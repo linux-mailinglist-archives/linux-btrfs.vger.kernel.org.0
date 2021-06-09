@@ -2,119 +2,197 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461173A198B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 17:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25F03A1B0D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 18:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236026AbhFIPba (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Jun 2021 11:31:30 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47340 "EHLO
+        id S234055AbhFIQgT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Jun 2021 12:36:19 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57500 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235379AbhFIPb3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 11:31:29 -0400
+        with ESMTP id S232296AbhFIQgS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 12:36:18 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 808E41FD62;
-        Wed,  9 Jun 2021 15:29:34 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id A49321FD5E;
+        Wed,  9 Jun 2021 16:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623252574;
+        t=1623256462;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2/GESPtg8Pnhjm76QD1EuJIUFaAMdraQ2yoaBcZfMRc=;
-        b=E723qE2qRHg81345gBuJ+NM7qYTRWcbxLjHknDy/Cyso0JGg4iM7tbPBuzuc3bpB0eASo5
-        3AtM5cliD84n3p2ivFtnH3x4fz+5Gx17YQgxWtrqpDKlynQ0gYYdwTROeSW20ybwJkEP7u
-        Mt7iU1QYfZjKqARfr3pP/KaifuGflqI=
+        bh=i6RW9GXhtrxu1U/fqugoZyGOBOmrC8annheH2ufgLmE=;
+        b=SekJs0jjVdqrZT0APCOHfCo3uK6K8Bb0ksTdLkVlSr9SmEkshdOfs6FHaY+s+A5kfyJaht
+        o2OiEXl4dI7MNSd9Jy5d4mYdtt9gMMcMl2sy2oz8CAb9TCbeRGSmFODNamTR6o+y0GHdB5
+        fm1s8gkfOoWsK9n3Ur9KlSENSGtC9oQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623252574;
+        s=susede2_ed25519; t=1623256462;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2/GESPtg8Pnhjm76QD1EuJIUFaAMdraQ2yoaBcZfMRc=;
-        b=gP4+tEvhjhWEPCvWxGLB4YReKqp1op1foyoDtEGsqXQdViCHFV66QI8XcJH7T4h/R0HGm6
-        ppWjcEFE6o8PAyBw==
+        bh=i6RW9GXhtrxu1U/fqugoZyGOBOmrC8annheH2ufgLmE=;
+        b=7Zj63LIH0GYCNgCsEEbGK1WRN98ijEWTB8KY86EUbbJNsqzHHpY26LLzNhom6qYM/ceXCW
+        gtBgAmCMhAdX/ADg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 7AE15A3B81;
-        Wed,  9 Jun 2021 15:29:34 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 9EBC7A3B81;
+        Wed,  9 Jun 2021 16:34:22 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 64503DA908; Wed,  9 Jun 2021 17:26:50 +0200 (CEST)
-Date:   Wed, 9 Jun 2021 17:26:50 +0200
+        id 8630DDA8C5; Wed,  9 Jun 2021 18:31:38 +0200 (CEST)
+Date:   Wed, 9 Jun 2021 18:31:38 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
+To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 00/10]  btrfs: defrag: rework to support sector
- perfect defrag
-Message-ID: <20210609152650.GC27283@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: send: fix invalid path for unlink operations
+ after parent orphanization
+Message-ID: <20210609163138.GD27283@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
         linux-btrfs@vger.kernel.org
-References: <20210608025927.119169-1-wqu@suse.com>
+References: <375bc37e9eb10cef96fe9f37d89b598737943499.1623234153.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210608025927.119169-1-wqu@suse.com>
+In-Reply-To: <375bc37e9eb10cef96fe9f37d89b598737943499.1623234153.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 10:59:17AM +0800, Qu Wenruo wrote:
-> This branch is based on subpage RW branch, as the last patch needs to
-> enable defrag support for subpage cases.
+On Wed, Jun 09, 2021 at 11:25:03AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> But despite that one, all other patches can be applied on current
-> misc-next.
+> During an incremental send operation, when processing the new references
+> for the current inode, we might send an unlink operation for another inode
+> that has a conflicting path and has more than one hard link. However this
+> path was computed and cached before we processed previous new references
+> for the current inode. We may have orphanized a directory of that path
+> while processing a previous new reference, in which case the path will
+> be invalid and cause the receiver process to fail.
 > 
-> [BACKGROUND]
-> In subpage rw branch, we disable defrag completely due to the fact that
-> current code can only work on page basis.
+> The following reproducer triggers the problem and explains how/why it
+> happens in its comments:
 > 
-> This could lead to problems like btrfs/062 crash.
+>   $ cat test-send-unlink.sh
+>   #!/bin/bash
 > 
-> Thus this patchset will make defrag to work on both regular and subpage
-> sectorsize.
+>   DEV=/dev/sdi
+>   MNT=/mnt/sdi
 > 
-> [SOLUTION]
-> To defrag a file range, what we do is pretty much like buffered write,
-> except we don't really write any new data to page cache, but just mark
-> the range dirty.
+>   mkfs.btrfs -f $DEV >/dev/null
+>   mount $DEV $MNT
 > 
-> Then let later writeback to merge the range into a larger extent.
+>   # Create our test files and directory. Inode 259 (file3) has two hard
+>   # links.
+>   touch $MNT/file1
+>   touch $MNT/file2
+>   touch $MNT/file3
 > 
-> But current defrag code is working on per-page basis, not per-sector,
-> thus we have to refactor it a little to make it to work properly for
-> subpage.
+>   mkdir $MNT/A
+>   ln $MNT/file3 $MNT/A/hard_link
 > 
-> This patch will separate the code into 3 layers:
-> Layer 0:	btrfs_defrag_file()
-> 		The defrag entrace
-> 		Just do proper inode lock and split the file into
-> 		page aligned 256K clusters to defrag
+>   # Filesystem looks like:
+>   #
+>   # .                                     (ino 256)
+>   # |----- file1                          (ino 257)
+>   # |----- file2                          (ino 258)
+>   # |----- file3                          (ino 259)
+>   # |----- A/                             (ino 260)
+>   #        |---- hard_link                (ino 259)
+>   #
 > 
-> Layer 1:	defrag_one_cluster()
-> 		Will collect the initial targets file extents, and pass
-> 		each continuous target to defrag_one_range()
+>   # Now create the base snapshot, which is going to be the parent snapshot
+>   # for a later incremental send.
+>   btrfs subvolume snapshot -r $MNT $MNT/snap1
+>   btrfs send -f /tmp/snap1.send $MNT/snap1
 > 
-> Layer 2:	defrag_one_range()
-> 		Will prepare the needed page and extent locking.
-> 		Then re-check the range for real target list, as initial
-> 		target list is not consistent as it doesn't hage
-> 		page/extent locking to prevent hole punching.
+>   # Move inode 257 into directory inode 260. This results in computing the
+>   # path for inode 260 as "/A" and caching it.
+>   mv $MNT/file1 $MNT/A/file1
 > 
-> Layer 3:	defrag_one_locked_target()
-> 		The real work, to make the extent range defrag and
-> 		update involved page status
+>   # Move inode 258 (file2) into directory inode 260, with a name of
+>   # "hard_link", moving first inode 259 away since it currently has that
+>   # location and name.
+>   mv $MNT/A/hard_link $MNT/tmp
+>   mv $MNT/file2 $MNT/A/hard_link
 > 
-> [BEHAVIOR CHANGE]
-> In the refactor, there is one behavior change:
+>   # Now rename inode 260 to something else (B for example) and then create
+>   # a hard link for inode 258 that has the old name and location of inode
+>   # 260 ("/A").
+>   mv $MNT/A $MNT/B
+>   ln $MNT/B/hard_link $MNT/A
 > 
-> - Defraged sector counter is based on the initial target list
->   This is mostly to avoid the paremters to be passed too deep into
->   defrag_one_locked_target().
->   Considering the accounting is not that important, we can afford some
->   difference.
+>   # Filesystem now looks like:
+>   #
+>   # .                                     (ino 256)
+>   # |----- tmp                            (ino 259)
+>   # |----- file3                          (ino 259)
+>   # |----- B/                             (ino 260)
+>   # |      |---- file1                    (ino 257)
+>   # |      |---- hard_link                (ino 258)
+>   # |
+>   # |----- A                              (ino 258)
+> 
+>   # Create another snapshot of our subvolume and use it for an incremental
+>   # send.
+>   btrfs subvolume snapshot -r $MNT $MNT/snap2
+>   btrfs send -f /tmp/snap2.send -p $MNT/snap1 $MNT/snap2
+> 
+>   # Now unmount the filesystem, create a new one, mount it and try to
+>   # apply both send streams to recreate both snapshots.
+>   umount $DEV
+> 
+>   mkfs.btrfs -f $DEV >/dev/null
+> 
+>   mount $DEV $MNT
+> 
+>   # First add the first snapshot to the new filesystem by applying the
+>   # first send stream.
+>   btrfs receive -f /tmp/snap1.send $MNT
+> 
+>   # The incremental receive operation below used to fail with the
+>   # following error:
+>   #
+>   #    ERROR: unlink A/hard_link failed: No such file or directory
+>   #
+>   # This is because when send is processing inode 257, it generates the
+>   # path for inode 260 as "/A", since that inode is its parent in the send
+>   # snapshot, and caches that path.
+>   #
+>   # Later when processing inode 258, it first processes its new reference
+>   # that has the path of "/A", which results in orphanizing inode 260
+>   # because there is a a path collision. This results in issuing a rename
+>   # operation from "/A" to "/o260-6-0".
+>   #
+>   # Finally when processing the new reference "B/hard_link" for inode 258,
+>   # it notices that it collides with inode 259 (not yet processed, because
+>   # it has a higher inode number), since that inode has the name
+>   # "hard_link" under the directory inode 260. It also checks that inode
+>   # 259 has two hardlinks, so it decides to issue a unlink operation for
+>   # the name "hard_link" for inode 259. However the path passed to the
+>   # unlink operation is "/A/hard_link", which is incorrect since currently
+>   # "/A" does not exists, due to the orphanization of inode 260 mentioned
+>   # before. The path is incorrect because it was computed and cached
+>   # before the orphanization. This results in the receiver to fail with
+>   # the above error.
+>   btrfs receive -f /tmp/snap2.send $MNT
+> 
+>   umount $MNT
+> 
+> When running the test, it fails like this:
+> 
+>   $ ./test-send-unlink.sh
+>   Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap1'
+>   At subvol /mnt/sdi/snap1
+>   Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap2'
+>   At subvol /mnt/sdi/snap2
+>   At subvol snap1
+>   At snapshot snap2
+>   ERROR: unlink A/hard_link failed: No such file or directory
+> 
+> Fix this by recomputing a path before issuing an unlink operation when
+> processing the new references for the current inode if we previously
+> have orphanized a directory.
+> 
+> A test case for fstests will follow soon.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-As you're going to resend, please fix all occurences of 'defraged' to
-'defragged'.
-
-I'll give the patchset some testing bug am not sure if it isn't too
-risky to put it to the 5.14 queue as it's about time to do only safe
-changes.
+Added to misc-next, thanks.
