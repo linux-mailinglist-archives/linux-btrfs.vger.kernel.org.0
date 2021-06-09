@@ -2,218 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F763A0C6B
+	by mail.lfdr.de (Postfix) with ESMTP id EB7033A0C6C
 	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 08:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhFIG3n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Jun 2021 02:29:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39826 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbhFIG3m (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 02:29:42 -0400
+        id S233590AbhFIG3o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Jun 2021 02:29:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59416 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232818AbhFIG3o (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 02:29:44 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A90B6219C2
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Jun 2021 06:27:47 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6BABB1FD2A
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Jun 2021 06:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623220067; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=A+jJaKNLgbXOp0BfnipdG2MhV44yu0K77RxVH28/yAk=;
-        b=R9iBkcWCYLYGgwEFaXkp2intNplPhy0CDJLX9qD+ySBsFHI7l1TrWsVKGRQpF4wWtWtd87
-        A0sW/aIq3uoUl4VEn6WK8jY+y9LlcqvNBPAwPIlAMjm4DGYLq9nlVqgc7JAVKXZVLSH781
-        qgnlyFUdYL/D8dD771A8Q6rkI9PVn0Y=
+        t=1623220069; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8M+uMB7++0uScb8ayVnA3WznpCfhOF07kG5IK4114c=;
+        b=Do5o0+FnYCxIEQ+uzhaBbHZEuhAMhebkVmeWv99QJeJzmahZvYp1B6sufHI5t/vtOWiraP
+        E+q8704x4713QjOgGjbWmzIAlVdL/q7F7ViEMRXkCKhQhqv0JDSHF1oP0Mv+1yuhwliW1h
+        b+caCtARe6gje2iDW2BmR9XtdvIoXqM=
 Received: from adam-pc.lan (unknown [10.163.16.38])
-        by relay2.suse.de (Postfix) with ESMTP id 821C1A3B81
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Jun 2021 06:27:46 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 6CAB5A3B81
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Jun 2021 06:27:48 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs-progs: check: add the ability to reset btrfs_dev_item::bytes_used
-Date:   Wed,  9 Jun 2021 14:27:42 +0800
-Message-Id: <20210609062743.190936-1-wqu@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: tests/fsck: add test case to make sure btrfs check can reset btrfs_dev_item::bytes_used
+Date:   Wed,  9 Jun 2021 14:27:43 +0800
+Message-Id: <20210609062743.190936-2-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210609062743.190936-1-wqu@suse.com>
+References: <20210609062743.190936-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a report from the mail list that one user got its filesystem
-with device item bytes_used mismatch.
-
-This problem leaves the device item with some ghost bytes_used, meaning
-even if we delete all device extents of that device, the bytes_used
-still won't be 0.
-
-This itself is not a big deal, but when the user used up all its
-unallocated space, write time tree-checker can be triggered and make the
-fs RO, as the new device::bytes_used can be larger than
-device::total_bytes.
-
-Thus we need to fix the problem in btrfs-check to avoid above write-time
-tree check warning.
-
-This patch will add the ability to reset a device's bytes_used to both
-original mode and lowmem mode.
+The test image is manually crafted with 1MiB offset in the device item
+of devid 1.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/main.c        |  8 ++++++-
- check/mode-common.c | 57 +++++++++++++++++++++++++++++++++++++++++++++
- check/mode-common.h |  2 ++
- check/mode-lowmem.c | 14 +++++++++--
- 4 files changed, 78 insertions(+), 3 deletions(-)
+ .../047-dev-bytes-used/.lowmem_repairable        |   0
+ .../047-dev-bytes-used/default_case.img.xz       | Bin 0 -> 1896 bytes
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 tests/fsck-tests/047-dev-bytes-used/.lowmem_repairable
+ create mode 100644 tests/fsck-tests/047-dev-bytes-used/default_case.img.xz
 
-diff --git a/check/main.c b/check/main.c
-index ee6cf793251c..6cf96b1a9b3b 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -8397,11 +8397,17 @@ static int check_device_used(struct device_record *dev_rec,
- 	}
- 
- 	if (total_byte != dev_rec->byte_used) {
-+		int ret = -1;
-+
- 		fprintf(stderr,
- 			"Dev extent's total-byte(%llu) is not equal to byte-used(%llu) in dev[%llu, %u, %llu]\n",
- 			total_byte, dev_rec->byte_used,	dev_rec->objectid,
- 			dev_rec->type, dev_rec->offset);
--		return -1;
-+		if (repair) {
-+			ret = repair_dev_item_bytes_used(gfs_info,
-+					dev_rec->devid, total_byte);
-+		}
-+		return ret;
- 	} else {
- 		return 0;
- 	}
-diff --git a/check/mode-common.c b/check/mode-common.c
-index cb22f3233c00..5764bf6ee54c 100644
---- a/check/mode-common.c
-+++ b/check/mode-common.c
-@@ -21,6 +21,7 @@
- #include "kernel-shared/transaction.h"
- #include "common/utils.h"
- #include "kernel-shared/disk-io.h"
-+#include "kernel-shared/volumes.h"
- #include "common/repair.h"
- #include "check/mode-common.h"
- 
-@@ -1243,3 +1244,59 @@ out:
- 	btrfs_release_path(&path);
- 	return ret;
- }
-+
-+int repair_dev_item_bytes_used(struct btrfs_fs_info *fs_info,
-+			       u64 devid, u64 bytes_used_expected)
-+{
-+	struct btrfs_trans_handle *trans;
-+	struct btrfs_device *device;
-+	int ret;
-+
-+	device = btrfs_find_device_by_devid(fs_info->fs_devices, devid, 0);
-+	if (!device) {
-+		error("failed to find device with devid %llu", devid);
-+		return -ENOENT;
-+	}
-+
-+	/* Bytes_used matches, not what we can repair */
-+	if (device->bytes_used == bytes_used_expected)
-+		return -ENOTSUP;
-+
-+	/*
-+	 * We have to set the device bytes used right now, before
-+	 * starting a new transaction, as it may allocate new chunk and
-+	 * modify device->bytes_used.
-+	 */
-+	device->bytes_used = bytes_used_expected;
-+	trans = btrfs_start_transaction(fs_info->chunk_root, 1);
-+	if (IS_ERR(trans)) {
-+		ret = PTR_ERR(trans);
-+		errno = -ret;
-+		error("failed to start transaction: %d (\"%m\")", ret);
-+		return ret;
-+	}
-+
-+	/* Manually update the device item in chunk tree */
-+	ret = btrfs_update_device(trans, device);
-+	if (ret < 0) {
-+		error(
-+		"failed to update device item for devid %llu: %d (\"%m\")",
-+		      devid, ret);
-+		goto error;
-+	}
-+
-+	/*
-+	 * Commit transaction not only to save above change but also update
-+	 * the device item in super block.
-+	 */
-+	ret = btrfs_commit_transaction(trans, fs_info->chunk_root);
-+	if (ret < 0)
-+		error("failed to commit transaction: %d (\"%m\")", ret);
-+	else
-+		printf("reset devid %llu bytes_used to %llu\n", devid,
-+		       device->bytes_used);
-+	return ret;
-+error:
-+	btrfs_abort_transaction(trans, ret);
-+	return ret;
-+}
-diff --git a/check/mode-common.h b/check/mode-common.h
-index 3ba29ecab6cd..711eced3acf0 100644
---- a/check/mode-common.h
-+++ b/check/mode-common.h
-@@ -192,4 +192,6 @@ static inline void btrfs_check_subpage_eb_alignment(u64 start, u32 len)
- 			start, start + len);
- }
- 
-+int repair_dev_item_bytes_used(struct btrfs_fs_info *fs_info,
-+			       u64 devid, u64 bytes_used_expected);
- #endif
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 2f736712bc7f..64f09e68516c 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -4454,7 +4454,8 @@ out:
- /*
-  * Check if the used space is correct with the dev item
-  */
--static int check_dev_item(struct extent_buffer *eb, int slot)
-+static int check_dev_item(struct extent_buffer *eb, int slot,
-+			  u64 *bytes_used_expected)
- {
- 	struct btrfs_root *dev_root = gfs_info->dev_root;
- 	struct btrfs_dev_item *dev_item;
-@@ -4543,6 +4544,7 @@ next:
- 	}
- 	btrfs_release_path(&path);
- 
-+	*bytes_used_expected = total;
- 	if (used != total) {
- 		btrfs_item_key_to_cpu(eb, &key, slot);
- 		error(
-@@ -4744,6 +4746,7 @@ static int repair_chunk_item(struct btrfs_root *chunk_root,
- static int check_leaf_items(struct btrfs_root *root, struct btrfs_path *path,
- 			    struct node_refs *nrefs, int account_bytes)
- {
-+	u64 bytes_used_expected = (u64)-1;
- 	struct btrfs_key key;
- 	struct extent_buffer *eb;
- 	int slot;
-@@ -4782,7 +4785,14 @@ again:
- 		err |= ret;
- 		break;
- 	case BTRFS_DEV_ITEM_KEY:
--		ret = check_dev_item(eb, slot);
-+		ret = check_dev_item(eb, slot, &bytes_used_expected);
-+		if (repair && ret & ACCOUNTING_MISMATCH &&
-+		    bytes_used_expected != (u64)-1) {
-+			ret = repair_dev_item_bytes_used(root->fs_info,
-+					key.offset, bytes_used_expected);
-+			if (ret < 0)
-+				ret = ACCOUNTING_MISMATCH;
-+		}
- 		err |= ret;
- 		break;
- 	case BTRFS_CHUNK_ITEM_KEY:
+diff --git a/tests/fsck-tests/047-dev-bytes-used/.lowmem_repairable b/tests/fsck-tests/047-dev-bytes-used/.lowmem_repairable
+new file mode 100644
+index 000000000000..e69de29bb2d1
+diff --git a/tests/fsck-tests/047-dev-bytes-used/default_case.img.xz b/tests/fsck-tests/047-dev-bytes-used/default_case.img.xz
+new file mode 100644
+index 0000000000000000000000000000000000000000..28100c185cb6f6f3ec342434e9605b6faea135af
+GIT binary patch
+literal 1896
+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
+
+literal 0
+HcmV?d00001
+
 -- 
 2.32.0
 
