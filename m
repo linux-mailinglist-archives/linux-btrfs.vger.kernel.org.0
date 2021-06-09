@@ -2,76 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358623A1916
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 17:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AFB3A1968
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 17:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239225AbhFIPTd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Jun 2021 11:19:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45564 "EHLO
+        id S236114AbhFIP1K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Jun 2021 11:27:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47006 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239221AbhFIPTE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 11:19:04 -0400
+        with ESMTP id S235287AbhFIP1J (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 11:27:09 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8C1201FD62;
-        Wed,  9 Jun 2021 15:17:08 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 300A91FD5F;
+        Wed,  9 Jun 2021 15:25:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623251828;
+        t=1623252314;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2E76Axm2P/Q+gpkJ1vBfr5a6vL6qL/4uTsjHo/0dzOM=;
-        b=UHakXyEpWQJMLllBjXm+m0xRX8FLYvO4S9/+r9jx/RAXgBbEwdQX7lRKK1zIz3Vu5vzRiv
-        O3Ui6JrDewbeZxPrfpDYAdXOVbm+M8uR+fbwJ6IKSldekJ9A3WrvtM5hP6urKj/fBmo9mo
-        rBQsa/O6pwR2b6TO3dg606CuBjp9deg=
+        bh=FnwpRx7yBJ1OiUH+QEEKkqma20IwsS7l8C1CBgxMwZE=;
+        b=x9blfVsfHU2ikNtiGmwORxv051ighw3RV83vLk8ry8KxoVXs65eMhqqkYyciHcC0seOXvd
+        BranzjpuMgzxDm5zgng/Ig0skdoIeenjgkYxnk0c+AufmSTHCRkt1dZ+kpyxTV15DI6saK
+        6OP+0uWaJzUIEakwd5kEMegTIq0ZZww=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623251828;
+        s=susede2_ed25519; t=1623252314;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2E76Axm2P/Q+gpkJ1vBfr5a6vL6qL/4uTsjHo/0dzOM=;
-        b=NVW40s2XzYCw3Y8oeAUL4R0ePOiTDPJPzWWAXA/oeYJuheWaGFQQTHici3kVpzYRM7eBCH
-        TNsFB/K95awvemDQ==
+        bh=FnwpRx7yBJ1OiUH+QEEKkqma20IwsS7l8C1CBgxMwZE=;
+        b=u9SGg7nzulHYh4r8kwbpIOc6cZWOUDYfiiCA/vX4hvdeGK3YPPEOFWC+yM13ThOluPu/zT
+        bOfFWIe7daFyA9Bg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 83483A3B9F;
-        Wed,  9 Jun 2021 15:17:08 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 126EBA3B84;
+        Wed,  9 Jun 2021 15:25:13 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 73209DA908; Wed,  9 Jun 2021 17:14:24 +0200 (CEST)
-Date:   Wed, 9 Jun 2021 17:14:24 +0200
+        id BA216DA908; Wed,  9 Jun 2021 17:22:29 +0200 (CEST)
+Date:   Wed, 9 Jun 2021 17:22:29 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: sysfs: export dev stats in devinfo directory
-Message-ID: <20210609151424.GA27283@twin.jikos.cz>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     kernel test robot <lkp@intel.com>, linux-btrfs@vger.kernel.org,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: include/linux/compiler_types.h:326:38: error: call to
+ '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON
+ failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+Message-ID: <20210609152229.GB27283@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210604132058.11334-1-dsterba@suse.com>
- <5aeca0cd-c6b2-939a-6f83-7ea5722076dc@oracle.com>
- <20210604142105.GD31483@twin.jikos.cz>
- <77708664-a7db-50e0-aa44-6cbb3fb90070@oracle.com>
- <20210607185556.GL31483@twin.jikos.cz>
- <8e255fb8-9dc2-57cf-f6e8-d1c23aa43563@oracle.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        kernel test robot <lkp@intel.com>, linux-btrfs@vger.kernel.org,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <202106092159.05DloM1z-lkp@intel.com>
+ <6cc4b52b-48cd-45e2-67b5-289c4962fedb@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <8e255fb8-9dc2-57cf-f6e8-d1c23aa43563@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6cc4b52b-48cd-45e2-67b5-289c4962fedb@csgroup.eu>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 03:43:44PM +0800, Anand Jain wrote:
-> > I'm more inclined to follow what
-> > /proc/ stats do. It's more convenient to monitor stats in one file read
-> > than having to do 'cat error_stats/*' or with filenames as 'grep ^
-> > error_stats/*'.
+On Wed, Jun 09, 2021 at 04:01:20PM +0200, Christophe Leroy wrote:
+> Le 09/06/2021 à 15:55, kernel test robot a écrit :
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   368094df48e680fa51cedb68537408cfa64b788e
+> > commit: 4eeef098b43242ed145c83fba9989d586d707589 powerpc/44x: Remove STDBINUTILS kconfig option
+> > date:   4 months ago
+> > config: powerpc-randconfig-r012-20210609 (attached as .config)
+> > compiler: powerpc-linux-gcc (GCC) 9.3.0
 > 
->   Agreed. I prefer one file from the convenience pov. Also, block dev has
->   one file, the reason to represent it invariably at a given time [1]
->     [1] https://www.kernel.org/doc/Documentation/block/stat.txt
->   IMO the same applies to btrfs too.
+> That's a BTRFS issue, and not directly linked to the above mentioned commit. Before that commit the 
+> problem was already present.
+> 
+> Problem is that with 256k PAGE_SIZE, following BUILD_BUG() pops up:
+> 
+> BUILD_BUG_ON((BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0)
 
-Ah nice, same reason for us to use the file then. I'd argue that having
-the names of the values is more convenient than just an array of raw
-numbers though.
+A 256K page is a problem for btrfs, until now I was not even aware
+there's an architecture supporting that so. That the build fails is
+probably best thing. Maximum metadata nodesize supported is 64K and
+having that on a 256K page would need deeper changes, no top of the
+currently developed subpage changes (that do 4K blocks on 64K pages).
