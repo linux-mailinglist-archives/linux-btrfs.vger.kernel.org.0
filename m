@@ -2,63 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEA53A1CE0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 20:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316183A1D38
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 20:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhFISmO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Jun 2021 14:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhFISmN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 14:42:13 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B16C061574
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Jun 2021 11:40:18 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id o9so17475807pgd.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Jun 2021 11:40:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qBrJGD35IyUYnM2I0p0yXK7PJNELziFu5LKvIlypAiQ=;
-        b=zdmyRxvHxhfB6huyK69dwFWmnkKujZxsC4WHJL/phs8NavYBZmKC7bj2ZcOZ1ld6eU
-         ltTURbOWCvwHS9UjDS0nLtErEr6OYF7Z8VgonvtHZGbmf3aqEu+Gb6I7TWUER7/skK1C
-         meBN+M8NPO8NwCoudYw7x5ldG6cKS87eqVtfLkepbCiYTexnIO218EsA+uUoWYST8SWE
-         4EP75KUn9XTA8g8lk6MAhotOQcBtr7u+WDL9WISch4gtE/aK5tFZsFWAlW9OdXp+nOzC
-         VVNHvngL0nrJAlVSUO5ElrDQjC36HQtcqK1rFWxeYpNBjRr85zui1fnLZtr2MrLRBTAq
-         NErQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qBrJGD35IyUYnM2I0p0yXK7PJNELziFu5LKvIlypAiQ=;
-        b=Ieavw5jVsuSFDjN5llYuvyJtlMAylS9zxYti5lFozR8kRI4FjNFXJ9apEsaqyuJAcZ
-         vFJqIzn2UIBVzHmKZfrqXtrf5jElQGx4fbPz0z42A/4nhKH7hXB7LwMSyzn2yfGPM4/Y
-         z2fwnLf8J/cR+yAr9qhWI4OlfDkf20zkPQWc1PzuKC+G7zE0hrmiTje2yUL3FND4PLg1
-         l9iXu7iClRS1vz1+SEApg/EfcF0gCh8UIzmIRgir5By3Wo8d5/sF3gh+0XmiTjeWpi39
-         zOzAgg3KiqoFoSzPWeCY4tpd0ANMc8Gp6J1i2da31t20EsU2X+Ry8O2hKyqyWkcIbI7z
-         p/Lw==
-X-Gm-Message-State: AOAM532VF79qWH5SNApHXyT7jBAstpsKrT2+NC1HwZGimqOlC5GHECVB
-        nJ99qKiaSy6G6SKHiffqnQ+2MhCiygBPmw==
-X-Google-Smtp-Source: ABdhPJzxNUvRKZqLWMGFbkx/47jAwMq2l0g50ZjncE/qdITiXTuwP3FgqEsvhI9CEiM4B6y9ZbGYsA==
-X-Received: by 2002:a63:e0e:: with SMTP id d14mr1026005pgl.426.1623264017701;
-        Wed, 09 Jun 2021 11:40:17 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:a169])
-        by smtp.gmail.com with ESMTPSA id c4sm278330pfo.189.2021.06.09.11.40.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Jun 2021 11:40:17 -0700 (PDT)
-Date:   Wed, 9 Jun 2021 11:40:15 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
+        id S229703AbhFISy4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Jun 2021 14:54:56 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41416 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhFISyy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 14:54:54 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id EDCEA1FD60;
+        Wed,  9 Jun 2021 18:52:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623264778;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AlcaPnRw6bv4CHU9gKFw2OudSUE4OxGVk2XBD0NaCPc=;
+        b=N9pTyxACGjz6XIH3D+9pIwjWgrY4HxIxGSSQT44frQMUU+g903t39fCZaWv2Ur3DXUuEc3
+        tZ1HdlOGT8FOj2nu0YijDRi/sA2Da2u4UoSdF8nE1JWPg1DXF/Lz7TC5ibHueZqkJiEW6t
+        NHthOR+DCJtUbCAF2Qt/DDIvW+J8Fi8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623264778;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AlcaPnRw6bv4CHU9gKFw2OudSUE4OxGVk2XBD0NaCPc=;
+        b=vluGsHaD4DsB9D3cbGsghSmXt4etIfBDr3ET3ycvoQJrNafhD0xxjY9r0h3DLjjX3R60MM
+        Q7zFPV4x8eT0t/BA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id E64F3A3B87;
+        Wed,  9 Jun 2021 18:52:58 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C88F8DA908; Wed,  9 Jun 2021 20:50:14 +0200 (CEST)
+Date:   Wed, 9 Jun 2021 20:50:14 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH] btrfs: sysfs: export dev stats in devinfo directory
-Message-ID: <YMELD/Jkx7WT1oqg@relinquished.localdomain>
+Message-ID: <20210609185014.GE27283@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <20210604132058.11334-1-dsterba@suse.com>
  <YMEHVWTrcJ6ol5bH@relinquished.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <YMEHVWTrcJ6ol5bH@relinquished.localdomain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -114,4 +107,5 @@ On Wed, Jun 09, 2021 at 11:24:21AM -0700, Omar Sandoval wrote:
 > the same? It seems a little awkward to have a flag that means that the
 > rest of the file is meaningless.
 
-Typo, I meant to say "the ioctl returns ENODEV _if_ !dev_stats_valid".
+You mean returning -ENODEV when reading the stats file? Or return 0 but
+the contents is something like 'stats invalid' or similar.
