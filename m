@@ -2,93 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA503A2071
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jun 2021 00:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77D93A207A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jun 2021 01:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhFIXAA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Jun 2021 19:00:00 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:42619 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhFIW77 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 18:59:59 -0400
-Received: by mail-lj1-f196.google.com with SMTP id r16so1955971ljk.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Jun 2021 15:58:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=tf7A8M8MW0cJL9m4DIttEClNLOA5QjszPUC9MV5ahVw=;
-        b=kgflrM9HuRKxe9hgf6VCnLuEOiT3OpLd9tyYZ3VPoCIJWQgz5g5CV+s1wop9ONbzk1
-         pJQTNxXU+sPCBgKQMyKWmvtPI9wGCM8rQNDE0ZNRT5dDQlQpgA30prL/t4cMWo5Klaeb
-         QRLqFrbX+R/c8NJgerDCMj/RwFuVdikWj9hYpql5n3MNQ6Yuvhtqu9IuWX9XW3DL56PN
-         o650ldPUZauQ14wA61Mfk0i0r/uSG1KR4N71b70oWOWKwNecqeySFdafvUzgzw8WWlDJ
-         +ju41DDitAMC6uHne3XBasyG8dg1F5rb/+zdCnDhbm9fCZbLg9/G7mtV6tVwap5cKFkc
-         v9MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=tf7A8M8MW0cJL9m4DIttEClNLOA5QjszPUC9MV5ahVw=;
-        b=ecr0f8Aw99BpCHHmRwxq0vGEmRfvsCXHBOOSE2UmrYoG505Q5Lf4Ax/fpxkOlryup2
-         F1SXx6anIKmnrW726c3oQDhDPs6jm5DZ09ZByGlzRRuawe3JMwyktZMWVKoeiwwKgOs0
-         XapO16x8ZxpZ7sNGxJBrO+12jYJHy9EVyQqYgF1wwgJTOp3fP5Tccj4uRJRo8IcWAdgo
-         BlKx0KoQ9C7H0xKCGCsUgIyjIbuxXfMd8yvzC6c7kfvT4DO5MygSFnDpKhRq2THQMrIx
-         INALQnIukRmf2QwIUeDxYpKGNhsTq+aI506pWu5AbUPQeYb6LNvp4NddSs5okepv8Khl
-         crxw==
-X-Gm-Message-State: AOAM533uIcJM1xvrxe+WT/1zs/TxXy/pMdiVLYCHmszrFctDH9CDZxEA
-        6swwPBLzcPtKjsDkXr4LuADsdCXQSkx6Sk681/U=
-X-Google-Smtp-Source: ABdhPJzChLUloYI7gPTB9lW33cc+Z9ENwjtrgpbWcjC/jLvi5Js57TZOg3Quzt8BGIuLeoEtS4+sHfurBhBa9fDEW/M=
-X-Received: by 2002:a2e:9e8e:: with SMTP id f14mr1515353ljk.468.1623279423563;
- Wed, 09 Jun 2021 15:57:03 -0700 (PDT)
+        id S229548AbhFIXG5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Jun 2021 19:06:57 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41028 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFIXG5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 19:06:57 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 36010219A7;
+        Wed,  9 Jun 2021 23:05:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623279901;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mlsWobBerWfFrg8aDDUB+4shQ+pMVEP20lmn7L8rIdk=;
+        b=YaIFa6vWcmziGerjPi3aRA7s50vCH2JRVF+PG6lde7d/bAJl+JXCcO9Ot3QXwxLSzAMSE5
+        +3FfQBcuuBIK44T9B6SQesDWsAnpvPDbWxu0fnROATueLYrYwP7LtiYLxTye23S+66xaPa
+        tPmwy7+gs2F1OQCw5SbMwvJsl6o79+E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623279901;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mlsWobBerWfFrg8aDDUB+4shQ+pMVEP20lmn7L8rIdk=;
+        b=EC/7pcNurdXoJggNtbNwa+o1Zltx+vZxGwfXTf27pNmC+GSiLwG1RiaxtPX80JErmcCSJo
+        Gges2T0QpQK+3DBA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 2EE39A3B84;
+        Wed,  9 Jun 2021 23:05:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id EF309DAF37; Thu, 10 Jun 2021 01:02:16 +0200 (CEST)
+Date:   Thu, 10 Jun 2021 01:02:16 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Neal Gompa <ngompa13@gmail.com>
+Cc:     David Sterba <dsterba@suse.cz>, Qu Wenruo <wqu@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v3 00/10] btrfs: defrag: rework to support sector perfect
+ defrag
+Message-ID: <20210609230216.GF27283@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
+        Qu Wenruo <wqu@suse.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <20210608025927.119169-1-wqu@suse.com>
+ <20210609152650.GC27283@twin.jikos.cz>
+ <CAEg-Je_8sDQNWM9tdka_Zd=v5pQzf0AsnJJAVAeKy7nMO5CE8Q@mail.gmail.com>
 MIME-Version: 1.0
-Reply-To: patzengu@outlook.com
-Sender: bellarichnice@gmail.com
-Received: by 2002:a05:6512:692:0:0:0:0 with HTTP; Wed, 9 Jun 2021 15:57:03
- -0700 (PDT)
-From:   Patrice Zengu <rm2568590@gmail.com>
-Date:   Thu, 10 Jun 2021 00:57:03 +0200
-X-Google-Sender-Auth: IV0AU7V5l2p5OTr-OXOVCPdneMc
-Message-ID: <CAKq9YDieTc1vz+evibw8X0cczU2aSNVzBAtseD8MUawFdWHC2w@mail.gmail.com>
-Subject: Please co-operate with me
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEg-Je_8sDQNWM9tdka_Zd=v5pQzf0AsnJJAVAeKy7nMO5CE8Q@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
+On Wed, Jun 09, 2021 at 06:48:31PM -0400, Neal Gompa wrote:
+> On Wed, Jun 9, 2021 at 12:23 PM David Sterba <dsterba@suse.cz> wrote:
+> > On Tue, Jun 08, 2021 at 10:59:17AM +0800, Qu Wenruo wrote:
+> > > [BEHAVIOR CHANGE]
+> > > In the refactor, there is one behavior change:
+> > >
+> > > - Defraged sector counter is based on the initial target list
+> > >   This is mostly to avoid the paremters to be passed too deep into
+> > >   defrag_one_locked_target().
+> > >   Considering the accounting is not that important, we can afford some
+> > >   difference.
+> >
+> > As you're going to resend, please fix all occurences of 'defraged' to
+> > 'defragged'.
+> >
+> > I'll give the patchset some testing bug am not sure if it isn't too
+> > risky to put it to the 5.14 queue as it's about time to do only safe
+> > changes.
+> 
+> This patch set makes it possible to do compression and balance in
+> subpage cases, right? At least, that's what I understood of it (defrag
+> code is used for balance and compression...).
 
-
--- 
-Dear Friend,
-
-I am Mr.Patrice Zengu ,from Burkina Faso and i am the new bank telex
-manager of our bank here in Africa.
-
-I have the opportunity to transfer the sum of US$ 10.5Million to your
-bank account which i personally placed on an Escrow account without a
-name.
-
-I must tell you that after revision of files both old and new as the
-new telex manager ,i discovered that if these funds remains here
-without transferring it offshore,it will be lawfully recovered
-andmoved to the  Government of Burkina Faso treasury as an abandoned
-funds without any name.
-
-I want to let you know that a Burkinabe cannot stand as the depositor
-of these US dollars  since we are not allowed to operate on foreign
-currrency.I do not intend to work  and stay in Africa till the rest of
-my life.
-
-Moreso,i will not want my bank to know about these funds and if they
-happens to know probably,the funds will be moved to the Burkina Faso
-Government public treasury as an abandoned funds.
-
-I will furnish you with more details of this transfer and how it ca
-nbe perfectly and legally executed without any hitch since i am now in
-control.
-
-I am waiting to hear from you urgently to proceed.
-
-
-Yours sincerely,
-Mr.Patrice Zengu.
+No it's just to do defragmentation in subpage case. Defrag and balance
+code are indpendent, and only defrag can do compression, balance just
+moves chunks of data but does not do changes to the data itself (it
+could write them in a different way eg. the stripes or copies).
