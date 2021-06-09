@@ -2,168 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA11F3A1661
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 16:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358623A1916
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 17:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237166AbhFIODV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Jun 2021 10:03:21 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:49265 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237148AbhFIODS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 9 Jun 2021 10:03:18 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G0TKt4K9TzBBZH;
-        Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id a1uqyJtO2ulD; Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G0TKt3M9JzBBTw;
-        Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3400D8B7E3;
-        Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 793nCcEw9Je0; Wed,  9 Jun 2021 16:01:22 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 96F388B7C3;
-        Wed,  9 Jun 2021 16:01:21 +0200 (CEST)
-Subject: Re: include/linux/compiler_types.h:326:38: error: call to
- '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON
- failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
-To:     kernel test robot <lkp@intel.com>, linux-btrfs@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <202106092159.05DloM1z-lkp@intel.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <6cc4b52b-48cd-45e2-67b5-289c4962fedb@csgroup.eu>
-Date:   Wed, 9 Jun 2021 16:01:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239225AbhFIPTd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Jun 2021 11:19:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45564 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239221AbhFIPTE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 11:19:04 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8C1201FD62;
+        Wed,  9 Jun 2021 15:17:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623251828;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2E76Axm2P/Q+gpkJ1vBfr5a6vL6qL/4uTsjHo/0dzOM=;
+        b=UHakXyEpWQJMLllBjXm+m0xRX8FLYvO4S9/+r9jx/RAXgBbEwdQX7lRKK1zIz3Vu5vzRiv
+        O3Ui6JrDewbeZxPrfpDYAdXOVbm+M8uR+fbwJ6IKSldekJ9A3WrvtM5hP6urKj/fBmo9mo
+        rBQsa/O6pwR2b6TO3dg606CuBjp9deg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623251828;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2E76Axm2P/Q+gpkJ1vBfr5a6vL6qL/4uTsjHo/0dzOM=;
+        b=NVW40s2XzYCw3Y8oeAUL4R0ePOiTDPJPzWWAXA/oeYJuheWaGFQQTHici3kVpzYRM7eBCH
+        TNsFB/K95awvemDQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 83483A3B9F;
+        Wed,  9 Jun 2021 15:17:08 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 73209DA908; Wed,  9 Jun 2021 17:14:24 +0200 (CEST)
+Date:   Wed, 9 Jun 2021 17:14:24 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: sysfs: export dev stats in devinfo directory
+Message-ID: <20210609151424.GA27283@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210604132058.11334-1-dsterba@suse.com>
+ <5aeca0cd-c6b2-939a-6f83-7ea5722076dc@oracle.com>
+ <20210604142105.GD31483@twin.jikos.cz>
+ <77708664-a7db-50e0-aa44-6cbb3fb90070@oracle.com>
+ <20210607185556.GL31483@twin.jikos.cz>
+ <8e255fb8-9dc2-57cf-f6e8-d1c23aa43563@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <202106092159.05DloM1z-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e255fb8-9dc2-57cf-f6e8-d1c23aa43563@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Le 09/06/2021 à 15:55, kernel test robot a écrit :
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   368094df48e680fa51cedb68537408cfa64b788e
-> commit: 4eeef098b43242ed145c83fba9989d586d707589 powerpc/44x: Remove STDBINUTILS kconfig option
-> date:   4 months ago
-> config: powerpc-randconfig-r012-20210609 (attached as .config)
-> compiler: powerpc-linux-gcc (GCC) 9.3.0
+On Wed, Jun 09, 2021 at 03:43:44PM +0800, Anand Jain wrote:
+> > I'm more inclined to follow what
+> > /proc/ stats do. It's more convenient to monitor stats in one file read
+> > than having to do 'cat error_stats/*' or with filenames as 'grep ^
+> > error_stats/*'.
+> 
+>   Agreed. I prefer one file from the convenience pov. Also, block dev has
+>   one file, the reason to represent it invariably at a given time [1]
+>     [1] https://www.kernel.org/doc/Documentation/block/stat.txt
+>   IMO the same applies to btrfs too.
 
-That's a BTRFS issue, and not directly linked to the above mentioned commit. Before that commit the 
-problem was already present.
-
-Problem is that with 256k PAGE_SIZE, following BUILD_BUG() pops up:
-
-BUILD_BUG_ON((BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0)
-
-
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4eeef098b43242ed145c83fba9989d586d707589
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout 4eeef098b43242ed145c83fba9989d586d707589
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All error/warnings (new ones prefixed by >>):
-> 
->     fs/buffer.c: In function 'block_read_full_page':
->>> fs/buffer.c:2342:1: warning: the frame size of 2048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->      2342 | }
->           | ^
-> --
->     fs/ext4/move_extent.c: In function 'mext_page_mkuptodate':
->>> fs/ext4/move_extent.c:227:1: warning: the frame size of 2056 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->       227 | }
->           | ^
-> --
->     fs/fat/dir.c: In function 'fat_add_new_entries':
->>> fs/fat/dir.c:1279:1: warning: the frame size of 2088 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->      1279 | }
->           | ^
->     fs/fat/dir.c: In function 'fat_alloc_new_dir':
->     fs/fat/dir.c:1195:1: warning: the frame size of 2064 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->      1195 | }
->           | ^
-> --
->     fs/fat/fatent.c: In function 'fat_free_clusters':
->>> fs/fat/fatent.c:632:1: warning: the frame size of 2080 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->       632 | }
->           | ^
->     fs/fat/fatent.c: In function 'fat_alloc_clusters':
->     fs/fat/fatent.c:550:1: warning: the frame size of 2112 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->       550 | }
->           | ^
-> --
->     fs/exfat/fatent.c: In function 'exfat_zeroed_cluster':
->>> fs/exfat/fatent.c:277:1: warning: the frame size of 2048 bytes is larger than 1024 bytes [-Wframe-larger-than=]
->       277 | }
->           | ^
-> --
->     In file included from <command-line>:
->     fs/btrfs/inode.c: In function 'compress_file_range':
->>> include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
->       326 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->           |                                      ^
->     include/linux/compiler_types.h:307:4: note: in definition of macro '__compiletime_assert'
->       307 |    prefix ## suffix();    \
->           |    ^~~~~~
->     include/linux/compiler_types.h:326:2: note: in expansion of macro '_compiletime_assert'
->       326 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->           |  ^~~~~~~~~~~~~~~~~~~
->     include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
->        39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->           |                                     ^~~~~~~~~~~~~~~~~~
->     include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->        50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
->           |  ^~~~~~~~~~~~~~~~
->     fs/btrfs/inode.c:563:2: note: in expansion of macro 'BUILD_BUG_ON'
->       563 |  BUILD_BUG_ON((BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0);
->           |  ^~~~~~~~~~~~
-> 
-> 
-> vim +/__compiletime_assert_791 +326 include/linux/compiler_types.h
-> 
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  312
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  313  #define _compiletime_assert(condition, msg, prefix, suffix) \
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  314  	__compiletime_assert(condition, msg, prefix, suffix)
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  315
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  316  /**
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  317   * compiletime_assert - break build and emit msg if condition is false
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  318   * @condition: a compile-time constant condition to check
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  319   * @msg:       a message to emit if condition is false
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  320   *
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  321   * In tradition of POSIX assert, this macro will break the build if the
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  322   * supplied condition is *false*, emitting the supplied error message if the
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  323   * compiler has support to do so.
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  324   */
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  325  #define compiletime_assert(condition, msg) \
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21 @326  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-> eb5c2d4b45e3d2 Will Deacon 2020-07-21  327
-> 
-> :::::: The code at line 326 was first introduced by commit
-> :::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-> 
-> :::::: TO: Will Deacon <will@kernel.org>
-> :::::: CC: Will Deacon <will@kernel.org>
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
+Ah nice, same reason for us to use the file then. I'd argue that having
+the names of the values is more convenient than just an array of raw
+numbers though.
