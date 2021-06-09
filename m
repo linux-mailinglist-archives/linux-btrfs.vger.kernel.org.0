@@ -2,88 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AFB3A1968
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 17:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461173A198B
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Jun 2021 17:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236114AbhFIP1K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Jun 2021 11:27:10 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47006 "EHLO
+        id S236026AbhFIPba (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Jun 2021 11:31:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47340 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235287AbhFIP1J (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 11:27:09 -0400
+        with ESMTP id S235379AbhFIPb3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 11:31:29 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 300A91FD5F;
-        Wed,  9 Jun 2021 15:25:14 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 808E41FD62;
+        Wed,  9 Jun 2021 15:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623252314;
+        t=1623252574;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FnwpRx7yBJ1OiUH+QEEKkqma20IwsS7l8C1CBgxMwZE=;
-        b=x9blfVsfHU2ikNtiGmwORxv051ighw3RV83vLk8ry8KxoVXs65eMhqqkYyciHcC0seOXvd
-        BranzjpuMgzxDm5zgng/Ig0skdoIeenjgkYxnk0c+AufmSTHCRkt1dZ+kpyxTV15DI6saK
-        6OP+0uWaJzUIEakwd5kEMegTIq0ZZww=
+        bh=2/GESPtg8Pnhjm76QD1EuJIUFaAMdraQ2yoaBcZfMRc=;
+        b=E723qE2qRHg81345gBuJ+NM7qYTRWcbxLjHknDy/Cyso0JGg4iM7tbPBuzuc3bpB0eASo5
+        3AtM5cliD84n3p2ivFtnH3x4fz+5Gx17YQgxWtrqpDKlynQ0gYYdwTROeSW20ybwJkEP7u
+        Mt7iU1QYfZjKqARfr3pP/KaifuGflqI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623252314;
+        s=susede2_ed25519; t=1623252574;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FnwpRx7yBJ1OiUH+QEEKkqma20IwsS7l8C1CBgxMwZE=;
-        b=u9SGg7nzulHYh4r8kwbpIOc6cZWOUDYfiiCA/vX4hvdeGK3YPPEOFWC+yM13ThOluPu/zT
-        bOfFWIe7daFyA9Bg==
+        bh=2/GESPtg8Pnhjm76QD1EuJIUFaAMdraQ2yoaBcZfMRc=;
+        b=gP4+tEvhjhWEPCvWxGLB4YReKqp1op1foyoDtEGsqXQdViCHFV66QI8XcJH7T4h/R0HGm6
+        ppWjcEFE6o8PAyBw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 126EBA3B84;
-        Wed,  9 Jun 2021 15:25:13 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 7AE15A3B81;
+        Wed,  9 Jun 2021 15:29:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BA216DA908; Wed,  9 Jun 2021 17:22:29 +0200 (CEST)
-Date:   Wed, 9 Jun 2021 17:22:29 +0200
+        id 64503DA908; Wed,  9 Jun 2021 17:26:50 +0200 (CEST)
+Date:   Wed, 9 Jun 2021 17:26:50 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     kernel test robot <lkp@intel.com>, linux-btrfs@vger.kernel.org,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: include/linux/compiler_types.h:326:38: error: call to
- '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON
- failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
-Message-ID: <20210609152229.GB27283@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 00/10]  btrfs: defrag: rework to support sector
+ perfect defrag
+Message-ID: <20210609152650.GC27283@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        kernel test robot <lkp@intel.com>, linux-btrfs@vger.kernel.org,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <202106092159.05DloM1z-lkp@intel.com>
- <6cc4b52b-48cd-45e2-67b5-289c4962fedb@csgroup.eu>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210608025927.119169-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6cc4b52b-48cd-45e2-67b5-289c4962fedb@csgroup.eu>
+In-Reply-To: <20210608025927.119169-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 04:01:20PM +0200, Christophe Leroy wrote:
-> Le 09/06/2021 à 15:55, kernel test robot a écrit :
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   368094df48e680fa51cedb68537408cfa64b788e
-> > commit: 4eeef098b43242ed145c83fba9989d586d707589 powerpc/44x: Remove STDBINUTILS kconfig option
-> > date:   4 months ago
-> > config: powerpc-randconfig-r012-20210609 (attached as .config)
-> > compiler: powerpc-linux-gcc (GCC) 9.3.0
+On Tue, Jun 08, 2021 at 10:59:17AM +0800, Qu Wenruo wrote:
+> This branch is based on subpage RW branch, as the last patch needs to
+> enable defrag support for subpage cases.
 > 
-> That's a BTRFS issue, and not directly linked to the above mentioned commit. Before that commit the 
-> problem was already present.
+> But despite that one, all other patches can be applied on current
+> misc-next.
 > 
-> Problem is that with 256k PAGE_SIZE, following BUILD_BUG() pops up:
+> [BACKGROUND]
+> In subpage rw branch, we disable defrag completely due to the fact that
+> current code can only work on page basis.
 > 
-> BUILD_BUG_ON((BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0)
+> This could lead to problems like btrfs/062 crash.
+> 
+> Thus this patchset will make defrag to work on both regular and subpage
+> sectorsize.
+> 
+> [SOLUTION]
+> To defrag a file range, what we do is pretty much like buffered write,
+> except we don't really write any new data to page cache, but just mark
+> the range dirty.
+> 
+> Then let later writeback to merge the range into a larger extent.
+> 
+> But current defrag code is working on per-page basis, not per-sector,
+> thus we have to refactor it a little to make it to work properly for
+> subpage.
+> 
+> This patch will separate the code into 3 layers:
+> Layer 0:	btrfs_defrag_file()
+> 		The defrag entrace
+> 		Just do proper inode lock and split the file into
+> 		page aligned 256K clusters to defrag
+> 
+> Layer 1:	defrag_one_cluster()
+> 		Will collect the initial targets file extents, and pass
+> 		each continuous target to defrag_one_range()
+> 
+> Layer 2:	defrag_one_range()
+> 		Will prepare the needed page and extent locking.
+> 		Then re-check the range for real target list, as initial
+> 		target list is not consistent as it doesn't hage
+> 		page/extent locking to prevent hole punching.
+> 
+> Layer 3:	defrag_one_locked_target()
+> 		The real work, to make the extent range defrag and
+> 		update involved page status
+> 
+> [BEHAVIOR CHANGE]
+> In the refactor, there is one behavior change:
+> 
+> - Defraged sector counter is based on the initial target list
+>   This is mostly to avoid the paremters to be passed too deep into
+>   defrag_one_locked_target().
+>   Considering the accounting is not that important, we can afford some
+>   difference.
 
-A 256K page is a problem for btrfs, until now I was not even aware
-there's an architecture supporting that so. That the build fails is
-probably best thing. Maximum metadata nodesize supported is 64K and
-having that on a 256K page would need deeper changes, no top of the
-currently developed subpage changes (that do 4K blocks on 64K pages).
+As you're going to resend, please fix all occurences of 'defraged' to
+'defragged'.
+
+I'll give the patchset some testing bug am not sure if it isn't too
+risky to put it to the 5.14 queue as it's about time to do only safe
+changes.
