@@ -2,111 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A7F3A20D5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jun 2021 01:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FD13A21A7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jun 2021 02:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhFIXfo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Jun 2021 19:35:44 -0400
-Received: from mout.gmx.net ([212.227.17.20]:51129 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229542AbhFIXfn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 9 Jun 2021 19:35:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623281623;
-        bh=DXbGtHScqn1n0hju0EeMxxv1mTI7QhPktzanKzphuKo=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Xj2oxA0Fc52aRSPPJhEUIJY+8aa6Nquy9ABDD9NE6kzW6AppArbpQ8OvyMPaS0vGo
-         AxDgTroBV6RoMKi9bYs4eCCNQc2mPS28wc9osFS+vdLRa44qQFubpNYmSGbOGiQTOF
-         PeUsDsMl+LbZQJYVzj0jDMGvrp5usJ6gHF1ls4so=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MC34X-1m2y553eZh-00CS6U; Thu, 10
- Jun 2021 01:33:43 +0200
-Subject: Re: [PATCH v3 00/10] btrfs: defrag: rework to support sector perfect
- defrag
-To:     dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
-        Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <20210608025927.119169-1-wqu@suse.com>
- <20210609152650.GC27283@twin.jikos.cz>
- <CAEg-Je_8sDQNWM9tdka_Zd=v5pQzf0AsnJJAVAeKy7nMO5CE8Q@mail.gmail.com>
- <20210609230216.GF27283@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <6a6dcf9d-96ce-65cf-5615-4ffd05d2e1cc@gmx.com>
-Date:   Thu, 10 Jun 2021 07:33:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229792AbhFJA5U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Jun 2021 20:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhFJA5T (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Jun 2021 20:57:19 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367B6C061574
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Jun 2021 17:55:08 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id c12so185450pfl.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 09 Jun 2021 17:55:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7pVCGEXkr1tatvMc/wXTps5uCsG/QvWeA1meTH3kKAM=;
+        b=Fz5KUjUWxqzwKVKHSSs4h+o8oG6iQUt0hVBa0KNyTlwyXIdQD7HxHdaPRK9GLSROwG
+         /YbjjOtqSGHgQDYwDGtypkFuhwK6leGFXUWeYO8D/IEVcaPe/yzV7wf///MMQHe6MGYP
+         V6m0TyO7oLydb8USntdZ/k2Y60tVa2voPqppIhSmHqfajaMzkqf19ysuOLz5yclyaYws
+         S+cKLKXUXCVe3iOIgXb2cwoyVxuJLnQFH2/qJlXoEDK2CryuCB4T9qfIkJkwzC1D+TJs
+         3Jq23bi9k4OznQ8MajbrLdTZyHz2KyscPbwWI/GvP524/XunlBQaJ5QjLSavTF/nP8qV
+         vI9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7pVCGEXkr1tatvMc/wXTps5uCsG/QvWeA1meTH3kKAM=;
+        b=cIZKsjvDamRc9QbYg8U52swJYEQ+cpSY2VINj0iGys2v4DfvUBsz9u73H89vHkPGxE
+         xlbmJhj43ofMhDMivA1GoTeduqsZHlqyZVY+0TiyWhc86QE9beGnmSZrfjfVFBIog/cD
+         gHjN/e14ZeagAhrd7giEoAraloJBXHoFIv1APFJXSEFPpL1T9WBKtPGVHnhRpJzjfq1K
+         E0tYggfgINnHVPHa6TKqwOHOSzizmhacoRAZNfOcUc/Rh0x3eM+iq3vgS8tbzkQuyJoI
+         YKgf/Xyli0kTfqSVK8IMzltUePadgt0WyoAPSqTli0uYSELVNvJ52JOFfUvvEUwZq/gN
+         tBrA==
+X-Gm-Message-State: AOAM533V+cqsuyXipckJep1YmyUfTsKmirBdR+01yqkUSWk+acOCdHI+
+        ri681OxSG6VYEOWpCWAeAMFL4A==
+X-Google-Smtp-Source: ABdhPJwTG1HP956gFqP3xkxdsOfBFb4HG09WHYUSHmdZ9VFvrFJGyu35yipKo7B41wWBSV5UgITBcw==
+X-Received: by 2002:a63:5442:: with SMTP id e2mr2352056pgm.365.1623286507012;
+        Wed, 09 Jun 2021 17:55:07 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:a169])
+        by smtp.gmail.com with ESMTPSA id s123sm607006pfb.78.2021.06.09.17.55.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Jun 2021 17:55:06 -0700 (PDT)
+Date:   Wed, 9 Jun 2021 17:55:05 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: sysfs: export dev stats in devinfo directory
+Message-ID: <YMFi6fSxMUDCU/C9@relinquished.localdomain>
+References: <20210604132058.11334-1-dsterba@suse.com>
+ <YMEHVWTrcJ6ol5bH@relinquished.localdomain>
+ <20210609185014.GE27283@twin.jikos.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210609230216.GF27283@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PmL+0R7cpB2tPtqy1ceJcaCQp1Vs72Ehb/SeD+7Yrer7WoisHwl
- 0RIMki65kjCos7C05Pb5P74MxRWBkCO/aYRaxs5hDk58Ozesm8Sj9Vi7cbhxxJuPr5cF6CN
- 6h7C3KpFng7p02ciHP/Dw9SK854s/q7JyoiW89ijBy6CF+1JExbv2nHP95rz9RoxT7kbwI2
- B/+PR36A8ODZa4DIFiHNA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MSfXE4iBfjk=:srirCO48NQnVY46sxq7MAf
- dSYC0CZO9DW8Ut32DYnL0+C5ntNbIPt1/jvZ4qia1KeIpRDpinRGdCR836OGTjIUMUHIPBfwy
- pogLtnNr+RWGut7nHmK7jr5m8pjg+BsGKbbuPhqr5zlk7KsBDA8HOAx6QmrHSl7gjCXxB/U86
- YS5r8pnp1dMvuHs/PBfNOo9F4YrRqno5/zeR1HoBxcVMFek11K/ymrGDBEqVZbwyW8/gtDJJL
- 6vaznIJNng2w97m/SIOv6DHw5OxQ+C8FQrdvaprY8zCa8CyI44x/v5sUtEeo3H8fBwe/25cTh
- RX3yfPyCOntViyyot54zHpDnx6lmDoGtMGbMPFeZ4MCeVARapYJzM3wyCbOwccNWpUdvDn/iR
- fL3s7znIyEjTM2TO0nt5BwxXnbJaxZ5xVedRnm2j50RouQFaNPUf5F8uErGYjqxq4lqk1gOPs
- tV761Dmo0qIvzjinqCbLp20wUQOKuV3wpkPhOOznwF1Pas+5dJEr+1snBgFofsJSNFBYjk4eZ
- rmaZAkIycF5ZUMXnSMsAsa4yMX/WtV9t6qls/tcbraV9eZwfGsUxMsWYepqJcX5YL75k+aos+
- iAOQhOH8GN+i9B5nYCdx5sF7mpOBC50giVmG63txkGntYSrBXHdRbuV9EY2GAZpNUwatkmv7U
- Ise1b34CxSVkxIVfOdvF1MUSJtRjubIZz2Uplxa+HR/9kqJWRfsm5Xz79hLoo6O5YoKLdJxlp
- pLmn8q/5l0VMlgGTVAN+KCzcdwXoSrRU4KwZqo4JMix81GtAZhIStA9qk443VEt4VIAQ+wKym
- NpQBSFmI+ePpvbWyhJpAznK90TFemYAerwKxftfBc1253xs3+QevaP67OMKxlV4UyntUn5yKs
- Ars4gKgrPgfAbRDLnWUp6V4AoewHl3u2c98mR93mfzNwoJEK8gqv3fh1XnNvl24uG8A+XDitr
- 9StJWmr5xEYApelxUJkK7kMrAGaKZxagnL9Atsj8SWGyRTcFNeAh3cksLk2ukddZdmnd9fy29
- JkX0Thb9R15WXO+rt/jT2QALWClesAinF0nVeRH+qV0RvAv2+r8QVasYXNGq+vTxC2q7od6Mb
- IPszZfOIm3moHhZZ/FTo6Z+xIJudX4m0pnL4n/fq+yc2Om+ZLdUF97YNA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609185014.GE27283@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Jun 09, 2021 at 08:50:14PM +0200, David Sterba wrote:
+> On Wed, Jun 09, 2021 at 11:24:21AM -0700, Omar Sandoval wrote:
+> > On Fri, Jun 04, 2021 at 03:20:58PM +0200, David Sterba wrote:
+> > > The device stats can be read by ioctl, wrapped by command 'btrfs device
+> > > stats'. Provide another source where to read the information in
+> > > /sys/fs/btrfs/FSID/devinfo/DEVID/stats . The format is a list of
+> > > 'key value' pairs one per line, which is common in other stat files.
+> > > The names are the same as used in other device stat outputs.
+> > > 
+> > > The stats are all in one file as it's the snapshot of all available
+> > > stats. The 'one value per file' is not very suitable here. The stats
+> > > should be valid right after the stats item is read from disk, shortly
+> > > after initializing the device, but in any case also print the validity
+> > > status.
+> > > 
+> > > Signed-off-by: David Sterba <dsterba@suse.com>
+> > > ---
+> > >  fs/btrfs/sysfs.c | 28 ++++++++++++++++++++++++++++
+> > >  1 file changed, 28 insertions(+)
+> > > 
+> > > diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> > > index 4b508938e728..3d4c806c4f73 100644
+> > > --- a/fs/btrfs/sysfs.c
+> > > +++ b/fs/btrfs/sysfs.c
+> > > @@ -1495,11 +1495,39 @@ static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
+> > >  }
+> > >  BTRFS_ATTR(devid, writeable, btrfs_devinfo_writeable_show);
+> > >  
+> > > +static ssize_t btrfs_devinfo_stats_show(struct kobject *kobj,
+> > > +		struct kobj_attribute *a, char *buf)
+> > > +{
+> > > +	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
+> > > +						   devid_kobj);
+> > > +
+> > > +	/*
+> > > +	 * Print all at once so we get a snapshot of all values from the same
+> > > +	 * time. Keep them in sync and in order of definition of
+> > > +	 * btrfs_dev_stat_values.
+> > > +	 */
+> > > +	return scnprintf(buf, PAGE_SIZE,
+> > > +		"stats_valid %d\n",
+> > > +		"write_errs %d\n"
+> > > +		"read_errs %d\n"
+> > > +		"flush_errs %d\n"
+> > > +		"corruption_errs %d\n"
+> > > +		"generation_errs %d\n",
+> > > +		!!(device->dev_stats_valid),
+> > 
+> > The ioctl returns ENODEV is !dev_stats_valid, maybe this file should do
+> > the same? It seems a little awkward to have a flag that means that the
+> > rest of the file is meaningless.
+> 
+> You mean returning -ENODEV when reading the stats file? Or return 0 but
+> the contents is something like 'stats invalid' or similar.
 
-
-On 2021/6/10 =E4=B8=8A=E5=8D=887:02, David Sterba wrote:
-> On Wed, Jun 09, 2021 at 06:48:31PM -0400, Neal Gompa wrote:
->> On Wed, Jun 9, 2021 at 12:23 PM David Sterba <dsterba@suse.cz> wrote:
->>> On Tue, Jun 08, 2021 at 10:59:17AM +0800, Qu Wenruo wrote:
->>>> [BEHAVIOR CHANGE]
->>>> In the refactor, there is one behavior change:
->>>>
->>>> - Defraged sector counter is based on the initial target list
->>>>    This is mostly to avoid the paremters to be passed too deep into
->>>>    defrag_one_locked_target().
->>>>    Considering the accounting is not that important, we can afford so=
-me
->>>>    difference.
->>>
->>> As you're going to resend, please fix all occurences of 'defraged' to
->>> 'defragged'.
->>>
->>> I'll give the patchset some testing bug am not sure if it isn't too
->>> risky to put it to the 5.14 queue as it's about time to do only safe
->>> changes.
->>
->> This patch set makes it possible to do compression and balance in
->> subpage cases, right? At least, that's what I understood of it (defrag
->> code is used for balance and compression...).
->
-> No it's just to do defragmentation in subpage case. Defrag and balance
-> code are indpendent, and only defrag can do compression, balance just
-> moves chunks of data but does not do changes to the data itself (it
-> could write them in a different way eg. the stripes or copies).
->
-Furthermore, defrag code doesn't do compression by itself.
-
-The compression is done during writeback, defrag just tells writeback
-code to do compression.
-
-But for subpage enablement right now, compression is disabled
-completely, thus no matter what setting you use, compression will not be
-enabled.
-
-Thanks,
-Qu
+I'd vote for returning -ENODEV when reading the stats file, but I think
+either one is fine.
