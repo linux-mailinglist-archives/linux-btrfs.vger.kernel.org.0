@@ -2,116 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5E63A307C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jun 2021 18:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4563A30D7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jun 2021 18:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231225AbhFJQZb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Jun 2021 12:25:31 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60036 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhFJQZ3 (ORCPT
+        id S231245AbhFJQlo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Jun 2021 12:41:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48496 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229823AbhFJQln (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Jun 2021 12:25:29 -0400
+        Thu, 10 Jun 2021 12:41:43 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id AF84E2199E;
-        Thu, 10 Jun 2021 16:23:31 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id B49731FD3F;
+        Thu, 10 Jun 2021 16:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623342211;
+        t=1623343185;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KjKhr3a6YXymIHtw/GA/lThxHjdin/LlLBM4rjmo30o=;
-        b=OaCK2JwDCJzSG8mw0/KxhlY24EZJYzmrY1pCXj1ftvfhrFWiJeWwKCF6VRt/3GNGIZQTKI
-        64uAumwxrCoYdgNTs61JjnnHSiudVprP6OUXn6eQhEtgRh2PJr0hss4Xc4UV44n8M0sx8X
-        PenUaTJWzag3UNmGuL8gosguy0gx3Mk=
+        bh=rjo4yU49aNzDHUoL/7NPBcF08/U2ZIUgmFLmvQnYc9g=;
+        b=bbUV11Aph3pL8ls72exZ+QSSOz0E9pGx4rhxu9A2lKy2xrs2x9ve7S4Q8nwWAyJll2ejLC
+        qj13BgTgpp+8ZcbBD1R0JULicJYAYiYqVokdMpwB4vEEeNNYWz1c5GikAI4X6VlUmtpXZz
+        xRbhlXhAQeWauE6lUoGJ4ekxXIXNC00=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623342211;
+        s=susede2_ed25519; t=1623343185;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KjKhr3a6YXymIHtw/GA/lThxHjdin/LlLBM4rjmo30o=;
-        b=Q1+SIX5fmet/R8yDOZj1UmQUYKVKEEmnbImI7UgkAOw2mAruK7BtMq2iRopww2P1n1GTgZ
-        Q69a5hyw9tRxW6Cg==
+        bh=rjo4yU49aNzDHUoL/7NPBcF08/U2ZIUgmFLmvQnYc9g=;
+        b=HmjryIKpa7BsoSdlSiwGdwKpyuNKmavvHenkwddEzWx7cLlDIr8rLifTtEiG62vaaUl3Un
+        rwl2rend/F+M4/AQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 6326CA3B93;
-        Thu, 10 Jun 2021 16:23:31 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id AE275A3B96;
+        Thu, 10 Jun 2021 16:39:45 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C6DC9DAEB9; Thu, 10 Jun 2021 18:20:46 +0200 (CEST)
-Date:   Thu, 10 Jun 2021 18:20:46 +0200
+        id 1EABDDA8EB; Thu, 10 Jun 2021 18:37:01 +0200 (CEST)
+Date:   Thu, 10 Jun 2021 18:37:01 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
-Message-ID: <20210610162046.GB28158@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: sysfs: export dev stats in devinfo directory
+Message-ID: <20210610163700.GC28158@suse.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
-References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
- <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
- <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210604132058.11334-1-dsterba@suse.com>
+ <YMEHVWTrcJ6ol5bH@relinquished.localdomain>
+ <20210609185014.GE27283@twin.jikos.cz>
+ <YMFi6fSxMUDCU/C9@relinquished.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
+In-Reply-To: <YMFi6fSxMUDCU/C9@relinquished.localdomain>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 04:50:09PM +0200, Christophe Leroy wrote:
-> 
-> 
-> Le 10/06/2021 à 15:54, Chris Mason a écrit :
+On Wed, Jun 09, 2021 at 05:55:05PM -0700, Omar Sandoval wrote:
+> > > The ioctl returns ENODEV is !dev_stats_valid, maybe this file should do
+> > > the same? It seems a little awkward to have a flag that means that the
+> > > rest of the file is meaningless.
 > > 
-> >> On Jun 10, 2021, at 1:23 AM, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
-> >>
-> >> With a config having PAGE_SIZE set to 256K, BTRFS build fails
-> >> with the following message
-> >>
-> >> include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
-> >>
-> >> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
-> >> 256K pages at the time being.
-> >>
-> >> There are two platforms that can select 256K pages:
-> >> - hexagon
-> >> - powerpc
-> >>
-> >> Disable BTRFS when 256K page size is selected.
-> >>
-> > 
-> > We’ll have other subpage blocksize concerns with 256K pages, but this BTRFS_MAX_COMPRESSED #define is arbitrary.  It’s just trying to have an upper bound on the amount of memory we’ll need to uncompress a single page’s worth of random reads.
-> > 
-> > We could change it to max(PAGE_SIZE, 128K) or just bump to 256K.
-> > 
+> > You mean returning -ENODEV when reading the stats file? Or return 0 but
+> > the contents is something like 'stats invalid' or similar.
 > 
-> But if 256K is problematic in other ways, is it worth bumping BTRFS_MAX_COMPRESSED to 256K ?
-> 
-> David, in below mail, said that 256K support would require deaper changes. So disabling BTRFS 
-> support seems the easiest solution for the time being, at least for Stable (I forgot the Fixes: tag 
-> and the CC: to stable).
-> 
-> On powerpc, 256k pages is a corner case, it requires customised binutils, so I don't think disabling 
-> BTRFS is a issue there. For hexagon I don't know.
+> I'd vote for returning -ENODEV when reading the stats file, but I think
+> either one is fine.
 
-That it blew up due to the max compressed size is a coincidence. We
-could have explicit BUILD_BUG_ONs for page size or other constraints
-derived from the page size like INLINE_EXTENT_BUFFER_PAGES.
+Hm so I think this should reflect how the sysfs files are used. They all
+contain textual information, and errors are returned when eg. there are
+no permissions.
 
-And there's no such thing like "just bump BTRFS_MAX_COMPRESSED to 256K".
-The constant is part of on-disk format for lzo and otherwise changing it
-would impact performance so this would need proper evaluation.
+In a shell script it's IMHO more convenient to do
+
+stats=$(cat $devicepath/stats)
+
+and then validate contents of $stats rather then catching the error
+value and deciding based on that what happend. Not to say that this
+would also print an error message. I've found this in
+admin-guide/sysfs-rules.rst that's perhaps closest to a recommendation
+we could follow:
+
+172 - When reading and writing sysfs device attribute files, avoid dependency
+173     on specific error codes wherever possible. This minimizes coupling to
+174     the error handling implementation within the kernel.
+
+So I take it as that error codes belong to the sysfs layer and the
+validity of the contents is up to the sysfs user, ie. btrfs in this
+case.
