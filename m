@@ -2,38 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1313A2EA0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jun 2021 16:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5E63A307C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Jun 2021 18:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhFJOwS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Jun 2021 10:52:18 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:8321 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231336AbhFJOwQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Jun 2021 10:52:16 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G16Mt6NybzBBTQ;
-        Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id IgLzEJiZ-597; Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G16Mt5QJzzBB9r;
-        Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 375368B81B;
-        Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id DzO9RJN6YzIB; Thu, 10 Jun 2021 16:50:18 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B07968B80F;
-        Thu, 10 Jun 2021 16:50:17 +0200 (CEST)
+        id S231225AbhFJQZb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Jun 2021 12:25:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60036 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231230AbhFJQZ3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Jun 2021 12:25:29 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id AF84E2199E;
+        Thu, 10 Jun 2021 16:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623342211;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjKhr3a6YXymIHtw/GA/lThxHjdin/LlLBM4rjmo30o=;
+        b=OaCK2JwDCJzSG8mw0/KxhlY24EZJYzmrY1pCXj1ftvfhrFWiJeWwKCF6VRt/3GNGIZQTKI
+        64uAumwxrCoYdgNTs61JjnnHSiudVprP6OUXn6eQhEtgRh2PJr0hss4Xc4UV44n8M0sx8X
+        PenUaTJWzag3UNmGuL8gosguy0gx3Mk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623342211;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjKhr3a6YXymIHtw/GA/lThxHjdin/LlLBM4rjmo30o=;
+        b=Q1+SIX5fmet/R8yDOZj1UmQUYKVKEEmnbImI7UgkAOw2mAruK7BtMq2iRopww2P1n1GTgZ
+        Q69a5hyw9tRxW6Cg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 6326CA3B93;
+        Thu, 10 Jun 2021 16:23:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C6DC9DAEB9; Thu, 10 Jun 2021 18:20:46 +0200 (CEST)
+Date:   Thu, 10 Jun 2021 18:20:46 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
 Subject: Re: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
-To:     Chris Mason <clm@fb.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
+Message-ID: <20210610162046.GB28158@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
@@ -41,78 +61,57 @@ Cc:     Josef Bacik <josef@toxicpanda.com>,
         "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
 References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
  <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
-Date:   Thu, 10 Jun 2021 16:50:09 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
 MIME-Version: 1.0
-In-Reply-To: <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-Le 10/06/2021 à 15:54, Chris Mason a écrit :
+On Thu, Jun 10, 2021 at 04:50:09PM +0200, Christophe Leroy wrote:
 > 
->> On Jun 10, 2021, at 1:23 AM, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
->>
->> With a config having PAGE_SIZE set to 256K, BTRFS build fails
->> with the following message
->>
->> include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
->>
->> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
->> 256K pages at the time being.
->>
->> There are two platforms that can select 256K pages:
->> - hexagon
->> - powerpc
->>
->> Disable BTRFS when 256K page size is selected.
->>
 > 
-> We’ll have other subpage blocksize concerns with 256K pages, but this BTRFS_MAX_COMPRESSED #define is arbitrary.  It’s just trying to have an upper bound on the amount of memory we’ll need to uncompress a single page’s worth of random reads.
+> Le 10/06/2021 à 15:54, Chris Mason a écrit :
+> > 
+> >> On Jun 10, 2021, at 1:23 AM, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+> >>
+> >> With a config having PAGE_SIZE set to 256K, BTRFS build fails
+> >> with the following message
+> >>
+> >> include/linux/compiler_types.h:326:38: error: call to '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0
+> >>
+> >> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
+> >> 256K pages at the time being.
+> >>
+> >> There are two platforms that can select 256K pages:
+> >> - hexagon
+> >> - powerpc
+> >>
+> >> Disable BTRFS when 256K page size is selected.
+> >>
+> > 
+> > We’ll have other subpage blocksize concerns with 256K pages, but this BTRFS_MAX_COMPRESSED #define is arbitrary.  It’s just trying to have an upper bound on the amount of memory we’ll need to uncompress a single page’s worth of random reads.
+> > 
+> > We could change it to max(PAGE_SIZE, 128K) or just bump to 256K.
+> > 
 > 
-> We could change it to max(PAGE_SIZE, 128K) or just bump to 256K.
+> But if 256K is problematic in other ways, is it worth bumping BTRFS_MAX_COMPRESSED to 256K ?
 > 
+> David, in below mail, said that 256K support would require deaper changes. So disabling BTRFS 
+> support seems the easiest solution for the time being, at least for Stable (I forgot the Fixes: tag 
+> and the CC: to stable).
+> 
+> On powerpc, 256k pages is a corner case, it requires customised binutils, so I don't think disabling 
+> BTRFS is a issue there. For hexagon I don't know.
 
-But if 256K is problematic in other ways, is it worth bumping BTRFS_MAX_COMPRESSED to 256K ?
+That it blew up due to the max compressed size is a coincidence. We
+could have explicit BUILD_BUG_ONs for page size or other constraints
+derived from the page size like INLINE_EXTENT_BUFFER_PAGES.
 
-David, in below mail, said that 256K support would require deaper changes. So disabling BTRFS 
-support seems the easiest solution for the time being, at least for Stable (I forgot the Fixes: tag 
-and the CC: to stable).
-
-On powerpc, 256k pages is a corner case, it requires customised binutils, so I don't think disabling 
-BTRFS is a issue there. For hexagon I don't know.
-
-
-https://lkml.org/lkml/2021/6/9/978
-
-Le 09/06/2021 à 17:22, David Sterba a écrit :
- > On Wed, Jun 09, 2021 at 04:01:20PM +0200, Christophe Leroy wrote:
- >> Le 09/06/2021 à 15:55, kernel test robot a écrit :
- >>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
- >>> head:   368094df48e680fa51cedb68537408cfa64b788e
- >>> commit: 4eeef098b43242ed145c83fba9989d586d707589 powerpc/44x: Remove STDBINUTILS kconfig option
- >>> date:   4 months ago
- >>> config: powerpc-randconfig-r012-20210609 (attached as .config)
- >>> compiler: powerpc-linux-gcc (GCC) 9.3.0
- >>
- >> That's a BTRFS issue, and not directly linked to the above mentioned commit. Before that commit the
- >> problem was already present.
- >>
- >> Problem is that with 256k PAGE_SIZE, following BUILD_BUG() pops up:
- >>
- >> BUILD_BUG_ON((BTRFS_MAX_COMPRESSED % PAGE_SIZE) != 0)
- >
- > A 256K page is a problem for btrfs, until now I was not even aware
- > there's an architecture supporting that so. That the build fails is
- > probably best thing. Maximum metadata nodesize supported is 64K and
- > having that on a 256K page would need deeper changes, no top of the
- > currently developed subpage changes (that do 4K blocks on 64K pages).
- >
+And there's no such thing like "just bump BTRFS_MAX_COMPRESSED to 256K".
+The constant is part of on-disk format for lzo and otherwise changing it
+would impact performance so this would need proper evaluation.
