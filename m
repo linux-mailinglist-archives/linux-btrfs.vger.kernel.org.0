@@ -2,54 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBCE3A438E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EED3A4365
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbhFKN5q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 09:57:46 -0400
-Received: from mail-qt1-f173.google.com ([209.85.160.173]:40540 "EHLO
-        mail-qt1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbhFKN5L (ORCPT
+        id S230470AbhFKN4E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 09:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhFKN4D (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:57:11 -0400
-Received: by mail-qt1-f173.google.com with SMTP id t9so2595302qtw.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 06:55:04 -0700 (PDT)
+        Fri, 11 Jun 2021 09:56:03 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033B4C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 06:54:06 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id e3so2644300qte.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 06:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=eo3uPuIkk9g5eY7Rh3Yd/RH0ZC3R9OIWSjFlpNNl+A0=;
-        b=QH7H+0U/TZrduBv7bS/WtqmhqtW4M3mbJa2V2UcFl2EQ7bOsYfIDqSyWSnRMkxuets
-         j2RJntbj9wwT4oJUkcVoY9jZYBPlikdQCR5zZxKnNNTV62+pieXV4O+Aj7bVPwzarI6Q
-         eY61aKiwFvinUeP+vMbwjyAAwdTZmCBMXdJ8sW/670fkHE6NwAnqeMSAm7nIR/eU6C+c
-         jx5FgaUOSGAb9wMFf2Ooj0nt4B+FlwsVD5C3ZnerlCP3VX9OQHxn26G3E2u2xx8+axMw
-         +wnR/Y9PUJ8W8cvZA6sOfXd4jZu0lk3l9PSwWejyJ8W7NKCt6qjQAWl0RxXkbOBnmOAf
-         JSFg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nfke/cFq6xaTH29Ge5vwvLHugoZC/ayAJOBSumXUS6w=;
+        b=dbKrJOw7l2T7iVLqAXrWa81mhiFCTqVb9o3EzaLBXaF/Yt52XRsGcn5RtqMsbjqbae
+         Uxa+BlefIeZjFZgFR5thwqVtYuI0vQtpZtut8bmHGLykrjSgBEADJUxL21BVQ3QjvZtG
+         623vyPaED1I1qNs6GvRWw+UaNcIpQYBKdfGINt+1ecafbAPFQrU0sE0PyMJ8954sQ1R6
+         IeHKCRxhvoM4n3/TMZShMEwYxYG5N+mGaw1iFQf54khO7hRFGpo70hwX4Q6cHa9Xk6BR
+         tOVJSyGNp8TCGNt+ZLdC0VkRA1QXoBQDp2BL9snw98sHMarwDQ/woZ0gwzlZj3EgNxoz
+         p4fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eo3uPuIkk9g5eY7Rh3Yd/RH0ZC3R9OIWSjFlpNNl+A0=;
-        b=FVCr8BDLGnRmu8dGx1CwXqCRTMVIh2BUiHnZDKceQN0gvpHBfyKC23lPZwa2vpnerS
-         Ali1vCrz+oyxJP4+9Ug7qAyQ6sGTjItkj8OUuosnqaFNRvtGV2cDwWM95686srBFP7Br
-         Dn98APhXQC4bjd3xCLIbQBh3pwPyIa4TI2HqE2B5GM6AI256m/DymuN5kPPKdmVADHwS
-         cQkcuRlqaYx++jX0zy9O7jS68Nfkhc8VHOo/MMKpl7SvhPMPturUnly9OFgePeKh1Ej4
-         is366bS8DtUYjCl5CMJlkelLtNOCGYcVnN4OkN9kwsDATfz+hJRdJN3N651/wvtf3xKB
-         QnNw==
-X-Gm-Message-State: AOAM5330jmnd0BbR/tKPojFOs30hrMTB00yUq7/DD3/JOJ8eHsJMIo00
-        eQXye9oNzScaALGdotGsLtJ0gcBymXuaCw==
-X-Google-Smtp-Source: ABdhPJzC6mdMVKkHKoSKFZXQ2ZXipRe/EkwTjCiKIU22fLcbSCmYS/uGzoiEbGumEBoaX7yXVJN4dg==
-X-Received: by 2002:a05:622a:1c1:: with SMTP id t1mr3836184qtw.27.1623419643508;
-        Fri, 11 Jun 2021 06:54:03 -0700 (PDT)
+        bh=nfke/cFq6xaTH29Ge5vwvLHugoZC/ayAJOBSumXUS6w=;
+        b=qm7DNC7VIvTPISCx0r0GKsv2jtPoXTHaK8qQAGjgtlCFgYHO8TIXBql8jZzuTgI/q5
+         ov5LxIDBlWF0InyWeg3M57fD3tE37nHJix9PLpKn38eDDQjja1lT8dgxE6eBQS4NNJlN
+         Jmuwa/2uOEz2XG8pqW0tDhwJwTACQ3gvmEkn5rbIsPNFjxUuGKlqTPb4do/TDtaFafyA
+         QhDLyghdnA+wPRwo9qDhMQuM4sxRyvsGCE1dB61AtEUN0vYdyOurIqAhE9PM3tswDDpR
+         IIRz+njD0bQQgWPKAMrT3J4caQaXEb7d+bmkjTHYvG8CUFiplUiwNcb8rB20Znt7Qq9R
+         P4mg==
+X-Gm-Message-State: AOAM530iEhCUMO4LZCu6n7gtJ99nZaen1zS3qnwxOE19Q57lIyOVX+lV
+        125ld9zZ09nV04XvhIRdVuMJtgQLYqor4A==
+X-Google-Smtp-Source: ABdhPJzybheumRiqwViRdJ9Ll5j59V4bXtascbt8naBgBI8PWdD4yqWmis3Li7sr5hiwt5UdLEpmdQ==
+X-Received: by 2002:a05:622a:15c5:: with SMTP id d5mr4009598qty.77.1623419644852;
+        Fri, 11 Jun 2021 06:54:04 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u123sm4376478qkh.83.2021.06.11.06.54.02
+        by smtp.gmail.com with ESMTPSA id p21sm4153094qtq.92.2021.06.11.06.54.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 06:54:03 -0700 (PDT)
+        Fri, 11 Jun 2021 06:54:04 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/4] btrfs: wait on async extents when flushing delalloc
-Date:   Fri, 11 Jun 2021 09:53:57 -0400
-Message-Id: <f2a18e6cf6553f9b886768d86d5580561d9c279e.1623419155.git.josef@toxicpanda.com>
+Cc:     stable@vger.kernel.org
+Subject: [PATCH 2/4] btrfs: wake up async_delalloc_pages waiters after submit
+Date:   Fri, 11 Jun 2021 09:53:58 -0400
+Message-Id: <d1802ad325a04d3640b85e4c928b91dd9316252c.1623419155.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1623419155.git.josef@toxicpanda.com>
 References: <cover.1623419155.git.josef@toxicpanda.com>
@@ -59,97 +63,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I've been debugging an early ENOSPC problem in production and finally
-root caused it to this problem.  When we switched to the per-inode
-flushing code I pulled out the async extent handling, because we were
-doing the correct thing by calling filemap_flush() if we had async
-extents set.  This would properly wait on any async extents by locking
-the page in the second flush, thus making sure our ordered extents were
-properly set up.
+We use the async_delalloc_pages mechanism to make sure that we've
+completed our async work before trying to continue our delalloc
+flushing.  The reason for this is we need to see any ordered extents
+that were created by our delalloc flushing.  However we're waking up
+before we do the submit work, which is before we create the ordered
+extents.  This is a pretty wide race window where we could potentially
+think there are no ordered extents and thus exit shrink_delalloc
+prematurely.  Fix this by waking us up after we've done the work to
+create ordered extents.
 
-However when I switched us back to page based flushing, I used
-sync_inode(), which allows us to pass in our own wbc.  The problem here
-is that sync_inode() is smarter than the filemap_* helpers, it tries to
-avoid calling writepages at all.  This means that our second call could
-skip calling do_writepages altogether, and thus not wait on the pagelock
-for the async helpers.  This means we could come back before any ordered
-extents were created and then simply continue on in our flushing
-mechanisms and ENOSPC out when we have plenty of space to use.
-
-Fix this by putting back the async pages logic in shrink_delalloc.  This
-allows us to bulk write out everything that we need to, and then we can
-wait in one place for the async helpers to catch up, and then wait on
-any ordered extents that are created.
-
-Fixes: e076ab2a2ca7 ("btrfs: shrink delalloc pages instead of full inodes")
+cc: stable@vger.kernel.org
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c      |  4 ----
- fs/btrfs/space-info.c | 33 +++++++++++++++++++++++++++++++++
- 2 files changed, 33 insertions(+), 4 deletions(-)
+ fs/btrfs/inode.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 8ba4b194cd3e..6cb73ff59c7c 100644
+index 6cb73ff59c7c..c37271df2c6d 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -9681,10 +9681,6 @@ static int start_delalloc_inodes(struct btrfs_root *root,
- 					 &work->work);
- 		} else {
- 			ret = sync_inode(inode, wbc);
--			if (!ret &&
--			    test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
--				     &BTRFS_I(inode)->runtime_flags))
--				ret = sync_inode(inode, wbc);
- 			btrfs_add_delayed_iput(inode);
- 			if (ret || wbc->nr_to_write <= 0)
- 				goto out;
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index af467e888545..3c89af4fd729 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -547,9 +547,42 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
- 	while ((delalloc_bytes || ordered_bytes) && loops < 3) {
- 		u64 temp = min(delalloc_bytes, to_reclaim) >> PAGE_SHIFT;
- 		long nr_pages = min_t(u64, temp, LONG_MAX);
-+		int async_pages;
+@@ -1271,11 +1271,6 @@ static noinline void async_cow_submit(struct btrfs_work *work)
+ 	nr_pages = (async_chunk->end - async_chunk->start + PAGE_SIZE) >>
+ 		PAGE_SHIFT;
  
- 		btrfs_start_delalloc_roots(fs_info, nr_pages, true);
- 
-+		/*
-+		 * We need to make sure any outstanding async pages are now
-+		 * processed before we continue.  This is because things like
-+		 * sync_inode() try to be smart and skip writing if the inode is
-+		 * marked clean.  We don't use filemap_fwrite for flushing
-+		 * because we want to control how many pages we write out at a
-+		 * time, thus this is the only safe way to make sure we've
-+		 * waited for outstanding compressed workers to have started
-+		 * their jobs and thus have ordered extents set up properly.
-+		 * Josef, when you think you are smart enough to remove this in
-+		 * the future, read this comment 4 times and explain in the
-+		 * commit message why it makes sense to remove it, and then
-+		 * delete the commit and don't remove it.
-+		 */
-+		async_pages = atomic_read(&fs_info->async_delalloc_pages);
-+		if (!async_pages)
-+			goto skip_async;
+-	/* atomic_sub_return implies a barrier */
+-	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
+-	    5 * SZ_1M)
+-		cond_wake_up_nomb(&fs_info->async_submit_wait);
+-
+ 	/*
+ 	 * ->inode could be NULL if async_chunk_start has failed to compress,
+ 	 * in which case we don't have anything to submit, yet we need to
+@@ -1284,6 +1279,11 @@ static noinline void async_cow_submit(struct btrfs_work *work)
+ 	 */
+ 	if (async_chunk->inode)
+ 		submit_compressed_extents(async_chunk);
 +
-+		/*
-+		 * We don't want to wait forever, if we wrote less pages in this
-+		 * loop than we have outstanding, only wait for that number of
-+		 * pages, otherwise we can wait for all async pages to finish
-+		 * before continuing.
-+		 */
-+		if (async_pages > nr_pages)
-+			async_pages -= nr_pages;
-+		else
-+			async_pages = 0;
-+		wait_event(fs_info->async_submit_wait,
-+			   atomic_read(&fs_info->async_delalloc_pages) <=
-+			   async_pages);
-+skip_async:
- 		loops++;
- 		if (wait_ordered && !trans) {
- 			btrfs_wait_ordered_roots(fs_info, items, 0, (u64)-1);
++	/* atomic_sub_return implies a barrier */
++	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
++	    5 * SZ_1M)
++		cond_wake_up_nomb(&fs_info->async_submit_wait);
+ }
+ 
+ static noinline void async_cow_free(struct btrfs_work *work)
 -- 
 2.26.3
 
