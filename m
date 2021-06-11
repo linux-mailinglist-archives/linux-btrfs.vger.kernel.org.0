@@ -2,145 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7C23A3DEC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 10:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618303A3DF8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 10:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhFKIVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 04:21:01 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:52598 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFKIVB (ORCPT
+        id S229960AbhFKI2y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 04:28:54 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:50148 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229733AbhFKI2y (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 04:21:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623399543; x=1654935543;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=RyEPalm9218tN/gJxrnAl8KJf//HGQS//0A3ceIqoh0=;
-  b=nkFPf9G3q0YwVsDOpqHQD3pgH3ToX8vChJfXZ8yedvIlEPX0rFnZGNQ+
-   TQO08gxkvmyou7f/QlJ5r0Kia6VBgXjGwjCyXN7YU3gRrEcRs+CglOI+S
-   XnhEzwR88qyEqQyeeO3QUOsbJ/pDugcJtbaol0FGy4DoEIXc84wudHPAT
-   rcgdbkEHtVXYfNVMVeuiCcQirI8zLi39hlsERp/gbHnSoclSrzUANhhRz
-   J2AwGgiXKACwAvNmA1uq7cS4b7nBeHXPJHr2MDoLLFofIxTwVkKSBsu0t
-   sbhN5RhYp0L03psv6XsuxbVi7lSQzOSrdZ2792mVWXC1gmEh5OjnARei/
-   A==;
-IronPort-SDR: D43A6LYskbcBq5IypDwZPXHo+mN9gjwcxBbpKDVKE244jFKwax/adYBJyUGvCMFXI9cQ5JJZ1/
- Y7aBPnzMAfuAuRtkfwrxrNjqG/65OmWXvv6cIJFgT+9nR0R1UyP45oh6UVPMBmkcJzf8FYSefB
- NA04smnswhxnMzbK9IgaNTsJryii/ZHqvHLmZ8x+ZMHJ9/vlfZitpjAOoZ7ACgHk+iYZ8tg9kW
- Eve57pQHyNZeQKMa5neUwNpR+mMmctLZrQ/crtsucyvfv9dlGjjRJOfpWDBK59KRz179VtAtDq
- MRs=
-X-IronPort-AV: E=Sophos;i="5.83,265,1616428800"; 
-   d="scan'208";a="176336195"
-Received: from mail-mw2nam10lp2101.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.101])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Jun 2021 16:19:03 +0800
+        Fri, 11 Jun 2021 04:28:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1623400015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jGAPtrRq6a0uoykBGCnageWRIetBQut4R5f9TtMq+04=;
+        b=EjP5eFcUIIAXKqSmuVIrGTVCcq9b3CBP14U1Dz9uY8wc75LJILh0JH7ZUcjtgmEsxNn0vF
+        zRH7veQdmqQp8hZhPoJwC+glKvX0D0chgJ7UFYhr8s8fkW+opJPBxiOvd5ipLzyG3v0xIU
+        8+RiqjjpDF4mrmKVFjfcyCXkwHMUjZs=
+Received: from EUR02-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur02lp2052.outbound.protection.outlook.com [104.47.5.52]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-31-LBK1cR6kMK-keep7C9uQnA-1; Fri, 11 Jun 2021 10:26:54 +0200
+X-MC-Unique: LBK1cR6kMK-keep7C9uQnA-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YJesQ+a8pPZ6Jj2fm7R3BSyuAmOZvIGsZuFLyjxGDdZAwOSDu1s2ge1zGGlGvmhmzvCeiBWaWjogVwPdlpwrw467lrtCLzpxVCAaDIA6Yu0uCggdrf9J4B7khvAJABnd7BYY0niJ54jhmO9OKAm/oho3mNMW1BVssD883RdD9GI82eM41B/Y3HRfiYz5BhH6gp44bK+HYsNeGyVzJy17rDQgFi4+3qXv8OvDhaYZd8rA1hMt4Bl7H5h/rJ7m0Wd3fyl/vNC277Ldzwap4P0Eexge0hegHgQ3Xxim+3xtQ/wSUXSgVwm0jAPtE3QaZC19HYjDonluujaHuXA0trB1IA==
+ b=dfUMXSh3M0eUNFLWYIpxCvc8h/TfTMePs7ZGgFBg3J8VhfzN7FStoukCGRmK+RtAbwYEAbz7OIbjxf2MgBqeS+RNb5JmsHep6axNYq+oWxwokQ99C+mpw3G72MlyHiYSIZO8Z8ltarI4evylfL1cmhwwHKe41VvL4lXk2lYnbgD4z5qH3RHsp5M3FE456Vxr2kO7I1Bi/UeNuiYIebJZ/OwwcpTwwFbY1PYvWuo7H4jrHUzpF3wYDID7JCe0VZuGGIj/ThYkUdAtTQzApHUDs19UfwkTelVdiG2n4a9r68f1xo4r/zBRZ21J3Zvvwz21Z7Ehsp572ITQ7DOX0NCraA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RyEPalm9218tN/gJxrnAl8KJf//HGQS//0A3ceIqoh0=;
- b=SK6pJ88LutWCPTjF4q6nPbLQKz0VS969f8SEwkEOo4AaJue/p1KZffd9udU2wNk6VZQRLiC8RYJN9v4xS9CLX+JSk4S5J1hL7YM50s2L+XjM7YyZS+LWDzViQy80eU0NhBJWSTLfbu4HOlaTudvNTA47ZBejA4Brb+LitwEIsW2OFaL34o/8DkyI7pnqNpsYI7zRULsOh/5RaanRsNuE7zIr+ZdOufFoe8kNMIYG3uS1IRVM8cA6Lza95ynl5+sN31qlA8XT5z5PEByDDt/7B4R53gZuGUzDm65nX9DJMDwpeDC6GrLwOzcTSyNV7I1jtwj+eG1E5Lh1xNN5jSLwgw==
+ bh=6EtUF8qR/dzxKgrphJQK2/dxxg778TtSuGJ9SHwcT1E=;
+ b=NDNLEAJSeEKaAA7I1bUNWsn3yMldTxauYvHPKc780cWYVQBj2Pb5S1tYbvsDdEKya7tx6MgPlTe+Uzoz2YaNnrpli/NWcpRYPXLvDYWsmoCMVDPUIsge5V8VnL2mL/V0+7swIQyThsX0zn9qo9pvvtQAr23wmy7OwElXzKdHXlubAKhYc7YnKO2jk6OOMtGgBJMiHNZBU3c7WW9FLx1QHDj2zKEYmtDgGnZghB3ONpcbt/wLoXNeDc1kdDxPn3dkjhhOuwYSI+rJupa6A04kQl2WmHonFcpPCQqZ6FE8JBLsyQPT0f9VIddCaS1kIq73e9sAeIDWVFPH0qh9oLCMeg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RyEPalm9218tN/gJxrnAl8KJf//HGQS//0A3ceIqoh0=;
- b=ROJfxU9zp+30W4bcDZQIFX7j+gJpPhANiv4uRiRzMudem3NbzPvjWPj11lRiMtgeJzwzl606KsOtk66qPmCVGPjmRrETAz31uGJMxEQqtc8tK1EvkMm9aMjdqyxZQBFfe+kyg2YiwIZ/C6gP9fmbJ/9lL9UVcp4YvMScsphbhms=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7303.namprd04.prod.outlook.com (2603:10b6:510:1a::17) with
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AM6PR04MB5720.eurprd04.prod.outlook.com (2603:10a6:20b:a7::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Fri, 11 Jun
- 2021 08:19:02 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4219.023; Fri, 11 Jun 2021
- 08:19:02 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.24; Fri, 11 Jun
+ 2021 08:26:53 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b8b1:d726:a3c7:9cb]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b8b1:d726:a3c7:9cb%7]) with mapi id 15.20.4195.032; Fri, 11 Jun 2021
+ 08:26:53 +0000
 Subject: Re: [PATCH 8/9] btrfs: make btrfs_submit_compressed_read() to
  determine stripe boundary at bio allocation time
-Thread-Topic: [PATCH 8/9] btrfs: make btrfs_submit_compressed_read() to
- determine stripe boundary at bio allocation time
-Thread-Index: AQHXXmGkeNgEMm2fkEuHw4DggYnomg==
-Date:   Fri, 11 Jun 2021 08:19:02 +0000
-Message-ID: <PH0PR04MB7416BE7F9C7820B29E0EE18E9B349@PH0PR04MB7416.namprd04.prod.outlook.com>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <20210611013114.57264-1-wqu@suse.com>
  <20210611013114.57264-9-wqu@suse.com>
  <PH0PR04MB741678D81425B3F3E24DD28D9B349@PH0PR04MB7416.namprd04.prod.outlook.com>
  <3542ce4c-f2ce-c834-6866-eee6c28a967e@gmx.com>
-Accept-Language: en-US
+ <PH0PR04MB7416BE7F9C7820B29E0EE18E9B349@PH0PR04MB7416.namprd04.prod.outlook.com>
+From:   Qu Wenruo <wqu@suse.com>
+Message-ID: <69317414-5e55-dfc9-a22d-4cc5a7c93f66@suse.com>
+Date:   Fri, 11 Jun 2021 16:26:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <PH0PR04MB7416BE7F9C7820B29E0EE18E9B349@PH0PR04MB7416.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmx.com; dkim=none (message not signed)
- header.d=none;gmx.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:141b:f301:e91f:9de6:cb32:f149]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1207b796-9446-4474-0789-08d92cb19271
-x-ms-traffictypediagnostic: PH0PR04MB7303:
-x-microsoft-antispam-prvs: <PH0PR04MB7303CD3C7CDC070F7A4491129B349@PH0PR04MB7303.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KJ/4Wn2sn0JR6yDRWVuprQT6XIMIW/cDyGKximKcpmWzv6erKDWgDYPK90JUa2hCEz1KO1/cUOK06Fulto0po9o8ZG5G65wFsykIS1Iai2WeZScoT1sXT9LP/41MtrTKatQISIXlZNOMo/y4kqkRufd7clp6YVA+SSZUzryx9Ru8nyQuXpK73IVbd8iUGLqKPXxzzlJBwWEoMRpjCz2vPKU5dkYRUQTc/y+HSK+SaHXY0e2iT2oFRW39hoQbNG0IJ9pwiPa3+q64McNDs0d8HlRj0MLZSCr4JOT9tyF4xSGaaPB1g1mzX3BAVH0J75GTGxMmYnfGGis7tzdZVKtAWPKMmTCj7Pg+mwXOKAh6UPM7AHL/hD/7cpZmp7O1zBWWdj53iu7JBCwgiT+TXgze6/0WpqEAqA/GDERPcGBcaUBPD+f6KnBgMQKhD1tgdDMdyT552G6PEU7k9dAHnJ6Ol0kH5qUa2eGR5pXAxJQ9+3u+dvlfFFEaYyWZlHYrsqeyEMuUC2zrhu571UeNtwZ5qW5Dm/EJiA4xCQJ0g/i1m5KdLFH4esK+1HzStIv7jT3Utb8Knypqs3aNFtKJlgz+Z/c6gV2siazW4ZB4iHZ/6cc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(346002)(376002)(396003)(110136005)(66446008)(55016002)(8936002)(8676002)(6506007)(478600001)(53546011)(66556008)(66946007)(76116006)(7696005)(91956017)(83380400001)(5660300002)(64756008)(66476007)(52536014)(316002)(33656002)(9686003)(71200400001)(38100700002)(4744005)(122000001)(186003)(86362001)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?D+DluG8Sf1G5nMuoihqzJHcg/9ukxPyArzsOiR6iNo1jksySa45jkQlUUF6N?=
- =?us-ascii?Q?VhJi4tVghojBj92i89TEI35qWMB/ygYWk6PvGT/239EedOMtNmDaySenqaS0?=
- =?us-ascii?Q?obXesbQZMLtI5EkRFzvJc8z+iJQC8teXLj+uisgbWTUdA39u0+VPErUQZOZE?=
- =?us-ascii?Q?eJK8AD04YEcqIcOyyJ3VBZltjv5cF3M4UfcgQsiW+jBLn93nB1HVh37L1KtN?=
- =?us-ascii?Q?5Jk8bTe5Gpx4uQNAI49lXEoZeO4vZ0On1U13WSzxl9U8ZC6ksvYv80kj5uxH?=
- =?us-ascii?Q?Jm3v/7pwXRfBSITEYmlroqZ6pJaNTiHbvJEVVcu4kSkgAID8nByIyn9WBXFb?=
- =?us-ascii?Q?vaRQdybYuRqOCllzvvPuow1co8AYnG/C4o2vyNZRYrOdyRkbf8+QsBGJ6tGh?=
- =?us-ascii?Q?YrCrKPwDekxkKtatuR6ORoMV9F1Yb8gk1g/LOE/z60iZStO9Pe4kBC+YzkDy?=
- =?us-ascii?Q?fkke31XehQtipGqktB09PdkHb1xuxNw7wi0pjIoDNOEj4JYonWL50i56Ihat?=
- =?us-ascii?Q?INl19vapyRxvxsnb3hiWoqgbj/shiRRBHz/7SNxcUL0/wZCyhGr3MHNLKNsw?=
- =?us-ascii?Q?bnG+QO9yAgRRZPQ7BFuFnILg6hZV+wF1DYCbXtn9ENGpN4NQwNDWFhDNI4dO?=
- =?us-ascii?Q?9rU/htOXa0jw808lheqXYsqhY1RBot2wJrAW1SuLTozm/3LYMane8trE4jzV?=
- =?us-ascii?Q?qdFYdlxENleLQwEsWvbHz81Bi/nSqySNICn+CfNUxe1QTcn8bTiWjgiXeBio?=
- =?us-ascii?Q?LL71Ujz6z52XCNA75k6243PPpXCYTpyx6QeHPS0nXcW0+oMydtTcyq9klDVp?=
- =?us-ascii?Q?5VD8sS9u+rdrfvVkyz6cl3U3dnKAIXe6rrDqw+Qx71fW6qqjbfDCIZja0qBt?=
- =?us-ascii?Q?uOFzaeiY7BpxAX3r/Q9SZPQpAOc62XTHcMLv3Bsisv86ZYAZw0nt2cxcHAIz?=
- =?us-ascii?Q?QhW7AX9i1bkQgm2HpO9IOiVZuobTX4c0F1nGkm0wzhPEtDcb1MOLWpEQYc/y?=
- =?us-ascii?Q?5ulUKkBkP6ZdFZ0cCgTfuYILJOue87VpvS70AU7dVMuc57iY//o5uyj2rm0O?=
- =?us-ascii?Q?08vvhUP2q2xrbaFXq2JZfkG7nFnW5fbabS/PcNfsWCF1ekvuRKHfpBD40VQA?=
- =?us-ascii?Q?tneBMpyZ+uXDVGSWjydoSJNlP74SVV7ysLqNpar7/FB85CCqAHeY1iMwxZ8r?=
- =?us-ascii?Q?lNzFXtXEyPCTYZnk5xuKk3Vpj5lF4uu3euuizLfK2a3Kl7tZ5DWCjjr5I6/E?=
- =?us-ascii?Q?jV3/h7j9hyTs1WrqYYInx5MCEb5aWPoojTQlp4kU2TbUwf39tu13rVD/8vNF?=
- =?us-ascii?Q?1JsPorWGy410zyw9xaJxt0b19ck77DBsirmN6PInSsQlmQvTM5DjFHhlTn0t?=
- =?us-ascii?Q?jx1T6NwUXkNbMq6Bpd3vHBhjiTcEKLGwH8zRXjoPPAQhUjRk9Q=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [45.77.180.217]
+X-ClientProxiedBy: TYAPR01CA0066.jpnprd01.prod.outlook.com
+ (2603:1096:404:2b::30) To AM7PR04MB6821.eurprd04.prod.outlook.com
+ (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (45.77.180.217) by TYAPR01CA0066.jpnprd01.prod.outlook.com (2603:1096:404:2b::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Fri, 11 Jun 2021 08:26:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 955c20c1-7b31-40ad-8cab-08d92cb2aac5
+X-MS-TrafficTypeDiagnostic: AM6PR04MB5720:
+X-Microsoft-Antispam-PRVS: <AM6PR04MB57205B397A79932476BDCB01D6349@AM6PR04MB5720.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FZu9qt09eS0DU7ceY+dyTEiHLXv+zKHQJ/hokGH3oLmmeG9rE6mO0SAr/a5tE/PP2RprpO0rzKHJqYCvZ3hW6M9KK8EH/B73Wf9+dY4pCqna4cvkmdIHcLrqF1wADOT+5z66bXEreac1HykDXObQ/ykASYExPMceZ6pFslWMBe8ZrOYDun5jqqbPCD/1QkcKLdjrmODK4e8NKDThAakBzk5y78oZH5RUXn6VNmDCrcBtGuEeVvyTOY69Y9yKXm1Gy4Z+Ydl0Jmv4JSjli58QJMM2cbSfvK8TXCAKdP+zaJ9GWlxbeNfphNKEhRtFiAlet0tevrUJ4cBxWIeHD0BZLke29mpXkxcUfIXFW5SsoZyREkgnIJW319ZZ2kuke9zeUc+HP5Iyd3YSMGnfLTHGwlTrjWc6JVBB+35og1qQQUoSMjm5qEga3QA5f81hhDsUiZ3Ypu89UFea4eROwBD6l1Z4AIXEPW4rtVGEvFSl8VWhEzeR204Xu7mPeXmm5A+YkY8rkWAhPH9hVyt0x9EFgVzvoe79plr2hdFesu1gK9TAGdhvUmKp2ZjmDTIk2pVCK/tudyWWTj40E4+fZVr+Fz4nPfcd2uGzyYjsjS3UPWXDAZDQYOYJ7CLv+ql/ybYe6JnIy1Ot1F+tds6VJ1UIGf7xUZgtK3UmpAu5sutoXXwrRMvyC2TwYB2K/78jl34w
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(136003)(366004)(39850400004)(2616005)(956004)(8676002)(6486002)(8936002)(31686004)(6706004)(86362001)(4744005)(2906002)(36756003)(478600001)(16526019)(316002)(110136005)(66476007)(66556008)(83380400001)(66946007)(53546011)(6666004)(38100700002)(186003)(26005)(55236004)(31696002)(5660300002)(16576012)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Qyl78B3wh8BY6ckjqIrFEz0Z9vtwmLrO+ZcejUoMO3RikXgbmQwQWFSTglKp?=
+ =?us-ascii?Q?1+YcGE6EUgTJWBR8S/xPs0SUC3AfxfcyBUsWehGZ3qSwx+/NXYLXJn3RrSdF?=
+ =?us-ascii?Q?gqTXfsK6BD6bYjw7vpjZpFshOzX5wBik8xff62kSpP36Z4vo7OWSwaU4O8iU?=
+ =?us-ascii?Q?EZ/dHBc3vYtnkFZeLHnIM5uluQi9nJDCX+TN0ohOFTZ4DioDjMigYOXbGRsL?=
+ =?us-ascii?Q?1ALsHg6NbMunxN0j1awthP41rxnERBTmv0QvLE5OSpg3IIzqmvHzSypSGF0l?=
+ =?us-ascii?Q?FMJbREDQaHkMWp30T97Ntx88NqT6Y4DxuHSNOHWWPTMI5bcX/QI6ZVIH92at?=
+ =?us-ascii?Q?OagBwqJenNg3a2jLyv2rPEp6LFV5g1kMyBue/F+nCfLfsw71qZgGlM0r3+c0?=
+ =?us-ascii?Q?DJ8KKa6WUdZle0lB02B0X8je5CvpJQXwYiRxYv5w1HI3Gtc15i0eXPfHGBgv?=
+ =?us-ascii?Q?3UNouJkCtOX+Geb8+ZXzdyTuSzwa0JGVlbYOoZl+w67XIxzYFcaHoi7Ay6Bz?=
+ =?us-ascii?Q?5uXRFcl6x6YsFM7F4WlXI+kkY5Mr7fDmUthAaT5OCU8Y8hFmd8o+32ihrJ42?=
+ =?us-ascii?Q?Cvjgv1Yu/Mw4koUja3VVSQRf9Y8l7aYyfvC7qY4gRlLTPVXjRv9oizWG3CSf?=
+ =?us-ascii?Q?G/XGB562srx/S7a6OdSoWcWTqZArucQZwwvuam2i8Yj88H8/z79klyslnQaj?=
+ =?us-ascii?Q?XtfXmImMYQXo86POgM/ormfR0Mvkp0YHqZvRMTAY75LoHfEMXGOT4lshL8QL?=
+ =?us-ascii?Q?EZv3QtkPvwFttCeZ5ljDrqS9SUbvd64VS1TRtiA3bxaDGR81QmCwToeGCEdc?=
+ =?us-ascii?Q?5L5QhPRvwJmJ4SPy05rcq46YF0oC3JA8szTLj6hjbWJtXYpckDMCZwyjrW6h?=
+ =?us-ascii?Q?ZHHwkJmgwiaz9xJsbr6IwW8w5DliQiCUvZJ3zcEJfkS2RDm/vcgJGHpgIaJV?=
+ =?us-ascii?Q?jWOehMkwNSM50HalxapnKDB806btXA8HWxiTgDeidCydMtM0SPDtpmG5Aksp?=
+ =?us-ascii?Q?z0k05dMPSQrKDN4Zs3OPF5J6BsbN0//M+Edn6SU2aQpuLf//zk5vzlYl7fNs?=
+ =?us-ascii?Q?aEc/7gTAjBFvg7bqfo9OMQsbb9XfN8Bm0di5k7hBv1uscyW80FlgMMtno20d?=
+ =?us-ascii?Q?/fqnV6mx6gyCgzgqp31yLWrnCR5bDARTrW3QPW59NEKQNkAgw6LC0KFBNDAI?=
+ =?us-ascii?Q?aAtj6mu2FJDl44o1SUwQkvM0PtDi/7AMaPFa1yFzsNsY8UglXWIzITbZW+c7?=
+ =?us-ascii?Q?pci583PY5BwIYhXrOATX4nQgXw15aQQFCODlptxH9wjIkpc9DJ4tipPtQvZb?=
+ =?us-ascii?Q?pb/Q4L5skpZ31LrU/m9p8SYo?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 955c20c1-7b31-40ad-8cab-08d92cb2aac5
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1207b796-9446-4474-0789-08d92cb19271
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2021 08:19:02.6374
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2021 08:26:53.4383
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4xxRLz3BI5UOCUPkSwI6Y63WJTX3ziW/m6xhgzjT8bMcu0fL9K7k5oHbpHGAcW3IVgV/u8C1jLC0SI0t0i2/Ep1a/j417j+BFE5h1QbAasQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7303
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j2/hDKZ24tXsCNCfj2rbUkAZ06T41kkC3tKXWxRZ0YeHcN+DCofvzrzGHkDfeFcs
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5720
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/06/2021 10:16, Qu Wenruo wrote:=0A=
-> Did you mean that for the bio_add_zone_append_page(), it may return less=
-=0A=
-> bytes than we expected?=0A=
-> Even if our compressed write is ensured to be smaller than 128K?=0A=
-=0A=
-No it either adds the number of requested pages or it fails (I think there'=
-s=0A=
-and effort going on to make bio_add_page() and friends return bool so this =
-is=0A=
-less confusing). =0A=
+
+
+On 2021/6/11 =E4=B8=8B=E5=8D=884:19, Johannes Thumshirn wrote:
+> On 11/06/2021 10:16, Qu Wenruo wrote:
+>> Did you mean that for the bio_add_zone_append_page(), it may return less
+>> bytes than we expected?
+>> Even if our compressed write is ensured to be smaller than 128K?
+>=20
+> No it either adds the number of requested pages or it fails (I think ther=
+e's
+> and effort going on to make bio_add_page() and friends return bool so thi=
+s is
+> less confusing).
+>=20
+
+Got it, it means we still need to check the return value and submit if=20
+needed.
+
+Only for regular bio_add_page() it would never fail as our write size is=20
+smaller than bio size limit.
+But for bio_add_zone_append_page() it still has extra limit so that add=20
+can fail.
+
+Will fix it in next version.
+
+Thanks,
+Qu
+
