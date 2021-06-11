@@ -2,77 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732883A4991
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 21:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36643A49FE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 22:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229980AbhFKTrF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 15:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhFKTrD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 15:47:03 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3874EC061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 12:44:56 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id c9so7188700wrt.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 12:44:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=7iXwO069K4+sv+VN/IkT2C46ZNj1x4qss+2rw0VpJqE=;
-        b=CbDcnZN8VvBrLRsvW57+Z9176jJRDEbC4F4AhssdZqBu25rb3MwES4EgDySxrsS6Y/
-         3FlbK0WU8N9WQNHTWqSyeh7KuqZOFVBEdODghwckH/fZ59QoZWR/FQWaQk6yS3vPp1y0
-         uKVsar29EmNTQNMlBUXsFOhgOKfeyIWkOnODRq/cuU37D1INDJNTAyxWPASvqOt5fQkM
-         Vgotj1jyP83dr0XsHDTFWYjW9m3gHVWSVVJVWfF+eFRv4DnVSTLjZr+g/3uuBkLq0bCg
-         PCMqv7TTFfRm7DUMwr3E5zNczPLJhM1OZZxXh0xzGpA3X/Ue9stc1Tvy/OdUS0R+7Dzc
-         TJsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7iXwO069K4+sv+VN/IkT2C46ZNj1x4qss+2rw0VpJqE=;
-        b=qx7P/kDW+nWdzpOu6/zpRqlisAmXOlKlCXYyijbCpPL/SsDCpg4kV+xEXkQuJN2hkU
-         2lj84eHh6l4vhlg8wsrHK2CSx8RQjSJWprosvPT0y5z0bzeBtaZEy+/r/cDPWbtzzmpv
-         woHzq8NpF8fy44VTL/VkZ5+Qg/WqZnkE95gphyHu4xoyB3tPurm4HqUcTRQ+MuuJ7CCH
-         TsBKwAKpnu7O1+p748BN3SQzvQrZAoxj1VX/fhbW+IADM/4zDL7kMf64j0hVxXyOw9rE
-         xVvspHCszKqych1WGgu47sgxXjMpMqLedpmERUOOkPybD2TLN2JTickRdA+7LCzLNEjH
-         yiEw==
-X-Gm-Message-State: AOAM530SPKBhGTZu8OyXzfCmZUi0ogFsOZPVeKfg+lVe0WZAbnUMd21u
-        KVp1GctgqmWvHQF6GcygRNHiu0JhxG5DGg==
-X-Google-Smtp-Source: ABdhPJxnScOzonjLQkTaDRF1+gwl5utky/ckHRf2kyEWwfC6Dsr5VmJOQBX2qN01v/8HImqapXjYrQ==
-X-Received: by 2002:a5d:6daf:: with SMTP id u15mr5795729wrs.400.1623440694319;
-        Fri, 11 Jun 2021 12:44:54 -0700 (PDT)
-Received: from localhost.localdomain ([176.92.77.97])
-        by smtp.gmail.com with ESMTPSA id c7sm8119626wrs.23.2021.06.11.12.44.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 12:44:52 -0700 (PDT)
-From:   auxsvr <auxsvr@gmail.com>
-To:     linux-btrfs@vger.kernel.org, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Write time tree block corruption detected
-Date:   Fri, 11 Jun 2021 22:44:50 +0300
-Message-ID: <5720791.lOV4Wx5bFT@localhost.localdomain>
-In-Reply-To: <9f901a7d-bbe7-fd13-8538-1fdc0f869296@gmx.com>
-References: <1861574.PYKUYFuaPT@localhost.localdomain> <4656165.31r3eYUQgx@localhost.localdomain> <9f901a7d-bbe7-fd13-8538-1fdc0f869296@gmx.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S230443AbhFKUOJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 16:14:09 -0400
+Received: from ciao.gmane.io ([116.202.254.214]:44496 "EHLO ciao.gmane.io"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230393AbhFKUOI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Jun 2021 16:14:08 -0400
+X-Greylist: delayed 301 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Jun 2021 16:14:08 EDT
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane-mx.org>)
+        id 1lrnQq-0009Xp-19
+        for linux-btrfs@vger.kernel.org; Fri, 11 Jun 2021 22:07:08 +0200
+X-Injected-Via-Gmane: http://gmane.org/
+To:     linux-btrfs@vger.kernel.org
+From:   Jean-Denis Girard <jd.girard@sysnux.pf>
+Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
+Date:   Fri, 11 Jun 2021 10:06:58 -1000
+Message-ID: <sa0fp3$12s9$1@ciao.gmane.io>
+References: <20210430013157.747152-1-nickrterrell@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210430013157.747152-1-nickrterrell@gmail.com>
+Content-Language: fr
+Cc:     linux-crypto@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wednesday, 9 June 2021 11:32:57 EEST Qu Wenruo wrote:
-> Would you please try to compile the following branch of btrfs-progs?
+Hi list,
+
+Le 29/04/2021 à 15:31, Nick Terrell a écrit :
+> From: Nick Terrell <terrelln@fb.com>
 > 
-> https://github.com/adam900710/btrfs-progs/tree/device_size_fix
+> Please pull from
 > 
-> And run "./btrfs check --repair --force /dev/sda2" for the newly
-> compiled btrfs-progs to see if it solves your problem.
+>    git@github.com:terrelln/linux.git tags/v11-zstd-1.4.10
+> 
+> to get these changes. Alternatively the patchset is included.
+> 
+> This patchset lists me as the maintainer for zstd and upgrades the zstd library
+> to the latest upstream release. The current zstd version in the kernel is a
+> modified version of upstream zstd-1.3.1. At the time it was integrated, zstd
+> wasn't ready to be used in the kernel as-is. But, it is now possible to use
+> upstream zstd directly in the kernel.
+> 
+> I have not yet released zstd-1.4.10 upstream. I want the zstd version in the
+> kernel to match up with a known upstream release, so we know exactly what code
+> is running. Whenever this patchset is ready for merge, I will cut a release at
+> the upstream commit that gets merged. This should not be necessary for future
+> releases.
+> 
+> The kernel zstd library is automatically generated from upstream zstd. A script
+> makes the necessary changes and imports it into the kernel. The changes are:
+> 
+> 1. Replace all libc dependencies with kernel replacements and rewrite includes.
+> 2. Remove unncessary portability macros like: #if defined(_MSC_VER).
+> 3. Use the kernel xxhash instead of bundling it.
+> 
+> This automation gets tested every commit by upstream's continuous integration.
+> When we cut a new zstd release, we will submit a patch to the kernel to update
+> the zstd version in the kernel.
+> 
+> I've updated zstd to upstream with one big patch because every commit must build,
+> so that precludes partial updates. Since the commit is 100% generated, I hope the
+> review burden is lightened. I considered replaying upstream commits, but that is
+> not possible because there have been ~3500 upstream commits since the last zstd
+> import, and the commits don't all build individually. The bulk update preserves
+> bisectablity because bugs can be bisected to the zstd version update. At that
+> point the update can be reverted, and we can work with upstream to find and fix
+> the bug. After this big switch in how the kernel consumes zstd, future patches
+> will be smaller, because they will only have one upstream release worth of
+> changes each.
+> 
+> This patchset adds a new kernel-style wrapper around zstd. This wrapper API is
+> functionally equivalent to the subset of the current zstd API that is currently
+> used. The wrapper API changes to be kernel style so that the symbols don't
+> collide with zstd's symbols. The update to zstd-1.4.6 maintains the same API
+> and preserves the semantics, so that none of the callers need to be updated.
+> 
+> This patchset comes in 2 parts:
+> 1. The first 2 patches prepare for the zstd upgrade. The first patch adds the
+>     new kernel style API so zstd can be upgraded without modifying any callers.
+>     The second patch adds an indirection for the lib/decompress_unzstd.c
+>     including of all decompression source files.
+> 2. Import zstd-1.4.10. This patch is completely generated from upstream using
+>     automated tooling.
+> 
+> I tested every caller of zstd on x86_64. I tested both after the 1.4.10 upgrade
+> using the compatibility wrapper, and after the final patch in this series.
+> 
+> I tested kernel and initramfs decompression in i386 and arm.
+> 
+> I ran benchmarks to compare the current zstd in the kernel with zstd-1.4.6.
+> I benchmarked on x86_64 using QEMU with KVM enabled on an Intel i9-9900k.
+> I found:
+> * BtrFS zstd compression at levels 1 and 3 is 5% faster
+> * BtrFS zstd decompression+read is 15% faster
+> * SquashFS zstd decompression+read is 15% faster
+> * F2FS zstd compression+write at level 3 is 8% faster
+> * F2FS zstd decompression+read is 20% faster
+> * ZRAM decompression+read is 30% faster
+> * Kernel zstd decompression is 35% faster
+> * Initramfs zstd decompression+build is 5% faster
+> 
+> The latest zstd also offers bug fixes. For example the problem with large kernel
+> decompression has been fixed upstream for over 2 years
+> https://lkml.org/lkml/2020/9/29/27.
+> 
+> Please let me know if there is anything that I can do to ease the way for these
+> patches. I think it is important because it gets large performance improvements,
+> contains bug fixes, and is switching to a more maintainable model of consuming
+> upstream zstd directly, making it easy to keep up to date.
+> 
+> Best,
+> Nick Terrell
 
-Ran the repair and everything seems to be fine so far.
 
-Thank you,
-Petros
+I've been using this series on stable kernel since 5.12.3 (now on 
+5.12.10) on my main system without issues.
 
+Tested-by: Jean-Denis Girard <jd.girard@sysnux.pf>
+
+
+Thanks,
+-- 
+Jean-Denis Girard
+
+SysNux                   Systèmes   Linux   en   Polynésie  française
+https://www.sysnux.pf/   Tél: +689 40.50.10.40 / GSM: +689 87.797.527
 
