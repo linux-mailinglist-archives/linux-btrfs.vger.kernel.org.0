@@ -2,58 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16EED3A4365
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6263A4366
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhFKN4E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 09:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46612 "EHLO
+        id S231158AbhFKN4V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 09:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhFKN4D (ORCPT
+        with ESMTP id S230409AbhFKN4V (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:56:03 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033B4C061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 06:54:06 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id e3so2644300qte.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 06:54:05 -0700 (PDT)
+        Fri, 11 Jun 2021 09:56:21 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DF9C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 06:54:07 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id r20so2608820qtp.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 06:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nfke/cFq6xaTH29Ge5vwvLHugoZC/ayAJOBSumXUS6w=;
-        b=dbKrJOw7l2T7iVLqAXrWa81mhiFCTqVb9o3EzaLBXaF/Yt52XRsGcn5RtqMsbjqbae
-         Uxa+BlefIeZjFZgFR5thwqVtYuI0vQtpZtut8bmHGLykrjSgBEADJUxL21BVQ3QjvZtG
-         623vyPaED1I1qNs6GvRWw+UaNcIpQYBKdfGINt+1ecafbAPFQrU0sE0PyMJ8954sQ1R6
-         IeHKCRxhvoM4n3/TMZShMEwYxYG5N+mGaw1iFQf54khO7hRFGpo70hwX4Q6cHa9Xk6BR
-         tOVJSyGNp8TCGNt+ZLdC0VkRA1QXoBQDp2BL9snw98sHMarwDQ/woZ0gwzlZj3EgNxoz
-         p4fQ==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=uogoIf0mLnC18pRJSXbrn3NvUCGRWlEyukoJAD5I02I=;
+        b=K9p3jjtlSgjosz7I+uKdTryyiWlmk/69JNenjSvROmF9s2gLo67ywQ+a16vpFwBb5V
+         +AbYrXOXpwgZJrjWf9TAK4MMjJhOPi0WOhggA7ZZkyCMuif3TYwpthfYaHtl0egRdw8a
+         cc1kofg7YHRx3vBV81DnVPrlTSs8+pPOZf0MtZlrsLyCa8/AuwI7n6KJeE+YRJldU/jw
+         ij5NzTIVKe2dcp1WpZsegVUbAP2/E0EO0giAEnyGfCZMUhvRYTdbGNDmJB2QHZnltd6w
+         PxfiLbznkTLIuve8YSnpMQ59upYheFV9jQKgjJ5QsasSD6qOyk7okD93kSzxqyK+Z569
+         wZ0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nfke/cFq6xaTH29Ge5vwvLHugoZC/ayAJOBSumXUS6w=;
-        b=qm7DNC7VIvTPISCx0r0GKsv2jtPoXTHaK8qQAGjgtlCFgYHO8TIXBql8jZzuTgI/q5
-         ov5LxIDBlWF0InyWeg3M57fD3tE37nHJix9PLpKn38eDDQjja1lT8dgxE6eBQS4NNJlN
-         Jmuwa/2uOEz2XG8pqW0tDhwJwTACQ3gvmEkn5rbIsPNFjxUuGKlqTPb4do/TDtaFafyA
-         QhDLyghdnA+wPRwo9qDhMQuM4sxRyvsGCE1dB61AtEUN0vYdyOurIqAhE9PM3tswDDpR
-         IIRz+njD0bQQgWPKAMrT3J4caQaXEb7d+bmkjTHYvG8CUFiplUiwNcb8rB20Znt7Qq9R
-         P4mg==
-X-Gm-Message-State: AOAM530iEhCUMO4LZCu6n7gtJ99nZaen1zS3qnwxOE19Q57lIyOVX+lV
-        125ld9zZ09nV04XvhIRdVuMJtgQLYqor4A==
-X-Google-Smtp-Source: ABdhPJzybheumRiqwViRdJ9Ll5j59V4bXtascbt8naBgBI8PWdD4yqWmis3Li7sr5hiwt5UdLEpmdQ==
-X-Received: by 2002:a05:622a:15c5:: with SMTP id d5mr4009598qty.77.1623419644852;
-        Fri, 11 Jun 2021 06:54:04 -0700 (PDT)
+        bh=uogoIf0mLnC18pRJSXbrn3NvUCGRWlEyukoJAD5I02I=;
+        b=Anj9njqzTVyGlftJOkqxdOXJHgxuIK//FAax+qVMjAJ3u947FdSPe9YNfVwb1f/oes
+         yNRGZTa3RUlf3IUafL+5BR1ZqrTuTZ5qUV04V+w1SM2dMCdPazJ8liRxDnXQuVV1cWK1
+         0KDmhQuPNpxEBUvGSlwNICDG8Yh/Zd4pB5bY1HUm8kM+Zso/aTMOq4g5Hu13fVQPzzDt
+         vVu7XyKaTiHNT3hsNFofnU3bJyPvoWia6Dhn8wWGsM2ASimYY43vkOexakET1w10Lp9T
+         zGv+cdfxyYcZRupaQZF+4HNCqILpHWYaSOYKWH+0Ej7l0Wol1nuMonEzx4rb7aQVBYG8
+         O0pQ==
+X-Gm-Message-State: AOAM530kk2uaUFxaWpD9ypYEzUqFWN+J3dYogmzHWTiZxLmPLoF4vsuf
+        JqrvJy7bJCxHto3xaeOEJE+3tc7cCPgNKA==
+X-Google-Smtp-Source: ABdhPJzl+CCFD31ilDwuj/ZAOwOWomfn1oebfYsaeIS79BSlBMQ95y3KDCrGdkGTUcm0LJfwlfJA9g==
+X-Received: by 2002:a05:622a:134a:: with SMTP id w10mr4022827qtk.201.1623419646353;
+        Fri, 11 Jun 2021 06:54:06 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id p21sm4153094qtq.92.2021.06.11.06.54.04
+        by smtp.gmail.com with ESMTPSA id c23sm4427304qkc.3.2021.06.11.06.54.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Jun 2021 06:54:04 -0700 (PDT)
+        Fri, 11 Jun 2021 06:54:05 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     stable@vger.kernel.org
-Subject: [PATCH 2/4] btrfs: wake up async_delalloc_pages waiters after submit
-Date:   Fri, 11 Jun 2021 09:53:58 -0400
-Message-Id: <d1802ad325a04d3640b85e4c928b91dd9316252c.1623419155.git.josef@toxicpanda.com>
+Subject: [PATCH 3/4] fs: add a filemap_fdatawrite_wbc helper
+Date:   Fri, 11 Jun 2021 09:53:59 -0400
+Message-Id: <b7ce962335474c7b0e96849cd9fb650b1138cbb3.1623419155.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1623419155.git.josef@toxicpanda.com>
 References: <cover.1623419155.git.josef@toxicpanda.com>
@@ -63,50 +62,104 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We use the async_delalloc_pages mechanism to make sure that we've
-completed our async work before trying to continue our delalloc
-flushing.  The reason for this is we need to see any ordered extents
-that were created by our delalloc flushing.  However we're waking up
-before we do the submit work, which is before we create the ordered
-extents.  This is a pretty wide race window where we could potentially
-think there are no ordered extents and thus exit shrink_delalloc
-prematurely.  Fix this by waking us up after we've done the work to
-create ordered extents.
+Btrfs sometimes needs to flush dirty pages on a bunch of dirty inodes in
+order to reclaim metadata reservations.  Unfortunately most helpers in
+this area are too smart for us
 
-cc: stable@vger.kernel.org
+1) The normal filemap_fdata* helpers only take range and sync modes, and
+   don't give any indication of how much was written, so we can only
+   flush full inodes, which isn't what we want in most cases.
+2) The normal writeback path requires us to have the s_umount sem held,
+   but we can't unconditionally take it in this path because we could
+   deadlock.
+3) The normal writeback path also skips inodes with I_SYNC set if we
+   write with WB_SYNC_NONE.  This isn't the behavior we want under heavy
+   ENOSPC pressure, we want to actually make sure the pages are under
+   writeback before returning, and if another thread is in the middle of
+   writing the file we may return before they're under writeback and
+   miss our ordered extents and not properly wait for completion.
+4) sync_inode() uses the normal writeback path and has the same problem
+   as #3.
+
+What we really want is to call do_writepages() with our wbc.  This way
+we can make sure that writeback is actually started on the pages, and we
+can control how many pages are written as a whole as we write many
+inodes using the same wbc.  Accomplish this with a new helper that does
+just that so we can use it for our ENOSPC flushing infrastructure.
+
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ include/linux/fs.h |  2 ++
+ mm/filemap.c       | 29 ++++++++++++++++++++++++-----
+ 2 files changed, 26 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6cb73ff59c7c..c37271df2c6d 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1271,11 +1271,6 @@ static noinline void async_cow_submit(struct btrfs_work *work)
- 	nr_pages = (async_chunk->end - async_chunk->start + PAGE_SIZE) >>
- 		PAGE_SHIFT;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index c3c88fdb9b2a..aace07f88b73 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2886,6 +2886,8 @@ extern int filemap_fdatawrite_range(struct address_space *mapping,
+ 				loff_t start, loff_t end);
+ extern int filemap_check_errors(struct address_space *mapping);
+ extern void __filemap_set_wb_err(struct address_space *mapping, int err);
++extern int filemap_fdatawrite_wbc(struct address_space *mapping,
++				  struct writeback_control *wbc);
  
--	/* atomic_sub_return implies a barrier */
--	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
--	    5 * SZ_1M)
--		cond_wake_up_nomb(&fs_info->async_submit_wait);
--
- 	/*
- 	 * ->inode could be NULL if async_chunk_start has failed to compress,
- 	 * in which case we don't have anything to submit, yet we need to
-@@ -1284,6 +1279,11 @@ static noinline void async_cow_submit(struct btrfs_work *work)
- 	 */
- 	if (async_chunk->inode)
- 		submit_compressed_extents(async_chunk);
+ static inline int filemap_write_and_wait(struct address_space *mapping)
+ {
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 66f7e9fdfbc4..0408bc247e71 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -376,6 +376,29 @@ static int filemap_check_and_keep_errors(struct address_space *mapping)
+ 		return -ENOSPC;
+ 	return 0;
+ }
++/**
++ * filemap_fdatawrite_wbc - start writeback on mapping dirty pages in range
++ * @mapping:	address space structure to write
++ * @wbc:	the writeback_control controlling the writeout
++ *
++ * This behaves the same way as __filemap_fdatawrite_range, but simply takes the
++ * writeback_control as an argument to allow the caller to have more flexibility
++ * over the writeout parameters, and with no checks around whether the mapping
++ * has dirty pages or anything, it simply calls writepages.
++ *
++ * Return: %0 on success, negative error code otherwise.
++ */
++int filemap_fdatawrite_wbc(struct address_space *mapping,
++			   struct writeback_control *wbc)
++{
++	int ret;
 +
-+	/* atomic_sub_return implies a barrier */
-+	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
-+	    5 * SZ_1M)
-+		cond_wake_up_nomb(&fs_info->async_submit_wait);
++	wbc_attach_fdatawrite_inode(wbc, mapping->host);
++	ret = do_writepages(mapping, wbc);
++	wbc_detach_inode(wbc);
++	return ret;
++}
++EXPORT_SYMBOL(filemap_fdatawrite_wbc);
+ 
+ /**
+  * __filemap_fdatawrite_range - start writeback on mapping dirty pages in range
+@@ -397,7 +420,6 @@ static int filemap_check_and_keep_errors(struct address_space *mapping)
+ int __filemap_fdatawrite_range(struct address_space *mapping, loff_t start,
+ 				loff_t end, int sync_mode)
+ {
+-	int ret;
+ 	struct writeback_control wbc = {
+ 		.sync_mode = sync_mode,
+ 		.nr_to_write = LONG_MAX,
+@@ -409,10 +431,7 @@ int __filemap_fdatawrite_range(struct address_space *mapping, loff_t start,
+ 	    !mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
+ 		return 0;
+ 
+-	wbc_attach_fdatawrite_inode(&wbc, mapping->host);
+-	ret = do_writepages(mapping, &wbc);
+-	wbc_detach_inode(&wbc);
+-	return ret;
++	return filemap_fdatawrite_wbc(mapping, &wbc);
  }
  
- static noinline void async_cow_free(struct btrfs_work *work)
+ static inline int __filemap_fdatawrite(struct address_space *mapping,
 -- 
 2.26.3
 
