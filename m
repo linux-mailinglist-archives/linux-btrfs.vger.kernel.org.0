@@ -2,125 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3713A4341
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7413A4364
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhFKNt6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 09:49:58 -0400
-Received: from mout.gmx.net ([212.227.15.15]:58483 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229874AbhFKNt6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:49:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623419269;
-        bh=DQZaNV/hwR/W07WPShIulNh1yaAYynzVvSqkCu5eIgw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=gv0lZuxvaCRSdJw9ALtXnvPNz0RpqA3o41KJkHnFS3JAjFQN0NXaOJPZaJGXTvfRW
-         cRfk/2pcZiRH3pYPujayL27QT3O3kXFTqWzKe5XgNOYazGOEsu4txjz+xPemm2fyAr
-         YAjNey8WEfRl/vTGUIWJQwCexlRqJdpxyNvj5fgc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMGRA-1laadG39Pi-00JMkH; Fri, 11
- Jun 2021 15:47:49 +0200
-Subject: Re: [PATCH] fs: btrfs: Disable BTRFS on platforms having 256K pages
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-btrfs@vger.kernel.org, linux-hexagon@vger.kernel.org
-References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <a2411cbb-d793-5e11-dd4f-cc25ca55ed91@gmx.com>
-Date:   Fri, 11 Jun 2021 21:47:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230187AbhFKN4B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 09:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhFKN4B (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:56:01 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D1EC061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 06:54:03 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id i68so27404231qke.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 06:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JOdcMWdXVsJoaWI8HwpgkBnP5c3NGfsOlpQk4HkjqKg=;
+        b=vyC4212LvMC0gEPwcWr0Fo74Wl6dfJK80+7jYwL7I7x+5GXTmfXgszeEthsQ0WFfzJ
+         uD/6vs9fzbySNDRc0EAt9m5b8DCs9XFZqzEtwJy0JJ1TiX35UvSNBj5r8kmDSEQHcVeP
+         fW+PV65iHoUuSQfcT9SeD9F8ZJYVC3fLlGzw7yLSkwS7ww28ZqZ5Qz5okyCKGJ/W3Qxw
+         GWgQBvSI0ixy7ZYRk7JTLK7NoGUyNFJC3g02wS8j9B0YLMqoWOuR05+LvR5TvvvAtq42
+         7IaQaDe6Z/vScjuXkIUcQqlTDVCfY/6DE/CMwJqV32ha6rDdDNspOtDwmSDLK5tGz7vx
+         RA7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JOdcMWdXVsJoaWI8HwpgkBnP5c3NGfsOlpQk4HkjqKg=;
+        b=fdsJybqVJC5iXDEZ0KJdUV+PdrZt82f0vwl6gBDi0Rp2cMlmIvN+krB0cpnOM5RMtE
+         jRMGunBg+eWBGu8NUDaBDxBi4b1eoOvggk3mUiMRSV1bxeCPbxzrQ2nHXSzes/23avPR
+         0lm5GAuXvL7uKnT0scLsJL62hluXC+EBKDxucHvvYv2IY/mXgN1u8aJCEkzdu4jcn1jT
+         2qjmkQLwFHNojHeEMe/Raq0ZbY1uh/3pJxodrDjjxZVboQI/6Xil9HcEI9P0b+bmPoPM
+         EsxgXuK7Prxpk04YRgSchikjSmjokLnK891qPukIi2XAt0V4GRFYpkCK008mBtdgxUKG
+         wuZw==
+X-Gm-Message-State: AOAM533YYyM1wKlEN9wkY00QW8gp5XeEj3VHRVcwUG5RSaDYcqXj8B4y
+        ZD8vsRu3I7otZNxnAqABeZh99OYCmRcjHA==
+X-Google-Smtp-Source: ABdhPJwEI2sL/wfYvhAr8WxIxOGCxb+8D5W19d1T5aKPZfP5QeLPerRI2Jn906H1jm6zUVOyMMgNHw==
+X-Received: by 2002:a05:620a:1485:: with SMTP id w5mr3939024qkj.66.1623419642093;
+        Fri, 11 Jun 2021 06:54:02 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id 64sm4155902qtc.95.2021.06.11.06.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Jun 2021 06:54:01 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/4] btrfs: shrink delalloc fixes
+Date:   Fri, 11 Jun 2021 09:53:56 -0400
+Message-Id: <cover.1623419155.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Oz7Y2Pd5S35Xo4teAX2NkhjMPqdlSnZ/X9M7YWX87qJwU02UdFX
- ONeoj46pv+uWradLLCwtNKQu4Cfv5yDkU6d45LZ5rCh+Y/quqn58yXkyyZr6GdAEf3NTJn6
- z73x+9KfLF5ujCc1xo8aUcmcu5186WRbra////x4K2z4hYyKti1aXCI9uvZG1WZSdk0eBZg
- 3K2AT4odeGMgO39E5fGTw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fbDu+ROrRRM=:IYeBLdyGVO30AKgwzEsXt4
- gG4vovTO3s34V2CXIH3btu/cwpr/xRNSZG+86ds/zxDzdUzeY40v7unNYDxYiGA7hBEhp06gZ
- 1kh0kIajOPnDNXZAVoNo2FOE4IwWrLS+SZHAgNy5/Qtn2ZH+e0k2w4vxK5qwZqXbmsoMDtWqp
- UXyB3B9yrQ9TdOzaN33n0BsCpu3L4OIFkhnrzrlkRZtlyJHaPM29WA/0VjiuoEmeYKY7AsgvQ
- 4HmmPnPePgovVDoNVTnoM0EXHFE0HgeJOE3GBopX7zaiv4b+7mdkZOchAM7N+oPe/2+D11V3b
- grPqObRUO2Vaj6qSsKCDpaDm7ckE0eetfMVyIUo8eYRAo2FOGUBxnAha/i4mMeHmK/Ixi2Wro
- QqNJREbuFNxzTiy9lCExyyk5+qj47I0U8Vr6UjJP4v+7F7jCPWMv5322jS6HzhuVF6qHMKwaj
- snNtAHa6Y0m4yWBMDXM06lcKb8knZRcjlUFZJ5gc7tU6Gpi9UugylOx8y0aIE9p6ZEUQPiEzr
- I0xhXHfh8Z4DlQV3WqMoE7vBo72U28jK09FPto0cuB4c0w/yZc0WDc9DHcDIEgEKpTjeS6t5J
- rOUjuKHNoLdhJ5iAfr1vdC6Ky9Z3sHO4rCoD1z8K0Qp3/dzyvIltfn/s9eacKdU3FiYSHdvQd
- gzz0Nfo2C+qJwDoE53dbldbOe13ld81dkqDJDdUENA62MzUfSKtOTKpIX/p62q3q5WaEmGJy9
- /0JFyC/XmdhnDmv1z5N8USGAd2GVZG2VhbJbxrCfUsNinG1zo3uiw+k11TdM4bkFMwQbQM5Jl
- /u/67Q/Ho25UIyVLHey18fBYKvh96vpKv75AJP37tclGlC5HGzfVPJbMrclCkLgMMbni5SIqe
- v5vNKDVvLukKc1mz4IZBSO/j7MtIA9oJH86d03cDEx3NBZKy0q2JwGTUCSG1xVsOWuiwjRftW
- VU0eBEflj0GCzVuXn0hh3YWX6IDFO5Q9crhZ2kqaFqZpAeO0l2YTp64iZkk0AvehQw46dkDmq
- RRbxqoCumDZJhsDVv9AgnK5xMorDPNl3UhgArmNyd5e5r9+lCZHV+XmRSyS1VpPf4mxdUWJ5k
- 4/5dGKThpbFBLPEr3JoynjRfYJJ9Xwl+O69Pqs/bVSPrGE6wvdes4F1gQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
+I backported the patch to switch us to using sync_inode() to our kernel inside
+Facebook to fix a deadlock when using the async delalloc shrinker threads.  This
+uncovered a bunch of problems with how we shrink delalloc, as we use -o
+compress-force, and thus everything goes through the async compression threads.
 
-On 2021/6/10 =E4=B8=8B=E5=8D=881:23, Christophe Leroy wrote:
-> With a config having PAGE_SIZE set to 256K, BTRFS build fails
-> with the following message
->
->   include/linux/compiler_types.h:326:38: error: call to '__compiletime_a=
-ssert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_=
-COMPRESSED % PAGE_SIZE) !=3D 0
->
-> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
-> 256K pages at the time being.
->
-> There are two platforms that can select 256K pages:
->   - hexagon
->   - powerpc
->
-> Disable BTRFS when 256K page size is selected.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->   fs/btrfs/Kconfig | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-> index 68b95ad82126..520a0f6a7d9e 100644
-> --- a/fs/btrfs/Kconfig
-> +++ b/fs/btrfs/Kconfig
-> @@ -18,6 +18,8 @@ config BTRFS_FS
->   	select RAID6_PQ
->   	select XOR_BLOCKS
->   	select SRCU
-> +	depends on !PPC_256K_PAGES	# powerpc
-> +	depends on !PAGE_SIZE_256KB	# hexagon
+I ripped out the async pages stuff because originally I had switched us to just
+writing the whole inode.  This caused a performance regression, and so I
+switched us to calling sync_inode() twice to handle the async extent case.  The
+problem is that sync_inode() can skip writing inodes sometimes, and thus we
+weren't properly waiting on the async helpers.  We really do need to wait for
+the async delalloc pages to go down before continuing to shrink delalloc.  There
+was also a race in how we woke up the async delalloc pages waiter which could be
+problematic.
 
-I'm OK to disable page size other than 4K, 16K, 32K, 64K for now.
+And then finally there is our use of sync_inode().  It tries to be too clever
+for us, when in reality we want to make sure all pages are under writeback
+before we come back to the shrinking loop.  I've added a small helper to give us
+this flexibilty and have switched us to that helper.
 
-Although for other reasons.
+With these patches, and others that will be sent separately, the early ENOSPC
+problems we were experiencing have been eliminated.  Thanks,
 
-Not only for the BUILD_BUG_ON(), but for the fact that btrfs only
-support 4K, 16K, 32K, 64K sectorsize, and requires PAGE_SIZE =3D=3D sector=
-size.
+Josef Bacik (4):
+  btrfs: wait on async extents when flushing delalloc
+  btrfs: wake up async_delalloc_pages waiters after submit
+  fs: add a filemap_fdatawrite_wbc helper
+  btrfs: use the filemap_fdatawrite_wbc helper for delalloc shrinking
 
-Although we're adding subpage support, the subpage support only comes
-with 4K sectorsize on 64K page size.
+ fs/btrfs/inode.c      | 16 ++++++----------
+ fs/btrfs/space-info.c | 33 +++++++++++++++++++++++++++++++++
+ include/linux/fs.h    |  2 ++
+ mm/filemap.c          | 29 ++++++++++++++++++++++++-----
+ 4 files changed, 65 insertions(+), 15 deletions(-)
 
-Until variable length version is introduced, 256K/128K page size won't
-be support.
+-- 
+2.26.3
 
-Thus I'm fine to disable BTRFS for any arch outside of the supported
-page sizes for now.
-
-Thanks,
-Qu
->
->   	help
->   	  Btrfs is a general purpose copy-on-write filesystem with extents,
->
