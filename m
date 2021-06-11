@@ -2,102 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2A63A42FA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8623A4322
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhFKN0G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 09:26:06 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38436 "EHLO
+        id S229633AbhFKNlH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 09:41:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39894 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbhFKN0G (ORCPT
+        with ESMTP id S229517AbhFKNlG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:26:06 -0400
+        Fri, 11 Jun 2021 09:41:06 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8CB8721994;
-        Fri, 11 Jun 2021 13:24:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623417847;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IoZe2Do+YjFfznb3FBAGTMrmvEaWFCHdUpFU1G49nbI=;
-        b=DsPjPdR/cfZoznWMhaKw2jCReQocGLnq0vEnJz7X8/bGQYVgpxy7wp95U5fUoz1M7KM78/
-        lO2UK4i5tLunQSK1zEYRN1rTnR+kGQ05PFOwnRnWD6Fd6xeLJGkm/Jf2XaAB9oJSQApAgB
-        F2wxrLlTZqOTDKnNZkF7+OqUsTJI2GI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623417847;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IoZe2Do+YjFfznb3FBAGTMrmvEaWFCHdUpFU1G49nbI=;
-        b=3WXO5EAErIRttTmkRzoLqskq1oqP9k1xWfNAPTGWce7kDcJB+FkFYeIsKAoU0vg9toUpFm
-        f+ez2JLbfaxrODBA==
+        by smtp-out1.suse.de (Postfix) with ESMTP id F26E82199C;
+        Fri, 11 Jun 2021 13:39:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1623418747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=2bZT0Yp1evBZn7l5BsX4NdOcO+PvrvPSJN3LNN9+C04=;
+        b=J+0OzaYVOIqPJ4cWpBFTX8sYiNQ/ZqXi44JHLw94gyCxt1yqr7fJTY+zryLV5Dm/CyD/ws
+        zDur1LvuvjdkArRwh4D0NGPcbLBUjNj9CGpmWLXxDzpoxQUGaMIOowKdPanCSeaMzgpAue
+        EZcUnzjXUwFTQ5y080Pe3sjfPkzySWE=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 661FAA3BBB;
-        Fri, 11 Jun 2021 13:24:07 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id E74DDA3BBB;
+        Fri, 11 Jun 2021 13:39:07 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 43475DA7A2; Fri, 11 Jun 2021 15:21:22 +0200 (CEST)
-Date:   Fri, 11 Jun 2021 15:21:22 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Chris Mason <clm@fb.com>
-Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
-Message-ID: <20210611132121.GF28158@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Chris Mason <clm@fb.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
-References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
- <185278AF-1D87-432D-87E9-C86B3223113E@fb.com>
- <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
- <20210610162046.GB28158@suse.cz>
- <6769ED4C-15A8-4CFF-BF2B-26A5328257A0@fb.com>
+        id E1EE0DA77B; Fri, 11 Jun 2021 15:36:22 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, anand.jain@oracle.com,
+        osandov@osandov.com
+Subject: [PATCH v2] btrfs: sysfs: export dev stats in devinfo directory
+Date:   Fri, 11 Jun 2021 15:36:22 +0200
+Message-Id: <20210611133622.12282-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6769ED4C-15A8-4CFF-BF2B-26A5328257A0@fb.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 12:58:58PM +0000, Chris Mason wrote:
-> > On Jun 10, 2021, at 12:20 PM, David Sterba <dsterba@suse.cz> wrote:
-> > On Thu, Jun 10, 2021 at 04:50:09PM +0200, Christophe Leroy wrote:
-> >> Le 10/06/2021 à 15:54, Chris Mason a écrit :
-> >>>> On Jun 10, 2021, at 1:23 AM, Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
-> > And there's no such thing like "just bump BTRFS_MAX_COMPRESSED to 256K".
-> > The constant is part of on-disk format for lzo and otherwise changing it
-> > would impact performance so this would need proper evaluation.
-> 
-> Sorry, how is it baked into LZO?  It definitely will have performance implications, I agree there.
+The device stats can be read by ioctl, wrapped by command 'btrfs device
+stats'. Provide another source where to read the information in
+/sys/fs/btrfs/FSID/devinfo/DEVID/stats . The format is a list of
+'key value' pairs one per line, which is common in other stat files.
+The names are the same as used in other device stat outputs.
 
-lzo_decompress_bio:
+The stats are all in one file as it's the snapshot of all available
+stats. The 'one value per file' is not very suitable here. The stats
+should be valid right after the stats item is read from disk, shortly
+after initializing the device.
 
-309         /*
-310          * Compressed data header check.
-311          *
-312          * The real compressed size can't exceed the maximum extent length, and
-313          * all pages should be used (whole unused page with just the segment
-314          * header is not possible).  If this happens it means the compressed
-315          * extent is corrupted.
-316          */
-317         if (tot_len > min_t(size_t, BTRFS_MAX_COMPRESSED, srclen) ||
-318             tot_len < srclen - PAGE_SIZE) {
-319                 ret = -EUCLEAN;
-320                 goto done;
-321         }
+In case the stats are not yet valid, print just 'invalid' as the file
+contents.
+
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+
+v2:
+- print 'invalid' separtely and not among the values
+- rename file name to 'error_stats' to leave 'stats' available for any
+  other kind of stats we'd like in the future
+
+ fs/btrfs/sysfs.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 4b508938e728..ebde1d09e686 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1495,7 +1495,36 @@ static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
+ }
+ BTRFS_ATTR(devid, writeable, btrfs_devinfo_writeable_show);
+ 
++static ssize_t btrfs_devinfo_error_stats_show(struct kobject *kobj,
++		struct kobj_attribute *a, char *buf)
++{
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
++
++	if (!device->dev_stats_valid)
++		return scnprintf(buf, PAGE_SIZE, "invalid\n");
++
++	/*
++	 * Print all at once so we get a snapshot of all values from the same
++	 * time. Keep them in sync and in order of definition of
++	 * btrfs_dev_stat_values.
++	 */
++	return scnprintf(buf, PAGE_SIZE,
++		"write_errs %d\n"
++		"read_errs %d\n"
++		"flush_errs %d\n"
++		"corruption_errs %d\n"
++		"generation_errs %d\n",
++		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_WRITE_ERRS),
++		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_READ_ERRS),
++		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_FLUSH_ERRS),
++		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_CORRUPTION_ERRS),
++		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_GENERATION_ERRS));
++}
++BTRFS_ATTR(devid, error_stats, btrfs_devinfo_error_stats_show);
++
+ static struct attribute *devid_attrs[] = {
++	BTRFS_ATTR_PTR(devid, error_stats),
+ 	BTRFS_ATTR_PTR(devid, in_fs_metadata),
+ 	BTRFS_ATTR_PTR(devid, missing),
+ 	BTRFS_ATTR_PTR(devid, replace_target),
+-- 
+2.31.1
+
