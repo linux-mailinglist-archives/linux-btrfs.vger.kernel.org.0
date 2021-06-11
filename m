@@ -2,391 +2,252 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C423A3ACD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 06:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BC73A3B97
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 08:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbhFKEVM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 00:21:12 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:35202 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbhFKEVL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 00:21:11 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15B4FE3V112368;
-        Fri, 11 Jun 2021 04:19:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : cc : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=HTmR8iWRdiLVfg5Kg/DbDnCyUN6OyaktdDfnoFAfkA4=;
- b=KJZeDisEYJ1+ewy7gKdKeLVlPgmbhcci0x+j0JmdxFJ+jW3IV7h3coNeyOrP9Di2g5is
- bZZI/Sn1oXiVblqn8ga49CRxtSaAnwJdebKnfVGZr9d0jvoULCYMyGAl9hSRXfcaVn8Y
- sASi4n2ezGXp27Ta+90qXkxdcsfFbpZ5Fh6VCn/thAz0b3+ENxANtNaB2PCyhbJf+KH8
- iCVv93xMuQgPoNlJLHMz2gSoQgcSHcz1W1bMy92lQOh83N8b2xO1fZZ2abuhbErd6RY1
- nkXTMwgBgmcTph+6izwzMshyTRoQX0OfjRTgH00+Dbd/eOM42PC6+7WVITWdTpB/zSQL Xw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 3900psdj5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Jun 2021 04:19:10 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15B4FB0V102576;
-        Fri, 11 Jun 2021 04:19:09 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2175.outbound.protection.outlook.com [104.47.73.175])
-        by userp3020.oracle.com with ESMTP id 390k1thg7w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Jun 2021 04:19:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BA4NSW5rfaK+vQszKILoqtYF1OFCKfgu192jWw+93NaVWGZG5a74eaC5T/ri7Ga1M94+Mg6xVDi6F6HV7TadRimyx54Zpkp6DHpwLa84cvuY2IRi327J9gyFUq0DvpUG8vQhB2PGZEyYl1hlRxel1dXgPe/Q+lOLrVzZHLtThQ2G88l7Px3bFYhQMl4061DkRihEpnNodMzQD6c31QnLZUwfALHhedFiM91Ox1Jf0NqjEdIJ0yCRNjosT9HAViXWtehbhx/Wi/mNGEwJjyn1TXrYSoEE1g5FjFEIC9SZy52h5gLXzbpm8xKnyIN1EqbuVxNj5mZUzzrEMlEQy43t7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HTmR8iWRdiLVfg5Kg/DbDnCyUN6OyaktdDfnoFAfkA4=;
- b=f/Qr3/m6M65ozKtRdRk/sAjmeD3XissQLPV2kOiIoRAnFOsMBIN4vdtJ5eKP6wda7796uT9K16XYar9t2DMyYLPMUM0YhKnaSCoFf+BaLHjMIPE5SOyoC8HBJoZOe9RPfG/iYjadMvoQOnSx9n5cYZBilj0ZOT1XwQq1X5GMO62hZoth5WbNPB0iLoeLRMIzQMa8cUO91AY/gT4iP8juNMdigiLX8OevknpKJ2GeA3msNJ5Tr4dVM0JcQKMVwkRZMJFItlGE5vep2U+uHkEkRw8MPnBMw0S6UEJ5Qx0/P0CM7HJL2gbei31Z2PEg81dGdIHCPz6Nq75foQVFaR/DIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HTmR8iWRdiLVfg5Kg/DbDnCyUN6OyaktdDfnoFAfkA4=;
- b=FoCLxgiB2dSZiciwPMyaAKqgOe6Wd2J1uEC6TiVgusTgSzgHGUCm+bk+erZWBQOsZRI/8luxDUu5pTOhuDdgJhBaNQebN5G/lVcu6sUkebY6AzZfKm8pU2Zv8osZjOydHVdTN1w2M2/WukCCzPG0xK8HgQ7EL3dIfOSilT6uVOk=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4303.namprd10.prod.outlook.com (2603:10b6:208:1d8::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20; Fri, 11 Jun
- 2021 04:19:07 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::992c:4b34:d95:def8]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::992c:4b34:d95:def8%9]) with mapi id 15.20.4219.023; Fri, 11 Jun 2021
- 04:19:07 +0000
+        id S231133AbhFKGEn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 02:04:43 -0400
+Received: from mout.gmx.net ([212.227.17.21]:36753 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230216AbhFKGEn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Jun 2021 02:04:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1623391359;
+        bh=2xgoGa1/BbkDDpkVALi9GTfq6RlXFVf+LHgq5L+oj/o=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=j2Jg7Mp6mjLblrNOdo2vhah9Li9XL1wANU8mXWXn2OZUrrSKGdr6F39qnfL+duD8N
+         +MMeniCta4c87PlInecIvv8WZe+/I6K8soxUJcYP7UiHa/l95O/aWOre3upfjlOHk7
+         6r17TV0eL0vhfvP9HVLz1L39t/VyLO5NI1Sap9ZI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5QFB-1lsxIJ148D-001PGk; Fri, 11
+ Jun 2021 08:02:38 +0200
 Subject: Re: [PATCH 2/9] btrfs: add compressed_bio::io_sectors to trace
  compressed bio more elegantly
-To:     Qu Wenruo <wqu@suse.com>
+To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
 References: <20210611013114.57264-1-wqu@suse.com>
  <20210611013114.57264-3-wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <1d315909-b51c-c74a-a7f2-60d71b637886@oracle.com>
-Date:   Fri, 11 Jun 2021 12:18:58 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210611013114.57264-3-wqu@suse.com>
+ <1d315909-b51c-c74a-a7f2-60d71b637886@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <ec916f2a-80fd-f456-0073-e3c42bd6034b@gmx.com>
+Date:   Fri, 11 Jun 2021 14:02:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <1d315909-b51c-c74a-a7f2-60d71b637886@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [39.109.186.25]
-X-ClientProxiedBy: SG2PR02CA0117.apcprd02.prod.outlook.com
- (2603:1096:4:92::33) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.137] (39.109.186.25) by SG2PR02CA0117.apcprd02.prod.outlook.com (2603:1096:4:92::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21 via Frontend Transport; Fri, 11 Jun 2021 04:19:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 43b65719-12b4-45b5-5add-08d92c900e41
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4303:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4303B31C514442881C2841B0E5349@MN2PR10MB4303.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aa9a+GLPhxtOlP748+8uJLeJ2RzQ+h7S62xc3mAwNsJQHyyEeOcSHyyLczgJvoGjU0UctfN/iRt1XPizzXoNJPleOZ35e6X4ngvasgDL+OxjJMVk7HTm4ArItHmZe3eJlrAVF8/4n9I4yBcTDqjy/mK8ES6brgS0qhA4VPILWFwIQFglLBN6Bnw8B3oNADuf57xpxgtcC8DF2537rtKICXvCpZZASeLH2lZiMMVUx4HBnIpwhN+rgfE0GGZUe7rVCcp4+qiX2AxH2Ee2JahsRQzqwdzxB0MM/uRe/2FXhrBB02vzKBnmRZGlhJ/1v9NZfp2nHa4AzSx0lV4GFnggjTST0Ys0W/rMbgTD4XJHi7P7XM0EkqQlnwfp6hFTxaYIMuhuELkbMT566HG3kKczXpxMVoaRgiAJdYrtd4ysyy7MJ9vcew1VTFZggieoniLaGMoWwnHyETevi1vYUSa4yO1BMj4rwSUg1tqtUg0J5BWXZ+CtA1S5N/RUbz8I1BotxGYy82Es7myCKGJIH713s1TG8otGdAxi1tI3A4SGh0KVF7pp+hB8tMn9gwwt67QKcG1JB0++QhDEF4tcrYguZ4srYtcmrERW2y7v1wcTOc2wYldebCVWIE5c3r5XKrrc3u21Cr6KVV1nLHGzvXZWoEU+NddJ3T6nW5WYyL6tn+SVIpHiP/DGQSkHdgm5SOB7
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(366004)(396003)(346002)(39860400002)(6486002)(956004)(186003)(2616005)(31686004)(44832011)(26005)(16576012)(6666004)(6916009)(53546011)(16526019)(316002)(2906002)(66556008)(31696002)(478600001)(36756003)(5660300002)(8936002)(66946007)(83380400001)(66476007)(4326008)(8676002)(86362001)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0VDNElJSjdBdFV2VmlUTERMekxtRUNUSUxPdkFpVGJCMEU2VmhBRXAzSUNB?=
- =?utf-8?B?Tmk4dU0yajFoSVpFR3o3QkhpZGxLZjhXOXhqZG9qUVVaTUtDRU5BQ3F5Tzly?=
- =?utf-8?B?Z3g2YVkveHkwMDVqM0VMOTRiWGJJcmNCdlcwUWFpbGxldXV5Y1diUStyTG9y?=
- =?utf-8?B?N3MvL2JvTk1sTlFTRW5DQlNWUzdMcWVIaE9MUzZNWDRKN2dMMXFzU3dUNzRx?=
- =?utf-8?B?eWVZaThKTUdyeTlHaTdsUTA1RWtsU3pNSEhvOEZPbVlKOStaZExpL0JaL1Bu?=
- =?utf-8?B?THluaElxRXgyaFVjYkhodmdVTmRseWxvQUhPdXBnWHA4TUFmMlY2RDVicE53?=
- =?utf-8?B?T1N3TG5MY21VV1BKRjRzbnE1aldEWVlzY2JydXorckJuK3U5dm4yNzZzd1Q0?=
- =?utf-8?B?UkZDOFBHekEva0c4Zjh3cDZpVEJOeW9hSkphMTIxakRQbDVCa29uTGtDUDZn?=
- =?utf-8?B?YWc3NjBFc3c5SW9KRzNodVdpd1lRZWRkRm5OdUdXVC9YazRYRm10MDRNSWFi?=
- =?utf-8?B?a0V5eUx1Q1dMenkrVE5mY1BFSDB2RGNtbEJrOTlqZTIycEUzWFdwYTQ5QldB?=
- =?utf-8?B?QURSVU5uRnVRUUg5YnI2a0ZFRWJ4emROM1pNQjFZWXRYcDJCMkp5QkhORlJp?=
- =?utf-8?B?U0N5eGFodW1IMmhDYXI3UXdTQXhEZEVwbTFSMHRqaHZxZUhoN0RSU0lBNUhi?=
- =?utf-8?B?QjBwTnkrTFNISXJmZnhCTk1RbmtVK1VzdjZtWDBIOUY2MHlyZEVvUWdDdXdH?=
- =?utf-8?B?ME01MytWUWdRWEFXV1lGMWFOOEYrdlJZZUIza21rUFN5VDV2bTR3T00venR0?=
- =?utf-8?B?aGc3cjdsamE5ZmZUdlJtemlhblBFd1p3OG5MTDBTSDQzSnFrclNuZlQwTGt5?=
- =?utf-8?B?SmJlTERsV2xlTlBZT3NISTE1SmUxY0JJUjJ2R1BFNzlIRzJVdnI3d2JhT0xh?=
- =?utf-8?B?WFZLTytIREVhTHJxM3lKdHRiWk9ZRktpMzYwNXVZdmZDMlNUQnA0cTduOXFS?=
- =?utf-8?B?VlU5SjRiYkkyZnpwU3dpU2Q3Z0RrekF4ZHUwb1IyK1BKSFhCbnBUZFhkSFd4?=
- =?utf-8?B?K0JtYTRHMEhHRW0vclRlcmpNam9kVmxJWHdRSEhmcjZrelFIMGo5VytpT3hQ?=
- =?utf-8?B?V0VidHZJWVJCd1dDdXpJQXUyM2hXWWdTbHd1UitYNGFCallzb3RMWE5KbEhl?=
- =?utf-8?B?OHRCRllJTC83Z2s3SlpQaThGTUR1Y0RBSENmOVhmTGgreFk3UzNlY2J4MUxo?=
- =?utf-8?B?OG9RazVJa3RVb1lpekZTeFkwbzJIMHd4bnE5ZjNJc0t1VFlKdVk0QXFMY3FY?=
- =?utf-8?B?WTlFUkhmcTI5RkZiUm9JMVp3MzRpU1VpVlQ5U3VZNjk0WEdoeXRoYStXOXRO?=
- =?utf-8?B?RzliYm9WRXJhNVFkdUYwTlJITDJmblNObDNvM2tEWEJsdWFMME1Vc2Y1UlY3?=
- =?utf-8?B?VUZFOHZobW5BSVByU0wvZklITDZZVUY2dkxFaXVjUXdINDAwNmVpY3Q1NS9r?=
- =?utf-8?B?dnNyTGdqSlJ4dFFiMHE0ODA3SENWODErVFd0Z2kzYTB0cUltcFQ2TDdOTURH?=
- =?utf-8?B?Q1B4R2huK1lOMHd0V21IVktvYzRFdWdrZlZoNFh4a1JIZkhFZXhZc2dLQ3B3?=
- =?utf-8?B?VUdvUytDam5PSjdVT1kvUm82L0JlQ0taNEVyUnNkdFFZN3N3amtxV2l0ZFZm?=
- =?utf-8?B?NWpnaVlOcW1IbGsyZUxOZGYvMitqNjJOM0kvNkcwd1Z3aVlBemdMcEc3QWVT?=
- =?utf-8?Q?UydJG10GqcplvvGNBI+if+Zw3yyvbtAeS0b5wYi?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43b65719-12b4-45b5-5add-08d92c900e41
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2021 04:19:07.7464
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FH+9gG+WSKUNZdAIkCXImRSZiIcrruKltUw93DpneeociK0Yk5UfWvEwMB6MM0GJxJfVRC7FgvS7EQ9MGhk/PA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4303
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10011 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 adultscore=0
- malwarescore=0 phishscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106110026
-X-Proofpoint-GUID: Q7LexPLEWlDmUtwp1SBcwQQAKf1TuyrY
-X-Proofpoint-ORIG-GUID: Q7LexPLEWlDmUtwp1SBcwQQAKf1TuyrY
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10011 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1015
- bulkscore=0 spamscore=0 mlxscore=0 adultscore=0 malwarescore=0
- phishscore=0 suspectscore=0 lowpriorityscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106110026
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:3zQl8lYiCKIe80Fw+c9vTjMz4uXDa9w41aHAh+bDBje9Fplzaxt
+ bWkOEGFJKZXcjKXZADbxkn554rP/wWsxSb4knwlNqYNEXTz1N3psiW2ElOai2absYRfjAjM
+ gMdmHdKFNUr5AHKN5uUqcHFYA0t81Mit5fMATzI3jZK2iNx9d54pBvIBKkXskafwhAlKMQC
+ oRseo2oIIJUflvxvGhZKQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tnmxHMRDXCk=:ZN2J1xlNwIZUUOB6W81nFr
+ C5LpgwsjnCOP2bXZxI5EeE+K4sjpZXRm8ouPbogDytXf8pYO15YIstq99vp6MINgPFEOkR2lO
+ /tO0S4g4eBqLXsxru6U0g4SjYh+rRV1mwpBg1kP97wfKxvBjbWYkn13Z8OsPTt2+EzOn1gu0m
+ a66LFwYvQYq/+jqd6BK0M7OEpHd9CT5yZCxKYRsdXnyvAlby6EXOAnzQzjTt7k9X/IVmOHcSg
+ LnjxRd1QyCiMJlNectejOFcnndgmtFvkyYEDrwHnf5TbGRJiP3Sopu/ubDVMqNX8Oaa/0fxKM
+ p2bQ68FNifP/63p/OJsur+sai7c3DHwVJxUJGOaY1ZacztwFMjl4EtJkogGgYwPpSLpew0JCQ
+ r/0+GybdDoLpUqFgQ6PFf7GqvYqy0UOqL0MTbx/vLC75TmIPjsZ7zv7PEf8DLa02TK13BPlul
+ RapScH+Fbigun6iuM7xZv7rtOWGwijLIWAIjZsTeWwenYAGU/WIj/WZAPbxQMO8xV88cebF/k
+ FIcp8+wSnH2a2s8NgJd0iaz+unCe4gxJcWBnXtiOsa7JYiz8mTu/xjol9aggI79Sk509rDyIJ
+ ZCZ25WUsLeKWS9r8IlKbcdO9yxFMcp9dgietPZapUccm+g6/u2s56YTaxoURHvpbrNgGO105O
+ CePhMyVTjAMEx4I3FS16t9aaOQZW/jM9Qm5Ofz67LHUe9wYU9eamAg4KSIK8HP3YhGrJ2KI4l
+ iKkY2t1Lby3S81Bym2iY/73qRiW1pBgybzxhrH5lB55+hDOV9F31UL9u2K053FLjACBnsWsoN
+ mgI9n2y3w5eHmAxbSBc7d0aSozgLbvYJQc1Lb0vP76SIuhCw77tLzO5GG3hDwlX6bptk72d2Z
+ qyKrtKRdQIpmzFYR0/1XijB1A5Bbd0yNEXTjbKim+oPI4ewK2KK76u3aPjLJCGRAUQYOzNrAy
+ iyRG4yf9CN2ANW73a6Wg7Xb/M4vtjdTyyOFKfOr6kpGhUuu5mYDj11O3juElyqbanPlK5XlKJ
+ TDxBiZqA9vCX1ByfogPHHnQhvqpd/DNQ6QJoEQmYh7DmCgDwlWvg069LfgSKfYXM8w14K5u1r
+ XaEq2DYaHsl26bSR1hrnbubLMVHK9ioeDZQ6WhMYo/M6wwL+cRLIH+lMw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/6/21 9:31 am, Qu Wenruo wrote:
-> For btrfs_submit_compressed_read() and btrfs_submit_compressed_write(),
-> we have a pretty weird dance around compressed_bio::io_sectors:
-
-I don't see io_sectors member for the struct compressed_bio in the 
-current misc-next. It is not mentioned in the cover letter, but is this 
-series a part of some other patch set yet to integrate into misc-next? 
-OR can this series be re-based on current misc-next?
-
-Thanks, Anand
-
-
-> 
->    btrfs_submit_compressed_read/write()
->    {
-> 	cb = kmalloc()
-> 	refcount_set(&cb->pending_bios, 0);
-> 	bio = btrfs_alloc_bio();
-> 
-> 	/* NOTE here, we haven't yet submitted any bio */
-> 	refcount_set(&cb->pending_bios, 1);
-> 
-> 	for (pg_index = 0; pg_index < cb->nr_pages; pg_index++) {
-> 		if (submit) {
-> 			/* Here we submit bio, but we always have one
-> 			 * extra pending_bios */
-> 			refcount_inc(&cb->pending_bios);
-> 			ret = btrfs_map_bio();
-> 		}
-> 	}
-> 
-> 	/* Submit the last bio */
-> 	ret = btrfs_map_bio();
->    }
-> 
-> There are two reasons why we do this:
-> 
-> - compressed_bio::pending_bios is a refcount
->    Thus if it's reduced to 0, it can not be increased again.
-> 
-> - To ensure the compressed_bio is not freed by some submitted bios
->    If the submitted bio is finished before the next bio submitted,
->    we can free the compressed_bio completely.
-> 
-> But the above code is sometimes confusing, and we can do it better by
-> just introduce a new member, compressed_bio::io_sectors.
-> 
-> With that member, we can easily distinguish if we're really the last
-> bio at endio time, and even allows us to remove some BUG_ON() later,
-> as we now know how many bytes are not yet submitted.
-> 
-> With this new member, now compressed_bio::pending_bios really indicates
-> the pending bios, without any special handling needed.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/compression.c | 71 ++++++++++++++++++++++--------------------
->   fs/btrfs/compression.h | 10 +++++-
->   2 files changed, 47 insertions(+), 34 deletions(-)
-> 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index fc4f37adb7b7..c9dbe306f6ba 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -193,6 +193,34 @@ static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
->   	return 0;
->   }
->   
-> +/*
-> + * Reduce bio and io accounting for a compressed_bio with its coresponding bio.
-> + *
-> + * Return true if there is no pending bio nor io.
-> + * Return false otherwise.
-> + */
-> +static bool dec_and_test_compressed_bio(struct compressed_bio *cb,
-> +					struct bio *bio)
-> +{
-> +	struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
-> +	unsigned int bi_size = bio->bi_iter.bi_size;
-> +	bool last_bio = false;
-> +	bool last_io = false;
-> +
-> +	if (bio->bi_status)
-> +		cb->errors = 1;
-> +
-> +	last_bio = atomic_dec_and_test(&cb->pending_bios);
-> +	last_io = atomic_sub_and_test(bi_size >> fs_info->sectorsize_bits,
-> +				       &cb->io_sectors);
-> +
-> +	/*
-> +	 * We can only finish the compressed bio if no pending bio and all io
-> +	 * submitted.
-> +	 */
-> +	return last_bio && last_io;
-> +}
-> +
->   /* when we finish reading compressed pages from the disk, we
->    * decompress them and then run the bio end_io routines on the
->    * decompressed pages (in the inode address space).
-> @@ -212,13 +240,7 @@ static void end_compressed_bio_read(struct bio *bio)
->   	unsigned int mirror = btrfs_io_bio(bio)->mirror_num;
->   	int ret = 0;
->   
-> -	if (bio->bi_status)
-> -		cb->errors = 1;
-> -
-> -	/* if there are more bios still pending for this compressed
-> -	 * extent, just exit
-> -	 */
-> -	if (!refcount_dec_and_test(&cb->pending_bios))
-> +	if (!dec_and_test_compressed_bio(cb, bio))
->   		goto out;
->   
->   	/*
-> @@ -336,13 +358,7 @@ static void end_compressed_bio_write(struct bio *bio)
->   	struct page *page;
->   	unsigned long index;
->   
-> -	if (bio->bi_status)
-> -		cb->errors = 1;
-> -
-> -	/* if there are more bios still pending for this compressed
-> -	 * extent, just exit
-> -	 */
-> -	if (!refcount_dec_and_test(&cb->pending_bios))
-> +	if (!dec_and_test_compressed_bio(cb, bio))
->   		goto out;
->   
->   	/* ok, we're the last bio for this extent, step one is to
-> @@ -408,7 +424,8 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->   	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
->   	if (!cb)
->   		return BLK_STS_RESOURCE;
-> -	refcount_set(&cb->pending_bios, 0);
-> +	atomic_set(&cb->pending_bios, 0);
-> +	atomic_set(&cb->io_sectors, compressed_len >> fs_info->sectorsize_bits);
->   	cb->errors = 0;
->   	cb->inode = &inode->vfs_inode;
->   	cb->start = start;
-> @@ -441,7 +458,6 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->   		bio->bi_opf |= REQ_CGROUP_PUNT;
->   		kthread_associate_blkcg(blkcg_css);
->   	}
-> -	refcount_set(&cb->pending_bios, 1);
->   
->   	/* create and submit bios for the compressed pages */
->   	bytes_left = compressed_len;
-> @@ -462,13 +478,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->   
->   		page->mapping = NULL;
->   		if (submit || len < PAGE_SIZE) {
-> -			/*
-> -			 * inc the count before we submit the bio so
-> -			 * we know the end IO handler won't happen before
-> -			 * we inc the count.  Otherwise, the cb might get
-> -			 * freed before we're done setting it up
-> -			 */
-> -			refcount_inc(&cb->pending_bios);
-> +			atomic_inc(&cb->pending_bios);
->   			ret = btrfs_bio_wq_end_io(fs_info, bio,
->   						  BTRFS_WQ_ENDIO_DATA);
->   			BUG_ON(ret); /* -ENOMEM */
-> @@ -506,6 +516,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
->   		cond_resched();
->   	}
->   
-> +	atomic_inc(&cb->pending_bios);
->   	ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
->   	BUG_ON(ret); /* -ENOMEM */
->   
-> @@ -689,7 +700,8 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->   	if (!cb)
->   		goto out;
->   
-> -	refcount_set(&cb->pending_bios, 0);
-> +	atomic_set(&cb->pending_bios, 0);
-> +	atomic_set(&cb->io_sectors, compressed_len >> fs_info->sectorsize_bits);
->   	cb->errors = 0;
->   	cb->inode = inode;
->   	cb->mirror_num = mirror_num;
-> @@ -734,7 +746,6 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->   	comp_bio->bi_opf = REQ_OP_READ;
->   	comp_bio->bi_private = cb;
->   	comp_bio->bi_end_io = end_compressed_bio_read;
-> -	refcount_set(&cb->pending_bios, 1);
->   
->   	for (pg_index = 0; pg_index < nr_pages; pg_index++) {
->   		u32 pg_len = PAGE_SIZE;
-> @@ -763,18 +774,11 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->   		if (submit || bio_add_page(comp_bio, page, pg_len, 0) < pg_len) {
->   			unsigned int nr_sectors;
->   
-> +			atomic_inc(&cb->pending_bios);
->   			ret = btrfs_bio_wq_end_io(fs_info, comp_bio,
->   						  BTRFS_WQ_ENDIO_DATA);
->   			BUG_ON(ret); /* -ENOMEM */
->   
-> -			/*
-> -			 * inc the count before we submit the bio so
-> -			 * we know the end IO handler won't happen before
-> -			 * we inc the count.  Otherwise, the cb might get
-> -			 * freed before we're done setting it up
-> -			 */
-> -			refcount_inc(&cb->pending_bios);
-> -
->   			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
->   			BUG_ON(ret); /* -ENOMEM */
->   
-> @@ -798,6 +802,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
->   		cur_disk_byte += pg_len;
->   	}
->   
-> +	atomic_inc(&cb->pending_bios);
->   	ret = btrfs_bio_wq_end_io(fs_info, comp_bio, BTRFS_WQ_ENDIO_DATA);
->   	BUG_ON(ret); /* -ENOMEM */
->   
-> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> index 8001b700ea3a..3df3262fedcd 100644
-> --- a/fs/btrfs/compression.h
-> +++ b/fs/btrfs/compression.h
-> @@ -29,7 +29,15 @@ struct btrfs_inode;
->   
->   struct compressed_bio {
->   	/* number of bios pending for this compressed extent */
-> -	refcount_t pending_bios;
-> +	atomic_t pending_bios;
-> +
-> +	/*
-> +	 * Number of sectors which hasn't finished.
-> +	 *
-> +	 * Combined with pending_bios, we can manually finish the compressed_bio
-> +	 * if we hit some error while there is still some pages not added.
-> +	 */
-> +	atomic_t io_sectors;
->   
->   	/* the pages with the compressed data on them */
->   	struct page **compressed_pages;
-> 
-
+DQoNCk9uIDIwMjEvNi8xMSDkuIvljYgxMjoxOCwgQW5hbmQgSmFpbiB3cm90ZToNCj4gT24gMTEv
+Ni8yMSA5OjMxIGFtLCBRdSBXZW5ydW8gd3JvdGU6DQo+PiBGb3IgYnRyZnNfc3VibWl0X2NvbXBy
+ZXNzZWRfcmVhZCgpIGFuZCBidHJmc19zdWJtaXRfY29tcHJlc3NlZF93cml0ZSgpLA0KPj4gd2Ug
+aGF2ZSBhIHByZXR0eSB3ZWlyZCBkYW5jZSBhcm91bmQgY29tcHJlc3NlZF9iaW86OmlvX3NlY3Rv
+cnM6DQo+IA0KPiBJIGRvbid0IHNlZSBpb19zZWN0b3JzIG1lbWJlciBmb3IgdGhlIHN0cnVjdCBj
+b21wcmVzc2VkX2JpbyBpbiB0aGUgDQo+IGN1cnJlbnQgbWlzYy1uZXh0LiBJdCBpcyBub3QgbWVu
+dGlvbmVkIGluIHRoZSBjb3ZlciBsZXR0ZXIsIGJ1dCBpcyB0aGlzIA0KPiBzZXJpZXMgYSBwYXJ0
+IG9mIHNvbWUgb3RoZXIgcGF0Y2ggc2V0IHlldCB0byBpbnRlZ3JhdGUgaW50byBtaXNjLW5leHQ/
+IA0KPiBPUiBjYW4gdGhpcyBzZXJpZXMgYmUgcmUtYmFzZWQgb24gY3VycmVudCBtaXNjLW5leHQ/
+DQoNCk15IGJhZCwgdGhlIHdyb25nIHZhcmlhYmxlIG5hbWUgaW4gdGhlIGNvbW1pdCBtZXNzYWdl
+Lg0KDQpJdCBzaG91bGQgYmUgY29tcHJlc3NlZF9iaW86OnBlbmRpbmdfYmlvcy4NCg0KVGhlIGlv
+X3NlY3RvcnMgaXMgYWRkZWQgdG8gYWRkcmVzcyB0aGUgcHJvYmxlbS4NCg0KVGhhbmtzLA0KUXUN
+Cj4gDQo+IFRoYW5rcywgQW5hbmQNCj4gDQo+IA0KPj4NCj4+IMKgwqAgYnRyZnNfc3VibWl0X2Nv
+bXByZXNzZWRfcmVhZC93cml0ZSgpDQo+PiDCoMKgIHsNCj4+IMKgwqDCoMKgY2IgPSBrbWFsbG9j
+KCkNCj4+IMKgwqDCoMKgcmVmY291bnRfc2V0KCZjYi0+cGVuZGluZ19iaW9zLCAwKTsNCj4+IMKg
+wqDCoMKgYmlvID0gYnRyZnNfYWxsb2NfYmlvKCk7DQo+Pg0KPj4gwqDCoMKgwqAvKiBOT1RFIGhl
+cmUsIHdlIGhhdmVuJ3QgeWV0IHN1Ym1pdHRlZCBhbnkgYmlvICovDQo+PiDCoMKgwqDCoHJlZmNv
+dW50X3NldCgmY2ItPnBlbmRpbmdfYmlvcywgMSk7DQo+Pg0KPj4gwqDCoMKgwqBmb3IgKHBnX2lu
+ZGV4ID0gMDsgcGdfaW5kZXggPCBjYi0+bnJfcGFnZXM7IHBnX2luZGV4KyspIHsNCj4+IMKgwqDC
+oMKgwqDCoMKgIGlmIChzdWJtaXQpIHsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLyogSGVy
+ZSB3ZSBzdWJtaXQgYmlvLCBidXQgd2UgYWx3YXlzIGhhdmUgb25lDQo+PiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgKiBleHRyYSBwZW5kaW5nX2Jpb3MgKi8NCj4+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgcmVmY291bnRfaW5jKCZjYi0+cGVuZGluZ19iaW9zKTsNCj4+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgcmV0ID0gYnRyZnNfbWFwX2JpbygpOw0KPj4gwqDCoMKgwqDCoMKgwqAgfQ0KPj4g
+wqDCoMKgwqB9DQo+Pg0KPj4gwqDCoMKgwqAvKiBTdWJtaXQgdGhlIGxhc3QgYmlvICovDQo+PiDC
+oMKgwqDCoHJldCA9IGJ0cmZzX21hcF9iaW8oKTsNCj4+IMKgwqAgfQ0KPj4NCj4+IFRoZXJlIGFy
+ZSB0d28gcmVhc29ucyB3aHkgd2UgZG8gdGhpczoNCj4+DQo+PiAtIGNvbXByZXNzZWRfYmlvOjpw
+ZW5kaW5nX2Jpb3MgaXMgYSByZWZjb3VudA0KPj4gwqDCoCBUaHVzIGlmIGl0J3MgcmVkdWNlZCB0
+byAwLCBpdCBjYW4gbm90IGJlIGluY3JlYXNlZCBhZ2Fpbi4NCj4+DQo+PiAtIFRvIGVuc3VyZSB0
+aGUgY29tcHJlc3NlZF9iaW8gaXMgbm90IGZyZWVkIGJ5IHNvbWUgc3VibWl0dGVkIGJpb3MNCj4+
+IMKgwqAgSWYgdGhlIHN1Ym1pdHRlZCBiaW8gaXMgZmluaXNoZWQgYmVmb3JlIHRoZSBuZXh0IGJp
+byBzdWJtaXR0ZWQsDQo+PiDCoMKgIHdlIGNhbiBmcmVlIHRoZSBjb21wcmVzc2VkX2JpbyBjb21w
+bGV0ZWx5Lg0KPj4NCj4+IEJ1dCB0aGUgYWJvdmUgY29kZSBpcyBzb21ldGltZXMgY29uZnVzaW5n
+LCBhbmQgd2UgY2FuIGRvIGl0IGJldHRlciBieQ0KPj4ganVzdCBpbnRyb2R1Y2UgYSBuZXcgbWVt
+YmVyLCBjb21wcmVzc2VkX2Jpbzo6aW9fc2VjdG9ycy4NCj4+DQo+PiBXaXRoIHRoYXQgbWVtYmVy
+LCB3ZSBjYW4gZWFzaWx5IGRpc3Rpbmd1aXNoIGlmIHdlJ3JlIHJlYWxseSB0aGUgbGFzdA0KPj4g
+YmlvIGF0IGVuZGlvIHRpbWUsIGFuZCBldmVuIGFsbG93cyB1cyB0byByZW1vdmUgc29tZSBCVUdf
+T04oKSBsYXRlciwNCj4+IGFzIHdlIG5vdyBrbm93IGhvdyBtYW55IGJ5dGVzIGFyZSBub3QgeWV0
+IHN1Ym1pdHRlZC4NCj4+DQo+PiBXaXRoIHRoaXMgbmV3IG1lbWJlciwgbm93IGNvbXByZXNzZWRf
+YmlvOjpwZW5kaW5nX2Jpb3MgcmVhbGx5IGluZGljYXRlcw0KPj4gdGhlIHBlbmRpbmcgYmlvcywg
+d2l0aG91dCBhbnkgc3BlY2lhbCBoYW5kbGluZyBuZWVkZWQuDQo+Pg0KPj4gU2lnbmVkLW9mZi1i
+eTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+DQo+PiAtLS0NCj4+IMKgIGZzL2J0cmZzL2NvbXBy
+ZXNzaW9uLmMgfCA3MSArKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0N
+Cj4+IMKgIGZzL2J0cmZzL2NvbXByZXNzaW9uLmggfCAxMCArKysrKy0NCj4+IMKgIDIgZmlsZXMg
+Y2hhbmdlZCwgNDcgaW5zZXJ0aW9ucygrKSwgMzQgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAt
+LWdpdCBhL2ZzL2J0cmZzL2NvbXByZXNzaW9uLmMgYi9mcy9idHJmcy9jb21wcmVzc2lvbi5jDQo+
+PiBpbmRleCBmYzRmMzdhZGI3YjcuLmM5ZGJlMzA2ZjZiYSAxMDA2NDQNCj4+IC0tLSBhL2ZzL2J0
+cmZzL2NvbXByZXNzaW9uLmMNCj4+ICsrKyBiL2ZzL2J0cmZzL2NvbXByZXNzaW9uLmMNCj4+IEBA
+IC0xOTMsNiArMTkzLDM0IEBAIHN0YXRpYyBpbnQgY2hlY2tfY29tcHJlc3NlZF9jc3VtKHN0cnVj
+dCANCj4+IGJ0cmZzX2lub2RlICppbm9kZSwgc3RydWN0IGJpbyAqYmlvLA0KPj4gwqDCoMKgwqDC
+oCByZXR1cm4gMDsNCj4+IMKgIH0NCj4+ICsvKg0KPj4gKyAqIFJlZHVjZSBiaW8gYW5kIGlvIGFj
+Y291bnRpbmcgZm9yIGEgY29tcHJlc3NlZF9iaW8gd2l0aCBpdHMgDQo+PiBjb3Jlc3BvbmRpbmcg
+YmlvLg0KPj4gKyAqDQo+PiArICogUmV0dXJuIHRydWUgaWYgdGhlcmUgaXMgbm8gcGVuZGluZyBi
+aW8gbm9yIGlvLg0KPj4gKyAqIFJldHVybiBmYWxzZSBvdGhlcndpc2UuDQo+PiArICovDQo+PiAr
+c3RhdGljIGJvb2wgZGVjX2FuZF90ZXN0X2NvbXByZXNzZWRfYmlvKHN0cnVjdCBjb21wcmVzc2Vk
+X2JpbyAqY2IsDQo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3Ry
+dWN0IGJpbyAqYmlvKQ0KPj4gK3sNCj4+ICvCoMKgwqAgc3RydWN0IGJ0cmZzX2ZzX2luZm8gKmZz
+X2luZm8gPSBidHJmc19zYihjYi0+aW5vZGUtPmlfc2IpOw0KPj4gK8KgwqDCoCB1bnNpZ25lZCBp
+bnQgYmlfc2l6ZSA9IGJpby0+YmlfaXRlci5iaV9zaXplOw0KPj4gK8KgwqDCoCBib29sIGxhc3Rf
+YmlvID0gZmFsc2U7DQo+PiArwqDCoMKgIGJvb2wgbGFzdF9pbyA9IGZhbHNlOw0KPj4gKw0KPj4g
+K8KgwqDCoCBpZiAoYmlvLT5iaV9zdGF0dXMpDQo+PiArwqDCoMKgwqDCoMKgwqAgY2ItPmVycm9y
+cyA9IDE7DQo+PiArDQo+PiArwqDCoMKgIGxhc3RfYmlvID0gYXRvbWljX2RlY19hbmRfdGVzdCgm
+Y2ItPnBlbmRpbmdfYmlvcyk7DQo+PiArwqDCoMKgIGxhc3RfaW8gPSBhdG9taWNfc3ViX2FuZF90
+ZXN0KGJpX3NpemUgPj4gZnNfaW5mby0+c2VjdG9yc2l6ZV9iaXRzLA0KPj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICZjYi0+aW9fc2VjdG9ycyk7DQo+PiAr
+DQo+PiArwqDCoMKgIC8qDQo+PiArwqDCoMKgwqAgKiBXZSBjYW4gb25seSBmaW5pc2ggdGhlIGNv
+bXByZXNzZWQgYmlvIGlmIG5vIHBlbmRpbmcgYmlvIGFuZCANCj4+IGFsbCBpbw0KPj4gK8KgwqDC
+oMKgICogc3VibWl0dGVkLg0KPj4gK8KgwqDCoMKgICovDQo+PiArwqDCoMKgIHJldHVybiBsYXN0
+X2JpbyAmJiBsYXN0X2lvOw0KPj4gK30NCj4+ICsNCj4+IMKgIC8qIHdoZW4gd2UgZmluaXNoIHJl
+YWRpbmcgY29tcHJlc3NlZCBwYWdlcyBmcm9tIHRoZSBkaXNrLCB3ZQ0KPj4gwqDCoCAqIGRlY29t
+cHJlc3MgdGhlbSBhbmQgdGhlbiBydW4gdGhlIGJpbyBlbmRfaW8gcm91dGluZXMgb24gdGhlDQo+
+PiDCoMKgICogZGVjb21wcmVzc2VkIHBhZ2VzIChpbiB0aGUgaW5vZGUgYWRkcmVzcyBzcGFjZSku
+DQo+PiBAQCAtMjEyLDEzICsyNDAsNyBAQCBzdGF0aWMgdm9pZCBlbmRfY29tcHJlc3NlZF9iaW9f
+cmVhZChzdHJ1Y3QgYmlvICpiaW8pDQo+PiDCoMKgwqDCoMKgIHVuc2lnbmVkIGludCBtaXJyb3Ig
+PSBidHJmc19pb19iaW8oYmlvKS0+bWlycm9yX251bTsNCj4+IMKgwqDCoMKgwqAgaW50IHJldCA9
+IDA7DQo+PiAtwqDCoMKgIGlmIChiaW8tPmJpX3N0YXR1cykNCj4+IC3CoMKgwqDCoMKgwqDCoCBj
+Yi0+ZXJyb3JzID0gMTsNCj4+IC0NCj4+IC3CoMKgwqAgLyogaWYgdGhlcmUgYXJlIG1vcmUgYmlv
+cyBzdGlsbCBwZW5kaW5nIGZvciB0aGlzIGNvbXByZXNzZWQNCj4+IC3CoMKgwqDCoCAqIGV4dGVu
+dCwganVzdCBleGl0DQo+PiAtwqDCoMKgwqAgKi8NCj4+IC3CoMKgwqAgaWYgKCFyZWZjb3VudF9k
+ZWNfYW5kX3Rlc3QoJmNiLT5wZW5kaW5nX2Jpb3MpKQ0KPj4gK8KgwqDCoCBpZiAoIWRlY19hbmRf
+dGVzdF9jb21wcmVzc2VkX2JpbyhjYiwgYmlvKSkNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBnb3Rv
+IG91dDsNCj4+IMKgwqDCoMKgwqAgLyoNCj4+IEBAIC0zMzYsMTMgKzM1OCw3IEBAIHN0YXRpYyB2
+b2lkIGVuZF9jb21wcmVzc2VkX2Jpb193cml0ZShzdHJ1Y3QgYmlvIA0KPj4gKmJpbykNCj4+IMKg
+wqDCoMKgwqAgc3RydWN0IHBhZ2UgKnBhZ2U7DQo+PiDCoMKgwqDCoMKgIHVuc2lnbmVkIGxvbmcg
+aW5kZXg7DQo+PiAtwqDCoMKgIGlmIChiaW8tPmJpX3N0YXR1cykNCj4+IC3CoMKgwqDCoMKgwqDC
+oCBjYi0+ZXJyb3JzID0gMTsNCj4+IC0NCj4+IC3CoMKgwqAgLyogaWYgdGhlcmUgYXJlIG1vcmUg
+YmlvcyBzdGlsbCBwZW5kaW5nIGZvciB0aGlzIGNvbXByZXNzZWQNCj4+IC3CoMKgwqDCoCAqIGV4
+dGVudCwganVzdCBleGl0DQo+PiAtwqDCoMKgwqAgKi8NCj4+IC3CoMKgwqAgaWYgKCFyZWZjb3Vu
+dF9kZWNfYW5kX3Rlc3QoJmNiLT5wZW5kaW5nX2Jpb3MpKQ0KPj4gK8KgwqDCoCBpZiAoIWRlY19h
+bmRfdGVzdF9jb21wcmVzc2VkX2JpbyhjYiwgYmlvKSkNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBn
+b3RvIG91dDsNCj4+IMKgwqDCoMKgwqAgLyogb2ssIHdlJ3JlIHRoZSBsYXN0IGJpbyBmb3IgdGhp
+cyBleHRlbnQsIHN0ZXAgb25lIGlzIHRvDQo+PiBAQCAtNDA4LDcgKzQyNCw4IEBAIGJsa19zdGF0
+dXNfdCBidHJmc19zdWJtaXRfY29tcHJlc3NlZF93cml0ZShzdHJ1Y3QgDQo+PiBidHJmc19pbm9k
+ZSAqaW5vZGUsIHU2NCBzdGFydCwNCj4+IMKgwqDCoMKgwqAgY2IgPSBrbWFsbG9jKGNvbXByZXNz
+ZWRfYmlvX3NpemUoZnNfaW5mbywgY29tcHJlc3NlZF9sZW4pLCANCj4+IEdGUF9OT0ZTKTsNCj4+
+IMKgwqDCoMKgwqAgaWYgKCFjYikNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gQkxLX1NU
+U19SRVNPVVJDRTsNCj4+IC3CoMKgwqAgcmVmY291bnRfc2V0KCZjYi0+cGVuZGluZ19iaW9zLCAw
+KTsNCj4+ICvCoMKgwqAgYXRvbWljX3NldCgmY2ItPnBlbmRpbmdfYmlvcywgMCk7DQo+PiArwqDC
+oMKgIGF0b21pY19zZXQoJmNiLT5pb19zZWN0b3JzLCBjb21wcmVzc2VkX2xlbiA+PiANCj4+IGZz
+X2luZm8tPnNlY3RvcnNpemVfYml0cyk7DQo+PiDCoMKgwqDCoMKgIGNiLT5lcnJvcnMgPSAwOw0K
+Pj4gwqDCoMKgwqDCoCBjYi0+aW5vZGUgPSAmaW5vZGUtPnZmc19pbm9kZTsNCj4+IMKgwqDCoMKg
+wqAgY2ItPnN0YXJ0ID0gc3RhcnQ7DQo+PiBAQCAtNDQxLDcgKzQ1OCw2IEBAIGJsa19zdGF0dXNf
+dCBidHJmc19zdWJtaXRfY29tcHJlc3NlZF93cml0ZShzdHJ1Y3QgDQo+PiBidHJmc19pbm9kZSAq
+aW5vZGUsIHU2NCBzdGFydCwNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBiaW8tPmJpX29wZiB8PSBS
+RVFfQ0dST1VQX1BVTlQ7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAga3RocmVhZF9hc3NvY2lhdGVf
+YmxrY2coYmxrY2dfY3NzKTsNCj4+IMKgwqDCoMKgwqAgfQ0KPj4gLcKgwqDCoCByZWZjb3VudF9z
+ZXQoJmNiLT5wZW5kaW5nX2Jpb3MsIDEpOw0KPj4gwqDCoMKgwqDCoCAvKiBjcmVhdGUgYW5kIHN1
+Ym1pdCBiaW9zIGZvciB0aGUgY29tcHJlc3NlZCBwYWdlcyAqLw0KPj4gwqDCoMKgwqDCoCBieXRl
+c19sZWZ0ID0gY29tcHJlc3NlZF9sZW47DQo+PiBAQCAtNDYyLDEzICs0NzgsNyBAQCBibGtfc3Rh
+dHVzX3QgYnRyZnNfc3VibWl0X2NvbXByZXNzZWRfd3JpdGUoc3RydWN0IA0KPj4gYnRyZnNfaW5v
+ZGUgKmlub2RlLCB1NjQgc3RhcnQsDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcGFnZS0+bWFwcGlu
+ZyA9IE5VTEw7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKHN1Ym1pdCB8fCBsZW4gPCBQQUdF
+X1NJWkUpIHsNCj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qDQo+PiAtwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgICogaW5jIHRoZSBjb3VudCBiZWZvcmUgd2Ugc3VibWl0IHRoZSBiaW8gc28N
+Cj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiB3ZSBrbm93IHRoZSBlbmQgSU8gaGFuZGxl
+ciB3b24ndCBoYXBwZW4gYmVmb3JlDQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogd2Ug
+aW5jIHRoZSBjb3VudC7CoCBPdGhlcndpc2UsIHRoZSBjYiBtaWdodCBnZXQNCj4+IC3CoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgKiBmcmVlZCBiZWZvcmUgd2UncmUgZG9uZSBzZXR0aW5nIGl0IHVw
+DQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICovDQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCByZWZjb3VudF9pbmMoJmNiLT5wZW5kaW5nX2Jpb3MpOw0KPj4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgYXRvbWljX2luYygmY2ItPnBlbmRpbmdfYmlvcyk7DQo+PiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCByZXQgPSBidHJmc19iaW9fd3FfZW5kX2lvKGZzX2luZm8sIGJpbywNCj4+
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBC
+VFJGU19XUV9FTkRJT19EQVRBKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJVR19P
+TihyZXQpOyAvKiAtRU5PTUVNICovDQo+PiBAQCAtNTA2LDYgKzUxNiw3IEBAIGJsa19zdGF0dXNf
+dCBidHJmc19zdWJtaXRfY29tcHJlc3NlZF93cml0ZShzdHJ1Y3QgDQo+PiBidHJmc19pbm9kZSAq
+aW5vZGUsIHU2NCBzdGFydCwNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBjb25kX3Jlc2NoZWQoKTsN
+Cj4+IMKgwqDCoMKgwqAgfQ0KPj4gK8KgwqDCoCBhdG9taWNfaW5jKCZjYi0+cGVuZGluZ19iaW9z
+KTsNCj4+IMKgwqDCoMKgwqAgcmV0ID0gYnRyZnNfYmlvX3dxX2VuZF9pbyhmc19pbmZvLCBiaW8s
+IEJUUkZTX1dRX0VORElPX0RBVEEpOw0KPj4gwqDCoMKgwqDCoCBCVUdfT04ocmV0KTsgLyogLUVO
+T01FTSAqLw0KPj4gQEAgLTY4OSw3ICs3MDAsOCBAQCBibGtfc3RhdHVzX3QgYnRyZnNfc3VibWl0
+X2NvbXByZXNzZWRfcmVhZChzdHJ1Y3QgDQo+PiBpbm9kZSAqaW5vZGUsIHN0cnVjdCBiaW8gKmJp
+bywNCj4+IMKgwqDCoMKgwqAgaWYgKCFjYikNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBnb3RvIG91
+dDsNCj4+IC3CoMKgwqAgcmVmY291bnRfc2V0KCZjYi0+cGVuZGluZ19iaW9zLCAwKTsNCj4+ICvC
+oMKgwqAgYXRvbWljX3NldCgmY2ItPnBlbmRpbmdfYmlvcywgMCk7DQo+PiArwqDCoMKgIGF0b21p
+Y19zZXQoJmNiLT5pb19zZWN0b3JzLCBjb21wcmVzc2VkX2xlbiA+PiANCj4+IGZzX2luZm8tPnNl
+Y3RvcnNpemVfYml0cyk7DQo+PiDCoMKgwqDCoMKgIGNiLT5lcnJvcnMgPSAwOw0KPj4gwqDCoMKg
+wqDCoCBjYi0+aW5vZGUgPSBpbm9kZTsNCj4+IMKgwqDCoMKgwqAgY2ItPm1pcnJvcl9udW0gPSBt
+aXJyb3JfbnVtOw0KPj4gQEAgLTczNCw3ICs3NDYsNiBAQCBibGtfc3RhdHVzX3QgYnRyZnNfc3Vi
+bWl0X2NvbXByZXNzZWRfcmVhZChzdHJ1Y3QgDQo+PiBpbm9kZSAqaW5vZGUsIHN0cnVjdCBiaW8g
+KmJpbywNCj4+IMKgwqDCoMKgwqAgY29tcF9iaW8tPmJpX29wZiA9IFJFUV9PUF9SRUFEOw0KPj4g
+wqDCoMKgwqDCoCBjb21wX2Jpby0+YmlfcHJpdmF0ZSA9IGNiOw0KPj4gwqDCoMKgwqDCoCBjb21w
+X2Jpby0+YmlfZW5kX2lvID0gZW5kX2NvbXByZXNzZWRfYmlvX3JlYWQ7DQo+PiAtwqDCoMKgIHJl
+ZmNvdW50X3NldCgmY2ItPnBlbmRpbmdfYmlvcywgMSk7DQo+PiDCoMKgwqDCoMKgIGZvciAocGdf
+aW5kZXggPSAwOyBwZ19pbmRleCA8IG5yX3BhZ2VzOyBwZ19pbmRleCsrKSB7DQo+PiDCoMKgwqDC
+oMKgwqDCoMKgwqAgdTMyIHBnX2xlbiA9IFBBR0VfU0laRTsNCj4+IEBAIC03NjMsMTggKzc3NCwx
+MSBAQCBibGtfc3RhdHVzX3QgYnRyZnNfc3VibWl0X2NvbXByZXNzZWRfcmVhZChzdHJ1Y3QgDQo+
+PiBpbm9kZSAqaW5vZGUsIHN0cnVjdCBiaW8gKmJpbywNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBp
+ZiAoc3VibWl0IHx8IGJpb19hZGRfcGFnZShjb21wX2JpbywgcGFnZSwgcGdfbGVuLCAwKSA8IA0K
+Pj4gcGdfbGVuKSB7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1bnNpZ25lZCBpbnQg
+bnJfc2VjdG9yczsNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGF0b21pY19pbmMoJmNiLT5w
+ZW5kaW5nX2Jpb3MpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0ID0gYnRyZnNf
+YmlvX3dxX2VuZF9pbyhmc19pbmZvLCBjb21wX2JpbywNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCVFJGU19XUV9FTkRJT19EQVRBKTsN
+Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJVR19PTihyZXQpOyAvKiAtRU5PTUVNICov
+DQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvKg0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCAqIGluYyB0aGUgY291bnQgYmVmb3JlIHdlIHN1Ym1pdCB0aGUgYmlvIHNvDQo+PiAtwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgICogd2Uga25vdyB0aGUgZW5kIElPIGhhbmRsZXIgd29uJ3Qg
+aGFwcGVuIGJlZm9yZQ0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIHdlIGluYyB0aGUg
+Y291bnQuwqAgT3RoZXJ3aXNlLCB0aGUgY2IgbWlnaHQgZ2V0DQo+PiAtwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgICogZnJlZWQgYmVmb3JlIHdlJ3JlIGRvbmUgc2V0dGluZyBpdCB1cA0KPj4gLcKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLw0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmVm
+Y291bnRfaW5jKCZjYi0+cGVuZGluZ19iaW9zKTsNCj4+IC0NCj4+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIHJldCA9IGJ0cmZzX2xvb2t1cF9iaW9fc3Vtcyhpbm9kZSwgY29tcF9iaW8sIHN1
+bXMpOw0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQlVHX09OKHJldCk7IC8qIC1FTk9N
+RU0gKi8NCj4+IEBAIC03OTgsNiArODAyLDcgQEAgYmxrX3N0YXR1c190IGJ0cmZzX3N1Ym1pdF9j
+b21wcmVzc2VkX3JlYWQoc3RydWN0IA0KPj4gaW5vZGUgKmlub2RlLCBzdHJ1Y3QgYmlvICpiaW8s
+DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgY3VyX2Rpc2tfYnl0ZSArPSBwZ19sZW47DQo+PiDCoMKg
+wqDCoMKgIH0NCj4+ICvCoMKgwqAgYXRvbWljX2luYygmY2ItPnBlbmRpbmdfYmlvcyk7DQo+PiDC
+oMKgwqDCoMKgIHJldCA9IGJ0cmZzX2Jpb193cV9lbmRfaW8oZnNfaW5mbywgY29tcF9iaW8sIEJU
+UkZTX1dRX0VORElPX0RBVEEpOw0KPj4gwqDCoMKgwqDCoCBCVUdfT04ocmV0KTsgLyogLUVOT01F
+TSAqLw0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2NvbXByZXNzaW9uLmggYi9mcy9idHJmcy9j
+b21wcmVzc2lvbi5oDQo+PiBpbmRleCA4MDAxYjcwMGVhM2EuLjNkZjMyNjJmZWRjZCAxMDA2NDQN
+Cj4+IC0tLSBhL2ZzL2J0cmZzL2NvbXByZXNzaW9uLmgNCj4+ICsrKyBiL2ZzL2J0cmZzL2NvbXBy
+ZXNzaW9uLmgNCj4+IEBAIC0yOSw3ICsyOSwxNSBAQCBzdHJ1Y3QgYnRyZnNfaW5vZGU7DQo+PiDC
+oCBzdHJ1Y3QgY29tcHJlc3NlZF9iaW8gew0KPj4gwqDCoMKgwqDCoCAvKiBudW1iZXIgb2YgYmlv
+cyBwZW5kaW5nIGZvciB0aGlzIGNvbXByZXNzZWQgZXh0ZW50ICovDQo+PiAtwqDCoMKgIHJlZmNv
+dW50X3QgcGVuZGluZ19iaW9zOw0KPj4gK8KgwqDCoCBhdG9taWNfdCBwZW5kaW5nX2Jpb3M7DQo+
+PiArDQo+PiArwqDCoMKgIC8qDQo+PiArwqDCoMKgwqAgKiBOdW1iZXIgb2Ygc2VjdG9ycyB3aGlj
+aCBoYXNuJ3QgZmluaXNoZWQuDQo+PiArwqDCoMKgwqAgKg0KPj4gK8KgwqDCoMKgICogQ29tYmlu
+ZWQgd2l0aCBwZW5kaW5nX2Jpb3MsIHdlIGNhbiBtYW51YWxseSBmaW5pc2ggdGhlIA0KPj4gY29t
+cHJlc3NlZF9iaW8NCj4+ICvCoMKgwqDCoCAqIGlmIHdlIGhpdCBzb21lIGVycm9yIHdoaWxlIHRo
+ZXJlIGlzIHN0aWxsIHNvbWUgcGFnZXMgbm90IGFkZGVkLg0KPj4gK8KgwqDCoMKgICovDQo+PiAr
+wqDCoMKgIGF0b21pY190IGlvX3NlY3RvcnM7DQo+PiDCoMKgwqDCoMKgIC8qIHRoZSBwYWdlcyB3
+aXRoIHRoZSBjb21wcmVzc2VkIGRhdGEgb24gdGhlbSAqLw0KPj4gwqDCoMKgwqDCoCBzdHJ1Y3Qg
+cGFnZSAqKmNvbXByZXNzZWRfcGFnZXM7DQo+Pg0KPiANCg==
