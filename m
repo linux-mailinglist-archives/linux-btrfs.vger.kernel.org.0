@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05883A429E
+	by mail.lfdr.de (Postfix) with ESMTP id E93203A429F
 	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhFKNCu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 09:02:50 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35858 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhFKNCu (ORCPT
+        id S231719AbhFKNCy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 09:02:54 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:54542 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhFKNCx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:02:50 -0400
+        Fri, 11 Jun 2021 09:02:53 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 285C121A5C
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 13:00:52 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id BDAC41FD77
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 13:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623416452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1623416454; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=E/Vluc0NaoaoYny0jrZjGxNsAKslPGI0XzVlyVweBRs=;
-        b=bLt4gGaTadrxDeGHpTDrlvNuZGBmYr7I8UN/LlqM/F/dVRFjf7pbxlezsMR8kzXwRLHdq0
-        KKPaeLkTMxYX3bmATdI4w/IcV6zaxQJf5BZ/P+UO9Ut/VyLm96DkYBfI8OI8kOVdJqIjCg
-        jfa0njn96I8pgvBUbBF/OSyA2bn90Ek=
+        bh=OK+mDKk4b/u5WUAJsgQnxdrZd0Y5+dMj78Y4xvVK/+A=;
+        b=HqOCDqGzzrOYOhNktSjHalQF6o1AHGyFQTMet84ppLdG+SHDl+kQDysp2YlxBvimHW/jl7
+        tQIDG6ykHABNgL69gcy3I/BvdSee2kiV3VXx01KCW+yhE7L6+sbKX1BJ2a4Ygvsu93OIcE
+        mvCk73n8C+VxpdhDkfP+z0iB3nAwBHw=
 Received: from adam-pc.lan (unknown [10.163.16.38])
-        by relay2.suse.de (Postfix) with ESMTP id B03BFA3BC2
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 13:00:50 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 585AEA3BC9
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 13:00:52 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 5/9] btrfs: introduce submit_compressed_bio() for compression
-Date:   Fri, 11 Jun 2021 21:00:29 +0800
-Message-Id: <20210611130033.329908-6-wqu@suse.com>
+Subject: [PATCH v2 6/9] btrfs: introduce alloc_submit_compressed_bio() for compression
+Date:   Fri, 11 Jun 2021 21:00:30 +0800
+Message-Id: <20210611130033.329908-7-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210611130033.329908-1-wqu@suse.com>
 References: <20210611130033.329908-1-wqu@suse.com>
@@ -41,124 +41,158 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The new helper, submit_compressed_bio(), will aggregate the following
-work:
+Just aggregate the bio allocation code into one helper, so that we can
+replace 4 call sites.
 
-- Increase compressed_bio::pending_bios
-- Remap the endio function
-- Map and submit the bio
+There is one special note for zoned write.
+
+Currently btrfs_submit_compressed_write() will only allocate the first
+bio using ZONE_APPEND.
+If we have to submit current bio due to stripe boundary, the new bio
+allocated will not use ZONE_APPEND.
+
+In theory this should be a bug, but considering zoned mode currently
+only support SINGLE profile, which doesn't have any stripe boundary
+limit, it should never be a problem.
+
+This function will provide a good entrance for any work which needs to be
+done at bio allocation time. Like determining the stripe boundary.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 44 +++++++++++++++++-------------------------
- 1 file changed, 18 insertions(+), 26 deletions(-)
+ fs/btrfs/compression.c | 91 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 63 insertions(+), 28 deletions(-)
 
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 0dcf6e1b9738..454e54b6ff5e 100644
+index 454e54b6ff5e..96b5ad76b38b 100644
 --- a/fs/btrfs/compression.c
 +++ b/fs/btrfs/compression.c
-@@ -404,6 +404,20 @@ static void end_compressed_bio_write(struct bio *bio)
- 	bio_put(bio);
+@@ -418,6 +418,41 @@ static blk_status_t submit_compressed_bio(struct btrfs_fs_info *fs_info,
+ 	return ret;
  }
  
-+static blk_status_t submit_compressed_bio(struct btrfs_fs_info *fs_info,
-+					  struct compressed_bio *cb,
-+					  struct bio *bio, int mirror_num)
++/*
++ * To allocate a compressed_bio, which will be used to read/write on-disk data.
++ *
++ * @disk_bytenr:	Disk bytenr of the IO
++ * @opf:		Bio opf
++ * @endio_func:		Endio function
++ */
++static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u64 disk_bytenr,
++					unsigned int opf, bio_end_io_t endio_func)
 +{
-+	blk_status_t ret;
++	struct bio *bio;
 +
-+	atomic_inc(&cb->pending_bios);
-+	ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
-+	if (ret)
-+		return ret;
-+	ret = btrfs_map_bio(fs_info, bio, mirror_num);
-+	return ret;
++	bio = btrfs_bio_alloc(disk_bytenr);
++	/* bioset allocation should not fail */
++	ASSERT(bio);
++
++	bio->bi_opf = opf;
++	bio->bi_private = cb;
++	bio->bi_end_io = endio_func;
++
++	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
++		struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
++		struct btrfs_device *device;
++
++		device = btrfs_zoned_get_device(fs_info, disk_bytenr,
++						fs_info->sectorsize);
++		if (IS_ERR(device)) {
++			bio_put(bio);
++			return ERR_CAST(device);
++		}
++		bio_set_dev(bio, device->bdev);
++	}
++	return bio;
 +}
 +
  /*
   * worker function to build and submit bios for previously compressed pages.
   * The corresponding pages in the inode should be marked for writeback
-@@ -499,19 +513,13 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+@@ -464,22 +499,11 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	cb->orig_bio = NULL;
+ 	cb->nr_pages = nr_pages;
  
- 		page->mapping = NULL;
- 		if (submit || len < PAGE_SIZE) {
--			atomic_inc(&cb->pending_bios);
--			ret = btrfs_bio_wq_end_io(fs_info, bio,
--						  BTRFS_WQ_ENDIO_DATA);
--			if (ret)
--				goto finish_cb;
+-	bio = btrfs_bio_alloc(first_byte);
+-	bio->bi_opf = bio_op | write_flags;
+-	bio->bi_private = cb;
+-	bio->bi_end_io = end_compressed_bio_write;
 -
- 			if (!skip_sum) {
- 				ret = btrfs_csum_one_bio(inode, bio, start, 1);
- 				if (ret)
- 					goto finish_cb;
- 			}
+-	if (use_append) {
+-		struct btrfs_device *device;
+-
+-		device = btrfs_zoned_get_device(fs_info, disk_start, PAGE_SIZE);
+-		if (IS_ERR(device)) {
+-			kfree(cb);
+-			bio_put(bio);
+-			return BLK_STS_NOTSUPP;
+-		}
+-
+-		bio_set_dev(bio, device->bdev);
++	bio = alloc_compressed_bio(cb, first_byte, bio_op | write_flags,
++				   end_compressed_bio_write);
++	if (IS_ERR(bio)) {
++		kfree(cb);
++		return errno_to_blk_status(PTR_ERR(bio));
+ 	}
  
--			ret = btrfs_map_bio(fs_info, bio, 0);
-+			ret = submit_compressed_bio(fs_info, cb, bio, 0);
+ 	if (blkcg_css) {
+@@ -523,10 +547,14 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
  			if (ret)
  				goto finish_cb;
  
-@@ -537,18 +545,13 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 		cond_resched();
- 	}
+-			bio = btrfs_bio_alloc(first_byte);
+-			bio->bi_opf = bio_op | write_flags;
+-			bio->bi_private = cb;
+-			bio->bi_end_io = end_compressed_bio_write;
++			bio = alloc_compressed_bio(cb, first_byte,
++					bio_op | write_flags,
++					end_compressed_bio_write);
++			if (IS_ERR(bio)) {
++				ret = errno_to_blk_status(PTR_ERR(bio));
++				bio = NULL;
++				goto finish_cb;
++			}
+ 			if (blkcg_css)
+ 				bio->bi_opf |= REQ_CGROUP_PUNT;
+ 			/*
+@@ -790,10 +818,13 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	/* include any pages we added in add_ra-bio_pages */
+ 	cb->len = bio->bi_iter.bi_size;
  
--	atomic_inc(&cb->pending_bios);
--	ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
--	if (ret)
--		goto last_bio;
--
- 	if (!skip_sum) {
- 		ret = btrfs_csum_one_bio(inode, bio, start, 1);
- 		if (ret)
- 			goto last_bio;
- 	}
+-	comp_bio = btrfs_bio_alloc(cur_disk_byte);
+-	comp_bio->bi_opf = REQ_OP_READ;
+-	comp_bio->bi_private = cb;
+-	comp_bio->bi_end_io = end_compressed_bio_read;
++	comp_bio = alloc_compressed_bio(cb, cur_disk_byte, REQ_OP_READ,
++					end_compressed_bio_read);
++	if (IS_ERR(comp_bio)) {
++		ret = errno_to_blk_status(PTR_ERR(comp_bio));
++		comp_bio = NULL;
++		goto fail2;
++	}
  
--	ret = btrfs_map_bio(fs_info, bio, 0);
-+	ret = submit_compressed_bio(fs_info, cb, bio, 0);
- 	if (ret)
- 		goto last_bio;
- 
-@@ -819,12 +822,6 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 		if (submit || bio_add_page(comp_bio, page, pg_len, 0) < pg_len) {
- 			unsigned int nr_sectors;
- 
--			atomic_inc(&cb->pending_bios);
--			ret = btrfs_bio_wq_end_io(fs_info, comp_bio,
--						  BTRFS_WQ_ENDIO_DATA);
--			if (ret)
--				goto finish_cb;
--
- 			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
- 			if (ret)
- 				goto finish_cb;
-@@ -833,7 +830,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 						  fs_info->sectorsize);
- 			sums += fs_info->csum_size * nr_sectors;
- 
--			ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
-+			ret = submit_compressed_bio(fs_info, cb, comp_bio, mirror_num);
+ 	for (pg_index = 0; pg_index < nr_pages; pg_index++) {
+ 		u32 pg_len = PAGE_SIZE;
+@@ -834,10 +865,14 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
  			if (ret)
  				goto finish_cb;
  
-@@ -847,16 +844,11 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 		cur_disk_byte += pg_len;
- 	}
+-			comp_bio = btrfs_bio_alloc(cur_disk_byte);
+-			comp_bio->bi_opf = REQ_OP_READ;
+-			comp_bio->bi_private = cb;
+-			comp_bio->bi_end_io = end_compressed_bio_read;
++			comp_bio = alloc_compressed_bio(cb, cur_disk_byte,
++					REQ_OP_READ,
++					end_compressed_bio_read);
++			if (IS_ERR(comp_bio)) {
++				ret = errno_to_blk_status(PTR_ERR(comp_bio));
++				comp_bio = NULL;
++				goto finish_cb;
++			}
  
--	atomic_inc(&cb->pending_bios);
--	ret = btrfs_bio_wq_end_io(fs_info, comp_bio, BTRFS_WQ_ENDIO_DATA);
--	if (ret)
--		goto last_bio;
--
- 	ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
- 	if (ret)
- 		goto last_bio;
- 
--	ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
-+	ret = submit_compressed_bio(fs_info, cb, comp_bio, mirror_num);
- 	if (ret)
- 		goto last_bio;
- 
+ 			bio_add_page(comp_bio, page, pg_len, 0);
+ 		}
 -- 
 2.32.0
 
