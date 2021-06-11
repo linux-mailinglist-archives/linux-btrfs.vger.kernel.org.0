@@ -2,149 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92923A3D7D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 09:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AEF3A3D7F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 09:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhFKHsO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 03:48:14 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:28587 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230467AbhFKHsJ (ORCPT
+        id S230440AbhFKHvq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 03:51:46 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:15361 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229733AbhFKHvp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 03:48:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1623397571;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HY3joFsFwZpc2q6B4pYQwy2jUSJT4AEYmZ1lFD/0Alk=;
-        b=H+Qe3HImVbrMB31qc/A4e1Ewb1L1Cz684ECTxGigBCnnm6e2tP8aoTCdllrGLGD1hP1Dyj
-        uD32ln/LWfDIEi16Dlc1NW7eRFvrOKzygDvHnyNF01U1rtR9M4TYejofaTuw2jlFGTaYjS
-        jzPRHFDxoKmbg4cy5q5NRcPw0kWcpFg=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2110.outbound.protection.outlook.com [104.47.18.110])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-28-mMM8DU1gOR6rDNiHfSO4Ag-1; Fri, 11 Jun 2021 09:46:10 +0200
-X-MC-Unique: mMM8DU1gOR6rDNiHfSO4Ag-1
+        Fri, 11 Jun 2021 03:51:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1623397788; x=1654933788;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=WVQGvo4JyekxQV5+0C71cmFzBF+K6JVriYRZOcHPOzs=;
+  b=gGx3t2rLinmxidaasq/CyaM5dpH+DBnn4vL21hPPUOJG+BE0vQk3NdEr
+   OWNyT4e0kl8CbkF5ckU0Hoi/vS17/hJXW5K77NCRNoyE7dUQuxGAFUfR2
+   x6eYkhj2NsIrtLMUj9Ie/hvi+LDl0bkUQ5PQwO66fo+nlGrDJ7E2m8XW2
+   W+ds4BAWVyGy3hf5sZO1hlDhv/0rAucZJxS/zFjN2+3J8Ka/kGzz5MlYK
+   0hv0LsPOYY2NjONso4FOs9e3d6Hf8Slu1EIPy06izoiClADS+7NY9UUri
+   AKdfbtIscy5jxhyrjAbBfneZr1jyWnDLsfK0uH36VXxNwsvCx8bik2MMn
+   w==;
+IronPort-SDR: ovrUphNlkLNEzoC+YWa0/gir9lQ0/XSySNOExrQqUy7DAljx548EF4g4omTxHDq7xItDoFtssb
+ 9Xb5ekbXvCt64MxUnBvbCo9oQCID752tc4sBPDfI+IMoj8Ye6geF8KCUJmeuPniDomzE72xBvC
+ X8q6zMgwqNFimajBghF4ss+kpQoZg4EwEdY0knEeIxLh6X6ZpMYQndpqCxt+mohUX2gxNDROMw
+ sKPXxx4ARQ9ck5fRtOtBl2RSvbdBS89ClmZpnIF9hrhzfIAZga+4qxluetGtv0Kr485YaGkj84
+ 0sg=
+X-IronPort-AV: E=Sophos;i="5.83,265,1616428800"; 
+   d="scan'208";a="172124441"
+Received: from mail-dm6nam10lp2108.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.108])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Jun 2021 15:49:47 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NDoYBcXT1Pko85G3NY+/+ZdLeEzNI5bjbR0MGHXXLhJjqYKPT1DVb54HHoyete6Ev7wzjIZJkaq7ZDowoW1sBQ3eaaEGm8sMbjON4r+IXBA21XcmmIKGq1X6iGI53hTrbh3tk58TUi4ChFXrY4+NpD3yRbXFMyIfaPb8gnY1G+Nk6K0b0wyMCOXJe8ajAIQmrY3ifnq3OZNrxGcoLkvKBmiQ4zF3Fm3eXhqgQgxfFUQpiMSBrUk4+/rhgRWpeI619pHxzhsVXp+zD1S9V0w6oOzSWMGa/1dfYrL4nCJnYIuW5skvTzH5sU85XEN1HRMDkbepCrbC8unDy25r1dXGCA==
+ b=UZYeIqt/hBRqZLtPnAaWsW5S4tzQ/UOxLO+G+K8iaitoJdGqBrHNHhG4FfAqE4Yp4Y+tl0NqJIOQOMslE6pXjoudfyRBHBfc9Gy1fwJ1ijPb2QYvtRNgYfO8DlDYV5H2+j0UaiWNLTauKw3pubNMlWXM7S/yLO7aCl7vgSRJpEnbG/mA1Ipi8+12IUJNm8Msvx3KJUHFmvaKrhCLPen2LnvQGJSQS56Ecx5RvFuYodykGCtFqV6fB0enQrIdWrDjpjfoU+W6MeFkAnm5RzFtg5Wbh3YhUun5+R9uSfJnXEnHWJmnPBMfnS/MsZI7Gi6OxE7d5uyIY6NEnCCqjOFjRA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VUBY8n5br/Q3MMnqsvuDxqAycL66dy3cS4e+5YKODRc=;
- b=Myz5SIlsz+IhmgM1DYSkz/exXUbZx4TJeDox0cLRDJomMoaQIIl926O7IB+2TPd+ScM4wZYDi48nZxhthirJ70MVzTNbp49zXtdwk9SncjDL35nQjwxY/CJodrxYJ5hKEgTv6TXpDIkXBDwra6HFT5UpjlNwasXuTmQFIC9TufcfP0jiA7SqVLm7j49AFvic74r5IMMfIAK0RN8D4TaI2pKbiYUa5Edppz5kjYARCCplRZi6O85rkwL2MfyMQLu79mtBWrer44emafzGFtaqJH2DF+RIz55vWKgR1nnChLJNH5jvP23wQCWYROd3UfSwWC+SwQKKF+AX7x1Ogec8BQ==
+ bh=sJzDQzJzNf+U4NJpZQna9MaojGc3GeWiZj2tGJt/Tos=;
+ b=PT8TWhbUBPDMbZ0J1KqL0VUnJ9PPuNb8GyuKgj4Avm21dvtz7HI1AMy/2Z1czVmpcHMlC/E1u3OQoh66kATyPHdQAyV8j/PPCvnrWRjdtHhmDFE2TurJrrXWDIUTolOn/qVWEUyD8haIECOre9uqn8aXN7oSzC6+zP6em6/HnUn3SxfzYiV85FqL+CXJRRjK584yZGjDhX7Zj95qxYSEbAVUb4gj1jGCcF2qXGOkuzl/suQFfcgp68gVoYfPN3T+gOIAm1IDtVs5kyy/F0G0FSoZr6v7P/Kr/dBdd3wQ5FfF/klhi2v50VszQS/E5vDb8XfU1IQDQufpB+7MMSVq2Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AM5PR0401MB2449.eurprd04.prod.outlook.com (2603:10a6:203:35::18) with
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sJzDQzJzNf+U4NJpZQna9MaojGc3GeWiZj2tGJt/Tos=;
+ b=Yq9eHsC8Dg/KsZxrkvw/Eke0zsn+EyYCuSKa9jN4urJVoP7JY7usmxH4/7rdNuoxrRXsc0cwWSTzLWdH6NmAyGr8O0Gpmm+E2l4RItK/MXCTAeKiCRP+qaK4mmD1BIsEbjwsC7Q3Vj8YXLvWGA1O/c70hesIoDAJapEXQpXSxP4=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7623.namprd04.prod.outlook.com (2603:10b6:510:51::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Fri, 11 Jun
- 2021 07:46:09 +0000
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::b8b1:d726:a3c7:9cb]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::b8b1:d726:a3c7:9cb%7]) with mapi id 15.20.4195.032; Fri, 11 Jun 2021
- 07:46:09 +0000
-Subject: Re: [PATCH 4/9] btrfs: hunt down the BUG_ON()s inside
- btrfs_submit_compressed_write()
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20; Fri, 11 Jun
+ 2021 07:49:45 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4219.023; Fri, 11 Jun 2021
+ 07:49:45 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Qu Wenruo <wqu@suse.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 8/9] btrfs: make btrfs_submit_compressed_read() to
+ determine stripe boundary at bio allocation time
+Thread-Topic: [PATCH 8/9] btrfs: make btrfs_submit_compressed_read() to
+ determine stripe boundary at bio allocation time
+Thread-Index: AQHXXmGkeNgEMm2fkEuHw4DggYnomg==
+Date:   Fri, 11 Jun 2021 07:49:45 +0000
+Message-ID: <PH0PR04MB741678D81425B3F3E24DD28D9B349@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <20210611013114.57264-1-wqu@suse.com>
- <20210611013114.57264-5-wqu@suse.com>
- <PH0PR04MB74168CCA9DF58BAA47A965D49B349@PH0PR04MB7416.namprd04.prod.outlook.com>
-From:   Qu Wenruo <wqu@suse.com>
-Message-ID: <1ff0719b-db66-9485-6b5b-590c3795a3dd@suse.com>
-Date:   Fri, 11 Jun 2021 15:46:01 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <PH0PR04MB74168CCA9DF58BAA47A965D49B349@PH0PR04MB7416.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ <20210611013114.57264-9-wqu@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:141b:f301:e91f:9de6:cb32:f149]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 41cc9830-5bdf-47a7-df29-08d92cad7b39
+x-ms-traffictypediagnostic: PH0PR04MB7623:
+x-microsoft-antispam-prvs: <PH0PR04MB7623459CF2E210DCED6F80D89B349@PH0PR04MB7623.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ohP3Loipw6ko/g3c8jzVIb3inuQ+yBd9g5yxncPLRijj8hVRGz1ACRCt1gA2ATm5DZ+/bYAlCfEH8BrOg8Oa3v4jjr6mwlXm8UqkvJGQ4BwoYjDCCkOC4Ol+iCUPifqHc5TjYlQr4xoLiDoAGuYXi2ZXQyY54GudlpfXPQydcMus0aTgsUgv6SOmWA8cmlo9sCIuRd+YEgqrf7GIf0V78QYdERivTZT57ewIF37kHP8QwzVRRpHDR4YY8oVpMwTuVALZOQWYNwQ72qY+Hf1vGLcmAknQB7ZVdiopj4UEEnVK/l0FqouSsX/iBobmBIvqWEGNAe/QgdKy/NAHY3zogNY0DLkU5olsoEOcfHfj5GFQCZe0HzHggZI3v3gHpxpL1rTVlVIkiXopuk0nLgz7R42CoOoK+QkA1jhMA/pPptXrsU2he2zVxxARTvp3oxaoth5TBDf/+M6CEeLWeuRHcb1t4N14jlVfywJaQS8SvORyFQ4HdZ3zZqoAtVlzR2Anjpe3rLAR2+8WnWXba12wxYesxkF68yRrM3AOwvUD5zBmlmF/BNTm8W8LzgCR3ANWJL6WGG4LNiwyeWuDI/uYcGKZPckcMHhgzLmFg1yFhtQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(396003)(136003)(66556008)(66446008)(76116006)(64756008)(33656002)(6506007)(66946007)(478600001)(53546011)(66476007)(5660300002)(9686003)(91956017)(52536014)(55016002)(71200400001)(83380400001)(7696005)(38100700002)(2906002)(316002)(186003)(110136005)(86362001)(8936002)(8676002)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?XzC30XIZE38kEKsOfRWEgqS83VH9+AalMdxOJnm/HoiuW5AaZmD/C/6bZEM7?=
+ =?us-ascii?Q?VIyJVzEX9Imys8vZXn3PyF5nMhFamxf/32E/EKit46/SdbUyJgFHNBLGeNox?=
+ =?us-ascii?Q?Lc+270BRk4lEHgDLn4//uA72iINvup6JlQSvpf7iMKD9NM3tJtTYnY1WVx2h?=
+ =?us-ascii?Q?kQU2LvQL7HIcxGEfXwwW4UsK7Pv4+QKva+QvYF3TUZyBUmk90p7eWcloMpAN?=
+ =?us-ascii?Q?6hgUyzTXc95htdYeg/Lkp66G7pYGIAhPyKi/QEL98C6HRP5Q2pTDcxORY+po?=
+ =?us-ascii?Q?xMLJCF9i4snt+10kiAo+41yjSFPJ6kGKTYWk0DhTkKhjO+m2u6oJ9MuGYo9F?=
+ =?us-ascii?Q?d7aad4DRwIYh3tfA9VV9FDn41E2dd2ubGeD2l/yJnVzBne9GkyntIWYnuu6Q?=
+ =?us-ascii?Q?GyNH4X8a31w87TyV38QKDcHv/8XiwnfY6ZmR44+XbVAa5GeH26Z0O8yIFyTQ?=
+ =?us-ascii?Q?h0NI5yiOwn7qznqzTx0Z3B/GoPzfpA3OHPnmzM6wEJYdb9YUqQkk9LHslSAY?=
+ =?us-ascii?Q?Spozww3g3aIkvut9uzvDJPGebDecxTDs8d/KThSuTW2B1YMJi/JDt8YO2tKe?=
+ =?us-ascii?Q?iILGnAOoU6o366dDdPD9w0SSKpVdBegP8RYRVV0VEll3MaP7PR5nF2y3XOJC?=
+ =?us-ascii?Q?6r3DdVvSQBLsIL0nPXmEQ+V9usFiJCgUdPb/B4XnWa707D2UhCG0u/yqHVmk?=
+ =?us-ascii?Q?jVvPBjU3UlX/PjcNKXJsqs/sWmEk1BgY8Tjp1QieBynSCyLA/jJIHbsExgZp?=
+ =?us-ascii?Q?ejQuHHxQb/xb+8VEsmJC1J/NFEEPUfzeWIZ245DluDx/mB1cjtkQ2c0W+orn?=
+ =?us-ascii?Q?mAd4coGAXH7aUk7OfHJN+Niu3EMuRfsLSw4Gd9r/YHMN4lFbHPkCFn5EUUq2?=
+ =?us-ascii?Q?1xb1+j1FfxlTGWnTVy9tsGFBlaBgAfwplwetR0qAY/gcj0GehO9LpeBMamL0?=
+ =?us-ascii?Q?Abw66X2Id23zkXO5WyXP/kPdBObhS3BprX3PcDbAvVrGs2E+/xR5CET9tIbP?=
+ =?us-ascii?Q?hEGkqzJtZeMvImqrF4byRQZkgfvqabRo4JLWJfPtsk32pqlaUZ6zG6L4MaYJ?=
+ =?us-ascii?Q?PXmz7GAREjFkkJ5toK6RJY4KxYc+ITUIScpb7AbvPt+uftqFhPcaxSJ6v3Vu?=
+ =?us-ascii?Q?arDM8X7LuBeQV3WAZsS1OxpWuGfF6jo6gOokqmX+QS1XTMgtSg2oVLSvgIKn?=
+ =?us-ascii?Q?ChZjKdUrWaNr3WJr3/09TfDqW3V0peh9UJfnVhWqQklshXhEbrpHpfj2Irps?=
+ =?us-ascii?Q?yIA9ubXgpJ4rZ0ZLkhr1pKympz0OoNzfz8Fd3802j2cUO9CBzsNLv8XVjr1k?=
+ =?us-ascii?Q?/JGdT02k9OhyrqxQQJIozbTir2nD7F+9ATa9QpvZeFY0jRXme24TLD9Jksgm?=
+ =?us-ascii?Q?dN/mH9N5y/74a/WlWQnfs5Cqkm08rJlvpSgcDGasZM/83lVpLg=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [149.28.201.231]
-X-ClientProxiedBy: BYAPR05CA0010.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::23) To AM7PR04MB6821.eurprd04.prod.outlook.com
- (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR05CA0010.namprd05.prod.outlook.com (2603:10b6:a03:c0::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.9 via Frontend Transport; Fri, 11 Jun 2021 07:46:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e610b618-bbbb-4d18-f81c-08d92cacfa45
-X-MS-TrafficTypeDiagnostic: AM5PR0401MB2449:
-X-Microsoft-Antispam-PRVS: <AM5PR0401MB2449BF97FB7A52931D3B3298D6349@AM5PR0401MB2449.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WtaFZEQ6KnSGqGUhRNENOrkIWAm7PXcsHyzMdeLIEAU2BoCHpu6cE8wJZP0o9a9X8l2DPapgq0N6NMYKzUqoVHccm4kEhbRiGdBuxw9GxV4Lrlzq3UQM8qvKKxHSujNr7OuJy1Amc9DYv5m3qdIfMjn1f30RITEfCuHenSa0gn0YaFzdWxbJuwrQtiMcXH7BTP0y76RcO6vyoEu/PBEYCXoDDcvpUiBNjqa0HeHI6d7tMPL6EirE7dbncO8qCDP6ODGWfmNI/1MJavNIsIYVqhLeMRIUfCNa1RilAOZjeW7SeKO/IFzf2raus9gA+GbgkVtAeBG0DoILkRb+HP7GMuXYf0Rkj5Gjg8Wp9IdjJ1XgjG4kMJVToTlFo0eXZr5x0UkOmqbl+RBFeiPmclgNOyoAaXuIBxK887LXQ11qyrmnzIFyOA2YLQIuCnOpVQ/jjU/n7qsuDICSQGVM8tUwG/aObe3kAGFFv8eJh0NMEC4DomEUTBtZ2F8pGqeJ9DISPrbDfnnKxpHNjAoQYci+RtAbDHdM7ahccFvZX26PAuuzfasVQpdrrr7uOx+8J2MzjuRtB7MmjTrt8ULDISRnl0OA/A0cf3OOr/B8F9++6KW1aNhCL5tWgGCYGo/Fl3xKXkWxaNy6nA7KrzGriD9Te1oF2ykijQsnCrjI3AtpPXLrP+sxpKrHqg49gZU/VWnYd1qe8r27UlP3Aw5kYGCfyA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(346002)(396003)(39860400002)(16576012)(6706004)(38100700002)(83380400001)(6666004)(8676002)(8936002)(478600001)(110136005)(31686004)(4744005)(36756003)(53546011)(66946007)(66556008)(66476007)(86362001)(2616005)(2906002)(31696002)(16526019)(956004)(6486002)(316002)(5660300002)(186003)(26005)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9Y2Lq0TSlWnajmNYgNDRgsZXuO63ksUMnsCVnq6ugGXyAOZMnlNp98zpZjsG?=
- =?us-ascii?Q?2zUt/eGfqI3kp4jsZ67F+aBGR//FZj8uRnYt8//aKFQ7EMZq+UedR4nnxTOO?=
- =?us-ascii?Q?KRzcFBOrNHpYiQ+7iCR6ERZDsjJu1xP9AuxLq55pzpCFwLMACu2/NuiFclvY?=
- =?us-ascii?Q?2tOVnS0/KQjeITQpd0mbJc+FjVYppc5zbO/N34AVMk0SirAhcn+5Ku3uZcU5?=
- =?us-ascii?Q?uDNjZazI1NPz8YKJiw1CL1sKB33v+PC/VwZGljvWTFCJgF7cQREDL94EyjwY?=
- =?us-ascii?Q?Py/xjVXlcqRThxlxP2TDDbVzc7qni9MShmTnYI948IkMFcudix8LKhUUUKCH?=
- =?us-ascii?Q?w/na4zw/n7mKShGAk45fYwPx4Bk0WJO54ONVPpRxGPB1mkt8pb/I5Ullstxx?=
- =?us-ascii?Q?i0G18Dfcl4ZLNfLCfSWaD78nMqV64IQk9JzDD/GzsWIMVuAWXqX3OUmao/Dc?=
- =?us-ascii?Q?JTyjULqzyE8Hlzbl6+C+IMDTXdF3YJPTY27lkOq5vACDcPumuCnxOXRHqXPI?=
- =?us-ascii?Q?GFMQzXPMG3TbG33W+FOwilnIkgwn+UZbRHrhu1ciMUzOyOpICKqnaZzVG69S?=
- =?us-ascii?Q?ozVltOtORlJ+X64wcibQdUM3mjgSRfBACuZyeFDzvRE5KAyisblJPDpiEjea?=
- =?us-ascii?Q?EZh3ElXk9AeInttN8xqGbyAe3uqCU1oHx90cpVLh/aThyxd9YSgWNywrSprm?=
- =?us-ascii?Q?DumSNSMoOg9kwwLL90x2yXh98KtmFadHh6nDt9fm8vAaWdzl1EUjLw6rL9RO?=
- =?us-ascii?Q?yAbuNI1PgJgOMPICSSv7Lsh+jFhs6G6ygyDHkoGU93ynr3W+0Zpu09F6mAkk?=
- =?us-ascii?Q?aLLfN+phJSKMvcs1RyeSDEM4jGS9+mSFKdSkY+DwBZNVjSC1fEEm22CyG6EO?=
- =?us-ascii?Q?Zzl8lMk1kgd4HpdCSdLGcoy9nyNKaePlG2Mz6Fyav8gES4pnPD0/nt5vR6Xb?=
- =?us-ascii?Q?5UXwVnWn14PzLQ0x8q8eLkdxorAZBIB7PA16OqhqdJzJGHBg38Wvt49DUlD2?=
- =?us-ascii?Q?+i8ZqKfirwHGDg91uMyVGzirsnXvycy9CtEAq8SMI9/cxUgfwZQii4WPdeTV?=
- =?us-ascii?Q?XeF3kt38T1j4A9pnof9OGb7PYVd2Opfgd4lGmj0wUtuNPRt/usPkG9ikQ0QR?=
- =?us-ascii?Q?6lcgZdZsGRS9aYTc4ncAn8lpdy2UxRGBhLQxb4ulMsYGTCoeg2QWau+TSMXp?=
- =?us-ascii?Q?LCnZ1p2dK7gS04pJDCDx9rXCPDq9eJWz9zPLkA3qIR+RT29dY6AjtVEe4B9O?=
- =?us-ascii?Q?YbjvwhRxvuzqepgVGm+Ijtah0+L+ydycU0eTw68jKvild07tkk7yNA3e++EA?=
- =?us-ascii?Q?qSRhA0LWTQWpf5C7bmEg3FM1?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e610b618-bbbb-4d18-f81c-08d92cacfa45
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2021 07:46:09.7638
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41cc9830-5bdf-47a7-df29-08d92cad7b39
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2021 07:49:45.6954
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MGAqW3TODulzI1E8a1UfwXFVkCHAuK5z2yT65c0IZ3DrpiwdaLZ1J6EJl7rT6SPh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0401MB2449
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iBAQ9AFTpPsKeRXyINxATRth4doVxTqwRo4lxwBFfPUjcPkR8VGR26m9aA4UuJ+DeYGFHDGIvn+Nj5HGVxFgQqUZUHCw1NoOJF15BDcaFVc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7623
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/6/11 =E4=B8=8B=E5=8D=883:36, Johannes Thumshirn wrote:
-> On 11/06/2021 03:32, Qu Wenruo wrote:
->> Just like btrfs_submit_compressed_read(), there are quite some BUG_ON()s
->> inside btrfs_submit_compressed_write() for the bio submission path.
->>
->> Fix them using the same method:
->>
->> - For last bio, just endio the bio
->>    As in that case, one of the endio function of all these submitted bio
->>    will be able to free the comprssed_bio
->>
->> - For half-submitted bio, wait and finish the compressed_bio manually
->>    In this case, as long as all other bio finishes, we're the only one
->>    referring the compressed_bio, and can manually finish it.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
-> And that one doesn't apply cleanly as well, which base did you work on?
->=20
-An old misc-next branch, with some subpage patches, which shouldn't=20
-change them.
-
-I'll update the branch to solve the conflicts.
-
-Thanks,
-Qu
-
+On 11/06/2021 03:32, Qu Wenruo wrote:=0A=
+> +		/* Allocate new bio if not allocated or already submitted */=0A=
+> +		if (!bio) {=0A=
+> +			bio =3D alloc_compressed_bio(cb, cur_disk_bytenr,=0A=
+> +				bio_op | write_flags,=0A=
+> +				end_compressed_bio_write,=0A=
+> +				&next_stripe_start);=0A=
+> +			if (IS_ERR(bio)) {=0A=
+> +				ret =3D errno_to_blk_status(PTR_ERR(bio));=0A=
+> +				bio =3D NULL;=0A=
+> +				goto finish_cb;=0A=
+> +			}=0A=
+> +		}=0A=
+> +		/*=0A=
+> +		 * We should never reach next_stripe_start, as if we reach the=0A=
+> +		 * boundary we will submit the bio immediately.=0A=
+> +		 */=0A=
+> +		ASSERT(cur_disk_bytenr !=3D next_stripe_start);=0A=
+> +=0A=
+> +		/*=0A=
+> +		 * We have various limit on the real read size:=0A=
+> +		 * - stripe boundary=0A=
+> +		 * - page boundary=0A=
+> +		 * - compressed length boundary=0A=
+> +		 */=0A=
+> +		real_size =3D min_t(u64, U32_MAX,=0A=
+> +				  next_stripe_start - cur_disk_bytenr);=0A=
+> +		real_size =3D min_t(u64, real_size,=0A=
+> +				  PAGE_SIZE - offset_in_page(offset));=0A=
+> +		real_size =3D min_t(u64, real_size,=0A=
+> +				  compressed_len - offset);=0A=
+> +		ASSERT(IS_ALIGNED(real_size, fs_info->sectorsize));=0A=
+>  =0A=
+> -	/* create and submit bios for the compressed pages */=0A=
+> -	bytes_left =3D compressed_len;=0A=
+> -	for (pg_index =3D 0; pg_index < cb->nr_pages; pg_index++) {=0A=
+> -		int submit =3D 0;=0A=
+> -		int len;=0A=
+> +		added =3D bio_add_page(bio, page, real_size,=0A=
+> +				     offset_in_page(offset));=0A=
+> +		/*=0A=
+> +		 * Maximum compressed extent size is 128K, we should never=0A=
+> +		 * reach bio size limit.=0A=
+> +		 */=0A=
+> +		ASSERT(added =3D=3D real_size);=0A=
+>  =0A=
+> -		page =3D compressed_pages[pg_index];=0A=
+> -		page->mapping =3D inode->vfs_inode.i_mapping;=0A=
+> -		if (bio->bi_iter.bi_size)=0A=
+> -			submit =3D btrfs_bio_fits_in_stripe(page, PAGE_SIZE, bio,=0A=
+> -							  0);=0A=
+> +		cur_disk_bytenr +=3D added;=0A=
+>  =0A=
+> -		if (pg_index =3D=3D 0 && use_append)=0A=
+> -			len =3D bio_add_zone_append_page(bio, page, PAGE_SIZE, 0);=0A=
+> -		else=0A=
+> -			len =3D bio_add_page(bio, page, PAGE_SIZE, 0);=0A=
+=0A=
+I think you still need to distinguish between normal write and zone append =
+here,=0A=
+as you adding pages to an already created bio. Adding one page to an empty =
+bio=0A=
+will always succeed but when adding more than one page to a zone append bio=
+, you=0A=
+have to take the device's maximum zone append limit into account, as zone a=
+ppend=0A=
+bios can't be split. This is also the reason why we do the device =0A=
+lookup/bio_set_dev() for the zone append bios, so bio_add_zone_append_page(=
+) can=0A=
+look at the device's limitations when adding the pages.=0A=
