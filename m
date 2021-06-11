@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65913A394C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 03:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00933A394D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 03:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhFKBda (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Jun 2021 21:33:30 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60776 "EHLO
+        id S231166AbhFKBdb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Jun 2021 21:33:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60782 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhFKBda (ORCPT
+        with ESMTP id S230190AbhFKBdb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Jun 2021 21:33:30 -0400
+        Thu, 10 Jun 2021 21:33:31 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 15DAD21992
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 01:31:32 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id BF9D4219A2
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 01:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623375092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1623375093; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uPIIWpxmKE2jgKRJKiiQZdV8qn12dcMI6YWAPlMhczc=;
-        b=L27Cw6uBsLzwUEpXmU8Te74zz6JAG0dj5O+hxdyFNa7+RUk2b9yrOPpwmefxL517Ttki1R
-        0emFl/dCS2STWR5ECB3hk9QY+2eQ2d0jNZ24XexRUc1YCSg5eonnJCNjzRv3RwtYxSmlwu
-        wxfvGr1vGINUlAX7C14YMo51CQo+H0Y=
+        bh=r1R3GLExusSk1SD0sPR/3xBIzFnlnMY5aw7lL71vLSo=;
+        b=GbhjjiWLtfM23fgHgBG71zZbe0DpTfdj0MaEUiJzMwhj2jiXhRsKpHfVouCzzh1WTS8Y/a
+        73yu0v4bV7AUFgCrkq4ztJVgvx1dxkrdE9W0HIZ1WJk5Ut/Q+MrpSsqZp+VUyPFt6gV+lm
+        lykLHoOdB5ZpWhsZ9feMGl0ChNTAy0M=
 Received: from adam-pc.lan (unknown [10.163.16.38])
-        by relay2.suse.de (Postfix) with ESMTP id 28D97A3B91
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 01:31:30 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id C8787A3B91
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Jun 2021 01:31:32 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 8/9] btrfs: make btrfs_submit_compressed_read() to determine stripe boundary at bio allocation time
-Date:   Fri, 11 Jun 2021 09:31:13 +0800
-Message-Id: <20210611013114.57264-9-wqu@suse.com>
+Subject: [PATCH 9/9] btrfs: remove unused function btrfs_bio_fits_in_stripe()
+Date:   Fri, 11 Jun 2021 09:31:14 +0800
+Message-Id: <20210611013114.57264-10-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210611013114.57264-1-wqu@suse.com>
 References: <20210611013114.57264-1-wqu@suse.com>
@@ -41,192 +41,81 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently btrfs_submit_compressed_write() will check
-btrfs_bio_fits_in_stripe() each time a new page is going to be added.
-
-Even compressed extent is small, we don't really need to do that for
-every page.
-
-This patch will align the behavior to extent_io.c, by determining the
-stripe boundary when allocating a bio.
-
-Unlike extent_io.c, in compressed.c we don't need to bother things like
-different bio flags, thus no need to re-use bio_ctrl.
-
-Here we just manually introduce new local variable, next_stripe_start,
-and use that value returned from alloc_compressed_bio() to calculate
-the stripe boundary.
-
-Then each time we add some page range into the bio, we check if we
-reached the boundary.
-And if reached, submit it.
+As the last caller in compression.c is removed, we don't need that
+function anymore.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 122 ++++++++++++++++++++---------------------
- 1 file changed, 59 insertions(+), 63 deletions(-)
+ fs/btrfs/ctree.h |  2 --
+ fs/btrfs/inode.c | 42 ------------------------------------------
+ 2 files changed, 44 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 71d7b1b9b4bf..de91489b92c0 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -491,10 +491,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct bio *bio = NULL;
- 	struct compressed_bio *cb;
--	unsigned long bytes_left;
--	int pg_index = 0;
--	struct page *page;
--	u64 first_byte = disk_start;
-+	u64 cur_disk_bytenr = disk_start;
- 	u64 next_stripe_start;
- 	blk_status_t ret;
- 	int skip_sum = inode->flags & BTRFS_INODE_NODATASUM;
-@@ -518,38 +515,58 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 	cb->orig_bio = NULL;
- 	cb->nr_pages = nr_pages;
- 
--	bio = alloc_compressed_bio(cb, first_byte, bio_op | write_flags,
--				   end_compressed_bio_write,
--				   &next_stripe_start);
--	if (IS_ERR(bio)) {
--		kfree(cb);
--		return errno_to_blk_status(PTR_ERR(bio));
--	}
-+	while (cur_disk_bytenr < disk_start + compressed_len) {
-+		u64 offset = cur_disk_bytenr - disk_start;
-+		int index = offset >> PAGE_SHIFT;
-+		unsigned int real_size;
-+		unsigned int added;
-+		struct page *page = compressed_pages[index];
- 
--	if (blkcg_css) {
--		bio->bi_opf |= REQ_CGROUP_PUNT;
--		kthread_associate_blkcg(blkcg_css);
--	}
-+		/* Allocate new bio if not allocated or already submitted */
-+		if (!bio) {
-+			bio = alloc_compressed_bio(cb, cur_disk_bytenr,
-+				bio_op | write_flags,
-+				end_compressed_bio_write,
-+				&next_stripe_start);
-+			if (IS_ERR(bio)) {
-+				ret = errno_to_blk_status(PTR_ERR(bio));
-+				bio = NULL;
-+				goto finish_cb;
-+			}
-+		}
-+		/*
-+		 * We should never reach next_stripe_start, as if we reach the
-+		 * boundary we will submit the bio immediately.
-+		 */
-+		ASSERT(cur_disk_bytenr != next_stripe_start);
-+
-+		/*
-+		 * We have various limit on the real read size:
-+		 * - stripe boundary
-+		 * - page boundary
-+		 * - compressed length boundary
-+		 */
-+		real_size = min_t(u64, U32_MAX,
-+				  next_stripe_start - cur_disk_bytenr);
-+		real_size = min_t(u64, real_size,
-+				  PAGE_SIZE - offset_in_page(offset));
-+		real_size = min_t(u64, real_size,
-+				  compressed_len - offset);
-+		ASSERT(IS_ALIGNED(real_size, fs_info->sectorsize));
- 
--	/* create and submit bios for the compressed pages */
--	bytes_left = compressed_len;
--	for (pg_index = 0; pg_index < cb->nr_pages; pg_index++) {
--		int submit = 0;
--		int len;
-+		added = bio_add_page(bio, page, real_size,
-+				     offset_in_page(offset));
-+		/*
-+		 * Maximum compressed extent size is 128K, we should never
-+		 * reach bio size limit.
-+		 */
-+		ASSERT(added == real_size);
- 
--		page = compressed_pages[pg_index];
--		page->mapping = inode->vfs_inode.i_mapping;
--		if (bio->bi_iter.bi_size)
--			submit = btrfs_bio_fits_in_stripe(page, PAGE_SIZE, bio,
--							  0);
-+		cur_disk_bytenr += added;
- 
--		if (pg_index == 0 && use_append)
--			len = bio_add_zone_append_page(bio, page, PAGE_SIZE, 0);
--		else
--			len = bio_add_page(bio, page, PAGE_SIZE, 0);
-+		/* Reached boundary stripe, need to submit */
-+		if (cur_disk_bytenr == next_stripe_start) {
- 
--		page->mapping = NULL;
--		if (submit || len < PAGE_SIZE) {
- 			if (!skip_sum) {
- 				ret = btrfs_csum_one_bio(inode, bio, start, 1);
- 				if (ret)
-@@ -559,47 +576,26 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 			ret = submit_compressed_bio(fs_info, cb, bio, 0);
- 			if (ret)
- 				goto finish_cb;
--
--			bio = alloc_compressed_bio(cb, first_byte,
--					bio_op | write_flags,
--					end_compressed_bio_write,
--					&next_stripe_start);
--			if (IS_ERR(bio)) {
--				ret = errno_to_blk_status(PTR_ERR(bio));
--				bio = NULL;
--				goto finish_cb;
--			}
--			if (blkcg_css)
--				bio->bi_opf |= REQ_CGROUP_PUNT;
--			/*
--			 * Use bio_add_page() to ensure the bio has at least one
--			 * page.
--			 */
--			bio_add_page(bio, page, PAGE_SIZE, 0);
--		}
--		if (bytes_left < PAGE_SIZE) {
--			btrfs_info(fs_info,
--					"bytes left %lu compress len %lu nr %lu",
--			       bytes_left, cb->compressed_len, cb->nr_pages);
-+			bio = NULL;
- 		}
--		bytes_left -= PAGE_SIZE;
--		first_byte += PAGE_SIZE;
- 		cond_resched();
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 918df8877b45..4364733f4464 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3144,8 +3144,6 @@ void btrfs_merge_delalloc_extent(struct inode *inode, struct extent_state *new,
+ 				 struct extent_state *other);
+ void btrfs_split_delalloc_extent(struct inode *inode,
+ 				 struct extent_state *orig, u64 split);
+-int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+-			     unsigned long bio_flags);
+ void btrfs_set_range_writeback(struct btrfs_inode *inode, u64 start, u64 end);
+ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf);
+ int btrfs_readpage(struct file *file, struct page *page);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 27d56a77aa5f..abbee108b298 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2232,48 +2232,6 @@ void btrfs_clear_delalloc_extent(struct inode *vfs_inode,
  	}
+ }
  
--	if (!skip_sum) {
--		ret = btrfs_csum_one_bio(inode, bio, start, 1);
-+	/* Submit the last bio */
-+	if (bio) {
-+		if (!skip_sum) {
-+			ret = btrfs_csum_one_bio(inode, bio, start, 1);
-+			if (ret)
-+				goto last_bio;
-+		}
-+
-+		ret = submit_compressed_bio(fs_info, cb, bio, 0);
- 		if (ret)
- 			goto last_bio;
--	}
+-/*
+- * btrfs_bio_fits_in_stripe - Checks whether the size of the given bio will fit
+- * in a chunk's stripe. This function ensures that bios do not span a
+- * stripe/chunk
+- *
+- * @page - The page we are about to add to the bio
+- * @size - size we want to add to the bio
+- * @bio - bio we want to ensure is smaller than a stripe
+- * @bio_flags - flags of the bio
+- *
+- * return 1 if page cannot be added to the bio
+- * return 0 if page can be added to the bio
+- * return error otherwise
+- */
+-int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
+-			     unsigned long bio_flags)
+-{
+-	struct inode *inode = page->mapping->host;
+-	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-	u64 logical = bio->bi_iter.bi_sector << 9;
+-	u32 bio_len = bio->bi_iter.bi_size;
+-	struct extent_map *em;
+-	int ret = 0;
+-	struct btrfs_io_geometry geom;
 -
--	ret = submit_compressed_bio(fs_info, cb, bio, 0);
--	if (ret)
--		goto last_bio;
- 
-+	}
- 	if (blkcg_css)
- 		kthread_associate_blkcg(NULL);
+-	if (bio_flags & EXTENT_BIO_COMPRESSED)
+-		return 0;
 -
- 	return 0;
- 
- last_bio:
+-	em = btrfs_get_chunk_map(fs_info, logical, fs_info->sectorsize);
+-	if (IS_ERR(em))
+-		return PTR_ERR(em);
+-	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), logical, &geom);
+-	if (ret < 0)
+-		goto out;
+-
+-	if (geom.len < bio_len + size)
+-		ret = 1;
+-out:
+-	free_extent_map(em);
+-	return ret;
+-}
+-
+ /*
+  * in order to insert checksums into the metadata in large chunks,
+  * we wait until bio submission time.   All the pages in the bio are
 -- 
 2.32.0
 
