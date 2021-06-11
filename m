@@ -2,111 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8623A4322
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3713A4341
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Jun 2021 15:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbhFKNlH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Jun 2021 09:41:07 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39894 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhFKNlG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Jun 2021 09:41:06 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id F26E82199C;
-        Fri, 11 Jun 2021 13:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623418747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=2bZT0Yp1evBZn7l5BsX4NdOcO+PvrvPSJN3LNN9+C04=;
-        b=J+0OzaYVOIqPJ4cWpBFTX8sYiNQ/ZqXi44JHLw94gyCxt1yqr7fJTY+zryLV5Dm/CyD/ws
-        zDur1LvuvjdkArRwh4D0NGPcbLBUjNj9CGpmWLXxDzpoxQUGaMIOowKdPanCSeaMzgpAue
-        EZcUnzjXUwFTQ5y080Pe3sjfPkzySWE=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E74DDA3BBB;
-        Fri, 11 Jun 2021 13:39:07 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E1EE0DA77B; Fri, 11 Jun 2021 15:36:22 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>, anand.jain@oracle.com,
-        osandov@osandov.com
-Subject: [PATCH v2] btrfs: sysfs: export dev stats in devinfo directory
-Date:   Fri, 11 Jun 2021 15:36:22 +0200
-Message-Id: <20210611133622.12282-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.31.1
+        id S230457AbhFKNt6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Jun 2021 09:49:58 -0400
+Received: from mout.gmx.net ([212.227.15.15]:58483 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229874AbhFKNt6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Jun 2021 09:49:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1623419269;
+        bh=DQZaNV/hwR/W07WPShIulNh1yaAYynzVvSqkCu5eIgw=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=gv0lZuxvaCRSdJw9ALtXnvPNz0RpqA3o41KJkHnFS3JAjFQN0NXaOJPZaJGXTvfRW
+         cRfk/2pcZiRH3pYPujayL27QT3O3kXFTqWzKe5XgNOYazGOEsu4txjz+xPemm2fyAr
+         YAjNey8WEfRl/vTGUIWJQwCexlRqJdpxyNvj5fgc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMGRA-1laadG39Pi-00JMkH; Fri, 11
+ Jun 2021 15:47:49 +0200
+Subject: Re: [PATCH] fs: btrfs: Disable BTRFS on platforms having 256K pages
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-btrfs@vger.kernel.org, linux-hexagon@vger.kernel.org
+References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <a2411cbb-d793-5e11-dd4f-cc25ca55ed91@gmx.com>
+Date:   Fri, 11 Jun 2021 21:47:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Oz7Y2Pd5S35Xo4teAX2NkhjMPqdlSnZ/X9M7YWX87qJwU02UdFX
+ ONeoj46pv+uWradLLCwtNKQu4Cfv5yDkU6d45LZ5rCh+Y/quqn58yXkyyZr6GdAEf3NTJn6
+ z73x+9KfLF5ujCc1xo8aUcmcu5186WRbra////x4K2z4hYyKti1aXCI9uvZG1WZSdk0eBZg
+ 3K2AT4odeGMgO39E5fGTw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fbDu+ROrRRM=:IYeBLdyGVO30AKgwzEsXt4
+ gG4vovTO3s34V2CXIH3btu/cwpr/xRNSZG+86ds/zxDzdUzeY40v7unNYDxYiGA7hBEhp06gZ
+ 1kh0kIajOPnDNXZAVoNo2FOE4IwWrLS+SZHAgNy5/Qtn2ZH+e0k2w4vxK5qwZqXbmsoMDtWqp
+ UXyB3B9yrQ9TdOzaN33n0BsCpu3L4OIFkhnrzrlkRZtlyJHaPM29WA/0VjiuoEmeYKY7AsgvQ
+ 4HmmPnPePgovVDoNVTnoM0EXHFE0HgeJOE3GBopX7zaiv4b+7mdkZOchAM7N+oPe/2+D11V3b
+ grPqObRUO2Vaj6qSsKCDpaDm7ckE0eetfMVyIUo8eYRAo2FOGUBxnAha/i4mMeHmK/Ixi2Wro
+ QqNJREbuFNxzTiy9lCExyyk5+qj47I0U8Vr6UjJP4v+7F7jCPWMv5322jS6HzhuVF6qHMKwaj
+ snNtAHa6Y0m4yWBMDXM06lcKb8knZRcjlUFZJ5gc7tU6Gpi9UugylOx8y0aIE9p6ZEUQPiEzr
+ I0xhXHfh8Z4DlQV3WqMoE7vBo72U28jK09FPto0cuB4c0w/yZc0WDc9DHcDIEgEKpTjeS6t5J
+ rOUjuKHNoLdhJ5iAfr1vdC6Ky9Z3sHO4rCoD1z8K0Qp3/dzyvIltfn/s9eacKdU3FiYSHdvQd
+ gzz0Nfo2C+qJwDoE53dbldbOe13ld81dkqDJDdUENA62MzUfSKtOTKpIX/p62q3q5WaEmGJy9
+ /0JFyC/XmdhnDmv1z5N8USGAd2GVZG2VhbJbxrCfUsNinG1zo3uiw+k11TdM4bkFMwQbQM5Jl
+ /u/67Q/Ho25UIyVLHey18fBYKvh96vpKv75AJP37tclGlC5HGzfVPJbMrclCkLgMMbni5SIqe
+ v5vNKDVvLukKc1mz4IZBSO/j7MtIA9oJH86d03cDEx3NBZKy0q2JwGTUCSG1xVsOWuiwjRftW
+ VU0eBEflj0GCzVuXn0hh3YWX6IDFO5Q9crhZ2kqaFqZpAeO0l2YTp64iZkk0AvehQw46dkDmq
+ RRbxqoCumDZJhsDVv9AgnK5xMorDPNl3UhgArmNyd5e5r9+lCZHV+XmRSyS1VpPf4mxdUWJ5k
+ 4/5dGKThpbFBLPEr3JoynjRfYJJ9Xwl+O69Pqs/bVSPrGE6wvdes4F1gQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The device stats can be read by ioctl, wrapped by command 'btrfs device
-stats'. Provide another source where to read the information in
-/sys/fs/btrfs/FSID/devinfo/DEVID/stats . The format is a list of
-'key value' pairs one per line, which is common in other stat files.
-The names are the same as used in other device stat outputs.
 
-The stats are all in one file as it's the snapshot of all available
-stats. The 'one value per file' is not very suitable here. The stats
-should be valid right after the stats item is read from disk, shortly
-after initializing the device.
 
-In case the stats are not yet valid, print just 'invalid' as the file
-contents.
+On 2021/6/10 =E4=B8=8B=E5=8D=881:23, Christophe Leroy wrote:
+> With a config having PAGE_SIZE set to 256K, BTRFS build fails
+> with the following message
+>
+>   include/linux/compiler_types.h:326:38: error: call to '__compiletime_a=
+ssert_791' declared with attribute error: BUILD_BUG_ON failed: (BTRFS_MAX_=
+COMPRESSED % PAGE_SIZE) !=3D 0
+>
+> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms with
+> 256K pages at the time being.
+>
+> There are two platforms that can select 256K pages:
+>   - hexagon
+>   - powerpc
+>
+> Disable BTRFS when 256K page size is selected.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>   fs/btrfs/Kconfig | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> index 68b95ad82126..520a0f6a7d9e 100644
+> --- a/fs/btrfs/Kconfig
+> +++ b/fs/btrfs/Kconfig
+> @@ -18,6 +18,8 @@ config BTRFS_FS
+>   	select RAID6_PQ
+>   	select XOR_BLOCKS
+>   	select SRCU
+> +	depends on !PPC_256K_PAGES	# powerpc
+> +	depends on !PAGE_SIZE_256KB	# hexagon
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
+I'm OK to disable page size other than 4K, 16K, 32K, 64K for now.
 
-v2:
-- print 'invalid' separtely and not among the values
-- rename file name to 'error_stats' to leave 'stats' available for any
-  other kind of stats we'd like in the future
+Although for other reasons.
 
- fs/btrfs/sysfs.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+Not only for the BUILD_BUG_ON(), but for the fact that btrfs only
+support 4K, 16K, 32K, 64K sectorsize, and requires PAGE_SIZE =3D=3D sector=
+size.
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 4b508938e728..ebde1d09e686 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -1495,7 +1495,36 @@ static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
- }
- BTRFS_ATTR(devid, writeable, btrfs_devinfo_writeable_show);
- 
-+static ssize_t btrfs_devinfo_error_stats_show(struct kobject *kobj,
-+		struct kobj_attribute *a, char *buf)
-+{
-+	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
-+						   devid_kobj);
-+
-+	if (!device->dev_stats_valid)
-+		return scnprintf(buf, PAGE_SIZE, "invalid\n");
-+
-+	/*
-+	 * Print all at once so we get a snapshot of all values from the same
-+	 * time. Keep them in sync and in order of definition of
-+	 * btrfs_dev_stat_values.
-+	 */
-+	return scnprintf(buf, PAGE_SIZE,
-+		"write_errs %d\n"
-+		"read_errs %d\n"
-+		"flush_errs %d\n"
-+		"corruption_errs %d\n"
-+		"generation_errs %d\n",
-+		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_WRITE_ERRS),
-+		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_READ_ERRS),
-+		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_FLUSH_ERRS),
-+		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_CORRUPTION_ERRS),
-+		btrfs_dev_stat_read(device, BTRFS_DEV_STAT_GENERATION_ERRS));
-+}
-+BTRFS_ATTR(devid, error_stats, btrfs_devinfo_error_stats_show);
-+
- static struct attribute *devid_attrs[] = {
-+	BTRFS_ATTR_PTR(devid, error_stats),
- 	BTRFS_ATTR_PTR(devid, in_fs_metadata),
- 	BTRFS_ATTR_PTR(devid, missing),
- 	BTRFS_ATTR_PTR(devid, replace_target),
--- 
-2.31.1
+Although we're adding subpage support, the subpage support only comes
+with 4K sectorsize on 64K page size.
 
+Until variable length version is introduced, 256K/128K page size won't
+be support.
+
+Thus I'm fine to disable BTRFS for any arch outside of the supported
+page sizes for now.
+
+Thanks,
+Qu
+>
+>   	help
+>   	  Btrfs is a general purpose copy-on-write filesystem with extents,
+>
