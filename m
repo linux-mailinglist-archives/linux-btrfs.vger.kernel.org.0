@@ -2,70 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B72B3A58CE
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Jun 2021 15:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC4D3A58CF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Jun 2021 15:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhFMNm4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Jun 2021 09:42:56 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34572 "EHLO
+        id S231876AbhFMNm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Jun 2021 09:42:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34580 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbhFMNmz (ORCPT
+        with ESMTP id S231846AbhFMNm6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Jun 2021 09:42:55 -0400
+        Sun, 13 Jun 2021 09:42:58 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 22FC921972;
-        Sun, 13 Jun 2021 13:40:54 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AA23D21972;
+        Sun, 13 Jun 2021 13:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623591654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623591656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8BQUYBVQ/UYTbG0b/GxopWsB0aWx2Aoyv/KPIamnS/g=;
-        b=qaYXaW7TgIyV22GjU2drkZE7psLE9n0CBMgRz0qV55nCiTmmZn8GlPwtkBM+VIOgjAVqw4
-        5sjRztpCCDpmkKCkRrXs0Jok9rKyW88SYob2qBt+f3jgW0OdsmtrWqkAkXPePjm0DKjYfu
-        3U+pDGJWGUN661ZWQKQK4qT0kh7T8qA=
+        bh=D+/hZrO15Vf4vY/d/brckWzoWlmW2Z5wUX3vyyNhiWo=;
+        b=2VYk/JXOXD5WsYHucmi0wGjG4CYc9UmWYlLuXiAjxtLroa+a17XvmWL6OIsFSbeB22AQXO
+        h7nk2OT0DEsN6vISvK9ecXr7sSn5x7/Fp98P3S+5GEwfgHZVuuwRcBs0O/sIyATe/LcinB
+        OuzB3RhvL4z29tKuA/jG/t0s4mIVmVk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623591654;
+        s=susede2_ed25519; t=1623591656;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8BQUYBVQ/UYTbG0b/GxopWsB0aWx2Aoyv/KPIamnS/g=;
-        b=6cP0FydpyqqRu3iabGW7jaeeCqTuoSdDyK4hN+SwVGs3bWP8+o5hfkRRPeMH/5ZPTwhr17
-        m9ag0sSz8mFC+XAQ==
+        bh=D+/hZrO15Vf4vY/d/brckWzoWlmW2Z5wUX3vyyNhiWo=;
+        b=DKv5PZxzF2s/uJafic7iy6Cu8WKpDj3FkM4h6fqwYm2k8Jl8N8urKElLGV7uYehWqfvcIP
+        nvNSYtvtUSkrb4CA==
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id BA5F4118DD;
-        Sun, 13 Jun 2021 13:40:53 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 34AB7118DD;
+        Sun, 13 Jun 2021 13:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623591654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623591656; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8BQUYBVQ/UYTbG0b/GxopWsB0aWx2Aoyv/KPIamnS/g=;
-        b=qaYXaW7TgIyV22GjU2drkZE7psLE9n0CBMgRz0qV55nCiTmmZn8GlPwtkBM+VIOgjAVqw4
-        5sjRztpCCDpmkKCkRrXs0Jok9rKyW88SYob2qBt+f3jgW0OdsmtrWqkAkXPePjm0DKjYfu
-        3U+pDGJWGUN661ZWQKQK4qT0kh7T8qA=
+        bh=D+/hZrO15Vf4vY/d/brckWzoWlmW2Z5wUX3vyyNhiWo=;
+        b=2VYk/JXOXD5WsYHucmi0wGjG4CYc9UmWYlLuXiAjxtLroa+a17XvmWL6OIsFSbeB22AQXO
+        h7nk2OT0DEsN6vISvK9ecXr7sSn5x7/Fp98P3S+5GEwfgHZVuuwRcBs0O/sIyATe/LcinB
+        OuzB3RhvL4z29tKuA/jG/t0s4mIVmVk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623591654;
+        s=susede2_ed25519; t=1623591656;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8BQUYBVQ/UYTbG0b/GxopWsB0aWx2Aoyv/KPIamnS/g=;
-        b=6cP0FydpyqqRu3iabGW7jaeeCqTuoSdDyK4hN+SwVGs3bWP8+o5hfkRRPeMH/5ZPTwhr17
-        m9ag0sSz8mFC+XAQ==
+        bh=D+/hZrO15Vf4vY/d/brckWzoWlmW2Z5wUX3vyyNhiWo=;
+        b=DKv5PZxzF2s/uJafic7iy6Cu8WKpDj3FkM4h6fqwYm2k8Jl8N8urKElLGV7uYehWqfvcIP
+        nvNSYtvtUSkrb4CA==
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id 4RtTIeUKxmCGJAAALh3uQQ
-        (envelope-from <rgoldwyn@suse.de>); Sun, 13 Jun 2021 13:40:53 +0000
+        id uBu7AOgKxmCKJAAALh3uQQ
+        (envelope-from <rgoldwyn@suse.de>); Sun, 13 Jun 2021 13:40:56 +0000
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [RFC PATCH 19/31] btrfs: Add reservation information to btrfs_iomap
-Date:   Sun, 13 Jun 2021 08:39:47 -0500
-Message-Id: <d92db79ce8a41b7e0775f68f498ee6941264a0fd.1623567940.git.rgoldwyn@suse.com>
+Subject: [RFC PATCH 20/31] btrfs: Carve out btrfs_buffered_iomap_begin() from write path
+Date:   Sun, 13 Jun 2021 08:39:48 -0500
+Message-Id: <bc0e662fb8728a4cec08e6ce4000971819ede942.1623567940.git.rgoldwyn@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1623567940.git.rgoldwyn@suse.com>
 References: <cover.1623567940.git.rgoldwyn@suse.com>
@@ -77,188 +77,146 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Move reservation information into btrfs_iomap.
+Carve out reservation and locking from bufferd write sequence in
+btrfs_buffered_iomap_begin().
+
+Shortcomings: page handling with respect to nrptrs is messed up.
+However, since we will be passing the responsibility of pages to iomap,
+this will not be problem.
 
 Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/file.c | 49 +++++++++++++++++++++++++------------------------
- 1 file changed, 25 insertions(+), 24 deletions(-)
+ fs/btrfs/file.c | 100 ++++++++++++++++++++++++++++--------------------
+ 1 file changed, 59 insertions(+), 41 deletions(-)
 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 3d4b8fde47f4..ccae8ce7ec4f 100644
+index ccae8ce7ec4f..5751bb5e0656 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -63,6 +63,11 @@ struct btrfs_iomap {
- 	u64 lockend;
- 	struct extent_state *cached_state;
- 	int extents_locked;
-+
-+	/* Reservation */
-+	bool metadata_only;
-+	struct extent_changeset *data_reserved;
-+	size_t reserved_bytes;
- };
+@@ -1627,6 +1627,57 @@ static void btrfs_iomap_release(struct inode *inode,
+ 	kfree(bi);
+ }
  
- static int __compare_inode_defrag(struct inode_defrag *defrag1,
-@@ -1630,12 +1635,10 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 	struct inode *inode = file_inode(file);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct page **pages = NULL;
--	struct extent_changeset *data_reserved = NULL;
- 	u64 release_bytes = 0;
- 	size_t num_written = 0;
- 	int nrptrs;
--	ssize_t ret;
--	bool only_release_metadata = false;
++static int btrfs_buffered_iomap_begin(struct inode *inode, loff_t pos,
++		size_t length, struct btrfs_iomap *bi)
++{
 +	int ret;
- 	loff_t old_isize = i_size_read(inode);
- 	unsigned int ilock_flags = 0;
- 	struct btrfs_iomap *bi = NULL;
-@@ -1673,14 +1676,12 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 	}
- 
- 	while (iov_iter_count(i) > 0) {
--		struct extent_state *cached_state = NULL;
- 		size_t offset = offset_in_page(pos);
- 		size_t sector_offset;
- 		size_t write_bytes = min(iov_iter_count(i),
- 					 nrptrs * (size_t)PAGE_SIZE -
- 					 offset);
- 		size_t num_pages;
--		size_t reserve_bytes;
- 		size_t dirty_pages;
- 		size_t copied;
- 		size_t dirty_sectors;
-@@ -1696,12 +1697,12 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 		}
- 
- 		bi->extents_locked = false;
--		only_release_metadata = false;
-+		bi->metadata_only = false;
++	size_t write_bytes = length;
++	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	size_t sector_offset = pos & (fs_info->sectorsize - 1);
++
++	ret = btrfs_check_data_free_space(BTRFS_I(inode),
++			&bi->data_reserved, pos, write_bytes);
++	if (ret < 0) {
++		/*
++		 * If we don't have to COW at the offset, reserve
++		 * metadata only. write_bytes may get smaller than
++		 * requested here.
++		 */
++		if (btrfs_check_nocow_lock(BTRFS_I(inode), pos,
++					&write_bytes) > 0)
++			bi->metadata_only = true;
++		else
++			return ret;
++	}
++
++	bi->reserved_bytes = round_up(write_bytes + sector_offset,
++			fs_info->sectorsize);
++	WARN_ON(bi->reserved_bytes == 0);
++	ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode),
++			bi->reserved_bytes);
++	if (ret) {
++		if (!bi->metadata_only)
++			btrfs_free_reserved_data_space(BTRFS_I(inode),
++					bi->data_reserved, pos,
++					write_bytes);
++		else
++			btrfs_check_nocow_unlock(BTRFS_I(inode));
++		return ret;
++	}
++
++	if (pos < inode->i_size) {
++		bi->lockstart = round_down(pos, fs_info->sectorsize);
++		bi->lockend = round_up(pos + write_bytes, fs_info->sectorsize) - 1;
++		btrfs_lock_and_flush_ordered_range(BTRFS_I(inode),
++				bi->lockstart, bi->lockend,
++				&bi->cached_state);
++		bi->extents_locked = true;
++	}
++
++	return 0;
++
++}
++
+ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 					       struct iov_iter *i)
+ {
+@@ -1701,50 +1752,15 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
  		sector_offset = pos & (fs_info->sectorsize - 1);
  
--		extent_changeset_release(data_reserved);
-+		extent_changeset_release(bi->data_reserved);
- 		ret = btrfs_check_data_free_space(BTRFS_I(inode),
--						  &data_reserved, pos,
-+						  &bi->data_reserved, pos,
- 						  write_bytes);
- 		if (ret < 0) {
- 			/*
-@@ -1711,36 +1712,36 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 			 */
- 			if (btrfs_check_nocow_lock(BTRFS_I(inode), pos,
- 						   &write_bytes) > 0)
--				only_release_metadata = true;
-+				bi->metadata_only = true;
- 			else
- 				break;
+ 		extent_changeset_release(bi->data_reserved);
+-		ret = btrfs_check_data_free_space(BTRFS_I(inode),
+-						  &bi->data_reserved, pos,
+-						  write_bytes);
+-		if (ret < 0) {
+-			/*
+-			 * If we don't have to COW at the offset, reserve
+-			 * metadata only. write_bytes may get smaller than
+-			 * requested here.
+-			 */
+-			if (btrfs_check_nocow_lock(BTRFS_I(inode), pos,
+-						   &write_bytes) > 0)
+-				bi->metadata_only = true;
+-			else
+-				break;
+-		}
+ 
+-		num_pages = DIV_ROUND_UP(write_bytes + offset, PAGE_SIZE);
+-		WARN_ON(num_pages > nrptrs);
+-		bi->reserved_bytes = round_up(write_bytes + sector_offset,
+-					 fs_info->sectorsize);
+-		WARN_ON(bi->reserved_bytes == 0);
+-		ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode),
+-				bi->reserved_bytes);
+-		if (ret) {
+-			if (!bi->metadata_only)
+-				btrfs_free_reserved_data_space(BTRFS_I(inode),
+-						bi->data_reserved, pos,
+-						write_bytes);
+-			else
+-				btrfs_check_nocow_unlock(BTRFS_I(inode));
+-			break;
+-		}
+-
+-		release_bytes = bi->reserved_bytes;
++		ret = btrfs_buffered_iomap_begin(inode, pos, write_bytes,
++				bi);
+ 
+-		if (pos < inode->i_size) {
+-			bi->lockstart = round_down(pos, fs_info->sectorsize);
+-			bi->lockend = round_up(pos + write_bytes, fs_info->sectorsize) - 1;
+-			btrfs_lock_and_flush_ordered_range(BTRFS_I(inode),
+-					bi->lockstart, bi->lockend,
+-					&bi->cached_state);
+-			bi->extents_locked = true;
+-		}
++		if (ret < 0)
++			goto out;
+ 
++		num_pages = DIV_ROUND_UP(write_bytes + offset, PAGE_SIZE);
++		WARN_ON(num_pages > nrptrs);
+ 		/*
+ 		 * This is going to setup the pages array with the number of
+ 		 * pages we want, so we don't really need to worry about the
+@@ -1780,6 +1796,8 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 						   PAGE_SIZE);
  		}
  
- 		num_pages = DIV_ROUND_UP(write_bytes + offset, PAGE_SIZE);
- 		WARN_ON(num_pages > nrptrs);
--		reserve_bytes = round_up(write_bytes + sector_offset,
-+		bi->reserved_bytes = round_up(write_bytes + sector_offset,
- 					 fs_info->sectorsize);
--		WARN_ON(reserve_bytes == 0);
-+		WARN_ON(bi->reserved_bytes == 0);
- 		ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode),
--				reserve_bytes);
-+				bi->reserved_bytes);
- 		if (ret) {
--			if (!only_release_metadata)
-+			if (!bi->metadata_only)
- 				btrfs_free_reserved_data_space(BTRFS_I(inode),
--						data_reserved, pos,
-+						bi->data_reserved, pos,
- 						write_bytes);
- 			else
- 				btrfs_check_nocow_unlock(BTRFS_I(inode));
- 			break;
- 		}
- 
--		release_bytes = reserve_bytes;
 +		release_bytes = bi->reserved_bytes;
- 
- 		if (pos < inode->i_size) {
- 			bi->lockstart = round_down(pos, fs_info->sectorsize);
- 			bi->lockend = round_up(pos + write_bytes, fs_info->sectorsize) - 1;
- 			btrfs_lock_and_flush_ordered_range(BTRFS_I(inode),
- 					bi->lockstart, bi->lockend,
--					&cached_state);
-+					&bi->cached_state);
- 			bi->extents_locked = true;
- 		}
- 
-@@ -1753,13 +1754,13 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 				    pos, write_bytes);
- 		if (ret) {
- 			btrfs_delalloc_release_extents(BTRFS_I(inode),
--						       reserve_bytes);
-+						       bi->reserved_bytes);
- 			break;
- 		}
- 
- 		copied = btrfs_copy_from_user(pos, write_bytes, pages, i);
- 
--		num_sectors = BTRFS_BYTES_TO_BLKS(fs_info, reserve_bytes);
-+		num_sectors = BTRFS_BYTES_TO_BLKS(fs_info, bi->reserved_bytes);
- 		dirty_sectors = round_up(copied + sector_offset,
- 					fs_info->sectorsize);
- 		dirty_sectors = BTRFS_BYTES_TO_BLKS(fs_info, dirty_sectors);
-@@ -1782,7 +1783,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
++
  		if (num_sectors > dirty_sectors) {
  			/* release everything except the sectors we dirtied */
  			release_bytes -= dirty_sectors << fs_info->sectorsize_bits;
--			if (only_release_metadata) {
-+			if (bi->metadata_only) {
- 				btrfs_delalloc_release_metadata(BTRFS_I(inode),
- 							release_bytes, true);
- 			} else {
-@@ -1792,7 +1793,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 						   fs_info->sectorsize) +
- 					(dirty_pages << PAGE_SHIFT);
- 				btrfs_delalloc_release_space(BTRFS_I(inode),
--						data_reserved, __pos,
-+						bi->data_reserved, __pos,
- 						release_bytes, true);
- 			}
- 		}
-@@ -1802,7 +1803,8 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 
- 		ret = btrfs_dirty_pages(BTRFS_I(inode), pages,
- 					dirty_pages, pos, copied,
--					&cached_state, only_release_metadata);
-+					&bi->cached_state,
-+					bi->metadata_only);
- 
- 		/*
- 		 * If we have not locked the extent range, because the range's
-@@ -1819,14 +1821,14 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 			free_extent_state(bi->cached_state);
- 		bi->extents_locked = false;
- 
--		btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
-+		btrfs_delalloc_release_extents(BTRFS_I(inode), bi->reserved_bytes);
- 		if (ret) {
- 			btrfs_drop_pages(pages, num_pages);
- 			break;
- 		}
- 
- 		release_bytes = 0;
--		if (only_release_metadata)
-+		if (bi->metadata_only)
- 			btrfs_check_nocow_unlock(BTRFS_I(inode));
- 
- 		btrfs_drop_pages(pages, num_pages);
-@@ -1850,7 +1852,6 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 		btrfs_check_nocow_unlock(BTRFS_I(inode));
- 	btrfs_iomap_release(inode, pos, release_bytes, bi);
- out:
--	kfree(bi);
- 	btrfs_inode_unlock(inode, ilock_flags);
- 	return num_written ? num_written : ret;
- }
 -- 
 2.31.1
 
