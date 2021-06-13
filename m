@@ -2,131 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5103A4F5D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Jun 2021 16:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928063A58BB
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Jun 2021 15:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhFLOqb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Jun 2021 10:46:31 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:40212 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231165AbhFLOqa (ORCPT
+        id S231755AbhFMNmP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Jun 2021 09:42:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55380 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231733AbhFMNmN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Jun 2021 10:46:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623509070; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
- To: From: Reply-To: Sender;
- bh=RhtvN2QTW0JZFH6Rjd3vbX9yOl+YFdfv0SB17b2868c=; b=eHQjgFG3YEl+bYnfVmZWGTf+2DhM9d0MLqbdvNN7JhKtxnubR7IcusMz6ejwHzJgw4z6+CWp
- CZbsNOe+VnG1R793sEjgpyxj7Vrd0E2BzRXlJ8iCR5nPrXlmad8Ly2T7ykXjZkr47is9Yk+d
- UkyzG5zTsyYrpnOLunYpTxvfeuM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyIyMzg3MiIsICJsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmciLCAiYmU5ZTRhIl0=
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60c4c838ed59bf69ccbbf388 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Jun 2021 14:44:08
- GMT
-Sender: bcain=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BFE3EC4323A; Sat, 12 Jun 2021 14:44:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        PDS_BAD_THREAD_QP_64,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from BCAIN (104-54-226-75.lightspeed.austtx.sbcglobal.net [104.54.226.75])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Sun, 13 Jun 2021 09:42:13 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: bcain)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EAC33C433D3;
-        Sat, 12 Jun 2021 14:44:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EAC33C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bcain@codeaurora.org
-Reply-To: <bcain@codeaurora.org>
-From:   "Brian Cain" <bcain@codeaurora.org>
-To:     "'Christophe Leroy'" <christophe.leroy@csgroup.eu>,
-        "'Chris Mason'" <clm@fb.com>
-Cc:     "'Josef Bacik'" <josef@toxicpanda.com>,
-        "'David Sterba'" <dsterba@suse.com>,
-        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        "'linux-btrfs'" <linux-btrfs@vger.kernel.org>,
-        <linux-hexagon@vger.kernel.org>
-References: <a16c31f3caf448dda5d9315e056585b6fafc22c5.1623302442.git.christophe.leroy@csgroup.eu> <185278AF-1D87-432D-87E9-C86B3223113E@fb.com> <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
-In-Reply-To: <cdadf66e-0a6e-4efe-0326-7236c43b2735@csgroup.eu>
-Subject: RE: [PATCH] btrfs: Disable BTRFS on platforms having 256K pages
-Date:   Sat, 12 Jun 2021 09:44:05 -0500
-Message-ID: <17a401d75f99$662cdc50$328694f0$@codeaurora.org>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E88D81FD32;
+        Sun, 13 Jun 2021 13:40:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623591610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=3af5kMw7B67kqD1PWVbxZh/Jo3GD1EbCYn0NnRFsQyg=;
+        b=a2/20eULzyC4PxvEwQID5sWxlrfMiTCVDRxhS7igTxAtd0WcB6wXNz5TGW9Wd3dJYufkRD
+        J+8t5cy7tIQZskDK+0WTO4I1WqD0+0QzQgSBm7Vs8kmqsJnl5X9eg+OrXdIUp5s3nwY4l9
+        BM8cqITG89CGRts1ltNmvh6EntBn6xc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623591610;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=3af5kMw7B67kqD1PWVbxZh/Jo3GD1EbCYn0NnRFsQyg=;
+        b=AKFt4B7Wn3EDMn4osrN2U5uDj2YC1oGseQd51E95L+5UMQjmnw0z4sNxUEwiSNV075lu0N
+        5zXEWBb1bXawmbBQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 94776118DD;
+        Sun, 13 Jun 2021 13:40:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1623591610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=3af5kMw7B67kqD1PWVbxZh/Jo3GD1EbCYn0NnRFsQyg=;
+        b=a2/20eULzyC4PxvEwQID5sWxlrfMiTCVDRxhS7igTxAtd0WcB6wXNz5TGW9Wd3dJYufkRD
+        J+8t5cy7tIQZskDK+0WTO4I1WqD0+0QzQgSBm7Vs8kmqsJnl5X9eg+OrXdIUp5s3nwY4l9
+        BM8cqITG89CGRts1ltNmvh6EntBn6xc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1623591610;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=3af5kMw7B67kqD1PWVbxZh/Jo3GD1EbCYn0NnRFsQyg=;
+        b=AKFt4B7Wn3EDMn4osrN2U5uDj2YC1oGseQd51E95L+5UMQjmnw0z4sNxUEwiSNV075lu0N
+        5zXEWBb1bXawmbBQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id SliiG7oKxmAoJAAALh3uQQ
+        (envelope-from <rgoldwyn@suse.de>); Sun, 13 Jun 2021 13:40:10 +0000
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: [RFC PATCH 00/31] btrfs buffered iomap support
+Date:   Sun, 13 Jun 2021 08:39:28 -0500
+Message-Id: <cover.1623567940.git.rgoldwyn@suse.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-us
-Thread-Index: AQFXZSsKSQYV21VAkXhEQlQXq32SZQKLFB0ZAuYFiEqr5N8nYA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+
+This is an attempt to perform the bufered read and write using iomap on btrfs.
+I propose these changes as an RFC because I would like to know on your comments on the feasibility of going ahead with the design. It is not feature complete
+with the most important support missing is multi-device and compression.
+Sending to BTRFS mailing only for perspective from btrfs developers first.
+
+Locking sequence change
+One of the biggest architecture changes is locking extents before pages.
+writepage(), called during memory pressure provides the page which is locked
+already. Perform a best effort locking and work with what is feasible.
+For truncate->invalidatepage(), lock the pages before calling setsize().
+Are there any other areas which need to be covered?
+
+TODO
+====
+
+Bio submission for multi-device
+  Multi-device submission would require some work with respect to asynchronous
+  completions. iomap can merge bio's making it larger than extent_map's
+  map_length. There is a check in btrfs_map_bio which WARN()s on this.
+  Perhaps a more modular approach of having callbacks would be easier to
+  deal with.
+
+Compression
+  This would require extra flags to iomap, say type IOMAP_ENCODED, which would
+  require iomap to read/write complete extents as opposed to performing I/O on
+  only what is requested. An additional field io_size would be required to
+  know how much of compressed size maps to uncompressed size.
 
 
-> -----Original Message-----
-> From: Christophe Leroy <christophe.leroy@csgroup.eu>
-...
-> Le 10/06/2021 =C3=A0 15:54, Chris Mason a =C3=A9crit :
-> >
-> >> On Jun 10, 2021, at 1:23 AM, Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
-> >>
-> >> With a config having PAGE_SIZE set to 256K, BTRFS build fails
-> >> with the following message
-> >>
-> >> include/linux/compiler_types.h:326:38: error: call to
-> '__compiletime_assert_791' declared with attribute error: BUILD_BUG_ON
-> failed: (BTRFS_MAX_COMPRESSED % PAGE_SIZE) !=3D 0
-> >>
-> >> BTRFS_MAX_COMPRESSED being 128K, BTRFS cannot support platforms
-> with
-> >> 256K pages at the time being.
-> >>
-> >> There are two platforms that can select 256K pages:
-> >> - hexagon
-> >> - powerpc
-> >>
-> >> Disable BTRFS when 256K page size is selected.
-> >>
-> >
-> > We=E2=80=99ll have other subpage blocksize concerns with 256K pages, =
-but this
-> BTRFS_MAX_COMPRESSED #define is arbitrary.  It=E2=80=99s just trying =
-to have an
-> upper bound on the amount of memory we=E2=80=99ll need to uncompress a =
-single
-> page=E2=80=99s worth of random reads.
-> >
-> > We could change it to max(PAGE_SIZE, 128K) or just bump to 256K.
-> >
->=20
-> But if 256K is problematic in other ways, is it worth bumping
-> BTRFS_MAX_COMPRESSED to 256K ?
->=20
-> David, in below mail, said that 256K support would require deaper =
-changes. So
-> disabling BTRFS
-> support seems the easiest solution for the time being, at least for =
-Stable (I
-> forgot the Fixes: tag
-> and the CC: to stable).
->=20
-> On powerpc, 256k pages is a corner case, it requires customised =
-binutils, so I
-> don't think disabling
-> BTRFS is a issue there. For hexagon I don't know.
+Known issues
+============
+ BIO Submission: described above
+ Random WARN_ON in kernel/locking/lockdep.c:895 points to memory corruption.
 
-Larger page sizes like this are typical for hexagon.  Disabling btrfs on =
-hexagon seems appropriate.
+Finally, I have added some questions in the patch headers as well.
 
--Brian
+
+-- 
+Goldwyn
+
+
+Goldwyn Rodrigues (31):
+  iomap: Check if blocksize == PAGE_SIZE in to_iomap_page()
+  iomap: Add submit_io to writepage_ops
+  iomap: Export iomap_writepage_end_bio()
+  iomap: Introduce iomap_readpage_ops
+  btrfs: writepage() lock extent before pages
+  btrfs: lock extents while truncating
+  btrfs: write() perform extent locks before locking page
+  btrfs: btrfs_em_to_iomap () to convert em to iomap
+  btrfs: Don't process pages if locked_page is NULL
+  btrfs: Add btrfs_map_blocks to for iomap_writeback_ops
+  btrfs: Use submit_io to submit btrfs writeback bios
+  btrfs: endio sequence for writepage
+  btrfs: do not checksum for free space inode
+  btrfs: end EXTENT_MAP_INLINE writeback early
+  btrfs: Switch to iomap_writepages()
+  btrfs: remove force_page_uptodate
+  btrfs: Introduce btrfs_iomap
+  btrfs: Add btrfs_iomap_release()
+  btrfs: Add reservation information to btrfs_iomap
+  btrfs: Carve out btrfs_buffered_iomap_begin() from write path
+  btrfs: Carve out btrfs_buffered_iomap_end from the write path
+  btrfs: Set extents delalloc in iomap_end
+  btrfs: define iomap_page_ops
+  btrfs: Switch to iomap_file_buffered_write()
+  btrfs: remove all page related functions
+  btrfs: use srcmap for read-before-write cases
+  btrfs: Rename end_bio_extent_readpage to btrfs_readpage_endio
+  btrfs: iomap_begin() for buffered read
+  btrfs: Use iomap_readpage_ops to allocate and submit bio
+  btrfs: Do not call btrfs_io_bio_free_csum() if BTRFS_INODE_NODATASUM
+    is not set
+  btrfs: Switch to iomap_readpage() and iomap_readahead()
+
+ fs/btrfs/ctree.h       |   3 +
+ fs/btrfs/disk-io.c     |   9 +-
+ fs/btrfs/extent_io.c   | 103 +++++--
+ fs/btrfs/extent_io.h   |   4 +
+ fs/btrfs/file.c        | 642 ++++++++++++++---------------------------
+ fs/btrfs/inode.c       | 219 ++++++++++++--
+ fs/gfs2/aops.c         |   4 +-
+ fs/iomap/buffered-io.c |  80 +++--
+ fs/xfs/xfs_aops.c      |   4 +-
+ fs/zonefs/super.c      |   4 +-
+ include/linux/iomap.h  |  26 +-
+ 11 files changed, 601 insertions(+), 497 deletions(-)
+
+-- 
+2.31.1
 
