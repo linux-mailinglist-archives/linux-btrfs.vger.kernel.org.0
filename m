@@ -2,70 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAD63A58D3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Jun 2021 15:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB083A58D4
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Jun 2021 15:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhFMNnI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Jun 2021 09:43:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55458 "EHLO
+        id S231893AbhFMNnK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Jun 2021 09:43:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55466 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbhFMNnH (ORCPT
+        with ESMTP id S231888AbhFMNnK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Jun 2021 09:43:07 -0400
+        Sun, 13 Jun 2021 09:43:10 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 016641FD2D;
-        Sun, 13 Jun 2021 13:41:06 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8D2601FD2D;
+        Sun, 13 Jun 2021 13:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623591666; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623591668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=woGRyD6YcRWiTazf5LzYH7OlMQ3bppkqFLYFo8OVpZY=;
-        b=gKp+qI7Cnzc6dEH/NsQdawjtKbl6yeFo0gKA1pkwhdIq0245twIg5/CzuMn/5tnsYGrEZA
-        ogwr7ALii/vEHCtgfsLLnRHG4aVXqmtNMonX7cJbJZoNv5KGoidK9tfRqbpigQoug5JCBM
-        iBSnoxXdpiOv7ft2SvtzTOcxVRmTyWY=
+        bh=9sHt7LK1ESoWdj42G+riEG2/YtmTweWopKxvGb9XqrI=;
+        b=vNELV5+Hv6izPSdEcN9JIw3NDMXWsivXHroMabIzeXp9bHLZ1mXEDGMv7iVtqurtsCzznn
+        QAdo5uF/t7MsMyLBNPpamXBqBHhl1+hxWDn3E8aPbeIO6qMD/HZYLZm4/32xECr0ON6c5+
+        0kJaJMyX9Ty/8mXauiyZPThkyRxJ/y8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623591666;
+        s=susede2_ed25519; t=1623591668;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=woGRyD6YcRWiTazf5LzYH7OlMQ3bppkqFLYFo8OVpZY=;
-        b=dJ3+2Y/08JboD825YQns5ClcTKwF0Bvkrm1ihL4p6kuB2x0RvvfFFNk+6pHnSqF74LUeWy
-        CJsaEXKcvBchLmDg==
+        bh=9sHt7LK1ESoWdj42G+riEG2/YtmTweWopKxvGb9XqrI=;
+        b=ONluyri5V2+0iExL4uvrjsYBVJwlg7NplEM9eQBbIZQ2oSB9bbd6xHMsJgpUUaEc4b1drA
+        mV4NXuMEMtsC/BAw==
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 50319118DD;
-        Sun, 13 Jun 2021 13:41:05 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 3083A118DD;
+        Sun, 13 Jun 2021 13:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623591665; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623591668; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=woGRyD6YcRWiTazf5LzYH7OlMQ3bppkqFLYFo8OVpZY=;
-        b=KhFOPUfPmFagBzCPtA1pemsyqM4AgvXdyZH87tqcP9yNxOxkL1akFc0NUZvG39W1x8pcN0
-        8DSZHt8oGPUqH31MzarkpDXKJ/8VCdY+gKBIkeRsUKggrbiP1Ydth6yz1rb9sjFVqU4ZiG
-        YrkgpSS9SbbPInTnQhx9BIeQmPvnMDM=
+        bh=9sHt7LK1ESoWdj42G+riEG2/YtmTweWopKxvGb9XqrI=;
+        b=vNELV5+Hv6izPSdEcN9JIw3NDMXWsivXHroMabIzeXp9bHLZ1mXEDGMv7iVtqurtsCzznn
+        QAdo5uF/t7MsMyLBNPpamXBqBHhl1+hxWDn3E8aPbeIO6qMD/HZYLZm4/32xECr0ON6c5+
+        0kJaJMyX9Ty/8mXauiyZPThkyRxJ/y8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623591665;
+        s=susede2_ed25519; t=1623591668;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=woGRyD6YcRWiTazf5LzYH7OlMQ3bppkqFLYFo8OVpZY=;
-        b=NCGAhcgDBlI6c15cyFuofpJ1Cn1wnY3ltJ5FkYW2kABShpTiGbeHPB8XFgCD4MfKQdmdz1
-        1NNKzRPg0k1hUnBA==
+        bh=9sHt7LK1ESoWdj42G+riEG2/YtmTweWopKxvGb9XqrI=;
+        b=ONluyri5V2+0iExL4uvrjsYBVJwlg7NplEM9eQBbIZQ2oSB9bbd6xHMsJgpUUaEc4b1drA
+        mV4NXuMEMtsC/BAw==
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id wjFAB/EKxmCWJAAALh3uQQ
-        (envelope-from <rgoldwyn@suse.de>); Sun, 13 Jun 2021 13:41:05 +0000
+        id 2C86APQKxmCcJAAALh3uQQ
+        (envelope-from <rgoldwyn@suse.de>); Sun, 13 Jun 2021 13:41:08 +0000
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [RFC PATCH 24/31] btrfs: Switch to iomap_file_buffered_write()
-Date:   Sun, 13 Jun 2021 08:39:52 -0500
-Message-Id: <5f7bdc2dd24fd6a2e5b3b73b43c867463a5277a7.1623567940.git.rgoldwyn@suse.com>
+Subject: [RFC PATCH 25/31] btrfs: remove all page related functions
+Date:   Sun, 13 Jun 2021 08:39:53 -0500
+Message-Id: <adc05e1b047f3adcd83cb0b8defec4aabc55ae49.1623567940.git.rgoldwyn@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1623567940.git.rgoldwyn@suse.com>
 References: <cover.1623567940.git.rgoldwyn@suse.com>
@@ -77,226 +77,188 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Move allocation of btrfs_iomap into iomap_begin().
-Change begin()/end() functions to fill iomap data structure.
+Cleanup after switching to iomap writes. Remove all page handling
+functions.
 
 Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/file.c | 157 +++++++++---------------------------------------
- 1 file changed, 27 insertions(+), 130 deletions(-)
+ fs/btrfs/file.c | 156 ------------------------------------------------
+ 1 file changed, 156 deletions(-)
 
 diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index fe6d24c6f7bf..6c6e3343bf37 100644
+index 6c6e3343bf37..b3e48bfd75df 100644
 --- a/fs/btrfs/file.c
 +++ b/fs/btrfs/file.c
-@@ -1639,12 +1639,18 @@ static void btrfs_iomap_release(struct inode *inode,
- }
- 
- static int btrfs_buffered_iomap_begin(struct inode *inode, loff_t pos,
--		size_t length, struct btrfs_iomap *bi)
-+		loff_t length, unsigned int flags, struct iomap *iomap,
-+		struct iomap *srcmap)
- {
- 	int ret;
- 	size_t write_bytes = length;
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	size_t sector_offset = pos & (fs_info->sectorsize - 1);
-+	struct btrfs_iomap *bi;
-+
-+	bi = kzalloc(sizeof(struct btrfs_iomap), GFP_NOFS);
-+	if (!bi)
-+		return -ENOMEM;
- 
- 	ret = btrfs_check_data_free_space(BTRFS_I(inode),
- 			&bi->data_reserved, pos, write_bytes);
-@@ -1685,14 +1691,25 @@ static int btrfs_buffered_iomap_begin(struct inode *inode, loff_t pos,
- 		bi->extents_locked = true;
- 	}
- 
-+	iomap->private = bi;
-+	iomap->length = round_up(write_bytes + sector_offset,
-+				 fs_info->sectorsize);
-+	iomap->offset = round_down(pos, fs_info->sectorsize);
-+	iomap->addr = IOMAP_NULL_ADDR;
-+	iomap->type = IOMAP_DELALLOC;
-+	iomap->bdev = fs_info->fs_devices->latest_bdev;
-+	iomap->page_ops = &btrfs_iomap_page_ops;
-+
- 	return 0;
- 
- }
- 
- static int btrfs_buffered_iomap_end(struct inode *inode, loff_t pos,
--		loff_t length, ssize_t written, struct btrfs_iomap *bi)
-+		loff_t length, ssize_t written, unsigned flags,
-+		struct iomap *iomap)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_iomap *bi = iomap->private;
- 	int ret = 0;
- 	size_t release_bytes = 0;
- 	u64 start = round_down(pos, fs_info->sectorsize);
-@@ -1742,21 +1759,19 @@ static int btrfs_buffered_iomap_end(struct inode *inode, loff_t pos,
+@@ -394,79 +394,6 @@ int btrfs_run_defrag_inodes(struct btrfs_fs_info *fs_info)
  	return 0;
  }
  
-+const struct iomap_ops btrfs_buffered_iomap_ops = {
-+	.iomap_begin = btrfs_buffered_iomap_begin,
-+	.iomap_end = btrfs_buffered_iomap_end,
-+};
-+
- static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 					       struct iov_iter *i)
- {
- 	struct file *file = iocb->ki_filp;
--	loff_t pos;
- 	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	struct page **pages = NULL;
--	u64 release_bytes = 0;
- 	size_t num_written = 0;
--	int nrptrs;
- 	int ret;
--	loff_t old_isize = i_size_read(inode);
- 	unsigned int ilock_flags = 0;
--	struct btrfs_iomap *bi = NULL;
- 
- 	if (iocb->ki_flags & IOCB_NOWAIT)
- 		ilock_flags |= BTRFS_ILOCK_TRY;
-@@ -1773,130 +1788,12 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 	if (ret < 0)
- 		goto out;
- 
--	pos = iocb->ki_pos;
--	nrptrs = min(DIV_ROUND_UP(iov_iter_count(i), PAGE_SIZE),
--			PAGE_SIZE / (sizeof(struct page *)));
--	nrptrs = min(nrptrs, current->nr_dirtied_pause - current->nr_dirtied);
--	nrptrs = max(nrptrs, 8);
--	pages = kmalloc_array(nrptrs, sizeof(struct page *), GFP_KERNEL);
--	if (!pages) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	num_written = iomap_file_buffered_write(iocb, i,
-+						&btrfs_buffered_iomap_ops);
- 
--	bi = kzalloc(sizeof(struct btrfs_iomap), GFP_NOFS);
--	if (!bi) {
--		ret = -ENOMEM;
--		goto out;
--	}
+-/* simple helper to fault in pages and copy.  This should go away
+- * and be replaced with calls into generic code.
+- */
+-static noinline int btrfs_copy_from_user(loff_t pos, size_t write_bytes,
+-					 struct page **prepared_pages,
+-					 struct iov_iter *i)
+-{
+-	size_t copied = 0;
+-	size_t total_copied = 0;
+-	int pg = 0;
+-	int offset = offset_in_page(pos);
 -
--	while (iov_iter_count(i) > 0) {
--		size_t offset = offset_in_page(pos);
--		size_t sector_offset;
--		size_t write_bytes = min(iov_iter_count(i),
--					 nrptrs * (size_t)PAGE_SIZE -
--					 offset);
--		size_t num_pages;
--		size_t dirty_pages;
--		size_t copied;
--		size_t dirty_sectors;
+-	while (write_bytes > 0) {
+-		size_t count = min_t(size_t,
+-				     PAGE_SIZE - offset, write_bytes);
+-		struct page *page = prepared_pages[pg];
+-		/*
+-		 * Copy data from userspace to the current page
+-		 */
+-		copied = iov_iter_copy_from_user_atomic(page, i, offset, count);
+-
+-		/* Flush processor's dcache for this page */
+-		flush_dcache_page(page);
 -
 -		/*
--		 * Fault pages before locking them in prepare_pages
--		 * to avoid recursive lock
+-		 * if we get a partial write, we can end up with
+-		 * partially up to date pages.  These add
+-		 * a lot of complexity, so make sure they don't
+-		 * happen by forcing this copy to be retried.
+-		 *
+-		 * The rest of the btrfs_file_write code will fall
+-		 * back to page at a time copies after we return 0.
 -		 */
--		if (unlikely(iov_iter_fault_in_readable(i, write_bytes))) {
--			ret = -EFAULT;
+-		if (!PageUptodate(page) && copied < count)
+-			copied = 0;
+-
+-		iov_iter_advance(i, copied);
+-		write_bytes -= copied;
+-		total_copied += copied;
+-
+-		/* Return to btrfs_file_write_iter to fault page */
+-		if (unlikely(copied == 0))
 -			break;
--		}
 -
--		bi->extents_locked = false;
--		bi->metadata_only = false;
--		sector_offset = pos & (fs_info->sectorsize - 1);
--
--		extent_changeset_release(bi->data_reserved);
--
--		ret = btrfs_buffered_iomap_begin(inode, pos, write_bytes,
--				bi);
--
--		if (ret < 0)
--			goto out;
--
--		num_pages = DIV_ROUND_UP(write_bytes + offset, PAGE_SIZE);
--		WARN_ON(num_pages > nrptrs);
--		/*
--		 * This is going to setup the pages array with the number of
--		 * pages we want, so we don't really need to worry about the
--		 * contents of pages from loop to loop
--		 */
--		ret = prepare_pages(inode, pages, num_pages,
--				    pos, write_bytes);
--		if (ret) {
--			btrfs_delalloc_release_extents(BTRFS_I(inode),
--						       bi->reserved_bytes);
--			break;
--		}
--
--		copied = btrfs_copy_from_user(pos, write_bytes, pages, i);
--
--		dirty_sectors = round_up(copied + sector_offset,
--					fs_info->sectorsize);
--		dirty_sectors = BTRFS_BYTES_TO_BLKS(fs_info, dirty_sectors);
--
--		/*
--		 * if we have trouble faulting in the pages, fall
--		 * back to one page at a time
--		 */
--		if (copied < write_bytes)
--			nrptrs = 1;
--
--		if (copied == 0) {
--			dirty_sectors = 0;
--			dirty_pages = 0;
+-		if (copied < PAGE_SIZE - offset) {
+-			offset += copied;
 -		} else {
--			dirty_pages = DIV_ROUND_UP(copied + offset,
--						   PAGE_SIZE);
+-			pg++;
+-			offset = 0;
 -		}
--
--		release_bytes = round_up(copied + sector_offset,
--					fs_info->sectorsize);
--
--		ret = btrfs_dirty_pages(BTRFS_I(inode), pages,
--					dirty_pages, pos, copied,
--					&bi->cached_state,
--					bi->metadata_only);
--
--		if (ret) {
--			btrfs_drop_pages(pages, num_pages);
--			break;
--		}
--
--		btrfs_buffered_iomap_end(inode, pos, write_bytes, copied, bi);
--
--		release_bytes = 0;
--		if (bi->metadata_only)
--			btrfs_check_nocow_unlock(BTRFS_I(inode));
--
--		btrfs_drop_pages(pages, num_pages);
--
--		cond_resched();
--
--		balance_dirty_pages_ratelimited(inode->i_mapping);
--
--		pos += copied;
--		num_written += copied;
 -	}
+-	return total_copied;
+-}
 -
--	kfree(pages);
--
--	if (num_written > 0) {
--		pagecache_isize_extended(inode, old_isize, iocb->ki_pos);
-+	if (num_written > 0)
- 		iocb->ki_pos += num_written;
+-/*
+- * unlocks pages after btrfs_file_write is done with them
+- */
+-static void btrfs_drop_pages(struct page **pages, size_t num_pages)
+-{
+-	size_t i;
+-	for (i = 0; i < num_pages; i++) {
+-		/* page checked is some magic around finding pages that
+-		 * have been modified without going through btrfs_set_page_dirty
+-		 * clear it here. There should be no need to mark the pages
+-		 * accessed as prepare_pages should have marked them accessed
+-		 * in prepare_pages via find_or_create_page()
+-		 */
+-		ClearPageChecked(pages[i]);
+-		unlock_page(pages[i]);
+-		put_page(pages[i]);
 -	}
+-}
+-
+ static void btrfs_page_done(struct inode *inode, loff_t pos,
+ 		unsigned int copied, struct page *page,
+ 		struct iomap *iomap)
+@@ -1346,89 +1273,6 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
  
--	if (release_bytes && bi->metadata_only)
--		btrfs_check_nocow_unlock(BTRFS_I(inode));
--	btrfs_iomap_release(inode, pos, release_bytes, bi);
- out:
- 	btrfs_inode_unlock(inode, ilock_flags);
- 	return num_written ? num_written : ret;
+-/*
+- * on error we return an unlocked page and the error value
+- * on success we return a locked page and 0
+- */
+-static int prepare_uptodate_page(struct inode *inode,
+-				 struct page *page, u64 pos)
+-{
+-	int ret = 0;
+-
+-	if ((pos & (PAGE_SIZE - 1)) && !PageUptodate(page)) {
+-		ret = btrfs_readpage(NULL, page);
+-		if (ret)
+-			return ret;
+-		lock_page(page);
+-		if (!PageUptodate(page)) {
+-			unlock_page(page);
+-			return -EIO;
+-		}
+-		if (page->mapping != inode->i_mapping) {
+-			unlock_page(page);
+-			return -EAGAIN;
+-		}
+-	}
+-	return 0;
+-}
+-
+-/*
+- * this just gets pages into the page cache and locks them down.
+- */
+-static noinline int prepare_pages(struct inode *inode, struct page **pages,
+-				  size_t num_pages, loff_t pos,
+-				  size_t write_bytes)
+-{
+-	int i;
+-	unsigned long index = pos >> PAGE_SHIFT;
+-	gfp_t mask = btrfs_alloc_write_mask(inode->i_mapping);
+-	int err = 0;
+-	int faili;
+-
+-	for (i = 0; i < num_pages; i++) {
+-again:
+-		pages[i] = find_or_create_page(inode->i_mapping, index + i,
+-					       mask | __GFP_WRITE);
+-		if (!pages[i]) {
+-			faili = i - 1;
+-			err = -ENOMEM;
+-			goto fail;
+-		}
+-
+-		err = set_page_extent_mapped(pages[i]);
+-		if (err < 0) {
+-			faili = i;
+-			goto fail;
+-		}
+-
+-		if (i == 0)
+-			err = prepare_uptodate_page(inode, pages[i], pos);
+-		if (!err && i == num_pages - 1)
+-			err = prepare_uptodate_page(inode, pages[i],
+-						    pos + write_bytes);
+-		if (err) {
+-			put_page(pages[i]);
+-			if (err == -EAGAIN) {
+-				err = 0;
+-				goto again;
+-			}
+-			faili = i - 1;
+-			goto fail;
+-		}
+-		wait_on_page_writeback(pages[i]);
+-	}
+-
+-	return 0;
+-fail:
+-	while (faili >= 0) {
+-		unlock_page(pages[faili]);
+-		put_page(pages[faili]);
+-		faili--;
+-	}
+-	return err;
+-
+-}
+-
+ static int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
+ 			   size_t *write_bytes, bool nowait)
+ {
 -- 
 2.31.1
 
