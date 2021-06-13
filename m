@@ -2,70 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198E93A58D9
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Jun 2021 15:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E053A58DA
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Jun 2021 15:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbhFMNnX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Jun 2021 09:43:23 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55482 "EHLO
+        id S231911AbhFMNn0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Jun 2021 09:43:26 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55494 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbhFMNnX (ORCPT
+        with ESMTP id S231888AbhFMNnZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Jun 2021 09:43:23 -0400
+        Sun, 13 Jun 2021 09:43:25 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 422F91FD32;
-        Sun, 13 Jun 2021 13:41:21 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B19CC1FD32;
+        Sun, 13 Jun 2021 13:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623591681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623591683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=e3SwlmhUCiFoc8JrUC/yOudxgsveSdq0yYwhSQ7MXDc=;
-        b=IcK0C74f96KZTpPCFFTt35Q5U13Yxwf8Fzaac7y+4xzLMtMNpkm9GAKicp9FQnrRXoALit
-        4oHYgrKSrIQZyzne5x2thb6g1vYBYXE7AIGpIU0szT50hJdT4ytgX5g4zg4gvSmGP+yRQo
-        rMvXZgfAlk9oCJLcb1Um+btljpkkV9w=
+        bh=DGS+rAwO6W5XC4k4/elnYe/7UK77wwj8LLNNxM0l86c=;
+        b=dznH0irWlm9RXBLlBfzTLHg8E0gbRbcnGAZq4gLpCsQs4hKa6Q3JMbtDclHveslfAgtTMm
+        eH79FoX7qpI4xilhkwBrCIQa/ZDa2wx07p5j556U1HansQkh7YUdW+JBOwwuXE3CGiNJ2l
+        Dc5O92qtiZGJ/pAB4KMbjWRdgjIU3lc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623591681;
+        s=susede2_ed25519; t=1623591683;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=e3SwlmhUCiFoc8JrUC/yOudxgsveSdq0yYwhSQ7MXDc=;
-        b=GFb34SC2Y52nq6uZjYixYClnYUvia0pj1S0wwSC/KIIX+09LTM4bUGp994EB26/jHCZU+d
-        jkKnwoFjLTwI5YCQ==
+        bh=DGS+rAwO6W5XC4k4/elnYe/7UK77wwj8LLNNxM0l86c=;
+        b=ctKZR8q0fCGOy69SQGNK4URuxxCBgTSq8sZLiIlhjzep456JrnatZQEd6Rhh1I93KshE8q
+        +jR4c1Fsmyuzl0AQ==
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id C16A0118DD;
-        Sun, 13 Jun 2021 13:41:20 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 55395118DD;
+        Sun, 13 Jun 2021 13:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1623591681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623591683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=e3SwlmhUCiFoc8JrUC/yOudxgsveSdq0yYwhSQ7MXDc=;
-        b=IcK0C74f96KZTpPCFFTt35Q5U13Yxwf8Fzaac7y+4xzLMtMNpkm9GAKicp9FQnrRXoALit
-        4oHYgrKSrIQZyzne5x2thb6g1vYBYXE7AIGpIU0szT50hJdT4ytgX5g4zg4gvSmGP+yRQo
-        rMvXZgfAlk9oCJLcb1Um+btljpkkV9w=
+        bh=DGS+rAwO6W5XC4k4/elnYe/7UK77wwj8LLNNxM0l86c=;
+        b=dznH0irWlm9RXBLlBfzTLHg8E0gbRbcnGAZq4gLpCsQs4hKa6Q3JMbtDclHveslfAgtTMm
+        eH79FoX7qpI4xilhkwBrCIQa/ZDa2wx07p5j556U1HansQkh7YUdW+JBOwwuXE3CGiNJ2l
+        Dc5O92qtiZGJ/pAB4KMbjWRdgjIU3lc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1623591681;
+        s=susede2_ed25519; t=1623591683;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=e3SwlmhUCiFoc8JrUC/yOudxgsveSdq0yYwhSQ7MXDc=;
-        b=GFb34SC2Y52nq6uZjYixYClnYUvia0pj1S0wwSC/KIIX+09LTM4bUGp994EB26/jHCZU+d
-        jkKnwoFjLTwI5YCQ==
+        bh=DGS+rAwO6W5XC4k4/elnYe/7UK77wwj8LLNNxM0l86c=;
+        b=ctKZR8q0fCGOy69SQGNK4URuxxCBgTSq8sZLiIlhjzep456JrnatZQEd6Rhh1I93KshE8q
+        +jR4c1Fsmyuzl0AQ==
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id afa+HQALxmC1JAAALh3uQQ
-        (envelope-from <rgoldwyn@suse.de>); Sun, 13 Jun 2021 13:41:20 +0000
+        id E5ChCAMLxmC/JAAALh3uQQ
+        (envelope-from <rgoldwyn@suse.de>); Sun, 13 Jun 2021 13:41:23 +0000
 From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [RFC PATCH 30/31] btrfs: Do not call btrfs_io_bio_free_csum() if BTRFS_INODE_NODATASUM is not set
-Date:   Sun, 13 Jun 2021 08:39:58 -0500
-Message-Id: <2a2dc9b5feedd92839f1f835f02235b2539bbcfd.1623567940.git.rgoldwyn@suse.com>
+Subject: [RFC PATCH 31/31] btrfs: Switch to iomap_readpage() and iomap_readahead()
+Date:   Sun, 13 Jun 2021 08:39:59 -0500
+Message-Id: <92c58a2ffd31c6538fe3b1a50d5c38556631cbae.1623567940.git.rgoldwyn@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <cover.1623567940.git.rgoldwyn@suse.com>
 References: <cover.1623567940.git.rgoldwyn@suse.com>
@@ -77,57 +77,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Q: Not sure why this patch is required. But there are cases when I received
-a would fail at kfree(io_bio->csum). io_bio->csum_inline would be set
-to some random value. What would cause this?
+Use iomap readpage and readahead sequences.
 
 Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 ---
- fs/btrfs/extent_io.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ fs/btrfs/inode.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 88a8fbf467b0..a9e8217c0935 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3013,6 +3013,7 @@ void btrfs_readpage_endio(struct bio *bio)
- 	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
- 	struct extent_io_tree *tree, *failure_tree;
- 	struct processed_extent processed = { 0 };
-+	struct inode *inode;
- 	/*
- 	 * The offset to the beginning of a bio, since one bio can never be
- 	 * larger than UINT_MAX, u32 here is enough.
-@@ -3026,14 +3027,16 @@ void btrfs_readpage_endio(struct bio *bio)
- 	bio_for_each_segment_all(bvec, bio, iter_all) {
- 		bool uptodate = !bio->bi_status;
- 		struct page *page = bvec->bv_page;
--		struct inode *inode = page->mapping->host;
--		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--		const u32 sectorsize = fs_info->sectorsize;
-+		struct btrfs_fs_info *fs_info;
-+		u32 sectorsize;
- 		unsigned int error_bitmap = (unsigned int)-1;
- 		u64 start;
- 		u64 end;
- 		u32 len;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 1ca83c11e8b9..56d9cbeb151d 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8320,18 +8320,8 @@ const struct iomap_ops btrfs_buffered_read_iomap_ops = {
  
-+		inode = page->mapping->host;
-+		fs_info = btrfs_sb(inode->i_sb);
-+		sectorsize = fs_info->sectorsize;
- 		btrfs_debug(fs_info,
- 			"btrfs_readpage_endio: bi_sector=%llu, err=%d, mirror=%u",
- 			bio->bi_iter.bi_sector, bio->bi_status,
-@@ -3140,7 +3143,8 @@ void btrfs_readpage_endio(struct bio *bio)
- 	}
- 	/* Release the last extent */
- 	endio_readpage_release_extent(&processed, NULL, 0, 0, false);
--	btrfs_io_bio_free_csum(io_bio);
-+	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM))
-+		btrfs_io_bio_free_csum(io_bio);
- 	bio_put(bio);
+ int btrfs_readpage(struct file *file, struct page *page)
+ {
+-	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
+-	u64 start = page_offset(page);
+-	u64 end = start + PAGE_SIZE - 1;
+-	struct btrfs_bio_ctrl bio_ctrl = { 0 };
+-	int ret;
+-
+-	btrfs_lock_and_flush_ordered_range(inode, start, end, NULL);
+-
+-	ret = btrfs_do_readpage(page, NULL, &bio_ctrl, 0, NULL);
+-	if (bio_ctrl.bio)
+-		ret = submit_one_bio(bio_ctrl.bio, 0, bio_ctrl.bio_flags);
+-	return ret;
++	return iomap_readpage(page, &btrfs_buffered_read_iomap_ops,
++				&btrfs_iomap_readpage_ops);
  }
  
+ static int find_delalloc_range(struct inode *inode, u64 *start, u64 *end)
+@@ -8492,7 +8482,8 @@ static int btrfs_writepages(struct address_space *mapping,
+ 
+ static void btrfs_readahead(struct readahead_control *rac)
+ {
+-	extent_readahead(rac);
++	iomap_readahead(rac, &btrfs_buffered_read_iomap_ops,
++			&btrfs_iomap_readpage_ops);
+ }
+ 
+ static int __btrfs_releasepage(struct page *page, gfp_t gfp_flags)
 -- 
 2.31.1
 
