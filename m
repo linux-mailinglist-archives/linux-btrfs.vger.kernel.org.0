@@ -2,60 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C6C3A5FE3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Jun 2021 12:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685F83A627C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Jun 2021 13:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbhFNKWE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Jun 2021 06:22:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56758 "EHLO
+        id S234268AbhFNLBI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Jun 2021 07:01:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58542 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232767AbhFNKWE (ORCPT
+        with ESMTP id S234915AbhFNK7h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:22:04 -0400
+        Mon, 14 Jun 2021 06:59:37 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E296B2197F;
-        Mon, 14 Jun 2021 10:20:00 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 16B6321968;
+        Mon, 14 Jun 2021 10:57:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623666000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623668253; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=p90Rw1lQUgsGAYyIhBKdRAA+nYXDEQr9r0ffM1jJGRY=;
-        b=tGNP2VSuYWLuQWrH1xORcefdhL3mmtO1wfRPmy59IOMRJra0MYXl4kPeg6+UyItFYLji2L
-        qhvyReXEaYRI+FA8gXylPQkbXKHOT2BfJttzOmN39IBn9na9m9DiBcKwC5zFqpn6adCLhZ
-        hngk+C3P+a07a6n/tVWNO/5bHKdr+c8=
+        bh=TmQo1l7bcMKWEFiclpc1QPil9mIidTMZ8Ob9PomebOU=;
+        b=u1gqBZIJTdg4w6O6SSkSENApDDfJhuDM0tEu2HDHuAhuPd2zUtLmsDYNaqIw0aWg3AaJlk
+        9KqrIhnkkykgjdvTZCl3d6ekNL+rqZpBCB+BrBOD25U3qZdZ2dQS9vZrfceP/a6tmZqT77
+        JkjuBhhKWcB3kIi+WhTwk2e6uid0Evs=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id A0B1C118DD;
-        Mon, 14 Jun 2021 10:20:00 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id CE758118DD;
+        Mon, 14 Jun 2021 10:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623666000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623668253; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=p90Rw1lQUgsGAYyIhBKdRAA+nYXDEQr9r0ffM1jJGRY=;
-        b=tGNP2VSuYWLuQWrH1xORcefdhL3mmtO1wfRPmy59IOMRJra0MYXl4kPeg6+UyItFYLji2L
-        qhvyReXEaYRI+FA8gXylPQkbXKHOT2BfJttzOmN39IBn9na9m9DiBcKwC5zFqpn6adCLhZ
-        hngk+C3P+a07a6n/tVWNO/5bHKdr+c8=
+        bh=TmQo1l7bcMKWEFiclpc1QPil9mIidTMZ8Ob9PomebOU=;
+        b=u1gqBZIJTdg4w6O6SSkSENApDDfJhuDM0tEu2HDHuAhuPd2zUtLmsDYNaqIw0aWg3AaJlk
+        9KqrIhnkkykgjdvTZCl3d6ekNL+rqZpBCB+BrBOD25U3qZdZ2dQS9vZrfceP/a6tmZqT77
+        JkjuBhhKWcB3kIi+WhTwk2e6uid0Evs=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id EFrXJFAtx2BdaAAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Mon, 14 Jun 2021 10:20:00 +0000
-Subject: Re: [PATCH 2/4] btrfs: wake up async_delalloc_pages waiters after
- submit
+        id z82pLxw2x2AmfwAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Mon, 14 Jun 2021 10:57:32 +0000
+Subject: Re: [PATCH 4/4] btrfs: use the filemap_fdatawrite_wbc helper for
+ delalloc shrinking
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-Cc:     stable@vger.kernel.org
 References: <cover.1623419155.git.josef@toxicpanda.com>
- <d1802ad325a04d3640b85e4c928b91dd9316252c.1623419155.git.josef@toxicpanda.com>
+ <bcf08d20f1894052eb6edc4c3f37bd44f6dcab60.1623419155.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <17c2f625-e31c-40a9-279a-dee3dc9cfb07@suse.com>
-Date:   Mon, 14 Jun 2021 13:20:00 +0300
+Message-ID: <c5df2100-ff64-6ed1-a97b-5960b867de22@suse.com>
+Date:   Mon, 14 Jun 2021 13:57:32 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <d1802ad325a04d3640b85e4c928b91dd9316252c.1623419155.git.josef@toxicpanda.com>
+In-Reply-To: <bcf08d20f1894052eb6edc4c3f37bd44f6dcab60.1623419155.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -65,51 +64,34 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 11.06.21 г. 16:53, Josef Bacik wrote:
-> We use the async_delalloc_pages mechanism to make sure that we've
-> completed our async work before trying to continue our delalloc
-> flushing.  The reason for this is we need to see any ordered extents
-> that were created by our delalloc flushing.  However we're waking up
-> before we do the submit work, which is before we create the ordered
-> extents.  This is a pretty wide race window where we could potentially
-> think there are no ordered extents and thus exit shrink_delalloc
-> prematurely.  Fix this by waking us up after we've done the work to
-> create ordered extents.
+On 11.06.21 г. 16:54, Josef Bacik wrote:
+> sync_inode() has some holes that can cause problems if we're under heavy
+> ENOSPC pressure.  If there's writeback running on a separate thread
+> sync_inode() will skip writing the inode altogether.  What we really
+> want is to make sure writeback has been started on all the pages to make
+> sure we can see the ordered extents and wait on them if appropriate.
+> Switch to this new helper which will allow us to accomplish this and
+> avoid ENOSPC'ing early.
 > 
-> cc: stable@vger.kernel.org
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
 > ---
->  fs/btrfs/inode.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+>  fs/btrfs/inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 6cb73ff59c7c..c37271df2c6d 100644
+> index c37271df2c6d..93d113991e2c 100644
 > --- a/fs/btrfs/inode.c
 > +++ b/fs/btrfs/inode.c
-> @@ -1271,11 +1271,6 @@ static noinline void async_cow_submit(struct btrfs_work *work)
->  	nr_pages = (async_chunk->end - async_chunk->start + PAGE_SIZE) >>
->  		PAGE_SHIFT;
->  
-> -	/* atomic_sub_return implies a barrier */
-> -	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
-> -	    5 * SZ_1M)
-> -		cond_wake_up_nomb(&fs_info->async_submit_wait);
-> -
->  	/*
->  	 * ->inode could be NULL if async_chunk_start has failed to compress,
->  	 * in which case we don't have anything to submit, yet we need to
-> @@ -1284,6 +1279,11 @@ static noinline void async_cow_submit(struct btrfs_work *work)
->  	 */
->  	if (async_chunk->inode)
->  		submit_compressed_extents(async_chunk);
-> +
-> +	/* atomic_sub_return implies a barrier */
-> +	if (atomic_sub_return(nr_pages, &fs_info->async_delalloc_pages) <
-> +	    5 * SZ_1M)
-> +		cond_wake_up_nomb(&fs_info->async_submit_wait);
->  }
->  
->  static noinline void async_cow_free(struct btrfs_work *work)
+> @@ -9680,7 +9680,7 @@ static int start_delalloc_inodes(struct btrfs_root *root,
+>  			btrfs_queue_work(root->fs_info->flush_workers,
+>  					 &work->work);
+>  		} else {
+> -			ret = sync_inode(inode, wbc);
+> +			ret = filemap_fdatawrite_wbc(inode->i_mapping, wbc);
+>  			btrfs_add_delayed_iput(inode);
+>  			if (ret || wbc->nr_to_write <= 0)
+>  				goto out;
 > 
