@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E5C3A5FAA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Jun 2021 12:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551843A5FD2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Jun 2021 12:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232685AbhFNKHd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Jun 2021 06:07:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45322 "EHLO
+        id S232733AbhFNKTD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Jun 2021 06:19:03 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45900 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232579AbhFNKHc (ORCPT
+        with ESMTP id S232691AbhFNKTC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Jun 2021 06:07:32 -0400
+        Mon, 14 Jun 2021 06:19:02 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3CF891FD29;
-        Mon, 14 Jun 2021 10:05:29 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4BD9A1FD33;
+        Mon, 14 Jun 2021 10:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623665129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1623665819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZNaeHfpworRaHwbYWGBo82ID+Ws91lZWskujRu/57vU=;
-        b=ec8AXltdK0n7yMcym5KTUA/oh8gY7ORmhJSzoqyCBnY/6EvLYCGKN50JGFD74JcAO5J9Aa
-        InT31LK7qJhX541EgidZ7eCtX8WCni4uvDvfzk0P5sqTE/9MZBd9xAKdyGp8XyMSIC5fie
-        3G7+xE4/j7GhkeiNrQb8qbOOLxtlJMA=
+        bh=4wVkZRseJCqwcfKVL1n437+jCRaIQ+gB1ySnu1udt+s=;
+        b=PyOb2tjh03HRplQzsPeFQm7tqizYB9uwfc6VbbVH4XVQHyAWLITUF23ZjzOZzMpNdxCVJO
+        q3082So55kY0F/hI4wlTJ6y1UEXd//qJn5GIybxGyLUlUxelGSDpBeIv2nOtFZ/wB5T3sv
+        weu3Jo0wIwR+jLc+rYOOosk0606KDIU=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 03436118DD;
-        Mon, 14 Jun 2021 10:05:28 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 138A7118DD;
+        Mon, 14 Jun 2021 10:16:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623665129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1623665819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZNaeHfpworRaHwbYWGBo82ID+Ws91lZWskujRu/57vU=;
-        b=ec8AXltdK0n7yMcym5KTUA/oh8gY7ORmhJSzoqyCBnY/6EvLYCGKN50JGFD74JcAO5J9Aa
-        InT31LK7qJhX541EgidZ7eCtX8WCni4uvDvfzk0P5sqTE/9MZBd9xAKdyGp8XyMSIC5fie
-        3G7+xE4/j7GhkeiNrQb8qbOOLxtlJMA=
+        bh=4wVkZRseJCqwcfKVL1n437+jCRaIQ+gB1ySnu1udt+s=;
+        b=PyOb2tjh03HRplQzsPeFQm7tqizYB9uwfc6VbbVH4XVQHyAWLITUF23ZjzOZzMpNdxCVJO
+        q3082So55kY0F/hI4wlTJ6y1UEXd//qJn5GIybxGyLUlUxelGSDpBeIv2nOtFZ/wB5T3sv
+        weu3Jo0wIwR+jLc+rYOOosk0606KDIU=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id Za8ROugpx2BjYAAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Mon, 14 Jun 2021 10:05:28 +0000
-Subject: Re: [PATCH 1/4] btrfs: wait on async extents when flushing delalloc
+        id fKllApssx2C8ZgAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Mon, 14 Jun 2021 10:16:59 +0000
+Subject: Re: [PATCH 3/4] fs: add a filemap_fdatawrite_wbc helper
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1623419155.git.josef@toxicpanda.com>
- <f2a18e6cf6553f9b886768d86d5580561d9c279e.1623419155.git.josef@toxicpanda.com>
+ <b7ce962335474c7b0e96849cd9fb650b1138cbb3.1623419155.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <af617239-cc73-1e36-6f06-f5c9d385af73@suse.com>
-Date:   Mon, 14 Jun 2021 13:05:28 +0300
+Message-ID: <83038b23-71df-962c-167f-db0b21b83025@suse.com>
+Date:   Mon, 14 Jun 2021 13:16:58 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <f2a18e6cf6553f9b886768d86d5580561d9c279e.1623419155.git.josef@toxicpanda.com>
+In-Reply-To: <b7ce962335474c7b0e96849cd9fb650b1138cbb3.1623419155.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -64,121 +64,122 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 11.06.21 г. 16:53, Josef Bacik wrote:
-> I've been debugging an early ENOSPC problem in production and finally
-> root caused it to this problem.  When we switched to the per-inode
-> flushing code I pulled out the async extent handling, because we were
-> doing the correct thing by calling filemap_flush() if we had async
-> extents set.  This would properly wait on any async extents by locking
-> the page in the second flush, thus making sure our ordered extents were
-> properly set up.
-
-Which commit is this paragraph referring to? It will be helpful to
-include a reference so once can actually trace the  history of this code.
+> Btrfs sometimes needs to flush dirty pages on a bunch of dirty inodes in
+> order to reclaim metadata reservations.  Unfortunately most helpers in
+> this area are too smart for us
 > 
-> However when I switched us back to page based flushing, I used
-> sync_inode(), which allows us to pass in our own wbc.  The problem here
-> is that sync_inode() is smarter than the filemap_* helpers, it tries to
-> avoid calling writepages at all.  This means that our second call could
-> skip calling do_writepages altogether, and thus not wait on the pagelock
-> for the async helpers.  This means we could come back before any ordered
-> extents were created and then simply continue on in our flushing
-> mechanisms and ENOSPC out when we have plenty of space to use.
-
-AFAICS in the code and based on your problem statement it would seem the
-culprit here is really the fact we are calling the 2nd sync_inode with
-WBC_SYNC_NONE, which is an indicator for sync_inode (respectively.
-writeback_single_inode) to simply return in case I_SYNC is still set
-from the first invocation of sync_inode or if the inode doesn't have
-I_DIRTY_ALL set. So wouldn't a simple fix be to change the wbc's
-.sync_mode to the second sync_inode to be WB_SYNC_ALL that will ensure
-that the 2nd sync_inode takes effect?
-
+> 1) The normal filemap_fdata* helpers only take range and sync modes, and
+>    don't give any indication of how much was written, so we can only
+>    flush full inodes, which isn't what we want in most cases.
+> 2) The normal writeback path requires us to have the s_umount sem held,
+>    but we can't unconditionally take it in this path because we could
+>    deadlock.
+> 3) The normal writeback path also skips inodes with I_SYNC set if we
+>    write with WB_SYNC_NONE.  This isn't the behavior we want under heavy
+>    ENOSPC pressure, we want to actually make sure the pages are under
+>    writeback before returning, and if another thread is in the middle of
+>    writing the file we may return before they're under writeback and
+>    miss our ordered extents and not properly wait for completion.
+> 4) sync_inode() uses the normal writeback path and has the same problem
+>    as #3.
 > 
-> Fix this by putting back the async pages logic in shrink_delalloc.  This
-> allows us to bulk write out everything that we need to, and then we can
-> wait in one place for the async helpers to catch up, and then wait on
-> any ordered extents that are created.
+> What we really want is to call do_writepages() with our wbc.  This way
+> we can make sure that writeback is actually started on the pages, and we
+> can control how many pages are written as a whole as we write many
+> inodes using the same wbc.  Accomplish this with a new helper that does
+> just that so we can use it for our ENOSPC flushing infrastructure.
 > 
-> Fixes: e076ab2a2ca7 ("btrfs: shrink delalloc pages instead of full inodes")
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-
 > ---
->  fs/btrfs/inode.c      |  4 ----
->  fs/btrfs/space-info.c | 33 +++++++++++++++++++++++++++++++++
->  2 files changed, 33 insertions(+), 4 deletions(-)
+>  include/linux/fs.h |  2 ++
+>  mm/filemap.c       | 29 ++++++++++++++++++++++++-----
+>  2 files changed, 26 insertions(+), 5 deletions(-)
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 8ba4b194cd3e..6cb73ff59c7c 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -9681,10 +9681,6 @@ static int start_delalloc_inodes(struct btrfs_root *root,
->  					 &work->work);
->  		} else {
->  			ret = sync_inode(inode, wbc);
-> -			if (!ret &&
-> -			    test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
-> -				     &BTRFS_I(inode)->runtime_flags))
-> -				ret = sync_inode(inode, wbc);
->  			btrfs_add_delayed_iput(inode);
->  			if (ret || wbc->nr_to_write <= 0)
->  				goto out;
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index af467e888545..3c89af4fd729 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -547,9 +547,42 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info,
->  	while ((delalloc_bytes || ordered_bytes) && loops < 3) {
->  		u64 temp = min(delalloc_bytes, to_reclaim) >> PAGE_SHIFT;
->  		long nr_pages = min_t(u64, temp, LONG_MAX);
-> +		int async_pages;
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index c3c88fdb9b2a..aace07f88b73 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2886,6 +2886,8 @@ extern int filemap_fdatawrite_range(struct address_space *mapping,
+>  				loff_t start, loff_t end);
+>  extern int filemap_check_errors(struct address_space *mapping);
+>  extern void __filemap_set_wb_err(struct address_space *mapping, int err);
+> +extern int filemap_fdatawrite_wbc(struct address_space *mapping,
+> +				  struct writeback_control *wbc);
 >  
->  		btrfs_start_delalloc_roots(fs_info, nr_pages, true);
->  
-> +		/*
-> +		 * We need to make sure any outstanding async pages are now
-> +		 * processed before we continue.  This is because things like
-> +		 * sync_inode() try to be smart and skip writing if the inode is
-> +		 * marked clean.  We don't use filemap_fwrite for flushing
-> +		 * because we want to control how many pages we write out at a
-> +		 * time, thus this is the only safe way to make sure we've
-> +		 * waited for outstanding compressed workers to have started
-> +		 * their jobs and thus have ordered extents set up properly.
-> +		 * Josef, when you think you are smart enough to remove this in
-> +		 * the future, read this comment 4 times and explain in the
-> +		 * commit message why it makes sense to remove it, and then
-> +		 * delete the commit and don't remove it.
+>  static inline int filemap_write_and_wait(struct address_space *mapping)
+>  {
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 66f7e9fdfbc4..0408bc247e71 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -376,6 +376,29 @@ static int filemap_check_and_keep_errors(struct address_space *mapping)
+>  		return -ENOSPC;
+>  	return 0;
+>  }
+> +/**
+> + * filemap_fdatawrite_wbc - start writeback on mapping dirty pages in range
+> + * @mapping:	address space structure to write
+> + * @wbc:	the writeback_control controlling the writeout
+> + *
+> + * This behaves the same way as __filemap_fdatawrite_range, but simply takes the
 
-I think the last sentence can be omitted, simply prefix the paragraph
-with N.B. or put a more generic warning e.g. "Be extra careful and
-thoughtful when considering changing this logic".
+That's not true, because __filemap_fdatawrite_range will only issue
+writeback in case of PAGECACHE_TAG_DIRTY && the inode's bdi having
+BDI_CAP_WRITEBACK. So I think those checks should also be moved to
+fdatawrite_wbc.
 
-> +		 */
-> +		async_pages = atomic_read(&fs_info->async_delalloc_pages);
-> +		if (!async_pages)
-> +			goto skip_async;
+In fact what would be good for readability since we have a bunch of
+__filemap_fdatawrite functions is to have each one call your newly
+introduced helper and have their body simply setup the correct
+writeback_control structure. Alternative right now one has to chase up
+to 3-4 levels of (admittedly very short) functions. I.E
+
+filemap_fdatawrite->__filemap_fdatawrite->__filemap_fdatawrite_range->filemap_fdatawrite_wbc
+
+which is somewhat annoying. Instead I propose having
+
+filemap_fdatawrite->filemap_fdatawrite_wbc
+filemap_flush->filemap_fdatawrite_wbc etc...
+
+
+> + * writeback_control as an argument to allow the caller to have more flexibility
+> + * over the writeout parameters, and with no checks around whether the mapping
+> + * has dirty pages or anything, it simply calls writepages.
+> + *
+> + * Return: %0 on success, negative error code otherwise.
+> + */
+> +int filemap_fdatawrite_wbc(struct address_space *mapping,
+> +			   struct writeback_control *wbc)
+> +{
+> +	int ret;
 > +
-> +		/*
-> +		 * We don't want to wait forever, if we wrote less pages in this
-> +		 * loop than we have outstanding, only wait for that number of
-> +		 * pages, otherwise we can wait for all async pages to finish
-> +		 * before continuing.
-> +		 */
-> +		if (async_pages > nr_pages)
-> +			async_pages -= nr_pages;
-> +		else
-> +			async_pages = 0;
-> +		wait_event(fs_info->async_submit_wait,
-> +			   atomic_read(&fs_info->async_delalloc_pages) <=
-> +			   async_pages);
-
-nit: What's funny is that without this patch async_submit_wait actually
-doesn't have a single user, it's only woken up in async_cow_submit but
-nobody actually waited for it. Ideally it should have been removed when
-its last user was removed. ;)
-
-> +skip_async:
->  		loops++;
->  		if (wait_ordered && !trans) {
->  			btrfs_wait_ordered_roots(fs_info, items, 0, (u64)-1);
+> +	wbc_attach_fdatawrite_inode(wbc, mapping->host);
+> +	ret = do_writepages(mapping, wbc);
+> +	wbc_detach_inode(wbc);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(filemap_fdatawrite_wbc);
+>  
+>  /**
+>   * __filemap_fdatawrite_range - start writeback on mapping dirty pages in range
+> @@ -397,7 +420,6 @@ static int filemap_check_and_keep_errors(struct address_space *mapping)
+>  int __filemap_fdatawrite_range(struct address_space *mapping, loff_t start,
+>  				loff_t end, int sync_mode)
+>  {
+> -	int ret;
+>  	struct writeback_control wbc = {
+>  		.sync_mode = sync_mode,
+>  		.nr_to_write = LONG_MAX,
+> @@ -409,10 +431,7 @@ int __filemap_fdatawrite_range(struct address_space *mapping, loff_t start,
+>  	    !mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
+>  		return 0;
+>  
+> -	wbc_attach_fdatawrite_inode(&wbc, mapping->host);
+> -	ret = do_writepages(mapping, &wbc);
+> -	wbc_detach_inode(&wbc);
+> -	return ret;
+> +	return filemap_fdatawrite_wbc(mapping, &wbc);
+>  }
+>  
+>  static inline int __filemap_fdatawrite(struct address_space *mapping,
 > 
