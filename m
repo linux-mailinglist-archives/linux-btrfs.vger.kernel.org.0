@@ -2,139 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D693A790C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jun 2021 10:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70133A7926
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jun 2021 10:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhFOIfM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Jun 2021 04:35:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbhFOIfL (ORCPT
+        id S231140AbhFOIje (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Jun 2021 04:39:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50510 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231166AbhFOIj2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:35:11 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DA3C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Jun 2021 01:33:06 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id o20so10590703qtr.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Jun 2021 01:33:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JPRLuX68fN3MBTKIcPaDskdfs8yDI+LzPrWJoY8CXl8=;
-        b=rYwqAurknXMNiOA15rGYLHJ+rtvH/aPeCnkA0QlREsWDkdC+Mo96WmrqPPEW+eLjV4
-         O3Jd0n/gCA4oHYQKfa7HDwnb/UL6gh+R5Xfl4SxN/Meh3tLjd8MOro6M6DjDF3KnR8iP
-         WxJAdU5kgmRlegOyMJZM/tAIJTFA3vvefJFrje7RHkHfaq2Qof2c+nQ22cON3nl6bw4a
-         GIDnJXXdnMDnpppPCzL8SVlrIYwFStoIBWQIWIgyEB8tEo3wGPQG/Gl2nrcdmT9vw67g
-         ZJzw7k95QeaEwcP8fVLpKeeKT8mHevdBZ5T725/n3nfX4bGcim2gWRaqVvIpkJb+Bg7k
-         lD9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JPRLuX68fN3MBTKIcPaDskdfs8yDI+LzPrWJoY8CXl8=;
-        b=stsym6+Mn9JW0GkfKmsLs+WS4sdd5CJSVS6i1fF6ciXRq0RLXeOOL7vFjysI1kY55I
-         PMuL+fkyoygurUVwf4S6TdrmNcVUHh2+18yoiy8MebIcvO7qWcWqHKeLB1M/UjyYYHE9
-         pmC7y6PmTaMZiNWclI0yiTE3XabUzmwLFBt5C4JWN4cXkEDSX68iV7PFzHM3TSMapSrA
-         +Hw9VpMXQzW7NSOKhh86EChiGA2RmVCqUlndTf8nYO3o/FU6m9uzenCm4rA1jgHcQiUB
-         Yc7hy3eOEQrrAdF5kRa2lsIkj0DOy4fz1zsMIcSYv23dQPJ7q2YjFaQUSwCbGUomfoJy
-         dJRw==
-X-Gm-Message-State: AOAM530qs3YUfBnqxtLTVXKx/8NPnB/uvRQENmV7Fm7E+7EY00JjTqTt
-        BooIPYJhMJqN7KpqTddkCjDRZv+ngtkMEyh8bBIKSA==
-X-Google-Smtp-Source: ABdhPJyUqqfkD7z8rVARq/6IOe6ofKeo9UmbLfYZ9Cd5wzhOG+enr+XxQep9MOXRxxv2Ny5oFlSYCFcyjk8j6XBBZNg=
-X-Received: by 2002:ac8:5949:: with SMTP id 9mr3025053qtz.67.1623745985682;
- Tue, 15 Jun 2021 01:33:05 -0700 (PDT)
+        Tue, 15 Jun 2021 04:39:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1623746244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=baAmkgM+AWGY356VSVgLvgws69TxGo9QZingMrfUCr8=;
+        b=Btt6v0DvCvcuyjB9MmvN/gO6WFc93OowDq/pIdWrcuZO7LooiKyNMjjlG+iQOs+Hk+LX7x
+        v7p0m9h8h54AO4om8c8bmHDZlZUGrjae0DNh78As2TB5l8T93cF2SwzJh4DMQoT9EqETrY
+        t5Er2kO7cb+Kx9kukS1Je55miYdZuSM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-4JEmupRkNnC2Vw9NDkZ6qg-1; Tue, 15 Jun 2021 04:37:20 -0400
+X-MC-Unique: 4JEmupRkNnC2Vw9NDkZ6qg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F746107ACF6;
+        Tue, 15 Jun 2021 08:37:19 +0000 (UTC)
+Received: from T590 (ovpn-12-39.pek2.redhat.com [10.72.12.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B40F85D6DC;
+        Tue, 15 Jun 2021 08:37:13 +0000 (UTC)
+Date:   Tue, 15 Jun 2021 16:37:09 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Qu Wenruo <wqu@suse.de>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Subject: Re: About `bio->bi_iter.bi_size` at write endio time
+Message-ID: <YMhmtd8doc9g23cT@T590>
+References: <18cbcd0b-8c49-00b8-558b-5d74b3664b85@suse.de>
 MIME-Version: 1.0
-References: <0000000000009c083105c4b34e70@google.com> <8ba465e6-f933-6224-ef74-c5aa898a1022@toxicpanda.com>
-In-Reply-To: <8ba465e6-f933-6224-ef74-c5aa898a1022@toxicpanda.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 15 Jun 2021 10:32:53 +0200
-Message-ID: <CACT4Y+anyMbe-GQ040BN1dRO=stayqGDPLUpV=c89BUs6qzTCQ@mail.gmail.com>
-Subject: Re: [syzbot] KMSAN: uninit-value in generic_bin_search (2)
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     syzbot <syzbot+8aa9678d1cda7a0432b7@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, glider@google.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18cbcd0b-8c49-00b8-558b-5d74b3664b85@suse.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-_data_ On Mon, Jun 14, 2021 at 8:53 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> On 6/14/21 1:41 AM, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    6099c9da x86: entry: speculatively unpoison pt_regs in do_..
-> > git tree:       https://github.com/google/kmsan.git master
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=12c7a057d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=4e6842a91012889c
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=8aa9678d1cda7a0432b7
-> > compiler:       Debian clang version 11.0.1-2
-> > userspace arch: i386
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+8aa9678d1cda7a0432b7@syzkaller.appspotmail.com
-> >
-> >   tracehook_notify_resume include/linux/tracehook.h:189 [inline]
-> >   exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
-> >   exit_to_user_mode_prepare+0x486/0x560 kernel/entry/common.c:208
-> >   __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
-> >   syscall_exit_to_user_mode+0x35/0x60 kernel/entry/common.c:301
-> >   __do_fast_syscall_32+0x14f/0x180 arch/x86/entry/common.c:145
-> >   do_fast_syscall_32+0x77/0xd0 arch/x86/entry/common.c:168
-> >   do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:211
-> >   entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> > =====================================================
-> > =====================================================
-> > BUG: KMSAN: uninit-value in btrfs_comp_cpu_keys fs/btrfs/ctree.c:1556 [inline]
-> > BUG: KMSAN: uninit-value in comp_keys fs/btrfs/ctree.c:1528 [inline]
-> > BUG: KMSAN: uninit-value in generic_bin_search+0x799/0xbc0 fs/btrfs/ctree.c:1702
-> > CPU: 1 PID: 9364 Comm: syz-executor.2 Tainted: G    B             5.12.0-rc6-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >   __dump_stack lib/dump_stack.c:79 [inline]
-> >   dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
-> >   kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
-> >   __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
-> >   btrfs_comp_cpu_keys fs/btrfs/ctree.c:1556 [inline]
-> >   comp_keys fs/btrfs/ctree.c:1528 [inline]
-> >   generic_bin_search+0x799/0xbc0 fs/btrfs/ctree.c:1702
-> >   btrfs_bin_search fs/btrfs/ctree.c:1724 [inline]
->
-> This appears to be a bug in KMSAN, the code is doing the correct thing and it
-> appears to be complaining about tmp, which is initialized either in the if or
-> else part.  The else part may be what's confusing KMSAM here as it's essentially
->
-> struct btrfs_disk_key tmp;
-> struct btrfs_disk_key unaligned;
->
-> else {
->       memcpy(&unaligned, ptr, len); // read_extent_buffer is basically memcpy
->       tmp = &unaligned;
-> }
+On Tue, Jun 15, 2021 at 03:22:59PM +0800, Qu Wenruo wrote:
+> Hi,
+> 
+> Recently I got a strange case where for write bio, at its endio time, I got
+> bio->bi_iter.bi_size == 0, but bio_for_each_segment_all() reports we still
+> have some bv_len.
 
-Hi Josef,
+It is normal to observe zero .bi_size in ->bi_end_io(), see req_bio_endio().
+Meantime bio_for_each_segment_all() covers all pages added to the bio via
+bio_add_page(), which is invariant after the bio is submitted.
 
-Thanks for looking into this.
+> 
+> And obviously, when the bio get submitted, its bi_size is not 0.
+> 
+> This is especially common for REQ_OP_ZONE_APPEND bio, but I also get rare
+> bi_size == 0 at endio time, for REQ_OP_WRITE too.
 
-The mere fact of assigning something to a variable does not make it initialized.
-Namely,
+It shouldn't be rare.
 
-int y;
-int x = y;
-if (x) ...
+> 
+> So I guess bi_size at endio time is no longer reliable due to bio
+> merging/splitting?
 
-is not much different from:
+No, ->bi_size should be zero in .bi_end_io() if this bio is completed
+successfully no matter if the bio is splitted or not.
 
-int x;
-if (x) ...
+> 
+> Thus the only correct way to get how large a bio really is, is through
+> bio_for_each_segment_all()?
 
-Are you sure the data used in the code is in fact initialized?
-KMSAN says the data originated in btrfs_alloc_tree_block. Was it
-initialized? Where?
+Yeah, if you mean to get the bio's real size in ->bi_end_io().
+
+
+Thanks,
+Ming
+
