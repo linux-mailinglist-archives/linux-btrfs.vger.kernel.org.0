@@ -2,58 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55573A828E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jun 2021 16:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFF43A8322
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jun 2021 16:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbhFOOVA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Jun 2021 10:21:00 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33418 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbhFOOTP (ORCPT
+        id S231332AbhFOOqY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Jun 2021 10:46:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44824 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231308AbhFOOqY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Jun 2021 10:19:15 -0400
+        Tue, 15 Jun 2021 10:46:24 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B68AA1FD49;
-        Tue, 15 Jun 2021 14:17:09 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D28E321A65;
+        Tue, 15 Jun 2021 14:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623766629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1623768258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0JVyQwYz2svcAr/ZY06AiYicx+BXp0Hz+pc8SSM2ddQ=;
-        b=cehEPJqWIj53UCg2xIO665clT2r1D+hccSc25YHGHA3fHtlFeY5PsJBk2ZWtzyJg/hHekw
-        FZT0UTqZLJ1QOAj/VY5vbzH5P4kwTXZeb/7CfR7EpNp1RefZ2VmlKluuPOqwg1GO+40+Ef
-        U4nPhIgxAVVGJWyi64qLmiXcMD9BMkg=
+        bh=Th0416q2+KdoF86StzHPGX+ZjnCKgouwXmF86B7JW+4=;
+        b=dbY6F9pNXJn2rrhIpX8k7qU9XgyNqHEAjaayuDfRJgErREl9vTrheu4OesfBX2AiKIRxfR
+        m/59OJjzQd5Nc9stiqnZi99BmoLFR0EECegTwKAUokkL4uQrYb/SIY0tQEpvjDKA8oaaBZ
+        zU9v60jNQUX2M5xdwnCVIvRiws/eUHM=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 8880C118DD;
-        Tue, 15 Jun 2021 14:17:09 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id A2B3E118DD;
+        Tue, 15 Jun 2021 14:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623766629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1623768258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0JVyQwYz2svcAr/ZY06AiYicx+BXp0Hz+pc8SSM2ddQ=;
-        b=cehEPJqWIj53UCg2xIO665clT2r1D+hccSc25YHGHA3fHtlFeY5PsJBk2ZWtzyJg/hHekw
-        FZT0UTqZLJ1QOAj/VY5vbzH5P4kwTXZeb/7CfR7EpNp1RefZ2VmlKluuPOqwg1GO+40+Ef
-        U4nPhIgxAVVGJWyi64qLmiXcMD9BMkg=
+        bh=Th0416q2+KdoF86StzHPGX+ZjnCKgouwXmF86B7JW+4=;
+        b=dbY6F9pNXJn2rrhIpX8k7qU9XgyNqHEAjaayuDfRJgErREl9vTrheu4OesfBX2AiKIRxfR
+        m/59OJjzQd5Nc9stiqnZi99BmoLFR0EECegTwKAUokkL4uQrYb/SIY0tQEpvjDKA8oaaBZ
+        zU9v60jNQUX2M5xdwnCVIvRiws/eUHM=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id UmEMH2W2yGC8MQAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Tue, 15 Jun 2021 14:17:09 +0000
-Subject: Re: [RFC PATCH 01/31] iomap: Check if blocksize == PAGE_SIZE in
- to_iomap_page()
+        id 7wtuJcK8yGAXQgAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Tue, 15 Jun 2021 14:44:18 +0000
+Subject: Re: [RFC PATCH 04/31] iomap: Introduce iomap_readpage_ops
 To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
 References: <cover.1623567940.git.rgoldwyn@suse.com>
- <79781ca99470475ff33382e67571eeb914edac63.1623567940.git.rgoldwyn@suse.com>
+ <ae9727cdb9e1a576e3e9e7e1410a0afe75422621.1623567940.git.rgoldwyn@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <9ba35f37-8876-c635-5d46-dd8682833f20@suse.com>
-Date:   Tue, 15 Jun 2021 17:17:09 +0300
+Message-ID: <06fd3b39-8d0a-9c98-5938-80fe41f165b1@suse.com>
+Date:   Tue, 15 Jun 2021 17:44:18 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <79781ca99470475ff33382e67571eeb914edac63.1623567940.git.rgoldwyn@suse.com>
+In-Reply-To: <ae9727cdb9e1a576e3e9e7e1410a0afe75422621.1623567940.git.rgoldwyn@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -66,48 +65,92 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 13.06.21 г. 16:39, Goldwyn Rodrigues wrote:
 > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> btrfs requires page->private set to get a callback to releasepage(). 
-
-nit: This is somewhat terse of an explanation and someone not familiar
-with btrfs might wonder what's going on. In fact, btrfs uses the
-PagePrivate flag to indicate that the page has undergone CoW and has
-ordered extents created. And this is in fact problematic because iomap
-assume page_private is not in use by the underlying fs.
-
-So,
-> for normal circumstances of blocksize==PAGE_SIZE, btrfs will have
-> page->private set to 1. In order to avoid a crash, check for the
-> blocksize==PAGE_SIZE in to_iomap_page().
+> iomap_readpage_ops provide additional functions to allocate or submit
+> the bio.
+> 
+> alloc_bio() is used to allocate bio from the filesystem, in case of
+> btrfs: to allocate btrfs_io_bio.
+> 
+> submit_io() similar to the one introduced with direct I/O, submits the
+> bio.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > ---
->  fs/iomap/buffered-io.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+>  fs/gfs2/aops.c         |  4 +--
+>  fs/iomap/buffered-io.c | 56 +++++++++++++++++++++++++++++++-----------
+>  fs/xfs/xfs_aops.c      |  4 +--
+>  fs/zonefs/super.c      |  4 +--
+>  include/linux/iomap.h  | 19 ++++++++++++--
+>  5 files changed, 64 insertions(+), 23 deletions(-)
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 9023717c5188..d30683734d01 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -41,9 +41,11 @@ static inline struct iomap_page *to_iomap_page(struct page *page)
->  	 */
->  	VM_BUG_ON_PGFLAGS(PageTail(page), page);
+
+<snip>
+
+> @@ -282,19 +283,31 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+>  		gfp_t orig_gfp = gfp;
+>  		unsigned int nr_vecs = DIV_ROUND_UP(length, PAGE_SIZE);
 >  
-> -	if (page_has_private(page))
-> -		return (struct iomap_page *)page_private(page);
-> -	return NULL;
-> +	if (i_blocksize(page->mapping->host) == PAGE_SIZE)
-> +		return NULL;
-> +	if (!page_has_private(page))
-> +		return NULL;
-> +	return (struct iomap_page *)page_private(page);
->  }
+> -		if (ctx->bio)
+> -			submit_bio(ctx->bio);
+> +		if (ctx->bio) {
+> +			if (ctx->ops && ctx->ops->submit_io)
+
+here you check for the presence of ctx->ops && ctx->ops->some_op
+
+> +				ctx->ops->submit_io(inode, ctx->bio);
+> +			else
+> +				submit_bio(ctx->bio);
+> +		}
 >  
->  static struct bio_set iomap_ioend_bioset;
-> @@ -163,7 +165,7 @@ iomap_set_range_uptodate(struct page *page, unsigned off, unsigned len)
->  	if (PageError(page))
->  		return;
+>  		if (ctx->rac) /* same as readahead_gfp_mask */
+>  			gfp |= __GFP_NORETRY | __GFP_NOWARN;
+> -		ctx->bio = bio_alloc(gfp, bio_max_segs(nr_vecs));
+> +		if (ctx->ops->alloc_bio)
+
+but here you directly check for the presence of ctx->ops->some_op. The
+correct should be to also check for ctx->ops since other filesystems
+don't necessarily implement specific readops.
+
+> +			ctx->bio = ctx->ops->alloc_bio(gfp,
+> +					bio_max_segs(nr_vecs));
+> +		else
+> +			ctx->bio = bio_alloc(gfp, bio_max_segs(nr_vecs));
+>  		/*
+>  		 * If the bio_alloc fails, try it again for a single page to
+>  		 * avoid having to deal with partial page reads.  This emulates
+>  		 * what do_mpage_readpage does.
+>  		 */
+> -		if (!ctx->bio)
+> -			ctx->bio = bio_alloc(orig_gfp, 1);
+> +		if (!ctx->bio) {
+> +			if (ctx->ops->alloc_bio)
+
+ditto about checking for presence of ops.
+
+> +				ctx->bio = ctx->ops->alloc_bio(orig_gfp, 1);
+> +			else
+> +				ctx->bio = bio_alloc(orig_gfp, 1);
+> +		}
+>  		ctx->bio->bi_opf = REQ_OP_READ;
+>  		if (ctx->rac)
+>  			ctx->bio->bi_opf |= REQ_RAHEAD;
+
+<snip>
+
+> @@ -336,7 +353,10 @@ iomap_readpage(struct page *page, const struct iomap_ops *ops)
+>  	}
 >  
-> -	if (page_has_private(page))
-> +	if (i_blocksize(page->mapping->host) != PAGE_SIZE)
->  		iomap_iop_set_range_uptodate(page, off, len);
->  	else
->  		SetPageUptodate(page);
-> 
+>  	if (ctx.bio) {
+> -		submit_bio(ctx.bio);
+> +		if (ctx.ops->submit_io)
+
+readpage_ops can be NULL so you should check for it as well.
+
+> +			ctx.ops->submit_io(inode, ctx.bio);
+> +		else
+> +			submit_bio(ctx.bio);
+>  		WARN_ON_ONCE(!ctx.cur_page_in_bio);
+>  	} else {
+>  		WARN_ON_ONCE(ctx.cur_page_in_bio);
+
+<snip>
