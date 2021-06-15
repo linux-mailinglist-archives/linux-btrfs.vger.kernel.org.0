@@ -2,135 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D073A7E18
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jun 2021 14:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070973A8081
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jun 2021 15:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFOMWr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Jun 2021 08:22:47 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:47648 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhFOMWq (ORCPT
+        id S231694AbhFONkf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Jun 2021 09:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231759AbhFONjs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Jun 2021 08:22:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623759642; x=1655295642;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=nIXSRDi8P6VtxXfnTHOjCcaIQ9BHRLwvj6KXnY/hWF5O6AA3kAwxaHKd
-   CU8IB/M3BgcnYNPOVao41/rUJWTMdYbmWYLBRLg4QpuGDeyjWu4vxYmFu
-   o6gaSsiwZxa/xUBLi2TThtI3G5vyaEY8amuMdQpDega2qhDpIB+QESGct
-   pq943y5CbXNJxJLjbs6fvdFuQ44YHURPQz5JBa1nbjs8jEjPB7XaAulu5
-   1Z+A488OG9yqiJ6iN/lwOYlGet7GdPuy7Scc6euA3Lo7MMNJIi32B8a99
-   xEA+qAC07pwpu/BmkCP7IqLUsc+tu+cPvGbmwDzMdImBtZz6h2/EWTM+u
-   g==;
-IronPort-SDR: 6bPY+a5JCnQZSZfLSwEABqRUjQldyZCyIrSMlwQ5yUNFoLgAm933H+GZ9VgndPWzBpdWtGMDC5
- 1YPiFmZwSCTqmKdp//Wvqzf2iN3VTq022x4TzUJFz3v9Bva7pc/WbPZ0wjBlCu8wM0LK6zkAwR
- apb8YhY4votqGPlqnHkoyVr8c2PMxDBCi3EqUGOEdmNU2ClEAdrRT6cfpr8ixTjmvvs5FemUyU
- TJTVx8QarvvqR0PS3JSfVYZFDZcD8Wd6byb9amU8lEe40zawDUcOeocmB7W0plf7xaY8MSzUi8
- zhc=
-X-IronPort-AV: E=Sophos;i="5.83,275,1616428800"; 
-   d="scan'208";a="283419222"
-Received: from mail-mw2nam10lp2101.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.101])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Jun 2021 20:20:41 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iV7iTxJzNGkAVeLzpoOEg532MLT6WLSxjeww0hl2H3LZYldcOYzGs0wGrrKKwZsqtXCVrcnCzoByBuYQ1wU7n/zNSQOAR5QjrpRNHVspRwvM3nnW9w3qUhF486cJ11o8OIoVr+LGz2K5fM19vQQ6yCSxfcxeNh6oKZH1Wd0bSXFxnxSn15JTMb3lrXJ+DpaVRc5/fQej8hDdlgjf3QUvopCBcWEcsU/wdykys2rYaQ4VBUm/I4CJ60l3rx7L83jy7QItWJOfzknDuXXA6XDCFRlKUNjlpPPSManQj32pFwmueidpsA2IU+tTGLP21EsSOilPjg8RM6V7tR8OPqlrhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=TjwBcU6sKQnjzRGkzpb143WZPXToAZhOAfSspQMd0c7GPcu2u4Y2xh/Qo/cbj00J5aHp2c3FYC1WUnnqv8q2nPdpQNLXukxRWxfbdgtdepw9pC+0SMZuZqnhcZrF0ZcgfZBW/yzne7QuxNl6Re3QP+Sn/W4JyH8RGEfBNGM2D4E6LmCCpmcIwO0SCg5Vxa2RC7igjoqzeUyZ7LsMR2BAfhWL4ur5rd1MmGjT9IdP2v9mItwo7TdZJM4pOILJLlamBGnrsKSsOk2LRlkGCQ2P4SZKwFGTVOO+opTPwWTmrrYA7xd2QdQnW870dTOITz4c+ljHx1N+SQ33V1pcRfWaXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Tue, 15 Jun 2021 09:39:48 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C330AC0613A4
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Jun 2021 06:37:36 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id u20so11214185qtx.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Jun 2021 06:37:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=bsDvE4UPyJ6P7RDUpOo0lo2VG31PD6g6QaJAjKLSnYrsUL3Nc/tXtqsEwFz706VlyrXJrkCAlx50P7U23PYoP7K/dyzp7QEz4cvObnpfpy4hwo4kNqsieC5yfNIBm++v42AV9y5Mes5ZHFKUkd9JjRbWDepTujyHjbyeMagJnwM=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7543.namprd04.prod.outlook.com (2603:10b6:510:55::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Tue, 15 Jun
- 2021 12:20:39 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4219.025; Tue, 15 Jun 2021
- 12:20:39 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     Anand Jain <anand.jain@oracle.com>
-Subject: Re: [PATCH v3 1/9] btrfs: remove a dead comment for
- btrfs_decompress_bio()
-Thread-Topic: [PATCH v3 1/9] btrfs: remove a dead comment for
- btrfs_decompress_bio()
-Thread-Index: AQHXYeCYL0B+Kusyhk+mxyuk9+92ZQ==
-Date:   Tue, 15 Jun 2021 12:20:39 +0000
-Message-ID: <PH0PR04MB7416D90D27A2BA87D7450ECA9B309@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <20210615121836.365105-1-wqu@suse.com>
- <20210615121836.365105-2-wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:141b:f301:b8f6:a609:8f3f:1503]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 44a8885f-b967-4bea-b411-08d92ff7fd00
-x-ms-traffictypediagnostic: PH0PR04MB7543:
-x-microsoft-antispam-prvs: <PH0PR04MB75430F152807D12C55A467749B309@PH0PR04MB7543.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1mTkVcjeYlSkVHOJzZYr4VuoIXPBEJZ86ZqWf+m/TE22DYDU3dg3T088pJcMyaBWxMUyRarrrs6doAE0SqPLAATaP3nIqvemUzxefXpS7A0Yh+cxJeMrNsQvOTDs2as95t2MsDPFR4QJcU57lJWdjaq5CrwUN8xj214b0L6tvH98rLjnAVVEPcFpVEkkw9GqrT0st/ywT8GnXdRBG/lcx6SSWv8cXqcJTTDntZPkWCWWJyhORXz7BZnzHyVFm9o9KPT6/rEjn3ZDAhsXNlQi6FSZAjWsds7bE3SvDZVmhaDuNJOHEqBGG+HbLxXzJjI+rN1D2YZ+2jgtlC+9LWMm5orYwXxZs5UTNZVShdj8fvynY+vIMi1+ZS7GsXHByXJ0JAhMHTECVrjUM/+e0O1UlVP8zoMgKkkeMEvw/ZRi5XqqxgwHs7mHvOKsWvtc1QACBQCJzPOutjQFUKHhMKZHxZN6d0WW5Cyavju+Bq1FDvFuGcLMEoemiUG3mbzevh3RNZJFi6hW/Dmbca85d5PW5MNgc4Kyhz01aXuFrR+A2MmTBT2QChfNxLe2DvCqrXEz5WU6bsh9XRsGoe0De5tmXUjFm4zT71wtAlz7NWkjhHQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(558084003)(7696005)(86362001)(498600001)(186003)(5660300002)(66476007)(66556008)(66946007)(38100700002)(66446008)(9686003)(55016002)(64756008)(8936002)(71200400001)(52536014)(76116006)(6506007)(110136005)(33656002)(4326008)(8676002)(2906002)(4270600006)(122000001)(19618925003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?OzLyLMnJ0qns8TU8JkQqFvmZxWyDEVssAjO3N1yPsEfHE7p0O7gN0+m4nzha?=
- =?us-ascii?Q?B9zpP69lHXDhwi97iMm3QNagu+63lGZX2Q+dPHhqeuSAP/bse2jIiH97jurj?=
- =?us-ascii?Q?hsHIWSXkw7YMczVlp1Z2lVTleuneM/2LH3FeoLqSuFlY9rihM7C/FIBHadFV?=
- =?us-ascii?Q?/K0iVl/dm8Y6AKQACPNhsebuseeMILJfDJTadvOYa77KyQGg2g24JVT/fxGy?=
- =?us-ascii?Q?f3TUM3v2fFDRM51Tpx7YZQFVpaLB0ZcKwBbHVs8x5+FQF2hOH4TKUxhYTFlE?=
- =?us-ascii?Q?XigqIJzjPoqJSzIdLLiXwiIIHdBiT20igQ6KtflPb2lFyTjodJn2Y/fPqeWs?=
- =?us-ascii?Q?XlkuI2dwTVuHxKUcW1ayadkKvIRcOm3Q/x0jlI9PSs3RfIPV3wu9fRCTBfqh?=
- =?us-ascii?Q?55OtEoiR43SO0IfurJY6U1YP7jf+f8rjwjDHCsG8vMBsLcRB4PNUIdY55xKQ?=
- =?us-ascii?Q?Mz/Cuvl3rZ3V+iCaCmZrPyO5ko7N89clsSgNxdTFWB0miDCxdVacYAcmOwBh?=
- =?us-ascii?Q?08T8eXB7VfhoTdQvAvvhzi2bKmvfWSVQVXo/0AlAehxcQFbcnIAyUa9cJCe2?=
- =?us-ascii?Q?0+qp1GIYXLmBS3hGRHjnuNkhLZ/4A7coB8a8ItT7OeyXNF3+Xb7SV/HAc/xw?=
- =?us-ascii?Q?2yaZ65MFN5rr9bEnZc+MAQ0FjbuBIeOVFyzjfg5RV7ClsLUWIyOUGhTzaSPs?=
- =?us-ascii?Q?Us62d2Z82YNY2cquqIZ8Vl1SXTMxipOIeMsXLb9IaNPPo2QmSfVFug4CvT71?=
- =?us-ascii?Q?dVFh/NF3ScdJWXpISel/ETM/Z5uTo6j7lrepcQEUE1zYAzPJNzcIVjIuCJ0A?=
- =?us-ascii?Q?uyYLkReEkO3FxcCzEfcUhvlajDLbzdynUBKXwwvbnambhA+IeLl9bbWwnt0I?=
- =?us-ascii?Q?knDR3sTL5nPsYwvwz+6sdrmT13ecVrhV7B35S+gmBrUv0k9vYfIYanJKKAIj?=
- =?us-ascii?Q?CQPOJMPwcLXmFXLmm0EoH8JucqSb1VhHmqEzTJ2r4piSv7lc6WNbFNOEu5HU?=
- =?us-ascii?Q?mwVhHDbCehY5MUXujG4mVz+axZrRlwe4/1sty7cLE6P+yvG/EeUt4TeqjDCy?=
- =?us-ascii?Q?oW3sx5DQoiSQ9J5Cbp8sKd2T4588Sgv+NB/xore6UexpPG8gsEpCPEy+fWh0?=
- =?us-ascii?Q?n55u4ioyI9/VJzhr0DcoCibOIjl/7ASZYV2b2JiAv1JkES3r1ltOCob0A9j2?=
- =?us-ascii?Q?PXTcz2wDe5gZSJSe55UXTeUoCzl3U9tAqosXsHY0BsV+JGlaTyNtCJYYz+bN?=
- =?us-ascii?Q?/jFoZoYiqsMIQACBEB9WD3+BKZwt8sIRFm9GzI9toaG6/NGyY6OSTNL3ShP3?=
- =?us-ascii?Q?EHNfSi/vsQm6Qko4XFjwuilvDdPxdaYFy+D9KwPlGoLy6b5QxEQKj7fArll+?=
- =?us-ascii?Q?2dgTOOMjBO9JSVFPZko6yuDFoOZFl0wqGSfGRAUzWWk6J110UA=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=goev78KTRwSihvJJ4DbK1rkMP7cZKBvVkokgGMEXEzA=;
+        b=KV83j3dWZzmGTNEvAPX5b+XerPcy3fxDd1Rv3W+WAJlZr2P1guBFa8QLVJuo2lMXnX
+         EHRw/9BbE3OPZIgWZ/BhWJ8WzNgkWxg6OTuk6jVJqbwCAc5ralS3DAoURVkWBN5Z65m8
+         sFgbKIo7XqYYhPjSVYTubu1LnRcTtOJW+2pAAaF5gaA3tYp+tpN4sE9NTU/WIWJvhARP
+         PlWtuMUwpVZtg3EXtK8XGyx3hZu7gU0OvH5M2B5uC4W1Q5Do8MkG2ERtdETxAET/PTVu
+         8+bPoj1rtAQDRrrmSwG9y5abIOQ/SX8FruCKaN54dV937aL8n2Pne2LGL0mbef3zIWrk
+         gziQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=goev78KTRwSihvJJ4DbK1rkMP7cZKBvVkokgGMEXEzA=;
+        b=qj9vDj8H4bz9yknhR3Jb5qFZPhJknSGPsKYe30aMhsL5cymZoOgdY0rlDif8PEL5XI
+         qPdAQr6OAnuFX36QfalLMoIson4phJVSqb2IuV4fy0b3BiTlRRAvYblj1Gl86se8XeiT
+         0THJvZCpIgtFYmQJw/ZX3cE4hwTFxBtI3ZSgvSDtvy4+4+xEDtFC1jXW8iTV3qU1P2Dq
+         Q+tnf5HQFRKe5VPn9tFy8CHrWpCpLf4XiqiDMkekrzbDNPDvzt5V5JV4iTUWeo0wGFar
+         JSHkr5bfzOYr6xYd0uJxw4JkONmsCrmKucmWSUXrJxi1JRTwkQhg0SrlPsCAd0LBQC++
+         bMsQ==
+X-Gm-Message-State: AOAM5337vlyLBHtg7ltjn+ybTW3KIS9HHL63rxxAZRCVsnuI/ZNrTG1x
+        mhQ6tkhpgvW5lss5q4t02X3b4g==
+X-Google-Smtp-Source: ABdhPJzmluXTaG6pJx2CXk/UgEJkDy5ar4iZmE16H1+RGZl3otHGMYxenjUlq2lHi2qRcthfpAZ6MQ==
+X-Received: by 2002:ac8:7516:: with SMTP id u22mr21766856qtq.160.1623764255653;
+        Tue, 15 Jun 2021 06:37:35 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id r22sm7392667qtm.82.2021.06.15.06.37.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Jun 2021 06:37:34 -0700 (PDT)
+Subject: Re: [PATCH 3/4] fs: add a filemap_fdatawrite_wbc helper
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1623419155.git.josef@toxicpanda.com>
+ <b7ce962335474c7b0e96849cd9fb650b1138cbb3.1623419155.git.josef@toxicpanda.com>
+ <83038b23-71df-962c-167f-db0b21b83025@suse.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <8c1d5edb-8149-f0e3-6170-2b25fdaa4e9f@toxicpanda.com>
+Date:   Tue, 15 Jun 2021 09:37:33 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44a8885f-b967-4bea-b411-08d92ff7fd00
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2021 12:20:39.6082
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bnTZ6hV1MPD/AMB4o5dAXAPsszRevz4STdPG3hH79YnbP72e8lvZyOtUBo4YJohQodMVp6DmwubumsJyivhbks+ipaJE8nw6nxbDbY60LE0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7543
+In-Reply-To: <83038b23-71df-962c-167f-db0b21b83025@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+On 6/14/21 6:16 AM, Nikolay Borisov wrote:
+> 
+> 
+> On 11.06.21 г. 16:53, Josef Bacik wrote:
+>> Btrfs sometimes needs to flush dirty pages on a bunch of dirty inodes in
+>> order to reclaim metadata reservations.  Unfortunately most helpers in
+>> this area are too smart for us
+>>
+>> 1) The normal filemap_fdata* helpers only take range and sync modes, and
+>>     don't give any indication of how much was written, so we can only
+>>     flush full inodes, which isn't what we want in most cases.
+>> 2) The normal writeback path requires us to have the s_umount sem held,
+>>     but we can't unconditionally take it in this path because we could
+>>     deadlock.
+>> 3) The normal writeback path also skips inodes with I_SYNC set if we
+>>     write with WB_SYNC_NONE.  This isn't the behavior we want under heavy
+>>     ENOSPC pressure, we want to actually make sure the pages are under
+>>     writeback before returning, and if another thread is in the middle of
+>>     writing the file we may return before they're under writeback and
+>>     miss our ordered extents and not properly wait for completion.
+>> 4) sync_inode() uses the normal writeback path and has the same problem
+>>     as #3.
+>>
+>> What we really want is to call do_writepages() with our wbc.  This way
+>> we can make sure that writeback is actually started on the pages, and we
+>> can control how many pages are written as a whole as we write many
+>> inodes using the same wbc.  Accomplish this with a new helper that does
+>> just that so we can use it for our ENOSPC flushing infrastructure.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   include/linux/fs.h |  2 ++
+>>   mm/filemap.c       | 29 ++++++++++++++++++++++++-----
+>>   2 files changed, 26 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/fs.h b/include/linux/fs.h
+>> index c3c88fdb9b2a..aace07f88b73 100644
+>> --- a/include/linux/fs.h
+>> +++ b/include/linux/fs.h
+>> @@ -2886,6 +2886,8 @@ extern int filemap_fdatawrite_range(struct address_space *mapping,
+>>   				loff_t start, loff_t end);
+>>   extern int filemap_check_errors(struct address_space *mapping);
+>>   extern void __filemap_set_wb_err(struct address_space *mapping, int err);
+>> +extern int filemap_fdatawrite_wbc(struct address_space *mapping,
+>> +				  struct writeback_control *wbc);
+>>   
+>>   static inline int filemap_write_and_wait(struct address_space *mapping)
+>>   {
+>> diff --git a/mm/filemap.c b/mm/filemap.c
+>> index 66f7e9fdfbc4..0408bc247e71 100644
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -376,6 +376,29 @@ static int filemap_check_and_keep_errors(struct address_space *mapping)
+>>   		return -ENOSPC;
+>>   	return 0;
+>>   }
+>> +/**
+>> + * filemap_fdatawrite_wbc - start writeback on mapping dirty pages in range
+>> + * @mapping:	address space structure to write
+>> + * @wbc:	the writeback_control controlling the writeout
+>> + *
+>> + * This behaves the same way as __filemap_fdatawrite_range, but simply takes the
+> 
+> That's not true, because __filemap_fdatawrite_range will only issue
+> writeback in case of PAGECACHE_TAG_DIRTY && the inode's bdi having
+> BDI_CAP_WRITEBACK. So I think those checks should also be moved to
+> fdatawrite_wbc.
+> 
+
+Yeah I'll move those into _wbc
+
+> In fact what would be good for readability since we have a bunch of
+> __filemap_fdatawrite functions is to have each one call your newly
+> introduced helper and have their body simply setup the correct
+> writeback_control structure. Alternative right now one has to chase up
+> to 3-4 levels of (admittedly very short) functions. I.E
+> 
+> filemap_fdatawrite->__filemap_fdatawrite->__filemap_fdatawrite_range->filemap_fdatawrite_wbc
+> 
+> which is somewhat annoying. Instead I propose having
+> 
+> filemap_fdatawrite->filemap_fdatawrite_wbc
+> filemap_flush->filemap_fdatawrite_wbc etc...
+> 
+
+Yeah I'd like to clean this up at some point, but that's outside the scope of 
+this patch.  I want to get a helper in without needing to run it by everybody, 
+we can take up cleaning this up at a later point with input from everybody else. 
+  Thanks,
+
+Josef
