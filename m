@@ -2,134 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5653A85DE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jun 2021 18:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954493A8C41
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jun 2021 01:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhFOQC2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Jun 2021 12:02:28 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:8854 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhFOQCG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Jun 2021 12:02:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623772802; x=1655308802;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=Envi8JGVc3SSw4PgBVbrvOOZoXcHZrys//VVwACJV8IkwUJhGJG6AvqR
-   HLBX5e9/xj9BKRc9syePppI69/AEKMIEd6ln01JbOKcTtnPfMHaOmaqYB
-   YNMcCQhcPIJUUIiMcxNzerV68IOgAdtNO5OPW9j7Zu28++PolkZPtfNID
-   3iKCtCVti/WSw2CJsfhcRy8wS3j5Ri9lSvKCk8m5AYOm/su3HP747ECNZ
-   Q7HzZvU8jUt1q32i1R8NGC7cKYW7UObBpKlt8XEIdo9kxkfFBP5tcAOpK
-   +Cg5I3dLL9Zil1ZWJp9wdh25+RdaxYzH/0silW7QUN2SZ8+E1imUMcJZt
-   w==;
-IronPort-SDR: 8WgTMbLM/fktZD7k/L1j6DVC1/mBajwfJcXhNH57wvtjoqtrqp7zkYyJglPml3WUz424wvPuPG
- nkCSdiUvNn4GB60B4OhFxhiqwaBdHa/kMr7HwPyuiB2LScqdx7s5RmXZPuVUK5tfNu35m5s5Ys
- O+Kj9isXpIBnQygrrdc8eArdgM5CHM0IaNb6T2uEoCWl80o8E7g/cOuSxzmkms+ahGK5ebIcjn
- Blv501gfKgEEHuPMFQ5pr5tNBLVPzRii2oGaI1JGZXug/FWNaQG14pu/5bhUPODtIJSiYNKENM
- uW4=
-X-IronPort-AV: E=Sophos;i="5.83,275,1616428800"; 
-   d="scan'208";a="172546714"
-Received: from mail-sn1anam02lp2043.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.57.43])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Jun 2021 00:00:01 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HAsofvSfK43enPx7YqUzkDOI9rmi+t1WbsKUZb+MWQRJOjUeACGfU5/HK1BSEt7LdumWUAmcBRXW9Mzp88mhb0hmPxG1vS6xpLxHOTpNrJDMXw+aqb9/i5NbChC19/AJppuWRBGqwkg19j198IUKizaUrsows9i6xFLA+Zxz13+QGLldEx5nU0IHbhaBxuDedEg13z+1srMPDteKQB74k5fIY5ASqk4sUgzUhlrZG6qq9EkNB7G+BbLCJdNGxBGL387UDzzI+Fp85c5Gz2Gj5HzNal32MlJ23rsxYSXAn3cizYg5DsBqBB4Ssgnb1c1lzNHlemmsW4MyBOxAiVQVOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=J1I76NFDAxMRv09ezk9Edm+SeZorxHlaXvB/XRSuAXVvjRVXvQ62MG2Ejx31BAkGfFx8HiMc9UdOs8PosUtrH5AC5sbY4iB8gJQK+wP0e/rKr+2Z3eWJ/sp+sm+DloKJDGsZob56eMQWGI5RGoGuCzthB79DTyx6CkJdaI+boFI6L9NDwOpisYlMRRSaHjHacMTF0d52V4UG9bcLSPh6j+hHiDACDeYHRRnXn4S/rgB9EpT5oGYTbUBQiMO6x9eollG2uyNUHmlC3+9beKHOBIdEaMVQt34COBdcZ0Md5+fbWqbpBHghht7bHIKhZ6cgV5Tv96eK2AO+IFWyuR3kBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=IUWya+Xov/euwVZXeoa0+AoI0e5M4RVd5IqvFc3f8j1OBY++I+UPhbfb+hejJMSjOIgz0VtmzuTwu0kdUmfPLRBZVbkiN50ajlPIDWIX9jm2pd5YeuTgrqoI6aWuptkA0bRCjwA92CkJxNv8IKgIRjYpm3B836/TDVdqzV6qbV0=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7254.namprd04.prod.outlook.com (2603:10b6:510:1b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.25; Tue, 15 Jun
- 2021 15:59:58 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::99a5:9eaa:4863:3ef3%4]) with mapi id 15.20.4219.025; Tue, 15 Jun 2021
- 15:59:58 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Qu Wenruo <wqu@suse.com>,
+        id S230481AbhFOXL7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Jun 2021 19:11:59 -0400
+Received: from mout.gmx.net ([212.227.15.18]:50949 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229898AbhFOXL6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Jun 2021 19:11:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1623798589;
+        bh=LY8rEQ8y7z6i1gkGmoMXtPXAH2p3AHB/7zU2sT0cZQg=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=QJslMDZrcKTMOHKItIe/Ip/dkMf2F9819iaoQ2AeM1K8krKHikts8tQMiO9Blh8Sb
+         pO0Qdo+C8sGD3/H7TheKALlJp4vbNuZn+PXrmJpqam9uJazV5nW/OMfRysHbnTEVne
+         4uLhUGERmK8QX3/CE8PjxmcsEav01pIv92ODq5ME=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWics-1lmicG1wAi-00X224; Wed, 16
+ Jun 2021 01:09:49 +0200
+Subject: Re: [PATCH v3 6/9] btrfs: introduce alloc_submit_compressed_bio() for
+ compression
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v3 5/9] btrfs: introduce submit_compressed_bio() for
- compression
-Thread-Topic: [PATCH v3 5/9] btrfs: introduce submit_compressed_bio() for
- compression
-Thread-Index: AQHXYeCe1QWm+LG/YkK0o2psmHGFlw==
-Date:   Tue, 15 Jun 2021 15:59:58 +0000
-Message-ID: <PH0PR04MB74160C8631EE0915A7C9CCE89B309@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <20210615121836.365105-1-wqu@suse.com>
- <20210615121836.365105-6-wqu@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:141b:f301:b8f6:a609:8f3f:1503]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a909e638-04d4-461a-cc96-08d93016a05a
-x-ms-traffictypediagnostic: PH0PR04MB7254:
-x-microsoft-antispam-prvs: <PH0PR04MB7254CEAB03C1E180AB1AD59B9B309@PH0PR04MB7254.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EvuBdI6Y16gz6oCBgEPoIf9jrA+Zy84v8kUldORHq7Q0qi5kBYnOCl54dPlhupJQsj+Lk+MVgKkUmiNlDo5FF/pmAdzfi8kSVocrGq7d3sp/Baqk0M6QM8Rh62RJAXqiA6Fy4zsgUqtGLzqU+6vzPaBPAtIIYHd2FCvMo8/SCJEbbS2tvsu5Tk5lCG9sMPE/TCiAB4FppjavX4KomuoNZ5KgQKKWheHYyxI2wNUWg/ztHFv5AxuM/yE1j27hs9N1wBnvSgLTzwKFqXWjTI8ESpo2nRuwuy1jp/cWHRiCJhGSRx7zu2N0s3Ai3tbDW00uuAtMJxCk7n+Rx2O0gdH1HJhuVN0w4ZHWqG/p1yitz6FWOmvEHyYJ8QVD4jnKk0tsUX03+dMkjg060wz74A1Q0gy6G14GuXTGE9cIlpRiKQlURMOyilNLbdNaHgZQoUEBgRmiKuPgywpbf5mEvKA50Lc5fu208XWB41dh0AcUVPUBOsPNDTM8Xv6No3ySUOz4bkissZJlPGu9rIh5cmcx5hDhguhnt8A/bnN8DMq4b3oTnfR0wPYbshzNEuuJVxqtHXh2CtVoBlX3rjiAQmmcl5aWIz3iYingadhVklmW8UQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39850400004)(136003)(376002)(366004)(346002)(71200400001)(4270600006)(66476007)(8676002)(66556008)(9686003)(52536014)(316002)(66446008)(122000001)(38100700002)(64756008)(110136005)(478600001)(5660300002)(558084003)(86362001)(19618925003)(186003)(6506007)(55016002)(33656002)(8936002)(76116006)(2906002)(7696005)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?NKiDDWOt/jnCNaI8Q9tAMJdulirY705lt8r9za8EqaEhXzA8ZoNf7owE0JnU?=
- =?us-ascii?Q?1sza5qu2lP/0z39sMb9aWH7ZY5y43FpvjFaAFXYqCG0wfzSZM0WPtZpeonMT?=
- =?us-ascii?Q?cCQ+PvtD7nDp9LWV6nnxNO+l9IV+2d8fT7ahOy+q0cXejCQZieMtezqZdVVD?=
- =?us-ascii?Q?Ddf3KeiCyinRIJmoq114YXi2ucwMtet6/20+6gOztw3yKBjsK01+c8b3Xybv?=
- =?us-ascii?Q?+XkHgvT+w9NkzrigaGBV0EI1pSyxa1c+DJrX8MfoviQNH3BRvTb/hw5vRAt0?=
- =?us-ascii?Q?B+l1fhmt+fqJXsI9tHCcYBARKpfr2IsDoeHzaeF8fqDqBnHkKlfmAk33gJ51?=
- =?us-ascii?Q?CGkjTeFk602dJQ56/YEufYQppVEGv5dc35Ov7OtqBFR+LkPWvtxjGiMs81hR?=
- =?us-ascii?Q?NLJz56CVHsjGXugm4cpFGZHJeZuywssOF9FuQkQI4mykaeXe6Gw/SQB99XEF?=
- =?us-ascii?Q?rrdq66iThGeHNvac4sQfsT8QbyDiptGY8Ht2FYf5ZDevlk14h/DQox5Se7AN?=
- =?us-ascii?Q?f5gvMlNL0UdT5py+DKYzZpSgXr3NY8DV/gHs+h4MhSeBKajQXfFE+33oGI7d?=
- =?us-ascii?Q?KotDdSISCIvMOJWv1+JpLcbyspJ80b2qhm1SpJpC9rfg2PHKE0OujfXXc5kd?=
- =?us-ascii?Q?zf5tG7bbC/KvKGQts6Uy2EQpAfmnAyjaBrTKnNlh4pbjdi/f0CFKyKhzCwQR?=
- =?us-ascii?Q?kQm+5I33gpl/E9WuUHX/m+v8gxHvsp2VayTtKV6rUcapbMjcllEsvCdsF6BW?=
- =?us-ascii?Q?HH2P+DbAG5FxMb9+69DJCEIVD0R6o+CNblwqwPUPuu7FMFpP5WSACOJFd5Nv?=
- =?us-ascii?Q?I/yansSkkHJmXqqfzzCPZLsNqjNcncIYR+y9uOHhcDp+IDlxA1mrbvoGRylz?=
- =?us-ascii?Q?jAUqpYuAlh8Dt0aC+svx8Lnwn4qHe4Revqw5dvec9Uc4RuSJAlY5+8xXYRVW?=
- =?us-ascii?Q?UXb5GOp7pcDM6CTb5mnKy33eC73M0g8U+Gn1J5f+n9iQL0AJo6AirxO3HgiM?=
- =?us-ascii?Q?AXjtKdcwcgUuk2Wml5u9q1C5X8Kd9kG4KFanKPvxp9J9yVZRgBWL0T25pfkq?=
- =?us-ascii?Q?qJfPdxJpxgwZz+P8o7LlCo4f9BoEItlojizPimONTZ5xwcR4qAyNv85Wv96S?=
- =?us-ascii?Q?gI3lWe0hI01g5uaqN5W6T6qZMSX0otX/zJkhUtW1ojIvYAxL7byXUuloJRaq?=
- =?us-ascii?Q?1y2BvAy/aOwx0RNVLHJV9aAvoROSgSGz9lKv8Zc1NIeeW8YGm9bQlVjgeDrV?=
- =?us-ascii?Q?2woDmohij+i92o4tmaM5szL4JvKfk8if4KLDFaQ6ZQ2nvfdFTnUcy8rhSpba?=
- =?us-ascii?Q?cVNmtiF/RH+oC2l1UIIvh1HcPOdE/WFz5hrM+CQqFZ4Lm085Z9lkTqESn4kZ?=
- =?us-ascii?Q?OOmIo/GwyKDVOkOH4bqvKDFEXAp7nhj/NRR0KmzbW0p1VHN4DQ=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <20210615121836.365105-7-wqu@suse.com>
+ <PH0PR04MB7416F076827A67A7560A341F9B309@PH0PR04MB7416.namprd04.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <88f89e31-b87a-4086-2bf1-8bea6c886b31@gmx.com>
+Date:   Wed, 16 Jun 2021 07:09:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a909e638-04d4-461a-cc96-08d93016a05a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2021 15:59:58.6020
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZxBC6A6a5hHiArFZ+7SW2pFFtcjXnc/q8Zj0iJp00vRiqJ0/mnOsFdrU3DQxnqkvXQrHp2E4HBwbgojbKaTUHPKxLDKrIWmPl1bRMPF/N7I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7254
+In-Reply-To: <PH0PR04MB7416F076827A67A7560A341F9B309@PH0PR04MB7416.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1FnrmSTTiwvv66cQW5iboI53vJNCXbd/Rtsdyd+hO/BBYAcCqDo
+ pqm5n7MRywer3MYJoKyONK1f9E9cKijJr7o2yk+sKn0rtxdjsWkhDPi/9fm5nI4WOL7swK9
+ rimvLYxXnGTydPnlthHaR/ak2+Fy92YD8Xb4xPADsj27A/nStvy1gJ/NJZRBTA/5s6TnU3R
+ WrEp6JQokXVi7n3leYXxw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:r64ytcj4Pdk=:E6TRhj5P5IW3L4b6a42QxW
+ 9jro1us/GpXzE7+FXDGK7VQe5/p0W+A/l5v4Uev3c3P+XCtmxfKadtn5yVDZ0id24P6KREQ4a
+ HUKm+RM+ROs1KJAnbEDl/Xi8faqtIndHh6p0apYfEasZ6DBT+DBj9HpfYFoNU/miLVZotoK5N
+ jgURDi7747enEyNhI78rfzkUp6u//XI4EGdziSi8IaXuDD9C6/2GhOjUS4mZciIyvqL3qlIx0
+ pXjMeBMu2/XteQMuSCrILYExM97isMvTrNXCmhlba5ad2Fsl8W3iTFwUa5MBuCCpCy5Xe0xI7
+ 1UlTaP0y5YUCMyRoE3ebpQhKcIIur8vBbcjdYvYjI8Ig7ZLW4OrTZTBWTgeBOL2oiwYcGyDTI
+ AB3fcocFukkoZ9velwvDn0++e+UKOxcdBlao0ZAz1w6cZnSIX3y+G/SFkLcgGh6jzNAQTJ7Oj
+ 1roxYTO7oVWPxEfdZHWyNe+qN4t/euNMWWrIcKwCI3irfWu77663z6Trbho/SYsgpXMIlv7kX
+ NmMP1FAcsYGqy8/B1GA9HM0+/+toor0qfmO7f5QwQ225oyyJvyk2ERA1JjnBLXr55v4lI3MDv
+ sDl0EakaNR1lmQAMpBWiKClwMFBE72r44YofBw0wtk4kFfOMb8LNTD6sPiO6TjffT3l/KD/GS
+ 2wcnerwcbUKwZor8pF/L19MSdpv3Se8aglgxBk1gZGuqD30gZOpK1FU6gGbZguirWysaEHfTP
+ +KED5x8ReLEDf8AXCwSwecW1OUxP+wJA/r/BbA7PaJhuWzCb1TW1uP+pWLj16qFjUAuXBa/FU
+ G5SshPl/xFndTtAWw+6t6WRioPtmfL70zE4QYrD2WG44WLWXJE6J6/x4BWZEZuTfFQW4yTcKd
+ wqKGJGPu/fTSGz8XotVNY0dCgoL0rYldie/NcD5L5Gkx0gpjbwLvnur47pvZ4m7og99UngbYD
+ vlnsxKBYPJ//B5FtCpvUZsrQKgAAncP95NMuYw7M342vmqQwXh1GBN4wPBdvte/79N2OTdLx5
+ 0+Zh5TNdYNgvOsxPgD8F1gpKb8/qJ4rj1zIArCzMEo3NQIjo3Oeh+nrnYeNCI/xDoYlBWs8Ns
+ efws2dKrcYU3cLMpNsoUqF+8NRBnQ/5Oh/zw3LnapiM+GH3Qh6EqVphFg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+
+
+On 2021/6/15 =E4=B8=8B=E5=8D=8811:58, Johannes Thumshirn wrote:
+> On 15/06/2021 14:18, Qu Wenruo wrote:
+>> +static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u64=
+ disk_bytenr,
+>> +					unsigned int opf, bio_end_io_t endio_func)
+>> +{
+>> +	struct bio *bio;
+>> +
+>> +	bio =3D btrfs_bio_alloc(disk_bytenr);
+>> +	/* bioset allocation should not fail */
+>> +	ASSERT(bio);
+>
+> Here you write that bio allocation shouldn't fail (because it's backed
+> by a bioset/mempool and we're not calling from IRQ context).
+
+But alloc_compressed_bio() has other error path, namingly
+btrfs_get_chunk_map() and btrfs_get_io_geometry() can fail, thus caller
+still need to check that.
+
+Although thanks to your mention, I find that I should call bio_put() for
+the above error cases before returning ERR_CAST().
+
+Thanks,
+Qu
+>
+> [...]
+>
+>> +	bio =3D alloc_compressed_bio(cb, first_byte, bio_op | write_flags,
+>> +				   end_compressed_bio_write);
+>> +	if (IS_ERR(bio)) {
+>> +		kfree(cb);
+>> +		return errno_to_blk_status(PTR_ERR(bio));
+>>   	}
+>
+> Here you're checking for IS_ERR().
+>
+>> @@ -545,10 +569,14 @@ blk_status_t btrfs_submit_compressed_write(struct=
+ btrfs_inode *inode, u64 start,
+>
+> [...]
+>
+>> +			bio =3D alloc_compressed_bio(cb, first_byte,
+>> +					bio_op | write_flags,
+>> +					end_compressed_bio_write);
+>> +			if (IS_ERR(bio)) {
+>> +				ret =3D errno_to_blk_status(PTR_ERR(bio));
+>> +				bio =3D NULL;
+>> +				goto finish_cb;
+>> +			}
+>
+> same
+>
+>> @@ -812,10 +840,13 @@ blk_status_t btrfs_submit_compressed_read(struct =
+inode *inode, struct bio *bio,
+>
+> [...]
+>
+>> +	comp_bio =3D alloc_compressed_bio(cb, cur_disk_byte, REQ_OP_READ,
+>> +					end_compressed_bio_read);
+>> +	if (IS_ERR(comp_bio)) {
+>> +		ret =3D errno_to_blk_status(PTR_ERR(comp_bio));
+>> +		comp_bio =3D NULL;
+>> +		goto fail2;
+>> +	}
+>>
+>
+> same
+>
+> if btrfs_bio_alloc() would have failed we'd already crash on a nullptr
+> dereference much earlier.
+>
