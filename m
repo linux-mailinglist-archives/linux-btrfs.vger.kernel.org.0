@@ -2,88 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70133A7926
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jun 2021 10:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1D43A7E04
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Jun 2021 14:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhFOIje (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Jun 2021 04:39:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50510 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231166AbhFOIj2 (ORCPT
+        id S230152AbhFOMUp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Jun 2021 08:20:45 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33564 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhFOMUo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Jun 2021 04:39:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623746244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=baAmkgM+AWGY356VSVgLvgws69TxGo9QZingMrfUCr8=;
-        b=Btt6v0DvCvcuyjB9MmvN/gO6WFc93OowDq/pIdWrcuZO7LooiKyNMjjlG+iQOs+Hk+LX7x
-        v7p0m9h8h54AO4om8c8bmHDZlZUGrjae0DNh78As2TB5l8T93cF2SwzJh4DMQoT9EqETrY
-        t5Er2kO7cb+Kx9kukS1Je55miYdZuSM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-4JEmupRkNnC2Vw9NDkZ6qg-1; Tue, 15 Jun 2021 04:37:20 -0400
-X-MC-Unique: 4JEmupRkNnC2Vw9NDkZ6qg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F746107ACF6;
-        Tue, 15 Jun 2021 08:37:19 +0000 (UTC)
-Received: from T590 (ovpn-12-39.pek2.redhat.com [10.72.12.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B40F85D6DC;
-        Tue, 15 Jun 2021 08:37:13 +0000 (UTC)
-Date:   Tue, 15 Jun 2021 16:37:09 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Qu Wenruo <wqu@suse.de>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: About `bio->bi_iter.bi_size` at write endio time
-Message-ID: <YMhmtd8doc9g23cT@T590>
-References: <18cbcd0b-8c49-00b8-558b-5d74b3664b85@suse.de>
+        Tue, 15 Jun 2021 08:20:44 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D3EF81FD55
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Jun 2021 12:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1623759519; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=GshSd/K+k5PgCEc4X2F5XaBFOs1Eo2OZ3dzJzg4giiY=;
+        b=aB+E7hPL+r4/yrHV6IIeQgo+pE5pRs8NV6l52Crrjilx5GJAfkFsVLgDoDm5219hyajnL6
+        DoRjCOs5IlVh4YcMHWvmCILwR06cOBuKUPA/stgMyJVEz8NY2Q0dVRo77BZNhjSm1X4Hrt
+        OFLhmKL+aQ9AnXf3tDMJP+IDljAQE6A=
+Received: from adam-pc.lan (unknown [10.163.16.38])
+        by relay2.suse.de (Postfix) with ESMTP id D5404A3B8E
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Jun 2021 12:18:38 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 0/9] btrfs: compression: refactor and enhancement preparing for subpage compression support
+Date:   Tue, 15 Jun 2021 20:18:27 +0800
+Message-Id: <20210615121836.365105-1-wqu@suse.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18cbcd0b-8c49-00b8-558b-5d74b3664b85@suse.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 03:22:59PM +0800, Qu Wenruo wrote:
-> Hi,
-> 
-> Recently I got a strange case where for write bio, at its endio time, I got
-> bio->bi_iter.bi_size == 0, but bio_for_each_segment_all() reports we still
-> have some bv_len.
+There are quite some problems in compression code:
 
-It is normal to observe zero .bi_size in ->bi_end_io(), see req_bio_endio().
-Meantime bio_for_each_segment_all() covers all pages added to the bio via
-bio_add_page(), which is invariant after the bio is submitted.
+- Weird compressed_bio::pending_bios dance
+  If we just don't want compressed_bio being freed halfway, we have more
+  sane methods, just like btrfs_subpage::readers.
 
-> 
-> And obviously, when the bio get submitted, its bi_size is not 0.
-> 
-> This is especially common for REQ_OP_ZONE_APPEND bio, but I also get rare
-> bi_size == 0 at endio time, for REQ_OP_WRITE too.
+  So here we fix it by introducing compressed_bio::io_sectors to do the
+  job.
 
-It shouldn't be rare.
+- BUG_ON()s inside btrfs_submit_compressed_*()
+  Even they are just ENOMEM, we should handle them.
+  With io_sectors introduced, we have a way to finish compressed_bio
+  all by ourselves, as long as we haven't submitted last bio.
 
-> 
-> So I guess bi_size at endio time is no longer reliable due to bio
-> merging/splitting?
+  If we have last bio submitted, then endio will handle it well.
 
-No, ->bi_size should be zero in .bi_end_io() if this bio is completed
-successfully no matter if the bio is splitted or not.
+- Duplicated code for compressed bio allocation and submission
+  Just small refactor can handle it
 
-> 
-> Thus the only correct way to get how large a bio really is, is through
-> bio_for_each_segment_all()?
+- Stripe boundary is checked every time one page is added
+  This is overkilled.
+  Just learn from extent_io.c refactor which use bio_ctrl to do the
+  boundary check only once for each bio.
 
-Yeah, if you mean to get the bio's real size in ->bi_end_io().
+  Although in compression context, we don't need extra checks in
+  extent_io.c, thus we don't need bio_ctrl structure, but
+  can afford to do it locally.
 
+- Dead code removal
+  One dead comment and a new zombie function,
+  btrfs_bio_fits_in_stripe(), can be removed now.
 
-Thanks,
-Ming
+Changelog:
+v2:
+- Rebased to latest misc-next
+
+- Fix a bug in btrfs_submit_compressed_write() where zoned write is not
+  taken into consideration
+
+- Reuse the existing chunk mapping of btrfs_get_chunk_map()
+
+v3:
+- Fix a bug that zoned device can't even pass btrfs/001
+  This is because at endio time, bi_size for zoned device is always 0.
+  We have to use bio_for_each_segment_all() to calculate the real bio
+  size instead.
+  In theory, it should also happen more frequently for non-zoned device,
+  but no catch for all test cases (with "-o compress") except btrfs/011.
+
+- Fix btrfs/011 hang when tested with "-o compress"
+  This is caused by checking both atomic value without protection.
+  Checking two atomic values is no longer atomic.
+
+  In fact, with compressed_bio::io_sectors introduced, pending_bios is
+  only used to wait for any pending bio to finish in error path.
+
+  Thus dec_and_test_compressed_bio() only need to check if io_sectors is
+  zero
+
+- Fix a error that in error handling path, we may hang due to missing
+  wake_up() in dec_and_test_compressed_bio()
+
+Qu Wenruo (9):
+  btrfs: remove a dead comment for btrfs_decompress_bio()
+  btrfs: introduce compressed_bio::io_sectors to trace compressed bio
+    more elegantly
+  btrfs: hunt down the BUG_ON()s inside btrfs_submit_compressed_read()
+  btrfs: hunt down the BUG_ON()s inside btrfs_submit_compressed_write()
+  btrfs: introduce submit_compressed_bio() for compression
+  btrfs: introduce alloc_submit_compressed_bio() for compression
+  btrfs: make btrfs_submit_compressed_read() to determine stripe
+    boundary at bio allocation time
+  btrfs: make btrfs_submit_compressed_write() to determine stripe
+    boundary at bio allocation time
+  btrfs: remove unused function btrfs_bio_fits_in_stripe()
+
+ fs/btrfs/compression.c | 607 ++++++++++++++++++++++++-----------------
+ fs/btrfs/compression.h |  13 +-
+ fs/btrfs/ctree.h       |   2 -
+ fs/btrfs/inode.c       |  42 ---
+ 4 files changed, 367 insertions(+), 297 deletions(-)
+
+-- 
+2.32.0
 
