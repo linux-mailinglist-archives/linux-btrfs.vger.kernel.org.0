@@ -2,161 +2,270 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537293A9BC1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jun 2021 15:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87BD3A9CC2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jun 2021 15:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232729AbhFPNQC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Jun 2021 09:16:02 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51884 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhFPNQB (ORCPT
+        id S233325AbhFPN5G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Jun 2021 09:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233467AbhFPN4g (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:16:01 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CD7071FD49;
-        Wed, 16 Jun 2021 13:13:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623849233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hyc9OB1aJ61rm42WLk624Hlxkve+NCFyEazVDo+3lxY=;
-        b=b1YYPinKZswGwP4e/xrvJs3OhOwqDUUwYLlan+7Ai88YiZrgxWUZ8BFAFJ00u8PNM7HMTZ
-        fWFBJ2zVUM6cV6VWGstLx5brdcBW0rJh+H2udGI5Pi+kSvbI8luG0N6F+gAYJ7FAoavbQ5
-        DYDJrJW2BOSrbEf2O9UpnbVqU29ZQzs=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 93B6F118DD;
-        Wed, 16 Jun 2021 13:13:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623849233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hyc9OB1aJ61rm42WLk624Hlxkve+NCFyEazVDo+3lxY=;
-        b=b1YYPinKZswGwP4e/xrvJs3OhOwqDUUwYLlan+7Ai88YiZrgxWUZ8BFAFJ00u8PNM7HMTZ
-        fWFBJ2zVUM6cV6VWGstLx5brdcBW0rJh+H2udGI5Pi+kSvbI8luG0N6F+gAYJ7FAoavbQ5
-        DYDJrJW2BOSrbEf2O9UpnbVqU29ZQzs=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id Nx6jIRH5yWAsLwAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Wed, 16 Jun 2021 13:13:53 +0000
-Subject: Re: [RFC PATCH 06/31] btrfs: lock extents while truncating
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <cover.1623567940.git.rgoldwyn@suse.com>
- <6a65ad8036c65f0d484dc98ee30ba21d4c4812fc.1623567940.git.rgoldwyn@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <479483b1-bc2e-f8d2-01a1-0ddd869a7f81@suse.com>
-Date:   Wed, 16 Jun 2021 16:13:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 16 Jun 2021 09:56:36 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0534DC06124A
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Jun 2021 06:54:22 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id e18so1551086qvm.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Jun 2021 06:54:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=gbN5ye64fpiDG0SpjbAoQPwgI82zEiu21v1ZkrhK5R0=;
+        b=ahmDTSqSLNBOjAgaVw7eDIkrBV796+E7Y1WijhjPd5xKl9PvfmWtMWrus8kC5/7MFp
+         P/NBXSMIF4Vktehg/M+f+tDNn8VH4fC7Rt8GPXP+Ko4nWnohLCVmAFSWjlje7u6/Y9pT
+         UpUKpTwd4M33nxDGTN+QHrqMm3MGyQl6Xeg4xqU7OCeC8Nfn5DCOI/j0DGxgBL6n4NDE
+         E68G2TydvjoRyWd8qfrRCEu3ZHjyhkqAQw5f7/8u1yRVYWASEPaxFKUSclNiJknvYytv
+         I089XMRC4q0XFwCm56k+exhRhG5hvUqUFCWwL/ItPKkdOvczmrW+KjBbYhYQOVkMsBqD
+         KXZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=gbN5ye64fpiDG0SpjbAoQPwgI82zEiu21v1ZkrhK5R0=;
+        b=Nw0trulCQT+3AO/sb2nhM+X63cGmT2bfCdY/KlEyYxB53RpmrJo/VJbWUVMoGAC3Pf
+         tlamqaulCAiRBODWxuJWNNyI7Adj+Uo+SgHjUzVg0swJK+/KEamWzWrWDWHQwXoGY5hb
+         N7tW3Y99tVowDA85Vx34IeZEZ93W0Tx4fpjInbo4/+JYGQfMtXc3vdIZ34bhrXVHdPRt
+         5IDAbxsCY1N/RVE4VSfAc3Rc8+xbsQ3Ft1zDYefCPlRGxsF/8tfvdEuODy+wuihNcAeI
+         EF1LNUd4MsAdGYu1269aEqSgubwlsl5f+GMrNRm/U0xeK325nGl0uG8cXueFKYGQGtYU
+         zuYQ==
+X-Gm-Message-State: AOAM530zUq+fdwocuMBLK+YllxoPQgWGdrQi2FqXARCjVHBb3s9gB6qZ
+        zxbQsBwB1593DkWEpYawbTpi2+xAL4rfk82Dl7M=
+X-Google-Smtp-Source: ABdhPJyPvtT6jL4Id7/yau5jRaowj9CZktpcVHCSCUUa8N4IEVPX4urNleys3aBQK42VvxKbR+Zm3mPG2h9grMMCh14=
+X-Received: by 2002:ad4:4eee:: with SMTP id dv14mr91380qvb.45.1623851661224;
+ Wed, 16 Jun 2021 06:54:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6a65ad8036c65f0d484dc98ee30ba21d4c4812fc.1623567940.git.rgoldwyn@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1621526221.git.dsterba@suse.com> <79a09502c532bc9939645d2711c72ebad5fce2e7.1621526221.git.dsterba@suse.com>
+In-Reply-To: <79a09502c532bc9939645d2711c72ebad5fce2e7.1621526221.git.dsterba@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 16 Jun 2021 14:54:10 +0100
+Message-ID: <CAL3q7H6P-TqtM6BkRY5_15ThVJzD54HZCdjKtdkukUqrZzh5-Q@mail.gmail.com>
+Subject: Re: [PATCH 2/6] btrfs: add cancelable chunk relocation support
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 13.06.21 г. 16:39, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> Lock order change: Lock extents before pages.
-> 
-> This removes extent locking in invalidatepages().
-> invalidatepage() is either called during truncating or while evicting
-> inode. Inode eviction does not require locking.
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On Fri, May 21, 2021 at 9:15 PM David Sterba <dsterba@suse.com> wrote:
+>
+> Add support code that will allow canceling relocation on the chunk
+> granularity. This is different and independent of balance, that also
+> uses relocation but is a higher level operation and manages it's own
+> state and pause/cancelation requests.
+>
+> Relocation is used for resize (shrink) and device deletion so this will
+> be a common point to implement cancelation for both. The context is
+> entirely in btrfs_relocate_block_group and btrfs_recover_relocation,
+> enclosing one chunk relocation. The status bit is set and unset between
+> the chunks. As relocation can take long, the effects may not be
+> immediate and the request and actual action can slightly race.
+>
+> The fs_info::reloc_cancel_req is only supposed to be increased and does
+> not pair with decrement like fs_info::balance_cancel_req.
+>
+> Signed-off-by: David Sterba <dsterba@suse.com>
 > ---
->  fs/btrfs/inode.c | 29 +++++++++++++++++++++++------
->  1 file changed, 23 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 794d906cba6c..7761a60788d0 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -5201,6 +5201,9 @@ static int btrfs_setsize(struct inode *inode, struct iattr *attr)
->  		btrfs_end_transaction(trans);
->  	} else {
->  		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> +		u64 start = round_down(oldsize, fs_info->sectorsize);
-> +		u64 end = round_up(newsize, fs_info->sectorsize) - 1;
-> +		struct extent_state **cached = NULL;
->  
->  		if (btrfs_is_zoned(fs_info)) {
->  			ret = btrfs_wait_ordered_range(inode,
-> @@ -5219,7 +5222,10 @@ static int btrfs_setsize(struct inode *inode, struct iattr *attr)
->  			set_bit(BTRFS_INODE_FLUSH_ON_CLOSE,
->  				&BTRFS_I(inode)->runtime_flags);
->  
-> +		lock_extent_bits(&BTRFS_I(inode)->io_tree, start, end, cached);
->  		truncate_setsize(inode, newsize);
-> +		unlock_extent_cached(&BTRFS_I(inode)->io_tree, start, end,
-> +				cached);
->  
->  		inode_dio_wait(inode);
->  
-> @@ -8322,9 +8328,23 @@ static int __btrfs_releasepage(struct page *page, gfp_t gfp_flags)
->  
->  static int btrfs_releasepage(struct page *page, gfp_t gfp_flags)
->  {
-> +	struct btrfs_inode *inode = BTRFS_I(page->mapping->host);
-> +	struct extent_map *em;
-> +	int ret;
+>  fs/btrfs/ctree.h      |  9 +++++++
+>  fs/btrfs/disk-io.c    |  1 +
+>  fs/btrfs/relocation.c | 60 ++++++++++++++++++++++++++++++++++++++++++-
+>  3 files changed, 69 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index a142e56b6b9a..3dfc32a3ebab 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -565,6 +565,12 @@ enum {
+>          */
+>         BTRFS_FS_BALANCE_RUNNING,
+>
+> +       /*
+> +        * Indicate that relocation of a chunk has started, it's set per =
+chunk
+> +        * and is toggled between chunks.
+> +        */
+> +       BTRFS_FS_RELOC_RUNNING,
 > +
->  	if (PageWriteback(page) || PageDirty(page))
->  		return 0;
-> -	return __btrfs_releasepage(page, gfp_flags);
+>         /* Indicate that the cleaner thread is awake and doing something.=
+ */
+>         BTRFS_FS_CLEANER_RUNNING,
+>
+> @@ -871,6 +877,9 @@ struct btrfs_fs_info {
+>         struct btrfs_balance_control *balance_ctl;
+>         wait_queue_head_t balance_wait_q;
+>
+> +       /* Cancelation requests for chunk relocation */
+> +       atomic_t reloc_cancel_req;
 > +
-> +	em = lookup_extent_mapping(&inode->extent_tree, page_offset(page),
-> +			PAGE_SIZE - 1);
-> +	if (!em)
-> +		return 0;
-> +	if (!try_lock_extent(&inode->io_tree, em->start, extent_map_end(em) - 1))
-> +		return 0;
-> +	ret = __btrfs_releasepage(page, gfp_flags);
-> +	unlock_extent(&inode->io_tree, em->start, extent_map_end(em));
-> +	free_extent_map(em);
-> +	return ret;
+>         u32 data_chunk_allocations;
+>         u32 metadata_ratio;
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 8c3db9076988..93c994b78d61 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2251,6 +2251,7 @@ static void btrfs_init_balance(struct btrfs_fs_info=
+ *fs_info)
+>         atomic_set(&fs_info->balance_cancel_req, 0);
+>         fs_info->balance_ctl =3D NULL;
+>         init_waitqueue_head(&fs_info->balance_wait_q);
+> +       atomic_set(&fs_info->reloc_cancel_req, 0);
 >  }
+>
+>  static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index b70be2ac2e9e..9b84eb86e426 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -2876,11 +2876,12 @@ int setup_extent_mapping(struct inode *inode, u64=
+ start, u64 end,
+>  }
+>
+>  /*
+> - * Allow error injection to test balance cancellation
+> + * Allow error injection to test balance/relocation cancellation
+>   */
+>  noinline int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info)
+>  {
+>         return atomic_read(&fs_info->balance_cancel_req) ||
+> +               atomic_read(&fs_info->reloc_cancel_req) ||
+>                 fatal_signal_pending(current);
+>  }
+>  ALLOW_ERROR_INJECTION(btrfs_should_cancel_balance, TRUE);
+> @@ -3780,6 +3781,47 @@ struct inode *create_reloc_inode(struct btrfs_fs_i=
+nfo *fs_info,
+>         return inode;
+>  }
+>
+> +/*
+> + * Mark start of chunk relocation that is cancelable. Check if the cance=
+lation
+> + * has been requested meanwhile and don't start in that case.
+> + *
+> + * Return:
+> + *   0             success
+> + *   -EINPROGRESS  operation is already in progress, that's probably a b=
+ug
+> + *   -ECANCELED    cancelation request was set before the operation star=
+ted
+> + */
+> +static int reloc_chunk_start(struct btrfs_fs_info *fs_info)
+> +{
+> +       if (test_and_set_bit(BTRFS_FS_RELOC_RUNNING, &fs_info->flags)) {
+> +               /* This should not happen */
+> +               btrfs_err(fs_info, "reloc already running, cannot start")=
+;
+> +               return -EINPROGRESS;
+> +       }
+> +
+> +       if (atomic_read(&fs_info->reloc_cancel_req) > 0) {
+> +               btrfs_info(fs_info, "chunk relocation canceled on start")=
+;
+> +               /*
+> +                * On cancel, clear all requests but let the caller mark
+> +                * the end after cleanup operations.
+> +                */
+> +               atomic_set(&fs_info->reloc_cancel_req, 0);
+> +               return -ECANCELED;
+> +       }
+> +       return 0;
+> +}
+> +
+> +/*
+> + * Mark end of chunk relocation that is cancelable and wake any waiters.
+> + */
+> +static void reloc_chunk_end(struct btrfs_fs_info *fs_info)
+> +{
+> +       /* Requested after start, clear bit first so any waiters can cont=
+inue */
+> +       if (atomic_read(&fs_info->reloc_cancel_req) > 0)
+> +               btrfs_info(fs_info, "chunk relocation canceled during ope=
+ration");
+> +       clear_and_wake_up_bit(BTRFS_FS_RELOC_RUNNING, &fs_info->flags);
+> +       atomic_set(&fs_info->reloc_cancel_req, 0);
+> +}
+> +
+>  static struct reloc_control *alloc_reloc_control(struct btrfs_fs_info *f=
+s_info)
+>  {
+>         struct reloc_control *rc;
+> @@ -3862,6 +3904,12 @@ int btrfs_relocate_block_group(struct btrfs_fs_inf=
+o *fs_info, u64 group_start)
+>                 return -ENOMEM;
+>         }
+>
+> +       ret =3D reloc_chunk_start(fs_info);
+> +       if (ret < 0) {
+> +               err =3D ret;
+> +               goto out_end;
 
-Care to elaborate why this is needed, looking at the code I couldn't
-find the answer.
+There's a bug here. At out_end we do:
 
->  
->  #ifdef CONFIG_MIGRATION
-> @@ -8398,9 +8418,6 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
->  		return;
->  	}
->  
-> -	if (!inode_evicting)
-> -		lock_extent_bits(tree, page_start, page_end, &cached_state);
-> -
->  	cur = page_start;
->  	while (cur < page_end) {
->  		struct btrfs_ordered_extent *ordered;
-> @@ -8458,7 +8475,7 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
->  		if (!inode_evicting)
->  			clear_extent_bit(tree, cur, range_end,
->  					 EXTENT_DELALLOC |
-> -					 EXTENT_LOCKED | EXTENT_DO_ACCOUNTING |
-> +					 EXTENT_DO_ACCOUNTING |
->  					 EXTENT_DEFRAG, 1, 0, &cached_state);
->  
->  		spin_lock_irq(&inode->ordered_tree.lock);
-> @@ -8503,7 +8520,7 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
->  		 */
->  		btrfs_qgroup_free_data(inode, NULL, cur, range_end + 1 - cur);
->  		if (!inode_evicting) {
-> -			clear_extent_bit(tree, cur, range_end, EXTENT_LOCKED |
-> +			clear_extent_bit(tree, cur, range_end,
->  				 EXTENT_DELALLOC | EXTENT_UPTODATE |
->  				 EXTENT_DO_ACCOUNTING | EXTENT_DEFRAG, 1,
->  				 delete_states, &cached_state);
-> 
+btrfs_put_block_group(rc->block_group);
+
+But rc->block_group was not yet assigned.
+
+Thanks.
+
+> +       }
+> +
+>         rc->extent_root =3D extent_root;
+>         rc->block_group =3D bg;
+>
+> @@ -3953,6 +4001,8 @@ int btrfs_relocate_block_group(struct btrfs_fs_info=
+ *fs_info, u64 group_start)
+>                 btrfs_dec_block_group_ro(rc->block_group);
+>         iput(rc->data_inode);
+>         btrfs_put_block_group(rc->block_group);
+> +out_end:
+> +       reloc_chunk_end(fs_info);
+>         free_reloc_control(rc);
+>         return err;
+>  }
+> @@ -4073,6 +4123,12 @@ int btrfs_recover_relocation(struct btrfs_root *ro=
+ot)
+>                 goto out;
+>         }
+>
+> +       ret =3D reloc_chunk_start(fs_info);
+> +       if (ret < 0) {
+> +               err =3D ret;
+> +               goto out_end;
+> +       }
+> +
+>         rc->extent_root =3D fs_info->extent_root;
+>
+>         set_reloc_control(rc);
+> @@ -4137,6 +4193,8 @@ int btrfs_recover_relocation(struct btrfs_root *roo=
+t)
+>                 err =3D ret;
+>  out_unset:
+>         unset_reloc_control(rc);
+> +out_end:
+> +       reloc_chunk_end(fs_info);
+>         free_reloc_control(rc);
+>  out:
+>         free_reloc_roots(&reloc_roots);
+> --
+> 2.29.2
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
