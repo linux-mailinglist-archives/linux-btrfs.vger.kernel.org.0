@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1A83A9310
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jun 2021 08:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F9C3A9327
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jun 2021 08:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbhFPGvM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Jun 2021 02:51:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58890 "EHLO
+        id S231382AbhFPGxf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Jun 2021 02:53:35 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58966 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhFPGvL (ORCPT
+        with ESMTP id S231357AbhFPGxe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Jun 2021 02:51:11 -0400
+        Wed, 16 Jun 2021 02:53:34 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BD92E21A57;
-        Wed, 16 Jun 2021 06:49:04 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DA2E5219C5;
+        Wed, 16 Jun 2021 06:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623826144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623826287; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=j1uiD6qG2WffXAsSwqDQGFVdZvF8EV54m1IwsWy0S3A=;
-        b=Ta2aVdWEdk498OLiVTJ7sIivaKmww9O0z7Xdc+sgihQVlWSd26/2vGML1sBO+/rKQGI+uk
-        22c35excRNubrGhxRHCIG8XgEymd33aWBfrQFKn76oEsbF0rbZFS2620mjxxktdQp+q3dA
-        khAFCc9OTJ/4/U6RMQV36I/klFnxvf0=
+        bh=x5CFTSiI/9tBv1dqqwLCB87cJcpzOBdPJAuXjfCOyXQ=;
+        b=fjMl/XQLZofO6p3XVTz4b9YdzMfzTWQyM4zELCizP1VlUk1CcT+hSf2yMYqI1GQBCvmdp+
+        lRGLxek6AY6ag3KhuTsfSfbkg7klOFCsE5a/AflIuGc8ZdHAh/0lC5BVge8M6tqcPwKRV5
+        90yM8cEXbaF4T8Y4lGQr/3DdN6+B8Zk=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 7D5AF118DD;
-        Wed, 16 Jun 2021 06:49:04 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 9CAE4118DD;
+        Wed, 16 Jun 2021 06:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623826144; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623826287; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=j1uiD6qG2WffXAsSwqDQGFVdZvF8EV54m1IwsWy0S3A=;
-        b=Ta2aVdWEdk498OLiVTJ7sIivaKmww9O0z7Xdc+sgihQVlWSd26/2vGML1sBO+/rKQGI+uk
-        22c35excRNubrGhxRHCIG8XgEymd33aWBfrQFKn76oEsbF0rbZFS2620mjxxktdQp+q3dA
-        khAFCc9OTJ/4/U6RMQV36I/klFnxvf0=
+        bh=x5CFTSiI/9tBv1dqqwLCB87cJcpzOBdPJAuXjfCOyXQ=;
+        b=fjMl/XQLZofO6p3XVTz4b9YdzMfzTWQyM4zELCizP1VlUk1CcT+hSf2yMYqI1GQBCvmdp+
+        lRGLxek6AY6ag3KhuTsfSfbkg7klOFCsE5a/AflIuGc8ZdHAh/0lC5BVge8M6tqcPwKRV5
+        90yM8cEXbaF4T8Y4lGQr/3DdN6+B8Zk=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id b17GG+CeyWADUAAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Wed, 16 Jun 2021 06:49:04 +0000
+        id nY1RI2+fyWBGUQAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Wed, 16 Jun 2021 06:51:27 +0000
 Subject: Re: [RFC PATCH 08/31] btrfs: btrfs_em_to_iomap () to convert em to
  iomap
 To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
@@ -49,8 +49,8 @@ Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
 References: <cover.1623567940.git.rgoldwyn@suse.com>
  <87e85bcd1f50533b3a18c09cff5bd88cc3c6f923.1623567940.git.rgoldwyn@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <53aa2db9-b80b-9c8f-2072-49b1422056c7@suse.com>
-Date:   Wed, 16 Jun 2021 09:49:04 +0300
+Message-ID: <1096d7a1-4b7e-58f4-19b3-064034bff7e9@suse.com>
+Date:   Wed, 16 Jun 2021 09:51:27 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
@@ -103,9 +103,6 @@ On 13.06.21 г. 16:39, Goldwyn Rodrigues wrote:
 > +{
 > +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
 > +	loff_t diff = sector_pos - em->start;
-
-rename this variable to offset or em_offset or something like that. diff
-is too generic and somewhat non-descriptive.
 > +
 > +	if (em->block_start == EXTENT_MAP_HOLE) {
 > +		iomap->addr = IOMAP_NULL_ADDR;
@@ -118,6 +115,10 @@ is too generic and somewhat non-descriptive.
 > +		iomap->type = IOMAP_MAPPED;
 > +	}
 > +	iomap->offset = em->start + diff;
+
+This is really iomap->offset = sector_pos i.e no need to perform the
+addition.
+
 > +	iomap->bdev = fs_info->fs_devices->latest_bdev;
 > +	iomap->length = em->len - diff;
 > +}
