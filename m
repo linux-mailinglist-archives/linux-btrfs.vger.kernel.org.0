@@ -2,57 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2823A90BE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jun 2021 06:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5D73A911B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jun 2021 07:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhFPEoY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Jun 2021 00:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
+        id S231281AbhFPFVF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Jun 2021 01:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhFPEoX (ORCPT
+        with ESMTP id S231272AbhFPFVE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Jun 2021 00:44:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFDBC061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Jun 2021 21:42:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=r0x35Jl28I1SAtioj+6G7nfdWL88GFGlvGRhfogoufM=; b=ThKJ1inIDxtTCFIDOVEGxlRJxP
-        IUJCcuMp7bC/8U17IWCDSaFxCHXleBwdCPmDxz0fxn98SglLHhjp1P/+gLTvl4eqNXl9kz/2BQHwT
-        NEiG8X/iVfJfkN3pUPGCmFCQJViP0LNA1ydQKFR67yy6s60+7UXzMmkY0DtNzo+89C8IMy7PiSDTi
-        Fmc85181Pet8tTWlMfe63xsU0MEZ6Nn0KAGXSgKe4vCYW+j9HXaQsyMjn9TaCPIqarmT0h8qdYxEy
-        zX27tZeKd6hp+L3K0oo7fJtP8czHVKDj2XwIg3KpjuUai2dyjwbqDoKZrELH1VSzdlPdOAaURyHG1
-        iTl0K0Ug==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ltNN2-007b9E-Ih; Wed, 16 Jun 2021 04:41:47 +0000
-Date:   Wed, 16 Jun 2021 05:41:44 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 3/4] fs: add a filemap_fdatawrite_wbc helper
-Message-ID: <YMmBCL23eCLnROJx@infradead.org>
-References: <cover.1623419155.git.josef@toxicpanda.com>
- <b7ce962335474c7b0e96849cd9fb650b1138cbb3.1623419155.git.josef@toxicpanda.com>
- <83038b23-71df-962c-167f-db0b21b83025@suse.com>
- <8c1d5edb-8149-f0e3-6170-2b25fdaa4e9f@toxicpanda.com>
+        Wed, 16 Jun 2021 01:21:04 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C9CC0617A6
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Jun 2021 22:18:58 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id my49so1634101ejc.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Jun 2021 22:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=L0V3tEWU6RXdv4sHk2WURUiKYv8hNk/3Vb4RrbCcOlY=;
+        b=IQKHz9ZfxvKAVGBYoUcXHQzcL7UgPABjzLyotDAOhMdo/ltFm+YbYQQeYXERWQ3UjG
+         +hhf87nkvGQEVaBwzaOjK375x6CUwmxrclTkSYx5H8/CVh0GTGuz012X/7y9X9H6SEM3
+         A8ttX+L167AAa6TrHWCR9SYjq9iBDbAaK17H7pD3j0CON4a8/BX48Oi928szvoYy5nnA
+         z/ElNPD47s3CFKzD8tSaRNfWVx6iFllDbPmroQh8AB48lhfKPo/v4eA/oBMO2JlTLFBt
+         oS1aP2vJvv9mYAjfksYBCzRY8ea5WiV8x6gt2kekRNcU0sOIfqCVG18egVjm23+EIW6g
+         /myQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=L0V3tEWU6RXdv4sHk2WURUiKYv8hNk/3Vb4RrbCcOlY=;
+        b=tJmS2dOEPr82wgbGm3K2SLQdz6pVV/SL3VAc6nH0WEqWHPd1Cc6GO1Zp3l649nG36W
+         pBkcZrwQNfY7ACWoSjz696z0uMkZR9dVk51b7mApdotliJDezZjS6PclZG606rTTBsga
+         sqB45pevjmfVcKnVJyV7RVq6tvp3rfGJNYBe13c+elQbrrt1ln49GK9rp2wx+FgxRA1L
+         HOPDLBy7L418kHTM9+E1TCrpP9lphWWmzKTtH5XByaRr/mJtE225GcUxRKKJ4wSE41dU
+         1adK892idWPoZo8uxut8v6cH1g5Zc/sABpiDllMTVpI1hg6CPsFlFXssRSvXMQVdTJLi
+         kxyA==
+X-Gm-Message-State: AOAM5300+Qj1ECQjhzf0kFkGZ95mgK7nQl3353zinjC2jYO5EyvESY64
+        1Hel/opgM7J4s6xl8db3F972TNbSFcSUD0Fbj4g=
+X-Google-Smtp-Source: ABdhPJzutzF6n4XTwfu4Htur3cHrRJiMJskCNYwr/fUjDDVT9Wc5OVBaFTDRHUNtNQc0QcXaw3Nwv+V/g/4izT/upQU=
+X-Received: by 2002:a17:906:5407:: with SMTP id q7mr3404285ejo.158.1623820736632;
+ Tue, 15 Jun 2021 22:18:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c1d5edb-8149-f0e3-6170-2b25fdaa4e9f@toxicpanda.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Received: by 2002:a17:906:6410:0:0:0:0 with HTTP; Tue, 15 Jun 2021 22:18:56
+ -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   "Aisha.Gaddafi" <fasoburkina03@gmail.com>
+Date:   Tue, 15 Jun 2021 22:18:56 -0700
+Message-ID: <CALcAMQJ-84jWa8Hax6z=X5Ca5XptCjWuHy3RAPBvcdzdBRGKgQ@mail.gmail.com>
+Subject: Liebster Freund,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 09:37:33AM -0400, Josef Bacik wrote:
-> Yeah I'd like to clean this up at some point, but that's outside the scope
-> of this patch.  I want to get a helper in without needing to run it by
-> everybody, we can take up cleaning this up at a later point with input from
-> everybody else.  Thanks,
+--=20
+Liebster Freund,
 
-But you _do_ need to run a new core writeback function past "everybody".
-Just posting it on the btrfs list like for this series is definitely
-not enough.
+Im Namen Gottes, des gn=C3=A4digsten, barmherzigsten.
+
+Friede sei mit dir und Barmherzigkeit sei mit dir und Segen sei mit dir.
+Ich habe die Summe von 27,5 Millionen USD f=C3=BCr Investitionen, ich
+interessiere mich f=C3=BCr Sie f=C3=BCr die Unterst=C3=BCtzung von
+Investitionsprojekten in Ihrem Land. Mein Name ist Aisha Gaddafi und
+lebe derzeit im Oman, ich bin eine Witwe und alleinerziehende Mutter
+mit drei Kindern, die einzige leibliche Tochter des verstorbenen
+libyschen Pr=C3=A4sidenten (dem verstorbenen Oberst Muammar Gaddafi) und
+stehe derzeit unter politischem Asylschutz der omanischen Regierung.
+
+Bitte antworten Sie dringend f=C3=BCr weitere Details.
+
+Vielen Dank
+Mit freundlichen Gr=C3=BC=C3=9Fen Aisha
