@@ -2,289 +2,331 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951ED3A9CC5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jun 2021 15:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F24B3A9CF5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Jun 2021 16:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233196AbhFPN6G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Jun 2021 09:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232791AbhFPN6F (ORCPT
+        id S233774AbhFPOI0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Jun 2021 10:08:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35940 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233420AbhFPOIZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Jun 2021 09:58:05 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD912C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Jun 2021 06:55:57 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id p21so1904807qtw.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Jun 2021 06:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=g0sVMETT/F7NDf9jL4c12dlz9ZiNZuKpYh5M976/2eU=;
-        b=rBTGlPKJ5ozderoyhdfb1YJOI9cZW/4kxQ+YUNkSEK6hYq5fZ0JhOrMNWBr0vvvSU4
-         1fzgKiN9qKWF6yHnICOICz1gud+gs7CH7ZzKUouLDX6i7L3dkrQxYJ9mb/JuJCFgcB4s
-         k931jJMUObwgQQ3PxNjm3KqlK8ipTveJMxxjTr0lCuZqhSMipq7o1pBsfPrFv8UY6u04
-         z5ir+jyPFOmBy8Q4QoLDyXGH1ktVviMZqbWKsk2qL95cjFxuHiMzIiK5hHogzQDN2kEd
-         deebApndg0X7SsQxnmKb+dZuwpjBmNoA//9v8U6dfeC5q6j09zoxbPTN3WPICTHAMN0Z
-         qLZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=g0sVMETT/F7NDf9jL4c12dlz9ZiNZuKpYh5M976/2eU=;
-        b=qOHPM0DWIIHTPEgOa8TE7BV3n23nX97e7qp1zZId0IGi2PVSibn89MuddVuc5hjdqQ
-         5fvdspz5V0NHtxDmp763tTopMThBUZwrXgxnXSvPgXMlo6YU6OQUxkAZaQhbnuUC9VOo
-         Bilcz0NZBpNQqYbtjF7Jgq0Bktjpax5nXWR9MgBAHuMSr9vbBHKs6UG6DX19gdcEFCpQ
-         5YpvX1PADD8XgaEG5e64zuxmu5Dn9wkdOHrwq6HPkMnk1TrVl1BJIik6dy7X1faKX+Or
-         XbLGoEKMT4AXc1S+tRXY768JVIvSRhGasYnpmqx6h2OdO8z+bNK86hOcZHQ+YMOhlQ5U
-         4WsA==
-X-Gm-Message-State: AOAM5339jnfZBUXDpUYzSTohD+V9QCGy4vRglOJZrAA6to8MygEBKVwW
-        qipnzSDCDPsG7RYxWBaDkjwt7ibg3AT7yP9QPSM=
-X-Google-Smtp-Source: ABdhPJxvb85Et6ipcrImtqk8YUKC/aTgY9fI7VmYG2EwaPhnJxXEswFBnad00iGZFy6L3NcVoKQL/bLvS5/KjxrbW0Q=
-X-Received: by 2002:ac8:7590:: with SMTP id s16mr5254060qtq.259.1623851757105;
- Wed, 16 Jun 2021 06:55:57 -0700 (PDT)
+        Wed, 16 Jun 2021 10:08:25 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8FEC521A56;
+        Wed, 16 Jun 2021 14:06:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623852378;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kNC2dtyoIr0r8OTNhbRuYcjLq1167RvSOcHqZKzI7yg=;
+        b=X5/tj/TCn1FS2IpvYWCuKBcfj+9ZAMYtvX0fIXX76e5roHLU2mwnz4URstU/cMWHYDQz/Q
+        GT3xsu4horJw6cSIdDUNN/LCe4EdFSMHRaO/kAYhOH4lZlddjQo7CWWKUGM9imZMbrJDgE
+        XQC4AgAnKxEDEAWFFaVLZ+BaVaxBkSE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623852378;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kNC2dtyoIr0r8OTNhbRuYcjLq1167RvSOcHqZKzI7yg=;
+        b=RI6+hv62Ex6A4+ynE/BDofpwUOKB5XpGSlN/N0Jh721snvq0K/KlVq1FrVZuiNbLTqGW84
+        Szij278OWaHEbBDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 88E9DA3BA9;
+        Wed, 16 Jun 2021 14:06:18 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E970DDAF29; Wed, 16 Jun 2021 16:03:30 +0200 (CEST)
+Date:   Wed, 16 Jun 2021 16:03:30 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 3/9] btrfs: hunt down the BUG_ON()s inside
+ btrfs_submit_compressed_read()
+Message-ID: <20210616140330.GN28158@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210615121836.365105-1-wqu@suse.com>
+ <20210615121836.365105-4-wqu@suse.com>
 MIME-Version: 1.0
-References: <cover.1621526221.git.dsterba@suse.com> <79a09502c532bc9939645d2711c72ebad5fce2e7.1621526221.git.dsterba@suse.com>
- <CAL3q7H6P-TqtM6BkRY5_15ThVJzD54HZCdjKtdkukUqrZzh5-Q@mail.gmail.com>
-In-Reply-To: <CAL3q7H6P-TqtM6BkRY5_15ThVJzD54HZCdjKtdkukUqrZzh5-Q@mail.gmail.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 16 Jun 2021 14:55:46 +0100
-Message-ID: <CAL3q7H4xwZwZaBVXjJ8n9152D39eomfKOS1j0QQBFAWn7kYUxQ@mail.gmail.com>
-Subject: Re: [PATCH 2/6] btrfs: add cancelable chunk relocation support
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615121836.365105-4-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 2:54 PM Filipe Manana <fdmanana@gmail.com> wrote:
->
-> On Fri, May 21, 2021 at 9:15 PM David Sterba <dsterba@suse.com> wrote:
-> >
-> > Add support code that will allow canceling relocation on the chunk
-> > granularity. This is different and independent of balance, that also
-> > uses relocation but is a higher level operation and manages it's own
-> > state and pause/cancelation requests.
-> >
-> > Relocation is used for resize (shrink) and device deletion so this will
-> > be a common point to implement cancelation for both. The context is
-> > entirely in btrfs_relocate_block_group and btrfs_recover_relocation,
-> > enclosing one chunk relocation. The status bit is set and unset between
-> > the chunks. As relocation can take long, the effects may not be
-> > immediate and the request and actual action can slightly race.
-> >
-> > The fs_info::reloc_cancel_req is only supposed to be increased and does
-> > not pair with decrement like fs_info::balance_cancel_req.
-> >
-> > Signed-off-by: David Sterba <dsterba@suse.com>
-> > ---
-> >  fs/btrfs/ctree.h      |  9 +++++++
-> >  fs/btrfs/disk-io.c    |  1 +
-> >  fs/btrfs/relocation.c | 60 ++++++++++++++++++++++++++++++++++++++++++-
-> >  3 files changed, 69 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> > index a142e56b6b9a..3dfc32a3ebab 100644
-> > --- a/fs/btrfs/ctree.h
-> > +++ b/fs/btrfs/ctree.h
-> > @@ -565,6 +565,12 @@ enum {
-> >          */
-> >         BTRFS_FS_BALANCE_RUNNING,
-> >
-> > +       /*
-> > +        * Indicate that relocation of a chunk has started, it's set pe=
-r chunk
-> > +        * and is toggled between chunks.
-> > +        */
-> > +       BTRFS_FS_RELOC_RUNNING,
-> > +
-> >         /* Indicate that the cleaner thread is awake and doing somethin=
-g. */
-> >         BTRFS_FS_CLEANER_RUNNING,
-> >
-> > @@ -871,6 +877,9 @@ struct btrfs_fs_info {
-> >         struct btrfs_balance_control *balance_ctl;
-> >         wait_queue_head_t balance_wait_q;
-> >
-> > +       /* Cancelation requests for chunk relocation */
-> > +       atomic_t reloc_cancel_req;
-> > +
-> >         u32 data_chunk_allocations;
-> >         u32 metadata_ratio;
-> >
-> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> > index 8c3db9076988..93c994b78d61 100644
-> > --- a/fs/btrfs/disk-io.c
-> > +++ b/fs/btrfs/disk-io.c
-> > @@ -2251,6 +2251,7 @@ static void btrfs_init_balance(struct btrfs_fs_in=
-fo *fs_info)
-> >         atomic_set(&fs_info->balance_cancel_req, 0);
-> >         fs_info->balance_ctl =3D NULL;
-> >         init_waitqueue_head(&fs_info->balance_wait_q);
-> > +       atomic_set(&fs_info->reloc_cancel_req, 0);
-> >  }
-> >
-> >  static void btrfs_init_btree_inode(struct btrfs_fs_info *fs_info)
-> > diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> > index b70be2ac2e9e..9b84eb86e426 100644
-> > --- a/fs/btrfs/relocation.c
-> > +++ b/fs/btrfs/relocation.c
-> > @@ -2876,11 +2876,12 @@ int setup_extent_mapping(struct inode *inode, u=
-64 start, u64 end,
-> >  }
-> >
-> >  /*
-> > - * Allow error injection to test balance cancellation
-> > + * Allow error injection to test balance/relocation cancellation
-> >   */
-> >  noinline int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info=
-)
-> >  {
-> >         return atomic_read(&fs_info->balance_cancel_req) ||
-> > +               atomic_read(&fs_info->reloc_cancel_req) ||
-> >                 fatal_signal_pending(current);
-> >  }
-> >  ALLOW_ERROR_INJECTION(btrfs_should_cancel_balance, TRUE);
-> > @@ -3780,6 +3781,47 @@ struct inode *create_reloc_inode(struct btrfs_fs=
-_info *fs_info,
-> >         return inode;
-> >  }
-> >
-> > +/*
-> > + * Mark start of chunk relocation that is cancelable. Check if the can=
-celation
-> > + * has been requested meanwhile and don't start in that case.
-> > + *
-> > + * Return:
-> > + *   0             success
-> > + *   -EINPROGRESS  operation is already in progress, that's probably a=
- bug
-> > + *   -ECANCELED    cancelation request was set before the operation st=
-arted
-> > + */
-> > +static int reloc_chunk_start(struct btrfs_fs_info *fs_info)
-> > +{
-> > +       if (test_and_set_bit(BTRFS_FS_RELOC_RUNNING, &fs_info->flags)) =
-{
-> > +               /* This should not happen */
-> > +               btrfs_err(fs_info, "reloc already running, cannot start=
-");
-> > +               return -EINPROGRESS;
-> > +       }
-> > +
-> > +       if (atomic_read(&fs_info->reloc_cancel_req) > 0) {
-> > +               btrfs_info(fs_info, "chunk relocation canceled on start=
-");
-> > +               /*
-> > +                * On cancel, clear all requests but let the caller mar=
-k
-> > +                * the end after cleanup operations.
-> > +                */
-> > +               atomic_set(&fs_info->reloc_cancel_req, 0);
-> > +               return -ECANCELED;
-> > +       }
-> > +       return 0;
-> > +}
-> > +
-> > +/*
-> > + * Mark end of chunk relocation that is cancelable and wake any waiter=
-s.
-> > + */
-> > +static void reloc_chunk_end(struct btrfs_fs_info *fs_info)
-> > +{
-> > +       /* Requested after start, clear bit first so any waiters can co=
-ntinue */
-> > +       if (atomic_read(&fs_info->reloc_cancel_req) > 0)
-> > +               btrfs_info(fs_info, "chunk relocation canceled during o=
-peration");
-> > +       clear_and_wake_up_bit(BTRFS_FS_RELOC_RUNNING, &fs_info->flags);
-> > +       atomic_set(&fs_info->reloc_cancel_req, 0);
-> > +}
-> > +
-> >  static struct reloc_control *alloc_reloc_control(struct btrfs_fs_info =
-*fs_info)
-> >  {
-> >         struct reloc_control *rc;
-> > @@ -3862,6 +3904,12 @@ int btrfs_relocate_block_group(struct btrfs_fs_i=
-nfo *fs_info, u64 group_start)
-> >                 return -ENOMEM;
-> >         }
-> >
-> > +       ret =3D reloc_chunk_start(fs_info);
-> > +       if (ret < 0) {
-> > +               err =3D ret;
-> > +               goto out_end;
->
-> There's a bug here. At out_end we do:
->
-> btrfs_put_block_group(rc->block_group);
->
-> But rc->block_group was not yet assigned.
+On Tue, Jun 15, 2021 at 08:18:30PM +0800, Qu Wenruo wrote:
+> There are quite some BUG_ON()s inside btrfs_submit_compressed_read(),
+> namingly all errors inside the for() loop relies on BUG_ON() to handle
+> -ENOMEM.
+> 
+> Hunt down these BUG_ON()s properly by:
+> 
+> - Introduce compressed_bio::pending_bios_wait
+>   This allows us to wait for any submitted bio to finish, while still
+>   keeps the compressed_bio from being freed, as we should have
+>   compressed_bio::io_sectors not zero.
+> 
+> - Introduce finish_compressed_bio_read() to finish the compressed_bio
+> 
+> - Properly end the bio and finish compressed_bio when error happens
+> 
+> Now in btrfs_submit_compressed_read() even when the bio submission
+> failed, we can properly handle the error without triggering BUG_ON().
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-On misc-next it's actually label "out_put_bg" and under there we do
-the block group put, but not on the version posted here.
+Please change the subject to something like "btrfs: do proper error
+handling in btrfs_submit_compressed_read", same for the other patch.
 
->
-> Thanks.
->
-> > +       }
-> > +
-> >         rc->extent_root =3D extent_root;
-> >         rc->block_group =3D bg;
-> >
-> > @@ -3953,6 +4001,8 @@ int btrfs_relocate_block_group(struct btrfs_fs_in=
-fo *fs_info, u64 group_start)
-> >                 btrfs_dec_block_group_ro(rc->block_group);
-> >         iput(rc->data_inode);
-> >         btrfs_put_block_group(rc->block_group);
-> > +out_end:
-> > +       reloc_chunk_end(fs_info);
-> >         free_reloc_control(rc);
-> >         return err;
-> >  }
-> > @@ -4073,6 +4123,12 @@ int btrfs_recover_relocation(struct btrfs_root *=
-root)
-> >                 goto out;
-> >         }
-> >
-> > +       ret =3D reloc_chunk_start(fs_info);
-> > +       if (ret < 0) {
-> > +               err =3D ret;
-> > +               goto out_end;
-> > +       }
-> > +
-> >         rc->extent_root =3D fs_info->extent_root;
-> >
-> >         set_reloc_control(rc);
-> > @@ -4137,6 +4193,8 @@ int btrfs_recover_relocation(struct btrfs_root *r=
-oot)
-> >                 err =3D ret;
-> >  out_unset:
-> >         unset_reloc_control(rc);
-> > +out_end:
-> > +       reloc_chunk_end(fs_info);
-> >         free_reloc_control(rc);
-> >  out:
-> >         free_reloc_roots(&reloc_roots);
-> > --
-> > 2.29.2
-> >
->
->
-> --
-> Filipe David Manana,
->
-> =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you'=
-re right.=E2=80=9D
+> ---
+>  fs/btrfs/compression.c | 127 ++++++++++++++++++++++++++---------------
+>  fs/btrfs/compression.h |   3 +
+>  2 files changed, 85 insertions(+), 45 deletions(-)
+> 
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index bbfee9ffd20a..abbdb8d35001 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -220,7 +220,6 @@ static bool dec_and_test_compressed_bio(struct compressed_bio *cb,
+>  		cb->errors = 1;
+>  
+>  	ASSERT(bi_size && bi_size <= cb->compressed_len);
+> -	atomic_dec(&cb->pending_bios);
+>  
+>  	/*
+>  	 * Here we only need to check io_sectors, as if that is 0, we definily
+> @@ -232,9 +231,55 @@ static bool dec_and_test_compressed_bio(struct compressed_bio *cb,
+>  	ASSERT(atomic_read(&cb->io_sectors) <
+>  	       (cb->compressed_len >> fs_info->sectorsize_bits));
+>  
+> +	/*
+> +	 * Here we must wake up pending_bio_wait after all other operations on
+> +	 * @cb finished, or we can race with finish_compressed_bio_*() in
+> +	 * error path.
+> +	 */
+> +	atomic_dec(&cb->pending_bios);
+> +	wake_up(&cb->pending_bio_wait);
+> +
+>  	return last_io;
+>  }
+>  
+> +static void finish_compressed_bio_read(struct compressed_bio *cb,
+> +				       struct bio *bio)
+> +{
+> +	unsigned int index;
+> +	struct page *page;
+> +
+> +	/* release the compressed pages */
 
+Please fix/update comments in code that gets moved, here it's the
+uppercase
 
+> +	for (index = 0; index < cb->nr_pages; index++) {
+> +		page = cb->compressed_pages[index];
+> +		page->mapping = NULL;
+> +		put_page(page);
+> +	}
+> +
+> +	/* do io completion on the original bio */
 
---=20
-Filipe David Manana,
+	/* Do io ... */
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+> +	if (cb->errors) {
+> +		bio_io_error(cb->orig_bio);
+> +	} else {
+> +		struct bio_vec *bvec;
+> +		struct bvec_iter_all iter_all;
+> +
+> +		ASSERT(bio);
+> +		ASSERT(!bio->bi_status);
+> +		/*
+> +		 * we have verified the checksum already, set page
+> +		 * checked so the end_io handlers know about it
+> +		 */
+> +		ASSERT(!bio_flagged(bio, BIO_CLONED));
+> +		bio_for_each_segment_all(bvec, cb->orig_bio, iter_all)
+> +			SetPageChecked(bvec->bv_page);
+> +
+> +		bio_endio(cb->orig_bio);
+> +	}
+> +
+> +	/* finally free the cb struct */
+> +	kfree(cb->compressed_pages);
+> +	kfree(cb);
+> +}
+> +
+>  /* when we finish reading compressed pages from the disk, we
+>   * decompress them and then run the bio end_io routines on the
+>   * decompressed pages (in the inode address space).
+> @@ -249,8 +294,6 @@ static void end_compressed_bio_read(struct bio *bio)
+>  {
+>  	struct compressed_bio *cb = bio->bi_private;
+>  	struct inode *inode;
+> -	struct page *page;
+> -	unsigned int index;
+>  	unsigned int mirror = btrfs_io_bio(bio)->mirror_num;
+>  	int ret = 0;
+>  
+> @@ -285,36 +328,7 @@ static void end_compressed_bio_read(struct bio *bio)
+>  csum_failed:
+>  	if (ret)
+>  		cb->errors = 1;
+> -
+> -	/* release the compressed pages */
+> -	index = 0;
+> -	for (index = 0; index < cb->nr_pages; index++) {
+> -		page = cb->compressed_pages[index];
+> -		page->mapping = NULL;
+> -		put_page(page);
+> -	}
+> -
+> -	/* do io completion on the original bio */
+> -	if (cb->errors) {
+> -		bio_io_error(cb->orig_bio);
+> -	} else {
+> -		struct bio_vec *bvec;
+> -		struct bvec_iter_all iter_all;
+> -
+> -		/*
+> -		 * we have verified the checksum already, set page
+> -		 * checked so the end_io handlers know about it
+> -		 */
+> -		ASSERT(!bio_flagged(bio, BIO_CLONED));
+> -		bio_for_each_segment_all(bvec, cb->orig_bio, iter_all)
+> -			SetPageChecked(bvec->bv_page);
+> -
+> -		bio_endio(cb->orig_bio);
+> -	}
+> -
+> -	/* finally free the cb struct */
+> -	kfree(cb->compressed_pages);
+> -	kfree(cb);
+> +	finish_compressed_bio_read(cb, bio);
+>  out:
+>  	bio_put(bio);
+>  }
+> @@ -440,6 +454,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+>  		return BLK_STS_RESOURCE;
+>  	atomic_set(&cb->pending_bios, 0);
+>  	atomic_set(&cb->io_sectors, compressed_len >> fs_info->sectorsize_bits);
+> +	init_waitqueue_head(&cb->pending_bio_wait);
+>  	cb->errors = 0;
+>  	cb->inode = &inode->vfs_inode;
+>  	cb->start = start;
+> @@ -723,6 +738,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  
+>  	atomic_set(&cb->pending_bios, 0);
+>  	atomic_set(&cb->io_sectors, compressed_len >> fs_info->sectorsize_bits);
+> +	init_waitqueue_head(&cb->pending_bio_wait);
+>  	cb->errors = 0;
+>  	cb->inode = inode;
+>  	cb->mirror_num = mirror_num;
+> @@ -798,20 +814,20 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  			atomic_inc(&cb->pending_bios);
+>  			ret = btrfs_bio_wq_end_io(fs_info, comp_bio,
+>  						  BTRFS_WQ_ENDIO_DATA);
+> -			BUG_ON(ret); /* -ENOMEM */
+> +			if (ret)
+> +				goto finish_cb;
+>  
+>  			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
+> -			BUG_ON(ret); /* -ENOMEM */
+> +			if (ret)
+> +				goto finish_cb;
+>  
+>  			nr_sectors = DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
+>  						  fs_info->sectorsize);
+>  			sums += fs_info->csum_size * nr_sectors;
+>  
+>  			ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
+> -			if (ret) {
+> -				comp_bio->bi_status = ret;
+> -				bio_endio(comp_bio);
+> -			}
+> +			if (ret)
+> +				goto finish_cb;
+>  
+>  			comp_bio = btrfs_bio_alloc(cur_disk_byte);
+>  			comp_bio->bi_opf = REQ_OP_READ;
+> @@ -825,16 +841,16 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  
+>  	atomic_inc(&cb->pending_bios);
+>  	ret = btrfs_bio_wq_end_io(fs_info, comp_bio, BTRFS_WQ_ENDIO_DATA);
+> -	BUG_ON(ret); /* -ENOMEM */
+> +	if (ret)
+> +		goto last_bio;
+>  
+>  	ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
+> -	BUG_ON(ret); /* -ENOMEM */
+> +	if (ret)
+> +		goto last_bio;
+>  
+>  	ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
+> -	if (ret) {
+> -		comp_bio->bi_status = ret;
+> -		bio_endio(comp_bio);
+> -	}
+> +	if (ret)
+> +		goto last_bio;
+>  
+>  	return 0;
+>  
+> @@ -850,6 +866,27 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  out:
+>  	free_extent_map(em);
+>  	return ret;
+> +last_bio:
+> +	cb->errors = 1;
+> +	comp_bio->bi_status = ret;
+> +	/* This is the last bio, endio functions will free @cb */
+> +	bio_endio(comp_bio);
+> +	return ret;
+> +finish_cb:
+> +	cb->errors = 1;
+> +	if (comp_bio) {
+> +		comp_bio->bi_status = ret;
+> +		bio_endio(comp_bio);
+> +	}
+> +	/*
+> +	 * Even with previous bio ended, we should still have io not yet
+> +	 * submitted, thus need to finish @cb manually.
+> +	 */
+> +	ASSERT(atomic_read(&cb->io_sectors));
+> +	wait_event(cb->pending_bio_wait, atomic_read(&cb->pending_bios) == 0);
+> +	/* Now we are the only one referring @cb, can finish it safely. */
+> +	finish_compressed_bio_read(cb, NULL);
+> +	return ret;
+>  }
+>  
+>  /*
+> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+> index 41dd0bf6d5db..6f6c14f83c74 100644
+> --- a/fs/btrfs/compression.h
+> +++ b/fs/btrfs/compression.h
+> @@ -39,6 +39,9 @@ struct compressed_bio {
+>  	 */
+>  	atomic_t io_sectors;
+>  
+> +	/* To wait for any submitted bio, used in error handling */
+> +	wait_queue_head_t pending_bio_wait;
+
+This adds 24 bytes to the structure and it's only used for error
+handling, so that does not seem justified enough.
+
+There are system-wide wait queues, shared with other subsystems but it
+looks like a better fit for the exceptional case of errors. See commit
+6b2bb7265f0b62605 for more details, the change is otherwise trivial and
+the api functions are wait_var_event(&variable, condition) and
+wake_up_var(&variable), where the variable is a unique key which would
+be the compressed_bio.
+
+> +
+>  	/* Number of compressed pages in the array */
+>  	unsigned int nr_pages;
+>  
+> -- 
+> 2.32.0
