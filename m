@@ -2,60 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BB23AB056
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jun 2021 11:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BD93AB10E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jun 2021 12:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhFQJyO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 17 Jun 2021 05:54:14 -0400
-Received: from 6-200-5-45.rpnnetprovedor.com.br ([45.5.200.6]:39072 "EHLO
-        srv01.rpnnetprovedor.com.br" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232023AbhFQJyN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Jun 2021 05:54:13 -0400
-X-Greylist: delayed 14556 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Jun 2021 05:54:13 EDT
-Received: from [84.38.130.143] (helo=IP-130-143.dataclub.eu)
-        by srv01.rpnnetprovedor.com.br with esmtpa (Exim 4.92.2)
-        (envelope-from <robertnellsona@citromail.hu>)
-        id 1ltku9-0000yu-2P
-        for linux-btrfs@vger.kernel.org; Thu, 17 Jun 2021 02:49:29 -0300
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: CAN YOU INVEST WITH ME?...6
+        id S231229AbhFQKOS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Jun 2021 06:14:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230272AbhFQKOS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Jun 2021 06:14:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73336613E7
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jun 2021 10:12:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623924730;
+        bh=zSJA62zGCOLSVbR3m0pRWQfx4zV/FZiJ/01HBNLYtXw=;
+        h=From:To:Subject:Date:From;
+        b=BBpnLzAoFIk3QvuS5cVPDITPcnmVqILmuO0kdEI/MKM1HknUaUMhWt8rELrVbrOI7
+         MDsy3eCGRHKW5M+4gFLrM27N/gX+v8F5c13o0jw7Y/pBOx7OnPeA/SWyLNv0VnbCYs
+         gjqbX/19f1uOtvjLYXVNFG2dHgswgDnoguIIhDE9CV39pSz2kKCAuZ0xwc59NvdPg1
+         CEbJYS31QHYmZheiWHWUebyDRnKoV+GRqw9FYGBU3BrauvjFd3CgItRB4lJCvRk5TP
+         WqpeUkK56fBspP6qqu6kSkPMCwJBsP0JdvFCAe/QjtYGLKbzdenHp671aUwbdnbk9O
+         NN/ii5Eo5RAMQ==
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-From:   "Mr.  Robert" <robertnellsona@citromail.hu>
-Date:   Thu, 17 Jun 2021 08:49:21 +0300
-Reply-To: robertnellsona@citromail.hu
-Message-Id: <E1ltku9-0000yu-2P@srv01.rpnnetprovedor.com.br>
+Subject: [PATCH 0/2] btrfs: fixes for send with relocation and reclaim
+Date:   Thu, 17 Jun 2021 11:12:06 +0100
+Message-Id: <cover.1623924268.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
-ATTENTION; linux-btrfs@vger.kernel.org,
+There's a recent report from Chris Murphy on a crash caused by send
+triggering reclaim and inode eviction due to page/memory allocation,
+the second patch fixes that. The first one just prevents relocation from
+happening while there are send operations in progress, as currently only
+balance is prevented from running but other operations can trigger
+relocation too (device shrinking and automatic chunk relocation on zoned
+filesystems). Details are in the changelogs of the patches.
 
-IMPORTANT INVESTMENT INFORMATION
+Filipe Manana (2):
+  btrfs: ensure relocation never runs while we have send operations
+    running
+  btrfs: send: fix crash when memory allocations trigger reclaim
 
-We have a good investment program going on now.
-We have $95m USD for Investment in your Country.
-We use this opportunity to invest you to join the investment program and you will never regret it.
-Please kindly invest with us and you will be receiving monthly income/return/profit every month.
-We can also give you Loan, 
+ fs/btrfs/block-group.c | 10 ++++++++--
+ fs/btrfs/ctree.h       |  5 +++--
+ fs/btrfs/disk-io.c     | 19 ++-----------------
+ fs/btrfs/qgroup.c      |  8 +-------
+ fs/btrfs/relocation.c  | 13 +++++++++++++
+ fs/btrfs/send.c        | 12 +++++-------
+ fs/btrfs/transaction.c |  3 ---
+ fs/btrfs/transaction.h |  2 --
+ fs/btrfs/volumes.c     |  8 --------
+ 9 files changed, 32 insertions(+), 48 deletions(-)
 
-We have: 
+-- 
+2.28.0
 
-1. Short Term Loan, 
-
-2. Medium Term Loan 
-
-3. and Long Term Loan, 
-
-There is no need of collateral security. We will use our company to sign agreement and guarantee on your behalf and our Lawyer will sign on your behalf.
-
-Reply for more detail.
-
-Thank you Sir.
-
-Robert Nellson.
-INVESTMENT MANAGER.
