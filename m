@@ -2,60 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4023F3AAA97
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jun 2021 06:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F2B3AAAAC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jun 2021 07:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbhFQE7D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Jun 2021 00:59:03 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:24491 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhFQE7D (ORCPT
+        id S229560AbhFQFRC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Jun 2021 01:17:02 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38148 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhFQFRC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Jun 2021 00:59:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1623905816; x=1655441816;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=FhPyoTCQdd6PxIxdzyfFf2b7ixNGYH4zx5UBGvcDRYs=;
-  b=NnD4oIavGCafMvuZCJgf81v42L5VahfERy3pujDt6JNsUSJTTLL1pCHk
-   GXDU7u4o5op08ROzdD7lwra9tT6HUuXd8cjGjkMBO+WPaVWbxDfv1JvZz
-   J7evuXCT5NP/BJivIlgwmz2fkbKWfYwRHL+dVUcRn0piisGWQBeVt3X3r
-   SOFqw5kKgHfLuhe2Y4Ld0LY1cRk/7TB33UYMZw9Iaiq9GbO/55/I0cABG
-   nK2mnE8gL74NNKH/oNMFmubXXLFXgBmmIAZFkaHdZ2W98FJQZq0mAN6CC
-   hsPfPF5GFpcoC1NOuRxwRXKWvCproXbDwzFK54kPNid1gQpnaxsakgics
-   w==;
-IronPort-SDR: FoaDHPoI7AmUn/+0N7mf51MWbh71Lac8hOLHeamY3ibXcXPoqSkuEUVBEnfz1tvsJTfvsjCTBj
- E/U39onU9hrM43UZPPdh7sE6XClrcX2X5qn8qk2Ar+vyvHSKfI+o5EfbM7DpgMMyhxt43xAq6y
- RHfMKN7rF0/EQQf6iYuTn19AYsSA48bMQIe7d2YK7P3gSo4m7vhNdGaJ8ejo1oLcOxDW/OLeyg
- kFf1FOSzP5Iho1ONlXI1jNh/wY3jDMlj34n2mev2by2BxzOC4YCT/NNuCtBXRWDq4V+Gt6gdWe
- vRQ=
-X-IronPort-AV: E=Sophos;i="5.83,278,1616428800"; 
-   d="scan'208";a="171433731"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Jun 2021 12:56:56 +0800
-IronPort-SDR: HA6kW7uRoWWRVlGJYJ/OP3JghFNl1LWhcdAbt5unraqLGRfEon65PtE80p1jiFpbZuGCvIQz3q
- AVureJNGVoDnKGzY9c6CxOR2hS9tJCK7AnqW97DmYJMtdIlt/96rnIlJRvvO4/g+ZTu7vS0V5/
- zqqGzxwCkYktDs6bvoaDOTDyytSJW/lcZ+6h8kgDvlS380rNEXIIqO9HB1nadHUuz9XSdy5gBa
- /mDP+i56prN/bzI0lhei/itR5vNeb7zQ4MVdBPKIj/ljfFmvvRu3+TWbShuhgr8wpNx5Y4lxjT
- sC8zxKu4QblGzgpf5LFjQHcl
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2021 21:35:45 -0700
-IronPort-SDR: HFFdfobZb9P95QYmPHzOuFfNmgfExvqB4j8qt7j833qssQe3+BEeMRwgHf7j6DG0Xs9gzl6pKS
- /OHYYbWiZg7nRYcJBIqv+lL1w4wx8u7qqfAN9fMcTukkiZirIc6r+BZJql5iJVnc5jorkHqYtS
- sDaqIM35zkklU3cnnbg0kRw0qMuGKVWZeRH/wt58tYyELKy9nGdBQctvmsd810GgE4t6b0Ax27
- F8TJA300L0yxP17kF02aebTfr0IvbDUHScroMhldj8E6ofstHaqiRnOSKuOLdbrlsisOkDuGp7
- TKY=
-WDCIronportException: Internal
-Received: from gyd5zf2.ad.shared (HELO localhost.localdomain) ([10.225.50.171])
-  by uls-op-cesaip02.wdc.com with ESMTP; 16 Jun 2021 21:56:55 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
+        Thu, 17 Jun 2021 01:17:02 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7D0CA1FDB1
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jun 2021 05:14:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1623906894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=oE3tOJnIhdQ30YiNBvnPK8vcRTIuB5mkp55kzcIsCAg=;
+        b=qlrSJNF9j3t2GgXq85gm5UGqYTUnJ8rqDX+0vVAg+QpG44WLBCGV5iBTkH/6dydTYVfleH
+        P+Uf7CO7AccWbxZiwxFu3nSmIRYBQqftFry8Lwfe90NLBV77IWGBRC1TPATIGcbl06CRDa
+        xH5bNUsu4YjkMKcUsuK4QTiemnFJNNQ=
+Received: from adam-pc.lan (unknown [10.163.16.38])
+        by relay2.suse.de (Postfix) with ESMTP id 78DD0A3BB8
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jun 2021 05:14:53 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>, stable@vger.kernel.org
-Subject: [PATCH] btrfs: fix negative space_info->bytes_readonly
-Date:   Thu, 17 Jun 2021 13:56:18 +0900
-Message-Id: <20210617045618.1179079-1-naohiro.aota@wdc.com>
+Subject: [PATCH v4 0/9] btrfs: compression: refactor and enhancement preparing for subpage compression support
+Date:   Thu, 17 Jun 2021 13:14:41 +0800
+Message-Id: <20210617051450.206704-1-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,59 +37,100 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Consider we have a using block group on zoned btrfs.
+There are quite some problems in compression code:
 
-|<- ZU ->|<- used ->|<---free--->|
-                     `- Alloc offset
-ZU: Zone unusable
+- Weird compressed_bio::pending_bios dance
+  If we just don't want compressed_bio being freed halfway, we have more
+  sane methods, just like btrfs_subpage::readers.
 
-Marking the block group read-only will migrate the zone unusable bytes
-to the read-only bytes. So, we will have this.
+  So here we fix it by introducing compressed_bio::io_sectors to do the
+  job.
 
-|<- RO ->|<- used ->|<--- RO --->|
-RO: Read only
+- BUG_ON()s inside btrfs_submit_compressed_*()
+  Even they are just ENOMEM, we should handle them.
+  With io_sectors introduced, we have a way to finish compressed_bio
+  all by ourselves, as long as we haven't submitted last bio.
 
-When marking it back to read-write, btrfs_dec_block_group_ro()
-subtracts the above "RO" bytes from the
-space_info->bytes_readonly. And, it moves the zone unusable bytes back
-and again subtracts those bytes from the space_info->bytes_readonly,
-leading to negative bytes_readonly.
+  If we have last bio submitted, then endio will handle it well.
 
-This commit fixes the issue by reordering the operations.
+- Duplicated code for compressed bio allocation and submission
+  Just small refactor can handle it
 
-Link: https://github.com/naota/linux/issues/37
-Fixes: 169e0da91a21 ("btrfs: zoned: track unusable bytes for zones")
-Cc: stable@vger.kernel.org # 5.12+
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/block-group.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+- Stripe boundary is checked every time one page is added
+  This is overkilled.
+  Just learn from extent_io.c refactor which use bio_ctrl to do the
+  boundary check only once for each bio.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 38885b29e6e5..c42b6528552f 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2442,16 +2442,16 @@ void btrfs_dec_block_group_ro(struct btrfs_block_group *cache)
- 	spin_lock(&sinfo->lock);
- 	spin_lock(&cache->lock);
- 	if (!--cache->ro) {
--		num_bytes = cache->length - cache->reserved -
--			    cache->pinned - cache->bytes_super -
--			    cache->zone_unusable - cache->used;
--		sinfo->bytes_readonly -= num_bytes;
- 		if (btrfs_is_zoned(cache->fs_info)) {
- 			/* Migrate zone_unusable bytes back */
- 			cache->zone_unusable = cache->alloc_offset - cache->used;
- 			sinfo->bytes_zone_unusable += cache->zone_unusable;
- 			sinfo->bytes_readonly -= cache->zone_unusable;
- 		}
-+		num_bytes = cache->length - cache->reserved -
-+			    cache->pinned - cache->bytes_super -
-+			    cache->zone_unusable - cache->used;
-+		sinfo->bytes_readonly -= num_bytes;
- 		list_del_init(&cache->ro_list);
- 	}
- 	spin_unlock(&cache->lock);
+  Although in compression context, we don't need extra checks in
+  extent_io.c, thus we don't need bio_ctrl structure, but
+  can afford to do it locally.
+
+- Dead code removal
+  One dead comment and a new zombie function,
+  btrfs_bio_fits_in_stripe(), can be removed now.
+
+Changelog:
+v2:
+- Rebased to latest misc-next
+
+- Fix a bug in btrfs_submit_compressed_write() where zoned write is not
+  taken into consideration
+
+- Reuse the existing chunk mapping of btrfs_get_chunk_map()
+
+v3:
+- Fix a bug that zoned device can't even pass btrfs/001
+  This is because at endio time, bi_size for zoned device is always 0.
+  We have to use bio_for_each_segment_all() to calculate the real bio
+  size instead.
+  In theory, it should also happen more frequently for non-zoned device,
+  but no catch for all test cases (with "-o compress") except btrfs/011.
+
+- Fix btrfs/011 hang when tested with "-o compress"
+  This is caused by checking both atomic value without protection.
+  Checking two atomic values is no longer atomic.
+
+  In fact, with compressed_bio::io_sectors introduced, pending_bios is
+  only used to wait for any pending bio to finish in error path.
+
+  Thus dec_and_test_compressed_bio() only need to check if io_sectors is
+  zero
+
+- Fix a error that in error handling path, we may hang due to missing
+  wake_up() in dec_and_test_compressed_bio()
+
+v4:
+- Use formal words for BUG_ON() removal patch titles
+
+- Remove compressed_bio::pending_bios
+  As compressed_bio::pending_sectors can replace it completely
+
+- Remove unnecessary comments and BUG_ON()s
+
+- Use wait_var_event() APIs to reduce the memory overhead
+
+- Comments update to follow the same schema for moved comments
+
+Qu Wenruo (9):
+  btrfs: remove a dead comment for btrfs_decompress_bio()
+  btrfs: introduce compressed_bio::pending_sectors to trace compressed
+    bio more elegantly
+  btrfs: handle errors properly inside btrfs_submit_compressed_read()
+  btrfs: handle errors properly inside btrfs_submit_compressed_write()
+  btrfs: introduce submit_compressed_bio() for compression
+  btrfs: introduce alloc_compressed_bio() for compression
+  btrfs: make btrfs_submit_compressed_read() to determine stripe
+    boundary at bio allocation time
+  btrfs: make btrfs_submit_compressed_write() to determine stripe
+    boundary at bio allocation time
+  btrfs: remove unused function btrfs_bio_fits_in_stripe()
+
+ fs/btrfs/compression.c | 587 +++++++++++++++++++++++------------------
+ fs/btrfs/compression.h |   4 +-
+ fs/btrfs/ctree.h       |   2 -
+ fs/btrfs/inode.c       |  42 ---
+ 4 files changed, 336 insertions(+), 299 deletions(-)
+
 -- 
 2.32.0
 
