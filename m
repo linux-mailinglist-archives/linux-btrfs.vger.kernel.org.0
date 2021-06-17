@@ -2,66 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241123AB7E1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jun 2021 17:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC453AB9E7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jun 2021 18:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhFQPuN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Jun 2021 11:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233497AbhFQPuN (ORCPT
+        id S230047AbhFQQwB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Jun 2021 12:52:01 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39172 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbhFQQwB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Jun 2021 11:50:13 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B914AC061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jun 2021 08:48:05 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id r16so7008850oiw.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jun 2021 08:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=M6Uf6NkDZiYshRV7APwwZSzaQYOp1ZQ/V75qVxy/lEA=;
-        b=Ab3pkHlYxaDJSuVNX1/URUSwlMU1y67Wl4ZdAUsGHlLbl/BqwDRh2wBfTwgfMYZT+P
-         Q2iNO/jWzcsHooPKnwmcu5ueiRAD8h8/Xtkt5y9LDgtfoULkbuU0axvnplUwj7gzOwEL
-         uKhjcv14o/qNot3MYLsXTrX9PTUSF9Q/brbowBgD16Z4jjD3dh7t0wdtQvQOHGa340mp
-         wrSVVhzQ/nwIVESsOxOx/N+9u9EdWHWBEaJQNIWUYCBXcQukCzoI/AM4FQ5GShpDZlmv
-         87MeLsJe/e7izTlvGPpMCZOXleiO46M+SiZSjgZs0FQ4F01d5TBPZ20TZn9HvI36cqdE
-         rz7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=M6Uf6NkDZiYshRV7APwwZSzaQYOp1ZQ/V75qVxy/lEA=;
-        b=lkKCY39/7pWE+sxDkHgz8U+TmDEpbM+RRlUP5VxM4Lv0ObF5CUwKfd2QAXzElsuK5y
-         FroIVtBh116xVsbcr+VYr7wRWmmAhGoyjPlRAfWd+hJXoFUjwAcjydaT4jQEIIKRLVbS
-         vZSzS2kV7bJjOsZWpMxG5752mXL37+Z7mdJAp3j73On51nD368nTE6QlRiPClQH5+s5j
-         kUqGk2wbDGGhfd+JqY2phvGN1yYeNat+oyyUYhBh540inQTG+MRBnTTMhwJU8fJqt/Y3
-         C3BFjyKEupT/ZF3umysTNNpp1O3phX8Z6YST0Nc2Mad0aS9U5g4TNo8rveDGXBNU0rKu
-         N2Ww==
-X-Gm-Message-State: AOAM532lMvJAD9Z/RC3FFHDss9D9BuB+Ec/Pd6Yp/saXQxiH/q3lfbGU
-        2vzfUVpUlMzbnv5JEysv0YAaQ2IXLAVPAz2Ty/s=
-X-Google-Smtp-Source: ABdhPJzqsFrhwkx2ehM9Qy97ILBb00FGg0Qigi4oBV/yinsA1Z4k7hcObXyh4QYlkVkBhNQ7iqgR16sXnQxMbbeXQHY=
-X-Received: by 2002:aca:c18b:: with SMTP id r133mr3767283oif.143.1623944885099;
- Thu, 17 Jun 2021 08:48:05 -0700 (PDT)
+        Thu, 17 Jun 2021 12:52:01 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id DBAE221AB0;
+        Thu, 17 Jun 2021 16:49:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623948592;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uGYkU//QvVmQnvySnjx7DvJsjI5AZu9WZykDQvGwkmA=;
+        b=GxZ+dEDrLqr3b/h/oUsh4GXyDzCZGb/9f6/K20LgjtNPrPBy0QuHBy+XHY2lejpUTGhdNI
+        Cr3Bq6hTYi4z1avZGqz7RHKImvpUnEWVJyMpEN6gbZUlrGSIHVFcHddkRvDVGA8SW/EPHZ
+        QsnNMK6Re/j6132s/qu9QcpvyXe832A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623948592;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uGYkU//QvVmQnvySnjx7DvJsjI5AZu9WZykDQvGwkmA=;
+        b=DxOPFAS0zH/7fSaF13MRpTKM/5RmsJPz80b5mU5tg+mAwkTceJn8PtIpyGrLwbwTbxobNe
+        K/KZPaEPZPTXK1BA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id D4DB0A3BBB;
+        Thu, 17 Jun 2021 16:49:52 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 473A8DAF4C; Thu, 17 Jun 2021 18:47:03 +0200 (CEST)
+Date:   Thu, 17 Jun 2021 18:47:03 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v4 0/9] btrfs: compression: refactor and enhancement
+ preparing for subpage compression support
+Message-ID: <20210617164703.GW28158@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210617051450.206704-1-wqu@suse.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6838:f1ae:0:0:0:0 with HTTP; Thu, 17 Jun 2021 08:48:04
- -0700 (PDT)
-Reply-To: westernunion8289@zohomail.com
-From:   WESTERN UNION AGENT <ahannah332@gmail.com>
-Date:   Thu, 17 Jun 2021 08:48:04 -0700
-Message-ID: <CAL724f=CaO_baRf9r__8KnQ-Cn+u7BZM6jNZSNtb6UWm3ihCsA@mail.gmail.com>
-Subject: WESTERN UNION AGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210617051450.206704-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Attention,
+On Thu, Jun 17, 2021 at 01:14:41PM +0800, Qu Wenruo wrote:
+> There are quite some problems in compression code:
+> 
+> - Weird compressed_bio::pending_bios dance
+>   If we just don't want compressed_bio being freed halfway, we have more
+>   sane methods, just like btrfs_subpage::readers.
+> 
+>   So here we fix it by introducing compressed_bio::io_sectors to do the
+>   job.
+> 
+> - BUG_ON()s inside btrfs_submit_compressed_*()
+>   Even they are just ENOMEM, we should handle them.
+>   With io_sectors introduced, we have a way to finish compressed_bio
+>   all by ourselves, as long as we haven't submitted last bio.
+> 
+>   If we have last bio submitted, then endio will handle it well.
+> 
+> - Duplicated code for compressed bio allocation and submission
+>   Just small refactor can handle it
+> 
+> - Stripe boundary is checked every time one page is added
+>   This is overkilled.
+>   Just learn from extent_io.c refactor which use bio_ctrl to do the
+>   boundary check only once for each bio.
+> 
+>   Although in compression context, we don't need extra checks in
+>   extent_io.c, thus we don't need bio_ctrl structure, but
+>   can afford to do it locally.
+> 
+> - Dead code removal
+>   One dead comment and a new zombie function,
+>   btrfs_bio_fits_in_stripe(), can be removed now.
 
-We have deposited the cheque of your fund ($ 2.5 Million USD) through
-Western Union department Finally after our meeting Regarding your
-fund,  All you do is to contact Western Union director Dr.Ferdinand
-Umeh via Email ( westernunion8289@zohomail.com ) he will give you
-direction on how you will be receiving the Funds daily,remember to
-send him your full information to avoid wrong transfer
+I went through it several times, the changes are scary, but the overall
+direction is IMHO the right one, not to say it's fixing the difficult
+BUG_ONs.
+
+I'll put it to for-next once it passes a few rounds of fstests. Taking
+it to 5.14 could be risky if we don't have enough review and testing,
+time is almost up before the code freeze.
