@@ -2,198 +2,199 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC63C3AB3A7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jun 2021 14:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DD73AB3AB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Jun 2021 14:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhFQMhP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Jun 2021 08:37:15 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47636 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhFQMhO (ORCPT
+        id S231225AbhFQMiL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Jun 2021 08:38:11 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:20161 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231217AbhFQMiL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Jun 2021 08:37:14 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4764C1FDD7;
-        Thu, 17 Jun 2021 12:35:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623933306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=GFNPKF/TKf7vix0I6YgVsxNqnt0K3WcNuu1eK1RfzJs=;
-        b=Yi9BN3ieOBxO/rSOfkyoXbCnNIl5WYobb5Xj6Yuoyb4ORAXIAr4EdhLhpor5k58SZR0Vhu
-        GasbZMty4ro8c5GijQCm/kapKOE2HS39ZS0N9TbPgkl+NMLwjqcAfKlyW7RNDuKj4EV4g9
-        ELEooFG6xKsDR4KCvo/dSbKjrhLpHnE=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id C48BA118DD;
-        Thu, 17 Jun 2021 12:35:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623933306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=GFNPKF/TKf7vix0I6YgVsxNqnt0K3WcNuu1eK1RfzJs=;
-        b=Yi9BN3ieOBxO/rSOfkyoXbCnNIl5WYobb5Xj6Yuoyb4ORAXIAr4EdhLhpor5k58SZR0Vhu
-        GasbZMty4ro8c5GijQCm/kapKOE2HS39ZS0N9TbPgkl+NMLwjqcAfKlyW7RNDuKj4EV4g9
-        ELEooFG6xKsDR4KCvo/dSbKjrhLpHnE=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 4mS/IXhBy2CsKAAALh3uQQ
-        (envelope-from <mpdesouza@suse.com>); Thu, 17 Jun 2021 12:35:04 +0000
-From:   Marcos Paulo de Souza <mpdesouza@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, wqu@suse.com,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] btrfs: quota: Introduce new flag to cancel quota rescan
-Date:   Thu, 17 Jun 2021 09:34:36 -0300
-Message-Id: <20210617123436.28327-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 17 Jun 2021 08:38:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1623933362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q4h7RDAAKxnEPdTnlqLbhXH7Bu+QSwByew+CxBMiRb4=;
+        b=Yb+l+XYBENZ5Jtnmr42XvcK38awglgjHZWep272YepRd5QWKXiSCwX46ivY4WMIo4rxFds
+        UTo6IwlhShzhubIxzDgxea6GKoye1nrbqpkmUahK9Rywjb5u3rC7AqVJlYXSLBb2tPbaYP
+        tR07TobLVKdLreMJkWVMB3Mp7dJIbiQ=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2112.outbound.protection.outlook.com [104.47.18.112])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-19-qNkrkbrSPL6kairwoN1mqg-1; Thu, 17 Jun 2021 14:36:00 +0200
+X-MC-Unique: qNkrkbrSPL6kairwoN1mqg-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q4laTSjBmS+kIvadbhp4r8NRxEHUJfUTE/bFd0SF8BrsOZGObgvUjguwqE2UUSUW+SVBFREQ8RU6da1TAZJAD+Zah2FN/MUd2NFZ4lquK4SOMM9cP+aLRMa5UWaqgYRYb7YS2iZkN2zEkgInQdcVxNncRK0I40c3Rn6FSQu+64f+XTREs2UnYegQBBzhJSrnychgwlz0jOdJj8oOsZfgZYQ1gIMci9a2Ip81Vu+g0j4MUWZsHBjktmsHLsFjZT37ex35WZqbLzsi1xYOoRu5ZQoOx6IW0sV9tRals1aqT3UbKIIVaDRFGUpbweVZPuqdC4wcFSn79ibRwS9XxGAzOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0gWpIye3vClN1ow3ebiU5MJBx3a5OxZEvgZvrlukDLo=;
+ b=fH5XOMtmGxM+Td8dgJF0GJhSk60v1hOh9GTPOo4mwvp/R7URvadI3Sx7SLip00RAB8soLQXBHzwxUDLf2pcHwDZbCb4yE1bPkqI8MB+ffDo2PRIeexzNmetk+JL18LDp87ZzYDWtBpnmDwPAtGBbqE80azl5V1I7jydOVrT1w/zJE1wRIuIe0QZVwrV4spFnuXb/kuc8dXfT9ibeTw65PSVb/dUvB/el5wYhMpQTNVt6+62aaQndSQefuzHdWxLmNRypS2ji5RA+25m2jJMUnw5VhX3Osvyor8X846RR0ffpVwmsSH5Zl8zZ/3E6nK8GTrr3QaM3MiImE5alz1Qj2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AM6PR04MB4038.eurprd04.prod.outlook.com (2603:10a6:209:44::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Thu, 17 Jun
+ 2021 12:35:59 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b4b5:823d:f2fd:d10]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b4b5:823d:f2fd:d10%8]) with mapi id 15.20.4219.025; Thu, 17 Jun 2021
+ 12:35:59 +0000
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Martin Raiber <martin@urbackup.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <01020179f656e348-b07c8001-7b74-432a-b215-ccc7b17fbfdf-000000@eu-west-1.amazonses.com>
+ <80834345-2626-a0a9-c3ae-fb2cc9435b49@gmx.com>
+ <01020179fab66f82-98bc2232-7461-42ea-8194-ec5d1670d9f6-000000@eu-west-1.amazonses.com>
+ <016d413c-a4fe-6259-6bb8-b16cb4aa592a@gmx.com>
+ <20210617121550.GV28158@twin.jikos.cz>
+From:   Qu Wenruo <wqu@suse.com>
+Subject: Re: Combining nodatasum + compression
+Message-ID: <6606aecf-0749-d74b-8653-a6ce918b7a8d@suse.com>
+Date:   Thu, 17 Jun 2021 20:35:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210617121550.GV28158@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [149.28.201.231]
+X-ClientProxiedBy: SJ0PR05CA0195.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::20) To AM7PR04MB6821.eurprd04.prod.outlook.com
+ (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR05CA0195.namprd05.prod.outlook.com (2603:10b6:a03:330::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Thu, 17 Jun 2021 12:35:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f6a68468-ee19-4f1b-1ad7-08d9318c75c1
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4038:
+X-Microsoft-Antispam-PRVS: <AM6PR04MB403824086753F82800E0AA2BD60E9@AM6PR04MB4038.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6BeIUi60hUioMH9G64kpXHXDbKxfyPiJG+kr4G1Vw8XdeQdMH0qjuqWTHVEkKivX9+BMTP73Gywtik5VJf+CDO5Fz7y3UVemU7BkOJuRVKaFX7gi729u4jV70z19uQv5RtMBhxpfmSwprv0/bUDXGgWv1oqJrzNNcT6SJV9jEJ0YirTsXo7uH3i1G3QwzJoFl1TWpx6Ao+ZZRv8waUrRfNCtj6UTu3/4ib5eUOYmVy1gBVd3zMX+KRj0Ye4lv2fcSIaclkO7kAIDfLtXEgTYVHlZUr7cDIPOuxYTVSmdQmJodNgYJXWoO/jS2uwxNeHcnhSzJAqjPc2Mvdouh9XgUfrSDMYK6hvJdKwhhRXEztX7usoRoCWnEco5IXG8CCOf/6bSbSpCMb4bYSQsMXuswRdneP7Bf1RYw67bAENd8Jx2IOm5GF53jN+ph/GSuiokzyex9y2Ix8ZabI2Uw+4WFDQMIRuvk48cgiYGGUdTpNzI+QFLVFN0LrKlrQ4/2ywPhcEvCJlyS6XLryK0V3Tr7qhfj+dbNrl6PSoDKEpLnr5X3bLiwUL4R5422PD53ru3yEwlyFQfBxXFn5JCuVGPLJDJw7sgG6cm1TAITRSbJMoEL1bNenGSkt6HKQcqfanV5rA7DXA/A9rjAAvu54L4eCy1LGj2f3vurPA1pakjYkD/vulkk5CTJyLkgzts29cdzgd1yieZd4RHX7eMpCcy2w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(136003)(346002)(39850400004)(38100700002)(110136005)(8676002)(6706004)(53546011)(6666004)(86362001)(956004)(8936002)(36756003)(83380400001)(2906002)(31686004)(5660300002)(2616005)(16576012)(66476007)(26005)(478600001)(16526019)(66946007)(31696002)(66556008)(186003)(316002)(6486002)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ytafF6KW32BAm3hJcNVf7uKVLKWwwdpdafL07MMyMnLul3rAt5TLsPoja2Gs?=
+ =?us-ascii?Q?ehIxeffQGb6BW+0u1NPLwPb4Vus9POCetnBzwuwWeCLvT9tBjMADYVO8vcws?=
+ =?us-ascii?Q?D63rUx95+VQn34g1IY8kuycbzjOhigIHD0xik0V7c241JdzTHxBjqyIFeTQr?=
+ =?us-ascii?Q?Quyx6L7R6t7TAfEmp7rk3cU7lSWHigGzYV+W+uENDQJaotbsZ0iud/03uJ0r?=
+ =?us-ascii?Q?duiaaV5atkCWDijVWiddWIo4GdJh3fr2wWrVzC6b1yCDkCOwRp0Vyj2/NWKX?=
+ =?us-ascii?Q?M8Uyv9Ojvbb5ysgR/b8nqGGg1TuWYdqb3cS6R4fcnCm372+UoKxfRNFGUvwa?=
+ =?us-ascii?Q?muH+6X7ruYSdGbS+XRrJW3tfUFVzYZ6WupIuvhxYY/xhIcdhKxO6hLHuEP4M?=
+ =?us-ascii?Q?0zh0cg5HzXR6Z0sNKn7a+Jybjo+C9d/J/zLMPvhx0G8YhjXdKwk8YcMtdCfT?=
+ =?us-ascii?Q?NoMCH3dhzF3+sNx0LfoDsb6arx8oRTb11Om4CfWy37SncFZyWON1LuUC61zF?=
+ =?us-ascii?Q?e2dsVlVZjqGYUUmiDQ2ZczCiUcGZUaU+GPkRApEn6Ad7hAT+31DG50Q+40qP?=
+ =?us-ascii?Q?TIDTYFk7Raipj2e7gsGXSdHjX3sgE/U9odfGOGGhpHdcCiz5smKeQEfoz+q6?=
+ =?us-ascii?Q?Lw/yOjdqk3tsD+pz9Qv/nnqpFNJbK0JGWGd2HgAeiI47ob4panMemefEuB1S?=
+ =?us-ascii?Q?fcs60A+fyMmfGRlNsg9m+I5JJxSRIiaREZuI2P+ai84OWbINbhC6J5pDdoVN?=
+ =?us-ascii?Q?mS02KpFD9HTx/TGmjtWa39hom3Zc/PnFtItDlpm/1uua1o2U64h5jqfqIFR3?=
+ =?us-ascii?Q?T4DZm2C3+TTx1HGn1Qqtf0QOI1NCXaPo9fW/jhKLE7GrHOT/dq9xVjFrdM81?=
+ =?us-ascii?Q?SxGQb35JV8X9ahRhy8SE4WyhdRkqTzGdr2vir8RR6ndoGtRNA/vvo5yVaOa/?=
+ =?us-ascii?Q?7+74BYKKDhECVgkT8bl1UQpo2zxRZHy6YJG3VWD+VTbx9ORnxI+d9+l7CqJB?=
+ =?us-ascii?Q?ifbTLVwPJJprb6AGQMMCrqAuCfb4k5HC/3AqEdLWJjZe4sGzBjdfaY2YEuPs?=
+ =?us-ascii?Q?Ujr7iPUh559F82trI5CObhjFJrU2Vxg11IEBIZM4sq0KY+j/ZWYdmLgxbAI5?=
+ =?us-ascii?Q?Ty6k4jVHiE/1EEW3lGX0Xcl9rGDmzzsNUUOY6iTpA7vy8m+cgFP3hT7/QiBi?=
+ =?us-ascii?Q?jF1wkbD/kXnGrAKZHep45OJtW+C22atVKljOaxm+8QPjEakGhzCy9l62JsyZ?=
+ =?us-ascii?Q?1wGF3omkbvhsxHELSrGFdoCsM0oCOJZrQoZ2egauHKM3S2Svg1JX2IF6waCI?=
+ =?us-ascii?Q?zViC/rJeoEKrsTS9gdQAGalJ?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6a68468-ee19-4f1b-1ad7-08d9318c75c1
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2021 12:35:59.4390
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NaS5/JKP9MMy1QYCJUgFC+hb3gmg6xfRdCoBxM/NtdM6R+Vc6bCkxpRqpSGLCn07
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4038
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Until now, there wasn't a way to cancel a currently running quota
-rescan. The QUOTA_CTL ioctl has only commands to enable and disable,
-thus, no way to cancel and restart the rescan. This functionality can be
-useful to applications like snapper, that can create and delete
-snapshots, and thus restarting the quota scan can be used instead of
-waiting for the current scan to finish.
 
-The new command BTRFS_QUOTA_CTL_CANCEL_RESCAN can now be used in
-QUOTA_CTL ioctl to reset the progress of the rescan and stopping
-btrfs_qgroup_rescan_worker.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
+On 2021/6/17 =E4=B8=8B=E5=8D=888:15, David Sterba wrote:
+> On Fri, Jun 11, 2021 at 07:15:29PM +0800, Qu Wenruo wrote:
+>> On 2021/6/11 =E4=B8=8B=E5=8D=886:55, Martin Raiber wrote:
+>>> On 11.06.2021 02:18 Qu Wenruo wrote:
+>>>> On 2021/6/10 =E4=B8=8B=E5=8D=8810:32, Martin Raiber wrote:
+>>
+>> But this still means, all other regular end user can hit a case where
+>> they set nodatasum for a directory and later corrupt their data.
+>=20
+> So this where I'd say give users what they ask for, like the usecase
+> where the data correctness is done on another layer or solved by
+> completely different approach like reprovisioning in case of errors.
 
- Can someone check if locking only qgrop_ioctl_lock is enough for this case, or
- if I missed something? Thanks!
+Fine, then I guess what we need is to talk about the technical details then=
+.
 
- fs/btrfs/ctree.h           |  1 +
- fs/btrfs/ioctl.c           |  3 +++
- fs/btrfs/qgroup.c          | 29 +++++++++++++++++++++++++++++
- fs/btrfs/qgroup.h          |  1 +
- include/uapi/linux/btrfs.h |  1 +
- 5 files changed, 35 insertions(+)
+>=20
+> I would certainly not recommend to turning off nodatasum in general but
+> if thre's a usecase with known pros and cons then I'm for allowing it
+> (if feasible on technical grounds).
+>=20
+> An example from past is (not)allowing DUP on a single device for data.
+> The counterargument for that was something like "but it won't help on SD
+> cards anyway", but we're not choosing hw or usecase for users.
+>=20
+> I had a prototype to do "nometasum", it's obviously simple but with lack
+> of usecase I did not push it for a merge. If there's an interest for a
+> checksum-free usecase we can do that.
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 6131b58f779f..e1f2153d4a42 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -933,6 +933,7 @@ struct btrfs_fs_info {
- 
- 	/* qgroup rescan items */
- 	struct mutex qgroup_rescan_lock; /* protects the progress item */
-+	bool qgroup_cancel_rescan;
- 	struct btrfs_key qgroup_rescan_progress;
- 	struct btrfs_workqueue *qgroup_rescan_workers;
- 	struct completion qgroup_rescan_completion;
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 0ba98e08a029..b39b6ff4650f 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4206,6 +4206,9 @@ static long btrfs_ioctl_quota_ctl(struct file *file, void __user *arg)
- 	case BTRFS_QUOTA_CTL_DISABLE:
- 		ret = btrfs_quota_disable(fs_info);
- 		break;
-+	case BTRFS_QUOTA_CTL_CANCEL_RESCAN:
-+		ret = btrfs_quota_cancel_rescan(fs_info);
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		break;
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index d72885903b8c..077021fc63c8 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1233,6 +1233,21 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
- 	return ret;
- }
- 
-+int btrfs_quota_cancel_rescan(struct btrfs_fs_info *fs_info)
-+{
-+	int ret;
-+
-+	mutex_lock(&fs_info->qgroup_ioctl_lock);
-+	fs_info->qgroup_cancel_rescan = true;
-+
-+	ret = btrfs_qgroup_wait_for_completion(fs_info, false);
-+
-+	fs_info->qgroup_cancel_rescan = false;
-+	mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+
-+	return ret;
-+}
-+
- static void qgroup_dirty(struct btrfs_fs_info *fs_info,
- 			 struct btrfs_qgroup *qgroup)
- {
-@@ -3214,6 +3229,7 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
- 	int err = -ENOMEM;
- 	int ret = 0;
- 	bool stopped = false;
-+	bool canceled = false;
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -3234,6 +3250,9 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
- 		}
- 		if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
- 			err = -EINTR;
-+		} else if (fs_info->qgroup_cancel_rescan) {
-+			canceled = true;
-+			err = -ECANCELED;
- 		} else {
- 			err = qgroup_rescan_leaf(trans, path);
- 		}
-@@ -3280,6 +3299,14 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
- 		}
- 	}
- 	fs_info->qgroup_rescan_running = false;
-+
-+	/*
-+	 * If we cancel the current rescan, set progress to zero to start over
-+	 * on next rescan.
-+	 */
-+	if (canceled)
-+		fs_info->qgroup_rescan_progress.objectid = 0;
-+
- 	complete_all(&fs_info->qgroup_rescan_completion);
- 	mutex_unlock(&fs_info->qgroup_rescan_lock);
- 
-@@ -3290,6 +3317,8 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
- 
- 	if (stopped) {
- 		btrfs_info(fs_info, "qgroup scan paused");
-+	} else if (canceled) {
-+		btrfs_info(fs_info, "qgroup scan canceled");
- 	} else if (err >= 0) {
- 		btrfs_info(fs_info, "qgroup scan completed%s",
- 			err > 0 ? " (inconsistency flag cleared)" : "");
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 7283e4f549af..ae6a42312ab8 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -245,6 +245,7 @@ static inline u64 btrfs_qgroup_subvolid(u64 qgroupid)
- 
- int btrfs_quota_enable(struct btrfs_fs_info *fs_info);
- int btrfs_quota_disable(struct btrfs_fs_info *fs_info);
-+int btrfs_quota_cancel_rescan(struct btrfs_fs_info *fs_info);
- int btrfs_qgroup_rescan(struct btrfs_fs_info *fs_info);
- void btrfs_qgroup_rescan_resume(struct btrfs_fs_info *fs_info);
- int btrfs_qgroup_wait_for_completion(struct btrfs_fs_info *fs_info,
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index 22cd037123fa..29a66dd01df7 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -714,6 +714,7 @@ struct btrfs_ioctl_get_dev_stats {
- #define BTRFS_QUOTA_CTL_ENABLE	1
- #define BTRFS_QUOTA_CTL_DISABLE	2
- #define BTRFS_QUOTA_CTL_RESCAN__NOTUSED	3
-+#define BTRFS_QUOTA_CTL_CANCEL_RESCAN 4
- struct btrfs_ioctl_quota_ctl_args {
- 	__u64 cmd;
- 	__u64 status;
--- 
-2.26.2
+Already off-topic, but I doubt if it can really bring some benefit.
+
+In the old days, maybe.
+
+Nowadays, even with checksum disabled, we still have mandatory=20
+tree-checker, which on average takes a similar amount of time of csum=20
+the tree-block...
+
+>=20
+>> This will increase the corruption loss, if user just migrate from older
+>> kernel to newer one.
+>>
+>> Yeah, you can blame the users for doing that, but I'm still not that
+>> sure if such behavior change is fine.
+>>
+>> Especially when this increase the chance of data loss.
+>> It may be fine for ceph, but btrfs still have a wider user base to consi=
+der.
+>=20
+> So the silent change would make a difference, but it's still after a
+> decision to do nodatasum, that gets on a directory and inherited.
+> That it actually happens is not what user asked for, so from that point
+> I think it's the other way around.
+>=20
+>>> Furthermore it depends on the use-case if corruption affecting
+>>> one page, or a whole compressed block is something one can live with.
+>>
+>> That's true, but my point is, at least we shouldn't increase the data
+>> loss possibility for the end users.
+>>
+>> If in the past, we allowed NODATASUM + compression, then converting to
+>> current situation, I'm more or less fine, since it reduce the
+>> possibility of data loss.
+>=20
+> I'm going to read the reasoning again.
+>=20
+
+That's because we used to force csum check for compressed data, but it's=20
+no longer the case anymore.
+
+As Martin already stated, we skip the compressed csum for read, as long=20
+as the inode has NODATASUM flag.
+
+Thanks,
+Qu
 
