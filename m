@@ -2,119 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B941F3ABF14
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jun 2021 00:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DB93ABFC6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jun 2021 01:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhFQWtI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Jun 2021 18:49:08 -0400
-Received: from mout.gmx.net ([212.227.17.22]:40759 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231911AbhFQWtH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Jun 2021 18:49:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1623970015;
-        bh=Dn/Oc8B6qJsgBQvhDWwbGMfVBf4cK4vDgghSsy6WqX4=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=H3EPUD4eLCA/J89rBxP4cfACB0bQaMF+1S33TiGbYbW08JDdGkm0SbJbYqIL96FyN
-         BiqeVy4/GhtS9KUlz5iPV7u7vRYc1Nf655+qDXD9DdzJtAQhmRRH6BTjlBwE6IItaa
-         w3O3mmtGufHXttVn8qaF0hUxf4gxDbvNBSGRn/hQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQ5rU-1lgj5a35km-00M3qq; Fri, 18
- Jun 2021 00:46:55 +0200
-Subject: Re: [PATCH v4 0/9] btrfs: compression: refactor and enhancement
- preparing for subpage compression support
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210617051450.206704-1-wqu@suse.com>
- <20210617164703.GW28158@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <d184445f-a1a1-3f17-c33d-ffe3fc066c66@gmx.com>
-Date:   Fri, 18 Jun 2021 06:46:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231437AbhFQXx5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Jun 2021 19:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhFQXx5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Jun 2021 19:53:57 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10129C06175F
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jun 2021 16:51:48 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id m15-20020a17090a5a4fb029016f385ffad0so1986707pji.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Jun 2021 16:51:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kLtan7ZgJ39lAhTwAEL8BRZtTwp/aIezL/TyKBUefV8=;
+        b=CMbZvSZFdRziY2qn+EzuEJyFpb5KZc/g7cglf106+oa8PYPkBH90Vjzm8GS/NgOeJ+
+         yxc+cnRixg44tkVtPCwP7Nj1QHoAx2PgTqvkZl83ye7hBhxdXyjRzcXQN+i9arLDTVlZ
+         u5ZcQbdYqYB2r0tmcEo4NfOxV1zLYTz6NKqZRkeiG4b+Mgm6ORrx2FXBsUT32s5iW5Li
+         3/K1IZmDw76onWKA2uUKE6pX3ig2sp5K7/A8sN9aGSBSWSvLF7m8EDg0Idgy35bNHxnb
+         SpczVRDx7uvMVuM1Dps9nCh3R6B0UsfPp/PiNdu0OpTvIRgLanXcpOJk+tR1Gf5SHFyj
+         hosQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kLtan7ZgJ39lAhTwAEL8BRZtTwp/aIezL/TyKBUefV8=;
+        b=l/0eElkvaJIeuRL5ttXFIIBs3OVxwcLcheVjoTl50+p53ckSoOxFJPb6gZ1NO0NuqR
+         eFajgl8yVyk9iuw/IpkdMRXAUOMiDG5VGdClNYbiQ/YU1kp0Qkc7y0acGpA36FtS5EbT
+         iRrtXBnlH9ibHXGAvCQ2SgveNgp8y1/2ovh2HY0lRUK2a3rIxp1UaRUkA7WGhTU3ejOC
+         iKzE3RnqdNZtzLrVkyZWlNc8cDvjHGCLSFB6cqAqG9bUU8F2ETOOE/BxiHdKNvCZCpSJ
+         mGA/e9Liqh5xN+As2xL8TFG35PhM8v4ty0p5knRSeB0N6aqzl0o9gW5SPYb56x9ZGN1o
+         zfQw==
+X-Gm-Message-State: AOAM531xGOyfJ8DBdj8psXw8+TTJWDe38X59gE03BN0lVqqs0co1bftE
+        OhAzaPunfxCKvwXoA8h7vdLt2A==
+X-Google-Smtp-Source: ABdhPJyA6tXbsmmkly8bTrUXZH/0/TjlUm3khtAowkRsCAeYUZKTslgJojSVEnGBaGDHmX3h6GCLlA==
+X-Received: by 2002:a17:90a:8502:: with SMTP id l2mr7943043pjn.215.1623973907360;
+        Thu, 17 Jun 2021 16:51:47 -0700 (PDT)
+Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:2f0e])
+        by smtp.gmail.com with ESMTPSA id a187sm6087517pfb.66.2021.06.17.16.51.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 16:51:46 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH RESEND x3 v9 0/9] fs: interface for directly reading/writing compressed data
+Date:   Thu, 17 Jun 2021 16:51:23 -0700
+Message-Id: <cover.1623972518.git.osandov@fb.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210617164703.GW28158@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5csoI25Syf6U3E9KJD02z3x6jDYVIcgtnqSUFBquwlFfVSPKPen
- g4+ArFebnqAizKERmXPBcu3OVxHIfRluQK+i/ou5wKwishyoSgAC7FlvIyCrf0Xu5npz4jN
- 4D0DP9ES38lpZ8rjp7EZ0GgU8j5sd5OZNuwKo/nJrRMJSrhMGI753nzxvC2zWnApA57iKn1
- 53LiGzkK4r45DLgbKNLvg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MI86MD2jD28=:A1UZWf9Wffc4XoG/g8C3Gv
- +HvYSiF4we+NPr4/QVW8yWhAR7zrNU0sRskcrUpKeIQu5KeIK0s4Piang4GgjSXbJcPuAKooJ
- B9Iqr8pxlTiKTz+7jB6ic3bKPjnlFtI6cuE7pMrqW1yC1jpl/AUZhZ/uPgFCvnjMrAoJbN7cI
- 8rH9g9N2HWxGNywL5PqrurohtFHJwfmffDzu6/sT3c8o0E/LqS2q541zm8hw2XRIMyzdUur/q
- CiqGwHVb3JErOaAKWx9y3roV4NHmP5ciiWmzzeV573hJr3eZlCYVrtQRXPzL5iJvuE3I1jzYZ
- ha2YKDmvh7i/9A9yNz0BnRhJPhKSJEQXweVg5E6w1sALLl2EmlszlY3oprN15WniLzQWIz3kg
- 3qDMQdBJOAmLttXmiTneUU2uj2nVG8eGhiaFGkFFhNDkXrdXkY2djVTbBdCyjsha9XTUg2liu
- PI3YSrgj4j2f3iPOJ4Pe5PDTrtGPlocNTqkjDf4BL3fRvNJ+zRAfrej6CXZV2VgW6RMT/ZSc3
- taBKG7izkWFnb5jw8MRz8J4/g7ITF0Jh/Y76ISFrZVxM0E9b6KN3fec9ZqTS7p3b01Uihd+rG
- 5tsg9lZK1G8/ZHvTcJ3Mypg62lhLbXmPrYPpjAL3wrckRG2jxoMlL6BWCNr5BDIpPAKwqKDhc
- n/BymBZMqN3t6VJC7fnOJq18yWbLeAdhxzCe2i9uUw6w3YHI5QTzdV8iRS4e7hXKMR6/mEaJm
- XPIfAJ4X3Ku75sH00iARqZhAzTtSDwpdTL4aWF8f0MkaEM/v3LZuCJez0aQrXAgFGwvWhwVaN
- DzH/mlsDtSDnmqvuP3bBJliyy+CdNa6k8D5S0WfaRAo1VJClRHtQ3dwyCKgojOVbEDaypC6wB
- JSZx3nQ8pR1BBSThdMnG4jNFtGSlaTvdnBxXEVl/VKM6yTYH4jOJWZqro2vBmnEFXA78ZWSjB
- fUFj3PqrdEm+dl80ri2iROev41G22UQFHRZ7lQ2eknHxRd93CGiPVgPI6AbMgietmoWt4E5xW
- uctzctYfTtE/kAfCCjERuCeVQVCyB1rEJ84v43uu3BBIjQMkSH8loHeVlBgVTpHxY7K66QBzc
- YZHsNaGYmdHch6ZM0gHcZdT81JV+6a96L2SKGMCW2s+hpwTLwZwZylA2g==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Omar Sandoval <osandov@fb.com>
 
+This series adds an API for reading compressed data on a filesystem
+without decompressing it as well as support for writing compressed data
+directly to the filesystem. I have test cases (including fsstress
+support) and example programs which I'll send up once the dust settles
+[1].
 
-On 2021/6/18 =E4=B8=8A=E5=8D=8812:47, David Sterba wrote:
-> On Thu, Jun 17, 2021 at 01:14:41PM +0800, Qu Wenruo wrote:
->> There are quite some problems in compression code:
->>
->> - Weird compressed_bio::pending_bios dance
->>    If we just don't want compressed_bio being freed halfway, we have mo=
-re
->>    sane methods, just like btrfs_subpage::readers.
->>
->>    So here we fix it by introducing compressed_bio::io_sectors to do th=
-e
->>    job.
->>
->> - BUG_ON()s inside btrfs_submit_compressed_*()
->>    Even they are just ENOMEM, we should handle them.
->>    With io_sectors introduced, we have a way to finish compressed_bio
->>    all by ourselves, as long as we haven't submitted last bio.
->>
->>    If we have last bio submitted, then endio will handle it well.
->>
->> - Duplicated code for compressed bio allocation and submission
->>    Just small refactor can handle it
->>
->> - Stripe boundary is checked every time one page is added
->>    This is overkilled.
->>    Just learn from extent_io.c refactor which use bio_ctrl to do the
->>    boundary check only once for each bio.
->>
->>    Although in compression context, we don't need extra checks in
->>    extent_io.c, thus we don't need bio_ctrl structure, but
->>    can afford to do it locally.
->>
->> - Dead code removal
->>    One dead comment and a new zombie function,
->>    btrfs_bio_fits_in_stripe(), can be removed now.
->
-> I went through it several times, the changes are scary, but the overall
-> direction is IMHO the right one, not to say it's fixing the difficult
-> BUG_ONs.
->
-> I'll put it to for-next once it passes a few rounds of fstests. Taking
-> it to 5.14 could be risky if we don't have enough review and testing,
-> time is almost up before the code freeze.
->
-Please don't put it into 5.14.
+The main use-case is Btrfs send/receive: currently, when sending data
+from one compressed filesystem to another, the sending side decompresses
+the data and the receiving side recompresses it before writing it out.
+This is wasteful and can be avoided if we can just send and write
+compressed extents. The patches implementing the send/receive support
+were sent with the last submission of this series [2].
 
-It's really a preparation for subpage compression support.
-However we don't even have subpage queued for v5.14, thus I'm not in a
-hurry.
+Patches 1-3 add the VFS support, UAPI, and documentation. Patches 4-7
+are Btrfs prep patches. Patch 8 adds Btrfs encoded read support and
+patch 9 adds Btrfs encoded write support.
 
-Thanks,
-Qu
+These patches are based on Dave Sterba's Btrfs misc-next branch [3],
+which is in turn currently based on v5.13-rc6.
+
+This is a _resend of a resend of a resend_ of v9 [4], rebased on the
+latest kdave/misc-next branch.
+
+In the last resend, there was some good discussion around how to support
+encryption with this interface in the future. The conclusion was that
+this interface should suffice for file data, and we would need separate
+interface(s) for working with encrypted file names. So, this really just
+needs review on the VFS side.
+
+1: https://github.com/osandov/xfstests/tree/rwf-encoded
+2: https://lore.kernel.org/linux-btrfs/cover.1615922753.git.osandov@fb.com/
+3: https://github.com/kdave/btrfs-devel/tree/misc-next
+4: https://lore.kernel.org/linux-fsdevel/cover.1621276134.git.osandov@fb.com/
+
+Omar Sandoval (9):
+  iov_iter: add copy_struct_from_iter()
+  fs: add O_ALLOW_ENCODED open flag
+  fs: add RWF_ENCODED for reading/writing compressed data
+  btrfs: don't advance offset for compressed bios in
+    btrfs_csum_one_bio()
+  btrfs: add ram_bytes and offset to btrfs_ordered_extent
+  btrfs: support different disk extent size for delalloc
+  btrfs: optionally extend i_size in cow_file_range_inline()
+  btrfs: implement RWF_ENCODED reads
+  btrfs: implement RWF_ENCODED writes
+
+ Documentation/filesystems/encoded_io.rst | 240 ++++++
+ Documentation/filesystems/index.rst      |   1 +
+ arch/alpha/include/uapi/asm/fcntl.h      |   1 +
+ arch/parisc/include/uapi/asm/fcntl.h     |   1 +
+ arch/sparc/include/uapi/asm/fcntl.h      |   1 +
+ fs/btrfs/compression.c                   |  12 +-
+ fs/btrfs/compression.h                   |   6 +-
+ fs/btrfs/ctree.h                         |   9 +-
+ fs/btrfs/delalloc-space.c                |  18 +-
+ fs/btrfs/file-item.c                     |  35 +-
+ fs/btrfs/file.c                          |  46 +-
+ fs/btrfs/inode.c                         | 925 +++++++++++++++++++++--
+ fs/btrfs/ordered-data.c                  | 124 +--
+ fs/btrfs/ordered-data.h                  |  25 +-
+ fs/btrfs/relocation.c                    |   4 +-
+ fs/fcntl.c                               |  10 +-
+ fs/namei.c                               |   4 +
+ fs/read_write.c                          | 168 +++-
+ include/linux/encoded_io.h               |  17 +
+ include/linux/fcntl.h                    |   2 +-
+ include/linux/fs.h                       |  13 +
+ include/linux/uio.h                      |   1 +
+ include/uapi/asm-generic/fcntl.h         |   4 +
+ include/uapi/linux/encoded_io.h          |  30 +
+ include/uapi/linux/fs.h                  |   5 +-
+ lib/iov_iter.c                           |  91 +++
+ 26 files changed, 1559 insertions(+), 234 deletions(-)
+ create mode 100644 Documentation/filesystems/encoded_io.rst
+ create mode 100644 include/linux/encoded_io.h
+ create mode 100644 include/uapi/linux/encoded_io.h
+
+-- 
+2.32.0
+
