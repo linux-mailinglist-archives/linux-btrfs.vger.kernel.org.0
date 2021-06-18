@@ -2,175 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1B53AC4F7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jun 2021 09:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1C73AC6B8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jun 2021 11:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhFRH1q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Jun 2021 03:27:46 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48440 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232282AbhFRH1m (ORCPT
+        id S232753AbhFRJFm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Jun 2021 05:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232800AbhFRJFk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:27:42 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 095831FD8F
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 07:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624001133; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Penx4yvyNonFPb598VVvvm4JhEsiXZIS01tRr9Oc0f0=;
-        b=ml19MGad943+FoBvX6du2dQ6SIWl5rGQVgG8dfrwhliQHTLP8v4Et/Q5KzfX03tVCnLnVN
-        mmOjaqH9Dn3KoWSgkP3P1yQs2+bmnWI/9Yd0zkkb8y/gfCkdAwy4evJaj4/J9l0cJQXAc2
-        wB3U9peP/vnyVQ3/GTqZLXbMKVeqx/c=
-Received: from adam-pc.lan (unknown [10.163.16.38])
-        by relay2.suse.de (Postfix) with ESMTP id 09CB6A3BC3
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 07:25:31 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v5 11/11] btrfs: allow read-write for 4K sectorsize on 64K page size systems
-Date:   Fri, 18 Jun 2021 15:24:37 +0800
-Message-Id: <20210618072437.207550-12-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210618072437.207550-1-wqu@suse.com>
-References: <20210618072437.207550-1-wqu@suse.com>
+        Fri, 18 Jun 2021 05:05:40 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA8AC06175F
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 02:03:30 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id bp38so15556705lfb.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 02:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=L0V3tEWU6RXdv4sHk2WURUiKYv8hNk/3Vb4RrbCcOlY=;
+        b=HRvgmX97kx1hQFnlJijCzTlaBTIzKIyXSCXGKZg7q5/AKHPFwkKWZ0P7w6rC2PDphD
+         hzD9cdRNe+DD4WAuH/1w/rracmYSVb8u73qYKK40Ctl847sszfczknraMa/B+UiEyvQr
+         XLgMezfKLty6O+A8f/yl//mh0g8p3R913nHtCFKQjVszv4gJrVUFO6reeYTek354CM2a
+         +2FNG+z9dtiC2wtNJRmRZuFqp+ENXXo1T62Y1atuFLVOUKDR49Zu4cqsLWHr4ODmjNtH
+         GqgHRsEqKHrzwScM0V2ixTkXTlpdIaLUMHi6HH9gjMC5mHZ2eBwswhOdwJCVQlKJIsGB
+         ZlHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=L0V3tEWU6RXdv4sHk2WURUiKYv8hNk/3Vb4RrbCcOlY=;
+        b=FHQ+wXyQFg51k1nX62cNmpEtEo7eARVuKtJHBxU69u7W2U4LlI6L9GWMma8VR1VpC7
+         TWep9cuSsKjhEMboEhWU2VRGWEjWt5el74oP0B9/t4eR0lqn5a6aVd7nUKnCTiREa3/I
+         DN+rENHSYNiPVQzzDxTo6YPcBIhxm+fUtERDviwagIedHCi9tq9A0dW/OrtiVu9cImmi
+         Rlkgz5x1SYGzp7hQtMisWZztfgaztThmOLJiPU/9ockM05BIUivDRakSV1+3n8gYhtLg
+         lT0AkttkYnZrUC9s3TKdt6AGaVhz5af32+46ViNhyHm2pdqshDySlI4LVAcphKpuUmFC
+         OPEg==
+X-Gm-Message-State: AOAM533Hu552lOXlf0jmSJ2SSq3X0+icQnDDxVGQqwJ/0Xs3oOUfEFpI
+        ZLVjJaFzosKYqRignvZxI7atS2fmRD0zHU+Cx/M=
+X-Google-Smtp-Source: ABdhPJwEclwXrAXDUlX68SRALNvSRqNCMDp/+xlXqYeoYF2wB1nrRmcrortt3kCSqirKAqfiCcKVfQnQN81k/I5gBJ0=
+X-Received: by 2002:ac2:43a3:: with SMTP id t3mr2356365lfl.183.1624007007836;
+ Fri, 18 Jun 2021 02:03:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6520:204d:b029:105:5c81:34aa with HTTP; Fri, 18 Jun 2021
+ 02:03:26 -0700 (PDT)
+Reply-To: ayishagddafio@mail.ru
+From:   AISHA GADDAFI <julebongo10@gmail.com>
+Date:   Fri, 18 Jun 2021 02:03:26 -0700
+Message-ID: <CALSL=tYN34-H0RTQOYYpvBpsBDDfHqZFT3hzq9tOMgnTdRU8=A@mail.gmail.com>
+Subject: Liebster Freund,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since now we support data and metadata read-write for subpage, remove
-the RO requirement for subpage mount.
+--=20
+Liebster Freund,
 
-There are some extra limits though:
-- For now, subpage RW mount is still considered experimental
-  Thus that mount warning will still be there.
+Im Namen Gottes, des gn=C3=A4digsten, barmherzigsten.
 
-- No compression support
-  There are still quite some PAGE_SIZE hard coded and quite some call
-  sites use extent_clear_unlock_delalloc() to unlock locked_page.
-  This will screw up subpage helpers
+Friede sei mit dir und Barmherzigkeit sei mit dir und Segen sei mit dir.
+Ich habe die Summe von 27,5 Millionen USD f=C3=BCr Investitionen, ich
+interessiere mich f=C3=BCr Sie f=C3=BCr die Unterst=C3=BCtzung von
+Investitionsprojekten in Ihrem Land. Mein Name ist Aisha Gaddafi und
+lebe derzeit im Oman, ich bin eine Witwe und alleinerziehende Mutter
+mit drei Kindern, die einzige leibliche Tochter des verstorbenen
+libyschen Pr=C3=A4sidenten (dem verstorbenen Oberst Muammar Gaddafi) und
+stehe derzeit unter politischem Asylschutz der omanischen Regierung.
 
-  Now for subpage RW mount, no matter whatever mount option or inode
-  attr is set, all write will not be compressed.
-  Although reading compressed data has no problem.
+Bitte antworten Sie dringend f=C3=BCr weitere Details.
 
-- No defrag for subpage case
-  The defrag support for subpage case will come in later patches, which
-  will also rework the defrag workflow.
-
-- No inline extent will be created
-  This is mostly due to the fact that filemap_fdatawrite_range() will
-  trigger more write than the range specified.
-  In fallocate calls, this behavior can make us to writeback which can
-  be inlined, before we enlarge the isize.
-
-  This is a very special corner case, and even current btrfs check won't
-  report error on such inline extent + regular extent.
-  But considering how much effort has been put to prevent such inline +
-  regular, I'd prefer to cut off inline extent completely until we have
-  a good solution.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/disk-io.c | 13 ++++---------
- fs/btrfs/inode.c   |  3 +++
- fs/btrfs/ioctl.c   |  6 ++++++
- fs/btrfs/super.c   |  7 -------
- fs/btrfs/sysfs.c   |  5 +++++
- 5 files changed, 18 insertions(+), 16 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 2af13bb48812..983cc1c0acf5 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3407,15 +3407,10 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		goto fail_alloc;
- 	}
- 
--	/* For 4K sector size support, it's only read-only */
--	if (PAGE_SIZE == SZ_64K && sectorsize == SZ_4K) {
--		if (!sb_rdonly(sb) || btrfs_super_log_root(disk_super)) {
--			btrfs_err(fs_info,
--	"subpage sectorsize %u only supported read-only for page size %lu",
--				sectorsize, PAGE_SIZE);
--			err = -EINVAL;
--			goto fail_alloc;
--		}
-+	if (sectorsize != PAGE_SIZE) {
-+		btrfs_warn(fs_info,
-+	"read-write for sector size %u with page size %lu is experimental",
-+			   sectorsize, PAGE_SIZE);
- 	}
- 	if (sectorsize != PAGE_SIZE) {
- 		if (btrfs_super_incompat_flags(fs_info->super_copy) &
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2abe18dd9d43..59530cdb1163 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -490,6 +490,9 @@ static noinline int add_async_extent(struct async_chunk *cow,
-  */
- static inline bool inode_can_compress(struct btrfs_inode *inode)
- {
-+	/* Subpage doesn't support compress yet */
-+	if (inode->root->fs_info->sectorsize < PAGE_SIZE)
-+		return false;
- 	if (inode->flags & BTRFS_INODE_NODATACOW ||
- 	    inode->flags & BTRFS_INODE_NODATASUM)
- 		return false;
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 0ba98e08a029..4d809899c076 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3115,6 +3115,12 @@ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
- 		goto out;
- 	}
- 
-+	/* Subpage defrag will be supported in later commits */
-+	if (root->fs_info->sectorsize < PAGE_SIZE) {
-+		ret = -ENOTTY;
-+		goto out;
-+	}
-+
- 	switch (inode->i_mode & S_IFMT) {
- 	case S_IFDIR:
- 		if (!capable(CAP_SYS_ADMIN)) {
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index bc613218c8c5..70922362400a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2042,13 +2042,6 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 			ret = -EINVAL;
- 			goto restore;
- 		}
--		if (fs_info->sectorsize < PAGE_SIZE) {
--			btrfs_warn(fs_info,
--	"read-write mount is not yet allowed for sectorsize %u page size %lu",
--				   fs_info->sectorsize, PAGE_SIZE);
--			ret = -EINVAL;
--			goto restore;
--		}
- 
- 		/*
- 		 * NOTE: when remounting with a change that does writes, don't
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index ebde1d09e686..579ec09cbc55 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -366,6 +366,11 @@ static ssize_t supported_sectorsizes_show(struct kobject *kobj,
- {
- 	ssize_t ret = 0;
- 
-+	/* 4K sector size is also support with 64K page size */
-+	if (PAGE_SIZE == SZ_64K)
-+		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%u ",
-+				 SZ_4K);
-+
- 	/* Only sectorsize == PAGE_SIZE is now supported */
- 	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%lu\n", PAGE_SIZE);
- 
--- 
-2.32.0
-
+Vielen Dank
+Mit freundlichen Gr=C3=BC=C3=9Fen Aisha
