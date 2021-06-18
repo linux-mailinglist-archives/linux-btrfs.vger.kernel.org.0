@@ -2,94 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7923AD47F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jun 2021 23:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9883AD4CF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Jun 2021 00:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234606AbhFRVnV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Jun 2021 17:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhFRVnU (ORCPT
+        id S234847AbhFRWJC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Jun 2021 18:09:02 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50700 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234791AbhFRWJB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Jun 2021 17:43:20 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4139C06175F
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 14:41:09 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 131so15892246ljj.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 14:41:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1r2JNcGiZYGEsYXKAn8qdNAkS9jkXxdkGrKjRmIacM0=;
-        b=W9WgSMPNxsi6UNVwDFOvRq4okEhNaCNzDakMc0cvqSwcUVgvkkcz8ZcfCsH+hgFs5k
-         M687Bx4DVFcOT3GjS/qoFgbSOFd1xSAEce+22UPK2itBj11GTffU3KUg8hTc6ns7oObl
-         GTyi3Kk1pl2MJYCc42QRxWGeDH/y3b0qmQLpM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1r2JNcGiZYGEsYXKAn8qdNAkS9jkXxdkGrKjRmIacM0=;
-        b=kKmWRWiiZuDcXFi1pu3d8mOqOrNsXB6siKWDGH0bJsoK1Fxh4ttFIJa40PYtnBzIgm
-         wFn0NFjuLEjYh2VgHlPJHc3tu1BgKrihukgx4eOr74PvIu6ieJwHcwdJkUqhebCXUNeN
-         lTtwdsyoO9h7KoXR4e6B6xrGCfqIFRQjjAPK9QjDlzMcyOAhfLGJf69r1nYuWht0/eZg
-         fLkRmT0geFBXbd4bdmyDCdQiXB2rFagg2+6xu/JYrhPo/hnjc5JIMeW6GGabmHGfx1jq
-         TwvcgSp8DPrb4vkkWnnItvbgZdqT+kCfwhBif33cYl0ryqQpB18Qu93nO9Lrs2sD7RQh
-         AWAg==
-X-Gm-Message-State: AOAM533SPSIhY/wJyFo4xbl61bpPCriBVw1LHBO8tkRcRmLwRW6+09tZ
-        wS9+a4JPGKvLcF+6qi5PEXCaLsKIcY8PjlSY
-X-Google-Smtp-Source: ABdhPJyz2j+lhm9z9SZFiruHHwytQYKLjc+TKTB5o/9yMksBWlfTepPLleLpSLeEKnNmVokGey2Dsg==
-X-Received: by 2002:a2e:844a:: with SMTP id u10mr11336657ljh.443.1624052467860;
-        Fri, 18 Jun 2021 14:41:07 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id u10sm22005lfg.240.2021.06.18.14.41.07
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 14:41:07 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id c11so15863196ljd.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 14:41:07 -0700 (PDT)
-X-Received: by 2002:a2e:7a14:: with SMTP id v20mr10866300ljc.465.1624052467049;
- Fri, 18 Jun 2021 14:41:07 -0700 (PDT)
+        Fri, 18 Jun 2021 18:09:01 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3CA9721A95;
+        Fri, 18 Jun 2021 22:06:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624054010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=eQ97ySKqUY5sJYiNs0e4ec4qGYY54ruXYkWNXH/lJUw=;
+        b=U2F+C+QZaEKg00JMjrdlbQR0z5uvg2+I37mydQiNuF8bq/BhQfpJ/+DSB3bVyYG9sQz6XK
+        YUEGoN+DuCXhf74NSljxfoVpbgBktdPHQD/3ex508+tmsc+ANYsZqw9WHmrOmKgevFbtfe
+        VyIxLI5x1Fa1kGoCGkSqRUc5fpXTOHI=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 32A3BA3BC2;
+        Fri, 18 Jun 2021 22:06:50 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5992BDA79B; Sat, 19 Jun 2021 00:04:01 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fix for 5.13-rc7
+Date:   Sat, 19 Jun 2021 00:03:55 +0200
+Message-Id: <cover.1624051838.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <cover.1623972518.git.osandov@fb.com> <6caae597eb20da5ea23e53e8e64ce0c4f4d9c6d2.1623972519.git.osandov@fb.com>
- <CAHk-=whRA=54dtO3ha-C2-fV4XQ2nry99BmfancW-16EFGTHVg@mail.gmail.com>
- <YMz3MfgmbtTSQljy@zeniv-ca.linux.org.uk> <YM0C2mZfTE0uz3dq@relinquished.localdomain>
- <YM0I3aQpam7wfDxI@zeniv-ca.linux.org.uk> <CAHk-=wgiO+jG7yFEpL5=cW9AQSV0v1N6MhtfavmGEHwrXHz9pA@mail.gmail.com>
- <YM0Q5/unrL6MFNCb@zeniv-ca.linux.org.uk>
-In-Reply-To: <YM0Q5/unrL6MFNCb@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 18 Jun 2021 14:40:51 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjDhxnRaO8FU-fOEAF6WeTUsvaoz0+fr1tnJvRCfAaSCQ@mail.gmail.com>
-Message-ID: <CAHk-=wjDhxnRaO8FU-fOEAF6WeTUsvaoz0+fr1tnJvRCfAaSCQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Omar Sandoval <osandov@osandov.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 2:32 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> Huh?  All corner cases are already taken care of by copy_from_iter{,_full}().
-> What I'm proposing is to have the size as a field in 'encoded' and
-> do this
+Hi,
 
-Hmm. Making it part of the structure does make it easier (also for the
-sending userspace side, that doesn't now have to create yet another
-iov or copy the structure or whatever).
+one more fix, for a space accounting bug in zoned mode. It happens when
+a block group is switched back rw->ro and unusable bytes (due to
+zoned constraints) are subtracted twice.
 
-Except your code doesn't actually handle the "smaller than expected"
-case correctly, since by the time it even checks for that, it will
-possibly already have failed. So you actually had a bug there - you
-can't use the "xyz_full()" version and get it right.
+It has user visible effects so I consider it important enough for late
+-rc inclusion and backport to stable.
 
-That's fixable.
+Please pull, thanks.
 
-So I guess I'd be ok with that version.
+----------------------------------------------------------------
+The following changes since commit aefd7f7065567a4666f42c0fc8cdb379d2e036bf:
 
-             Linus
+  btrfs: promote debugging asserts to full-fledged checks in validate_super (2021-06-04 13:12:06 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc6-tag
+
+for you to fetch changes up to f9f28e5bd0baee9708c9011897196f06ae3a2733:
+
+  btrfs: zoned: fix negative space_info->bytes_readonly (2021-06-17 11:12:14 +0200)
+
+----------------------------------------------------------------
+Naohiro Aota (1):
+      btrfs: zoned: fix negative space_info->bytes_readonly
+
+ fs/btrfs/block-group.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
