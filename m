@@ -2,109 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1438A3ACE0D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jun 2021 16:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D6F3ACE7B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jun 2021 17:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhFRO5a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Jun 2021 10:57:30 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48756 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234775AbhFRO53 (ORCPT
+        id S232925AbhFRPUq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Jun 2021 11:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230329AbhFRPUq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:57:29 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EFBC321B0D;
-        Fri, 18 Jun 2021 14:55:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624028118; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=91Rr/E/5R6I18ISVo+VgdT12J4lHou79LqXmaL64BU0=;
-        b=BZNz7kyu7P4Z0Mg8kderpGTYoWXWU9epCHb2pDfVEd7ypq8Ckp6U8ulKGglqiChzs/VRM+
-        EDCYC+/w6am2xeewIm463f7h002R8n+goAxqrww6wd6frgW7TN1TXXpSrRIhzAwDcbcukR
-        8Jxh7vNHLZ6EAdyBZSKeZi3ES8/T860=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E99AAA3B99;
-        Fri, 18 Jun 2021 14:55:18 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5FC4EDA7B0; Fri, 18 Jun 2021 16:52:30 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/2] btrfs: shorten integrity checker extent data mount option
-Date:   Fri, 18 Jun 2021 16:52:30 +0200
-Message-Id: <4caf7228626fb21eecac55d22ddbfbf9bff8b219.1624027617.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1624027617.git.dsterba@suse.com>
-References: <cover.1624027617.git.dsterba@suse.com>
+        Fri, 18 Jun 2021 11:20:46 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525E2C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 08:18:35 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id q16so11761617qkm.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 08:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZcrucE7BXliNQEHYR4bRltDDNtULAPF0enkEThtiyX4=;
+        b=B6vURZ3G8/+2kAZWtMbQvxL2FP43zMXbo1H/bTMZ6n5Cl+XRvfqY4apL33h6WehkDX
+         3dSiJLPyfi8B+KEY7WmEaKhQsbwMExJoQVv/dlQCLGdFTzo9P6x+soT4on73mTACDfjP
+         6t1AXnoBapnQL1U69zINadUd9ALXP4fWYL4PXwPEmhz2JU3UL1tHXjMJg+bHpNnJ6uHF
+         sj2ekCVOO6P2tYd2wi2Eo0FVEf82aK6Xed8zFpiwWJIj+APFMF0swBmhnDMNOm/gFcvE
+         uszuPl/m4yoFJ5QEqtKJ+LL7SLTxSchA9spqN50mg9HZFyyKv7w7BmavGcbnQRWz0rAs
+         LwCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZcrucE7BXliNQEHYR4bRltDDNtULAPF0enkEThtiyX4=;
+        b=tiWcQEBv+Z8UiCB/Me6WulUweTo9ErlQ5rJ6mIffowYObPFZR+iTiidm2gdcTgP5Fm
+         XeN3oStXjdkjKPi27Jpg6nobhHGWLPBrPESl1f0O0I4P1lopg2X/X69LKZItin+8phoC
+         e3QjByBrUO5p9lKR+/bU7ZN96r7zJ0Zuwpf7Zh4tAnA7TWkaAOrxH7cd6wUeqbHDPjLE
+         syYLZs5xqYOqVXdaScAb5rxFs04F1n2ZwzUVwSd7OVwClWdbLjGW5QOUFqL+D3nKoJq7
+         84e7A7CtYOQGnFSFOIptXPo5JtbBm4iOeSuZMUrjCGpwF4Yzm5f1rYHnJzsoWvupJl7B
+         B9Pw==
+X-Gm-Message-State: AOAM530lZyub2pRuXap9t9WVnX99WAz5BoabPCNurBNzGl/rEof6236P
+        5QsDcWBGt8T91pJH7XUYVhK5fRbOOPXitg==
+X-Google-Smtp-Source: ABdhPJyHQzprA5l08av9cmgE/q0hg4Ov/ONX7T855s2zhFYekg++W0bBmmUflKIiAoRuitjgZVMh8Q==
+X-Received: by 2002:a05:620a:919:: with SMTP id v25mr9549543qkv.327.1624029514153;
+        Fri, 18 Jun 2021 08:18:34 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id p21sm5468783qtq.92.2021.06.18.08.18.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 08:18:33 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/4][v2] btrfs: commit the transaction unconditionally for ensopc
+Date:   Fri, 18 Jun 2021 11:18:28 -0400
+Message-Id: <cover.1624029337.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Subjectively, CHECK_INTEGRITY_INCLUDING_EXTENT_DATA is quite long and
-calling it CHECK_INTEGRITY_DATA still keeps the meaning and matches the
-mount option name.
+v1->v2:
+- added "btrfs: remove FLUSH_DELAYED_REFS from data enospc flushing" to deal
+  with me changing the docs and to reflect that we no longer need this step in
+  data enospc flushing.
+- Updated the 'rip out' patch to no longer include that particular part of the
+  documentation update.
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/ctree.h   | 2 +-
- fs/btrfs/disk-io.c | 3 +--
- fs/btrfs/super.c   | 5 ++---
- 3 files changed, 4 insertions(+), 6 deletions(-)
+--- Original email ---
+Hello,
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index e0f6aa6e8bd2..4d156d9e8050 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1405,7 +1405,7 @@ enum {
- 	BTRFS_MOUNT_USEBACKUPROOT		= (1UL << 17),
- 	BTRFS_MOUNT_SKIP_BALANCE		= (1UL << 18),
- 	BTRFS_MOUNT_CHECK_INTEGRITY		= (1UL << 19),
--	BTRFS_MOUNT_CHECK_INTEGRITY_INCLUDING_EXTENT_DATA = (1UL << 20),
-+	BTRFS_MOUNT_CHECK_INTEGRITY_DATA	= (1UL << 20),
- 	BTRFS_MOUNT_PANIC_ON_FATAL_ERROR	= (1UL << 21),
- 	BTRFS_MOUNT_RESCAN_UUID_TREE		= (1UL << 22),
- 	BTRFS_MOUNT_FRAGMENT_DATA		= (1UL << 23),
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 544bb7a82e57..6eb0010f9c7e 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3598,8 +3598,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	if (btrfs_test_opt(fs_info, CHECK_INTEGRITY)) {
- 		ret = btrfsic_mount(fs_info, fs_devices,
- 				    btrfs_test_opt(fs_info,
--					CHECK_INTEGRITY_INCLUDING_EXTENT_DATA) ?
--				    1 : 0,
-+					CHECK_INTEGRITY_DATA) ? 1 : 0,
- 				    fs_info->check_integrity_print_mask);
- 		if (ret)
- 			btrfs_warn(fs_info,
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index bc613218c8c5..d07b18b2b250 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -934,8 +934,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 		case Opt_check_integrity_including_extent_data:
- 			btrfs_info(info,
- 				   "enabling check integrity including extent data");
--			btrfs_set_opt(info->mount_opt,
--				      CHECK_INTEGRITY_INCLUDING_EXTENT_DATA);
-+			btrfs_set_opt(info->mount_opt, CHECK_INTEGRITY_DATA);
- 			btrfs_set_opt(info->mount_opt, CHECK_INTEGRITY);
- 			break;
- 		case Opt_check_integrity:
-@@ -1516,7 +1515,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 	if (btrfs_test_opt(info, SKIP_BALANCE))
- 		seq_puts(seq, ",skip_balance");
- #ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
--	if (btrfs_test_opt(info, CHECK_INTEGRITY_INCLUDING_EXTENT_DATA))
-+	if (btrfs_test_opt(info, CHECK_INTEGRITY_DATA))
- 		seq_puts(seq, ",check_int_data");
- 	else if (btrfs_test_opt(info, CHECK_INTEGRITY))
- 		seq_puts(seq, ",check_int");
+While debugging early ENOSPC issues in the Facebook fleet I hit a case where we
+weren't committing the transaction because of some patch that I hadn't
+backported to our kernel.
+
+This made me think really hard about why we have may_commit_transaction, and
+realized that it doesn't make sense in it's current form anymore.  By-in-large
+it just exists to have bugs in it and cause us pain.  It served a purpose in the
+pre-ticketing days, but now just exists to be a giant pain in the ass.
+
+So rip it out.  Just commit the transaction.  This also allows us to drop the
+logic for ->total_bytes_pinned, which Nikolay noticed a problem with earlier
+this week again.  Thanks,
+
+Josef Bacik (4):
+  btrfs: rip out may_commit_transaction
+  btrfs: remove FLUSH_DELAYED_REFS from data enospc flushing
+  btrfs: rip the first_ticket_bytes logic from fail_all_tickets
+  btrfs: rip out ->total_bytes_pinned
+
+ fs/btrfs/block-group.c       |   3 -
+ fs/btrfs/ctree.h             |   1 -
+ fs/btrfs/delayed-ref.c       |  26 ------
+ fs/btrfs/disk-io.c           |   3 -
+ fs/btrfs/extent-tree.c       |  15 ---
+ fs/btrfs/space-info.c        | 175 +++--------------------------------
+ fs/btrfs/space-info.h        |  30 ------
+ fs/btrfs/sysfs.c             |  13 ---
+ include/trace/events/btrfs.h |   3 +-
+ 9 files changed, 12 insertions(+), 257 deletions(-)
+
 -- 
-2.31.1
+2.26.3
 
