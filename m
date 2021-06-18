@@ -2,42 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9423ACA2F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jun 2021 13:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D906A3ACE0A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Jun 2021 16:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbhFRLqT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 18 Jun 2021 07:46:19 -0400
-Received: from [210.180.118.67] ([210.180.118.67]:34626 "EHLO blank.cafe24.com"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231398AbhFRLqR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Jun 2021 07:46:17 -0400
-X-Greylist: delayed 108573 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Jun 2021 07:46:16 EDT
-Received: from IP-130-143.dataclub.eu (ip-130-143.dataclub.info [84.38.130.143] (may be forged))
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.7/8.14.7) with ESMTP id 15IBhZHn011143
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 20:44:04 +0900
-Message-Id: <202106181144.15IBhZHn011143@blank.cafe24.com>
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: BUSINESS LOAN/PROJECT FUNDING...67
+        id S234777AbhFRO5Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Jun 2021 10:57:25 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37184 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234651AbhFRO5Y (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:57:24 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7A5AC1FDAE;
+        Fri, 18 Jun 2021 14:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624028114; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=h0k5MV2y/fScUzdBTBqcQC40lwaw6Nxmlpuoqwd2U+w=;
+        b=lDPPE8tBGQ2ZyJJ53An2FSSG8YNFtxJ2N+RuHYLn0Kv3L2GKta8oiza/uIuSq12kkNVl39
+        2aMPslqIdZmKGWgNtu0VJdi/fbTrseb+1EgR+iH1CGUp0SwxJTHSlwGnsg4l/xI2Tr/aS2
+        tDXaHMTUgNYbWjDv7OOopMHeWS3tY4k=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 73978A3BBC;
+        Fri, 18 Jun 2021 14:55:14 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C1604DA7B0; Fri, 18 Jun 2021 16:52:25 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
-From:   "Smith Green" <ssbinvestmentsllc@citromail.hu>
-Date:   Fri, 18 Jun 2021 14:44:42 +0300
-Reply-To: ssbinvestmentsllc@citromail.hu
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH 0/2] Mount option bit definitions cleanups
+Date:   Fri, 18 Jun 2021 16:52:25 +0200
+Message-Id: <cover.1624027617.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Sir/Madam,
+The number of mount options has reached 32bit limit and adding a new one
+causes some funny effects, so convert them to enum and use proper int
+width.
 
-Our Investors are based in the middle east with a profound track record. We invite you to take advantage of our investment loan program to fund your existing or intending projects. We offer a straight or convertible loan investment program for projects with high-returns and payback prospects without the usual rigid procedures of conventional lenders.
- 
-Kindly forward a copy of your Executive business summary for our review: info@ssbinvestmentsllc.us
+David Sterba (2):
+  btrfs: switch mount option bits to enums and use wider type
+  btrfs: shorten integrity checker extent data mount option
 
- 
-Best Regards.
-Smith Green
-E:info@ssbinvestmentsllc.us
-International investment broker
+ fs/btrfs/ctree.h   | 65 +++++++++++++++++++++++-----------------------
+ fs/btrfs/disk-io.c |  3 +--
+ fs/btrfs/super.c   |  5 ++--
+ 3 files changed, 36 insertions(+), 37 deletions(-)
+
+-- 
+2.31.1
+
