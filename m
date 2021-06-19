@@ -2,59 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5F53AD613
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Jun 2021 01:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54AD3AD657
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Jun 2021 02:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235148AbhFRXnf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Jun 2021 19:43:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231697AbhFRXnd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:43:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D810261261;
-        Fri, 18 Jun 2021 23:41:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624059683;
-        bh=KO7Mky7TEISWwYQgm3GqeIzYRSBkq+MhTix608n1iWU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=N576FvJOdNgAlZCIhHt75rPKw0FHWBESQbMFSjsJhcmeEGSBs5K7APkbnNnG6EAPo
-         ADqnAasX/MrLqcmCCgqnVks6/dqqV01eC5zfKhcDnIhXAmGIfRY1T7sgPdrxlPS5vH
-         MDWVOT9EKIn9zM9JUblibScP/vUBGqUQtFVeTb3kK9mjHakZTCxFsvZ9Tx7BvVc3Qu
-         x08GJolE3yhLbt8lp3gyjeivwWC7eodNf0U3KkbQ/7xwoP4GAX9hBl7ErFGAKJ1I/w
-         GaN7Q0Ygz+lffhBKuECV3VxWvApeGw7y0s4vKps6CL4l4l1i5SjXIIQ+SjRqlqdyKo
-         PWNUAQNZC9seA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C5642609D8;
-        Fri, 18 Jun 2021 23:41:23 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fix for 5.13-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1624051838.git.dsterba@suse.com>
-References: <cover.1624051838.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1624051838.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc6-tag
-X-PR-Tracked-Commit-Id: f9f28e5bd0baee9708c9011897196f06ae3a2733
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6fab154a33ba9b3574ba74a86ed085e0ed8454cb
-Message-Id: <162405968374.12858.13556789583759382541.pr-tracker-bot@kernel.org>
-Date:   Fri, 18 Jun 2021 23:41:23 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S234372AbhFSApg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Jun 2021 20:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234092AbhFSApf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Jun 2021 20:45:35 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3A4C06175F
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 17:43:24 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so9154327pjn.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 18 Jun 2021 17:43:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7s9WvbJkqKhCNp+zP4zH5s3aBLko94DMgPFH1zonS9k=;
+        b=X5tsLekqhkt5ZAfhcwjLxVkCIhWWGWyFrUqo+zXkbWVAqw7zFDxQJpQajV3c5Zkght
+         /izvXct8sWn/ST4UiXGHvviVtzlaMe73F+CIEbPJFJtNTmYE59f0qxrznXWzMS7wRzut
+         fNqI1E/4hBX917pEM/NHfl4ES5WCgiEwhjzs6/wo31i7HwDw42KmPybL1s+YKwQaT5/Y
+         jZDhQXvm0AJ0v5vu6dcV51K1wzQHDFUDFn7X17k0dmaoCa86D9ksQxwdk4Te9PBUosRW
+         +eT3czudcFwUKmMg92NhqPrR3QJad2xTDaFvcN+omSCR/sae4uSAXTbaJGlrqGSK12xI
+         aOrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7s9WvbJkqKhCNp+zP4zH5s3aBLko94DMgPFH1zonS9k=;
+        b=R9FdD2Rgx5WSuQZIP3JWkuBfQs+aRMaHST0CDZePlget5nEt6Hb8kweUYS01Pidpka
+         idBoTcGU5Zg3J0s31CmZp+HQSHpovLl/+LeN3NoEPdVK9SrZTab9lDkASxfbEhm3mq4D
+         +zJqI2rWF0s5/xKDp05InILUOGmpvqF+Bhr6QdM8sKkfweOpTBQ4cFiC8HFyQKpOlVz3
+         JjoNOoVNPosAYBZaADnGwogR4oP3qD13KZTgKpYeVn/Vh9+1QlbszPymmZcstL8cj0fx
+         PXntZMjNvpA05PXVY+vjpRJrky93wCGY18lRBx7CiDHETa5gtEB1dEHZWeu2a90Ykl7h
+         CBow==
+X-Gm-Message-State: AOAM532XbdOVxLGzYaaGd++3rLCk4takMx0MXBsIwNMwGvipKdXtmqvE
+        KFmJbr1gkuIuUaxJEnFSrjtYwA==
+X-Google-Smtp-Source: ABdhPJyKpSD8EvYengKDA/eCNasZnZcsFnhZy+bH9v2g2zKaQZ9ToHx3SeDLgXiiZLb47uifa1YJkA==
+X-Received: by 2002:a17:903:1243:b029:ed:8298:7628 with SMTP id u3-20020a1709031243b02900ed82987628mr6972494plh.11.1624063404170;
+        Fri, 18 Jun 2021 17:43:24 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:41cb])
+        by smtp.gmail.com with ESMTPSA id v1sm8425835pjg.19.2021.06.18.17.43.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 17:43:23 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 17:43:21 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
+Message-ID: <YM09qaP3qATwoLTJ@relinquished.localdomain>
+References: <6caae597eb20da5ea23e53e8e64ce0c4f4d9c6d2.1623972519.git.osandov@fb.com>
+ <CAHk-=whRA=54dtO3ha-C2-fV4XQ2nry99BmfancW-16EFGTHVg@mail.gmail.com>
+ <YMz3MfgmbtTSQljy@zeniv-ca.linux.org.uk>
+ <YM0C2mZfTE0uz3dq@relinquished.localdomain>
+ <YM0I3aQpam7wfDxI@zeniv-ca.linux.org.uk>
+ <CAHk-=wgiO+jG7yFEpL5=cW9AQSV0v1N6MhtfavmGEHwrXHz9pA@mail.gmail.com>
+ <YM0Q5/unrL6MFNCb@zeniv-ca.linux.org.uk>
+ <CAHk-=wjDhxnRaO8FU-fOEAF6WeTUsvaoz0+fr1tnJvRCfAaSCQ@mail.gmail.com>
+ <YM0Zu3XopJTGMIO5@relinquished.localdomain>
+ <YM0fFnMFSFpUb63U@zeniv-ca.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YM0fFnMFSFpUb63U@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Sat, 19 Jun 2021 00:03:55 +0200:
+On Fri, Jun 18, 2021 at 10:32:54PM +0000, Al Viro wrote:
+> On Fri, Jun 18, 2021 at 03:10:03PM -0700, Omar Sandoval wrote:
+> 
+> > Or do the same reverting thing that Al did, but with copy_from_iter()
+> > instead of copy_from_iter_full() and being careful with the copied count
+> > (which I'm not 100% sure I got correct here):
+> > 
+> > 	size_t copied = copy_from_iter(&encoded, sizeof(encoded), &i);
+> > 	if (copied < offsetofend(struct encoded_iov, size))
+> > 		return -EFAULT;
+> > 	if (encoded.size > PAGE_SIZE)
+> > 		return -E2BIG;
+> > 	if (encoded.size < ENCODED_IOV_SIZE_VER0)
+> > 		return -EINVAL;
+> > 	if (encoded.size > sizeof(encoded)) {
+> > 		if (copied < sizeof(encoded)
+> > 			return -EFAULT;
+> > 		if (!iov_iter_check_zeroes(&i, encoded.size - sizeof(encoded))
+> > 			return -EINVAL;
+> > 	} else if (encoded.size < sizeof(encoded)) {
+> > 		// older than what we expect
+> > 		if (copied < encoded.size)
+> > 			return -EFAULT;
+> > 		iov_iter_revert(&i, copied - encoded.size);
+> > 		memset((void *)&encoded + encoded.size, 0, sizeof(encoded) - encoded.size);
+> > 	}    
+> 
+> simpler than that, actually -
+> 
+> 	copied = copy_from_iter(&encoded, sizeof(encoded), &i);
+> 	if (unlikely(copied < sizeof(encoded))) {
+> 		if (copied < offsetofend(struct encoded_iov, size) ||
+> 		    copied < encoded.size)
+> 			return iov_iter_count(i) ? -EFAULT : -EINVAL;
+> 	}
+> 	if (encoded.size > sizeof(encoded)) {
+> 		if (!iov_iter_check_zeroes(&i, encoded.size - sizeof(encoded))
+> 			return -EINVAL;
+> 	} else if (encoded.size < sizeof(encoded)) {
+> 		// copied can't be less than encoded.size here - otherwise
+> 		// we'd have copied < sizeof(encoded) and the check above
+> 		// would've buggered off
+> 		iov_iter_revert(&i, copied - encoded.size);
+> 		memset((void *)&encoded + encoded.size, 0, sizeof(encoded) - encoded.size);
+> 	}
+> 
+> should do it.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc6-tag
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6fab154a33ba9b3574ba74a86ed085e0ed8454cb
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks, Al, I'll send an updated version with this approach next week.
