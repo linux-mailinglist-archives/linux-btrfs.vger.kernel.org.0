@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02CA3AE049
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Jun 2021 22:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF2A3AE05A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Jun 2021 22:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhFTUdm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 20 Jun 2021 16:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
+        id S229901AbhFTUkZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 20 Jun 2021 16:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhFTUdl (ORCPT
+        with ESMTP id S229632AbhFTUkY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 20 Jun 2021 16:33:41 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FF5C061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Jun 2021 13:31:27 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id c138so25336973qkg.5
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Jun 2021 13:31:27 -0700 (PDT)
+        Sun, 20 Jun 2021 16:40:24 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEE7C061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 20 Jun 2021 13:38:11 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id bm25so10442259qkb.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 20 Jun 2021 13:38:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:from:date:message-id:subject:to;
-        bh=syt+VC+oe+YkxJyKveY/fh86yz3WpEW8Hmg0PmznLOs=;
-        b=JJZ4KJ+6HBxc7zzrqvzXsc5bvKKOch6alrGeT7bwZBAo7M4aA0bRzmmtwh/8f1cMEh
-         3j6OKvej/aEkXjrB5J2vdohn3/jjyxi2ygk7Dcc4PM4IcHRBXe4o8qkApEOAtolvEQ4u
-         Iln50R26LZEM1IYlo8w8IYf3rE7cai6Lvgn71v9Kj34DY6RHkICtZ1Nfxg15jnvl3lAm
-         Vs3JJO1G/Rn3q8ZR4+vi2QISRLGOf6kdKLeIgE9n/3w9HZeqsTHxEUv2BY9EdP5/xQps
-         4ak/YzS09FYF74Jj+87sNPh0yDNdaxBawWfmtY1ogfvPw+PA3U7isN66Gx172mOD5al1
-         NLhw==
+        bh=ldk8tA65+m2606pOo410IHGd50z2oZhqcb48l6BDpQk=;
+        b=M4uV5U0b5prZ6RClmNN3cmFNIwvMJBs15TpRKdKKYuaAwU24RD5RJtolTxBSpTN9lD
+         GkpiI3fG6uLjPvHXc5ZPPeKfvJiPaeWIsYPWtg+67yLC0OjMU10e4g6s1I70sKC5oWo1
+         wCZe6a3dkZxvwAtrXLkIWLrLwyexp29xxW3oiVa+AJIxK74GT3sB6c108RH1tQCHyUVp
+         v8FssA7IONQUQ9h/3VKw/AjLjVmHQlsZ96cs9HtpyEzMn3TRxrVy9voPq0Y9mNdmruj6
+         uBlriy56cM5s7p6mp2T1qayoToD8GMOO7LnoC6yPbGCSZkwBx61JchcHcYBueBxjjyzy
+         VQZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=syt+VC+oe+YkxJyKveY/fh86yz3WpEW8Hmg0PmznLOs=;
-        b=OSalaIEG0PGTIpJ/tHYIPmdC/aNlpcgymYiUm1ZKgyjZAccYIZ4rpNLhnqy24rvfYZ
-         PnRpwwaGwIoywXm051pp+0aNqm3awNJzdpHuesWobbiXI7zLtO1T/eybXcPEOQx+l/4Q
-         9K/r1cDO1DGBmPv0GTVtEpWh+yKyaBDgjShVZ/OvK4XeawDSB+sH3e8THqXQcL+vPZn3
-         wlXHAGgF8qBCcb9RDxzY2lK85SMqE9jBBRfJlAvCzLScHMaE4hUeeD8au6Vas4ldfngw
-         2kJBjjPriOi0lgo6CwJ/hkWA5GEJvQUqIlTYKhQmavn8GPp8i/ckFHO7tXdR4+2miqA/
-         dilg==
-X-Gm-Message-State: AOAM530SxgPGrbXIeVxDExP06DojWnISW2Kk8Fpjc2bnAGvpLfEpIJDU
-        tZWsfJxH2ktQjdWm/mtQaLsYKZk8lhMvF8R2Hj8XZgLmc7w=
-X-Google-Smtp-Source: ABdhPJyeuFhPY1u2TJgc1pHKsBJND7YB2mUj+57UVcHDQsS4XuroV9t7SsbG/yIpaZDq34UYQtMUqqR3L/VlK0O4Hyo=
-X-Received: by 2002:a25:2681:: with SMTP id m123mr28381419ybm.121.1624221086783;
- Sun, 20 Jun 2021 13:31:26 -0700 (PDT)
+        bh=ldk8tA65+m2606pOo410IHGd50z2oZhqcb48l6BDpQk=;
+        b=BPqVeFGe5V+Ne+7IOOS6HLx9gN5SDxMwK25Ob0TxQUfWkdPZnu3EKUPbo7FP8/Thla
+         cneCA4sw5G76PlZIOZSVi+b6TrBELtiDFSsN/bqXDDiGSc1KQXPa3M8v3uqZZrH9j1Di
+         yBoZyrLw4JBJivPe7PQWtXtggFxnbBiVSWg2ezaft3DkjzexGzAcC2vQb1onGl0Gv70E
+         6pIQpL1OIYDNKB/5JMr3h4Luc0/q9xelf9S+fUS0ih8d/Jxnwt0VVyVdgw9jq0MitWeg
+         YEKA4LyD+0Bbmv776/g2FaINYrGS8WrDHgE9W4vukRMMLU4p+Ah+EpE1+CFTRVINsiWk
+         nEiA==
+X-Gm-Message-State: AOAM5324qdhk5y69V8N5MAtiS/vHQm6v0yPNsHFw7/CpabGIum856kkh
+        ATuExodfMr7mVPDcgitba/UfyfsJ1Z5aK3UQNKjHuCQ7/e0=
+X-Google-Smtp-Source: ABdhPJxLH4NwPgybxyJc3zf+Vw6l8yqhY4kTGSGP4F6WDxpSbMp2s207xS2PwLJhrkR2WIa7S4HmB/tf44hkYRq5j7s=
+X-Received: by 2002:a05:6902:50b:: with SMTP id x11mr27425126ybs.133.1624221490461;
+ Sun, 20 Jun 2021 13:38:10 -0700 (PDT)
 MIME-Version: 1.0
 From:   Nathan Dehnel <ncdehnel@gmail.com>
-Date:   Sun, 20 Jun 2021 20:31:16 +0000
-Message-ID: <CAEEhgEuN0mmyGjKi_zZDKE2+XzdfGno2xwhPg3sPQ8vQXDehQw@mail.gmail.com>
-Subject: 
+Date:   Sun, 20 Jun 2021 20:37:59 +0000
+Message-ID: <CAEEhgEss-SusbDdw1qz-7hB3SbQyWhkYNkVLHdQuE+NhMXe27A@mail.gmail.com>
+Subject: Recover from "couldn't read tree root"?
 To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
@@ -105,3 +105,5 @@ Label: none  uuid: 76189222-b60d-4402-a7ff-141f057e8574
         devid   10 size 931.51GiB used 311.03GiB path /dev/bcache5
 
 Is this filesystem recoverable?
+
+(Sorry, re-sending because I forgot to add a subject)
