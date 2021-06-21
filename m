@@ -2,130 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047033AF708
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jun 2021 22:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBCB3AF90D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jun 2021 01:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhFUU5W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Jun 2021 16:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
+        id S231526AbhFUXRX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Jun 2021 19:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbhFUU5V (ORCPT
+        with ESMTP id S231552AbhFUXRX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Jun 2021 16:57:21 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1408EC061756
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jun 2021 13:55:06 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id w31so15152175pga.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jun 2021 13:55:06 -0700 (PDT)
+        Mon, 21 Jun 2021 19:17:23 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C350C061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jun 2021 16:15:07 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id g4so33591473qkl.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jun 2021 16:15:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EO/Cg881E4iR5hE8GRk/YyeQH3UG7S/UbMqMJ0fur8M=;
-        b=lkHLTaLpDyjPrk3QQVWBO9CcyBzPHXjrx9TueMmy+m/owtjQ6+GZOsg/8x3a8uPW9z
-         2+exZ9hs2iSUAYqX/D1XbjYW85bnBBOKxGZJiTPljjO98A7bVvrZZpBEwXNEzdAArTzg
-         Sd9zOGh+PMw8yY1rMLUZP8SZ2NnTgOiKVQgGwrz8iRQey/9SZ4EJS2aolT3Jmr42hdJt
-         GNKdI5q3XXitSyed3Nkd7UK94UjTImmBKhS4+PYSA5IEA68Py5qZzzICMmUQ+G17gHxe
-         4g/5d71GDWgvlWF1vrURd1Ad6k+hSkMK/P8PpSS9AAzOLT5O/GhXowWPu58fzzD0MvLQ
-         TMxQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fTfNDJzejXnE1YW8pbjEhPLN4XT04vM7ykkceXdecBs=;
+        b=sQ64T8l5rfZD9ADMEfrH9nA3UfwQfgVY0FereaidraBr9Hbi+JxaGPvKtxganah7cO
+         +zt04OYcU4UlmGBQhgER9f6sYGmnauh/Eqzj6QEJEFnXiVLIhpV3/YN4G1Pzlz3R6rS2
+         TzHOX5sxg0mN02hu7f/uuDiH+M6GlBi7n0gWOtHWM89MNW1YwAomTUjr+mJE581L6Huk
+         MOaaxtYvOEYF0i8k6kjmzgMV+4Ag76kXlB+cWxqO1upbxmgRUSp5AKcbJ+uLcRKt5nEa
+         AHgB7TYrEpYh/MKXXbBEJcVy8BQ3nx3azDAEDTuvyK4VMSbzDOikJ4MoEq6D/1oBKlCO
+         /MiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EO/Cg881E4iR5hE8GRk/YyeQH3UG7S/UbMqMJ0fur8M=;
-        b=lIceU9RlKvNJlFuSbDvxR0xO1hjFJAP91ZtpZgczEDUQeJ0lJ8OO2NqbtYnsjqdNdV
-         ozySvG7T6havJ3w7fWb7U006TB0+9wqH57eJvleia3bBPhw2SRP4IrM7oRkGE8xPqVqD
-         w2mYYsa7aYCPu9oUoDZyDQgb9/X+D5nJSuRTpgyyJspuSMtyNG3cYkATyEtiIbQiIQnm
-         YbA5c4zw5j+qdnxwRwkahFhpHdY/WUgJAoBTCbuEr/XT/1Z9AH07O8Yt7bCBd16CAYuL
-         hYZlEg86Rf+xXa/jTrcKPMGYWgV5fw2mDwNrnebof+0szVKzGCct3w6qynqV9lekoo//
-         NSRQ==
-X-Gm-Message-State: AOAM5327iQcVvDpHlrcAcJeEpgDKehImIYjYI8Wg8/1JChOFgtcPUYF0
-        Tj+NM9UwqO/ZMRoaZnGimAFYjg==
-X-Google-Smtp-Source: ABdhPJyKb8WfwKdvePyi0WHvYma5ixOJ2P9VN2ywqCwlxu6wmVOzb2rnQKDqp+xGoIdwuG8O9lHxPw==
-X-Received: by 2002:a63:308:: with SMTP id 8mr400220pgd.194.1624308905601;
-        Mon, 21 Jun 2021 13:55:05 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:96f])
-        by smtp.gmail.com with ESMTPSA id z16sm4928003pff.9.2021.06.21.13.55.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 13:55:05 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 13:55:03 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Chinner <dchinner@redhat.com>
-Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
-Message-ID: <YND8p7ioQRfoWTOU@relinquished.localdomain>
-References: <YM0I3aQpam7wfDxI@zeniv-ca.linux.org.uk>
- <CAHk-=wgiO+jG7yFEpL5=cW9AQSV0v1N6MhtfavmGEHwrXHz9pA@mail.gmail.com>
- <YM0Q5/unrL6MFNCb@zeniv-ca.linux.org.uk>
- <CAHk-=wjDhxnRaO8FU-fOEAF6WeTUsvaoz0+fr1tnJvRCfAaSCQ@mail.gmail.com>
- <YM0Zu3XopJTGMIO5@relinquished.localdomain>
- <YM0fFnMFSFpUb63U@zeniv-ca.linux.org.uk>
- <YM09qaP3qATwoLTJ@relinquished.localdomain>
- <YNDem7R6Yh4Wy9po@relinquished.localdomain>
- <CAHk-=wh+-otnW30V7BUuBLF7Dg0mYaBTpdkH90Ov=zwLQorkQw@mail.gmail.com>
- <YND6jOrku2JDgqjt@relinquished.localdomain>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fTfNDJzejXnE1YW8pbjEhPLN4XT04vM7ykkceXdecBs=;
+        b=YSTP5p1H4i91dxy2U+zopgrTz4m1CoEhUvJsVSQau0pCMRB4tuNyMheaNU6jFAxAn2
+         oLUNfrSa5uJiBNtmatCV/F53KisbqnVAUIBrvmPBmwalVmy4PyUAX1ns1jViTtzFDJLZ
+         /LICBJFimBYyRlJyKy+mH6nzhdGl3aKwvH8vGad3sPUb4npa/j2cOXCfZFQ+P0BHm7MZ
+         +oqmvkx0aa5Rdc2ZM0o6csTqKTPFEQb/enPoTShsUraYbJ/HC4BJ1l+JcXouEP6O6xWi
+         JYiawb0Mq+635MNXbQ8bwmVp/UGIqHHmB/qVBDxnPS5uusJ8R+S1vseUu59NNPacnPYT
+         WhJA==
+X-Gm-Message-State: AOAM532dVdNl2BUF9Dc61LNoRsJmcXBIzpzJ/gFfxLmJNS9SghNe4QiN
+        3A8s+Njk3WWzWK82wLEpbAZVVn2pifkFdb5G5PI=
+X-Google-Smtp-Source: ABdhPJyAMwmC2RmUV90mgAbcxa+yyispCm9NkD1L0aHS3qeHyAsNnzHSDIedEYlTPKwBqqI4NFJ315euvkmjO2w8E9c=
+X-Received: by 2002:a25:4055:: with SMTP id n82mr779792yba.242.1624317306651;
+ Mon, 21 Jun 2021 16:15:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YND6jOrku2JDgqjt@relinquished.localdomain>
+References: <2bb832db-3c33-d3ba-d9ae-4ebd44c1c7f3@gmail.com> <1b89f8a3-42a4-3c6d-aec8-1b91a7b43713@gmx.com>
+In-Reply-To: <1b89f8a3-42a4-3c6d-aec8-1b91a7b43713@gmx.com>
+From:   Asif Youssuff <yoasif@gmail.com>
+Date:   Mon, 21 Jun 2021 19:14:54 -0400
+Message-ID: <CAHw5_hk9Uy-q=9n+TvtiCtLH5A08gVo=G4rUhpuQyZwzuF68dQ@mail.gmail.com>
+Subject: Re: Filesystem goes readonly soon after mount, cannot free space or rebalance
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 01:46:04PM -0700, Omar Sandoval wrote:
-> On Mon, Jun 21, 2021 at 12:33:17PM -0700, Linus Torvalds wrote:
-> > On Mon, Jun 21, 2021 at 11:46 AM Omar Sandoval <osandov@osandov.com> wrote:
-> > >
-> > > How do we get the userspace size with the encoded_iov.size approach?
-> > > We'd have to read the size from the iov_iter before writing to the rest
-> > > of the iov_iter. Is it okay to mix the iov_iter as a source and
-> > > destination like this? From what I can tell, it's not intended to be
-> > > used like this.
-> > 
-> > I guess it could work that way, but yes, it's ugly as hell. And I
-> > really don't want a readv() system call - that should write to the
-> > result buffer - to first have to read from it.
-> > 
-> > So I think the original "just make it be the first iov entry" is the
-> > better approach, even if Al hates it.
-> > 
-> > Although I still get the feeling that using an ioctl is the *really*
-> > correct way to go. That was my first reaction to the series
-> > originally, and I still don't see why we'd have encoded data in a
-> > regular read/write path.
-> > 
-> > What was the argument against ioctl's, again?
-> 
-> The suggestion came from Dave Chinner here:
-> https://lore.kernel.org/linux-fsdevel/20190905021012.GL7777@dread.disaster.area/
-> 
-> His objection to an ioctl was two-fold:
-> 
-> 1. This interfaces looks really similar to normal read/write, so we
->    should try to use the normal read/write interface for it. Perhaps
->    this trouble with iov_iter has refuted that.
-> 2. The last time we had Btrfs-specific ioctls that eventually became
->    generic (FIDEDUPERANGE and FICLONE{,RANGE}), the generalization was
->    painful. Part of the problem with clone/dedupe was that the Btrfs
->    ioctls were underspecified. I think I've done a better job of
->    documenting all of the semantics and corner cases for the encoded I/O
->    interface (and if not, I can address this). The other part of the
->    problem is that there were various sanity checks in the normal
->    read/write paths that were missed or drifted out of sync in the
->    ioctls. That requires some vigilance going forward. Maybe starting
->    this off as a generic (not Btrfs-specific) ioctl right off the bat
->    will help.
-> 
-> If we do go the ioctl route, then we also have to decide how much of
-> preadv2/pwritev2 it should emulate. Should it use the fd offset, or
-> should that be an ioctl argument? Some of the RWF_ flags would be useful
-> for encoded I/O, too (RWF_DSYNC, RWF_SYNC, RWF_APPEND), should it
-> support those? These bring us back to Dave's first point.
+Qu, thanks for responding.
 
-Oops, I dropped Dave from the Cc list at some point. Adding him back
-now.
+On Mon, Jun 21, 2021 at 3:42 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+
+> Can you delete some subvolumes/snapshot to free some space?
+>
+> In such critical case, I don't believe balance will do any help.
+>
+> Regular file deletion also needs extra metadata, thus maybe only
+> subvolumes/snapshots deletion can help.
+
+I have tried removing snapshots, but the disk continues to go ro -
+after remount, the subvolumes are still there. Is there a way to force
+a sync of the subvolume removal before the fs goes ro?
+
+
+-- 
+Thanks,
+Asif
