@@ -2,92 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934FF3AE145
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jun 2021 03:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D653AE14F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jun 2021 03:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhFUBXm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 20 Jun 2021 21:23:42 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:2001 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhFUBXm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 20 Jun 2021 21:23:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1624238487; x=1655774487;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=r4qQ1DBnwaxTyifpYRp7XPW4WMROSMnkVBUAd4SQZ/k=;
-  b=QsyDsENhaNKYZP/BLKCCRDxFh04SWYTnEB3nY+nLb9iirEIQgbMdoDnr
-   8Fd2qB9c/DSaTJ2CyI405w8hnz5WylTuSDZtssxZXaepH4yTz+clwE06B
-   gxdE6kwVT6WnPa5uViY1lzz3OT1DXxEc1JiZetR5bhKT6Gbc5s4AGkwj2
-   NZFnH9uo1hf0FngKJasnZ6x45CvlBsMvrD0z7xLTmLymTFtzeU3xOuk4v
-   cEgC2qdCDVW4TUe2KJc/Uc/N8sZpPxMEw19L3egr5s/5QQi6HHAnF+04u
-   jRHPhIeKAPuSsNCbgOf4+DNVvYfZMjTyD9q7ZlCwtIGYYM6gyhZtZxAMq
-   Q==;
-IronPort-SDR: DlatUUn9ldELD+ComFjMv/FndR4Sv2B7FvN57wA6YBSKKqhO2PaQven84qB2R2DiGH0SXYsNzv
- JjDeAdjJ+p7gXK4BbiH8BsL/XfoR26p2EKZrtt5rGLxMM/kLXkjex6p10TZOCJvz1b1S9sTQx7
- qbeZqGVD2FSjkMEPZdf87cd6yu8vs9VzeAiTVZ5zDhmrZAlFRGV1IHcd6JNPOPZB5auRXVwh5D
- P8HQ7w8Syjf33tT0sKke27GNwJw9HpE4ZerNKmwsyVUUM9tqfdVQEehiTnmQq/454gqIUIri0z
- /qw=
-X-IronPort-AV: E=Sophos;i="5.83,288,1616428800"; 
-   d="scan'208";a="172438424"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Jun 2021 09:21:27 +0800
-IronPort-SDR: g1lKHietdXp5+ZdsF310cGvHFkAf8dKu4TqOxUhWJOHV3VYfKjaYaLkfHxkjG6lv0WMrZaABTy
- +R9+/6OwRlYehUHxhGvro8wlC84xVx91SS5ckZM6C4D7pOM56GeB/UT9xGiaesKrF0xRNhdtxg
- 0pg2eiEteKkDGisYQPDBi/4+C961i3WGmZL8GWKD180Em3GLuDNTg8WowfPqJgXiRVTwh1aQka
- 9QriY4ajBlXw3TnHg9JhB8uhc/dajljPwAKFvfhS7vKTlmKJg+c5vAbOxRZ3QiV1HABXWKwn0s
- loiAjbK9SKiMmfDKix/DS57Q
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2021 17:58:48 -0700
-IronPort-SDR: NP7J8dozX1R4Bz30ZQYLgoHn9YWHvryHV9MQiEGPcVX0BUBzzZG+fNlvQUYyX1f3ZE5SwV1tmr
- Tgho2Xrm02NAmwZSCnMv7hUGzIvHE1zPN18xkwmv46+zdaLgWzpHKQT0Y+9GuSdfyowsGKzV/6
- aHmkX5JY0nKSQsmlm/iEnkeRw8+cRpAagNnUjjuMNzfVBFT7IaFEesrIOCCQglENjMm+Y4pHaa
- zwJ0C4U0d5DbMZ39QAo9KZ7VjF4/hXd5oDgMEjmzTmb6ZESFrD77hxJLKP61dBMPTXrNqL78FY
- Gqg=
-WDCIronportException: Internal
-Received: from 5cg0390p95.ad.shared (HELO naota-xeon.wdc.com) ([10.225.48.64])
-  by uls-op-cesaip02.wdc.com with ESMTP; 20 Jun 2021 18:21:27 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        stable <stable@vger.kernel.org>
-Subject: [PATCH] btrfs: fix unbalanced unlock in qgroup_account_snapshot()
-Date:   Mon, 21 Jun 2021 10:21:14 +0900
-Message-Id: <20210621012114.1884779-1-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.32.0
+        id S229968AbhFUBgB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 20 Jun 2021 21:36:01 -0400
+Received: from mout.gmx.net ([212.227.15.18]:58559 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229877AbhFUBgA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 20 Jun 2021 21:36:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624239222;
+        bh=iM9D/+0Yrt9eVXTASL66BsWz34bYlt1kCDTYfG36Hx8=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=e+zBsF3Tf7CvPZxdJ/i7PiP1ehNRwYHZDHuMehjn5Okkz/TvqkWBYlw7fuesCD4QV
+         rpzcyiEGDiqUihWmBPvC8bnz9UQGyEpSTsDgm2r0OjxFCgbq64tr/GdHQ5WZuHiUY8
+         itma32xy4nwogaqcoclx/+39DPPf7pInT1WKsKb4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M8QWA-1lzYf80KNk-004Sd5; Mon, 21
+ Jun 2021 03:33:42 +0200
+Subject: Re: [PATCH] btrfs: fix unbalanced unlock in qgroup_account_snapshot()
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, stable <stable@vger.kernel.org>
+References: <20210621012114.1884779-1-naohiro.aota@wdc.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <1f926610-8620-c736-f338-8acc7d45e8a7@gmx.com>
+Date:   Mon, 21 Jun 2021 09:33:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210621012114.1884779-1-naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:BhqnwfZxJVhyeVcAFHQwawO7pUqkn3thylp0O0WQJyNSHNCsavd
+ wxjW0QP03vWBkxp7SMB4M1EadYxbtg8u5UBClPkjOtRyZPcW7EqgTwmtBZ5c94ZNkOtqKUu
+ RvOFTDhQ2N0jadYzR1HyJiY7foRTbMIMygDVK3Af7qUuIyAw+UKqUDQ14mScTDVwGniFbjd
+ i67x56lOj+l2QZMwTSKbw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LR1VrEYHWuc=:atfGrjWZ1rIRYtjsQbC6wX
+ tYnt2cXpV0PnIcKeSqXbR5HvzTyohE5JBH8fnC6SmmcOkDBP9JOOIVPz5FPKSaQsONwhwmbOh
+ RUZfH3E5K5f9HvuKBLQY9H/ZsoCLpG5liORFjXD5ksp0qYzZXVId1/lH+Ulf1ABk8ykFPFcUv
+ abgH6NBtLTNtnlCwPSv27cVVOXNQRe3IhgkA87+Oor0EJSHLBJWxfsd5qzZMhpLyRprxUjgUI
+ 4nbtwL3F85AjmwL762sWn8UQVMIBY7S/xPeFOULQ06wmJTqIIBhV+i94Rg4JqmqSindO0jYJ6
+ s689dMbrtBY86ggh6QWsrDbM5IXnTOBVe/kUuHKCYO1SyBU5oJLXRllf6VkTd7o2oRonzDsRq
+ ph0SSnTqVfbAH8nOc8WwfU+VmTnA1YgFxDhLpg7gxlpozkXQoe00eLXJLRRI+uDN8d9aP6E9d
+ jnOz2hgJ9ZbuGBy4bZHucXXMG1XkatNyAR+vL4rNzURfCqfRHj4wD47A0RfYFcn9ZFIOggzK9
+ UTjSzfzLLb2O0TXNzmPW9dsFWOd/9MJJghYjg06k6GqPVjfhE1MJ/31ykTNF88fCKtDh+JqjB
+ 1c+rEjQLNrLCGptCJj60djtp4A2RdYtDhrBPNrG9dxjlCK4XbmHazTIE3Oj/oKLTYkRnMs1JW
+ Z9Yih8X4dydtrW1oAAkvQaoWn+PDPXQNd1Q98iTNra+/Goxn+AKQKISELvUStQvfzyFFc/1lc
+ 5i6iZdiQVXmio9LtvRGUzGl1agB5YmqrjaZfG1L3wx4Hq/AVxzopOtHpIXvBJiUuxmdvdb4ms
+ /wOwdq6kH3adQTFwg63ketvfaNDOGqFqhhqrAaCg5JUbfBQLiQtbzNrDtVg2rkVZH7qADF8rr
+ 1r+zuT2DUqJbNrh9FjPw2/zb/ezkyM3lO+CA0xyxXD+RDCzw1Yt6C+7AyFFt0bC/IrsH5zawj
+ osNlf82wQX6wxaKEThkxuUekLN8gO/lp4zqNmJFygb6WsWgncB8kdq8Xoh4ukOfOCJ7MVrqji
+ VF7fjhrlHgM11UOonjED4l7uG2aEtyVhfE+c1+GOvzZuARFE5KOIbPd5SnaI55Ikyl5641Yvl
+ rgHacxXZlkD/TL5yq0un30Drj0bcdFulMQkiItzuWVQOaqm3kIK5V1Paw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-qgroup_account_snapshot() is trying to unlock the not taken
-tree_log_mutex in a error path. Since ret != 0 in this case, we can
-just return from here.
 
-Fixes: 2a4d84c11a87 ("btrfs: move delayed ref flushing for qgroup into qgroup helper")
-Cc: stable <stable@vger.kernel.org> # 5.12
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/transaction.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index f75de9f6c0ad..6aca64cf77dc 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1476,7 +1476,7 @@ static int qgroup_account_snapshot(struct btrfs_trans_handle *trans,
- 	ret = btrfs_run_delayed_refs(trans, (unsigned long)-1);
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
--		goto out;
-+		return ret;
- 	}
- 
- 	/*
--- 
-2.32.0
+On 2021/6/21 =E4=B8=8A=E5=8D=889:21, Naohiro Aota wrote:
+> qgroup_account_snapshot() is trying to unlock the not taken
+> tree_log_mutex in a error path. Since ret !=3D 0 in this case, we can
+> just return from here.
+>
+> Fixes: 2a4d84c11a87 ("btrfs: move delayed ref flushing for qgroup into q=
+group helper")
+> Cc: stable <stable@vger.kernel.org> # 5.12
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+> ---
+>   fs/btrfs/transaction.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index f75de9f6c0ad..6aca64cf77dc 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -1476,7 +1476,7 @@ static int qgroup_account_snapshot(struct btrfs_tr=
+ans_handle *trans,
+>   	ret =3D btrfs_run_delayed_refs(trans, (unsigned long)-1);
+>   	if (ret) {
+>   		btrfs_abort_transaction(trans, ret);
+> -		goto out;
+> +		return ret;
+>   	}
+>
+>   	/*
+>
