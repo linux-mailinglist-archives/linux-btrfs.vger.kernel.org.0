@@ -2,202 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C583AE1DF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jun 2021 05:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4310E3AE296
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jun 2021 07:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhFUDaB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 20 Jun 2021 23:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhFUDaA (ORCPT
+        id S229708AbhFUFIf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Jun 2021 01:08:35 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:37759 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhFUFIe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 20 Jun 2021 23:30:00 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70896C061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Jun 2021 20:27:47 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id j2so7320913wrs.12
-        for <linux-btrfs@vger.kernel.org>; Sun, 20 Jun 2021 20:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fjGZ+h6UAJj7ywHTXS6TOxzVIa2gcXNFKVPtW3B2CfQ=;
-        b=rdPqyVQqELLISZrTDqgSAAHh03btS917PVH6danGxv7fDRMFusUbMLjgx7CG6aY7JL
-         o05htQNr/Ok+Y6kiZHrDQdySKb3R6r6dWkq+OsSRkpVQQcutqzQsHFDWwRYnjxEVh51m
-         UbQ4BHX3ImagXJ0Y4h3fiydn4QFnIC9hbqDoPEFjYiRZdBUn7tWhdoB2I1LF1cMiWfoP
-         vXKalX76XSXy8QOAp+3LtPfnddHhVVHDK/HQrIEX6zzcqxmTI3qFP99KiJYGFj/4Exc6
-         CxsWBX3CFsxPc9wDsMIhzFknh4iLOZOVuaIMrDxPpe84p5khCeqnH6c7M2/qOz5PS8PA
-         hhRQ==
+        Mon, 21 Jun 2021 01:08:34 -0400
+Received: by mail-io1-f72.google.com with SMTP id q15-20020a6b710f0000b02904e2f00a469fso3716881iog.4
+        for <linux-btrfs@vger.kernel.org>; Sun, 20 Jun 2021 22:06:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fjGZ+h6UAJj7ywHTXS6TOxzVIa2gcXNFKVPtW3B2CfQ=;
-        b=c0QHZM+EnCI9RfLtcluk0G7NhOZ7oryv5STatrdnNC/NvPY1LgJrK92GXmcXUldaQ6
-         5wlCf46bAvq6ys1DRixM+ebhvLq4uCcg8DyPZWLahxFKOmbb0NwToaEw05SzzS2DdsUH
-         IqUZ3pcDszBJ//RFMV4q+cX1EnTCkirOhrAkK9SD8sj8llDQAlWTDq1aJnb7UNmE2l31
-         a9o07hN8wSUHJofIb3XvLz8oHom4nqNkaLPaddCImoJibcvsW2mrge2QDJamPrvrv9zM
-         Eio0VzNz4CvsojnBnmwtNy79WVotv54/6TbY/ZupgIgE926DvI6VY8OZvxrQj0Efjux1
-         USbg==
-X-Gm-Message-State: AOAM530/nN5Qky762DnLz4vEE4IglHED64tIf6FYWd3axuDl3FU47zAy
-        k1zARFRVQWnV/7zZo9SqRctKsWP6q4S/MQwcuZPmYw==
-X-Google-Smtp-Source: ABdhPJyuuptl2OKUO7F/NwilHcEG4avt5/tWeccEIeZwVHFl+JTjlswReMbBXGj6EI2zvI37Mrme0f4IOjtv2rrIXEY=
-X-Received: by 2002:a05:6000:12c8:: with SMTP id l8mr6252365wrx.236.1624246065004;
- Sun, 20 Jun 2021 20:27:45 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=9r48W4h0FyT5pPrVFAU7afHEN1fmEnBomvSChPTyeC0=;
+        b=bENEEpsKuljupwy7BgBQLilQhmLi8GyKy2hGWjsItElEK1OGqFpFCuRKCFoTKciKAi
+         5P5bRtC5DVU+p1ue1lcsfT2qBOASiN2uysmd+DeUc8aJo2A3lkF8oEbbFA+odnwOw5Tf
+         KvhonAfR1iJhwlfDeCMA2wKo8GHbiOLaCpcCLD9azk+xU/D6Z3vCdxlH21dKPCCkrSLI
+         o++csnPLfm3ZSCoQueFiWzWCzEasn6z+6VDL+fPauf3wBonL4zjQpBYGWU8OGxFFIL5N
+         Lm4/lmU9WzXRJlTlNUYjVPlJAcD9Gg0qpJoQyR+9FzPAivNRJYRJdS6sT1Dy9XPNvRSv
+         Ik9A==
+X-Gm-Message-State: AOAM530Slt2nbXMbdK8SJAJxdL+ZPEJNMaTo5sM4ziHbzs2sPuV5lf++
+        vFMD/3smQiVtsMAE5LVPiqxg26H8obUKTlOjQz/FVnvmq5f7
+X-Google-Smtp-Source: ABdhPJwv/uTWAH4C9fRYwyTTxtTssd8nqg/nvTIQgYk4NyxfnInNGmcglaCb3KWWQGsmBVOtzrxbOZIMUspjgVMVIYRSoby5S2Fu
 MIME-Version: 1.0
-References: <2bb832db-3c33-d3ba-d9ae-4ebd44c1c7f3@gmail.com>
- <CAJCQCtSWxp+=nEJRFzEjEA0Lxt-rC+6Dq_CtpCNPmapzFw6WPA@mail.gmail.com>
- <ab0e8705-e18f-90eb-c42b-318c04a2101c@gmail.com> <CAJCQCtQXOgHTDAiGCWEN8_RaLNk26o9iDvtNcEBg9EVZ0yfdLg@mail.gmail.com>
- <CAHw5_hkJu-O8+F2WNFvab=z4LFfy2QYh0u6yr-CPmcSQHGjEXQ@mail.gmail.com>
-In-Reply-To: <CAHw5_hkJu-O8+F2WNFvab=z4LFfy2QYh0u6yr-CPmcSQHGjEXQ@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sun, 20 Jun 2021 21:27:28 -0600
-Message-ID: <CAJCQCtSjJPh_jVJLK_esiK=HGOAmc4L-XByBN19RRq1mCbhFkQ@mail.gmail.com>
-Subject: Re: Filesystem goes readonly soon after mount, cannot free space or rebalance
-To:     Asif Youssuff <yoasif@gmail.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+X-Received: by 2002:a6b:e60f:: with SMTP id g15mr18914004ioh.52.1624251980326;
+ Sun, 20 Jun 2021 22:06:20 -0700 (PDT)
+Date:   Sun, 20 Jun 2021 22:06:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000502c1a05c53fa2e1@google.com>
+Subject: [syzbot] general protection fault in detach_extent_buffer_page
+From:   syzbot <syzbot+38cd5310bb0818ffc964@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jun 20, 2021 at 8:04 PM Asif Youssuff <yoasif@gmail.com> wrote:
->
-> > skip_balance,nospace_cache
->
-> I did this in the mount that follows.
->
-> [77763.027733] BTRFS info (device sde): balance: resume skipped
-> [77763.027749] BTRFS info (device sde): checking UUID tree
-> [78007.542667] ------------[ cut here ]------------
-> [78007.542675] BTRFS: Transaction aborted (error -28)
+Hello,
 
-So about 10 minutes.
+syzbot found the following issue on:
 
-But 'btrfs balance cancel' results in an immediate error and forced read only.
+HEAD commit:    6b00bc63 Merge tag 'dmaengine-fix-5.13' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1591a33fd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7ca96a2d153c74b0
+dashboard link: https://syzkaller.appspot.com/bug?extid=38cd5310bb0818ffc964
+userspace arch: i386
 
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> btrfs fi us /media/camino/
-> WARNING: RAID56 detected, not implemented
-> Overall:
->     Device size:          96.42TiB
->     Device allocated:          75.24TiB
->     Device unallocated:          21.18TiB
->     Device missing:             0.00B
->     Used:              74.02TiB
->     Free (estimated):          15.30TiB    (min: 11.42TiB)
->     Data ratio:                  1.46
->     Metadata ratio:              1.00
->     Global reserve:         512.00MiB    (used: 1.61MiB)
->
-> Data,RAID1: Size:37.59TiB, Used:36.98TiB
->    /dev/sda       5.70TiB
->    /dev/sdb       4.65TiB
->    /dev/sdc       5.80TiB
->    /dev/sdd       4.69TiB
->    /dev/sde       4.62TiB
->    /dev/sdf       5.41TiB
->    /dev/sdg      11.22TiB
->    /dev/sdj       6.32TiB
->    /dev/sdl       5.26TiB
->    /dev/sdm       5.71TiB
->    /dev/sdn       5.68TiB
->    /dev/sdo       4.01TiB
->    /dev/sdp       6.10TiB
->
-> Data,RAID6: Size:13.77TiB, Used:13.75TiB
->    /dev/sda       1.56TiB
->    /dev/sdb     808.33GiB
->    /dev/sdc       1.46TiB
->    /dev/sdd     775.98GiB
->    /dev/sde     849.14GiB
->    /dev/sdf       2.07TiB
->    /dev/sdg       1.45TiB
->    /dev/sdj     964.87GiB
->    /dev/sdl       2.00TiB
->    /dev/sdm       1.56TiB
->    /dev/sdn       1.58TiB
->    /dev/sdo       2.37TiB
->    /dev/sdp       1.14TiB
->
-> Metadata,single: Size:66.00GiB, Used:65.58GiB
->    /dev/sda      18.00GiB
->    /dev/sdb      14.00GiB
->    /dev/sdc      16.00GiB
->    /dev/sdd      15.00GiB
->    /dev/sde       9.00GiB
->    /dev/sdf      12.00GiB
->    /dev/sdg      66.00GiB
->    /dev/sdj      14.00GiB
->    /dev/sdl      15.00GiB
->    /dev/sdm      11.00GiB
->    /dev/sdn      18.00GiB
->    /dev/sdo      28.00GiB
->    /dev/sdp      28.00GiB
->
-> System,single: Size:32.00MiB, Used:13.00MiB
->    /dev/sdf      32.00MiB
->    /dev/sdg      32.00MiB
->    /dev/sdl      32.00MiB
->    /dev/sdo      32.00MiB
->
-> Unallocated:
->    /dev/sda       1.02MiB
->    /dev/sdb       1.02MiB
->    /dev/sdc       1.02MiB
->    /dev/sdd       1.02MiB
->    /dev/sde       1.02MiB
->    /dev/sdf       1.60TiB
->    /dev/sdg       3.44MiB
->    /dev/sdj       1.02MiB
->    /dev/sdl      14.09MiB
->    /dev/sdm       1.02MiB
->    /dev/sdn       1.02MiB
->    /dev/sdo     881.16GiB
->    /dev/sdp       1.02MiB
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+38cd5310bb0818ffc964@syzkaller.appspotmail.com
 
-
-This output is slightly confusing because it's an older btrfsprogs
-that doesn't fully understand raid1c4 or raid56.  But the gist is that
-there's not enough space on 4 drives to create a metadata block group,
-which it wants to do for some reason even though there's ~600MiB
-available in metadata bg's currently.
+general protection fault, probably for non-canonical address 0xdffffc000000002a: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000150-0x0000000000000157]
+CPU: 1 PID: 10005 Comm: syz-fuzzer Not tainted 5.13.0-rc6-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:__lock_acquire+0xcf0/0x5230 kernel/locking/lockdep.c:4772
+Code: 3d 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 06 49 3d 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 2f 00 00 49 81 3e c0 b3 42 8f 0f 84 da f3 ff
+RSP: 0000:ffffc9000d27e9e0 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000002a RSI: 0000000000000001 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff1b92d2a R11: 0000000000000000 R12: ffff888017401c40
+R13: 0000000000000000 R14: 0000000000000150 R15: 0000000000000000
+FS:  000000c013afc090(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000009a67f0 CR3: 000000001b446000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ lock_acquire kernel/locking/lockdep.c:5512 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ detach_extent_buffer_page+0x402/0xd20 fs/btrfs/extent_io.c:5446
+ btrfs_release_extent_buffer_pages+0xf1/0x320 fs/btrfs/extent_io.c:5515
+ release_extent_buffer+0x242/0x2b0 fs/btrfs/extent_io.c:5985
+ try_release_extent_buffer+0x706/0x900 fs/btrfs/extent_io.c:7032
+ btree_releasepage+0x1fe/0x310 fs/btrfs/disk-io.c:1023
+ try_to_release_page+0x27b/0x3e0 mm/filemap.c:3856
+ shrink_page_list+0x3cb6/0x6060 mm/vmscan.c:1599
+ shrink_inactive_list+0x347/0xca0 mm/vmscan.c:2145
+ shrink_list mm/vmscan.c:2367 [inline]
+ shrink_lruvec+0x7f9/0x14f0 mm/vmscan.c:2662
+ shrink_node_memcgs mm/vmscan.c:2850 [inline]
+ shrink_node+0x868/0x1de0 mm/vmscan.c:2967
+ shrink_zones mm/vmscan.c:3170 [inline]
+ do_try_to_free_pages+0x388/0x14b0 mm/vmscan.c:3225
+ try_to_free_pages+0x29f/0x750 mm/vmscan.c:3464
+ __perform_reclaim mm/page_alloc.c:4430 [inline]
+ __alloc_pages_direct_reclaim mm/page_alloc.c:4451 [inline]
+ __alloc_pages_slowpath.constprop.0+0x84e/0x2140 mm/page_alloc.c:4855
+ __alloc_pages+0x422/0x500 mm/page_alloc.c:5213
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+ __page_cache_alloc mm/filemap.c:1005 [inline]
+ __page_cache_alloc+0x303/0x3a0 mm/filemap.c:990
+ pagecache_get_page+0x38f/0x18d0 mm/filemap.c:1885
+ filemap_fault+0x166c/0x25b0 mm/filemap.c:2992
+ ext4_filemap_fault+0x87/0xc0 fs/ext4/inode.c:6194
+ __do_fault+0x10d/0x4d0 mm/memory.c:3680
+ do_read_fault mm/memory.c:3984 [inline]
+ do_fault mm/memory.c:4112 [inline]
+ handle_pte_fault mm/memory.c:4371 [inline]
+ __handle_mm_fault+0x2c5f/0x52c0 mm/memory.c:4506
+ handle_mm_fault+0x1bc/0x7e0 mm/memory.c:4604
+ do_user_addr_fault+0x483/0x1210 arch/x86/mm/fault.c:1390
+ handle_page_fault arch/x86/mm/fault.c:1475 [inline]
+ exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
+RIP: 0033:0x455709
+Code: 24 40 8b 44 24 60 85 c0 7d 1b c7 44 24 70 ff ff ff ff 48 c7 44 24 78 00 00 00 00 48 8b 6c 24 40 48 83 c4 48 c3 48 8b 4c 24 50 <39> 41 20 7e db 48 8d 51 27 48 63 c0 48 8d 04 82 48 8d 40 01 8b 00
+RSP: 002b:000000c00d74b848 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 000000000099b3a0 RCX: 0000000000a03f30
+RDX: 0000000000495e89 RSI: 0000000000495e89 RDI: 0000000000495f60
+RBP: 000000c00d74b888 R08: 00000000000005fe R09: 000000c00038a600
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000005608
+R13: 0000000000000200 R14: 000000000094b641 R15: 0000000000000000
+Modules linked in:
+---[ end trace c2509809fbde7be8 ]---
+RIP: 0010:__lock_acquire+0xcf0/0x5230 kernel/locking/lockdep.c:4772
+Code: 3d 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 06 49 3d 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 2f 00 00 49 81 3e c0 b3 42 8f 0f 84 da f3 ff
+RSP: 0000:ffffc9000d27e9e0 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000002a RSI: 0000000000000001 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: fffffbfff1b92d2a R11: 0000000000000000 R12: ffff888017401c40
+R13: 0000000000000000 R14: 0000000000000150 R15: 0000000000000000
+FS:  000000c013afc090(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000009a67f0 CR3: 000000001b446000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-> Before I emailed the list, I had tried to add a new disk - it never
-> worked for me - I think because btrfs sees the balance operation in
-> progress and the "add" won't complete with it.  I can try again, but
-> was previously unsuccessful in adding a single device.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Well the balance operation is skipped, it shouldn't need to happen at
-all. I'm not sure what's starting up 10 minutes later that results in
-the error and flipping to read only. But yeah, whatever that is,
-probably has a higher priority than device add.
-
-Another remote possibility is doing a filtered balance that quickly
-frees up space with minimal metadata writes. In fact, sdf and sdo
-already have enough space; so you only need to free up enough space on
-two devices to get btrfs to create a new metadata bg on those four.
-
-This is part of upstream btrfs-progs, but isn't packaged by most
-distros. Download that and set proper perms and run it.
-https://github.com/kdave/btrfs-progs/blob/master/btrfs-debugfs
-
-sudo ./btrfs-debugfs -b /mntpoint
-
-You'll get a lot of output, and chances are your mua will wrap it
-badly to the list so you might want to post it in a pastebin expiring
-in a week or so. I figure the ideal block group would be one that is
-(a) least full, and (b) raid1. So we also need the chunk tree to
-figure that out. Point this command to any of the devices for this
-btrfs and it'll output the chunk tree. Put that up in a pastebin also
-for a week.
-
-sudo btrfs insp dump-t -t chunk /dev/any
-
-
-
-
--- 
-Chris Murphy
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
