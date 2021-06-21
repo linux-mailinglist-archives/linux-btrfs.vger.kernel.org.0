@@ -2,326 +2,265 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5063AE6C8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jun 2021 12:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C073AE6E0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Jun 2021 12:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhFUKM6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Jun 2021 06:12:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58006 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhFUKM5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:12:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42D1160FE9
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jun 2021 10:10:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624270243;
-        bh=7urVwjHKTbHahZJedmq9q+ESzfBGpsVjmutmks68IMs=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=BC02O2ZbNYX9d0ciRLQcURxWEe1SVqB/bOafh9vnq7VJEokNnqHP33vQnKLTXrou1
-         rM0Knfr8NBR3xJ0LfGa7G6qG5a7zHNfhamHnSYc+0mjRJffVVVwH9Z3PdV9O1JK6B0
-         o6dkoHg8XiP9NoNRrzi21hA6ha7pQqr4/tHVZLXCGM/t4su6DboVvatMFZMKJMcxDS
-         5HJSFjhT8b5gW7xYI9y3Ws+eBFXE8cLLFAq0ZhX/XBiHReZc5sRRLnBt3r23TiRtCy
-         c35ac7EJytxU7FoyTjymd3XXH1V3AgyvW4l2SEcWJFAMzlOsYxUrzSWPun1dO2j7U4
-         Nsnd4ea8phC7w==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: send: fix crash when memory allocations trigger reclaim
-Date:   Mon, 21 Jun 2021 11:10:39 +0100
-Message-Id: <33fc2ecb82f1e020c2e4ae7bd51a261a4134e090.1624269734.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1624269734.git.fdmanana@suse.com>
-References: <cover.1624269734.git.fdmanana@suse.com>
+        id S230311AbhFUKUI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Jun 2021 06:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhFUKUI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Jun 2021 06:20:08 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FEFBC061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jun 2021 03:17:53 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id l2so10214918qtq.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jun 2021 03:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=t1VjcrkFj6QJbeVVYBqTJZG/xzW3ZMtg1srKVtucrT4=;
+        b=pfFYaBSyaqhFb2xjn3Qa8+xkuPONBJhdh8K23d6zJF9SKbilTG+N9SfLPH8fKpDlip
+         IIpCytW61dxpdgiF4MrZ38EI+HiUQ8rl+cIWYSOOdv5S7ln2IMH0gHxcYuGt/jMK99r9
+         Flxla3DuyxQpMvJVG+TFdBWKWgFtk7SDsGKv/w9yldit22tjRD0IhuiVH7Lem/kAVK6C
+         pxhC5GFY+I5ReVl5KkMK6RgvNLG6H/9EhPWCvijn2GqDu1Dkqoy9soR1HSJq/zYpH+mm
+         jtKedAn+IAIjXsv4kXfKcSNYzEeYnXGgSt8fi2AVsGdjjfbJ0xCf+6qq7C786ZzOiyEW
+         aAYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=t1VjcrkFj6QJbeVVYBqTJZG/xzW3ZMtg1srKVtucrT4=;
+        b=riHwmrnk5zdzrU1n2LCDhLEnS2vTMda2w8pNaguxxtFcV3iXLim2N9dRjMiiOB+umM
+         WEiqQEccwk4UxlbpmvMX0xiIsj6dVK2pzxTLn3lzBOs6ivjgKBS2/I/+zcpJ9bTGxfrD
+         p5EONm4LSMHfIF7j3gp5ofhDnRh/+4IH+DA/qsPaQr2y0fLWQkw/+e93QqEr3e/yBLKX
+         GL0YUgwQ9perv7mQuVHcjck2G2VfUtulSibqIk0nIKWhm9QsxJ2xMUXnetHnV9moeKc7
+         A6UeOEOUJ2BuVdHZzk1PeEwmXjG/gDd67+LlAkoF9TCpRCaoVgO+FmEgJijVJWZ0IKSC
+         rnvw==
+X-Gm-Message-State: AOAM5325leJnno0/L7pf+XJgD3V1NDa283VtMwsGLRa/dZHZyja5IFcd
+        0TqJup91rdlBPIzKWyu5evYCaotAREKzfFYlZrU=
+X-Google-Smtp-Source: ABdhPJxzXWrjn04lS2YhBLcjdIGdSHSEOIakVj2VdVwG2FnrsWpDJPBOfJJYUY2o5AW/tTqmBFz2n28QjvEEja9gmak=
+X-Received: by 2002:ac8:6f37:: with SMTP id i23mr23332560qtv.376.1624270672521;
+ Mon, 21 Jun 2021 03:17:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210621015922.ewgbffxuawia7liz@naota-xeon>
+In-Reply-To: <20210621015922.ewgbffxuawia7liz@naota-xeon>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 21 Jun 2021 11:17:41 +0100
+Message-ID: <CAL3q7H4q2Xjf9m5Ar62BVYJFO+wZSR9yn6wN6xwdtnNfCXDTyQ@mail.gmail.com>
+Subject: Re: hung_task issue by wait_event() in check_system_chunk()
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Mon, Jun 21, 2021 at 3:03 AM Naohiro Aota <naohiro.aota@wdc.com> wrote:
+>
+> We recently observed a hung_task issue on our 5.13-rc* test runs
+> (without any lockdep warnings!). The code is based on Linux 5.13-rc6 +
+> a patch to fix unbalanced unlock in qgroup_account_snapshot() [1] +
+> some debug printings. I found the cause of the issue, but I'm not sure
+> how we can fix it.
+>
+> [1] https://lore.kernel.org/linux-btrfs/20210621012114.1884779-1-naohiro.=
+aota@wdc.com/T/#u
+>
+> * Summary:
+>
+> In btrfs_chunk_alloc(), we set space_info->chunk_alloc =3D 1 before a
+> chunk allocation and turn it to 0 after the allocation. We block other
+> chunk allocations while space_info->chunk_alloc =3D=3D 1. So, the code
+> should be forward-progress while space_info->chunk_alloc =3D=3D 1.
+>
+> However, commit eafa4fd0ad06 ("btrfs: fix exhaustion of the system
+> chunk array due to concurrent allocations") broke the assumption. It
+> introduced wait_event() to wait for an ongoing transaction which
+> allocated a new chunk to finish. That waiting leads to an invisible
+> circular dependency. If the thread that allocated a chunk tries to
+> allocate another chunk, it cannot proceed because the wait_event()'ing
+> thread set space_info->chunk_alloc =3D 1.
 
-When doing a send we don't expect the task to ever start a transaction
-after the initial check that verifies if commit roots match the regular
-roots. This is because after that we set current->journal_info with a
-stub (special value) that signals we are in send context, so that we take
-a read lock on an extent buffer when reading it from disk and verifying
-it is valid (its generation matches the generation stored in the parent).
-This stub was introduced in 2014 by commit a26e8c9f75b0bf ("Btrfs: don't
-clear uptodate if the eb is under IO") in order to fix a concurrency issue
-between send and balance.
+Indeed, thanks for reporting.
 
-However there is one particular exception where we end up needing to start
-a transaction and when this happens it results in a crash with a stack
-trace like the following:
+>
+> We might need to set space_info->chunk_alloc =3D 0 while wait_event()?
+> But then we need to recheck everything again from the start of
+> btrfs_chunk_alloc()?
 
-[60015.902283] kernel: WARNING: CPU: 3 PID: 58159 at arch/x86/include/asm/kfence.h:44 kfence_protect_page+0x21/0x80
-[60015.902292] kernel: Modules linked in: uinput rfcomm snd_seq_dummy (...)
-[60015.902384] kernel: CPU: 3 PID: 58159 Comm: btrfs Not tainted 5.12.9-300.fc34.x86_64 #1
-[60015.902387] kernel: Hardware name: Gigabyte Technology Co., Ltd. To be filled by O.E.M./F2A88XN-WIFI, BIOS F6 12/24/2015
-[60015.902389] kernel: RIP: 0010:kfence_protect_page+0x21/0x80
-[60015.902393] kernel: Code: ff 0f 1f 84 00 00 00 00 00 55 48 89 fd (...)
-[60015.902396] kernel: RSP: 0018:ffff9fb583453220 EFLAGS: 00010246
-[60015.902399] kernel: RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff9fb583453224
-[60015.902401] kernel: RDX: ffff9fb583453224 RSI: 0000000000000000 RDI: 0000000000000000
-[60015.902402] kernel: RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-[60015.902404] kernel: R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
-[60015.902406] kernel: R13: ffff9fb583453348 R14: 0000000000000000 R15: 0000000000000001
-[60015.902408] kernel: FS:  00007f158e62d8c0(0000) GS:ffff93bd37580000(0000) knlGS:0000000000000000
-[60015.902410] kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[60015.902412] kernel: CR2: 0000000000000039 CR3: 00000001256d2000 CR4: 00000000000506e0
-[60015.902414] kernel: Call Trace:
-[60015.902419] kernel:  kfence_unprotect+0x13/0x30
-[60015.902423] kernel:  page_fault_oops+0x89/0x270
-[60015.902427] kernel:  ? search_module_extables+0xf/0x40
-[60015.902431] kernel:  ? search_bpf_extables+0x57/0x70
-[60015.902435] kernel:  kernelmode_fixup_or_oops+0xd6/0xf0
-[60015.902437] kernel:  __bad_area_nosemaphore+0x142/0x180
-[60015.902440] kernel:  exc_page_fault+0x67/0x150
-[60015.902445] kernel:  asm_exc_page_fault+0x1e/0x30
-[60015.902450] kernel: RIP: 0010:start_transaction+0x71/0x580
-[60015.902454] kernel: Code: d3 0f 84 92 00 00 00 80 e7 06 0f 85 63 (...)
-[60015.902456] kernel: RSP: 0018:ffff9fb5834533f8 EFLAGS: 00010246
-[60015.902458] kernel: RAX: 0000000000000001 RBX: 0000000000000001 RCX: 0000000000000000
-[60015.902460] kernel: RDX: 0000000000000801 RSI: 0000000000000000 RDI: 0000000000000039
-[60015.902462] kernel: RBP: ffff93bc0a7eb800 R08: 0000000000000001 R09: 0000000000000000
-[60015.902463] kernel: R10: 0000000000098a00 R11: 0000000000000001 R12: 0000000000000001
-[60015.902464] kernel: R13: 0000000000000000 R14: ffff93bc0c92b000 R15: ffff93bc0c92b000
-[60015.902468] kernel:  btrfs_commit_inode_delayed_inode+0x5d/0x120
-[60015.902473] kernel:  btrfs_evict_inode+0x2c5/0x3f0
-[60015.902476] kernel:  evict+0xd1/0x180
-[60015.902480] kernel:  inode_lru_isolate+0xe7/0x180
-[60015.902483] kernel:  __list_lru_walk_one+0x77/0x150
-[60015.902487] kernel:  ? iput+0x1a0/0x1a0
-[60015.902489] kernel:  ? iput+0x1a0/0x1a0
-[60015.902491] kernel:  list_lru_walk_one+0x47/0x70
-[60015.902495] kernel:  prune_icache_sb+0x39/0x50
-[60015.902497] kernel:  super_cache_scan+0x161/0x1f0
-[60015.902501] kernel:  do_shrink_slab+0x142/0x240
-[60015.902505] kernel:  shrink_slab+0x164/0x280
-[60015.902509] kernel:  shrink_node+0x2c8/0x6e0
-[60015.902512] kernel:  do_try_to_free_pages+0xcb/0x4b0
-[60015.902514] kernel:  try_to_free_pages+0xda/0x190
-[60015.902516] kernel:  __alloc_pages_slowpath.constprop.0+0x373/0xcc0
-[60015.902521] kernel:  ? __memcg_kmem_charge_page+0xc2/0x1e0
-[60015.902525] kernel:  __alloc_pages_nodemask+0x30a/0x340
-[60015.902528] kernel:  pipe_write+0x30b/0x5c0
-[60015.902531] kernel:  ? set_next_entity+0xad/0x1e0
-[60015.902534] kernel:  ? switch_mm_irqs_off+0x58/0x440
-[60015.902538] kernel:  __kernel_write+0x13a/0x2b0
-[60015.902541] kernel:  kernel_write+0x73/0x150
-[60015.902543] kernel:  send_cmd+0x7b/0xd0
-[60015.902545] kernel:  send_extent_data+0x5a3/0x6b0
-[60015.902549] kernel:  process_extent+0x19b/0xed0
-[60015.902551] kernel:  btrfs_ioctl_send+0x1434/0x17e0
-[60015.902554] kernel:  ? _btrfs_ioctl_send+0xe1/0x100
-[60015.902557] kernel:  _btrfs_ioctl_send+0xbf/0x100
-[60015.902559] kernel:  ? enqueue_entity+0x18c/0x7b0
-[60015.902562] kernel:  btrfs_ioctl+0x185f/0x2f80
-[60015.902564] kernel:  ? psi_task_change+0x84/0xc0
-[60015.902569] kernel:  ? _flat_send_IPI_mask+0x21/0x40
-[60015.902572] kernel:  ? check_preempt_curr+0x2f/0x70
-[60015.902576] kernel:  ? selinux_file_ioctl+0x137/0x1e0
-[60015.902579] kernel:  ? expand_files+0x1cb/0x1d0
-[60015.902582] kernel:  ? __x64_sys_ioctl+0x82/0xb0
-[60015.902585] kernel:  __x64_sys_ioctl+0x82/0xb0
-[60015.902588] kernel:  do_syscall_64+0x33/0x40
-[60015.902591] kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[60015.902595] kernel: RIP: 0033:0x7f158e38f0ab
-[60015.902599] kernel: Code: ff ff ff 85 c0 79 9b (...)
-[60015.902602] kernel: RSP: 002b:00007ffcb2519bf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[60015.902605] kernel: RAX: ffffffffffffffda RBX: 00007ffcb251ae00 RCX: 00007f158e38f0ab
-[60015.902607] kernel: RDX: 00007ffcb2519cf0 RSI: 0000000040489426 RDI: 0000000000000004
-[60015.902608] kernel: RBP: 0000000000000004 R08: 00007f158e297640 R09: 00007f158e297640
-[60015.902610] kernel: R10: 0000000000000008 R11: 0000000000000246 R12: 0000000000000000
-[60015.902612] kernel: R13: 0000000000000002 R14: 00007ffcb251aee0 R15: 0000558c1a83e2a0
-[60015.902615] kernel: ---[ end trace 7bbc33e23bb887ae ]---
+I think something slightly simpler might be enough.
+It's a bit tricky due to the two stages chunk allocation, but it's a
+necessary evil to avoid other type of deadlock.
 
-This happens because when writing to the pipe, by calling kernel_write(),
-we end up doing page allocations using GFP_HIGHUSER | __GFP_ACCOUNT as the
-gfp flags, which allow reclaim to happen if there is memory pressure. This
-allocation happens at fs/pipe.c:pipe_write().
+I'll think about it a bit more and let you know, thanks.
 
-If the reclaim is triggered, inode eviction can be triggered and that in
-turn can result in starting a transaction if the inode has a link count
-of 0. The transaction start happens early on during eviction, when we call
-btrfs_commit_inode_delayed_inode() at btrfs_evict_inode(). This happens if
-there is currently an open file descriptor for an inode with a link count
-of 0 and the reclaim task gets a reference on the inode before that
-descriptor is closed, in which case the reclaim task ends up doing the
-final iput that triggers the inode eviction.
+>
+> * Full analysis:
+>
+> # These messages are from check_system_chunk() after "trans->chunk_bytes_=
+reserved +=3D thresh;"
+> [  905.785876][  T722] 722 add 393216 to transaction 233
+> [  905.800494][ T5063] 5063 add 393216 to transaction 233
+>
+> Thread 722 and 5063 reserved space for its chunk allocation metadata
+> on the running transaction.
+>
+> [  905.806845][ T5070] BTRFS info (device nullb1): left=3D65536, need=3D3=
+93216, flags=3D4
+> [  905.811547][ T5070] BTRFS info (device nullb1): space_info 2 has 65536=
+ free, is not full
+> ...
+> # This message is from check_system_chunk() before the wait_event()
+> [  905.831000][ T5070] waiting for reserved 786432 trans 0 min_needed 393=
+216
+>
+> Now thread 5070 does not have enough SYSTEM space (left=3D65536 <
+> need=3D393216) for its chunk allocation. And, since other
+> transaction_handle in the same transaction (transaction_handle of
+> thread 722 and 5063) already reserved space for them, it now waits for
+> them to free their reservation with transaction commit.
+>
+> [ 1108.499029][   T22] INFO: task kworker/u4:5:721 blocked for more than =
+122 seconds.
+>
+> But, nothing progressed!
+>
+> So, what is happened with threads 722 and 5063?
+>
+> Backtrace of thread 722
+>
+> crash> bt 722
+> PID: 722    TASK: ffff888100f80000  CPU: 0   COMMAND: "kworker/u4:6"
+>  #0 [ffffc90002467160] __schedule at ffffffff8260da25
+>  #1 [ffffc90002467268] preempt_schedule_common at ffffffff8260f635
+>  #2 [ffffc90002467288] __cond_resched at ffffffff8260f68d
+>  #3 [ffffc90002467298] btrfs_chunk_alloc at ffffffffa03cd50a [btrfs]
+>  #4 [ffffc90002467330] find_free_extent at ffffffffa01adfa2 [btrfs]
+>  #5 [ffffc900024674f0] btrfs_reserve_extent at ffffffffa01bf7d0 [btrfs]
+>  #6 [ffffc90002467580] btrfs_alloc_tree_block at ffffffffa01c074f [btrfs]
+>  #7 [ffffc90002467720] alloc_tree_block_no_bg_flush at ffffffffa018d9e5 [=
+btrfs]
+>  #8 [ffffc90002467780] __btrfs_cow_block at ffffffffa0194fb1 [btrfs]
+>  #9 [ffffc900024678d0] btrfs_cow_block at ffffffffa01960b5 [btrfs]
+> #10 [ffffc90002467950] btrfs_search_slot at ffffffffa01a15c7 [btrfs]
+> #11 [ffffc90002467ac0] btrfs_remove_chunk at ffffffffa027f43c [btrfs]
+> #12 [ffffc90002467c50] btrfs_relocate_chunk at ffffffffa0280503 [btrfs]
+> #13 [ffffc90002467c88] btrfs_reclaim_bgs_work.cold at ffffffffa040e7b7 [b=
+trfs]
+> #14 [ffffc90002467c90] __kasan_check_read at ffffffff8167ebf1
+> #15 [ffffc90002467d08] process_one_work at ffffffff811ae718
+> #16 [ffffc90002467e40] worker_thread at ffffffff811af8de
+> #17 [ffffc90002467f08] kthread at ffffffff811c0857
+> #18 [ffffc90002467f50] ret_from_fork at ffffffff810034b2
+>
+> So, here it is. Since check_system_chunk() takes neither
+> space_info->lock nor fs_info->chunk_mutex while the waiting, thread
+> 722 is in busy-loop to wait for space_info->chunk_alloc =3D=3D 0.
+>
+>  #3 [ffffc90002467298] btrfs_chunk_alloc at ffffffffa03cd50a [btrfs]
+>     /home/naota/src/linux-works/btrfs-zoned/fs/btrfs/block-group.c: 3282
+>
+> And, how about thread 5063?
+>
+> crash> bt 5063
+> PID: 5063   TASK: ffff8881ca254000  CPU: 0   COMMAND: "fsstress"
+>  #0 [ffffc90007d46fd8] __schedule at ffffffff8260da25
+>  #1 [ffffc90007d470e0] schedule at ffffffff8260f247
+>  #2 [ffffc90007d47110] rwsem_down_read_slowpath at ffffffff82619b9d
+>  #3 [ffffc90007d47268] __down_read_common at ffffffff8126492c
+>  #4 [ffffc90007d47318] down_read_nested at ffffffff81264da4
+>  #5 [ffffc90007d47368] btrfs_read_lock_root_node at ffffffffa02b5007 [btr=
+fs]
+>  #6 [ffffc90007d47390] btrfs_search_slot at ffffffffa01a181b [btrfs]
+>  #7 [ffffc90007d47500] _raw_spin_unlock_irqrestore at ffffffff8262349c
+>  #8 [ffffc90007d47550] insert_with_overflow at ffffffffa01c74b9 [btrfs]
+>  #9 [ffffc90007d47600] btrfs_insert_dir_item at ffffffffa01c7bff [btrfs]
+> #10 [ffffc90007d47738] create_subvol at ffffffffa02a610b [btrfs]
+> #11 [ffffc90007d47970] btrfs_mksubvol at ffffffffa02a7829 [btrfs]
+> #12 [ffffc90007d47a08] _copy_from_user at ffffffff81b315ab
+> #13 [ffffc90007d47a60] btrfs_ioctl_snap_create_v2 at ffffffffa02a832f [bt=
+rfs]
+> #14 [ffffc90007d47ab8] btrfs_ioctl at ffffffffa02ae668 [btrfs]
+> #15 [ffffc90007d47d40] __x64_sys_ioctl at ffffffff8171c09f
+> #16 [ffffc90007d47f38] do_syscall_64 at ffffffff82602a70
+> #17 [ffffc90007d47f50] entry_SYSCALL_64_after_hwframe at ffffffff8280007c
+>
+> So, it's contended here:
+>
+>   #4 [ffffc90007d47318] down_read_nested at ffffffff81264da4
+>     ffffc90007d47320: [ffff88811a30bc20:btrfs_extent_buffer] 000000000000=
+0000
+>     ffffc90007d47330: 0000000000000000 ffffc90007d47360
+>     ffffc90007d47340: __btrfs_tree_read_lock+40 [ffff88811a30bc20:btrfs_e=
+xtent_buffer]
+>     ffffc90007d47350: ffffed102e902800 dffffc0000000000
+>     ffffc90007d47360: ffffc90007d47388 btrfs_read_lock_root_node+71
+>
+> Thread 5063 is trying to read lock this extent buffer.
+>
+> crash> struct extent_buffer ffff88811a30bc20
+> struct extent_buffer {
+>   start =3D 1803321344,
+> ...
+>   lock_owner =3D 5065,
+> ...
+>
+> The lock is owned by thread 5065.
+>
+> crash> bt 5065
+> PID: 5065   TASK: ffff88812a7f0000  CPU: 1   COMMAND: "fsstress"
+>  #0 [ffffc90007d66ab0] __schedule at ffffffff8260da25
+>  #1 [ffffc90007d66bb8] preempt_schedule_common at ffffffff8260f635
+>  #2 [ffffc90007d66bd8] __cond_resched at ffffffff8260f68d
+>  #3 [ffffc90007d66be8] btrfs_chunk_alloc at ffffffffa03cd50a [btrfs]
+>  #4 [ffffc90007d66c80] find_free_extent at ffffffffa01adfa2 [btrfs]
+>  #5 [ffffc90007d66e40] btrfs_reserve_extent at ffffffffa01bf7d0 [btrfs]
+>  #6 [ffffc90007d66ed0] btrfs_alloc_tree_block at ffffffffa01c074f [btrfs]
+>  #7 [ffffc90007d67070] alloc_tree_block_no_bg_flush at ffffffffa018d9e5 [=
+btrfs]
+>  #8 [ffffc90007d670d0] __btrfs_cow_block at ffffffffa0194fb1 [btrfs]
+>  #9 [ffffc90007d67220] btrfs_cow_block at ffffffffa01960b5 [btrfs]
+> #10 [ffffc90007d672a0] btrfs_search_slot at ffffffffa01a15c7 [btrfs]
+> #11 [ffffc90007d67410] btrfs_lookup_file_extent at ffffffffa01ca05e [btrf=
+s]
+> #12 [ffffc90007d674a8] btrfs_drop_extents at ffffffffa0233449 [btrfs]
+> #13 [ffffc90007d67738] btrfs_replace_file_extents at ffffffffa023762d [bt=
+rfs]
+> #14 [ffffc90007d678d8] btrfs_clone at ffffffffa03d674f [btrfs]
+> #15 [ffffc90007d67b20] btrfs_extent_same_range at ffffffffa03d6d38 [btrfs=
+]
+> #16 [ffffc90007d67b68] btrfs_remap_file_range at ffffffffa03d7b68 [btrfs]
+> #17 [ffffc90007d67c60] vfs_dedupe_file_range_one at ffffffff8179f58b
+> #18 [ffffc90007d67cd0] vfs_dedupe_file_range at ffffffff8179fadd
+> #19 [ffffc90007d67d40] __x64_sys_ioctl at ffffffff8171c344
+> #20 [ffffc90007d67f38] do_syscall_64 at ffffffff82602a70
+> #21 [ffffc90007d67f50] entry_SYSCALL_64_after_hwframe at ffffffff8280007c
+>
+> Again! Thread 5065 is busy-looping in the same loop in
+> btrfs_chunk_alloc().
+>
+> * How to fix it?
+>
+> I'm not sure how we can fix it without breaking the original intention
+> of commit eafa4fd0ad06. We might need to set space_info->chunk_alloc =3D
+> 0 while in the wait_event(). But then, we also need to recheck
+> everything from the start of btrfs_chunk_alloc().
+>
+> Or, we can commit the transaction before another chunk allocation if
+> its transaction_handle is waited?
+>
+> Thanks,
 
-When we have assertions enabled (CONFIG_BTRFS_ASSERT=y), this triggers
-the following assertion at transaction.c:start_transaction():
 
-    /* Send isn't supposed to start transactions. */
-    ASSERT(current->journal_info != BTRFS_SEND_TRANS_STUB);
 
-And when assertions are not enabled, it triggers a crash since after that
-assertion we cast current->journal_info into a transaction handle pointer
-and then dereference it:
+--=20
+Filipe David Manana,
 
-   if (current->journal_info) {
-       WARN_ON(type & TRANS_EXTWRITERS);
-       h = current->journal_info;
-       refcount_inc(&h->use_count);
-       (...)
-
-Which obviously results in a crash due to an invalid memory access.
-
-The same type of issue can happen during other memory allocations we
-do directly in the send code with kmalloc (and friends) as they use
-GFP_KERNEL and therefore may trigger reclaim too, which started to
-happen since 2016 after commit e780b0d1c1523e ("btrfs: send: use
-GFP_KERNEL everywhere").
-
-The issue could be solved by setting up a NOFS context for the entire
-send operation so that reclaim could not be triggered when allocating
-memory or pages through kernel_write(). However that is not very friendly
-and we can in fact get rid of the send stub because:
-
-1) The stub was introduced way back in 2014 by commit a26e8c9f75b0bf
-   ("Btrfs: don't clear uptodate if the eb is under IO") to solve an
-   issue exclusive to when send and balance are running in paralllel,
-   however there were other problems between balance and send and we do
-   not allow anymore to have balance and send run concurrently since
-   commit 9e967495e0e0ae ("Btrfs: prevent send failures and crashes due
-   to concurrent relocation"). More generically the issues are between
-   send and relocation, and that last commit eliminated only the
-   possibility of having send and balance run concurrently, but shrinking
-   a device also can trigger relocation, and on zoned filesystems we have
-   relocation of partially used block groups triggered automatically as
-   well. The previous patch that has a subject of:
-
-   "btrfs: ensure relocation never runs while we have send operations running"
-
-   Addresses all the remaining cases that can trigger relocation.
-
-2) We can actually allow starting and even committing transactions while
-   in a send context if needed because send is not holding any locks that
-   would block the start or the commit of a transaction.
-
-So get rid of all the logic added by commit a26e8c9f75b0bf ("Btrfs: don't
-clear uptodate if the eb is under IO"). We can now always call
-clear_extent_buffer_uptodate() at verify_parent_transid() since send is
-the only case that uses commit roots without having a transaction open or
-without holding the commit_root_sem.
-
-Reported-by: Chris Murphy <lists@colorremedies.com>
-Link: https://lore.kernel.org/linux-btrfs/CAJCQCtRQ57=qXo3kygwpwEBOU_CA_eKvdmjP52sU=eFvuVOEGw@mail.gmail.com/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/disk-io.c     | 18 +-----------------
- fs/btrfs/qgroup.c      |  8 +-------
- fs/btrfs/send.c        |  2 --
- fs/btrfs/transaction.c |  3 ---
- fs/btrfs/transaction.h |  2 --
- 5 files changed, 2 insertions(+), 31 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 3ded062d303c..d1e3424aea16 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -241,7 +241,6 @@ static int verify_parent_transid(struct extent_io_tree *io_tree,
- {
- 	struct extent_state *cached_state = NULL;
- 	int ret;
--	bool need_lock = (current->journal_info == BTRFS_SEND_TRANS_STUB);
- 
- 	if (!parent_transid || btrfs_header_generation(eb) == parent_transid)
- 		return 0;
-@@ -249,9 +248,6 @@ static int verify_parent_transid(struct extent_io_tree *io_tree,
- 	if (atomic)
- 		return -EAGAIN;
- 
--	if (need_lock)
--		btrfs_tree_read_lock(eb);
--
- 	lock_extent_bits(io_tree, eb->start, eb->start + eb->len - 1,
- 			 &cached_state);
- 	if (extent_buffer_uptodate(eb) &&
-@@ -264,22 +260,10 @@ static int verify_parent_transid(struct extent_io_tree *io_tree,
- 			eb->start,
- 			parent_transid, btrfs_header_generation(eb));
- 	ret = 1;
--
--	/*
--	 * Things reading via commit roots that don't have normal protection,
--	 * like send, can have a really old block in cache that may point at a
--	 * block that has been freed and re-allocated.  So don't clear uptodate
--	 * if we find an eb that is under IO (dirty/writeback) because we could
--	 * end up reading in the stale data and then writing it back out and
--	 * making everybody very sad.
--	 */
--	if (!extent_buffer_under_io(eb))
--		clear_extent_buffer_uptodate(eb);
-+	clear_extent_buffer_uptodate(eb);
- out:
- 	unlock_extent_cached(io_tree, eb->start, eb->start + eb->len - 1,
- 			     &cached_state);
--	if (need_lock)
--		btrfs_tree_read_unlock(eb);
- 	return ret;
- }
- 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index d72885903b8c..07ec06d4e972 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3545,13 +3545,7 @@ static int try_flush_qgroup(struct btrfs_root *root)
- 	struct btrfs_trans_handle *trans;
- 	int ret;
- 
--	/*
--	 * Can't hold an open transaction or we run the risk of deadlocking,
--	 * and can't either be under the context of a send operation (where
--	 * current->journal_info is set to BTRFS_SEND_TRANS_STUB), as that
--	 * would result in a crash when starting a transaction and does not
--	 * make sense either (send is a read-only operation).
--	 */
-+	/* Can't hold an open transaction or we run the risk of deadlocking. */
- 	ASSERT(current->journal_info == NULL);
- 	if (WARN_ON(current->journal_info))
- 		return 0;
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 37e502b09a80..6ac37ae6c811 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -7427,9 +7427,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 	fs_info->send_in_progress++;
- 	spin_unlock(&fs_info->send_reloc_lock);
- 
--	current->journal_info = BTRFS_SEND_TRANS_STUB;
- 	ret = send_subvol(sctx);
--	current->journal_info = NULL;
- 	spin_lock(&fs_info->send_reloc_lock);
- 	fs_info->send_in_progress--;
- 	spin_unlock(&fs_info->send_reloc_lock);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 73df8b81496e..143f7a5dec30 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -583,9 +583,6 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 	bool do_chunk_alloc = false;
- 	int ret;
- 
--	/* Send isn't supposed to start transactions. */
--	ASSERT(current->journal_info != BTRFS_SEND_TRANS_STUB);
--
- 	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
- 		return ERR_PTR(-EROFS);
- 
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 0702e8d9b30e..07d76029f598 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -122,8 +122,6 @@ struct btrfs_transaction {
- 
- #define TRANS_EXTWRITERS	(__TRANS_START | __TRANS_ATTACH)
- 
--#define BTRFS_SEND_TRANS_STUB	((void *)1)
--
- struct btrfs_trans_handle {
- 	u64 transid;
- 	u64 bytes_reserved;
--- 
-2.28.0
-
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
