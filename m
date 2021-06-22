@@ -2,130 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B2F3B0FDA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 00:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7363B0FFB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 00:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhFVWJB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Jun 2021 18:09:01 -0400
-Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:50582 "EHLO
-        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229612AbhFVWJB (ORCPT
+        id S229955AbhFVWVU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Jun 2021 18:21:20 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46744 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229625AbhFVWVU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Jun 2021 18:09:01 -0400
-Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
-        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 3F98D7126;
-        Wed, 23 Jun 2021 08:06:40 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lvoXX-00Fr2Q-Fn; Wed, 23 Jun 2021 08:06:39 +1000
-Date:   Wed, 23 Jun 2021 08:06:39 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Chinner <dchinner@redhat.com>
-Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
-Message-ID: <20210622220639.GH2419729@dread.disaster.area>
-References: <CAHk-=wgiO+jG7yFEpL5=cW9AQSV0v1N6MhtfavmGEHwrXHz9pA@mail.gmail.com>
- <YM0Q5/unrL6MFNCb@zeniv-ca.linux.org.uk>
- <CAHk-=wjDhxnRaO8FU-fOEAF6WeTUsvaoz0+fr1tnJvRCfAaSCQ@mail.gmail.com>
- <YM0Zu3XopJTGMIO5@relinquished.localdomain>
- <YM0fFnMFSFpUb63U@zeniv-ca.linux.org.uk>
- <YM09qaP3qATwoLTJ@relinquished.localdomain>
- <YNDem7R6Yh4Wy9po@relinquished.localdomain>
- <CAHk-=wh+-otnW30V7BUuBLF7Dg0mYaBTpdkH90Ov=zwLQorkQw@mail.gmail.com>
- <YND6jOrku2JDgqjt@relinquished.localdomain>
- <YND8p7ioQRfoWTOU@relinquished.localdomain>
+        Tue, 22 Jun 2021 18:21:20 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 232761FD45;
+        Tue, 22 Jun 2021 22:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1624400343;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XJW/qzv1HPORQ4r8PAkjRjLV49p93vJve2ZrcLBsrvA=;
+        b=HAUr2mXVuA//VNxE7CkOphb+I6TYzqD+R7kVyWlCFVGnbXaAgZjawqP0QPZf+v1NxGmUPO
+        PwHqgiP1IO034qS4l6Qm1nCxV+WxSKSeQOKO6ADEeBXxG+sFaWk8LKYEdayvF0//I8FzBD
+        8Q2Yx8Qk2FL1Lih0zj4Fpl24pwsTFzs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1624400343;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XJW/qzv1HPORQ4r8PAkjRjLV49p93vJve2ZrcLBsrvA=;
+        b=XhF51cUFhp56/8nNQXcCIblPy+mg+z5iZwlGjQRZs0RHqmUtyR3xdLX+nWnDfQWocEJLB1
+        sAd9wXmRSEHW88CA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1C349A3B97;
+        Tue, 22 Jun 2021 22:19:03 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2E329DA8D1; Wed, 23 Jun 2021 00:16:12 +0200 (CEST)
+Date:   Wed, 23 Jun 2021 00:16:12 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Remove btrfs_fs_info::total_pinned
+Message-ID: <20210622221612.GL28158@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210622132738.2357003-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YND8p7ioQRfoWTOU@relinquished.localdomain>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
-        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
-        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=-uoBkjAQAAAA:8 a=VwQbUJbxAAAA:8
-        a=7-415B0cAAAA:8 a=SiS6zSyo1DA6T2jvNdwA:9 a=CjuIK1q_8ugA:10
-        a=y0wLjPFBLyexm0soFTcm:22 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20210622132738.2357003-1-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 01:55:03PM -0700, Omar Sandoval wrote:
-> On Mon, Jun 21, 2021 at 01:46:04PM -0700, Omar Sandoval wrote:
-> > On Mon, Jun 21, 2021 at 12:33:17PM -0700, Linus Torvalds wrote:
-> > > On Mon, Jun 21, 2021 at 11:46 AM Omar Sandoval <osandov@osandov.com> wrote:
-> > > >
-> > > > How do we get the userspace size with the encoded_iov.size approach?
-> > > > We'd have to read the size from the iov_iter before writing to the rest
-> > > > of the iov_iter. Is it okay to mix the iov_iter as a source and
-> > > > destination like this? From what I can tell, it's not intended to be
-> > > > used like this.
-> > > 
-> > > I guess it could work that way, but yes, it's ugly as hell. And I
-> > > really don't want a readv() system call - that should write to the
-> > > result buffer - to first have to read from it.
-> > > 
-> > > So I think the original "just make it be the first iov entry" is the
-> > > better approach, even if Al hates it.
-> > > 
-> > > Although I still get the feeling that using an ioctl is the *really*
-> > > correct way to go. That was my first reaction to the series
-> > > originally, and I still don't see why we'd have encoded data in a
-> > > regular read/write path.
-> > > 
-> > > What was the argument against ioctl's, again?
-> > 
-> > The suggestion came from Dave Chinner here:
-> > https://lore.kernel.org/linux-fsdevel/20190905021012.GL7777@dread.disaster.area/
-> > 
-> > His objection to an ioctl was two-fold:
-> > 
-> > 1. This interfaces looks really similar to normal read/write, so we
-> >    should try to use the normal read/write interface for it. Perhaps
-> >    this trouble with iov_iter has refuted that.
-> > 2. The last time we had Btrfs-specific ioctls that eventually became
-> >    generic (FIDEDUPERANGE and FICLONE{,RANGE}), the generalization was
-> >    painful. Part of the problem with clone/dedupe was that the Btrfs
-> >    ioctls were underspecified. I think I've done a better job of
-> >    documenting all of the semantics and corner cases for the encoded I/O
-> >    interface (and if not, I can address this). The other part of the
-> >    problem is that there were various sanity checks in the normal
-> >    read/write paths that were missed or drifted out of sync in the
-> >    ioctls. That requires some vigilance going forward. Maybe starting
-> >    this off as a generic (not Btrfs-specific) ioctl right off the bat
-> >    will help.
-> > 
-> > If we do go the ioctl route, then we also have to decide how much of
-> > preadv2/pwritev2 it should emulate. Should it use the fd offset, or
-> > should that be an ioctl argument? Some of the RWF_ flags would be useful
-> > for encoded I/O, too (RWF_DSYNC, RWF_SYNC, RWF_APPEND), should it
-> > support those? These bring us back to Dave's first point.
+On Tue, Jun 22, 2021 at 04:27:38PM +0300, Nikolay Borisov wrote:
+> This got added 14 years ago in 324ae4df00fd ("Btrfs: Add block group pinned accounting back")
+> but it was not ever used. Subsequently its usage got gradually removed
+> in  8790d502e440 ("Btrfs: Add support for mirroring across drives") and
+> 11833d66be94 ("Btrfs: improve async block group caching"). Let's remove
+> it for good!
 > 
-> Oops, I dropped Dave from the Cc list at some point. Adding him back
-> now.
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Fair summary. The only other thing that I'd add is this is an IO
-interface that requires issuing physical IO. So if someone wants
-high throughput for encoded IO, we really need AIO and/or io_uring
-support, and we get that for free if we use readv2/writev2
-interfaces.
-
-Yes, it could be an ioctl() interface, but I think that this sort of
-functionality is exactly what extensible syscalls like
-preadv2/pwritev2 should be used for. It's a slight variant on normal
-IO, and that's exactly what the RWF_* flags are intended to be used
-for - allowing interesting per-IO variant behaviour without having
-to completely re-implemnt the IO path via custom ioctls every time
-we want slightly different functionality...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Added to misc-next, thanks.
