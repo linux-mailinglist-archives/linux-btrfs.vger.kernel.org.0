@@ -2,316 +2,253 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDBC3AFD1B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jun 2021 08:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69733B01DA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jun 2021 12:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbhFVGjh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Jun 2021 02:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhFVGjf (ORCPT
+        id S230004AbhFVK4I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Jun 2021 06:56:08 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:55438 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229968AbhFVK4H (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:39:35 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A25C061574
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jun 2021 23:37:18 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id bl4so905383qkb.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Jun 2021 23:37:18 -0700 (PDT)
+        Tue, 22 Jun 2021 06:56:07 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MAqp1m020137;
+        Tue, 22 Jun 2021 10:53:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=jducg8RwTxza7q1N4Oi9qUBRSQybrdomMEijTYnGqZ0=;
+ b=mGZmNJRF7kIeEvnPA8N9/F7gSLzg6RqAOA8iuN68BaZdJRSJ3lhTMrBcnCWzSYgrA6N5
+ egBzDp/vit7hSNzx8nHiF2Z+nTl5pT0yqnyF7FLOhANdi2dQcigcKW8ZzCyA7/HuzgIs
+ ITSqUp68ZWCU064fs0tEbTO88ZUORuRMUJC3czCM/FZtgWfT0XvF7YYN8T5A6JsGW/tL
+ X8NIvaIZVrcrfDVN0Hwdvnf6TQH+REW8hAEi3XEauWqnZ6ScudjUlzitL0TNnbI/fXQ8
+ QpS+61IknCIZ16cPXhDCpUcQgShkNMfGnEho7KiYnJjgS5G0WRRvEMbVHNl2stxkSOHq qg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39anpuu3dd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Jun 2021 10:53:48 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15MAnqjK091937;
+        Tue, 22 Jun 2021 10:53:47 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2170.outbound.protection.outlook.com [104.47.73.170])
+        by userp3020.oracle.com with ESMTP id 399tbscyj4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Jun 2021 10:53:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JjV8IpAlXR+zoYW6FdNvHefMxQhJLAdJ6YYxJZmgMIyd1rOTn3CMAEK87WNFdLtlEeCYnpdfXOU52ZgH99Fv5heDrnWbgjnbON4HUAcOzaUk5d6+3Iji+Xh3LVPqmJmLuopo1feMfNkffMTi/eQWdka5nEK2VHzpQODZfviUQbzBQvsQSTQG1kPI2Uh2+LxvIdv0IXMOHL/w7cn+JuLkiNjPfqAt0anN2qif6zcFInQdbFnI1wA0m24KhFHFkPPcHbRLH1alErchv3o1DJtSOEGf1ErYTbAUz7GXqGRjim0JTBeiMs/shqjLzNUPa6YYqgvnjKCn4WHoBpwcFhF4Pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jducg8RwTxza7q1N4Oi9qUBRSQybrdomMEijTYnGqZ0=;
+ b=EyqcnJBVsn72oojII9Z/VCDLdsWDhYNnkApHM3AHV6WVWvkvWNk2bhk2elwuxFU8J9trvivW1IACSS2TfMZxbj/X6PW2P5Sx2Aqjs/bPUbqBNoq/A1ZWOKuNwBUJaImGPAVaRwDTZwbFU1HnYOKXa4ZNaj+v9V1022b7z/My3XKWX2H4xIq/jL5JYqQ1vY4tckfDX5htRGq29mrLI0jlipaazbbBuzu3kf8V+EV5f1NQZ/NHXdioAdMDQfSfwZylYkAFPY6QgGyOMrzWDynxLMSRUYFU8/ny7y0P319BRYtwK2bbbVYvbDjpot/T6dTyvwpva/EA74ksnXC7zMGQiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Siqb5iUOIo5NubPav6dIjfSd0qGjGo+rcWPN7QzYuIk=;
-        b=J5X/YgejoNlmEiv5yogc94E+YSvYr4Hhy/WBqJ6UomKA04QIbdo0sZfXQ3gSzDOm5z
-         HrFHnyLnqbDzeKgC8gE38AGL0ONNLPtXNY7+ss+ja8KtIA2UtZONrBZQeSfO6bdYRxOf
-         O37jcBC5vFBb+JbCIwweG94TmhQgg3G5k9NV9w8hWtzTBhmrsB3WqhYVz/T5XIGc7888
-         0l340PUjHZIZ5uC1ey2dI1aAKNL1Pw997UVGsVsjD63vI+B3ttTWrV/E0GU/3C3mhUrs
-         qgAn3/218EfgESx87eFqtSOZtbgQWZOt/1cqtDgz++cj1j9Rb+B06amq6urk75CTHSAZ
-         aGig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Siqb5iUOIo5NubPav6dIjfSd0qGjGo+rcWPN7QzYuIk=;
-        b=OUSxAafNIY5QXgO6FBxDt/zviV20ddMDOfgxp27BiWAhNrolUUZqDDoSS1h4zMSRHd
-         NjbNOhQsjdq/WBN/+EPyYcsGe3rzkAbT6YwZX2RTXev/1183sTRTshH/XTnsDd8x9T+i
-         3ZDWMB83F/xaNOGy4GQoBD3I5IZGJFZuiafiK2CG3NJsuFNfqzTB5PsZt37G5p7tx9z7
-         zg10ULPYBbuPjYTjbRS4V3TBe4CMM/I9ACTOnw+w7G2AYUkxtgGIIUa56Yk/X+1anxss
-         arvZTP1kzU6KTQZOiTVW5leG7YQULWpxJMJqFDTrA2sg9Wm6w7I1wxt8SmheGYZor3cQ
-         auHQ==
-X-Gm-Message-State: AOAM533S6U3JOxq6Uvete+EzAJyL5/8SQtrS6lML86iHulvJz/ihle4n
-        EvTK5MzL5s5o5j4IbjdC8p7CKhabCHUtkHn3ynI=
-X-Google-Smtp-Source: ABdhPJwupZvsNkNF8fq9YW7vXK9VZ8mmlqCu94nC+4r1wvxunRGiN3eRCOw831F7pd8QEABDHYlJwOKxXRn6gUPhpEo=
-X-Received: by 2002:a25:e80f:: with SMTP id k15mr2807156ybd.432.1624343837243;
- Mon, 21 Jun 2021 23:37:17 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jducg8RwTxza7q1N4Oi9qUBRSQybrdomMEijTYnGqZ0=;
+ b=qgMUtBKa19OmoVg75tEBUpvzM9UXP20543vOOrmft00WMcwWKBzjEumhekHzeWOPX2/lNRUtQKxkAo/ITOsDknn17TWAiRrsBPAWQRDZ82wmYET1yOIT/0JgoY4jttiY/L5IxZALW+hiNXzuFcmyqfgDWnvA/rYw6tzY/Sn2Rt8=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BLAPR10MB4868.namprd10.prod.outlook.com (2603:10b6:208:333::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Tue, 22 Jun
+ 2021 10:53:44 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::992c:4b34:d95:def8]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::992c:4b34:d95:def8%8]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
+ 10:53:44 +0000
+Subject: Re: [PATCH 1/2] btrfs: switch mount option bits to enums and use
+ wider type
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1624027617.git.dsterba@suse.com>
+ <b821156f786564e0eb16c036428cd819b1ae9bf9.1624027617.git.dsterba@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <f54f27c7-e928-370d-3008-4ab78a52b08b@oracle.com>
+Date:   Tue, 22 Jun 2021 18:53:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <b821156f786564e0eb16c036428cd819b1ae9bf9.1624027617.git.dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [39.109.186.25]
+X-ClientProxiedBy: SG2PR06CA0203.apcprd06.prod.outlook.com (2603:1096:4:1::35)
+ To MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-References: <2bb832db-3c33-d3ba-d9ae-4ebd44c1c7f3@gmail.com>
- <1b89f8a3-42a4-3c6d-aec8-1b91a7b43713@gmx.com> <CAHw5_hk9Uy-q=9n+TvtiCtLH5A08gVo=G4rUhpuQyZwzuF68dQ@mail.gmail.com>
- <60a9b119-c842-9fea-3fb3-5cd29a8869ef@gmx.com> <CAHw5_hmN3XTYDhRy4jMfV4YN6jcRZsKs-Q_+K-o3fLhC9MXHJA@mail.gmail.com>
- <06661dd5-520b-c1b5-061e-748e695f98a6@suse.com> <CAHw5_hkUhV8OvrdZOWTnQU_ksh3z94+ivskyw_h069HwYhvNXg@mail.gmail.com>
- <CAHw5_hmUda4hO7=sNQNWtSxyyzm7i9MU50nsQkrZRw7fsAW3NA@mail.gmail.com>
- <e12010fe-6881-c01c-f05f-899b8b76c4fd@gmx.com> <CAHw5_hmeUWf0RdqXcFjfSEEeK4+jTb1yxRuRB5JSnK1Avha0JQ@mail.gmail.com>
- <83e8fa57-fc20-bc5b-8a63-3153327961a6@gmx.com>
-In-Reply-To: <83e8fa57-fc20-bc5b-8a63-3153327961a6@gmx.com>
-From:   Asif Youssuff <yoasif@gmail.com>
-Date:   Tue, 22 Jun 2021 02:37:05 -0400
-Message-ID: <CAHw5_hm+UX2EHSdZHcMXWMNYxOtccKMQ1qtfbu1gKUm-WZFXYg@mail.gmail.com>
-Subject: Re: Filesystem goes readonly soon after mount, cannot free space or rebalance
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.109] (39.109.186.25) by SG2PR06CA0203.apcprd06.prod.outlook.com (2603:1096:4:1::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18 via Frontend Transport; Tue, 22 Jun 2021 10:53:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ad839b68-8920-4e34-5202-08d9356c0118
+X-MS-TrafficTypeDiagnostic: BLAPR10MB4868:
+X-Microsoft-Antispam-PRVS: <BLAPR10MB4868A5836BBA570EB8162592E5099@BLAPR10MB4868.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TSuYNrSiiOq8IRR26kM1gNITjCcAd3vgP1vbk1QL7LlmIul7vVXwpTxZUkG8Cuy3OTZm01f998EzzVGi3UOklDovCLBEhdTajRaXeeLAVMjneanv2YLjxCWKspthNUbAJsWwRAglt0Thg3OPKNEKgUsouSBHpIuvy/jgWIG0z3RBZvQ7/YaU1jzYRdp4E56GA2R55pxk4KLNqd/tm0IWmSrMpb+JxSp/1HEAUyus51av/HZSLc7qyUHhfn7FAk5DEm2yXdf8nwUp3SANXTyr5xmvrt5jwZuVwmvM2+jC4MoUhwh733FkVPZgUIt8L/p49OvCyT9ATEmqcuCfh56DXKfDQax3twkSvS8LvoVhEJLIfzprqdzH+qsDdcYrj8gIL0iA+OOdjY1PaOYWs4HQRCKq8T2JhY+n4zEwlrDKCD+pfckskGsLJEufFdUQ38auB+pbwGFlTfFd10kcoQ32BAdzUw6gbstLeoNUQeJjA62fizoP3m7ncmhopEDwTtbY4BSRN4tyRfpkv281+kwMGf/OWWLMYBXXg3aRn1Coe8RXpG3RvSFhkdlZWVUFn/z43mjMq4/x28tME1M4YFbFCGs+cmdoWJz/v/MaFOYViIvvbjHE5pdQTAU1poFIwdzcJuer1Nx09yr38aHSpmxlVVIVCeza00bqpjho2UNfMuPampQH4qihqPZkLEBhi7eH
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(396003)(366004)(136003)(6666004)(44832011)(6486002)(38100700002)(2906002)(2616005)(956004)(36756003)(8676002)(186003)(53546011)(478600001)(66556008)(66476007)(66946007)(83380400001)(26005)(5660300002)(316002)(8936002)(16576012)(86362001)(31686004)(16526019)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TVcyeWZWWXNZaG5lNWhHcUVBa3BTQnJ1WFNvTlZXZzdmbmpBamJTTmttNy9w?=
+ =?utf-8?B?ZGMwR3VCK2xSU2hlSkJhYTlmU2R2MXdrUDlyYk92ZXBxVjFELzhYTkRSUnVx?=
+ =?utf-8?B?S0NVaTE4MmtObENFTGt2cjg3NXMvTFpaRXF1OWVLZVVRcmdEcGdSVHl2Wk5a?=
+ =?utf-8?B?MW5JMmpqOE5HVTRLV2ZqM2l5ZlpZakJod2hZN21FL0VyQjBHMS9UNndRcmY4?=
+ =?utf-8?B?dHkwTVVWaFZWSktFZDIwMVZWRVZWQ2hKaXcrTTBlU015aERzT2RTcW90SEV5?=
+ =?utf-8?B?TmI2TkxNWmQvNEJNY2pjZnh0OTRYZEc3QUF4ZzRrYkVCWkNEWC9NWlVuYW5a?=
+ =?utf-8?B?Q3pNRGVpR2lheXZtNFBCMGtmZ0h4aFQrTlF1anhZVkphN0FYajNZNEpteWZp?=
+ =?utf-8?B?cHNjckMwUlU1eDJxSGVXNVZlVUJDWG5UYlhkeTFybVV1Y3MrVXAwL0xNQjAz?=
+ =?utf-8?B?b28yVE95RHF6SFlQdkhBVU9kS2l2NGJDbTFhWXJqUFF6R1lSUW9mKzc1QXE1?=
+ =?utf-8?B?bTMycFJVcVhTeFgyd0hxTWRuY3dhWUNhQnRFY2Q1cWFObFkyb3Qyb2M4S1pv?=
+ =?utf-8?B?REs4d1FFenF6MjBjeUowZDl4ak1NeFd2Y3h3NkFHWXpFMkdDMHc2K0tkTVZD?=
+ =?utf-8?B?b1N2Q01FTTJPQm1wbmFYTkF1Z0dKYXl2VU1Odmk3UVZmQWgxN3pnUHlrV2ow?=
+ =?utf-8?B?a3NFdTVQQTk4U1V3V1FZdEUxVE55a2tILyt2VmtFOXVYR0RBY3k1TUYwS0Z3?=
+ =?utf-8?B?bkJGWmNyRzc2ZG1Zd24xSW9CWFN1a3lZV0JTRXQ5RTFBYnF1RVZVK3cwbkJZ?=
+ =?utf-8?B?UENXbmF6cEZKOFlJd2dCMlc4eVo1RFhTblIzSlcyVmE0TndCOEVsNVE3U3po?=
+ =?utf-8?B?YnFVcnV6YmN3a2JJNk1HRVg2MlRjLytyMHpxK3lob0t2dllneW1XWm1vN0RM?=
+ =?utf-8?B?SytERG9jNVNpU0R6Z1dENjBLaWEyU2VFRXhUZVA1VWZwVnRiMmJycEhUY2hT?=
+ =?utf-8?B?eWZkUHpVNzN4aUlLZ0N2eGsyOHE2S0pkR2xxa1B2UVdySlc4MDlFSFlLVFMw?=
+ =?utf-8?B?QUdUeDdMK1Z3ODdFUjhRbHFSczZsT09jNU1CY1FDbDFldEVudElWa1FHcVll?=
+ =?utf-8?B?OWgwd1czekdtNkJCeU9SZnpUMUxYenhtM3hkM0FRZ1lVZ0kzY2ZjYU5tK3Yv?=
+ =?utf-8?B?bWIrcXhhbVZ4UWlJeGpybEFxRUh5Vzg3VDRxVnM4OTR6amxQbXdvR3BrWldD?=
+ =?utf-8?B?WEdzYW05MkdPbUxYdFpmS3dNalJ3VFIzY3pkTkg1aXNjdGN6M2paOW9lNHhZ?=
+ =?utf-8?B?SXpVbHZTb01DTjFzTXpWeXI4cjd4bkw0SkxWb2lqcHNjMnJTRFVRdnFFUDdU?=
+ =?utf-8?B?U3ZDV0NkU0xERFljSWQveUhXTUd5VDlnT09HMmJaRzBEcytLUlJrK3N3Qkw5?=
+ =?utf-8?B?bXdXcmtSM0xmZGdEcm9jZzdHNTBERnQvUFYxUHdhZnBzRUlSYW9WbGR0YnF1?=
+ =?utf-8?B?Y3duVVc2Ukk1SzY4OHE5NDlISVo1Q2ZqdDZmSjhOTDZodXJKZXplckU4KzRs?=
+ =?utf-8?B?dUY2Q214Nm1ldzhWc1ExNmkrc0xvZ1FnMTZ4eUptUjh0Q0ozSlJNSFg3YlZa?=
+ =?utf-8?B?ZjlYSEJzb2hSSGpER2V1bWxEKzVTN1YyRXQ1YUpWK0pOTzZDVzBWcnQzNGox?=
+ =?utf-8?B?YkdINENZTWl0bkJ1Nk9YSmg1SFE2bW82Z0xwcTlxb1kwQWxWd0c5aWVYUXY0?=
+ =?utf-8?Q?zSKv9PTpSbguFayj3WjjnAkFk5NW99xYTVJFZGK?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad839b68-8920-4e34-5202-08d9356c0118
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 10:53:44.6352
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x77GNAEBnip3UUvIdFAzrlojCWlmOPBZKRxDW81mRf3FFaH3gvSGGYMinJsqmLAs+S6jnHvlqtOEkoC08KYiJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4868
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10022 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106220069
+X-Proofpoint-GUID: WcRdmvQTY4bp_3gCdHEnH6mwY9Z2ffnJ
+X-Proofpoint-ORIG-GUID: WcRdmvQTY4bp_3gCdHEnH6mwY9Z2ffnJ
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 1:03 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2021/6/22 =E4=B8=8B=E5=8D=8812:54, Asif Youssuff wrote:
-> > Qu,
-> >
-> > I went ahead and remounted and did:
-> >
-> > btrfs device add -f /dev/sdk /dev/sdq /media/camino/
-> >
-> > I'm returned to the shell prompt and nothing happens. btrfs fi show
-> > doesn't show the new disks, nor do I see anything in dmesg.
->
-> Then can you remove subvolume and run "btrfs fi sync"?
+On 18/06/2021 22:52, David Sterba wrote:
+> Switch defines of BTRFS_MOUNT_* to an enum (the symbolic names are
+> recorded in the debugging information for convenience).
+> 
+> There are two more things done but separating them would not make much
+> sense as it's touching the same lines:
+> 
+> - Renumber shifts 18..31 to 17..30 to get rid of the hole in the
+>    sequence.
+> 
+> - Use 1UL as the value that gets shifted because we're approaching the
+>    32bit limit and due to integer promotions the value of (1 << 31)
+>    becomes 0xffffffff80000000 when cast to unsigned long (eg. the option
+>    manipulating helpers).
+> 
+>    This is not causing any problems yet as the operations are in-memory
+>    and masking the 31st bit works, we don't have more than 31 bits so the
+>    ill effects of not masking higher bits don't happen. But once we have
+>    more, the problems will emerge.
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-Tried this, and it goes ro after a while again. It seems like the
-disks are being added, since I tried creating partitions on the disks,
-and adding the partitions (using -f) to the btrfs filesystem seems to
-"corrupt" the partitions when I look at them in gparted.
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-Or rather, it seems like btrfs is somehow marking the disks as ready
-to be added, but it never actually gets added (since it never shows up
-in "btrfs fi show".
->
-> >
-> > I suppose I can partition the two disks if you would like me to try to
-> > add *4* disks, but I don't really think it would make a difference. I
-> > see no errors - which is what I would expect in any case (this sounds
-> > like an improvement that could be made).
-
-I went ahead and also created two partitions each on the two new usb
-disks (for a two of four new partitions) and added them to the btrfs
-filesystem using "btrfs device add", then removing a snapshot followed
-by a "btrfs fi sync". The filesystem still goes ro after a while.
-
-I also did a "btrfs device add" using the four new partitions and
-immediately tried a "btrfs balance cancel" which also went ro.
-
-I then tried not using "skip_balance" and added the four partitions
-using "btrfs device add" followed by a "btrfs balance cancel". You
-guessed it, it went ro.
-
-I think the biggest hint here seems to be that the new
-disks/partitions aren't actually being added to the filesystem, so
-further writes to the filesystem continue using the same number of
-disks as it was mounted with, making recovery impossible.
-
-Would mounting as degraded make it possible to add the disks and have
-it stick? Based on reading elsewhere, it seems like btrfstune to
-update the UUIDs of any new partitions would likely corrupt the
-filesystem on mount (which was my idea to somehow trick btrfs into
-adding new disks offline and having it stick).
-
-Happy to try any other ideas! :)
-
-> >
-> > FWIW, I am running btrfs-progs v5.4.1 in case that makes a difference
-> > - I can try to update to a newer btrfs-progs, but it doesn't look like
-> > btrfs device add is detecting an error here - the kernel is simply not
-> > adding the disk.
->
-> I don't think btrfs-progs version would make a difference.
->
-> Thanks,
-> Qu
->
-> >
-> > Still holding out hope here. :)
-> >
-> > On Mon, Jun 21, 2021 at 11:15 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wro=
-te:
-> >>
-> >>
-> >>
-> >> On 2021/6/22 =E4=B8=8A=E5=8D=888:55, Asif Youssuff wrote:
-> >>> To be clear, it was the last snapshot on an infrequently updated
-> >>> subvolume, likely with no changes since the prior snapshot to the one
-> >>> deleted.
-> >>
-> >> The last chance would be try to add *two* devices, which should be at
-> >> least 1G for each.
-> >>
-> >> If the device add can success, then you can go delete as many as
-> >> subvolumes, and then remove (I mean btrfs device remove, not unplug) t=
-he
-> >> added two devices.
-> >>
-> >>
-> >> I think we should really rework the metadata over-commit code to use m=
-y
-> >> previously submitted calculation to avoid such deadly ENOSPC trap.
-> >>
-> >> Thanks,
-> >> Qu
-> >>>
-> >>> On Mon, Jun 21, 2021 at 8:50 PM Asif Youssuff <yoasif@gmail.com> wrot=
-e:
-> >>>>
-> >>>> I tried removing a single snapshot from a subvolume with rarely
-> >>>> updated data (likely no changes at all to that subvolume between
-> >>>> snapshots), and I was unable to successfully sync the filesystem
-> >>>> before it went readonly.
-> >>>>
-> >>>> On Mon, Jun 21, 2021 at 8:26 PM Qu Wenruo <wqu@suse.com> wrote:
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>>> On 2021/6/22 =E4=B8=8A=E5=8D=888:12, Asif Youssuff wrote:
-> >>>>>> On Mon, Jun 21, 2021 at 7:36 PM Qu Wenruo <quwenruo.btrfs@gmx.com>=
- wrote:
-> >>>>>>
-> >>>>>>>> I have tried removing snapshots, but the disk continues to go ro=
- -
-> >>>>>>>> after remount, the subvolumes are still there. Is there a way to=
- force
-> >>>>>>>> a sync of the subvolume removal before the fs goes ro?
-> >>>>>>>
-> >>>>>>> Maybe you can try "btrfs fi sync" before remount?
-> >>>>>>
-> >>>>>> Tried deleting a bunch of snapshots and immediately did a btrfs fi
-> >>>>>> sync - still forced ro pretty quickly:
-> >>>>>
-> >>>>> So that's the worst case, metadata already exhausted.
-> >>>>>
-> >>>>> Have you tried to just delete one small subvolume and then fi sync?
-> >>>>>
-> >>>>> It's possible that too many pending subvolume deletion can cause to=
-o
-> >>>>> much metadata space usage.
-> >>>>>
-> >>>>> Thus if you do it one by one, there may be a chance to commit succe=
-ssfully.
-> >>>>>
-> >>>>> Thanks,
-> >>>>> Qu
-> >>>>>>
-> >>>>>> [ 1810.858326] ------------[ cut here ]------------
-> >>>>>> [ 1810.858334] BTRFS: Transaction aborted (error -28)
-> >>>>>> [ 1810.858384] BTRFS: error (device sdf) in __btrfs_free_extent:32=
-16:
-> >>>>>> errno=3D-28 No space left
-> >>>>>> [ 1810.858493] BTRFS info (device sdf): forced readonly
-> >>>>>> [ 1810.858405] WARNING: CPU: 5 PID: 10137 at
-> >>>>>> fs/btrfs/extent-tree.c:3216 __btrfs_free_extent+0x7be/0x920 [btrfs=
-]
-> >>>>>> [ 1810.858500] BTRFS: error (device sdf) in
-> >>>>>> btrfs_run_delayed_refs:2163: errno=3D-28 No space left
-> >>>>>> [ 1810.858635] Modules linked in: veth xt_nat nf_conntrack_netlink
-> >>>>>> nfnetlink xfrm_user xfrm_algo xt_addrtype br_netfilter xt_CHECKSUM
-> >>>>>> iptable_mangle xt_MASQUERADE iptable_nat nf_nat xt_conntrack
-> >>>>>> nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ipt_REJECT nf_reject_ip=
-v4
-> >>>>>> xt_tcpudp bridge stp llc ebtable_filter ebtables ip6table_filter
-> >>>>>> ip6_tables iptable_filter bpfilter ppdev parport_pc parport
-> >>>>>> vmw_vsock_vmci_transport vsock vmw_vmci overlay bluetooth ecdh_gen=
-eric
-> >>>>>> ecc msr binfmt_misc input_leds joydev ipmi_ssif dm_crypt
-> >>>>>> intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerc=
-lamp
-> >>>>>> coretemp kvm_intel kvm crct10dif_pclmul crc32_pclmul
-> >>>>>> ghash_clmulni_intel aesni_intel crypto_simd cryptd rapl intel_csta=
-te
-> >>>>>> intel_pch_thermal lpc_ich mei_me mei acpi_ipmi ipmi_si ipmi_devint=
-f
-> >>>>>> ipmi_msghandler ie31200_edac mac_hid acpi_pad sch_fq_codel ib_iser
-> >>>>>> rdma_cm iw_cm ib_cm ib_core iscsi_tcp libiscsi_tcp libiscsi
-> >>>>>> scsi_transport_iscsi ip_tables x_tables autofs4 btrfs blake2b_gene=
-ric
-> >>>>>> raid10 raid456
-> >>>>>> [ 1810.858782]  async_raid6_recov async_memcpy async_pq async_xor
-> >>>>>> async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear
-> >>>>>> hid_generic usbhid hid uas usb_storage ast drm_vram_helper
-> >>>>>> drm_ttm_helper ttm drm_kms_helper syscopyarea sysfillrect sysimgbl=
-t
-> >>>>>> fb_sys_fops cec mpt3sas rc_core raid_class drm igb ahci xhci_pci d=
-ca
-> >>>>>> e1000e libahci i2c_algo_bit scsi_transport_sas xhci_pci_renesas vi=
-deo
-> >>>>>> [ 1810.858857] CPU: 5 PID: 10137 Comm: btrfs-transacti Tainted: G
-> >>>>>>      W         5.12.12-051212-generic #202106180931
-> >>>>>> [ 1810.858865] Hardware name: Supermicro X10SLM-F/X10SLM-F, BIOS 3=
-.0 04/24/2015
-> >>>>>> [ 1810.858868] RIP: 0010:__btrfs_free_extent+0x7be/0x920 [btrfs]
-> >>>>>> [ 1810.858973] Code: 8b 40 50 f0 48 0f ba a8 48 0a 00 00 03 72 1d =
-8b
-> >>>>>> 45 84 83 f8 fb 74 32 83 f8 e2 74 2d 89 c6 48 c7 c7 98 0c 75 c0 e8 =
-15
-> >>>>>> e1 f6 f7 <0f> 0b 8b 4d 84 48 8b 7d 90 ba 90 0c 00 00 48 c7 c6 c0 5=
-2 74
-> >>>>>> c0 e8
-> >>>>>> [ 1810.858980] RSP: 0018:ffffab4702a43c00 EFLAGS: 00010286
-> >>>>>> [ 1810.858986] RAX: 0000000000000000 RBX: 0000000000000030 RCX: ff=
-ff95e57fd585c8
-> >>>>>> [ 1810.858991] RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ff=
-ff95e57fd585c0
-> >>>>>> [ 1810.858995] RBP: ffffab4702a43ca8 R08: 0000000000000000 R09: ff=
-ffab4702a439e0
-> >>>>>> [ 1810.858998] R10: ffffab4702a439d8 R11: ffffffffb99542e8 R12: 00=
-0157fe74a6e000
-> >>>>>> [ 1810.859002] R13: 0000000000000515 R14: ffff95de8a0941c0 R15: ff=
-ff95dfaa212200
-> >>>>>> [ 1810.859007] FS:  0000000000000000(0000) GS:ffff95e57fd40000(000=
-0)
-> >>>>>> knlGS:0000000000000000
-> >>>>>> [ 1810.859012] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >>>>>> [ 1810.859016] CR2: 00007fd6fc652718 CR3: 0000000278610004 CR4: 00=
-000000001706e0
-> >>>>>> [ 1810.859022] Call Trace:
-> >>>>>> [ 1810.859031]  run_delayed_data_ref+0x96/0x160 [btrfs]
-> >>>>>> [ 1810.859130]  btrfs_run_delayed_refs_for_head+0x184/0x480 [btrfs=
-]
-> >>>>>> [ 1810.859225]  __btrfs_run_delayed_refs+0x8c/0x1d0 [btrfs]
-> >>>>>> [ 1810.859320]  btrfs_run_delayed_refs+0x73/0x200 [btrfs]
-> >>>>>> [ 1810.859474]  btrfs_commit_transaction+0x68/0xa20 [btrfs]
-> >>>>>> [ 1810.859633]  ? start_transaction+0xd5/0x590 [btrfs]
-> >>>>>> [ 1810.859783]  ? __next_timer_interrupt+0xd0/0x110
-> >>>>>> [ 1810.859800]  transaction_kthread+0x138/0x1b0 [btrfs]
-> >>>>>> [ 1810.859905]  kthread+0x12f/0x150
-> >>>>>> [ 1810.859916]  ? btrfs_cleanup_transaction.isra.0+0x290/0x290 [bt=
-rfs]
-> >>>>>> [ 1810.860020]  ? __kthread_bind_mask+0x70/0x70
-> >>>>>> [ 1810.860031]  ret_from_fork+0x22/0x30
-> >>>>>> [ 1810.860045] ---[ end trace 64a07c4b91899089 ]---
-> >>>>>> [ 1810.860052] BTRFS: error (device sdf) in __btrfs_free_extent:32=
-16:
-> >>>>>> errno=3D-28 No space left
-> >>>>>> [ 1810.860172] BTRFS: error (device sdf) in
-> >>>>>> btrfs_run_delayed_refs:2163: errno=3D-28 No space left
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>
-> >>>>
-> >>>>
-> >>>> --
-> >>>> Thanks,
-> >>>> Asif
-> >>>
-> >>>
-> >>>
-> >
-> >
-> >
+Thanks, Anand
 
 
+> ---
+>   fs/btrfs/ctree.h | 65 ++++++++++++++++++++++++------------------------
+>   1 file changed, 33 insertions(+), 32 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 6131b58f779f..e0f6aa6e8bd2 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -1384,38 +1384,39 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
+>    *
+>    * Note: don't forget to add new options to btrfs_show_options()
+>    */
+> -#define BTRFS_MOUNT_NODATASUM		(1 << 0)
+> -#define BTRFS_MOUNT_NODATACOW		(1 << 1)
+> -#define BTRFS_MOUNT_NOBARRIER		(1 << 2)
+> -#define BTRFS_MOUNT_SSD			(1 << 3)
+> -#define BTRFS_MOUNT_DEGRADED		(1 << 4)
+> -#define BTRFS_MOUNT_COMPRESS		(1 << 5)
+> -#define BTRFS_MOUNT_NOTREELOG           (1 << 6)
+> -#define BTRFS_MOUNT_FLUSHONCOMMIT       (1 << 7)
+> -#define BTRFS_MOUNT_SSD_SPREAD		(1 << 8)
+> -#define BTRFS_MOUNT_NOSSD		(1 << 9)
+> -#define BTRFS_MOUNT_DISCARD_SYNC	(1 << 10)
+> -#define BTRFS_MOUNT_FORCE_COMPRESS      (1 << 11)
+> -#define BTRFS_MOUNT_SPACE_CACHE		(1 << 12)
+> -#define BTRFS_MOUNT_CLEAR_CACHE		(1 << 13)
+> -#define BTRFS_MOUNT_USER_SUBVOL_RM_ALLOWED (1 << 14)
+> -#define BTRFS_MOUNT_ENOSPC_DEBUG	 (1 << 15)
+> -#define BTRFS_MOUNT_AUTO_DEFRAG		(1 << 16)
+> -/* bit 17 is free */
+> -#define BTRFS_MOUNT_USEBACKUPROOT	(1 << 18)
+> -#define BTRFS_MOUNT_SKIP_BALANCE	(1 << 19)
+> -#define BTRFS_MOUNT_CHECK_INTEGRITY	(1 << 20)
+> -#define BTRFS_MOUNT_CHECK_INTEGRITY_INCLUDING_EXTENT_DATA (1 << 21)
+> -#define BTRFS_MOUNT_PANIC_ON_FATAL_ERROR	(1 << 22)
+> -#define BTRFS_MOUNT_RESCAN_UUID_TREE	(1 << 23)
+> -#define BTRFS_MOUNT_FRAGMENT_DATA	(1 << 24)
+> -#define BTRFS_MOUNT_FRAGMENT_METADATA	(1 << 25)
+> -#define BTRFS_MOUNT_FREE_SPACE_TREE	(1 << 26)
+> -#define BTRFS_MOUNT_NOLOGREPLAY		(1 << 27)
+> -#define BTRFS_MOUNT_REF_VERIFY		(1 << 28)
+> -#define BTRFS_MOUNT_DISCARD_ASYNC	(1 << 29)
+> -#define BTRFS_MOUNT_IGNOREBADROOTS	(1 << 30)
+> -#define BTRFS_MOUNT_IGNOREDATACSUMS	(1 << 31)
+> +enum {
+> +	BTRFS_MOUNT_NODATASUM			= (1UL << 0),
+> +	BTRFS_MOUNT_NODATACOW			= (1UL << 1),
+> +	BTRFS_MOUNT_NOBARRIER			= (1UL << 2),
+> +	BTRFS_MOUNT_SSD				= (1UL << 3),
+> +	BTRFS_MOUNT_DEGRADED			= (1UL << 4),
+> +	BTRFS_MOUNT_COMPRESS			= (1UL << 5),
+> +	BTRFS_MOUNT_NOTREELOG   		= (1UL << 6),
+> +	BTRFS_MOUNT_FLUSHONCOMMIT		= (1UL << 7),
+> +	BTRFS_MOUNT_SSD_SPREAD			= (1UL << 8),
+> +	BTRFS_MOUNT_NOSSD			= (1UL << 9),
+> +	BTRFS_MOUNT_DISCARD_SYNC		= (1UL << 10),
+> +	BTRFS_MOUNT_FORCE_COMPRESS      	= (1UL << 11),
+> +	BTRFS_MOUNT_SPACE_CACHE			= (1UL << 12),
+> +	BTRFS_MOUNT_CLEAR_CACHE			= (1UL << 13),
+> +	BTRFS_MOUNT_USER_SUBVOL_RM_ALLOWED	= (1UL << 14),
+> +	BTRFS_MOUNT_ENOSPC_DEBUG		= (1UL << 15),
+> +	BTRFS_MOUNT_AUTO_DEFRAG			= (1UL << 16),
+> +	BTRFS_MOUNT_USEBACKUPROOT		= (1UL << 17),
+> +	BTRFS_MOUNT_SKIP_BALANCE		= (1UL << 18),
+> +	BTRFS_MOUNT_CHECK_INTEGRITY		= (1UL << 19),
+> +	BTRFS_MOUNT_CHECK_INTEGRITY_INCLUDING_EXTENT_DATA = (1UL << 20),
+> +	BTRFS_MOUNT_PANIC_ON_FATAL_ERROR	= (1UL << 21),
+> +	BTRFS_MOUNT_RESCAN_UUID_TREE		= (1UL << 22),
+> +	BTRFS_MOUNT_FRAGMENT_DATA		= (1UL << 23),
+> +	BTRFS_MOUNT_FRAGMENT_METADATA		= (1UL << 24),
+> +	BTRFS_MOUNT_FREE_SPACE_TREE		= (1UL << 25),
+> +	BTRFS_MOUNT_NOLOGREPLAY			= (1UL << 26),
+> +	BTRFS_MOUNT_REF_VERIFY			= (1UL << 27),
+> +	BTRFS_MOUNT_DISCARD_ASYNC		= (1UL << 28),
+> +	BTRFS_MOUNT_IGNOREBADROOTS		= (1UL << 29),
+> +	BTRFS_MOUNT_IGNOREDATACSUMS		= (1UL << 30),
+> +};
+>   
+>   #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
+>   #define BTRFS_DEFAULT_MAX_INLINE	(2048)
+> 
 
---=20
-Thanks,
-Asif
