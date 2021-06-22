@@ -2,90 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88783B0F73
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jun 2021 23:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B2F3B0FDA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 00:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhFVVf6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Jun 2021 17:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhFVVf6 (ORCPT
+        id S229800AbhFVWJB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Jun 2021 18:09:01 -0400
+Received: from mail107.syd.optusnet.com.au ([211.29.132.53]:50582 "EHLO
+        mail107.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229612AbhFVWJB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:35:58 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735F8C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Jun 2021 14:33:40 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id p10-20020a05600c430ab02901df57d735f7so2672203wme.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Jun 2021 14:33:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Qwnh6KJ8kA+JQY3mT9MJ+HvW2MwTtSA4qWYFa3KO1o=;
-        b=V06hgjAv975HFw2gKuTB9Djj8GUDZ+49loj12iC5za5WSX3NswIUUg2enAlIgIK+EE
-         C6jf+tQf4y71ThHFD7VFLmBqEtOITCbZDpgukFvINmvJ7kmoYP+1XFmvGtndbKH0migr
-         +EZndQeiFvrwMKaviI18u2d18V8IGNt/nh+fzQqe3MXxtdYoAslo8SE8diih/iOwI9Kc
-         Q8MhnWsETY0ojPlDvur4G3hOyeBnqXuOQyvw7SYLm1HM9vkcawTGwNNJdQXv0tiVCRIb
-         JKNWK0SoLQnctCAV2/7WixhzWsKpp8lqTokEuTHL1ulSovyv7Z90mPMxAXNWULpodcbQ
-         Rs9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Qwnh6KJ8kA+JQY3mT9MJ+HvW2MwTtSA4qWYFa3KO1o=;
-        b=bBGHGeO0iYdpcjBv5JWCOLGmVjiko0cyCiNqErvXXrwqSPh96mOZ4BheIK4z+Jzw14
-         ydZaY4azxqfTQbJ81MKapXmhdOZCawn8pTmMQYfxf8HfO8ot8j+KtvBgtaJYfiBytzOd
-         0PgrAIvi/DKMltghvp5//qLHESEcZCCFS1caS+tZp3iMISF7dsuip2oV03W5vUOVJANK
-         jMOq9RbRtdtq/TWob1PV/FDAIYAkDy+2Hawh+0KbgkvtCBS5BWGFn8MAed3Zxi3kBuud
-         L5Lhcn7rzijPEF5McOueCwFrFEIjjjw4O8pvUF/M6dO54kyxVuJbrKSCOdAcpV5NGdET
-         BD0g==
-X-Gm-Message-State: AOAM531ji9omY9cOL7pr2r5TPmHPE2ZZhqFx68fBGYm8GD1fu/g13WUa
-        P781/barZV4hR9MLAmc4BsR5RLKNKbznBF3WS46D6Q==
-X-Google-Smtp-Source: ABdhPJy0KIN7W6TpBT9g1HTNM0i6eMKYo7gbYvQ5iKQHBuq9OPqbW3EgE/8eO1dnkX3z8dNSXoU2rxAIVWMipan1HTQ=
-X-Received: by 2002:a05:600c:1c87:: with SMTP id k7mr6815888wms.168.1624397618985;
- Tue, 22 Jun 2021 14:33:38 -0700 (PDT)
+        Tue, 22 Jun 2021 18:09:01 -0400
+Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
+        by mail107.syd.optusnet.com.au (Postfix) with ESMTPS id 3F98D7126;
+        Wed, 23 Jun 2021 08:06:40 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lvoXX-00Fr2Q-Fn; Wed, 23 Jun 2021 08:06:39 +1000
+Date:   Wed, 23 Jun 2021 08:06:39 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Chinner <dchinner@redhat.com>
+Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
+Message-ID: <20210622220639.GH2419729@dread.disaster.area>
+References: <CAHk-=wgiO+jG7yFEpL5=cW9AQSV0v1N6MhtfavmGEHwrXHz9pA@mail.gmail.com>
+ <YM0Q5/unrL6MFNCb@zeniv-ca.linux.org.uk>
+ <CAHk-=wjDhxnRaO8FU-fOEAF6WeTUsvaoz0+fr1tnJvRCfAaSCQ@mail.gmail.com>
+ <YM0Zu3XopJTGMIO5@relinquished.localdomain>
+ <YM0fFnMFSFpUb63U@zeniv-ca.linux.org.uk>
+ <YM09qaP3qATwoLTJ@relinquished.localdomain>
+ <YNDem7R6Yh4Wy9po@relinquished.localdomain>
+ <CAHk-=wh+-otnW30V7BUuBLF7Dg0mYaBTpdkH90Ov=zwLQorkQw@mail.gmail.com>
+ <YND6jOrku2JDgqjt@relinquished.localdomain>
+ <YND8p7ioQRfoWTOU@relinquished.localdomain>
 MIME-Version: 1.0
-References: <2bb832db-3c33-d3ba-d9ae-4ebd44c1c7f3@gmail.com>
- <1b89f8a3-42a4-3c6d-aec8-1b91a7b43713@gmx.com> <CAHw5_hk9Uy-q=9n+TvtiCtLH5A08gVo=G4rUhpuQyZwzuF68dQ@mail.gmail.com>
- <60a9b119-c842-9fea-3fb3-5cd29a8869ef@gmx.com> <CAHw5_hmN3XTYDhRy4jMfV4YN6jcRZsKs-Q_+K-o3fLhC9MXHJA@mail.gmail.com>
- <06661dd5-520b-c1b5-061e-748e695f98a6@suse.com> <CAHw5_hkUhV8OvrdZOWTnQU_ksh3z94+ivskyw_h069HwYhvNXg@mail.gmail.com>
- <CAHw5_hmUda4hO7=sNQNWtSxyyzm7i9MU50nsQkrZRw7fsAW3NA@mail.gmail.com>
- <e12010fe-6881-c01c-f05f-899b8b76c4fd@gmx.com> <CAHw5_hmeUWf0RdqXcFjfSEEeK4+jTb1yxRuRB5JSnK1Avha0JQ@mail.gmail.com>
- <83e8fa57-fc20-bc5b-8a63-3153327961a6@gmx.com> <CAHw5_hm+UX2EHSdZHcMXWMNYxOtccKMQ1qtfbu1gKUm-WZFXYg@mail.gmail.com>
-In-Reply-To: <CAHw5_hm+UX2EHSdZHcMXWMNYxOtccKMQ1qtfbu1gKUm-WZFXYg@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 22 Jun 2021 15:33:22 -0600
-Message-ID: <CAJCQCtTW0tR-55UkkE=r0ONQucCO7_An2ASOQeBjZiZXtPrLSg@mail.gmail.com>
-Subject: Re: Filesystem goes readonly soon after mount, cannot free space or rebalance
-To:     Asif Youssuff <yoasif@gmail.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YND8p7ioQRfoWTOU@relinquished.localdomain>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
+        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=-uoBkjAQAAAA:8 a=VwQbUJbxAAAA:8
+        a=7-415B0cAAAA:8 a=SiS6zSyo1DA6T2jvNdwA:9 a=CjuIK1q_8ugA:10
+        a=y0wLjPFBLyexm0soFTcm:22 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 12:37 AM Asif Youssuff <yoasif@gmail.com> wrote:
+On Mon, Jun 21, 2021 at 01:55:03PM -0700, Omar Sandoval wrote:
+> On Mon, Jun 21, 2021 at 01:46:04PM -0700, Omar Sandoval wrote:
+> > On Mon, Jun 21, 2021 at 12:33:17PM -0700, Linus Torvalds wrote:
+> > > On Mon, Jun 21, 2021 at 11:46 AM Omar Sandoval <osandov@osandov.com> wrote:
+> > > >
+> > > > How do we get the userspace size with the encoded_iov.size approach?
+> > > > We'd have to read the size from the iov_iter before writing to the rest
+> > > > of the iov_iter. Is it okay to mix the iov_iter as a source and
+> > > > destination like this? From what I can tell, it's not intended to be
+> > > > used like this.
+> > > 
+> > > I guess it could work that way, but yes, it's ugly as hell. And I
+> > > really don't want a readv() system call - that should write to the
+> > > result buffer - to first have to read from it.
+> > > 
+> > > So I think the original "just make it be the first iov entry" is the
+> > > better approach, even if Al hates it.
+> > > 
+> > > Although I still get the feeling that using an ioctl is the *really*
+> > > correct way to go. That was my first reaction to the series
+> > > originally, and I still don't see why we'd have encoded data in a
+> > > regular read/write path.
+> > > 
+> > > What was the argument against ioctl's, again?
+> > 
+> > The suggestion came from Dave Chinner here:
+> > https://lore.kernel.org/linux-fsdevel/20190905021012.GL7777@dread.disaster.area/
+> > 
+> > His objection to an ioctl was two-fold:
+> > 
+> > 1. This interfaces looks really similar to normal read/write, so we
+> >    should try to use the normal read/write interface for it. Perhaps
+> >    this trouble with iov_iter has refuted that.
+> > 2. The last time we had Btrfs-specific ioctls that eventually became
+> >    generic (FIDEDUPERANGE and FICLONE{,RANGE}), the generalization was
+> >    painful. Part of the problem with clone/dedupe was that the Btrfs
+> >    ioctls were underspecified. I think I've done a better job of
+> >    documenting all of the semantics and corner cases for the encoded I/O
+> >    interface (and if not, I can address this). The other part of the
+> >    problem is that there were various sanity checks in the normal
+> >    read/write paths that were missed or drifted out of sync in the
+> >    ioctls. That requires some vigilance going forward. Maybe starting
+> >    this off as a generic (not Btrfs-specific) ioctl right off the bat
+> >    will help.
+> > 
+> > If we do go the ioctl route, then we also have to decide how much of
+> > preadv2/pwritev2 it should emulate. Should it use the fd offset, or
+> > should that be an ioctl argument? Some of the RWF_ flags would be useful
+> > for encoded I/O, too (RWF_DSYNC, RWF_SYNC, RWF_APPEND), should it
+> > support those? These bring us back to Dave's first point.
+> 
+> Oops, I dropped Dave from the Cc list at some point. Adding him back
+> now.
 
-> I went ahead and also created two partitions each on the two new usb
-> disks (for a two of four new partitions) and added them to the btrfs
-> filesystem using "btrfs device add", then removing a snapshot followed
-> by a "btrfs fi sync". The filesystem still goes ro after a while.
+Fair summary. The only other thing that I'd add is this is an IO
+interface that requires issuing physical IO. So if someone wants
+high throughput for encoded IO, we really need AIO and/or io_uring
+support, and we get that for free if we use readv2/writev2
+interfaces.
 
-Yeah Qu is correct, and I had it wrong. Two devices have enough space
-for a new metadata BG, but no other disks. And it requires four. All
-you need is to add two but it won't even let you add one before it
-goes ro. So it's stuck. Until there is a kernel fix for this, it's
-permanently read-only (unless we're missing some other work around).
+Yes, it could be an ioctl() interface, but I think that this sort of
+functionality is exactly what extensible syscalls like
+preadv2/pwritev2 should be used for. It's a slight variant on normal
+IO, and that's exactly what the RWF_* flags are intended to be used
+for - allowing interesting per-IO variant behaviour without having
+to completely re-implemnt the IO path via custom ioctls every time
+we want slightly different functionality...
 
+Cheers,
 
-> Would mounting as degraded make it possible to add the disks and have
-> it stick?
-
-No, that's even more fragile and you're sure to run into myriad
-degraded raid5 bugs, not least of which are the bogus errors. And it
-won't be obvious which ones are important and which ones are not.
-
-
+Dave.
 -- 
-Chris Murphy
+Dave Chinner
+david@fromorbit.com
