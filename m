@@ -2,79 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE273B0297
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jun 2021 13:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4603B029E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jun 2021 13:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhFVLTK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Jun 2021 07:19:10 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48312 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhFVLTK (ORCPT
+        id S230032AbhFVLVN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Jun 2021 07:21:13 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46924 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhFVLVL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Jun 2021 07:19:10 -0400
+        Tue, 22 Jun 2021 07:21:11 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0505E2197E;
-        Tue, 22 Jun 2021 11:16:54 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 4F5D61FD36;
+        Tue, 22 Jun 2021 11:18:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1624360614;
+        t=1624360735;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=75jDg7aJB1XhocWzVBz1IrJi+PfLRwDXduDW8DyGKiU=;
-        b=X1lA3fY5nVeRrJIMOgmfrfp7ICpePQrkL0DXphACt9+nEfar/goMwmX8Wk6thlzqGuDOdz
-        j7ZoOI+LbeLzTom0S2C63G+DXLN+LN7LmzFsrNYxPKfUIZdrhrIqZbL8cu1MLy6Vm0tNTn
-        j1SpLdP8KOqUJGgp83ExAUwxVlmWnNg=
+        bh=0hRCOzqwCDpKImlNhcRQ4lSl0u1CfYXE8CSwB9ReWnc=;
+        b=w1e4LnhcbdLXk4VkNdYoM3HgkJqfakKKtdnSO9YqtREno9l3UC0MS7y1LNDcEA2d8+QOJu
+        GIG06sKzBRPn/baL/540hAHPQZjKb367bENUijy36XiuwVcBL1mPj8Bk/sbHxrzjy+3pMv
+        ilK1Y/2w02XRx34LLZ2tRo3oMFVqmYE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1624360614;
+        s=susede2_ed25519; t=1624360735;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=75jDg7aJB1XhocWzVBz1IrJi+PfLRwDXduDW8DyGKiU=;
-        b=5lUfjVcdq/ZQCJKmJtlHpQOLcpAyY1cEO98NAYiKkNTjnJMoi/AagqZXYWH4pACYqwW2se
-        /F0krqGOymbhvyBg==
+        bh=0hRCOzqwCDpKImlNhcRQ4lSl0u1CfYXE8CSwB9ReWnc=;
+        b=faJchCNtstP0S2lZ0gHWxqZg8d/7OaxFPNrZBnvlzVNbuiCB+fVgW5nD/ik5QtLGTF2Lve
+        uvWL8pHlbwtF4SDQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id F1413A3B85;
-        Tue, 22 Jun 2021 11:16:53 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 457C8A3B8E;
+        Tue, 22 Jun 2021 11:18:55 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 41DC6DA79B; Tue, 22 Jun 2021 13:14:03 +0200 (CEST)
-Date:   Tue, 22 Jun 2021 13:14:03 +0200
+        id 9C0A9DA77B; Tue, 22 Jun 2021 13:16:04 +0200 (CEST)
+Date:   Tue, 22 Jun 2021 13:16:04 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 0/9] btrfs: compression: refactor and enhancement
- preparing for subpage compression support
-Message-ID: <20210622111403.GF28158@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: handle shrink_delalloc pages calculation
+ differently
+Message-ID: <20210622111604.GG28158@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210617051450.206704-1-wqu@suse.com>
- <20210617164703.GW28158@twin.jikos.cz>
- <d184445f-a1a1-3f17-c33d-ffe3fc066c66@gmx.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org
+References: <f17b840611935b5f58bfcdbe050a942c33b90a60.1622576697.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d184445f-a1a1-3f17-c33d-ffe3fc066c66@gmx.com>
+In-Reply-To: <f17b840611935b5f58bfcdbe050a942c33b90a60.1622576697.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 06:46:51AM +0800, Qu Wenruo wrote:
-> > I went through it several times, the changes are scary, but the overall
-> > direction is IMHO the right one, not to say it's fixing the difficult
-> > BUG_ONs.
-> >
-> > I'll put it to for-next once it passes a few rounds of fstests. Taking
-> > it to 5.14 could be risky if we don't have enough review and testing,
-> > time is almost up before the code freeze.
-> >
-> Please don't put it into 5.14.
+On Tue, Jun 01, 2021 at 03:45:08PM -0400, Josef Bacik wrote:
+> We have been hitting some early ENOSPC issues in production with more
+> recent kernels, and I tracked it down to us simply not flushing delalloc
+> as aggressively as we should be.  With tracing I was seeing us failing
+> all tickets with all of the block rsvs at or around 0, with very little
+> pinned space, but still around 120mib of outstanding bytes_may_used.
+> Upon further investigation I saw that we were flushing around 14 pages
+> per shrink call for delalloc, despite having around 2gib of delalloc
+> outstanding.
 > 
-> It's really a preparation for subpage compression support.
-> However we don't even have subpage queued for v5.14, thus I'm not in a
-> hurry.
+> Consider the example of a 8 way machine, all cpu's trying to create a
+> file in parallel, which at the time of this commit requires 5 items to
+> do.  Assuming a 16k leaf size, we have 10mib of total metadata reclaim
+> size waiting on reservations.  Now assume we have 128mib of delalloc
+> outstanding.  With our current math we would set items to 20, and then
+> set to_reclaim to 20 * 256k, or 5mib.
+> 
+> Assuming that we went through this loop all 3 times, for both
+> FLUSH_DELALLOC and FLUSH_DELALLOC_WAIT, and then did the full loop
+> twice, we'd only flush 60mib of the 128mib delalloc space.  This could
+> leave a fair bit of delalloc reservations still hanging around by the
+> time we go to ENOSPC out all the remaining tickets.
+> 
+> Fix this two ways.  First, change the calculations to be a fraction of
+> the total delalloc bytes on the system.  Prior to my change we were
+> calculating based on dirty inodes so our math made more sense, now it's
+> just completely unrelated to what we're actually doing.
+> 
+> Second add a FLUSH_DELALLOC_FULL state, that we hold off until we've
+> gone through the flush states at least once.  This will empty the system
+> of all delalloc so we're sure to be truly out of space when we start
+> failing tickets.
+> 
+> I'm tagging stable 5.10 and forward, because this is where we started
+> using the page stuff heavily again.  This affects earlier kernel
+> versions as well, but would be a pain to backport to them as the
+> flushing mechanisms aren't the same.
+> 
+> CC: stable@vger.kernel.org # 5.10
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Ok, no problem. As merge window is close I'll keep the compression and
-subpage out of for-next until rc1 is out, the timestamped for-next
-snapshots branches could contain it so we can start testing.
+As this is going to be resent, I'll remove it from misc-next for now.
+Updated version can go in as a fix after rc1.
