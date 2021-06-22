@@ -2,126 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3779F3B0CC0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jun 2021 20:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88783B0F73
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Jun 2021 23:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbhFVSWx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Jun 2021 14:22:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhFVSWx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:22:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8849F6128E
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Jun 2021 18:20:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624386037;
-        bh=ya3jJQwoox6wDL93xYGWMvMcGan2v5r9KknlocXmbtc=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=hBrzJQjBNPltm0aYYe6v8g6Ped/pjfXrWjhbqtoAC+IjVvtdF3FjCrUTPOI6nqX+l
-         +AvA1YFR0ywm4Hg/e8HQNB1kybl0/uu9Ava0TbSM/yUlngsfdj48slC0G/aZl6ifvD
-         98UgYCDDB/TEDXKFHsjnvOieBj7X5I24RU4cgGt5U1Bv45aBsxZRhXN3/ckhgfzcM7
-         btvGdgNlKq5ytZvN5BdJeAyvfiVtu0YPPOiDi8hWq82t5oJbf/M7JR2imwauoUOEEw
-         qgbGgK3NTt209F/SdMyF2Wkq9qgP2RgSAZ6xVamdAjKt44PjpaHRdPqsh2BeeqVq7L
-         dR3llq26W3HzA==
-Received: by mail-qv1-f47.google.com with SMTP id r19so14598qvw.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Jun 2021 11:20:37 -0700 (PDT)
-X-Gm-Message-State: AOAM5330O6bb/HtA3TWo70Uh7Ejl9LlG1cfuN3YxV1PJnQa9bZDPnPTM
-        H2pNBA/jSqw7TPEXirT6C2H0mc7ntiyp/edgZ8M=
-X-Google-Smtp-Source: ABdhPJz6DME6/FrXUfq2PRp5AwDWQrNoaVlrl6sbMkIcCQUYLM++RjDin6PlrIThOZME2UflaJczHHxIf6kAyIGOsDk=
-X-Received: by 2002:a05:6214:174a:: with SMTP id dc10mr107196qvb.62.1624386036728;
- Tue, 22 Jun 2021 11:20:36 -0700 (PDT)
+        id S229844AbhFVVf6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Jun 2021 17:35:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229800AbhFVVf6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Jun 2021 17:35:58 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735F8C061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Jun 2021 14:33:40 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id p10-20020a05600c430ab02901df57d735f7so2672203wme.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Jun 2021 14:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7Qwnh6KJ8kA+JQY3mT9MJ+HvW2MwTtSA4qWYFa3KO1o=;
+        b=V06hgjAv975HFw2gKuTB9Djj8GUDZ+49loj12iC5za5WSX3NswIUUg2enAlIgIK+EE
+         C6jf+tQf4y71ThHFD7VFLmBqEtOITCbZDpgukFvINmvJ7kmoYP+1XFmvGtndbKH0migr
+         +EZndQeiFvrwMKaviI18u2d18V8IGNt/nh+fzQqe3MXxtdYoAslo8SE8diih/iOwI9Kc
+         Q8MhnWsETY0ojPlDvur4G3hOyeBnqXuOQyvw7SYLm1HM9vkcawTGwNNJdQXv0tiVCRIb
+         JKNWK0SoLQnctCAV2/7WixhzWsKpp8lqTokEuTHL1ulSovyv7Z90mPMxAXNWULpodcbQ
+         Rs9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Qwnh6KJ8kA+JQY3mT9MJ+HvW2MwTtSA4qWYFa3KO1o=;
+        b=bBGHGeO0iYdpcjBv5JWCOLGmVjiko0cyCiNqErvXXrwqSPh96mOZ4BheIK4z+Jzw14
+         ydZaY4azxqfTQbJ81MKapXmhdOZCawn8pTmMQYfxf8HfO8ot8j+KtvBgtaJYfiBytzOd
+         0PgrAIvi/DKMltghvp5//qLHESEcZCCFS1caS+tZp3iMISF7dsuip2oV03W5vUOVJANK
+         jMOq9RbRtdtq/TWob1PV/FDAIYAkDy+2Hawh+0KbgkvtCBS5BWGFn8MAed3Zxi3kBuud
+         L5Lhcn7rzijPEF5McOueCwFrFEIjjjw4O8pvUF/M6dO54kyxVuJbrKSCOdAcpV5NGdET
+         BD0g==
+X-Gm-Message-State: AOAM531ji9omY9cOL7pr2r5TPmHPE2ZZhqFx68fBGYm8GD1fu/g13WUa
+        P781/barZV4hR9MLAmc4BsR5RLKNKbznBF3WS46D6Q==
+X-Google-Smtp-Source: ABdhPJy0KIN7W6TpBT9g1HTNM0i6eMKYo7gbYvQ5iKQHBuq9OPqbW3EgE/8eO1dnkX3z8dNSXoU2rxAIVWMipan1HTQ=
+X-Received: by 2002:a05:600c:1c87:: with SMTP id k7mr6815888wms.168.1624397618985;
+ Tue, 22 Jun 2021 14:33:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <b8b7b585ec8b7b2924fd5995951a0d16d2e394d7.1624369954.git.fdmanana@suse.com>
- <20210622175811.GK28158@twin.jikos.cz>
-In-Reply-To: <20210622175811.GK28158@twin.jikos.cz>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 22 Jun 2021 19:20:25 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6tx3XG9a4=nCLyv+GG8uLJ40qLzqzUWaxTLwhqOhZSKg@mail.gmail.com>
-Message-ID: <CAL3q7H6tx3XG9a4=nCLyv+GG8uLJ40qLzqzUWaxTLwhqOhZSKg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix deadlock with concurrent chunk allocations
- involving system chunks
-To:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>
+References: <2bb832db-3c33-d3ba-d9ae-4ebd44c1c7f3@gmail.com>
+ <1b89f8a3-42a4-3c6d-aec8-1b91a7b43713@gmx.com> <CAHw5_hk9Uy-q=9n+TvtiCtLH5A08gVo=G4rUhpuQyZwzuF68dQ@mail.gmail.com>
+ <60a9b119-c842-9fea-3fb3-5cd29a8869ef@gmx.com> <CAHw5_hmN3XTYDhRy4jMfV4YN6jcRZsKs-Q_+K-o3fLhC9MXHJA@mail.gmail.com>
+ <06661dd5-520b-c1b5-061e-748e695f98a6@suse.com> <CAHw5_hkUhV8OvrdZOWTnQU_ksh3z94+ivskyw_h069HwYhvNXg@mail.gmail.com>
+ <CAHw5_hmUda4hO7=sNQNWtSxyyzm7i9MU50nsQkrZRw7fsAW3NA@mail.gmail.com>
+ <e12010fe-6881-c01c-f05f-899b8b76c4fd@gmx.com> <CAHw5_hmeUWf0RdqXcFjfSEEeK4+jTb1yxRuRB5JSnK1Avha0JQ@mail.gmail.com>
+ <83e8fa57-fc20-bc5b-8a63-3153327961a6@gmx.com> <CAHw5_hm+UX2EHSdZHcMXWMNYxOtccKMQ1qtfbu1gKUm-WZFXYg@mail.gmail.com>
+In-Reply-To: <CAHw5_hm+UX2EHSdZHcMXWMNYxOtccKMQ1qtfbu1gKUm-WZFXYg@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 22 Jun 2021 15:33:22 -0600
+Message-ID: <CAJCQCtTW0tR-55UkkE=r0ONQucCO7_An2ASOQeBjZiZXtPrLSg@mail.gmail.com>
+Subject: Re: Filesystem goes readonly soon after mount, cannot free space or rebalance
+To:     Asif Youssuff <yoasif@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 7:01 PM David Sterba <dsterba@suse.cz> wrote:
->
-> On Tue, Jun 22, 2021 at 02:54:10PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > When a task attempting to allocate a new chunk verifies that there is not
-> > currently enough free space in the system space_info and there is another
-> > task that allocated a new system chunk but it did not finish yet the
-> > creation of the respective block group, it waits for that other task to
-> > finish creating the block group. This is to avoid exhaustion of the system
-> > chunk array in the superblock, which is limited, when we have a thundering
-> > herd of tasks allocating new chunks. This problem was described and fixed
-> > by commit eafa4fd0ad0607 ("btrfs: fix exhaustion of the system chunk array
-> > due to concurrent allocations").
-> >
-> > However there are two very similar scenarios where this can lead to a
-> > deadlock:
-> >
-> > 1) Task B allocated a new system chunk and task A is waiting on task B
-> >    to finish creation of the respective system block group. However before
-> >    task B ends its transaction handle and finishes the creation of the
-> >    system block group, it attempts to allocate another chunk (like a data
-> >    chunk for an fallocate operation for a very large range). Task B will
-> >    be unable to progress and allocate the new chunk, because task A set
-> >    space_info->chunk_alloc to 1 and therefore it loops at
-> >    btrfs_chunk_alloc() waiting for task A to finish its chunk allocation
-> >    and set space_info->chunk_alloc to 0, but task A is waiting on task B
-> >    to finish creation of the new system block group, therefore resulting
-> >    in a deadlock;
-> >
-> > 2) Task B allocated a new system chunk and task A is waiting on task B to
-> >    finish creation of the respective system block group. By the time that
-> >    task B enter the final phase of block group allocation, which happens
-> >    at btrfs_create_pending_block_groups(), when it modifies the extent
-> >    tree, the device tree or the chunk tree to insert the items for some
-> >    new block group, it needs to allocate a new chunk, so it ends up at
-> >    btrfs_chunk_alloc() and keeps looping there because task A has set
-> >    space_info->chunk_alloc to 1, but task A is waiting for task B to
-> >    finish creation of the new system block group and release the reserved
-> >    system space, therefore resulting in a deadlock.
-> >
-> > In short, the problem is if a task B needs to allocate a new chunk after
-> > it previously allocated a new system chunk and if another task A is
-> > currently waiting for task B to complete the allocation of the new system
-> > chunk.
-> >
-> > Fix this by making a task that previously allocated a new system chunk to
-> > not loop at btrfs_chunk_alloc() and proceed if there is another task that
-> > is waiting for it.
-> >
-> > Reported-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > Link: https://lore.kernel.org/linux-btrfs/20210621015922.ewgbffxuawia7liz@naota-xeon/
-> > Fixes: eafa4fd0ad0607 ("btrfs: fix exhaustion of the system chunk array due to concurrent allocations")
->
-> So this is a regression in 5.13-rc, the final release is most likely the
-> upcoming Sunday. This fixes a deadlock so that's an error that could be
-> considered urgent.
->
-> Option 1 is to let Aota test it for a day or two (adding it to our other
-> branches for testing as well) and then I'll send a pull request on
-> Friday at the latest.
->
-> Option 2 is to put it to pull request branch with a stable tag, so it
-> would propagate to 5.13.1 in three weeks from now.
->
-> I'd prefer option 1 for release completeness sake but if there are
-> doubts or tests show otherwise, we can always do 2.
+On Tue, Jun 22, 2021 at 12:37 AM Asif Youssuff <yoasif@gmail.com> wrote:
 
-Either way is fine for me. I didn't even notice before that it was in
-5.13-rcs, I was thinking about 5.12 on top of my head.
+> I went ahead and also created two partitions each on the two new usb
+> disks (for a two of four new partitions) and added them to the btrfs
+> filesystem using "btrfs device add", then removing a snapshot followed
+> by a "btrfs fi sync". The filesystem still goes ro after a while.
 
-The issue is probably easier for Aota to trigger on zoned filesystems,
-I suppose it triggers more chunk allocations than non-zoned
-filesystems due to the zoned device constraints.
+Yeah Qu is correct, and I had it wrong. Two devices have enough space
+for a new metadata BG, but no other disks. And it requires four. All
+you need is to add two but it won't even let you add one before it
+goes ro. So it's stuck. Until there is a kernel fix for this, it's
+permanently read-only (unless we're missing some other work around).
 
-Thanks.
+
+> Would mounting as degraded make it possible to add the disks and have
+> it stick?
+
+No, that's even more fragile and you're sure to run into myriad
+degraded raid5 bugs, not least of which are the bogus errors. And it
+won't be obvious which ones are important and which ones are not.
+
+
+-- 
+Chris Murphy
