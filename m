@@ -2,133 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4533B21FD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 22:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CF53B21FF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 22:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhFWUqz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Jun 2021 16:46:55 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33462 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWUqy (ORCPT
+        id S229774AbhFWUtL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Jun 2021 16:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWUtL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Jun 2021 16:46:54 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2D74521962;
-        Wed, 23 Jun 2021 20:44:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1624481075;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KEPylJ/5OMVWWJLFj+uKL80g+HUG5aNaW4TuIZ7eWCc=;
-        b=cmAdcr1yPiIPA0ZIDun8ywxztPKNzq+XLtzld22L0Fwkq3Cwuucr7Jvs5lcWeNoLGLd3sz
-        wRO9Pa5lFG5AkyO8YcT4UL2iob5b+q+XOaKYd3MT/WeJ0gd3zBElW5+PaLz00qRfuePVmN
-        fXRP0gRyNcZhlrqZ6tRkGMb1N/DyMVg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1624481075;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KEPylJ/5OMVWWJLFj+uKL80g+HUG5aNaW4TuIZ7eWCc=;
-        b=5wiy1x+udyiiv+sDK7qXr/73HPidMAZIqY/2cFqiG3PjaqK1nXuyhrSnbqwX20uao8cnQI
-        rSScIodjUChiQmDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E6295A3BB1;
-        Wed, 23 Jun 2021 20:44:34 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 185C2DA908; Wed, 23 Jun 2021 22:41:42 +0200 (CEST)
-Date:   Wed, 23 Jun 2021 22:41:42 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        dsterba@suse.cz, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 1/1] btrfs: tests: remove unnecessary oom message
-Message-ID: <20210623204142.GN28158@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20210617083053.1064-1-thunder.leizhen@huawei.com>
- <20210617203518.GZ28158@twin.jikos.cz>
- <5f6198a7-3d3a-603e-73fe-b56c0b71fbf9@huawei.com>
- <b464d670-aa49-2f41-36f6-36a432959f46@gmx.com>
- <55b0c70b-f0c1-07e2-f8dd-073f4fdc8f07@gmx.com>
+        Wed, 23 Jun 2021 16:49:11 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B92BC061574
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jun 2021 13:46:53 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id g21so1592859pfc.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jun 2021 13:46:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=35fX3b/9KipFW6E3fYUr5lcYBNTVVlADu03Gtygr2Nk=;
+        b=Hk+dH/qK+72QM33k5wW4gKCoofvBG35fBFE/5NSN9cuhFQ+yHUtHo14gwPuBvB5kLS
+         E6q16f1m17kqPZWIR5Z6unziZ6jNGg0lecaDbu/EOB01AT4yko4updWTWuzu3/j8Cp0K
+         YAFsNG5PL9jNw4QzSuNhiJLFiNHr9gXPNlJOJFVchKP7QBJrSVQFsIUSPF+FeTb7AtEa
+         F76qW3ZgBP/1e7hFW/auvpk9BMkPCXa5wT8JCEK2eWcXwJ2JRhyCm0QgqUMcmwgdVVOI
+         PQUwMPVkPN4hgOGpQ3sFI0P/fJEMAK2kqXaTj4te5hrUFsfFOqp3bsBD9XezvotPsgK6
+         CmQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=35fX3b/9KipFW6E3fYUr5lcYBNTVVlADu03Gtygr2Nk=;
+        b=uZRJ3GlN5sG2xhpEqcF9Uj1k/sQ1hftXlyaZqDzdYDOc3Pf1YJogWCmLfmTHKeA5sL
+         MoXuHh2i++vD3AVfoxKg56FPbLqddNy23Q23ylNupmMeWZ316QNLSg75//lgXyKWIRlQ
+         UPCV9pDVPDrW3O2Lz7+KAv8GVRhEeGUR2QMitKg2HdFrZFrq8wJFATrzckW70/8gks9T
+         cpD8EJCk+ZufQQuT8hFl0lEMji2isy/Ajrt+VQeoa75tJMfGW9qtoZ26dQaywE07KXPw
+         ihXNLkm2jHpLyyTtdf/5T2lhOeOFbEhAThP12XUSQC3yauSRH79rPg9gkylwHhYkMqEh
+         N/6Q==
+X-Gm-Message-State: AOAM532o6G78vkm/u6ZCCbtywmum+E48htCcXyBrf+1Tt2cido6AYj3O
+        R2pdI6v6rPFaW3PeQiP8q/M1FsenViUvzA==
+X-Google-Smtp-Source: ABdhPJxc5l5DI/3/a0Vr5/trltrw8Ct1u+bkj2q4aYmLeaoJdbHwBVB2e0UdzNnQEvcMXtZUvOQ8aQ==
+X-Received: by 2002:a65:6644:: with SMTP id z4mr1258936pgv.101.1624481212718;
+        Wed, 23 Jun 2021 13:46:52 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:e167])
+        by smtp.gmail.com with ESMTPSA id p45sm702640pfw.19.2021.06.23.13.46.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 13:46:52 -0700 (PDT)
+Date:   Wed, 23 Jun 2021 13:46:50 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Chinner <dchinner@redhat.com>
+Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
+Message-ID: <YNOdunP+Fvhbsixb@relinquished.localdomain>
+References: <YM0Zu3XopJTGMIO5@relinquished.localdomain>
+ <YM0fFnMFSFpUb63U@zeniv-ca.linux.org.uk>
+ <YM09qaP3qATwoLTJ@relinquished.localdomain>
+ <YNDem7R6Yh4Wy9po@relinquished.localdomain>
+ <CAHk-=wh+-otnW30V7BUuBLF7Dg0mYaBTpdkH90Ov=zwLQorkQw@mail.gmail.com>
+ <YND6jOrku2JDgqjt@relinquished.localdomain>
+ <YND8p7ioQRfoWTOU@relinquished.localdomain>
+ <20210622220639.GH2419729@dread.disaster.area>
+ <YNN0P4KWH+Uj7dTE@relinquished.localdomain>
+ <YNOPdy14My+MHmy8@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <55b0c70b-f0c1-07e2-f8dd-073f4fdc8f07@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <YNOPdy14My+MHmy8@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 02:05:59PM +0800, Qu Wenruo wrote:
-> On 2021/6/18 下午1:58, Qu Wenruo wrote:
-> > On 2021/6/18 上午10:33, Leizhen (ThunderTown) wrote:
-> >> On 2021/6/18 4:35, David Sterba wrote:
-> >>> On Thu, Jun 17, 2021 at 04:30:53PM +0800, Zhen Lei wrote:
-> >>>> Fixes scripts/checkpatch.pl warning:
-> >>>> WARNING: Possible unnecessary 'out of memory' message
-> >>>>
-> >>>> Remove it can help us save a bit of memory.
-> >>>
-> >>> Well, we have a few more messages in tests regarding failed memory
-> >>> allocations.  Though I've never seen one in practice, I think it's not
-> >>> a big deal to have that one here as well. The failures in the testsuite
-> >>> are intentionally verbose and saving a few bytes in optional development
-> >>> feature hardly bothers anyone.
-> >>
-> >> The calltrace of the OOM message contains all the information printed by
-> >> test_err() here. I don't think anyone wants to see a bunch of
-> >> unhelpful tips
-> >> when locating an OOM problem.
-> >
-> > This only get enabled for btrfs developers, in production environment
-> > would enable CONFIG_BTRFS_FS_RUN_SANITY_TESTS=y.
-> >
-> > Thus this error message are only for btrfs developers.
-> >
-> > And I'm 100% sure you won't need to investigate such OOM problem, nor
-> > even see it.
-> >
-> >>> Where bytes can be saved are error messages for the same type of error,
-> >>
-> >> It also saves a dozen bytes of binary code.
-> >
-> > It won't make any different as you won't enable that config.
-> >
-> >>> that I've implemented in the past, see file fs/btrfs/tests/btrfs-tests.c
-> >>> array test_error that maps enums to strings.
-> >>
-> >> As mentioned above, I don't think these "no memory" strings are
-> >> necessary,
-> >> unless the rest of the test can continue to run healthy. Otherwise, no
-> >> one trusts
-> >> the test results in the OOM situation. They're going to locate the OOM
-> >> problem
-> >> first, and these information are pointless. >
+On Wed, Jun 23, 2021 at 07:45:59PM +0000, Al Viro wrote:
+> On Wed, Jun 23, 2021 at 10:49:51AM -0700, Omar Sandoval wrote:
 > 
-> And nope, it's not only OOM can cause the selftest to fail, but also
-> error injection.
+> > > Fair summary. The only other thing that I'd add is this is an IO
+> > > interface that requires issuing physical IO. So if someone wants
+> > > high throughput for encoded IO, we really need AIO and/or io_uring
+> > > support, and we get that for free if we use readv2/writev2
+> > > interfaces.
+> > > 
+> > > Yes, it could be an ioctl() interface, but I think that this sort of
+> > > functionality is exactly what extensible syscalls like
+> > > preadv2/pwritev2 should be used for. It's a slight variant on normal
+> > > IO, and that's exactly what the RWF_* flags are intended to be used
+> > > for - allowing interesting per-IO variant behaviour without having
+> > > to completely re-implemnt the IO path via custom ioctls every time
+> > > we want slightly different functionality...
+> > 
+> > Al, Linus, what do you think? Is there a path forward for this series as
+> > is? I'd be happy to have this functionality merged in any form, but I do
+> > think that this approach with preadv2/pwritev2 using iov_len is decent
+> > relative to the alternatives.
 > 
-> I guess you never ran error injection tests for filesystems.
+> IMO we might be better off with explicit ioctl - this magical mystery shite
+> with special meaning of the first iovec length is, IMO, more than enough
+> to make it a bad fit for read/write family.
 > 
-> Under most case, we inject error with specific call chain, but sometimes
-> without any call chain specification, error injection may find some
-> corner cases we're unaware of.
+> It's *not* just a "slightly different functionality" - it's very different
+> calling conventions.  And the deeper one needs to dig into the interface
+> details to parse what's going on, the less it differs from ioctl() mess.
 > 
-> If by chance the injected memory allocation failure happens during
-> selftest, there will be *NO* OOM dump at all.
+> Said that, why do you need a variable-length header on the read side,
+> in the first place?
 
-Yeah, a hard OOM won't probably happen and the allocations can fail for
-other valid reasons.  The error message in the logs, with the ERROR
-message level is clear and helpful. Saving a few bytes here does not
-make much sense.
+Suppose we add a new field representing a new type of encoding to the
+end of encoded_iov. On the write side, the caller might want to specify
+that the data is encoded in that new way, of course. But on the read
+side, if the data is encoded in that new way, then the kernel will want
+to return that. The kernel needs to know if the user's structure
+includes the new field (otherwise when it copies the full struct out, it
+will write into what the user thinks is the data instead).
+
+As I mentioned in my reply to Linus, maybe we can stick with
+preadv2/pwritev2, but make the struct encoded_iov structure a fixed size
+with some reserved space for future expansion. That makes this a lot
+less special: just copy a fixed size structure, then read/write the
+rest. And then we don't need to reinvent the rest of the
+preadv2/pwritev2 path for an ioctl.
+
+Between a fixed size structure and an ioctl, what would you prefer?
