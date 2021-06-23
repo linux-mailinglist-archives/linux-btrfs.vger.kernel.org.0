@@ -2,81 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0A63B2395
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jun 2021 00:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4533B239F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jun 2021 00:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhFWW2x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Jun 2021 18:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhFWW2w (ORCPT
+        id S229755AbhFWWm7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Jun 2021 18:42:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37528 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWWm6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Jun 2021 18:28:52 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2197C061574;
-        Wed, 23 Jun 2021 15:26:34 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lwBKB-00BeJB-Rn; Wed, 23 Jun 2021 22:26:23 +0000
-Date:   Wed, 23 Jun 2021 22:26:23 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Chinner <dchinner@redhat.com>
-Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
-Message-ID: <YNO1D++slcnNoLVU@zeniv-ca.linux.org.uk>
-References: <YNDem7R6Yh4Wy9po@relinquished.localdomain>
- <CAHk-=wh+-otnW30V7BUuBLF7Dg0mYaBTpdkH90Ov=zwLQorkQw@mail.gmail.com>
- <YND6jOrku2JDgqjt@relinquished.localdomain>
- <YND8p7ioQRfoWTOU@relinquished.localdomain>
- <20210622220639.GH2419729@dread.disaster.area>
- <YNN0P4KWH+Uj7dTE@relinquished.localdomain>
- <YNOPdy14My+MHmy8@zeniv-ca.linux.org.uk>
- <YNOdunP+Fvhbsixb@relinquished.localdomain>
- <YNOqJIto1t13rPYZ@zeniv-ca.linux.org.uk>
- <YNOuiMfRO51kLcOE@relinquished.localdomain>
+        Wed, 23 Jun 2021 18:42:58 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id ABA5221962;
+        Wed, 23 Jun 2021 22:40:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1624488031;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OgE/NZKnt/M0/aCdj7tn9NDZeKvuvp07A8QAHAQkDSc=;
+        b=kT+L1t+orxLCKC1GaTiWNk1b3yJpZXRMMrdTcF2VL8VRxCuzO0M3PWl69F0+/BUryeNwCi
+        6/aCa1wDXh6D3FkiV48K7DHbcIpTerqtOnwpaxOLo8j8NhJC5sseRPc+NZEaQZCKmGiq+X
+        eeaB0VmdtcBGozNhWB+YAu9JfPN1B4M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1624488031;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OgE/NZKnt/M0/aCdj7tn9NDZeKvuvp07A8QAHAQkDSc=;
+        b=8SZfrf/cFfXOfvDNZytwpIg9USefsSBtyHjhJLaMnUuIO9IGTF9QzRk45ShnRtYYvbeBld
+        5JVgVjYrK8/XWrDA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id A47BCA3B83;
+        Wed, 23 Jun 2021 22:40:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 35D07DA8E8; Thu, 24 Jun 2021 00:37:40 +0200 (CEST)
+Date:   Thu, 24 Jun 2021 00:37:40 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC 0/8] btrfs: experimental compression support for
+ subpage
+Message-ID: <20210623223740.GQ28158@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210623055529.166678-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNOuiMfRO51kLcOE@relinquished.localdomain>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210623055529.166678-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 02:58:32PM -0700, Omar Sandoval wrote:
+On Wed, Jun 23, 2021 at 01:55:21PM +0800, Qu Wenruo wrote:
+> Qu Wenruo (8):
+>   btrfs: don't pass compressed pages to
+>     btrfs_writepage_endio_finish_ordered()
+>   btrfs: make btrfs_subpage_end_and_test_writer() to handle pages not
+>     locked by btrfs_page_start_writer_lock()
+>   btrfs: make compress_file_range() to be subpage compatible
+>   btrfs: make btrfs_submit_compressed_write() to be subpage compatible
+>   btrfs: use async_chunk::async_cow to replace the confusing pending
+>     pointer
+>   btrfs: make end_compressed_bio_writeback() to be subpage compatble
+>   btrfs: make extent_write_locked_range() to be subpage compatible
+>   btrfs: only allow subpage compression if the range fully covers the
+>     first page
 
-> Ah, I was stuck on thinking about this calling convention:
-> 
-> 	struct encoded_iov encoded_iov;
-> 	char compressed_data[...];
-> 	struct iovec iov[] = {
-> 		{ &encoded_iov, sizeof(encoded_iov) },
-> 		{ compressed_data, sizeof(compressed_data) },
-> 	};
-> 	preadv2(fd, iov, 2, -1, RWF_ENCODED);
-> 
-> But what you described would look more like:
-> 
-> 	// Needs to be large enough for maximum returned header + data.
-> 	char buffer[...];
-> 	struct iovec iov[] = {
-> 		{ buffer, sizeof(buffer) },
-> 	};
-> 	preadv2(fd, iov, 2, -1, RWF_ENCODED);
-> 	// We should probably align the buffer.
-> 	struct encoded_iov *encoded_iov = (void *)buffer;
-> 	char *data = buffer + encoded_iov->size;
-> 
-> That's a little uglier, but it should work, and allows for arbitrary
-> extensions. So, among these three alternatives (fixed size structure
-> with reserved space, variable size structure like above, or ioctl),
-> which would you prefer?
-
-Variable-sized structure would seem to be the easiest from the kernel
-POV and the interface is the easiest to describe - "you read the
-encoded data preceded by the header"...
+Some of the patches seem independent and potentially could be taken into
+5.14 now but I guess the whole subpage could go in one big batch to 5.15
+so it won't help you much anyway. The significant change is the last
+patch and so far I think it's acceptable.
