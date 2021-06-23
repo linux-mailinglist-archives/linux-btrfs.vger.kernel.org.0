@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729C13B1387
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 07:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF8E3B1388
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 07:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhFWF5x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Jun 2021 01:57:53 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35222 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhFWF5w (ORCPT
+        id S229924AbhFWF5z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Jun 2021 01:57:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41958 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229660AbhFWF5y (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Jun 2021 01:57:52 -0400
+        Wed, 23 Jun 2021 01:57:54 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E98021FD45
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jun 2021 05:55:34 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id A757021941
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jun 2021 05:55:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624427734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1624427736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=n/0xu33j7Z+M5mRBiZdFLgQBO529M5ax9gv6Glab24o=;
-        b=GOSETx/RSTYU0mofb9lg5o5yvWM1pqhlR0vb6uQrfnNXKnEMjpEDgt/Rkb7Lm3quyHGx8c
-        uad3NMv142liL4Q4SvdL5ecTNpJX+DxJC7qlcxrMtxo+WQFvhqkVzMjkFRqcUgjBPrHKwq
-        fIhDW2Iwr7bK7SLkuBu/RLE/Cc23NbI=
+        bh=VVugdK+zOUMbXo/vgGDQW1NzunSGLisnNvs/l9jtbNc=;
+        b=QlRqwyoE1/7BHwXlc3wEl3MRDo5sWS0OLFVNPfqx8yDucAa5/gmWzHLj2kqUCiOp65tbvu
+        7BrGaR6wAFpuDFyJ7Og3ifflJQWvCCxaQIzF5gN7xyQTIXVK0NZaQxdYZuuDLbflLcAiP3
+        TtvPrOwhWaqu93/VlRuTBNj2OPLW8zA=
 Received: from adam-pc.lan (unknown [10.163.16.38])
-        by relay2.suse.de (Postfix) with ESMTP id EEB90A3B8A
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jun 2021 05:55:33 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id ACE19A3B91
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jun 2021 05:55:35 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 1/8] btrfs: don't pass compressed pages to btrfs_writepage_endio_finish_ordered()
-Date:   Wed, 23 Jun 2021 13:55:22 +0800
-Message-Id: <20210623055529.166678-2-wqu@suse.com>
+Subject: [PATCH RFC 2/8] btrfs: make btrfs_subpage_end_and_test_writer() to handle pages not locked by btrfs_page_start_writer_lock()
+Date:   Wed, 23 Jun 2021 13:55:23 +0800
+Message-Id: <20210623055529.166678-3-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210623055529.166678-1-wqu@suse.com>
 References: <20210623055529.166678-1-wqu@suse.com>
@@ -41,39 +41,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since async_extent holds the compressed page, it would trigger the new
-ASSERT() in btrfs_mark_ordered_io_finished() which checks the range is
-inside the page.
+Normally if a page is locked by page_lock() other than
+btrfs_page_start_writer_lock(), it should be passed as @locked_page for
+various extent_clear_unlock_delalloc() call sites.
 
-Since btrfs_writepage_endio_finish_ordered() can accept @page == NULL,
-just pass NULL to btrfs_writepage_endio_finish_ordered().
+But there are quite some call sites in compression path, where we
+intentionally call extent_clear_unlock_delalloc() with @locked_page ==
+NULL.
+
+This will abuse extent_clear_unlock_delalloc() to unlock @locked_page.
+
+This works fine for regular page size, but not really for subpage, as if
+a page is locked by btrfs_page_start_writer_lock() it will have proper
+@writers value increased.
+
+If a page not locked by btrfs_page_start_writer_lock() we will underflow
+the value.
+
+But thankfully, for such pages its @writers value should be zero, and
+we can use that to distinguish page locked by
+btrfs_page_start_writer_lock() and @locked_page by delalloc.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ fs/btrfs/subpage.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 050c88ab74b5..e102e3672475 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -974,15 +974,12 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
- 				    async_extent->nr_pages,
- 				    async_chunk->write_flags,
- 				    async_chunk->blkcg_css)) {
--			struct page *p = async_extent->pages[0];
- 			const u64 start = async_extent->start;
- 			const u64 end = start + async_extent->ram_size - 1;
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index a61aa33aeeee..72d5d4712933 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -245,11 +245,33 @@ bool btrfs_subpage_end_and_test_writer(const struct btrfs_fs_info *fs_info,
+ {
+ 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
+ 	const int nbits = (len >> fs_info->sectorsize_bits);
++	unsigned long flags;
++	bool ret;
  
--			p->mapping = inode->vfs_inode.i_mapping;
--			btrfs_writepage_endio_finish_ordered(inode, p, start,
-+			btrfs_writepage_endio_finish_ordered(inode, NULL, start,
- 							     end, 0);
+ 	btrfs_subpage_assert(fs_info, page, start, len);
  
--			p->mapping = NULL;
- 			extent_clear_unlock_delalloc(inode, start, end, NULL, 0,
- 						     PAGE_END_WRITEBACK |
- 						     PAGE_SET_ERROR);
++	/* Will do two atomic checks, no longer atomic and need spinlock */
++	spin_lock_irqsave(&subpage->lock, flags);
++
++	/*
++	 * In compression path, we have extent_clear_unlock_delalloc() call
++	 * sites which intentionally pass @locked_page == NULL to unlock
++	 * the locked page.
++	 *
++	 * In that case, @locked_page should has no writer counts, as it's
++	 * not locked by btrfs_page_start_writer_lock().
++	 * For such case, we just return true so that
++	 * btrfs_page_end_writer_lock() will unlock the page.
++	 */
++	if (atomic_read(&subpage->writers) == 0) {
++		ret = true;
++		spin_unlock_irqrestore(&subpage->lock, flags);
++		return ret;
++	}
+ 	ASSERT(atomic_read(&subpage->writers) >= nbits);
+-	return atomic_sub_and_test(nbits, &subpage->writers);
++	ret = atomic_sub_and_test(nbits, &subpage->writers);
++	spin_unlock_irqrestore(&subpage->lock, flags);
++	return ret;
+ }
+ 
+ /*
 -- 
 2.32.0
 
