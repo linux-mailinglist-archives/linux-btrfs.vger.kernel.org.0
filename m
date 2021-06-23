@@ -2,325 +2,275 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AFA3B1458
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 09:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917ED3B14EE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 09:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhFWHG1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Jun 2021 03:06:27 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:52276 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229964AbhFWHG0 (ORCPT
+        id S230449AbhFWHkG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Jun 2021 03:40:06 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:63437 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhFWHjo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Jun 2021 03:06:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1624431847;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eTMYTwYaVBtNYOYQR2c0KY7S1/zCp4dMBgQLkChlS3w=;
-        b=fGnUWiR6LC6vYU3NXpikCaG4yvUo7iGBuHjD4kxxd6NWEVV1qLnmnrDvSQNtwPj/qCrKD6
-        0DPCUq12MZcstwdOuPrpSp3QKH9TGtdg9ZKGALkh0eBqb06uNwlAnkww6g2vliH1+SqW7F
-        t9PTfvpYc1GkfcwSCX1/Ez4nFuNJnh8=
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-db3eur04lp2051.outbound.protection.outlook.com [104.47.12.51]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-35-5U7wjuRYNhC4lt6MgJalTg-1; Wed, 23 Jun 2021 09:04:06 +0200
-X-MC-Unique: 5U7wjuRYNhC4lt6MgJalTg-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WJuly8iW2Ye2otSZQXF3mn3Fvpq+S19W5kjJtGkYMZzXvuv8nZsQYAXJ8qUKfLQGAA5zw6mNuC88CGANFEzbqbt/H6tGPhpFOyMwvKjatRFuvIcOG7bKpaQO7+xSK55yR6wQPBH7fv4P+u3g9IbeuZc7DbGEtW/0dbpak7D84HSR+cBWC4m4Wiwpg7AULHbQgoODow5pR8Cfh89iDwq14a2vHszvcHBZh/vPH47UTufcsy6ciKCfahWo6Cx+Cu+fIfbuegU8c1Qh+Wfd+Ws1LVjPG+fcgaEE0hqMd5HyvTlWLoLz/bBbQZ3eNy+Qk8wzkJ1Nl87ioPtL5OR74hT5eA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EV/vF8sEoOEgLVgeJ/Dkz6WZVMDk2FeMYZQ/m1byUec=;
- b=FBsq/5btf3HAPX1TC7m4niZs8eseQuSsMCuSxj+/7crOCab5xUF0y0MchXQuxUFx87m2EpIUR2+EFIvjwqSTaSV4ZIGI2CP2u/iX7BFW/JXimBm9O3h7RbasUvQ2uR4VFePToGDiK+fGBlj+JqpddDRmTQgU60J11jtRP/b91lR9hRyDCDtP1aLqgUrnegPIPNHXKS+9JiudO/ZvhEQMROMaFf7OE77d9Vc2QzVpYfrdjVA2YkcwNW36x+sixihf0Trw9NBIbYz5XTsRYEC7dIpQENuDkYgzcGGoj+9ZUFZC/cWJjyxeCM9h9i1HUTuejMr5EIN/+75w/4ahTNZGDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AM7PR04MB6775.eurprd04.prod.outlook.com (2603:10a6:20b:102::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Wed, 23 Jun
- 2021 07:04:04 +0000
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::b4b5:823d:f2fd:d10]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::b4b5:823d:f2fd:d10%7]) with mapi id 15.20.4242.023; Wed, 23 Jun 2021
- 07:04:04 +0000
-To:     riteshh <riteshh@linux.ibm.com>
-CC:     linux-btrfs@vger.kernel.org
-References: <20210610050917.105458-1-wqu@suse.com>
- <20210623065636.l7uqokq7dcf6m5tc@riteshh-domain>
-From:   Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH v4 00/10] btrfs: defrag: rework to support sector perfect
- defrag
-Message-ID: <a213d8c4-da08-3b4b-6b35-9ede297e9038@suse.com>
-Date:   Wed, 23 Jun 2021 15:03:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210623065636.l7uqokq7dcf6m5tc@riteshh-domain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [149.28.201.231]
-X-ClientProxiedBy: SJ0PR03CA0271.namprd03.prod.outlook.com
- (2603:10b6:a03:39e::6) To AM7PR04MB6821.eurprd04.prod.outlook.com
- (2603:10a6:20b:105::22)
+        Wed, 23 Jun 2021 03:39:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1624433849; x=1655969849;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wYE1VyDahZ1Q30CU9FhxmfOZbmbHnUnr5Hn/KtJegd0=;
+  b=YBstdSrd/ljUqXm2DYyy25s3DFSevq+y+QYRLFXchLNx3CWCMuGSBXlh
+   bdKH/BzyBu4ZWPqEWb9AmFBAMz9zh0LSJNuuWyvQJjTuiMzTM3aSGXg/a
+   cLm3xltSxPWRYjRlqMrRCmr59e5YYyDtrpy2OCz23MfEb8sPuaw/WU56C
+   Nx6ZQZ+skE8atccM0fL5jBfqSYiDxQyV5APSBz7RX4L7tlbY7/NZIArW4
+   p1XIOX6XrmdGDsMcZ2KZIVqljEv2D9NlwmOLRotRaQLneIE/P+af4QsZK
+   BQpcbDaglCidI3Q/yn00bgyDmhj1I4EXMLhmaQkot5g5So97N7HzGXQqi
+   Q==;
+IronPort-SDR: t06cJD5IyVJU8jJ333ewHWeI8/U+i3kFIPCwg6+MMLmLhMV1+vdzuzcxUXfucIkHmfYIeQBdJM
+ kXalukHJ1fNESyHuS4PIlitjivjK2ytzstp5FFbA3DZRgX4x8oTDhq+uQ668xyr45jdOJjgy2+
+ HwGMAYeGIHlLdLHODIaVURnE62bcNKKCOA1JWDKkGTRJfXOrdUCnuM+0de2qs2Xa9sSLgOIJBm
+ VMnnHQfPaloH528ulVMhY80uZbwq/n0vLug15tMx8k5vLXrH9B9+atzZOibd/aBTVCfhFWkQoC
+ Fow=
+X-IronPort-AV: E=Sophos;i="5.83,293,1616428800"; 
+   d="scan'208";a="276458303"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Jun 2021 15:37:27 +0800
+IronPort-SDR: yV8cY4pG+SXFVzv7Rv+wGxSEY9QQzMAHjRF1p842LcBRDc70BkaiUl9qCMffcRrYJVI4oTW90Z
+ ZDJdrbaFaxXgsI/MHJREgnMzTVZ0PRhydwsxKDfDq0q0wY33EuQBHUncMKSwcrdm7W+0wDCfRV
+ 9BlDszZ3NnuAI/fznhK/CYn4hTYiN1xXp3ismMiGFaepkh5rsC79Tjtg3fkF87FOi9N1h8QunX
+ e1GebWOKS1Qz6T9oLIunbWmLYWVsPi7Cu3aGFM600rBMvWLvrhhDet3/tYJzFiQ4TT7x//yEAb
+ aReY570eMCegnZV+ikdTf7dv
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 00:16:02 -0700
+IronPort-SDR: 6oAJo8CEzRGOJd3FO+cAVKt0OJcMsKP72ghlggUnKyQOpWnxJzFbEKUlU4YKzhYNFXl5KvX2YH
+ TZBUDRG1KZDzmCuW9Bxiz639eRlY4Y8l8USHdjlN61+7FJbOKuI6B+8KM0ocsQe7wkJ2rgqvXt
+ ZQywWZhDG6ThGUOorfaSgBC4rKtesZozH7GaRQlXwUUbja8Ix46WrJLtXuM2/29uOgzcV9o3ej
+ ln07Qq4BjvJ8Pzwk4BrUW/h1Lj0dMqgUWuqRz46fbdP5guAUIH/cYWLqwOwsDuyYLmnhQ/PHP1
+ GdY=
+WDCIronportException: Internal
+Received: from 75b91z2.ad.shared (HELO naota-xeon) ([10.225.50.161])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 00:37:26 -0700
+Date:   Wed, 23 Jun 2021 16:37:24 +0900
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: fix deadlock with concurrent chunk allocations
+ involving system chunks
+Message-ID: <20210623073724.diltq4hd7z6t6dmo@naota-xeon>
+References: <b8b7b585ec8b7b2924fd5995951a0d16d2e394d7.1624369954.git.fdmanana@suse.com>
+ <20210622175811.GK28158@twin.jikos.cz>
+ <CAL3q7H6tx3XG9a4=nCLyv+GG8uLJ40qLzqzUWaxTLwhqOhZSKg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by SJ0PR03CA0271.namprd03.prod.outlook.com (2603:10b6:a03:39e::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18 via Frontend Transport; Wed, 23 Jun 2021 07:04:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e146b185-3eaf-4643-a50d-08d936151637
-X-MS-TrafficTypeDiagnostic: AM7PR04MB6775:
-X-Microsoft-Antispam-PRVS: <AM7PR04MB6775C3B46F903DDE974C15C4D6089@AM7PR04MB6775.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: s+7UhuTgsgJ8ie7uGxAuQWI0TgffZ72Rzm0O59obkjA92976USeuTRblyS088l+xG794wF9PSaabE7eSoAwAyjRtkBeyjMDJBuBj6XKsNKBmft+tTfaJeMe+feJDnBAOhq2DgKlclo0ha8+6+Slch6tGrGckxNy2nRVKySsLvuRLVnPdV5xDfvIf35T8GnT1zb3K8xsg0/6a0S2Y6KWNeL2s00kzyPnKBLRa2ujIsVlBa+MRYwBGuMBNhWuXzkfR8jP2LNueH7XtdO8LZ2JQfuILj9Hwgl1tKQ/awql85pMmGqz3+alMyFf5UnDaZt8cBzmaO0eYqF9IQVKOkXSWHfGBeYVjAG83Qc0dxnQUsa0NjObXP4JML99+l/uOHzG5kesLJLGHfgo/fzGDFOruef6dLqbN2hGjXwTkzfJhe3r3p3yxn2wQOdzv1lyq1zp742mqeNmk5R/v68jDO97TdFwuPxwMClAXvjmPLw1sk7/wwENwYt2LKwXexzIWQcNkRd3hPHNdGgD9VYp+SjWprNv/TWjM8ro/zc65OyxsCxhRZMLvZK5meIkPDyrWZbJMce+RFE6U6OpTKfcf3duSzxZcGCwUW9PtMDtKV618LeW0weiWiotaBy2k4WyjaX3evbYOu5S0dZe73lJfcBe/8j99WBoQ/bpGCghS9lULmjjAEbo4XTXYNQvmQL0Tx0FlBIWXynK7XddnN+4J6ZR/CJlciCRazeBULrb4CLdSHzQrH1f1Jw/ig+1QIGiM/xHzD8r3GLouJd9jRIhoxn1WV8o+Qg8xCNtNz/TqZFhp8cJiI8xARvPrxi2L355XxPDV
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(136003)(376002)(39850400004)(366004)(4326008)(31696002)(5660300002)(83380400001)(66556008)(45080400002)(31686004)(8676002)(6486002)(478600001)(966005)(66476007)(66946007)(6666004)(86362001)(8936002)(16576012)(16526019)(956004)(186003)(316002)(6706004)(2616005)(2906002)(38100700002)(6916009)(26005)(36756003)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HgY/il7D+XJBfegzEXFVC9C8V9OtxoBnyi27MHu2uU5R41VCevE4mYZ8/6hd?=
- =?us-ascii?Q?Hh6PMs4zcA6I8JDrmhsFp78hKOmBu0mnNtzQBbqyQBuD31zWbBZ+zo1VPOhi?=
- =?us-ascii?Q?Ee94luF/Yry4EdcP3DTAn6R5zVU2+hdXot2wB0XlMZ7JA86PNUhxXi9YJ1DD?=
- =?us-ascii?Q?iqxoMJUGvh7SInVAwhKtp/RK2J+ES0iIZfWtxJP+4Y5U9RhUVIwwTX+W2+Wk?=
- =?us-ascii?Q?Ho/XDwm52goVaNdliEhYpAKZh+sv3C2Vf/NTRUPPrQNL9GMMUXkDmiRuQBqG?=
- =?us-ascii?Q?URZhe1aPBWzYmC6BYyCFKDhEbpnvKI1D4kc9XhD5zNBt66n+ipTQT6C6TluN?=
- =?us-ascii?Q?009Y1jPNbyoZb2TsFIM1QpWyI3+5mfNLlJqiktD8WsX6v48LYbRWkINC4f0O?=
- =?us-ascii?Q?hAWfQB7tgKWFeJrdRinRKW1tjiF0EZJvAPiSIBpX+fr+uc6HKf/tI4Kv8TDb?=
- =?us-ascii?Q?advJZ6ZZzjkeyK/mgn/MlyJY83y0X5X6kq/OSHZYwwltBKrq2kkJWHgeA+3z?=
- =?us-ascii?Q?VRahtYKpENoyv7+jnPV6aJMvpLQq5ta0wgP8XNnvAVFJzEj3dDn/xk56DY1I?=
- =?us-ascii?Q?o0IT8pb9LEWTGNHRH9Q10LBYRttROzs64UPlg7RmhtACbnjVy+bgEmIDtkP1?=
- =?us-ascii?Q?ULFy2Iz0iMhEQLvnn/4hKGiDskJRHFOLL/Tzd2QahVuahxZAN5fx1bSCmeq2?=
- =?us-ascii?Q?IeCg8D32OoNQ9DNGUHXySAEZKu/Ee+IHMAnihA284RO+jSiATCooF8oSQ4Aa?=
- =?us-ascii?Q?iAIEpG4fQ4VgUF6I1MvzPm7ZX86d3qLmdc4xelt+LVLm9bLY+X20IA+Co8cO?=
- =?us-ascii?Q?TL+nvXsdu2SQduDMT7FbkjOkPk5KUv6TZwlH0AjphGNL/AxFWXe6LYBzw8/R?=
- =?us-ascii?Q?TP8FhRGUN1vJ4FntoVVPsUVHVsNc1TruHgBlJSMaQNM6iqVMfDuxLr1dIZF8?=
- =?us-ascii?Q?TlCT1LFMQF3zA2X7o7GbhRqI5Zf9RfAtd0blDmly8VPLzDOH6eEYB3go3ApG?=
- =?us-ascii?Q?OfkJCzsUYB/UahN51HGTVlClSXVdALJARDHd6nUulDplaMTByfgdvld/fKK0?=
- =?us-ascii?Q?quCEWpaLfiPBU3SMGxGeBYRPUgthEDa4i0x0WDc0Jn1O34C3BZT0NOz7bXiG?=
- =?us-ascii?Q?dFiWf+BTplviK6aOwi7tfuoQGLbH90eG4dsMfb6Gq3GGG8Z52rCq2fLqHHun?=
- =?us-ascii?Q?1tuj8CQhn//RnFGw3FBcIUNAUCyRkJXz46dUuXmMDgEci/SQFs/FuvUjL32U?=
- =?us-ascii?Q?6tdDuHqxZfAra4tY2AFa5RzUFL4MFXVBWhPcDxZTPwn/DBn7f9yrVTcYlxdd?=
- =?us-ascii?Q?frBtQuLKwoPMUMog8VC6q6Vt?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e146b185-3eaf-4643-a50d-08d936151637
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 07:04:04.8537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: klRypPRY33z2OzM0lerGA/0YgJph1P/uR2fCRC+piAqEsMpDbuLXj4jsTwl9vOZb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6775
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H6tx3XG9a4=nCLyv+GG8uLJ40qLzqzUWaxTLwhqOhZSKg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Jun 22, 2021 at 07:20:25PM +0100, Filipe Manana wrote:
+> On Tue, Jun 22, 2021 at 7:01 PM David Sterba <dsterba@suse.cz> wrote:
+> >
+> > On Tue, Jun 22, 2021 at 02:54:10PM +0100, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > >
+> > > When a task attempting to allocate a new chunk verifies that there is not
+> > > currently enough free space in the system space_info and there is another
+> > > task that allocated a new system chunk but it did not finish yet the
+> > > creation of the respective block group, it waits for that other task to
+> > > finish creating the block group. This is to avoid exhaustion of the system
+> > > chunk array in the superblock, which is limited, when we have a thundering
+> > > herd of tasks allocating new chunks. This problem was described and fixed
+> > > by commit eafa4fd0ad0607 ("btrfs: fix exhaustion of the system chunk array
+> > > due to concurrent allocations").
+> > >
+> > > However there are two very similar scenarios where this can lead to a
+> > > deadlock:
+> > >
+> > > 1) Task B allocated a new system chunk and task A is waiting on task B
+> > >    to finish creation of the respective system block group. However before
+> > >    task B ends its transaction handle and finishes the creation of the
+> > >    system block group, it attempts to allocate another chunk (like a data
+> > >    chunk for an fallocate operation for a very large range). Task B will
+> > >    be unable to progress and allocate the new chunk, because task A set
+> > >    space_info->chunk_alloc to 1 and therefore it loops at
+> > >    btrfs_chunk_alloc() waiting for task A to finish its chunk allocation
+> > >    and set space_info->chunk_alloc to 0, but task A is waiting on task B
+> > >    to finish creation of the new system block group, therefore resulting
+> > >    in a deadlock;
+> > >
+> > > 2) Task B allocated a new system chunk and task A is waiting on task B to
+> > >    finish creation of the respective system block group. By the time that
+> > >    task B enter the final phase of block group allocation, which happens
+> > >    at btrfs_create_pending_block_groups(), when it modifies the extent
+> > >    tree, the device tree or the chunk tree to insert the items for some
+> > >    new block group, it needs to allocate a new chunk, so it ends up at
+> > >    btrfs_chunk_alloc() and keeps looping there because task A has set
+> > >    space_info->chunk_alloc to 1, but task A is waiting for task B to
+> > >    finish creation of the new system block group and release the reserved
+> > >    system space, therefore resulting in a deadlock.
+> > >
+> > > In short, the problem is if a task B needs to allocate a new chunk after
+> > > it previously allocated a new system chunk and if another task A is
+> > > currently waiting for task B to complete the allocation of the new system
+> > > chunk.
+> > >
+> > > Fix this by making a task that previously allocated a new system chunk to
+> > > not loop at btrfs_chunk_alloc() and proceed if there is another task that
+> > > is waiting for it.
+> > >
+> > > Reported-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > > Link: https://lore.kernel.org/linux-btrfs/20210621015922.ewgbffxuawia7liz@naota-xeon/
+> > > Fixes: eafa4fd0ad0607 ("btrfs: fix exhaustion of the system chunk array due to concurrent allocations")
+> >
+> > So this is a regression in 5.13-rc, the final release is most likely the
+> > upcoming Sunday. This fixes a deadlock so that's an error that could be
+> > considered urgent.
+> >
+> > Option 1 is to let Aota test it for a day or two (adding it to our other
+> > branches for testing as well) and then I'll send a pull request on
+> > Friday at the latest.
+> >
+> > Option 2 is to put it to pull request branch with a stable tag, so it
+> > would propagate to 5.13.1 in three weeks from now.
+> >
+> > I'd prefer option 1 for release completeness sake but if there are
+> > doubts or tests show otherwise, we can always do 2.
+> 
+> Either way is fine for me. I didn't even notice before that it was in
+> 5.13-rcs, I was thinking about 5.12 on top of my head.
+> 
+> The issue is probably easier for Aota to trigger on zoned filesystems,
+> I suppose it triggers more chunk allocations than non-zoned
+> filesystems due to the zoned device constraints.
+> 
+> Thanks.
 
+Unfortunately, I still have a hung with the patch.
 
-On 2021/6/23 =E4=B8=8B=E5=8D=882:56, riteshh wrote:
-> On 21/06/10 01:09PM, Qu Wenruo wrote:
-[...]
->>
->> Thus I'm wondering if the check timing is even correct for the existing
->> code.
->> But at least I can't reproduce the nbytes problem on x86_64, thus no yet
->> sure what the real cause is.
->=20
-> Hi Qu,
->=20
-> Sorry for getting back late on this. I was using my test machines for oth=
-er
-> tests hence this got delayed.
+This time there was a recursive dependency between PID 1212 (in the
+busy loop) and 1214 (waiting for a tree lock PID 1212 is holding).
 
-No need to hurry, this branch is mostly in archive mode, no active=20
-development working on that yet.
+PID 1212 is at the busy loop.
 
-But still, thank you for the testing.
+crash> bt -S ffffc900037568d0 1212
+PID: 1212   TASK: ffff88819c7ec000  CPU: 0   COMMAND: "fsstress"
+ #0 [ffffc900037568d0] __schedule at ffffffff8260d345
+ #1 [ffffc90003756910] rcu_read_lock_sched_held at ffffffff812c08b1
+ #2 [ffffc90003756928] lock_acquire at ffffffff8127bf1c
+ #3 [ffffc90003756a40] btrfs_chunk_alloc at ffffffffa03cb7ad [btrfs]
+ #4 [ffffc90003756ae0] find_free_extent at ffffffffa01abfa2 [btrfs]
+ #5 [ffffc90003756ca0] btrfs_reserve_extent at ffffffffa01bd7d0 [btrfs]
+ #6 [ffffc90003756d30] btrfs_alloc_tree_block at ffffffffa01be74f [btrfs]
+ #7 [ffffc90003756ed0] alloc_tree_block_no_bg_flush at ffffffffa018b9e5 [btrfs]
+ #8 [ffffc90003756f30] __btrfs_cow_block at ffffffffa0192fb1 [btrfs]
+ #9 [ffffc90003757080] btrfs_cow_block at ffffffffa01940b5 [btrfs]
+#10 [ffffc90003757100] btrfs_search_slot at ffffffffa019f5c7 [btrfs]
+#11 [ffffc90003757270] lookup_inline_extent_backref at ffffffffa01afbb3 [btrfs]
+#12 [ffffc900037573a0] lookup_extent_backref at ffffffffa01b173c [btrfs]
+#13 [ffffc900037573f8] __btrfs_free_extent at ffffffffa01b1a56 [btrfs]
+#14 [ffffc90003757578] __btrfs_run_delayed_refs at ffffffffa01b4486 [btrfs]
+#15 [ffffc90003757760] btrfs_run_delayed_refs at ffffffffa01b723c [btrfs]
+#16 [ffffc900037577c0] btrfs_commit_transaction at ffffffffa01ecbfd [btrfs]
+#17 [ffffc90003757918] btrfs_mksubvol at ffffffffa02a5569 [btrfs]
+#18 [ffffc900037579a8] btrfs_mksnapshot at ffffffffa02a5c88 [btrfs]
+#19 [ffffc90003757a00] __btrfs_ioctl_snap_create at ffffffffa02a5f9d [btrfs]
+#20 [ffffc90003757a60] btrfs_ioctl_snap_create_v2 at ffffffffa02a630f [btrfs]
+...
 
->=20
-> I did test this whole patch series from your github https://github.com/ad=
-am900710/linux/commits/defrag_refactor.
-> I didn't find any crashes (as you also mentioned). But some tests did fai=
-l e.g. btrfs/072.
->=20
-> Is this(btrfs/072) what you are referring to in above (random test failue=
-s with subpage
-> sectorsize)?
+PID 1214 is holding the reserved chunk bytes. So, PID 1212 is waiting
+for PID 1214 to finish chunk allocation.
 
-Exactly the same thing.
+crash> task -R journal_info 1214
+PID: 1214   TASK: ffff8881c8be4000  CPU: 0   COMMAND: "fsstress"
+  journal_info = 0xffff88812cc343f0,
+crash> struct btrfs_trans_handle 0xffff88812cc343f0
+struct btrfs_trans_handle {
+  transid = 218, 
+  bytes_reserved = 0, 
+  chunk_bytes_reserved = 393216, 
+  delayed_ref_updates = 0, 
+  transaction = 0xffff8881c631e000, 
+  block_rsv = 0x0, 
+  orig_rsv = 0x0, 
+  use_count = {
+    refs = {
+      counter = 1
+    }
+  }, 
+  type = 513, 
+  aborted = 0, 
+  adding_csums = false, 
+  allocating_chunk = false, 
+  can_flush_pending_bgs = true, 
+  reloc_reserved = false, 
+  dirty = true, 
+  in_fsync = false, 
+  root = 0xffff8881d04c0000, 
+  fs_info = 0xffff8881f6f94000, 
+  new_bgs = {
+    next = 0xffff8881b369d1c8, 
+    prev = 0xffff8881b369d1c8
+  }
+}
+crash> struct btrfs_transaction.chunk_bytes_reserved 0xffff8881c631e000
+  chunk_bytes_reserved = {
+    counter = 393216
+  }
 
->=20
-> Please do let me know if you would like me to try any of the fstest in lo=
-op for
-> reproducing any error. Or if there is any other tests that you would like=
- me to
-> run?
->=20
-> 1. output from btrfs/072 test.
-> 	_check_btrfs_filesystem: filesystem on /dev/vdc is inconsistent
-> 	*** fsck.btrfs output ***
-> 	[1/7] checking root items
-> 	[2/7] checking extents
-> 	[3/7] checking free space cache
-> 	btrfs: csum mismatch on free space cache
-> 	failed to load free space cache for block group 22020096
-> 	btrfs: csum mismatch on free space cache
-> 	failed to load free space cache for block group 1095761920
-> 	btrfs: csum mismatch on free space cache
-> 	failed to load free space cache for block group 1364197376
-> 	[4/7] checking fs roots
-> 	root 5 inode 323 errors 400, nbytes wrong
+PID 1214 is trying to take a read lock of a tree root.
 
-Yep, and I even know how to solve it if you really want.
+crash> bt 1214
+PID: 1214   TASK: ffff8881c8be4000  CPU: 0   COMMAND: "fsstress"
+ #0 [ffffc90003777228] __schedule at ffffffff8260d345
+ #1 [ffffc90003777330] schedule at ffffffff8260eb67
+ #2 [ffffc90003777360] rwsem_down_read_slowpath at ffffffff826194bd
+ #3 [ffffc900037774b8] __down_read_common at ffffffff812648cc
+ #4 [ffffc90003777568] down_read_nested at ffffffff81264d44
+ #5 [ffffc900037775b8] btrfs_read_lock_root_node at ffffffffa02b2fe7 [btrfs]
+ #6 [ffffc900037775e0] btrfs_search_slot at ffffffffa019f81b [btrfs]
+ #7 [ffffc900037777b8] do_raw_spin_unlock at ffffffff81285004
+ #8 [ffffc900037777f8] btrfs_create_pending_block_groups at ffffffffa03c672c [btrfs]
+ #9 [ffffc90003777938] __btrfs_end_transaction at ffffffffa01e8138 [btrfs]
+#10 [ffffc90003777978] btrfs_end_transaction at ffffffffa01e8ffb [btrfs]
+#11 [ffffc90003777988] btrfs_cont_expand at ffffffffa02209d6 [btrfs]
+#12 [ffffc90003777b00] btrfs_clone_files at ffffffffa03d53df [btrfs]
+#13 [ffffc90003777b58] btrfs_remap_file_range at ffffffffa03d601f [btrfs]
+#14 [ffffc90003777c50] do_clone_file_range at ffffffff8179f72c
+#15 [ffffc90003777ca0] vfs_clone_file_range at ffffffff8179fbdb
+#16 [ffffc90003777cf8] ioctl_file_clone at ffffffff8171a1b4
+...
 
-The diff should solve it pretty well:
+And the extent buffer looks like to be held by PID 1212, making the
+dependency loop.
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index edf597ad515f..40d6a46e43f3 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1235,8 +1235,9 @@ static int defrag_one_locked_target(struct=20
-btrfs_inode *inode,
-         clear_extent_bit(&inode->io_tree, start, start + len - 1,
-                          EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING |
-                          EXTENT_DEFRAG, 0, 0, cached_state);
--       set_extent_defrag(&inode->io_tree, start, start + len - 1,
--                         cached_state);
-+       ret =3D btrfs_set_extent_delalloc(inode, start, start + len - 1,
-+                                       EXTENT_DEFRAG, cached_state);
-+       ASSERT(!ret);
+crash> bt -FF 1214
+...
+ #4 [ffffc90003777568] down_read_nested at ffffffff81264d44
+    ffffc90003777570: [ffff88817afc7c20:btrfs_extent_buffer] 0000000000000000 
+    ffffc90003777580: 0000000000000000 ffffc900037775b0 
+    ffffc90003777590: __btrfs_tree_read_lock+40 [ffff88817afc7c20:btrfs_extent_buffer] 
+    ffffc900037775a0: ffffed102e623800 dffffc0000000000 
+    ffffc900037775b0: ffffc900037775d8 btrfs_read_lock_root_node+71
+...
+crash> struct extent_buffer ffff88817afc7c20
+struct extent_buffer {
+  start = 1979629568, 
+  len = 16384, 
+...
+  lock_owner = 1212,
+...
 
-         /* Update the page status */
-         for (i =3D start_index - first_index; i <=3D last_index - first_in=
-dex;
+I now started to think waiting in btrfs_chunk_alloc() is generally bad
+idea. Since the function is called with tree locks held, it's quite
+easy to hit a recursive dependency. The previous busy loop was OK
+because it only waits for an allocating process which leave there
+really soon.
 
-But I don't know why the timing calling set_extent_defrag() is not safe=20
-enough.
-
-
-Currently the branch is not a high priority thing, thus feel free to=20
-ignore the branch and above diff for now.
-
-
-> 	ERROR: errors found in fs roots
-> 	Opening filesystem to check...
-> 	Checking filesystem on /dev/vdc
-> 	UUID: b638db59-981c-4502-831e-038930e65cf4
-> 	found 28282880 bytes used, error(s) found
-> 	total csum bytes: 15196
-> 	total tree bytes: 442368
-> 	total fs tree bytes: 331776
-> 	total extent tree bytes: 36864
-> 	btree space waste bytes: 163191
-> 	file data blocks allocated: 37101568
-> 	 referenced 27430912
-> 	*** end fsck.btrfs output
->=20
-> 2. btrfs/124 (- I guess this we have seen in past w/o your changes too).
-> 	[ 2565.969989] BTRFS info (device vdc): balance: start -d -m -s
-> 	[ 2565.970727] BTRFS info (device vdc): relocating block group 151348838=
-4 flags data
-> 	[ 2570.693594] BTRFS error (device vdc): bad tree block start, want 3182=
-1824 have 0
-> 	[ 2570.725804] BTRFS info (device vdc): read error corrected: ino 0 off =
-31821824 (dev /dev/vdi sector 21192)
-> 	[ 2581.579592] BTRFS info (device vdc): found 5 extents, stage: move dat=
-a extents
-> 	[ 2581.818799] BTRFS info (device vdc): found 5 extents, stage: update d=
-ata pointers
-> 	[ 2582.086796] BTRFS info (device vdc): relocating block group 976617472=
- flags data
-> 	[ 2598.759264] BTRFS info (device vdc): found 6 extents, stage: move dat=
-a extents
-> 	[ 2598.991059] BTRFS info (device vdc): found 6 extents, stage: update d=
-ata pointers
-> 	[ 2599.274253] BTRFS info (device vdc): relocating block group 943063040=
- flags system
-> 	[ 2599.525191] BTRFS info (device vdc): relocating block group 674627584=
- flags metadata
-> 	[ 2599.788734] BTRFS info (device vdc): relocating block group 298844160=
- flags data|raid1
-> 	[ 2609.746593] BTRFS info (device vdc): found 4 extents, stage: move dat=
-a extents
-> 	[ 2609.989663] BTRFS info (device vdc): found 3 extents, stage: update d=
-ata pointers
-> 	[ 2610.234642] BTRFS info (device vdc): relocating block group 30408704 =
-flags metadata|raid1
-> 	[ 2610.234889] ------------[ cut here ]------------
-> 	[ 2610.234970] BTRFS: Transaction aborted (error -28)
-
-Yep, I can also see this on our Power8 VM, without my patches.
-
-> 	[ 2610.235172] WARNING: CPU: 3 PID: 26186 at fs/btrfs/extent-tree.c:2163=
- btrfs_run_delayed_refs+0x108/0x330
-> 	[ 2610.235364] Modules linked in:
-> 	[ 2610.235426] CPU: 3 PID: 26186 Comm: btrfs Not tainted 5.13.0-rc2-0039=
-3-gc0e4bc6f271f #43
-> 	[ 2610.235547] NIP:  c0000000009f0bb8 LR: c0000000009f0bb4 CTR: c0000000=
-00e5fb30
-> 	[ 2610.235665] REGS: c000000078fb7320 TRAP: 0700   Not tainted  (5.13.0-=
-rc2-00393-gc0e4bc6f271f)
-> 	[ 2610.235802] MSR:  800000000282b033 &lt;SF,VEC,VSX,EE,FP,ME,IR,DR,RI,L=
-E&gt;  CR: 48004222  XER: 20000000
-> 	[ 2610.235961] CFAR: c0000000001cea40 IRQMASK: 0
-> 	               GPR00: c0000000009f0bb4 c000000078fb75c0 c000000001c5dc00=
- 0000000000000026
-> 	               GPR04: 00000000fffff5ff c000000078fb7280 0000000000000027=
- c0000000ff507e98
-> 	               GPR08: 0000000000000023 0000000000000000 c00000000c286580=
- c000000001a11050
-> 	               GPR12: 0000000000004400 c00000003ffeae00 0000000000000002=
- c000000045e4e088
-> 	               GPR16: c000000045e4e000 c000000001334eb0 c000000012654000=
- 0000000001d00000
-> 	               GPR20: c000000012654000 0000000000000e5c 0000000000000000=
- c000000001662dc8
-> 	               GPR24: 0000000000000014 c000000009ec9800 c000000009ec9b48=
- c0000000410f6e08
-> 	               GPR28: 0000000000000000 0000000000000001 c000000012654000=
- ffffffffffffffe4
-> 	[ 2610.237012] NIP [c0000000009f0bb8] btrfs_run_delayed_refs+0x108/0x330
-> 	[ 2610.237111] LR [c0000000009f0bb4] btrfs_run_delayed_refs+0x104/0x330
-> 	[ 2610.237213] Call Trace:
-> 	[ 2610.237254] [c000000078fb75c0] [c0000000009f0bb4] btrfs_run_delayed_r=
-efs+0x104/0x330 (unreliable)
-> 	[ 2610.237404] [c000000078fb7680] [c000000000a0c4e4] btrfs_commit_transa=
-ction+0xf4/0x1330
-> 	[ 2610.237533] [c000000078fb7770] [c000000000a96e74] prepare_to_relocate=
-+0x104/0x140
-> 	[ 2610.237657] [c000000078fb77a0] [c000000000a9d524] relocate_block_grou=
-p+0x74/0x5f0
-> 	[ 2610.237770] [c000000078fb7860] [c000000000a9dcd0] btrfs_relocate_bloc=
-k_group+0x230/0x4a0
-> 	[ 2610.237886] [c000000078fb7920] [c000000000a56a60] btrfs_relocate_chun=
-k+0x80/0x1c0
-> 	[ 2610.238002] [c000000078fb79a0] [c000000000a57d3c] btrfs_balance+0x103=
-c/0x1560
-> 	[ 2610.238117] [c000000078fb7b30] [c000000000a6ab98] btrfs_ioctl_balance=
-+0x2d8/0x450
-> 	[ 2610.238232] [c000000078fb7b90] [c000000000a6eb90] btrfs_ioctl+0x1df0/=
-0x3be0
-> 	[ 2610.238328] [c000000078fb7d10] [c00000000058e048] sys_ioctl+0xa8/0x12=
-0
-> 	[ 2610.238435] [c000000078fb7d60] [c000000000036524] system_call_excepti=
-on+0x3d4/0x410
-> 	[ 2610.238551] [c000000078fb7e10] [c00000000000d45c] system_call_common+=
-0xec/0x278
-> 	[ 2610.238666] --- interrupt: c00 at 0x7ffff7be2990
->=20
-> 3. There were other failues, but I guess those were either due to mount f=
-ailure
->     or since no compression support yet for subpage blocksize.
-
-Yep, RAID56 mount/convert failures, and compression related output mismatch=
-.
+And, with the loop-exiting condition is getting complex, can't we use
+some proper lock/synchronization mechanism here? The hung this time
+was not straight forward because I did not see PID 1212 and 1214 in the
+hung task list. Also, using proper lock would make it possible to
+catch such recursion with the lockdep.
 
 Thanks,
-Qu
->=20
-> -ritesh
->=20
-
