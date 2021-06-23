@@ -2,149 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134963B138E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 07:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C853B13B8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Jun 2021 08:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbhFWF6F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Jun 2021 01:58:05 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41988 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhFWF6E (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Jun 2021 01:58:04 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4A8BF21941
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jun 2021 05:55:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624427747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zte+T6lWXLDCrBRpHBD3N+olXn7I2dy68NsLBa1clEo=;
-        b=oQOyB720RilPFkDknRv03u4WfBuMeQJLAkVOtrn7HIRhR3AL1b8oyJVyJq5n90VP/6I9/W
-        8EaPQ5JjMZsiQIKfARYxztjHHjCt3HXW7hol45/LDEHPEULFpoab9xMa8zrYWJg9s50Z4K
-        D+vG2VBXXm8kbhdaqS/+O0U2xLaIlz4=
-Received: from adam-pc.lan (unknown [10.163.16.38])
-        by relay2.suse.de (Postfix) with ESMTP id 4A2AAA3BB5
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Jun 2021 05:55:45 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 8/8] btrfs: only allow subpage compression if the range fully covers the first page
-Date:   Wed, 23 Jun 2021 13:55:29 +0800
-Message-Id: <20210623055529.166678-9-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210623055529.166678-1-wqu@suse.com>
-References: <20210623055529.166678-1-wqu@suse.com>
+        id S229886AbhFWGLS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Jun 2021 02:11:18 -0400
+Received: from mail-me3aus01on2068.outbound.protection.outlook.com ([40.107.108.68]:8479
+        "EHLO AUS01-ME3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229665AbhFWGLS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Jun 2021 02:11:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c7Aeja29Njnbz3iTm2zAYT1oz5iiZt5fLuWR9cgSJUSaHPcFqEGdkqBM8GVYaqGOhdRJcBEeCBRcUE3M6hWMLX+qcEXTyInMMyhx08xg+0oDXYaNsmxi8fKvUrE+NcbuMH2IZ4K2AdK1M7y3Ji8HKwNYIiOSQo1PGCSCzxqycSAcrPA6yrMRM9rvM1f0xDSoA5lZgKdmLyy9oxhsBNBa2fMvQGoTGoSLbTSdXqHgiqET9yO8q0EGiU67z9TnMqZ3jy6b574X2QCyDK6N9A7WYcvPVb84EmyUJVHIz+iFPlMJW8AelVqC8WkKwHzmfNYkZFX4wJbpktdVhzWk5m8a1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fb0/rfGjg7qRQHEgRg/yapKWUYgBYt7jVXFVPTqHTcs=;
+ b=nklnQlrhPPH3LOvpuGUZqodeIGOaN5VuQBe6wuXjcTQY7OOgG0ZoLZJpz7LSObuZvLMOGLb8ZUwybTnn/5p+Ya4eXkyV1hZgOfuKjbukPCzf+H0UPv30hD6RjFjQhvZqgUUjpjQDaW9Rx6oiUwlaUtgEdmQKm8rz2TKkbT+jP+F5ubfhpnQcJtFlzDcj/aPFUrwhEYwh3l5nboDFTzC8AplGYcYHO+gFFLbEcHkzi9SNMOq2289wy92A2um1glTPDX/LiaslxRVlUS8A2C4I507zTDg9y94lAHY3NhhZ5nauFlhiCxVBnNCsNPwINxh+serWev8dYKn7lIUSKX9w8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
+ header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oakvillepondscapes.onmicrosoft.com;
+ s=selector2-oakvillepondscapes-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fb0/rfGjg7qRQHEgRg/yapKWUYgBYt7jVXFVPTqHTcs=;
+ b=H1VVFKoOe1F1HjR7KKTPPXYXPpHQNaePF+FQ+DWDYRCfDNhHd1FUKxAhVU+7YNauvoeqaPJHgOzrgyRSU1GU5xYyRD+NXENvtTbsFn0m/2Hqwm6GTYmAogqsfBfJwWCm4NwrdXOWsi5GwV8ZJBVo2IV4zwWnQSaTVzvPb6+kJkY=
+Received: from SYXPR01MB1918.ausprd01.prod.outlook.com (2603:10c6:0:2b::11) by
+ SYXPR01MB1007.ausprd01.prod.outlook.com (2603:10c6:0:b::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4242.21; Wed, 23 Jun 2021 06:08:58 +0000
+Received: from SYXPR01MB1918.ausprd01.prod.outlook.com
+ ([fe80::5c09:faee:58ba:65b6]) by SYXPR01MB1918.ausprd01.prod.outlook.com
+ ([fe80::5c09:faee:58ba:65b6%5]) with mapi id 15.20.4242.024; Wed, 23 Jun 2021
+ 06:08:58 +0000
+From:   Paul Jones <paul@pauljones.id.au>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Asif Youssuff <yoasif@gmail.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: RE: Filesystem goes readonly soon after mount, cannot free space or
+ rebalance
+Thread-Topic: Filesystem goes readonly soon after mount, cannot free space or
+ rebalance
+Thread-Index: AQHXZMpevWC96VF9tUqaU1trL8NahashGMmAgAAIrUA=
+Date:   Wed, 23 Jun 2021 06:08:58 +0000
+Message-ID: <SYXPR01MB191839844E7C773F755E110B9E089@SYXPR01MB1918.ausprd01.prod.outlook.com>
+References: <2bb832db-3c33-d3ba-d9ae-4ebd44c1c7f3@gmail.com>
+ <20210623053240.GJ11733@hungrycats.org>
+In-Reply-To: <20210623053240.GJ11733@hungrycats.org>
+Accept-Language: en-AU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: umail.furryterror.org; dkim=none (message not signed)
+ header.d=none;umail.furryterror.org; dmarc=none action=none
+ header.from=pauljones.id.au;
+x-originating-ip: [124.171.130.175]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: be5eba14-b9c6-42cd-a17f-08d9360d639e
+x-ms-traffictypediagnostic: SYXPR01MB1007:
+x-microsoft-antispam-prvs: <SYXPR01MB1007015E843BAEC4A02462299E089@SYXPR01MB1007.ausprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5R0YHOnBIVEDU6zzxB0uyLEiDUVJJbP6EZxYofdZZGwuLG/0OSLNIbtV239+Nn6fXu/Y7Yn3t+1prwNtTff8EJnCepzpRPuT2mzXWX6f0LJrZYsx7mzf2kC6sP/XOAzjLHyXvyanaV+wp8fqu3IWTUlgPXX6V//gbfIuEKXewYPjlTJ8CJzPwT2VI+OxwJc+CnEPgFocNjIW5OfScBjTqf5RaOsYe0yBkIPB98KfuSA4a2gspqJvSmwRbiw5LFmaKHbyR5AYfmsSoiZtiSBPI2QEqONiuwvuhTtosBso3d6ajV/flSb0006926Sndzwh4oI+D4ksrVanmE+sCNKiRSIGbuQEQ/OQ4ZDcyWmfvmpicfK77msaUHck9aswi04wrt7s+EnEOWSH0+h90ibSnbl3uzpIdcXbDB8LbcOtHsl8dJNPVnHudZNKg24YgIVWYc+hIHAIXaFZprXB8ZTzWPWVFiWU2b8efVUoLJqoHpN8zktVAt6f6mrcMZ7A3pOp3jXFulRhCgW6pWr69cw4gcNtLpZgCRI0BIM+PEcOO2ZPbagToHuZ4tsofAhlEZ2ds5ta2WD2t/O9fz8wXDBHoYwdAwJCRFJIfMQixPOXsQg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SYXPR01MB1918.ausprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(136003)(396003)(39830400003)(4326008)(478600001)(66476007)(8676002)(66946007)(33656002)(76116006)(86362001)(316002)(110136005)(5660300002)(64756008)(8936002)(66446008)(52536014)(66556008)(71200400001)(4744005)(6506007)(2906002)(53546011)(26005)(83380400001)(7696005)(9686003)(38100700002)(122000001)(55016002)(186003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?rTX6LdzSBWhv++PUK3wOOguCWJvDzHcFHqZrJ8hDYAqtxPMf4VqhP44aW0HN?=
+ =?us-ascii?Q?3uYaWeBBufxq5sV96pehPkU68bc7mwdRIvuXbUGpFGaxAZy2PGIiwQ6tAhZr?=
+ =?us-ascii?Q?Dau5aBMScngyJJUkEClrJTp23IxnsR0ciVydxl5CVGOygAx/UePJELQb5duZ?=
+ =?us-ascii?Q?yonrbWK2pYEqlkUnYGy5YIPn5DPePYwfzGjJeJOYM+KPT8D/0/K1fuHUGZzS?=
+ =?us-ascii?Q?UHXD1UDAmdGMf0UP07Oou6+ZKVzAmp0r/NNvUbXjnY9H76BxvHhWnVeICQZy?=
+ =?us-ascii?Q?7sihGK+ugZLYRAFe4RZpgNO0dQ3B7X1jOA7G5kasiTq4+RH09m4CYJ8aQviH?=
+ =?us-ascii?Q?abmO0mIQY602YZnL12ZVh7uWOdMo8tnpDB8afK0z1dWgTt4eEG9PsMPAZVsn?=
+ =?us-ascii?Q?RxVwVo+dE7X+VzMYvwHKE02a5ZI+6p58U+yAhBJMV3IR2jDOvCF7wj2v2kkz?=
+ =?us-ascii?Q?ba7PMDfdUUjbiAR1x22hNnbMw7AYvQRasF2NW3Y9RiaovbUYoPTaZO0ko63i?=
+ =?us-ascii?Q?Njwn5XE0bKmX6jgDosyK2ZlKnHdy2U+WChymgVEvgQDh3U3e11cW2kvo5YR+?=
+ =?us-ascii?Q?O/KpMaW2I5nno/N69c3TzypLsyJXG51AhytXIdgBaulfw3UkO2CIOR4558M5?=
+ =?us-ascii?Q?2bxB3od7GQm7Ix7e2fbVz8aHm7KRKB9kKfzJSVN/p0J5y96dbnrYikRImGl9?=
+ =?us-ascii?Q?RPhrurXeP5vwb2x94Z55dnf8+PEYl3ETqEOMNdCMbNbYhBB4h6Xf32V1h7lh?=
+ =?us-ascii?Q?Up+oR2M10yX7Ip6zC73eGGiiWaayRi3NHVRsU+UZ1CY8RJsWowz5T3XjNEHE?=
+ =?us-ascii?Q?k1f2VrG0y0UrhbsNFBY82GjbpUOfkJRY9oWTKaBAlwPvKrXhQrqFG1o+2rZ/?=
+ =?us-ascii?Q?JOboxxYKRQLkNnEYCwKOia2H2qLNifj+I4fYkh8OGfh1ehMsaKmhurjVpCN6?=
+ =?us-ascii?Q?PewdTbo99u6btiFAofgarYpGP16auqFsCF0CGGBaY178Wu6CgZ0sZBaFawav?=
+ =?us-ascii?Q?cX3Joccmnq2fCrGHjiUGB2xUZ7W/lTkhd7HM+mmKpcvpTVJcOihzxLdCx6Tc?=
+ =?us-ascii?Q?rcX2kCpPQQtszkxjVlAJ0xIx6pz4P6w/0z0MstmqnWs46o5EMUYM7T5q2ta6?=
+ =?us-ascii?Q?XQdJ7fcySS1vOM+a8ZEDIC6GmNg57TfnlsOOi3Pa6LjE9eT0GBHIcfL1px/0?=
+ =?us-ascii?Q?wJXh+Hp+FpqoyDWnpsN+ji/hxTYvsX0K1R6Ltx8E2GYS80yUAapR7bQKKWbO?=
+ =?us-ascii?Q?3XmyHP3jGQ/kW43DORFZ5BW+6uSXhFybKFpTTulPfkzZsHZVpisCDPgMM7ci?=
+ =?us-ascii?Q?GYChNhwtzO47T4EQWehwT3R6?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: pauljones.id.au
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SYXPR01MB1918.ausprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be5eba14-b9c6-42cd-a17f-08d9360d639e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jun 2021 06:08:58.2241
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dk5uneRyQnRltfqIzh0qV9FCW6Tu+GnojgmgCd7U6JVCcn2pi0esNIhqTVW3DwOM/Sh0gQIawMV1C2YibjzrjQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYXPR01MB1007
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For btrfs compressed write, we use a mechanism called async cow, which
-unliek regular run_delalloc_cow() or cow_file_range(), it will also
-unlock the first page.
+> -----Original Message-----
+> From: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+> Sent: Wednesday, 23 June 2021 3:33 PM
+> To: Asif Youssuff <yoasif@gmail.com>
+> Cc: linux-btrfs@vger.kernel.org
+> Subject: Re: Filesystem goes readonly soon after mount, cannot free space
+> or rebalance
+> =20
+> You might be able to recover by booting a kernel with a patch to delay
+> startup of the btrfs-cleaner thread, thereby preventing the snapshot
+> delete from restarting immediately and breaking the filesystem.  I haven'=
+t
+> tried it, but it was my plan B if reverting to 4.19 hadn't worked.
 
-This mechanism allows btrfs to continue handling next ranges, without
-waiting for the time consuming compression.
+Yes, I had to do that and it worked nicely. I don't remember the details, b=
+ut I just commented out the part that forced a RO remount. The cleaner thre=
+ad would still run and fail, but at least I could add two drives to my raid=
+ array for long enough to fix the problem.
 
-But this has a problem for subpage case, as we could have the following
-delalloc range for a page:
 
-0		32K		64K
-|	|///////|	|///////|
-		\- A		\- B
-
-In above case, if we pass both range to cow_file_range_async(), both
-range A and range B will try to unlock the full page [0, 64K).
-
-And which finishes later than the other range will try to do other page
-operatioins like end_page_writeback() on a unlocked page, triggering VM
-layer BUG_ON().
-
-Currently I don't have any perfect solution to this, but two
-workarounds:
-
-- Only allow compression for fully page aligned range
-
-  This is what I did in this patch.
-  By this, the compressed range can exclusively lock the first page
-  (and other pages), so they are completely safe to do whatever they
-  want.
-  The problem is, we will not compress a lot of small writes.
-  This is especially problematic as our target page size is 64K, not
-  a small size.
-
-- Make cow_file_range_async() to behave like cow_file_range() for
-  subpage
-
-  This needs several behavier change, and are all subpage specific:
-  * Skip the first page of the range when finished
-    Just like cow_file_range()
-  * Have a way to wait for the async_cow to finish before handling the
-    next delalloc range
-
-  The biggest problem here is the performance impact.
-  Although by this we can compress all sector aligned ranges, we will
-  waste time waiting for the async_cow to finish.
-  This is completely denying the meaning of "async" part.
-  Now to mention there are tons of code needs to be changed.
-
-Thus I choose the current way to only compress ranges which is fully
-page aligned.
-The cost is we will skip a lot of small writes for 64K page size.
-
-With this change, btrfs subpage can support compressed write now.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 497c219758e0..be6d00d097d1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -489,9 +489,6 @@ static noinline int add_async_extent(struct async_chunk *cow,
-  */
- static inline bool inode_can_compress(struct btrfs_inode *inode)
- {
--	/* Subpage doesn't support compress yet */
--	if (inode->root->fs_info->sectorsize < PAGE_SIZE)
--		return false;
- 	if (inode->flags & BTRFS_INODE_NODATACOW ||
- 	    inode->flags & BTRFS_INODE_NODATASUM)
- 		return false;
-@@ -513,6 +510,29 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
- 			btrfs_ino(inode));
- 		return 0;
- 	}
-+	/*
-+	 * Special check for subpage.
-+	 *
-+	 * Due to page locking is still done in full page size for
-+	 * btrfs_run_delalloc_range(), subpage compression can't allow two
-+	 * delalloc range both start at the same page like the following case:
-+	 *
-+	 * 0		32K		64K
-+	 * |	|///////|	|///////|
-+	 * 		\- A		\- B
-+	 *
-+	 * In above case, both range A and range B will try to unlock the full
-+	 * page [0, 64K), causing the one finished later will have page
-+	 * unlocked already, triggering various page lock requirement BUG_ON()s.
-+	 *
-+	 * So here we add an artificial limit that subpage compression can only
-+	 * happen if the range is fully page aligned.
-+	 */
-+	if (fs_info->sectorsize < PAGE_SIZE) {
-+		if (!IS_ALIGNED(start, PAGE_SIZE) ||
-+		    !IS_ALIGNED(end + 1, PAGE_SIZE))
-+			return 0;
-+	}
- 	/* force compress */
- 	if (btrfs_test_opt(fs_info, FORCE_COMPRESS))
- 		return 1;
--- 
-2.32.0
-
+Paul.
