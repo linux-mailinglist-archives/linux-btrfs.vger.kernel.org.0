@@ -2,122 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7503B384F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Jun 2021 23:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979933B3951
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jun 2021 00:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbhFXVJn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Jun 2021 17:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbhFXVJn (ORCPT
+        id S232885AbhFXWnf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Jun 2021 18:43:35 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:43075 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229643AbhFXWne (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Jun 2021 17:09:43 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902ECC061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Jun 2021 14:07:22 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id k8so9600429lja.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Jun 2021 14:07:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zAsYzzhXkdofQZ/91vxC7T2pQLg/Al6Inx2IRm0Ut3U=;
-        b=UhgrjmazbjVyroDGAIMCaeMq5+n4Zq0zIRTShHEICkP3b4QusYEcd395MUEp8AFCQx
-         pZlB6wuYan6cRqYD5qIM9Csv3iJOOilTEZiCgxQS1D+CqOSIuFTCsEE+d9Qip5KXOrRx
-         3AN8UMYj0rqX8g6GxPrgltXzQqGcgVwxVdXIg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zAsYzzhXkdofQZ/91vxC7T2pQLg/Al6Inx2IRm0Ut3U=;
-        b=f52xyTiDgu04KnTBeTnRaMhkfTAyEOz8f3idUvkXAMxOxr0DlXEbaQtr5sgYTG503q
-         fjZnGdGxvTE4U1FmIlgkXAVt55hdjB4a6NbTP3VnlLYGIacX3XHOtmDQ/3rimtrp8siq
-         1CKdbzdyDnU0GJn2SWLb9b11lYaQcqMkIX47wwLI/HUjE/NurjyfVgdtGSMwe9ifWdTB
-         eAT7Z/pGxA2rZD472vQ5rN1DM6r9jBMkSZqSxjslRhyNN5E7tgmDw5udCHU2pDvQ6Vtd
-         h92RLUh+TIyfwNlgOxUBAQun9oDS2Rtr26BGmzy7yl9IVwcr8VLeKiXmz96agBFle1xk
-         Kx5Q==
-X-Gm-Message-State: AOAM533nqz8Ec5+aIecQV+kCJZqhj1Soz6pAeXu1YPsD033K8LPNvEtk
-        mMTMoFOAzU79+2QJ21eNtKABziRqjEgxC02xofo=
-X-Google-Smtp-Source: ABdhPJxvCxc1DJ89/UupNJZILFrLqdg59JIwyD2/hxc5Dn+MGh+0Bnj024oQZ/Zolc4PedcrJEVFzg==
-X-Received: by 2002:a05:651c:a07:: with SMTP id k7mr5597461ljq.477.1624568840791;
-        Thu, 24 Jun 2021 14:07:20 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id w24sm323482lfa.143.2021.06.24.14.07.19
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Jun 2021 14:07:19 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id k8so9600330lja.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Jun 2021 14:07:19 -0700 (PDT)
-X-Received: by 2002:a2e:a276:: with SMTP id k22mr5247591ljm.465.1624568838796;
- Thu, 24 Jun 2021 14:07:18 -0700 (PDT)
+        Thu, 24 Jun 2021 18:43:34 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 2FBB73200915;
+        Thu, 24 Jun 2021 18:41:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 24 Jun 2021 18:41:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=ZzbCx04jtNFOGuklkVjUanZ6+T
+        Lt2OeTVFaiWEBjksU=; b=oIrkU61lUNChHacIBEHzLS9Gn+on7XRrvART8UuKsU
+        3DKDXg/itkr+EZGRMZMJ8DlhvRG/G+tqu+FujqMvtfyFNaC5ttUuAINapKmbDv9p
+        htHAjxj+EVq6tYkgM2gP1xyzEs7wuXE+x7p+O+3qR7Jm5/GtHTiTEpf0pBAwef41
+        M7GG1oEBQGyF6YIqdjkuXsPpI3oEgRrSds+m+eeF/1oNceiJBRHl1lMBm9TCX4Ex
+        /MYSCMHblVQj/jAVLfAnxIL3s0bquRX3cmW6qtvQBCZPLUIL7Rs/PJ1HHomTcnlR
+        qWlxDkcZ/IiUdW3o2NsJNwWRLirArwMygVtM86xAob6Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZzbCx04jtNFOGuklk
+        VjUanZ6+TLt2OeTVFaiWEBjksU=; b=ND42MbgUAbQ6oDxFrj+gr3GLigxZYcLle
+        4Fe6PBliQAeihCoIY5KcnC7NNxnJ21p8oggPWGDD5vpb78DHxvBHZxNoXM2mboD7
+        V1A2n0l3fIA72+YWBfSXru3eRiUStd5+izpp9eUEFVjnACRNDBoCtKg7crVLfu+y
+        vcZWf6wQFjNzYYTiwMm0NqOPGbP+jnkmTLQyK7REP/EfVwADE2irupfP50l448hY
+        FP2PM0Tc+F/RsR6XyEsmchvXRkvCzkxGuOY2Mc649biNjSrU3F26zWcVoRodk63d
+        oYIeWn0p7HLje4hylijb19nz83dZx/yh+TZm1gWY9qDi4tJMGA5kg==
+X-ME-Sender: <xms:CQrVYFkhGJpK9qR5gg-yloCsmEWz5Rd3tB4xSzL1C4F_fVtce34Sjg>
+    <xme:CQrVYA1FPn5VpgdipOGdAb1uCs3xcar3bc4KAYOl-RMvqpmEDwdZ7n8xmkTNOZAZy
+    G1OwcM1HSBx6YBIbG4>
+X-ME-Received: <xmr:CQrVYLps6ZetFJ3BU9OHoTIFJxMb-TZM5umOwxgV-AP6nh184zHj-3ZebA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeegiedgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
+    qeenucggtffrrghtthgvrhhnpeduiedtleeuieejfeelffevleeifefgjeejieegkeduud
+    etfeekffeftefhvdejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhioh
+X-ME-Proxy: <xmx:CQrVYFnTbTJeIYw2YRSiUOW-NsMli--VBihJFJ5lummc0tPFDkou_Q>
+    <xmx:CQrVYD239GQ3Dg-7JngDjqLBC7u0Ec56D4IsbuGd8OalxA4j62zJWA>
+    <xmx:CQrVYEtv9SsaVDf8D1hFhDgjWvZ81gdjM3Zbcn6_lhsH1LrwUyrszw>
+    <xmx:CQrVYM-QoKQxd9MRa5NjhLsJh0Z4XjxxhloQcftt7vAnffgXBlWJzQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 24 Jun 2021 18:41:13 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v5 0/3] btrfs: support fsverity
+Date:   Thu, 24 Jun 2021 15:41:08 -0700
+Message-Id: <cover.1624573983.git.boris@bur.io>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <YND8p7ioQRfoWTOU@relinquished.localdomain> <20210622220639.GH2419729@dread.disaster.area>
- <YNN0P4KWH+Uj7dTE@relinquished.localdomain> <YNOPdy14My+MHmy8@zeniv-ca.linux.org.uk>
- <YNOdunP+Fvhbsixb@relinquished.localdomain> <YNOqJIto1t13rPYZ@zeniv-ca.linux.org.uk>
- <YNOuiMfRO51kLcOE@relinquished.localdomain> <YNPnRyasHVq9NF79@casper.infradead.org>
- <YNQi3vgCLVs/ExiK@relinquished.localdomain> <CAHk-=whmRQWm_gVek32ekPqBi3zAKOsdK6_6Hx8nHp3H5JAMew@mail.gmail.com>
- <YNTO1T6BEzmG6Uj5@relinquished.localdomain>
-In-Reply-To: <YNTO1T6BEzmG6Uj5@relinquished.localdomain>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 24 Jun 2021 14:07:02 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi37_ccWmq1EKTduS8ms_=KpyY2LwJV7roD+s=ZkBkjCw@mail.gmail.com>
-Message-ID: <CAHk-=wi37_ccWmq1EKTduS8ms_=KpyY2LwJV7roD+s=ZkBkjCw@mail.gmail.com>
-Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Chinner <dchinner@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 11:28 AM Omar Sandoval <osandov@osandov.com> wrote:
->
-> I'll suggest the fixed-size struct encoded_iov again, then. If we're
-> willing to give up some of the flexibility of a variable size, then
-> userspace can always put the fixed-size structure in its own iovec or
-> include it inline with the data, depending on what's more convenient and
-> whether it's using O_DIRECT.
+This patchset provides support for fsverity in btrfs.
 
-I really would prefer to have the separate pointer to it.
+At a high level, we store the verity descriptor and Merkle tree data
+in the file system btree with the file's inode as the objectid, and
+direct reads/writes to those items to implement the generic fsverity
+interface required by fs/verity/.
 
-Fixed size doesn't help. It's still "mixed in" unless you have a
-clearly separate pointer. Sure, user space *could* use a separate iov
-entry if it wants to, but then it becomes a user choice rather than
-part of the design.
+The first patch is a preparatory patch which adds a notion of
+compat_flags to the btrfs_inode and inode_item in order to allow
+enabling verity on a file without making the file system unusable for
+older kernels.
 
-That separate data structure would be the only way to do it for a
-ioctl() interface, but in the readv/writev world the whole separate
-"first iov entry" does that too.
+The second patch is the bulk of the fsverity implementation. It
+implements the fsverity interface, storage, caching, etc...
 
-I also worry that this "raw compressed data" thing isn't the only
-thing people will want to do. I could easily see some kind of
-"end-to-end CRC read/write" where the user passes in not just the
-data, but also checksums for it to validate it (maybe because you're
-doing a file copy and had the original checksums, but also maybe
-because user space simply has a known good copy and doesn't want
-errors re-introduced due to memory corruption).
+The third patch handles crashes mid-verity enable via orphan items.
 
-And I continue to think that this whole issue isn't all that different
-from the FSVERITY thing.
+I have tested this patch set in the following ways:
+- xfstests auto group
+- with a separate fix for btrfs fiemap and some light touches to the
+  tests themselves: xfstests generic/572,573,574,575.
+- new xfstest for btrfs specific corruptions (e.g. inline extents).
+- new xfstest using dmlogwrites and dmsnapshot to exercise orphans.
+- new xfstest using pwrite to exercise merkle cache EFBIG cases
+- manual test with sleeps in kernel to force orphan vs. unlink race.
+- manual end-to-end test with verity signed rpms.
+--
+changes for v5:
+Significant rewrite/re-organization. Most changes in patch 1 and 2:
+- rewrote ro_compat flags to use top 32 bits of flags, discovered tree
+  checker/flags definitions were broken (see patch 1 for details)
+- merged dio and inline/prealloc/hole patches into main verity patch, as
+they were basically empty.
+- rewrote rollback to abort much less aggressively
+- put orphan/enable verity on inode in one btrfs transaction
+- tweaks to returned types to prefer u64 where reasonable
+- use kmap_local, memzero_page properly
+- use GFP_NOFS for allocating merkle tree cache pages
+- many documentation fixes/improvements
+- many style fixes
+- rebase onto kdave/misc-next as of 6/24
 
-Of course, the real take-away is that "preadv2/pwritev2()" is a
-horrible interface. It should have been more extensible, rather than
-the lazy "just add another flag argument".
+changes for v4:
+Patch 2:
+- fix build without CONFIG_VERITY
+- fix assumption of short writes
+- make true_size match the item contents in get_verity_descriptor
+- rewrite overflow logic in terms of file position instead of cache index
+- round up position by 64k instead of adding 2048 pages
+- fix conflation of block index and page index in write_merkle_block
+- ensure reserved fields are 0 in the new descriptor item.
 
-I think we finally may have gotten a real extensible interface right
-with openat2(), and that "open_how" thing, but maybe I'm being naive
-and it will turn out that that wasn't so great either.
+changes for v3:
+Patch 2: fix bug in overflow logic, fix interface of
+get_verity_descriptor, truncate merkle cache items on failure, fix
+various code/style issues.
+Patch 5: fix extent data leak if verity races with unlink or O_TMPFILE
+and removes a legitimate orphan, then system is interrupted such that
+the orphan was needed.
 
-Maybe we'll some day end up with a "preadv3()" that has an extensible
-"struct io_how" argument.
+changes for v2:
+Patch 1: Unchanged.
+Patch 2: Return EFBIG if Merkle data past s_maxbytes. Added special
+descriptor item for encryption and to handle ERANGE case for
+get_verity_descriptor. Improved function comments. Rebased onto subpage
+read patches -- modified end_page_read to do verity check before marking
+the page uptodate. Changed from full compat to ro_compat; merged sysfs
+feature here.
+Patch 3: Rebased onto subpage read patches.
+Patch 4: Unchanged.
+Patch 5: Used to be sysfs feature, now a new patch that handles orphaned
+verity data.
 
-Interfaces are hard.
+Boris Burkov (3):
+  btrfs: add ro compat flags to inodes
+  btrfs: initial fsverity support
+  btrfs: verity metadata orphan items
 
-                Linus
+ fs/btrfs/Makefile               |   1 +
+ fs/btrfs/btrfs_inode.h          |  27 +-
+ fs/btrfs/ctree.h                |  53 +-
+ fs/btrfs/delayed-inode.c        |   9 +-
+ fs/btrfs/extent_io.c            |  25 +-
+ fs/btrfs/file.c                 |  10 +
+ fs/btrfs/inode.c                |  31 +-
+ fs/btrfs/ioctl.c                |  21 +-
+ fs/btrfs/super.c                |   3 +
+ fs/btrfs/sysfs.c                |   6 +
+ fs/btrfs/tree-checker.c         |  18 +-
+ fs/btrfs/tree-log.c             |   5 +-
+ fs/btrfs/verity.c               | 833 ++++++++++++++++++++++++++++++++
+ include/uapi/linux/btrfs.h      |   1 +
+ include/uapi/linux/btrfs_tree.h |  35 ++
+ 15 files changed, 1031 insertions(+), 47 deletions(-)
+ create mode 100644 fs/btrfs/verity.c
+
+-- 
+2.31.1
+
