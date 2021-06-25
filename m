@@ -2,129 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B80B3B466E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jun 2021 17:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F5C3B474A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Jun 2021 18:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhFYPQn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Jun 2021 11:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
+        id S229924AbhFYQS4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Jun 2021 12:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhFYPQn (ORCPT
+        with ESMTP id S229864AbhFYQS4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Jun 2021 11:16:43 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8358EC061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Jun 2021 08:14:21 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id t8so5124189ybt.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Jun 2021 08:14:21 -0700 (PDT)
+        Fri, 25 Jun 2021 12:18:56 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B238C061767
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Jun 2021 09:16:35 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id f30so17193890lfj.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Jun 2021 09:16:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=pa7MnaK3FucxBO6j4A21Ev1AHDGzRqnsf4FunKEJR7Y=;
-        b=rltB9X/o47DNdox06Trexmka8W9dNxYEf8bDZ5NwJbINmrv2ijx2YJyhT5/pcTz6d3
-         acw2h5dPbvp3q31nP1HRQ3AFPqrfQmKqY8WxYtIYK9QYn+AH1WGfXOKQPKlaH6eGixdi
-         rA1Fal+yUFUEJIGG8lg2RJQMbJIxFx3mPh/EUghf6Gs0M72IYYLvqEdi9inMnsmzWxxH
-         169pCz/J0tis2mBiaUecOSMgFUyR5VTU23nJlTYzZ8KuskIE1ayNLbGBwXiaeKzSXn9Z
-         TtnDA6uhk4hQ+ugEeNujR4BZw2m3V2nr9wyE7wA7WaldVWRQSvackAoMSSuZ0tD3BVsI
-         e0dA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LoG9DHygRjJYEXURLzSM71rAKIxITMJD9Hkh3VbJzrY=;
+        b=av+bQrr5b5kQTmtUU/uB7PzdV8FL54n4I97oc56slPbT6MAKkVqessm0tDlUDEN1H2
+         UVsQbC1465BjkFLIUxy9E3tycgt4lSFot0VGHK2oOfPjc0R96+xfjLDkO1VRswqjHvpI
+         01nxEx5e0aw9US6zIfsCjApiakA55LRBturTA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=pa7MnaK3FucxBO6j4A21Ev1AHDGzRqnsf4FunKEJR7Y=;
-        b=R7Jt+MSrEdG7REqijdCx0uZFSIo3g2q7CEUgQIua1RVVE6z5vn6lWHjsZTOgYB79HS
-         UWox8ygmxbevnobewnGmNJYFVbl4VLiR2HlRPLIJ0Jp6EPoF9J8aTjrkzMqqrJomv8Be
-         iqam1OOanVHN7U4d8dfix6WuDqEixe32qobhUn8gslPWsaIcNCqUS57nqbs+bvAVibL1
-         +Ge2VCzZWw4nKXwgTeBud+SOWygr+GsxgMEGbVyEB77DE6tDxyYi2ft+jDC2+n28q3X6
-         iwKfoTJsg1LCARfWEmDC4aKrRbH2KiGR2imEuwgtDHsFhOO7BaxkMWPthJzuDf9jASld
-         d3jA==
-X-Gm-Message-State: AOAM530DNQBMdTCOkc4XMQ0iFdWZrXVUYJRr7rVpsp2qGjdazPj5o6ks
-        I/Oy0TAU2mbMXu3Z/TcFqMzOHv9sZlmpvMYGQs4=
-X-Google-Smtp-Source: ABdhPJyOgZuGL+cSoqO22xAw2W6UgDTlwm78efXgUOfzSIjebQY2hKimfO3WS9PK4uO7JwuD5DRUY2zSXdBT9O7xnhk=
-X-Received: by 2002:a25:76d2:: with SMTP id r201mr3819491ybc.78.1624634060872;
- Fri, 25 Jun 2021 08:14:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LoG9DHygRjJYEXURLzSM71rAKIxITMJD9Hkh3VbJzrY=;
+        b=GAFSXvcM3+C7xdyNzvGt+GNJ92aoGZD6Ra59B3Bm5RvHKYxnTi0fiEvonHG8YbYxBh
+         wcbWsCqckow6JUYJSHnhUdU+4f981tShD3QRQxm8mlUfwiHhqpBOyehy4bOxIQC4pqie
+         AgnaS0YYHMi6fmNW/Poh3AmeglRtADVxxg5JAw+NxFcVnXyhVqrqqB7f0k4bQSXyUvQZ
+         OFsw9f9Ex/vpbtEtfMbJ5hL1kuUiSouJURqadxN5tQxILsIAEHKhuxD2m0DJ1IPhf3pU
+         jqY0DZ4yTGeDKJtLVKCbzNSxvHP8ah5pjIAgldpAhT2oLAxtZBsGX7hcL0CpRtb3emDI
+         oapQ==
+X-Gm-Message-State: AOAM531gbxpzSUEJps3TKIKhGayLodaJ3VpT5k7Iq+pNijwUONBEkoKy
+        JZkuQ9hgk/gbD9waoA5KZgFjF7nt6kN7fBXLoa8=
+X-Google-Smtp-Source: ABdhPJwUn0v2z8kBoV2lVdxP6VCRx+QBNRjQG1/pK9U2DTuMyvjVpMkxWQWYM1X/WokJRG05tOujnQ==
+X-Received: by 2002:a05:6512:b84:: with SMTP id b4mr9293612lfv.477.1624637793037;
+        Fri, 25 Jun 2021 09:16:33 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id k11sm545817lfv.291.2021.06.25.09.16.31
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 09:16:31 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id a11so17071627lfg.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Jun 2021 09:16:31 -0700 (PDT)
+X-Received: by 2002:a05:6512:3f82:: with SMTP id x2mr8373954lfa.421.1624637791386;
+ Fri, 25 Jun 2021 09:16:31 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6918:3648:b029:2d:8def:ce56 with HTTP; Fri, 25 Jun 2021
- 08:14:20 -0700 (PDT)
-Reply-To: wilsonmutanda.j@gmail.com
-From:   willson mutanda <pkldfji382892@gmail.com>
-Date:   Fri, 25 Jun 2021 08:14:20 -0700
-Message-ID: <CAJS1rrRzCXrmBA-s0vqJDuOmkm=_ivr6Ppg7giw-D=BBT_jk4A@mail.gmail.com>
-Subject: =?UTF-8?B?0KHQvtC+0LHRidC10L3QuNC1?=
-To:     undisclosed-recipients:;
+References: <YNOPdy14My+MHmy8@zeniv-ca.linux.org.uk> <YNOdunP+Fvhbsixb@relinquished.localdomain>
+ <YNOqJIto1t13rPYZ@zeniv-ca.linux.org.uk> <YNOuiMfRO51kLcOE@relinquished.localdomain>
+ <YNPnRyasHVq9NF79@casper.infradead.org> <YNQi3vgCLVs/ExiK@relinquished.localdomain>
+ <CAHk-=whmRQWm_gVek32ekPqBi3zAKOsdK6_6Hx8nHp3H5JAMew@mail.gmail.com>
+ <YNTO1T6BEzmG6Uj5@relinquished.localdomain> <CAHk-=wi37_ccWmq1EKTduS8ms_=KpyY2LwJV7roD+s=ZkBkjCw@mail.gmail.com>
+ <yq1tulmoqxf.fsf@ca-mkp.ca.oracle.com> <YNVPp/Pgqshami3U@casper.infradead.org>
+In-Reply-To: <YNVPp/Pgqshami3U@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 25 Jun 2021 09:16:15 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgH5pUbrL7CM5v6TWyNzDYpVM9k1qYCEgmY+b3Gx9nEAA@mail.gmail.com>
+Message-ID: <CAHk-=wgH5pUbrL7CM5v6TWyNzDYpVM9k1qYCEgmY+b3Gx9nEAA@mail.gmail.com>
+Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Omar Sandoval <osandov@osandov.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Chinner <dchinner@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-0JfQtNGA0LDQstGB0YLQstGD0LksINC00L7RgNC+0LPQvtC5INC00YDRg9CzDQoNCtCf0YDQuNC9
-0L7RgdC40Lwg0LjQt9Cy0LjQvdC10L3QuNGPINC30LAg0L3QtdGD0LTQvtCx0YHRgtCy0LA7INCc
-0LXQvdGPINC30L7QstGD0YIg0KPQuNC70YHQvtC9INCU0LYuINCc0YPRgtCw0L3QtNCwLCDRjyDQ
-uNC3DQrQn9GA0LXRgtC+0YDQuNC4LCDQm9C40YfQvdGL0Lkg0L/QvtC80L7RidC90LjQuiAo0LMt
-0L3QsCDQrdC90LTRgNGOKSwg0LrQsNC6INGPINGA0LDQvdC10LUg0L7QsdGK0Y/RgdC90LjQuyDQ
-stCw0LwuINCTLdC9DQrQrdC90LTRgNGOIC0g0L/QvtC00YDRj9C00YfQuNC6INC/0L4g0LTQvtCx
-0YvRh9C1INC30L7Qu9C+0YLQsCDQuCDQsNC70LzQsNC30L7QsiDQuCDQtNC10LvQvtCy0L7QuSDR
-h9C10LvQvtCy0LXQuiDQt9C00LXRgdGMLA0K0LIg0K7QttC90L7QuSDQkNGE0YDQuNC60LUsINGB
-0LrQvtC90YfQsNC70YHRjyDQvdC10YHQutC+0LvRjNC60L4g0LvQtdGCINC90LDQt9Cw0LQuINCv
-INC/0LjRiNGDINCy0LDQvCDQsiDRgdCy0Y/Qt9C4INGBDQrRgdGA0L7Rh9C90L7RgdGC0YzRjiDR
-gtC+0LPQviDQttC1INCy0L7Qv9GA0L7RgdCwLCDQstGB0LUg0L/QvtC/0YvRgtC60Lgg0L3QsNC5
-0YLQuCDQtdCz0L4g0YDQvtC00YHRgtCy0LXQvdC90LjQutC+0LIg0L/QvtGB0LvQtQ0K0LXQs9C+
-INCy0L3QtdC30LDQv9C90L7QuSDRgdC80LXRgNGC0Lgg0L/QvtGC0LXRgNC/0LXQu9C4INC90LXR
-g9C00LDRh9GDLg0KDQrQotCw0Log0LrQsNC6INC00L4g0YHQuNGFINC/0L7RgCDRjyDQvdC1INC8
-0L7QsyDQvdCw0LnRgtC4INC90Lgg0L7QtNC90L7Qs9C+INC40Lcg0LXQs9C+INGA0L7QtNGB0YLQ
-stC10L3QvdC40LrQvtCyLCDQsA0K0JjQvdCy0LXRgdGC0LjRhtC40Y8g0LHRg9C00LXRgiDQv9C1
-0YDQtdCy0LXQtNC10L3QsCDQsiDQs9C+0YHRg9C00LDRgNGB0YLQstC10L3QvdGD0Y4g0LrQsNC3
-0L3RgyDQsiDQutCw0YfQtdGB0YLQstC1DQrQvdC10LLQvtGB0YLRgNC10LHQvtCy0LDQvdC90L7Q
-s9C+INCy0LXQutGB0LXQu9GPLCDQv9C+0LbQsNC70YPQudGB0YLQsCwg0Y8g0L/RgNC+0YjRgyDQ
-stCw0YjQtdCz0L4g0YHQvtCz0LvQsNGB0LjRjw0K0YHQstGP0LfQsNGC0YzRgdGPINGBINC60L7Q
-vNC/0LDQvdC40LXQuSDQutCw0Log0LXQs9C+INC90LDRgdC70LXQtNC90LjQutC+0LwsINC/0L7R
-gdC60L7Qu9GM0LrRgyDRgyDQstCw0YEg0YEg0L3QuNC8INGC0LDQutCw0Y8NCtC20LUg0YTQsNC8
-0LjQu9C40Y87INCvINGF0L7Rh9GDLCDRh9GC0L7QsdGLINCy0Ysg0LLRi9GB0YLRg9C/0LjQu9C4
-INCyINC60LDRh9C10YHRgtCy0LUg0LXQs9C+INGA0L7QtNGB0YLQstC10L3QvdC40LrQsCwNCtGH
-0YLQvtCx0Ysg0LLQu9Cw0LTQtdGC0Ywg0LXQs9C+INC60LDQv9C40YLQsNC70YzQvdGL0LzQuCDQ
-stC70L7QttC10L3QuNGP0LzQuCDQvdCwINGB0YPQvNC80YMgKDcg0LzQuNC70LvQuNC+0L3QvtCy
-INC00LLQtdGB0YLQuA0K0LHRgNC40YLQsNC90YHQutC40YUg0YTRg9C90YLQvtCyKSDQsiDQuNC9
-0LLQtdGB0YLQuNGG0LjQvtC90L3Rg9GOINC60L7QvNC/0LDQvdC40Y4sINC60LDQuiDRg9C60LDQ
-t9Cw0L3QviDQsiDRhNCw0LnQu9C1LCDQtNC+DQrRgtC+0LPQviwg0LrQsNC6INC+0L3QuCDQsdGD
-0LTRg9GCINC60L7QvdGE0LjRgdC60L7QstCw0L3Riy4g0KTQvtC90LQg0LTQvtC70LPQvtC1INCy
-0YDQtdC80Y8g0LHQtdC30LTQtdC50YHRgtCy0L7QstCw0LssDQrQvtC20LjQtNCw0Y8g0LXQs9C+
-INC/0YDQtdC10LzQvdC40LrQsCwg0LrQvtGC0L7RgNC+0LPQviDQtNC+INGB0LjRhSDQv9C+0YAg
-0L3QuNC60YLQviDQvdC1INC+0LHRitGP0LLQuNC7LCDQuCDRjyDQvdC1DQrQvNC+0LPRgyDQvdCw
-0LnRgtC4INC10LPQviDQv9GA0Y/QvNC+0LPQviDRgNC+0LTRgdGC0LLQtdC90L3QuNC60LAuDQoN
-CtCvINC90LDRiNC10Lsg0LLQsNGIINC60L7QvdGC0LDQutGCINCyINCY0L3RgtC10YDQvdC10YLQ
-tSDQuCDRgNC10YjQuNC7INGB0LLRj9C30LDRgtGM0YHRjyDRgSDQstCw0LzQuCwg0YLQsNC6INC6
-0LDQuiDRgw0K0LLQsNGBINGC0L4g0LbQtSDQuNC80Y8sINGH0YLQviDQuCDRgyDQvNC+0LXQs9C+
-INGF0L7Qt9GP0LjQvdCwLiDQmCDRjyDQvdCw0LTQtdGO0YHRjCwg0YfRgtC+INGC0Ysg0LzQtdC9
-0Y8g0L3QtQ0K0YDQsNC30L7QsdC70LDRh9C40YjRjCwg0LTQsNC20LUg0LXRgdC70Lgg0L3QtSDR
-hdC+0YfQtdGI0Ywg0L/QvtC80L7Rh9GMLiDQrdGC0LAg0YHQtNC10LvQutCwINC00L7Qu9C20L3Q
-sCDQsdGL0YLRjA0K0YHQtdC60YDQtdGC0L7QvCDQvNC10LbQtNGDINC80L3QvtC5INC4INCy0LDQ
-vNC4INC00LDQttC1INC/0L7RgdC70LUg0LDRgNGF0LjQstC40YDQvtCy0LDQvdC40Y8g0Y3RgtC+
-0Lkg0YbQtdC70LguDQoNCiDQryDQvNC+0LPRgyDQs9Cw0YDQsNC90YLQuNGA0L7QstCw0YLRjCwg
-0YfRgtC+INGN0YLQviDQtNC10LvQviDQsdGD0LTQtdGCINGA0LDRgdGB0LzQvtGC0YDQtdC90L4g
-0LIg0YHQvtC+0YLQstC10YLRgdGC0LLQuNC4INGBDQrQt9Cw0LrQvtC90L3Ri9C8INGB0L7Qs9C7
-0LDRiNC10L3QuNC10LwsINC60L7RgtC+0YDQvtC1INC30LDRidC40YLQuNGCINCy0LDRgSDQuCDQ
-vNC10L3RjyDQvtGCINC70Y7QsdC+0LPQviDQvdCw0YDRg9GI0LXQvdC40Y8NCtC30LDQutC+0L3Q
-sCwg0LXRgdC70Lgg0LzRiyDRgdC80L7QttC10Lwg0LLQvNC10YHRgtC1INC+0LHRgdGD0LTQuNGC
-0YwsINGH0YLQviDRgSDRjdGC0LjQvCDQtNC10LvQsNGC0YwuINCS0YHQtSwg0YfRgtC+INGPDQrR
-gtGA0LXQsdGD0Y4g0L7RgiDQstCw0YEsIC0g0Y3RgtC+INCy0LDRiNC1INGH0LXRgdGC0L3QvtC1
-INGB0L7RgtGA0YPQtNC90LjRh9C10YHRgtCy0L4sINGH0YLQvtCx0Ysg0LzRiyDQvNC+0LPQu9C4
-DQrQtNC+0LLQtdGB0YLQuCDRjdGC0YMg0YLRgNCw0L3Qt9Cw0LrRhtC40Y4g0LTQviDQutC+0L3R
-htCwOyDQryDQvdCw0LTQtdGO0YHRjCDQv9C+0LvRg9GH0LjRgtGMINC40LfQstC10YHRgtC40LUg
-0L7RgiDQstCw0YENCtGB0YDQsNC30YMg0L/QvtGB0LvQtSDRgtC+0LPQviwg0LrQsNC6INCy0Ysg
-0L/RgNC+0YfRgtC10YLQtSDRjdGC0L4g0YHQvtC+0LHRidC10L3QuNC1INC00LvRjyDQv9C+0LvR
-g9GH0LXQvdC40Y8g0LHQvtC70LXQtQ0K0L/QvtC00YDQvtCx0L3QvtC5INC40L3RhNC+0YDQvNCw
-0YbQuNC4Lg0KDQrQn9C+0LbQsNC70YPQudGB0YLQsCwg0YHQstGP0LbQuNGC0LXRgdGMINGBINC8
-0L7QuNC8INC70LjRh9C90YvQvCDQsNC00YDQtdGB0L7QvCDRjdC70LXQutGC0YDQvtC90L3QvtC5
-INC/0L7Rh9GC0YssDQrRg9C60LDQt9Cw0L3QvdGL0Lwg0L3QuNC20LUsINC/0L4g0YHQvtC+0LHR
-gNCw0LbQtdC90LjRj9C8INCx0LXQt9C+0L/QsNGB0L3QvtGB0YLQuCwg0LXRgdC70Lgg0LLRiyDR
-hdC+0YLQuNGC0LUg0YHQstGP0LfQsNGC0YzRgdGPDQrRgSDRg9GH0YDQtdC20LTQtdC90LjQtdC8
-INC/0L4g0Y3RgtC+0LzRgyDRgdGA0L7Rh9C90L7QvNGDINCy0L7Qv9GA0L7RgdGDLiDQryDRg9C3
-0L3QsNC7LCDRh9GC0L4g0LLQsNGIINGP0LfRi9C6INC90LUNCtCw0L3Qs9C70LjQudGB0LrQuNC5
-OyDQv9C+0LbQsNC70YPQudGB0YLQsCwg0L7RgtCy0LXRgtGMINC80L3QtSDQv9C+LdCw0L3Qs9C7
-0LjQudGB0LrQuCwg0LXRgdC70Lgg0YLRiyDRg9C80LXQtdGI0Ywg0L/QuNGB0LDRgtGMDQrQv9C+
-LdCw0L3Qs9C70LjQudGB0LrQuA0KINCX0LDRgNCw0L3QtdC1INGB0L/QsNGB0LjQsdC+INC4INC0
-0LAg0LHQu9Cw0LPQvtGB0LvQvtCy0LjRgiDQstCw0YEg0JHQvtCzLA0K0KPQuNC70YHQvtC9INCU
-0LYuINCc0YPRgtCw0L3QtNCwDQrQrdC70LXQutGC0YDQvtC90L3QsNGPINC/0L7Rh9GC0LA6IHdp
-bHNvbm11dGFuZGEuakBnbWFpbC5jb20NCg==
+On Thu, Jun 24, 2021 at 8:38 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> Does it make any kind of sense to talk about doing this for buffered I/O,
+> given that we can't generate them for (eg) mmaped files?
+
+Sure we can.
+
+Or rather, some people might very well like to do it even for mutable
+data. In fact, _especially_ for mutable data.
+
+You might want to do things like "write out the state I verified just
+a moment ago", and if it has changed since then, you *want* the result
+to be invalid because the checksums no longer match - in case somebody
+else changed the data you used for the state calculation and
+verification in the meantime. It's very much why you'd want a separate
+checksum in the first place.
+
+Yeah, yeah,  you can - and people do - just do things like this with a
+separate checksum. But if you know that the filesystem has internal
+checksumming support _anyway_, you might want to use it, and basically
+say "use this checksum, if the data doesn't match when I read it back
+I want to get an IO error".
+
+(The "data doesn't match" _could_ be just due to DRAM corruption etc,
+of course. Some people care about things like that. You want
+"verified" filesystem contents - it might not be about security, it
+might simply be about "I have validated this data and if it's not the
+same data any more it's useless and I need to re-generate it").
+
+Am I a big believer in this model? No. Portability concerns (across
+OS'es, across filesystems, even just across backups on the same exact
+system) means that even if we did this, very few people would use it.
+
+People who want this end up using an external checksum instead and do
+it outside of and separately from the actual IO, because then they can
+do it on existing systems.
+
+So my argument is not "we want this". My argument is purely that some
+buffered filesystem IO case isn't actually any different from the
+traditional "I want access to the low-level sector hardware checksum
+data". The use cases are basically exactly the same.
+
+Of course, basically nobody does that hw sector checksum either, for
+all the same reasons, even if it's been around for decades.
+
+So my "checksum metadata interface" is not something I'm a big
+believer in, but I really don't think it's really all _that_ different
+from the whole "compressed format interface" that this whole patch
+series is about. They are pretty much the same thing in many ways.
+
+                Linus
