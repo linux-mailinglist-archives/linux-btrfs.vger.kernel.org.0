@@ -2,146 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899203B4BB8
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Jun 2021 02:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD43E3B4C38
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Jun 2021 05:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhFZA4h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Jun 2021 20:56:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44488 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhFZA4g (ORCPT
+        id S229906AbhFZDlF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Jun 2021 23:41:05 -0400
+Received: from mail-pl1-f179.google.com ([209.85.214.179]:38778 "EHLO
+        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229873AbhFZDlE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Jun 2021 20:56:36 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 096421FF5C;
-        Sat, 26 Jun 2021 00:54:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624668854; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=If1lGVvTTy1mMve5v/f1OW4gM6c9qmSkqDESDLtyHqs=;
-        b=SjiknnsUNVjICytBz3ka48tYcKip5ZAYGJzfWsw5lRr8qdToari5DSlTDHIGgK2v436wU7
-        FF8g4kuq+1F45mIQVHmh78vPLPpM9jy+N/vuzJ5iwF7i9J/IQjQeiBDZCBhL17HxJLO8pY
-        Ej0X+lFhIFuRhTpY8zWFBqQ3bGc0/Cg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624668854;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=If1lGVvTTy1mMve5v/f1OW4gM6c9qmSkqDESDLtyHqs=;
-        b=Ji+R9xh/0FWAFTIbhTteyy15Q8MorWHiY0P6k45YZnS18YBaSyJNJofg/FcZo29NIGuHyY
-        ocPxX7L/mbwfItCw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id AD26B118DD;
-        Sat, 26 Jun 2021 00:54:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624668853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=If1lGVvTTy1mMve5v/f1OW4gM6c9qmSkqDESDLtyHqs=;
-        b=wh93Y7yvzlU5XQrOfvurCNxUardrc/SUJwYmx98m0qFWvMo1PYz68B1d5x6zdj2aGlUX58
-        k7asZPRpXyayB8zeXJoZ6W4dlnZCpcb5Il7E5QusO9anqWFW/Cp81WC78map07xuuIkWLV
-        CHksUCyUBWD6q0qaziC5zCIbJMnNHSc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624668853;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=If1lGVvTTy1mMve5v/f1OW4gM6c9qmSkqDESDLtyHqs=;
-        b=lZ+K9UmSwfe3VfVSk3AByt7eThUiRum0BI4/kpG670gxRxKHM4UUaFwBmrBeDCxKmMLZWx
-        Lr5GdFIVFM45VSCg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id w/AZF7R61mAWeQAALh3uQQ
-        (envelope-from <neilb@suse.de>); Sat, 26 Jun 2021 00:54:12 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Martin Steigerwald" <martin@lichtvoll.de>
+        Fri, 25 Jun 2021 23:41:04 -0400
+Received: by mail-pl1-f179.google.com with SMTP id 69so5716858plc.5;
+        Fri, 25 Jun 2021 20:38:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zJnKu8VyGHUHakkNx3B7bfcptdv9iXQ+SKMU8fbrCYo=;
+        b=BPZnXw21NSzKPZ/JZZ8lPSqZCIwO1/2Iy8zKPrp7xsAwT7onRihlZP68WG4xF9+3iz
+         HoYKoO3kX8/Tjo2NmkUZP18FpCqQSPZc78O/NCnqqXRhECQknUA2CsiT/T4dTqtgAJjx
+         g9a12qAH/fbZztRF+H13tgDoJW+MzMEmDOp8/VpUjh7rXRdcbsPjztk7qMLOoKr0ZjSQ
+         TmaTBwVHd/ctrnYZ/ZxY6n6uaHFTuP0PVHLWMGXInHe8E0oytOY8CA5fmVG8dV0dUC8Q
+         CIfx9emqgPjVdLprz/w9dW0ohv95Uwew68p+6usoIoSFOOaBQQu3gWMx7TcgPwUbFXgm
+         pRPg==
+X-Gm-Message-State: AOAM533vkteFJLRt8BiRnmTnSFzIRcaeS6xVaYVO+HzC0F5lPC+ZlM2x
+        LEjvtqMg5DLVudcB31vz/3gVRJSAdVg=
+X-Google-Smtp-Source: ABdhPJxM5JqS4cODA4DV4/M1Oke6f+YPVYkHMq4B00IWIYOG3lAFx1uiQcGOu/BSAH8GD/uD2xkHUg==
+X-Received: by 2002:a17:902:446:b029:120:1fd:adbf with SMTP id 64-20020a1709020446b029012001fdadbfmr12252905ple.52.1624678722222;
+        Fri, 25 Jun 2021 20:38:42 -0700 (PDT)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id 135sm7152412pgf.20.2021.06.25.20.38.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Jun 2021 20:38:41 -0700 (PDT)
+Subject: Re: Assumption on fixed device numbers in Plasma's desktop search
+ Baloo
+To:     NeilBrown <neilb@suse.de>, Martin Steigerwald <martin@lichtvoll.de>
 Cc:     linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: Assumption on fixed device numbers in Plasma's desktop search Baloo
-In-reply-to: <41661070.mPYKQbcTYQ@ananda>
 References: <41661070.mPYKQbcTYQ@ananda>
-Date:   Sat, 26 Jun 2021 10:54:09 +1000
-Message-id: <162466884942.28671.6997551060359774034@noble.neil.brown.name>
+ <162466884942.28671.6997551060359774034@noble.neil.brown.name>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <ec60fd7f-7020-5168-81f1-809da73763f3@acm.org>
+Date:   Fri, 25 Jun 2021 20:38:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <162466884942.28671.6997551060359774034@noble.neil.brown.name>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, 26 Jun 2021, Martin Steigerwald wrote:
-> Hi!
+On 6/25/21 5:54 PM, NeilBrown wrote:
+> On Sat, 26 Jun 2021, Martin Steigerwald wrote:
+>>                                  And that Baloo needs an "invariant" for 
+>> a file. See comment #11 of that bug report:
 > 
-> I found repeatedly that Baloo indexes the same files twice or even more 
-> often after a while.
+> That is really hard to provide in general.  Possibly the best approach
+> is to use the statfs() systemcall to get the "f_fsid" field.  This is
+> 64bits.  It is not supported uniformly well by all filesystems, but I
+> think it is at least not worse than using the device number.  For a lot
+> of older filesystems it is just an encoding of the device number.
 > 
-> I reported this upstream in:
-> 
-> Bug 438434 - Baloo appears to be indexing twice the number of files than 
-> are actually in my home directory 
-> 
-> https://bugs.kde.org/show_bug.cgi?id=438434
-> 
-> And got back that if the device number changes, Baloo will think it has 
-> new files even tough the path is still the same. And found over time that 
-> the device number for the single BTRFS filesystem on a NVMe SSD in a 
-> ThinkPad T14 Gen1 AMD can change. It is not (maybe yet) RAID 1. I do 
-> have BTRFS RAID 1 in another laptop and there I also had this issue 
-> already.
-> 
-> I argued that a desktop application has no business to rely on a device 
-> number and got back that search/indexing is in the middle between an 
-> application and system software.
+> For btrfs, xfs, ext4 it is much much better.
 
-NO SOFTWARE can rely on device numbers being stable in Linux.  Not
-desktop, not system, not anything.  They are stable while the device is
-in use (e.g. while the filesystem is mounted) but can definitely change
-on reboot.  This has been the case since about Linux 2.4.
+How about combining the UUID of the partition with the file path? An
+example from one of the VMs on my workstation:
 
->                                  And that Baloo needs an "invariant" for 
-> a file. See comment #11 of that bug report:
+$ df .
+Filesystem     1K-blocks     Used Available Use% Mounted on
+/dev/vda1       25670972 12730276  11613648  53% /
+$ lsblk -O | grep vda1
+└─vda1 vda1  /dev/vda1 252:1     11.1G  24.5G ext4    12.1G    50% 1.0
+ /                84cebea8-7e6f-4c2a-8a1b-8bc0c9744751 ae2151de
+                    dos    0x83     Linux                  ae2151de-01
+                        0x80      128  0  0       0
+                 25G         root  disk  brw-rw----         0    512
+  0     512     512    1 mq-deadline     256 part        0      512B
+   2G         0    0B        0 vda                      block:virtio:pci
+                   none    0
 
-That is really hard to provide in general.  Possibly the best approach
-is to use the statfs() systemcall to get the "f_fsid" field.  This is
-64bits.  It is not supported uniformly well by all filesystems, but I
-think it is at least not worse than using the device number.  For a lot
-of older filesystems it is just an encoding of the device number.
+In other words, UUID 84cebea8-7e6f-4c2a-8a1b-8bc0c9744751 has been
+associated with the block device under the filesystem that owns the
+directory from which the 'df' command has been run.
 
-For btrfs, xfs, ext4 it is much much better.
-
-NeilBrown
-
-
-> 
-> https://bugs.kde.org/show_bug.cgi?id=438434#c11
-> 
-> I got the suggestion to try to find a way to tell the kernel to use a 
-> fixed device number. 
-> 
-> I still think, an application or an infrastructure service for a desktop 
-> environment or even anything else in user space should not rely on a 
-> device number to be fixed and never change upon reboots.
-> 
-> But maybe you have a different idea about that and it is okay for an 
-> userspace component to do that. I would like to hear your idea about 
-> that.
-> 
-> Another question would be whether I could somehow make sure that the 
-> device number does not change, even if just as a work-around. I know for 
-> NFS there is a fsid= mount option, but it does not appear to be 
-> something generic, at least the mount man page seems to have nothing 
-> related to fsid.
-> 
-> 
-> Best,
-> -- 
-> Martin
-> 
-> 
-> 
+Bart.
