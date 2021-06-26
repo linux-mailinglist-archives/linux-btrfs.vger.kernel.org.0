@@ -2,66 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FDC3B4DF6
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Jun 2021 12:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7DD3B4F1B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Jun 2021 17:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhFZKUw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 26 Jun 2021 06:20:52 -0400
-Received: from luna.lichtvoll.de ([194.150.191.11]:46345 "EHLO
-        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229518AbhFZKUw (ORCPT
+        id S230048AbhFZPGV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 26 Jun 2021 11:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhFZPGU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 26 Jun 2021 06:20:52 -0400
-X-Greylist: delayed 5336 seconds by postgrey-1.27 at vger.kernel.org; Sat, 26 Jun 2021 06:20:52 EDT
-Received: from ananda.localnet (unknown [IPv6:2001:a62:1a52:5a00:19da:1263:b56c:4c4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 43B3727B021;
-        Sat, 26 Jun 2021 12:18:29 +0200 (CEST)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-block@vger.kernel.org, Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Assumption on fixed device numbers in Plasma's desktop search Baloo
-Date:   Sat, 26 Jun 2021 12:18:26 +0200
-Message-ID: <3602587.1ANNM6WTHT@ananda>
-In-Reply-To: <d24989e1-c8e0-d6c7-706e-2b5b8e9b124c@gmx.com>
-References: <41661070.mPYKQbcTYQ@ananda> <2009039.b04VgvrTqe@ananda> <d24989e1-c8e0-d6c7-706e-2b5b8e9b124c@gmx.com>
+        Sat, 26 Jun 2021 11:06:20 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39621C061574
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Jun 2021 08:03:58 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id gd24-20020a17090b0fd8b02901702bcb0d90so3014241pjb.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Jun 2021 08:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=laP9fCBkSmOfdhmYsvsg1t3DmvuO87wUoZhSmrsWMm8=;
+        b=qNDAy5DcPoAqwonBdkWhQcUSJWhHmGwjgg9RZbK4CKt7W70KzRjpODsIqntQJKpNVA
+         hbJPMp5Sq+qoW5qhOGUYWiL1fcBP5aioNSJ1Yfpn07N33bnArXgroSc3/Wtqim5agccD
+         8uLUmA2RVahFVL/rRqfJOywpvpAm0aWp3IR8WXbIv31bHN7PuaDrODtlkDb6UcoQMje8
+         z3i8DsS6z6ZcQM6NyMEVoVbcZmsD4P+gPKoNjkwVWUt9oTUFl+1dfKxdzC2iQ5qKA0BE
+         vezBHNc1hLvakXHhszvFd/e/zGPomldRddxPNm5ARcLUbTF7oEZkL6KvPKm4yZegnXJT
+         XvMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=laP9fCBkSmOfdhmYsvsg1t3DmvuO87wUoZhSmrsWMm8=;
+        b=ST4jXg8JTN7cmVUsi98qEwZiIjyi1CbeSfIf28wnVi1rcOO4XolTTBqrSPiNMuUUGq
+         20GfkTw1fVIgmLRb87+7Qs/ksUNFFCgJAm2jN8ddcX1oO85OugMO2FaeGp/gpo94X1Oo
+         3bvIGUmOUiDX3sejaj01Vp2OxNlT10okIwWUL+WY1gtLY8Sin1Dc4OiphYFbiYvIS2un
+         nhkl+zzIx4pPVKkzau/FMtRUE20StwXcPg0xhKnO40gIbHr7R89jDySzJZEhFfhEruYP
+         CLiJuxQQTFrGZIBaL5Jd5tS/UgxC7aBTnniBzsYMsi6+8xQQs1Q5cbRlIZST//mdJHi0
+         DeBA==
+X-Gm-Message-State: AOAM530/qdRD0D2QOIFMHzD9YwIxQGfZGTSCffSt1QjWqV/fQZSQi7I3
+        15MedtoUQtRFhMP3cCLI2cClJUQu0NzjlQ==
+X-Google-Smtp-Source: ABdhPJxkudSiD6+yWUBEsZmDk2Lh34YygDqLlrXvemkHZte0MY0pwGxxUpDLmy9GfvY3QcAWm1v4Wg==
+X-Received: by 2002:a17:90b:3142:: with SMTP id ip2mr26426684pjb.63.1624719837686;
+        Sat, 26 Jun 2021 08:03:57 -0700 (PDT)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id 206sm8956459pfv.108.2021.06.26.08.03.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Jun 2021 08:03:57 -0700 (PDT)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH] btrfs-progs: zoned: fix memory leak in btrfs_sb_io()
+Date:   Sat, 26 Jun 2021 15:03:44 +0000
+Message-Id: <20210626150344.25860-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin2 smtp.mailfrom=martin@lichtvoll.de
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Qu Wenruo - 26.06.21, 11:33:17 CEST:
-> > I am not aware of an option for fstab to mount this one first and
-> > then the other second, but I could set the second mount to noauto
-> > and mount it when I need it.
-> > 
-> >> But this also means, all later subvolumes not in the fixed
-> >> mount/read sequence can not get a fixed number.
-> > 
-> > I somehow thought this would get complicated.
-> 
-> It's already complicated.
-> 
-> So this just proves Neil is right, device number is only reliable at
-> the lifespan of the fs, nothing else.
+In btrfs_sb_io(), blk_zone_report is used for getting information about
+zones. But it is not freed if code goes in usual path. This patch frees
+the variable just after it used.
 
-Thank you again.
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+ kernel-shared/zoned.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I informed upstream about the conclusions from this thread.
-
-Let's see what they come up with.
-
-They have an energy efficiency goal, for that it would be desirable to 
-stop indexing files twice or thrice or even more times. :)
-
-Best,
+diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
+index 2a6892b3..75eade84 100644
+--- a/kernel-shared/zoned.c
++++ b/kernel-shared/zoned.c
+@@ -543,6 +543,7 @@ size_t btrfs_sb_io(int fd, void *buf, off_t offset, int rw)
+ 	zones = (struct blk_zone *)(rep + 1);
+ 
+ 	ret = sb_log_location(fd, zones, rw, &mapped);
++	free(rep);	
+ 	/*
+ 	 * Special case: no superblock found in the zones. This case happens
+ 	 * when initializing a file-system.
 -- 
-Martin
-
+2.25.1
 
