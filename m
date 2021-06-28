@@ -2,65 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9D33B5DBC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jun 2021 14:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCEB3B5DE1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jun 2021 14:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232940AbhF1MPg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Jun 2021 08:15:36 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:43116 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhF1MPd (ORCPT
+        id S233016AbhF1MWL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Jun 2021 08:22:11 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:56926 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232939AbhF1MWK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Jun 2021 08:15:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1624882389; x=1656418389;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=MjQSF4MTuL2ikyWs/1nAoX16DTXb7a/cYBWeZYrSHO0=;
-  b=dDVWGu81tUhYdcm83gT5Olvca5vRVYmQSfYrR4bK4skL3Vi2PN3sTPHY
-   MefzpFSL3Hj0JmoA7q0lYaMo9/PkGkjrVFiwynUaJTsiegwgQmkjpGR2B
-   Dn6gnh3jvZd4ynCPwu83JqS4PBUokl8IU6rG77PkReZgSbYsHfuVu6vjS
-   JCsy/WWT0DXdd7xLQiCU0Y+z/taxgbjurwDCnTAvuPPwVbRgiigP154wg
-   U1iqNJqRh4SiggXMyxov5ya6ZjfACMCJFbZz4ld9OC0KFHAxFUKNmkQCp
-   MIh3XfH/uZUngrEEjmL7Cwy5zHbkP0LX3AlOcN9KQgNHlL8pVAPcjlZc/
-   w==;
-IronPort-SDR: XocgAJIgvY4NY39lpsQLJGC0xuJnL2jqgbQWpIUp4hhXpMT4IbB3IUuTkaTCcGBdW0sTyPcoZ4
- XvPYnwGKXDGstghsuwjUMEE3OiORVg+9WqWI5+F0d7jbBI7P7JdqcghewMw8VhUoAvhOSSshIg
- 6fBaMdrtge/BJ1OO41cn0EB5qxBNX1u7K2olq3KyTbL0HYPL/hkRIkHUPQY3EcSFxD/RIZdb25
- LOKhFi+RA7IkjRauVSM7cEb96LzajHDJCsNE4/U23+S/9g2k1dexFeOuXxnTe2d4Ulbx6jLShU
- RxQ=
-X-IronPort-AV: E=Sophos;i="5.83,305,1616428800"; 
-   d="scan'208";a="173661313"
-Received: from mail-mw2nam10lp2102.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.102])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Jun 2021 20:13:07 +0800
+        Mon, 28 Jun 2021 08:22:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1624882783;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b0GedsWt5LeCsxBjzTJtosUf5BOtt6SnxtzKSeGHpkc=;
+        b=N2nPcyNVNZQcFeisUhcqAO2u5Rlwom1FUu2sg1XMVePv3uwh0WA7ge9FanF23l+eaS2X59
+        064zwbLBWY3/j8HoJuqlJVn93FGVbK4LjSup9858SlFU30jVOzmsW40/+gkhGtw7cZA9Kp
+        clAIfc933buSJpUAi9ZJWd5HAsND0Do=
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur04lp2050.outbound.protection.outlook.com [104.47.13.50]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-1-FC-HSgG2OLCMVjn2S9c8_A-1;
+ Mon, 28 Jun 2021 14:19:42 +0200
+X-MC-Unique: FC-HSgG2OLCMVjn2S9c8_A-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dkrxItIzwQkOjKdsKIBJDCAb9v+l1VuxZ+Uz1TzVdSwx+4JtZqImTzblKVTb/gfcxv09Xvm+MoayESUeEjV/wh+AMPgWKS5sbWcAKdqp5VHPeqZyXXQkVwYdAUVcdNDlRnn88U+2+z+3rGzgI2K0DELIdRStAr2C3saGBsYlt7W/Hqv6u0QZ/3yvFm+ps/9p8/Z5GWii0f0AR7dRsvbUu9rj8KFBtaXmIdUSn4QvmiZu8Q5AJaFKEnlkxb2VRf4ym1pGvWXrgM6ht38re/cgqvjNsTyA2canus2Tcz3lIvfNsA2752zbXidSWF+SVcff1IDX5v0fahzsmzJ1wW1d9A==
+ b=AnsUOHY1viFEkF/nblAjEUssnGPWoCZXmYFsUGqA4ex34GYLulsg6s0cy2/UI1CU/HAIi2YVTGdijstBH3sJ9G7/8aececqMXoGxDD+mckAq4529ZkCHm4frVMuuSm7QKYkA5ltFQ0EjDcslPd5+sF0olZM/Q5RXOEkF7QoULE3kK2i5HOsWFDh0PiZRYoGJV5QT8XoN59Yd60kUb1lfjH8lurF34zJSZaR1Bw7PPuSw+luYI0UjrBSimlIXiyHoc3D8Z7AwXB8ZYlElaM81qvTBm3HSTS17VrdBltGTD+q7wLeSZGYos9QnRK9qgSqC4awyOnHGUNBuBDr5izaWJQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NETzj0fHWFolcLq9LQiYuJtzjQgaqQuW2ZMnuosQTkQ=;
- b=MVjylqO5X8afLAbfNMo1eJ9Dfia0ts+TCgFRPSPJDIBUTZ+qDkI11XPYiTGB7zyxTqqk8DFs+lPzdM5a3HBZiUR2PnAD7GwnkGPS3BJnrXBI8uAXQVflwO8z4bkVz9xoAu0+VmfN+GsaYze4G9dxd6qrLuKAa40peX85lobM9H1IFrgvQrXz1xzlicBAhvOv7O60GPpEi4fkZhcQs+dMctNSR0eVm7SUVZh4HLixUiBYXaLttmoXZnYV7xPkm6rpIEy7VDIsYvTIrQIsPT0pOnMpmxuNcjVuow3dAXBIIkRpgvgrzXy7rVuLB/iym+3CEPpjAeiGCMYYXeqUJLKjIg==
+ bh=MCNiJ86kDBWbqdJs99LblVxkdqotAoFIX2D5GxhNPa4=;
+ b=N5GVBB7qc+IbMHS3zCZG4wYTDDX5VYiXqIUlzjdsbQXs4hewv+lEBH85fTXgIJI3C8l4S4uCHaeNKHyZhG5CQm6puePY/3sBns9xK0iWgT7QmF/fI6sj8LNBr0hHvzEDEaxXuc/5ReDpKqENZMLvcgkTiIA3ggBT3LBbF6M3cF2e2xlgxVGYGw+/2h2e7wGs6pM2sj4iztCLz83VbifcMYTAnyPictQOAwcUi6hkVD+DkK/M3/J7A3ugSV4jVddN7ajzkGK9UWhR/nZG8ac7NLRaMu1uDMHztfZDQbYozBs8cweyrh8ydVXflmlVITH5ZxhwsMBeQ0YVDUwo6ZdBNg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NETzj0fHWFolcLq9LQiYuJtzjQgaqQuW2ZMnuosQTkQ=;
- b=pdpGawVTctSjzs2vCjLKB9yrFDlY5DIrwsezTnhkqrm6o8hltlkbPWgViz0iCkMWT9xat+LOsGrrsWfE/g5YzJ4kMH6I9LC40UL2fi2wPOmBe14pps42XOu/iVTl4TM6cIk9XIe8VO+niSyK4PiOmkdVyLVIYZ7tkzKh92tKZNs=
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com (2603:10b6:5:244::21)
- by DM6PR04MB5164.namprd04.prod.outlook.com (2603:10b6:5:12::18) with
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: yulong.com; dkim=none (message not signed)
+ header.d=none;yulong.com; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AM6PR04MB4902.eurprd04.prod.outlook.com (2603:10a6:20b:b::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Mon, 28 Jun
- 2021 12:13:05 +0000
-Received: from DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::a043:568a:290e:18bd]) by DM6PR04MB7081.namprd04.prod.outlook.com
- ([fe80::a043:568a:290e:18bd%9]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
- 12:13:05 +0000
-From:   Damien Le Moal <Damien.LeMoal@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Mon, 28 Jun
+ 2021 12:19:40 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b4b5:823d:f2fd:d10]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b4b5:823d:f2fd:d10%9]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
+ 12:19:40 +0000
+To:     dsterba@suse.cz, Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
         Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
         "13145886936@163.com" <13145886936@163.com>,
         "clm@fb.com" <clm@fb.com>,
@@ -68,11 +57,6 @@ CC:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
         "dsterba@suse.com" <dsterba@suse.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         gushengxian <gushengxian@yulong.com>
-Subject: Re: [PATCH] btrfs: remove unneeded variable: "ret"
-Thread-Topic: [PATCH] btrfs: remove unneeded variable: "ret"
-Thread-Index: AQHXa/qIqPYC2XVGwUGkFAjG5cdOuw==
-Date:   Mon, 28 Jun 2021 12:13:05 +0000
-Message-ID: <DM6PR04MB708118A4B938CA4B94C243BEE7039@DM6PR04MB7081.namprd04.prod.outlook.com>
 References: <20210628083050.5302-1-13145886936@163.com>
  <ee06042f-da1a-9137-dda3-b8f14bf1b79a@gmx.com>
  <DM6PR04MB7081A02339DB3ACC72F86261E7039@DM6PR04MB7081.namprd04.prod.outlook.com>
@@ -80,129 +64,139 @@ References: <20210628083050.5302-1-13145886936@163.com>
  <e73fd408-d5c3-0e17-b3f4-e12f2c105bc0@gmx.com>
  <DM6PR04MB70814C2126868BE1DE1DDC19E7039@DM6PR04MB7081.namprd04.prod.outlook.com>
  <20210628120435.GC2610@twin.jikos.cz>
-Accept-Language: en-US
+From:   Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH] btrfs: remove unneeded variable: "ret"
+Message-ID: <ce9083c7-ed1c-1248-484b-3b8650734f52@suse.com>
+Date:   Mon, 28 Jun 2021 20:19:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210628120435.GC2610@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2400:2411:43c0:6000:49b5:3cc7:e59d:b478]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7560e1bb-6de3-4d5f-b66b-08d93a2e1595
-x-ms-traffictypediagnostic: DM6PR04MB5164:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR04MB516414B23BB4697D05A61684E7039@DM6PR04MB5164.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /7oz+xLJh4nBagCOILzeoq8XVGn4SbgirLD4CnIJEWMxn1RpE5uD4waElk7FiVQwYFjGYFXqzpSr/eS64wfsODtjbqt0lUrNBIGcxND4nicFYUsG7LHzjg3q/RKpQ0Ouxatd2nxPKT9P5hLGFIpsvta17SMLYyV4enEYbJCkZCjSE7TtukbuTzOybaaLysKqsF8kFkxqlwLaQ+lytY3NyDWGuLeo7g/IdUdcPdX6Wh5Z2ondxqsbyM3++yK+r+wy5lG33GUWSff8F+a9OM1rF3ni3XfNe3+3jF3aFauJYG2Oa3O+HOpHHwb+RXL7Qp1henLzuIZd0bTkifrIVGXjLvi85JqEWBT6JiTZs9yyFr4dqldDk2nISkGRR9IdB/CZLA62X1Q4KEQbNtEMU9TYuEPqwXiCVvr8Q8oO6IKIkgi6BeYK648Su1frrRv+rnMHAllk/5dIUP9a/Y7m55YWeuLw2TS0GuqdCM7j1c+BcLTPacEXY/ZENJ+0HaBO+EW5VmozDledIS8pIOAIQ3WaGkcYp9mqp9lTf5sCRWLZ+yh7+ciy4AC1fn3qHZM1aeChqBChDtmtBF6Us0R1w7+HHGMG/10myFxRXN+C3qAzEnVzwPNTOlLR3z0d8I/cBf1dbjVgfLSy3lrq/rtoMcc23A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB7081.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(376002)(39860400002)(136003)(478600001)(66446008)(64756008)(66556008)(8936002)(53546011)(66946007)(55016002)(9686003)(122000001)(66476007)(52536014)(76116006)(2906002)(6506007)(54906003)(91956017)(33656002)(6916009)(4326008)(5660300002)(8676002)(83380400001)(86362001)(316002)(7696005)(38100700002)(71200400001)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TaxPeFuuYwyqMGuFeHdOAPy9iipzVAQx3AWl0BpYVJfaKa6F2Dhouc50DZQg?=
- =?us-ascii?Q?SBEV99E34+S9Q2r5DFJD2pECpLOcvKCjNLjURDSRs8/570JdmaXdZ0f4GxQ6?=
- =?us-ascii?Q?BZ6TWb3PUb3DZsyljaDc1xWhgXA+UK/ESfLeNd6al0hICjuEqrlQDK2vvvyH?=
- =?us-ascii?Q?X+M3cdsYsg0UCVUHD9Dc8IUsADv7kDEhODMiI/N0YhkVN2BpmtN3O1Z7p/HF?=
- =?us-ascii?Q?fqW3aPXIfxvKgSJlBJ8Qp2O6/AtzVJ66hLKbhfGHJoP7oi1RSywstc6g9lOC?=
- =?us-ascii?Q?nAWraX1xB5tjFfFFCdP+5v913pCYega0RoLsn77ZmGoMhdB2NgidOb9wLuld?=
- =?us-ascii?Q?zdAsMavj5tldracFbnHreFz22i+miW8qBb71SXmAk3xnSRL2FfRn6uJCFArJ?=
- =?us-ascii?Q?QFil+zNC9Ctq308P1IuxRhDofojz18Dl4Rjcwfoh6qtCuXVpSgkVcEI0Qu/I?=
- =?us-ascii?Q?U1WySRC+nnX66wkMDRWBGx1RY01wmLyzlCeD5u+vcI4WzF79Mvwbi+j7igI8?=
- =?us-ascii?Q?+nEfih2DR+boFbeQxX9E7McHpkEm3vL0lOG4N3o703oiAT3Cb66Xd6Dpaynj?=
- =?us-ascii?Q?4c1E1vHY949CWyytwN8+dXUpcpbXJdIaqF3P0ERDgMi1hY6I1uEUUpLJhFOR?=
- =?us-ascii?Q?CU0FpNI0Sb21Cj2vExZMUtojAPIAehSWSuLXXu+MlbYGotrCfpqKLGbDJTQ3?=
- =?us-ascii?Q?T6HeAvZLbmDDV7Wum1sydUUUUiHu/+kzGv/fYqHhWsvvJznVVMFuJEHExQ2c?=
- =?us-ascii?Q?XTneYigfeJMQHhN9x/tlb7JbOZGyo3J1Dp48P4rzmQKcyDfiLulCFo7M/7HU?=
- =?us-ascii?Q?el/9KyAmCbXRpkXu/u/mPaL45g/kF1VEmk5TAkZKfaS2He7AFUdN4SCrqmMn?=
- =?us-ascii?Q?4L4/Ty2Ybj10v0AQmDuw+tKea/cTFpT3m+vmvbhsRhabWGvm3N87OZD56RU/?=
- =?us-ascii?Q?RxeK39hAnn5PmeOKNGLIc+khoLEqUUyjsLz6uQSAodQMqwSZrpMeNxR8tBQT?=
- =?us-ascii?Q?jdfY7Cl3dCMyfrYEX7iQFgxfsc6KOj/5Tny+WBHCEox45DrS50HM30g4XAuv?=
- =?us-ascii?Q?0kRYf5hSOkhXQ69O05zOR3+bcSnDemp4mK4U8CPyw0cJbYCY8lvmnx4br3oT?=
- =?us-ascii?Q?01aM2oCprxJNrTnmmsfw9XiZQcFv4kTQ7v6jZ/F1/5UZkaeY+pXDe8uKJZxz?=
- =?us-ascii?Q?njRxcnDW7lbsO7ll/0DjEBdfXxgf1VogIPY8/qKzX+RN0VsGUmIFYyQoodqa?=
- =?us-ascii?Q?E4FA5FiGYShdH6ceafb61FRzjFRpJ2lU38iN5lZv04aMhe8b7nrz0t5oswGe?=
- =?us-ascii?Q?SjmI+cbHAHmVSKVCfA29ZYhhEh6+qSu2OFW+fPFeWTso/7kEthKfT326nGBD?=
- =?us-ascii?Q?tFP7+UulGGk+EYoOvwc5L1KHNnoE7GOEyMX6f3Zm3EJsMHdTYA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [149.28.201.231]
+X-ClientProxiedBy: BYAPR07CA0049.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::26) To AM7PR04MB6821.eurprd04.prod.outlook.com
+ (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by BYAPR07CA0049.namprd07.prod.outlook.com (2603:10b6:a03:60::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Mon, 28 Jun 2021 12:19:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 78c2f037-cd81-4730-8290-08d93a2f00ea
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4902:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB4902A4DA2AF8F062A6B21AC5D6039@AM6PR04MB4902.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2q8bwS3DNwZPTYzOh4kJfiVm3BczxpfGbmIQagnQ5PHehcLFMo8Kql1hlv/WgZEJSUNiSEHk/wWw/aH+eWsix72EJFCkrjoUV3ep8PJEpejj3WXHtfLeuwnWJfsJm4/h8cl/RyWosV6Vuqhq5oSK/OIvRkqHr/J4GOjiM9AdMozxIhycRW0jfkL2p43Fl5Yp5KabslbAk/WygAkNpUOifUPlMdJhcDe9mOPsjp7kx0mTh7+x0ksoXH7+0IYB11Iej1Tu5QgJeU1lqTb+lya65SX9uO+Jo6sklvvYxK7h/uqD8Hs5XG9xMh0QYJjlS+UQedAbgY3P14x1Wh7WF2mRPv6M7CGjrrHZSnWAtFVS37lx2PIAiRQ55vpQhyKjZj/K/38RGTW5oIrKHhBOWLII8XIvnWwnLM36sEvvk1MlkFMtKeCxiYPqc4mTTbwhAY0GYLWTe8XM7BY+o1gFldiYk5XKT48F/CHvmmANcsLP3EJb27bxL0pqtyLu73rffaxsJ4hAzoSuiV2Tslic+gCYD47IYz9d3IvDEazacX7P3ZQqj8tfRin69ee9OEBLGFHJB0jbJy+uBRUa86TFrkBi1557Peco3MYIDlttABdKKgYddmPUBYUzS7kVMmhvOdWkQvGnXn8zyeKWePnBbMoqX4lfl/VJ+DOuJ+azUF9WrsIHXuTczdz1pcDJcZzBsTRGcXvTWn6jCAjqIa2xDc4Etazb6Y7wbqY9I5d0VOCMJXOYHNe84okJEH3C1DwS+RhDKOHSpr0KxR+QD838dBbjDA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(136003)(39860400002)(396003)(2616005)(6706004)(316002)(8936002)(66946007)(83380400001)(66556008)(36756003)(38100700002)(66476007)(16576012)(110136005)(956004)(8676002)(6486002)(921005)(6666004)(31686004)(26005)(186003)(31696002)(478600001)(86362001)(5660300002)(2906002)(16526019)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cenV2a1mlVYJ+wFQSy18ccXRBWWghAlACpvBli81Z8hXsnDyChqRRaIyMPXa?=
+ =?us-ascii?Q?9sX7xDLmrSaIbKH275Hzbzzc8qtd3rRyecsSZyameRwkYedp/bV8oDbpApGP?=
+ =?us-ascii?Q?3KnOfGtnHVNtrNSti7KuUIC8B+5KHnKvAt9DJY8nmZu3E/r3/uBtcWanZpbF?=
+ =?us-ascii?Q?+p/U1/Llntv4IWTr0K2+wUa8LRDpa7DMkgI5C3H5bk2hG/5f3AvGmXrOFPU/?=
+ =?us-ascii?Q?YIkWHxf2n6a2WcuLakl/3qTuejoiYh64G28KrjWrnL+kxR5/9ntG4g9/5GEM?=
+ =?us-ascii?Q?oKyI6oiVDPfEfMZGzgqqZnFEo7om42MH2F2pYvoVCWyjfSPnNILfGnnSHEAk?=
+ =?us-ascii?Q?deFmOagPkaSNnA4V7M/l99V2if5JPo41fwnxjACnUHp8125VQ5DWyHJh/MQ9?=
+ =?us-ascii?Q?WBDfTw+Rzxhpfa2FCjTHw2YWeehxYWGZhszke1xJNF3v28GYQifu/p3ldpne?=
+ =?us-ascii?Q?/m5hX+Mwhmqv5odxwJ/m9x0Csd/R+SgpqrfOnUykVO68XY5r4PIS5l9q5hxS?=
+ =?us-ascii?Q?94zqRj98+Of9tAYWBHglcOsLk15gR1w+uYxlseiV9YfOSN2oeQmDc8ifIhRM?=
+ =?us-ascii?Q?5dAWEo89VOMx5ft02g3ZCKIYYxGACNiePii4qa2my5KEgrDmaaaAmgdTBZDq?=
+ =?us-ascii?Q?E9kRWNeEPtLW4yddhTctJ23C6ZeY/r/d1DTtMcL6F8NCagFwgDGK5FjswkVt?=
+ =?us-ascii?Q?2vgcY2OiTdjVwKdjHPJ/spbrk6l+TmU6GL1KzC3ZPmyjqo/gt0ElAo9EWCMV?=
+ =?us-ascii?Q?/Qik9LyY5/skS3LITg3zPbnkBcYkWQR5A03/CRAiL9ZVmO5g3rrQhFJI+cbl?=
+ =?us-ascii?Q?x/28mbivgtDLRRhpevcsZ/BcHm+RqXZRTjEoWD405Km2Bv+L4uYul5Uj1p1u?=
+ =?us-ascii?Q?ALHE+o0zajYDAeb6gAi6s9zVWxh0MUAwOpIGoi4GDLX68JN+FaLCvp+EMNHo?=
+ =?us-ascii?Q?2u0DaKbWf0TGdaXlvTdVfdVzsc803yfFCiIv5TMulwjI+CF6r+VZY2oOAXrH?=
+ =?us-ascii?Q?JOEAxAWZvd9TiAjplYJ9mA4BKN3aHd/XIXGkue9XbXl26geYI0v+5o2NFF1d?=
+ =?us-ascii?Q?X90tNir4KKpfe5BhZ1SLWdIMxL/dFeuDTweO6sWECdu14wtt343yAaEmBnYR?=
+ =?us-ascii?Q?ojW63QMPtFnGzlE4TNsq1thOok1mho3znBboambGVMmdDPN0wu9R3+0G7rUL?=
+ =?us-ascii?Q?vFv82lS53TZ55PdAYgodNOsSsmk3T03DNmfEeIWXfGX2daWweNEcodk5zv97?=
+ =?us-ascii?Q?5+t9Qht2+M1+bH5aeO6wiDLh7L7K5KXTRqKgciffV9q7SAHNSqc9EWTnHcSu?=
+ =?us-ascii?Q?qYHa+YXLDC1scHyw0MXaydWb?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78c2f037-cd81-4730-8290-08d93a2f00ea
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB7081.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7560e1bb-6de3-4d5f-b66b-08d93a2e1595
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2021 12:13:05.3311
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jun 2021 12:19:40.5497
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: elStrXzp8kkezHeD3vedQoakWG3ur+8+mjvhejzYhYtjpEJdf8oei4wjMnYtO674nKs93S7be5IyITIvsWMtlg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5164
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nOxUNFT4lFiA3jfmYEwnHMVD78gFCJpcKz4lwaHAkrpOVMMOti02tCEAbmZ6SLGz
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4902
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2021/06/28 21:07, David Sterba wrote:=0A=
-> On Mon, Jun 28, 2021 at 09:48:40AM +0000, Damien Le Moal wrote:=0A=
->> This one is actually a good fix :)=0A=
-> =0A=
-> It's not a good fix and has been posted several times already. What=0A=
-> needs to be done in this function is to propagate error codes from the=0A=
-> whole call tree starting in that function. Removing code triggering a=0A=
-> warning is perhaps the simplest thing to make the warning go away but=0A=
-> the right fix needs some understanding of the function and context.=0A=
-=0A=
-Thanks for clarifying. I actually did not look into the details of the patc=
-h.=0A=
-From a 10,000 feet view, it did seem like something OK. Obviously, it is no=
-t :)=0A=
-=0A=
-> =0A=
-> The patch also comes without any explanation so that does not help to=0A=
-> back the intentions to remove it. Reveiew of such path is "Please=0A=
-> explain".=0A=
-> =0A=
-> Replying to patches attempting to fix the warning (and not the code)=0A=
-> does not seem to help, it's just pointing to the previous iterations.=0A=
-> =0A=
-> Everybody is free to run checkers, find the warnings and send patches,=0A=
-> that's fine and that's how open communities work.  But in this case=0A=
-> we'll probably have to put a note in code not to touch that particular=0A=
-> line/variable.=0A=
-> =0A=
+
+
+On 2021/6/28 =E4=B8=8B=E5=8D=888:04, David Sterba wrote:
+> On Mon, Jun 28, 2021 at 09:48:40AM +0000, Damien Le Moal wrote:
+>> This one is actually a good fix :)
+>=20
+> It's not a good fix and has been posted several times already. What
+> needs to be done in this function is to propagate error codes from the
+> whole call tree starting in that function. Removing code triggering a
+> warning is perhaps the simplest thing to make the warning go away but
+> the right fix needs some understanding of the function and context.
+>=20
+> The patch also comes without any explanation so that does not help to
+> back the intentions to remove it. Reveiew of such path is "Please
+> explain".
+>=20
+> Replying to patches attempting to fix the warning (and not the code)
+> does not seem to help, it's just pointing to the previous iterations.
+
+But in this particular patch, it's really doing proper cleanup.
+
+The truth is, the whole function, btrfs_destroy_delayed_refs(), only get=20
+called when a transaction is aborted, and to cleanup all pending delayed=20
+refs.
+
+Thus in this particular function, there is nothing to return an error,=20
+since we're already erroring out.
+
+And in fact we should use void for btrfs_destroy_delayed_refs().
+
+Thus opposite to my initial thought, it's in fact OK for the cleanup.
+Just one step left to change the function to return void.
+
+And obviously, with all these comment above added to commit message.
+
+
+If this is from some guy with years experience, I would definitely bark=20
+at him, but this is one really looks like a newbie, thus it's more or=20
+less acceptable.
+
+Thanks,
+Qu
+>=20
+> Everybody is free to run checkers, find the warnings and send patches,
+> that's fine and that's how open communities work.  But in this case
+> we'll probably have to put a note in code not to touch that particular
+> line/variable.
+>=20
 >> Just did a make with gcc 11 and W=3D2 and this warning does not show up,=
- but there=0A=
+ but there
 >> are a lot more warnings about unused macros and some "variable may be us=
-ed=0A=
->> uninitialized" in the zone code... -> Johannes ?=0A=
->>=0A=
+ed
+>> uninitialized" in the zone code... -> Johannes ?
+>>
 >> There are lots of warnings about ffs() and other core functions not in b=
-trfs=0A=
->> code though.=0A=
-> =0A=
-> That the higher W=3D warning levels are too noisy and have to be filtered=
-=0A=
-> or specific issues fixed after manual selection. We've recently added a=
-=0A=
-> more fine grained list of warnings that would apply only in fs/btrfs, so=
-=0A=
-> if you find more that are worth fixing and then enabling by default, no=
-=0A=
-> problem.=0A=
-> =0A=
-> Some set-but-not used could be useful to point to code to analyze if=0A=
-> it's not obscuring some bug but given that thre are lots of instances in=
-=0A=
-> the system includes we can't enable it.=0A=
-=0A=
-Yes. Agree there. I personally use W=3D1 and W=3D2 only when compile testin=
-g patches=0A=
-before sending. Not having these enabled by default is fine with me. And si=
-nce I=0A=
-just noticed the warnings related to zone code with W=3D2, I mentioned it. =
-Most of=0A=
-the W=3D2 warnings for btrfs are clearly not related to btrfs itself.=0A=
-=0A=
-=0A=
--- =0A=
-Damien Le Moal=0A=
-Western Digital Research=0A=
+trfs
+>> code though.
+>=20
+> That the higher W=3D warning levels are too noisy and have to be filtered
+> or specific issues fixed after manual selection. We've recently added a
+> more fine grained list of warnings that would apply only in fs/btrfs, so
+> if you find more that are worth fixing and then enabling by default, no
+> problem.
+>=20
+> Some set-but-not used could be useful to point to code to analyze if
+> it's not obscuring some bug but given that thre are lots of instances in
+> the system includes we can't enable it.
+>=20
+
