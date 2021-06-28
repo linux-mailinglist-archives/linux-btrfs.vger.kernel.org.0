@@ -2,123 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131113B5B0A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jun 2021 11:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4E23B5B2B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jun 2021 11:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232466AbhF1JQL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Jun 2021 05:16:11 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:24774 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbhF1JQL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Jun 2021 05:16:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1624871642; x=1656407642;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=9RRQk3yZ4Y48nfJL3J2/6/8jUFLDivDGgF2d0vvesBg=;
-  b=kykwIOIzzk8tBe3Fmhk0CH+PljWVQ+tQkWHS0m7qBDWKlMoSXj74+Nbb
-   KbQayB7aAQbVH188pY3MtNeXa0jTaZ8VypsoxLpXKfW5j6IgCXFHshDmD
-   90IaEzZeWkZYi9RvLLl44Pzv02cz4EtLf8cSFxvpdMeNjB/4jOBP/B/ia
-   XHj7eHVeCPhlLE9KKOgoy+ulRknO3VqfhpRwzOuC8QoZe+enxobIzgInB
-   IsD808lwddya7o1pmbAmTQtB7qzQvvY5kW4rWFfM23KNHEoeEh9rQLApE
-   UL90z8MhuAWuvvSvt2jUcxSKX/KD+Q/O/8a39DevRKivwZZ5EvwIAPHV6
-   Q==;
-IronPort-SDR: tEgfNtVm5eHg7MqYk3b2i+cHuIW7Tm7FMHhpG6H8T5xIDenUzI9NPxXruolab2XlRgC/624Cze
- Ck//mJ7qOp4IFAiZniqWLQV8cLKoNpkJwtO9kccg/GMd4MKTNe8gCzTPCHcjmO0jlPmn5yue31
- FT2L2CIZTw7dYEE+ucMNVyGWerT2EzSXnGLJDnZun4Mh9cb0hjZB6JAZ2rh46BbYtk5ddOU0WQ
- /3VNqd2mlgBz7zfRsd4YSaYDqTKF3mLJaDAA/nl3pt/+N8S9ZnkICC2P/sfFRl+SF+ocrW9hR/
- KYo=
-X-IronPort-AV: E=Sophos;i="5.83,305,1616428800"; 
-   d="scan'208";a="276871728"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Jun 2021 17:14:01 +0800
-IronPort-SDR: VAqquZzw55iUL/hmsg/+izh6RWFfGtxxtfoKPlP+Czb6RaLjx/8it9y8z4LPx/8J39dCn0Doe5
- yKLKi2Mb+4Kh3PIB3aLCFiGFxFnsFM5iJLBeZhUMpIAOLxW5otHAhPFDJ4VFtoS46l8JbuBqBn
- U1cj0eAhO8+p7+AgTzsgaYfODUcXrBRK+CZM8qNH6hraOiymA+3JZNzPY758fbVSp4xXBjov9a
- nS1qDWvVNQ5S1yrZkQxmaMEHK5sFnoVFUQX9Fck0sbzoR0TtpptBPUCoCu6p82iUvO/QmNN32X
- j8EeGxMXAryx+AcnDBShIfQj
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2021 01:50:56 -0700
-IronPort-SDR: v3S0QT6WqqcaJaLmVmHUY67ehvOT8qN7zWOdfe1ry6ajFH+ho0/R9FGkMQgbVq97tgdxVEZeJN
- vl7ytc+GoTKEoMW8comPc88iH+CmPvEKFi48qKxPKrc5TeGva9xCsTfttYh3N5CiBT8vKKlOjt
- +qgLWIcKgg5NyeJNKJCfgxlIc0xMGSZB/9LUObeKgf1JlGFu2xdLg+yMg92vlvZwd/3q2br57v
- jenetyMAtmm5RLzoxIFRjhpl31DNuAkVyOCmvVWcLt/LG3WKiH2bINqOxdJuNhaselcnu9VwBG
- MjE=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 28 Jun 2021 02:13:45 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: remove fs_info->max_zone_append_size
-Date:   Mon, 28 Jun 2021 18:13:37 +0900
-Message-Id: <fb36e9a074e51af822fe97f2759e62394ec17eaf.1624871611.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.31.1
+        id S232529AbhF1JY0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Jun 2021 05:24:26 -0400
+Received: from mout.gmx.net ([212.227.15.15]:42063 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232527AbhF1JYX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 28 Jun 2021 05:24:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624872099;
+        bh=vhIyYZ7msZOYr3lfD+Hbl2Brh69vI/AmcDPrLyZarKM=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Tu7S1y1/RgeQcammVM22heUno73b2dRhM2aoG7J8RFDaLXVyoT3nJbZF1S7QpSmIN
+         puMJoNqMVfIWnvc9JpLEf3mUJpcbx+jOPojh2/xM1O4X9Yn7ehVamZnLpg/fbKL9Za
+         b7XNJ9EBNlgkqmyVM6JFNbtGtTgndtc5eGESKI+o=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MNbp3-1lZw9h2kiB-00P2MO; Mon, 28
+ Jun 2021 11:21:39 +0200
+Subject: Re: [PATCH] btrfs: remove unneeded variable: "ret"
+To:     13145886936@163.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gushengxian <gushengxian@yulong.com>
+References: <20210628083050.5302-1-13145886936@163.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <ee06042f-da1a-9137-dda3-b8f14bf1b79a@gmx.com>
+Date:   Mon, 28 Jun 2021 17:21:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210628083050.5302-1-13145886936@163.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8U1F7hZf+AwSnmCB198rs0tWTeB5BJjzQp8Q1ItNgZOIwVOAp50
+ zIAQ8HqAzrx5vtBTDbLFr4TwHPMpW2vvfNyEGIFO0vd+dN5zch7FKJxP3oSSDgmLMo0qFRp
+ KZSE2YdkbjyVfQE8Pl4HgqPO+76lS9MYbm8X+M8MYCkZGKm4NL5prFaX59o8HGVof7fg9v3
+ k2EQUVqu3ipojHwqPjQNg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2DTsEmU7shc=:48pCwe61dCYyPvENXti+e2
+ pKkqbunx/nQiVvDYuvCtR2nJF+vX34KUw1/82wWwm4xldLYxsxKuSiCXvkpSqty3DVOCiUucm
+ DyBJVynz0y52IkKqX76wh5AZ1DoTZUx1mNjXNVS/T6HWgJFTk4OoF1wgKZ+OEWFEHJ9M99q1e
+ NyAtPXQ2SCsPr7b2/8AjuwNL9Nlobb3oCDjHm8MO2FhiMPGoibrK44QEEbhD9EMMUZ1sqv7uL
+ AWkjeyiW7UHHLGthuk9p70tr0ZeOYTWmcIBap+BjztcIkqgvmiWvl0RfLJ0q0gb3+E4FyTYl9
+ ixxjhESORN44wLCRRgU1SIhOkXu1fJHfuVsm6uZOxPLznYSmyebP7OlqJgQsPLXAJ9lY0WM2X
+ vAR0cDYb4H/1vxEuGhlSsUNKQ4rtrL7ggYvYqb9CFOpy0fIf9OZB2FDN7+0hSvFInhoNxXMZl
+ wbJ1BXMDXNjEn/nXuMkpirUyglRHvEIqN89vjYBXBHjPWE1V1Olwl/G8gQUNJiTmqXen594B8
+ +ft594yuY10lqv9xlrpndFDpmtusmNzRSmJ2ZRFFGYJYNGnFfauCpkAPObNrcsa3Ix8gyjT2W
+ 5nD3saIS/e8yXVHutJvDcVmWUtqul388U0sJQvVGt/fKE3+oH46cqMEMWrsr7YdBtuTZoVnYn
+ 9in6KFx7IEt7bjW+ZX6pBJ+XfTVAVuT3kRJqza+hYwlYMrMGWETAD+OQ6dgGhngXxVP59HwcF
+ TI74raW1fhhbLLqvZhfrAZXwbh1xqtASOg3GU7/qRTUrOY/H1IhnVfwk2u5zZ++ueYdCu9P3B
+ vyXt8lTT0d2eEcu1gBXSFsqrktXqKusnMm6zX7BWXNN50NfLuYgtFlrf3cTpm4CUjbGt4wd+A
+ APqfY1pWasGee91P4II22fLsLR9QKX5wLrNY7D3e1qjfRhdxz66alIH8VryFJ9vU5QSEn4yeQ
+ LM9BApnTBNYE9Nrgd3DZ+2yB8Ls5LNU8xIOIsnEPAX2L4MwowCa7U1rcnaPFtpuNr15rOoKMB
+ 8Yr1ik2JOJmhtDFUSX91mDVnu8GiV8gAa7vC4r0fq/a9KbeRkTefH24JViT3b70bjET0Zy0jQ
+ zh/cZOBbn8tNFXGCkvjnUIJquyAs4zpxeQ3De3p0rMAYeIs4E4L9Jt+yw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Remove fs_info->max_zone_append_size, it doesn't serve any purpose.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/ctree.h     | 2 --
- fs/btrfs/extent_io.c | 1 -
- fs/btrfs/zoned.c     | 4 ----
- 3 files changed, 7 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index d7ef4d7d2c1a..7a9cf4d12157 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1014,8 +1014,6 @@ struct btrfs_fs_info {
- 		u64 zoned;
- 	};
- 
--	/* Max size to emit ZONE_APPEND write command */
--	u64 max_zone_append_size;
- 	struct mutex zoned_meta_io_lock;
- 	spinlock_t treelog_bg_lock;
- 	u64 treelog_bg;
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 9e81d25dea70..1f947e24091a 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3266,7 +3266,6 @@ static int calc_bio_boundaries(struct btrfs_bio_ctrl *bio_ctrl,
- 		return 0;
- 	}
- 
--	ASSERT(fs_info->max_zone_append_size > 0);
- 	/* Ordered extent not yet created, so we're good */
- 	ordered = btrfs_lookup_ordered_extent(inode, logical);
- 	if (!ordered) {
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 297c0b1c0634..fa481d1ce524 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -619,7 +619,6 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
- 	}
- 
- 	fs_info->zone_size = zone_size;
--	fs_info->max_zone_append_size = max_zone_append_size;
- 	fs_info->fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_ZONED;
- 
- 	/*
-@@ -1318,9 +1317,6 @@ bool btrfs_use_zone_append(struct btrfs_inode *inode, u64 start)
- 	if (!btrfs_is_zoned(fs_info))
- 		return false;
- 
--	if (!fs_info->max_zone_append_size)
--		return false;
--
- 	if (!is_data_inode(&inode->vfs_inode))
- 		return false;
- 
--- 
-2.31.1
+On 2021/6/28 =E4=B8=8B=E5=8D=884:30, 13145886936@163.com wrote:
+> From: gushengxian <gushengxian@yulong.com>
+>
+> Remove unneeded variable: "ret".
+>
+> Signed-off-by: gushengxian <13145886936@163.com>
+> Signed-off-by: gushengxian <gushengxian@yulong.com>
 
+Is this detected by some script?
+
+Mind to share the script and run it against the whole btrfs code base?
+
+Thanks,
+Qu
+
+> ---
+>   fs/btrfs/disk-io.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index b117dd3b8172..7e65a54b7839 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4624,7 +4624,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>   	struct rb_node *node;
+>   	struct btrfs_delayed_ref_root *delayed_refs;
+>   	struct btrfs_delayed_ref_node *ref;
+> -	int ret =3D 0;
+>
+>   	delayed_refs =3D &trans->delayed_refs;
+>
+> @@ -4632,7 +4631,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>   	if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
+>   		spin_unlock(&delayed_refs->lock);
+>   		btrfs_debug(fs_info, "delayed_refs has NO entry");
+> -		return ret;
+> +		return 0;
+>   	}
+>
+>   	while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL=
+) {
+> @@ -4695,7 +4694,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>
+>   	spin_unlock(&delayed_refs->lock);
+>
+> -	return ret;
+> +	return 0;
+>   }
+>
+>   static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
+>
