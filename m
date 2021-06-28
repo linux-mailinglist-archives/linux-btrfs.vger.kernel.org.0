@@ -2,147 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C443B5CFD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jun 2021 13:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C413B5D43
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Jun 2021 13:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbhF1LPA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Jun 2021 07:15:00 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:62904 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232767AbhF1LO7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Jun 2021 07:14:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1624878752; x=1656414752;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=mXoxRZ7pXfWIrvENXIB2Bi40nbIep3/vmXrlPxYMvnE=;
-  b=Eoh1zsGMpleRU8+9lpc08f22gv7lmfo2XEOBDnMsfJlkz07Kq1A8/69n
-   usRmUB6NjvDjQtTAGDV01je8UDRiuVYVIKyy1YNo76anuJor26TPUqsFV
-   xFhvI3aln7Nhqy9o+vcfh2UNIcgaWQ5Hlb4p8eV/j2mxeKn9ePkTnD50b
-   8VKNn+Ml0UR7cgbxJ2uzkgoPXJNkRNMkpkaD3GNtst8PbE9CNL/w8Xf70
-   FraFMKt0KnPbw7k/d5mgz+6vZUUjzLvd0FxITg4V58wLGunpLyiugNkS2
-   bbGcBevIuaD5wMDaVD5EfjMmNXOwYHdfuxDHVMKbv/dPVjwxY2hw6Vb03
-   w==;
-IronPort-SDR: tLnqbQAMhwBvQ6L642CX9HGNXz7DklpUbccuhFEzwy11fw5LoR4h9pgIJzspo2I11u9cuYrhgN
- vCzBRXXc1colahjrWmeDHLmWWoxLaHhJCCCRyIyQibBuJNFNom39At2skee5b/LWHPEsNA0ASs
- w9zhw3UUf8U4TysHM0H/+kqcumBAbLLSvlijH8iBKTiFjj7Q31UOxNBMKyHRA+NQXaDS9yECuW
- X0nvSHyisCmdblD/PrHKU0mJ6EeKBE1i7b7ieCdfC2iRoQmM19+pIt3OKE3IS3Sz9dA7LuBiUe
- GuM=
-X-IronPort-AV: E=Sophos;i="5.83,305,1616428800"; 
-   d="scan'208";a="173087089"
-Received: from mail-dm6nam10lp2100.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.100])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Jun 2021 19:12:32 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TxNGP4XyZZMcsr+BTQy5FYZCDJJjsZztoaeRVrgXFPvuJxbLi4doNIH1ZmAJgkmx8IOjIRTOQrGr2d8Z3Woc7XDXPu/LhUBhzForBtwyR4LtHdb8p1tEqZWUnXAXgLWmcglrwr7swb5zvf5jRT7MFYAlJNtklZgJCMZSekBHp1Olh3BlXUsuajgLp4xQ/YGg2x+hDd5lpazxF7nAzyO7nnu5grvzzavYG9GHV1D2NIqYM8sy6X9bT+/IHoDdJvDh8AXG+dbkl4f+7OpVJDm6Y5sKDHGW0OsFC8Nl7LsyeZD/RiYg/j+bAq16F1Vda60nyXUKztnZeesPfVx3lG+0Cw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mXoxRZ7pXfWIrvENXIB2Bi40nbIep3/vmXrlPxYMvnE=;
- b=in1Una7ct15SN/u86VXAzR0JEM30hehPBe7EhaGzroH5M/g4mYAHgi3rC3NNuJhmnsGoGyYnVpCU9EMUHT+Pifx3pa7+vzXUFqOUG1Q39emGetf/c7aqjuQHolVet0jZDQbWvS+ctw3ucsF2X7PE37Ap7AqDdhAkN6ExLbmZGOsVJ0tAh64DHBZuvunmQSZ+KzSIODrVjDtIIPQA0iJiUcUsVa3y12E4Nu8LAc9R9X0uF/AU70otTL0WaLncPVxHCK+2yu58MuezR0Y9zZH14HRzfL5/sA02M6QIzc3pcVv8FBLm4NP/z3FonqJ/tfuY9P2lO6NkHZmz/TenMv0EwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mXoxRZ7pXfWIrvENXIB2Bi40nbIep3/vmXrlPxYMvnE=;
- b=pXsMJAk//pCtWO5agZnPjMxZ6PzBLkJAOfbqSHjZqe9e5yjXIOzIgZFWgQQ4cZV0WtjPgAr9wqSNoeAG0tLiZPLrC8YsnI7Eh0se/cdZCf19ghwxeNuEZxYAUH6WoTQEzHnlYnTDAf3tcd0mFfoPwxB4vvK1Rov8O6e1pMg+5Ag=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7640.namprd04.prod.outlook.com (2603:10b6:510:5b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Mon, 28 Jun
- 2021 11:12:31 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ad2f:e5e4:3bfd:e1de]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ad2f:e5e4:3bfd:e1de%4]) with mapi id 15.20.4264.026; Mon, 28 Jun 2021
- 11:12:31 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.cz>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH] btrfs: zoned: remove fs_info->max_zone_append_size
-Thread-Topic: [PATCH] btrfs: zoned: remove fs_info->max_zone_append_size
-Thread-Index: AQHXa/3nofQJ662Nl0esv0zax9Zs8w==
-Date:   Mon, 28 Jun 2021 11:12:31 +0000
-Message-ID: <PH0PR04MB7416A143777E98CBB3A0B5689B039@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <fb36e9a074e51af822fe97f2759e62394ec17eaf.1624871611.git.johannes.thumshirn@wdc.com>
- <c6e645b1-ceb1-bbd6-a58a-e6b696f6be8e@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [62.216.205.159]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3746f34c-5d2b-4457-8d98-08d93a259fbf
-x-ms-traffictypediagnostic: PH0PR04MB7640:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR04MB76407F4360059028B0D28C939B039@PH0PR04MB7640.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: DX0FMkMF5zjIEaVwOClw14usF21DVleXVZEWbe97TKSNpOXMlGQ+pA0Ej7i2yXHx1JoHpythR/phituRq+dHbR3hFEI2RL7+yn7KOkeReWwTJAHkd13bBtEgWbwsue0EAEk/UwRRJW1bYL0gSCy4Qvvz8vrxWObE6mwFSwKEXfPNZq3/tT9XVy0eqzITFG+47+9lmDqC8fe/ZM/P85UeqIL4VrRN24sEZ+wATTsP4/ilfCgHOpdfkRvkqjNzqecsDD9RAF/I/b9QbsK9GFc9PdWbkYT32pi/759MdCxiT6KZWTXIOvrHJPv5FRitApzhxi6nbqBv4kkcj0VESVjaSvDM2tMi5fl538IJmDEjWGp+KKJw8U2+kEfHbYEm6M3ZzIfPYt1GOKJufF1yP3qxxgrX3kC4/zOd7BJojbObKnCGQWjeDJqVskm0ufo2p5LYlNbNH6DnIozOBEbPxgEj3le3XKxhErAIKiu1OZI+LbV136lNenXbJ73aZZnLBta2HCQEXiQeOQXyViXCYYo75v9ww/QBsK20LhmLTLEo+WrK9cQqlirA8e8ZZWfOjv+h04xB5KB4JX4n/w0I8ZQy8DaNu10UfBRrzDVDvLd70WskH6PndfiTNkHDRfxCNiL3KpfFiJxyGFfGhb+9Tqq93Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(366004)(4326008)(8936002)(186003)(76116006)(91956017)(86362001)(71200400001)(8676002)(54906003)(7696005)(33656002)(110136005)(316002)(55016002)(9686003)(122000001)(66446008)(26005)(83380400001)(478600001)(6506007)(4744005)(53546011)(52536014)(66556008)(66476007)(64756008)(5660300002)(66946007)(38100700002)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?yYw/A1s/owwUvgF35r814ZIPGbZbrM00yGSdpV4B97yFo7MDcQVi9Q3Ziw2g?=
- =?us-ascii?Q?kIcYQreRBIO29XUOIXY9cL2HYVx8ZdFJejK29blDxYjeqQx2dWMWGcuuSDNE?=
- =?us-ascii?Q?aWKk5xx/GMnIHYxbXu8JOjdE9fhjznz+zjhN11e3W+k2ihOhn5PPQ/H7EijZ?=
- =?us-ascii?Q?DW7O9SgH6MIDEXZDwsqJAAnzddFiuX8RsBGfDkCCGSqaUIhx+jW6DcwzQPLe?=
- =?us-ascii?Q?w2RGZgEIiZUSWxjdLplCheC5jFhLERafOeRrGZJOtlG4oDcoo63s4NUYEfda?=
- =?us-ascii?Q?o6Ypoo/LyrVW6UGv5wfz5Adeu9PFDpJzU94+pXNRi5OTHkJlEtQ/G5FCNMzu?=
- =?us-ascii?Q?9GxGFOnRwrAzrLzGSo4pUl6HWJixG5TSUeV3neg2GPTMaxAPonp1JBqK1PGA?=
- =?us-ascii?Q?LPJZrmvbHxcRPddHR0ug+h+yEj+fx9jYEE1B60yhH0pOm4qt5Kiq0RI1yNxV?=
- =?us-ascii?Q?yHtN2GjnBohG+fv6zAmTRh50korEt8PAsR+kj/qXJvX045rwY6GiETleOeuO?=
- =?us-ascii?Q?ViPp58P7aA0XCrzHiLIn+jhqOZ6YN1U80tWHuDjBwMcq7sLddNBJVtH4xPQx?=
- =?us-ascii?Q?GaR/TAJGk2Iuz7LaI8xgs6A5dFx9wY18QUJOewKDG2VbetnvKY7YpsvhSk+u?=
- =?us-ascii?Q?lZQGiDYLF5aPh5byxbSqbL1IuzdMTGT0432G5sogrX5UvCAxMAGVC7+KrE1s?=
- =?us-ascii?Q?OG8W/IzJwucWP37H4txTojdY88dIeR7n/8FF21ooLk9MZfEvTHIEU+JuzWw5?=
- =?us-ascii?Q?gsB3d4H9ErDqZjZTo+lHgPuF2LaXyjnTQhX3yiuSt6MOy+0wHBHL0OOKBx/c?=
- =?us-ascii?Q?AD9xIG2KyZRxFTvkiB1I0BfdtP0L38QvCyPi/mPWhoWrEVuxyvjo56fYFY9g?=
- =?us-ascii?Q?FH+Dmod2YU8CbPQWpQVp1a1MVH0r350PmEK0lSEzBSN1O5Hg0WexE7x1OMG9?=
- =?us-ascii?Q?MRd8qJVRBNrqHAo3vkJDybCy/MmK0x3hF/OQLNSWB/hd+qGF2/4xAnzUEe5/?=
- =?us-ascii?Q?/IyZ5EOunwHsY4t517tvmc5ZeAr+uTQ+hOm6+YsDWa2HCOF7/NYvXvHv73dX?=
- =?us-ascii?Q?Iu7PilVdUV5jcJxlesnsWz3sMlt7Kr1cL3X6BJLvBlnf2DUMVxocntZTc3WK?=
- =?us-ascii?Q?cBAb/uniJNLW6kNR0TaTyQ/2jAb3UX1KWQzb2gJ6EXzROWC5u0x610/jcy2o?=
- =?us-ascii?Q?vaqgYgj/5a3tQp2IBSF4/gL164uRwjYb6AhOx5OQqx3xi/otvpAPKJE5r7z0?=
- =?us-ascii?Q?RrtaxRPcCJ9XD6L/obe/WdrnTkndmzFitfT1DfhspYUnGjzU4dPdvf33VX68?=
- =?us-ascii?Q?vTC0e+kuUFoCJ3coXNvN7HRrkUNWfXelbjMyDYZ/J1NTgg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232883AbhF1Llv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Jun 2021 07:41:51 -0400
+Received: from mout.gmx.net ([212.227.15.18]:35287 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232884AbhF1Llt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 28 Jun 2021 07:41:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624880317;
+        bh=00G7pzR1O9LgCBM7CPR6hiHOXgoARTMTk2Q1Z8dY/SY=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=GO0RHG3VZRfL5Pzr7ZNlpYaW8LfPDxEjvHKW+C2dnhcusSFnFLKLhPEM3GuY/m0qc
+         FtJIPSnzvyfMHuiLNv3x9ij29vgOWcT5b6jE+UNcWCA1dLF1mSqE6nNI4oDKXVxM0f
+         t0sb8fI0uAtPJsAfJayMVSBBQBK9m+i2NBhu5Dzk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3KTo-1lGHaI2TlS-010MPK; Mon, 28
+ Jun 2021 13:38:37 +0200
+To:     13145886936@163.com, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, gushengxian <gushengxian@yulong.com>
+References: <20210628083050.5302-1-13145886936@163.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH] btrfs: remove unneeded variable: "ret"
+Message-ID: <0220a6b0-a948-daa3-331e-1332588057e9@gmx.com>
+Date:   Mon, 28 Jun 2021 19:38:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3746f34c-5d2b-4457-8d98-08d93a259fbf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2021 11:12:31.6673
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xBcZeo3C0+rx25Ae9uHWNDYdzkWnQNcfU4qkdXQehPP4b8y/NzHKfCWom5gdlvrJFnMSpxQELJE6gbSqCSLEtWx23xA7tMAvSWAuQJSut1Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7640
+In-Reply-To: <20210628083050.5302-1-13145886936@163.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:cAubsysGtGV03CoD+DkB53fjInzdFpm4lB5hSQ28jADKa4bZoaT
+ 85A1bXajtVYGlK570yt3tDL5bCamEjsMlEdbusnlfSvpfuqnUl8v9JLsVQKnIwq/UhZJJyA
+ eFd79N4ok/GWNCKNqsIuE5xbZjYiICaDYei+G0h6QG95Z4iNrqkR7KMD6YLLr25zi5W7eIQ
+ YKjYRKQALjoyTMxogeokQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nNAC8qQi56A=:I9IZBgeEvImvPX96jiUo85
+ SqTzTuYnFRdscy7QajwIrgPBUDBFnQM4Ff1iulPft710X2psdFhNnfmy5PIDQDx6hC2nzzvo8
+ qDIOO3mHlzjZt7d6dB8CvmlCJyw9nlVdEiRFfcejzhZ/PZoTENpZ39FYklkDRbgM8YfYkRfQm
+ qoJoDAen31zTRtcITrXg6MVS0Yf2NxZ/yoZtAdzCTt/avyeCaIon9dDw6aClC0MbnygrXC3wa
+ SUqHwzx3/RA3FpvxEQ+kuQWvHl0VedKNNzUFYZp7IXeBgmjxRinTZuoHs87LajNA+1E6XrYdk
+ bNkvJP0SMQYIRIZgpJlMG4B+wL3++2yO8WGAdS3G9umYvMW59VBZ1XOa8sYeXwosqEEWxwOOW
+ Rq86/Q5k1tYH480TkipPNzb1JTC+rI/HYUMXdcaIEIVu2OYj7iyTh9nuNEI2V4AkpKBEr3Czc
+ BrYYSVdW9funR+M3VI25ieSXV6Qs8aTjNJk2oxFZRloBr5KQH4qVnF8dgWt9l+2gFwZzNAv6M
+ hex8x6DFr+LnM7z1hPp8Serno2n8fmdD1q9Dxa05YR37qFe+IRPNUVkYFsKdf8Bgt5jHEIT88
+ i6srGb4Ph8M5mAoBE0ujg6LVdLda/4GfuEC28sjuMc/6qLd3bE68Uk/02Yia+M+/beS56Xpnu
+ lT8lXURaYMpePQaCmqWPkletrR6T8Z2LYGW7XSfKo2JXWPyZd5lQOVaSd2BaVLQoPUZCgOr2Q
+ 6kcKwYGL9KvmR+VgYtvwziLs0+Js/DpiItJTCDny71ca9eXh8m3eY8HhHthVfzp+y6EGaRECm
+ 3nFdspeSPSe5HKg4q7Cfpb5TRMsc91iZNvr6hucpAkfolVLF/1m1SyqW1C3LVhIbsuEVEZBd+
+ 3UqqdBUrCTdFPVECGtjJXiu1MUajWnYZGdwgDn7/MEkTsOQiudG+TtzMuf12X6lsPWp4kWTVZ
+ 67G0tiIQZH7KEKzEMMcAA0+KPJgIsxk1JgzSwHbJN08tlhq/69S64KBwpQmi0GRIJ6eajQfar
+ sVS+Ij9sCLlzm6yFKCCG+zVB0hLYy/rAn6nVZ3nVKtjvR8ojTzt5rh1i/peMtS58zmJ3+B9VD
+ TFt+nuhE539mrnk3g0Gw9FDjaPCPfWeFaEDaFeQ4QUK9RzusgmaPK/OiQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 28/06/2021 12:39, Anand Jain wrote:=0A=
-> On 28/6/21 5:13 pm, Johannes Thumshirn wrote:=0A=
->> Remove fs_info->max_zone_append_size, it doesn't serve any purpose.=0A=
->>=0A=
-> =0A=
-> =0A=
-> Commit 862931c76327 (btrfs: introduce max_zone_append_size) add it.=0A=
-> The purpose of it is to limit all IO append size. So now, we shall=0A=
-> only track the max_zone_append_size in=0A=
-> device->zone_info->max_zone_append_size, which is per device.=0A=
-> =0A=
-> btrfs_check_zoned_mode() found the lowest of these per device=0A=
-> max_zone_append_size but it didn't do much about it.=0A=
-=0A=
-Exactly. We don't do anything with it, so it's completely unneeded. Also=0A=
-as the max_zone_append_size is per device it doesn't make much sense to=0A=
-track it globally. It is basically set but never read.=0A=
+Hi Gu,
+
+On 2021/6/28 =E4=B8=8B=E5=8D=884:30, 13145886936@163.com wrote:
+> From: gushengxian <gushengxian@yulong.com>
+>
+> Remove unneeded variable: "ret".
+
+Considering you're really a newbie doing new contribution to the kernel,
+I think it's better to give you some advice to encourage you do more
+contribution, while also be more professional, and hopefully to help
+other individuals in your company to contribute.
+
+And I hope this could also be some guide for new developers to learn a
+trick or two from.
+
+
+=3D=3D=3D WHEN NOT SURE, LEARN FROM OTHERS =3D=3D=3D
+First thing first, if you have something not sure, like how you should
+setup your name and email in your git config, try to find some merged
+patches to learn from them.
+
+
+=3D=3D=3D EMAIL ADDRESS =3D=3D=3D
+Firstly, your mail is sent from your 163 mail box, not your company mail
+box.
+
+Peter Zijlstra has already mentioned this in another patch.
+
+Normally if you want to send a patch to represent your company, it's
+common to send using a mail address of your company "@yulong.com" (Isn't
+it called Coolpad Group nowadays?)
+
+For how to configure git-send-email to use the SMTP server of your
+company, I guess your colleague Hu Yue <huyue2@yulong.com> has more
+experience and you can definitely learn from him.
+
+If you want to the patch to be CCed to your personal mail box, you can
+use "--cc" option of git-send-email, as most reviewer just reply-to-all,
+thus your personal mail box will definite get the comment.
+
+This will make the SOB line much cleaner.
+
+
+=3D=3D=3D MAIL LIST =3D=3D=3D
+This is not a big deal, just something optional but really helpful for
+your next contribution.
+
+In this particular patch, you only need to send the patch to btrfs mail
+list <linux-btrfs@vger.kernel.org>, even no need to CC the maintainers.
+
+LKML is fine for your first several patches to get more comments, like
+this one.
+
+But when you get settled to a certain field of kernel, it's better just
+to send the patch to the related mail list.
+
+
+=3D=3D=3D FOR THE CLEANUP =3D=3D=3D
+As I mentioned in another thread, if you use some automatic tool or
+script to expose the problem, that's fine.
+
+But it would be even better to provide the tool. Fix one small problem
+is OK, but fixing a type of problems is really what we want.
+
+If you really just found the bug by manually scanning the code, kudos to
+you.
+
+But if you do more contribution, one day your time will be too precious
+to be spent on things like this.
+
+
+Just like an old Chinese saying, give a man a fish, and you feed him for
+a day, teach a man to finish, and you feed him for a lifetime.
+
+
+
+And since the patch itself is fine.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+And really hope you can do more and better contribution to linux kernel.
+
+Thanks,
+Qu
+>
+> Signed-off-by: gushengxian <13145886936@163.com>
+> Signed-off-by: gushengxian <gushengxian@yulong.com>
+> ---
+>   fs/btrfs/disk-io.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index b117dd3b8172..7e65a54b7839 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4624,7 +4624,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>   	struct rb_node *node;
+>   	struct btrfs_delayed_ref_root *delayed_refs;
+>   	struct btrfs_delayed_ref_node *ref;
+> -	int ret =3D 0;
+>
+>   	delayed_refs =3D &trans->delayed_refs;
+>
+> @@ -4632,7 +4631,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>   	if (atomic_read(&delayed_refs->num_entries) =3D=3D 0) {
+>   		spin_unlock(&delayed_refs->lock);
+>   		btrfs_debug(fs_info, "delayed_refs has NO entry");
+> -		return ret;
+> +		return 0;
+>   	}
+>
+>   	while ((node =3D rb_first_cached(&delayed_refs->href_root)) !=3D NULL=
+) {
+> @@ -4695,7 +4694,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs=
+_transaction *trans,
+>
+>   	spin_unlock(&delayed_refs->lock);
+>
+> -	return ret;
+> +	return 0;
+>   }
+>
+>   static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
+>
