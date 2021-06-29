@@ -2,147 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95983B6FF6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jun 2021 11:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8EF3B7001
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jun 2021 11:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbhF2JQj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Jun 2021 05:16:39 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:21491 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbhF2JQi (ORCPT
+        id S232621AbhF2JVO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Jun 2021 05:21:14 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:6744 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232568AbhF2JVN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Jun 2021 05:16:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1624958071; x=1656494071;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=8pQSpm0xJTGFxeFiuXaCAr9WAlXiY0ARbJhDt5nroLo=;
-  b=aZVnirya/NHHFPDQRFL5ED2J/F92p/KxKQpMrwdDvcbimPjvnrSpO/Ve
-   NksPJZVoNq41JnHv2M80j3va/NhZU4nDeM9XYYTFEOrsWGMWO5O5SLenk
-   7q9Ihp6wto7FR8e5LJmtUiO5dgELPP8WigIU7rL9pciWcuQH/t+vsLv8a
-   17Kwa6rEqSonJuGRJxHYhUi9KgXcvegAwqdgxvDiJ1QLxjCzUhfkj9jh9
-   z2C65Byx85Ua/Wyi2rcMdaHUA039lQlZPrW3V4YdRKyjW9cQ6lqA1cm+g
-   jlIIPeNRD+8KIBcXOfVat5sfYPuVoEKCBMhGLw6m3WNzRRZAZ3FKIoP92
-   g==;
-IronPort-SDR: AT9BRFaPDjLOBJ6XhTVQ0TxLbxgkuyGONLfDeA12vMKk9H5Tk0pwlqbajZHdJqvD9L7CleEOaa
- 19FhbiHQvOPvrmF505UE1YRw9opP5v6nUG559e8OS2LibOOYBHYYIU479OW5dWcq9O0mpX3zVs
- G5wir9u0mqi4qwWtyyQPXAoo5rN+0TJf3SQfXQTASVcq+CVQtHmAK2wsGXnQfoyY8z1xXxcZHh
- Ud3FMYmlYdogyF2mo5OkPdu1B+7cMH7s528VkS2/7CbpUqEd/bnYu62SaxLjxyiJugq+mTQR1K
- 7v4=
-X-IronPort-AV: E=Sophos;i="5.83,308,1616428800"; 
-   d="scan'208";a="276974393"
-Received: from mail-mw2nam10lp2106.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.106])
-  by ob1.hgst.iphmx.com with ESMTP; 29 Jun 2021 17:14:30 +0800
+        Tue, 29 Jun 2021 05:21:13 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15T9CEsR015150;
+        Tue, 29 Jun 2021 09:18:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=HZInwS0IBnUvCP1omAwhtnWxWlumm7BmEp+g8IfS9ks=;
+ b=Jdh4gXvjy+EorsIXiymVh3TJ+p+oe4+drq0z9RiULrbh5GxryxUdsRwt61l9mtK2sjPk
+ z6OvaEMusyYdCU5GpoGsne492oe4Wn6pWT4bIgz3/WhtTz79Jr4+mgucmz0YHveUP8UU
+ nUYiuYj4q5gg1yFCdEi4dfcHPY5LhWu1DXl0UZTVsJuWH7RhBf7ij8gR/0RN24SwJ5zJ
+ xMbZbrQF6/dih4tv/mNOkhwiGEFxB6CQ9CTuMKoCCKPZzecYUao4cBBFOe6WywM8KGZ9
+ Zm+68yG564R7L2O5jkO2Aq27FlByfV5JYDALHKZNaXL8AsqNbBseZa6n6BfnX5mPhKPd 3g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39f7uu31dr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Jun 2021 09:18:42 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15T9Fpbw112802;
+        Tue, 29 Jun 2021 09:18:41 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by aserp3020.oracle.com with ESMTP id 39dv2582kt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Jun 2021 09:18:41 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Adx1HhV0i3+uAElxoKHON05F1Ke6lfxwRSje9+y0IxMsXq0dLYwSZ+2RGdCtSNR4S5BZpX4iFZWUrZnoSbGFgj8Tn4j7P4tGbpOWRfn9dcYkaRJZ63YIJSk/6fWYJJio1H9va6kCPWFuqLnPLqFiCBp5TuL/HJDFVvIb/Pinlyk8oGAwG4o4z/7gPDAb/VyKA/YrKQSL37fk4tjJRLFNe3OGPgQhx7aG+P4EP2dL6B270Akf/rXzaRT2OhnInHXEaHuYSW2RdABh2745U4kCfQPpTEVPYOZz+RQrfQBqZ4Xpj713B9KT4GWvOiyXDbhJ2OLGGGsxy+duBddvjvboYg==
+ b=hZ4bA/JMDlVykNgvWsiV9i7gD4T8+xXqqozFYepe4OUwNF+6Rc8JUBEjCWDEpagAwioEHZXOdCaMajmq0nGTrbx/gkC/06fMSHrdMsnfJnRfUEI21Gf6Sl4w0kkyY9+CJMzdXCEa7IUpOpoKoRofXtm7TLiCaHeA0cb1a6C+MpvrziCK1kiUvFrgIXAa+CJ0Nlx7Q1alwKnyqqIxc2HTOIttbvwrboiX7ec37t+bDqNlizudo6SXhCEwvTne+7E7vZ7zPchX27OcWi9CSTMB/Wyz9JkndLWr/gSX57u9f1Fn48cUvd2TteFnD3ousORCSmwEPr9N894o2uIWQuXUAA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8pQSpm0xJTGFxeFiuXaCAr9WAlXiY0ARbJhDt5nroLo=;
- b=Mu36EcfHa8enPZXsnf+z84Ymg4YKXocP6u1rsTBfQu2ZKQTN491YSx/xQZvqMPq1jzlW0S0ER8tFybq48GDuQ5dkyLOgEjIbdnBLcx+FQfOGtUEOjYF43fpNQFn74je2omHSBJsgbz47PDbNGfn9yAVLsG+b89NEC3AlDBMHFNyEM+twf3+CVWVv3bKwmAysSBc2+OioQ7zba7osfxcOvMjUe1JQM8RXdKogzIIdoWHKvOcUekr9Q8gRCijtlXSJ0yQaTDOWuL6kjb52tpYj1HGnc9g9lmyISHNNUUoo1O8qt06p2UkmvGPflIq619BMhYgHNoivpFxDPcRO1mIa6A==
+ bh=HZInwS0IBnUvCP1omAwhtnWxWlumm7BmEp+g8IfS9ks=;
+ b=NxIh6CqnrDLJ/YGce2C36KdzCjMwem/fUSPYWTrWVoET7Ml65lnZrRDwKqoIO0a5sBib5F+7nvph2HSvLpRZBje13y6foGQSzNl/PfTFDCND81LykzssjEcBVhLEOF0xnBVOi6lsJLXAINCezLAtut01Yf3vJUHal+xa9LqJzcxHmxWMIHRubRSdOE6MRg5PmGHQSHWZJU0onlXDiyOe6fL3OdhcZjfG9I+Atj6cTQR4VcNpmmRDaNg7agOg5MuFRZKjHnLlp9tDJqYIS8YjLipl92HRocv5UOCjRSW1WWzW9bvXirkI06Mr0IPgiMB4MmjY/wzmXyspp25Mbo9JBA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8pQSpm0xJTGFxeFiuXaCAr9WAlXiY0ARbJhDt5nroLo=;
- b=IW7QHNxvwXYY5FrfkBOjQyTWzMRtxURwMeH2UuXOOHS2knQihQTPAkFn8Rfn+REZsWi5rHIK/jA2WThGEqt0lhAj2sY+awaT7VG2DazY3ilaeqv1MnV9KBllpoCVga2fOAgZ8ZFP8dmkaTgLBOkW69ZrEcL6n3HCaBRWLJXO5/Q=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7430.namprd04.prod.outlook.com (2603:10b6:510:18::9) with
+ bh=HZInwS0IBnUvCP1omAwhtnWxWlumm7BmEp+g8IfS9ks=;
+ b=US8NROoS8v9LhhC+Rhy7rk2Mt+5srhEKIxvlpFjTj6/o8HR/NbKHjsGsCyA/ESJTI8gKY8hyoZ0foWF1SErVtrBXZsrdgXFCZG0xnDpBdn3mbA3YJMqPIKxzSu8EKe1u3/FjluBtNRu7ewL3C4EIMzzJLUtPhALrRE0FJzyG+O0=
+Authentication-Results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB4125.namprd10.prod.outlook.com (2603:10b6:208:1df::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Tue, 29 Jun
- 2021 09:14:10 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ad2f:e5e4:3bfd:e1de]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::ad2f:e5e4:3bfd:e1de%4]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
- 09:14:10 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Anand Jain <anand.jain@oracle.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Tue, 29 Jun
+ 2021 09:18:40 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b10f:7144:1abb:4255]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b10f:7144:1abb:4255%3]) with mapi id 15.20.4264.026; Tue, 29 Jun 2021
+ 09:18:39 +0000
 Subject: Re: [PATCH v2] btrfs: zoned: remove fs_info->max_zone_append_size
-Thread-Topic: [PATCH v2] btrfs: zoned: remove fs_info->max_zone_append_size
-Thread-Index: AQHXbEyTtFQvRlqoQEGKBoNt5m0IBA==
-Date:   Tue, 29 Jun 2021 09:14:10 +0000
-Message-ID: <PH0PR04MB741606592F69DA989383A2C09B029@PH0PR04MB7416.namprd04.prod.outlook.com>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
+        David Sterba <dsterba@suse.cz>
 References: <a7f717432896b5f12847435727838b32bd6e2b35.1624905177.git.johannes.thumshirn@wdc.com>
- <20210628202013.GG2610@twin.jikos.cz>
-Accept-Language: en-US
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <7bcfee70-adb4-4d00-c090-42147010c837@oracle.com>
+Date:   Tue, 29 Jun 2021 17:18:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <a7f717432896b5f12847435727838b32bd6e2b35.1624905177.git.johannes.thumshirn@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.88]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d346d240-ad77-4417-d03e-08d93ade41a4
-x-ms-traffictypediagnostic: PH0PR04MB7430:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR04MB7430956E1583907C40C568AE9B029@PH0PR04MB7430.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1850;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Q44Jjrw5eZdApqcNQUMGb0l5LO7wL2UHNIU0OV5TMrS7JA3EoMOyJzYqZk57UvLxNQU/dw4VZVJUlwd9gQTlV1pCwa86jCvPcnM1FjP7pBGnhe+bVwiNUZcIDXXZyzMKk86e5/xEHrbKQLDsxEmi+rg6R8J3RamsrDr8HpkS11BLdhDavLat5eDWzr6JESp20oy7HEPZ6HYFiQ8x34m3JgqaTyXt+ht2cu4dy1X9hq1iKU743Q1yABBSHZzhA/3VZKq6r2hU2Fm5ifYbO+MXklpp+4ddd4sP6zWyxjnxAPT9sP37rYbMBOrs7DYUgG/BgNAmigsnkkBnA036mix0cv+L7AGK0bgGN5mJVp7JdVnp7oJsqtOvun+U/4D17HXGF7oWI4Ag5iMBcSiwuGvbLN88bnJJDF6osvOwS79Sk6qYIRlx1C5fQoF20bgzs4TK6iNHC/BmceKohOFCBBgG07qFRyMY3cSHuBAOla2Z3+wM7FA0VVnvsjhbr+agdBUYGr017XQTcb8PQp9Iionh5oKIkTfNw8MoLqp6+uvnCe67tVRRfsYk3IIbqap6MqjYfSyTbh/H6T344n4xLxZF+66cMrdkTCoMxp3j9o2mX4Nt8S5sAfcHaF3XqvD7DW3Z2kDwJSbd87iWKTEQlKR4Xw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(366004)(346002)(396003)(83380400001)(7696005)(53546011)(38100700002)(122000001)(55016002)(6506007)(6916009)(9686003)(316002)(54906003)(5660300002)(91956017)(76116006)(66556008)(64756008)(26005)(66446008)(66946007)(52536014)(71200400001)(66476007)(186003)(4744005)(86362001)(33656002)(478600001)(4326008)(2906002)(8936002)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?F1uyY92Uzjsm2vC+6GmKmJcMNd1lvmoPymWkM65IlsnKANa42oBdSiM26H78?=
- =?us-ascii?Q?psQ5dkngNNS9SS2j43x04z56KBfBRE/G0YZMHA8lfikEuIr/8lXvJ1j4HTrB?=
- =?us-ascii?Q?PXbBYpuujwY8sq4hGV7P7m4JCOtE6b9q/QtGPJj46tdSS9Zhzc8jhFr4sAza?=
- =?us-ascii?Q?8WJrQeGwxX0gwdNiEl3p3XjDsrNfYWPHzp+6bxw4DB3+0IXYopjo5Q4vx4gF?=
- =?us-ascii?Q?/ZXluDj9nTDBXZuhYE4e7TwiikJcwcBP2jdM5gX9otKDCOoL0kaKB8qpbhUt?=
- =?us-ascii?Q?8+h602ZJXfs8ApCR8wGAmgrTfTcM3ZBdEStssTD4ONBBteiqmUYKkNpxqzIX?=
- =?us-ascii?Q?/8K5/48v+agkXFXAOZ7nF4T/tDtV9gk8PzLetbDFFB7MMKe6KZFqG1NpALP8?=
- =?us-ascii?Q?1z0GbIfXC5Xp9ZdPeSxg/5nAJIw+K0SSUu96/DNHJ57j5xMJyCxeh8G2zIs7?=
- =?us-ascii?Q?WJpTlBn9Y9q39FXfKxuQi1h7D/gyPwkW+LHGEbprTtLYWea9yVeEBYMVJsiH?=
- =?us-ascii?Q?+EgBVOr2/8HVHagkHNh2xqNCHidqaGri2TY8Ht/oHHqUggm86azrnN0S7hW5?=
- =?us-ascii?Q?AivmtrgekHZz3wmWDAfaN6LKbD6wcZ+vUBLpzx7yzq3wWhRXZ4Mfwv2hdER2?=
- =?us-ascii?Q?krkJL0030tNwx9d5GTrflLDdDOAa02O6AqKxx6lUkgKcMIuvtxYA2zBWPNg1?=
- =?us-ascii?Q?elYwTnJkzGgEFgEWyCW25DIYdCB10gdKFSCImwivgJDlj6nmI1la9cQ/BO1y?=
- =?us-ascii?Q?cjX9eDlU/1XDl0fzzf27aSIhW5oMhRmT4s3ibW9MS2S/7G39k/7jOXiqk8I4?=
- =?us-ascii?Q?V1aQ/VY2tkL1YxjUSyhbmTNZaMkXY3Q1Zc6X01GXIEgDr3EZjsebfr5UB2Kh?=
- =?us-ascii?Q?EHUKA1x6B5Ed/LR070lUGmo+WMbHITZiMG+GEuCUdyYyMQ8Ui1m249V9sNI5?=
- =?us-ascii?Q?Gbp7bO7NTuM6y48IHXaeq7CRuER6La1yHDHgpP/O+T2pdq9uYFLeHj36VTJ9?=
- =?us-ascii?Q?/1rbAQj8lnfs0IbHfgh95wwOEW3kk5Z1hZ9nrA2bdnRMiSFrJwLJv8Hp8ad+?=
- =?us-ascii?Q?QpFDLAIAONToA708DFiyfVbz7VoHlYtB98Cu6j+D3dknoLGXoarYAp876mRk?=
- =?us-ascii?Q?oRaMvxq5wsVhZocezuZAIShPDh3H36eSqAslCGPL8PSSObjDESVDpWCoR6Ac?=
- =?us-ascii?Q?B2IGR9vRTGABAGBGpG3eeNecUgK8GGozTFx9crC6pAi0pZXd6XaoTdOUHd5m?=
- =?us-ascii?Q?64pQI0bsr/uUm0q/Vs/55kSyv+82H3ATHL1wuMT/4wk2M+DTrzEwEBClkrl4?=
- =?us-ascii?Q?rCwhUa9qUcmLeAaAmTOZ5F/0aNGDHfBSg++SC3H4q6CJnw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [39.109.186.25]
+X-ClientProxiedBy: SG2PR02CA0055.apcprd02.prod.outlook.com
+ (2603:1096:4:54::19) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.109] (39.109.186.25) by SG2PR02CA0055.apcprd02.prod.outlook.com (2603:1096:4:54::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19 via Frontend Transport; Tue, 29 Jun 2021 09:18:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e256c250-4229-46f5-215c-08d93adee1ea
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4125:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4125F85B3D4063BB42FF1250E5029@MN2PR10MB4125.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: S7zXoCaa/94/TjPomPsQeJogd8w38n443YNmz9iIEtNLUl4Q8yxzPgcmxGvrRxtwI6aefXJR9Zy+DxrE417oNgK49x3igv5yvPaTkoCD5N67WN1yUXLYsRN1y+6RM/hV17nHXs1/AjVHTVUqVMYx/yeAlCOwD+eYgJiSiBrBb9z7P6IaCjT4/cSp9tgiFvWY6MemnsEIUg/lDMM6AQSgfTUwxJgoUifFhHauvyJ9bvSE0x0n0iVZwDEF1NzxHDgIxFtIxo1R0hg0Dw8cPlrs6ljZH+gYy1/cMN4xFIMzJPV1n+4AzR4TL5ttv6uYzep6qcfzw/7yBg0/mncorWYyz06xX3Kx8EzTT3wNiMdlv0eYbTPV7H+RyF00cAGeglyxv9LQYinmF+w4zWEAKtjBnp/K6PwzWtdvcjPIryfbOmBRBQ1MXXXq7BCFEa9Ph5YBuhiYYsBys68JrFo8Npe/+6YXX3vdFQx6Yq+jE8mYYsM3sXdYXef0y/6lSY4yaN2j9/0qDD6maxW6yzeOFDkXW/sOJZWO+UWHerUbZ6yYO+Le3L1ela8t8G1ENxSPqznHwgq1lRciPgVK2Yh4oB69jD+U6caE7SKMUnjRUzfJsGZ+gJAQUQX6Z9CZUSkKm8BwkWaWyXS5a+1IL8uZYTxlfSzpfNsshAI0m7BYPbsSzrf+cX5OZzohBmKW5VROCpRAD5fcY65BqRPGO8X4Q+yl/lE3mHYvEKTvtaCUXwwOViA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(376002)(396003)(136003)(39860400002)(66556008)(66476007)(6916009)(5660300002)(186003)(53546011)(36756003)(16526019)(2906002)(8676002)(38100700002)(54906003)(8936002)(66946007)(86362001)(26005)(16576012)(83380400001)(31696002)(478600001)(956004)(31686004)(4326008)(2616005)(44832011)(316002)(6486002)(6666004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWk4Mlh1MTc4Z0tnQk5MTktJZmdXRzg5OGUzM2pub1BPazU3Q0xKRVZZM1Y5?=
+ =?utf-8?B?ZitWVE5JcmMzenkrVlVBUGZ3cUFycXhJMmJTd2owdUdlKzlJcTREbEUrSmtu?=
+ =?utf-8?B?NU9ob0pONEdLVW85QVFMbU5iWXdscWFTRDQwVzJ2NytGOFloRVNxSUNTSnha?=
+ =?utf-8?B?bm1RQnhIUnJjQjNReG13Q3JGSGtOYzFRdEJkS2E0TTV4cTZTWlZlbS9LMHpy?=
+ =?utf-8?B?YkVsYXdHUmVoLzIwNW0yNWZ2RElxSEZwcERwTk1JWisrVmZXWThzdmJOVW9p?=
+ =?utf-8?B?VDEzOURFbU9jL3V0RGgrTHNaV2xZVG5YOGVNVDRoOVVROVd6N215bWtZMkVF?=
+ =?utf-8?B?SWJFZ3ZONFdFbzB3anY2SUx1SFRBNjB2dm0zUlBWb0s1OVgyQ3FoTmU1SlZj?=
+ =?utf-8?B?M21BRnlCSDc3TTVYQjByRjZ4ZklIY01nYURhaHFjY2ZjMWdaQnZ4dmRpVHJm?=
+ =?utf-8?B?VThBQm5PUWp4K3JwMHAycXpJQmt2OHU2VUZNTDcxMG0vTUJHQUQ0akZCb1BZ?=
+ =?utf-8?B?b0RkQ3pPdlpsMFlZbUVwc1NXMTN3d2lFRThXSUxiNzdrc2tBTDR5MjBtMy8v?=
+ =?utf-8?B?WCtMMmZSY3IwaElId0tMNFlUdGJwYTcraG1GYlJkVDY3dnN0UFd6TFVTQ04v?=
+ =?utf-8?B?cml4aWkvOU04RHc5QjB3aXJRZDBTa01sbjZUTlptaThwZ2NFQzk5Sno5WkJw?=
+ =?utf-8?B?RU9oMVFqUWJ6NHU0Sy9NNHZYQ3YvUlM4Vnk2M2pIVXRaRFJuN1JHWGxBVHVt?=
+ =?utf-8?B?Y2JvMFhBdFp5dmd3TU1Kak1FcTkzTWVhQXdORkxTaEpQcWRRUEtxblNNVEdn?=
+ =?utf-8?B?TkpjV0FraXJ5U2d5ek9Pd2xaMFhvLzJJaW45eDNVS0hTY05ETVAxUnp0M0NE?=
+ =?utf-8?B?dUNBZThYZWVwa1JiY0lOdG1seTRjd0lFMEMvaUIzZVFDTjZFd3JNbWVEWWRx?=
+ =?utf-8?B?VUhIcHkydm9ESEJ3Z1dHUVdUUEhSaHBvVW0zSnI4QUR2b1dMcUFxaWJRbWJa?=
+ =?utf-8?B?K0htSm1oenRXUEdPMDRENHZTMlVQeHovd1ZOM0VEc3NxdkpqUTJuc0k5Sk4w?=
+ =?utf-8?B?V28xaFZEbGowbktMdlV1NE1sTWc3bHEvZHJXdUgrclQrQ1ZkckxDL3luMklL?=
+ =?utf-8?B?VUxIU0daNytIR0llK3pvVSt3ZVhSTUtTZU55RXE4b3h2OUNWU1U3REtnUkhT?=
+ =?utf-8?B?VE5uNHJmblhnZWY2YzZJWWdGZjZQZlROeTYrVE00VVJwR3k2cTlYT3p0YVpw?=
+ =?utf-8?B?alBaT1BvcjB5VGdiQWhXaE1TZ3hxWFoxM2VqN3gyVEVFVmM4SWtoakl5Nmxv?=
+ =?utf-8?B?S0o5dlltUSsrT1JaUWV5RzVlb0k0NjBjQk9KVDNCaDlPamVyQXVjQ3ltTFJR?=
+ =?utf-8?B?aVRZU0k5UWt3a1BzWXhmNnVyZWFvTDBWWjJVZ0NyRFEzeExqYWRvTXAwZzNL?=
+ =?utf-8?B?bnJtdGM4L0xSYTh5aC9OeTFFNWxheEJNS1JzV3ZKeWg1OVZWYmZRNDVyS1Fi?=
+ =?utf-8?B?QVYxbVBRMnAzMXZVTGEzdUhGVUQ2MUZ0ZmREOXN4ejZ5aDZ4dm9QWGtqT3Rj?=
+ =?utf-8?B?QTdwTXdKVjlnK01ydndxTGUrRkpiSXViSHVnYWNVellyL2o0UGIwY3UxMjRs?=
+ =?utf-8?B?aUJwUlBxN1hLNE5FQy9GOWo1MXR2bHlZbEM4aU00b01NbGozbE1hTG1ZN04v?=
+ =?utf-8?B?SXNQT0ozYnY0aXAva1pvUDArTjNSWkFaZ0wrWnB5ODVhdll5SW9wOFRJRWw0?=
+ =?utf-8?Q?2jqH4No58pVYh4k07Y2R74rDXvQ8fdCKM8eUhM3?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e256c250-4229-46f5-215c-08d93adee1ea
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d346d240-ad77-4417-d03e-08d93ade41a4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jun 2021 09:14:10.7469
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2021 09:18:39.8706
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +3nydiSVzjLB27Gqdg9gYs6CEdoGGOcC/kL+P2b1WFUGELy9tnSC/XFeDJQ2YHaDFp90yfQUhAgCn58gQQcOKLG/01xtiAaWMUqNptPWDgE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7430
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +Ulq2zGyC+44vZM7lfQPePprcJ+oOgcW/mUXGwgFLt/0RfBJb/vsuIT0+ynAt35ggAFrpHlf7VdV5ZTKxi0nmQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4125
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10029 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=999 suspectscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106290065
+X-Proofpoint-ORIG-GUID: oTgaKPKhSx8sUecIksH-mObi-Hf2ZsUr
+X-Proofpoint-GUID: oTgaKPKhSx8sUecIksH-mObi-Hf2ZsUr
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 28/06/2021 22:22, David Sterba wrote:=0A=
-> On Tue, Jun 29, 2021 at 03:36:45AM +0900, Johannes Thumshirn wrote:=0A=
->> Remove fs_info->max_zone_append_size, it doesn't serve any purpose.=0A=
-> Why was it added then? Commit 862931c76327 ("btrfs: introduce=0A=
-> max_zone_append_size") states some reasons so you should explain why=0A=
-> it's not needed now. It's a partial revert of the commit.=0A=
-> =0A=
-=0A=
-There used to be a patch in the original series for zoned support which=0A=
-limited the extent size to max_zone_append_size, but this patch has been=0A=
-dropped from the series somewhere around v9 IIRC.=0A=
-=0A=
-We've decided to go the opposite round, instead of limiting extents in the=
-=0A=
-first place we split them before submission to comply with the device's=0A=
-limits.=0A=
+
+
+On 29/06/2021 02:36, Johannes Thumshirn wrote:
+> Remove fs_info->max_zone_append_size, it doesn't serve any purpose.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+
+  I hope the reason to remove max_zone_append_size shall go into the 
+commit log.
+  With that,
+
+  Reviewed-by: Anand Jain <anand.jain@oracle.com>
+
+Thanks, Anand
+
+
+> 
+> ---
+> Changes to v1:
+> - also remove the local max_zone_append_size variable in
+>    btrfs_check_zoned_mode() (Anand)
+> ---
+>   fs/btrfs/ctree.h     |  2 --
+>   fs/btrfs/extent_io.c |  1 -
+>   fs/btrfs/zoned.c     | 10 ----------
+>   3 files changed, 13 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index d7ef4d7d2c1a..7a9cf4d12157 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -1014,8 +1014,6 @@ struct btrfs_fs_info {
+>   		u64 zoned;
+>   	};
+>   
+> -	/* Max size to emit ZONE_APPEND write command */
+> -	u64 max_zone_append_size;
+>   	struct mutex zoned_meta_io_lock;
+>   	spinlock_t treelog_bg_lock;
+>   	u64 treelog_bg;
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 9e81d25dea70..1f947e24091a 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -3266,7 +3266,6 @@ static int calc_bio_boundaries(struct btrfs_bio_ctrl *bio_ctrl,
+>   		return 0;
+>   	}
+>   
+> -	ASSERT(fs_info->max_zone_append_size > 0);
+>   	/* Ordered extent not yet created, so we're good */
+>   	ordered = btrfs_lookup_ordered_extent(inode, logical);
+>   	if (!ordered) {
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 297c0b1c0634..76754e441e20 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -529,7 +529,6 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+>   	u64 zoned_devices = 0;
+>   	u64 nr_devices = 0;
+>   	u64 zone_size = 0;
+> -	u64 max_zone_append_size = 0;
+>   	const bool incompat_zoned = btrfs_fs_incompat(fs_info, ZONED);
+>   	int ret = 0;
+>   
+> @@ -565,11 +564,6 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+>   				ret = -EINVAL;
+>   				goto out;
+>   			}
+> -			if (!max_zone_append_size ||
+> -			    (zone_info->max_zone_append_size &&
+> -			     zone_info->max_zone_append_size < max_zone_append_size))
+> -				max_zone_append_size =
+> -					zone_info->max_zone_append_size;
+>   		}
+>   		nr_devices++;
+>   	}
+> @@ -619,7 +613,6 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
+>   	}
+>   
+>   	fs_info->zone_size = zone_size;
+> -	fs_info->max_zone_append_size = max_zone_append_size;
+>   	fs_info->fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_ZONED;
+>   
+>   	/*
+> @@ -1318,9 +1311,6 @@ bool btrfs_use_zone_append(struct btrfs_inode *inode, u64 start)
+>   	if (!btrfs_is_zoned(fs_info))
+>   		return false;
+>   
+> -	if (!fs_info->max_zone_append_size)
+> -		return false;
+> -
+>   	if (!is_data_inode(&inode->vfs_inode))
+>   		return false;
+>   
+> 
