@@ -2,137 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751713B7725
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jun 2021 19:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E00E3B7728
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Jun 2021 19:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233587AbhF2R06 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Jun 2021 13:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232638AbhF2R05 (ORCPT
+        id S234110AbhF2R1i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Jun 2021 13:27:38 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:45442 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233859AbhF2R1g (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Jun 2021 13:26:57 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BB4C061760
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Jun 2021 10:24:29 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id f5so11455496qvu.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 29 Jun 2021 10:24:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=bsoBCoBbWm9paaTgsCw2KJ7dRNoIiIvzwvpYNO6VbeE=;
-        b=VUAQZxJ6J2VkeoSockQ8YMVsOM/sTeZFrW+uWBlwlYejBKktw6pbRPzCgJhmV6dP9M
-         8uixZFw6+1DvaZfAM38IDqFRWVzAGDXbcVT5V8cUeXHiYh9dvZduGc5DilcYOKY0Aa/n
-         CGZdutDcPz8eA9coPZQvoQNzRCxw+nP3YnQ5eR/WESQormYQfgkFSFpqlDA/XS3hOBce
-         GpSc9Q1sY7sr11aTyCl1Z9Myhe6WszS9426tJgs4/SK2p7z/JfxtK5EtWpQ33PciGWEd
-         D4XdhiipK4OqAtsCdQqppZY765ihVzImMbmfoH4bFoibkGnJgX52sCbdEWjVAgxlDDcr
-         3DTA==
+        Tue, 29 Jun 2021 13:27:36 -0400
+Received: from mail-ed1-f70.google.com ([209.85.208.70])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lyHTw-0003NH-Fr
+        for linux-btrfs@vger.kernel.org; Tue, 29 Jun 2021 17:25:08 +0000
+Received: by mail-ed1-f70.google.com with SMTP id r15-20020aa7da0f0000b02903946a530334so11841461eds.22
+        for <linux-btrfs@vger.kernel.org>; Tue, 29 Jun 2021 10:25:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=bsoBCoBbWm9paaTgsCw2KJ7dRNoIiIvzwvpYNO6VbeE=;
-        b=tIeuDDMzqBAU7wzHIg/XFPut/VBgnJNmMMy80dqBe4TT7w/LbFOql27ROEdklCyxvZ
-         pjOt6/vAuayk5/vNgKLMaNLqMOuqdeoVRCZgW5QStCB6VVbv9UT7yZyHN00tAM0sOHOA
-         vU01TvX8RmzYj9tK973sBYPvaKPlchfW+NTGUULCrrQmnzozGNqKeYPc49/IO+68oTVX
-         ZYY/efDRhVfgeG+Rcm3LJim7wKEOmT4xZ9GC+Kxv5YfCIq0ndXvhN2EXM2T/UHHnxorP
-         sYbvV/SISgqBUKkQ2L0ZA/9sD+32byvx7G2EHI5f1zsSGhB8fVihtqzAYi3/dI28f6NP
-         TxKA==
-X-Gm-Message-State: AOAM532lRaxczL1nvLsNJasDT0Tbqeii6M1KiMHdtnQqSE5n07JngaKA
-        sQFajEZLCZ7hyiJjTZtQA3FsnA==
-X-Google-Smtp-Source: ABdhPJxKjXyJMSnDBVoAeREpzwPOHtksXWllHCV11xPEpEVP1OjWafoBcvcWVyZpdnBdWKt5zhz6yQ==
-X-Received: by 2002:ad4:4ea7:: with SMTP id ed7mr29830995qvb.1.1624987468822;
-        Tue, 29 Jun 2021 10:24:28 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id k19sm7930456qta.90.2021.06.29.10.24.27
+        bh=Ri3WXGzuTojlL+9mSjxaDY7X42NrL+ai9PlKm2Tb+w4=;
+        b=lN9Ob6sK1g3MrYuuxNL3OWdzaWP3bYOo+TamiPTwV7CgCVQHynQLzPWxBalbyGNiEu
+         Lfscq3eg70BT+WThx8PQtgw7KqtVOGhGNZyVeb+JyDlszObDXA4bWChsJRJZ20B4Vt9r
+         M+J+Bg1NzRzH3vtLMeBpn2EVXZ+oW9lP6fWFnobf4ytvdferR+bM+PPuc2dbu+rhyDyJ
+         Wp2g1Pa7gAtWqjKJXRnQKjw9NH7cFytKK9H7AcjWsDJA3ccHVWasVh+E7UKo32Tot+W9
+         oUjsZpoyuLyg4Wt9Iagk8Cxos7mGfRmB2UK/5/HCwLVQEuI03wX3DTrsoShz8/4IINwJ
+         c8SA==
+X-Gm-Message-State: AOAM533pAlTGj5cl07StP1e6rM0yCmIpPTSrZEC/nl2QN4lcds+URdgv
+        mbDEnXfii7o5Dou8wp0ToToms4Wikb4FnuLvOiSq+O4gUX45JhgVze4HZU0aKoQaW48XjkZYi2c
+        lrZLMEd36pIkBq4vsgY3N8ltqp32worJVxZQ+cwI/
+X-Received: by 2002:a05:6402:31a9:: with SMTP id dj9mr41493358edb.164.1624987508245;
+        Tue, 29 Jun 2021 10:25:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzU/YhwLaYMTGQNMSd2pgQJxlfGs1UWubtAp8nzGtPKda2VM7Jpw2ZllP8AvwmGwX6cwntukw==
+X-Received: by 2002:a05:6402:31a9:: with SMTP id dj9mr41493349edb.164.1624987508141;
+        Tue, 29 Jun 2021 10:25:08 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id n2sm11450840edi.32.2021.06.29.10.25.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 10:24:28 -0700 (PDT)
+        Tue, 29 Jun 2021 10:25:07 -0700 (PDT)
 Subject: Re: [BUG] btrfs potential failure on 32 core LTP test (fallocate05)
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org,
+To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
         "ltp@lists.linux.it" <ltp@lists.linux.it>,
         Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
 References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
-Date:   Tue, 29 Jun 2021 13:24:26 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+ <e4c71c01-ed70-10a6-be4d-11966d1fcb75@toxicpanda.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <b5c6779b-f11d-661e-18c5-569a07f6fd8e@canonical.com>
+Date:   Tue, 29 Jun 2021 19:25:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <e4c71c01-ed70-10a6-be4d-11966d1fcb75@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 6/29/21 1:00 PM, Krzysztof Kozlowski wrote:
-> Dear BTRFS folks,
+On 29/06/2021 19:20, Josef Bacik wrote:
+> On 6/29/21 1:00 PM, Krzysztof Kozlowski wrote:
+>> Dear BTRFS folks,
+>>
+>> I am hitting a potential regression of btrfs, visible only with
+>> fallocate05 test from LTP (Linux Test Project) only on 32+ core Azure
+>> instances (x86_64).
+>>
+>> Tested:
+>> v5.8 (Ubuntu with our stable patches): PASS
+>> v5.11 (Ubuntu with our stable patches): FAIL
+>> v5.13 mainline: FAIL
+>>
+>> PASS means test passes on all instances
+>> FAIL means test passes on other instance types (e.g. 4 or 16 core) but
+>> fails on 32 and 64 core instances (did not test higher),
+>> e.g.: Standard_F32s_v2, Standard_F64s_v2, Standard_D32s_v3,
+>> Standard_E32s_v3
+>>
+>> Reproduction steps:
+>> git clone https://github.com/linux-test-project/ltp.git
+>> cd ltp
+>> ./build.sh && make install -j8
+>> cd ../ltp-install
+>> sudo ./runltp -f syscalls -s fallocate05
+>>
 > 
-> I am hitting a potential regression of btrfs, visible only with
-> fallocate05 test from LTP (Linux Test Project) only on 32+ core Azure
-> instances (x86_64).
-> 
-> Tested:
-> v5.8 (Ubuntu with our stable patches): PASS
-> v5.11 (Ubuntu with our stable patches): FAIL
-> v5.13 mainline: FAIL
-> 
-> PASS means test passes on all instances
-> FAIL means test passes on other instance types (e.g. 4 or 16 core) but
-> fails on 32 and 64 core instances (did not test higher),
-> e.g.: Standard_F32s_v2, Standard_F64s_v2, Standard_D32s_v3,
-> Standard_E32s_v3
-> 
-> Reproduction steps:
-> git clone https://github.com/linux-test-project/ltp.git
-> cd ltp
-> ./build.sh && make install -j8
-> cd ../ltp-install
-> sudo ./runltp -f syscalls -s fallocate05
-> 
-> Failure output:
-> tst_test.c:1379: TINFO: Testing on btrfs
-> tst_test.c:888: TINFO: Formatting /dev/loop4 with btrfs opts='' extra opts=''
-> tst_test.c:1311: TINFO: Timeout per run is 0h 05m 00s
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file0 size 21710183
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file1 size 8070086
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file2 size 3971177
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file3 size 36915315
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file4 size 70310993
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file5 size 4807935
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file6 size 90739786
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file7 size 76896492
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file8 size 72228649
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file9 size 36207821
-> tst_fill_fs.c:32: TINFO: Creating file mntpoint/file10 size 81483962
-> tst_fill_fs.c:59: TINFO: write(): ENOSPC (28)
-> fallocate05.c:81: TPASS: write() wrote 65536 bytes
-> fallocate05.c:102: TINFO: fallocate()d 0 extra blocks on full FS
-> fallocate05.c:114: TPASS: fallocate() on full FS
-> fallocate05.c:130: TPASS: fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)
-> fallocate05.c:134: TFAIL: write(): ENOSPC (28)
-> 
-> Test code:
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/fallocate/fallocate05.c#L134
-> 
-> See also: https://bugs.launchpad.net/ubuntu-kernel-tests/+bug/1933112
-> 
-> Other FS tests succeed on that machines/kernels. Other file systems
-> also pass - only btrfs fails. The issue was not bisected. Full test
-> log attached.
-> 
+> This thing keeps trying to test ext2, how do I make it only test btrfs?  Thanks,
 
-Also it looks like you're using a loop device, the instructions you gave me 
-aren't complete enough for me to reproduce.  What is the actual setup you are 
-using?  How big is your loop device?  Is it a backing device?  I had to do -b 
-<device> to get the test to even start to run, but I've got a 2tib ssd, am I 
-supposed to be using something else?  Thanks,
+It tests all available file systems, just wait till it gets to btrfs. I
+don't know how to limit it only to one file system.
 
-Josef
+
+Best regards,
+Krzysztof
