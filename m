@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9D63B828A
+	by mail.lfdr.de (Postfix) with ESMTP id B46A53B828B
 	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 14:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbhF3M54 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Jun 2021 08:57:56 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56974 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234719AbhF3M5z (ORCPT
+        id S234809AbhF3M56 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Jun 2021 08:57:58 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37756 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234719AbhF3M55 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Jun 2021 08:57:55 -0400
+        Wed, 30 Jun 2021 08:57:57 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D9C2B1FE8A;
-        Wed, 30 Jun 2021 12:55:25 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B4ECA225BA;
+        Wed, 30 Jun 2021 12:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625057725; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1625057727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0hkVvUt7SUM4cpe8w/v4XI+Iy8xGl5bQjVnVm8xgN00=;
-        b=okHs9RqeXTlFMeJhu2vSx+INKsshi0eu0G2FnXnHpKjITfwLgVR/ucztXF6xWHS3wlg1O8
-        WVxpLcEABssWa2VsMepL5nmte6hdOJ2i31gktaXEqRZmXuF8aufqKhN1IPHZjyrRTq/GxF
-        KEjaHWikk+LDRoP1xLt3CnaIN0R1d2A=
+        bh=+99e25y+ynUz+vYPwDfXy1RK4PjQ5j7RoOFAXVOo5WI=;
+        b=HfMddDumopvX5aAoW9iiskYrqvl1xbnSh0+J+ZIaTw+RMbaR/KfYer+v2n2L5L16J0qlg8
+        ECpXpoYwG1nvx/rccCRYYhTzqJcny85LuHHfxaqIZwXOuhiA9MBm/3MXkmZHV0kD0OZB5Q
+        G5YpjcGRJoakioAw8GrxAYuXcUi0VHc=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 98232118DD;
-        Wed, 30 Jun 2021 12:55:24 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id 74B07118DD;
+        Wed, 30 Jun 2021 12:55:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625057725; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1625057727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0hkVvUt7SUM4cpe8w/v4XI+Iy8xGl5bQjVnVm8xgN00=;
-        b=okHs9RqeXTlFMeJhu2vSx+INKsshi0eu0G2FnXnHpKjITfwLgVR/ucztXF6xWHS3wlg1O8
-        WVxpLcEABssWa2VsMepL5nmte6hdOJ2i31gktaXEqRZmXuF8aufqKhN1IPHZjyrRTq/GxF
-        KEjaHWikk+LDRoP1xLt3CnaIN0R1d2A=
+        bh=+99e25y+ynUz+vYPwDfXy1RK4PjQ5j7RoOFAXVOo5WI=;
+        b=HfMddDumopvX5aAoW9iiskYrqvl1xbnSh0+J+ZIaTw+RMbaR/KfYer+v2n2L5L16J0qlg8
+        ECpXpoYwG1nvx/rccCRYYhTzqJcny85LuHHfxaqIZwXOuhiA9MBm/3MXkmZHV0kD0OZB5Q
+        G5YpjcGRJoakioAw8GrxAYuXcUi0VHc=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id UA4+E7xp3GBqYAAALh3uQQ
-        (envelope-from <wqu@suse.com>); Wed, 30 Jun 2021 12:55:24 +0000
+        id qG6nCr5p3GBqYAAALh3uQQ
+        (envelope-from <wqu@suse.com>); Wed, 30 Jun 2021 12:55:26 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v2 1/4] btrfs: grab correct extent map for subpage compressed extent read
-Date:   Wed, 30 Jun 2021 20:55:09 +0800
-Message-Id: <20210630125512.325889-2-wqu@suse.com>
+Subject: [PATCH v2 2/4] btrfs: remove the GFP_HIGHMEM flag for compression code
+Date:   Wed, 30 Jun 2021 20:55:10 +0800
+Message-Id: <20210630125512.325889-3-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210630125512.325889-1-wqu@suse.com>
 References: <20210630125512.325889-1-wqu@suse.com>
@@ -57,118 +57,122 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When subpage compressed read write support is enabled, btrfs/038 always
-fail with EIO.
+This allows later decompress functions to get rid of kmap()/kunmap()
+pairs.
 
-A simplified script can easily trigger the problem:
+And since all other filesystems are getting rid of HIGHMEM, it should
+not be a problem for btrfs.
 
-  mkfs.btrfs -f -s 4k $dev
-  mount $dev $mnt -o compress=lzo
-
-  xfs_io -f -c "truncate 118811" $mnt/foo
-  xfs_io -c "pwrite -S 0x0d -b 39987 92267 39987" $mnt/foo > /dev/null
-
-  sync
-  btrfs subvolume snapshot -r $mnt $mnt/mysnap1
-
-  xfs_io -c "pwrite -S 0x3e -b 80000 200000 80000" $mnt/foo > /dev/null
-  sync
-
-  xfs_io -c "pwrite -S 0xdc -b 10000 250000 10000" $mnt/foo > /dev/null
-  xfs_io -c "pwrite -S 0xff -b 10000 300000 10000" $mnt/foo > /dev/null
-
-  sync
-  btrfs subvolume snapshot -r $mnt $mnt/mysnap2
-
-  cat $mnt/mysnap2/foo
-  # Above cat will fail due to EIO
-
-[CAUSE]
-The problem is in btrfs_submit_compressed_read().
-
-When it tries to grab the extent map of the read range, it uses the
-following call:
-
-	em = lookup_extent_mapping(em_tree,
-  				   page_offset(bio_first_page_all(bio)),
-				   fs_info->sectorsize);
-
-The problem is in the page_offset(bio_first_page_all(bio)) part.
-
-The offending inode has the following file extent layout
-
-        item 10 key (257 EXTENT_DATA 131072) itemoff 15639 itemsize 53
-                generation 8 type 1 (regular)
-                extent data disk byte 13680640 nr 4096
-                extent data offset 0 nr 4096 ram 4096
-                extent compression 0 (none)
-        item 11 key (257 EXTENT_DATA 135168) itemoff 15586 itemsize 53
-                generation 8 type 1 (regular)
-                extent data disk byte 0 nr 0
-        item 12 key (257 EXTENT_DATA 196608) itemoff 15533 itemsize 53
-                generation 8 type 1 (regular)
-                extent data disk byte 13676544 nr 4096
-                extent data offset 0 nr 53248 ram 86016
-                extent compression 2 (lzo)
-
-And the bio passed in has the following parameters:
-
-page_offset(bio_first_page_all(bio))	= 131072
-bio_first_bvec_all(bio)->bv_offset	= 65536
-
-If we use page_offset(bio_first_page_all(bio) without adding bv_offset,
-we will get an extent map for file offset 131072, not 196608.
-
-This means we read uncompressed data from disk, and later decompression
-will definitely fail.
-
-[FIX]
-Take bv_offset into consideration when trying to grab an extent map.
-
-And add an ASSERT() to ensure we're really getting a compressed extent.
-
-Thankfully this won't affect anything but subpage, thus we wonly need to
-ensure this patch get merged before we enabled basic subpage support.
+Although we removed the HIGHMEM allocation, we still keep the
+kmap()/kunmap() pairs.
+They will be removed when involved functions are refactored later.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ fs/btrfs/compression.c | 3 +--
+ fs/btrfs/lzo.c         | 4 ++--
+ fs/btrfs/zlib.c        | 6 +++---
+ fs/btrfs/zstd.c        | 6 +++---
+ 4 files changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 9a023ae0f98b..19da933c5f1c 100644
+index 19da933c5f1c..8318e56b5ab4 100644
 --- a/fs/btrfs/compression.c
 +++ b/fs/btrfs/compression.c
-@@ -673,6 +673,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 	struct page *page;
- 	struct bio *comp_bio;
- 	u64 cur_disk_byte = bio->bi_iter.bi_sector << 9;
-+	u64 file_offset;
- 	u64 em_len;
- 	u64 em_start;
- 	struct extent_map *em;
-@@ -682,15 +683,17 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+@@ -724,8 +724,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 		goto fail1;
  
- 	em_tree = &BTRFS_I(inode)->extent_tree;
+ 	for (pg_index = 0; pg_index < nr_pages; pg_index++) {
+-		cb->compressed_pages[pg_index] = alloc_page(GFP_NOFS |
+-							      __GFP_HIGHMEM);
++		cb->compressed_pages[pg_index] = alloc_page(GFP_NOFS);
+ 		if (!cb->compressed_pages[pg_index]) {
+ 			faili = pg_index - 1;
+ 			ret = BLK_STS_RESOURCE;
+diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+index cd042c7567a4..2bebb60c5830 100644
+--- a/fs/btrfs/lzo.c
++++ b/fs/btrfs/lzo.c
+@@ -146,7 +146,7 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 	 * store the size of all chunks of compressed data in
+ 	 * the first 4 bytes
+ 	 */
+-	out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
++	out_page = alloc_page(GFP_NOFS);
+ 	if (out_page == NULL) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -216,7 +216,7 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 					goto out;
+ 				}
  
-+	file_offset = bio_first_bvec_all(bio)->bv_offset +
-+		      page_offset(bio_first_page_all(bio));
-+
- 	/* we need the actual starting offset of this extent in the file */
- 	read_lock(&em_tree->lock);
--	em = lookup_extent_mapping(em_tree,
--				   page_offset(bio_first_page_all(bio)),
--				   fs_info->sectorsize);
-+	em = lookup_extent_mapping(em_tree, file_offset, fs_info->sectorsize);
- 	read_unlock(&em_tree->lock);
- 	if (!em)
- 		return BLK_STS_IOERR;
+-				out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
++				out_page = alloc_page(GFP_NOFS);
+ 				if (out_page == NULL) {
+ 					ret = -ENOMEM;
+ 					goto out;
+diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+index c3fa7d3fa770..2c792bc5a987 100644
+--- a/fs/btrfs/zlib.c
++++ b/fs/btrfs/zlib.c
+@@ -121,7 +121,7 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 	workspace->strm.total_in = 0;
+ 	workspace->strm.total_out = 0;
  
-+	ASSERT(em->compress_type != BTRFS_COMPRESS_NONE);
- 	compressed_len = em->block_len;
- 	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
- 	if (!cb)
+-	out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
++	out_page = alloc_page(GFP_NOFS);
+ 	if (out_page == NULL) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -202,7 +202,7 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 				ret = -E2BIG;
+ 				goto out;
+ 			}
+-			out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
++			out_page = alloc_page(GFP_NOFS);
+ 			if (out_page == NULL) {
+ 				ret = -ENOMEM;
+ 				goto out;
+@@ -240,7 +240,7 @@ int zlib_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 				ret = -E2BIG;
+ 				goto out;
+ 			}
+-			out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
++			out_page = alloc_page(GFP_NOFS);
+ 			if (out_page == NULL) {
+ 				ret = -ENOMEM;
+ 				goto out;
+diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+index 3e26b466476a..9451d2bb984e 100644
+--- a/fs/btrfs/zstd.c
++++ b/fs/btrfs/zstd.c
+@@ -405,7 +405,7 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 
+ 
+ 	/* Allocate and map in the output buffer */
+-	out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
++	out_page = alloc_page(GFP_NOFS);
+ 	if (out_page == NULL) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -452,7 +452,7 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 				ret = -E2BIG;
+ 				goto out;
+ 			}
+-			out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
++			out_page = alloc_page(GFP_NOFS);
+ 			if (out_page == NULL) {
+ 				ret = -ENOMEM;
+ 				goto out;
+@@ -512,7 +512,7 @@ int zstd_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 			ret = -E2BIG;
+ 			goto out;
+ 		}
+-		out_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
++		out_page = alloc_page(GFP_NOFS);
+ 		if (out_page == NULL) {
+ 			ret = -ENOMEM;
+ 			goto out;
 -- 
 2.32.0
 
