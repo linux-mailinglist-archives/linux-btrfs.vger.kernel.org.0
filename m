@@ -2,457 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4743B80F8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 12:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CCB23B8125
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 13:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234146AbhF3KxU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Jun 2021 06:53:20 -0400
-Received: from mout.gmx.net ([212.227.15.19]:53225 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229882AbhF3KxT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Jun 2021 06:53:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625050248;
-        bh=SteWlTFGexHsOX1Quw4QCAN6KARsyJOGCoUwi/YFrZc=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=N8rBbmTrcBzF3SCvbQV7ogaa0snWMZxZF4RXPpfexHXksYarz8pVXrdOEQe/+Ct/Y
-         /h122+TtKkfxi/Mp/GHVbCo5A+YGQVYjieaEtEPun08fDtQJURT1vDa2FrMoDqFoxv
-         bVZ0F6O+EarfIuBtdOjwu+fo0Y/QrWEp7j1/bRDo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mqs0R-1lUD8r0H1l-00mpvL; Wed, 30
- Jun 2021 12:50:48 +0200
-Subject: Re: [PATCH 3/4] btrfs: rework btrfs_decompress_buf2page()
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210630093233.238032-1-wqu@suse.com>
- <20210630093233.238032-4-wqu@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <3c12e04d-812a-87cd-4e4c-fabff10bc0d3@gmx.com>
-Date:   Wed, 30 Jun 2021 18:50:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210630093233.238032-4-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S234263AbhF3LUC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Jun 2021 07:20:02 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:30817 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233706AbhF3LUB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 30 Jun 2021 07:20:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1625051853; x=1656587853;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=PjeRn+D+5HMTawXT+6z06iFHeE1iks5YMrysAviIg/0=;
+  b=Ko2WC0ay0AqSXpv0Ffqk+T/YzjJsgugTMEIWii8LXZaTchGtmWZMVliT
+   yFeZwgvckyF4VqOR/GgmTOhmNV6FrlYGNrBvGBtO3ZsaGvNAsFsmWM394
+   NyxoomfR0E/7UUn+3LiDwlqC7efhVe8X11CDpf3Ge8baiUgAfrkfLpOYJ
+   xI2W8VrolC64bch5ZE71oyhevlIiN9F2xijlYCMiNc0f9n7zZY9S2+t9a
+   cv8mqvy++aN1Hzs77peVPBzPAdKNqfVxz4O0LNKwCpVpebK7zOj3/GbPA
+   ZNyvCtyL6+YXDFjnpi0l1EUcClBFEnRoUDZZ390tpBFUTNQlZQsqnwkEF
+   A==;
+IronPort-SDR: ruF9ZyN4p8pineuZYEOOjhmCvWp9GTZ7JD3v9nv+PeDFb1vLIatdLRqUu6/Lh8M/dzw6pIUOyz
+ Wmnfox78snSn/rVj4Au5dJWJrOpv2kDW/a3ZazXQgUX/AUwwfTKj7A0cJ4vkTGIeyNzhaDo5GU
+ W+vwfOVDzJdVLJaiBZqmhzX4LfhDLLjJ9LuGj3sxH+FuGnubnlMK3YOQonK4hOcScralilG/Rf
+ c8+GhQcnbBrED65Vd1PPsNBd72p2nBWaROzT7wFuiPdAZOx1kQMdtDH/fBK+IOM5ebr1nO0Thn
+ QcE=
+X-IronPort-AV: E=Sophos;i="5.83,311,1616428800"; 
+   d="scan'208";a="172566944"
+Received: from mail-bn1nam07lp2047.outbound.protection.outlook.com (HELO NAM02-BN1-obe.outbound.protection.outlook.com) ([104.47.51.47])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Jun 2021 19:17:31 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fNfFMI0K1j5fnDqU6EtGdfn4PH96so/jX6Fpum8aBSwVY5yIKvi10+pRm7qvgoc7zzvxuetl66tto5hyL7nXWxl+MX+tKhxLzPTO56BlZrMfaaMW86zxV5q9L2tFGHCg0UiCqFRnxCjdlS/TqxiXI/E6DSkTFS8yIqSEWJTOT+PlWMCanSBz9ZkYCXn++5LfbXctjpUzLWB38ScZGanPI1lPP/haX8tIEt6FlDByXkcEV8s+BTHgkABFToFiXq544BbatlCnfWzCbP3LxKSyBTudXLRDv5Bqc41xk2AMDlztQb9jWt5XblivTlNF8rPHHPpbyCSnfwlAGYXJhjivnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O8jH+dUYYr4lLCeoyji5GdxJj6YPqW05hSOdVg/XkyE=;
+ b=hZfq8omhlaZvWvT8mxLNsOqhpGvfs/wrFzRzdFcc6shOviQ04dXM/gCBIT8gpkAOLMDpbzquIv0rOXnyDsqQzzDW5q8iNlcmyR8i5m1wzCVXZO2UdaTQkL9Chwzn3OarTCorUdmB0nSC5x5cFgzcESLdickntejGY39QAQPRS0Fzm5JjYwq3mEeePo6/EvapL2//L692N1lZCOzQkCFLiBDSumOc2UvfphCC/80qYBgx2CqtF4j6kX0A+zzhCeDgQjQJNWljo5a92rm6v2s7n0IZ3XbrTWyibILkhRor8auUp/6jBo45wihTYABR81T7PmfivMNqAb2cPbUK3T2Bag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O8jH+dUYYr4lLCeoyji5GdxJj6YPqW05hSOdVg/XkyE=;
+ b=DJ7tovLDW4IvnjlKgczfS9N0qJWAA66LJg2v5WHjzF6264lioSSBP7Fga2S6frLqkq7vwdlm10CM2xnFT90a4H0lf7aN4F71+cOict/gHpI3CXyQrTubgk+ZkF4MGHY0rNLPYose9KIJLHEYW0QTCW3urNfcbzfACI2U4Z6MwA0=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.19; Wed, 30 Jun
+ 2021 11:17:30 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ad2f:e5e4:3bfd:e1de]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ad2f:e5e4:3bfd:e1de%4]) with mapi id 15.20.4264.026; Wed, 30 Jun 2021
+ 11:17:30 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     "lijian_8010a29@163.com" <lijian_8010a29@163.com>,
+        "clm@fb.com" <clm@fb.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        lijian <lijian@yulong.com>
+Subject: Re: [PATCH] fs: btrfs: extent_map: removed unneeded variable
+Thread-Topic: [PATCH] fs: btrfs: extent_map: removed unneeded variable
+Thread-Index: AQHXbMQAzBmALZ3G+kSY1PzHly/n7g==
+Date:   Wed, 30 Jun 2021 11:17:30 +0000
+Message-ID: <PH0PR04MB7416AEA4D23FAE000C86DF729B019@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <20210629085025.98437-1-lijian_8010a29@163.com>
+ <PH0PR04MB741666CF29DB96CF0DB0C26B9B029@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <20210630095923.GH2610@twin.jikos.cz>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:156c:b201:ec6e:b732:eb2c:38fb]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1473a590-205d-465b-06f0-08d93bb8a696
+x-ms-traffictypediagnostic: PH0PR04MB7416:
+x-microsoft-antispam-prvs: <PH0PR04MB74168309727CE2CE6A63E2899B019@PH0PR04MB7416.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lC/yFNDoao3/Ub2SFWfrMFQ6yItJvohJe/Zuw2dCz1oxp4DwCijWoOvtjlwQnrnvD5dxftOlpSyPV0uUWJljUxV6rTNlZ8RKjcWx+H8K6Tx2MkIf0bYMzXekT2OQ64XbASFH0OxqvRIW9mw7kPIGomqhAR8aUzuQRY49+lapuF9EnE6Fubigk8O+biFvO+4Vz4QdLtuC8rS5grTwFZqaMsnrd1w27vCMUE5uu5nvfLfHKof4s7LS18Mq0mWSUlrsiahGciPYlYPakERf/b9kzjnVrlrj4RNygtdgzIDXYQDIXLZ/JnFIhCM7eAlUDk2Kr1Gsx/bMTZjen3WBYmGqMJlq4Tuv/EC/5AarGC4VmxFbn+G6LFS6KKgC0+83oxIRBzX9FEvlYWdY/uSnoEdKBSZgWKKYtLsjKVkoV3eKwd4DL5iUeZxyTQgm1Vz9NJ7l06Lm/47wDq/LD5tx1puU68wKCGlOC1b5MxQ8l1xRNxMSRRqnUqN6cpcHb98QYMWLS+qJ5Eomj6+rxvTmgD53BKHPbEJ4LwNWSrUOFHGIFtQlRES/1daicE9kDPRa5WGFuvrxcAVjSg4EaM9B/TAgrC3SgxJE22vEEQXQbYqb9xz8wjjp03iUfjSqhBBF6/DU5zLy12SLYY1nXrGMU72o+g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(366004)(376002)(39860400002)(316002)(6916009)(8936002)(38100700002)(66476007)(76116006)(54906003)(122000001)(33656002)(4326008)(86362001)(2906002)(478600001)(66446008)(64756008)(66556008)(66946007)(83380400001)(8676002)(55016002)(91956017)(186003)(52536014)(7696005)(6506007)(5660300002)(53546011)(71200400001)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?BBVoBYNjMT7qBSPXEevXHnMoCpUT/YZZ8Qws+T/n6G2ixsi1sCOQIfcK/jKx?=
+ =?us-ascii?Q?6gkCTcIzp01VwXHJgw0XSgiRIfR7K6W69vg/9KjhLmkUMxYEsBTwSyG4LvTJ?=
+ =?us-ascii?Q?7Zi7oakNvLS7oYLnzvi9ZnVSF4NvZWhOGyybtru9nhsdce2CKo/Kx0Y7DMoK?=
+ =?us-ascii?Q?ptX3pJYYCxUlAOqvdTXpRB5bdCoQQ/rEHzTW+kw5k1K4LcvS6tgjiLxkuqrd?=
+ =?us-ascii?Q?bQICNZErQhHnNBjLl4lcuYIjlQDH/wTHY8bfS3uiWSYTsqG8/1p4VLFOXbve?=
+ =?us-ascii?Q?U9PYLB+ltKhWBtwAWhDdBi1k0gKNrVqqS4kuCv289gB0mt6jrkJCJ25YOyZx?=
+ =?us-ascii?Q?0kshdgXPMqX7oe/bqsuzgal2r5YXxeFe1YRcE41X9ntM7SIWud6zLWUWXaFg?=
+ =?us-ascii?Q?5RmWh2XwEamqsgGc0uP76FlEY8b+0H8LrHFYIbNA3b6ZVe0qFzyR58T4x/74?=
+ =?us-ascii?Q?sI/ent3FxSC3nnRVabJc9KHgv6jlqesxhP6gMwOgi38ZyTokfGN6UOboRWqX?=
+ =?us-ascii?Q?glsiRzILXieVuEC3SeWRs9Rw8PqWVcNS7HzFCw8G43Pwq3uaZl14D5Pculrj?=
+ =?us-ascii?Q?9fMUbj0xqy1Zem9y4+Isd/zQ/1Z/10l6xN5ejcMGblWxKJ3w2mseNEOyWd6n?=
+ =?us-ascii?Q?v/iPp31TiQK8O8l69aNSwLAlL7FL1wC7gDbl/b0RZ2NHPRa0ifI/aY5pzWx4?=
+ =?us-ascii?Q?CvZWOyyDQrQ2M49/XZAe1MTlxIAxsscFRw7/crCeq+hiClCZRh0IFi3ZfG8O?=
+ =?us-ascii?Q?Z9kMChZ73v7i+TM8XrPSggzwWtlIK8DyKzkcN/afEYktDsYL6CaWkGr2q0ug?=
+ =?us-ascii?Q?broOZ+hR7XUt/xrEXuCLPtvJz+4r6VvN3bn5/JRjjZ330TorBI68bA4/4yyy?=
+ =?us-ascii?Q?T1dmfaLcdrFj89UfgWdseQrHdR+mTAPM8yMwFf2CpRFbPVCmilTpN0EU0k3J?=
+ =?us-ascii?Q?IZEWfFutruJEyX1c0GeNYt5QDhI13/eBmYWX9UbJlaW0LYVEQwyBQvR+NQkU?=
+ =?us-ascii?Q?p/YtZyoO3Cub3TWlQRpqq3O94oUkTcggzR4HR1Y2p+mUh86z2+fyUTlyNFA4?=
+ =?us-ascii?Q?wWFiuLCTqZJon5VOI7mycCfR482faqOomAnAR4M+c2MvyIde4EJigNJ9wsDq?=
+ =?us-ascii?Q?tgql2at0EkXFa+vdBDifHmpczcEgkyDZXaS+/neZf3sRpAczEE2EHU5RkVa9?=
+ =?us-ascii?Q?tYprOWb8Pv4nsBBZWojUjtklC9lUEcqhassl4kh+KRQRE0dp5ueoFpcrGdH2?=
+ =?us-ascii?Q?fzsJJxe0wpqOWMuHGlBWmNBEPYDH8JUsVRFmLlPq0YkBWtN4ef8nEotNuNh9?=
+ =?us-ascii?Q?y6VkoeMQ/ntnQenWiGSrfgm6VHBJu3nUDJLGxLkvoAvj8BJBD/tm9hPAgex/?=
+ =?us-ascii?Q?bu0oWRHqgOIoKXsSMbzZq9rb8EQb/CAiYy0LI2CZikEkpY0Crw=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:f5SHdzm7mfdg7wkLLFXVshZPxbkj4IA3LWC7i5cCcrIuNHYl4Sm
- BLRzIamJwpjsUX6OG0Q4ftRXOOAgfmqPKXuituWvr+D9RUb3ImdByXWtYrS94UjOFTSVr68
- CeIQk56WMtKnsMmOy4reHzibaQzIRH62kEeYggiSfoSya2Hyl1Tz4C4jWUMA0YU+2ko0/Pj
- /z1R3osp6wTUP+OvFWIzw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RuIf494XmrE=:hMZ4BUX+uab1ko0pnBHc1u
- dG9LCY/Hxc48hnGAEYieiwaPDkmvS0QaKMHS+ov/xE0sms5NunK3jbPTfArdeAyoUnvj4FciO
- dDOoh6d+Oc2MuJ0krrMD0H39JCpKWAAoRJuvM3QkIvB1V9jZJyRuME6G6F31i5ptG9SoHujLy
- vS4mU6nKiCmOw9eJbsFMmM9GuXig+vVqZ4flEoNUv5T5tNDLUvkXKbQ8I7awjdONQ9tOtUymD
- CGSNgLse5OfhJUrnWbxOONcAU2e3eylW9SszdV4vGxVWWx5o4X3RVZK/xMb4kZRvbNerybp8k
- aqx27m09AINf4xrWNkvgeSM44qhMOZbiWTNB45LhHkJjdNEIn9OfX0YuPdzc8Pai2XxNAzY1s
- j0MzkrN44KY4NBquDH3dQU7KSpyNrXEASXtdBju0gFMi4IFkbAeeWRF1BXsQMCqhwgQoxJJ0P
- pxQWe8roFPOirELcFsSqAsQzdYgaWelDUp5P0RdxLeq+cNm8/4T5+z/6wTKLvRyeIimBzcoWN
- Gxab7xuEoR8e6FhEWXELsj4I0DjYSmd42PosSgMOjKD2nI8WzmxFi5uwG2HJxvXNLqfoCKtKg
- LMav1dkL6vz35U2hQaDLKUl/BAc2POe4BysLOr8mIkhsxzaWrBLN6LhbvhzuxKjKSJDTJThKa
- hqQCdVmSORRGqLbF1jaeO++v2Z+AE5faJeH9I9r5VFyFiwoOlqOCLAx/L7lBsNdWh6pPz2WdS
- sqwDV8Jkkj2t3laSNo6vGoWus/BGaIF7bFj/HvQiET42yQprkTB55x4EE+dzLD8dB+CKjJWi/
- O0+agfcb46E1xOKdp5wexMZW+8MDMY6iNcc9LBCpGMkqez0TXbQkaUbwQbg6dosWd9W1GLSQ+
- gtqI1m2Vrbk1fd4yEqU/tLwBzJOWLv0vFqlnemaTmsJmowT1Q/GmMMA5xHT9wcuOGzY1oALI/
- lVuR07nKmcbUFGDgq9WRO7Y7sWzYM2KUrY5LcpjwXokwO9Wre3oC6y2y939UxZVfhaI5MHWn3
- cHxv/KYjrgCjaS9sTonSpy6Rz/htpRRtyGloAvNjp3dHWqwVo27JS+dTsMk2mWOkT3D0oCSCQ
- 16qh30dXfEJ4zZSsXSn1SNtC6IKFCOYbMxKokE+OYA5i2aeBkUjRRujVA==
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1473a590-205d-465b-06f0-08d93bb8a696
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jun 2021 11:17:30.3232
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bCMfe9UcMgQTuJb8r8iWL7dtAoLS/XyYUqok3PddOfQxWKptd9B+8/fRZfITuLniQbW3OMaCjc9XcftzgSHvphKQqgTynSEdMStiKxVOtXg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7416
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/6/30 =E4=B8=8B=E5=8D=885:32, Qu Wenruo wrote:
-> There are several bugs inside the function btrfs_decompress_buf2page()
->
-> - @start_byte doesn't take bvec.bv_offset into consideration
->    Thus it can't handle case where the target range is not page aligned.
->
-> - Too many helper variables
->    There are tons of helper variables, @buf_offset, @current_buf_start,
->    @start_byte, @prev_start_byte, @working_bytes, @bytes.
->    This hurts anyone who wants to read the function.
->
-> - No obvious main cursor for the iteartion
->    A new problem caused by previous problem.
->
-> - Comments for parameter list makes no sense
->    Like @buf_start is the offset to @buf, or offset inside the full
->    decompressed extent? (Spoiler alert, the later case)
->    And @total_out acts more like @buf_start + @size_of_buf.
->
->    The worst is @disk_start.
->    The real meaning of it is the file offset of the full decompressed
->    extent.
->
-> This patch will rework the whole function by:
->
-> - Add a proper comment with ASCII art to explain the parameter list
->
-> - Rework parameter list
->    The old @buf_start is renamed to @decompressed, to show how many byte=
-s
->    are already decompressed inside the full decompressed extent.
->    The old @total_out is replaced by @buf_len, which is the decompressed
->    data size.
->    For old @disk_start and @bio, just pass @compressed_bio in.
->
-> - Use single main cursor
->    The main cursor will be @cur_file_offset, to show what's the current
->    file offset.
->    Other helper variables will be declared inside the main loop, and onl=
-y
->    minimal amount of helper variables:
->    * offset_inside_decompressed_buf:	The only real helper
->    * copy_start_file_offset:		File offset we start memcpy
->    * bvec_file_offset:			File offset of current bvec
->
-> Even with all these extensive comments, the final function is still
-> smaller than the original function, which is definitely a win.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/compression.c | 159 ++++++++++++++++++++---------------------
->   fs/btrfs/compression.h |   5 +-
->   fs/btrfs/lzo.c         |   8 +--
->   fs/btrfs/zlib.c        |  12 ++--
->   fs/btrfs/zstd.c        |   6 +-
->   5 files changed, 89 insertions(+), 101 deletions(-)
->
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 8318e56b5ab4..28f24c8ac3c1 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -1263,96 +1263,93 @@ void __cold btrfs_exit_compress(void)
->   }
->
->   /*
-> - * Copy uncompressed data from working buffer to pages.
-> + * Copy decompressed data from working buffer to pages.
->    *
-> - * buf_start is the byte offset we're of the start of our workspace buf=
-fer.
-> + * @buf:		The decompressed data buffer
-> + * @buf_len:		The decompressed data length
-> + * @decompressed:	Number of bytes that is already decompressed inside t=
-he
-> + * 			compressed extent
-> + * @cb:			The compressed extent descriptor
-> + * @orig_bio:		The original bio that the caller wants to read for
->    *
-> - * total_out is the last byte of the buffer
-> + * An easier to understand graph is like below:
-> + *
-> + * 		|<- orig_bio ->|     |<- orig_bio->|
-> + * 	|<-------      full decompressed extent      ----->|
-> + * 	|<-----------    @cb range   ---->|
-> + * 	|			|<-- @buf_len -->|
-> + * 	|<--- @decompressed --->|
-> + *
-> + * Note that, @cb can be a subpage of the full decompressed extent, but
-> + * @cb->start always has the same as the orig_file_offset value of the =
-full
-> + * decompressed extent.
-> + *
-> + * When reading compressed extent, we have to read the full compressed =
-extent,
-> + * while @orig_bio may only want part of the range.
-> + * Thus this function will ensure only data covered by @orig_bio will b=
-e copied
-> + * to.
-> + *
-> + * Return 0 if we have copied all needed contents for @orig_bio.
-> + * Return >0 if we need continue decompress.
->    */
-> -int btrfs_decompress_buf2page(const char *buf, unsigned long buf_start,
-> -			      unsigned long total_out, u64 disk_start,
-> -			      struct bio *bio)
-> +int btrfs_decompress_buf2page(const char *buf, u32 buf_len,
-> +			      struct compressed_bio *cb, u32 decompressed)
->   {
-> -	unsigned long buf_offset;
-> -	unsigned long current_buf_start;
-> -	unsigned long start_byte;
-> -	unsigned long prev_start_byte;
-> -	unsigned long working_bytes =3D total_out - buf_start;
-> -	unsigned long bytes;
-> -	struct bio_vec bvec =3D bio_iter_iovec(bio, bio->bi_iter);
-> -
-> -	/*
-> -	 * start byte is the first byte of the page we're currently
-> -	 * copying into relative to the start of the compressed data.
-> -	 */
-> -	start_byte =3D page_offset(bvec.bv_page) - disk_start;
-> -
-> -	/* we haven't yet hit data corresponding to this page */
-> -	if (total_out <=3D start_byte)
-> -		return 1;
-> -
-> -	/*
-> -	 * the start of the data we care about is offset into
-> -	 * the middle of our working buffer
-> -	 */
-> -	if (total_out > start_byte && buf_start < start_byte) {
-> -		buf_offset =3D start_byte - buf_start;
-> -		working_bytes -=3D buf_offset;
-> -	} else {
-> -		buf_offset =3D 0;
-> -	}
-> -	current_buf_start =3D buf_start;
-> -
-> -	/* copy bytes from the working buffer into the pages */
-> -	while (working_bytes > 0) {
-> -		bytes =3D min_t(unsigned long, bvec.bv_len,
-> -				PAGE_SIZE - (buf_offset % PAGE_SIZE));
-> -		bytes =3D min(bytes, working_bytes);
-> -
-> -		memcpy_to_page(bvec.bv_page, bvec.bv_offset, buf + buf_offset,
-> -			       bytes);
-> -		flush_dcache_page(bvec.bv_page);
-> -
-> -		buf_offset +=3D bytes;
-> -		working_bytes -=3D bytes;
-> -		current_buf_start +=3D bytes;
-> -
-> -		/* check if we need to pick another page */
-> -		bio_advance(bio, bytes);
-> -		if (!bio->bi_iter.bi_size)
-> -			return 0;
-> -		bvec =3D bio_iter_iovec(bio, bio->bi_iter);
-> -		prev_start_byte =3D start_byte;
-> -		start_byte =3D page_offset(bvec.bv_page) - disk_start;
-> +	const u64 orig_file_offset =3D cb->start;
-
-This part can underflow when the compressed extent is reflinked to a
-lower file offset.
-
-Thus we can't use file_offset as the main cursor, as underflowed value
-can easily screw up later max/min calculation.
-
-This can be exposed by btrfs/097.
-
-I'll need to find a better cursor for this case then.
-
-Thanks,
-Qu
-
-> +	const u64 buf_file_offset =3D orig_file_offset + decompressed;
-> +	struct bio *orig_bio =3D cb->orig_bio;
-> +	u64 cur_file_offset =3D buf_file_offset;
-> +
-> +	/* The main loop to do the copy */
-> +	while (cur_file_offset < buf_file_offset + buf_len) {
-> +		struct bio_vec bvec =3D bio_iter_iovec(orig_bio,
-> +						     orig_bio->bi_iter);
-> +		size_t copy_len;
-> +		u32 offset_inside_decompressed_buf;
-> +		u64 copy_start_file_offset;
-> +		u64 bvec_file_offset;
-> +
-> +		bvec =3D bio_iter_iovec(orig_bio, orig_bio->bi_iter);
-> +		bvec_file_offset =3D page_offset(bvec.bv_page) + bvec.bv_offset;
-> +
-> +		/* Haven't reached the bvec range, exit */
-> +		if (buf_file_offset + buf_len <=3D bvec_file_offset)
-> +			return 1;
-> +
-> +		copy_start_file_offset =3D max(bvec_file_offset, cur_file_offset);
-> +		copy_len =3D min(bvec_file_offset + bvec.bv_len,
-> +			       buf_file_offset + buf_len) -
-> +			   copy_start_file_offset;
-> +		ASSERT(copy_len);
-> +		ASSERT(copy_len <=3D buf_file_offset + buf_len -
-> +				   copy_start_file_offset);
->
->   		/*
-> -		 * We need to make sure we're only adjusting
-> -		 * our offset into compression working buffer when
-> -		 * we're switching pages.  Otherwise we can incorrectly
-> -		 * keep copying when we were actually done.
-> +		 * Extra range check to ensure we didn't go beyond
-> +		 * @buf + @buf_len.
-> +		 *
-> +		 * (copy_start_file_offset - orig_file_offset) is the offset
-> +		 * inside the full decompressed extent.
-> +		 * then (- decompressed) we got the offset inside the
-> +		 * decompressed data @buf, which should not exceed @buf_len.
->   		 */
-> -		if (start_byte !=3D prev_start_byte) {
-> -			/*
-> -			 * make sure our new page is covered by this
-> -			 * working buffer
-> -			 */
-> -			if (total_out <=3D start_byte)
-> -				return 1;
-> -
-> -			/*
-> -			 * the next page in the biovec might not be adjacent
-> -			 * to the last page, but it might still be found
-> -			 * inside this working buffer. bump our offset pointer
-> -			 */
-> -			if (total_out > start_byte &&
-> -			    current_buf_start < start_byte) {
-> -				buf_offset =3D start_byte - buf_start;
-> -				working_bytes =3D total_out - start_byte;
-> -				current_buf_start =3D buf_start + buf_offset;
-> -			}
-> +		offset_inside_decompressed_buf =3D copy_start_file_offset -
-> +						 orig_file_offset -
-> +						 decompressed;
-> +		ASSERT(offset_inside_decompressed_buf < buf_len);
-> +		memcpy_to_page(bvec.bv_page, bvec.bv_offset,
-> +			       buf + offset_inside_decompressed_buf,
-> +			       copy_len);
-> +		cur_file_offset +=3D copy_len;
-> +
-> +		/* Check if we need to advanced to next bvec */
-> +		if (cur_file_offset >=3D bvec_file_offset + bvec.bv_len) {
-> +			bio_advance(orig_bio, copy_len);
-> +			/* Finished the bio */
-> +			if (!orig_bio->bi_iter.bi_size)
-> +				return 0;
->   		}
->   	}
-> -
->   	return 1;
->   }
->
-> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> index c359f20920d0..399be0b435bf 100644
-> --- a/fs/btrfs/compression.h
-> +++ b/fs/btrfs/compression.h
-> @@ -86,9 +86,8 @@ int btrfs_compress_pages(unsigned int type_level, stru=
-ct address_space *mapping,
->   			 unsigned long *total_out);
->   int btrfs_decompress(int type, unsigned char *data_in, struct page *de=
-st_page,
->   		     unsigned long start_byte, size_t srclen, size_t destlen);
-> -int btrfs_decompress_buf2page(const char *buf, unsigned long buf_start,
-> -			      unsigned long total_out, u64 disk_start,
-> -			      struct bio *bio);
-> +int btrfs_decompress_buf2page(const char *buf, u32 buf_len,
-> +			      struct compressed_bio *cb, u32 decompressed);
->
->   blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, =
-u64 start,
->   				  unsigned int len, u64 disk_start,
-> diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-> index 2bebb60c5830..2dbbfd33e5a5 100644
-> --- a/fs/btrfs/lzo.c
-> +++ b/fs/btrfs/lzo.c
-> @@ -301,8 +301,6 @@ int lzo_decompress_bio(struct list_head *ws, struct =
-compressed_bio *cb)
->   	char *buf;
->   	bool may_late_unmap, need_unmap;
->   	struct page **pages_in =3D cb->compressed_pages;
-> -	u64 disk_start =3D cb->start;
-> -	struct bio *orig_bio =3D cb->orig_bio;
->
->   	data_in =3D kmap(pages_in[0]);
->   	tot_len =3D read_compress_length(data_in);
-> @@ -407,15 +405,15 @@ int lzo_decompress_bio(struct list_head *ws, struc=
-t compressed_bio *cb)
->   		buf_start =3D tot_out;
->   		tot_out +=3D out_len;
->
-> -		ret2 =3D btrfs_decompress_buf2page(workspace->buf, buf_start,
-> -						 tot_out, disk_start, orig_bio);
-> +		ret2 =3D btrfs_decompress_buf2page(workspace->buf, out_len,
-> +						 cb, buf_start);
->   		if (ret2 =3D=3D 0)
->   			break;
->   	}
->   done:
->   	kunmap(pages_in[page_in_index]);
->   	if (!ret)
-> -		zero_fill_bio(orig_bio);
-> +		zero_fill_bio(cb->orig_bio);
->   	return ret;
->   }
->
-> diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-> index 2c792bc5a987..767a0c6c9694 100644
-> --- a/fs/btrfs/zlib.c
-> +++ b/fs/btrfs/zlib.c
-> @@ -286,8 +286,6 @@ int zlib_decompress_bio(struct list_head *ws, struct=
- compressed_bio *cb)
->   	unsigned long total_pages_in =3D DIV_ROUND_UP(srclen, PAGE_SIZE);
->   	unsigned long buf_start;
->   	struct page **pages_in =3D cb->compressed_pages;
-> -	u64 disk_start =3D cb->start;
-> -	struct bio *orig_bio =3D cb->orig_bio;
->
->   	data_in =3D kmap(pages_in[page_in_index]);
->   	workspace->strm.next_in =3D data_in;
-> @@ -326,9 +324,8 @@ int zlib_decompress_bio(struct list_head *ws, struct=
- compressed_bio *cb)
->   		if (buf_start =3D=3D total_out)
->   			break;
->
-> -		ret2 =3D btrfs_decompress_buf2page(workspace->buf, buf_start,
-> -						 total_out, disk_start,
-> -						 orig_bio);
-> +		ret2 =3D btrfs_decompress_buf2page(workspace->buf,
-> +				total_out - buf_start, cb, buf_start);
->   		if (ret2 =3D=3D 0) {
->   			ret =3D 0;
->   			goto done;
-> @@ -348,8 +345,7 @@ int zlib_decompress_bio(struct list_head *ws, struct=
- compressed_bio *cb)
->   			data_in =3D kmap(pages_in[page_in_index]);
->   			workspace->strm.next_in =3D data_in;
->   			tmp =3D srclen - workspace->strm.total_in;
-> -			workspace->strm.avail_in =3D min(tmp,
-> -							   PAGE_SIZE);
-> +			workspace->strm.avail_in =3D min(tmp, PAGE_SIZE);
->   		}
->   	}
->   	if (ret !=3D Z_STREAM_END)
-> @@ -361,7 +357,7 @@ int zlib_decompress_bio(struct list_head *ws, struct=
- compressed_bio *cb)
->   	if (data_in)
->   		kunmap(pages_in[page_in_index]);
->   	if (!ret)
-> -		zero_fill_bio(orig_bio);
-> +		zero_fill_bio(cb->orig_bio);
->   	return ret;
->   }
->
-> diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-> index 9451d2bb984e..f06b68040352 100644
-> --- a/fs/btrfs/zstd.c
-> +++ b/fs/btrfs/zstd.c
-> @@ -547,8 +547,6 @@ int zstd_decompress_bio(struct list_head *ws, struct=
- compressed_bio *cb)
->   {
->   	struct workspace *workspace =3D list_entry(ws, struct workspace, list=
-);
->   	struct page **pages_in =3D cb->compressed_pages;
-> -	u64 disk_start =3D cb->start;
-> -	struct bio *orig_bio =3D cb->orig_bio;
->   	size_t srclen =3D cb->compressed_len;
->   	ZSTD_DStream *stream;
->   	int ret =3D 0;
-> @@ -589,7 +587,7 @@ int zstd_decompress_bio(struct list_head *ws, struct=
- compressed_bio *cb)
->   		workspace->out_buf.pos =3D 0;
->
->   		ret =3D btrfs_decompress_buf2page(workspace->out_buf.dst,
-> -				buf_start, total_out, disk_start, orig_bio);
-> +				total_out - buf_start, cb, buf_start);
->   		if (ret =3D=3D 0)
->   			break;
->
-> @@ -614,7 +612,7 @@ int zstd_decompress_bio(struct list_head *ws, struct=
- compressed_bio *cb)
->   		}
->   	}
->   	ret =3D 0;
-> -	zero_fill_bio(orig_bio);
-> +	zero_fill_bio(cb->orig_bio);
->   done:
->   	if (workspace->in_buf.src)
->   		kunmap(pages_in[page_in_index]);
->
+On 30/06/2021 12:01, David Sterba wrote:=0A=
+> On Tue, Jun 29, 2021 at 09:04:40AM +0000, Johannes Thumshirn wrote:=0A=
+>> On 29/06/2021 10:51, lijian_8010a29@163.com wrote:=0A=
+>>> From: lijian <lijian@yulong.com>=0A=
+>>>=0A=
+>>> removed unneeded variable 'ret'.=0A=
+>>=0A=
+>> Wouldn't it make more sense to return an error (-ENOENT??) in case=0A=
+>> the em lookup fails and handle the error in btrfs_finish_ordered_io()=0A=
+>> as this is the only caller of unpin_extent_cache()?=0A=
+>>=0A=
+>> I've actually tripped over this a couple of times already when =0A=
+>> investigating extent map and ordered extent splitting problems=0A=
+>> on zoned filesystems:=0A=
+>>=0A=
+>> 	em =3D lookup_extent_mapping(tree, start, len);=0A=
+>> 	WARN_ON(!em || em->start !=3D start);=0A=
+>>=0A=
+>> Maybe even turn this WARN_ON() into an ASSERT() when introducing proper=
+=0A=
+>> error handling, as we shouldn't really get there unless we have a logica=
+l=0A=
+>> error.=0A=
+> =0A=
+> If you have real workloads hitting the warning then it really should be=
+=0A=
+> proper error handling, not even an assert.=0A=
+> =0A=
+=0A=
+Up to now it's been coding errors from my side so I think it warrants an=0A=
+ASSERT().=0A=
+=0A=
+But still we should handle the error in the caller.=0A=
