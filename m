@@ -2,80 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837B13B88E1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 21:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20683B8925
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 21:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232904AbhF3TCo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Jun 2021 15:02:44 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33162 "EHLO
+        id S233693AbhF3TaX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Jun 2021 15:30:23 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36462 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233197AbhF3TCl (ORCPT
+        with ESMTP id S233679AbhF3TaW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Jun 2021 15:02:41 -0400
+        Wed, 30 Jun 2021 15:30:22 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 549391FEE4;
-        Wed, 30 Jun 2021 19:00:11 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id A0A9A1FEF3;
+        Wed, 30 Jun 2021 19:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625079611;
+        t=1625081272;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=H/NRxJ3qkpsFTtWU+micFrlScP9YbvKOPOJlLTNx3Hs=;
-        b=eb3/b6wOiGxvti7dB9XKmYBjLPmXtKzxLDG9RhegyMWJw6ggVUZiwCkMfNQ3S4b+ZjHuJc
-        2S5/vZuJrxz56Vf9/oof7SJTqBrIJJkTC5Qsmb35MongY0Q1portwPwWySAQ6gLF/snVOi
-        7oJLjWpYo48QVtE1/K1tFir9HuzCKYM=
+        bh=N2CVyFvWX8NyaeNckyr/gysZjg/caGEbfcMb0bAjW0U=;
+        b=zdVj3NTn4A7mS9zskk5mNdlpBHEwclMmyJL3HoHCoNS7PkuQH/mzlh+thC/7T/EN8lK4n4
+        uL7+lus5siXR1ZrEocJx+Nolxlc2OWDzkKJ0XAygAq41/skYmlJCHNSme+vgzQ+N0IgnrN
+        gv+fL1fdAWUN4+bQ6+eKji1qNUGpzqw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625079611;
+        s=susede2_ed25519; t=1625081272;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=H/NRxJ3qkpsFTtWU+micFrlScP9YbvKOPOJlLTNx3Hs=;
-        b=z5GGAMHgkXyLdBkle9QTLjsapdQ4Lgeus+Mc8hqwykMtYjMaENdaLjU/PJDPNlUedqQwow
-        bA2Iw3616GJ8CaCw==
+        bh=N2CVyFvWX8NyaeNckyr/gysZjg/caGEbfcMb0bAjW0U=;
+        b=qcGEB25H9Oc09tsn3eyVF+atWRvaPo1UyabCRS4AP+UTMUO7liBGeBRcE+9hKPfXohvUCa
+        kuPhqQMHmydDS6AA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 4DB43A3B85;
-        Wed, 30 Jun 2021 19:00:11 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 6FE75A3B88;
+        Wed, 30 Jun 2021 19:27:52 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2E759DA6FD; Wed, 30 Jun 2021 20:57:41 +0200 (CEST)
-Date:   Wed, 30 Jun 2021 20:57:41 +0200
+        id 51A9BDA6FD; Wed, 30 Jun 2021 21:25:22 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 21:25:22 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 0/3] btrfs: commit the transaction unconditionally for
- ensopc
-Message-ID: <20210630185741.GS2610@twin.jikos.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH] btrfs: properly split extent_map for REQ_OP_ZONE_APPEND
+Message-ID: <20210630192522.GT2610@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1623421213.git.josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+References: <20210628085728.2813793-1-naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1623421213.git.josef@toxicpanda.com>
+In-Reply-To: <20210628085728.2813793-1-naohiro.aota@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 10:23:07AM -0400, Josef Bacik wrote:
-> Hello,
+On Mon, Jun 28, 2021 at 05:57:28PM +0900, Naohiro Aota wrote:
+> Damien reported a test failure with btrfs/209. The test itself ran fine,
+> but the fsck run afterwards reported a corrupted filesystem.
 > 
-> While debugging early ENOSPC issues in the Facebook fleet I hit a case where we
-> weren't committing the transaction because of some patch that I hadn't
-> backported to our kernel.
+> The filesystem corruption happens because we're splitting an extent and
+> then writing the extent twice. We have to split the extent though, because
+> we're creating too large extents for a REQ_OP_ZONE_APPEND operation.
 > 
-> This made me think really hard about why we have may_commit_transaction, and
-> realized that it doesn't make sense in it's current form anymore.  By-in-large
-> it just exists to have bugs in it and cause us pain.  It served a purpose in the
-> pre-ticketing days, but now just exists to be a giant pain in the ass.
+> When dumping the extent tree, we can see two EXTENT_ITEMs at the same
+> start address but different lengths.
 > 
-> So rip it out.  Just commit the transaction.  This also allows us to drop the
-> logic for ->total_bytes_pinned, which Nikolay noticed a problem with earlier
-> this week again.  Thanks,
+> $ btrfs inspect dump-tree /dev/nullb1 -t extent
+> ...
+>    item 19 key (269484032 EXTENT_ITEM 126976) itemoff 15470 itemsize 53
+>            refs 1 gen 7 flags DATA
+>            extent data backref root FS_TREE objectid 257 offset 786432 count 1
+>    item 20 key (269484032 EXTENT_ITEM 262144) itemoff 15417 itemsize 53
+>            refs 1 gen 7 flags DATA
+>            extent data backref root FS_TREE objectid 257 offset 786432 count 1
 > 
-> Josef Bacik (3):
->   btrfs: rip out may_commit_transaction
->   btrfs: rip the first_ticket_bytes logic from fail_all_tickets
->   btrfs: rip out ->total_bytes_pinned
+> The duplicated EXTENT_ITEMs originally come from wrongly split extent_map in
+> extract_ordered_extent(). Since extract_ordered_extent() uses
+> create_io_em() to split an existing extent_map, we will have
+> split->orig_start != split->start. Then, it will be logged with non-zero
+> "extent data offset". Finally, the logged entries are replayed into
+> a duplicated EXTENT_ITEM.
+> 
+> Introduce and use proper splitting function for extent_map. The function is
+> intended to be simple and specific usage for extract_ordered_extent() e.g.
+> not supporting compression case (we do not allow splitting compressed
+> extent_map anyway).
+> 
+> Fixes: d22002fd37bd ("btrfs: zoned: split ordered extent when bio is sent")
+> Cc: stable@vger.kernel.org # 5.12+
+> Reported-by: Damien Le Moal <damien.lemoal@wdc.com>
+> Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-For the record, this has been picked before merge and is now in 5.14-rc.
+Added to a topic branch, I think I've hit the problem this patch is
+supposed to fix so I'll to reproduce it before adding it to misc-next.
+I've added Daminen's answer to the changelog as it's really helpful to
+understand why it's fixed that way.
