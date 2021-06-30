@@ -2,117 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D033B814D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 13:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E033B8289
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 14:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234350AbhF3LcR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Jun 2021 07:32:17 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36986 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234148AbhF3LcQ (ORCPT
+        id S234761AbhF3M5y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Jun 2021 08:57:54 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37748 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234719AbhF3M5x (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Jun 2021 07:32:16 -0400
+        Wed, 30 Jun 2021 08:57:53 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 194891FE76;
-        Wed, 30 Jun 2021 11:29:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625052587;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xPlVznWY17sCdzDew0ArEqg6XigOQOCtFmbDtY+DTDg=;
-        b=ahMFe4kxqAr6ueSduanu8ivNo0m8vDKaSEkb4pG/Qi/05WQRTOrGkzh1J40pYoAJ3KBikV
-        M5JYxKcMeW0svIA/2h2D7Veog/xZ+B8jDsWLdxSJDpkdqWV9IphicqsKgIpyp5JJEPF1Oh
-        R9PvwOBQhAK+NvxsEWVRcSz7joKLYXU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625052587;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xPlVznWY17sCdzDew0ArEqg6XigOQOCtFmbDtY+DTDg=;
-        b=ISanfFyNsTDcmf/hJGeEewWmmA9CgWCXw2JvPbz70fjhijtToL0lFRU1PwRQLCUjZpzy/+
-        +yWiGRLd8SPAPQBQ==
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 08AF2225CA;
+        Wed, 30 Jun 2021 12:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625057724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=17DidTDDjQGzLMbEcnZNuUjcsUsNfig01YbWI8/VEsI=;
+        b=V7ymlQiBvO5QGlJbx/FpEG8pg/Gpd618dohEZPPANSBOi54YXJXaBpUW2XtB61XjI8JTVo
+        7pKV3+0r00KiGysC8YAU/Bzg64TGWOLANnyA3hB1y6vEGRAj3Hgv0ewud3qwki7rFDHY5+
+        0vQeuCvDcRwSHVU0QTCZh38Hj3N4Tqg=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id BC248118DD;
-        Wed, 30 Jun 2021 11:29:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625052587;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xPlVznWY17sCdzDew0ArEqg6XigOQOCtFmbDtY+DTDg=;
-        b=ahMFe4kxqAr6ueSduanu8ivNo0m8vDKaSEkb4pG/Qi/05WQRTOrGkzh1J40pYoAJ3KBikV
-        M5JYxKcMeW0svIA/2h2D7Veog/xZ+B8jDsWLdxSJDpkdqWV9IphicqsKgIpyp5JJEPF1Oh
-        R9PvwOBQhAK+NvxsEWVRcSz7joKLYXU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625052587;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xPlVznWY17sCdzDew0ArEqg6XigOQOCtFmbDtY+DTDg=;
-        b=ISanfFyNsTDcmf/hJGeEewWmmA9CgWCXw2JvPbz70fjhijtToL0lFRU1PwRQLCUjZpzy/+
-        +yWiGRLd8SPAPQBQ==
+        by imap.suse.de (Postfix) with ESMTP id BA429118DD;
+        Wed, 30 Jun 2021 12:55:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625057724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=17DidTDDjQGzLMbEcnZNuUjcsUsNfig01YbWI8/VEsI=;
+        b=V7ymlQiBvO5QGlJbx/FpEG8pg/Gpd618dohEZPPANSBOi54YXJXaBpUW2XtB61XjI8JTVo
+        7pKV3+0r00KiGysC8YAU/Bzg64TGWOLANnyA3hB1y6vEGRAj3Hgv0ewud3qwki7rFDHY5+
+        0vQeuCvDcRwSHVU0QTCZh38Hj3N4Tqg=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id ImMGLKpV3GD+LgAALh3uQQ
-        (envelope-from <pvorel@suse.cz>); Wed, 30 Jun 2021 11:29:46 +0000
-Date:   Wed, 30 Jun 2021 13:29:45 +0200
-From:   Petr Vorel <pvorel@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>,
-        "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
-        "ltp@lists.linux.it" <ltp@lists.linux.it>,
-        David Sterba <dsterba@suse.com>,
-        Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [LTP] [BUG] btrfs potential failure on 32 core LTP test
- (fallocate05)
-Message-ID: <YNxVqca+WeQcBmzA@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
- <e4c71c01-ed70-10a6-be4d-11966d1fcb75@toxicpanda.com>
- <b5c6779b-f11d-661e-18c5-569a07f6fd8e@canonical.com>
- <YNxTr43lvviG0GOn@pevik>
+        id PGd5G7pp3GBqYAAALh3uQQ
+        (envelope-from <wqu@suse.com>); Wed, 30 Jun 2021 12:55:22 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Qu Wenruo <wqu@suse.com>
+Subject: [PATCH v2 0/4] btrfs: subpage compressed read path fixes
+Date:   Wed, 30 Jun 2021 20:55:08 +0800
+Message-Id: <20210630125512.325889-1-wqu@suse.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YNxTr43lvviG0GOn@pevik>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi all,
+During the development of subpage write support for compressed file
+extents, there is a strange failure in btrfs/038 which results -EIO
+during file read on compressed extents.
 
-...
-> > >> Reproduction steps:
-> > >> git clone https://github.com/linux-test-project/ltp.git
-> > >> cd ltp
-> > >> ./build.sh && make install -j8
-> > >> cd ../ltp-install
-> > >> sudo ./runltp -f syscalls -s fallocate05
+It exposed a rabbit hole of problems inside compression code, especially
+for subpage case. Those problems including:
 
-NOTE: you can also be a bit faster if you test just single test, see
-https://github.com/linux-test-project/ltp#shortcut-to-running-a-single-test
-(not compiling and installing whole LTP)
+- bv_offset is not taken into consideration
+  This involves several functions:
 
-$ cd testcases/kernel/syscalls/fallocate/
-$ make -j`nproc`
-$ sudo ./fallocate05
+  * btrfs_submit_compressed_read()
+    Without bv_offset taken into consideration, it can get a wrong
+    extent map (can even be uncompressed extent) and cause tons
+    of problems when doing decompression
 
-> > > This thing keeps trying to test ext2, how do I make it only test btrfs?  Thanks,
+  * btrfs_decompress_buf2page()
+    It doesn't take bv_offset into consideration, which means it can
+    copy wrong data into inode pages.
 
-> > It tests all available file systems, just wait till it gets to btrfs. I
-> > don't know how to limit it only to one file system.
-> In the future we can add environment variable to specify the only fs to be
-> tested. There is LTP_DEV_FS_TYPE, but that does not work when .all_filesystems
-> flag is enabled. Thus just patch the file:
+- PAGE_SIZE abuse inside lzo decompress code
+  This makes padding zero behavior differ between different page size.
 
-NOTE: It detect kernel filesystem support and presence of mkfs.xxx.
-Thus other way to limit filesystem is to rename mkfs.xxx of other filesystems
-(in case you test LTP from package and don't want / cannot compile and can
-modify root filesystem).
+- Super awful code quality
+  Anything involving two page switching is way more complex than it
+  needs to be.
+  Tons of comments for parameters are completely meaningless.
+  Way too many helper variables, that makes it super hard to grab which
+  is the main iteration cursor.
 
-Kind regards,
-Petr
+This patchset will fix them by:
+
+- Make btrfs_submit_compressed_read() to do proper calculation
+  Just a small fix
+
+- Rework btrfs_decompress_buf2page()
+  Not only to make it subpage compatible, but also introduce ASCII art
+  to explain the parameter list.
+  As there are several different offsets involved.
+
+  Use single cursor for the main loop, separate page switching to
+  different loops
+
+- Rework lzo_decompress_bio()
+  The same style applied to lzo_decompress_bio(), with proper
+  sectorsize/PAGE_SIZE usage.
+
+All the rework result smaller code size, even with the excessive
+comments style and extra ASSERT()s.
+
+Since this affects the enablement of basic subpage support (affects the
+ability to read existing compressed extents), thus this patchset needs
+to be merged before the enablement patch.
+
+It will be re-sent with the unmerged subpage patches, but since it's
+touching the common compression code, it's better to be merged early and
+get more tests.
+
+Thankfully all those patches should bring minimal amount of conflicts as
+they are in compression path, not a location touched by subpage support.
+
+
+
+Changelog:
+v2:
+- Fix an ASSERT() when compressed extent is reflinked to lower bytenr
+  This is caused by cb->start which can underflow in that case.
+  This makes it impossible to use file_offset as the main cursor
+
+  Fix it by using offset inside the full decompressed extent.
+  Since cb->start or any file offset will be substracted, with underflow
+  value it will work correctly.
+
+- Fix an false ASSERT() in btrfs_decompress_buf2page()
+  It's caused by the wrong value involved in the ASSERT().
+
+- Fix a bug that bio_advance() is only called when we reach page
+  boudnary
+  This prevents some bio from finishing.
+  Fix it by always call bio_advance().
+
+Qu Wenruo (4):
+  btrfs: grab correct extent map for subpage compressed extent read
+  btrfs: remove the GFP_HIGHMEM flag for compression code
+  btrfs: rework btrfs_decompress_buf2page()
+  btrfs: rework lzo_decompress_bio() to make it subpage compatible
+
+ fs/btrfs/compression.c | 152 ++++++++++++++---------------
+ fs/btrfs/compression.h |   5 +-
+ fs/btrfs/lzo.c         | 210 +++++++++++++++++------------------------
+ fs/btrfs/zlib.c        |  18 ++--
+ fs/btrfs/zstd.c        |  12 +--
+ 5 files changed, 173 insertions(+), 224 deletions(-)
+
+-- 
+2.32.0
+
