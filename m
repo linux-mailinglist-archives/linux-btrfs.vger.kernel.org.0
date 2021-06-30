@@ -2,126 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059E93B7E45
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 09:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298873B7F15
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 10:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbhF3HmA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Jun 2021 03:42:00 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39302 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233010AbhF3Hl7 (ORCPT
+        id S232982AbhF3Ih2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Jun 2021 04:37:28 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58185 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232831AbhF3Ih2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Jun 2021 03:41:59 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 57C012045B;
-        Wed, 30 Jun 2021 07:39:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625038770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ENgYi+Uyc0WHz/3/frP46KpSv1i4qQgN4oslA9u8rWc=;
-        b=GePpEUiATSG3IqgRFVYIWpfqth3Hqk+IofO0PxJnvqMTC8VrTLzbh05h40K9lsv6YHaazJ
-        XLG8ubMFTmH9BCKv5vR2R1rGEWV3kCazT0vaUkFgOv3qK7coPDfNdW6CgT3JUbkBxFqzJW
-        kydq/xUWWTr12t+e8py8ZW5laRWP1I4=
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 224D411906;
-        Wed, 30 Jun 2021 07:39:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625038770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ENgYi+Uyc0WHz/3/frP46KpSv1i4qQgN4oslA9u8rWc=;
-        b=GePpEUiATSG3IqgRFVYIWpfqth3Hqk+IofO0PxJnvqMTC8VrTLzbh05h40K9lsv6YHaazJ
-        XLG8ubMFTmH9BCKv5vR2R1rGEWV3kCazT0vaUkFgOv3qK7coPDfNdW6CgT3JUbkBxFqzJW
-        kydq/xUWWTr12t+e8py8ZW5laRWP1I4=
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id 75dfBbIf3GCzJAAALh3uQQ
-        (envelope-from <nborisov@suse.com>); Wed, 30 Jun 2021 07:39:30 +0000
-Subject: Re: [PATCH] btrfs: Stop kmalloc'ing btrfs_path in
- btrfs_lookup_bio_sums
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <20210628150609.2833435-1-nborisov@suse.com>
- <06554f93-68e1-b706-07be-62f6cdbf150e@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <3724ac1b-bb8e-eaf3-17fd-98e42d5b9bb6@suse.com>
-Date:   Wed, 30 Jun 2021 10:39:29 +0300
+        Wed, 30 Jun 2021 04:37:28 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lyVgQ-0006BI-Bs
+        for linux-btrfs@vger.kernel.org; Wed, 30 Jun 2021 08:34:58 +0000
+Received: by mail-ed1-f69.google.com with SMTP id h11-20020a50ed8b0000b02903947b9ca1f3so756085edr.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Jun 2021 01:34:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1IFtEhzs0Lv1y9+UgWa0DfCZGcuW1gInwvipY/SR0mg=;
+        b=d4/1Y+i4JHgWoNol91NaUF8eSwFCNoIxr4vMGOeoWIVHlb4RzR94XaPIb3RbcD+69k
+         5NFdU9Sdyvbn4hQpBuhrac1wcMsCzKiH0Xjhn90159IQIqG7Eif6xy1tZIS5YB/Mcqm2
+         YieYU96IJw8HZfk00mALt6gxI9vjhDtujJqQzmE6METMdkM6CUDSGrUF6WNq56Tj6xJs
+         pWZRCRdbG7aP2jrRxo421Glhte+Gq3FSkLtBQqM48EWb994e4Ac/F5XHXWu+OGpZrxEF
+         yPFGHxMd+DVgwSMtGej3plGwLdUTje9v2qi4s59qJIKVmybOghPqa3YO5BHD6m9uC0nb
+         W0Xw==
+X-Gm-Message-State: AOAM531bC6BldwnXBvUxw9m5c6UmAw3j3AAQHnm83iJ5ChQQm71yEepC
+        UWdGv+Brq7/JfRCBnAup2Zs2OToRKzxnDk0Z38BKQx79q/rm5wQO/fW3S8Q4+/bJc4ujOlZ8WzG
+        ls9wqR9u887ljH15hLeSXr2T1TCxZD0FOjWY208Zu
+X-Received: by 2002:a05:6402:510d:: with SMTP id m13mr44656743edd.179.1625042098154;
+        Wed, 30 Jun 2021 01:34:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNgwxmBwrzLvr9noQ+vvLunox3/nAXTETv/38X874mVuhLyMIBpETi86RVWG3SYS6/SBEvBQ==
+X-Received: by 2002:a05:6402:510d:: with SMTP id m13mr44656731edd.179.1625042097973;
+        Wed, 30 Jun 2021 01:34:57 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id gl26sm410271ejb.72.2021.06.30.01.34.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Jun 2021 01:34:57 -0700 (PDT)
+Subject: Re: [BUG] btrfs potential failure on 32 core LTP test (fallocate05)
+To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "kernel-team@lists.ubuntu.com" <kernel-team@lists.ubuntu.com>,
+        "ltp@lists.linux.it" <ltp@lists.linux.it>,
+        Qu Wenruo <wqu@suse.com>, Filipe Manana <fdmanana@suse.com>
+References: <a3b42abc-6996-ab06-ea9f-238e7c6f08d7@canonical.com>
+ <124d7ead-6600-f369-7af1-a1bc27df135c@toxicpanda.com>
+ <667133e5-44cb-8d95-c40a-12ac82f186f0@canonical.com>
+ <0b6a502a-8db8-ef27-f48e-5001f351ef24@toxicpanda.com>
+ <2576a472-1c99-889a-685c-a12bbfb08052@canonical.com>
+ <9e2214b1-999d-90cf-a5c2-2dbb5a2eadd4@canonical.com>
+ <57cfa398-8a33-06e2-dfcd-fa959c27ac47@toxicpanda.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <30d510db-df48-e499-6e46-bd84c85d4b41@canonical.com>
+Date:   Wed, 30 Jun 2021 10:34:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <06554f93-68e1-b706-07be-62f6cdbf150e@gmx.com>
+In-Reply-To: <57cfa398-8a33-06e2-dfcd-fa959c27ac47@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 29/06/2021 20:32, Josef Bacik wrote:
+> On 6/29/21 2:28 PM, Krzysztof Kozlowski wrote:
+>> On 29/06/2021 20:06, Krzysztof Kozlowski wrote:
+>>> Minor update - it's not only Azure's. AWS m5.8xlarge and m5.16xlarge (32
+>>> and 64 cores) fail similarly. I'll try later also QEMU machines with
+>>> different amount of CPUs.
+>>>
+>>
+>> Test on QEMU machine with 31 CPUs passes. With 32 CPUs - failure as
+>> reported.
+>>
+>> dmesg is empty - no error around this.
+>>
+>> Maybe something with per-cpu variables?
+> 
+> Ah yeah, so since you are further into this than I am, want to give my recent 
+> batch of fixes a try?
+> 
+> https://github.com/josefbacik/linux/tree/delalloc-shrink
+> 
+> This might actually resolve the problems.  If not I'm getting one of our 64cpu 
+> boxes setup to test this, I also couldn't reproduce it on my smaller local 
+> machines.  Thanks,
+
+I just gave ita try on v5.13 + merge of your branch and it fixes the
+issue, at least on QEMU with 32 and 64 CPUs.
+
+Would be good to find the exact commit fixing it to be sure it gets
+backported to stables.
 
 
-On 29.06.21 г. 14:56, Qu Wenruo wrote:
-> 
-> 
-> On 2021/6/28 下午11:06, Nikolay Borisov wrote:
->> While doing some performance characterization of a workoad reading ~80g
->> split among 4mb files via DIO I observed that btrfs_lookup_bio_sums was
->> using rather excessive cpu cycles:
->>
->> 95.97%--ksys_pread64
->> 95.96%--new_sync_read
->> 95.95%--iomap_dio_rw
->> 95.89%--iomap_apply
->> 72.25%--iomap_dio_bio_actor
->> 55.19%--iomap_dio_submit_bio
->> 55.13%--btrfs_submit_direct
->> 20.72%--btrfs_lookup_bio_sums
->> 7.44%-- kmem_cache_alloc
->>
->> Timing the workload yielded:
->> real 4m41.825s
->> user 0m14.321s
->> sys 10m38.419s
->>
->> Turns out this kmem_cache_alloc corresponds to the btrfs_path allocation
->> that happens in btrfs_lookup_bio_sums. Nothing in btrfs_lookup_bio_sums
->> warrants having the path be heap allocated. Just turn this allocation
->> into a stack based one. After the change performance changes
->> accordingly:
->>
->> real 4m21.742s
->> user 0m13.679s
->> sys 9m8.889s
->>
->> All in all there's a 20 seconds (~7%) reductino in real run time as well
->> as the time spent in the kernel is reduced by 1:30 minutes (~14%). And
->> btrfs_lookup_bio_sums ends up accounting for only 7.91% of cycles rather
->> than 20% before.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> I'm surprised that btrfs_path in kernel no longer needs any initialization.
-> 
-> I guess we can do a lot of more such conversion to use stack btrfs_path,
-> just like what we did in btrfs-progs.
-> 
-> But I'm not that sure if 112 bytes stack memory usage increase is OK or
-> not for other locations.
-> 
-> But since this one get a pretty good performance increase, and this
-> function itself doesn't have much stack memory usage anyway, it looks ok
-> to me.
-> 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> 
-
-Actually this patch makes most sense when SLUB debugging is enabled as
-it would seem btrfs is hit pretty hard when debugging is enabled. IN
-real world with SLUB debugging disabled it didn't make any noticeable
-difference. In this case the fact that I'm adding 112 bytes on the stack
-might bring more harm than good so I guess this patch can be dropped.
-
-<snip>
+Best regards,
+Krzysztof
