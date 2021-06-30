@@ -2,86 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759663B8724
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 18:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEE03B888A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 20:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhF3Qim (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Jun 2021 12:38:42 -0400
-Received: from www378.your-server.de ([78.47.166.48]:38578 "EHLO
-        www378.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231350AbhF3Qil (ORCPT
+        id S234404AbhF3Six (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Jun 2021 14:38:53 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45786 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234311AbhF3Siw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Jun 2021 12:38:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bock.nu;
-        s=default2006; h=MIME-Version:Content-Type:In-Reply-To:Subject:To:From:
-        Message-ID:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:References;
-        bh=S4TWDHvKMWNehg1WWjnRdLDnYBfcQFNoHp6IMi2jBJ8=; b=UBFHj0cz+yeiPBhSrZX7aET2ys
-        Ymi+/Ai6g6Z4vwrEvDP3rXgKniwVwNUMItdUpt1SHAsy03+gQAvBK9xODJqLDkr90hoBAW4UaNcAY
-        kVqygISKISFt/8GWDUQaLHq6hGPa4fNt6w9KnvmI2NKZFKjbENK7HTppLEOvNBIAfppa4IU5PCcYT
-        6fDFkVZW3oTHFWtRmVC6LWY37hTmG/GnuF81x6dxoszd/VB9PQVH3z92g1JwTpIisFD7F5FvNakdC
-        4MrEA+4X7U1OVhxLL/lLEvgr+UPBQTMjAFjjoegRgn6KnRT6WqywsNfmdL3q9aeGMQFDOQPKn38Ca
-        v6hcfljA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www378.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <bernhard@bock.nu>)
-        id 1lydC6-0008rj-6G
-        for linux-btrfs@vger.kernel.org; Wed, 30 Jun 2021 18:36:10 +0200
-Received: from [192.168.0.31] (helo=webmail.your-server.de)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-CHACHA20-POLY1305:256)
-        (Exim 4.92)
-        (envelope-from <bernhard@bock.nu>)
-        id 1lydC6-000060-4a
-        for linux-btrfs@vger.kernel.org; Wed, 30 Jun 2021 18:36:10 +0200
-Received: from p200300C98F393300800dE988D2EfCd9F.dip0.t-ipconnect.de
- (p200300C98F393300800dE988D2EfCd9F.dip0.t-ipconnect.de
- [2003:c9:8f39:3300:800d:e988:d2ef:cd9f]) by webmail.your-server.de (Horde
- Framework) with HTTPS; Wed, 30 Jun 2021 18:36:10 +0200
-Date:   Wed, 30 Jun 2021 18:36:10 +0200
-Message-ID: <20210630183610.Horde.ynUK_R3E05jP-kbHcUJxSir@webmail.your-server.de>
-From:   Bernhard Bock <bernhard@bock.nu>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: recover from BTRFS critical: corrupt leaf: invalid extent
- length
-In-Reply-To: <20210630112105.Horde.--esBg1nCMcX5WI6c4tluy4@webmail.your-server.de>
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        Wed, 30 Jun 2021 14:38:52 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 516B321D00;
+        Wed, 30 Jun 2021 18:36:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625078182;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b7Of3y895BTLJnycIzLoMdDAS4u14fS+sUr94O76snM=;
+        b=krLFGMs3ElKft3ZdVTnN6Czv59S1yGKFPyPGoVtkBp4dFPdK2mcOABgdmhmw8Ctv0+cc9o
+        2tCq5Y9q176JqQYznfjBJ+YpGHXQErZK3V0Peon7RtfhPMIXzseKH23Vbrhn8CbzG16aFv
+        fKQD23+SzJwrUGghZXu9oc6p+2fcPj4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625078182;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b7Of3y895BTLJnycIzLoMdDAS4u14fS+sUr94O76snM=;
+        b=Kuq+dmp+y78HtH4gDbEd5z24XKQb1fiXNhrleuszw3RI8+b1VD0ssIXyU0Gmmhrvu5xtTX
+        m+Duel38QWzjsODw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 22133A3B85;
+        Wed, 30 Jun 2021 18:36:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0767FDA7A2; Wed, 30 Jun 2021 20:33:51 +0200 (CEST)
+Date:   Wed, 30 Jun 2021 20:33:51 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        "fdmanana@kernel.org" <fdmanana@kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: Re: [PATCH 0/2] btrfs: eliminate a deadlock when allocating system
+ chunks and rework chunk allocation
+Message-ID: <20210630183351.GQ2610@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "fdmanana@kernel.org" <fdmanana@kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>,
+        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+References: <cover.1624973480.git.fdmanana@suse.com>
+ <20210630131010.GL2610@twin.jikos.cz>
+ <PH0PR04MB741603949B19D52F5CD411B09B019@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Authenticated-Sender: bernhard@bock.nu
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26217/Wed Jun 30 13:10:04 2021)
+In-Reply-To: <PH0PR04MB741603949B19D52F5CD411B09B019@PH0PR04MB7416.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Wed, Jun 30, 2021 at 02:50:00PM +0000, Johannes Thumshirn wrote:
+> On 30/06/2021 15:12, David Sterba wrote:
+> > On Tue, Jun 29, 2021 at 02:43:04PM +0100, fdmanana@kernel.org wrote:
+> >> From: Filipe Manana <fdmanana@suse.com>
+> >>
+> >> The first patch eliminates a deadlock when multiple tasks need to allocate
+> >> a system chunk. It reverts a previous fix for a problem that resulted in
+> >> exhausting the system chunk array and result in a transaction abort when
+> >> there are many tasks allocating chunks in parallel. Since there is not a
+> >> simple and short fix for the deadlock that does not bring back the system
+> >> array exhaustion problem, and the deadlock is relatively easy to trigger
+> >> on zoned filesystem while the exhaustion problem is not so common, this
+> >> first patch just revets that previous fix.
+> >>
+> >> The second patch reworks a bit of the chunk allocation code so that we
+> >> don't hold onto reserved system space from phase 1 to phase 2 of chunk
+> >> allocation, which is what leads to system chunk array exhaustion when
+> >> there's a bunch of tasks doing chunks allocations in parallel (initially
+> >> observed on PowerPC, with a 64K node size, when running the fallocate
+> >> tests from stress-ng). The diff of this patch is quite big, but about
+> >> half of it are just comments.
+> > 
+> > The description of the chunk allocation process is great, thanks.
+> > Patches added to misc-next.
+> > 
+> 
+> I also have a first positive response from Shinichiro that he can't
+> reproduce the hangs in a quick run.
+> 
+> He'll probably responds with his 'Tested-by' once the complete tests
+> are done.
 
-Bernhard Bock <bernhard@bock.nu> wrote:
-> I found one of our servers with a read-only btrfs this morning.
-> dmesg says:
->
-> BTRFS critical (device dm-1): corrupt leaf: block=6404379377664  
-> slot=66 extent bytenr=3138606432256 len=18446619972284938920 invalid  
-> extent length, have 18446619972284938920 expect aligned to 4096
-> ...
-> BTRFS error (device dm-1): block=6404379377664 write time tree block  
-> corruption detected
-
-
-looks like all is well.
-
-After a reboot, btrfsck didn't find any errors any more. Additionally,
-btfs-scrub also completed without errors.
-
-Seems like the write time btrfs corruption checks found everything before
-committing to disk. Possibly a memory error despite ECC RAM?
-
-To any future readers having similar problems: Do not trust any checks / log
-statements before reboot if you encounter possible btrfs corruption.
-
-All the best,
-Bernhard
-
-
+I was not able to reproduce the deadlock with the patches.
