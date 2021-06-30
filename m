@@ -2,128 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1C93B8009
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 11:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2DD3B800B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Jun 2021 11:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbhF3JfI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Jun 2021 05:35:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60188 "EHLO
+        id S233959AbhF3JfL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Jun 2021 05:35:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60244 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233906AbhF3JfH (ORCPT
+        with ESMTP id S233906AbhF3JfK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Jun 2021 05:35:07 -0400
+        Wed, 30 Jun 2021 05:35:10 -0400
 Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
         (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5E34F1FE5F;
-        Wed, 30 Jun 2021 09:32:38 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E056B1FE51;
+        Wed, 30 Jun 2021 09:32:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625045558; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=KyU/x4OsFTOgK8JG0QU+epFDTuC6jL58APtB5n/wF70=;
-        b=GdpLhqXE1bir63UuYUPg+nd/dgSW4RAxUgx21cEOIbyN+ZZRVqtkmnm+wcHeiqdlmP1ycw
-        QX+L5olKYcD4RmKA5xTSlpnT0S+LToL69GY6nVdVY6ER3flbn7m/7VS8+qlUaAIf5TVbQt
-        NSe5meRdOxCRuxsZJHl12iXYNlC0o4M=
+        t=1625045560; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0hkVvUt7SUM4cpe8w/v4XI+Iy8xGl5bQjVnVm8xgN00=;
+        b=vDlDIJ8nmu15NsvTj/L1E+5R8sWEI7qEFr9HbzwRDMQbj2+7QZnc2XclkThV6afcAvKyxX
+        TzWn9C2YgdtbARPrivsY7F2w4EdzFJ4EZvdGGg1i5jT3Nn2uC53QZXPFMgLTL6AqJeoalY
+        7C6y+0Sx1fsLvsjTu5n7Qtixy083n6A=
 Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 3834611906;
-        Wed, 30 Jun 2021 09:32:36 +0000 (UTC)
+        by imap.suse.de (Postfix) with ESMTP id BD4A411906;
+        Wed, 30 Jun 2021 09:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625045558; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=KyU/x4OsFTOgK8JG0QU+epFDTuC6jL58APtB5n/wF70=;
-        b=GdpLhqXE1bir63UuYUPg+nd/dgSW4RAxUgx21cEOIbyN+ZZRVqtkmnm+wcHeiqdlmP1ycw
-        QX+L5olKYcD4RmKA5xTSlpnT0S+LToL69GY6nVdVY6ER3flbn7m/7VS8+qlUaAIf5TVbQt
-        NSe5meRdOxCRuxsZJHl12iXYNlC0o4M=
+        t=1625045560; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0hkVvUt7SUM4cpe8w/v4XI+Iy8xGl5bQjVnVm8xgN00=;
+        b=vDlDIJ8nmu15NsvTj/L1E+5R8sWEI7qEFr9HbzwRDMQbj2+7QZnc2XclkThV6afcAvKyxX
+        TzWn9C2YgdtbARPrivsY7F2w4EdzFJ4EZvdGGg1i5jT3Nn2uC53QZXPFMgLTL6AqJeoalY
+        7C6y+0Sx1fsLvsjTu5n7Qtixy083n6A=
 Received: from director2.suse.de ([192.168.254.72])
         by imap3-int with ESMTPSA
-        id P6BIOTQ63GAjZwAALh3uQQ
-        (envelope-from <wqu@suse.com>); Wed, 30 Jun 2021 09:32:36 +0000
+        id 8NMxHjc63GAjZwAALh3uQQ
+        (envelope-from <wqu@suse.com>); Wed, 30 Jun 2021 09:32:39 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH 0/4] btrfs: subpage compressed read path fixes
-Date:   Wed, 30 Jun 2021 17:32:29 +0800
-Message-Id: <20210630093233.238032-1-wqu@suse.com>
+Subject: [PATCH 1/4] btrfs: grab correct extent map for subpage compressed extent read
+Date:   Wed, 30 Jun 2021 17:32:30 +0800
+Message-Id: <20210630093233.238032-2-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210630093233.238032-1-wqu@suse.com>
+References: <20210630093233.238032-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-During the development of subpage write support for compressed file
-extents, there is a strange failure in btrfs/038 which results -EIO
-during file read on compressed extents.
+[BUG]
+When subpage compressed read write support is enabled, btrfs/038 always
+fail with EIO.
 
-It exposed a rabbit hole of problems inside compression code, especially
-for subpage case. Those problems including:
+A simplified script can easily trigger the problem:
 
-- bv_offset is not taken into consideration
-  This involves several functions:
+  mkfs.btrfs -f -s 4k $dev
+  mount $dev $mnt -o compress=lzo
 
-  * btrfs_submit_compressed_read()
-    Without bv_offset taken into consideration, it can get a wrong
-    extent map (can even be uncompressed extent) and cause tons
-    of problems when doing decompression
+  xfs_io -f -c "truncate 118811" $mnt/foo
+  xfs_io -c "pwrite -S 0x0d -b 39987 92267 39987" $mnt/foo > /dev/null
 
-  * btrfs_decompress_buf2page()
-    It doesn't take bv_offset into consideration, which means it can
-    copy wrong data into inode pages.
+  sync
+  btrfs subvolume snapshot -r $mnt $mnt/mysnap1
 
-- PAGE_SIZE abuse inside lzo decompress code
-  This makes padding zero behavior differ between different page size.
+  xfs_io -c "pwrite -S 0x3e -b 80000 200000 80000" $mnt/foo > /dev/null
+  sync
 
-- Super awful code quality
-  Anything involving two page switching is way more complex than it
-  needs to be.
-  Tons of comments for parameters are completely meaningless.
-  Way too many helper variables, that makes it super hard to grab which
-  is the main iteration cursor.
+  xfs_io -c "pwrite -S 0xdc -b 10000 250000 10000" $mnt/foo > /dev/null
+  xfs_io -c "pwrite -S 0xff -b 10000 300000 10000" $mnt/foo > /dev/null
 
-This patchset will fix them by:
+  sync
+  btrfs subvolume snapshot -r $mnt $mnt/mysnap2
 
-- Make btrfs_submit_compressed_read() to do proper calculation
-  Just a small fix
+  cat $mnt/mysnap2/foo
+  # Above cat will fail due to EIO
 
-- Rework btrfs_decompress_buf2page()
-  Not only to make it subpage compatible, but also introduce ASCII art
-  to explain the parameter list.
-  As there are several different offsets involved.
+[CAUSE]
+The problem is in btrfs_submit_compressed_read().
 
-  Use single cursor for the main loop, separate page switching to
-  different loops
+When it tries to grab the extent map of the read range, it uses the
+following call:
 
-- Rework lzo_decompress_bio()
-  The same style applied to lzo_decompress_bio(), with proper
-  sectorsize/PAGE_SIZE usage.
+	em = lookup_extent_mapping(em_tree,
+  				   page_offset(bio_first_page_all(bio)),
+				   fs_info->sectorsize);
 
-All the rework result smaller code size, even with the excessive
-comments style and extra ASSERT()s.
+The problem is in the page_offset(bio_first_page_all(bio)) part.
 
-Since this affects the enablement of basic subpage support (affects the
-ability to read existing compressed extents), thus this patchset needs
-to be merged before the enablement patch.
+The offending inode has the following file extent layout
 
-Thankfully all those patches should bring minimal amount of conflicts as
-they are in compression path, not a location touched by subpage support.
+        item 10 key (257 EXTENT_DATA 131072) itemoff 15639 itemsize 53
+                generation 8 type 1 (regular)
+                extent data disk byte 13680640 nr 4096
+                extent data offset 0 nr 4096 ram 4096
+                extent compression 0 (none)
+        item 11 key (257 EXTENT_DATA 135168) itemoff 15586 itemsize 53
+                generation 8 type 1 (regular)
+                extent data disk byte 0 nr 0
+        item 12 key (257 EXTENT_DATA 196608) itemoff 15533 itemsize 53
+                generation 8 type 1 (regular)
+                extent data disk byte 13676544 nr 4096
+                extent data offset 0 nr 53248 ram 86016
+                extent compression 2 (lzo)
 
+And the bio passed in has the following parameters:
 
-If possible, please merge this patchset early so that we can get more
-tests to ensure everything at least works fine for 4K page size.
+page_offset(bio_first_page_all(bio))	= 131072
+bio_first_bvec_all(bio)->bv_offset	= 65536
 
-Qu Wenruo (4):
-  btrfs: grab correct extent map for subpage compressed extent read
-  btrfs: remove the GFP_HIGHMEM flag for compression code
-  btrfs: rework btrfs_decompress_buf2page()
-  btrfs: rework lzo_decompress_bio() to make it subpage compatible
+If we use page_offset(bio_first_page_all(bio) without adding bv_offset,
+we will get an extent map for file offset 131072, not 196608.
 
- fs/btrfs/compression.c | 171 +++++++++++++++++----------------
- fs/btrfs/compression.h |   5 +-
- fs/btrfs/lzo.c         | 210 +++++++++++++++++------------------------
- fs/btrfs/zlib.c        |  18 ++--
- fs/btrfs/zstd.c        |  12 +--
- 5 files changed, 188 insertions(+), 228 deletions(-)
+This means we read uncompressed data from disk, and later decompression
+will definitely fail.
 
+[FIX]
+Take bv_offset into consideration when trying to grab an extent map.
+
+And add an ASSERT() to ensure we're really getting a compressed extent.
+
+Thankfully this won't affect anything but subpage, thus we wonly need to
+ensure this patch get merged before we enabled basic subpage support.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/compression.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 9a023ae0f98b..19da933c5f1c 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -673,6 +673,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	struct page *page;
+ 	struct bio *comp_bio;
+ 	u64 cur_disk_byte = bio->bi_iter.bi_sector << 9;
++	u64 file_offset;
+ 	u64 em_len;
+ 	u64 em_start;
+ 	struct extent_map *em;
+@@ -682,15 +683,17 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 
+ 	em_tree = &BTRFS_I(inode)->extent_tree;
+ 
++	file_offset = bio_first_bvec_all(bio)->bv_offset +
++		      page_offset(bio_first_page_all(bio));
++
+ 	/* we need the actual starting offset of this extent in the file */
+ 	read_lock(&em_tree->lock);
+-	em = lookup_extent_mapping(em_tree,
+-				   page_offset(bio_first_page_all(bio)),
+-				   fs_info->sectorsize);
++	em = lookup_extent_mapping(em_tree, file_offset, fs_info->sectorsize);
+ 	read_unlock(&em_tree->lock);
+ 	if (!em)
+ 		return BLK_STS_IOERR;
+ 
++	ASSERT(em->compress_type != BTRFS_COMPRESS_NONE);
+ 	compressed_len = em->block_len;
+ 	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
+ 	if (!cb)
 -- 
 2.32.0
 
