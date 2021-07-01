@@ -2,123 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74123B96B9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jul 2021 21:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A147A3B9828
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jul 2021 23:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhGATqb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Jul 2021 15:46:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34968 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhGATqb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Jul 2021 15:46:31 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id F12771FFE5;
-        Thu,  1 Jul 2021 19:43:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625168639;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        id S234071AbhGAVbw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Jul 2021 17:31:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35968 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230328AbhGAVbv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Jul 2021 17:31:51 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D665722959;
+        Thu,  1 Jul 2021 21:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625174959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=tlu/ZHcXkJfdTLpv5H/oQ1AU6mloYP89OGNkVNM7I+o=;
-        b=FckHKZmOw7ELRgz9OjN2qmZSPrbTNfpvU++CXgAK7+ZTka3wbQA9M1emcK8I2Sh7ifrC9i
-        JtLIDgCIFqa754JnDfd/2FB7hPq3qTx3GxKkndOdog4Z9oBaMjMyuik/lczRCIxtxa5Iio
-        JnkNVnKLLMlBoVieihW1H8x0UoR+BJI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625168639;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        bh=1vxVxeO/BLR2aPXwEjhxpngI+8ToJNLPDRHzxpgrd4M=;
+        b=BzUMWsJ39sLfnbIlgywU4tIjHM3FN0Qgc23aU5fYBB1nwcwUSKOpcic3ItSxllwrjQ0Y5H
+        gwr8VQMamVw5BUji+Acqt+UTj7OTRgicngvBuhMkHBxMSuGllD/TyuqRSLvq7JNF2bLuuf
+        JvY5Y7dPLwHVQ0agxwbKmCKCMw3sThU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625174959;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=tlu/ZHcXkJfdTLpv5H/oQ1AU6mloYP89OGNkVNM7I+o=;
-        b=t9lC47uG95rYdkceAHtmGUgnP5qiZN9pJyw8ewk5rvuP4Ptj1ojQyFjw/+9AcgarrEkD9n
-        1oo9kf+MXIWNJrCA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id EA65BA3B8B;
-        Thu,  1 Jul 2021 19:43:59 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4C2C1DA6FD; Thu,  1 Jul 2021 21:41:29 +0200 (CEST)
-Date:   Thu, 1 Jul 2021 21:41:29 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: mkfs: follow sectorsize for mixed mode
-Message-ID: <20210701194129.GC2610@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210517095516.129287-1-wqu@suse.com>
+        bh=1vxVxeO/BLR2aPXwEjhxpngI+8ToJNLPDRHzxpgrd4M=;
+        b=oyyEsiu0PIQ+bgjtfNMtmU+Tk+x3HQkMWXRUCpt6rCJ1Da9xfDgAqAYdn7oj5WW4Xo8K9K
+        iSltrYqgb2diKpAA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 7E31F11CD6;
+        Thu,  1 Jul 2021 21:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625174959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1vxVxeO/BLR2aPXwEjhxpngI+8ToJNLPDRHzxpgrd4M=;
+        b=BzUMWsJ39sLfnbIlgywU4tIjHM3FN0Qgc23aU5fYBB1nwcwUSKOpcic3ItSxllwrjQ0Y5H
+        gwr8VQMamVw5BUji+Acqt+UTj7OTRgicngvBuhMkHBxMSuGllD/TyuqRSLvq7JNF2bLuuf
+        JvY5Y7dPLwHVQ0agxwbKmCKCMw3sThU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625174959;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1vxVxeO/BLR2aPXwEjhxpngI+8ToJNLPDRHzxpgrd4M=;
+        b=oyyEsiu0PIQ+bgjtfNMtmU+Tk+x3HQkMWXRUCpt6rCJ1Da9xfDgAqAYdn7oj5WW4Xo8K9K
+        iSltrYqgb2diKpAA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id FOdOE68z3mASKgAALh3uQQ
+        (envelope-from <rgoldwyn@suse.de>); Thu, 01 Jul 2021 21:29:19 +0000
+Date:   Thu, 1 Jul 2021 16:29:17 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        Dave Sterba <DSterba@suse.com>
+Subject: Re: [PATCH] btrfs-progs: Correct check_running_fs_exclop() return
+ value
+Message-ID: <20210701212917.l4lvoq7lofkrpher@fiona>
+References: <20210628194000.org5zuvytk34yvwy@fiona>
+ <20210701192125.GA2610@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210517095516.129287-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210701192125.GA2610@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 17, 2021 at 05:55:16PM +0800, Qu Wenruo wrote:
-> [BUG]
-> When running fstests with 4K sectorsize and 64K page size (aka subpage
-> support), the following tests failed:
+On 21:21 01/07, David Sterba wrote:
+> On Mon, Jun 28, 2021 at 02:40:00PM -0500, Goldwyn Rodrigues wrote:
+> > check_running_fs_exclop() can return 1 when exclop is changed to "none"
+> > The ret is set by the return value of the select() operation. Checking
+> > the exclusive op changes just the exclop variable while ret is still
+> > set to 1.
+> > 
+> > Set ret = 0 if exclop is set to BTRFS_EXCL_NONE or BTRFS_EXCL_UNKNOWN.
+> > Remove unnecessary continue statement at the end of the block.
 > 
->   $ sudo ./check generic/416 generic/619
->   FSTYP         -- btrfs
->   PLATFORM      -- Linux/aarch64 rockpi4 5.12.0-rc8-custom+ #9 SMP Tue Apr 27 12:49:52 CST 2021
->   MKFS_OPTIONS  -- -s 4k /dev/mapper/arm_nvme-scratch1
->   MOUNT_OPTIONS -- /dev/mapper/arm_nvme-scratch1 /mnt/scratch
+> That's describing what the code does in words, but there must be some
+> user visible effects like failed command. Do you have some reproducer?
 > 
->   generic/416     [failed, exit status 1]- output mismatch (see ~/xfstests-dev/results//generic/416.out.bad)
->      QA output created by 416
->     -wrote 16777216/16777216 bytes at offset 0
->     -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->     +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/arm_nvme-scratch1, missing codepage or helper program, or other error.
->     +mount failed
->     +(see ~/xfstests-dev/results//generic/416.full for details)
->     ...
->     (Run 'diff -u ~/xfstests-dev/tests/generic/416.out ~/xfstests-dev/results//generic/416.out.bad'  to see the entire diff)
->   generic/619     [failed, exit status 1]- output mismatch (see ~/xfstests-dev/results//generic/619.out.bad)
->      QA output created by 619
->     -Silence is golden
->     +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on /dev/mapper/arm_nvme-scratch1, missing codepage or helper program, or other error.
->     +mount failed
->     +(see ~/xfstests-dev/results//generic/619.full for details)
->     ...
->     (Run 'diff -u ~/xfstests-dev/tests/generic/619.out ~/xfstests-dev/results//generic/619.out.bad'  to see the entire diff)
->   Ran: generic/416 generic/619
->   Failures: generic/416 generic/619
->   Failed 2 of 2 tests
-> 
-> [CAUSE]
-> Those two tests call _scratch_mkfs_sized to create a small fs, all of them
-> are smaller than the 256M.
-> 
-> Since the fs is small, fstests choose to pass -M to make a mixed btrfs.
-> (Let's just ignore whether we should pass -M here).
+> I've applied patch as it's a fix but would still like to update the
+> changelog.
 
-I think this is actually the problem, this should be fixed in fstests.
+If check_running_fs_exclop() returns anything but zero, it would exit
+immediately and the ioctl, for which the program is called, is not
+executed, without any error notice. IOW, the command appears to have
+executed, but does not. This was found when balance which typically
+reports chunks relocated did not print anything on screen.
 
-> 
-> Then on 64K page size system, "mkfs.btrfs -s 4K -M -b 128M $dev" will fail
-
-When --mixed is used, use both --sectorsize and --nodesize.
-
-> with the following error message:
-> 
->   btrfs-progs v5.11
->   See http://btrfs.wiki.kernel.org for more information.
-> 
->   ERROR: illegal nodesize 65536 (not equal to 4096 for mixed block group)
-> 
-> This is caused by the nodesize selection, which always try to choose the
-> larger value between pagesize and sectorsize.
-> 
-> This hardcoded PAGESIZE usage in mkfs.btrfs makes us to choose 64K
-> nodesize even we specified to use 4K sectorsize.
-> 
-> [FIX]
-> Just use sectorsize as nodesize when -M is specified.
-> 
-> With this fix, above two tests now pass for btrfs subpage case.
-
-This is changing the mkfs behaviour for everybody just to fix a fstests
-test case. I disagree to do that. Fstests get weekly releases so if the
-test is failing now, it won't next week once a patch is applied.
+-- 
+Goldwyn
