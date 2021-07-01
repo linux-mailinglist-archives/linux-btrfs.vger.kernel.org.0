@@ -2,150 +2,246 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4693B9897
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 00:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4384E3B99D5
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 02:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbhGAWfW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Jul 2021 18:35:22 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:39980 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230213AbhGAWfV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Jul 2021 18:35:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1625178769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RUzL76i2CXk/KkJiIpcr6P04Dx1MVmZssbty3olu1IA=;
-        b=kUSb6T53So3x7r6vZcDOf0I0YTgmDQVKBGW4Z0kTIU+glFWH8jVPvw2YoD0XVXkZVUkPBr
-        N638mel31KYIWQ3YNf/jyKBnFKOHDtn4/TZi2u4PjuQxN4ubL7j4Z8q6olTcWp0LlsXLrb
-        nFzlXSSPf1iNMizPCNsy111/4L5xm2M=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2104.outbound.protection.outlook.com [104.47.18.104])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-30-536HE7eHMlO08HVyfCs4Pw-1; Fri, 02 Jul 2021 00:32:48 +0200
-X-MC-Unique: 536HE7eHMlO08HVyfCs4Pw-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aUGQ0VKGn9eKn2KSV/CyHtNCfdtReL/ENkgqKNiPnmba7IEEbxWKcJoN1iWvkHQoXkkovDQBckKs/QE+GRGl9+KmJfsl9J7Fk16Yo0RphoAkwyqbPQOS2TotraRhEokZ+wSl4BZ2Cs7Txm6CkhroEqwUMTnW9XqKwfHFrwTP3qtWQNkq//8l+1r7dcTm+PHGr8gENfjQunzaapvJeY74tEWP9Y48hOGax3dyJOeuqOFhEBUkHLwT20OaXUlZEynr7a57EY0UFvGcFGP0cARJkgtx8339LeAndvuUtsmpLLZronF6lJtGpjjCy9kCak10XDO8gJqCA/FIvbxkuIzNnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/EoXlorf9YljHgzDqE4x7HvxZQ/AwMn8vtHTWCjIYAI=;
- b=av2PQ2aR0kxF15NmF+WQ0MLgHdAofZobmNtfjn9ND87+LRQk/qaKkMQg18Xn0ZUDa60nzlq2js/cLUxkwIMYNNbG0hs/H7NKO6oT6Z2lViugszj9t85/ylHdT1D7G0oJHfXKimPvut/lOQ0LEBosZlYJQrZNXDplC78/o6X8IH32tsPud9CWOGLx3kGGoil65ob4QoLIApLVJ2k3i3Fg/8d7BNpbfBqU8bgGB84w1cqHtdtsV0LbUgw1nb8UqaYzmFynu+Tp8PfPW/W67cLZ33wO7Do6b+X0YA5GnUeNRN07A5zH/PeVceQ0lfSiSMRslnLv6fzWcc5rpaegAMgYag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AS8PR04MB7671.eurprd04.prod.outlook.com (2603:10a6:20b:299::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Thu, 1 Jul
- 2021 22:32:48 +0000
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::b4b5:823d:f2fd:d10]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::b4b5:823d:f2fd:d10%9]) with mapi id 15.20.4264.026; Thu, 1 Jul 2021
- 22:32:48 +0000
-Subject: Re: [PATCH v4 02/10] btrfs: defrag: extract the page preparation code
- into one helper
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <20210610050917.105458-1-wqu@suse.com>
- <20210610050917.105458-3-wqu@suse.com> <20210701165815.GZ2610@twin.jikos.cz>
-From:   Qu Wenruo <wqu@suse.com>
-Message-ID: <604fc4c5-0d09-73a0-276f-c41d64efb495@suse.com>
-Date:   Fri, 2 Jul 2021 06:32:35 +0800
+        id S234370AbhGBACW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Jul 2021 20:02:22 -0400
+Received: from mout.gmx.net ([212.227.17.20]:34187 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234063AbhGBACW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Jul 2021 20:02:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625183986;
+        bh=lQTvw3fKnzPgaYZEA1fjyOw6IXIrjguAi0tTg/G02/g=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=l1gx1qp8oZsCj5Izcn2hh2qnuI1NSH4ZjGkZe8Rl9+ZsKG8gN/dVh28dtBfifgCu5
+         JEOpS+0V6lhc3wuXIBQeOGYQYDKOt5q1omv8cntPhml6HnKIykpkZ5SDlsV7nmYQj9
+         vK5MXWbczy8SwfFo45qacMJ564LcCfRnYkuk5Tyc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIx3C-1leh6B49og-00KRr3; Fri, 02
+ Jul 2021 01:59:46 +0200
+Subject: Re: [PATCH] btrfs: add special case to setget helpers for 64k pages
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20210701160039.12518-1-dsterba@suse.com>
+ <20210701215740.GA12099@embeddedor>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <fc90ec53-1632-e796-3bf0-f46c5df790bb@gmx.com>
+Date:   Fri, 2 Jul 2021 07:59:42 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-In-Reply-To: <20210701165815.GZ2610@twin.jikos.cz>
+MIME-Version: 1.0
+In-Reply-To: <20210701215740.GA12099@embeddedor>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [45.77.180.217]
-X-ClientProxiedBy: TYAPR01CA0042.jpnprd01.prod.outlook.com
- (2603:1096:404:28::30) To AM7PR04MB6821.eurprd04.prod.outlook.com
- (2603:10a6:20b:105::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (45.77.180.217) by TYAPR01CA0042.jpnprd01.prod.outlook.com (2603:1096:404:28::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Thu, 1 Jul 2021 22:32:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0a5621ec-29d1-46b7-b256-08d93ce0273e
-X-MS-TrafficTypeDiagnostic: AS8PR04MB7671:
-X-Microsoft-Antispam-PRVS: <AS8PR04MB76716B62748436FF07C1944AD6009@AS8PR04MB7671.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hGbR10j6IgPLjk+JdSj/x95NDDDq6Z8J0jnI85am1z8jiHI5wd6Swt5Ogz2pAzqObybr4w5mtiRYLZueAxKjp6LB0pPeeSqcyLK5zU229Nsos8p4DJ79ZSPlu1R34T2hEG+2Y6VpBgktCOU5bpSfPK8Q+Q3ojXPCYH70blHU47CtJ6ebmSex84skTTyl5vimFaepW5f6AZrUyK8pYFsNoh8UR/vOsBc7E07dR/EzhlOlijL/60+CK0rQWIBjrehu3zYrNP51akNLYnjeBuHinlTEIYqzvisAlbS3/teWuVbW5BIJgUo9IDW/B5jz9VLfnrCrmDGNio+CXk4CNPSVmH/QDJLGAWqIIVcgnNG2k75SJZCJbRw2aOJHvHNeySz7GEB1K/J7KULubOML4w00EZCb6K2P+i0dHHIiK6mVujUxP+D15wcoaQojqxr3EgcWjP4Xf9PLnLhHUtFXEckRsHmgjPnZoypEkfYW/mSIcIkJs6ip4buj/2F1L7bCAWAkbPVgDqfxmtj2jmIXyAqMRHz9GqFLdj3G3NSGQQ4HW7xr79yHCfzqsNS29PdxZH61fQtlKXOjYyhpnhB+wDLVKbHkaywI+qiji+jX97xj9DT83ktB9k9WlCcoN+e74EO/mjFj3rp+YqH8jYHC9/k5foWIuBJccd0iBDAh68juCq7mGs5rZwb+ibLOyaPPuKB6Wna9IHJZ4IYgRYmzgKU1O/7+c302NJTE7cvzoboIH/p9bGFcjeRpE6UBAEptB94a
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39850400004)(136003)(366004)(376002)(36756003)(8676002)(16526019)(316002)(26005)(186003)(8936002)(6666004)(66476007)(55236004)(2906002)(38100700002)(16576012)(66946007)(66556008)(6706004)(86362001)(956004)(83380400001)(478600001)(31686004)(6486002)(2616005)(5660300002)(31696002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?21/qoYiE4ek7auLnuBwvJTMhSvOsLmEwM6BQ0qau7ioYTiPO1O95JPIAuZaB?=
- =?us-ascii?Q?u55nlF6xNjAWtj0nfj2XQmUFKEljxI/N5sN9+DUM5ziv6UpG87rH4T1j+v7T?=
- =?us-ascii?Q?I044fCj62BsQc+53krk3gmRF2Oxs/YzMJOj5A7I9X4Mbg85l1O4bkJ4Fdt6s?=
- =?us-ascii?Q?ziAzCUufIJaeX22RfR+GGV1IchNsLS07Cd8B4yDWhm8iIppjua5vYRWOQ11n?=
- =?us-ascii?Q?z68+uvcYr+2GOedRjlj/ytpof55CuwRWyfd2lViEiPHm9rZIi2F+A072K6mt?=
- =?us-ascii?Q?9kIF4tYmgO1aD8wQ77nPPCx/N/HA8EX9bae8ql/w2rcggvoCOHUIaEWk2VVW?=
- =?us-ascii?Q?P5pcJL7B2gkJFx3LUudAW3lqhS2iHj6ALtHR2hWO2fwCH5PHFNL3NVv7tEp0?=
- =?us-ascii?Q?D1yIUV0FiR6EtDoigObuAPWO4HXdn5q1fu6oiwD3lEzD6y7ZzQInfUD/fxGf?=
- =?us-ascii?Q?h0XJI5e1ByQuNK1ZdcJlNn7AlAb495EMFQio1VyuSI33AQS9QrUQSxhRgTYf?=
- =?us-ascii?Q?O9in4Ss3LRp5IBIPXDIcAac6aJZTcijc1lcxVY1mrMgibIYfkjZ8/e8hBwO5?=
- =?us-ascii?Q?zugbdtTIfHz5gFPp+ny8SEFD153hYcQ+UiTvaYoqA2d5S14KqqHeyzK6pWgA?=
- =?us-ascii?Q?JvY7vigTuv1+PUJKM81B4MqLIorwjaiPYMj4Icsv5Dk5CHjt3WIaxo0Dzjz/?=
- =?us-ascii?Q?GTGsNV3oy24ZRsTqvyPp88YH7/NwXAx9SeXLLh8UT9q8oGpAYLcDeTS8bSfe?=
- =?us-ascii?Q?RbiYo4zaoV0YG4WWQwzFOkHwKo/N8B4UboKUxvNqfWKVjPYFXYE0pU0Nly8p?=
- =?us-ascii?Q?RxbqeixcWsLvTMZYur5FeULFyb8HugffeYdSuKJWgzT+16664tT9Aptcp17/?=
- =?us-ascii?Q?+q1f6mOnTkRhrOW72CGE7G7qDVWofvOp7q6Pim4z+SPk0aucZvB7yMGbJQXg?=
- =?us-ascii?Q?ijUm3SIOZTPnr5mHw7DeMkrOS8v6FKUmQk0f9ftEf4hbOz4eUe5p8/+fOxwp?=
- =?us-ascii?Q?ebGcctOks+Y8w86pvrEcsFcKFJWPamrSWvfQNQfKr6CuW9BQWfaWxV90ZXAc?=
- =?us-ascii?Q?0UHamnNurwimO+fJbZE561bAkpb7kyuYFVei7k9W3XhpD1s46GusHUujETXr?=
- =?us-ascii?Q?Y656IxsYx1eiAuvqFeSqHPa55WFKnlyRVx/mvquUNipaclbN5mYPP0zHmBTL?=
- =?us-ascii?Q?8iXe1vZEh1bm0ufW8BgUpzkVpH8ibqLhwDJeHTnUJ4bEE1TjpCYtWUHn/yAp?=
- =?us-ascii?Q?AonaaBcgaouf5P4t0n7ldlpqPQ42wMisy7Wycg5H+bTKoAB4RuL9qFvSycB1?=
- =?us-ascii?Q?OgeVZtWPqxXWZSv5wla67Ijc?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a5621ec-29d1-46b7-b256-08d93ce0273e
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2021 22:32:48.1971
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Xv1FG2awkon+fmncTLnR6UchIAcplrzY121Lp0W+OodhPe5V65y6uBIeUuWZmTJX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7671
+X-Provags-ID: V03:K1:bBlIRarLpqtI4LBmnQALeObyssJvkZGn+4rQAXr4DhGjXikCIXM
+ vTWIUwtJSvoftlI4h0/8r7UIv7cNGfZQUaZaoDH4V65+ItAVP3KvWkmsQlxIvIB+BCDvt62
+ 4Nq6+1UV09laSwdWQ7jXFdcUhH8DJe1podH3dzqkJr1YpzguwG5WkbXSZGp7z/DtYnD84LT
+ wI/kGdLMxMDOTtE3DPkwg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8s5mDgkBICY=:Xtxa7qVnVH8m4yn3sZIGmq
+ HMZt7ADqH6Q2d/gy8NmMuQ+Ti3irlwiGreSf6Hl+swT2hR5AiGtrrhcgXTzL1mjFwOewBiM7L
+ JnuZA4S7pvzth7ptfXtA/uCqbsZG6qMAIuZ/8WFWgfoT1gQXxf2Vp8VQKsTMJgafQWu0ny27Y
+ Wqb6ZCfxYRbG3/nee+h8x3Vbd/38gBWrWGvHXGpUulGp8KsrbeV/ih4Ukfac9bjs7KUtV+POm
+ Kdf+GIQNZEhwrjWAsrceGQ03hct2+oAab1j8LOLA2dpOUxEps+YyBKJm2r8yRhrinr/n1JDl4
+ m9tdFM/JPfxCK2cBmFg7os9SaB1e5ztRxsgC8X5MT7R0/80NiCYnEZw+Vv1NJGwdPe1Ub37q8
+ H9QriAvFW0X2yc+3MUyWKqemTnOY8eVH++dTBtfafBv53lqfOAmIQTTdFehudgJlE5tTJSGyQ
+ 5QGcNStIK1QR+Gt1FS5KpD87Z5c6LqrAObigkPEVpNc80fxUguPYVOdrILpaW81DGssELdbXg
+ WSabkgnd2xssqOVGtPrO4RhIQWbNndf/zjejVWhmh2Aq6BMiw13WRtQuU/pp2QTXzhD6lm6r8
+ r37WLs9INe0Yd0/mGWePOwgkDWCt450Nyii49CmbAO/cQp+txWhmkKRMfcl5PmTtLaFbqbjOl
+ YI/nThohWssuOgk2T/0HIrJTxuXhjPzwW1svoy2cc/0zo1raWWEkl+qtnye+qjCf2Q17/YEC5
+ 2CVj2xpoZ57QkrLq2xdDqfttDbhK2AV+IIZr0ox3qUL4C7rjh97Jr1notVuFVFk7LSDqkSfL+
+ LmVHzevcojooaz1/SjpgfpLco0BWFVR620Ct/gIKXGJ0IJLaeTJl4aTdvi1njM+vnIknKRJGg
+ 7L6VvVeWO7Y0IbuU8VWDIYivXBqcQPHonVzVD5kxnLze5Qpv5tkeXhxfMKq0tFxEjgA2ZpBeU
+ jeWOsAyT8Ar1l3AdhJsGsMTfjX0gp6b0GXC5ySkli1Hcq9gHppKXN+60/bsJt72cK2X0dMVx1
+ +1jd2sZZ4VseePdg8iYV9G9UuNA+X0zAekNEYX+8/5ehCVdNYz36T/QcHlzYD3DrT/2hnqIaD
+ zp7wgtmGAszNu+XviEDyca3nxKzI8BYsXLyr2upkDjNeCcmR/7qU+fgbg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/7/2 =E4=B8=8A=E5=8D=8812:58, David Sterba wrote:
-> On Thu, Jun 10, 2021 at 01:09:09PM +0800, Qu Wenruo wrote:
->> In cluster_pages_for_defrag(), we have complex code block inside one
->> for() loop.
+On 2021/7/2 =E4=B8=8A=E5=8D=885:57, Gustavo A. R. Silva wrote:
+> On Thu, Jul 01, 2021 at 06:00:39PM +0200, David Sterba wrote:
+>> On 64K pages the size of the extent_buffer::pages array is 1 and
+>> compilation with -Warray-bounds warns due to
 >>
->> The code block is to prepare one page for defrag, this will ensure:
->> - The page is locked and set up properly
->> - No ordered extent exists in the page range
->> - The page is uptodate
->> - The writeback has finished
+>>    kaddr =3D page_address(eb->pages[idx + 1]);
 >>
->> This behavior is pretty common and will be reused by later defrag
->> rework.
+>> when reading byte range crossing page boundary.
 >>
->> So extract the code into its own helper, defrag_prepare_one_page(), for
->> later usage, and cleanup the code by a little.
+>> This does never actually overflow the array because on 64K because all
+>> the data fit in one page and bounds are checked by check_setget_bounds.
 >>
->> Since we're here, also make the page check to be subpage compatible,
->> which means we will also check page::private, not only page->mapping.
->=20
-> Please split this change, it's unnoticeable in the refactoring.
->=20
-Sure, but the defrag patchset is now in very low priority mode, thus it=20
-will be a long time before you see the next update...
+>> To fix the reported overflow and warning add a copy of the non-crossing
+>> read/write code and put it behind a condition that's evaluated at
+>> compile time. That way only one implementation remains due to dead code
+>> elimination.
+>
+> Any chance we can use a flexible-array in struct extent_buffer instead,
+> so all the warnings are removed?
+>
+> Something like this:
+>
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index 62027f551b44..b82e8b694a3b 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -94,11 +94,11 @@ struct extent_buffer {
+>
+>          struct rw_semaphore lock;
+>
+> -       struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+>          struct list_head release_list;
+>   #ifdef CONFIG_BTRFS_DEBUG
+>          struct list_head leak_list;
+>   #endif
+> +       struct page *pages[];
+>   };
 
-(And I hope I didn't forgot those comments before next update)
+But wouldn't that make the the size of extent_buffer structure change
+and affect the kmem cache for it?
 
 Thanks,
 Qu
-
+>
+>   /*
+>
+> which is actually what is needed in this case to silence the
+> array-bounds warnings: the replacement of the one-element array
+> with a flexible-array member[1] in struct extent_buffer.
+>
+> --
+> Gustavo
+>
+> [1] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-l=
+ength-and-one-element-arrays
+>
+>>
+>> Link: https://lore.kernel.org/lkml/20210623083901.1d49d19d@canb.auug.or=
+g.au/
+>> CC: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+>> ---
+>>   fs/btrfs/struct-funcs.c | 66 +++++++++++++++++++++++++---------------=
+-
+>>   1 file changed, 41 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
+>> index 8260f8bb3ff0..51204b280da8 100644
+>> --- a/fs/btrfs/struct-funcs.c
+>> +++ b/fs/btrfs/struct-funcs.c
+>> @@ -73,14 +73,18 @@ u##bits btrfs_get_token_##bits(struct btrfs_map_tok=
+en *token,		\
+>>   	}								\
+>>   	token->kaddr =3D page_address(token->eb->pages[idx]);		\
+>>   	token->offset =3D idx << PAGE_SHIFT;				\
+>> -	if (oip + size <=3D PAGE_SIZE)					\
+>> +	if (INLINE_EXTENT_BUFFER_PAGES =3D=3D 1) {				\
+>>   		return get_unaligned_le##bits(token->kaddr + oip);	\
+>> +	} else {							\
+>> +		if (oip + size <=3D PAGE_SIZE)				\
+>> +			return get_unaligned_le##bits(token->kaddr + oip); \
+>>   									\
+>> -	memcpy(lebytes, token->kaddr + oip, part);			\
+>> -	token->kaddr =3D page_address(token->eb->pages[idx + 1]);		\
+>> -	token->offset =3D (idx + 1) << PAGE_SHIFT;			\
+>> -	memcpy(lebytes + part, token->kaddr, size - part);		\
+>> -	return get_unaligned_le##bits(lebytes);				\
+>> +		memcpy(lebytes, token->kaddr + oip, part);		\
+>> +		token->kaddr =3D page_address(token->eb->pages[idx + 1]);	\
+>> +		token->offset =3D (idx + 1) << PAGE_SHIFT;		\
+>> +		memcpy(lebytes + part, token->kaddr, size - part);	\
+>> +		return get_unaligned_le##bits(lebytes);			\
+>> +	}								\
+>>   }									\
+>>   u##bits btrfs_get_##bits(const struct extent_buffer *eb,		\
+>>   			 const void *ptr, unsigned long off)		\
+>> @@ -94,13 +98,17 @@ u##bits btrfs_get_##bits(const struct extent_buffer=
+ *eb,		\
+>>   	u8 lebytes[sizeof(u##bits)];					\
+>>   									\
+>>   	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
+>> -	if (oip + size <=3D PAGE_SIZE)					\
+>> +	if (INLINE_EXTENT_BUFFER_PAGES =3D=3D 1) {				\
+>>   		return get_unaligned_le##bits(kaddr + oip);		\
+>> +	} else {							\
+>> +		if (oip + size <=3D PAGE_SIZE)				\
+>> +			return get_unaligned_le##bits(kaddr + oip);	\
+>>   									\
+>> -	memcpy(lebytes, kaddr + oip, part);				\
+>> -	kaddr =3D page_address(eb->pages[idx + 1]);			\
+>> -	memcpy(lebytes + part, kaddr, size - part);			\
+>> -	return get_unaligned_le##bits(lebytes);				\
+>> +		memcpy(lebytes, kaddr + oip, part);			\
+>> +		kaddr =3D page_address(eb->pages[idx + 1]);		\
+>> +		memcpy(lebytes + part, kaddr, size - part);		\
+>> +		return get_unaligned_le##bits(lebytes);			\
+>> +	}								\
+>>   }									\
+>>   void btrfs_set_token_##bits(struct btrfs_map_token *token,		\
+>>   			    const void *ptr, unsigned long off,		\
+>> @@ -124,15 +132,19 @@ void btrfs_set_token_##bits(struct btrfs_map_toke=
+n *token,		\
+>>   	}								\
+>>   	token->kaddr =3D page_address(token->eb->pages[idx]);		\
+>>   	token->offset =3D idx << PAGE_SHIFT;				\
+>> -	if (oip + size <=3D PAGE_SIZE) {					\
+>> +	if (INLINE_EXTENT_BUFFER_PAGES =3D=3D 1) {				\
+>>   		put_unaligned_le##bits(val, token->kaddr + oip);	\
+>> -		return;							\
+>> +	} else {							\
+>> +		if (oip + size <=3D PAGE_SIZE) {				\
+>> +			put_unaligned_le##bits(val, token->kaddr + oip); \
+>> +			return;						\
+>> +		}							\
+>> +		put_unaligned_le##bits(val, lebytes);			\
+>> +		memcpy(token->kaddr + oip, lebytes, part);		\
+>> +		token->kaddr =3D page_address(token->eb->pages[idx + 1]);	\
+>> +		token->offset =3D (idx + 1) << PAGE_SHIFT;		\
+>> +		memcpy(token->kaddr, lebytes + part, size - part);	\
+>>   	}								\
+>> -	put_unaligned_le##bits(val, lebytes);				\
+>> -	memcpy(token->kaddr + oip, lebytes, part);			\
+>> -	token->kaddr =3D page_address(token->eb->pages[idx + 1]);		\
+>> -	token->offset =3D (idx + 1) << PAGE_SHIFT;			\
+>> -	memcpy(token->kaddr, lebytes + part, size - part);		\
+>>   }									\
+>>   void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
+>>   		      unsigned long off, u##bits val)			\
+>> @@ -146,15 +158,19 @@ void btrfs_set_##bits(const struct extent_buffer =
+*eb, void *ptr,	\
+>>   	u8 lebytes[sizeof(u##bits)];					\
+>>   									\
+>>   	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
+>> -	if (oip + size <=3D PAGE_SIZE) {					\
+>> +	if (INLINE_EXTENT_BUFFER_PAGES =3D=3D 1) {				\
+>>   		put_unaligned_le##bits(val, kaddr + oip);		\
+>> -		return;							\
+>> -	}								\
+>> +	} else {							\
+>> +		if (oip + size <=3D PAGE_SIZE) {				\
+>> +			put_unaligned_le##bits(val, kaddr + oip);	\
+>> +			return;						\
+>> +		}							\
+>>   									\
+>> -	put_unaligned_le##bits(val, lebytes);				\
+>> -	memcpy(kaddr + oip, lebytes, part);				\
+>> -	kaddr =3D page_address(eb->pages[idx + 1]);			\
+>> -	memcpy(kaddr, lebytes + part, size - part);			\
+>> +		put_unaligned_le##bits(val, lebytes);			\
+>> +		memcpy(kaddr + oip, lebytes, part);			\
+>> +		kaddr =3D page_address(eb->pages[idx + 1]);		\
+>> +		memcpy(kaddr, lebytes + part, size - part);		\
+>> +	}								\
+>>   }
+>>
+>>   DEFINE_BTRFS_SETGET_BITS(8)
+>> --
+>> 2.31.1
+>>
