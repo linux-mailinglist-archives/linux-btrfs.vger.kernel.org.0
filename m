@@ -2,222 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F9C3B8BCE
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jul 2021 03:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27913B8CC0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jul 2021 05:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237170AbhGABoi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Jun 2021 21:44:38 -0400
-Received: from mout.gmx.net ([212.227.17.21]:48235 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237836AbhGABoh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Jun 2021 21:44:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625103652;
-        bh=Cxk8KNcL/qgXExsLULTR9VaLFCFHRntBwV7V+qG353s=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=AcynJLP4Dux8bXQztsCAHb67a+3WB8pt13emToJ50ZqMjpGnitgJsCK/R/yS6V7ZZ
-         U8+uxzOJQBDOMUKZGvvQSirGnFQLcqYfFUv1Ho66GDrTsNTDCpFUFXWOflhSlbSJZ7
-         1ZOzRZXSB2xLj2Z6x5waoVn9D6ys30Lrq4mW4WTg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmDEm-1lYXgJ10F6-00iD6j; Thu, 01
- Jul 2021 03:40:51 +0200
-Subject: Re: IO failure without other (device) error
-To:     Martin Raiber <martin@urbackup.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <010201795331ffe5-6933accd-b72f-45f0-be86-c2832b6fe306-000000@eu-west-1.amazonses.com>
- <0102017a1fead031-e0b49bda-297e-42f8-8fde-5567c5cfdec9-000000@eu-west-1.amazonses.com>
- <0102017a5e38aa40-fb2774c8-5be1-4022-abfa-c59fe23f46a3-000000@eu-west-1.amazonses.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <4e6c3598-92b4-30d6-3df8-6b70badbd893@gmx.com>
-Date:   Thu, 1 Jul 2021 09:40:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <0102017a5e38aa40-fb2774c8-5be1-4022-abfa-c59fe23f46a3-000000@eu-west-1.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S229777AbhGAECM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Jul 2021 00:02:12 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:4644 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhGAECM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Jul 2021 00:02:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1625112005; x=1656648005;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=EhFTULe+vBkLBjygAQvEsJqE+WpC1hTRFAsE1pZlc4U=;
+  b=DgAcrtMsMIHwlg+r/kzgXGoXoQd52MPtsQ4Nvy4eNnBu2dYrY+y52P1M
+   cAoEw27skqKiM2uRTGfOMfAip4hjMAG77xeDS2eibaezX6ojNYO7x4tz/
+   7cmmLG6F7/QQbyZDGTVlWbupl6QXBfuBCcDDX3RUMjgWk1DKsz7z9HCfb
+   0DPNNjpN2YEXkZky+o0i5KDl8ODMsn89C+urumLHV9TRyMMzemJjrI/e3
+   wYNJgV/JT55QAVfiE1DWaMyDbWurE4gxF5YW+r8ubY1k9m8rV5yWf9rgk
+   JWsIV7VNqbZoIwxBNmH2b5UYzL44600XUJ4c8LZn3vYe9i2NnoTWOm0ga
+   Q==;
+IronPort-SDR: PGl+LtP4OJkjjWl76fh/dekekd+W8QpKZUhB2n70Gg27R8bpGtJV+SN3toxLfue4UCE5z8jRCv
+ bsydC5hfLnKusktRkr7Sn28CI+jpTorHy9mq+b740iD0Gp+G+CM6y0bfFRNxxGGHgWC8mEiwCa
+ tebifEdB7F0lgY1Eax7NZznA7kKZuKMQ4+IJH5/njVQHZHs3WoWL4ZmeYiBpFwH8Ju44SHtYkV
+ /U9S0OfLNJOizxqEljDAgGYiv3I+LJoC2iFlOpSjwDz8f5WVA85ZkqF2hTGfnJgPr9Ef0hrDS5
+ sLY=
+X-IronPort-AV: E=Sophos;i="5.83,313,1616428800"; 
+   d="scan'208";a="277199116"
+Received: from mail-mw2nam10lp2106.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.106])
+  by ob1.hgst.iphmx.com with ESMTP; 01 Jul 2021 12:00:04 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N36kPeGzslYQO2gNnBjTqqXN2qhKX/ACoDK7xSMz0zyxi95fx/KJlAC9i/7RAzFNqqUSm9SPVqmvS3g1EDDykkfoLytWDU8/yUj5GBpaaB2vEn9ECKcGbzZ5i2SF7RAcKcZZ5BPJlskau8PkalIo2s8gPxh8f1yHtrtDR6W4Qq/2CYiHzdiQG1rXVqvF8/C3esREkwlACmrPT4YyWXN0bo9uwzE2itW27sykbbcFNb3f73TNUJpPmoNUM59sC6NIkwk5vn3QOabibq3B8hRDnCDWvnM323zS1SlU868FGr3g/KjP19KWgWrqYsbRohvJez/80L0YDUG1YUYHAZEhow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EhFTULe+vBkLBjygAQvEsJqE+WpC1hTRFAsE1pZlc4U=;
+ b=HNkdFyCHsEL9hD3NLwLTtra/J/whuB23BDr1VreCndZlrg1K0GZJiHOLIg2JOZx2lqQtOtX5x99T8hyFVcTL3X+ic+FougySb9j4/VjlHh3L7KdaZwwxxf8EaX994ufaLeIIv5L7Y9gtAz8odWWQ3L5cESnIWPJZmUfmtewYaC8+SOotD5q/ywbKd6s3gqnCyDhf0nFr7nTm/L4BVBfWuLMO+haGCi4R9VcddB5hX9YUyP0S5SukYzc4P7trGE7KhXqXIncki++CO39nPF/Cq3bysEFbvr6n0la0uY/LPvwVyI34dADUD2MGkcRMuVULlCKyJ802UiPN+tXUThgE3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EhFTULe+vBkLBjygAQvEsJqE+WpC1hTRFAsE1pZlc4U=;
+ b=c11gNOQD8j5fv54EzVHfxrQhVVGf125Ft403qqxnpKT+I6BI8RZixsMC14U0K4i2tXPnCDh4O5joyya+grQ8aMRKIZ4288ptiKfZGsW1Z5OPTZjVciahmsIW79IMJtk4NFI1pj3COzWo9KmYlpFJiuhRTqbglk6TT9XlJ7c0I3Q=
+Received: from SJ0PR04MB7184.namprd04.prod.outlook.com (2603:10b6:a03:291::7)
+ by BYAPR04MB4392.namprd04.prod.outlook.com (2603:10b6:a02:fe::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.23; Thu, 1 Jul
+ 2021 03:59:40 +0000
+Received: from SJ0PR04MB7184.namprd04.prod.outlook.com
+ ([fe80::801f:2817:2957:5625]) by SJ0PR04MB7184.namprd04.prod.outlook.com
+ ([fe80::801f:2817:2957:5625%3]) with mapi id 15.20.4287.022; Thu, 1 Jul 2021
+ 03:59:40 +0000
+From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To:     "fdmanana@kernel.org" <fdmanana@kernel.org>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH 0/2] btrfs: eliminate a deadlock when allocating system
+ chunks and rework chunk allocation
+Thread-Topic: [PATCH 0/2] btrfs: eliminate a deadlock when allocating system
+ chunks and rework chunk allocation
+Thread-Index: AQHXbi2DbNJFhY2ix0Wefxf6czxttA==
+Date:   Thu, 1 Jul 2021 03:59:40 +0000
+Message-ID: <20210701035939.qpuiebd7ieoi7yh2@shindev>
+References: <cover.1624973480.git.fdmanana@suse.com>
+In-Reply-To: <cover.1624973480.git.fdmanana@suse.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.182.60]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7839217b-5e4c-4b3f-486c-08d93c44a6fe
+x-ms-traffictypediagnostic: BYAPR04MB4392:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR04MB4392F90A86D2F15D5E9235E2ED009@BYAPR04MB4392.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DkzT2OZmf8S3qUhQEmTVALerK0QpnxfJiT0uNltbJk96PFtzVUrdG1jmjmB/WxEmN4Uv/Np8RVR5hf6FHYxNrM2pbW4NmOLqhK6DDlI+x2NQ2e4ZrdSlVbgayohQnJNDb2Vf1N2sF7WOxpLslp5cBnq/wbbMi3K+I5CbiAHFE0g/UWnmNKQuUvxbwaF94Dv38q62sSU6I/SikCPseygSfFw/U6k8T1gI+eAY/iS3sCHs5suER8ry2Rv8auni0MdpolNxFZTBe/D0vQNxql/hLw/8rqrKzlHfoKPCulYHQhMEdV3l0CkaJrVgssDK5tFkl/b5UN8QwAaycdlEhuvq0pISL4XiPeFGCWSx+ZeHXrrcQ7ND3B9PT4jHG0Dj+AIBZg2gyKRotNfE2iqhHF/99D9qCOPgp4FZnHG/HX1G5oJSgDiYF7s4rbDvF/ILz8oM55ACYZYBMuCKPa0kBPw7hsGiP8vlNBkGAs/k7/gx7oQqZeHWJQ4QZWAn74qQAD/k8+H9beiYhPg/X6dyZ0w4vlF67AwjU8iyghr5cHFHTGD3nWcMbkwlHehc0fGoMdc2lixevuEvrDIOndY/Y0PKnd5a/w4nu/Z8+U68HSSQ1xQ1FARhWRtnKBLHnDL47Dp10D6nXItP6u7U+YlDdfg/Cg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7184.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(39860400002)(396003)(346002)(366004)(376002)(8676002)(6486002)(91956017)(83380400001)(54906003)(26005)(2906002)(76116006)(86362001)(64756008)(8936002)(122000001)(1076003)(66946007)(66476007)(9686003)(33716001)(6916009)(316002)(71200400001)(66556008)(4326008)(66446008)(44832011)(186003)(478600001)(5660300002)(38100700002)(6512007)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?lXE5Y0jSPYqWFB/Irahbg6gAkqZ+E3oRkUi5vQiNBzNqRdnPnMbfcgi41lVa?=
+ =?us-ascii?Q?dOHwCCVNgHOehKj8Rv5DABm1ejUcM/rHq3gwJN5nnTB2u0p7M32rcD3MIcVh?=
+ =?us-ascii?Q?9hHguiGsmo3aFIyH7HrZO7x8gLbFNDe40AS6wmp4++2ACCwCX28pfmiPyL+/?=
+ =?us-ascii?Q?Q2r4/ihAqXZK97f5j2jrrdXy5ob77spkaCSaOBxclV4GbcsOMbNm0Wvu3hWa?=
+ =?us-ascii?Q?47VXlbtZ2p2U/huQPgfy/qGuS8D6jIzDrb3RBxSrVMnu7TqUCpbxd7NAQBlK?=
+ =?us-ascii?Q?GWqK6HE/ZAjysGYHm7/G96teOCVV/gTvgJb/fBGnyMqLXGImaGIKyKbxETQm?=
+ =?us-ascii?Q?OnEcCln6CNH1l6CGYY+w17dqhAqBKKR32kZBEo19TFH2qpmIn8aeDFIMShQy?=
+ =?us-ascii?Q?yn/1/jPJtqXhbd+a1q3iSwV0gy1yxohfmpknsKUfudqImU2yd3tb+7varQe1?=
+ =?us-ascii?Q?JvjiMwoAu90HrTstBnrGKDDKu2RF8snG/vk+n/gERBCtobIWT8/TjYOZqL+F?=
+ =?us-ascii?Q?CiovbKHvuK4gD7+aYuUBPuTxRyR8uMW6btN8Jr1xReT+6t0Q7Ibko00QHcGN?=
+ =?us-ascii?Q?viekt3pNH5lHVoqhAr0vEe87St4O2BeChlxR2cmrC410KKZ6ZM21sJNuO1eA?=
+ =?us-ascii?Q?qlGY56VPlBPFGa+R3/XzFrLoK+O3szr2yZNzpEX2IpnibQj9Ehv3BLSzahWP?=
+ =?us-ascii?Q?gOUC95Z7I7DDEWz3WvYzJj0d+zdVCa/SE4aVrC1AEgRGMDdsLNQIdv8OLWkH?=
+ =?us-ascii?Q?QW5z8Ga525fqROJfDVXV1j9tlb180jkUOIJgdU0LB0tChzEkAGSbHSbTgrf+?=
+ =?us-ascii?Q?n8MabxcSDZquthtXV1R4fH26Yn648JK0hwzncNEvbtYjxTu1vHJI4UuEsdTh?=
+ =?us-ascii?Q?93r8Mce2SJCi0nNDdVUKmQYw1MOhklhPx0is8U+s2PJi0MT9YJDRAhmznNLT?=
+ =?us-ascii?Q?7itFgT8Y/RNOSjkoDP2Amb/SGLPZvB//twB77wBaSvaHhFCozxuyitFMW/xQ?=
+ =?us-ascii?Q?DARlKZL0EhG58hQe3jMwEiSLGuboBxW0729AW1JOgD9wMYzNNfwZpddwUsp9?=
+ =?us-ascii?Q?g8zQozWJcs3iHoT+f6AAVocjlPJVSa90yVXSnkNdSBnq9o9sMdLg13PjJ74W?=
+ =?us-ascii?Q?xmKhZMlru48KOuZYI5ZedpWXJZArSdHCtDBo3oryGMUKPaXO2aduTD7MLtla?=
+ =?us-ascii?Q?jYkLt0fsAjQfWHLralXxGI/v1geAzIqz27oqdoog9SIqLqSalhz5+79yo9o9?=
+ =?us-ascii?Q?LFH0s5BjGqFz9H1yWUhyWooGNfJRUyidCzsT83ScRz1JOIDQDc7SJmsHJhYL?=
+ =?us-ascii?Q?BIS+cBaLs5KQl++tIBdH17FJrWemyF3zWiCvwqoTGXYJdg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9E0A4DF86E575E42BF12FB7F231D3F0F@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pLYPYBlNbAJeqQG224mQ/6x9uhMQnDr4zKrihPJeXGzxJY0KqhX
- TaAt+7GHVE9uuW1HdEAO6piGiY2PSIo7WsJfCqksZphQ523jiFBblvbMmcS9V2fFT+p4hwD
- 4NEoVCyXTPHOI/UWQaNDW1IPFW5NZ5DbfCZRQyB1/ibxr5fh8RbZqPh7Hxh1XlEUC96ZGbf
- LXyl1IZLXDbaC4xvcFFqQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rqUA4eQNsRw=:ZZRluABZ/niwffeV2NBsNY
- qmSYojtSzhoXACZyztyoOxWYCnJwzfFwb6Pb2PQNLD4GdpgHNbTBoyogW45a1TX0HJ4LjNER0
- GZJnRRwXTR7yv/2extsV8MdnO6N9N81U5m4pScjyksT96godzIJjgb6qCoHqmLUxcB7Z2iVtx
- 1GuI4b1O8Qxin3wnDKXyFa+CuYKLEvbjyAW4+QZ6nrl4Ta+E3+fnDYJi/cAaQSk7N+rTTiZ1n
- CRwJoEJ86O6RgTTMKO8hBuNwxHzeSk1wlixPbYS67tEf1aXQuVHbH2b7dYJrYTcXvWD87m1TJ
- 9xskDhcMf0GBcug+sVnAGlLXY298skhaSN8VMrbBC1Eq5u4xWRCjn9rCoVV5ZRMLzz+6e6aw7
- DkVLTSoSKhZcT046lq7bMZYyRLjsvo33OYEia00VZE9cpi3soXkGdD4q7gy9dED9Gmd7TCywo
- ZpRGsTpjN+ZyGt9i0aR3SsI+xjgmzmrA4wkK4RHQOfaKl2afEx889or3/wF/WsvJ6Pp2G0oC4
- R+BqIYGBsKL0WWzQuJ0EO/Tr9xgmg6/sj043spLKyQS/VLDkm4u+vaJmp6AZixEcQXwM3zEiw
- yOH8/36khCOrUDAY7FnUnfs/TBZJNBRf7ZY+zFGMH88xaoUc+TL1OVeahO4ocyzWZDOm1kX0v
- eZzkyfFfBUXt7JA5ovsValW1J6/EbU+b08BDfc+2IQSH+/Zke+fGZn4ouRhBJg/o4uY1604kJ
- DfpoyMU2miNvMk/uWr0d1rVJKkl/HH/pO3lg92m+V3HJu8Po1fT45nt9NMUPzamCvxFcR/avu
- aKehKTIMxc3tQLKfx8SmXbjw/xVAspCJH5YMpo+eMkxPGy83PDURxlk2Ws14VmjDsv7L0mPuU
- /5gOTZ/jmiTq0MYOscUYfESI3fnCV7WZnY1GXFcOfdDOBC2RQ5Hochjs+Z9Am+EaqizhRmOcd
- KkUs0IJM8cMmojhWYyQr2hxyIfdtFZd28ipAzkfB/swTM001s9ICVDT8VNI0EVtkVilMA1XCe
- QAu0oUPP91XZE4tqecRzOV4PGT6AST80mec2/zwtn593Eb/Hr5hlMgnWRxR0Ef/8O4Bgz8DIY
- jisWwrgo6ONlLatJjyBfeoUSwJYG1T6dDmTFZE+cZDcl04L7hmGMFmKXA==
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7184.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7839217b-5e4c-4b3f-486c-08d93c44a6fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Jul 2021 03:59:40.5118
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: m9uhGRyCJDpDMDB67q6zY/RxQjMT1nBn+1aeuSablXCe4KZNNaFenwWuSewBaAKuRb0tECa/mG55drUpKxQeQD2n2GZl2nlcqW4dfaz0Bj8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4392
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Jun 29, 2021 / 14:43, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>=20
+> The first patch eliminates a deadlock when multiple tasks need to allocat=
+e
+> a system chunk. It reverts a previous fix for a problem that resulted in
+> exhausting the system chunk array and result in a transaction abort when
+> there are many tasks allocating chunks in parallel. Since there is not a
+> simple and short fix for the deadlock that does not bring back the system
+> array exhaustion problem, and the deadlock is relatively easy to trigger
+> on zoned filesystem while the exhaustion problem is not so common, this
+> first patch just revets that previous fix.
+>=20
+> The second patch reworks a bit of the chunk allocation code so that we
+> don't hold onto reserved system space from phase 1 to phase 2 of chunk
+> allocation, which is what leads to system chunk array exhaustion when
+> there's a bunch of tasks doing chunks allocations in parallel (initially
+> observed on PowerPC, with a 64K node size, when running the fallocate
+> tests from stress-ng). The diff of this patch is quite big, but about
+> half of it are just comments.
 
+Thank you for the fix. Before applying this series, I had observed btrfs ha=
+ngs
+during xfstests on btrfs zoned. The hangs happened at 4 test cases: generic=
+/013,
+generic/113, generic/127 and generic/241. After applying the series, I repe=
+ated
+each of the 4 tests cases for 30 minutes, and did not observed the hang. Al=
+so I
+ran through my test set with the series, and no failure was observed. Looks=
+ good
+from testing point of view, then for the series,
 
-On 2021/7/1 =E4=B8=8A=E5=8D=882:40, Martin Raiber wrote:
-> On 18.06.2021 18:18 Martin Raiber wrote:
->> On 10.05.2021 00:14 Martin Raiber wrote:
->>> I get this (rare) issue where btrfs reports an IO error in run_delayed=
-_refs or finish_ordered_io with no underlying device errors being reported=
-. This is with 5.10.26 but with a few patches like the pcpu ENOMEM fix or =
-work-arounds for btrfs ENOSPC issues:
->>>
->>> [1885197.101981] systemd-sysv-generator[2324776]: SysV service '/etc/i=
-nit.d/exim4' lacks a native systemd unit file. Automatically generating a =
-unit file for compatibility. Please update package to include a native sys=
-temd unit file, in order to make it more safe and robust.
->>> [2260628.156893] BTRFS: error (device dm-0) in btrfs_finish_ordered_io=
-:2736: errno=3D-5 IO failure
->>> [2260628.156980] BTRFS info (device dm-0): forced readonly
->>>
->>> This issue occured on two different machines now (on one twice). Both =
-with ECC RAM. One bare metal (where dm-0 is on a NVMe) and one in a VM (wh=
-ere dm-0 is a ceph volume).
->> Just got it again (5.10.43). So I guess the question is how can I trace=
- where this error comes from... The error message points at btrfs_csum_fil=
-e_blocks but nothing beyond that. Grep for EIO and put a WARN_ON at each l=
-ocation?
->>
-> Added the WARN_ON -EIOs. And hit it. It points at read_extent_buffer_pag=
-es (this time), this part before unlock_exit:
+Tested-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
 
-Well, this is quite different from your initial report.
-
-Your initial report is EIO in btrfs_finish_ordered_io(), which happens
-after all data is written back to disk.
-
-But in this particular case, it happens before we submit the data to disk.
-
-In this case, we search csum tree first, to find the csum for the range
-we want to read, before submit the read bio.
-
-Thus they are at completely different path.
-
->
->  =C2=A0=C2=A0=C2=A0 for (i =3D 0; i < num_pages; i++) {
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 page =3D eb->pages[i];
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 wait_on_page_locked(page);
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if (!PageUptodate(page))
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 -->ret =3D -EI=
-O;
->  =C2=A0=C2=A0=C2=A0 }
->
-> Complete dmesg output. In this instance it seems to not be able to read =
-a csum. It doesn't go read only in this case... Maybe it should?
->
-> [Wed Jun 30 10:31:11 2021] systemd[1]: Started Journal Service.
-> [Wed Jun 30 10:43:22 2021] ------------[ cut here ]------------
-> [Wed Jun 30 10:43:22 2021] WARNING: CPU: 13 PID: 3965190 at fs/btrfs/ext=
-ent_io.c:5597 read_extent_buffer_pages+0x346/0x360
-> [Wed Jun 30 10:43:22 2021] Modules linked in: zram bcache crc64 loop dm_=
-crypt bfq xfs dm_mod st sr_mod cdrom bridge stp llc intel_powerclamp coret=
-emp kvm_intel snd_pcm mgag200 snd_timer kvm snd drm_kms_helper iTCO_wdt so=
-undcore dcdbas irqbypass serio_raw pcspkr joydev iTCO_vendor_support evdev=
- i2c_algo_bit i7core_edac sg ipmi_si ipmi_devintf ipmi_msghandler wmi acpi=
-_power_meter button ib_iser rdma_cm iw_cm ib_cm ib_core iscsi_tcp libiscsi=
-_tcp libiscsi scsi_transport_iscsi drm configfs ip_tables x_tables autofs4=
- raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx=
- raid0 multipath linear raid1 md_mod ses enclosure sd_mod hid_generic usbh=
-id hid crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesn=
-i_intel crypto_simd ahci cryptd glue_helper libahci uhci_hcd ehci_pci psmo=
-use mpt3sas ehci_hcd raid_class lpc_ich libata nvme scsi_transport_sas mfd=
-_core nvme_core usbcore t10_pi scsi_mod bnx2
-> [Wed Jun 30 10:43:22 2021] CPU: 13 PID: 3965190 Comm: io_wqe_worker-0 Ta=
-inted: G=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 I=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.10.44 #1
-> [Wed Jun 30 10:43:22 2021] Hardware name: Dell Inc. PowerEdge R510/0DPRK=
-F, BIOS 1.13.0 03/02/2018
-> [Wed Jun 30 10:43:22 2021] RIP: 0010:read_extent_buffer_pages+0x346/0x36=
-0
-> [Wed Jun 30 10:43:22 2021] Code: 48 8b 43 08 a8 01 48 8d 78 ff 48 0f 44 =
-fb 31 f6 e8 8f d5 db ff 48 8b 43 08 48 8d 50 ff a8 01 48 0f 45 da 48 8b 03=
- a8 04 75 ab <0f> 0b 41 be fb ff ff ff eb a1 e8 5b a2 56 00 66 66 2e 0f 1f=
- 84 00
-> [Wed Jun 30 10:43:22 2021] RSP: 0018:ffffc900215ab5f0 EFLAGS: 00010246
-> [Wed Jun 30 10:43:22 2021] RAX: 06ffff80000020a3 RBX: ffffea0008a1b680 R=
-CX: 0000000000000000
-> [Wed Jun 30 10:43:22 2021] RDX: dead0000000000ff RSI: ffffc900215ab588 R=
-DI: ffffffff82208780
-> [Wed Jun 30 10:43:22 2021] RBP: ffff88844c924d68 R08: 000000000000000d R=
-09: 00000000000003bb
-> [Wed Jun 30 10:43:22 2021] R10: 0000000000000001 R11: 0000000000000000 R=
-12: ffff88844c924e10
-> [Wed Jun 30 10:43:22 2021] R13: ffffea00091094c0 R14: 0000000000000000 R=
-15: ffff88844c924e10
-> [Wed Jun 30 10:43:22 2021] FS:=C2=A0 0000000000000000(0000) GS:ffff88871=
-3b80000(0000) knlGS:0000000000000000
-> [Wed Jun 30 10:43:22 2021] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000=
-080050033
-> [Wed Jun 30 10:43:22 2021] CR2: 00007f4c7a7fb00a CR3: 000000012f1ba003 C=
-R4: 00000000000206e0
-> [Wed Jun 30 10:43:22 2021] Call Trace:
-> [Wed Jun 30 10:43:22 2021]=C2=A0 btree_read_extent_buffer_pages+0x9f/0x1=
-10
-> [Wed Jun 30 10:43:22 2021]=C2=A0 read_tree_block+0x36/0x60
-> [Wed Jun 30 10:43:22 2021]=C2=A0 read_block_for_search.isra.0+0x1ab/0x36=
-0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 btrfs_search_slot+0x232/0x970
-> [Wed Jun 30 10:43:22 2021]=C2=A0 btrfs_lookup_csum+0x75/0x170
-> [Wed Jun 30 10:43:22 2021]=C2=A0 btrfs_lookup_bio_sums+0x23a/0x620
-> [Wed Jun 30 10:43:22 2021]=C2=A0 btrfs_submit_compressed_read+0x44f/0x4e=
-0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 btrfs_submit_data_bio+0x170/0x180
-> [Wed Jun 30 10:43:22 2021]=C2=A0 submit_one_bio+0x44/0x70
-> [Wed Jun 30 10:43:22 2021]=C2=A0 extent_readahead+0x374/0x3a0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ? xas_load+0x5/0x70
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ? xa_get_order+0x93/0xd0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ? __mod_memcg_lruvec_state+0x21/0xe0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ? __add_to_page_cache_locked+0x19d/0x3f=
-0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 read_pages+0x83/0x1e0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 page_cache_ra_unbounded+0x1aa/0x1f0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ? find_get_entry+0xd5/0x140
-> [Wed Jun 30 10:43:22 2021]=C2=A0 force_page_cache_ra+0xdc/0x140
-> [Wed Jun 30 10:43:22 2021]=C2=A0 generic_file_buffered_read+0x5d9/0x8e0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 btrfs_file_read_iter+0x38/0xc0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 generic_file_splice_read+0xfc/0x1b0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 do_splice+0x670/0x720
-> [Wed Jun 30 10:43:22 2021]=C2=A0 io_issue_sqe+0xde7/0xfa0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ? pick_next_task_fair+0x32/0x380
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ? __switch_to+0x7b/0x3d0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 io_wq_submit_work+0x50/0x1a0
-> [Wed Jun 30 10:43:22 2021]=C2=A0 io_worker_handle_work+0x1a1/0x570
-> [Wed Jun 30 10:43:22 2021]=C2=A0 io_wqe_worker+0x2c1/0x360
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ? io_worker_handle_work+0x570/0x570
-> [Wed Jun 30 10:43:22 2021]=C2=A0 kthread+0x11b/0x140
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ? __kthread_bind_mask+0x60/0x60
-> [Wed Jun 30 10:43:22 2021]=C2=A0 ret_from_fork+0x1f/0x30
-> [Wed Jun 30 10:43:22 2021] ---[ end trace 32a38f7d02f704b2 ]---
-> [Wed Jun 30 10:43:22 2021] BTRFS info (device dm-0): no csum found for i=
-node 23468615 start 10428416
-> [Wed Jun 30 10:43:22 2021] BTRFS warning (device dm-0): csum failed root=
- 1571 ino 23468615 off 586692173824 csum 0xc0a0c537 expected csum 0x000000=
-00 mirror 1
-
-For this particular case, btrfs first can't find the csum for the range
-of read, and just left the csum as all zeros and continue.
-
-Then the data read from disk will definitely cause a csum mismatch.
-
-This normally means a csum tree corruption.
-
-Can you run btrfs-check on that fs?
-
-Thanks,
-Qu
-> [Wed Jun 30 10:43:22 2021] BTRFS error (device dm-0): bdev /dev/mapper/L=
-UKS-RC-75aba4438f084377be2fc6d7d1f8eba0 errs: wr 0, rd 0, flush 0, corrupt=
- 2, gen 0
->
+--=20
+Best Regards,
+Shin'ichiro Kawasaki=
