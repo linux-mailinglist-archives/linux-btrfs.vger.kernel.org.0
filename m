@@ -2,258 +2,226 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00FC3B988A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 00:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A3D3B9896
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 00:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236865AbhGAWWS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Jul 2021 18:22:18 -0400
-Received: from mout.gmx.net ([212.227.17.22]:43935 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234270AbhGAWWR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Jul 2021 18:22:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625177985;
-        bh=zSZ80HF91K1RkbNsOLW7355e7uUJZr9d+0+tRXyrYyc=;
-        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
-        b=LzWkpucRPLntwJnTJYEuoqqVtdKeblqYgLmd1vd3ZytTzB8wSPrqqkKgz+O4s/EqO
-         rCNmkhjx38eFVy5DR45QMRjTvw7soc9TM1aVFtRIZtdFYOsAF61lyY4KLX/xJ6vqN6
-         DZNa9X1s6hqDxASK6BYL/eQ4ZfmeGTzVtIBuNdWQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7iCg-1lCHmU0sCo-014nIb; Fri, 02
- Jul 2021 00:19:45 +0200
-To:     Martin Raiber <martin@urbackup.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <010201795331ffe5-6933accd-b72f-45f0-be86-c2832b6fe306-000000@eu-west-1.amazonses.com>
- <0102017a1fead031-e0b49bda-297e-42f8-8fde-5567c5cfdec9-000000@eu-west-1.amazonses.com>
- <0102017a5e38aa40-fb2774c8-5be1-4022-abfa-c59fe23f46a3-000000@eu-west-1.amazonses.com>
- <4e6c3598-92b4-30d6-3df8-6b70badbd893@gmx.com>
- <0102017a631abd46-c29f6d05-e5b2-44b1-a945-53f43026154f-000000@eu-west-1.amazonses.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: IO failure without other (device) error
-Message-ID: <6422009e-be80-f753-2243-2a13178a1763@gmx.com>
-Date:   Fri, 2 Jul 2021 06:19:40 +0800
+        id S232926AbhGAWdW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Jul 2021 18:33:22 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:48053 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230213AbhGAWdV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Jul 2021 18:33:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1625178649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mWzxR1GzjU6S5tCT4FVRXYnJ0rFuVqgHcZ5IzkDmn5o=;
+        b=A/U6VAlkBTui3SZt8hRJzbrAacCe45fBrqesepv99+7D2JbL2AzX0AuT5om+r58o4AWMkY
+        o54nkXIviRshTywXbhl5AWtom4lLh74r0GyAW8zAGD4Awj5ElFqDK46Ov5LcvwMf6GLUs1
+        c0CqXTx+tMw/CFLACRFjzqBfZ5BoHiM=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2113.outbound.protection.outlook.com [104.47.18.113])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-34-mD833GW-NmW5PWD-WeTlUg-1; Fri, 02 Jul 2021 00:30:48 +0200
+X-MC-Unique: mD833GW-NmW5PWD-WeTlUg-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WJTkv+zBuEpGz0yywiPjGzyJLgE4mX6fCXIXx+INufPrik0dJMZrE7r1SvI2E6EEQxwg24c+bfIoddMKObfI6EXxglVEijt60tdpB4AYpApvNdscGl2IQ7Dj1xUiGUb81uI9LBSwVpK98sMYzzJwawO9I/s/wXFhMG0OA6aLvSrsqg1cf2ebSzwYsJp35PUF90/DFx4KTKu8aVbbCPJ5dx1K1vuGqOgQEcq94KpnWJPImoFg9osdvT2gwq1aZlI+OAzKyKkQpPMKoeTOHH2EciX0MZcdBEH4hkfkBdmlsspKEvmxOwjNh5iCeGhhLx9iNmpR0E10TosRRvO/h1LAjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TdnGd6/JSNAtxCeDBiSWdD/3bMK4xKuxSuqxs0LEDYI=;
+ b=btZaH87VAqdQQ/2Ea3LuIbTxzapyr38C+sSpwlAx6RQxR6o4o5dKKVZ82gdrzQ+tVQUj03MCoNp/NUAZwryEnqkjZ35P5HltTsOH/2h8ziHdRADg/fFBsm9aw1hb/1acF6BwgKZ8+G0SldyS/Y2yQGHMy8O6PDjs68Ff5GPyVUM5awXSfAJCcFwzXdadk+aF2g4E/NyV2lRmEi52RZl7kIwP3LT5VUVAvGKpYkGt89dSA0UvtjB6aDcSBTOJNp6j+3EoyXXW71Vqef0WpY3TljscizEiTtG6MbiXI8QaD8MZMsXfisIKeSDMNX9pe0HnhgqgFYlUXrU5Bmysh1kbGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AS8PR04MB7671.eurprd04.prod.outlook.com (2603:10a6:20b:299::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22; Thu, 1 Jul
+ 2021 22:30:48 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b4b5:823d:f2fd:d10]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::b4b5:823d:f2fd:d10%9]) with mapi id 15.20.4264.026; Thu, 1 Jul 2021
+ 22:30:47 +0000
+Subject: Re: [PATCH] btrfs-progs: mkfs: follow sectorsize for mixed mode
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20210517095516.129287-1-wqu@suse.com>
+ <20210701194129.GC2610@twin.jikos.cz>
+From:   Qu Wenruo <wqu@suse.com>
+Message-ID: <958e28b6-17cf-cdf2-dbbc-0fc341a3b656@suse.com>
+Date:   Fri, 2 Jul 2021 06:30:36 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <0102017a631abd46-c29f6d05-e5b2-44b1-a945-53f43026154f-000000@eu-west-1.amazonses.com>
+In-Reply-To: <20210701194129.GC2610@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:whEuhWbmT8IvFbSSW+A1d24pWX4OUzrUdXvOZV7WgxfIsamH+Vg
- 1kv84F3KXmwU/FyQNQlewm1hPE1DHzojSdMIiNx4UOZrol27ptNvku+ZYVu+hwSC42fVGrz
- DFYAVYL28AeLv95riIA8zJzD7rVJJIx5QMpeRh6MeHD9oskQoDZZf8FcdQyg/VT66VB+rU+
- CjWaaVrkihsHHKOgH3mQg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:t/QZMiTq1wg=:O1g1YVg9oMbPBQc2Idz8Qf
- T7fUjvBXKo19GvZyFF9EBSUZRPGswuM2fgrHrMkFe9WYSTaJJytUmetneg7bQsdj+Qhb9NpBf
- ur07AU0UN/XezmT/Xvpf/8p0rYBNoiiXnL6UHWPoPuU/wyvdPJ0u208cN0BKyRYtzBfM6z37r
- sEYbNW1YEoDwiEQjMbveZIB2NUJ0SQLoO8rTlcjo6ztZStsKqI3DLZxNt+S0rjzaR4jXiLOZ2
- lIrI6e2cfjnXibPOEOO4tFsg3uU/PZdxZxHA3NFBoc+ZJRweGqWeRpGvFt+yDRlcm+v0CDUZt
- FSXvUQlCFMsqCdCUYB5hYavIRt6Hv19yC3xCFfR7HWiP9XZjtllbQUdSRSy4FU5uc+FA1WfrQ
- sFBHuhvTe0Iq1EWNBzdx2yWBwsQILrXmdLVvUIR0mE+uRyPXYsT03Uvgx0svjqTw9VN+zVYPK
- +GSwvzfSPKvR4f4d9cEKb3MS3HlXDqNmJAZvZVRH6ALaAXvdCslK3VPa3Da+MOFQz/vMAIB70
- 4BinNezOJFW6YsuSOADz9Es0KqY+sOeYEuUC0ijBKKMDs1KnLkNBNe5cnK8cA7F8lAbQGWnOw
- 3s11PVjNBsXMfB+hB3iHVek+4J4zRRwlchn+P7zBDPKfsZocnEOuxSDksZcywsh/hXqegQrxl
- d3ovRHEbUgGsjmzzAmMZj3nX5prwWn8AS+eruMGgR3blClubah1VARSfsaWJcHNESPJfXohgm
- SIa3InHwG3RB1H3zgggciLEqT19vC58+iewADooVDQfRZ9Cm2IUX3GK33DfY9lU1YfYAfwQWi
- 7H12Et9ltP192L8BtK8kFfosFX2O4pLI5uqZ77hqOIoSrFm+nF1zJI/ku5rrGyvnsoP/+DLu7
- elVIb2Dtavbv7qeNNNhafpDs0ZixkT50D2iO+ToogoG7pRwAacHiQ6gi5GGeQWF33PpRz6e9W
- Upqtw1qUfkhCNcyS1QXzf9DcBc5epwVmLyb+OOKpNKXXD8Jt32YUfGLOuTu82ivACtjEKSG05
- cj5veT2x3+Ayqs7VtWnTwFz0kaCJkvOSLDTOtZ/W8bGKsK87LvyXFVBO05H/Txt/SW6vXM3Ti
- ghW31MSKfFhBdHGGgtG5jQhLWFvpdq29jDHwbLXL/sy4Ejl3L82zLSkJg==
+X-Originating-IP: [45.77.180.217]
+X-ClientProxiedBy: TY2PR06CA0023.apcprd06.prod.outlook.com
+ (2603:1096:404:42::35) To AM7PR04MB6821.eurprd04.prod.outlook.com
+ (2603:10a6:20b:105::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (45.77.180.217) by TY2PR06CA0023.apcprd06.prod.outlook.com (2603:1096:404:42::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.22 via Frontend Transport; Thu, 1 Jul 2021 22:30:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9c1cb039-b5ad-4388-85fb-08d93cdfdfb3
+X-MS-TrafficTypeDiagnostic: AS8PR04MB7671:
+X-Microsoft-Antispam-PRVS: <AS8PR04MB767181EE10E4150CF32A5CB6D6009@AS8PR04MB7671.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ce2pU/Cyko2Z0Q81vYdW5xkA47nPIiakIV/+/K1bY1sXV19jvk2HBpUkdUvmvqHHhnhu8bvHdTu7CcGqXNMq/2zvLRoeBTKcppL0wddcXV1rOzqkyU0YAyC5bI9yr1+CvHd8nPGxJWYugsQYTsLUYVNsTJKibToBsA9MIA3ho8xrqflj9NR7Ze7vfs+f5l57mdEKaPrnIpvuO0wY86FctJIV1WAirQllc6yRhnl6owg7P5i4pjZ3LuU3/fT9H/IldqHa7g+e2AcdGflAaYtPERfJJrjZb/UXS3hwBQwGeuo9vuC+lfzve1pf3Y0RAyRNrRCyiTp+s5nCZx8DYMiNM+cNGcwllDENUkcN8ghJ1Hp1aDeIi1nQCQuSVyt3hfTjqtzFmJ7jg47SqYtyQWBpBQ48L2ztDMBWDoQttbRTB85bzb6JzMl2VeW5zijNDSOgXukq52ETCuCbo+P0Xid0DNnNSqeqwCJ4Z9l0dlVpsDBDuRuGWteKXAkgL5WwzBAf5oTS8CCEQSztZ97h36IhbiN6sjLV4Drhe4kZsUmL87BR79xV8LNHsbNoLLIAb4ytMhfNztSR7j4DkHm0Wcps3wjQibC9rIvNiZnDuAO1SIqt6HJ4AxTweqQ7jzMOYZRWmDNfd68iKSbcO0iLiY2SquqatI7qCEpoNqDMzsDEhUZsj/60QyrGJbxw5tTe+Z/PiGwoX+ql7FQ1jqqoBNaPZe4emkEEdmWOw0k2ef49iLtb/k1X+BrUR539lsespQyyH1+h3+++1aKsnIbWgasujCKD94zDTm5KwAahactJvrpiWFEuGxkTAkbOTMVyHFMyILHHe0faiMuTkLkPjVEnkV/EW7sY/fchk0hxaX8ul7hrG3x5KpmOJqYdvUEF6S3UjOoZ3oRlPWuOc9WxcPPmQll9j3qFubhF1A777LZkVto=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39850400004)(136003)(366004)(376002)(36756003)(8676002)(16526019)(316002)(26005)(186003)(8936002)(6666004)(66476007)(55236004)(2906002)(38100700002)(16576012)(66946007)(66556008)(6706004)(86362001)(956004)(83380400001)(966005)(478600001)(31686004)(6486002)(2616005)(5660300002)(31696002)(21314003)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?61eqGVo/aVzXT/vbUZVH2nbWLWkgxv8ASMuN7o+LWzyVCzGzKGPh4b7KxO1t?=
+ =?us-ascii?Q?o3k9Wm3UyB8uM2phb3gzlhV8KK4WiuyVmqQRzawG9vtifSjpswZe1ykfb4LB?=
+ =?us-ascii?Q?csPARuP7GOINVNvUV6vw/RkQWDtKPyDxztThiv+Sb+Hy4IyrVBcbWXSnRvMA?=
+ =?us-ascii?Q?GPeifAsYPWOOs3A3willps78UjZzRXYiOQ2S4vdOnutwoPNA/eoA/zE1JOy6?=
+ =?us-ascii?Q?27rYzD0wQfUIotdPjmDA39usFiHoujPaIQ/gKumArWGNDf/FKQHnj0ozOEa/?=
+ =?us-ascii?Q?beUCBOGhaqXMEcpoPu2JeLn77e/ZrJgBw/0Z07a2MDUqZxobjlEj3Tqj7fpp?=
+ =?us-ascii?Q?PyzSlnb0bqX72bMicAJG/p58Q0+3HyxzNEgLeDbKV5DPeqfzSd7vGJF/gl9G?=
+ =?us-ascii?Q?Ktx8kSTt6Ok7m7ees1GOcjbWUVOEuzzo/ZXfsDnWhHEfXY6r/6vTgM8Usazj?=
+ =?us-ascii?Q?S+V7BBMgyYgM/AFGqPmsGO1PldvPkk7dFqQVVaOOpBUPbjIYjJk2X17Js2pF?=
+ =?us-ascii?Q?bwlcvJ+jhwH/tD7v3wFh1k6RtLOIJtgA8MLwjn3RCJ9f5eO3Wf4QDgD9Ok2Z?=
+ =?us-ascii?Q?eea1vD1D2Lpk499o2MImds4UrJZLsfetBzHcV06APPk5m1ggPMlsDJdTJDNn?=
+ =?us-ascii?Q?EvPqpG1AiyGxfq9bD7SvLzp0c9l8dENn9EeYuLE57oN+5IGG3LYCAj+JX5NZ?=
+ =?us-ascii?Q?azg6l/44ne1GqiDjq93aUgDHFLnTwEIkMYiTa+yEEKkj7iXc27V+qfN3iNM6?=
+ =?us-ascii?Q?5qeka+TXboyUtLND3+rhwf+fruJ6CtxUI/SRGbU6xfnerJrldtt7GaHMl+jo?=
+ =?us-ascii?Q?q+j6dvt/fHajlyZCdQ8yg94I1JE488pqm1cWPIGGv5GDXllj5KFdNM2Y7Txj?=
+ =?us-ascii?Q?WHjeKaTp7JR9QuJ1Qk0uk/mrWd9AwspZeEzftu/S1K0VNH7bnL4NS81QjqPk?=
+ =?us-ascii?Q?3Mxutue9xLfixun/VFMwkD0zhYPxDOYOQakMBZoMokew/Uz9G5FplCUdIB68?=
+ =?us-ascii?Q?fmTC00N0ZE2+/eqa9v6j01HqtnsLe5HYJOK8SgLPxAW+MB82HJ0PVwuTdM2Q?=
+ =?us-ascii?Q?s44ykx/C+69LhCeFL5MbdJ5wGa7hIeCdd6DoYh7dYDgvg+BG/HT8aQML3Ztn?=
+ =?us-ascii?Q?8VH7TldQgTtkYV8oArRMF8ZSD2bKPWjXH0rRU9OE7ryZflrk6YV4mxAuBsZa?=
+ =?us-ascii?Q?P4XynCV9XhQ6zUgNYEkVkkcIFnFR/yoBUDTz+dRLsxPsRLkPGKZjhiHCvgos?=
+ =?us-ascii?Q?p0Y3zgaCiuN4E94Vn8ZI0Cxywk0yIn0H65Z29QJpgF/IiyE3lxUkX6imKqR3?=
+ =?us-ascii?Q?qYhZ+krHFqaSds5/9OPfo59b?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c1cb039-b5ad-4388-85fb-08d93cdfdfb3
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2021 22:30:47.9328
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BpWO/4nqQBcVf1MOGyF1Ilx0bpmxa40gKFfuKaFkK2If2+WDf0srKabqQ+K5TMTI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7671
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/7/2 =E4=B8=8A=E5=8D=881:25, Martin Raiber wrote:
-> On 01.07.2021 03:40 Qu Wenruo wrote:
+On 2021/7/2 =E4=B8=8A=E5=8D=883:41, David Sterba wrote:
+> On Mon, May 17, 2021 at 05:55:16PM +0800, Qu Wenruo wrote:
+>> [BUG]
+>> When running fstests with 4K sectorsize and 64K page size (aka subpage
+>> support), the following tests failed:
 >>
+>>    $ sudo ./check generic/416 generic/619
+>>    FSTYP         -- btrfs
+>>    PLATFORM      -- Linux/aarch64 rockpi4 5.12.0-rc8-custom+ #9 SMP Tue =
+Apr 27 12:49:52 CST 2021
+>>    MKFS_OPTIONS  -- -s 4k /dev/mapper/arm_nvme-scratch1
+>>    MOUNT_OPTIONS -- /dev/mapper/arm_nvme-scratch1 /mnt/scratch
 >>
->> On 2021/7/1 =E4=B8=8A=E5=8D=882:40, Martin Raiber wrote:
->>> On 18.06.2021 18:18 Martin Raiber wrote:
->>>> On 10.05.2021 00:14 Martin Raiber wrote:
->>>>> I get this (rare) issue where btrfs reports an IO error in run_delay=
-ed_refs or finish_ordered_io with no underlying device errors being report=
-ed. This is with 5.10.26 but with a few patches like the pcpu ENOMEM fix o=
-r work-arounds for btrfs ENOSPC issues:
->>>>>
->>>>> [1885197.101981] systemd-sysv-generator[2324776]: SysV service '/etc=
-/init.d/exim4' lacks a native systemd unit file. Automatically generating =
-a unit file for compatibility. Please update package to include a native s=
-ystemd unit file, in order to make it more safe and robust.
->>>>> [2260628.156893] BTRFS: error (device dm-0) in btrfs_finish_ordered_=
-io:2736: errno=3D-5 IO failure
->>>>> [2260628.156980] BTRFS info (device dm-0): forced readonly
->>>>>
->>>>> This issue occured on two different machines now (on one twice). Bot=
-h with ECC RAM. One bare metal (where dm-0 is on a NVMe) and one in a VM (=
-where dm-0 is a ceph volume).
->>>> Just got it again (5.10.43). So I guess the question is how can I tra=
-ce where this error comes from... The error message points at btrfs_csum_f=
-ile_blocks but nothing beyond that. Grep for EIO and put a WARN_ON at each=
- location?
->>>>
->>> Added the WARN_ON -EIOs. And hit it. It points at read_extent_buffer_p=
-ages (this time), this part before unlock_exit:
+>>    generic/416     [failed, exit status 1]- output mismatch (see ~/xfste=
+sts-dev/results//generic/416.out.bad)
+>>       QA output created by 416
+>>      -wrote 16777216/16777216 bytes at offset 0
+>>      -XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>>      +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on =
+/dev/mapper/arm_nvme-scratch1, missing codepage or helper program, or other=
+ error.
+>>      +mount failed
+>>      +(see ~/xfstests-dev/results//generic/416.full for details)
+>>      ...
+>>      (Run 'diff -u ~/xfstests-dev/tests/generic/416.out ~/xfstests-dev/r=
+esults//generic/416.out.bad'  to see the entire diff)
+>>    generic/619     [failed, exit status 1]- output mismatch (see ~/xfste=
+sts-dev/results//generic/619.out.bad)
+>>       QA output created by 619
+>>      -Silence is golden
+>>      +mount: /mnt/scratch: wrong fs type, bad option, bad superblock on =
+/dev/mapper/arm_nvme-scratch1, missing codepage or helper program, or other=
+ error.
+>>      +mount failed
+>>      +(see ~/xfstests-dev/results//generic/619.full for details)
+>>      ...
+>>      (Run 'diff -u ~/xfstests-dev/tests/generic/619.out ~/xfstests-dev/r=
+esults//generic/619.out.bad'  to see the entire diff)
+>>    Ran: generic/416 generic/619
+>>    Failures: generic/416 generic/619
+>>    Failed 2 of 2 tests
 >>
->> Well, this is quite different from your initial report.
+>> [CAUSE]
+>> Those two tests call _scratch_mkfs_sized to create a small fs, all of th=
+em
+>> are smaller than the 256M.
 >>
->> Your initial report is EIO in btrfs_finish_ordered_io(), which happens
->> after all data is written back to disk.
+>> Since the fs is small, fstests choose to pass -M to make a mixed btrfs.
+>> (Let's just ignore whether we should pass -M here).
+>=20
+> I think this is actually the problem, this should be fixed in fstests.
+
+Yeah, but this still expose a problem.
+
+When -s is specified, why nodesize is not chosen automatically when -M=20
+is also specified.
+
+For current -s 4k specification, nodesize is chosen automatically by the=20
+16K default value, not the PAGE_SIZE anymore.
+
+But with -s 4K and -M together, we go 64K as default nodesize which is=20
+totally wrong.
+>=20
 >>
->> But in this particular case, it happens before we submit the data to di=
-sk.
->>
->> In this case, we search csum tree first, to find the csum for the range
->> we want to read, before submit the read bio.
->>
->> Thus they are at completely different path.
-> Yes it fails to read the csum, because read_extent_buffer_pages returns =
--EIO. I made the, I think, reasonable assumption that there is only one is=
-sue in btrfs where -EIO happens without an actual IO error on the underlyi=
-ng device. The original issue has line numbers that point at btrfs_csum_fi=
-le_blocks which calls btrfs_lookup_csum which is in the call path of this =
-issue. Can't confirm it's the same issue because the original report didn'=
-t have the WARN_ONs in there, so feel free to treat them as separate issue=
-s.
->>
->>>
->>>  =C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < num_pages; i++) {
->>>  =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 page =3D eb->pages[i];
->>>  =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 wait_on_page_locked(page)=
-;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 if (!PageUptodate(page))
->>>  =C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 -->ret=
- =3D -EIO;
->>>  =C2=A0=C2=A0=C2=A0=C2=A0 }
->>>
->>> Complete dmesg output. In this instance it seems to not be able to rea=
-d a csum. It doesn't go read only in this case... Maybe it should?
->>>
->>> [Wed Jun 30 10:31:11 2021] kernel log
->>
->> For this particular case, btrfs first can't find the csum for the range
->> of read, and just left the csum as all zeros and continue.
->>
->> Then the data read from disk will definitely cause a csum mismatch.
->>
->> This normally means a csum tree corruption.
->>
->> Can you run btrfs-check on that fs?
->
-> It didn't "find" the csum because it has an -EIO error reading the exten=
-t where the csum is supposed to be stored. It is not a csum tree corruptio=
-n because that would cause different log messages like transid not matchin=
-g or csum of tree nodes being wrong, I think.
+>> Then on 64K page size system, "mkfs.btrfs -s 4K -M -b 128M $dev" will fa=
+il
+>=20
+> When --mixed is used, use both --sectorsize and --nodesize.
 
-Yes, that's what I expect, and feel strange about.
+Nope, on 4K systems, when -s 4k and -M is specififed, nodesize is=20
+automatically chosen as 4K.
 
->
-> Sorry, the file is long deleted. Scrub comes back as clean and I guess t=
-he -EIO error causing the csum read failure was only transient anyway.
->
-> I'm not sufficiently familiar with btrfs/block device/mm subsystem obvio=
-usly but here is one guess what could be wrong.
->
-> It waits for completion for the read of the extent buffer page like this=
-:
->
-> wait_on_page_locked(page);
-> if (!PageUptodate(page))
->  =C2=A0=C2=A0=C2=A0 ret =3D -EIO;
->
-> while in filemap.c it reads a page like this:
->
-> wait_on_page_locked(page);
-> if (PageUptodate(page))
->  =C2=A0=C2=A0=C2=A0 goto out;
-> lock_page(page);
-> if (!page->mapping) {
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 unlock_page(page);
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 put_page(page);
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 goto repeat;
-> }
+No need to specify the nodesize.
 
-Yes, that what we do for data read path, as each time a page get
-unlocked, we can get page invalidator trigger for the page, and when we
-re-lock the page, it may has been invalidated.
+In fact, when possible the nodesize should be automatically chosen.
 
-Although above check has been updated to do extra check including
-page->mapping and page->private check to be extra sure.
-
-> /* Someone else locked and filled the page in a very small window */
-> if (PageUptodate(page)) {
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 unlock_page(page);
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 goto out;
->
-> }
->
-> With the comment:
->
->> /*
->> * Page is not up to date and may be locked due to one of the following
->> * case a: Page is being filled and the page lock is held
->> * case b: Read/write error clearing the page uptodate status
->> * case c: Truncation in progress (page locked)
->> * case d: Reclaim in progress
->> *
->> * Case a, the page will be up to date when the page is unlocked.
->> * There is no need to serialise on the page lock here as the page
->> * is pinned so the lock gives no additional protection. Even if the
->> * page is truncated, the data is still valid if PageUptodate as
->> * it's a race vs truncate race.
->> * Case b, the page will not be up to date
->> * Case c, the page may be truncated but in itself, the data may still
->> * be valid after IO completes as it's a read vs truncate race. The
->> * operation must restart if the page is not uptodate on unlock but
->> * otherwise serialising on page lock to stabilise the mapping gives
->> * no additional guarantees to the caller as the page lock is
->> * released before return.
->> * Case d, similar to truncation. If reclaim holds the page lock, it
->> * will be a race with remove_mapping that determines if the mapping
->> * is valid on unlock but otherwise the data is valid and there is
->> * no need to serialise with page lock.
->> *
->> * As the page lock gives no additional guarantee, we optimistically
->> * wait on the page to be unlocked and check if it's up to date and
->> * use the page if it is. Otherwise, the page lock is required to
->> * distinguish between the different cases. The motivation is that we
->> * avoid spurious serialisations and wakeups when multiple processes
->> * wait on the same page for IO to complete.
->> */
-> So maybe the extent buffer page gets e.g. reclaimed in the small window =
-between unlock and PageUptodate check?
-
-But for metadata case, unlike data path, we have very limited way to
-invalidate/release a page.
-
-Unlike data path, metadata page uses it page->private as pointer to
-extent buffer.
-
-And each time we want to drop a metadata page, we can only do that if
-the extent buffer owning the page can be removed from the extent buffer
-cache.
-
-Thus a unlock metadata page get released halfway is not expected
-behavior at all.
-
->
-> Another option is case b (read/write error), but the NVMe/dm subsystem d=
-oesn't log any error for some reason.
-
-I don't believe that's the case neither, or we should have csum mismatch
-report from btrfs.
-
->
-> I guess I could add the lock and check for mapping and PageError(page) t=
-o narrow it down further?
->
-If you have a proper way to reproduce the bug reliable, I could craft a
-diff for you to debug (with everything output to ftrace buffer to debug)
+Thus this is the problem I am going to solve.
+The fstest failure is just an easy way to expose the bug.
 
 Thanks,
 Qu
+
+>=20
+>> with the following error message:
+>>
+>>    btrfs-progs v5.11
+>>    See http://btrfs.wiki.kernel.org for more information.
+>>
+>>    ERROR: illegal nodesize 65536 (not equal to 4096 for mixed block grou=
+p)
+>>
+>> This is caused by the nodesize selection, which always try to choose the
+>> larger value between pagesize and sectorsize.
+>>
+>> This hardcoded PAGESIZE usage in mkfs.btrfs makes us to choose 64K
+>> nodesize even we specified to use 4K sectorsize.
+>>
+>> [FIX]
+>> Just use sectorsize as nodesize when -M is specified.
+>>
+>> With this fix, above two tests now pass for btrfs subpage case.
+>=20
+> This is changing the mkfs behaviour for everybody just to fix a fstests
+> test case. I disagree to do that. Fstests get weekly releases so if the
+> test is failing now, it won't next week once a patch is applied.
+>=20
+
