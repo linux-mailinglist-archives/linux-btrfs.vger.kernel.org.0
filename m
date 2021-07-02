@@ -2,246 +2,269 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4384E3B99D5
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 02:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE8F3B9A16
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 02:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbhGBACW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Jul 2021 20:02:22 -0400
-Received: from mout.gmx.net ([212.227.17.20]:34187 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234063AbhGBACW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Jul 2021 20:02:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625183986;
-        bh=lQTvw3fKnzPgaYZEA1fjyOw6IXIrjguAi0tTg/G02/g=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=l1gx1qp8oZsCj5Izcn2hh2qnuI1NSH4ZjGkZe8Rl9+ZsKG8gN/dVh28dtBfifgCu5
-         JEOpS+0V6lhc3wuXIBQeOGYQYDKOt5q1omv8cntPhml6HnKIykpkZ5SDlsV7nmYQj9
-         vK5MXWbczy8SwfFo45qacMJ564LcCfRnYkuk5Tyc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIx3C-1leh6B49og-00KRr3; Fri, 02
- Jul 2021 01:59:46 +0200
+        id S234384AbhGBAcz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Jul 2021 20:32:55 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.2]:33772 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234378AbhGBAcz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Jul 2021 20:32:55 -0400
+X-Greylist: delayed 1372 seconds by postgrey-1.27 at vger.kernel.org; Thu, 01 Jul 2021 20:32:54 EDT
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 07DCD400D111A
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Jul 2021 19:07:30 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id z6iPlLj5P7sOiz6iQlKsey; Thu, 01 Jul 2021 19:07:30 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=svnN5JFasnZvlP9YJJWXm87pmoStuhjLGaql0HIrOVo=; b=faV7cYtH/L8MJGUuZDDmesjSgM
+        IDt6+dcpvnBhNUoxNSWWZyQhOKWY3M77VDR8OVaQ7dc4oAB3+WaDJAxfNN4NJ6n8/IP0St6LfwS/x
+        34q+9P2zJdXzEQSJGopboIA9EHfJOdmgcMWj0ISLw6pGUPcMj1xEGbd1/4kIhlSydW+4BnRecfGf7
+        5fZXWdC0qPgbrN74W05keFuf13qJ3cCfF9adcZVHuZWtHX51MPF8qaOuOh66SXp3Ygi42qzP7GktO
+        OKLZJhJU7Huu6tfMYy7QKdccWEJD/yma0uJSjkyQFTeRlvuDCCaea2O9+IZy2K6oUFDI69569/Bjv
+        C7ebCuJw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:38502 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lz6iO-001049-Nw; Thu, 01 Jul 2021 19:07:28 -0500
 Subject: Re: [PATCH] btrfs: add special case to setget helpers for 64k pages
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         David Sterba <dsterba@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
 References: <20210701160039.12518-1-dsterba@suse.com>
  <20210701215740.GA12099@embeddedor>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <fc90ec53-1632-e796-3bf0-f46c5df790bb@gmx.com>
-Date:   Fri, 2 Jul 2021 07:59:42 +0800
+ <fc90ec53-1632-e796-3bf0-f46c5df790bb@gmx.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <dd4346f9-bc3d-b12f-3b32-1e1ecabb5b8b@embeddedor.com>
+Date:   Thu, 1 Jul 2021 19:09:15 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210701215740.GA12099@embeddedor>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <fc90ec53-1632-e796-3bf0-f46c5df790bb@gmx.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:bBlIRarLpqtI4LBmnQALeObyssJvkZGn+4rQAXr4DhGjXikCIXM
- vTWIUwtJSvoftlI4h0/8r7UIv7cNGfZQUaZaoDH4V65+ItAVP3KvWkmsQlxIvIB+BCDvt62
- 4Nq6+1UV09laSwdWQ7jXFdcUhH8DJe1podH3dzqkJr1YpzguwG5WkbXSZGp7z/DtYnD84LT
- wI/kGdLMxMDOTtE3DPkwg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8s5mDgkBICY=:Xtxa7qVnVH8m4yn3sZIGmq
- HMZt7ADqH6Q2d/gy8NmMuQ+Ti3irlwiGreSf6Hl+swT2hR5AiGtrrhcgXTzL1mjFwOewBiM7L
- JnuZA4S7pvzth7ptfXtA/uCqbsZG6qMAIuZ/8WFWgfoT1gQXxf2Vp8VQKsTMJgafQWu0ny27Y
- Wqb6ZCfxYRbG3/nee+h8x3Vbd/38gBWrWGvHXGpUulGp8KsrbeV/ih4Ukfac9bjs7KUtV+POm
- Kdf+GIQNZEhwrjWAsrceGQ03hct2+oAab1j8LOLA2dpOUxEps+YyBKJm2r8yRhrinr/n1JDl4
- m9tdFM/JPfxCK2cBmFg7os9SaB1e5ztRxsgC8X5MT7R0/80NiCYnEZw+Vv1NJGwdPe1Ub37q8
- H9QriAvFW0X2yc+3MUyWKqemTnOY8eVH++dTBtfafBv53lqfOAmIQTTdFehudgJlE5tTJSGyQ
- 5QGcNStIK1QR+Gt1FS5KpD87Z5c6LqrAObigkPEVpNc80fxUguPYVOdrILpaW81DGssELdbXg
- WSabkgnd2xssqOVGtPrO4RhIQWbNndf/zjejVWhmh2Aq6BMiw13WRtQuU/pp2QTXzhD6lm6r8
- r37WLs9INe0Yd0/mGWePOwgkDWCt450Nyii49CmbAO/cQp+txWhmkKRMfcl5PmTtLaFbqbjOl
- YI/nThohWssuOgk2T/0HIrJTxuXhjPzwW1svoy2cc/0zo1raWWEkl+qtnye+qjCf2Q17/YEC5
- 2CVj2xpoZ57QkrLq2xdDqfttDbhK2AV+IIZr0ox3qUL4C7rjh97Jr1notVuFVFk7LSDqkSfL+
- LmVHzevcojooaz1/SjpgfpLco0BWFVR620Ct/gIKXGJ0IJLaeTJl4aTdvi1njM+vnIknKRJGg
- 7L6VvVeWO7Y0IbuU8VWDIYivXBqcQPHonVzVD5kxnLze5Qpv5tkeXhxfMKq0tFxEjgA2ZpBeU
- jeWOsAyT8Ar1l3AdhJsGsMTfjX0gp6b0GXC5ySkli1Hcq9gHppKXN+60/bsJt72cK2X0dMVx1
- +1jd2sZZ4VseePdg8iYV9G9UuNA+X0zAekNEYX+8/5ehCVdNYz36T/QcHlzYD3DrT/2hnqIaD
- zp7wgtmGAszNu+XviEDyca3nxKzI8BYsXLyr2upkDjNeCcmR/7qU+fgbg==
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lz6iO-001049-Nw
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:38502
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/7/2 =E4=B8=8A=E5=8D=885:57, Gustavo A. R. Silva wrote:
-> On Thu, Jul 01, 2021 at 06:00:39PM +0200, David Sterba wrote:
->> On 64K pages the size of the extent_buffer::pages array is 1 and
->> compilation with -Warray-bounds warns due to
+On 7/1/21 18:59, Qu Wenruo wrote:
+> 
+> 
+> On 2021/7/2 上午5:57, Gustavo A. R. Silva wrote:
+>> On Thu, Jul 01, 2021 at 06:00:39PM +0200, David Sterba wrote:
+>>> On 64K pages the size of the extent_buffer::pages array is 1 and
+>>> compilation with -Warray-bounds warns due to
+>>>
+>>>    kaddr = page_address(eb->pages[idx + 1]);
+>>>
+>>> when reading byte range crossing page boundary.
+>>>
+>>> This does never actually overflow the array because on 64K because all
+>>> the data fit in one page and bounds are checked by check_setget_bounds.
+>>>
+>>> To fix the reported overflow and warning add a copy of the non-crossing
+>>> read/write code and put it behind a condition that's evaluated at
+>>> compile time. That way only one implementation remains due to dead code
+>>> elimination.
 >>
->>    kaddr =3D page_address(eb->pages[idx + 1]);
+>> Any chance we can use a flexible-array in struct extent_buffer instead,
+>> so all the warnings are removed?
 >>
->> when reading byte range crossing page boundary.
+>> Something like this:
 >>
->> This does never actually overflow the array because on 64K because all
->> the data fit in one page and bounds are checked by check_setget_bounds.
+>> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+>> index 62027f551b44..b82e8b694a3b 100644
+>> --- a/fs/btrfs/extent_io.h
+>> +++ b/fs/btrfs/extent_io.h
+>> @@ -94,11 +94,11 @@ struct extent_buffer {
 >>
->> To fix the reported overflow and warning add a copy of the non-crossing
->> read/write code and put it behind a condition that's evaluated at
->> compile time. That way only one implementation remains due to dead code
->> elimination.
->
-> Any chance we can use a flexible-array in struct extent_buffer instead,
-> so all the warnings are removed?
->
-> Something like this:
->
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index 62027f551b44..b82e8b694a3b 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -94,11 +94,11 @@ struct extent_buffer {
->
->          struct rw_semaphore lock;
->
-> -       struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->          struct list_head release_list;
->   #ifdef CONFIG_BTRFS_DEBUG
->          struct list_head leak_list;
->   #endif
-> +       struct page *pages[];
->   };
+>>          struct rw_semaphore lock;
+>>
+>> -       struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+>>          struct list_head release_list;
+>>   #ifdef CONFIG_BTRFS_DEBUG
+>>          struct list_head leak_list;
+>>   #endif
+>> +       struct page *pages[];
+>>   };
+> 
+> But wouldn't that make the the size of extent_buffer structure change
+> and affect the kmem cache for it?
 
-But wouldn't that make the the size of extent_buffer structure change
-and affect the kmem cache for it?
+Could you please point out the places in the code that would be
+affected?
 
-Thanks,
-Qu
->
->   /*
->
-> which is actually what is needed in this case to silence the
-> array-bounds warnings: the replacement of the one-element array
-> with a flexible-array member[1] in struct extent_buffer.
->
-> --
-> Gustavo
->
-> [1] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-l=
-ength-and-one-element-arrays
->
+I'm trying to understand this code and see the possibility of
+using a flex-array together with proper memory allocation, so
+we can avoid having one-element array in extent_buffer.
+
+Not sure at what extent this would be possible. So, any pointer
+is greatly appreciate it. :)
+
+Thanks
+--
+Gustavo
+
+> 
+> Thanks,
+> Qu
 >>
->> Link: https://lore.kernel.org/lkml/20210623083901.1d49d19d@canb.auug.or=
-g.au/
->> CC: Gustavo A. R. Silva <gustavoars@kernel.org>
->> Signed-off-by: David Sterba <dsterba@suse.com>
->> ---
->>   fs/btrfs/struct-funcs.c | 66 +++++++++++++++++++++++++---------------=
--
->>   1 file changed, 41 insertions(+), 25 deletions(-)
+>>   /*
 >>
->> diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
->> index 8260f8bb3ff0..51204b280da8 100644
->> --- a/fs/btrfs/struct-funcs.c
->> +++ b/fs/btrfs/struct-funcs.c
->> @@ -73,14 +73,18 @@ u##bits btrfs_get_token_##bits(struct btrfs_map_tok=
-en *token,		\
->>   	}								\
->>   	token->kaddr =3D page_address(token->eb->pages[idx]);		\
->>   	token->offset =3D idx << PAGE_SHIFT;				\
->> -	if (oip + size <=3D PAGE_SIZE)					\
->> +	if (INLINE_EXTENT_BUFFER_PAGES =3D=3D 1) {				\
->>   		return get_unaligned_le##bits(token->kaddr + oip);	\
->> +	} else {							\
->> +		if (oip + size <=3D PAGE_SIZE)				\
->> +			return get_unaligned_le##bits(token->kaddr + oip); \
->>   									\
->> -	memcpy(lebytes, token->kaddr + oip, part);			\
->> -	token->kaddr =3D page_address(token->eb->pages[idx + 1]);		\
->> -	token->offset =3D (idx + 1) << PAGE_SHIFT;			\
->> -	memcpy(lebytes + part, token->kaddr, size - part);		\
->> -	return get_unaligned_le##bits(lebytes);				\
->> +		memcpy(lebytes, token->kaddr + oip, part);		\
->> +		token->kaddr =3D page_address(token->eb->pages[idx + 1]);	\
->> +		token->offset =3D (idx + 1) << PAGE_SHIFT;		\
->> +		memcpy(lebytes + part, token->kaddr, size - part);	\
->> +		return get_unaligned_le##bits(lebytes);			\
->> +	}								\
->>   }									\
->>   u##bits btrfs_get_##bits(const struct extent_buffer *eb,		\
->>   			 const void *ptr, unsigned long off)		\
->> @@ -94,13 +98,17 @@ u##bits btrfs_get_##bits(const struct extent_buffer=
- *eb,		\
->>   	u8 lebytes[sizeof(u##bits)];					\
->>   									\
->>   	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
->> -	if (oip + size <=3D PAGE_SIZE)					\
->> +	if (INLINE_EXTENT_BUFFER_PAGES =3D=3D 1) {				\
->>   		return get_unaligned_le##bits(kaddr + oip);		\
->> +	} else {							\
->> +		if (oip + size <=3D PAGE_SIZE)				\
->> +			return get_unaligned_le##bits(kaddr + oip);	\
->>   									\
->> -	memcpy(lebytes, kaddr + oip, part);				\
->> -	kaddr =3D page_address(eb->pages[idx + 1]);			\
->> -	memcpy(lebytes + part, kaddr, size - part);			\
->> -	return get_unaligned_le##bits(lebytes);				\
->> +		memcpy(lebytes, kaddr + oip, part);			\
->> +		kaddr =3D page_address(eb->pages[idx + 1]);		\
->> +		memcpy(lebytes + part, kaddr, size - part);		\
->> +		return get_unaligned_le##bits(lebytes);			\
->> +	}								\
->>   }									\
->>   void btrfs_set_token_##bits(struct btrfs_map_token *token,		\
->>   			    const void *ptr, unsigned long off,		\
->> @@ -124,15 +132,19 @@ void btrfs_set_token_##bits(struct btrfs_map_toke=
-n *token,		\
->>   	}								\
->>   	token->kaddr =3D page_address(token->eb->pages[idx]);		\
->>   	token->offset =3D idx << PAGE_SHIFT;				\
->> -	if (oip + size <=3D PAGE_SIZE) {					\
->> +	if (INLINE_EXTENT_BUFFER_PAGES =3D=3D 1) {				\
->>   		put_unaligned_le##bits(val, token->kaddr + oip);	\
->> -		return;							\
->> +	} else {							\
->> +		if (oip + size <=3D PAGE_SIZE) {				\
->> +			put_unaligned_le##bits(val, token->kaddr + oip); \
->> +			return;						\
->> +		}							\
->> +		put_unaligned_le##bits(val, lebytes);			\
->> +		memcpy(token->kaddr + oip, lebytes, part);		\
->> +		token->kaddr =3D page_address(token->eb->pages[idx + 1]);	\
->> +		token->offset =3D (idx + 1) << PAGE_SHIFT;		\
->> +		memcpy(token->kaddr, lebytes + part, size - part);	\
->>   	}								\
->> -	put_unaligned_le##bits(val, lebytes);				\
->> -	memcpy(token->kaddr + oip, lebytes, part);			\
->> -	token->kaddr =3D page_address(token->eb->pages[idx + 1]);		\
->> -	token->offset =3D (idx + 1) << PAGE_SHIFT;			\
->> -	memcpy(token->kaddr, lebytes + part, size - part);		\
->>   }									\
->>   void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,	\
->>   		      unsigned long off, u##bits val)			\
->> @@ -146,15 +158,19 @@ void btrfs_set_##bits(const struct extent_buffer =
-*eb, void *ptr,	\
->>   	u8 lebytes[sizeof(u##bits)];					\
->>   									\
->>   	ASSERT(check_setget_bounds(eb, ptr, off, size));		\
->> -	if (oip + size <=3D PAGE_SIZE) {					\
->> +	if (INLINE_EXTENT_BUFFER_PAGES =3D=3D 1) {				\
->>   		put_unaligned_le##bits(val, kaddr + oip);		\
->> -		return;							\
->> -	}								\
->> +	} else {							\
->> +		if (oip + size <=3D PAGE_SIZE) {				\
->> +			put_unaligned_le##bits(val, kaddr + oip);	\
->> +			return;						\
->> +		}							\
->>   									\
->> -	put_unaligned_le##bits(val, lebytes);				\
->> -	memcpy(kaddr + oip, lebytes, part);				\
->> -	kaddr =3D page_address(eb->pages[idx + 1]);			\
->> -	memcpy(kaddr, lebytes + part, size - part);			\
->> +		put_unaligned_le##bits(val, lebytes);			\
->> +		memcpy(kaddr + oip, lebytes, part);			\
->> +		kaddr =3D page_address(eb->pages[idx + 1]);		\
->> +		memcpy(kaddr, lebytes + part, size - part);		\
->> +	}								\
->>   }
+>> which is actually what is needed in this case to silence the
+>> array-bounds warnings: the replacement of the one-element array
+>> with a flexible-array member[1] in struct extent_buffer.
 >>
->>   DEFINE_BTRFS_SETGET_BITS(8)
->> --
->> 2.31.1
+>> -- 
+>> Gustavo
 >>
+>> [1] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+>>
+>>>
+>>> Link: https://lore.kernel.org/lkml/20210623083901.1d49d19d@canb.auug.org.au/
+>>> CC: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> Signed-off-by: David Sterba <dsterba@suse.com>
+>>> ---
+>>>   fs/btrfs/struct-funcs.c | 66 +++++++++++++++++++++++++----------------
+>>>   1 file changed, 41 insertions(+), 25 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
+>>> index 8260f8bb3ff0..51204b280da8 100644
+>>> --- a/fs/btrfs/struct-funcs.c
+>>> +++ b/fs/btrfs/struct-funcs.c
+>>> @@ -73,14 +73,18 @@ u##bits btrfs_get_token_##bits(struct btrfs_map_token *token,        \
+>>>       }                                \
+>>>       token->kaddr = page_address(token->eb->pages[idx]);        \
+>>>       token->offset = idx << PAGE_SHIFT;                \
+>>> -    if (oip + size <= PAGE_SIZE)                    \
+>>> +    if (INLINE_EXTENT_BUFFER_PAGES == 1) {                \
+>>>           return get_unaligned_le##bits(token->kaddr + oip);    \
+>>> +    } else {                            \
+>>> +        if (oip + size <= PAGE_SIZE)                \
+>>> +            return get_unaligned_le##bits(token->kaddr + oip); \
+>>>                                       \
+>>> -    memcpy(lebytes, token->kaddr + oip, part);            \
+>>> -    token->kaddr = page_address(token->eb->pages[idx + 1]);        \
+>>> -    token->offset = (idx + 1) << PAGE_SHIFT;            \
+>>> -    memcpy(lebytes + part, token->kaddr, size - part);        \
+>>> -    return get_unaligned_le##bits(lebytes);                \
+>>> +        memcpy(lebytes, token->kaddr + oip, part);        \
+>>> +        token->kaddr = page_address(token->eb->pages[idx + 1]);    \
+>>> +        token->offset = (idx + 1) << PAGE_SHIFT;        \
+>>> +        memcpy(lebytes + part, token->kaddr, size - part);    \
+>>> +        return get_unaligned_le##bits(lebytes);            \
+>>> +    }                                \
+>>>   }                                    \
+>>>   u##bits btrfs_get_##bits(const struct extent_buffer *eb,        \
+>>>                const void *ptr, unsigned long off)        \
+>>> @@ -94,13 +98,17 @@ u##bits btrfs_get_##bits(const struct extent_buffer *eb,        \
+>>>       u8 lebytes[sizeof(u##bits)];                    \
+>>>                                       \
+>>>       ASSERT(check_setget_bounds(eb, ptr, off, size));        \
+>>> -    if (oip + size <= PAGE_SIZE)                    \
+>>> +    if (INLINE_EXTENT_BUFFER_PAGES == 1) {                \
+>>>           return get_unaligned_le##bits(kaddr + oip);        \
+>>> +    } else {                            \
+>>> +        if (oip + size <= PAGE_SIZE)                \
+>>> +            return get_unaligned_le##bits(kaddr + oip);    \
+>>>                                       \
+>>> -    memcpy(lebytes, kaddr + oip, part);                \
+>>> -    kaddr = page_address(eb->pages[idx + 1]);            \
+>>> -    memcpy(lebytes + part, kaddr, size - part);            \
+>>> -    return get_unaligned_le##bits(lebytes);                \
+>>> +        memcpy(lebytes, kaddr + oip, part);            \
+>>> +        kaddr = page_address(eb->pages[idx + 1]);        \
+>>> +        memcpy(lebytes + part, kaddr, size - part);        \
+>>> +        return get_unaligned_le##bits(lebytes);            \
+>>> +    }                                \
+>>>   }                                    \
+>>>   void btrfs_set_token_##bits(struct btrfs_map_token *token,        \
+>>>                   const void *ptr, unsigned long off,        \
+>>> @@ -124,15 +132,19 @@ void btrfs_set_token_##bits(struct btrfs_map_token *token,        \
+>>>       }                                \
+>>>       token->kaddr = page_address(token->eb->pages[idx]);        \
+>>>       token->offset = idx << PAGE_SHIFT;                \
+>>> -    if (oip + size <= PAGE_SIZE) {                    \
+>>> +    if (INLINE_EXTENT_BUFFER_PAGES == 1) {                \
+>>>           put_unaligned_le##bits(val, token->kaddr + oip);    \
+>>> -        return;                            \
+>>> +    } else {                            \
+>>> +        if (oip + size <= PAGE_SIZE) {                \
+>>> +            put_unaligned_le##bits(val, token->kaddr + oip); \
+>>> +            return;                        \
+>>> +        }                            \
+>>> +        put_unaligned_le##bits(val, lebytes);            \
+>>> +        memcpy(token->kaddr + oip, lebytes, part);        \
+>>> +        token->kaddr = page_address(token->eb->pages[idx + 1]);    \
+>>> +        token->offset = (idx + 1) << PAGE_SHIFT;        \
+>>> +        memcpy(token->kaddr, lebytes + part, size - part);    \
+>>>       }                                \
+>>> -    put_unaligned_le##bits(val, lebytes);                \
+>>> -    memcpy(token->kaddr + oip, lebytes, part);            \
+>>> -    token->kaddr = page_address(token->eb->pages[idx + 1]);        \
+>>> -    token->offset = (idx + 1) << PAGE_SHIFT;            \
+>>> -    memcpy(token->kaddr, lebytes + part, size - part);        \
+>>>   }                                    \
+>>>   void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,    \
+>>>                 unsigned long off, u##bits val)            \
+>>> @@ -146,15 +158,19 @@ void btrfs_set_##bits(const struct extent_buffer *eb, void *ptr,    \
+>>>       u8 lebytes[sizeof(u##bits)];                    \
+>>>                                       \
+>>>       ASSERT(check_setget_bounds(eb, ptr, off, size));        \
+>>> -    if (oip + size <= PAGE_SIZE) {                    \
+>>> +    if (INLINE_EXTENT_BUFFER_PAGES == 1) {                \
+>>>           put_unaligned_le##bits(val, kaddr + oip);        \
+>>> -        return;                            \
+>>> -    }                                \
+>>> +    } else {                            \
+>>> +        if (oip + size <= PAGE_SIZE) {                \
+>>> +            put_unaligned_le##bits(val, kaddr + oip);    \
+>>> +            return;                        \
+>>> +        }                            \
+>>>                                       \
+>>> -    put_unaligned_le##bits(val, lebytes);                \
+>>> -    memcpy(kaddr + oip, lebytes, part);                \
+>>> -    kaddr = page_address(eb->pages[idx + 1]);            \
+>>> -    memcpy(kaddr, lebytes + part, size - part);            \
+>>> +        put_unaligned_le##bits(val, lebytes);            \
+>>> +        memcpy(kaddr + oip, lebytes, part);            \
+>>> +        kaddr = page_address(eb->pages[idx + 1]);        \
+>>> +        memcpy(kaddr, lebytes + part, size - part);        \
+>>> +    }                                \
+>>>   }
+>>>
+>>>   DEFINE_BTRFS_SETGET_BITS(8)
+>>> -- 
+>>> 2.31.1
+>>>
