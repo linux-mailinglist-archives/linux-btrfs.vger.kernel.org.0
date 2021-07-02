@@ -2,175 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00AC3B9F0F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 12:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4BD3B9F18
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 12:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhGBK1s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Jul 2021 06:27:48 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59220 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbhGBK1q (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jul 2021 06:27:46 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8FED120079;
-        Fri,  2 Jul 2021 10:25:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625221513;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eObXKMArKaHNSJD2PyqWy7nPDLUv3P/3WnSz8h6j82g=;
-        b=f7o+5Qzk1uGtK5FAGMPcLFg/SlPp2W1NjmZDgsQbNFNacNIk4J/BvVB4sHpKzz95syF33a
-        1fbRrbK/rOJfWkhjyLA1gnxxBps8K5lpjMvLIn6BD2hmkQy03mWeqOAKEsA8fWRlOG952G
-        e0MhdT/24n1/9YcwV3l5sr5vEW62798=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625221513;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eObXKMArKaHNSJD2PyqWy7nPDLUv3P/3WnSz8h6j82g=;
-        b=pgRAWBwi/RNVUyJUuwrxb0FZIK9KlaBmK8OGPpuLanWpUlsVopXKRLMD3AWX7sdOeqn19K
-        bFmPRO4HTlHOdNBw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 86C97A3B81;
-        Fri,  2 Jul 2021 10:25:13 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6E839DA6FD; Fri,  2 Jul 2021 12:22:42 +0200 (CEST)
-Date:   Fri, 2 Jul 2021 12:22:42 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add special case to setget helpers for 64k pages
-Message-ID: <20210702102242.GD2610@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210701160039.12518-1-dsterba@suse.com>
- <20210701215740.GA12099@embeddedor>
- <fc90ec53-1632-e796-3bf0-f46c5df790bb@gmx.com>
- <dd4346f9-bc3d-b12f-3b32-1e1ecabb5b8b@embeddedor.com>
- <62ec2948-77a3-6e50-7940-8de259b8671f@gmx.com>
- <20210702003936.GA13456@embeddedor>
+        id S231151AbhGBKbz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Jul 2021 06:31:55 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:28495 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhGBKbz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jul 2021 06:31:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1625221764; x=1656757764;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=a+t86cZnTnAfFT5OWC7YMRqkGbz3z7vT5zRkrPSCi3E=;
+  b=TeywUR6EkG1PQwqcKrsSp1240WWEzZtOAay0kNkaxp3KbVAV7XYRI8LQ
+   warcshm27M3RZevwkH09MfQTdLfbxRGYHYeTkH8feOa4HzGVsrQ6OuEnY
+   xcK7bExyJy8AIuJiXh17LTuf6EMbNel2N2pKNTduac8wqZbIVTudpUDPi
+   ghRGeWRd2rZXVWQZBevrnuBizyxEc5yL4wz6yFfg8OFuPp6+uq3JPNocs
+   IyR4D2ZOXZe8Bc5bj5cpGNUd36sXkpHClpR47hvWn+l6LMjKOdAb6rPxO
+   /AEa07QQkedvKDrCSov7VrXT7CUlOo/ZRek3/fpMkveyEVHtfw4RSRX8m
+   Q==;
+IronPort-SDR: lus6fU8lLg5QLZaNZUV5kmtCZrHNnNyeSfCoFx+0z8aNRbAR8deZqo9tZWAqkFhkOahvldaJTx
+ 74NExRmm1tVNEe5+FCBvFsgsK1QrZ8z8z6MInD16VXiRvkm3LL7oi4afOm6aoEMeqQd2mFMtKt
+ PXjh//iMbNENT6+t+UKfCbvJx+W0KVzw9vOQVFRjH33SRPf7MN0Axkx3GFj/O3ziYRBabP5I6E
+ /6WlNlaI1PBUVMq2nn5dcXCas8KRy4a/m/ft4A4zbbF7XraDQm9cWEHE7mnuRU7M6l2P7VFjH4
+ VQ8=
+X-IronPort-AV: E=Sophos;i="5.83,317,1616428800"; 
+   d="scan'208";a="174132996"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 02 Jul 2021 18:29:23 +0800
+IronPort-SDR: u576MTt3DGllXEUBrlVUrH5aYnHXwvG0574WoNeKpKmVrPqI+ZcYJYdT6/s3Cg9SWDvPNT7L9S
+ 6+NA8IRKvPmsSUHgWkcJNNqTy8XMvkw/7xqqzYBCS1ldlRkC3F0bV+bxBXF/14k/6UPxcSAkvS
+ 0UTGZAM8UQdomA97LuinEhf7Fs4g8i9jjNkfxi0E7hJyYOc7qJXMvM4dZ+Ek5jmdhliTbyiycM
+ gaB3rGRmHCLN158q0OLde21NwhtEbBZfNUIUduIe19sw8qHWduqlFo/7Pj8tPWO7O8kHPz5Ytw
+ DEWjPP3rdoWlH1WihUibkMmW
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Jul 2021 03:07:45 -0700
+IronPort-SDR: 3BCMBuIaWwrFS2xH1xg22UBBwUJi1PAZCphZJ6Rsslr6H01wOfp5c+/mdnssNcjUMa3ZMFqtGL
+ c6F8gVW7DSsvco21AmvCUwzDqp/c+Jyzq3b2Eba/ds1328lFHhT3g3uWwIljqhS9bJ68EfCV87
+ sGPSxE1whb8jt1e60a0mboJGCdQL0uMCmKaUhocYFthvPTeT5To1u00xE9HD+QirvbfCbdywxH
+ uTiOnI2EBuask1h+emiwG5mW53ZVPlakSRhjd+0JZaoQTQdasvhyS3pdp2e1EHvMm6dn8y/Wwp
+ xQk=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 02 Jul 2021 03:29:22 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Subject: [PATCH v2] btrfs: zoned: revert "btrfs: zoned: fail mount if the device does not support zone append"
+Date:   Fri,  2 Jul 2021 19:29:16 +0900
+Message-Id: <a6b7c5c38267fb410a4a4f711e986c863790ddf8.1625221720.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210702003936.GA13456@embeddedor>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 07:39:36PM -0500, Gustavo A. R. Silva wrote:
-> On Fri, Jul 02, 2021 at 08:21:31AM +0800, Qu Wenruo wrote:
-> > On 2021/7/2 上午8:09, Gustavo A. R. Silva wrote:
-> > > On 7/1/21 18:59, Qu Wenruo wrote:
-> > > > On 2021/7/2 上午5:57, Gustavo A. R. Silva wrote:
-> > > > > On Thu, Jul 01, 2021 at 06:00:39PM +0200, David Sterba wrote:
-> > > > > > On 64K pages the size of the extent_buffer::pages array is 1 and
-> > > > > > compilation with -Warray-bounds warns due to
-> > > > > > 
-> > > > > >     kaddr = page_address(eb->pages[idx + 1]);
-> > > > > > 
-> > > > > > when reading byte range crossing page boundary.
-> > > > > > 
-> > > > > > This does never actually overflow the array because on 64K because all
-> > > > > > the data fit in one page and bounds are checked by check_setget_bounds.
-> > > > > > 
-> > > > > > To fix the reported overflow and warning add a copy of the non-crossing
-> > > > > > read/write code and put it behind a condition that's evaluated at
-> > > > > > compile time. That way only one implementation remains due to dead code
-> > > > > > elimination.
-> > > > > 
-> > > > > Any chance we can use a flexible-array in struct extent_buffer instead,
-> > > > > so all the warnings are removed?
-> > > > > 
-> > > > > Something like this:
-> > > > > 
-> > > > > diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> > > > > index 62027f551b44..b82e8b694a3b 100644
-> > > > > --- a/fs/btrfs/extent_io.h
-> > > > > +++ b/fs/btrfs/extent_io.h
-> > > > > @@ -94,11 +94,11 @@ struct extent_buffer {
-> > > > > 
-> > > > >           struct rw_semaphore lock;
-> > > > > 
-> > > > > -       struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
-> > > > >           struct list_head release_list;
-> > > > >    #ifdef CONFIG_BTRFS_DEBUG
-> > > > >           struct list_head leak_list;
-> > > > >    #endif
-> > > > > +       struct page *pages[];
-> > > > >    };
-> > > > 
-> > > > But wouldn't that make the the size of extent_buffer structure change
-> > > > and affect the kmem cache for it?
-> > > 
-> > > Could you please point out the places in the code that would be
-> > > affected?
-> > 
-> > Sure, the direct code get affected is here:
-> > 
-> > extent_io.c:
-> > int __init extent_io_init(void)
-> > {
-> >         extent_buffer_cache = kmem_cache_create("btrfs_extent_buffer",
-> >                         sizeof(struct extent_buffer), 0,
-> >                         SLAB_MEM_SPREAD, NULL);
-> > 
-> > So here we can no longer use sizeof(struct extent_buffer);
-> > 
-> > Furthermore, this function is called at btrfs module load time,
-> > at that time we have no idea how large the extent buffer could be, thus we
-> > must allocate a large enough cache for extent buffer.
-> > 
-> > Thus the size will be fixed to the current size, no matter if we use flex
-> > array or not.
-> > 
-> > Though I'm not sure if using such flex array with fixed real size can silent
-> > the warning though.
-> 
-> Yeah; I think this might be the right solution:
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 9e81d25dea70..4cf0b72fdd9f 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -232,8 +232,9 @@ int __init extent_state_cache_init(void)
->  int __init extent_io_init(void)
->  {
->         extent_buffer_cache = kmem_cache_create("btrfs_extent_buffer",
-> -                       sizeof(struct extent_buffer), 0,
-> -                       SLAB_MEM_SPREAD, NULL);
-> +                       struct_size((struct extent_buffer *)0, pages,
-> +                                   INLINE_EXTENT_BUFFER_PAGES),
-> +                       0, SLAB_MEM_SPREAD, NULL);
->         if (!extent_buffer_cache)
->                 return -ENOMEM;
-> 
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index 62027f551b44..b82e8b694a3b 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -94,11 +94,11 @@ struct extent_buffer {
-> 
->         struct rw_semaphore lock;
-> 
-> -       struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->         struct list_head release_list;
->  #ifdef CONFIG_BTRFS_DEBUG
->         struct list_head leak_list;
->  #endif
-> +       struct page *pages[];
+Now that commit f34ee1dce642 ("dm crypt: Fix zoned block device support")
+is merged in master, the device-mapper code can fully emulate zone append
+there's no need for this check anymore.
 
-IMHO this is going the wrong way, INLINE_EXTENT_BUFFER_PAGES is a
-compile time constant and the array is not variable sized at all, so
-adding the end member and using struct_size is just manually coding
-what would compiler do for free.
+This reverts commit 1d68128c107a ("btrfs: zoned: fail mount if the device
+does not support zone append").
+
+Cc: Naohiro  Aota <naohiro.aota@wdc.com>
+Cc: Damien Le Moal <damien.lemoal@wdc.com>
+Singed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/zoned.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 297c0b1c0634..e4087a2364a2 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -354,13 +354,6 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device)
+ 	if (!IS_ALIGNED(nr_sectors, zone_sectors))
+ 		zone_info->nr_zones++;
+ 
+-	if (bdev_is_zoned(bdev) && zone_info->max_zone_append_size == 0) {
+-		btrfs_err(fs_info, "zoned: device %pg does not support zone append",
+-			  bdev);
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+ 	zone_info->seq_zones = bitmap_zalloc(zone_info->nr_zones, GFP_KERNEL);
+ 	if (!zone_info->seq_zones) {
+ 		ret = -ENOMEM;
+-- 
+2.31.1
+
