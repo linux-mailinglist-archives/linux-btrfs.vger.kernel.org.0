@@ -2,103 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF0C3BA0B7
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 14:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B2B3BA0D3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 15:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhGBMxS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Jul 2021 08:53:18 -0400
-Received: from mail-qk1-f175.google.com ([209.85.222.175]:36488 "EHLO
-        mail-qk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbhGBMxR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jul 2021 08:53:17 -0400
-Received: by mail-qk1-f175.google.com with SMTP id c3so8226679qkc.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Jul 2021 05:50:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EifV/LfZwY4P1MKXsR6R17aefJ52QOFWSQcmdGLH1Tc=;
-        b=libLBBVfkFDvd8xNUXeUvG8HExwQrU4UoryWIWsbBS3wQCTWeyT65c6QjdNKJt2Zvx
-         YtwBd/JlpR7W9KGAKPbHdKo97RV1Dp/B2xTJqc8fz9w+OVPh10Cb5l+GYpzRSmoXNeK5
-         OFcSu+muU38PgybhAUTyFZ5y3suKMPvswdDEnRjZrx5cQ1RkSSOtitumz6v/U30Anp02
-         QvqgGKQ+/ymMxzg9PgmdtndvNaLRW+MxFqk7Pdh2bxByEIzznpRBitW96HGBZrjHVy2e
-         QZeqDMhrUct5KrEsPYaOLGTDkuxHOWNRd3LQlZyAPBBVyTtNNvUX4+ZSeeuJho7mrR/w
-         Q0JQ==
-X-Gm-Message-State: AOAM532nsm4cY8MhCSfMRC59p99BU628QgtxKWaqI2KKzRBmQsQXixyx
-        mCNU2e48y2TV12re/pYWYXPK61SVJxQ=
-X-Google-Smtp-Source: ABdhPJyz/uYg92F7NYgYv8v2ZoRxB5teBm6lvvuGAAYbn8nVSjy++EenPDtI+PYJSTHQbTN2gKaH0w==
-X-Received: by 2002:a37:5c87:: with SMTP id q129mr5241838qkb.137.1625230244228;
-        Fri, 02 Jul 2021 05:50:44 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id c22sm1349579qka.95.2021.07.02.05.50.43
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 02 Jul 2021 05:50:44 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id r135so16305080ybc.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Jul 2021 05:50:43 -0700 (PDT)
-X-Received: by 2002:a25:be8a:: with SMTP id i10mr6747986ybk.176.1625230243632;
- Fri, 02 Jul 2021 05:50:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <2069666c4c5f68fafe0cfefdbc880fa6b4969217.1625225912.git.johannes.thumshirn@wdc.com>
-In-Reply-To: <2069666c4c5f68fafe0cfefdbc880fa6b4969217.1625225912.git.johannes.thumshirn@wdc.com>
-From:   Neal Gompa <ngompa@fedoraproject.org>
-Date:   Fri, 2 Jul 2021 08:50:07 -0400
-X-Gmail-Original-Message-ID: <CAEg-Je9whNMO4r4dKi1vTWF14CFsrqusHzNFjqp6dn1nO2138w@mail.gmail.com>
-Message-ID: <CAEg-Je9whNMO4r4dKi1vTWF14CFsrqusHzNFjqp6dn1nO2138w@mail.gmail.com>
-Subject: Re: [PATCH v3] btrfs: zoned: revert "btrfs: zoned: fail mount if the
- device does not support zone append"
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232377AbhGBNEl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Jul 2021 09:04:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47286 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232250AbhGBNEl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jul 2021 09:04:41 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7CA0121E76;
+        Fri,  2 Jul 2021 13:02:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625230928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc;
+        bh=UVO/7CoBdvjM84nh+SBpq9bVu5gGtrn5WsPZ4T9LE04=;
+        b=Scf1olJjTLDUdqyybA2GMdI9vPl6l/g35K1MjkeZG3hnBJCAMelH02UoSq06gPE8fJ+qXQ
+        A40z4R4KkSRJ5RWNfbWG05f+RDy7MAz+Ly129kxctb+0lAYufxJz+Gk6pecuzz+g8/8910
+        Rs0bDF0hYPCkiGwbjc8bIsC39jfV/Do=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 41D5D11C84;
+        Fri,  2 Jul 2021 13:02:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625230928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc;
+        bh=UVO/7CoBdvjM84nh+SBpq9bVu5gGtrn5WsPZ4T9LE04=;
+        b=Scf1olJjTLDUdqyybA2GMdI9vPl6l/g35K1MjkeZG3hnBJCAMelH02UoSq06gPE8fJ+qXQ
+        A40z4R4KkSRJ5RWNfbWG05f+RDy7MAz+Ly129kxctb+0lAYufxJz+Gk6pecuzz+g8/8910
+        Rs0bDF0hYPCkiGwbjc8bIsC39jfV/Do=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id t8fuDFAO32CtNAAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Fri, 02 Jul 2021 13:02:08 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs: Minor improvements to should_alloc_chunk
+Date:   Fri,  2 Jul 2021 16:02:06 +0300
+Message-Id: <20210702130206.30909-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 2, 2021 at 7:40 AM Johannes Thumshirn
-<johannes.thumshirn@wdc.com> wrote:
->
-> Now that commit f34ee1dce642 ("dm crypt: Fix zoned block device support")
-> is merged in master, the device-mapper code can fully emulate zone append.
-> So there's no need for this check anymore.
->
-> This reverts commit 1d68128c107a ("btrfs: zoned: fail mount if the device
-> does not support zone append").
->
-> Cc: Naohiro  Aota <naohiro.aota@wdc.com>
-> Cc: Damien Le Moal <damien.lemoal@wdc.com>
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/zoned.c | 7 -------
->  1 file changed, 7 deletions(-)
->
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index 297c0b1c0634..e4087a2364a2 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -354,13 +354,6 @@ int btrfs_get_dev_zone_info(struct btrfs_device *device)
->         if (!IS_ALIGNED(nr_sectors, zone_sectors))
->                 zone_info->nr_zones++;
->
-> -       if (bdev_is_zoned(bdev) && zone_info->max_zone_append_size == 0) {
-> -               btrfs_err(fs_info, "zoned: device %pg does not support zone append",
-> -                         bdev);
-> -               ret = -EINVAL;
-> -               goto out;
-> -       }
-> -
->         zone_info->seq_zones = bitmap_zalloc(zone_info->nr_zones, GFP_KERNEL);
->         if (!zone_info->seq_zones) {
->                 ret = -ENOMEM;
-> --
-> 2.31.1
->
+Since it's a predicate function make it explicitly return boolean. Also
+the  'thresh' variable is only used when force is CHUNK_ALLOC_LIMITED so
+reduce the scope of the variable as necessary. Finally, remove the + 2m
+used in the final check. Given the granularity of btrfs' allocation I
+doubt that the + 2m made a difference when making a decision whether to
+allocate a chunk or not.
 
-Looks good to me.
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ fs/btrfs/block-group.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-Reviewed-by: Neal Gompa <ngompa@fedoraproject.org>
-
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 3eecbc2b3dae..613527733fb2 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3312,30 +3312,29 @@ static void force_metadata_allocation(struct btrfs_fs_info *info)
+ 	}
+ }
+ 
+-static int should_alloc_chunk(struct btrfs_fs_info *fs_info,
++static bool should_alloc_chunk(struct btrfs_fs_info *fs_info,
+ 			      struct btrfs_space_info *sinfo, int force)
+ {
+ 	u64 bytes_used = btrfs_space_info_used(sinfo, false);
+-	u64 thresh;
+ 
+ 	if (force == CHUNK_ALLOC_FORCE)
+-		return 1;
++		return true;
+ 
+ 	/*
+ 	 * in limited mode, we want to have some free space up to
+ 	 * about 1% of the FS size.
+ 	 */
+ 	if (force == CHUNK_ALLOC_LIMITED) {
+-		thresh = btrfs_super_total_bytes(fs_info->super_copy);
++		u64 thresh = btrfs_super_total_bytes(fs_info->super_copy);
+ 		thresh = max_t(u64, SZ_64M, div_factor_fine(thresh, 1));
+ 
+ 		if (sinfo->total_bytes - bytes_used < thresh)
+-			return 1;
++			return true;
+ 	}
+ 
+-	if (bytes_used + SZ_2M < div_factor(sinfo->total_bytes, 8))
+-		return 0;
+-	return 1;
++	if (bytes_used < div_factor(sinfo->total_bytes, 8))
++		return false;
++	return true;
+ }
+ 
+ int btrfs_force_chunk_alloc(struct btrfs_trans_handle *trans, u64 type)
 -- 
-Neal Gompa (FAS: ngompa)
+2.17.1
+
