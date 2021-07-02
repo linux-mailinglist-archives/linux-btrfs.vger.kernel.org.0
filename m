@@ -2,61 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2963B9A6B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 03:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0E83B9A8E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 03:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbhGBBJl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Jul 2021 21:09:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234370AbhGBBJl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Jul 2021 21:09:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17A7A61410;
-        Fri,  2 Jul 2021 01:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625188030;
-        bh=UjT3wKYrLIDYj2zGG8oqyyOctj0jABvrNaQw+gkvs7A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UvxIIjmOMyWNt+pT8ioppOG4hwLTvTKy73f+VdJabAMR4QY/DrLG6Pt0laWUmpz3w
-         GZHjrvWFqtkywEfQ1Rfo1Oa5UKejckKRKjrtr/o43Gmz71aKPPIn9hH8kzbFFhv1b1
-         p8k8XxV+4TkWwyylF7CnGvbh9q+VyddwzWpYqL6Qv25Mz7+3v4/om8AwsJEB9boNLP
-         RnkKUa/YOAY2KYZd7vf495qVPchwSJjMt6sw0kxbS8uhd3jOMRiCGvbqZ6rA1jbL7S
-         +LmSCju694IqHpYVl64Lh9qqRjDRIm+EJNQiyJUCy8DKkc5LR95vGnRCfsW7RzwUjN
-         RYTgAWydx3neA==
-Date:   Thu, 1 Jul 2021 20:09:03 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add special case to setget helpers for 64k pages
-Message-ID: <20210702010903.GA83901@embeddedor>
-References: <20210701160039.12518-1-dsterba@suse.com>
- <20210701215740.GA12099@embeddedor>
- <fc90ec53-1632-e796-3bf0-f46c5df790bb@gmx.com>
- <dd4346f9-bc3d-b12f-3b32-1e1ecabb5b8b@embeddedor.com>
- <62ec2948-77a3-6e50-7940-8de259b8671f@gmx.com>
- <20210702003936.GA13456@embeddedor>
- <77ce2806-9be0-6ed7-4657-a0ce8b3ab0c6@gmx.com>
+        id S234672AbhGBBc3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Jul 2021 21:32:29 -0400
+Received: from bee.birch.relay.mailchannels.net ([23.83.209.14]:51102 "EHLO
+        bee.birch.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234476AbhGBBc1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Jul 2021 21:32:27 -0400
+X-Sender-Id: instrampxe0y3a|x-authsender|calestyo@scientia.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id C18FE1E1C6C
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jul 2021 01:29:55 +0000 (UTC)
+Received: from mailgw-02.dd24.net (100-96-13-105.trex-nlb.outbound.svc.cluster.local [100.96.13.105])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id EE37C1E1AB8
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jul 2021 01:29:54 +0000 (UTC)
+X-Sender-Id: instrampxe0y3a|x-authsender|calestyo@scientia.net
+Received: from mailgw-02.dd24.net (mailgw-02.dd24.net [193.46.215.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.96.13.105 (trex/6.3.3);
+        Fri, 02 Jul 2021 01:29:55 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authsender|calestyo@scientia.net
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Bubble-Trade: 600569481171997a_1625189395508_3239045516
+X-MC-Loop-Signature: 1625189395508:3283094367
+X-MC-Ingress-Time: 1625189395508
+Received: from heisenberg.fritz.box (ppp-88-217-47-84.dynamic.mnet-online.de [88.217.47.84])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: calestyo@scientia.net)
+        by smtp.dd24.net (Postfix) with ESMTPSA id 262C25FC25
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jul 2021 01:29:53 +0000 (UTC)
+Message-ID: <d29726ca253ba1b8ff43ff00852347bd2c876b4d.camel@scientia.net>
+Subject: auto-detect and set -o discard?
+From:   Christoph Anton Mitterer <calestyo@scientia.net>
+To:     linux-btrfs@vger.kernel.org
+Date:   Fri, 02 Jul 2021 03:29:52 +0200
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <77ce2806-9be0-6ed7-4657-a0ce8b3ab0c6@gmx.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 08:39:06AM +0800, Qu Wenruo wrote:
-> > Do you think there is any other place where we should update
-> > the total size for extent_buffer?
-> 
-> Nope, that should be enough.
+Hey.
 
-Awesome. :)
+Right now it seems, btrfs doesn't automatically set -o discard,
+depending on whether or no a SSD is detected.
 
-Here is the proper patch:
+The FAQ entry https://btrfs.wiki.kernel.org/index.php/FAQ#Does_Btrfs_support_TRIM.2Fdiscard.3F
+seems to imply that this was done because of several reasons:
 
-https://lore.kernel.org/linux-btrfs/20210702010653.GA84106@embeddedor/
 
-Thanks, Qu.
---
-Gustavo
+- dm-crypt security issues
+  => that should be a non-issue, because AFAIU, dm-crypt itself simply
+     blocks any TRIM/discard, unless cryptsetup’s --allow-discards is
+     specifically set when opening the device
+
+- disputed performance benefits
+  => Is this still questioned?
+     I don't have any concrete benchmarks, but I mean using TRIM is
+     what probably every SSD manufacturer suggests?
+
+
+Another disadvantage of not auto-detecting this is that - with default
+mount options (i.e. no discard) - VMs and the like, wont give back any
+space in their storage images.
+
+
+Cheers,
+Chris
+
