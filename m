@@ -2,50 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717713B9CC1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 09:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FB93B9DC3
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Jul 2021 10:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhGBHNm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Jul 2021 03:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhGBHNk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jul 2021 03:13:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF886C061762
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Jul 2021 00:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jRLR1B9nE2eSXl8cb2dQ6cUhLgqjllFZBjON5RoT8sc=; b=s7Ug+QbLt3hmvAfu6junsJjzgq
-        wj3HXR1eJD8fa3K0VxrQ8ccSr1OgsQEXClMA+exfciBoQiO3XBOXtfoHgjS+9ZNwG/9PU/A+o5JcF
-        /mVuhu5K1b/OBAOGAZQbN3wpuaquE7FNIYLjpeYgDqh4dIumgfHe44j0eqHnVaHGuXWwpMFaidiL7
-        qUjrXiwPAlIjf4UwbSUb6vYEVbRRSvkB42ekC34569Z4/8tWuoRXtTMDuTFojQ390iD7OJ5kHbhpl
-        pVUcLNdukm3OpmnerKKhEGjLye3HQSOC6tbpFv24ZXzwpiHB45W1q8v8Mrgw98AF7/qOzBnAn88dK
-        dRS69ZkA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lzDK6-007RAH-6R; Fri, 02 Jul 2021 07:10:53 +0000
-Date:   Fri, 2 Jul 2021 08:10:50 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH] btrfs: add special case to setget helpers for 64k pages
-Message-ID: <YN67+nvpQBfiLXzh@infradead.org>
-References: <20210701160039.12518-1-dsterba@suse.com>
+        id S230513AbhGBIy6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Jul 2021 04:54:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43858 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230435AbhGBIy5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Jul 2021 04:54:57 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EF50B2005F;
+        Fri,  2 Jul 2021 08:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625215944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AO9No1ANmw6vVXxIbsNXZhA3yP5G22TYw5yf0xUm17Q=;
+        b=PDkGu02dXl6KBYtKQuW4/M4RRuGOoNtKP9hwk6pmrkP7TxnrlQYHlpEA/qmSt1LkkyNIC/
+        VhrmaeUHCSbncYBCgSrjtdcGRtomB5Qco9pRzeWYIGOOHEbn/dIqP0Dvqw3Xa5FEOY4t8w
+        bXt4Ks/MaC+ao930IyBmlF9GYoNlkMg=
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id A6B0411CD6;
+        Fri,  2 Jul 2021 08:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625215944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AO9No1ANmw6vVXxIbsNXZhA3yP5G22TYw5yf0xUm17Q=;
+        b=PDkGu02dXl6KBYtKQuW4/M4RRuGOoNtKP9hwk6pmrkP7TxnrlQYHlpEA/qmSt1LkkyNIC/
+        VhrmaeUHCSbncYBCgSrjtdcGRtomB5Qco9pRzeWYIGOOHEbn/dIqP0Dvqw3Xa5FEOY4t8w
+        bXt4Ks/MaC+ao930IyBmlF9GYoNlkMg=
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id iU3XJcjT3mCGLQAALh3uQQ
+        (envelope-from <nborisov@suse.com>); Fri, 02 Jul 2021 08:52:24 +0000
+Subject: Re: [PATCH 2/2] btrfs: rework chunk allocation to avoid exhaustion of
+ the system chunk array
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+Cc:     naohiro.aota@wdc.com, Filipe Manana <fdmanana@suse.com>
+References: <cover.1624973480.git.fdmanana@suse.com>
+ <6a715978a2539344e0c795754817746e06b73438.1624973480.git.fdmanana@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <d3a3fa99-b55d-7bae-4fdb-f3b2f5c7d98f@suse.com>
+Date:   Fri, 2 Jul 2021 11:52:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210701160039.12518-1-dsterba@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <6a715978a2539344e0c795754817746e06b73438.1624973480.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> +	if (INLINE_EXTENT_BUFFER_PAGES == 1) {				\
->  		return get_unaligned_le##bits(token->kaddr + oip);	\
-> +	} else {							\
 
-No need for an else after the return and thus no need for all the
-reformatting.
+
+On 29.06.21 г. 16:43, fdmanana@kernel.org wrote:
+> |However that commit also introduced a deadlock where a task in phase 1
+> of the chunk allocation waited for another task that had allocated a
+> system chunk to finish its phase 2, but that other task was waiting on
+> an extent buffer lock held by the first task, therefore resulting in
+> both tasks not making any progress. That change was later reverted by a
+> patch with the subject "btrfs: fix deadlock with concurrent chunk
+> allocations involving system chunks", since there is no simple and short
+> solution to address it and the deadlock is relatively easy to trigger on
+> zoned filesystems, while the system chunk array exhaustion is not so
+> common. |
+
+nit: Wouldn't the deadlock constitute of the task in phase1, holding
+chunk_mutex sleep on chunk_reserve_wait and having set
+space_info->chunk_alloc = 1 and this in turn causes task in phase 2 to
+to deadlock on chunk_mutex in btrfs_alloc_chunk due to
+btrfs_create_pending_block_groups (phase2) happening with chunk_mutex
+unlocked BUT chunk_reserve_wait still not woken up ? Your previous patch
+explains this situation but this paragraph seems to mention extent
+buffer locks which I don't think are involved in the deadlock.
