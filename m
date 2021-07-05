@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE6E3BB992
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jul 2021 10:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577ED3BB99D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jul 2021 10:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhGEIsf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Jul 2021 04:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
+        id S230178AbhGEIxJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Jul 2021 04:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhGEIsf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jul 2021 04:48:35 -0400
+        with ESMTP id S230101AbhGEIxJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jul 2021 04:53:09 -0400
 Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6830C061574;
-        Mon,  5 Jul 2021 01:45:58 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id q190so16332267qkd.2;
-        Mon, 05 Jul 2021 01:45:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74363C061574;
+        Mon,  5 Jul 2021 01:50:32 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id q16so16304845qke.10;
+        Mon, 05 Jul 2021 01:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=jRpeww35YI8f/dxn2qm2ATgBcOzNiQ9//xFsr8uz168=;
-        b=KVyEY+JVCE38czyKYT0UHqwOmRYrDqscxszqrVRku43zGOU+QJSkcnjza/TpW5+ksZ
-         +1aO2ihAFT4h9pY0WxFm/Yt6bVd3VlM9TPfA9f4doKzP9mucrbI+Padc3VCuf/u2MPDQ
-         BbwCp8vw2geR9/5d5DP57yAawY7j3hhbtV2SG49Q+0cD1vNsvKWRzfBnT/sQ5VDYUn7t
-         UJRmv1M9tT1q2c9mFQXNtQRHxMFHXZpC1JswUpj3c5ESeCMjvY+v47xJo/1yK3x7axPW
-         oec4knTHEKKQEjF5U7ck9vlT9H6Iub+HIRVvrqI7laU9CHwkiPel8ekgAvfWKqyTqB/T
-         /0kA==
+        bh=PplRZd5dlVUzPhARv/8SuCABXVhNZbVaAcrURo+1N/o=;
+        b=pDG2GARa6+kA71AAd/dlouUo5Qnn02EHYaBFYAva49jGUKr6CCWNV3C/Vjkcj0vUDy
+         oiN2FH7YEzrcU3j0rv72ef2Ahpx0QUAlNmq7OEnqYdiWOPg+3ofsIJ4xoRnBXgtRXPDa
+         0+kU/gH+OqeanMxQg8T0qQ9fwTYsJOu7WW2K0kWmkMMGTHKa9T4GK/Y8ZWbrGThAlL0X
+         GLv8/Jxja67rDeH8IM1k3T6lZltZbvo1Vo27EeHoOciIDjaPOJQ7nvWJjbYx0JxLVnRq
+         cQ7GOBgF3B09D7zPSIUn8IguIIU2OeCkiVk5ChHtjteE+VuVguqiS3EaVxSvcp1tJibc
+         nngg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=jRpeww35YI8f/dxn2qm2ATgBcOzNiQ9//xFsr8uz168=;
-        b=VJuQul2E9eHjgIcSpp5GypvWl1zmFC2H4ndmce11hPy+LbF9N+AKwwqGVopoghrHrV
-         do5e41AXQT+92wAh8T22lHNMk6mMr3lp02TgNt+39XdoTNwz4bArE7BaH1H1ArUn9bjs
-         prEvYKDOx6yQtUJQKCYPDrcw25bPxzv5d1R6UOEWFjJ/1IebUBVFexNtZX6vxT3Qw/VG
-         NSq91Oz6D8VNV2u93h1M8kAFFkShZDdz+3aFuBz2teC2k2MlULE8a1onyqYzUWFTG5R8
-         SCmQcpYCQffC3+kf93XpUc8skFURUGJO5IvaV5HmDxTrigWpYGL0zLDP6VZ33s/15uLO
-         X1LQ==
-X-Gm-Message-State: AOAM530l4zJMKhGfI2/kEJSJAjh7NY49Cfi1QBktCVuDkMA27vaiZnGR
-        wXo/y8qIm6zLxxsTmpEAK6DSYHl9KXoe2ToPAE8=
-X-Google-Smtp-Source: ABdhPJwh+AQ56zVTIUXpg7ysVr9dwCcDXaGH0zwgyfhkDg9A8mP0WZ591eo/LL5FG7fBmVFHz+Zpv67a3ph+QKx55sE=
-X-Received: by 2002:ae9:ec11:: with SMTP id h17mr12928358qkg.438.1625474757981;
- Mon, 05 Jul 2021 01:45:57 -0700 (PDT)
+        bh=PplRZd5dlVUzPhARv/8SuCABXVhNZbVaAcrURo+1N/o=;
+        b=Z9JRFY4JlL2QnwHTD9bWa+G395rFI4dklkreA2OihCIJ1iuU84VLcskG+1etzHCHUQ
+         IJHB5sgiH40jnppowitQzSAYQunLMzNiYKOjbHTznXn8XC+Q4yu3azVslprAIqARiZlB
+         1nH+lK+unJ4Y/+LRiyfyDNByN9IzNwINfODt8Ub1iisljmVEGlRzYsuzbcQxGWx7x/S8
+         IOUQ62qsTZ8HDXjuvC0cID6ypjE8XSKCY7xCzKpRu/8gglLRhouJQHY/Qxj8mJeMpSHA
+         eruBv/OlV6MOy0i/lSboB0ZXyLXWGGGlo95/xxb5I6kFLickc3OiVipsDw9HVifaXPl1
+         h6sw==
+X-Gm-Message-State: AOAM530QCrABcAHDK1t3q5x2KjgsHCkR7VJr5paQVrCuUBZsTODnKGro
+        TLnlXNjmKSCdmU7IV8KpzbByyUUw4cQ8WKRmzo0=
+X-Google-Smtp-Source: ABdhPJwc9S3xCMOsmsYpRNPIzo+sjwHNusf8+aCEYY+1igfx93qm8bFE+6pfgCSoHY9JYqwXd+mj+fcAsA+AhQbMsdo=
+X-Received: by 2002:ae9:ec11:: with SMTP id h17mr12939064qkg.438.1625475031750;
+ Mon, 05 Jul 2021 01:50:31 -0700 (PDT)
 MIME-Version: 1.0
 References: <a70c9f6b4e45d9bcdc5c2f19182f89ef8e22c074.1625237782.git.anand.jain@oracle.com>
 In-Reply-To: <a70c9f6b4e45d9bcdc5c2f19182f89ef8e22c074.1625237782.git.anand.jain@oracle.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 5 Jul 2021 09:45:47 +0100
-Message-ID: <CAL3q7H6YZa6JLFhHbJB_FScD2wdm3NWEEDsE9C3EwVmoKMMkJQ@mail.gmail.com>
+Date:   Mon, 5 Jul 2021 09:50:20 +0100
+Message-ID: <CAL3q7H5xdS5EXCN2QP0DXQr1_uxCGqK719J5c0EBFH28hYKj+A@mail.gmail.com>
 Subject: Re: [PATCH] btrfs/242: test case to fstrim on a degraded filesystem
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     fstests <fstests@vger.kernel.org>,
@@ -91,6 +91,12 @@ On Sun, Jul 4, 2021 at 12:24 PM Anand Jain <anand.jain@oracle.com> wrote:
 > +
 > +. ./common/preamble
 > +_begin_fstest auto quick replace trim
+
+Also, this does not belong to the 'replace' group (again copied from
+btrfs/223 it seems).
+
+Thanks.
+
 > +
 > +# Import common functions.
 > +. ./common/filter
@@ -110,16 +116,6 @@ On Sun, Jul 4, 2021 at 12:24 PM Anand Jain <anand.jain@oracle.com> wrote:
 > +
 > +# Add a test file with some data.
 > +$XFS_IO_PROG -f -c "pwrite -S 0xab 0 10M" $SCRATCH_MNT/foo > /dev/null
-
-What's the point of adding this file (which you copied exactly from
-btrfs/223) if it's not needed to trigger the bug and it's not used
-anywhere in the test?
-Or at the very least, check that reading it after the fstrim returns
-the correct data, as it might help prevent some regression in the
-future.
-
-Thanks.
-
 > +
 > +# Unmount the filesystem.
 > +_scratch_unmount
