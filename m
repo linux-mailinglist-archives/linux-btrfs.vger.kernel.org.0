@@ -2,152 +2,313 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577ED3BB99D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jul 2021 10:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431273BB9C2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jul 2021 11:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhGEIxJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Jul 2021 04:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbhGEIxJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jul 2021 04:53:09 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74363C061574;
-        Mon,  5 Jul 2021 01:50:32 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id q16so16304845qke.10;
-        Mon, 05 Jul 2021 01:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=PplRZd5dlVUzPhARv/8SuCABXVhNZbVaAcrURo+1N/o=;
-        b=pDG2GARa6+kA71AAd/dlouUo5Qnn02EHYaBFYAva49jGUKr6CCWNV3C/Vjkcj0vUDy
-         oiN2FH7YEzrcU3j0rv72ef2Ahpx0QUAlNmq7OEnqYdiWOPg+3ofsIJ4xoRnBXgtRXPDa
-         0+kU/gH+OqeanMxQg8T0qQ9fwTYsJOu7WW2K0kWmkMMGTHKa9T4GK/Y8ZWbrGThAlL0X
-         GLv8/Jxja67rDeH8IM1k3T6lZltZbvo1Vo27EeHoOciIDjaPOJQ7nvWJjbYx0JxLVnRq
-         cQ7GOBgF3B09D7zPSIUn8IguIIU2OeCkiVk5ChHtjteE+VuVguqiS3EaVxSvcp1tJibc
-         nngg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=PplRZd5dlVUzPhARv/8SuCABXVhNZbVaAcrURo+1N/o=;
-        b=Z9JRFY4JlL2QnwHTD9bWa+G395rFI4dklkreA2OihCIJ1iuU84VLcskG+1etzHCHUQ
-         IJHB5sgiH40jnppowitQzSAYQunLMzNiYKOjbHTznXn8XC+Q4yu3azVslprAIqARiZlB
-         1nH+lK+unJ4Y/+LRiyfyDNByN9IzNwINfODt8Ub1iisljmVEGlRzYsuzbcQxGWx7x/S8
-         IOUQ62qsTZ8HDXjuvC0cID6ypjE8XSKCY7xCzKpRu/8gglLRhouJQHY/Qxj8mJeMpSHA
-         eruBv/OlV6MOy0i/lSboB0ZXyLXWGGGlo95/xxb5I6kFLickc3OiVipsDw9HVifaXPl1
-         h6sw==
-X-Gm-Message-State: AOAM530QCrABcAHDK1t3q5x2KjgsHCkR7VJr5paQVrCuUBZsTODnKGro
-        TLnlXNjmKSCdmU7IV8KpzbByyUUw4cQ8WKRmzo0=
-X-Google-Smtp-Source: ABdhPJwc9S3xCMOsmsYpRNPIzo+sjwHNusf8+aCEYY+1igfx93qm8bFE+6pfgCSoHY9JYqwXd+mj+fcAsA+AhQbMsdo=
-X-Received: by 2002:ae9:ec11:: with SMTP id h17mr12939064qkg.438.1625475031750;
- Mon, 05 Jul 2021 01:50:31 -0700 (PDT)
+        id S230251AbhGEJEE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Jul 2021 05:04:04 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35960 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230121AbhGEJED (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jul 2021 05:04:03 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3FA411FE07;
+        Mon,  5 Jul 2021 09:01:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625475686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=8YHJec7jPUnlgBWQcs4bC0WPyBAozbAcFh5VJLtdo+c=;
+        b=Yx2hwWuY+NoHwzCTUE9mlq0p5XfN1fA6GDcyZEF/5SWuObtZRFZ/DaLgirRy/PooCN0xAn
+        hwvD7QLWuurwq6HB67xjLDivNcfSy9D+11e5W7r3LpCqaK5o4FqFpz5f6IsQj69BVxDG5T
+        YVClabdEJRKr333VO3G6/qmWZX6NA1Q=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0083213522;
+        Mon,  5 Jul 2021 09:01:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id OjbKOGXK4mAWJgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 05 Jul 2021 09:01:25 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH v2] btrfs: make btrfs_finish_chunk_alloc private to block-group.c
+Date:   Mon,  5 Jul 2021 12:01:24 +0300
+Message-Id: <20210705090124.3402812-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <a70c9f6b4e45d9bcdc5c2f19182f89ef8e22c074.1625237782.git.anand.jain@oracle.com>
-In-Reply-To: <a70c9f6b4e45d9bcdc5c2f19182f89ef8e22c074.1625237782.git.anand.jain@oracle.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 5 Jul 2021 09:50:20 +0100
-Message-ID: <CAL3q7H5xdS5EXCN2QP0DXQr1_uxCGqK719J5c0EBFH28hYKj+A@mail.gmail.com>
-Subject: Re: [PATCH] btrfs/242: test case to fstrim on a degraded filesystem
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jul 4, 2021 at 12:24 PM Anand Jain <anand.jain@oracle.com> wrote:
->
-> Create a degraded btrfs filesystem and run fstrim on it.
->
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  tests/btrfs/242     | 49 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/242.out |  2 ++
->  2 files changed, 51 insertions(+)
->  create mode 100755 tests/btrfs/242
->  create mode 100644 tests/btrfs/242.out
->
-> diff --git a/tests/btrfs/242 b/tests/btrfs/242
-> new file mode 100755
-> index 000000000000..e946ee6ac7c2
-> --- /dev/null
-> +++ b/tests/btrfs/242
-> @@ -0,0 +1,49 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2021 Oracle. All Rights Reserved.
-> +#
-> +# FS QA Test 242
-> +#
-> +# Test that fstrim can run on the degraded filesystem
-> +#   Kernel requires fix for the null pointer deref in btrfs_trim_fs()
-> +#     [patch] btrfs: check for missing device in btrfs_trim_fs
-> +
-> +
-> +. ./common/preamble
-> +_begin_fstest auto quick replace trim
+One of the final things that must be done to add a new chunk is
+inserting its device extent items in the extent tree. They describe
+the the portion of allocated device physical space during phase 1 of
+chunk allocation. This is currently done in btrfs_finish_chunk_alloci
+whose name isn't very informative. What's more, this function is only
+used in block-group.c but is defined as public. There isn't anything
+special about it that would warrant it being defined in volumes.c.
 
-Also, this does not belong to the 'replace' group (again copied from
-btrfs/223 it seems).
+Just move btrfs_finish_chunk_alloc and alloc_chunk_dev_extent to
+block-group.c, make the former static and rename both functions to
+insert_dev_extents and insert_dev_extent respectively.
 
-Thanks.
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+V2:
+ * Give the 2 moved functions better names.
+ * Improve changelog to correctly reflect reality.
 
-> +
-> +# Import common functions.
-> +. ./common/filter
-> +
-> +# real QA test starts here
-> +_supported_fs btrfs
-> +_require_btrfs_forget_or_module_loadable
-> +_require_scratch_dev_pool 2
-> +#_require_command "$WIPEFS_PROG" wipefs
-> +
-> +_scratch_dev_pool_get 2
-> +dev1=3D$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{ print $1 }')
-> +
-> +_scratch_pool_mkfs "-m raid1 -d raid1"
-> +_scratch_mount
-> +_require_batched_discard $SCRATCH_MNT
-> +
-> +# Add a test file with some data.
-> +$XFS_IO_PROG -f -c "pwrite -S 0xab 0 10M" $SCRATCH_MNT/foo > /dev/null
-> +
-> +# Unmount the filesystem.
-> +_scratch_unmount
-> +
-> +# Mount the filesystem in degraded mode
-> +_btrfs_forget_or_module_reload
-> +_mount -o degraded $dev1 $SCRATCH_MNT
-> +
-> +# Run fstrim
-> +$FSTRIM_PROG $SCRATCH_MNT
-> +
-> +_scratch_dev_pool_put
-> +
-> +echo Silence is golden
-> +
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/242.out b/tests/btrfs/242.out
-> new file mode 100644
-> index 000000000000..a46d77702f23
-> --- /dev/null
-> +++ b/tests/btrfs/242.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 242
-> +Silence is golden
-> --
-> 2.27.0
->
+ fs/btrfs/block-group.c | 98 +++++++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/volumes.c     | 92 ---------------------------------------
+ fs/btrfs/volumes.h     |  2 -
+ 3 files changed, 96 insertions(+), 96 deletions(-)
 
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index c557327b4545..5c2361168363 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2236,6 +2236,100 @@ static int insert_block_group_item(struct btrfs_trans_handle *trans,
+ 	return btrfs_insert_item(trans, root, &key, &bgi, sizeof(bgi));
+ }
 
---=20
-Filipe David Manana,
++
++static int insert_dev_extent(struct btrfs_trans_handle *trans,
++			    struct btrfs_device *device, u64 chunk_offset,
++			    u64 start, u64 num_bytes)
++{
++	int ret;
++	struct btrfs_path *path;
++	struct btrfs_fs_info *fs_info = device->fs_info;
++	struct btrfs_root *root = fs_info->dev_root;
++	struct btrfs_dev_extent *extent;
++	struct extent_buffer *leaf;
++	struct btrfs_key key;
++
++	WARN_ON(!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state));
++	WARN_ON(test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state));
++	path = btrfs_alloc_path();
++	if (!path)
++		return -ENOMEM;
++
++	key.objectid = device->devid;
++	key.offset = start;
++	key.type = BTRFS_DEV_EXTENT_KEY;
++	ret = btrfs_insert_empty_item(trans, root, path, &key,
++				      sizeof(*extent));
++	if (ret)
++		goto out;
++
++	leaf = path->nodes[0];
++	extent = btrfs_item_ptr(leaf, path->slots[0],
++				struct btrfs_dev_extent);
++	btrfs_set_dev_extent_chunk_tree(leaf, extent,
++					BTRFS_CHUNK_TREE_OBJECTID);
++	btrfs_set_dev_extent_chunk_objectid(leaf, extent,
++					    BTRFS_FIRST_CHUNK_TREE_OBJECTID);
++	btrfs_set_dev_extent_chunk_offset(leaf, extent, chunk_offset);
++
++	btrfs_set_dev_extent_length(leaf, extent, num_bytes);
++	btrfs_mark_buffer_dirty(leaf);
++out:
++	btrfs_free_path(path);
++	return ret;
++}
++
++
++/*
++ * This function belongs to phase 2.
++ *
++ * See the comment at btrfs_chunk_alloc() for details about the chunk allocation
++ * phases.
++ */
++static int insert_dev_extents(struct btrfs_trans_handle *trans,
++				   u64 chunk_offset, u64 chunk_size)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_device *device;
++	struct extent_map *em;
++	struct map_lookup *map;
++	u64 dev_offset;
++	u64 stripe_size;
++	int i;
++	int ret = 0;
++
++	em = btrfs_get_chunk_map(fs_info, chunk_offset, chunk_size);
++	if (IS_ERR(em))
++		return PTR_ERR(em);
++
++	map = em->map_lookup;
++	stripe_size = em->orig_block_len;
++
++	/*
++	 * Take the device list mutex to prevent races with the final phase of
++	 * a device replace operation that replaces the device object associated
++	 * with the map's stripes, because the device object's id can change
++	 * at any time during that final phase of the device replace operation
++	 * (dev-replace.c:btrfs_dev_replace_finishing()), so we could grab the
++	 * replaced device and then see it with an ID of BTRFS_DEV_REPLACE_DEVID,
++	 * resulting in persisting a device extent item with such ID.
++	 */
++	mutex_lock(&fs_info->fs_devices->device_list_mutex);
++	for (i = 0; i < map->num_stripes; i++) {
++		device = map->stripes[i].dev;
++		dev_offset = map->stripes[i].physical;
++
++		ret = insert_dev_extent(trans, device, chunk_offset, dev_offset,
++				       stripe_size);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
++
++	free_extent_map(em);
++	return ret;
++}
++
+ /*
+  * This function, btrfs_create_pending_block_groups(), belongs to the phase 2 of
+  * chunk allocation.
+@@ -2270,8 +2364,8 @@ void btrfs_create_pending_block_groups(struct btrfs_trans_handle *trans)
+ 			if (ret)
+ 				btrfs_abort_transaction(trans, ret);
+ 		}
+-		ret = btrfs_finish_chunk_alloc(trans, block_group->start,
+-					block_group->length);
++		ret = insert_dev_extents(trans, block_group->start,
++					      block_group->length);
+ 		if (ret)
+ 			btrfs_abort_transaction(trans, ret);
+ 		add_block_group_free_space(trans, block_group);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c6c14315b1c9..f820c32f4a0d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1758,48 +1758,6 @@ static int btrfs_free_dev_extent(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+-static int btrfs_alloc_dev_extent(struct btrfs_trans_handle *trans,
+-				  struct btrfs_device *device,
+-				  u64 chunk_offset, u64 start, u64 num_bytes)
+-{
+-	int ret;
+-	struct btrfs_path *path;
+-	struct btrfs_fs_info *fs_info = device->fs_info;
+-	struct btrfs_root *root = fs_info->dev_root;
+-	struct btrfs_dev_extent *extent;
+-	struct extent_buffer *leaf;
+-	struct btrfs_key key;
+-
+-	WARN_ON(!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state));
+-	WARN_ON(test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state));
+-	path = btrfs_alloc_path();
+-	if (!path)
+-		return -ENOMEM;
+-
+-	key.objectid = device->devid;
+-	key.offset = start;
+-	key.type = BTRFS_DEV_EXTENT_KEY;
+-	ret = btrfs_insert_empty_item(trans, root, path, &key,
+-				      sizeof(*extent));
+-	if (ret)
+-		goto out;
+-
+-	leaf = path->nodes[0];
+-	extent = btrfs_item_ptr(leaf, path->slots[0],
+-				struct btrfs_dev_extent);
+-	btrfs_set_dev_extent_chunk_tree(leaf, extent,
+-					BTRFS_CHUNK_TREE_OBJECTID);
+-	btrfs_set_dev_extent_chunk_objectid(leaf, extent,
+-					    BTRFS_FIRST_CHUNK_TREE_OBJECTID);
+-	btrfs_set_dev_extent_chunk_offset(leaf, extent, chunk_offset);
+-
+-	btrfs_set_dev_extent_length(leaf, extent, num_bytes);
+-	btrfs_mark_buffer_dirty(leaf);
+-out:
+-	btrfs_free_path(path);
+-	return ret;
+-}
+-
+ static u64 find_next_chunk(struct btrfs_fs_info *fs_info)
+ {
+ 	struct extent_map_tree *em_tree;
+@@ -5462,56 +5420,6 @@ struct btrfs_block_group *btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+ 	return block_group;
+ }
+
+-/*
+- * This function, btrfs_finish_chunk_alloc(), belongs to phase 2.
+- *
+- * See the comment at btrfs_chunk_alloc() for details about the chunk allocation
+- * phases.
+- */
+-int btrfs_finish_chunk_alloc(struct btrfs_trans_handle *trans,
+-			     u64 chunk_offset, u64 chunk_size)
+-{
+-	struct btrfs_fs_info *fs_info = trans->fs_info;
+-	struct btrfs_device *device;
+-	struct extent_map *em;
+-	struct map_lookup *map;
+-	u64 dev_offset;
+-	u64 stripe_size;
+-	int i;
+-	int ret = 0;
+-
+-	em = btrfs_get_chunk_map(fs_info, chunk_offset, chunk_size);
+-	if (IS_ERR(em))
+-		return PTR_ERR(em);
+-
+-	map = em->map_lookup;
+-	stripe_size = em->orig_block_len;
+-
+-	/*
+-	 * Take the device list mutex to prevent races with the final phase of
+-	 * a device replace operation that replaces the device object associated
+-	 * with the map's stripes, because the device object's id can change
+-	 * at any time during that final phase of the device replace operation
+-	 * (dev-replace.c:btrfs_dev_replace_finishing()), so we could grab the
+-	 * replaced device and then see it with an ID of BTRFS_DEV_REPLACE_DEVID,
+-	 * resulting in persisting a device extent item with such ID.
+-	 */
+-	mutex_lock(&fs_info->fs_devices->device_list_mutex);
+-	for (i = 0; i < map->num_stripes; i++) {
+-		device = map->stripes[i].dev;
+-		dev_offset = map->stripes[i].physical;
+-
+-		ret = btrfs_alloc_dev_extent(trans, device, chunk_offset,
+-					     dev_offset, stripe_size);
+-		if (ret)
+-			break;
+-	}
+-	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+-
+-	free_extent_map(em);
+-	return ret;
+-}
+-
+ /*
+  * This function, btrfs_chunk_alloc_add_chunk_item(), typically belongs to the
+  * phase 1 of chunk allocation. It belongs to phase 2 only when allocating system
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 55a8ba244716..70c749eee3ad 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -508,8 +508,6 @@ int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info,
+ 			   u64 logical, u64 len);
+ unsigned long btrfs_full_stripe_len(struct btrfs_fs_info *fs_info,
+ 				    u64 logical);
+-int btrfs_finish_chunk_alloc(struct btrfs_trans_handle *trans,
+-			     u64 chunk_offset, u64 chunk_size);
+ int btrfs_chunk_alloc_add_chunk_item(struct btrfs_trans_handle *trans,
+ 				     struct btrfs_block_group *bg);
+ int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset);
+--
+2.25.1
+
