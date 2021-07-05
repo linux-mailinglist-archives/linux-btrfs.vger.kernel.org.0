@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95803BB50C
+	by mail.lfdr.de (Postfix) with ESMTP id F15DC3BB50D
 	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jul 2021 04:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhGECEG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 4 Jul 2021 22:04:06 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34354 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhGECEG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 4 Jul 2021 22:04:06 -0400
+        id S229982AbhGECEI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 4 Jul 2021 22:04:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53512 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229970AbhGECEH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 4 Jul 2021 22:04:07 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7E8781FDE1
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jul 2021 02:01:29 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B2FC72210E
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jul 2021 02:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625450489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1625450490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BqEfKMNy0MJ5dGgqMa8+l2RQWEnpIK2PYYexv+AHAiQ=;
-        b=nUJr3ppA70JPC6sSoxZ5XpT4JR8EruLcuRQOCe7EDK5SNmIKlP0jxNMjzWpeu8p1eJ2r+w
-        3v+wjshCuYTpfpgjaTDchde2wp7/Pl05RfDDba/Jhdv1KFV/I/1mOdesmJ9Pe0CP0cRRiT
-        dRSXnDHLK7KwSe2PG+NZTn6FRfw5+6M=
+        bh=fi30vnFvI3dGiTDw/Op5FSrw3izYI90ujDtGcti1i3A=;
+        b=Jsvu8Xn2tvewwk28j6tTIJr+Mu2Ka2sduqzCYZ71xPWCSTB0bHnK4mH6iMbOqXmLnUPIgv
+        6+k3Vpqdomd4YKtGe2PA1GeTwXj5QIPT3llYB+jWZnYgrzQpwVX+eiN91hk9Bk/4j1Zroh
+        l+dNZJua2iKnwbfAzm4xK2DCfLk+/+I=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BB84013522
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jul 2021 02:01:28 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EFE2813522
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jul 2021 02:01:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id YDdJH/hn4mAVSQAAMHmgww
+        id aL0cLPln4mAVSQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jul 2021 02:01:28 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jul 2021 02:01:29 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v6 13/15] btrfs: fix a subpage false alert for relocating partial preallocated data extents
-Date:   Mon,  5 Jul 2021 10:01:08 +0800
-Message-Id: <20210705020110.89358-14-wqu@suse.com>
+Subject: [PATCH v6 14/15] btrfs: fix a subpage relocation data corruption
+Date:   Mon,  5 Jul 2021 10:01:09 +0800
+Message-Id: <20210705020110.89358-15-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210705020110.89358-1-wqu@suse.com>
 References: <20210705020110.89358-1-wqu@suse.com>
@@ -52,87 +52,160 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-When relocating partial preallocated data extents (part of the
-preallocated extent is written) for subpage, it can cause the following
-false alert and make the relocation to fail:
-
-  BTRFS info (device dm-3): balance: start -d
-  BTRFS info (device dm-3): relocating block group 13631488 flags data
-  BTRFS warning (device dm-3): csum failed root -9 ino 257 off 4096 csum 0x98757625 expected csum 0x00000000 mirror 1
-  BTRFS error (device dm-3): bdev /dev/mapper/arm_nvme-test errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
-  BTRFS warning (device dm-3): csum failed root -9 ino 257 off 4096 csum 0x98757625 expected csum 0x00000000 mirror 1
-  BTRFS error (device dm-3): bdev /dev/mapper/arm_nvme-test errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
-  BTRFS info (device dm-3): balance: ended with status: -5
-
-The minimal script to reproduce looks like this:
+When using the following script, btrfs will report data corruption after
+one data balance with subpage support:
 
   mkfs.btrfs -f -s 4k $dev
   mount $dev -o nospace_cache $mnt
-  xfs_io -f -c "falloc 0 8k" $mnt/file
-  xfs_io -f -c "pwrite 0 4k" $mnt/file
+  $fsstress -w -n 8 -s 1620948986 -d $mnt/ -v > /tmp/fsstress
+  sync
   btrfs balance start -d $mnt
+  btrfs scrub start -B $mnt
+
+Similar problem can be easily observed in btrfs/028 test case, there
+will be tons of balance failure with -EIO.
 
 [CAUSE]
-Function btrfs_verify_data_csum() checks if the full range has
-EXTENT_NODATASUM bit for data reloc inode, if *all* bytes of the range
-has EXTENT_NODATASUM bit, then it skip the range.
+Above fsstress will result the following data extents layout in extent
+tree:
+  item 10 key (13631488 EXTENT_ITEM 98304) itemoff 15889 itemsize 82
+    refs 2 gen 7 flags DATA
+    extent data backref root FS_TREE objectid 259 offset 1339392 count 1
+    extent data backref root FS_TREE objectid 259 offset 647168 count 1
+  item 11 key (13631488 BLOCK_GROUP_ITEM 8388608) itemoff 15865 itemsize 24
+    block group used 102400 chunk_objectid 256 flags DATA
+  item 12 key (13733888 EXTENT_ITEM 4096) itemoff 15812 itemsize 53
+    refs 1 gen 7 flags DATA
+    extent data backref root FS_TREE objectid 259 offset 729088 count 1
 
-This works pretty well for regular sectorsize, as in that case
-btrfs_verify_data_csum() is called for each sector, thus no problem at
-all.
+Then when creating the data reloc inode, the data reloc inode will look
+like this:
 
-But for subpage case, btrfs_verify_data_csum() is called on each bvec,
-which can contain several sectors, and since it checks *all* bytes for
-EXTENT_NODATASUM bit, if we have some range with csum, then we will
-continue checking all the sectors.
+	0	32K	64K	96K 100K	104K
+	|<------ Extent A ----->|   |<- Ext B ->|
 
-For the preallocated sectors, it doesn't have any csum, thus obviously
-the csum won't match and cause the false alert.
+Then when we first try to relocate extent A, we setup the data reloc
+inode with iszie 96K, then read both page [0, 64K) and page [64K, 128K).
+
+For page 64K, since the isize is just 96K, we fill range [96K, 128K)
+with 0 and set it uptodate.
+
+Then when we come to extent B, we update isize to 104K, then try to read
+page [64K, 128K).
+Then we find the page is already uptodate, so we skip the read.
+But range [96K, 128K) is filled with 0, not the real data.
+
+Then we writeback the data reloc inode to disk, with 0 filling range
+[96K, 128K), corrupting the content of extent B.
+
+The behavior is caused by the fact that we still do full page read for
+subpage case.
+
+The bug won't really happen for regular sectorsize, as one page only
+contains one sector.
 
 [FIX]
-Move the EXTENT_NODATASUM check into the main loop, so that we can check
-each sector for EXTENT_NODATASUM bit for subpage case.
+This patch will fix the problem by invalidating range [isize, PAGE_END]
+in prealloc_file_extent_cluster().
 
+So that if above example happens, when we preallocate the file extent
+for extent B, we will clear the uptodate bits for range [96K, 128K),
+allowing later relocate_one_page() to re-read the needed range.
+
+There is a special note for the invalidating part.
+
+Since we're not calling real btrfs_invalidatepage(), but just clearing
+the subpage and page uptodate bits, we can leave a page half dirty and
+half out of date.
+
+Reading such page can make btrfs to deadlock, as we normally expect a
+dirty page to be full uptodate.
+
+Thus here we flush and wait the data reloc inode before doing the hacked
+invalidating.
+This won't cause extra overhead, as we're going to writeback the data
+later anyway.
+
+Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ fs/btrfs/relocation.c | 59 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 73a062f1deb2..c842a19737f9 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3188,19 +3188,24 @@ unsigned int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
- 	if (!root->fs_info->csum_root)
- 		return 0;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 72ffeb34b92b..cfb33e093150 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2782,10 +2782,69 @@ static noinline_for_stack int prealloc_file_extent_cluster(
+ 	u64 num_bytes;
+ 	int nr;
+ 	int ret = 0;
++	u64 isize = i_size_read(&inode->vfs_inode);
+ 	u64 prealloc_start = cluster->start - offset;
+ 	u64 prealloc_end = cluster->end - offset;
+ 	u64 cur_offset = prealloc_start;
  
--	if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID &&
--	    test_range_bit(io_tree, start, end, EXTENT_NODATASUM, 1, NULL)) {
--		clear_extent_bits(io_tree, start, end, EXTENT_NODATASUM);
--		return 0;
--	}
--
- 	ASSERT(page_offset(page) <= start &&
- 	       end <= page_offset(page) + PAGE_SIZE - 1);
- 	for (pg_off = offset_in_page(start);
- 	     pg_off < offset_in_page(end);
- 	     pg_off += sectorsize, bio_offset += sectorsize) {
-+		u64 file_offset = pg_off + page_offset(page);
- 		int ret;
- 
-+		if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID &&
-+		    test_range_bit(io_tree, file_offset,
-+				   file_offset + sectorsize - 1,
-+				   EXTENT_NODATASUM, 1, NULL)) {
-+			/* Skip the range without csum for data reloc inode */
-+			clear_extent_bits(io_tree, file_offset,
-+					  file_offset + sectorsize - 1,
-+					  EXTENT_NODATASUM);
-+			continue;
++	/*
++	 * For subpage case, previous isize may not be aligned to PAGE_SIZE.
++	 * This means the range [isize, PAGE_END + 1) is filled with 0 by
++	 * btrfs_do_readpage() call of previously relocated file cluster.
++	 *
++	 * If the current cluster starts in above range, btrfs_do_readpage()
++	 * will skip the read, and relocate_one_page() will later writeback
++	 * the padding 0 as new data, causing data corruption.
++	 *
++	 * Here we have to manually invalidate the range (isize, PAGE_END + 1).
++	 */
++	if (!IS_ALIGNED(isize, PAGE_SIZE)) {
++		struct address_space *mapping = inode->vfs_inode.i_mapping;
++		struct btrfs_fs_info *fs_info = inode->root->fs_info;
++		const u32 sectorsize = fs_info->sectorsize;
++		struct page *page;
++
++		ASSERT(sectorsize < PAGE_SIZE);
++		ASSERT(IS_ALIGNED(isize, sectorsize));
++
++		/*
++		 * Btrfs subpage can't handle page with DIRTY but without
++		 * UPTODATE bit as it can lead to the following deadlock:
++		 * btrfs_readpage()
++		 * | Page already *locked*
++		 * |- btrfs_lock_and_flush_ordered_range()
++		 *    |- btrfs_start_ordered_extent()
++		 *       |- extent_write_cache_pages()
++		 *          |- lock_page()
++		 *             We try to lock the page we already hold.
++		 *
++		 * Here we just writeback the whole data reloc inode, so that
++		 * we will be ensured to have no dirty range in the page, and
++		 * are safe to clear the uptodate bits.
++		 *
++		 * This shouldn't cause too much overhead, as we need to write
++		 * the data back anyway.
++		 */
++		ret = filemap_write_and_wait(mapping);
++		if (ret < 0)
++			return ret;
++
++		clear_extent_bits(&inode->io_tree, isize,
++				  round_up(isize, PAGE_SIZE) - 1,
++				  EXTENT_UPTODATE);
++		page = find_lock_page(mapping, isize >> PAGE_SHIFT);
++		/*
++		 * If page is freed we don't need to do anything then, as
++		 * we will re-read the whole page anyway.
++		 */
++		if (page) {
++			btrfs_subpage_clear_uptodate(fs_info, page, isize,
++					round_up(isize, PAGE_SIZE) - isize);
++			unlock_page(page);
++			put_page(page);
 +		}
- 		ret = check_data_csum(inode, io_bio, bio_offset, page, pg_off,
- 				      page_offset(page) + pg_off);
- 		if (ret < 0) {
++	}
++
+ 	BUG_ON(cluster->start != cluster->boundary[0]);
+ 	ret = btrfs_alloc_data_chunk_ondemand(inode,
+ 					      prealloc_end + 1 - prealloc_start);
 -- 
 2.32.0
 
