@@ -2,87 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC4E3BBC51
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jul 2021 13:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDA43BBC6C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jul 2021 13:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhGELlL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Jul 2021 07:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhGELlK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Jul 2021 07:41:10 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E377BC061574;
-        Mon,  5 Jul 2021 04:38:33 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id z12so6952062qtj.3;
-        Mon, 05 Jul 2021 04:38:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=jle5XGhwk007GM50q3hVvqAaCNNQ4hrGqxMgqOzL+yA=;
-        b=C5fWNfiVEaRD6cwplUvGHBnN50tVaoihfJdjMC/0gbbTMQZwGDhYgfoIns7ylSuOod
-         i3CC5ttPszG2WitDD3zPGHLGplpboQSfy8OF4xP0rI1/LYNmNuF0pSAzB/8oF9jFY0nB
-         u8NCO5JpRZ05yxfuzgmft4PVMDUHcaJM41k10+ypLUWvfdQxTumY6wGDDIeQNxTNHjzU
-         ImcUBqHOCPBYHUtJ2fsdyQwkdfYl2JiJvF67NzjSUy2Ras4lOVLtIGC7hDj6OyU062hR
-         ZKtI0cFxhB1e2henpRdJ9JCEsLVKyFIiCPo/cTVAWUnybx643mB+aGz5wuKUVdOH6dXA
-         rObg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=jle5XGhwk007GM50q3hVvqAaCNNQ4hrGqxMgqOzL+yA=;
-        b=F1yQ1kH/5A3VkME36LlH5VY9HXoC0DsR91B6cxvtJfiwJRj8nABLz+XNXmpSciHOWX
-         f/Ut99Pr6c3sjKV0jSOTw93AT/O8qrDCGmlnqXlv/ZNrq65ltW2xZcYprwom2kOpRLw/
-         CbMZNo3mDpxlBItyBrxkFMPNaWXw675HXnD/CP8SEroYFEalxW37w4xlIt9mfLWv7JEK
-         v/7d+nT+XersuwJ52YMW4kv28dsOc6ukaKWoxlrRszHN0lo7FcHaEbzEcN2XcchO9saN
-         ybG1BudeRy8EaE5jCMbzIpek4PU8jT564NJs3I5ziEtLKVzSHUEn+UO9LMTAHtKpwrPl
-         exWA==
-X-Gm-Message-State: AOAM532NOhA9imytPN+EUbVj7sPUFyXJQ0KFy5e/8kFR9T2CCSyqwfzH
-        dZxLim/Njqvv08YESgJ5y1VsA9aSkftLDUsMelk=
-X-Google-Smtp-Source: ABdhPJwgDcErqPy9my6tK68kYocfyc4aPtBPCcU21mQvHMDC5CU5IysQrFNnYoyxZuEPYp4GFSbclVFBclxF//WAyME=
-X-Received: by 2002:ac8:7742:: with SMTP id g2mr5314082qtu.21.1625485112925;
- Mon, 05 Jul 2021 04:38:32 -0700 (PDT)
-MIME-Version: 1.0
+        id S230479AbhGELyc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Jul 2021 07:54:32 -0400
+Received: from mout.gmx.net ([212.227.17.22]:58811 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230174AbhGELyc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Jul 2021 07:54:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625485910;
+        bh=EO2m/NuEe3jDGVDa5YMWA5P96siPx6lfK1ls9sZfHq0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ECaF7LJHMVJWoUvD3/60wEg+oeB8TjfxilL37NbDVdm/rX9sH3OLbCUT1Dd/KRHaF
+         BFrCGmN/+6nKQcfVjXGZ/RH3OtEwW+nUpa6ubCp9X8qMXdqdpRZCflI5cQdc00Czue
+         zShu57hOgTfKGp4C5qqYsYdbAftUkUIrWoXAA244=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkHMP-1lKgk30erp-00kfmk; Mon, 05
+ Jul 2021 13:51:50 +0200
+Subject: Re: [PATCH v3] btrfs/242: test case to fstrim on a degraded
+ filesystem
+To:     Anand Jain <anand.jain@oracle.com>, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, fdmanana@gmail.com
 References: <a70c9f6b4e45d9bcdc5c2f19182f89ef8e22c074.1625237782.git.anand.jain@oracle.com>
  <cae6a7e7836949a0407cf6859d7f9102636bab8f.1625481473.git.anand.jain@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <d39a3fba-e887-29b5-f577-841a16de49ec@gmx.com>
+Date:   Mon, 5 Jul 2021 19:51:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
 In-Reply-To: <cae6a7e7836949a0407cf6859d7f9102636bab8f.1625481473.git.anand.jain@oracle.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 5 Jul 2021 12:38:21 +0100
-Message-ID: <CAL3q7H6qXMuLuKquTaYurfZb89YieZQv0p6B7avRNi4f40pPJQ@mail.gmail.com>
-Subject: Re: [PATCH v3] btrfs/242: test case to fstrim on a degraded filesystem
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WiHP4f4QY6zFGXhDn5F3oyQs3r7rOlQizz28LQZD/fy2ZRvsoPd
+ BoLfvACVdfwnQQt5OZKpfNcjCnYxkqLfHm7Iz5BVzeTc8tMI/b1p08Vr/3AZXZck1V85NB/
+ 3BCa0eHsKpc51/yEBQ+HyuqdrI7eAUeir/KiBLYeFeeBur3Jr/0wEXXBG3KVujtNubXmKTP
+ analX1hMig6Z+wtfpgScw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+uSrSkuglYQ=:CNbVt065PcXkdAYcc5XP/3
+ mm8PQwhPu8ATeWFeHpf++R0xghOqa+UCWLJU2GJpth4/VPWRIKfbsiOICcvMxz2hiIbvlu6vT
+ 51DFtygRbicXtx951x0RHQanh19pcigUOysYKz3wOwnMNru68CvMPLai+It9xT8QMOyPJjeCp
+ wZ0Oe0owmdIfZteAt1t+E1j/hAUwMaLgRH3UUaUsSqTJ7p1aOjfCMLcaGQ/t5iLCrcG6yOopm
+ jhl87qxA+KyqS/6ND3J9SDDACLLs33l1x/gGoD1FF05WM7mv1UvW6iV5WfPJMduWJOKdAaT8F
+ BJUs3nzTlDgio7mFpXOZXF+NsfmMGu1SkRwhoKqcYoH3tuNRoFrkZjs8aYC2BC6MDEFjV9kTI
+ NqIe6TMsPgc2F05gKGeniK31jVFpMpgcHmErI1RpHm2ocI+YsjQclhBeDHNSLwr/tWfI8iSeB
+ 9z8NBoewulAqhW1tVunqWiFHJJQP5WoVrXfpMZwmCMi2lBMmFaIxyi60JLJw4h4BJfvct4GaF
+ C0QtvjzRzXzbsegrNCfyn7ersHvPC4w9m35tlXCx5+5bniUrk2sXkmU1O31iUQZEm86IZqxNB
+ 8J7uKAVEdl7J/HbPyGce0zzE3RYcCH0xOiDXYPS24TFZh3fCBHZCOixl+jkpkylThuaZZYVKo
+ XAsDe8r5OUowmnsNusKsxjski29pvtx50Siy9NComrZZA4A5x/7BAB8NewvbliPPZA8EuvDgG
+ BJOJ1gM9RF8s8yTyEXfMtUh+Hss7Svn+ejK7IAzZnscNxnlt/BJcsivV6+9rgQpkAlfRq1fNo
+ 0KhwF0aJLb3x0BHEpqVS0CEkk1XZttuHFeQGR4iN84275rwge1rNG4M5d4WXqNhDy6QWgM2JS
+ pjQfa64vJWqd1cqy6mrgSebaIfWurcNrvYGHf0rMJmNm6RKundv4tggc56kJQnWTAdd4eWnXu
+ CgzxJl2WWnJ2fKdqzxsVWZun/jBi4LU2T9UAjNWuFS0eEF0XRVsx5J78WMZyOiZxlYr1wXNOH
+ uchavqyEdi2S2YEEmkFE4pGrwPNyAszKrAP6hCSXVwMac1aNPSJLTuegtsrF043kGn08LJ3E6
+ 0y6Zy6T2NvfAq96O/LjjsOW9hQ2tDx2GeRf7ZCQJA5wuZE1bgIM2F9o9w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 11:43 AM Anand Jain <anand.jain@oracle.com> wrote:
->
+
+
+On 2021/7/5 =E4=B8=8B=E5=8D=886:43, Anand Jain wrote:
 > Create a degraded btrfs filesystem and run fstrim on it.
 >
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Thanks.
-
+Thanks,
+Qu
 > ---
 > v3: Remove from replace-group.
->     Add to the volume-group.
->     Check for the data integrity.
+>      Add to the volume-group.
+>      Check for the data integrity.
 > v2: Remove the commented #_require_command "$WIPEFS_PROG" wipefs
->     which I forgot to remove earlier.
->  tests/btrfs/242     | 49 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/242.out |  7 +++++++
->  2 files changed, 56 insertions(+)
->  create mode 100755 tests/btrfs/242
->  create mode 100644 tests/btrfs/242.out
+>      which I forgot to remove earlier.
+>   tests/btrfs/242     | 49 +++++++++++++++++++++++++++++++++++++++++++++
+>   tests/btrfs/242.out |  7 +++++++
+>   2 files changed, 56 insertions(+)
+>   create mode 100755 tests/btrfs/242
+>   create mode 100644 tests/btrfs/242.out
 >
 > diff --git a/tests/btrfs/242 b/tests/btrfs/242
 > new file mode 100755
@@ -119,8 +122,8 @@ Thanks.
 > +_require_batched_discard $SCRATCH_MNT
 > +
 > +# Add a test file with some data.
-> +$XFS_IO_PROG -f -c "pwrite -S 0xab 0 10M" $SCRATCH_MNT/foo | _filter_xfs=
-_io
+> +$XFS_IO_PROG -f -c "pwrite -S 0xab 0 10M" $SCRATCH_MNT/foo | _filter_xf=
+s_io
 > +
 > +# Unmount the filesystem.
 > +_scratch_unmount
@@ -153,13 +156,4 @@ _io
 > +0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
 > +*
 > +10485760
-> --
-> 2.27.0
 >
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
