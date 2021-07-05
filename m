@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA22B3BB509
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jul 2021 04:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FD03BB50A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jul 2021 04:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbhGECEF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S229959AbhGECEF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Sun, 4 Jul 2021 22:04:05 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34336 "EHLO
+Received: from smtp-out2.suse.de ([195.135.220.29]:34342 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhGECEC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 4 Jul 2021 22:04:02 -0400
+        with ESMTP id S229951AbhGECEE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 4 Jul 2021 22:04:04 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D45E11FDDF
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jul 2021 02:01:25 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1716F1FDE1
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jul 2021 02:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1625450485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1625450487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nRGLWUNqXnhrxfbUqafHzfxHbmkWuWWjlMSI/rHlwQo=;
-        b=RLlYpKgCnD0p+Rj4AWmmyX9i1jj4GwqOyUjnqMa3tCWaXeltflfmQDCmrZTDcp5flg4LrI
-        MztlwLihGZNxaaH4zcNQPuUJqsJaibcQGlSNPPl5QDFrz8/ESM4UPQtXUM+razA0QQ2ZqC
-        7eHDFOcihxjcOQ/ABc9BSOrAeRNDD3w=
+        bh=gG8Dj36kgpxzET8Cv7LI37p3xtOTV61BIB8envJEWIw=;
+        b=dIZfMxDRNBfK++QhjDX/ZFz3BkcfeqOTtMKe+cBa92uYcMg/ewwY8KxePiLI5AmIW+XUmd
+        Spf7Sml7oheBiL4s9d0wrqJplyQIZVrwWvaxnEj1YPAg8j2ZN03cX9kqd+thF7S92rfr4d
+        ZLEzTjAoSwb9olqolO9R5G4+Gdgoc1w=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CFE213522
-        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jul 2021 02:01:24 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 52CF213522
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Jul 2021 02:01:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id oLY4NPRn4mAVSQAAMHmgww
+        id +AZlBfZn4mAVSQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jul 2021 02:01:24 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jul 2021 02:01:26 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v6 10/15] btrfs: reject raid5/6 fs for subpage
-Date:   Mon,  5 Jul 2021 10:01:05 +0800
-Message-Id: <20210705020110.89358-11-wqu@suse.com>
+Subject: [PATCH v6 11/15] btrfs: fix a crash caused by race between prepare_pages() and btrfs_releasepage()
+Date:   Mon,  5 Jul 2021 10:01:06 +0800
+Message-Id: <20210705020110.89358-12-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210705020110.89358-1-wqu@suse.com>
 References: <20210705020110.89358-1-wqu@suse.com>
@@ -51,62 +51,81 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Raid5/6 is not only unsafe due to its write-hole problem, but also has
-tons of hardcoded PAGE_SIZE.
+[BUG]
+When running generic/095, there is a high chance to crash with subpage
+data RW support:
+ assertion failed: PagePrivate(page) && page->private
+ ------------[ cut here ]------------
+ kernel BUG at fs/btrfs/ctree.h:3403!
+ Internal error: Oops - BUG: 0 [#1] SMP
+ CPU: 1 PID: 3567 Comm: fio Tainted: 5.12.0-rc7-custom+ #17
+ Hardware name: Khadas VIM3 (DT)
+ Call trace:
+  assertfail.constprop.0+0x28/0x2c [btrfs]
+  btrfs_subpage_assert+0x80/0xa0 [btrfs]
+  btrfs_subpage_set_uptodate+0x34/0xec [btrfs]
+  btrfs_page_clamp_set_uptodate+0x74/0xa4 [btrfs]
+  btrfs_dirty_pages+0x160/0x270 [btrfs]
+  btrfs_buffered_write+0x444/0x630 [btrfs]
+  btrfs_direct_write+0x1cc/0x2d0 [btrfs]
+  btrfs_file_write_iter+0xc0/0x160 [btrfs]
+  new_sync_write+0xe8/0x180
+  vfs_write+0x1b4/0x210
+  ksys_pwrite64+0x7c/0xc0
+  __arm64_sys_pwrite64+0x24/0x30
+  el0_svc_common.constprop.0+0x70/0x140
+  do_el0_svc+0x28/0x90
+  el0_svc+0x2c/0x54
+  el0_sync_handler+0x1a8/0x1ac
+  el0_sync+0x170/0x180
+ Code: f0000160 913be042 913c4000 955444bc (d4210000)
+ ---[ end trace 3fdd39f4cccedd68 ]---
 
-So disable it for subpage support for now.
+[CAUSE]
+Although prepare_pages() calls find_or_create_page(), which returns with
+the page locked, but in later prepare_uptodate_page() calls, we may call
+btrfs_readpage() which will unlock the page before it returns.
 
+This leaves a window where btrfs_releasepage() can sneak in and release
+the page, clearing page->private and causing above ASSERT().
+
+[FIX]
+In prepare_uptodate_page(), we should not only check page->mapping, but
+also PagePrivate() to ensure we are still hold a correct page which has
+proper fs context setup.
+
+Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Tested-by: Ritesh Harjani <riteshh@linux.ibm.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/disk-io.c | 10 ++++++++++
- fs/btrfs/volumes.c |  8 ++++++++
- 2 files changed, 18 insertions(+)
+ fs/btrfs/file.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index b117dd3b8172..3de8e86f3170 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3402,6 +3402,16 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 			goto fail_alloc;
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 28a05ba47060..0831ca08376f 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1341,7 +1341,18 @@ static int prepare_uptodate_page(struct inode *inode,
+ 			unlock_page(page);
+ 			return -EIO;
  		}
- 	}
-+	if (sectorsize != PAGE_SIZE) {
-+		if (btrfs_super_incompat_flags(fs_info->super_copy) &
-+			BTRFS_FEATURE_INCOMPAT_RAID56) {
-+			btrfs_err(fs_info,
-+	"raid5/6 is not yet supported for sector size %u with page size %lu",
-+				sectorsize, PAGE_SIZE);
-+			err = -EINVAL;
-+			goto fail_alloc;
-+		}
-+	}
- 
- 	ret = btrfs_init_workqueues(fs_info, fs_devices);
- 	if (ret) {
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 782e16795bc4..3cd876c49446 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -3937,11 +3937,19 @@ static inline int validate_convert_profile(struct btrfs_fs_info *fs_info,
- 	if (!(bargs->flags & BTRFS_BALANCE_ARGS_CONVERT))
- 		return true;
- 
-+	if (fs_info->sectorsize < PAGE_SIZE &&
-+		bargs->target & BTRFS_BLOCK_GROUP_RAID56_MASK) {
-+		btrfs_err(fs_info,
-+	"RAID5/6 is not supported yet for sectorsize %u with page size %lu",
-+			  fs_info->sectorsize, PAGE_SIZE);
-+		goto invalid;
-+	}
- 	/* Profile is valid and does not have bits outside of the allowed set */
- 	if (alloc_profile_is_valid(bargs->target, 1) &&
- 	    (bargs->target & ~allowed) == 0)
- 		return true;
- 
-+invalid:
- 	btrfs_err(fs_info, "balance: invalid convert %s profile %s",
- 			type, btrfs_bg_type_to_raid_name(bargs->target));
- 	return false;
+-		if (page->mapping != inode->i_mapping) {
++
++		/*
++		 * Since btrfs_readpage() will unlock the page before it
++		 * returns, there is a window where btrfs_releasepage() can
++		 * be called to release the page.
++		 * Here we check both inode mapping and PagePrivate() to
++		 * make sure the page was not released.
++		 *
++		 * The private flag check is essential for subpage as we need
++		 * to store extra bitmap using page->private.
++		 */
++		if (page->mapping != inode->i_mapping || !PagePrivate(page)) {
+ 			unlock_page(page);
+ 			return -EAGAIN;
+ 		}
 -- 
 2.32.0
 
