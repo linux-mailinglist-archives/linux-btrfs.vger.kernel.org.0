@@ -2,182 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCC23BD8AF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jul 2021 16:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F196D3BDCCE
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jul 2021 20:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhGFOqF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Jul 2021 10:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232686AbhGFOpu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Jul 2021 10:45:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6662E61447;
-        Tue,  6 Jul 2021 14:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625582592;
-        bh=I+Qjfj0jRXnQ+l9/aImguvu0qDNPNZHHuHrZucfhbxU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=P++QDggmjdjY6FVbBnobaVsGo3HF587qOqJsKU5LivJlO81aIUX6vs6OKYdpp+eSZ
-         l4d/Mppf6yHKMq1qyJ4vvOl9xFn42HnX/cMQdzTvnG3tWO7fUPbR0kqEzBYG3RmoV+
-         Fn9rDNuOtLzB6O9KRQbCUgFV6QLKMVrMz5F5u5Y9G4HXYzmOQBaa5oKXg8lGnkBrcK
-         Es1/eDs89WLqd4vOjOss4ZinHuDBY1FAhjPsHfkcBFmTctPOAt/bM+YrryzkU0310I
-         DiDV69CIoPiTkwH+rcqwZHu6fwWXexmEBep8STEhnhcGUrCVzVqqQr0jaxOQhoZU7M
-         fSs6xnKqJpttA==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: test fsync after increasing file size with truncate
-Date:   Tue,  6 Jul 2021 15:42:17 +0100
-Message-Id: <6dedbce5e4eb410f96b946a4fe065626990a232c.1625582369.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.30.2
+        id S230082AbhGFSP7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Jul 2021 14:15:59 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58848 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229954AbhGFSP7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Jul 2021 14:15:59 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 862941FFB1;
+        Tue,  6 Jul 2021 18:13:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1625595199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=85RVnRsdKahf3YRXyEiKk9Ekx1RRvS2ns8Ls2cE1eEw=;
+        b=kf552dWln+zzxynrQ6KAUVt4CE34HITj1FVmQR4amX1NLZwK7XD99eOC4boTKEUIvzYMV1
+        9nzZK3qzJGTavYW9rtLkDML4n2uxYW1DRsTX4JvZYYtrUenPU8I/nHeqN2c+WPJhfRHB4/
+        h0PgaGIQx7mDqQ0gwmD013YEQfZywt0=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6820313668;
+        Tue,  6 Jul 2021 18:13:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id rBkIDD6d5GDGdQAAGKfGzw
+        (envelope-from <mpdesouza@suse.com>); Tue, 06 Jul 2021 18:13:18 +0000
+From:   Marcos Paulo de Souza <mpdesouza@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH] btrfs: ctree: Remove max argument from generic_bin_search
+Date:   Tue,  6 Jul 2021 15:13:25 -0300
+Message-Id: <20210706181325.6749-1-mpdesouza@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Both callers use btrfs_header_nritems to feed the max argument.
+Remove the argument and let generic_bin_search call it itself.
 
-Test that if we explicitly fsync a file that was previously renamed and
-its size was increased through a truncate operation, after a power failure
-the file has the size set by the truncate operation. Also, in between the
-truncation and the fsync, there was a rename of another file in the same
-directory and that file was also fsynced before we fsynced the file that
-was truncated.
-
-This currently fails on a 5.13 kernel and on Linus' master branch. It is
-fixed by a patch with the following subject:
-
-  "btrfs: fix unpersisted i_size on fsync after expanding truncate"
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- tests/btrfs/242     | 93 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/242.out | 15 ++++++++
- 2 files changed, 108 insertions(+)
- create mode 100755 tests/btrfs/242
- create mode 100644 tests/btrfs/242.out
+ fs/btrfs/ctree.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/tests/btrfs/242 b/tests/btrfs/242
-new file mode 100755
-index 00000000..7ae28751
---- /dev/null
-+++ b/tests/btrfs/242
-@@ -0,0 +1,93 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 242
-+#
-+# Test that if we explicitly fsync a file that was previously renamed and its
-+# size was increased through a truncate operation, after a power failure the
-+# file has the size set by truncate operation. In between the truncation and
-+# the fsync, there was a rename of another file in the same directory and that
-+# file was also fsynced before we fsynced the file that was truncated.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick log
-+
-+_cleanup()
-+{
-+	_cleanup_flakey
-+	cd /
-+	rm -r -f $tmp.*
-+}
-+
-+. ./common/rc
-+. ./common/filter
-+. ./common/dmflakey
-+
-+# real QA test starts here
-+
-+_supported_fs btrfs
-+_require_scratch
-+_require_dm_target flakey
-+
-+rm -f $seqres.full
-+
-+_scratch_mkfs >>$seqres.full 2>&1
-+_require_metadata_journaling $SCRATCH_DEV
-+_init_flakey
-+_mount_flakey
-+
-+# Create our test files.
-+touch $SCRATCH_MNT/foo
-+$XFS_IO_PROG -f -c "pwrite -S 0xab 0 1M" $SCRATCH_MNT/bar | _filter_xfs_io
-+
-+# Make them durably persisted.
-+sync
-+
-+# Fsync bar, this will be a noop since the file has not yet been modified in
-+# the current transaction. The goal here is to clear BTRFS_INODE_NEEDS_FULL_SYNC
-+# from the inode's runtime flags.
-+$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/bar
-+
-+# Now rename both files, without changing their parent directory.
-+mv $SCRATCH_MNT/bar $SCRATCH_MNT/bar2
-+mv $SCRATCH_MNT/foo $SCRATCH_MNT/foo2
-+
-+# Increase the size of bar2 with a truncate operation.
-+$XFS_IO_PROG -c "truncate 2M" $SCRATCH_MNT/bar2
-+
-+# Now fsync foo2, this results in logging its parent inode (the root directory),
-+# and logging the parent results in logging the inode of file bar2 (its inode
-+# item and the new name). The inode of file bar2 is logged with an i_size of 0
-+# bytes since it's logged in LOG_INODE_EXISTS mode, meaning we are only logging
-+# its names (and xattrs if it had any) and the i_size of the inode will not be
-+# changed when the log is replayed.
-+$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/foo2
-+
-+# Now explicitly fsync bar2. This resulted in doing nothing, not logging the
-+# inode with the new i_size of 2M and the hole from file offset 1M to 2M.
-+# Because the inode did not have the flag BTRFS_INODE_NEEDS_FULL_SYNC set, when
-+# it was logged through the fsync of file foo2, its last_log_commit field was
-+# updated, resulting in this explicit of file bar2 not doing anything.
-+$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/bar2
-+
-+echo "File bar2 content before power failure:"
-+od -A d -t x1 $SCRATCH_MNT/bar2
-+
-+# Simulate a power failure and then mount again the filesystem to replay the log
-+# tree.
-+_flakey_drop_and_remount
-+
-+echo "File bar2 content after power failure:"
-+od -A d -t x1 $SCRATCH_MNT/bar2
-+
-+# While here, also check that the rename of foo to foo2 was durably persisted,
-+# even if it's not the specific regression the test is checking for.
-+[ -f $SCRATCH_MNT/foo2 ] || echo "File name foo2 does not exists"
-+[ -f $SCRATCH_MNT/foo ] && echo "File name foo still exists"
-+
-+_unmount_flakey
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/242.out b/tests/btrfs/242.out
-new file mode 100644
-index 00000000..49e184dd
---- /dev/null
-+++ b/tests/btrfs/242.out
-@@ -0,0 +1,15 @@
-+QA output created by 242
-+wrote 1048576/1048576 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+File bar2 content before power failure:
-+0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
-+*
-+1048576 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+2097152
-+File bar2 content after power failure:
-+0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
-+*
-+1048576 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-+*
-+2097152
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index c5c08c87e130..394fec1d3fd9 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -726,22 +726,22 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+ 
+ /*
+  * search for key in the extent_buffer.  The items start at offset p,
+- * and they are item_size apart.  There are 'max' items in p.
++ * and they are item_size apart.
+  *
+  * the slot in the array is returned via slot, and it points to
+  * the place where you would insert key if it is not found in
+  * the array.
+  *
+- * slot may point to max if the key is bigger than all of the keys
++ * slot may point to total number of items if the key is bigger than
++ * all of the keys
+  */
+ static noinline int generic_bin_search(struct extent_buffer *eb,
+ 				       unsigned long p, int item_size,
+-				       const struct btrfs_key *key,
+-				       int max, int *slot)
++				       const struct btrfs_key *key, int *slot)
+ {
+-	int low = 0;
+-	int high = max;
+ 	int ret;
++	int low = 0;
++	int high = btrfs_header_nritems(eb);
+ 	const int key_size = sizeof(struct btrfs_disk_key);
+ 
+ 	if (low > high) {
+@@ -800,14 +800,12 @@ int btrfs_bin_search(struct extent_buffer *eb, const struct btrfs_key *key,
+ 		return generic_bin_search(eb,
+ 					  offsetof(struct btrfs_leaf, items),
+ 					  sizeof(struct btrfs_item),
+-					  key, btrfs_header_nritems(eb),
+-					  slot);
++					  key, slot);
+ 	else
+ 		return generic_bin_search(eb,
+ 					  offsetof(struct btrfs_node, ptrs),
+ 					  sizeof(struct btrfs_key_ptr),
+-					  key, btrfs_header_nritems(eb),
+-					  slot);
++					  key, slot);
+ }
+ 
+ static void root_add_used(struct btrfs_root *root, u32 size)
 -- 
-2.30.2
+2.26.2
 
