@@ -2,116 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E176C3BEFFA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jul 2021 21:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8254A3BF260
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 01:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhGGTFt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jul 2021 15:05:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49486 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhGGTFs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jul 2021 15:05:48 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D5D092265F;
-        Wed,  7 Jul 2021 19:03:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625684586;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D5ZHObgI7gZ+E/QUhOuan+CHAYodONox+mpIqQsblAo=;
-        b=HkTBdMxzC/vHSMHcpV+gjrZO4H1R/dKyiKYWCgYOCxiW9RMPwDyNO++KCzLo4TTbiFuda+
-        vK/5p/G7gwIU6iq5SxxmDhr52h2MnWaWF9tD8bm29kM7lfOLSIkE0HgTyh8bvR5uaZZDDf
-        ZRO/JGppW2xpWm4ltk8I7TXRZRBb618=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625684586;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D5ZHObgI7gZ+E/QUhOuan+CHAYodONox+mpIqQsblAo=;
-        b=TaVBgaH6gN31QZEpA2CO266Wm1g5GBFd58kdqen+rkXhqk6wdBckKnBloteAoqeYSa/9iN
-        1T4hbx4Cu3v099Dw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id CF209A3B8A;
-        Wed,  7 Jul 2021 19:03:06 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EF14DDB29A; Wed,  7 Jul 2021 21:00:32 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 21:00:32 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Yan Li <elliot.li.tech@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: autodefrag causing freezes under heavy writes?
-Message-ID: <20210707190032.GT2610@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Yan Li <elliot.li.tech@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CALc-jWwheBvcKKM79AD7BA5ZZQs7D407acgwOiwyo9R=U98Nwg@mail.gmail.com>
+        id S230233AbhGGXW0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jul 2021 19:22:26 -0400
+Received: from mout.gmx.net ([212.227.17.22]:37885 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230029AbhGGXWY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 7 Jul 2021 19:22:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1625699972;
+        bh=FSq5hOg20GzKGUSP9BoJRMwTbY31oDy+zlIif7Cs6oE=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=A4aV50jujp1YD4cwQc0P383jkG3zrILbZC4TAugeMJzycOojhJ8Gv+9eDvzyuZWoH
+         5w3z7696GRRN56mO2XNgBgTCtCJCQcoDLsAuMcXcTEEzMjcwBAMmCCma/2Z1ssifht
+         LB/guCr+x7wEUN9w1yUyJkIjmn9HulVtSx5Mea1M=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5GE1-1l11Ak30zt-0116kO; Thu, 08
+ Jul 2021 01:19:32 +0200
+Subject: Re: [PATCH v6 00/15] btrfs: add data write support for subpage
+To:     dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
+        Qu Wenruo <wqu@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <20210705020110.89358-1-wqu@suse.com>
+ <5ad76de9-d1df-cafa-f5c3-44e316e0fb23@suse.com>
+ <CAEg-Je8A=d6JOMfAPFcfppuhXvatLqpLb6UK5dOzdLZnfBfq7Q@mail.gmail.com>
+ <20210707181451.GS2610@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <843d839c-11f5-40e3-9871-e462254113b1@gmx.com>
+Date:   Thu, 8 Jul 2021 07:19:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALc-jWwheBvcKKM79AD7BA5ZZQs7D407acgwOiwyo9R=U98Nwg@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210707181451.GS2610@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:LT5TzKAJLWUP3mQL4LC9M7SjSFYEmGpnwUxNwPJp/3Ktaazrbdz
+ gk8R1ItO6ypI+YNU1i4k0zedvhLoCWVyskCV/mjvhwEDARWEoDe4R95JPz+iBYbRGENWTPo
+ FcSkuDkMG39OkoOZVxX6WnGVP+oWnpZCBhMmh9M3ftrW7G2KFmEJJlblcIvvKbDv1mWxpcH
+ LWOIpmxAG7TJCCq7/Wkdw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qiks1iXrk+Y=:uD+BLARkAoODEYG3loIIvl
+ 3D8YpQc/5q9f7dqw8dHFdlRWuZJZqioIlFOEgLioc0xdakxMV8AFbYcnsLd4yCyqMJu7r79Nu
+ E/vrVU9TuZXz/zCN21sg9z3bDEbJVkABoT7Rjlll8g3pdy46hzIBh4I8iyvqTy9OzXQoRsYvn
+ eMcRd5WxfhsUaTKqLlWS2/fqg0V0bugqsfTpSSXOYgRwf5m2M4tNJWtl6LY8v4VQwyw+o9I16
+ Wfhgq5IvjrrhZDeFnmVZIEa+eI/NlVBzcnKwyDcDgZzxmwvhnJnLemP20sYYDtsGChbEh5sD8
+ TQwgQOaip/64FH94sHDmTjJmU6doehRpLKVkjW58aCkFRVcJuk9AG5HCrsJM+X/0nCJlp2fq5
+ DjD0kJu0qWs371KiODvBbCwz6NMpclD0xb4c8m/8qYJtEONqIgItruJy06ox1dOTzUy5zVAOe
+ TwYNqlWkP1VZqzF6QqNh6agHjS+KXG5U/iirx9mDEVu3XrcUD3ncYUVzD1Jaz8NfazBCyDK6u
+ qjT693PeRUx+NYY49aJA4mx6IMO34OjpzGDLkxdKwH/MREwlF/+IrVs9AwlwH5fu1tsIxPMzG
+ k7/u6OTHYvEkMqUowkWJDC6EmGn/wNye0WPszyJjXjkxYRmEnygxnprsscVnya3rldzlxUM71
+ 0o+2u/3R40FJKyBxhid+sOYgjqABHZZlGthlpjHrkVOgFhMNnJlOJgNYIOlQSaRQOX738mUmE
+ waxO3Y9gMvDw0lYWL6lMRR19cgMh/GPfhVv+lq8DTvKhqulSWukxZ9hor7ZpggCxQYdM/Xv5f
+ WVTk6B8zn2FwBZtCZGOwFvOlhPqWotCRLdFvoku6ItlfvbRIwgBNuiDu5T/x5F0/qkRmxGG20
+ iWnkL/TbsVOHzgj88lYwHmUZ63q7Vv1LcVz1+5tnOUQReKAqqOgk0KUerTEVsqiHzQIL74WOx
+ R/DHk8LalDIpFsigqP8b8FV69QaSoc0q8mZ2YZ5QoKr97iTNumaKYOrcyTonPsdn9QXzcskt4
+ i3iGmG8L4c7IhNW5ek/Suu9RKKpqlbnkDZarc3HG3XsV2OobV8AL9np9f1KkqQ/aKW7CMsymd
+ FlZuE31GQsb78pn76wo4qVzfOIJrvJV+hM0a6o86p68QcEoUSxvmyUqCw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 08:56:23PM -0700, Yan Li wrote:
-> I'm using 5.11.0-22-generic from Ubuntu 21.04. My btrfs is running in
-> raid1 mode with two SATA SSDs. Mount options
-> "defaults,ssd,noatime,compress=zstd". Motherboard is ASUS Pro WS
-> X570-ACE with 32GB ECC RAM and AMD Ryzen 5 5600X. The system has no
-> other known problems.
-> 
-> I found that when I added the autodefrag mount option, the system
-> would freeze under heavy write workload for a long time before the
 
-Do you have an estimate for 'long time' ? Like human percievable
-"seconds" or like 5 seconds and more.
 
-> write finished and the system recovered itself, and would occasionally
-> freeze with a simple sync. During heavy write workloads, dmesg showed:
-> 
-> INFO: task journal-offline:514885 blocked for more than 120 seconds.
->       Tainted: P           OE     5.11.0-22-generic #23-Ubuntu
-> task:journal-offline state:D stack:    0 pid:514885 ppid:     1 flags:0x00000220
-> Call Trace:
->  __schedule+0x23d/0x670
->  schedule+0x4f/0xc0
->  btrfs_start_ordered_extent+0xdd/0x110 [btrfs]
->  ? wait_woken+0x80/0x80
->  btrfs_wait_ordered_range+0x120/0x210 [btrfs]
->  btrfs_sync_file+0x2d1/0x480 [btrfs]
->  vfs_fsync_range+0x49/0x80
->  ? __fget_light+0x32/0x80
->  __x64_sys_fsync+0x39/0x60
->  do_syscall_64+0x38/0x90
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x7f49c9178d4b
-> RSP: 002b:00007f49c5150c50 EFLAGS: 00000293 ORIG_RAX: 000000000000004a
-> RAX: ffffffffffffffda RBX: 00005589e7e26140 RCX: 00007f49c9178d4b
-> RDX: 0000000000000002 RSI: 00007f49c94bf497 RDI: 000000000000002c
-> RBP: 00007f49c94c1db0 R08: 0000000000000000 R09: 00007f49c5151640
-> R10: 0000000000000017 R11: 0000000000000293 R12: 0000000000000002
-> R13: 00007ffee4c5c8bf R14: 0000000000000000 R15: 00007f49c5151640
-> 
-> And many similar messages. The heavy write workload was just a dd from
-> urandom to a file.
-> 
-> The system behaves fine when I remove the autodefrag mount option.
-> 
-> Is this a known problem? If you need any more information, please
-> kindly let me know.
+On 2021/7/8 =E4=B8=8A=E5=8D=882:14, David Sterba wrote:
+> On Wed, Jul 07, 2021 at 01:41:46PM -0400, Neal Gompa wrote:
+>>> But on the other hand, I'm not sure what's the proper way to introduce=
+ a
+>>> fix for v5.15 window.
+>>>
+>>> Should I just disable readahead for compression read (which just needs
+>>> two lines to return 0 for subpage case in add_ra_bio_pages())?
+>>>
+>>> Or should I add the proper fix into the patchset?
+>>
+>> If this is going into 5.15 instead of 5.14, just add the proper fix
+>> into this patch set. But if we want to land this in 5.14, I would
+>> suggest disabling it for now and then having a separate patch set for
+>> that.
+>
+> 5.14 is not possible, there are other subpage changes already merged so
+> fixes to existing level of support (still limited) can go to 5.14-rcs
+> but this whole patchses it is targeting 5.15.
+>
+>> You're already targeting 5.15 (though I kind of want this in 5.14...),
+>> so I suggest going with adding the fix to the patch set.
+>
+> For 5.15 it's free to do any change, eg. fold the fix or do a separate
+> patch explaining all the details.
 
-The autodefrag can cause problems like this, yes, but it depends on
-other factors too. Autodefrag can read additional pages from disk in
-case they aren't contiguous and then writes them (in a small cluster)
-together. You're using compression, so this may add a slightly more
-delay before the data are written. On the default level it should be
-unnoticeable and you mention that's on a Ryzen 5 so I'd rule that out.
+Another reason why I'm considering to disable that readahead ability is,
+it really makes little sense for 64K page size.
 
-IIRC autodefrag can help some workloads but may hurt others so if it's
-making things worse you, then drop it. It helps when seeks are expensive
-ie. on rotational disks but you use SSD so it should not be necessary.
+Our maximum compressed extent size is just 128K, at most 3 pages for 64K
+page size (that's when the extent is not page aligned).
 
-If you'd still like to debug it, please take a snapshot of all process
-stacks at the time the hang happens.
+Just saving two reads (which may only be one or 2 4K sectors) doesn't
+really make it worthy, especially considering the change to ra itself is
+going to affecting common code path.
+
+Thus I prefer to disable for the initial support, and only add the
+proper fix for the compression write support.
+
+>
+> In general the development changes must be ready at the rc5 time at the
+> latest (with a week or two for some testing and catching last bugs).
+> Once it's due there's like two months until the next code freeze.
+>
+
+Great, I'll just add a simple disabling patch with comments on why the
+current code doesn't work and why it's fine to disable it for 64K page siz=
+e.
+
+Thanks,
+Qu
