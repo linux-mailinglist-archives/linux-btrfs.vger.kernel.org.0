@@ -2,78 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503C33BEA24
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jul 2021 16:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B233BEA42
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jul 2021 17:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbhGGO73 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Jul 2021 10:59:29 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38416 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbhGGO7O (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jul 2021 10:59:14 -0400
+        id S232148AbhGGPGj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Jul 2021 11:06:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58528 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232265AbhGGPGe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Jul 2021 11:06:34 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1C2C722251;
-        Wed,  7 Jul 2021 14:53:22 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 86A94200A1;
+        Wed,  7 Jul 2021 15:03:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625669602;
+        t=1625670200;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1K0uj2UaKKCEgLmDi0NyOHurtBzFDbCrqUYA741JTNc=;
-        b=oJja2kgWV+c/8lLnw4tg/rINhEN7M6cA8wVmaYXzElKJwNc40beBBe62waUqleQOcYzHiK
-        HhPuS8b4uBjhiRrVh11pSdugChc2vlY6yO5H6d5VYbxZP1jssHCUn1Ku4Myzitr3BLxom3
-        +6KT0iCrj6ZKAv4BUUQKnNtfCdwc6a4=
+        bh=/njSWsFKmrr+gCtk5oLKLx0gnGyNTSkRi3qeU7FkYJc=;
+        b=P70mfZINIHga/GUSB474MUZ/h3uZi7rozCxArusbasTg4gcWmobEYqPY/sTCUi6mNa9C6M
+        ntLaJVEUEtvG2a+WOsc4QvKjikYlix0TusAj5dIxIQDxD6cgxHEuX/pPLRUkgbEEaTTy0Z
+        Y5Jho/NqRo2LT7BAe14b97nzMq97Bn4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625669602;
+        s=susede2_ed25519; t=1625670200;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1K0uj2UaKKCEgLmDi0NyOHurtBzFDbCrqUYA741JTNc=;
-        b=dhX7TKNrHWxthttH8Dq/MAxgv3EWfwpGg1JQ3/ZEQURDykG3dR8g5GtqTbpE6KoS8skE8P
-        1xEDmF5iVmp5bdAQ==
+        bh=/njSWsFKmrr+gCtk5oLKLx0gnGyNTSkRi3qeU7FkYJc=;
+        b=yor2vNtUHhEUakJ1XrwjM1hEGtN2wJ+5A3qSKpDiRDplrJKmbqaMvDu4nVVtruXhxKl8P9
+        RJF5BX29JgVyqVCg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id DC314A3B9F;
-        Wed,  7 Jul 2021 14:53:21 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 7C8C8A3B8A;
+        Wed,  7 Jul 2021 15:03:20 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 36C4DDA6FD; Wed,  7 Jul 2021 16:50:48 +0200 (CEST)
-Date:   Wed, 7 Jul 2021 16:50:48 +0200
+        id C6A03DA6FD; Wed,  7 Jul 2021 17:00:46 +0200 (CEST)
+Date:   Wed, 7 Jul 2021 17:00:46 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Subject: Re: [PATCH] btrfs-progs:  default to SINGLE profile on zoned devices
-Message-ID: <20210707145048.GK2610@twin.jikos.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 2/2] btrfs: change btrfs_io_bio_init inline function to
+ macro
+Message-ID: <20210707150046.GL2610@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>
-References: <20210706091922.38650-1-johannes.thumshirn@wdc.com>
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <cover.1625237377.git.anand.jain@oracle.com>
+ <0ae479ebdecf5501937b5d93449a782d96864cce.1625237377.git.anand.jain@oracle.com>
+ <05870252-7ab1-0306-7360-a6edeed2b168@suse.com>
+ <a9f156a1-354b-6555-ba71-da6c92235d09@oracle.com>
+ <7ba26789-f98e-adb2-a6d9-7979e519e802@suse.com>
+ <PH0PR04MB7416055C3C4AC524B8F5CAC29B1B9@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210706091922.38650-1-johannes.thumshirn@wdc.com>
+In-Reply-To: <PH0PR04MB7416055C3C4AC524B8F5CAC29B1B9@PH0PR04MB7416.namprd04.prod.outlook.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 06:19:22PM +0900, Johannes Thumshirn wrote:
-> On zoned devices we're currently not supporting any other block group
-> profile than the SINGLE profile, so pick it as default value otherwise a
-> user would have to specify it manually at mkfs time for rotational zoned
-> devices.
+On Tue, Jul 06, 2021 at 06:14:38AM +0000, Johannes Thumshirn wrote:
+> On 06/07/2021 07:29, Nikolay Borisov wrote:
+> >> The gain is macro is guaranteed to be inline-ed. A function with the
+> >> inline prefix isn't.
+> >>
+> > In this particular case it's guaranteed that the function will be inlined.
+> > 
+> 
+> And we also get additional type safety from the function, which the macro
+> doesn't provide.
 
-Yes this is annoying but careful with setting defaults, it's hard to
-change them. And in case of zoned devices it will be possible to set
-something else in the future so defaulting to single/single needs to be
-justified in another way than "currently we don't support anything
-else".
-
-The SSD fallback to single is not showing as useful and there's ongoing
-work to make it default to dup for metadata again. For consistency I'd
-rather have simple logic for selecting defaults and give hints
-eventually instead of checking random things in the system and then
-selectin on behalf of the user. Unfortunatelly it's not that easy as
-there are conflicting valid interests and we don't have defaults that
-fits all scenarios.
+Yeah, using static inlines instead of macros is preferred when they're
+reasonably simple, like in this case.
