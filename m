@@ -2,297 +2,577 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D423C16EB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 18:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65863C1727
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 18:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhGHQRR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jul 2021 12:17:17 -0400
-Received: from a4-2.smtp-out.eu-west-1.amazonses.com ([54.240.4.2]:56267 "EHLO
-        a4-2.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229553AbhGHQRR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Jul 2021 12:17:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=vbsgq4olmwpaxkmtpgfbbmccllr2wq3g; d=urbackup.org; t=1625760874;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=v5TrdRD8u5ib3ScvKsWKCVQ305RLRyPYaAnwFPuCe8A=;
-        b=oh8ryhj4V6lUpFTh7gaUU9YRX4nY6QkndVh/71yCCofM1C6hhpW5e8M4d4WiQuDS
-        CFfLU5c/SHfRHZxEnu4NDg5phY2WANAo7csXvveBAnFZDI0mKIWbbJxPSrAYcByCXCE
-        krWDPyFCvJzGF5crUJjBaVy0+gxCPwBYgrh+hL08=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=uku4taia5b5tsbglxyj6zym32efj7xqv; d=amazonses.com; t=1625760874;
-        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=v5TrdRD8u5ib3ScvKsWKCVQ305RLRyPYaAnwFPuCe8A=;
-        b=M0eBkHmxd1WWTPYOIn7YojE5hcixHDyuH5KNRFYropIcZGm6eESXWKzCJ8J8QpoD
-        9jwLpTOSpoA/MKV9ufpnHu4XeX2CswAKpSMoYApWvnMNDrMobsk5fdquuY4b/bdi6Sy
-        MsQ67Xi/ww+iF+i4uPp0QoZI/ue61kltOvDuOLzM=
-Subject: Re: IO failure without other (device) error
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <010201795331ffe5-6933accd-b72f-45f0-be86-c2832b6fe306-000000@eu-west-1.amazonses.com>
- <0102017a1fead031-e0b49bda-297e-42f8-8fde-5567c5cfdec9-000000@eu-west-1.amazonses.com>
- <0102017a5e38aa40-fb2774c8-5be1-4022-abfa-c59fe23f46a3-000000@eu-west-1.amazonses.com>
- <4e6c3598-92b4-30d6-3df8-6b70badbd893@gmx.com>
- <0102017a631abd46-c29f6d05-e5b2-44b1-a945-53f43026154f-000000@eu-west-1.amazonses.com>
- <6422009e-be80-f753-2243-2a13178a1763@gmx.com>
- <0102017a680d637c-4a958f96-dd8b-433d-84a6-8fc6a84abf47-000000@eu-west-1.amazonses.com>
- <a5357b44-6c1c-3174-a76c-09f01802386a@gmx.com>
-From:   Martin Raiber <martin@urbackup.org>
-Message-ID: <0102017a86e63e18-a5023d15-0b20-43e8-b71c-6dd241451179-000000@eu-west-1.amazonses.com>
-Date:   Thu, 8 Jul 2021 16:14:34 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229542AbhGHQjR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jul 2021 12:39:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53344 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhGHQjR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 12:39:17 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2933A2232F
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jul 2021 16:36:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1625762194; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=0IatzWjcUAC2W7RNlutwTJlIe+N5pSXEBpxo859kFvU=;
+        b=hrAjsTHEPOYgaaT1iC9vPEhuGpl/ODTWA9OoAImaMosQ3me1raN3azqcd/sgg31BtW81CC
+        EzM5bAmHvNKx03Q4zwrAykcanbr2VG7V6j6q7h6zdXMaOOMneF6S8c6isl0jePeFOztNrl
+        2CNrTe2bzYdZEGbxYjZZ8fPwv1ez838=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1625762194;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=0IatzWjcUAC2W7RNlutwTJlIe+N5pSXEBpxo859kFvU=;
+        b=u7cPpbflLC42r81nIh3nhzm6lWq15oW8VMuQVIMFBaDqjJjblqjPgLv4/VFlfN/Shw2+ld
+        twu9Pqizt95AurAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B705613B07
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jul 2021 16:36:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nrLFD5Ep52BeJAAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jul 2021 16:36:33 +0000
+Date:   Thu, 8 Jul 2021 11:36:30 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: Use io_bio->mirror_num for all mirror_num needs
+Message-ID: <20210708163630.dd7uw6hhgim2gaxd@fiona>
 MIME-Version: 1.0
-In-Reply-To: <a5357b44-6c1c-3174-a76c-09f01802386a@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
-X-SES-Outgoing: 2021.07.08-54.240.4.2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 03.07.2021 00:46 Qu Wenruo wrote:
->
->
-> On 2021/7/3 上午12:29, Martin Raiber wrote:
->> On 02.07.2021 00:19 Qu Wenruo wrote:
->>>
->>>
->>> On 2021/7/2 上午1:25, Martin Raiber wrote:
->>>> On 01.07.2021 03:40 Qu Wenruo wrote:
->>>>>
->>>>>
->>>>> On 2021/7/1 上午2:40, Martin Raiber wrote:
->>>>>> On 18.06.2021 18:18 Martin Raiber wrote:
->>>>>>> On 10.05.2021 00:14 Martin Raiber wrote:
->>>>>>>> I get this (rare) issue where btrfs reports an IO error in run_delayed_refs or finish_ordered_io with no underlying device errors being reported. This is with 5.10.26 but with a few patches like the pcpu ENOMEM fix or work-arounds for btrfs ENOSPC issues:
->>>>>>>>
->>>>>>>> [1885197.101981] systemd-sysv-generator[2324776]: SysV service '/etc/init.d/exim4' lacks a native systemd unit file. Automatically generating a unit file for compatibility. Please update package to include a native systemd unit file, in order to make it more safe and robust.
->>>>>>>> [2260628.156893] BTRFS: error (device dm-0) in btrfs_finish_ordered_io:2736: errno=-5 IO failure
->>>>>>>> [2260628.156980] BTRFS info (device dm-0): forced readonly
->>>>>>>>
->>>>>>>> This issue occured on two different machines now (on one twice). Both with ECC RAM. One bare metal (where dm-0 is on a NVMe) and one in a VM (where dm-0 is a ceph volume).
->>>>>>> Just got it again (5.10.43). So I guess the question is how can I trace where this error comes from... The error message points at btrfs_csum_file_blocks but nothing beyond that. Grep for EIO and put a WARN_ON at each location?
->>>>>>>
->>>>>> Added the WARN_ON -EIOs. And hit it. It points at read_extent_buffer_pages (this time), this part before unlock_exit:
->>>>>
->>>>> Well, this is quite different from your initial report.
->>>>>
->>>>> Your initial report is EIO in btrfs_finish_ordered_io(), which happens
->>>>> after all data is written back to disk.
->>>>>
->>>>> But in this particular case, it happens before we submit the data to disk.
->>>>>
->>>>> In this case, we search csum tree first, to find the csum for the range
->>>>> we want to read, before submit the read bio.
->>>>>
->>>>> Thus they are at completely different path.
->>>> Yes it fails to read the csum, because read_extent_buffer_pages returns -EIO. I made the, I think, reasonable assumption that there is only one issue in btrfs where -EIO happens without an actual IO error on the underlying device. The original issue has line numbers that point at btrfs_csum_file_blocks which calls btrfs_lookup_csum which is in the call path of this issue. Can't confirm it's the same issue because the original report didn't have the WARN_ONs in there, so feel free to treat them as separate issues.
->>>>>
->>>>>>
->>>>>>        for (i = 0; i < num_pages; i++) {
->>>>>>            page = eb->pages[i];
->>>>>>            wait_on_page_locked(page);
->>>>>>            if (!PageUptodate(page))
->>>>>>                -->ret = -EIO;
->>>>>>        }
->>>>>>
->>>>>> Complete dmesg output. In this instance it seems to not be able to read a csum. It doesn't go read only in this case... Maybe it should?
->>>>>>
->>>>>> [Wed Jun 30 10:31:11 2021] kernel log
->>>>>
->>>>> For this particular case, btrfs first can't find the csum for the range
->>>>> of read, and just left the csum as all zeros and continue.
->>>>>
->>>>> Then the data read from disk will definitely cause a csum mismatch.
->>>>>
->>>>> This normally means a csum tree corruption.
->>>>>
->>>>> Can you run btrfs-check on that fs?
->>>>
->>>> It didn't "find" the csum because it has an -EIO error reading the extent where the csum is supposed to be stored. It is not a csum tree corruption because that would cause different log messages like transid not matching or csum of tree nodes being wrong, I think.
->>>
->>> Yes, that's what I expect, and feel strange about.
->>>
->>>>
->>>> Sorry, the file is long deleted. Scrub comes back as clean and I guess the -EIO error causing the csum read failure was only transient anyway.
->>>>
->>>> I'm not sufficiently familiar with btrfs/block device/mm subsystem obviously but here is one guess what could be wrong.
->>>>
->>>> It waits for completion for the read of the extent buffer page like this:
->>>>
->>>> wait_on_page_locked(page);
->>>> if (!PageUptodate(page))
->>>>       ret = -EIO;
->>>>
->>>> while in filemap.c it reads a page like this:
->>>>
->>>> wait_on_page_locked(page);
->>>> if (PageUptodate(page))
->>>>       goto out;
->>>> lock_page(page);
->>>> if (!page->mapping) {
->>>>           unlock_page(page);
->>>>           put_page(page);
->>>>           goto repeat;
->>>> }
->>>
->>> Yes, that what we do for data read path, as each time a page get
->>> unlocked, we can get page invalidator trigger for the page, and when we
->>> re-lock the page, it may has been invalidated.
->>>
->>> Although above check has been updated to do extra check including
->>> page->mapping and page->private check to be extra sure.
->>>
->>>> /* Someone else locked and filled the page in a very small window */
->>>> if (PageUptodate(page)) {
->>>>           unlock_page(page);
->>>>           goto out;
->>>>
->>>> }
->>>>
->>>> With the comment:
->>>>
->>>>> /*
->>>>> * Page is not up to date and may be locked due to one of the following
->>>>> * case a: Page is being filled and the page lock is held
->>>>> * case b: Read/write error clearing the page uptodate status
->>>>> * case c: Truncation in progress (page locked)
->>>>> * case d: Reclaim in progress
->>>>> *  [...]
->>>>> */
->>>> So maybe the extent buffer page gets e.g. reclaimed in the small window between unlock and PageUptodate check?
->>>
->>> But for metadata case, unlike data path, we have very limited way to
->>> invalidate/release a page.
->>>
->>> Unlike data path, metadata page uses it page->private as pointer to
->>> extent buffer.
->>>
->>> And each time we want to drop a metadata page, we can only do that if
->>> the extent buffer owning the page can be removed from the extent buffer
->>> cache.
->>>
->>> Thus a unlock metadata page get released halfway is not expected
->>> behavior at all.
->> I see. It mainly checks extent_buffer->refs and it increments that after allocating/finding the extent... No further idea what could be the problem...
->>>
->>>>
->>>> Another option is case b (read/write error), but the NVMe/dm subsystem doesn't log any error for some reason.
->>>
->>> I don't believe that's the case neither, or we should have csum mismatch
->>> report from btrfs.
->>>
->>>>
->>>> I guess I could add the lock and check for mapping and PageError(page) to narrow it down further?
->>>>
->>> If you have a proper way to reproduce the bug reliable, I could craft a
->>> diff for you to debug (with everything output to ftrace buffer to debug)
->>
->> Unfortunately I can't reproduce it and it is really rare. I could add further output at that location. E.g. checking for mapping presence if the page has an error or if it was submitted for read or was Uptodate before?
->>
->> For now I'll just extent the retry logic in btree_read_extent_buffer_pages to try the same mirror multiple times (The problematic btrfs filesystems have single metadata). That should do it as work-around.
->>
-> My recommendation for debugging is to add extra trace_printk() on
-> btree_releasepage() to see when a metadata page really get freed, and
-> read_extent_buffer_pages() to see what's the possible race.
->
-> Another idea is to add extra debug output in end_bio_extent_readpage()
-> for metadata pages.
->
-> As I'm still wondering if there is something wrong detected by btrfs
-> module but without any error message.
->
-> In that case, we definitely want to add a proper error message.
+Simplification.
 
-I guess this would be a proper error message:
+btrfs_io_bio has a mirror_num field which is under-used. The mirror_num
+is available when the io_bio is allocated, ie as an argument to the
+function where bio is allocated. Set it when a new bio (and in
+essence io_bio) is allocated. The makes passing mirror_num as function
+arguments unnecessary.
 
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -6505,8 +6505,14 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
-        for (i = 0; i < num_pages; i++) {
-                page = eb->pages[i];
-                wait_on_page_locked(page);
--               if (!PageUptodate(page))
-+               if (!PageUptodate(page)) {
-+                       btrfs_err_rl(eb->fs_info,
-+                               "error reading extent buffer "
-+                               "start %llu len %lu PageError %d",
-+                               eb->start, eb->len,
-+                               PageError(page) ? 1 : 0);
-                        ret = -EIO;
-+               }
-        }
+The io_bio->mirror_num is also used as the failed mirror number of the
+failed_bio as opposed to explicitly being passed as the function
+argument.
 
-        return ret;
+Similarly, async_submit_bio.mirror_num is also made unnecessary because it
+carries the pointer to the bio.
 
-I haven't added this to the kernel I'm running yet. It currently still has a WARN_ON instead of the error message.
+compressed_bio->mirror_num is also set by the bio passed (which
+eventually becomes compressed_bio->orig_bio). So any io_bio allocated by
+compressed_bio sequence is also assigned from cb->mirror_num.
 
-I also added the retry like this:
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+---
+ fs/btrfs/compression.c | 14 ++++++++------
+ fs/btrfs/compression.h |  2 +-
+ fs/btrfs/ctree.h       |  2 +-
+ fs/btrfs/disk-io.c     | 14 ++++++--------
+ fs/btrfs/disk-io.h     |  4 ++--
+ fs/btrfs/extent_io.c   | 28 +++++++++++++++-------------
+ fs/btrfs/extent_io.h   |  6 ++----
+ fs/btrfs/inode.c       | 18 ++++++++----------
+ fs/btrfs/volumes.c     |  4 ++--
+ fs/btrfs/volumes.h     |  3 +--
+ 10 files changed, 46 insertions(+), 49 deletions(-)
 
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 9a023ae0f98b..576e22ab0932 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -485,7 +485,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 				BUG_ON(ret); /* -ENOMEM */
+ 			}
+ 
+-			ret = btrfs_map_bio(fs_info, bio, 0);
++			ret = btrfs_map_bio(fs_info, bio);
+ 			if (ret) {
+ 				bio->bi_status = ret;
+ 				bio_endio(bio);
+@@ -521,7 +521,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 		BUG_ON(ret); /* -ENOMEM */
+ 	}
+ 
+-	ret = btrfs_map_bio(fs_info, bio, 0);
++	ret = btrfs_map_bio(fs_info, bio);
+ 	if (ret) {
+ 		bio->bi_status = ret;
+ 		bio_endio(bio);
+@@ -662,7 +662,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+  * bio we were passed and then call the bio end_io calls
+  */
+ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+-				 int mirror_num, unsigned long bio_flags)
++				 unsigned long bio_flags)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct extent_map_tree *em_tree;
+@@ -699,7 +699,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	refcount_set(&cb->pending_bios, 0);
+ 	cb->errors = 0;
+ 	cb->inode = inode;
+-	cb->mirror_num = mirror_num;
++	cb->mirror_num = btrfs_io_bio(bio)->mirror_num;
+ 	sums = cb->sums;
+ 
+ 	cb->start = em->orig_start;
+@@ -741,6 +741,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	comp_bio->bi_opf = REQ_OP_READ;
+ 	comp_bio->bi_private = cb;
+ 	comp_bio->bi_end_io = end_compressed_bio_read;
++	btrfs_io_bio(comp_bio)->mirror_num = cb->mirror_num;
+ 	refcount_set(&cb->pending_bios, 1);
+ 
+ 	for (pg_index = 0; pg_index < nr_pages; pg_index++) {
+@@ -789,7 +790,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 						  fs_info->sectorsize);
+ 			sums += fs_info->csum_size * nr_sectors;
+ 
+-			ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
++			ret = btrfs_map_bio(fs_info, comp_bio);
+ 			if (ret) {
+ 				comp_bio->bi_status = ret;
+ 				bio_endio(comp_bio);
+@@ -799,6 +800,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 			comp_bio->bi_opf = REQ_OP_READ;
+ 			comp_bio->bi_private = cb;
+ 			comp_bio->bi_end_io = end_compressed_bio_read;
++			btrfs_io_bio(comp_bio)->mirror_num = cb->mirror_num;
+ 
+ 			bio_add_page(comp_bio, page, pg_len, 0);
+ 		}
+@@ -811,7 +813,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
+ 	BUG_ON(ret); /* -ENOMEM */
+ 
+-	ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
++	ret = btrfs_map_bio(fs_info, comp_bio);
+ 	if (ret) {
+ 		comp_bio->bi_status = ret;
+ 		bio_endio(comp_bio);
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index c359f20920d0..1476d58d2dc3 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -98,7 +98,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 				  unsigned int write_flags,
+ 				  struct cgroup_subsys_state *blkcg_css);
+ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+-				 int mirror_num, unsigned long bio_flags);
++				 unsigned long bio_flags);
+ 
+ unsigned int btrfs_compress_str2level(unsigned int type, const char *str);
+ 
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 4a69aa604ac5..087c6b3edb61 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3107,7 +3107,7 @@ u64 btrfs_file_extent_end(const struct btrfs_path *path);
+ 
+ /* inode.c */
+ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+-				   int mirror_num, unsigned long bio_flags);
++				   unsigned long bio_flags);
+ unsigned int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
+ 				    struct page *page, u64 start, u64 end);
+ struct extent_map *btrfs_get_extent_fiemap(struct btrfs_inode *inode,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index b117dd3b8172..fdf95c832099 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -385,6 +385,7 @@ static int btree_read_extent_buffer_pages(struct extent_buffer *eb,
-        int num_copies = 0;
-        int mirror_num = 0;
-        int failed_mirror = 0;
-+       int tries = 2;
+@@ -113,7 +113,6 @@ struct async_submit_bio {
+ 	struct inode *inode;
+ 	struct bio *bio;
+ 	extent_submit_bio_start_t *submit_bio_start;
+-	int mirror_num;
+ 
+ 	/* Optional parameter for submit_bio_start used by direct io */
+ 	u64 dio_file_offset;
+@@ -827,7 +826,7 @@ static void run_one_async_done(struct btrfs_work *work)
+ 	 * This changes nothing when cgroups aren't in use.
+ 	 */
+ 	async->bio->bi_opf |= REQ_CGROUP_PUNT;
+-	ret = btrfs_map_bio(btrfs_sb(inode->i_sb), async->bio, async->mirror_num);
++	ret = btrfs_map_bio(btrfs_sb(inode->i_sb), async->bio);
+ 	if (ret) {
+ 		async->bio->bi_status = ret;
+ 		bio_endio(async->bio);
+@@ -843,7 +842,7 @@ static void run_one_async_free(struct btrfs_work *work)
+ }
+ 
+ blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
+-				 int mirror_num, unsigned long bio_flags,
++				 unsigned long bio_flags,
+ 				 u64 dio_file_offset,
+ 				 extent_submit_bio_start_t *submit_bio_start)
+ {
+@@ -856,7 +855,6 @@ blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
+ 
+ 	async->inode = inode;
+ 	async->bio = bio;
+-	async->mirror_num = mirror_num;
+ 	async->submit_bio_start = submit_bio_start;
+ 
+ 	btrfs_init_work(&async->work, run_one_async_start, run_one_async_done,
+@@ -914,7 +912,7 @@ static bool should_async_write(struct btrfs_fs_info *fs_info,
+ }
+ 
+ blk_status_t btrfs_submit_metadata_bio(struct inode *inode, struct bio *bio,
+-				       int mirror_num, unsigned long bio_flags)
++				       unsigned long bio_flags)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	blk_status_t ret;
+@@ -928,18 +926,18 @@ blk_status_t btrfs_submit_metadata_bio(struct inode *inode, struct bio *bio,
+ 					  BTRFS_WQ_ENDIO_METADATA);
+ 		if (ret)
+ 			goto out_w_error;
+-		ret = btrfs_map_bio(fs_info, bio, mirror_num);
++		ret = btrfs_map_bio(fs_info, bio);
+ 	} else if (!should_async_write(fs_info, BTRFS_I(inode))) {
+ 		ret = btree_csum_one_bio(bio);
+ 		if (ret)
+ 			goto out_w_error;
+-		ret = btrfs_map_bio(fs_info, bio, mirror_num);
++		ret = btrfs_map_bio(fs_info, bio);
+ 	} else {
+ 		/*
+ 		 * kthread helpers are used to submit writes so that
+ 		 * checksumming can happen in parallel across all CPUs
+ 		 */
+-		ret = btrfs_wq_submit_bio(inode, bio, mirror_num, 0,
++		ret = btrfs_wq_submit_bio(inode, bio, 0,
+ 					  0, btree_submit_bio_start);
+ 	}
+ 
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 0e7e9526b6a8..7ca535655f47 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -85,7 +85,7 @@ int btrfs_validate_metadata_buffer(struct btrfs_io_bio *io_bio,
+ 				   struct page *page, u64 start, u64 end,
+ 				   int mirror);
+ blk_status_t btrfs_submit_metadata_bio(struct inode *inode, struct bio *bio,
+-				       int mirror_num, unsigned long bio_flags);
++				       unsigned long bio_flags);
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ struct btrfs_root *btrfs_alloc_dummy_root(struct btrfs_fs_info *fs_info);
+ #endif
+@@ -115,7 +115,7 @@ int btrfs_read_buffer(struct extent_buffer *buf, u64 parent_transid, int level,
+ blk_status_t btrfs_bio_wq_end_io(struct btrfs_fs_info *info, struct bio *bio,
+ 			enum btrfs_wq_endio_type metadata);
+ blk_status_t btrfs_wq_submit_bio(struct inode *inode, struct bio *bio,
+-				 int mirror_num, unsigned long bio_flags,
++				 unsigned long bio_flags,
+ 				 u64 dio_file_offset,
+ 				 extent_submit_bio_start_t *submit_bio_start);
+ blk_status_t btrfs_submit_bio_done(void *private_data, struct bio *bio,
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 54f96767cddc..e5bc1eeb0c44 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -164,8 +164,7 @@ static int add_extent_changeset(struct extent_state *state, u32 bits,
+ 	return ret;
+ }
+ 
+-int __must_check submit_one_bio(struct bio *bio, int mirror_num,
+-				unsigned long bio_flags)
++int __must_check submit_one_bio(struct bio *bio, unsigned long bio_flags)
+ {
+ 	blk_status_t ret = 0;
+ 	struct extent_io_tree *tree = bio->bi_private;
+@@ -173,11 +172,11 @@ int __must_check submit_one_bio(struct bio *bio, int mirror_num,
+ 	bio->bi_private = NULL;
+ 
+ 	if (is_data_inode(tree->private_data))
+-		ret = btrfs_submit_data_bio(tree->private_data, bio, mirror_num,
++		ret = btrfs_submit_data_bio(tree->private_data, bio,
+ 					    bio_flags);
+ 	else
+ 		ret = btrfs_submit_metadata_bio(tree->private_data, bio,
+-						mirror_num, bio_flags);
++						bio_flags);
+ 
+ 	return blk_status_to_errno(ret);
+ }
+@@ -206,7 +205,7 @@ static int __must_check flush_write_bio(struct extent_page_data *epd)
+ 	struct bio *bio = epd->bio_ctrl.bio;
+ 
+ 	if (bio) {
+-		ret = submit_one_bio(bio, 0, 0);
++		ret = submit_one_bio(bio, 0);
+ 		/*
+ 		 * Clean up of epd->bio is handled by its endio function.
+ 		 * And endio is either triggered by successful bio execution
+@@ -2620,7 +2619,7 @@ static bool btrfs_check_repairable(struct inode *inode,
+ int btrfs_repair_one_sector(struct inode *inode,
+ 			    struct bio *failed_bio, u32 bio_offset,
+ 			    struct page *page, unsigned int pgoff,
+-			    u64 start, int failed_mirror,
++			    u64 start,
+ 			    submit_bio_hook_t *submit_bio_hook)
+ {
+ 	struct io_failure_record *failrec;
+@@ -2628,6 +2627,7 @@ int btrfs_repair_one_sector(struct inode *inode,
+ 	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+ 	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+ 	struct btrfs_io_bio *failed_io_bio = btrfs_io_bio(failed_bio);
++	int failed_mirror = failed_io_bio->mirror_num;
+ 	const int icsum = bio_offset >> fs_info->sectorsize_bits;
+ 	struct bio *repair_bio;
+ 	struct btrfs_io_bio *repair_io_bio;
+@@ -2654,6 +2654,7 @@ int btrfs_repair_one_sector(struct inode *inode,
+ 	repair_bio->bi_end_io = failed_bio->bi_end_io;
+ 	repair_bio->bi_iter.bi_sector = failrec->logical >> 9;
+ 	repair_bio->bi_private = failed_bio->bi_private;
++	btrfs_io_bio(repair_bio)->mirror_num = failrec->this_mirror;
+ 
+ 	if (failed_io_bio->csum) {
+ 		const u32 csum_size = fs_info->csum_size;
+@@ -2671,8 +2672,7 @@ int btrfs_repair_one_sector(struct inode *inode,
+ 		    "repair read error: submitting new read to mirror %d",
+ 		    failrec->this_mirror);
+ 
+-	status = submit_bio_hook(inode, repair_bio, failrec->this_mirror,
+-				 failrec->bio_flags);
++	status = submit_bio_hook(inode, repair_bio, failrec->bio_flags);
+ 	if (status) {
+ 		free_io_failure(failure_tree, tree, failrec);
+ 		bio_put(repair_bio);
+@@ -2743,7 +2743,7 @@ static blk_status_t submit_read_repair(struct inode *inode,
+ 		ret = btrfs_repair_one_sector(inode, failed_bio,
+ 				bio_offset + offset,
+ 				page, pgoff + offset, start + offset,
+-				failed_mirror, submit_bio_hook);
++				submit_bio_hook);
+ 		if (!ret) {
+ 			/*
+ 			 * We have submitted the read repair, the page release
+@@ -3139,6 +3139,7 @@ struct bio *btrfs_bio_clone(struct bio *bio)
+ 	btrfs_bio = btrfs_io_bio(new);
+ 	btrfs_io_bio_init(btrfs_bio);
+ 	btrfs_bio->iter = bio->bi_iter;
++	btrfs_bio->mirror_num = btrfs_io_bio(bio)->mirror_num;
+ 	return new;
+ }
+ 
+@@ -3318,7 +3319,7 @@ static int submit_extent_page(unsigned int opf,
+ 		if (force_bio_submit ||
+ 		    !btrfs_bio_add_page(bio_ctrl, page, disk_bytenr, io_size,
+ 					pg_offset, bio_flags)) {
+-			ret = submit_one_bio(bio, mirror_num, bio_ctrl->bio_flags);
++			ret = submit_one_bio(bio, bio_ctrl->bio_flags);
+ 			bio_ctrl->bio = NULL;
+ 			if (ret < 0)
+ 				return ret;
+@@ -3335,6 +3336,7 @@ static int submit_extent_page(unsigned int opf,
+ 	bio->bi_private = tree;
+ 	bio->bi_write_hint = page->mapping->host->i_write_hint;
+ 	bio->bi_opf = opf;
++	btrfs_io_bio(bio)->mirror_num = mirror_num;
+ 	if (wbc) {
+ 		struct block_device *bdev;
+ 
+@@ -5039,7 +5041,7 @@ void extent_readahead(struct readahead_control *rac)
+ 		free_extent_map(em_cached);
+ 
+ 	if (bio_ctrl.bio) {
+-		if (submit_one_bio(bio_ctrl.bio, 0, bio_ctrl.bio_flags))
++		if (submit_one_bio(bio_ctrl.bio, bio_ctrl.bio_flags))
+ 			return;
+ 	}
+ }
+@@ -6383,7 +6385,7 @@ static int read_extent_buffer_subpage(struct extent_buffer *eb, int wait,
+ 	if (bio_ctrl.bio) {
+ 		int tmp;
+ 
+-		tmp = submit_one_bio(bio_ctrl.bio, mirror_num, 0);
++		tmp = submit_one_bio(bio_ctrl.bio, 0);
+ 		bio_ctrl.bio = NULL;
+ 		if (tmp < 0)
+ 			return tmp;
+@@ -6491,7 +6493,7 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
+ 	}
+ 
+ 	if (bio_ctrl.bio) {
+-		err = submit_one_bio(bio_ctrl.bio, mirror_num, bio_ctrl.bio_flags);
++		err = submit_one_bio(bio_ctrl.bio, bio_ctrl.bio_flags);
+ 		bio_ctrl.bio = NULL;
+ 		if (err)
+ 			return err;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 62027f551b44..8568f5bfe089 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -71,7 +71,6 @@ struct io_failure_record;
+ struct extent_io_tree;
+ 
+ typedef blk_status_t (submit_bio_hook_t)(struct inode *inode, struct bio *bio,
+-					 int mirror_num,
+ 					 unsigned long bio_flags);
+ 
+ typedef blk_status_t (extent_submit_bio_start_t)(struct inode *inode,
+@@ -177,8 +176,7 @@ typedef struct extent_map *(get_extent_t)(struct btrfs_inode *inode,
+ int try_release_extent_mapping(struct page *page, gfp_t mask);
+ int try_release_extent_buffer(struct page *page);
+ 
+-int __must_check submit_one_bio(struct bio *bio, int mirror_num,
+-				unsigned long bio_flags);
++int __must_check submit_one_bio(struct bio *bio, unsigned long bio_flags);
+ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
+ 		      struct btrfs_bio_ctrl *bio_ctrl,
+ 		      unsigned int read_flags, u64 *prev_em_start);
+@@ -309,7 +307,7 @@ struct io_failure_record {
+ int btrfs_repair_one_sector(struct inode *inode,
+ 			    struct bio *failed_bio, u32 bio_offset,
+ 			    struct page *page, unsigned int pgoff,
+-			    u64 start, int failed_mirror,
++			    u64 start,
+ 			    submit_bio_hook_t *submit_bio_hook);
+ 
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 8f60314c36c5..ad4308546006 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2465,7 +2465,7 @@ static blk_status_t extract_ordered_extent(struct btrfs_inode *inode,
+  *    c-3) otherwise:			async submit
+  */
+ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+-				   int mirror_num, unsigned long bio_flags)
++				   unsigned long bio_flags)
+ 
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+@@ -2497,7 +2497,6 @@ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+ 
+ 		if (bio_flags & EXTENT_BIO_COMPRESSED) {
+ 			ret = btrfs_submit_compressed_read(inode, bio,
+-							   mirror_num,
+ 							   bio_flags);
+ 			goto out;
+ 		} else {
+@@ -2516,7 +2515,7 @@ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+ 		if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID)
+ 			goto mapit;
+ 		/* we're doing a write, do the async checksumming */
+-		ret = btrfs_wq_submit_bio(inode, bio, mirror_num, bio_flags,
++		ret = btrfs_wq_submit_bio(inode, bio, bio_flags,
+ 					  0, btrfs_submit_bio_start);
+ 		goto out;
+ 	} else if (!skip_sum) {
+@@ -2526,7 +2525,7 @@ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+ 	}
+ 
+ mapit:
+-	ret = btrfs_map_bio(fs_info, bio, mirror_num);
++	ret = btrfs_map_bio(fs_info, bio);
+ 
+ out:
+ 	if (ret) {
+@@ -7999,7 +7998,6 @@ static void btrfs_dio_private_put(struct btrfs_dio_private *dip)
+ }
+ 
+ static blk_status_t submit_dio_repair_bio(struct inode *inode, struct bio *bio,
+-					  int mirror_num,
+ 					  unsigned long bio_flags)
+ {
+ 	struct btrfs_dio_private *dip = bio->bi_private;
+@@ -8013,7 +8011,7 @@ static blk_status_t submit_dio_repair_bio(struct inode *inode, struct bio *bio,
+ 		return ret;
+ 
+ 	refcount_inc(&dip->refs);
+-	ret = btrfs_map_bio(fs_info, bio, mirror_num);
++	ret = btrfs_map_bio(fs_info, bio);
+ 	if (ret)
+ 		refcount_dec(&dip->refs);
+ 	return ret;
+@@ -8057,7 +8055,7 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 						&io_bio->bio,
+ 						start - io_bio->logical,
+ 						bvec.bv_page, pgoff,
+-						start, io_bio->mirror_num,
++						start,
+ 						submit_dio_repair_bio);
+ 				if (ret)
+ 					err = errno_to_blk_status(ret);
+@@ -8134,7 +8132,7 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
+ 		goto map;
+ 
+ 	if (write && async_submit) {
+-		ret = btrfs_wq_submit_bio(inode, bio, 0, 0, file_offset,
++		ret = btrfs_wq_submit_bio(inode, bio, 0, file_offset,
+ 					  btrfs_submit_bio_start_direct_io);
+ 		goto err;
+ 	} else if (write) {
+@@ -8154,7 +8152,7 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
+ 		btrfs_io_bio(bio)->csum = dip->csums + csum_offset;
+ 	}
+ map:
+-	ret = btrfs_map_bio(fs_info, bio, 0);
++	ret = btrfs_map_bio(fs_info, bio);
+ err:
+ 	return ret;
+ }
+@@ -8361,7 +8359,7 @@ int btrfs_readpage(struct file *file, struct page *page)
+ 
+ 	ret = btrfs_do_readpage(page, NULL, &bio_ctrl, 0, NULL);
+ 	if (bio_ctrl.bio)
+-		ret = submit_one_bio(bio_ctrl.bio, 0, bio_ctrl.bio_flags);
++		ret = submit_one_bio(bio_ctrl.bio, bio_ctrl.bio_flags);
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c6c14315b1c9..9485e71dce0d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6758,8 +6758,7 @@ static void bbio_error(struct btrfs_bio *bbio, struct bio *bio, u64 logical)
+ 	}
+ }
+ 
+-blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+-			   int mirror_num)
++blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio)
+ {
+ 	struct btrfs_device *dev;
+ 	struct bio *first_bio = bio;
+@@ -6770,6 +6769,7 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 	int dev_nr;
+ 	int total_devs;
+ 	struct btrfs_bio *bbio = NULL;
++	int mirror_num = btrfs_io_bio(bio)->mirror_num;
+ 
+ 	length = bio->bi_iter.bi_size;
+ 	map_length = length;
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 55a8ba244716..776f45f4299b 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -453,8 +453,7 @@ int btrfs_read_chunk_tree(struct btrfs_fs_info *fs_info);
+ struct btrfs_block_group *btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
+ 					    u64 type);
+ void btrfs_mapping_tree_free(struct extent_map_tree *tree);
+-blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+-			   int mirror_num);
++blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio);
+ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+ 		       fmode_t flags, void *holder);
+ struct btrfs_device *btrfs_scan_one_device(const char *path,
+-- 
+2.32.0
 
-        io_tree = &BTRFS_I(fs_info->btree_inode)->io_tree;
-        while (1) {
-@@ -403,6 +404,10 @@ static int btree_read_extent_buffer_pages(struct extent_buffer *eb,
 
-                num_copies = btrfs_num_copies(fs_info,
-                                              eb->start, eb->len);
-+
-+               if (num_copies == 1 && tries-- > 0)
-+                       continue;
-+
-                if (num_copies == 1)
-                        break;
-
-On Tuesday I got this:
-
-[Tue Jul  6 14:49:17 2021] ------------[ cut here ]------------
-[Tue Jul  6 14:49:17 2021] WARNING: CPU: 13 PID: 2265463 at fs/btrfs/extent_io.c:5597 read_extent_buffer_pages+0x346/0x360
-[Tue Jul  6 14:49:17 2021] Modules linked in: zram bcache crc64 loop dm_crypt bfq xfs dm_mod st sr_mod cdrom bridge stp llc intel_powerclamp coretemp snd_pcm kvm_intel snd_timer snd mgag200 kvm soundcore drm_kms_helper iTCO_wdt dcdbas irqbypass pcspkr serio_raw iTCO_vendor_support i2c_algo_bit evdev joydev i7core_edac sg ipmi_si ipmi_devintf ipmi_msghandler wmi acpi_power_meter button ib_iser rdma_cm iw_cm ib_cm ib_core iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi drm configfs ip_tables x_tables autofs4 raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx raid0 multipath linear raid1 md_mod ses enclosure sd_mod hid_generic usbhid hid crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cryptd glue_helper ahci libahci uhci_hcd ehci_pci psmouse mpt3sas ehci_hcd lpc_ich raid_class libata nvme scsi_transport_sas mfd_core nvme_core usbcore t10_pi scsi_mod bnx2
-[Tue Jul  6 14:49:17 2021] CPU: 13 PID: 2265463 Comm: btrfs Tainted: G          I       5.10.47 #1
-[Tue Jul  6 14:49:17 2021] Hardware name: Dell Inc. PowerEdge R510/0DPRKF, BIOS 1.13.0 03/02/2018
-[Tue Jul  6 14:49:17 2021] RIP: 0010:read_extent_buffer_pages+0x346/0x360
-[Tue Jul  6 14:49:17 2021] Code: 48 8b 43 08 a8 01 48 8d 78 ff 48 0f 44 fb 31 f6 e8 cf d0 db ff 48 8b 43 08 48 8d 50 ff a8 01 48 0f 45 da 48 8b 03 a8 04 75 ab <0f> 0b 41 be fb ff ff ff eb a1 e8 4b af 56 00 66 66 2e 0f 1f 84 00
-[Tue Jul  6 14:49:17 2021] RSP: 0018:ffffc9007562bb40 EFLAGS: 00010246
-[Tue Jul  6 14:49:17 2021] RAX: 06ffff80000020e3 RBX: ffffea00095a5fc0 RCX: 0000000000000000
-[Tue Jul  6 14:49:17 2021] RDX: dead0000000000ff RSI: 0000000000000020 RDI: ffff888713babd40
-[Tue Jul  6 14:49:17 2021] RBP: ffff88869a7d6f78 R08: 0000f5a746752ed4 R09: 0000000000000483
-[Tue Jul  6 14:49:17 2021] R10: 0000000000000001 R11: 0000000000000000 R12: ffff88869a7d7020
-[Tue Jul  6 14:49:17 2021] R13: ffffea0005f51f80 R14: 0000000000000000 R15: ffff88869a7d7020
-[Tue Jul  6 14:49:17 2021] FS:  00007f748ddc18c0(0000) GS:ffff888713b80000(0000) knlGS:0000000000000000
-[Tue Jul  6 14:49:17 2021] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[Tue Jul  6 14:49:17 2021] CR2: 00005618b6037058 CR3: 000000011feca004 CR4: 00000000000206e0
-[Tue Jul  6 14:49:17 2021] Call Trace:
-[Tue Jul  6 14:49:17 2021]  btree_read_extent_buffer_pages+0x66/0x130
-[Tue Jul  6 14:49:17 2021]  read_tree_block+0x36/0x60
-[Tue Jul  6 14:49:17 2021]  btrfs_read_node_slot+0xc0/0x110
-[Tue Jul  6 14:49:17 2021]  btrfs_search_forward+0x1db/0x350
-[Tue Jul  6 14:49:17 2021]  search_ioctl+0x19e/0x250
-[Tue Jul  6 14:49:17 2021]  btrfs_ioctl_tree_search+0x63/0xc0
-[Tue Jul  6 14:49:17 2021]  btrfs_ioctl+0x1874/0x3060
-[Tue Jul  6 14:49:17 2021]  ? page_add_new_anon_rmap+0xa3/0x1f0
-[Tue Jul  6 14:49:17 2021]  ? handle_mm_fault+0xf6c/0x1950
-[Tue Jul  6 14:49:17 2021]  ? __x64_sys_ioctl+0x83/0xb0
-[Tue Jul  6 14:49:17 2021]  __x64_sys_ioctl+0x83/0xb0
-[Tue Jul  6 14:49:17 2021]  do_syscall_64+0x33/0x80
-[Tue Jul  6 14:49:17 2021]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[Tue Jul  6 14:49:17 2021] RIP: 0033:0x7f748deb8cc7
-[Tue Jul  6 14:49:17 2021] Code: 00 00 00 48 8b 05 c9 91 0c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 99 91 0c 00 f7 d8 64 89 01 48
-[Tue Jul  6 14:49:17 2021] RSP: 002b:00007ffc7e07f098 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[Tue Jul  6 14:49:17 2021] RAX: ffffffffffffffda RBX: 00007ffc7e0801d8 RCX: 00007f748deb8cc7
-[Tue Jul  6 14:49:17 2021] RDX: 00007ffc7e07f0f8 RSI: 00000000d0009411 RDI: 0000000000000005
-[Tue Jul  6 14:49:17 2021] RBP: 0000000000bafaad R08: 000000000000000b R09: 00007f748df82be0
-[Tue Jul  6 14:49:17 2021] R10: 0000000000000010 R11: 0000000000000246 R12: 0000000000000005
-[Tue Jul  6 14:49:17 2021] R13: 00007ffc7e07ffe1 R14: 000000000000000b R15: 00007ffc7e07f160
-[Tue Jul  6 14:49:17 2021] ---[ end trace 81f64eb2e9ceb4de ]---
-
-with no other message afterwards. This means the retry is working and "fixed" the problem for me. I'll keep monitoring this and will try to catch the -EIO from other areas, like the original btrfs_finish_ordered_io.
-
+-- 
+Goldwyn
