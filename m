@@ -2,96 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910913C1B64
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 00:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8573C1B6E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 00:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhGHWUP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jul 2021 18:20:15 -0400
-Received: from smtp01.belwue.de ([129.143.71.86]:48426 "EHLO smtp01.belwue.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhGHWUP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Jul 2021 18:20:15 -0400
-Received: from fex.rus.uni-stuttgart.de (fex.rus.uni-stuttgart.de [129.69.1.129])
-        by smtp01.belwue.de (Postfix) with SMTP id 9A3FB6097
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jul 2021 00:17:31 +0200 (MEST)
-Date:   Fri, 9 Jul 2021 00:17:31 +0200
-From:   Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: cannot use btrfs for nfs server
-Message-ID: <20210708221731.GB8249@tik.uni-stuttgart.de>
-Mail-Followup-To: linux-btrfs@vger.kernel.org
-References: <20210310074620.GA2158@tik.uni-stuttgart.de>
- <20210311074636.GA28705@tik.uni-stuttgart.de>
+        id S229936AbhGHW1f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jul 2021 18:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhGHW1f (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 18:27:35 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED402C061574
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jul 2021 15:24:52 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id y38so11493066ybi.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jul 2021 15:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Cr0w6+uHJiiLDGehWme7OVhZCJ+jUL5MHdVy/spqKls=;
+        b=ABUB4cyt5rcUJTGLzAAeq/nmLX5JRyLhNp3b8PqIBXTp1P3jtrgFr5bnmeFKiWRRTi
+         Kphhfenx11k2NZPrYBESfT0OyvUQnboX/JZ5wynxApnYzKVOZPPLNzEK3jwF+AVpakYT
+         cD+R2i669C3zvKuLyOW9eZG68e4slIhFz54NPzZu9rB0sdJehe4IpDN/NfDGqZILlL64
+         g3Ec2oXIIZoPWhlj9E7paJ/RHMuiAQ6WDGcGgPGczTuGczY6JojIm+A7YsyvydzuTLo4
+         KaLc5UaA8BnIIYO8j8POSJ8d06RCHAACzumEQFgWF6Qyfw9RgVvEd7NZNsjhR0MNZ265
+         9nQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=Cr0w6+uHJiiLDGehWme7OVhZCJ+jUL5MHdVy/spqKls=;
+        b=ssN09M5ENaqZT+yuGmuw7G/q1ahtI3uU5+W8k0sczLDMqDnbLVobDdIA7AHQY3ka5e
+         o6KQ67FTS35iqQXSQnwquhqX9JHiwhJ+J8kcIIXDk3mYIBpOm1Ctn5d15ksimfMjLpAZ
+         a1CP+BCHx81U/dMyrW0PoRH/Wousy+2YPW1WZEqMorFtF3KWS5M09VKTL/gC76a74kZD
+         41G2TOJngNwzGt1p957bhwIyCqAH4A8joDiFT1EPn+3HxDWWRSiOkfl61k8GZR1DQOJH
+         +Zp66Q3Vf6rvnUlWl9Doay/vbi5mLfnHVcGUlBGlmJHlifZeNLBnRMq0EyzCEW4XJFmZ
+         VSKw==
+X-Gm-Message-State: AOAM530cTUcD0b6gQ6HlAV3JipIj0Q+oPhQDPhrhb5Z9uOxzjp/YW0OB
+        K9xjGGlTWCDlyTcA6fhTuEnclfaDr67eDqnPAAc=
+X-Google-Smtp-Source: ABdhPJxMrjZ17fmVs8j6TIpFlI6kMLG+3MTheNmzcRiXlIqXJ44qNjPO5SCrovyaNlUpZBH3rOd0EwhOaDVsjxHwx7Y=
+X-Received: by 2002:a25:b203:: with SMTP id i3mr42251811ybj.260.1625783091955;
+ Thu, 08 Jul 2021 15:24:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311074636.GA28705@tik.uni-stuttgart.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <cover.1625043706.git.dsterba@suse.com> <CAEg-Je_N8_rSfVjRD_R1J+ecH1tDW9syZawQavKXRBXQUofjag@mail.gmail.com>
+ <20210708124959.GZ2610@suse.cz>
+In-Reply-To: <20210708124959.GZ2610@suse.cz>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Thu, 8 Jul 2021 18:24:16 -0400
+Message-ID: <CAEg-Je8FJwM6REQPqpyYGES_sCgv4fWY7X7pW5XABAVBvsPjxg@mail.gmail.com>
+Subject: Re: [PATCH 0/6] Remove highmem allocations, kmap/kunmap
+To:     David Sterba <dsterba@suse.cz>, Neal Gompa <ngompa13@gmail.com>,
+        David Sterba <dsterba@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Jul 8, 2021 at 8:52 AM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Thu, Jul 08, 2021 at 08:45:12AM -0400, Neal Gompa wrote:
+> > On Thu, Jul 8, 2021 at 7:48 AM David Sterba <dsterba@suse.com> wrote:
+> > >
+> > > The highmem was maybe was a good idea long time ago but with 64bit
+> > > architectures everywhere I don't think we need to take it into accoun=
+t.
+> > > This does not mean this 32bit won't work, just that it won't try to u=
+se
+> > > temporary pages in highmem for compression and raid56. The key word i=
+s
+> > > temporary. Combining a very fast device (like hundreds of megabytes
+> > > throughput) and 32bit machine with reasonable memory (for 32bit, like
+> > > 8G), it could become a problem once low memory is scarce.
+> > >
+> > > David Sterba (6):
+> > >   btrfs: drop from __GFP_HIGHMEM all allocations
+> > >   btrfs: compression: drop kmap/kunmap from lzo
+> > >   btrfs: compression: drop kmap/kunmap from zlib
+> > >   btrfs: compression: drop kmap/kunmap from zstd
+> > >   btrfs: compression: drop kmap/kunmap from generic helpers
+> > >   btrfs: check-integrity: drop kmap/kunmap for block pages
+> > >
+> > >  fs/btrfs/check-integrity.c | 11 +++-------
+> > >  fs/btrfs/compression.c     |  6 ++----
+> > >  fs/btrfs/inode.c           |  3 +--
+> > >  fs/btrfs/lzo.c             | 42 +++++++++++-------------------------=
+--
+> > >  fs/btrfs/raid56.c          | 10 ++++-----
+> > >  fs/btrfs/zlib.c            | 42 +++++++++++++-----------------------=
+--
+> > >  fs/btrfs/zstd.c            | 33 +++++++++++-------------------
+> > >  7 files changed, 49 insertions(+), 98 deletions(-)
+> > >
+> >
+> > I'd be concerned about the impact of this on SBC devices. All Fedora
+> > ARM images have zstd compression applied to them, and it would suck if
+> > we had a performance regression here because of this.
+>
+> How much memory do the SBC devices have?
 
-I have waited some time and some Ubuntu updates, but the bug is still there:
+On average? Probably between 1 to 4 GB of RAM. Usually 2GB of RAM is common=
+.
 
-On Thu 2021-03-11 (08:46), Ulli Horlacher wrote:
-> On Wed 2021-03-10 (08:46), Ulli Horlacher wrote:
-> 
-> > When I try to access a btrfs filesystem via nfs, I get the error:
-> > 
-> > root@tsmsrvi:~# mount tsmsrvj:/data/fex /nfs/tsmsrvj/fex
-> > root@tsmsrvi:~# time find /nfs/tsmsrvj/fex | wc -l
-> > find: File system loop detected; '/nfs/tsmsrvj/fex/spool' is part of the same file system loop as '/nfs/tsmsrvj/fex'.
-> 
-> It is even worse:
-> 
-> root@tsmsrvj:# grep localhost /etc/exports
-> /data/fex       localhost(rw,async,no_subtree_check,no_root_squash)
-> 
-> root@tsmsrvj:# mount localhost:/data/fex /nfs/localhost/fex
-> 
-> root@tsmsrvj:# du -s /data/fex
-> 64282240        /data/fex
-> 
-> root@tsmsrvj:# du -s /nfs/localhost/fex
-> du: WARNING: Circular directory structure.
-> This almost certainly means that you have a corrupted file system.
-> NOTIFY YOUR SYSTEM MANAGER.
-> The following directory is part of the cycle:
->   /nfs/localhost/fex/spool
-> 
-> 0       /nfs/localhost/fex
-> 
-> root@tsmsrvj:# btrfs subvolume list /data
-> ID 257 gen 42 top level 5 path fex
-> ID 270 gen 42 top level 257 path fex/spool
-> ID 271 gen 21 top level 270 path fex/spool/.snapshot/2021-03-07_1453.test
-> ID 272 gen 23 top level 270 path fex/spool/.snapshot/2021-03-07_1531.test
-> ID 273 gen 25 top level 270 path fex/spool/.snapshot/2021-03-07_1532.test
-> ID 274 gen 27 top level 270 path fex/spool/.snapshot/2021-03-07_1718.test
 
-root@tsmsrvj:~# uname -a
-Linux tsmsrvj 5.4.0-77-generic #86-Ubuntu SMP Thu Jun 17 02:35:03 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
-
-root@tsmsrvj:~# btrfs version
-btrfs-progs v5.4.1
-
-root@tsmsrvj:~# dpkg -l | grep nfs-
-ii  nfs-common                             1:1.3.4-2.5ubuntu3.4              amd64        NFS support files common to client and server
-ii  nfs-kernel-server                      1:1.3.4-2.5ubuntu3.4              amd64        support for NFS kernel server
-
-This makes btrfs with snapshots unusable as a nfs server :-(
-
-How/where can I escalate it further?
-
-My Ubuntu bug report has been ignored :-(
-
-https://bugs.launchpad.net/ubuntu/+source/nfs-utils/+bug/1918599
-
--- 
-Ullrich Horlacher              Server und Virtualisierung
-Rechenzentrum TIK         
-Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
-Allmandring 30a                Tel:    ++49-711-68565868
-70569 Stuttgart (Germany)      WWW:    http://www.tik.uni-stuttgart.de/
-REF:<20210311074636.GA28705@tik.uni-stuttgart.de>
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
