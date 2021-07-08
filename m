@@ -2,108 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EC93C15A2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 17:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6644C3C15A9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 17:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhGHPFn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jul 2021 11:05:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39898 "EHLO
+        id S231857AbhGHPJD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jul 2021 11:09:03 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41968 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbhGHPFm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 11:05:42 -0400
+        with ESMTP id S229738AbhGHPJB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 11:09:01 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E82C6223A2;
-        Thu,  8 Jul 2021 15:02:59 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id B88CB21F20;
+        Thu,  8 Jul 2021 15:06:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625756579;
+        t=1625756778;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=s7svOdl1dyaQudT56UEzPVpdl7IHV8NCKI9xBqMlKwk=;
-        b=h8Lbh8TCGl6QsYXT8QBA1V4OooH5EO3rRyHlK+pEhpyMMaIIvQxHk1f9Ghm1r5ygxeEKMt
-        mIyCSdNOufgANpIQRdQ+1hoT2bqpn9FB4V3Gk1k5oCBIiWS0HQGCQVx8Mt4zUa/wqnR7Zu
-        jje1/5pT720Hu8SOS9HIpq4yrQVHeeY=
+        bh=lNC4McqW1N+JJw3iWV1XIO3H34DzinunpWM0GQsOtNw=;
+        b=0OYrpwPOvnTZHxWpro+F0tpX8NjMuKGNZUToMBXsxG8IXweaiTG6JcJ/rvDQBTIA/3ZgZx
+        2mAzqYJ60uviBoMXyh4ucc7IqNDWYSn8QcOwOgOvWTVxKDN4KocaLyzzI/787EkPf5cmhL
+        mMSZag/zFriHlW486JeLXhOmaKCzQ0w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625756579;
+        s=susede2_ed25519; t=1625756778;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=s7svOdl1dyaQudT56UEzPVpdl7IHV8NCKI9xBqMlKwk=;
-        b=7RdbX1wQJhm3CcuVoeaOHzGc6cAtVR/I9cgm9biIDFYz+LgqvGyobbZcEyb1Jx40sDbViT
-        HzuX4IpzmlKxrDCA==
+        bh=lNC4McqW1N+JJw3iWV1XIO3H34DzinunpWM0GQsOtNw=;
+        b=bhFj1cZl5ObyJuDqWVIWN4x4JsFGzMa/tvUQAWHaSdlG+1VKqS/X353nLaPWl4GTFCtT55
+        i38qf96M9QKzK7CQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id DFE3AA3B88;
-        Thu,  8 Jul 2021 15:02:59 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 87145A3B84;
+        Thu,  8 Jul 2021 15:06:18 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AAE02DAF7A; Thu,  8 Jul 2021 17:00:25 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 17:00:25 +0200
+        id 53063DAF7A; Thu,  8 Jul 2021 17:03:44 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 17:03:44 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Naohiro Aota <naohiro.aota@wdc.com>
 Cc:     linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org,
         Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
         Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Subject: Re: [PATCH 2/3] btrfs: fix argument type of btrfs_bio_clone_partial()
-Message-ID: <20210708150025.GE2610@twin.jikos.cz>
+Subject: Re: [PATCH 3/3] btrfs: drop unnecessary ASSERT from
+ btrfs_submit_direct()
+Message-ID: <20210708150344.GF2610@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
         linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org,
         Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
         Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 References: <20210708131057.259327-1-naohiro.aota@wdc.com>
- <20210708131057.259327-3-naohiro.aota@wdc.com>
+ <20210708131057.259327-4-naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210708131057.259327-3-naohiro.aota@wdc.com>
+In-Reply-To: <20210708131057.259327-4-naohiro.aota@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 08, 2021 at 10:10:56PM +0900, Naohiro Aota wrote:
-> From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+On Thu, Jul 08, 2021 at 10:10:57PM +0900, Naohiro Aota wrote:
+> When on SINGLE block group, btrfs_get_io_geometry() will return "the
+> size of the block group - the offset of the logical address within the
+> block group" as geom.len. Since we allow up to 8 GB zone size on zoned
+> btrfs, we can have up to 8 GB block group, so can have up to 8 GB
+> geom.len. With this setup, we easily hit the "ASSERT(geom.len <=
+> INT_MAX);".
 > 
-> The offset and can never be negative use unsigned int instead of int type
-> for them.
+> The ASSERT looks like to guard btrfs_bio_clone_partial() and bio_trim()
+> which both take "int" (now "unsigned int" with the previous patch). So to
+> be precise the ASSERT should check if clone_len <= UINT_MAX. But
+> actually, clone_len is already capped by bio.bi_iter.bi_size which is
+> unsigned int. So the ASSERT is not necessary.
 > 
-> Tested-by: Naohiro Aota <naohiro.aota@wdc.com>
-> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+> Drop the ASSERT and properly compare submit_len and geom.len in u64. Then,
+> let the implicit casting to convert it to unsigned int.
+> 
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 > ---
->  fs/btrfs/extent_io.c | 3 ++-
->  fs/btrfs/extent_io.h | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
+>  fs/btrfs/inode.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 1f947e24091a..082f135bb3de 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3153,7 +3153,8 @@ struct bio *btrfs_io_bio_alloc(unsigned int nr_iovecs)
->  	return bio;
->  }
->  
-> -struct bio *btrfs_bio_clone_partial(struct bio *orig, int offset, int size)
-> +struct bio *btrfs_bio_clone_partial(struct bio *orig, unsigned int offset,
-> +				    unsigned int size)
->  {
->  	struct bio *bio;
->  	struct btrfs_io_bio *btrfs_bio;
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index 62027f551b44..f78b365b56cf 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -280,7 +280,8 @@ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
->  struct bio *btrfs_bio_alloc(u64 first_byte);
->  struct bio *btrfs_io_bio_alloc(unsigned int nr_iovecs);
->  struct bio *btrfs_bio_clone(struct bio *bio);
-> -struct bio *btrfs_bio_clone_partial(struct bio *orig, int offset, int size);
-> +struct bio *btrfs_bio_clone_partial(struct bio *orig, unsigned int offset,
-> +				    unsigned int size);
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 8f60314c36c5..b6cc26dd7919 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -8206,8 +8206,8 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
+>  	u64 start_sector;
+>  	int async_submit = 0;
+>  	u64 submit_len;
+> -	int clone_offset = 0;
+> -	int clone_len;
+> +	unsigned int clone_offset = 0;
+> +	unsigned int clone_len;
 
-This is passed to bio_trim that you change to take sector_t, should this
-be the same?
+After reading the other patches, clone_offset should be sector_t or u64.
+clone_len is fine as u32 as it only gets update from the bio.bi_size,
+but later in the code there's
 
->  
->  int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
->  		      u64 length, u64 logical, struct page *page,
-> -- 
-> 2.32.0
+	clone_offset += clone_len;
+
+and clone_offset is passed to btrfs_bio_clone_partial -> bio_trim, that
+you've changed to sector_t.
