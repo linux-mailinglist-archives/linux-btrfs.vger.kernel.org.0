@@ -2,96 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514623BF9E2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 14:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36733BFA8A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 14:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhGHMNv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jul 2021 08:13:51 -0400
-Received: from mout.gmx.net ([212.227.15.19]:59967 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231404AbhGHMNu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Jul 2021 08:13:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625746266;
-        bh=/S3KTEsWj4o0twJj5q9aPeNWOTcJAvPBNUM8nnIs/sk=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=dufTARth9IPPZl4rXPKn6/85WewADwKcwZAIXlXR8HD/uTDbwyWKw3u6T2VRL/lFh
-         zyGEnw1takEFYbS+DgXauCdUMAtjx8sIVNLnkPLyMdWhcEOGPV0TxXdhnwQRv3WkFL
-         h0Gc6hjaJcRyRs8Uvxl7jyisezu/mbtahY4VWOd4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MysRk-1lEKK33NIo-00vtVu; Thu, 08
- Jul 2021 14:11:06 +0200
-Subject: Re: [PATCH v6 02/15] btrfs: remove the GFP_HIGHMEM flag for
- compression code
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210705020110.89358-1-wqu@suse.com>
- <20210705020110.89358-3-wqu@suse.com> <20210708115410.GX2610@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <40b037ee-24e7-08a1-da48-3df4507c0e89@gmx.com>
-Date:   Thu, 8 Jul 2021 20:11:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230493AbhGHMsb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jul 2021 08:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhGHMsa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 08:48:30 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E2EC061574
+        for <linux-btrfs@vger.kernel.org>; Thu,  8 Jul 2021 05:45:48 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id g19so8701087ybe.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jul 2021 05:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HxfFOyvFOR6AzHczBpsc2jeld0Hpkrpt5vLCpMOI85Y=;
+        b=VULndT0460vtAY34S1SX4DMJXmE1aVelWghA1c/PAT2cL6N7xwhEtV/bEuio2rtv+O
+         blyPPvoUJn7FtCt623JJ34Hhg3NWf8F7yq/+yLNRVG5veo2R+xoTRAq6zTeuQ1OSYAkh
+         knvJT32zuSnadT7JKVhSZpBrEd3VMYiwjQCzMpxinRVtkV5CJ1PVZEi5QLfLhdXjc/2S
+         rZyUdR1pSnXgr7m4J2Wn+dZ7hD6B60u/IiY8TXYATLin9GzmqCO8Ryb1HxNR8zPYKIun
+         zq9mLAso5FkJdvGZs3dcuBflMtZazGn0bta59BCEVNe/dxVsC1jzBO5eD+smBkWQmsbi
+         zG7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HxfFOyvFOR6AzHczBpsc2jeld0Hpkrpt5vLCpMOI85Y=;
+        b=I0/KusQIIriFvRaeROvSPNMV1gBB8nGXNiwcxGBSUo/+Z65+BYX4zA04h93cqL0pWm
+         g8CgvLB2s3VLfsH+EZ7dGnzj82lLbU7ZsBW8uUkQFLvabedZNqY/yrJWyZaGtzccUOSo
+         FrrNKz4Whi2w7ZzlFBYDYI86X0PCKj3sC4NNGgKE4dle42igGb+OYY28GE9xFIK5kZVG
+         h8uwt/1Bf+pugiF3wyCEJoevAYPRYyhHWFbELdURWThDV6B4zgbPDI7G4ezXga62KX4k
+         sA+DMUrXuBWWYkVBGnuvJMm2qWbju8rFPMrrp2fn8x9/7cS9MmlIHQ/pJPvOXb10739L
+         C1EA==
+X-Gm-Message-State: AOAM533K8PezQC4hCWlCFDxdIcinpKZbNpSHLWRuNJsGd5LJkyG/eXaJ
+        3qv1leACMRgEHTsu/hK8/n9KvRfQSqeWrvgwhPg=
+X-Google-Smtp-Source: ABdhPJxt+OiBGnaKuE5WNEXotksu+9XHEr1m6Jl+gfnlLsz59iYVyV/D8CTyff3c2c7CIBf0hB717Z87xk662763F3Q=
+X-Received: by 2002:a25:258:: with SMTP id 85mr39058805ybc.109.1625748348025;
+ Thu, 08 Jul 2021 05:45:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210708115410.GX2610@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+References: <cover.1625043706.git.dsterba@suse.com>
+In-Reply-To: <cover.1625043706.git.dsterba@suse.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Thu, 8 Jul 2021 08:45:12 -0400
+Message-ID: <CAEg-Je_N8_rSfVjRD_R1J+ecH1tDW9syZawQavKXRBXQUofjag@mail.gmail.com>
+Subject: Re: [PATCH 0/6] Remove highmem allocations, kmap/kunmap
+To:     David Sterba <dsterba@suse.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+YiX4oW6SZkHfN8FtiJp1Ur7IhktWJjc+oB31+w++r2Y4Irg3Ph
- hexlAfmwsT+FhTxf7KjUOukYYS6+0qCQFMBBk8w6FebIwbZSooCSGHQfk1iSr2Dl6qdoLto
- DQo2sMF/me3GKHw4JUt4F6tgGLSKtudkqNVHTNMJmJwNTq9NAjXeDY1XBf2/EeC0MCN2cWn
- Uv6+jGpYUWhgoz1xNaANQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:50UnglClHU0=:zW4FYDBAFHk3u7zl+9mrGI
- oWwhK6PjEHOtjHeduKJIK1APTyGD6HVlkqitXxItogtpudQ5GIbebo3a+tj56laAthHKjZ/+8
- NnhrthYMwh5urc9oH9bUi9iIK4tGBZHHKlAIPPY/wBWpfSF75vUG7V74sA1KRDwggfxdYbBxg
- ztumKUG8+fBh9BbS6koW22/tvT47iPTNrg9tfrrXmQXmTjB0vt3cHvIhzYE5C0tNUca4ZzL0j
- sHd/TPc/RPC3JvT+3B9wguaP7lDezvz0s75aETniirpDsTgMtbVvaYVYK93Uqvrr54OMBbLx8
- IoZefC2wSkFfOiijPlihMWDWFErPH431sRRm3ykTqfDVaDDmVSDERQW9IMdQips6U77lgConY
- JhSNfUYqIedNe7FFrQh9DwaWYm7jmC3NMYUu77UldSmgydWuCXFV540Y6szn85J1ZPPd4ymaN
- nST7R45jvfvc/6NmH96omEDNchHbnb8JgevkzcLDA3g+yqID4myh+Cstz4zEz36iHGCxgXhBF
- 4vzciGA//izA4S3pFVOeq5Etjc8+RW+ZwBVZ8oFZG3CKpdGKEKQDsSO5UHzWfoQ6lGCRo/avb
- LGPFHruuD09LriIaTQxjQ4ZMJFARNj+XXbnmSdCPiynFgfwBsUPYP1MyHY0A4lC9h1nupCfgE
- zPKQvAPkSAIqkD9cTGC4r8q6QNgy74pOiQsys+XGQk84W3J+qNHAQBG+aRYKdZjI+iqftjBHr
- 5biiImkjjrbLNKFKk8QTTltRiKIxG1cK9PaslmF5nWcCpITzeEQEAtwn6GndBHplfueBiycl3
- jcMSgSB/CQ0pgSC/tLsXBio7jBSRjzeaTXK1a7jOJ/qSYjHgMqXKsv/iM8iwm4xeBC942edhQ
- uQJPezkLALnEjQT2FUPJkhe3o3tJf52uRlu/WWF85NxqYLLOwzsAXRU+aPcVaifz9QqxPvS2G
- 3+IMBebFT+vVlLiNBZxQ8cxmslouMJcmScd2Y6YJGBh7RZrluW4QPP4LHqX6eJ38e+NflaoDh
- YU30twpyCor+23563gBbr+nR2bQVs5QaeKBMx+moquqXGHn+5W5p797V6EsT2T3Y+qT4BWBO/
- 3C/P+g9t2AdFyo4Rf+tXLLjZW4t4qvvmjHz20qC+kiugWXkYEfR+smhlw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/7/8 =E4=B8=8B=E5=8D=887:54, David Sterba wrote:
-> On Mon, Jul 05, 2021 at 10:00:57AM +0800, Qu Wenruo wrote:
->> This allows later decompress functions to get rid of kmap()/kunmap()
->> pairs.
->>
->> And since all other filesystems are getting rid of HIGHMEM, it should
->> not be a problem for btrfs.
->>
->> Although we removed the HIGHMEM allocation, we still keep the
->> kmap()/kunmap() pairs.
->> They will be removed when involved functions are refactored later.
+On Thu, Jul 8, 2021 at 7:48 AM David Sterba <dsterba@suse.com> wrote:
 >
-> I've sent the highmem cleanup and will drop this patch, there should be
-> minimal conflicts in the followup changes.
+> The highmem was maybe was a good idea long time ago but with 64bit
+> architectures everywhere I don't think we need to take it into account.
+> This does not mean this 32bit won't work, just that it won't try to use
+> temporary pages in highmem for compression and raid56. The key word is
+> temporary. Combining a very fast device (like hundreds of megabytes
+> throughput) and 32bit machine with reasonable memory (for 32bit, like
+> 8G), it could become a problem once low memory is scarce.
 >
-Thanks, that's great.
+> David Sterba (6):
+>   btrfs: drop from __GFP_HIGHMEM all allocations
+>   btrfs: compression: drop kmap/kunmap from lzo
+>   btrfs: compression: drop kmap/kunmap from zlib
+>   btrfs: compression: drop kmap/kunmap from zstd
+>   btrfs: compression: drop kmap/kunmap from generic helpers
+>   btrfs: check-integrity: drop kmap/kunmap for block pages
+>
+>  fs/btrfs/check-integrity.c | 11 +++-------
+>  fs/btrfs/compression.c     |  6 ++----
+>  fs/btrfs/inode.c           |  3 +--
+>  fs/btrfs/lzo.c             | 42 +++++++++++---------------------------
+>  fs/btrfs/raid56.c          | 10 ++++-----
+>  fs/btrfs/zlib.c            | 42 +++++++++++++-------------------------
+>  fs/btrfs/zstd.c            | 33 +++++++++++-------------------
+>  7 files changed, 49 insertions(+), 98 deletions(-)
+>
 
-I'll update the patchset later after I have shaken out all bugs in
-subpage compressed read path.
-(Optimistic ETA, around v5.14-rc3)
+I'd be concerned about the impact of this on SBC devices. All Fedora
+ARM images have zstd compression applied to them, and it would suck if
+we had a performance regression here because of this.
 
-As previously without a way to write compressed extent under subpage
-case, we have no coverage for subpage compressed read.
 
-I hope not to submit new fixes just for subpage compressed read path
-after the initial enablement.
-
-Thanks,
-Qu
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
