@@ -2,248 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1FA3BF5FA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 09:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2503A3BF8A7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 13:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhGHHJL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jul 2021 03:09:11 -0400
-Received: from mout.gmx.net ([212.227.15.18]:51933 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhGHHJL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Jul 2021 03:09:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1625727974;
-        bh=sSiTJDAiFRvVEmQjsQnE5kdXw9xHTNlBlwyPcqSqDgo=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=fkLeCb8IvQL2LK4TONz5QBdxvkm8TWMeIzn/la/WJ7aT1yPE46ovL9HIEnZdLJIpT
-         eamRR26vUFusQE0Oku8Oogp5Jvt7itK6pLlDaSHtod2HFUX5TimSkZoX37vHgLOidj
-         R/Hsvk2xF65RzxRFkbODLnDV3BVHTAIKT5N/AAJo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N95iH-1l4jNS2ZhH-0165qo; Thu, 08
- Jul 2021 09:06:14 +0200
-Subject: Re: [PATCH v6 01/15] btrfs: grab correct extent map for subpage
- compressed extent read
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>
+        id S231546AbhGHLGo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jul 2021 07:06:44 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51432 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231522AbhGHLGn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 07:06:43 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3A4F32216D;
+        Thu,  8 Jul 2021 11:04:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625742241;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A7k8162AxIvijG3JoKW5DrMgHXjhZ6w9ytK9+8WoE6Y=;
+        b=Z7PKpk0F5t88iOtO3HYfrHhZ2i7/NgoXM4R2RgMnBKa/rJ/2G1YcZE17IkIumdSfX8CAZb
+        Z65mA3d3DhlDVu10DRjc9XSZhBnKq2mYBcY4HHdzwNrF3FtfvQHX2KxeqKW5ZmH5qVOryz
+        53cZ3A4uNztoxKQjgMC5I4gzExaiCDY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625742241;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A7k8162AxIvijG3JoKW5DrMgHXjhZ6w9ytK9+8WoE6Y=;
+        b=/tgBCHxG3+kamm4MotfV5iuMjY5gYxdLtj4zGo9S2P+mmuVlDb3x0hNEqa9neu36JuvM9N
+        H50EY8njgNx0bLAA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 332DBA3B88;
+        Thu,  8 Jul 2021 11:04:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1468FDAF79; Thu,  8 Jul 2021 13:01:27 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 13:01:26 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-References: <20210705020110.89358-1-wqu@suse.com>
- <20210705020110.89358-2-wqu@suse.com>
- <3d654aac-a0c5-fb2d-24d7-4508c8080e03@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <6bc6b208-c376-85dd-910d-03d5b7478efe@gmx.com>
-Date:   Thu, 8 Jul 2021 15:06:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Subject: Re: [PATCH] btrfs: fix unpersisted i_size on fsync after expanding
+ truncate
+Message-ID: <20210708110126.GU2610@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <6cceff8fdd4cf0293d28201c5602e011574d3b97.1625582327.git.fdmanana@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <3d654aac-a0c5-fb2d-24d7-4508c8080e03@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0lUwroUQk1Y8fNHYi/i9X2sZGCUTSWOcg2uHgXdzdYO83fJDbjn
- fabh6fOyG9jaDq/ApJgdcEt2lN7FAEpQZjKXGzGMjvGiHugTMxQe3BrOjb+Exx73zJT2gbw
- lWHp7q3VusSDV7u3MjWQFwGBNsJgyMlBmAmYM1VC68EOlfqYgB46QDB24EEmDt/NnmYoZJO
- 0r+LWYzL8VlComEPgu0Dw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OQYxRU6K8f8=:i4xRgzdM8eFoHKBT4IftLD
- PvTxx9t7Rx1jvEiSErcZk+nWaY/uhCwGdLoVBNWyjGdnHhBPolWwK992+mum2niLYI5q+oeSX
- 9JG85OcfpdjizpSFQ83QocT76ZsmxKLOpG4DI9DBr/tQFLC3A7c+HCik/Gv3ynfXF2j1uTLX3
- HTw0s3Z55PMjiXNxvJe4VkY9D1YCL4bv/fst05/gZTjkoBgbo/rEwUELIxBgdLLcU1i7ZN+iw
- f0BEamVxheF5HXLJbhMb/QgTJAJ7VjVbSrqsbyHOTA//DYnX5dvPwRVy7f+ojx0JJbFJMSKJq
- JyUK9YR+ekCs7CijiPIvBxM5u1mKgkkndq6mia1rFTrFVJC7SulEeT7ls0ZeatFSHFXZjSCR6
- ef+Dx28e+KWjBYZVlYZACMqjWcyEzB6Jn1kxEt/4VW3VY5U/VDaWq0rSGCLWS8P7dp2IS43hU
- XnK82Pa/DWVbVcUGMEXnidC4aGDO1uA+aB5TTYJBJ/7KfbUMo7qTZA0esSd99lEuZTmpedk+5
- L0haWZPpVNXfSve/jWbendV90NwP0+LLbhO4nzmk43+BzxOIsM2q4rOpIEkrDZ5u+mrz95VNG
- Vnwbrfd2Q+b4BGYtrFVozzBMvfBEj20PqKm5D3B5X2chBHA5RdnEhonurybagnXyo/qpjQRXm
- ewdiswYUE0w88fQda/OH5gXvqAJB+KqO7qMdBsMjc7daDNHL1QVvzaJaCrbrFywDm8K8w6CSH
- cMk+JyTYNnX+4n/Ii/7wftEerWKeJ3zPiMnXMK0hVNY30RBrd0m5hbqANL+W2HEEn3NHfVvY9
- llep8ZgrhzCt/7FEyRajExkJ9WaM1ul6cg8j/YabJ0R+lrC2acjBcc8QQzafveF2GM4Ns4Bbs
- P2fWrzHspREzmnv3xjVBxds/kmIvSHWD9ZmC8l3sBtk+osjx7PYE/zq71gkBzzIHZlA0K/xwK
- pnnjTt1NTjjD1yITPd1f6+cJ7nAonQwk2Cm2afUZwZic95tYcAHH1t6XXKja5ixjHKF1kZ9ux
- 1wlD7UZnZLmPVIt9UPDjjSy/wdowTbivFzRqq7qNlf5WIQBIcIDsaYlM4NFRA5ZM3uwi9QYtk
- MwvtdBu5JEswDPNATXkCKp/0d4gMFSURfzrvAMr24SvOzbZVgzGvhWZFQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6cceff8fdd4cf0293d28201c5602e011574d3b97.1625582327.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Jul 06, 2021 at 03:41:15PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> If we have an inode that does not have the full sync flag set, was changed
+> in the current transaction, then it is logged while logging some other
+> inode (like its parent directory for example), its i_size is increased by
+> a truncate operation, the log is synced through an fsync of some other
+> inode and then finally we explicitly call fsync on our inode, the new
+> i_size is not persisted.
+> 
+> The following example shows how to trigger it, with comments explaining
+> how and why the issue happens:
+> 
+>   $ mkfs.btrfs -f /dev/sdc
+>   $ mount /dev/sdc /mnt
+> 
+>   $ touch /mnt/foo
+>   $ xfs_io -f -c "pwrite -S 0xab 0 1M" /mnt/bar
+> 
+>   $ sync
+> 
+>   # Fsync bar, this will be a noop since the file has not yet been
+>   # modified in the current transaction. The goal here is to clear
+>   # BTRFS_INODE_NEEDS_FULL_SYNC from the inode's runtime flags.
+>   $ xfs_io -c "fsync" /mnt/bar
+> 
+>   # Now rename both files, without changing their parent directory.
+>   $ mv /mnt/bar /mnt/bar2
+>   $ mv /mnt/foo /mnt/foo2
+> 
+>   # Increase the size of bar2 with a truncate operation.
+>   $ xfs_io -c "truncate 2M" /mnt/bar2
+> 
+>   # Now fsync foo2, this results in logging its parent inode (the root
+>   # directory), and logging the parent results in logging the inode of
+>   # file bar2 (its inode item and the new name). The inode of file bar2
+>   # is logged with an i_size of 0 bytes since it's logged in
+>   # LOG_INODE_EXISTS mode, meaning we are only logging its names (and
+>   # xattrs if it had any) and the i_size of the inode will not be changed
+>   # when the log is replayed.
+>   $ xfs_io -c "fsync" /mnt/foo2
+> 
+>   # Now explicitly fsync bar2. This resulted in doing nothing, not
+>   # logging the inode with the new i_size of 2M and the hole from file
+>   # offset 1M to 2M. Because the inode did not have the flag
+>   # BTRFS_INODE_NEEDS_FULL_SYNC set, when it was logged through the
+>   # fsync of file foo2, its last_log_commit field was updated,
+>   # resulting in this explicit of file bar2 not doing anything.
+>   $ xfs_io -c "fsync" /mnt/bar2
+> 
+>   # File bar2 content and size before a power failure.
+>   $ od -A d -t x1 /mnt/bar2
+>   0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
+>   *
+>   1048576 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>   *
+>   2097152
+> 
+>   <power failure>
+> 
+>   # Mount the filesystem to replay the log.
+>   $ mount /dev/sdc /mnt
+> 
+>   # Read the file again, should have the same content and size as before
+>   # the power failure happened, but it doesn't, i_size is still at 1M.
+>   $ od -A d -t x1 /mnt/bar2
+>   0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
+>   *
+>   1048576
+> 
+> This started to happen after commit 209ecbb8585bf6 ("btrfs: remove stale
+> comment and logic from btrfs_inode_in_log()"), since btrfs_inode_in_log()
+> no longer checks if the inode's list of modified extents is not empty.
+> However, checking that list is not the right way to address this case
+> and the check was added long time ago in commit 125c4cf9f37c98
+> ("Btrfs: set inode's logged_trans/last_log_commit after ranged fsync")
+> for a different purpose, to address consecutive ranged fsyncs.
+> 
+> The reason that checking for the list emptiness makes this test pass is
+> because during an expanding truncate we create an extent map to represent
+> a hole from the old i_size to the new i_size, and add that extent map to
+> the list of modified extents in the inode. However if we are low on
+> available memory and we can not allocate a new extent map, then we don't
+> treat it as an error and just set the full sync flag on the inode, so that
+> the next fsync does not rely on the list of modified extents - so checking
+> for the emptiness of the list to decide if the inode needs to be logged is
+> not reliable, and results in not logging the inode if it was not possible
+> to allocate the extent map for the hole.
+> 
+> Fix this by ensuring that if we are only logging that an inode exists
+> (inode item, names/references and xattrs), we don't update the inode's
+> last_log_commit even if it does not have the full sync runtime flag set.
+> 
+> A test case for fstests follows soon.
+> 
+> CC: stable@vger.kernel.org # 5.13+
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-
-On 2021/7/8 =E4=B8=8B=E5=8D=882:50, Anand Jain wrote:
-> On 5/7/21 10:00 am, Qu Wenruo wrote:
->> [BUG]
->> When subpage compressed read write support is enabled, btrfs/038 always
->> fail with EIO.
->>
->> A simplified script can easily trigger the problem:
->>
->> =C2=A0=C2=A0 mkfs.btrfs -f -s 4k $dev
->> =C2=A0=C2=A0 mount $dev $mnt -o compress=3Dlzo
->>
->> =C2=A0=C2=A0 xfs_io -f -c "truncate 118811" $mnt/foo
->> =C2=A0=C2=A0 xfs_io -c "pwrite -S 0x0d -b 39987 92267 39987" $mnt/foo >=
- /dev/null
->>
->> =C2=A0=C2=A0 sync
->> =C2=A0=C2=A0 btrfs subvolume snapshot -r $mnt $mnt/mysnap1
->>
->> =C2=A0=C2=A0 xfs_io -c "pwrite -S 0x3e -b 80000 200000 80000" $mnt/foo =
-> /dev/null
->> =C2=A0=C2=A0 sync
->>
->> =C2=A0=C2=A0 xfs_io -c "pwrite -S 0xdc -b 10000 250000 10000" $mnt/foo =
-> /dev/null
->> =C2=A0=C2=A0 xfs_io -c "pwrite -S 0xff -b 10000 300000 10000" $mnt/foo =
-> /dev/null
->>
->> =C2=A0=C2=A0 sync
->> =C2=A0=C2=A0 btrfs subvolume snapshot -r $mnt $mnt/mysnap2
->>
->> =C2=A0=C2=A0 cat $mnt/mysnap2/foo
->> =C2=A0=C2=A0 # Above cat will fail due to EIO
->>
->> [CAUSE]
->> The problem is in btrfs_submit_compressed_read().
->>
->> When it tries to grab the extent map of the read range, it uses the
->> following call:
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0em =3D lookup_extent_mapping(em_tree,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 page_offset(bio_=
-first_page_all(bio)),
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_info->sectorsize);
->>
->> The problem is in the page_offset(bio_first_page_all(bio)) part.
->>
->> The offending inode has the following file extent layout
->>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 10 key (257 EXTEN=
-T_DATA 131072) itemoff 15639 itemsize 53
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 generation 8 type 1 (regular)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent data disk byte 13680640 nr 4096
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent data offset 0 nr 4096 ram 4096
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent compression 0 (none)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 11 key (257 EXTEN=
-T_DATA 135168) itemoff 15586 itemsize 53
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 generation 8 type 1 (regular)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent data disk byte 0 nr 0
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 12 key (257 EXTEN=
-T_DATA 196608) itemoff 15533 itemsize 53
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 generation 8 type 1 (regular)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent data disk byte 13676544 nr 4096
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent data offset 0 nr 53248 ram 86016
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 extent compression 2 (lzo)
->>
->
->
->
->> And the bio passed in has the following parameters:
->>
->> page_offset(bio_first_page_all(bio))=C2=A0=C2=A0=C2=A0 =3D 131072
->> bio_first_bvec_all(bio)->bv_offset=C2=A0=C2=A0=C2=A0 =3D 65536
->>
->> If we use page_offset(bio_first_page_all(bio) without adding bv_offset,
->> we will get an extent map for file offset 131072, not 196608.
->>
->> This means we read uncompressed data from disk, and later decompression
->> will definitely fail.
->>
->
->
->> [FIX]
->> Take bv_offset into consideration when trying to grab an extent map.
->>
->> And add an ASSERT() to ensure we're really getting a compressed extent.
->>
->> Thankfully this won't affect anything but subpage, thus we wonly need t=
-o
->> ensure this patch get merged before we enabled basic subpage support.
->>
->
-> Is it possible to simplify the test case?
-
-I guess it's possible to simplify the test case further, but to me it
-doesn't make much sense.
-
-We don't make test case for regression which is not in upstream.
-
-And the existing test case is good enough to catch it anyway.
-
-Furthermore, there is another bug just exposed and fixed locally, that
-in btrfS_do_readpage() we never reset @this_bio_flag, causing any later
-read being treated as compressed read.
-
-There will be more small fixes for read path in next update.
-
-> Why is this not an issue in
-> the case of the non-subpage filesystem?
-
-Because for non-subpage case, bv_offset is always 0, as one page
-represents one sector.
-
-Thanks,
-Qu
->
-> Thanks, Anand
->
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> =C2=A0 fs/btrfs/compression.c | 9 ++++++---
->> =C2=A0 1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
->> index 9a023ae0f98b..19da933c5f1c 100644
->> --- a/fs/btrfs/compression.c
->> +++ b/fs/btrfs/compression.c
->> @@ -673,6 +673,7 @@ blk_status_t btrfs_submit_compressed_read(struct
->> inode *inode, struct bio *bio,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct page *page;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bio *comp_bio;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 cur_disk_byte =3D bio->bi_iter.bi_se=
-ctor << 9;
->> +=C2=A0=C2=A0=C2=A0 u64 file_offset;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 em_len;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 em_start;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct extent_map *em;
->> @@ -682,15 +683,17 @@ blk_status_t btrfs_submit_compressed_read(struct
->> inode *inode, struct bio *bio,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 em_tree =3D &BTRFS_I(inode)->extent_tree=
-;
->> +=C2=A0=C2=A0=C2=A0 file_offset =3D bio_first_bvec_all(bio)->bv_offset =
-+
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 page_offset(bio_first_page_all(bio));
->> +
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* we need the actual starting offset of=
- this extent in the file */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 read_lock(&em_tree->lock);
->> -=C2=A0=C2=A0=C2=A0 em =3D lookup_extent_mapping(em_tree,
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 page_offset(bio_first_page_all(bio=
-)),
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_info->sectorsize);
->> +=C2=A0=C2=A0=C2=A0 em =3D lookup_extent_mapping(em_tree, file_offset,
->> fs_info->sectorsize);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 read_unlock(&em_tree->lock);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!em)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BLK_STS_I=
-OERR;
->> +=C2=A0=C2=A0=C2=A0 ASSERT(em->compress_type !=3D BTRFS_COMPRESS_NONE);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 compressed_len =3D em->block_len;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cb =3D kmalloc(compressed_bio_size(fs_in=
-fo, compressed_len),
->> GFP_NOFS);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!cb)
->>
->
+Added to misc-next, thanks.
