@@ -2,135 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5CE3C1546
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 16:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EC33C1590
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 17:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhGHOjc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jul 2021 10:39:32 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33064 "EHLO
+        id S231857AbhGHPCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jul 2021 11:02:40 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:36062 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231879AbhGHOj3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 10:39:29 -0400
+        with ESMTP id S229738AbhGHPCk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 11:02:40 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 82CC5201FD;
-        Thu,  8 Jul 2021 14:36:46 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7EBA8201E8;
+        Thu,  8 Jul 2021 14:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1625755006;
+        t=1625756397;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Yq+Znsjp1QYVup7/gHk50wW4SLmbIrlfygfyg1XArg0=;
-        b=l6+vYXjVloXQTnPDSvOEjDCZmSYbpb2s5DVnREHVCZTTp6BBbwTgL6BOmsriWkf8KZpxVt
-        oMheNCNL3ubZ9FavJ+9YCCD8mRp8gwQvjMgbPyW+JxyDG+3Rf3T5OA8dMHDDHFDAKxI/X7
-        +hmFKG5NP1sIQ/hLztXjzYU0ykY8m4o=
+        bh=DXJe/zv8j+p7Sg0wqBCi+lNUc6fbXchuhBe6zva+y8Q=;
+        b=dLMnC0Cll80oHhUd4fBVSrMwg2kNtExPvuhF6SbQm76gwSD+/2xhpQvYwjVBevlZvkvKFu
+        tmJ/uy29ZZXVGFBiPyJ0Aj8TaosJgwrn0zqZkC6Z44w6/HtY0b7vOSqJxbvPZaofA8GtkY
+        vg+BpHy24Z8ZOrJNJHD+V0+3CnkHTRg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1625755006;
+        s=susede2_ed25519; t=1625756397;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Yq+Znsjp1QYVup7/gHk50wW4SLmbIrlfygfyg1XArg0=;
-        b=++YeMitRKXmXe+IY1BPnvR6MMLfbAfkSxSN+3Lz/5Dptpo/ArSiR7YA8He+fEDi1T9S4me
-        d5BVkU+DPBMaAqBg==
+        bh=DXJe/zv8j+p7Sg0wqBCi+lNUc6fbXchuhBe6zva+y8Q=;
+        b=lzmvWgRTdg7JvxSljnJ8Nw2g5UTfqw2+0ddG7DpWtS0kAWHzizQWd2TdIvDXKKk+3avvdM
+        rjavvEjvg58zOODw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 720EAA3BC5;
-        Thu,  8 Jul 2021 14:36:46 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 7DC38A3B84;
+        Thu,  8 Jul 2021 14:59:56 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 335E7DAF79; Thu,  8 Jul 2021 16:34:12 +0200 (CEST)
-Date:   Thu, 8 Jul 2021 16:34:12 +0200
+        id 47DD4DAF79; Thu,  8 Jul 2021 16:57:22 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 16:57:22 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH] btrfs: add special case to setget helpers for 64k pages
-Message-ID: <20210708143412.GC2610@twin.jikos.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Subject: Re: [PATCH 1/3] block: fix arg type of bio_trim()
+Message-ID: <20210708145722.GD2610@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@infradead.org>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-References: <20210701160039.12518-1-dsterba@suse.com>
- <YN67+nvpQBfiLXzh@infradead.org>
- <20210702110630.GE2610@twin.jikos.cz>
- <YOLD3CJjDgiq+kfR@infradead.org>
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+References: <20210708131057.259327-1-naohiro.aota@wdc.com>
+ <20210708131057.259327-2-naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YOLD3CJjDgiq+kfR@infradead.org>
+In-Reply-To: <20210708131057.259327-2-naohiro.aota@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 05, 2021 at 09:33:34AM +0100, Christoph Hellwig wrote:
-> On Fri, Jul 02, 2021 at 01:06:30PM +0200, David Sterba wrote:
-> > On Fri, Jul 02, 2021 at 08:10:50AM +0100, Christoph Hellwig wrote:
-> > > > +	if (INLINE_EXTENT_BUFFER_PAGES == 1) {				\
-> > > >  		return get_unaligned_le##bits(token->kaddr + oip);	\
-> > > > +	} else {							\
-> > > 
-> > > No need for an else after the return and thus no need for all the
-> > > reformatting.
-> > 
-> > That leads to worse code, compiler does not eliminate the block that
-> > would otherwise be in the else block. Measured on x86_64 with
-> > instrumented code to force INLINE_EXTENT_BUFFER_PAGES = 1 this adds
-> > +1100 bytes of code and has impact on stack consumption.
-> > 
-> > That the code that is in two branches that do not share any code is
-> > maybe not pretty but the compiler did what I expected.  The set/get
-> > helpers get called a lot and are performance sensitive.
-> > 
-> > This patch pre (original version), post (with dropped else):
-> > 
-> > 1156210   19305   14912 1190427  122a1b pre/btrfs.ko
-> > 1157386   19305   14912 1191603  122eb3 post/btrfs.ko
+On Thu, Jul 08, 2021 at 10:10:55PM +0900, Naohiro Aota wrote:
+> From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 > 
-> For the obvious trivial patch (see below) I see the following
-> difference, which actually makes the simple change smaller:
+> The function bio_trim has offset and size arguments that are declared
+> as int.
 > 
->    text	   data	    bss	    dec	    hex	filename
-> 1322580	 112183	  27600	1462363	 16505b	fs/btrfs/btrfs.o.hch
-> 1322832	 112183	  27600	1462615	 165157	fs/btrfs/btrfs.o.dave
+> The callers of this function uses sector_t type when passing the offset
+> and size e,g. drivers/md/raid1.c:narrow_write_error() and
+> drivers/md/raid1.c:narrow_write_error().
+> 
+> Change offset & size arguments to sector_t type for bio_trim().
+> 
+> Tested-by: Naohiro Aota <naohiro.aota@wdc.com>
+> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+> ---
+>  block/bio.c         | 2 +-
+>  include/linux/bio.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/block/bio.c b/block/bio.c
+> index 44205dfb6b60..d342ce84f6cf 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -1465,7 +1465,7 @@ EXPORT_SYMBOL(bio_split);
+>   * @offset:	number of sectors to trim from the front of @bio
+>   * @size:	size we want to trim @bio to, in sectors
+>   */
+> -void bio_trim(struct bio *bio, int offset, int size)
+> +void bio_trim(struct bio *bio, sector_t offset, sector_t size)
 
-This was on x86_64 and without any further changes to the
-extent_buffer::pages, right?
+sectort_t seems to be the right one, there are << 9 in the function so
+that could lead to some bugs if the offset and size are at the boundary.
 
-I've tested your version with the following diff emulating the single
-page that would be on ppc:
+>  {
+>  	/* 'bio' is a cloned bio which we need to trim to match
+>  	 * the given offset and size.
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index a0b4cfdf62a4..fb663152521e 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -379,7 +379,7 @@ static inline void bip_set_seed(struct bio_integrity_payload *bip,
+>  
+>  #endif /* CONFIG_BLK_DEV_INTEGRITY */
+>  
+> -extern void bio_trim(struct bio *bio, int offset, int size);
+> +void bio_trim(struct bio *bio, sector_t offset, sector_t size);
 
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -94,7 +94,8 @@ struct extent_buffer {
+You may want to keep the extern for consistency in that file, though
+it's not necessary for the prototype.
 
-        struct rw_semaphore lock;
-
--       struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
-+       struct page *pages[1];
-+       /* struct page *pages[INLINE_EXTENT_BUFFER_PAGES]; */
-        struct list_head release_list;
- #ifdef CONFIG_BTRFS_DEBUG
-        struct list_head leak_list;
-diff --git a/fs/btrfs/struct-funcs.c b/fs/btrfs/struct-funcs.c
-index 8260f8bb3ff0..4f8e8f7b29d1 100644
---- a/fs/btrfs/struct-funcs.c
-+++ b/fs/btrfs/struct-funcs.c
-@@ -52,6 +52,8 @@ static bool check_setget_bounds(const struct extent_buffer *eb,
-  * from 0 to metadata node size.
-  */
-
-+#define _INLINE_EXTENT_BUFFER_PAGES 1
-...
----
-
-And replacing _INLINE_EXTENT_BUFFER_PAGES in the checks. This leads to
-the same result as in my original version with the copied blocks:
-
-   text    data     bss     dec     hex filename
-1161350   19305   14912 1195567  123e2f pre/btrfs.ko
-1156090   19305   14912 1190307  1229a3 post/btrfs.ko
-
-DELTA: -5260
-
-ie. compiler properly removed the dead code after evaluating the
-conditions. As your change is simpler code I'll take it, tahnks for the
-suggestion.
+The patch is simple I can take it through the btrfs tree with the other
+fixes unless there are objections.
