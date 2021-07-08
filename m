@@ -2,138 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4C83BF8B0
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 13:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387173BF8D5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 13:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhGHLMG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jul 2021 07:12:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231522AbhGHLMF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Jul 2021 07:12:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 080D061606;
-        Thu,  8 Jul 2021 11:09:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625742564;
-        bh=O9K4Dy/jCMCCdUkBLxKjOpkYRQKnlt2h/CJQif++SME=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=qknINIEsuRSXOyI6xbCItD101O4iVSmVeuFRkakW69Y+k5b/878uv+w1U6SFqXeiB
-         cdRwGF0kCgyfHgHxEh40AQ7njzwXRf57H6emEjsbzajwLvCOtfP9LhWiv8JMlBpARP
-         6v5z67ehURIeGKlcqvaHNVyK3Hvp63ME21+N4zMH0INNxzb8n4c2/wAyYe0KJoERpX
-         zTEp7P4tjiJhuVeWZmvYRV+eMW19fC8tb0Tbo/5Nb+J411KfCSB4+LBodCCsdv6X8e
-         qUEOEJFAFFbxe0S1mlHlkbMpsnSI30qCEbW7BdRq0gCkNR40zPEL9mGEjglHLcxRSq
-         3t0LnAeQ+U1lA==
-Date:   Thu, 8 Jul 2021 07:09:23 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     dsterba@suse.cz, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.13 75/85] btrfs: make Private2 lifespan more
- consistent
-Message-ID: <YObc45mLr/L++VKj@sashalap>
-References: <20210704230420.1488358-1-sashal@kernel.org>
- <20210704230420.1488358-75-sashal@kernel.org>
- <20210707111005.GI2610@suse.cz>
+        id S231578AbhGHLZX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jul 2021 07:25:23 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51116 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231569AbhGHLZX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 07:25:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7C22F201CD;
+        Thu,  8 Jul 2021 11:22:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1625743360;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4LGj9wpGSK7fArH6eLnlhKGl4Z2Z7UhnDw+j4Gvf9zk=;
+        b=W6YyluT5LSwwOg0LGgVKZUAFVr8TEU23dLvw/q9DUlY22FiM/YOLGEOkanALvMHn7XxQ60
+        5wbK1kX7oUTTExUAMJlvxepXVTmznN9sX/9o3s9Fa66qAbD3/260iD1fi0sBVIDoSO2kBJ
+        6V0RJnVA9WIrNb4jLVo++RAzbOV95eg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1625743360;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4LGj9wpGSK7fArH6eLnlhKGl4Z2Z7UhnDw+j4Gvf9zk=;
+        b=5fdCnLdo158uhxS5Nj0WUV8y6NeUgqeVe6hp67qvd2s0yevCDnHAXEYdIZ6g39hhS4yOaH
+        LM4BfvaDrxeR2eBg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 72571A3B85;
+        Thu,  8 Jul 2021 11:22:40 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 45682DAF79; Thu,  8 Jul 2021 13:20:06 +0200 (CEST)
+Date:   Thu, 8 Jul 2021 13:20:06 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     David Sterba <dsterba@suse.com>, fdmanana@gmail.com,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: check for missing device in btrfs_trim_fs
+Message-ID: <20210708112006.GV2610@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, fdmanana@gmail.com,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <fce2724eaa78b9666c2ac4f0a1b806ae14c55cd0.1625236214.git.anand.jain@oracle.com>
+ <CAL3q7H6yweidJi85pdb-D=iOYTEqoDuRs8wvC3q9W1ng__ewkA@mail.gmail.com>
+ <829ddc25-e814-460d-4119-8828d64f2ff7@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210707111005.GI2610@suse.cz>
+In-Reply-To: <829ddc25-e814-460d-4119-8828d64f2ff7@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 01:10:05PM +0200, David Sterba wrote:
->On Sun, Jul 04, 2021 at 07:04:10PM -0400, Sasha Levin wrote:
->> From: Qu Wenruo <wqu@suse.com>
->>
->> [ Upstream commit 87b4d86baae219a9a79f6b0a1434b2a42fd40d09 ]
->>
->> Currently we use page Private2 bit to indicate that we have ordered
->> extent for the page range.
->>
->> But the lifespan of it is not consistent, during regular writeback path,
->> there are two locations to clear the same PagePrivate2:
->>
->>     T ----- Page marked Dirty
->>     |
->>     + ----- Page marked Private2, through btrfs_run_dealloc_range()
->>     |
->>     + ----- Page cleared Private2, through btrfs_writepage_cow_fixup()
->>     |       in __extent_writepage_io()
->>     |       ^^^ Private2 cleared for the first time
->>     |
->>     + ----- Page marked Writeback, through btrfs_set_range_writeback()
->>     |       in __extent_writepage_io().
->>     |
->>     + ----- Page cleared Private2, through
->>     |       btrfs_writepage_endio_finish_ordered()
->>     |       ^^^ Private2 cleared for the second time.
->>     |
->>     + ----- Page cleared Writeback, through
->>             btrfs_writepage_endio_finish_ordered()
->>
->> Currently PagePrivate2 is mostly to prevent ordered extent accounting
->> being executed for both endio and invalidatepage.
->> Thus only the one who cleared page Private2 is responsible for ordered
->> extent accounting.
->>
->> But the fact is, in btrfs_writepage_endio_finish_ordered(), page
->> Private2 is cleared and ordered extent accounting is executed
->> unconditionally.
->>
->> The race prevention only happens through btrfs_invalidatepage(), where
->> we wait for the page writeback first, before checking the Private2 bit.
->>
->> This means, Private2 is also protected by Writeback bit, and there is no
->> need for btrfs_writepage_cow_fixup() to clear Priavte2.
->>
->> This patch will change btrfs_writepage_cow_fixup() to just check
->> PagePrivate2, not to clear it.
->> The clearing will happen in either btrfs_invalidatepage() or
->> btrfs_writepage_endio_finish_ordered().
->>
->> This makes the Private2 bit easier to understand, just meaning the page
->> has unfinished ordered extent attached to it.
->>
->> And this patch is a hard requirement for the incoming refactoring for
->> how we finished ordered IO for endio context, as the coming patch will
->> check Private2 to determine if we need to do the ordered extent
->> accounting.  Thus this patch is definitely needed or we will hang due to
->> unfinished ordered extent.
->>
->> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> Signed-off-by: David Sterba <dsterba@suse.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->
->Please drop this patch from all autosel stable backports. This is not a
->standalone fix and the CC: stable@ is not there intentionally.
+On Thu, Jul 08, 2021 at 08:11:30AM +0800, Anand Jain wrote:
+> On 5/7/21 4:43 pm, Filipe Manana wrote:
+> > On Sun, Jul 4, 2021 at 12:17 PM Anand Jain <anand.jain@oracle.com> wrote:
+> >>
+> >> A fstrim on a degraded raid1 can trigger the following null pointer
+> >> dereference:
+> >>
+> >> BTRFS info (device loop0): allowing degraded mounts
+> >> BTRFS info (device loop0): disk space caching is enabled
+> >> BTRFS info (device loop0): has skinny extents
+> >> BTRFS warning (device loop0): devid 2 uuid 97ac16f7-e14d-4db1-95bc-3d489b424adb is missing
+> >> BTRFS warning (device loop0): devid 2 uuid 97ac16f7-e14d-4db1-95bc-3d489b424adb is missing
+> >> BTRFS info (device loop0): enabling ssd optimizations
+> >> BUG: kernel NULL pointer dereference, address: 0000000000000620
+> >> PGD 0 P4D 0
+> >> Oops: 0000 [#1] SMP NOPTI
+> >> CPU: 0 PID: 4574 Comm: fstrim Not tainted 5.13.0-rc7+ #31
+> >> Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+> >> RIP: 0010:btrfs_trim_fs+0x199/0x4a0 [btrfs]
+> >> Code: 24 10 65 4c 8b 34 25 00 70 01 00 48 c7 44 24 38 00 00 10 00 48 8b 45 50 48 c7 44 24 40 00 00 00 00 48 c7 44 24 30 00 00 00 00 <48> 8b 80 20 06 00 00 48 8b 80 90 00 00 00 48 8b 40 68 f6 c4 01 0f
+> >> RSP: 0018:ffff959541797d28 EFLAGS: 00010293
+> >> RAX: 0000000000000000 RBX: ffff946f84eca508 RCX: a7a67937adff8608
+> >> RDX: ffff946e8122d000 RSI: 0000000000000000 RDI: ffffffffc02fdbf0
+> >> RBP: ffff946ea4615000 R08: 0000000000000001 R09: 0000000000000000
+> >> R10: 0000000000000000 R11: ffff946e8122d960 R12: 0000000000000000
+> >> R13: ffff959541797db8 R14: ffff946e8122d000 R15: ffff959541797db8
+> >> FS:  00007f55917a5080(0000) GS:ffff946f9bc00000(0000) knlGS:0000000000000000
+> >> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >> CR2: 0000000000000620 CR3: 000000002d2c8001 CR4: 00000000000706f0
+> >> Call Trace:
+> >> btrfs_ioctl_fitrim+0x167/0x260 [btrfs]
+> >> btrfs_ioctl+0x1c00/0x2fe0 [btrfs]
+> >> ? selinux_file_ioctl+0x140/0x240
+> >> ? syscall_trace_enter.constprop.0+0x188/0x240
+> >> ? __x64_sys_ioctl+0x83/0xb0
+> >> __x64_sys_ioctl+0x83/0xb0
+> >> do_syscall_64+0x40/0x80
+> >> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >>
+> >> Reproducer:
+> >>
+> >>    Create raid1 btrfs:
+> >>          mkfs.btrfs -fq -draid1 -mraid1 /dev/loop0 /dev/loop1
+> >>          mount /dev/loop0 /btrfs
+> >>
+> >>    Create some data:
+> >>          _sysbench prepare /btrfs 10 2g 6
+> > 
+> 
+> 
+> > This step isn't needed, it's confusing to suggest the filesystem needs
+> > to have some data in order to trigger the bug.
+> 
+> That's right. I wonder if David could remove the above two lines while 
+> integrating? I am ok to send a reroll with this change if that's better.
 
-Will do.
-
->All patches that go through my tree are evaluated for stable backports
->up to 4.4 so it's unlikely the machinery you're using can find something
->I've overlooked.
-
-If you'd like, I can make it ignore fs/btrfs/. The tool is there to help
-maintainers who aren't as diligent w.r.t tagging patches for stable, not
-to create extra noise for something.
-
-We can ofcourse also keep the current workflow if you think that it's
-helpful in some way.
-
->The patches that autosel picks and do not get a complain^Wreply for me
->are below the bar I'd consider it for stable but if after another review
->the patch "does no harm", I let it pass because you're obviously
->handling the backports. I would not tag it myself to avoid increasing
->load of Greg with patches that don't matter much.
-
-I'd say don't worry about this side of things: we're trying to get any
-fixes in, without too much regard to whether the fix is for something
-"big" or "small". We'd prefer to go over extra patches here in exchange
-for a much better user experience :)
-
--- 
-Thanks,
-Sasha
+Yeah such fixups are fine, no need to resend. I've applied thisd patch
+before the cleanup of the devices variable so this one can be
+backported, thanks.
