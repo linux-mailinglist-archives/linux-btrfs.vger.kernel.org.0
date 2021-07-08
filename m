@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B513C1401
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 15:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636CD3C13FD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jul 2021 15:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhGHNPX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Jul 2021 09:15:23 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:42292 "EHLO
+        id S231838AbhGHNPW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Jul 2021 09:15:22 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:42294 "EHLO
         esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231642AbhGHNPS (ORCPT
+        with ESMTP id S231747AbhGHNPS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Jul 2021 09:15:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
   t=1625749957; x=1657285957;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=vsm350jfoKt4/3nGe5MPD3rxlEZZX9Ax374HVNofoOY=;
-  b=itCvWtVTuGfS8mXZV4tz4BztNGDnylsSfvc70s7zfrl9qgodWeMaRHvV
-   q/CAOU2FoGPxW/UXvjQOGjtc1xNFIab+wULsFpg5sPpjNRGKiUt0Hnjhj
-   Ig3o4RrTFp3rbrcZG09ZzBtYt/WajsfO3lOuHF3LPkVjVgtNKUywVX4VU
-   9CnbR3R0j0UeubmsKYKYDjbpdQKi+QvyU5Rv4jMiGDACm9qkFWVx+7bbS
-   cp68BwadvxpsBQPQcPOyeoqTfrimBIkjk9QSZMn5Om6Xga6qcpfPF1l4L
-   rWEoQPqfYkkHG9klO+nZGCmzFmQepqDbjDJac19naubZ35DLSeWypemd3
-   Q==;
-IronPort-SDR: j9snqBTd2hqo4pjTBszdhgwAJcvm6IzvWKdnm4ycJw0UA9uw5xm3YRxS2j+33Uw7Oj93gh3xqz
- zmgXRezCkhyO4J+qXCEn9AW9Tm2nvaH9qgUT73hfTACSIXSU1Qo3JaZPhyDt7U3M7BnDFSF0k0
- 3D1ZvEu6Jb5Vh+Beskn7ZhO+BeZgu44njhw3ofaXi14SVbhnPdUuVqVpxbFqcBCAfV/HYHy2lr
- c6dVkFHOOzI5ikBJqzql0yugpvQkzHF0gpVGTo6cQvL3wuAenMU8uX2lqxTc1NNeAfb//7NVZP
- euo=
+  bh=nWtyhCb7dS+Dg9n3hRx6LlJZ3mZVgdbPHDJlobS6lHw=;
+  b=X8oT9+3NqeGwOfqGqdC+R6cfqiAaa8ShAe2UIEcqp1BzTY3hcvHNEo9T
+   d8lce7TPCK08l7jFWXY9O5aWXtKDmZpEbxfZ4nnWgAvpcND+9k7+VhZsD
+   nV1siFGr4H/fAGRlVl10/0mgibDPLu2dB+h5rnazrJIGTYVkZuejbfRRM
+   guVxuUYfMFcfI4rIJEa+antabaKngUOuD+dZU8Pbm6Oiqgjua4/df1bnm
+   /4Z9/IkghFwDMqror9pU//aYAj7TZ/tsSYQc7DI28w+2svmrJh5XhLINW
+   SmuF0kczNz5h45WlaclB7BNMsKYQbnGIBVoi4sb6m+ojj5y10rhss2d6v
+   A==;
+IronPort-SDR: vkrF57WcqKqmUZsiUC0qNr7k3KGqGc2/B+ROcLCInRw9HnCb/NOHRPKmS/YThIBzu2+HIQnfd8
+ bSS1qON54fRG1VVZDR7U9lNA1qHaWKvxueER+vEi6/n5/cIvxPdoFw2bVItOMQddUclWKJ/X0w
+ m1XeQAsx7z9hD2Ge/WaAA+WtWWvg8Xn/1ZxKdexCtNKYb8A/qPwEc0z+OUxWvzBvSjxEx0wLh8
+ AmWGYK3bqgjjQR2418r37nFfF2DxSHAyUvEbDadEH1jgmvSN22puXJEniey38iLL0wLsQxBNh9
+ 7gE=
 X-IronPort-AV: E=Sophos;i="5.84,222,1620662400"; 
-   d="scan'208";a="285562706"
+   d="scan'208";a="285562708"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 08 Jul 2021 21:12:34 +0800
-IronPort-SDR: c1JqsLl0BLKTUzeqVp0A6IIOUMZlr8yFUnzb5HLFsEpOAfzrZJJamA+XM3Lr4RU+gg4p+X0RAJ
- 2Iav6rGK5s/GaFNMYNGcuY8z5Z5JuMbGWHNZOyG59qQwL1Mld0KQAmsipl0k77UmLwa52MoRt9
- ZDgG2MduT7nmwQMJazLnVgz8IQur92vjpgaBbkGZeUTLH1EusDIHAiwN4DDIIhNm1p6BrWzDcn
- VH2m00Wruc7VkDuz82E+7jAihr98yEhXrzAdA+jOSWyMT5zHh3ykAbhHzSo5ioNsHnZsocDAQo
- lixFA47iGMHV8EyZYG+eioV1
+  by ob1.hgst.iphmx.com with ESMTP; 08 Jul 2021 21:12:36 +0800
+IronPort-SDR: 1fac1nnRXNgUuZYPTa/RnmygpqgmOgHXGo54Sm570ERLjyuvugEeXAza92mutLiiOtv/le58WO
+ HgicC8zWa5knWTWqhoEjAutYLYdupmDOfhxNuH8bBmTABAeZsJYQLoiIxOh8r6KwFhqq7M+Mix
+ 81wnW8MuoS3v3PwndeNutkFA3Ntr5OUKo/W0dcNZf0ghsEVImwimf2XvOmyRGo08Lig5CNp+1h
+ ZNYXZ4Re4PelwmaOUmSkexpn+vlhnhvbx/AxT98wmRKY1i8DU6Ugcpl8nU6RtYa9n89Qce+uAb
+ If5OrW6IQyoAcNwbUk7twuw1
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 05:49:33 -0700
-IronPort-SDR: Xr2M3rkLhKlGAlJ/5fUE4ginOUUnlb7K5udbqCfJdFotFfeBEr84FuTFWm9fPgxn+4p2/6f9WI
- JezPAKafztXFE4YMS1tNVgSaoHbr78NCPxubeurpqyEeYxSjnuwqDj2s7puWYOkfCP+rmTau18
- H20+4I2u/EWSP+ffC6LuNYeGS20lGMO0E3srtXd03CFRQ+yQLdnXFlXcllpb1LFqrc3CF4yII1
- ELGemzdgkWhOF8Lkiu2KBOSYHnPkI2Nj3LcMBPmiGf4YSz19TxbBzhwquIVHlgVGFoHH3S1mhQ
- 6qc=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 05:49:34 -0700
+IronPort-SDR: z4D3x52j96aOjYhJBr2TBF630/KjE7N397mktHkDdQkZ/0yS1oLwcRWwDXAC+jVFKTzu58lOiU
+ iAx9L7ykoa+Ob8JUOZ7NKAq6hMNxxvqmjdGUw0jctFkgvM83+hzJKDxeGMaCYdNR7Rtb6KNIdZ
+ Dl0tdQzJL4NGqhKLYn5Ixww4kLgFsRfT550AoS7d7VRRi6lgTIffSHnO3oLW4+gMwCH9cTH6HB
+ zh5yymG5rtWv6M28KSdv83rktSn3LzSJkr7vIr1fKbOS6n9oqf0vw2ND3bOZ+8KEws7NleQJOl
+ KBE=
 WDCIronportException: Internal
 Received: from b1j4fb3.ad.shared (HELO naota-xeon.wdc.com) ([10.225.50.95])
-  by uls-op-cesaip02.wdc.com with ESMTP; 08 Jul 2021 06:12:34 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 08 Jul 2021 06:12:36 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org
 Cc:     Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
         Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
         Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 1/3] block: fix arg type of bio_trim()
-Date:   Thu,  8 Jul 2021 22:10:55 +0900
-Message-Id: <20210708131057.259327-2-naohiro.aota@wdc.com>
+Subject: [PATCH 2/3] btrfs: fix argument type of btrfs_bio_clone_partial()
+Date:   Thu,  8 Jul 2021 22:10:56 +0900
+Message-Id: <20210708131057.259327-3-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210708131057.259327-1-naohiro.aota@wdc.com>
 References: <20210708131057.259327-1-naohiro.aota@wdc.com>
@@ -67,48 +67,44 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 
-The function bio_trim has offset and size arguments that are declared
-as int.
-
-The callers of this function uses sector_t type when passing the offset
-and size e,g. drivers/md/raid1.c:narrow_write_error() and
-drivers/md/raid1.c:narrow_write_error().
-
-Change offset & size arguments to sector_t type for bio_trim().
+The offset and can never be negative use unsigned int instead of int type
+for them.
 
 Tested-by: Naohiro Aota <naohiro.aota@wdc.com>
 Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 ---
- block/bio.c         | 2 +-
- include/linux/bio.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/extent_io.c | 3 ++-
+ fs/btrfs/extent_io.h | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/block/bio.c b/block/bio.c
-index 44205dfb6b60..d342ce84f6cf 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -1465,7 +1465,7 @@ EXPORT_SYMBOL(bio_split);
-  * @offset:	number of sectors to trim from the front of @bio
-  * @size:	size we want to trim @bio to, in sectors
-  */
--void bio_trim(struct bio *bio, int offset, int size)
-+void bio_trim(struct bio *bio, sector_t offset, sector_t size)
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 1f947e24091a..082f135bb3de 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3153,7 +3153,8 @@ struct bio *btrfs_io_bio_alloc(unsigned int nr_iovecs)
+ 	return bio;
+ }
+ 
+-struct bio *btrfs_bio_clone_partial(struct bio *orig, int offset, int size)
++struct bio *btrfs_bio_clone_partial(struct bio *orig, unsigned int offset,
++				    unsigned int size)
  {
- 	/* 'bio' is a cloned bio which we need to trim to match
- 	 * the given offset and size.
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index a0b4cfdf62a4..fb663152521e 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -379,7 +379,7 @@ static inline void bip_set_seed(struct bio_integrity_payload *bip,
+ 	struct bio *bio;
+ 	struct btrfs_io_bio *btrfs_bio;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 62027f551b44..f78b365b56cf 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -280,7 +280,8 @@ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
+ struct bio *btrfs_bio_alloc(u64 first_byte);
+ struct bio *btrfs_io_bio_alloc(unsigned int nr_iovecs);
+ struct bio *btrfs_bio_clone(struct bio *bio);
+-struct bio *btrfs_bio_clone_partial(struct bio *orig, int offset, int size);
++struct bio *btrfs_bio_clone_partial(struct bio *orig, unsigned int offset,
++				    unsigned int size);
  
- #endif /* CONFIG_BLK_DEV_INTEGRITY */
- 
--extern void bio_trim(struct bio *bio, int offset, int size);
-+void bio_trim(struct bio *bio, sector_t offset, sector_t size);
- extern struct bio *bio_split(struct bio *bio, int sectors,
- 			     gfp_t gfp, struct bio_set *bs);
- 
+ int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 		      u64 length, u64 logical, struct page *page,
 -- 
 2.32.0
 
