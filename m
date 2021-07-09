@@ -2,103 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911CF3C200C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 09:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C672A3C200D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 09:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhGIHek (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Jul 2021 03:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhGIHej (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jul 2021 03:34:39 -0400
-Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97C4C0613DD
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jul 2021 00:31:56 -0700 (PDT)
-Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
-        (envelope-from <hrm@savella.carfax.org.uk>)
-        id 1m1kon-0004Ri-OR
-        for linux-btrfs@vger.kernel.org; Fri, 09 Jul 2021 08:21:01 +0100
-Date:   Fri, 9 Jul 2021 08:21:01 +0100
-From:   Hugo Mills <hugo@carfax.org.uk>
+        id S230505AbhGIHh2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Jul 2021 03:37:28 -0400
+Received: from smtp01.belwue.de ([129.143.71.86]:58564 "EHLO smtp01.belwue.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230121AbhGIHh2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 9 Jul 2021 03:37:28 -0400
+Received: from fex.rus.uni-stuttgart.de (fex.rus.uni-stuttgart.de [129.69.1.129])
+        by smtp01.belwue.de (Postfix) with SMTP id 44432AED7
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jul 2021 09:34:44 +0200 (MEST)
+Date:   Fri, 9 Jul 2021 09:34:44 +0200
+From:   Ulli Horlacher <framstag@rus.uni-stuttgart.de>
 To:     linux-btrfs@vger.kernel.org
-Subject: Re: where is the parent of a snapshot?
-Message-ID: <20210709072101.GE11526@savella.carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
-        linux-btrfs@vger.kernel.org
-References: <20210708213806.GA8249@tik.uni-stuttgart.de>
- <0f03c92b-f3c6-bab8-fa37-ef1b489e2d38@gmail.com>
- <20210709071555.GD8249@tik.uni-stuttgart.de>
+Subject: Re: cannot use btrfs for nfs server
+Message-ID: <20210709073444.GA582@tik.uni-stuttgart.de>
+Mail-Followup-To: linux-btrfs@vger.kernel.org
+References: <20210310074620.GA2158@tik.uni-stuttgart.de>
+ <20210311074636.GA28705@tik.uni-stuttgart.de>
+ <20210708221731.GB8249@tik.uni-stuttgart.de>
+ <56c40592-0937-060a-5f8a-969d8a88d541@cobb.uk.net>
+ <20210709065320.GC8249@tik.uni-stuttgart.de>
+ <475ccf1.ca37f515.17a8a262a72@tnonline.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210709071555.GD8249@tik.uni-stuttgart.de>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <475ccf1.ca37f515.17a8a262a72@tnonline.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-   Try adding -a to the options. That should list all of the subvols on
-the filesystem.
+On Fri 2021-07-09 (09:23), Forza wrote:
 
-   Hugo.
+> > In consequence many cronjobs and montoring tools will fail :-(
+> > 
+> >> You can eliminate the problems by exporting and mounting single
+> >> subvolumes only 
+> > 
+> > This is not possible at our site, we use rotating snapshots created by a
+> > cronjob.
 
-On Fri, Jul 09, 2021 at 09:15:55AM +0200, Ulli Horlacher wrote:
-> On Fri 2021-07-09 (08:03), Andrei Borzenkov wrote:
-> > On 09.07.2021 00:38, Ulli Horlacher wrote:
-> > 
-> > > 
-> > > 
-> > > This is btrfs v5.4.1 on Ubuntu 20.04:
-> > > 
-> > > I have created several snapshots of the btrfs root filesystem /mnt/spool:
-> > > 
-> > > root@unifex:~# df -HT /mnt/spool
-> > > Filesystem     Type   Size  Used Avail Use% Mounted on
-> > > /dev/loop0     btrfs   32T  258G   32T   1% /mnt/spool
-> > > 
-> > > root@unifex:~# btrfs filesys show /mnt/spool
-> > > Label: none  uuid: 217ccc65-6ab9-44f0-b691-ec9bbcdd9496
-> > >         Total devices 2 FS bytes used 238.70GiB
-> > >         devid    1 size 14.55TiB used 161.02GiB path /dev/loop0
-> > >         devid    2 size 14.55TiB used 101.00GiB path /dev/loop1
-> > > 
-> > > root@unifex:~# btrfs subvolume list -q /mnt/spool
-> > > ID 30401 gen 193524 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 path .snapshot/2021-07-08_0000.daily
-> > > ID 30424 gen 194441 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 path .snapshot/2021-07-08_2100.hourly
-> > > ID 30425 gen 194472 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 path .snapshot/2021-07-08_2200.hourly
-> > > ID 30426 gen 194497 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 path .snapshot/2021-07-08_2300.hourly
-> > > 
-> > 
-> > Is it really full list?
-> 
-> Yes, that's all!
-> 
-> 
-> > subvolume uuid is not shown by this command.
-> 
-> root@unifex:/# btrfs subvolume list -qu /mnt/spool
-> ID 30428 gen 194535 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 uuid 7f044b92-d928-2f44-a880-e453feaa551d path .snapshot/2021-07-09_0000.daily
-> ID 30435 gen 194686 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 uuid eeace077-5f22-c541-8fb4-f0523fd76c9e path .snapshot/2021-07-09_0700.hourly
-> ID 30436 gen 194715 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 uuid 70fc8ced-7c13-f947-bab6-5354eb71483f path .snapshot/2021-07-09_0800.hourly
-> ID 30437 gen 194756 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 uuid 254fcaba-9549-0244-8467-baaa3d68cb7b path .snapshot/2021-07-09_0900.hourly
-> 
-> root@unifex:/# btrfs version
-> btrfs-progs v5.4.1
-> 
-> My aim is to discover which directory is the parent of a snapshot. In this
-> particular case I know it is /mnt/spool but I want to do it by a script,
-> so I need a generic solution: "Directory XY is a snapshot of directory XZ"
-> 
-> 
-> 
-> 
+> Have you tried using the fsid= export option in /etc/exports? 
+
+I have testet it with localhost:
+
+root@tsmsrvj:/# grep localhost /etc/exports 
+/data/fex       localhost(rw,async,no_subtree_check,no_root_squash,fsid=20000001)
+
+root@tsmsrvj:/# mount -v localhost:/data/fex /nfs/localhost/fex
+mount.nfs: timeout set for Fri Jul  9 09:32:55 2021
+mount.nfs: trying text-based options 'vers=4.2,addr=127.0.0.1,clientaddr=127.0.0.1'
+
+root@tsmsrvj:/# mount | grep localhost
+localhost:/data/fex on /nfs/localhost/fex type nfs4 (rw,relatime,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=127.0.0.1,local_lock=none,addr=127.0.0.1)
+
+root@tsmsrvj:/# du -s /nfs/localhost/fex
+du: WARNING: Circular directory structure.
+This almost certainly means that you have a corrupted file system.
+NOTIFY YOUR SYSTEM MANAGER.
+The following directory is part of the cycle:
+  /nfs/localhost/fex/spool
+
 
 -- 
-Hugo Mills             | Modern medicine does not treat causes: headaches are
-hugo@... carfax.org.uk | not caused by a paracetamol deficiency.
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |
+Ullrich Horlacher              Server und Virtualisierung
+Rechenzentrum TIK         
+Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
+Allmandring 30a                Tel:    ++49-711-68565868
+70569 Stuttgart (Germany)      WWW:    http://www.tik.uni-stuttgart.de/
+REF:<475ccf1.ca37f515.17a8a262a72@tnonline.net>
