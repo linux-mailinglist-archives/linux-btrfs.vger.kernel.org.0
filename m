@@ -2,85 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733543C2962
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 21:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2633A3C296D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 21:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbhGITEe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Jul 2021 15:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37570 "EHLO
+        id S229506AbhGITM4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Jul 2021 15:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhGITEe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jul 2021 15:04:34 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5810C0613DD
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jul 2021 12:01:50 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso6595677pjp.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Jul 2021 12:01:50 -0700 (PDT)
+        with ESMTP id S229459AbhGITMz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jul 2021 15:12:55 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E94FC0613DD
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jul 2021 12:10:12 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id d12so10881112pgd.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 09 Jul 2021 12:10:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zjPYFNP/4bWKiS4Tt52QOU/BI4y3bdEiErjfd5IVs2c=;
-        b=uBWIWPPYjSttNfmPCuemXtVlpX4iVC/cS83hzvgsEx6opc6oP/yFcj2aLHBI0pOxO1
-         c0MgAhUMwKZcUK43aozGDWPUwSSckiRbn1Mo99t/7v0W5DBVLYy1mWLDwHOuuk7VBRrv
-         O7pA1RJ60z4vD83qRFd3RHIHk2nFqGxdSV0z1i1+COiGmr8wkrcc43sIO0GnHFVT0Vff
-         u+oo1NSU4NsRtjamF69bOXV72jK8s/82RmSigddcieA4W4DOGCHS/JO8qeEW0wj7+QSb
-         T883Tusk5i8owiUHZ0OZ1bj0iXw/C3XzXWnDbn1dfMm4eCcRltr3dExSzeN7UsDk5vfN
-         GUAg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=e9QisSr2GII0VMeTljMLtJbGoXh8gr891kjxYtyzaRE=;
+        b=TFUAgAU8xod7uwHPswWo6DV8gLcQSpttNhtLtv0M4QmGpkrEG88HfphtsDcP7kQ25r
+         YxX095aBWjZIJZnC0n/dvACSgiUYU9q5KD8y5xOJm0LUm+VfNdhQVk/7qhn1/0NJE6Zw
+         gbR7AKURr6Zt3Gjv6SV0mef6HZmv61XO+ROKHI9JHtzDQ8kzF7yVdM6P2xb2Sg2QWJge
+         gd3fcVS/lz9YjANRanl7wUAbRjwW92Q7pULDrQZ5wRGszkDgBQXrmDYNMGyhDl9TDc5O
+         S1UQnO8a+az5vH2HV/t6MaDeDfYsC6veBMkPhcIToECVK7A4meVMOQHJTbIuNlgfiYM1
+         IjjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zjPYFNP/4bWKiS4Tt52QOU/BI4y3bdEiErjfd5IVs2c=;
-        b=hE2bABGRAU/Ixi8Y37olfM2LuCEClx7L4nfKeXk+DX33WmR98cF2UVL79JwIfCdoi2
-         /gSNrIMO+b6KTpREyBV03IeYM7Ah4kZdmoYKYHmn4l3pBtMin2ky/KHK8uuSWwctd1Qi
-         6QNPmXwF1HOCAb5NI9bPk9DMo+T4EaOejzsGuxCCgNGFt6y7sjxlyXuK5I5huSXGo6zp
-         7QWh6emTKtbK/HKeDwD126NR7pJVqmLi/is24I7sVqxvALnzwClMpXTGEgvMZhbbYh1R
-         +o5D4VJz+W3Wggn3bh+dMrF6mB1URblU+IsjVAttif+xxpzWH09kiuZpembqNhytb9IT
-         k1Dw==
-X-Gm-Message-State: AOAM531MUpMYWtBa8FRRlwBtvxdEFtDM3t5YNN5Nz8pfQRcSQErme9CS
-        y0G/5EfeLG7Id1QSvu+oxsTjRaKplLiuWLML04CH5MSdRPwafg==
-X-Google-Smtp-Source: ABdhPJwjFqf9rtBsmxAPuHaUFvFSqBTJpUBYcjiwWVIaX8KPBw0r3R0kedMylE8ACGDUOoCc8jnhQGJ64ku/XuZvzGk=
-X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr5419457pjb.228.1625857310313;
- Fri, 09 Jul 2021 12:01:50 -0700 (PDT)
+         :message-id:subject:to;
+        bh=e9QisSr2GII0VMeTljMLtJbGoXh8gr891kjxYtyzaRE=;
+        b=tthoQy+kXQq0cTgRgnLR3KDJUWfuhON1kDtWUpvTXj6DNs8hJrSHfWY+MCifZZBFbW
+         yccoE1OrnAnje+J4U84XahXltf8nYGnUvMnsTxJYXe1oAQ/ctTviutMzX9JhypJWW9s9
+         8Po0KZvV5hT31n/h19oL/S7VdCVFa6oINFLZHeOxVc7DUydVY3K7xYOtvR0E4Olb0GWD
+         JWLjEZVwLfeIOIVb/+zYDTdaqFPQe9uxrw+hxPnVmpWJlp29VxKNfRZg2FOztISysKJT
+         pNKyqMU818d6CQpFdfv4wLP44Ak559gFvCOpJI9XRiy1qZXzx1dtttpj/7ekEXpLjDJK
+         wOHw==
+X-Gm-Message-State: AOAM5303+d8NNhsR1vsqwthUr+TRTE4rnW5jkPfHmqLCQOjnyWNefi7b
+        jNbrmDL98X1hu7SCMw795T7Ox0XyRY3DQ9kyzYs=
+X-Google-Smtp-Source: ABdhPJzPehbNiUmPWHNvixkXaWwpx8fMoEWGJbUmndLwHnDzE8tN8dYFOYfwmmHTJ8vmsV3VqiGOmVhJ1VvgHaR7CIw=
+X-Received: by 2002:a05:6a00:bd3:b029:329:3e4f:eadb with SMTP id
+ x19-20020a056a000bd3b02903293e4feadbmr2393902pfu.44.1625857811775; Fri, 09
+ Jul 2021 12:10:11 -0700 (PDT)
 MIME-Version: 1.0
 References: <CALc-jWwheBvcKKM79AD7BA5ZZQs7D407acgwOiwyo9R=U98Nwg@mail.gmail.com>
- <20210706161908.BE32.409509F4@e16-tech.com>
-In-Reply-To: <20210706161908.BE32.409509F4@e16-tech.com>
+ <20210707190032.GT2610@twin.jikos.cz>
+In-Reply-To: <20210707190032.GT2610@twin.jikos.cz>
 From:   Yan Li <elliot.li.tech@gmail.com>
-Date:   Fri, 9 Jul 2021 12:01:39 -0700
-Message-ID: <CALc-jWwAW9yaoHgXvWykUiovYKCPzv3SuZVjBpsmp8i3CdgUEw@mail.gmail.com>
+Date:   Fri, 9 Jul 2021 12:10:00 -0700
+Message-ID: <CALc-jWzcGL0Jsb+K6ziokFMmJwLKy-ibDC_h-xcTBu7fh4NeXQ@mail.gmail.com>
 Subject: Re: autodefrag causing freezes under heavy writes?
-To:     wangyugui@e16-tech.com
-Cc:     linux-btrfs@vger.kernel.org
+To:     dsterba@suse.cz, Yan Li <elliot.li.tech@gmail.com>,
+        linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 1:19 AM Wang Yugui <wangyugui@e16-tech.com> wrote:
-> The message 'blocked for more than 120 seconds.' show which job is
-> blocked.
+On Wed, Jul 7, 2021 at 12:03 PM David Sterba <dsterba@suse.cz> wrote:
+> On Mon, Jul 05, 2021 at 08:56:23PM -0700, Yan Li wrote:
+> > I found that when I added the autodefrag mount option, the system
+> > would freeze under heavy write workload for a long time before the
 >
-> Is there some message like 'watchdog: BUG: soft lockup - CPU#XX stuck for XXs!'?
-> that show which job blocked others.
+> Do you have an estimate for 'long time' ? Like human percievable
+> "seconds" or like 5 seconds and more.
 
-Nope. There was no such a message.
+It would freeze for minutes, during which the GUI was totally
+unresponsive. After a few minutes, presumably after the dd was
+finished, the machine would resume normal operation.
 
-> so a full dmesg is useful.
+The full dmesg is here: https://pastebin.com/TwChmFmC
 
-Here you go
+You could see that the blocked I/O messed up journald's output so that
+the message towards the end were not even ordered by the timestamp.
+
+> The autodefrag can cause problems like this, yes, but it depends on
+> other factors too. Autodefrag can read additional pages from disk in
+> case they aren't contiguous and then writes them (in a small cluster)
+> together. You're using compression, so this may add a slightly more
+> delay before the data are written. On the default level it should be
+> unnoticeable and you mention that's on a Ryzen 5 so I'd rule that out.
+
+The workload was just a simple:
+dd if=/dev/urandom of=test_data bs=1M count=2000
+so there should be no reason for it to block for such a long time.
+And, yes, it's was a new workstation, and works flawlessly on much
+heavier workloads when autodefrag was removed.
+
+> IIRC autodefrag can help some workloads but may hurt others so if it's
+> making things worse you, then drop it. It helps when seeks are expensive
+> ie. on rotational disks but you use SSD so it should not be necessary.
+
+I was advised to add it since I'm running VirtualBox VMs out of these
+btrfs. But autodefrag made *everything* worse on this filesystem. It's
+weird.
+
+> If you'd still like to debug it, please take a snapshot of all process
+> stacks at the time the hang happens.
+
+This was from before I removed the autodefrag option.
 https://pastebin.com/TwChmFmC
 
-> If there is no good info in the full dmesg, the call trace of 'freeze'
-> status is useful too.
->
-> echo "t" >/proc/sysrq-trigger  will output all jobs call stace.
-
-I'll try next time. I can't reboot this system very often, since it's
-a production system.
+It's a production system so I can't reboot it every day. I can try to
+add autodefrag back a few days later and retest.
 
 Thanks!
 
---
+-- 
 Yan
