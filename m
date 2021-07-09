@@ -2,63 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1B43C202A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 09:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3ABD3C207A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 10:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbhGIHuy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Jul 2021 03:50:54 -0400
-Received: from smtp01.belwue.de ([129.143.71.86]:59324 "EHLO smtp01.belwue.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230269AbhGIHuy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 9 Jul 2021 03:50:54 -0400
-Received: from fex.rus.uni-stuttgart.de (fex.rus.uni-stuttgart.de [129.69.1.129])
-        by smtp01.belwue.de (Postfix) with SMTP id 710F4C1F9
-        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jul 2021 09:48:10 +0200 (MEST)
-Date:   Fri, 9 Jul 2021 09:48:10 +0200
-From:   Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-To:     linux-btrfs@vger.kernel.org
+        id S231347AbhGIIMg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Jul 2021 04:12:36 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:43031 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231278AbhGIIMg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 9 Jul 2021 04:12:36 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 980355C00B5
+        for <linux-btrfs@vger.kernel.org>; Fri,  9 Jul 2021 04:09:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 09 Jul 2021 04:09:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=w
+        LY8vVdL/BVP2m5VvkRUHPFvbIVfUbl+52RgwZt+exI=; b=IBf2NO3+jcdVG5Zd/
+        Oyzt5UKSToMdRLv77skSA7h9gLl8Q3YmuKQe2R+6Cxs7AhmmtmkxS+JnIcttm4jz
+        OtkbvgyBkj/SnjiwVrg7e35kZ2sBrm+TTVmo6QQquwf8u5HqGywCPWn7B5+Q3Z4c
+        jzGiAFoMxQiB1CzKvH1rtXcgA9jzHHsoK+1ju01eyAj3buE5iRQlNRsnCfZ9KBZf
+        K9XP5Yd0iZfylsnsB1TIBeO0AIuy8FcJr/RMx4w/VmJogEiY8/s7QGSGqIOwHuRP
+        MYZTS5PGJD6VwysjmxU6f5mGOGX2uqgP9iEZPgm3rj3QGTlDYgEgstvGlJasXU2+
+        natiw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=wLY8vVdL/BVP2m5VvkRUHPFvbIVfUbl+52RgwZt+e
+        xI=; b=CgVoMxdIfAX520kAkJcBd4VmCj+8+O6eLSEaYo6e4RLbIx4jzJ6oyh5T7
+        YwwQbmzkVIg1wultYon9Z/X3zKFqvmL6Xz7IpScZklZz+MZG26VZa5kWuuN/ndAG
+        Y79BiJOGTbrkj61vxRHkV7khqq/SN+OE001V0rOqI5g3ApTbNWipvnJK0Ty4DujA
+        4rSo/8fSEAzLqyvbgkWA7wxNrs+1WQ36UokVR/cGba7LF/yod9wrzfaiGNFzJksf
+        6eTpfk0plJ/qA2L+e05DVhmKhU25P1oRVarajE6waLdhFLbL47BnqDdxFWa3jT2k
+        pFcjlfVG+VHUJK/UmQZHDfmhXpVZg==
+X-ME-Sender: <xms:UAToYGcqqgGrRJ52YvIlHsOjA91Xi1nlokhCCVo0ANmU_Xf1dIwOkA>
+    <xme:UAToYAO0dkim63VtWJgDGV5qERSNyKRJGvCsbZbBtaWb-BZDJKSJPPC_nSHBM6eqa
+    rqE3vQLRJfm1MyUgg>
+X-ME-Received: <xmr:UAToYHivaQQ0YnZfcype_jjIDCyMiYNGqj1vT2cNtMcY-rfXkbm_ZXDbJbYRJLKDrsPYVpvvw6a6a2o_ToEB2MHm07U>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrtdehgdellecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtgfesthejre
+    dttdefjeenucfhrhhomheptfgvmhhiucfirghuvhhinhcuoehrvghmihesghgvohhrghhi
+    rghnihhtrdgtohhmqeenucggtffrrghtthgvrhhnpefhgfefuedttdduhfdujeekjeduve
+    eltdduueffhffhueekjeekkeeitdffhfffieenucevlhhushhtvghrufhiiigvpedtnecu
+    rfgrrhgrmhepmhgrihhlfhhrohhmpehrvghmihesghgvohhrghhirghnihhtrdgtohhm
+X-ME-Proxy: <xmx:UAToYD_yKOzqolDqVcYcIq5uUW7BxqNxbvVVe6bIHhVe9Px2QMe3-Q>
+    <xmx:UAToYCuDa4fufD7XvlMo8CsEMtRb27MfzQaABidhn55YLee6PpySLQ>
+    <xmx:UAToYKEXKvc54t2myeAqwDub64MRd8zteK9ChlZVPhGqdJrIJDmMeg>
+    <xmx:UAToYD5ETmKSw_fL4YapzdxDib2yJHQNYsimjHs9ar5kryswmIltrg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-btrfs@vger.kernel.org>; Fri, 9 Jul 2021 04:09:52 -0400 (EDT)
 Subject: Re: where is the parent of a snapshot?
-Message-ID: <20210709074810.GA1548@tik.uni-stuttgart.de>
-Mail-Followup-To: linux-btrfs@vger.kernel.org
+To:     linux-btrfs@vger.kernel.org
 References: <20210708213806.GA8249@tik.uni-stuttgart.de>
  <0f03c92b-f3c6-bab8-fa37-ef1b489e2d38@gmail.com>
  <20210709071555.GD8249@tik.uni-stuttgart.de>
  <20210709072101.GE11526@savella.carfax.org.uk>
  <20210709073731.GB582@tik.uni-stuttgart.de>
+ <20210709074810.GA1548@tik.uni-stuttgart.de>
+From:   Remi Gauvin <remi@georgianit.com>
+Message-ID: <eb210591-3d91-72c3-783f-ccedb9ef3359@georgianit.com>
+Date:   Fri, 9 Jul 2021 04:09:51 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709073731.GB582@tik.uni-stuttgart.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210709074810.GA1548@tik.uni-stuttgart.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 2021-07-09 3:48 a.m., Ulli Horlacher wrote:
 
-And an example of a new snapshot:
+> 
+> So, where is subvolume uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2??
+> 
 
-root@unifex:/# btrfs subvolume snapshot -r /mnt/spool /mnt/spool/.snapshot/2021-07-09_0944.test
-Create a readonly snapshot of '/mnt/spool' in '/mnt/spool/.snapshot/2021-07-09_0944.test'
-
-root@unifex:/# btrfs filesystem show /mnt/spool
-Label: none  uuid: 217ccc65-6ab9-44f0-b691-ec9bbcdd9496
-        Total devices 2 FS bytes used 209.80GiB
-        devid    1 size 14.55TiB used 161.02GiB path /dev/loop0
-        devid    2 size 14.55TiB used 100.00GiB path /dev/loop1
-
-root@unifex:/# btrfs subvolume list -aqu /mnt/spool
-ID 30428 gen 194535 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 uuid 7f044b92-d928-2f44-a880-e453feaa551d path .snapshot/2021-07-09_0000.daily
-ID 30435 gen 194686 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 uuid eeace077-5f22-c541-8fb4-f0523fd76c9e path .snapshot/2021-07-09_0700.hourly
-ID 30436 gen 194715 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 uuid 70fc8ced-7c13-f947-bab6-5354eb71483f path .snapshot/2021-07-09_0800.hourly
-ID 30437 gen 194756 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 uuid 254fcaba-9549-0244-8467-baaa3d68cb7b path .snapshot/2021-07-09_0900.hourly
-ID 30438 gen 194793 top level 5 parent_uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2 uuid 5c6ade10-39ee-de47-a1f8-321953e397fd path .snapshot/2021-07-09_0944.test
-
-So, where is subvolume uuid 7f010d85-b761-45e7-8d4a-453f81bb10b2??
-
--- 
-Ullrich Horlacher              Server und Virtualisierung
-Rechenzentrum TIK         
-Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
-Allmandring 30a                Tel:    ++49-711-68565868
-70569 Stuttgart (Germany)      WWW:    http://www.tik.uni-stuttgart.de/
-REF:<20210709073731.GB582@tik.uni-stuttgart.de>
+btrfs subvolume show /mnt/spool   will display what you want.  It seems
+as though the subvolume list does not include the root subvolume.
