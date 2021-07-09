@@ -2,78 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1137F3C1EAA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 06:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FBA3C1EB8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jul 2021 07:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhGIE6V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Jul 2021 00:58:21 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:57797 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhGIE6U (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jul 2021 00:58:20 -0400
+        id S229707AbhGIFEX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Jul 2021 01:04:23 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:43296 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhGIFEX (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Jul 2021 01:04:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1625806537; x=1657342537;
+  t=1625806899; x=1657342899;
   h=from:to:cc:subject:date:message-id:references:
    in-reply-to:content-id:content-transfer-encoding:
    mime-version;
-  bh=DFQ2DvUpeGfXmEYQdWUgNHByxbGzwdkzd6+L2dAe5Pg=;
-  b=Q9Y6G9g3mNGyYzeOQo21vEcwoJ/bW4Take/gRQPdUlHnU+8dzLj7BKJB
-   jtQc88yMfL+eKPm89p69XPffpafcdrxwLkL3zCMf6n3dTGzRKYsdswbVb
-   isRO5RCAf56ohXvTcTHbiDIW9pA7vJaUj9xKmGMHF9/BuGwVt4gYhxCVu
-   S/SD4qC6MrXlf077j2j99v4fU6ieYUFc2KvA62L+eAsCw2wXQpcKlF5JI
-   kwgaKYCMmL7o+swZH8f7WI6sShOZJNg/IciNOhxgtO/zGh0Lt2DLSLE8M
-   efBNwumNlY0KmJBVx6vC43sWNELKQG4kwALWHhKy8/IlSBEmt8j576WZk
-   A==;
-IronPort-SDR: hO9iIL3gZ+B0z03xUNjXkW7sn8+hiYwIC58CUac7nt78emkj0pKRiTaNfwIqpqs3F758UtIY/4
- lSeoiKmZO8WAPRIdom0MwTyOSKLTLL15xYdLKuf8RidJ0N21pwJFMN9QVVtvG8T5JcRJ9dnF6g
- LHk9CQpdv0Z//nPHUSMbsvqaDmgtJbOmP290r2K2bKyGfgAOTrMyTBg/X5kiP9kB6ILhxje6bf
- tY6UW85+u09JR5VatcJnUFzOk6gGjIRrbkCAE/QcvM0nYdwOUMGj86GnXxQznIUlxoNkzylafP
- fsU=
-X-IronPort-AV: E=Sophos;i="5.84,225,1620662400"; 
-   d="scan'208";a="173370257"
-Received: from mail-bn1nam07lp2044.outbound.protection.outlook.com (HELO NAM02-BN1-obe.outbound.protection.outlook.com) ([104.47.51.44])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Jul 2021 12:55:37 +0800
+  bh=V76ruzJqzEtTt4x4WIUXWvUqvCKz4QSILG+l+uMcBZ4=;
+  b=Ky9VzNoLFFNoHuLRAAB7Vkngd6SpmVAPr8LPLDk+muB7Y/QG2Abv2aft
+   iiK98fKJkpDPcBjLXrNJ4Qu95E1xO5BSFZZvVs2ObYNCcyY75uzPOzyEN
+   s0H94M6N35HzGwNqirgxjgkjR+slDa3l+x99VV5zt67u769UuL7RkewXM
+   8+PbbMQsOARHWLVwOg+sDP7TWwQOuXtipCKzuHCQMA+w0ny25EqFywh0q
+   bU3KM3ZVSpePrr4iyJUqZVR/0/eq4pSnenj61Z0wjEIOhS6uwJ3BOUBF4
+   KKp3SFGLOSSXqfRzvcrNK+rntF951sQy7hSWqMtuY36YJiSktGer5lPzD
+   w==;
+IronPort-SDR: Mj4btQofMPLEpEQksyowh0rackN0q11l/0LP3rK30GEoT3cFRzL24jwcmnCf2FqtGsInZ/A47y
+ RZwbuPJxjp6SIY+WP1GsY8b2igv16L+owfvo1LGQMThaJOl52ACP0m3Ky7LpWZKa20QUYubP0w
+ Zl25zicuRPOC/0bidU5L/Dd3DOlcBnSQc6ISz/6wLmJA1c2Qz6ia9xXroZTklovVm+45bTkLou
+ QXTmYaz3u2Z0it4jyaxwGJpNn8PQIEzGjHuJ3opxRV42cEOr2GLNqv9/sKj4sp8vLdTpFJ/2Mr
+ RyQ=
+X-IronPort-AV: E=Sophos;i="5.84,226,1620662400"; 
+   d="scan'208";a="178936006"
+Received: from mail-bn8nam11lp2172.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.172])
+  by ob1.hgst.iphmx.com with ESMTP; 09 Jul 2021 13:01:38 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PGLXDMQe2BY/Jcw+QjltS9FGUUOiiF9Ib+WOnRYOkyVt6xhaOZSKkCUB2yAIsLURliT+LV72bVzj/z7eu8n2lzaCH07ikFOcyoVHTXoFYRfSAf/y6VDdzqiRRb6/z51ROjh7upDvGf6U67nKggT6FyluDmAeiayg3PrniXzzDv1okc4YTVcpZbYi9tquIGYFVlGhEiXdHFby/1L9WeO5P6uKX7Ga6oTxjS6jeR1CSB25POFKl6k5zJhiLWcAFHYLB19O/EujANR6QDxorB2z9Cker3e0y4uGqBeZXIUDsNVQ9yoRxX5dOqjAJe00lcOGto8H/e5ggrUGXM5SRlZwhw==
+ b=ROIMt3yam/5ZdiejGLTxJJ6wVbVYkxYln01pR9ytM1Gn7At/BJiD6etxvB/8CL5jS4ZwbPFgp8JkDLXapl+sicU8QpgJZGguDfDjhopBYQ1zXXe1J4JT5FjmbxhZibK/bNBaMFFH6siEdfTMUPplklXnfrKoM+xXdXgcTlgXJp6RC+VxZfVQ2a11HJpnGWcw3UNwk5xDhZzKsICl0ljndEWK1RkhXtJrb6CT7JWP50wZrE/98oc5XbBgPeICK8Cal4FeT1T2K+YAK4l9WI+JveXMbh2s/z0GZzYXxBfTQ238qvLsk+9IXDf4s6Q4TPkRtx4Osd4wRTzrF+JwCwMCsQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mQpE31zdY5bldfuIVAjgOeNK/YBBrhMn0y0cJjEFsJs=;
- b=f3EM1l3QGKmsXbtkmxq5bqlLXkN/nJljQjksEBSQxaS8Tp4rDgAsSyZi89PKlXeZOEfTz3gTuCQvcSLlt5R4zeoBf8OswbZg7m0TNNe4cApMFIiILBlKud4MMpaXroKeirKt9oKCVX8pNjiSfXnZqG0fXgd7vTVVPYrZkmUs1YxDDk0siwcus2n2RUZUrSO2BrseZHIs7c//xw2CgGxMtyy5PjfvLyfFB3cfYcsF42LqzP0zObpx/4G1D0X0mif3BvolBfl6RAfeNRZG5v/aUiSz/yl3e8kBTXKqAPyMXlFAU5Ju9k7oVbW5KtehXpf/YTDHNjOK4XGBHEvA1tc2ig==
+ bh=FclcawyNYZms2X6fqwcfB+g2ObPnIvEnE9xdl2UtwMw=;
+ b=C09ocy1NU9C2pIe0cj47qoWQsK0hL5gjdp/9h1K5CSDrbKitXD70B8pV0IHeuv/mC+TJsXvyUnHfxlkuitv+tlBuZQBS2quXBOuVw9VS+sOdu1jpbU4vysXAQOHAJV2TJSqFFfv+9gUkN1JITgfVeK5Lr3bgPi840H5pLWlKwSyYCsK4MLbTFWiN4l/XK6Ohk/NKT6j2PO1KK8TbMFR+/QXWo/7imsA4TcyrmdNbRzjZVkq72U0IRReh2QRcqEmvl0Eb+yK60FW4i/2SyIn9XhHp0Mw6/75OQQvXiB5y0j9Mhqc5pO9Wa84oFseSdVRw/geRPa9rGSujCRGt+Qf1WA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mQpE31zdY5bldfuIVAjgOeNK/YBBrhMn0y0cJjEFsJs=;
- b=Y3y4BFzN72e2OOMv5Mg2gNje/idFp/ysC9Lz10a1OKtUXFXrIep8tL4tPk+zFEg0LgbGF38t5MROE3/zhX/dZ6UMVnp/5IqL+Ja0NK0+msk5umAMUUJcQy+aYjrENahf+kxnFDYokSskBxyikxuNy7WlenpfwBNL8D7YUyhODvI=
+ bh=FclcawyNYZms2X6fqwcfB+g2ObPnIvEnE9xdl2UtwMw=;
+ b=tQdY8hSa3lItL4zCuWKBs3cKige9kjc3zVIZUwT3qZjsDyKwPsZneRgXDqkyZkhR7XRpae/ffe6tUhYummUMZvTn4nBLN+IrO8m7YMJkzyYKwh6quaqH5OFQOHHc/FOzVMYqJ4bWisbjeK3YgzPCNB1zz545EajGh0+enG0wfmc=
 Received: from BN6PR04MB0707.namprd04.prod.outlook.com (2603:10b6:404:d2::15)
- by BN8PR04MB6355.namprd04.prod.outlook.com (2603:10b6:408:dd::23) with
+ by BN6PR04MB0356.namprd04.prod.outlook.com (2603:10b6:404:95::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Fri, 9 Jul
- 2021 04:55:36 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20; Fri, 9 Jul
+ 2021 05:01:38 +0000
 Received: from BN6PR04MB0707.namprd04.prod.outlook.com
  ([fe80::2dd7:4b71:80b1:9a71]) by BN6PR04MB0707.namprd04.prod.outlook.com
  ([fe80::2dd7:4b71:80b1:9a71%3]) with mapi id 15.20.4308.021; Fri, 9 Jul 2021
- 04:55:30 +0000
+ 05:01:38 +0000
 From:   Naohiro Aota <Naohiro.Aota@wdc.com>
 To:     "dsterba@suse.cz" <dsterba@suse.cz>
 CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
         Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
         Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Subject: Re: [PATCH 1/3] block: fix arg type of bio_trim()
-Thread-Topic: [PATCH 1/3] block: fix arg type of bio_trim()
-Thread-Index: AQHXc/rs9j75hehid0CdbWHLvuNysqs5KyYAgADlyICAAARiAA==
-Date:   Fri, 9 Jul 2021 04:55:29 +0000
-Message-ID: <20210709045528.gxlwlmzwgs2gzkwa@naota-xeon>
+Subject: Re: [PATCH 2/3] btrfs: fix argument type of btrfs_bio_clone_partial()
+Thread-Topic: [PATCH 2/3] btrfs: fix argument type of
+ btrfs_bio_clone_partial()
+Thread-Index: AQHXc/rtivEKh00VUUeSNzU4etMYM6s5LACAgADrCIA=
+Date:   Fri, 9 Jul 2021 05:01:37 +0000
+Message-ID: <20210709050137.63mo3vvf7f6wb46g@naota-xeon>
 References: <20210708131057.259327-1-naohiro.aota@wdc.com>
- <20210708131057.259327-2-naohiro.aota@wdc.com>
- <20210708145722.GD2610@twin.jikos.cz>
- <20210709043947.edhwb5cj6zuf22kv@naota-xeon>
-In-Reply-To: <20210709043947.edhwb5cj6zuf22kv@naota-xeon>
+ <20210708131057.259327-3-naohiro.aota@wdc.com>
+ <20210708150025.GE2610@twin.jikos.cz>
+In-Reply-To: <20210708150025.GE2610@twin.jikos.cz>
 Accept-Language: ja-JP, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -81,118 +81,116 @@ X-MS-TNEF-Correlator:
 authentication-results: suse.cz; dkim=none (message not signed)
  header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4af51463-0c63-42ed-fe33-08d94295c6ad
-x-ms-traffictypediagnostic: BN8PR04MB6355:
+x-ms-office365-filtering-correlation-id: 21a792f1-44e9-46b5-cd32-08d94296a201
+x-ms-traffictypediagnostic: BN6PR04MB0356:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN8PR04MB6355524B833691FEA87F52348C189@BN8PR04MB6355.namprd04.prod.outlook.com>
+x-microsoft-antispam-prvs: <BN6PR04MB0356FC476AC2979136B621908C189@BN6PR04MB0356.namprd04.prod.outlook.com>
 wdcipoutbound: EOP-TRUE
 x-ms-oob-tlc-oobclassifiers: OLM:7219;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XnLoJK0165XSXMEPW3aUNFrW7fgVRESkXD/5JnL4TDGlj1pUuv9bMnUiHH9m8RYMpKZyvELkRaq/nhZQEyCRskfqXPlCPVszn7gHYIlNE8KgwgHDjc4UqQJppb4UzEdFCalwuEXQb5Q0ZhikV8fsNAlZaXh7v6Q0Nz5ed+HgcfcpSnOXizi1BYNBZ6ow+AO/DlpV6+dkBqiAy/ydMVTaiAkzHa6pJHsf2LaFzQviX7MoDlSqi5a2l2Svsecz9kbwBOzE0+MJwXaKX2NrWkhD8u/PXl1qcKmPNllue88Q71ftyMOrnPra6po2Qx3v7KX0htHm00wK7Rb2pMHVi8e7yWrOrD6/TtKRl8Cin5RGkzJcVWEhc8n8QTE8iWO4wRa3CUV08GNjjUBP8cACcl+U46WZr+wvRsm0OMnwci56p884KWfTqEHmQGQsz+zXnkHo/WITSHhi6AKrOX6z5r2BD4O+DHKOYi8MFMIvoaYaCwdw8+O9sQOWj0+qg/vxnnG1tR0ByIJEIQf0fVjvCTznXhXbG0DbvYMDY+IuniZ/32iVoLfQRaOm07f7/wAdUDeunugeJhBLZR7xvF51YamDHEJyBOCiVlfwyZpqckpG+y+GNtEQztJQIEZLBDGUTPEFemvMKNNkIZ5LE0rh9K99yg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0707.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(39860400002)(396003)(136003)(376002)(366004)(346002)(66946007)(64756008)(186003)(54906003)(76116006)(478600001)(5660300002)(33716001)(122000001)(83380400001)(38100700002)(2906002)(8676002)(71200400001)(6506007)(8936002)(26005)(4326008)(66446008)(66556008)(66476007)(91956017)(86362001)(9686003)(6512007)(6486002)(1076003)(316002)(6916009);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: lPGE+3AfhzTqxhgCAlmLjGH7gcWVc/RL4VDjWK8RljtwM/kV0h3B9TDFxk5dH8h28wic8PgzFeTH81cdl7YojK6Yf6stgmzg8FJ5KTeUmR6dhMNCykARFjMFvgu9T7gn0qDZnx4VYoM0mQl8xI0b8MuBg8e4mn4+rxpQ2L7MrRoOHK9DJRoNn/RRBlqY7q/evGNFcMr4UsFS3oxQhO8kMlAu6Q5rL2yU+H7UH1un8IdoHGJgpripSSMwtr3R6fmxK9M8w03CG3XT63MvPqCsJJ6duDID/1ia2BPaqT76qcbRJTv2G48Pb0tWYtMJze+sO43o5fpTfiM8SWlxFJpE/iDuPW8zSmnltXvbZ/F00EXijwJRtwh12K8pUx5y6N+IfYQzBY7+/lClucDJP+ycna5aDNlCrR0I9TLC+jNvtUoUji49TkeBxs9yvL5zaikJjXI20XBsRvAmBbyG7lvs9zmz2fmHUxD9FdkCggUhwbjQUxAUWa9y9S2fjZfYnh4LDyOCP3mVuzxyfMHd6MS2IQwGu1VsI5LJmJWzmMweb9jVasD6Ifgdth0KloPAsQ2DMPdv9x0qOjWxrFy/+kzVJVsed4t7NdCgovnAT+oPa8oAYlUEj6VXg5zNrrevzY1ZFIZUNj2i6MMnDumhSL9U5w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0707.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(346002)(39860400002)(396003)(366004)(376002)(54906003)(66946007)(4326008)(76116006)(91956017)(86362001)(6506007)(33716001)(66476007)(316002)(478600001)(64756008)(6512007)(66556008)(83380400001)(186003)(5660300002)(26005)(6486002)(6916009)(8936002)(8676002)(71200400001)(1076003)(122000001)(2906002)(38100700002)(9686003)(66446008);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?kmu9vr93XLlFzN0yKPxd3YYq7lAu4gSsjy4B5VC0cndBxISY6fzgWNE6z2Tp?=
- =?us-ascii?Q?jUZmoI3APoeLSiggUhAp0xbgDerfU9ThwOck+fN8SPcoVPzhpoIhhZ8xuZcX?=
- =?us-ascii?Q?FD8vujozliMS758Nav10QmnqnRDxQD5VZvQj1s4XQ8F/RRmaDj9IzA7gH8Yz?=
- =?us-ascii?Q?EWNIvUEn+2lZgzLdc/OQjVyG4yjMzXvLdXmjK2uLTYeatIFdn50AbY/u61dI?=
- =?us-ascii?Q?1cD5tVtM0tzitX26HcrGuKkmEa0vAKrwk6r8yobn4E1D67ogsI7TVLx1O+eA?=
- =?us-ascii?Q?ddptBfXhmG9GW+SjkLroqT43ryt+MPxDPUdCW9UmxOc2iGK78bZoRLoi9GVy?=
- =?us-ascii?Q?TUDYRX5ppc4A5MAYwnAYEivMWFK8Lj4EqWVn0hO26K7ybdEkkmf+o2/BVKjK?=
- =?us-ascii?Q?vtKAkW4ZP5WrlsdV2zam9w6dBXqvJx4tJv7I0q2J5p76/LlZO4u5DmPnu8W3?=
- =?us-ascii?Q?Lu5pT9WKxYG0h7wVE4TN4IxEzBXZYGSlYevwR65De5EWgjvL4dOlE1BTeq3i?=
- =?us-ascii?Q?Ev4ZhZnbQs2XATPlpV29kVf0CIr9xTqj+ODHRGRFpT/EtcOSjtt+WmrUQKpu?=
- =?us-ascii?Q?/rbeQA+RjgGuh2ip5MAhaW8S0nwQ0tCFBM+PjYT9e1y52WGOGl0qxj+X4MT1?=
- =?us-ascii?Q?De/1MOZ8k6vfXUzh0IcfHXafSGqtqmQdsHJNUllmjgD4VbkcNAamnWiDDtZM?=
- =?us-ascii?Q?SYtZtxC8TB70AGqB9utBFqCZA6SzibiC2CiA55T1sfI9TBVC1YmwPLUbIaLb?=
- =?us-ascii?Q?jXNQb/9XKZ60/OJugKQ+UJN/byWfrEvFtrBpun/f+93v3NnHkkKflpE7TbKe?=
- =?us-ascii?Q?xa+hqy6t2QdpQot+/vf0Z0zCopK/JidozEt8P8C/dynk7pZQM26w/sJqkTW2?=
- =?us-ascii?Q?dZFvdxxUDokOnufvAT2e1LeTPHDf+Jh5IfRSb6iZCYSBIoB6RreyLI5oef5R?=
- =?us-ascii?Q?tvpT/XjcBsithwPOeTBLBimtehs9tj12cTCbeKmft32QJG2oB+gV8aDrbBK0?=
- =?us-ascii?Q?sclj4/YwWaofPTYyninOwxwVg3KUskzsrKLssrFvQFmCgWKJyeOcItQJPGnm?=
- =?us-ascii?Q?nDlzzRv6mpw3/8su8sdrDIJSF33Y2dUsnpiUbTDp6z/w9mYPSqi2TDkJpk/5?=
- =?us-ascii?Q?Uh0DHIgtMRuCm38OWpCFzXcaqQC328d/xGjx1qMqV1K0ocaTw6gHTCpOmPqr?=
- =?us-ascii?Q?w7tizNRQhQJ9z8N1Ypul4PdO9dbPLAbkdIgjqVpUofTqsrUVHy8iOgqZ1q3A?=
- =?us-ascii?Q?mA6EBZ0QVeOdUjynCd0DgYJMZ+/fJC75nBUx/fcDZJ0NgOUnBhpKFCVzvP+U?=
- =?us-ascii?Q?TjmAFNJwhU1TPMxp4Hyf4FO0e0eMCgyAJiaAGWz9yHqhiA=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?JXaBSscR7WyLjxRJLxFhMD9IIorh7M5UCrFxbdrrD6AIXCSF8jxTHVmyqvgS?=
+ =?us-ascii?Q?ZW5f4/RrGIMm5GcwrpVxCxMJiLL3m6QamzYJ7sKoh9B764YNvsmICDH4T549?=
+ =?us-ascii?Q?fLyoTKwADaoYmkU1wL5B2MJSSrk3SUXgH/H545L2TI9Zzqemoppa/S9E2RhH?=
+ =?us-ascii?Q?cTvM8oZ+g9kq1WASQj6hhgBS8GDntDxOxYfxO4FlKNuo3JY4GBg4i5Rfchur?=
+ =?us-ascii?Q?deArjyjYENpnWfomtZeuDzHQz3v93KNz25zdy7vj52Q7FNxChGu4gVYM8p9C?=
+ =?us-ascii?Q?N0W6Ef78yHmba/Sw6Sw4HJDlxIkl3flVFeMbhYfKt4Cn7zhMxv+DJF1AJfCY?=
+ =?us-ascii?Q?H53ffQMQntS9EA5A8dJ1qRFIH2GaVHzJziRH188rpPBDAIIIEkkxXdrnC6Ox?=
+ =?us-ascii?Q?jNDDQq60oe+nq3DyyDvbpNEzAc/QbC8LCWFvR8cAZLjGMleF1HvYJCA848xj?=
+ =?us-ascii?Q?Cnx7iXE7Cf013gNKHlTfoSW5FyxGXFI/cTFfHYa/QIOgXpLZ1ldn2GE+9ws9?=
+ =?us-ascii?Q?upoiAncva9OB77xuiBKVgI4M+YKIYfmMW7qIMlyZs8ENVi5JKAas9SWmPXQ7?=
+ =?us-ascii?Q?a+oqUHv831vflD5ELiNY/8Hsd4bMgVcq8V2dzDTTfja5av3TR9dDwXxJo3bR?=
+ =?us-ascii?Q?iL0Go0OW7Q1BYaPOBsslDtIr8hQNG0dr3/suZytt4FR3jm9eS4IioSwHBAB1?=
+ =?us-ascii?Q?2h5SH2mAZZY4+HAR4SKzg4kfDCgaeh10455dKx8yfZ774XTWD2PNVdCQiZQP?=
+ =?us-ascii?Q?BqS8VqXGemJnLyafI3hH4KqkIURYdoZm4cuq16ACgb9LmFIrz9amHDj2Duw5?=
+ =?us-ascii?Q?MNjofBGedMXXWr3UuG2lrkIN5m+FZUBYywytRV48eBhE64iHNTR53lah40I3?=
+ =?us-ascii?Q?7SQD0bjeY14gPVEFMPtq6h62qV8zdSXM3XxWBuSvADl1pL9mEtTHw+wzUCPb?=
+ =?us-ascii?Q?DexazMp/hKKT2V2fs7BXfjrZc/R3LFXFAgXDnhArwjyvG8FCMd+hhaf/uU6n?=
+ =?us-ascii?Q?pG/F//H4hErm0O8y2/t1k+4PZLmCBuApLlTj4nqK2Y4owv1l7RSObeNZRBmu?=
+ =?us-ascii?Q?JpzkSxX5E51NF6yyqWEXw/LYiokZJ3OC9aLA2BfEZhKM+F3mYYvQXCGslHUx?=
+ =?us-ascii?Q?emB3QDo9G+iaxlBKN2QOXmjxcWdRORQMTEIIn/v6d4FN4iED/eCNF9l3dH/F?=
+ =?us-ascii?Q?qND5byqa+RmO3imowI+5pNQxsAZ4gyXfwKFuQ1lqDv4m8VXK/iAjYSDQuUqH?=
+ =?us-ascii?Q?vgpZTMdCwgZbpa2Ob5w+uvJQtkkjQGdERM76MrOzbHl2loBtrLwB7zoubXe5?=
+ =?us-ascii?Q?KNbag9MOVm4aL5MJiaVzi4yisNiADWn8IC9VGGRx+7xg1g=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <AF32D2698E83154198CA9C59A5ABB56D@namprd04.prod.outlook.com>
+Content-ID: <11EE62733EEDF84D9AD88F7A38651B91@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BN6PR04MB0707.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4af51463-0c63-42ed-fe33-08d94295c6ad
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2021 04:55:29.8898
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21a792f1-44e9-46b5-cd32-08d94296a201
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jul 2021 05:01:37.6951
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: P/uVdlPBrvK/agh5B9qlBxTWM6lK7abfiBIN+0WWowdIcm8aTaq5FlVzaKHcYlCNNRuU/R5imIddLvZdUeUNfA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR04MB6355
+X-MS-Exchange-CrossTenant-userprincipalname: 73qoh8iygDAnFZlq/VIa4kwa2qhPojBj1sHX8x+HJ3P44QrO9t0V9uP2xqdmdmsG2twxXFwOt09m5KPeIfiV5Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR04MB0356
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 04:39:47AM +0000, Naohiro Aota wrote:
-> On Thu, Jul 08, 2021 at 04:57:22PM +0200, David Sterba wrote:
-> > On Thu, Jul 08, 2021 at 10:10:55PM +0900, Naohiro Aota wrote:
-> > > From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-> > >=20
-> > > The function bio_trim has offset and size arguments that are declared
-> > > as int.
-> > >=20
-> > > The callers of this function uses sector_t type when passing the offs=
-et
-> > > and size e,g. drivers/md/raid1.c:narrow_write_error() and
-> > > drivers/md/raid1.c:narrow_write_error().
-> > >=20
-> > > Change offset & size arguments to sector_t type for bio_trim().
-> > >=20
-> > > Tested-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > > Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-> > > ---
-> > >  block/bio.c         | 2 +-
-> > >  include/linux/bio.h | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/block/bio.c b/block/bio.c
-> > > index 44205dfb6b60..d342ce84f6cf 100644
-> > > --- a/block/bio.c
-> > > +++ b/block/bio.c
-> > > @@ -1465,7 +1465,7 @@ EXPORT_SYMBOL(bio_split);
-> > >   * @offset:	number of sectors to trim from the front of @bio
-> > >   * @size:	size we want to trim @bio to, in sectors
-> > >   */
-> > > -void bio_trim(struct bio *bio, int offset, int size)
-> > > +void bio_trim(struct bio *bio, sector_t offset, sector_t size)
+On Thu, Jul 08, 2021 at 05:00:25PM +0200, David Sterba wrote:
+> On Thu, Jul 08, 2021 at 10:10:56PM +0900, Naohiro Aota wrote:
+> > From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 > >=20
-> > sectort_t seems to be the right one, there are << 9 in the function so
-> > that could lead to some bugs if the offset and size are at the boundary=
-.
+> > The offset and can never be negative use unsigned int instead of int ty=
+pe
+> > for them.
+> >=20
+> > Tested-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+> > ---
+> >  fs/btrfs/extent_io.c | 3 ++-
+> >  fs/btrfs/extent_io.h | 3 ++-
+> >  2 files changed, 4 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > index 1f947e24091a..082f135bb3de 100644
+> > --- a/fs/btrfs/extent_io.c
+> > +++ b/fs/btrfs/extent_io.c
+> > @@ -3153,7 +3153,8 @@ struct bio *btrfs_io_bio_alloc(unsigned int nr_io=
+vecs)
+> >  	return bio;
+> >  }
+> > =20
+> > -struct bio *btrfs_bio_clone_partial(struct bio *orig, int offset, int =
+size)
+> > +struct bio *btrfs_bio_clone_partial(struct bio *orig, unsigned int off=
+set,
+> > +				    unsigned int size)
+> >  {
+> >  	struct bio *bio;
+> >  	struct btrfs_io_bio *btrfs_bio;
+> > diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> > index 62027f551b44..f78b365b56cf 100644
+> > --- a/fs/btrfs/extent_io.h
+> > +++ b/fs/btrfs/extent_io.h
+> > @@ -280,7 +280,8 @@ void extent_clear_unlock_delalloc(struct btrfs_inod=
+e *inode, u64 start, u64 end,
+> >  struct bio *btrfs_bio_alloc(u64 first_byte);
+> >  struct bio *btrfs_io_bio_alloc(unsigned int nr_iovecs);
+> >  struct bio *btrfs_bio_clone(struct bio *bio);
+> > -struct bio *btrfs_bio_clone_partial(struct bio *orig, int offset, int =
+size);
+> > +struct bio *btrfs_bio_clone_partial(struct bio *orig, unsigned int off=
+set,
+> > +				    unsigned int size);
 >=20
-> Sure. I'll add the following ASSERT to catch the case.
->=20
-> diff --git a/block/bio.c b/block/bio.c
-> index d342ce84f6cf..54b573414126 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -1467,10 +1467,14 @@ EXPORT_SYMBOL(bio_split);
->   */
->  void bio_trim(struct bio *bio, sector_t offset, sector_t size)
->  {
-> +	const uint_max_sectors =3D UINT_MAX << SECTOR_SHIFT;
-> +
->  	/* 'bio' is a cloned bio which we need to trim to match
->  	 * the given offset and size.
->  	 */
-> =20
-> +	ASSERT(offset <=3D uint_max_sectors && size < uint_max_sectors);
-> +
->  	size <<=3D 9;
->  	if (offset =3D=3D 0 && size =3D=3D bio->bi_iter.bi_size)
->  		return;
->=20
+> This is passed to bio_trim that you change to take sector_t, should this
+> be the same?
 
-Please ignore this one. I failed to add the type and cannot use ASSERT
-here. Updated diff available in the reply to Damien.=
+btrfs_bio_clone_partial() expects byte-based value, so using sector_t
+is misleading. Should we use u64 here? But the values must be <=3D
+UINT_MAX.
+
+> > =20
+> >  int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 star=
+t,
+> >  		      u64 length, u64 logical, struct page *page,
+> > --=20
+> > 2.32.0=
