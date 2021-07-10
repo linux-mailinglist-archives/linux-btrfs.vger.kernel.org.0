@@ -2,76 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 791893C3420
-	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Jul 2021 12:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0403C344D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Jul 2021 13:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhGJK3X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 10 Jul 2021 06:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
+        id S232537AbhGJLSM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 10 Jul 2021 07:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbhGJK3X (ORCPT
+        with ESMTP id S230468AbhGJLSL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 10 Jul 2021 06:29:23 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C343C0613DD
-        for <linux-btrfs@vger.kernel.org>; Sat, 10 Jul 2021 03:26:38 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id z18so6220174qtq.8
-        for <linux-btrfs@vger.kernel.org>; Sat, 10 Jul 2021 03:26:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=VCnNLzAHnJbir+tF/9Fg6QPEr3z3+qmz+HAiLrYuMUQ=;
-        b=ia5gq4+2MXp5WUzOpY/Uthe5TC0I3j9t8Oj2mQREYI/zJu17A4mwtusJkOl66dHel9
-         pAyNn6GIhYw6U4uq4PuU6b/DVj7WoAwO6+uR3rDj6r4tHOIh03mzis2CHSX1bBWn0Czz
-         dlnjc0aeoa/H04G8a4Ts5ED9nG2HNSr5FxvXpWwF3FoWzuXXDS+DgdNYngT9dfmH1a7o
-         6xjqFStO3wSMsRicJS9YnVQEkyeBXg9TiL/6yA6EgaK2nrPz6Xm78N9kpsyNgCacO2+P
-         YbwuLLQi4kpYNVyl51I/Nt0xIOw/WSGDVvZ3v62eNOIZOKChxaf7CdmWuGhLx+azI6gB
-         SuyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=VCnNLzAHnJbir+tF/9Fg6QPEr3z3+qmz+HAiLrYuMUQ=;
-        b=nTiN888dG1gozGF+sRRnh5GIbQgXBgNJ2ONX6yXKJNJE75+qKPyEq19sARAA0Ejx44
-         SKsAmEAc3l5VIv8r6VABTaQ7k2IZ1pr9LvSnl6o0ddq4Ka2Ep2L6iF2wFzqWGKnRtl9j
-         OzMeBgV7PSDNa+nmQYF+OOCbjNpDAXbhhbhUQ86Vgnsj7k1hujGk7F1CjpwDC09jHKyL
-         SwGk1PYncYON/TQ2JV/mP8Y6R940JpZ9HlCGK+LTqW8ua7gsOQALdDtyn43iI0SPxEY6
-         cUSBXMqQCngWM8IzXBzs/+c4zVTz6bcRucYP+honeHTiUHFc+O448O3dW3TldocDnF63
-         OMPw==
-X-Gm-Message-State: AOAM532kFDETKpiB3GHIAMEGzUpvAyAiWy46dZYdn5E4aWDGakiK+fg/
-        n3cQ8o5bu4GsvwDCAO2WSNPw20sxPUHN+WslFtU=
-X-Google-Smtp-Source: ABdhPJwM5qMiJFeMxOryTuc1Lo45NLfz081rURkT1heULSe6Lj/rc3x+WxVwr2Yqz6sjGHMutw7/8+Z0EAblwJ4sOtQ=
-X-Received: by 2002:ac8:4cdb:: with SMTP id l27mr18712571qtv.350.1625912797355;
- Sat, 10 Jul 2021 03:26:37 -0700 (PDT)
+        Sat, 10 Jul 2021 07:18:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C927CC0613DD
+        for <linux-btrfs@vger.kernel.org>; Sat, 10 Jul 2021 04:15:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wmQp8ube1jC3ArDlExYKIa2tEnq1e03Nr4DNTkCc14w=; b=kkaYFvw9H1ZEz4XLVuQadvOz+7
+        fJvu0cZJwUqnYPV0x+IYCEELERci2WvEJRNRRxoeOo9wpzZwLWuzQfC68/u7zEAsuLPRwVIfztkne
+        Vc0kZZWipyiI1TQ7v1EeVdNpsNQihpIF3nebzzfDwfg4H5cEFb83Zo+s2B3kOw9RAyb+NnK8tb7NA
+        zatnezcuA4WzWMvfE1aqwpfWr7IqIyZYJ/tKErAIJRwxQESAyWHUHj0UbYjCV1q6hKiJUq7RP7HM8
+        K8Ds4s/6QGiB7FmeXzzTeQbWpT9l47nU4sYHhxOXoxBZJsYa13k5VK4Fz9jtOXyFTQskMaAwXtkvm
+        ulE2LEcA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m2Awu-00FR6f-PB; Sat, 10 Jul 2021 11:15:10 +0000
+Date:   Sat, 10 Jul 2021 12:15:08 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Neal Gompa <ngompa13@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Sterba <dsterba@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 0/6] Remove highmem allocations, kmap/kunmap
+Message-ID: <YOmBPOYfsuNtV1jK@infradead.org>
+References: <cover.1625043706.git.dsterba@suse.com>
+ <CAEg-Je_N8_rSfVjRD_R1J+ecH1tDW9syZawQavKXRBXQUofjag@mail.gmail.com>
+ <e6a4b354-879b-a767-3f21-2535e38e8571@gmx.com>
+ <YOfwuQPtXScmFULF@infradead.org>
+ <dbddba2c-9242-d8ab-3969-86e7b2974727@gmx.com>
+ <CAEg-Je9ESQ+Qvq7uVvV_K3ZGgNrD-kYzJMJif=3e5cCe8p6aXg@mail.gmail.com>
+ <95974239-b63e-75af-0720-7fdb10e9fbe5@gmx.com>
 MIME-Version: 1.0
-Reply-To: mohammedssaaaad@gmail.com
-Sender: issasalif505@gmail.com
-Received: by 2002:a0c:ba09:0:0:0:0:0 with HTTP; Sat, 10 Jul 2021 03:26:36
- -0700 (PDT)
-From:   Mohammed Saad <mohammedsaadht@gmail.com>
-Date:   Sat, 10 Jul 2021 03:26:36 -0700
-X-Google-Sender-Auth: lYvtwev8EZ4kTaGhTC0IQxZRezo
-Message-ID: <CAO1GMAQc3B_ekgPhN9mh_OgDZob=Dv8P8pU2uRZFbqiG7fW6yA@mail.gmail.com>
-Subject: Business Proposal .........................................
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <95974239-b63e-75af-0720-7fdb10e9fbe5@gmx.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Greetings
+On Sat, Jul 10, 2021 at 05:50:47PM +0800, Qu Wenruo wrote:
+> Don't forget that, our biggest memory usage, inode pages are all
+> allocated without HIGHMEM, just like XFS.
+> If it's causing problems, then it would have already caused more series
+> performance impact.
 
-  I am Mr. .Mohammed Saad .I am sending this brief letter to solicit
-your partnership to transfer =E2=82=AC 15 MILLION Euros into your account. =
-I
-shall send you more information and procedures when I receive positive
-response from you. If you are interested, send to me the followings
-immediately
-Full Names
-Age
-Nationality
-Occupation
-Direct Telephone Lines
-Mr Mohammed Saad
+What do you mean with "inode pages"?  The actual page cache data,
+which should be the biggest users of memory in most file system
+workloads is allocated using highmem for basicaly every file system.
