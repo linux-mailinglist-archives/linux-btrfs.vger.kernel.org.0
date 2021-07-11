@@ -2,46 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E613C3BED
-	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Jul 2021 13:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2603C3BF4
+	for <lists+linux-btrfs@lfdr.de>; Sun, 11 Jul 2021 13:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbhGKLjy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 11 Jul 2021 07:39:54 -0400
-Received: from pio-pvt-msa3.bahnhof.se ([79.136.2.42]:47212 "EHLO
+        id S232433AbhGKLnx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 11 Jul 2021 07:43:53 -0400
+Received: from pio-pvt-msa3.bahnhof.se ([79.136.2.42]:47498 "EHLO
         pio-pvt-msa3.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbhGKLjy (ORCPT
+        with ESMTP id S229688AbhGKLnw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 11 Jul 2021 07:39:54 -0400
+        Sun, 11 Jul 2021 07:43:52 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTP id 20E763F401;
-        Sun, 11 Jul 2021 13:37:06 +0200 (CEST)
+        by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTP id 075C93F401
+        for <linux-btrfs@vger.kernel.org>; Sun, 11 Jul 2021 13:41:05 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at bahnhof.se
 X-Spam-Flag: NO
-X-Spam-Score: -1.901
+X-Spam-Score: -1.9
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.901 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, NICE_REPLY_A=-0.001]
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, NICE_REPLY_A=-0.001, URIBL_BLOCKED=0.001]
         autolearn=ham autolearn_force=no
 Received: from pio-pvt-msa3.bahnhof.se ([127.0.0.1])
         by localhost (pio-pvt-msa3.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id dLmbhJoTFouB; Sun, 11 Jul 2021 13:37:05 +0200 (CEST)
-Received: by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTPA id 055C63F375;
-        Sun, 11 Jul 2021 13:37:04 +0200 (CEST)
-Received: from [192.168.0.10] (port=64411)
+        with ESMTP id asCal5mkLmFV for <linux-btrfs@vger.kernel.org>;
+        Sun, 11 Jul 2021 13:41:04 +0200 (CEST)
+Received: by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTPA id 1387B3F375
+        for <linux-btrfs@vger.kernel.org>; Sun, 11 Jul 2021 13:41:04 +0200 (CEST)
+Received: from [192.168.0.10] (port=62817)
         by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
         (Exim 4.94.2)
         (envelope-from <forza@tnonline.net>)
-        id 1m2Xlf-0002ao-MM; Sun, 11 Jul 2021 13:37:03 +0200
-Subject: Re: btrfs cannot be mounted or checked
-To:     Zhenyu Wu <wuzy001@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAJ9tZB_VHc4x3hMpjW6h_3gr5tCcdK7RpOUcAdpLuR5PVpW8EQ@mail.gmail.com>
+        id 1m2XpX-0002kf-I1
+        for linux-btrfs@vger.kernel.org; Sun, 11 Jul 2021 13:41:03 +0200
+Subject: Re: cannot use btrfs for nfs server
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <20210310074620.GA2158@tik.uni-stuttgart.de>
+ <20210311074636.GA28705@tik.uni-stuttgart.de>
+ <20210708221731.GB8249@tik.uni-stuttgart.de>
+ <56c40592-0937-060a-5f8a-969d8a88d541@cobb.uk.net>
+ <20210709065320.GC8249@tik.uni-stuttgart.de>
+ <475ccf1.ca37f515.17a8a262a72@tnonline.net>
+ <20210709073444.GA582@tik.uni-stuttgart.de>
+ <CAJCQCtR=Xar+0pD9ivhk-kfrWxTxbJpVYu3z8A617GKshf2AsA@mail.gmail.com>
+ <20210710063535.GE1548@tik.uni-stuttgart.de>
 From:   Forza <forza@tnonline.net>
-Message-ID: <110a038d-a542-dcf5-38b8-5f15ee97eb2c@tnonline.net>
-Date:   Sun, 11 Jul 2021 13:37:02 +0200
+Message-ID: <2fd105cb-c097-63e8-0c43-049dceeb93c9@tnonline.net>
+Date:   Sun, 11 Jul 2021 13:41:02 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAJ9tZB_VHc4x3hMpjW6h_3gr5tCcdK7RpOUcAdpLuR5PVpW8EQ@mail.gmail.com>
+In-Reply-To: <20210710063535.GE1548@tik.uni-stuttgart.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -51,51 +61,33 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021-07-11 10:59, Zhenyu Wu wrote:
-> Sorry for my disturbance.
-> After a dirty reboot because of a computer crash, my btrfs partition
-> cannot be mounted. The same thing happened before, but now `btrfs
-> rescue zero-log` cannot work.
-> ```
-> $ uname -r
-> 5.10.27-gentoo-x86_64
-> $ btrfs rescue zero-log /dev/sda2
-> Clearing log on /dev/sda2, previous log_root 0, level 0
-> $ mount /dev/sda2 /mnt/gentoo
-> mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
-> /dev/sda2, missing codepage or helper program, or other error.
-> $ btrfs check /dev/sda2
-> parent transid verify failed on 34308096 wanted 962175 found 961764
-> parent transid verify failed on 34308096 wanted 962175 found 961764
-> parent transid verify failed on 34308096 wanted 962175 found 961764
-> Ignoring transid failure
-> leaf parent key incorrect 34308096
-> ERROR: failed to read block groups: Operation not permitted
-> ERROR: cannot open file system
-> $ dmesg 2>&1|tee dmesg.txt
-> # see attachment
-> ```
-> Like `mount -o ro,usebackuproot` cannot work, too.
+On 2021-07-10 08:35, Ulli Horlacher wrote:
+> On Fri 2021-07-09 (10:30), Chris Murphy wrote:
+>> On Fri, Jul 9, 2021 at 1:34 AM Ulli Horlacher
+>> <framstag@rus.uni-stuttgart.de> wrote:
+>>
+>>>
+>>> root@tsmsrvj:/# du -s /nfs/localhost/fex
+>>> du: WARNING: Circular directory structure.
+>>> This almost certainly means that you have a corrupted file system.
+>>> NOTIFY YOUR SYSTEM MANAGER.
+>>> The following directory is part of the cycle:
+>>>    /nfs/localhost/fex/spool
+>>
+>> What do you get for:
+>>
+>> btrfs subvolume list -to /nfs/localhost/fex
 > 
-> Thanks for any help!
+> root@tsmsrvj:~# btrfs subvolume list -to /nfs/localhost/fex
+> ERROR: not a btrfs filesystem: /nfs/localhost/fex
+> ERROR: can't access '/nfs/localhost/fex'
+> 
+> 
+> root@tsmsrvj:~# mount | grep localhost
+> localhost:/data/fex on /nfs/localhost/fex type nfs4 (rw,relatime,vers=4.2,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=127.0.0.1,local_lock=none,addr=127.0.0.1)
+> 
 > 
 
+I think you should have done the btrfs filesystem and not nfs mount:
 
-Hi!
-
-Parent transid failed is hard to recover from, as mentioned on 
-https://btrfs.wiki.kernel.org/index.php/FAQ#How_do_I_recover_from_a_.22parent_transid_verify_failed.22_error.3F
-
-I see you have "corrupt 5" sectors in dmesg. Is your disk healthy? You 
-can check with "smartctl -x /dev/sda" to determine the health.
-
-One way of avoiding this error is to disable write-cache. Parent transid 
-failed can happen when the disk re-orders writes in its write cache 
-before flushing to disk. This violates barriers, but it is unfortately 
-common. If you have a crash, SATA bus reset or other issues, unwritten 
-content is lost. The problem here is the re-ordering. The superblock is 
-written out before other metadata (which is now lost due to the crash).
-
-You disable write cache with "hdparm -W0 /dev/sda". It might be worth 
-adding this to a cron-job every 5 minutes or so, as the setting is not 
-persistent and can get reset if the disk looses power, goes to sleep, etc.
+btrfs subvolume list -to /data/fex
