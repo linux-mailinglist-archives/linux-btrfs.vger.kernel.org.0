@@ -2,191 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F88A3C6B4E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jul 2021 09:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF453C6F38
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jul 2021 13:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbhGMHkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Jul 2021 03:40:13 -0400
-Received: from smtp01.belwue.de ([129.143.71.86]:38155 "EHLO smtp01.belwue.de"
+        id S235671AbhGMLSH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Jul 2021 07:18:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233762AbhGMHkN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Jul 2021 03:40:13 -0400
-Received: from fex.rus.uni-stuttgart.de (fex.rus.uni-stuttgart.de [129.69.1.129])
-        by smtp01.belwue.de (Postfix) with SMTP id 5463B6060
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jul 2021 09:37:22 +0200 (MEST)
-Date:   Tue, 13 Jul 2021 09:37:21 +0200
-From:   Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: cannot use btrfs for nfs server
-Message-ID: <20210713073721.GA5047@tik.uni-stuttgart.de>
-Mail-Followup-To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <20210708221731.GB8249@tik.uni-stuttgart.de>
- <56c40592-0937-060a-5f8a-969d8a88d541@cobb.uk.net>
- <20210709065320.GC8249@tik.uni-stuttgart.de>
- <CAJCQCtQvak-28B7eUf5zRnAeGK27qZaF-1ZZt=OAHk+2KmfsWQ@mail.gmail.com>
- <20210710065612.GF1548@tik.uni-stuttgart.de>
- <CAJCQCtQn0=8KiB=2garN8k2NRd1PO3HBnrMNvmqssSfKT2-UXQ@mail.gmail.com>
- <20210712072525.GI1548@tik.uni-stuttgart.de>
- <294e8449-383f-1c90-62be-fb618332862e@cobb.uk.net>
- <20210712161618.GA913@tik.uni-stuttgart.de>
- <8506b846-4c4d-6e8f-09ee-e0f2736aac4e@cobb.uk.net>
+        id S235390AbhGMLSH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 13 Jul 2021 07:18:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 534B56023F;
+        Tue, 13 Jul 2021 11:15:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626174917;
+        bh=zLRIz5p5ourrK1LiN61koDqQ3x8/edeGXrFSrIxyOGs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y+p/jMdydLbpPOIa6w6s0vQ1875AjmoVTlyYQl8qZxs8FsLWO0lDmcVkrxnMM6sKI
+         U8NItXF49aJ1Wf4ER4hs7v/Pgq1bp4klfiNizlYqIj1KpzrpB1FZ4WIf3+EVKzd62c
+         j6wo26AkItMCMt2pV1EUmQiMGLoGDlVYDxHoPTIMPGjT0qlyq1VTNGoN2vlrAac8Br
+         OnctXgEKzAekP7RcxdP73Y9YYFJgbZwsR/X0xpazfMXYdhXmKl7GTBec5CfYWCCmAL
+         izX7rMu1sf/BOeX6tb1MKox1UjUxE04UL5ZavUX1wyR6QbyuF8GN5y/Ubb9+fWzrCv
+         RFiLbsgIkyd8A==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH 00/24] btrfs: support idmapped mounts
+Date:   Tue, 13 Jul 2021 13:13:20 +0200
+Message-Id: <20210713111344.1149376-1-brauner@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8506b846-4c4d-6e8f-09ee-e0f2736aac4e@cobb.uk.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5722; h=from:subject; bh=sdqEN4uw+nlUNPCZNK8c16q/IAiwG0V4khK6UQee5KU=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMSS8LQ1/OdP5mvPtuTLLq0KuTXy6MshEc83NxmVV096ziv78 Wv8vu6OUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiMQcZ/uewMVUkvP2Varj8N1/Em7 tNglW79fvqtp66vYTXLebij50M/8t1LYS3S3DyBfN/57ivmbY56M9hl627Z+uvsrRg7b2xghEA
+X-Developer-Key: i=christian.brauner@ubuntu.com; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon 2021-07-12 (23:56), g.btrfs@cobb.uk.net wrote:
+From: Christian Brauner <christian.brauner@ubuntu.com>
 
-> > root@tsmsrvj:/etc# du -Hs /nfs/localhost/snapshots
-> > du: WARNING: Circular directory structure.
-> > This almost certainly means that you have a corrupted file system.
-> > NOTIFY YOUR SYSTEM MANAGER.
-> > The following directory is part of the cycle:
-> >   /nfs/localhost/snapshots/spool
-> 
-> Sure. But it makes the useful operations work. du, find, ls -R, etc all
-> work properly on /nfs/localhost/fex.
+Hey everyone,
 
-Properly on /nfs/localhost/fex : yes
-Properly on /nfs/localhost/snapshots : NO
+This series enables the creation of idmapped mounts on btrfs. On the list of
+filesystems btrfs was pretty high-up and requested quite often from userspace
+(cf. [1]). This series requires just a few changes to the vfs for specific
+lookup helpers that btrfs relies on to perform permission checking when looking
+up an inode. The changes are required to port some other filesystem as well.
 
-And the error messages are annoying!
+The conversion of the necessary btrfs internals was fairly straightforward. No
+invasive changes were needed. I've decided to split up the patchset into very
+small individual patches. This hopefully makes the series more readable and
+fairly easy to review. The overall changeset is quite small.
 
-root@tsmsrvj:/etc# exportfs -v
-/data/fex       localhost.localdomain(rw,async,wdelay,crossmnt,no_root_squash,no_subtree_check,sec=sys,rw,secure,no_root_squash,no_all_squash)
-/data/snapshots localhost.localdomain(rw,async,wdelay,crossmnt,no_root_squash,no_subtree_check,sec=sys,rw,secure,no_root_squash,no_all_squash)
+All non-filesystem wide ioctls that peform permission checking based on inodes
+can be supported on idmapped mounts. There are really just a few restrictions.
+This should really only affect the deletion of subvolumes by subvolume id which
+can be used to delete any subvolume in the filesystem even though the caller
+might not even be able to see the subvolume under their mount. Other than that
+behavior on idmapped and non-idmapped mounts is identical for all enabled
+ioctls.
 
-root@tsmsrvj:/etc# mount -o vers=3 localhost:/data/fex /nfs/localhost/fex
-root@tsmsrvj:/etc# mount -o vers=3 localhost:/data/snapshots /nfs/localhost/snapshots
-root@tsmsrvj:/etc# mount | grep localhost
-localhost:/data/fex on /nfs/localhost/fex type nfs (rw,relatime,vers=3,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,mountaddr=127.0.0.1,mountvers=3,mountport=37961,mountproto=udp,local_lock=none,addr=127.0.0.1)
-localhost:/data/snapshots on /nfs/localhost/snapshots type nfs (rw,relatime,vers=3,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,mountaddr=127.0.0.1,mountvers=3,mountport=37961,mountproto=udp,local_lock=none,addr=127.0.0.1)
+The changeset has an associated new testsuite specific to btrfs. The
+core vfs operations that btrfs implements are covered by the generic
+idmapped mount testsuite. For the ioctls a new testsuite was added. It
+is sent alongside this patchset for ease of review but will very likely
+be merged independent of it.
 
-root@tsmsrvj:/etc# ls -la /data/snapshots /nfs/localhost/snapshots
-/data/snapshots:
-total 16
-drwxr-xr-x 1 root root     20 Jul 13 09:19 .
-drwxr-xr-x 1 root root     24 Jul 12 17:42 ..
-drwxr-xr-x 1 fex  fex  261964 Mar  7 14:53 fex_1
-drwxr-xr-x 1 fex  fex  261964 Mar  7 14:53 fex_2
+All patches are based on v5.14-rc1.
 
-/nfs/localhost/snapshots:
-total 4
-drwxr-xr-x 1 root root     20 Jul 13 09:19 .
-drwxr-xr-x 4 root root   4096 Jul 12 17:49 ..
-drwxr-xr-x 1 fex  fex  261964 Mar  7 14:53 fex_1
-drwxr-xr-x 1 fex  fex  261964 Mar  7 14:53 fex_2
+The series can be pulled from:
+https://git.kernel.org/brauner/h/fs.idmapped.btrfs
+https://github.com/brauner/linux/tree/fs.idmapped.btrfs
 
-root@tsmsrvj:/etc# du -Hs /nfs/localhost/snapshots
-du: WARNING: Circular directory structure.
-This almost certainly means that you have a corrupted file system.
-NOTIFY YOUR SYSTEM MANAGER.
-The following directory is part of the cycle:
-  /nfs/localhost/snapshots/fex_1/XXXXXXXXXX@gmail.com
+The xfstests can be pulled from:
+https://git.kernel.org/brauner/xfstests-dev/h/fs.idmapped.btrfs
+https://github.com/brauner/xfstests/tree/fs.idmapped.btrfs
 
-du: WARNING: Circular directory structure.
-This almost certainly means that you have a corrupted file system.
-NOTIFY YOUR SYSTEM MANAGER.
-The following directory is part of the cycle:
-  /nfs/localhost/snapshots/fex_2/XXXXXXXXXX@gmail.com
+Note, the new btrfs xfstests patch is on top of a branch of mine
+containing a few more preliminary patches. So if you want to run the
+tests, please simply pull the branch and build from there. It's based on
+latest xfstests master.
 
-25708064        /nfs/localhost/snapshots
+The series has been tested with xfstests including the newly added btrfs
+specific test. All tests pass.
+There were three unrelated failures that I observed: btrfs/219,
+btrfs/2020 and btrfs/235. All three also fail on earlier kernels
+without the patch series applied.
 
-root@tsmsrvj:/etc# du -Hs /data/snapshots
-25712896        /data/snapshots
+Thanks!
+Christian
 
-root@tsmsrvj:/etc# ls -R /nfs/localhost/snapshots | wc -l
-ls: /nfs/localhost/snapshots/fex_1/XXXXXXXXXX@gmail.com: not listing already-listed directory
-ls: /nfs/localhost/snapshots/fex_2/XXXXXXXXXX@gmail.com: not listing already-listed directory
-128977
+[1]: https://github.com/systemd/systemd/pull/19438#discussion_r622807165
 
-root@tsmsrvj:/etc# ls -R /data/snapshots | wc -l
-129021
+Christian Brauner (23):
+  namei: handle mappings in lookup_one_len()
+  namei: handle mappings in lookup_one_len_unlocked()
+  namei: handle mappings in lookup_positive_unlocked()
+  namei: handle mappings in try_lookup_one_len()
+  btrfs/inode: handle idmaps in btrfs_new_inode()
+  btrfs/inode: allow idmapped rename iop
+  btrfs/inode: allow idmapped getattr iop
+  btrfs/inode: allow idmapped mknod iop
+  btrfs/inode: allow idmapped create iop
+  btrfs/inode: allow idmapped mkdir iop
+  btrfs/inode: allow idmapped symlink iop
+  btrfs/inode: allow idmapped tmpfile iop
+  btrfs/inode: allow idmapped setattr iop
+  btrfs/inode: allow idmapped permission iop
+  btrfs/ioctl: check whether fs{g,u}id are mapped during subvolume
+    creation
+  btrfs/inode: allow idmapped BTRFS_IOC_{SNAP,SUBVOL}_CREATE{_V2} ioctl
+  btrfs/ioctl: allow idmapped BTRFS_IOC_SNAP_DESTROY{_V2} ioctl
+  btrfs/ioctl: relax restrictions for BTRFS_IOC_SNAP_DESTROY_V2 with
+    subvolids
+  btrfs/ioctl: allow idmapped BTRFS_IOC_SET_RECEIVED_SUBVOL{_32} ioctl
+  btrfs/ioctl: allow idmapped BTRFS_IOC_SUBVOL_SETFLAGS ioctl
+  btrfs/ioctl: allow idmapped BTRFS_IOC_INO_LOOKUP_USER ioctl
+  btrfs/acl: handle idmapped mounts
+  btrfs/super: allow idmapped btrfs
 
-root@tsmsrvj:/etc# ls -aR /nfs/localhost/snapshots | wc -l
-ls: /nfs/localhost/snapshots/fex_1/XXXXXXXXXX@gmail.com: not listing already-listed directory
-ls: /nfs/localhost/snapshots/fex_2/XXXXXXXXXX@gmail.com: not listing already-listed directory
-281357
+ arch/s390/hypfs/inode.c            |  2 +-
+ drivers/android/binderfs.c         |  4 +-
+ drivers/infiniband/hw/qib/qib_fs.c |  5 +-
+ fs/afs/dir.c                       |  2 +-
+ fs/afs/dir_silly.c                 |  2 +-
+ fs/afs/dynroot.c                   |  6 +-
+ fs/binfmt_misc.c                   |  2 +-
+ fs/btrfs/acl.c                     | 13 +++--
+ fs/btrfs/ctree.h                   |  3 +-
+ fs/btrfs/inode.c                   | 62 +++++++++++---------
+ fs/btrfs/ioctl.c                   | 94 ++++++++++++++++++++----------
+ fs/btrfs/super.c                   |  2 +-
+ fs/cachefiles/namei.c              |  9 +--
+ fs/cifs/cifsfs.c                   |  3 +-
+ fs/debugfs/inode.c                 |  9 ++-
+ fs/ecryptfs/inode.c                |  3 +-
+ fs/exportfs/expfs.c                |  6 +-
+ fs/kernfs/mount.c                  |  4 +-
+ fs/namei.c                         | 32 ++++++----
+ fs/nfs/unlink.c                    |  3 +-
+ fs/nfsd/nfs3xdr.c                  |  3 +-
+ fs/nfsd/nfs4recover.c              |  7 ++-
+ fs/nfsd/nfs4xdr.c                  |  3 +-
+ fs/nfsd/nfsproc.c                  |  3 +-
+ fs/nfsd/vfs.c                      | 19 +++---
+ fs/overlayfs/copy_up.c             | 10 ++--
+ fs/overlayfs/dir.c                 | 23 ++++----
+ fs/overlayfs/export.c              |  3 +-
+ fs/overlayfs/namei.c               | 13 +++--
+ fs/overlayfs/readdir.c             | 12 ++--
+ fs/overlayfs/super.c               |  8 ++-
+ fs/overlayfs/util.c                |  2 +-
+ fs/quota/dquot.c                   |  3 +-
+ fs/reiserfs/xattr.c                | 14 ++---
+ fs/tracefs/inode.c                 |  3 +-
+ include/linux/namei.h              | 12 ++--
+ ipc/mqueue.c                       |  5 +-
+ kernel/bpf/inode.c                 |  2 +-
+ security/apparmor/apparmorfs.c     |  5 +-
+ security/inode.c                   |  2 +-
+ 40 files changed, 250 insertions(+), 168 deletions(-)
 
-root@tsmsrvj:/etc# ls -aR /data/snapshots | wc -l
-281427
 
-
-
-More debug info:
-
-root@tsmsrvj:/data/snapshots# find . >/tmp/local.list
-
-root@tsmsrvj:/nfs/localhost/snapshots# find . >/tmp/nfs.list
-find: File system loop detected; './fex_1/XXXXXXXXXX@gmail.com' is part of the same file system loop as '.'.
-find: File system loop detected; './fex_2/XXXXXXXXXX@gmail.com' is part of the same file system loop as '.'.
-
-root@tsmsrvj:/nfs/localhost/snapshots# diff -u /tmp/local.list /tmp/nfs.list
-
---- /tmp/local.list	2021-07-13 09:25:36.388084331 +0200
-+++ /tmp/nfs.list	2021-07-13 09:26:02.120793230 +0200
-@@ -1,25 +1,5 @@
- .
- ./fex_1
--./fex_1/XXXXXXXXXX@gmail.com
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/alist
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/filename
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/size
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/autodelete
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/keep
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/ip
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/uurl
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/useragent
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/header
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/dkey
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/speed
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/md5sum
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/download
--./fex_1/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/error
--./fex_1/XXXXXXXXXX@gmail.com/.log
--./fex_1/XXXXXXXXXX@gmail.com/.log/fup
--./fex_1/XXXXXXXXXX@gmail.com/.log/fop
- ./fex_1/XXXXXXXXXX@web.de
- ./fex_1/XXXXXXXXXX@web.de/@LOCALE
- ./fex_1/XXXXXXXXXX@web.de/.log
-@@ -97976,26 +97956,6 @@
- ./fex_1/.xkeys
- ./fex_1/.snapshot
- ./fex_2
--./fex_2/XXXXXXXXXX@gmail.com
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/alist
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/filename
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/size
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/autodelete
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/keep
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/ip
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/uurl
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/useragent
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/header
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/dkey
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/speed
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/md5sum
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/download
--./fex_2/XXXXXXXXXX@gmail.com/XXXXXXXXXX@pi2.uni-stuttgart.de/origin-8.5.1-SR2.zip/error
--./fex_2/XXXXXXXXXX@gmail.com/.log
--./fex_2/XXXXXXXXXX@gmail.com/.log/fup
--./fex_2/XXXXXXXXXX@gmail.com/.log/fop
- ./fex_2/XXXXXXXXXX@web.de
- ./fex_2/XXXXXXXXXX@web.de/@LOCALE
- ./fex_2/XXXXXXXXXX@web.de/.log
-
+base-commit: e73f0f0ee7541171d89f2e2491130c7771ba58d3
 -- 
-Ullrich Horlacher              Server und Virtualisierung
-Rechenzentrum TIK         
-Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
-Allmandring 30a                Tel:    ++49-711-68565868
-70569 Stuttgart (Germany)      WWW:    http://www.tik.uni-stuttgart.de/
-REF:<8506b846-4c4d-6e8f-09ee-e0f2736aac4e@cobb.uk.net>
+2.30.2
+
