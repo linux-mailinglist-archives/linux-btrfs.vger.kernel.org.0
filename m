@@ -2,132 +2,234 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467F83C8198
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 11:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070843C823F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 11:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238362AbhGNJdx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Jul 2021 05:33:53 -0400
-Received: from eu-shark2.inbox.eu ([195.216.236.82]:49788 "EHLO
-        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238189AbhGNJdx (ORCPT
+        id S238923AbhGNKBw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jul 2021 06:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238865AbhGNKBv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Jul 2021 05:33:53 -0400
-Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
-        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id F30B71E0051C;
-        Wed, 14 Jul 2021 12:31:00 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1626255060; bh=OrHCNZxX90vrgyl+yyhQBt65j3Tt5Fz0vepwWkA1Ilg=;
-        h=From:To:Cc:Subject:Date;
-        b=UHAL6mRU9raLK3NHep3jHsHYwDecMTXFoqES853II1wjRwmBujkGc6zTuLCcZcq9V
-         1N472N8AYCQCPnhYiD9Y/H8HEDDvUhIZ2M71jeMIxdgP21XfHGB9SUOwDk6PTm6HfN
-         9cZKlAk5QaBiP0hSeuW8VlFdkjQpEMHXVujfU3Gc=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id EABC71E004B3;
-        Wed, 14 Jul 2021 12:31:00 +0300 (EEST)
-Received: from eu-shark2.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id 3DM9JJlFaMMq; Wed, 14 Jul 2021 12:31:00 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 899351E004F7;
-        Wed, 14 Jul 2021 12:31:00 +0300 (EEST)
-Received: from localhost.localdomain (unknown [211.106.132.202])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 29F451BE01CB;
-        Wed, 14 Jul 2021 12:30:58 +0300 (EEST)
-From:   Su Yue <l@damenly.su>
-To:     linux-btrfs@vger.kernel.org
-Cc:     l@damenly.su
-Subject: [RFC PATCH] btrfs: do not warn if fs_devices has no device when call btrfs_show_devname
-Date:   Wed, 14 Jul 2021 17:30:49 +0800
-Message-Id: <20210714093049.303978-1-l@damenly.su>
-X-Mailer: git-send-email 2.30.1
+        Wed, 14 Jul 2021 06:01:51 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EDEC06175F
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 02:58:59 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id q124so343970vka.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 02:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=X4keXmUsT/YmCPEpAQiFbw+FKTMdBrSQRgnOMAd4sUE=;
+        b=j795HeAmyCFE9TD9EE3p6C+0qvB9QbQrSG20De+kgkJVk4l+6wJNw7dWlh8jMgCpfC
+         yLy6aq9bQ0p30GTpJacLTZWsO+X205+IezyAlBa+8L5ORSPsDwisaR2OeCHKNPm/s/yQ
+         ZP2XHqvhhukGRNGMRajxHWihr8v+LzGLM7j0Cb1igQymbbSWcN0f5q1H4xTjPFBK7SfY
+         ByJtuKUdo7g+u+6zoiI0bvZaUSsOtSsWXCXXGA+KikcFn+f3StV6c3qEcJ6GfJmhRuFe
+         Qco/9m38Y4HpOCcdxTxCZgHdkiLfsjJj8Um0iUVhbBT/Klu3UhXgdAWKeumEoqiAUA+U
+         SguQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=X4keXmUsT/YmCPEpAQiFbw+FKTMdBrSQRgnOMAd4sUE=;
+        b=oK2cn8+sb95EUfErjaAjvneLV2OtkE4CefOnzmeA7Xf4FvdoRLDmhikcVM6qkGywIC
+         ykfHDxr81pONBecSa0v8IkgyJnoDXmSPHi8zZ6LqczZ5S7pR3TvXLafHfkCfGkHJkHzg
+         HWQ8JCijOpx46InE44XDi2AAHwDgMXjxpG5ze4O67Evi7zBpukWxin3zE/fQ0UTJiWKa
+         XOVWHZu05oN1SAws9AzDbg6rxaKzmRKibT/hDwroNaq/uCAkp7ap+tO8p3Ihhr2uHDM9
+         8NAlvVrEEC2iUmr6zKYkdgDAqreVREnsxdVihLWnT2tYUj1aE+27cSDwRHBi+rfA2ne+
+         Q2hg==
+X-Gm-Message-State: AOAM5339koGOz0o9TDAFrRb2/Kf9U5T22i1h+R+qelFkoWVF/cRwUeHa
+        2oc0b5XpR8GlrL70kLSPC5sUqqg1+9+i+9Xpa4U=
+X-Google-Smtp-Source: ABdhPJzn7EizQt8LzkCUqZTyMfufNMeAbuTdwvyltp7tJ/ERtvZ+LkMEjVxCRZUfbbcrPB0JSrJ9h7kYp5Vew7oOo3E=
+X-Received: by 2002:ac5:c4c1:: with SMTP id a1mr10930983vkl.18.1626256738824;
+ Wed, 14 Jul 2021 02:58:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: OK
-X-ESPOL: 885mlotPBD+kjECgQHnABwY1s0g9Uezj++a42B5YmH3mU12JfFR+Ix3M/3AFM3H44X8X
+Received: by 2002:a67:1447:0:0:0:0:0 with HTTP; Wed, 14 Jul 2021 02:58:58
+ -0700 (PDT)
+In-Reply-To: <9e4f970a-a8c5-8b96-d0bb-d527830d0d12@suse.com>
+References: <CAJ9tZB_VHc4x3hMpjW6h_3gr5tCcdK7RpOUcAdpLuR5PVpW8EQ@mail.gmail.com>
+ <110a038d-a542-dcf5-38b8-5f15ee97eb2c@tnonline.net> <2a9b53ea-fd95-5a92-34a5-3dcac304cec1@gmx.com>
+ <CAJ9tZB9X=iWvUSuyE=nPJ8Chge4E_f-9o67A-d=zt4ZAnXjeCg@mail.gmail.com> <9e4f970a-a8c5-8b96-d0bb-d527830d0d12@suse.com>
+From:   Zhenyu Wu <wuzy001@gmail.com>
+Date:   Wed, 14 Jul 2021 17:58:58 +0800
+Message-ID: <CAJ9tZB_C+RLX0oRTKuUZv0ZxGQiWOL=1EGzM=rHD0gMhgbhGmA@mail.gmail.com>
+Subject: Re: btrfs cannot be mounted or checked
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Forza <forza@tnonline.net>,
+        linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-while running btrfs/238 in my test box, the following warning occurs
-in high chance:
+```
+[  301.533172] BTRFS info (device sda2): unrecognized rescue option 'ibadro=
+ots'
+[  301.533209] BTRFS error (device sda2): open_ctree failed
+```
 
-------------[ cut here  ]------------
-WARNING: CPU: 3 PID: 481 at fs/btrfs/super.c:2509 btrfs_show_devname+0x104/0x1e8 [btrfs]
-CPU: 2 PID: 1 Comm: systemd Tainted: G        W  O 5.14.0-rc1-custom #72
-Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
-Call trace:
-  btrfs_show_devname+0x108/0x1b4 [btrfs]
-  show_mountinfo+0x234/0x2c4
-  m_show+0x28/0x34
-  seq_read_iter+0x12c/0x3c4
-  vfs_read+0x29c/0x2c8
-  ksys_read+0x80/0xec
-  __arm64_sys_read+0x28/0x34
-  invoke_syscall+0x50/0xf8
-  do_el0_svc+0x88/0x138
-  el0_svc+0x2c/0x8c
-  el0t_64_sync_handler+0x84/0xe4
-  el0t_64_sync+0x198/0x19c
----[ end trace 3efd7e5950b8af05  ]---
+Does ibadroots need a newer version of btrfs? My btrfs version is 5.10.1.
 
-It's also reproducible by creating a sprout filesystem and reading
-/proc/self/mounts in parallel.
+Thanks!
 
-The warning is produced if btrfs_show_devname() can't find any available
-device in fs_info->fs_devices->devices which is protected by RCU.
-The warning is desirable to exercise there is at least one device in the
-mounted filesystem. However, it's not always true for a sprouting fs.
-
-While a new device is being added into fs to be sprouted, call stack is:
- btrfs_ioctl_add_dev
-  btrfs_init_new_device
-    btrfs_prepare_sprout
-      list_splice_init_rcu(&fs_devices->devices, &seed_devices->devices,
-      synchronize_rcu);
-    list_add_rcu(&device->dev_list, &fs_devices->devices);
-
-Looking at btrfs_prepare_sprout(), every new RCU reader will read a
-empty fs_devices->devices once synchronize_rcu() is called.
-After commit 4faf55b03823 ("btrfs: don't traverse into the seed devices
-in show_devname"), btrfs_show_devname() won't looking into
-fs_devices->seed_list even there is no device in fs_devices->devices.
-
-And Since commit 88c14590cdd6 ("btrfs: use RCU in btrfs_show_devname for
-device list traversal"), btrfs_show_devname() only uses RCU no heavy
-mutex lock for device list traversal. It read an empty
-fs_devices->devices and found no device in the list then triggers the
-warning. The commit just enlarged the window that the fs device list
-could be empty. Even btrfs_show_devname() uses mutex_lock(), there is a
-tiny chance of reading an empty devices list between mutex_unlock() in
-btrfs_prepare_sprout() and next mutex_lock() in btrfs_init_new_device().
-
-Just remove the WARN_ON(1) if there is no valid device since the least
-one device check is not suitable for the one short period of sprouting
-filesystem.
-
-Signed-off-by: Su Yue <l@damenly.su>
-
----
-Make it RFC since I wonder if there is any better solution not dropping
-the sanity check for normal fs.
----
- fs/btrfs/super.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index d07b18b2b250..34f9b1c930f8 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2503,8 +2503,6 @@ static int btrfs_show_devname(struct seq_file *m, struct dentry *root)
- 
- 	if (first_dev)
- 		seq_escape(m, rcu_str_deref(first_dev->name), " \t\n\\");
--	else
--		WARN_ON(1);
- 	rcu_read_unlock();
- 	return 0;
- }
--- 
-2.30.1
-
+On 7/14/21, Qu Wenruo <wqu@suse.com> wrote:
+>
+>
+> On 2021/7/14 =E4=B8=8B=E5=8D=884:49, Zhenyu Wu wrote:
+>> sorry for late:(
+>>
+>> I found <https://bbs.archlinux.org/viewtopic.php?id=3D233724> looks same
+>> as my situation. But in my computer (boot from live usb) `btrfs check
+>> --init-extent-tree` output a lot of non-ascii character (maybe because
+>> ansi escape code mess the terminal)
+>> after several days it outputs `7/7`and `killed`. The solution looks
+>> failed.
+>>
+>> I'm sorry because my live usb don't have smartctl :(
+>>
+>> ```
+>> $ hdparm -W0 /dev/sda
+>> /dev/sda:
+>>   setting drive write-caching to 0 (off)
+>>   write-caching =3D  0 (off)
+>> ```
+>>
+>> But now the btrfs partition still cannot be mounted.
+>>
+>> when I try to mount it with `usebackuproot`, it will output the same
+>> error message. And dmesg will output
+>> ```
+>> [250062.064785] BTRFS warning (device sda2): 'usebackuproot' is
+>> deprecated, use 'rescue=3Dusebackuproot' instead
+>> [250062.064788] BTRFS info (device sda2): trying to use backup root at
+>> mount time
+>> [250062.064789] BTRFS info (device sda2): disk space caching is enabled
+>> [250062.064790] BTRFS info (device sda2): has skinny extents
+>> [250062.208403] BTRFS info (device sda2): bdev /dev/sda2 errs: wr 0,
+>> rd 0, flush 0, corrupt 5, gen 0
+>> [250062.277045] BTRFS critical (device sda2): corrupt leaf: root=3D2
+>> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D1073741824, i=
+nvalid
+>> block group used, have 1073754112 expect [0, 1073741824)
+>
+> Looks like a bad extent tree re-initialization, a bug in btrfs-progs then=
+.
+>
+> For now, you can try to mount with "ro,rescue=3Dibadroots" to see if it
+> can be mounted RO, then rescue your data.
+>
+> Thanks,
+> Qu
+>> [250062.277048] BTRFS error (device sda2): block=3D273006592 read time
+>> tree block corruption detected
+>> [250062.291924] BTRFS critical (device sda2): corrupt leaf: root=3D2
+>> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D1073741824, i=
+nvalid
+>> block group used, have 1073754112 expect [0, 1073741824)
+>> [250062.291927] BTRFS error (device sda2): block=3D273006592 read time
+>> tree block corruption detected
+>> [250062.291943] BTRFS error (device sda2): failed to read block groups:
+>> -5
+>> [250062.292897] BTRFS error (device sda2): open_ctree failed
+>> ```
+>>
+>> If don't usebackuproot, dmesg will output the same log except the first =
+2
+>> lines.
+>>
+>> Now btrfs check can check this partition:
+>>
+>> ```
+>> $ btrfs check /dev/sda2 2>&1|tee check.txt
+>> # see attachment
+>> ```
+>>
+>> Does my disk have any hope to be rescued?
+>> thanks!
+>>
+>> On 7/11/21, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>>>
+>>>
+>>> On 2021/7/11 =E4=B8=8B=E5=8D=887:37, Forza wrote:
+>>>>
+>>>>
+>>>> On 2021-07-11 10:59, Zhenyu Wu wrote:
+>>>>> Sorry for my disturbance.
+>>>>> After a dirty reboot because of a computer crash, my btrfs partition
+>>>>> cannot be mounted. The same thing happened before, but now `btrfs
+>>>>> rescue zero-log` cannot work.
+>>>>> ```
+>>>>> $ uname -r
+>>>>> 5.10.27-gentoo-x86_64
+>>>>> $ btrfs rescue zero-log /dev/sda2
+>>>>> Clearing log on /dev/sda2, previous log_root 0, level 0
+>>>>> $ mount /dev/sda2 /mnt/gentoo
+>>>>> mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
+>>>>> /dev/sda2, missing codepage or helper program, or other error.
+>>>>> $ btrfs check /dev/sda2
+>>>>> parent transid verify failed on 34308096 wanted 962175 found 961764
+>>>>> parent transid verify failed on 34308096 wanted 962175 found 961764
+>>>>> parent transid verify failed on 34308096 wanted 962175 found 961764
+>>>>> Ignoring transid failure
+>>>>> leaf parent key incorrect 34308096
+>>>>> ERROR: failed to read block groups: Operation not permitted
+>>>>> ERROR: cannot open file system
+>>>>> $ dmesg 2>&1|tee dmesg.txt
+>>>>> # see attachment
+>>>>> ```
+>>>>> Like `mount -o ro,usebackuproot` cannot work, too.
+>>>>>
+>>>>> Thanks for any help!
+>>>>>
+>>>>
+>>>>
+>>>> Hi!
+>>>>
+>>>> Parent transid failed is hard to recover from, as mentioned on
+>>>> https://btrfs.wiki.kernel.org/index.php/FAQ#How_do_I_recover_from_a_.2=
+2parent_transid_verify_failed.22_error.3F
+>>>>
+>>>>
+>>>> I see you have "corrupt 5" sectors in dmesg. Is your disk healthy? You
+>>>> can check with "smartctl -x /dev/sda" to determine the health.
+>>>>
+>>>> One way of avoiding this error is to disable write-cache. Parent
+>>>> transid
+>>>> failed can happen when the disk re-orders writes in its write cache
+>>>> before flushing to disk. This violates barriers, but it is unfortately
+>>>> common. If you have a crash, SATA bus reset or other issues, unwritten
+>>>> content is lost. The problem here is the re-ordering. The superblock i=
+s
+>>>> written out before other metadata (which is now lost due to the crash)=
+.
+>>>
+>>> To be extra accurate, all filesysmtems have taken the re-order into
+>>> consideration.
+>>> Thus we have flush (or called barrier) command to force the disk to
+>>> write all its cache back to disk or at least non-volatile cache.
+>>>
+>>> Combined with mandatory metadata CoW, it means, no matter what the disk
+>>> re-order or not, we should only see either the newer data after the
+>>> flush, or the older data before the flush.
+>>>
+>>> But unfortunately, hardware is unreliable, sometimes even lies about it=
+s
+>>> flush command.
+>>> Thus it's possible some disks, especially some cheap RAID cards, tend t=
+o
+>>> just ignore such flush commands, thus leaves the data corrupted after a
+>>> power loss.
+>>>
+>>> Thanks,
+>>> Qu
+>>>
+>>>>
+>>>> You disable write cache with "hdparm -W0 /dev/sda". It might be worth
+>>>> adding this to a cron-job every 5 minutes or so, as the setting is not
+>>>> persistent and can get reset if the disk looses power, goes to sleep,
+>>>> etc.
+>>>
+>
+>
