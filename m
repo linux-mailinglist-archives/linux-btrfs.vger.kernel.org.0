@@ -2,558 +2,244 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AC93C8689
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 17:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC533C88B1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 18:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239524AbhGNPDR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Jul 2021 11:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231797AbhGNPDQ (ORCPT
+        id S235534AbhGNQfV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jul 2021 12:35:21 -0400
+Received: from a4-6.smtp-out.eu-west-1.amazonses.com ([54.240.4.6]:52665 "EHLO
+        a4-6.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235843AbhGNQfV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Jul 2021 11:03:16 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7953C06175F
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 08:00:23 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id r25so1148050vsk.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 08:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=P9HMRp14zPXNCwvdRKiyCox8f9c+6uCGj1UO7u/gK8w=;
-        b=M9cD1H8J5R04NhPAJoJdXzYUdxQHLi3BDVl8MF19/ZRXmP6QS3lyz/RXZNY4oWgCKe
-         cp6Y49wZknM7R869gpCaq/vAlORTJP3Oo7DzrADPSlvkNzVOqaeUoDvU12zMhe3AoEIf
-         BFmXij5Gqho1F7f/znWB462Pgw83vAawy+mqbNfZ0dTtQgJKkBZjCX/35DiHOJhnETQT
-         qmyQw03+qi32CBklMKDM/uK4w37OSGBz9OQpB7Je9kV4TcbON/hplhPEenxbhmWc6iZW
-         cIFZkBWEM1P4zsmRQ1gW3v5Oe/MbEcnZ+dOmiJtFdcrKkaNwNknH9AyvebcVHAMcdUd6
-         as8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=P9HMRp14zPXNCwvdRKiyCox8f9c+6uCGj1UO7u/gK8w=;
-        b=V38nVYLgCcwaGlM618u+D1dpq4NsI5CZjpZLeoWgGH1K0po/rCtf721/FbZ+PdtQj+
-         EFVZ6/2y7nhsWCpb2wMKJMGF/ePmvqC57Vt3Dzq79psrED6ToOQaB2MpO/Kwoc2UNMCa
-         jNawWD2Pi1hV0+P2ccq54tgfdHJcE13zwimpARNYECEnCLTfWvYlB9aQkPrclzROCUB+
-         y+HvWPlu5zwI6HaJbjWzy0246Dj5HbAfjTmcI6gBm5ccBDHsZva5WcfGf6RhdnWM84iT
-         Uthe+0Ipxz+KsOo0l4Itx/QP9gGtSO0KgLMe/pMFLSnfOC5ShoepFyQxpoiXG6RjQ7/1
-         1m7A==
-X-Gm-Message-State: AOAM532o5Yjbt1mYacMklqluAtPjAjseZ9oA6EACpnZpKXWUu1QdQ2xE
-        uYHbJZ3IFmL4W0Dc8lW1kulCkRCeN1dmTfcm49A=
-X-Google-Smtp-Source: ABdhPJwdrCbiMHVL3fBi1tVpvs/lAeFBibSMF1lTKhSRo8uP4mUvwUdb8Ebq495n1et8t/KRVBrsbvzaB7Izzb5JHJ0=
-X-Received: by 2002:a05:6102:209c:: with SMTP id h28mr14388450vsr.21.1626274822640;
- Wed, 14 Jul 2021 08:00:22 -0700 (PDT)
+        Wed, 14 Jul 2021 12:35:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=vbsgq4olmwpaxkmtpgfbbmccllr2wq3g; d=urbackup.org; t=1626280348;
+        h=From:Subject:To:References:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=kdezr35jRYueidu0+1JC0al158mRuDXJ5DJYBwRIhFM=;
+        b=qoT3DCvJ8rjlPCpstWJNi/Nf4NMo/N3T2uzLt+QV2jI2Qo4SHAj5+hvrmN/pDpCP
+        znxr/cVbnbOxsAJrAVOHXsqYOEi2ocqQzXuFxuQmLmhb18uBsnz3DXa+Mei6iAE9n2/
+        tZg55PPmmsKA6DhvB1DPKY+iJy6hUPtIqdj1kCPE=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=uku4taia5b5tsbglxyj6zym32efj7xqv; d=amazonses.com; t=1626280348;
+        h=From:Subject:To:References:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+        bh=kdezr35jRYueidu0+1JC0al158mRuDXJ5DJYBwRIhFM=;
+        b=J5D8p29tX2EODTrc15l+gzeFZMw6SOvNu4KCI1G4PYuEVrJwLG8oeU8HAA86YX7G
+        vaI4nB9NrulUV4hA0jbCLAAENnbUxsijJQMFijFtaeGfRVM4NoCtCsjXdulHVDCbYi5
+        PrS77YYjj/j6ooF1bukG/8/lbz5nvjUtkf4R2TM0=
+From:   Martin Raiber <martin@urbackup.org>
+Subject: Re: IO failure without other (device) error
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <010201795331ffe5-6933accd-b72f-45f0-be86-c2832b6fe306-000000@eu-west-1.amazonses.com>
+ <0102017a1fead031-e0b49bda-297e-42f8-8fde-5567c5cfdec9-000000@eu-west-1.amazonses.com>
+ <0102017a5e38aa40-fb2774c8-5be1-4022-abfa-c59fe23f46a3-000000@eu-west-1.amazonses.com>
+ <4e6c3598-92b4-30d6-3df8-6b70badbd893@gmx.com>
+ <0102017a631abd46-c29f6d05-e5b2-44b1-a945-53f43026154f-000000@eu-west-1.amazonses.com>
+ <6422009e-be80-f753-2243-2a13178a1763@gmx.com>
+ <0102017a680d637c-4a958f96-dd8b-433d-84a6-8fc6a84abf47-000000@eu-west-1.amazonses.com>
+ <a5357b44-6c1c-3174-a76c-09f01802386a@gmx.com>
+ <0102017a86e63e18-a5023d15-0b20-43e8-b71c-6dd241451179-000000@eu-west-1.amazonses.com>
+ <75a45aff-a75f-a6ec-1a7b-6ea4d89071bb@gmx.com>
+Message-ID: <0102017aa5dcc902-1d1e5407-152a-4e8e-be78-9fd5d5c68cc9-000000@eu-west-1.amazonses.com>
+Date:   Wed, 14 Jul 2021 16:32:28 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: by 2002:a67:1447:0:0:0:0:0 with HTTP; Wed, 14 Jul 2021 08:00:22
- -0700 (PDT)
-In-Reply-To: <CAJ9tZB-O+xphuHJ-DhpjvoFFuFAJrSpoMuurx_44s040YWBtqQ@mail.gmail.com>
-References: <CAJ9tZB_VHc4x3hMpjW6h_3gr5tCcdK7RpOUcAdpLuR5PVpW8EQ@mail.gmail.com>
- <110a038d-a542-dcf5-38b8-5f15ee97eb2c@tnonline.net> <2a9b53ea-fd95-5a92-34a5-3dcac304cec1@gmx.com>
- <CAJ9tZB9X=iWvUSuyE=nPJ8Chge4E_f-9o67A-d=zt4ZAnXjeCg@mail.gmail.com>
- <9e4f970a-a8c5-8b96-d0bb-d527830d0d12@suse.com> <CAJ9tZB_C+RLX0oRTKuUZv0ZxGQiWOL=1EGzM=rHD0gMhgbhGmA@mail.gmail.com>
- <c0024688-3361-7e15-21d1-c55bc16fa83e@gmx.com> <CAJ9tZB-O+xphuHJ-DhpjvoFFuFAJrSpoMuurx_44s040YWBtqQ@mail.gmail.com>
-From:   Zhenyu Wu <wuzy001@gmail.com>
-Date:   Wed, 14 Jul 2021 23:00:22 +0800
-Message-ID: <CAJ9tZB-vAaoON-ewoEXLx6qoPS_7cZsq3Rx=pWOaN-dE1B82cw@mail.gmail.com>
-Subject: Re: btrfs cannot be mounted or checked
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, Forza <forza@tnonline.net>,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <75a45aff-a75f-a6ec-1a7b-6ea4d89071bb@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+X-SES-Outgoing: 2021.07.14-54.240.4.6
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-smartctl exists in archlinux live USB.
-
-```
-# smartctl -x /dev/sda
-smartctl 7.2 2020-12-30 r5155 [x86_64-linux-5.12.13-arch1-2] (local build)
-Copyright (C) 2002-20, Bruce Allen, Christian Franke, www.smartmontools.org
-
-=3D=3D=3D START OF INFORMATION SECTION =3D=3D=3D
-Model Family:     Seagate Laptop HDD
-Device Model:     ST500LT012-1DG142
-Serial Number:    SBY85S8Y
-LU WWN Device Id: 5 000c50 0a84e3995
-Firmware Version: 0002SDM1
-User Capacity:    500,107,862,016 bytes [500 GB]
-Sector Sizes:     512 bytes logical, 4096 bytes physical
-Rotation Rate:    5400 rpm
-Form Factor:      2.5 inches
-Device is:        In smartctl database [for details use: -P show]
-ATA Version is:   ATA8-ACS T13/1699-D revision 4
-SATA Version is:  SATA 3.0, 6.0 Gb/s (current: 6.0 Gb/s)
-Local Time is:    Wed Jul 14 14:53:11 2021 UTC
-SMART support is: Available - device has SMART capability.
-SMART support is: Enabled
-AAM feature is:   Unavailable
-APM level is:     128 (minimum power consumption without standby)
-Rd look-ahead is: Enabled
-Write cache is:   Enabled
-DSN feature is:   Unavailable
-ATA Security is:  Disabled, frozen [SEC2]
-Wt Cache Reorder: Enabled
-
-=3D=3D=3D START OF READ SMART DATA SECTION =3D=3D=3D
-SMART overall-health self-assessment test result: PASSED
-
-General SMART Values:
-Offline data collection status:  (0x00)	Offline data collection activity
-					was never started.
-					Auto Offline Data Collection: Disabled.
-Self-test execution status:      (   0)	The previous self-test routine comp=
-leted
-					without error or no self-test has ever
-					been run.
-Total time to complete Offline
-data collection: 		(    0) seconds.
-Offline data collection
-capabilities: 			 (0x73) SMART execute Offline immediate.
-					Auto Offline data collection on/off support.
-					Suspend Offline collection upon new
-					command.
-					No Offline surface scan supported.
-					Self-test supported.
-					Conveyance Self-test supported.
-					Selective Self-test supported.
-SMART capabilities:            (0x0003)	Saves SMART data before entering
-					power-saving mode.
-					Supports SMART auto save timer.
-Error logging capability:        (0x01)	Error logging supported.
-					General Purpose Logging supported.
-Short self-test routine
-recommended polling time: 	 (   1) minutes.
-Extended self-test routine
-recommended polling time: 	 (  99) minutes.
-Conveyance self-test routine
-recommended polling time: 	 (   2) minutes.
-SCT capabilities: 	       (0x1035)	SCT Status supported.
-					SCT Feature Control supported.
-					SCT Data Table supported.
-
-SMART Attributes Data Structure revision number: 10
-Vendor Specific SMART Attributes with Thresholds:
-ID# ATTRIBUTE_NAME          FLAGS    VALUE WORST THRESH FAIL RAW_VALUE
-  1 Raw_Read_Error_Rate     POSR--   106   099   006    -    10870616
-  3 Spin_Up_Time            PO----   099   098   000    -    0
-  4 Start_Stop_Count        -O--CK   094   094   020    -    6612
-  5 Reallocated_Sector_Ct   PO--CK   100   100   036    -    0
-  7 Seek_Error_Rate         POSR--   073   060   030    -    60468900788
-  9 Power_On_Hours          -O--CK   091   091   000    -    8240 (177 169 =
-0)
- 10 Spin_Retry_Count        PO--C-   100   100   097    -    0
- 12 Power_Cycle_Count       -O--CK   099   099   020    -    1958
-184 End-to-End_Error        -O--CK   100   100   099    -    0
-187 Reported_Uncorrect      -O--CK   100   100   000    -    0
-188 Command_Timeout         -O--CK   100   099   000    -    1
-189 High_Fly_Writes         -O-RCK   100   100   000    -    0
-190 Airflow_Temperature_Cel -O---K   068   056   045    -    32 (Min/Max 31=
-/33)
-191 G-Sense_Error_Rate      -O--CK   100   100   000    -    1011
-192 Power-Off_Retract_Count -O--CK   100   100   000    -    3
-193 Load_Cycle_Count        -O--CK   001   001   000    -    486026
-194 Temperature_Celsius     -O---K   032   044   000    -    32 (0 7 0 0 0)
-197 Current_Pending_Sector  -O--C-   100   100   000    -    0
-198 Offline_Uncorrectable   ----C-   100   100   000    -    0
-199 UDMA_CRC_Error_Count    -OSRCK   200   200   000    -    0
-240 Head_Flying_Hours       ------   093   093   000    -    6674 (140 75 0=
-)
-241 Total_LBAs_Written      ------   100   253   000    -    48132007448
-242 Total_LBAs_Read         ------   100   253   000    -    89410660754
-254 Free_Fall_Sensor        -O--CK   100   100   000    -    0
-                            ||||||_ K auto-keep
-                            |||||__ C event count
-                            ||||___ R error rate
-                            |||____ S speed/performance
-                            ||_____ O updated online
-                            |______ P prefailure warning
-
-General Purpose Log Directory Version 1
-SMART           Log Directory Version 1 [multi-sector log support]
-Address    Access  R/W   Size  Description
-0x00       GPL,SL  R/O      1  Log Directory
-0x01           SL  R/O      1  Summary SMART error log
-0x02           SL  R/O      5  Comprehensive SMART error log
-0x03       GPL     R/O      5  Ext. Comprehensive SMART error log
-0x06           SL  R/O      1  SMART self-test log
-0x07       GPL     R/O      1  Extended self-test log
-0x09           SL  R/W      1  Selective self-test log
-0x10       GPL     R/O      1  NCQ Command Error log
-0x11       GPL     R/O      1  SATA Phy Event Counters log
-0x21       GPL     R/O      1  Write stream error log
-0x22       GPL     R/O      1  Read stream error log
-0x80-0x9f  GPL,SL  R/W     16  Host vendor specific log
-0xa1       GPL,SL  VS      20  Device vendor specific log
-0xa2       GPL     VS    2248  Device vendor specific log
-0xa8       GPL,SL  VS      65  Device vendor specific log
-0xa9       GPL,SL  VS       1  Device vendor specific log
-0xab       GPL     VS       1  Device vendor specific log
-0xb0       GPL     VS    2864  Device vendor specific log
-0xbd-0xbf  GPL     VS   65535  Device vendor specific log
-0xc0       GPL,SL  VS       1  Device vendor specific log
-0xc1       GPL,SL  VS      10  Device vendor specific log
-0xc3       GPL,SL  VS       8  Device vendor specific log
-0xc4       GPL,SL  VS      18  Device vendor specific log
-0xe0       GPL,SL  R/W      1  SCT Command/Status
-0xe1       GPL,SL  R/W      1  SCT Data Transfer
-
-SMART Extended Comprehensive Error Log Version: 1 (5 sectors)
-No Errors Logged
-
-SMART Extended Self-test Log Version: 1 (1 sectors)
-Num  Test_Description    Status                  Remaining
-LifeTime(hours)  LBA_of_first_error
-# 1  Short offline       Completed without error       00%      8079       =
-  -
-# 2  Short offline       Interrupted (host reset)      00%       663       =
-  -
-# 3  Extended offline    Completed without error       00%        27       =
-  -
-# 4  Short offline       Completed without error       00%        23       =
-  -
-# 5  Short offline       Completed without error       00%         0       =
-  -
-
-SMART Selective self-test log data structure revision number 1
- SPAN  MIN_LBA  MAX_LBA  CURRENT_TEST_STATUS
-    1        0        0  Not_testing
-    2        0        0  Not_testing
-    3        0        0  Not_testing
-    4        0        0  Not_testing
-    5        0        0  Not_testing
-Selective self-test flags (0x0):
-  After scanning selected spans, do NOT read-scan remainder of disk.
-If Selective self-test is pending on power-up, resume after 0 minute delay.
-
-SCT Status Version:                  3
-SCT Version (vendor specific):       522 (0x020a)
-Device State:                        Active (0)
-Current Temperature:                    33 Celsius
-Power Cycle Min/Max Temperature:     31/33 Celsius
-Lifetime    Min/Max Temperature:      7/46 Celsius
-Specified Max Operating Temperature:    32 Celsius
-Under/Over Temperature Limit Count:   0/0
-
-SCT Temperature History Version:     2
-Temperature Sampling Period:         1 minute
-Temperature Logging Interval:        30 minutes
-Min/Max recommended Temperature:     14/55 Celsius
-Min/Max Temperature Limit:           10/60 Celsius
-Temperature History Size (Index):    128 (42)
-
-Index    Estimated Time   Temperature Celsius
-  43    2021-07-11 23:00    41  **********************
- ...    ..( 27 skipped).    ..  **********************
-  71    2021-07-12 13:00    41  **********************
-  72    2021-07-12 13:30    42  ***********************
- ...    ..( 23 skipped).    ..  ***********************
-  96    2021-07-13 01:30    42  ***********************
-  97    2021-07-13 02:00    41  **********************
- ...    ..( 15 skipped).    ..  **********************
- 113    2021-07-13 10:00    41  **********************
- 114    2021-07-13 10:30    42  ***********************
- ...    ..(  5 skipped).    ..  ***********************
- 120    2021-07-13 13:30    42  ***********************
- 121    2021-07-13 14:00    43  ************************
- ...    ..(  3 skipped).    ..  ************************
- 125    2021-07-13 16:00    43  ************************
- 126    2021-07-13 16:30    42  ***********************
- 127    2021-07-13 17:00    42  ***********************
-   0    2021-07-13 17:30    42  ***********************
-   1    2021-07-13 18:00    41  **********************
-   2    2021-07-13 18:30    42  ***********************
- ...    ..( 10 skipped).    ..  ***********************
-  13    2021-07-14 00:00    42  ***********************
-  14    2021-07-14 00:30    41  **********************
- ...    ..(  9 skipped).    ..  **********************
-  24    2021-07-14 05:30    41  **********************
-  25    2021-07-14 06:00    44  *************************
- ...    ..(  2 skipped).    ..  *************************
-  28    2021-07-14 07:30    44  *************************
-  29    2021-07-14 08:00    37  ******************
-  30    2021-07-14 08:30    39  ********************
-  31    2021-07-14 09:00    42  ***********************
-  32    2021-07-14 09:30    43  ************************
-  33    2021-07-14 10:00    43  ************************
-  34    2021-07-14 10:30    43  ************************
-  35    2021-07-14 11:00    35  ****************
-  36    2021-07-14 11:30    35  ****************
-  37    2021-07-14 12:00    37  ******************
-  38    2021-07-14 12:30    34  ***************
-  39    2021-07-14 13:00     ?  -
-  40    2021-07-14 13:30    31  ************
-  41    2021-07-14 14:00     ?  -
-  42    2021-07-14 14:30    31  ************
-
-SCT Error Recovery Control command not supported
-
-Device Statistics (GP/SMART Log 0x04) not supported
-
-Pending Defects log (GP Log 0x0c) not supported
-
-SATA Phy Event Counters (GP Log 0x11)
-ID      Size     Value  Description
-0x000a  2            3  Device-to-host register FISes sent due to a COMRESE=
-T
-0x0001  2            0  Command failed due to ICRC error
-0x0003  2            0  R_ERR response for device-to-host data FIS
-0x0004  2            0  R_ERR response for host-to-device data FIS
-0x0006  2            0  R_ERR response for device-to-host non-data FIS
-0x0007  2            0  R_ERR response for host-to-device non-data FIS
-```
-
-Thanks!
-
-On 7/14/21, Zhenyu Wu <wuzy001@gmail.com> wrote:
-> I found btrfs-5.12 in archlinux (surprisedly)
+On 09.07.2021 01:32 Qu Wenruo wrote:
 >
-> When I try to mount with ro, rescue=3Dibadroots, I will get
-> ```
-> wrong fs type, bad option, bad superblock on
-> /dev/sda2, missing codepage or helper program, or other error.
-> ```
->
-> dmesg will output
-> ```
-> [ 1087.646701] BTRFS info (device sda2): ignoring bad roots
-> [ 1087.646725] BTRFS info (device sda2): disk space caching is enabled
-> [ 1087.646735] BTRFS info (device sda2): has skinny extents
-> [ 1087.770464] BTRFS info (device sda2): bdev /dev/sda2 errs: wr 0, rd
-> 0, flush 0, corrupt 5, gen 0
-> [ 1087.834263] BTRFS critical (device sda2): corrupt leaf: root=3D2
-> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D1073741824, in=
-valid
-> block group used, have 1073754112 expect [0, 1073741824)
-> [ 1087.834550] BTRFS error (device sda2): block=3D273006592 read time
-> tree block corruption detected
-> [ 1087.848452] BTRFS critical (device sda2): corrupt leaf: root=3D2
-> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D1073741824, in=
-valid
-> block group used, have 1073754112 expect [0, 1073741824)
-> [ 1087.848762] BTRFS error (device sda2): block=3D273006592 read time
-> tree block corruption detected
-> [ 1087.849006] BTRFS error (device sda2): failed to read block groups: -5
-> [ 1087.851674] BTRFS error (device sda2): open_ctree failed
-> ```
-> does it mean my extent tree is still intact? so I need to btrfs ins
-> dump-tree, btrfs-map-logical?
-> thanks!
->
-> On 7/14/21, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>
->>
->> On 2021/7/14 =E4=B8=8B=E5=8D=885:58, Zhenyu Wu wrote:
->>> ```
->>> [  301.533172] BTRFS info (device sda2): unrecognized rescue option
->>> 'ibadroots'
->>> [  301.533209] BTRFS error (device sda2): open_ctree failed
->>> ```
+> [...]
+>>> My recommendation for debugging is to add extra trace_printk() on
+>>> btree_releasepage() to see when a metadata page really get freed, and
+>>> read_extent_buffer_pages() to see what's the possible race.
 >>>
->>> Does ibadroots need a newer version of btrfs? My btrfs version is
->>> 5.10.1.
->>
->> Oh, that support is added in v5.11...
->>
->> You may want to grab a liveCD from some rolling release.
->>
->> But even with v5.11, it may not help much, as that option won't help if
->> your extent tree is still intact.
->>
->> You may want to use "btrfs ins dump-tree" to locate your extent tree,
->> then corrupt the extent tree root completely (using btrfs-map-logical to
->> get the physical offset, then dd to destory the first 4 bytes of both
->> copy), then the option would properly work.
->>
->> Thanks,
->> Qu
+>>> Another idea is to add extra debug output in end_bio_extent_readpage()
+>>> for metadata pages.
 >>>
->>> Thanks!
+>>> As I'm still wondering if there is something wrong detected by btrfs
+>>> module but without any error message.
 >>>
->>> On 7/14/21, Qu Wenruo <wqu@suse.com> wrote:
->>>>
->>>>
->>>> On 2021/7/14 =E4=B8=8B=E5=8D=884:49, Zhenyu Wu wrote:
->>>>> sorry for late:(
->>>>>
->>>>> I found <https://bbs.archlinux.org/viewtopic.php?id=3D233724> looks s=
-ame
->>>>> as my situation. But in my computer (boot from live usb) `btrfs check
->>>>> --init-extent-tree` output a lot of non-ascii character (maybe becaus=
-e
->>>>> ansi escape code mess the terminal)
->>>>> after several days it outputs `7/7`and `killed`. The solution looks
->>>>> failed.
->>>>>
->>>>> I'm sorry because my live usb don't have smartctl :(
->>>>>
->>>>> ```
->>>>> $ hdparm -W0 /dev/sda
->>>>> /dev/sda:
->>>>>    setting drive write-caching to 0 (off)
->>>>>    write-caching =3D  0 (off)
->>>>> ```
->>>>>
->>>>> But now the btrfs partition still cannot be mounted.
->>>>>
->>>>> when I try to mount it with `usebackuproot`, it will output the same
->>>>> error message. And dmesg will output
->>>>> ```
->>>>> [250062.064785] BTRFS warning (device sda2): 'usebackuproot' is
->>>>> deprecated, use 'rescue=3Dusebackuproot' instead
->>>>> [250062.064788] BTRFS info (device sda2): trying to use backup root a=
-t
->>>>> mount time
->>>>> [250062.064789] BTRFS info (device sda2): disk space caching is
->>>>> enabled
->>>>> [250062.064790] BTRFS info (device sda2): has skinny extents
->>>>> [250062.208403] BTRFS info (device sda2): bdev /dev/sda2 errs: wr 0,
->>>>> rd 0, flush 0, corrupt 5, gen 0
->>>>> [250062.277045] BTRFS critical (device sda2): corrupt leaf: root=3D2
->>>>> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D1073741824=
-, invalid
->>>>> block group used, have 1073754112 expect [0, 1073741824)
->>>>
->>>> Looks like a bad extent tree re-initialization, a bug in btrfs-progs
->>>> then.
->>>>
->>>> For now, you can try to mount with "ro,rescue=3Dibadroots" to see if i=
-t
->>>> can be mounted RO, then rescue your data.
->>>>
->>>> Thanks,
->>>> Qu
->>>>> [250062.277048] BTRFS error (device sda2): block=3D273006592 read tim=
-e
->>>>> tree block corruption detected
->>>>> [250062.291924] BTRFS critical (device sda2): corrupt leaf: root=3D2
->>>>> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D1073741824=
-, invalid
->>>>> block group used, have 1073754112 expect [0, 1073741824)
->>>>> [250062.291927] BTRFS error (device sda2): block=3D273006592 read tim=
-e
->>>>> tree block corruption detected
->>>>> [250062.291943] BTRFS error (device sda2): failed to read block
->>>>> groups:
->>>>> -5
->>>>> [250062.292897] BTRFS error (device sda2): open_ctree failed
->>>>> ```
->>>>>
->>>>> If don't usebackuproot, dmesg will output the same log except the
->>>>> first
->>>>> 2
->>>>> lines.
->>>>>
->>>>> Now btrfs check can check this partition:
->>>>>
->>>>> ```
->>>>> $ btrfs check /dev/sda2 2>&1|tee check.txt
->>>>> # see attachment
->>>>> ```
->>>>>
->>>>> Does my disk have any hope to be rescued?
->>>>> thanks!
->>>>>
->>>>> On 7/11/21, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>>>>>
->>>>>>
->>>>>> On 2021/7/11 =E4=B8=8B=E5=8D=887:37, Forza wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 2021-07-11 10:59, Zhenyu Wu wrote:
->>>>>>>> Sorry for my disturbance.
->>>>>>>> After a dirty reboot because of a computer crash, my btrfs
->>>>>>>> partition
->>>>>>>> cannot be mounted. The same thing happened before, but now `btrfs
->>>>>>>> rescue zero-log` cannot work.
->>>>>>>> ```
->>>>>>>> $ uname -r
->>>>>>>> 5.10.27-gentoo-x86_64
->>>>>>>> $ btrfs rescue zero-log /dev/sda2
->>>>>>>> Clearing log on /dev/sda2, previous log_root 0, level 0
->>>>>>>> $ mount /dev/sda2 /mnt/gentoo
->>>>>>>> mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
->>>>>>>> /dev/sda2, missing codepage or helper program, or other error.
->>>>>>>> $ btrfs check /dev/sda2
->>>>>>>> parent transid verify failed on 34308096 wanted 962175 found 96176=
-4
->>>>>>>> parent transid verify failed on 34308096 wanted 962175 found 96176=
-4
->>>>>>>> parent transid verify failed on 34308096 wanted 962175 found 96176=
-4
->>>>>>>> Ignoring transid failure
->>>>>>>> leaf parent key incorrect 34308096
->>>>>>>> ERROR: failed to read block groups: Operation not permitted
->>>>>>>> ERROR: cannot open file system
->>>>>>>> $ dmesg 2>&1|tee dmesg.txt
->>>>>>>> # see attachment
->>>>>>>> ```
->>>>>>>> Like `mount -o ro,usebackuproot` cannot work, too.
->>>>>>>>
->>>>>>>> Thanks for any help!
->>>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> Hi!
->>>>>>>
->>>>>>> Parent transid failed is hard to recover from, as mentioned on
->>>>>>> https://btrfs.wiki.kernel.org/index.php/FAQ#How_do_I_recover_from_a=
-_.22parent_transid_verify_failed.22_error.3F
->>>>>>>
->>>>>>>
->>>>>>> I see you have "corrupt 5" sectors in dmesg. Is your disk healthy?
->>>>>>> You
->>>>>>> can check with "smartctl -x /dev/sda" to determine the health.
->>>>>>>
->>>>>>> One way of avoiding this error is to disable write-cache. Parent
->>>>>>> transid
->>>>>>> failed can happen when the disk re-orders writes in its write cache
->>>>>>> before flushing to disk. This violates barriers, but it is
->>>>>>> unfortately
->>>>>>> common. If you have a crash, SATA bus reset or other issues,
->>>>>>> unwritten
->>>>>>> content is lost. The problem here is the re-ordering. The superbloc=
-k
->>>>>>> is
->>>>>>> written out before other metadata (which is now lost due to the
->>>>>>> crash).
->>>>>>
->>>>>> To be extra accurate, all filesysmtems have taken the re-order into
->>>>>> consideration.
->>>>>> Thus we have flush (or called barrier) command to force the disk to
->>>>>> write all its cache back to disk or at least non-volatile cache.
->>>>>>
->>>>>> Combined with mandatory metadata CoW, it means, no matter what the
->>>>>> disk
->>>>>> re-order or not, we should only see either the newer data after the
->>>>>> flush, or the older data before the flush.
->>>>>>
->>>>>> But unfortunately, hardware is unreliable, sometimes even lies about
->>>>>> its
->>>>>> flush command.
->>>>>> Thus it's possible some disks, especially some cheap RAID cards, ten=
-d
->>>>>> to
->>>>>> just ignore such flush commands, thus leaves the data corrupted afte=
-r
->>>>>> a
->>>>>> power loss.
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>>
->>>>>>>
->>>>>>> You disable write cache with "hdparm -W0 /dev/sda". It might be
->>>>>>> worth
->>>>>>> adding this to a cron-job every 5 minutes or so, as the setting is
->>>>>>> not
->>>>>>> persistent and can get reset if the disk looses power, goes to
->>>>>>> sleep,
->>>>>>> etc.
->>>>>>
->>>>
->>>>
+>>> In that case, we definitely want to add a proper error message.
 >>
+>> I guess this would be a proper error message:
+>>
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -6505,8 +6505,14 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
+>>          for (i = 0; i < num_pages; i++) {
+>>                  page = eb->pages[i];
+>>                  wait_on_page_locked(page);
+>> -               if (!PageUptodate(page))
+>> +               if (!PageUptodate(page)) {
+>> +                       btrfs_err_rl(eb->fs_info,
+>> +                               "error reading extent buffer "
+>> +                               "start %llu len %lu PageError %d",
+>> +                               eb->start, eb->len,
+>> +                               PageError(page) ? 1 : 0);
 >
+> What I originally mean is, in end_bio_extent_readpage() we may hit a
+> case where @uptodate is 0, but we don't have any error message for it.
+>
+> Your error message is fine, it has PageError() to indicate whether we're
+> really hitting a case like above, or someone is releasing the metadata
+> page improperly.
+>
+> If combined with the following diff, it can rule out or catch the error
+> in metadata read path directly, as I'm still wondering if it's error
+> from the bio, or the error from improperly released metadata pages.
+>
+> Thanks,
+> Qu
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index b5f5de7e4a29..b1f8862ba539 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -3047,6 +3047,16 @@ static void end_bio_extent_readpage(struct bio *bio)
+>                 if (likely(uptodate))
+>                         goto readpage_ok;
+>
+> +               if (!is_data_inode(inode)) {
+> +                       struct extent_buffer *eb;
+> +
+> +                       eb = (struct extent_buffer *)page->private;
+> +                       btrfs_err_rl(fs_info,
+> +               "metadata read error, page=%llu eb=%llu bio_status=%d
+> ret=%d",
+> +                                    page_offset(page), eb->start,
+> +                                    bio->bi_status, ret);
+> +               }
+> +
+>                 if (is_data_inode(inode)) {
+>                         /*
+>                          * btrfs_submit_read_repair() will handle all
+> the good
+>
+Added this to the kernel as well, but it is not hit:
+
+[199571.686344] BTRFS error (device dm-0): error reading extent buffer start 97231241216 len 16384 PageError 0
+[199571.686423] ------------[ cut here ]------------
+[199571.686432] WARNING: CPU: 22 PID: 3451967 at fs/btrfs/extent_io.c:5611 read_extent_buffer_pages+0x308/0x380
+[199571.686433] Modules linked in: zram bcache crc64 loop dm_crypt bfq xfs dm_mod st sr_mod cdrom bridge stp llc intel_powerclamp coretemp kvm_intel kvm snd_pcm snd_timer snd dcdbas irqbypass soundcore mgag200 serio_raw pcspkr drm_kms_helper evdev joydev iTCO_wdt iTCO_vendor_support i2c_algo_bit i7core_edac sg ipmi_si ipmi_devintf ipmi_msghandler wmi acpi_power_meter button ib_iser rdma_cm iw_cm ib_cm ib_core iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi drm configfs ip_tables x_tables autofs4 raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx raid1 raid0 multipath linear md_mod ses enclosure sd_mod hid_generic usbhid hid crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cryptd glue_helper ahci ehci_pci uhci_hcd libahci psmouse mpt3sas ehci_hcd raid_class lpc_ich libata nvme scsi_transport_sas mfd_core usbcore nvme_core t10_pi scsi_mod bnx2
+[199571.686505] CPU: 22 PID: 3451967 Comm: kworker/u49:9 Tainted: G          I       5.10.48 #1
+[199571.686506] Hardware name: Dell Inc. PowerEdge R510/0DPRKF, BIOS 1.13.0 03/02/2018
+[199571.686510] Workqueue: btrfs-endio-write btrfs_work_helper
+[199571.686513] RIP: 0010:read_extent_buffer_pages+0x308/0x380
+[199571.686516] Code: e9 8a fe ff ff 85 c9 75 05 83 fb 01 74 32 41 89 ce eb b3 48 c7 c6 b0 54 e4 81 48 c7 c7 80 d5 65 82 e8 2c b0 1a 00 85 c0 75 65 <0f> 0b 41 be fb ff ff ff 48 83 04 24 08 48 8b 04 24 4c 39 e0 74 86
+[199571.686517] RSP: 0018:ffffc9004ad93a58 EFLAGS: 00010282
+[199571.686519] RAX: 0000000000000000 RBX: ffffea001fbbc300 RCX: 0000000000000000
+[199571.686520] RDX: 0000000000000000 RSI: ffff888e13cd8b80 RDI: ffff888e13cd8b80
+[199571.686521] RBP: ffff888b616af7b8 R08: ffffffff825e21c8 R09: 0000000000027ffb
+[199571.686522] R10: 00000000ffff8000 R11: 3fffffffffffffff R12: ffff888b616af860
+[199571.686523] R13: ffffea0031592dc0 R14: 0000000000000000 R15: ffff888b616af860
+[199571.686525] FS:  0000000000000000(0000) GS:ffff888e13cc0000(0000) knlGS:0000000000000000
+[199571.686526] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[199571.686527] CR2: 00007f034897600a CR3: 000000011f344006 CR4: 00000000000206e0
+[199571.686528] Call Trace:
+[199571.686536]  btree_read_extent_buffer_pages+0x66/0x130
+[199571.686539]  read_tree_block+0x36/0x60
+[199571.686543]  read_block_for_search.isra.0+0x1ab/0x360
+[199571.686547]  ? ttwu_do_wakeup+0x17/0x130
+[199571.686550]  btrfs_search_slot+0x232/0x970
+[199571.686552]  btrfs_lookup_csum+0x75/0x170
+[199571.686557]  ? kmem_cache_alloc+0xda/0x1d0
+[199571.686559]  btrfs_csum_file_blocks+0x17d/0x690
+[199571.686561]  ? insert_reserved_file_extent+0x1cb/0x210
+[199571.686564]  btrfs_finish_ordered_io.isra.0+0x49d/0x8d0
+[199571.686567]  btrfs_work_helper+0xe0/0x310
+[199571.686572]  process_one_work+0x1b6/0x350
+[199571.686574]  worker_thread+0x53/0x3e0
+[199571.686575]  ? process_one_work+0x350/0x350
+[199571.686577]  kthread+0x11b/0x140
+[199571.686579]  ? __kthread_bind_mask+0x60/0x60
+[199571.686584]  ret_from_fork+0x1f/0x30
+[199571.686586] ---[ end trace 05ee2703b7a5772f ]---
+
+PageError isn't set es well, so it looks like the page is unlocked without setting an error but not setting Uptodate?
+
+(I left the WARN_ON in to get a call trace and it retries so there is no further error message now for my kernel)
+>
+>>                          ret = -EIO;
+>> +               }
+>>          }
+>>
+>>          return ret;
+>>
+>> I haven't added this to the kernel I'm running yet. It currently still has a WARN_ON instead of the error message.
+>>
+>> I also added the retry like this:
+>>
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -385,6 +385,7 @@ static int btree_read_extent_buffer_pages(struct extent_buffer *eb,
+>>          int num_copies = 0;
+>>          int mirror_num = 0;
+>>          int failed_mirror = 0;
+>> +       int tries = 2;
+>>
+>>          io_tree = &BTRFS_I(fs_info->btree_inode)->io_tree;
+>>          while (1) {
+>> @@ -403,6 +404,10 @@ static int btree_read_extent_buffer_pages(struct extent_buffer *eb,
+>>
+>>                  num_copies = btrfs_num_copies(fs_info,
+>>                                                eb->start, eb->len);
+>> +
+>> +               if (num_copies == 1 && tries-- > 0)
+>> +                       continue;
+>> +
+>>                  if (num_copies == 1)
+>>                          break;
+>>
+>> On Tuesday I got this:
+>>
+>> [Tue Jul  6 14:49:17 2021] ------------[ cut here ]------------
+>> [Tue Jul  6 14:49:17 2021] WARNING: CPU: 13 PID: 2265463 at fs/btrfs/extent_io.c:5597 read_extent_buffer_pages+0x346/0x360
+>> [Tue Jul  6 14:49:17 2021] Modules linked in: zram bcache crc64 loop dm_crypt bfq xfs dm_mod st sr_mod cdrom bridge stp llc intel_powerclamp coretemp snd_pcm kvm_intel snd_timer snd mgag200 kvm soundcore drm_kms_helper iTCO_wdt dcdbas irqbypass pcspkr serio_raw iTCO_vendor_support i2c_algo_bit evdev joydev i7core_edac sg ipmi_si ipmi_devintf ipmi_msghandler wmi acpi_power_meter button ib_iser rdma_cm iw_cm ib_cm ib_core iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi drm configfs ip_tables x_tables autofs4 raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx raid0 multipath linear raid1 md_mod ses enclosure sd_mod hid_generic usbhid hid crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cryptd glue_helper ahci libahci uhci_hcd ehci_pci psmouse mpt3sas ehci_hcd lpc_ich raid_class libata nvme scsi_transport_sas mfd_core nvme_core usbcore t10_pi scsi_mod bnx2
+>> [Tue Jul  6 14:49:17 2021] CPU: 13 PID: 2265463 Comm: btrfs Tainted: G          I       5.10.47 #1
+>> [Tue Jul  6 14:49:17 2021] Hardware name: Dell Inc. PowerEdge R510/0DPRKF, BIOS 1.13.0 03/02/2018
+>> [Tue Jul  6 14:49:17 2021] RIP: 0010:read_extent_buffer_pages+0x346/0x360
+>> [Tue Jul  6 14:49:17 2021] Code: 48 8b 43 08 a8 01 48 8d 78 ff 48 0f 44 fb 31 f6 e8 cf d0 db ff 48 8b 43 08 48 8d 50 ff a8 01 48 0f 45 da 48 8b 03 a8 04 75 ab <0f> 0b 41 be fb ff ff ff eb a1 e8 4b af 56 00 66 66 2e 0f 1f 84 00
+>> [Tue Jul  6 14:49:17 2021] RSP: 0018:ffffc9007562bb40 EFLAGS: 00010246
+>> [Tue Jul  6 14:49:17 2021] RAX: 06ffff80000020e3 RBX: ffffea00095a5fc0 RCX: 0000000000000000
+>> [Tue Jul  6 14:49:17 2021] RDX: dead0000000000ff RSI: 0000000000000020 RDI: ffff888713babd40
+>> [Tue Jul  6 14:49:17 2021] RBP: ffff88869a7d6f78 R08: 0000f5a746752ed4 R09: 0000000000000483
+>> [Tue Jul  6 14:49:17 2021] R10: 0000000000000001 R11: 0000000000000000 R12: ffff88869a7d7020
+>> [Tue Jul  6 14:49:17 2021] R13: ffffea0005f51f80 R14: 0000000000000000 R15: ffff88869a7d7020
+>> [Tue Jul  6 14:49:17 2021] FS:  00007f748ddc18c0(0000) GS:ffff888713b80000(0000) knlGS:0000000000000000
+>> [Tue Jul  6 14:49:17 2021] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [Tue Jul  6 14:49:17 2021] CR2: 00005618b6037058 CR3: 000000011feca004 CR4: 00000000000206e0
+>> [Tue Jul  6 14:49:17 2021] Call Trace:
+>> [Tue Jul  6 14:49:17 2021]  btree_read_extent_buffer_pages+0x66/0x130
+>> [Tue Jul  6 14:49:17 2021]  read_tree_block+0x36/0x60
+>> [Tue Jul  6 14:49:17 2021]  btrfs_read_node_slot+0xc0/0x110
+>> [Tue Jul  6 14:49:17 2021]  btrfs_search_forward+0x1db/0x350
+>> [Tue Jul  6 14:49:17 2021]  search_ioctl+0x19e/0x250
+>> [Tue Jul  6 14:49:17 2021]  btrfs_ioctl_tree_search+0x63/0xc0
+>> [Tue Jul  6 14:49:17 2021]  btrfs_ioctl+0x1874/0x3060
+>> [Tue Jul  6 14:49:17 2021]  ? page_add_new_anon_rmap+0xa3/0x1f0
+>> [Tue Jul  6 14:49:17 2021]  ? handle_mm_fault+0xf6c/0x1950
+>> [Tue Jul  6 14:49:17 2021]  ? __x64_sys_ioctl+0x83/0xb0
+>> [Tue Jul  6 14:49:17 2021]  __x64_sys_ioctl+0x83/0xb0
+>> [Tue Jul  6 14:49:17 2021]  do_syscall_64+0x33/0x80
+>> [Tue Jul  6 14:49:17 2021]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> [Tue Jul  6 14:49:17 2021] RIP: 0033:0x7f748deb8cc7
+>> [Tue Jul  6 14:49:17 2021] Code: 00 00 00 48 8b 05 c9 91 0c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 99 91 0c 00 f7 d8 64 89 01 48
+>> [Tue Jul  6 14:49:17 2021] RSP: 002b:00007ffc7e07f098 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>> [Tue Jul  6 14:49:17 2021] RAX: ffffffffffffffda RBX: 00007ffc7e0801d8 RCX: 00007f748deb8cc7
+>> [Tue Jul  6 14:49:17 2021] RDX: 00007ffc7e07f0f8 RSI: 00000000d0009411 RDI: 0000000000000005
+>> [Tue Jul  6 14:49:17 2021] RBP: 0000000000bafaad R08: 000000000000000b R09: 00007f748df82be0
+>> [Tue Jul  6 14:49:17 2021] R10: 0000000000000010 R11: 0000000000000246 R12: 0000000000000005
+>> [Tue Jul  6 14:49:17 2021] R13: 00007ffc7e07ffe1 R14: 000000000000000b R15: 00007ffc7e07f160
+>> [Tue Jul  6 14:49:17 2021] ---[ end trace 81f64eb2e9ceb4de ]---
+>>
+>> with no other message afterwards. This means the retry is working and "fixed" the problem for me. I'll keep monitoring this and will try to catch the -EIO from other areas, like the original btrfs_finish_ordered_io.
+>>
+
