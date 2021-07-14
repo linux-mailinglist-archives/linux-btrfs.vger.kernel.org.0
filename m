@@ -2,101 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454083C7C10
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 04:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8763C7DB9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 06:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237456AbhGNCyD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Jul 2021 22:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237415AbhGNCyC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Jul 2021 22:54:02 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AD6C0613DD
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jul 2021 19:51:11 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id l11so580933pji.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jul 2021 19:51:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=rVHm0oq+VRnopmeEuC3A2GqVAfbgYXf4wapvsU6H7ns=;
-        b=NPoC7DdPEZygUp01MruRH6p+alN57GNSsJTja7SB+3bFJdLSWgzyVOSnEeblPYk8uD
-         VWuCTCzQeNnPmX17uINl5yLIsAj5t65FTenRKCnOXsQXpRj6Va77Q4r4PMzbs15uygFh
-         Chje3EkccqVDZ/f2dRFWS6lw5UQL1XF+HYBnXvM0yjPM3GH905MmCEQd33r3HnctzK5t
-         OVC8iX8f6WpVM8cA/tMco4YUiuMMXewFPNORX0NKL3Zr2NQj1RiS/DnpBLKRmhT7iMyv
-         e+NFMRtaajRmr/BPrKXaS8sm2dJ9nnB24VDWLTqUGo++oL1dr5BC0boGp2tNe/5nB1ra
-         KAYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=rVHm0oq+VRnopmeEuC3A2GqVAfbgYXf4wapvsU6H7ns=;
-        b=OdB0QBa/8d153NXwwZ8ncqt5ph2oEGFpQWBh7WoReqnkMjbue0zG3okmp38BM8SFwl
-         zjk8W2VQBnXxWmWxZrfSOWWGWlO1qdMvjRQMUaEFoEqxYb2Znzbk4Ev8fTV7XyBQAo1y
-         Uzqp286jhf4ze3caUCF9zsts4fG4gpHPefEnV1v+rNcPykG8TOQCYWuLUUaoX43wTMj1
-         NsJFbv6KmypB4yTeGWGSZ8YFXtXYLo//3v+YY1ArqBejWCbMGxnmxGs1teyGDj+isNpN
-         uLtYB1dff/WUAZHSwd99MA3MLBWEBO2O0RaBeAChWZ6mXO4lSUsKUqs9LViFdth+NTpz
-         7V4g==
-X-Gm-Message-State: AOAM532qiWu3UwAKUQ9J+0H+cTuSzDeRS8EIUXAuw8dFASfquNrVftsB
-        SxcPgTda5DplDSTd+Ydc7Is=
-X-Google-Smtp-Source: ABdhPJzzzhmyA4ntygYKYOG1e3z1u2lvJI1sz3ichD/tX5aqO7gmzLSRyD20fCvpi7naVjQ8cTf5wg==
-X-Received: by 2002:a17:90b:128a:: with SMTP id fw10mr3592278pjb.116.1626231070733;
-        Tue, 13 Jul 2021 19:51:10 -0700 (PDT)
-Received: from [192.168.178.53] (14-203-78-180.tpgi.com.au. [14.203.78.180])
-        by smtp.gmail.com with ESMTPSA id hf5sm1109407pjb.18.2021.07.13.19.51.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jul 2021 19:51:10 -0700 (PDT)
-To:     linux-btrfs@vger.kernel.org
-Cc:     danglingpointerexception@gmail.com
-From:   DanglingPointer <danglingpointerexception@gmail.com>
-Subject: Enhancement Idea - Optional PGO+LTO build for btrfs-progs
-Message-ID: <d0f8f74f-edd3-6591-c6e5-138daf6b25f5@gmail.com>
-Date:   Wed, 14 Jul 2021 12:51:07 +1000
+        id S237800AbhGNFCG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jul 2021 01:02:06 -0400
+Received: from mout.gmx.net ([212.227.15.19]:35355 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhGNFCF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 14 Jul 2021 01:02:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626238753;
+        bh=4+rqcanT4GED+Ag+ugUvDld3kYWzfyl3dU3zXBGy1AE=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=XvBRWvCjrEZRbg8sEsrUoGryJ3vLCT7ngxitm6bMpPtA2DL6FNzoJuVW4gDX631oS
+         OWqFGumv8Wv46DBthxWmzYCgiIyDDWupk3m1+7yNhFlum38vskp4nuqcHOKdZL5RZT
+         VUYNBndw2OGBTTaRCqBwMoqOE4hlXfhRrXw3ZOcY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M26vL-1m1b2k3pt3-002ZfB; Wed, 14
+ Jul 2021 06:59:13 +0200
+To:     DanglingPointer <danglingpointerexception@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <63396688-0dc7-17c5-a830-5893b030a30f@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: migrating to space_cache=2 and btrfs userspace commands
+Message-ID: <86f0624a-cba4-58a3-0a80-460d3f12e8b3@gmx.com>
+Date:   Wed, 14 Jul 2021 12:59:08 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <63396688-0dc7-17c5-a830-5893b030a30f@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-AU
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:31N8UtQ6IN+uoIHqxYPbqUwDL5WO81zJxQ+S5Z3wmfufQeQfirv
+ j7GDFi8J5jTujpNLY7SiM0i52Afn7//FgL8dHT1ZU0r1/Q6x8IyIltHnQeyY58tsRgsAKwi
+ aw5QRo1h5+rbpuUvlvl0RpmGikmq+NnKj6ghiuNpB9+T0V0XygMyqg/ASrMW4rtdr5Mvqg1
+ /mrj82UHB8oL42MKViK9w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:IELzJ0TNfsw=:wd3Ds5htQxqvO0gez6+/ie
+ zllEqgWzUcPFM9lvD/9vdSWb2+WHHUhPHjwt8YZu+wDbeOr++u/gqy+8t4XKlizs9bPofTWbD
+ IviTA/WzHtuP3ZlIaC4zXqpnUW5NW9BFV7MRGusU8QeNmGqyO/V7PyVl6P+pOzpJkgqAaicHZ
+ VvuvTSLRV/WA8Hocb3CO3UQdqceO9K0YAopS4j3UX+0mDCTvrhIvPcIg8qPUe90+RFcdLhTS6
+ Jh0xRApOLPQfxuiStH9ESsZ/AsD8DyMfEYs7vPkttpaFMNIJ0rmU8JOq0CnC3UZxQZWeNMJ6p
+ tJGDEXg5cF2X10QdE+uEL+BggwKIZLiiUwaoGW7EbuDj+vwjoZuTF/2n4+a3x3PZrQtWtEjKT
+ gyKhEyETdbojpp3RNONsa2Tsp1B65ccwONbfQbCVV0hezSBA4oilTSfl/0atUqRm7XlzQJHD6
+ HTnPqOwBvDfgr63FKEJtP9YeKLUBZj1wn963qYAtMtxSTJtBq5K+dy0Jsu6FaNdOk34eQKm27
+ Jc/ilqT4eiFqa/l8J5JykhuKqMIN47bA3Q2hKvrLSXyKY3LZwLqaBHJ04f75IXXjTyEUtPowb
+ mLD+OUNOgbV8gcEmmuYu6BCJYav1cTuXL2ZjDJ95EQepNAn3AkaO4S7hT63yCgfqdcrAYyDjg
+ nsxZ2uqBuSVHlE4AsimbannXqrfunq7rpdxsp0wEP0LcFdArdP63xuoHWhKS/xhOqdDQEc6rh
+ Kqejw3Y/+IHxjLb+lomeAkjUigCbtHwamNJjPKiLflP7ZcYkKjg+zvZI2gUGgbjfKGMSZNUNG
+ zXdDSlnL3IC2Iai4z9qeDHAcj2D3SQFfgek4lo5T3Hcw3YDnm3lFxyc0jA/vyOhRZM30uMxz0
+ s1uK4s1KN6+TDhqoKDLsnpLopaDy17ZLDbTVfHket+Y26wmnPvlEqIsdhBraABGOxUpkE+y7D
+ 8PW7nU0gUvzajpPPA2E28LfZ3K/HvWtjVz8LiddUfncND1KDRhsjIrlX3PvWJXSSK1VBD/Buz
+ din1rtQqt+Unk5xtc9nvp6WRcllcoUFuBWZU8f9sI4aQcfH3MvoV/ocsDjVmYqQ9I16tJ7NYH
+ U6uCllE8uthXHDtEKE9sYewDQGKCnW+NToP5C0TCLkIxOS0h/UbI5xxZw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Recently we have been impacted by some performance issues with the 
-workstations in my lab with large multi-terabyte arrays in btrfs.  I 
-have detailed this on a separate thread.  It got me thinking however, 
-why not have an optional configure option for btrfs-progs to use PGO 
-against the entire suite of regression tests?
 
-Idea is:
 
- 1. configure with optional "-pgo" or "-fdo" option which will configure
-    a relative path from source root where instrumentation files will go
-    (let's start with gcc only for now, so *.gcda files into a folder). 
-    We then add the instrumentation compiler option
- 2. build btrfs-progs
- 3. run every single tests available ( make test &&  make test-fsck &&
-    make test-convert)
- 4. clean-up except for instrumentation files
- 5. re-build without the instrumentation flag from point 1; and use the
-    instrumentation files for feedback directed optimisation (FDO) (for
-    gcc add additional partial-training flag); add LTO.
+On 2021/7/13 =E4=B8=8B=E5=8D=8811:38, DanglingPointer wrote:
+> We're currently considering switching to "space_cache=3Dv2" with noatime
+> mount options for my lab server-workstations running RAID5.
 
-I know btrfs is primarily IO bound and not cpu.  But just thinking of 
-squeezing every last efficiency out of whatever is running in the cpu, 
-cache and memory.
+Btrfs RAID5 is unsafe due to its write-hole problem.
 
-I suppose people can do the above on their own, but was thinking if it 
-was provided as a configuration optional option then it would make it 
-easier for people to do without more hacking.  Just need to add warnings 
-that it will take a long time, have a coffee.
+>
+>  =C2=A0* One has 13TB of data/metadata in a bunch of 6TB and 2TB disks
+>  =C2=A0=C2=A0 totalling 26TB.
+>  =C2=A0* Another has about 12TB data/metadata in uniformly sized 6TB dis=
+ks
+>  =C2=A0=C2=A0 totalling 24TB.
+>  =C2=A0* Both of the arrays are on individually luks encrypted disks wit=
+h
+>  =C2=A0=C2=A0 btrfs on top of the luks.
+>  =C2=A0* Both have "defaults,autodefrag" turned on in fstab.
+>
+> We're starting to see large pauses during constant backups of millions
+> of chunk files (using duplicacy backup) in the 24TB array.
+>
+> Pauses sometimes take up to 20+ seconds in frequencies after every
+> ~30secs of the end of the last pause.=C2=A0 "btrfs-transacti" process
+> consistently shows up as the blocking process/thread locking up
+> filesystem IO.=C2=A0 IO gets into the RAID5 array via nfsd. There are no=
+ disk
+> or btrfs errors recorded.=C2=A0 scrub last finished yesterday successful=
+ly.
 
-The python3 configure process has the process above as an optional 
-option but caters for gcc and clang (might even cater for icc).
+Please provide the "echo l > /proc/sysrq-trigger" output when such pause
+happens.
 
-Anyways, that's my idea for an enhancement above.
+If you're using qgroup (may be enabled by things like snapper), it may
+be the cause, as qgroup does its accounting when committing transaction.
 
-Would like to know your thoughts.  cheers...
+If one transaction is super large, it can cause such problem.
 
+You can test if qgroup is enabled by:
+
+# btrfs qgroup show -prce <mnt>
+
+>
+> After doing some research around the internet, we've come to the
+> consideration above as described.=C2=A0 Unfortunately the official
+> documentation isn't clear on the following.
+>
+> Official documentation URL -
+> https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs(5)
+>
+> 1. How to migrate from default space_cache=3Dv1 to space_cache=3Dv2? It
+>  =C2=A0=C2=A0 talks about the reverse, from v2 to v1!
+
+Just mount with "space_cache=3Dv2".
+
+> 2. If we use space_cache=3Dv2, is it indeed still the case that the
+>  =C2=A0=C2=A0 "btrfs" command will NOT work with the filesystem?
+
+Why would you think "btrfs" won't work on a btrfs?
+
+Thanks,
+Qu
+
+>=C2=A0 So will our
+>  =C2=A0=C2=A0 "btrfs scrub start /mount/point/..." cron jobs FAIL?=C2=A0=
+ I'm guessing
+>  =C2=A0=C2=A0 the btrfs command comes from btrfs-progs which is currentl=
+y v5.4.1-2
+>  =C2=A0=C2=A0 amd64, is that correct?
+> 3. Any other ideas on how we can get rid of those annoying pauses with
+>  =C2=A0=C2=A0 large backups into the array?
+>
+> Thanks in advance!
+>
+> DP
+>
