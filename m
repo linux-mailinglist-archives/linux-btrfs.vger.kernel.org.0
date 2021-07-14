@@ -2,353 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB133C842C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 14:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5903C8480
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 14:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239281AbhGNMDa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Jul 2021 08:03:30 -0400
-Received: from mout.gmx.net ([212.227.15.19]:59663 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239276AbhGNMDa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Jul 2021 08:03:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626264036;
-        bh=h0NYBGKFt9A2e9m3mSFupr2l9fAZAqhM6OVK7dLVTV8=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=LHcgOeWrGNBDX/iA8mpOBG9T8nZlDJSiuuuoyKBwzSlseNJuQ25w+VNfIoOIgSaoC
-         bDBjC6RLnXrQXNVw7+FH2HUQWUueIaEOS2VEerpMq5IcBC4rZAZm9tt6mU9SsFyefr
-         6PFlUafDQLArdHmnSkkeO5tGN9MmJrrJYQhaYq64=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([45.77.180.217]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MKbkM-1ligN43Yr6-00L0P7; Wed, 14
- Jul 2021 14:00:36 +0200
-To:     Zhenyu Wu <wuzy001@gmail.com>
-Cc:     Qu Wenruo <wqu@suse.com>, Forza <forza@tnonline.net>,
-        linux-btrfs@vger.kernel.org, nborisov@suse.com
-References: <CAJ9tZB_VHc4x3hMpjW6h_3gr5tCcdK7RpOUcAdpLuR5PVpW8EQ@mail.gmail.com>
- <110a038d-a542-dcf5-38b8-5f15ee97eb2c@tnonline.net>
- <2a9b53ea-fd95-5a92-34a5-3dcac304cec1@gmx.com>
- <CAJ9tZB9X=iWvUSuyE=nPJ8Chge4E_f-9o67A-d=zt4ZAnXjeCg@mail.gmail.com>
- <9e4f970a-a8c5-8b96-d0bb-d527830d0d12@suse.com>
- <CAJ9tZB_C+RLX0oRTKuUZv0ZxGQiWOL=1EGzM=rHD0gMhgbhGmA@mail.gmail.com>
- <c0024688-3361-7e15-21d1-c55bc16fa83e@gmx.com>
- <CAJ9tZB82FAG5jrD-JLWGLy13OEJut+YYtVtUV8AqZNqGtFJxbw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: btrfs cannot be mounted or checked
-Message-ID: <744795fa-e45a-110a-103e-13caf597299a@gmx.com>
-Date:   Wed, 14 Jul 2021 20:00:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231288AbhGNMix (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jul 2021 08:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231226AbhGNMix (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 14 Jul 2021 08:38:53 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2BFC06175F
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 05:36:02 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id y38so2924940ybi.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 05:36:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6Jadq2eY89u2XALiGk1q5HW5jRWVAq6ct+OiU9qoR+A=;
+        b=QuRKodW2ZDi6IxIsOaFTDFjnZELEfAFXLUHwKEEo/Hfp/5022Ti4ttTk/QcLETyXdg
+         Ck12rhLpfYzJN9EoWkTYRosYitNDxAcW+Y4rAQAQhzITzYgFhcw4Xx5zUhiu3mNDU5ks
+         /Vp9axZFCk+v/EXovI01r4K+kq0sXE2GkFR+Lt6lnTiN4mcYFxuxZk5yLHh95BYOIPjx
+         VYWeNhu24JF6NRc0Q87l6BmKyQ6isLGRQoYI8f9rfrIQSsUHiQoiV/RY9hbWHZJUweKq
+         EXMO48txsa0RnQe3JW4pewhRgJOedc9gqiCdsbZqZkSH2k56SzvizoC4nXkZLd3nx8fN
+         H4ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6Jadq2eY89u2XALiGk1q5HW5jRWVAq6ct+OiU9qoR+A=;
+        b=cUlyV9GTDGecUQc5AU31WXz1H2J+pSm5yFqd3ZBTAWl59PIFCrt7v2f+KHF46rgZoZ
+         v/PeX+HbT2zvji2Z6eAi0QS0ZxvQi1aF5r6BN2M/wkg3FnkBgBtcXwaoxfnt2se47PfU
+         HZNJGS14fCL/d+glxRmxWG4oeNiozxLMTExz222wFjL6mKoDTguNVRsyV4h1kwoLdHQ2
+         rm0WggT4SwG5Jt3xHV/L5fHfI0Pggw87Gd56rEu4/lfL6vkNQ2UChpl8Vjg0U+G8A9iR
+         SLgh1kBxjX/BHK4nBgcpQ4sDGgiI0xIqPJ4QjBviykiHUQlrYrl1Pd3sG6QGs8uglOlf
+         AAlg==
+X-Gm-Message-State: AOAM533JXV9IN6Q+8MFmQaJp5ALb2OZXQhm5U+A7iyDmAL1jx43G3nKY
+        QJI7vw29IITPD/KnkMUjta5D2lhhD0cVn1Ku/WA=
+X-Google-Smtp-Source: ABdhPJwrnLwZ2keoZHU4ZK9St1VTlCR8msRS8Da6L7ckIhx63G7NyajsyLnFCYlDJdU3/Qe6K2qndxZC7QmadIUDD5U=
+X-Received: by 2002:a25:7786:: with SMTP id s128mr13132136ybc.354.1626266161164;
+ Wed, 14 Jul 2021 05:36:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJ9tZB82FAG5jrD-JLWGLy13OEJut+YYtVtUV8AqZNqGtFJxbw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+References: <d0f8f74f-edd3-6591-c6e5-138daf6b25f5@gmail.com>
+ <f68a2809-eb46-744f-7045-93eaeb4bb44f@gmx.com> <db80b801-9e7d-ce2b-15dd-84b30faf19cd@gmail.com>
+ <2a29adba-8451-7550-a6f1-835be431953b@gmx.com> <762a5060-e38d-ccef-293d-c05389d5b0af@gmail.com>
+In-Reply-To: <762a5060-e38d-ccef-293d-c05389d5b0af@gmail.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Wed, 14 Jul 2021 08:35:25 -0400
+Message-ID: <CAEg-Je_2rMu-Y_Qu0tvD85_jnSTGtvkZxE0d7VTASCxCBSdZZg@mail.gmail.com>
+Subject: Re: Enhancement Idea - Optional PGO+LTO build for btrfs-progs
+To:     DanglingPointer <danglingpointerexception@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fJWlm1fl5y48Yiv48aUrPM8/+ar6i2Tw1vGcSxBcbXqbqKcx3Jx
- 7XQnEVIcd8WMhlmaLGN0+IT8eHxLIJu/nPOms6ZXXd0mRGu6KGon2MutlAPXobGLZdVhLZK
- OdDd5RpSIAZ38Iaz7kqfmPpWWfzelRhMygvbfEChFupciaQ/IomFg9xGJKL56PU41hRifvc
- qnYtvELDX0Um/j7VuBqWg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vzAFMJNSgSI=:Oyc2HOrNjaF5c6z8tsDIBZ
- xdWHH4RW62EotT1Gq4qNHea+6PMLwC3vqqDSqeJJN5gtoVTqXrz9k/RsFCFx6TAgTI5/U0N6Y
- qoKqzaMYLaSYvaNp1XZkevZtHEo/tt6xMWrHIgvLPdOVLOKIj4oldsGGW6jhORvXU1y0V/7fp
- MPAgud2e7NEoqMSRBHcCW/zPrZJ7f6Tq78WxUfxcWE/S07i9QDo3KjLKyf2tWg3LhBRR8uk5f
- ZKZq1uJnWGQhFxBT+0KuSKJfyBezWqXP03GXXAFnU65Ol9l7xUyeUzELj6hejGFEinevZR283
- fMWtumU6qvchbut1HEaOV6+E04iUZUy79kPeuW/X7AUSj0EydGMpGhmFCmpx236zDFQ6VIrFu
- ETvzx6hgqR6Yz0sDPTkqgq41ttB4t2iqoWFf4oQy0Q6PgGz3zwlYJDHBZKfFUDuRLtwzLUPnE
- TIsTyI5MB0H9b1SwVTweQR6HaiZem5kR60VbQQii9wdDCjyPa9joHQqQ9Eheg5U6cgowrrCWO
- 85qNFk7AAud8wOOB5UhSVrzbDxSZu+txuvzLsHPdwM8VU9aOd1b8cn/PfjOoV9YplbYa4xDHP
- R4Ck467/wKFYkQpFag1JGyzvZ7KywjQoFjOAewx5ffasdGeg5Zbo04QKyG48GlIJl4q5h206C
- MhhR6aK+ITBjkZ/6xwSnTKHlwHFrGbiCsonYWBMecjkDPtou0PUdeftMscoRDu/OAPMwQ2sxs
- /u7t1I4eSdSLWYMyOmtp0mwTicwXkc6YIO47hztoKFB30EiXxcC5HqOvSnKKE3oOejs1Fz91F
- yE6NLo6KScCsTj6/4E6HPx8NucOnad8Y3DUAwJzZnKz3d+to0M7qGnIiVR7fB2J98ubS7DlBo
- 90MQqErSWwM/YKqTqvbWuxABLz1/FIhOzvlF7HvKYM5SfV0NMCeYRIIRhDvfXhiCdBols+Ac3
- D/0Nxv2MlTaYC2YsiQDJCPqfj+eD0H6J+Y4FzY+oHBXCmUbxx0WfSXwAurNcd5GeyFVCiMgPG
- MMBawEC3dXw6Pq7PgVavhQ1g5XpLBQK6+EVZcBnMdMFYdO3DUretNjSAvLK1x0rghFSzpLnTd
- 1Y4doDMJ5mhM4S9xdiB3OARGSlFNoZqhM1ZwLFMVk+DhorC3As/XQdQtQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/7/14 =E4=B8=8B=E5=8D=887:37, Zhenyu Wu wrote:
-> sorry:( can it be specific?
-> btrfs-map-logical looks like need an option, btrfs ins dump-tree is
-> outputing many text, and how to locate the extent tree?
-> Thanks!
-
-Oh, sorry I should explain it more.
-
-Here is the more detailed version.
-
-NOTE: this only works for non-RAID5/6 metadata profiles.
-RAID5/6 has extra P/Q to recovery the metadata.
-
-- Use "btrfs ins dump-tree" to determine where the extent tree root is
-
-   $ btrfs ins dump-tree -t root /dev/test/test | grep -A 3 EXTENT_TREE
-         item 0 key (EXTENT_TREE ROOT_ITEM 0) itemoff 15844 itemsize 439
-                 generation 3682 root_dirid 0 bytenr 30441472 level 1 refs=
- 1
-                 lastsnap 0 byte_limit 0 bytes_used 65536 flags 0x0(none)
-                 uuid 00000000-0000-0000-0000-000000000000
-
-   The bytenr "30441472" is the bytenr you need to take note of.
-   (Here the number is just my example, yours will change obviously)
-
-- Use "btrfs-map-logical" to determine the real location of the metadata
-
-   $ btrfs-map-logical -l 30441472 /dev/test/test
-   mirror 1 logical 30441472 physical 38830080 device /dev/test/test
-   mirror 2 logical 30441472 physical 307265536 device /dev/test/test
-
-   The two physical numbers, "38830080" and "307265536", are the real
-   offset inside each device.
-
-- Corrupt the metadata header of both copies
-
-   Only 4 bytes are needed to be corrupted.
-
-   # xfs_io -f -c "pwrite 38830080 4" /dev/test/test
-   # xfs_io -f -c "pwrite 307265536 4" /dev/test/test
-
-- Verify the corruption works:
-   $ btrfs check /dev/test/test
-   Opening filesystem to check...
-   checksum verify failed on 30441472 wanted 0xcdcdcdcd found 0x900b6dae
-   checksum verify failed on 30441472 wanted 0xcdcdcdcd found 0x900b6dae
-   checksum verify failed on 30441472 wanted 0xcdcdcdcd found 0x900b6dae
-   Csum didn't match
-   ERROR: could not setup extent tree
-   ERROR: cannot open file system
-
-   0xcd is the default pattern of xfs_io pwrite. And the line "ERROR:
-   could not setup extent tree" means extent tree is completely
-   corrupted.
-
-- Use rescue=3Dibadroots to rescue the fs
-
-   # mount -o ro,rescue=3Dibadroots /dev/test/test /mnt/btrfs
-
-Thanks,
-Qu
+On Wed, Jul 14, 2021 at 5:22 AM DanglingPointer
+<danglingpointerexception@gmail.com> wrote:
 >
-> On 7/14/21, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>
->>
->> On 2021/7/14 =E4=B8=8B=E5=8D=885:58, Zhenyu Wu wrote:
->>> ```
->>> [  301.533172] BTRFS info (device sda2): unrecognized rescue option
->>> 'ibadroots'
->>> [  301.533209] BTRFS error (device sda2): open_ctree failed
->>> ```
->>>
->>> Does ibadroots need a newer version of btrfs? My btrfs version is 5.10=
-.1.
->>
->> Oh, that support is added in v5.11...
->>
->> You may want to grab a liveCD from some rolling release.
->>
->> But even with v5.11, it may not help much, as that option won't help if
->> your extent tree is still intact.
->>
->> You may want to use "btrfs ins dump-tree" to locate your extent tree,
->> then corrupt the extent tree root completely (using btrfs-map-logical t=
-o
->> get the physical offset, then dd to destory the first 4 bytes of both
->> copy), then the option would properly work.
->>
->> Thanks,
->> Qu
->>>
->>> Thanks!
->>>
->>> On 7/14/21, Qu Wenruo <wqu@suse.com> wrote:
->>>>
->>>>
->>>> On 2021/7/14 =E4=B8=8B=E5=8D=884:49, Zhenyu Wu wrote:
->>>>> sorry for late:(
->>>>>
->>>>> I found <https://bbs.archlinux.org/viewtopic.php?id=3D233724> looks =
-same
->>>>> as my situation. But in my computer (boot from live usb) `btrfs chec=
-k
->>>>> --init-extent-tree` output a lot of non-ascii character (maybe becau=
-se
->>>>> ansi escape code mess the terminal)
->>>>> after several days it outputs `7/7`and `killed`. The solution looks
->>>>> failed.
->>>>>
->>>>> I'm sorry because my live usb don't have smartctl :(
->>>>>
->>>>> ```
->>>>> $ hdparm -W0 /dev/sda
->>>>> /dev/sda:
->>>>>     setting drive write-caching to 0 (off)
->>>>>     write-caching =3D  0 (off)
->>>>> ```
->>>>>
->>>>> But now the btrfs partition still cannot be mounted.
->>>>>
->>>>> when I try to mount it with `usebackuproot`, it will output the same
->>>>> error message. And dmesg will output
->>>>> ```
->>>>> [250062.064785] BTRFS warning (device sda2): 'usebackuproot' is
->>>>> deprecated, use 'rescue=3Dusebackuproot' instead
->>>>> [250062.064788] BTRFS info (device sda2): trying to use backup root =
-at
->>>>> mount time
->>>>> [250062.064789] BTRFS info (device sda2): disk space caching is enab=
-led
->>>>> [250062.064790] BTRFS info (device sda2): has skinny extents
->>>>> [250062.208403] BTRFS info (device sda2): bdev /dev/sda2 errs: wr 0,
->>>>> rd 0, flush 0, corrupt 5, gen 0
->>>>> [250062.277045] BTRFS critical (device sda2): corrupt leaf: root=3D2
->>>>> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D107374182=
-4, invalid
->>>>> block group used, have 1073754112 expect [0, 1073741824)
->>>>
->>>> Looks like a bad extent tree re-initialization, a bug in btrfs-progs
->>>> then.
->>>>
->>>> For now, you can try to mount with "ro,rescue=3Dibadroots" to see if =
-it
->>>> can be mounted RO, then rescue your data.
->>>>
->>>> Thanks,
->>>> Qu
->>>>> [250062.277048] BTRFS error (device sda2): block=3D273006592 read ti=
-me
->>>>> tree block corruption detected
->>>>> [250062.291924] BTRFS critical (device sda2): corrupt leaf: root=3D2
->>>>> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D107374182=
-4, invalid
->>>>> block group used, have 1073754112 expect [0, 1073741824)
->>>>> [250062.291927] BTRFS error (device sda2): block=3D273006592 read ti=
-me
->>>>> tree block corruption detected
->>>>> [250062.291943] BTRFS error (device sda2): failed to read block grou=
-ps:
->>>>> -5
->>>>> [250062.292897] BTRFS error (device sda2): open_ctree failed
->>>>> ```
->>>>>
->>>>> If don't usebackuproot, dmesg will output the same log except the fi=
-rst
->>>>> 2
->>>>> lines.
->>>>>
->>>>> Now btrfs check can check this partition:
->>>>>
->>>>> ```
->>>>> $ btrfs check /dev/sda2 2>&1|tee check.txt
->>>>> # see attachment
->>>>> ```
->>>>>
->>>>> Does my disk have any hope to be rescued?
->>>>> thanks!
->>>>>
->>>>> On 7/11/21, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>>>>>
->>>>>>
->>>>>> On 2021/7/11 =E4=B8=8B=E5=8D=887:37, Forza wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 2021-07-11 10:59, Zhenyu Wu wrote:
->>>>>>>> Sorry for my disturbance.
->>>>>>>> After a dirty reboot because of a computer crash, my btrfs partit=
-ion
->>>>>>>> cannot be mounted. The same thing happened before, but now `btrfs
->>>>>>>> rescue zero-log` cannot work.
->>>>>>>> ```
->>>>>>>> $ uname -r
->>>>>>>> 5.10.27-gentoo-x86_64
->>>>>>>> $ btrfs rescue zero-log /dev/sda2
->>>>>>>> Clearing log on /dev/sda2, previous log_root 0, level 0
->>>>>>>> $ mount /dev/sda2 /mnt/gentoo
->>>>>>>> mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
->>>>>>>> /dev/sda2, missing codepage or helper program, or other error.
->>>>>>>> $ btrfs check /dev/sda2
->>>>>>>> parent transid verify failed on 34308096 wanted 962175 found 9617=
-64
->>>>>>>> parent transid verify failed on 34308096 wanted 962175 found 9617=
-64
->>>>>>>> parent transid verify failed on 34308096 wanted 962175 found 9617=
-64
->>>>>>>> Ignoring transid failure
->>>>>>>> leaf parent key incorrect 34308096
->>>>>>>> ERROR: failed to read block groups: Operation not permitted
->>>>>>>> ERROR: cannot open file system
->>>>>>>> $ dmesg 2>&1|tee dmesg.txt
->>>>>>>> # see attachment
->>>>>>>> ```
->>>>>>>> Like `mount -o ro,usebackuproot` cannot work, too.
->>>>>>>>
->>>>>>>> Thanks for any help!
->>>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> Hi!
->>>>>>>
->>>>>>> Parent transid failed is hard to recover from, as mentioned on
->>>>>>> https://btrfs.wiki.kernel.org/index.php/FAQ#How_do_I_recover_from_=
-a_.22parent_transid_verify_failed.22_error.3F
->>>>>>>
->>>>>>>
->>>>>>> I see you have "corrupt 5" sectors in dmesg. Is your disk healthy?
->>>>>>> You
->>>>>>> can check with "smartctl -x /dev/sda" to determine the health.
->>>>>>>
->>>>>>> One way of avoiding this error is to disable write-cache. Parent
->>>>>>> transid
->>>>>>> failed can happen when the disk re-orders writes in its write cach=
-e
->>>>>>> before flushing to disk. This violates barriers, but it is
->>>>>>> unfortately
->>>>>>> common. If you have a crash, SATA bus reset or other issues,
->>>>>>> unwritten
->>>>>>> content is lost. The problem here is the re-ordering. The superblo=
-ck
->>>>>>> is
->>>>>>> written out before other metadata (which is now lost due to the
->>>>>>> crash).
->>>>>>
->>>>>> To be extra accurate, all filesysmtems have taken the re-order into
->>>>>> consideration.
->>>>>> Thus we have flush (or called barrier) command to force the disk to
->>>>>> write all its cache back to disk or at least non-volatile cache.
->>>>>>
->>>>>> Combined with mandatory metadata CoW, it means, no matter what the
->>>>>> disk
->>>>>> re-order or not, we should only see either the newer data after the
->>>>>> flush, or the older data before the flush.
->>>>>>
->>>>>> But unfortunately, hardware is unreliable, sometimes even lies abou=
-t
->>>>>> its
->>>>>> flush command.
->>>>>> Thus it's possible some disks, especially some cheap RAID cards, te=
-nd
->>>>>> to
->>>>>> just ignore such flush commands, thus leaves the data corrupted aft=
-er
->>>>>> a
->>>>>> power loss.
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>>
->>>>>>>
->>>>>>> You disable write cache with "hdparm -W0 /dev/sda". It might be wo=
-rth
->>>>>>> adding this to a cron-job every 5 minutes or so, as the setting is
->>>>>>> not
->>>>>>> persistent and can get reset if the disk looses power, goes to sle=
-ep,
->>>>>>> etc.
->>>>>>
->>>>
->>>>
->>
+> Yes noted.
+>
+> We're aware of the write hole risk.  We have battery backup for both
+> workstations and automation to shut it down in the event of power-outage.
+>
+> Also they are lab workstations. Not production.  Data is backed up to
+> two locations.
+>
+> The primary reason for RAID5 (or 6) is economics.  Money goes way
+> further with RAID5 compared to other RAIDs (1,/10,etc) for the amount of
+> data store-able in an array with the reliability of being able to loose
+> a disk.  I'm sure there are thousands of others out there in a similar
+> situation to me where economics are tight.
+>
+> Would be good if at some point RAID56 can be looked on and fixed and
+> further optimised so it can be declared stable.  Thousands of people
+> would further flock to btrfs, especially small medium enterprises, orgs,
+> charities, home users, schools and labs.
+>
+
+Btrfs RAID 5/6 code is being worked on[1], so this will be fixed
+eventually. I personally look forward to this being resolved as
+well...
+
+[1]: https://lore.kernel.org/linux-btrfs/BL0PR04MB65144CAE288491C3FC6B0757E=
+7489@BL0PR04MB6514.namprd04.prod.outlook.com/
+
+
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
