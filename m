@@ -2,65 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4020C3C7F40
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 09:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00553C7F6D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 09:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238129AbhGNHV1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Jul 2021 03:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
+        id S238314AbhGNHg5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jul 2021 03:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238079AbhGNHV1 (ORCPT
+        with ESMTP id S238139AbhGNHg5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Jul 2021 03:21:27 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0E8C061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 00:18:35 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id j199so1212338pfd.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 00:18:35 -0700 (PDT)
+        Wed, 14 Jul 2021 03:36:57 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7DCC06175F
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 00:34:05 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 21so1262579pfp.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 00:34:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:from:cc:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=G5hpqnd/EPaes0Tyb7HVsg6XMvhlib07jp+mo1aAquM=;
-        b=oSnR+0JWoZhtK64yxlzNJgLvZIDjbuGeRPxwGieCwt3O+yHGXPj6ujq32UYG+XtV6b
-         6jNePMrKtHdz98JD4gXb0PG9MLF8AIbRoJS756U59J9maS4++rsEf737IQG8BSY+eLDh
-         IgxRxLU2HhozGwPiG5Z1NAnpAJtBsqJc6N6B7eT16Ih0SAjYSXhnaPpNcgJUi9PdCppe
-         iCpZ2//NH9MabPc9WUAffvATWH08KwtyfT1w2OCjUHgGcY0El6Wqi8B6Al9A/IicyB4e
-         8JvfOuzqZpJbu71mxJsswwqruKWNF4kd8+MK3QMp/mnk7HsTkQi6+Ywh33dWleyUFsgZ
-         DjdA==
+        bh=MPz1fjOqz0txIzzJTqZt+Y+SrOdziovB7RbYKIdssgo=;
+        b=tMkOGmEop4XyA62SiU+UzTXqgnqrchkNsOuLLHrmPq3EYXASahPOYrwnPRmznm8dVH
+         IBQLr52mz3xEBYpT56yqq67IoYz6r7vU5NeFKJCCTeCUqePgQZj/yR+Lw0d3K8yToRsR
+         PyoL1Jlc47ddIHCP15ks6k87P5RxbURNCWAzD6xiWhElKUN0LKBYQBSgn2RW6rLhz47J
+         C6DRbNWuyha/eULBIivxQbBjHTILHhczn1omwt85YWaMGBvbbX26nJ7iWIsqPtUEe4Ev
+         nBVAN3uPjE1m48jtIBGhWqaJ49iZSnecbdcINaTblVZf5Cq/DhdSyGxGZSeuxbEiOquh
+         ZlSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:cc:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=G5hpqnd/EPaes0Tyb7HVsg6XMvhlib07jp+mo1aAquM=;
-        b=s1Bq9l6VWk+BlGjDOkqHomi7nAuJZlWYttYfA4H10vqKKbQnGN1k5/E3d9RTGMAarx
-         tStFgIKiOvLIqMTNgmUCgPO7ZcxL//iM2QkHz5vaM5EhoQHQGlJciEOyb40Fsp66nGv1
-         jP5HWtuvY/bWYgod3X+y1sI//2zDkNst/xL98Jqn4JL/hUFlMqqYdX8OCOBfmvyZbE3n
-         0kHEf/SToZWZBU9RA9SApxQw7sWeav7BTG0nwGinhwxXKYMd+IQvuaIfZex7BiUxo9eN
-         cGMFfKmCAk42VJxe4X5reGKqqiYenezJZbhSV1EzqxO92klFrHjtpwfoAqc0MDA2pTkb
-         T6yA==
-X-Gm-Message-State: AOAM531SBVeBi1Ki6knqdOfcjkszuAdMvcET04FqJrPCg/pio0EA1GCN
-        dU52VDWHyzP1xi8NGLY3O8A=
-X-Google-Smtp-Source: ABdhPJxYoYs4VuUL/VGUSdsyxWGGwWsuIy3fokq/rwfKFUKMO2BKTSaxWzrAFbdBoAQ8944cNqnAbw==
-X-Received: by 2002:a63:2b92:: with SMTP id r140mr8117132pgr.394.1626247115038;
-        Wed, 14 Jul 2021 00:18:35 -0700 (PDT)
+        bh=MPz1fjOqz0txIzzJTqZt+Y+SrOdziovB7RbYKIdssgo=;
+        b=QpDwqzQ87qAMVDww2KqE2VH0gNfr88gnhQTXEh3+mEDMQghfgAHIBdKpXqHbSQ8FkF
+         8U0MAEnLPxuLyia6NenM57gxZ5+6tSG9h1WObcP9QaCRv2qzD0pXQcBRBuA5Y6dw3kWJ
+         Yuk2RMUBmjTwpHEqc9VbPiX9jnoSw7lunIWR0L1f628Jm7L4FR+wrPvjUnE3Q19bBCMN
+         OrPdiczrdL/xAel1R7j/rU2kCNRUE92o/f/Q6UTwvBhd8F62sxIpZyB5ldci+kuFD/5P
+         l+Km38/nvc8ddLIgD9uqJ7VGIQqaExBYQ127sworOTngGTEJbkRTXwlNIMfBppcSgVtU
+         DTBA==
+X-Gm-Message-State: AOAM531btgBNoEa2QifeoCVG4JHRGgIv4eFWcsQx1JqlUG8ccixvotKi
+        Bb1g5e3O2/OKuhFBd9R81uE=
+X-Google-Smtp-Source: ABdhPJzy0z4W6JIuSuLsrUFCT1a3dh+Xb1xWfcgmBQzIR5ATWYUTKtxIDekMEE3hy8775gf7NY4c0w==
+X-Received: by 2002:a63:171e:: with SMTP id x30mr8409154pgl.368.1626248044683;
+        Wed, 14 Jul 2021 00:34:04 -0700 (PDT)
 Received: from [192.168.178.53] (14-203-78-180.tpgi.com.au. [14.203.78.180])
-        by smtp.gmail.com with ESMTPSA id k19sm1339981pji.32.2021.07.14.00.18.33
+        by smtp.gmail.com with ESMTPSA id 73sm1422689pjz.24.2021.07.14.00.34.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jul 2021 00:18:34 -0700 (PDT)
-Subject: Re: migrating to space_cache=2 and btrfs userspace commands
+        Wed, 14 Jul 2021 00:34:04 -0700 (PDT)
+Subject: Re: Enhancement Idea - Optional PGO+LTO build for btrfs-progs
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <63396688-0dc7-17c5-a830-5893b030a30f@gmail.com>
- <86f0624a-cba4-58a3-0a80-460d3f12e8b3@gmx.com>
+References: <d0f8f74f-edd3-6591-c6e5-138daf6b25f5@gmail.com>
+ <f68a2809-eb46-744f-7045-93eaeb4bb44f@gmx.com>
 From:   DanglingPointer <danglingpointerexception@gmail.com>
 Cc:     danglingpointerexception@gmail.com
-Message-ID: <c81f758f-c452-d30c-75a2-a6cdcf2f9a8e@gmail.com>
-Date:   Wed, 14 Jul 2021 17:18:31 +1000
+Message-ID: <db80b801-9e7d-ce2b-15dd-84b30faf19cd@gmail.com>
+Date:   Wed, 14 Jul 2021 17:34:01 +1000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <86f0624a-cba4-58a3-0a80-460d3f12e8b3@gmx.com>
+In-Reply-To: <f68a2809-eb46-744f-7045-93eaeb4bb44f@gmx.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-AU
@@ -68,108 +68,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-a) "echo l > /proc/sysrq-trigger"
+"Why would you think btrfs-progs is the one needs to optimization?"
 
-The backup finished today already unfortunately and we are unlikely to 
-run it again until we get an outage to remount the array with the 
-space_cache=v2 and noatime mount options.
-Thanks for the command, we'll definitely use it if/when it happens again 
-on the next large migration of data.
+Perhaps I should have written more context.  When the data migration was 
+taking a very long time (days); and the pauses due to "btrfs-transacti" 
+blocking all IO including nfsd.  We thought, "should we '$ btrfs scrub 
+<mount>' to make sure nothing had gone wrong?"
+
+Problem is, scrubbing on the whole RAID5 takes ages!  If we did one disk 
+of the array only it would at least sample a quarter of the array with a 
+quarter chance of detecting if something/anything had gone wrong and 
+hopefully won't massively slow down the on-going migration.
+
+We tried it for a while on the single drive and it did indeed have 2x 
+the scrubbing throughput but it was still very slow since we're talking 
+multi-terrabytes on the single disk!  I believe the ETA forecast was ~3 
+days.
+
+Interestingly scrubbing the whole lot (whole RAID5 array) in one go by 
+just scrubbing the mount point is a 4day ETA which we do regularly every 
+3 months.  So even though it is slower on each disk, it finishes the 
+whole lot faster than doing one disk at a time sequentially.
+
+Anyways, thanks for informing us on what btrfs-progs does and how 'scrub 
+speed' is independent of btrfs-progs and done by the kernel ioctls (on 
+the other email thread).
+
+regards,
+
+DP
+
+I thought btrfs scrub was part of btrfs-progs.  Pardon my ignorance if 
+it isn't.
 
 
-b) "sudo btrfs qgroup show -prce" ........
-
-$ ERROR: can't list qgroups: quotas not enabled
-
-So looks like it isn't enabled.
-
-File sizes are between: 1,048,576 bytes and 16,777,216 bytes (Duplicacy 
-backup defaults)
-
-What classifies as a transaction?  Any/All writes done in a 30sec 
-interval?  If 100 unique files were written in 30secs, is that 1 
-transaction or 100 transactions?  Millions of files of the size range 
-above were backed up.
-
-
-c) "Just mount with "space_cache=v2""
-
-Ok so no need to "clear_cache" the v1 cache, right?
-I wrote this in the fstab but hadn't remounted yet until I can get an 
-outage....
-
-..."btrfs defaults,autodefrag,clear_cache,space_cache=v2,noatime  0  2"
-
-Thanks again for your help Qu!
-
-On 14/7/21 2:59 pm, Qu Wenruo wrote:
+On 14/7/21 3:00 pm, Qu Wenruo wrote:
 >
 >
-> On 2021/7/13 下午11:38, DanglingPointer wrote:
->> We're currently considering switching to "space_cache=v2" with noatime
->> mount options for my lab server-workstations running RAID5.
->
-> Btrfs RAID5 is unsafe due to its write-hole problem.
->
+> On 2021/7/14 上午10:51, DanglingPointer wrote:
+>> Recently we have been impacted by some performance issues with the
+>> workstations in my lab with large multi-terabyte arrays in btrfs.  I
+>> have detailed this on a separate thread.  It got me thinking however,
+>> why not have an optional configure option for btrfs-progs to use PGO
+>> against the entire suite of regression tests?
 >>
->>   * One has 13TB of data/metadata in a bunch of 6TB and 2TB disks
->>     totalling 26TB.
->>   * Another has about 12TB data/metadata in uniformly sized 6TB disks
->>     totalling 24TB.
->>   * Both of the arrays are on individually luks encrypted disks with
->>     btrfs on top of the luks.
->>   * Both have "defaults,autodefrag" turned on in fstab.
+>> Idea is:
 >>
->> We're starting to see large pauses during constant backups of millions
->> of chunk files (using duplicacy backup) in the 24TB array.
->>
->> Pauses sometimes take up to 20+ seconds in frequencies after every
->> ~30secs of the end of the last pause.  "btrfs-transacti" process
->> consistently shows up as the blocking process/thread locking up
->> filesystem IO.  IO gets into the RAID5 array via nfsd. There are no disk
->> or btrfs errors recorded.  scrub last finished yesterday successfully.
+>> 1. configure with optional "-pgo" or "-fdo" option which will configure
+>>     a relative path from source root where instrumentation files will go
+>>     (let's start with gcc only for now, so *.gcda files into a folder).
+>>     We then add the instrumentation compiler option
+>> 2. build btrfs-progs
+>> 3. run every single tests available ( make test &&  make test-fsck &&
+>>     make test-convert)
+>> 4. clean-up except for instrumentation files
+>> 5. re-build without the instrumentation flag from point 1; and use the
+>>     instrumentation files for feedback directed optimisation (FDO) (for
+>>     gcc add additional partial-training flag); add LTO.
 >
-> Please provide the "echo l > /proc/sysrq-trigger" output when such pause
-> happens.
+> Why would you think btrfs-progs is the one needs to optimization?
 >
-> If you're using qgroup (may be enabled by things like snapper), it may
-> be the cause, as qgroup does its accounting when committing transaction.
+> From your original report, there is nothing btrfs-progs related at all.
 >
-> If one transaction is super large, it can cause such problem.
+> All your work, from scrub to IO, it's all handled by kernel btrfs module.
 >
-> You can test if qgroup is enabled by:
->
-> # btrfs qgroup show -prce <mnt>
->
->>
->> After doing some research around the internet, we've come to the
->> consideration above as described.  Unfortunately the official
->> documentation isn't clear on the following.
->>
->> Official documentation URL -
->> https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs(5)
->>
->> 1. How to migrate from default space_cache=v1 to space_cache=v2? It
->>     talks about the reverse, from v2 to v1!
->
-> Just mount with "space_cache=v2".
->
->> 2. If we use space_cache=v2, is it indeed still the case that the
->>     "btrfs" command will NOT work with the filesystem?
->
-> Why would you think "btrfs" won't work on a btrfs?
+> Thus optimization of btrfs-progs would bring no impact.
 >
 > Thanks,
 > Qu
->
->>   So will our
->>     "btrfs scrub start /mount/point/..." cron jobs FAIL?  I'm guessing
->>     the btrfs command comes from btrfs-progs which is currently v5.4.1-2
->>     amd64, is that correct?
->> 3. Any other ideas on how we can get rid of those annoying pauses with
->>     large backups into the array?
 >>
->> Thanks in advance!
+>> I know btrfs is primarily IO bound and not cpu.  But just thinking of
+>> squeezing every last efficiency out of whatever is running in the cpu,
+>> cache and memory.
 >>
->> DP
+>> I suppose people can do the above on their own, but was thinking if it
+>> was provided as a configuration optional option then it would make it
+>> easier for people to do without more hacking.  Just need to add warnings
+>> that it will take a long time, have a coffee.
+>>
+>> The python3 configure process has the process above as an optional
+>> option but caters for gcc and clang (might even cater for icc).
+>>
+>> Anyways, that's my idea for an enhancement above.
+>>
+>> Would like to know your thoughts.  cheers...
 >>
