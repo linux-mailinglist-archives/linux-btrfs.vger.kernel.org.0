@@ -2,124 +2,332 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46793C8B40
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 20:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B413C93E9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jul 2021 00:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240124AbhGNSue (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Jul 2021 14:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240140AbhGNSud (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Jul 2021 14:50:33 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB92C061760
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 11:47:41 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id p202so2598942qka.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jul 2021 11:47:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=4ITw8yYO9Mm2EpdRdd+ThoxB7QMMRcOH9aOSdlmSits=;
-        b=0rpJPuMJ1jxhCoRWOAqTZd6zN/yZv7cGsws/5dyp0RPDk5yGbj3aBRIrSXG5WLEm6D
-         AxDz3lCAE0gwoY2j8jeNE1ZTslQyXzhZeq4ftXR/so2xCGycfCU8TCs/rALNRCy0t68+
-         4rGgxude/xhKypgjI6AKyq4JOrkW6Qf+pOaivIPu8dKAWPcAyF5zJPmwrztwNvkbriEV
-         81IrJhs75XLjqXeEu6aR0tyL7022zW1xMPmIeGdyGQIVcz5uBOqIaPvr/+RhuKWFKJAl
-         xY5gJvSUE4YkhnXXrSkpOHzKTucWnyA07TJ+iBTYvZANoaeVKLZe9d8v1bVkwcczpOPO
-         p9JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4ITw8yYO9Mm2EpdRdd+ThoxB7QMMRcOH9aOSdlmSits=;
-        b=dKaa0fAFHAcP3gAqV9sCE6DpFMo2a/uSmNk8v2hMs7qpJmhv0qGrTnzwvl/tghtrbF
-         kAEoTXvy8p08ApMWcvAJPhrYKTM/GIdLkZVa1tSIj2ddT7cPZAbt4VmHqhDc3LGovqzl
-         Yhi5/DriQV88SwQ3glYQsIznREjRUsLdNwvO7gNM4YiV+SfMrtI4nHbup4wsUifrbr5e
-         pcQzKyR9Lwdl0P919eSFyJ+EKkqZYZaN1YKnPuGJ1CNyvztFL0WPu2SIopN7uqL0kgL1
-         EILGyloNcEbz7Tk9YYzCFK6LlbUyRB6+H0R4oi8JGhvLM+6jg3v30rtllAemyvTS1tCP
-         /S7A==
-X-Gm-Message-State: AOAM531Yfp4bA5lagesXWlIn5PhQDlLRyVQTc4A/hPOBPWYJRoPGpyff
-        80lgvEsQB1RN5xHGr4snPhICqaZSTbsBdtOS
-X-Google-Smtp-Source: ABdhPJyHX8vfDY4LWszZXONESfbhQmTh2Tw5hDSZy+QhAXwh7eUT/aSKeHlokFDKQEnjjyU0cySG+A==
-X-Received: by 2002:a37:a413:: with SMTP id n19mr7494248qke.462.1626288460075;
-        Wed, 14 Jul 2021 11:47:40 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id bk40sm1312434qkb.3.2021.07.14.11.47.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jul 2021 11:47:39 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v3 9/9] fs: kill sync_inode
-Date:   Wed, 14 Jul 2021 14:47:25 -0400
-Message-Id: <8c4c75ad09fb61114ee955829860ce8fd5e170ee.1626288241.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1626288241.git.josef@toxicpanda.com>
-References: <cover.1626288241.git.josef@toxicpanda.com>
+        id S231891AbhGNWiP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Jul 2021 18:38:15 -0400
+Received: from mout.gmx.net ([212.227.17.20]:54127 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229900AbhGNWiP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 14 Jul 2021 18:38:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626302119;
+        bh=kjQq6Li1mxKYLoktIiEGfr8MmU7gbQHf/O/96lEthj0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ELhtbP9SvCVhQ72rRaVMARlk/AHUjCjhV+RcmBeEFwGE0YtZTGzk0KR7XAuOUqW6M
+         +/Y7KLPSidPYR5jZeGlGD1N33AR8LY+7H/9HuUjAjfXMfrN34kyRjp6FS+ZBvBMyNs
+         o/EAlsyWQ5ufgb7gcT45OA8nkKKpV+WQkMolFeso=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MvK0X-1lCnLT43SD-00rIZ6; Thu, 15
+ Jul 2021 00:35:19 +0200
+Subject: Re: btrfs cannot be mounted or checked
+To:     Zhenyu Wu <wuzy001@gmail.com>
+Cc:     Qu Wenruo <wqu@suse.com>, Forza <forza@tnonline.net>,
+        linux-btrfs@vger.kernel.org
+References: <CAJ9tZB_VHc4x3hMpjW6h_3gr5tCcdK7RpOUcAdpLuR5PVpW8EQ@mail.gmail.com>
+ <110a038d-a542-dcf5-38b8-5f15ee97eb2c@tnonline.net>
+ <2a9b53ea-fd95-5a92-34a5-3dcac304cec1@gmx.com>
+ <CAJ9tZB9X=iWvUSuyE=nPJ8Chge4E_f-9o67A-d=zt4ZAnXjeCg@mail.gmail.com>
+ <9e4f970a-a8c5-8b96-d0bb-d527830d0d12@suse.com>
+ <CAJ9tZB_C+RLX0oRTKuUZv0ZxGQiWOL=1EGzM=rHD0gMhgbhGmA@mail.gmail.com>
+ <c0024688-3361-7e15-21d1-c55bc16fa83e@gmx.com>
+ <CAJ9tZB-O+xphuHJ-DhpjvoFFuFAJrSpoMuurx_44s040YWBtqQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <b25141f0-d4c7-05bc-05af-848b6ed26b1d@gmx.com>
+Date:   Thu, 15 Jul 2021 06:35:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ9tZB-O+xphuHJ-DhpjvoFFuFAJrSpoMuurx_44s040YWBtqQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UVqeDX+vgMXUE0r8Z1GcmZEybjRIfe5QnHlCDFLHszOqKNzt+rz
+ v1j8ohxs4j4JxXBY3EQZrudy1wkIy4fSlNk7qJHM3ujJdnrTPAQNhHO+4LVGJjbdNfQ++B3
+ NcZoWJ7nKi6QCAdFKt/CffSYSCTXgwAAyjROu+4Ca5YstZlMIqVswL5lXcJN7mM4EefSEyn
+ 4Uq4/DvHxtvAZOdgLOkkw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:G9j5YOZe1Dw=:c3CDF+gZvMuRtqQEwev/tX
+ zvUY6Fwt2qwnRKxkT2+Tz0uZM4VsSZok4CQOCgPjrYpo6gGB0JDSzDovJTVCxuURIifidB11X
+ 0B9EsAqQNEFhQN7tipzplTeV8R4+D1TyHtlKRotoAFVCKKItUZxH13Kn8XacS/m9lVdzxPwIK
+ bkDnG2pmgxywfrXgk3VhKHs5eZOKRUJFNzyo2Rd2Q1p3YLH2sogPnphLqxTNF69GXEzNpyb2R
+ Deyh+mevmQbpxF80SGMORjEZ/nLtAWMY61DS30ZpPyCA6mIH9zgACjNt0oTWOXtJpiBhmF1cW
+ /ylDp9Le94352m1YpfBf2KLvfuSHS03YK1gh2ctlBX7GuKdTJnS8B0goIuNedjgfx28jysrLj
+ vGkDTFf23vRUYyzXSXnQnEb3eujCBBwTwWcsVXfEXni2YTUbo8cz5y6lD5SWZygdNWUz331Dr
+ rSgt3IpjGxK9+EO7rmPmkXlohl1THoLvFtnAJWeTlV1kcyuyKN+mn5WPHkbUXfV8R1cTfl69H
+ u/r1zbReqihpkB21G2tCgZUllSnGSCCzQ3TFnTB9eXxUMylbiscpYYvFtKSo31z/yHdEtvOW0
+ WozpGyMtcOgwRDWrmVAGedOshLDwDBgBCmVJl8ry7tpxpGUE5wFBP6LMH3Wnuuwmb/L6NzhFW
+ FJvstbRCCmjkqNBabMDcCHWhCVnzI/+7WujlImweQ/bQgUtLUxBLN7XiIdgj4lMc1RjiFbz1p
+ GLgIPFxTfl1DzzM1vkhINCmunBIv89pnUnVspQz3b9951tRC4uSQeqDmVghWx0Vy6W5ZvlfCS
+ fFoT0SmWCfZc3FZd/9OuSaPPkJzonAUh+5DQ2O6e1ETlEyc1qUKVb/9L4P7Xjf+AMDdOv09dd
+ yW6V8Nk/xAwQxygTTM0SrlkdjWw9WUqm9Mcvh2ptS05HcavZ2WcwWls9edAeI3kczqu2WJhlu
+ dFx3LsQsrPmamzOiPpQ7dPu3rHQG+2Nvr/gsINn2csBc3cUDctypycyt1N/eURtr4N3ozYqpv
+ YRlMwY8TqoMqFaU6YSumvUdpUGEYvozTg/f3FavRn+8LAqVj15RYcODSmL9JuVjDut7accOCR
+ K9BSQAQv+GCdOizAty/tj0fuDOunAUaCCPGMWJPR1luCWr2sN0+GaTi9Q==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that all users of sync_inode() have been deleted, remove
-sync_inode().
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/fs-writeback.c  | 19 +------------------
- include/linux/fs.h |  1 -
- 2 files changed, 1 insertion(+), 19 deletions(-)
 
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index e91980f49388..706dad22f735 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -2608,23 +2608,6 @@ int write_inode_now(struct inode *inode, int sync)
- }
- EXPORT_SYMBOL(write_inode_now);
- 
--/**
-- * sync_inode - write an inode and its pages to disk.
-- * @inode: the inode to sync
-- * @wbc: controls the writeback mode
-- *
-- * sync_inode() will write an inode and its pages to disk.  It will also
-- * correctly update the inode on its superblock's dirty inode lists and will
-- * update inode->i_state.
-- *
-- * The caller must have a ref on the inode.
-- */
--int sync_inode(struct inode *inode, struct writeback_control *wbc)
--{
--	return writeback_single_inode(inode, wbc);
--}
--EXPORT_SYMBOL(sync_inode);
--
- /**
-  * sync_inode_metadata - write an inode to disk
-  * @inode: the inode to sync
-@@ -2641,6 +2624,6 @@ int sync_inode_metadata(struct inode *inode, int wait)
- 		.nr_to_write = 0, /* metadata-only */
- 	};
- 
--	return sync_inode(inode, &wbc);
-+	return writeback_single_inode(inode, &wbc);
- }
- EXPORT_SYMBOL(sync_inode_metadata);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index aace07f88b73..7c33e5414747 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2458,7 +2458,6 @@ static inline void file_accessed(struct file *file)
- 
- extern int file_modified(struct file *file);
- 
--int sync_inode(struct inode *inode, struct writeback_control *wbc);
- int sync_inode_metadata(struct inode *inode, int wait);
- 
- struct file_system_type {
--- 
-2.26.3
+On 2021/7/14 =E4=B8=8B=E5=8D=889:52, Zhenyu Wu wrote:
+> I found btrfs-5.12 in archlinux (surprisedly)
+>
+> When I try to mount with ro, rescue=3Dibadroots, I will get
+> ```
+> wrong fs type, bad option, bad superblock on
+> /dev/sda2, missing codepage or helper program, or other error.
+> ```
+>
+> dmesg will output
+> ```
+> [ 1087.646701] BTRFS info (device sda2): ignoring bad roots
+> [ 1087.646725] BTRFS info (device sda2): disk space caching is enabled
+> [ 1087.646735] BTRFS info (device sda2): has skinny extents
+> [ 1087.770464] BTRFS info (device sda2): bdev /dev/sda2 errs: wr 0, rd
+> 0, flush 0, corrupt 5, gen 0
+> [ 1087.834263] BTRFS critical (device sda2): corrupt leaf: root=3D2
+> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D1073741824, i=
+nvalid
+> block group used, have 1073754112 expect [0, 1073741824)
+> [ 1087.834550] BTRFS error (device sda2): block=3D273006592 read time
+> tree block corruption detected
+> [ 1087.848452] BTRFS critical (device sda2): corrupt leaf: root=3D2
+> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D1073741824, i=
+nvalid
+> block group used, have 1073754112 expect [0, 1073741824)
+> [ 1087.848762] BTRFS error (device sda2): block=3D273006592 read time
+> tree block corruption detected
+> [ 1087.849006] BTRFS error (device sda2): failed to read block groups: -=
+5
+> [ 1087.851674] BTRFS error (device sda2): open_ctree failed
+> ```
+> does it mean my extent tree is still intact? so I need to btrfs ins
+> dump-tree, btrfs-map-logical?
+> thanks!
 
+Yep, you need to corrupt the extent tree to rescue the data, ironically.
+
+Thanks,
+Qu
+>
+> On 7/14/21, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>>
+>>
+>> On 2021/7/14 =E4=B8=8B=E5=8D=885:58, Zhenyu Wu wrote:
+>>> ```
+>>> [  301.533172] BTRFS info (device sda2): unrecognized rescue option
+>>> 'ibadroots'
+>>> [  301.533209] BTRFS error (device sda2): open_ctree failed
+>>> ```
+>>>
+>>> Does ibadroots need a newer version of btrfs? My btrfs version is 5.10=
+.1.
+>>
+>> Oh, that support is added in v5.11...
+>>
+>> You may want to grab a liveCD from some rolling release.
+>>
+>> But even with v5.11, it may not help much, as that option won't help if
+>> your extent tree is still intact.
+>>
+>> You may want to use "btrfs ins dump-tree" to locate your extent tree,
+>> then corrupt the extent tree root completely (using btrfs-map-logical t=
+o
+>> get the physical offset, then dd to destory the first 4 bytes of both
+>> copy), then the option would properly work.
+>>
+>> Thanks,
+>> Qu
+>>>
+>>> Thanks!
+>>>
+>>> On 7/14/21, Qu Wenruo <wqu@suse.com> wrote:
+>>>>
+>>>>
+>>>> On 2021/7/14 =E4=B8=8B=E5=8D=884:49, Zhenyu Wu wrote:
+>>>>> sorry for late:(
+>>>>>
+>>>>> I found <https://bbs.archlinux.org/viewtopic.php?id=3D233724> looks =
+same
+>>>>> as my situation. But in my computer (boot from live usb) `btrfs chec=
+k
+>>>>> --init-extent-tree` output a lot of non-ascii character (maybe becau=
+se
+>>>>> ansi escape code mess the terminal)
+>>>>> after several days it outputs `7/7`and `killed`. The solution looks
+>>>>> failed.
+>>>>>
+>>>>> I'm sorry because my live usb don't have smartctl :(
+>>>>>
+>>>>> ```
+>>>>> $ hdparm -W0 /dev/sda
+>>>>> /dev/sda:
+>>>>>     setting drive write-caching to 0 (off)
+>>>>>     write-caching =3D  0 (off)
+>>>>> ```
+>>>>>
+>>>>> But now the btrfs partition still cannot be mounted.
+>>>>>
+>>>>> when I try to mount it with `usebackuproot`, it will output the same
+>>>>> error message. And dmesg will output
+>>>>> ```
+>>>>> [250062.064785] BTRFS warning (device sda2): 'usebackuproot' is
+>>>>> deprecated, use 'rescue=3Dusebackuproot' instead
+>>>>> [250062.064788] BTRFS info (device sda2): trying to use backup root =
+at
+>>>>> mount time
+>>>>> [250062.064789] BTRFS info (device sda2): disk space caching is enab=
+led
+>>>>> [250062.064790] BTRFS info (device sda2): has skinny extents
+>>>>> [250062.208403] BTRFS info (device sda2): bdev /dev/sda2 errs: wr 0,
+>>>>> rd 0, flush 0, corrupt 5, gen 0
+>>>>> [250062.277045] BTRFS critical (device sda2): corrupt leaf: root=3D2
+>>>>> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D107374182=
+4, invalid
+>>>>> block group used, have 1073754112 expect [0, 1073741824)
+>>>>
+>>>> Looks like a bad extent tree re-initialization, a bug in btrfs-progs
+>>>> then.
+>>>>
+>>>> For now, you can try to mount with "ro,rescue=3Dibadroots" to see if =
+it
+>>>> can be mounted RO, then rescue your data.
+>>>>
+>>>> Thanks,
+>>>> Qu
+>>>>> [250062.277048] BTRFS error (device sda2): block=3D273006592 read ti=
+me
+>>>>> tree block corruption detected
+>>>>> [250062.291924] BTRFS critical (device sda2): corrupt leaf: root=3D2
+>>>>> block=3D273006592 slot=3D17 bg_start=3D1104150528 bg_len=3D107374182=
+4, invalid
+>>>>> block group used, have 1073754112 expect [0, 1073741824)
+>>>>> [250062.291927] BTRFS error (device sda2): block=3D273006592 read ti=
+me
+>>>>> tree block corruption detected
+>>>>> [250062.291943] BTRFS error (device sda2): failed to read block grou=
+ps:
+>>>>> -5
+>>>>> [250062.292897] BTRFS error (device sda2): open_ctree failed
+>>>>> ```
+>>>>>
+>>>>> If don't usebackuproot, dmesg will output the same log except the fi=
+rst
+>>>>> 2
+>>>>> lines.
+>>>>>
+>>>>> Now btrfs check can check this partition:
+>>>>>
+>>>>> ```
+>>>>> $ btrfs check /dev/sda2 2>&1|tee check.txt
+>>>>> # see attachment
+>>>>> ```
+>>>>>
+>>>>> Does my disk have any hope to be rescued?
+>>>>> thanks!
+>>>>>
+>>>>> On 7/11/21, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2021/7/11 =E4=B8=8B=E5=8D=887:37, Forza wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2021-07-11 10:59, Zhenyu Wu wrote:
+>>>>>>>> Sorry for my disturbance.
+>>>>>>>> After a dirty reboot because of a computer crash, my btrfs partit=
+ion
+>>>>>>>> cannot be mounted. The same thing happened before, but now `btrfs
+>>>>>>>> rescue zero-log` cannot work.
+>>>>>>>> ```
+>>>>>>>> $ uname -r
+>>>>>>>> 5.10.27-gentoo-x86_64
+>>>>>>>> $ btrfs rescue zero-log /dev/sda2
+>>>>>>>> Clearing log on /dev/sda2, previous log_root 0, level 0
+>>>>>>>> $ mount /dev/sda2 /mnt/gentoo
+>>>>>>>> mount: /mnt/gentoo: wrong fs type, bad option, bad superblock on
+>>>>>>>> /dev/sda2, missing codepage or helper program, or other error.
+>>>>>>>> $ btrfs check /dev/sda2
+>>>>>>>> parent transid verify failed on 34308096 wanted 962175 found 9617=
+64
+>>>>>>>> parent transid verify failed on 34308096 wanted 962175 found 9617=
+64
+>>>>>>>> parent transid verify failed on 34308096 wanted 962175 found 9617=
+64
+>>>>>>>> Ignoring transid failure
+>>>>>>>> leaf parent key incorrect 34308096
+>>>>>>>> ERROR: failed to read block groups: Operation not permitted
+>>>>>>>> ERROR: cannot open file system
+>>>>>>>> $ dmesg 2>&1|tee dmesg.txt
+>>>>>>>> # see attachment
+>>>>>>>> ```
+>>>>>>>> Like `mount -o ro,usebackuproot` cannot work, too.
+>>>>>>>>
+>>>>>>>> Thanks for any help!
+>>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> Hi!
+>>>>>>>
+>>>>>>> Parent transid failed is hard to recover from, as mentioned on
+>>>>>>> https://btrfs.wiki.kernel.org/index.php/FAQ#How_do_I_recover_from_=
+a_.22parent_transid_verify_failed.22_error.3F
+>>>>>>>
+>>>>>>>
+>>>>>>> I see you have "corrupt 5" sectors in dmesg. Is your disk healthy?
+>>>>>>> You
+>>>>>>> can check with "smartctl -x /dev/sda" to determine the health.
+>>>>>>>
+>>>>>>> One way of avoiding this error is to disable write-cache. Parent
+>>>>>>> transid
+>>>>>>> failed can happen when the disk re-orders writes in its write cach=
+e
+>>>>>>> before flushing to disk. This violates barriers, but it is
+>>>>>>> unfortately
+>>>>>>> common. If you have a crash, SATA bus reset or other issues,
+>>>>>>> unwritten
+>>>>>>> content is lost. The problem here is the re-ordering. The superblo=
+ck
+>>>>>>> is
+>>>>>>> written out before other metadata (which is now lost due to the
+>>>>>>> crash).
+>>>>>>
+>>>>>> To be extra accurate, all filesysmtems have taken the re-order into
+>>>>>> consideration.
+>>>>>> Thus we have flush (or called barrier) command to force the disk to
+>>>>>> write all its cache back to disk or at least non-volatile cache.
+>>>>>>
+>>>>>> Combined with mandatory metadata CoW, it means, no matter what the
+>>>>>> disk
+>>>>>> re-order or not, we should only see either the newer data after the
+>>>>>> flush, or the older data before the flush.
+>>>>>>
+>>>>>> But unfortunately, hardware is unreliable, sometimes even lies abou=
+t
+>>>>>> its
+>>>>>> flush command.
+>>>>>> Thus it's possible some disks, especially some cheap RAID cards, te=
+nd
+>>>>>> to
+>>>>>> just ignore such flush commands, thus leaves the data corrupted aft=
+er
+>>>>>> a
+>>>>>> power loss.
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Qu
+>>>>>>
+>>>>>>>
+>>>>>>> You disable write cache with "hdparm -W0 /dev/sda". It might be wo=
+rth
+>>>>>>> adding this to a cron-job every 5 minutes or so, as the setting is
+>>>>>>> not
+>>>>>>> persistent and can get reset if the disk looses power, goes to sle=
+ep,
+>>>>>>> etc.
+>>>>>>
+>>>>
+>>>>
+>>
