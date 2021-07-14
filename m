@@ -2,142 +2,317 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C793C7981
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 00:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF01A3C7ABF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jul 2021 03:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236341AbhGMWTG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Jul 2021 18:19:06 -0400
-Received: from mout.gmx.net ([212.227.15.19]:49961 "EHLO mout.gmx.net"
+        id S237206AbhGNBDl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Jul 2021 21:03:41 -0400
+Received: from mout.gmx.net ([212.227.17.22]:34347 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236133AbhGMWTG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Jul 2021 18:19:06 -0400
+        id S237180AbhGNBDl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 13 Jul 2021 21:03:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626214572;
-        bh=+53UVZGBNVA77nRwclDpNbCEwEHBqhKKB/u7K1SRy38=;
+        s=badeba3b8450; t=1626224428;
+        bh=VChibxoLx6Jc0jNuRE9DDxLJE+G6pF+f6gIyZZYjdUk=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=jvSPOaUh/YRMjlowXk2u7dd9dYP8MoHqUZVB8V6b3yYIQytG9O39jWiIgWaP5Uw0o
-         wtrUvG/O5oYpPL2rM5lyZR1NXZ75CbtfTjsyyEMJnjRqTh4+xs2HvUAZnbrfRf/Cou
-         PDas2mDU2DN5wo2ISq0B1OhF9YSL4mCoCNhsMeYA=
+        b=O75YU8io9QTTb4cNVm5rEKrVmBfDM6oP/d3UBu5MMQ5z0eY8W84myXljoOer9z4Gl
+         hWJfJL62bbhBCvJ/1ecohDx2lmIV7D9Jag48thrx50WrpXjKmqkpxj4/tVxlpj3Bzf
+         EAXysjvnhINJyVMDGle3RR3r9zTriG9UwZxHmeEg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5VDE-1l5iWv2MZu-016vl4; Wed, 14
- Jul 2021 00:16:12 +0200
-Subject: Re: [PATCH v2] btrfs-progs: cmds: Add subcommand that dumps file
- extents
-To:     Sidong Yang <realwakka@gmail.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20210711161007.68589-1-realwakka@gmail.com>
- <PH0PR04MB7416299F37110AAD9FC7131E9B159@PH0PR04MB7416.namprd04.prod.outlook.com>
- <20210713165444.GB71156@realwakka>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhU9j-1lYW1w3jnP-00egvP; Wed, 14
+ Jul 2021 03:00:28 +0200
+Subject: Re: [PATCH 17/24] btrfs/ioctl: allow idmapped
+ BTRFS_IOC_SNAP_DESTROY{_V2} ioctl
+To:     Christian Brauner <brauner@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@infradead.org>
+References: <20210713111344.1149376-1-brauner@kernel.org>
+ <20210713111344.1149376-18-brauner@kernel.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <2c0484ff-670d-5a26-0a96-e396289a784f@gmx.com>
-Date:   Wed, 14 Jul 2021 06:16:08 +0800
+Message-ID: <82945186-1373-fc09-0afd-60d40dc71868@gmx.com>
+Date:   Wed, 14 Jul 2021 09:00:21 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210713165444.GB71156@realwakka>
+In-Reply-To: <20210713111344.1149376-18-brauner@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DOFPMmXHkSqE6aZsXc7x0chgK3SOFTQGF0icuRVyRRvRXwLYKya
- g6XQ7bmBLlZb7Co635bxi+ahXk7Eynx0RXETSiJyr1mAoWQbtM2Y+q/BUqjTFUOgJqDoSCf
- FRpEpBLeYvyRSf7tgE24hIN6Ppz7ISOSA1e2w24Kl9SRVDPS23CtyOk4vRoyKHX3emXP208
- OXiH50NdoBHlUIfvBFMLw==
+X-Provags-ID: V03:K1:i4GV977pxKOtlypIPQ83tmFJV5CEuoOJt/vixN/JzNzHT6fxmfC
+ R2Wm+4vflMY4+asTeJG/O2LelZ0HAvghjdDs5HltYZy8/eavi/PAwU/0Up3UABQYTNdBX+X
+ jii/Y7Qck/5hn7VVtHmYTV3Bj7ukF/fHAFPVI4OYC4s9bS+7Ib+MiqvmTVyVa7ce6/+SWh0
+ rrdScbMcNY43pZF4SNGCg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:olLnS3DwQ58=:KWu4FUs6cQe5o7+mAZzN3O
- dDniijUgdO3iOCT4Yn0DWCsEHswjkMoc8W3sfGOrYG/pLyZcIvtqtKsb6AwReYQnIjr7uuQJF
- fWjtZGTa8AwjRzrtxKIEjdKEH0tulNvRGzGZFP++LGCOZEYTLoZR/AuBr37leQvBbOCY8HuSO
- iAOHa+BpsZBylLOBB2VXmMZB6rsIkgcqMNfqIIj1/js2KwXyNX6XGBV5a1L/+2M17c6RT1T1b
- Z53jEMF/DkQLrZVyJ/8ApP6ORKAjchbK6bFYdHO655EjL15Jn6PxGba7LPswWcXu8iVEyTurT
- GRx6g3j1DsKW1rABlQEPDdNzljYlDo66Zt24908SI2AO3nZXzEIxRoyJAJ6pCmdwM/WLoNGE4
- BQwcpmKhxYFlhqn5c+LEbEDVody5fXdsxi4dQ4llm24nt1hlBetN5YuTu5Mw2yTWYy7voCOxq
- wLbVpaltbbpRY4WLHrBmd/KPuJ7w3BXtoMUz9DWxpgVH+fNLLZ6iCrFOQU5ex6vyW7PMNichR
- eWNtkDCCe7mBvx6yGo/enAK4JBnlVzNnOe2gQMp6i/tKTTdPZrqDvwCAzusGg2bljqEHQ61he
- PI3rXoVUIgy+MIkEJS3pjWrT1q0nEqLuTgqoWg3aq+AzTXIbEDDe/pBoNqYIEJI9qlaYOKY/V
- EKlnqK78dKQWPRpkynGyNe6YwvyeR7K6blANbfvUfLlKjskLGR9aMWtjLgbnFZADvxIt6zthC
- RIpsx9EsUYIv/fwZNDniDyaj3czrHfhiwLfj7Ahal4+E3KCh1Kw3N24mkCH7/usW85BimQV/R
- u9E7QB638QhZrLoSeuORy0QslEPuEC6OOmkhhp4ABt+cH6irk7558dbxVcAzHWCnrl6YNAeLV
- 5ee4vlqZHX83sHHYvEqp7khHLI6u4JOuKj/Mmu3W4s0/+74d5ppno0bpx9uTf41oymkYGfzl0
- rIjHAJidQ7rsGQZ8fjtCAgr3JrLwSOKCKHqiPzAU/lRjJbli3kpn8XTkENaruqXvSGSIl71qA
- yBgCaqNALdBkWDvH4+UBeDRih1QH+RDPoLLDG9n7KXR6gTeDlzSzmJhjQBYHp/USXccUGsqdm
- Da6kCQR+7bIkOvZgCB0nt0l7GQcT3nLbQr5m00DVX0l6yiHae6QpQYuvA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nsyLeidVQs4=:pIkQOjTu8WsQlwyK4VxTL3
+ vERoNMmbJSrasd5eV+lc9/BaEfgpOEH+GSjGlT3pp6Ro/aD0/mJOsidPs2tLSWUefttv9vjyV
+ rbqiC+y4RkgqGiUr8hdNMOARDpMVJroZp3tN6rmPgvdTUFItYiYiOi+lHHmrowPOTPMH/huAj
+ tsVhyHNRuihAwBstOZBwz9fKe09N0aWVysvIkiYmhlF92f4FokrACX4qa/bHIIlTBh13gARYR
+ uCa8AtgUH5/WwvIKZiJRyhh1X5hmg3i3vaTUWlCj61I7YMO41E+PWp/gh/lFLRNyDf4jvjvv2
+ 91CH2abDi9Tk2ep4m1iYdFW8dyrSre+LK2ox6J3b2k0kD3zvg2299XMij7cKF8A4AA0cRN6NY
+ +p1GXzBw6a2411222YNwBOb35VhNpKGmlkdWTWgFmsggH45GznxzMXJCMLogF7vRuZzk+dQ1a
+ 5TKr7bgKHL3cvnyhNBYXLqPjXkt0BBLcAsT0c/kTT1xcFYv9mPRHME2+2ixHq40nUvqtRdEgR
+ abSECS9b8CQ5IG8Fd104x4ePoxa0C748E4VUWn+ufOzzLnbqUILX55QRSTABGDF7n96Y/dgyQ
+ sEWJP9nkxjdY/hspRL+v48lkGMyxaMhj3uzrPJ9e+zIJXAGRlFsD4eOi48IIRfPWvtWWZW0Sf
+ GIO63TP1rgNlfN9OANwprwllvZSjJVpDLDbM1PFmBhNpfgS3vcu3nut0L5fQUI+3UzPMwdxq+
+ migvukGotnixpLRObV0yB5m5I2q4cX6oOWSbM34TZElUTeOek6IJcYgjPsVVuJ0/nZ7zoFbmZ
+ Rtqm7ydRq2udFHf3aImBBNC0aNOv9AAG/NUKEwCYkqHJengREN1VUEMWRLqXK5v8bBnG2kw2r
+ P6qJZl5GK5OqSLy8RQ1DRSU80t3VoJcFKwKwe1kRnppRqh+2zm2yAEYstH40cgQPmC451Bq3s
+ JMJ0z0Ix+2gvVw5l15BOXWgOXOcnF4GJDrOKTLpo1hGlFvlQCx8W5Dx0IK+r/jQejEzNwyQqN
+ jvJj1eh09Oj0ZHBeaCgVRc6XLoJtAlQqm6J/nq36/T6pvd56ZAfI2t5jxb3IEUBEol/lmybfC
+ Z6RN/pyt14LXRWTnP6CYzW/afkjeloVZtpoIxqrqMZfrNsCe3FaTiSMSA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/7/14 =E4=B8=8A=E5=8D=8812:54, Sidong Yang wrote:
-> On Mon, Jul 12, 2021 at 06:52:28AM +0000, Johannes Thumshirn wrote:
+On 2021/7/13 =E4=B8=8B=E5=8D=887:13, Christian Brauner wrote:
+> From: Christian Brauner <christian.brauner@ubuntu.com>
 >
-> Hi, Thanks for review!
+> Destroying subvolumes and snapshots are important features of btrfs. Bot=
+h
+> operations are available to unprivileged users if the filesystem has bee=
+n
+> mounted with the "user_subvol_rm_allowed" mount option. Allow subvolume =
+and
+> snapshot deletion on idmapped mounts. This is a fairly straightforward
+> operation since all the permission checking helpers are already capable =
+of
+> handling idmapped mounts. So we just need to pass down the mount's usern=
+s.
 >
->> On 11/07/2021 18:10, Sidong Yang wrote:
->>> +static void compress_type_to_str(u8 compress_type, char *ret)
->>> +{
->>> +	switch (compress_type) {
->>> +	case BTRFS_COMPRESS_NONE:
->>> +		strcpy(ret, "none");
->>> +		break;
->>> +	case BTRFS_COMPRESS_ZLIB:
->>> +		strcpy(ret, "zlib");
->>> +		break;
->>> +	case BTRFS_COMPRESS_LZO:
->>> +		strcpy(ret, "lzo");
->>> +		break;
->>> +	case BTRFS_COMPRESS_ZSTD:
->>> +		strcpy(ret, "zstd");
->>> +		break;
->>> +	default:
->>> +		sprintf(ret, "UNKNOWN.%d", compress_type);
->>> +	}
->>> +}
->>
->> [....]
->>> +	char compress_str[16];
->>
->> [...]
->>
->>> +					compress_type_to_str(extent_item->compression, compress_str);
->>
->> While this looks safe at a first glance, can we change this to:
->>
->> #define COMPRESS_STR_LEN 5
->>
->> [...]
->>
->> switch (compress_type) {
->> case BTRFS_COMPRESS_NONE:
->> 	strncpy(ret, "none", COMPRESS_STR_LEN);
->>
->> [...]
->>
->> char compress_str[COMPRESS_STR_LEN];
->>
->> One day someone will factor out 'compress_type_to_str()' and make it pu=
-blic, read user
->> supplied input and then it's a disaster waiting to happen.
+> In addition to regular subvolume or snapshot deletion by specifying the =
+name of
+> the subvolume or snapshot the BTRFS_IOC_SNAP_DESTROY_V2 ioctl allows the
+> deletion of subvolumes and snapshots via subvolume and snapshot ids when=
+ the
+> BTRFS_SUBVOL_SPEC_BY_ID flag is raised.
 >
-> This can be happen when @ret is too short? If it so, I think it also has
-> problem when @ret is shorter than COMPRESS_STR_LEN. I wonder that I
-> understood this problem you said.
+> This feature is blocked on idmapped mounts as this allows filesystem wid=
+e
+> subvolume deletions and thus can escape the scope of what's exposed unde=
+r the
+> mount identified by the fd passed with the ioctl.
+>
+> Here is an example where a btrfs subvolume is deleted through a subvolum=
+e mount
+> that does not expose the subvolume to be delete but it can still be dele=
+ted by
+> using the subvolume id:
+>
+>   /* Compile the following program as "delete_by_spec". */
+>
+>   #define _GNU_SOURCE
+>   #include <fcntl.h>
+>   #include <inttypes.h>
+>   #include <linux/btrfs.h>
+>   #include <stdio.h>
+>   #include <stdlib.h>
+>   #include <sys/ioctl.h>
+>   #include <sys/stat.h>
+>   #include <sys/types.h>
+>   #include <unistd.h>
+>
+>   static int rm_subvolume_by_id(int fd, uint64_t subvolid)
+>   {
+>   	struct btrfs_ioctl_vol_args_v2 args =3D {};
+>   	int ret;
+>
+>   	args.flags =3D BTRFS_SUBVOL_SPEC_BY_ID;
+>   	args.subvolid =3D subvolid;
+>
+>   	ret =3D ioctl(fd, BTRFS_IOC_SNAP_DESTROY_V2, &args);
+>   	if (ret < 0)
+>   		return -1;
+>
+>   	return 0;
+>   }
+>
+>   int main(int argc, char *argv[])
+>   {
+>   	int subvolid =3D 0;
+>
+>   	if (argc < 3)
+>   		exit(1);
+>
+>   	fprintf(stderr, "Opening %s\n", argv[1]);
+>   	int fd =3D open(argv[1], O_CLOEXEC | O_DIRECTORY);
+>   	if (fd < 0)
+>   		exit(2);
+>
+>   	subvolid =3D atoi(argv[2]);
+>
+>   	fprintf(stderr, "Deleting subvolume with subvolid %d\n", subvolid);
+>   	int ret =3D rm_subvolume_by_id(fd, subvolid);
+>   	if (ret < 0)
+>   		exit(3);
+>
+>   	exit(0);
+>   }
+>   #include <stdio.h>"
+>   #include <stdlib.h>"
+>   #include <linux/btrfs.h"
+>
+>   truncate -s 10G btrfs.img
+>   mkfs.btrfs btrfs.img
+>   export LOOPDEV=3D$(sudo losetup -f --show btrfs.img)
+>   mount ${LOOPDEV} /mnt
+>   sudo chown $(id -u):$(id -g) /mnt
+>   btrfs subvolume create /mnt/A
+>   btrfs subvolume create /mnt/B/C
+>   # Get subvolume id via:
+>   sudo btrfs subvolume show /mnt/A
+>   # Save subvolid
+>   SUBVOLID=3D<nr>
+>   sudo umount /mnt
+>   sudo mount ${LOOPDEV} -o subvol=3DB/C,user_subvol_rm_allowed /mnt
+>   ./delete_by_spec /mnt ${SUBVOLID}
+>
+> With idmapped mounts this can potentially be used by users to delete
+> subvolumes/snapshots they would otherwise not have access to as the idma=
+pping
+> would be applied to an inode that is not exposed in the mount of the sub=
+volume.
+>
+> The fact that this is a filesystem wide operation suggests it might be a=
+ good
+> idea to expose this under a separate ioctl that clearly indicates this. =
+In
+> essence, the file descriptor passed with the ioctl is merely used to ide=
+ntify
+> the filesystem on which to operate when BTRFS_SUBVOL_SPEC_BY_ID is used.
+>
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: Christoph Hellwig <hch@infradead.org>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: linux-btrfs@vger.kernel.org
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+> ---
+>   fs/btrfs/ioctl.c | 26 ++++++++++++++++++++------
+>   1 file changed, 20 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 31115083f382..dd0fabdbeeeb 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -830,7 +830,8 @@ static int create_snapshot(struct btrfs_root *root, =
+struct inode *dir,
+>    *     nfs_async_unlink().
+>    */
+>
+> -static int btrfs_may_delete(struct inode *dir, struct dentry *victim, i=
+nt isdir)
+> +static int btrfs_may_delete(struct user_namespace *mnt_userns,
+> +			    struct inode *dir, struct dentry *victim, int isdir)
+>   {
+>   	int error;
+>
+> @@ -840,12 +841,12 @@ static int btrfs_may_delete(struct inode *dir, str=
+uct dentry *victim, int isdir)
+>   	BUG_ON(d_inode(victim->d_parent) !=3D dir);
+>   	audit_inode_child(dir, victim, AUDIT_TYPE_CHILD_DELETE);
+>
+> -	error =3D inode_permission(&init_user_ns, dir, MAY_WRITE | MAY_EXEC);
+> +	error =3D inode_permission(mnt_userns, dir, MAY_WRITE | MAY_EXEC);
+>   	if (error)
+>   		return error;
+>   	if (IS_APPEND(dir))
+>   		return -EPERM;
+> -	if (check_sticky(&init_user_ns, dir, d_inode(victim)) ||
+> +	if (check_sticky(mnt_userns, dir, d_inode(victim)) ||
+>   	    IS_APPEND(d_inode(victim)) || IS_IMMUTABLE(d_inode(victim)) ||
+>   	    IS_SWAPFILE(d_inode(victim)))
+>   		return -EPERM;
+> @@ -2914,6 +2915,7 @@ static noinline int btrfs_ioctl_snap_destroy(struc=
+t file *file,
+>   	struct btrfs_root *dest =3D NULL;
+>   	struct btrfs_ioctl_vol_args *vol_args =3D NULL;
+>   	struct btrfs_ioctl_vol_args_v2 *vol_args2 =3D NULL;
+> +	struct user_namespace *mnt_userns =3D file_mnt_user_ns(file);
+>   	char *subvol_name, *subvol_name_ptr =3D NULL;
+>   	int subvol_namelen;
+>   	int err =3D 0;
+> @@ -2941,6 +2943,18 @@ static noinline int btrfs_ioctl_snap_destroy(stru=
+ct file *file,
+>   			if (err)
+>   				goto out;
+>   		} else {
+> +			/*
+> +			 * Deleting by subvolume id can be used to delete
+> +			 * subvolumes/snapshots anywhere in the filesystem.
+> +			 * Ensure that users can't abuse idmapped mounts of
+> +			 * btrfs subvolumes/snapshots to perform operations in
+> +			 * the whole filesystem.
+> +			 */
+> +			if (mnt_userns !=3D &init_user_ns) {
+> +				err =3D -EINVAL;
+> +				goto out;
+> +			}
 
-I guess Johannes means that, if we support more and more new compression
-algos, it can go beyond your original 16 bytes length for the
-compression algo name.
+I'm OK to disable subvolume deletion by subvolid for now as a workaround.
 
-While using strncpy, it will never go beyond COMPRESS_STR_LEN forever.
-(Although it will truncating the output, but that would be easier to
-spot the problem and then enlarge the macro)
+In fact, for idmapped environment, if using btrfs-progs to delete
+subvolume, it will do the root backref lookup, and if it can't do that,
+it will abort the deletion.
+
+Although the ultimate solution would be to make root backref lookup to
+idmap compatible.
+
+For a valid subvolume deletion, it needs to find the dentry of the root,
+just like below you can see the related code:
+
+                         dentry =3D btrfs_get_dentry(fs_info->sb,
+                                         BTRFS_FIRST_FREE_OBJECTID,
+                                         vol_args2->subvolid, 0, 0);
+                         if (IS_ERR(dentry)) {
+                                 err =3D PTR_ERR(dentry);
+                                 goto out_drop_write;
+                         }
+
+Not sure how hard it would be, but I guess it may be a big project.
 
 Thanks,
 Qu
 
+> +
+>   			if (vol_args2->subvolid < BTRFS_FIRST_FREE_OBJECTID) {
+>   				err =3D -EINVAL;
+>   				goto out;
+> @@ -3025,7 +3039,7 @@ static noinline int btrfs_ioctl_snap_destroy(struc=
+t file *file,
+>   	err =3D down_write_killable_nested(&dir->i_rwsem, I_MUTEX_PARENT);
+>   	if (err =3D=3D -EINTR)
+>   		goto free_subvol_name;
+> -	dentry =3D lookup_one_len(&init_user_ns, subvol_name, parent, subvol_n=
+amelen);
+> +	dentry =3D lookup_one_len(mnt_userns, subvol_name, parent, subvol_name=
+len);
+>   	if (IS_ERR(dentry)) {
+>   		err =3D PTR_ERR(dentry);
+>   		goto out_unlock_dir;
+> @@ -3067,14 +3081,14 @@ static noinline int btrfs_ioctl_snap_destroy(str=
+uct file *file,
+>   		if (root =3D=3D dest)
+>   			goto out_dput;
 >
-> Thanks,
-> Sidong
+> -		err =3D inode_permission(&init_user_ns, inode,
+> +		err =3D inode_permission(mnt_userns, inode,
+>   				       MAY_WRITE | MAY_EXEC);
+>   		if (err)
+>   			goto out_dput;
+>   	}
 >
->>
->> Thanks,
->> 	Johannes
+>   	/* check if subvolume may be deleted by a user */
+> -	err =3D btrfs_may_delete(dir, dentry, 1);
+> +	err =3D btrfs_may_delete(mnt_userns, dir, dentry, 1);
+>   	if (err)
+>   		goto out_dput;
+>
+>
