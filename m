@@ -2,233 +2,277 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790AC3C997F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jul 2021 09:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C675C3C99A5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jul 2021 09:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238186AbhGOHVD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Jul 2021 03:21:03 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:58754 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231718AbhGOHVD (ORCPT
+        id S240351AbhGOHeT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Jul 2021 03:34:19 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49982 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231206AbhGOHeT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Jul 2021 03:21:03 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16F7FkGD031855;
-        Thu, 15 Jul 2021 07:18:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=xX4QYUade/ITxoiIwPQguCMvt3xpEDY/IUmFwMfHDc8=;
- b=lT1vCnFGRz7fwrghIFIogGxHbU9xUK8+iuMGYmUZHWpPUhzzm3YqvIN/lSh69wX/drik
- QqPcM/C2fD/SVuARFf+OMlzXANs/mRKE45J7+CMQSQtOL7N0OfENoZpjUdEdQuf4dfsz
- X8pTucxmZwG8yyKqcfaYQQ8RuZ3ZHVrl/YqP6lONurcUSgekFhb4JYfVNVldo0t9s3Tp
- J4EXGdWsUe6X8gt/rYJIcdO7+WNxnuBoAwNkbjSDa8FHuyZ3bQZc6XXtWCVBJHu2dhfA
- 0QSEEQwKltwIOGJ+ZcnClaz7kH3FyqtXmPgiL3fWLnSpdAQPtIbAC2XL23SeNhZoB05D ow== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=xX4QYUade/ITxoiIwPQguCMvt3xpEDY/IUmFwMfHDc8=;
- b=F5EDyPg1GUiq9fRzLUQhh4SIP1UnGOBRAQOCHhkmXdlmUoHRwxTrCCbGVY1xFkcaEFS7
- KqP63p4Xt1WZgTg2qW2JZh2OpNeQuohJLC1fWtFPX+MCYY3zuUJC5+qPHVrYxQJpmSUU
- PcLB43WTqIKHvcsvF7Ry1g6logAKKD4Q8JIJvxD6yfC7wQJ8yei/GR5oF4BY1k+qCfDd
- yF4/vxP7WwyzQ2KlUgYtRu+cTezwQW73KvDwiwrDSHHbGoqxaABSt3xQo7F9ZIPWZ7BJ
- fcEskiSr7e5rp7dD1ADaZMpbhfCckDO4tG2D1impaFLMXn7Fex4g7uR/RP4VsznzR2f1 4g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39tg5101bb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Jul 2021 07:18:06 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16F7F2gG134404;
-        Thu, 15 Jul 2021 07:18:05 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by aserp3030.oracle.com with ESMTP id 39qyd29gb0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Jul 2021 07:18:05 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cWmJ2USH5zziBM/j70wjvAE6aXsxGI16ucyYcKQ5R60GlQvSr17ewEuTz0HfwaaWI1Namdkh9bS2LDJ7W9NRmhu98ZIdMnxd/M8+4a/oUUZ3JNElq+N82c+uP3LGtwN87S+aZ/yun0jT4byiUxMpzZu7Kjd98udoREcBHO6gz9N+H41wUUeJAmHO7bB1YUX9svkNQyRkWV0DTKXaD352GmrZe47rEFcTjP0IrsQUrVtaThIvmAUR9e8M47b+CdSZhGPvT11E+7MPHvQlUjSqd+NHIXj+IF3WmEiDnlOJGo22h5xblV9HwTwcD8KizH8c3MPnMFegMSjZAEczzPyFLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xX4QYUade/ITxoiIwPQguCMvt3xpEDY/IUmFwMfHDc8=;
- b=KQ3v1IQd6nYhnkKjAgdBANvxSw9gxRd+pTARo/PVn6W7ODuU2vcgdxBIhIpXckowmWEh4Xkz+N/PJVip7cV2OggeJcauIKu9TEuZgQwW71la/qhvFB01SEFnHO4anPV1nxBiGTwiC+b19l59MI7NhjSUVEeP6v6svIXCue5vImv6ywD8qAJRj9Qilmr4YYBSXL/jfkol0ARgIQ5LfIGeVL3zjBHne+vVKEVL5tcfyCaWw/wDgIC8thi/sgzehevlpPxBacs8x3KplC6zysR0+a+yhF2fYlxg8F+dSM12m9WEEXeMjCD+LspNH6/mxkyfMWlFY0Yukl4/U0ABjINPKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xX4QYUade/ITxoiIwPQguCMvt3xpEDY/IUmFwMfHDc8=;
- b=BTQrLDF3KBc53BuYOgiuX+aPaovx9OrLYbOOkTarirHyTUbujqY1eUyyvkp1SrB95Odxf+ufgyORLhEntuBZzHS9AwSupjp3JxvUuamDZnsojA1FUUnpcvJYQxp8an/T4v+cvtjhLZTBueSVwcO/Eyrbl9mPt9xS0Z9wignKODk=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4287.namprd10.prod.outlook.com (2603:10b6:208:1da::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Thu, 15 Jul
- 2021 07:18:03 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b10f:7144:1abb:4255]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b10f:7144:1abb:4255%3]) with mapi id 15.20.4331.022; Thu, 15 Jul 2021
- 07:18:03 +0000
-Subject: Re: [PATCH v3] btrfs: rescue: allow ibadroots to skip bad extent tree
- when reading block group items
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Zhenyu Wu <wuzy001@gmail.com>
-References: <20210715050036.30369-1-wqu@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <0a54017f-e147-1111-6526-b068558f9c7b@oracle.com>
-Date:   Thu, 15 Jul 2021 15:17:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Thu, 15 Jul 2021 03:34:19 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 75DD91FDE5;
+        Thu, 15 Jul 2021 07:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626334285; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Aiup4vY4vJRhXSGiOIzKN+lppMDY6MMj9epdL5i1fk=;
+        b=PBxZVoxNMJxU+reMcuqG7PwYHp+pZBJnsLvYkwGtAEWJ9+FkJp99PTKPbr11yw8HD3GGVk
+        6EewOl8kS0nDNwv3Kyx5GbJSJz6QsAWn44Xp49hXLcd+/1Qvv/wJCdU6ELyjvoa8vGg3rQ
+        XQFNNraaUcIPEozqsclFp4UmQ95DYDQ=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 3CD9713AAF;
+        Thu, 15 Jul 2021 07:31:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id hWxwDE3k72CZWwAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Thu, 15 Jul 2021 07:31:25 +0000
+Subject: Re: [PATCH v3 0/9] ENOSPC delalloc flushing fixes
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, linux-fsdevel@vger.kernel.org
+References: <cover.1626288241.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <cda9b2f4-120e-2d08-5b8c-50eb4dcf3cf5@suse.com>
+Date:   Thu, 15 Jul 2021 10:31:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-In-Reply-To: <20210715050036.30369-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR03CA0146.apcprd03.prod.outlook.com
- (2603:1096:4:c8::19) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.109] (39.109.186.25) by SG2PR03CA0146.apcprd03.prod.outlook.com (2603:1096:4:c8::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.11 via Frontend Transport; Thu, 15 Jul 2021 07:18:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 80593364-b825-41c8-717b-08d94760af5f
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4287:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4287BC198B05DD77314C9D35E5129@MN2PR10MB4287.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: f6ql22qTwyr4dFKbm+I3FC9dMWvdfMoG0LinmviJpZuUgU844TpKzDhKPYB/8vmJtrvNpSPTbrYd+1IzUcIW98rXuK1Mtmei8PkXWYRX05lgAJioS39gs0lQN0NBgdCUIrXDkUPH+1WdDPnUpnRo1kzaCyqnSso4MXkIVLDyNROV2J+ANCzPhVYPI9irMqcijaDvhxzOfF1kAQtFUiw6S1PK0XSMY+KNZGuBopDgx6vF8G/2ajPcusUxTJhP5W5pH2/TV4huL5fDxLkq6tIVeI0Gfr+8yHziJqF0z+jbVo1KTOtHJcHWF8M6uGMBou4kLu7jrpgPEVssql2caTc/wdBrsYpHFSOZR3lzE1Lml3W1X85ofutUrgXsjfuHvDoyyYr1SWf4umyciFx6OKQqeT/ChHmq+3Ua55uceBVlF+r3QpO20q56Z/7XHnyZPCPv/R3SI0hE4X+Oc4FPYvEr352LhcVU3EUZ/IZ5gElXgg4RJKHcINMeO3LoS8wZJvWBZv5tLYr1JXISIFaeQuz/WgqzYWSBY+hfpd34mSYyuKPzz3uUaiYEpsUU++jLSREyuBit2HLRCCADu/3JI+6SqH7Gj/xrg0pezVHpBPcwztQqz+gbnVKjiRLyfYYFGUBJUZf07tZRrm3goWA8GuGPPlMvmrgpXqQ0/WgGl+rTdRMrVeRFeVI0RGFxIKQoS+RZeYB+FNOq8L9s6kF/Bb4AgZAj48xHTJIFYIQulAwr+WBP1SHPqeBgEkvwPr0EtElckY5uCnerlZ+9HhBrS6zmQfTjHSibdmvgd7Op7/WRiAUVLk8nznM1YEhJEdy1bqz+
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(366004)(376002)(136003)(26005)(8936002)(31696002)(8676002)(6486002)(6666004)(186003)(83380400001)(66476007)(66556008)(66946007)(86362001)(44832011)(316002)(16576012)(2616005)(956004)(966005)(2906002)(478600001)(5660300002)(53546011)(31686004)(36756003)(4326008)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUt6YTFiQk9kV2NqZUJPWlVHdUVDSk41dmhRUDhUM2lObnVHaVVjYzFoQnJP?=
- =?utf-8?B?UmdBTHJVZjZBRGxBZnZQNm9QTFdtRXRmOW0rQXVJbFNiL2s3MFlBYWZWNTc2?=
- =?utf-8?B?UnUyUnBFanZSalBiQm9CTVNWS0JMNURzWGtlaFoyVGZ2R2hMbVpBZVNpNFIy?=
- =?utf-8?B?aWovTWJaQnBHVXh5dlAvR0cwUlhlOUpFeUZvT2s4NWFlTFNoN2lZWXlYK0lH?=
- =?utf-8?B?b0pRSExWbEVCVlo5MGE1NEpGL2p3ckM2YmdQV0Z6TTcwVmtzQkRTZkxIZ1li?=
- =?utf-8?B?M1crdlZIU0ZTN01UVnZVMEwxaFc1RDVYMEQ0LzI4aER2Vlg3cnVCcFlST1hK?=
- =?utf-8?B?Znhoam5FaWZtbDlJNWpBTStCSjg5T0loOGNmTTF1eGFWQkQ0OVNUenFCU216?=
- =?utf-8?B?aGlFNWpzMXRlWDRwZVJONHBLcTBUbjFoQ0tXRzF2cEVjTFlqVmJ4VlFiU0xt?=
- =?utf-8?B?TnJtQW1vZUtrYld3RDFjUWNkUEtncXdYWXFyMktQUHVOMEhVbTJOUVJXSmI4?=
- =?utf-8?B?ejlOOVFobGtnZVpYTnhvVmx0S1YwRDFFeExxSjVjQjRBZ1lha1pDQkVsTTlI?=
- =?utf-8?B?YVNQWUV4WlVjbWQ2TXR3SFZzRHdDRXVXU2R2aFV3NUtjemVIZFlIVld0aStH?=
- =?utf-8?B?cGFhVDRRZU00NUFRdGRRdy9kTkRCMkozbTRVZkFUWEp2ZzlaOVMvc0NHWHAy?=
- =?utf-8?B?TTBxWVJBa0hZalZBUDJRNmhQanY2TitvK2svT0Q3S2ZGM1QvREpQR0RUeXVx?=
- =?utf-8?B?cndlSE54M3djaTljLzRKdjFFV2RHZFJ3QmJTSnA1Q2dJR25jL1NFSEJWb3M0?=
- =?utf-8?B?RFloMnlscXVlTTVKUVNQaEkvRjJSVlcxcE9hTXdlallObW9xYnkrVlNDUEF3?=
- =?utf-8?B?NHJrRWxJZ1FnNnZ0dlNsUlBia0x6a3J2bjA1a1pFMk5QejNLNUU3Z2tkdSsv?=
- =?utf-8?B?VkpKLzNhRU9PRUpPNkQyUE1BRGp3MDM0UEI2NEFYYlduT2RlalEvTTJnZUZE?=
- =?utf-8?B?Qis4Z1o4WjlkSnM3aFJoK0VWaVU2WmNZS1MxL05jOEp6dkgyczVIMnJjNlhD?=
- =?utf-8?B?WUxvWGJkQzNIeUt1K0psdGlKNHZWbjlOTUJSMDNHOXlNUTVqQ3ZhclZSR1FP?=
- =?utf-8?B?N1hnaWVjeUhZOWlrVlFQOHZTLzEvcWxEV1EzWEVYWXpjRWpqSkJsNHZ5VTBP?=
- =?utf-8?B?MjNLaWJhTVZMQzZyb0xpbVN4MjZUSm05VUVYM2ZWRkdlanAvMkk2ZVlCejNl?=
- =?utf-8?B?bUFMYnF5OGpQa3NDbGk1bXBOYXV3Ui9TWHRyd3gxbnBMNTNCOE9GRHA2RnM1?=
- =?utf-8?B?NTFyNVliQkRWWEloVk9qMFBkNWpLbHBCUjFWY2srQnRFMWVqL0ViaGNwUFhy?=
- =?utf-8?B?MUtzUVY5VG9HelQ5OVAxVjN4Y3UyQTBzd1N5TjI4cHBEQ1FLMzJuWkE1SjlI?=
- =?utf-8?B?Tk11R1J2RG5pSWswbWpkaVZMWWcvTjdTa1JzQjB0UXI3ZUJXLzZjdWR0Vms0?=
- =?utf-8?B?RDdleGlBWnBHKzcwVERTUkNha29LcWlFL3hVWkRzRmMvU1gwTjZvRnVib2Vn?=
- =?utf-8?B?ZzIyYWhmK2lKVXVVbUFDaGVqdGNuZ3RqNnlGWWFPSlNGUlpVcEdUdlFrQThH?=
- =?utf-8?B?RGQvaUNPeXFqQmdXZ0NITXpzbFMyVitVQnVJeEFJcVVDSUhFRDFvMnBtaDJH?=
- =?utf-8?B?MHBadmFuclhaL0QrYUx5N0w2ZmdIZXRNVVB0Qm45QzNEY2E3bDkwY2t5MkJT?=
- =?utf-8?Q?+FzyHUqzPkowcinbsww/A3wTs92MxAJsdRxP57c?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80593364-b825-41c8-717b-08d94760af5f
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 07:18:03.6645
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HxHqlN2bFx/rd2ONNxCdUuoViqOZ6XuMMoegeuo0w+Yn099b47BqpjvzXo4q9palQJDxcphoo5oWKuGEWxwZQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4287
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10045 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107150054
-X-Proofpoint-GUID: VyILdEwdI3JeDZwA3ND-nmPcDzxpadj9
-X-Proofpoint-ORIG-GUID: VyILdEwdI3JeDZwA3ND-nmPcDzxpadj9
+In-Reply-To: <cover.1626288241.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15/07/2021 13:00, Qu Wenruo wrote:
-> When extent tree gets corrupted, normally it's not extent tree root, but
-> one toasted tree leaf/node.
-> 
-> In that case, rescue=ibadroots mount option won't help as it can only
-> handle the extent tree root corruption.
-> 
-> This patch will enhance the behavior by:
-> 
-> - Allow fill_dummy_bgs() to ignore -EEXIST error
-> 
->    This means we may have some block group items read from disk, but
->    then hit some error halfway.
-> 
-> - Fallback to fill_dummy_bgs() if any error gets hit in
->    btrfs_read_block_groups()
-> 
->    Of course, this still needs rescue=ibadroots mount option.
-> 
-> With that, rescue=ibadroots can handle extent tree corruption more
-> gracefully and allow a better recover chance.
-> 
-> Reported-by: Zhenyu Wu <wuzy001@gmail.com>
-> Link: https://www.spinics.net/lists/linux-btrfs/msg114424.html
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-  Reviewed-by: Anand Jain <anand.jain@oracle.com>
 
-Thanks, Anand
-
-> ---
-> Changelog:
-> v2:
-> - Don't try to fill with dummy block groups when we hit ENOMEM
-> v3:
-> - Remove a dead condition
->    The empty fs_info->extent_root case has already been handled.
-> ---
->   fs/btrfs/block-group.c | 15 ++++++++++++++-
->   1 file changed, 14 insertions(+), 1 deletion(-)
+On 14.07.21 г. 21:47, Josef Bacik wrote:
+> v2->v3:
+> - Reordered the patches to have "btrfs: wake up async_delalloc_pages waiters
+>   after submit" come first, as it's a general fix that we need.
+> - Fixed the nit that Nikolay pointed out in "btrfs: handle shrink_delalloc pages
+>   calculation differently".
+> - Added "btrfs: include delalloc related info in dump space info tracepoint" to
+>   include the delalloc_bytes and ordered_bytes in the dump_space_info
+>   tracepoint.
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 5bd76a45037e..9bc68515bc4a 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -2105,11 +2105,16 @@ static int fill_dummy_bgs(struct btrfs_fs_info *fs_info)
->   		bg->used = em->len;
->   		bg->flags = map->type;
->   		ret = btrfs_add_block_group_cache(fs_info, bg);
-> -		if (ret) {
-> +		/*
-> +		 * We may have some block groups filled already, thus ignore
-> +		 * the -EEXIST error.
-> +		 */
-> +		if (ret && ret != -EEXIST) {
->   			btrfs_remove_free_space_cache(bg);
->   			btrfs_put_block_group(bg);
->   			break;
->   		}
-> +		ret = 0;
->   		btrfs_update_space_info(fs_info, bg->flags, em->len, em->len,
->   					0, 0, &space_info);
->   		bg->space_info = space_info;
-> @@ -2212,6 +2217,14 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
->   	ret = check_chunk_block_group_mappings(info);
->   error:
->   	btrfs_free_path(path);
-> +	/*
-> +	 * We hit some error reading the extent tree, and have rescue=ibadroots
-> +	 * mount option.
-> +	 * Try to fill using dummy block groups so that the user can continue
-> +	 * to mount and grab their data.
-> +	 */
-> +	if (ret && btrfs_test_opt(info, IGNOREBADROOTS))
-> +		ret = fill_dummy_bgs(info);
->   	return ret;
->   }
->   
+> v1->v2:
+> - Two extra patches to remove the last user of sync_inode() (p9fs) and then
+>   remove sync_inode() itself, as per hch's request
+> 
+> --- Original email ---
+> 
+> Hello,
+> 
+> I've been debugging and fixing a problem we hit in production related to getting
+> ENOSPC when we still should have had space to use.  A variety of different
+> things were going wrong, but one of them was sometimes we wouldn't wait for all
+> of delalloc to be flushed.  This series of patches fixes a few problems in this
+> area, starting with
+> 
+>   btrfs: handle shrink_delalloc pages calculation differently
+> 
+> When we switched to writing pages instead of full inodes for flushing we didn't
+> adjust the counters to give us pages, instead using the "items" amount.  This is
+> incorrect as we'd just not flush that much delalloc, leaving a lot laying around
+> when we finally ENOSPC'd.
+> 
+> The next bit are related to compression, as we have compression on everywhere in
+> production.
+> 
+>   btrfs: wait on async extents when flushing delalloc
+>   btrfs: wake up async_delalloc_pages waiters after submit
+> 
+> I ripped this code out because I added a second sync_inode() if we had async
+> extents in order to do the proper waiting.  However sync_inode() could skip
+> writeout if writeout had begun already on the inode, so we still need this
+> waiting in order to make sure we don't try to wait on ordered extents until all
+> ordered extents have been created.
+> 
+> And finally these two patches
+> 
+>   fs: add a filemap_fdatawrite_wbc helper
+>   btrfs: use the filemap_fdatawrite_wbc helper for delalloc shrinking
+> 
+> We need a writeback helper that will take a wbc and not try to do anything fancy
+> other than write out the inode we want.  sync_inode() has the drawback that it
+> will skip writeout if the inode is currently under writeback, and thus we won't
+> wait properly.
+> 
+> I ran this series through fsperf, the results ar eposted below.  I'm still
+> printing the %diff, but I'm also printing the stdev so you can see the variance
+> in teh values we expect.  Generally there is no change or it's within the normal
+> range.  These patches really only affect anything when we're very full on space.
+> 
+> I also ran this through the enospc stress test and saw no early enospc.  Thanks,
+> 
+> Josef
+> 
+> dbench60 results
+>   metric     baseline   current     stdev           diff
+> ==============================================================
+> qpathinfo       11.26      11.87       0.64     5.35%
+> throughput     652.90     628.99      65.68    -3.66%
+> flush        22292.41   35005.49   15197.94    57.03%
+> qfileinfo        1.04       1.24       0.17    19.02%
+> ntcreatex     3965.31    6167.38    7790.74    55.53%
+> qfsinfo          1.79       1.41       0.40   -20.88%
+> close            1.81       1.95       0.39     7.67%
+> sfileinfo        4.96       5.50       1.13    10.70%
+> rename        2640.98    5844.86    5873.86   121.31%
+> find            12.29      12.83       1.00     4.36%
+> unlink        3310.42    4809.88    7179.77    45.30%
+> writex       12521.22   37992.79    7567.72   203.43%
+> deltree        409.86     363.46     224.63   -11.32%
+> readx            2.37       4.18       0.66    76.01%
+> mkdir            0.03       0.11       0.01   271.06%
+> lockx            0.44       0.17       0.27   -61.83%
+> unlockx          0.16       0.64       0.11   291.70%
+> 
+> emptyfiles500k results
+>      metric         baseline   current      stdev           diff
+> ======================================================================
+> write_io_kbytes       125000     125000            0    0.00%
+> read_clat_ns_p99           0          0            0    0.00%
+> write_bw_bytes      1.83e+08   1.77e+08   5516543.33   -3.19%
+> read_iops                  0          0            0    0.00%
+> write_clat_ns_p50      17536      17792       273.68    1.46%
+> read_io_kbytes             0          0            0    0.00%
+> read_io_bytes              0          0            0    0.00%
+> write_clat_ns_p99      72576      74240      2677.97    2.29%
+> read_bw_bytes              0          0            0    0.00%
+> elapsed                    1          1            0    0.00%
+> write_lat_ns_min           0          0            0    0.00%
+> sys_cpu                91.86      91.29         0.66   -0.63%
+> write_lat_ns_max           0          0            0    0.00%
+> read_lat_ns_min            0          0            0    0.00%
+> write_iops          44583.10   43162.98      1346.81   -3.19%
+> read_lat_ns_max            0          0            0    0.00%
+> read_clat_ns_p50           0          0            0    0.00%
+> 
+> smallfiles100k results
+>      metric         baseline   current       stdev            diff
+> ========================================================================
+> write_io_kbytes     2.04e+08   2.04e+08             0     0.00%
+> read_clat_ns_p99           0          0             0     0.00%
+> write_bw_bytes      1.33e+08   1.40e+08   15033768.39     5.20%
+> read_iops                  0          0             0     0.00%
+> write_clat_ns_p50       6424       6688         79.77     4.11%
+> read_io_kbytes             0          0             0     0.00%
+> read_io_bytes              0          0             0     0.00%
+> write_clat_ns_p99      15960      16320        251.24     2.26%
+> read_bw_bytes              0          0             0     0.00%
+> elapsed              1592.50       1492        234.98    -6.31%
+> write_lat_ns_min     2730.75       2768         45.73     1.36%
+> sys_cpu                 5.75       6.25          0.65     8.68%
+> write_lat_ns_max    5.17e+08   1.52e+08      1.05e+09   -70.54%
+> read_lat_ns_min            0          0             0     0.00%
+> write_iops          32545.54   34239.34       3670.35     5.20%
+> read_lat_ns_max            0          0             0     0.00%
+> read_clat_ns_p50           0          0             0     0.00%
+> 
+> bufferedrandwrite16g results
+>      metric          baseline     current       stdev            diff
+> ===========================================================================
+> write_io_kbytes        16777216   16777216             0     0.00%
+> read_clat_ns_p99              0          0             0     0.00%
+> write_bw_bytes      91729211.62   94071836   13859731.84     2.55%
+> read_iops                     0          0             0     0.00%
+> write_clat_ns_p50         12704      11840       1227.26    -6.80%
+> read_io_kbytes                0          0             0     0.00%
+> read_io_bytes                 0          0             0     0.00%
+> write_clat_ns_p99         31136      32384       2925.86     4.01%
+> read_bw_bytes                 0          0             0     0.00%
+> elapsed                  191.38        183         25.98    -4.38%
+> write_lat_ns_min        3961.25       4068         95.29     2.69%
+> sys_cpu                   31.83      29.77          6.85    -6.47%
+> write_lat_ns_max       3.05e+10   1.70e+10      1.95e+10   -44.34%
+> read_lat_ns_min               0          0             0     0.00%
+> write_iops             22394.83   22966.76       3383.72     2.55%
+> read_lat_ns_max               0          0             0     0.00%
+> read_clat_ns_p50              0          0             0     0.00%
+> 
+> dio4kbs16threads results
+>      metric          baseline     current       stdev            diff
+> ===========================================================================
+> write_io_kbytes         4187092    4949612     599817.04    18.21%
+> read_clat_ns_p99              0          0             0     0.00%
+> write_bw_bytes      71448568.62   84467746   10233293.68    18.22%
+> read_iops                     0          0             0     0.00%
+> write_clat_ns_p50        245504     240640       4370.25    -1.98%
+> read_io_kbytes                0          0             0     0.00%
+> read_io_bytes                 0          0             0     0.00%
+> write_clat_ns_p99      22249472   20054016    1120427.41    -9.87%
+> read_bw_bytes                 0          0             0     0.00%
+> elapsed                      61         61             0     0.00%
+> write_lat_ns_min          38440      38571        225.10     0.34%
+> sys_cpu                    3.89       4.57          0.46    17.47%
+> write_lat_ns_max       1.23e+09   9.48e+08      7.00e+08   -23.22%
+> read_lat_ns_min               0          0             0     0.00%
+> write_iops             17443.50   20622.01       2498.36    18.22%
+> read_lat_ns_max               0          0             0     0.00%
+> read_clat_ns_p50              0          0             0     0.00%
+> 
+> randwrite2xram results
+>      metric         baseline   current       stdev            diff
+> ========================================================================
+> write_io_kbytes     33948247   34359528    4793805.63     1.21%
+> read_clat_ns_p99           0          0             0     0.00%
+> write_bw_bytes      1.15e+08   1.17e+08   17455355.14     1.47%
+> read_iops                  0          0             0     0.00%
+> write_clat_ns_p50      15232      14400       1043.81    -5.46%
+> read_io_kbytes             0          0             0     0.00%
+> read_io_bytes              0          0             0     0.00%
+> write_clat_ns_p99      95264      67072      25379.05   -29.59%
+> read_bw_bytes              0          0             0     0.00%
+> elapsed               313.62        314          5.10     0.12%
+> write_lat_ns_min     5399.38       5658        126.19     4.79%
+> sys_cpu                11.61      11.06          2.04    -4.69%
+> write_lat_ns_max    3.16e+10   2.91e+10      1.46e+10    -8.05%
+> read_lat_ns_min            0          0             0     0.00%
+> write_iops          28099.86   28511.67       4261.56     1.47%
+> read_lat_ns_max            0          0             0     0.00%
+> read_clat_ns_p50           0          0             0     0.00%
+> 
+> untarfirefox results
+> metric    baseline   current   stdev        diff
+> ======================================================
+> elapsed      46.89     46.75    0.18   -0.29%
+> 
+> Josef Bacik (9):
+>   btrfs: wake up async_delalloc_pages waiters after submit
+>   btrfs: include delalloc related info in dump space info tracepoint
+>   btrfs: enable a tracepoint when we fail tickets
+>   btrfs: handle shrink_delalloc pages calculation differently
+>   btrfs: wait on async extents when flushing delalloc
+>   fs: add a filemap_fdatawrite_wbc helper
+>   btrfs: use the filemap_fdatawrite_wbc helper for delalloc shrinking
+>   9p: migrate from sync_inode to filemap_fdatawrite_wbc
+>   fs: kill sync_inode
+> 
+>  fs/9p/vfs_file.c             |  7 +--
+>  fs/btrfs/ctree.h             |  9 ++--
+>  fs/btrfs/inode.c             | 16 +++----
+>  fs/btrfs/space-info.c        | 82 ++++++++++++++++++++++++++++++------
+>  fs/fs-writeback.c            | 19 +--------
+>  include/linux/fs.h           |  3 +-
+>  include/trace/events/btrfs.h | 21 +++++++--
+>  mm/filemap.c                 | 35 +++++++++++----
+>  8 files changed, 128 insertions(+), 64 deletions(-)
 > 
 
+
+For the whole series:
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
