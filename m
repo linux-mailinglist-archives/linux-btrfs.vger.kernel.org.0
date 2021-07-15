@@ -2,148 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188F53CAF39
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jul 2021 00:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2623CAF6B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jul 2021 00:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbhGOWkL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Jul 2021 18:40:11 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42248 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbhGOWkJ (ORCPT
+        id S230024AbhGOWwp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Jul 2021 18:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhGOWwo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Jul 2021 18:40:09 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D5A6522ADE;
-        Thu, 15 Jul 2021 22:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626388634; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FuRexorNhTCnUXe3dimi/nsOEYPMUp+LaDN4hllMJqM=;
-        b=kjm+JrMJTGd4jq4wdEG2nM/SEot1PZ9/2jflIYbZZcMeDkWqF/KYnOz2TRU9eWc3XPg211
-        tdyrC59Oi4yy0qoM0JC4WKwZmlchkNSDYMgAsyiFMaIyb8zjx2+7hTXAPborQKZc2VhmfR
-        iCph+JqPeYjcuWrKpOianqu9gh1p+OA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626388634;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FuRexorNhTCnUXe3dimi/nsOEYPMUp+LaDN4hllMJqM=;
-        b=G8FuSlEJQ8oAvndJ/MJk9/jk6q1IKEqyi4WLLArFphht/2rQ1GkDY998WgbwKNZ890H+1b
-        0t/NfW/DxU5uepCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7347D13C4D;
-        Thu, 15 Jul 2021 22:37:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id I1+zCZe48GADYgAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 15 Jul 2021 22:37:11 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 15 Jul 2021 18:52:44 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D1BC06175F
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Jul 2021 15:49:50 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id w127so8583468oig.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Jul 2021 15:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rJyJeIfP0FTzpICn7zS4idNx8UaUpqZ2iejzyr1BxLo=;
+        b=obxMwyFutFhXcUVLD2xBFXR1N1IGfFOFoB1ET7Ir4l/weS6/RlrUpHOBehBRtTuBM2
+         MGz9jSFJEmcagbPkRAbZoiT2g1mI/L9949B2kDVqxL+5zb1SnSFlO43PK6RPEFVcae1v
+         fWwKHDGsY9eAG6Ntu1ukoWHLiwQbFtyBFSkCF8BkP/tCcXs5HE4vRQ40URZDiNwiDrzP
+         3kAzIoMHUtQWZBydAzevmUoLr69Ksb9rF+SjeKNdlz44sV2rgbXE7HkLCSA/XPxShWr6
+         jPmy3lFzr7o5Q8eCYrWrRrxPplR/Lpwkdsd1pNFL1jsTJ1CuShqnxHfV1k9DHrv/R0G4
+         Ye1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rJyJeIfP0FTzpICn7zS4idNx8UaUpqZ2iejzyr1BxLo=;
+        b=Zg++h0aAHTmSoqQU+uc/WfDnDl6awpAqit4jkyBkq0HIuo3EON/pZ9u+J/tcTrtzHM
+         16xGNuzAgQRpaX9L8LeV3unK7Ki/lcwkV8HvqZqLOYqTpAW4qpn+ZQll1ueIkkw30jOH
+         fYHzcc479bFeXXUWPSQqJ54Y4omRxjwy2R0Xxzyu0bUTO6/+9RC8p2ufQTXPEltyhjEV
+         z3sFDTn+o21T1AOXaQrWR9k53E/DyHK8X48oYFAC6AjtjhiHQapQ0yxDqlaDIHHl21qg
+         zzWtSqsKeKH5FaOUenbGoHaeFHZ6o8pMZ5kfflWuC/CL+rRbwEhggctH8MoDcR44rKYo
+         PaNQ==
+X-Gm-Message-State: AOAM531EvL5MOHYUZ4hFUFlcVRNEZSrCpVIeB24da0b+a/PPmnozRLiT
+        eC26Fn2ET9ICz2p6LQXMtaJwnnnQoL2Q8eD/esjI0L4iUAk=
+X-Google-Smtp-Source: ABdhPJw95qPcgOKZbcLfd0160VR0a+qOz7MY6973JhH91R/NFlLFbdJNRIVMcZYUKY39qtaZf7i35wsjW1l+hu6TbkQ=
+X-Received: by 2002:a05:6808:130f:: with SMTP id y15mr9619565oiv.26.1626389390357;
+ Thu, 15 Jul 2021 15:49:50 -0700 (PDT)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Josef Bacik" <josef@toxicpanda.com>
-Cc:     "Christoph Hellwig" <hch@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
-        "David Sterba" <dsterba@suse.com>, linux-nfs@vger.kernel.org,
-        "Wang Yugui" <wangyugui@e16-tech.com>,
-        "Ulli Horlacher" <framstag@rus.uni-stuttgart.de>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH/RFC] NFSD: handle BTRFS subvolumes better.
-In-reply-to: <e1d9caad-e4c7-09d4-b145-5397b24e1cc7@toxicpanda.com>
-References: <20210613115313.BC59.409509F4@e16-tech.com>,
- <20210310074620.GA2158@tik.uni-stuttgart.de>,
- <162632387205.13764.6196748476850020429@noble.neil.brown.name>,
- <edd94b15-90df-c540-b9aa-8eac89b6713b@toxicpanda.com>,
- <YPBmGknHpFb06fnD@infradead.org>,
- <28bb883d-8d14-f11a-b37f-d8e71118f87f@toxicpanda.com>,
- <YPBvUfCNmv0ElBpo@infradead.org>,
- <e1d9caad-e4c7-09d4-b145-5397b24e1cc7@toxicpanda.com>
-Date:   Fri, 16 Jul 2021 08:37:07 +1000
-Message-id: <162638862766.13764.8566962032225976326@noble.neil.brown.name>
+References: <CAGdWbB6qxBtVc1XtSF_wOR3NyR9nGpr5_Nc5RCLGT5NK=C4iRA@mail.gmail.com>
+ <3be8bba9-60cd-2cce-a05d-6c24b8895f3f@gmx.com> <CAGdWbB44nH7dgdP3qO_bFYZwbkrW37OwFEVTE2Bn+rn4d7zWiQ@mail.gmail.com>
+ <43e7dc04-c862-fff1-45af-fd779206d71c@gmx.com> <CAGdWbB7Q98tSbPgHUBF+yjqYRBPZ-a42hd=xLwMZUMO46gfd0A@mail.gmail.com>
+ <CAGdWbB47rKnLoSBZ7Ez+inkeKRgE+SbOAp5QEpB=VWfM_5AmRA@mail.gmail.com> <520a696d-d747-ef86-4560-0ec25897e0e1@suse.com>
+In-Reply-To: <520a696d-d747-ef86-4560-0ec25897e0e1@suse.com>
+From:   Dave T <davestechshop@gmail.com>
+Date:   Thu, 15 Jul 2021 18:49:39 -0400
+Message-ID: <CAGdWbB6CrFc319fwRwmkd=zrVE4jabF0GTpqZd5Jjzx2RcAo9Q@mail.gmail.com>
+Subject: Re: bad file extent, some csum missing - how to check that restored
+ volumes are error-free?
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 16 Jul 2021, Josef Bacik wrote:
-> On 7/15/21 1:24 PM, Christoph Hellwig wrote:
-> > On Thu, Jul 15, 2021 at 01:11:29PM -0400, Josef Bacik wrote:
-> >> Because there's no alternative.  We need a way to tell userspace they've
-> >> wandered into a different inode namespace.  There's no argument that what
-> >> we're doing is ugly, but there's never been a clear "do X instead".  Jus=
-t a
-> >> lot of whinging that btrfs is broken.  This makes userspace happy and is
-> >> simple and straightforward.  I'm open to alternatives, but there have be=
-en 0
-> >> workable alternatives proposed in the last decade of complaining about i=
-t.
-> >=20
-> > Make sure we cross a vfsmount when crossing the "st_dev" domain so
-> > that it is properly reported.   Suggested many times and ignored all
-> > the time beause it requires a bit of work.
-> >=20
->=20
-> You keep telling me this but forgetting that I did all this work when you=20
-> originally suggested it.  The problem I ran into was the automount stuff=20
-> requires that we have a completely different superblock for every vfsmount.=
-=20
-> This is fine for things like nfs or samba where the automount literally poi=
-nts=20
-> to a completely different mount, but doesn't work for btrfs where it's on t=
-he=20
-> same file system.  If you have 1000 subvolumes and run sync() you're going =
-to=20
-> write the superblock 1000 times for the same file system.  You are going to=
-=20
-> reclaim inodes on the same file system 1000 times.  You are going to reclai=
-m=20
-> dcache on the same filesytem 1000 times.  You are also going to pin 1000=20
-> dentries/inodes into memory whenever you wander into these things because t=
-he=20
-> super is going to hold them open.
->=20
-> This is not a workable solution.  It's not a matter of simply tying into=20
-> existing infrastructure, we'd have to completely rework how the VFS deals w=
-ith=20
-> this stuff in order to be reasonable.  And when I brought this up to Al he =
-told=20
-> me I was insane and we absolutely had to have a different SB for every vfsm=
-ount,=20
-> which means we can't use vfsmount for this, which means we don't have any o=
-ther=20
-> options.  Thanks,
+> OK, lowmem mode indeed did a much better job.
+>
+> This is a very strange bug.
+>
+> This means:
+>
+> - The compressed extent doesn't have csum
+>    Which shouldn't be possible for recent kernels.
+>
+> - The compressed extent exists for inode which has NODATASUM flag
+>    Not possible again for recent kernels.
+>
+> But IIRC there are old kernels allowing such compression + nodatasum.
+>
+> I guess that's the reason why you got EIO when reading it.
+>
+> When we failed to find csum, we just put 0x00 as csum, and then when you
+> read the data, it's definitely going to cause csum mismatch and nothing
+> get read out.
+>
+> This can be worked around by recent "rescue=idatacsums" mount option.
+>
+> But to me, this really looks like some old fs, with some inodes created
+> by older kernels.
 
-When I was first looking at this, I thought that separate vfsmnts
-and auto-mounting was the way to go "just like NFS".  NFS still shares a
-lot between the multiple superblock - certainly it shares the same
-connection to the server.
+I'm running:
+kernel version 5.12.15-arch1-1 (linux@archlinux)
 
-But I dropped the idea when Bruce pointed out that nfsd is not set up to
-export auto-mounted filesystems.  It needs to be able to find a
-filesystem given a UUID (extracted from a filehandle), and it does this
-by walking through the mount table to find one that matches.  So unless
-all btrfs subvols were mounted all the time (which I wouldn't propose),
-it would need major work to fix.
+I've been running arch + btrfs since 2014. I keep arch linux fully
+updated. I'm running new kernels and new btrfs progs. However, I
+created this filesystem around 2014.
 
-NFSv4 describes the fsid as having a "major" and "minor" component.
-We've never treated these as having an important meaning - just extra
-bits to encode uniqueness in.  Maybe we should have used "major" for the
-vfsmnt, and kept "minor" for the subvol.....
+Is there an option to "update" my BTRFS filesystem? Is that even a thing?
 
-The idea for a single vfsmnt exposing multiple inode-name-spaces does
-appeal to me.  The "st_dev" is just part of the name, and already a
-fairly blurry part.  Thanks to bind mounts, multiple mounts can have the
-same st_dev.  I see no intrinsic reason that a single mount should not
-have multiple fsids, provided that a coherent picture is provided to
-userspace which doesn't contain too many surprises.
+I have multiple devices running on BTRFS filesystems created around
+2014 to 2016. Are those all in danger of having some problems now?
+BTRFS has been mostly problem-free for me since before 2014. I do
+regular balance and scrubs. However, I'm getting worried about my data
+now...
 
-NeilBrown
+I hope I do not need to backup every device, recreate the filesystems,
+and restore them. That would be weeks of work and I'm already
+overworked... but losing data would be worse.
+
+BTW, even my backup disks run on BTRFS filesystems that were created years ago.
+
+> > Are any of these options appropriate?
+> >
+> > -  btrfs rescue chunk-recover /dev/mapper/xyz
+>
+> Definite no.
+>
+> Any rescue command should only be used when some developer suggested.
+
+Thank you for reminding me! There's a lot of bad BTRFS advice on all
+the various forums, and it is easy to be influenced by it when you are
+a casual user like me.
+
+
+> > - btrfs check --repair --init-csum-tree /dev/mapper/xyz
+>
+> This may solve the read error, but we will still report the NODATACSUM
+> problem for the compressed extent.
+>
+> Have you tried to remove the NODATASUM option for those involved inodes?
+
+https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs(5)
+says:
+Note: If compression is enabled, nodatacow and nodatasum are disabled.
+
+My mount options are:
+rw,autodefrag,noatime,nodiratime,compress=lzo,space_cache,subvol=xyz
+
+Do I understand it correctly? My compression option should already
+"remove the NODATASUM".
+
+>
+> If it's possible to remove NODATASUM for those inodes, then
+> --init-csum-tree should be able to solve the problem.
+
+What do you recommend now?
