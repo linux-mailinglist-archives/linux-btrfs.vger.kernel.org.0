@@ -2,180 +2,288 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D063CB99A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jul 2021 17:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE1E3CBA03
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jul 2021 17:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240836AbhGPPWy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 16 Jul 2021 11:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
+        id S234230AbhGPPnJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Jul 2021 11:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240581AbhGPPWw (ORCPT
+        with ESMTP id S233678AbhGPPnI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Jul 2021 11:22:52 -0400
-Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED65C06175F
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Jul 2021 08:19:57 -0700 (PDT)
-Received: from ananda.localnet (unknown [IPv6:2001:a62:1a32:4600:ff4b:9862:35d:64af])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 1AA1228A350
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Jul 2021 17:19:56 +0200 (CEST)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: Corruption errors on Samsung 980 Pro
-Date:   Fri, 16 Jul 2021 17:19:55 +0200
-Message-ID: <4728303.pjhilp7EXf@ananda>
-In-Reply-To: <2729231.WZja5ltl65@ananda>
-References: <2729231.WZja5ltl65@ananda>
+        Fri, 16 Jul 2021 11:43:08 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6C1C06175F
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Jul 2021 08:40:12 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id h9so11364253oih.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Jul 2021 08:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=E3cNaxeO2mqOs+YGY6004Ld8GQc0+vSV1j7pGYPMeXo=;
+        b=ctJHmXmHG4VOWWOENJ4X7JB2yXWTiM7yWeQbmHBhep0gHPrfbDs6ep7vb1Wcz7eYL/
+         B9atg4sXaZQ+C4kbt13y50SW+z/OkK1WwScUckCWsC7dniQ5oThFDFNF43O5Rmxt39vY
+         yokoGEuJ2zIAOih5o0Bqlio6TtxcVzkPpDd72hxWSUDYav2M6eEiZQcH7/emuuGUIzJu
+         1h3LgZv6ipvvDICaHSmLcd6+dijm7l0GxWCnxV+PEmVQq2e5HR/m83wLRO9n1j6GAZYT
+         MPjzIsGKeRVXfYFjUM+u5/q/BDQ0T0R7oScKt7axTWJe8Em0CT2l+HW+E/Z7M/r+1S6F
+         I3XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=E3cNaxeO2mqOs+YGY6004Ld8GQc0+vSV1j7pGYPMeXo=;
+        b=BlitIFm7M5VYTLsQp4iflaoxlvLQ/xjSCktZ0QjZG+G5cxnTASMTB7TD6oXyoSGyu4
+         kQT+xX6u+Of18qxyjdbY+HyfgSPImMLnFIWf0fYfEShaZaQFtnXgDgBlL3ruIpcOba0f
+         fXOiHovvCfGwlkjFv/ssq6SxEyvDOOIW5+dkojeER8tHTaVF/hrtj4z1dkIhPqQr2i9Q
+         5aolBQjL/3l3ABLIWMf5wp3/EcZheKkGEOKT7ATPDT0+wbvA8Hq49NprRVHdlGJEi5Xm
+         BDI3rwc/V0NLV7zvCMiBba3FKN8bnA5DtpxvevYjAk28AFM8MZK2mkA18DA/hDIb5KY9
+         SWhQ==
+X-Gm-Message-State: AOAM530TfFtJfMJSDANUnTIIsfJKYS6o8SOJykek9tYx8x5NbwFgLrIj
+        WaO8C8Fo15TGiTNUyKQOFcG3x3mzWPVSp8voPoo=
+X-Google-Smtp-Source: ABdhPJw+mUEtd+pV4ZMSFu0sR8agNkr6DdMkTQev0hTK8mLO5ZCuBcjMX8nocTobQwnrUETiit2RX631Ph4iUhJ/4kU=
+X-Received: by 2002:a54:4e95:: with SMTP id c21mr12922495oiy.137.1626450011592;
+ Fri, 16 Jul 2021 08:40:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+References: <CAGdWbB6qxBtVc1XtSF_wOR3NyR9nGpr5_Nc5RCLGT5NK=C4iRA@mail.gmail.com>
+ <3be8bba9-60cd-2cce-a05d-6c24b8895f3f@gmx.com> <CAGdWbB44nH7dgdP3qO_bFYZwbkrW37OwFEVTE2Bn+rn4d7zWiQ@mail.gmail.com>
+ <43e7dc04-c862-fff1-45af-fd779206d71c@gmx.com> <CAGdWbB7Q98tSbPgHUBF+yjqYRBPZ-a42hd=xLwMZUMO46gfd0A@mail.gmail.com>
+ <CAGdWbB47rKnLoSBZ7Ez+inkeKRgE+SbOAp5QEpB=VWfM_5AmRA@mail.gmail.com>
+ <520a696d-d747-ef86-4560-0ec25897e0e1@suse.com> <CAGdWbB6CrFc319fwRwmkd=zrVE4jabF0GTpqZd5Jjzx2RcAo9Q@mail.gmail.com>
+ <e4cc8998-fc9e-4ef3-3a49-0f6d98960a75@gmx.com> <CAGdWbB6Y0p3dc6+00eTnf1XSS1rUMbPUckQabi6VJQXdjRt2jg@mail.gmail.com>
+ <88005f9b-d596-f2f9-21f0-97fc7be4c662@gmx.com>
+In-Reply-To: <88005f9b-d596-f2f9-21f0-97fc7be4c662@gmx.com>
+From:   Dave T <davestechshop@gmail.com>
+Date:   Fri, 16 Jul 2021 11:40:00 -0400
+Message-ID: <CAGdWbB59w+5=3AoKU0uRHHkA1zeya0cRhqRn8sDYpea+hZOunA@mail.gmail.com>
+Subject: Re: bad file extent, some csum missing - how to check that restored
+ volumes are error-free?
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin2 smtp.mailfrom=martin@lichtvoll.de
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Martin Steigerwald - 16.07.21, 17:05:59 CEST:
-> I migrated to a different laptop and this one has a 2TB Samsung 980 Pro drive
-> (not a 2TB Samsung 870 Evo Plus which previously had problems).
+On Fri, Jul 16, 2021 at 9:28 AM Qu Wenruo <quwenruo.btrfs@gmx.com>
+> > I can do more testing and let you know. Can you suggest any tests you
+> > would like me to try?
+>
+> 1. Try to read the affected file:
+>
+> - Mount the btrfs
+>
+> - Read inode 262 in root 329 (just one example)
+>    You can use "find -inum 262" inside root 329 to locate the file.
+>
 
-Kernel is:
+I have reconnected and mounted the affected SSD.
+Most of the csum errors reported are for root 334 like this:
 
-% cat /proc/version
-Linux version 5.13.1-t14 (martin@[…]) (gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2) #14 SMP PREEMPT Mon Jul 12 10:36:54 CEST 2021
+root 334 inode 184115 errors 1040, bad file extent, some csum missing
+root 334 inode 184116 errors 1040, bad file extent, some csum missing
+There are hundreds of similar error lines.
 
-> I thought this time I would be fine, but I just got:
-> 
-> [63168.287911] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63168.287925] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
-> [63168.346552] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63168.346567] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
-> [63168.346685] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63168.346708] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
-> [63168.346859] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63168.346873] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
-> [63299.490367] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63299.490384] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
-> [63299.572849] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63299.572866] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
-> [63299.573151] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63299.573168] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
-> [63299.573286] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63299.573295] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
-> [63588.902631] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> [63588.902647] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 13, gen 0
-> [63588.949614] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> [63588.949628] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 14, gen 0
-> [63588.949849] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> [63588.949855] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 15, gen 0
-> [63588.950087] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> [63588.950099] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 16, gen 0
+There were only a few for root 329 and one for 330.
 
-Additional errors revealed through scrubbing – will test the other
-filesystems as well:
+What is the method to map root 334, for example, to a file system
+path? Is it like this?
 
-% btrfs scrub status /home
-UUID:             […]
-Scrub started:    Fri Jul 16 17:08:49 2021
-Status:           finished
-Duration:         0:02:05
-Total to scrub:   203.54GiB
-Rate:             1.63GiB/s
-Error summary:    csum=5
-  Corrected:      0
-  Uncorrectable:  5
-  Unverified:     0
+# btrfs su li /
+ID 257 gen 1106448 top level 5 path @root
+...
+ID 329 gen 1105905 top level 326 path @home/live/snapshot/user1/.cache
+ID 330 gen 1105905 top level 326 path @home/live/snapshot/user2/.cache
+ID 331 gen 1105905 top level 326 path @home/live/snapshot/user3/.cache
+ID 332 gen 1105905 top level 326 path @home/live/snapshot/user4.cache
+ID 333 gen 1105905 top level 326 path @home/live/snapshot/user5/.cache
+ID 334 gen 1105905 top level 326 path @home/live/snapshot/user6/.cache
 
-Now totalling to 21 errors:
+# cd /home/user6/.cache
+# find . -inum 184116
+./mozilla/firefox/profile1/cache2/entries/3E5DF2A295E7D36F537DFDC221EBD6153=
+F46DC30
 
-% btrfs device stats /home
-[/dev/mapper/nvme-home].write_io_errs    0
-[/dev/mapper/nvme-home].read_io_errs     0
-[/dev/mapper/nvme-home].flush_io_errs    0
-[/dev/mapper/nvme-home].corruption_errs  21
-[/dev/mapper/nvme-home].generation_errs  0
+Did I do that correctly?
 
-Log:
+# less ./mozilla/firefox/profile1/cache2/entries/3E5DF2A295E7D36F537DFDC221=
+EBD6153F46DC30
+"./mozilla/firefox/profile1/cache2/entries/3E5DF2A295E7D36F537DFDC221EBD615=
+3F46DC30"
+may be a binary file.  See it anyway?
 
-[64707.979036] BTRFS info (device dm-3): scrub: started on devid 1
-[64730.009687] BTRFS warning (device dm-3): checksum error at logical 36997591040 on dev /dev/mapper/nvme-home, physical 34850107392, root 1054, inode 2295743, offset 2718461952: path resolving failed with ret=-2
-[64730.009710] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 17, gen 0
-[64730.009721] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997591040 on dev /dev/mapper/nvme-home
-[64730.010996] BTRFS warning (device dm-3): checksum error at logical 36997595136 on dev /dev/mapper/nvme-home, physical 34850111488, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
-[64730.011014] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 18, gen 0
-[64730.011024] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997595136 on dev /dev/mapper/nvme-home
-[64730.011298] BTRFS warning (device dm-3): checksum error at logical 36997599232 on dev /dev/mapper/nvme-home, physical 34850115584, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
-[64730.011312] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 19, gen 0
-[64730.011319] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997599232 on dev /dev/mapper/nvme-home
-[64730.011603] BTRFS warning (device dm-3): checksum error at logical 36997603328 on dev /dev/mapper/nvme-home, physical 34850119680, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
-[64730.011616] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 20, gen 0
-[64730.011623] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997603328 on dev /dev/mapper/nvme-home
-[64730.011905] BTRFS warning (device dm-3): checksum error at logical 36997607424 on dev /dev/mapper/nvme-home, physical 34850123776, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
-[64730.011921] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 21, gen 0
-[64730.011928] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997607424 on dev /dev/mapper/nvme-home
-[64832.447560] BTRFS info (device dm-3): scrub: finished on devid 1 with status: 0
+I viewed it and there are no errors in terminal or systemd journal
+when reading it.
 
-Why is BTRFS unable to determine a path?
+Next I tested every reported inode in root 334 (assuming I identified
+the root correctly) using this method:
 
-How would I fix those when BTRFS does not tell me what file is affected?
+find /home/user6/.cache/ -inum 184874 -exec bash -c 'cp "{}" /tmp ;
+out=3D$(basename "{}"); rm /tmp/$out' \;
 
-> during a backup.
-> 
-> According to rsync this is related (why does BTRFS does not report the
-> affected file?)
-> 
-> Create a snapshot of '/home' in '/zeit/home/backup-2021-07-16-16:40:13'
-> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/output error (5)
-> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/output error (5)
-> ERROR: martin/.local/share/akonadi/search_db/email/postlist.glass failed verification -- update discarded.
-> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/baloo/index": Input/output error (5)
-> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/baloo/index": Input/output error (5)
-> ERROR: martin/.local/share/baloo/index failed verification -- update discarded.
-> 
-> Both are frequently written to files (both Baloo and Akonadi have very crazy
-> I/O patterns that, I would not have thought so, can even satisfy an NVMe SSD).
-> 
-> I thought that a Samsung 980 Pro can easily handle "discard=async" so I
-> used it.
-> 
-> This is on a ThinkPad T14 Gen1 with AMD Ryzen 7 PRO 4750U and 32 GiB of RAM.
-> 
-> It is BTRFS single profile on LVM on LUKS. Mount options are:
-> 
-> rw,relatime,lazytime,compress=zstd:3,ssd,space_cache=v2,subvolid=1054,subvol=/home
-> 
-> Smartctl has no errors.
-> 
-> I only use a few (less than 10) subvolumes.
-> 
-> I do not have any other errors in kernel log, so I bet this may not be
-> "discard=async" related. Any idea?
+I got a list of every inode number (e.g., 184874) from the output of
+my prior checks and looped through them all. No errors were reported.
 
-Maybe I still remove "discard=async" for now. Maybe it is not yet fully reliable.
+I do not see any related errors in dmesg either.
 
-> Could it have to do with a sudden switching off the laptop (there had
-> been quite some reasons cause at least with a AMD model of this laptop
-> in combination with an USB-C dock by Lenovo there are quite some stability
-> issues)? I would have hoped that the Samsung 980 Pro would still be
-> equipped to complete the outstanding write operation, but maybe it has
-> no capacitor for this.
-> 
-> I am really surprised by the what I experienced about the reliability of
-> SSDs I recently bought. I did not see a failure within a month with any
-> of the older SSDs. I hope this does not point at a severe worsening of
-> the quality. Probably I have to fit another SSD in there and use BTRFS
-> RAID 1 again to protect at least part of the data from errors like this.
-> 
-> Any idea about this? I bet you may not have any, as there is not block
-> I/O related errors in the log, but if you have, by all means share your
-> thoughts. Thank you.
-> 
-> Both files can be recreated. So I bet I will just remove them.
-> 
-> Best,
--- 
-Martin
+# dmesg | grep -i btrfs
+[  +0.032192] Btrfs loaded, crc32c=3Dcrc32c-intel, zoned=3Dyes
+[  +0.000546] BTRFS: device label top_level devid 1 transid 1106559
+/dev/dm-0 scanned by systemd-udevd (120)
+[  +0.029879] BTRFS info (device dm-0): disk space caching is enabled
+[  +0.000003] BTRFS info (device dm-0): has skinny extents
+[  +0.096620] BTRFS info (device dm-0): enabling ssd optimizations
+[  +0.002567] BTRFS info (device dm-0): enabling auto defrag
+[  +0.000005] BTRFS info (device dm-0): use lzo compression, level 0
+[  +0.000005] BTRFS info (device dm-0): disk space caching is enabled
+[  +0.044004] BTRFS info (device dm-0): devid 1 device path
+/dev/mapper/root changed to /dev/dm-0 scanned by systemd-udevd (275)
+[  +0.000829] BTRFS info (device dm-0): devid 1 device path /dev/dm-0
+changed to /dev/mapper/root scanned by system
 
+The only other FS-related messages in dmesg are:
 
+[  +0.142425] FS-Cache: Netfs 'nfs' registered for caching
+[  +0.018228] Key type dns_resolver registered
+[  +0.194893] NFS: Registering the id_resolver key type
+[  +0.000016] Key type id_resolver registered
+[  +0.000001] Key type id_legacy registered
+[  +0.022450] FS-Cache: Duplicate cookie detected
+
+If I have done that correctly, it raises some interesting questions.
+First, I started using a btrfs subvolume for user .cache directories
+in late 2018. I do this:
+
+users_list=3D"user1 user2 user3 ... userN"
+for uu in $users_list; do \
+  btrfs su cr $destination/@home/live/snapshot/${uu}/.cache
+    chattr +C $destination/@home/live/snapshot/${uu}/.cache
+    chown ${uu}:${uu} $destination/@home/live/snapshot/${uu}/.cache
+done
+
+The reason is to not include the cache contents in snapshots & backups.
+
+The user6 user has apparently not logged into this particular device
+since May 15, 2019. (It is now used primarily by someone else.) The
+files in /home/user6/.cache appear to all have dates equal or prior to
+May 15, 2019, but no older than Feb 3, 2019. The vast majority of the
+reported errors were in these files. However, I do not see errors when
+accessing those files now.
+
+> - Find a way to reproduce the read-only fs problem
+
+This happened when I was using btrbk to send|receive snapshots to a
+target via ssh. I do not think it is a coincidence that I was doing a
+btrfs operation at the time this happened.
+
+I did the same btrbk operation on another device (a ThinkPad T450
+laptop) that has been running Arch Linux and BTRFS since many years
+ago (probably around 2015). However, the btrbk operation succeeded
+with no errors.
+
+Here is exactly what I did when the read-only problem first happened:
+
+# btrbk dryrun
+---------------------------------------------------------------------------=
+-----
+Backup Summary (btrbk command line client, version 0.31.2)
+
+    Date:   Tue Jul 13 23:11:32 2021
+    Config: /etc/btrbk/btrbk.conf
+    Dryrun: YES
+
+Legend:
+    =3D=3D=3D  up-to-date subvolume (source snapshot)
+    +++  created subvolume (source snapshot)
+    ---  deleted subvolume
+    ***  received subvolume (non-incremental)
+    >>>  received subvolume (incremental)
+---------------------------------------------------------------------------=
+-----
+/mnt/top_level/@root/live/snapshot
++++ /mnt/top_level/@root/_btrbk_snap/root.20210713T231132-0400
+*** backupsrv:/backup/clnt/laptop2/@root/root.20210713T231132-0400
+
+/mnt/top_level/@home/live/snapshot
++++ /mnt/top_level/@home/_btrbk_snap/home.20210713T231132-0400
+*** backupsrv:/backup/clnt/laptop2/@home/home.20210713T231132-0400
+
+/mnt/top_level/@logs/live/snapshot
++++ /mnt/top_level/@logs/_btrbk_snap/vlog.20210713T231132-0400
+*** backupsrv:/backup/clnt/laptop2/@log/vlog.20210713T231132-0400
+
+NOTE: Dryrun was active, none of the operations above were actually execute=
+d!
+
+# systemctl disable --now snapper-timeline.timer
+
+# systemctl enable --now btrbk.timer
+Created symlink /etc/systemd/system/timers.target.wants/btrbk.timer =E2=86=
+=92
+/usr/lib/systemd/system/btrbk.timer.
+
+# systemctl list-timers --all
+NEXT                        LEFT        LAST
+PASSED        UNIT                         ACTIVATES
+Wed 2021-07-14 00:00:00 EDT 47min left  n/a
+n/a           btrbk.timer                  btrbk.service
+Wed 2021-07-14 00:00:00 EDT 47min left  Tue 2021-07-13 09:05:48 EDT
+14h ago       logrotate.timer              logrotate.service
+Wed 2021-07-14 00:00:00 EDT 47min left  Tue 2021-07-13 09:05:48 EDT
+14h ago       man-db.timer                 man-db.service
+Wed 2021-07-14 00:00:00 EDT 47min left  Tue 2021-07-13 09:05:48 EDT
+14h ago       shadow.timer                 shadow.service
+Wed 2021-07-14 17:31:57 EDT 18h left    Tue 2021-07-13 17:31:57 EDT 5h
+40min ago  snapper-cleanup.timer        snapper-cleanup.service
+Wed 2021-07-14 17:36:17 EDT 18h left    Tue 2021-07-13 17:36:17 EDT 5h
+36min ago  systemd-tmpfiles-clean.timer systemd-tmpfiles-clean.service
+Mon 2021-07-19 01:11:06 EDT 5 days left Mon 2021-07-12 01:24:15 EDT 1
+day 21h ago fstrim.timer                 fstrim.service
+
+7 timers listed.
+
+# systemctl start btrbk.service
+
+# systemctl status btrbk
+=E2=97=8B btrbk.service - btrbk backup
+     Loaded: loaded (/usr/lib/systemd/system/btrbk.service; static)
+    Drop-In: /etc/systemd/system/btrbk.service.d
+             =E2=94=94=E2=94=80override.conf
+     Active: inactive (dead) since Tue 2021-07-13 23:17:54 EDT; 20s ago
+TriggeredBy: =E2=97=8F btrbk.timer
+       Docs: man:btrbk(1)
+    Process: 6827 ExecStart=3D/usr/local/bin/btrbk_run.sh (code=3Dexited,
+status=3D0/SUCCESS)
+   Main PID: 6827 (code=3Dexited, status=3D0/SUCCESS)
+        CPU: 2min 40.794s
+
+# mount /mnt/top_level/
+mount: /mnt/top_level: wrong fs type, bad option, bad superblock on
+/dev/mapper/root, missing codepage or helper program, or other error.
+
+# ls /mnt/top_level/
+total 0
+drwxr-x--x 1 root root   0 Nov  1  2017 .
+drwxr-xr-x 1 root root 116 Apr 10  2020 ..
+
+My prompt includes a timestamp like this:
+
+ !2813 [13-Jul 23:19:18] root@laptop2
+# journalctl -r
+An error was encountered while opening journal file or directory
+/var/log/journal/7db5321aaf884af786868ec2f2e9c7b0/system.journal,
+ignoring file: Input/output error
+-- Journal begins at Thu 2021-06-17 15:14:31 EDT, ends at Tue
+2021-07-13 16:19:12 EDT. --
+Jul 13 16:19:12 laptop2 sudo[674]: pam_unix(sudo:session): session
+opened for user root(uid=3D0) by user0(uid=3D1000)
+
+As far as I can tell, the last 7 hours of the journal are missing at that p=
+oint.
+
+That's exactly how the read-only problem happened. I did a btrbk
+dryrun to validate the configuration. Then I started the backup. Near
+(or at) the end of the backup for the root subvolume, the backup
+process exited, but I could not see the journal entries for it because
+they were missing and the filesystem was read-only.
