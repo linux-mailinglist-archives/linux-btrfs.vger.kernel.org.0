@@ -2,399 +2,326 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF7A3CBF8C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Jul 2021 01:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157053CBF90
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Jul 2021 01:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237481AbhGPXDa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Jul 2021 19:03:30 -0400
-Received: from mout.gmx.net ([212.227.15.15]:47797 "EHLO mout.gmx.net"
+        id S231846AbhGPXJf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Jul 2021 19:09:35 -0400
+Received: from mout.gmx.net ([212.227.17.20]:55821 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231400AbhGPXD0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Jul 2021 19:03:26 -0400
+        id S231630AbhGPXJf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Jul 2021 19:09:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626476427;
-        bh=kximOJCgoKt6ypuVeH5ewkByVTEBFxDeZc30cfKAaaw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=cRb4+XkBAgieHJD8IFz73L74LdwYweTFI/AB858DH0HUIlQXVr8KCVaN88dtYvXh9
-         IVFLIigSkgz1YtzJETf7VcZzqxiSNAdE0RGsdxqUx2lerPXRJnHzQzU02wIvU5X+c+
-         gDiix+amgjwPZTYmMNxv2xWA3/FTTgo5OrSiZzz0=
+        s=badeba3b8450; t=1626476797;
+        bh=zBbGJxfIwj6V2HUWdindowr92NOFqJ9AzDwsnhyfNI0=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=hC3+6zWyNjNI3JasNVJRRgd//Gh22ZfIbn9bWjfo+TjmQvX1D1gtvsQLXa6myZWL2
+         oVPtF9cTep4lklfxkwJyP3xtIw61b7UNmzkE7V3bDW1eag4xH9sB6SaKazgE1rHuZ/
+         EJezeXBdQKJkXsbHEQaMwDFeMul3ZJcZaH5C4JrE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWzk3-1lcJfP48Yz-00XObg; Sat, 17
- Jul 2021 01:00:27 +0200
-Subject: Re: migrating to space_cache=2 and btrfs userspace commands
-To:     Joshua Villwock <joshua@mailmag.net>
-Cc:     linux-btrfs@vger.kernel.org
-References: <40c94987-936f-e6ac-bcec-2051284e1821@gmx.com>
- <4C74CCF4-95CD-446D-A01B-F61AB61550A4@mailmag.net>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MwQXN-1lFJpx1QxR-00sKGT; Sat, 17
+ Jul 2021 01:06:36 +0200
+To:     Dave T <davestechshop@gmail.com>
+Cc:     Qu Wenruo <wqu@suse.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAGdWbB6qxBtVc1XtSF_wOR3NyR9nGpr5_Nc5RCLGT5NK=C4iRA@mail.gmail.com>
+ <3be8bba9-60cd-2cce-a05d-6c24b8895f3f@gmx.com>
+ <CAGdWbB44nH7dgdP3qO_bFYZwbkrW37OwFEVTE2Bn+rn4d7zWiQ@mail.gmail.com>
+ <43e7dc04-c862-fff1-45af-fd779206d71c@gmx.com>
+ <CAGdWbB7Q98tSbPgHUBF+yjqYRBPZ-a42hd=xLwMZUMO46gfd0A@mail.gmail.com>
+ <CAGdWbB47rKnLoSBZ7Ez+inkeKRgE+SbOAp5QEpB=VWfM_5AmRA@mail.gmail.com>
+ <520a696d-d747-ef86-4560-0ec25897e0e1@suse.com>
+ <CAGdWbB6CrFc319fwRwmkd=zrVE4jabF0GTpqZd5Jjzx2RcAo9Q@mail.gmail.com>
+ <e4cc8998-fc9e-4ef3-3a49-0f6d98960a75@gmx.com>
+ <CAGdWbB6Y0p3dc6+00eTnf1XSS1rUMbPUckQabi6VJQXdjRt2jg@mail.gmail.com>
+ <88005f9b-d596-f2f9-21f0-97fc7be4c662@gmx.com>
+ <CAGdWbB59w+5=3AoKU0uRHHkA1zeya0cRhqRn8sDYpea+hZOunA@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <bf93658c-996b-9a60-7ca1-0587a34f259a@gmx.com>
-Date:   Sat, 17 Jul 2021 07:00:24 +0800
+Subject: Re: bad file extent, some csum missing - how to check that restored
+ volumes are error-free?
+Message-ID: <e42fcd8e-23d4-ee98-aab6-2210e408ad3f@gmx.com>
+Date:   Sat, 17 Jul 2021 07:06:33 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <4C74CCF4-95CD-446D-A01B-F61AB61550A4@mailmag.net>
+In-Reply-To: <CAGdWbB59w+5=3AoKU0uRHHkA1zeya0cRhqRn8sDYpea+hZOunA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fW3c96Iy9JbgIAksY7bl8rKLggtGawTEE68zcyODMGbXk9ZjZs/
- KVIAbm+Osr65UguQHvKGOu0+Qry85iqP8cm4j9XUsQ8NclqxFTgPu0nfXbRds+Sl/DfpJ9K
- /pPBeRLx+SQ6GSZWnWPKJ9jrFuRtgDQz0qUr/JP2pUDyt7zh5mro/B6K8r0DadBBPToUdG5
- A4hHu1RphiJIon/a27dog==
+X-Provags-ID: V03:K1:0Kpl8ehJCVgceEr0/FlZ7K5TPXR7wq1WXWBQ88goQiCGF/j6erp
+ 8tc2HsVTTkbWixf1ALvwbFAk+cOXjR+yaBWzfjx0fk8WZo5wSvmQwLVAtxvgf99d5Dret+a
+ SOeJfIa66/czD0w0MLkIopWpQAJCaGCyovLhCvXGjINLIlmGHvjhOkZJWXGVjdGK0nGqFmP
+ fLHTIJmWx4CVWhOxfOylg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:czvpCq+qVRo=:1gihZvmK6flCJKL4X3X4Db
- B7uFQ90myMawXLnDcCedlaUXRt5/UdG/L4YQVcTorf88TMPq9xlWDuZ28nwIUcLmNQIwdtNnC
- u2Co8rragdRrxOcZPSftUO9+k/CXs4BlO2cIv/A8qzesfr6NCsh6hNGojjkYQQ6OB8ZMzVYLE
- bmwnAtxbLTGiVZL2Zx5mK2xdpaNtmoKe88GyJeCJX0ueHzRkmbFcpK/GcbFif2niXRHyq1zn0
- 6GE8iWmoHzHeK5jeFuLATecsGQSpi6scEhPKhwhtvwtA4lcZ6h356s7n10AIF7bVWPU/GNfH8
- 1FwlQ1XF1rMcXqVEHNnf3KeQKiK5efbZJGzlfwzWXRcoeWExMEkVQf26fC3gG40pzduN2wzZI
- 8IaVld6Uh1tytvMygK4vR+lit80jMngxTv7iS44cg0kbTNND/beeuLMLZCdac23B5ZtKYSaSV
- /SyH/Wfk/Hm4rbF0Zqa5ZC4aUOa4J1KxLYY0AmPAw0Vx0AllgFoLcHQ+tm4shJ+PGO/S+e8le
- ToVp2ICC98grNTwPVZXCXB/KKErEwnSuEiT4dP+7pxN14zn9Q3QbVefFthRO1seFtPJNORdzt
- wjFhchdi6dFpukzXetudLS/7nLmhNQkw1RXzkl6FbQsjAAs5u3IxSSPLgxq3hkIKnxp26XEPC
- 88ng+EJ7pUaucRtdF0BQOobFXl23ifvwMp3Oa6ZVLIRCGa/XkTy29m9831vWMNg8TFNFbLflA
- 6q7s7Hgavuj0KxC7z8Uj3aQzbWGDFVrUQLELlrslBwdcDXBElcI29ZKZddxjgliXnEN1XmBf0
- v2RPCUou4ZWtsMzKBHd5Iy3sHgn+K4IcN49SWT1tA1GfqWoDcZJw8DrQ2Z6Q0d74gZPZmnaUm
- TUsGONmZjuAg5kpGgn1h4GxibY3zOLrh6hNRK6c5qISCB7kClyGqn9iJiCEpOj/70SBqlPbm2
- I3Ltge1VQIfdBlqO2vlbaukV6Rhq6YaSYjSpzyTgMrREH7m0FjSF+JAJMiMXCrpxjaeONzkhT
- B9L8Efra1osmqgDwa561ALe1zh7OAACLLBOOqCnx5WJbQ5+q5Ij12eXy/5VmrpFtv43a85RTs
- ZXtdpZHww/oliJrk2Od4VFEBvG9CLL+BdtgNmBbQE0p90P4nwgMl/DY0A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:T1Ru5g8yQ6A=:7fq/BFyQ0QoPzw2/FT58t1
+ /YpCyJnncERyo6eq468vaZqB2/QQf4fPEbuw7ujNUGlI6zFzQy5NnpW90c/qcY2oqAorRcu72
+ Y1weGlHOmf6QwQZ9Fx9IwSrg462ailnZuqciqdFWwhdpCedTY/paNNEe0NUHC6TwOsY9BiTC2
+ r9fRfQ6tBQKZ6dgU5rUN6V4kTm8yFl8qjPte9BM/mLMPv9yE1NdsJf8fSbZqOtXIvUQ3+BylR
+ ITHLPTdM0LZVAdFVWHFMjQAbbZdMdTa7rKon1eKTbLzd1nt02dXWYiuEWjc3c/gRKzUWoifIi
+ EHTeL1fyGr45Jp217EznzuFfnWb0ykaiq+oXi7wXXgA68ln/ycXfosUhC/B8meJvdbaHuSeTX
+ JR+6sy6TaT2K6Li5oGa75P6C0ZJtaqj7eHBTHuHdLo1lKiYjUZD8gQrLSPubKGb4v9LOXfme2
+ TXm+VBeKOWl/gdP9+LuvMf1drhvAbGfDyui72fMTybuNTH3bQlEpn2NGQjFaHnaUwycPjFO8B
+ WKgomRok0mGXwNbQ9jFJqlEMHhlUihog1QwiwKhCJcRzcz2tewHkhSxOoB5WP1uS34WKbsf/+
+ SJuu0e99M0iVtA+v3TIv4RdrO7Aq0TiGqw8X5qkBjBLh9AvA17fDMn06l9PkvmmxDTpx2VdAb
+ qVOIc0SqJ16ZTCTdNi5fVXock4l/ppbAy47i8Qo1YcCbKdmm+CSTUD7OU6kdql9R2o744xR+s
+ ysYsYu35tYI849L3zU0dQXPd0qCX18xhQZL03MnwPcuq/k9Bybi0MnQu5ep/dEHdXxncc61sg
+ Cv/t+ixIw/2s7BO7lEGc2LO+XtYOOMZ+I7o+XTMnDBFoICq5HvWSQ335jhD/QPBuQxDsWWXWj
+ GIQooczs9UJFU8Z0N3NMjEyQsqq/3C98hbI92Q6HzAO7XX4MhV0BctvRpnuyghiUHuoR2AiBw
+ MvPmmy7AF+vHa1UAb1InncJt5FK4CqKlx3j2leJ3HoMb8ADwa/fhlRFOvKVtEX2Gg5x9b+FCm
+ nBtHLIi3mgo4tDwcrJh7rnYD+tzYV0J8ZK7hqQcSeTFi1yjIPO1W09fSPlLO4qk7LaO8YiEF7
+ PNdqmMKSE8xxCtDyyCrRkpAofCv5A1BoD0wZ5B7FdA5TMOzsAznM3TPsQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/7/17 =E4=B8=8A=E5=8D=884:33, Joshua Villwock wrote:
-> Qu, thanks indeed for your responses!
+On 2021/7/16 =E4=B8=8B=E5=8D=8811:40, Dave T wrote:
+> On Fri, Jul 16, 2021 at 9:28 AM Qu Wenruo <quwenruo.btrfs@gmx.com>
+>>> I can do more testing and let you know. Can you suggest any tests you
+>>> would like me to try?
+>>
+>> 1. Try to read the affected file:
+>>
+>> - Mount the btrfs
+>>
+>> - Read inode 262 in root 329 (just one example)
+>>     You can use "find -inum 262" inside root 329 to locate the file.
+>>
 >
->> On Jul 16, 2021, at 5:59 AM, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>
->> =EF=BB=BF
->>
->>> On 2021/7/16 =E4=B8=8B=E5=8D=888:42, DanglingPointer wrote:
->>> Hi Joshua, on that system where you tried to run the
->>> "--clear-space-cache v1", when you gave up, did you continue using
->>> "space_cache=3Dv2" on it?
->>>
->>>
->>> Here are some more questions to add for anyone who can help educate us=
-:...
->>>
->>> Why would someone want to clear the space_cache v1?
->>
->> Because it takes up space and we won't be able to delete them.
->>
->>>
->>> What's the value of clearing the previous version space_cache before
->>> using the new version?
->>
->> AFAIK, just save some space and reduce the root tree size.
->>
->> The v1 cache exists as special files inside root tree (not accessible b=
-y
->> end users).
->>
->> Their existence takes up space and fragments the file system (one file
->> is normally around 64K, and we have one such v1 file for each block
->> group, you can see how many small files it has now)
->>
->>>
->>> Why "clear" and not just "delete"?  Won't "deleting" the whole previou=
-s
->>> space_cache files, blocks, whatever in the filesystem be faster then
->>> doing whatever "clear" does?
->>
->> Just bad naming, and properly from me.
->>
->> Indeed "delete" would be more proper here.
->>
->> And we're indeed deleting them in "btrfs check --clear-space-cache v1",
->> that's also why it's so slow.
->>
->> If you have 20T used space, then the it would be around 20,000 block
->> groups, meaning 20,000 64K files inside root tree, and deleting them on=
-e
->> by one, and each deletion will cause a new transaction, no wonder it
->> will be slow to hell.
+> I have reconnected and mounted the affected SSD.
+> Most of the csum errors reported are for root 334 like this:
 >
-> If v1 space cache exists as special files in the root tree, could those =
-be a contributing factor to the issue I was having in the past with mounts=
- taking too long and dropping to recovery mode?
+> root 334 inode 184115 errors 1040, bad file extent, some csum missing
+> root 334 inode 184116 errors 1040, bad file extent, some csum missing
+> There are hundreds of similar error lines.
+>
+> There were only a few for root 329 and one for 330.
+>
+> What is the method to map root 334, for example, to a file system
+> path? Is it like this?
+>
+> # btrfs su li /
+> ID 257 gen 1106448 top level 5 path @root
+> ...
+> ID 329 gen 1105905 top level 326 path @home/live/snapshot/user1/.cache
+> ID 330 gen 1105905 top level 326 path @home/live/snapshot/user2/.cache
+> ID 331 gen 1105905 top level 326 path @home/live/snapshot/user3/.cache
+> ID 332 gen 1105905 top level 326 path @home/live/snapshot/user4.cache
+> ID 333 gen 1105905 top level 326 path @home/live/snapshot/user5/.cache
+> ID 334 gen 1105905 top level 326 path @home/live/snapshot/user6/.cache
+>
+> # cd /home/user6/.cache
+> # find . -inum 184116
+> ./mozilla/firefox/profile1/cache2/entries/3E5DF2A295E7D36F537DFDC221EBD6=
+153F46DC30
+>
+> Did I do that correctly?
 
-That's another known thing.
-
-It's block group items in extent tree.
-
-I have proposed skinny block group tree to greatly reduce the time
-needed to mount large fs.
-
-But unfortunately it's not yet merged, and even merged, you will still
-need to do a lengthy convert to the new format.
+Yes, you're doing it correctly.
 
 >
-> I discovered running btrfs fi defrag on each of my subvolumes (for the s=
-ubvolume tree/extent tree, not the files) every couple weeks has reduced t=
-he mount time enough I don=E2=80=99t run into that issue on my massive FS =
-anymore.
+> # less ./mozilla/firefox/profile1/cache2/entries/3E5DF2A295E7D36F537DFDC=
+221EBD6153F46DC30
+> "./mozilla/firefox/profile1/cache2/entries/3E5DF2A295E7D36F537DFDC221EBD=
+6153F46DC30"
+> may be a binary file.  See it anyway?
+>
+> I viewed it and there are no errors in terminal or systemd journal
+> when reading it.
+>
+> Next I tested every reported inode in root 334 (assuming I identified
+> the root correctly) using this method:
+>
+> find /home/user6/.cache/ -inum 184874 -exec bash -c 'cp "{}" /tmp ;
+> out=3D$(basename "{}"); rm /tmp/$out' \;
+>
+> I got a list of every inode number (e.g., 184874) from the output of
+> my prior checks and looped through them all. No errors were reported.
+>
+> I do not see any related errors in dmesg either.
 
-Yes, defrag reduce the size of extent tree, but not good enough,
-especially when you have hundreds of thousands block groups, and every
-time mount needs to find the block group items scattering around the
-large extent tree, it will take quite some time.
+
+That's the expected behavior.
+
+So the original problem of failed to read is another problem.
+>
+> # dmesg | grep -i btrfs
+> [  +0.032192] Btrfs loaded, crc32c=3Dcrc32c-intel, zoned=3Dyes
+> [  +0.000546] BTRFS: device label top_level devid 1 transid 1106559
+> /dev/dm-0 scanned by systemd-udevd (120)
+> [  +0.029879] BTRFS info (device dm-0): disk space caching is enabled
+> [  +0.000003] BTRFS info (device dm-0): has skinny extents
+> [  +0.096620] BTRFS info (device dm-0): enabling ssd optimizations
+> [  +0.002567] BTRFS info (device dm-0): enabling auto defrag
+> [  +0.000005] BTRFS info (device dm-0): use lzo compression, level 0
+> [  +0.000005] BTRFS info (device dm-0): disk space caching is enabled
+> [  +0.044004] BTRFS info (device dm-0): devid 1 device path
+> /dev/mapper/root changed to /dev/dm-0 scanned by systemd-udevd (275)
+> [  +0.000829] BTRFS info (device dm-0): devid 1 device path /dev/dm-0
+> changed to /dev/mapper/root scanned by system
+>
+> The only other FS-related messages in dmesg are:
+>
+> [  +0.142425] FS-Cache: Netfs 'nfs' registered for caching
+> [  +0.018228] Key type dns_resolver registered
+> [  +0.194893] NFS: Registering the id_resolver key type
+> [  +0.000016] Key type id_resolver registered
+> [  +0.000001] Key type id_legacy registered
+> [  +0.022450] FS-Cache: Duplicate cookie detected
+>
+> If I have done that correctly, it raises some interesting questions.
+> First, I started using a btrfs subvolume for user .cache directories
+> in late 2018. I do this:
+>
+> users_list=3D"user1 user2 user3 ... userN"
+> for uu in $users_list; do \
+>    btrfs su cr $destination/@home/live/snapshot/${uu}/.cache
+>      chattr +C $destination/@home/live/snapshot/${uu}/.cache
+>      chown ${uu}:${uu} $destination/@home/live/snapshot/${uu}/.cache
+> done
+>
+> The reason is to not include the cache contents in snapshots & backups.
+>
+> The user6 user has apparently not logged into this particular device
+> since May 15, 2019. (It is now used primarily by someone else.) The
+> files in /home/user6/.cache appear to all have dates equal or prior to
+> May 15, 2019, but no older than Feb 3, 2019. The vast majority of the
+> reported errors were in these files. However, I do not see errors when
+> accessing those files now.
+
+So far so good, every thing is working as expected.
+
+Just the btrfs-check is a little paranoid.
+
+BTW, despite the bad file extent and csum missing error, is there any
+other error reported from btrfs check?
 
 >
-> Could actually getting rid of those thousands of now-useless v1 entries =
-help reduce mount times on such a massive FS, or would that be completely =
-unrelated?
+>> - Find a way to reproduce the read-only fs problem
+>
+> This happened when I was using btrbk to send|receive snapshots to a
+> target via ssh. I do not think it is a coincidence that I was doing a
+> btrfs operation at the time this happened.
+>
+> I did the same btrbk operation on another device (a ThinkPad T450
+> laptop) that has been running Arch Linux and BTRFS since many years
+> ago (probably around 2015). However, the btrbk operation succeeded
+> with no errors.
+>
+> Here is exactly what I did when the read-only problem first happened:
+>
+> # btrbk dryrun
+> ------------------------------------------------------------------------=
+--------
+> Backup Summary (btrbk command line client, version 0.31.2)
+>
+>      Date:   Tue Jul 13 23:11:32 2021
+>      Config: /etc/btrbk/btrbk.conf
+>      Dryrun: YES
+>
+> Legend:
+>      =3D=3D=3D  up-to-date subvolume (source snapshot)
+>      +++  created subvolume (source snapshot)
+>      ---  deleted subvolume
+>      ***  received subvolume (non-incremental)
+>      >>>  received subvolume (incremental)
+> ------------------------------------------------------------------------=
+--------
+> /mnt/top_level/@root/live/snapshot
+> +++ /mnt/top_level/@root/_btrbk_snap/root.20210713T231132-0400
+> *** backupsrv:/backup/clnt/laptop2/@root/root.20210713T231132-0400
+>
+> /mnt/top_level/@home/live/snapshot
+> +++ /mnt/top_level/@home/_btrbk_snap/home.20210713T231132-0400
+> *** backupsrv:/backup/clnt/laptop2/@home/home.20210713T231132-0400
+>
+> /mnt/top_level/@logs/live/snapshot
+> +++ /mnt/top_level/@logs/_btrbk_snap/vlog.20210713T231132-0400
+> *** backupsrv:/backup/clnt/laptop2/@log/vlog.20210713T231132-0400
+>
+> NOTE: Dryrun was active, none of the operations above were actually exec=
+uted!
+>
+> # systemctl disable --now snapper-timeline.timer
+>
+> # systemctl enable --now btrbk.timer
+> Created symlink /etc/systemd/system/timers.target.wants/btrbk.timer =E2=
+=86=92
+> /usr/lib/systemd/system/btrbk.timer.
+>
+> # systemctl list-timers --all
+> NEXT                        LEFT        LAST
+> PASSED        UNIT                         ACTIVATES
+> Wed 2021-07-14 00:00:00 EDT 47min left  n/a
+> n/a           btrbk.timer                  btrbk.service
+> Wed 2021-07-14 00:00:00 EDT 47min left  Tue 2021-07-13 09:05:48 EDT
+> 14h ago       logrotate.timer              logrotate.service
+> Wed 2021-07-14 00:00:00 EDT 47min left  Tue 2021-07-13 09:05:48 EDT
+> 14h ago       man-db.timer                 man-db.service
+> Wed 2021-07-14 00:00:00 EDT 47min left  Tue 2021-07-13 09:05:48 EDT
+> 14h ago       shadow.timer                 shadow.service
+> Wed 2021-07-14 17:31:57 EDT 18h left    Tue 2021-07-13 17:31:57 EDT 5h
+> 40min ago  snapper-cleanup.timer        snapper-cleanup.service
+> Wed 2021-07-14 17:36:17 EDT 18h left    Tue 2021-07-13 17:36:17 EDT 5h
+> 36min ago  systemd-tmpfiles-clean.timer systemd-tmpfiles-clean.service
+> Mon 2021-07-19 01:11:06 EDT 5 days left Mon 2021-07-12 01:24:15 EDT 1
+> day 21h ago fstrim.timer                 fstrim.service
+>
+> 7 timers listed.
+>
+> # systemctl start btrbk.service
+>
+> # systemctl status btrbk
+> =E2=97=8B btrbk.service - btrbk backup
+>       Loaded: loaded (/usr/lib/systemd/system/btrbk.service; static)
+>      Drop-In: /etc/systemd/system/btrbk.service.d
+>               =E2=94=94=E2=94=80override.conf
+>       Active: inactive (dead) since Tue 2021-07-13 23:17:54 EDT; 20s ago
+> TriggeredBy: =E2=97=8F btrbk.timer
+>         Docs: man:btrbk(1)
+>      Process: 6827 ExecStart=3D/usr/local/bin/btrbk_run.sh (code=3Dexite=
+d,
+> status=3D0/SUCCESS)
+>     Main PID: 6827 (code=3Dexited, status=3D0/SUCCESS)
+>          CPU: 2min 40.794s
+>
+> # mount /mnt/top_level/
+> mount: /mnt/top_level: wrong fs type, bad option, bad superblock on
+> /dev/mapper/root, missing codepage or helper program, or other error.
+>
+> # ls /mnt/top_level/
+> total 0
+> drwxr-x--x 1 root root   0 Nov  1  2017 .
+> drwxr-xr-x 1 root root 116 Apr 10  2020 ..
+>
+> My prompt includes a timestamp like this:
+>
+>   !2813 [13-Jul 23:19:18] root@laptop2
+> # journalctl -r
+> An error was encountered while opening journal file or directory
+> /var/log/journal/7db5321aaf884af786868ec2f2e9c7b0/system.journal,
+> ignoring file: Input/output error
+> -- Journal begins at Thu 2021-06-17 15:14:31 EDT, ends at Tue
+> 2021-07-13 16:19:12 EDT. --
+> Jul 13 16:19:12 laptop2 sudo[674]: pam_unix(sudo:session): session
+> opened for user root(uid=3D0) by user0(uid=3D1000)
+>
+> As far as I can tell, the last 7 hours of the journal are missing at tha=
+t point.
+>
+> That's exactly how the read-only problem happened. I did a btrbk
+> dryrun to validate the configuration. Then I started the backup. Near
+> (or at) the end of the backup for the root subvolume, the backup
+> process exited, but I could not see the journal entries for it because
+> they were missing and the filesystem was read-only.
 
-It can help, but not a root cause.
+It's a pity that we didn't get the dmesg of that RO event, it should
+contain the most valuable info.
+
+But at least so far your old fs is pretty fine, you can continue using it.
 
 Thanks,
 Qu
 
 >
-> Thanks,
-> -Joshua
->
->>>
->>> Am I missing out on something by not attempting to clear the previous
->>> version space_cache before using the new v2 version?
->>
->> Except some wasted space, you're completely fine to skip the slow delet=
-ion.
->>
->> This also means, I should enhance the deletion process to avoid too man=
-y
->> transactions...
->>
->> Thanks,
->> Qu
->>
->>>
->>>
->>>> On 16/7/21 3:51 am, Joshua wrote:
->>>> Just as a point of data, I have a 96 TB array with RAID1 data, and
->>>> RAID1C3 metadata.
->>>>
->>>> I made the switch to space_cache=3Dv2 some time ago, and I remember i=
-t
->>>> made a huge difference when I did so!
->>>> (It was RAID1 metadata at the time, as RAID1C3 was not available at
->>>> the time.)
->>>>
->>>>
->>>> However, I also tried a check with '--clear-space-cache v1' at the
->>>> time, and after waiting a literal whole day without it completing, I
->>>> gave up, canceled it, and put it back into production.  Is a
->>>> --clear-space-cache v1 operation expected to take so long on such a
->>>> large file system?
->>>>
->>>> Thanks!
->>>> --Joshua Villwock
->>>>
->>>>
->>>>
->>>> July 15, 2021 9:40 AM, "DanglingPointer"
->>>> <danglingpointerexception@gmail.com> wrote:
->>>>
->>>>> Hi Qu,
->>>>>
->>>>> Just updating here that setting the mount option "space_cache=3Dv2" =
-and
->>>>> "noatime" completely SOLVED
->>>>> the performance problem!
->>>>> Basically like night and day!
->>>>>
->>>>> These are my full fstab mount options...
->>>>>
->>>>> btrfs defaults,autodefrag,space_cache=3Dv2,noatime 0 2
->>>>>
->>>>> Perhaps defaulting the space_cache=3Dv2 should be considered?  Why
->>>>> default to v1, what's the value of
->>>>> v1?
->>>>>
->>>>> So for conclusion, for large multi-terrabyte arrays (in my case
->>>>> RAID5s), setting space_cache=3Dv2 and
->>>>> noatime massively increases performance and eliminates the large lon=
-g
->>>>> pauses in frequent intervals
->>>>> by "btrfs-transacti" blocking all IO.
->>>>>
->>>>> Thanks Qu for your help!
->>>>>
->>>>> On 14/7/21 5:45 pm, Qu Wenruo wrote:
->>>>>
->>>>>> On 2021/7/14 =E4=B8=8B=E5=8D=883:18, DanglingPointer wrote:
->>>>>>> a) "echo l > /proc/sysrq-trigger"
->>>>>>>
->>>>>>> The backup finished today already unfortunately and we are unlikel=
-y to
->>>>>>> run it again until we get an outage to remount the array with the
->>>>>>> space_cache=3Dv2 and noatime mount options.
->>>>>>> Thanks for the command, we'll definitely use it if/when it happens
->>>>>>> again
->>>>>>> on the next large migration of data.
->>>>>> Just to avoid confusion, after that command, "dmesg" output is stil=
-l
->>>>>> needed, as that's where sysrq put its output.
->>>>>>> b) "sudo btrfs qgroup show -prce" ........
->>>>>>>
->>>>>>> $ ERROR: can't list qgroups: quotas not enabled
->>>>>>>
->>>>>>> So looks like it isn't enabled.
->>>>>> One less thing to bother.
->>>>>>> File sizes are between: 1,048,576 bytes and 16,777,216 bytes
->>>>>>> (Duplicacy
->>>>>>> backup defaults)
->>>>>> Between 1~16MiB, thus tons of small files.
->>>>>>
->>>>>> Btrfs is not really good at handling tons of small files, as they
->>>>>> generate a lot of metadata.
->>>>>>
->>>>>> That may contribute to the hang.
->>>>>>
->>>>>>> What classifies as a transaction?
->>>>>> It's a little complex.
->>>>>>
->>>>>> Technically it's a check point where before the checkpoint, all you=
- see
->>>>>> is old data, after the checkpoint, all you see is new data.
->>>>>>
->>>>>> To end users, any data and metadata write will be included into one
->>>>>> transaction (with proper dependency handled).
->>>>>>
->>>>>> One way to finish (or commit) current transaction is to sync the fs=
-,
->>>>>> using "sync" command (sync all filesystems).
->>>>>>
->>>>>>> Any/All writes done in a 30sec
->>>>>>> interval?
->>>>>> This the default commit interval. Almost all fses will try to commi=
-t
->>>>>> its
->>>>>> data/metadata to disk after a configurable interval.
->>>>>>
->>>>>> The default one is 30s. That's also one way to commit current >
->>>>>> transaction.
->>>>>>
->>>>>>> If 100 unique files were written in 30secs, is that 1
->>>>>>> transaction or 100 transactions?
->>>>>> It depends. As things like syncfs() and subvolume/snapshot creation=
- may
->>>>>> try to commit transaction.
->>>>>>
->>>>>> But without those special operations, just writing 100 unique files
->>>>>> using buffered write, it would only start one transaction, and when=
- the
->>>>>> 30s interval get hit, the transaction will be committed to disk.
->>>>>>
->>>>>>> Millions of files of the size range
->>>>>>> above were backed up.
->>>>>> The amount of files may not force a transaction commit, if it doesn=
-'t
->>>>>> trigger enough memory pressure, or free space pressure.
->>>>>>
->>>>>> Anyway, the "echo l" sysrq would help us to locate what's taking so
->>>>>> long
->>>>>> time.
->>>>>>
->>>>>>> c) "Just mount with "space_cache=3Dv2""
->>>>>>>
->>>>>>> Ok so no need to "clear_cache" the v1 cache, right?
->>>>>> Yes, and "clear_cache" won't really remove all the v1 cache anyway.
->>>>>>
->>>>>> Thus it doesn't help much.
->>>>>>
->>>>>> The only way to fully clear v1 cache is by using "btrfs check
->>>>>> --clear-space-cache v1" on a *unmounted* btrfs.
->>>>>>
->>>>>>> I wrote this in the fstab but hadn't remounted yet until I can get=
- an
->>>>>>> outage....
->>>>>> IMHO if you really want to test if v2 would help, you can just remo=
-unt,
->>>>>> no need to wait for a break.
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>>> ..."btrfs defaults,autodefrag,clear_cache,space_cache=3Dv2,noatime
->>>>>>> 0  2 >
->>>>>>> Thanks again for your help Qu!
->>>>>>>
->>>>>>> On 14/7/21 2:59 pm, Qu Wenruo wrote:
->>>>>> On 2021/7/13 =E4=B8=8B=E5=8D=8811:38, DanglingPointer wrote:
->>>>>> We're currently considering switching to "space_cache=3Dv2" with no=
-atime
->>>>>> mount options for my lab server-workstations running RAID5.
->>>>>>
->>>>>> Btrfs RAID5 is unsafe due to its write-hole problem.
->>>>>>
->>>>>> * One has 13TB of data/metadata in a bunch of 6TB and 2TB disks
->>>>>> totalling 26TB.
->>>>>> * Another has about 12TB data/metadata in uniformly sized 6TB disks
->>>>>> totalling 24TB.
->>>>>> * Both of the arrays are on individually luks encrypted disks with
->>>>>> btrfs on top of the luks.
->>>>>> * Both have "defaults,autodefrag" turned on in fstab.
->>>>>>
->>>>>> We're starting to see large pauses during constant backups of milli=
-ons
->>>>>> of chunk files (using duplicacy backup) in the 24TB array.
->>>>>>
->>>>>> Pauses sometimes take up to 20+ seconds in frequencies after every
->>>>>> ~30secs of the end of the last pause.  "btrfs-transacti" process
->>>>>> consistently shows up as the blocking process/thread locking up
->>>>>> filesystem IO.  IO gets into the RAID5 array via nfsd. There are no
->>>>>>>>>> disk
->>>>>> or btrfs errors recorded.  scrub last finished yesterday successful=
-ly.
->>>>>>
->>>>>> Please provide the "echo l > /proc/sysrq-trigger" output when such
->>>>>>>>> pause
->>>>>> happens.
->>>>>>
->>>>>> If you're using qgroup (may be enabled by things like snapper), it =
-may
->>>>>> be the cause, as qgroup does its accounting when committing >>>
->>>>>> transaction.
->>>>>>
->>>>>> If one transaction is super large, it can cause such problem.
->>>>>>
->>>>>> You can test if qgroup is enabled by:
->>>>>>
->>>>>> # btrfs qgroup show -prce <mnt>
->>>>>>
->>>>>> After doing some research around the internet, we've come to the
->>>>>> consideration above as described.  Unfortunately the official
->>>>>> documentation isn't clear on the following.
->>>>>>
->>>>>> Official documentation URL -
->>>>>> https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs(5)
->>>>>>
->>>>>> 1. How to migrate from default space_cache=3Dv1 to space_cache=3Dv2=
-? It
->>>>>> talks about the reverse, from v2 to v1!
->>>>>>
->>>>>> Just mount with "space_cache=3Dv2".
->>>>>>
->>>>>> 2. If we use space_cache=3Dv2, is it indeed still the case that the
->>>>>> "btrfs" command will NOT work with the filesystem?
->>>>>>
->>>>>> Why would you think "btrfs" won't work on a btrfs?
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>>
->>>>>> So will our
->>>>>> "btrfs scrub start /mount/point/..." cron jobs FAIL? I'm guessing
->>>>>> the btrfs command comes from btrfs-progs which is currently >>>>
->>>>>> v5.4.1-2
->>>>>> amd64, is that correct?
->>>>>> 3. Any other ideas on how we can get rid of those annoying pauses w=
-ith
->>>>>> large backups into the array?
->>>>>>
->>>>>> Thanks in advance!
->>>>>>
->>>>>> DP
