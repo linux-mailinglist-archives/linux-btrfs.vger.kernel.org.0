@@ -2,105 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBDC3CAF86
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jul 2021 01:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7B33CB045
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jul 2021 03:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhGOXLf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Jul 2021 19:11:35 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:48232 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbhGOXL3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Jul 2021 19:11:29 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 987432031D;
-        Thu, 15 Jul 2021 23:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626390514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ve8ErLhX1f+100lLvDLhv/pIh4svJ8cQRMH6eGKkCVc=;
-        b=W7+YWau6NX8iVZLJYrW0B5dh1J0pOC9r1oGl0PQlhymAh0p4Bw4zbrCUoR3NX0jc6kdrmp
-        Z2Mdj1HgoLCwp5QwF7G4XL4GrJM9tGH/wJ3Lb6GvfcO8+DRG7oXm3gOVovTZAiOA6cLFxy
-        14WLXd/J+GFA88JC+Up+9nwrvxYacOg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626390514;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ve8ErLhX1f+100lLvDLhv/pIh4svJ8cQRMH6eGKkCVc=;
-        b=Bux2qrgiOgxGtLJ/L6bS80wg62raaM88jPOETmfTMmo8VkWOouJiQvE6jzgVlWGYGnckrX
-        +kEwGEwA/uO7+MCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6F24B13C4B;
-        Thu, 15 Jul 2021 23:08:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vcJrCO+/8GCWaAAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 15 Jul 2021 23:08:31 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S231588AbhGPBII (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Jul 2021 21:08:08 -0400
+Received: from mout.gmx.net ([212.227.15.19]:59755 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229703AbhGPBIH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 15 Jul 2021 21:08:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626397511;
+        bh=FGGFcR7OaHy2MbLYKAaSXOg8cny85wAcbzlg35su/q8=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=TBlLv5vLgH19cj4oddbOxNNTDKIVRN0fT7eksuZ/V8y5cQTY3sHTATmE4wE8QXV2O
+         Bq2ik8xCBiPWD5LbjZc9So6pOVtK4wr0mhIpccYjbr8DTGaTAGJGfYzTVvG9kf5rpS
+         xw92++b3jUXfsGrH2N6I60ZHy1Z8X8e9SmW0bht4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMofW-1lndL82ttc-00Invp; Fri, 16
+ Jul 2021 03:05:11 +0200
+To:     Dave T <davestechshop@gmail.com>, Qu Wenruo <wqu@suse.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAGdWbB6qxBtVc1XtSF_wOR3NyR9nGpr5_Nc5RCLGT5NK=C4iRA@mail.gmail.com>
+ <3be8bba9-60cd-2cce-a05d-6c24b8895f3f@gmx.com>
+ <CAGdWbB44nH7dgdP3qO_bFYZwbkrW37OwFEVTE2Bn+rn4d7zWiQ@mail.gmail.com>
+ <43e7dc04-c862-fff1-45af-fd779206d71c@gmx.com>
+ <CAGdWbB7Q98tSbPgHUBF+yjqYRBPZ-a42hd=xLwMZUMO46gfd0A@mail.gmail.com>
+ <CAGdWbB47rKnLoSBZ7Ez+inkeKRgE+SbOAp5QEpB=VWfM_5AmRA@mail.gmail.com>
+ <520a696d-d747-ef86-4560-0ec25897e0e1@suse.com>
+ <CAGdWbB6CrFc319fwRwmkd=zrVE4jabF0GTpqZd5Jjzx2RcAo9Q@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: bad file extent, some csum missing - how to check that restored
+ volumes are error-free?
+Message-ID: <e4cc8998-fc9e-4ef3-3a49-0f6d98960a75@gmx.com>
+Date:   Fri, 16 Jul 2021 09:05:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
-        "Josef Bacik" <josef@toxicpanda.com>,
-        "David Sterba" <dsterba@suse.com>, linux-nfs@vger.kernel.org,
-        "Wang Yugui" <wangyugui@e16-tech.com>,
-        "Ulli Horlacher" <framstag@rus.uni-stuttgart.de>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH/RFC] NFSD: handle BTRFS subvolumes better.
-In-reply-to: <20210715154534.GA24492@fieldses.org>
-References: <20210613115313.BC59.409509F4@e16-tech.com>,
- <20210310074620.GA2158@tik.uni-stuttgart.de>,
- <162632387205.13764.6196748476850020429@noble.neil.brown.name>,
- <20210715154534.GA24492@fieldses.org>
-Date:   Fri, 16 Jul 2021 09:08:27 +1000
-Message-id: <162639050750.13764.15083673238872288080@noble.neil.brown.name>
+In-Reply-To: <CAGdWbB6CrFc319fwRwmkd=zrVE4jabF0GTpqZd5Jjzx2RcAo9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Vd6tlMx75aaiqBSWgWtA20RiJcXJ5tr+u2tjE9n75mQZcGYNQth
+ a+AfgJyRzLi8uDH/A/gy/tWSbPIjpfxWeDhsQrsRd2SqDjcVIXCDAyYwcZPCY6k2/+k1b5f
+ kP/yiVTvjCbn8sxu7kPfSkcEpNETUOrq1WvlJM5XRN4K9UGYq31vgHw07dRia7rpFBACa9J
+ r8utxFhwsXeTDrTvAe+Eg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PnJCGowJDx0=:ORHYK9f89HV0/Ivvpc5qlh
+ AOFL51PwRMdk0DGehU2b6FMkpSzvrrJXD3f5cVtOri2MRnWSzFb5wVROsrPoaxTGQypbeeidx
+ arLNrK72wCHOTH/AyOr9RUi0YgzJmZXFV/hW1LuhGq0XUIaPtIJOk3D6j/TVdbydTOkKMX1uF
+ VGghKG383HpYjcWoXW2CsWaw/OsWCwRCDz9QSIlxDL9tXssD8Q0xmxc3Z4fZSQG+ZvI2aGqPz
+ ldNLVQS0cTMF7+/6OdIZk0Kqme7PyCz8JTECcGJW2Yi4XaxcsCOEpKCTcb6ociW51WZiqgogA
+ ZyA9iJ+IxhvAlr5TRg2CyvHbQ3c5bjJWcv1DtLVv0uvRwgiUZjBmlNySStGzToEsevClc+PoZ
+ Y+29t7ZaMC5NxEY80wOG/NkP79FdFkNgQP253YIcMgqk8G9LTLlAKRqKNNJH5nS13E/6JzGpM
+ RK9W/ajBGAvUxjlI/9oiAdZMIXR8yNgmfdKm0tG6ijucMUazOMtzc0xN5Bwem20DuA9sBA4qN
+ opKyxgtvqulhRQHkjREG4mlPjWE7skylF0NKiz7zf0z6DOQa5sOCiyYWnlilrHoaBZ5bd8eL6
+ UKQdfHsvJ6aG7Yqzzq6dh2UaKI1xyGIxgqpzb2s9ixCB1HOj5Te6V3nrMKSuTkn4Exfq6l65r
+ rWl+DXzhE7Ms6ohkQ2pOALHxdYHUqjhl+Nj71sFVMcd5/JNVjIO8QqGOuiv98tA0k9vN1ibIg
+ KE+hnTSPhvtogWotob63O7x1f7cTeJX4Xc59Y/6mxsOnL7iQOUYA2fpi2Vci2nKSqt47D+sR3
+ ZuS+xWHTdfjF7Wg9AkcccwfhBH4OMe/pygmKRwjpGpqMY7t9yuj/TTAKU60xWrltYvRtgAyJM
+ yrXxmiNyO8kJRlrPwjkdibXqztRpJDvXD/Z8W5Ffgix4BjifxpB1rJ7hXP4rywt1TCTl868w9
+ +Q4YIPK8r/tsZFNhZBbSEYKB3JmLBR6TJE2s/aKTdBGG2eyYi3VZvyDHXB9fToWL9zJ9MlrR6
+ Hu9VRiQqBFxQzL9aA8IKmpAX/4oFKHxkliZjcaIIILMm+WeuxwW1jc3M5KnHRyeT8Qsii1fhe
+ hy5OYcg/SA2FR3sFgoUyF1EGuE/lVxtYIqN2wJoUW1SiCt32ZNik/bL5w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 16 Jul 2021, J. Bruce Fields wrote:
-> On Thu, Jul 15, 2021 at 02:37:52PM +1000, NeilBrown wrote:
-> > To fix this, we need to report a different fsid for each subvolume, but
-> > need to use the same fsid that we currently use for the top-level
-> > volume.  Changing this (by rebooting a server to new code), might
-> > confuse the client.  I don't think it would be a major problem (stale
-> > filehandles shouldn't happen), but it is best avoided.
-> ...
-> > Again, we really want an API to get this from the filesystem.  Changing
-> > it later has no cost, so we don't need any commitment from the btrfs team
-> > that this is what they will provide if/when we do get such an API.
-> 
-> "No cost" makes me a little nervous, are we sure nobody will notice the
-> mountd-on-fileid changing?
 
-One cannot be 100% sure, but I cannot see how anything would depend on
-it being stable.  Certainly the kernel doesn't.
-'ls -i' doesn't report it - even as "ls -if".  "find -inum xx" cannot see
-it.
-Obviously readdir() will see it but if any application put much weight
-on the number, it could already get confused when btrfs returns
-non-unique numbers as I mentioned.  
-I certainly wouldn't lose sleep over changing it.
 
-NeilBrown
+On 2021/7/16 =E4=B8=8A=E5=8D=886:49, Dave T wrote:
+>> OK, lowmem mode indeed did a much better job.
+>>
+>> This is a very strange bug.
+>>
+>> This means:
+>>
+>> - The compressed extent doesn't have csum
+>>     Which shouldn't be possible for recent kernels.
+>>
+>> - The compressed extent exists for inode which has NODATASUM flag
+>>     Not possible again for recent kernels.
+>>
+>> But IIRC there are old kernels allowing such compression + nodatasum.
+>>
+>> I guess that's the reason why you got EIO when reading it.
+>>
+>> When we failed to find csum, we just put 0x00 as csum, and then when yo=
+u
+>> read the data, it's definitely going to cause csum mismatch and nothing
+>> get read out.
+>>
+>> This can be worked around by recent "rescue=3Didatacsums" mount option.
+>>
+>> But to me, this really looks like some old fs, with some inodes created
+>> by older kernels.
+>
+> I'm running:
+> kernel version 5.12.15-arch1-1 (linux@archlinux)
+>
+> I've been running arch + btrfs since 2014. I keep arch linux fully
+> updated. I'm running new kernels and new btrfs progs. However, I
+> created this filesystem around 2014.
 
-> 
-> Fileid and fsid changes I'd worry about more, though I wouldn't rule it
-> out if that'd stand in the way of a bug fix.
-> 
-> Thanks for looking into this.
-> 
-> --b.
-> 
-> 
+The change that don't allow allow compression if the inode has NODATASUM
+option is introduced in commit 42c16da6d684 ("btrfs: inode: Don't
+compress if NODATASUM or NODATACOW set"), which is from v5.2 in 2019.
+
+Thus such old fs indeed can be affected.
+
+>
+> Is there an option to "update" my BTRFS filesystem? Is that even a thing=
+?
+
+I don't think so, but please allow me to do more testing and then I may
+craft a fix in btrfs-progs to allow btrfs-check to repair such problems.
+
+If possible I would enhance kernel to handle such existing file extents
+better so that what you really need is just run "pacman -Syu" as usual,
+nothing to bother.
+
+Thanks,
+Qu
+
+>
+> I have multiple devices running on BTRFS filesystems created around
+> 2014 to 2016. Are those all in danger of having some problems now?
+> BTRFS has been mostly problem-free for me since before 2014. I do
+> regular balance and scrubs. However, I'm getting worried about my data
+> now...
+>
+> I hope I do not need to backup every device, recreate the filesystems,
+> and restore them. That would be weeks of work and I'm already
+> overworked... but losing data would be worse.
+>
+> BTW, even my backup disks run on BTRFS filesystems that were created yea=
+rs ago.
+>
+>>> Are any of these options appropriate?
+>>>
+>>> -  btrfs rescue chunk-recover /dev/mapper/xyz
+>>
+>> Definite no.
+>>
+>> Any rescue command should only be used when some developer suggested.
+>
+> Thank you for reminding me! There's a lot of bad BTRFS advice on all
+> the various forums, and it is easy to be influenced by it when you are
+> a casual user like me.
+>
+>
+>>> - btrfs check --repair --init-csum-tree /dev/mapper/xyz
+>>
+>> This may solve the read error, but we will still report the NODATACSUM
+>> problem for the compressed extent.
+>>
+>> Have you tried to remove the NODATASUM option for those involved inodes=
+?
+>
+> https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs(5)
+> says:
+> Note: If compression is enabled, nodatacow and nodatasum are disabled.
+>
+> My mount options are:
+> rw,autodefrag,noatime,nodiratime,compress=3Dlzo,space_cache,subvol=3Dxyz
+>
+> Do I understand it correctly? My compression option should already
+> "remove the NODATASUM".
+>
+>>
+>> If it's possible to remove NODATASUM for those inodes, then
+>> --init-csum-tree should be able to solve the problem.
+>
+> What do you recommend now?
+>
