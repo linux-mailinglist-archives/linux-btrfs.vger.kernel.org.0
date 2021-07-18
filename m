@@ -2,345 +2,514 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0B43CC700
-	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Jul 2021 02:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75B93CC7DC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Jul 2021 07:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbhGRATZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 17 Jul 2021 20:19:25 -0400
-Received: from mout.gmx.net ([212.227.17.20]:43041 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230259AbhGRATY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 17 Jul 2021 20:19:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626567383;
-        bh=Fm8L/PfE/DZD+7ND6BNrg4pr1ojSZCyDIvtYdtmN4YE=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=RQfbxTgrUd70mhpexuvgbawfS7/0Nx3olzD/K86AYo38ayq0J7L5sMbCprrmYr2fj
-         MkXywmG2Iqhnx92LEIRYZ8KHUn5K+yuI6oxijIdlR+uZuuVYJ8atsKEbXT4sndis3e
-         v8kj7j/am9T2pn00pCLlptpIP9Z4sRHybuCjoNh0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1po0-1m77PC1dxg-002HkG; Sun, 18
- Jul 2021 02:16:23 +0200
-Subject: Re: Corruption errors on Samsung 980 Pro (FIXED for now)
-To:     Martin Steigerwald <martin@lichtvoll.de>,
-        linux-btrfs@vger.kernel.org, dennis@kernel.org
-References: <2729231.WZja5ltl65@ananda> <4728303.pjhilp7EXf@ananda>
- <2078476.5JW8h9ZS4m@ananda>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <92baa2b1-88ce-492f-f206-39b1dafc573a@gmx.com>
-Date:   Sun, 18 Jul 2021 08:16:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S229578AbhGRF3i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 18 Jul 2021 01:29:38 -0400
+Received: from mx1.simplelogin.co ([94.237.111.15]:56118 "EHLO
+        mx1.simplelogin.co" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhGRF3i (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 18 Jul 2021 01:29:38 -0400
+X-SimpleLogin-Client-IP: 94.237.111.15
+Received: from [172.17.0.2] (mx1.simplelogin.co [94.237.111.15])
+        by mx1.simplelogin.co (Postfix) with ESMTP id 91B625F0F4
+        for <linux-btrfs@vger.kernel.org>; Sun, 18 Jul 2021 05:26:39 +0000 (UTC)
+Subject: Re: Read time tree block corruption detected
+In-Reply-To: <CQeY09U34m7SrT6nTAlkSQrbLJtmyKF1tDfuGDtKUkwJqujMI_nZU4MpGiU4F_Q1U3Lk1aWD1mFCT5SlsOsOcILWECflIw7EhVQTQpy_1Ts=@email.ardentcoding.com>
+References: <162648632340.7.1932907459648384384.10178178@mb.ardentcoding.com>
+ <162650555086.7.16811903270475408953.10183708@simplelogin.co>
+ <162650826457.7.1050455337652772013.10184548@mb.ardentcoding.com>
+ <162650966150.7.11743767259405124657.10185986@simplelogin.co>
+ <162651226617.7.3584131829663375587.10186721@mb.ardentcoding.com>
+ <162651674065.6.7912816287233908759.10188327@simplelogin.co>
+ <162651809235.7.7061042874033963922.10188873@mb.ardentcoding.com>
+ <162651892663.6.17938009695497100557.10189169@simplelogin.co>
+ <CQeY09U34m7SrT6nTAlkSQrbLJtmyKF1tDfuGDtKUkwJqujMI_nZU4MpGiU4F_Q1U3Lk1aWD1mFCT5SlsOsOcILWECflIw7EhVQTQpy_1Ts=@email.ardentcoding.com>
 MIME-Version: 1.0
-In-Reply-To: <2078476.5JW8h9ZS4m@ananda>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:aksx+3aya6XpEWInUUyHx1qWT++GGcxu5gmhNPKvUoYES+Pq8FS
- 1ejMNm3qmh0GaUM09orOXWa+brK0oO3Xtprwr7LOr1likuloMEhwF4kSyOY43N9lwvV6CKl
- K8PV7GOr5y3ZjCXJ77SS3hdXadl8yN3YHw81JILrX/v88kEy3X+axMxVR+seHbctDFXZe/b
- FkN7Prx9AuSCTN0aJI2dg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xETMCIdmhGU=:jRftvTvbMi42bJsjnq4PaN
- j3dEPux7Bv91wlWXHn+wyuqtgo8/F96AkrFvAZAIJODRfo3yRi4V802M1ZFHcQLOwgqdzKNJM
- 1FTxykGEIG0/N5h3C6Zq6dACSg1qIRf2wu9lm5uHsvaXqloD8YoIk6DFfYjiy8GqWD4vyboXJ
- c+BU1ThNlho18it9MQxaPR/wbc3tkSlZ8Ai8gcZPIzRUfHkhSML45TyhOWSvrD9NC2n2BwI7M
- 55IEGR5ptuMO+5pUwE96hHR5u5ZYa9dC9ryGudpX7XUKdTcxTgNNcgC/QZbLZdBLF9IyHxija
- iGAAEeF1fqJBgSrGVrUWp4DRNWRrb1ByyErkY1iO5Sj47wWdX7XxITCT9a6m8v3oRX1uintz7
- OFRhv7G1md03cVFALIp/rKn00eT3ISd/Tuq15piWWh+oa+Tj3GLw2t//FcYY4+BK77em/lDjU
- C5NISwp8SjFIwsb/1LNPlu95CVtrn6CfklC2c5W63ZRtCQvMKX2LiM9p5Pt9tcF2Tk3Ntmk6g
- q2GRb0NYN2+cFuuJyOy8IXNlQxIPm1UBNunlRl4pClZUSU5YMEaS7/r0CAV4JZ28GGFx41ZXh
- pp8fqqWqQ76h9LNwShFi7xcHO7dftHjIPt8EAAQsWXfk+6fyZHwKkBKITXYMjkq20psBT2SeK
- wV21sZIPzgrmL2KL/N41Nh7NAw/zlDarm7TsUFSKVRiKh8R77pX7ntKag/MEQp3Sw/Z2Mminb
- C1KScjsmJfKjskhXRKL1mz3GtJDuodGcNJORiYTe0vBom5nBpdmjf7hiE67XE1LEpav7zSUVt
- P0uRe6BzjZ5atX8QWlJEGCQMZRNQ0Z+A+yaX9siJnjm/7kmWOMGFMfEHg6Lt5ucpmQNd7KkNs
- 5+zAMptWELvvwtbxBRO4zo4rItB0OsAOoWCtSi36+bWRRyPzxFlvFwlzKQXDBcW1Lt+PTvMiZ
- oD5k0MtzYqDTq5OR9KFPm6P71/I7pIeeqMjM9qVFyMleyYQuu/YZ91sALBKtX6w2dLPTqlOMh
- 9fIY0Y3/oeOdxkqhY/W3utddO29HEU882plwfyLNco9b/GtqjMte+aT/uOlCcAyTjm69euiSh
- JXzK/F9R8ujnOkKXm/kxDtgaa3ne26yQ4lUCRrsRs06GT07WZttFNhR2A==
+From:   pepperpoint@mb.ardentcoding.com
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Message-ID: <162658599956.8.1295537648062034245.10216359@mb.ardentcoding.com>
+Date:   Sun, 18 Jul 2021 05:26:39 -0000
+X-SimpleLogin-Type: Reply
+X-SimpleLogin-EmailLog-ID: 10216359
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;  d=mb.ardentcoding.com;
+ i=@mb.ardentcoding.com; q=dns/txt; s=dkim;  t=1626585999; h=from : to;
+  bh=Fx7X0f38KE+SapDUJT5ZBO01OVBoXXFbKCt1hssegOg=;
+  b=ihIEkS3VLc5cNLsH6Z5IVjGntNVigzjT1yozMT8TyquyXTipdF3boY3SHDLEDSPl6BvKX
+  dEA6FQ3zwVGYGWNgggPyJ3s3fM9o+6YPdWEv60uGnhpu4HLoOEgOR9MUTcJPtsv6ehsmRyM
+  ukIX5rLLSe9gOmajsKqIN3+xYIbEJLc= 
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Qu,
 
+May I know if there are any leads on this? What should I do for now?
 
-On 2021/7/17 =E4=B8=8B=E5=8D=884:31, Martin Steigerwald wrote:
-> Martin Steigerwald - 16.07.21, 17:19:55 CEST:
->> Martin Steigerwald - 16.07.21, 17:05:59 CEST:
->>> I migrated to a different laptop and this one has a 2TB Samsung 980 Pr=
-o drive
->>> (not a 2TB Samsung 870 Evo Plus which previously had problems).
->>
->> Kernel is:
->>
->> % cat /proc/version
->> Linux version 5.13.1-t14 (martin@[=E2=80=A6]) (gcc (Debian 10.2.1-6) 10=
-.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2) #14 SMP PREEMPT Mo=
-n Jul 12 10:36:54 CEST 2021
->
-> Another addition that might be important. I am using xxhash.
->
-> I created the filesystem like that:
->
-> % mkfs.btrfs -L home --csum xxhash /dev/nvme/home
->
-> So it is xxhash, discard=3Dasync and space cache v2.
+Regards,
+Lester
 
-My educiated guess is async.
+=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
+ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
 
-The reason is that all affected tree blocks are showing a fixed pattern:
-have 0x48be03222606a29d expected csum 0x0100000026004000
+On Saturday, July 17th, 2021 at 8:51 PM, pepperpoint@mb.ardentcoding.com wr=
+ote:
 
-This pretty much means those tree blocks have been discarded.
-
-But I'm not familiar with that part.
-
-Dennis is more familiar with this, maybe he could provide some idea on thi=
-s.
-
-Thanks,
-Qu
+> Hi Qu,
 >
-> Maybe something in this combination is not yet fully stable?
+> I run btrfs ins dump-tree -t 363 unmounted but the same error appears. Re=
+running btrfs check does not show any error.
 >
-> https://btrfs.wiki.kernel.org/index.php/Status says additional checksum
-> algorithms are stable. It also states free space cache is stable. And it
-> states that asynchronous discards are stable. It does not explicitly
-> mention xxhash or free space v2 are stable too. I bet it may be included
-> in the general statement, but I am not completely sure.
+> Regards,
 >
-> However what I just did is:
+> Lester
 >
-> % mount -o remount,clear_cache,space_cache=3Dv2 /home
+> =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original =
+Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
 >
-> And I now get:
+> On Saturday, July 17th, 2021 at 6:48 PM, Qu Wenruo - quwenruo.btrfs@gmx.c=
+om wrote:
 >
-> % btrfs scrub status /home
-> UUID:             [=E2=80=A6]
-> Scrub started:    Sat Jul 17 10:24:54 2021
-> Status:           finished
-> Duration:         0:01:43
-> Total to scrub:   178.39GiB
-> Rate:             1.73GiB/s
-> Error summary:    no errors found
->
-> Hopefully it will stay this way. Fingers crossed.
->
-> So a good trick in case there is no file mentioned in kernal log may be =
-to clear
-> free space tree and see whether the checksum errors go away.
->
-> If anyone can make any additional sense out of this, please go ahead.
->
->>> I thought this time I would be fine, but I just got:
->>>
->>> [63168.287911] BTRFS warning (device dm-3): csum failed root 1372 ino =
-2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x01000000260=
-04000 mirror 1
->>> [63168.287925] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 1, gen 0
->>> [63168.346552] BTRFS warning (device dm-3): csum failed root 1372 ino =
-2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x01000000260=
-04000 mirror 1
->>> [63168.346567] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 2, gen 0
->>> [63168.346685] BTRFS warning (device dm-3): csum failed root 1372 ino =
-2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x01000000260=
-04000 mirror 1
->>> [63168.346708] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 3, gen 0
->>> [63168.346859] BTRFS warning (device dm-3): csum failed root 1372 ino =
-2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x01000000260=
-04000 mirror 1
->>> [63168.346873] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 4, gen 0
->>> [63299.490367] BTRFS warning (device dm-3): csum failed root 1372 ino =
-2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x01000000260=
-04000 mirror 1
->>> [63299.490384] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 5, gen 0
->>> [63299.572849] BTRFS warning (device dm-3): csum failed root 1372 ino =
-2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x01000000260=
-04000 mirror 1
->>> [63299.572866] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 6, gen 0
->>> [63299.573151] BTRFS warning (device dm-3): csum failed root 1372 ino =
-2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x01000000260=
-04000 mirror 1
->>> [63299.573168] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 7, gen 0
->>> [63299.573286] BTRFS warning (device dm-3): csum failed root 1372 ino =
-2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x01000000260=
-04000 mirror 1
->>> [63299.573295] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 8, gen 0
->>> [63588.902631] BTRFS warning (device dm-3): csum failed root 1372 ino =
-4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701=
-000000 mirror 1
->>> [63588.902647] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 13, gen 0
->>> [63588.949614] BTRFS warning (device dm-3): csum failed root 1372 ino =
-4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701=
-000000 mirror 1
->>> [63588.949628] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 14, gen 0
->>> [63588.949849] BTRFS warning (device dm-3): csum failed root 1372 ino =
-4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701=
-000000 mirror 1
->>> [63588.949855] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 15, gen 0
->>> [63588.950087] BTRFS warning (device dm-3): csum failed root 1372 ino =
-4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701=
-000000 mirror 1
->>> [63588.950099] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home e=
-rrs: wr 0, rd 0, flush 0, corrupt 16, gen 0
->>
->> Additional errors revealed through scrubbing =E2=80=93 will test the ot=
-her
->> filesystems as well:
->>
->> % btrfs scrub status /home
->> UUID:             [=E2=80=A6]
->> Scrub started:    Fri Jul 16 17:08:49 2021
->> Status:           finished
->> Duration:         0:02:05
->> Total to scrub:   203.54GiB
->> Rate:             1.63GiB/s
->> Error summary:    csum=3D5
->>    Corrected:      0
->>    Uncorrectable:  5
->>    Unverified:     0
->>
->> Now totalling to 21 errors:
->>
->> % btrfs device stats /home
->> [/dev/mapper/nvme-home].write_io_errs    0
->> [/dev/mapper/nvme-home].read_io_errs     0
->> [/dev/mapper/nvme-home].flush_io_errs    0
->> [/dev/mapper/nvme-home].corruption_errs  21
->> [/dev/mapper/nvme-home].generation_errs  0
->>
->> Log:
->>
->> [64707.979036] BTRFS info (device dm-3): scrub: started on devid 1
->> [64730.009687] BTRFS warning (device dm-3): checksum error at logical 3=
-6997591040 on dev /dev/mapper/nvme-home, physical 34850107392, root 1054, =
-inode 2295743, offset 2718461952: path resolving failed with ret=3D-2
->> [64730.009710] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home er=
-rs: wr 0, rd 0, flush 0, corrupt 17, gen 0
->> [64730.009721] BTRFS error (device dm-3): unable to fixup (regular) err=
-or at logical 36997591040 on dev /dev/mapper/nvme-home
->> [64730.010996] BTRFS warning (device dm-3): checksum error at logical 3=
-6997595136 on dev /dev/mapper/nvme-home, physical 34850111488, root 1054, =
-inode 4895964, offset 7676579840: path resolving failed with ret=3D-2
->> [64730.011014] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home er=
-rs: wr 0, rd 0, flush 0, corrupt 18, gen 0
->> [64730.011024] BTRFS error (device dm-3): unable to fixup (regular) err=
-or at logical 36997595136 on dev /dev/mapper/nvme-home
->> [64730.011298] BTRFS warning (device dm-3): checksum error at logical 3=
-6997599232 on dev /dev/mapper/nvme-home, physical 34850115584, root 1054, =
-inode 4895964, offset 7676579840: path resolving failed with ret=3D-2
->> [64730.011312] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home er=
-rs: wr 0, rd 0, flush 0, corrupt 19, gen 0
->> [64730.011319] BTRFS error (device dm-3): unable to fixup (regular) err=
-or at logical 36997599232 on dev /dev/mapper/nvme-home
->> [64730.011603] BTRFS warning (device dm-3): checksum error at logical 3=
-6997603328 on dev /dev/mapper/nvme-home, physical 34850119680, root 1054, =
-inode 4895964, offset 7676579840: path resolving failed with ret=3D-2
->> [64730.011616] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home er=
-rs: wr 0, rd 0, flush 0, corrupt 20, gen 0
->> [64730.011623] BTRFS error (device dm-3): unable to fixup (regular) err=
-or at logical 36997603328 on dev /dev/mapper/nvme-home
->> [64730.011905] BTRFS warning (device dm-3): checksum error at logical 3=
-6997607424 on dev /dev/mapper/nvme-home, physical 34850123776, root 1054, =
-inode 4895964, offset 7676579840: path resolving failed with ret=3D-2
->> [64730.011921] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home er=
-rs: wr 0, rd 0, flush 0, corrupt 21, gen 0
->> [64730.011928] BTRFS error (device dm-3): unable to fixup (regular) err=
-or at logical 36997607424 on dev /dev/mapper/nvme-home
->> [64832.447560] BTRFS info (device dm-3): scrub: finished on devid 1 wit=
-h status: 0
->>
->> Why is BTRFS unable to determine a path?
->>
->> How would I fix those when BTRFS does not tell me what file is affected=
-?
->>
->>> during a backup.
->>>
->>> According to rsync this is related (why does BTRFS does not report the
->>> affected file?)
->>>
->>> Create a snapshot of '/home' in '/zeit/home/backup-2021-07-16-16:40:13=
-'
->>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:4=
-0:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/ou=
-tput error (5)
->>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:4=
-0:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/ou=
-tput error (5)
->>> ERROR: martin/.local/share/akonadi/search_db/email/postlist.glass fail=
-ed verification -- update discarded.
->>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:4=
-0:13/martin/.local/share/baloo/index": Input/output error (5)
->>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:4=
-0:13/martin/.local/share/baloo/index": Input/output error (5)
->>> ERROR: martin/.local/share/baloo/index failed verification -- update d=
-iscarded.
->>>
->>> Both are frequently written to files (both Baloo and Akonadi have very=
- crazy
->>> I/O patterns that, I would not have thought so, can even satisfy an NV=
-Me SSD).
->>>
->>> I thought that a Samsung 980 Pro can easily handle "discard=3Dasync" s=
-o I
->>> used it.
->>>
->>> This is on a ThinkPad T14 Gen1 with AMD Ryzen 7 PRO 4750U and 32 GiB o=
-f RAM.
->>>
->>> It is BTRFS single profile on LVM on LUKS. Mount options are:
->>>
->>> rw,relatime,lazytime,compress=3Dzstd:3,ssd,space_cache=3Dv2,subvolid=
-=3D1054,subvol=3D/home
->>>
->>> Smartctl has no errors.
->>>
->>> I only use a few (less than 10) subvolumes.
->>>
->>> I do not have any other errors in kernel log, so I bet this may not be
->>> "discard=3Dasync" related. Any idea?
->>
->> Maybe I still remove "discard=3Dasync" for now. Maybe it is not yet ful=
-ly reliable.
->>
->>> Could it have to do with a sudden switching off the laptop (there had
->>> been quite some reasons cause at least with a AMD model of this laptop
->>> in combination with an USB-C dock by Lenovo there are quite some stabi=
-lity
->>> issues)? I would have hoped that the Samsung 980 Pro would still be
->>> equipped to complete the outstanding write operation, but maybe it has
->>> no capacitor for this.
->>>
->>> I am really surprised by the what I experienced about the reliability =
-of
->>> SSDs I recently bought. I did not see a failure within a month with an=
-y
->>> of the older SSDs. I hope this does not point at a severe worsening of
->>> the quality. Probably I have to fit another SSD in there and use BTRFS
->>> RAID 1 again to protect at least part of the data from errors like thi=
-s.
->>>
->>> Any idea about this? I bet you may not have any, as there is not block
->>> I/O related errors in the log, but if you have, by all means share you=
-r
->>> thoughts. Thank you.
->>>
->>> Both files can be recreated. So I bet I will just remove them.
->>>
->>> Best,
->>
->
->
+> > On 2021/7/17 =E4=B8=8B=E5=8D=886:34, pepperpoint@mb.ardentcoding.com wr=
+ote:
+> >
+> > > Hi Qu,
+> > >
+> > > Unfortunately I cannot find subvolume 363
+> > >
+> > > btrfs subvolume list /run/media/root
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > >
+> > > ID 361 gen 1814826 top level 584 path @/live/snapshot
+> > >
+> > > ID 364 gen 1814414 top level 5 path @vtmp/live/snapshot
+> > >
+> > > ID 369 gen 1814414 top level 5 path @vlmachines/live/snapshot
+> > >
+> > > ID 493 gen 1814414 top level 5 path @vlportables/live/snapshot
+> > >
+> > > ID 579 gen 1814828 top level 5 path @vlog/live/snapshot
+> > >
+> > > ID 580 gen 1814414 top level 5 path @vcache/live/snapshot
+> > >
+> > > ID 581 gen 1814414 top level 5 path @vlmongodb/live/snapshot
+> > >
+> > > ID 582 gen 1814414 top level 5 path @vlmysql/live/snapshot
+> > >
+> > > ID 583 gen 1814414 top level 5 path @vspool/live/snapshot
+> > >
+> > > ID 584 gen 1814414 top level 5 path @
+> > >
+> > > ID 598 gen 1813420 top level 584 path @/4/snapshot
+> >
+> > Maybe 363 is some subvolume get deleted and later snapshot of it still
+> >
+> > exists.
+> >
+> > This will be harder to debug.
+> >
+> > Can you take a btrfs-image dump of your filesystem? (needs to be taken
+> >
+> > with the fs unmounted).
+> >
+> > The dumped image will contain your metadata, including file names and
+> >
+> > directory structures, but no data inside those files.
+> >
+> > Although btrfs-image has "-s" option to mask the filenames, but
+> >
+> > considering the filename in this case is useful to locate the inode, I
+> >
+> > guess it's better to take the image without any "-s" option.
+> >
+> > > btrfs ins dump-tree -t 363 /dev/dm-0 | grep -A 5 "(286 "
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+> > >
+> > > parent transid verify failed on 174170742784 wanted 1789655 found 181=
+2621
+> > >
+> > > parent transid verify failed on 174170742784 wanted 1789655 found 181=
+2621
+> > >
+> > > parent transid verify failed on 174170742784 wanted 1789655 found 181=
+2621
+> > >
+> > > Ignoring transid failure
+> > >
+> > > ERROR: child eb corrupted: parent bytenr=3D174170738688 item=3D0 pare=
+nt level=3D2 child bytenr=3D174170742784 child level=3D0
+> >
+> > This transid mismatch may be a problem when running dump-tree on mounte=
+d
+> >
+> > fs, since you mentioned btrfs check reported no error, there shouldn't
+> >
+> > be a transid mismatch error.
+> >
+> > Anyway, if you can upload the btrfs-image dump, it would be much easier
+> >
+> > for us to debug and find out what's really going.
+> >
+> > Thanks,
+> >
+> > Qu
+> >
+> > > =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Origi=
+nal Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=
+=90
+> > >
+> > > On Saturday, July 17th, 2021 at 6:12 PM, Qu Wenruo wqu@suse.com wrote=
+:
+> > >
+> > > > On 2021/7/17 =E4=B8=8B=E5=8D=884:57, pepperpoint@mb.ardentcoding.co=
+m wrote:
+> > > >
+> > > > > Hi Qu,
+> > > > >
+> > > > > I don't know how the directory was created but last month, I used=
+ btrfs device add and btrfs device remove to move the filesystem from one p=
+artition to another. It failed because of the same error and was advised to=
+ use btrfs replace instead. I don't know if the error also happened before =
+I move the file system as I don't have any previous logs.
+> > > >
+> > > > It definitely happens before you moving the fs.
+> > > >
+> > > > As regular dev replacing/add/move only relocates the metadata, but =
+not
+> > > >
+> > > > touching the fs trees.
+> > > >
+> > > > > Here is the result when I search for the inodes you mentioned if =
+it helps:
+> > > > >
+> > > > > find /run/media/root -inum 260 -exec ls -ldi {} \;
+> > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> > > > >
+> > > > > 260 -rw-r--r-- 1 root root 36864 Jun 25 06:22 /run/media/root/@vc=
+ache/live/snapshot/app-info/cache/en_US.cache
+> > > > >
+> > > > > 260 drwx------ 1 mongodb mongodb 136 Sep 12 2020 /run/media/root/=
+@vlmongodb/live/snapshot/diagnostic.data
+> > > > >
+> > > > > 260 -rw-rw---- 1 mysql mysql 50331648 Sep 13 2015 /run/media/root=
+/@vlmysql/live/snapshot/ib_logfile0
+> > > > >
+> > > > > 260 -rw-r----- 1 root lp 8641 Mar 5 2014 /run/media/root/@vspool/=
+live/snapshot/cups/d00001-001
+> > > > >
+> > > > > 260 dr-xr-xr-x 1 root root 0 Sep 13 2013 /run/media/root/@/live/s=
+napshot/sys
+> > > > >
+> > > > > 260 dr-xr-xr-x 1 root root 0 Sep 13 2013 /run/media/root/@/4/snap=
+shot/sys
+> > > >
+> > > > Since btrfs can have the same inode number inside different subvolu=
+mes,
+> > > >
+> > > > you may want to limit the search inside subvolume 363.
+> > > >
+> > > > "-mount" option of find can do that, you only need to locate subvol=
+ume
+> > > >
+> > > > 363 by "btrfs subv list".
+> > > >
+> > > > But from these output I guess above two "sys" directory are more po=
+ssible.
+> > > >
+> > > > Is there any directory named "blaklight" inside those directory?
+> > > >
+> > > > > find /run/media/root -inum 286 -exec ls -ldi {} \;
+> > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> > > > >
+> > > > > 286 -rw-r--r-- 1 root root 96 Aug 16 2015 /run/media/root/@vcache=
+/live/snapshot/fontconfig/4b172ca7f111e3cffadc3636415fead9-le64.cache-4
+> > > > >
+> > > > > 286 -rw-rw---- 1 mysql mysql 4096 Sep 15 2013 /run/media/root/@vl=
+mysql/live/snapshot/mysql/columns_priv.MYI
+> > > > >
+> > > > > 286 -rw-r-----+ 1 root systemd-journal 16777216 Jul 4 01:14 /run/=
+media/root/@vlog/live/snapshot/journal/5098dd7845ae46d3ba1826c68a809a7c/use=
+r-1000@fbd9f65d0ea349f6b996716280e6c4dd-00000000002314c5-0005c5cb84a3a438.j=
+ournal
+> > > >
+> > > > This is interesting, it means the inode 286 is not accessible.
+> > > >
+> > > > It can be some orphan inode, but would you dump subvolume 363 then =
+try
+> > > >
+> > > > to locate the inode 286?
+> > > >
+> > > > One example command would be:
+> > > >
+> > > > btrfs ins dump-tree -t 363 <dev> | grep -A 5 "(286 "
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> > > >
+> > > > Thanks,
+> > > >
+> > > > Qu
+> > > >
+> > > > > Directories with pattern /root/@<dir>/live/snapshot/ are subvolum=
+es and directories with pattern /root/@<dir>/<num>/snapshot/ are snapshots =
+of live.
+> > > > >
+> > > > > =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=
+=90 Original Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=
+=90=E2=80=90
+> > > > >
+> > > > > On Saturday, July 17th, 2021 at 4:14 PM, Qu Wenruo quwenruo.btrfs=
+@gmx.com wrote:
+> > > > >
+> > > > > > On 2021/7/17 =E4=B8=8B=E5=8D=883:51, pepperpoint@mb.ardentcodin=
+g.com wrote:
+> > > > > >
+> > > > > > > Hi Qu,
+> > > > > > >
+> > > > > > > Please see below for the dump.
+> > > > > > >
+> > > > > > > btrfs-progs v5.12.1
+> > > > > > >
+> > > > > > > leaf 174113599488 items 18 free space 2008 generation 1330906=
+ owner 363
+> > > > > > >
+> > > > > > > leaf 174113599488 flags 0x1(WRITTEN) backref revision 1
+> > > > > > >
+> > > > > > > fs uuid a7d327c4-8594-4116-a6f8-8aa2a4162063
+> > > > > > >
+> > > > > > > chunk uuid f885f49e-14a0-4c80-9c12-c2302b9a0229
+> > > > > > >
+> > > > > > > item 0 key (5471 INODE_ITEM 0) itemoff 3835 itemsize 160
+> > > > > > >
+> > > > > > > generation 2063 transid 27726 size 40 nbytes 40
+> > > > > > >
+> > > > > > > block group 0 mode 100600 links 1 uid 0 gid 100 rdev 0
+> > > > > > >
+> > > > > > > sequence 1501 flags 0x0(none)
+> > > > > > >
+> > > > > > > atime 1386484844.468769570 (2013-12-08 14:40:44)
+> > > > > > >
+> > > > > > > ctime 1386484844.468769570 (2013-12-08 14:40:44)
+> > > > > > >
+> > > > > > > mtime 1386484844.468769570 (2013-12-08 14:40:44)
+> > > > > > >
+> > > > > > > otime 0.0 (1970-01-01 08:00:00)
+> > > > > > >
+> > > > > > > item 1 key (5471 INODE_REF 4399) itemoff 3824 itemsize 11
+> > > > > > >
+> > > > > > > index 12 namelen 1 name: 8
+> > > > > > >
+> > > > > > > item 2 key (5471 EXTENT_DATA 0) itemoff 3763 itemsize 61
+> > > > > > >
+> > > > > > > generation 27726 type 0 (inline)
+> > > > > > >
+> > > > > > > inline extent data size 40 ram_bytes 40 compression 0 (none)
+> > > > > > >
+> > > > > > > item 3 key (5645 INODE_ITEM 0) itemoff 3603 itemsize 160
+> > > > > > >
+> > > > > > > generation 2542 transid 61261 size 40 nbytes 40
+> > > > > > >
+> > > > > > > block group 0 mode 100600 links 1 uid 0 gid 100 rdev 0
+> > > > > > >
+> > > > > > > sequence 24769 flags 0x0(none)
+> > > > > > >
+> > > > > > > atime 1394335806.351857522 (2014-03-09 11:30:06)
+> > > > > > >
+> > > > > > > ctime 1394335827.344389955 (2014-03-09 11:30:27)
+> > > > > > >
+> > > > > > > mtime 1394335827.344389955 (2014-03-09 11:30:27)
+> > > > > > >
+> > > > > > > otime 0.0 (1970-01-01 08:00:00)
+> > > > > > >
+> > > > > > > item 4 key (5645 INODE_REF 4399) itemoff 3592 itemsize 11
+> > > > > > >
+> > > > > > > index 13 namelen 1 name: 7
+> > > > > > >
+> > > > > > > item 5 key (5645 EXTENT_DATA 0) itemoff 3531 itemsize 61
+> > > > > > >
+> > > > > > > generation 61261 type 0 (inline)
+> > > > > > >
+> > > > > > > inline extent data size 40 ram_bytes 40 compression 0 (none)
+> > > > > > >
+> > > > > > > item 6 key (7222 INODE_ITEM 0) itemoff 3371 itemsize 160
+> > > > > > >
+> > > > > > > generation 5754 transid 5767 size 307 nbytes 307
+> > > > > > >
+> > > > > > > block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
+> > > > > > >
+> > > > > > > sequence 7 flags 0x0(none)
+> > > > > > >
+> > > > > > > atime 1379834835.428558020 (2013-09-22 15:27:15)
+> > > > > > >
+> > > > > > > ctime 1379834835.428558020 (2013-09-22 15:27:15)
+> > > > > > >
+> > > > > > > mtime 1379834835.428558020 (2013-09-22 15:27:15)
+> > > > > > >
+> > > > > > > otime 0.0 (1970-01-01 08:00:00)
+> > > > > > >
+> > > > > > > item 7 key (7222 INODE_REF 287) itemoff 3344 itemsize 27
+> > > > > > >
+> > > > > > > index 6 namelen 17 name: dhcpcd-eth0.lease
+> > > > > > >
+> > > > > > > item 8 key (7222 EXTENT_DATA 0) itemoff 3016 itemsize 328
+> > > > > > >
+> > > > > > > generation 5767 type 0 (inline)
+> > > > > > >
+> > > > > > > inline extent data size 307 ram_bytes 307 compression 0 (none=
+)
+> > > > > > >
+> > > > > > > item 9 key (7415 INODE_ITEM 0) itemoff 2856 itemsize 160
+> > > > > > >
+> > > > > > > generation 5904 transid 1330906 size 180 nbytes 0
+> > > > > > >
+> > > > > > > block group 0 mode 40755 links 2 uid 0 gid 0 rdev 0
+> > > > > > >
+> > > > > > > sequence 177 flags 0x0(none)
+> > > > > > >
+> > > > > > > atime 1483277713.141980592 (2017-01-01 21:35:13)
+> > > > > > >
+> > > > > > > ctime 1563162901.234656246 (2019-07-15 11:55:01)
+> > > > > > >
+> > > > > > > mtime 1406534032.158605559 (2014-07-28 15:53:52)
+> > > > > > >
+> > > > > > > otime 0.0 (1970-01-01 08:00:00)
+> > > > > >
+> > > > > > This inode is indeed a directory.
+> > > > > >
+> > > > > > But it has two hard links, which is definitely something unexpe=
+cted.
+> > > > > >
+> > > > > > Under Linux we shouldn't have any hardlink for directory, as it=
+ would
+> > > > > >
+> > > > > > easily lead to loops.
+> > > > > >
+> > > > > > > item 10 key (7415 INODE_REF 260) itemoff 2837 itemsize 19
+> > > > > > >
+> > > > > > > index 28 namelen 9 name: backlight
+> > > > > >
+> > > > > > Its parent inode is 260 in the same root, with the name backlig=
+ht.
+> > > > > >
+> > > > > > > item 11 key (7415 INODE_REF 286) itemoff 2818 itemsize 19
+> > > > > > >
+> > > > > > > index 3 namelen 9 name: backlight
+> > > > > >
+> > > > > > Another hardlink in inode 286, which is definitely a regular th=
+ing.
+> > > > > >
+> > > > > > Btrfs-progs lacks the ability to detect such problem, we need t=
+o enhance
+> > > > > >
+> > > > > > it first.
+> > > > > >
+> > > > > > But do you have any idea how this directory get created?
+> > > > > >
+> > > > > > It looks like the content of sysfs.
+> > > > > >
+> > > > > > Thanks,
+> > > > > >
+> > > > > > Qu
+> > > > > >
+> > > > > > > item 12 key (7415 DIR_ITEM 3128336373) itemoff 2746 itemsize =
+72
+> > > > > > >
+> > > > > > > location key (120417 INODE_ITEM 0) type FILE
+> > > > > > >
+> > > > > > > transid 117279 data_len 0 name_len 42
+> > > > > > >
+> > > > > > > name: pci-0000:00:02.0:backlight:intel_backlight
+> > > > > > >
+> > > > > > > item 13 key (7415 DIR_ITEM 3218198317) itemoff 2705 itemsize =
+41
+> > > > > > >
+> > > > > > > location key (7487 INODE_ITEM 0) type FILE
+> > > > > > >
+> > > > > > > transid 5992 data_len 0 name_len 11
+> > > > > > >
+> > > > > > > name: acpi_video0
+> > > > > > >
+> > > > > > > item 14 key (7415 DIR_ITEM 3582254411) itemoff 2638 itemsize =
+67
+> > > > > > >
+> > > > > > > location key (55325 INODE_ITEM 0) type FILE
+> > > > > > >
+> > > > > > > transid 63351 data_len 0 name_len 37
+> > > > > > >
+> > > > > > > name: platform-VPC2004:00:backlight:ideapad
+> > > > > > >
+> > > > > > > item 15 key (7415 DIR_INDEX 2) itemoff 2597 itemsize 41
+> > > > > > >
+> > > > > > > location key (7487 INODE_ITEM 0) type FILE
+> > > > > > >
+> > > > > > > transid 5992 data_len 0 name_len 11
+> > > > > > >
+> > > > > > > name: acpi_video0
+> > > > > > >
+> > > > > > > item 16 key (7415 DIR_INDEX 4) itemoff 2530 itemsize 67
+> > > > > > >
+> > > > > > > location key (55325 INODE_ITEM 0) type FILE
+> > > > > > >
+> > > > > > > transid 63351 data_len 0 name_len 37
+> > > > > > >
+> > > > > > > name: platform-VPC2004:00:backlight:ideapad
+> > > > > > >
+> > > > > > > item 17 key (7415 DIR_INDEX 5) itemoff 2458 itemsize 72
+> > > > > > >
+> > > > > > > location key (120417 INODE_ITEM 0) type FILE
+> > > > > > >
+> > > > > > > transid 117279 data_len 0 name_len 42
+> > > > > > >
+> > > > > > > name: pci-0000:00:02.0:backlight:intel_backlight
+> > > > > > >
+> > > > > > > =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=
+=E2=80=90 Original Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=
+=E2=80=90=E2=80=90
+> > > > > > >
+> > > > > > > On Saturday, July 17th, 2021 at 3:05 PM, Qu Wenruo quwenruo.b=
+trfs@gmx.com wrote:
+> > > > > > >
+> > > > > > > > On 2021/7/17 =E4=B8=8A=E5=8D=889:45, pepperpoint@mb.ardentc=
+oding.com wrote:
+> > > > > > > >
+> > > > > > > > > Hello,
+> > > > > > > > >
+> > > > > > > > > I see this message on dmesg:
+> > > > > > > > >
+> > > > > > > > > [ 2452.256756] BTRFS critical (device dm-0): corrupt leaf=
+: root=3D363 block=3D174113599488 slot=3D9 ino=3D7415, invalid nlink: has 2=
+ expect no more than 1 for dir
+> > > > > > > > >
+> > > > > > > > > [ 2452.256776] BTRFS error (device dm-0): block=3D1741135=
+99488 read time tree block corruption detected
+> > > > > > > >
+> > > > > > > > Please provide the following dump:
+> > > > > > > >
+> > > > > > > > btrfs ins dump-tree -b 174113599488 /dev/dm-0
+> > > > > > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> > > > > > > >
+> > > > > > > > Thanks,
+> > > > > > > >
+> > > > > > > > Qu
+> > > > > > > >
+> > > > > > > > > When I run btrfs scrub and btrfs check, no error was dete=
+cted.
+> > > > > > > > >
+> > > > > > > > > I am running Linux 5.12.15-arch1-1 and btrfs-progs v5.12.=
+1
+> > > > > > > > >
+> > > > > > > > > How should I fix this error?
