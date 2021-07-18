@@ -2,257 +2,596 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14743CC7FE
-	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Jul 2021 08:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892493CC80C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Jul 2021 09:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhGRGtX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 18 Jul 2021 02:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhGRGtK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 18 Jul 2021 02:49:10 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1233FC061762
-        for <linux-btrfs@vger.kernel.org>; Sat, 17 Jul 2021 23:46:13 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id h1so7807885plf.6
-        for <linux-btrfs@vger.kernel.org>; Sat, 17 Jul 2021 23:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=djS4yHu9H9HvU5bm2lyOGyHsUSZNFJ8qFoaLocKNOVM=;
-        b=U64PQYfRkpeMRO95RQNWM/y9PRLUM1tCovkpP35KiuHrtZ9qqRsczyG9J1HVjZCqcO
-         EjqwG3IhAYVtTOKTBz+EpSRT1++FgZUv3oBj2PvxXj76tqCSwhdcDFTNPUg3x2jY/4/Z
-         qop/drsQggG5JBk3gD6xYb/XRY+2E0ddw26knCHtqqo7DBXq0soH/1FBiVgoVYphFsa9
-         h5GXl1ZRq64xrWkkp//XX6t5Hf6Wzc1NrOEQl14NcMNV7KZzm3HYsKhEooAINQ8I0TYh
-         8oc7Qs4atTFxNRSyr8apSDp1Hyuuc2W4Id2VZ3yBrbLORPCzFaEKRAkWdnxEsxiTkhHB
-         MPRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=djS4yHu9H9HvU5bm2lyOGyHsUSZNFJ8qFoaLocKNOVM=;
-        b=MudQl6lqpvbp9nP4zINbs35sMhfIP7ckoWj/Uwmzg2xAfhLTP+U/VylWHlxkWAHcd8
-         U6nhSjNmbkYLOKHaPliZWXR3M7g8UkiWVc1DnUMsFq3NNJy20ShW6UX8JHbQXlkuTQFH
-         z5tPqVnQud96ABhYVB7/E64k7kcCIaSlXAQxZO3Olo+tCbRRC+rtPzQ8L/pIoa9yXj/j
-         Dt0mEuNaYyW7ze6e81OQjzN/cIrE1nMUfI8yDC8tbSkRGHZSM9/w560hs0W0/HeKW//Y
-         667jwTHheNVviZtuk5PAR4nhseFF0uTzI7KU/HS6/pTmW7GAWIEBvQybGKWyT9J5Z6xs
-         rpbQ==
-X-Gm-Message-State: AOAM53152Yv7JVUdwTJNhN0VfOnaPGoDDCGX6VpaqzwXsU45qPxcbDzJ
-        CIlRUwNK/ByfkPyNUxrPp1Huunopvxg=
-X-Google-Smtp-Source: ABdhPJwZtpQdFwIWTNDvoUWAGeJFcl06xP3SbNSxsSCBt1ah/PAxK6a6uOjzFhmDERIsuOfcRxeo7Q==
-X-Received: by 2002:a17:90a:a087:: with SMTP id r7mr24398538pjp.84.1626590772472;
-        Sat, 17 Jul 2021 23:46:12 -0700 (PDT)
-Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id w23sm1302741pfc.60.2021.07.17.23.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Jul 2021 23:46:12 -0700 (PDT)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH v4 2/2] btrfs-progs: cmds: Add subcommand that dumps file extents
-Date:   Sun, 18 Jul 2021 06:46:01 +0000
-Message-Id: <20210718064601.3435-3-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210718064601.3435-1-realwakka@gmail.com>
-References: <20210718064601.3435-1-realwakka@gmail.com>
+        id S229842AbhGRHTI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 18 Jul 2021 03:19:08 -0400
+Received: from mout.gmx.net ([212.227.17.20]:56793 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229480AbhGRHTH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 18 Jul 2021 03:19:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626592557;
+        bh=9jtsHXfilTcGDj9+N7/K0IxarAxfhhLHscCx3I/x9vU=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=L24d1HlybMIZC6PYdzn50Amw5ayb3xENtXa1d6II5hT9ni+pLTo3S2F1QoF3b6xFs
+         myYr+5ACTPM9r6nqTSlso8GxqcpLXJlmO/qHhbmPgtyaJ3ABUrHaeC3w5aFYrkPbxi
+         TvgkNI3CcGjE/k2s/G23CsfCo0v1gKO4uBdv3cRc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M59GG-1m66xM14fE-0018DH; Sun, 18
+ Jul 2021 09:15:56 +0200
+To:     pepperpoint@mb.ardentcoding.com
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <162648632340.7.1932907459648384384.10178178@mb.ardentcoding.com>
+ <162650555086.7.16811903270475408953.10183708@simplelogin.co>
+ <162650826457.7.1050455337652772013.10184548@mb.ardentcoding.com>
+ <162650966150.7.11743767259405124657.10185986@simplelogin.co>
+ <162651226617.7.3584131829663375587.10186721@mb.ardentcoding.com>
+ <162651674065.6.7912816287233908759.10188327@simplelogin.co>
+ <162651809235.7.7061042874033963922.10188873@mb.ardentcoding.com>
+ <162651892663.6.17938009695497100557.10189169@simplelogin.co>
+ <CQeY09U34m7SrT6nTAlkSQrbLJtmyKF1tDfuGDtKUkwJqujMI_nZU4MpGiU4F_Q1U3Lk1aWD1mFCT5SlsOsOcILWECflIw7EhVQTQpy_1Ts=@email.ardentcoding.com>
+ <162658599956.8.1295537648062034245.10216359@mb.ardentcoding.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Read time tree block corruption detected
+Message-ID: <30ece5d9-9dd0-412f-1731-eaadbedd0bb4@gmx.com>
+Date:   Sun, 18 Jul 2021 15:15:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <162658599956.8.1295537648062034245.10216359@mb.ardentcoding.com>
+Content-Type: multipart/mixed;
+ boundary="------------F94AF19584F05A356D4F42E6"
+Content-Language: en-US
+X-Provags-ID: V03:K1:UtuNOiGcjZ8YgtqftbNYSfhQMlppFM+x3mi5XqBFxXlYqAhS/i8
+ QvbYm/quAKsF+8B9N9Fu9+E/R3gQDDEIOkC/bkkMRhVZglIyxEMJn9byP4GkBcc1B0wKm8g
+ DpmzXTFfghtrwyIsDtJnwPqC/Y52nbUOykdlxYPpjbiZi9ph//3N4Ym4v4W6b3eFhBKvvH4
+ g9xQxeVNjE7tKJ+OMCW7A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Jj5F9SxtYzg=:pHWLyNl37xzuU2AV6Fyijk
+ ZBlNvoxnnDbjyZYzPQz3WtnWDhTpQFXLFIzbT4jvWvHQ3n0mrz3hn/550WCtIQJwIxSb0tDPF
+ JI1owj6EZEYgFXrxVVWUtyi+t5eir4uWocHUJJ/41hheHmy3wWyubcAOKL259EzhkhE54WcOA
+ f+chkUWcAfiZQumKYr9olc53St5zQ87dNQIDuYLs07Dmzr2Jq6VJxBAG3pRjTr9n0xKQBhQcZ
+ b2QHF1t1EBwWrpxrum8M29NaXZcJIHb+INeUP5RoiqDLg4MASg4iinRQ1p0T0RkGntql8Of9K
+ TWSzcL6B+olG1dcwXaTytZT1OVy9CKjbmab8oliGN0H5bvI2Q4TKr8lB87vaG48LmAfzyrgJM
+ u1Ns+oF9o1cMbnIrYX4ZcDSExVlILaDiSdNAodugScE8prLu+A8F7mOTGrlOGf4RJCoqfmXXb
+ 9BQ8iWgqVwRz9nSCg3gQfzT4KWuemyXrCLpUxE1v3i3sU6Q3GY0VOtxafHKC/wWwUsx9aRcGI
+ mt11oBTDC+r/jgvfPHO1Gnz3MPiXK1TwCZVahEPgQ3x4a8eYbt/7I7ep5ucKTRrsdaWbZx1fd
+ oN8KRbYQXpbAUhk+DmuQFXhPf9PUaIghnknZY3G4T/xFxjkUaAf40wnVYWD/dXnHFoXZm9XZ8
+ mlsh1DlTT5oMHbiXtCNx3FPbMdKG+WIQbjvVn4SvgumRbibGt87GhbeXTIbvsaDOAZX5p6c96
+ a/ldTvDN+NE49m/679+Zzt1HqRCWYjdTKFv48sjHQfQs1jt6Hqi6PcpOUcJnTKgXGxd5vhVfD
+ 1AUysHQYLel0OJZwaInGLgHxc5KJpqvic9apzXzxhxogHx1qkTuxrg2BmhOZqaub5OVAfo5lb
+ T9XGB0/TX1GBzS8DZ7TVac/j0fVEHxDKh1OnslgFWTUQZqo0stfuBRsFxFkWK5HPN2+GC5uny
+ 6s0LBQNm7diebhi6rfRPqPgA29smk318XatP2/KePSDkdPyYJsfSYw0oTqjmiIds6bLLqfcrB
+ KDgwQY7TlGlpVAYCKE5Ge5sx6CMWf4E585q6rpcsVh3H02WalQS9KYeTq5rvCtoVczLKN2fMg
+ ARR4On7C81iEQ5S35Zz6rp+OClXHqaqi5rGhEB7rwwxQ3HD89B1gAEZrg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch adds an subcommand in inspect-internal. It dumps file extents of
-the file that user provided. It helps to show the internal information
-about file extents comprise the file.
+This is a multi-part message in MIME format.
+--------------F94AF19584F05A356D4F42E6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
----
- Makefile                         |   2 +-
- cmds/commands.h                  |   2 +-
- cmds/inspect-dump-file-extents.c | 134 +++++++++++++++++++++++++++++++
- cmds/inspect.c                   |   1 +
- 4 files changed, 137 insertions(+), 2 deletions(-)
- create mode 100644 cmds/inspect-dump-file-extents.c
 
-diff --git a/Makefile b/Makefile
-index a1cc457b..911e16de 100644
---- a/Makefile
-+++ b/Makefile
-@@ -156,7 +156,7 @@ cmds_objects = cmds/subvolume.o cmds/filesystem.o cmds/device.o cmds/scrub.o \
- 	       cmds/restore.o cmds/rescue.o cmds/rescue-chunk-recover.o \
- 	       cmds/rescue-super-recover.o \
- 	       cmds/property.o cmds/filesystem-usage.o cmds/inspect-dump-tree.o \
--	       cmds/inspect-dump-super.o cmds/inspect-tree-stats.o cmds/filesystem-du.o \
-+	       cmds/inspect-dump-super.o cmds/inspect-tree-stats.o cmds/inspect-dump-file-extents.o cmds/filesystem-du.o \
- 	       mkfs/common.o check/mode-common.o check/mode-lowmem.o
- libbtrfs_objects = common/send-stream.o common/send-utils.o kernel-lib/rbtree.o btrfs-list.o \
- 		   kernel-lib/radix-tree.o common/extent-cache.o kernel-shared/extent_io.o \
-diff --git a/cmds/commands.h b/cmds/commands.h
-index 8fa85d6c..55de248e 100644
---- a/cmds/commands.h
-+++ b/cmds/commands.h
-@@ -154,5 +154,5 @@ DECLARE_COMMAND(select_super);
- DECLARE_COMMAND(dump_super);
- DECLARE_COMMAND(debug_tree);
- DECLARE_COMMAND(rescue);
--
-+DECLARE_COMMAND(inspect_dump_file_extents);
- #endif
-diff --git a/cmds/inspect-dump-file-extents.c b/cmds/inspect-dump-file-extents.c
-new file mode 100644
-index 00000000..5e5bc6f7
---- /dev/null
-+++ b/cmds/inspect-dump-file-extents.c
-@@ -0,0 +1,134 @@
-+/*
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public
-+ * License v2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public
-+ * License along with this program; if not, write to the
-+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-+ * Boston, MA 021110-1307, USA.
-+ */
-+
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+
-+#include <sys/ioctl.h>
-+
-+#include "common/utils.h"
-+#include "cmds/commands.h"
-+#include "kernel-shared/print-tree.h"
-+
-+static const char * const cmd_inspect_dump_file_extents_usage[] = {
-+	"btrfs inspect-internal dump-extent path",
-+	"Dump file extent in a textual form",
-+	NULL
-+};
-+
-+static int cmd_inspect_dump_file_extents(const struct cmd_struct *cmd,
-+										 int argc, char **argv)
-+{
-+	int fd;
-+	struct stat statbuf;
-+	struct btrfs_ioctl_ino_lookup_args lookup;
-+	struct btrfs_ioctl_search_args args;
-+	struct btrfs_ioctl_search_key *sk = &args.key;
-+	struct btrfs_file_extent_item *extent_item;
-+	struct btrfs_ioctl_search_header *header;
-+	u64 buf_off;
-+	u64 len;
-+	u64 start;
-+	u64 disk_bytenr;
-+	u64 disk_num_bytes;
-+	u64 offset;
-+	int ret;
-+	int i;
-+	char compress_str[BTRFS_COMPRESS_STR_LEN];
-+
-+	fd = open(argv[optind], O_RDONLY);
-+	if (fd < 0) {
-+		error("cannot open %s: %m", argv[optind]);
-+		ret = 1;
-+		goto out;
-+	}
-+
-+	if (fstat(fd, &statbuf) < 0) {
-+		error("failed to fstat %s: %m", argv[optind]);
-+		ret = 1;
-+		goto out;
-+	}
-+
-+	lookup.treeid = 0;
-+	lookup.objectid = BTRFS_FIRST_FREE_OBJECTID;
-+
-+	if (ioctl(fd, BTRFS_IOC_INO_LOOKUP, &lookup) < 0) {
-+		error("failed to lookup inode %s: %m", argv[optind]);
-+		ret = 1;
-+		goto out;
-+	}
-+
-+	sk->tree_id = lookup.treeid;
-+	sk->min_objectid = statbuf.st_ino;
-+	sk->max_objectid = statbuf.st_ino;
-+	sk->min_offset = 0;
-+	sk->max_offset = UINT64_MAX;
-+	sk->min_transid = 0;
-+	sk->max_transid = UINT64_MAX;
-+	sk->min_type = sk->max_type = BTRFS_EXTENT_DATA_KEY;
-+	sk->nr_items = UINT32_MAX;
-+
-+again:
-+	if (ioctl(fd, BTRFS_IOC_TREE_SEARCH, &args)) {
-+		error("failed to search tree ioctl %s: %m", argv[optind]);
-+		ret = 1;
-+		goto out;
-+	}
-+
-+	buf_off = 0;
-+	for(i=0; i<sk->nr_items; ++i) {
-+		header = (struct btrfs_ioctl_search_header *)(args.buf + buf_off);
-+
-+		if (btrfs_search_header_type(header) == BTRFS_EXTENT_DATA_KEY) {
-+			extent_item = (struct btrfs_file_extent_item *)(header + 1);
-+			start = btrfs_search_header_offset(header);
-+
-+			printf("type = %s, start = %llu, ",
-+				   btrfs_file_extent_type_to_str(extent_item->type), start);
-+			switch (extent_item->type) {
-+			case BTRFS_FILE_EXTENT_INLINE:
-+				len = le64_to_cpu(extent_item->ram_bytes);
-+				printf("len = %llu\n", len);
-+				break;
-+			case BTRFS_FILE_EXTENT_REG:
-+			case BTRFS_FILE_EXTENT_PREALLOC:
-+				len = le64_to_cpu(extent_item->num_bytes);
-+				disk_bytenr = le64_to_cpu(extent_item->disk_bytenr);
-+				disk_num_bytes = le64_to_cpu(extent_item->disk_num_bytes);
-+				offset = le64_to_cpu(extent_item->offset);
-+				btrfs_compress_type_to_str(extent_item->compression, compress_str);
-+				printf("len = %llu, disk_bytenr = %llu, disk_num_bytes = %llu,"
-+					   " offset = %llu, compression = %s\n",
-+					   len, disk_bytenr, disk_num_bytes, offset, compress_str);
-+
-+				break;
-+			}
-+
-+		}
-+		buf_off += sizeof(*header) + btrfs_search_header_len(header);
-+	}
-+	if (sk->nr_items > 512) {
-+		sk->nr_items = UINT32_MAX;
-+		sk->min_offset = start + 1;
-+		goto again;
-+	}
-+	ret = 0;
-+out:
-+	close(fd);
-+	return ret;
-+}
-+DEFINE_SIMPLE_COMMAND(inspect_dump_file_extents, "dump-file-extents");
-diff --git a/cmds/inspect.c b/cmds/inspect.c
-index 2ef5f4b6..dfb0e27b 100644
---- a/cmds/inspect.c
-+++ b/cmds/inspect.c
-@@ -696,6 +696,7 @@ static const struct cmd_group inspect_cmd_group = {
- 		&cmd_struct_inspect_dump_tree,
- 		&cmd_struct_inspect_dump_super,
- 		&cmd_struct_inspect_tree_stats,
-+		&cmd_struct_inspect_dump_file_extents,
- 		NULL
- 	}
- };
--- 
-2.25.1
 
+On 2021/7/18 =E4=B8=8B=E5=8D=881:26, pepperpoint@mb.ardentcoding.com wrote=
+:
+> Hi Qu,
+>
+> May I know if there are any leads on this? What should I do for now?
+
+Sorry for the late reply.
+
+With the image dump, it's much easier to find what's going wrong.
+
+- About root 363
+   It's an orphan root, thus user can't access it directly.
+
+   Furthermore, it's being dropped, thus "btrfs ins dump-tree -t 363"
+   reports transid error, as part of the tree has already been dropped,
+   and this is expected.
+
+   So far your fs is still OK, except that reported error.
+
+- About the offending tree block
+   The offending tree block only belongs to the delete subvolume 363,
+   thus it should be delete soon.
+
+   But unfortunately due to the corrupted content, it's unable to be
+   deleted.
+
+   For now, if you can re-compile btrfs module, we can workaround the
+   problem by temporarily disable read-time tree-checker so that the
+   deletion can continue, and after the root 363 get fully deleted, the
+   problem should be gone.
+
+   Or you can use older kernel, any kernel <=3D v5.1 should not have the
+   enhanced check, thus can continue with the subvolume deletion.
+
+   If you want to go through the re-compile path, the needed diff is
+   attached
+
+Thanks,
+Qu
+>
+> Regards,
+> Lester
+>
+> =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original=
+ Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
+>
+> On Saturday, July 17th, 2021 at 8:51 PM, pepperpoint@mb.ardentcoding.com=
+ wrote:
+>
+>> Hi Qu,
+>>
+>> I run btrfs ins dump-tree -t 363 unmounted but the same error appears. =
+Rerunning btrfs check does not show any error.
+>>
+>> Regards,
+>>
+>> Lester
+>>
+>> =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Origina=
+l Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
+>>
+>> On Saturday, July 17th, 2021 at 6:48 PM, Qu Wenruo - quwenruo.btrfs@gmx=
+.com wrote:
+>>
+>>> On 2021/7/17 =E4=B8=8B=E5=8D=886:34, pepperpoint@mb.ardentcoding.com w=
+rote:
+>>>
+>>>> Hi Qu,
+>>>>
+>>>> Unfortunately I cannot find subvolume 363
+>>>>
+>>>> btrfs subvolume list /run/media/root
+>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>>
+>>>> ID 361 gen 1814826 top level 584 path @/live/snapshot
+>>>>
+>>>> ID 364 gen 1814414 top level 5 path @vtmp/live/snapshot
+>>>>
+>>>> ID 369 gen 1814414 top level 5 path @vlmachines/live/snapshot
+>>>>
+>>>> ID 493 gen 1814414 top level 5 path @vlportables/live/snapshot
+>>>>
+>>>> ID 579 gen 1814828 top level 5 path @vlog/live/snapshot
+>>>>
+>>>> ID 580 gen 1814414 top level 5 path @vcache/live/snapshot
+>>>>
+>>>> ID 581 gen 1814414 top level 5 path @vlmongodb/live/snapshot
+>>>>
+>>>> ID 582 gen 1814414 top level 5 path @vlmysql/live/snapshot
+>>>>
+>>>> ID 583 gen 1814414 top level 5 path @vspool/live/snapshot
+>>>>
+>>>> ID 584 gen 1814414 top level 5 path @
+>>>>
+>>>> ID 598 gen 1813420 top level 584 path @/4/snapshot
+>>>
+>>> Maybe 363 is some subvolume get deleted and later snapshot of it still
+>>>
+>>> exists.
+>>>
+>>> This will be harder to debug.
+>>>
+>>> Can you take a btrfs-image dump of your filesystem? (needs to be taken
+>>>
+>>> with the fs unmounted).
+>>>
+>>> The dumped image will contain your metadata, including file names and
+>>>
+>>> directory structures, but no data inside those files.
+>>>
+>>> Although btrfs-image has "-s" option to mask the filenames, but
+>>>
+>>> considering the filename in this case is useful to locate the inode, I
+>>>
+>>> guess it's better to take the image without any "-s" option.
+>>>
+>>>> btrfs ins dump-tree -t 363 /dev/dm-0 | grep -A 5 "(286 "
+>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>>
+>>>> parent transid verify failed on 174170742784 wanted 1789655 found 181=
+2621
+>>>>
+>>>> parent transid verify failed on 174170742784 wanted 1789655 found 181=
+2621
+>>>>
+>>>> parent transid verify failed on 174170742784 wanted 1789655 found 181=
+2621
+>>>>
+>>>> Ignoring transid failure
+>>>>
+>>>> ERROR: child eb corrupted: parent bytenr=3D174170738688 item=3D0 pare=
+nt level=3D2 child bytenr=3D174170742784 child level=3D0
+>>>
+>>> This transid mismatch may be a problem when running dump-tree on mount=
+ed
+>>>
+>>> fs, since you mentioned btrfs check reported no error, there shouldn't
+>>>
+>>> be a transid mismatch error.
+>>>
+>>> Anyway, if you can upload the btrfs-image dump, it would be much easie=
+r
+>>>
+>>> for us to debug and find out what's really going.
+>>>
+>>> Thanks,
+>>>
+>>> Qu
+>>>
+>>>> =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Origi=
+nal Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=
+=90
+>>>>
+>>>> On Saturday, July 17th, 2021 at 6:12 PM, Qu Wenruo wqu@suse.com wrote=
+:
+>>>>
+>>>>> On 2021/7/17 =E4=B8=8B=E5=8D=884:57, pepperpoint@mb.ardentcoding.com=
+ wrote:
+>>>>>
+>>>>>> Hi Qu,
+>>>>>>
+>>>>>> I don't know how the directory was created but last month, I used b=
+trfs device add and btrfs device remove to move the filesystem from one pa=
+rtition to another. It failed because of the same error and was advised to=
+ use btrfs replace instead. I don't know if the error also happened before=
+ I move the file system as I don't have any previous logs.
+>>>>>
+>>>>> It definitely happens before you moving the fs.
+>>>>>
+>>>>> As regular dev replacing/add/move only relocates the metadata, but n=
+ot
+>>>>>
+>>>>> touching the fs trees.
+>>>>>
+>>>>>> Here is the result when I search for the inodes you mentioned if it=
+ helps:
+>>>>>>
+>>>>>> find /run/media/root -inum 260 -exec ls -ldi {} \;
+>>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>>>>>>
+>>>>>> 260 -rw-r--r-- 1 root root 36864 Jun 25 06:22 /run/media/root/@vcac=
+he/live/snapshot/app-info/cache/en_US.cache
+>>>>>>
+>>>>>> 260 drwx------ 1 mongodb mongodb 136 Sep 12 2020 /run/media/root/@v=
+lmongodb/live/snapshot/diagnostic.data
+>>>>>>
+>>>>>> 260 -rw-rw---- 1 mysql mysql 50331648 Sep 13 2015 /run/media/root/@=
+vlmysql/live/snapshot/ib_logfile0
+>>>>>>
+>>>>>> 260 -rw-r----- 1 root lp 8641 Mar 5 2014 /run/media/root/@vspool/li=
+ve/snapshot/cups/d00001-001
+>>>>>>
+>>>>>> 260 dr-xr-xr-x 1 root root 0 Sep 13 2013 /run/media/root/@/live/sna=
+pshot/sys
+>>>>>>
+>>>>>> 260 dr-xr-xr-x 1 root root 0 Sep 13 2013 /run/media/root/@/4/snapsh=
+ot/sys
+>>>>>
+>>>>> Since btrfs can have the same inode number inside different subvolum=
+es,
+>>>>>
+>>>>> you may want to limit the search inside subvolume 363.
+>>>>>
+>>>>> "-mount" option of find can do that, you only need to locate subvolu=
+me
+>>>>>
+>>>>> 363 by "btrfs subv list".
+>>>>>
+>>>>> But from these output I guess above two "sys" directory are more pos=
+sible.
+>>>>>
+>>>>> Is there any directory named "blaklight" inside those directory?
+>>>>>
+>>>>>> find /run/media/root -inum 286 -exec ls -ldi {} \;
+>>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+>>>>>>
+>>>>>> 286 -rw-r--r-- 1 root root 96 Aug 16 2015 /run/media/root/@vcache/l=
+ive/snapshot/fontconfig/4b172ca7f111e3cffadc3636415fead9-le64.cache-4
+>>>>>>
+>>>>>> 286 -rw-rw---- 1 mysql mysql 4096 Sep 15 2013 /run/media/root/@vlmy=
+sql/live/snapshot/mysql/columns_priv.MYI
+>>>>>>
+>>>>>> 286 -rw-r-----+ 1 root systemd-journal 16777216 Jul 4 01:14 /run/me=
+dia/root/@vlog/live/snapshot/journal/5098dd7845ae46d3ba1826c68a809a7c/user=
+-1000@fbd9f65d0ea349f6b996716280e6c4dd-00000000002314c5-0005c5cb84a3a438.j=
+ournal
+>>>>>
+>>>>> This is interesting, it means the inode 286 is not accessible.
+>>>>>
+>>>>> It can be some orphan inode, but would you dump subvolume 363 then t=
+ry
+>>>>>
+>>>>> to locate the inode 286?
+>>>>>
+>>>>> One example command would be:
+>>>>>
+>>>>> btrfs ins dump-tree -t 363 <dev> | grep -A 5 "(286 "
+>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+>>>>>
+>>>>> Thanks,
+>>>>>
+>>>>> Qu
+>>>>>
+>>>>>> Directories with pattern /root/@<dir>/live/snapshot/ are subvolumes=
+ and directories with pattern /root/@<dir>/<num>/snapshot/ are snapshots o=
+f live.
+>>>>>>
+>>>>>> =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Ori=
+ginal Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=
+=90
+>>>>>>
+>>>>>> On Saturday, July 17th, 2021 at 4:14 PM, Qu Wenruo quwenruo.btrfs@g=
+mx.com wrote:
+>>>>>>
+>>>>>>> On 2021/7/17 =E4=B8=8B=E5=8D=883:51, pepperpoint@mb.ardentcoding.c=
+om wrote:
+>>>>>>>
+>>>>>>>> Hi Qu,
+>>>>>>>>
+>>>>>>>> Please see below for the dump.
+>>>>>>>>
+>>>>>>>> btrfs-progs v5.12.1
+>>>>>>>>
+>>>>>>>> leaf 174113599488 items 18 free space 2008 generation 1330906 own=
+er 363
+>>>>>>>>
+>>>>>>>> leaf 174113599488 flags 0x1(WRITTEN) backref revision 1
+>>>>>>>>
+>>>>>>>> fs uuid a7d327c4-8594-4116-a6f8-8aa2a4162063
+>>>>>>>>
+>>>>>>>> chunk uuid f885f49e-14a0-4c80-9c12-c2302b9a0229
+>>>>>>>>
+>>>>>>>> item 0 key (5471 INODE_ITEM 0) itemoff 3835 itemsize 160
+>>>>>>>>
+>>>>>>>> generation 2063 transid 27726 size 40 nbytes 40
+>>>>>>>>
+>>>>>>>> block group 0 mode 100600 links 1 uid 0 gid 100 rdev 0
+>>>>>>>>
+>>>>>>>> sequence 1501 flags 0x0(none)
+>>>>>>>>
+>>>>>>>> atime 1386484844.468769570 (2013-12-08 14:40:44)
+>>>>>>>>
+>>>>>>>> ctime 1386484844.468769570 (2013-12-08 14:40:44)
+>>>>>>>>
+>>>>>>>> mtime 1386484844.468769570 (2013-12-08 14:40:44)
+>>>>>>>>
+>>>>>>>> otime 0.0 (1970-01-01 08:00:00)
+>>>>>>>>
+>>>>>>>> item 1 key (5471 INODE_REF 4399) itemoff 3824 itemsize 11
+>>>>>>>>
+>>>>>>>> index 12 namelen 1 name: 8
+>>>>>>>>
+>>>>>>>> item 2 key (5471 EXTENT_DATA 0) itemoff 3763 itemsize 61
+>>>>>>>>
+>>>>>>>> generation 27726 type 0 (inline)
+>>>>>>>>
+>>>>>>>> inline extent data size 40 ram_bytes 40 compression 0 (none)
+>>>>>>>>
+>>>>>>>> item 3 key (5645 INODE_ITEM 0) itemoff 3603 itemsize 160
+>>>>>>>>
+>>>>>>>> generation 2542 transid 61261 size 40 nbytes 40
+>>>>>>>>
+>>>>>>>> block group 0 mode 100600 links 1 uid 0 gid 100 rdev 0
+>>>>>>>>
+>>>>>>>> sequence 24769 flags 0x0(none)
+>>>>>>>>
+>>>>>>>> atime 1394335806.351857522 (2014-03-09 11:30:06)
+>>>>>>>>
+>>>>>>>> ctime 1394335827.344389955 (2014-03-09 11:30:27)
+>>>>>>>>
+>>>>>>>> mtime 1394335827.344389955 (2014-03-09 11:30:27)
+>>>>>>>>
+>>>>>>>> otime 0.0 (1970-01-01 08:00:00)
+>>>>>>>>
+>>>>>>>> item 4 key (5645 INODE_REF 4399) itemoff 3592 itemsize 11
+>>>>>>>>
+>>>>>>>> index 13 namelen 1 name: 7
+>>>>>>>>
+>>>>>>>> item 5 key (5645 EXTENT_DATA 0) itemoff 3531 itemsize 61
+>>>>>>>>
+>>>>>>>> generation 61261 type 0 (inline)
+>>>>>>>>
+>>>>>>>> inline extent data size 40 ram_bytes 40 compression 0 (none)
+>>>>>>>>
+>>>>>>>> item 6 key (7222 INODE_ITEM 0) itemoff 3371 itemsize 160
+>>>>>>>>
+>>>>>>>> generation 5754 transid 5767 size 307 nbytes 307
+>>>>>>>>
+>>>>>>>> block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
+>>>>>>>>
+>>>>>>>> sequence 7 flags 0x0(none)
+>>>>>>>>
+>>>>>>>> atime 1379834835.428558020 (2013-09-22 15:27:15)
+>>>>>>>>
+>>>>>>>> ctime 1379834835.428558020 (2013-09-22 15:27:15)
+>>>>>>>>
+>>>>>>>> mtime 1379834835.428558020 (2013-09-22 15:27:15)
+>>>>>>>>
+>>>>>>>> otime 0.0 (1970-01-01 08:00:00)
+>>>>>>>>
+>>>>>>>> item 7 key (7222 INODE_REF 287) itemoff 3344 itemsize 27
+>>>>>>>>
+>>>>>>>> index 6 namelen 17 name: dhcpcd-eth0.lease
+>>>>>>>>
+>>>>>>>> item 8 key (7222 EXTENT_DATA 0) itemoff 3016 itemsize 328
+>>>>>>>>
+>>>>>>>> generation 5767 type 0 (inline)
+>>>>>>>>
+>>>>>>>> inline extent data size 307 ram_bytes 307 compression 0 (none)
+>>>>>>>>
+>>>>>>>> item 9 key (7415 INODE_ITEM 0) itemoff 2856 itemsize 160
+>>>>>>>>
+>>>>>>>> generation 5904 transid 1330906 size 180 nbytes 0
+>>>>>>>>
+>>>>>>>> block group 0 mode 40755 links 2 uid 0 gid 0 rdev 0
+>>>>>>>>
+>>>>>>>> sequence 177 flags 0x0(none)
+>>>>>>>>
+>>>>>>>> atime 1483277713.141980592 (2017-01-01 21:35:13)
+>>>>>>>>
+>>>>>>>> ctime 1563162901.234656246 (2019-07-15 11:55:01)
+>>>>>>>>
+>>>>>>>> mtime 1406534032.158605559 (2014-07-28 15:53:52)
+>>>>>>>>
+>>>>>>>> otime 0.0 (1970-01-01 08:00:00)
+>>>>>>>
+>>>>>>> This inode is indeed a directory.
+>>>>>>>
+>>>>>>> But it has two hard links, which is definitely something unexpecte=
+d.
+>>>>>>>
+>>>>>>> Under Linux we shouldn't have any hardlink for directory, as it wo=
+uld
+>>>>>>>
+>>>>>>> easily lead to loops.
+>>>>>>>
+>>>>>>>> item 10 key (7415 INODE_REF 260) itemoff 2837 itemsize 19
+>>>>>>>>
+>>>>>>>> index 28 namelen 9 name: backlight
+>>>>>>>
+>>>>>>> Its parent inode is 260 in the same root, with the name backlight.
+>>>>>>>
+>>>>>>>> item 11 key (7415 INODE_REF 286) itemoff 2818 itemsize 19
+>>>>>>>>
+>>>>>>>> index 3 namelen 9 name: backlight
+>>>>>>>
+>>>>>>> Another hardlink in inode 286, which is definitely a regular thing=
+.
+>>>>>>>
+>>>>>>> Btrfs-progs lacks the ability to detect such problem, we need to e=
+nhance
+>>>>>>>
+>>>>>>> it first.
+>>>>>>>
+>>>>>>> But do you have any idea how this directory get created?
+>>>>>>>
+>>>>>>> It looks like the content of sysfs.
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>>
+>>>>>>> Qu
+>>>>>>>
+>>>>>>>> item 12 key (7415 DIR_ITEM 3128336373) itemoff 2746 itemsize 72
+>>>>>>>>
+>>>>>>>> location key (120417 INODE_ITEM 0) type FILE
+>>>>>>>>
+>>>>>>>> transid 117279 data_len 0 name_len 42
+>>>>>>>>
+>>>>>>>> name: pci-0000:00:02.0:backlight:intel_backlight
+>>>>>>>>
+>>>>>>>> item 13 key (7415 DIR_ITEM 3218198317) itemoff 2705 itemsize 41
+>>>>>>>>
+>>>>>>>> location key (7487 INODE_ITEM 0) type FILE
+>>>>>>>>
+>>>>>>>> transid 5992 data_len 0 name_len 11
+>>>>>>>>
+>>>>>>>> name: acpi_video0
+>>>>>>>>
+>>>>>>>> item 14 key (7415 DIR_ITEM 3582254411) itemoff 2638 itemsize 67
+>>>>>>>>
+>>>>>>>> location key (55325 INODE_ITEM 0) type FILE
+>>>>>>>>
+>>>>>>>> transid 63351 data_len 0 name_len 37
+>>>>>>>>
+>>>>>>>> name: platform-VPC2004:00:backlight:ideapad
+>>>>>>>>
+>>>>>>>> item 15 key (7415 DIR_INDEX 2) itemoff 2597 itemsize 41
+>>>>>>>>
+>>>>>>>> location key (7487 INODE_ITEM 0) type FILE
+>>>>>>>>
+>>>>>>>> transid 5992 data_len 0 name_len 11
+>>>>>>>>
+>>>>>>>> name: acpi_video0
+>>>>>>>>
+>>>>>>>> item 16 key (7415 DIR_INDEX 4) itemoff 2530 itemsize 67
+>>>>>>>>
+>>>>>>>> location key (55325 INODE_ITEM 0) type FILE
+>>>>>>>>
+>>>>>>>> transid 63351 data_len 0 name_len 37
+>>>>>>>>
+>>>>>>>> name: platform-VPC2004:00:backlight:ideapad
+>>>>>>>>
+>>>>>>>> item 17 key (7415 DIR_INDEX 5) itemoff 2458 itemsize 72
+>>>>>>>>
+>>>>>>>> location key (120417 INODE_ITEM 0) type FILE
+>>>>>>>>
+>>>>>>>> transid 117279 data_len 0 name_len 42
+>>>>>>>>
+>>>>>>>> name: pci-0000:00:02.0:backlight:intel_backlight
+>>>>>>>>
+>>>>>>>> =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 O=
+riginal Message =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=
+=80=90
+>>>>>>>>
+>>>>>>>> On Saturday, July 17th, 2021 at 3:05 PM, Qu Wenruo quwenruo.btrfs=
+@gmx.com wrote:
+>>>>>>>>
+>>>>>>>>> On 2021/7/17 =E4=B8=8A=E5=8D=889:45, pepperpoint@mb.ardentcoding=
+.com wrote:
+>>>>>>>>>
+>>>>>>>>>> Hello,
+>>>>>>>>>>
+>>>>>>>>>> I see this message on dmesg:
+>>>>>>>>>>
+>>>>>>>>>> [ 2452.256756] BTRFS critical (device dm-0): corrupt leaf: root=
+=3D363 block=3D174113599488 slot=3D9 ino=3D7415, invalid nlink: has 2 expe=
+ct no more than 1 for dir
+>>>>>>>>>>
+>>>>>>>>>> [ 2452.256776] BTRFS error (device dm-0): block=3D174113599488 =
+read time tree block corruption detected
+>>>>>>>>>
+>>>>>>>>> Please provide the following dump:
+>>>>>>>>>
+>>>>>>>>> btrfs ins dump-tree -b 174113599488 /dev/dm-0
+>>>>>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>>>>>>>
+>>>>>>>>> Thanks,
+>>>>>>>>>
+>>>>>>>>> Qu
+>>>>>>>>>
+>>>>>>>>>> When I run btrfs scrub and btrfs check, no error was detected.
+>>>>>>>>>>
+>>>>>>>>>> I am running Linux 5.12.15-arch1-1 and btrfs-progs v5.12.1
+>>>>>>>>>>
+>>>>>>>>>> How should I fix this error?
+
+--------------F94AF19584F05A356D4F42E6
+Content-Type: text/plain; charset=UTF-8;
+ name="diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="diff"
+
+ZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL3RyZWUtY2hlY2tlci5jIGIvZnMvYnRyZnMvdHJlZS1j
+aGVja2VyLmMKaW5kZXggYThiMmUwZDJjMDI1Li45OWI0MzA5ZDZkYjYgMTAwNjQ0Ci0tLSBh
+L2ZzL2J0cmZzL3RyZWUtY2hlY2tlci5jCisrKyBiL2ZzL2J0cmZzL3RyZWUtY2hlY2tlci5j
+CkBAIC0xMDQ4LDEyICsxMDQ4LDE0IEBAIHN0YXRpYyBpbnQgY2hlY2tfaW5vZGVfaXRlbShz
+dHJ1Y3QgZXh0ZW50X2J1ZmZlciAqbGVhZiwKIAkJCXJldHVybiAtRVVDTEVBTjsKIAkJfQog
+CX0KKwkvKgogCWlmICh1bmxpa2VseShTX0lTRElSKG1vZGUpICYmIGJ0cmZzX2lub2RlX25s
+aW5rKGxlYWYsIGlpdGVtKSA+IDEpKSB7CiAJCWlub2RlX2l0ZW1fZXJyKGxlYWYsIHNsb3Qs
+CiAJCSAgICAgICAiaW52YWxpZCBubGluazogaGFzICV1IGV4cGVjdCBubyBtb3JlIHRoYW4g
+MSBmb3IgZGlyIiwKIAkJCWJ0cmZzX2lub2RlX25saW5rKGxlYWYsIGlpdGVtKSk7CiAJCXJl
+dHVybiAtRVVDTEVBTjsKIAl9CisJKi8KIAlpZiAodW5saWtlbHkoYnRyZnNfaW5vZGVfZmxh
+Z3MobGVhZiwgaWl0ZW0pICYgfkJUUkZTX0lOT0RFX0ZMQUdfTUFTSykpIHsKIAkJaW5vZGVf
+aXRlbV9lcnIobGVhZiwgc2xvdCwKIAkJCSAgICAgICAidW5rbm93biBmbGFncyBkZXRlY3Rl
+ZDogMHglbGx4IiwK
+--------------F94AF19584F05A356D4F42E6--
