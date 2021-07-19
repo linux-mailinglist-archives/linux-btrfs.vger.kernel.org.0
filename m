@@ -2,116 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDABB3CEB96
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jul 2021 22:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232D93CEFCD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 01:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354798AbhGSRVn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Jul 2021 13:21:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378034AbhGSRRU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Jul 2021 13:17:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7C1761006;
-        Mon, 19 Jul 2021 17:57:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626717476;
-        bh=x8x0pqYFmuT5qMTKwlfFNeYH6hS0owwPMc2CIru3JzA=;
+        id S238282AbhGSWpy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Jul 2021 18:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358128AbhGSTTe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 19 Jul 2021 15:19:34 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31D3C061574;
+        Mon, 19 Jul 2021 12:54:00 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 8EE5161D7; Mon, 19 Jul 2021 16:00:03 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 8EE5161D7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1626724803;
+        bh=b9qm4hKOOAHjad+oiXzxEcT+dT1CknWHrSBYAfAxuic=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YCqMLshCd5VlFt6qY7ow+EPyAxC3nLUM+r5tRv+eN2i1qoVRrynw50Zyvq5YnPyhj
-         Rp/iZj6ZzLGbNcw8ftnZA/xC97yDiPTbdHkI2nBxhYyxLaOQOA3Z5tPN73ax9WEfdF
-         LkyKvxGu95M9mi1/Tp7zOOBw27ndzwluDyrRZ+p0NHS4M+HpEX4aSUik78mg6wHS2n
-         QbeVKL6uOmJjyF0NX/8u32Qi9NXQjQXFzMT/mYryuRft7dA1wuoTqZnzQBD/X5DYzS
-         bK9HN4kZHKdLNxWd1nBU7w4rnf1PVkdgpfUKp3w7ZcdUHpyIXnJmeKU8phfNbRrntH
-         tfZyI3LdWvKAA==
-Date:   Mon, 19 Jul 2021 10:57:56 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
-        cluster-devel@redhat.com
-Subject: Re: RFC: switch iomap to an iterator model
-Message-ID: <20210719175756.GM22357@magnolia>
-References: <20210719103520.495450-1-hch@lst.de>
+        b=J1SSzSUzI9styPoMp40SP4m4ZHLIfWaV5z0IFTOz+2vpWnsE5PEhDXFEMw4IYsv6a
+         dfRcxkoku2k7Pb5VS74LQDmC4HrIsSZWxMeOv41hb8Az7/4A1Q6MK9fKvwShPKOQ77
+         HcRfi0sroeqwC19rSOzdECIWkbDOVEodwkCoukSY=
+Date:   Mon, 19 Jul 2021 16:00:03 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     NeilBrown <neilb@suse.de>, Christoph Hellwig <hch@infradead.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-nfs@vger.kernel.org,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Ulli Horlacher <framstag@rus.uni-stuttgart.de>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] NFSD: handle BTRFS subvolumes better.
+Message-ID: <20210719200003.GA32471@fieldses.org>
+References: <20210613115313.BC59.409509F4@e16-tech.com>
+ <20210310074620.GA2158@tik.uni-stuttgart.de>
+ <162632387205.13764.6196748476850020429@noble.neil.brown.name>
+ <edd94b15-90df-c540-b9aa-8eac89b6713b@toxicpanda.com>
+ <YPBmGknHpFb06fnD@infradead.org>
+ <28bb883d-8d14-f11a-b37f-d8e71118f87f@toxicpanda.com>
+ <YPBvUfCNmv0ElBpo@infradead.org>
+ <e1d9caad-e4c7-09d4-b145-5397b24e1cc7@toxicpanda.com>
+ <162638862766.13764.8566962032225976326@noble.neil.brown.name>
+ <15d0f450-cae5-22bc-eef3-8a973e6dda27@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210719103520.495450-1-hch@lst.de>
+In-Reply-To: <15d0f450-cae5-22bc-eef3-8a973e6dda27@toxicpanda.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 12:34:53PM +0200, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this series replies the existing callback-based iomap_apply to an iter based
-> model.  The prime aim here is to simply the DAX reflink support, which
-> requires iterating through two inodes, something that is rather painful
-> with the apply model.  It also helps to kill an indirect call per segment
-> as-is.  Compared to the earlier patchset from Matthew Wilcox that this
-> series is based upon it does not eliminate all indirect calls, but as the
-> upside it does not change the file systems at all (except for the btrfs
-> and gfs2 hooks which have slight prototype changes).
+On Mon, Jul 19, 2021 at 11:40:28AM -0400, Josef Bacik wrote:
+> Ok so setting aside btrfs for the moment, how does NFS deal with
+> exporting a directory that has multiple other file systems under
+> that tree?  I assume the same sort of problem doesn't occur, but why
+> is that?  Is it because it's a different vfsmount/sb or is there
+> some other magic making this work?  Thanks,
 
-FWIW patches 9-20 look ok to me, modulo the discussion I started in
-patch 8 about defining a distinct type for iomap byte lengths instead of
-the combination of int/ssize_t/u64 that we use now.
+There are two main ways an NFS client can look up a file: by name or by
+filehandle.  The former's the normal filesystem directory lookup that
+we're used to.  If the name refers to a mountpoint, the server can cross
+into the mounted filesystem like anyone else.
 
-> This passes basic testing on XFS for block based file systems.  The DAX
-> changes are entirely untested as I haven't managed to get pmem work in
-> recent qemu.
+It's the lookup by filehandle that's interesting.  Typically the
+filehandle includes a UUID and an inode number.  The server looks up the
+UUID with some help from mountd, and that gives a superblock that nfsd
+can use for the inode lookup.
 
-This gets increasingly difficult as time goes by.
+As Neil says, mountd does that basically by searching among mounted
+filesystems for one with that uuid.
 
-Right now I have the following bits of libvirt xml in the vm
-definitions:
+So if you wanted to be able to handle a uuid for a filesystem that's not
+even mounted yet, you'd need some new mechanism to look up such uuids.
 
-  <maxMemory slots='32' unit='KiB'>1073741824</maxMemory>
-  <devices>
-    <memory model='nvdimm' access='shared'>
-      <source>
-        <path>/run/g.mem</path>
-      </source>
-      <target>
-        <size unit='KiB'>10487808</size>
-        <node>0</node>
-      </target>
-      <address type='dimm' slot='0'/>
-    </memory>
-  </devices>
+That's something we don't currently support but that we'd need to
+support if BTRFS subvolumes were automounted.  (And it might have other
+uses as well.)
 
-Which seems to translate to:
+But I'm not entirely sure if that answers your question....
 
--machine pc-q35-4.2,accel=kvm,usb=off,vmport=off,dump-guest-core=off,nvdimm=on
--object memory-backend-file,id=memnvdimm0,prealloc=no,mem-path=/run/g.mem,share=yes,size=10739515392,align=128M
--device nvdimm,memdev=memnvdimm0,id=nvdimm0,slot=0,label-size=2M
-
-Evidently something was added to the pmem code(?) that makes it fussy if
-the memory region doesn't align to a 128M boundary or the label isn't
-big enough for ... whatever gets written into them.
-
-The file /run/g.mem is intended to provide 10GB of pmem to the VM, with
-an additional 2M allocated for the label.
-
---D
-
-> Diffstat:
->  b/fs/btrfs/inode.c       |    5 
->  b/fs/buffer.c            |    4 
->  b/fs/dax.c               |  578 ++++++++++++++++++++++-------------------------
->  b/fs/gfs2/bmap.c         |    5 
->  b/fs/internal.h          |    4 
->  b/fs/iomap/Makefile      |    2 
->  b/fs/iomap/buffered-io.c |  344 +++++++++++++--------------
->  b/fs/iomap/direct-io.c   |  162 ++++++-------
->  b/fs/iomap/fiemap.c      |  101 +++-----
->  b/fs/iomap/iter.c        |   74 ++++++
->  b/fs/iomap/seek.c        |   88 +++----
->  b/fs/iomap/swapfile.c    |   38 +--
->  b/fs/iomap/trace.h       |   35 +-
->  b/include/linux/iomap.h  |   73 ++++-
->  fs/iomap/apply.c         |   99 --------
->  15 files changed, 777 insertions(+), 835 deletions(-)
+--b.
