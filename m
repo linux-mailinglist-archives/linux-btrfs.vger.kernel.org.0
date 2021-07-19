@@ -2,156 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C146A3CE282
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jul 2021 18:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCDF3CE2CD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jul 2021 18:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240773AbhGSPao (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Jul 2021 11:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
+        id S235649AbhGSPcJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Jul 2021 11:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348949AbhGSPZN (ORCPT
+        with ESMTP id S1348273AbhGSPaN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Jul 2021 11:25:13 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EECC080090
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jul 2021 08:17:38 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id bm6so4284987qkb.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jul 2021 08:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=c/B7bNcE9Phu7269FlyezAjEUnJf0M11TkizgrrFZ/c=;
-        b=a/sTjqQEnCS7lyyy2OXazSYpOjCRbSVrYJ2YSiyIVw1upkLd6aRWClL1jfGmW4H16r
-         LhksSaPDwU0QjDLDlIv8x84KMmWOGlwPaPFi55YR/l2FKurhkXwteiyP9SCNsZaTjqOW
-         37blyGzj/CcpW0qiUpTBcarFCp3J5IIia7/JZTZrWSyfL7SB1dwCwijbIehAuPxmsXwk
-         HlGBZMPdGgb7dqB8El9Ap6uO/SaO9uv48ccnRzfUXchET4jmU70cPYTcd06aeh58sKiI
-         WqMFuWGycYoclwpXRSQ6NuAwrzD1KTtMGnoUNRuSB9AEDMjNeEdpW1Aij7bbIoHHglNG
-         qzjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=c/B7bNcE9Phu7269FlyezAjEUnJf0M11TkizgrrFZ/c=;
-        b=K40ZrGrl3CqjKQRDIlkAnvlH/AZsl8Dmlz4sIBIocOxPE2hbDFcBcPCpNpyaHAt4hY
-         8KPRC9r3uOt25EweN+JbTph0wy6BZglSBfVp+NvI5kElU3UEip0Gcm/wH3I8NzSmhPE/
-         cI2peaE/DeWUWNxBzYcY9WwaZ7EzuGgN6L14M/k9uaiGpdhLdILd8WTf3ziGieV79pkN
-         sVkOTPyDTUxLS6eFRiEwyVLGgWw9+GyKgfPTaRSlDYMSxml/Cq2fBNfhAPuX6r++MWPc
-         d7u7v9bhxc4IcfwmrJ0QmWCokJgHhycYcU6aDOC4SVTPbQ+7ujOs64LZwIUSGmoG2l46
-         4D6g==
-X-Gm-Message-State: AOAM533J/zRsQt6bjJZhyeepOiXug0Ea+j/KdOkUD1+PuW4/LOZNFrZD
-        jZ02SIMO461TKfHUm5Qm9uuOYg==
-X-Google-Smtp-Source: ABdhPJwRpLwx/aqwRX8tty8BvuxvF3O4THl7l9vegQx2FFn4OVc23smYTG/RD8ZrpzFqZMIHrE4Q7A==
-X-Received: by 2002:a05:620a:893:: with SMTP id b19mr13964751qka.487.1626709496981;
-        Mon, 19 Jul 2021 08:44:56 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v4sm3437785qkf.52.2021.07.19.08.44.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 08:44:55 -0700 (PDT)
-Subject: Re: [PATCH RESEND x3 v9 1/9] iov_iter: add copy_struct_from_iter()
-To:     Omar Sandoval <osandov@osandov.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Chinner <dchinner@redhat.com>
-References: <YNOuiMfRO51kLcOE@relinquished.localdomain>
- <YNPnRyasHVq9NF79@casper.infradead.org>
- <YNQi3vgCLVs/ExiK@relinquished.localdomain>
- <CAHk-=whmRQWm_gVek32ekPqBi3zAKOsdK6_6Hx8nHp3H5JAMew@mail.gmail.com>
- <YNTO1T6BEzmG6Uj5@relinquished.localdomain>
- <CAHk-=wi37_ccWmq1EKTduS8ms_=KpyY2LwJV7roD+s=ZkBkjCw@mail.gmail.com>
- <yq1tulmoqxf.fsf@ca-mkp.ca.oracle.com>
- <YNVPp/Pgqshami3U@casper.infradead.org>
- <CAHk-=wgH5pUbrL7CM5v6TWyNzDYpVM9k1qYCEgmY+b3Gx9nEAA@mail.gmail.com>
- <YNZFr7oJj1nkrwJY@relinquished.localdomain>
- <YOXrmbi81Fr14fUV@relinquished.localdomain>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <84e667ce-0a26-3a2f-0fe8-4a56bfa43006@toxicpanda.com>
-Date:   Mon, 19 Jul 2021 11:44:54 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Mon, 19 Jul 2021 11:30:13 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4633DC025476;
+        Mon, 19 Jul 2021 08:22:10 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 8978869C3; Mon, 19 Jul 2021 11:49:07 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 8978869C3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1626709747;
+        bh=ti8Lix6DTW58HSt/kKrKpzmA8A16cLxRx7tBsW4gCcI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q+7IBwT4bCVh4ZkXH6Pfu7BgB2qcElqNyADOVa5xC43rFJ4vsYfF0EWd8NkZG5Kir
+         PFmx/3LYVqkCXmYBT5pdxjKMxDA5uFyKsRrrzm6YkaPz01WWTYcoPOwRc9V/w4xYx4
+         pDg5hxPqnR+UYHhNZOPJO4xeCz88ha+peHkes0Iw=
+Date:   Mon, 19 Jul 2021 11:49:07 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-nfs@vger.kernel.org,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Ulli Horlacher <framstag@rus.uni-stuttgart.de>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] NFSD: handle BTRFS subvolumes better.
+Message-ID: <20210719154907.GA28482@fieldses.org>
+References: <20210613115313.BC59.409509F4@e16-tech.com>
+ <20210310074620.GA2158@tik.uni-stuttgart.de>
+ <162632387205.13764.6196748476850020429@noble.neil.brown.name>
+ <edd94b15-90df-c540-b9aa-8eac89b6713b@toxicpanda.com>
+ <YPBmGknHpFb06fnD@infradead.org>
+ <28bb883d-8d14-f11a-b37f-d8e71118f87f@toxicpanda.com>
+ <YPBvUfCNmv0ElBpo@infradead.org>
+ <e1d9caad-e4c7-09d4-b145-5397b24e1cc7@toxicpanda.com>
+ <162638862766.13764.8566962032225976326@noble.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <YOXrmbi81Fr14fUV@relinquished.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162638862766.13764.8566962032225976326@noble.neil.brown.name>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/7/21 1:59 PM, Omar Sandoval wrote:
-> On Fri, Jun 25, 2021 at 02:07:59PM -0700, Omar Sandoval wrote:
->> On Fri, Jun 25, 2021 at 09:16:15AM -0700, Linus Torvalds wrote:
->>> On Thu, Jun 24, 2021 at 8:38 PM Matthew Wilcox <willy@infradead.org> wrote:
->>>>
->>>> Does it make any kind of sense to talk about doing this for buffered I/O,
->>>> given that we can't generate them for (eg) mmaped files?
->>>
->>> Sure we can.
->>>
->>> Or rather, some people might very well like to do it even for mutable
->>> data. In fact, _especially_ for mutable data.
->>>
->>> You might want to do things like "write out the state I verified just
->>> a moment ago", and if it has changed since then, you *want* the result
->>> to be invalid because the checksums no longer match - in case somebody
->>> else changed the data you used for the state calculation and
->>> verification in the meantime. It's very much why you'd want a separate
->>> checksum in the first place.
->>>
->>> Yeah, yeah,  you can - and people do - just do things like this with a
->>> separate checksum. But if you know that the filesystem has internal
->>> checksumming support _anyway_, you might want to use it, and basically
->>> say "use this checksum, if the data doesn't match when I read it back
->>> I want to get an IO error".
->>>
->>> (The "data doesn't match" _could_ be just due to DRAM corruption etc,
->>> of course. Some people care about things like that. You want
->>> "verified" filesystem contents - it might not be about security, it
->>> might simply be about "I have validated this data and if it's not the
->>> same data any more it's useless and I need to re-generate it").
->>>
->>> Am I a big believer in this model? No. Portability concerns (across
->>> OS'es, across filesystems, even just across backups on the same exact
->>> system) means that even if we did this, very few people would use it.
->>>
->>> People who want this end up using an external checksum instead and do
->>> it outside of and separately from the actual IO, because then they can
->>> do it on existing systems.
->>>
->>> So my argument is not "we want this". My argument is purely that some
->>> buffered filesystem IO case isn't actually any different from the
->>> traditional "I want access to the low-level sector hardware checksum
->>> data". The use cases are basically exactly the same.
->>>
->>> Of course, basically nobody does that hw sector checksum either, for
->>> all the same reasons, even if it's been around for decades.
->>>
->>> So my "checksum metadata interface" is not something I'm a big
->>> believer in, but I really don't think it's really all _that_ different
->>> from the whole "compressed format interface" that this whole patch
->>> series is about. They are pretty much the same thing in many ways.
->>
->> I see the similarity in the sense that we basically want to pass some
->> extra metadata down with the read or write. So then do we want to add
->> preadv3/pwritev3 for encoded I/O now so that checksums can use it in the
->> future? The encoding metadata could go in this "struct io_how", either
->> directly or in a separate structure with a pointer in "struct io_how".
->> It could get messy with compat syscalls.
+On Fri, Jul 16, 2021 at 08:37:07AM +1000, NeilBrown wrote:
+> On Fri, 16 Jul 2021, Josef Bacik wrote:
+> > On 7/15/21 1:24 PM, Christoph Hellwig wrote:
+> > > On Thu, Jul 15, 2021 at 01:11:29PM -0400, Josef Bacik wrote:
+> > >> Because there's no alternative.  We need a way to tell userspace they've
+> > >> wandered into a different inode namespace.  There's no argument that what
+> > >> we're doing is ugly, but there's never been a clear "do X instead".  Just a
+> > >> lot of whinging that btrfs is broken.  This makes userspace happy and is
+> > >> simple and straightforward.  I'm open to alternatives, but there have been 0
+> > >> workable alternatives proposed in the last decade of complaining about it.
+> > > 
+> > > Make sure we cross a vfsmount when crossing the "st_dev" domain so
+> > > that it is properly reported.   Suggested many times and ignored all
+> > > the time beause it requires a bit of work.
+> > > 
+> > 
+> > You keep telling me this but forgetting that I did all this work when you 
+> > originally suggested it.  The problem I ran into was the automount stuff 
+> > requires that we have a completely different superblock for every vfsmount. 
+> > This is fine for things like nfs or samba where the automount literally points 
+> > to a completely different mount, but doesn't work for btrfs where it's on the 
+> > same file system.  If you have 1000 subvolumes and run sync() you're going to 
+> > write the superblock 1000 times for the same file system.  You are going to 
+> > reclaim inodes on the same file system 1000 times.  You are going to reclaim 
+> > dcache on the same filesytem 1000 times.  You are also going to pin 1000 
+> > dentries/inodes into memory whenever you wander into these things because the 
+> > super is going to hold them open.
+> > 
+> > This is not a workable solution.  It's not a matter of simply tying into 
+> > existing infrastructure, we'd have to completely rework how the VFS deals with 
+> > this stuff in order to be reasonable.  And when I brought this up to Al he told 
+> > me I was insane and we absolutely had to have a different SB for every vfsmount, 
+> > which means we can't use vfsmount for this, which means we don't have any other 
+> > options.  Thanks,
 > 
-> Ping. What's the path forward here? At this point, it seems like an
-> ioctl is the path of least resistance.
+> When I was first looking at this, I thought that separate vfsmnts
+> and auto-mounting was the way to go "just like NFS".  NFS still shares a
+> lot between the multiple superblock - certainly it shares the same
+> connection to the server.
 > 
+> But I dropped the idea when Bruce pointed out that nfsd is not set up to
+> export auto-mounted filesystems.
 
-At this point we've been deadlocked on this for too long.  Put it in a btrfs 
-IOCTL, if somebody wants to extend it generically in the future then godspeed, 
-we can tie into that interface after the fact.  Thanks,
+Yes.  I wish it was....  But we'd need some way to look a
+not-currently-mounted filesystem by filehandle:
 
-Josef
+> It needs to be able to find a
+> filesystem given a UUID (extracted from a filehandle), and it does this
+> by walking through the mount table to find one that matches.  So unless
+> all btrfs subvols were mounted all the time (which I wouldn't propose),
+> it would need major work to fix.
+> 
+> NFSv4 describes the fsid as having a "major" and "minor" component.
+> We've never treated these as having an important meaning - just extra
+> bits to encode uniqueness in.  Maybe we should have used "major" for the
+> vfsmnt, and kept "minor" for the subvol.....
+
+So nfsd would use the "major" ID to find the parent export, and then
+btrfs would use the "minor" ID to identify the subvolume?
+
+--b.
+
+> The idea for a single vfsmnt exposing multiple inode-name-spaces does
+> appeal to me.  The "st_dev" is just part of the name, and already a
+> fairly blurry part.  Thanks to bind mounts, multiple mounts can have the
+> same st_dev.  I see no intrinsic reason that a single mount should not
+> have multiple fsids, provided that a coherent picture is provided to
+> userspace which doesn't contain too many surprises.
