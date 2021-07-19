@@ -2,149 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78433CEFD2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 01:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19523CEFDD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 01:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241451AbhGSWq4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Jul 2021 18:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387310AbhGSUDZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Jul 2021 16:03:25 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8279C061762
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jul 2021 13:41:40 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id j7so1033307qtj.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jul 2021 13:44:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=K/VYJ+Xk68wd6Kee797wsO4yZGhHcsOEseb1eKniI5E=;
-        b=icAIiEC9Hjdzwl4/iN2W4fIbyaPW+XYuagG5rjkPI+i8D0WNPnOAdjOVwtcxcKR1ap
-         e9YNSY73/grv5OxSewYGfOz2XE0CXXSUqgLzAxFCOvoKvuwdVoR8iTxGEm8BqYed/bZE
-         kK4J+R3h7bbeuesDSG2BMvqzAGVs7lLORzhFELfk1dyZZAsycLHAJjj9ORA3xDDIrHeF
-         u3+Vu3czlIE8bL69Uz4Hbe9kdRAF6CiD8Bn9evo/GwqptvAEpt4HYL7DGlpx1ktQMh4N
-         lE8QSjuy94uq/5kQ5JkWMogwzTjsNGVjfQ8wwIJ/J/O8zN8+dCZ2J4hrg25oBh+JPobm
-         ydtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K/VYJ+Xk68wd6Kee797wsO4yZGhHcsOEseb1eKniI5E=;
-        b=VUDxDBU/1yLE78yoHaNQYRvS5z+550DwnmxKwQ2xXKt6ooIQEdYRe99CWuryGYPwFR
-         8Hl7/C5at0Whl0tjhOH2xbrc0VqVuOFtUjLtkqoEhXdPzb58CjLQLFpAR6oNYumxmoz/
-         LmNicvoeNDtMlRrnPNbBaiHQVtYOtLpx5yzNEbZm5qEZIWcmExIynEorUIaZJz9Kksbg
-         +2f3Axu0oXHGXO10PT8y6UNky1rNvgliFn8zoYA3B79NzvDmjBKas5RVLD9LpBrOFfq2
-         ArImX0GsU3mI20shBHNpB3CFpd1iLXHocphKE/q4N3lRffZsT0wNQDeY+513nmMPiiQE
-         AoSQ==
-X-Gm-Message-State: AOAM531yJ5FQwUg/LMrk5gvukDAPgcWRrqVEuaLnh4+Ukb/nQWxFxgDa
-        jWOFCcYaW06VHEOS8UuOXXRXw92hAg0rTbVV
-X-Google-Smtp-Source: ABdhPJxIyRSwwTaNqm36/HJu7pLyicPXiR2gHD36Jqo6NsrUZJPq21tZfkF++BUZR+mp5rB/DqFM4w==
-X-Received: by 2002:a05:622a:199d:: with SMTP id u29mr12737620qtc.195.1626727443451;
-        Mon, 19 Jul 2021 13:44:03 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:11c1::1011? ([2620:10d:c091:480::1:e95a])
-        by smtp.gmail.com with ESMTPSA id r139sm3905238qka.40.2021.07.19.13.44.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jul 2021 13:44:02 -0700 (PDT)
-Subject: Re: [PATCH/RFC] NFSD: handle BTRFS subvolumes better.
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     NeilBrown <neilb@suse.de>, Christoph Hellwig <hch@infradead.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, linux-nfs@vger.kernel.org,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Ulli Horlacher <framstag@rus.uni-stuttgart.de>,
-        linux-btrfs@vger.kernel.org
-References: <20210613115313.BC59.409509F4@e16-tech.com>
- <20210310074620.GA2158@tik.uni-stuttgart.de>
- <162632387205.13764.6196748476850020429@noble.neil.brown.name>
- <edd94b15-90df-c540-b9aa-8eac89b6713b@toxicpanda.com>
- <YPBmGknHpFb06fnD@infradead.org>
- <28bb883d-8d14-f11a-b37f-d8e71118f87f@toxicpanda.com>
- <YPBvUfCNmv0ElBpo@infradead.org>
- <e1d9caad-e4c7-09d4-b145-5397b24e1cc7@toxicpanda.com>
- <162638862766.13764.8566962032225976326@noble.neil.brown.name>
- <15d0f450-cae5-22bc-eef3-8a973e6dda27@toxicpanda.com>
- <20210719200003.GA32471@fieldses.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <56bd8b67-a72c-1946-e877-838d9c0c65bd@toxicpanda.com>
-Date:   Mon, 19 Jul 2021 16:44:00 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S239226AbhGSWrT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Jul 2021 18:47:19 -0400
+Received: from mout.gmx.net ([212.227.15.15]:43907 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1376295AbhGSVZj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 19 Jul 2021 17:25:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626732365;
+        bh=m1RoUt6wke5q3c8LSjSBb3+h9rkh9hgn8OjVlKJAwXw=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=AHIwxq7mw5RteWS2WddQIYAfub2eeRCGG4QolciFyIRbrUX/KD64NyKX+ZnWjK1IQ
+         t+Aj47V4WZg0N3zzWFxapNsSEU0PMDYe+8xRaMvLbYmGXZeO8OijIgkfY7tq/kDjBR
+         RgICo7nIyR8E16OUMXIV/T3Bv+R6KEFX0SQwyKnw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MnJlW-1lMKUq16Ae-00jEkQ; Tue, 20
+ Jul 2021 00:06:05 +0200
+Subject: Re: [PATCH RFC] fstests: allow running custom hooks
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>, Qu Wenruo <wqu@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20210719071337.217501-1-wqu@suse.com> <YPWF5iqB0fOYZd9K@mit.edu>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <8588de9d-b4e9-0d4a-4ea4-41a6673ddcd5@gmx.com>
+Date:   Tue, 20 Jul 2021 06:06:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210719200003.GA32471@fieldses.org>
+In-Reply-To: <YPWF5iqB0fOYZd9K@mit.edu>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:E8MYtYTYzMbP9+7FUaLtqglI8z95VQ6jAsk7oDRtoWYTsGZcB6L
+ TpQKzzbfJi0JkY2vw+F/cZIWsRXjpeM+H6VEQQmK5ZRdHuAn7Zm/K2G6nqfJl8kKiAMhZzd
+ e6rfEYJAzLsZv6LBGAJ50JQZsw2Yt/BVuQ3Tr2IpirAQBo29h1ehkVjtZFCu6QEGEIUQi9Y
+ oIO8dveyPsF7JN3lTV0+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9Hx14OjWEy8=:tI4SzxaW3EWqJDNh0esH4g
+ dv1TUAZS/xMFhJKwSO+h9Li3CjadCVnGRd5qzCaN8LRWchwJSnfwT0DQe0yKrIi89bMrd7r1l
+ EGSeyNVw4ndIFdg/MLKGi+w5qfwztRjfpB24Y+BcY25gfCtXnJyCZZi8tN6Fp3jqdJZq0qOg7
+ 8hGlKntSDA2GpH4paSmWG8u3DTDo8yDaFKTgpPTbCO/jEEVLiJXUzYRqgQaJDGjQboyNeqdG6
+ g4MbV+KJYc3hcqx0Ufhel+p1UaoMDKA5lxZLr41//vTxB8AKFi32GovPfyvImXuEm4uk3gnyc
+ 59buUUL96PYLjg5d/DieH3QQyBD7FZQ2SIF7NUOs7S0ldMcvDQlYInkRu3psu6dEApJaAubxQ
+ G01HR+Fs2iuXrZuGffYwcmfcg7uVIQ3aNp8WDyR/44C+xEEyNjE7lYzw0d+A4bqb92+zbQ/ey
+ 55yDTGNEYu1u1rp48qPUwHCu5EVIyYSG7O2owWVYNuQgJdLtPJppD2nyMaJpBjxsvgFBhDCo5
+ IkcRdjYNsr4yeFiNWBiizWokag8w0a2Z0gMrMDLrrA4sxYge42KFgbNb6vtY6xwv/BNIlNCM0
+ Mlmy5rByehRho0t5Z7MO/RwooPRbDlxz3F6P+EokbVhCXgv6zQc7KTD/jl+nZ4UuCxOH7DJyl
+ MX4r2hocoFoJRpQutccsOYSvY6iTuC8zgtVLKa9ptzDHTg/6Ez2jslovTqZRlAFbi4NYCG3+2
+ KG2A+3tZpQnWLeMhs9YmwKWayfFxStMUKTgpOw0Ih4NrzfJrUGFd544J9NeLoUuikokiw+1Br
+ NKmoEc0dP3VQJYqDa2Sde3AFZDMKwrCkKO4IpJnbUPSlftwyAFVnw2+uwxJaAUrjuUVrquZc6
+ 37WOtNfBIhQ3LL6DfR035sgbPcdhbohnhRs1VXrN0Voz040NKA8vUd203ngISW5zMbqDG3qHs
+ Mnjk0/Sfg1xtlTteCUMw1w1SdedNIVBA6o4Iz4l4O6exdh1mXIQCnq0XvlHBFR2B1rhU2kczN
+ J16Z+20d/Uf5cZIU2UNeifbXkGpJxwmueFoGhUVIQslOhgAhi0DApMkU2T73c6mVCzFcdwxfK
+ mlJYNUVaVKx/1U7Z1DlD3Mibvb9iL5PhNZNZVIzNcs8D0kYq60gG7HidA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/19/21 4:00 PM, J. Bruce Fields wrote:
-> On Mon, Jul 19, 2021 at 11:40:28AM -0400, Josef Bacik wrote:
->> Ok so setting aside btrfs for the moment, how does NFS deal with
->> exporting a directory that has multiple other file systems under
->> that tree?  I assume the same sort of problem doesn't occur, but why
->> is that?  Is it because it's a different vfsmount/sb or is there
->> some other magic making this work?  Thanks,
-> 
-> There are two main ways an NFS client can look up a file: by name or by
-> filehandle.  The former's the normal filesystem directory lookup that
-> we're used to.  If the name refers to a mountpoint, the server can cross
-> into the mounted filesystem like anyone else.
-> 
-> It's the lookup by filehandle that's interesting.  Typically the
-> filehandle includes a UUID and an inode number.  The server looks up the
-> UUID with some help from mountd, and that gives a superblock that nfsd
-> can use for the inode lookup.
-> 
-> As Neil says, mountd does that basically by searching among mounted
-> filesystems for one with that uuid.
-> 
-> So if you wanted to be able to handle a uuid for a filesystem that's not
-> even mounted yet, you'd need some new mechanism to look up such uuids.
-> 
-> That's something we don't currently support but that we'd need to
-> support if BTRFS subvolumes were automounted.  (And it might have other
-> uses as well.)
-> 
-> But I'm not entirely sure if that answers your question....
-> 
 
-Right, because btrfs handles the filehandles ourselves properly with the 
-export_operations and we encode the subvolume id's into those things to make 
-sure we can always do the proper lookup.
 
-I suppose the real problem is that NFS is exposing the inode->i_ino to the 
-client without understanding that it's on a different subvolume.
+On 2021/7/19 =E4=B8=8B=E5=8D=8810:02, Theodore Y. Ts'o wrote:
+> On Mon, Jul 19, 2021 at 03:13:37PM +0800, Qu Wenruo wrote:
+>> This patch will allow fstests to run custom hooks before and after each
+>> test case.
+>
+> Nice!   This is better than what I had been doing which was to set:
+>
+> export LOGGER_PROG=3D/usr/local/lib/gce-logger
+>
+> ... and then parse the passed message to be logged for "run xfstests
+> $seqnum", and which only worked to hook the start of each test.
+>
+>> diff --git a/README.hooks b/README.hooks
+>> new file mode 100644
+>> index 00000000..be92a7d7
+>> --- /dev/null
+>> +++ b/README.hooks
+>> @@ -0,0 +1,72 @@
+>> +To run extra commands before and after each test case, there is the
+>> +'hooks/start.hook' and 'hooks/end.hook' files for such usage.
+>> +
+>> +Some notes for those two hooks:
+>> +
+>> +- Both hook files needs to be executable
+>> +  Or they will just be ignored
+>
+> Minor nit: I'd reword this as:
+>
+> - The hook script must be executable or it
+>    will be ignored.
+>
+>> diff --git a/check b/check
+>> index bb7e030c..f24906f5 100755
+>> --- a/check
+>> +++ b/check
+>> @@ -846,6 +846,10 @@ function run_section()
+>>   		# to be reported for each test
+>>   		(echo 1 > $DEBUGFS_MNT/clear_warn_once) > /dev/null 2>&1
+>>
+>> +		# Remove previous $seqres.full before start hook
+>> +		rm -f $seqres.full
+>> +
+>> +		_run_start_hook
+>
+> I wonder if it would be useful to have the start hook have a way to
+> signal that a particular test should be skipped.  This might allow for
+> various programatic tests that could be inserted by the test runner
+> framework.
 
-Our trick of simply allocating an anonymous bdev every time you wander into a 
-subvolume to get a unique st_dev doesn't help you guys because you are looking 
-for mounted file systems.
+Currently it's impossible, as the design is to prevent any hook to
+interrupt the test.
 
-I'm not concerned about the FH case, because for that it's already been crafted 
-by btrfs and we know what to do with it, so it's always going to be correct.
+But if we allow test case to return its result, then it should be not
+hard to make us to skip test cases using start hook.
 
-The actual problem is that we can do
+I can enhance the next version to do that, but that also means any error
+inside the hook will bring down the whole test run.
 
-getattr(/file1)
-getattr(/snap/file1)
+Not sure the trade-off is worthy then.
 
-on the client and the NFS server just blind sends i_ino with the same fsid 
-because / and /snap are the same fsid.
-
-Which brings us back to what HCH is complaining about.  In his view if we had a 
-vfsmount for /snap then you would know that it was a different fs.  However that 
-would only actually work if we generated a completely different superblock and 
-thus gave /snap a unique fsid, right?
-
-If we did the automount thing, and the NFS server went down and came back up and 
-got a getattr(/snap/file1) from a previously generated FH it would still work 
-right, because it would come into the export_operations with the format that 
-btrfs is expecting and it would be able to do the lookup.  This FH lookup would 
-do the automount magic it needs to and then NFS would have the fsid it needs, 
-correct?  Thanks,
-
-Josef
+Thanks,
+Qu
+>
+> (E.g., this is the 5.4 kernel, we know this test is guaranteed to
+> fail, so tell check to skip the test)
+>
+> 	      	      	       	    	- Ted
+>
