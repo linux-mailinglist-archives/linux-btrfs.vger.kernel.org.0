@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DC93CFDF2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 17:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926F73CFDC2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 17:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242138AbhGTO7b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jul 2021 10:59:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34734 "EHLO mail.kernel.org"
+        id S242156AbhGTO7h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jul 2021 10:59:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240246AbhGTOYs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jul 2021 10:24:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35B20610FB
+        id S240271AbhGTOYt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 20 Jul 2021 10:24:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 050F461221
         for <linux-btrfs@vger.kernel.org>; Tue, 20 Jul 2021 15:05:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626793526;
-        bh=pguSaTqu9tEYtHPhK6dRxL+gCaAPXJYFXjJnpx45tCc=;
+        s=k20201202; t=1626793527;
+        bh=I5Xow7BTADsKyYvX7t1/vErMeHW8CIheIVL1pIfIImA=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=HCZwNRcXE0CLkWjYon+dqhqjpZXux4CtgPIFXjMbyy49K5LGSgJv3cbWudX41olLK
-         YUI3udQAsRRvNVthWk1WxAe4yjqmFBfjbU9gbaf+cJPC6G9O8NVoV097B08O1WmrSW
-         oAjUXuXTlLhnwmhIaQEFHndX7SP77u0XuJqajv6pZAXW/GZi5Q8WnDbSaQ25EoSdjS
-         FKyp+dktawiFm6Dmr8onfh31sqchEu3ZaQjOEr7xic1sPIkwgFZQb0cEjazhk3QVIj
-         n4lCuWGUJ0XNab2K4M5SofOEff8B3xJZi9cxKYfFhQjRnnRGy+DRHK7CX/4KXE1wdv
-         KfdC4jPyzluKA==
+        b=sSET+3xA9+ZdSbhqoNAitNyxJBbh/2nvNji+2D/3ebR+sOmnfwXUZLa9T+sYzgpJP
+         K/Z7e8zV680cP1Br8I0BM1R2NW22QMNkdIZ8Ii47SkzARTfVjkO56lpSUU/TqMkh+D
+         nG/6ypQ6mGK46MVQq/IbtpqlI2opc1UqTp6dpN5C41XbJ3+9MACs3tlK1/8ssmsBfN
+         HoqDWaDrlWemyOy4HzBq9IbP4eD0US57jgNSuK1mO7FAcc0ekRPNeCE6m+sGWlmMUW
+         IJQzz3kiNV8L8rpnqHzx51Ym5iypmValR9c2k4N5SrYKU8t8tPfjno4GaV9gdYUFqI
+         ZFM05uSScLKxg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: improve the batch insertion of delayed items
-Date:   Tue, 20 Jul 2021 16:05:22 +0100
-Message-Id: <cea652dbf5f4a6af09eee673d65f55120e6d8e65.1626791739.git.fdmanana@suse.com>
+Subject: [PATCH 2/2] btrfs: stop doing GFP_KERNEL memory allocations in the ref verify tool
+Date:   Tue, 20 Jul 2021 16:05:23 +0100
+Message-Id: <a3c49375c499e32d265feea5895d59da78db1c89.1626791739.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1626791739.git.fdmanana@suse.com>
 References: <cover.1626791739.git.fdmanana@suse.com>
@@ -39,368 +39,167 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When we insert the delayed items of an inode, which corresponds to the
-directory index keys for a directory (key type BTRFS_DIR_INDEX_KEY), we
-do the following:
+In commit 351cbf6e4410e7 ("btrfs: use nofs allocations for running delayed
+items") we wrapped all btree updates when running delayed items with
+memalloc_nofs_save() and memalloc_nofs_restore(), due to a lock inversion
+detected by lockdep involving reclaim and the mutex of delayed nodes.
 
-1) Pick the first delayed item from the rbtree and insert it into the
-   fs/subvolume btree, using btrfs_insert_empty_item() for that;
+The problem is because the ref verify tool does some memory allocations
+with GFP_KERNEL, which can trigger reclaim and reclaim can trigger inode
+eviction, which requires locking the mutex of an inode's delayed node.
+On the other hand the ref verify tool is called when allocating metadata
+extents as part of operations that modify a btree, which is a problem when
+running delayed nodes, where we do btree updates while holding the mutex
+of a delayed node. This is what caused the lockdep warning.
 
-2) Without releasing the path returned by btrfs_insert_empty_item(),
-   keep collecting as many consecutive delayed items from the rbtree
-   as possible, as long as each one's BTRFS_DIR_INDEX_KEY key is the
-   immediate successor of the previously picked item and as long as
-   they fit in the available space of the leaf the path points to;
+Instead of wrapping every btree update when running delayed nodes, change
+the ref verify tool to never do GFP_KERNEL allocations, because:
 
-3) Then insert all the collected items into the leaf;
+1) We get less repeated code, which at the moment does not even have a
+   comment mentioning why we need to setup the NOFS context, which is a
+   recommended good practice as mentioned at
+   Documentation/core-api/gfp_mask-from-fs-io.rst
 
-4) Release the reserve metadata space for each collected item and
-   release each item (implies deleting from the rbtree);
+2) The ref verify tool is something meant only for debugging and not
+   something that should be enabled on non-debug / non-development
+   kernels;
 
-5) Unlock the path.
+3) We may have yet more places outside delayed-inode.c where we have
+   similar problem: doing btree updates while holding some lock and
+   then having the GFP_KERNEL memory allocations, from the ref verify
+   tool, trigger reclaim and trying again to acquire the same lock
+   through the reclaim path.
+   Or we could get more such cases in the future, therefore this change
+   prevents getting into similar cases when using the ref verify tool.
 
-While this is much better than inserting items one by one, it can be
-improved in a few aspects:
-
-1) Instead of adding items based on the remaining free space of the
-   leaf, collect as many items that can fit in a leaf and bulk insert
-   them. This results in less and larger batches, reducing the total
-   amount of time to insert the delayed items. For example when adding
-   100K files to a directory, we ended up creating 1658 batches with
-   very variable sizes ranging from 1 item to 118 items, on a filesystem
-   with a node/leaf size of 16K. After this change, we end up with 839
-   batches, with the vast majority of them having exactly 120 items;
-
-2) We do the search for more items to batch, by iterating the rbtree,
-   while holding a write lock on the leaf;
-
-3) While still holding the leaf locked, we are releasing the reserved
-   metadata for each item and then deleting each item, keeping a write
-   lock on the leaf for longer than necessary. Releasing the delayed items
-   one by one can take a significant amount of time, because deleting
-   them from the rbtree can often be a bit slow when the deletion results
-   in rebalacing the rbtree.
-
-So change this so that we try to create larger batches, with a total
-item size up to the maximum a leaf can support, and by unlocking the leaf
-immediately after inserting the items, releasing the reserved metadata
-space of each item and releasing each item without holding the write lock
-on the leaf.
-
-The following script that runs fs_mark was used to test this change:
-
-  $ cat test.sh
-  #!/bin/bash
-
-  DEV=/dev/nvme0n1
-  MNT=/mnt/nvme0n1
-  MOUNT_OPTIONS="-o ssd"
-  MKFS_OPTIONS="-m single -d single"
-  FILES=1000000
-  THREADS=16
-  FILE_SIZE=0
-
-  echo "performance" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-
-  umount $DEV &> /dev/null
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  OPTS="-S 0 -L 5 -n $FILES -s $FILE_SIZE -t 16"
-  for ((i = 1; i <= $THREADS; i++)); do
-      OPTS="$OPTS -d $MNT/d$i"
-  done
-
-  fs_mark $OPTS
-
-  umount $MNT
-
-It was run on machine with 12 cores, 64G of ram, using a NVMe device and
-using a non-debug kernel config (Debian's default config).
-
-Results before this change:
-
-FSUse%        Count         Size    Files/sec     App Overhead
-     1     16000000            0      76182.1         72223046
-     3     32000000            0      62746.9         80776528
-     5     48000000            0      77029.0         93022381
-     6     64000000            0      73691.6         95251075
-     8     80000000            0      66288.0         85089634
-
-Results after this change:
-
-FSUse%        Count         Size    Files/sec         App Overhead
-     1     16000000            0      79049.5 (+3.7%)     69700824
-     3     32000000            0      65248.9 (+3.9%)     80583693
-     5     48000000            0      77991.4 (+1.2%)     90040908
-     6     64000000            0      75096.8 (+1.9%)     89862241
-     8     80000000            0      66926.8 (+1.0%)     84429169
+Curiously most of the memory allocations done by the ref verify tool
+were already using GFP_NOFS, except a few ones for no apparent reason.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/delayed-inode.c | 212 +++++++++++++++------------------------
- 1 file changed, 79 insertions(+), 133 deletions(-)
+ fs/btrfs/delayed-inode.c | 12 ------------
+ fs/btrfs/ref-verify.c    | 10 +++++-----
+ 2 files changed, 5 insertions(+), 17 deletions(-)
 
 diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 257c1e18abd4..7deb26604a56 100644
+index 7deb26604a56..7a9070a80fe2 100644
 --- a/fs/btrfs/delayed-inode.c
 +++ b/fs/btrfs/delayed-inode.c
-@@ -672,176 +672,122 @@ static void btrfs_delayed_inode_release_metadata(struct btrfs_fs_info *fs_info,
- }
+@@ -6,7 +6,6 @@
  
- /*
-- * This helper will insert some continuous items into the same leaf according
-- * to the free space of the leaf.
-+ * Insert a single delayed item or a batch of delayed items that have consecutive
-+ * keys if they exists.
-  */
--static int btrfs_batch_insert_items(struct btrfs_root *root,
--				    struct btrfs_path *path,
--				    struct btrfs_delayed_item *item)
-+static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
-+				     struct btrfs_root *root,
-+				     struct btrfs_path *path,
-+				     struct btrfs_delayed_item *first_item)
- {
--	struct btrfs_delayed_item *curr, *next;
--	int free_space;
--	int total_size = 0;
--	struct extent_buffer *leaf;
--	char *data_ptr;
--	struct btrfs_key *keys;
--	u32 *data_size;
--	struct list_head head;
--	int slot;
-+	LIST_HEAD(batch);
-+	struct btrfs_delayed_item *curr;
-+	struct btrfs_delayed_item *next;
-+	const int max_size = BTRFS_LEAF_DATA_SIZE(root->fs_info);
-+	int total_size;
+ #include <linux/slab.h>
+ #include <linux/iversion.h>
+-#include <linux/sched/mm.h>
+ #include "misc.h"
+ #include "delayed-inode.h"
+ #include "disk-io.h"
+@@ -686,7 +685,6 @@ static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
+ 	const int max_size = BTRFS_LEAF_DATA_SIZE(root->fs_info);
+ 	int total_size;
  	int nitems;
--	int i;
--	int ret = 0;
--
--	BUG_ON(!path->nodes[0]);
--
--	leaf = path->nodes[0];
--	free_space = btrfs_leaf_free_space(leaf);
--	INIT_LIST_HEAD(&head);
-+	unsigned int nofs_flag;
-+	char *ins_data = NULL;
-+	struct btrfs_key *ins_keys;
-+	u32 *ins_sizes;
-+	int ret;
- 
--	next = item;
--	nitems = 0;
-+	list_add_tail(&first_item->tree_list, &batch);
-+	nitems = 1;
-+	total_size = first_item->data_len + sizeof(struct btrfs_item);
-+	curr = first_item;
- 
--	/*
--	 * count the number of the continuous items that we can insert in batch
--	 */
--	while (total_size + next->data_len + sizeof(struct btrfs_item) <=
--	       free_space) {
--		total_size += next->data_len + sizeof(struct btrfs_item);
--		list_add_tail(&next->tree_list, &head);
--		nitems++;
-+	while (true) {
-+		int next_size;
- 
--		curr = next;
- 		next = __btrfs_next_delayed_item(curr);
--		if (!next)
-+		if (!next || !btrfs_is_continuous_delayed_item(curr, next))
- 			break;
- 
--		if (!btrfs_is_continuous_delayed_item(curr, next))
-+		next_size = next->data_len + sizeof(struct btrfs_item);
-+		if (total_size + next_size > max_size)
- 			break;
--	}
- 
--	if (!nitems) {
--		ret = 0;
--		goto out;
-+		list_add_tail(&next->tree_list, &batch);
-+		nitems++;
-+		total_size += next_size;
-+		curr = next;
- 	}
- 
--	keys = kmalloc_array(nitems, sizeof(struct btrfs_key), GFP_NOFS);
--	if (!keys) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (nitems == 1) {
-+		ins_keys = &first_item->key;
-+		ins_sizes = &first_item->data_len;
-+	} else {
-+		int i = 0;
- 
--	data_size = kmalloc_array(nitems, sizeof(u32), GFP_NOFS);
--	if (!data_size) {
--		ret = -ENOMEM;
--		goto error;
-+		ins_data = kmalloc(nitems * sizeof(u32) +
-+				   nitems * sizeof(struct btrfs_key), GFP_NOFS);
-+		if (!ins_data) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		ins_sizes = (u32 *)ins_data;
-+		ins_keys = (struct btrfs_key *)(ins_data + nitems * sizeof(u32));
-+		list_for_each_entry(curr, &batch, tree_list) {
-+			ins_keys[i] = curr->key;
-+			ins_sizes[i] = curr->data_len;
-+			i++;
-+		}
- 	}
- 
--	/* get keys of all the delayed items */
--	i = 0;
--	list_for_each_entry(next, &head, tree_list) {
--		keys[i] = next->key;
--		data_size[i] = next->data_len;
--		i++;
--	}
-+	nofs_flag = memalloc_nofs_save();
-+	ret = btrfs_insert_empty_items(trans, root, path, ins_keys, ins_sizes,
-+				       nitems);
-+	memalloc_nofs_restore(nofs_flag);
-+	if (ret)
-+		goto out;
- 
--	/* insert the keys of the items */
--	setup_items_for_insert(root, path, keys, data_size, nitems);
-+	list_for_each_entry(curr, &batch, tree_list) {
-+		char *data_ptr;
- 
--	/* insert the dir index items */
--	slot = path->slots[0];
--	list_for_each_entry_safe(curr, next, &head, tree_list) {
--		data_ptr = btrfs_item_ptr(leaf, slot, char);
--		write_extent_buffer(leaf, &curr->data,
--				    (unsigned long)data_ptr,
--				    curr->data_len);
--		slot++;
-+		data_ptr = btrfs_item_ptr(path->nodes[0], path->slots[0], char);
-+		write_extent_buffer(path->nodes[0], &curr->data,
-+				    (unsigned long)data_ptr, curr->data_len);
-+		path->slots[0]++;
-+	}
- 
--		btrfs_delayed_item_release_metadata(root, curr);
-+	/*
-+	 * Now release our path before releasing the delayed items and their
-+	 * metadata reservations, so that we don't block other tasks for more
-+	 * time than needed.
-+	 */
-+	btrfs_release_path(path);
- 
-+	list_for_each_entry_safe(curr, next, &batch, tree_list) {
- 		list_del(&curr->tree_list);
-+		btrfs_delayed_item_release_metadata(root, curr);
- 		btrfs_release_delayed_item(curr);
- 	}
--
--error:
--	kfree(data_size);
--	kfree(keys);
- out:
-+	kfree(ins_data);
- 	return ret;
- }
- 
--/*
-- * This helper can just do simple insertion that needn't extend item for new
-- * data, such as directory name index insertion, inode insertion.
-- */
--static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
--				     struct btrfs_root *root,
--				     struct btrfs_path *path,
--				     struct btrfs_delayed_item *delayed_item)
--{
--	struct extent_buffer *leaf;
 -	unsigned int nofs_flag;
--	char *ptr;
--	int ret;
--
+ 	char *ins_data = NULL;
+ 	struct btrfs_key *ins_keys;
+ 	u32 *ins_sizes;
+@@ -735,10 +733,8 @@ static int btrfs_insert_delayed_item(struct btrfs_trans_handle *trans,
+ 		}
+ 	}
+ 
 -	nofs_flag = memalloc_nofs_save();
--	ret = btrfs_insert_empty_item(trans, root, path, &delayed_item->key,
--				      delayed_item->data_len);
+ 	ret = btrfs_insert_empty_items(trans, root, path, ins_keys, ins_sizes,
+ 				       nitems);
 -	memalloc_nofs_restore(nofs_flag);
--	if (ret < 0 && ret != -EEXIST)
--		return ret;
--
--	leaf = path->nodes[0];
--
--	ptr = btrfs_item_ptr(leaf, path->slots[0], char);
--
--	write_extent_buffer(leaf, delayed_item->data, (unsigned long)ptr,
--			    delayed_item->data_len);
--	btrfs_mark_buffer_dirty(leaf);
--
--	btrfs_delayed_item_release_metadata(root, delayed_item);
--	return 0;
--}
--
--/*
-- * we insert an item first, then if there are some continuous items, we try
-- * to insert those items into the same leaf.
-- */
- static int btrfs_insert_delayed_items(struct btrfs_trans_handle *trans,
- 				      struct btrfs_path *path,
- 				      struct btrfs_root *root,
+ 	if (ret)
+ 		goto out;
+ 
+@@ -860,7 +856,6 @@ static int btrfs_delete_delayed_items(struct btrfs_trans_handle *trans,
  				      struct btrfs_delayed_node *node)
  {
--	struct btrfs_delayed_item *curr, *prev;
+ 	struct btrfs_delayed_item *curr, *prev;
+-	unsigned int nofs_flag;
  	int ret = 0;
  
--do_again:
--	mutex_lock(&node->mutex);
--	curr = __btrfs_first_delayed_insertion_item(node);
--	if (!curr)
--		goto insert_end;
--
--	ret = btrfs_insert_delayed_item(trans, root, path, curr);
--	if (ret < 0) {
--		btrfs_release_path(path);
--		goto insert_end;
--	}
-+	while (ret == 0) {
-+		struct btrfs_delayed_item *curr;
+ do_again:
+@@ -869,9 +864,7 @@ static int btrfs_delete_delayed_items(struct btrfs_trans_handle *trans,
+ 	if (!curr)
+ 		goto delete_fail;
  
--	prev = curr;
--	curr = __btrfs_next_delayed_item(prev);
--	if (curr && btrfs_is_continuous_delayed_item(prev, curr)) {
--		/* insert the continuous items into the same leaf */
--		path->slots[0]++;
--		btrfs_batch_insert_items(root, path, curr);
-+		mutex_lock(&node->mutex);
-+		curr = __btrfs_first_delayed_insertion_item(node);
-+		if (!curr) {
-+			mutex_unlock(&node->mutex);
-+			break;
-+		}
-+		ret = btrfs_insert_delayed_item(trans, root, path, curr);
-+		mutex_unlock(&node->mutex);
- 	}
--	btrfs_release_delayed_item(prev);
--	btrfs_mark_buffer_dirty(path->nodes[0]);
--
--	btrfs_release_path(path);
--	mutex_unlock(&node->mutex);
--	goto do_again;
+-	nofs_flag = memalloc_nofs_save();
+ 	ret = btrfs_search_slot(trans, root, &curr->key, path, -1, 1);
+-	memalloc_nofs_restore(nofs_flag);
+ 	if (ret < 0)
+ 		goto delete_fail;
+ 	else if (ret > 0) {
+@@ -940,7 +933,6 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
+ 	struct btrfs_key key;
+ 	struct btrfs_inode_item *inode_item;
+ 	struct extent_buffer *leaf;
+-	unsigned int nofs_flag;
+ 	int mod;
+ 	int ret;
  
--insert_end:
--	mutex_unlock(&node->mutex);
- 	return ret;
- }
+@@ -953,9 +945,7 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
+ 	else
+ 		mod = 1;
  
+-	nofs_flag = memalloc_nofs_save();
+ 	ret = btrfs_lookup_inode(trans, root, path, &key, mod);
+-	memalloc_nofs_restore(nofs_flag);
+ 	if (ret > 0)
+ 		ret = -ENOENT;
+ 	if (ret < 0)
+@@ -1012,9 +1002,7 @@ static int __btrfs_update_delayed_inode(struct btrfs_trans_handle *trans,
+ 	key.type = BTRFS_INODE_EXTREF_KEY;
+ 	key.offset = -1;
+ 
+-	nofs_flag = memalloc_nofs_save();
+ 	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+-	memalloc_nofs_restore(nofs_flag);
+ 	if (ret < 0)
+ 		goto err_out;
+ 	ASSERT(ret);
+diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+index 8e026de74c44..d2062d5f71dd 100644
+--- a/fs/btrfs/ref-verify.c
++++ b/fs/btrfs/ref-verify.c
+@@ -264,8 +264,8 @@ static struct block_entry *add_block_entry(struct btrfs_fs_info *fs_info,
+ 	struct block_entry *be = NULL, *exist;
+ 	struct root_entry *re = NULL;
+ 
+-	re = kzalloc(sizeof(struct root_entry), GFP_KERNEL);
+-	be = kzalloc(sizeof(struct block_entry), GFP_KERNEL);
++	re = kzalloc(sizeof(struct root_entry), GFP_NOFS);
++	be = kzalloc(sizeof(struct block_entry), GFP_NOFS);
+ 	if (!be || !re) {
+ 		kfree(re);
+ 		kfree(be);
+@@ -313,7 +313,7 @@ static int add_tree_block(struct btrfs_fs_info *fs_info, u64 ref_root,
+ 	struct root_entry *re;
+ 	struct ref_entry *ref = NULL, *exist;
+ 
+-	ref = kmalloc(sizeof(struct ref_entry), GFP_KERNEL);
++	ref = kmalloc(sizeof(struct ref_entry), GFP_NOFS);
+ 	if (!ref)
+ 		return -ENOMEM;
+ 
+@@ -358,7 +358,7 @@ static int add_shared_data_ref(struct btrfs_fs_info *fs_info,
+ 	struct block_entry *be;
+ 	struct ref_entry *ref;
+ 
+-	ref = kzalloc(sizeof(struct ref_entry), GFP_KERNEL);
++	ref = kzalloc(sizeof(struct ref_entry), GFP_NOFS);
+ 	if (!ref)
+ 		return -ENOMEM;
+ 	be = add_block_entry(fs_info, bytenr, num_bytes, 0);
+@@ -393,7 +393,7 @@ static int add_extent_data_ref(struct btrfs_fs_info *fs_info,
+ 	u64 offset = btrfs_extent_data_ref_offset(leaf, dref);
+ 	u32 num_refs = btrfs_extent_data_ref_count(leaf, dref);
+ 
+-	ref = kzalloc(sizeof(struct ref_entry), GFP_KERNEL);
++	ref = kzalloc(sizeof(struct ref_entry), GFP_NOFS);
+ 	if (!ref)
+ 		return -ENOMEM;
+ 	be = add_block_entry(fs_info, bytenr, num_bytes, ref_root);
 -- 
 2.30.2
 
