@@ -2,91 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB523D0136
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 20:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6F73D0450
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jul 2021 00:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhGTRV7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jul 2021 13:21:59 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:59956 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhGTRV4 (ORCPT
+        id S230527AbhGTVaw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jul 2021 17:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231770AbhGTVap (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jul 2021 13:21:56 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4C782202F8;
-        Tue, 20 Jul 2021 18:02:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626804153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=LaU4b0lkV2DAzm547SG3vChDSaDssKW+s40xfvGTod4=;
-        b=uze8pxiESsPp0bWmhu6d6g3efNmV+1EueOfpBROAgjBD0dsa8iXfYNKUQu6M5sMD8Dez/R
-        WChrEaKBEQjnP2caN1xnTn4GoBFMYtpOjlkx/3uwQueYJYRpALT+Tpq9QsSzLhS78d5dmr
-        4s/JMRQe4XKUUirOIPE5eMACbHM0HzM=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 2E28C13B9D;
-        Tue, 20 Jul 2021 18:02:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id TEalObcP92AAVAAAGKfGzw
-        (envelope-from <mpdesouza@suse.com>); Tue, 20 Jul 2021 18:02:31 +0000
-From:   Marcos Paulo de Souza <mpdesouza@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] btrfs: Use NULL in btrfs_search_slot as trans if we only want to search
-Date:   Tue, 20 Jul 2021 15:02:47 -0300
-Message-Id: <20210720180247.16802-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 20 Jul 2021 17:30:45 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E314C0613E0;
+        Tue, 20 Jul 2021 15:10:47 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id CDD006801; Tue, 20 Jul 2021 18:10:44 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org CDD006801
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1626819044;
+        bh=LtQY5pxcSArdGZFknLSBlW9FrCcEI34fvbHFuaQyogg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z/mUlVP4bhdzK/bCfP9BbYrmPf9FswIlx1cglIiLZyW5C9RzXTBYq5Gdwn0nMtQQR
+         g63IIkVYRnrPdSRr43VG0oSuxVUMNHhX/uDzQf1Fe666RFKXGvd4H9T2451nNzaq11
+         1Tfqda1//Qzecw6mQbuQX+KJsTmPCX76mv3yWzh8=
+Date:   Tue, 20 Jul 2021 18:10:44 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, NeilBrown <neilb@suse.de>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-nfs@vger.kernel.org,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Ulli Horlacher <framstag@rus.uni-stuttgart.de>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] NFSD: handle BTRFS subvolumes better.
+Message-ID: <20210720221044.GD19507@fieldses.org>
+References: <20210613115313.BC59.409509F4@e16-tech.com>
+ <20210310074620.GA2158@tik.uni-stuttgart.de>
+ <162632387205.13764.6196748476850020429@noble.neil.brown.name>
+ <edd94b15-90df-c540-b9aa-8eac89b6713b@toxicpanda.com>
+ <YPBmGknHpFb06fnD@infradead.org>
+ <28bb883d-8d14-f11a-b37f-d8e71118f87f@toxicpanda.com>
+ <YPBvUfCNmv0ElBpo@infradead.org>
+ <e1d9caad-e4c7-09d4-b145-5397b24e1cc7@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e1d9caad-e4c7-09d4-b145-5397b24e1cc7@toxicpanda.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Using a transaction in btrfs_search_slot is only useful when if are
-searching to add or modify the tree. When the function is only used for
-searching, insert length and mod arguments are 0, there is no need to
-use a transaction.
+On Thu, Jul 15, 2021 at 02:01:11PM -0400, Josef Bacik wrote:
+> The problem I ran into was the automount stuff requires that we have a
+> completely different superblock for every vfsmount. This is fine for
+> things like nfs or samba where the automount literally points to a
+> completely different mount, but doesn't work for btrfs where it's on
+> the same file system.  If you have 1000 subvolumes and run sync()
+> you're going to write the superblock 1000 times for the same file
+> system.
 
-No functional changes, changing for consistency.
+Dumb question: why do you have to write the superblock 1000 times, and
+why is that slower than writing to 1000 different filesystems?
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- fs/btrfs/backref.c     | 2 +-
- fs/btrfs/extent-tree.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> You are
+> going to reclaim inodes on the same file system 1000 times.  You are
+> going to reclaim dcache on the same filesytem 1000 times.  You are
+> also going to pin 1000 dentries/inodes into memory whenever you
+> wander into these things because the super is going to hold them
+> open.
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 7a8a2fc19533..0602c1cc7b62 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -1211,7 +1211,7 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
- again:
- 	head = NULL;
- 
--	ret = btrfs_search_slot(trans, fs_info->extent_root, &key, path, 0, 0);
-+	ret = btrfs_search_slot(NULL, fs_info->extent_root, &key, path, 0, 0);
- 	if (ret < 0)
- 		goto out;
- 	BUG_ON(ret == 0);
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index d296483d148f..d8d5fb9fb77a 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -153,7 +153,7 @@ int btrfs_lookup_extent_info(struct btrfs_trans_handle *trans,
- 	else
- 		key.type = BTRFS_EXTENT_ITEM_KEY;
- 
--	ret = btrfs_search_slot(trans, fs_info->extent_root, &key, path, 0, 0);
-+	ret = btrfs_search_slot(NULL, fs_info->extent_root, &key, path, 0, 0);
- 	if (ret < 0)
- 		goto out_free;
- 
--- 
-2.26.2
+That last part at least is the same for the 1000-different-filesystems
+case, isn't it?
 
+--b.
+
+> This is not a workable solution.  It's not a matter of simply tying
+> into existing infrastructure, we'd have to completely rework how the
+> VFS deals with this stuff in order to be reasonable.  And when I
+> brought this up to Al he told me I was insane and we absolutely had
+> to have a different SB for every vfsmount, which means we can't use
+> vfsmount for this, which means we don't have any other options.
+> Thanks,
+> 
+> Josef
