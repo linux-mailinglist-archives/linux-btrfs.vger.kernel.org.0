@@ -2,96 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7721B3CF0D0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 02:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3507F3CF0CE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 02:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241957AbhGSXwV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Jul 2021 19:52:21 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34946 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243971AbhGSXOe (ORCPT
+        id S236545AbhGSXwZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Jul 2021 19:52:25 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:44747 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1379500AbhGSXpE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Jul 2021 19:14:34 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9F78822238;
-        Mon, 19 Jul 2021 23:54:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626738891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2e30UxNRYI81qzFHTtrwJ5lwISEqhM5uW8QAmbxdFV8=;
-        b=T89awzIfzFFHwjP8S+ng7M6sirVcdMJI1lUO350U/K4A3V/Rvo1aUICYwZOK9hxSOAxGbR
-        Yjh5F3bC5BwPWN7/YgcKNH55iEb8vRuAUCYv3Dr24/9u7iUiOd8LkcghFAgCpIpAG8q1YY
-        UK7+rmUzk3bjyHjZ1SfvSTXQC8rgT80=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626738891;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2e30UxNRYI81qzFHTtrwJ5lwISEqhM5uW8QAmbxdFV8=;
-        b=Ea5DnS1JyVG2sIt78v1Ii+XDeLaV73dQWYRUXkBQLkdokH3lLP5DZu8V3OsI9r/23Aujr4
-        Zl56hnPTW5quthBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3AD2A13D45;
-        Mon, 19 Jul 2021 23:54:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mo+HN8cQ9mCOGgAAMHmgww
-        (envelope-from <neilb@suse.de>); Mon, 19 Jul 2021 23:54:47 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 19 Jul 2021 19:45:04 -0400
+Received: from dread.disaster.area (pa49-181-34-10.pa.nsw.optusnet.com.au [49.181.34.10])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 804E086780F;
+        Tue, 20 Jul 2021 10:25:37 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1m5dZo-008Wuz-5h; Tue, 20 Jul 2021 10:25:36 +1000
+Date:   Tue, 20 Jul 2021 10:25:36 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC] fstests: allow running custom hooks
+Message-ID: <20210720002536.GA2031856@dread.disaster.area>
+References: <20210719071337.217501-1-wqu@suse.com>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Christoph Hellwig" <hch@infradead.org>
-Cc:     "Josef Bacik" <josef@toxicpanda.com>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
-        "David Sterba" <dsterba@suse.com>, linux-nfs@vger.kernel.org,
-        "Wang Yugui" <wangyugui@e16-tech.com>,
-        "Ulli Horlacher" <framstag@rus.uni-stuttgart.de>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH/RFC] NFSD: handle BTRFS subvolumes better.
-In-reply-to: <YPVC/w4kw3y/14oF@infradead.org>
-References: <20210613115313.BC59.409509F4@e16-tech.com>,
- <20210310074620.GA2158@tik.uni-stuttgart.de>,
- <162632387205.13764.6196748476850020429@noble.neil.brown.name>,
- <edd94b15-90df-c540-b9aa-8eac89b6713b@toxicpanda.com>,
- <YPBmGknHpFb06fnD@infradead.org>,
- <28bb883d-8d14-f11a-b37f-d8e71118f87f@toxicpanda.com>,
- <YPBvUfCNmv0ElBpo@infradead.org>,
- <e1d9caad-e4c7-09d4-b145-5397b24e1cc7@toxicpanda.com>,
- <YPVC/w4kw3y/14oF@infradead.org>
-Date:   Tue, 20 Jul 2021 09:54:44 +1000
-Message-id: <162673888433.4136.7451392112850411713@noble.neil.brown.name>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719071337.217501-1-wqu@suse.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=hdaoRb6WoHYrV466vVKEyw==:117 a=hdaoRb6WoHYrV466vVKEyw==:17
+        a=kj9zAlcOel0A:10 a=e_q4qTt1xDgA:10 a=7-415B0cAAAA:8
+        a=A28zH0UQg-Nq1e7uk5gA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 19 Jul 2021, Christoph Hellwig wrote:
-> On Thu, Jul 15, 2021 at 02:01:11PM -0400, Josef Bacik wrote:
-> > This is not a workable solution.  It's not a matter of simply tying into
-> > existing infrastructure, we'd have to completely rework how the VFS deals
-> > with this stuff in order to be reasonable.  And when I brought this up to=
- Al
-> > he told me I was insane and we absolutely had to have a different SB for
-> > every vfsmount, which means we can't use vfsmount for this, which means we
-> > don't have any other options.  Thanks,
->=20
-> Then fix the problem another way.  The problem is known, old and keeps
-> breaking stuff.  Don't paper over it, fix it.=20
+On Mon, Jul 19, 2021 at 03:13:37PM +0800, Qu Wenruo wrote:
+> This patch will allow fstests to run custom hooks before and after each
+> test case.
+> 
+> These hooks will need to follow requirements:
+> 
+> - Both hook files needs to be executable
+>   Or they will just be ignored
+> 
+> - Stderr and stdout will be redirected to "$seqres.full"
+>   With extra separator to distinguish the hook output with real
+>   test output
+> 
+>   Thus if any of the hook is specified, all tests will generate
+>   "$seqres.full" which may increase the disk usage for results.
+> 
+> - Error in hooks script will be ignored completely
+> 
+> - Environment variable "$HOOK_TEMP" will be exported for both hooks
+>   And the variable will be ensured not to change for both hooks.
+> 
+>   Thus it's possible to store temporary values between the two hooks,
+>   like pid.
+> 
+> - Start hook has only one parameter passed in
+>   $1 is "$seq" from "check" script. The content will the path of current
+>   test case. E.g "tests/btrfs/001"
+> 
+> - End hook has two parameters passed in
+>   $1 is the same as start hook.
+>   $2 is the return value of the test case.
+>   NOTE: $2 doesn't take later golden output mismatch check nor dmesg/kmemleak
+>   check.
+> 
+> For more info, please refer to "README.hooks".
 
-Do you have any pointers to other breakage caused by this particular
-behaviour of btrfs? It would to have all requirements clearly on the
-table while designing a solution.
+This is all info that should be in README.hooks, not in the commit
+message.  Commit messages are about explaining why something needs
+to exist or be changed, not to describe the change being made. This
+commit message doesn't tell me anything about what this is for, so I
+can't really make any value judgement on it - exactly what is this
+intended to be used for?
 
-Thanks,
-NeilBrown
+FWIW, if a test needs something to be run before/after the test, it
+really should be in the test, run as part of the test. Adding
+overhead to every test being just to check for something that
+doesn't actually have a defined use, nor will exist or be used on
+the vast majority of systems running fstests doesn't seem like the
+best idea to me.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
