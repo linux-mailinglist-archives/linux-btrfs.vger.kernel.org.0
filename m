@@ -2,269 +2,274 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727E93CF4DF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 08:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031BB3CF4E5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 08:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242238AbhGTGQL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 20 Jul 2021 02:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236918AbhGTGPw (ORCPT
+        id S242423AbhGTGQT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jul 2021 02:16:19 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58120 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242139AbhGTGQN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:15:52 -0400
-Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837A2C061766
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jul 2021 23:56:28 -0700 (PDT)
-Received: from ananda.localnet (unknown [IPv6:2001:a62:1af8:f300:8efb:5b0a:975:bed6])
+        Tue, 20 Jul 2021 02:16:13 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 8D95428CFA6;
-        Tue, 20 Jul 2021 08:56:24 +0200 (CEST)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     linux-btrfs@vger.kernel.org, dennis@kernel.org,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Corruption errors on Samsung 980 Pro (FIXED for now)
-Date:   Tue, 20 Jul 2021 08:56:21 +0200
-Message-ID: <2087201.fsvZfV134Y@ananda>
-In-Reply-To: <92baa2b1-88ce-492f-f206-39b1dafc573a@gmx.com>
-References: <2729231.WZja5ltl65@ananda> <2078476.5JW8h9ZS4m@ananda> <92baa2b1-88ce-492f-f206-39b1dafc573a@gmx.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1B82A1FDCF
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jul 2021 06:56:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626764209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=HypKL8KwMobI7wyC4uT8OpWXXwx2pMBwDH6+7qeomPA=;
+        b=VS21GBImCNsTJXlZ3v+2CQIUyfwOGGZymN8ianul3CYCCGJ6IkQ9XiBbySThbISiQohhsf
+        f5tIVurUm5daSoCv77UT+FE0fubLN/Nl+j95zbeVzc+//sQqHhoPqMVFQ/Y0SpClGOTgsX
+        Q1JekdSS1ZgO5giis/mOOzxt/B0R/Jo=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4BE651388B
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jul 2021 06:56:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id qaPYArBz9mCUawAAGKfGzw
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jul 2021 06:56:48 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC] btrfs: handle the added ordered extent when bio submission fails
+Date:   Tue, 20 Jul 2021 14:56:45 +0800
+Message-Id: <20210720065645.197453-1-wqu@suse.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin2 smtp.mailfrom=martin@lichtvoll.de
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Qu Wenruo - 18.07.21, 02:16:19 CEST:
-> On 2021/7/17 下午4:31, Martin Steigerwald wrote:
-> > Martin Steigerwald - 16.07.21, 17:19:55 CEST:
-> >> Martin Steigerwald - 16.07.21, 17:05:59 CEST:
-> >>> I migrated to a different laptop and this one has a 2TB Samsung 980 Pro drive
-> >>> (not a 2TB Samsung 870 Evo Plus which previously had problems).
-> >>
-> >> Kernel is:
-> >>
-> >> % cat /proc/version
-> >> Linux version 5.13.1-t14 (martin@[…]) (gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2) #14 SMP PREEMPT Mon Jul 12 10:36:54 CEST 2021
-> >
-> > Another addition that might be important. I am using xxhash.
-> >
-> > I created the filesystem like that:
-> >
-> > % mkfs.btrfs -L home --csum xxhash /dev/nvme/home
-> >
-> > So it is xxhash, discard=async and space cache v2.
-> 
-> My educiated guess is async.
-> 
-> The reason is that all affected tree blocks are showing a fixed pattern:
-> have 0x48be03222606a29d expected csum 0x0100000026004000
+[BUG]
+There is a strange bug that when running "-o compress" mount option for
+subpage case, btrfs/160 has a random chance (~20%) to crash the system:
 
-Thank you.
+ BTRFS critical (device dm-7): panic in __btrfs_add_ordered_extent:238: inconsistency in ordered tree at offset 0 (errno=-17 Object already exists)
+ ------------[ cut here ]------------
+ kernel BUG at fs/btrfs/ordered-data.c:238!
+ Internal error: Oops - BUG: 0 [#1] SMP
+ pc : __btrfs_add_ordered_extent+0x550/0x670 [btrfs]
+ lr : __btrfs_add_ordered_extent+0x550/0x670 [btrfs]
+ Call trace:
+  __btrfs_add_ordered_extent+0x550/0x670 [btrfs]
+  btrfs_add_ordered_extent+0x2c/0x50 [btrfs]
+  run_delalloc_nocow+0x81c/0x8fc [btrfs]
+  btrfs_run_delalloc_range+0xa4/0x390 [btrfs]
+  writepage_delalloc+0xc0/0x1ac [btrfs]
+  __extent_writepage+0xf4/0x370 [btrfs]
+  extent_write_cache_pages+0x288/0x4f4 [btrfs]
+  extent_writepages+0x58/0xe0 [btrfs]
+  btrfs_writepages+0x1c/0x30 [btrfs]
+  do_writepages+0x60/0x110
+  __filemap_fdatawrite_range+0x108/0x170
+  filemap_fdatawrite_range+0x20/0x30
+  btrfs_fdatawrite_range+0x34/0x4dc [btrfs]
+  __btrfs_write_out_cache+0x34c/0x480 [btrfs]
+  btrfs_write_out_cache+0x144/0x220 [btrfs]
+  btrfs_start_dirty_block_groups+0x3ac/0x6b0 [btrfs]
+  btrfs_commit_transaction+0xd0/0xbb4 [btrfs]
+  btrfs_sync_fs+0x64/0x1cc [btrfs]
+  sync_fs_one_sb+0x3c/0x50
+  iterate_supers+0xcc/0x1d4
+  ksys_sync+0x6c/0xd0
+  __arm64_sys_sync+0x1c/0x30
+  invoke_syscall+0x50/0x120
+  el0_svc_common.constprop.0+0x4c/0xd4
+  do_el0_svc+0x30/0x9c
+  el0_svc+0x2c/0x54
+  el0_sync_handler+0x1a8/0x1b0
+  el0_sync+0x198/0x1c0
+ ---[ end trace 336f67369ae6e0af ]---
 
-Now it gets interesting. I just found, as I wanted to disable discard,
-that it was not enabled to begin with:
+However if we disable v1 space cache, the crash just disappera.
 
-% grep home /etc/fstab
-/dev/nvme/home  /home           btrfs   lazytime,compress=zstd                                  0       0
-[…]
+[CAUSE]
+The offending inode is in fact a v1 space cache inode.
 
-It appears that out of caution after my experiences with Samsung 870 Evo
-Plus I went without "discard=async".
+The crash happens in the following sequence:
 
-Also I stated the exact mount options further down in the mail. No
-discard in there:
+- Writing back space cache for inode 1/257 (root 1, ino 257).
+  The space cache is a little big in this case, 983040 bytes (960K).
 
-> >>> It is BTRFS single profile on LVM on LUKS. Mount options are:
-> >>>
-> >>> rw,relatime,lazytime,compress=zstd:3,ssd,space_cache=v2,subvolid=1054,subvol=/home
+- Run delalloc range for the free space cache inode
+  Ordered extent [0, 960K) is inserted for inode 1/257.
 
-So that part of my mail where I claimed I was using "discard=async" was
-inaccurate.
+- Call __extent_writepage_io() for each page
+  The first 3 pages submitted without problem.
+  But the 4th page get submitted but failed due to the injected error.
 
-> This pretty much means those tree blocks have been discarded.
-> 
-> But I'm not familiar with that part.
-> 
-> Dennis is more familiar with this, maybe he could provide some idea on this.
+- Error out without handling the submitted ordered extent
+  Since only 4 pages submitted and finished, the ordered extent
+  [0, 960K) is still there.
 
-Any other insights?
+- Retry the free space cache writeback with some update
+  Now inode 1/257 have its contents updated, and need to try writeback
+  again.
 
-Best,
-Martin
+- Run delalloc range for the free space cache inode.
+  Ordered extent [0, 960K) is going to be inserted again.
+  But previously added ordered extent [0, 960K) is still there,
+  triggering the crash.
 
-> Thanks,
-> Qu
-> >
-> > Maybe something in this combination is not yet fully stable?
-> >
-> > https://btrfs.wiki.kernel.org/index.php/Status says additional checksum
-> > algorithms are stable. It also states free space cache is stable. And it
-> > states that asynchronous discards are stable. It does not explicitly
-> > mention xxhash or free space v2 are stable too. I bet it may be included
-> > in the general statement, but I am not completely sure.
-> >
-> > However what I just did is:
-> >
-> > % mount -o remount,clear_cache,space_cache=v2 /home
-> >
-> > And I now get:
-> >
-> > % btrfs scrub status /home
-> > UUID:             […]
-> > Scrub started:    Sat Jul 17 10:24:54 2021
-> > Status:           finished
-> > Duration:         0:01:43
-> > Total to scrub:   178.39GiB
-> > Rate:             1.73GiB/s
-> > Error summary:    no errors found
-> >
-> > Hopefully it will stay this way. Fingers crossed.
-> >
-> > So a good trick in case there is no file mentioned in kernal log may be to clear
-> > free space tree and see whether the checksum errors go away.
-> >
-> > If anyone can make any additional sense out of this, please go ahead.
-> >
-> >>> I thought this time I would be fine, but I just got:
-> >>>
-> >>> [63168.287911] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> >>> [63168.287925] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
-> >>> [63168.346552] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> >>> [63168.346567] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
-> >>> [63168.346685] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> >>> [63168.346708] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
-> >>> [63168.346859] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> >>> [63168.346873] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
-> >>> [63299.490367] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> >>> [63299.490384] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
-> >>> [63299.572849] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> >>> [63299.572866] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
-> >>> [63299.573151] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> >>> [63299.573168] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
-> >>> [63299.573286] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> >>> [63299.573295] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
-> >>> [63588.902631] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> >>> [63588.902647] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 13, gen 0
-> >>> [63588.949614] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> >>> [63588.949628] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 14, gen 0
-> >>> [63588.949849] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> >>> [63588.949855] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 15, gen 0
-> >>> [63588.950087] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> >>> [63588.950099] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 16, gen 0
-> >>
-> >> Additional errors revealed through scrubbing – will test the other
-> >> filesystems as well:
-> >>
-> >> % btrfs scrub status /home
-> >> UUID:             […]
-> >> Scrub started:    Fri Jul 16 17:08:49 2021
-> >> Status:           finished
-> >> Duration:         0:02:05
-> >> Total to scrub:   203.54GiB
-> >> Rate:             1.63GiB/s
-> >> Error summary:    csum=5
-> >>    Corrected:      0
-> >>    Uncorrectable:  5
-> >>    Unverified:     0
-> >>
-> >> Now totalling to 21 errors:
-> >>
-> >> % btrfs device stats /home
-> >> [/dev/mapper/nvme-home].write_io_errs    0
-> >> [/dev/mapper/nvme-home].read_io_errs     0
-> >> [/dev/mapper/nvme-home].flush_io_errs    0
-> >> [/dev/mapper/nvme-home].corruption_errs  21
-> >> [/dev/mapper/nvme-home].generation_errs  0
-> >>
-> >> Log:
-> >>
-> >> [64707.979036] BTRFS info (device dm-3): scrub: started on devid 1
-> >> [64730.009687] BTRFS warning (device dm-3): checksum error at logical 36997591040 on dev /dev/mapper/nvme-home, physical 34850107392, root 1054, inode 2295743, offset 2718461952: path resolving failed with ret=-2
-> >> [64730.009710] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 17, gen 0
-> >> [64730.009721] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997591040 on dev /dev/mapper/nvme-home
-> >> [64730.010996] BTRFS warning (device dm-3): checksum error at logical 36997595136 on dev /dev/mapper/nvme-home, physical 34850111488, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
-> >> [64730.011014] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 18, gen 0
-> >> [64730.011024] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997595136 on dev /dev/mapper/nvme-home
-> >> [64730.011298] BTRFS warning (device dm-3): checksum error at logical 36997599232 on dev /dev/mapper/nvme-home, physical 34850115584, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
-> >> [64730.011312] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 19, gen 0
-> >> [64730.011319] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997599232 on dev /dev/mapper/nvme-home
-> >> [64730.011603] BTRFS warning (device dm-3): checksum error at logical 36997603328 on dev /dev/mapper/nvme-home, physical 34850119680, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
-> >> [64730.011616] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 20, gen 0
-> >> [64730.011623] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997603328 on dev /dev/mapper/nvme-home
-> >> [64730.011905] BTRFS warning (device dm-3): checksum error at logical 36997607424 on dev /dev/mapper/nvme-home, physical 34850123776, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
-> >> [64730.011921] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 21, gen 0
-> >> [64730.011928] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997607424 on dev /dev/mapper/nvme-home
-> >> [64832.447560] BTRFS info (device dm-3): scrub: finished on devid 1 with status: 0
-> >>
-> >> Why is BTRFS unable to determine a path?
-> >>
-> >> How would I fix those when BTRFS does not tell me what file is affected?
-> >>
-> >>> during a backup.
-> >>>
-> >>> According to rsync this is related (why does BTRFS does not report the
-> >>> affected file?)
-> >>>
-> >>> Create a snapshot of '/home' in '/zeit/home/backup-2021-07-16-16:40:13'
-> >>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/output error (5)
-> >>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/output error (5)
-> >>> ERROR: martin/.local/share/akonadi/search_db/email/postlist.glass failed verification -- update discarded.
-> >>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/baloo/index": Input/output error (5)
-> >>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/baloo/index": Input/output error (5)
-> >>> ERROR: martin/.local/share/baloo/index failed verification -- update discarded.
-> >>>
-> >>> Both are frequently written to files (both Baloo and Akonadi have very crazy
-> >>> I/O patterns that, I would not have thought so, can even satisfy an NVMe SSD).
-> >>>
-> >>> I thought that a Samsung 980 Pro can easily handle "discard=async" so I
-> >>> used it.
-> >>>
-> >>> This is on a ThinkPad T14 Gen1 with AMD Ryzen 7 PRO 4750U and 32 GiB of RAM.
-> >>>
-> >>> It is BTRFS single profile on LVM on LUKS. Mount options are:
-> >>>
-> >>> rw,relatime,lazytime,compress=zstd:3,ssd,space_cache=v2,subvolid=1054,subvol=/home
-> >>>
-> >>> Smartctl has no errors.
-> >>>
-> >>> I only use a few (less than 10) subvolumes.
-> >>>
-> >>> I do not have any other errors in kernel log, so I bet this may not be
-> >>> "discard=async" related. Any idea?
-> >>
-> >> Maybe I still remove "discard=async" for now. Maybe it is not yet fully reliable.
-> >>
-> >>> Could it have to do with a sudden switching off the laptop (there had
-> >>> been quite some reasons cause at least with a AMD model of this laptop
-> >>> in combination with an USB-C dock by Lenovo there are quite some stability
-> >>> issues)? I would have hoped that the Samsung 980 Pro would still be
-> >>> equipped to complete the outstanding write operation, but maybe it has
-> >>> no capacitor for this.
-> >>>
-> >>> I am really surprised by the what I experienced about the reliability of
-> >>> SSDs I recently bought. I did not see a failure within a month with any
-> >>> of the older SSDs. I hope this does not point at a severe worsening of
-> >>> the quality. Probably I have to fit another SSD in there and use BTRFS
-> >>> RAID 1 again to protect at least part of the data from errors like this.
-> >>>
-> >>> Any idea about this? I bet you may not have any, as there is not block
-> >>> I/O related errors in the log, but if you have, by all means share your
-> >>> thoughts. Thank you.
-> >>>
-> >>> Both files can be recreated. So I bet I will just remove them.
-> >>>
-> >>> Best,
-> >>
-> >
-> >
-> 
+This problem only happens for free space cache inode, as other inode
+won't try to re-write the same inode after error.
 
+Although the free space cache size 960K seems to be a subpage specific
+problem, but the root cause is still there.
 
+[FIX]
+Fix the problem by introducing a new helper,
+btrfs_cleanup_hanging_ordered_extents(), to cleanup the added ordered
+extent after bio submission error.
+
+This function will call btrfs_mark_ordered_io_finished() on each
+involved page, and finish the ordered extent and clear the page Private
+bit.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Reason for RFC:
+
+Current version works and will no longer crash at btrfs/160.
+(Although still need some polish, as the delalloc space for v1 cache
+ inode is not yet properly cleaned up)
+
+But I'm not sure why we never hit such problem for v1 space cache write
+back, and not sure if this is the correct way to go.
+
+Should we just error out if we failed to write back v1 space cache?
+
+Anyway, send out the RFC version to make sure if the fix is the correct
+way to go.
+---
+ fs/btrfs/ctree.h       |  3 +++
+ fs/btrfs/extent_io.c   | 15 +++++++++++++++
+ fs/btrfs/inode.c       | 41 +++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/transaction.c | 11 +++++++++++
+ 4 files changed, 70 insertions(+)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index e265a7eb0d5c..8c32f2119790 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3194,6 +3194,9 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
+ void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
+ 					  struct page *page, u64 start,
+ 					  u64 end, int uptodate);
++void btrfs_cleanup_hanging_ordered_extents(struct btrfs_fs_info *fs_info,
++					   struct btrfs_inode *inode,
++					   u64 start);
+ extern const struct dentry_operations btrfs_dentry_operations;
+ extern const struct iomap_ops btrfs_dio_iomap_ops;
+ extern const struct iomap_dio_ops btrfs_dio_ops;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index fff1a4d8fe25..cfbed849b598 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4137,6 +4137,21 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
+ 		ret = ret < 0 ? ret : -EIO;
+ 		end_extent_writepage(page, ret, page_start, page_end);
+ 	}
++
++	/*
++	 * We may have ordered extent already allocated, and since we error out
++	 * the remaining pages will never be submitted thus the ordered extent
++	 * will hang there forever.
++	 *
++	 * Such hanging OE would cause problem for things like free space cache
++	 * where we could retry to write it back.
++	 * So here if we hit error submitting the IO, we need to cleanup the
++	 * hanging ordered extent.
++	 */
++	if (ret < 0)
++		btrfs_cleanup_hanging_ordered_extents(fs_info, BTRFS_I(inode),
++						      page_end + 1);
++
+ 	if (epd->extent_locked) {
+ 		/*
+ 		 * If epd->extent_locked, it's from extent_write_locked_range(),
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index e8af0021af78..05d392315f3b 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3211,6 +3211,47 @@ void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
+ 				       finish_ordered_fn, uptodate);
+ }
+ 
++/*
++ * Cleanup any added ordered ordered extent from @start.
++ *
++ * This fucntion should be called when ordered extent is submitted but by some
++ * how the bio submission hits some error and has to error out.
++ */
++void btrfs_cleanup_hanging_ordered_extents(struct btrfs_fs_info *fs_info,
++					   struct btrfs_inode *inode,
++					   u64 start)
++{
++	struct btrfs_ordered_extent *oe;
++	u64 cur;
++	u64 end;
++
++	ASSERT(IS_ALIGNED(start, PAGE_SIZE));
++	/* Grab the ordered extent covers the bytenr to calculate the end. */
++	oe = btrfs_lookup_first_ordered_extent(inode, start);
++	if (!oe)
++		return;
++	end = oe->file_offset + oe->num_bytes;
++	btrfs_put_ordered_extent(oe);
++
++	/* Finish the ordered extent of the remaining pages */
++	for (cur = start; cur < end; cur += PAGE_SIZE) {
++		struct page *page;
++		u32 len;
++
++		page = find_lock_page(inode->vfs_inode.i_mapping,
++				cur >> PAGE_SHIFT);
++		if (!page)
++			continue;
++
++		len = min(page_offset(page) + PAGE_SIZE, end + 1) -
++		      page_offset(page);
++		btrfs_mark_ordered_io_finished(inode, page, cur, len,
++				finish_ordered_fn, false);
++		unlock_page(page);
++		put_page(page);
++	}
++}
++
+ /*
+  * check_data_csum - verify checksum of one sector of uncompressed data
+  * @inode:	inode
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 14b9fdc8aaa9..05d786401374 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -313,6 +313,17 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
+ 	if (type == TRANS_ATTACH)
+ 		return -ENOENT;
+ 
++	/*
++	 * TRANS_JOIN_NOLOCK is only utilized by free space cache endio.
++	 * Normally it only happens during commit transaction, but it's
++	 * possible that we error out and abort transaction.
++	 *
++	 * In that case, the endio for free space cache may get no running
++	 * trans.
++	 * Stay cool and just return error for the only caller.
++	 */
++	if (type == TRANS_JOIN_NOLOCK)
++		return -ENOENT;
+ 	/*
+ 	 * JOIN_NOLOCK only happens during the transaction commit, so
+ 	 * it is impossible that ->running_transaction is NULL
 -- 
-Martin
-
+2.32.0
 
