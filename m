@@ -2,169 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FACC3CF91A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 13:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4113CFDB8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 17:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237398AbhGTLGR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jul 2021 07:06:17 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37628 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238084AbhGTLFP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jul 2021 07:05:15 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 98DE12246F
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jul 2021 11:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626781552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=oGY9979LeVJMzZJKeCm5LnKCbjGsKzpDAR5y+LppNvY=;
-        b=TQTHx8HflkUlIdGDKPynSqASc45DZG4Q4ffcctFGh/zrkPv/20u7QTpvSf53vovtrGPZB5
-        nJSDFOuLBpOx4od3DUH0Kt/zDehY8moO7mJgZy82LvyQxBAtODiEkRG9Kc3v/m21q4+i66
-        OZ+AL8pdQNZQQn8t3PZzPELzX65im4U=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id BF2F013AB8
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jul 2021 11:45:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id sC5kHm+39mDiUAAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jul 2021 11:45:51 +0000
-From:   Qu Wenruo <wqu@suse.com>
+        id S239047AbhGTO6c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jul 2021 10:58:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239984AbhGTOWd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 20 Jul 2021 10:22:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2765610F7
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jul 2021 15:03:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626793386;
+        bh=Ucl24oHM5iW+cRQ6rEKKDwivQC2Y561F7tGhfogogHk=;
+        h=From:To:Subject:Date:From;
+        b=V/ArZUp83/qBCKcqDnexzvd4NS4z6znpdn4fv2Z8M5r4wcjFNazWu+Pwd3b8sr7RP
+         7vTqypCuAqJplRN3ILfKPKia4Q7IfJ3kOZv3K8NXo66Es9s1t0ipBxhK398gsz/cqF
+         +hgcVqn3pjCg21bx64TV40ZdFEvmHJYZyX3jlxZz6T82CkmAHHblWhJ/VMBLNkKZ9p
+         lrjvuv4eJa6u4EhIQ40LFCU94/vNr+Uv0d6DXQLo8xu2HXkzvJF315voe3AsR8I0rG
+         eQoGmJz/cdcsJQmXFPXcMvIFjjcY0omY0rvuUXYRFbxZiRfGpY28T/ldj83x6mDjFz
+         HZYiXV8Je5/YA==
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: make __extent_writepage() not return error if the page is marked error
-Date:   Tue, 20 Jul 2021 19:45:48 +0800
-Message-Id: <20210720114548.322356-1-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
+Subject: [PATCH] btrfs: continue readahead of siblings even if target node is in memory
+Date:   Tue, 20 Jul 2021 16:03:03 +0100
+Message-Id: <1589fffc3a30631b2268b4f64e55fcf9ce664fb6.1626792325.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When running btrfs/160 in a loop for subpage with experimental
-compression support, it has a high chance to crash (~20%):
+From: Filipe Manana <fdmanana@suse.com>
 
- BTRFS critical (device dm-7): panic in __btrfs_add_ordered_extent:238: inconsistency in ordered tree at offset 0 (errno=-17 Object already exists)
- ------------[ cut here ]------------
- kernel BUG at fs/btrfs/ordered-data.c:238!
- Internal error: Oops - BUG: 0 [#1] SMP
- pc : __btrfs_add_ordered_extent+0x550/0x670 [btrfs]
- lr : __btrfs_add_ordered_extent+0x550/0x670 [btrfs]
- Call trace:
-  __btrfs_add_ordered_extent+0x550/0x670 [btrfs]
-  btrfs_add_ordered_extent+0x2c/0x50 [btrfs]
-  run_delalloc_nocow+0x81c/0x8fc [btrfs]
-  btrfs_run_delalloc_range+0xa4/0x390 [btrfs]
-  writepage_delalloc+0xc0/0x1ac [btrfs]
-  __extent_writepage+0xf4/0x370 [btrfs]
-  extent_write_cache_pages+0x288/0x4f4 [btrfs]
-  extent_writepages+0x58/0xe0 [btrfs]
-  btrfs_writepages+0x1c/0x30 [btrfs]
-  do_writepages+0x60/0x110
-  __filemap_fdatawrite_range+0x108/0x170
-  filemap_fdatawrite_range+0x20/0x30
-  btrfs_fdatawrite_range+0x34/0x4dc [btrfs]
-  __btrfs_write_out_cache+0x34c/0x480 [btrfs]
-  btrfs_write_out_cache+0x144/0x220 [btrfs]
-  btrfs_start_dirty_block_groups+0x3ac/0x6b0 [btrfs]
-  btrfs_commit_transaction+0xd0/0xbb4 [btrfs]
-  btrfs_sync_fs+0x64/0x1cc [btrfs]
-  sync_fs_one_sb+0x3c/0x50
-  iterate_supers+0xcc/0x1d4
-  ksys_sync+0x6c/0xd0
-  __arm64_sys_sync+0x1c/0x30
-  invoke_syscall+0x50/0x120
-  el0_svc_common.constprop.0+0x4c/0xd4
-  do_el0_svc+0x30/0x9c
-  el0_svc+0x2c/0x54
-  el0_sync_handler+0x1a8/0x1b0
-  el0_sync+0x198/0x1c0
- ---[ end trace 336f67369ae6e0af ]---
+At reada_for_search(), when attempting to readahead a node or leaf's
+siblings, we skip the readahead of the siblings if the node/leaf is
+already in memory. That is probably fine for the READA_FORWARD and
+READA_BACK readahead types, as they are used on contextes where we
+end up reading some consecutive leaves, but usually not the whole btree.
 
-[CAUSE]
-For subpage case, we can have multiple sectors inside a page, this makes
-it possible for __extent_writepage() to have part of its page submitted
-before returning.
+However for a READA_FORWARD_ALWAYS mode, currently only used for full
+send operations, it does not make sense to skip the readahead if the
+target node or leaf is already loaded in memory, since we know the caller
+is visiting every node and leaf of the btree in ascending order.
 
-In btrfs/160, we are using dm-dust to emulate write error, this means
-for certain pages, we could have everything running fine, but at the end
-of __extent_writepage(), one of the submitted bios fails due to dm-dust.
+So change the behaviour to not skip the readahead when the target node is
+already in memory and the readahead mode is READA_FORWARD_ALWAYS.
 
-Then the page is marked Error, and we change @ret from 0 to -EIO.
+The following test script was used to measure the improvement on a box
+using an average, consumer grade, spinning disk, with 32GiB of RAM and
+using a non-debug kernel config (Debian's default config).
 
-This makes the caller extent_write_cache_pages() to error out, without
-submitting the remaining pages.
+  $ cat test.sh
+  #!/bin/bash
 
-Furthermore, since we're erroring out for free space cache, it doesn't
-really care about the error and will update the inode and retry the
-writeback.
+  DEV=/dev/sdj
+  MNT=/mnt/sdj
+  MKFS_OPTIONS="--nodesize 16384"     # default, just to be explicit
+  MOUNT_OPTIONS="-o max_inline=2048"  # default, just to be explicit
 
-Then we re-run the delalloc range, and will try to insert the same
-delalloc range while previous delalloc range is still hanging there,
-triggering the above error.
+  mkfs.btrfs -f $MKFS_OPTIONS $DEV > /dev/null
+  mount $MOUNT_OPTIONS $DEV $MNT
 
-[FIX]
-Ironically, to fix the problem we need to ignore the PageError() part,
-at least not to populate @ret.
+  # Create files with inline data to make it easier and faster to create
+  # large btrees.
+  add_files()
+  {
+      local total=$1
+      local start_offset=$2
+      local number_jobs=$3
+      local total_per_job=$(($total / $number_jobs))
 
-By this, we fallback to the same behavior of non-subpage case, continue
-to submit the remaining pages so that the ordered extent can finish.
+      echo "Creating $total new files using $number_jobs jobs"
+      for ((n = 0; n < $number_jobs; n++)); do
+          (
+              local start_num=$(($start_offset + $n * $total_per_job))
+              for ((i = 1; i <= $total_per_job; i++)); do
+                  local file_num=$((start_num + $i))
+                  local file_path="$MNT/file_${file_num}"
+                  xfs_io -f -c "pwrite -S 0xab 0 2000" $file_path > /dev/null
+                  if [ $? -ne 0 ]; then
+                      echo "Failed creating file $file_path"
+                      break
+                  fi
+              done
+          ) &
+          worker_pids[$n]=$!
+      done
 
-The failed bio will still mark the page error and properly inform the
-caller that some IO failed, we just don't need to bother the IO error so
-early.
+      wait ${worker_pids[@]}
 
-Since we're here, also convert the PageError() macros to subpage
-compatible helpers.
+      sync
+      echo
+      echo "btree node/leaf count: $(btrfs inspect-internal dump-tree -t 5 $DEV | egrep '^(node|leaf) ' | wc -l)"
+  }
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+  file_count=2000000
+  add_files $file_count 0 4
+
+  echo
+  echo "Creating snapshot..."
+  btrfs subvolume snapshot -r $MNT $MNT/snap1
+
+  umount $MNT
+
+  echo 3 > /proc/sys/vm/drop_caches
+  blockdev --flushbufs $DEV &> /dev/null
+  hdparm -F $DEV &> /dev/null
+
+  mount $MOUNT_OPTIONS $DEV $MNT
+
+  echo
+  echo "Testing full send..."
+  start=$(date +%s)
+  btrfs send $MNT/snap1 > /dev/null
+  end=$(date +%s)
+  echo
+  echo "Full send took $((end - start)) seconds"
+
+  umount $MNT
+
+The duration of the full send operations, in seconds, were the following:
+
+Before this change:  85 seconds
+After this change:   76 seconds (-11.2%)
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/extent_io.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ fs/btrfs/ctree.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index fff1a4d8fe25..237824caaa84 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3815,7 +3815,8 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 		ret = btrfs_run_delalloc_range(inode, page, delalloc_start,
- 				delalloc_end, &page_started, nr_written, wbc);
- 		if (ret) {
--			SetPageError(page);
-+			btrfs_page_set_error(inode->root->fs_info, page,
-+					     page_offset(page), PAGE_SIZE);
- 			/*
- 			 * btrfs_run_delalloc_range should return < 0 for error
- 			 * but just in case, we use > 0 here meaning the IO is
-@@ -4092,7 +4093,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index c212f1218fdd..63c026495193 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -1233,7 +1233,6 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
+ 	u64 target;
+ 	u64 nread = 0;
+ 	u64 nread_max;
+-	struct extent_buffer *eb;
+ 	u32 nr;
+ 	u32 blocksize;
+ 	u32 nscan = 0;
+@@ -1262,10 +1261,14 @@ static void reada_for_search(struct btrfs_fs_info *fs_info,
  
- 	WARN_ON(!PageLocked(page));
- 
--	ClearPageError(page);
-+	btrfs_page_clear_error(fs_info, page, page_offset(page), PAGE_SIZE);
- 
- 	pg_offset = offset_in_page(i_size);
- 	if (page->index > end_index ||
-@@ -4133,10 +4134,8 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 		set_page_writeback(page);
- 		end_page_writeback(page);
+ 	search = btrfs_node_blockptr(node, slot);
+ 	blocksize = fs_info->nodesize;
+-	eb = find_extent_buffer(fs_info, search);
+-	if (eb) {
+-		free_extent_buffer(eb);
+-		return;
++	if (path->reada != READA_FORWARD_ALWAYS) {
++		struct extent_buffer *eb;
++
++		eb = find_extent_buffer(fs_info, search);
++		if (eb) {
++			free_extent_buffer(eb);
++			return;
++		}
  	}
--	if (PageError(page)) {
--		ret = ret < 0 ? ret : -EIO;
-+	if (PageError(page))
- 		end_extent_writepage(page, ret, page_start, page_end);
--	}
- 	if (epd->extent_locked) {
- 		/*
- 		 * If epd->extent_locked, it's from extent_write_locked_range(),
+ 
+ 	target = search;
 -- 
-2.32.0
+2.30.2
 
