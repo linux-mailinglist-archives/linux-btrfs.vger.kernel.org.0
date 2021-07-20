@@ -2,142 +2,296 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17C43CF107
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 02:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3323CF14A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 03:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380984AbhGTASA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Jul 2021 20:18:00 -0400
-Received: from mout.gmx.net ([212.227.17.20]:35499 "EHLO mout.gmx.net"
+        id S1347577AbhGTAoI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Jul 2021 20:44:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1353336AbhGSX4Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Jul 2021 19:56:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626741413;
-        bh=ulyEvw4No4EfJFJSjOQgzHVLnWd4RfvP0axlH2vg9kk=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=kWfDSR4udF3HkAolomudovCWAMSE3+D/x69HFmch0t8NyZFgfX2FV0biKHbhU34DD
-         hwTVotejVRT8SEfQPDOFaDovyDgbSQ+1DL3iipe8noNRaP55H8dn2tc+TERpqMFPsH
-         tUVhs3L8M+tgpjr62dtK4c94EM1QOZY0bqXM4kAM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4b1y-1m3zal0DeY-001fMu; Tue, 20
- Jul 2021 02:36:53 +0200
-Subject: Re: [PATCH RFC] fstests: allow running custom hooks
-To:     Dave Chinner <david@fromorbit.com>, Qu Wenruo <wqu@suse.com>
+        id S1351730AbhGTAfr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 19 Jul 2021 20:35:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE94E6108B;
+        Tue, 20 Jul 2021 01:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626743760;
+        bh=Yu6/Js4+nHeT7yEHxi8Y4jx0Y2d+CXydqKqvVSRmwMA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WRkhJKsypTCzhosQFi7KUAYJE1+XC2R8pxEN/TKm+HjyQhDEuqAOi8J0S7XXqyFJT
+         XMIzUUJC3K6yTo4kMhxlr+r+yCYoJeJHL2/tnbJjJITtvsOl+8iYrb3Et1K9bSCRO+
+         awV37gvtW2f0aT07XypUFlni1byXkDNWiYLcVKmJlMsNGcg3qFMliEP87pBZcVx09b
+         WXIHrG1ixCJvaLfCW8FAZmG6je0cRcdCi6y2UN4tD5bbZV4od4iq5legm32n0jYVTE
+         AvRrKfOXPOH06MEoH/2DAQz0Brm61hO9UjABYvNCDzWs2qKHcnr17A9wfzV3rUoocB
+         +VP7CP0RVVjqQ==
+Date:   Mon, 19 Jul 2021 18:16:00 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC] fstests: allow running custom hooks
+Message-ID: <20210720011600.GA22384@magnolia>
 References: <20210719071337.217501-1-wqu@suse.com>
- <20210720002536.GA2031856@dread.disaster.area>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <3f2d4ebd-bf75-b283-45be-3fa81e65d5bf@gmx.com>
-Date:   Tue, 20 Jul 2021 08:36:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210720002536.GA2031856@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xIQyieE+8AnwKrR0CZwTQbwASh5VLLJsyMHqJU64/AMa+Az2PMR
- Txx+v79INZZD0z4lJbSLzvVu/tCsHR0qAs6zEvPEM1/UEPmTUg0BNu8BL5/Wu+ARbsM0/kG
- XAOg9EWUceHcCb8t79kstYlJz8Nd2l1SDwx3c2U74w3niZTDwG7KMvE+WqLnAud57fH608L
- yCgoZjzxi39J7mKCrnKWQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sZaeM+5luWE=:WxyS4ALzab/RYcuXKHHiNx
- FOk7DxP/e7uKwYjZp6aKNn0441Oag8iASP9bAwgT8A8dIk+hGLZ79c0q2xBYCkgBdNrGB1+f7
- BoTsVS7mNi7ELG9nNPT8Tx2TAyPbdrNEVDbcUL2UlqfMTZChpXhk1z926MUcLfJbN2XC44RmW
- uNCLmSCRQIvmTCHKCS21x6Uu42AuqE9XYHfHvctE72d/RbK4AawayvZJsnp7DfptUgTjX0WXz
- ZwL9febrJtUeCU2loUocM1uzxhyTGLxCHtiAHAC57fQ0vso2rYIxFwQ2A7avpmXUz/9deKvU6
- zyAIJWyiflv5oxSci3y3F+e815Htft9EJmUPgA7BCkq083m+jMXbE3kftf8QxPubMCsNwTzgl
- PDweUmOHXhbc25BTcNQsF9X/dp1JyxmTW152ssLRg/VWAi52qDRoZGZZ4iymRBxtg3/tmDKbL
- GmynfKb5LlBEK/aNH0P5gz7O7nd3tMaZc/A8Z0RJtvAYttB3UYmd7jCA2Vz10lUCz07jo9T6S
- kCM57yCaeReM3pHgvGMs1z+cWPJnAY2ZjJo9FhM5UNB8peNXoriuP1W9l9ayCmtrcQigA9tpt
- g65iwVESV5g2Mi+d4vb7pOZn+mRqqHUm49jC9l8xLq2coqEf/uRBl2HeJa9g3ZqqBgz3GhpHm
- HYK1arvDdpQxKDSyrAYflP1A0h7W7HmtzqZfoQq8yRSuuQwZaKUga3kYuEZU33mSjPKme706O
- ZdylppO4gVGhoM1mIp4saY1KjCVvUrKPXYT/J+Rsf4ZVBgDzcan/4CF0i6+JWpCQ7AdC1RSdX
- OAewvSeqKExAHNg7l0OzyTCctukHn5cf2a2z6x3JOCCt7GvvhvwRY5TLcoa0TjukrPGWZmNns
- umgreXYBkN3tLFOJvY1Tx/7KoMfyPhs+Td9Dweae6la3Q0cDqh3xxQz/6/VhIewME86LGtcPZ
- NpdgD8sDq6C9mYmq+H3kHJa+UxeiXxns3UjqnPUdUfOHBKU8UVrFPgOB5vyxBAwW4Kp/Rf+qV
- wzbbRj2fS69fiRjxNqQ1qOzMMJ7pTMb/K4TnzzALrPbXIlbnqJeEDTIwYtVhnLgzRiNFfM+be
- 9n7zkfOIbDSmzB+F2HGvqpszYlrxJQWzoNrUAuOfD9NKR6wzFkOdqKWFA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719071337.217501-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Jul 19, 2021 at 03:13:37PM +0800, Qu Wenruo wrote:
+> This patch will allow fstests to run custom hooks before and after each
+> test case.
+> 
+> These hooks will need to follow requirements:
+> 
+> - Both hook files needs to be executable
+>   Or they will just be ignored
+> 
+> - Stderr and stdout will be redirected to "$seqres.full"
+>   With extra separator to distinguish the hook output with real
+>   test output
+> 
+>   Thus if any of the hook is specified, all tests will generate
+>   "$seqres.full" which may increase the disk usage for results.
+> 
+> - Error in hooks script will be ignored completely
+> 
+> - Environment variable "$HOOK_TEMP" will be exported for both hooks
+>   And the variable will be ensured not to change for both hooks.
+> 
+>   Thus it's possible to store temporary values between the two hooks,
+>   like pid.
+> 
+> - Start hook has only one parameter passed in
+>   $1 is "$seq" from "check" script. The content will the path of current
+>   test case. E.g "tests/btrfs/001"
+> 
+> - End hook has two parameters passed in
+>   $1 is the same as start hook.
+>   $2 is the return value of the test case.
+>   NOTE: $2 doesn't take later golden output mismatch check nor dmesg/kmemleak
+>   check.
+> 
+> For more info, please refer to "README.hooks".
+> 
+> Also update .gitignore to ignore "hooks/start.hook" and "hooks/end.hook"
+> so that one won't accidentally submit the debug hook.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Instead of previous attempt to manually utilize sysfs interface of
+> ftrace, this time just add some hooks to allow one to do whatever they
+> want.
+> 
+> RFC for how everything should be passed to hooks.
+> Currently it's using a mixed method, $seq/$sts is passed as paramaters,
+> while HOOK_TMP is passed as environmental variable.
+> 
+> Not sure what's the recommended way for hooks.
+> ---
+>  .gitignore      |  4 +++
+>  README.hooks    | 72 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  check           |  5 ++++
+>  common/preamble |  4 ---
+>  common/rc       | 43 +++++++++++++++++++++++++++++
+>  5 files changed, 124 insertions(+), 4 deletions(-)
+>  create mode 100644 README.hooks
+> 
+> diff --git a/.gitignore b/.gitignore
+> index 2d72b064..99905ff9 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -201,3 +201,7 @@ tags
+>  # cscope files
+>  cscope.*
+>  ncscope.*
+> +
+> +# hook scripts
+> +/hooks/start.hook
+> +/hooks/end.hook
+> diff --git a/README.hooks b/README.hooks
+> new file mode 100644
+> index 00000000..be92a7d7
+> --- /dev/null
+> +++ b/README.hooks
+> @@ -0,0 +1,72 @@
+> +To run extra commands before and after each test case, there is the
+> +'hooks/start.hook' and 'hooks/end.hook' files for such usage.
+> +
+> +Some notes for those two hooks:
+> +
+> +- Both hook files needs to be executable
+> +  Or they will just be ignored
+> +
+> +- Stderr and stdout will be redirected to "$seqres.full"
+> +  With extra separator to distinguish the hook output with real
+> +  test output
+> +
+> +  Thus if any of the hook is specified, all tests will generate
+> +  "$seqres.full" which may increase the disk usage for results.
+> +
+> +- Error in hooks script will be ignored completely
+> +
+> +- Environment variable "$HOOK_TEMP" will be exported for both hooks
+> +  And the variable will be ensured not to change for both hooks.
+> +
+> +  Thus it's possible to store temporary values between the two hooks,
+> +  like pid.
+> +
+> +- Start hook has only one parameter passed in
+> +  $1 is "$seq" from "check" script. The content will the path of current
+> +  test case. E.g "tests/btrfs/001"
+> +
+> +- End hook has two parameters passed in
+> +  $1 is the same as start hook.
+> +  $2 is the return value of the test case.
+> +  NOTE: $2 doesn't take later golden output mismatch check nor dmesg/kmemleak
+> +  check.
+> +
+> +The very basic test hooks would look like:
+> +
+> +hooks/start.hook:
+> +  #!/bin/bash
+> +  seq=$1
+> +  echo "HOOK_TMP=$HOOK_TMP"
+> +  echo "seq=$seq"
+> +
+> +hooks/end.hook:
+> +  #!/bin/bash
+> +  seq=$1
+> +  sts=$2
+> +  echo "HOOK_TMP=$HOOK_TMP"
+> +  echo "seq=$seq"
+> +  echo "sts=$sts"
+> +
+> +Then run test btrfs/001 and btrfs/002, their "$seqres.full" would look like:
+> +
+> +result/btrfs/001.full:
+> +  === Running start hook ===
+> +  HOOK_TMP=/tmp/78973.hook
+> +  seq=tests/btrfs/001
+> +  === Start hook finished ===
+> +  === Running end hook ===
+> +  HOOK_TMP=/tmp/78973.hook
+> +  seq=tests/btrfs/001
+> +  sts=0
+> +  === End hook finished ===
+> +
+> +result/btrfs/002.full:
+> +  === Running start hook ===
+> +  HOOK_TMP=/tmp/78973.hook
+> +  seq=tests/btrfs/002
+> +  === Start hook finished ===
+> +  === Running end hook ===
+> +  HOOK_TMP=/tmp/78973.hook
+> +  seq=tests/btrfs/002
+> +  sts=0
+> +  === End hook finished ===
+> diff --git a/check b/check
+> index bb7e030c..f24906f5 100755
+> --- a/check
+> +++ b/check
+> @@ -846,6 +846,10 @@ function run_section()
+>  		# to be reported for each test
+>  		(echo 1 > $DEBUGFS_MNT/clear_warn_once) > /dev/null 2>&1
+>  
+> +		# Remove previous $seqres.full before start hook
+> +		rm -f $seqres.full
+> +
+> +		_run_start_hook
 
+Seeing as we now have standardized preamble and cleanup in every single
+test, why don't you run this from _begin_fstest and modify
+_register_cleanup to run _run_end_hook from the trap handler?
 
-On 2021/7/20 =E4=B8=8A=E5=8D=888:25, Dave Chinner wrote:
-> On Mon, Jul 19, 2021 at 03:13:37PM +0800, Qu Wenruo wrote:
->> This patch will allow fstests to run custom hooks before and after each
->> test case.
->>
->> These hooks will need to follow requirements:
->>
->> - Both hook files needs to be executable
->>    Or they will just be ignored
->>
->> - Stderr and stdout will be redirected to "$seqres.full"
->>    With extra separator to distinguish the hook output with real
->>    test output
->>
->>    Thus if any of the hook is specified, all tests will generate
->>    "$seqres.full" which may increase the disk usage for results.
->>
->> - Error in hooks script will be ignored completely
->>
->> - Environment variable "$HOOK_TEMP" will be exported for both hooks
->>    And the variable will be ensured not to change for both hooks.
->>
->>    Thus it's possible to store temporary values between the two hooks,
->>    like pid.
->>
->> - Start hook has only one parameter passed in
->>    $1 is "$seq" from "check" script. The content will the path of curre=
-nt
->>    test case. E.g "tests/btrfs/001"
->>
->> - End hook has two parameters passed in
->>    $1 is the same as start hook.
->>    $2 is the return value of the test case.
->>    NOTE: $2 doesn't take later golden output mismatch check nor dmesg/k=
-memleak
->>    check.
->>
->> For more info, please refer to "README.hooks".
->
-> This is all info that should be in README.hooks, not in the commit
-> message.  Commit messages are about explaining why something needs
-> to exist or be changed, not to describe the change being made. This
-> commit message doesn't tell me anything about what this is for, so I
-> can't really make any value judgement on it - exactly what is this
-> intended to be used for?
+This way the start hooks run from within each test and therefore can
+modify the test's environment (as opposed to ./check's environment; the
+two are /not/ the same thing!) and/or _notrun the test like Ted wants.
 
-To run whatever you may want.
+(Granted I wonder why not use an exclude list, because I bet my 3.10
+kernel has patches that yours doesn't, so kernel versions aren't all
+that meaningful...)
 
-Don't you want to run some trace-cmd to record the ftrace buffer for
-certain tests to debug?
+--D
 
->
-> FWIW, if a test needs something to be run before/after the test, it
-> really should be in the test, run as part of the test.
-
-Not the trace-cmd things one is going to debug.
-
-> Adding
-> overhead to every test being just to check for something that
-> doesn't actually have a defined use, nor will exist or be used on
-> the vast majority of systems running fstests doesn't seem like the
-> best idea to me.
-
-Then you can do whatever you did when you debug certain test case like
-before, adding whatever commands you need into "check" script.
-
-If you believe that's the cleanest way to debug, then sure.
-
-Thanks,
-Qu
-
->
-> Cheers,
->
-> Dave.
->
+>  		if [ "$DUMP_OUTPUT" = true ]; then
+>  			_run_seq 2>&1 | tee $tmp.out
+>  			# Because $? would get tee's return code
+> @@ -854,6 +858,7 @@ function run_section()
+>  			_run_seq >$tmp.out 2>&1
+>  			sts=$?
+>  		fi
+> +		_run_end_hook
+>  
+>  		if [ -f core ]; then
+>  			_dump_err_cont "[dumped core]"
+> diff --git a/common/preamble b/common/preamble
+> index 66b0ed05..41a12060 100644
+> --- a/common/preamble
+> +++ b/common/preamble
+> @@ -56,8 +56,4 @@ _begin_fstest()
+>  	_register_cleanup _cleanup
+>  
+>  	. ./common/rc
+> -
+> -	# remove previous $seqres.full before test
+> -	rm -f $seqres.full
+> -
+>  }
+> diff --git a/common/rc b/common/rc
+> index d4b1f21f..ec434aa5 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -4612,6 +4612,49 @@ _require_names_are_bytes() {
+>          esac
+>  }
+>  
+> +_run_start_hook()
+> +{
+> +	if [[ ! -d "hooks" ]]; then
+> +		return
+> +	fi
+> +
+> +	if [[ ! -x "hooks/start.hook" ]]; then
+> +		return
+> +	fi
+> +
+> +	# Export $HOOK_TMP for hooks, here we add ".hook" suffix to "$tmp",
+> +	# so we won't overwrite any existing $tmp.* files
+> +	export HOOK_TMP=$tmp.hook
+> +
+> +	echo "=== Running start hook ===" >> $seqres.full
+> +	# $1 is alwasy $seq
+> +	./hooks/start.hook $seq >> $seqres.full 2>&1
+> +	echo "=== Start hook finished ===" >> $seqres.full
+> +	unset HOOK_TMP
+> +}
+> +
+> +_run_end_hook()
+> +{
+> +	if [[ ! -d "hooks" ]]; then
+> +		return
+> +	fi
+> +
+> +	if [[ ! -x "hooks/end.hook" ]]; then
+> +		return
+> +	fi
+> +
+> +	# Export $HOOK_TMP for hooks, here we add ".hook" suffix to "$tmp",
+> +	# so we won't overwrite any existing $tmp.* files
+> +	export HOOK_TMP=$tmp.hook
+> +
+> +	echo "=== Running end hook ===" >> "$seqres.full"
+> +	# $1 is alwasy $seq
+> +	# $2 is alwasy $sts
+> +	./hooks/end.hook $seq $sts >> "$seqres.full" 2>&1
+> +	echo "=== End hook finished ===" >> "$seqres.full"
+> +	unset HOOK_TMP
+> +}
+> +
+>  init_rc
+>  
+>  ################################################################################
+> -- 
+> 2.31.1
+> 
