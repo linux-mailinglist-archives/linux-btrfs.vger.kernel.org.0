@@ -2,215 +2,269 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2E33CF4B1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 08:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727E93CF4DF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 08:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237858AbhGTGDA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jul 2021 02:03:00 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:60414 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237878AbhGTGCq (ORCPT
+        id S242238AbhGTGQL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 20 Jul 2021 02:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236918AbhGTGPw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jul 2021 02:02:46 -0400
-Received: from dread.disaster.area (pa49-181-34-10.pa.nsw.optusnet.com.au [49.181.34.10])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 2897E80B75D;
-        Tue, 20 Jul 2021 16:43:19 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1m5jTJ-008d1T-S5; Tue, 20 Jul 2021 16:43:17 +1000
-Date:   Tue, 20 Jul 2021 16:43:17 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC] fstests: allow running custom hooks
-Message-ID: <20210720064317.GC2031856@dread.disaster.area>
-References: <20210719071337.217501-1-wqu@suse.com>
- <20210720002536.GA2031856@dread.disaster.area>
- <3f2d4ebd-bf75-b283-45be-3fa81e65d5bf@gmx.com>
- <20210720021437.GB2031856@dread.disaster.area>
- <cb2bf09e-91fd-2976-4366-4daf29664890@gmx.com>
+        Tue, 20 Jul 2021 02:15:52 -0400
+Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837A2C061766
+        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jul 2021 23:56:28 -0700 (PDT)
+Received: from ananda.localnet (unknown [IPv6:2001:a62:1af8:f300:8efb:5b0a:975:bed6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 8D95428CFA6;
+        Tue, 20 Jul 2021 08:56:24 +0200 (CEST)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     linux-btrfs@vger.kernel.org, dennis@kernel.org,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Corruption errors on Samsung 980 Pro (FIXED for now)
+Date:   Tue, 20 Jul 2021 08:56:21 +0200
+Message-ID: <2087201.fsvZfV134Y@ananda>
+In-Reply-To: <92baa2b1-88ce-492f-f206-39b1dafc573a@gmx.com>
+References: <2729231.WZja5ltl65@ananda> <2078476.5JW8h9ZS4m@ananda> <92baa2b1-88ce-492f-f206-39b1dafc573a@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cb2bf09e-91fd-2976-4366-4daf29664890@gmx.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
-        a=hdaoRb6WoHYrV466vVKEyw==:117 a=hdaoRb6WoHYrV466vVKEyw==:17
-        a=IkcTkHD0fZMA:10 a=e_q4qTt1xDgA:10 a=7-415B0cAAAA:8
-        a=p1jNpjReWds5lNl4ywoA:9 a=QEXdDO2ut3YA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin2 smtp.mailfrom=martin@lichtvoll.de
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 10:45:17AM +0800, Qu Wenruo wrote:
+Qu Wenruo - 18.07.21, 02:16:19 CEST:
+> On 2021/7/17 下午4:31, Martin Steigerwald wrote:
+> > Martin Steigerwald - 16.07.21, 17:19:55 CEST:
+> >> Martin Steigerwald - 16.07.21, 17:05:59 CEST:
+> >>> I migrated to a different laptop and this one has a 2TB Samsung 980 Pro drive
+> >>> (not a 2TB Samsung 870 Evo Plus which previously had problems).
+> >>
+> >> Kernel is:
+> >>
+> >> % cat /proc/version
+> >> Linux version 5.13.1-t14 (martin@[…]) (gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2) #14 SMP PREEMPT Mon Jul 12 10:36:54 CEST 2021
+> >
+> > Another addition that might be important. I am using xxhash.
+> >
+> > I created the filesystem like that:
+> >
+> > % mkfs.btrfs -L home --csum xxhash /dev/nvme/home
+> >
+> > So it is xxhash, discard=async and space cache v2.
 > 
+> My educiated guess is async.
 > 
-> On 2021/7/20 上午10:14, Dave Chinner wrote:
-> > On Tue, Jul 20, 2021 at 08:36:49AM +0800, Qu Wenruo wrote:
-> > > 
-> > > 
-> > > On 2021/7/20 上午8:25, Dave Chinner wrote:
-> > > > On Mon, Jul 19, 2021 at 03:13:37PM +0800, Qu Wenruo wrote:
-> > > > > This patch will allow fstests to run custom hooks before and after each
-> > > > > test case.
-> > > > > 
-> > > > > These hooks will need to follow requirements:
-> > > > > 
-> > > > > - Both hook files needs to be executable
-> > > > >     Or they will just be ignored
-> > > > > 
-> > > > > - Stderr and stdout will be redirected to "$seqres.full"
-> > > > >     With extra separator to distinguish the hook output with real
-> > > > >     test output
-> > > > > 
-> > > > >     Thus if any of the hook is specified, all tests will generate
-> > > > >     "$seqres.full" which may increase the disk usage for results.
-> > > > > 
-> > > > > - Error in hooks script will be ignored completely
-> > > > > 
-> > > > > - Environment variable "$HOOK_TEMP" will be exported for both hooks
-> > > > >     And the variable will be ensured not to change for both hooks.
-> > > > > 
-> > > > >     Thus it's possible to store temporary values between the two hooks,
-> > > > >     like pid.
-> > > > > 
-> > > > > - Start hook has only one parameter passed in
-> > > > >     $1 is "$seq" from "check" script. The content will the path of current
-> > > > >     test case. E.g "tests/btrfs/001"
-> > > > > 
-> > > > > - End hook has two parameters passed in
-> > > > >     $1 is the same as start hook.
-> > > > >     $2 is the return value of the test case.
-> > > > >     NOTE: $2 doesn't take later golden output mismatch check nor dmesg/kmemleak
-> > > > >     check.
-> > > > > 
-> > > > > For more info, please refer to "README.hooks".
-> > > > 
-> > > > This is all info that should be in README.hooks, not in the commit
-> > > > message.  Commit messages are about explaining why something needs
-> > > > to exist or be changed, not to describe the change being made. This
-> > > > commit message doesn't tell me anything about what this is for, so I
-> > > > can't really make any value judgement on it - exactly what is this
-> > > > intended to be used for?
-> > > 
-> > > To run whatever you may want.
-> > 
-> > No, don't try to turn this around and put it on me to think up use
-> > cases to justify your change. You have a use case for this, so
-> > *document it so everyone understands what it is*.
+> The reason is that all affected tree blocks are showing a fixed pattern:
+> have 0x48be03222606a29d expected csum 0x0100000026004000
+
+Thank you.
+
+Now it gets interesting. I just found, as I wanted to disable discard,
+that it was not enabled to begin with:
+
+% grep home /etc/fstab
+/dev/nvme/home  /home           btrfs   lazytime,compress=zstd                                  0       0
+[…]
+
+It appears that out of caution after my experiences with Samsung 870 Evo
+Plus I went without "discard=async".
+
+Also I stated the exact mount options further down in the mail. No
+discard in there:
+
+> >>> It is BTRFS single profile on LVM on LUKS. Mount options are:
+> >>>
+> >>> rw,relatime,lazytime,compress=zstd:3,ssd,space_cache=v2,subvolid=1054,subvol=/home
+
+So that part of my mail where I claimed I was using "discard=async" was
+inaccurate.
+
+> This pretty much means those tree blocks have been discarded.
 > 
-> If you don't need it, then fine.
+> But I'm not familiar with that part.
 > 
-> But there are already other guys interesting in this feature.
+> Dennis is more familiar with this, maybe he could provide some idea on this.
+
+Any other insights?
+
+Best,
+Martin
+
+> Thanks,
+> Qu
+> >
+> > Maybe something in this combination is not yet fully stable?
+> >
+> > https://btrfs.wiki.kernel.org/index.php/Status says additional checksum
+> > algorithms are stable. It also states free space cache is stable. And it
+> > states that asynchronous discards are stable. It does not explicitly
+> > mention xxhash or free space v2 are stable too. I bet it may be included
+> > in the general statement, but I am not completely sure.
+> >
+> > However what I just did is:
+> >
+> > % mount -o remount,clear_cache,space_cache=v2 /home
+> >
+> > And I now get:
+> >
+> > % btrfs scrub status /home
+> > UUID:             […]
+> > Scrub started:    Sat Jul 17 10:24:54 2021
+> > Status:           finished
+> > Duration:         0:01:43
+> > Total to scrub:   178.39GiB
+> > Rate:             1.73GiB/s
+> > Error summary:    no errors found
+> >
+> > Hopefully it will stay this way. Fingers crossed.
+> >
+> > So a good trick in case there is no file mentioned in kernal log may be to clear
+> > free space tree and see whether the checksum errors go away.
+> >
+> > If anyone can make any additional sense out of this, please go ahead.
+> >
+> >>> I thought this time I would be fine, but I just got:
+> >>>
+> >>> [63168.287911] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
+> >>> [63168.287925] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+> >>> [63168.346552] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
+> >>> [63168.346567] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
+> >>> [63168.346685] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
+> >>> [63168.346708] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
+> >>> [63168.346859] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
+> >>> [63168.346873] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
+> >>> [63299.490367] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
+> >>> [63299.490384] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
+> >>> [63299.572849] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
+> >>> [63299.572866] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
+> >>> [63299.573151] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
+> >>> [63299.573168] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
+> >>> [63299.573286] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
+> >>> [63299.573295] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
+> >>> [63588.902631] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
+> >>> [63588.902647] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 13, gen 0
+> >>> [63588.949614] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
+> >>> [63588.949628] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 14, gen 0
+> >>> [63588.949849] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
+> >>> [63588.949855] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 15, gen 0
+> >>> [63588.950087] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
+> >>> [63588.950099] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 16, gen 0
+> >>
+> >> Additional errors revealed through scrubbing – will test the other
+> >> filesystems as well:
+> >>
+> >> % btrfs scrub status /home
+> >> UUID:             […]
+> >> Scrub started:    Fri Jul 16 17:08:49 2021
+> >> Status:           finished
+> >> Duration:         0:02:05
+> >> Total to scrub:   203.54GiB
+> >> Rate:             1.63GiB/s
+> >> Error summary:    csum=5
+> >>    Corrected:      0
+> >>    Uncorrectable:  5
+> >>    Unverified:     0
+> >>
+> >> Now totalling to 21 errors:
+> >>
+> >> % btrfs device stats /home
+> >> [/dev/mapper/nvme-home].write_io_errs    0
+> >> [/dev/mapper/nvme-home].read_io_errs     0
+> >> [/dev/mapper/nvme-home].flush_io_errs    0
+> >> [/dev/mapper/nvme-home].corruption_errs  21
+> >> [/dev/mapper/nvme-home].generation_errs  0
+> >>
+> >> Log:
+> >>
+> >> [64707.979036] BTRFS info (device dm-3): scrub: started on devid 1
+> >> [64730.009687] BTRFS warning (device dm-3): checksum error at logical 36997591040 on dev /dev/mapper/nvme-home, physical 34850107392, root 1054, inode 2295743, offset 2718461952: path resolving failed with ret=-2
+> >> [64730.009710] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 17, gen 0
+> >> [64730.009721] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997591040 on dev /dev/mapper/nvme-home
+> >> [64730.010996] BTRFS warning (device dm-3): checksum error at logical 36997595136 on dev /dev/mapper/nvme-home, physical 34850111488, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
+> >> [64730.011014] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 18, gen 0
+> >> [64730.011024] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997595136 on dev /dev/mapper/nvme-home
+> >> [64730.011298] BTRFS warning (device dm-3): checksum error at logical 36997599232 on dev /dev/mapper/nvme-home, physical 34850115584, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
+> >> [64730.011312] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 19, gen 0
+> >> [64730.011319] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997599232 on dev /dev/mapper/nvme-home
+> >> [64730.011603] BTRFS warning (device dm-3): checksum error at logical 36997603328 on dev /dev/mapper/nvme-home, physical 34850119680, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
+> >> [64730.011616] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 20, gen 0
+> >> [64730.011623] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997603328 on dev /dev/mapper/nvme-home
+> >> [64730.011905] BTRFS warning (device dm-3): checksum error at logical 36997607424 on dev /dev/mapper/nvme-home, physical 34850123776, root 1054, inode 4895964, offset 7676579840: path resolving failed with ret=-2
+> >> [64730.011921] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 21, gen 0
+> >> [64730.011928] BTRFS error (device dm-3): unable to fixup (regular) error at logical 36997607424 on dev /dev/mapper/nvme-home
+> >> [64832.447560] BTRFS info (device dm-3): scrub: finished on devid 1 with status: 0
+> >>
+> >> Why is BTRFS unable to determine a path?
+> >>
+> >> How would I fix those when BTRFS does not tell me what file is affected?
+> >>
+> >>> during a backup.
+> >>>
+> >>> According to rsync this is related (why does BTRFS does not report the
+> >>> affected file?)
+> >>>
+> >>> Create a snapshot of '/home' in '/zeit/home/backup-2021-07-16-16:40:13'
+> >>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/output error (5)
+> >>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/output error (5)
+> >>> ERROR: martin/.local/share/akonadi/search_db/email/postlist.glass failed verification -- update discarded.
+> >>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/baloo/index": Input/output error (5)
+> >>> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/baloo/index": Input/output error (5)
+> >>> ERROR: martin/.local/share/baloo/index failed verification -- update discarded.
+> >>>
+> >>> Both are frequently written to files (both Baloo and Akonadi have very crazy
+> >>> I/O patterns that, I would not have thought so, can even satisfy an NVMe SSD).
+> >>>
+> >>> I thought that a Samsung 980 Pro can easily handle "discard=async" so I
+> >>> used it.
+> >>>
+> >>> This is on a ThinkPad T14 Gen1 with AMD Ryzen 7 PRO 4750U and 32 GiB of RAM.
+> >>>
+> >>> It is BTRFS single profile on LVM on LUKS. Mount options are:
+> >>>
+> >>> rw,relatime,lazytime,compress=zstd:3,ssd,space_cache=v2,subvolid=1054,subvol=/home
+> >>>
+> >>> Smartctl has no errors.
+> >>>
+> >>> I only use a few (less than 10) subvolumes.
+> >>>
+> >>> I do not have any other errors in kernel log, so I bet this may not be
+> >>> "discard=async" related. Any idea?
+> >>
+> >> Maybe I still remove "discard=async" for now. Maybe it is not yet fully reliable.
+> >>
+> >>> Could it have to do with a sudden switching off the laptop (there had
+> >>> been quite some reasons cause at least with a AMD model of this laptop
+> >>> in combination with an USB-C dock by Lenovo there are quite some stability
+> >>> issues)? I would have hoped that the Samsung 980 Pro would still be
+> >>> equipped to complete the outstanding write operation, but maybe it has
+> >>> no capacitor for this.
+> >>>
+> >>> I am really surprised by the what I experienced about the reliability of
+> >>> SSDs I recently bought. I did not see a failure within a month with any
+> >>> of the older SSDs. I hope this does not point at a severe worsening of
+> >>> the quality. Probably I have to fit another SSD in there and use BTRFS
+> >>> RAID 1 again to protect at least part of the data from errors like this.
+> >>>
+> >>> Any idea about this? I bet you may not have any, as there is not block
+> >>> I/O related errors in the log, but if you have, by all means share your
+> >>> thoughts. Thank you.
+> >>>
+> >>> Both files can be recreated. So I bet I will just remove them.
+> >>>
+> >>> Best,
+> >>
+> >
+> >
 > 
-> Talk to them too.
-> 
-> Something you don't need doesn't mean other don't.
 
-Hold up, what's with the attitude?
 
-I asked you to describe the use case for the hooks because it wasn't
-in the commit message and I don't have a clue how you intend to use
-it. Hence I need you, the patch author and submitter, to tell me
-what it is intended for.
-
-Shouting at me telling how I should read about what others want when
-instead of actually answering my question by describing your use
-case as I've asked you (repeatedly) to describe is not helpful.
-
-So please clam down, take a step back and please explain to me in a
-calm, rational, professional manner what this functionality is
-needed for.
-
-> > My concerns are about whether the infrastructure is maintainable
-> > from a long term persepective, and that all depends on what use
-> > cases we have for it and whether global hooks are the likely best
-> > solution to those use cases over the long term.  I'm not opposed to
-> > adding hooks, I'm just asking for context and justification that is
-> > needed to be able to consider if this is the best solution for the
-> > use cases that are put forward...
-> 
-> Nope. All hook users are responsible for whatever they do.
-> 
-> Maybe it's adding trace-cmd calls, maybe it's to do extra error
-> injection setup, I don't care.
-
-You might not care, but other people will. I can see that if these
-execution hooks becomes a common thing people use, it will need to
-be formalised and further developed and documented. Because if they
-are in widespread use, we really, really care about things like API
-changes because breaking everyone's custom hook scripts because we
-removed or changed a global variable or function is not in anyone's
-interests.
-
-> I just provide a way to do that more simply, to add two points to call
-> executable scripts, and any modification in their hooks won't be
-> submitted to fstests by default (check the gitignore update)
-> What users do in their hooks is not what I really care, and nor what you
-> should care.
-
-Yes, I get it that you don't care. And that's a problem.
-
-ISTM that you haven't thought this through beyond "add a hook for
-running throw-away debug code". You clearly haven't thought about
-what a developer would need to do to build a library of hook
-implementations for debugging different tests. I say that because
-maintaining that library via commits in local fstests repositories
-is impossible because gitignore rules you added. I know, you don't
-care, but I very much do, because storing stacks of custom changes
-to fstests in local repositories is how I deploy fstests to my test
-machines...
-
-And given that it appears you haven't thought about maintaining a
-local repository of hooks, I strongly doubt you've even consider the
-impact of future changes to the hook API on existing hook scripts
-that devs and test engineers have written over months and years
-while debugging test failures.
-
-Darrick pointed out the difference between running in the check vs
-test environment, which is something that is very much an API
-consideration - we change the test environment arbitrarily and fix
-all the tests that change affects at the same time. But if there are
-private scripts that depend on the test environment and variables
-being stable, then we can't do things like, say, rename the "seqres"
-variable across all tests because that will break every custom hook
-script out there that writes to $seqres.full...
-
-See what I'm getting at here? I've looked at the proposal and I'm
-asking questions that your implementation raises. I'm not asking
-these questions to be difficult, I'm asking them because I want to
-know if I can use the hooks to replace some of the things I do with
-other methods. And if I do, how I'm expected to maintain and deploy
-them to the test machine farm from my master git repository they all
-pull from...
-
-> If someone is running hooks with every test case, it's their problem or
-> intention. I don't care!
-> 
-> > 
-> > IOWs, without a description of your use case and requirements, I
-> > have no basis from which to determine if this is useful
-> > infrastructure over the long term or not.
-> OK, my use case is just to run "trace-cmd clear" before one test,
-> btrfs/160, and I don't want to populate my workplace so that I may
-> submit some patch with my debugging setup included.
-> 
-> I would only run that btrfs/160 with my custom hook, that's all.
-
-If you have to submit a patch with the debugging and custom hook
-defined in it to the build system, why can't you just submit a patch
-that, say, runs "trace-cmd clear" at the start of btrfs/160 itself?
-
-IOWs, I don't understand why generic, fstests-global script
-execution hooks are needed just to run a simple command for helping
-debug a single test. Why not just *patch the test* and then once
-you're done throw away the debug patch?
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Martin
+
+
