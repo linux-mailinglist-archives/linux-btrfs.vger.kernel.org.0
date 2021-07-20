@@ -2,123 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16C13CF654
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 10:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AEE3CF737
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 11:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhGTILc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jul 2021 04:11:32 -0400
-Received: from mout.gmx.net ([212.227.17.20]:43155 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232287AbhGTIFI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jul 2021 04:05:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1626770674;
-        bh=1FBydMUdr5SBBEWX7UJ+djUwawBWu+TIpND3K/PjJEA=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=HL/mPw9PxH5PLN8z0g8G5UMNceyPwej+CB+P6acMlQTvfHRXNUDHK1MGxOb91OHeG
-         p3xeP7ioSy5MfPiU9n3mxmn+S8b7VBH90IUaPY/avZrUASs8bdyhKLh2lTNu7dQOHm
-         gcvkTzunVIdGrvm0jI+u3gxh4i6556x/dMT50ihM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiacR-1lQfW22f03-00fjRo; Tue, 20
- Jul 2021 10:44:34 +0200
-Subject: Re: [PATCH RFC] fstests: allow running custom hooks
-To:     Eryu Guan <eguan@linux.alibaba.com>,
-        Dave Chinner <david@fromorbit.com>
-Cc:     Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20210719071337.217501-1-wqu@suse.com>
- <20210720002536.GA2031856@dread.disaster.area>
- <3f2d4ebd-bf75-b283-45be-3fa81e65d5bf@gmx.com>
- <20210720021437.GB2031856@dread.disaster.area>
- <cb2bf09e-91fd-2976-4366-4daf29664890@gmx.com>
- <20210720064317.GC2031856@dread.disaster.area>
- <20210720075748.GJ60846@e18g06458.et15sqa>
- <3fd6494b-8f03-4d97-9d00-21343e0e8152@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <6b7699a9-fc5e-32d9-78c5-9c0e3cf92895@gmx.com>
-Date:   Tue, 20 Jul 2021 16:44:29 +0800
+        id S234417AbhGTJMC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jul 2021 05:12:02 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:54854 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232506AbhGTJMB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 20 Jul 2021 05:12:01 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0B1DF1FD3E;
+        Tue, 20 Jul 2021 09:52:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1626774756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0S3FE71qGo66t31Vxc28Wi9V+Ayx6OZMuHotTPZ+18Y=;
+        b=c2XzEflSX0tIvkoXclpsr1Pe1rwb9SiwUw5Glll8ctmd9TDuRsQwYS1BLW/AjVcFtvH+Rq
+        W6oJgU04IUmXu1L/1wUNyWdN6bOMgy+b6ADzKJW1x0BccrffxjZDSzIduLav2BcOc6NBmk
+        IKBPPCIKUYUO4NmItmpCSt/z+J74vDI=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 80D2213AA2;
+        Tue, 20 Jul 2021 09:52:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id +x0ZHeOc9mCHKgAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Tue, 20 Jul 2021 09:52:35 +0000
+Subject: Re: [PATCH 03/27] iomap: mark the iomap argument to iomap_sector
+ const
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
+        cluster-devel@redhat.com
+References: <20210719103520.495450-1-hch@lst.de>
+ <20210719103520.495450-4-hch@lst.de> <20210719160820.GE22402@magnolia>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <ab10035a-43ee-8f25-47c0-57321f748abd@suse.com>
+Date:   Tue, 20 Jul 2021 12:52:35 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <3fd6494b-8f03-4d97-9d00-21343e0e8152@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210719160820.GE22402@magnolia>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DjUhkcVjv1gc0E5hcs2IjAxcu+i989Q37AaXVBTCsoiWSY/1Z+v
- yhIIyso7i/LEQVry1Uk/vDOOl5Ha4mcD3a/c+ODVDqDRwJfePpLqik+i0745j8gebrQEq/9
- ZjPgl+41ycFe4sp44FaO2m0lTBRSWjuVEJK7r3BqrWQqqkh8u70ojDxmlOyEKbF+CqjOzzv
- ZwuHu45qBif4NR9PzeznA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:x9w8VzAsalU=:/11HsaO7g2pI22J++r/VOx
- b2CXgiHPxJ7dANOaGOzo9M1fAQ+es51G+cm5a4wVsyzsD3zn/xNcTMohoyfkHaAw2YTAnXFLm
- Qk8NcaCYJaOpYMtBsvobvBXJ9apM/nFbLk7+FH4R5aSPNbpL6Nd+XNzf7/+j5mPVq2ign/3OA
- 5carFyC4rm/7KfzkY3lF0xcHuE9yWaNghoLmIwlsJ2FPqJUNXf2agX0Ta3O9ifBq9nRmb3JaZ
- eUx2+mUrLYW17Qf2ckZ6oXnjApjQhV6JXxA1NGCef5+7UkfFYZ8NSlM4IbDX99E4yxvwOB+6U
- dhY122+1W/fNEUc/6Qd9DV/fZf510Y0TPgw+dnZHlACfVI+5jNeCsdIJk/mUcZiyWQVv26xG9
- xqDulbpqw34dccA/rS5zfHhnpbPGw/NI9Tc+0Z6qRXDUOnRTKzh6E7sWXC2yUAZC3smoZlxsS
- hy7q9rmK7O0uqikbYjnZ2Ux0+85poRtGJZ8VbhjmEKPp3Gi01xltHimpJe4f7o5Zujr8kdaU9
- gykEKzRxLeSS42eQ9B73qagYqq7F5IBGiJFZYcfnlyfrOj1TTpBVEzx/cxIc8G910Z9448yMK
- bRGhQSo6Lk+r14fs0bI3R1A8jaaTZK0EZplDMBiB4S0mFB5gGq+DiOZkCNqm7f3FTLTyiJQe6
- LJpnbMcHuE3O5kkktXwoCfOiN+iFxw6v9mOK3udIgA8mrAHbALQ/gOIOulistCetNZVv9I9li
- eczcoKATtIKfOK6uvUkrstR0ZorUNEf17P5/qTf9dTzckBAFDsl+de4pdG3WnRyBAmzL13eoR
- mRMlE4vQuUeiQidMBKMXGiEwJcjuqEaHHyGPFzyDffE+aMPB6X0NlylOze0/wQN9RnyRoUQfx
- B8fhd9QAkdd3wOxl3mjQ8bj1JNvRc0oJVb4tHWjSN6YCMYZ8+I4u/6ITOrBEBNYgo6cHULwtY
- ptsjFk58vCWcIiVKqXIlGtIZyqD7ztFw2kB5sqRC4cf+/SLRQB+jSMC80WsRwhFu/lKbQPlA9
- YtXjBshnh/atPuuyotImBQEIQ7CMteFAMvurnx5dSS/ffheaXWgAZQhiowz6RKgSM4dr3KnWn
- zid2Bg8p/Khfwlvf7G6RXZYvNs6D8gbZL9/Y0GEu3KgAUYLggAP7jGrXQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/7/20 =E4=B8=8B=E5=8D=884:29, Qu Wenruo wrote:
->
->
-> On 2021/7/20 =E4=B8=8B=E5=8D=883:57, Eryu Guan wrote:
->> On Tue, Jul 20, 2021 at 04:43:17PM +1000, Dave Chinner wrote:
->> [snip]
->>>
->>> And given that it appears you haven't thought about maintaining a
->>> local repository of hooks, I strongly doubt you've even consider the
->>> impact of future changes to the hook API on existing hook scripts
->>> that devs and test engineers have written over months and years
->>> while debugging test failures.
->>>
->>> Darrick pointed out the difference between running in the check vs
->>> test environment, which is something that is very much an API
->>> consideration - we change the test environment arbitrarily and fix
->>> all the tests that change affects at the same time. But if there are
->>> private scripts that depend on the test environment and variables
->>> being stable, then we can't do things like, say, rename the "seqres"
->>> variable across all tests because that will break every custom hook
->>> script out there that writes to $seqres.full...
+On 19.07.21 г. 19:08, Darrick J. Wong wrote:
+> On Mon, Jul 19, 2021 at 12:34:56PM +0200, Christoph Hellwig wrote:
+>> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> 
+> /me wonders, does this have any significant effect on the generated
+> code?
+
+https://theartofmachinery.com/2019/08/12/c_const_isnt_for_performance.html
+
+> 
+> It's probably a good idea to feed the optimizer as much usage info as we
+> can, though I would imagine that for such a simple function it can
+> probably tell that we don't change *iomap.
+> 
+> IMHO, constifiying functions is a good way to signal to /programmers/
+> that they're not intended to touch the arguments, so
+> 
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+> 
+> --D
+> 
+>> ---
+>>  include/linux/iomap.h | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
 >>
->> I was thinking about this as well, if such private hook scripts are
->> useful to others as well, then I think maybe it's worth to maintain suc=
-h
->> scripts in fstests repo, and further changes to the hook API won't brea=
-k
->> the scripts
->
-> But those hook scripts are really craft by each developer, which can
-> have vastly different usage.
->
-> How could that be maintained inside fstests?
-
-Anyway, if building a stable and complex API just for hooks, then it's
-completely against my initial purpose.
-
-I'll just discard this patch then.
-
-Thanks,
-Qu
-
->
-> Thanks,
-> Qu
+>> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+>> index 093519d91cc9cc..f9c36df6a3061b 100644
+>> --- a/include/linux/iomap.h
+>> +++ b/include/linux/iomap.h
+>> @@ -91,8 +91,7 @@ struct iomap {
+>>  	const struct iomap_page_ops *page_ops;
+>>  };
+>>  
+>> -static inline sector_t
+>> -iomap_sector(struct iomap *iomap, loff_t pos)
+>> +static inline sector_t iomap_sector(const struct iomap *iomap, loff_t pos)
+>>  {
+>>  	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
+>>  }
+>> -- 
+>> 2.30.2
 >>
->> Thanks,
->> Eryu
->>
+> 
