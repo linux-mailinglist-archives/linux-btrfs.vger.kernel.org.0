@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDC63CF5A1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 09:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6E73CF5AE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jul 2021 10:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhGTHRb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Jul 2021 03:17:31 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:37224 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231201AbhGTHRM (ORCPT
+        id S232127AbhGTHXa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Jul 2021 03:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232260AbhGTHWq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Jul 2021 03:17:12 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UgP9.Mc_1626767868;
-Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0UgP9.Mc_1626767868)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 20 Jul 2021 15:57:49 +0800
-Date:   Tue, 20 Jul 2021 15:57:48 +0800
-From:   Eryu Guan <eguan@linux.alibaba.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC] fstests: allow running custom hooks
-Message-ID: <20210720075748.GJ60846@e18g06458.et15sqa>
-References: <20210719071337.217501-1-wqu@suse.com>
- <20210720002536.GA2031856@dread.disaster.area>
- <3f2d4ebd-bf75-b283-45be-3fa81e65d5bf@gmx.com>
- <20210720021437.GB2031856@dread.disaster.area>
- <cb2bf09e-91fd-2976-4366-4daf29664890@gmx.com>
- <20210720064317.GC2031856@dread.disaster.area>
+        Tue, 20 Jul 2021 03:22:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B0EC061762;
+        Tue, 20 Jul 2021 01:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ExmrGbrdIUQSeY7e8dXMjoWIxviUFIUiz6y8MEQJj8w=; b=X22RTxG/2SWNuDrL8UUVekBqpP
+        slcqfv+jIuqDbmJ7DSwfs8Tunkg/f+0vAg3hGD+Tf1Lpw8KloNYpnwZbZGUkSSYA4LHJ5bJdbrsiE
+        t5K4kjDeOTH0bhVeRaMnr78MrnlIS9NJq5dxXNa6TNYeRlLIAr8JY1WU5gAS7Q9TqMmsKbFpXfc+b
+        5IT85XAPChHfZdsFFaCx2jBPeTHHk26Fgg8JE9msUq5qosVUwrvwl/jo8IVNjfSs9pDqDyUpJgfD+
+        Twfonm9JaREnj29QkLIHv7Md/h7uZ3YLyneaYRjyIlUjt+V+lumPOVVy192h23FtjqGTi8WHRhbSf
+        wybvr/Yg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m5kgS-007tLP-QZ; Tue, 20 Jul 2021 08:01:05 +0000
+Date:   Tue, 20 Jul 2021 09:00:56 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-nfs@vger.kernel.org,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Ulli Horlacher <framstag@rus.uni-stuttgart.de>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] NFSD: handle BTRFS subvolumes better.
+Message-ID: <YPaCuGm+3RX6vzjp@infradead.org>
+References: <162632387205.13764.6196748476850020429@noble.neil.brown.name>
+ <edd94b15-90df-c540-b9aa-8eac89b6713b@toxicpanda.com>
+ <YPBmGknHpFb06fnD@infradead.org>
+ <28bb883d-8d14-f11a-b37f-d8e71118f87f@toxicpanda.com>
+ <YPBvUfCNmv0ElBpo@infradead.org>
+ <e1d9caad-e4c7-09d4-b145-5397b24e1cc7@toxicpanda.com>
+ <YPVC/w4kw3y/14oF@infradead.org>
+ <162673888433.4136.7451392112850411713@noble.neil.brown.name>
+ <YPZr9woK584Oc61H@infradead.org>
+ <162676543271.12554.10226255548215795177@noble.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210720064317.GC2031856@dread.disaster.area>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <162676543271.12554.10226255548215795177@noble.neil.brown.name>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 04:43:17PM +1000, Dave Chinner wrote:
-[snip]
-> 
-> And given that it appears you haven't thought about maintaining a
-> local repository of hooks, I strongly doubt you've even consider the
-> impact of future changes to the hook API on existing hook scripts
-> that devs and test engineers have written over months and years
-> while debugging test failures.
-> 
-> Darrick pointed out the difference between running in the check vs
-> test environment, which is something that is very much an API
-> consideration - we change the test environment arbitrarily and fix
-> all the tests that change affects at the same time. But if there are
-> private scripts that depend on the test environment and variables
-> being stable, then we can't do things like, say, rename the "seqres"
-> variable across all tests because that will break every custom hook
-> script out there that writes to $seqres.full...
+On Tue, Jul 20, 2021 at 05:17:12PM +1000, NeilBrown wrote:
+> Does anything there seem unreasonable to you?
 
-I was thinking about this as well, if such private hook scripts are
-useful to others as well, then I think maybe it's worth to maintain such
-scripts in fstests repo, and further changes to the hook API won't break
-the scripts
-
-Thanks,
-Eryu
+This is what I've been asking for for years.
