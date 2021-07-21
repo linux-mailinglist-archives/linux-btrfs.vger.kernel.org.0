@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51FF3D1763
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jul 2021 22:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B761A3D1842
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jul 2021 22:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240370AbhGUTKM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Jul 2021 15:10:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45532 "EHLO
+        id S229553AbhGUUAV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Jul 2021 16:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240344AbhGUTKL (ORCPT
+        with ESMTP id S229463AbhGUUAV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Jul 2021 15:10:11 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F479C061757
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jul 2021 12:50:47 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id n10so3182867qke.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jul 2021 12:50:47 -0700 (PDT)
+        Wed, 21 Jul 2021 16:00:21 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A681CC061575
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jul 2021 13:40:57 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id i4so1588906qvq.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jul 2021 13:40:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=2sgwkbwA2WSiIVHue+sfNYuYuqRexhFEsyiJ0LGhOT0=;
-        b=Hz/AYpeiKDvMIzv7BFA7wU0uN7ha91WuriUmz/oE7kcHLGE2MpHoeReNTmHF0g5K26
-         gyLCEUfdBoAqRzo4lTK5CzUUnFUt36daxzeDjI1qVDjwk6aa3xN6DH1M4hoi1WZ4NK9t
-         8e6ZTUTC8z7UUGgOCRq9EcxoYL/y5nfvtzs9gbV30Dhu5Pm6i5Bins0og841IiOtYjcb
-         uQtmGCTY1i6Cy/QZuljT/r33g6TeOEw880WFKCRBwdRyBFKXiA9CbDIwRI/FA0yMBIw1
-         yebW1W5QMh1Y7e7I5nId4IbPa+qRMe9lZmQBKs0twiYiaDefG7+UTDKLqqhT43rg9tNB
-         8t3w==
+        bh=t+TMxxnGRy84Zh6fBJxce4cgNkD9Onu7Q7a5TfijRqA=;
+        b=V6w1gIabSB7XFswKmdjGz7PshFPB3auh8zLHS83lnpgAb/3+QJ1cMM1rxelRKGkIGG
+         F6G45ceuUnDUU1W3mGiPKy7qgmUEplHs9PvU5fx20DbnDxdxsJzhbKg/hs8ej9ix873p
+         jIeuwgh18c+iEpB+q96DKt8uKkgHDjKsUGJBD9lzYxzH0WA5P5/45qr6CvF8wTdUiqdZ
+         SarAMK9nwb8GmEouKWIE5fSSfJMcG5MaktO9PtCF64rWGrmIENBggbWb64+IVoA4AXb+
+         7kEHEdB+ASidFcUSJkANlBw3fTSUqZ9RKdbHiAGkcZW5EPbEmEQMP/2e7LCp9cQ1O/VW
+         i1lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=2sgwkbwA2WSiIVHue+sfNYuYuqRexhFEsyiJ0LGhOT0=;
-        b=SC+epsqW5e1AZ3KfPvvomEhuMSE8BmXyUGpVwxxp5nvECL2TkuzsByxf3n2NN9IUzj
-         6kDkvqn0cKRCdJOIPjwCNwWH61zZOkTeyVTRQlA8zfmDIaGK4vbDHCnBe2kksNZOKAF2
-         NDRMyT/r0UD1EyyK70g+raCdOd14Pa3vWucIG9Yo49QPGJUZFqDvZv2HMBr3qsRbQlub
-         Gz/HbftiXnjxmTNbQOxXbckp+xgFoXELffs7s6Xmwvn0Ez6lvVOdpCoYieK7Bl31Bulr
-         VJPYI26PuFHyFGr4YvA+a1U8uk61ZvJIvBrh3MwzQXnifuMGBqsl6Tu5bFVAjmo0iely
-         sKlQ==
-X-Gm-Message-State: AOAM5305edmuzLpfAPXNkI6hnYVhdao4OveG0O0xbfdSCm2EJJ1D7Qap
-        uOMQ/B0K3dEmVTNPxEyWahqnPQr+gCNBVkD+
-X-Google-Smtp-Source: ABdhPJyTUOTigLP8uutcwSCs1La57247VSnSjx14AsmRvEahwsJVmXiNLXhNXa/WMOxjBf6Osn24dw==
-X-Received: by 2002:a37:e02:: with SMTP id 2mr20801923qko.10.1626897045581;
-        Wed, 21 Jul 2021 12:50:45 -0700 (PDT)
+        bh=t+TMxxnGRy84Zh6fBJxce4cgNkD9Onu7Q7a5TfijRqA=;
+        b=Np/S69hiIILRndxbfzVXxVzG9uFrPF2dSnhfRYSWmi9l0f7OgVR8SOE4Q5Me5T/SeN
+         W5RJrh9kn2ZrN5venrcrqhN0WHbgSO83TZ2NDG/Jonvf3BS24ZLn4HM11NNdpPl4rw6o
+         jtmHOQy39waWnc4OFqzUrjU+Zy1OUiu9rVJ8BpJWEHcazySJ8WTTK8UKgMGouKhku54v
+         O+WeIEmMAispcdTl6MHiBMwGWPD+R8Rh8pfFfZqaKTF6JccpuNIeTXvGl9EI2lIknd/H
+         L1NNrmMM30Yu3S7gGdUUXi+LJhxFpbrMmLG891TrrXGezBRPk/x7hxVP+ajayQoUDH39
+         efTg==
+X-Gm-Message-State: AOAM533JgyovPvE/550uV3itRj6/ofxL0FXk+7iEzbgUkOgf4V6JKi2L
+        xbAPnyketRhKJs8p4d4d5djF10sW96qkty9Y
+X-Google-Smtp-Source: ABdhPJyCJHpcdyEaMWWz3hdc3DR5AzoMJ3XovuMk6gMs/dsgepBfOQCnkuyt4fSpogigucNEcaZR9g==
+X-Received: by 2002:a05:6214:5b0:: with SMTP id by16mr37103075qvb.54.1626900056424;
+        Wed, 21 Jul 2021 13:40:56 -0700 (PDT)
 Received: from ?IPv6:2620:10d:c0a8:11e8::1223? ([2620:10d:c091:480::1:9441])
-        by smtp.gmail.com with ESMTPSA id 197sm11999701qkn.64.2021.07.21.12.50.44
+        by smtp.gmail.com with ESMTPSA id g76sm11699665qke.127.2021.07.21.13.40.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 12:50:45 -0700 (PDT)
-Subject: Re: [PATCH 0/4] btrfs: a few fsync related minor improvements and a
- cleanup
+        Wed, 21 Jul 2021 13:40:55 -0700 (PDT)
+Subject: Re: [PATCH 0/2] btrfs: make the batch insertion of dir index keys
+ more efficient
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1626791500.git.fdmanana@suse.com>
+References: <cover.1626791739.git.fdmanana@suse.com>
 From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <4d80c909-97d2-00c7-d5c2-290c48d85558@toxicpanda.com>
-Date:   Wed, 21 Jul 2021 15:50:43 -0400
+Message-ID: <868e88cd-cad9-ffa5-de71-2fc2838d191f@toxicpanda.com>
+Date:   Wed, 21 Jul 2021 16:40:54 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <cover.1626791500.git.fdmanana@suse.com>
+In-Reply-To: <cover.1626791739.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,31 +67,22 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/20/21 11:03 AM, fdmanana@kernel.org wrote:
+On 7/20/21 11:05 AM, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> The following patches remove some unnecessary code and bring a couple minor
-> performance improvements in the fsync path. They are independent of each other,
-> but are grouped in the same pathset just because they relate around the same
-> code. The last patch has some performance results in its changelog.
+> The first patch makes the batch insertion of dir index keys (delayed items)
+> more efficient. The second patch is a cleanup, but only applies cleanly after
+> the first patch.
 > 
-> Filipe Manana (4):
->    btrfs: remove racy and unnecessary inode transaction update when using
->      no-holes
->    btrfs: avoid unnecessary log mutex contention when syncing log
->    btrfs: remove unnecessary list head initialization when syncing log
->    btrfs: avoid unnecessary lock and leaf splits when updating inode in
->      the log
-> 
->   fs/btrfs/inode.c    | 12 ++++------
->   fs/btrfs/tree-log.c | 56 ++++++++++++++++++++++++++++++++++++---------
->   2 files changed, 50 insertions(+), 18 deletions(-)
+> Filipe Manana (2):
+>    btrfs: improve the batch insertion of delayed items
+>    btrfs: stop doing GFP_KERNEL memory allocations in the ref verify tool
 > 
 
 You can add
 
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-to this series, thanks,
+to the series, thanks,
 
 Josef
