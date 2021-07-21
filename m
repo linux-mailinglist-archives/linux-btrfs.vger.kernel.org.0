@@ -2,112 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D35D3D0EFB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jul 2021 14:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5743D0FA6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jul 2021 15:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237813AbhGUMDE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Jul 2021 08:03:04 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:44572 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237633AbhGUMDD (ORCPT
+        id S238188AbhGUM6v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Jul 2021 08:58:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44698 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238302AbhGUM5I (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Jul 2021 08:03:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1626871420; x=1658407420;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+AOmYnp5eWwCpHbiJveVjM12q0Aiis7WZQe+HfKdN1k=;
-  b=Mf2Ucni6WB/4VfagXOb/D87rkHtOjZWzhE8pNS6pw8b4JbGXmRi4Xa0O
-   WbWc6suDXxDnpl1PN5iSdATsWPmKPrLVxDt7ohbBUw0AELjIELwEz/9qP
-   XRZTbx0jcu+o9qqzghWEaiDv2UP06u0zi/l5h9Or9YWZ9xXTPxmnvucs4
-   g9I/vF306xeINUP3Xd6Wfca82lMrK08QUKjmw7yhai5m6T//5U4dEnCu3
-   iTvgh4RJtj49fPOfFdUKbIagiFzoYQXrS+wt3mY25BIZs+cB5RwO/azHZ
-   OEVIKz0Y7Lnip/5Qh15QnkZV3aUBUJsZIWlMxfuUrNewrwkjA53HxWTNt
-   g==;
-X-IronPort-AV: E=Sophos;i="5.84,258,1620662400"; 
-   d="scan'208";a="174366712"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Jul 2021 20:43:40 +0800
-IronPort-SDR: GCoQug1cBxEWJodie1R+kLOcuDONRUG7AnUAhM+by73Fcz0XEqCYrne4y7g56OShTsTUOXXKzM
- Uiy2rhkingLDLW/a5q4K1kXjW6Q0cosFBsgRVYPaZLHMVBdS/LX6eT2ax7JCVGrDCoE4RyUYx9
- fZ20Q7jsq20d/6T3xk6XF/Sa85iGTg/U0DRdFSaGoaCHkPxgyBMczzuZ01+C4jqXNvXNkvvEdT
- aaNjxeKkrREo88DOhFB57QSWOSs5TyMU4OuwFgPsAhRZ7Gk6uVC0cFny0Mf51AIREJBnkIds2b
- Zh3Wfaz/WNB8Q1irZVYdeAvs
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 05:19:55 -0700
-IronPort-SDR: RJSbz3nvaJqmgbTocMX6w3UNFHfD/f6H55O/Jr9AQm1WE3tftR2Gkl4mGKsiz885NCMIDE9wzK
- qs6ZenpakotAMjLE4IH3RRBe1PCtkfAsNKIbK7NtL+x/xE0VKD0LQJakYLDxrV1f51bx0gPthY
- RFRMq+zjgI1/S4q9ijCTJrnZAAcQ1qlv+dF1pUOOGDzjv0G9rlxJBi4Xg/yV8inZ7nrTszQE0c
- +OpClsyde+CmYVRbJLfy2Nzl3XpK/iJehHqpyh5siTGcKX2hGZ5Qf5mf5YaAc49wp37F3J6Z4N
- yMg=
-WDCIronportException: Internal
-Received: from my8nr8qf2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.49.83])
-  by uls-op-cesaip02.wdc.com with ESMTP; 21 Jul 2021 05:43:39 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v3 3/3] btrfs: drop unnecessary ASSERT from btrfs_submit_direct()
-Date:   Wed, 21 Jul 2021 21:43:34 +0900
-Message-Id: <13a38aa3e4b99f11970f96a85ce0a71498ff0737.1626871138.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1626871138.git.naohiro.aota@wdc.com>
-References: <cover.1626871138.git.naohiro.aota@wdc.com>
+        Wed, 21 Jul 2021 08:57:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7DD981FEA7;
+        Wed, 21 Jul 2021 13:36:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626874614;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ACSOqLjxdKypbguvriIn2aNR3FddUn7knx9Dv2QbmwE=;
+        b=n/b1fl3ecyHZMi/6WIbjgf5cls+zJemQ1MOUkGfSdnHaytU9XIQntu0Nxx76h3BnwHIHQ1
+        Ik6PEVpV89wDn7XahUFoLRcGmvvoHpdwtFSLRnojtE87LjWLl70r2auHHewAwYQURaVO0U
+        0CqrL77M+5kM5XLds90DyZTX1YQz8X8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626874614;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ACSOqLjxdKypbguvriIn2aNR3FddUn7knx9Dv2QbmwE=;
+        b=FH1MGv0VUqlII3Qv7nLEnjfyHdjMsKsmnpuQ3t+FpBT4BNp8YQBKXwk7fHRDr+fYoSVw68
+        86TtUebrHBXSGmAw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 64FC0A3B87;
+        Wed, 21 Jul 2021 13:36:54 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 482F7DA704; Wed, 21 Jul 2021 15:34:13 +0200 (CEST)
+Date:   Wed, 21 Jul 2021 15:34:13 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+Subject: Re: [PATCH] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+Message-ID: <20210721133412.GE19710@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        Nikolay Borisov <nborisov@suse.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210715103403.176695-1-desmondcheongzx@gmail.com>
+ <7ae7a858-9893-c41c-ed96-10651c295087@suse.com>
+ <b8fe8fa5-c022-187f-b10d-3f73e668008a@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <b8fe8fa5-c022-187f-b10d-3f73e668008a@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When on SINGLE block group, btrfs_get_io_geometry() will return "the
-size of the block group - the offset of the logical address within the
-block group" as geom.len. Since we allow up to 8 GB zone size on zoned
-btrfs, we can have up to 8 GB block group, so can have up to 8 GB
-geom.len. With this setup, we easily hit the "ASSERT(geom.len <=
-INT_MAX);".
+On Thu, Jul 15, 2021 at 09:11:43PM +0800, Desmond Cheong Zhi Xi wrote:
+> On 15/7/21 7:55 pm, Nikolay Borisov wrote:
+> > 
+> > 
+> > On 15.07.21 г. 13:34, Desmond Cheong Zhi Xi wrote:
+> >> Syzbot reports a warning in close_fs_devices that happens because
+> >> fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
+> >> on each device.
+> >>
+> >> This happens when a writeable device is removed in
+> >> __btrfs_free_extra_devids, but the rw device count is not decremented
+> >> accordingly. So when close_fs_devices is called, the removed device is
+> >> still counted and we get an off by 1 error.
+> >>
+> >> Here is one call trace that was observed:
+> >>    btrfs_mount_root():
+> >>      btrfs_scan_one_device():
+> >>        device_list_add();   <---------------- device added
+> >>      btrfs_open_devices():
+> >>        open_fs_devices():
+> >>          btrfs_open_one_device();   <-------- rw device count ++
+> >>      btrfs_fill_super():
+> >>        open_ctree():
+> >>          btrfs_free_extra_devids():
+> >> 	  __btrfs_free_extra_devids();  <--- device removed
+> >> 	  fail_tree_roots:
+> >> 	    btrfs_close_devices():
+> >> 	      close_fs_devices();   <------- rw device count off by 1
+> >>
+> >> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+> >> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+> >> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+> >> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> > 
+> > Is there a reliable reproducer from syzbot? Can this be turned into an
+> > xfstest?
+> > 
+> 
+> Syzbot has some reliable reproducers here:
+> https://syzkaller.appspot.com/bug?id=113d9a01cbe0af3e291633ba7a7a3e983b86c3c0
+> 
+> Seems like it constructs two images in-memory then mounts them. I'm not 
+> sure if that's amenable to be converted into an xfstest?
 
-The ASSERT looks like to guard btrfs_bio_clone_partial() and bio_trim()
-which both take "int" (now "unsigned int" with the previous patch). So to
-be precise the ASSERT should check if clone_len <= UINT_MAX. But
-actually, clone_len is already capped by bio.bi_iter.bi_size which is
-unsigned int. So the ASSERT is not necessary.
+It would need to be an image from the time the warning is reproduced,
+I'm not sure how much timing is also important. But iirc adding raw test
+images to fstests was not welcome, so it would have to be a reproducer
+and given that the syzkaller source is not human readable I'm not sure
+it would be welcome either.
 
-Drop the ASSERT and properly compare submit_len and geom.len in u64. Then,
-let the implicit casting to convert it to unsigned int.
-
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/inode.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 8f60314c36c5..8cd1a4f0174a 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8206,8 +8206,8 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 	u64 start_sector;
- 	int async_submit = 0;
- 	u64 submit_len;
--	int clone_offset = 0;
--	int clone_len;
-+	u64 clone_offset = 0;
-+	u64 clone_len;
- 	u64 logical;
- 	int ret;
- 	blk_status_t status;
-@@ -8255,9 +8255,9 @@ static blk_qc_t btrfs_submit_direct(struct inode *inode, struct iomap *iomap,
- 			status = errno_to_blk_status(ret);
- 			goto out_err_em;
- 		}
--		ASSERT(geom.len <= INT_MAX);
- 
--		clone_len = min_t(int, submit_len, geom.len);
-+		clone_len = min(submit_len, geom.len);
-+		ASSERT(clone_len <= UINT_MAX);
- 
- 		/*
- 		 * This will never fail as it's passing GPF_NOFS and
--- 
-2.32.0
-
+Maybe there's some middle ground when the image is created by mkfs and
+filled with the data and then the mount loop is started from shell. But
+that means to untangle the C reproducer.
