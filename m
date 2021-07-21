@@ -2,56 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD843D090B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jul 2021 08:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6309D3D0DCF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jul 2021 13:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhGUF5h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Jul 2021 01:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbhGUF5W (ORCPT
+        id S238237AbhGUKxX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Jul 2021 06:53:23 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40812 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239079AbhGUKMR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:57:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317B3C061574;
-        Tue, 20 Jul 2021 23:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XYeBKSl9pF1jy3vtrjCu+kIPIp8ICH8F1p/bMzcagKs=; b=YPTD1oSDMQ1tqkeq4zo2uX9zjo
-        XAzfqnrxfDYo/qWpdOxsmXM14GEqxAzpFjUhG3a64UQuaiihyFyO+bjrrRbOqzo17tmN1kSHPhubx
-        lCtR/G3qnIcXm/tbiJDDp0JB8s7FfYg9tHPzbTWIFGm/BKTCLDr9u8Bqk6lqhtxnr+jH9m8pv1JFk
-        mOa5jAOcCj0znZcMrZIYiVmJ0hwBimK9G8x3coK6W+C25rfCW2q0au1bHVzrO3rodWo8RUBTxLVVb
-        0XQ2LiqisLcoCFufVMKzckKnFYneDTQ/4JsWVdWPsH42mOdjWB6dUQBQYIcqP/V7XPdddbuYsvhqN
-        Zf8qZH4w==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m65rY-008svf-Bd; Wed, 21 Jul 2021 06:37:50 +0000
-Date:   Wed, 21 Jul 2021 07:37:48 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Subject: Re: [PATCH v2 2/3] btrfs: fix argument type of
- btrfs_bio_clone_partial()
-Message-ID: <YPfAvDXlikV4t3zA@infradead.org>
-References: <cover.1626848677.git.naohiro.aota@wdc.com>
- <c69cf6f0b81a28dd04b62537e3b8b4f46bd36e1e.1626848677.git.naohiro.aota@wdc.com>
+        Wed, 21 Jul 2021 06:12:17 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 961F6224C0;
+        Wed, 21 Jul 2021 10:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626864750;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tbXyjAK9/zbaL9b+l3GlYTIFHULSzENd3xXwuJBkAjM=;
+        b=DPyZnUuH89vHNp5STNHwDjy/7c7ZMcrIoQJCiUVJOJ9Xq6xCLnLgSuzSbAnofqaAH9CTdV
+        C57BOX6qKPFrF/oevuSxqhOM0rS0NZFxqSDiQpJz+OkuTDwSFA5qxweGWmXfq2ayNL2uLg
+        4XGa5CK2oa6jf/1nFlgWb136h/fuSsE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626864750;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tbXyjAK9/zbaL9b+l3GlYTIFHULSzENd3xXwuJBkAjM=;
+        b=0rbzu4o+jXA43DYMwGjzHYuREPuOG2v0h99Xd/PfmtQTh7w2Yc3q9Z3xp/ycRous8PQf8X
+        Pn0vVgZtP1UHrZBA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 6F7A0A3B81;
+        Wed, 21 Jul 2021 10:52:30 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 601A6DA704; Wed, 21 Jul 2021 12:49:49 +0200 (CEST)
+Date:   Wed, 21 Jul 2021 12:49:49 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fsdevel@vger.kernel.org,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net
+Subject: Re: [PATCH v3 8/9] 9p: migrate from sync_inode to
+ filemap_fdatawrite_wbc
+Message-ID: <20210721104949.GB19710@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fsdevel@vger.kernel.org,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net
+References: <cover.1626288241.git.josef@toxicpanda.com>
+ <696f89db6b30858af65749cafb72a896552cfc44.1626288241.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c69cf6f0b81a28dd04b62537e3b8b4f46bd36e1e.1626848677.git.naohiro.aota@wdc.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <696f89db6b30858af65749cafb72a896552cfc44.1626288241.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 03:26:59PM +0900, Naohiro Aota wrote:
->  	btrfs_bio = btrfs_io_bio(bio);
->  	btrfs_io_bio_init(btrfs_bio);
->  
-> -	bio_trim(bio, offset >> 9, size >> 9);
-> +	bio_trim(bio, (sector_t)offset >> 9, (sector_t)size >> 9);
+I don't see any 9p people in CC, adding them. The cover letter is
+https://lore.kernel.org/linux-btrfs/cover.1626288241.git.josef@toxicpanda.com/
 
-No need for the casts when shifting down.
+On Wed, Jul 14, 2021 at 02:47:24PM -0400, Josef Bacik wrote:
+> We're going to remove sync_inode, so migrate to filemap_fdatawrite_wbc
+> instead.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/9p/vfs_file.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
+> index 59c32c9b799f..6b64e8391f30 100644
+> --- a/fs/9p/vfs_file.c
+> +++ b/fs/9p/vfs_file.c
+> @@ -625,12 +625,7 @@ static void v9fs_mmap_vm_close(struct vm_area_struct *vma)
+>  	p9_debug(P9_DEBUG_VFS, "9p VMA close, %p, flushing", vma);
+>  
+>  	inode = file_inode(vma->vm_file);
+> -
+> -	if (!mapping_can_writeback(inode->i_mapping))
+> -		wbc.nr_to_write = 0;
+> -
+> -	might_sleep();
+> -	sync_inode(inode, &wbc);
+> +	filemap_fdatawrite_wbc(inode->i_mapping, &wbc);
+>  }
+>  
+>  
+> -- 
+> 2.26.3
