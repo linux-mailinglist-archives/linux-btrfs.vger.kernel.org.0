@@ -2,128 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779AB3D15CF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jul 2021 20:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B353D15F8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jul 2021 20:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237315AbhGURVo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Jul 2021 13:21:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55322 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbhGURVo (ORCPT
+        id S230498AbhGURdy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Jul 2021 13:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhGURdx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Jul 2021 13:21:44 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B12522257D;
-        Wed, 21 Jul 2021 18:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1626890539;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UURkxj0FzkddkNj25OCBmqPhNmUDQqkrhXQKcD008LU=;
-        b=xcQSz636EWAiC85tX8hiA6MdN0EZiqEIXRlig788UnnDsmwAPzPBNq5J3lLcsUo83LT+9F
-        PWY+l9YpdOPJ6SMR19CtQZDKqUAtXxhCzxHkySb4Z5Fz+k5lkuLdPKh0+Fr0OknVGundiW
-        hVkzEVOGq0Yvh7CCchNWz2ZxJ+eNiJ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1626890539;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UURkxj0FzkddkNj25OCBmqPhNmUDQqkrhXQKcD008LU=;
-        b=BKweevZE47LPO8lNVm//uvT+55czJ9isHbyeT/esC54dRYhnvB5WwwqU7lmw2B08F50XxW
-        Zq7IF1jCXNLG68BA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 9A5B9A3B87;
-        Wed, 21 Jul 2021 18:02:19 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6D5D5DA704; Wed, 21 Jul 2021 19:59:38 +0200 (CEST)
-Date:   Wed, 21 Jul 2021 19:59:38 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        anand.jain@oracle.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Subject: Re: [PATCH] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-Message-ID: <20210721175938.GP19710@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210715103403.176695-1-desmondcheongzx@gmail.com>
+        Wed, 21 Jul 2021 13:33:53 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177D1C061575
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jul 2021 11:14:29 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id r80so3750819oie.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jul 2021 11:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=BPUGLDGmne1oVoXaqqGKxuVfKgvE5xz4i0qcEnAZt1U=;
+        b=mOqmWA5J7Onoe6jcdAqQNRZHUEMj8KEn59lJV2pDnkxIWW6DJObAv94MNJKxTrQ/im
+         ZcqdG81FpgOpxXbpjfPtjDJLJYfsSPRaDoujy7ldwtv66ZjxHoVgcg/BCOfR7D0VO21r
+         QvqRCww91IDfGwsItM/Aggxg1hkmXA+tOMYIkESRm4d3sCkZJW8KLbhhBfLykabL2klW
+         RpT4njpUSIdD6EpmztM190EwlNlDREmpqQWDfrJcEIDEfXPyNw63I+N+bL06PY8f9hQz
+         iuM/3r70CKi4YjWuAWQbWJxkh72pX2D/ND5xHlEvz5pQ4Ac3FjLd9tzc36TG3HRBOty2
+         BcCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=BPUGLDGmne1oVoXaqqGKxuVfKgvE5xz4i0qcEnAZt1U=;
+        b=tgWcl4JTUeJcA/Z1KMqp7UHZkBVBTrEOb6eQYagNWZJ+tSkcjIiAqoXfh+vl785PRc
+         txnWd+bdt9nXp0gQ08GbyJxtcBPa9wI1O1mS5HYeHQHwPTrepDerJmn+6PGB6otlWxHu
+         /2Ai3f+yPhdlH87zedti/koEdgbK8NFhnMFmYvTLX5+K3q16P5X/7iV8bO2G/Q0KAN5T
+         CTU535ExVfBIGyLvjOUaJL4T2OTZP3TawiDqUex51ZNm57uYLK/eWldrvDanhUVDB0hq
+         EZWRXWwxN7+oQRc38OdqIFOaTFl3DVn8Z8T2ogeGnLgIvkEuB1Mm/aMdKBKahy7sa32r
+         0Kpw==
+X-Gm-Message-State: AOAM531Ea7vYeCQ8sTd1r64jqhSbQu9sqR4Fx+TWXzEkLedIkffa550X
+        y8tPxON6jL6gCKinFKU+ZAG7/UhdmCFDClDKkH0=
+X-Google-Smtp-Source: ABdhPJyb+ctLSyMYKqsTPJPwS7XKRvI8ia969zzc9bk3GGkAZ8xfNhAqvuPqrBB6eat14Wam1M03JX4jvSjTbHC3MXA=
+X-Received: by 2002:aca:4406:: with SMTP id r6mr20731587oia.50.1626891268354;
+ Wed, 21 Jul 2021 11:14:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715103403.176695-1-desmondcheongzx@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <CAHzMYBT+pMxrnDXrbTJqP-ZrPN5iDHEsW_nSjjD3R_w3wq5ZLg@mail.gmail.com>
+ <20210721174433.GO19710@twin.jikos.cz>
+In-Reply-To: <20210721174433.GO19710@twin.jikos.cz>
+From:   Jorge Bastos <jorge.mrbastos@gmail.com>
+Date:   Wed, 21 Jul 2021 19:14:17 +0100
+Message-ID: <CAHzMYBQnP=rqa_mf9TXAEK3Yrpjezff0cE=pBsunbBT63wHeSQ@mail.gmail.com>
+Subject: Re: "bad tree block start, want 419774464 have 0" after a clean
+ shutdown, could it be a disk firmware issue?
+To:     dsterba@suse.cz, Jorge Bastos <jorge.mrbastos@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 06:34:03PM +0800, Desmond Cheong Zhi Xi wrote:
-> Syzbot reports a warning in close_fs_devices that happens because
-> fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
-> on each device.
-> 
-> This happens when a writeable device is removed in
-> __btrfs_free_extra_devids, but the rw device count is not decremented
-> accordingly. So when close_fs_devices is called, the removed device is
-> still counted and we get an off by 1 error.
-> 
-> Here is one call trace that was observed:
->   btrfs_mount_root():
->     btrfs_scan_one_device():
->       device_list_add();   <---------------- device added
->     btrfs_open_devices():
->       open_fs_devices():
->         btrfs_open_one_device();   <-------- rw device count ++
->     btrfs_fill_super():
->       open_ctree():
->         btrfs_free_extra_devids():
-> 	  __btrfs_free_extra_devids();  <--- device removed
-> 	  fail_tree_roots:
-> 	    btrfs_close_devices():
-> 	      close_fs_devices();   <------- rw device count off by 1
-> 
-> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+On Wed, Jul 21, 2021 at 6:47 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> For the record summing up the discussion from IRC with Zygo, this
+> particular firmware 80.00A80 on WD Green is known to have problematic
+> firmware and would explain the observed errors.
+>
+> Recommendation is not to use WD Green or periodically disable the write
+> cache by 'hdparm -W0'.
+>
 
-What this patch did in the last hunk was the rw_devices decrement, but
-conditional:
+Thank you for the reply, yes, from now on I intend to disable write
+cache on those disks, since I still have a lot of them in use.
 
-@@ -1080,9 +1071,6 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
-                if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
-                        list_del_init(&device->dev_alloc_list);
-                        clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
--                       if (!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
--                                     &device->dev_state))
--                               fs_devices->rw_devices--;
-                }
-                list_del_init(&device->dev_list);
-                fs_devices->num_devices--;
----
-
-
-> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
->  		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
->  			list_del_init(&device->dev_alloc_list);
->  			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
-> +			fs_devices->rw_devices--;
->  		}
->  		list_del_init(&device->dev_list);
->  		fs_devices->num_devices--;
-
-So should it be reinstated in the original form? The rest of
-cf89af146b7e handles unexpected device replace item during mount.
-
-Adding the decrement is correct, but right now I'm not sure about the
-corner case when teh devcie has the BTRFS_DEV_STATE_REPLACE_TGT bit set.
-The state machine of the device bits and counters is not trivial so
-fixing it one way or the other could lead to further syzbot reports if
-we don't understand the issue.
+Jorge
