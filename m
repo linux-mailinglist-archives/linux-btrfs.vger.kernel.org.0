@@ -2,142 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3B23D1A66
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 01:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF36F3D1AA5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 02:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhGUWsB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Jul 2021 18:48:01 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:50729 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230091AbhGUWr7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Jul 2021 18:47:59 -0400
-Received: from dread.disaster.area (pa49-181-34-10.pa.nsw.optusnet.com.au [49.181.34.10])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 3C2DB863A9C;
-        Thu, 22 Jul 2021 09:28:31 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1m6Lde-009HBN-Q3; Thu, 22 Jul 2021 09:28:30 +1000
-Date:   Thu, 22 Jul 2021 09:28:30 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eryu Guan <eguan@linux.alibaba.com>, Qu Wenruo <wqu@suse.com>,
-        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH RFC] fstests: allow running custom hooks
-Message-ID: <20210721232830.GC2112234@dread.disaster.area>
-References: <cb2bf09e-91fd-2976-4366-4daf29664890@gmx.com>
- <20210720064317.GC2031856@dread.disaster.area>
- <20210720075748.GJ60846@e18g06458.et15sqa>
- <3fd6494b-8f03-4d97-9d00-21343e0e8152@gmx.com>
- <6b7699a9-fc5e-32d9-78c5-9c0e3cf92895@gmx.com>
- <YPbt2ohi62VyWN7e@mit.edu>
- <f37bec82-85cd-b818-8691-6c047751c4a6@gmx.com>
- <20210721011105.GA2112234@dread.disaster.area>
- <ff57f17c-e3f2-14f3-42d8-fefaafd65637@gmx.com>
- <DM6PR04MB70812AEDDAB6DE7951F4FBBDE7E39@DM6PR04MB7081.namprd04.prod.outlook.com>
+        id S229712AbhGUXh5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Jul 2021 19:37:57 -0400
+Received: from mout.gmx.net ([212.227.17.20]:50301 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229600AbhGUXh4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Jul 2021 19:37:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626913106;
+        bh=SOHDMKp6NUqB0eLarDg71BPdfJUItAKt+JCA+XvDq0U=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=RhMs7a1RO6N9PcaVHAVqUauHt8jXXYsUXLRFTHMAEFvxhBW9xBL2OGGvV20C0XE3t
+         C7ofk9RzF+HHi6eA6bM3+LQTDPfG/fw1cBN6xZW820gOeKI/gsp1psJIwMfEn0rbNy
+         Oeaf9y8QCfZW52UnEOOgkBPSAYbhAxqEqGG3FAmQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpDJX-1lJUsg19yR-00qhhS; Thu, 22
+ Jul 2021 02:18:25 +0200
+Subject: Maybe we want to maintain a bad driver list? (Was 'Re: "bad tree
+ block start, want 419774464 have 0" after a clean shutdown, could it be a
+ disk firmware issue?')
+To:     dsterba@suse.cz, Jorge Bastos <jorge.mrbastos@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <CAHzMYBT+pMxrnDXrbTJqP-ZrPN5iDHEsW_nSjjD3R_w3wq5ZLg@mail.gmail.com>
+ <20210721174433.GO19710@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <8b830dc8-11d4-9b21-abe4-5f44e6baa013@gmx.com>
+Date:   Thu, 22 Jul 2021 08:18:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DM6PR04MB70812AEDDAB6DE7951F4FBBDE7E39@DM6PR04MB7081.namprd04.prod.outlook.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
-        a=hdaoRb6WoHYrV466vVKEyw==:117 a=hdaoRb6WoHYrV466vVKEyw==:17
-        a=IkcTkHD0fZMA:10 a=e_q4qTt1xDgA:10 a=7-415B0cAAAA:8
-        a=WWgSXLAHQ0wrzOdU2uYA:9 a=QEXdDO2ut3YA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20210721174433.GO19710@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:FpNGBfFxdMD5ehcyIDBOZ3lLZmCiM9q7FTRZ/xYFvYxHNq31rj0
+ y8guzPcvDmysImIWUirMQE9lrIqtRosrUqZ+frV41fB6mFUjYn/UVwhRtEupZFWf18iyozG
+ ZUmuysA3yADumWxf8pIKQt5TyiTCqzT2DTzekfZtA7N+gjhgLgt65WaH6Ww23xmgD4jpW5i
+ gFwiYEwBpN2QxcT12LT+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Tc1z5SYw008=:WfZjPxwMcbNI5GNgw4XLe0
+ Z4uFh0agYxVTlWcIVPP/kAKPHPGOKuksNm/04v78jPugv8D7BSuHZ8fxoe+mUeRpE8Cj9nTp3
+ d9eEdj3eOmQ9glz88z7PKGmjbzzeVoHXlnrFtNSu3mMn28HuvyaC03kTwxZLql4BwlD0E3aq2
+ 6orr7ACoNNJ5EXFSKag9Oo8nSlcjUM7m/u9mYV8n70sX86N8sUiPKm79kl5qLaQ6KPFe3Mkvm
+ aFks+Y9gWowyvkh7+JjKkTrmu15u2ZvvCGamcqS1NCOn0wFfm4ozTZRF6Bv+KR3UEUbYnpBQ5
+ NRkH3DiFItYoUjtcSo02oyLCMnqHijfqcwEgW5dATazO3pW7DofJ5sLsdAy7YgiIhdh5Y+t5P
+ ZArDzeQKTwBQF6A4eMCK+MxbNaRlhm4OYl1AYrlTUdngeBEi0wpXlUDqu5FCHmi7HZ5QeGPvh
+ xK5P5yO5n3WLBnVk2KoegRd6kAITvsgyD5gncmEChmfokoXBkPYjQYOyVve1L0Mdqx+CKKJtz
+ oeYbD9BC1ZudQQ7AfcBFrB7A+j3J2C8mHjfYIM9E+H//0FwhagaN2n0NshZ+EtJ5SI/gDjQVf
+ +PPBe2k9DY5rOjmiPargacSenN//L3kstTIXwHY/QbdxEA4+vgcrVz112CsnumBNfVcN7uhtC
+ BJOAmA2hTUhqUrA7ckkoQKe0RRhzHVyoKYYDmN3yJuDuHgLbxGFTkZCVHjxpVpQRWKNfDytvA
+ VjN0M9KLIjH/wctghDKDUio39Zm2IGQxCpEsfErGLtRSflDx//o7iwW5UGGenXyAMDn/S2VCh
+ EcPPwrqQKaQQxvT8LR4UC7ir5AUPWXKewPFRZLV2JAkd0xnIgw8o9CF4nCIqf9g0zqsVx94mY
+ vcC8OvefSZQ6bqUzAV1pn3JuKQ9He6bkskBHQWEqnsjROBaU1K3T8jlzswam3hK83O1/hzrbR
+ omhu4QPbinrrzkzB3nPEEaizBSrF3oR0vGaSotBXvASDTorJSevySNiabtiVHdud3WT2NmSHu
+ gtL1nu+qR+X8d+x5yIYxHPk1cflhxrGoJALORrad5a84b1g5V0LnSjs1H7P1y1oozIjv3WAYl
+ OOT0ys5/rLm0K+MohI1R3cSMY1NLlioot7juGEDikBoRKdMMO7aqb59Hg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 02:23:14AM +0000, Damien Le Moal wrote:
-> On 2021/07/21 10:53, Qu Wenruo wrote:
-> > On 2021/7/21 上午9:11, Dave Chinner wrote:
-> > If you believe your philosophy that every test tool should be a complex
-> > mess, you're free to do whatever you always do.
-> > 
-> > And I can always express my objection just like you.
-> > 
-> > So, you want to build a complex framework using the simple hook, I would
-> > just say NO.
-> 
-> I think that Dave's opinion is actually the reverse of this: hooks, if well
-> designed, can be useful and facilitate adding functionalities to a complex test
-> framework. And sure, the hook infrastructure implementation can in itself be
-> complex, but if well designed, its use can be, and should be, very simple.
-> 
-> Implementation is done once. The complexity at that stage matters much less than
-> the end result usability. As a general principle, the more time one put in
-> design and development, the better the end result. Here, that means hooks being
-> useful, flexible, extensible, and reusable.
-
-Yup, that's pretty much what I'm advocating for.
-
-I'm thinking that it is something relatively simple like this:
-
-fstests/tests/hooks
-- directory containing library of hook scripts
-
-fstests/hooks/
-- directory containing symlinks to hook scripts
-- kept under gitignore, as hooks are a runtime configurable state,
-  not a global repository configured state.
-- symlink names indicate run target and order:
-  	$seq.{B,E}.X
-  where:	$seq is the test that the hook runs for
-  			use "global" for a hook that every test runs
-  		{B,E} indicates a test Begin or End hook
-		X is an integer indicating run order,
-			- 0 being the first script
-			- Run in ascending numerical order
 
 
-Now if you want to add a 'trace-cmd clear' command to run before
-the start of a specific test, you do:
+On 2021/7/22 =E4=B8=8A=E5=8D=881:44, David Sterba wrote:
+> On Fri, Jul 16, 2021 at 11:44:21PM +0100, Jorge Bastos wrote:
+>> Hi,
+>>
+>> This was a single disk filesystem, DUP metadata, and this week it stop
+>> mounting out of the blue, the data is not a concern since I have a
+>> full fs snapshot in another server, just curious why this happened, I
+>> remember reading that some WD disks have firmware with write caches
+>> issues, and I believe this disk is affected:
+>>
+>> Model family:Western Digital Green
+>> Device model:WDC WD20EZRX-00D8PB0
+>> Firmware version:80.00A80
+>
+> For the record summing up the discussion from IRC with Zygo, this
+> particular firmware 80.00A80 on WD Green is known to have problematic
+> firmware and would explain the observed errors.
+>
+> Recommendation is not to use WD Green or periodically disable the write
+> cache by 'hdparm -W0'.
 
-$ echo trace-cmd clear > tests/hooks/trace-cmd-clear
-$ ln -s tests/hooks/trace-cmd-clear hooks/btrfs-160.B.0
+Zygo is always the god to expose bad hardware.
 
-And now when btrfs/160 starts, the Begin hook that you've set up is
-run....
+Can we maintain a list of known bad hardware inside btrfs-wiki?
+And maybe escalate it to other fses too?
 
-If you want to do this for other tests, too, then just add symlinks
-for those tests. If you want all tests to run this trace hook, link
-global.B.0 to the hook script. Essentially, managing the hooks to
-run becomes an exercise in linking and unlinking external hook
-scripts.
-
-This means we can add curated hook scripts such as "use trace-cmd to
-trace all xfs trace points and then dump the report into
-$RESULTS_DIR/$seqres.traces" and hook them into to specific tests.
-The setup also allows stacked hook scripts, so we can have multiple
-monitoring options running at the same time (e.g. blktrace-scratch +
-trace-cmd-xfs) without having to write a custom hook scripts.
-
-> And one of the functionality of the hook setup could be "temporary, external
-> hook" for some very special case debugging as you seem to need that. What you
-> want to do and what Dave is proposing are not mutually exclusive.
-
-Yup, if you want a one-off throwaway hook script, then just add a
-file in to fstests/hooks and either name it as per above or link it
-to the test it should hook.
-
-Note: this just addresses the management side of running and
-curating hook scripts. There's a whole 'nother discussion about
-APIs to be had, but a curated hook library inside fstests is
-definitely a viable solution to that problem, too, because then the
-hook scripts can be changed at the same time the rest of fstests is
-changed to use the modified API....
-
-This isn't a huge amount of work to implement, but we really need to
-decide how these hooks are going to be maintained, managed and
-curated before we go much further...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Qu
