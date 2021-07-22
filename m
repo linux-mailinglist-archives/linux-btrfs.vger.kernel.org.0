@@ -2,99 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629033D2CD0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 21:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E763D2D05
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 21:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhGVSxi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Jul 2021 14:53:38 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37836 "EHLO
+        id S229659AbhGVTPL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jul 2021 15:15:11 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40276 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhGVSxi (ORCPT
+        with ESMTP id S229510AbhGVTPL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:53:38 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 661C51FF0C;
-        Thu, 22 Jul 2021 19:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1626982452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 22 Jul 2021 15:15:11 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0DA201FD61;
+        Thu, 22 Jul 2021 19:55:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626983745;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6cn6lQbVmHhnZkx84PaevJhuBImAxax88iMg/MHRT3A=;
-        b=qgMVjegBpeFmWF0ZFCqrh4I2EiQrOiuIhrPDXkqwLDwUZpY5I7FIb0x7eAWNtf/BIKp6fy
-        D2zYGok8u04DBkSr3XUvAhDncTVsD8nMKng8IQLKA5eCMwxiMgoMQZSkvPJF8gDIri9/Wf
-        ebWOk1PnVPwwyGMYle/hKHB/1TvnvZE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1626982452;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=yJb0Eyq/1swlG0BMXGFeJmwFfZwiUy6nYky2fChw8d4=;
+        b=T12Pq1ckMXc+7mkdRj7COJikzoFR8/D4VyyYhozV/4tLq71IqVlnwGvTCZVlgVNPTLpDy3
+        41S2ejka0bN06R+hpN3jrFe/PcQDjzSb33tIp2/zxC3vitWjOVW93tAiZYFh9rbkIVjnVB
+        MFNOZXm8Fy2Aydl9jIjLBxq1MuLGuZE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626983745;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6cn6lQbVmHhnZkx84PaevJhuBImAxax88iMg/MHRT3A=;
-        b=Q/0BzxHBSf2pAYb90oyPPZcjVHbk40niWLevveui7J8tkav3msu983Cmaeaup6Rir4/a1L
-        DF6JxAkvdpp04nBw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 10D3E139A1;
-        Thu, 22 Jul 2021 19:34:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id qHfKNTPI+WDnTAAAGKfGzw
-        (envelope-from <rgoldwyn@suse.de>); Thu, 22 Jul 2021 19:34:11 +0000
-Date:   Thu, 22 Jul 2021 14:34:10 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: mark compressed range uptodate only if all bio
- succeed
-Message-ID: <20210722193410.6ixnxt734ohcb625@fiona>
-References: <20210709162922.udxjidc3kgxkgzx3@fiona>
- <20210722143438.GZ19710@twin.jikos.cz>
+        bh=yJb0Eyq/1swlG0BMXGFeJmwFfZwiUy6nYky2fChw8d4=;
+        b=ErgzlAaU4iAVjsCZ6OivCDtG4949o6MwKEM8g13wqxoYr6GLqVHYue9ARcQW4wP28gsNbU
+        3OmG7G0vVT1To6Bg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 066DBA3B87;
+        Thu, 22 Jul 2021 19:55:45 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 40E3FDB225; Thu, 22 Jul 2021 21:53:03 +0200 (CEST)
+Date:   Thu, 22 Jul 2021 21:53:03 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
+Subject: Re: [PATCH] btrfs: Use next_leaf instead of next_item when slots >
+ nritems
+Message-ID: <20210722195303.GB19710@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com
+References: <20210713135803.4469-1-mpdesouza@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210722143438.GZ19710@twin.jikos.cz>
+In-Reply-To: <20210713135803.4469-1-mpdesouza@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 16:34 22/07, David Sterba wrote:
-> On Fri, Jul 09, 2021 at 11:29:22AM -0500, Goldwyn Rodrigues wrote:
-> > In compression write endio sequence, the range which the compressed_bio
-> > writes is marked as uptodate if the last bio of the compressed (sub)bios
-> > is completed successfully. There could be previous bio which may
-> > have failed which is recorded in cb->errors.
-> > 
-> > Set the writeback range as uptodate only if cb->errors is zero, as opposed
-> > to checking only the last bio's status.
-> > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > ---
-> >  fs/btrfs/compression.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> > index 9a023ae0f98b..30d82cdf128c 100644
-> > --- a/fs/btrfs/compression.c
-> > +++ b/fs/btrfs/compression.c
-> > @@ -352,7 +352,7 @@ static void end_compressed_bio_write(struct bio *bio)
-> >  	btrfs_record_physical_zoned(inode, cb->start, bio);
-> >  	btrfs_writepage_endio_finish_ordered(BTRFS_I(inode), NULL,
-> >  			cb->start, cb->start + cb->len - 1,
-> > -			bio->bi_status == BLK_STS_OK);
-> > +			!cb->errors);
+On Tue, Jul 13, 2021 at 10:58:03AM -0300, Marcos Paulo de Souza wrote:
+> After calling btrfs_search_slot is a common pratice to check if the
+> slot found isn't bigger than number of slots in the current leaf, and if
+> so, search for the same key in the next leaf by calling btrfs_next_leaf,
+> which calls btrfs_next_old_leaf to do the job.
 > 
-> Right, that would only test the last bio. Have been able to reproduce
-> it?
+> Calling btrfs_next_item in the same situation would end up in the same
+> code flow, since
 > 
+> * btrfs_next_item
+>   * btrfs_next_old_item
+>     * if slot >= nritems(curr_leaf)
+>       btrfs_next_old_leaf
+> 
+> Change btrfs_verify_dev_extents and calculate_emulated_zone_size
+> functions to use btrfs_next_leaf in the same situation.
+> 
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>  Please let me know if I'm missing something obvious here, but all other places
+>  who check for slot >= nritems are calling next_leaf...
 
-No, I don't have a reproducer. Just observed it while reading the code.
+Yeah it should be next_leaf, the next_item increments the slot but at
+that time it is already above nritems and it gets reset to 0 once the
+pointer is moved to the next leaf.
 
-> Anyway, added to misc-next, thanks.
-
-Thanks.
-
--- 
-Goldwyn
+Added to misc-next, thanks.
