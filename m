@@ -2,93 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EC63D1C06
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 04:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E9C3D1F5B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 09:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhGVCGq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Jul 2021 22:06:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48449 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229932AbhGVCGp (ORCPT
+        id S230410AbhGVHOG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jul 2021 03:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhGVHOF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Jul 2021 22:06:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626922040;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jwzE0vHI/rCdSa5s/04LOGn224KncNKRA39uN9p98So=;
-        b=i5ZvIKfANf9f7iFeF/cdsj4RW74WSp2LvMxZRObbBpJRwXHyeyQ8fNKFKcRMW9DNkgWItf
-        g+MB34ujGXx/NIqxuGAkLq7/46Z2BNBh5ygtWHs6O3MQ03o0hya0MuAwYslOxu1ySENx7h
-        0O1jJ1Vewr/nX3rPwmSvaFdR0ibSqL0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-i3vioKGeOA6EMuR4vlIe7w-1; Wed, 21 Jul 2021 22:47:19 -0400
-X-MC-Unique: i3vioKGeOA6EMuR4vlIe7w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E72071005D57;
-        Thu, 22 Jul 2021 02:47:17 +0000 (UTC)
-Received: from T590 (ovpn-13-66.pek2.redhat.com [10.72.13.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D0BA60C5F;
-        Thu, 22 Jul 2021 02:47:12 +0000 (UTC)
-Date:   Thu, 22 Jul 2021 10:47:08 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/8] block: grab a device model reference in
- blkdev_get_no_open
-Message-ID: <YPjcLDXYKbN1yl22@T590>
-References: <20210721153523.103818-1-hch@lst.de>
- <20210721153523.103818-4-hch@lst.de>
+        Thu, 22 Jul 2021 03:14:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C98C061575;
+        Thu, 22 Jul 2021 00:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=nl3M9fyQJINeLUMF6gJtfDfOMcTb90OeAzKs5tU5Z40=; b=U0i+II9WbcZDBaMju7p9mNBcjU
+        hrIn1ChgqJtx9lJdLSxpIzvQJaaP2IYb7K4D+Cz9YMoChhb6SHL9TqCc/HeCf36sVfKmEZSqRZl4I
+        EQC8JxGDc0FeOWat+cVuGqaLtaCDP3fzlaQ+h53/09goYqzPqLgyZ7qc9BQqqGbQg8ft/ZZXNBLkm
+        yRXf2u43z8A4ucv2yMxEEg26GrfNOyVcL0mPq8dbPyqJeW5brldaGAK898XIvNMRmu/G+nbzlyn2r
+        RBTuuVoSkRAMLY1m3CbhpGTdGXVRU62hkh/F0XHESamA6o9iBVxejkEGF19y8j5zZVFQZgn9DzOpb
+        2xEs6XOQ==;
+Received: from [2001:4bb8:193:7660:643c:9899:473:314a] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6TWt-00A1Dm-RB; Thu, 22 Jul 2021 07:54:11 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: fixes and cleanups for block_device refcounting v2
+Date:   Thu, 22 Jul 2021 09:53:53 +0200
+Message-Id: <20210722075402.983367-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721153523.103818-4-hch@lst.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 05:35:18PM +0200, Christoph Hellwig wrote:
-> Opening a block device needs to ensure it is fully present instead of
-> just the allocated memory.  Switch from an inode reference as obtained
-> by bdget to a full device model reference.
-> 
-> In fact we should not use inode references for anything in the block
-> layer.  There are three users left, two can be trivially removed
-> and the third (xen-blkfront) is a complete mess that needs more
-> attention.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/block_dev.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 9ef4f1fc2cb0..24a6970f3623 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -1342,9 +1342,16 @@ struct block_device *blkdev_get_no_open(dev_t dev)
->  		goto bdput;
->  	if ((disk->flags & (GENHD_FL_UP | GENHD_FL_HIDDEN)) != GENHD_FL_UP)
->  		goto put_disk;
-> -	if (!try_module_get(bdev->bd_disk->fops->owner))
-> +	if (!try_module_get(disk->fops->owner))
->  		goto put_disk;
-> +
-> +	/* switch to a device model reference instead of the inode one: */
-> +	if (!kobject_get_unless_zero(&bdev->bd_device.kobj))
+Hi Jens,
 
-If bdev->bd_device.kobj is grabbed in every open, getting disk reference might
-be moved into add_partition, and drop it in part_release(). Then we can avoid
-extra disk reference in open/close().
+this series fixes up a possible race with the block_device lookup
+changes, and the finishes off the conversion to stop using the inode
+refcount for block devices.
 
-Not mention two disk references are actually grabbed in case of opening disk.
+Changes since v1:
+ - clean up btrfs even more by storing a bdev instead of the disk
+ - keep a persistent disk reference in the bdev
+ - a bunch of cleanups to make the above change easier
 
-Thanks,
-Ming
-
+Diffstat:
+ block/genhd.c           |   12 +-----
+ block/partitions/core.c |   34 ++++++++++---------
+ drivers/block/loop.c    |    5 --
+ fs/block_dev.c          |   83 ++++++++++++++----------------------------------
+ fs/btrfs/inode.c        |    2 -
+ fs/btrfs/ordered-data.c |    2 -
+ fs/btrfs/ordered-data.h |    3 -
+ fs/btrfs/zoned.c        |   12 ++----
+ include/linux/blkdev.h  |    2 -
+ 9 files changed, 52 insertions(+), 103 deletions(-)
