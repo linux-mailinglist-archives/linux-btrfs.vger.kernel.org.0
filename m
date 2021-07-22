@@ -2,128 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6463D1F8A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 09:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423293D1FCC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 10:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbhGVHSV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Jul 2021 03:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbhGVHST (ORCPT
+        id S231157AbhGVHj3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jul 2021 03:39:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45707 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230499AbhGVHj2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Jul 2021 03:18:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9383CC06179A;
-        Thu, 22 Jul 2021 00:58:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=DLetPscjPSvYX0+JLQEAhyT0z61r6wDFfOuKfNbPHc0=; b=uUWXzTto9SFDBQ55AQSrqQxHhN
-        VZpzslCNdO/UWTiIvTBl6h4QJDqG1TnDRothEUBP07YQytD/asdapiS37ZAZtnKS2r9ByHoaEJ/Nd
-        +C5Wir7XByznnyLuB62cTCoCEtzbi2eVknvFgAeumtVjfaS7MR14Iq+acJZnNII+NP70ZJJT2CSzF
-        sKgrAGq7ngTcGr8C/YaA/J9pVk3TW5DehOfhNRHb+2BpASQcft6bmptyc7frsR5HVlbFyrBz4z4ia
-        PGIZAfJxci7DvR9YvLaCZKEwvT4iPykqATCtXYBaJZohA78lOSDQQvs2wXmOX2lr6L+r0HzEgNczt
-        OMxmjbxA==;
-Received: from [2001:4bb8:193:7660:643c:9899:473:314a] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6Taq-00A1WF-7Q; Thu, 22 Jul 2021 07:58:10 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Thu, 22 Jul 2021 03:39:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626942003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DJx9/ClR3r0S8KdItX7u51V0cYMjKw3xJMAyTzm0bzQ=;
+        b=Kyuizz7eC01FOc1YbEvQvuQJqNxKkBh1cpBm6/FkE7tXErwXQlGW0hO2mZw6JckhEXNOzD
+        vcx8rAQMDbogcS/wPm5ATLt+3rAWsP9qh666RWhuGsC6S6EG++m2hmfQ7887jBSNp/gkcN
+        S+U65+ec7Zq69XVKZ6fl0zuU6En/mY4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-469-AsjbECUNOqahM5ouocc35w-1; Thu, 22 Jul 2021 04:19:55 -0400
+X-MC-Unique: AsjbECUNOqahM5ouocc35w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35A7D804308;
+        Thu, 22 Jul 2021 08:19:54 +0000 (UTC)
+Received: from T590 (ovpn-13-219.pek2.redhat.com [10.72.13.219])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EBB4360C9B;
+        Thu, 22 Jul 2021 08:19:46 +0000 (UTC)
+Date:   Thu, 22 Jul 2021 16:19:42 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Naohiro Aota <naohiro.aota@wdc.com>,
         linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: [PATCH 9/9] block: remove bdput
-Date:   Thu, 22 Jul 2021 09:54:02 +0200
-Message-Id: <20210722075402.983367-10-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210722075402.983367-1-hch@lst.de>
+Subject: Re: [PATCH 3/9] block: unhash the whole device inode earlier
+Message-ID: <YPkqHjNQpgvbUgBr@T590>
 References: <20210722075402.983367-1-hch@lst.de>
+ <20210722075402.983367-4-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722075402.983367-4-hch@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that we've stopped using inode references for anything meaninful
-in the block layer get rid of the helper to put it and just open code
-the call to iput on the block_device inode.
+On Thu, Jul 22, 2021 at 09:53:56AM +0200, Christoph Hellwig wrote:
+> Unhash the whole device inode early in del_gendisk.  This allows to
+> remove the first GENHD_FL_UP check in the open path as we simply
+> won't find a just removed inode.  The second non-racy check after
+> taking open_mutex is still kept.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  block/genhd.c  | 7 +------
+>  fs/block_dev.c | 2 +-
+>  2 files changed, 2 insertions(+), 7 deletions(-)
+> 
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 298ee78c1bda..716f5ca479ad 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -585,6 +585,7 @@ void del_gendisk(struct gendisk *disk)
+>  	disk_del_events(disk);
+>  
+>  	mutex_lock(&disk->open_mutex);
+> +	remove_inode_hash(disk->part0->bd_inode);
+>  	disk->flags &= ~GENHD_FL_UP;
+>  	blk_drop_partitions(disk);
+>  	mutex_unlock(&disk->open_mutex);
+> @@ -592,12 +593,6 @@ void del_gendisk(struct gendisk *disk)
+>  	fsync_bdev(disk->part0);
+>  	__invalidate_device(disk->part0, true);
+>  
+> -	/*
+> -	 * Unhash the bdev inode for this device so that it can't be looked
+> -	 * up any more even if openers still hold references to it.
+> -	 */
+> -	remove_inode_hash(disk->part0->bd_inode);
+> -
+>  	set_capacity(disk, 0);
+>  
+>  	if (!(disk->flags & GENHD_FL_HIDDEN)) {
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 9ef4f1fc2cb0..932f4034ad66 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1340,7 +1340,7 @@ struct block_device *blkdev_get_no_open(dev_t dev)
+>  	disk = bdev->bd_disk;
+>  	if (!kobject_get_unless_zero(&disk_to_dev(disk)->kobj))
+>  		goto bdput;
+> -	if ((disk->flags & (GENHD_FL_UP | GENHD_FL_HIDDEN)) != GENHD_FL_UP)
+> +	if (disk->flags & GENHD_FL_HIDDEN)
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
- block/genhd.c           | 4 ++--
- block/partitions/core.c | 2 +-
- fs/block_dev.c          | 6 ------
- include/linux/blkdev.h  | 1 -
- 4 files changed, 3 insertions(+), 10 deletions(-)
+But del_gendisk() can be called just between bdget() and checking GENHD_FL_UP.
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 716f5ca479ad..5dbb99b57b33 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1076,7 +1076,7 @@ static void disk_release(struct device *dev)
- 	xa_destroy(&disk->part_tbl);
- 	if (test_bit(GD_QUEUE_REF, &disk->state) && disk->queue)
- 		blk_put_queue(disk->queue);
--	bdput(disk->part0);	/* frees the disk */
-+	iput(disk->part0->bd_inode);	/* frees the disk */
- }
- struct class block_class = {
- 	.name		= "block",
-@@ -1261,7 +1261,7 @@ struct gendisk *__alloc_disk_node(int minors, int node_id)
- 
- out_destroy_part_tbl:
- 	xa_destroy(&disk->part_tbl);
--	bdput(disk->part0);
-+	iput(disk->part0->bd_inode);
- out_free_disk:
- 	kfree(disk);
- 	return NULL;
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index 4f7a1a9cd544..2415bffc2771 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -262,7 +262,7 @@ static void part_release(struct device *dev)
- 	if (MAJOR(dev->devt) == BLOCK_EXT_MAJOR)
- 		blk_free_ext_minor(MINOR(dev->devt));
- 	put_disk(dev_to_bdev(dev)->bd_disk);
--	bdput(dev_to_bdev(dev));
-+	iput(dev_to_bdev(dev)->bd_inode);
- }
- 
- static int part_uevent(struct device *dev, struct kobj_uevent_env *env)
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 4f2c4e9e84f5..6658f40ae492 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -934,12 +934,6 @@ long nr_blockdev_pages(void)
- 	return ret;
- }
- 
--void bdput(struct block_device *bdev)
--{
--	iput(bdev->bd_inode);
--}
--EXPORT_SYMBOL(bdput);
-- 
- /**
-  * bd_may_claim - test whether a block device can be claimed
-  * @bdev: block device of interest
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 98772da38bb1..b94de1d194b8 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1984,7 +1984,6 @@ void blkdev_put_no_open(struct block_device *bdev);
- struct block_device *bdev_alloc(struct gendisk *disk, u8 partno);
- void bdev_add(struct block_device *bdev, dev_t dev);
- struct block_device *I_BDEV(struct inode *inode);
--void bdput(struct block_device *);
- int truncate_bdev_range(struct block_device *bdev, fmode_t mode, loff_t lstart,
- 		loff_t lend);
- 
--- 
-2.30.2
+And not see difference by moving remove_inode_hash() with disk open_mutex held.
+
+
+Thanks,
+Ming
 
