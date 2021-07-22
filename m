@@ -2,93 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01313D2FCB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 00:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5983D2FF5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 00:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhGVVlU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Jul 2021 17:41:20 -0400
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:37593 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231320AbhGVVlT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Jul 2021 17:41:19 -0400
-Received: from dread.disaster.area (pa49-181-34-10.pa.nsw.optusnet.com.au [49.181.34.10])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 64FE869F47;
-        Fri, 23 Jul 2021 08:21:51 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1m6h4g-009dXh-O0; Fri, 23 Jul 2021 08:21:50 +1000
-Date:   Fri, 23 Jul 2021 08:21:50 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Eryu Guan <eguan@linux.alibaba.com>, Qu Wenruo <wqu@suse.com>,
-        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH RFC] fstests: allow running custom hooks
-Message-ID: <20210722222150.GE2112234@dread.disaster.area>
-References: <20210720075748.GJ60846@e18g06458.et15sqa>
- <3fd6494b-8f03-4d97-9d00-21343e0e8152@gmx.com>
- <6b7699a9-fc5e-32d9-78c5-9c0e3cf92895@gmx.com>
- <YPbt2ohi62VyWN7e@mit.edu>
- <f37bec82-85cd-b818-8691-6c047751c4a6@gmx.com>
- <20210721011105.GA2112234@dread.disaster.area>
- <ff57f17c-e3f2-14f3-42d8-fefaafd65637@gmx.com>
- <DM6PR04MB70812AEDDAB6DE7951F4FBBDE7E39@DM6PR04MB7081.namprd04.prod.outlook.com>
- <20210721232830.GC2112234@dread.disaster.area>
- <YPmDmZL6oLnGhayx@mit.edu>
+        id S232116AbhGVWLD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jul 2021 18:11:03 -0400
+Received: from mout.gmx.net ([212.227.17.22]:43865 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231596AbhGVWLC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Jul 2021 18:11:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1626994295;
+        bh=CQ4AOLjwX9L6dmur0EozxiMIVRp0TF32iYQY6CwtaWw=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=dgGxSSnA4cFxDBYPqCjCtRSmrmY5k7O6uvoLOynyDkLuJ8wQbYu1xIyeqcis/01HB
+         /oTbke8BPFmAVY48QuY5o32jDSccnjJTkYEo9eh7sbNFhWMUBtrxiIB014T4dqHh+K
+         Xm9ZhaZg4NMq8Q6Our9tLhQuFpFWZAv1kyjMOFk8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mqb1c-1lK7EM1ijY-00mZpI; Fri, 23
+ Jul 2021 00:51:35 +0200
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210722192955.18709-1-dsterba@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH] btrfs: allow degenerate raid0/raid10
+Message-ID: <db9e2f31-73a5-0d0d-a1da-7acde6fb118e@gmx.com>
+Date:   Fri, 23 Jul 2021 06:51:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPmDmZL6oLnGhayx@mit.edu>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=hdaoRb6WoHYrV466vVKEyw==:117 a=hdaoRb6WoHYrV466vVKEyw==:17
-        a=kj9zAlcOel0A:10 a=e_q4qTt1xDgA:10 a=7-415B0cAAAA:8
-        a=nZ5yuoXW5wKvLTnfgwkA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20210722192955.18709-1-dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sMvjN53rxfUEAZkQ3G4v/bKaco7kpJd1Wp/9kz58SggSYArbCep
+ ERM9MY2js4s4/9OYjBcNYz3kp3oI01grMr6ruOOYxgZ2R+qmch60ffSCxMmre73iRnLNImn
+ dxU7wb6ykizAtc9UoNAdnL1KWSkr9Jb1WP7+wsV1Dn1swbQt5SiY1j5DvOVtKNNjvZoN+TN
+ s+VuXQOnO3TUyFAelH91g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3v1uBDonOt4=:L46CqebyW13/eM2dz4zREu
+ BILXNgY0JtGOegYP7cdOtvj97aN6xhRJbJYbyrgeYWFa24/IB1VWN6X2eNvu9L3+8mB2TEHDz
+ LgQTiG9zO200zOed2+XwPyO7hCIVxuYmWv3tHY4kLWW4IJv0mdHtUUcE8EwU5iLVf85e/IzZ0
+ 1fPPyCWgxfytz+fpsqwU4zUAIxe6WzntAO2Mt+CqcnEmXzvYcq+WV7p+78bFxDAs/Um2yCMel
+ RR+NLIsiUD7m81mPKptjTzqVwXxSy5XRm4YgqbITot+9nUJi1DjvM4dpb02HfsIC1w9MNN2/x
+ P2GtpyV/oINtWEkkbfx80Enr2C37jL7UWr1KHJD5RLBPUbHPUHVnUp1UZEQHuWrTJ14j5TiVf
+ Aa9CE1whR+teO8i4PyVqg7eSCM2wBcR2M8rwiX6VF9w0G7edF3N6JU9V8mmC8KvHv0mxwZzzD
+ 5EAsUIphbQdfN3rcVR8vhnWmAgGSImNvsgxxu4F5Fh/n2L15PSDrFK2KfaFLVnq5Wqa3T1TL/
+ 5YfddaFHc70be3XYWFaBR/KpjPcolTsYWsXCkMJQj9Zsl5ye7hBkR6VGzO1DYJg3eBIHM3bjz
+ lc9cfIcpyncbOV3YempulKKpth3dkVmkVM4IgOrqqeXZpNyzIMa88/gXkaqGpdcd3d5UFACcY
+ PPBQi4JNS9R1glT9XqjAs6Zj17m+8dgzXclnA7x0VMG4AvzbSFpckzitgkpx8A6XPHoPp98Ya
+ nhuqwGnTbtT202m12mKUNK3bTFXBmCy3QSKtD+S4Fm09yL0K6uEAtwkNHCzBu4PjY3vEXW6LS
+ akFLE+8Fm5V5JpGg6ICFupctL78pI14saursLGTWpVH6N8bmciRWgwwt6XAMn62RODOQeg8e5
+ Uc+oF/LKpeLFVNHJpRwu/f01lKdHLfPpYxSkuLI05GkSGe8jgLn3VH6Xdk/y3o+2ZNTfNF/Y0
+ y2UwPTiNBMgMK7VE1UIDhLgnydikDi/goRvpg03LLQ3+eajuRvUbbJjkf/F9djNNiV5swhRDB
+ AoAnlq709hsWV98TD/n0XiKERBIG9atnvIiyYiKw1vnJDBBK8uYcPrBBqEe3q1jlTKbrNGhnk
+ x0Sd6Vhm0y/wjT3NatwkGWVDW/rEDnKqRiY5WoDMHtzlJe2V3hD93vzQQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 10:41:29AM -0400, Theodore Ts'o wrote:
-> On Thu, Jul 22, 2021 at 09:28:30AM +1000, Dave Chinner wrote:
-> > 
-> > I'm thinking that it is something relatively simple like this:
-> > 
-> > fstests/tests/hooks
-> > - directory containing library of hook scripts
-> 
-> I'd suggest fstests/common/hooks instead, since the hook scripts
-> aren't actually *tests* per so, but rather utility scripts, and common
-> would be a better place for it, I think.
 
-True, but I don't think common/ is the right place, either, because
-that's for common test infrastructure. I only just looked, but
-there's a lib/ directory in fstests.  lib/hooks seems like the right
-place for this, and if I had of looked yesterday I would have put it
-there from the start. :/
 
-Is that an acceptible location?
+On 2021/7/23 =E4=B8=8A=E5=8D=883:29, David Sterba wrote:
+> The data on raid0 and raid10 are supposed to be spread over multiple
+> devices, so the minimum constraints are set to 2 and 4 respectively.
+> This is an artificial limit and there's some interest to remove it.
 
-> > fstests/hooks/
-> > - directory containing symlinks to hook scripts
-> 
-> This might be a good default, but it might be better if the location
-> of the hook directory could be overridden via an environment variable.
-> In some cases, instead of having run-time configuration inside the
-> fstests directtory with .gitignore, it might be more convenient for it
-> if were made available externally (for example, via a 9p file system
-> in a case where tests are being run via KVM using a rootfs test image
-> with qmeu's snapshot mode so the hook directory could be supplied from
-> the host).
+This could be a better way to solve the SINGLE chunk created by degraded
+mount.
 
-Yup, that's easy enough to do. We can do it exactly the same way we
-allow RESULT_BASE to point the results to a user defined directory.
+>
+> Change this to allow raid0 on one device and raid10 on two devices. This
+> works as expected eg. when converting or removing devices.
+>
+> The only difference is when raid0 on two devices gets one device
+> removed. Unpatched would silently create a single profile, while newly
+> it would be raid0.
+>
+> The motivation is to allow to preserve the profile type as long as it
+> possible for some intermediate state (device removal, conversion).
+>
+> Unpatched kernel will mount and use the degenerate profiles just fine
+> but won't allow any operation that would not satisfy the stricter device
+> number constraints, eg. not allowing to go from 3 to 2 devices for
+> raid10 or various profile conversions.
 
-Cheers,
+My initial thought is, tree-checker will report errors like crazy, but
+no, the check for RAID1 only cares substripe, while for RAID0 no number
+of devices check.
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+So a good surprise here.
+
+
+Another thing is about the single device RAID0 or 2 devices RAID10 is
+the stripe splitting.
+
+Single device RAID0 is just SINGLE, while 2 devices RAID10 is just RAID1.
+Thus they need no stripe splitting at all.
+
+But we will still do the stripe calculation, thus it could slightly
+reduce the performance.
+Not a big deal though.
+
+>
+> Example output:
+>
+>    # btrfs fi us -T .
+>    Overall:
+>        Device size:                  10.00GiB
+>        Device allocated:              1.01GiB
+>        Device unallocated:            8.99GiB
+>        Device missing:                  0.00B
+>        Used:                        200.61MiB
+>        Free (estimated):              9.79GiB      (min: 9.79GiB)
+>        Free (statfs, df):             9.79GiB
+>        Data ratio:                       1.00
+>        Metadata ratio:                   1.00
+>        Global reserve:                3.25MiB      (used: 0.00B)
+>        Multiple profiles:                  no
+>
+> 		Data      Metadata  System
+>    Id Path       RAID0     single    single   Unallocated
+>    -- ---------- --------- --------- -------- -----------
+>     1 /dev/sda10   1.00GiB   8.00MiB  1.00MiB     8.99GiB
+>    -- ---------- --------- --------- -------- -----------
+>       Total        1.00GiB   8.00MiB  1.00MiB     8.99GiB
+>       Used       200.25MiB 352.00KiB 16.00KiB
+>
+>    # btrfs dev us .
+>    /dev/sda10, ID: 1
+>       Device size:            10.00GiB
+>       Device slack:              0.00B
+>       Data,RAID0/1:            1.00GiB
+
+Can we slightly enhance the output?
+RAID0/1 really looks like a new profile now, even the "1" really means
+the number of device.
+
+>       Metadata,single:         8.00MiB
+>       System,single:           1.00MiB
+>       Unallocated:             8.99GiB
+>
+> Note "Data,RAID0/1", with btrfs-progs 5.13+ the number of devices per
+> profile is printed.
+>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
+> ---
+>   fs/btrfs/volumes.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 86846d6e58d0..ad943357072b 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -38,7 +38,7 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR=
+_RAID_TYPES] =3D {
+>   		.sub_stripes	=3D 2,
+>   		.dev_stripes	=3D 1,
+>   		.devs_max	=3D 0,	/* 0 =3D=3D as many as possible */
+> -		.devs_min	=3D 4,
+> +		.devs_min	=3D 2,
+>   		.tolerated_failures =3D 1,
+>   		.devs_increment	=3D 2,
+>   		.ncopies	=3D 2,
+> @@ -103,7 +103,7 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_=
+NR_RAID_TYPES] =3D {
+>   		.sub_stripes	=3D 1,
+>   		.dev_stripes	=3D 1,
+>   		.devs_max	=3D 0,
+> -		.devs_min	=3D 2,
+> +		.devs_min	=3D 1,
+>   		.tolerated_failures =3D 0,
+>   		.devs_increment	=3D 1,
+>   		.ncopies	=3D 1,
+>
