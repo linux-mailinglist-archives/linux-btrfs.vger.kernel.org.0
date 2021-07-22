@@ -2,87 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D226A3D2295
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 13:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70D63D242E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Jul 2021 15:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhGVKb5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Jul 2021 06:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231599AbhGVKb4 (ORCPT
+        id S232111AbhGVMVI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jul 2021 08:21:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41512 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232112AbhGVMVH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Jul 2021 06:31:56 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154EFC061575
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jul 2021 04:12:31 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id u7so5843736ion.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jul 2021 04:12:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=TCoSn2Y27cJD1Ykti6bnmaHEq4EO4nIPiymbH1n40XE=;
-        b=UpMKgkXEu7AGdT8Wv0B5fZ8e8NJ/H0O80pGpyBGxdpX6y0Lvn/o5p09WGFFwFuATjz
-         e4y3nRKiukuJShSwMWRB5dLROlyC4fiKS25QPwD3Sy1SBH/w5t9gH8PF+4XJQrhGy9SQ
-         sRLqubJaLLCUsiYl+BqV5uhMhumFsZ5alacyxv9Rnfnuk2kpV0pjUjSDhEjIov3FiRpD
-         ahWBYp2Ywx74SF1od6MHMQ/SjzBUpJ476JUBXfN/dpedYd1gRWJ8VSoveQwWHUHYTsWj
-         xH12S++FPST9q5ERSijaTsBFkUJuYWKY+HXjTysYjvgsgCv3TzhUG+4vEK8dyaFY7qxF
-         f1UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=TCoSn2Y27cJD1Ykti6bnmaHEq4EO4nIPiymbH1n40XE=;
-        b=VJ9Tc0du6xkSgP2t2+EWeUMB8lL9lhn7yYSSUJmwkPH0RXqB2LBMgRrWa/2fy8YR9J
-         MxGtBIwbGtzRvPan7ogJ60Np2AH2Mk9C4pqB46pQ2cNM62ygbyLeWnr4h3ZS2xq4QfQZ
-         yUzen5gvIKDqso1U0qgUpyvGUBwwRsh2R17FPOIOjek2kTMYAxt2a7lBySnEZCQmuHap
-         wVV/FR/yn+oE5P/C1/uzj1YZmQkGxCb7WSsE4SsJASjDmPW9jmMRz1yXE2shzcYurUfD
-         DLRAtjZnyhzFqPnjMFILo8VPes+JeHMB7kHUG6s5FlSzsWGcwTD0SpVNBcNRw9heWLUs
-         dQeA==
-X-Gm-Message-State: AOAM530UL2/LGtBKuMxcLyHaLDI8vMJGazwqOq6HOSttnsOShiyrFdzb
-        7eCMMpYO98yWK295/MVfdUVJ63FnrNBVVZtU7bo=
-X-Google-Smtp-Source: ABdhPJwQt13FoGgsL+7+jE13BgI9/PD7JQuinGx0SsztR6IjpQ8uwxumAQfwGVCvevGA68/u3/a0UzJEcUIh3Bo1+T0=
-X-Received: by 2002:a05:6638:2111:: with SMTP id n17mr34843675jaj.76.1626952350527;
- Thu, 22 Jul 2021 04:12:30 -0700 (PDT)
+        Thu, 22 Jul 2021 08:21:07 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 938432261C;
+        Thu, 22 Jul 2021 13:01:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1626958901;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+xUdPc/hG2dsiqci235bXPQfzG/mD8JEN84kQSrasT4=;
+        b=0AjfIRXl8RVtnIjJ9Gff6PkA6n62qdGmD38knXThAK8IlJaMpBDJn4A3s8/hiKl/YGILjd
+        830JKp/D0JmMkf9qhw33PLkbhMdEs8cuh+jcR+HwLbZb0yq5kE935c1ju6jla9XYBKUkYy
+        dh0E0+ccg4WHyQQm90Hmm2HRoa/sap0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1626958901;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+xUdPc/hG2dsiqci235bXPQfzG/mD8JEN84kQSrasT4=;
+        b=mP7jcHWZBX7wcR56NyPqa1xT16hm7Y1FPhVibQDjFM238fVLT2pp99pqeZJ27TVY+iZw+S
+        bAcfmKTqzLhnNvCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 5BEFCA3B99;
+        Thu, 22 Jul 2021 13:01:41 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id AF0A9DAF95; Thu, 22 Jul 2021 14:58:59 +0200 (CEST)
+Date:   Thu, 22 Jul 2021 14:58:59 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 6/9] btrfs: store a block_device in struct
+ btrfs_ordered_extent
+Message-ID: <20210722125859.GR19710@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20210722075402.983367-1-hch@lst.de>
+ <20210722075402.983367-7-hch@lst.de>
 MIME-Version: 1.0
-Sender: mrsshahinazzuthimalin@gmail.com
-Received: by 2002:a05:6638:38a:0:0:0:0 with HTTP; Thu, 22 Jul 2021 04:12:30
- -0700 (PDT)
-From:   "Mrs. Shahinaz Zuthimalin" <mrsshahinazzuthimalin9@gmail.com>
-Date:   Thu, 22 Jul 2021 11:12:30 +0000
-X-Google-Sender-Auth: -zNFQpAhEro8_wO5pik1H7UuagA
-Message-ID: <CAPTbkoa3FZtdh0ipfzCcorPxWeX9VS4KyBeqS4_7qo4DRvxuMg@mail.gmail.com>
-Subject: HELLO!!!!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722075402.983367-7-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello My Dear,
+On Thu, Jul 22, 2021 at 09:53:59AM +0200, Christoph Hellwig wrote:
+> Store the block device instead of the gendisk in the btrfs_ordered_extent
+> structure intead of acquiring a reference to it later.
+            instead
 
-It's my pleasure to have contact with you, based on the critical
-condition I find mine self, though, it's not financial problem, but my
-health, you might have know that cancer is not what to talk home
-about,
-I am married to Mr. Shine Zuthimalin  who worked with Tunisia embassy
-in Burkina Faso for nine years before he died in the year 2008.We were
-married for eleven years without a child. He died after a brief
-illness that lasted for five days.
-Since his death I decided not to remarry, When my late husband was
-alive he deposited the sum of US$ 9 .2m (nine million two hundred
-thousand dollars) in a bank in Burkina Faso, Presently this money is
-still in bank. And My Doctor told me that I don't have much time to
-live because of the cancer problem,
-Having known my condition I decided to hand you over this fond to take
-care of the less-privileged people, you will utilize this money the
-way I am going to instruct herein. I want you to take 30 Percent of
-the total money for your personal use While 70% of the money will go
-to charity" people and helping the orphanage.
-I don't want my husband's efforts to be used by the Government. I grew
-up as an Orphan and I don't have anybody as my family member,
-I am expecting your respond
-email me on mrsshahinazzuthimalin9@gmail.com
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Regards,
-Mrs. Shahinaz Zuthimalin
-written from Hospital
+Reviewed-by: David Sterba <dsterba@suse.com>
+
+I can add the patch to the next pull request so you can rebase your
+series on top of it and don't need to carry it until the next merge
+window.
