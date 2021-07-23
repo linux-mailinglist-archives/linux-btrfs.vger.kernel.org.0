@@ -2,70 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4633D3EE3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 19:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB2F3D4036
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 20:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhGWQz0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Jul 2021 12:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhGWQzZ (ORCPT
+        id S229761AbhGWRhK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Jul 2021 13:37:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47992 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhGWRhK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:55:25 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF002C061575
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Jul 2021 10:35:57 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id m193so3451901ybf.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Jul 2021 10:35:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:cc
-         :content-transfer-encoding;
-        bh=14y41gAT3/GmIKANldx0ihA42tw3VCzaSMi/lH/Ylb4=;
-        b=s8UhHjtjy4A6Z5Fy+Ypl1QQ4cJ3jH6u4c0q7mGwVbpvjJ3zHVFuzxGSFPojXxZqyFX
-         Dbi/9yB6nZUXlM5vdSFPo+w5ONFdvOfTbPyl1d2PIocClGux6CXQ/1BzA6dSfHlQS2Q0
-         r7Dtn8z3B6pjFqBDyPYzH+G8dWVJmSsuLBu7ZbLUljbu8m9FGCK6xjEJ9IAPOun9UcO9
-         brCpwiyGCmENSTIbkzKlNvT5mQfl4AmrVOgmZegXXlAtvvZR/BPfdzpqCEuTMnZNZj7S
-         uetwlE5qV+Ul7DKThlRO8Onn9ghVHVpnODM0rArQTLl6fj8oFGIfFWQDZa7xNWojIpSd
-         y3CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:cc:content-transfer-encoding;
-        bh=14y41gAT3/GmIKANldx0ihA42tw3VCzaSMi/lH/Ylb4=;
-        b=TpwSXX062Ns65RoIiqBSUTqBph0KX4rwjH7r7NJphKvO40oOrN5J6LQRmdLiJVl5XP
-         Ris95/dYEQtN+T/SCpkbr/0JbHZ5c/H90XVxABhuNKSOJUwCTVYAoSho1ACiUSj1aEya
-         3QFprYwe3bAz+NFV/sAR29DM+PXhGm+ymkFRO+t+exoYHEdgsILIaWkpKOghu6vrWry3
-         f3cx5iOCI7ksEZeNhYo9T01F+ac6PhZ2avP+YiukWJ9MCTBIgz4f4Pl5V4l2VEj1M10f
-         tTd+Lz5IRxCkCzwlVH43UxykwnDBy2mlFJaBaIhSqb2vkXoA2SaiCYaqZnabd4P6XnZB
-         KfOg==
-X-Gm-Message-State: AOAM530+fEj+F4MMzwUiW5d6M/y/bpTCqceWQBhG3KF1Q1I7LkAkrSEi
-        qE/0xc7ftgvNP/a2bsSeM+01vQXDI6wMcYnakHU=
-X-Received: by 2002:a25:ac3:: with SMTP id 186mt8458149ybk.436.1627061757320;
- Fri, 23 Jul 2021 10:35:57 -0700 (PDT)
+        Fri, 23 Jul 2021 13:37:10 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BCEA91FFEA;
+        Fri, 23 Jul 2021 18:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627064261; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=s1T7j8FIb6Q+H+/BcThktyQbkBkucVK47GjySEZArZc=;
+        b=ultZQ+1aXw1wqRIxKE8nLI9bdgQx3tsIVvT/1FqH1GnZI59YLltEzjCCV1q2BBpAU2uVDa
+        FZjsGF7UIXzmXJuDyhCRRc8LO9SSoVUysj7uiQDEm3MQvQy3eKtxjGg6k7EVC7peWnM6Td
+        0vEmK75zLrFpWM/EzsteDFBA+II8IG8=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 33B4C13697;
+        Fri, 23 Jul 2021 18:17:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id YSWbOsMH+2CpXgAAGKfGzw
+        (envelope-from <mpdesouza@suse.com>); Fri, 23 Jul 2021 18:17:39 +0000
+From:   Marcos Paulo de Souza <mpdesouza@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Cc:     dsterba@suse.com, guaneryu@gmail.com,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH] btrfs: Source common/module when requiring module reload
+Date:   Fri, 23 Jul 2021 15:18:00 -0300
+Message-Id: <20210723181800.26884-1-mpdesouza@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Received: by 2002:a25:6c6:0:0:0:0:0 with HTTP; Fri, 23 Jul 2021 10:35:57 -0700 (PDT)
-Reply-To: untnatcomp@gmail.com
-From:   Godwin frank <f43445329@gmail.com>
-Date:   Fri, 23 Jul 2021 17:35:57 +0000
-Message-ID: <CAOfdUesXnCxtbm7DS7cX9UdLE0vnWm2-U2-eKRz36g_AGZeoNQ@mail.gmail.com>
-Subject: HELLO
-Cc:     chukwuemedani@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Bonjour mon cher ami
+Tests 163, 219, 225 and 242 require the btrfs module to be reloaded in
+the middle of the test. If btrfs is compiled builtin, these tests
+should be skipped, since we cannot unload it.
 
-j'esp=C3=A8re que tu vas bien aujourd'hui
+Today, this is what happens:
 
-Veuillez confirmer la r=C3=A9ception de ce message car j'ai de bonnes
-nouvelles pour vous.
+    QA output created by 242
+    +./common/btrfs: line 405: _require_loadable_fs_module: command not found
 
-Contactez mon email (untnatcomp@gmail.com)
+Sourcing common/module in these tests fixes the issue by skipping the
+test:
+    btrfs/242       [not run] btrfs: must be a module.
+    Ran: btrfs/242
+    Not run: btrfs/242
 
-Sinc=C3=A8rement
-Sandra Moris
+Other tests liker btrfs/124 and btrfs/125 already source the same file
+for the same reason, so follow the pattern.
+
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+ tests/btrfs/163 | 1 +
+ tests/btrfs/219 | 1 +
+ tests/btrfs/225 | 1 +
+ tests/btrfs/242 | 1 +
+ 4 files changed, 4 insertions(+)
+
+diff --git a/tests/btrfs/163 b/tests/btrfs/163
+index 1dc081f1..76553831 100755
+--- a/tests/btrfs/163
++++ b/tests/btrfs/163
+@@ -27,6 +27,7 @@ _cleanup()
+ # Import common functions.
+ . ./common/filter
+ . ./common/filter.btrfs
++. ./common/module
+ 
+ # real QA test starts here
+ 
+diff --git a/tests/btrfs/219 b/tests/btrfs/219
+index 528175b8..1cd5daae 100755
+--- a/tests/btrfs/219
++++ b/tests/btrfs/219
+@@ -35,6 +35,7 @@ _cleanup()
+ 
+ # Import common functions.
+ . ./common/filter
++. ./common/module
+ 
+ # real QA test starts here
+ 
+diff --git a/tests/btrfs/225 b/tests/btrfs/225
+index 408c03d2..ce1818db 100755
+--- a/tests/btrfs/225
++++ b/tests/btrfs/225
+@@ -25,6 +25,7 @@ _cleanup()
+ 
+ # Import common functions.
+ . ./common/filter
++. ./common/module
+ 
+ # real QA test starts here
+ 
+diff --git a/tests/btrfs/242 b/tests/btrfs/242
+index 6ce62081..e1c102ae 100755
+--- a/tests/btrfs/242
++++ b/tests/btrfs/242
+@@ -13,6 +13,7 @@ _begin_fstest auto quick volume trim
+ 
+ # Import common functions.
+ . ./common/filter
++. ./common/module
+ 
+ # real QA test starts here
+ _supported_fs btrfs
+-- 
+2.26.2
+
