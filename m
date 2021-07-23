@@ -2,157 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019473D3BA8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 16:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA8E3D3C11
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 16:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbhGWNay (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Jul 2021 09:30:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39162 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233610AbhGWNax (ORCPT
+        id S235460AbhGWOOr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Jul 2021 10:14:47 -0400
+Received: from mailrelay4-1.pub.mailoutpod1-cph3.one.com ([46.30.210.185]:61889
+        "EHLO mailrelay4-1.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235412AbhGWOOq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:30:53 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 7E1E71FFBD;
-        Fri, 23 Jul 2021 14:11:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627049486;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zEL3I9lPPxZMigus1J9CQerWJ/oSid06amLVgKlOooc=;
-        b=j89yQk+5iYg2+14EtIjI2RQarJW67nb69wjm6pGmEQbrlL/6Pvyrvs7HhFxP/jv9cO9isW
-        OvyGnLzX8TbXoSOd0tvn5z77uSX9BwCVUmvdlCcR+ih9WK2dmj+TU4aKjPb7b6KEdpzwLV
-        QFtZ6rwo47grJSkD+aQtQ2z6E+E7V1I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627049486;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zEL3I9lPPxZMigus1J9CQerWJ/oSid06amLVgKlOooc=;
-        b=Jw5AqEWsAShHqv73olchQ0cNXlejT6o7NDBT76QqsLgtB4eYg3mWhOq4GONnd4lPjhMrl8
-        cHNegPU+nhXv7bCA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 76C12A3B90;
-        Fri, 23 Jul 2021 14:11:26 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 498B2DA8EB; Fri, 23 Jul 2021 16:08:44 +0200 (CEST)
-Date:   Fri, 23 Jul 2021 16:08:43 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: allow degenerate raid0/raid10
-Message-ID: <20210723140843.GE19710@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210722192955.18709-1-dsterba@suse.com>
- <db9e2f31-73a5-0d0d-a1da-7acde6fb118e@gmx.com>
+        Fri, 23 Jul 2021 10:14:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lithops.se; s=20191106;
+        h=content-transfer-encoding:content-type:mime-version:message-id:subject:to:
+         from:date:from;
+        bh=NUgR8GXbOVQG/csu+Y5eYxxQZxkQLAaRPPA8Nj0ylys=;
+        b=WLTL4eU+Gw1VnqyyLuqRkksSc0ZY0c881rRZeti9Aq+0WMlOjxw2byIM0xKDVZg3Vb4ZyQdEwYwr0
+         I2S/W0aZoDslYwcp9ZLwnonPG/a9gOu4x73aCrDz/kcWZgg3w6X7eibX4l7HhEVh0drxB7uNCLVeaT
+         I+58ogo7G+fPoK/Uo7e9QXwaJM8Z3Tc6BJbG8NNyE6ODanlR1famWF0w7EKI77X2aTZm0eOHGz6ZFi
+         9QJh5UkI9rnUJArVbncLdq1TEm0YrnIF7094DXMj2rnBfHnkFkUU6iqZt7bQ6YKH9GZCcyZ+w01nlA
+         cL3F53tbc8pq47A7jFmh3h9UzMUCXNA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lithops.se; s=rsa1;
+        h=content-transfer-encoding:content-type:mime-version:message-id:subject:to:
+         from:date:from;
+        bh=NUgR8GXbOVQG/csu+Y5eYxxQZxkQLAaRPPA8Nj0ylys=;
+        b=Loh54lV80SzUaUAPmA4UXy9gHT7Bn7w4b2UIqaDBGiWHu5oiraUyqzp3VI90ObBsBKj0TZgVJKoMp
+         zdA9U66nHswf2WvwSRJs5rb+1LJQlYma9t7JgTq5EAnVzTaNIpRy5ayFKHnDA/b6Tx/RWQsFaPhrIG
+         e5j/zXglDzuV7U+q5c0nmAqlugsM2nVMqlMm/RPbtnPCcnKZpgkZ3b086u2AIVlfEpSLoTDtxaYENl
+         zn9fEAKpQgkVlT+2IB+ENscMRIjS3lR97MdMFaeq093N+wMBnUtD2O7Ecb4ljFxgmOsIVmGnA/BkSd
+         xLQPVxMx/MO+U030jkXXERlWUQLZxGQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+        d=lithops.se; s=ed1;
+        h=content-transfer-encoding:content-type:mime-version:message-id:subject:to:
+         from:date:from;
+        bh=NUgR8GXbOVQG/csu+Y5eYxxQZxkQLAaRPPA8Nj0ylys=;
+        b=cUl6gPuhVO1gIA9brTZLXvfifaTKPmgeA87Wq1bFShVdixAUqf38wfPZVkCSTG462XxdNjCGRNGan
+         ynhoSXLBA==
+X-HalOne-Cookie: f73648e50a9151f77b7db6df3903a0b471265c13
+X-HalOne-ID: fea1403e-ebc5-11eb-adf8-d0431ea8bb10
+Received: from poirot.localdomain (unknown [178.255.113.211])
+        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPA
+        id fea1403e-ebc5-11eb-adf8-d0431ea8bb10;
+        Fri, 23 Jul 2021 14:55:18 +0000 (UTC)
+Date:   Fri, 23 Jul 2021 16:55:17 +0200
+From:   Jonas Aaberg <cja@lithops.se>
+To:     linux-btrfs@vger.kernel.org
+Subject: On the issue of direct I/O and csum warnings
+Message-ID: <20210723165517.2614d1b4@poirot.localdomain>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <db9e2f31-73a5-0d0d-a1da-7acde6fb118e@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 06:51:31AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2021/7/23 上午3:29, David Sterba wrote:
-> > The data on raid0 and raid10 are supposed to be spread over multiple
-> > devices, so the minimum constraints are set to 2 and 4 respectively.
-> > This is an artificial limit and there's some interest to remove it.
-> 
-> This could be a better way to solve the SINGLE chunk created by degraded
-> mount.
 
-Yes, but in this case it's rather a conicidence because raid0 now
-becomes a valid fallback profile, other cases are not affected. There's
-also some interest to allow full write with missing devices (as long as
-complete data can be written, not necessarily to all copies). MD-RAID
-allows that.
+Hi,
 
-As an example, when we'd allow that, 2 device raid1 with one missing
-will continue to write to the present device and once the missing device
-reappears, scrub will fill the missing bits, or device replace will do a
-full sync.
+I use btrfs on dm-crypt. About two months ago, I started to get:
 
-> > Change this to allow raid0 on one device and raid10 on two devices. This
-> > works as expected eg. when converting or removing devices.
-> >
-> > The only difference is when raid0 on two devices gets one device
-> > removed. Unpatched would silently create a single profile, while newly
-> > it would be raid0.
-> >
-> > The motivation is to allow to preserve the profile type as long as it
-> > possible for some intermediate state (device removal, conversion).
-> >
-> > Unpatched kernel will mount and use the degenerate profiles just fine
-> > but won't allow any operation that would not satisfy the stricter device
-> > number constraints, eg. not allowing to go from 3 to 2 devices for
-> > raid10 or various profile conversions.
-> 
-> My initial thought is, tree-checker will report errors like crazy, but
-> no, the check for RAID1 only cares substripe, while for RAID0 no number
-> of devices check.
-> 
-> So a good surprise here.
-> 
-> Another thing is about the single device RAID0 or 2 devices RAID10 is
-> the stripe splitting.
-> 
-> Single device RAID0 is just SINGLE, while 2 devices RAID10 is just RAID1.
-> Thus they need no stripe splitting at all.
-> 
-> But we will still do the stripe calculation, thus it could slightly
-> reduce the performance.
-> Not a big deal though.
+--
+BTRFS warning (device dm-0): csum failed root 257 ino 1068852 off
+25690112 csum 0xa27faf9a expected csum 0x4c266278 mirror 1 BTRFS error
+(device dm-0): bdev /dev/mapper/disk0 errs: wr 0, rd 0, flush 0,
+corrupt 349, gen 0
+--
 
-Yeah effectively they're raid0 == single, raid10 == raid1, I haven't
-checked the overhead of the additional striping logic nor measured
-performance impact but I don't feel it would be noticeable.
+kind of warning/errors on my laptop. I went a bought a new NVME disk
+because I'm rather found of my data, eventhough most is backup-ed up.
 
-> > Example output:
-> >
-> >    # btrfs fi us -T .
-> >    Overall:
-> >        Device size:                  10.00GiB
-> >        Device allocated:              1.01GiB
-> >        Device unallocated:            8.99GiB
-> >        Device missing:                  0.00B
-> >        Used:                        200.61MiB
-> >        Free (estimated):              9.79GiB      (min: 9.79GiB)
-> >        Free (statfs, df):             9.79GiB
-> >        Data ratio:                       1.00
-> >        Metadata ratio:                   1.00
-> >        Global reserve:                3.25MiB      (used: 0.00B)
-> >        Multiple profiles:                  no
-> >
-> > 		Data      Metadata  System
-> >    Id Path       RAID0     single    single   Unallocated
-> >    -- ---------- --------- --------- -------- -----------
-> >     1 /dev/sda10   1.00GiB   8.00MiB  1.00MiB     8.99GiB
-> >    -- ---------- --------- --------- -------- -----------
-> >       Total        1.00GiB   8.00MiB  1.00MiB     8.99GiB
-> >       Used       200.25MiB 352.00KiB 16.00KiB
-> >
-> >    # btrfs dev us .
-> >    /dev/sda10, ID: 1
-> >       Device size:            10.00GiB
-> >       Device slack:              0.00B
-> >       Data,RAID0/1:            1.00GiB
-> 
-> Can we slightly enhance the output?
-> RAID0/1 really looks like a new profile now, even the "1" really means
-> the number of device.
+A week later, I started to get the same kind of warning/error message
+on my new NVME. After half a day of memtest86, resulted in no memory
+errors found, I gave up on my otherwise stable laptop and started to
+use an old laptop that I've been to lazy to sell instead while looking
+out for a decent pre-owned newer laptop.
 
-Do you have a concrete suggestion? This format was inspired by a
-discussion and suggested by users so I guess this is what people expect
-and I find it clear. It's also documented in manual page so if you think
-it's not clear or missing some important information, please let me
-know.
+Now I'm just about to install and move over to a newly bought laptop,
+when today my old laptop started to show the same warning/errors.
+My old laptop does not share a single part with the laptop which I
+previous got the "checksum failure" warnings on. Therefore I have a hard
+time to believe that I've gotten the same hardware failure twice.
+
+Then I found:
+<https://btrfs.wiki.kernel.org/index.php/Gotchas> and "Direct I/O and
+CRCs".
+
+Which I believe is what I've ran into. One of the affect files is
+a log file from syncthing on both computers.
+
+Some people might have been quite pissed off having bought a new
+NVME disk and another laptop in vain, but I'm a relieved that I
+think I've found the root cause of.
+I've used btrfs for about ten years and together with the "btrfs"
+tool I find btrfs a very pleasant experience.
+
+I have just one humble request, please do something about this
+checksum error message. Just add printk with a link to:
+<https://btrfs.wiki.kernel.org/index.php/Gotchas> and the issue of
+"Direct I/O and CRCs".
+
+Maybe update the wiki with:
+`find <mountpoint> -inum <ino-number-from-warning-message>`
+would be a helpful as well.
+
+Thanks.
+
+Best regards,
+ Jonas Aaberg
