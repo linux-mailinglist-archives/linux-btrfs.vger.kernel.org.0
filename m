@@ -2,34 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69C93D323C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 05:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E4F3D33C0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 06:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233559AbhGWCuJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Jul 2021 22:50:09 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41435 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233499AbhGWCuI (ORCPT
+        id S233700AbhGWDvv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jul 2021 23:51:51 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39834 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231760AbhGWDvv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Jul 2021 22:50:08 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16N3UR3w017188
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 23:30:28 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id BC69B15C37C0; Thu, 22 Jul 2021 23:30:27 -0400 (EDT)
-Date:   Thu, 22 Jul 2021 23:30:27 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
+        Thu, 22 Jul 2021 23:51:51 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UggEgt-_1627014743;
+Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0UggEgt-_1627014743)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 23 Jul 2021 12:32:23 +0800
+Date:   Fri, 23 Jul 2021 12:32:23 +0800
+From:   Eryu Guan <eguan@linux.alibaba.com>
 To:     Dave Chinner <david@fromorbit.com>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Eryu Guan <eguan@linux.alibaba.com>, Qu Wenruo <wqu@suse.com>,
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
         "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Subject: Re: [PATCH RFC] fstests: allow running custom hooks
-Message-ID: <YPo300VndiwhdrVc@mit.edu>
+Message-ID: <20210723043223.GK60846@e18g06458.et15sqa>
 References: <3fd6494b-8f03-4d97-9d00-21343e0e8152@gmx.com>
  <6b7699a9-fc5e-32d9-78c5-9c0e3cf92895@gmx.com>
  <YPbt2ohi62VyWN7e@mit.edu>
@@ -44,6 +40,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20210722222150.GE2112234@dread.disaster.area>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -60,6 +57,9 @@ On Fri, Jul 23, 2021 at 08:21:50AM +1000, Dave Chinner wrote:
 > > I'd suggest fstests/common/hooks instead, since the hook scripts
 > > aren't actually *tests* per so, but rather utility scripts, and common
 > > would be a better place for it, I think.
+
+Agreed, then we could avoid naming hooks dir as "Hooks".
+
 > 
 > True, but I don't think common/ is the right place, either, because
 > that's for common test infrastructure. I only just looked, but
@@ -69,8 +69,15 @@ On Fri, Jul 23, 2021 at 08:21:50AM +1000, Dave Chinner wrote:
 > 
 > Is that an acceptible location?
 
-Sounds good to me!
+Right now the lib dir contains mainly c libs used by test binaries, it
+looks like part of the build infrastructure to me. OTOH, I think
+common/hooks is fine, as hooks is part of the test harness to me. Or
+maybe tools/hooks is another choice?
 
+Thanks,
+Eryu
+
+> 
 > > > fstests/hooks/
 > > > - directory containing symlinks to hook scripts
 > > 
@@ -85,7 +92,10 @@ Sounds good to me!
 > 
 > Yup, that's easy enough to do. We can do it exactly the same way we
 > allow RESULT_BASE to point the results to a user defined directory.
-
-Excellent, thanks!
-
-						- Ted
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
