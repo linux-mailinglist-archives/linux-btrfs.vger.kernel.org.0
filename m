@@ -2,73 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255053D31E6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 04:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69C93D323C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 05:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbhGWByy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Jul 2021 21:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233216AbhGWByu (ORCPT
+        id S233559AbhGWCuJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Jul 2021 22:50:09 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41435 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233499AbhGWCuI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Jul 2021 21:54:50 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CFDC061575
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jul 2021 19:35:24 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id r1so272822iln.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Jul 2021 19:35:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=fTFWwMjCpocca3MO7P1jty1ObtUAP01oxLMOZnGcpik=;
-        b=lhwCf5dBaX4NrYPRsGpwcKn11738Jhl73V7eYvD0t1WxG4dXZoAMTZUCy5lcGTS60X
-         R+zloXl9+KDLiIH9pJhUZ9hJDHj6SjvFYTDDQXvE5TvyCyatV73KtILBhIIb2dPJakun
-         WZ8ovA20oVpZtfKciX1q10L4BeTwL8KgupXC5W6++g5PaSlC5DRz/W0TupL0lRDRNMX/
-         DHnJNFOPJmxkoytb54o24Gm1bWwAiAyz0ZTa8Ge6TWWC1OlvEDp0TjOTwu1vPTxtwoRF
-         Bja4n4ZBag8Bk1Vk5gaP0VWoNCQFPrLddkaqvBdN4/1E+fVSVxzl/2yTZb7+9FCg7owx
-         LUmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=fTFWwMjCpocca3MO7P1jty1ObtUAP01oxLMOZnGcpik=;
-        b=dZck3HBvaxG99fOpvd2+76HKBoFnLS/aB6s/9YA0pbhN0HwTyml3Q/QDoOv8Mj8WSt
-         dixHuf3dOZoqCe6DUDoVXQiesZZri+kBm3Biboic0eFFV0ciui3mtYisowt6kOXrW6Nl
-         vPr0fABiM217SAxZShFmK11MnOMKS029v0e7NcDCSbaeZWfI3GbLVQM8V/ZPf/ZF8qQa
-         Xwk7q4VNEWtEfq0UQQcsaW4TDECIVmQmS0NNSdSAw72HiaYfh21cOkVBGMdgtjdxKKDh
-         ZcODVx6QNxXaGG2XRKb9u2CKvAOn5P2rf4bQfgyMs3NMic0Vg30N29a5PSZVhD65nm6+
-         aZLg==
-X-Gm-Message-State: AOAM533WNL3XSvyezAe004oY4LM6E5x1bBe+6hWV7x+t/N1keH0zRm2v
-        4vNtls77jU16znPAenkFG1W3TSrwphjycOk10Zg=
-X-Google-Smtp-Source: ABdhPJwJ78IYuZKPPWr52OO7IKTqGig+ng8BGQ1h+7HEV9bKq5p99i7Gepmk2LbKqKF2nA+l8IkhbUNAkLpkLGt26oI=
-X-Received: by 2002:a92:c644:: with SMTP id 4mr2068641ill.246.1627007724238;
- Thu, 22 Jul 2021 19:35:24 -0700 (PDT)
+        Thu, 22 Jul 2021 22:50:08 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16N3UR3w017188
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Jul 2021 23:30:28 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id BC69B15C37C0; Thu, 22 Jul 2021 23:30:27 -0400 (EDT)
+Date:   Thu, 22 Jul 2021 23:30:27 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Eryu Guan <eguan@linux.alibaba.com>, Qu Wenruo <wqu@suse.com>,
+        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH RFC] fstests: allow running custom hooks
+Message-ID: <YPo300VndiwhdrVc@mit.edu>
+References: <3fd6494b-8f03-4d97-9d00-21343e0e8152@gmx.com>
+ <6b7699a9-fc5e-32d9-78c5-9c0e3cf92895@gmx.com>
+ <YPbt2ohi62VyWN7e@mit.edu>
+ <f37bec82-85cd-b818-8691-6c047751c4a6@gmx.com>
+ <20210721011105.GA2112234@dread.disaster.area>
+ <ff57f17c-e3f2-14f3-42d8-fefaafd65637@gmx.com>
+ <DM6PR04MB70812AEDDAB6DE7951F4FBBDE7E39@DM6PR04MB7081.namprd04.prod.outlook.com>
+ <20210721232830.GC2112234@dread.disaster.area>
+ <YPmDmZL6oLnGhayx@mit.edu>
+ <20210722222150.GE2112234@dread.disaster.area>
 MIME-Version: 1.0
-Received: by 2002:a05:6638:2414:0:0:0:0 with HTTP; Thu, 22 Jul 2021 19:35:23
- -0700 (PDT)
-Reply-To: mrs.chantal166@gmail.com
-From:   mrs chantal <misschantal10014@gmail.com>
-Date:   Fri, 23 Jul 2021 02:35:23 +0000
-Message-ID: <CANYMfis46tjoyQ8eCQbNqT0uaWOpxi8d92dJCq-rADnOvwC9LA@mail.gmail.com>
-Subject: HELLO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722222150.GE2112234@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Friend
-You have been compensated with the sum of 4.3 million dollars in this
-united nation the payment will be issue into atm visa card and send to
-you from the santander bank we need your address and your whatsapp
-number
+On Fri, Jul 23, 2021 at 08:21:50AM +1000, Dave Chinner wrote:
+> On Thu, Jul 22, 2021 at 10:41:29AM -0400, Theodore Ts'o wrote:
+> > On Thu, Jul 22, 2021 at 09:28:30AM +1000, Dave Chinner wrote:
+> > > 
+> > > I'm thinking that it is something relatively simple like this:
+> > > 
+> > > fstests/tests/hooks
+> > > - directory containing library of hook scripts
+> > 
+> > I'd suggest fstests/common/hooks instead, since the hook scripts
+> > aren't actually *tests* per so, but rather utility scripts, and common
+> > would be a better place for it, I think.
+> 
+> True, but I don't think common/ is the right place, either, because
+> that's for common test infrastructure. I only just looked, but
+> there's a lib/ directory in fstests.  lib/hooks seems like the right
+> place for this, and if I had of looked yesterday I would have put it
+> there from the start. :/
+> 
+> Is that an acceptible location?
 
-Fill the followings with your details;
+Sounds good to me!
 
-1. Your Name:
-2. Country :
-3. Age and Sex:
-4. Occupation :
-5. Mobile Telephone:
-6. Delivery Address:
-7. Id Card Identification
+> > > fstests/hooks/
+> > > - directory containing symlinks to hook scripts
+> > 
+> > This might be a good default, but it might be better if the location
+> > of the hook directory could be overridden via an environment variable.
+> > In some cases, instead of having run-time configuration inside the
+> > fstests directtory with .gitignore, it might be more convenient for it
+> > if were made available externally (for example, via a 9p file system
+> > in a case where tests are being run via KVM using a rootfs test image
+> > with qmeu's snapshot mode so the hook directory could be supplied from
+> > the host).
+> 
+> Yup, that's easy enough to do. We can do it exactly the same way we
+> allow RESULT_BASE to point the results to a user defined directory.
+
+Excellent, thanks!
+
+						- Ted
