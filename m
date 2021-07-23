@@ -2,139 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D303D407E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 21:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06833D40B0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jul 2021 21:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbhGWSWR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Jul 2021 14:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGWSWQ (ORCPT
+        id S230125AbhGWSn5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Jul 2021 14:43:57 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47850 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhGWSn4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Jul 2021 14:22:16 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ACEC061575
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Jul 2021 12:02:48 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id o5-20020a1c4d050000b02901fc3a62af78so4082759wmh.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 23 Jul 2021 12:02:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iesmariamoliner-com.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=oTO2SPf7Lds3IDzlBxAg6xNXTrrZ5v1vnVP+Pc3Znq0=;
-        b=unjuJYS4ATfArG8MpXIcgFy2lorpcfZ2gikbTqgpuJdz+JwYbtQN7lHtaWWrRge4f5
-         r3R+uMB6J6qCrmHi1yHjS4eXbaivSPIDRt96DDrbiIqlMXFn8GTcp7W0/6gFcN/Tx8hi
-         vY4sMjTO+BT+wPrWJuatVTKLNjIsqArBLx0PKKzYi2BPkfuQp9pX6TA5yMo2nFaNTTrj
-         FWIsy6ETi6NjSYzPTtEaxA7FA3M7Q0I6qiK4UAwAbfMKyWVUJn0f2ftnww+AQVZ+ph96
-         K2pgkRLfoG6ULCVuJ16eMUu+QWOJdE58JqYUlqMh986s8v4JxDst8/lKPVWaGB6GAwh9
-         S1UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=oTO2SPf7Lds3IDzlBxAg6xNXTrrZ5v1vnVP+Pc3Znq0=;
-        b=hXQbnJ4BxldsbIw/wJsNbdWv6F1Q3/fZyf3U/GhZfTsoHCk8SYLOGlaFeyprC2J1CY
-         fYlE/WAOUbcDkZe5hr5d2aZSyqEVFfftQRDXInO8RYQKySJYeM1fvDIs6u4dUX0yQRlB
-         ++VxGBTzs5twmuOzf1BTNpWi5NUtiwhw9YCimKv6BoVdP+VSteq5TdLK7pplmzr+Oe/L
-         PCv0Bei5PiaOevxuyUhMEG5Npik8ktpSIdrjtg5qX9iCRdZTjfn3uIYkgqnV9EUsti+H
-         cHZz2NJDrHfLsX15VBJTSgl+I7pJlR9woDl9Am13s4hrspC+eG2zL1vpm6g7JiNquiOo
-         33dA==
-X-Gm-Message-State: AOAM530+K5p6pbr3Ko9QK5FPoB9npkZUIelujfiiO3XA6Ok7R+fFoOvn
-        6vFMtDU8o65s7iE4DFVtD426DjGNbs7uaA==
-X-Google-Smtp-Source: ABdhPJwQ1uyYKvW8L/3lXonmm4CBpHD5b00at8MkfbpL6K1wdn2J4CVlk14DbMN1i9UElkW/1CbRdQ==
-X-Received: by 2002:a1c:730d:: with SMTP id d13mr16004342wmb.129.1627066951763;
-        Fri, 23 Jul 2021 12:02:31 -0700 (PDT)
-Received: from [192.168.2.3] (188.red-81-44-181.dynamicip.rima-tde.net. [81.44.181.188])
-        by smtp.gmail.com with ESMTPSA id d18sm26727820wmp.46.2021.07.23.12.02.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 12:02:31 -0700 (PDT)
-To:     linux-btrfs@vger.kernel.org
-From:   Fernando Peral <fperal@iesmariamoliner.com>
-Subject: Help Dealing with BTRFS errors on a root partition in NVMe M2 PCIe
-Message-ID: <47feb886-8220-abb1-2245-06d6f37d4c0c@iesmariamoliner.com>
-Date:   Fri, 23 Jul 2021 21:02:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 23 Jul 2021 14:43:56 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id F38E6220BC;
+        Fri, 23 Jul 2021 19:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627068269;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2T8g9e/awfX3Vu+0w8TJP8RAgy26B8aoKGtGPJTE/Xs=;
+        b=uv5xRSj1xiEVBhZllXrODnwAs6hLZAMkyG+YDDtGKfHeIZD1buAQ58swuTRm69a83WoPfy
+        RVUpAqD2jJoCRmdBavTCMCggCbOlrT/HulVK35I81knfBbKSITed7RNPJsqjTkdQ0L+ejv
+        GNbZH5TL/duyUq7bRkQuqg+xZz81XHY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627068269;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2T8g9e/awfX3Vu+0w8TJP8RAgy26B8aoKGtGPJTE/Xs=;
+        b=yBh89vvMxhyxl4DeziC1RYTgElIM7Mtqxk8tMfVztOqxIoVdDJ5zbO+nXu6wO6aSw//0Em
+        9nMOYki3/TfxC3Aw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id E9790A3B85;
+        Fri, 23 Jul 2021 19:24:28 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 4DDA9DA8EB; Fri, 23 Jul 2021 21:21:45 +0200 (CEST)
+Date:   Fri, 23 Jul 2021 21:21:45 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Roman Mamedov <rm@romanrm.net>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: allow degenerate raid0/raid10
+Message-ID: <20210723192145.GF19710@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Roman Mamedov <rm@romanrm.net>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210722192955.18709-1-dsterba@suse.com>
+ <db9e2f31-73a5-0d0d-a1da-7acde6fb118e@gmx.com>
+ <20210723140843.GE19710@twin.jikos.cz>
+ <20210723222730.1d23f9b4@natsu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723222730.1d23f9b4@natsu>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi.
+On Fri, Jul 23, 2021 at 10:27:30PM +0500, Roman Mamedov wrote:
+> On Fri, 23 Jul 2021 16:08:43 +0200
+> David Sterba <dsterba@suse.cz> wrote:
+> 
+> > > Can we slightly enhance the output?
+> > > RAID0/1 really looks like a new profile now, even the "1" really means
+> > > the number of device.
+> > 
+> > Do you have a concrete suggestion? This format was inspired by a
+> > discussion and suggested by users so I guess this is what people expect
+> > and I find it clear. It's also documented in manual page so if you think
+> > it's not clear or missing some important information, please let me
+> > know.
+> 
+> It really reads like another RAID level, easily confused with RAID10.
+> 
+> Or that it would flip between RAID0 and RAID1 depending on something.
 
-I'm having an error on the root partition of a opensuse leap 15.3 system.
+I think it could be confusing when the number of stripes is also another
+raid level, like /1 in this case. From the commit
+https://github.com/kdave/btrfs-progs/commit/4693e8226140289dcf8f0932af05895a38152817
 
-I have been asking for help in 
-https://forums.opensuse.org/showthread.php/557380-Dealing-with-BTRFS-errors-on-a-root-partition-in-NVMe-M2-PCIe
+/dev/vdc, ID: 1
+   Device size:             1.00GiB
+   Device slack:              0.00B
+   Data,RAID0/2:          912.62MiB
+   Data,RAID0/3:          912.62MiB
+   Metadata,RAID1:        102.38MiB
+   System,RAID1:            8.00MiB
+   Unallocated:             1.00MiB
 
-The problem seems to have been caused by a faulty ram module wich has 
-been already replaced, but the error of the fs is still there.
+it's IMHO clear or at least prompting to read the docs what it means.
 
-It has been suggested that it has been a bitflip and to ask here if  a 
-btrfs check and repair should be done.
+> Maybe something like RAID0d1?
 
+That looks similar to RAID1c3 which I'd interpret as a new profile as
+well. The raid56 profiles also print the stripe count so I don't know if
+eg. RAID5d4 is really an improvement.
 
+A 4 device mix of raid56 data and metadata would look like:
 
-#btrfs
-check --readonly --force /dev/nvme0n1p1
-[1/7] checking root items
-[2/7] checking extents
-data backref 227831808 root 263 owner 7983 offset 0 num_refs 0 not found 
-in extent tree
-incorrect local backref count on 227831808 root 263 owner 7983 offset 0 
-found 1 wanted 0 back 0x5559e0ab7020
-incorrect local backref count on 227831808 root 263 owner 
-140737488363311offset 0 found 0 wanted 1 back 0x5559dde718d0
-backref disk bytenr does not match extent record, bytenr=227831808, ref 
-bytenr=0
-backpointer mismatch on [227831808 4096]
-ERROR: errors found in extent allocation tree or chunk allocation
-[3/7]checking free space cache
-[4/7]checking fs roots
-[5/7]checking only csums items (without verifying data)
-[6/7]checking root refs
-[7/7]checking quota groups
-Qgroup are marked as inconsistent.
-Opening filesystem to check...
-Checking filesystem on /dev/nvme0n1p1
-UUID: 5b000355-3a1a-49f5-8005-f10668008aa7
-Rescan hasn't been initialized, a difference in qgroup accounting is 
-expected
-found 51878920192 bytes used, error(s) found
-total csum bytes: 48135312
-total tree bytes: 991313920
-total fs tree bytes: 885358592
-total extent tree bytes: 48414720
-btree space waste bytes: 151592274
-file data blocks allocated: 239972728832
-referenced 85539778560
+# btrfs dev us .
+/dev/sda10, ID: 1
+   Device size:            10.00GiB
+   Device slack:              0.00B
+   Data,RAID5/4:            1.00GiB
+   Metadata,RAID6/4:       64.00MiB
+   System,RAID6/4:          8.00MiB
+   Unallocated:             8.93GiB
 
+/dev/sda11, ID: 2
+   Device size:            10.00GiB
+   Device slack:              0.00B
+   Data,RAID5/4:            1.00GiB
+   Metadata,RAID6/4:       64.00MiB
+   System,RAID6/4:          8.00MiB
+   Unallocated:             8.93GiB
 
+/dev/sda12, ID: 3
+   Device size:            10.00GiB
+   Device slack:              0.00B
+   Data,RAID5/4:            1.00GiB
+   Metadata,RAID6/4:       64.00MiB
+   System,RAID6/4:          8.00MiB
+   Unallocated:             8.93GiB
 
+/dev/sda13, ID: 4
+   Device size:            10.00GiB
+   Device slack:              0.00B
+   Data,RAID5/4:            1.00GiB
+   Metadata,RAID6/4:       64.00MiB
+   System,RAID6/4:          8.00MiB
+   Unallocated:             8.93GiB
 
-pruebas:~# uname -a
-Linux pruebas 5.3.18-59.13-default #1 SMP Tue Jul 6
-07:33:56 UTC 2021 (23ab94f) x86_64 x86_64 x86_64 GNU/Linux
-
-
-pruebas:~#btrfs --version
-btrfs-progs v4.19.1  ç
-
-
-pruebas:~# btrfs fi show
-Label: none  uuid: 5b000355-3a1a-49f5-8005-f10668008aa7
-        Totaldevices 1 FS bytes used 48.42GiB
-        devid   1 size 931.51GiB used 51.05GiB path /dev/nvme0n1p1
-
-
-pruebas:~#btrfs fi df /
-Data, single: total=49.01GiB, used=47.48GiB
-System, single: total=32.00MiB, used=16.00KiB
-Metadata, single: total=2.01GiB, used=962.69MiB
-GlobalReserve, single: total=101.06MiB, used=0.00B
-
-
-
+Maybe it's still too new so nobody is used to it and we've always had
+problems with the raid naming scheme anyway.
