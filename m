@@ -2,51 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372A13D49E5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jul 2021 22:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF413D49E6
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jul 2021 22:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbhGXTwW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 24 Jul 2021 15:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38884 "EHLO
+        id S229700AbhGXTwv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 24 Jul 2021 15:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhGXTwV (ORCPT
+        with ESMTP id S229510AbhGXTws (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 24 Jul 2021 15:52:21 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F22C061575
-        for <linux-btrfs@vger.kernel.org>; Sat, 24 Jul 2021 13:32:52 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id b128so2831887wmb.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 24 Jul 2021 13:32:51 -0700 (PDT)
+        Sat, 24 Jul 2021 15:52:48 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FF2C061575
+        for <linux-btrfs@vger.kernel.org>; Sat, 24 Jul 2021 13:33:19 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id p5so1042295wro.7
+        for <linux-btrfs@vger.kernel.org>; Sat, 24 Jul 2021 13:33:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:from:date:message-id:subject:to;
         bh=2HQzZz8CgWbQEOqKdPMfch3t10c7+Vhywforo3J7lfo=;
-        b=OgNe+ZS7NH2TYu/sKpyyJmmjv0rCh0jXTdZ0YqMfxcL7ksVDhqVgBmtKIm2lQmxtHK
-         Hdn3C6yyzlaLfv60y23IQpH1SRnaAocCKf8vMVPaRqEM+8aD+QitaA+K3EatpJWrC0M9
-         HSkCcsbGNSz0h6NPW44iKvj1lgIL9Yb7dyL1N3NQuGlSGL3/9QrNvCkAb3b8Hb1ubU+2
-         13Qp2SLjwKp3yDSNtwC/zvkkApB3l4krMvY35lbyEAuQ9hXiviNDb478qSPXbmmgSdaX
-         ZNQa4TBPNXKq9Ba6+Tp/3sm2dMIZSfZBjVtD9p08NoKTIetc8sKhGs7P6ZjsTAaCdYHy
-         Akcw==
+        b=mjQeLwc5Vo57eL2ahhXZwJhTS95ls7MnURJxAZr4RBrpqQCEx3WcRGwwow9xtBVThs
+         LKQ11G/SEUtEmXdIwii8ziLipYl9q9ptxsOvGI2ao/yrsdLFadtmTZY1XWwieFuXGekN
+         w4bijWK00bOQ581kUqEEdGgdqiL6F0kqSKq3S9vo5AH4MSpbCiXqTlFCRQVpD0n2LnuS
+         6XuWQ4JhSDsXx7m0BBsCSWL8D8GeEjDgQN9yhTekZDofB8ye87req4oGujZmmP5wwPJG
+         QYOI3zzjO7kfn3naKE8mrUa+5gK/WqUheUf7mgOUgEOfJyT5UIYLfSVesajVYlcWlnbB
+         Bvgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
         bh=2HQzZz8CgWbQEOqKdPMfch3t10c7+Vhywforo3J7lfo=;
-        b=XFDv8nHE8ek5x5+AtZxVrJ7pwbif0QDYj7kTOXTJCgmyOaeJa/wI8/CJr1hZRD3t5v
-         0qPNZDk4qD7pbvno/cC9n4/9E9DgiXtzgzjnsqcT2c8bmcAMk5nOoeVcQ7cF52sYFvEZ
-         22Oj3+fZSTpT6Deuh3FjMYGTKOSLBjV4cgx2wR01GKfo1T3EJUCS7YT+jNMe22N9CoY6
-         kpwJpAOxENCrEgdQZJeuM7Y3+LzLCUq6s65pFoMny+5uq//Jr0WvRIMAw6na9Ixf5jV3
-         YQxdikGPDg7T+SYQrDNezvzhwQmilPUyuWR09Vl2xjPgOMBdGotld45JRHXfiqXcDGLA
-         ueew==
-X-Gm-Message-State: AOAM531KfOkgqOWl72dVu7RdD8AfeUta38wwhMzZDuRPM3K7x/VUa/CI
-        B3cDj9NtnOvlMZ7Y9VOS/EyTAxYHGb6i9mvdB047EY8i+nY=
-X-Google-Smtp-Source: ABdhPJwA9PP17KgrqLaEidl03wZ9wTcjKyOuLF0Q4y5trI4A/FZQtXfOlLzIjxIHEsHgkAJhjyNWbbUaNGv+jSGzvOw=
-X-Received: by 2002:a1c:3505:: with SMTP id c5mr19429212wma.53.1627158770542;
- Sat, 24 Jul 2021 13:32:50 -0700 (PDT)
+        b=g7Xrz/vKritLTmBPIHkrzo8Qyjga9Aic1dI9pSVqo0VEmgQg54YrBD2Z4wmDzxZZDJ
+         qTxaQKi8fLBLhJPeVbdvE7Ac1Pfw3apH8GTijxoSU/zu+3QHrj2NB0yPiclZp8xyPjfZ
+         ZOpbQ6vioIQIjPpxU5C6IJleMQNcQ+R0Z0FZvDAjt/GRoW3Dm6np2r5/dwUaujfu1cWp
+         BaFuiiTndjd0QC134wN5E3FIkIGr3P0LG4YJ9TwjNeh6cfQr+Z2ph02j/PqeatwZccEB
+         fUfhQlQNtPm8D+l5NkzJE6DKAAi2vZL0KNA5Pqx0Dvm4s6vOCG7KMtPPdXJbJGn5jkHj
+         dvug==
+X-Gm-Message-State: AOAM530aDUc0uHZzgJoHEjSZ/E5InK9xUnLmhYNLnLgeYuoWP0vt4C4t
+        8zB5/02rO3N5EUf+ieFzxCI4uBh5314zhyMQO+pmpdtES2M=
+X-Google-Smtp-Source: ABdhPJxA7U+r4Omb4NufNvvC20XwuZyGIDUWbPcy9TOo6exVNyoenhVNMMWJ18g/WQfr8dj3nxNDsQzxhXUgDxx4Ox8=
+X-Received: by 2002:adf:fc0d:: with SMTP id i13mr1138686wrr.276.1627158797828;
+ Sat, 24 Jul 2021 13:33:17 -0700 (PDT)
 MIME-Version: 1.0
 From:   Matthew Warren <matthewwarren101010@gmail.com>
-Date:   Sat, 24 Jul 2021 15:32:40 -0500
-Message-ID: <CA+H1V9yDPy++WLfxGqwXf0MkszN8aZ0Zu5xQuKQx2zHvrL4Xjg@mail.gmail.com>
-Subject: 
+Date:   Sat, 24 Jul 2021 15:33:07 -0500
+Message-ID: <CA+H1V9watMYVkFXy_P06H_8WXY9GOjfaM0rX6pW8HObT6nU4vA@mail.gmail.com>
+Subject: Btrfs can become unmountable if a drive dies during a replace
+ operation even though it should still be mountable
 To:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
