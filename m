@@ -2,111 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8303D4B0C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jul 2021 04:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E513D4B39
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jul 2021 05:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhGYCPx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 24 Jul 2021 22:15:53 -0400
-Received: from eu-shark2.inbox.eu ([195.216.236.82]:36358 "EHLO
-        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhGYCPw (ORCPT
+        id S230241AbhGYCyM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 24 Jul 2021 22:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230217AbhGYCyL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 24 Jul 2021 22:15:52 -0400
-Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
-        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id B15731E0065C;
-        Sun, 25 Jul 2021 05:56:22 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1627181782; bh=ai1Ndk+Y8Ph1vQ/OfrqDEYftyIwkH6+OViczuy2wI1Y=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to;
-        b=sG0OI4iP9MLFXokSgNLCpq79y3ykiC01eNQQdEXwdas/Pyxa/A1XcVfzQOX1CzUro
-         +BR3qarga1i95LfP+ZaIc7kaJCC7JGXSB1f/aOLLW2X+tFnK+WvRF5vbp8UCOc6asL
-         Ob0iK3YL1gwWyfcMqoX+zOZRyAQ9m7mIDbDCfuQA=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id A74F91E00662;
-        Sun, 25 Jul 2021 05:56:22 +0300 (EEST)
-Received: from eu-shark2.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id AQPRzceWSuFy; Sun, 25 Jul 2021 05:56:22 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 571371E0065C;
-        Sun, 25 Jul 2021 05:56:22 +0300 (EEST)
-Received: from nas (unknown [103.138.53.19])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 498E41BE0035;
-        Sun, 25 Jul 2021 05:56:20 +0300 (EEST)
-References: <20210724074642.68771-1-realwakka@gmail.com>
- <2305182b-1e12-df9c-320c-7a7eedba860d@gmx.com>
- <20210724082356.GA68829@realwakka>
-User-agent: mu4e 1.5.8; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs-progs: cmds: Fix build for using NAME_MAX
-Date:   Sun, 25 Jul 2021 10:54:05 +0800
-In-reply-to: <20210724082356.GA68829@realwakka>
-Message-ID: <czr7w180.fsf@damenly.su>
+        Sat, 24 Jul 2021 22:54:11 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0C6C061757
+        for <linux-btrfs@vger.kernel.org>; Sat, 24 Jul 2021 20:34:41 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id j6-20020a05600c1906b029023e8d74d693so4045314wmq.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 24 Jul 2021 20:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=liUCJ3ymAhCfuIY4sGlaXHFTRX3wyXAIRM0uO6AXVow=;
+        b=JIkz/47oyRqcWuFh+Kikrl9fLJx86DuSN6yXUGGJFxZ51OU89SU2Vt45nitSrRWI9A
+         tchh75DZSaEvZHYN/5Ou31yIH6EqN1bv9tAR0vztpgaC/uKddyY+/RK1xXWWMKrHcCz5
+         lSGMV21loa0QQXXkBsVpL0LX37QC3RXYVnmu0Qz89nqqdMmuyWzYD2zz629199FG8dZF
+         X/5QevWM1dqYMQgyL3EZNQQd7jFd9Xn9LtoIdVSJlKN8IDS2oYNC3zOkySGRN/muZJfh
+         iNyPZlVj/ma8pZI55ZqcMNyy0qmU04DR22KIraj6Ln+yQNvmu3x0LSuS27HK161HC3/7
+         8pxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=liUCJ3ymAhCfuIY4sGlaXHFTRX3wyXAIRM0uO6AXVow=;
+        b=a419ML1oa+q4CMILMIoM8uHBmZGVsH5dD9jvNMpDWuqv5KABEuKGAuP4XJWY9D4SFv
+         206Ko6HgHqRgPpQMKZW7xUjDof7yqHDFPujds9v1OTCzYWbLE3lzZgwV26cofR1a1B44
+         +z01E9TcaCs2hbiv/BAWHxQ8fKI2//p0t4gqTuXnYm3JJcB9YKZ5TwVra6w7RbO402/3
+         xP6siVOPB9bdgGkQD6y58DZbgaVWT5n30kV6Ohoc+G2A2XOT6qqSNO9pFWEb2uAFek0i
+         uc+jNoHI+3m6M+st/5Qx2RcK3MjDpL8uleH6m+yNU2sLXe7FTMiSSgMFh4ysoZYF9Pf9
+         ZYLg==
+X-Gm-Message-State: AOAM530aK6+/Yr5d2v6YtWbRocO0aran7lG9xZ9dNwtMoHmU5e/Dgjti
+        PeRhZYkdAi1Y2Ej6bMTdvSB9J67V3jUZ7xuptkgtEQ==
+X-Google-Smtp-Source: ABdhPJyNINsUj+TIUNtuHUmTKnDZtx1mimuUcZ6RgCWP6U//lt0IfvYOMNezb51fxludUDqnBUcmflNrJ2nu9U2ZAa8=
+X-Received: by 2002:a1c:2b04:: with SMTP id r4mr8170977wmr.168.1627184079494;
+ Sat, 24 Jul 2021 20:34:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: OK
-X-ESPOL: 885mlYpNBD+ngkCkQGXfDBpV3CdKQJ6W9p/BzG4nkTulcTLmCkUMVhC2n2R1THi+og==
+References: <CAHzMYBT+pMxrnDXrbTJqP-ZrPN5iDHEsW_nSjjD3R_w3wq5ZLg@mail.gmail.com>
+ <20210721174433.GO19710@twin.jikos.cz> <8b830dc8-11d4-9b21-abe4-5f44e6baa013@gmx.com>
+ <20210722135455.GU19710@twin.jikos.cz> <20210724231527.GF10170@hungrycats.org>
+In-Reply-To: <20210724231527.GF10170@hungrycats.org>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sat, 24 Jul 2021 21:34:23 -0600
+Message-ID: <CAJCQCtSc8x3xLKb2yyBchgvMn-0ecGi56CEDtQcFD74WyEOzUw@mail.gmail.com>
+Subject: Re: Maybe we want to maintain a bad driver list? (Was 'Re: "bad tree
+ block start, want 419774464 have 0" after a clean shutdown, could it be a
+ disk firmware issue?')
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     David Sterba <dsterba@suse.cz>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Jorge Bastos <jorge.mrbastos@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-On Sat 24 Jul 2021 at 16:23, Sidong Yang <realwakka@gmail.com>=20
-wrote:
-
-> On Sat, Jul 24, 2021 at 03:50:25PM +0800, Qu Wenruo wrote:
->>
->>
->> On 2021/7/24 =E4=B8=8B=E5=8D=883:46, Sidong Yang wrote:
->> > There is some code that using NAME_MAX but it doesn't include=20
->> > header
->> > that is defined. This patch adds a line that includes=20
->> > linux/limits.h
->> > which defines NAME_MAX.
->>
->> I guess it's related to this issue?
->>
->> https://github.com/kdave/btrfs-progs/issues/386
+On Sat, Jul 24, 2021 at 5:16 PM Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> wrote:
 >
-> Yeah, It seems that there is no patch for this yet. So I sent=20
-> this
-> patch. Is this too minor patch?
->
-Good fix. But there is one PR before the issue creation:
-https://github.com/kdave/btrfs-progs/pull/385
+> SSDs are a different story:  there are so many models, firmware revisions
+> are far more diverse, and vendors are still rapidly updating their
+> designs, so we never see exactly the same firmware in any two incident
+> reports.  A firmware list would be obsolete in days.  There is nothing
+> in SSD firmware like the decade-long stability there is in HDD firmware.
 
---
-Su
+It might still be worth having reports act as a counter. 0-3 might be
+"not enough info", 4-7 might be "suspicious", 8+ might be "consider
+yourself warned".
 
-> Thanks,
-> Sidong
->
->>
->> Thanks,
->> Qu
->>
->> >
->> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
->> > ---
->> >   cmds/filesystem-usage.c | 1 +
->> >   1 file changed, 1 insertion(+)
->> >
->> > diff --git a/cmds/filesystem-usage.c=20
->> > b/cmds/filesystem-usage.c
->> > index 50d8995e..2a76e29c 100644
->> > --- a/cmds/filesystem-usage.c
->> > +++ b/cmds/filesystem-usage.c
->> > @@ -24,6 +24,7 @@
->> >   #include <stdarg.h>
->> >   #include <getopt.h>
->> >   #include <fcntl.h>
->> > +#include <linux/limits.h>
->> >
->> >   #include "common/utils.h"
->> >   #include "kerncompat.h"
->> >
+But the scale could be a problem due to the small sample size.
+
+
+
+-- 
+Chris Murphy
