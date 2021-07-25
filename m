@@ -2,188 +2,269 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E393D4C15
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jul 2021 07:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707DA3D4C5E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jul 2021 08:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbhGYErg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 25 Jul 2021 00:47:36 -0400
-Received: from mout.gmx.net ([212.227.17.22]:60721 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229460AbhGYErf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 25 Jul 2021 00:47:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627190882;
-        bh=yk4HC/WglYbeVnohzOEFPf9A56hcayIyAd5yeJYBTYg=;
-        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
-        b=Brnxux4dd/vaV1MVrxIe0wNKhwYlYBez+uOhIU/CyMtuSEcRIALNUvKZq+A/RMCSP
-         IsUWJ8dHjF7qvTTUA7hm2/Lv2unKNcBReDBz6yLw3pjZMA+OxJwdQjFAs+xRfVlkfp
-         Y5B+H32OTgyDTa7pyO2kwos4unJBHLl34RHErN5s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MatVb-1lWp9W0iaZ-00cRlS; Sun, 25
- Jul 2021 07:28:01 +0200
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>, dsterba@suse.cz,
-        Jorge Bastos <jorge.mrbastos@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAHzMYBT+pMxrnDXrbTJqP-ZrPN5iDHEsW_nSjjD3R_w3wq5ZLg@mail.gmail.com>
- <20210721174433.GO19710@twin.jikos.cz>
- <8b830dc8-11d4-9b21-abe4-5f44e6baa013@gmx.com>
- <20210722135455.GU19710@twin.jikos.cz>
- <20210724231527.GF10170@hungrycats.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Maybe we want to maintain a bad driver list? (Was 'Re: "bad tree
- block start, want 419774464 have 0" after a clean shutdown, could it be a
- disk firmware issue?')
-Message-ID: <7cc3c882-6509-ffde-ac32-2d4dba6ade94@gmx.com>
-Date:   Sun, 25 Jul 2021 13:27:56 +0800
+        id S230210AbhGYFj2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 25 Jul 2021 01:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhGYFj2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 25 Jul 2021 01:39:28 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3883DC061757;
+        Sat, 24 Jul 2021 23:19:58 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id n10so266789plc.2;
+        Sat, 24 Jul 2021 23:19:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=5yDM229yNO4FMxdb7dwYLFirB4+FBvYJjOIDRQxk/Cc=;
+        b=h3F0BeXYlOP4WTv6Kb5n6O+Jum9MOc5kZie2OxbkuO3iYS0QVBwrxPEdPXtQ8ABT7K
+         HhmJkuonP1SN7NgHDpOWzFQYL9ZZ1IvFKFq9ipwYBcLZe7ewKPMnvbMc0DNYkMUZLobw
+         CVkDvvsMncmoJRqOpBQoLlHvcKNd5GaS+QqDjQY/QTrY4x2WxrGlZ7qbZkK+qoLGdaDZ
+         UqpgypA3ySCqNxgZD4tpM7bH/JACxcgMoYDSZx4+lsEVieMlFbQIK/1NNwS7uPlpmVF2
+         unq8PAD8jz5T7Gt8c8p3o5AYuEp46ZcAY2kzVk0UWvJkTQJvwyistGm4hNXND5j0Na3s
+         KaQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5yDM229yNO4FMxdb7dwYLFirB4+FBvYJjOIDRQxk/Cc=;
+        b=czU4fj1sU0wN1u3JsRP1tZejrDLdcGdhryVGDJ8MF4DeQ7QEfQsvwH5c9ruCq9vGSK
+         1jb/vq+PZNK6yqzO9hU44x1fMOG3zmqpKpxHdWkhl7u7+BCYI8VaQG9jm/EsDlvFQ9vv
+         c76Lrwi+V1DO8A3sAFilcf8z6UofwNaeEj4VSQXbjSkxdzQAypLI6FQ3GCgoUduOTbQn
+         BXX1xTy50wpkOjarAKIrl+6uGGJoZhbeA8ecYRqbkX/vYWn86Jcx/xlBM4njas5ULkHW
+         /Ldqy55B9R4qtGQ6Ev+NKS/YO7HVwfSMqiLgaFLXmtN8r2tmrZaawLNYgwJ/9N3And0o
+         y+Hg==
+X-Gm-Message-State: AOAM532r31aXGrz0K7MpcFIdSUQ3s6SbKSnWwOWgK6F1A5eU4nEzQJfn
+        HxKI4c43K22E17EWwmUbxJQ=
+X-Google-Smtp-Source: ABdhPJwKpWDg+QUDLNjSAlISCC6Nynf1fAnEo7wHYEheWFlCKMokM7k6e8PbgtTg2hcxq5LodYjC5Q==
+X-Received: by 2002:aa7:8683:0:b029:32e:2a35:941e with SMTP id d3-20020aa786830000b029032e2a35941emr12113330pfo.44.1627193997717;
+        Sat, 24 Jul 2021 23:19:57 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id w18sm35874120pjg.50.2021.07.24.23.19.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Jul 2021 23:19:57 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Subject: Re: [PATCH] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210715103403.176695-1-desmondcheongzx@gmail.com>
+ <20210721175938.GP19710@twin.jikos.cz>
+Message-ID: <9119934f-fb61-3b55-655c-9a7552e0b30b@gmail.com>
+Date:   Sun, 25 Jul 2021 14:19:52 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210724231527.GF10170@hungrycats.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210721175938.GP19710@twin.jikos.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7gZAwAsne9ST6k1GtPa3Eu4idwR+tKcq85dWnvak3N7rcH7y6mj
- DY7bInu2Y817P2IPkXWsjEUCpcnnX/gRWfxhW7nhkDz/lsDLz/jwM80wFgBFwMCq/KireOU
- M7QXpRu4gRzIbbuRb5+KHGsnG0qSU4MVaniyvnkYoyQvtGrmel7GaZHVTaVz0Zqc+SmoKn9
- 0pg1iKxyeZnpq027qB9FA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xT5dfOvgmis=:+dLRf3J+ZW7dSiiu5kX2r2
- KdpwcirI7K3UBt47YN3ErH//VcCOKsLxbtxUQNm0LLtOt17cPrHNwEt46XdfVhBYb4kggStoD
- 6tk1c5eF0QRK3K+7QMcxCM3nYaDU04taWIu0QYw2TvYvCiq7B74bgAhKx7ORqslxkX1WBM5Ru
- cORe3i6If/FsoFo41WpUx80QsPuFdjFK0mXyu/WEqbpuySijPaKnelRO9mOuHw3kY1t0LUv4r
- jIomifVGDy4pjOa8lyoWmJhZXXKiSqnj2MXIIdTnmxjJjpudybjlNwMNongP9Oa2uQ6vfioUi
- HJ6xsqCiQo1ZzhLLeYXS+nUBUUM0R3+D9Sj/rsz2I2N2e0TuJYhoyMrMDed0eHqnR9LYcGhkH
- L3QqraBFRDKR4bWkkA16DGDZbGB4bRaMF54rxa0zCNWonVQLjUFV7mAj89ZCFOsKP2V7krUck
- DbM1lI0Ugd/r9BNQ4YOJnszKXUepElyAwRdbMOP39U4lVNL+ck8+raKDLiD64zHu7yiQfeGC8
- lmkzZQ6x7lLHWkqIKML5T53tGTViQlAcUh+j0E4A0E5HXnGVTBb0ThvLYFAO9OczUqfOVKXPE
- /h4DNVbPXcbqdsdZGVUHmrzgH7x65mfpLLNZC4sJomZ5iN6Du9VCulAo0DLbGew0A4S8cV1WS
- ObC5lZBHyUAl6Uimp+t1UmsCsNytn2XlND5Z2BenMwKE4lUpbfE1XXQFe3/Kw+5syMnT4tJVv
- eFaxsT9TpFqvlxXSc0e5uKFasfMEwjhlpSOBl8QV2u6OdK0OI5z//iTKn8kLRBOVLYJjbK1Rj
- sKKqPcMWLMhstI7AYeTQilPkBs5CFv2Yd938T2aYJMu8fzb8jZnNxtxhWl0PES+q0lcOuzieh
- LfujksUwyFwZ1/GUp/L7X0Gajod0HnXL1APLVgEAZO3frsctn/uDG5pLyVetJFX32oyQbrqrI
- 0MJ062V7t6TSTseNagg66yz78n+upYqSvWYi/zJ+2e8I7DI/9vXA0w4XitChd397VeYYWXxwu
- 6DIdj3W2md5QnA1xvxo5HXXNNSoaVfJ8MZrypxFCXwfz8wucNMH1uIAyKGSslPz4NfRBFmC8u
- ut+h1GFpODXLxrTkeTzrl4Ns0JjlLkmjByRtptGSbTyxOarp8JTapmzEQ==
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/7/25 =E4=B8=8A=E5=8D=887:15, Zygo Blaxell wrote:
-> On Thu, Jul 22, 2021 at 03:54:55PM +0200, David Sterba wrote:
->> On Thu, Jul 22, 2021 at 08:18:21AM +0800, Qu Wenruo wrote:
->>>
->>>
->>> On 2021/7/22 =E4=B8=8A=E5=8D=881:44, David Sterba wrote:
->>>> On Fri, Jul 16, 2021 at 11:44:21PM +0100, Jorge Bastos wrote:
->>>>> Hi,
->>>>>
->>>>> This was a single disk filesystem, DUP metadata, and this week it st=
-op
->>>>> mounting out of the blue, the data is not a concern since I have a
->>>>> full fs snapshot in another server, just curious why this happened, =
-I
->>>>> remember reading that some WD disks have firmware with write caches
->>>>> issues, and I believe this disk is affected:
->>>>>
->>>>> Model family:Western Digital Green
->>>>> Device model:WDC WD20EZRX-00D8PB0
->>>>> Firmware version:80.00A80
->>>>
->>>> For the record summing up the discussion from IRC with Zygo, this
->>>> particular firmware 80.00A80 on WD Green is known to have problematic
->>>> firmware and would explain the observed errors.
->>>>
->>>> Recommendation is not to use WD Green or periodically disable the wri=
-te
->>>> cache by 'hdparm -W0'.
->>>
->>> Zygo is always the god to expose bad hardware.
->>>
->>> Can we maintain a list of known bad hardware inside btrfs-wiki?
->>> And maybe escalate it to other fses too?
+On 22/7/21 1:59 am, David Sterba wrote:
+> On Thu, Jul 15, 2021 at 06:34:03PM +0800, Desmond Cheong Zhi Xi wrote:
+>> Syzbot reports a warning in close_fs_devices that happens because
+>> fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
+>> on each device.
 >>
->> Yeah a list on wiki would be great, though I'm a bit skeptical about
->> keeping it up up to date, there are very few active wiki editors, the
->> knowledge is still mostly stored in the IRC logs. But without a landing
->> page on wiki we can't even start, so I'll create it.
->
-> Some points to note:
->
-> Most HDD *models* are good (all but 4% of models I've tested, and the
-> ones that failed were mostly 8?.00A8?),
+>> This happens when a writeable device is removed in
+>> __btrfs_free_extra_devids, but the rw device count is not decremented
+>> accordingly. So when close_fs_devices is called, the removed device is
+>> still counted and we get an off by 1 error.
+>>
+>> Here is one call trace that was observed:
+>>    btrfs_mount_root():
+>>      btrfs_scan_one_device():
+>>        device_list_add();   <---------------- device added
+>>      btrfs_open_devices():
+>>        open_fs_devices():
+>>          btrfs_open_one_device();   <-------- rw device count ++
+>>      btrfs_fill_super():
+>>        open_ctree():
+>>          btrfs_free_extra_devids():
+>> 	  __btrfs_free_extra_devids();  <--- device removed
+>> 	  fail_tree_roots:
+>> 	    btrfs_close_devices():
+>> 	      close_fs_devices();   <------- rw device count off by 1
+>>
+>> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+> 
+> What this patch did in the last hunk was the rw_devices decrement, but
+> conditional:
+> 
+> @@ -1080,9 +1071,6 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+>                  if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+>                          list_del_init(&device->dev_alloc_list);
+>                          clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+> -                       if (!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
+> -                                     &device->dev_state))
+> -                               fs_devices->rw_devices--;
+>                  }
+>                  list_del_init(&device->dev_list);
+>                  fs_devices->num_devices--;
+> ---
+> 
+> 
+>> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+>>   		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+>>   			list_del_init(&device->dev_alloc_list);
+>>   			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+>> +			fs_devices->rw_devices--;
+>>   		}
+>>   		list_del_init(&device->dev_list);
+>>   		fs_devices->num_devices--;
+> 
+> So should it be reinstated in the original form? The rest of
+> cf89af146b7e handles unexpected device replace item during mount.
+> 
+> Adding the decrement is correct, but right now I'm not sure about the
+> corner case when teh devcie has the BTRFS_DEV_STATE_REPLACE_TGT bit set.
+> The state machine of the device bits and counters is not trivial so
+> fixing it one way or the other could lead to further syzbot reports if
+> we don't understand the issue.
+> 
 
-That's what we expect.
+Hi David,
 
-> but the very few models that
-> are bad form a significant portion of drives in use:  they are the cheap
-> drives that consumers and OEMs buy millions of every year.
->
-> 80.00A80 keeps popping up in parent-transid-verify-failed reports from
-> IRC users.  Sometimes also 81.00A81 and 82.00A82 (those two revisions
-> appear on some NAS vendor blacklists as well).  I've never seen 83.00A83
-> fail--I have some drives with that firmware, and they seem OK, and I
-> have not seen any reports about it.
+Thanks for raising this issue. I took a closer look and I think we don't 
+have to reinstate the original form because it's a historical artifact.
 
-In fact, even just one model number is much better than nothing.
+The short version of the story is that going by the intention of 
+__btrfs_free_extra_devids, we skip removing the replace target device. 
+Hence, by the time we've reached the decrement in question, the device 
+is not the replace target device and the BTRFS_DEV_STATE_REPLACE_TGT bit 
+should not be set.
 
-We know nowadays btrfs is even able to detect bitflip, but we don't
-really want weird hardware to bring blame which we don't deserve.
+But we should also try to understand the original intention of the code. 
+The check in question was first introduced in commit 8dabb7420f01 
+("Btrfs: change core code of btrfs to support the device replace 
+operations"):
+> @@ -536,7 +553,8 @@ void btrfs_close_extra_devices(struct btrfs_fs_devices *fs_devices)
+>                 if (device->writeable) {
+>                         list_del_init(&device->dev_alloc_list);
+>                         device->writeable = 0;
+> -                       fs_devices->rw_devices--;
+> +                       if (!device->is_tgtdev_for_dev_replace)
+> +                               fs_devices->rw_devices--;
+>                 }
+>                 list_del_init(&device->dev_list);
+>                 fs_devices->num_devices--;
 
->
-> 80.00A80 may appear in a lot of low-end WD drive models (here "low end"
-> is "anything below Gold and Ultrastar"), marketed under other names like
-> White Label, or starring as the unspecified model inside USB external
-> drives.
->
-> The bad WD firmware has been sold over a period of at least 8 years.
-> Retail consumers can buy new drives today with this firmware (the most
-> recent instance we found was a WD Blue 1TB if I'm decoding the model
-> string correctly).  Even though WD seems to have fixed the bugs years
-> ago (in 83.00A83), the bad firmware doesn't die out as hardware ages
-> out of the user population because users keep buying new drives with
-> the old firmware.
->
-> It seems that _any_ HDD might have write cache issues if it is having
-> some kind of hardware failure at the same time (e.g. UNC sectors or
-> power supply issues).  A failing drive is a failing drive, it might blow
-> up a btrfs with dup profile that would otherwise have survived.  It is
-> possible that firmware bugs are involved in these cases, but it's hard
-> to make a test fleet large enough for meaningful and consistent results.
+If we take a trip back in time to this commit we see that 
+btrfs_dev_replace_finishing added the target device to the alloc list 
+without incrementing the rw_devices count. So this check was likely 
+originally meant to prevent under-counting of rw_devices.
 
-For such case, I guess smart is enough to tell the drive is failing?
-Thus it shouldn't be that a big concern IMHO.
+However, the situation has changed, following various fixes to 
+rw_devices counting. Commit 63dd86fa79db ("btrfs: fix rw_devices miss 
+match after seed replace") added an increment to rw_devices when 
+replacing a seed device with a writable one in btrfs_dev_replace_finishing:
+> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> index eea26e1b2fda..fb0a7fa2f70c 100644
+> --- a/fs/btrfs/dev-replace.c
+> +++ b/fs/btrfs/dev-replace.c
+> @@ -562,6 +562,8 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+>         if (fs_info->fs_devices->latest_bdev == src_device->bdev)
+>                 fs_info->fs_devices->latest_bdev = tgt_device->bdev;
+>         list_add(&tgt_device->dev_alloc_list, &fs_info->fs_devices->alloc_list);
+> +       if (src_device->fs_devices->seeding)
+> +               fs_info->fs_devices->rw_devices++;
+>  
+>         /* replace the sysfs entry */
+>         btrfs_kobj_rm_device(fs_info, src_device);
 
->
-> SSDs are a different story:  there are so many models, firmware revision=
-s
-> are far more diverse, and vendors are still rapidly updating their
-> designs, so we never see exactly the same firmware in any two incident
-> reports.  A firmware list would be obsolete in days.  There is nothing
-> in SSD firmware like the decade-long stability there is in HDD firmware.
+This was later simplified in commit 82372bc816d7 ("Btrfs: make the logic 
+of source device removing more clear") that simply decremented 
+rw_devices in btrfs_rm_dev_replace_srcdev if the replaced device was 
+writable. This meant that the rw_devices count could be incremented in 
+btrfs_dev_replace_finishing without any checks:
+> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> index e9cbbdb72978..6f662b34ba0e 100644
+> --- a/fs/btrfs/dev-replace.c
+> +++ b/fs/btrfs/dev-replace.c
+> @@ -569,8 +569,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+>         if (fs_info->fs_devices->latest_bdev == src_device->bdev)
+>                 fs_info->fs_devices->latest_bdev = tgt_device->bdev;
+>         list_add(&tgt_device->dev_alloc_list, &fs_info->fs_devices->alloc_list);
+> -       if (src_device->fs_devices->seeding)
+> -               fs_info->fs_devices->rw_devices++;
+> +       fs_info->fs_devices->rw_devices++;
+>  
+>         /* replace the sysfs entry */
+>         btrfs_kobj_rm_device(fs_info, src_device);
 
-Yeah, that's more or less expected.
+Thus, given the current state of the code base, the original check is 
+now incorrect, because we want to decrement rw_devices as long as the 
+device is being removed from the alloc list.
 
-So we don't need to bother that for now.
+To further convince ourselves of this, we can take a closer look at the 
+relation between the device with devid BTRFS_DEV_REPLACE_DEVID and the 
+BTRFS_DEV_STATE_REPLACE_TGT bit for devices.
 
-Thanks for your awesome info again!
-Qu
+BTRFS_DEV_STATE_REPLACE_TGT is set in two places:
+- btrfs_init_dev_replace_tgtdev
+- btrfs_init_dev_replace
 
->
-> IRC users report occasional parent-transid-verify-failure or similar
-> metadata corruption failures on SSDs, but they don't seem to be repeatab=
-le
-> with other instances of the same model device.  Samsung dominates the
-> SSD problem reports, but Samsung also dominates the consumer SSD market,
-> so I think we are just seeing messy-but-normal-for-SSD hardware failures=
-,
-> not evidence of firmware bugs.
->
-> It's also possible that the window for exploiting a powerfail write cach=
-e
-> bug is much, much shorter for SSD than HDD, so even if the bugs do exist=
-,
-> the probability of hitting one is negligible.
->
+In btrfs_init_dev_replace_tgtdev, the BTRFS_DEV_STATE_REPLACE_TGT bit is 
+set for a device allocated with devid BTRFS_DEV_REPLACE_DEVID.
+
+In btrfs_init_dev_replace, the BTRFS_DEV_STATE_REPLACE_TGT bit is set 
+for the target device found with devid BTRFS_DEV_REPLACE_DEVID.
+
+ From both cases, we see that the BTRFS_DEV_STATE_REPLACE_TGT bit is set 
+only for the device with devid BTRFS_DEV_REPLACE_DEVID.
+
+It follows that if a device does not have devid BTRFS_DEV_REPLACE_DEVID, 
+then the BTRFS_DEV_STATE_REPLACE_TGT bit will not be set.
+
+With commit cf89af146b7e ("btrfs: dev-replace: fail mount if we don't 
+have replace item with target device"), we skip removing the device in 
+__btrfs_free_extra_devids as long as the devid is BTRFS_DEV_REPLACE_DEVID:
+> -               if (device->devid == BTRFS_DEV_REPLACE_DEVID) {
+> -                       /*
+> -                        * In the first step, keep the device which has
+> -                        * the correct fsid and the devid that is used
+> -                        * for the dev_replace procedure.
+> -                        * In the second step, the dev_replace state is
+> -                        * read from the device tree and it is known
+> -                        * whether the procedure is really active or
+> -                        * not, which means whether this device is
+> -                        * used or whether it should be removed.
+> -                        */
+> -                       if (step == 0 || test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
+> -                                                 &device->dev_state)) {
+> -                               continue;
+> -                       }
+> -               }
+> +               /*
+> +                * We have already validated the presence of BTRFS_DEV_REPLACE_DEVID,
+> +                * in btrfs_init_dev_replace() so just continue.
+> +                */
+> +               if (device->devid == BTRFS_DEV_REPLACE_DEVID)
+> +                       continue;
+
+Given the discussion above, after we fail the check for device->devid == 
+BTRFS_DEV_REPLACE_DEVID, all devices from that point are not the replace 
+target device, and do not have the BTRFS_DEV_STATE_REPLACE_TGT bit set.
+
+So the original check for the BTRFS_DEV_STATE_REPLACE_TGT bit before 
+incrementing rw_devices is not just incorrect at this point, it's also 
+redundant.
+
+Of course, I would hate to introduce a hard-to-find bug with a bad 
+analysis, so any thoughts on this would be appreciated.
+
+Best wishes,
+Desmond
