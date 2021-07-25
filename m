@@ -2,107 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C36B3D4F19
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jul 2021 19:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABBB3D4F2B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jul 2021 19:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbhGYQyb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 25 Jul 2021 12:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
+        id S231219AbhGYQ7i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 25 Jul 2021 12:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhGYQyb (ORCPT
+        with ESMTP id S231189AbhGYQ7h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 25 Jul 2021 12:54:31 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA3DC061757
-        for <linux-btrfs@vger.kernel.org>; Sun, 25 Jul 2021 10:35:01 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id u25so8204193oiv.5
-        for <linux-btrfs@vger.kernel.org>; Sun, 25 Jul 2021 10:35:01 -0700 (PDT)
+        Sun, 25 Jul 2021 12:59:37 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EFEC061757
+        for <linux-btrfs@vger.kernel.org>; Sun, 25 Jul 2021 10:40:06 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id y18so8236892oiv.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 25 Jul 2021 10:40:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=S9d1lqiXWKI0318KohFjzNnROG99hJjZ1ZMZ1I0qtkA=;
-        b=IswdaY1nu6+Af9oylO/RbwCcMI5deYqWt5dxum2CYyknnvGLuvt2aMOdVh3lbmoWEW
-         iqqdpfcO9usoAOvUj75z+PHSdKXAC+sSy2tTehRvOE+jpfl/UIM7CNQNxDvRa4ATJkWT
-         QnyA52sJpF9uspcYwUuU/stUUNk8U7mc3IFd16YIBFBWZhEo2Qbvk0jvw3RaD/f1bKRm
-         vf1ef9oxYGMXG0veIB6C42rvC1Qpni2SyQ2yaUq1ILXzUqtp/GSUwQ8GlC7rcHf2w78z
-         QtTY4guDsPsX7l6yejuLM7sEemGuEhylHhHoC2sBI8UhMzNhVnu8KxmyZHtMBMBtLdn1
-         hfLQ==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=h/E+kJy8+tfycO9ObgK2kgvBxIz9iBIHNdBU2cyFflM=;
+        b=E9anlEgpzUQiDNQtzc0iRkttpKQk+Lv0vzOJP2ADs/b8Se6wX1sWxnDRZ48GchVSeJ
+         dv9neeSkwi4Pn+tjmDvjR8tH+YYzRHzQsy5dOsDMqUpzuLvZXdZPjaqN/8hnvaPsjMP9
+         T2nF2hiZdki+S4KV0OGueIRjyfyz/ZcjKL16w+hlpuFjk7cYF81E30Sscqwhd32/cddV
+         wAd0u9zgT+SHw5FmBEBpovqgF58Y1yPCQs4wfX/9mv0P/yW/6TOn9HxM4CO4ic2ZDb5X
+         IF87ChcGBSTf3frcUd5RRih30Wys8oJfnycBaysklXEJeQbuCpckSrs0M0j3pP9HzimJ
+         yuBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=S9d1lqiXWKI0318KohFjzNnROG99hJjZ1ZMZ1I0qtkA=;
-        b=o0RMT0Hk4BzE19dp2EcUbiRCgiN+qDZvGFsRJD/Tc43G0R7A1DenL+sLSEsE8imx5a
-         ludNFfZNlF2JS/KO3wWkdsJjBOUJDgbBM5vAHrTOzpZc8FayOMg2Wph/NsCGclMDgx8Q
-         eFcv/+s57+nOaapNG+cNBMNVpR+ENefa5OVq5mSvQl9NrUHaVfWIhqZdFJ2lnWJNXLiE
-         4hO47d33gZwEzT6U8eDotxZ1sh7chl2c795RBe9trAPF0iBoFfM3cq7POp/ffzrUBtV/
-         H4nB5Lu0mSsFrAmA3CIUxrMdrGQySByH0EoBY6UDzirbg6Xle9bWCaRPa6pzm8arpQpF
-         nS2w==
-X-Gm-Message-State: AOAM533tFCm3KxKfEw/DN8LRa7t22VJ8BDX6cQwQeUuONwbbLveUmhzo
-        /9QfK3A0/WMoypHCQZgF34TtQZxmjn1h6votvjQ=
-X-Google-Smtp-Source: ABdhPJyznJCc0Pw+B/N/8BgxlIPpXP8i1Xob//R+chS/REL2dsYUGf0tub8r5+uUFilJklUCLmv/lefzweNB6NleL6w=
-X-Received: by 2002:aca:adc8:: with SMTP id w191mr8860248oie.44.1627234500583;
- Sun, 25 Jul 2021 10:35:00 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=h/E+kJy8+tfycO9ObgK2kgvBxIz9iBIHNdBU2cyFflM=;
+        b=dayYYbFi6k4HOV/qWFDGKyWtX8WfjEjkPgfGI56FJIU3fzechEFpRm5O6iuZ6ip9GG
+         dsiLPtFy9KvBtwAbp533xucB/EXjOl5/1qMdJCUt4kegBbLmAZtW4UaUfTfB/LQLWMEk
+         XKq5lOaWWUmkURm9jLWCnEne6dVXqKSZb7ChIfmCDD6xPpy1EBpcEeaucHNciTVtNRk9
+         lm7zyDJyQlnLFHg3G9fIxC3z+WIfKBMMUmIXqhl2ofxZ+nhPL1sg6oj+4St3PSYH2JcF
+         ySaXBG7RU4Cap5fjMyv0+IiQMoVnDnOZZz6ksMuWgg91mzfTeu0mYh7wvkRLxjZypQIL
+         YxuQ==
+X-Gm-Message-State: AOAM532q9NUz/ZO/Re+mnvuN/EkEoQncCEyBfX8587WExQVudyoaVC2C
+        1PZJfD5gE3JqXJ2f6FZ1d9B/uPGlPGPlshsNT4dXtb8s+rg=
+X-Google-Smtp-Source: ABdhPJyuKRsVRLauP6WAbsxXiLWJnmxSTKgFd1LbMkr/Hm5o1W8WkAHwokwuAo8n29eMbiRGCBl6If5e9DaxIghQ4Ag=
+X-Received: by 2002:a05:6808:24d:: with SMTP id m13mr12556809oie.137.1627234806123;
+ Sun, 25 Jul 2021 10:40:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGdWbB6qxBtVc1XtSF_wOR3NyR9nGpr5_Nc5RCLGT5NK=C4iRA@mail.gmail.com>
- <3be8bba9-60cd-2cce-a05d-6c24b8895f3f@gmx.com> <CAGdWbB44nH7dgdP3qO_bFYZwbkrW37OwFEVTE2Bn+rn4d7zWiQ@mail.gmail.com>
- <43e7dc04-c862-fff1-45af-fd779206d71c@gmx.com> <CAGdWbB7Q98tSbPgHUBF+yjqYRBPZ-a42hd=xLwMZUMO46gfd0A@mail.gmail.com>
- <CAGdWbB47rKnLoSBZ7Ez+inkeKRgE+SbOAp5QEpB=VWfM_5AmRA@mail.gmail.com>
- <520a696d-d747-ef86-4560-0ec25897e0e1@suse.com> <CAGdWbB6CrFc319fwRwmkd=zrVE4jabF0GTpqZd5Jjzx2RcAo9Q@mail.gmail.com>
- <e4cc8998-fc9e-4ef3-3a49-0f6d98960a75@gmx.com> <CAGdWbB6Y0p3dc6+00eTnf1XSS1rUMbPUckQabi6VJQXdjRt2jg@mail.gmail.com>
- <88005f9b-d596-f2f9-21f0-97fc7be4c662@gmx.com> <CAGdWbB59w+5=3AoKU0uRHHkA1zeya0cRhqRn8sDYpea+hZOunA@mail.gmail.com>
- <e42fcd8e-23d4-ee98-aab6-2210e408ad3f@gmx.com> <CAGdWbB7z2Q8hCFx_VriHaV1Ve1Yg7P38Rm63hMS6QxbVR=V-jQ@mail.gmail.com>
- <6982c092-22dc-d145-edea-2d33e1a0dced@gmx.com> <CAGdWbB7XqoJaVsdbG7VkvSj78hVPt-HnZxOw_nvX7GaTziaiwg@mail.gmail.com>
- <062c20ad-ea9f-f83f-ce49-0a82668c3c6c@gmx.com>
-In-Reply-To: <062c20ad-ea9f-f83f-ce49-0a82668c3c6c@gmx.com>
 From:   Dave T <davestechshop@gmail.com>
-Date:   Sun, 25 Jul 2021 13:34:49 -0400
-Message-ID: <CAGdWbB6KmDgsd2jKn65=H9W76aHNSVP_kZzqXMU8hV13R6seJw@mail.gmail.com>
-Subject: Re: bad file extent, some csum missing - how to check that restored
- volumes are error-free?
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Sun, 25 Jul 2021 13:39:55 -0400
+Message-ID: <CAGdWbB5YL40HiF9E0RxCdO96MS7tKg1=CRPT2YSe+vR3eGZUgQ@mail.gmail.com>
+Subject: BTRFS scrub reports an error but check doesn't find any errors.
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-HI Qu. Was the information I sent helpful? Is there any final lesson I
-should take away from this? Thank you.
+What does the list recommend I do in this case?
 
-On Fri, Jul 16, 2021 at 9:00 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2021/7/17 =E4=B8=8A=E5=8D=888:57, Dave T wrote:
-> >> But before that, would you mind to run "btrfs check" again on the fs t=
-o
-> >> see if it reports any error?
-> >
-> >> I'm interested to see the result though.
-> >
-> > First I will send you the full output of the command I ran:
-> > btrfs check --repair --init-csum-tree /dev/mapper/xyz
-> > It's a lot of output - around 50MB before I zip it up.
-> > How about if I send that to you as an attachment and mail it directly
-> > to you, not the list?
->
-> It works for me either way.
->
-> >
-> > Next step: I have remounted the old fs and I'm going to run a scrub on =
-it.
->
-> Scrub shouldn't detect much thing else, but it won't hurt anyway.
->
-> >
-> > Then I will unmount it and run btrfs check again and send you the
-> > output. Again, I'll send it to you privately, OK?
-> >
->
-> That's fine to me.
->
-> THanks,
-> Qu
+starting btrfs scrub ...
+scrub done for 56cea9cf-5374-4a43-b19d-6b0b143dc635
+Scrub started:    Sun Jul 25 00:40:43 2021
+Status:           finished
+Duration:         2:52:45
+Total to scrub:   1.26TiB
+Rate:             113.72MiB/s
+Error summary:    read=1
+  Corrected:      0
+  Uncorrectable:  1
+  Unverified:     0
+ERROR: there are uncorrectable errors
+
+dmesg | grep "checksum error at" | tail -n 20
+(no output)
+
+# dmesg | grep -i checksum
+[  +0.001698] xor: automatically using best checksumming function   avx
+(not related to BTRFS, right?)
+
+# btrfs fi us /path/to/xyz
+Overall:
+    Device size:                   2.73TiB
+    Device allocated:              1.26TiB
+    Device unallocated:            1.47TiB
+    Device missing:                  0.00B
+    Used:                          1.12TiB
+    Free (estimated):              1.60TiB      (min: 888.70GiB)
+    Free (statfs, df):             1.60TiB
+    Data ratio:                       1.00
+    Metadata ratio:                   2.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+Data,single: Size:1.25TiB, Used:1.11TiB (89.38%)
+   /dev/mapper/userluks    1.25TiB
+
+Metadata,DUP: Size:6.00GiB, Used:5.26GiB (87.67%)
+   /dev/mapper/userluks   12.00GiB
+
+System,DUP: Size:32.00MiB, Used:160.00KiB (0.49%)
+   /dev/mapper/userluks   64.00MiB
+
+Unallocated:
+   /dev/mapper/userluks    1.47TiB
+
+# btrfs check /dev/mapper/xyz
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/xyz
+UUID: 56cea9cf-5374-4a43-b19d-6b0b143dc635
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 1230187327496 bytes used, no error found
+total csum bytes: 1195610680
+total tree bytes: 5648285696
+total fs tree bytes: 4011016192
+total extent tree bytes: 379256832
+btree space waste bytes: 827370015
+file data blocks allocated: 5497457123328
+ referenced 5523039584256
+
+If more info is needed, please let me know. Recommendations and advice
+are appreciated.
+Thank you.
