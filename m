@@ -2,131 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D867C3D50AF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 01:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00C73D50B0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 01:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhGYXKv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 25 Jul 2021 19:10:51 -0400
-Received: from mout.gmx.net ([212.227.17.20]:35919 "EHLO mout.gmx.net"
+        id S230116AbhGYXLb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 25 Jul 2021 19:11:31 -0400
+Received: from mout.gmx.net ([212.227.17.21]:33803 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229829AbhGYXKv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 25 Jul 2021 19:10:51 -0400
+        id S229808AbhGYXLa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 25 Jul 2021 19:11:30 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627257077;
-        bh=Y7tGCmkXPNlojXylk4iC2Xy35JHIFDxLrrMC07yE3tA=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=B4kTBawWZqRtTM/DuiBAEsoWXCbQD6nDTCiuj7Mjs9/gfNQk6tzy8Jyfof2FTmSNP
-         EtY8K/siTIIoJAZqeWQAKc+xbzGM4bXBYbKMISzyUo3Rjv4Yd1wExoqfk5xbqER5Yo
-         YZuLQuxtLqD7Dgm6vo5O2RERj8hZbqzMa651s4tk=
+        s=badeba3b8450; t=1627257115;
+        bh=vJ1wV3BecJ07XIDmZBjf2cpZZmGTlrcTIjdeQfbTzj0=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=ZY3ldrxYaYl68dBN9FU70S9MSV+kOJKdpKF2xcGFCBskiS1C3salQQGNbmiuSEGeT
+         SHwDvAaB07B5T4YlPajHzvgv0D68rnKBMdwCY1Y9GJIOOaOJRQ99QF8M74uZwd6vgu
+         zBc9AGBrjYgejidEGF+eOqfPXAn0hDMmxHRyRKqI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mxm3K-1l9dCU1loE-00zG8y; Mon, 26
- Jul 2021 01:51:17 +0200
-Subject: Re: bad file extent, some csum missing - how to check that restored
- volumes are error-free?
-To:     Dave T <davestechshop@gmail.com>
-Cc:     Qu Wenruo <wqu@suse.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAGdWbB6qxBtVc1XtSF_wOR3NyR9nGpr5_Nc5RCLGT5NK=C4iRA@mail.gmail.com>
- <43e7dc04-c862-fff1-45af-fd779206d71c@gmx.com>
- <CAGdWbB7Q98tSbPgHUBF+yjqYRBPZ-a42hd=xLwMZUMO46gfd0A@mail.gmail.com>
- <CAGdWbB47rKnLoSBZ7Ez+inkeKRgE+SbOAp5QEpB=VWfM_5AmRA@mail.gmail.com>
- <520a696d-d747-ef86-4560-0ec25897e0e1@suse.com>
- <CAGdWbB6CrFc319fwRwmkd=zrVE4jabF0GTpqZd5Jjzx2RcAo9Q@mail.gmail.com>
- <e4cc8998-fc9e-4ef3-3a49-0f6d98960a75@gmx.com>
- <CAGdWbB6Y0p3dc6+00eTnf1XSS1rUMbPUckQabi6VJQXdjRt2jg@mail.gmail.com>
- <88005f9b-d596-f2f9-21f0-97fc7be4c662@gmx.com>
- <CAGdWbB59w+5=3AoKU0uRHHkA1zeya0cRhqRn8sDYpea+hZOunA@mail.gmail.com>
- <e42fcd8e-23d4-ee98-aab6-2210e408ad3f@gmx.com>
- <CAGdWbB7z2Q8hCFx_VriHaV1Ve1Yg7P38Rm63hMS6QxbVR=V-jQ@mail.gmail.com>
- <6982c092-22dc-d145-edea-2d33e1a0dced@gmx.com>
- <CAGdWbB7XqoJaVsdbG7VkvSj78hVPt-HnZxOw_nvX7GaTziaiwg@mail.gmail.com>
- <062c20ad-ea9f-f83f-ce49-0a82668c3c6c@gmx.com>
- <CAGdWbB6KmDgsd2jKn65=H9W76aHNSVP_kZzqXMU8hV13R6seJw@mail.gmail.com>
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWRRT-1laxBR1GcF-00XwGx; Mon, 26
+ Jul 2021 01:51:55 +0200
+Subject: Re: [PATCH v2] btrfs-progs: cmds: Fix build for using NAME_MAX
+To:     Sidong Yang <realwakka@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>, Su Yue <l@damenly.su>
+References: <20210725152438.70213-1-realwakka@gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <c2e346de-4f07-80b9-3b40-75fe0481f09e@gmx.com>
-Date:   Mon, 26 Jul 2021 07:51:13 +0800
+Message-ID: <5fc1b673-7d93-2ac1-114e-8e404ab05e76@gmx.com>
+Date:   Mon, 26 Jul 2021 07:51:51 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAGdWbB6KmDgsd2jKn65=H9W76aHNSVP_kZzqXMU8hV13R6seJw@mail.gmail.com>
+In-Reply-To: <20210725152438.70213-1-realwakka@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+5SMjMDy2D5SKYPaOq/exeO259dB5afTli6uhUbHWfU534FpNRw
- jD7Y4ouZ4UTkTCDnV5+87Syt8TvnB4cRo7Gqq7uhBrzRi38DrXInhebFy6ZS/VZVL2vVzvg
- 8WgXaz8Xb7eU+QZ/coXj+KbwDbDE5Srup8iPLyx6Pi31u6cEwFVyR09by720CqOfn0n15+x
- ffrwzI5c1QFgnlo2oCh2w==
+X-Provags-ID: V03:K1:LoMzosPICoOd+CkIpNLDUrRAFgkIHCQlTOx6c53aUCW0PiRnvjR
+ f3/BW4Qolpiva3BFYoasG7Qchc3JoXSyWGNCk2JS/m8C6fWA0hpf9oNhJEtgzN3scxmlJF/
+ a317SvYuDaFVfO+rLzw3+LJf3GvQwMYDziD4tK9z/+eFI2M7RQGWdQX1qqtUN8rwzdWdC7I
+ k+IIsppZea90rxWfP7l0A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OX6R8r3ioGY=:5cVhHrNxKcoHwCWn11ydNA
- konMYRh2pgAa5k8hwebzXiXdCkU48V5b7t+5dkIZljh/UUYfGukcfTJiJ8dJEMaTckIGqgi1+
- ttb2nCB5DqkQ920OmprUEkw7lz95DxHnpA3tduDyulxZDl4+E1KW8tGF6KKXwEJqZNE5e+KCy
- eB7Cd2wQJJMVA7bE4OM3WwcSozdS86ylAgSL4uJjVtc1J8Zr6Or5XAgIPHF8FrumFgoGF5386
- n4Bjm9BqNjjcGUU73qBbJMF5SBlYkBglYAnV3Y+Lveu3GN/9aIY0DQZsXkiKGLceJA/DRBY0w
- YdeBo9ZnenlrmOEu4T1zPXI1kYnf1O7+BqU6Hlc5Y9TJ/7qK5q0TMkTLjbfFelSv8A+OUOgh6
- taO52HGfScPnRKhL6SOLIR9jXinJ3o3GWsX5FjddY0laaVqj/kGcdRduh1+aErfL9JXhFrb+L
- bI3KWORf92ZPZ5y2PK9R4MgkdUthquiD9XNsOdY12HbT9Km/jSTyqA9r1OJb0QiAgN5qW9fgH
- zsL+Zrg5UbgXVF5sXezV+JK7MjlKl6lrB4xWO60IvgPhKj1dxgBJA1aII5RVhKFfFnawnsLe+
- R7ZAqulR3dzUvFk3E9//y8u1xF6e8GmnMg4Rs/gVMqrIv/WI5pCtW+G0RCosrB1u6TXB00oJi
- KI2xXFRuWpbaa/56e/uZo8YrLDEqmLaEHBtJPm3sYdJqtAQkX4RKGZf9d4j5sI9iP2fHPUh+f
- u+Cba8uhz23A5yg70yFJmV21JKzhHXi0i7n6mWcAucnu9YrRrp77nVCqFPpHH0zbBJoQjVR/Y
- NPfN1mmURygjOxTGjwwOQJ2Dcqs8VmdWrdIB5kSW6xl34oRtmxMaAY+tYKkv3XqTJHbriAV8v
- r/6Ej1BPP4KDYYVJK6NVnwIkuHtRsGJPePGNzT8jnIBN8qi32lIsO4P3A97adeZAHPkJ0LgJm
- y0bV4G8Bm7nK1bkdVl7r2GBm6fTIv6rAP9ko2bb7vvPNqr/dy1v6F3QaYida9MUvq4eNtISsG
- dGbtOvmv3ATGTH0Iczr44xvROHVyN644WVT+V0DhAQAZPggxHEZz2/54QEwFq5Ksi2xWn/MTr
- 02NsHBeCyN9z3iU+VfKvtpM5XRvJc6eXoPT4m9jyQ4zgclhaYyUAxkczQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9Hfwn3jQ4h4=:Kmmq+fbHTsMJ6KIn/VUkFD
+ sq7RKMdHFXe5zettxTwmap/ST5WINKAlJOr3WFIyZ70NdSzQQfbQH8IrCLCP+Jp5ukkYH9zv8
+ o9SAklRkqaI4xwF6EwUGo5f0zm5qVsigDbOX3Qh3loEmcKRN66M8Ss2BQ/34VNv98KSR3n/6U
+ 9OJstYH1nYPe1gUa3doxpZ1d5odVgMt8RrFGHqkvGKB4VLwbkU5lRi1QArWL5AawPeuTjWdQn
+ nVGnF3smDyCbrZbOplbilzmjFjD1LlP7JTrRIkbnA5qQEL5fUSweVL9zSZYVh+hkxAYMDM50U
+ qRRRWmXkVgGyPd6sc/grgwnaSZszwfYGmgKr7E/S4KqQcH+Ilz1oaCJY8LKgjx1NKJgtvriXB
+ q2rEGC0uq54JrpHJBbMG3+WEBuBjp+bwW1eP36PkJKKxWu9z1JsPMTcjzjaC6pOaxjfWFTWeV
+ 0OeXsO8TJszJhpyxxo6VRyF1Y0+GC9t6Y16lX7NFDjr6eGZYclmr/VNfL6oC1GwQUud/a2rUr
+ k+XQyHHYa8mGW4W81wC4Cz0Ql7ED43ZKJNVyYwfJWjf1/Wnj30TBql8gMfXDmH5tDkizW5n2H
+ zZQsEOFkpZRelRqxv+Hs0ZJX/NG+VF2Uq0L1IVZd0i8dC6dK/0nfMPT11VH93uf+K4JC98h0K
+ leGsT8ydzCGKcNlua5w9Lb0hpbANcgONCmeeuDRgjQsjytxf58XXl7ZAyWfp2UJg1SQEa1mrL
+ siTL89uW7A21xGbrM32gWPpPjzpDBgJ9Es7hFJeT3nNR7PdzZ5f+1rQBcL495vUqbcRlLFFRO
+ G5P9PEnEpNwjVHWaG/cafVduE++lXvj9WpTHzxk+Uadik43GYVtbr61kubBX5jaV8C/3tTTDM
+ xDvHHrKhL8dnAL30ie5cZh0jJMSlzSR2lUPAKD/EO7HSg7NDnaBra9caUQWlc9xdcJHYmYz3Y
+ xJfNvfY6Xho8/VUdEL01NmlnzYVDihMFBTzYlLs4/Hu4lyZyNQQnRtUk8l5Hg7hujAQjmXXRj
+ iPrAx7uR7N6AZjRFnI5ReBycDAWc/0NwL3nkK63Fe81dc/8AxUYmFHKtK9qX1KUav6aqCxUYv
+ vK0VXY3qA7pq6aDjvpvoib04C5ca2aPNfMbM5P8xL6hU3C/2+6JOw+Cdg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/7/26 =E4=B8=8A=E5=8D=881:34, Dave T wrote:
-> HI Qu. Was the information I sent helpful? Is there any final lesson I
-> should take away from this? Thank you.
+On 2021/7/25 =E4=B8=8B=E5=8D=8811:24, Sidong Yang wrote:
+> There is some code that using NAME_MAX but it doesn't include header
+> that is defined. This patch adds a line that includes linux/limits.h
+> which defines NAME_MAX.
+>
+> Issue: #386
+>
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
 
-Sorry, nothing much less can be provided.
-
-It mostly looks like btrfs check --init-extent-tree is doing a pretty
-bad rebuild of extent tree.
-
-Thus I won't recommend it for future repair.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
+> ---
+> v2:
+>   - Added tag for github issue
+> ---
+>   cmds/filesystem-usage.c | 1 +
+>   1 file changed, 1 insertion(+)
 >
-> On Fri, Jul 16, 2021 at 9:00 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote=
-:
->>
->>
->>
->> On 2021/7/17 =E4=B8=8A=E5=8D=888:57, Dave T wrote:
->>>> But before that, would you mind to run "btrfs check" again on the fs =
-to
->>>> see if it reports any error?
->>>
->>>> I'm interested to see the result though.
->>>
->>> First I will send you the full output of the command I ran:
->>> btrfs check --repair --init-csum-tree /dev/mapper/xyz
->>> It's a lot of output - around 50MB before I zip it up.
->>> How about if I send that to you as an attachment and mail it directly
->>> to you, not the list?
->>
->> It works for me either way.
->>
->>>
->>> Next step: I have remounted the old fs and I'm going to run a scrub on=
- it.
->>
->> Scrub shouldn't detect much thing else, but it won't hurt anyway.
->>
->>>
->>> Then I will unmount it and run btrfs check again and send you the
->>> output. Again, I'll send it to you privately, OK?
->>>
->>
->> That's fine to me.
->>
->> THanks,
->> Qu
+> diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+> index 50d8995e..2a76e29c 100644
+> --- a/cmds/filesystem-usage.c
+> +++ b/cmds/filesystem-usage.c
+> @@ -24,6 +24,7 @@
+>   #include <stdarg.h>
+>   #include <getopt.h>
+>   #include <fcntl.h>
+> +#include <linux/limits.h>
+>
+>   #include "common/utils.h"
+>   #include "kerncompat.h"
+>
