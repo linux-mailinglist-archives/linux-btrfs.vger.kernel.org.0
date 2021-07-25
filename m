@@ -2,122 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068B33D4A9C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jul 2021 01:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8303D4B0C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jul 2021 04:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhGXWfu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 24 Jul 2021 18:35:50 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:38742 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhGXWfu (ORCPT
+        id S229689AbhGYCPx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 24 Jul 2021 22:15:53 -0400
+Received: from eu-shark2.inbox.eu ([195.216.236.82]:36358 "EHLO
+        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhGYCPw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 24 Jul 2021 18:35:50 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 6EFA4AFE5A4; Sat, 24 Jul 2021 19:15:27 -0400 (EDT)
-Date:   Sat, 24 Jul 2021 19:15:27 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Jorge Bastos <jorge.mrbastos@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Maybe we want to maintain a bad driver list? (Was 'Re: "bad tree
- block start, want 419774464 have 0" after a clean shutdown, could it be a
- disk firmware issue?')
-Message-ID: <20210724231527.GF10170@hungrycats.org>
-References: <CAHzMYBT+pMxrnDXrbTJqP-ZrPN5iDHEsW_nSjjD3R_w3wq5ZLg@mail.gmail.com>
- <20210721174433.GO19710@twin.jikos.cz>
- <8b830dc8-11d4-9b21-abe4-5f44e6baa013@gmx.com>
- <20210722135455.GU19710@twin.jikos.cz>
+        Sat, 24 Jul 2021 22:15:52 -0400
+Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
+        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id B15731E0065C;
+        Sun, 25 Jul 2021 05:56:22 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1627181782; bh=ai1Ndk+Y8Ph1vQ/OfrqDEYftyIwkH6+OViczuy2wI1Y=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to;
+        b=sG0OI4iP9MLFXokSgNLCpq79y3ykiC01eNQQdEXwdas/Pyxa/A1XcVfzQOX1CzUro
+         +BR3qarga1i95LfP+ZaIc7kaJCC7JGXSB1f/aOLLW2X+tFnK+WvRF5vbp8UCOc6asL
+         Ob0iK3YL1gwWyfcMqoX+zOZRyAQ9m7mIDbDCfuQA=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id A74F91E00662;
+        Sun, 25 Jul 2021 05:56:22 +0300 (EEST)
+Received: from eu-shark2.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id AQPRzceWSuFy; Sun, 25 Jul 2021 05:56:22 +0300 (EEST)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 571371E0065C;
+        Sun, 25 Jul 2021 05:56:22 +0300 (EEST)
+Received: from nas (unknown [103.138.53.19])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 498E41BE0035;
+        Sun, 25 Jul 2021 05:56:20 +0300 (EEST)
+References: <20210724074642.68771-1-realwakka@gmail.com>
+ <2305182b-1e12-df9c-320c-7a7eedba860d@gmx.com>
+ <20210724082356.GA68829@realwakka>
+User-agent: mu4e 1.5.8; emacs 27.2
+From:   Su Yue <l@damenly.su>
+To:     Sidong Yang <realwakka@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs-progs: cmds: Fix build for using NAME_MAX
+Date:   Sun, 25 Jul 2021 10:54:05 +0800
+In-reply-to: <20210724082356.GA68829@realwakka>
+Message-ID: <czr7w180.fsf@damenly.su>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210722135455.GU19710@twin.jikos.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: OK
+X-ESPOL: 885mlYpNBD+ngkCkQGXfDBpV3CdKQJ6W9p/BzG4nkTulcTLmCkUMVhC2n2R1THi+og==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 03:54:55PM +0200, David Sterba wrote:
-> On Thu, Jul 22, 2021 at 08:18:21AM +0800, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2021/7/22 上午1:44, David Sterba wrote:
-> > > On Fri, Jul 16, 2021 at 11:44:21PM +0100, Jorge Bastos wrote:
-> > >> Hi,
-> > >>
-> > >> This was a single disk filesystem, DUP metadata, and this week it stop
-> > >> mounting out of the blue, the data is not a concern since I have a
-> > >> full fs snapshot in another server, just curious why this happened, I
-> > >> remember reading that some WD disks have firmware with write caches
-> > >> issues, and I believe this disk is affected:
-> > >>
-> > >> Model family:Western Digital Green
-> > >> Device model:WDC WD20EZRX-00D8PB0
-> > >> Firmware version:80.00A80
-> > >
-> > > For the record summing up the discussion from IRC with Zygo, this
-> > > particular firmware 80.00A80 on WD Green is known to have problematic
-> > > firmware and would explain the observed errors.
-> > >
-> > > Recommendation is not to use WD Green or periodically disable the write
-> > > cache by 'hdparm -W0'.
-> > 
-> > Zygo is always the god to expose bad hardware.
-> > 
-> > Can we maintain a list of known bad hardware inside btrfs-wiki?
-> > And maybe escalate it to other fses too?
-> 
-> Yeah a list on wiki would be great, though I'm a bit skeptical about
-> keeping it up up to date, there are very few active wiki editors, the
-> knowledge is still mostly stored in the IRC logs. But without a landing
-> page on wiki we can't even start, so I'll create it.
 
-Some points to note:
+On Sat 24 Jul 2021 at 16:23, Sidong Yang <realwakka@gmail.com>=20
+wrote:
 
-Most HDD *models* are good (all but 4% of models I've tested, and the
-ones that failed were mostly 8?.00A8?), but the very few models that
-are bad form a significant portion of drives in use:  they are the cheap
-drives that consumers and OEMs buy millions of every year.
+> On Sat, Jul 24, 2021 at 03:50:25PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/7/24 =E4=B8=8B=E5=8D=883:46, Sidong Yang wrote:
+>> > There is some code that using NAME_MAX but it doesn't include=20
+>> > header
+>> > that is defined. This patch adds a line that includes=20
+>> > linux/limits.h
+>> > which defines NAME_MAX.
+>>
+>> I guess it's related to this issue?
+>>
+>> https://github.com/kdave/btrfs-progs/issues/386
+>
+> Yeah, It seems that there is no patch for this yet. So I sent=20
+> this
+> patch. Is this too minor patch?
+>
+Good fix. But there is one PR before the issue creation:
+https://github.com/kdave/btrfs-progs/pull/385
 
-80.00A80 keeps popping up in parent-transid-verify-failed reports from
-IRC users.  Sometimes also 81.00A81 and 82.00A82 (those two revisions
-appear on some NAS vendor blacklists as well).  I've never seen 83.00A83
-fail--I have some drives with that firmware, and they seem OK, and I
-have not seen any reports about it.
+--
+Su
 
-80.00A80 may appear in a lot of low-end WD drive models (here "low end"
-is "anything below Gold and Ultrastar"), marketed under other names like
-White Label, or starring as the unspecified model inside USB external
-drives.
-
-The bad WD firmware has been sold over a period of at least 8 years.
-Retail consumers can buy new drives today with this firmware (the most
-recent instance we found was a WD Blue 1TB if I'm decoding the model
-string correctly).  Even though WD seems to have fixed the bugs years
-ago (in 83.00A83), the bad firmware doesn't die out as hardware ages
-out of the user population because users keep buying new drives with
-the old firmware.
-
-It seems that _any_ HDD might have write cache issues if it is having
-some kind of hardware failure at the same time (e.g. UNC sectors or
-power supply issues).  A failing drive is a failing drive, it might blow
-up a btrfs with dup profile that would otherwise have survived.  It is
-possible that firmware bugs are involved in these cases, but it's hard
-to make a test fleet large enough for meaningful and consistent results.
-
-SSDs are a different story:  there are so many models, firmware revisions
-are far more diverse, and vendors are still rapidly updating their
-designs, so we never see exactly the same firmware in any two incident
-reports.  A firmware list would be obsolete in days.  There is nothing
-in SSD firmware like the decade-long stability there is in HDD firmware.
-
-IRC users report occasional parent-transid-verify-failure or similar
-metadata corruption failures on SSDs, but they don't seem to be repeatable
-with other instances of the same model device.  Samsung dominates the
-SSD problem reports, but Samsung also dominates the consumer SSD market,
-so I think we are just seeing messy-but-normal-for-SSD hardware failures,
-not evidence of firmware bugs.
-
-It's also possible that the window for exploiting a powerfail write cache
-bug is much, much shorter for SSD than HDD, so even if the bugs do exist,
-the probability of hitting one is negligible.
+> Thanks,
+> Sidong
+>
+>>
+>> Thanks,
+>> Qu
+>>
+>> >
+>> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+>> > ---
+>> >   cmds/filesystem-usage.c | 1 +
+>> >   1 file changed, 1 insertion(+)
+>> >
+>> > diff --git a/cmds/filesystem-usage.c=20
+>> > b/cmds/filesystem-usage.c
+>> > index 50d8995e..2a76e29c 100644
+>> > --- a/cmds/filesystem-usage.c
+>> > +++ b/cmds/filesystem-usage.c
+>> > @@ -24,6 +24,7 @@
+>> >   #include <stdarg.h>
+>> >   #include <getopt.h>
+>> >   #include <fcntl.h>
+>> > +#include <linux/limits.h>
+>> >
+>> >   #include "common/utils.h"
+>> >   #include "kerncompat.h"
+>> >
