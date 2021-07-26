@@ -2,39 +2,43 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C9A3D5779
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 12:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A96E3D577B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 12:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhGZJsW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jul 2021 05:48:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35262 "EHLO mail.kernel.org"
+        id S232331AbhGZJsZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jul 2021 05:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231421AbhGZJsV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 05:48:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87F6660F55;
-        Mon, 26 Jul 2021 10:28:48 +0000 (UTC)
+        id S231421AbhGZJsY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Jul 2021 05:48:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3577A60F22;
+        Mon, 26 Jul 2021 10:28:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627295330;
-        bh=btW6BrQtdiy2BGfAtYgtO3mdDJAwuJZx3t47oTAwnTk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=f/7Tynxw0dc+aTsE3bUo1N6cHVNZhErAWWa7FkpVRfz5jkx+TEoMBc25Do+9O+aX/
-         wBPcBMfz61Umrq0R7khVfl7B+xFDCjTdc3VJG9Z4hM4mhv2rC+vID5r8/G9Xc2/5ye
-         Bjtbmo7sTac/vN/B9r5l9iQ3/PbqFcBbA/xXNw1k2PxMvzTH9SSfU4gmDencJeEkWs
-         yU0FOy47iT4v7952Z3/pKzzPfhxlx9nVkudXUrnv/QurKIJwUB3a/AYo2k+Kf8TUtv
-         8LbHOSkS4g7tpcjTYE5pDt2IEHawIzvFIN7yyqDjaHqEzHfAzMdz/4g3zCp7dyg4AT
-         YNaRC9Jhau76A==
+        s=k20201202; t=1627295333;
+        bh=Q65wTxj8papDGcJgc1J3joFcMnqpS0z8nz0sG+q3sxg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=I2Q/4Rva/RhthB6gI3WyVPrWUJVPx67RSGyIOzspJjxIpyA16Os8henvyDWoLa3Y2
+         QBzOm4QDF7TAzSXNw8SCdQxAEd9KBBHqsAlkfPDv1wfo5vOK9UlpaJ2X0hXVfOSfDq
+         qJ3WjZeuaYFZ10Uw4V0FceBeGRmpGw8gMBG/r3MkgLUoh8g7/z0eOXBuqkN/UtIw7R
+         HVuXafM6m5J7gejBj1jQvnidifG/OMxbUn7IQGF2inOBC0AOC6gYSyYWmgYz5k09eA
+         nu3/GAXtWvSCGSe9suy/OiHuwudhSi5YWkDhbt5QmPne0dzNxuAne1HBlV1CQOUic0
+         wsXzJWTKthviQ==
 From:   Christian Brauner <brauner@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH v3 00/21] btrfs: support idmapped mounts
-Date:   Mon, 26 Jul 2021 12:27:55 +0200
-Message-Id: <20210726102816.612434-1-brauner@kernel.org>
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v3 01/21] namei: add mapping aware lookup helper
+Date:   Mon, 26 Jul 2021 12:27:56 +0200
+Message-Id: <20210726102816.612434-2-brauner@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210726102816.612434-1-brauner@kernel.org>
+References: <20210726102816.612434-1-brauner@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4284; h=from:subject; bh=qtZhh5mEZComnykB4yzWVyhJZ4CRIeDrJjmJF7pMG9w=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMST86zPY8fvtb4fVjXVTdc+VlEUopVf9eCG8yvr9VhYn41ue mYIpHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABNZWczwh2dZRu88Nfb/pde/m/7Ntp x43OvctZ+SSlMOMikePV4sZ8nIcCHoW2lTVF7blicH30gWbH+4vfjI5O1ZNl6H/Fp3HduwgB8A
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4654; h=from:subject; bh=hz8lZ5Aw+HWLOcVYddCv6SoN2CluB8W6yBJZblizz5M=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMST86zNgN5p4SPBhTaJLwYlo178b658tbfY7sW7K2fcbFwWz HxD+2VHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRyysZ/rv80FPc993IZ+ehXGWZfO umjTIXtuWwhLv2/HhcyNqXv53hr0QjY6f0XN7D7mqqK9M5pxqlTsnbkD/HgfnZUr3K0rit/AA=
 X-Developer-Key: i=christian.brauner@ubuntu.com; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -43,100 +47,132 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Christian Brauner <christian.brauner@ubuntu.com>
 
-Hey everyone,
+Various filesystems rely on the lookup_one_len() helper to lookup a single path
+component relative to a well-known starting point. Allow such filesystems to
+support idmapped mounts by adding a version of this helper to take the idmap
+into account when calling inode_permission(). This change is a required to let
+btrfs (and other filesystems) support idmapped mounts.
+
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-fsdevel@vger.kernel.org
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+/* v2 */
+- Al Viro <viro@zeniv.linux.org.uk>:
+  - Add a new lookup helper instead of changing the old ones.
 
 /* v3 */
-- base: v5.14-rc3
-- Added Josef's Reviewed-by's (Thank you!)
-- Switched subvolume/snapshot deletion error code (David)
-But please see individual patches for changelogs.
+unchanged
+---
+ fs/namei.c            | 44 +++++++++++++++++++++++++++++++++++++------
+ include/linux/namei.h |  2 ++
+ 2 files changed, 40 insertions(+), 6 deletions(-)
 
-This series enables the creation of idmapped mounts on btrfs. On the list of
-filesystems btrfs was pretty high-up and requested quite often from userspace
-(cf. [1]). This series requires just a few changes to the vfs for specific
-lookup helpers that btrfs relies on to perform permission checking when looking
-up an inode. The changes are required to port some other filesystem as well.
-
-The conversion of the necessary btrfs internals was fairly straightforward. No
-invasive changes were needed. I've decided to split up the patchset into very
-small individual patches. This hopefully makes the series more readable and
-fairly easy to review. The overall changeset is quite small.
-
-All non-filesystem wide ioctls that peform permission checking based on inodes
-can be supported on idmapped mounts. There are really just a few restrictions.
-This should really only affect the deletion of subvolumes by subvolume id which
-can be used to delete any subvolume in the filesystem even though the caller
-might not even be able to see the subvolume under their mount. Other than that
-behavior on idmapped and non-idmapped mounts is identical for all enabled
-ioctls. People interested in idmappings on idmapped mounts should read [2].
-
-The changeset has an associated new testsuite specific to btrfs. The
-core vfs operations that btrfs implements are covered by the generic
-idmapped mount testsuite. For the ioctls a new testsuite was added. It
-is sent alongside this patchset for ease of review but will very likely
-be merged independent of it.
-
-All patches are based on v5.14-rc3.
-
-The series can be pulled from:
-https://git.kernel.org/brauner/h/fs.idmapped.btrfs
-https://github.com/brauner/linux/tree/fs.idmapped.btrfs
-
-The xfstests can be pulled from:
-https://git.kernel.org/brauner/xfstests-dev/h/fs.idmapped.btrfs
-https://github.com/brauner/xfstests/tree/fs.idmapped.btrfs
-
-Note, the new btrfs xfstests patch is on top of a branch of mine
-containing a few more preliminary patches. So if you want to run the
-tests, please simply pull the branch and build from there.
-
-The series has been tested with xfstests including the newly added btrfs
-specific test. All tests pass.
-There were three unrelated failures that I observed: btrfs/219,
-btrfs/2020 and btrfs/235. All three also fail on earlier kernels
-without the patch series applied.
-
-Thanks!
-Christian
-
-[1]: https://github.com/systemd/systemd/pull/19438#discussion_r622807165
-[2]: https://lore.kernel.org/linux-fsdevel/20210723125150.334206-1-brauner@kernel.org
-
-Christian Brauner (20):
-  namei: add mapping aware lookup helper
-  btrfs/inode: handle idmaps in btrfs_new_inode()
-  btrfs/inode: allow idmapped rename iop
-  btrfs/inode: allow idmapped getattr iop
-  btrfs/inode: allow idmapped mknod iop
-  btrfs/inode: allow idmapped create iop
-  btrfs/inode: allow idmapped mkdir iop
-  btrfs/inode: allow idmapped symlink iop
-  btrfs/inode: allow idmapped tmpfile iop
-  btrfs/inode: allow idmapped setattr iop
-  btrfs/inode: allow idmapped permission iop
-  btrfs/ioctl: check whether fs{g,u}id are mapped during subvolume
-    creation
-  btrfs/inode: allow idmapped BTRFS_IOC_{SNAP,SUBVOL}_CREATE{_V2} ioctl
-  btrfs/ioctl: allow idmapped BTRFS_IOC_SNAP_DESTROY{_V2} ioctl
-  btrfs/ioctl: relax restrictions for BTRFS_IOC_SNAP_DESTROY_V2 with
-    subvolids
-  btrfs/ioctl: allow idmapped BTRFS_IOC_SET_RECEIVED_SUBVOL{_32} ioctl
-  btrfs/ioctl: allow idmapped BTRFS_IOC_SUBVOL_SETFLAGS ioctl
-  btrfs/ioctl: allow idmapped BTRFS_IOC_INO_LOOKUP_USER ioctl
-  btrfs/acl: handle idmapped mounts
-  btrfs/super: allow idmapped btrfs
-
- fs/btrfs/acl.c        | 11 ++---
- fs/btrfs/ctree.h      |  3 +-
- fs/btrfs/inode.c      | 62 ++++++++++++++++------------
- fs/btrfs/ioctl.c      | 96 ++++++++++++++++++++++++++++---------------
- fs/btrfs/super.c      |  2 +-
- fs/namei.c            | 44 +++++++++++++++++---
- include/linux/namei.h |  2 +
- 7 files changed, 148 insertions(+), 72 deletions(-)
-
-
-base-commit: ff1176468d368232b684f75e82563369208bc371
+diff --git a/fs/namei.c b/fs/namei.c
+index bf6d8a738c59..8f416698ee34 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2575,8 +2575,9 @@ int vfs_path_lookup(struct dentry *dentry, struct vfsmount *mnt,
+ }
+ EXPORT_SYMBOL(vfs_path_lookup);
+ 
+-static int lookup_one_len_common(const char *name, struct dentry *base,
+-				 int len, struct qstr *this)
++static int lookup_one_len_common(struct user_namespace *mnt_userns,
++				 const char *name, struct dentry *base, int len,
++				 struct qstr *this)
+ {
+ 	this->name = name;
+ 	this->len = len;
+@@ -2604,7 +2605,7 @@ static int lookup_one_len_common(const char *name, struct dentry *base,
+ 			return err;
+ 	}
+ 
+-	return inode_permission(&init_user_ns, base->d_inode, MAY_EXEC);
++	return inode_permission(mnt_userns, base->d_inode, MAY_EXEC);
+ }
+ 
+ /**
+@@ -2628,7 +2629,7 @@ struct dentry *try_lookup_one_len(const char *name, struct dentry *base, int len
+ 
+ 	WARN_ON_ONCE(!inode_is_locked(base->d_inode));
+ 
+-	err = lookup_one_len_common(name, base, len, &this);
++	err = lookup_one_len_common(&init_user_ns, name, base, len, &this);
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+@@ -2655,7 +2656,7 @@ struct dentry *lookup_one_len(const char *name, struct dentry *base, int len)
+ 
+ 	WARN_ON_ONCE(!inode_is_locked(base->d_inode));
+ 
+-	err = lookup_one_len_common(name, base, len, &this);
++	err = lookup_one_len_common(&init_user_ns, name, base, len, &this);
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+@@ -2664,6 +2665,37 @@ struct dentry *lookup_one_len(const char *name, struct dentry *base, int len)
+ }
+ EXPORT_SYMBOL(lookup_one_len);
+ 
++/**
++ * lookup_mapped_one_len - filesystem helper to lookup single pathname component
++ * @mnt_userns:	user namespace of the mount the lookup is performed from
++ * @name:	pathname component to lookup
++ * @base:	base directory to lookup from
++ * @len:	maximum length @len should be interpreted to
++ *
++ * Note that this routine is purely a helper for filesystem usage and should
++ * not be called by generic code.
++ *
++ * The caller must hold base->i_mutex.
++ */
++struct dentry *lookup_mapped_one_len(struct user_namespace *mnt_userns,
++				     const char *name, struct dentry *base,
++				     int len)
++{
++	struct dentry *dentry;
++	struct qstr this;
++	int err;
++
++	WARN_ON_ONCE(!inode_is_locked(base->d_inode));
++
++	err = lookup_one_len_common(mnt_userns, name, base, len, &this);
++	if (err)
++		return ERR_PTR(err);
++
++	dentry = lookup_dcache(&this, base, 0);
++	return dentry ? dentry : __lookup_slow(&this, base, 0);
++}
++EXPORT_SYMBOL(lookup_mapped_one_len);
++
+ /**
+  * lookup_one_len_unlocked - filesystem helper to lookup single pathname component
+  * @name:	pathname component to lookup
+@@ -2683,7 +2715,7 @@ struct dentry *lookup_one_len_unlocked(const char *name,
+ 	int err;
+ 	struct dentry *ret;
+ 
+-	err = lookup_one_len_common(name, base, len, &this);
++	err = lookup_one_len_common(&init_user_ns, name, base, len, &this);
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+diff --git a/include/linux/namei.h b/include/linux/namei.h
+index be9a2b349ca7..fd9d22128df6 100644
+--- a/include/linux/namei.h
++++ b/include/linux/namei.h
+@@ -68,6 +68,8 @@ extern struct dentry *try_lookup_one_len(const char *, struct dentry *, int);
+ extern struct dentry *lookup_one_len(const char *, struct dentry *, int);
+ extern struct dentry *lookup_one_len_unlocked(const char *, struct dentry *, int);
+ extern struct dentry *lookup_positive_unlocked(const char *, struct dentry *, int);
++extern struct dentry *lookup_mapped_one_len(struct user_namespace *,
++					    const char *, struct dentry *, int);
+ 
+ extern int follow_down_one(struct path *);
+ extern int follow_down(struct path *);
 -- 
 2.30.2
 
