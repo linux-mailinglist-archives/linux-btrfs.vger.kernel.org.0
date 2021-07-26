@@ -2,63 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2356A3D597D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 14:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46ED83D5982
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 14:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbhGZLtE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jul 2021 07:49:04 -0400
-Received: from mout.gmx.net ([212.227.15.15]:56393 "EHLO mout.gmx.net"
+        id S234006AbhGZLt0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jul 2021 07:49:26 -0400
+Received: from mout.gmx.net ([212.227.17.20]:34923 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233947AbhGZLtD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:49:03 -0400
+        id S233995AbhGZLtZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:49:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627302568;
-        bh=HwwEzNd9uvnA9X/zx2Tt2jhSmUjYNRJr6rG9LLyC3RI=;
+        s=badeba3b8450; t=1627302591;
+        bh=7KPiIGxPDpovmhOcivY1M0Rjj0fb3CkoMxTX4f+WXLI=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=eFF0TaUsq82LiIg0IQje9vPMOvlD8BWzCKeIr/YAlejWJmP0C0TDn6YeK42fc6Mva
-         LjnHxstveF2W7Njcx+NP8IMBFiWjgEqszjsqn6jtcLd5tllRwejZNlEQqc7HXlxJvs
-         60E7RF+B7BhTq1xh118C7Vonp3eXllSvYwB7oT34=
+        b=jQlfl8+LfUVQ2J8jIOxmi44MR5jSPrSpasdH5cDueCvJbkvwE2Ly/yo6ObeUZ4Q6N
+         2dLfRXBU5PSYmTB0s0bZ7gCuHiTpFrFPC+OdHuN5V0EWRiWQVeL7AjN9+jis9hWgIt
+         aTR99HLgc15nU/CE7kNezX/QZt1TZAKf/PcJTJSI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MQ5vW-1lm5Ae0ZiS-00M829; Mon, 26
- Jul 2021 14:29:28 +0200
-Subject: Re: [PATCH 04/10] btrfs: tree-checker: use table values for stripe
- checks
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mof9F-1lJVgd3fTd-00p7qf; Mon, 26
+ Jul 2021 14:29:51 +0200
+Subject: Re: [PATCH 05/10] btrfs: tree-checker: add missing stripe checks for
+ raid1c3/4 profiles
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1627300614.git.dsterba@suse.com>
- <b7a7bb037ee8622784d94f39997d8ab1fbec892a.1627300614.git.dsterba@suse.com>
+ <867952ec2e4728190693011e215a81ea9a4eb73c.1627300614.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <aa326600-b1e0-e3d4-38b5-1ef0b4527e8e@gmx.com>
-Date:   Mon, 26 Jul 2021 20:29:25 +0800
+Message-ID: <53d058cc-cf3f-20d2-2d86-336cea00be5a@gmx.com>
+Date:   Mon, 26 Jul 2021 20:29:47 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <b7a7bb037ee8622784d94f39997d8ab1fbec892a.1627300614.git.dsterba@suse.com>
+In-Reply-To: <867952ec2e4728190693011e215a81ea9a4eb73c.1627300614.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LLIOk7gqBjHiSQlNULexxOyqqjBkucJV0JRVaRc/Gzyj/StUzkF
- p1aHo0uxew6zkkGvMks47dH/IIx01BeF3nxv/0UBO6rW6VYYDEG/v8saTEWO+nnMbgAqx95
- Y2IHUbIp0mpTBbTG0rqtFDLvDLDZ7z6q74ukfhK0LnXUILMZNOKC/uWFtcpYyC9qRTZmjzN
- LuP+YcZmB1BuCw90OK5Qg==
+X-Provags-ID: V03:K1:F4NGIxNGGAnGZGsuFWGySi6TuBQnXsStdHtRMCsCfE5qZwjkLqo
+ QlFt4XQqCK9yQdtsQD1aYN9uyB1Qtm5rVk4H0YpKQF7pfLZ6mD381nRwaCxlEbOo2pzvBNg
+ MKMoPnv0H06QLg/uYOy68+4C6ahr8yLsCQIpqmljwK1xkwxfvijNfCZ7nAUN+p5jodBdLyz
+ r4n5/jrxxCwQStb3/HBQQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:PBKSm/E+KDw=:ufuhjRXjojSrbrzDqQnROm
- iF57ggGlQsla9//OUidjmyXRJj7UJUAOPYSq+HmCnAGdlVUZD0y+20cekGWFstTi2ijUV+kwJ
- 28XISvPYfHKBlBzUFQcB2bceMtjPj5sr0mcojFQpnzq6+DqEtgUtcGU/BT3PPBuTpk1Xnbulw
- Tt+ObacwZH82p+xv7R9tJKj2ebv6j7zsVgv/Eo0EoGHxGwZEBjf8wsjXB3fd9rDyYbuZVVSt2
- XLjfKUzfcpI8nuqA65RwrClYGjgkCxFsqjLFFGxI71709d1RncZnbx9tthwGfghj6GSbG1fRI
- Tf6lLWzjp3t2wRUhFbo1Qg7r53NsXpVEEXpWEXTeECScIa5hD52v7tKMdxhZEAlMqZkMRG8rn
- USt19cJFeuH2vH5DgS7D7NhnCkeHYGaxMXJq4aQE30ynAEaqa0RlnAlZL3GE5kLiSzYCqEaQe
- HnM6ZnMQGCGMP4alrKgaAvyKcow6pso4bTwy+4zAmeWIeXy4KQih9JFYF8pbhKmjGajbsFIgz
- eU23gU3oJrn1ZG7PAqlvy5UnqMhR4FzuOo2hyEAghproctzKcVAKwruvwZynLCCeW02uvZsZc
- xSbuNnit+GKkOpaNOIR26BPZpP514/ihYXn0tynrnu8zcHRGlILb0vMzpRaYZJ9A6HjaLT2px
- uGEuhXEC0WW511oqC+gYT8/F/MPvifuRMvmBFArtRYA8+rVQUFrOG6cFWa9XlxEQZcYiz9c+M
- wz03PpyurCz33yRp0tvnzwb4QZYsU1s49EZjCotk0E2u7Az6aakUxoRyjSBSKHcyAR66EKnI+
- gZ77IbwZYcSL5iCFvjneXlMu4E57n7qWffuC6p1U/jxgGA7tJwC3xKtcvLiY+6d+FZ/bYX85M
- uurWXSxDVvqejQXvtt2OSy54dYmax0Vutc6U0dvZBlmrtJ1+cKtqpuoBnuRvpR3ZM9CWFuI4H
- 37PIEgWI8JrLJMQRHErETHt5n5LbvAJtBa1sxwML9fMmOgPkskjfkH9iUpZTvSTf69bG9Jcmg
- g8GbURd1JyXxrDYDh6aMOXNC9FprN9UBka30TxWIyLB23F5Hgal3VFiXBrb5KyCq9eTtAGrIK
- pVrYGKa8vcbNR1B+/W+IlFpEh4MXbwqec0K9VF5v9HmqSvjTXl7J/QMNA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:teV9wDQziMw=:YWR0KdCPc5NDq1/Enr7Fky
+ 0+OQYESyDGMwNwjMYRzOsQ1noo+LwBA7Crh5b7N2QbsUXWrIRz3WKTWq4MHyEUPeiYvY9A91c
+ AHDxMQ3FoAq7miXVrGasw8XKnyavg+b1mpmg2rwjeiXydDt7FFjpXftRRmWS1IppuiFCXNcvV
+ oykhUGayI1o/45IxLCTF7iUZ5HiXvhVV+Fn04Yz3OjBrFJzX3vvriSW18lh6v8nrbOYk8Ywrd
+ A5sGqOAQMjYKobhux1zaRJrC6SCcGbNKw0KuRa1vaq2vAT4o4/H3aPfzXwQndDeuDgyZlJCmA
+ vbdMjw0ukZZZBr83/M0w96NIPe4RtYIieCldRs0uRwpLYTuZX6vW7viQ4qHx7cciKmaleDBUD
+ 9a2D8kQi9XA9HQGPnjYt/lWLITd9+yT2Pnl7W4TU1L7k2HKcTVRaUDgmf4qNn4I4xIyz5lj8u
+ PzWYrlV9H5WO+/eEzA5gWNa12b7KeFsy3DxVM+Qg8E5DA+G0apogZpn6bYIsRwZIbSFxZYj8N
+ 29jqr0gsVmegxfT+ji2eaA/JgvOR3mYtk7/p7DnKwFm0iKSt8Ok8NnpXcoHmzDYoDrncD1a8A
+ WMdcRcIA+K4sTCMUIADysfSlURKHSp6SxlZDiprPhvGBHu5kpxLoGkqtpBAxHFvGCHeVNBVK+
+ udTQDDZgE/oW4fQNTb9BJ247MLAkfP3n5duExcJ2JZOPO4p2F8DLZbLpsqD0eMCrgPfUWqr+k
+ jMX84FwEUdUIm9VcyWfBTzwQq8M1eCn3aUrNCeVQVv75hP30dKGDbc1cYOjyFO4jhxUR0BQFw
+ YtRHx4y3SgKnKE00xDk1nWe6Eglr0Ib0YYQYaLA7Y3CPG5Jnvr1QK8ABukWs9S9oiVJTtSX70
+ CNiHoOGO2pau4HhKf9PGAcZmNZjwk8wKf6KXqU5r///FXpKIAWGTWsnoBYZxTqG2wqFkA5R7x
+ roA4ZOTjioYMtuyF7df8vEf9VyEScyLz9VG9IDeYQhA4yTwTrVb8eojxgCcuzCYuyd53uFOdf
+ NaMjMmZ62JAJ+/N8CZ8QSwiTDZwf4G32R0U6A3BdlVz47hqYei0jDI0izydcTIHcdoMZGYRWV
+ Z+i2rLkEeYgAP5KePbVjK6/VN+jpj6RA/b/N9IaJNuHhZWem5cbOv8sQA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -66,59 +66,36 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/7/26 =E4=B8=8B=E5=8D=888:15, David Sterba wrote:
-> There are hardcoded values in several checks regarding chunks and stripe
-> constraints. We have that defined in the raid table and ought to use it.
+> The stripe checks for raid1c3/raid1c4 are missing in the sequence in
+> btrfs_check_chunk_valid.
 >
 > Signed-off-by: David Sterba <dsterba@suse.com>
-
 Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-But one weird off-topics inlined below.
-
-> ---
->   fs/btrfs/tree-checker.c | 17 +++++++++++------
->   1 file changed, 11 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index a8b2e0d2c025..ac9416cb4496 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -873,13 +873,18 @@ int btrfs_check_chunk_valid(struct extent_buffer *=
-leaf,
->   		}
->   	}
->
-> -	if (unlikely((type & BTRFS_BLOCK_GROUP_RAID10 && sub_stripes !=3D 2) |=
-|
-> -		     (type & BTRFS_BLOCK_GROUP_RAID1 && num_stripes !=3D 2) ||
-> -		     (type & BTRFS_BLOCK_GROUP_RAID5 && num_stripes < 2) ||
-> -		     (type & BTRFS_BLOCK_GROUP_RAID6 && num_stripes < 3) ||
-> -		     (type & BTRFS_BLOCK_GROUP_DUP && num_stripes !=3D 2) ||
-> +	if (unlikely((type & BTRFS_BLOCK_GROUP_RAID10 &&
-> +		      sub_stripes !=3D btrfs_raid_array[BTRFS_RAID_RAID10].sub_stripe=
-s) ||
-> +		     (type & BTRFS_BLOCK_GROUP_RAID1 &&
-> +		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_RAID1].devs_min) |=
-|
-
-We're adding support for single device RAID0, but there won't be
-anything called single device RAID1 at all, right?
 
 Thanks,
 Qu
-
-> +		     (type & BTRFS_BLOCK_GROUP_RAID5 &&
-> +		      num_stripes < btrfs_raid_array[BTRFS_RAID_RAID5].devs_min) ||
-> +		     (type & BTRFS_BLOCK_GROUP_RAID6 &&
-> +		      num_stripes < btrfs_raid_array[BTRFS_RAID_RAID6].devs_min) ||
-> +		     (type & BTRFS_BLOCK_GROUP_DUP &&
-> +		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_DUP].dev_stripes) =
+> ---
+>   fs/btrfs/tree-checker.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index ac9416cb4496..7ba94b683ee3 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -877,6 +877,10 @@ int btrfs_check_chunk_valid(struct extent_buffer *l=
+eaf,
+>   		      sub_stripes !=3D btrfs_raid_array[BTRFS_RAID_RAID10].sub_strip=
+es) ||
+>   		     (type & BTRFS_BLOCK_GROUP_RAID1 &&
+>   		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_RAID1].devs_min) =
 ||
->   		     ((type & BTRFS_BLOCK_GROUP_PROFILE_MASK) =3D=3D 0 &&
-> -		      num_stripes !=3D 1))) {
-> +		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_SINGLE].dev_stripe=
-s))) {
->   		chunk_err(leaf, chunk, logical,
->   			"invalid num_stripes:sub_stripes %u:%u for profile %llu",
->   			num_stripes, sub_stripes,
+> +		     (type & BTRFS_BLOCK_GROUP_RAID1C3 &&
+> +		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_RAID1C3].devs_min)=
+ ||
+> +		     (type & BTRFS_BLOCK_GROUP_RAID1C4 &&
+> +		      num_stripes !=3D btrfs_raid_array[BTRFS_RAID_RAID1C4].devs_min)=
+ ||
+>   		     (type & BTRFS_BLOCK_GROUP_RAID5 &&
+>   		      num_stripes < btrfs_raid_array[BTRFS_RAID_RAID5].devs_min) ||
+>   		     (type & BTRFS_BLOCK_GROUP_RAID6 &&
 >
