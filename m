@@ -2,79 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F963D592A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 14:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBED3D5942
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 14:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbhGZL1M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jul 2021 07:27:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233713AbhGZL1M (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:27:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8AB3600D1;
-        Mon, 26 Jul 2021 12:07:38 +0000 (UTC)
-Date:   Mon, 26 Jul 2021 14:07:35 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v3 15/21] btrfs/ioctl: relax restrictions for
- BTRFS_IOC_SNAP_DESTROY_V2 with subvolids
-Message-ID: <20210726120735.u7ncpcwyv4am4duz@wittgenstein>
-References: <20210726102816.612434-1-brauner@kernel.org>
- <20210726102816.612434-16-brauner@kernel.org>
- <a4931bab-c299-3aa0-a700-5b5e8b61f040@gmx.com>
+        id S233903AbhGZLhW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jul 2021 07:37:22 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57992 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233713AbhGZLhV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:37:21 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A0B701FE75;
+        Mon, 26 Jul 2021 12:17:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627301869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=P+gwaORr8f2nAj7HfaN9/SPXmo3oIRxSwUF5LlTN4mg=;
+        b=SkZTGusi4byb0R0k6QDA+HFKFV7pfOUI5sGyZSZC6G6Iwmlb5jhcTUHhTpFP0Hoq0KJY6p
+        8i3m+ViL3rEii3Cmn6NsUK0n7VEdlk8QGsjS2U6W1oB+eYCtYQ7GM4pqu2uoOJlyDvBxun
+        phkvKCQ75wO9nBM9kLijA7rIV289N0E=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 98F10A3BCD;
+        Mon, 26 Jul 2021 12:17:49 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DE2D9DA8D8; Mon, 26 Jul 2021 14:15:05 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH 00/10] Misc small cleanups
+Date:   Mon, 26 Jul 2021 14:15:05 +0200
+Message-Id: <cover.1627300614.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a4931bab-c299-3aa0-a700-5b5e8b61f040@gmx.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 07:31:07PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2021/7/26 下午6:28, Christian Brauner wrote:
-> > From: Christian Brauner <christian.brauner@ubuntu.com>
-> > 
-> > So far we prevented the deletion of subvolumes and snapshots using subvolume
-> > ids possible with the BTRFS_SUBVOL_SPEC_BY_ID flag.
-> > This restriction is necessary on idmapped mounts as this allows filesystem wide
-> > subvolume and snapshot deletions and thus can escape the scope of what's
-> > exposed under the mount identified by the fd passed with the ioctl.
-> > 
-> > Deletion by subvolume id works by looking for an alias of the parent of the
-> > subvolume or snapshot to be deleted. The parent alias can be anywhere in the
-> > filesystem. However, as long as the alias of the parent that is found is the
-> > same as the one identified by the file descriptor passed through the ioctl we
-> > can allow the deletion.
-> > 
-> > Cc: Chris Mason <clm@fb.com>
-> > Cc: Josef Bacik <josef@toxicpanda.com>
-> > Cc: Christoph Hellwig <hch@infradead.org>
-> > Cc: David Sterba <dsterba@suse.com>
-> > Cc: linux-btrfs@vger.kernel.org
-> > Reviewed-by: Josef Bacik <josef@toxicpanda.com> > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
-> 
-> Although I'm wondering if there is any special use case for this relaxed
-> subvolid deletion?
-> 
-> As for most subvolume deletion it's from btrfs-progs, which has extra
-> path lookup before calling the ioctl (even for subvolid id deletion).
-> 
-> Thus I guess the relaxed check is only for direct ioctl call for
-> subvolume deletion?
+Mix of type fixups, helper cleanups and minor optimizations.
 
-Yeah, it's for convenience. My think was that it might be helpful when
-you already have the subvolume id around and can use it for subvolume
-deletion not bothering with paths.
+Overall impact on binary size:
 
-Christian
+   text    data     bss     dec     hex filename
+1163320   19157   14912 1197389  12454d pre/btrfs.ko
+1160800   19157   14912 1194869  123b75 post/btrfs.ko
+
+DELTA: -2520
+
+David Sterba (10):
+  btrfs: switch uptodate to bool in btrfs_writepage_endio_finish_ordered
+  btrfs: remove uptodate parameter from
+    btrfs_dec_test_first_ordered_pending
+  btrfs: make btrfs_next_leaf static inline
+  btrfs: tree-checker: use table values for stripe checks
+  btrfs: tree-checker: add missing stripe checks for raid1c3/4 profiles
+  btrfs: uninline btrfs_bg_flags_to_raid_index
+  btrfs: merge alloc_device helpers
+  btrfs: simplify data stripe calculation helpers
+  btrfs: constify and cleanup variables comparators
+  btrfs: add and use simple page/bio to inode/fs_info helpers
+
+ fs/btrfs/ctree.c        |  10 ----
+ fs/btrfs/ctree.h        |  15 +++++-
+ fs/btrfs/disk-io.c      |  24 +++++----
+ fs/btrfs/extent_io.c    |  41 ++++++++-------
+ fs/btrfs/inode.c        |  10 ++--
+ fs/btrfs/misc.h         |   4 ++
+ fs/btrfs/ordered-data.c |   5 +-
+ fs/btrfs/ordered-data.h |   2 +-
+ fs/btrfs/raid56.c       |   8 +--
+ fs/btrfs/send.c         |   6 +--
+ fs/btrfs/super.c        |  13 +++--
+ fs/btrfs/tree-checker.c |  21 +++++---
+ fs/btrfs/tree-log.c     |   2 +-
+ fs/btrfs/volumes.c      | 109 ++++++++++++++++++++--------------------
+ fs/btrfs/volumes.h      |  27 +---------
+ 15 files changed, 141 insertions(+), 156 deletions(-)
+
+-- 
+2.31.1
+
