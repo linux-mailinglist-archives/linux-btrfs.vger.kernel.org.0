@@ -2,80 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 658B33D5CB4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 17:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1593D613A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 18:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234672AbhGZOcO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jul 2021 10:32:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60382 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234725AbhGZOcN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:32:13 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EA40021F5F;
-        Mon, 26 Jul 2021 15:12:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627312356;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D9NOou/vwXk1Ftp7PwQWuweDzZF1eFYI7/fzkzlbd7Q=;
-        b=Sc+IWhtIgG0jfGanPLryNMMkJTh9UwJec4gvrJH14r074KmvJdKMzC4fdLujg3Bzfmm5D1
-        91gL0JcuTJLKxW+Bz8BNMjtj7s5c6sB5Gr2Bs/dDPH63eJTiQxeGnk7G5OkVFnWu+CQfyz
-        PxvAOkl3iwXudv2j2+PJckijTUvyncE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627312356;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D9NOou/vwXk1Ftp7PwQWuweDzZF1eFYI7/fzkzlbd7Q=;
-        b=HyzfFgdajlBKyheC/A5eTBuGR75uWmb0kZobv5kQRek45gYTBrB5fT1lqSvDAUuD35FSZc
-        WgfAJ5IbZf+gXQAw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E2436A3B85;
-        Mon, 26 Jul 2021 15:12:36 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 242C5DA8D8; Mon, 26 Jul 2021 17:09:53 +0200 (CEST)
-Date:   Mon, 26 Jul 2021 17:09:53 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 10/10] btrfs: add and use simple page/bio to
- inode/fs_info helpers
-Message-ID: <20210726150953.GG5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1627300614.git.dsterba@suse.com>
- <4d3594dcca4dd8a8e58b134409922c2787b6a757.1627300614.git.dsterba@suse.com>
- <6cac34b2-39ba-f344-d601-b78a3f0c7698@gmx.com>
+        id S231694AbhGZPaW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jul 2021 11:30:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232359AbhGZPaT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:30:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC42960C40;
+        Mon, 26 Jul 2021 16:10:45 +0000 (UTC)
+Date:   Mon, 26 Jul 2021 18:10:43 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 01/21] namei: add mapping aware lookup helper
+Message-ID: <20210726161043.xll6yxkh3awwlcuk@wittgenstein>
+References: <20210726102816.612434-1-brauner@kernel.org>
+ <20210726102816.612434-2-brauner@kernel.org>
+ <YP7JgZCb/AAG17xf@casper.infradead.org>
+ <20210726144540.GA12779@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6cac34b2-39ba-f344-d601-b78a3f0c7698@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210726144540.GA12779@lst.de>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 08:41:57PM +0800, Qu Wenruo wrote:
+On Mon, Jul 26, 2021 at 04:45:40PM +0200, Christoph Hellwig wrote:
+> On Mon, Jul 26, 2021 at 03:41:05PM +0100, Matthew Wilcox wrote:
+> > On Mon, Jul 26, 2021 at 12:27:56PM +0200, Christian Brauner wrote:
+> > > +/**
+> > > + * lookup_mapped_one_len - filesystem helper to lookup single pathname component
+> > 
+> > Can we think about the name a bit?  In the ur-times (2.3.99), we had
+> > lookup_dentry(), which as far as I can tell walked an entire path.
+> > That got augmented with lookup_one() which just walked a single path
+> > entry.  That was replaced with lookup_one_len() which added the 'len'
+> > parameter.  Now we have:
+> > 
+> > struct dentry *try_lookup_one_len(const char *, struct dentry *, int);
+> > struct dentry *lookup_one_len(const char *, struct dentry *, int);
+> > struct dentry *lookup_one_len_unlocked(const char *, struct dentry *, int);
+> > struct dentry *lookup_positive_unlocked(const char *, struct dentry *, int);
+> > 
+> > I think the 'len' part of the name has done its job, and this new
+> > helper should be 'lookup_one_mapped'.
 > 
-> 
-> On 2021/7/26 下午8:15, David Sterba wrote:
-> > We have lots of places where we want to obtain inode from page, fs_info
-> > from page and open code the pointer chains.
-> 
-> All those inode/fs_info grabbing from just a page is dangerous.
-> 
-> If an anonymous page is passed in unintentionally, it can easily crash
-> the system.
-> 
-> Thus at least some ASSERT() here is a must to me.
+> Heh.  I'd drop the mapped as well as this should be the new normal
+> going ahead.
 
-But we can only check if the pointer is valid, any page can have a valid
-pointer but not our fs_info. If it crashes on an unexpected page than
-what can we do in the code anyway?
+I'm fine with either. Though lookup_one() is shorter and sounds nicest. :)
