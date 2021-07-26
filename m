@@ -2,62 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707A93D59A3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 14:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25793D59A7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 14:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhGZLzN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jul 2021 07:55:13 -0400
-Received: from mout.gmx.net ([212.227.15.15]:60569 "EHLO mout.gmx.net"
+        id S234126AbhGZL57 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jul 2021 07:57:59 -0400
+Received: from mout.gmx.net ([212.227.15.18]:34721 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233742AbhGZLzM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:55:12 -0400
+        id S234116AbhGZL55 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:57:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627302939;
-        bh=z+uBMrkx9wykoa6L52QPdGGtfHXAVkrgAVuafCpqtKo=;
+        s=badeba3b8450; t=1627303099;
+        bh=HWXR/cqJLveXTNhTNZQ+3pF8xdanuiIz+vmVs3I16dk=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ADPJ7HTZ2rqnEH/m128OjJjrUtKJMgb7TafBrctYxLZHR4CB1tmqBodb4iG/EFQc5
-         +iOluxKkFf9+r+ZuiZgTE7zXcFoBW91XwBHGks+yxZB5Y6G1A+eGsqYttQusLDW3d3
-         IAsgAy50yKg3aTpwmUxLLR9YllwEA3EZ1DQS3OnU=
+        b=Q8DT6z9XRD4IzvRNq2BKjkKA0l9UKx6WC7YrNX4Pr5aDf2e2qy8qa5VXiAewQCJpG
+         SIn63kTQGpfD4Q1SPiIVVtyhdOVuMEgt7ln52aNWJcf/1Kwn16KVSHBrvu6Ew2SFsP
+         Von36S7Z4M6hmCTrz/Dju1DxNGK2hMb28kktUuSE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdNY2-1lYf502ajQ-00ZLKR; Mon, 26
- Jul 2021 14:35:39 +0200
-Subject: Re: [PATCH 07/10] btrfs: merge alloc_device helpers
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1McH5a-1lVLfS1gj6-00cdQ5; Mon, 26
+ Jul 2021 14:38:19 +0200
+Subject: Re: [PATCH 08/10] btrfs: simplify data stripe calculation helpers
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1627300614.git.dsterba@suse.com>
- <2d6e3c341f5ed60f5fe3cffe81ad301f9cdfdee5.1627300614.git.dsterba@suse.com>
+ <6e7fd9d9fe39f547eae063dac6e230f155980ba0.1627300614.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <d05c047f-8656-aee4-2c64-145b2c22980d@gmx.com>
-Date:   Mon, 26 Jul 2021 20:35:36 +0800
+Message-ID: <41a6c967-1f34-b48a-c24c-14cf226a5c67@gmx.com>
+Date:   Mon, 26 Jul 2021 20:38:16 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <2d6e3c341f5ed60f5fe3cffe81ad301f9cdfdee5.1627300614.git.dsterba@suse.com>
+In-Reply-To: <6e7fd9d9fe39f547eae063dac6e230f155980ba0.1627300614.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yC5dmL8hWohvdmtLjHhBZhg0yRJBdJbE1BfF9onyozHjvO3hmz8
- U3+8cPjKW2jJ89yuB8Gl/furFjXzQUJFgQHoMGNVAac5jADpAAtOchxDigvhNgsXeaeGVpq
- 3XewhO9wjCS7gYU0ctaZ54tYtdrvFP8N0wittZ5b0sPCxQ2Lfh3+i9645YPuwm9DrTaUOTm
- iRz2WkpPVRDlqKasHwdbg==
+X-Provags-ID: V03:K1:iiyMdnx0htFzBLprSMyi7lVhMFYW3vvkHJ9ALd2zTKSSOmUHJJs
+ CQuiIT28v2viJpvlLY9ysJ/LfkxbFZmtNbtu0+QUbUXrNVG+iMBpJ4oQ7M8xZi8g2b/3NSH
+ yBSF7Oh3G9uvEStdDhtsXA8uqVQKLHh5BGy33nB4oKkbn7qH0PjInPoGTLayePmEk6ihtW6
+ AnX4gRU678Bo9V5VEbjrw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:a2LKi1exW58=:5Y5sLowQuev2yyoRYtwWNp
- QS+BCwyyTusMusFe8g+1j0S4QQ067v5+YgNys757nBDVJ9POo47xfzKjfaeR8pHFVv/qGCqus
- xQameANzq3p+sZXzrgYv2OIAONAcxGaJHyp+GIaLWF8w7SNi43HgFhWntwiWUdoCi3LLp/6YX
- 9eRVaY67yjzQak2qnnKFdUbF89mtpIukPd0yOfwx+8dTY66gfQAlxf9gh+ELvDzi54QEzie8E
- NuseZ3vtDz97Mg1EUiJVcdr7p5LISIqO9NjJL5aJO7P4f+5sKRCuUcUeMqiYp3lxgG2Y3TaYD
- OMpqMm46aTAgLcWrfAJAaI4IVawPPAtOmjpwjEh3aKsH7fJH9VnEuIr5ui7XzfIvdm1n3rxH7
- FQJNh0DAyutoN03urgb1L0+/3R7SqdLmaMawXjr33YaZb3XRDi05HjQ8jlmD+8O2xReF1Tj9j
- sSpWFyrDenaW03qUryBuNSMop/ciniz+2R41+0O37XYtaXo9mcufrdEKo78eP51OVqs7ckVdm
- VPAikVpUmWum0xHXsDBAHY+J4OgI9ZCEtUsb6uZDmozUJfw0e1x0yFzgRgRh0kvVY9RYXUO3S
- RubJdcch73gfBZ3OQH1C/M4LpJkv4uUPVU48Xz6FtjYlUDnpAMmoQJ+CVD400Po1ooW0LbccS
- Uk2oumVBvpQt4c+N1fxj7TzhEZPOL/Fan1zGHWN9Ls+6K/agpVbhoLj/4Kf2XtuYlYZJvVYgp
- JpY2/AT5ubXZaT8LTzSFcE2pstkmtwcu7owoTRqoPINnZJuAngLl/fhRCbGl4S74hucXpFimz
- MrElOzWZ5z02Bt8ALA05xc/CTpDJh0iW7oThIakWSCIGdpiir8IN54VD1YBRft1U/gUMpRPlY
- ta6nlyA5X6ncGcB8J+wnHyqe/0Lzgp6Z2uiLO7dp5IUuW2o5LcRBm9U8pwfJCc2YHUB/MsGli
- Uh/Kf8dKjYJuYSrI5rvwTeBZtfy3UNJ1mqrM6uNpt8wQXj1nI4gUHwQkUkR9tJlRLa7EzMSV9
- kSKmE0X5qOY70LFsCJhEnGzNCQVzzBQvyLpAydONK3RSXMKmA/BY/y78BMj3HOIN+YVSDl0yA
- 73EvP2An6BrYwLmDva0JxtbPvqvct3+z/6crrvg8AcziHu6bQkylTDvsA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:APOjuqRMTrc=:nM5Kt/qB8uS3qJzGwYCbcx
+ lwb3T6hePb937MDHvWO9QqlIKUmhBdxLT0sexXV11BLP93zElXQEmAulVk/77wouMA0Ztac5J
+ jWZ42SUIsan2rkULWEZ3/tmdJMn3DfEfO5PywJFEM+9xHJ+wOlhel0ZeNEoDletqwshWMRI5f
+ QFRO1jCvsUY9VUmGb7JS9xI5HaTY920FR717Y1I4JgJPTk6zDlu470KcqVpdfiLX50g1t3JBn
+ ZMZJ3TedX9284HuemewaMKQo0ZVByXNeHBn1+Wv7xe6+XvqN68KxIfBMJA3bg7RfES0BMCjJ9
+ ly7DIUWhAxPJt1toluDy4EsVnV8FrDSZqNLq0kuhntHUkqCKCzn3/FUlbm+ixtfOYMfsdxZFl
+ Dca8t/lS1TB5s+c/iN6NHrk7NHZyiBUvUE5SBnh6UIYoSXmFW35hE/9tpbDZsoPycdxax7cYc
+ mJ3QDqZghtRZcmoOWhZvNc8/+BPAlirSpTIeebSafA2HR+4RXHr15rcL0vpQ/nKRex7z9Fg3c
+ i9sbrGghryhzNWwcfdQWmSO6ZhM7Srzv1233alZdRZbJjQjMWGkmeWXeQ9EMsPOK9SgT1G1Ar
+ E+iWI+gqBhMc+PjuXIca/99Tg7MFTdcGSPREPUqvkfwC0m21ns7jAKtOAl+wtzzkVxvHm90zx
+ 0tAUT596wtWiWzqXyieiG3oYKeHyx9+QwXNxaAaoGtp+ClJW84A+mqJ32bSW9tpupznTyoGaq
+ /CFGI7L/d9kLyvI6uPpMcjQ62TvvQz72CaZ6J8/qCzZNomY3hLO4Jht2B/+1J9qlaGxNRcsX2
+ jhfRBdvBkGufGSCIqI9Tcg6DXCMxW2CwLhNf+aJYQ64EqpgRHZyp9+UQxMEdcc1rWSWtYe3kA
+ CHqvuXMADmNAF4CCsT+M1cU1Flr4eozvNgEXSNWFXCGCc02RxRCX3pDm5MVteVHx4jW43f5si
+ zJmxAC47yJkq4l+62iaeHuFClv+z6CtxY1qcYGQ/iGnQE6dSjN91XI4X45bZurrQF4sfBkSP4
+ wAA2akPXENGupq7IcBYKhyWXhLwcF8lErnD16FD+MmadVnk19cnQ0VjkbsboUC7YDizEtkSCT
+ KLJxj5rIfPhLkkWS7yIXvEej/HuORlF58fZccmdDbBg2yH40d6+2fbR9g==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -65,109 +65,62 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/7/26 =E4=B8=8B=E5=8D=888:15, David Sterba wrote:
-> The device allocation is split to two functions, but one just calls the
-> other and they're very far in the file. Merge them together.
+> There are two helpers doing the same calculations based on nparity and
+> ncopies. calc_data_stripes can be simplified into one expression, so far
+> we don't have profile with both copies and parity, so there's no
+> effective change. calc_stripe_length should reuse the helper and not
+> repeat the same calculation.
 >
 > Signed-off-by: David Sterba <dsterba@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Thanks,
-Qu
+Just one nitpick inlined below.
 > ---
->   fs/btrfs/volumes.c | 66 ++++++++++++++++++----------------------------
->   1 file changed, 25 insertions(+), 41 deletions(-)
+>   fs/btrfs/volumes.c | 15 ++-------------
+>   1 file changed, 2 insertions(+), 13 deletions(-)
 >
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 19feb64586fc..d98e29556d79 100644
+> index d98e29556d79..78dd013d0ee3 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -430,44 +430,6 @@ void __exit btrfs_cleanup_fs_uuids(void)
->   	}
+> @@ -3567,10 +3567,7 @@ static u64 calc_data_stripes(u64 type, int num_st=
+ripes)
+>   	const int ncopies =3D btrfs_raid_array[index].ncopies;
+>   	const int nparity =3D btrfs_raid_array[index].nparity;
+>
+> -	if (nparity)
+> -		return num_stripes - nparity;
+> -	else
+> -		return num_stripes / ncopies;
+
+I would prefer an ASSERT() here to be extra sure.
+But it's my personal taste (and love for tons of ASSERT()).
+
+Thanks,
+Qu
+
+> +	return (num_stripes - nparity) / ncopies;
 >   }
 >
-> -/*
-> - * Returns a pointer to a new btrfs_device on success; ERR_PTR() on err=
-or.
-> - * Returned struct is not linked onto any lists and must be destroyed u=
-sing
-> - * btrfs_free_device.
-> - */
-> -static struct btrfs_device *__alloc_device(struct btrfs_fs_info *fs_inf=
-o)
-> -{
-> -	struct btrfs_device *dev;
-> -
-> -	dev =3D kzalloc(sizeof(*dev), GFP_KERNEL);
-> -	if (!dev)
-> -		return ERR_PTR(-ENOMEM);
-> -
-> -	/*
-> -	 * Preallocate a bio that's always going to be used for flushing devic=
-e
-> -	 * barriers and matches the device lifespan
-> -	 */
-> -	dev->flush_bio =3D bio_kmalloc(GFP_KERNEL, 0);
-> -	if (!dev->flush_bio) {
-> -		kfree(dev);
-> -		return ERR_PTR(-ENOMEM);
-> -	}
-> -
-> -	INIT_LIST_HEAD(&dev->dev_list);
-> -	INIT_LIST_HEAD(&dev->dev_alloc_list);
-> -	INIT_LIST_HEAD(&dev->post_commit_list);
-> -
-> -	atomic_set(&dev->reada_in_flight, 0);
-> -	atomic_set(&dev->dev_stats_ccnt, 0);
-> -	btrfs_device_data_ordered_init(dev);
-> -	INIT_RADIX_TREE(&dev->reada_zones, GFP_NOFS & ~__GFP_DIRECT_RECLAIM);
-> -	INIT_RADIX_TREE(&dev->reada_extents, GFP_NOFS & ~__GFP_DIRECT_RECLAIM)=
-;
-> -	extent_io_tree_init(fs_info, &dev->alloc_state,
-> -			    IO_TREE_DEVICE_ALLOC_STATE, NULL);
-> -
-> -	return dev;
-> -}
-> -
->   static noinline struct btrfs_fs_devices *find_fsid(
->   		const u8 *fsid, const u8 *metadata_fsid)
->   {
-> @@ -6856,9 +6818,31 @@ struct btrfs_device *btrfs_alloc_device(struct bt=
+>   /* [pstart, pend) */
+> @@ -6878,15 +6875,7 @@ static void btrfs_report_missing_device(struct bt=
 rfs_fs_info *fs_info,
->   	if (WARN_ON(!devid && !fs_info))
->   		return ERR_PTR(-EINVAL);
 >
-> -	dev =3D __alloc_device(fs_info);
-> -	if (IS_ERR(dev))
-> -		return dev;
-> +	dev =3D kzalloc(sizeof(*dev), GFP_KERNEL);
-> +	if (!dev)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	/*
-> +	 * Preallocate a bio that's always going to be used for flushing devic=
-e
-> +	 * barriers and matches the device lifespan
-> +	 */
-> +	dev->flush_bio =3D bio_kmalloc(GFP_KERNEL, 0);
-> +	if (!dev->flush_bio) {
-> +		kfree(dev);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> +
-> +	INIT_LIST_HEAD(&dev->dev_list);
-> +	INIT_LIST_HEAD(&dev->dev_alloc_list);
-> +	INIT_LIST_HEAD(&dev->post_commit_list);
-> +
-> +	atomic_set(&dev->reada_in_flight, 0);
-> +	atomic_set(&dev->dev_stats_ccnt, 0);
-> +	btrfs_device_data_ordered_init(dev);
-> +	INIT_RADIX_TREE(&dev->reada_zones, GFP_NOFS & ~__GFP_DIRECT_RECLAIM);
-> +	INIT_RADIX_TREE(&dev->reada_extents, GFP_NOFS & ~__GFP_DIRECT_RECLAIM)=
-;
-> +	extent_io_tree_init(fs_info, &dev->alloc_state,
-> +			    IO_TREE_DEVICE_ALLOC_STATE, NULL);
+>   static u64 calc_stripe_length(u64 type, u64 chunk_len, int num_stripes=
+)
+>   {
+> -	int index =3D btrfs_bg_flags_to_raid_index(type);
+> -	int ncopies =3D btrfs_raid_array[index].ncopies;
+> -	const int nparity =3D btrfs_raid_array[index].nparity;
+> -	int data_stripes;
+> -
+> -	if (nparity)
+> -		data_stripes =3D num_stripes - nparity;
+> -	else
+> -		data_stripes =3D num_stripes / ncopies;
+> +	const int data_stripes =3D calc_data_stripes(type, num_stripes);
 >
->   	if (devid)
->   		tmp =3D *devid;
+>   	return div_u64(chunk_len, data_stripes);
+>   }
 >
