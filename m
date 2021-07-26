@@ -2,63 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE1F3D5964
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 14:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926E63D5966
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 14:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbhGZLoP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jul 2021 07:44:15 -0400
-Received: from mout.gmx.net ([212.227.15.18]:44573 "EHLO mout.gmx.net"
+        id S233964AbhGZLos (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jul 2021 07:44:48 -0400
+Received: from mout.gmx.net ([212.227.15.15]:32857 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233968AbhGZLoO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:44:14 -0400
+        id S233819AbhGZLos (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:44:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627302281;
-        bh=nBA9MZPtlqVyFVIjCG3a5LVyvb9WzlgIWX5DivBaqd0=;
+        s=badeba3b8450; t=1627302315;
+        bh=63QOWAjUHi2jfYYLo+Y5BChDRAE33w5OcvlPFN5lQ+Q=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=lO4yN6jCUaQ9Wq3Q7RXSxscNA4R8LMZssQKY2jiYUeNTGqZzgqOmZlljTNaBTuH0Y
-         FGe90a1FjMI5Ce4qEC0Rs+rNKllTTBHWeIxq01czvRB1qJ3w3x6Kq7jUH5LMKQ16X+
-         3CjCDH2j7p7OYBVj6j8NnVT209a8OjpNhVrDDeNM=
+        b=NbUoxqlhxbbebIIjOZ1kY6MDvxDnh1ObhOssxIoEFkr9pL4bvE/OZVF4Ufe3OsKFQ
+         8wUQ9+GPj7pOXOSkzQNzZer7nYC4ik6e165HQIOLaeQOx19L7K2LSCC3NWHlNK9pQn
+         K/jGZKIuB1DxwY/4Brb2FxpV3fn+0nXyQyB1b5Yk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MsYqv-1lEe5D1srb-00u405; Mon, 26
- Jul 2021 14:24:41 +0200
-Subject: Re: [PATCH 02/10] btrfs: remove uptodate parameter from
- btrfs_dec_test_first_ordered_pending
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N49lD-1l8ZHH29Jp-0107ig; Mon, 26
+ Jul 2021 14:25:15 +0200
+Subject: Re: [PATCH 03/10] btrfs: make btrfs_next_leaf static inline
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1627300614.git.dsterba@suse.com>
- <2b01784d09b77a3209dda4284887271e1f8d434b.1627300614.git.dsterba@suse.com>
+ <23099d2508b778b3169926538cb495213db327a9.1627300614.git.dsterba@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <18e1ac39-480e-7d2c-0dbd-dd35dd55baf8@gmx.com>
-Date:   Mon, 26 Jul 2021 20:24:38 +0800
+Message-ID: <664be774-b187-90d1-d17f-390332ebf8fa@gmx.com>
+Date:   Mon, 26 Jul 2021 20:25:12 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <2b01784d09b77a3209dda4284887271e1f8d434b.1627300614.git.dsterba@suse.com>
+In-Reply-To: <23099d2508b778b3169926538cb495213db327a9.1627300614.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yTwb/OvtqTu2JF6WHzPu5q3ArPBEBzjywpBEeX1b2pyCLQpAKJ+
- MEA+SQAQw6hMslkL8FzULZOIgFyiA6KH7D86GnBs0TGND0kMEOgBHxR2ykynezN3rERfZcR
- EnGwK1s7py3VsY7mUfWzrlfsaNiclIe5p43jaBc30V065yHVOXBvwe00wbfNrovDNK05pyN
- qMucOMe+lQ/NwMXhtSgCg==
+X-Provags-ID: V03:K1:3QI7bu0wLD1FSBv5Un3s0UeMhr2ma3YvjDkoWfNQ0Ih35EwV4JH
+ lh9VeZcbsv6jl49AM8LjEAz563d1UFgukH56zSFm4QstMlXMHvl4MzFvYFjzGTgtPHMMUZj
+ wx6T7nbhg9s7vs+Bz/y3s1feNgsCN+xP62TPBJmSyQahBv/8DUKt+ZBjg52Rff0SsreujSu
+ Scv7JsaBAvsUFSoxg3CSQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bcMyh4DS0bQ=:Ba1wbdzHJWo4J/XsVbXNTs
- zEjTAt9Pn4+H99TbLfl+3qoX19RjpaEUuCAZYQ28s66C17Somqw24Z1AzropKUzvGXutbyrCH
- ldk1kruGqg2gKI/gVg2yeJlNcJD0o05ivOelKXFrUxNf9p5xgHxRyAQCg2T1qaA4G0HbIdKUp
- QFkLwnJDgTJD/x6Ztqqfo70HeudclhVae8qIXqCaC31VMxLAWf4NuebQdtaVuVO2u/pWr0q9J
- N2qVOz8fUSvvAqoYahR5B0ke5CfVuY+HO15qc5YN+LTGdvUm5fepLJ8Frq+vsTHI43cPgyLPb
- kACJryXvIhfS6NOF62Qc9fAr4/YDauMGE+eg8bVuFrSOXbrfNbzNYHf1B7fbnLxQrOFYxY08t
- cM26k3SWhnAcLRnhAAFuJgifQEUSRDz+yBomSbySp+z21Brs8IU83ATPJNBalkpj/IyQX6vub
- gYm8JtWp/S4Uf55cZmSbJ0EImvad+rW67H6qqA579LL1abxBTEgP9ALmRJ/HviX4dVDxUAP6Q
- reoG2SosjsvlHzCxruuJ0Z3zPv2/UbCvCpUxEVNi3DgXDDhwhtUFxTdupkbmh4Xcn3DBQUcrR
- ijMDTQ48P20HXDQO6AcpJWxwGlLZZx8q5Lu8yrLgji+Y7O7PhdQTntEUAuh42VvNdYaET+7C/
- pQkkv0hql5fmdgTbtPegb8pvMjfgu6zoLvMldxlRIk6IT249LzNmCKqJzfdfIXBoj/rQKtl6H
- dHgD5uYHCm2exPpaPs+FpxSHXo2QIvNOIBMGhIQh8513TSzEaH0YWyXC4tOTdVzGegWQbR3kf
- pXfQULR8k+gZNO37p7gD8joRpBzEBE3nVx05fAOVA5YWHO+6ADhxVrZ0iyqAWn508bCHmymD3
- Swn1NSu2y6tefDESxpd9jfBgFWDIFj23aU8vTswqRrJHDSLGHUm8Z6Ubex2aYVEKLO7XiN18E
- dJpnG58rQ0zBkgUrSWsMPgY4d5lwn103vDlJNRgE+wE5ePXKqdyF4J4AwXUIJuCdc8hbIRvwz
- 3jlJj/lcibLjcJvYhGWALXL3IzHPOqJhkcBz80JmTsXS43feTX72Zgv7OZrWtGbQk1arV6ear
- 6VPMMEhnyIFWMUBouURD83poCSKGWUGe2gPSd9HiAo2+7CkvgnbnDdw7Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fR5S2pbNW5w=:QZOt/ZCdv1897qDAIcDZJX
+ mVPG5ZQpfJAiXpoTcM6lBAYakt2ydV9ODe/lnFy0LjbksgacJLz3zVyAy9kYzOG9rERW1lY1+
+ 88R9oqVtI6RCOn0H92lnfTSKdU1Rn5D43jIujiBDK+tKlFzyeb+lXUV9c1bnkmjQR6hGatdhk
+ r+Zde5sCX0Ehu82Drpp5Hmwdt92wmfXBP7UUyhqsuZ0DicdEgOWbhz1qTGkZro8Q+oSTHus33
+ 2yZqtL+748yimx5KLwoagRTVixRNsA43xptQmTavAwWJg06/lFvmtw+KjpHwrExgR9+37ZLb+
+ 6IbwD5vMfo+VHqHtqGMB+++S45UawvP2AVVf5ZCf5LrUQml9HCrKb9vwszYY8cbAeZgRh/3Pv
+ rxLgEYbIP7KxkrTgPAp+hBa3AJ33wrdPtEMIiKoilRF/WiGsRBHQav1D4L1peb29xpm2KnL+K
+ Z5obsUQ8avGgE9TppnA7ZLBQWtKoaWirGRaZ39WWg/186Lf7IVPU+O8vYFVPKIU3gqQ2f5Wep
+ ykImQxkVSHeHCOyY6GJ2qnjDH/RXKlRhwUktxddENmbvtiT/wCWED0WwHefRaXi0/LNjL6B7g
+ RuLZVY3ILVxJBj+pX+2RQUbBAeLwEcEz8b31pu6tigFQAoJbzSNwVBzL1R/lueY87pq63x8lo
+ QuWaIZGh6rQpWwN5c1bqfjaBOTSY0evO3BXddeHIUZjonEu4jeuaj98d76t1100Ld1DPixbhD
+ 0cqz4PCG8khc2XKAIFUW/gtZz4EXe6WB3nKmxMpmrchBT8EIex7c273+Lr9oDtOT43mVKY5uV
+ xQEXU5EPRU/YU1RQ6HZTHNLKwIdQCVEKIVHNoLixo3Q03eL4lvnlcgzVVuehNfdqB/DOrmc1h
+ cBul80uRYz3LkgenBtttNfQA3OPUJzC1NGyyNp/+7kLDx9T+P8KsUg0n4zJsvBHPQ8bn8zw5k
+ ms4CBsMXVF3rkcbj6EhSrq2M8a/419OnotznvITQD2xO6FHj84MDcpPNAw4ZJRHBWqjpfkZhg
+ J37eUaD7OHJ544I26VTucAMkkJprQYP2xodPq4hCsgRNwNCx7dPXpa7wzybtyr8gf4AaAo19A
+ BbCqAczPOVP+X+1A3svyYPIyS2CQWnoxXRPJKLVdLRYJA7x/ExSJm/icw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -66,13 +65,8 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/7/26 =E4=B8=8B=E5=8D=888:15, David Sterba wrote:
-> In commit e65f152e4348 ("btrfs: refactor how we finish ordered extent io
-> for endio functions") there was last caller not using 1 for the uptodate
-> parameter. Now there's only one, passing 1, so we can remove it and
-> simplify the code.
-
-I should have noticed that...
-
+> btrfs_next_leaf is a simple wrapper for btrfs_next_old_leaf so move it
+> to header to avoid the function call overhead.
 >
 > Signed-off-by: David Sterba <dsterba@suse.com>
 
@@ -81,72 +75,68 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   fs/btrfs/inode.c        | 2 +-
->   fs/btrfs/ordered-data.c | 5 +----
->   fs/btrfs/ordered-data.h | 2 +-
->   3 files changed, 3 insertions(+), 6 deletions(-)
+>   fs/btrfs/ctree.c | 10 ----------
+>   fs/btrfs/ctree.h | 13 ++++++++++++-
+>   2 files changed, 12 insertions(+), 11 deletions(-)
 >
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 43b1393eec67..ba0bba9f5505 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -8554,7 +8554,7 @@ static void btrfs_invalidatepage(struct page *page=
-, unsigned int offset,
->   		spin_unlock_irq(&inode->ordered_tree.lock);
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 63c026495193..99b33a5b33c8 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -4357,16 +4357,6 @@ int btrfs_find_next_key(struct btrfs_root *root, =
+struct btrfs_path *path,
+>   	return 1;
+>   }
 >
->   		if (btrfs_dec_test_ordered_pending(inode, &ordered,
-> -					cur, range_end + 1 - cur, 1)) {
-> +						   cur, range_end + 1 - cur)) {
->   			btrfs_finish_ordered_io(ordered);
->   			/*
->   			 * The ordered extent has finished, now we're again
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 5c0f8481e25e..edb65abf0393 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -446,7 +446,6 @@ void btrfs_mark_ordered_io_finished(struct btrfs_ino=
-de *inode,
->    * 		 Will be also used to store the finished ordered extent.
->    * @file_offset: File offset for the finished IO
->    * @io_size:	 Length of the finish IO range
-> - * @uptodate:	 If the IO finishes without problem
->    *
->    * Return true if the ordered extent is finished in the range, and upd=
-ate
->    * @cached.
-> @@ -457,7 +456,7 @@ void btrfs_mark_ordered_io_finished(struct btrfs_ino=
-de *inode,
->    */
->   bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
->   				    struct btrfs_ordered_extent **cached,
-> -				    u64 file_offset, u64 io_size, int uptodate)
-> +				    u64 file_offset, u64 io_size)
+> -/*
+> - * search the tree again to find a leaf with greater keys
+> - * returns 0 if it found something or 1 if there are no greater leaves.
+> - * returns < 0 on io errors.
+> - */
+> -int btrfs_next_leaf(struct btrfs_root *root, struct btrfs_path *path)
+> -{
+> -	return btrfs_next_old_leaf(root, path, 0);
+> -}
+> -
+>   int btrfs_next_old_leaf(struct btrfs_root *root, struct btrfs_path *pa=
+th,
+>   			u64 time_seq)
 >   {
->   	struct btrfs_ordered_inode_tree *tree =3D &inode->ordered_tree;
->   	struct rb_node *node;
-> @@ -486,8 +485,6 @@ bool btrfs_dec_test_ordered_pending(struct btrfs_ino=
-de *inode,
->   		       entry->bytes_left, io_size);
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index a822404eeaee..04779e3d3ab5 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -2899,7 +2899,6 @@ static inline int btrfs_insert_empty_item(struct b=
+trfs_trans_handle *trans,
+>   	return btrfs_insert_empty_items(trans, root, path, key, &data_size, 1=
+);
+>   }
 >
->   	entry->bytes_left -=3D io_size;
-> -	if (!uptodate)
-> -		set_bit(BTRFS_ORDERED_IOERR, &entry->flags);
->
->   	if (entry->bytes_left =3D=3D 0) {
->   		/*
-> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-> index b2d88aba8420..4194e960ff61 100644
-> --- a/fs/btrfs/ordered-data.h
-> +++ b/fs/btrfs/ordered-data.h
-> @@ -177,7 +177,7 @@ void btrfs_mark_ordered_io_finished(struct btrfs_ino=
-de *inode,
->   				bool uptodate);
->   bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
->   				    struct btrfs_ordered_extent **cached,
-> -				    u64 file_offset, u64 io_size, int uptodate);
-> +				    u64 file_offset, u64 io_size);
->   int btrfs_add_ordered_extent(struct btrfs_inode *inode, u64 file_offse=
-t,
->   			     u64 disk_bytenr, u64 num_bytes, u64 disk_num_bytes,
->   			     int type);
+> -int btrfs_next_leaf(struct btrfs_root *root, struct btrfs_path *path);
+>   int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path);
+>   int btrfs_next_old_leaf(struct btrfs_root *root, struct btrfs_path *pa=
+th,
+>   			u64 time_seq);
+> @@ -2911,6 +2910,18 @@ static inline int btrfs_next_old_item(struct btrf=
+s_root *root,
+>   		return btrfs_next_old_leaf(root, p, time_seq);
+>   	return 0;
+>   }
+> +
+> +/*
+> + * Search the tree again to find a leaf with greater keys.
+> + *
+> + * Returns 0 if it found something or 1 if there are no greater leaves.
+> + * Returns < 0 on error.
+> + */
+> +static inline int btrfs_next_leaf(struct btrfs_root *root, struct btrfs=
+_path *path)
+> +{
+> +	return btrfs_next_old_leaf(root, path, 0);
+> +}
+> +
+>   static inline int btrfs_next_item(struct btrfs_root *root, struct btrf=
+s_path *p)
+>   {
+>   	return btrfs_next_old_item(root, p, 0);
 >
