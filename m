@@ -2,82 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1E53D57B3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 12:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0398A3D586A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 13:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbhGZKCS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jul 2021 06:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbhGZKCR (ORCPT
+        id S233240AbhGZKkj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jul 2021 06:40:39 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48194 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233143AbhGZKki (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 06:02:17 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC7CC061757
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jul 2021 03:42:45 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id h9so10743698ljq.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jul 2021 03:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=JNmzBtMgWgE+nmezwrn0LfWYM1hyPu75as3jzrxj76M=;
-        b=nqah0DLg2AulcGsXRCYerAS8P2j3CEoXcq4/AC5dMToiFIW7fx03uuheQdqoKzA3m8
-         1BfRpbawHAkOXYefGbJa1rWk/OrqLfLVJ7r4hj5M9flU5AChTWdkR/QYYY6tD1WXpfxh
-         /G49XNYleVuuUPMA9kT9meHvqQ1dSiYR8Sg/q2IVptGD17tIaAJcDb210q1C2m5YENFj
-         +80HX7dunw5/Lhii0+XLTEyih/7z3z9Mdfyz8ZttJAzLeMHVKvQumW2g6om81jv4k91Q
-         1PbaDqP8o+ZbM0c3g7offXxPDzeiyoM+cYgQA3pPOwmb7QcVoPypSy8zc1TUi7l4Ur4J
-         uBqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=JNmzBtMgWgE+nmezwrn0LfWYM1hyPu75as3jzrxj76M=;
-        b=gyrptkZ1pkmr7rbIkit3Z1RmrGmAuWL7aU/VctM0nSkUlKchwEqO8fgwaTjQWYV5+F
-         IuHZW09OVc6mHJQtb3BvaB7/PpNvmynOvOLcljxFEw5+JApjeVPPu6Hh5xCdCLFwJ5vg
-         ThmGjMOLYN86IofjIk6aaInEG+7M3moFXSh6VwpKjC5P2Wihkx7f+AMIG6Cs2Xoon2A8
-         7xvOfcAyv1fCmMTKiLcZM96rtYuSFOwcMudExnq9v4jJL+GZI2Te7pBhxJ57G9qaT3xt
-         3CMR8pMXxhVdG1hcfNe1scKrs5WHmN8FJ3Yp0ZiHYeMF8SbwMihnTcxj5zcoSKnz0fP2
-         JtgQ==
-X-Gm-Message-State: AOAM532NBykpMCKr+fz18gnlGu5gpafiM2IWkDwln+Cc2qEWq02T3r4a
-        bcEZtzgDICl/AzZ7X+fttqmcVjrozNn0VmMul3Y=
-X-Google-Smtp-Source: ABdhPJzvl1g2xFNYZ9gyAN/W2UmRuualtreWvJhDipWohyehxAPjERWzW/EMTbjq65YKU1eDRGhOGc9MuDORIUwnTHA=
-X-Received: by 2002:a05:651c:130f:: with SMTP id u15mr11849270lja.485.1627296163148;
- Mon, 26 Jul 2021 03:42:43 -0700 (PDT)
+        Mon, 26 Jul 2021 06:40:38 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id F231F21CBA;
+        Mon, 26 Jul 2021 11:21:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627298466;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QGVjpS7LYdJN3maugMA0rmF+5qQFoYyr4ug1pVSqoE0=;
+        b=vUaHiu/Gm90IRMofIgw+hgDF4gnCzfkKdJCmJkSN/bRluemHt/kpWMEIUl7Slyz+Jixawr
+        KUbfbCnTtb/wabee9zX85JoHB43l390rr0wfh3W8sboVWUvRlKagoz+BVAFAHYSJ1RnHtx
+        qfoAa0onpRj95BpEobGb1EUkD9IIDzw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627298466;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QGVjpS7LYdJN3maugMA0rmF+5qQFoYyr4ug1pVSqoE0=;
+        b=qz7sUB8x/dr1A7F8amL3Zl7BRWd9TucgdTfb5mqsBRPQpKnEAHGgh/bR+ejcUVQisJ4cNi
+        dB61RYsTqvvK31Cg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id E9FB7A4E3F;
+        Mon, 26 Jul 2021 11:21:06 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 31A21DA8CA; Mon, 26 Jul 2021 13:18:23 +0200 (CEST)
+Date:   Mon, 26 Jul 2021 13:18:23 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Sidong Yang <realwakka@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Su Yue <l@damenly.su>
+Subject: Re: [PATCH v2] btrfs-progs: cmds: Fix build for using NAME_MAX
+Message-ID: <20210726111822.GB5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Sidong Yang <realwakka@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Su Yue <l@damenly.su>
+References: <20210725152438.70213-1-realwakka@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6520:3357:b029:11e:67bf:33a2 with HTTP; Mon, 26 Jul 2021
- 03:42:42 -0700 (PDT)
-Reply-To: westernunion8289@zohomail.com
-From:   WESTERN UNION AGENT <atmofficepostofficesavingsacco@gmail.com>
-Date:   Mon, 26 Jul 2021 03:42:42 -0700
-Message-ID: <CAMXEuLVkT5ai-YfOMqMGPBv7FUoYtd-TErHPre+8UgZ-14C_xw@mail.gmail.com>
-Subject: WESTERN UNION AGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210725152438.70213-1-realwakka@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Attention,
+On Sun, Jul 25, 2021 at 03:24:38PM +0000, Sidong Yang wrote:
+> There is some code that using NAME_MAX but it doesn't include header
+> that is defined. This patch adds a line that includes linux/limits.h
+> which defines NAME_MAX.
+> 
+> Issue: #386
+> 
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
 
-We have deposited the cheque of your fund ($ 2.5 Million USD) through
-Western Union department Finally after our meeting Regarding your
-fund,  All you do is to contact Western Union director Dr.Ferdinand
-Umeh via Email ( westernunion8289@zohomail.com ) he will give you
-direction on how you will be receiving the Funds daily,
-
-Though,  Dr.Ferdinand Umeh has sent $ 5,000 through Western Union  in
-your name  today  so contact  Dr.Ferdinand Umeh as soon as you receive
-this email and tell him to give you the Mtcn, sender name and question
-/ answer to pick the $ 5000 and Please let us know as soon as you
-received all your fund.
-
-remember to send him your full information to avoid wrong transfer Such as,
-
-Receiver's Name _______________
-Address: ________________
-Country: _____________
-Phone Number: _____________
-Your email address _______________
-
-Best Regards.
-WESTERN UNION AGENT
+That was an easier than I thought, thanks. Verified by musl container
+build.
