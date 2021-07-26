@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56EC3D5333
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 08:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5D53D5334
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jul 2021 08:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhGZFy4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S231857AbhGZFy4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 26 Jul 2021 01:54:56 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35626 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbhGZFyx (ORCPT
+Received: from smtp-out1.suse.de ([195.135.220.28]:57320 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231820AbhGZFyy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 01:54:53 -0400
+        Mon, 26 Jul 2021 01:54:54 -0400
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0943F1FE45
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jul 2021 06:35:22 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 48E4021F10
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jul 2021 06:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627281322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1627281323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JAcQ0casqzCJ5UoA+wL8J0HdEMzj6C429jYwjFHMGF0=;
-        b=kaqwfyPto7GG10NzoXvNZglLAAc/KzJVf1GAHW/coJR8IrVTtmO7vUwcSN71djfdHxv5Sl
-        P5rLppz0a0YuDdJJv4CjSbiFaDq+l/6XVHkOExj1aC8iiF5KJmTzFKc5YLkDD0IM9NntI8
-        MQBiXTj3eLCexVZUEirDoxd4RuHE5gA=
+        bh=2mXTb/qj6s8bTEqo+yI8WqGrrNJJd9N/g5vPl7tlK2c=;
+        b=hIsVu43JlJtzRUvi8eYBQYcwWBDV+3gT+wQPqui+0QQzHVBL/fMzU/4GhFZM96NpYCU8uH
+        TEJI7lBiTyi6BB+lQaZOYM847mL0Jm92baDIQzuV7Q3hxD1+X7w6Gdl+sn/H08HuLICoFc
+        XJE9a8Lr1Ro0DUokJ7mEZbrIf8B5wVw=
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4009D1365C
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jul 2021 06:35:21 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7F20D1365C
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jul 2021 06:35:22 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id 4FChAKlX/mCXBQAAGKfGzw
+        id 2FoIEKpX/mCXBQAAGKfGzw
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jul 2021 06:35:21 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jul 2021 06:35:22 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v8 08/18] btrfs: make relocate_one_page() to handle subpage case
-Date:   Mon, 26 Jul 2021 14:34:57 +0800
-Message-Id: <20210726063507.160396-9-wqu@suse.com>
+Subject: [PATCH v8 09/18] btrfs: fix wild subpage writeback which does not have ordered extent.
+Date:   Mon, 26 Jul 2021 14:34:58 +0800
+Message-Id: <20210726063507.160396-10-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726063507.160396-1-wqu@suse.com>
 References: <20210726063507.160396-1-wqu@suse.com>
@@ -52,209 +52,148 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For subpage case, one page of data reloc inode can contain several file
-extents, like this:
+[BUG]
+When running fsstress with subpage RW support, there are random
+BUG_ON()s triggered with the following trace:
 
-|<--- File extent A --->| FE B | FE C |<--- File extent D -->|
-		|<--------- Page --------->|
+ kernel BUG at fs/btrfs/file-item.c:667!
+ Internal error: Oops - BUG: 0 [#1] SMP
+ CPU: 1 PID: 3486 Comm: kworker/u13:2 5.11.0-rc4-custom+ #43
+ Hardware name: Radxa ROCK Pi 4B (DT)
+ Workqueue: btrfs-worker-high btrfs_work_helper [btrfs]
+ pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+ pc : btrfs_csum_one_bio+0x420/0x4e0 [btrfs]
+ lr : btrfs_csum_one_bio+0x400/0x4e0 [btrfs]
+ Call trace:
+  btrfs_csum_one_bio+0x420/0x4e0 [btrfs]
+  btrfs_submit_bio_start+0x20/0x30 [btrfs]
+  run_one_async_start+0x28/0x44 [btrfs]
+  btrfs_work_helper+0x128/0x1b4 [btrfs]
+  process_one_work+0x22c/0x430
+  worker_thread+0x70/0x3a0
+  kthread+0x13c/0x140
+  ret_from_fork+0x10/0x30
 
-We can no longer use PAGE_SIZE directly for various operations.
+[CAUSE]
+Above BUG_ON() means there are some bio range which doesn't have ordered
+extent, which indeed is worthy a BUG_ON().
 
-This patch will relocate_one_page() to handle subpage case by:
-- Iterating through all extents of a cluster when marking pages
-  When marking pages dirty and delalloc, we need to check the cluster
-  extent boundary.
-  Now we introduce a loop to go extent by extent of a page, until we
-  either finished the last extent, or reach the page end.
+Unlike regular sectorsize == PAGE_SIZE case, in subpage we have extra
+subpage dirty bitmap to record which range is dirty and should be
+written back.
 
-  By this, regular sectorsize == PAGE_SIZE can still work as usual, since
-  we will do that loop only once.
+This means, if we submit bio for a subpage range, we do not only need to
+clear page dirty, but also need to clear subpage dirty bits.
 
-- Iteration start from max(page_start, extent_start)
-  Since we can have the following case:
-			| FE B | FE C |<--- File extent D -->|
-		|<--------- Page --------->|
-  Thus we can't always start from page_start, but do a
-  max(page_start, extent_start)
+In __extent_writepage_io(), we will call btrfs_page_clear_dirty() for
+any range we submit a bio.
 
-- Iteration end when the cluster is exhausted
-  Similar to previous case, the last file extent can end before the page
-  end:
-|<--- File extent A --->| FE B | FE C |
-		|<--------- Page --------->|
-  In this case, we need to manually exit the loop after we have finished
-  the last extent of the cluster.
+But there is loophole, if we hit a range which is beyond isize, we just
+call btrfs_writepage_endio_finish_ordered() to finish the ordered io,
+then break out, without clearing the subpage dirty.
 
-- Reserve metadata space for each extent range
-  Since now we can hit multiple ranges in one page, we should reserve
-  metadata for each range, not simply PAGE_SIZE.
+This means, if we hit above branch, the subpage dirty bits are still
+there, if other range of the page get dirtied and we need to writeback
+that page again, we will submit bio for the old range, leaving a wild
+bio range which doesn't have ordered extent.
+
+[FIX]
+Fix it by always calling btrfs_page_clear_dirty() in
+__extent_writepage_io().
+
+Also to avoid such problem from happening again, add a new assert,
+btrfs_page_assert_not_dirty(), to make sure both page dirty and subpage
+dirty bits are cleared before exiting __extent_writepage_io().
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/relocation.c | 108 ++++++++++++++++++++++++++++++------------
- 1 file changed, 79 insertions(+), 29 deletions(-)
+ fs/btrfs/extent_io.c | 17 +++++++++++++++++
+ fs/btrfs/subpage.c   | 16 ++++++++++++++++
+ fs/btrfs/subpage.h   |  7 +++++++
+ 3 files changed, 40 insertions(+)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 9353fbc1a07c..72ffeb34b92b 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -24,6 +24,7 @@
- #include "block-group.h"
- #include "backref.h"
- #include "misc.h"
-+#include "subpage.h"
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index a834ba61a729..a0e9af49a74f 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3865,6 +3865,16 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 		if (cur >= i_size) {
+ 			btrfs_writepage_endio_finish_ordered(inode, page, cur,
+ 							     end, 1);
++			/*
++			 * This range is beyond isize, thus we don't need to
++			 * bother writing back.
++			 * But we still need to clear the dirty subpage bit, or
++			 * the next time the page get dirtied, we will try to
++			 * writeback the sectors with subpage diryt bits,
++			 * causing writeback without ordered extent.
++			 */
++			btrfs_page_clear_dirty(fs_info, page, cur,
++					       end + 1 - cur);
+ 			break;
+ 		}
  
- /*
-  * Relocation overview
-@@ -2886,6 +2887,17 @@ noinline int btrfs_should_cancel_balance(struct btrfs_fs_info *fs_info)
- }
- ALLOW_ERROR_INJECTION(btrfs_should_cancel_balance, TRUE);
- 
-+static u64 get_cluster_boundary_end(struct file_extent_cluster *cluster,
-+				    int cluster_nr)
-+{
-+	/* Last extent, use cluster end directly */
-+	if (cluster_nr >= cluster->nr - 1)
-+		return cluster->end;
-+
-+	/* Use next boundary start*/
-+	return cluster->boundary[cluster_nr + 1] - 1;
-+}
-+
- static int relocate_one_page(struct inode *inode, struct file_ra_state *ra,
- 			     struct file_extent_cluster *cluster,
- 			     int *cluster_nr, unsigned long page_index)
-@@ -2897,22 +2909,17 @@ static int relocate_one_page(struct inode *inode, struct file_ra_state *ra,
- 	struct page *page;
- 	u64 page_start;
- 	u64 page_end;
-+	u64 cur;
- 	int ret;
- 
- 	ASSERT(page_index <= last_index);
--	ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode), PAGE_SIZE);
--	if (ret)
--		return ret;
--
- 	page = find_lock_page(inode->i_mapping, page_index);
- 	if (!page) {
- 		page_cache_sync_readahead(inode->i_mapping, ra, NULL,
- 				page_index, last_index + 1 - page_index);
- 		page = find_or_create_page(inode->i_mapping, page_index, mask);
--		if (!page) {
--			ret = -ENOMEM;
--			goto release_delalloc;
--		}
-+		if (!page)
-+			return -ENOMEM;
+@@ -3915,6 +3925,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 			else
+ 				btrfs_writepage_endio_finish_ordered(inode,
+ 						page, cur, cur + iosize - 1, 1);
++			btrfs_page_clear_dirty(fs_info, page, cur, iosize);
+ 			cur += iosize;
+ 			continue;
+ 		}
+@@ -3950,6 +3961,12 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 		cur += iosize;
+ 		nr++;
  	}
- 	ret = set_page_extent_mapped(page);
- 	if (ret < 0)
-@@ -2934,30 +2941,76 @@ static int relocate_one_page(struct inode *inode, struct file_ra_state *ra,
- 	page_start = page_offset(page);
- 	page_end = page_start + PAGE_SIZE - 1;
- 
--	lock_extent(&BTRFS_I(inode)->io_tree, page_start, page_end);
--
--	if (*cluster_nr < cluster->nr &&
--	    page_start + offset == cluster->boundary[*cluster_nr]) {
--		set_extent_bits(&BTRFS_I(inode)->io_tree, page_start, page_end,
--				EXTENT_BOUNDARY);
--		(*cluster_nr)++;
--	}
 +	/*
-+	 * Start from the cluster, as for subpage case, the cluster can start
-+	 * inside the page.
++	 * If we finishes without problem, we should not only clear page dirty,
++	 * but also emptied subpage dirty bits
 +	 */
-+	cur = max(page_start, cluster->boundary[*cluster_nr] - offset);
-+	while (cur <= page_end) {
-+		u64 extent_start = cluster->boundary[*cluster_nr] - offset;
-+		u64 extent_end = get_cluster_boundary_end(cluster,
-+						*cluster_nr) - offset;
-+		u64 clamped_start = max(page_start, extent_start);
-+		u64 clamped_end = min(page_end, extent_end);
-+		u32 clamped_len = clamped_end + 1 - clamped_start;
-+
-+		/* Reserve metadata for this range */
-+		ret = btrfs_delalloc_reserve_metadata(BTRFS_I(inode),
-+						      clamped_len);
-+		if (ret)
-+			goto release_page;
- 
--	ret = btrfs_set_extent_delalloc(BTRFS_I(inode), page_start, page_end,
--					0, NULL);
--	if (ret) {
--		clear_extent_bits(&BTRFS_I(inode)->io_tree, page_start,
--				  page_end, EXTENT_LOCKED | EXTENT_BOUNDARY);
--		goto release_page;
-+		/* Mark the range delalloc and dirty for later writeback */
-+		lock_extent(&BTRFS_I(inode)->io_tree, clamped_start,
-+				clamped_end);
-+		ret = btrfs_set_extent_delalloc(BTRFS_I(inode), clamped_start,
-+				clamped_end, 0, NULL);
-+		if (ret) {
-+			clear_extent_bits(&BTRFS_I(inode)->io_tree,
-+					clamped_start, clamped_end,
-+					EXTENT_LOCKED | EXTENT_BOUNDARY);
-+			btrfs_delalloc_release_metadata(BTRFS_I(inode),
-+							clamped_len, true);
-+			btrfs_delalloc_release_extents(BTRFS_I(inode),
-+							clamped_len);
-+			goto release_page;
-+		}
-+		btrfs_page_set_dirty(fs_info, page, clamped_start, clamped_len);
- 
-+		/*
-+		 * Set the boundary if it's inside the page.
-+		 * Data relocation requires the destination extents have the
-+		 * same size as the source.
-+		 * EXTENT_BOUNDARY bit prevent current extent from being merged
-+		 * with previous extent.
-+		 */
-+		if (in_range(cluster->boundary[*cluster_nr] - offset,
-+			     page_start, PAGE_SIZE)) {
-+			u64 boundary_start = cluster->boundary[*cluster_nr] -
-+						offset;
-+			u64 boundary_end = boundary_start +
-+					   fs_info->sectorsize - 1;
-+
-+			set_extent_bits(&BTRFS_I(inode)->io_tree,
-+					boundary_start, boundary_end,
-+					EXTENT_BOUNDARY);
-+		}
-+		unlock_extent(&BTRFS_I(inode)->io_tree, clamped_start,
-+			      clamped_end);
-+		btrfs_delalloc_release_extents(BTRFS_I(inode), clamped_len);
-+		cur += clamped_len;
-+
-+		/* Crossed extent end, go to next extent */
-+		if (cur >= extent_end) {
-+			(*cluster_nr)++;
-+			/* Just finished the last extent of the cluster, exit. */
-+			if (*cluster_nr >= cluster->nr)
-+				break;
-+		}
- 	}
--	set_page_dirty(page);
--
--	unlock_extent(&BTRFS_I(inode)->io_tree, page_start, page_end);
- 	unlock_page(page);
- 	put_page(page);
- 
--	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
- 	balance_dirty_pages_ratelimited(inode->i_mapping);
- 	btrfs_throttle(fs_info);
- 	if (btrfs_should_cancel_balance(fs_info))
-@@ -2967,9 +3020,6 @@ static int relocate_one_page(struct inode *inode, struct file_ra_state *ra,
- release_page:
- 	unlock_page(page);
- 	put_page(page);
--release_delalloc:
--	btrfs_delalloc_release_metadata(BTRFS_I(inode), PAGE_SIZE, true);
--	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
++	if (!ret)
++		btrfs_page_assert_not_dirty(fs_info, page);
+ 	*nr_ret = nr;
  	return ret;
  }
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 640bcd21bf28..b2bad9a0295f 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -559,3 +559,19 @@ IMPLEMENT_BTRFS_PAGE_OPS(writeback, set_page_writeback, end_page_writeback,
+ 			 PageWriteback);
+ IMPLEMENT_BTRFS_PAGE_OPS(ordered, SetPageOrdered, ClearPageOrdered,
+ 			 PageOrdered);
++
++void btrfs_page_assert_not_dirty(const struct btrfs_fs_info *fs_info,
++				 struct page *page)
++{
++	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
++
++	if (!IS_ENABLED(CONFIG_BTRFS_ASSERT))
++		return;
++
++	ASSERT(!PageDirty(page));
++	if (fs_info->sectorsize == PAGE_SIZE)
++		return;
++
++	ASSERT(PagePrivate(page) && page->private);
++	ASSERT(subpage->dirty_bitmap == 0);
++}
+diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+index 4d7aca85d915..9aa40d795ba9 100644
+--- a/fs/btrfs/subpage.h
++++ b/fs/btrfs/subpage.h
+@@ -126,4 +126,11 @@ DECLARE_BTRFS_SUBPAGE_OPS(ordered);
+ bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
+ 		struct page *page, u64 start, u32 len);
  
++/*
++ * Extra assert to make sure not only the page dirty bit is cleared, but also
++ * subpage dirty bit is cleared.
++ */
++void btrfs_page_assert_not_dirty(const struct btrfs_fs_info *fs_info,
++				 struct page *page);
++
+ #endif
 -- 
 2.32.0
 
