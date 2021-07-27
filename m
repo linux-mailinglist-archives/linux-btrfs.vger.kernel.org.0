@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CBC3D8355
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 00:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336B53D833B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 00:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbhG0Wnx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 18:43:53 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57312 "EHLO
+        id S232986AbhG0WnH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 18:43:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57124 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbhG0Wnv (ORCPT
+        with ESMTP id S232810AbhG0WnF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 18:43:51 -0400
+        Tue, 27 Jul 2021 18:43:05 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1EA5922236;
-        Tue, 27 Jul 2021 22:43:50 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 00CDC21E78;
+        Tue, 27 Jul 2021 22:43:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627425830; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1627425784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Lm7XB6jR4TjnMiZxavOOo4KztvJwCpv6U5v30F4iOGM=;
-        b=Ruy1UKS5MFYt+ikokL5kri3piAU9UYkgt7PEvOrIsLbHcZEhZllORnWezNvk6A7RB2slTd
-        czUkBE/KdhHqx80je46krijH743QwxUO//XKIMczIEOYKqUVKvew5wyS/K6+UjgI/QVUR1
-        HBC/U3YHjy7EAMZ+CFb3fC4ovhW+teg=
+        bh=0TpbPbKdpPuBJzOYDLGprabdAvWGnrm1h37EgRsFnts=;
+        b=nL3M6YWdd6o/ZyD521zO3PjVfu0MTzCsWfh5OhGkhN+KcPtsm7tK6ucvRHtwju5ekFeADP
+        8VOhZduis4H2FoVdVUGFqcb/2iWKNHpSknpDOKR1qiyrsY60T7v7yJY90My65vOmYcvRjO
+        XgoiDdNrdPjliyJXcZTC6eovo4jU+aE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627425830;
+        s=susede2_ed25519; t=1627425784;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Lm7XB6jR4TjnMiZxavOOo4KztvJwCpv6U5v30F4iOGM=;
-        b=OEAQvFW1Q330kWqehW6WoRxhd+EvDE7JGKS4U7ymQgJuDbfwBYnCZH1J+uTMJagralu77U
-        MOpBbC8+su+CkhAw==
+        bh=0TpbPbKdpPuBJzOYDLGprabdAvWGnrm1h37EgRsFnts=;
+        b=CZzlkIxkHsCqWkUwj+ehsgFgw7bBL5VYd774t4FPisdItlI2nO0Krq1bvu+lubYsJBh0kb
+        8RxuZBklBv4lCnDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3ABFD13A5D;
-        Tue, 27 Jul 2021 22:43:46 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1FA2313A5D;
+        Tue, 27 Jul 2021 22:43:00 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id hGaHOiKMAGHnVQAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 27 Jul 2021 22:43:46 +0000
-Subject: [PATCH 10/11] btrfs: introduce mapping function from location to inum
+        id 2DnzM/SLAGGsVQAAMHmgww
+        (envelope-from <neilb@suse.de>); Tue, 27 Jul 2021 22:43:00 +0000
+Subject: [PATCH 04/11] VFS: export lookup_mnt()
 From:   NeilBrown <neilb@suse.de>
 To:     Christoph Hellwig <hch@infradead.org>,
         Josef Bacik <josef@toxicpanda.com>,
@@ -57,7 +57,7 @@ To:     Christoph Hellwig <hch@infradead.org>,
 Cc:     linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
         linux-btrfs@vger.kernel.org
 Date:   Wed, 28 Jul 2021 08:37:45 +1000
-Message-ID: <162742546557.32498.956193040064011710.stgit@noble.brown>
+Message-ID: <162742546551.32498.5847026750506620683.stgit@noble.brown>
 In-Reply-To: <162742539595.32498.13687924366155737575.stgit@noble.brown>
 References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -68,67 +68,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A btrfs directory entry can refer to two different sorts of objects
-
- BTRFS_INODE_ITEM_KEY - a regular fs object (file, dir, etc)
- BTRFS_ROOT_ITEM_KEY  - a reference to a subvol.
-
-The 'objectid' numbers for these two are independent, so it is possible
-(and common) for an INODE and a ROOT to have the same objectid.
-
-As readdir reports the objectid as the inode number, if two such are in
-the same directory, a tool which examines the inode numbers in getdents
-results could think they are links.
-
-As the BTRFS_ROOT_ITEM_KEY objectid is not visible via stat() (only
-getdents), this is rarely if ever a problem.  However a future patch
-will expose this number as the i_ino of an automount point.  This will
-cause problems if the objectid is used as-is.
-
-So: create a simple mapping function to reduce (or eliminate?) the
-possibility of conflict.  The objectid of BTRFS_ROOT_ITEM_KEY is
-subtracted from ULONG_MAX to make an inode number.
+In order to support filehandle lookup in filesystems with internal
+mounts (multiple subvols in the one filesystem) reconnect_path() in
+exportfs will need to find out if a given dentry is already mounted.
+This can be done with the function lookup_mnt(), so export that to make
+it available.
 
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- fs/btrfs/btrfs_inode.h |   10 ++++++++++
- fs/btrfs/inode.c       |    3 ++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ fs/internal.h         |    1 -
+ fs/namespace.c        |    1 +
+ include/linux/mount.h |    2 ++
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index c652e19ad74e..a4b5f38196e6 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -328,6 +328,16 @@ static inline bool btrfs_inode_in_log(struct btrfs_inode *inode, u64 generation)
- 	return ret;
- }
+diff --git a/fs/internal.h b/fs/internal.h
+index 3ce8edbaa3ca..0feb2722d2e5 100644
+--- a/fs/internal.h
++++ b/fs/internal.h
+@@ -81,7 +81,6 @@ int do_renameat2(int olddfd, struct filename *oldname, int newdfd,
+ /*
+  * namespace.c
+  */
+-extern struct vfsmount *lookup_mnt(const struct path *);
+ extern int finish_automount(struct vfsmount *, struct path *);
  
-+static inline unsigned long btrfs_location_to_ino(struct btrfs_key *location)
-+{
-+	if (location->type == BTRFS_INODE_ITEM_KEY)
-+		return location->objectid;
-+	/* Probably BTRFS_ROOT_ITEM_KEY, try to keep the inode
-+	 * numbers separate.
-+	 */
-+	return ULONG_MAX - location->objectid;
-+}
+ extern int sb_prepare_remount_readonly(struct super_block *);
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 81b0f2b2e701..73bbdb921e24 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -662,6 +662,7 @@ struct vfsmount *lookup_mnt(const struct path *path)
+ 	rcu_read_unlock();
+ 	return m;
+ }
++EXPORT_SYMBOL(lookup_mnt);
+ 
+ static inline void lock_ns_list(struct mnt_namespace *ns)
+ {
+diff --git a/include/linux/mount.h b/include/linux/mount.h
+index 5d92a7e1a742..1d3daed88f83 100644
+--- a/include/linux/mount.h
++++ b/include/linux/mount.h
+@@ -118,6 +118,8 @@ extern unsigned int sysctl_mount_max;
+ 
+ extern bool path_is_mountpoint(const struct path *path);
+ 
++extern struct vfsmount *lookup_mnt(const struct path *);
 +
- struct btrfs_dio_private {
- 	struct inode *inode;
- 	u64 logical_offset;
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 8f60314c36c5..02537c1a9763 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6136,7 +6136,8 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
- 		put_unaligned(fs_ftype_to_dtype(btrfs_dir_type(leaf, di)),
- 				&entry->type);
- 		btrfs_dir_item_key_to_cpu(leaf, di, &location);
--		put_unaligned(location.objectid, &entry->ino);
-+		put_unaligned(btrfs_location_to_ino(&location),
-+			      &entry->ino);
- 		put_unaligned(found_key.offset, &entry->offset);
- 		entries++;
- 		addr += sizeof(struct dir_entry) + name_len;
+ extern void kern_unmount_array(struct vfsmount *mnt[], unsigned int num);
+ 
+ #endif /* _LINUX_MOUNT_H */
 
 
