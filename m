@@ -2,83 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183B13D788C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 16:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6D93D7923
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 16:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236856AbhG0Oc5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 10:32:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232123AbhG0Oc4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 10:32:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8053603E7;
-        Tue, 27 Jul 2021 14:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627396376;
-        bh=P+J3nIURP3B0hGzMIl54oyj1L6/yl7CDmXAm5X+Upx8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mrlGqwmpjfPpgIzgTRGvv8csrCB9SF7IAeAXSl4PoYy4iHOL8O7IQYDa4eZu4E+7C
-         1OaUNt7sGa++izEvGezUm4A51hFgnFq/otisMzdmjNXAX54GLwKWj5K/orOK2B6S1v
-         XglpIa8SNerVvNFX5K5SD/TrRB+AvsU3281uQ1BiTC6o4EXW3QZJCVVCJ33pM+NlJm
-         L3VPYLxHOsKcEElZIdokwaqGoub+L6oWy+apXEDlQpMVQj7k7qbq0hXCQmhVKpiKtO
-         v+lwBnYgi/S5VV0CcbVlTi3CTNmvbAJrktYncwHyG+GYNgGiXBwuqtUsZX8lH/OQdw
-         uHMmFHkU98lMA==
-Date:   Tue, 27 Jul 2021 07:32:56 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
-        cluster-devel@redhat.com
-Subject: Re: [PATCH 16/27] iomap: switch iomap_bmap to use iomap_iter
-Message-ID: <20210727143256.GC559142@magnolia>
-References: <20210719103520.495450-1-hch@lst.de>
- <20210719103520.495450-17-hch@lst.de>
- <20210719170545.GF22402@magnolia>
- <20210726081942.GD14853@lst.de>
- <20210726163922.GA559142@magnolia>
- <20210727063138.GA10143@lst.de>
+        id S232643AbhG0Ozb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 10:55:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51564 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231552AbhG0Oza (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Jul 2021 10:55:30 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E394522198;
+        Tue, 27 Jul 2021 14:46:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627397213;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wtXdwMjMyP4WAU9I4sJHOJCU4RjIAg+ii9xInTrnyXE=;
+        b=1JIzNiiGjXWFxxIr6vgo5gzz1QYeT1xjjuHw8s8+6ubMkof0cfBQ0WKnIjF9wCUUqvT78X
+        /PO3kXO2yeBdb7yOZhKgctoOfKG0PFQjLgC0htgri9+MBD5nbNR5bErug15mqndLwtqtOX
+        UDzOuNm8d5Xi1TqanTsROpnIn/Colgo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627397213;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wtXdwMjMyP4WAU9I4sJHOJCU4RjIAg+ii9xInTrnyXE=;
+        b=hb3EzYrB+pMg3n0HghbYGMZRcUGNvvefx+yocu5nXhgkMFXD6T6ZFoj48NZWzqBjREWupK
+        /0/pcwH7X5olUJAg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id DC466A3B85;
+        Tue, 27 Jul 2021 14:46:53 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8A8F4DA8CC; Tue, 27 Jul 2021 16:44:09 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 16:44:09 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 10/10] btrfs: add and use simple page/bio to
+ inode/fs_info helpers
+Message-ID: <20210727144409.GS5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1627300614.git.dsterba@suse.com>
+ <4d3594dcca4dd8a8e58b134409922c2787b6a757.1627300614.git.dsterba@suse.com>
+ <6cac34b2-39ba-f344-d601-b78a3f0c7698@gmx.com>
+ <20210726150953.GG5047@twin.jikos.cz>
+ <cc110ee1-c1bf-2b83-b5db-f70468b159f7@gmx.com>
+ <20210727084552.GK5047@twin.jikos.cz>
+ <aee4baab-b288-0520-545e-f1c28cac3e09@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210727063138.GA10143@lst.de>
+In-Reply-To: <aee4baab-b288-0520-545e-f1c28cac3e09@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 08:31:38AM +0200, Christoph Hellwig wrote:
-> On Mon, Jul 26, 2021 at 09:39:22AM -0700, Darrick J. Wong wrote:
-> > The documentation needs to be much more explicit about the fact that you
-> > cannot "break;" your way out of an iomap_iter loop.  I think the comment
-> > should be rewritten along these lines:
-> > 
-> > "Iterate over filesystem-provided space mappings for the provided file
-> > range.  This function handles cleanup of resources acquired for
-> > iteration when the filesystem indicates there are no more space
-> > mappings, which means that this function must be called in a loop that
-> > continues as long it returns a positive value.  If 0 or a negative value
-> > is returned, the caller must not return to the loop body.  Within a loop
-> > body, there are two ways to break out of the loop body: leave
-> > @iter.processed unchanged, or set it to the usual negative errno."
-> > 
-> > Hm.
+On Tue, Jul 27, 2021 at 05:42:10PM +0800, Qu Wenruo wrote:
+> >    ({ ASSERT(page); ASSERT(page->mapping); page->mapping->host; })
 > 
-> Yes, I'll update the documentation.
-
-Ok, thanks!
-
-> > Clunky, for sure, but at least we still get to use break as the language
-> > designers intended.
+> ASSERT(page) is not needed.
 > 
-> I can't see any advantage there over just proper documentation.  If you
-> are totally attached to a working break we might have to come up with
-> a nasty for_each macro that ensures we have a final iomap_apply, but I
-> doubt it is worth the effort.
+> ASSERT(page->mapping) is what I think is necessary.
+> 
+> With something like ({ ASSERT(page); page->mapping->host; }), it still 
+> looks fine to me.
 
-I was pushing the explicit _break() function as a means to avoid an even
-fuglier loop macro.
+Ok, let's do that.
 
---D
+> > Or perhaps also page with a temporary variable to avoid multiple
+> > evaluations.
+> > 
+> > The helpers are used in a handful of places, if we really care about
+> > consistency of the assertions, something like assert_page_ok(page) would
+> > have to be in each function that gets the page from other subsystems.
+> > 
+> 
+> The call site that should really be concerned is compression, which 
+> utilize anonymous pages, along with cached pages.
+> (Scrub is another case, but scrub never mix cached pages with anonymous, 
+> thus it's less a concern)
+> 
+> In fact, during subpage compression development, I have already exposed 
+> several locations where we are trying to pass anonymous page with 
+> manually populated page->i_mapping.
+> 
+> Thus I'm sensitive to this problem.
+> 
+> So far in your code, it's not touching compression code, thus it's fine 
+> for now.
+> 
+> But it's just a problem of time before next refactor to use this macros 
+> for compression code.
+> 
+> Without proper ASSERT(), it's super easy to cause problems IMHO.
+
+Ok then.
