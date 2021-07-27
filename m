@@ -2,178 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E3C3D8348
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 00:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CB73D832C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 00:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhG0Wnh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 18:43:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54054 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232449AbhG0Wnh (ORCPT
+        id S232376AbhG0Wme (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 18:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232198AbhG0Wmd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 18:43:37 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 767CC1FF31;
-        Tue, 27 Jul 2021 22:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627425815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Vs3Pylsgp5mwqAihPx4If4U0ooiHOgHgod8MkA49/Q=;
-        b=1imyhpcQPAElE++MT1bROHAJ2lTK3+5vRY8kRdiflawAsfgMVAvxfhBm/z4RrWSLyZNyuM
-        VRUeU0HW0l0asfs/VrDtVik6+V4UtClsgesqbCP8JstiBrzlllW8PWrdMtxDARVxcm6xRP
-        LGIiA4zW10+jtIhYRkYGQ3nKYTkR9/w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627425815;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Vs3Pylsgp5mwqAihPx4If4U0ooiHOgHgod8MkA49/Q=;
-        b=/Zf8YFdWKv+6CsF5e9OCySNWlNamfX/vsFct8llyCkILATrZ4U9GB7XtT+udmdEcdRDUN/
-        WSxZriRMjkfbcZDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 890E213A5D;
-        Tue, 27 Jul 2021 22:43:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ErgmEhSMAGHaVQAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 27 Jul 2021 22:43:32 +0000
-Subject: [PATCH 08/11] nfsd: change get_parent_attributes() to
- nfsd_get_mounted_on()
-From:   NeilBrown <neilb@suse.de>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Date:   Wed, 28 Jul 2021 08:37:45 +1000
-Message-ID: <162742546555.32498.13169105043649293291.stgit@noble.brown>
-In-Reply-To: <162742539595.32498.13687924366155737575.stgit@noble.brown>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
-User-Agent: StGit/0.23
+        Tue, 27 Jul 2021 18:42:33 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111DAC061757
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 15:42:32 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id c18so401323qke.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 15:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=EuQy9FmoDBhP7VkeXtGebfxPuZn/XxiAgXAw1fibXY0=;
+        b=UNHD9I3Y8JqvKQBW8rHd3VN8ov0La7GhTy93zV4W6X9yOVgxIw3gAVrTh4aAJH0Ogt
+         HWmXEhWK5xPlXlW6odB4nz56EZqWhqmsjkkTdEZpUE64FTO/rz61/tlxRDRr9ZfmFhf4
+         ItBEp95iH9yvVqYVE37QF5cPY8rd2SJeOeP8kicw5nezg8wJyC+PiBcaQfiz5Ixb4h/v
+         CnF5MXJy21uPqNSfDs2T5r16qj5uNEUxl4PQWYKB72w4VJcIkrHRj/STuemXKfOnwkOA
+         iLZeKYoDtpcjcryM6NIKTT36Py8GccEpMDUJAwhicV4yfmuxHyBtcgdRKxm+GxFTP3Tx
+         Xrqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EuQy9FmoDBhP7VkeXtGebfxPuZn/XxiAgXAw1fibXY0=;
+        b=JkCR4fu5Zvz4We9E8FhIHi+VzopzrvBq/cq6bP3dDjTJ9BEMeGmLMA4vAGQa6Bb7p4
+         Qw620cUyGmGmmgcO9Cz+7h8xebxkGHWCFCpdE1TLiEzlDj61prDALAV2HuBt5qqYDE59
+         /GBdOJmLH42O67dNLkOUUegtJruMAXsdPUElnohkE7J2tV+BP2t7aXwBzf0E/mP74yhN
+         UZyoLx0eW4YS85CT016WAVQhJ8k74hVhtq/J4oAz0AbRLjGkFbpwXhzua34VQcjFVubT
+         BTa0RC0jhPWDGDgRU62fqoc7Oe2PPAdfEiKgmyGs14aj3IdQmjq04fJYlLvAYNh/5/kA
+         yNuA==
+X-Gm-Message-State: AOAM531oVL5k4bzc/EttZ9r74pPLPCos3OvpcjViXHXTXaFio18sg3PX
+        aNDVlVfBV+NnJ8uzhOuH1B+6Ow==
+X-Google-Smtp-Source: ABdhPJzJqrPSXDYt6SDOFEGG72APMvPA7i0unj6mnJ7+QibQJtouGhzaMaHK/whwbgBTC0OLqIURzQ==
+X-Received: by 2002:a37:64d:: with SMTP id 74mr24758742qkg.407.1627425751145;
+        Tue, 27 Jul 2021 15:42:31 -0700 (PDT)
+Received: from [192.168.1.211] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id h7sm2067000qto.22.2021.07.27.15.42.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 15:42:30 -0700 (PDT)
+Subject: Re: [PATCH 1/6] btrfs: do not check for ->num_devices == 0 in
+ rm_device
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1627414703.git.josef@toxicpanda.com>
+ <00156ba3c68ac186cf4895fd9e62b50a504c550f.1627414703.git.josef@toxicpanda.com>
+ <8bb67a56-b79d-abb5-2a4e-597d38a373ab@oracle.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <d39dd6b1-508b-1427-cdca-32418a2b5152@toxicpanda.com>
+Date:   Tue, 27 Jul 2021 18:42:29 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <8bb67a56-b79d-abb5-2a4e-597d38a373ab@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-get_parent_attributes() is only used to get the inode number of the
-mounted-on directory.  So change it to only do that and call it
-nfsd_get_mounted_on().
+On 7/27/21 6:35 PM, Anand Jain wrote:
+> On 28/07/2021 03:47, Josef Bacik wrote:
+>> We're specifically prohibited from removing the last device in a file
+>> system, so this check is meaningless and the code can be deleted.
+> 
+> Josef, That's not true when removing a seed device from the sprouted 
+> filesystem.
+> 
 
-It will eventually be use by nfs3 as well as nfs4, so move it to vfs.c.
+Yeah I'm an idiot and noticed this immediately after I hit send, you'll 
+see I fixed it in v2 that I sent like an hour later.  Thanks,
 
-Signed-off-by: NeilBrown <neilb@suse.de>
----
- fs/nfsd/nfs4xdr.c |   29 +++++------------------------
- fs/nfsd/vfs.c     |   18 ++++++++++++++++++
- fs/nfsd/vfs.h     |    2 ++
- 3 files changed, 25 insertions(+), 24 deletions(-)
-
-diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-index 21c277fa28ae..d5683b6a74b2 100644
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -2768,22 +2768,6 @@ static __be32 fattr_handle_absent_fs(u32 *bmval0, u32 *bmval1, u32 *bmval2, u32
- 	return 0;
- }
- 
--
--static int get_parent_attributes(struct svc_export *exp, struct kstat *stat)
--{
--	struct path path = exp->ex_path;
--	int err;
--
--	path_get(&path);
--	while (follow_up(&path)) {
--		if (path.dentry != path.mnt->mnt_root)
--			break;
--	}
--	err = vfs_getattr(&path, stat, STATX_BASIC_STATS, AT_STATX_SYNC_AS_STAT);
--	path_put(&path);
--	return err;
--}
--
- static __be32
- nfsd4_encode_bitmap(struct xdr_stream *xdr, u32 bmval0, u32 bmval1, u32 bmval2)
- {
-@@ -3269,8 +3253,7 @@ nfsd4_encode_fattr(struct xdr_stream *xdr, struct svc_fh *fhp,
- 		*p++ = cpu_to_be32(stat.mtime.tv_nsec);
- 	}
- 	if (bmval1 & FATTR4_WORD1_MOUNTED_ON_FILEID) {
--		struct kstat parent_stat;
--		u64 ino = stat.ino;
-+		u64 ino;
- 
- 		p = xdr_reserve_space(xdr, 8);
- 		if (!p)
-@@ -3279,12 +3262,10 @@ nfsd4_encode_fattr(struct xdr_stream *xdr, struct svc_fh *fhp,
- 		 * Get parent's attributes if not ignoring crossmount
- 		 * and this is the root of a cross-mounted filesystem.
- 		 */
--		if (ignore_crossmnt == 0 && dentry == mnt->mnt_root) {
--			err = get_parent_attributes(exp, &parent_stat);
--			if (err)
--				goto out_nfserr;
--			ino = parent_stat.ino;
--		}
-+		if (ignore_crossmnt == 0 && dentry == mnt->mnt_root)
-+			ino = nfsd_get_mounted_on(mnt);
-+		if (!ino)
-+			ino = stat.ino;
- 		p = xdr_encode_hyper(p, ino);
- 	}
- #ifdef CONFIG_NFSD_PNFS
-diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-index c0c6920f25a4..baa12ac36ece 100644
---- a/fs/nfsd/vfs.c
-+++ b/fs/nfsd/vfs.c
-@@ -2445,3 +2445,21 @@ nfsd_permission(struct svc_rqst *rqstp, struct svc_export *exp,
- 
- 	return err? nfserrno(err) : 0;
- }
-+
-+unsigned long nfsd_get_mounted_on(struct vfsmount *mnt)
-+{
-+	struct kstat stat;
-+	struct path path = { .mnt = mnt, .dentry = mnt->mnt_root };
-+	int err;
-+
-+	path_get(&path);
-+	while (follow_up(&path)) {
-+		if (path.dentry != path.mnt->mnt_root)
-+			break;
-+	}
-+	err = vfs_getattr(&path, &stat, STATX_INO, AT_STATX_DONT_SYNC);
-+	path_put(&path);
-+	if (err)
-+		return 0;
-+	return stat.ino;
-+}
-diff --git a/fs/nfsd/vfs.h b/fs/nfsd/vfs.h
-index 52f587716208..11ac36b21b4c 100644
---- a/fs/nfsd/vfs.h
-+++ b/fs/nfsd/vfs.h
-@@ -132,6 +132,8 @@ __be32		nfsd_statfs(struct svc_rqst *, struct svc_fh *,
- __be32		nfsd_permission(struct svc_rqst *, struct svc_export *,
- 				struct dentry *, int);
- 
-+unsigned long	nfsd_get_mounted_on(struct vfsmount *mnt);
-+
- static inline int fh_want_write(struct svc_fh *fh)
- {
- 	int ret;
-
-
+Josef
