@@ -2,106 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1ACA3D6B94
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 03:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 069F43D6BB9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 04:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhG0A7U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jul 2021 20:59:20 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33826 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhG0A7T (ORCPT
+        id S234251AbhG0B0E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Jul 2021 21:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229575AbhG0B0D (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 20:59:19 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E96B8200A6
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 01:39:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627349985; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=J3h7E18xAdGA1UJaXJ/BX6mnvpNGGUKciir3SiJxpC8=;
-        b=KBXzhpVYPH1xHDd+Qt86Bt/lRPO3jNOr3dGMerQtrXGB5IGPBWI0vZMvxF6p3MQUjibXAy
-        wi6kfSTL/xHCaQYdCjDclQaS5wavT1VfLTueiS+J64aaifsAANrgz48IRK8ULl7AOPK23Z
-        MBLmLfA80NrY5H56FMwmz/U8kahS25s=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 23930133A7
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 01:39:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id YQy7NOBj/2DFRgAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 01:39:44 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: change the set_page_extent_mapped() call into an ASSERT()
-Date:   Tue, 27 Jul 2021 09:39:42 +0800
-Message-Id: <20210727013942.83531-1-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 26 Jul 2021 21:26:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF4BC061757;
+        Mon, 26 Jul 2021 19:06:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=V0ATl+eIh0HuiypTyuL38sNzso+AG9tCEbfF0CNjqqM=; b=unyefSVZ6q91OKI3QKjtdVxX7K
+        bOZtKgxWnX4ShhE+mwfNAkHi+rfDnWczn5QB2a7UlkkiMzNHsxzuEGGFI9jDjScwVSg/dLxGhJNAH
+        y6FDtCpt55JJlmHtjMd2pDKYOpOU5QdJC6Bta/hMqixP7gH6Paij1bsyOOIzNnzgytJ7aZi/iuH8h
+        KlRpJCIAPYnsK464AaujXWchz+xg36bMNkv/Kd+YlM/+5IVwwN7+gDbR6dywCkhE3cHA8i6wi1WEU
+        UEmr9aGtnqUUpqYf30O/yQNKEEz/bdQ1mCRG33fCpmw6XljCg4OSUIr7O+/J8xVyOahbR+m4mBHcL
+        uz+Zfw0Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8CTR-00EZdj-0O; Tue, 27 Jul 2021 02:06:00 +0000
+Date:   Tue, 27 Jul 2021 03:05:36 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH] fs: reduce pointers while using file_ra_state_init()
+Message-ID: <YP9p8G6eu30+d2jH@casper.infradead.org>
+References: <20210726164647.brx3l2ykwv3zz7vr@fiona>
+ <162733718119.4153.5949006309014161476@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162733718119.4153.5949006309014161476@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs uses set_page_extent_mapped() to properly setup a page.
+On Tue, Jul 27, 2021 at 08:06:21AM +1000, NeilBrown wrote:
+> You seem to be assuming that inode->i_mapping->host is always 'inode'.
+> That is not the case.
 
-That function would set PagePrivate, and populate needed structure for
-subpage.
-The timing of calling set_page_extent_mapped() happens before reading a
-page or dirtying a page.
-Thus when we got a page to write back, if it doesn't have PagePrivate,
-it is a big problem in code logic.
+Weeeelllll ... technically, outside of the filesystems that are
+changed here, the only assumption in common code that is made is that
+inode_to_bdi(inode->i_mapping->host->i_mapping->host) ==
+inode_to_bdi(inode)
 
-Calling set_page_extent_mapped() for such page would just mask the
-problem.
-Furthermore, for subpage case, we call subpage error helper to clear the
-page error bit before calling set_page_extent_mapped().
-If we really got a page without Private bit, it can call kernel NULL
-pointer dereference.
+Looking at inode_to_bdi, that just means that they have the same i_sb.
+Which is ... not true for character raw devices?
+        if (++raw_devices[minor].inuse == 1)
+                file_inode(filp)->i_mapping =
+                        bdev->bd_inode->i_mapping;
+but then, who's using readahead on a character raw device?  They
+force O_DIRECT.  But maybe this should pass inode->i_mapping->host
+instead of inode.
 
-So change the set_page_extent_mapped() call to an ASSERT(), and move the
-check before any page status update call.
+> In particular, fs/coda/file.c contains
+> 
+> 	if (coda_inode->i_mapping == &coda_inode->i_data)
+> 		coda_inode->i_mapping = host_inode->i_mapping;
+> 
+> So a "coda_inode" shares the mapping with a "host_inode".
+> 
+> This is why an inode has both i_data and i_mapping.
+> 
+> So I'm not really sure this patch is safe.  It might break codafs.
+> 
+> But it is more likely that codafs isn't used, doesn't work, should be
+> removed, and i_data should be renamed to i_mapping.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 62f0ed2de2b9..219add264acf 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4099,6 +4099,12 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 
- 	WARN_ON(!PageLocked(page));
- 
-+	/*
-+	 * All dirty page to be written should have PagePrivate set by
-+	 * set_page_extent_mapped() when creating the page.
-+	 */
-+	ASSERT(PagePrivate(page));
-+
- 	btrfs_page_clear_error(btrfs_sb(inode->i_sb), page,
- 			       page_offset(page), PAGE_SIZE);
- 
-@@ -4115,12 +4121,6 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 		flush_dcache_page(page);
- 	}
- 
--	ret = set_page_extent_mapped(page);
--	if (ret < 0) {
--		SetPageError(page);
--		goto done;
--	}
--
- 	if (!epd->extent_locked) {
- 		ret = writepage_delalloc(BTRFS_I(inode), page, wbc,
- 					 &nr_written);
--- 
-2.32.0
-
+I think there's also something unusual going on with either ocfs2
+or gfs2.  But yes, I don't understand the rules for when I need to
+go from inode->i_mapping->host.
