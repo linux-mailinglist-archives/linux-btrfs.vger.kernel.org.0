@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E573D8065
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 23:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B563D8069
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 23:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbhG0VDv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 17:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S232691AbhG0VDy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 17:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbhG0VDq (ORCPT
+        with ESMTP id S231892AbhG0VDp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:03:46 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD570C08EAEC
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:27 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id d3so430800qvq.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:27 -0700 (PDT)
+        Tue, 27 Jul 2021 17:03:45 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62068C08EAED
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:29 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id db14so421667qvb.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=5rMIw2iXQ+ZslafDm4rxX6vuabpT8K8FLSsrZItpAlo=;
-        b=ni2mvTyBjhw50tNkDG1KoQur+Girhf+7kSu+940UGb+qHBJvMeFaM4/yVSfaaGSWUH
-         WeYrf71mm50QV9dHuOGq9NGIIBwGljo0HNhMNHvY7uMW4ht//25h2iBzcGmgHqSHco5O
-         fUnnFGc09+15N/tlY3gLxQY61dIDphZWULUTEtw4U7LsRBguscZLIeqWbooZ7wpmlqzJ
-         sHip0LlzL+AXnxDzOlyrtCacGpibSzunz9sS1IlDGXW5SuCnYVd0EOB0ezFPn10jFONz
-         tVk8y/waGoXGkdhzOIIcY274tv9/sYuIE8acftzrtHeI+Gu8gY08Pkvtvre7bDO3fzhB
-         c8QQ==
+        bh=N1niVJlLllNUZVZP/uah0+e+dqzMpPuFxun/166AaJg=;
+        b=ha9BEqAQbWT6PlccexTtglltB9aPeoSm+mIGUHKba3PVcQx3V+VKRV85ajp9iVa6FO
+         nEzqLnFJK+AqXAt68c2E12WsN69qXQRWNqAq+RWxH6Qc2uBdJEjBAwkae0izwIvHw5Ez
+         upb65URbZeK+kzRzzbk5RJgMrlGcieOW8R+Z6uPLDrwjaRCJvQLy9MtDS4Zx2+qisHAe
+         W/zam1L9xh4pHNgw/HTsebmCNscSIYW9PJvapgQUD/z+HW1IMrorAQQKluZvkpTcJjrw
+         pFIg2VZzp9Y0y3OkbYJxLIMIBEWRV03vEjtv1vpBdA7WR95UglxqCDpGeoinRLt5f7Lh
+         crSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5rMIw2iXQ+ZslafDm4rxX6vuabpT8K8FLSsrZItpAlo=;
-        b=AFUv2SqpLTZ7iCoeqWfqcZfv7Kvx3LsRLmw1JYW1C2v/4dNtO4eUxLDYoZjGa3D+u8
-         LlyHWrA1YZDYFqldwph1OK9L/FFChib6Y4KU/9sIIMcBNctK48ie4TcVg0X90GTv7aPc
-         U+SPIZuDB7/M3G3NJ+SJhY2B6Je3tbmW4FG1mQo37Wdodv8YFH5rF5beEhVhfU5vF8Ul
-         NEfHrzkEIVi0PiwNSjpcWnHthkcnAzvTbZyVJ+gZI0Ca4/yUUdGuYN1X2x2jV/ce3DTL
-         QPvwhTk4l/+gxGm4T2dQc7ql93cFWcxKe5Omld/cVVYnS6Q2866OzaeBxbpOi9hEpvaf
-         0jZw==
-X-Gm-Message-State: AOAM531BvueusjxmRZ3gnnY1g7vYyUGV3kTFeF43Xi8DtqpuDrcsVUB5
-        zZDlNm69IUwKuqAPAdEqK4cj3NaDSnl+32ED
-X-Google-Smtp-Source: ABdhPJzRy+V3aKFomsCVdqvTE77EZ+yYbvg3creSjCDsNhaQ/KvCBzTBHOZ77+Qe4CE3+D3pTm4nJg==
-X-Received: by 2002:a05:6214:21ec:: with SMTP id p12mr7731958qvj.8.1627419686723;
-        Tue, 27 Jul 2021 14:01:26 -0700 (PDT)
+        bh=N1niVJlLllNUZVZP/uah0+e+dqzMpPuFxun/166AaJg=;
+        b=Qe6+iC2WoRzmcY9hrDSCQziTzx8nbDlcLJ6lQVw38Ot3D1N+kyitXc7VDCrh+RGVpY
+         MnGJ0TaM9rtW2Gb9FdAuooIe89jYpX53Kb4PcPHipGYLk6wvL/jq7/IWH+zgF7k6eLSF
+         /UfVGqf7LB71Ova1emHR/oBjkbxzkMhhTSRC6MfgTY9X6ABY6XPtrbogj587wZ8RpX/Y
+         6WxPT1yAO7CroISfSXWHzN8PE+HO6zQN8jcFaVlCxMq00rnNX0oMGXkOBklHryIh1e23
+         Z3xhdEAGeKVigWi5G7Vi/uM5JvwPuQzL+q9d8DK7zkb65OGBKAYryFG3Zu9f/p3R8DOX
+         l0SQ==
+X-Gm-Message-State: AOAM531chfatGxC4G3INpKld0oXIMFJbyZGRo0qud+Ybem7P85rPGOLR
+        EqppS5Zeav5aZ1B/RVk0OZCUm16RO30NL3l1
+X-Google-Smtp-Source: ABdhPJwT6w4QQ2kCg2qkYpq30eL3g6j8ao/OB4WBGmlAYSZR65vfcc4cbMaPqTSxNL7qENMMhSpn3A==
+X-Received: by 2002:a05:6214:529e:: with SMTP id kj30mr24877203qvb.32.1627419688183;
+        Tue, 27 Jul 2021 14:01:28 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l11sm2335077qke.23.2021.07.27.14.01.26
+        by smtp.gmail.com with ESMTPSA id g24sm1962544qtr.86.2021.07.27.14.01.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 14:01:26 -0700 (PDT)
+        Tue, 27 Jul 2021 14:01:27 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 4/7] btrfs: update the bdev time directly when closing
-Date:   Tue, 27 Jul 2021 17:01:16 -0400
-Message-Id: <7a02499fac5a53031b333ce58d84089c8ce9e329.1627419595.git.josef@toxicpanda.com>
+Subject: [PATCH v2 5/7] btrfs: delay blkdev_put until after the device remove
+Date:   Tue, 27 Jul 2021 17:01:17 -0400
+Message-Id: <e6af22a1b116e908d26359b55c0d6e2d50fe3105.1627419595.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1627419595.git.josef@toxicpanda.com>
 References: <cover.1627419595.git.josef@toxicpanda.com>
@@ -62,23 +62,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We update the ctime/mtime of a block device when we remove it so that
-blkid knows the device changed.  However we do this by re-opening the
-block device and calling filp_update_time.  This is more correct because
-it'll call the inode->i_op->update_time if it exists, but the block dev
-inodes do not do this.  Instead call generic_update_time() on the
-bd_inode in order to avoid the blkdev_open path and get rid of the
+When removing the device we call blkdev_put() on the device once we've
+removed it, and because we have an EXCL open we need to take the
+->open_mutex on the block device to clean it up.  Unfortunately during
+device remove we are holding the sb writers lock, which results in the
 following lockdep splat
 
 ======================================================
 WARNING: possible circular locking dependency detected
-5.14.0-rc2+ #406 Not tainted
+5.14.0-rc2+ #407 Not tainted
 ------------------------------------------------------
-losetup/11596 is trying to acquire lock:
-ffff939640d2f538 ((wq_completion)loop0){+.+.}-{0:0}, at: flush_workqueue+0x67/0x5e0
+losetup/11595 is trying to acquire lock:
+ffff973ac35dd138 ((wq_completion)loop0){+.+.}-{0:0}, at: flush_workqueue+0x67/0x5e0
 
 but task is already holding lock:
-ffff939655510c68 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x41/0x660 [loop]
+ffff973ac9812c68 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x41/0x660 [loop]
 
 which lock already depends on the new lock.
 
@@ -100,15 +98,8 @@ the existing dependency chain (in reverse order) is:
 
 -> #3 (&disk->open_mutex){+.+.}-{3:3}:
        __mutex_lock+0x7d/0x750
-       blkdev_get_by_dev.part.0+0x56/0x3c0
-       blkdev_open+0xd2/0xe0
-       do_dentry_open+0x161/0x390
-       path_openat+0x3cc/0xa20
-       do_filp_open+0x96/0x120
-       file_open_name+0xc7/0x170
-       filp_open+0x2c/0x50
-       btrfs_scratch_superblocks.part.0+0x10f/0x170
-       btrfs_rm_device.cold+0xe8/0xed
+       blkdev_put+0x3a/0x220
+       btrfs_rm_device.cold+0x62/0xe5
        btrfs_ioctl+0x2a31/0x2e70
        __x64_sys_ioctl+0x80/0xb0
        do_syscall_64+0x38/0x90
@@ -156,11 +147,11 @@ Chain exists of:
 
  *** DEADLOCK ***
 
-1 lock held by losetup/11596:
- #0: ffff939655510c68 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x41/0x660 [loop]
+1 lock held by losetup/11595:
+ #0: ffff973ac9812c68 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x41/0x660 [loop]
 
 stack backtrace:
-CPU: 1 PID: 11596 Comm: losetup Not tainted 5.14.0-rc2+ #406
+CPU: 0 PID: 11595 Comm: losetup Not tainted 5.14.0-rc2+ #407
 Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
 Call Trace:
  dump_stack_lvl+0x57/0x72
@@ -181,58 +172,139 @@ Call Trace:
  __x64_sys_ioctl+0x80/0xb0
  do_syscall_64+0x38/0x90
  entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fc21255d4cb
+
+So instead save the bdev and do the put once we've dropped the sb
+writers lock in order to avoid the lockdep recursion.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/volumes.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ fs/btrfs/ioctl.c   | 17 ++++++++++++++---
+ fs/btrfs/volumes.c | 19 +++++++++++++++----
+ fs/btrfs/volumes.h |  3 ++-
+ 3 files changed, 31 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index bf2449cdb2ab..3ab6c78e6eb2 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1882,15 +1882,17 @@ static int btrfs_add_dev_item(struct btrfs_trans_handle *trans,
-  * Function to update ctime/mtime for a given device path.
-  * Mainly used for ctime/mtime based probe like libblkid.
-  */
--static void update_dev_time(const char *path_name)
-+static void update_dev_time(struct block_device *bdev)
- {
--	struct file *filp;
-+	struct inode *inode = bdev->bd_inode;
-+	struct timespec64 now;
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 0ba98e08a029..fabbfdfa56f5 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -3205,6 +3205,8 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
+ 	struct inode *inode = file_inode(file);
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct btrfs_ioctl_vol_args_v2 *vol_args;
++	struct block_device *bdev = NULL;
++	fmode_t mode;
+ 	int ret;
+ 	bool cancel = false;
  
--	filp = filp_open(path_name, O_RDWR, 0);
--	if (IS_ERR(filp))
-+	/* Shouldn't happen but just in case. */
-+	if (!inode)
- 		return;
--	file_update_time(filp);
--	filp_close(filp, NULL);
-+
-+	now = current_time(inode);
-+	generic_update_time(inode, &now, S_MTIME|S_CTIME);
+@@ -3237,9 +3239,11 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
+ 	/* Exclusive operation is now claimed */
+ 
+ 	if (vol_args->flags & BTRFS_DEVICE_SPEC_BY_ID)
+-		ret = btrfs_rm_device(fs_info, NULL, vol_args->devid);
++		ret = btrfs_rm_device(fs_info, NULL, vol_args->devid, &bdev,
++				      &mode);
+ 	else
+-		ret = btrfs_rm_device(fs_info, vol_args->name, 0);
++		ret = btrfs_rm_device(fs_info, vol_args->name, 0, &bdev,
++				      &mode);
+ 
+ 	btrfs_exclop_finish(fs_info);
+ 
+@@ -3255,6 +3259,8 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
+ 	kfree(vol_args);
+ err_drop:
+ 	mnt_drop_write_file(file);
++	if (bdev)
++		blkdev_put(bdev, mode);
+ 	return ret;
  }
  
- static int btrfs_rm_dev_item(struct btrfs_device *device)
-@@ -2070,7 +2072,7 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
- 	btrfs_kobject_uevent(bdev, KOBJ_CHANGE);
+@@ -3263,6 +3269,8 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
+ 	struct inode *inode = file_inode(file);
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct btrfs_ioctl_vol_args *vol_args;
++	struct block_device *bdev = NULL;
++	fmode_t mode;
+ 	int ret;
+ 	bool cancel;
  
- 	/* Update ctime/mtime for device path for libblkid */
--	update_dev_time(device_path);
-+	update_dev_time(bdev);
+@@ -3284,7 +3292,8 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
+ 	ret = exclop_start_or_cancel_reloc(fs_info, BTRFS_EXCLOP_DEV_REMOVE,
+ 					   cancel);
+ 	if (ret == 0) {
+-		ret = btrfs_rm_device(fs_info, vol_args->name, 0);
++		ret = btrfs_rm_device(fs_info, vol_args->name, 0, &bdev,
++				      &mode);
+ 		if (!ret)
+ 			btrfs_info(fs_info, "disk deleted %s", vol_args->name);
+ 		btrfs_exclop_finish(fs_info);
+@@ -3294,6 +3303,8 @@ static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
+ out_drop_write:
+ 	mnt_drop_write_file(file);
+ 
++	if (bdev)
++		blkdev_put(bdev, mode);
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 3ab6c78e6eb2..f622e93a6ff1 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2076,7 +2076,7 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
  }
  
  int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
-@@ -2711,7 +2713,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 	btrfs_forget_devices(device_path);
+-		    u64 devid)
++		    u64 devid, struct block_device **bdev, fmode_t *mode)
+ {
+ 	struct btrfs_device *device;
+ 	struct btrfs_fs_devices *cur_devices;
+@@ -2186,15 +2186,26 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
+ 	mutex_unlock(&fs_devices->device_list_mutex);
  
- 	/* Update ctime/mtime for blkid or udev */
--	update_dev_time(device_path);
-+	update_dev_time(bdev);
+ 	/*
+-	 * at this point, the device is zero sized and detached from
++	 * At this point, the device is zero sized and detached from
+ 	 * the devices list.  All that's left is to zero out the old
+ 	 * supers and free the device.
++	 *
++	 * We cannot call btrfs_close_bdev() here because we're holding the sb
++	 * write lock, and blkdev_put() will pull in the ->open_mutex on the
++	 * block device and it's dependencies.  Instead just flush the device
++	 * and let the caller do the final blkdev_put.
+ 	 */
+-	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state))
++	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+ 		btrfs_scratch_superblocks(fs_info, device->bdev,
+ 					  device->name->str);
++		if (device->bdev) {
++			sync_blockdev(device->bdev);
++			invalidate_bdev(device->bdev);
++		}
++	}
  
- 	return ret;
+-	btrfs_close_bdev(device);
++	*bdev = device->bdev;
++	*mode = device->mode;
+ 	synchronize_rcu();
+ 	btrfs_free_device(device);
  
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 70c749eee3ad..cc70e54cb901 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -472,7 +472,8 @@ struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
+ 					const u8 *uuid);
+ void btrfs_free_device(struct btrfs_device *device);
+ int btrfs_rm_device(struct btrfs_fs_info *fs_info,
+-		    const char *device_path, u64 devid);
++		    const char *device_path, u64 devid,
++		    struct block_device **bdev, fmode_t *mode);
+ void __exit btrfs_cleanup_fs_uuids(void);
+ int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len);
+ int btrfs_grow_device(struct btrfs_trans_handle *trans,
 -- 
 2.26.3
 
