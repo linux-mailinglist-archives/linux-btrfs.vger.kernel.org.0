@@ -2,35 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478293D731B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 12:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2433D732A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 12:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236131AbhG0KZC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 06:25:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47460 "EHLO mail.kernel.org"
+        id S236263AbhG0KZq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 06:25:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236347AbhG0KYt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:24:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C955F617E4
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 10:24:49 +0000 (UTC)
+        id S236186AbhG0KZq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:25:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2E67617E4;
+        Tue, 27 Jul 2021 10:25:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627381490;
-        bh=Wc3K/Uv2dCe1fhCKUWcm0kDVsDi8/zj9oBgJYbY0Skc=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Z2l7fX4sgeJAeZ+X6yXZZWVXSeNqDu4VTbX/QR8gu/LrSYuQwtTQIq68qnzKmp99q
-         yEEKdC+MTBrLDegmOO5RkeKUVbUP7X4mBA7/9SrQMVU02hCgcZcu/pS+seYfhhfn42
-         i2OsYJ4hqpc5J58c4HMdSH0RFwMfS3Sb4M5qZ8GNGOP32jsA+Q9dj/66HYxk6IzZkr
-         A1BBGf9QaaTf9zhOhvQAgfR1O4UtsVJqFuFscAxIp1N2YoTWrgOUR3EcRxXxgTx9ZP
-         VfuVVs3ve4iBopwZwzkePEVEdB59ArbfSMm/AGs9oDXMQa/+HsIGgUcv9Y6oQdQLF6
-         ClJLvEgebnKhQ==
+        s=k20201202; t=1627381546;
+        bh=vzfJ9FEqcWDsy5agYuNTWuR98wOyWGY4I2rjGKnPBOc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=S/O9eidOutXUeBT45Tb6qY8850jujqUwvlmH4YbaNIw8fJY3e/eUdSboifb3tvNNG
+         338hQ9k86RGyjAbtG71X/Xsm3NaKmwYDP6W92dO6wXMWUFPa7miM1JfCxvS2ctnpRN
+         T1uSgbMYNTVdCLyBBm4TVlL09YNnJKKK3IPyByCuRSvkh7vkjV1P1Es9nqepPyrI4U
+         CmwZkBgqjwZ6jBL1yi1z9P2juWWM8vRqw/mMXSfTDs9nMBLLM6QoGqB4qgv105zQ/r
+         KN21Jhz2+yUJ0/zpmUxzMKwG//zbOkeIvqpRQJe1K26Ar4fr4gXojRG/Ob7vyCbVU4
+         qSXP4d+aqaGCg==
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: do not pin logs too early during renames
-Date:   Tue, 27 Jul 2021 11:24:45 +0100
-Message-Id: <019dba0981817da70e0820550267b368e3ce7389.1627379796.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1627379796.git.fdmanana@suse.com>
-References: <cover.1627379796.git.fdmanana@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] generic: test for file loss after mix of rename, fsync and inode eviction
+Date:   Tue, 27 Jul 2021 11:24:59 +0100
+Message-Id: <bff6929ef4dd5c94df382bd92019388ddce60456.1627380983.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -39,236 +38,139 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-During renames we pin the logs of the roots a bit too early, before the
-calls to btrfs_insert_inode_ref(). We can pin the logs after those calls,
-since those will not change anything in a log tree.
+Test that if we fsync a directory A, evict A's inode, move one file from
+directory A to directory B, fsync some other inode that is not directory
+A, B or any inode inside these two directories, and then power fail, the
+file that was moved is not lost.
 
-In a scenario where we have multiple and diverse filesystem operations
-running in parallel, those calls can take a significant amount of time,
-due to lock contention on extent buffers, and delay log commits from other
-tasks for longer than necessary.
+This currently fails on btrfs and is fixed by a patch that has the
+following subject:
 
-So just pin logs after calls to btrfs_insert_inode_ref() and right before
-the first operation that can update a log tree.
-
-The following script that uses dbench was used for testing:
-
-  $ cat dbench-test.sh
-  #!/bin/bash
-
-  DEV=/dev/nvme0n1
-  MNT=/mnt/nvme0n1
-  MOUNT_OPTIONS="-o ssd"
-  MKFS_OPTIONS="-m single -d single"
-
-  echo "performance" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-
-  umount $DEV &> /dev/null
-  mkfs.btrfs -f $MKFS_OPTIONS $DEV
-  mount $MOUNT_OPTIONS $DEV $MNT
-
-  dbench -D $MNT -t 120 16
-
-  umount $MNT
-
-The tests were run on a machine with 12 cores, 64G of RAN, a NVME device
-and using a non-debug kernel config (Debian's default config).
-
-The results compare a branch without this patch and without the previous
-patch in the series, that has the subject:
-
- "btrfs: eliminate some false positives when checking if inode was logged"
-
-Versus the same branch with these two patches applied.
-
-dbench with 8 clients, results before:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    4391359     0.009   249.745
- Close        3225882     0.001     3.243
- Rename        185953     0.065   240.643
- Unlink        886669     0.049   249.906
- Deltree          112     2.455   217.433
- Mkdir             56     0.002     0.004
- Qpathinfo    3980281     0.004     3.109
- Qfileinfo     697579     0.001     0.187
- Qfsinfo       729780     0.002     2.424
- Sfileinfo     357764     0.004     1.415
- Find         1538861     0.016     4.863
- WriteX       2189666     0.010     3.327
- ReadX        6883443     0.002     0.729
- LockX          14298     0.002     0.073
- UnlockX        14298     0.001     0.042
- Flush         307777     2.447   303.663
-
-Throughput 1149.6 MB/sec  8 clients  8 procs  max_latency=303.666 ms
-
-dbench with 8 clients, results after:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    4269920     0.009   213.532
- Close        3136653     0.001     0.690
- Rename        180805     0.082   213.858
- Unlink        862189     0.050   172.893
- Deltree          112     2.998   218.328
- Mkdir             56     0.002     0.003
- Qpathinfo    3870158     0.004     5.072
- Qfileinfo     678375     0.001     0.194
- Qfsinfo       709604     0.002     0.485
- Sfileinfo     347850     0.004     1.304
- Find         1496310     0.017     5.504
- WriteX       2129613     0.010     2.882
- ReadX        6693066     0.002     1.517
- LockX          13902     0.002     0.075
- UnlockX        13902     0.001     0.055
- Flush         299276     2.511   220.189
-
-Throughput 1187.33 MB/sec  8 clients  8 procs  max_latency=220.194 ms
-
-+3.2% throughput, -31.8% max latency
-
-dbench with 16 clients, results before:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    5978334     0.028   156.507
- Close        4391598     0.001     1.345
- Rename        253136     0.241   155.057
- Unlink       1207220     0.182   257.344
- Deltree          160     6.123    36.277
- Mkdir             80     0.003     0.005
- Qpathinfo    5418817     0.012     6.867
- Qfileinfo     949929     0.001     0.941
- Qfsinfo       993560     0.002     1.386
- Sfileinfo     486904     0.004     2.829
- Find         2095088     0.059     8.164
- WriteX       2982319     0.017     9.029
- ReadX        9371484     0.002     4.052
- LockX          19470     0.002     0.461
- UnlockX        19470     0.001     0.990
- Flush         418936     2.740   347.902
-
-Throughput 1495.31 MB/sec  16 clients  16 procs  max_latency=347.909 ms
-
-dbench with 16 clients, results after:
-
- Operation      Count    AvgLat    MaxLat
- ----------------------------------------
- NTCreateX    5711833     0.029   131.240
- Close        4195897     0.001     1.732
- Rename        241849     0.204   147.831
- Unlink       1153341     0.184   231.322
- Deltree          160     6.086    30.198
- Mkdir             80     0.003     0.021
- Qpathinfo    5177011     0.012     7.150
- Qfileinfo     907768     0.001     0.793
- Qfsinfo       949205     0.002     1.431
- Sfileinfo     465317     0.004     2.454
- Find         2001541     0.058     7.819
- WriteX       2850661     0.017     9.110
- ReadX        8952289     0.002     3.991
- LockX          18596     0.002     0.655
- UnlockX        18596     0.001     0.179
- Flush         400342     2.879   293.607
-
-Throughput 1565.73 MB/sec  16 clients  16 procs  max_latency=293.611 ms
-
-+4.6% throughput, -16.9% max latency
+ "btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction"
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 48 ++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 42 insertions(+), 6 deletions(-)
+ tests/generic/640     | 101 ++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/640.out |   2 +
+ 2 files changed, 103 insertions(+)
+ create mode 100755 tests/generic/640
+ create mode 100644 tests/generic/640.out
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6089c5e7763c..59b35e12bb81 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9271,8 +9271,6 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 		/* force full log commit if subvolume involved. */
- 		btrfs_set_log_full_commit(trans);
- 	} else {
--		btrfs_pin_log_trans(root);
--		root_log_pinned = true;
- 		ret = btrfs_insert_inode_ref(trans, dest,
- 					     new_dentry->d_name.name,
- 					     new_dentry->d_name.len,
-@@ -9289,8 +9287,6 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 		/* force full log commit if subvolume involved. */
- 		btrfs_set_log_full_commit(trans);
- 	} else {
--		btrfs_pin_log_trans(dest);
--		dest_log_pinned = true;
- 		ret = btrfs_insert_inode_ref(trans, root,
- 					     old_dentry->d_name.name,
- 					     old_dentry->d_name.len,
-@@ -9321,6 +9317,29 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 				BTRFS_I(new_inode), 1);
- 	}
- 
-+	/*
-+	 * Now pin the logs of the roots. We do it to ensure that no other task
-+	 * can sync the logs while we are in progress with the rename, because
-+	 * that could result in an inconsistency in case any of the inodes that
-+	 * are part of this rename operation were logged before.
-+	 *
-+	 * We pin the logs even if at this precise moment none of the inodes was
-+	 * logged before. This is because right after we checked for that, some
-+	 * other task fsyncing some other inode not involved with this rename
-+	 * operation could log that one of our inodes exists.
-+	 *
-+	 * We don't need to pin the logs before the above calls to
-+	 * btrfs_insert_inode_ref(), since those don't ever need to change a log.
-+	 */
-+	if (old_ino != BTRFS_FIRST_FREE_OBJECTID) {
-+		btrfs_pin_log_trans(root);
-+		root_log_pinned = true;
-+	}
-+	if (new_ino != BTRFS_FIRST_FREE_OBJECTID) {
-+		btrfs_pin_log_trans(dest);
-+		dest_log_pinned = true;
-+	}
+diff --git a/tests/generic/640 b/tests/generic/640
+new file mode 100755
+index 00000000..a9346d5b
+--- /dev/null
++++ b/tests/generic/640
+@@ -0,0 +1,101 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2021 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FSQA Test No. 640
++#
++# Test that if we fsync a directory A, evict A's inode, move one file from
++# directory A to a directory B, fsync some other inode that is not directory A,
++# B or any inode inside these two directories, and then power fail, the file
++# that was moved is not lost.
++#
++. ./common/preamble
++_begin_fstest auto quick log
 +
- 	/* src is a subvolume */
- 	if (old_ino == BTRFS_FIRST_FREE_OBJECTID) {
- 		ret = btrfs_unlink_subvol(trans, old_dir, old_dentry);
-@@ -9573,8 +9592,6 @@ static int btrfs_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		/* force full log commit if subvolume involved. */
- 		btrfs_set_log_full_commit(trans);
- 	} else {
--		btrfs_pin_log_trans(root);
--		log_pinned = true;
- 		ret = btrfs_insert_inode_ref(trans, dest,
- 					     new_dentry->d_name.name,
- 					     new_dentry->d_name.len,
-@@ -9598,6 +9615,25 @@ static int btrfs_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	if (unlikely(old_ino == BTRFS_FIRST_FREE_OBJECTID)) {
- 		ret = btrfs_unlink_subvol(trans, old_dir, old_dentry);
- 	} else {
-+		/*
-+		 * Now pin the log. We do it to ensure that no other task can
-+		 * sync the log while we are in progress with the rename, as
-+		 * that could result in an inconsistency in case any of the
-+		 * inodes that are part of this rename operation were logged
-+		 * before.
-+		 *
-+		 * We pin the log even if at this precise moment none of the
-+		 * inodes was logged before. This is because right after we
-+		 * checked for that, some other task fsyncing some other inode
-+		 * not involved with this rename operation could log that one of
-+		 * our inodes exists.
-+		 *
-+		 * We don't need to pin the logs before the above call to
-+		 * btrfs_insert_inode_ref(), since that does not need to change
-+		 * a log.
-+		 */
-+		btrfs_pin_log_trans(root);
-+		log_pinned = true;
- 		ret = __btrfs_unlink_inode(trans, root, BTRFS_I(old_dir),
- 					BTRFS_I(d_inode(old_dentry)),
- 					old_dentry->d_name.name,
++# Override the default cleanup function.
++_cleanup()
++{
++	_cleanup_flakey
++	cd /
++	rm -f $tmp.*
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/dmflakey
++
++# real QA test starts here
++_supported_fs generic
++_require_scratch
++_require_dm_target flakey
++
++_scratch_mkfs >>$seqres.full 2>&1
++_require_metadata_journaling $SCRATCH_DEV
++_init_flakey
++_mount_flakey
++
++# Create two test directories, one with a file we will rename later.
++mkdir $SCRATCH_MNT/A
++mkdir $SCRATCH_MNT/B
++echo -n "hello world" > $SCRATCH_MNT/A/foo
++
++# Persist everything done so far.
++sync
++
++# Add some new file to directory A and fsync the directory.
++touch $SCRATCH_MNT/A/bar
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/A
++
++# Now evict all inodes from memory. To trigger the original problem on btrfs we
++# actually only needed to trigger eviction of A's inode, but there's no simple
++# way to evict a single inode, so evict everything.
++echo 2 > /proc/sys/vm/drop_caches
++
++# Now move file foo from directory A to directory B.
++mv $SCRATCH_MNT/A/foo $SCRATCH_MNT/B/foo
++
++# Now make an fsync to anything except A, B or any file inside them, like for
++# example create a file at the root directory and fsync this new file.
++touch $SCRATCH_MNT/baz
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/baz
++
++# Simulate a power failure and then check file foo still exists.
++_flakey_drop_and_remount
++
++# Since file foo was not explicitly fsynced we can not guarantee that, for every
++# filesystem, after replaying the journal/log we have file foo inside directory A
++# or inside directory B. The file must exist however, and can only be found in
++# one of the directories, not on both.
++#
++# At the moment of this writing, on f2fs file foo exists always at A/foo,
++# regardless of the fsync-mode mount option ("-o fsync_mode=posix" or
++# "-o fsync_mode=strict"). On ext4 and xfs it exists at B/foo. It is also
++# supposed to exist at B/foo on btrfs (at the moment it doesn't exist in
++# either directory due to a bug).
++
++foo_in_a=0
++foo_in_b=0
++
++if [ -f $SCRATCH_MNT/A/foo ]; then
++	echo "File foo data: $(cat $SCRATCH_MNT/A/foo)"
++	foo_in_a=1
++fi
++
++if [ -f $SCRATCH_MNT/B/foo ]; then
++	echo "File foo data: $(cat $SCRATCH_MNT/B/foo)"
++	foo_in_b=1
++fi
++
++if [ $foo_in_a -eq 1 ] && [ $foo_in_b -eq 1 ]; then
++	echo "File foo found in A/ and B/"
++elif [ $foo_in_a -eq 0 ] && [ $foo_in_b -eq 0 ]; then
++	echo "File foo is missing"
++fi
++
++# While here, also check that files bar and baz exist.
++[ -f $SCRATCH_MNT/A/bar ] || echo "File A/bar is missing"
++[ -f $SCRATCH_MNT/baz ] || echo "File baz is missing"
++
++_unmount_flakey
++status=0
++exit
+diff --git a/tests/generic/640.out b/tests/generic/640.out
+new file mode 100644
+index 00000000..a19db353
+--- /dev/null
++++ b/tests/generic/640.out
+@@ -0,0 +1,2 @@
++QA output created by 640
++File foo data: hello world
 -- 
 2.28.0
 
