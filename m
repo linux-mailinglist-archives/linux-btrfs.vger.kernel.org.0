@@ -2,44 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B6D3D73A7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 12:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1482D3D73A8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 12:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhG0Kua (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 06:50:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55674 "EHLO mail.kernel.org"
+        id S236388AbhG0Kue (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 06:50:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236169AbhG0Ku3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:50:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B218E6135A;
-        Tue, 27 Jul 2021 10:50:27 +0000 (UTC)
+        id S236169AbhG0Kuc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:50:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FD2A61378;
+        Tue, 27 Jul 2021 10:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627383029;
-        bh=DXeBxntle03LxjR/sp5v3vkSocLKm4g6taMWkMmXodk=;
+        s=k20201202; t=1627383032;
+        bh=3s9m2M0zO9BpXEPa838DCG0One5d1J/jUFNCpaKdbXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X7HJVWbvk0tBSl8ovUoqxoyqWSPboLkyGdhI4Lc7vI6ktormTVwmUu3HmUdrLJClB
-         F1NoaV1K4m4hsQqCvMCjHQ2grR/lxzo09v0OA8P3wFWmhOqgrkNDcd/eCpu1TbDoYm
-         OGA7XwY/Qm1yLjhg8h7yr0VRkp0G02d4n8yNW5heFOmB6R890hqLTkBeYJsEnqm3D0
-         O5Wf39IYzjJagm+U4kiFP53Xnyb5x+fqFTVYEstF1zcgNGfIQQvGHKQZobHZqQkh+Q
-         gi+mLtZtIyjf5lPDroTbyrtZd79KR1WSHm5N2eE4JGyiiJQRH41bmq4dwhhtv9aC3X
-         OTSRmELwyRluA==
+        b=IMR/2+Xv+w0Elt/y4lyVMeHQasLk4z7ia6Vc9so74XBUr5zhHVGhXIlDYdJWrs4OJ
+         BkOb18GC97J77W+f7BJ4dlgIlaZUYJ42KvNKt/kVDf4WYJAD2u2xgCzNnM+vnFnAAs
+         qQ/JrfofYbzPl/1DngNmGhVDG3s9rTFLn43Cp1vFiTeIkCVlez/0aZgjdTMeg6mh/Z
+         ptMcwX0zvjY+VD3YN9wuamq79YcOw2phrGGdxcPnbdhh2YKWGeN1f7agBZDU+ECrbv
+         MSrD8b8QfPa2X3ZupeOVpVGW0jECAuvKLI7MSU2hE5cho6AM+z2XKVu9gji6NtufWC
+         WLFgAW/FOMNqg==
 From:   Christian Brauner <brauner@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v4 01/21] namei: add mapping aware lookup helper
-Date:   Tue, 27 Jul 2021 12:48:40 +0200
-Message-Id: <20210727104900.829215-2-brauner@kernel.org>
+        Christoph Hellwig <hch@infradead.org>
+Subject: [PATCH v4 02/21] btrfs/inode: handle idmaps in btrfs_new_inode()
+Date:   Tue, 27 Jul 2021 12:48:41 +0200
+Message-Id: <20210727104900.829215-3-brauner@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210727104900.829215-1-brauner@kernel.org>
 References: <20210727104900.829215-1-brauner@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5026; h=from:subject; bh=oa4AcwY1bGhWgVrnncnHqGiwwPocGdhs0DBLxErCIjY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMST8fzJRhpvrbeTEu9HZE7WLzV03Hw/pWTz1qLmlwcfCiINb Z7kxdpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAExENpSRYePHRX99a1Nm+gV729smBd lfrpiocebn9E5HlalzTdIOXGNk+Jbffbfktv/Bzesk/77tO3tRO7N+ywdHUYGfrzXfqv8tYgAA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4730; h=from:subject; bh=HARpXJ+DflNJss2SNmEgF1SQiC1Os3fqzbxgRo2Yak4=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMST8fzIp+qVYiWfAjkV8183M+HRi38cfbXz8tPfotY/nOsMe Tjfo6ihlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjI+zUMv5hEmtzKN5kWH26Sdp3/7W h9QMKJ/oLls70PPPXs2vR58yOGf8Y8sf4bZmy1vJTuVumvFdb9u/tG+ikZznm7uhTazrz8zQIA
 X-Developer-Key: i=christian.brauner@ubuntu.com; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -48,140 +46,132 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Christian Brauner <christian.brauner@ubuntu.com>
 
-Various filesystems rely on the lookup_one_len() helper to lookup a single path
-component relative to a well-known starting point. Allow such filesystems to
-support idmapped mounts by adding a version of this helper to take the idmap
-into account when calling inode_permission(). This change is a required to let
-btrfs (and other filesystems) support idmapped mounts.
+Extend btrfs_new_inode() to take the idmapped mount into account when
+initializing a new inode. This is just a matter of passing down the mount's
+userns. The rest is taken care of in inode_init_owner(). This is a preliminary
+patch to make the individual btrfs inode operations idmapped mount aware.
 
+Cc: Chris Mason <clm@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
 Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: linux-fsdevel@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
 /* v2 */
-- Al Viro <viro@zeniv.linux.org.uk>:
-  - Add a new lookup helper instead of changing the old ones.
+unchanged
 
 /* v3 */
 unchanged
 
 /* v4 */
-- Christoph Hellwig <hch@infradead.org>,
-  Matthew Wilcox (Oracle) <willy@infradead.org>:
-  - Simplify the name of lookup_mapped_one_len() to either lookup_one_mapped()
-    or lookup_one(). The *_len() prefix in all those helper apparently just
-    exists for historical reasons because we used to have lookup_dentry(), then
-    grew lookup_one(), and then grew lookup_one_len().
+unchanged
 ---
- fs/namei.c            | 43 +++++++++++++++++++++++++++++++++++++------
- include/linux/namei.h |  2 ++
- 2 files changed, 39 insertions(+), 6 deletions(-)
+ fs/btrfs/inode.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
-diff --git a/fs/namei.c b/fs/namei.c
-index bf6d8a738c59..902df46e7dd3 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -2575,8 +2575,9 @@ int vfs_path_lookup(struct dentry *dentry, struct vfsmount *mnt,
- }
- EXPORT_SYMBOL(vfs_path_lookup);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0117d867ecf8..ae4fe9377e6f 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -6370,6 +6370,7 @@ static void btrfs_inherit_iflags(struct inode *inode, struct inode *dir)
  
--static int lookup_one_len_common(const char *name, struct dentry *base,
--				 int len, struct qstr *this)
-+static int lookup_one_common(struct user_namespace *mnt_userns,
-+			     const char *name, struct dentry *base, int len,
-+			     struct qstr *this)
- {
- 	this->name = name;
- 	this->len = len;
-@@ -2604,7 +2605,7 @@ static int lookup_one_len_common(const char *name, struct dentry *base,
- 			return err;
- 	}
+ static struct inode *btrfs_new_inode(struct btrfs_trans_handle *trans,
+ 				     struct btrfs_root *root,
++				     struct user_namespace *mnt_userns,
+ 				     struct inode *dir,
+ 				     const char *name, int name_len,
+ 				     u64 ref_objectid, u64 objectid,
+@@ -6479,7 +6480,7 @@ static struct inode *btrfs_new_inode(struct btrfs_trans_handle *trans,
+ 	if (ret != 0)
+ 		goto fail_unlock;
  
--	return inode_permission(&init_user_ns, base->d_inode, MAY_EXEC);
-+	return inode_permission(mnt_userns, base->d_inode, MAY_EXEC);
- }
+-	inode_init_owner(&init_user_ns, inode, dir, mode);
++	inode_init_owner(mnt_userns, inode, dir, mode);
+ 	inode_set_bytes(inode, 0);
  
- /**
-@@ -2628,7 +2629,7 @@ struct dentry *try_lookup_one_len(const char *name, struct dentry *base, int len
- 
- 	WARN_ON_ONCE(!inode_is_locked(base->d_inode));
- 
--	err = lookup_one_len_common(name, base, len, &this);
-+	err = lookup_one_common(&init_user_ns, name, base, len, &this);
+ 	inode->i_mtime = current_time(inode);
+@@ -6664,9 +6665,9 @@ static int btrfs_mknod(struct user_namespace *mnt_userns, struct inode *dir,
  	if (err)
- 		return ERR_PTR(err);
+ 		goto out_unlock;
  
-@@ -2655,7 +2656,7 @@ struct dentry *lookup_one_len(const char *name, struct dentry *base, int len)
- 
- 	WARN_ON_ONCE(!inode_is_locked(base->d_inode));
- 
--	err = lookup_one_len_common(name, base, len, &this);
-+	err = lookup_one_common(&init_user_ns, name, base, len, &this);
+-	inode = btrfs_new_inode(trans, root, dir, dentry->d_name.name,
+-			dentry->d_name.len, btrfs_ino(BTRFS_I(dir)), objectid,
+-			mode, &index);
++	inode = btrfs_new_inode(trans, root, &init_user_ns, dir,
++			dentry->d_name.name, dentry->d_name.len,
++			btrfs_ino(BTRFS_I(dir)), objectid, mode, &index);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+ 		inode = NULL;
+@@ -6728,9 +6729,9 @@ static int btrfs_create(struct user_namespace *mnt_userns, struct inode *dir,
  	if (err)
- 		return ERR_PTR(err);
+ 		goto out_unlock;
  
-@@ -2664,6 +2665,36 @@ struct dentry *lookup_one_len(const char *name, struct dentry *base, int len)
- }
- EXPORT_SYMBOL(lookup_one_len);
- 
-+/**
-+ * lookup_one - filesystem helper to lookup single pathname component
-+ * @mnt_userns:	user namespace of the mount the lookup is performed from
-+ * @name:	pathname component to lookup
-+ * @base:	base directory to lookup from
-+ * @len:	maximum length @len should be interpreted to
-+ *
-+ * Note that this routine is purely a helper for filesystem usage and should
-+ * not be called by generic code.
-+ *
-+ * The caller must hold base->i_mutex.
-+ */
-+struct dentry *lookup_one(struct user_namespace *mnt_userns, const char *name,
-+			  struct dentry *base, int len)
-+{
-+	struct dentry *dentry;
-+	struct qstr this;
-+	int err;
-+
-+	WARN_ON_ONCE(!inode_is_locked(base->d_inode));
-+
-+	err = lookup_one_common(mnt_userns, name, base, len, &this);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	dentry = lookup_dcache(&this, base, 0);
-+	return dentry ? dentry : __lookup_slow(&this, base, 0);
-+}
-+EXPORT_SYMBOL(lookup_one);
-+
- /**
-  * lookup_one_len_unlocked - filesystem helper to lookup single pathname component
-  * @name:	pathname component to lookup
-@@ -2683,7 +2714,7 @@ struct dentry *lookup_one_len_unlocked(const char *name,
- 	int err;
- 	struct dentry *ret;
- 
--	err = lookup_one_len_common(name, base, len, &this);
-+	err = lookup_one_common(&init_user_ns, name, base, len, &this);
+-	inode = btrfs_new_inode(trans, root, dir, dentry->d_name.name,
+-			dentry->d_name.len, btrfs_ino(BTRFS_I(dir)), objectid,
+-			mode, &index);
++	inode = btrfs_new_inode(trans, root, &init_user_ns, dir,
++			dentry->d_name.name, dentry->d_name.len,
++			btrfs_ino(BTRFS_I(dir)), objectid, mode, &index);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+ 		inode = NULL;
+@@ -6873,8 +6874,9 @@ static int btrfs_mkdir(struct user_namespace *mnt_userns, struct inode *dir,
  	if (err)
- 		return ERR_PTR(err);
+ 		goto out_fail;
  
-diff --git a/include/linux/namei.h b/include/linux/namei.h
-index be9a2b349ca7..df106b6d3cc5 100644
---- a/include/linux/namei.h
-+++ b/include/linux/namei.h
-@@ -68,6 +68,8 @@ extern struct dentry *try_lookup_one_len(const char *, struct dentry *, int);
- extern struct dentry *lookup_one_len(const char *, struct dentry *, int);
- extern struct dentry *lookup_one_len_unlocked(const char *, struct dentry *, int);
- extern struct dentry *lookup_positive_unlocked(const char *, struct dentry *, int);
-+extern struct dentry *lookup_one(struct user_namespace *, const char *,
-+				 struct dentry *, int);
+-	inode = btrfs_new_inode(trans, root, dir, dentry->d_name.name,
+-			dentry->d_name.len, btrfs_ino(BTRFS_I(dir)), objectid,
++	inode = btrfs_new_inode(trans, root, &init_user_ns, dir,
++			dentry->d_name.name, dentry->d_name.len,
++			btrfs_ino(BTRFS_I(dir)), objectid,
+ 			S_IFDIR | mode, &index);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+@@ -8949,7 +8951,8 @@ int btrfs_create_subvol_root(struct btrfs_trans_handle *trans,
+ 	if (err < 0)
+ 		return err;
  
- extern int follow_down_one(struct path *);
- extern int follow_down(struct path *);
+-	inode = btrfs_new_inode(trans, new_root, NULL, "..", 2, ino, ino,
++	inode = btrfs_new_inode(trans, new_root, &init_user_ns, NULL, "..", 2,
++				ino, ino,
+ 				S_IFDIR | (~current_umask() & S_IRWXUGO),
+ 				&index);
+ 	if (IS_ERR(inode))
+@@ -9442,7 +9445,7 @@ static int btrfs_whiteout_for_rename(struct btrfs_trans_handle *trans,
+ 	if (ret)
+ 		return ret;
+ 
+-	inode = btrfs_new_inode(trans, root, dir,
++	inode = btrfs_new_inode(trans, root, &init_user_ns, dir,
+ 				dentry->d_name.name,
+ 				dentry->d_name.len,
+ 				btrfs_ino(BTRFS_I(dir)),
+@@ -9941,9 +9944,10 @@ static int btrfs_symlink(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (err)
+ 		goto out_unlock;
+ 
+-	inode = btrfs_new_inode(trans, root, dir, dentry->d_name.name,
+-				dentry->d_name.len, btrfs_ino(BTRFS_I(dir)),
+-				objectid, S_IFLNK|S_IRWXUGO, &index);
++	inode = btrfs_new_inode(trans, root, &init_user_ns, dir,
++				dentry->d_name.name, dentry->d_name.len,
++				btrfs_ino(BTRFS_I(dir)), objectid,
++				S_IFLNK | S_IRWXUGO, &index);
+ 	if (IS_ERR(inode)) {
+ 		err = PTR_ERR(inode);
+ 		inode = NULL;
+@@ -10292,7 +10296,7 @@ static int btrfs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
+ 	if (ret)
+ 		goto out;
+ 
+-	inode = btrfs_new_inode(trans, root, dir, NULL, 0,
++	inode = btrfs_new_inode(trans, root, &init_user_ns, dir, NULL, 0,
+ 			btrfs_ino(BTRFS_I(dir)), objectid, mode, &index);
+ 	if (IS_ERR(inode)) {
+ 		ret = PTR_ERR(inode);
 -- 
 2.30.2
 
