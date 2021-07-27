@@ -2,135 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2E23D7017
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 09:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530AB3D7156
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 10:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbhG0HNv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 03:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235675AbhG0HNu (ORCPT
+        id S235931AbhG0Img (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 04:42:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47118 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235629AbhG0Img (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:13:50 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F5FC061757;
-        Tue, 27 Jul 2021 00:13:51 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso3608264pjf.4;
-        Tue, 27 Jul 2021 00:13:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KrrJwiLbM3Ga7nei1tG5qM9T+06r1hAsagdwYPL060k=;
-        b=jvQXoar1Xahk3e8uQeeVl7OK02Fswvs4y1JvdgZ93YspKNaORNAnz+zgOWG2cB27/l
-         XUovgz8r6G61X12/X1fT4lvlSGwN0BUagN8S1DtK9Q76X8Py/TNvP1MEdsjFKCUZXJln
-         TKaHMdW6/76wQTTf/PJ3AGhd0b6WKbdZ/wmggHvm9j05Yq+EWJK7eeQFDX/W/19teX81
-         fq960S63dOv6FG0h1l9Sb29/EJcwVug7EU5bcnXqxyTHn5cvgbnEh3l3/4c4gF6s390p
-         xq/HSpn0UI55a+VShKD77A8bBvJwJ0dTTgHap//Kj3mRE/ToQGWOrB2hX9zv3Gqi1Pc7
-         X/oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KrrJwiLbM3Ga7nei1tG5qM9T+06r1hAsagdwYPL060k=;
-        b=SPxvloUEMfLXvst4hKmNpyUNTrTGHS3hEcXD0MUuRXSz162FKhi/aC3cJpb4rMaE5z
-         oJZKDTJa9uoObAjcJpBKifqWdyniDq2ulA2tr55Wc8nL5CI0KUBTyOPl2urd1cpUoOcw
-         DBHYkGVn0HnWdsVIQMMyUx6lspwE7HqVGqgkE6MoYovdIg3mXGLSkBVHn/S7llSnks+r
-         sXs4/YeL/UjzC1kClXOjaBrEkDEfvmavS9KnPlzwC0i4RIxxydONVyG16cDcAQlFpnWp
-         +MriNHSo8bm/BBHPxz38b3lLA1sWYw1Hgxp1uz7kKX2wHIx3zWgSOFs/bUbx1YS7PFKN
-         14WA==
-X-Gm-Message-State: AOAM531q7fpz5weNZVJvaFbFX51VOA58nMkYCxhjFOd4ErgUeTtKQL9e
-        e/9UCQJTX8P9U7zayx9Gjf4=
-X-Google-Smtp-Source: ABdhPJxl/oFTVpBPLS9lHnjiYkPouAfBbgeyg9umctBTQA7m/uCelnOcXkz6H/S0DedIwEb3jc3HJw==
-X-Received: by 2002:a05:6a00:a8a:b029:30c:a10b:3e3f with SMTP id b10-20020a056a000a8ab029030ca10b3e3fmr21536386pfl.40.1627370030492;
-        Tue, 27 Jul 2021 00:13:50 -0700 (PDT)
-Received: from localhost.localdomain ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id v9sm2361542pfn.22.2021.07.27.00.13.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 00:13:49 -0700 (PDT)
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        anand.jain@oracle.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Subject: [PATCH v2] btrfs: fix rw device counting in __btrfs_free_extra_devids
-Date:   Tue, 27 Jul 2021 15:13:03 +0800
-Message-Id: <20210727071303.113876-1-desmondcheongzx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 27 Jul 2021 04:42:36 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A78D221FC9;
+        Tue, 27 Jul 2021 08:42:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627375355;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yhdkw6yZRMHdst5GSVL7RnwuRhSvoS+HqhQ/4ZI+exs=;
+        b=JoC6O/iqxAnVVctg/ldL7LPL2Yo6Tic7Q/Kyjg1HZCTEKdE8mqmxMiU3hr0AHDyanMewIi
+        mb4T+gUAlDSOwalKvATkR+We9acwZV7zogTO6AOaAQKS5pno4rr8nvc6cStkzzlWAxciOt
+        Wyp/oM7LsUCKvLWTXvlkieD7sjESZu4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627375355;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yhdkw6yZRMHdst5GSVL7RnwuRhSvoS+HqhQ/4ZI+exs=;
+        b=w0h3/GvxO21U9cpzxOsA0AkATIYE3hQawvK4M/tkc2JjXm072YlRntqZH6BR2obI7NbAvv
+        wtKGvA0BlJRhBSDA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id A10AEA3B8C;
+        Tue, 27 Jul 2021 08:42:35 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6D356DA8CC; Tue, 27 Jul 2021 10:39:51 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 10:39:51 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 08/10] btrfs: simplify data stripe calculation helpers
+Message-ID: <20210727083951.GJ5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1627300614.git.dsterba@suse.com>
+ <6e7fd9d9fe39f547eae063dac6e230f155980ba0.1627300614.git.dsterba@suse.com>
+ <41a6c967-1f34-b48a-c24c-14cf226a5c67@gmx.com>
+ <20210726150651.GF5047@twin.jikos.cz>
+ <b1af7184-740c-457d-b8ac-daad094ce7cb@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b1af7184-740c-457d-b8ac-daad094ce7cb@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When removing a writeable device in __btrfs_free_extra_devids, the rw
-device count should be decremented.
+On Tue, Jul 27, 2021 at 06:23:03AM +0800, Qu Wenruo wrote:
+> >>> --- a/fs/btrfs/volumes.c
+> >>> +++ b/fs/btrfs/volumes.c
+> >>> @@ -3567,10 +3567,7 @@ static u64 calc_data_stripes(u64 type, int num_stripes)
+> >>>    	const int ncopies = btrfs_raid_array[index].ncopies;
+> >>>    	const int nparity = btrfs_raid_array[index].nparity;
+> >>>
+> >>> -	if (nparity)
+> >>> -		return num_stripes - nparity;
+> >>> -	else
+> >>> -		return num_stripes / ncopies;
+> >>
+> >> I would prefer an ASSERT() here to be extra sure.
+> >> But it's my personal taste (and love for tons of ASSERT()).
+> >
+> > Assert for what exactly? I had a thought about that too but was not sure
+> > what to put there.
+> >
+> 
+> To ensure we have either non-zero nparity with 1 ncopy or zero nparity
+> with ncopies > 1.
 
-This error was caught by Syzbot which reported a warning in
-close_fs_devices because fs_devices->rw_devices was not 0 after
-closing all devices. Here is the call trace that was observed:
-
-  btrfs_mount_root():
-    btrfs_scan_one_device():
-      device_list_add();   <---------------- device added
-    btrfs_open_devices():
-      open_fs_devices():
-        btrfs_open_one_device();   <-------- writable device opened,
-	                                     rw device count ++
-    btrfs_fill_super():
-      open_ctree():
-        btrfs_free_extra_devids():
-	  __btrfs_free_extra_devids();  <--- writable device removed,
-	                              rw device count not decremented
-	  fail_tree_roots:
-	    btrfs_close_devices():
-	      close_fs_devices();   <------- rw device count off by 1
-
-As a note, prior to commit cf89af146b7e ("btrfs: dev-replace: fail
-mount if we don't have replace item with target device"), rw_devices
-was decremented on removing a writable device in
-__btrfs_free_extra_devids only if the BTRFS_DEV_STATE_REPLACE_TGT bit
-was not set for the device. However, this check does not need to be
-reinstated as it is now redundant and incorrect.
-
-In __btrfs_free_extra_devids, we skip removing the device if it is the
-target for replacement. This is done by checking whether device->devid
-== BTRFS_DEV_REPLACE_DEVID. Since BTRFS_DEV_STATE_REPLACE_TGT is set
-only on the device with devid BTRFS_DEV_REPLACE_DEVID, no devices
-should have the BTRFS_DEV_STATE_REPLACE_TGT bit set after the check,
-and so it's redundant to test for that bit.
-
-Additionally, following commit 82372bc816d7 ("Btrfs: make
-the logic of source device removing more clear"), rw_devices is
-incremented whenever a writeable device is added to the alloc
-list (including the target device in btrfs_dev_replace_finishing), so
-all removals of writable devices from the alloc list should also be
-accompanied by a decrement to rw_devices.
-
-Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
-Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/volumes.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 807502cd6510..916c25371658 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
- 		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
- 			list_del_init(&device->dev_alloc_list);
- 			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
-+			fs_devices->rw_devices--;
- 		}
- 		list_del_init(&device->dev_list);
- 		fs_devices->num_devices--;
--- 
-2.25.1
-
+Yeah but that's statically defined in the raid table, it does not change
+so we don't have to verify it on each call. If anything, such
+constraints could be verified as _static_assert right after the table
+but IMO that's pointless and definitely not a runtime check.
