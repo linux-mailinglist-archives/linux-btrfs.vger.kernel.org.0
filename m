@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8FF3D73B4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 12:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB593D73B6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 12:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236314AbhG0Ku5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 06:50:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56062 "EHLO mail.kernel.org"
+        id S236449AbhG0Ku6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 06:50:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236431AbhG0Kuz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:50:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B8386135A;
-        Tue, 27 Jul 2021 10:50:53 +0000 (UTC)
+        id S236434AbhG0Ku6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:50:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F36A600CD;
+        Tue, 27 Jul 2021 10:50:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627383055;
-        bh=W8n859/SRlGQ7exT3uSV5aE2VA+wYWi1b4nP9t7In+s=;
+        s=k20201202; t=1627383058;
+        bh=Dh7XOP/FJ/SYcaAMmFbAGhF7YtATOmtd9+KPUrsPpwM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mhchuf1og1/Tluz5Fc2+/0o4S+vSmgqSoE8JUOZLDr9ss8HCfxmRKrwKGQcQjl+ny
-         JYgTqcKw92Bsp0qI4yy4fkOjpkFjBTMK4vS7kBti6upqy6gRMeFCp01USttWxZdE3G
-         47BDcOJDmQ2MwZZnDyLAQHb2opqmgofUjocg3tBBk7Q30ItppY+NoxoqTDfw8Y+Gdx
-         FFGaOqD7unavSeuzqJbLREVRjr1PO4LuNOlzVF92tNMqzAarcOkLDcE+/3pdOaI37L
-         Y6ER/c6jRGUIqhRouSV87d6xnLF1Gk8cy/jpnW9bvlVFryKY1B4qpiAYcoHO1oXqSD
-         Tt9qvX6Zsg76A==
+        b=afHo67rLuQHhWKlvfhOxmoWMfXz9zQK0aO/ePIfSYdEi8QrdH78KgjtdWTxYQzlRl
+         gSL3q88BCRfjjpFtibY2gwazPeKokcAf7K3RdPWn14TaXJss98liADJkTa73Y7vGbb
+         mL60PAkn2//JfxHJmJqeDdd4rNhXIxpZjejzfCgwuz19Hcq40cDIDvrSK9+kHKroLQ
+         TCrhHPFJppqgV9ruVoG1MVUTc1XUvGxJO4x/usZO9uYZvNo1UhMzfOM+qTZdTqviCD
+         YgYti/YrQF1nP8dlbyTdTAwryRxRvaqD1KxM0+vXhXkiUW8eQAlc5ZR7BoS37/pM4y
+         z8+z68sDzpWUw==
 From:   Christian Brauner <brauner@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
@@ -30,14 +30,14 @@ To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
 Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
         Christian Brauner <christian.brauner@ubuntu.com>,
         Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH v4 11/21] btrfs/inode: allow idmapped permission iop
-Date:   Tue, 27 Jul 2021 12:48:50 +0200
-Message-Id: <20210727104900.829215-12-brauner@kernel.org>
+Subject: [PATCH v4 12/21] btrfs/ioctl: check whether fs{g,u}id are mapped during subvolume creation
+Date:   Tue, 27 Jul 2021 12:48:51 +0200
+Message-Id: <20210727104900.829215-13-brauner@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210727104900.829215-1-brauner@kernel.org>
 References: <20210727104900.829215-1-brauner@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1086; h=from:subject; bh=7QZtZ22YWM5l3X750lvv/oKj3lzulOrOb1OJQSL0Ewg=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMST8fzIl/+Wtn+br2dVvfu5w3zYhpLJsLedn6WVmvnll798d 3uLp3FHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCR5kmMDJNy/zNn+wh8PTn/3UW/8t SjqbpKqkKGt3TWyhseWcWiZsLwv3j2m+IQp4OF0qz5dRN4Vuu7b3Awmb/nefOEVdwTAme2MgEA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1734; h=from:subject; bh=BgunXVJFNVa/wuJS4n0aobSThxeR7C5BLjftXo3Q3QE=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMST8fzI1wX96/pkDfD/mvjJL0ZeonVe5ODJlH9tLMa+FDufu lDw53FHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjARJ0mG/xGrBP86abRZuPYf91ofu+ LBy7SX8WW+M1edU9vxJDT38EyG/6HPNfVX8n0Wkuhzvap4+hfnvN8hm1K6pj34oPe9Jrn7BQsA
 X-Developer-Key: i=christian.brauner@ubuntu.com; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -46,8 +46,18 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Christian Brauner <christian.brauner@ubuntu.com>
 
-Enable btrfs_permission() to handle idmapped mounts. This is just a matter of
-passing down the mount's userns.
+When a new subvolume is created btrfs currently doesn't check whether the
+fs{g,u}id of the caller actually have a mapping in the user namespace attached
+to the filesystem. The vfs always checks this to make sure that the caller's
+fs{g,u}id can be represented on-disk. This is most relevant for filesystems
+that can be mounted inside user namespaces but it is in general a good
+hardening measure to prevent unrepresentable {g,u}ids from being written to
+disk.
+Since we want to support idmapped mounts for btrfs ioctls to create subvolumes
+in follow-up patches this becomes important since we want to make sure the
+fs{g,u}id of the caller as mapped according to the idmapped mount can be
+represented on-disk. Simply add the missing fsuidgid_has_mapping() line from
+the vfs may_create() version to btrfs_may_create().
 
 Cc: Chris Mason <clm@fb.com>
 Cc: Josef Bacik <josef@toxicpanda.com>
@@ -66,22 +76,22 @@ unchanged
 /* v4 */
 unchanged
 ---
- fs/btrfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/ioctl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2d9717861a6b..5e0b8e394ae1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -10274,7 +10274,7 @@ static int btrfs_permission(struct user_namespace *mnt_userns,
- 		if (BTRFS_I(inode)->flags & BTRFS_INODE_READONLY)
- 			return -EACCES;
- 	}
--	return generic_permission(&init_user_ns, inode, mask);
-+	return generic_permission(mnt_userns, inode, mask);
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 0ba98e08a029..7a6a886df7c4 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -870,6 +870,8 @@ static inline int btrfs_may_create(struct inode *dir, struct dentry *child)
+ 		return -EEXIST;
+ 	if (IS_DEADDIR(dir))
+ 		return -ENOENT;
++	if (!fsuidgid_has_mapping(dir->i_sb, &init_user_ns))
++		return -EOVERFLOW;
+ 	return inode_permission(&init_user_ns, dir, MAY_WRITE | MAY_EXEC);
  }
  
- static int btrfs_tmpfile(struct user_namespace *mnt_userns, struct inode *dir,
 -- 
 2.30.2
 
