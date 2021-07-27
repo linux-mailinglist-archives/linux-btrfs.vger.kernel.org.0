@@ -2,163 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEFA3D819D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 23:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70913D8200
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 23:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbhG0VUH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 17:20:07 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46004 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbhG0VTZ (ORCPT
+        id S231814AbhG0Voc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 17:44:32 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:36758 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231364AbhG0Voc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:19:25 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id F40B920181;
-        Tue, 27 Jul 2021 21:18:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627420687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GuVIO3h4A3uvlueiXNtD+gOKe8DJdOF+LTpC6lPdeN0=;
-        b=EuKCJQ5x1aIryfImdCZCKXzQJC0ZwE/5lo4eOuyv4ITyP5/7WWVCmnZPxGksfvaljlrL3U
-        it1sdsmqMYHRsEMDmrAFKqZ0esYXDKXascr1WM7FowqTcJeEbx7VnhXS7ANbsNBVEFs3Jr
-        c37zWMpUUmHW0bRBsyRoCAtn4NbRtlw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627420687;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GuVIO3h4A3uvlueiXNtD+gOKe8DJdOF+LTpC6lPdeN0=;
-        b=plHhhSL3RHlgtPnDW4SiJjwR6x3MZzBGUwCOKA55C8KaJf9YPzlHZtSiqu8vgr2h8w1C9w
-        it0DORLeufmpOgCg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7064D133DE;
-        Tue, 27 Jul 2021 21:18:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id sdu9Dg94AGGTdQAAGKfGzw
-        (envelope-from <rgoldwyn@suse.de>); Tue, 27 Jul 2021 21:18:07 +0000
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 7/7] btrfs: Alloc backref_ctx on stack
-Date:   Tue, 27 Jul 2021 16:17:31 -0500
-Message-Id: <d1a4e43de270f291d97b1c00b7ca3b32ce699009.1627418762.git.rgoldwyn@suse.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1627418762.git.rgoldwyn@suse.com>
-References: <cover.1627418762.git.rgoldwyn@suse.com>
+        Tue, 27 Jul 2021 17:44:32 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 9A112B05909; Tue, 27 Jul 2021 17:42:10 -0400 (EDT)
+Date:   Tue, 27 Jul 2021 17:41:57 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Dave T <davestechshop@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: BTRFS scrub reports an error but check doesn't find any errors.
+Message-ID: <20210727214049.GH10170@hungrycats.org>
+References: <CAGdWbB5YL40HiF9E0RxCdO96MS7tKg1=CRPT2YSe+vR3eGZUgQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGdWbB5YL40HiF9E0RxCdO96MS7tKg1=CRPT2YSe+vR3eGZUgQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On Sun, Jul 25, 2021 at 01:39:55PM -0400, Dave T wrote:
+> What does the list recommend I do in this case?
+> 
+> starting btrfs scrub ...
+> scrub done for 56cea9cf-5374-4a43-b19d-6b0b143dc635
+> Scrub started:    Sun Jul 25 00:40:43 2021
+> Status:           finished
+> Duration:         2:52:45
+> Total to scrub:   1.26TiB
+> Rate:             113.72MiB/s
+> Error summary:    read=1
+>   Corrected:      0
+>   Uncorrectable:  1
+>   Unverified:     0
+> ERROR: there are uncorrectable errors
 
-Instead of using kmalloc() to allocate backref_ctx, allocate backref_ctx
-on stack.
+This is a read failure (data not available from device), not a csum error
+(data available but not correct).
 
-sizeof(backref_ctx) = 48
+> dmesg | grep "checksum error at" | tail -n 20
+> (no output)
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- fs/btrfs/send.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+You should be looking for a IO failure on the underlying device (the
+one below /dev/mapper/userluks).  Look for log messages that appear just
+before btrfs errors, or errors mentioning the device itself:
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 6ac37ae6c811..e0553fa27f85 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -1307,7 +1307,7 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	u64 flags = 0;
- 	struct btrfs_file_extent_item *fi;
- 	struct extent_buffer *eb = path->nodes[0];
--	struct backref_ctx *backref_ctx = NULL;
-+	struct backref_ctx backref_ctx = {0};
- 	struct clone_root *cur_clone_root;
- 	struct btrfs_key found_key;
- 	struct btrfs_path *tmp_path;
-@@ -1322,12 +1322,6 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	/* We only use this path under the commit sem */
- 	tmp_path->need_commit_sem = 0;
- 
--	backref_ctx = kmalloc(sizeof(*backref_ctx), GFP_KERNEL);
--	if (!backref_ctx) {
--		ret = -ENOMEM;
--		goto out;
--	}
--
- 	if (data_offset >= ino_size) {
- 		/*
- 		 * There may be extents that lie behind the file's size.
-@@ -1392,12 +1386,12 @@ static int find_extent_clone(struct send_ctx *sctx,
- 		cur_clone_root->found_refs = 0;
- 	}
- 
--	backref_ctx->sctx = sctx;
--	backref_ctx->found = 0;
--	backref_ctx->cur_objectid = ino;
--	backref_ctx->cur_offset = data_offset;
--	backref_ctx->found_itself = 0;
--	backref_ctx->extent_len = num_bytes;
-+	backref_ctx.sctx = sctx;
-+	backref_ctx.found = 0;
-+	backref_ctx.cur_objectid = ino;
-+	backref_ctx.cur_offset = data_offset;
-+	backref_ctx.found_itself = 0;
-+	backref_ctx.extent_len = num_bytes;
- 
- 	/*
- 	 * The last extent of a file may be too large due to page alignment.
-@@ -1405,7 +1399,7 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	 * __iterate_backrefs work.
- 	 */
- 	if (data_offset + num_bytes >= ino_size)
--		backref_ctx->extent_len = ino_size - data_offset;
-+		backref_ctx.extent_len = ino_size - data_offset;
- 
- 	/*
- 	 * Now collect all backrefs.
-@@ -1416,12 +1410,12 @@ static int find_extent_clone(struct send_ctx *sctx,
- 		extent_item_pos = 0;
- 	ret = iterate_extent_inodes(fs_info, found_key.objectid,
- 				    extent_item_pos, 1, __iterate_backrefs,
--				    backref_ctx, false);
-+				    &backref_ctx, false);
- 
- 	if (ret < 0)
- 		goto out;
- 
--	if (!backref_ctx->found_itself) {
-+	if (!backref_ctx.found_itself) {
- 		/* found a bug in backref code? */
- 		ret = -EIO;
- 		btrfs_err(fs_info,
-@@ -1434,7 +1428,7 @@ static int find_extent_clone(struct send_ctx *sctx,
- 		    "find_extent_clone: data_offset=%llu, ino=%llu, num_bytes=%llu, logical=%llu",
- 		    data_offset, ino, num_bytes, logical);
- 
--	if (!backref_ctx->found)
-+	if (!backref_ctx.found)
- 		btrfs_debug(fs_info, "no clones found");
- 
- 	cur_clone_root = NULL;
-@@ -1458,7 +1452,6 @@ static int find_extent_clone(struct send_ctx *sctx,
- 
- out:
- 	btrfs_free_path(tmp_path);
--	kfree(backref_ctx);
- 	return ret;
- }
- 
--- 
-2.32.0
+	dmesg | grep -B99 -i btrfs
 
+	dmesg | grep -C9 sda
+
+> # dmesg | grep -i checksum
+> [  +0.001698] xor: automatically using best checksumming function   avx
+> (not related to BTRFS, right?)
+> 
+> # btrfs fi us /path/to/xyz
+> Overall:
+>     Device size:                   2.73TiB
+>     Device allocated:              1.26TiB
+>     Device unallocated:            1.47TiB
+>     Device missing:                  0.00B
+>     Used:                          1.12TiB
+>     Free (estimated):              1.60TiB      (min: 888.70GiB)
+>     Free (statfs, df):             1.60TiB
+>     Data ratio:                       1.00
+>     Metadata ratio:                   2.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
+>     Multiple profiles:                  no
+> 
+> Data,single: Size:1.25TiB, Used:1.11TiB (89.38%)
+>    /dev/mapper/userluks    1.25TiB
+> 
+> Metadata,DUP: Size:6.00GiB, Used:5.26GiB (87.67%)
+>    /dev/mapper/userluks   12.00GiB
+> 
+> System,DUP: Size:32.00MiB, Used:160.00KiB (0.49%)
+>    /dev/mapper/userluks   64.00MiB
+
+Since the error was not corrected, it likely occurred in the data blocks.
+
+A metadata error would be correctable, so check wouldn't report it because
+the scrub will have already corrected it (assuming the underlying drive
+is still healthy enough to remap bad sectors).
+
+> Unallocated:
+>    /dev/mapper/userluks    1.47TiB
+> 
+> # btrfs check /dev/mapper/xyz
+
+That command won't read any data blocks, so it won't see any errors there.
+
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/xyz
+> UUID: 56cea9cf-5374-4a43-b19d-6b0b143dc635
+> [1/7] checking root items
+> [2/7] checking extents
+> [3/7] checking free space cache
+> [4/7] checking fs roots
+> [5/7] checking only csums items (without verifying data)
+> [6/7] checking root refs
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 1230187327496 bytes used, no error found
+> total csum bytes: 1195610680
+> total tree bytes: 5648285696
+> total fs tree bytes: 4011016192
+> total extent tree bytes: 379256832
+> btree space waste bytes: 827370015
+> file data blocks allocated: 5497457123328
+>  referenced 5523039584256
+> 
+> If more info is needed, please let me know. Recommendations and advice
+> are appreciated.
+> Thank you.
