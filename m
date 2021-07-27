@@ -2,91 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12AB3D7467
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 13:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E2F3D786B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 16:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236464AbhG0LfH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 07:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231781AbhG0LfF (ORCPT
+        id S232432AbhG0O0Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 10:26:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48022 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232136AbhG0O0X (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:35:05 -0400
-X-Greylist: delayed 452 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 27 Jul 2021 04:35:05 PDT
-Received: from mail-out02.belwue.de (mail-out02.belwue.de [IPv6:2001:7c0:0:76::12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48D7C061757
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 04:35:05 -0700 (PDT)
-Received: from mail-hub01.belwue.de (mail-hub01.belwue.de [IPv6:2001:7c0:0:76::41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by mail-out02.belwue.de (Postfix) with ESMTPS id 4GYvf72TlJz9yv7X
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 13:27:27 +0200 (CEST)
-Received: from fex.rus.uni-stuttgart.de (fex.rus.uni-stuttgart.de [129.69.1.129])
-        by mail-hub01.belwue.de (Postfix) with SMTP id 4GYvf65Nzfz52B3x
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 13:27:26 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 13:27:26 +0200
-From:   Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: cannot use btrfs for nfs server
-Message-ID: <20210727112726.GA30962@tik.uni-stuttgart.de>
-Mail-Followup-To: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <20210709065320.GC8249@tik.uni-stuttgart.de>
- <CAJCQCtQvak-28B7eUf5zRnAeGK27qZaF-1ZZt=OAHk+2KmfsWQ@mail.gmail.com>
- <20210710065612.GF1548@tik.uni-stuttgart.de>
- <CAJCQCtQn0=8KiB=2garN8k2NRd1PO3HBnrMNvmqssSfKT2-UXQ@mail.gmail.com>
- <20210712072525.GI1548@tik.uni-stuttgart.de>
- <294e8449-383f-1c90-62be-fb618332862e@cobb.uk.net>
- <20210712161618.GA913@tik.uni-stuttgart.de>
- <8506b846-4c4d-6e8f-09ee-e0f2736aac4e@cobb.uk.net>
- <20210713073721.GA5047@tik.uni-stuttgart.de>
- <2b53b9dd-4353-a73e-59b3-c87b6419ebf4@tnonline.net>
+        Tue, 27 Jul 2021 10:26:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id E0BEB221E7;
+        Tue, 27 Jul 2021 14:26:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627395982;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HC5ONAg2yYRZt2zW9acSUEGmX3FDz45BOcTIByRSZG8=;
+        b=EjBTK/xYJh2pUZ+nTQiXYIdlMErjE0SQP9RVh1bQduE9NdjhWWBg83CfSKMtvDu6fzDkqU
+        /dwoVfzMBFyQ0xy5aMJNLlf771g30bIaCXcwixsPyMA7FSCgXk0jMVieiD7yVFyu2cTe27
+        ipStDls/PrwR65iLAEGS6NDC1ooPGiE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627395982;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HC5ONAg2yYRZt2zW9acSUEGmX3FDz45BOcTIByRSZG8=;
+        b=YWAJMlp8oZ4T8PsK1yJ1ZFPpE/B32MNShDxs2rHk6LIi5nSbKWzBw94S8bsp9wzezZo8bS
+        1jz2bpWnZn+ZGnDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id DB930A3B92;
+        Tue, 27 Jul 2021 14:26:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5720DDA8CC; Tue, 27 Jul 2021 16:23:38 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 16:23:38 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: change the set_page_extent_mapped() call into an
+ ASSERT()
+Message-ID: <20210727142338.GR5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210727013942.83531-1-wqu@suse.com>
+ <68e6284c-3bac-8fb8-af82-1f717bffd3dc@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2b53b9dd-4353-a73e-59b3-c87b6419ebf4@tnonline.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Rspamd-Queue-Id: 4GYvf65Nzfz52B3x
-X-Rspamd-UID: 5ff9a9
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <68e6284c-3bac-8fb8-af82-1f717bffd3dc@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon 2021-07-19 (14:06), Forza wrote:
-
-> > And the error messages are annoying!
-> > 
-> > root@tsmsrvj:/etc# exportfs -v
-> > /data/fex       localhost.localdomain(rw,async,wdelay,crossmnt,no_root_squash,no_subtree_check,sec=sys,rw,secure,no_root_squash,no_all_squash)
-> > /data/snapshots localhost.localdomain(rw,async,wdelay,crossmnt,no_root_squash,no_subtree_check,sec=sys,rw,secure,no_root_squash,no_all_squash)
-> > 
-> > root@tsmsrvj:/etc# mount -o vers=3 localhost:/data/fex /nfs/localhost/fex
-> > root@tsmsrvj:/etc# mount -o vers=3 localhost:/data/snapshots /nfs/localhost/snapshots
-> > root@tsmsrvj:/etc# mount | grep localhost
-> > localhost:/data/fex on /nfs/localhost/fex type nfs (rw,relatime,vers=3,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,mountaddr=127.0.0.1,mountvers=3,mountport=37961,mountproto=udp,local_lock=none,addr=127.0.0.1)
-> > localhost:/data/snapshots on /nfs/localhost/snapshots type nfs (rw,relatime,vers=3,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,mountaddr=127.0.0.1,mountvers=3,mountport=37961,mountproto=udp,local_lock=none,addr=127.0.0.1)
-> > 
+On Tue, Jul 27, 2021 at 06:29:08PM +0800, Qu Wenruo wrote:
 > 
-> What kind of NFS server is this? 
+> 
+> On 2021/7/27 上午9:39, Qu Wenruo wrote:
+> > Btrfs uses set_page_extent_mapped() to properly setup a page.
+> > 
+> > That function would set PagePrivate, and populate needed structure for
+> > subpage.
+> > The timing of calling set_page_extent_mapped() happens before reading a
+> > page or dirtying a page.
+> > Thus when we got a page to write back, if it doesn't have PagePrivate,
+> > it is a big problem in code logic.
+> > 
+> > Calling set_page_extent_mapped() for such page would just mask the
+> > problem.
+> > Furthermore, for subpage case, we call subpage error helper to clear the
+> > page error bit before calling set_page_extent_mapped().
+> > If we really got a page without Private bit, it can call kernel NULL
+> > pointer dereference.
+> > 
+> > So change the set_page_extent_mapped() call to an ASSERT(), and move the
+> > check before any page status update call.
+> > 
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> 
+> Please discard the patch.
+> 
+> Although I haven't hit any problem testing the patch, it's still 
+> possible that we have a special page that would need cow fixup.
+> 
+> Such page will be:
+> 
+> - Dirty
+> 
+> - Not Private
+>    Thus no page->private, this could still cause problem for subpage case
+>    though
+> 
+> - No EXTENT_DELALLOC flags set for any range inside the page
+>    Thus writepage_delalloc() will not find a delalloc range inside the
+>    page.
+> 
+> Such page will be caught by btrfs_writepage_cow_fixup(), but it will 
+> trigger the ASSERT() added by this patch.
 
-Default Ubuntu kernel NFS-server.
-
-
-> Isn't UDP mounts legacy and not normally used by default?
-
-See above, I am using tcp!
-
-
-> Can you switch to an nfs4 server and try again? I also still think you 
-> should use fsid export option.
-
-No change. The error is still there.
-
-
-
--- 
-Ullrich Horlacher              Server und Virtualisierung
-Rechenzentrum TIK         
-Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
-Allmandring 30a                Tel:    ++49-711-68565868
-70569 Stuttgart (Germany)      WWW:    http://www.tik.uni-stuttgart.de/
-REF:<2b53b9dd-4353-a73e-59b3-c87b6419ebf4@tnonline.net>
+Hm yeah the mismatch between dirty/private/delalloc sounds exactly like
+work for the cow fixup.
