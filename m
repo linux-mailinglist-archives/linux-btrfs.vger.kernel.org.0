@@ -2,225 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B873D7EAE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 21:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9E43D8062
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 23:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbhG0TsD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 15:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37730 "EHLO
+        id S232467AbhG0VDq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 17:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbhG0TsC (ORCPT
+        with ESMTP id S232356AbhG0VDo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:48:02 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAADAC061757
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 12:48:01 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id c9so9738895qkc.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 12:48:01 -0700 (PDT)
+        Tue, 27 Jul 2021 17:03:44 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC309C08EACC
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:21 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id 129so144991qkg.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=yZxDUrf5YWF8xmdZRZwfW5IfNetp3a9EI1uOanSCoGY=;
-        b=sFG3YHzEAetzC0ZjFmivOO94gUs35BRKgjeEzCzeZBsSjpHfkJzQH8leSnx+b8Mt+q
-         zBNcfUHEi6BOZ3irYWbmcZyBN3dVoNoYZZF1ho81MBEgPFTvaCqbtbx2gSA+sx1wmLdQ
-         ddLcl4p5cKsCOqsTm9WrPHZnklG9XGECwfcAdc7KBmjHGfQTd+V0IJzIlDd/SmmgvJzP
-         WLuvGJczPO7SeZ1gI4ghGR3ZqXVAHJ9KXWkudiWeZZn6LcL2qgf0KaIVs8NNMrM+K1h0
-         znV9dMoL+rCJLmwyP0r22XPU8EmnccAjfZmiJxgcmtLzSnlB05UyFxp/JeTB7WvkHCBz
-         skfA==
+        bh=RyDBLt+kfCY7tDDWtQkDU64nWIAKmy2il1nHpBYXvfI=;
+        b=p2tBtqLRMatCVtqktAG4QfjHc8u2HyUlb/CDzxlTnI83ATTwMeMeNyx8Yt1m7PGeLm
+         Z1kiywsIkVqrKL4V83QMmxwKNCA0c7WHvlXzqn7gTuhFFKBdbBxZ0E0dOZC6cSMmErUI
+         D/GH5HBFn9g1ffSWgrfs1q+VfX6Cc0KNZOnTUoJc0u/iTojRrDnzeGzGSywxGK0SSJcG
+         NNZhkQIf2VdNP8r/Zl8/SM+c4iqoQHxxUapOYaZB2EIfYR9LxYTGZm24eTWscHY7zJ6W
+         ARB3mwmSVGl/zf9VZps7sAdksPTTJA2QFtfKec6aOrtlGR4v/R/WK/uEQQr9hvDnvDhb
+         4tpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yZxDUrf5YWF8xmdZRZwfW5IfNetp3a9EI1uOanSCoGY=;
-        b=Noh0dQ2kCjKOqRh7o6KoqAYXrSobbfzAWmsFdPLRxL888KNUtmkqhhEaegpIOJC3Fc
-         SmqBgCbjzfBnJc/iAonHh6tYmlxmCZ+u6+yMRDJCmR6pJIDQLWqB36mDxtfes+TAzljy
-         GanZOe75TVCNlwF4TFyL1kXtsiDIZxCcddlGhJPmfTatudAiqG9P1EjphUfO3HnqP4Yd
-         s7V0zAqMAitdZXrKaTqRhhSHFDdBuM8CiDPYYRmoi5TYP+NGpHZk8tEv8MM5jm27qnVa
-         J3j9UpuwSJkO7+Rfug9wp1b99nzsiNw/9FJ5CCeQ9YyC5RCX6AoT5YIUFTgPmdmvQrXP
-         eduA==
-X-Gm-Message-State: AOAM533qh3mnWSYzle+j1nmFTeZ8vBUjViCtYCrSV/1ucxynmIAThISW
-        JrZBr+yPEmsilmjlS+TPX1hGGBZ7kouxZ1bD
-X-Google-Smtp-Source: ABdhPJzrWko93wz/2vM8kzqErT2mW475VQTk5FYMI71TQhZ3Q8dly5x6eKMdIpvVvJcMnSAmdn3L1g==
-X-Received: by 2002:a37:a6d2:: with SMTP id p201mr24363893qke.98.1627415280646;
-        Tue, 27 Jul 2021 12:48:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RyDBLt+kfCY7tDDWtQkDU64nWIAKmy2il1nHpBYXvfI=;
+        b=AzU8AvV/aIhW90itH8TtIHapg1Ok2kN0ENU/qwbYDSv0wa7dTleUJmGEnaa4hvcWk/
+         rbWqHFEtOTtgfaZanpeQdsX23K3Cd6Oze7xrHdoogiOKxWJZwTkPdVV0rzObwVhAdJPC
+         mklDaciWls6mQ+10Hs9kPjjLwh1nQnRYsl5jLPa3leQp/qOTJNazLRL2gbc36V65jNwk
+         jb4z63owwfk1+ZcBEmov0Hn/pbHjb3GCdnx2QRcTVBnMF6NJe94Jw5B+K379AqBuGKUL
+         LnlWdQFd42MObmZ5tm9nuQb7NxP/sr9/3HubmwnhREa13UqL66PyDstlgpPrHoq2TKvN
+         VGmg==
+X-Gm-Message-State: AOAM532vF5UmAyhyeDOv8fkA9G1YAwTZGL+fkSu8vokIxsNID3vJyeaL
+        pRBRPlFsWDd0YWCl47rPuqC+p18s/EDA1JHZ
+X-Google-Smtp-Source: ABdhPJzV5drb31Dy1htrVHELpMUGJZwfv8ehGwMHDxoBp2vUd1/gZBt2dY7ctVHlZusroZMNzrw99A==
+X-Received: by 2002:a37:9f8d:: with SMTP id i135mr23926132qke.296.1627419680740;
+        Tue, 27 Jul 2021 14:01:20 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n14sm1876693qti.47.2021.07.27.12.47.59
+        by smtp.gmail.com with ESMTPSA id 197sm2270410qkn.64.2021.07.27.14.01.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 12:48:00 -0700 (PDT)
+        Tue, 27 Jul 2021 14:01:20 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 6/6] btrfs: unify common code for the v1 and v2 versions of device remove
-Date:   Tue, 27 Jul 2021 15:47:48 -0400
-Message-Id: <41983424cf4871def20a428f4bcdddaee1f98754.1627414703.git.josef@toxicpanda.com>
+Subject: [PATCH v2 0/7] 
+Date:   Tue, 27 Jul 2021 17:01:12 -0400
+Message-Id: <cover.1627419595.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1627414703.git.josef@toxicpanda.com>
-References: <cover.1627414703.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These things share a lot of common code, v2 simply allows you to specify
-devid.  Abstract out this common code and use the helper by both the v1
-and v2 interfaces to save us some lines of code.
+v1->v2:
+- Rework the first patch as it was wrong because we need it for seed devices.
+- Fix another lockdep splat I uncovered while testing against seed devices to
+  make sure I hadn't broken anything.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ioctl.c | 99 +++++++++++++++++++-----------------------------
- 1 file changed, 38 insertions(+), 61 deletions(-)
+--- Original email ---
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index fabbfdfa56f5..e3a7e8544609 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -3200,15 +3200,14 @@ static long btrfs_ioctl_add_dev(struct btrfs_fs_info *fs_info, void __user *arg)
- 	return ret;
- }
- 
--static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
-+static long btrfs_do_device_removal(struct file *file, const char *path,
-+				    u64 devid, bool cancel)
- {
- 	struct inode *inode = file_inode(file);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--	struct btrfs_ioctl_vol_args_v2 *vol_args;
- 	struct block_device *bdev = NULL;
- 	fmode_t mode;
- 	int ret;
--	bool cancel = false;
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
-@@ -3217,11 +3216,37 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
- 	if (ret)
- 		return ret;
- 
--	vol_args = memdup_user(arg, sizeof(*vol_args));
--	if (IS_ERR(vol_args)) {
--		ret = PTR_ERR(vol_args);
--		goto err_drop;
-+	ret = exclop_start_or_cancel_reloc(fs_info, BTRFS_EXCLOP_DEV_REMOVE,
-+					   cancel);
-+	if (ret)
-+		goto out;
-+
-+	/* Exclusive operation is now claimed */
-+	ret = btrfs_rm_device(fs_info, path, devid, &bdev, &mode);
-+	btrfs_exclop_finish(fs_info);
-+
-+	if (!ret) {
-+		if (path)
-+			btrfs_info(fs_info, "device deleted: %s", path);
-+		else
-+			btrfs_info(fs_info, "device deleted: id %llu", devid);
- 	}
-+out:
-+	mnt_drop_write_file(file);
-+	if (bdev)
-+		blkdev_put(bdev, mode);
-+	return ret;
-+}
-+
-+static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
-+{
-+	struct btrfs_ioctl_vol_args_v2 *vol_args;
-+	int ret = 0;
-+	bool cancel = false;
-+
-+	vol_args = memdup_user(arg, sizeof(*vol_args));
-+	if (IS_ERR(vol_args))
-+		return PTR_ERR(vol_args);
- 
- 	if (vol_args->flags & ~BTRFS_DEVICE_REMOVE_ARGS_MASK) {
- 		ret = -EOPNOTSUPP;
-@@ -3232,79 +3257,31 @@ static long btrfs_ioctl_rm_dev_v2(struct file *file, void __user *arg)
- 	    strcmp("cancel", vol_args->name) == 0)
- 		cancel = true;
- 
--	ret = exclop_start_or_cancel_reloc(fs_info, BTRFS_EXCLOP_DEV_REMOVE,
--					   cancel);
--	if (ret)
--		goto out;
--	/* Exclusive operation is now claimed */
--
- 	if (vol_args->flags & BTRFS_DEVICE_SPEC_BY_ID)
--		ret = btrfs_rm_device(fs_info, NULL, vol_args->devid, &bdev,
--				      &mode);
-+		ret = btrfs_do_device_removal(file, NULL, vol_args->devid,
-+					      cancel);
- 	else
--		ret = btrfs_rm_device(fs_info, vol_args->name, 0, &bdev,
--				      &mode);
--
--	btrfs_exclop_finish(fs_info);
--
--	if (!ret) {
--		if (vol_args->flags & BTRFS_DEVICE_SPEC_BY_ID)
--			btrfs_info(fs_info, "device deleted: id %llu",
--					vol_args->devid);
--		else
--			btrfs_info(fs_info, "device deleted: %s",
--					vol_args->name);
--	}
-+		ret = btrfs_do_device_removal(file, vol_args->name, 0, cancel);
- out:
- 	kfree(vol_args);
--err_drop:
--	mnt_drop_write_file(file);
--	if (bdev)
--		blkdev_put(bdev, mode);
- 	return ret;
- }
- 
- static long btrfs_ioctl_rm_dev(struct file *file, void __user *arg)
- {
--	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_ioctl_vol_args *vol_args;
--	struct block_device *bdev = NULL;
--	fmode_t mode;
- 	int ret;
- 	bool cancel;
- 
--	if (!capable(CAP_SYS_ADMIN))
--		return -EPERM;
--
--	ret = mnt_want_write_file(file);
--	if (ret)
--		return ret;
--
- 	vol_args = memdup_user(arg, sizeof(*vol_args));
--	if (IS_ERR(vol_args)) {
--		ret = PTR_ERR(vol_args);
--		goto out_drop_write;
--	}
-+	if (IS_ERR(vol_args))
-+		return PTR_ERR(vol_args);
- 	vol_args->name[BTRFS_PATH_NAME_MAX] = '\0';
- 	cancel = (strcmp("cancel", vol_args->name) == 0);
- 
--	ret = exclop_start_or_cancel_reloc(fs_info, BTRFS_EXCLOP_DEV_REMOVE,
--					   cancel);
--	if (ret == 0) {
--		ret = btrfs_rm_device(fs_info, vol_args->name, 0, &bdev,
--				      &mode);
--		if (!ret)
--			btrfs_info(fs_info, "disk deleted %s", vol_args->name);
--		btrfs_exclop_finish(fs_info);
--	}
-+	ret = btrfs_do_device_removal(file, vol_args->name, 0, cancel);
- 
- 	kfree(vol_args);
--out_drop_write:
--	mnt_drop_write_file(file);
--
--	if (bdev)
--		blkdev_put(bdev, mode);
- 	return ret;
- }
- 
+Hello,
+
+The commit 87579e9b7d8d ("loop: use worker per cgroup instead of kworker")
+enabled the use of workqueues for loopback devices, which brought with it
+lockdep annotations for the workqueues for loopback devices.  This uncovered a
+cascade of lockdep warnings because of how we mess with the block_device while
+under the sb writers lock while doing the device removal.
+
+The first patch seems innocuous but we have a lockdep_assert_held(&uuid_mutex)
+in one of the helpers, which is why I have it first.  The code should never be
+called which is why it is removed, but I'm removing it specifically to remove
+confusion about the role of the uuid_mutex here.
+
+The next 4 patches are to resolve the lockdep messages as they occur.  There are
+several issues and I address them one at a time until we're no longer getting
+lockdep warnings.
+
+The final patch doesn't necessarily have to go in right away, it's just a
+cleanup as I noticed we have a lot of duplicated code between the v1 and v2
+device removal handling.  Thanks,
+
+Josef
+
+Josef Bacik (7):
+  btrfs: do not call close_fs_devices in btrfs_rm_device
+  btrfs: do not take the uuid_mutex in btrfs_rm_device
+  btrfs: do not read super look for a device path
+  btrfs: update the bdev time directly when closing
+  btrfs: delay blkdev_put until after the device remove
+  btrfs: unify common code for the v1 and v2 versions of device remove
+  btrfs: do not take the device_list_mutex in clone_fs_devices
+
+ fs/btrfs/ioctl.c   |  92 +++++++++++++++--------------------
+ fs/btrfs/volumes.c | 118 ++++++++++++++++++++++-----------------------
+ fs/btrfs/volumes.h |   3 +-
+ 3 files changed, 101 insertions(+), 112 deletions(-)
+
 -- 
 2.26.3
 
