@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDB93D73B7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 12:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EB33D73B8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 12:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236451AbhG0KvB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 06:51:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56192 "EHLO mail.kernel.org"
+        id S236427AbhG0KvE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 06:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236425AbhG0KvA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:51:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86F8060249;
-        Tue, 27 Jul 2021 10:50:58 +0000 (UTC)
+        id S236455AbhG0KvC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:51:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01F7860F59;
+        Tue, 27 Jul 2021 10:51:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627383060;
-        bh=uOVzXrcM4S7QODaC1Hq8HLS7sq+6Lt+/4j8G+/Tb+wQ=;
+        s=k20201202; t=1627383063;
+        bh=ZVdEwxARCnwrtv8KR7Uv/W3jGp+1li1RIDemiy1dWck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GxJb9ybXPJCSkaUtpYPSpYJzoNpAUtF+yx2S9bh+OUfUhLS4VGN1XGIkaOEr/nA3N
-         Hjk75maM6ywIr0tqnf+GHib+NpXPNMoqXIX6kChnx3PH/Gp3gAYdSgcCgzYaVy07NH
-         ChBhR4mBA2HsqbF4S+PlSrA31CCP8oZr/qZJPLoJPUQ8CIiOKyrcYnuVrA+7ZNYV79
-         Krh9IOc7qzF5+aTMdFHozMtkJJE0LVpVxLk8TZEHEevyiJWuoprQ80hZHzZcJrC0gI
-         rDSJT4ou2PHXu7UgYP6SMw5sQNHTuDHE0GIm0gwFvJdi/f/BVUEv4S/VMqqy1sJCnI
-         Hn6zv5W5CH+KQ==
+        b=gqgRAt0R2LK12Q4WIjMU5Vtmf0rsQP4VP8Wbhtl+eHxyPQq021+ypQbSKoEBu6Q7e
+         mfkQidEYTfKCykEYUrxvgw9g90pxl8ACVaOO/7MKHcpOcttbHiE8BRkb69RYzmn1jS
+         Erxjif4O1RAvDPy7oLw2AR/QGe6YxIVFqs3uFnkfYNOWcGJ7vtLpjtFUcVkkN55Xi6
+         yjC8H0Iqs0Lr0GmML6QR1+gsuOTDYtK96qV0Cb5LwaRQSfALExRjGI++Q8/GXyt3kD
+         iyugAFcMBHs8iErtzbk79USpDUUO9FWFxBsE5mubsZJhJ7nrfeKaGdI64VvH6AuMhQ
+         v7VrTm0eLMLYQ==
 From:   Christian Brauner <brauner@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
 Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: [PATCH v4 13/21] btrfs/inode: allow idmapped BTRFS_IOC_{SNAP,SUBVOL}_CREATE{_V2} ioctl
-Date:   Tue, 27 Jul 2021 12:48:52 +0200
-Message-Id: <20210727104900.829215-14-brauner@kernel.org>
+        Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
+Subject: [PATCH v4 14/21] btrfs/ioctl: allow idmapped BTRFS_IOC_SNAP_DESTROY{_V2} ioctl
+Date:   Tue, 27 Jul 2021 12:48:53 +0200
+Message-Id: <20210727104900.829215-15-brauner@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210727104900.829215-1-brauner@kernel.org>
 References: <20210727104900.829215-1-brauner@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8252; h=from:subject; bh=Jb4kinKRMiKRA/d4DWHr6mIvAP2CszgObSFNZOVcWSM=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMST8fzL18pJPDy3XHrt3++Ts0klbwjor7uR+4Mtw7pOryeNn 23zheUcpC4MYF4OsmCKLQ7tJuNxynorNRpkaMHNYmUCGMHBxCsBE0v4wMnRZPdkye0cI60LhpNPvUt labiUYhy1riKkUceF3ds948oHhn6VE2nqG9xcdS43X7vSpd7qo/bzr6cxQVSP27dNNP9msYgAA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8052; h=from:subject; bh=XDvcdhsUgM9IEU8Jd1xYGomj1Lq1mSRLnB//SXLofQU=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMST8fzLV/kTX6v83v9+/c2jzdXUWa0aLz4t2cT7/LXx8pocw k8d2vo5SFgYxLgZZMUUWh3aTcLnlPBWbjTI1YOawMoEMYeDiFICJRN9h+O8y306/SHCvXGHkQ3XLuy se3nJW7z3M3L36opRpzIFt5lsY/vCxGIYxbF1qL/xWK3evAsfik+o+6/ZGnL/+Y80vqxvWJvwA
 X-Developer-Key: i=christian.brauner@ubuntu.com; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -46,11 +46,119 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Christian Brauner <christian.brauner@ubuntu.com>
 
-Creating subvolumes and snapshots is one of the core features of btrfs and is
-even available to unprivileged users. Make it possible to use subvolume and
-snapshot creation on idmapped mounts. This is a fairly straightforward
+Destroying subvolumes and snapshots are important features of btrfs. Both
+operations are available to unprivileged users if the filesystem has been
+mounted with the "user_subvol_rm_allowed" mount option. Allow subvolume and
+snapshot deletion on idmapped mounts. This is a fairly straightforward
 operation since all the permission checking helpers are already capable of
 handling idmapped mounts. So we just need to pass down the mount's userns.
+
+Subvolumes and snapshots can either be deleted by specifying their name or - if
+BTRFS_IOC_SNAP_DESTROY_V2 is used - by their subvolume or snapshot id if the
+BTRFS_SUBVOL_SPEC_BY_ID is set.
+
+This feature is blocked on idmapped mounts as this allows filesystem wide
+subvolume deletions and thus can escape the scope of what's exposed under the
+mount identified by the fd passed with the ioctl.
+
+As David correctly pointed out this means that even the root or CAP_SYS_ADMIN
+capable user can't delete a subvolume via BTRFS_SUBVOL_SPEC_BY_ID. This is
+intentional. The root user is currently already subject to permission checks in
+btrfs_may_delete() including whether the inode's i_uid/i_gid of the directory
+the subvolume is located in have a mapping in the caller's idmapping. For this
+to fail isn't currently possible since a btrfs filesystem can't be mounted with
+a non-initial idmapping but it shows that even the root user would fail to
+delete a subvolume if the relevant inode isn't mapped in their idmapping. The
+idmapped mount case is the same in principle.
+
+This isn't a huge problem a root user wanting to delete arbitrary subvolumes
+can just always create another (even detached) mount without an idmapping
+attached.
+
+In addition, we will allow BTRFS_SUBVOL_SPEC_BY_ID for cases where the
+subvolume to delete is directly located under inode referenced by the fd passed
+for the ioctl() in a follow-up commit.
+
+Here is an example where a btrfs subvolume is deleted through a subvolume mount
+that does not expose the subvolume to be delete but it can still be deleted by
+using the subvolume id:
+
+ /* Compile the following program as "delete_by_spec". */
+
+ #define _GNU_SOURCE
+ #include <fcntl.h>
+ #include <inttypes.h>
+ #include <linux/btrfs.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <sys/ioctl.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+
+ static int rm_subvolume_by_id(int fd, uint64_t subvolid)
+ {
+ 	struct btrfs_ioctl_vol_args_v2 args = {};
+ 	int ret;
+
+ 	args.flags = BTRFS_SUBVOL_SPEC_BY_ID;
+ 	args.subvolid = subvolid;
+
+ 	ret = ioctl(fd, BTRFS_IOC_SNAP_DESTROY_V2, &args);
+ 	if (ret < 0)
+ 		return -1;
+
+ 	return 0;
+ }
+
+ int main(int argc, char *argv[])
+ {
+ 	int subvolid = 0;
+
+ 	if (argc < 3)
+ 		exit(1);
+
+ 	fprintf(stderr, "Opening %s\n", argv[1]);
+ 	int fd = open(argv[1], O_CLOEXEC | O_DIRECTORY);
+ 	if (fd < 0)
+ 		exit(2);
+
+ 	subvolid = atoi(argv[2]);
+
+ 	fprintf(stderr, "Deleting subvolume with subvolid %d\n", subvolid);
+ 	int ret = rm_subvolume_by_id(fd, subvolid);
+ 	if (ret < 0)
+ 		exit(3);
+
+ 	exit(0);
+ }
+ #include <stdio.h>"
+ #include <stdlib.h>"
+ #include <linux/btrfs.h"
+
+ truncate -s 10G btrfs.img
+ mkfs.btrfs btrfs.img
+ export LOOPDEV=$(sudo losetup -f --show btrfs.img)
+ mount ${LOOPDEV} /mnt
+ sudo chown $(id -u):$(id -g) /mnt
+ btrfs subvolume create /mnt/A
+ btrfs subvolume create /mnt/B/C
+ # Get subvolume id via:
+ sudo btrfs subvolume show /mnt/A
+ # Save subvolid
+ SUBVOLID=<nr>
+ sudo umount /mnt
+ sudo mount ${LOOPDEV} -o subvol=B/C,user_subvol_rm_allowed /mnt
+ ./delete_by_spec /mnt ${SUBVOLID}
+
+With idmapped mounts this can potentially be used by users to delete
+subvolumes/snapshots they would otherwise not have access to as the idmapping
+would be applied to an inode that is not exposed in the mount of the subvolume.
+
+The fact that this is a filesystem wide operation suggests it might be a good
+idea to expose this under a separate ioctl that clearly indicates this. In
+essence, the file descriptor passed with the ioctl is merely used to identify
+the filesystem on which to operate when BTRFS_SUBVOL_SPEC_BY_ID is used.
 
 Cc: Chris Mason <clm@fb.com>
 Cc: Josef Bacik <josef@toxicpanda.com>
@@ -58,217 +166,108 @@ Cc: Christoph Hellwig <hch@infradead.org>
 Cc: David Sterba <dsterba@suse.com>
 Cc: linux-btrfs@vger.kernel.org
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
 /* v2 */
 unchanged
 
 /* v3 */
-unchanged
+- Christian Brauner <christian.brauner@ubuntu.com>:
+  - Explain the restriction for the BTRFS_SUBVOL_SPEC_BY_ID flag in detail.k
+
+- David Sterba <dsterba@suse.com>:
+  - Replace the -EINVAL return value for BTRFS_SUBVOL_SPEC_BY_ID deletion
+    requests with a more sensible one such as -EXDEV or -EOPNOTSUPP.
 
 /* v4 */
 non-semantical changes
 ---
- fs/btrfs/ctree.h |  3 ++-
- fs/btrfs/inode.c |  5 +++--
- fs/btrfs/ioctl.c | 47 +++++++++++++++++++++++++++--------------------
- 3 files changed, 32 insertions(+), 23 deletions(-)
+ fs/btrfs/ioctl.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index e5e53e592d4f..ee1876571b3f 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3145,7 +3145,8 @@ int btrfs_set_extent_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
- 			      struct extent_state **cached_state);
- int btrfs_create_subvol_root(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *new_root,
--			     struct btrfs_root *parent_root);
-+			     struct btrfs_root *parent_root,
-+			     struct user_namespace *mnt_userns);
-  void btrfs_set_delalloc_extent(struct inode *inode, struct extent_state *state,
- 			       unsigned *bits);
- void btrfs_clear_delalloc_extent(struct inode *inode,
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 5e0b8e394ae1..30e22c6f83a3 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8940,7 +8940,8 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
-  */
- int btrfs_create_subvol_root(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *new_root,
--			     struct btrfs_root *parent_root)
-+			     struct btrfs_root *parent_root,
-+			     struct user_namespace *mnt_userns)
- {
- 	struct inode *inode;
- 	int err;
-@@ -8951,7 +8952,7 @@ int btrfs_create_subvol_root(struct btrfs_trans_handle *trans,
- 	if (err < 0)
- 		return err;
- 
--	inode = btrfs_new_inode(trans, new_root, &init_user_ns, NULL, "..", 2,
-+	inode = btrfs_new_inode(trans, new_root, mnt_userns, NULL, "..", 2,
- 				ino, ino,
- 				S_IFDIR | (~current_umask() & S_IRWXUGO),
- 				&index);
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 7a6a886df7c4..bb4bda3bba98 100644
+index bb4bda3bba98..6295c9c6fc3e 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -492,8 +492,8 @@ int __pure btrfs_is_empty_uuid(u8 *uuid)
- 	return 1;
- }
+@@ -830,7 +830,8 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
+  *     nfs_async_unlink().
+  */
  
--static noinline int create_subvol(struct inode *dir,
--				  struct dentry *dentry,
-+static noinline int create_subvol(struct user_namespace *mnt_userns,
-+				  struct inode *dir, struct dentry *dentry,
- 				  const char *name, int namelen,
- 				  struct btrfs_qgroup_inherit *inherit)
+-static int btrfs_may_delete(struct inode *dir, struct dentry *victim, int isdir)
++static int btrfs_may_delete(struct user_namespace *mnt_userns,
++			    struct inode *dir, struct dentry *victim, int isdir)
  {
-@@ -638,7 +638,7 @@ static noinline int create_subvol(struct inode *dir,
- 		goto fail;
+ 	int error;
+ 
+@@ -840,12 +841,12 @@ static int btrfs_may_delete(struct inode *dir, struct dentry *victim, int isdir)
+ 	BUG_ON(d_inode(victim->d_parent) != dir);
+ 	audit_inode_child(dir, victim, AUDIT_TYPE_CHILD_DELETE);
+ 
+-	error = inode_permission(&init_user_ns, dir, MAY_WRITE | MAY_EXEC);
++	error = inode_permission(mnt_userns, dir, MAY_WRITE | MAY_EXEC);
+ 	if (error)
+ 		return error;
+ 	if (IS_APPEND(dir))
+ 		return -EPERM;
+-	if (check_sticky(&init_user_ns, dir, d_inode(victim)) ||
++	if (check_sticky(mnt_userns, dir, d_inode(victim)) ||
+ 	    IS_APPEND(d_inode(victim)) || IS_IMMUTABLE(d_inode(victim)) ||
+ 	    IS_SWAPFILE(d_inode(victim)))
+ 		return -EPERM;
+@@ -2914,6 +2915,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 	struct btrfs_root *dest = NULL;
+ 	struct btrfs_ioctl_vol_args *vol_args = NULL;
+ 	struct btrfs_ioctl_vol_args_v2 *vol_args2 = NULL;
++	struct user_namespace *mnt_userns = file_mnt_user_ns(file);
+ 	char *subvol_name, *subvol_name_ptr = NULL;
+ 	int subvol_namelen;
+ 	int err = 0;
+@@ -2941,6 +2943,18 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 			if (err)
+ 				goto out;
+ 		} else {
++			/*
++			 * Deleting by subvolume id can be used to delete
++			 * subvolumes/snapshots anywhere in the filesystem.
++			 * Ensure that users can't abuse idmapped mounts of
++			 * btrfs subvolumes/snapshots to perform operations in
++			 * the whole filesystem.
++			 */
++			if (mnt_userns != &init_user_ns) {
++				err = -EOPNOTSUPP;
++				goto out;
++			}
++
+ 			if (vol_args2->subvolid < BTRFS_FIRST_FREE_OBJECTID) {
+ 				err = -EINVAL;
+ 				goto out;
+@@ -3025,7 +3039,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 	err = down_write_killable_nested(&dir->i_rwsem, I_MUTEX_PARENT);
+ 	if (err == -EINTR)
+ 		goto free_subvol_name;
+-	dentry = lookup_one_len(subvol_name, parent, subvol_namelen);
++	dentry = lookup_one(mnt_userns, subvol_name, parent, subvol_namelen);
+ 	if (IS_ERR(dentry)) {
+ 		err = PTR_ERR(dentry);
+ 		goto out_unlock_dir;
+@@ -3067,14 +3081,14 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
+ 		if (root == dest)
+ 			goto out_dput;
+ 
+-		err = inode_permission(&init_user_ns, inode,
++		err = inode_permission(mnt_userns, inode,
+ 				       MAY_WRITE | MAY_EXEC);
+ 		if (err)
+ 			goto out_dput;
  	}
  
--	ret = btrfs_create_subvol_root(trans, new_root, root);
-+	ret = btrfs_create_subvol_root(trans, new_root, root, mnt_userns);
- 	btrfs_put_root(new_root);
- 	if (ret) {
- 		/* We potentially lose an unused inode item here */
-@@ -864,15 +864,16 @@ static int btrfs_may_delete(struct inode *dir, struct dentry *victim, int isdir)
- }
- 
- /* copy of may_create in fs/namei.c() */
--static inline int btrfs_may_create(struct inode *dir, struct dentry *child)
-+static inline int btrfs_may_create(struct user_namespace *mnt_userns,
-+				   struct inode *dir, struct dentry *child)
- {
- 	if (d_really_is_positive(child))
- 		return -EEXIST;
- 	if (IS_DEADDIR(dir))
- 		return -ENOENT;
--	if (!fsuidgid_has_mapping(dir->i_sb, &init_user_ns))
-+	if (!fsuidgid_has_mapping(dir->i_sb, mnt_userns))
- 		return -EOVERFLOW;
--	return inode_permission(&init_user_ns, dir, MAY_WRITE | MAY_EXEC);
-+	return inode_permission(mnt_userns, dir, MAY_WRITE | MAY_EXEC);
- }
- 
- /*
-@@ -881,6 +882,7 @@ static inline int btrfs_may_create(struct inode *dir, struct dentry *child)
-  * inside this filesystem so it's quite a bit simpler.
-  */
- static noinline int btrfs_mksubvol(const struct path *parent,
-+				   struct user_namespace *mnt_userns,
- 				   const char *name, int namelen,
- 				   struct btrfs_root *snap_src,
- 				   bool readonly,
-@@ -895,12 +897,12 @@ static noinline int btrfs_mksubvol(const struct path *parent,
- 	if (error == -EINTR)
- 		return error;
- 
--	dentry = lookup_one_len(name, parent->dentry, namelen);
-+	dentry = lookup_one(mnt_userns, name, parent->dentry, namelen);
- 	error = PTR_ERR(dentry);
- 	if (IS_ERR(dentry))
- 		goto out_unlock;
- 
--	error = btrfs_may_create(dir, dentry);
-+	error = btrfs_may_create(mnt_userns, dir, dentry);
- 	if (error)
+ 	/* check if subvolume may be deleted by a user */
+-	err = btrfs_may_delete(dir, dentry, 1);
++	err = btrfs_may_delete(mnt_userns, dir, dentry, 1);
+ 	if (err)
  		goto out_dput;
  
-@@ -922,7 +924,7 @@ static noinline int btrfs_mksubvol(const struct path *parent,
- 	if (snap_src)
- 		error = create_snapshot(snap_src, dir, dentry, readonly, inherit);
- 	else
--		error = create_subvol(dir, dentry, name, namelen, inherit);
-+		error = create_subvol(mnt_userns, dir, dentry, name, namelen, inherit);
- 
- 	if (!error)
- 		fsnotify_mkdir(dir, dentry);
-@@ -936,6 +938,7 @@ static noinline int btrfs_mksubvol(const struct path *parent,
- }
- 
- static noinline int btrfs_mksnapshot(const struct path *parent,
-+				   struct user_namespace *mnt_userns,
- 				   const char *name, int namelen,
- 				   struct btrfs_root *root,
- 				   bool readonly,
-@@ -965,7 +968,7 @@ static noinline int btrfs_mksnapshot(const struct path *parent,
- 
- 	btrfs_wait_ordered_extents(root, U64_MAX, 0, (u64)-1);
- 
--	ret = btrfs_mksubvol(parent, name, namelen,
-+	ret = btrfs_mksubvol(parent, mnt_userns, name, namelen,
- 			     root, readonly, inherit);
- out:
- 	if (snapshot_force_cow)
-@@ -1794,6 +1797,7 @@ static noinline int btrfs_ioctl_resize(struct file *file,
- }
- 
- static noinline int __btrfs_ioctl_snap_create(struct file *file,
-+				struct user_namespace *mnt_userns,
- 				const char *name, unsigned long fd, int subvol,
- 				bool readonly,
- 				struct btrfs_qgroup_inherit *inherit)
-@@ -1821,8 +1825,8 @@ static noinline int __btrfs_ioctl_snap_create(struct file *file,
- 	}
- 
- 	if (subvol) {
--		ret = btrfs_mksubvol(&file->f_path, name, namelen,
--				     NULL, readonly, inherit);
-+		ret = btrfs_mksubvol(&file->f_path, mnt_userns, name,
-+				     namelen, NULL, readonly, inherit);
- 	} else {
- 		struct fd src = fdget(fd);
- 		struct inode *src_inode;
-@@ -1836,16 +1840,17 @@ static noinline int __btrfs_ioctl_snap_create(struct file *file,
- 			btrfs_info(BTRFS_I(file_inode(file))->root->fs_info,
- 				   "Snapshot src from another FS");
- 			ret = -EXDEV;
--		} else if (!inode_owner_or_capable(&init_user_ns, src_inode)) {
-+		} else if (!inode_owner_or_capable(mnt_userns, src_inode)) {
- 			/*
- 			 * Subvolume creation is not restricted, but snapshots
- 			 * are limited to own subvolumes only
- 			 */
- 			ret = -EPERM;
- 		} else {
--			ret = btrfs_mksnapshot(&file->f_path, name, namelen,
--					     BTRFS_I(src_inode)->root,
--					     readonly, inherit);
-+			ret = btrfs_mksnapshot(&file->f_path, mnt_userns,
-+					       name, namelen,
-+					       BTRFS_I(src_inode)->root,
-+					       readonly, inherit);
- 		}
- 		fdput(src);
- 	}
-@@ -1869,8 +1874,9 @@ static noinline int btrfs_ioctl_snap_create(struct file *file,
- 		return PTR_ERR(vol_args);
- 	vol_args->name[BTRFS_PATH_NAME_MAX] = '\0';
- 
--	ret = __btrfs_ioctl_snap_create(file, vol_args->name, vol_args->fd,
--					subvol, false, NULL);
-+	ret = __btrfs_ioctl_snap_create(file, file_mnt_user_ns(file),
-+					vol_args->name, vol_args->fd, subvol,
-+					false, NULL);
- 
- 	kfree(vol_args);
- 	return ret;
-@@ -1928,8 +1934,9 @@ static noinline int btrfs_ioctl_snap_create_v2(struct file *file,
- 		}
- 	}
- 
--	ret = __btrfs_ioctl_snap_create(file, vol_args->name, vol_args->fd,
--					subvol, readonly, inherit);
-+	ret = __btrfs_ioctl_snap_create(file, file_mnt_user_ns(file),
-+					vol_args->name, vol_args->fd, subvol,
-+					readonly, inherit);
- 	if (ret)
- 		goto free_inherit;
- free_inherit:
 -- 
 2.30.2
 
