@@ -2,123 +2,185 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70913D8200
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 23:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB21D3D8234
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 23:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhG0Voc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 17:44:32 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:36758 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbhG0Voc (ORCPT
+        id S232134AbhG0V6q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 17:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231814AbhG0V6q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:44:32 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 9A112B05909; Tue, 27 Jul 2021 17:42:10 -0400 (EDT)
-Date:   Tue, 27 Jul 2021 17:41:57 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Dave T <davestechshop@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: BTRFS scrub reports an error but check doesn't find any errors.
-Message-ID: <20210727214049.GH10170@hungrycats.org>
-References: <CAGdWbB5YL40HiF9E0RxCdO96MS7tKg1=CRPT2YSe+vR3eGZUgQ@mail.gmail.com>
+        Tue, 27 Jul 2021 17:58:46 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5C1C061757
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:58:45 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id z18so465963ybg.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:58:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=anck6fo2s+mPb68AfQbcgyo8Kx5a9s1w+YI6ylEmT2I=;
+        b=AhfLv4RfO6xRbekCzf59VeQWn1DMIrmiZzjzBvG7KfWF2lgs1JtOMkcvPBZuawqjvi
+         WkZTiHb+yDoxqAakSKoJxOspnRyyCAe3tzrIyoC6QAhA6xHzRU4ZPathzIpE4q40JYim
+         vk1/RzoVuK5qYQEBxegiM02YY9OoP1R4kJu6GUyaGMFUXLX0Dvs9DihOjTMVO30FwRj3
+         3tottWM6z2tp6LULzqz8kl4SCKKd9jI55oHEh6i9/NCzeu8+VLMnYlL1Rwtkj9AGwpDd
+         Iscks7cYmAktSxRZO1lYfN6Sqw5hOeRripcbq+s19ioS0zww3r93IQn6LQXM+PIzgZvf
+         J2sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=anck6fo2s+mPb68AfQbcgyo8Kx5a9s1w+YI6ylEmT2I=;
+        b=FGV+K3dPgvUgCVvu/89tnTWj/t1rcvBSWmsfzNqYMVsJqwxCq6M3YYJRkOsSlGVeUf
+         KXBeRv9GVCks2uSgNi+g7xk7q1D69iQx8WdmKA3w7l5fEb2fbcxiN1hMHlmgrJBVD4sW
+         Iurcc84VFgPBEJI6keJ31V1FC3iR6t7QPvXwp4tEd/ZynJ1p8//h8Dpg+pfQsMjXp2Vb
+         UKdplBgtJs5aYcWMvl3Oprmpp/s3XKOeGsGa24hFba9F6KD6mH2z3yroUci+o0YobGS8
+         l6kUoBaZeCrelZqlaLRvyTrwyMu3gPxSLrZ8SNtM0NvtH8ETXS4ydmCtFYS92eiBPqUs
+         77Vg==
+X-Gm-Message-State: AOAM532jVAxarcndLW3jl4LAagvlRRfueyPzYboKacVD4N9i0EXR792p
+        VDUvKDPxXIICZ5PAxdL7ueVINLQGYtwFyKOqoeQ=
+X-Google-Smtp-Source: ABdhPJx2cExVVgGdOIPCqp3iITpmrIV4iw6m0bV1jTsbRf1EaepdvLw9TuHQQ271TQSdg1QmcXgAv5zXpC0g7DxzCBs=
+X-Received: by 2002:a25:2e49:: with SMTP id b9mr997405ybn.41.1627423124451;
+ Tue, 27 Jul 2021 14:58:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGdWbB5YL40HiF9E0RxCdO96MS7tKg1=CRPT2YSe+vR3eGZUgQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <2bb832db-3c33-d3ba-d9ae-4ebd44c1c7f3@gmail.com>
+ <1b89f8a3-42a4-3c6d-aec8-1b91a7b43713@gmx.com> <CAHw5_hk9Uy-q=9n+TvtiCtLH5A08gVo=G4rUhpuQyZwzuF68dQ@mail.gmail.com>
+ <60a9b119-c842-9fea-3fb3-5cd29a8869ef@gmx.com> <CAHw5_hmN3XTYDhRy4jMfV4YN6jcRZsKs-Q_+K-o3fLhC9MXHJA@mail.gmail.com>
+ <06661dd5-520b-c1b5-061e-748e695f98a6@suse.com> <CAHw5_hkUhV8OvrdZOWTnQU_ksh3z94+ivskyw_h069HwYhvNXg@mail.gmail.com>
+ <CAHw5_hmUda4hO7=sNQNWtSxyyzm7i9MU50nsQkrZRw7fsAW3NA@mail.gmail.com>
+ <e12010fe-6881-c01c-f05f-899b8b76c4fd@gmx.com> <CAHw5_hmeUWf0RdqXcFjfSEEeK4+jTb1yxRuRB5JSnK1Avha0JQ@mail.gmail.com>
+ <83e8fa57-fc20-bc5b-8a63-3153327961a6@gmx.com> <CAHw5_hm+UX2EHSdZHcMXWMNYxOtccKMQ1qtfbu1gKUm-WZFXYg@mail.gmail.com>
+ <CAJCQCtTW0tR-55UkkE=r0ONQucCO7_An2ASOQeBjZiZXtPrLSg@mail.gmail.com>
+ <CAHw5_hnLSwMBqNxE6pPvau+-9LQoCmWp7fy6vuxtT-UPPLL4Fw@mail.gmail.com>
+ <4d1f2c32-521a-aab4-7da9-6a0a8d3ecdc6@gmx.com> <CAHw5_h=izT2+AzXFK03uETYM2go=mKnSWYkW_5ki-36fkoYaNg@mail.gmail.com>
+In-Reply-To: <CAHw5_h=izT2+AzXFK03uETYM2go=mKnSWYkW_5ki-36fkoYaNg@mail.gmail.com>
+From:   Asif Youssuff <yoasif@gmail.com>
+Date:   Tue, 27 Jul 2021 17:58:33 -0400
+Message-ID: <CAHw5_hkP0v1YT=R2jVkjXNroibnLLV=5cMZGUMEE7BvDquASbw@mail.gmail.com>
+Subject: Re: Filesystem goes readonly soon after mount, cannot free space or rebalance
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Chris Murphy <lists@colorremedies.com>, Qu Wenruo <wqu@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jul 25, 2021 at 01:39:55PM -0400, Dave T wrote:
-> What does the list recommend I do in this case?
-> 
-> starting btrfs scrub ...
-> scrub done for 56cea9cf-5374-4a43-b19d-6b0b143dc635
-> Scrub started:    Sun Jul 25 00:40:43 2021
-> Status:           finished
-> Duration:         2:52:45
-> Total to scrub:   1.26TiB
-> Rate:             113.72MiB/s
-> Error summary:    read=1
->   Corrected:      0
->   Uncorrectable:  1
->   Unverified:     0
-> ERROR: there are uncorrectable errors
+Hi all,
 
-This is a read failure (data not available from device), not a csum error
-(data available but not correct).
+Just checking in to see if there are any other ideas or upcoming
+possible fixes on the horizon.
 
-> dmesg | grep "checksum error at" | tail -n 20
-> (no output)
+Thanks,
+Asif
 
-You should be looking for a IO failure on the underlying device (the
-one below /dev/mapper/userluks).  Look for log messages that appear just
-before btrfs errors, or errors mentioning the device itself:
+On Wed, Jun 23, 2021 at 12:24 PM Asif Youssuff <yoasif@gmail.com> wrote:
+>
+> On Wed, Jun 23, 2021 at 5:38 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> >
+> >
+> >
+> > On 2021/6/23 =E4=B8=8B=E5=8D=885:32, Asif Youssuff wrote:
+> > > On Tue, Jun 22, 2021 at 5:33 PM Chris Murphy <lists@colorremedies.com=
+> wrote:
+> > >>
+> > >> On Tue, Jun 22, 2021 at 12:37 AM Asif Youssuff <yoasif@gmail.com> wr=
+ote:
+> > >>
+> > >>> I went ahead and also created two partitions each on the two new us=
+b
+> > >>> disks (for a two of four new partitions) and added them to the btrf=
+s
+> > >>> filesystem using "btrfs device add", then removing a snapshot follo=
+wed
+> > >>> by a "btrfs fi sync". The filesystem still goes ro after a while.
+> > >>
+> > >> Yeah Qu is correct, and I had it wrong. Two devices have enough spac=
+e
+> > >> for a new metadata BG, but no other disks. And it requires four. All
+> > >> you need is to add two but it won't even let you add one before it
+> > >> goes ro. So it's stuck. Until there is a kernel fix for this, it's
+> > >> permanently read-only (unless we're missing some other work around).
+> > >
+> > > Hmm, would this be something that would be fixed in the near term?
+> > > Just wondering how long I'd have to leave this as ro.
+> > >
+> > > Happy to continue to try any other ideas of course, but I'd rather no=
+t
+> > > destroy the fs and start over.
+> >
+> > The problem is, I don't see why we can't do anything, including adding =
+a
+> > new device.
+> >
+> >  From the fi df output, we still have around 512M metadata free space,
+> > it means unless there is something wrong with globalrsv, we should be
+> > able to add new devices, which doesn't require much new space.
+> >
+> > For the worst case, I can craft a btrfs-progs program to manually
+> > degrade all your RAID1C3/C4 chunks to SINGLE.
+> >
+> > By that you can have tons of space left, but that should be the last
+> > thing to do IMHO.
+> >
+> > Currently I prefer to find a way to stop all background work like
+> > balance/subvolume deletion, and try to add two new devices to the array=
+,
+> > then continue.
+> >
+> > I still can't get why "btrfs device add" would success while "btrfs fi
+> > show" shows no new device.
+> >
+> > The new devices to add are really blank new devices, right? Not some
+> > disks already used by btrfs?
+>
+> Yes, absolutely. I even formatted them as ext4 and rebooted in order
+> to ensure that btrfs processes would not be acting on them until I did
+> btrfs device add.
+>
+> Once I run btrfs device add, the filesystem type shows up in gparted
+> as "unknown" - eg:
+>
+> /dev/sdk1           2048 15187967 15185920  7.2G 83 Linux
+> /dev/sdk2       15187968 30375935 15187968  7.2G 83 Linux
+>
+> I am also adding the devices like what Paul jones suggested - like:
+>
+> sudo mount /media/camino/ && sudo btrfs device add -f /dev/sdl1
+> /dev/sdl2 /dev/sdk1 /dev/sdk2 /media/camino/
+>
+> >
+> > Thanks,
+> > Qu
+> > >
+> > >>
+> > >>
+> > >>> Would mounting as degraded make it possible to add the disks and ha=
+ve
+> > >>> it stick?
+> > >>
+> > >> No, that's even more fragile and you're sure to run into myriad
+> > >> degraded raid5 bugs, not least of which are the bogus errors. And it
+> > >> won't be obvious which ones are important and which ones are not.
+> > >>
+> > >>
+> > >> --
+> > >> Chris Murphy
+> > >
+> > >
+> > >
+>
+>
+>
+> --
+> Thanks,
+> Asif
 
-	dmesg | grep -B99 -i btrfs
 
-	dmesg | grep -C9 sda
 
-> # dmesg | grep -i checksum
-> [  +0.001698] xor: automatically using best checksumming function   avx
-> (not related to BTRFS, right?)
-> 
-> # btrfs fi us /path/to/xyz
-> Overall:
->     Device size:                   2.73TiB
->     Device allocated:              1.26TiB
->     Device unallocated:            1.47TiB
->     Device missing:                  0.00B
->     Used:                          1.12TiB
->     Free (estimated):              1.60TiB      (min: 888.70GiB)
->     Free (statfs, df):             1.60TiB
->     Data ratio:                       1.00
->     Metadata ratio:                   2.00
->     Global reserve:              512.00MiB      (used: 0.00B)
->     Multiple profiles:                  no
-> 
-> Data,single: Size:1.25TiB, Used:1.11TiB (89.38%)
->    /dev/mapper/userluks    1.25TiB
-> 
-> Metadata,DUP: Size:6.00GiB, Used:5.26GiB (87.67%)
->    /dev/mapper/userluks   12.00GiB
-> 
-> System,DUP: Size:32.00MiB, Used:160.00KiB (0.49%)
->    /dev/mapper/userluks   64.00MiB
-
-Since the error was not corrected, it likely occurred in the data blocks.
-
-A metadata error would be correctable, so check wouldn't report it because
-the scrub will have already corrected it (assuming the underlying drive
-is still healthy enough to remap bad sectors).
-
-> Unallocated:
->    /dev/mapper/userluks    1.47TiB
-> 
-> # btrfs check /dev/mapper/xyz
-
-That command won't read any data blocks, so it won't see any errors there.
-
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/xyz
-> UUID: 56cea9cf-5374-4a43-b19d-6b0b143dc635
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space cache
-> [4/7] checking fs roots
-> [5/7] checking only csums items (without verifying data)
-> [6/7] checking root refs
-> [7/7] checking quota groups skipped (not enabled on this FS)
-> found 1230187327496 bytes used, no error found
-> total csum bytes: 1195610680
-> total tree bytes: 5648285696
-> total fs tree bytes: 4011016192
-> total extent tree bytes: 379256832
-> btree space waste bytes: 827370015
-> file data blocks allocated: 5497457123328
->  referenced 5523039584256
-> 
-> If more info is needed, please let me know. Recommendations and advice
-> are appreciated.
-> Thank you.
+--=20
+Thanks,
+Asif
