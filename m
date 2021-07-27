@@ -2,108 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9E43D8062
+	by mail.lfdr.de (Postfix) with ESMTP id 580603D8063
 	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 23:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhG0VDq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 17:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
+        id S232662AbhG0VDs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 17:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232356AbhG0VDo (ORCPT
+        with ESMTP id S232378AbhG0VDo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 27 Jul 2021 17:03:44 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC309C08EACC
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:21 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id 129so144991qkg.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:21 -0700 (PDT)
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFD5C08EAD1
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:23 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id c18so154448qke.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 14:01:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=RyDBLt+kfCY7tDDWtQkDU64nWIAKmy2il1nHpBYXvfI=;
-        b=p2tBtqLRMatCVtqktAG4QfjHc8u2HyUlb/CDzxlTnI83ATTwMeMeNyx8Yt1m7PGeLm
-         Z1kiywsIkVqrKL4V83QMmxwKNCA0c7WHvlXzqn7gTuhFFKBdbBxZ0E0dOZC6cSMmErUI
-         D/GH5HBFn9g1ffSWgrfs1q+VfX6Cc0KNZOnTUoJc0u/iTojRrDnzeGzGSywxGK0SSJcG
-         NNZhkQIf2VdNP8r/Zl8/SM+c4iqoQHxxUapOYaZB2EIfYR9LxYTGZm24eTWscHY7zJ6W
-         ARB3mwmSVGl/zf9VZps7sAdksPTTJA2QFtfKec6aOrtlGR4v/R/WK/uEQQr9hvDnvDhb
-         4tpA==
+        bh=nXyk6RG1BPGDU9NJwhOl2kUfe2XMppFu/R1x/KhsYoo=;
+        b=WgIVHA8YYZzaw3701F0hXqvZodXWHk4FEUVKRofxsuNKUll+VgDUw6jvn2RbVvaz7W
+         lz3w9E2B3QmI6cTVZ2E8WORbYjf5nXLr3/MVWWHGItFnizHV/oFKq/mXl1DWqZdgzY7l
+         PEmZvsHJQq6QFDownBd5lKbTJT3JY4sw9w6Jru/bhkwZrlfYZnNr7Ne/4A81sidMZtig
+         GybSC7hV85GS+BTCqQ5mrnKf0uFnc1O7UdiW80eeb5xV0oo9KAQWQM9VY3ENFNVbGc68
+         ZS/QT1nxoneopX+kC5wQaM2JK2uOAdjWnV7Tv2cPU7ItBKKatohDufu50YS19AbhX2ep
+         Lh1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RyDBLt+kfCY7tDDWtQkDU64nWIAKmy2il1nHpBYXvfI=;
-        b=AzU8AvV/aIhW90itH8TtIHapg1Ok2kN0ENU/qwbYDSv0wa7dTleUJmGEnaa4hvcWk/
-         rbWqHFEtOTtgfaZanpeQdsX23K3Cd6Oze7xrHdoogiOKxWJZwTkPdVV0rzObwVhAdJPC
-         mklDaciWls6mQ+10Hs9kPjjLwh1nQnRYsl5jLPa3leQp/qOTJNazLRL2gbc36V65jNwk
-         jb4z63owwfk1+ZcBEmov0Hn/pbHjb3GCdnx2QRcTVBnMF6NJe94Jw5B+K379AqBuGKUL
-         LnlWdQFd42MObmZ5tm9nuQb7NxP/sr9/3HubmwnhREa13UqL66PyDstlgpPrHoq2TKvN
-         VGmg==
-X-Gm-Message-State: AOAM532vF5UmAyhyeDOv8fkA9G1YAwTZGL+fkSu8vokIxsNID3vJyeaL
-        pRBRPlFsWDd0YWCl47rPuqC+p18s/EDA1JHZ
-X-Google-Smtp-Source: ABdhPJzV5drb31Dy1htrVHELpMUGJZwfv8ehGwMHDxoBp2vUd1/gZBt2dY7ctVHlZusroZMNzrw99A==
-X-Received: by 2002:a37:9f8d:: with SMTP id i135mr23926132qke.296.1627419680740;
-        Tue, 27 Jul 2021 14:01:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nXyk6RG1BPGDU9NJwhOl2kUfe2XMppFu/R1x/KhsYoo=;
+        b=SKt9qFt6vAT0Ge2Psweh1Q8Rq/jEmy9CCacyArqfA+mvFaUWCvDoI4KcqkMERIu2/B
+         GmQ9aGwlxBcP+vBOvQqlzUH1Ac9qW8dc43GK+cRcLcWacOBTJsNbIc49Pvb+wSXkubYj
+         lCrDIrWsvn2O+6m99wm6Ff435gbGZ3x8zkDgm68Awlp3znbqaFISOYnW0rYJbIFkmsKD
+         1b7VQK5rCJGaYkvOV51CycINXtnjgc4mUQj52v5ClNBjAd/NQoU19y4DVIRJ1Ab3ya1L
+         sAO+hn77X1MX12JRMAhBKsn1IMq3ZkhcyqxuprnCMNRhsYtBvXDy4Y/H+adYJYLrC78I
+         0omA==
+X-Gm-Message-State: AOAM531jiy2xlrOpbkHLgxCjbtiSG6qfj3bJSC5Gtvo3oRKs4qmPD+Jm
+        OJn3WZGpKl0EindXQW7s5Ly/+QJmakRW8Du1
+X-Google-Smtp-Source: ABdhPJwD6JWZnEAdMCN9ReYx7gfYXCW72h5Bi6kXg3q8NeQhCvbnQyajs0nH39hnZBYn9O9LtI4AQA==
+X-Received: by 2002:a37:a20d:: with SMTP id l13mr23544549qke.83.1627419682221;
+        Tue, 27 Jul 2021 14:01:22 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 197sm2270410qkn.64.2021.07.27.14.01.20
+        by smtp.gmail.com with ESMTPSA id p19sm1870318qtx.10.2021.07.27.14.01.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 14:01:20 -0700 (PDT)
+        Tue, 27 Jul 2021 14:01:21 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 0/7] 
-Date:   Tue, 27 Jul 2021 17:01:12 -0400
-Message-Id: <cover.1627419595.git.josef@toxicpanda.com>
+Subject: [PATCH v2 1/7] btrfs: do not call close_fs_devices in btrfs_rm_device
+Date:   Tue, 27 Jul 2021 17:01:13 -0400
+Message-Id: <27fa361288b46bcc0f4b1225f7c76c96ce6dbe5f.1627419595.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1627419595.git.josef@toxicpanda.com>
+References: <cover.1627419595.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-v1->v2:
-- Rework the first patch as it was wrong because we need it for seed devices.
-- Fix another lockdep splat I uncovered while testing against seed devices to
-  make sure I hadn't broken anything.
+There's a subtle case where if we're removing the seed device from a
+file system we need to free its private copy of the fs_devices.  However
+we do not need to call close_fs_devices(), because at this point there
+are no devices left to close as we've closed the last one.  The only
+thing that close_fs_devices() does is decrement ->opened, which should
+be 1.  We want to avoid calling close_fs_devices() here because it has a
+lockdep_assert_held(&uuid_mutex), and we are going to stop holding the
+uuid_mutex in this path.
 
---- Original email ---
+So add an assert for the ->opened counter and simply decrement it like
+we should, and then clean up like normal.  Also add a comment explaining
+what we're doing here as I initially removed this code erroneously.
 
-Hello,
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/volumes.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-The commit 87579e9b7d8d ("loop: use worker per cgroup instead of kworker")
-enabled the use of workqueues for loopback devices, which brought with it
-lockdep annotations for the workqueues for loopback devices.  This uncovered a
-cascade of lockdep warnings because of how we mess with the block_device while
-under the sb writers lock while doing the device removal.
-
-The first patch seems innocuous but we have a lockdep_assert_held(&uuid_mutex)
-in one of the helpers, which is why I have it first.  The code should never be
-called which is why it is removed, but I'm removing it specifically to remove
-confusion about the role of the uuid_mutex here.
-
-The next 4 patches are to resolve the lockdep messages as they occur.  There are
-several issues and I address them one at a time until we're no longer getting
-lockdep warnings.
-
-The final patch doesn't necessarily have to go in right away, it's just a
-cleanup as I noticed we have a lot of duplicated code between the v1 and v2
-device removal handling.  Thanks,
-
-Josef
-
-Josef Bacik (7):
-  btrfs: do not call close_fs_devices in btrfs_rm_device
-  btrfs: do not take the uuid_mutex in btrfs_rm_device
-  btrfs: do not read super look for a device path
-  btrfs: update the bdev time directly when closing
-  btrfs: delay blkdev_put until after the device remove
-  btrfs: unify common code for the v1 and v2 versions of device remove
-  btrfs: do not take the device_list_mutex in clone_fs_devices
-
- fs/btrfs/ioctl.c   |  92 +++++++++++++++--------------------
- fs/btrfs/volumes.c | 118 ++++++++++++++++++++++-----------------------
- fs/btrfs/volumes.h |   3 +-
- 3 files changed, 101 insertions(+), 112 deletions(-)
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 86846d6e58d0..5217b93172b4 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2200,9 +2200,17 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
+ 	synchronize_rcu();
+ 	btrfs_free_device(device);
+ 
++	/*
++	 * This can happen if cur_devices is the private seed devices list.  We
++	 * cannot call close_fs_devices() here because it expects the uuid_mutex
++	 * to be held, but in fact we don't need that for the private
++	 * seed_devices, we can simply decrement cur_devices->opened and then
++	 * remove it from our list and free the fs_devices.
++	 */
+ 	if (cur_devices->open_devices == 0) {
++		ASSERT(cur_devices->opened == 1);
+ 		list_del_init(&cur_devices->seed_list);
+-		close_fs_devices(cur_devices);
++		cur_devices->opened--;
+ 		free_fs_devices(cur_devices);
+ 	}
+ 
 -- 
 2.26.3
 
