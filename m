@@ -2,107 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DDA3D7174
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 10:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564A73D71AF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 11:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbhG0Ish (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 04:48:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46372 "EHLO
+        id S235983AbhG0JFm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 05:05:42 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50332 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235923AbhG0Isg (ORCPT
+        with ESMTP id S235923AbhG0JFl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:48:36 -0400
+        Tue, 27 Jul 2021 05:05:41 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 64D1F1FE4C;
-        Tue, 27 Jul 2021 08:48:36 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5B9CD200E4;
+        Tue, 27 Jul 2021 09:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627375716;
+        t=1627376741;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kzXQTzvZ19SQpcjZGUaYl1m4UECT4FzjFnng4ZJVe0U=;
-        b=DQl0oopbzM2xFD2+QTbaM7KeM8HKCvOVL+FnpyC6iQVGFcH2masxMSZHrYQpIStSEQhasJ
-        jC7jIq1aO3APWIX44aPR1ebeCizK4efMdlabaoEUi9IgL+EsXvQT8HUjftZSlc8vrAdmS1
-        v+fddxxCYXklWVH4XkGmfLQA/YKbOCA=
+        bh=AK6Z1ESnln5hAltD/AQpRJ6IclTultGtDAXI2fWJ520=;
+        b=v/TZSM3pgACA7XYxKl7K5Y38mEjHi6nmOT7tH+QjC0QiYjkmystgLVXof1j8XWAtR3kIwC
+        Nase/Pf2lXVm1NBUmntRomBhhlR5hzaPCqbqcSA+W4rRIMHQtIHNmwXKELdkbY+YegL3xJ
+        R/G5tvDemzv6WtcyHVqvhSpLelUWTXc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627375716;
+        s=susede2_ed25519; t=1627376741;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kzXQTzvZ19SQpcjZGUaYl1m4UECT4FzjFnng4ZJVe0U=;
-        b=moRQjEAUUApqnUN8kcjUQaQ7Kpo377NrZvMapa/DXOddcxyvMv+jkeoIqc+YfLktf+tSri
-        GvyENxtQpKg03KBw==
+        bh=AK6Z1ESnln5hAltD/AQpRJ6IclTultGtDAXI2fWJ520=;
+        b=CqGmfGVCeI9iTZLt0etb6oyN8MyNeUo7GlwWWD59EjsURqjjBkrrlCQZ/Bq4MQ0qIY2PNC
+        W45K/vPhknmz0UAw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5DA18A3B87;
-        Tue, 27 Jul 2021 08:48:36 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 3ED14A3B84;
+        Tue, 27 Jul 2021 09:05:41 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2F8D0DA8CC; Tue, 27 Jul 2021 10:45:52 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 10:45:52 +0200
+        id 0BE68DA8CC; Tue, 27 Jul 2021 11:02:57 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 11:02:56 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 10/10] btrfs: add and use simple page/bio to
- inode/fs_info helpers
-Message-ID: <20210727084552.GK5047@twin.jikos.cz>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        David Sterba <dsterba@suse.cz>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Jorge Bastos <jorge.mrbastos@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Maybe we want to maintain a bad driver list? (Was 'Re: "bad tree
+ block start, want 419774464 have 0" after a clean shutdown, could it be a
+ disk firmware issue?')
+Message-ID: <20210727090256.GL5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1627300614.git.dsterba@suse.com>
- <4d3594dcca4dd8a8e58b134409922c2787b6a757.1627300614.git.dsterba@suse.com>
- <6cac34b2-39ba-f344-d601-b78a3f0c7698@gmx.com>
- <20210726150953.GG5047@twin.jikos.cz>
- <cc110ee1-c1bf-2b83-b5db-f70468b159f7@gmx.com>
+Mail-Followup-To: dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Jorge Bastos <jorge.mrbastos@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAHzMYBT+pMxrnDXrbTJqP-ZrPN5iDHEsW_nSjjD3R_w3wq5ZLg@mail.gmail.com>
+ <20210721174433.GO19710@twin.jikos.cz>
+ <8b830dc8-11d4-9b21-abe4-5f44e6baa013@gmx.com>
+ <20210722135455.GU19710@twin.jikos.cz>
+ <20210724231527.GF10170@hungrycats.org>
+ <CAJCQCtSc8x3xLKb2yyBchgvMn-0ecGi56CEDtQcFD74WyEOzUw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cc110ee1-c1bf-2b83-b5db-f70468b159f7@gmx.com>
+In-Reply-To: <CAJCQCtSc8x3xLKb2yyBchgvMn-0ecGi56CEDtQcFD74WyEOzUw@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 06:26:47AM +0800, Qu Wenruo wrote:
-> On 2021/7/26 下午11:09, David Sterba wrote:
-> > On Mon, Jul 26, 2021 at 08:41:57PM +0800, Qu Wenruo wrote:
-> >>
-> >>
-> >> On 2021/7/26 下午8:15, David Sterba wrote:
-> >>> We have lots of places where we want to obtain inode from page, fs_info
-> >>> from page and open code the pointer chains.
-> >>
-> >> All those inode/fs_info grabbing from just a page is dangerous.
-> >>
-> >> If an anonymous page is passed in unintentionally, it can easily crash
-> >> the system.
-> >>
-> >> Thus at least some ASSERT() here is a must to me.
+On Sat, Jul 24, 2021 at 09:34:23PM -0600, Chris Murphy wrote:
+> On Sat, Jul 24, 2021 at 5:16 PM Zygo Blaxell
+> <ce3g8jdj@umail.furryterror.org> wrote:
 > >
-> > But we can only check if the pointer is valid, any page can have a valid
-> > pointer but not our fs_info. If it crashes on an unexpected page than
-> > what can we do in the code anyway?
+> > SSDs are a different story:  there are so many models, firmware revisions
+> > are far more diverse, and vendors are still rapidly updating their
+> > designs, so we never see exactly the same firmware in any two incident
+> > reports.  A firmware list would be obsolete in days.  There is nothing
+> > in SSD firmware like the decade-long stability there is in HDD firmware.
 > 
-> What I mean is to check page->mapping for the page passed in.
+> It might still be worth having reports act as a counter. 0-3 might be
+> "not enough info", 4-7 might be "suspicious", 8+ might be "consider
+> yourself warned".
 > 
-> Indeed we can't do anything when we hit a page with NULL mapping
-> pointer, but that's a code bug.
-> An ASSERT() would make us developer aware what's going wrong and to fix
-> the bug.
+> But the scale could be a problem due to the small sample size.
 
-The assert is a more verbose crash, so that's slightly more developer
-friendly but I'm still not convinced it's worth the assert. Right now
-the macros are not static inlines so they don't need full definitions of
-page and mapping and the other types. Embedding the asserts into macros
-would look like
-
-  ({ ASSERT(page); ASSERT(page->mapping); page->mapping->host; })
-
-Or perhaps also page with a temporary variable to avoid multiple
-evaluations.
-
-The helpers are used in a handful of places, if we really care about
-consistency of the assertions, something like assert_page_ok(page) would
-have to be in each function that gets the page from other subsystems.
+That's a good idea, I've started something on
+https://btrfs.wiki.kernel.org/index.php/Hardware_bugs
+using the mentioned WD and firmware as first exapmle.
