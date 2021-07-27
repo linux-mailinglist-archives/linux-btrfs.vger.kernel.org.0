@@ -2,166 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DF63D6D08
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 05:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276B13D6E3F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jul 2021 07:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbhG0DJL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Jul 2021 23:09:11 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44474 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbhG0DJK (ORCPT
+        id S235030AbhG0Flh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 01:41:37 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51638 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234867AbhG0Flf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Jul 2021 23:09:10 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Tue, 27 Jul 2021 01:41:35 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1284B22019;
-        Tue, 27 Jul 2021 03:49:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627357777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ADAJ0xRh1XICgfjWMOlNhyNJ5UxRHdIAobMT7+CzNzw=;
-        b=MDaJ6ioB9xpCfvLmF7/OrVZ8BVNK06CP7wr8B84iyhptD97IBxCwe00N6BLr5FhZWRv7ro
-        4TeioBLN3olfKzQbu6+UuC6xCsXIs/4XaN8RymSzZQbba73lcwiINXRa2GdE28gFRswiFe
-        EhoZ0o7vTE9Z5CV1w5OKwRBFjfPTBvg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627357777;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ADAJ0xRh1XICgfjWMOlNhyNJ5UxRHdIAobMT7+CzNzw=;
-        b=/wi4abGKP+tM1SmABu/nTaRDwc+NdvHwOFIAuRRvzx6Xh74A6wMcVMZFWkuBM3EfPb5dZB
-        Yuc3SE8Om6nk8WDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A3D17200BB
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 05:41:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627364495; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=YGw5qGdHmGqIPlNx0Knf/YTTqWz5x5EHHCeVchT0wn8=;
+        b=PyIn5IoHyeHIbZsbnHNpbZbV7Tr9nxc5kMqlj+Z+dd56waeHUoP8nHLRqV/SCKgzKNYO/s
+        SU/jPw1OboIS7Yr/czykJVjwovjWgIjTLu0RbvZYgdEwj3COzqShdUSi9qmI70xOCAMSV0
+        Kp4Y/CRUo8J6l3Aafce22Bf5KxlzZFs=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2EAA413B5C;
-        Tue, 27 Jul 2021 03:49:34 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D3C1013CDF
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 05:41:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XWb3Nk6C/2ACKQAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 27 Jul 2021 03:49:34 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id pKQcJI6c/2DCcgAAGKfGzw
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 05:41:34 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: remove the unused @start and @end parameter for btrfs_run_delalloc_range()
+Date:   Tue, 27 Jul 2021 13:41:32 +0800
+Message-Id: <20210727054132.164462-1-wqu@suse.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Goldwyn Rodrigues" <rgoldwyn@suse.de>
-Cc:     "Matthew Wilcox" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH] fs: reduce pointers while using file_ra_state_init()
-In-reply-to: <20210727024630.ia4sne4gbruvssgy@fiona>
-References: <20210726164647.brx3l2ykwv3zz7vr@fiona>,
- <162733718119.4153.5949006309014161476@noble.neil.brown.name>,
- <YP9p8G6eu30+d2jH@casper.infradead.org>,
- <162735275468.4153.4700285307587386171@noble.neil.brown.name>,
- <20210727024630.ia4sne4gbruvssgy@fiona>
-Date:   Tue, 27 Jul 2021 13:49:31 +1000
-Message-id: <162735777193.4153.15638869819515863315@noble.neil.brown.name>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 27 Jul 2021, Goldwyn Rodrigues wrote:
-> On 12:25 27/07, NeilBrown wrote:
-> > On Tue, 27 Jul 2021, Matthew Wilcox wrote:
-> > > On Tue, Jul 27, 2021 at 08:06:21AM +1000, NeilBrown wrote:
-> > > > You seem to be assuming that inode->i_mapping->host is always 'inode'.
-> > > > That is not the case.
-> > >=20
-> > > Weeeelllll ... technically, outside of the filesystems that are
-> > > changed here, the only assumption in common code that is made is that
-> > > inode_to_bdi(inode->i_mapping->host->i_mapping->host) =3D=3D
-> > > inode_to_bdi(inode)
-> >=20
-> > Individual filesystems doing their own thing is fine.  Passing just an
-> > inode to inode_to_bdi is fine.
-> >=20
-> > But the patch changes do_dentry_open()
->=20
-> But do_dentry_open() is setting up the file pointer (f) based on
-> inode (and it's i_mapping). Can f->f_mapping change within
-> do_dentry_open()?
+Since commit d75855b4518b ("btrfs: Remove
+extent_io_ops::writepage_start_hook") removes the writepage_start_hook()
+and added btrfs_writepage_cow_fixup() function, there is no need to
+follow the old hook parameters.
 
-do_dentry_open calls file_ra_state_init() to copy ra_pages from the bdi
-for inode->i_mapping->host->i_mapping.
-I do think there is some pointless indirection here, and it should be
-sufficient to pass inode->i_mapping (aka f->f_mapping) to
-file_ra_state_init(). (though in 2004, Andrew Morton thought otherwise)
-But you have changed do_dentry_open() to not follow the ->i_mapping link
-at all.
-So in the coda case f->f_ra will be inititalied from the bdi for coda
-instead of the bdi for the filesystem coda uses for local storage.
+This patch just remove the @start and @end hook, since currently the
+fixup check is full page check, it doesn't need @start and @end hook.
 
-So this is a change in behaviour.  Maybe not a serious one, but one that
-needs to be understood.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/?i=
-d=3D1c211088833a27daa4512348bcae9890e8cf92d4
+---
+Special discussion related to the cow fixup.
 
-Hmm.  drivers/dax/device.c does some funky things with ->i_mapping too.
-I wonder if that would be affected by this change....  probably not, it
-looks like it is the same super_block and so the same ra info for both
-mappings.
+Recently I'm exploring the possibility to change how we submit bio for a
+delalloc range.
 
-NeilBrown
+Currently we call writepage_delalloc(), which may add a new delalloc
+range, and set all involved pages with Ordered bit.
+But all other pages in the delalloc range is not locked.
 
->=20
-> >=20
-> > >=20
-> > > Looking at inode_to_bdi, that just means that they have the same i_sb.
-> > > Which is ... not true for character raw devices?
-> > >         if (++raw_devices[minor].inuse =3D=3D 1)
-> > >                 file_inode(filp)->i_mapping =3D
-> > >                         bdev->bd_inode->i_mapping;
-> > > but then, who's using readahead on a character raw device?  They
-> > > force O_DIRECT.  But maybe this should pass inode->i_mapping->host
-> > > instead of inode.
-> >=20
-> > Also not true in coda.
-> >=20
-> > coda (for those who don't know) is a network filesystem which fetches
-> > whole files (and often multiple files) at a time (like the Andrew
-> > filesystem).  The files are stored in a local filesystem which acts as a
-> > cache.
-> >=20
-> > So an inode in a 'coda' filesystem access page-cache pages from a file
-> > in e.g. an 'ext4' filesystem.  This is done via the ->i_mapping link.
-> > For (nearly?) all other filesystems, ->i_mapping is a link to ->i_data
-> > in the same inode.
-> >=20
-> > >=20
-> > > > In particular, fs/coda/file.c contains
-> > > >=20
-> > > > 	if (coda_inode->i_mapping =3D=3D &coda_inode->i_data)
-> > > > 		coda_inode->i_mapping =3D host_inode->i_mapping;
-> > > >=20
-> > > > So a "coda_inode" shares the mapping with a "host_inode".
-> > > >=20
-> > > > This is why an inode has both i_data and i_mapping.
-> > > >=20
-> > > > So I'm not really sure this patch is safe.  It might break codafs.
-> > > >=20
-> > > > But it is more likely that codafs isn't used, doesn't work, should be
-> > > > removed, and i_data should be renamed to i_mapping.
-> > >=20
-> > > I think there's also something unusual going on with either ocfs2
-> > > or gfs2.  But yes, I don't understand the rules for when I need to
-> > > go from inode->i_mapping->host.
-> > >=20
-> >=20
-> > Simple.  Whenever you want to work with the page-cache pages, you cannot
-> > assume anything in the original inode is relevant except i_mapping (and
-> > maybe i_size I guess).
-> >=20
-> > NeilBrown
->=20
-> --=20
-> Goldwyn
->=20
->=20
+Then we iterate through each page in the delalloc range, and submit
+them.
+
+This window between "delalloc range added" to "submit bio for the range"
+allows a page to be invalidated or changed.
+
+I'm not sure if the behavior (with the extra window with page unlocked)
+is correct.
+But at least we already have compression going through another path.
+
+For compression, we call cow_file_range(), but keeps all the pages in
+the range locked, then submit bio for the range, finally unlock the page
+range.
+
+This makes sure between "delalloc range added" to "bio submitted" the
+page is still locked and won't change.
+
+Not sure if this can eliminate the need for such fixup.
+
+As for the new method, if we hit a dirty page, we always ran delalloc
+range for it.
+
+Thus there is no way a dirty page will not be covered by an ordered extent,
+thus eliminate the need for fixup.
+
+---
+ fs/btrfs/ctree.h     | 2 +-
+ fs/btrfs/extent_io.c | 2 +-
+ fs/btrfs/inode.c     | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 958fe5d085ea..088f33c01a01 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3190,7 +3190,7 @@ int btrfs_prealloc_file_range_trans(struct inode *inode,
+ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page,
+ 		u64 start, u64 end, int *page_started, unsigned long *nr_written,
+ 		struct writeback_control *wbc, bool unlock_pages);
+-int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
++int btrfs_writepage_cow_fixup(struct page *page);
+ void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
+ 					  struct page *page, u64 start,
+ 					  u64 end, int uptodate);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index b26fd39abd39..b0751920f5ee 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3942,7 +3942,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 	const unsigned int write_flags = wbc_to_write_flags(wbc);
+ 	bool compressed;
+ 
+-	ret = btrfs_writepage_cow_fixup(page, start, end);
++	ret = btrfs_writepage_cow_fixup(page);
+ 	if (ret) {
+ 		/* Fixup worker will requeue */
+ 		redirty_page_for_writepage(wbc, page);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index baa3c4556a66..684f1ec85351 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2819,7 +2819,7 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+  * to fix it up.  The async helper will wait for ordered extents, set
+  * the delalloc bit and make it safe to write the page.
+  */
+-int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end)
++int btrfs_writepage_cow_fixup(struct page *page)
+ {
+ 	struct inode *inode = page->mapping->host;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+-- 
+2.32.0
+
