@@ -2,157 +2,281 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6921A3D9615
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 21:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C43A3D975B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 23:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhG1Tfl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 15:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S231519AbhG1VOm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 17:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhG1Tfk (ORCPT
+        with ESMTP id S231126AbhG1VOm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:35:40 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CC6C061757;
-        Wed, 28 Jul 2021 12:35:37 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id BAC546C91; Wed, 28 Jul 2021 15:35:36 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org BAC546C91
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1627500936;
-        bh=+ubDzSENl39MUZIPXJcllRmY3lYjmwUKCDsj0PDkg4w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q6pK9ojWCkrR98kzMLRySGHNXaOC8domFNiLKDe9C4R+73FjE8De5OBwjGe/7Js61
-         WVSJ9a/8YqpcB+C0AYk02CVYsyVuoIUKtMHb93Y/jbgUOO1anbGCpabk2k2brgyjCH
-         oxklpoC/f/SUUJUVPoYV1eB8DS1qKaeqJDcwdRIM=
-Date:   Wed, 28 Jul 2021 15:35:36 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
-Message-ID: <20210728193536.GD3152@fieldses.org>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+        Wed, 28 Jul 2021 17:14:42 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8530BC061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 14:14:39 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id a201so6239056ybg.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 14:14:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=g7/VXf0NvMhPDTNggXYxAZM9MuEiwsER1MM/CeT0MI4=;
+        b=g2YShPdqkvwDFfGXgGLoDejBCgG7XpoQ+rAeY4JFycJDST889DywfhsVXi0pH1m2Wh
+         1GPYWXLmCNw9aYPA4hjXQVD9goWjK/nbAc/KfJSqQjIeERnEfb2FlZ9IpKa5Hk2Hl/ZO
+         Ma1cWL2Jq2Y0nIZl+vRJ84+fSPya2LzJfFTmDBKR8eeK4DLPW+YLHaT9p+AfIYJxKo6s
+         Ku+QZjQAsJnRbM6n0Ncgkf/4ovTFoV6YIBYlx2CpVA9ZrpTrhQKLJBrlqkGNF+yZ0qcE
+         31tRPmaKTNLtOOG5zhqO425iKXXYICYtqX50Dg2em/v+0JGRIACm/7etR7BObWqcnWZt
+         0xmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=g7/VXf0NvMhPDTNggXYxAZM9MuEiwsER1MM/CeT0MI4=;
+        b=VOr9QniyGKEQG8vAW0XrtacBC0031NZ7t1om6BMickoCgDoG/fREhVV3PsTJdoNC7K
+         7snqSeCq9F0C5NqyYEwjDuflFPNyvcIYZdtm0a2AlMggXFhsKW2ROOrick9d39t0FyNJ
+         m6yXSCrelb2nwn9M/hEEUXLbzhQx6ju462OXp8j1myx1KCU/k3lZS1wolh98O7QWQ0kA
+         45Ta64Fkdtdtv/iMfNVOa47v2JrPRQHJdUsLdHJtw+CUQHvD5KeRYzaBw3fJPr6dc5DK
+         YmfjzltTPknpEbr5g2osiIjvqZ/ZDH4VkfN+sygySKbQmCPycSfgaWuJtv7cf0BHnFcu
+         +57Q==
+X-Gm-Message-State: AOAM5326cla74D5UwaWNzxNm5aVaiTjEZzGBteNgg+rx6N6/pvCjZdzh
+        RTgd6esBCbzdInVOBabO8F1hWirP/OzpmpNejaY=
+X-Google-Smtp-Source: ABdhPJzk1PYUvcky5Fb7AhQJ52poC5qcEQSZiPMQ7xNI8X26mIRCJ0Ui5AHR3pQ8kstPmX1qPJ44SAaNVt3KlJAmtVc=
+X-Received: by 2002:a25:9201:: with SMTP id b1mr2230892ybo.354.1627506878597;
+ Wed, 28 Jul 2021 14:14:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162742539595.32498.13687924366155737575.stgit@noble.brown>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <0f344e692b14ffbec90cb9f32e0d177c30326c37.1627498953.git.osandov@fb.com>
+In-Reply-To: <0f344e692b14ffbec90cb9f32e0d177c30326c37.1627498953.git.osandov@fb.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Wed, 28 Jul 2021 17:14:02 -0400
+Message-ID: <CAEg-Je-aF7eLRK_9qgM18kOgPjVChRti7PBm2yHgTKrcNQiCgg@mail.gmail.com>
+Subject: Re: [PATCH v2] libbtrfsutil: fix race between subvolume iterator and deletion
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'm still stuck trying to understand why subvolumes can't get their own
-superblocks:
-
-	- Why are the performance issues Josef raises unsurmountable?
-	  And why are they unique to btrfs?  (Surely there other cases
-	  where people need hundreds or thousands of superblocks?)
-
-	- If filehandle decoding can return a different vfs mount than
-	  it's passed, why can't it return a different superblock?
-
---b.
-
-On Wed, Jul 28, 2021 at 08:37:45AM +1000, NeilBrown wrote:
-> There are long-standing problems with btrfs subvols, particularly in
-> relation to whether and how they are exposed in the mount table.
-> 
->  - /proc/self/mountinfo reports the major:minor device number for each
->     filesystem and when a btrfs subvol is explicitly mounted, the number
->     reported is wrong - it does not match what stat() reports for the
->     mountpoint.
-> 
->  - when subvol are not explicitly mounted, they don't appear in
->    mountinfo at all.
-> 
-> Consequences include that a tool which uses stat() to find the dev of the
-> filesystem, then searches mountinfo for that filesystem, will not find
-> it.
-> 
-> Some tools (e.g. findmnt) appear to have been enhanced to cope with this
-> strangeness, but it would be best to make btrfs behave more normally.
-> 
->   - nfsd cannot currently see the transition to subvol, so reports the
->     main volume and all subvols to the client as being in the same
->     filesystem.  As inode numbers are not unique across all subvols,
->     this can confuse clients.  In particular, 'find' is likely to report a
->     loop.
-> 
-> subvols can be made to appear in mountinfo using automounts.  However
-> nfsd does not cope well with automounts.  It assumes all filesystems to
-> be exported are already mounted.  So adding automounts to btrfs would
-> break nfsd.
-> 
-> We can enhance nfsd to understand that some automounts can be managed.
-> "internal mounts" where a filesystem provides an automount point and
-> mounts its own directories, can be handled differently by nfsd.
-> 
-> This series addresses all these issues.  After a few enhancements to the
-> VFS to provide needed support, they enhance exportfs and nfsd to cope
-> with the concept of internal mounts, and then enhance btrfs to provide
-> them.
-> 
-> The NFSv3 support is incomplete.  I'm not sure we can make it work
-> "perfectly".  A normal nfsv3 mount seem to work well enough, but if
-> mounted with '-o noac', it loses track of the mounted-on inode number
-> and complains about inode numbers changing.
-> 
-> My basic test for these is to mount a btrfs filesystem which contains
-> subvols, nfs-export it and mount it with nfsv3 and nfsv4, then run
-> 'find' in each of the filesystem and check the contents of
-> /proc/self/mountinfo.
-> 
-> The first patch simply fixes the dev number in mountinfo and could
-> possibly be tagged for -stable.
-> 
-> NeilBrown
-> 
+On Wed, Jul 28, 2021 at 3:05 PM Omar Sandoval <osandov@osandov.com> wrote:
+>
+> From: Omar Sandoval <osandov@fb.com>
+>
+> Subvolume iteration has a window between when we get a root ref (with
+> BTRFS_IOC_TREE_SEARCH or BTRFS_IOC_GET_SUBVOL_ROOTREF) and when we look
+> up the path of the parent directory (with BTRFS_IOC_INO_LOOKUP{,_USER}).
+> If the subvolume is moved or deleted and its old parent directory is
+> deleted during that window, then BTRFS_IOC_INO_LOOKUP{,_USER} will fail
+> with ENOENT. The iteration will then fail with ENOENT as well.
+>
+> We originally encountered this bug with an application that called
+> `btrfs subvolume show` (which iterates subvolumes to find snapshots) in
+> parallel with other threads creating and deleting subvolumes. It can be
+> reproduced almost instantly with the included test cases.
+>
+> Subvolume iteration should be robust against concurrent modifications to
+> subvolumes. So, if a subvolume's parent directory no longer exists, just
+> skip the subvolume, as it must have been deleted or moved elsewhere.
+>
+> Reviewed-by: Neal Gompa <ngompa13@gmail.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 > ---
-> 
-> NeilBrown (11):
->       VFS: show correct dev num in mountinfo
->       VFS: allow d_automount to create in-place bind-mount.
->       VFS: pass lookup_flags into follow_down()
->       VFS: export lookup_mnt()
->       VFS: new function: mount_is_internal()
->       nfsd: include a vfsmount in struct svc_fh
->       exportfs: Allow filehandle lookup to cross internal mount points.
->       nfsd: change get_parent_attributes() to nfsd_get_mounted_on()
->       nfsd: Allow filehandle lookup to cross internal mount points.
->       btrfs: introduce mapping function from location to inum
->       btrfs: use automount to bind-mount all subvol roots.
-> 
-> 
->  fs/btrfs/btrfs_inode.h   |  12 +++
->  fs/btrfs/inode.c         | 111 ++++++++++++++++++++++++++-
->  fs/btrfs/super.c         |   1 +
->  fs/exportfs/expfs.c      | 100 ++++++++++++++++++++----
->  fs/fhandle.c             |   2 +-
->  fs/internal.h            |   1 -
->  fs/namei.c               |   6 +-
->  fs/namespace.c           |  32 +++++++-
->  fs/nfsd/export.c         |   4 +-
->  fs/nfsd/nfs3xdr.c        |  40 +++++++---
->  fs/nfsd/nfs4proc.c       |   9 ++-
->  fs/nfsd/nfs4xdr.c        | 106 ++++++++++++-------------
->  fs/nfsd/nfsfh.c          |  44 +++++++----
->  fs/nfsd/nfsfh.h          |   3 +-
->  fs/nfsd/nfsproc.c        |   5 +-
->  fs/nfsd/vfs.c            | 162 +++++++++++++++++++++++----------------
->  fs/nfsd/vfs.h            |  12 +--
->  fs/nfsd/xdr4.h           |   2 +-
->  fs/overlayfs/namei.c     |   5 +-
->  fs/xfs/xfs_ioctl.c       |  12 ++-
->  include/linux/exportfs.h |   4 +-
->  include/linux/mount.h    |   4 +
->  include/linux/namei.h    |   2 +-
->  23 files changed, 490 insertions(+), 189 deletions(-)
-> 
+> Changes from v1 -> v2:
+>
+> - Added Neal's reviewed-by.
+> - Added test cases.
+>
+> Let me know if you'd prefer the test cases as a separate patch instead.
+>
+>  libbtrfsutil/python/tests/__init__.py       | 11 +++-
+>  libbtrfsutil/python/tests/test_subvolume.py | 73 +++++++++++++++++++--
+>  libbtrfsutil/subvolume.c                    | 18 ++++-
+>  3 files changed, 91 insertions(+), 11 deletions(-)
+>
+> diff --git a/libbtrfsutil/python/tests/__init__.py b/libbtrfsutil/python/=
+tests/__init__.py
+> index 9fd6f6de..a1ea740e 100644
+> --- a/libbtrfsutil/python/tests/__init__.py
+> +++ b/libbtrfsutil/python/tests/__init__.py
+> @@ -77,7 +77,16 @@ class BtrfsTestCase(unittest.TestCase):
+>              mkfs =3D 'mkfs.btrfs'
+>          try:
+>              subprocess.check_call([mkfs, '-q', image])
+> -            subprocess.check_call(['mount', '-o', 'loop', '--', image, m=
+ountpoint])
+> +            subprocess.check_call(
+> +                [
+> +                    'mount',
+> +                    '-o',
+> +                    'loop,user_subvol_rm_allowed',
+> +                    '--',
+> +                    image,
+> +                    mountpoint,
+> +                ]
+> +            )
+>          except Exception as e:
+>              os.rmdir(mountpoint)
+>              os.remove(image)
+> diff --git a/libbtrfsutil/python/tests/test_subvolume.py b/libbtrfsutil/p=
+ython/tests/test_subvolume.py
+> index 61055f53..2620b5c5 100644
+> --- a/libbtrfsutil/python/tests/test_subvolume.py
+> +++ b/libbtrfsutil/python/tests/test_subvolume.py
+> @@ -17,6 +17,7 @@
+>
+>  import fcntl
+>  import errno
+> +import multiprocessing
+>  import os
+>  import os.path
+>  from pathlib import PurePath
+> @@ -493,20 +494,78 @@ class TestSubvolume(BtrfsTestCase):
+>          finally:
+>              os.chdir(pwd)
+>
+> +    def _skip_unless_have_unprivileged_subvolume_iterator(self, path):
+> +        with drop_privs():
+> +            try:
+> +                for _ in btrfsutil.SubvolumeIterator(path):
+> +                    break
+> +            except OSError as e:
+> +                if e.errno =3D=3D errno.ENOTTY:
+> +                    self.skipTest('BTRFS_IOC_GET_SUBVOL_ROOTREF is not a=
+vailable')
+> +                else:
+> +                    raise
+> +
+>      @skipUnlessHaveNobody
+>      def test_subvolume_iterator_unprivileged(self):
+>          os.chown(self.mountpoint, NOBODY_UID, -1)
+>          pwd =3D os.getcwd()
+>          try:
+>              os.chdir(self.mountpoint)
+> +            self._skip_unless_have_unprivileged_subvolume_iterator('.')
+>              with drop_privs():
+> -                try:
+> -                    list(btrfsutil.SubvolumeIterator('.'))
+> -                except OSError as e:
+> -                    if e.errno =3D=3D errno.ENOTTY:
+> -                        self.skipTest('BTRFS_IOC_GET_SUBVOL_ROOTREF is n=
+ot available')
+> -                    else:
+> -                        raise
+>                  self._test_subvolume_iterator()
+>          finally:
+>              os.chdir(pwd)
+> +
+> +    @staticmethod
+> +    def _create_and_delete_subvolume(i):
+> +        dir_name =3D f'dir{i}'
+> +        subvol_name =3D dir_name + '/subvol'
+> +        while True:
+> +            os.mkdir(dir_name)
+> +            btrfsutil.create_subvolume(subvol_name)
+> +            btrfsutil.delete_subvolume(subvol_name)
+> +            os.rmdir(dir_name)
+> +
+> +    def _test_subvolume_iterator_race(self):
+> +        procs =3D []
+> +        fd =3D os.open('.', os.O_RDONLY | os.O_DIRECTORY)
+> +        try:
+> +            for i in range(10):
+> +                procs.append(
+> +                    multiprocessing.Process(
+> +                        target=3Dself._create_and_delete_subvolume,
+> +                        args=3D(i,),
+> +                        daemon=3DTrue,
+> +                    )
+> +                )
+> +            for proc in procs:
+> +                proc.start()
+> +            for i in range(1000):
+> +                with btrfsutil.SubvolumeIterator(fd) as it:
+> +                    for _ in it:
+> +                        pass
+> +        finally:
+> +            for proc in procs:
+> +                proc.terminate()
+> +                proc.join()
+> +            os.close(fd)
+> +
+> +    def test_subvolume_iterator_race(self):
+> +        pwd =3D os.getcwd()
+> +        try:
+> +            os.chdir(self.mountpoint)
+> +            self._test_subvolume_iterator_race()
+> +        finally:
+> +            os.chdir(pwd)
+> +
+> +    def test_subvolume_iterator_race_unprivileged(self):
+> +        os.chown(self.mountpoint, NOBODY_UID, -1)
+> +        pwd =3D os.getcwd()
+> +        try:
+> +            os.chdir(self.mountpoint)
+> +            self._skip_unless_have_unprivileged_subvolume_iterator('.')
+> +            with drop_privs():
+> +                self._test_subvolume_iterator_race()
+> +        finally:
+> +            os.chdir(pwd)
+> diff --git a/libbtrfsutil/subvolume.c b/libbtrfsutil/subvolume.c
+> index e30956b1..32086b7f 100644
+> --- a/libbtrfsutil/subvolume.c
+> +++ b/libbtrfsutil/subvolume.c
+> @@ -1469,8 +1469,16 @@ static enum btrfs_util_error subvolume_iterator_ne=
+xt_tree_search(struct btrfs_ut
+>                 name =3D (const char *)(ref + 1);
+>                 err =3D build_subvol_path_privileged(iter, header, ref, n=
+ame,
+>                                                    &path_len);
+> -               if (err)
+> +               if (err) {
+> +                       /*
+> +                        * If the subvolume's parent directory doesn't ex=
+ist,
+> +                        * then the subvolume was either moved or deleted=
+. Skip
+> +                        * it.
+> +                        */
+> +                       if (errno =3D=3D ENOENT)
+> +                               continue;
+>                         return err;
+> +               }
+>
+>                 err =3D append_to_search_stack(iter,
+>                                 btrfs_search_header_offset(header), path_=
+len);
+> @@ -1539,8 +1547,12 @@ static enum btrfs_util_error subvolume_iterator_ne=
+xt_unprivileged(struct btrfs_u
+>                 err =3D build_subvol_path_unprivileged(iter, treeid, diri=
+d,
+>                                                      &path_len);
+>                 if (err) {
+> -                       /* Skip the subvolume if we can't access it. */
+> -                       if (errno =3D=3D EACCES)
+> +                       /*
+> +                        * If the subvolume's parent directory doesn't ex=
+ist,
+> +                        * then the subvolume was either moved or deleted=
+. Skip
+> +                        * it. Also skip it if we can't access it.
+> +                        */
+> +                       if (errno =3D=3D ENOENT || errno =3D=3D EACCES)
+>                                 continue;
+>                         return err;
+>                 }
 > --
-> Signature
+> 2.32.0
+>
+
+I like that test cases are part of the commit. It makes sense as part
+of a logical change.
+
+I know I've already done the review, but I'll reaffirm this version.
+
+Reviewed-by: Neal Gompa <ngompa13@gmail.com>
+
+
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
