@@ -2,110 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71123D8EB1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 15:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FA23D8EAE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 15:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236217AbhG1NND (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 09:13:03 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55156 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235204AbhG1NND (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:13:03 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D8441222D7;
-        Wed, 28 Jul 2021 13:13:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627477980;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OKoV1krvyhIRu7/06MEq9OW+5Bxnj1RcNG8eObanFZc=;
-        b=uPaHioeFwITMwDUMD0p3rOLMFde+MnN3L6zBi8vPSu71f64YqaZHGJnHkpmA41C8LFRjHS
-        oXjQI0TtXZDIFlOc0P1b4RdRqkKqE7/cfgaxs98lCYy2hRihtcbBUTjqygPez6HUP1FqtZ
-        lWoENi0i7HSkd2A1T+MJLG9J794Grzw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627477980;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OKoV1krvyhIRu7/06MEq9OW+5Bxnj1RcNG8eObanFZc=;
-        b=CeTrXBNtlCGRfN+EV14fA+hySimJnTqEOUacRNrAercuXNAMKRMl5hgzhxnjQCrBnxPZav
-        5CYNYYDBxPUubvAA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D0E6AA3B83;
-        Wed, 28 Jul 2021 13:13:00 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0086DDA8A7; Wed, 28 Jul 2021 15:10:15 +0200 (CEST)
-Date:   Wed, 28 Jul 2021 15:10:15 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Marcos Paulo de Souza <mpdesouza@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, nborisov@suse.com
-Subject: Re: [PATCH] btrfs: Introduce btrfs_search_backwards function
-Message-ID: <20210728131015.GF5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com, nborisov@suse.com
-References: <20210726140317.4907-1-mpdesouza@suse.com>
+        id S236264AbhG1NMV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 09:12:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235204AbhG1NMV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 28 Jul 2021 09:12:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AE4760FED;
+        Wed, 28 Jul 2021 13:12:16 +0000 (UTC)
+Date:   Wed, 28 Jul 2021 15:12:13 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 11/11] btrfs: use automount to bind-mount all subvol
+ roots.
+Message-ID: <20210728131213.pgu3r4m4ulozrcav@wittgenstein>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+ <162742546558.32498.1901201501617899416.stgit@noble.brown>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210726140317.4907-1-mpdesouza@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <162742546558.32498.1901201501617899416.stgit@noble.brown>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 11:03:17AM -0300, Marcos Paulo de Souza wrote:
-> It's a common practice to start a search using offset (u64)-1, which is
-> the u64 maximum value, meaning that we want the search_slot function to
-> be set in the last item with the same objectid and type.
+On Wed, Jul 28, 2021 at 08:37:45AM +1000, NeilBrown wrote:
+> All subvol roots are now marked as automounts.  If the d_automount()
+> function determines that the dentry is not the root of the vfsmount, it
+> creates a simple loop-back mount of the dentry onto itself.  If it
+> determines that it IS the root of the vfsmount, it returns -EISDIR so
+> that no further automounting is attempted.
 > 
-> Once we are in this position, it's a matter to start a search backwards
-> by calling btrfs_previous_item, which will check if we'll need to go to
-> a previous leaf and other necessary checks, only to be sure that we are
-> in last offset of the same object and type. If the item is found,
-> convert the ondisk structure to the current endianness of the machine
-> running the code.
+> btrfs_getattr pays special attention to these automount dentries.
+> If it is NOT the root of the vfsmount:
+>  - the ->dev is reported as that for the rest of the vfsmount
+>  - the ->ino is reported as the subvol objectid, suitable transformed
+>    to avoid collision.
 > 
-> The new btrfs_search_backwards function does the all these procedures when
-> necessary, and can be used to avoid code duplication.
+> This way the same inode appear to be different depending on which mount
+> it is in.
 > 
-> No functional changes.
+> automounted vfsmounts are kept on a list and timeout after 500 to 1000
+> seconds of last use.  This is configurable via a module parameter.
+> The tracking and timeout of automounts is copied from NFS.
 > 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> Link: https://lore.kernel.org/r/162742546558.32498.1901201501617899416.stgit@noble.brown
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: NeilBrown <neilb@suse.de>
 > ---
->  fs/btrfs/ctree.c   | 23 +++++++++++++++++++++++
->  fs/btrfs/ctree.h   |  6 ++++++
->  fs/btrfs/ioctl.c   | 30 ++++++++----------------------
->  fs/btrfs/super.c   | 26 ++++++--------------------
->  fs/btrfs/volumes.c |  7 +------
->  5 files changed, 44 insertions(+), 48 deletions(-)
+>  fs/btrfs/btrfs_inode.h |    2 +
+>  fs/btrfs/inode.c       |  108 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/super.c       |    1 
+>  3 files changed, 111 insertions(+)
 > 
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 394fec1d3fd9..2991ee845813 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -2100,6 +2100,29 @@ int btrfs_search_slot_for_read(struct btrfs_root *root,
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index a4b5f38196e6..f03056cacc4a 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -387,4 +387,6 @@ static inline void btrfs_print_data_csum_error(struct btrfs_inode *inode,
+>  			mirror_num);
+>  }
+>  
+> +void btrfs_release_automount_timer(void);
+> +
+>  #endif
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 02537c1a9763..a5f46545fb38 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/migrate.h>
+>  #include <linux/sched/mm.h>
+>  #include <linux/iomap.h>
+> +#include <linux/fs_context.h>
+>  #include <asm/unaligned.h>
+>  #include "misc.h"
+>  #include "ctree.h"
+> @@ -5782,6 +5783,8 @@ static int btrfs_init_locked_inode(struct inode *inode, void *p)
+>  	struct btrfs_iget_args *args = p;
+>  
+>  	inode->i_ino = args->ino;
+> +	if (args->ino == BTRFS_FIRST_FREE_OBJECTID)
+> +		inode->i_flags |= S_AUTOMOUNT;
+>  	BTRFS_I(inode)->location.objectid = args->ino;
+>  	BTRFS_I(inode)->location.type = BTRFS_INODE_ITEM_KEY;
+>  	BTRFS_I(inode)->location.offset = 0;
+> @@ -5985,6 +5988,101 @@ static int btrfs_dentry_delete(const struct dentry *dentry)
 >  	return 0;
 >  }
 >  
-> +/*
-> + * Execute search and call btrfs_previous_item to traverse backwards if the item
-> + * was not found. If found, convert the stored item to the correct endianness.
-> + *
-> + * Return 0 if found, 1 if not found and < 0 if error.
-> + */
-> +int btrfs_search_backwards(struct btrfs_root *root,
-> +				struct btrfs_key *key,
-> +				struct btrfs_key *found_key,
+> +static void btrfs_expire_automounts(struct work_struct *work);
+> +static LIST_HEAD(btrfs_automount_list);
+> +static DECLARE_DELAYED_WORK(btrfs_automount_task, btrfs_expire_automounts);
+> +int btrfs_mountpoint_expiry_timeout = 500 * HZ;
+> +static void btrfs_expire_automounts(struct work_struct *work)
+> +{
+> +	struct list_head *list = &btrfs_automount_list;
+> +	int timeout = READ_ONCE(btrfs_mountpoint_expiry_timeout);
+> +
+> +	mark_mounts_for_expiry(list);
+> +	if (!list_empty(list) && timeout > 0)
+> +		schedule_delayed_work(&btrfs_automount_task, timeout);
+> +}
+> +
+> +void btrfs_release_automount_timer(void)
+> +{
+> +	if (list_empty(&btrfs_automount_list))
+> +		cancel_delayed_work(&btrfs_automount_task);
+> +}
+> +
+> +static struct vfsmount *btrfs_automount(struct path *path)
+> +{
+> +	struct fs_context fc;
+> +	struct vfsmount *mnt;
+> +	int timeout = READ_ONCE(btrfs_mountpoint_expiry_timeout);
+> +
+> +	if (path->dentry == path->mnt->mnt_root)
+> +		/* dentry is root of the vfsmount,
+> +		 * so skip automount processing
+> +		 */
+> +		return ERR_PTR(-EISDIR);
+> +	/* Create a bind-mount to expose the subvol in the mount table */
+> +	fc.root = path->dentry;
+> +	fc.sb_flags = 0;
+> +	fc.source = "btrfs-automount";
+> +	mnt = vfs_create_mount(&fc);
+> +	if (IS_ERR(mnt))
+> +		return mnt;
 
-Is it necessary to have 2 keys? All calls pass the same one, so either
-this should be just one or you have other patches that make use of two
-distinct keys?
+Hey Neil,
 
-> -		ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
-> +		ret = btrfs_search_backwards(root, &key, &key, path);
+Sorry if this is a stupid question but wouldn't you want to copy the
+mount properties from path->mnt here? Couldn't you otherwise use this to
+e.g. suddenly expose a dentry on a read-only mount as read-write?
 
-						   &key, &key
+Christian
