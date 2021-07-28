@@ -2,425 +2,377 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E38A3D95ED
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 21:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D413D95F4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 21:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbhG1TRO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 15:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhG1TRN (ORCPT
+        id S231313AbhG1TSI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 15:18:08 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:38536 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230333AbhG1TSH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:17:13 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF06C061757;
-        Wed, 28 Jul 2021 12:17:11 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 917827C77; Wed, 28 Jul 2021 15:17:11 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 917827C77
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1627499831;
-        bh=QGi8Y+wurSkVuDPmP5sipc7Hrk2IhPq1SmNuzD0+Gug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IAQoriF0P6Iydqzyk12HgdxTxahcApXyETB1JRtcMNPnRj5trB/sHlPOizW5PvbHp
-         9U/fRNq4k+wL5N9A9EWNlOJaiV2ZJoEJ24ILc8XbxrMKseglRXJXV4656YkYPlInDH
-         RaqORoieJGDV5OZUySFUTrP+A/gBH57C4N03o3qI=
-Date:   Wed, 28 Jul 2021 15:17:11 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 07/11] exportfs: Allow filehandle lookup to cross
- internal mount points.
-Message-ID: <20210728191711.GC3152@fieldses.org>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
- <162742546554.32498.9309110546560807513.stgit@noble.brown>
+        Wed, 28 Jul 2021 15:18:07 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 96E36B0813F; Wed, 28 Jul 2021 15:18:04 -0400 (EDT)
+Date:   Wed, 28 Jul 2021 15:18:04 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Dave T <davestechshop@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: BTRFS scrub reports an error but check doesn't find any errors.
+Message-ID: <20210728191804.GI10170@hungrycats.org>
+References: <CAGdWbB5YL40HiF9E0RxCdO96MS7tKg1=CRPT2YSe+vR3eGZUgQ@mail.gmail.com>
+ <20210727214049.GH10170@hungrycats.org>
+ <CAGdWbB61NtG5roK3RUSWRN8i8Zo6qMno0LXhE6zaDLHSWhH3RA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <162742546554.32498.9309110546560807513.stgit@noble.brown>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGdWbB61NtG5roK3RUSWRN8i8Zo6qMno0LXhE6zaDLHSWhH3RA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 08:37:45AM +1000, NeilBrown wrote:
-> When a filesystem has internal mounts, it controls the filehandles
-> across all those mounts (subvols) in the filesystem.  So it is useful to
-> be able to look up a filehandle again one mount, and get a result which
-> is in a different mount (part of the same overall file system).
+On Wed, Jul 28, 2021 at 11:15:31AM -0400, Dave T wrote:
+> On Tue, Jul 27, 2021 at 5:44 PM Zygo Blaxell
+> <ce3g8jdj@umail.furryterror.org> wrote:
+> >
+> > On Sun, Jul 25, 2021 at 01:39:55PM -0400, Dave T wrote:
+> > > What does the list recommend I do in this case?
+> > >
+> > > starting btrfs scrub ...
+> > > scrub done for 56cea9cf-5374-4a43-b19d-6b0b143dc635
+> > > Scrub started:    Sun Jul 25 00:40:43 2021
+> > > Status:           finished
+> > > Duration:         2:52:45
+> > > Total to scrub:   1.26TiB
+> > > Rate:             113.72MiB/s
+> > > Error summary:    read=1
+> > >   Corrected:      0
+> > >   Uncorrectable:  1
+> > >   Unverified:     0
+> > > ERROR: there are uncorrectable errors
+> >
+> > This is a read failure (data not available from device), not a csum error
+> > (data available but not correct).
 > 
-> This patch makes that possible by changing export_decode_fh() and
-> export_decode_fh_raw() to take a vfsmount pointer by reference, and
-> possibly change the vfsmount pointed to before returning.
+> Thank you.
 > 
-> The core of the change is in reconnect_path() which now not only checks
-> that the dentry is fully connected, but also that the vfsmnt reported
-> has the same 'dev' (reported by vfs_getattr) as the dentry.
-> If it doesn't, we walk up the dparent() chain to find the highest place
-> where the dev changes without there being a mount point, and trigger an
-> automount there.
+> >
+> > > dmesg | grep "checksum error at" | tail -n 20
+> > > (no output)
+> >
+> > You should be looking for a IO failure on the underlying device (the
+> > one below /dev/mapper/userluks).
 > 
-> As no filesystems yet provide local-mounts, this does not yet change any
-> behaviour.
+> That would be /dev/sde in my case.
 > 
-> In exportfs_decode_fh_raw() we previously tested for DCACHE_DISCONNECT
-> before calling reconnect_path().  That test is dropped.  It was only a
-> minor optimisation and is now inconvenient.
+> > Look for log messages that appear just
+> > before btrfs errors, or errors mentioning the device itself:
+> >
+> >         dmesg | grep -B99 -i btrfs
+> >
+> >         dmesg | grep -C9 sda
+> >
 > 
-> The change in overlayfs needs more careful thought than I have yet given
-> it.
+> Here is the complete output from a new scrub, including the output of
+> the commands above.
 > 
-> Signed-off-by: NeilBrown <neilb@suse.de>
-> ---
->  fs/exportfs/expfs.c      |  100 +++++++++++++++++++++++++++++++++++++++-------
->  fs/fhandle.c             |    2 -
->  fs/nfsd/nfsfh.c          |    9 +++-
->  fs/overlayfs/namei.c     |    5 ++
->  fs/xfs/xfs_ioctl.c       |   12 ++++--
->  include/linux/exportfs.h |    4 +-
->  6 files changed, 106 insertions(+), 26 deletions(-)
+> # fpath="/home/userdata"
 > 
-> diff --git a/fs/exportfs/expfs.c b/fs/exportfs/expfs.c
-> index 0106eba46d5a..2d7c42137b49 100644
-> --- a/fs/exportfs/expfs.c
-> +++ b/fs/exportfs/expfs.c
-> @@ -207,11 +207,18 @@ static struct dentry *reconnect_one(struct vfsmount *mnt,
->   * that case reconnect_path may still succeed with target_dir fully
->   * connected, but further operations using the filehandle will fail when
->   * necessary (due to S_DEAD being set on the directory).
-> + *
-> + * If the filesystem supports multiple subvols, then *mntp may be updated
-> + * to a subordinate mount point on the same filesystem.
->   */
->  static int
-> -reconnect_path(struct vfsmount *mnt, struct dentry *target_dir, char *nbuf)
-> +reconnect_path(struct vfsmount **mntp, struct dentry *target_dir, char *nbuf)
->  {
-> +	struct vfsmount *mnt = *mntp;
-> +	struct path path;
->  	struct dentry *dentry, *parent;
-> +	struct kstat stat;
-> +	dev_t target_dev;
->  
->  	dentry = dget(target_dir);
->  
-> @@ -232,6 +239,68 @@ reconnect_path(struct vfsmount *mnt, struct dentry *target_dir, char *nbuf)
->  	}
->  	dput(dentry);
->  	clear_disconnected(target_dir);
+> # check_space "$fpath"
+> Filesystem            Size  Used Avail Use% Mounted on
+> /dev/mapper/userluks  2.8T  1.2T  1.7T  42% /home/userdata
+> Data, single: total=1.25TiB, used=1.11TiB
+> System, DUP: total=32.00MiB, used=160.00KiB
+> Metadata, DUP: total=6.00GiB, used=5.32GiB
+> GlobalReserve, single: total=512.00MiB, used=0.00B
+> 
+> # balance "$fpath"
+> starting btrfs balance for /home/userdata
+> Done, had to relocate 10 out of 1284 chunks
+> 
+> real    101m35.135s
+> user    0m0.000s
+> sys     0m32.991s
+> -----------------------
+> 
+> # scrub "$fpath"
+> starting btrfs scrub ...
+> scrub done for 56cea9cf-5374-4a43-b19d-6b0b143dc635
+> Scrub started:    Tue Jul 27 19:46:25 2021
+> Status:           finished
+> Duration:         2:09:17
+> Total to scrub:   1.25TiB
+> Rate:             151.98MiB/s
+> Error summary:    read=1
+>   Corrected:      0
+>   Uncorrectable:  1
+>   Unverified:     0
+> ERROR: there are uncorrectable errors
+> 
+> 
+> # btrfs fi us /home/userdata/
+> Overall:
+>     Device size:                   2.73TiB
+>     Device allocated:              1.25TiB
+>     Device unallocated:            1.48TiB
+>     Device missing:                  0.00B
+>     Used:                          1.12TiB
+>     Free (estimated):              1.60TiB      (min: 883.62GiB)
+>     Free (statfs, df):             1.60TiB
+>     Data ratio:                       1.00
+>     Metadata ratio:                   2.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
+>     Multiple profiles:                  no
+> 
+> Data,single: Size:1.24TiB, Used:1.11TiB (90.10%)
+>    /dev/mapper/userluks    1.24TiB
+> 
+> Metadata,DUP: Size:6.00GiB, Used:5.35GiB (89.17%)
+>    /dev/mapper/userluks   12.00GiB
+> 
+> System,DUP: Size:32.00MiB, Used:160.00KiB (0.49%)
+>    /dev/mapper/userluks   64.00MiB
+> 
+> Unallocated:
+>    /dev/mapper/userluks    1.48TiB
+> 
+> # lsblk
+> NAME         LABEL      UUID                                 PARTUUID
+>                            MODEL                 SIZE SERIAL
+>     MOUNTPOINT
+> 
+> sde
+>                            ST3000DM001-1CH166    2.7T XXXXXXX
+> └─sde1                  56cea9cf-3566-49f3-8abf-e59246f88a43
+> 5db1ed2f-572e-4388-920b-6e4bfabf9e72                       2.7T
+>   └─userluks USERCOMMON 56cea9cf-5374-4a43-b19d-6b0b143dc635
+>                                                  2.7T
+>     /mnt/temp/user
+> 
+> 
+> dmesg | grep -B99 -i btrfs
+> The only relevant output is:
+> 
+> [  +0.025578] BTRFS warning (device dm-4): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.000983] BTRFS warning (device dm-4): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.026646] BTRFS warning (device dm-4): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.001383] BTRFS warning (device dm-4): qgroup rescan init failed,
+> qgroup is not enabled
+> [Jul28 00:03] BTRFS warning (device dm-4): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.001119] BTRFS warning (device dm-4): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +1.828343] BTRFS warning (device dm-0): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.001132] BTRFS warning (device dm-0): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.029263] BTRFS warning (device dm-0): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.000969] BTRFS warning (device dm-0): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.068749] BTRFS warning (device dm-0): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.005558] BTRFS warning (device dm-0): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +2.872178] BTRFS warning (device dm-2): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.024708] BTRFS warning (device dm-2): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.041130] BTRFS warning (device dm-2): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +4.115641] BTRFS warning (device dm-2): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.032633] BTRFS warning (device dm-2): qgroup rescan init failed,
+> qgroup is not enabled
+> [  +0.059885] BTRFS warning (device dm-2): qgroup rescan init failed,
+> qgroup is not enabled
+> 
+> # dmesg | grep -C9 sde
+> (no output)
+> 
+> The journal shows:
+> 
+> Jul 27 21:54:39 server kernel: ata10.00: exception Emask 0x0 SAct
+> 0xffffffff SErr 0x0 action 0x0
+> Jul 27 21:54:39 server kernel: ata10.00: irq_stat 0x40000008
+> Jul 27 21:54:39 server kernel: ata10.00: failed command: READ FPDMA QUEUED
+> Jul 27 21:54:39 server kernel: ata10.00: cmd
+> 60/00:90:98:2f:9f/03:00:a4:00:00/40 tag 18 ncq dma 393216 in
+>                                          res
+> 41/40:00:20:32:9f/00:03:a4:00:00/00 Emask 0x409 (media error) <F>
+> Jul 27 21:54:39 server kernel: ata10.00: status: { DRDY ERR }
+> Jul 27 21:54:39 server kernel: ata10.00: error: { UNC }
+> Jul 27 21:54:39 server kernel: ata10.00: configured for UDMA/133
+> Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 FAILED Result:
+> hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=3s
+> Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 Sense Key :
+> Medium Error [current]
+> Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 Add. Sense:
+> Unrecovered read error - auto reallocate failed
+> Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 CDB: Read(16)
+> 88 00 00 00 00 00 a4 9f 2f 98 00 00 03 00 00 00
+> Jul 27 21:54:39 server kernel: blk_update_request: I/O error, dev sde,
+> sector 2761896480 op 0x0:(READ) flags 0x0 phys_seg 15 prio class 0
+> Jul 27 21:54:39 server kernel: ata10: EH complete
+> Jul 27 21:54:45 server kernel: ata10.00: exception Emask 0x0 SAct
+> 0x4000000 SErr 0x0 action 0x0
+> Jul 27 21:54:45 server kernel: ata10.00: irq_stat 0x40000008
+> Jul 27 21:54:45 server kernel: ata10.00: failed command: READ FPDMA QUEUED
+> Jul 27 21:54:45 server kernel: ata10.00: cmd
+> 60/08:d0:20:32:9f/00:00:a4:00:00/40 tag 26 ncq dma 4096 in
+>                                          res
+> 41/40:08:20:32:9f/00:00:a4:00:00/00 Emask 0x409 (media error) <F>
+> Jul 27 21:54:45 server kernel: ata10.00: status: { DRDY ERR }
+> Jul 27 21:54:45 server kernel: ata10.00: error: { UNC }
+> Jul 27 21:54:45 server kernel: ata10.00: configured for UDMA/133
+> Jul 27 21:54:45 server kernel: sd 9:0:0:0: [sde] tag#26 FAILED Result:
+> hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=4s
+> Jul 27 21:54:45 server kernel: sd 9:0:0:0: [sde] tag#26 Sense Key :
+> Medium Error [current]
+> Jul 27 21:54:45 server kernel: sd 9:0:0:0: [sde] tag#26 Add. Sense:
+> Unrecovered read error - auto reallocate failed
+> Jul 27 21:54:45 server kernel: sd 9:0:0:0: [sde] tag#26 CDB: Read(16)
+> 88 00 00 00 00 00 a4 9f 32 20 00 00 00 08 00 00
+> Jul 27 21:54:45 server kernel: blk_update_request: I/O error, dev sde,
+> sector 2761896480 op 0x0:(READ) flags 0x800 phys_seg 1 prio class 0
+> Jul 27 21:54:45 server kernel: ata10: EH complete
+> Jul 27 21:54:45 server kernel: BTRFS warning (device dm-2): i/o error
+> at logical 1567691653120 on dev /dev/mapper/userluks, physical
+> 1414087852032, root 19911, inode 624993, offset 5717954560, length
+> 4096, links 1 (path: path/to/file/filename.ext)
+> Jul 27 21:54:45 server kernel: BTRFS warning (device dm-2): i/o error
+> at logical 1567691653120 on dev /dev/mapper/userluks, physical
+> 1414087852032, root 19989, inode 624993, offset 5717954560, length
+> 4096, links 1 (path: path/to/file/filename.ext)
+> Jul 27 21:54:45 server kernel: BTRFS warning (device dm-2): i/o error
+> at logical 1567691653120 on dev /dev/mapper/userluks, physical
+> 1414087852032, root 20199, inode 624993, offset 5717954560, length
+> 4096, links 1 (path: path/to/file/filename.ext)
+> Jul 27 21:54:45 server kernel: BTRFS error (device dm-2): bdev
+> /dev/mapper/userluks errs: wr 0, rd 2, flush 0, corrupt 0, gen 0
+> Jul 27 21:54:45 server kernel: BTRFS error (device dm-2): unable to
+> fixup (regular) error at logical 1567691653120 on dev
+> /dev/mapper/userluks
+> Jul 27 21:55:42 server kernel: BTRFS info (device dm-2): scrub:
+> finished on devid 1 with status: 0
+> 
+> 
+> btrfs su li /home/userdata/
+> 
+> ...
+> ID 19911 gen 152144 top level 257 path @usertop/18053/snapshot
+> ID 19989 gen 152144 top level 257 path @usertop/18131/snapshot
+> ID 20199 gen 152144 top level 257 path @usertop/18313/snapshot
+> ...
+> 
+> snapper -c userdata ls
+> 
+> ...
+> 18053  | single |       | Fri 01 Jan 2021 12:00:18 AM EST | root |
+> timeline | timeline         |
+> 18131  | single |       | Mon 04 Jan 2021 12:00:15 AM EST | root |
+> timeline | timeline         |
+> 18313  | single |       | Mon 11 Jan 2021 12:00:20 AM EST | root |
+> timeline | timeline         |
+> ...
+> 
+> There are snapshots after that date without any errors. The live (r/w)
+> file system does not show any errors.
+> 
+> The volume is a 3TB disk, model ST3000DM001-1CH166 (Seagate Barracuda
+> SATA HDD).
+> 
+> Is there a way to mark sectors on the disk as bad? If so, is it
+> advisable to keep using this physical disk?
 
-Minor nit--I'd prefer the following in a separate function.
+Delete or replace the file so the blocks are released to free space.
+The next write over that sector will clobber the bad sector with fresh
+data, and the drive should remap the bad sector at that time.
 
---b.
+You can also try to expedite that process with dd, but that's error
+prone (you have to calculate the offsets and not typo them into dd
+commands...) and not really necessary (I never bother with that).
 
-> +
-> +	/* Need to find appropriate vfsmount, which might not exist yet.
-> +	 * We may need to trigger automount points.
-> +	 */
-> +	path.mnt = mnt;
-> +	path.dentry = target_dir;
-> +	vfs_getattr_nosec(&path, &stat, 0, AT_STATX_DONT_SYNC);
-> +	target_dev = stat.dev;
-> +
-> +	path.dentry = mnt->mnt_root;
-> +	vfs_getattr_nosec(&path, &stat, 0, AT_STATX_DONT_SYNC);
-> +
-> +	while (stat.dev != target_dev) {
-> +		/* walk up the dcache tree from target_dir, recording the
-> +		 * location of the most recent change in dev number,
-> +		 * until we find a mountpoint.
-> +		 * If there was no change in show_dev result before the
-> +		 * mountpount, the vfsmount at the mountpoint is what we want.
-> +		 * If there was, we need to trigger an automount where the
-> +		 * show_dev() result changed.
-> +		 */
-> +		struct dentry *last_change = NULL;
-> +		dev_t last_dev = target_dev;
-> +
-> +		dentry = dget(target_dir);
-> +		while ((parent = dget_parent(dentry)) != dentry) {
-> +			path.dentry = parent;
-> +			vfs_getattr_nosec(&path, &stat, 0, AT_STATX_DONT_SYNC);
-> +			if (stat.dev != last_dev) {
-> +				path.dentry = dentry;
-> +				mnt = lookup_mnt(&path);
-> +				if (mnt) {
-> +					mntput(path.mnt);
-> +					path.mnt = mnt;
-> +					break;
-> +				}
-> +				dput(last_change);
-> +				last_change = dget(dentry);
-> +				last_dev = stat.dev;
-> +			}
-> +			dput(dentry);
-> +			dentry = parent;
-> +		}
-> +		dput(dentry); dput(parent);
-> +
-> +		if (!last_change)
-> +			break;
-> +
-> +		mnt = path.mnt;
-> +		path.dentry = last_change;
-> +		follow_down(&path, LOOKUP_AUTOMOUNT);
-> +		dput(path.dentry);
-> +		if (path.mnt == mnt)
-> +			/* There should have been a mount-trap there,
-> +			 * but there wasn't.  Just give up.
-> +			 */
-> +			break;
-> +
-> +		path.dentry = mnt->mnt_root;
-> +		vfs_getattr_nosec(&path, &stat, 0, AT_STATX_DONT_SYNC);
-> +	}
-> +	*mntp = path.mnt;
->  	return 0;
->  }
->  
-> @@ -418,12 +487,13 @@ int exportfs_encode_fh(struct dentry *dentry, struct fid *fid, int *max_len,
->  EXPORT_SYMBOL_GPL(exportfs_encode_fh);
->  
->  struct dentry *
-> -exportfs_decode_fh_raw(struct vfsmount *mnt, struct fid *fid, int fh_len,
-> +exportfs_decode_fh_raw(struct vfsmount **mntp, struct fid *fid, int fh_len,
->  		       int fileid_type,
->  		       int (*acceptable)(void *, struct dentry *),
->  		       void *context)
->  {
-> -	const struct export_operations *nop = mnt->mnt_sb->s_export_op;
-> +	struct super_block *sb = (*mntp)->mnt_sb;
-> +	const struct export_operations *nop = sb->s_export_op;
->  	struct dentry *result, *alias;
->  	char nbuf[NAME_MAX+1];
->  	int err;
-> @@ -433,7 +503,7 @@ exportfs_decode_fh_raw(struct vfsmount *mnt, struct fid *fid, int fh_len,
->  	 */
->  	if (!nop || !nop->fh_to_dentry)
->  		return ERR_PTR(-ESTALE);
-> -	result = nop->fh_to_dentry(mnt->mnt_sb, fid, fh_len, fileid_type);
-> +	result = nop->fh_to_dentry(sb, fid, fh_len, fileid_type);
->  	if (IS_ERR_OR_NULL(result))
->  		return result;
->  
-> @@ -452,14 +522,12 @@ exportfs_decode_fh_raw(struct vfsmount *mnt, struct fid *fid, int fh_len,
->  		 *
->  		 * On the positive side there is only one dentry for each
->  		 * directory inode.  On the negative side this implies that we
-> -		 * to ensure our dentry is connected all the way up to the
-> +		 * need to ensure our dentry is connected all the way up to the
->  		 * filesystem root.
->  		 */
-> -		if (result->d_flags & DCACHE_DISCONNECTED) {
-> -			err = reconnect_path(mnt, result, nbuf);
-> -			if (err)
-> -				goto err_result;
-> -		}
-> +		err = reconnect_path(mntp, result, nbuf);
-> +		if (err)
-> +			goto err_result;
->  
->  		if (!acceptable(context, result)) {
->  			err = -EACCES;
-> @@ -494,7 +562,7 @@ exportfs_decode_fh_raw(struct vfsmount *mnt, struct fid *fid, int fh_len,
->  		if (!nop->fh_to_parent)
->  			goto err_result;
->  
-> -		target_dir = nop->fh_to_parent(mnt->mnt_sb, fid,
-> +		target_dir = nop->fh_to_parent(sb, fid,
->  				fh_len, fileid_type);
->  		if (!target_dir)
->  			goto err_result;
-> @@ -507,7 +575,7 @@ exportfs_decode_fh_raw(struct vfsmount *mnt, struct fid *fid, int fh_len,
->  		 * connected to the filesystem root.  The VFS really doesn't
->  		 * like disconnected directories..
->  		 */
-> -		err = reconnect_path(mnt, target_dir, nbuf);
-> +		err = reconnect_path(mntp, target_dir, nbuf);
->  		if (err) {
->  			dput(target_dir);
->  			goto err_result;
-> @@ -518,7 +586,7 @@ exportfs_decode_fh_raw(struct vfsmount *mnt, struct fid *fid, int fh_len,
->  		 * dentry for the inode we're after, make sure that our
->  		 * inode is actually connected to the parent.
->  		 */
-> -		err = exportfs_get_name(mnt, target_dir, nbuf, result);
-> +		err = exportfs_get_name(*mntp, target_dir, nbuf, result);
->  		if (err) {
->  			dput(target_dir);
->  			goto err_result;
-> @@ -556,7 +624,7 @@ exportfs_decode_fh_raw(struct vfsmount *mnt, struct fid *fid, int fh_len,
->  			goto err_result;
->  		}
->  
-> -		return alias;
-> +		return result;
->  	}
->  
->   err_result:
-> @@ -565,14 +633,14 @@ exportfs_decode_fh_raw(struct vfsmount *mnt, struct fid *fid, int fh_len,
->  }
->  EXPORT_SYMBOL_GPL(exportfs_decode_fh_raw);
->  
-> -struct dentry *exportfs_decode_fh(struct vfsmount *mnt, struct fid *fid,
-> +struct dentry *exportfs_decode_fh(struct vfsmount **mntp, struct fid *fid,
->  				  int fh_len, int fileid_type,
->  				  int (*acceptable)(void *, struct dentry *),
->  				  void *context)
->  {
->  	struct dentry *ret;
->  
-> -	ret = exportfs_decode_fh_raw(mnt, fid, fh_len, fileid_type,
-> +	ret = exportfs_decode_fh_raw(mntp, fid, fh_len, fileid_type,
->  				     acceptable, context);
->  	if (IS_ERR_OR_NULL(ret)) {
->  		if (ret == ERR_PTR(-ENOMEM))
-> diff --git a/fs/fhandle.c b/fs/fhandle.c
-> index 6630c69c23a2..b47c7696469f 100644
-> --- a/fs/fhandle.c
-> +++ b/fs/fhandle.c
-> @@ -149,7 +149,7 @@ static int do_handle_to_path(int mountdirfd, struct file_handle *handle,
->  	}
->  	/* change the handle size to multiple of sizeof(u32) */
->  	handle_dwords = handle->handle_bytes >> 2;
-> -	path->dentry = exportfs_decode_fh(path->mnt,
-> +	path->dentry = exportfs_decode_fh(&path->mnt,
->  					  (struct fid *)handle->f_handle,
->  					  handle_dwords, handle->handle_type,
->  					  vfs_dentry_acceptable, NULL);
-> diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
-> index 0bf7ac13ae50..4023046f63e2 100644
-> --- a/fs/nfsd/nfsfh.c
-> +++ b/fs/nfsd/nfsfh.c
-> @@ -157,6 +157,7 @@ static __be32 nfsd_set_fh_dentry(struct svc_rqst *rqstp, struct svc_fh *fhp)
->  	struct fid *fid = NULL, sfid;
->  	struct svc_export *exp;
->  	struct dentry *dentry;
-> +	struct vfsmount *mnt = NULL;
->  	int fileid_type;
->  	int data_left = fh->fh_size/4;
->  	__be32 error;
-> @@ -253,6 +254,8 @@ static __be32 nfsd_set_fh_dentry(struct svc_rqst *rqstp, struct svc_fh *fhp)
->  	if (rqstp->rq_vers > 2)
->  		error = nfserr_badhandle;
->  
-> +	mnt = mntget(exp->ex_path.mnt);
-> +
->  	if (fh->fh_version != 1) {
->  		sfid.i32.ino = fh->ofh_ino;
->  		sfid.i32.gen = fh->ofh_generation;
-> @@ -269,7 +272,7 @@ static __be32 nfsd_set_fh_dentry(struct svc_rqst *rqstp, struct svc_fh *fhp)
->  	if (fileid_type == FILEID_ROOT)
->  		dentry = dget(exp->ex_path.dentry);
->  	else {
-> -		dentry = exportfs_decode_fh_raw(exp->ex_path.mnt, fid,
-> +		dentry = exportfs_decode_fh_raw(&mnt, fid,
->  						data_left, fileid_type,
->  						nfsd_acceptable, exp);
->  		if (IS_ERR_OR_NULL(dentry)) {
-> @@ -299,7 +302,7 @@ static __be32 nfsd_set_fh_dentry(struct svc_rqst *rqstp, struct svc_fh *fhp)
->  	}
->  
->  	fhp->fh_dentry = dentry;
-> -	fhp->fh_mnt = mntget(exp->ex_path.mnt);
-> +	fhp->fh_mnt = mnt;
->  	fhp->fh_export = exp;
->  
->  	switch (rqstp->rq_vers) {
-> @@ -317,6 +320,7 @@ static __be32 nfsd_set_fh_dentry(struct svc_rqst *rqstp, struct svc_fh *fhp)
->  
->  	return 0;
->  out:
-> +	mntput(mnt);
->  	exp_put(exp);
->  	return error;
->  }
-> @@ -428,7 +432,6 @@ fh_verify(struct svc_rqst *rqstp, struct svc_fh *fhp, umode_t type, int access)
->  	return error;
->  }
->  
-> -
->  /*
->   * Compose a file handle for an NFS reply.
->   *
-> diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
-> index 210cd6f66e28..0bca19f6df54 100644
-> --- a/fs/overlayfs/namei.c
-> +++ b/fs/overlayfs/namei.c
-> @@ -155,6 +155,7 @@ struct dentry *ovl_decode_real_fh(struct ovl_fs *ofs, struct ovl_fh *fh,
->  {
->  	struct dentry *real;
->  	int bytes;
-> +	struct vfsmount *mnt2;
->  
->  	if (!capable(CAP_DAC_READ_SEARCH))
->  		return NULL;
-> @@ -169,9 +170,11 @@ struct dentry *ovl_decode_real_fh(struct ovl_fs *ofs, struct ovl_fh *fh,
->  		return NULL;
->  
->  	bytes = (fh->fb.len - offsetof(struct ovl_fb, fid));
-> -	real = exportfs_decode_fh(mnt, (struct fid *)fh->fb.fid,
-> +	mnt2 = mntget(mnt);
-> +	real = exportfs_decode_fh(&mnt2, (struct fid *)fh->fb.fid,
->  				  bytes >> 2, (int)fh->fb.type,
->  				  connected ? ovl_acceptable : NULL, mnt);
-> +	mntput(mnt2);
->  	if (IS_ERR(real)) {
->  		/*
->  		 * Treat stale file handle to lower file as "origin unknown".
-> diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-> index 16039ea10ac9..76eb7d540811 100644
-> --- a/fs/xfs/xfs_ioctl.c
-> +++ b/fs/xfs/xfs_ioctl.c
-> @@ -149,6 +149,8 @@ xfs_handle_to_dentry(
->  {
->  	xfs_handle_t		handle;
->  	struct xfs_fid64	fid;
-> +	struct dentry		*ret;
-> +	struct vfsmount		*mnt;
->  
->  	/*
->  	 * Only allow handle opens under a directory.
-> @@ -168,9 +170,13 @@ xfs_handle_to_dentry(
->  	fid.ino = handle.ha_fid.fid_ino;
->  	fid.gen = handle.ha_fid.fid_gen;
->  
-> -	return exportfs_decode_fh(parfilp->f_path.mnt, (struct fid *)&fid, 3,
-> -			FILEID_INO32_GEN | XFS_FILEID_TYPE_64FLAG,
-> -			xfs_handle_acceptable, NULL);
-> +	mnt = mntget(parfilp->f_path.mnt);
-> +	ret = exportfs_decode_fh(&mnt, (struct fid *)&fid, 3,
-> +				 FILEID_INO32_GEN | XFS_FILEID_TYPE_64FLAG,
-> +				 xfs_handle_acceptable, NULL);
-> +	WARN_ON(mnt != parfilp->f_path.mnt);
-> +	mntput(mnt);
-> +	return ret;
->  }
->  
->  STATIC struct dentry *
-> diff --git a/include/linux/exportfs.h b/include/linux/exportfs.h
-> index fe848901fcc3..9a8c5434a5cf 100644
-> --- a/include/linux/exportfs.h
-> +++ b/include/linux/exportfs.h
-> @@ -228,12 +228,12 @@ extern int exportfs_encode_inode_fh(struct inode *inode, struct fid *fid,
->  				    int *max_len, struct inode *parent);
->  extern int exportfs_encode_fh(struct dentry *dentry, struct fid *fid,
->  	int *max_len, int connectable);
-> -extern struct dentry *exportfs_decode_fh_raw(struct vfsmount *mnt,
-> +extern struct dentry *exportfs_decode_fh_raw(struct vfsmount **mntp,
->  					     struct fid *fid, int fh_len,
->  					     int fileid_type,
->  					     int (*acceptable)(void *, struct dentry *),
->  					     void *context);
-> -extern struct dentry *exportfs_decode_fh(struct vfsmount *mnt, struct fid *fid,
-> +extern struct dentry *exportfs_decode_fh(struct vfsmount **mnt, struct fid *fid,
->  	int fh_len, int fileid_type, int (*acceptable)(void *, struct dentry *),
->  	void *context);
->  
+You should monitor the drive SMART data and run SMART self-tests
+periodically (in addition to btrfs scrubs, they check different things).
+If the number of UNC sectors increases over time, it's a good indicator
+something is wrong with the drive and it may need replacement soon.
+
+Seagate Barracudas often follow a pattern where over a period of a few
+days, there's one UNC sector, then, two, then ten, then a thousand,
+then the drive doesn't spin up any more and all data is lost.  On those
+drives I'd run a SMART long self-test daily if possible, or as close
+to daily as your system load allows.
+
+> Thanks for sharing your knowledge. This is very helpful.
 > 
+> > > # dmesg | grep -i checksum
+> > > [  +0.001698] xor: automatically using best checksumming function   avx
+> > > (not related to BTRFS, right?)
+> > >
+> > > # btrfs fi us /path/to/xyz
+> > > Overall:
+> > >     Device size:                   2.73TiB
+> > >     Device allocated:              1.26TiB
+> > >     Device unallocated:            1.47TiB
+> > >     Device missing:                  0.00B
+> > >     Used:                          1.12TiB
+> > >     Free (estimated):              1.60TiB      (min: 888.70GiB)
+> > >     Free (statfs, df):             1.60TiB
+> > >     Data ratio:                       1.00
+> > >     Metadata ratio:                   2.00
+> > >     Global reserve:              512.00MiB      (used: 0.00B)
+> > >     Multiple profiles:                  no
+> > >
+> > > Data,single: Size:1.25TiB, Used:1.11TiB (89.38%)
+> > >    /dev/mapper/userluks    1.25TiB
+> > >
+> > > Metadata,DUP: Size:6.00GiB, Used:5.26GiB (87.67%)
+> > >    /dev/mapper/userluks   12.00GiB
+> > >
+> > > System,DUP: Size:32.00MiB, Used:160.00KiB (0.49%)
+> > >    /dev/mapper/userluks   64.00MiB
+> >
+> > Since the error was not corrected, it likely occurred in the data blocks.
+> 
+> Yes, it appears so from the info above.
+> 
+> >
+> > A metadata error would be correctable, so check wouldn't report it because
+> > the scrub will have already corrected it (assuming the underlying drive
+> > is still healthy enough to remap bad sectors).
+> >
+> > > Unallocated:
+> > >    /dev/mapper/userluks    1.47TiB
+> > >
+> > > # btrfs check /dev/mapper/xyz
+> >
+> > That command won't read any data blocks, so it won't see any errors there.
+> >
+> > > Opening filesystem to check...
+> > > Checking filesystem on /dev/mapper/xyz
+> > > UUID: 56cea9cf-5374-4a43-b19d-6b0b143dc635
+> > > [1/7] checking root items
+> > > [2/7] checking extents
+> > > [3/7] checking free space cache
+> > > [4/7] checking fs roots
+> > > [5/7] checking only csums items (without verifying data)
+> > > [6/7] checking root refs
+> > > [7/7] checking quota groups skipped (not enabled on this FS)
+> > > found 1230187327496 bytes used, no error found
+> > > total csum bytes: 1195610680
+> > > total tree bytes: 5648285696
+> > > total fs tree bytes: 4011016192
+> > > total extent tree bytes: 379256832
+> > > btree space waste bytes: 827370015
+> > > file data blocks allocated: 5497457123328
+> > >  referenced 5523039584256
+> > >
+> > > If more info is needed, please let me know. Recommendations and advice
+> > > are appreciated.
+> > > Thank you.
