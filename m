@@ -2,281 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C43A3D975B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 23:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A9D3D978A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 23:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhG1VOm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 17:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47734 "EHLO
+        id S231520AbhG1VaK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 17:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhG1VOm (ORCPT
+        with ESMTP id S230156AbhG1VaJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 17:14:42 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8530BC061757
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 14:14:39 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id a201so6239056ybg.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 14:14:39 -0700 (PDT)
+        Wed, 28 Jul 2021 17:30:09 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F79C0613C1
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 14:30:07 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id c18so3763746qke.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 14:30:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=g7/VXf0NvMhPDTNggXYxAZM9MuEiwsER1MM/CeT0MI4=;
-        b=g2YShPdqkvwDFfGXgGLoDejBCgG7XpoQ+rAeY4JFycJDST889DywfhsVXi0pH1m2Wh
-         1GPYWXLmCNw9aYPA4hjXQVD9goWjK/nbAc/KfJSqQjIeERnEfb2FlZ9IpKa5Hk2Hl/ZO
-         Ma1cWL2Jq2Y0nIZl+vRJ84+fSPya2LzJfFTmDBKR8eeK4DLPW+YLHaT9p+AfIYJxKo6s
-         Ku+QZjQAsJnRbM6n0Ncgkf/4ovTFoV6YIBYlx2CpVA9ZrpTrhQKLJBrlqkGNF+yZ0qcE
-         31tRPmaKTNLtOOG5zhqO425iKXXYICYtqX50Dg2em/v+0JGRIACm/7etR7BObWqcnWZt
-         0xmQ==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uVT1uFTAOGfK1fP5fzGaiByMshUd21P5nAY5t0mAWDw=;
+        b=o4pY+ugBDJRzrhgcaJYE3XIJZ/sZ/DL9/abDHd9cjt+SdfzNT7ZItYIrHzt1ZzUKGW
+         jPk87LcV9EbN29AUKteWvNlZ5PAZnZtNQCelTIIKjrsxHVgc61EI9m8JqbsFMDhVJ9Wt
+         Ljo/lFqcApepJWx9bGlw2a4ErY9seplPEw2vq3gG87Yy42jzl4bXSKyN+zBirqcZucui
+         qtc1pEWIC9s5EgdRSq9Lytn56zd+OUiePpmSYmCg5RD8LPI1zLZ8Cr4FMrZUNlxvAWyF
+         LqFeon22h5DzRAxin62tbC7hDBDDN7TLbSEejSqSYxapDjDv+uvHv9J+cI5SiHaF7UGS
+         VTvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=g7/VXf0NvMhPDTNggXYxAZM9MuEiwsER1MM/CeT0MI4=;
-        b=VOr9QniyGKEQG8vAW0XrtacBC0031NZ7t1om6BMickoCgDoG/fREhVV3PsTJdoNC7K
-         7snqSeCq9F0C5NqyYEwjDuflFPNyvcIYZdtm0a2AlMggXFhsKW2ROOrick9d39t0FyNJ
-         m6yXSCrelb2nwn9M/hEEUXLbzhQx6ju462OXp8j1myx1KCU/k3lZS1wolh98O7QWQ0kA
-         45Ta64Fkdtdtv/iMfNVOa47v2JrPRQHJdUsLdHJtw+CUQHvD5KeRYzaBw3fJPr6dc5DK
-         YmfjzltTPknpEbr5g2osiIjvqZ/ZDH4VkfN+sygySKbQmCPycSfgaWuJtv7cf0BHnFcu
-         +57Q==
-X-Gm-Message-State: AOAM5326cla74D5UwaWNzxNm5aVaiTjEZzGBteNgg+rx6N6/pvCjZdzh
-        RTgd6esBCbzdInVOBabO8F1hWirP/OzpmpNejaY=
-X-Google-Smtp-Source: ABdhPJzk1PYUvcky5Fb7AhQJ52poC5qcEQSZiPMQ7xNI8X26mIRCJ0Ui5AHR3pQ8kstPmX1qPJ44SAaNVt3KlJAmtVc=
-X-Received: by 2002:a25:9201:: with SMTP id b1mr2230892ybo.354.1627506878597;
- Wed, 28 Jul 2021 14:14:38 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uVT1uFTAOGfK1fP5fzGaiByMshUd21P5nAY5t0mAWDw=;
+        b=HQB4mywpIXijn/MzA0BrI8BhYdy4tLwxPCRkp4R2PAyCHnSJcChIDT2LU6DBWf2ZXw
+         RJLtx4MFBqMsaEz5xi7jwMBIQVpsKBPL59BfaFkIivjS2VKhIO5a1ICGsBnIR4R8CQ8I
+         zgm8nWpcHbH0+0TH+6kVgis8p0EGSh5dmIKkYk/hWho2j5JbDfAT91J73IkQVJ7/Szh9
+         zVVH42NRp0l/fQ6aEWlmkoJVj0WEwi69QzesS4Vc/w+abDAEY2Bdsuxm6M4ABLzODPiV
+         DW+q1nYc40F15B6Q4Du0e8Yn0Hhwva5runvm8BZQBKi2difQLj/bwPZ2x+7EnTN1e/cY
+         Goaw==
+X-Gm-Message-State: AOAM533FMg1/m1KfWWAb5DEavV9lhJBW4/xm2vI3wpX2Eq05CyY06ZUg
+        8/eMnogyrSETJXfhfvWe0F+kOEuARIDMblBH
+X-Google-Smtp-Source: ABdhPJy46q0J2ekkhkPZzNGpN9S/kQjLTruBQy5vunkhOpVUkV4xSJpf0x4MXXNiyBhVYP01cf58dw==
+X-Received: by 2002:a37:9b44:: with SMTP id d65mr1729724qke.71.1627507806155;
+        Wed, 28 Jul 2021 14:30:06 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id u36sm455507qtc.71.2021.07.28.14.30.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Jul 2021 14:30:05 -0700 (PDT)
+Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
+To:     "J. Bruce Fields" <bfields@fieldses.org>, NeilBrown <neilb@suse.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+ <20210728193536.GD3152@fieldses.org>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <e75ccfd2-e09f-99b3-b132-3bd69f3c734c@toxicpanda.com>
+Date:   Wed, 28 Jul 2021 17:30:04 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <0f344e692b14ffbec90cb9f32e0d177c30326c37.1627498953.git.osandov@fb.com>
-In-Reply-To: <0f344e692b14ffbec90cb9f32e0d177c30326c37.1627498953.git.osandov@fb.com>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Wed, 28 Jul 2021 17:14:02 -0400
-Message-ID: <CAEg-Je-aF7eLRK_9qgM18kOgPjVChRti7PBm2yHgTKrcNQiCgg@mail.gmail.com>
-Subject: Re: [PATCH v2] libbtrfsutil: fix race between subvolume iterator and deletion
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210728193536.GD3152@fieldses.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 3:05 PM Omar Sandoval <osandov@osandov.com> wrote:
->
-> From: Omar Sandoval <osandov@fb.com>
->
-> Subvolume iteration has a window between when we get a root ref (with
-> BTRFS_IOC_TREE_SEARCH or BTRFS_IOC_GET_SUBVOL_ROOTREF) and when we look
-> up the path of the parent directory (with BTRFS_IOC_INO_LOOKUP{,_USER}).
-> If the subvolume is moved or deleted and its old parent directory is
-> deleted during that window, then BTRFS_IOC_INO_LOOKUP{,_USER} will fail
-> with ENOENT. The iteration will then fail with ENOENT as well.
->
-> We originally encountered this bug with an application that called
-> `btrfs subvolume show` (which iterates subvolumes to find snapshots) in
-> parallel with other threads creating and deleting subvolumes. It can be
-> reproduced almost instantly with the included test cases.
->
-> Subvolume iteration should be robust against concurrent modifications to
-> subvolumes. So, if a subvolume's parent directory no longer exists, just
-> skip the subvolume, as it must have been deleted or moved elsewhere.
->
-> Reviewed-by: Neal Gompa <ngompa13@gmail.com>
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
-> ---
-> Changes from v1 -> v2:
->
-> - Added Neal's reviewed-by.
-> - Added test cases.
->
-> Let me know if you'd prefer the test cases as a separate patch instead.
->
->  libbtrfsutil/python/tests/__init__.py       | 11 +++-
->  libbtrfsutil/python/tests/test_subvolume.py | 73 +++++++++++++++++++--
->  libbtrfsutil/subvolume.c                    | 18 ++++-
->  3 files changed, 91 insertions(+), 11 deletions(-)
->
-> diff --git a/libbtrfsutil/python/tests/__init__.py b/libbtrfsutil/python/=
-tests/__init__.py
-> index 9fd6f6de..a1ea740e 100644
-> --- a/libbtrfsutil/python/tests/__init__.py
-> +++ b/libbtrfsutil/python/tests/__init__.py
-> @@ -77,7 +77,16 @@ class BtrfsTestCase(unittest.TestCase):
->              mkfs =3D 'mkfs.btrfs'
->          try:
->              subprocess.check_call([mkfs, '-q', image])
-> -            subprocess.check_call(['mount', '-o', 'loop', '--', image, m=
-ountpoint])
-> +            subprocess.check_call(
-> +                [
-> +                    'mount',
-> +                    '-o',
-> +                    'loop,user_subvol_rm_allowed',
-> +                    '--',
-> +                    image,
-> +                    mountpoint,
-> +                ]
-> +            )
->          except Exception as e:
->              os.rmdir(mountpoint)
->              os.remove(image)
-> diff --git a/libbtrfsutil/python/tests/test_subvolume.py b/libbtrfsutil/p=
-ython/tests/test_subvolume.py
-> index 61055f53..2620b5c5 100644
-> --- a/libbtrfsutil/python/tests/test_subvolume.py
-> +++ b/libbtrfsutil/python/tests/test_subvolume.py
-> @@ -17,6 +17,7 @@
->
->  import fcntl
->  import errno
-> +import multiprocessing
->  import os
->  import os.path
->  from pathlib import PurePath
-> @@ -493,20 +494,78 @@ class TestSubvolume(BtrfsTestCase):
->          finally:
->              os.chdir(pwd)
->
-> +    def _skip_unless_have_unprivileged_subvolume_iterator(self, path):
-> +        with drop_privs():
-> +            try:
-> +                for _ in btrfsutil.SubvolumeIterator(path):
-> +                    break
-> +            except OSError as e:
-> +                if e.errno =3D=3D errno.ENOTTY:
-> +                    self.skipTest('BTRFS_IOC_GET_SUBVOL_ROOTREF is not a=
-vailable')
-> +                else:
-> +                    raise
-> +
->      @skipUnlessHaveNobody
->      def test_subvolume_iterator_unprivileged(self):
->          os.chown(self.mountpoint, NOBODY_UID, -1)
->          pwd =3D os.getcwd()
->          try:
->              os.chdir(self.mountpoint)
-> +            self._skip_unless_have_unprivileged_subvolume_iterator('.')
->              with drop_privs():
-> -                try:
-> -                    list(btrfsutil.SubvolumeIterator('.'))
-> -                except OSError as e:
-> -                    if e.errno =3D=3D errno.ENOTTY:
-> -                        self.skipTest('BTRFS_IOC_GET_SUBVOL_ROOTREF is n=
-ot available')
-> -                    else:
-> -                        raise
->                  self._test_subvolume_iterator()
->          finally:
->              os.chdir(pwd)
-> +
-> +    @staticmethod
-> +    def _create_and_delete_subvolume(i):
-> +        dir_name =3D f'dir{i}'
-> +        subvol_name =3D dir_name + '/subvol'
-> +        while True:
-> +            os.mkdir(dir_name)
-> +            btrfsutil.create_subvolume(subvol_name)
-> +            btrfsutil.delete_subvolume(subvol_name)
-> +            os.rmdir(dir_name)
-> +
-> +    def _test_subvolume_iterator_race(self):
-> +        procs =3D []
-> +        fd =3D os.open('.', os.O_RDONLY | os.O_DIRECTORY)
-> +        try:
-> +            for i in range(10):
-> +                procs.append(
-> +                    multiprocessing.Process(
-> +                        target=3Dself._create_and_delete_subvolume,
-> +                        args=3D(i,),
-> +                        daemon=3DTrue,
-> +                    )
-> +                )
-> +            for proc in procs:
-> +                proc.start()
-> +            for i in range(1000):
-> +                with btrfsutil.SubvolumeIterator(fd) as it:
-> +                    for _ in it:
-> +                        pass
-> +        finally:
-> +            for proc in procs:
-> +                proc.terminate()
-> +                proc.join()
-> +            os.close(fd)
-> +
-> +    def test_subvolume_iterator_race(self):
-> +        pwd =3D os.getcwd()
-> +        try:
-> +            os.chdir(self.mountpoint)
-> +            self._test_subvolume_iterator_race()
-> +        finally:
-> +            os.chdir(pwd)
-> +
-> +    def test_subvolume_iterator_race_unprivileged(self):
-> +        os.chown(self.mountpoint, NOBODY_UID, -1)
-> +        pwd =3D os.getcwd()
-> +        try:
-> +            os.chdir(self.mountpoint)
-> +            self._skip_unless_have_unprivileged_subvolume_iterator('.')
-> +            with drop_privs():
-> +                self._test_subvolume_iterator_race()
-> +        finally:
-> +            os.chdir(pwd)
-> diff --git a/libbtrfsutil/subvolume.c b/libbtrfsutil/subvolume.c
-> index e30956b1..32086b7f 100644
-> --- a/libbtrfsutil/subvolume.c
-> +++ b/libbtrfsutil/subvolume.c
-> @@ -1469,8 +1469,16 @@ static enum btrfs_util_error subvolume_iterator_ne=
-xt_tree_search(struct btrfs_ut
->                 name =3D (const char *)(ref + 1);
->                 err =3D build_subvol_path_privileged(iter, header, ref, n=
-ame,
->                                                    &path_len);
-> -               if (err)
-> +               if (err) {
-> +                       /*
-> +                        * If the subvolume's parent directory doesn't ex=
-ist,
-> +                        * then the subvolume was either moved or deleted=
-. Skip
-> +                        * it.
-> +                        */
-> +                       if (errno =3D=3D ENOENT)
-> +                               continue;
->                         return err;
-> +               }
->
->                 err =3D append_to_search_stack(iter,
->                                 btrfs_search_header_offset(header), path_=
-len);
-> @@ -1539,8 +1547,12 @@ static enum btrfs_util_error subvolume_iterator_ne=
-xt_unprivileged(struct btrfs_u
->                 err =3D build_subvol_path_unprivileged(iter, treeid, diri=
-d,
->                                                      &path_len);
->                 if (err) {
-> -                       /* Skip the subvolume if we can't access it. */
-> -                       if (errno =3D=3D EACCES)
-> +                       /*
-> +                        * If the subvolume's parent directory doesn't ex=
-ist,
-> +                        * then the subvolume was either moved or deleted=
-. Skip
-> +                        * it. Also skip it if we can't access it.
-> +                        */
-> +                       if (errno =3D=3D ENOENT || errno =3D=3D EACCES)
->                                 continue;
->                         return err;
->                 }
-> --
-> 2.32.0
->
+On 7/28/21 3:35 PM, J. Bruce Fields wrote:
+> I'm still stuck trying to understand why subvolumes can't get their own
+> superblocks:
+> 
+> 	- Why are the performance issues Josef raises unsurmountable?
+> 	  And why are they unique to btrfs?  (Surely there other cases
+> 	  where people need hundreds or thousands of superblocks?)
+> 
 
-I like that test cases are part of the commit. It makes sense as part
-of a logical change.
+I don't think anybody has that many file systems.  For btrfs it's a single file 
+system.  Think of syncfs, it's going to walk through all of the super blocks on 
+the system calling ->sync_fs on each subvol superblock.  Now this isn't a huge 
+deal, we could just have some flag that says "I'm not real" or even just have 
+anonymous superblocks that don't get added to the global super_blocks list, and 
+that would address my main pain points.
 
-I know I've already done the review, but I'll reaffirm this version.
+The second part is inode reclaim.  Again this particular problem could be 
+avoided if we had an anonymous superblock that wasn't actually used, but the 
+inode lru is per superblock.  Now with reclaim instead of walking all the 
+inodes, you're walking a bunch of super blocks and then walking the list of 
+inodes within those super blocks.  You're burning CPU cycles because now instead 
+of getting big chunks of inodes to dispose, it's spread out across many super 
+blocks.
 
-Reviewed-by: Neal Gompa <ngompa13@gmail.com>
+The other weird thing is the way we apply pressure to shrinker systems.  We 
+essentially say "try to evict X objects from your list", which means in this 
+case with lots of subvolumes we'd be evicting waaaaay more inodes than you were 
+before, likely impacting performance where you have workloads that have lots of 
+files open across many subvolumes (which is what FB does with it's containers).
 
+If we want a anonymous superblock per subvolume then the only way it'll work is 
+if it's not actually tied into anything, and we still use the primary super 
+block for the whole file system.  And if that's what we're going to do what's 
+the point of the super block exactly?  This approach that Neil's come up with 
+seems like a reasonable solution to me.  Christoph gets his separation and 
+/proc/self/mountinfo, and we avoid the scalability headache of a billion super 
+blocks.  Thanks,
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+Josef
