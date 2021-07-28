@@ -2,84 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB283D8580
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 03:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EAE53D85BE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 04:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234691AbhG1Bj4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Jul 2021 21:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234277AbhG1Bj4 (ORCPT
+        id S233234AbhG1CEG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Jul 2021 22:04:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47338 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232926AbhG1CEG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Jul 2021 21:39:56 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C61C061760
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 18:39:55 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id k1so727025plt.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jul 2021 18:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=svIq3M8HhmjOQFHJQVWbDLjaKokejNdfgbcRMVtQl6I=;
-        b=OkeYqPnbSWWqVhkH3XroWcXMPLjvBpzL07PshovmwhHsgpcjHE/dwBaIT57dE6cguD
-         wfacScli3WcozLzcK7oOWYp1cr/cauCMt5zOXwYqVRt/eld6koC6z6wzTDj39ILXyPCS
-         u23uNSRCr3BshpsazezRbAAOpEcuTo8HlCD56SiPr0Udvm6yJpoh2jxr+RZqZ4gVGrqy
-         1vBIFStGTKz6wxYTBJ2r6H3qoqNNCw0z9s03i+NhcuItRBiexi9mFZR1JGLFD5Ja/uhq
-         2zgF/R88YiIs7q+GTZojmm1iimQe8VX81QQiSrtBWxMuc6KPQQ0HvH88ow1NF18cMW+z
-         FPRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=svIq3M8HhmjOQFHJQVWbDLjaKokejNdfgbcRMVtQl6I=;
-        b=S1J7KPLCg+eR6/08SgC08f9EsSKPod5XnNMxrotQRTEUH9oxEgjojHqi7KQeP33heB
-         O3PJ1AB//kD3BuTSv7SFOtumP8Fbbe0vRnmOOf3/BWaT/0JE+5yoY+YdeTruVmBi6tcB
-         bJjh8JceiLV5FPN+ombxqKsO4umxyafESq41ddbddU4Z2kW1hvxmFucWiiCZ5/qHXf4G
-         Jiy6z8lXcI0yOLw2Pyq7bqBfEcTP9Jc55rsv8Y1hW4NxPh/bAToZ7acbXBv0rs6DIHIK
-         X9KAZyXfnXPV+En3Egsffe+44XUtbe7SyZS6ZDNtzkZWIYgp0qmMEc3zZWw8lgf4lSHn
-         osDQ==
-X-Gm-Message-State: AOAM5330/Sr6olFfo8Yx9aoSduPV5eDCSfxBkQhnLKZJQyuV3S2FPgLB
-        Qk+QhBfuv8TrcHnVQ6971sdab9puPVmbef4S
-X-Google-Smtp-Source: ABdhPJyJLwNyRctObcxyK4toXEaF7zEJrs1ztdt1iDwWMOxEFMftiOxaVnTlS6RBmwQHMU92F/6ihA==
-X-Received: by 2002:a17:902:a587:b029:12c:3265:26a with SMTP id az7-20020a170902a587b029012c3265026amr8666756plb.34.1627436394755;
-        Tue, 27 Jul 2021 18:39:54 -0700 (PDT)
-Received: from [192.168.1.116] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id p11sm4131248pju.20.2021.07.27.18.39.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 18:39:53 -0700 (PDT)
-Subject: Re: fixes and cleanups for block_device refcounting v2
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20210722075402.983367-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <23d8cafb-413a-8feb-a2c7-601783d18706@kernel.dk>
-Date:   Tue, 27 Jul 2021 19:39:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 27 Jul 2021 22:04:06 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DFF5E22258;
+        Wed, 28 Jul 2021 02:04:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627437843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L+dw/aofJSb3QloWYKquDzLpKe1QWOhZPRkmSE2rp/Q=;
+        b=XsPO4kYGUgEuaSjx2rAtxIrl7sk8nkAHx+VbTc1rqeC8dJvmhG4MAejF0sLwhHDgX1QnLy
+        cXnuD1fN4V+BA9MDo8JfAtHuco07aY23Mxj2JNuZ+9vJo9addKzv8gyKMD5WsdBvba6kfG
+        uPBKWdX2azsPmRiLhCzgo6Yx1fNn7kg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627437843;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L+dw/aofJSb3QloWYKquDzLpKe1QWOhZPRkmSE2rp/Q=;
+        b=99DnYInNR1mhr9y5dsX+mES7C8Dl4tk/XJ39Dt21Q05gfvHDbqeAjZAVbdqzBDQyU7ur/x
+        eR8NgUE7l6dnK7Cw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7967C132AB;
+        Wed, 28 Jul 2021 02:04:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 2kSPERO7AGG0MwAAGKfGzw
+        (envelope-from <rgoldwyn@suse.de>); Wed, 28 Jul 2021 02:04:03 +0000
+Date:   Tue, 27 Jul 2021 21:04:01 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/7] btrfs: Allocate btrfs_ioctl_balance_args on stack
+Message-ID: <20210728020401.tvn6uk6443niesy6@fiona>
+References: <cover.1627418762.git.rgoldwyn@suse.com>
+ <320216bed8e0c28e9235571db1962cbb1e18366a.1627418762.git.rgoldwyn@suse.com>
+ <20210728000206.GA1241197@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20210722075402.983367-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210728000206.GA1241197@magnolia>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/22/21 1:53 AM, Christoph Hellwig wrote:
-> Hi Jens,
+On 17:02 27/07, Darrick J. Wong wrote:
+> On Tue, Jul 27, 2021 at 04:17:28PM -0500, Goldwyn Rodrigues wrote:
+> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > 
+> > Instead of using kmalloc() to allocate btrfs_ioctl_balance_args, allocate
+> > btrfs_ioctl_balance_args on stack.
+> > 
+> > sizeof(btrfs_ioctl_balance_args) = 1024
 > 
-> this series fixes up a possible race with the block_device lookup
-> changes, and the finishes off the conversion to stop using the inode
-> refcount for block devices.
+> That's a pretty big addition to the stack frame.  Aren't some of the
+> kbuild robots configured to whinge about functions that eat more than
+> 1100 bytes or so?
 
-Dropped the btrfs patch since it's in -git, and applied #1 to block-5.14,
-rest for 5.15.
+Apparently you are faster than the bot to detect this ;)
+I got the warning mail from the kbuild bot and the limit is 1024, so it
+would not fit in the frame. We can reject this patch.
+
 
 -- 
-Jens Axboe
-
+Goldwyn
