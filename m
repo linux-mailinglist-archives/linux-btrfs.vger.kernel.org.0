@@ -2,126 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9713D9255
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 17:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E6B3D92B2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 18:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236689AbhG1Puk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 11:50:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40380 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237058AbhG1Puh (ORCPT
+        id S237198AbhG1QDE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 12:03:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52984 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236868AbhG1QDD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 11:50:37 -0400
+        Wed, 28 Jul 2021 12:03:03 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2643F1FFD0;
-        Wed, 28 Jul 2021 15:49:49 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4DA3522325;
+        Wed, 28 Jul 2021 16:03:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627487389;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        t=1627488181;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=upRxFQ3m+In6q7JonR1jdicgI1MGOFp1GrrhziqMYzI=;
-        b=Na/CAPpXFVMJuB/M+66gdunt27wNX8X883ICPSLEKA/ux7lVcfpVYJ+W0A4oEU5iFGsqYS
-        c2McKzq4ejJY24gqCewYoVBNvs/GsNjqUm9+ErIC/qtYLXYtMj7OmHh6RbZYdDdLFo4Md0
-        OM06XDpZoP2zGFJGx72EuNPRXmFXgPA=
+        bh=G4ifBTr8AIhogl43KqSY8bmjGzLvqV6c2VAcAOB7YVY=;
+        b=NfcG9cc9kcLyRrEyvs4N/YBxS7o5zF6N58zhQ04k+pRtg6EN7vxelTBnusVujZrlxdDFai
+        aC845JWOF/aA8+L7oBYVEWcjXTT1x7uw9eCcHblEKNdFTIeb2wwvQYegN/EXdYBmaEbjPl
+        WYav26wSu7aj6pg8Uns/gokL9WvTHtA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627487389;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1627488181;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=upRxFQ3m+In6q7JonR1jdicgI1MGOFp1GrrhziqMYzI=;
-        b=X34D87sXWq97mAPUR05VMghmN6rKgxibZGAWER4cvAUSD1oYCt0GzCiMiMBrsGMgXFI4Rw
-        LvwPSuIGdI8LWzAw==
+        bh=G4ifBTr8AIhogl43KqSY8bmjGzLvqV6c2VAcAOB7YVY=;
+        b=DI0M/RNqufxVF/Q3EqoiX8XIgr8NPoKRsxp31Q4cB0liqo+mK1gnUJXmhxieltQf8ivm8Z
+        HHjOBfqFyX2STPCg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id EA1B1A3B87;
-        Wed, 28 Jul 2021 15:49:48 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 456A4A3B81;
+        Wed, 28 Jul 2021 16:03:01 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0866EDA8A7; Wed, 28 Jul 2021 17:47:03 +0200 (CEST)
-Date:   Wed, 28 Jul 2021 17:47:03 +0200
+        id 5AA29DA8A7; Wed, 28 Jul 2021 18:00:16 +0200 (CEST)
+Date:   Wed, 28 Jul 2021 18:00:16 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, stable@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH] btrfs: properly split extent_map for REQ_OP_ZONE_APPEND
-Message-ID: <20210728154703.GO5047@twin.jikos.cz>
+To:     dsterba@suse.cz, "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH] btrfs: add special case to setget helpers for 64k pages
+Message-ID: <20210728160015.GP5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, stable@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-References: <20210628085728.2813793-1-naohiro.aota@wdc.com>
- <CAL3q7H4LsXDK8rTr3yEkftMm9ok9kWdQuwxk57Pke5oJ+EZOZQ@mail.gmail.com>
- <CAL3q7H6dMNGQ+RKrK91pZsbXQO9852fE+pqZDzo53xOvDAeYFA@mail.gmail.com>
+Mail-Followup-To: dsterba@suse.cz,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+References: <20210701160039.12518-1-dsterba@suse.com>
+ <YN67+nvpQBfiLXzh@infradead.org>
+ <20210702110630.GE2610@twin.jikos.cz>
+ <YOLD3CJjDgiq+kfR@infradead.org>
+ <20210708143412.GC2610@twin.jikos.cz>
+ <333c5709-0d10-635e-656f-32263ec7f0a5@embeddedor.com>
+ <20210728153242.GN5047@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAL3q7H6dMNGQ+RKrK91pZsbXQO9852fE+pqZDzo53xOvDAeYFA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210728153242.GN5047@twin.jikos.cz>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 05:55:51PM +0100, Filipe Manana wrote:
-> > > +       if (pre) {
-> > > +               /* Insert the middle extent_map */
-> > > +               split_mid->start = em->start + pre;
-> > > +               split_mid->len = em->len - pre - post;
-> > > +               split_mid->orig_start = split_mid->start;
-> > > +               split_mid->block_start = em->block_start + pre;
-> > > +               split_mid->block_len = split_mid->len;
-> > > +               split_mid->orig_block_len = split_mid->block_len;
-> > > +               split_mid->ram_bytes = split_mid->len;
-> > > +               split_mid->flags = flags;
-> > > +               split_mid->compress_type = em->compress_type;
-> > > +               split_mid->generation = em->generation;
-> > > +               add_extent_mapping(em_tree, split_mid, modified);
-> > > +       }
-> > > +
-> > > +       if (post) {
-> > > +               split_post->start = em->start + em->len - post;
-> > > +               split_post->len = post;
-> > > +               split_post->orig_start = split_post->start;
-> > > +               split_post->block_start = em->block_start + em->len - post;
-> > > +               split_post->block_len = split_post->len;
-> > > +               split_post->orig_block_len = split_post->block_len;
-> > > +               split_post->ram_bytes = split_post->len;
-> > > +               split_post->flags = flags;
-> > > +               split_post->compress_type = em->compress_type;
-> > > +               split_post->generation = em->generation;
-> > > +               add_extent_mapping(em_tree, split_post, modified);
-> > > +       }
-> >
-> > So this happens when running delalloc, after creating the original
-> > extent map and ordered extent, the original "em" must have had the
-> > PINNED flag set.
-> >
-> > The "pre" and "post" extent maps should have the PINNED flag set. It's
-> > important to have the flag set to prevent extent map merging, which
-> > could result in a log corruption if the file is being fsync'ed
-> > multiple times in the current transaction and running delalloc was
-> > triggered precisely by an fsync. The corruption result would be
-> > logging extent items with overlapping ranges, since we construct them
-> > based on extent maps, and that's why we have the PINNED flag to
-> > prevent merging.
+On Wed, Jul 28, 2021 at 05:32:42PM +0200, David Sterba wrote:
+> On Wed, Jul 14, 2021 at 06:37:01PM -0500, Gustavo A. R. Silva wrote:
+> > Is it OK with you if we proceed to enable -Warray-bounds in linux-next,
+> > in the meantime?
 > 
-> Well, it actually happens that merging should not happen because the
-> original extent map was in the list of modified extents, and so should
-> be the new extent maps.
-> But we are really supposed to have the PINNED flag from the moment we
-> run delalloc and create a new extent map until the respective ordered
-> extent completes and unpins it.
-> 
-> Also EXTENT_FLAG_LOGGING should not be set at this point - if it were
-> we would screw up with a task logging the extent map.
-> 
-> Maybe assert that it is not set in the original extent map?
-> And also assert that the original em is in the list of modified
-> extents and has the PINNED flag set?
+> Yes, I've checked the development queue and there are no warnings from
+> fs/btrfs/.
 
-Agreed, the asserts should be here, Naohiro, please send a followup,
-thanks.
+Sorry, not yet, there's the other issue that happens on 64k pages that
+lead to a 1 element extent_buffer::pages. I can emulate that and see the
+warning
+
+  fs/btrfs/disk-io.c: In function ‘csum_tree_block’:
+  fs/btrfs/disk-io.c:226:34: warning: array subscript 1 is above array bounds of ‘struct page *[1]’ [-Warray-bounds]
+    226 |   kaddr = page_address(buf->pages[i]);
+	|                        ~~~~~~~~~~^~~
+  ./include/linux/mm.h:1630:48: note: in definition of macro ‘page_address’
+   1630 | #define page_address(page) lowmem_page_address(page)
+	|                                                ^~~~
+  In file included from fs/btrfs/ctree.h:32,
+		   from fs/btrfs/disk-io.c:23:
+  fs/btrfs/extent_io.h:98:15: note: while referencing ‘pages’
+     98 |  struct page *pages[1];
+	|               ^~~~~
+
+but that's easy to fix with
+
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -210,7 +210,7 @@ void btrfs_set_buffer_lockdep_class(u64 objectid, struct extent_buffer *eb,
+ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
+ {
+        struct btrfs_fs_info *fs_info = buf->fs_info;
+-       const int num_pages = fs_info->nodesize >> PAGE_SHIFT;
++       const int num_pages = num_extent_pages(buf);
+        const int first_page_part = min_t(u32, PAGE_SIZE, fs_info->nodesize);
+        SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+        char *kaddr;
+---
+
+I'll send a patch, it'll appear in for-next soonish.
