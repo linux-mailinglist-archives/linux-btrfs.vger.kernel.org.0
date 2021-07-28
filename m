@@ -2,170 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4E43D87A0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 08:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B83D3D87A4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 08:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233900AbhG1GEe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 02:04:34 -0400
-Received: from out20-98.mail.aliyun.com ([115.124.20.98]:58950 "EHLO
-        out20-98.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbhG1GEd (ORCPT
+        id S234007AbhG1GFP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 02:05:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35660 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233989AbhG1GFM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 02:04:33 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04465563|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0258471-0.000521062-0.973632;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.KrxbVWH_1627452269;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.KrxbVWH_1627452269)
-          by smtp.aliyun-inc.com(10.147.41.120);
-          Wed, 28 Jul 2021 14:04:30 +0800
-Date:   Wed, 28 Jul 2021 14:04:31 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     NeilBrown <neilb@suse.de>, Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
-In-Reply-To: <20210728125819.6E52.409509F4@e16-tech.com>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown> <20210728125819.6E52.409509F4@e16-tech.com>
-Message-Id: <20210728140431.D704.409509F4@e16-tech.com>
+        Wed, 28 Jul 2021 02:05:12 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DEB141FF4A
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 06:05:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627452308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=wlKoDi9IyaVDNSd/xoY9C9hhvOmh+NothoEXw2ZNDWY=;
+        b=uY3bgvdyFj4cHTem2nx4hEuioJMm5bGW3aZV4DKvjpXhZk1WIq2QNKZY/7s2y/xDO1OouX
+        11c7WP/0pSTjywns5b5gZRSibhgcbxzCxT1VOXWfm+jcR1LHToMUimaFvDc6xk0ecOvJ6Y
+        kufouqOZBGLxXennM/QA/QXDfGy+UBQ=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 19AEF13D29
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 06:05:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id /1g8MpPzAGFKXgAAGKfGzw
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 06:05:07 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: remove the dead comment in writepage_delalloc()
+Date:   Wed, 28 Jul 2021 14:05:05 +0800
+Message-Id: <20210728060505.105119-1-wqu@suse.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+When btrfs_run_delalloc_range() failed, we will error out.
 
-This patchset works well in 5.14-rc3.
+But there is a strange comment mentioning that
+btrfs_run_delalloc_range() could have return value >0 to indicate the IO
+has already started.
 
-1, fixed dummy inode(255, BTRFS_FIRST_FREE_OBJECTID - 1 )  is changed to
-dynamic dummy inode(18446744073709551358, or 18446744073709551359, ...)
+Commit 40f765805f08 ("Btrfs: split up __extent_writepage to lower stack
+usage") introduced the comment, but unfortunately at that time, we are
+already using @page_started to indicate that case, and still return 0.
 
-2, btrfs subvol mount info is shown in /proc/mounts, even if nfsd/nfs is
-not used.
-/dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test
-/dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test/sub1
-/dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test/sub2
+Furthermore, even if that comment is right (which is not), we would
+return -EIO if the IO is already started.
 
-This is a visiual feature change for btrfs user.
+By all means the comment is incorrect, just remove the comment along
+with the dead check.
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/07/28
+Just to be extra safe, add an ASSERT() in btrfs_run_delalloc_range() to
+make sure we either return 0 or error, no positive return value.
 
-> Hi,
-> 
-> We no longer need the dummy inode(BTRFS_FIRST_FREE_OBJECTID - 1) in this
-> patch serials?
-> 
-> I tried to backport it to 5.10.x, but it failed to work.
-> No big modification in this 5.10.x backporting, and all modified pathes
-> are attached.
-> 
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2021/07/28
-> 
-> > There are long-standing problems with btrfs subvols, particularly in
-> > relation to whether and how they are exposed in the mount table.
-> > 
-> >  - /proc/self/mountinfo reports the major:minor device number for each
-> >     filesystem and when a btrfs subvol is explicitly mounted, the number
-> >     reported is wrong - it does not match what stat() reports for the
-> >     mountpoint.
-> > 
-> >  - when subvol are not explicitly mounted, they don't appear in
-> >    mountinfo at all.
-> > 
-> > Consequences include that a tool which uses stat() to find the dev of the
-> > filesystem, then searches mountinfo for that filesystem, will not find
-> > it.
-> > 
-> > Some tools (e.g. findmnt) appear to have been enhanced to cope with this
-> > strangeness, but it would be best to make btrfs behave more normally.
-> > 
-> >   - nfsd cannot currently see the transition to subvol, so reports the
-> >     main volume and all subvols to the client as being in the same
-> >     filesystem.  As inode numbers are not unique across all subvols,
-> >     this can confuse clients.  In particular, 'find' is likely to report a
-> >     loop.
-> > 
-> > subvols can be made to appear in mountinfo using automounts.  However
-> > nfsd does not cope well with automounts.  It assumes all filesystems to
-> > be exported are already mounted.  So adding automounts to btrfs would
-> > break nfsd.
-> > 
-> > We can enhance nfsd to understand that some automounts can be managed.
-> > "internal mounts" where a filesystem provides an automount point and
-> > mounts its own directories, can be handled differently by nfsd.
-> > 
-> > This series addresses all these issues.  After a few enhancements to the
-> > VFS to provide needed support, they enhance exportfs and nfsd to cope
-> > with the concept of internal mounts, and then enhance btrfs to provide
-> > them.
-> > 
-> > The NFSv3 support is incomplete.  I'm not sure we can make it work
-> > "perfectly".  A normal nfsv3 mount seem to work well enough, but if
-> > mounted with '-o noac', it loses track of the mounted-on inode number
-> > and complains about inode numbers changing.
-> > 
-> > My basic test for these is to mount a btrfs filesystem which contains
-> > subvols, nfs-export it and mount it with nfsv3 and nfsv4, then run
-> > 'find' in each of the filesystem and check the contents of
-> > /proc/self/mountinfo.
-> > 
-> > The first patch simply fixes the dev number in mountinfo and could
-> > possibly be tagged for -stable.
-> > 
-> > NeilBrown
-> > 
-> > ---
-> > 
-> > NeilBrown (11):
-> >       VFS: show correct dev num in mountinfo
-> >       VFS: allow d_automount to create in-place bind-mount.
-> >       VFS: pass lookup_flags into follow_down()
-> >       VFS: export lookup_mnt()
-> >       VFS: new function: mount_is_internal()
-> >       nfsd: include a vfsmount in struct svc_fh
-> >       exportfs: Allow filehandle lookup to cross internal mount points.
-> >       nfsd: change get_parent_attributes() to nfsd_get_mounted_on()
-> >       nfsd: Allow filehandle lookup to cross internal mount points.
-> >       btrfs: introduce mapping function from location to inum
-> >       btrfs: use automount to bind-mount all subvol roots.
-> > 
-> > 
-> >  fs/btrfs/btrfs_inode.h   |  12 +++
-> >  fs/btrfs/inode.c         | 111 ++++++++++++++++++++++++++-
-> >  fs/btrfs/super.c         |   1 +
-> >  fs/exportfs/expfs.c      | 100 ++++++++++++++++++++----
-> >  fs/fhandle.c             |   2 +-
-> >  fs/internal.h            |   1 -
-> >  fs/namei.c               |   6 +-
-> >  fs/namespace.c           |  32 +++++++-
-> >  fs/nfsd/export.c         |   4 +-
-> >  fs/nfsd/nfs3xdr.c        |  40 +++++++---
-> >  fs/nfsd/nfs4proc.c       |   9 ++-
-> >  fs/nfsd/nfs4xdr.c        | 106 ++++++++++++-------------
-> >  fs/nfsd/nfsfh.c          |  44 +++++++----
-> >  fs/nfsd/nfsfh.h          |   3 +-
-> >  fs/nfsd/nfsproc.c        |   5 +-
-> >  fs/nfsd/vfs.c            | 162 +++++++++++++++++++++++----------------
-> >  fs/nfsd/vfs.h            |  12 +--
-> >  fs/nfsd/xdr4.h           |   2 +-
-> >  fs/overlayfs/namei.c     |   5 +-
-> >  fs/xfs/xfs_ioctl.c       |  12 ++-
-> >  include/linux/exportfs.h |   4 +-
-> >  include/linux/mount.h    |   4 +
-> >  include/linux/namei.h    |   2 +-
-> >  23 files changed, 490 insertions(+), 189 deletions(-)
-> > 
-> > --
-> > Signature
-> 
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c | 8 +-------
+ fs/btrfs/inode.c     | 1 +
+ 2 files changed, 2 insertions(+), 7 deletions(-)
 
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index f6723a7aab37..da9aca720047 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3824,13 +3824,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+ 		if (ret) {
+ 			btrfs_page_set_error(inode->root->fs_info, page,
+ 					     page_offset(page), PAGE_SIZE);
+-			/*
+-			 * btrfs_run_delalloc_range should return < 0 for error
+-			 * but just in case, we use > 0 here meaning the IO is
+-			 * started, so we don't want to return > 0 unless
+-			 * things are going well.
+-			 */
+-			return ret < 0 ? ret : -EIO;
++			return ret;
+ 		}
+ 		/*
+ 		 * delalloc_end is already one less than the total length, so
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 4c758ec8b8fd..becdd5fb330c 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2019,6 +2019,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
+ 		ret = cow_file_range_async(inode, wbc, locked_page, start, end,
+ 					   page_started, nr_written);
+ 	}
++	ASSERT(ret <= 0);
+ 	if (ret)
+ 		btrfs_cleanup_ordered_extents(inode, locked_page, start,
+ 					      end - start + 1);
+-- 
+2.32.0
 
