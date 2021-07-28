@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012ED3D8F39
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 15:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9EC3D8F49
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 15:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236503AbhG1NiX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 09:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
+        id S236917AbhG1Nlx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 09:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236415AbhG1NiX (ORCPT
+        with ESMTP id S236613AbhG1Nlw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:38:23 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62029C061757
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 06:38:21 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id l18so2593727wrv.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 06:38:21 -0700 (PDT)
+        Wed, 28 Jul 2021 09:41:52 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A6BC061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 06:41:49 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id k4so1445138wms.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 06:41:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:subject:to:message-id:date:user-agent:mime-version
          :content-transfer-encoding:content-language;
-        bh=hA52G8a2RZmzvyndwMOdRjnAuQlruiXHzLJg189j2LA=;
-        b=FkJxbDGZFC311v+jpB2z0fJRE/BhwcqW2HlpDMzpd7VYYW/8rEYYvCziOvm76jJK01
-         gPVJbQP+lE7AAL5QCJDYbDi78bh6e/b7fmk+w76cR7NIdN2vs2hZ8ORc6KAANHxnC+re
-         BilT1oDv0/IyEH3TwYh2HVzIhv2l+oSkpibG76jekhEIvGJrpXvIXe168jgoQ9BKk9Y8
-         qr+SDDq0CSmBarwwFw1o9kcZ6jffZSrqtSBKwGkrS0QBu3DimU76+Ua8NJ/DTMC/hD86
-         shkG6O1+8Yw+Q8S1I2S7BR7Rb4ZjC7ErrRsal8A234ieSC9Uh7llV4ZoHeXTcbmEQtyp
-         DFDQ==
+        bh=g1O7vERaXUzhdGBpnMV16QMelILx3j/l4i1+J4/d8yg=;
+        b=lfuLy0gW5v4FEYRYWyeQiZzOTEQZ5J02XSu36WmcsPTGJL5fxRG//uZtlXDZrV0QsJ
+         a1EI1el20RQWXTMvh3bA3QxFJyj1MY7munkQtzglhGdoGBsJvgB0BQ7D0l35XBcNWtqj
+         WVctmAq/Ea1pdsfZlFcvHiyDmJwLRm4WMrpNJ8zCGl3zxgmfFf6o3A5/OoZoD8sfKhwz
+         zMyTiLOnnzjPFh72O5wnCbfrvEsY+k1x6GqU+dl8Um1hS3n3Vo4w3dR+ds1JmOL4m4X5
+         gkNELFwFzhoY3LzWv6Cp1os4UnTGHsSOW6n1BAuXqD/No2U9LTqO7VgaXsq/E4wybhq9
+         o0MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:subject:to:message-id:date:user-agent
          :mime-version:content-transfer-encoding:content-language;
-        bh=hA52G8a2RZmzvyndwMOdRjnAuQlruiXHzLJg189j2LA=;
-        b=iM+JLgMoa3pNbDbgW422/x70sIWrsv2qLBwMwfAYlaTQ2mkHpNH++cy4FUNnyucK4U
-         Fc9m9C4wLO8hOAfLq1wZ8+hrWP2aAg0WOl0X/tlPhiCDY8jpyQv5E35L5DP1fdzgHFLY
-         CpJKALOBtazv0bYobU2MsAluv2fTy/80SJQLO0zUgTxOvA9IdYamULuBhIMjICDOTQ21
-         lbGsU8HXi7fQGEoiJ3ddmUTJqk3oYdbfdRRa4C7p5rME13kwX8tkhfjBbCY5FzuDqhDN
-         xUXPkVNqsejswqch7PEGatuxG4Kd6TrsFT53gOSfFF+FfOojsMC57HaCR5cUvrCmwD9E
-         gPZw==
-X-Gm-Message-State: AOAM530bmJLVzSdhxprKda8CcoWV0H/HSxZpyPSiTtIgLSUa0A98215x
-        22UOWYbG7Mq7nanvvvnARdkwsg4PKu8=
-X-Google-Smtp-Source: ABdhPJxljxsWXfe2m2YjStBgxchT2gO1ytS5282NNUVzWI2hBMYP7NdLG9tlE4X6UroN+pYTRe0rlA==
-X-Received: by 2002:a05:6000:1a86:: with SMTP id f6mr29633264wry.127.1627479499236;
-        Wed, 28 Jul 2021 06:38:19 -0700 (PDT)
+        bh=g1O7vERaXUzhdGBpnMV16QMelILx3j/l4i1+J4/d8yg=;
+        b=ppYupLq6/IcBGueSnh1aib7hPjQUW16dT86N6E32EL9vOFUdNUZnPFUP6LQxFSbKMR
+         w6QXXadHuseeYHmAEDEyKCGK/btLd+4dmBvViYHoHZcD/6THoMdUsDLD0C6Llioy6Irb
+         hCXZeqCGDJ+AYpnsdx2XhZGBLM0sffbX/of9L5VBqLHr8ZdhbWjmJsApx0JCxjy4O42x
+         28UwXa7kCGG7G7o6wmTWI852eQReii1PqA2jBEA+UmQvTlW9CR5GN+Fkdsq6/04be5hu
+         6B0sPivzsI2Csqby/y3Jetjai7/7IK8lZ4F7h6BfVZCiSCWIcyC+KGFkWCJrfHTKDnoN
+         53gA==
+X-Gm-Message-State: AOAM533Di+jaA7kP5Q8ALGLz4DiuiUJXdlx98691J4NxwMXk70X/SQKm
+        o2Ac8KsU0dJZPj1jVCqR4I19iNbksgc=
+X-Google-Smtp-Source: ABdhPJwxCF56tKewBpu6LLeOeMR1oDnXmAVG86aIhSKiwwi+WjTQVXyJHLCXpOLXjApop2EdTfPyjQ==
+X-Received: by 2002:a7b:c144:: with SMTP id z4mr9471975wmi.54.1627479707678;
+        Wed, 28 Jul 2021 06:41:47 -0700 (PDT)
 Received: from [192.168.0.5] (80-44-88-84.dynamic.dsl.as9105.com. [80.44.88.84])
-        by smtp.gmail.com with ESMTPSA id c10sm33256wmb.40.2021.07.28.06.38.18
+        by smtp.gmail.com with ESMTPSA id b14sm1397465wrm.43.2021.07.28.06.41.46
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Jul 2021 06:38:18 -0700 (PDT)
-From:   Confuciusofessex <confuciusofessex@gmail.com>
+        Wed, 28 Jul 2021 06:41:46 -0700 (PDT)
+From:   Ian B <ianpeterball@gmail.com>
 Subject: Unmountable Volume
 To:     linux-btrfs@vger.kernel.org
-Message-ID: <5baf3776-ed31-a096-b26c-14b8eec302ec@gmail.com>
-Date:   Wed, 28 Jul 2021 14:38:17 +0100
+Message-ID: <9ab13a41-619f-1aaf-2c41-2ef4a67802f3@gmail.com>
+Date:   Wed, 28 Jul 2021 14:41:45 +0100
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
@@ -66,7 +66,7 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Signature Hi,
 
 I've been advised to post here, for a opinion on which way is best to go 
 forward with my problem.
@@ -82,7 +82,8 @@ So far the options put forward are.
 1. Try to repair the filesystem (BTRFSCK) which might not work either 
 and can cause more damage than good.
 2. Dump the data somewhere else via BTRFS restore (giving you a backup 
-essentially). Then some how verify this is good, then factory reset the NAS.
+essentially). Then some how verify this is good, then factory reset the 
+NAS.
 3. Forget about the data and just reset the NAS.
 4. Put my faith in the btrfs community to come up with a plan.
 
@@ -90,7 +91,9 @@ I have some spare disks, which at some point where in the NAS and
 haven't been touch since removal. I have four 6TB, three 2TB, three 
 1.5TB and one 500GB. I also have the logs from the NAS.
 
+Many thanks for you time and insite.
 
+Ian
 
 REQUESTED OUTPUTS
 
@@ -157,12 +160,14 @@ point registers'
 [    0.000000] x86/fpu: Enabled xstate features 0x3, context size is 576 
 bytes, using 'standard' format.
 [    0.000000] e820: BIOS-provided physical RAM map:
-[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009cbff] usable
+[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009cbff] 
+usable
 [    0.000000] BIOS-e820: [mem 0x000000000009cc00-0x000000000009ffff] 
 reserved
 [    0.000000] BIOS-e820: [mem 0x00000000000e0000-0x00000000000fffff] 
 reserved
-[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x00000000afeaffff] usable
+[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x00000000afeaffff] 
+usable
 [    0.000000] BIOS-e820: [mem 0x00000000afeb0000-0x00000000afebdfff] 
 ACPI data
 [    0.000000] BIOS-e820: [mem 0x00000000afebe000-0x00000000afeeffff] 
@@ -173,7 +178,8 @@ reserved
 reserved
 [    0.000000] BIOS-e820: [mem 0x00000000ffb00000-0x00000000ffffffff] 
 reserved
-[    0.000000] BIOS-e820: [mem 0x0000000100000000-0x00000001cfffffff] usable
+[    0.000000] BIOS-e820: [mem 0x0000000100000000-0x00000001cfffffff] 
+usable
 [    0.000000] NX (Execute Disable) protection: active
 [    0.000000] SMBIOS 2.4 present.
 [    0.000000] DMI: To Be Filled By O.E.M. To Be Filled By O.E.M./To be 
@@ -200,7 +206,8 @@ filled by O.E.M., BIOS 080014  07/26/2010
 [    0.000000] x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB WC  UC- WT
 [    0.000000] e820: update [mem 0xaff00000-0xffffffff] usable ==> reserved
 [    0.000000] e820: last_pfn = 0xafeb0 max_arch_pfn = 0x400000000
-[    0.000000] Base memory trampoline at [ffff880000094000] 94000 size 28672
+[    0.000000] Base memory trampoline at [ffff880000094000] 94000 size 
+28672
 [    0.000000] BRK [0x08f56000, 0x08f56fff] PGTABLE
 [    0.000000] BRK [0x08f57000, 0x08f57fff] PGTABLE
 [    0.000000] BRK [0x08f58000, 0x08f58fff] PGTABLE
@@ -405,7 +412,8 @@ MSI]
 [    0.273896] pci 0000:00:1a.7: reg 0x10: [mem 0xff9fb400-0xff9fb7ff]
 [    0.273963] pci 0000:00:1a.7: PME# supported from D0 D3hot D3cold
 [    0.274054] pci 0000:00:1b.0: [8086:284b] type 00 class 0x040300
-[    0.274078] pci 0000:00:1b.0: reg 0x10: [mem 0xff9f4000-0xff9f7fff 64bit]
+[    0.274078] pci 0000:00:1b.0: reg 0x10: [mem 0xff9f4000-0xff9f7fff 
+64bit]
 [    0.274131] pci 0000:00:1b.0: PME# supported from D0 D3hot D3cold
 [    0.274209] pci 0000:00:1c.0: [8086:283f] type 01 class 0x060400
 [    0.274269] pci 0000:00:1c.0: PME# supported from D0 D3hot D3cold
@@ -440,7 +448,8 @@ ICH6 GPIO
 [    0.275598] pci 0000:00:1f.3: reg 0x10: [mem 0xff9fac00-0xff9facff]
 [    0.275624] pci 0000:00:1f.3: reg 0x20: [io  0x0400-0x041f]
 [    0.275778] pci 0000:01:00.0: [11ab:4362] type 00 class 0x020000
-[    0.275817] pci 0000:01:00.0: reg 0x10: [mem 0xff6fc000-0xff6fffff 64bit]
+[    0.275817] pci 0000:01:00.0: reg 0x10: [mem 0xff6fc000-0xff6fffff 
+64bit]
 [    0.275829] pci 0000:01:00.0: reg 0x18: [io  0xb800-0xb8ff]
 [    0.275869] pci 0000:01:00.0: reg 0x30: [mem 0xff6c0000-0xff6dffff pref]
 [    0.275912] pci 0000:01:00.0: supports D1 D2
@@ -449,9 +458,11 @@ ICH6 GPIO
 You can enable it with 'pcie_aspm=force'
 [    0.276005] pci 0000:00:1c.0: PCI bridge to [bus 01]
 [    0.276005] pci 0000:00:1c.0:   bridge window [io 0xb000-0xbfff]
-[    0.276005] pci 0000:00:1c.0:   bridge window [mem 0xff600000-0xff6fffff]
+[    0.276005] pci 0000:00:1c.0:   bridge window [mem 
+0xff600000-0xff6fffff]
 [    0.276056] pci 0000:02:00.0: [11ab:4362] type 00 class 0x020000
-[    0.276095] pci 0000:02:00.0: reg 0x10: [mem 0xff7fc000-0xff7fffff 64bit]
+[    0.276095] pci 0000:02:00.0: reg 0x10: [mem 0xff7fc000-0xff7fffff 
+64bit]
 [    0.276107] pci 0000:02:00.0: reg 0x18: [io  0xc800-0xc8ff]
 [    0.276148] pci 0000:02:00.0: reg 0x30: [mem 0xff7c0000-0xff7dffff pref]
 [    0.276190] pci 0000:02:00.0: supports D1 D2
@@ -460,8 +471,10 @@ You can enable it with 'pcie_aspm=force'
 You can enable it with 'pcie_aspm=force'
 [    0.276250] pci 0000:00:1c.1: PCI bridge to [bus 02]
 [    0.276255] pci 0000:00:1c.1:   bridge window [io 0xc000-0xcfff]
-[    0.276259] pci 0000:00:1c.1:   bridge window [mem 0xff700000-0xff7fffff]
-[    0.276336] pci 0000:00:1e.0: PCI bridge to [bus 03] (subtractive decode)
+[    0.276259] pci 0000:00:1c.1:   bridge window [mem 
+0xff700000-0xff7fffff]
+[    0.276336] pci 0000:00:1e.0: PCI bridge to [bus 03] (subtractive 
+decode)
 [    0.276345] pci 0000:00:1e.0:   bridge window [io 0x0000-0x0cf7 
 window] (subtractive decode)
 [    0.276347] pci 0000:00:1e.0:   bridge window [io 0x0d00-0xffff 
@@ -517,7 +530,8 @@ Rodolfo Giometti <giometti@linux.it>
 [    0.278869] FS-Cache: Loaded
 [    0.279028] pnp: PnP ACPI init
 [    0.279051] system 00:00: [mem 0xfed14000-0xfed19fff] has been reserved
-[    0.279051] system 00:00: Plug and Play ACPI device, IDs PNP0c01 (active)
+[    0.279051] system 00:00: Plug and Play ACPI device, IDs PNP0c01 
+(active)
 [    0.279110] pnp 00:01: Plug and Play ACPI device, IDs PNP0b00 (active)
 [    0.279166] pnp 00:02: Plug and Play ACPI device, IDs PNP0303 PNP030b 
 (active)
@@ -527,21 +541,26 @@ Rodolfo Giometti <giometti@linux.it>
 [    0.279709] pnp 00:04: Plug and Play ACPI device, IDs PNP0501 (active)
 [    0.280000] system 00:05: [io  0x0a00-0x0a0f] has been reserved
 [    0.280000] system 00:05: [io  0x0a10-0x0a1f] has been reserved
-[    0.280000] system 00:05: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    0.280000] system 00:05: Plug and Play ACPI device, IDs PNP0c02 
+(active)
 [    0.280121] system 00:06: [io  0x04d0-0x04d1] has been reserved
 [    0.280124] system 00:06: [io  0x0800-0x087f] has been reserved
 [    0.280127] system 00:06: [io  0x0480-0x04bf] has been reserved
 [    0.280130] system 00:06: [mem 0xfed1c000-0xfed1ffff] has been reserved
 [    0.280133] system 00:06: [mem 0xfed20000-0xfed8ffff] has been reserved
-[    0.280137] system 00:06: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    0.280137] system 00:06: Plug and Play ACPI device, IDs PNP0c02 
+(active)
 [    0.280241] system 00:07: [mem 0xffc00000-0xffefffff] has been reserved
-[    0.280244] system 00:07: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    0.280244] system 00:07: Plug and Play ACPI device, IDs PNP0c02 
+(active)
 [    0.280326] system 00:08: [mem 0xfec00000-0xfec00fff] could not be 
 reserved
 [    0.280330] system 00:08: [mem 0xfee00000-0xfee00fff] has been reserved
-[    0.280333] system 00:08: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    0.280333] system 00:08: Plug and Play ACPI device, IDs PNP0c02 
+(active)
 [    0.280401] system 00:09: [mem 0xe0000000-0xefffffff] has been reserved
-[    0.280404] system 00:09: Plug and Play ACPI device, IDs PNP0c02 (active)
+[    0.280404] system 00:09: Plug and Play ACPI device, IDs PNP0c02 
+(active)
 [    0.280583] system 00:0a: [mem 0x00000000-0x0009ffff] could not be 
 reserved
 [    0.280586] system 00:0a: [mem 0x000c0000-0x000cffff] could not be 
@@ -550,7 +569,8 @@ reserved
 reserved
 [    0.280592] system 00:0a: [mem 0x00100000-0xafefffff] could not be 
 reserved
-[    0.280595] system 00:0a: Plug and Play ACPI device, IDs PNP0c01 (active)
+[    0.280595] system 00:0a: Plug and Play ACPI device, IDs PNP0c01 
+(active)
 [    0.280715] pnp: PnP ACPI: found 11 devices
 [    0.289087] clocksource: acpi_pm: mask: 0xffffff max_cycles: 
 0xffffff, max_idle_ns: 2085701024 ns
@@ -575,12 +595,14 @@ pref] res_to_dev_res add_size 200000 min_align 100000
 0xb0200000-0xb03fffff 64bit pref]
 [    0.289190] pci 0000:00:1c.0: PCI bridge to [bus 01]
 [    0.289193] pci 0000:00:1c.0:   bridge window [io 0xb000-0xbfff]
-[    0.289198] pci 0000:00:1c.0:   bridge window [mem 0xff600000-0xff6fffff]
+[    0.289198] pci 0000:00:1c.0:   bridge window [mem 
+0xff600000-0xff6fffff]
 [    0.289202] pci 0000:00:1c.0:   bridge window [mem 
 0xb0000000-0xb01fffff 64bit pref]
 [    0.289208] pci 0000:00:1c.1: PCI bridge to [bus 02]
 [    0.289211] pci 0000:00:1c.1:   bridge window [io 0xc000-0xcfff]
-[    0.289216] pci 0000:00:1c.1:   bridge window [mem 0xff700000-0xff7fffff]
+[    0.289216] pci 0000:00:1c.1:   bridge window [mem 
+0xff700000-0xff7fffff]
 [    0.289221] pci 0000:00:1c.1:   bridge window [mem 
 0xb0200000-0xb03fffff 64bit pref]
 [    0.289227] pci 0000:00:1e.0: PCI bridge to [bus 03]
@@ -666,7 +688,8 @@ is a 16550A
 [    1.180471] agpgart-intel 0000:00:00.0: detected gtt size: 524288K 
 total, 262144K mappable
 [    1.180970] agpgart-intel 0000:00:00.0: detected 1024K stolen memory
-[    1.181157] agpgart-intel 0000:00:00.0: AGP aperture is 256M @ 0xd0000000
+[    1.181157] agpgart-intel 0000:00:00.0: AGP aperture is 256M @ 
+0xd0000000
 [    1.181221] [drm] Initialized drm 1.1.0 20060810
 [    1.181912] [drm] Memory usable by graphics device = 512M
 [    1.181915] [drm] Replacing VGA console driver
@@ -754,7 +777,8 @@ bnx2x 1.712.30-0 (2014/02/10)
 [    1.343441] ehci-pci 0000:00:1a.7: new USB bus registered, assigned 
 bus number 1
 [    1.343454] ehci-pci 0000:00:1a.7: debug port 1
-[    1.347357] ehci-pci 0000:00:1a.7: cache line size of 32 is not supported
+[    1.347357] ehci-pci 0000:00:1a.7: cache line size of 32 is not 
+supported
 [    1.347374] ehci-pci 0000:00:1a.7: irq 18, io mem 0xff9fb400
 [    1.353026] ehci-pci 0000:00:1a.7: USB 2.0 started, EHCI 1.00
 [    1.353388] hub 1-0:1.0: USB hub found
@@ -763,7 +787,8 @@ bus number 1
 [    1.353719] ehci-pci 0000:00:1d.7: new USB bus registered, assigned 
 bus number 2
 [    1.353731] ehci-pci 0000:00:1d.7: debug port 1
-[    1.357640] ehci-pci 0000:00:1d.7: cache line size of 32 is not supported
+[    1.357640] ehci-pci 0000:00:1d.7: cache line size of 32 is not 
+supported
 [    1.357658] ehci-pci 0000:00:1d.7: irq 23, io mem 0xff9fb000
 [    1.363035] ehci-pci 0000:00:1d.7: USB 2.0 started, EHCI 1.00
 [    1.363333] hub 2-0:1.0: USB hub found
@@ -809,7 +834,8 @@ bus number 7
 and ISDN adapters
 [    1.365543] usbcore: registered new interface driver usblp
 [    1.365588] usbcore: registered new interface driver usb-storage
-[    1.365653] i8042: PNP: PS/2 Controller [PNP0303:PS2K] at 0x60,0x64 irq 1
+[    1.365653] i8042: PNP: PS/2 Controller [PNP0303:PS2K] at 0x60,0x64 
+irq 1
 [    1.365654] i8042: PNP: PS/2 appears to have AUX port disabled, if 
 this is incorrect please boot with i8042.nopnp
 [    1.366400] serio: i8042 KBD port at 0x60,0x64 irq 1
@@ -885,7 +911,8 @@ enabled, doesn't support DPO or FUA
 [    1.843027] do_marvell_9170_recover: ignoring PCI device (8086:2821) 
 at PCI#0
 [    1.843040] ata2: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
-[    1.847974] ata2.00: ATA-9: WDC WD120EFAX-68UNTN0, 81.00A81, max UDMA/133
+[    1.847974] ata2.00: ATA-9: WDC WD120EFAX-68UNTN0, 81.00A81, max 
+UDMA/133
 [    1.847980] ata2.00: 23437770752 sectors, multi 0: LBA48 NCQ (depth 
 31/32), AA
 [    1.856069] ata2.00: configured for UDMA/133
@@ -910,7 +937,8 @@ enabled, doesn't support DPO or FUA
 [    2.162026] do_marvell_9170_recover: ignoring PCI device (8086:2821) 
 at PCI#0
 [    2.162038] ata3: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
-[    2.166495] ata3.00: ATA-9: WDC WD120EFBX-68B0EN0, 85.00A85, max UDMA/133
+[    2.166495] ata3.00: ATA-9: WDC WD120EFBX-68B0EN0, 85.00A85, max 
+UDMA/133
 [    2.166500] ata3.00: 23437770752 sectors, multi 0: LBA48 NCQ (depth 
 31/32), AA
 [    2.181695] ata3.00: configured for UDMA/133
@@ -954,7 +982,8 @@ enabled, doesn't support DPO or FUA
 [    2.793028] do_marvell_9170_recover: ignoring PCI device (8086:2821) 
 at PCI#0
 [    2.793044] ata5: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
-[    2.797530] ata5.00: ATA-9: WDC WD120EFBX-68B0EN0, 85.00A85, max UDMA/133
+[    2.797530] ata5.00: ATA-9: WDC WD120EFBX-68B0EN0, 85.00A85, max 
+UDMA/133
 [    2.797535] ata5.00: 23437770752 sectors, multi 0: LBA48 NCQ (depth 
 31/32), AA
 [    2.805019] ata5.00: configured for UDMA/133
@@ -974,7 +1003,8 @@ enabled, doesn't support DPO or FUA
 [    3.111019] do_marvell_9170_recover: ignoring PCI device (8086:2821) 
 at PCI#0
 [    3.111032] ata6: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
-[    3.121359] ata6.00: ATA-9: WDC WD120EFBX-68B0EN0, 85.00A85, max UDMA/133
+[    3.121359] ata6.00: ATA-9: WDC WD120EFBX-68B0EN0, 85.00A85, max 
+UDMA/133
 [    3.121364] ata6.00: 23437770752 sectors, multi 0: LBA48 NCQ (depth 
 31/32), AA
 [    3.130914] ata6.00: configured for UDMA/133
