@@ -2,142 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0543D95F8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 21:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6921A3D9615
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 21:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhG1TUC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 15:20:02 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:38912 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbhG1TUB (ORCPT
+        id S231158AbhG1Tfl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 15:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhG1Tfk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 15:20:01 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 63559B08157; Wed, 28 Jul 2021 15:19:59 -0400 (EDT)
-Date:   Wed, 28 Jul 2021 15:19:59 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Dave T <davestechshop@gmail.com>
-Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: BTRFS scrub reports an error but check doesn't find any errors.
-Message-ID: <20210728191959.GJ10170@hungrycats.org>
-References: <CAGdWbB5YL40HiF9E0RxCdO96MS7tKg1=CRPT2YSe+vR3eGZUgQ@mail.gmail.com>
- <20210727214049.GH10170@hungrycats.org>
- <CAGdWbB61NtG5roK3RUSWRN8i8Zo6qMno0LXhE6zaDLHSWhH3RA@mail.gmail.com>
- <9b64bb41-dcae-8571-0b92-1f0cffc97792@gmail.com>
- <CAGdWbB7vQOA-DvfFzGmPxca23uPd=hzssKO-zvMc4Uy2PpH+UA@mail.gmail.com>
+        Wed, 28 Jul 2021 15:35:40 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CC6C061757;
+        Wed, 28 Jul 2021 12:35:37 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id BAC546C91; Wed, 28 Jul 2021 15:35:36 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org BAC546C91
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1627500936;
+        bh=+ubDzSENl39MUZIPXJcllRmY3lYjmwUKCDsj0PDkg4w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q6pK9ojWCkrR98kzMLRySGHNXaOC8domFNiLKDe9C4R+73FjE8De5OBwjGe/7Js61
+         WVSJ9a/8YqpcB+C0AYk02CVYsyVuoIUKtMHb93Y/jbgUOO1anbGCpabk2k2brgyjCH
+         oxklpoC/f/SUUJUVPoYV1eB8DS1qKaeqJDcwdRIM=
+Date:   Wed, 28 Jul 2021 15:35:36 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
+Message-ID: <20210728193536.GD3152@fieldses.org>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGdWbB7vQOA-DvfFzGmPxca23uPd=hzssKO-zvMc4Uy2PpH+UA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 28, 2021 at 12:21:43PM -0400, Dave T wrote:
-> On Wed, Jul 28, 2021 at 12:11 PM Andrei Borzenkov <arvidjaar@gmail.com> wrote:
-> >
-> > On 28.07.2021 18:15, Dave T wrote:
-> > ...
-> > >
-> > > Jul 27 21:54:39 server kernel: ata10.00: exception Emask 0x0 SAct
-> > > 0xffffffff SErr 0x0 action 0x0
-> > > Jul 27 21:54:39 server kernel: ata10.00: irq_stat 0x40000008
-> > > Jul 27 21:54:39 server kernel: ata10.00: failed command: READ FPDMA QUEUED
-> > > Jul 27 21:54:39 server kernel: ata10.00: cmd
-> > > 60/00:90:98:2f:9f/03:00:a4:00:00/40 tag 18 ncq dma 393216 in
-> > >                                          res
-> > > 41/40:00:20:32:9f/00:03:a4:00:00/00 Emask 0x409 (media error) <F>
-> > > Jul 27 21:54:39 server kernel: ata10.00: status: { DRDY ERR }
-> > > Jul 27 21:54:39 server kernel: ata10.00: error: { UNC }
-> > > Jul 27 21:54:39 server kernel: ata10.00: configured for UDMA/133
-> > > Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 FAILED Result:
-> > > hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=3s
-> > > Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 Sense Key :
-> > > Medium Error [current]
-> > > Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 Add. Sense:
-> > > Unrecovered read error - auto reallocate failed
-> > > Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 CDB: Read(16)
-> > > 88 00 00 00 00 00 a4 9f 2f 98 00 00 03 00 00 00
-> > > Jul 27 21:54:39 server kernel: blk_update_request: I/O error, dev sde,
-> > > sector 2761896480 op 0x0:(READ) flags 0x0 phys_seg 15 prio class 0
-> > > Jul 27 21:54:39 server kernel: ata10: EH complete
-> > > Jul 27 21:54:45 server kernel: ata10.00: exception Emask 0x0 SAct
-> > > 0x4000000 SErr 0x0 action 0x0
-> > > Jul 27 21:54:45 server kernel: ata10.00: irq_stat 0x40000008
-> > > Jul 27 21:54:45 server kernel: ata10.00: failed command: READ FPDMA QUEUED
-> > > Jul 27 21:54:45 server kernel: ata10.00: cmd
-> > > 60/08:d0:20:32:9f/00:00:a4:00:00/40 tag 26 ncq dma 4096 in
-> > >                                          res
-> > > 41/40:08:20:32:9f/00:00:a4:00:00/00 Emask 0x409 (media error) <F>
-> > > Jul 27 21:54:45 server kernel: ata10.00: status: { DRDY ERR }
-> > > Jul 27 21:54:45 server kernel: ata10.00: error: { UNC }
-> > > Jul 27 21:54:45 server kernel: ata10.00: configured for UDMA/133
-> > > Jul 27 21:54:45 server kernel: sd 9:0:0:0: [sde] tag#26 FAILED Result:
-> > > hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=4s
-> > > Jul 27 21:54:45 server kernel: sd 9:0:0:0: [sde] tag#26 Sense Key :
-> > > Medium Error [current]
-> > > Jul 27 21:54:45 server kernel: sd 9:0:0:0: [sde] tag#26 Add. Sense:
-> > > Unrecovered read error - auto reallocate failed
-> > > Jul 27 21:54:45 server kernel: sd 9:0:0:0: [sde] tag#26 CDB: Read(16)
-> > > 88 00 00 00 00 00 a4 9f 32 20 00 00 00 08 00 00
-> > > Jul 27 21:54:45 server kernel: blk_update_request: I/O error, dev sde,
-> > > sector 2761896480 op 0x0:(READ) flags 0x800 phys_seg 1 prio class 0
-> > > Jul 27 21:54:45 server kernel: ata10: EH complete
-> > > Jul 27 21:54:45 server kernel: BTRFS warning (device dm-2): i/o error
-> > > at logical 1567691653120 on dev /dev/mapper/userluks, physical
-> > > 1414087852032, root 19911, inode 624993, offset 5717954560, length
-> > > 4096, links 1 (path: path/to/file/filename.ext)
-> > > Jul 27 21:54:45 server kernel: BTRFS warning (device dm-2): i/o error
-> > > at logical 1567691653120 on dev /dev/mapper/userluks, physical
-> > > 1414087852032, root 19989, inode 624993, offset 5717954560, length
-> > > 4096, links 1 (path: path/to/file/filename.ext)
-> > > Jul 27 21:54:45 server kernel: BTRFS warning (device dm-2): i/o error
-> > > at logical 1567691653120 on dev /dev/mapper/userluks, physical
-> > > 1414087852032, root 20199, inode 624993, offset 5717954560, length
-> > > 4096, links 1 (path: path/to/file/filename.ext)
-> > > Jul 27 21:54:45 server kernel: BTRFS error (device dm-2): bdev
-> > > /dev/mapper/userluks errs: wr 0, rd 2, flush 0, corrupt 0, gen 0
-> > > Jul 27 21:54:45 server kernel: BTRFS error (device dm-2): unable to
-> > > fixup (regular) error at logical 1567691653120 on dev
-> > > /dev/mapper/userluks
-> > > Jul 27 21:55:42 server kernel: BTRFS info (device dm-2): scrub:
-> > > finished on devid 1 with status: 0
-> > >
-> > ...>
-> > > The volume is a 3TB disk, model ST3000DM001-1CH166 (Seagate Barracuda
-> > > SATA HDD).
-> > >
-> > > Is there a way to mark sectors on the disk as bad? If so, is it
-> >
-> > Directly overwriting sector may "fix" it (of course, data is still lost)
-> > or trigger sector replacement. hdparm has --write-sector command
-> > although I do not have any experience with it. Or simple dd may suffice.
-> > Difference is that hdparm will bypass any kernel block layer recovery.
-> > If you had redundant data profile, btrfs scrub would likely have fixed
-> > it for you.
-> 
-> I never knew BTRFS could duplicate data without RAID. This looks like
-> a great feature for my situation. I think I may upgrade this disk to a
-> larger one and enable DUP for data.
-> 
-> Is this a good tutorial to follow?
-> https://zejn.net/b/2017/04/30/single-device-data-redundancy-with-btrfs/
-> 
-> Should I expect my data to take twice as much space after enabling DUP?
+I'm still stuck trying to understand why subvolumes can't get their own
+superblocks:
 
-Twice as much space, and also there is a seeking cost because the data is
-written in two locations some distance apart on the media.  It doesn't
-help if the entire device fails, so at best it typically only delays
-the inevitable total failure...but maybe that gives you time to finish
-a backup before the drive dies.
+	- Why are the performance issues Josef raises unsurmountable?
+	  And why are they unique to btrfs?  (Surely there other cases
+	  where people need hundreds or thousands of superblocks?)
 
-> > > advisable to keep using this physical disk?
-> > >
-> >
-> > Well, this happens, if this is just one sector so far I would say yes.
-> > You probably need to keep an eye on it though.
+	- If filehandle decoding can return a different vfs mount than
+	  it's passed, why can't it return a different superblock?
+
+--b.
+
+On Wed, Jul 28, 2021 at 08:37:45AM +1000, NeilBrown wrote:
+> There are long-standing problems with btrfs subvols, particularly in
+> relation to whether and how they are exposed in the mount table.
 > 
-> Thanks. My guess is that this is an isolated issue. It doesn't seem to
-> be growing, but I will watch it.
+>  - /proc/self/mountinfo reports the major:minor device number for each
+>     filesystem and when a btrfs subvol is explicitly mounted, the number
+>     reported is wrong - it does not match what stat() reports for the
+>     mountpoint.
+> 
+>  - when subvol are not explicitly mounted, they don't appear in
+>    mountinfo at all.
+> 
+> Consequences include that a tool which uses stat() to find the dev of the
+> filesystem, then searches mountinfo for that filesystem, will not find
+> it.
+> 
+> Some tools (e.g. findmnt) appear to have been enhanced to cope with this
+> strangeness, but it would be best to make btrfs behave more normally.
+> 
+>   - nfsd cannot currently see the transition to subvol, so reports the
+>     main volume and all subvols to the client as being in the same
+>     filesystem.  As inode numbers are not unique across all subvols,
+>     this can confuse clients.  In particular, 'find' is likely to report a
+>     loop.
+> 
+> subvols can be made to appear in mountinfo using automounts.  However
+> nfsd does not cope well with automounts.  It assumes all filesystems to
+> be exported are already mounted.  So adding automounts to btrfs would
+> break nfsd.
+> 
+> We can enhance nfsd to understand that some automounts can be managed.
+> "internal mounts" where a filesystem provides an automount point and
+> mounts its own directories, can be handled differently by nfsd.
+> 
+> This series addresses all these issues.  After a few enhancements to the
+> VFS to provide needed support, they enhance exportfs and nfsd to cope
+> with the concept of internal mounts, and then enhance btrfs to provide
+> them.
+> 
+> The NFSv3 support is incomplete.  I'm not sure we can make it work
+> "perfectly".  A normal nfsv3 mount seem to work well enough, but if
+> mounted with '-o noac', it loses track of the mounted-on inode number
+> and complains about inode numbers changing.
+> 
+> My basic test for these is to mount a btrfs filesystem which contains
+> subvols, nfs-export it and mount it with nfsv3 and nfsv4, then run
+> 'find' in each of the filesystem and check the contents of
+> /proc/self/mountinfo.
+> 
+> The first patch simply fixes the dev number in mountinfo and could
+> possibly be tagged for -stable.
+> 
+> NeilBrown
+> 
+> ---
+> 
+> NeilBrown (11):
+>       VFS: show correct dev num in mountinfo
+>       VFS: allow d_automount to create in-place bind-mount.
+>       VFS: pass lookup_flags into follow_down()
+>       VFS: export lookup_mnt()
+>       VFS: new function: mount_is_internal()
+>       nfsd: include a vfsmount in struct svc_fh
+>       exportfs: Allow filehandle lookup to cross internal mount points.
+>       nfsd: change get_parent_attributes() to nfsd_get_mounted_on()
+>       nfsd: Allow filehandle lookup to cross internal mount points.
+>       btrfs: introduce mapping function from location to inum
+>       btrfs: use automount to bind-mount all subvol roots.
+> 
+> 
+>  fs/btrfs/btrfs_inode.h   |  12 +++
+>  fs/btrfs/inode.c         | 111 ++++++++++++++++++++++++++-
+>  fs/btrfs/super.c         |   1 +
+>  fs/exportfs/expfs.c      | 100 ++++++++++++++++++++----
+>  fs/fhandle.c             |   2 +-
+>  fs/internal.h            |   1 -
+>  fs/namei.c               |   6 +-
+>  fs/namespace.c           |  32 +++++++-
+>  fs/nfsd/export.c         |   4 +-
+>  fs/nfsd/nfs3xdr.c        |  40 +++++++---
+>  fs/nfsd/nfs4proc.c       |   9 ++-
+>  fs/nfsd/nfs4xdr.c        | 106 ++++++++++++-------------
+>  fs/nfsd/nfsfh.c          |  44 +++++++----
+>  fs/nfsd/nfsfh.h          |   3 +-
+>  fs/nfsd/nfsproc.c        |   5 +-
+>  fs/nfsd/vfs.c            | 162 +++++++++++++++++++++++----------------
+>  fs/nfsd/vfs.h            |  12 +--
+>  fs/nfsd/xdr4.h           |   2 +-
+>  fs/overlayfs/namei.c     |   5 +-
+>  fs/xfs/xfs_ioctl.c       |  12 ++-
+>  include/linux/exportfs.h |   4 +-
+>  include/linux/mount.h    |   4 +
+>  include/linux/namei.h    |   2 +-
+>  23 files changed, 490 insertions(+), 189 deletions(-)
+> 
+> --
+> Signature
