@@ -2,118 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325423D8F53
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 15:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BF23D90B2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Jul 2021 16:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235324AbhG1Nn6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 09:43:58 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:43046 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233315AbhG1Nn5 (ORCPT
+        id S235516AbhG1OcQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 10:32:16 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39362 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235405AbhG1OcP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 09:43:57 -0400
-X-Greylist: delayed 72593 seconds by postgrey-1.27 at vger.kernel.org; Wed, 28 Jul 2021 09:43:57 EDT
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 56C309C360; Wed, 28 Jul 2021 14:43:55 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1627479835;
-        bh=AVprTXs7DyGHj0L7AmX18qLo2Z3rK1/x2Gl7dXunk0c=;
-        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
-        b=P78icvf1LC1b3lK8Aazp7RxJK63O+aoNb27kYWo6Razi5LEgwkJsv2oFOz9g2QJm+
-         uQABMy38OU1lTe4doxgxN3PviWxte1wly4H2+3Vuoy4d6SIzOKaKi3DaqTz1cdEasX
-         U5tzo9O3chmA82NIZkc+KvMkVdJzo2heuYu7/aImhTvPG5gpSsEsVFfLKLhSDp1oDN
-         khCzi58165JAVXEq+pRvCB99Z4EL641OjhZCcBxse3lTAcoXMIC4ClGbBjVGupHPuJ
-         B/FwoCn7DSCRnSNfA+5w0zzH1+PayzZynNyf/BCzLw+2HwW9BC9EpsQhFVHSNQtnm/
-         Ujvb/LaC/UuFQ==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-3.3 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id F3F339B846;
-        Wed, 28 Jul 2021 14:43:52 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1627479833;
-        bh=AVprTXs7DyGHj0L7AmX18qLo2Z3rK1/x2Gl7dXunk0c=;
-        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
-        b=Z6Jkm+JubTCKlQzFQC7kdv34buXMMFdGTRl0xbnIQMBu2D9WNo/T0dKFwZBvSpVzb
-         CsXLqPq+mjMzbHKiqUUUasWfG5vRSLoEUQTZ2g5VYI8AH/CQAV4spRcLI+CmussRPT
-         Wy0S7XH2GWbrFldyF9CvDJRZ5BAyxN8rUmSogjUu4ZXu5zgr5U9GuPhsu8yE+GMgsa
-         c6INNSNPs7vrmGj7TyKDdD23JAr75chB8Xq/3wkaLa2OOAm6H78bETe/IJEbIikb3y
-         Vu0QtVHihqTk8gdAjHsyMJzV4SRkQuSaJh4M4uM+URDtzrsDWVKl2d2T6EHUjqwZK2
-         GefGpOz9uCYjA==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-        by black.home.cobb.me.uk (Postfix) with ESMTP id A5D6027556C;
-        Wed, 28 Jul 2021 14:43:52 +0100 (BST)
-From:   g.btrfs@cobb.uk.net
-To:     NeilBrown <neilb@suse.de>, Wang Yugui <wangyugui@e16-tech.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
- <20210728125819.6E52.409509F4@e16-tech.com>
- <20210728140431.D704.409509F4@e16-tech.com>
- <162745567084.21659.16797059962461187633@noble.neil.brown.name>
-Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
-Message-ID: <2cb6455c-7b9f-9ac3-fd9d-9121eb1aa109@cobb.uk.net>
-Date:   Wed, 28 Jul 2021 14:43:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Wed, 28 Jul 2021 10:32:15 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3DC8022307;
+        Wed, 28 Jul 2021 14:32:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627482732;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xOYNM5gi0iTVS8nzgQd/fnnIhJ4MjXFXi0+RdDpaT6s=;
+        b=oPHRjAqgiZpxcgoayTxgHJ4ProRWmxoPzEsImtHp+zkf0sJxO27HGATJSw+ITpL2mxZ4Ht
+        znWSPLTgHZcEmgHDkFQVXi8NDGu+H4WmJrVioG3Mu0gegFwbPvOf+t818jBM1qmlJ+BHML
+        hAn7YOrSfx6xEh4QRkTm1Gyt85G56MA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627482732;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xOYNM5gi0iTVS8nzgQd/fnnIhJ4MjXFXi0+RdDpaT6s=;
+        b=p+zrkEVPfCkahtsZ2X3S1rp1vLggQq+UOxMoi1phe/M4Ku9P8Mt4ghkuHv0BqRDt9Ukxx+
+        fUDNfBSseXrCmvCg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 328D4A3B81;
+        Wed, 28 Jul 2021 14:32:12 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3A50CDA8A7; Wed, 28 Jul 2021 16:29:27 +0200 (CEST)
+Date:   Wed, 28 Jul 2021 16:29:27 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v6 2/3] btrfs: initial fsverity support
+Message-ID: <20210728142927.GK5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Eric Biggers <ebiggers@kernel.org>,
+        Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, kernel-team@fb.com
+References: <cover.1625083099.git.boris@bur.io>
+ <797d6524e4e6386fc343cd5d0bcdd53878a6593e.1625083099.git.boris@bur.io>
+ <YOsFyCA1QIKlgHFh@quark.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <162745567084.21659.16797059962461187633@noble.neil.brown.name>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YOsFyCA1QIKlgHFh@quark.localdomain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 28/07/2021 08:01, NeilBrown wrote:
-> On Wed, 28 Jul 2021, Wang Yugui wrote:
->> Hi,
->>
->> This patchset works well in 5.14-rc3.
+On Sun, Jul 11, 2021 at 09:52:56AM -0500, Eric Biggers wrote:
+> On Wed, Jun 30, 2021 at 01:01:49PM -0700, Boris Burkov wrote:
+> > Add support for fsverity in btrfs. To support the generic interface in
+> > fs/verity, we add two new item types in the fs tree for inodes with
+> > verity enabled. One stores the per-file verity descriptor and btrfs
+> > verity item and the other stores the Merkle tree data itself.
+> > 
+> > Verity checking is done in end_page_read just before a page is marked
+> > uptodate. This naturally handles a variety of edge cases like holes,
+> > preallocated extents, and inline extents. Some care needs to be taken to
+> > not try to verity pages past the end of the file, which are accessed by
+> > the generic buffered file reading code under some circumstances like
+> > reading to the end of the last page and trying to read again. Direct IO
+> > on a verity file falls back to buffered reads.
+> > 
+> > Verity relies on PageChecked for the Merkle tree data itself to avoid
+> > re-walking up shared paths in the tree. For this reason, we need to
+> > cache the Merkle tree data. Since the file is immutable after verity is
+> > turned on, we can cache it at an index past EOF.
+> > 
+> > Use the new inode ro_flags to store verity on the inode item, so that we
+> > can enable verity on a file, then rollback to an older kernel and still
+> > mount the file system and read the file. Since we can't safely write the
+> > file anymore without ruining the invariants of the Merkle tree, we mark
+> > a ro_compat flag on the file system when a file has verity enabled.
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Co-developed-by: Chris Mason <clm@fb.com>
+> > Signed-off-by: Chris Mason <clm@fb.com>
+> > Signed-off-by: Boris Burkov <boris@bur.io>
 > 
-> Thanks for testing.
+> Generally looks good, feel free to add:
 > 
->>
->> 1, fixed dummy inode(255, BTRFS_FIRST_FREE_OBJECTID - 1 )  is changed to
->> dynamic dummy inode(18446744073709551358, or 18446744073709551359, ...)
+> Acked-by: Eric Biggers <ebiggers@google.com>
 > 
-> The BTRFS_FIRST_FREE_OBJECTID-1 was a just a hack, I never wanted it to
-> be permanent.
-> The new number is ULONG_MAX - subvol_id (where subvol_id starts at 257 I
-> think).
-> This is a bit less of a hack.  It is an easily available number that is
-> fairly unique.
-> 
->>
->> 2, btrfs subvol mount info is shown in /proc/mounts, even if nfsd/nfs is
->> not used.
->> /dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test
->> /dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test/sub1
->> /dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test/sub2
->>
->> This is a visiual feature change for btrfs user.
-> 
-> Hopefully it is an improvement.  But it is certainly a change that needs
-> to be carefully considered.
+> A few minor comments below:
 
-Would this change the behaviour of findmnt? I have several scripts that
-depend on findmnt to select btrfs filesystems. Just to take a couple of
-examples (using the example shown above): my scripts would depend on
-'findmnt --target /mnt/test/sub1 -o target' providing /mnt/test, not the
-subvolume; and another script would depend on 'findmnt -t btrfs
---mountpoint /mnt/test/sub1' providing no output as the directory is not
-an /etc/fstab mount point for a btrfs filesystem.
-
-Maybe findmnt isn't affected? Or maybe the change is worth making
-anyway? But it needs to be carefully considered if it breaks existing
-user interfaces.
+Thanks for the comments. Lots of them are minor fixups, I can do that
+when applying the patch. There are some questions that I'll leave to
+Boris to answer, I don't think they'd prevent merging the patches now
+and fixing up later.
