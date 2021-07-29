@@ -2,69 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0313DA66E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 16:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DBA3DA692
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 16:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234361AbhG2Oa1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 10:30:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40688 "EHLO mail.kernel.org"
+        id S237253AbhG2OiM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 10:38:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234206AbhG2Oa1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:30:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F329D60F4A
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 14:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627569024;
-        bh=hoVsXImXD3/DVOvDiutb/wAxY8xoqa/hZFh13qgok1g=;
-        h=From:To:Subject:Date:From;
-        b=eMPEQYa9vFimcPxH9lot8g5fmNoiSraV2XYtNH3WAN2eC0obMWWLxDLV6Cnxis7ul
-         tQYYYmIJqcYZYXYgERbztQiMZmvovDwEgXYSTJziYxXQtlL99RRjWJQs8O3VSmp6QD
-         Hw+wGORvQeqJSKR34yOGgrbyFy81Ktb9pOoRImqcAihXvjAxXFP+LenlUUqjgT86Sq
-         c77g2KBlREZmbp3bl4cKzUkYbsUzpLA9NlrSp1nziUII1ebtN2iaZzQWZslBdDafEB
-         w1TWgUtxayxxNC80QLmCLjD+iZrOJRZq6yLAj2mVnFkNVRYreh0z4WYs7hdnpJf4wf
-         LJXxiBgpyXjVg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: update comment at log_conflicting_inodes()
-Date:   Thu, 29 Jul 2021 15:30:21 +0100
-Message-Id: <26f8585750e2eb8fc1f0bbaf975681277e93a1a8.1627568981.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S237035AbhG2OiK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:38:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8B6A60FD7;
+        Thu, 29 Jul 2021 14:38:03 +0000 (UTC)
+Date:   Thu, 29 Jul 2021 16:38:01 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 11/11] btrfs: use automount to bind-mount all subvol
+ roots.
+Message-ID: <20210729143801.k2zq7qm3pm2h4wzx@wittgenstein>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+ <162742546558.32498.1901201501617899416.stgit@noble.brown>
+ <20210728131213.pgu3r4m4ulozrcav@wittgenstein>
+ <162751940386.21659.17682627731630829061@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <162751940386.21659.17682627731630829061@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Jul 29, 2021 at 10:43:23AM +1000, NeilBrown wrote:
+> On Wed, 28 Jul 2021, Christian Brauner wrote:
+> > 
+> > Hey Neil,
+> > 
+> > Sorry if this is a stupid question but wouldn't you want to copy the
+> > mount properties from path->mnt here? Couldn't you otherwise use this to
+> > e.g. suddenly expose a dentry on a read-only mount as read-write?
+> 
+> There are no stupid questions, and this is a particularly non-stupid
+> one!
+> 
+> I hadn't considered that, but having examined the code I see that it
+> is already handled.
+> The vfsmount that d_automount returns is passed to finish_automount(),
+> which hands it to do_add_mount() together with the mnt_flags for the
+> parent vfsmount (plus MNT_SHRINKABLE).
+> do_add_mount() sets up the mnt_flags of the new vfsmount.
+> In fact, the d_automount interface has no control of these flags at all.
+> Whatever it sets will be over-written by do_add_mount.
 
-A comment at log_conflicting_inodes() mentions that we check the inode's
-logged_trans field instead of using btrfs_inode_in_log() because the field
-last_log_commit is not updated when we log that an inode exists and the
-inode has the full sync flag (BTRFS_INODE_NEEDS_FULL_SYNC) set. The part
-about the full sync flag is not true anymore since commit 9acc8103ab594f
-("btrfs: fix unpersisted i_size on fsync after expanding truncate"), so
-update the comment to not mention that part anymore.
+Ah, interesting thank you very much, Neil. I seemed to have overlooked
+this yesterday.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/tree-log.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+If btrfs makes use of automounts the way you envisioned to expose
+subvolumes and also will support idmapped mounts (see [1]) we need to
+teach do_add_mount() to also take the idmapped mount into account. So
+you'd need something like (entirely untested):
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index fc98b7a7a8e6..4de3f78c579b 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -5091,8 +5091,8 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
- 		/*
- 		 * Check the inode's logged_trans only instead of
- 		 * btrfs_inode_in_log(). This is because the last_log_commit of
--		 * the inode is not updated when we only log that it exists and
--		 * it has the full sync bit set (see btrfs_log_inode()).
-+		 * the inode is not updated when we only log that it exists (see
-+		 * btrfs_log_inode()).
- 		 */
- 		if (BTRFS_I(inode)->logged_trans == trans->transid) {
- 			spin_unlock(&BTRFS_I(inode)->lock);
--- 
-2.28.0
+diff --git a/fs/namespace.c b/fs/namespace.c
+index ab4174a3c802..921f6396c36d 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -2811,6 +2811,11 @@ static int do_add_mount(struct mount *newmnt, struct mountpoint *mp,
+                return -EINVAL;
 
+        newmnt->mnt.mnt_flags = mnt_flags;
++
++       newmnt->mnt.mnt_userns = path->mnt;
++       if (newmnt->mnt.mnt_userns != &init_user_ns)
++               newmnt->mnt.mnt_userns = get_user_ns(newmnt->mnt.mnt_userns);
++
+        return graft_tree(newmnt, parent, mp);
+ }
+
+[1]: https://lore.kernel.org/linux-btrfs/20210727104900.829215-1-brauner@kernel.org/T/#mca601363b435e81c89d8ca4f09134faa5c227e6d
