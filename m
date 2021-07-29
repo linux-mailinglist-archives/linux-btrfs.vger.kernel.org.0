@@ -2,138 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747D43D9BE4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 04:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C8C3D9C03
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 05:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbhG2Chz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 22:37:55 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:35686 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233256AbhG2Chz (ORCPT
+        id S233453AbhG2DMZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 23:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233297AbhG2DMY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 22:37:55 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id B1567B08AD5; Wed, 28 Jul 2021 22:37:51 -0400 (EDT)
-Date:   Wed, 28 Jul 2021 22:37:51 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Neal Gompa <ngompa13@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nfs@vger.kernel.org,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
-Message-ID: <20210729023751.GL10170@hungrycats.org>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
- <20210728125819.6E52.409509F4@e16-tech.com>
- <20210728140431.D704.409509F4@e16-tech.com>
- <162745567084.21659.16797059962461187633@noble.neil.brown.name>
- <CAEg-Je8Pqbw0tTw6NWkAcD=+zGStOJR0J-409mXuZ1vmb6dZsA@mail.gmail.com>
- <162751265073.21659.11050133384025400064@noble.neil.brown.name>
+        Wed, 28 Jul 2021 23:12:24 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282C7C061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 20:12:21 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id u15-20020a05600c19cfb02902501bdb23cdso5792898wmq.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 20:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SIyvXWSweTyclQqYELXw3SllTAF8d8Atg81b0p8mC58=;
+        b=VgU2JKWvFmhoO84jZrDybodHsHg+Sv7TMh2+8RU/+Tz0P+1Qg4fjNvqGfl98NghlZ0
+         opeIKYH/BlD1xV02UgNtLBAeZgTeB5PNHJPUqtDI8TSGZ6O96KG1GBuK/SWOlXKMA/Yx
+         9NsLTyDbCWTfymijRZX7BIX/a5xlSY1NgySYUZ1A26iClocG6K8s4daL+JUW1XXSpOJR
+         YuCxDOQN8lup2MNKiz9dwlmRAR3pPNK8FfUpzcABgEcY70Jmz8bNNxtg+S2qbRbANPSH
+         zClkhIfzm21htO+jswbxlB+qReE1zPrnpY0B9JPp2tiOx8jqNJ4CAOnCrXWg7d5FLVkT
+         FpDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SIyvXWSweTyclQqYELXw3SllTAF8d8Atg81b0p8mC58=;
+        b=iMuHLkAD9Hoq2h+jy2ZhZ1UXilyNUMFl3g6FXUEDD1Et9eLy5+l+18h8ddLof6+/8L
+         XjwOdCInEXGNc2sFgsuoNmvLBHxOimPQ7Dro5Vwgab/G3yG20EbY9zbdgV1YF/6L5u0j
+         A/DGtGafQf4Iir7DFVRJB2ryYcC43WKiEWgJ+eJH4Eb6szFSapw7nv2HnjC4her5VNVD
+         z4S2Mey1Zsv7+XNvOtdoNPywAZfyKMJBRT5i1+zrkE4n3SEIY6rCCy2vXrj1ExnTcQnG
+         yMaPWEpraeT70mRtrgjWdmkNplyv63F4SykKtVv1rL4MmPF9d0LBfJ8ZVic+JmBtW/t8
+         dvzA==
+X-Gm-Message-State: AOAM531Og2lAxIJjnP7wgLSesJoTkP2tWIrjCMSJXKAXJuYMpZqJJ4HM
+        KPAFliP7wmcBDJqVDl16GUkR5ggcP0tJAVSnKI0Omw==
+X-Google-Smtp-Source: ABdhPJxYcyPDEkLkTMGydynTvtwhC9L11DxyX74nW8l3VYsfws9keg86i3EblvCeuOXwBvdkXXIcCvoF+BVXKhRFWqI=
+X-Received: by 2002:a7b:c5c8:: with SMTP id n8mr12196126wmk.124.1627528339681;
+ Wed, 28 Jul 2021 20:12:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <162751265073.21659.11050133384025400064@noble.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAGdWbB5YL40HiF9E0RxCdO96MS7tKg1=CRPT2YSe+vR3eGZUgQ@mail.gmail.com>
+ <20210727214049.GH10170@hungrycats.org> <CAGdWbB61NtG5roK3RUSWRN8i8Zo6qMno0LXhE6zaDLHSWhH3RA@mail.gmail.com>
+In-Reply-To: <CAGdWbB61NtG5roK3RUSWRN8i8Zo6qMno0LXhE6zaDLHSWhH3RA@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 28 Jul 2021 21:12:03 -0600
+Message-ID: <CAJCQCtSAtCdZt3c+_qMvDCx0VuSpHf0uG1LU2haSbgKHuokT0Q@mail.gmail.com>
+Subject: Re: BTRFS scrub reports an error but check doesn't find any errors.
+To:     Dave T <davestechshop@gmail.com>
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 08:50:50AM +1000, NeilBrown wrote:
-> On Wed, 28 Jul 2021, Neal Gompa wrote:
-> > On Wed, Jul 28, 2021 at 3:02 AM NeilBrown <neilb@suse.de> wrote:
-> > >
-> > > On Wed, 28 Jul 2021, Wang Yugui wrote:
-> > > > Hi,
-> > > >
-> > > > This patchset works well in 5.14-rc3.
-> > >
-> > > Thanks for testing.
-> > >
-> > > >
-> > > > 1, fixed dummy inode(255, BTRFS_FIRST_FREE_OBJECTID - 1 )  is changed to
-> > > > dynamic dummy inode(18446744073709551358, or 18446744073709551359, ...)
-> > >
-> > > The BTRFS_FIRST_FREE_OBJECTID-1 was a just a hack, I never wanted it to
-> > > be permanent.
-> > > The new number is ULONG_MAX - subvol_id (where subvol_id starts at 257 I
-> > > think).
-> > > This is a bit less of a hack.  It is an easily available number that is
-> > > fairly unique.
-> > >
-> > > >
-> > > > 2, btrfs subvol mount info is shown in /proc/mounts, even if nfsd/nfs is
-> > > > not used.
-> > > > /dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test
-> > > > /dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test/sub1
-> > > > /dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test/sub2
-> > > >
-> > > > This is a visiual feature change for btrfs user.
-> > >
-> > > Hopefully it is an improvement.  But it is certainly a change that needs
-> > > to be carefully considered.
-> > 
-> > I think this is behavior people generally expect, but I wonder what
-> > the consequences of this would be with huge numbers of subvolumes. If
-> > there are hundreds or thousands of them (which is quite possible on
-> > SUSE systems, for example, with its auto-snapshotting regime), this
-> > would be a mess, wouldn't it?
-> 
-> Would there be hundreds or thousands of subvols concurrently being
-> accessed? The auto-mounted subvols only appear in the mount table while
-> that are being accessed, and for about 15 minutes after the last access.
-> I suspect that most subvols are "backup" snapshots which are not being
-> accessed and so would not appear.
+On Wed, Jul 28, 2021 at 9:15 AM Dave T <davestechshop@gmail.com> wrote:
+>
+> The journal shows:
+>
+> Jul 27 21:54:39 server kernel: ata10.00: exception Emask 0x0 SAct
+> 0xffffffff SErr 0x0 action 0x0
+> Jul 27 21:54:39 server kernel: ata10.00: irq_stat 0x40000008
+> Jul 27 21:54:39 server kernel: ata10.00: failed command: READ FPDMA QUEUED
+> Jul 27 21:54:39 server kernel: ata10.00: cmd
+> 60/00:90:98:2f:9f/03:00:a4:00:00/40 tag 18 ncq dma 393216 in
+>                                          res
+> 41/40:00:20:32:9f/00:03:a4:00:00/00 Emask 0x409 (media error) <F>
+> Jul 27 21:54:39 server kernel: ata10.00: status: { DRDY ERR }
+> Jul 27 21:54:39 server kernel: ata10.00: error: { UNC }
+> Jul 27 21:54:39 server kernel: ata10.00: configured for UDMA/133
+> Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 FAILED Result:
+> hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=3s
+> Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 Sense Key :
+> Medium Error [current]
+> Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 Add. Sense:
+> Unrecovered read error - auto reallocate failed
+> Jul 27 21:54:39 server kernel: sd 9:0:0:0: [sde] tag#18 CDB: Read(16)
+> 88 00 00 00 00 00 a4 9f 2f 98 00 00 03 00 00 00
+> Jul 27 21:54:39 server kernel: blk_update_request: I/O error, dev sde,
 
-bees dedupes across subvols and polls every few minutes for new data
-to dedupe.  bees doesn't particularly care where the "src" in the dedupe
-call comes from, so it will pick a subvol that has a reference to the
-data at random (whichever one comes up first in backref search) for each
-dedupe call.  There is a cache of open fds on each subvol root so that it
-can access files within that subvol using openat().  The cache quickly
-populates fully, i.e. it holds a fd to every subvol on the filesystem.
-The cache has a 15 minute timeout too, so bees would likely keep the
-mount table fully populated at all times.
+Bad sector. It'll need to be overwritten to be remapped by the drive
+firmware. I can't tell if it's 512n or 512e but the write needs to be
+the size of the physical sector or else the firmware turns the write
+into read-modify-write and you'll just get the same UNC error on the
+read.
 
-plocate also uses openat() and it can also be active on many subvols
-simultaneously, though it only runs once a day, and it's reasonable to
-exclude all snapshots from plocate for performance reasons.
+DUP profile will recover from this automatically. The file system is
+informed of the physical sector, it does a reverse lookup to find the
+logical block, reads good data from the good copy and overwrites the
+bad copy. And either that'll stick or fail with an internal write
+failure in which case the firmware remaps to a reserve sector. Once
+reserve sectors are gone, you get UNC write errors - and that pretty
+much means the drive is toast.
 
-My bigger concern here is that users on btrfs can currently have private
-subvols with secret names.  e.g.
 
-	user$ mkdir -m 700 private
-	user$ btrfs sub create private/secret
-	user$ cd private/secret
-	user$ ...do stuff...
 
-Would "secret" now be visible in the very public /proc/mounts every time
-the user is doing stuff?
-
-> > Or can we add a way to mark these things to not show up there or is
-> > there some kind of behavioral change we can make to snapper or other
-> > tools to make them not show up here?
-> 
-> Certainly it might make sense to flag these in some way so that tools
-> can choose the ignore them or handle them specially, just as nfsd needs
-> to handle them specially.  I was considering a "local" mount flag.
-
-I would definitely want an 'off' switch for this thing until the impact
-is better understood.
-
-> NeilBrown
-> 
-> > 
-> > 
-> > 
-> > -- 
-> > 真実はいつも一つ！/ Always, there's only one truth!
-> > 
-> > 
+-- 
+Chris Murphy
