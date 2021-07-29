@@ -2,166 +2,262 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176DF3D9D0F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 07:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF5D3DA073
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 11:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhG2F1b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 01:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhG2F1a (ORCPT
+        id S236285AbhG2JkI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 05:40:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57126 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236273AbhG2JkI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 01:27:30 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51F8C061757;
-        Wed, 28 Jul 2021 22:27:26 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id z3so4539188ile.12;
-        Wed, 28 Jul 2021 22:27:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DTeAbs9nCmz6V+eczywLnOWUpZGnm+DncT63ZiRo/lo=;
-        b=vgPiyoKHxgAtrVNGmkH1dEGA6gNBDTvrHhAdmFug/wiS6g7ntg2E93RFZ4QOes4Vo8
-         +0x1SOMR0eqfSFFKT3aDg5BMcaE41kCCtXMwwR7XhbqRGC2IhMk9mxeQUEwPg9KoB/7U
-         DE9HnWFvKOW4CL2IQBTbDFZwl9CBQCssQRF27S4DOS4NcLXsOKseeznJ1Jmsuer2+eoB
-         0BJ9kX+3anmoIPTnBzSLQ16yy0RkK2PVggQEbqD7WO/Fizdj+XIT84+XntA6loJCrx2X
-         gJrcEz1rCEgdIvydUw4/nxqN334RVnfSXImiZzj2enf/VQVAaAMGNPgZRHcvoYwL+TEx
-         oDZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DTeAbs9nCmz6V+eczywLnOWUpZGnm+DncT63ZiRo/lo=;
-        b=lZ8K16efaDzIHPuRWsAiVcszQjTzeCKok0G0CVQ+oS9UbQgA+hu2W0Xgjfef9Q7L23
-         DAh75SuaIW37h+KPS6eWDgGbpmCpgX7kK3aR7Xdw/J0TscFSqQEvrKmnR+WXKc5QkGMp
-         u3/nWWcAnWov/FgWdS8z0QAJsizaxeasYldOrmbLBtZxwoI/cvTwLK181YqlTDonuQwO
-         ydIgxS4KYynlkeyMAOovSpGX/Tm+Oo8EDE8c/Pbvy9WwFwoNjkob6aqKIFxa1yQDlsAc
-         TmD6rYvyH7Ctssb/tSlHY+m+oznmuhV5urty7xLLWu3+szwIlwUOi/j/Nq+7/cc9RMy1
-         kd6A==
-X-Gm-Message-State: AOAM530UPeXQaqxwumBWpOLHHK8rV9xfBvgZYm8RCuoC06t8727hmZak
-        b5PwexD3v5RqiIJ5omxytzxrgxlD3KRXOoXrpgc=
-X-Google-Smtp-Source: ABdhPJxwG8Kc8HTWidT5R4osTYLwPRtVaXbXue0evzaiEyiHCcYn2tC/reoBc53O68HGysKNO3P3GDu+AC8Vc9tIpbQ=
-X-Received: by 2002:a05:6e02:1c02:: with SMTP id l2mr2417307ilh.9.1627536446171;
- Wed, 28 Jul 2021 22:27:26 -0700 (PDT)
+        Thu, 29 Jul 2021 05:40:08 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5FC99223FB;
+        Thu, 29 Jul 2021 09:40:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627551604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=DjQETP2MjqNmkVBtGh/V/+uaUy/Hhl/JvA0br2yUK2Y=;
+        b=JHy2l2EMoqCAWLWgxacTUu+/Z5MXLfKJAhkJhj5J8seeFxAjCREfUJjCy6lIgo+grnGUpv
+        Jtjxlnim9BzP8V4BfjK5mYZze43LELIutXTO2ptn/Gtx1eX6QWTORZ+9BF6Fey8N0k8Bpf
+        FQoYQfzJszWlBqk1VGQD9k+cyDQ3IVk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE01213ECF;
+        Thu, 29 Jul 2021 08:21:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id j4eYISFlAmHjHgAAMHmgww
+        (envelope-from <mpdesouza@suse.com>); Thu, 29 Jul 2021 08:21:53 +0000
+From:   Marcos Paulo de Souza <mpdesouza@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH v2] btrfs: Introduce btrfs_search_backwards function
+Date:   Thu, 29 Jul 2021 05:22:16 -0300
+Message-Id: <20210729082216.22886-1-mpdesouza@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
- <162742546554.32498.9309110546560807513.stgit@noble.brown>
- <CAOQ4uxjXcVE=4K+3uSYXLsvGgi0o7Nav=DsV=0qG_DanjXB18Q@mail.gmail.com> <162751852209.21659.13294658501847453542@noble.neil.brown.name>
-In-Reply-To: <162751852209.21659.13294658501847453542@noble.neil.brown.name>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 29 Jul 2021 08:27:15 +0300
-Message-ID: <CAOQ4uxj9DW2SHqWCMXy4oRdazbODMhtWeyvNsKJm__0fuuspyQ@mail.gmail.com>
-Subject: Re: [PATCH 07/11] exportfs: Allow filehandle lookup to cross internal
- mount points.
-To:     NeilBrown <neilb@suse.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 3:28 AM NeilBrown <neilb@suse.de> wrote:
->
-> On Wed, 28 Jul 2021, Amir Goldstein wrote:
-> > On Wed, Jul 28, 2021 at 1:44 AM NeilBrown <neilb@suse.de> wrote:
-> > >
-> > > When a filesystem has internal mounts, it controls the filehandles
-> > > across all those mounts (subvols) in the filesystem.  So it is useful to
-> > > be able to look up a filehandle again one mount, and get a result which
-> > > is in a different mount (part of the same overall file system).
-> > >
-> > > This patch makes that possible by changing export_decode_fh() and
-> > > export_decode_fh_raw() to take a vfsmount pointer by reference, and
-> > > possibly change the vfsmount pointed to before returning.
-> > >
-> > > The core of the change is in reconnect_path() which now not only checks
-> > > that the dentry is fully connected, but also that the vfsmnt reported
-> > > has the same 'dev' (reported by vfs_getattr) as the dentry.
-> > > If it doesn't, we walk up the dparent() chain to find the highest place
-> > > where the dev changes without there being a mount point, and trigger an
-> > > automount there.
-> > >
-> > > As no filesystems yet provide local-mounts, this does not yet change any
-> > > behaviour.
-> > >
-> > > In exportfs_decode_fh_raw() we previously tested for DCACHE_DISCONNECT
-> > > before calling reconnect_path().  That test is dropped.  It was only a
-> > > minor optimisation and is now inconvenient.
-> > >
-> > > The change in overlayfs needs more careful thought than I have yet given
-> > > it.
-> >
-> > Just note that overlayfs does not support following auto mounts in layers.
-> > See ovl_dentry_weird(). ovl_lookup() fails if it finds such a dentry.
-> > So I think you need to make sure that the vfsmount was not crossed
-> > when decoding an overlayfs real fh.
->
-> Sounds sensible - thanks.
-> Does this mean that my change would cause problems for people using
-> overlayfs with a btrfs lower layer?
->
+It's a common practice to start a search using offset (u64)-1, which is
+the u64 maximum value, meaning that we want the search_slot function to
+be set in the last item with the same objectid and type.
 
-It sounds like it might :-/
-I assume that enabling automount in btrfs in opt-in?
-Otherwise you will be changing behavior for users of existing systems.
+Once we are in this position, it's a matter to start a search backwards
+by calling btrfs_previous_item, which will check if we'll need to go to
+a previous leaf and other necessary checks, only to be sure that we are
+in last offset of the same object and type.
 
-I am not sure, but I think it may be possible to remove the AUTOMOUNT
-check from the ovl_dentry_weird() condition with an explicit overlayfs
-config/module/mount option so that we won't change behavior by
-default, but distro may change the default for overlayfs.
+The new btrfs_search_backwards function does the all these procedures when
+necessary, and can be used to avoid code duplication.
 
-Then, when admin changes the btrfs options on the system to perform
-automounts, it will also need to change the overlayfs options to not
-error on automounts.
+No functional changes.
 
-Given that today, subvolume mounts (or any mounts) on the lower layer
-are not followed by overlayfs, I don't really see the difference
-if mounts are created manually or automatically.
-Miklos?
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
 
-> >
-> > Apart from that, I think that your new feature should be opt-in w.r.t
-> > the exportfs_decode_fh() vfs api and that overlayfs should not opt-in
-> > for the cross mount decode.
->
-> I did consider making it opt-in, but it is easy enough for the caller
-> to ignore the changed vfsmount, and only one (of 4) callers that it
-> really makes a difference for.
->
+ Changes from v1:
+ * Remove the found_key argument (David)
+ * Remove endinness mentiones (David)
 
-Which reminds me. Please ignore the changed vfsmount in
-do_handle_to_path() (or do not opt-in to changed vfsmount).
+ fs/btrfs/ctree.c   | 22 ++++++++++++++++++++++
+ fs/btrfs/ctree.h   |  4 ++++
+ fs/btrfs/ioctl.c   | 30 ++++++++----------------------
+ fs/btrfs/super.c   | 26 ++++++--------------------
+ fs/btrfs/volumes.c |  7 +------
+ 5 files changed, 41 insertions(+), 48 deletions(-)
 
-I have an application that uses a bind mount to filter file handles
-of directories by subtree. It opens by the file handles that were
-acquired from fanotify DFID info record using a mountfd in the
-bind mount and readlink /proc/self/fd to determine the path
-relative to that subtree bind mount.
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 99b33a5b33c8..f4b2c5d48d8c 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -2101,6 +2101,28 @@ int btrfs_search_slot_for_read(struct btrfs_root *root,
+ 	return 0;
+ }
+ 
++/*
++ * Execute search and call btrfs_previous_item to traverse backwards if the item
++ * was not found.
++ *
++ * Return 0 if found, 1 if not found and < 0 if error.
++ */
++int btrfs_search_backwards(struct btrfs_root *root,
++				struct btrfs_key *key,
++				struct btrfs_path *path)
++{
++	int ret;
++
++	ret = btrfs_search_slot(NULL, root, key, path, 0, 0);
++	if (ret > 0)
++		ret = btrfs_previous_item(root, path, key->objectid, key->type);
++
++	if (ret == 0)
++		btrfs_item_key_to_cpu(path->nodes[0], key, path->slots[0]);
++
++	return ret;
++}
++
+ /*
+  * adjust the pointers going up the tree, starting at level
+  * making sure the right key of each node is points to 'key'.
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index f17be4b023cb..a898257ad2b5 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2908,6 +2908,10 @@ static inline int btrfs_insert_empty_item(struct btrfs_trans_handle *trans,
+ int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path);
+ int btrfs_next_old_leaf(struct btrfs_root *root, struct btrfs_path *path,
+ 			u64 time_seq);
++
++int btrfs_search_backwards(struct btrfs_root *root, struct btrfs_key *key,
++			   struct btrfs_path *path);
++
+ static inline int btrfs_next_old_item(struct btrfs_root *root,
+ 				      struct btrfs_path *p, u64 time_seq)
+ {
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 85c8b5a87a6a..ba1dab6a5012 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -2389,23 +2389,16 @@ static noinline int btrfs_search_path_in_tree(struct btrfs_fs_info *info,
+ 	key.offset = (u64)-1;
+ 
+ 	while (1) {
+-		ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
++		ret = btrfs_search_backwards(root, &key, path);
+ 		if (ret < 0)
+ 			goto out;
+ 		else if (ret > 0) {
+-			ret = btrfs_previous_item(root, path, dirid,
+-						  BTRFS_INODE_REF_KEY);
+-			if (ret < 0)
+-				goto out;
+-			else if (ret > 0) {
+-				ret = -ENOENT;
+-				goto out;
+-			}
++			ret = -ENOENT;
++			goto out;
+ 		}
+ 
+ 		l = path->nodes[0];
+ 		slot = path->slots[0];
+-		btrfs_item_key_to_cpu(l, &key, slot);
+ 
+ 		iref = btrfs_item_ptr(l, slot, struct btrfs_inode_ref);
+ 		len = btrfs_inode_ref_name_len(l, iref);
+@@ -2480,23 +2473,16 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
+ 		key.type = BTRFS_INODE_REF_KEY;
+ 		key.offset = (u64)-1;
+ 		while (1) {
+-			ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
+-			if (ret < 0) {
++			ret = btrfs_search_backwards(root, &key, path);
++			if (ret < 0)
++				goto out_put;
++			else if (ret > 0) {
++				ret = -ENOENT;
+ 				goto out_put;
+-			} else if (ret > 0) {
+-				ret = btrfs_previous_item(root, path, dirid,
+-							  BTRFS_INODE_REF_KEY);
+-				if (ret < 0) {
+-					goto out_put;
+-				} else if (ret > 0) {
+-					ret = -ENOENT;
+-					goto out_put;
+-				}
+ 			}
+ 
+ 			leaf = path->nodes[0];
+ 			slot = path->slots[0];
+-			btrfs_item_key_to_cpu(leaf, &key, slot);
+ 
+ 			iref = btrfs_item_ptr(leaf, slot, struct btrfs_inode_ref);
+ 			len = btrfs_inode_ref_name_len(leaf, iref);
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index d444338db3c6..409bee3e7587 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1201,21 +1201,14 @@ char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+ 		key.type = BTRFS_ROOT_BACKREF_KEY;
+ 		key.offset = (u64)-1;
+ 
+-		ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
++		ret = btrfs_search_backwards(root, &key, path);
+ 		if (ret < 0) {
+ 			goto err;
+ 		} else if (ret > 0) {
+-			ret = btrfs_previous_item(root, path, subvol_objectid,
+-						  BTRFS_ROOT_BACKREF_KEY);
+-			if (ret < 0) {
+-				goto err;
+-			} else if (ret > 0) {
+-				ret = -ENOENT;
+-				goto err;
+-			}
++			ret = -ENOENT;
++			goto err;
+ 		}
+ 
+-		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+ 		subvol_objectid = key.offset;
+ 
+ 		root_ref = btrfs_item_ptr(path->nodes[0], path->slots[0],
+@@ -1248,21 +1241,14 @@ char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
+ 			key.type = BTRFS_INODE_REF_KEY;
+ 			key.offset = (u64)-1;
+ 
+-			ret = btrfs_search_slot(NULL, fs_root, &key, path, 0, 0);
++			ret = btrfs_search_backwards(fs_root, &key, path);
+ 			if (ret < 0) {
+ 				goto err;
+ 			} else if (ret > 0) {
+-				ret = btrfs_previous_item(fs_root, path, dirid,
+-							  BTRFS_INODE_REF_KEY);
+-				if (ret < 0) {
+-					goto err;
+-				} else if (ret > 0) {
+-					ret = -ENOENT;
+-					goto err;
+-				}
++				ret = -ENOENT;
++				goto err;
+ 			}
+ 
+-			btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+ 			dirid = key.offset;
+ 
+ 			inode_ref = btrfs_item_ptr(path->nodes[0],
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 230192d097c4..536e60c6ade3 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1586,14 +1586,9 @@ static int find_free_dev_extent_start(struct btrfs_device *device,
+ 	key.offset = search_start;
+ 	key.type = BTRFS_DEV_EXTENT_KEY;
+ 
+-	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
++	ret = btrfs_search_backwards(root, &key, path);
+ 	if (ret < 0)
+ 		goto out;
+-	if (ret > 0) {
+-		ret = btrfs_previous_item(root, path, key.objectid, key.type);
+-		if (ret < 0)
+-			goto out;
+-	}
+ 
+ 	while (1) {
+ 		l = path->nodes[0];
+-- 
+2.26.2
 
-Your change, IIUC, is going to change the semantics of
-open_by_handle_at(2) and is going to break my application.
-
-If you need this change for nfsd, please keep it as an internal api
-used only by nfsd.
-
-TBH, I think it would also be nice to have an internal api to limit
-reconnect_path() walk up to mnt->mnt_root, which is what overlayfs
-really wants, so here is another excuse for you to introduce
-"reconnect flags" to exportfs_decode_fh_raw() ;-)
-
-Note that I had already added support for one implicit "reconnect
-flag" (i.e. "don't reconnect") in commit 8a22efa15b46
-("ovl: do not try to reconnect a disconnected origin dentry").
-
-Thanks,
-Amir.
