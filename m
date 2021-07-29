@@ -2,175 +2,204 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4F03DA03A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 11:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C403DA086
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 11:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235496AbhG2J3G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 05:29:06 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:60868 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbhG2J3F (ORCPT
+        id S235197AbhG2Jri (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 05:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235019AbhG2Jrh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 05:29:05 -0400
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 7D7839C349; Thu, 29 Jul 2021 10:29:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1627550941;
-        bh=Iim5E1MebJGyexk5Ad4jyZr9JL9smuusi4CzEQP17Io=;
-        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
-        b=DGlgS7mAZ0OvZ6zR+muX0daTpryzm/k1xyBBC6cAY/IGrIfjgOMSk5VltymZTVr7Q
-         Sco01sWi2kDANB47WHk4X4n8afKYw0tBJMA4bLM933X3yaixW6YDmqdTl0zOeZyeQa
-         vVRm4f2T65rTKznc6LeDCdRZJSS58YwyxVA3skKwgidD9SV/YkxYHb6tt+CbvGiCpe
-         ExDDyK7QXIickhfMn+Bw3q4viZpDvOeEKdT6E6GKsL2XMG3mzUO89LlTPsbMmgHMLZ
-         9q3OJGIeY3JDqVGqo7JV2ZbBSAVfOhGr1fGBaBBogWrkZL/vtwVGI5FAQ8sQxFdI17
-         R7zeb52UPTxsw==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-3.1 required=12.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 68BDC9BC8E;
-        Thu, 29 Jul 2021 10:28:56 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1627550936;
-        bh=Iim5E1MebJGyexk5Ad4jyZr9JL9smuusi4CzEQP17Io=;
-        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
-        b=obpt+7/NgX/yoTjv+CSTPZXgsqanl2bIxZ3eppRGHUoUBft615lNQvL/jcPJ8OIBQ
-         GZzWNzSCPQhZ1qW4HRMkUTfSDNyrsN3881cxb00PcShRNx8zx37Fd0/KqwAuIva9fS
-         K7pzAclQAkFDOdFOqPq2GDKblx9zXEodliWbWy6ueJXgfXtICV81oHtfuC/ro/SENI
-         m2RFLCxpAi9BwmzrpLtIjl0PLmkAqjgenfkGU259FEI2njyr2PbUGMX0HB3Cw3Pq4s
-         DI/ie9WiSp+mC3lzI+v3jW76AQccDuKr+abrI8BpYVrTYb4RYrr3twwgI9UnX78qoj
-         UbHb09Murd+lQ==
-Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
-        by black.home.cobb.me.uk (Postfix) with ESMTP id E5D61275AD0;
-        Thu, 29 Jul 2021 10:28:55 +0100 (BST)
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Wang Yugui <wangyugui@e16-tech.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
- <20210728125819.6E52.409509F4@e16-tech.com>
- <20210728140431.D704.409509F4@e16-tech.com>
- <162745567084.21659.16797059962461187633@noble.neil.brown.name>
- <2cb6455c-7b9f-9ac3-fd9d-9121eb1aa109@cobb.uk.net>
- <162752278855.21659.8220794370174720381@noble.neil.brown.name>
-Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
-Message-ID: <3830b42b-2b76-6953-111f-d21ec3f0528e@cobb.uk.net>
-Date:   Thu, 29 Jul 2021 10:28:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 29 Jul 2021 05:47:37 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B6AC061757
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 02:47:34 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id o185so7645372oih.13
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 02:47:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=o2Qz6Jnn0AIZ5Opzbe+EnCnVh2/aU7Y7xLpEI4FG8hc=;
+        b=OOvTrQkbA1aE9nveiXilkrDLvBTW1k7w1PjDkjWt8D6zlQ/Jd0W8avagF0wszYiDHZ
+         L4Ycy6/d+wWdJqrFlEUupKAJZNzOxDAaepD6T4YgAiorqmr8ZZ6dyjmMuv3GCC3xjWFB
+         QEXMawPDYrKIJTd3d9d4ali4iqS10VRvegYmgcDux0ucyTjvXF9N18JAJf478vppPnzv
+         KwHpbR7EL3RB9xVjgTdbnbkKepnLeUfGVTccw2F00vfQQEPKiD5SNA3WCE8bqw7rck7z
+         Y7kJtm9Zeu1weC1JLZ9Z8s11LnMHX9W2N2GZOtxrM3y/zG0AI8+Rjlq162ipFGW6/CYI
+         ozHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=o2Qz6Jnn0AIZ5Opzbe+EnCnVh2/aU7Y7xLpEI4FG8hc=;
+        b=YVgnpII3hYsAiWtQCG6/gMOk5dYrjqZLc7U1blnKdnTCyEQeIY1G6ol8FHjCFQa+h5
+         dkmQilNjtFe3+d2zodmkG+2ZukbRcfwv07ih6OKgCZMFId+viPmUUKYKC2rLPb9w8v3b
+         FOayqfynEpKbQgkFt3ObjxubyKWcWCEwvX+Qv7r74JrjmbL0J5boXnmFXhxnuk4ZzyO1
+         wUWJdWArVjWD25tk0D9afLwjIO+3a7j1qslZZprwTNnr0TiyqjnImALql5gYm5MDj+xm
+         KErosi2NyDsjfZaDh5t7ELzhGNAwhJ0loRj4QF5FI1itova/cIWOZoPR4Uee6v4ljqSv
+         aGhg==
+X-Gm-Message-State: AOAM531lsu6Kp1K+Nj/ZgKS4FK4tXrZ7nBBQoZN4HScQHV3yKwrvzY3B
+        El+aW+AgUATQs7MQvVNy3gz2Ii6ozpfVr6imeqvn7i+IRK4=
+X-Google-Smtp-Source: ABdhPJweRVy/ytJaGIi+ESfrNvbC8S9YgGsOImtfQGYobsaNgwwlp6/45Kd0YqN0BG8G5npTLEn4n/EWM5PLiBl/Xg0=
+X-Received: by 2002:aca:a8cd:: with SMTP id r196mr2446820oie.160.1627552053340;
+ Thu, 29 Jul 2021 02:47:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <162752278855.21659.8220794370174720381@noble.neil.brown.name>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Jorge Bastos <jorge.mrbastos@gmail.com>
+Date:   Thu, 29 Jul 2021 10:47:22 +0100
+Message-ID: <CAHzMYBSap30NbnPnv4ka+fDA2nYGHfjYvD-NgT04t4vvN4q2sw@mail.gmail.com>
+Subject: Why usable space can be so different?
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 29/07/2021 02:39, NeilBrown wrote:
-> On Wed, 28 Jul 2021, g.btrfs@cobb.uk.net wrote:
->> On 28/07/2021 08:01, NeilBrown wrote:
->>> On Wed, 28 Jul 2021, Wang Yugui wrote:
->>>> Hi,
->>>>
->>>> This patchset works well in 5.14-rc3.
->>>
->>> Thanks for testing.
->>>
->>>>
->>>> 1, fixed dummy inode(255, BTRFS_FIRST_FREE_OBJECTID - 1 )  is changed to
->>>> dynamic dummy inode(18446744073709551358, or 18446744073709551359, ...)
->>>
->>> The BTRFS_FIRST_FREE_OBJECTID-1 was a just a hack, I never wanted it to
->>> be permanent.
->>> The new number is ULONG_MAX - subvol_id (where subvol_id starts at 257 I
->>> think).
->>> This is a bit less of a hack.  It is an easily available number that is
->>> fairly unique.
->>>
->>>>
->>>> 2, btrfs subvol mount info is shown in /proc/mounts, even if nfsd/nfs is
->>>> not used.
->>>> /dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test
->>>> /dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test/sub1
->>>> /dev/sdc                btrfs   94G  3.5M   93G   1% /mnt/test/sub2
->>>>
->>>> This is a visiual feature change for btrfs user.
->>>
->>> Hopefully it is an improvement.  But it is certainly a change that needs
->>> to be carefully considered.
->>
->> Would this change the behaviour of findmnt? I have several scripts that
->> depend on findmnt to select btrfs filesystems. Just to take a couple of
->> examples (using the example shown above): my scripts would depend on
->> 'findmnt --target /mnt/test/sub1 -o target' providing /mnt/test, not the
->> subvolume; and another script would depend on 'findmnt -t btrfs
->> --mountpoint /mnt/test/sub1' providing no output as the directory is not
->> an /etc/fstab mount point for a btrfs filesystem.
-> 
-> Yes, I think it does change the behaviour of findmnt.
-> If the sub1 automount has not been triggered,
->   findmnt --target /mnt/test/sub1 -o target
-> will report "/mnt/test".
-> After it has been triggered, it will report "/mnt/test/sub1"
-> 
-> Similarly "findmnt -t btrfs --mountpoint /mnt/test/sub1" will report
-> nothing if the automount hasn't been triggered, and will report full
-> details of /mnt/test/sub1 if it has.
-> 
->>
->> Maybe findmnt isn't affected? Or maybe the change is worth making
->> anyway? But it needs to be carefully considered if it breaks existing
->> user interfaces.
->>
-> I hope the change is worth making anyway, but breaking findmnt would not
-> be a popular move.
+HI,
 
-I agree. I use findmnt, but I also use NFS mounted btrfs disks so I am
-keen to see this deployed. But people who don't maintain their own
-scripts and need a third party to change them might disagree!
+This is not a big deal, but mostly out of curiosity, I've noticed
+before that sometimes I couldn't fill up a single device btrfs
+filesystem as much as I would expect, recently I've been farming some
+chia and here is a very good example, both are 8TB disks, filled up
+sequentially with 100MiB chia plots, this one looks about what I would
+expect:
 
-> This is unfortunate....  btrfs is "broken" and people/code have adjusted
-> to that breakage so that "fixing" it will be traumatic.
-> 
-> The only way I can find to get findmnt to ignore the new entries in
-> /proc/self/mountinfo is to trigger a parse error such as by replacing the 
-> " - " with " -- "
-> but that causes a parse error message to be generated, and will likely
-> break other tools.
-> (...  or I could check if current->comm is "findmnt", and suppress the
-> extra entries, but that is even more horrible!!)
-> 
-> A possible option is to change findmnt to explicitly ignore the new
-> "internal" mounts (unless some option is given) and then delay the
-> kernel update until that can be rolled out.
+btrfs fi usage /mnt/disk4
+Overall:
+    Device size:                   7.28TiB
+    Device allocated:              7.28TiB
+    Device unallocated:            1.04MiB
+    Device missing:                  0.00B
+    Used:                          7.24TiB
+    Free (estimated):             34.55GiB      (min: 34.55GiB)
+    Free (statfs, df):            34.55GiB
+    Data ratio:                       1.00
+    Metadata ratio:                   2.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
 
-That sounds good as a permanent fix for findmnt. Some sort of
-'--include-subvols' option. Particularly if it were possible to default
-it using an environment variable so a script can be written to work with
-both the old and the new versions of findmnt.
+Data,single: Size:7.26TiB, Used:7.22TiB (99.54%)
+   /dev/md4        7.26TiB
 
-Unfortunately it won't help any other program which does similar
-searches through /proc/self/mountinfo.
+Metadata,DUP: Size:9.50GiB, Used:8.45GiB (88.93%)
+   /dev/md4       19.00GiB
 
-How about creating two different files? Say, /proc/self/mountinfo and
-/proc/self/mountinfo.internal (better filenames may be available!). The
-.internal file could be just the additional internal mounts, or it could
-be the complete list. Or something like
-/proc/self/mountinfo.without-subvols and
-/proc/self/mountinfo.with-subvols and a sysctl setting to choose which
-is made visible as /proc/self/mountinfo.
+System,DUP: Size:32.00MiB, Used:800.00KiB (2.44%)
+   /dev/md4       64.00MiB
 
-Graham
+Unallocated:
+   /dev/md4        1.04MiB
 
 
+
+
+In this one, filled exactly the same way, could only fit 2 less plots:
+
+btrfs fi usage /mnt/disk3
+Overall:
+    Device size:                   7.28TiB
+    Device allocated:              7.28TiB
+    Device unallocated:            1.04MiB
+    Device missing:                  0.00B
+    Used:                          7.04TiB
+    Free (estimated):            239.04GiB      (min: 239.04GiB)
+    Free (statfs, df):           239.04GiB
+    Data ratio:                       1.00
+    Metadata ratio:                   2.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+Data,single: Size:7.26TiB, Used:7.03TiB (96.78%)
+   /dev/md3        7.26TiB
+
+Metadata,DUP: Size:8.51GiB, Used:7.96GiB (93.51%)
+   /dev/md3       17.02GiB
+
+System,DUP: Size:32.00MiB, Used:864.00KiB (2.64%)
+   /dev/md3       64.00MiB
+
+Unallocated:
+   /dev/md3        1.04MiB
+
+
+
+
+Maybe a full balance would help, but the disk was filled sequentially
+with one plot (100MiB file) at a time, there shouldn't be any
+fragmentation, it's as if it can't fully use the data chunks as the
+other one, kernel is 5.10.21, balance with -dusage=88 doesn't relocate
+any chunks, above that it fails with ENOSPC:
+
+btrfs balance start -dusage=88 /mnt/disk3
+Done, had to relocate 0 out of 7446 chunks
+
+btrfs balance start -dusage=89 /mnt/disk3
+ERROR: error during balancing '/mnt/disk3': No space left on device
+
+
+Any idea what could cause this difference, also two more disks (12 and
+10TB) that fall somewhere in between:
+
+btrfs fi usage /mnt/disk1
+Overall:
+    Device size:                  10.91TiB
+    Device allocated:             10.91TiB
+    Device unallocated:            3.94GiB
+    Device missing:                  0.00B
+    Used:                         10.71TiB
+    Free (estimated):            202.03GiB      (min: 200.06GiB)
+    Free (statfs, df):           202.03GiB
+    Data ratio:                       1.00
+    Metadata ratio:                   2.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+Data,single: Size:10.88TiB, Used:10.69TiB (98.22%)
+   /dev/md1       10.88TiB
+
+Metadata,DUP: Size:13.00GiB, Used:11.79GiB (90.74%)
+   /dev/md1       26.00GiB
+
+System,DUP: Size:32.00MiB, Used:1.25MiB (3.91%)
+   /dev/md1       64.00MiB
+
+Unallocated:
+   /dev/md1        3.94GiB
+
+
+
+
+
+
+btrfs fi usage /mnt/disk2
+Overall:
+    Device size:                   9.09TiB
+    Device allocated:              9.09TiB
+    Device unallocated:           13.01MiB
+    Device missing:                  0.00B
+    Used:                          8.93TiB
+    Free (estimated):            169.67GiB      (min: 169.67GiB)
+    Free (statfs, df):           169.68GiB
+    Data ratio:                       1.00
+    Metadata ratio:                   2.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+Data,single: Size:9.07TiB, Used:8.91TiB (98.17%)
+   /dev/md2        9.07TiB
+
+Metadata,DUP: Size:11.00GiB, Used:9.98GiB (90.76%)
+   /dev/md2       22.00GiB
+
+System,DUP: Size:8.00MiB, Used:992.00KiB (12.11%)
+   /dev/md2       16.00MiB
+
+Unallocated:
+   /dev/md2       13.01MiB
+
+
+
+
+
+
+
+Thanks,
+Jorge
