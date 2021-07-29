@@ -2,76 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970743DAA3D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 19:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40F73DAA83
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 19:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhG2RdC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 13:33:02 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58174 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhG2RdB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:33:01 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D6F0222290;
-        Thu, 29 Jul 2021 17:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627579977;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2b2wtvium4EzBpukBx0KTrLCQzS0W/rNjlIyWX9/Hr8=;
-        b=sb5M0JUla5jycVDlR4A7hmtAGEKMdz/mkT8Ea1TC6HJoVthjUSxALkDziHPk0VOTtEMkvt
-        jLq2IpHdm2jLE0jsEljxJqyeoe92PgqWNfpSp7RhRHU9Kq/o6ELIyMMc0tGQ83JpsdlKYP
-        dRwfW42ACaksOB7bTj7OLL4QppAwt9o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627579977;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2b2wtvium4EzBpukBx0KTrLCQzS0W/rNjlIyWX9/Hr8=;
-        b=QB5mAwNskabkuvdmIMJZr2TcHtp5HjS/TMUkrexZaTfQTqmF/bQKwCkEIi/fYRtIPPr6z5
-        MMSs6MsVRiGkhCDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D3B54A3B83;
-        Thu, 29 Jul 2021 17:32:57 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5E566DA882; Thu, 29 Jul 2021 19:30:12 +0200 (CEST)
-Date:   Thu, 29 Jul 2021 19:30:12 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove no longer needed full sync flag check at
- inode_logged()
-Message-ID: <20210729173012.GC5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <be665ad9dd952a442dbb8448539c87d2593e081a.1627568480.git.fdmanana@suse.com>
+        id S229761AbhG2Rww (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 13:52:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229485AbhG2Rww (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Jul 2021 13:52:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EC9160F42
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 17:52:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627581168;
+        bh=nadeIW/GuPJNhfKUg/Mo8x6Lw6YW9kr76tCAwTMRRSM=;
+        h=From:To:Subject:Date:From;
+        b=F9lRIe3GazFJGCj9HOlYOu8YwAv2OJyvpWTc0nxTn6MGoyqBfq5F38Y4XK7kWAkeB
+         UVP9i2bZmAD22/nADDVE44C/3EK/UClOoBk73JKq8KJMrFPfgfYrBv33UzlQ7FgK83
+         6RI3nZ58fWtja6T+E6HFW7cjOlwXBW4Sl2l4a+vaR7h3dr191L+THvgPi9ffz5wkJA
+         WmO13hYYmXdZ9w44MHV8mnDdbcmgN3UpYOmAHbrRzIcNu6N8PXDLA6znaH1KlcPKnY
+         Qr9rlZkZVakzhnilQqN4+X7YGoMldXNJcPoXpJygGqRnoY5DYoQDWU47ictrmzpKaH
+         d8DLw1iHe4xLg==
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: avoid unnecessarily logging directories that had no changes
+Date:   Thu, 29 Jul 2021 18:52:46 +0100
+Message-Id: <ffa14771bb6d672a2a74d92625bd024013b3f8ce.1627580467.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be665ad9dd952a442dbb8448539c87d2593e081a.1627568480.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 03:29:01PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Now that we are checking if the inode's logged_trans is 0 to detect the
-> possibility of the inode having been evicted and reloaded, the test for
-> the full sync flag (BTRFS_INODE_NEEDS_FULL_SYNC) is no longer needed at
-> tree-log.c:inode_logged(). Its purpose was to detect the possibility
-> of a previous eviction as well, since when an inode is loaded the full
-> sync flag is always set on it (and only cleared after the inode is
-> logged).
-> 
-> So just remove the check and update the comment. The check for the inode's
-> logged_trans being 0 was added recently by the patch with the subject
-> "btrfs: eliminate some false positives when checking if inode was logged".
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-Added to misc-next, thanks.
+There are several cases where when logging an inode we need to log its
+parent directories or logging subdirectories when logging a directory.
+
+There are cases however where we end up logging a directory even if it was
+not changed in the current transaction, no dentries added or removed since
+the last transaction. While this is harmless from a functional point of
+view, it is a waste time as it brings no advantage.
+
+One example where this is triggered is the following:
+
+  $ mkfs.btrfs -f /dev/sdc
+  $ mount /dev/sdc /mnt
+
+  $ mkdir /mnt/A
+  $ mkdir /mnt/B
+  $ mkdir /mnt/C
+
+  $ touch /mnt/A/foo
+  $ ln /mnt/A/foo /mnt/B/bar
+  $ ln /mnt/A/foo /mnt/C/baz
+
+  $ sync
+
+  $ rm -f /mnt/A/foo
+  $ xfs_io -c "fsync" /mnt/B/bar
+
+This last fsync ends up logging directories A, B and C, however we only
+need to log directory A, as B and C were not changed since the last
+transaction commit.
+
+So fix this by changing need_log_inode(), to return false in case the
+given inode is a directory and has a ->last_trans value smaller than the
+current transaction's ID.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tree-log.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index d2039743ecf2..b4e820cde461 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5610,6 +5610,13 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ static bool need_log_inode(struct btrfs_trans_handle *trans,
+ 			   struct btrfs_inode *inode)
+ {
++	/*
++	 * If a directory was not modified, no dentries added or removed, we can
++	 * and should avoid logging it.
++	 */
++	if (S_ISDIR(inode->vfs_inode.i_mode) && inode->last_trans < trans->transid)
++		return false;
++
+ 	/*
+ 	 * If this inode does not have new/updated/deleted xattrs since the last
+ 	 * time it was logged and is flagged as logged in the current transaction,
+-- 
+2.28.0
+
