@@ -2,93 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847573D9A30
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 02:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D07B3D9AA6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 02:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhG2Anh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Jul 2021 20:43:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37822 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbhG2Anf (ORCPT
+        id S232963AbhG2A5d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Jul 2021 20:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232837AbhG2A5c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Jul 2021 20:43:35 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D57D9201C9;
-        Thu, 29 Jul 2021 00:43:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627519409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9FTxaVEoSr+Xax9oo8ainK5PQyM3hdeesRBkvIyazV4=;
-        b=W9wlJWXzPR+NSH1Nlf6q1itAzldXvOmGDkR5jNm/RGZTHOobLrplYXH3plCNOkhZYK8ueT
-        7IjlWyTvkjD3pg2Z5pdoE5ieVlsjQMA481XiRuDVRgwyMLtHoi/XqTrmYC/RmAgt9SAFj4
-        VVJKKVWHTjsuWDpNPjNABwCJttMofHc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627519409;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9FTxaVEoSr+Xax9oo8ainK5PQyM3hdeesRBkvIyazV4=;
-        b=EVvHY4aO5lhaDw4izAyUO0sTU/eMKgNCQKhuaPDQoXb88K2Dn9kj/sUKLBFs8zziiHQErn
-        ooO4YByS5QcKWXDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ABEEA13ADC;
-        Thu, 29 Jul 2021 00:43:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dBNrGq75AWHvfgAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 29 Jul 2021 00:43:26 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 28 Jul 2021 20:57:32 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D46C061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 17:57:30 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id a19so6196148oiw.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Jul 2021 17:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nfo8HZubu4mgMe3UdDjz3WBFhgYcWrLmUAlt7FuD0LE=;
+        b=ASLmctXwIHTRroN15H6ZVD998EmIXJdJ9r+Ca6eJe3j6Pr30tSCjyIYv93wb47SXZq
+         5WKSScLOtEKP7JTQzOUSIYL9WuwKQuWWe330s/CGspv/X+AbDb7HwB83LR/k1e5tcM01
+         Td6emXzSrYV5vWIxgRq1T+z0IKzQq1v0T+AFNcyUnCl4VTvPfr8HGLaMhHMqCGTVwO8Y
+         NyHY02cPrTxlae9pw+ND3MbrnQsSS4sng2rgXnA363FECu9F+4Zj7k/wT9pp7pVGLw6B
+         rBcUZSj7Dyge31mYdge/b0Z0rtgxeL+KOwS8PziT9T9bKtwywXidr2WFA9gKPm6xFHDF
+         BlPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nfo8HZubu4mgMe3UdDjz3WBFhgYcWrLmUAlt7FuD0LE=;
+        b=ufriLthcg0knO+KXIuJNmRrcOeBHyfHMicZkhsW8far3BjJPhiDNDf4pesmTZlaQ0P
+         +UBMGoH2zAd782jIeBsSzj/UueFIi3k60sFU/MqRa8JNNVEj/gJ6MxZ8Qc+uEjtW8xtv
+         fBwWqRO21nNElj/MNiygGVpyAPnF/OsXMI+zjqmZ4pG66eclRxhf7bwKCKaQVuDO+ekt
+         XYWfTVg5a6QtSfyzjivA+wNe54klKWGAX704KaDsgdxy81Xtc9wwKEbk51oK5sSqaGLH
+         IravsC9Tu2sVgCfyL1g57FQRGt3kQ+ALn12ZMfXKaCCnOkmcKdKRu5KjTv6azbdHdMuz
+         CrXw==
+X-Gm-Message-State: AOAM5333X/hglU2J7lINvhOtL6jp8G7OzonQH1tGdNJ0E1fTsZOu57kW
+        f8DG9WFqQKfhlj3MWgHwzP5mmP0YmNd8jWXqkoxyKj4JTY0=
+X-Google-Smtp-Source: ABdhPJzGQL1b0/jSla74qylzYqv28RTIOEtIpfHguCG/vG2cWp5T/+TSkfMDJir8rGwMnOSGzL7lsOZeGfJgblFBeDE=
+X-Received: by 2002:a05:6808:24d:: with SMTP id m13mr8501177oie.137.1627520249716;
+ Wed, 28 Jul 2021 17:57:29 -0700 (PDT)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Christian Brauner" <christian.brauner@ubuntu.com>
-Cc:     "Christoph Hellwig" <hch@infradead.org>,
-        "Josef Bacik" <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
-        "David Sterba" <dsterba@suse.com>,
-        "Alexander Viro" <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 11/11] btrfs: use automount to bind-mount all subvol roots.
-In-reply-to: <20210728131213.pgu3r4m4ulozrcav@wittgenstein>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>,
- <162742546558.32498.1901201501617899416.stgit@noble.brown>,
- <20210728131213.pgu3r4m4ulozrcav@wittgenstein>
-Date:   Thu, 29 Jul 2021 10:43:23 +1000
-Message-id: <162751940386.21659.17682627731630829061@noble.neil.brown.name>
+References: <CAGdWbB4EspQpmK-uK_5bC2iXdx4X-SxsOrF9DC9dF6g0jqrJpA@mail.gmail.com>
+ <d6444a8d-f232-0744-1bcc-34457f0fcc3e@cobb.uk.net>
+In-Reply-To: <d6444a8d-f232-0744-1bcc-34457f0fcc3e@cobb.uk.net>
+From:   Dave T <davestechshop@gmail.com>
+Date:   Wed, 28 Jul 2021 20:57:18 -0400
+Message-ID: <CAGdWbB7-nebkXTrFRDADLYYLqBi3xhibucySpeKUWqGjFJMzng@mail.gmail.com>
+Subject: Re: reorganizing my snapshots: how to move a readonly snapshot? (btrbk)
+To:     Graham Cobb <g.btrfs@cobb.uk.net>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 28 Jul 2021, Christian Brauner wrote:
-> 
-> Hey Neil,
-> 
-> Sorry if this is a stupid question but wouldn't you want to copy the
-> mount properties from path->mnt here? Couldn't you otherwise use this to
-> e.g. suddenly expose a dentry on a read-only mount as read-write?
+On Tue, Jul 27, 2021 at 1:34 PM Graham Cobb <g.btrfs@cobb.uk.net> wrote:
+>
+>
+> On 27/07/2021 17:47, Dave T wrote:
+> > I'm using btrbk to create regular snapshots. I see a way I can improve
+> > the organization of my snapshots now that I have more experience with
+> > this tool, but it requires moving existing snapshots to a different
+> > directory.
+> >
+> > I would prefer to avoid re-creating the full initial snapshot in the
+> > new location and I would prefer to avoid losing the existing
+> > incremental snapshots. I also want to preserve the existing parent
+> > relationships used by my snapshot tools (mainly btrbk).
+> >
+> > I'm thinking about using the solution mentioned here:
+> > https://unix.stackexchange.com/a/149933
+> >
+> >> To set a snapshot to read-write, you do something like this:
+> >> btrfs property set -ts /path/to/snapshot ro false
+> >
+> > My plan would be to change the ro property to false, move the
+> > snapshots, reset the ro property to true, and change my btrbk.conf to
+> > match the new path.
+> >
+> > What are the caveats in this plan?
+>
+> I believe that setting snapshots read-write and then back to ro is not
+> recommended and is unsupported. It may work but I am sure I have seen
+> reports of problems with send/receive when snapshots have been made rw,
+> changed and then set ro again.
+>
+> I recommend using the btrbk archive feature to move your existing
+> snapshots and then start building on top of those. I think I did exactly
+> this a long time ago when I was in a similar position of wanting to move
+> my btrbk setup.
 
-There are no stupid questions, and this is a particularly non-stupid
-one!
+I tried the btrbk archive feature. It doesn't fit my use case.
+ERROR: Source and target subvolumes are on the same btrfs filesystem!
 
-I hadn't considered that, but having examined the code I see that it
-is already handled.
-The vfsmount that d_automount returns is passed to finish_automount(),
-which hands it to do_add_mount() together with the mnt_flags for the
-parent vfsmount (plus MNT_SHRINKABLE).
-do_add_mount() sets up the mnt_flags of the new vfsmount.
-In fact, the d_automount interface has no control of these flags at all.
-Whatever it sets will be over-written by do_add_mount.
+Any other suggestions? (I am running kernel 5.13)
+Thanks
 
-Thanks,
-NeilBrown
+>
+> Graham
