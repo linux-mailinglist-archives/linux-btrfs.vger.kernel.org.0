@@ -2,98 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40F73DAA83
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 19:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE353DAAD6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 20:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhG2Rww (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 13:52:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229485AbhG2Rww (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 13:52:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EC9160F42
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 17:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627581168;
-        bh=nadeIW/GuPJNhfKUg/Mo8x6Lw6YW9kr76tCAwTMRRSM=;
-        h=From:To:Subject:Date:From;
-        b=F9lRIe3GazFJGCj9HOlYOu8YwAv2OJyvpWTc0nxTn6MGoyqBfq5F38Y4XK7kWAkeB
-         UVP9i2bZmAD22/nADDVE44C/3EK/UClOoBk73JKq8KJMrFPfgfYrBv33UzlQ7FgK83
-         6RI3nZ58fWtja6T+E6HFW7cjOlwXBW4Sl2l4a+vaR7h3dr191L+THvgPi9ffz5wkJA
-         WmO13hYYmXdZ9w44MHV8mnDdbcmgN3UpYOmAHbrRzIcNu6N8PXDLA6znaH1KlcPKnY
-         Qr9rlZkZVakzhnilQqN4+X7YGoMldXNJcPoXpJygGqRnoY5DYoQDWU47ictrmzpKaH
-         d8DLw1iHe4xLg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: avoid unnecessarily logging directories that had no changes
-Date:   Thu, 29 Jul 2021 18:52:46 +0100
-Message-Id: <ffa14771bb6d672a2a74d92625bd024013b3f8ce.1627580467.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S229961AbhG2SRr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 14:17:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhG2SRq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:17:46 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63927C061765
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 11:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=dirtcellar.net; s=ds202012; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
+        Sender:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Yu1QahtALPTXXytTgcx5uoQmwmcwUA/jTJvnYlYm+Xg=; b=BBnp7vyaPmLYVhcMNfdWsyjD5h
+        TGJg+Wisj6pjKv/jqY4w515de7C9EKorTV8MsNHTwIxXOVhFoJS1XxugQn//wIbe2m3shU+p6quX+
+        yo72QGNuaw2ZIzf3xYTiLciJIdoX7i/KkhhfRhuhOwjQJmMDS17ZQLivflpodj+3SOh8bgRTrQ6os
+        XzzUVS3ovSiBQltHy64ZpQCAKO4f9vr6DJ/LUUYN+FB/eOPuINhnkP0lrnhsNXVUb9V3i/JIgp3Mn
+        mKJ9Sj4REIraaT9Xyf0BXY3b8udX5XW05ibD23C0SGSPCw+U5axXBTVdKVbrNGc8G3V8R4HZAuPs1
+        k9jyyj0w==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:46569 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1m9AbE-0001wa-7H; Thu, 29 Jul 2021 20:17:40 +0200
+Reply-To: waxhead@dirtcellar.net
+Subject: Re: Why usable space can be so different?
+To:     Jorge Bastos <jorge.mrbastos@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAHzMYBSap30NbnPnv4ka+fDA2nYGHfjYvD-NgT04t4vvN4q2sw@mail.gmail.com>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <24c59f01-97ff-8dc7-2e8c-e33598e317ca@dirtcellar.net>
+Date:   Thu, 29 Jul 2021 20:17:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 SeaMonkey/2.53.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHzMYBSap30NbnPnv4ka+fDA2nYGHfjYvD-NgT04t4vvN4q2sw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Jorge Bastos wrote:
+> HI,
+> 
+> This is not a big deal, but mostly out of curiosity, I've noticed
+> before that sometimes I couldn't fill up a single device btrfs
+> filesystem as much as I would expect, recently I've been farming some
+> chia and here is a very good example, both are 8TB disks, filled up
+> sequentially with 100MiB chia plots, this one looks about what I would
+> expect:
+>
+I am just a regular BTRFS user , and this is just a wild guess - but it 
+seems like the small difference in size causes data and metadata chunks 
+to be allocated in a different order. E.g. you hit full data before you 
+hit full metadata and vice versa.
 
-There are several cases where when logging an inode we need to log its
-parent directories or logging subdirectories when logging a directory.
+One thing that confused me when I started to use BTRFS was the concept 
+of allocated vs used disk space. I use "btrfs fi us -T /mnt" often and 
+from my experience it is perfectly healthy to panic when unallocated 
+(not necessarily unused) space is low. This is when I start to balance 
+and shuffle stuff around so that I can have at least 2-3 gigs free for 
+each device. Anything less than that is in my experience quite annoying.
 
-There are cases however where we end up logging a directory even if it was
-not changed in the current transaction, no dentries added or removed since
-the last transaction. While this is harmless from a functional point of
-view, it is a waste time as it brings no advantage.
-
-One example where this is triggered is the following:
-
-  $ mkfs.btrfs -f /dev/sdc
-  $ mount /dev/sdc /mnt
-
-  $ mkdir /mnt/A
-  $ mkdir /mnt/B
-  $ mkdir /mnt/C
-
-  $ touch /mnt/A/foo
-  $ ln /mnt/A/foo /mnt/B/bar
-  $ ln /mnt/A/foo /mnt/C/baz
-
-  $ sync
-
-  $ rm -f /mnt/A/foo
-  $ xfs_io -c "fsync" /mnt/B/bar
-
-This last fsync ends up logging directories A, B and C, however we only
-need to log directory A, as B and C were not changed since the last
-transaction commit.
-
-So fix this by changing need_log_inode(), to return false in case the
-given inode is a directory and has a ->last_trans value smaller than the
-current transaction's ID.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/tree-log.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index d2039743ecf2..b4e820cde461 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -5610,6 +5610,13 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- static bool need_log_inode(struct btrfs_trans_handle *trans,
- 			   struct btrfs_inode *inode)
- {
-+	/*
-+	 * If a directory was not modified, no dentries added or removed, we can
-+	 * and should avoid logging it.
-+	 */
-+	if (S_ISDIR(inode->vfs_inode.i_mode) && inode->last_trans < trans->transid)
-+		return false;
-+
- 	/*
- 	 * If this inode does not have new/updated/deleted xattrs since the last
- 	 * time it was logged and is flagged as logged in the current transaction,
--- 
-2.28.0
+I know there is a global reserve, but quite frankly I wish BTRFS did 
+allocate 3-4 gigs that one might release for use with a magic 
+maintenance command.
 
