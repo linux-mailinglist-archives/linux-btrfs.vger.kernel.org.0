@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923703DA663
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 16:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351603DA664
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 16:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237018AbhG2O2k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 10:28:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39980 "EHLO mail.kernel.org"
+        id S235692AbhG2O3G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 10:29:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237314AbhG2O2k (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 10:28:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFDE160F4B
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 14:28:36 +0000 (UTC)
+        id S234361AbhG2O3G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Jul 2021 10:29:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCBD160F4B
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 14:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627568917;
-        bh=iHwwGJwdHof5UXsDWEOKSy2L59AHFYiBBAgxcnGieNo=;
+        s=k20201202; t=1627568943;
+        bh=11giaWyQOf5rjLEUlGWqJ1IT7bubsGdOkSq9netej7c=;
         h=From:To:Subject:Date:From;
-        b=ktUMF2xTmMK+7nIzKiNG7OEu1b3BKRuQEYg2m+uCvAbINruSlW1ObVkh+1Vk/Up7R
-         qTHoNCcHot4XGSrxQ3PFG6umYhSEoXxJ9fX1qni7IKWRFU8RPv3rV+Z7fzDWHEO+qU
-         o3lZBzsLrn5SvvN7W5ePWQk35I5O/G5MR/clLugXlZ5GCrck3hCOyh0rm7bJBUcq5x
-         Y+qgkaQWCSaYKEoxk/9Z4NiqmExCeKr77jcVTrr+2A+/3j0Zv+MA7VpQHbsnCK0J/H
-         gvYSB8iclwM9A19AKP0yAOdwKPrzbotUd8Nm9NcL0YFFuzybHOEueIjeWbPWu5J7QV
-         FnYWJi0By2DOQ==
+        b=eqnSAvgNzdy4UPp4dHVhiFo/d77gIwa6GYQGwMNuTCGEFuGf+TeqDia7Y9hkN3Rfm
+         bU/M3eTgpTBe11LzrNSvEg0gIJgr48EAdUwpqxt7MelAvLo+kzsUHgpeo9j1Y7TiBz
+         JhljvfTnDFD8buORZbDMavTCcTkO/KzB0Tnwv1m1LlXXlvCANV5YQS/YtFYl6DxtXM
+         7VVo70u/g6omMZZgDd6RTf0imwMohqGz7W7e/CjiLhJYXR7ZI9bYDGa0zbjpGX0gO7
+         EeypwI1sgFc5vv2UYPrZQGXYRvFxKBszVvoySg0l1R3oyD2gNEsfqXC4LUeEAood1Z
+         X9Wa4LgVokiaA==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove unnecessary NULL check for the new inode during rename exchange
-Date:   Thu, 29 Jul 2021 15:28:34 +0100
-Message-Id: <8dd8e8f3020a5bd13ae22a1f21b8328adc1f4636.1627568438.git.fdmanana@suse.com>
+Subject: [PATCH] btrfs: remove no longer needed full sync flag check at inode_logged()
+Date:   Thu, 29 Jul 2021 15:29:01 +0100
+Message-Id: <be665ad9dd952a442dbb8448539c87d2593e081a.1627568480.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -37,39 +37,49 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-At the very end of btrfs_rename_exchange(), in case an error happened, we
-are checking if 'new_inode' is NULL, but that is not needed since during a
-rename exchange, unlike regular renames, 'new_inode' can never be NULL,
-and if it were, we would have a crash much earlier when we dereference it
-multiple times.
+Now that we are checking if the inode's logged_trans is 0 to detect the
+possibility of the inode having been evicted and reloaded, the test for
+the full sync flag (BTRFS_INODE_NEEDS_FULL_SYNC) is no longer needed at
+tree-log.c:inode_logged(). Its purpose was to detect the possibility
+of a previous eviction as well, since when an inode is loaded the full
+sync flag is always set on it (and only cleared after the inode is
+logged).
 
-So remove the check because it is not necessary and because it is causing
-static checkers to emit a warning. I probably introduced the check by
-copy-pasting similar code from btrfs_rename(), where 'new_inode' can be
-NULL, in commit 86e8aa0e772cab ("Btrfs: unpin logs if rename exchange
-operation fails").
+So just remove the check and update the comment. The check for the inode's
+logged_trans being 0 was added recently by the patch with the subject
+"btrfs: eliminate some false positives when checking if inode was logged".
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/btrfs/tree-log.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 59b35e12bb81..ef76bde10913 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9421,8 +9421,7 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 		if (btrfs_inode_in_log(BTRFS_I(old_dir), fs_info->generation) ||
- 		    btrfs_inode_in_log(BTRFS_I(new_dir), fs_info->generation) ||
- 		    btrfs_inode_in_log(BTRFS_I(old_inode), fs_info->generation) ||
--		    (new_inode &&
--		     btrfs_inode_in_log(BTRFS_I(new_inode), fs_info->generation)))
-+		    btrfs_inode_in_log(BTRFS_I(new_inode), fs_info->generation))
- 			btrfs_set_log_full_commit(trans);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 4de3f78c579b..d2039743ecf2 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3435,16 +3435,14 @@ static bool inode_logged(struct btrfs_trans_handle *trans,
+ 	/*
+ 	 * The inode's logged_trans is always 0 when we load it (because it is
+ 	 * not persisted in the inode item or elsewhere). So if it is 0, the
+-	 * inode was last modified in the current transaction and has the
+-	 * full_sync flag set, then the inode may have been logged before in
+-	 * the current transaction, then evicted and loaded again in the current
+-	 * transaction - or may have never been logged in the current transaction,
+-	 * but since we can not be sure, we have to assume it was, otherwise our
+-	 * callers can leave an inconsistent log.
++	 * inode was last modified in the current transaction then the inode may
++	 * have been logged before in the current transaction, then evicted and
++	 * loaded again in the current transaction - or may have never been logged
++	 * in the current transaction, but since we can not be sure, we have to
++	 * assume it was, otherwise our callers can leave an inconsistent log.
+ 	 */
+ 	if (inode->logged_trans == 0 &&
+ 	    inode->last_trans == trans->transid &&
+-	    test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags) &&
+ 	    !test_bit(BTRFS_FS_LOG_RECOVERING, &trans->fs_info->flags))
+ 		return true;
  
- 		if (root_log_pinned) {
 -- 
 2.28.0
 
