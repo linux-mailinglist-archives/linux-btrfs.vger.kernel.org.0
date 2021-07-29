@@ -2,77 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE353DAAD6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 20:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919F33DADA0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 22:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhG2SRr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 14:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
+        id S232559AbhG2Uc2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 16:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhG2SRq (ORCPT
+        with ESMTP id S229707AbhG2Uc1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:17:46 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63927C061765
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 11:17:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=dirtcellar.net; s=ds202012; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To:
-        Sender:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Yu1QahtALPTXXytTgcx5uoQmwmcwUA/jTJvnYlYm+Xg=; b=BBnp7vyaPmLYVhcMNfdWsyjD5h
-        TGJg+Wisj6pjKv/jqY4w515de7C9EKorTV8MsNHTwIxXOVhFoJS1XxugQn//wIbe2m3shU+p6quX+
-        yo72QGNuaw2ZIzf3xYTiLciJIdoX7i/KkhhfRhuhOwjQJmMDS17ZQLivflpodj+3SOh8bgRTrQ6os
-        XzzUVS3ovSiBQltHy64ZpQCAKO4f9vr6DJ/LUUYN+FB/eOPuINhnkP0lrnhsNXVUb9V3i/JIgp3Mn
-        mKJ9Sj4REIraaT9Xyf0BXY3b8udX5XW05ibD23C0SGSPCw+U5axXBTVdKVbrNGc8G3V8R4HZAuPs1
-        k9jyyj0w==;
-Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:46569 helo=[10.0.0.10])
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <waxhead@dirtcellar.net>)
-        id 1m9AbE-0001wa-7H; Thu, 29 Jul 2021 20:17:40 +0200
-Reply-To: waxhead@dirtcellar.net
-Subject: Re: Why usable space can be so different?
-To:     Jorge Bastos <jorge.mrbastos@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAHzMYBSap30NbnPnv4ka+fDA2nYGHfjYvD-NgT04t4vvN4q2sw@mail.gmail.com>
-From:   waxhead <waxhead@dirtcellar.net>
-Message-ID: <24c59f01-97ff-8dc7-2e8c-e33598e317ca@dirtcellar.net>
-Date:   Thu, 29 Jul 2021 20:17:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 SeaMonkey/2.53.8.1
+        Thu, 29 Jul 2021 16:32:27 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA04C061765
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 13:32:22 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id c18so7298426qke.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 13:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ArEg3wJQ2YWHtg3x+wWhG47C5LGq2xFDaJ6mvWtADyc=;
+        b=UIQyLDPDk1pikacmIcGUHAf1LDS290OCduL5o8uBcXYrykM3c55hQl77OclYmjHXzS
+         HV8m65RZIJs5jaCxSO3zrkTJC4btuCawroBd2HuMwcViNDH2OPSynnMXSemxIe9210bQ
+         r6r5ZUa89Ror1+WWAkJH4X2PqIVI9wqVKh37nsftvfwT/IuhiVYVm1CL9elTXwH3I+Mk
+         tByGCjLZrIAMay2k8MjNhqLbCOvH+p3Vq/nLsrqtlZpaQTuOR3wl/oE6pzUX6fKXbJSE
+         OFKMnPz9oz06iGK3NGzRS27pXtMx3mqaA3dMg+vsgMSBpBJdP5/0tL2pTr+Af/tySiEj
+         +gOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ArEg3wJQ2YWHtg3x+wWhG47C5LGq2xFDaJ6mvWtADyc=;
+        b=ZyOtio1dCFl0XQJMdH5Ne2x/0HcM3NjkFMNRqLVcAV5+fLRuMWO5tLOjjjpSltqMXe
+         Qp9YTQ7O4o6uooPc8xCogEGOTbG0+RpxHCfO7kehUr5SCgVTH65AR/9wDvm6D35g0Ppz
+         4lN5CM5eG7kf52yn5HvZcJib8H7ACmlA0B0s7NcEZJh+yA1jioMhyTzVzQtwk1dUZCtY
+         /E0T+QrmDo0gUc84Zb9X8MiWcnqZNi+hlZwtSW+Zcw54LHhzp++xuW48X51N7fWBeMh3
+         PsGfyiQkpkfuZzN7FRfwnH02b1xkjQbn7tmLEm7Sjby8TlkmtA6ms/ZYZCEIo4SZCttr
+         GrZg==
+X-Gm-Message-State: AOAM533//zOzxvBPzu8JCxwikOE15iIiwXBdxmgkFdz9QZpTA1WqlEVb
+        SeqwwR3DhY46FPXJ1qjszYAntw==
+X-Google-Smtp-Source: ABdhPJwc0eU8F64LAtZFo0M4lUJtfo7eQCcIW/Wf2PQzqFfNfXCuRwMUNJgUKB74oDCMI3UTydsoCw==
+X-Received: by 2002:ae9:f006:: with SMTP id l6mr6885862qkg.420.1627590741665;
+        Thu, 29 Jul 2021 13:32:21 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id i123sm2361117qkf.60.2021.07.29.13.32.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 13:32:21 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: [PATCH] fstests: remove results .dmesg on each run
+Date:   Thu, 29 Jul 2021 16:32:20 -0400
+Message-Id: <d6f40b516a57f9f899e67fad39088e0ddbe087db.1627590729.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <CAHzMYBSap30NbnPnv4ka+fDA2nYGHfjYvD-NgT04t4vvN4q2sw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Jorge Bastos wrote:
-> HI,
-> 
-> This is not a big deal, but mostly out of curiosity, I've noticed
-> before that sometimes I couldn't fill up a single device btrfs
-> filesystem as much as I would expect, recently I've been farming some
-> chia and here is a very good example, both are 8TB disks, filled up
-> sequentially with 100MiB chia plots, this one looks about what I would
-> expect:
->
-I am just a regular BTRFS user , and this is just a wild guess - but it 
-seems like the small difference in size causes data and metadata chunks 
-to be allocated in a different order. E.g. you hit full data before you 
-hit full metadata and vice versa.
+I recently added dmesg files to my nightly fstests summary page and
+noticed I was getting .dmesg files from runs that happened previously.
+This is because we don't remove the .dmesg file in the results directory
+when we go to run the test, so fstests results would show a test having
+failed with dmesg errors when it actually hadn't failed.  Fix this by
+removing the .dmesg file when we are going to run a test.
 
-One thing that confused me when I started to use BTRFS was the concept 
-of allocated vs used disk space. I use "btrfs fi us -T /mnt" often and 
-from my experience it is perfectly healthy to panic when unallocated 
-(not necessarily unused) space is low. This is when I start to balance 
-and shuffle stuff around so that I can have at least 2-3 gigs free for 
-each device. Anything less than that is in my experience quite annoying.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ check | 1 +
+ 1 file changed, 1 insertion(+)
 
-I know there is a global reserve, but quite frankly I wish BTRFS did 
-allocate 3-4 gigs that one might release for use with a magic 
-maintenance command.
+diff --git a/check b/check
+index bb7e030c..2021cb21 100755
+--- a/check
++++ b/check
+@@ -809,6 +809,7 @@ function run_section()
+ 
+ 		# really going to try and run this one
+ 		rm -f $seqres.out.bad
++		rm -f $seqres.dmesg
+ 
+ 		# check if we really should run it
+ 		_expunge_test $seqnum
+-- 
+2.26.3
 
