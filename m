@@ -2,134 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265323DA898
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 18:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036D93DA97A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 18:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233098AbhG2QLc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 12:11:32 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48680 "EHLO
+        id S229614AbhG2Qy1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 12:54:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52264 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234248AbhG2QJw (ORCPT
+        with ESMTP id S229556AbhG2Qy1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 12:09:52 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 156D122270;
-        Thu, 29 Jul 2021 16:09:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627574942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 29 Jul 2021 12:54:27 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 597A92242C
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 16:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627577663;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=lq/O8Y0CB9RHKdJxxOQdFWMqsh1BnqsluCSel35j/Ws=;
-        b=sSu76YsVtqBJq5/Bguo2I/CH0YFJ/DjJgd3sR7TZ2DA/9jv8pxNb4fOGXp00TGv6AvdpQP
-        0TG7+P31Ox7BlQlAw1sNQ35ypEOw2iL1eqE5Gn6rLEXoIgbwz0Y+fyeENataIlBgUU/1y0
-        dKuHTwBDnDgpD2ujb+ksJ+WfMhdsEKw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627574942;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=yZ+95lM2st4YGqoQwbO46sU3Ucv1A82jrRRuM6y1jkw=;
+        b=f5+6Hyb2JH6YjuDtVJzNt3KvEyknlTXdJ5ozCxZcmO/XTStLvbqR08GM0aqWYSGN61MsWX
+        rF5S62vz4Emx5kSGgvtb829+uv0a+QYcs2T4A28vpIB9MOhb/pNcaCxFFGcGwcLiLecqNF
+        HZya12I6ut7/sE1Ylb86wl5vWWU/k7A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627577663;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=lq/O8Y0CB9RHKdJxxOQdFWMqsh1BnqsluCSel35j/Ws=;
-        b=Qg4MWPER216A8pfT5Bwdf8hoai1JgM7ZGugt/w3qMT0FdASkrxZU7BjskWfAz4XponrUDh
-        /Xz3gbeKaOtkCwBA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id A052213357;
-        Thu, 29 Jul 2021 16:09:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 5jqyF53SAmEgOgAAGKfGzw
-        (envelope-from <rgoldwyn@suse.de>); Thu, 29 Jul 2021 16:09:01 +0000
-Date:   Thu, 29 Jul 2021 11:08:59 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH] fs: reduce pointers while using file_ra_state_init()
-Message-ID: <20210729160859.sfdypnrti5hxk6fg@fiona>
-References: <20210726164647.brx3l2ykwv3zz7vr@fiona>
- <YP7uqRrXsbCqTpfx@casper.infradead.org>
+        bh=yZ+95lM2st4YGqoQwbO46sU3Ucv1A82jrRRuM6y1jkw=;
+        b=4twMLJTazC7zZdxrINnpNiph4g8WWUqwPE+exgsfYlCGS5W3ooXmaYl+EcEEilOVADfP7u
+        wZHHTThhIPf15MBw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 533FDA3B83;
+        Thu, 29 Jul 2021 16:54:23 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BB286DA882; Thu, 29 Jul 2021 18:51:36 +0200 (CEST)
+Date:   Thu, 29 Jul 2021 18:51:34 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/7] Allocate structures on stack instead of kmalloc()
+Message-ID: <20210729165134.GX5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-btrfs@vger.kernel.org
+References: <20210727211731.23394-1-rgoldwyn@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YP7uqRrXsbCqTpfx@casper.infradead.org>
+In-Reply-To: <20210727211731.23394-1-rgoldwyn@suse.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 18:19 26/07, Matthew Wilcox wrote:
-> On Mon, Jul 26, 2021 at 11:46:47AM -0500, Goldwyn Rodrigues wrote:
-> > Simplification.
-> > 
-> > file_ra_state_init() take struct address_space *, just to use inode
-> > pointer by dereferencing from mapping->host.
-> > 
-> > The callers also derive mapping either by file->f_mapping, or
-> > even file->f_mapping->host->i_mapping.
-> > 
-> > Change file_ra_state_init() to accept struct inode * to reduce pointer
-> > dereferencing, both in the callee and the caller.
-> > 
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On Tue, Jul 27, 2021 at 04:17:24PM -0500, Goldwyn Rodrigues wrote:
+> Here are some structs which can be converted to allocation on stack in order
+> to save on post-checks on kmalloc() and kfree() each of them.
 > 
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> 
-> (some adjacent comments)
-> 
-> > diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> > index 4806295116d8..c43bf9915cda 100644
-> > --- a/fs/btrfs/free-space-cache.c
-> > +++ b/fs/btrfs/free-space-cache.c
-> > @@ -351,7 +351,7 @@ static void readahead_cache(struct inode *inode)
-> >  	if (!ra)
-> >  		return;
-> >  
-> > -	file_ra_state_init(ra, inode->i_mapping);
-> > +	file_ra_state_init(ra, inode);
-> >  	last_index = (i_size_read(inode) - 1) >> PAGE_SHIFT;
-> >  
-> >  	page_cache_sync_readahead(inode->i_mapping, ra, NULL, 0, last_index);
-> 
-> Why does btrfs allocate a file_ra_state using kmalloc instead of
-> on the stack?
-> 
-> > +++ b/include/linux/fs.h
-> > @@ -3260,7 +3260,7 @@ extern long do_splice_direct(struct file *in, loff_t *ppos, struct file *out,
-> >  
-> >  
-> >  extern void
-> > -file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping);
-> > +file_ra_state_init(struct file_ra_state *ra, struct inode *inode);
-> 
-> This should move to pagemap.h (and lose the extern).
-> I'd put it near the definition of VM_READAHEAD_PAGES.
-> 
-> > diff --git a/mm/readahead.c b/mm/readahead.c
-> > index d589f147f4c2..3541941df5e7 100644
-> > --- a/mm/readahead.c
-> > +++ b/mm/readahead.c
-> > @@ -31,9 +31,9 @@
-> >   * memset *ra to zero.
-> >   */
-> >  void
-> > -file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping)
-> > +file_ra_state_init(struct file_ra_state *ra, struct inode *inode)
-> >  {
-> > -	ra->ra_pages = inode_to_bdi(mapping->host)->ra_pages;
-> > +	ra->ra_pages = inode_to_bdi(inode)->ra_pages;
-> >  	ra->prev_pos = -1;
-> >  }
-> >  EXPORT_SYMBOL_GPL(file_ra_state_init);
-> 
-> I'm not entirely sure why this function is out-of-line, tbh.
-> Would it make more sense for it to be static inline in a header?
+> Sizes of the structures are also in the commit message in case you feel they
+> are too bit to be allocated on stack.
 
-Which one? pagemap.h or fs.h does not know of inode_to_bdi(), should
-linux/backing-dev.h be included?
+Reducing the potential error failures is good and may slightly increase
+performance in case the system is low on memory and allocator would have
+to do some work.
 
--- 
-Goldwyn
+We must also try to reduce stack usage, but for the ioctls it should be
+safe as it's run from the process context and not from a deep call
+chain. Where it could be a problem, if the call chaing becomes deep
+under btrfs, ie. in any other intermediate layer like NFS, DM, block
+layer and drivers.
+
+So, I'd limit the size of on-stack variables to something like 128, that
+accounts for a few nested function calls with a few varaibles (eg. 4
+functions with 4 pointers each).. This is a normal pattern anywhere
+else.
+
+> There are two more structs in ioctl.c which can be converted, but
+> I was not sure of them:
+> 
+> 1. In create_snapshot(), pending_snapshot can be converted. pending_snapshot
+>    is used in the transaction.
+
+That one is 144 bytes, arguably still ok.
+
+> 2. In btrfs_ioctl_set_received_subvol_32, args64 can be converted, but args32
+>    cannot. All Pointers associated with memdup_user() can also be converted
+>    by using copy_from_user() instead. This would include many more structs.
+
+size of btrfs_ioctl_received_subvol_args_32 is 192,
+and btrfs_ioctl_received_subvol_args is 200 bytes, both in the same
+function.
+
+I'd leave this one as is, it's not something critical where performance
+matters.
+
+So, overall I'll apply the series without the two commented.
