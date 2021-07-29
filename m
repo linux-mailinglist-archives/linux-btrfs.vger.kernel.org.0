@@ -2,127 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDDF3DADA2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 22:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C86D3DADB5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jul 2021 22:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhG2UdU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 16:33:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229707AbhG2UdU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 16:33:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B5F960F4A;
-        Thu, 29 Jul 2021 20:33:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627590796;
-        bh=GTe1YaWlZ3f8sinXX6wYwfDdFtcugLHScE88pGkRVC4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rYZJ+S4lX0VUutKB2sA2VoK5v6J7gyvPu3LQIBktomqb7U0z4KKIpRLkR8bRNEHxX
-         E706+T9JV9eGDe8m0c2eZHB8QrMERLUdlgPJOm318SyWZ1QBwocP0+wJ2QwozY9I28
-         8cjOP0TlhwDf3bj3D3W+bOBvTJ8JHoKYP0jJzGI2xquxbSfs8mlJIvfpG6d8oLsiYA
-         HiJ5PdLyBUEk1iR4jqmFZ00iXyEuLUv7VE58pa5IVLvqKtZZCZ8VrVVrZWbF99tJR7
-         myljnOHGA6odf5JByOMg7MzhujiGyzop26Fu9p/7ptcM64LRIDWI8dvSExOH6rPuYE
-         O/U92+T++nB4w==
-Date:   Thu, 29 Jul 2021 13:33:16 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
-        cluster-devel@redhat.com, Jan Kara <jack@suse.cz>
-Subject: Re: RFC: switch iomap to an iterator model
-Message-ID: <20210729203316.GF3601466@magnolia>
-References: <20210719103520.495450-1-hch@lst.de>
+        id S229845AbhG2UgA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 16:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhG2Uf7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Jul 2021 16:35:59 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1ECDC061765
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 13:35:55 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id m11so4875525qtx.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jul 2021 13:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oob2WOCi4H1WuxZs/osv6sou92YJN1qr7ACpeG7n1uY=;
+        b=YxmheqJK75c/ngXFeVzFVQARtpUvP/VezLAKuees2RiBRxR1N5lcrDW7zFDvwBXIUz
+         Oj86HtR5KaJ7x5QhC2RnczzJFsUorQeHqg1ALYF7+L3dVVihTjVinbLrBMcYtIjBJKoJ
+         RhziwUisIO/yuLX0rUdUhXBnHGMkY784b1Y4b9urD7p0cPz9B4euUM8c6pfIvAR6PkqT
+         +0haSoQT2Wiubsl2G/jGOPeAG2GpI6YnVInuhKxLmz3AqvrHEgmVwCjCzGsDyfAHxNsm
+         cNq2bbwKy1eOAGppNpgayiTd8t3DT6Fbh50ZCK9TPfJAziU42EmpO2CvhQFd3/SDJ+d1
+         XZfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oob2WOCi4H1WuxZs/osv6sou92YJN1qr7ACpeG7n1uY=;
+        b=X+gIOl/7FvA5p+bFAf5iu85qpjgeXrvdWXkqKJFpkBZrcqHrp/s7pQYr08c3zjxf1L
+         XLOA9KPPk7PgKHTaUCESxx2Am1qsTV/b/FqiPymCcVRty2pTFhz1TylUNP8448z0CsVe
+         fnyAjW0X8bEHlzhNFvb5y+Ci9CR1lYTzph9f5lnkPXb4Qw4cofAvxqBmBfadId4PCgki
+         jW2tG8WQugg33TcicNMycSVCGW0XWrx8I3QolN+yJXJEk2vjXWV/WMyT9MvoYCTn2UHo
+         Z85rvjCDgJ20P+/3l1QPxLO9+459XHMXM3MpQ0SvZXgl+SADVE2JlD7m2bX5l8X1E4Cu
+         Sjlg==
+X-Gm-Message-State: AOAM533y++l95mmiJTGgmgaU7Vta+Ry4xonD9ZXsDDyHPtQw+u913Gk1
+        2etnNE/nfjx+C08pWfkV6Py6mw==
+X-Google-Smtp-Source: ABdhPJz0cl3S9KQ0ZxUxDHATFJxWAnmptvw9mG/nUHCYaWUMR2QnCpFB88CGuOOAMNK7X4832TL5bA==
+X-Received: by 2002:a05:622a:134f:: with SMTP id w15mr5932476qtk.24.1627590954856;
+        Thu, 29 Jul 2021 13:35:54 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id f24sm1666817qtq.82.2021.07.29.13.35.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jul 2021 13:35:54 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: [PATCH] fstests: generic/204: fail if the mkfs fails
+Date:   Thu, 29 Jul 2021 16:35:53 -0400
+Message-Id: <fe1cd52ce8954e5aee1fc0a4baf5c75ef7d2635a.1627590942.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210719103520.495450-1-hch@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 12:34:53PM +0200, Christoph Hellwig wrote:
-> Hi all,
-> 
-> this series replies the existing callback-based iomap_apply to an iter based
-> model.  The prime aim here is to simply the DAX reflink support, which
+My nightly fstests runs on my Raspberry Pi got stuck trying to run
+generic/204.  This boiled down to mkfs failing to make the scratch
+device that small with the subpage blocksize support, and thus trying to
+fill a 1tib drive with tiny files.  On one hand I'd like to make
+_scratch_mkfs failures automatically fail the test, but I worry about
+cases where a test may be checking for an option and need to do
+something different with failures, so for now simply fail if we can't
+make our tiny-fs in generic/204.
 
-Jan Kara pointed out that recent gcc and clang support a magic attribute
-that causes a cleanup function to be called when an automatic variable
-goes out of scope.  I've ported the XFS for_each_perag* macros to use
-it, but I think this would be roughly (totally untested) what you'd do
-for iomap iterators:
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ tests/generic/204 | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-/* automatic iteration cleanup via macro hell */
-struct iomap_iter_cleanup {
-	struct iomap_ops	*ops;
-	struct iomap_iter	*iter;
-	loff_t			*ret;
-};
+diff --git a/tests/generic/204 b/tests/generic/204
+index a3dabb71..b5deb443 100755
+--- a/tests/generic/204
++++ b/tests/generic/204
+@@ -35,7 +35,8 @@ _scratch_mkfs 2> /dev/null | _filter_mkfs 2> $tmp.mkfs > /dev/null
+ [ $FSTYP = "xfs" ] && MKFS_OPTIONS="$MKFS_OPTIONS -l size=16m -i maxpct=50"
+ 
+ SIZE=`expr 115 \* 1024 \* 1024`
+-_scratch_mkfs_sized $SIZE $dbsize 2> /dev/null > $tmp.mkfs.raw
++_scratch_mkfs_sized $SIZE $dbsize 2> /dev/null > $tmp.mkfs.raw \
++	|| _fail "mkfs failed"
+ cat $tmp.mkfs.raw | _filter_mkfs 2> $tmp.mkfs > /dev/null
+ _scratch_mount
+ 
+-- 
+2.26.3
 
-static inline void iomap_iter_cleanup(struct iomap_iter_cleanup *ic)
-{
-	struct iomap_iter *iter = ic->iter;
-	int ret2 = 0;
-
-	if (!iter->iomap.length || !ic->ops->iomap_end)
-		return;
-
-	ret2 = ops->iomap_end(iter->inode, iter->pos,
-			iomap_length(iter), 0, iter->flags,
-			&iter->iomap);
-
-	if (ret2 && *ic->ret == 0)
-		*ic->ret = ret2;
-
-	iter->iomap.length = 0;
-}
-
-#define IOMAP_ITER_CLEANUP(pag)	\
-	struct iomap_iter_cleanup __iomap_iter_cleanup \
-			__attribute__((__cleanup__(iomap_iter_cleanup))) = \
-			{ .iter = (iter), .ops = (ops), .ret = &(ret) }
-
-#define for_each_iomap(iter, ops, ret) \
-	(ret) = iomap_iter((iter), (ops)); \
-	for (IOMAP_ITER_CLEANUP(iter, ops, ret); \
-		(ret) > 0; \
-		(ret) = iomap_iter((iter), (ops)) \
-
-Then we actually /can/ write our iteration loops in the normal C style:
-
-	struct iomap_iter iter = {
-		.inode = ...,
-		.pos = 0,
-		.length = 32768,
-	};
-	loff_t ret = 0;
-
-	for_each_iomap(&iter, ops, ret) {
-		if (iter.iomap.type != WHAT_I_WANT)
-                        break;
-
-		ret = am_i_pissed_off(...);
-		if (ret)
-			return ret;
-	}
-
-	return ret;
-
-and ->iomap_end will always get called.  There are a few sharp edges:
-
-I can't figure out how far back clang and gcc support this attribute.
-The gcc docs mention it at least far back as 3.3.6.  clang (afaict) docs
-don't reference it directly, but the clang 4 docs claim that it can be
-as pedantic as gcc w.r.t. attribute use.  That's more than new enough
-for upstream, which requires gcc 4.9 or clang 10.
-
-The /other/ problem is that gcc gets fussy about defining variables
-inside the for loop parentheses, which means that any code using it has
-to compile with -std=gnu99, which is /not/ the usual c89 that the kernel
-uses.  OTOH, it's been 22 years since C99 was ratified, c'mon...
-
---D
