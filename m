@@ -2,148 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF743DB5AE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jul 2021 11:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FC03DB7A1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jul 2021 13:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237895AbhG3JLz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Jul 2021 05:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbhG3JLy (ORCPT
+        id S238524AbhG3LK6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Jul 2021 07:10:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59316 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230157AbhG3LK5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Jul 2021 05:11:54 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A08C061765
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jul 2021 02:11:49 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id c7-20020a9d27870000b02904d360fbc71bso8789322otb.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jul 2021 02:11:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ch8MWzq+UnPiN5MYRHsS5qEeOcpy8UQavz8sBAor59c=;
-        b=tXfuyEbDYpTjn3HUWxM3bCQcxc/ooC00nkkFqj3UIc8QZuRdOFa/yKh7jaZiaHzx1t
-         UfUICzrc7HPfxLFeMd/BGjy2d1mViBPtmQcmpu6+XFGYSxIk23JzBXkqzmmt3Ea8ZPjr
-         Qt/d+ok72YrhhsREG2SzQ3yQHB2fEzYytVCjsSRzc4rQ19T7JbFmYG0c8IhxZ0v7NGX4
-         REoK5b0umv1FW/coMVqYZx3xCnzxVvul7xum/VgLIma0pwSsYh4u8Id9g3d6ThisZr5X
-         TUIBCx39KXwvPvZoqJP6vmOUQfLYmV70DHgqbnd4XFU3+jV1LBxDgCH6WR6zoIgCe1dz
-         FCuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ch8MWzq+UnPiN5MYRHsS5qEeOcpy8UQavz8sBAor59c=;
-        b=fTWmUAGkgCmXyAaX3kTpnvGTBQaPJp4yJPLxetoOh2uX8wJOWo9i4Q7BlJxpzjyyxD
-         dKVbg/y0mTOQc6KlJ82cyyCOxRm/IkXa1Jf2W+ARm+MjELEgxWxgPp+HgiNLW5aackjB
-         O1OLzNwzBoHIEvh+Z1znm8Q1++NeU295tSv5P3HyaV4Nq053QxAGoxVpFXVGfTJbHO30
-         8q9qOZR1CjZlJH2m/ahIBMrYG5LMWvvM1aReOyWhQUvTPHvS71VwsSgpGOnIDMXD/ZZ5
-         zWzJ9CTSYjm+Qe5aoDwQSCPt4/thj3ho8QW109GlFekvLo7VTvLvwnbJ/LV6NwN7Iiqp
-         RmEQ==
-X-Gm-Message-State: AOAM530llb+xY8yIForWlO1YI0b9mChHzUEbpA0nM5hbX4GS+dFumiO9
-        i4bre6ONIN/VI2HDz7CgkSdBqObRMjhiWYZktCzQ6geM/dw=
-X-Google-Smtp-Source: ABdhPJwJeTe9Co/um7Xs/UaM9Oo4oHY0ppNXhiesopWSDboPoZlZOLnpUR1+pDcqbmyu7mRkwBYijMUaiuQzrD6/vag=
-X-Received: by 2002:a05:6830:2476:: with SMTP id x54mr1247369otr.10.1627636308745;
- Fri, 30 Jul 2021 02:11:48 -0700 (PDT)
+        Fri, 30 Jul 2021 07:10:57 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6CEC61FDD5;
+        Fri, 30 Jul 2021 11:10:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627643452;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kLeeLW9VUmSLNDSMOvzNs8LGwdMr9c1omA3yfKsPhCY=;
+        b=vhR0REk6NUOYNBJckYLG2QzntM1XLCp6pu5GKng4V/Bv2/G0nzSE9igZKvpyaWNUPYHDCl
+        Dcl5In3EIa4zvpW8evQeFORjFCD5k/Yua+a+GY6C11sDXVtBkBPdYoWl2TekWG5lZSiw85
+        JG7SeVgvB+b0RmIE6J+mEbkQchmpqkE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627643452;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kLeeLW9VUmSLNDSMOvzNs8LGwdMr9c1omA3yfKsPhCY=;
+        b=jdrd3R2mB77oB5CsAcK82lVVC05yqQIqxsVAZPWyhFaCHyoBXAHbGvcGfFbnd4bwI3lccz
+        VY2MxRs8Qw6JEBDg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 66DA7A3B88;
+        Fri, 30 Jul 2021 11:10:52 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1A8A9DB284; Fri, 30 Jul 2021 13:08:05 +0200 (CEST)
+Date:   Fri, 30 Jul 2021 13:08:05 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: setup the page before calling any subpage helper
+Message-ID: <20210730110805.GF5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210730055857.149633-1-wqu@suse.com>
 MIME-Version: 1.0
-References: <CAHzMYBSap30NbnPnv4ka+fDA2nYGHfjYvD-NgT04t4vvN4q2sw@mail.gmail.com>
- <a5dd8f30-48f0-4954-f3fb-1a0722ae468f@gmail.com> <CAHzMYBQ+ALSKJbNqDy_=pyHEB_Y3CZ4X=hRYpx+7SWAcF58qiw@mail.gmail.com>
-In-Reply-To: <CAHzMYBQ+ALSKJbNqDy_=pyHEB_Y3CZ4X=hRYpx+7SWAcF58qiw@mail.gmail.com>
-From:   Jorge Bastos <jorge.mrbastos@gmail.com>
-Date:   Fri, 30 Jul 2021 10:11:37 +0100
-Message-ID: <CAHzMYBThqj1daz3owbewytXydnfrCkXj8j5qL2_9r07VHXhw5Q@mail.gmail.com>
-Subject: Re: Why usable space can be so different?
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210730055857.149633-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Was going to convert the metadata do single profile since don't need
-DUP for this but stupidly forgot to free up some space first, balance
-crashed and fs went read_only, and strangely it does the same even
-after mounting with skip_balance:
+On Fri, Jul 30, 2021 at 01:58:57PM +0800, Qu Wenruo wrote:
+> Function set_page_extent_mapped() will setup the data page cache so that
+> for subpage cases those pages will have page->private to store subpage
+> specific info.
+> 
+> Normally this happens when we create a new page for the page cache.
+> But there is a special call site, __extent_writepage(), as we have
+> special cases where upper layer can mark some page dirty without going
+> through set_page_dirty() interface.
+> 
+> I haven't yet seen any real world case for this, but if that's possible
+> then in __extent_writepage() we will call btrfs_page_clear_error()
+> before setting up the page->private, which can lead to NULL pointer
+> dereference.
 
-Jul 30 09:35:09 Tower1 kernel: BTRFS info (device sdz1): using free space tree
-Jul 30 09:35:09 Tower1 kernel: BTRFS info (device sdz1): has skinny extents
-Jul 30 09:35:13 Tower1 kernel: BTRFS info (device sdz1): balance: resume skipped
-Jul 30 09:35:32 Tower1 kernel: ------------[ cut here ]------------
-Jul 30 09:35:32 Tower1 kernel: BTRFS: Transaction aborted (error -28)
-Jul 30 09:35:32 Tower1 kernel: WARNING: CPU: 7 PID: 4673 at
-fs/btrfs/block-group.c:2122
-btrfs_create_pending_block_groups+0x176/0x1ff
-Jul 30 09:35:32 Tower1 kernel: Modules linked in: xt_CHECKSUM
-ipt_REJECT xt_nat ip6table_mangle ip6table_nat veth iptable_mangle tun
-md_mod ipmi_devintf iptable_nat xt_MASQUERADE nf_nat wireguard
-curve25519_x86_64 libcurve25519_generic libchacha20poly1305
-chacha_x86_64 poly1305_x86_64 ip6_udp_tunnel udp_tunnel libblake2s
-blake2s_x86_64 libblake2s_generic libchacha ip6table_filter ip6_tables
-iptable_filter ip_tables mlx4_en mlx4_core igb i2c_algo_bit sb_edac
-x86_pkg_temp_thermal intel_powerclamp coretemp crct10dif_pclmul
-crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd
-cryptd glue_helper rapl ipmi_ssif intel_cstate nvme i2c_i801
-intel_uncore nvme_core ahci input_leds wmi i2c_smbus i2c_core
-led_class libahci acpi_ipmi acpi_power_meter ipmi_si button acpi_pad
-[last unloaded: vhost_iotlb]
-Jul 30 09:35:32 Tower1 kernel: CPU: 7 PID: 4673 Comm: mc Tainted: G
-    W         5.10.21-Unraid #1
-Jul 30 09:35:32 Tower1 kernel: Hardware name: Supermicro Super
-Server/X10SRi-F, BIOS 3.3 10/28/2020
-Jul 30 09:35:32 Tower1 kernel: RIP:
-0010:btrfs_create_pending_block_groups+0x176/0x1ff
-Jul 30 09:35:32 Tower1 kernel: Code: 45 50 48 8d b8 40 0a 00 00 e8 ae
-db ff ff 84 c0 75 1a 83 fb fb 74 15 83 fb e2 74 10 89 de 48 c7 c7 da
-a1 d9 81 e8 9a 65 44 00 <0f> 0b 89 d9 ba 4a 08 00 00 48 c7 c6 00 9e c2
-81 48 89 ef e8 3e 91
-Jul 30 09:35:32 Tower1 kernel: RSP: 0018:ffffc9000360fdd0 EFLAGS: 00010286
-Jul 30 09:35:32 Tower1 kernel: RAX: 0000000000000000 RBX:
-00000000ffffffe4 RCX: 0000000000000027
-Jul 30 09:35:32 Tower1 kernel: RDX: 00000000ffffefff RSI:
-0000000000000001 RDI: ffff88903fbd8920
-Jul 30 09:35:32 Tower1 kernel: RBP: ffff88815cc28270 R08:
-0000000000000000 R09: 00000000ffffefff
-Jul 30 09:35:32 Tower1 kernel: R10: ffffc9000360fc00 R11:
-ffffc9000360fbf8 R12: ffff888cdd644508
-Jul 30 09:35:32 Tower1 kernel: R13: 0000000000000004 R14:
-0000000000000000 R15: ffff8881015b6000
-Jul 30 09:35:32 Tower1 kernel: FS:  000015074d988740(0000)
-GS:ffff88903fbc0000(0000) knlGS:0000000000000000
-Jul 30 09:35:32 Tower1 kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-Jul 30 09:35:32 Tower1 kernel: CR2: 00007ffcdcb4bf18 CR3:
-0000000101e96001 CR4: 00000000001706e0
-Jul 30 09:35:32 Tower1 kernel: Call Trace:
-Jul 30 09:35:32 Tower1 kernel: __btrfs_end_transaction+0x5b/0x150
-Jul 30 09:35:32 Tower1 kernel: btrfs_unlink+0x9e/0xb6
-Jul 30 09:35:32 Tower1 kernel: vfs_unlink+0x82/0xeb
-Jul 30 09:35:32 Tower1 kernel: do_unlinkat+0xfe/0x1d3
-Jul 30 09:35:32 Tower1 kernel: do_syscall_64+0x5d/0x6a
-Jul 30 09:35:32 Tower1 kernel: entry_SYSCALL_64_after_hwframe+0x44/0xa9
-Jul 30 09:35:32 Tower1 kernel: RIP: 0033:0x15074e246277
-Jul 30 09:35:32 Tower1 kernel: Code: f0 ff ff 73 01 c3 48 8b 0d 16 6c
-0d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66
-90 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e9 6b 0d
-00 f7 d8 64 89 01 48
-Jul 30 09:35:32 Tower1 kernel: RSP: 002b:00007ffcdcb4fd18 EFLAGS:
-00000206 ORIG_RAX: 0000000000000057
-Jul 30 09:35:32 Tower1 kernel: RAX: ffffffffffffffda RBX:
-00000000006167a0 RCX: 000015074e246277
-Jul 30 09:35:32 Tower1 kernel: RDX: 000000000058d130 RSI:
-00000000ffffffff RDI: 00000000005d1e70
-Jul 30 09:35:32 Tower1 kernel: RBP: 00000000006133b0 R08:
-0000000000000001 R09: 0000000000000000
-Jul 30 09:35:32 Tower1 kernel: R10: 0000000000000000 R11:
-0000000000000206 R12: 00007ffcdcb4fd7c
-Jul 30 09:35:32 Tower1 kernel: R13: 0000000000000000 R14:
-00000000005d14e0 R15: 00000000006133b0
-Jul 30 09:35:32 Tower1 kernel: ---[ end trace 9e1013fad580900f ]---
-Jul 30 09:35:32 Tower1 kernel: BTRFS: error (device sdz1) in
-btrfs_create_pending_block_groups:2122: errno=-28 No space left
-Jul 30 09:35:32 Tower1 kernel: BTRFS info (device sdz1): forced readonly
-Jul 30 09:36:34 Tower1 kernel: BTRFS info (device sdz1): using free space tree
-Jul 30 09:36:34 Tower1 kernel: BTRFS info (device sdz1): has skinny extents
-Jul 30 09:36:38 Tower1 kernel: BTRFS info (device sdz1): balance: resume skipped
-Jul 30 09:37:13 Tower1 kernel: ------------[ cut here ]------------
+Yeah it's hard to believe, but it's been there since almost the
+beginning. Back then there was a hard BUG() in the fixup worker, I've
+hit it randomly on x86_64,
 
+https://lore.kernel.org/linux-btrfs/20111031154139.GF19328@twin.jikos.cz/
 
-I'm just going to re-format these with xfs, I don't really need btrfs
-for this, just used it because it's my default fs.
+you could find a lot of other reports where it crashed inside
+btrfs_writepage_fixup_worker.
+
+> Fix it by moving set_page_extent_mapped() call before
+> btrfs_page_clear_error().
+> And make sure in the error path we won't call anything subpage helper.
+
+I'm not sure about the fix, because the whole fixup thing is not
+entirely clear.
+
+> Fixes: 32443de3382b ("btrfs: introduce btrfs_subpage for data inodes")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> I really hope we can have a more explicit comment about in exactly which
+> cases we can have such page, and maybe some test cases for it.
+
+The only reliable test case was on s390 with a particular seed for fsx,
+I still have it stored somewhere. On x86_64 it's very hard to hit.
+
+> In fact, I haven't really seen any case like this, and it doesn't really
+> make sense for me to make some MM layer code to mark a page dirty
+> without going through set_page_dirty() interface.
+
+On s390 it's quick because the page state bits are stored in 2 places
+and need to be synced. On x86_64 it's very unclear and low level arch
+specific MM stuff but it is still a problem.
