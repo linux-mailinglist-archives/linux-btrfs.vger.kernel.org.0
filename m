@@ -2,248 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C5D3DB130
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jul 2021 04:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D847F3DB209
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jul 2021 05:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhG3Cgn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Jul 2021 22:36:43 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43036 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbhG3Cgn (ORCPT
+        id S234928AbhG3Dwd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Jul 2021 23:52:33 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57271 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230352AbhG3Dwd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Jul 2021 22:36:43 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0F7501FD9A;
-        Fri, 30 Jul 2021 02:36:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627612598; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uWUcvHlwusRZYuqr62Cexf1wHC01k6ATksIHt0UTG40=;
-        b=UhW+Hbjx8tuF8MjAQ9iMxsBOeOKr3PYAuzL4ld/oKJ4MHstFmCHTrngccPItHLfOyno9At
-        NrKtIX6JNIizMqL+I72Rm7PRtceMjU9jMPrsngFG0aE1ZBC3E6zR16XxcwKf1c1GIoRgqQ
-        uCjZ/JiIOBKbmIZdykI9Dgk0bSue8Iw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627612598;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uWUcvHlwusRZYuqr62Cexf1wHC01k6ATksIHt0UTG40=;
-        b=5Y+gQU01MyCUiSEbZGelJ/ftp0KpZFMwwFnKFr2Wc97x86J2PFseXrU7DryK5pLhRPf28R
-        lUuDPz0thr9tyRBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5DFC813BF9;
-        Fri, 30 Jul 2021 02:36:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iXzyBrJlA2FFUwAAMHmgww
-        (envelope-from <neilb@suse.de>); Fri, 30 Jul 2021 02:36:34 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 29 Jul 2021 23:52:33 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16U3qQd0009312
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 23:52:26 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 109A515C37C0; Thu, 29 Jul 2021 23:52:26 -0400 (EDT)
+Date:   Thu, 29 Jul 2021 23:52:26 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] fstests: generic/204: fail if the mkfs fails
+Message-ID: <YQN3enkt+icpfG0e@mit.edu>
+References: <fe1cd52ce8954e5aee1fc0a4baf5c75ef7d2635a.1627590942.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
-Cc:     "Neal Gompa" <ngompa13@gmail.com>,
-        "Wang Yugui" <wangyugui@e16-tech.com>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "Josef Bacik" <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
-        "David Sterba" <dsterba@suse.com>,
-        "Alexander Viro" <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        linux-nfs@vger.kernel.org,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
-In-reply-to: <20210729232017.GE10106@hungrycats.org>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>,
- <20210728125819.6E52.409509F4@e16-tech.com>,
- <20210728140431.D704.409509F4@e16-tech.com>,
- <162745567084.21659.16797059962461187633@noble.neil.brown.name>,
- <CAEg-Je8Pqbw0tTw6NWkAcD=+zGStOJR0J-409mXuZ1vmb6dZsA@mail.gmail.com>,
- <162751265073.21659.11050133384025400064@noble.neil.brown.name>,
- <20210729023751.GL10170@hungrycats.org>,
- <162752976632.21659.9573422052804077340@noble.neil.brown.name>,
- <20210729232017.GE10106@hungrycats.org>
-Date:   Fri, 30 Jul 2021 12:36:31 +1000
-Message-id: <162761259105.21659.4838403432058511846@noble.neil.brown.name>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe1cd52ce8954e5aee1fc0a4baf5c75ef7d2635a.1627590942.git.josef@toxicpanda.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Jul 29, 2021 at 04:35:53PM -0400, Josef Bacik wrote:
+> My nightly fstests runs on my Raspberry Pi got stuck trying to run
+> generic/204.  This boiled down to mkfs failing to make the scratch
+> device that small with the subpage blocksize support, and thus trying to
+> fill a 1tib drive with tiny files.  On one hand I'd like to make
+> _scratch_mkfs failures automatically fail the test, but I worry about
+> cases where a test may be checking for an option and need to do
+> something different with failures, so for now simply fail if we can't
+> make our tiny-fs in generic/204.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-I've been pondering all the excellent feedback, and what I have learnt
-from examining the code in btrfs, and I have developed a different
-perspective.
+FWIW, I'm carrying the following patch in my local xfstests tree:
 
-Maybe "subvol" is a poor choice of name because it conjures up
-connections with the Volumes in LVM, and btrfs subvols are very different
-things.  Btrfs subvols are really just subtrees that can be treated as a
-unit for operations like "clone" or "destroy".
+commit cb8e8d44de5bbb1d6163dfeb2b77e8f003a564da
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Mon Jul 3 01:29:21 2017 -0400
 
-As such, they don't really deserve separate st_dev numbers.
+    common: kill the test if mkfs.ext4 in _scratch_mkfs_sized fails
+    
+    If the file system size specified by test is incompatible with the
+    mkfs options used in the test configuration, make sure the test stops
+    at that point instad of doing something undefined.
+    
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-Maybe the different st_dev numbers were introduced as a "cheap" way to
-extend to size of the inode-number space.  Like many "cheap" things, it
-has hidden costs.
+diff --git a/common/rc b/common/rc
+index 332e18b7..1dcad4a3 100644
+--- a/common/rc
++++ b/common/rc
+@@ -1034,7 +1034,9 @@ _scratch_mkfs_sized()
+ 		fi
+ 		;;
+ 	ext2|ext3|ext4|ext4dev)
+-		${MKFS_PROG} -t $FSTYP -F $MKFS_OPTIONS -b $blocksize $SCRATCH_DEV $blocks
++		echo "${MKFS_PROG} -t $FSTYP -F $MKFS_OPTIONS -b $blocksize $SCRATCH_DEV $blocks"
++		${MKFS_PROG} -t $FSTYP -F $MKFS_OPTIONS -b $blocksize $SCRATCH_DEV $blocks || \
++		    _die "${MKFS_PROG}.$FSTYP failed!"
+ 		;;
+ 	gfs2)
+ 		# mkfs.gfs2 doesn't automatically shrink journal files on small
 
-Maybe objects in different subvols should still be given different inode
-numbers.  This would be problematic on 32bit systems, but much less so on
-64bit systems.
 
-The patch below, which is just a proof-of-concept, changes btrfs to
-report a uniform st_dev, and different (64bit) st_ino in different subvols.
 
-It has problems:
- - it will break any 32bit readdir and 32bit stat.  I don't know how big
-   a problem that is these days (ino_t in the kernel is "unsigned long",
-   not "unsigned long long). That surprised me).
- - It might break some user-space expectations.  One thing I have learnt
-   is not to make any assumption about what other people might expect.
+I tried getting this upstream, but apparently there was pushback where
+when the mkfs failed, it was considered a *feature* that the test
+would run on some random scratch file system that was previously there
+from before.
 
-However, it would be quite easy to make this opt-in (or opt-out) with a
-mount option, so that people who need the current inode numbers and will
-accept the current breakage can keep working.
+I didn't appreciate wasting time trying to run down test failures
+caused by some completely inappropriate file system being used for a
+test after _scratch_mkfs_sized failed, so I've just been carrying the
+patch locally....
 
-I think this approach would be a net-win for NFS export, whether BTRFS
-supports it directly or not.  I might post a patch which modifies NFS to
-intuit improved inode numbers for btrfs exports....
-
-So: how would this break your use-case??
-
-Thanks,
-NeilBrown
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 0117d867ecf8..8dc58c848502 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -6020,6 +6020,37 @@ static int btrfs_opendir(struct inode *inode, struct f=
-ile *file)
- 	return 0;
- }
-=20
-+static u64 btrfs_make_inum(struct btrfs_key *root, struct btrfs_key *ino)
-+{
-+	u64 rootid =3D root->objectid;
-+	u64 inoid =3D ino->objectid;
-+	int shift =3D 64-8;
-+
-+	if (ino->type =3D=3D BTRFS_ROOT_ITEM_KEY) {
-+		/* This is a subvol root found during readdir. */
-+		rootid =3D inoid;
-+		inoid =3D BTRFS_FIRST_FREE_OBJECTID;
-+	}
-+	if (rootid =3D=3D BTRFS_FS_TREE_OBJECTID)
-+		/* this is main vol, not subvol (I think) */
-+		return inoid;
-+	/* store the rootid in the high bits of the inum.  This
-+	 * will break if 32bit inums are required - we cannot know
-+	 */
-+	while (rootid) {
-+		inoid ^=3D (rootid & 0xff) << shift;
-+		rootid >>=3D 8;
-+		shift -=3D 8;
-+	}
-+	return inoid;
-+}
-+
-+static inline u64 btrfs_ino_to_inum(struct inode *inode)
-+{
-+	return btrfs_make_inum(&BTRFS_I(inode)->root->root_key,
-+			       &BTRFS_I(inode)->location);
-+}
-+
- struct dir_entry {
- 	u64 ino;
- 	u64 offset;
-@@ -6045,6 +6076,49 @@ static int btrfs_filldir(void *addr, int entries, stru=
-ct dir_context *ctx)
- 	return 0;
- }
-=20
-+static inline bool btrfs_dir_emit_dot(struct file *file,
-+				      struct dir_context *ctx)
-+{
-+	return ctx->actor(ctx, ".", 1, ctx->pos,
-+			  btrfs_ino_to_inum(file->f_path.dentry->d_inode),
-+			  DT_DIR) =3D=3D 0;
-+}
-+
-+static inline ino_t btrfs_parent_ino(struct dentry *dentry)
-+{
-+	ino_t res;
-+
-+	/*
-+	 * Don't strictly need d_lock here? If the parent ino could change
-+	 * then surely we'd have a deeper race in the caller?
-+	 */
-+	spin_lock(&dentry->d_lock);
-+	res =3D btrfs_ino_to_inum(dentry->d_parent->d_inode);
-+	spin_unlock(&dentry->d_lock);
-+	return res;
-+}
-+
-+static inline bool btrfs_dir_emit_dotdot(struct file *file,
-+					 struct dir_context *ctx)
-+{
-+	return ctx->actor(ctx, "..", 2, ctx->pos,
-+			  btrfs_parent_ino(file->f_path.dentry), DT_DIR) =3D=3D 0;
-+}
-+static inline bool btrfs_dir_emit_dots(struct file *file,
-+				       struct dir_context *ctx)
-+{
-+	if (ctx->pos =3D=3D 0) {
-+		if (!btrfs_dir_emit_dot(file, ctx))
-+			return false;
-+		ctx->pos =3D 1;
-+	}
-+	if (ctx->pos =3D=3D 1) {
-+		if (!btrfs_dir_emit_dotdot(file, ctx))
-+			return false;
-+		ctx->pos =3D 2;
-+	}
-+	return true;
-+}
- static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
- {
- 	struct inode *inode =3D file_inode(file);
-@@ -6067,7 +6141,7 @@ static int btrfs_real_readdir(struct file *file, struct=
- dir_context *ctx)
- 	bool put =3D false;
- 	struct btrfs_key location;
-=20
--	if (!dir_emit_dots(file, ctx))
-+	if (!btrfs_dir_emit_dots(file, ctx))
- 		return 0;
-=20
- 	path =3D btrfs_alloc_path();
-@@ -6136,7 +6210,8 @@ static int btrfs_real_readdir(struct file *file, struct=
- dir_context *ctx)
- 		put_unaligned(fs_ftype_to_dtype(btrfs_dir_type(leaf, di)),
- 				&entry->type);
- 		btrfs_dir_item_key_to_cpu(leaf, di, &location);
--		put_unaligned(location.objectid, &entry->ino);
-+		put_unaligned(btrfs_make_inum(&root->root_key, &location),
-+			      &entry->ino);
- 		put_unaligned(found_key.offset, &entry->offset);
- 		entries++;
- 		addr +=3D sizeof(struct dir_entry) + name_len;
-@@ -9193,7 +9268,7 @@ static int btrfs_getattr(struct user_namespace *mnt_use=
-rns,
- 				  STATX_ATTR_NODUMP);
-=20
- 	generic_fillattr(&init_user_ns, inode, stat);
--	stat->dev =3D BTRFS_I(inode)->root->anon_dev;
-+	stat->ino =3D btrfs_ino_to_inum(inode);
-=20
- 	spin_lock(&BTRFS_I(inode)->lock);
- 	delalloc_bytes =3D BTRFS_I(inode)->new_delalloc_bytes;
+						- Ted
