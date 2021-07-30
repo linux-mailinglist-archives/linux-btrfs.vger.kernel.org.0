@@ -2,89 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EF73DBAEB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jul 2021 16:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8AF3DBBEF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jul 2021 17:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhG3On4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Jul 2021 10:43:56 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60500 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhG3On4 (ORCPT
+        id S238909AbhG3PRz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Jul 2021 11:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239509AbhG3PRy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Jul 2021 10:43:56 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 5F1002025B;
-        Fri, 30 Jul 2021 14:43:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627656230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/MxUMQqOErt5s9kpr2UduIMjgtyEA7lRScXZz1pXJbc=;
-        b=ODCClVam2dZUbrsTJ/mME//+Gky6EjgfZCbKl8MaZ9yN2mJsL94B9fm8BeQ8tu+1PH/Crt
-        Echx3i0AwwSc+BiGo1q52Jd0RZGf5XD1jAC4txjoR795rNMVRmwYwgUZK/oO7JPpI8vMh+
-        MNGHStvofmUKDKDmb2edgm7ZLSiWRNQ=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 56C2FA3B87;
-        Fri, 30 Jul 2021 14:43:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1FAB6DB284; Fri, 30 Jul 2021 16:41:03 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes fro 5.14-rc4
-Date:   Fri, 30 Jul 2021 16:40:59 +0200
-Message-Id: <cover.1627655635.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 30 Jul 2021 11:17:54 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14A5C061765;
+        Fri, 30 Jul 2021 08:17:49 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 765D96C0C; Fri, 30 Jul 2021 11:17:48 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 765D96C0C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1627658268;
+        bh=Li85SDlcyV77joGjmGDEsUglXDaV5Llbu6EqziOjsyk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hmBdBXPsolGx/6yQJRZFOCw1ozPtQ3p9NLGLQPVTKL8SGFMkIiiHLmQxDrTMcR/w8
+         Cm5TAbqvKfh6Kc94qsr0O54PvbB3Vrn38d7tI2h+LumarzcT8OqZEsyTRoo6lDG75L
+         Uz8vZbrwqRkgMQKewqArRRbp5TnloKzSZhbYvyKk=
+Date:   Fri, 30 Jul 2021 11:17:48 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     NeilBrown <neilb@suse.de>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Neal Gompa <ngompa13@gmail.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
+Message-ID: <20210730151748.GA21825@fieldses.org>
+References: <162745567084.21659.16797059962461187633@noble.neil.brown.name>
+ <CAEg-Je8Pqbw0tTw6NWkAcD=+zGStOJR0J-409mXuZ1vmb6dZsA@mail.gmail.com>
+ <162751265073.21659.11050133384025400064@noble.neil.brown.name>
+ <20210729023751.GL10170@hungrycats.org>
+ <162752976632.21659.9573422052804077340@noble.neil.brown.name>
+ <20210729232017.GE10106@hungrycats.org>
+ <162761259105.21659.4838403432058511846@noble.neil.brown.name>
+ <341403c0-a7a7-f6c8-5ef6-2d966b1907a8@gmx.com>
+ <162762468711.21659.161298577376336564@noble.neil.brown.name>
+ <bcde95bc-0bb8-a6e9-f197-590c8a0cba11@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bcde95bc-0bb8-a6e9-f197-590c8a0cba11@gmx.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Jul 30, 2021 at 02:23:44PM +0800, Qu Wenruo wrote:
+> OK, forgot it's an opt-in feature, then it's less an impact.
+> 
+> But it can still sometimes be problematic.
+> 
+> E.g. if the user want to put some git code into one subvolume, while
+> export another subvolume through NFS.
+> 
+> Then the user has to opt-in, affecting the git subvolume to lose the
+> ability to determine subvolume boundary, right?
 
-a few more fixes, please pull thanks.
+Totally naive question: is it be possible to treat different subvolumes
+differently, and give the user some choice at subvolume creation time
+how this new boundary should behave?
 
-* fix -Warray-bounds warning, to help external patchset to make it
-  default treewide
+It seems like there are some conflicting priorities that can only be
+resolved by someone who knows the intended use case.
 
-* fix writeable device accounting (syzbot report)
-
-* fix fsync and log replay after a rename and inode eviction
-
-* fix potentially lost error code when submitting multiple bios for
-  compressed range
-
-----------------------------------------------------------------
-The following changes since commit c7c3a6dcb1efd52949acc1e640be9aad1206a13a:
-
-  btrfs: store a block_device in struct btrfs_ordered_extent (2021-07-22 15:50:15 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc3-tag
-
-for you to fetch changes up to 7280305eb57dd32735f795ed4ee679bf9854f9d0:
-
-  btrfs: calculate number of eb pages properly in csum_tree_block (2021-07-29 13:01:04 +0200)
-
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs: calculate number of eb pages properly in csum_tree_block
-
-Desmond Cheong Zhi Xi (1):
-      btrfs: fix rw device counting in __btrfs_free_extra_devids
-
-Filipe Manana (1):
-      btrfs: fix lost inode on log replay after mix of fsync, rename and inode eviction
-
-Goldwyn Rodrigues (1):
-      btrfs: mark compressed range uptodate only if all bio succeed
-
- fs/btrfs/compression.c | 2 +-
- fs/btrfs/disk-io.c     | 2 +-
- fs/btrfs/tree-log.c    | 4 ++--
- fs/btrfs/volumes.c     | 1 +
- 4 files changed, 5 insertions(+), 4 deletions(-)
+--b.
