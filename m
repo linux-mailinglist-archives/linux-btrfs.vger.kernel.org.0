@@ -2,143 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C913DBCA2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jul 2021 17:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D619B3DBCF3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Jul 2021 18:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhG3Ps0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Jul 2021 11:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
+        id S229645AbhG3QSk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Jul 2021 12:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbhG3PsY (ORCPT
+        with ESMTP id S229642AbhG3QSi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Jul 2021 11:48:24 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701A9C06175F
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jul 2021 08:48:19 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id az7so9827367qkb.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jul 2021 08:48:19 -0700 (PDT)
+        Fri, 30 Jul 2021 12:18:38 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BE3C061765
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jul 2021 09:18:33 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id a93so16885139ybi.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 30 Jul 2021 09:18:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Wsj/Pez/9epYa0hBXbqjfBiQqpTk+YWXSs2MW1qmBqw=;
-        b=Hy91ASehghHCgZZDIsSoxj4lJjkdmriEMvJaXHxmI5YyvnCAOjVkD/QGeQVvZ4s9C0
-         1Yqwcl92x4TH5WtPcb3GOZzF5qo7yfTBUk6tcXMCkfp6K0T5R6w3sY1I+VDN+2t4Owwp
-         L3VeF/W13n0e1CKMjDNv8Mvy+eQwklJ3tPivXIbEHhoH60MLKmTyFaEfOvT0H7b2nm0R
-         UqjAEU0ObrF7PoMmEcjQswMjEW5cIrgl/MKCibakwHsyHC2VvifJOtIV7mFJy2tigvAf
-         rzgPCXA1G5AbhRPtV4UPCUZ4pERZInzHOhT1/H1330736WuUsDeyl+ynSjTKLf0ppduA
-         KFbg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Bg9jgjyTK1xMe0vVMAOXE0rqFsVHmuI2rjA1f7MSsBo=;
+        b=CU5O+LWatvmqwOLHVLZ1VKaMQIg8tSRKnjTOEU9OSOcokuZK0U0XrHg4I2I88cRNsn
+         qvvgoDjuz1PH9tRqWYocEdwKPxbRMtJxTcE4D0dvHHM+lRu74mHWqBsWgszvDAUKfjAe
+         E/61vC8uAi1ao6YzhKV1kz5mfh0a+UGI3/f8xgDff2AwTm1Yow+0hfZJz0V5eU7N2el2
+         bLK1ZWhLmq7DOeZfm59aGK89R0/08Rn+qHs4NIQVWvcTzVBZdc4v0Qx7j19uDKnzRu9o
+         Mv6LMIGn3/lR2rbrDjEThp8ABExKN3CbSLyVYycM3wwlYlK/g1sTonP0qVR+fR8HJkie
+         NG6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Wsj/Pez/9epYa0hBXbqjfBiQqpTk+YWXSs2MW1qmBqw=;
-        b=omRhithkxdUQCjajbH4TZnfgeTpch3GENhTftEU3h0hizgIh6vjo6FeMdS9io7iHbf
-         uoyPdFBANk8akaeCipQF0cjE9Rgk2YoAXuG1jVzWAkocRKh2A2IEqAbzJXACytpI16Fz
-         VI3tMcauV/wx4Oh6lSMBnEtfClDgO7MUEnTAHtfMMYmCY223AV0vA58ThbToiGayJb42
-         rxyvH7eAbdvC91ThLQp3DTpFH0q1YZN3HsCY4cW5W1ewbYz7zUvmlUMF2BeoW/aJ8dCO
-         ACbYhFOgY9c7CV9Ej3ns72swGcgd1b3pECc8UQMQRzfpbfY8xdpnZjejbxmY76uhnQ4E
-         O+HQ==
-X-Gm-Message-State: AOAM5306pOjypXtTKJ3Rj9Lq5CwhMfirmlSfckSRUU+aLYY6Y4PEvGY4
-        rhQVx7QKuKVRupih25rJi9I5zFhOfKgHJbMG
-X-Google-Smtp-Source: ABdhPJyHq1Kfnhcm73bWh/gXpWFFmKV7iLEvKuIiUogqyUSigXBYsaj8t1xtE6arwcrn6R6cpZR9rw==
-X-Received: by 2002:a37:8a44:: with SMTP id m65mr2971594qkd.72.1627660098177;
-        Fri, 30 Jul 2021 08:48:18 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l4sm1102787qkd.77.2021.07.30.08.48.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 30 Jul 2021 08:48:17 -0700 (PDT)
-Subject: Re: [PATCH/RFC 00/11] expose btrfs subvols in mount table correctly
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     NeilBrown <neilb@suse.de>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Neal Gompa <ngompa13@gmail.com>,
-        Wang Yugui <wangyugui@e16-tech.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nfs@vger.kernel.org,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <162745567084.21659.16797059962461187633@noble.neil.brown.name>
- <CAEg-Je8Pqbw0tTw6NWkAcD=+zGStOJR0J-409mXuZ1vmb6dZsA@mail.gmail.com>
- <162751265073.21659.11050133384025400064@noble.neil.brown.name>
- <20210729023751.GL10170@hungrycats.org>
- <162752976632.21659.9573422052804077340@noble.neil.brown.name>
- <20210729232017.GE10106@hungrycats.org>
- <162761259105.21659.4838403432058511846@noble.neil.brown.name>
- <341403c0-a7a7-f6c8-5ef6-2d966b1907a8@gmx.com>
- <162762468711.21659.161298577376336564@noble.neil.brown.name>
- <bcde95bc-0bb8-a6e9-f197-590c8a0cba11@gmx.com>
- <20210730151748.GA21825@fieldses.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <ae85654d-950f-04a2-8fca-145412b31e57@toxicpanda.com>
-Date:   Fri, 30 Jul 2021 11:48:15 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Bg9jgjyTK1xMe0vVMAOXE0rqFsVHmuI2rjA1f7MSsBo=;
+        b=qgTWZmvRQYUUTiJ26beiPQmLM6laJNYm8D5D5P5+NhZSffxzQD3cIg1Tsk5XuTafMW
+         rFlksNt/MvWqcvXbMcJpFKhBvg+Y0g3C6crAlsMgCkWiYt09F9+N6gADcTsWRm8pZP7j
+         vErG3PisFMgqQfDxm/msE45QucVSSliZKJ82NfEukjMmM1cS++ecGuYdXKrbeQ8KGrBF
+         XoOvpae8yoZT5qssTCihMsueRWOPNeSLpypKaDusGsofE6drrSIc9wKQidF8nzMBB7Ah
+         BENlB5VXkSny+5AT+izU9jharLjSXYaBt1+Mpm2x5oXSpG++t+pKshR5PpEqI0EdoOAH
+         s4dQ==
+X-Gm-Message-State: AOAM530WibtGIlDPvDQ9euFhUBU9HGwCADf0681lpu3Y228zi8v340T2
+        PgRmUf8JRyGZmUjP7wS7cCCfEQMtfMVBB494zXs=
+X-Google-Smtp-Source: ABdhPJzwC1ZqG/X6nuelwcyxAFWqY+llxUewjT6StcHAZCrG2MFrO2jSIu8FIDOQKdC9jE8TEFpt34GNiNqjFxXmY6U=
+X-Received: by 2002:a25:9201:: with SMTP id b1mr4040492ybo.354.1627661912430;
+ Fri, 30 Jul 2021 09:18:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210730151748.GA21825@fieldses.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210730141837.30571-1-dsterba@suse.com>
+In-Reply-To: <20210730141837.30571-1-dsterba@suse.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Fri, 30 Jul 2021 12:17:56 -0400
+Message-ID: <CAEg-Je9n-W1iMW6NPNJ+Leax77XW483Y0if+BKOqj8v9TBXZGA@mail.gmail.com>
+Subject: Re: Btrfs progs release 5.13.1
+To:     David Sterba <dsterba@suse.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/30/21 11:17 AM, J. Bruce Fields wrote:
-> On Fri, Jul 30, 2021 at 02:23:44PM +0800, Qu Wenruo wrote:
->> OK, forgot it's an opt-in feature, then it's less an impact.
->>
->> But it can still sometimes be problematic.
->>
->> E.g. if the user want to put some git code into one subvolume, while
->> export another subvolume through NFS.
->>
->> Then the user has to opt-in, affecting the git subvolume to lose the
->> ability to determine subvolume boundary, right?
-> 
-> Totally naive question: is it be possible to treat different subvolumes
-> differently, and give the user some choice at subvolume creation time
-> how this new boundary should behave?
-> 
-> It seems like there are some conflicting priorities that can only be
-> resolved by someone who knows the intended use case.
-> 
+On Fri, Jul 30, 2021 at 10:23 AM David Sterba <dsterba@suse.com> wrote:
+>
+> Hi,
+>
+> btrfs-progs version 5.12.1 have been released. This is a bugfix release.
+>
 
-This is the crux of the problem.  We have no real interfaces or anything to deal 
-with this sort of paradigm.  We do the st_dev thing because that's the most 
-common way that tools like find or rsync use to determine they've wandered into 
-a "different" volume.  This exists specifically because of usescases like 
-Zygo's, where he's taking thousands of snapshots and manually excluding them 
-from find/rsync is just not reasonable.
+Don't you mean 5.13.1? :)
 
-We have no good way to give the user information about what's going on, we just 
-have these old shitty interfaces.  I asked our guys about filling up 
-/proc/self/mountinfo with our subvolumes and they had a heart attack because we 
-have around 2-4k subvolumes on machines, and with monitoring stuff in place we 
-regularly read /proc/self/mountinfo to determine what's mounted and such.
 
-And then there's NFS which needs to know that it's walked into a new inode space.
-
-This is all super shitty, and mostly exists because we don't have a good way to 
-expose to the user wtf is going on.
-
-Personally I would be ok with simply disallowing NFS to wander into subvolumes 
-from an exported fs.  If you want to export subvolumes then export them 
-individually, otherwise if you walk into a subvolume from NFS you simply get an 
-empty directory.
-
-This doesn't solve the mountinfo problem where a user may want to figure out 
-which subvol they're in, but this is where I think we could address the issue 
-with better interfaces.  Or perhaps Neil's idea to have a common major number 
-with a different minor number for every subvol.
-
-Either way this isn't as simple as shoehorning it into automount and being done 
-with it, we need to take a step back and think about how should this actually 
-look, taking into account we've got 12 years of having Btrfs deployed with 
-existing usecases that expect a certain behavior.  Thanks,
-
-Josef
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
