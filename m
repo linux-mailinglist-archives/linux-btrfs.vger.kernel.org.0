@@ -2,54 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7068D3DCBB6
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Aug 2021 14:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1B93DCC89
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Aug 2021 18:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbhHAMxq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Aug 2021 08:53:46 -0400
-Received: from out20-110.mail.aliyun.com ([115.124.20.110]:56935 "EHLO
-        out20-110.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhHAMxq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Aug 2021 08:53:46 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07937175|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0220319-0.00110911-0.976859;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=guan@eryu.me;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.KtqKEhT_1627822416;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.KtqKEhT_1627822416)
-          by smtp.aliyun-inc.com(10.147.41.137);
-          Sun, 01 Aug 2021 20:53:36 +0800
-Date:   Sun, 1 Aug 2021 20:53:36 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+        id S232202AbhHAQA2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Aug 2021 12:00:28 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33116 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232190AbhHAP6e (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Aug 2021 11:58:34 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 171Fvijf020195
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 1 Aug 2021 11:57:45 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 4940915C3DD2; Sun,  1 Aug 2021 11:57:44 -0400 (EDT)
+Date:   Sun, 1 Aug 2021 11:57:44 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eryu Guan <guan@eryu.me>
+Cc:     Josef Bacik <josef@toxicpanda.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH] fstests: generic/204: fail if the mkfs fails
-Message-ID: <YQaZUK880CRVf6Sn@desktop>
+Message-ID: <YQbEeAYqXAAMGn7G@mit.edu>
 References: <fe1cd52ce8954e5aee1fc0a4baf5c75ef7d2635a.1627590942.git.josef@toxicpanda.com>
  <YQaWmtw5/OoXm26Z@desktop>
+ <YQaZUK880CRVf6Sn@desktop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQaWmtw5/OoXm26Z@desktop>
+In-Reply-To: <YQaZUK880CRVf6Sn@desktop>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 01, 2021 at 08:42:02PM +0800, Eryu Guan wrote:
-> On Thu, Jul 29, 2021 at 04:35:53PM -0400, Josef Bacik wrote:
-> > My nightly fstests runs on my Raspberry Pi got stuck trying to run
-> > generic/204.  This boiled down to mkfs failing to make the scratch
-> > device that small with the subpage blocksize support, and thus trying to
-> > fill a 1tib drive with tiny files.  On one hand I'd like to make
-> 
-> So the underlying disk is 1TB in size, and we ended up using this 1T
-> filesystem when _scratch_mkfs_sized failed?
-> 
-> But we have done _try_wipe_scratch_devs before each test to make sure we
-> don't use previous scratch dev accidently (just like this case), and the
-> subsesquent _scratch_mount will fail and fail the whole test. So it's
-> not clear to me what caused the failure you hit.
+On Sun, Aug 01, 2021 at 08:53:36PM +0800, Eryu Guan wrote:
+> > So the underlying disk is 1TB in size, and we ended up using this 1T
+> > filesystem when _scratch_mkfs_sized failed?
+> > 
+> > But we have done _try_wipe_scratch_devs before each test to make sure we
+> > don't use previous scratch dev accidently (just like this case), and the
+> > subsesquent _scratch_mount will fail and fail the whole test. So it's
+> > not clear to me what caused the failure you hit.
 
-Ah, if the previous test _notrun'd, then the scratch dev didn't get
-wiped. I think patch "check: don't leave the scratch filesystem mounted
-after _notrun" from Darrick should fix the bug for you. Would you please
-confirm?
+The call to _try_wipe_scratch_devs was added in 2019.  My commit to
+add:
 
-Thanks,
-Eryu
+	|| _notrun "mkfs.${FSTYP} failed"
+
+dates from 2017.  So the reason I was seeing the problem was because
+it was before we started running wipefs between tests.
+
+That being said, I've checked a recent test run, and the _notrun
+hasn't triggered recently.  Looking at the git history, it looks like
+a large number of tests had their arguments to _scratch_mkfs_sized
+adjusted upwards to avoid failures when running with 64k block sizes
+on powerpc.
+
+Going back to generic/204, I see why Josef ran into issues, however.
+even though we are running wipefs before each test.  In the case of
+generic/204, it runs _scratch_mkfs to determine the blocksize, and
+then it runs _scratch_mkfs_sized --- and if it fails, the file system
+is left at the full size of the scratch file system, and then
+generic/204 takes a vey long time.
+
+So even if we can rely on wipefs causing the tests to fail, maybe we
+should just add a check for mkfs failure to _scratch_mkfs_sized?  I
+think that's a better fix than Josef's proposed patch to generic/204.
+One benefit of adding the check to _scratch_mkfs_sized is we can
+supply a clearer explanation of the failure since the failure would be
+"mkfs failed" as opposed to "mount: /vdc: wrong fs type, bad option,
+bad superblock on /dev/vdc, missing codepage or helper program, or
+other error."
+
+It might also make sense to adjust the size passed to
+_scratch_mkfs_sized in generic/204 to be a something slightly larger,
+since otherwise it's pretty much guaranteed that generic/204 will
+start failing on PowerPC when testing with a 64k block size.
+
+Cheers,
+
+						- Ted
