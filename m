@@ -2,216 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647E93DD624
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 14:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB003DDA5C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 16:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233678AbhHBM55 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Aug 2021 08:57:57 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40060 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232629AbhHBM54 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Aug 2021 08:57:56 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BF4511FF87;
-        Mon,  2 Aug 2021 12:57:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627909066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=e0gVx5hbDFm9pXAxpf6ZIJHiyqUOOJi9NUsbtl+rdz0=;
-        b=KyK8ZwCvrQnLtVdhUFN72FYnsjSCSM5slKpz72qJJsAnpjhSV7UPf/U+a+byTM+6YtzEo3
-        lZPp8TjSxd9Jl+1ekUR8Fi04/yFEml3o0dj3RbB8lPH8BDGtN8CJsgG8dL2pF2/u38xIIZ
-        keVgN97IUWOx/uyjlGaj6EnUe4i7j74=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7504F13C6C;
-        Mon,  2 Aug 2021 12:57:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XmjpD8nrB2GEcgAAMHmgww
-        (envelope-from <mpdesouza@suse.com>); Mon, 02 Aug 2021 12:57:45 +0000
-From:   Marcos Paulo de Souza <mpdesouza@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, nborisov@suse.com,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH RFC] btrfs: Introduce btrfs_for_each_slot
-Date:   Mon,  2 Aug 2021 09:57:38 -0300
-Message-Id: <20210802125738.22588-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S235024AbhHBONk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Aug 2021 10:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239164AbhHBOL5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Aug 2021 10:11:57 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45235C09B070
+        for <linux-btrfs@vger.kernel.org>; Mon,  2 Aug 2021 06:53:44 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id x3so16580915qkl.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Aug 2021 06:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7YZ+YWuu0r8ls2F/ASXAfqcelR3faj3UC8eZqkF+Zko=;
+        b=pi2O34Gbu2DJiPT2DXuDG4QdH2iMvOdf7tSszje2qigN/T8dFHQH1pZvveTmPZn6j+
+         n+3K6aI91XYsSTxYK5jB8LHLswOYhOtyzb1/xWaQKFKzEy3YX52WVV2Dqhsu07r6IDBy
+         /Msf3u0R5zINNltrJUS4FpJrqYDP/afbpxcJpNpJXUIUeChB3cG/u39CTUTc6tYtV8MR
+         m9IixiU2rlsVICCdlryAlPFb6PkwD//xhAm4KiY3GiDBnyp1U/RkfoGK9NZkWcfIxAVy
+         CpJ7xSMq8XqGrE/t7mnlmMpciZNikmfd2pCBtxlfO7JcrlZYbk6z+N+tEp+CIhBteKHm
+         2tGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7YZ+YWuu0r8ls2F/ASXAfqcelR3faj3UC8eZqkF+Zko=;
+        b=Y0+eGMUd3J4M31YICWxN/+6xKP4rz6aDUqiSIYJ6Gypjd1VK6OBWMdlymQbiiDUiAQ
+         2slCT5+Gz4rX3wuqSuuedVXeejX5z01E8E0Vq+25s1ZAwq+iaw89/+aAEuuebGhtZUVM
+         JKTqJoYV4RSMSL9LRjQ21C8gv6Ni8LxpH/QnCfOUJEgv+95KXMK1D0U8y/rowD4Pc+yG
+         nS/fya+gozNamLvOrCU86S4J1NeeUmbpKtJzZVrtZI44m3yZLm3NvZZbdVG9ERdb9kcc
+         A22ciPNNhsHeyZIUrIFb468aL7N2MbrwKG3EnUj+pxg4Df6J/jo3I7RVrGV6JAmoipc1
+         BEQA==
+X-Gm-Message-State: AOAM533aAS8cQaSQOFX0CuX0qZHgQKt95i+H25zrYGGd2H0KjU5lvDJJ
+        9SLJtx5zJOERtyBAOo38VD6lPlWX8ZIZuQ==
+X-Google-Smtp-Source: ABdhPJydpVHsw4eOuMz3Y7rq9l4GuTxSALmGUmQoE814YRrjc3UCGWfVQPb8BvvAzRQHbeEJTDf+tA==
+X-Received: by 2002:a05:620a:233:: with SMTP id u19mr15753757qkm.48.1627912422875;
+        Mon, 02 Aug 2021 06:53:42 -0700 (PDT)
+Received: from [192.168.1.110] (38-132-189-23.dynamic-broadband.skybest.com. [38.132.189.23])
+        by smtp.gmail.com with ESMTPSA id a127sm6015928qkc.121.2021.08.02.06.53.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Aug 2021 06:53:42 -0700 (PDT)
+Subject: Re: A Third perspective on BTRFS nfsd subvol dev/inode number issues.
+To:     Amir Goldstein <amir73il@gmail.com>, NeilBrown <neilb@suse.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Christoph Hellwig <hch@infradead.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS list <linux-nfs@vger.kernel.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+ <162742546548.32498.10889023150565429936.stgit@noble.brown>
+ <YQNG+ivSssWNmY9O@zeniv-ca.linux.org.uk>
+ <162762290067.21659.4783063641244045179@noble.neil.brown.name>
+ <CAJfpegsR1qvWAKNmdjLfOewUeQy-b6YBK4pcHf7JBExAqqUvvg@mail.gmail.com>
+ <162762562934.21659.18227858730706293633@noble.neil.brown.name>
+ <CAJfpegtu3NKW9m2jepRrXe4UTuD6_3k0Y6TcCBLSQH7SSC90BA@mail.gmail.com>
+ <162763043341.21659.15645923585962859662@noble.neil.brown.name>
+ <CAJfpegub4oBZCBXFQqc8J-zUiSW+KaYZLjZaeVm_cGzNVpxj+A@mail.gmail.com>
+ <162787790940.32159.14588617595952736785@noble.neil.brown.name>
+ <YQeB3ASDyO0wSgL4@zeniv-ca.linux.org.uk>
+ <162788285645.32159.12666247391785546590@noble.neil.brown.name>
+ <CAOQ4uxgnGWMUvtyJ0MMxMzHFwiyR68FHorDNmLSva0CdpVNNcQ@mail.gmail.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <2337f1ba-ffed-2369-47a0-5ffda2d8b51c@toxicpanda.com>
+Date:   Mon, 2 Aug 2021 09:53:41 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxgnGWMUvtyJ0MMxMzHFwiyR68FHorDNmLSva0CdpVNNcQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a common pattern when search for a key in btrfs:
+On 8/2/21 3:54 AM, Amir Goldstein wrote:
+> On Mon, Aug 2, 2021 at 8:41 AM NeilBrown <neilb@suse.de> wrote:
+>>
+>> On Mon, 02 Aug 2021, Al Viro wrote:
+>>> On Mon, Aug 02, 2021 at 02:18:29PM +1000, NeilBrown wrote:
+>>>
+>>>> It think we need to bite-the-bullet and decide that 64bits is not
+>>>> enough, and in fact no number of bits will ever be enough.  overlayfs
+>>>> makes this clear.
+>>>
+>>> Sure - let's go for broke and use XML.  Oh, wait - it's 8 months too
+>>> early...
+>>>
+>>>> So I think we need to strongly encourage user-space to start using
+>>>> name_to_handle_at() whenever there is a need to test if two things are
+>>>> the same.
+>>>
+>>> ... and forgetting the inconvenient facts, such as that two different
+>>> fhandles may correspond to the same object.
+>>
+>> Can they?  They certainly can if the "connectable" flag is passed.
+>> name_to_handle_at() cannot set that flag.
+>> nfsd can, so using name_to_handle_at() on an NFS filesystem isn't quite
+>> perfect.  However it is the best that can be done over NFS.
+>>
+>> Or is there some other situation where two different filehandles can be
+>> reported for the same inode?
+>>
+>> Do you have a better suggestion?
+>>
+> 
+> Neil,
+> 
+> I think the plan of "changing the world" is not very realistic.
+> Sure, *some* tools can be changed, but all of them?
+> 
+> I went back to read your initial cover letter to understand the
+> problem and what I mostly found there was that the view of
+> /proc/x/mountinfo was hiding information that is important for
+> some tools to understand what is going on with btrfs subvols.
+> 
+> Well I am not a UNIX history expert, but I suppose that
+> /proc/PID/mountinfo was created because /proc/mounts and
+> /proc/PID/mounts no longer provided tool with all the information
+> about Linux mounts.
+> 
+> Maybe it's time for a new interface to query the more advanced
+> sb/mount topology? fsinfo() maybe? With mount2 compatible API for
+> traversing mounts that is not limited to reporting all entries inside
+> a single page. I suppose we could go for some hierarchical view
+> under /proc/PID/mounttree. I don't know - new API is hard.
+> 
+> In any case, instead of changing st_dev and st_ino or changing the
+> world to work with file handles, why not add inode generation (and
+> maybe subvol id) to statx().
+> filesystem that care enough will provide this information and tools that
+> care enough will use it.
+> 
 
- * Call btrfs_search_slot
- * Endless loop
-	 * If the found slot is bigger than the current items in the leaf, check the
-	   next one
-	 * If still not found in the next leaf, return 1
-	 * Do something with the code
-	 * Increment current slot, and continue
+Can y'all wait till I'm back from vacation, goddamn ;)
 
-This pattern can be improved by creating an iterator macro, similar to
-those for_each_X already existing in the linux kernel. using this
-approach means to reduce significantly boilerplate code, along making it
-easier to newcomers to understand how to code works.
+This is what I'm aiming for, I spent some time looking at how many 
+places we string parse /proc/<whatever>/mounts and my head hurts.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
+Btrfs already has a reasonable solution for this, we have UUID's for 
+everything.  UUID's aren't a strictly btrfs thing either, all the file 
+systems have some sort of UUID identifier, hell its built into blkid.  I 
+would love if we could do a better job about letting applications query 
+information about where they are.  And we could expose this with the 
+relatively common UUID format.  You ask what fs you're in, you get the 
+FS UUID, and then if you're on Btrfs you get the specific subvolume UUID 
+you're in.  That way you could do more fancy things like know if you've 
+wandered into a new file system completely or just a different subvolume.
 
- I've being testing this approach in the last few weeks, and using this macro
- all over the btrfs codebase, and not issues found yet. This is just a RFC
- showing how the xattr code would benefit using the macro.
+We have to keep the st_ino/st_dev thing for backwards compatibility, but 
+make it easier to get more info out of the file system.
 
- The only part that I didn't like was using the ret variable as a macro
- argument, but I couldn't find a better way to do it...
+We could in theory expose just the subvolid also, since that's a nice 
+simple u64, but it limits our ability to do new fancy shit in the 
+future.  It's not a bad solution, but like I said I think we need to 
+take a step back and figure out what problem we're specifically trying 
+to solve, and work from there.  Starting from automounts and working our 
+way back is not going very well.  Thanks,
 
- That's why this is an RFC, so please comment :)
-
- fs/btrfs/ctree.c | 23 +++++++++++++++++++++++
- fs/btrfs/ctree.h | 12 ++++++++++++
- fs/btrfs/xattr.c | 37 +++++++++----------------------------
- 3 files changed, 44 insertions(+), 28 deletions(-)
-
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 4f8d8fa1e085..a49b256d78f7 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -2123,6 +2123,29 @@ int btrfs_search_backwards(struct btrfs_root *root,
- 	return ret;
- }
- 
-+int btrfs_valid_slot(struct btrfs_root *root, struct btrfs_key *key,
-+		     struct btrfs_path *path)
-+{
-+	struct extent_buffer *leaf;
-+	int slot;
-+	int ret;
-+
-+	while (1) {
-+		slot = path->slots[0];
-+		leaf = path->nodes[0];
-+		if (slot >= btrfs_header_nritems(leaf)) {
-+			ret = btrfs_next_leaf(root, path);
-+			if (ret)
-+				return ret;
-+			continue;
-+		}
-+		btrfs_item_key_to_cpu(leaf, key, slot);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * adjust the pointers going up the tree, starting at level
-  * making sure the right key of each node is points to 'key'.
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 0a971e98f5f9..cff2a94700b2 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2912,6 +2912,18 @@ int btrfs_next_old_leaf(struct btrfs_root *root, struct btrfs_path *path,
- int btrfs_search_backwards(struct btrfs_root *root, struct btrfs_key *key,
- 			   struct btrfs_path *path);
- 
-+int btrfs_valid_slot(struct btrfs_root *root, struct btrfs_key *f,
-+		     struct btrfs_path *path);
-+
-+#define btrfs_for_each_slot(root, key, found_key, path, ret)		\
-+	for (ret = btrfs_search_slot(NULL, root, key, path, 0, 0);		\
-+		({								\
-+			ret >= 0 &&						\
-+			(ret = btrfs_valid_slot(root, found_key, path)) == 0;	\
-+		});								\
-+		path->slots[0]++						\
-+	)
-+
- static inline int btrfs_next_old_item(struct btrfs_root *root,
- 				      struct btrfs_path *p, u64 time_seq)
- {
-diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-index 8a4514283a4b..0562a17ff3b1 100644
---- a/fs/btrfs/xattr.c
-+++ b/fs/btrfs/xattr.c
-@@ -274,6 +274,7 @@ int btrfs_setxattr_trans(struct inode *inode, const char *name,
- ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- {
- 	struct btrfs_key key;
-+	struct btrfs_key found_key;
- 	struct inode *inode = d_inode(dentry);
- 	struct btrfs_root *root = BTRFS_I(inode)->root;
- 	struct btrfs_path *path;
-@@ -295,44 +296,22 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 	path->reada = READA_FORWARD;
- 
- 	/* search for our xattrs */
--	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
--	if (ret < 0)
--		goto err;
--
--	while (1) {
-+	btrfs_for_each_slot(root, &key, &found_key, path, ret) {
- 		struct extent_buffer *leaf;
- 		int slot;
- 		struct btrfs_dir_item *di;
--		struct btrfs_key found_key;
- 		u32 item_size;
- 		u32 cur;
- 
- 		leaf = path->nodes[0];
- 		slot = path->slots[0];
- 
--		/* this is where we start walking through the path */
--		if (slot >= btrfs_header_nritems(leaf)) {
--			/*
--			 * if we've reached the last slot in this leaf we need
--			 * to go to the next leaf and reset everything
--			 */
--			ret = btrfs_next_leaf(root, path);
--			if (ret < 0)
--				goto err;
--			else if (ret > 0)
--				break;
--			continue;
--		}
--
--		btrfs_item_key_to_cpu(leaf, &found_key, slot);
--
- 		/* check to make sure this item is what we want */
--		if (found_key.objectid != key.objectid)
--			break;
--		if (found_key.type > BTRFS_XATTR_ITEM_KEY)
-+		if (found_key.objectid != key.objectid ||
-+		    found_key.type > BTRFS_XATTR_ITEM_KEY)
- 			break;
- 		if (found_key.type < BTRFS_XATTR_ITEM_KEY)
--			goto next_item;
-+			continue;
- 
- 		di = btrfs_item_ptr(leaf, slot, struct btrfs_dir_item);
- 		item_size = btrfs_item_size_nr(leaf, slot);
-@@ -365,9 +344,11 @@ ssize_t btrfs_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 			cur += this_len;
- 			di = (struct btrfs_dir_item *)((char *)di + this_len);
- 		}
--next_item:
--		path->slots[0]++;
- 	}
-+
-+	if (ret < 0)
-+		goto err;
-+
- 	ret = total_size;
- 
- err:
--- 
-2.26.2
-
+Josef
