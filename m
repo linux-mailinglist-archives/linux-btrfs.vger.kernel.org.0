@@ -2,91 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2026C3DD59F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 14:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9E13DD5B0
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 14:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhHBM2l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Aug 2021 08:28:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233516AbhHBM2l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Aug 2021 08:28:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14B0E60F50;
-        Mon,  2 Aug 2021 12:28:29 +0000 (UTC)
-Date:   Mon, 2 Aug 2021 14:28:27 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v4 00/21] btrfs: support idmapped mounts
-Message-ID: <20210802122827.aomsh5i3rljgm2r3@wittgenstein>
-References: <20210727104900.829215-1-brauner@kernel.org>
+        id S233652AbhHBMeX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Aug 2021 08:34:23 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34572 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232815AbhHBMeU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Aug 2021 08:34:20 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AA6961FF87;
+        Mon,  2 Aug 2021 12:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627907645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=BewH+bks2/FkGv7UN96IANRKQHoVG5sgtPnw02H5Zk0=;
+        b=oDQylJcV138PxNeTzs4kncNASimQYkKB3hqKj4Q45W+CoZsKDZviUZLCkQb0w5TyK/C0e7
+        xot9hR6tev/dcod9p0bEQxKc3uHLkm8QnbcRi575xngtIZq3S1ywFGpP68VU/TvqAI3h0T
+        VrBUeuYTDw1LoB0ZvmXd5Hag+NA6sh8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5CCA213C6C;
+        Mon,  2 Aug 2021 12:34:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Q0AvCjzmB2GBagAAMHmgww
+        (envelope-from <mpdesouza@suse.com>); Mon, 02 Aug 2021 12:34:04 +0000
+From:   Marcos Paulo de Souza <mpdesouza@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, fdmanana@suse.com,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH] btrfs: tree-log: Check btrfs_lookup_data_extent return value
+Date:   Mon,  2 Aug 2021 09:34:00 -0300
+Message-Id: <20210802123400.2687-1-mpdesouza@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210727104900.829215-1-brauner@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 12:48:39PM +0200, Christian Brauner wrote:
-> From: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> Hey everyone,
-> 
-> /* v4 */
-> Rename new helper to lookup_one() and add new Reviewed-bys.
-> 
-> This series enables the creation of idmapped mounts on btrfs. On the list of
-> filesystems btrfs was pretty high-up and requested quite often from userspace
-> (cf. [1]). This series requires just a few changes to the vfs for specific
-> lookup helpers that btrfs relies on to perform permission checking when looking
-> up an inode. The changes are required to port some other filesystem as well.
-> 
-> The conversion of the necessary btrfs internals was fairly straightforward. No
-> invasive changes were needed. I've decided to split up the patchset into very
-> small individual patches. This hopefully makes the series more readable and
-> fairly easy to review. The overall changeset is quite small.
-> 
-> All non-filesystem wide ioctls that peform permission checking based on inodes
-> can be supported on idmapped mounts. There are really just a few restrictions.
-> This should really only affect the deletion of subvolumes by subvolume id which
-> can be used to delete any subvolume in the filesystem even though the caller
-> might not even be able to see the subvolume under their mount. Other than that
-> behavior on idmapped and non-idmapped mounts is identical for all enabled
-> ioctls. People interested in idmappings on idmapped mounts should read [2].
-> 
-> The changeset has an associated new testsuite specific to btrfs. The
-> core vfs operations that btrfs implements are covered by the generic
-> idmapped mount testsuite. For the ioctls a new testsuite was added. It
-> is sent alongside this patchset for ease of review but will very likely
-> be merged independent of it.
-> 
-> All patches are based on v5.14-rc3.
-> 
-> The series can be pulled from:
-> https://git.kernel.org/brauner/h/fs.idmapped.btrfs
-> https://github.com/brauner/linux/tree/fs.idmapped.btrfs
-> 
-> The xfstests can be pulled from:
-> https://git.kernel.org/brauner/xfstests-dev/h/fs.idmapped.btrfs
-> https://github.com/brauner/xfstests/tree/fs.idmapped.btrfs
-> 
-> Note, the new btrfs xfstests patch is on top of a branch of mine
-> containing a few more preliminary patches. So if you want to run the
-> tests, please simply pull the branch and build from there.
-> 
-> The series has been tested with xfstests including the newly added btrfs
-> specific test. All tests pass.
-> There were three unrelated failures that I observed: btrfs/219,
-> btrfs/2020 and btrfs/235. All three also fail on earlier kernels
-> without the patch series applied.
+Function btrfs_lookup_data_extent calls btrfs_search_slot to verify if
+the EXTENT_ITEM exists in the extent tree. btrfs_search_slot can return
+values bellow zero if an error happened.
 
-Hey David,
+Function replay_one_extent currently check if the search found something
+(0 returned) and increments the reference, and if not, it seems to evaluate as
+'not found'.
 
-Sorry to ping, could I answer the outstanding questions you had and are
-you okay with this series?
+Fix the condition by checking if the value was bellow zero and return early.
 
-Christian
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+---
+
+ Found while inspecting some btrfs_search_slot call sites.
+
+ fs/btrfs/tree-log.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 567adc3de11a..867ea0be0665 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -753,7 +753,9 @@ static noinline int replay_one_extent(struct btrfs_trans_handle *trans,
+ 			 */
+ 			ret = btrfs_lookup_data_extent(fs_info, ins.objectid,
+ 						ins.offset);
+-			if (ret == 0) {
++			if (ret < 0) {
++				goto out;
++			} else if (ret == 0) {
+ 				btrfs_init_generic_ref(&ref,
+ 						BTRFS_ADD_DELAYED_REF,
+ 						ins.objectid, ins.offset, 0);
+-- 
+2.26.2
+
