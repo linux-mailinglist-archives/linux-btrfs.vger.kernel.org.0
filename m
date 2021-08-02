@@ -2,78 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959023DDAC5
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 16:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 180CA3DDBA1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 16:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhHBOVI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Aug 2021 10:21:08 -0400
-Received: from mout.gmx.net ([212.227.17.21]:58929 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234486AbhHBOUy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Aug 2021 10:20:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627914043;
-        bh=xkmHkfdrMIWRgnPujhS7fBjhPu5H1xQq4xGMunOK8lo=;
-        h=X-UI-Sender-Class:From:To:Subject:Date;
-        b=FeRtCkvRLCNM9qSEVmnlTXZk0gBpSfijccLfhkSnJGtM5WFx/i2IUADv4xICFeeum
-         8ZZ9+7qUBuO+EK7Ewz0HJGsdrqfJ5CfWkfM24yQj7cwOZGLuDGeCRgl3QnSseRbPCL
-         A8Lin+PpL65W/AqMO8i2m8NmSzNGQAWkdJwWdKKg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [89.14.188.180] ([89.14.188.180]) by web-mail.gmx.net
- (3c-app-gmx-bap64.server.lan [172.19.172.134]) (via HTTP); Mon, 2 Aug 2021
- 16:20:43 +0200
+        id S234614AbhHBOzO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Aug 2021 10:55:14 -0400
+Received: from mta-102a.oxsus-vadesecure.net ([51.81.61.66]:33925 "EHLO
+        mta-102a.oxsus-vadesecure.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233981AbhHBOzN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:55:13 -0400
+X-Greylist: delayed 447 seconds by postgrey-1.27 at vger.kernel.org; Mon, 02 Aug 2021 10:55:13 EDT
+DKIM-Signature: v=1; a=rsa-sha256; bh=kOYgkgt1Eovr4+CuMMxXz1DZVQXHQDhi+reUiD
+ H50Qk=; c=relaxed/relaxed; d=earthlink.net; h=from:reply-to:subject:
+ date:to:cc:resent-date:resent-from:resent-to:resent-cc:in-reply-to:
+ references:list-id:list-help:list-unsubscribe:list-subscribe:list-post:
+ list-owner:list-archive; q=dns/txt; s=dk12062016; t=1627915653;
+ x=1628520453; b=k5hQVO/SHE5D98YVr+2IwaENw1BGVaPvd798Bvz8noqJFOrQHrwQvVd
+ acbkXb+GuUdFmtD7Im7xt5N3I3dDUjx2MMuH6wUFjkTcpQEi3tXU0YMZpM8MgNPjmEK6wXX
+ 7n66vUEYcA1iSZCaAltdccPBuqKqIoX8gGFuzWfhGRj97mc1UnsfIpcv75bNhoafaxxIPs1
+ 4VmdXE7SLVp2Lngptvwwwy1hsokE4TtY0QO2xHns8t07DsqzckT2tfcQPjY3pbdnA+vIcke
+ NKw7QwjOjrrsYbxqE8TXLjuLhi7L41SA+6xJHUGBtYowQI4hEuS9yH7rV3XVDCedWJwuSxH
+ 2pg==
+Received: from FRANKSTHINKPAD ([76.105.143.216])
+ by smtp.oxsus-vadesecure.net ESMTP oxsus1nmtao02p with ngmta
+ id af69139b-169784a9170c7b41; Mon, 02 Aug 2021 14:47:33 +0000
+From:   "Frank Filz" <ffilzlnx@mindspring.com>
+To:     "'Amir Goldstein'" <amir73il@gmail.com>,
+        "'NeilBrown'" <neilb@suse.de>
+Cc:     "'Al Viro'" <viro@zeniv.linux.org.uk>,
+        "'Miklos Szeredi'" <miklos@szeredi.hu>,
+        "'Christoph Hellwig'" <hch@infradead.org>,
+        "'Josef Bacik'" <josef@toxicpanda.com>,
+        "'J. Bruce Fields'" <bfields@fieldses.org>,
+        "'Chuck Lever'" <chuck.lever@oracle.com>,
+        "'Chris Mason'" <clm@fb.com>, "'David Sterba'" <dsterba@suse.com>,
+        "'linux-fsdevel'" <linux-fsdevel@vger.kernel.org>,
+        "'Linux NFS list'" <linux-nfs@vger.kernel.org>,
+        "'Btrfs BTRFS'" <linux-btrfs@vger.kernel.org>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown> <162742546548.32498.10889023150565429936.stgit@noble.brown> <YQNG+ivSssWNmY9O@zeniv-ca.linux.org.uk> <162762290067.21659.4783063641244045179@noble.neil.brown.name> <CAJfpegsR1qvWAKNmdjLfOewUeQy-b6YBK4pcHf7JBExAqqUvvg@mail.gmail.com> <162762562934.21659.18227858730706293633@noble.neil.brown.name> <CAJfpegtu3NKW9m2jepRrXe4UTuD6_3k0Y6TcCBLSQH7SSC90BA@mail.gmail.com> <162763043341.21659.15645923585962859662@noble.neil.brown.name> <CAJfpegub4oBZCBXFQqc8J-zUiSW+KaYZLjZaeVm_cGzNVpxj+A@mail.gmail.com> <162787790940.32159.14588617595952736785@noble.neil.brown.name> <YQeB3ASDyO0wSgL4@zeniv-ca.linux.org.uk> <162788285645.32159.12666247391785546590@noble.neil.brown.name> <CAOQ4uxgnGWMUvtyJ0MMxMzHFwiyR68FHorDNmLSva0CdpVNNcQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxgnGWMUvtyJ0MMxMzHFwiyR68FHorDNmLSva0CdpVNNcQ@mail.gmail.com>
+Subject: RE: A Third perspective on BTRFS nfsd subvol dev/inode number issues.
+Date:   Mon, 2 Aug 2021 07:47:31 -0700
+Message-ID: <02d201d787ad$53dfd930$fb9f8b90$@mindspring.com>
 MIME-Version: 1.0
-Message-ID: <trinity-59843172-879e-4efd-9b35-bbfed0ed52c6-1627914043406@3c-app-gmx-bap64>
-From:   telsch <telsch@gmx.de>
-To:     linux-btrfs@vger.kernel.org
-Subject: Random csum errors
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 2 Aug 2021 16:20:43 +0200
-Importance: normal
-Sensitivity: Normal
-X-Priority: 3
-X-Provags-ID: V03:K1:6YVVqS73JxhmUreFnkVWR1Vbiqvtx95S3WGt5wpzAWKxpebCbSWQatF153vyuOfCioci4
- n79bzdVWK7V+8HOnY4pXBdBOVkBGtowlkjdQqu0meQRFxc1UxNuvNHkxpmHzfNquP5/Bf1fE8pAT
- tPLl8SAGcRS4/AC/tsyM3DiXSHgP688k5Cy+heHviW6WxhfTZHhlpdW0hyPDTcdcF26njZDNIQWW
- 0q0LrZ89UTixiHRIeHJsOo5w4oYk1ZPA4aZlOySJC9lGd/I/exiw6hGPFzwWJ3y3pv/YsZoyuFao
- i8=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:A8wrOngqUfo=:7C1MaBL5ehO6ygXU+VVcbB
- 6Xif817J5HSGjgjlgAXe5A91KI3NHarCSQZs2qaNpsHLvHJhAdm3G6BcIJz12wkosVDO3yn6N
- /wzk7eod9Maj3Fu8eoRoTLCtahGclLNPtf7yVlNjYAXd4+l9O87lEYHO9q6RjaubvGueZgR1q
- nGiCejCqcAH4/vyL6PNo/epd51H04HXWP6wh7r36LKFySc/9LSnVOhQ+MFZSQdQ8Nh9j2IF4E
- 3Y+3sdYSFrDGiiVjgoiBiiTaCXjJ9U6cDmG7eyF+/79mG1uba7L7u/VPJIl6h821MZ9T0cpBy
- orxr12JCU/46HlbUER36tO3KA5g166s+yvS+Tw1h36ApHxiBrN9QgfTm6tKfDYTxCr/z4suuD
- y7d2FaF4qNAkH4cZ2T0C4XN6LPXMq6l8UqHKVuYHTaCEzcHlctdztErdh0/6FJCXSRI6PwBRL
- FV85HkRSN2vQUwNBaph+4D8pkiyguhlX1WYKUMo3ZXo102Bw20AzME9R/P1LZmLd4PCua8K5+
- Gbe1pR+iOIJWUL+U8A1YWnwn3ezVTEi3a3X+PNggqKnBgOktCZ2npy1L6XxmmC7AZpI+fAjU7
- dWFRCn+OI9OYPl3XqiCbhoRSJFrky09yEgt+xN23VVpCrHuGu0WqxgErIvne3CSJvINTOUaJ5
- 7Tn1SM2Gdlkhliaq0heJfbd+UHj4Mr6S/10HJZ4+lVqRNDCKqUC66xGpvq/qu+2u93ox+OBjo
- liZNP4tkDdoUyM75pEjnGTYQ6Yu394PRgNuoK6v09JPI53UBXybLv7Ok8kampXVtGLrLVaxwJ
- geORQKdxrN+FxsQqpKSX/cSvPuLtA==
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 15.0
+Content-Language: en-us
+Thread-Index: AQGsQ4rocC8JdciffDlk4WCbcNd5JAH9XzyyAdavEn8CATAmtQHAf3kAAq0/zdEChfj1cAJ+oSVgAZcNCFgCKp+e3AHI9mimAhJ4xdwCcfkHUqrsHG6A
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear devs,
+> In any case, instead of changing st_dev and st_ino or changing the =
+world to
+> work with file handles, why not add inode generation (and maybe subvol =
+id) to
+> statx().
+> filesystem that care enough will provide this information and tools =
+that care
+> enough will use it.
 
-since 26.07. scrub keeps reporting csum errors with random files.
-I replaced these files from backups. Then deleted the snapshots that still contained the
-the corrupt files. Snapshot with corrupt files I have determined with md5sum, here I get an input/output error.
-Following new scrub, still finds new csum errors that did not exist before.
+And how is NFS (especially V2 and V3 - V4.2 at least can add attributes) =
+going to provide these values for statx if applications are going to =
+start depending on them, and especially, will this work for those =
+applications that need to distinguish inodes that are working on an NFS =
+exported btrfs filesystem?
 
-Beginning with Kernel 5.10.52, current 5.10.55
-btrfs-progs 5.13
+Frank
 
-Disk layout with problems:
-
-mdadm raid10 4xhdd => bcache => luks
-mdadm raid6  4xhdd => bcache => luks
-
-Already replaced 2 old hdds with high Raw_Read_Error_Rate values.
-
-Aug 02 15:43:18 server kernel: BTRFS info (device dm-0): scrub: started on devid 1
-Aug 02 15:46:06 server kernel: BTRFS warning (device dm-0): checksum error at logical 462380818432 on dev /dev/mapper/root, physical 31640150016, root 29539, inode 27412268, offset 131072, length 4096, links 1 (path: docker-volumes/mayan-edms/media/document_cache/804391c5-e3fe-4941-96dc-ecc0a1d5d8c9-23-1815-92bcac02c4a72586e21044c0b244b052f5747c7d2c25e6086ca89ca64098e3f3)
-Aug 02 15:46:06 server kernel: BTRFS error (device dm-0): bdev /dev/mapper/root errs: wr 0, rd 0, flush 0, corrupt 414, gen 0
-Aug 02 15:46:06 server kernel: BTRFS error (device dm-0): unable to fixup (regular) error at logical 462380818432 on dev /dev/mapper/root
-Aug 02 15:47:25 server kernel: BTRFS info (device dm-0): scrub: finished on devid 1 with status: 0
