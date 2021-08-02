@@ -2,74 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F933DCF3E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 06:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D883DD00A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 07:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhHBEYM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Aug 2021 00:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhHBEYL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Aug 2021 00:24:11 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B57C06179B
-        for <linux-btrfs@vger.kernel.org>; Sun,  1 Aug 2021 21:23:58 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id y7so20426426eda.5
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Aug 2021 21:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=JbMtpdZj7sghISs4e5T5yryQDvERMuYalazmdQP0RcA=;
-        b=czeOQMYeZau4ejaBbgDdCuklRCyHoHRlo6xUfJcAj3bciaGtFBitiUib5a5MwOumE9
-         w7/Jn7bBNsLcP1+CHZ7cIXH8h+QOe2ioJtROZD2bqhS/lqEvaNcrldVE+LZBhK9CNKw9
-         GasUZeZx/Kcocc9jX4O3VqyeOrpbJXFle0t9OXPFTLvjA0ffc0WpqgkYu8CQSXrFRLzD
-         Yc8UR7mKpLCqpwn4ZFojN5x09EwrnOTDpyVyuL9REZStwkguR4uL/4srDE+vjWW4JCu8
-         Sy5z9ei3l3c7g9TC5s6E8Wj1tuL0hGAP5lkkVvlHQCNnMoccEAC8Z+koQ2tbRnEruEUY
-         O8Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=JbMtpdZj7sghISs4e5T5yryQDvERMuYalazmdQP0RcA=;
-        b=QHAEpUZHMIrPwICnY36cRlD+Tm8P6PQC33fbxYf8WhYcQqntDbL743FTmW2ot0uQKd
-         5IaNHicMngPUQ1hMptc5oabzqwdzkMojHoWrlBl/00lBkomg7u8bT4goM7R6vnceke2k
-         lbq5nKpVkJM8neU1UUR3L0rnEISnRga1eyYPc5xVEiGT3qrx/XV7EPFd+n4gVxF7XCra
-         wIM+kyrLGSohU7iW+z4d0iyBAALwz4xfBAk4qMQukpVeEI7xX70niQTbOoO+xbrKPya/
-         Xom7cmFMffK6R9IAVvm8yAh2ffABCA8sdd80pBU323KdislC9SPH/EtpjMAFU/Ab6d3V
-         4vYA==
-X-Gm-Message-State: AOAM5300z9LeYgvM1vJP24oHDzB7l6RRWfY0l0DYGM8RUfbIDDP7EB7v
-        URfKqjDv+PYKOgTwkkIPoVWicfkhzH9DMYAV4hY=
-X-Google-Smtp-Source: ABdhPJxItSnYdNOJr/eCcDJG9Ed81FEJCtux30e3VMRN30hf/TzQyuXNRWDf+H2IgaMscJY+xnmH/x8e0HLuRnwx6WI=
-X-Received: by 2002:a50:d70a:: with SMTP id t10mr16749153edi.253.1627878237019;
- Sun, 01 Aug 2021 21:23:57 -0700 (PDT)
+        id S229888AbhHBFdN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Aug 2021 01:33:13 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:60134 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229792AbhHBFdM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Aug 2021 01:33:12 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mAQSS-005v4j-Vb; Mon, 02 Aug 2021 05:25:49 +0000
+Date:   Mon, 2 Aug 2021 05:25:48 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Christoph Hellwig <hch@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
+        Linux NFS list <linux-nfs@vger.kernel.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: A Third perspective on BTRFS nfsd subvol dev/inode number issues.
+Message-ID: <YQeB3ASDyO0wSgL4@zeniv-ca.linux.org.uk>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+ <162742546548.32498.10889023150565429936.stgit@noble.brown>
+ <YQNG+ivSssWNmY9O@zeniv-ca.linux.org.uk>
+ <162762290067.21659.4783063641244045179@noble.neil.brown.name>
+ <CAJfpegsR1qvWAKNmdjLfOewUeQy-b6YBK4pcHf7JBExAqqUvvg@mail.gmail.com>
+ <162762562934.21659.18227858730706293633@noble.neil.brown.name>
+ <CAJfpegtu3NKW9m2jepRrXe4UTuD6_3k0Y6TcCBLSQH7SSC90BA@mail.gmail.com>
+ <162763043341.21659.15645923585962859662@noble.neil.brown.name>
+ <CAJfpegub4oBZCBXFQqc8J-zUiSW+KaYZLjZaeVm_cGzNVpxj+A@mail.gmail.com>
+ <162787790940.32159.14588617595952736785@noble.neil.brown.name>
 MIME-Version: 1.0
-Received: by 2002:a17:907:d0b:0:0:0:0 with HTTP; Sun, 1 Aug 2021 21:23:56
- -0700 (PDT)
-Reply-To: ablahikazabl67@gmail.com
-From:   Abdoulahi Kazim <drwilliamcuthbert@gmail.com>
-Date:   Mon, 2 Aug 2021 05:23:56 +0100
-Message-ID: <CAKwBCXvLzgfEHCKMKUxki4k1yYap9oH1ox=muoK9koBZXish5g@mail.gmail.com>
-Subject: More Authentic Information
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162787790940.32159.14588617595952736785@noble.neil.brown.name>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Dear Partner,
+On Mon, Aug 02, 2021 at 02:18:29PM +1000, NeilBrown wrote:
 
-I am soliciting your partnership to relocate $12.5 Million to your
-country for investment on my behalf and you will be entitled to 30% of
-the sum once the transaction is successful made.
+> It think we need to bite-the-bullet and decide that 64bits is not
+> enough, and in fact no number of bits will ever be enough.  overlayfs
+> makes this clear.
 
-Please indicate your genuine interest if you are capable so that i
-will send you the authentic details and documents of the transaction
-in awareness with some of my fellow Directors in the bank.
+Sure - let's go for broke and use XML.  Oh, wait - it's 8 months too
+early...
 
-If you are interested, here is my private Email address:
-(ablahikazabl67@gmail.com)
-For more authentic and legit information.
+> So I think we need to strongly encourage user-space to start using
+> name_to_handle_at() whenever there is a need to test if two things are
+> the same.
 
+... and forgetting the inconvenient facts, such as that two different
+fhandles may correspond to the same object.
 
-Regards :  Abdoulahi Kazim
+> I accept that I'm proposing some BIG changes here, and they might break
+> things.  But btrfs is already broken in various ways.  I think we need a
+> goal to work towards which will eventually remove all breakage and still
+> have room for expansion.  I think that must include:
+> 
+> - providing as-unique-as-practical inode numbers across the whole
+>   filesystem, and deprecating the internal use of different device
+>   numbers.  Make it possible to mount without them ASAP, and aim to
+>   make that the default eventually.
+> - working with user-space tool/library developers to use
+>   name_to_handle_at() to identify inodes, only using st_ino
+>   as a fall-back
+> - adding filehandles to various /proc etc files as needed, either
+>   duplicating lines or duplicating files.  And helping application which
+>   use these files to migrate (I would *NOT* change the dev numbers in
+>   the current file to report the internal btrfs dev numbers the way that
+>   SUSE does.  I would prefer that current breakage could be used to
+>   motivate developers towards depending instead on fhandles).
+> - exporting subtree (aka subvol) id to user-space, possibly paralleling
+>   proj_id in some way, and extending various tools to understand
+>   subtrees
+> 
+> Who's with me??
+
+Cf. "Poe Law"...
