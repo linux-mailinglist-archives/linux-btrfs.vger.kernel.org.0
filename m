@@ -2,209 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE883DCE6C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 02:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876B63DCF31
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 06:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhHBAwQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Aug 2021 20:52:16 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:44264 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230421AbhHBAwP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 1 Aug 2021 20:52:15 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1720penk004295;
-        Mon, 2 Aug 2021 00:51:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=Wa3rOMX0D+Y/dATxLdFnaWH8mItjZD0GNtkJba6TSuc=;
- b=FWHCQsn3aF23a3dS+PxIA63jCk7+4G5Ez3X/Vy6ZGkjXQlNtAOn+P8nuZRVLhGESZxPQ
- CP3mQuLKAdgP6w1JroHyfbJt6lgJ7Bxm9jpEybzwfOMXZZrWy20glylNp7zSUrsLr/9q
- NriIX/e7Wonjbg8mvsANGsE0tnhith7czx6qKVYbpGomSS9Ep4175+7aTEGUxspT20cJ
- SeqB5P4DErVYDZwPraKAxxVma+blnMGCuKg017WuWx418m6bBmvwY9NDFMrxBV2+OfyX
- eZicvpRbChA4N/vDbjXTgR5NfRhvRyeOcQPpKY1JsYh49xF9ErABOJYjRPUxBaKPKvkD /g== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=Wa3rOMX0D+Y/dATxLdFnaWH8mItjZD0GNtkJba6TSuc=;
- b=Sf1uhL7GA0c6iWCwfM4fnh7tngBocuCwKQXe/lTO3IWdx7gR9h7XajDMTee4PYIcZ+IO
- laisG/C3fTZrF5c0P8kWuOJ2rKKfj1S/V1+IKf0YOjCcho1NJhhawFdtwuvtKoCICyQa
- t3lTUIV5iUixuJ9X4Bkr3UuAX3ovwwWF7THDpWw5fwdb9MVXfoDbxKcBS0sunc6mtN7k
- GyJw4Y9K2w9EshZNtQgz2DS1ivb57u06+ZFstm9veEv5YGgpz7+ZnD6PmDeM3buX6sRs
- 0amIR/bbw5QwrCDZMcPlmAkqflmzzWngLvFXvvnf9bpnMXo3ywk74XVLR6R/gO2h9uCr fg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a5wy1g9e9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Aug 2021 00:51:57 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1720jlBf165450;
-        Mon, 2 Aug 2021 00:51:57 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2041.outbound.protection.outlook.com [104.47.56.41])
-        by aserp3020.oracle.com with ESMTP id 3a4xb40jst-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 02 Aug 2021 00:51:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mKPWedxy/8pMHHIOgrX4ABX/OMdcryfZY9mEbYQnAuKkVXlPRYHardTgqyzUHYbr38AMGl5DPFDiKTT+rTc2rwFHDIZzchtK74U06wtj+knFfXjcVvaI+NrLgh7mn4FnT9md7/zfqDg681AxYcQYtFIp7cgeHOLFPqNqhQ9hB+9rk1aa+jISrs65KHifUy91TTidDz0k1uelqCGxvk7swPa+jv7XH3OWDKVf4ocwI7CIaluni2KFzzymj4kkuxOIPYAfteyGOghIlJ5yNSiDKR13tOW+lUldWYC++9vb+fW6zRyAHPjsUwT5GGbz+TQFvGVzQFCIMcoWRK+WUjS2hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wa3rOMX0D+Y/dATxLdFnaWH8mItjZD0GNtkJba6TSuc=;
- b=jIoZML6Kz5lLFReX5fYGe686WUqS5MWBA65g2zWAQMn76J8ISyj8JOIZL8DH3K03N+qKkRcEdTSzpoizEPi+4tGHFTteK9mXcNGwEDHRtdNXjONji1HYV/TlHf91liyFD4SMn/Z8tZEpFN5SksNDop0hsJ/wC+LjLyCCYiodZVQJ+YKOHLpdErd0+qgEuFTZ+nUDe3rwJ38KkHb/YoaoaVRsHRZ+Kn+G1liR0wsdtF1U6RLiAGBTqdMDegyPgGrVY8DGkyt2aEd9ZI8Be+qoCYnx2U5BBcu+YpHU+ewvbXWVH3X09QNrvID4SzaqKOEW6M2IXijyQbgnRl+JVvmNQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wa3rOMX0D+Y/dATxLdFnaWH8mItjZD0GNtkJba6TSuc=;
- b=mOz/FFuy6gjthBeEgg1jx0zR15oumB3yVjyMq5MXOIBa/3TXEOtQ4gWCUTEyJRJlX0rm5HygF1wh5zQuB5jM+f23cZmkFqx1xiT2tU4r46+AFqpruHudpGRPZk56LuxQZ3LfZacaFR6Nb/YdNeL2A2azQeVRcU941kGbrgNGz/w=
-Authentication-Results: colorremedies.com; dkim=none (message not signed)
- header.d=none;colorremedies.com; dmarc=none action=none
- header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB3855.namprd10.prod.outlook.com (2603:10b6:208:1b6::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Mon, 2 Aug
- 2021 00:51:55 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b10f:7144:1abb:4255]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b10f:7144:1abb:4255%4]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
- 00:51:55 +0000
-Subject: Re: [PATCH] btrfs-progs: mkfs: set super_cache_generation to 0 if
- we're using free space tree
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Chris Murphy <lists@colorremedies.com>
-References: <20210731074240.206263-1-wqu@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <2007a29f-a3fc-4e0f-d216-cc91863ee0da@oracle.com>
-Date:   Mon, 2 Aug 2021 08:51:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <20210731074240.206263-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S229792AbhHBESq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Aug 2021 00:18:46 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45136 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhHBESq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Aug 2021 00:18:46 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AFCE91FF24;
+        Mon,  2 Aug 2021 04:18:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627877915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oCxfnDIQHo7zeHdIihSV072lb1GzrTxq9yJB4Mf+O8E=;
+        b=tG9f93fBuVgpVrn/aw2zo+rtxGc+IO6UoZuVfSzBrejHuz6s6vNVMySwT6a4VSlvQPeYNY
+        zOh0SS6/bwCLqF8xem+3GElgwi1tY4XZfNsynVwBGsYu5JD96KwaGrw8J2h3bcFn6PLs8/
+        sdsU4C0MPlrtC05jwTxjP8tzfuEHRVI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627877915;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oCxfnDIQHo7zeHdIihSV072lb1GzrTxq9yJB4Mf+O8E=;
+        b=oaGsnA8vKrjArsboWH11XwYKNZAB4/ptlgHYBQUbGFXYXV5Qd49pTQqIKmjM9KkJ6wzfmh
+        WFvRCeit5Vwzy+CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8410E1345F;
+        Mon,  2 Aug 2021 04:18:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 1W6pEBhyB2EXaQAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 02 Aug 2021 04:18:32 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR04CA0194.apcprd04.prod.outlook.com
- (2603:1096:4:14::32) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.109] (39.109.186.25) by SG2PR04CA0194.apcprd04.prod.outlook.com (2603:1096:4:14::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend Transport; Mon, 2 Aug 2021 00:51:53 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f42a7bd4-5569-4de4-0002-08d9554fb967
-X-MS-TrafficTypeDiagnostic: MN2PR10MB3855:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB3855BA39C4E4378BBFD2BD0EE5EF9@MN2PR10MB3855.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1751;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AviZ01kpNI4zhk5XEZZTdiFUB5EMQfDx8HeEg5S7H/taH/MPHSWUqrKiwidwt+ZA0F+6lGmhcv3LhiX4qE6MiBITyAQMZc1EtPPSjZ76P01r2mi93gGGxfRpsN3XFLipUTTYIzOSsicAv0V2rS0JZV3aKVi6ok17ve8AuF2DcHusW38thwqTFh9slHDOb57xlv29HiEvLD+p68FHz0l4ST/2IlNq0B98pnvANCOk7+1w/GJ2vjonDQ4f2vh/Hirbpxblkmqnl1vlYute9hs7hhs+BiebTYJnjGOVSX+de1ky7aWLEFHm/yJfba/ZsHg8ASGsiJ7LjhBmSfC0wY5MtN56e5ploisAJjSNwz7y9ahgpAIFUAwNoEeYISqY+y0DcZOPvzOh/G00tBGklJkp8Mq7dKxXeCF4TFuiOs7dxKdmlKxyR6H4minSyFUxeX/uWEcVBfXbB+qAstGSTr6NcW3l4ox94kRdxA0sQrleoUehwCQ/C5cmPzEcrHHXOc/Peu7h9kKn2EIgXM+g8WCib0viLTiIn3Z9jdQVvpSWxg10lLdk15q7Gek9Ros2nJk0QYbuxaY8RX8qfz5W+iWhaGYBHlgbJoAACdFItcmE5EcblO49IKgW04TVcGxyPKPPR5x/XTZ9N/NX4K6dQOM7YwWJ1qJ/VQmTJQW2G3HKD0SSnyZ4Ncwik1vVfNRw3BCVsnugLw4T+CO1PMYrmZzwXxdxWY+Y+B1ZSyR14UU1d05HSlVnRHfGm9ieJRLl3TgGIRNuxwlyOrc5JK9WicQ8P8FsCDrXPCIkRYPvEXHZF7BQortN25lTYh4ar4uScbwz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(366004)(136003)(39860400002)(6666004)(5660300002)(38100700002)(966005)(31686004)(2906002)(16576012)(53546011)(316002)(66946007)(66556008)(2616005)(36756003)(31696002)(956004)(66476007)(86362001)(8936002)(44832011)(26005)(478600001)(8676002)(4326008)(6486002)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U3VjYVg2RHBaSjJRcDhzL0tVY0N3SnhQZk9jMGNlM3YyZVRBSUppOEw4ek9y?=
- =?utf-8?B?ZUZwQUFEVG55VHhNUmRVMlArdHdQTUN3TTUrdzF3ZUdZcFp6L0hhVU9ObUZl?=
- =?utf-8?B?UE93Y0ZNcnZYK1dYemYrMkR6dGgyQVVYS3hVeG1RWEExaFNDTVRYUjBrYUtB?=
- =?utf-8?B?WjI5dTNxMjJXUEdTUTZlYzRiY0dBTC9BTnVFRXpuaEZZMkdmVEpDdzM5bTNP?=
- =?utf-8?B?V3JtRGJPN0dwR1RHV2JQdEs3N1k1ang5NUpxTW1PVmx1Z0h3c3dIY2JydmRq?=
- =?utf-8?B?bHVRQXBMeUxPTEwrTTRUdlhDL1NPK3JyalVqamozQ0hhcGVIYlM1WmE2TXRu?=
- =?utf-8?B?Y3JJWFpvdmFMcjFqOUhjaHl4MStXV29zYjg3WStlaFY1UWpFQmlRSisyZGN5?=
- =?utf-8?B?SE5PMGlsR1RpTEc4U3BSdGZSdkJvQVBTS2N6RjR0QnN1RUg0b21Rdy9ub0hN?=
- =?utf-8?B?VStNZ3RYRU5ZbklCd0EvMWUxTk1lVDJHRTBuQUFUL2ZEaUpKSVVqL2U4S1ZK?=
- =?utf-8?B?RDJkbE1aQkxuem4zOVVOSktwWms0dGZLMTBBMDR5RDVRUVV1bG83V2ZqdXFp?=
- =?utf-8?B?ZUROUjltMmVnNWJYV0czdkFsVGZWdEh0ZGpJN2dyS1p3bkRxakhnTEdKNHMz?=
- =?utf-8?B?YUlkUmcwdFFPZ045YVc0NkN0SVl2OFB2YWhBaHdWeVJRb2pUSnRDNzBVVFJw?=
- =?utf-8?B?UnJJSU1jSWk4LzhzRFRFdU82MHNHRVRaK0wxLzVHOUo1R1VMUkFhY2RmMkFK?=
- =?utf-8?B?T2dJS0tWanAzUGVRd0RwNUovaml5M2RSZW5TZVdRTWJrdG1rb0tJdTBOSFZn?=
- =?utf-8?B?NW9lRWF1ZS9lY0t0ZVd0L1hwcjVxVXdPVGhuMlZITyt2TmJJRUlsRitJTkdL?=
- =?utf-8?B?YlFjbXorUURmRk5qbWhDOFgwWUFDQzV4bXVpelFRVCs4amhqNnNIMTh2QkFP?=
- =?utf-8?B?Qm1JQjd1d2FGR0JvT1JrL2RQTkpCZWYwWHFaa2dKcHlGT09FS2pURnBXNlBo?=
- =?utf-8?B?cFB0QTNIQ3VHbnBkRW91V05vUmFvUEVBUC9mTFcvOFlvOFNKYjhqU1oxS1NP?=
- =?utf-8?B?YzFNTXdSOEhsWWcxTFQ2b0p2dm5kSzNUbDk2ZDNCVTRKcUVPL0xaQVF0M3hr?=
- =?utf-8?B?Z24wMlVlTTErZjVJZlZvUm5YOEpUREhXbHF3OVo4RmltREpyWXo3dk5FSVFy?=
- =?utf-8?B?Ykh3Umt6MG1uZ1B1VGZaYk9BemZBU0hGK21OcC9wVWwzZDlyQ1FlRENyUlVX?=
- =?utf-8?B?R0NURFY2ajZaSGhEUGJlSG5KcGJyK1Y3Q2JYN2dKNXlyZU53U1RCVzh3VUZy?=
- =?utf-8?B?Q1BhUHZ4eW10eHpaVWpXWkVMbFFaWjdHZnhZMzM5QkdjODVWd21ZM1ZvV1Rn?=
- =?utf-8?B?U0NpODlaQUtrT09TOFdMTzRXVkdseXpYYWNabVZDMitHSXFxdTcyV2ZLcjVa?=
- =?utf-8?B?QWVqb290R1VoY3FZaUhsM1FYYTZOSlRrN3o4VnI4NHFDOWRmbVg0bExiQ2p5?=
- =?utf-8?B?QzBTZDBQTnYzZmhRQXNmdldIMXlaUmtCMlJnSTBRRnJ0aDNzWjhtd3o0dWIy?=
- =?utf-8?B?TG9yT0RDRHpFbnA1V1F6U2YyZ3BFSGlDK3dXbStKdnY0bU95bEhXWjF5LzFY?=
- =?utf-8?B?Q1VVWGpXdTJYRHkyRFNOLzN3MjJtemNWTHpjdmoySlpheTFtNkJPVVFEQW91?=
- =?utf-8?B?MHMwK0psRm5rSVNsRTZQd1VBbEJoTDNIUGJDK3FBYlMrZDUvNmxZU2lPL1dV?=
- =?utf-8?Q?D0ESmxRNEbkuTo3KESzkT2+b4mOrZ7cuMWzSrPb?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f42a7bd4-5569-4de4-0002-08d9554fb967
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2021 00:51:55.3765
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BmrViTeeDMGs5Y7sTQOKbVL0o8V+LP6coJ6I6w5qtq8NoSkQByf62jKli3abcP7N5oMStLSgd+6x1Ghj2eNmrQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3855
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10063 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108020002
-X-Proofpoint-GUID: f5puweOnmPAOS_9LlM2OhmVwx3bBtUJt
-X-Proofpoint-ORIG-GUID: f5puweOnmPAOS_9LlM2OhmVwx3bBtUJt
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Miklos Szeredi" <miklos@szeredi.hu>
+Cc:     "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Josef Bacik" <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
+        "David Sterba" <dsterba@suse.com>, linux-fsdevel@vger.kernel.org,
+        "Linux NFS list" <linux-nfs@vger.kernel.org>,
+        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: A Third perspective on BTRFS nfsd subvol dev/inode number issues.
+In-reply-to: <CAJfpegub4oBZCBXFQqc8J-zUiSW+KaYZLjZaeVm_cGzNVpxj+A@mail.gmail.com>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>,
+ <162742546548.32498.10889023150565429936.stgit@noble.brown>,
+ <YQNG+ivSssWNmY9O@zeniv-ca.linux.org.uk>,
+ <162762290067.21659.4783063641244045179@noble.neil.brown.name>,
+ <CAJfpegsR1qvWAKNmdjLfOewUeQy-b6YBK4pcHf7JBExAqqUvvg@mail.gmail.com>,
+ <162762562934.21659.18227858730706293633@noble.neil.brown.name>,
+ <CAJfpegtu3NKW9m2jepRrXe4UTuD6_3k0Y6TcCBLSQH7SSC90BA@mail.gmail.com>,
+ <162763043341.21659.15645923585962859662@noble.neil.brown.name>,
+ <CAJfpegub4oBZCBXFQqc8J-zUiSW+KaYZLjZaeVm_cGzNVpxj+A@mail.gmail.com>
+Date:   Mon, 02 Aug 2021 14:18:29 +1000
+Message-id: <162787790940.32159.14588617595952736785@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 31/07/2021 15:42, Qu Wenruo wrote:
-> [HICCUP]
-> There is a bug report that mkfs.btrfs -R free-space-tree still makes
-> kernel to try to cleanup the v1 space cache:
+On Fri, 30 Jul 2021, Miklos Szeredi wrote:
+> On Fri, 30 Jul 2021 at 09:34, NeilBrown <neilb@suse.de> wrote:
 > 
->    # mkfs.btrfs -R free-space-tree -f /dev/test/scratch1
->    # mount /dev/test/scratch1 /mnt/btrfs
->    # dmesg | grep cleaning
->    BTRFS info (device dm-6): cleaning free space cache v1
+> > But I'm curious about your reference to "some sort of subvolume
+> > structure that the VFS knows about".  Do you have any references, or can
+> > you suggest a search term I could try?
 > 
-> [CAUSE]
-> By default, mkfs.btrfs will set super cache generation to (u64)-1, which
-> will inform kernel that the v1 space cache is invalid, needs to
-> regenerate it.
-> 
-> But for free space cache tree, kernel will set super cache generation to
-> 0, to indicate v1 space cache is not in use.
-> 
-> This means, even we enabled free space tree with all the RO compatible
-> bits and new tree, as long as super cache generation is not 0, kernel
-> still consider the fs has some invalid v1 space cache, and will try to
-> remove them.
-> 
-> [FIX]
-> This is not a big deal, but to make the "-R free-space-tree" to really
-> work as kernel, we also need to set super cache generation to 0.
-> 
-> Reported-by: Chris Murphy <lists@colorremedies.com>
-> Link: https://lore.kernel.org/linux-btrfs/CAJCQCtSvgzyOnxtrqQZZirSycEHp+g0eDH5c+Kw9mW=PgxuXmw@mail.gmail.com/
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Looks good.
-
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-
-
-> ---
->   kernel-shared/free-space-tree.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-tree.c
-> index 2edc7fc716f5..7f589dfef950 100644
-> --- a/kernel-shared/free-space-tree.c
-> +++ b/kernel-shared/free-space-tree.c
-> @@ -1447,6 +1447,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
->   
->   	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE);
->   	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
-> +	btrfs_set_super_cache_generation(fs_info->super_copy, 0);
->   
->   	ret = btrfs_commit_transaction(trans, tree_root);
->   	if (ret)
+> Found this:
+> https://lore.kernel.org/linux-fsdevel/20180508180436.716-1-mfasheh@suse.de/
 > 
 
+Excellent, thanks.  Very useful.
+
+OK.  Time for a third perspective.
+
+With its current framing the problem is unsolvable.  So it needs to be
+reframed.
+
+By "current framing", I mean that we are trying to get btrfs to behave
+in a way that meets current user-space expectations.  Specially, the
+expectation that each object in any filesystem can be uniquely
+identified by a 64bit inode number.  btrfs provides functionality which
+needs more than 64bits.  So it simple does not fit.  btrfs currently
+fudges with device numbers to hide the problem.  This is at best an
+incomplete solution, and is already being shown to be insufficient.
+
+Therefore we need to change user-space expectations.  This has been done
+before multiple times - often by breaking things and leaving it up to
+user-space to fix it.  My favourite example is that NFSv2 broke the
+creation of lock files with O_CREAT|O_EXCL.  USER-space starting using
+hard-links to achieve the same result.  When NFSv3 added reliable
+O_CREAT|O_EXCL support, it hardly mattered.... but I digress.
+
+It think we need to bite-the-bullet and decide that 64bits is not
+enough, and in fact no number of bits will ever be enough.  overlayfs
+makes this clear.  overlayfs merges multiple filesystems, and so needs
+strictly more bits to uniquely identify all inodes than any of the
+filesystems use.  Currently it over-loads the high bits and hopes the
+filesystem doesn't use them.
+
+The "obvious" choice for a replacement is the file handle provided by
+name_to_handle_at() (falling back to st_ino if name_to_handle_at isn't
+supported by the filesystem).  This returns an extensible opaque
+byte-array.  It is *already* more reliable than st_ino.  Comparing
+st_ino is only a reliable way to check if two files are the same if you
+have both of them open.  If you don't, then one of the files might have
+been deleted and the inode number reused for the other.  A filehandle
+contains a generation number which protects against this.
+
+So I think we need to strongly encourage user-space to start using
+name_to_handle_at() whenever there is a need to test if two things are
+the same.
+
+This frees us to be a little less precise about assuring st_ino is
+always unique, but only a little.  We still want to minimize conflicts
+and avoid them in common situations.
+
+A filehandle typically has some bytes used to locate the inode -
+"location" - and some to validate it - "generation".  In general, st_ino
+must now be seen as a hash of the "location".  It could be a generic hash
+(xxhash? jhash?) or it could be a careful xor of the bits.
+
+For btrfs, the "location" is root.objectid ++ file.objectid.  I think
+the inode should become (file.objectid ^ swab64(root.objectid)).  This
+will provide numbers that are unique until you get very large subvols,
+and very many subvols.  It also ensures that two inodes in the same
+subvol will be guaranteed to have different st_ino.
+
+This will quickly cause problems for overlayfs as it means that if btrfs
+is used with overlayfs, the top few bits won't be zero.  Possibly btrfs
+could be polite and shift the swab64(root.objectid) down 8 bits to make
+room.  Possible overlayfs should handle this case (top N-bits not all
+zero), and switch to a generic hash of the inode number (or preferably
+the filehandle) to (64-N bits).
+
+If we convince user-space to use filehandles to compare objects, the NFS
+problems I initially was trying to address go away.  Even before that,
+if btrfs switches to a hashed (i.e. xor) inode number, then the problems
+also go away.  but they aren't the only problems here.
+
+Accessing the fhandle isn't always possible.  For example reading
+/proc/locks reports major:minor:inode-number for each file (This is the
+major:minor from the superblock, so btrfs internal dev numbers aren't
+used).  The filehandle is simply not available.  I think the only way
+to address this is to create a new file. "/proc/locks2" :-)
+Similarly the "lock:" lines in /proc/$PID/fdinfo/$FD need to be duplicated
+as "lock2:" lines with filehandle instead of inode number.  Ditto for
+'inotify:' lines and possibly others.
+
+Similarly /proc/$PID/maps contains the inode number with no fhandle.
+The situation isn't so bad there as there is a path name, and you can
+even call name_to_handle_at("/proc/$PID/map_files/$RANGE") to get the
+fhandle.  It might be better to provide a new file though.
+
+Next we come to the use of different device numbers in the one btrfs
+filesystem.  I'm of the opinion that this was an unfortunately choice
+that we need to deprecate.  Tools that use fhandle won't need it to
+differentiate inodes, but there is more to the story than just that
+need.
+
+As has been mentioned, people depend on "du -x" and "find -mount" (aka
+"-xdev") to stay within a "subvol".  We need to provide a clean
+alternate before discouraging that usage.
+
+xfs, ext4, fuse, and f2fs each (can) maintain a "project id" for each
+inode, which effectively groups inodes into a tree.  This is used for
+project quotas.  At one level this is conceptually very similar to the
+btrfs subtree.root.objectid.  It is different in that it is only 32 bits
+(:-[) and is mapped between user name-spaces like uids and gids.  It is
+similar in that it identifies a group of inodes that are accounted
+together and are (generally) contiguous in a tree.
+
+If we encouraged "du" to have a "--proj" option (-j) which stays within
+a project, and gave a similar option to find, that could be broadly
+useful.  Then if btrfs provided the subvol objectid as fsx_projid
+(available in FS_IOC_FSGETXATTR ioctl), then "du --proj" on btrfs would
+stay in a subvol.  Longer term it might make sense to add a 64bit
+project-id to statx.  I don't think it would make sense for btrfs to
+have a 'project' concept that is different from the "subvolume".
+
+It would be cool if "df" could have a "--proj" (or similar) flag so that
+it would report the usage of a "subtree" (given a path).  Unfortunately
+there isn't really an interface for this.  Going through the quota
+system might be nice, I don't think it would work.
+
+Another thought about btrfs device numbers is that, providing inode
+numbers are (nearly) unique, we don't really need more than 2.  A btrfs
+filesystem could allocate 2 anon device numbers.  One would be assigned
+to the root, and each subvolume would get whichever device number its
+parent doesn't have.  This would stop "du -x" and "find -mount" and
+similar from crossing into subvols.  There could be a mount option to
+select between "1", "2", and "many" device numbers for a filesystem.
+
+- I note that cephfs place games with st_dev too....  I wonder if we can
+  learn anything from that. 
+- audit uses sb->s_dev without asking the filesystem.  So it won't
+  handle  btrfs correctly.  I wonder if there is room for it to use
+  file handles.
+
+I accept that I'm proposing some BIG changes here, and they might break
+things.  But btrfs is already broken in various ways.  I think we need a
+goal to work towards which will eventually remove all breakage and still
+have room for expansion.  I think that must include:
+
+- providing as-unique-as-practical inode numbers across the whole
+  filesystem, and deprecating the internal use of different device
+  numbers.  Make it possible to mount without them ASAP, and aim to
+  make that the default eventually.
+- working with user-space tool/library developers to use
+  name_to_handle_at() to identify inodes, only using st_ino
+  as a fall-back
+- adding filehandles to various /proc etc files as needed, either
+  duplicating lines or duplicating files.  And helping application which
+  use these files to migrate (I would *NOT* change the dev numbers in
+  the current file to report the internal btrfs dev numbers the way that
+  SUSE does.  I would prefer that current breakage could be used to
+  motivate developers towards depending instead on fhandles).
+- exporting subtree (aka subvol) id to user-space, possibly paralleling
+  proj_id in some way, and extending various tools to understand
+  subtrees
+
+Who's with me??
+
+NeilBrown
