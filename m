@@ -2,52 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A1B3DD16D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 09:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7073DD191
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 09:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbhHBHpZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Aug 2021 03:45:25 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43546 "EHLO
+        id S232544AbhHBHyA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Aug 2021 03:54:00 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44814 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbhHBHpY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Aug 2021 03:45:24 -0400
+        with ESMTP id S232482AbhHBHx7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Aug 2021 03:53:59 -0400
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CCC9B1FF3C;
-        Mon,  2 Aug 2021 07:45:14 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1B3D11FF3C;
+        Mon,  2 Aug 2021 07:53:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627890314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1627890829; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PebslToj3AADAmIgayvRbSS9q6qQlRuS4L+jp9SZ8sM=;
-        b=OWOywRwJwcZ/vyil34cZH5Q2PL/gews9Avd4aHM/dElpot1UOVagzRuDjotvObJ1n80UJm
-        xeI9N+0cttvj7+8ypRWnsBTgxp+9nqotzCqagn2My8EVSOn3IakzYSpyA0c0Bg77AGftsw
-        PYO4nfaO+Vj7yxQbjSgECMSm47j9Cpk=
+        bh=HOHrIFvuT6FRiwUN+q8oJADr1ERkkksGh9BokepR/cc=;
+        b=uB8aQOLVJk6jq1uKpqyTmD+s448MsUDRHoBIxCg2btTi2h+OEfMRO2GVp3ltGMZxAzNPL/
+        5jlp38q/cpP4hwsa3O4hQZZNEuxkDZ/ida6m9xKunKrQy8UineupnFMNrnSa+dEJaqcuxh
+        3ibQlnp953Fhg23+sJjcvyZC7aGMXK0=
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 9FD381363C;
-        Mon,  2 Aug 2021 07:45:14 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id EA91F13664;
+        Mon,  2 Aug 2021 07:53:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id Udq8JIqiB2EreQAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Mon, 02 Aug 2021 07:45:14 +0000
-Subject: Re: [PATCH] btrfs-progs: mkfs: set super_cache_generation to 0 if
- we're using free space tree
+        id gZjVNoykB2GnewAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Mon, 02 Aug 2021 07:53:48 +0000
+Subject: Re: [PATCH 2/2] btrfs: replace BUG_ON() in btrfs_csum_one_bio() with
+ proper error handling
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Chris Murphy <lists@colorremedies.com>
-References: <20210731074240.206263-1-wqu@suse.com>
+References: <20210802065447.178726-1-wqu@suse.com>
+ <20210802065447.178726-3-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <3ff8d410-3b05-0695-63d8-47284ac288aa@suse.com>
-Date:   Mon, 2 Aug 2021 10:45:14 +0300
+Message-ID: <594df624-3895-8787-9058-a00dba01c0cc@suse.com>
+Date:   Mon, 2 Aug 2021 10:53:48 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210731074240.206263-1-wqu@suse.com>
+In-Reply-To: <20210802065447.178726-3-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -57,53 +57,55 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 31.07.21 г. 10:42, Qu Wenruo wrote:
-> [HICCUP]
-> There is a bug report that mkfs.btrfs -R free-space-tree still makes
-> kernel to try to cleanup the v1 space cache:
+On 2.08.21 г. 9:54, Qu Wenruo wrote:
+> The BUG_ON() in btrfs_csum_one_bio() means we're trying to submit a bio
+> while we don't have ordered extent for it at all.
 > 
->   # mkfs.btrfs -R free-space-tree -f /dev/test/scratch1
->   # mount /dev/test/scratch1 /mnt/btrfs
->   # dmesg | grep cleaning
->   BTRFS info (device dm-6): cleaning free space cache v1
+> Normally this won't happen and is indeed a code logical error.
 > 
-> [CAUSE]
-> By default, mkfs.btrfs will set super cache generation to (u64)-1, which
-> will inform kernel that the v1 space cache is invalid, needs to
-> regenerate it.
+> But previous fix has already shown another possibility that, some call
+> sites don't handle error properly and submit the write bio after its
+> ordered extent has already been cleaned up.
 > 
-> But for free space cache tree, kernel will set super cache generation to
-> 0, to indicate v1 space cache is not in use.
+> This patch will add an extra safe net by replacing the BUG_ON() to
+> proper error handling.
 > 
-> This means, even we enabled free space tree with all the RO compatible
-> bits and new tree, as long as super cache generation is not 0, kernel
-> still consider the fs has some invalid v1 space cache, and will try to
-> remove them.
+> And even if some day we hit a regression that we're submitting bio
+> without an ordered extent, we will return error and the pages will be
+> marked Error, and being caught properly.
+
+Would this hamper debugability? I.e it will result in some writes
+failing with an error, right?
+
 > 
-> [FIX]
-> This is not a big deal, but to make the "-R free-space-tree" to really
-> work as kernel, we also need to set super cache generation to 0.
-> 
-> Reported-by: Chris Murphy <lists@colorremedies.com>
-> Link: https://lore.kernel.org/linux-btrfs/CAJCQCtSvgzyOnxtrqQZZirSycEHp+g0eDH5c+Kw9mW=PgxuXmw@mail.gmail.com/
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
->  kernel-shared/free-space-tree.c | 1 +
->  1 file changed, 1 insertion(+)
+>  fs/btrfs/file-item.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-tree.c
-> index 2edc7fc716f5..7f589dfef950 100644
-> --- a/kernel-shared/free-space-tree.c
-> +++ b/kernel-shared/free-space-tree.c
-> @@ -1447,6 +1447,7 @@ int btrfs_create_free_space_tree(struct btrfs_fs_info *fs_info)
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 2673c6ba7a4e..25205b9dad69 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -665,7 +665,19 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
 >  
->  	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE);
->  	btrfs_set_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID);
-> +	btrfs_set_super_cache_generation(fs_info->super_copy, 0);
+>  		if (!ordered) {
+>  			ordered = btrfs_lookup_ordered_extent(inode, offset);
+> -			BUG_ON(!ordered); /* Logic error */
+> +			/*
+> +			 * No ordered extent mostly means the OE has been
+> +			 * removed (mostly for error handling). Normally for
+> +			 * such case we should not flush_write_bio(), but
+> +			 * end_write_bio().
+> +			 *
+> +			 * But an extra safe net will never hurt. Just error
+> +			 * out.
+> +			 */
+> +			if (unlikely(!ordered)) {
+> +				kvfree(sums);
+> +				return BLK_STS_IOERR;
+> +			}
+>  		}
 >  
->  	ret = btrfs_commit_transaction(trans, tree_root);
->  	if (ret)
+>  		nr_sectors = BTRFS_BYTES_TO_BLKS(fs_info,
 > 
