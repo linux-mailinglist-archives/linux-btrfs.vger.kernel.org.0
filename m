@@ -2,172 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB003DDA5C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 16:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959023DDAC5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Aug 2021 16:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235024AbhHBONk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Aug 2021 10:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239164AbhHBOL5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Aug 2021 10:11:57 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45235C09B070
-        for <linux-btrfs@vger.kernel.org>; Mon,  2 Aug 2021 06:53:44 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id x3so16580915qkl.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Aug 2021 06:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7YZ+YWuu0r8ls2F/ASXAfqcelR3faj3UC8eZqkF+Zko=;
-        b=pi2O34Gbu2DJiPT2DXuDG4QdH2iMvOdf7tSszje2qigN/T8dFHQH1pZvveTmPZn6j+
-         n+3K6aI91XYsSTxYK5jB8LHLswOYhOtyzb1/xWaQKFKzEy3YX52WVV2Dqhsu07r6IDBy
-         /Msf3u0R5zINNltrJUS4FpJrqYDP/afbpxcJpNpJXUIUeChB3cG/u39CTUTc6tYtV8MR
-         m9IixiU2rlsVICCdlryAlPFb6PkwD//xhAm4KiY3GiDBnyp1U/RkfoGK9NZkWcfIxAVy
-         CpJ7xSMq8XqGrE/t7mnlmMpciZNikmfd2pCBtxlfO7JcrlZYbk6z+N+tEp+CIhBteKHm
-         2tGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7YZ+YWuu0r8ls2F/ASXAfqcelR3faj3UC8eZqkF+Zko=;
-        b=Y0+eGMUd3J4M31YICWxN/+6xKP4rz6aDUqiSIYJ6Gypjd1VK6OBWMdlymQbiiDUiAQ
-         2slCT5+Gz4rX3wuqSuuedVXeejX5z01E8E0Vq+25s1ZAwq+iaw89/+aAEuuebGhtZUVM
-         JKTqJoYV4RSMSL9LRjQ21C8gv6Ni8LxpH/QnCfOUJEgv+95KXMK1D0U8y/rowD4Pc+yG
-         nS/fya+gozNamLvOrCU86S4J1NeeUmbpKtJzZVrtZI44m3yZLm3NvZZbdVG9ERdb9kcc
-         A22ciPNNhsHeyZIUrIFb468aL7N2MbrwKG3EnUj+pxg4Df6J/jo3I7RVrGV6JAmoipc1
-         BEQA==
-X-Gm-Message-State: AOAM533aAS8cQaSQOFX0CuX0qZHgQKt95i+H25zrYGGd2H0KjU5lvDJJ
-        9SLJtx5zJOERtyBAOo38VD6lPlWX8ZIZuQ==
-X-Google-Smtp-Source: ABdhPJydpVHsw4eOuMz3Y7rq9l4GuTxSALmGUmQoE814YRrjc3UCGWfVQPb8BvvAzRQHbeEJTDf+tA==
-X-Received: by 2002:a05:620a:233:: with SMTP id u19mr15753757qkm.48.1627912422875;
-        Mon, 02 Aug 2021 06:53:42 -0700 (PDT)
-Received: from [192.168.1.110] (38-132-189-23.dynamic-broadband.skybest.com. [38.132.189.23])
-        by smtp.gmail.com with ESMTPSA id a127sm6015928qkc.121.2021.08.02.06.53.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Aug 2021 06:53:42 -0700 (PDT)
-Subject: Re: A Third perspective on BTRFS nfsd subvol dev/inode number issues.
-To:     Amir Goldstein <amir73il@gmail.com>, NeilBrown <neilb@suse.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Christoph Hellwig <hch@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS list <linux-nfs@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
- <162742546548.32498.10889023150565429936.stgit@noble.brown>
- <YQNG+ivSssWNmY9O@zeniv-ca.linux.org.uk>
- <162762290067.21659.4783063641244045179@noble.neil.brown.name>
- <CAJfpegsR1qvWAKNmdjLfOewUeQy-b6YBK4pcHf7JBExAqqUvvg@mail.gmail.com>
- <162762562934.21659.18227858730706293633@noble.neil.brown.name>
- <CAJfpegtu3NKW9m2jepRrXe4UTuD6_3k0Y6TcCBLSQH7SSC90BA@mail.gmail.com>
- <162763043341.21659.15645923585962859662@noble.neil.brown.name>
- <CAJfpegub4oBZCBXFQqc8J-zUiSW+KaYZLjZaeVm_cGzNVpxj+A@mail.gmail.com>
- <162787790940.32159.14588617595952736785@noble.neil.brown.name>
- <YQeB3ASDyO0wSgL4@zeniv-ca.linux.org.uk>
- <162788285645.32159.12666247391785546590@noble.neil.brown.name>
- <CAOQ4uxgnGWMUvtyJ0MMxMzHFwiyR68FHorDNmLSva0CdpVNNcQ@mail.gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <2337f1ba-ffed-2369-47a0-5ffda2d8b51c@toxicpanda.com>
-Date:   Mon, 2 Aug 2021 09:53:41 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234904AbhHBOVI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Aug 2021 10:21:08 -0400
+Received: from mout.gmx.net ([212.227.17.21]:58929 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234486AbhHBOUy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Aug 2021 10:20:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627914043;
+        bh=xkmHkfdrMIWRgnPujhS7fBjhPu5H1xQq4xGMunOK8lo=;
+        h=X-UI-Sender-Class:From:To:Subject:Date;
+        b=FeRtCkvRLCNM9qSEVmnlTXZk0gBpSfijccLfhkSnJGtM5WFx/i2IUADv4xICFeeum
+         8ZZ9+7qUBuO+EK7Ewz0HJGsdrqfJ5CfWkfM24yQj7cwOZGLuDGeCRgl3QnSseRbPCL
+         A8Lin+PpL65W/AqMO8i2m8NmSzNGQAWkdJwWdKKg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [89.14.188.180] ([89.14.188.180]) by web-mail.gmx.net
+ (3c-app-gmx-bap64.server.lan [172.19.172.134]) (via HTTP); Mon, 2 Aug 2021
+ 16:20:43 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAOQ4uxgnGWMUvtyJ0MMxMzHFwiyR68FHorDNmLSva0CdpVNNcQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-ID: <trinity-59843172-879e-4efd-9b35-bbfed0ed52c6-1627914043406@3c-app-gmx-bap64>
+From:   telsch <telsch@gmx.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: Random csum errors
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 2 Aug 2021 16:20:43 +0200
+Importance: normal
+Sensitivity: Normal
+X-Priority: 3
+X-Provags-ID: V03:K1:6YVVqS73JxhmUreFnkVWR1Vbiqvtx95S3WGt5wpzAWKxpebCbSWQatF153vyuOfCioci4
+ n79bzdVWK7V+8HOnY4pXBdBOVkBGtowlkjdQqu0meQRFxc1UxNuvNHkxpmHzfNquP5/Bf1fE8pAT
+ tPLl8SAGcRS4/AC/tsyM3DiXSHgP688k5Cy+heHviW6WxhfTZHhlpdW0hyPDTcdcF26njZDNIQWW
+ 0q0LrZ89UTixiHRIeHJsOo5w4oYk1ZPA4aZlOySJC9lGd/I/exiw6hGPFzwWJ3y3pv/YsZoyuFao
+ i8=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:A8wrOngqUfo=:7C1MaBL5ehO6ygXU+VVcbB
+ 6Xif817J5HSGjgjlgAXe5A91KI3NHarCSQZs2qaNpsHLvHJhAdm3G6BcIJz12wkosVDO3yn6N
+ /wzk7eod9Maj3Fu8eoRoTLCtahGclLNPtf7yVlNjYAXd4+l9O87lEYHO9q6RjaubvGueZgR1q
+ nGiCejCqcAH4/vyL6PNo/epd51H04HXWP6wh7r36LKFySc/9LSnVOhQ+MFZSQdQ8Nh9j2IF4E
+ 3Y+3sdYSFrDGiiVjgoiBiiTaCXjJ9U6cDmG7eyF+/79mG1uba7L7u/VPJIl6h821MZ9T0cpBy
+ orxr12JCU/46HlbUER36tO3KA5g166s+yvS+Tw1h36ApHxiBrN9QgfTm6tKfDYTxCr/z4suuD
+ y7d2FaF4qNAkH4cZ2T0C4XN6LPXMq6l8UqHKVuYHTaCEzcHlctdztErdh0/6FJCXSRI6PwBRL
+ FV85HkRSN2vQUwNBaph+4D8pkiyguhlX1WYKUMo3ZXo102Bw20AzME9R/P1LZmLd4PCua8K5+
+ Gbe1pR+iOIJWUL+U8A1YWnwn3ezVTEi3a3X+PNggqKnBgOktCZ2npy1L6XxmmC7AZpI+fAjU7
+ dWFRCn+OI9OYPl3XqiCbhoRSJFrky09yEgt+xN23VVpCrHuGu0WqxgErIvne3CSJvINTOUaJ5
+ 7Tn1SM2Gdlkhliaq0heJfbd+UHj4Mr6S/10HJZ4+lVqRNDCKqUC66xGpvq/qu+2u93ox+OBjo
+ liZNP4tkDdoUyM75pEjnGTYQ6Yu394PRgNuoK6v09JPI53UBXybLv7Ok8kampXVtGLrLVaxwJ
+ geORQKdxrN+FxsQqpKSX/cSvPuLtA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/2/21 3:54 AM, Amir Goldstein wrote:
-> On Mon, Aug 2, 2021 at 8:41 AM NeilBrown <neilb@suse.de> wrote:
->>
->> On Mon, 02 Aug 2021, Al Viro wrote:
->>> On Mon, Aug 02, 2021 at 02:18:29PM +1000, NeilBrown wrote:
->>>
->>>> It think we need to bite-the-bullet and decide that 64bits is not
->>>> enough, and in fact no number of bits will ever be enough.  overlayfs
->>>> makes this clear.
->>>
->>> Sure - let's go for broke and use XML.  Oh, wait - it's 8 months too
->>> early...
->>>
->>>> So I think we need to strongly encourage user-space to start using
->>>> name_to_handle_at() whenever there is a need to test if two things are
->>>> the same.
->>>
->>> ... and forgetting the inconvenient facts, such as that two different
->>> fhandles may correspond to the same object.
->>
->> Can they?  They certainly can if the "connectable" flag is passed.
->> name_to_handle_at() cannot set that flag.
->> nfsd can, so using name_to_handle_at() on an NFS filesystem isn't quite
->> perfect.  However it is the best that can be done over NFS.
->>
->> Or is there some other situation where two different filehandles can be
->> reported for the same inode?
->>
->> Do you have a better suggestion?
->>
-> 
-> Neil,
-> 
-> I think the plan of "changing the world" is not very realistic.
-> Sure, *some* tools can be changed, but all of them?
-> 
-> I went back to read your initial cover letter to understand the
-> problem and what I mostly found there was that the view of
-> /proc/x/mountinfo was hiding information that is important for
-> some tools to understand what is going on with btrfs subvols.
-> 
-> Well I am not a UNIX history expert, but I suppose that
-> /proc/PID/mountinfo was created because /proc/mounts and
-> /proc/PID/mounts no longer provided tool with all the information
-> about Linux mounts.
-> 
-> Maybe it's time for a new interface to query the more advanced
-> sb/mount topology? fsinfo() maybe? With mount2 compatible API for
-> traversing mounts that is not limited to reporting all entries inside
-> a single page. I suppose we could go for some hierarchical view
-> under /proc/PID/mounttree. I don't know - new API is hard.
-> 
-> In any case, instead of changing st_dev and st_ino or changing the
-> world to work with file handles, why not add inode generation (and
-> maybe subvol id) to statx().
-> filesystem that care enough will provide this information and tools that
-> care enough will use it.
-> 
+Dear devs,
 
-Can y'all wait till I'm back from vacation, goddamn ;)
+since 26.07. scrub keeps reporting csum errors with random files.
+I replaced these files from backups. Then deleted the snapshots that still contained the
+the corrupt files. Snapshot with corrupt files I have determined with md5sum, here I get an input/output error.
+Following new scrub, still finds new csum errors that did not exist before.
 
-This is what I'm aiming for, I spent some time looking at how many 
-places we string parse /proc/<whatever>/mounts and my head hurts.
+Beginning with Kernel 5.10.52, current 5.10.55
+btrfs-progs 5.13
 
-Btrfs already has a reasonable solution for this, we have UUID's for 
-everything.  UUID's aren't a strictly btrfs thing either, all the file 
-systems have some sort of UUID identifier, hell its built into blkid.  I 
-would love if we could do a better job about letting applications query 
-information about where they are.  And we could expose this with the 
-relatively common UUID format.  You ask what fs you're in, you get the 
-FS UUID, and then if you're on Btrfs you get the specific subvolume UUID 
-you're in.  That way you could do more fancy things like know if you've 
-wandered into a new file system completely or just a different subvolume.
+Disk layout with problems:
 
-We have to keep the st_ino/st_dev thing for backwards compatibility, but 
-make it easier to get more info out of the file system.
+mdadm raid10 4xhdd => bcache => luks
+mdadm raid6  4xhdd => bcache => luks
 
-We could in theory expose just the subvolid also, since that's a nice 
-simple u64, but it limits our ability to do new fancy shit in the 
-future.  It's not a bad solution, but like I said I think we need to 
-take a step back and figure out what problem we're specifically trying 
-to solve, and work from there.  Starting from automounts and working our 
-way back is not going very well.  Thanks,
+Already replaced 2 old hdds with high Raw_Read_Error_Rate values.
 
-Josef
+Aug 02 15:43:18 server kernel: BTRFS info (device dm-0): scrub: started on devid 1
+Aug 02 15:46:06 server kernel: BTRFS warning (device dm-0): checksum error at logical 462380818432 on dev /dev/mapper/root, physical 31640150016, root 29539, inode 27412268, offset 131072, length 4096, links 1 (path: docker-volumes/mayan-edms/media/document_cache/804391c5-e3fe-4941-96dc-ecc0a1d5d8c9-23-1815-92bcac02c4a72586e21044c0b244b052f5747c7d2c25e6086ca89ca64098e3f3)
+Aug 02 15:46:06 server kernel: BTRFS error (device dm-0): bdev /dev/mapper/root errs: wr 0, rd 0, flush 0, corrupt 414, gen 0
+Aug 02 15:46:06 server kernel: BTRFS error (device dm-0): unable to fixup (regular) error at logical 462380818432 on dev /dev/mapper/root
+Aug 02 15:47:25 server kernel: BTRFS info (device dm-0): scrub: finished on devid 1 with status: 0
