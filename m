@@ -2,174 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BE53DE73D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Aug 2021 09:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37B83DF511
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Aug 2021 20:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234108AbhHCHeh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Aug 2021 03:34:37 -0400
-Received: from mail.synology.com ([211.23.38.101]:39160 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234065AbhHCHee (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:34:34 -0400
-Subject: Re: [PATCH] Btrfs: fix root drop key mismatch when drop snapshot
- fails
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1627976063; bh=bBHI5hxjuEP1QRyZL7ShDjgNdVTpFiefjLsZpmDItkc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=t1rUqY52VTKqpWS/iAVp+DVENkj6dsPOmJ/6HBW1JCd3dtUb+kbmGsYlH4UktltYX
-         kdfUjMWJoApSK2+si6Aqq/jyYkL7mxrfnrQCzWv6+sn8flQP0DSC6hF0eWu9/sjvl5
-         9SspWoFRiO5RXqayP1cqFh2JpQFWW6FzGpIRnArI=
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20210802104004.733-1-robbieko@synology.com>
- <CAL3q7H6BpnTLqugMh7NrSSqdB4NE4HnuWPYmKOV79UD3v3UBsA@mail.gmail.com>
-From:   robbieko <robbieko@synology.com>
-Message-ID: <2e781b79-2b7c-f88f-17d4-9d237b65d67e@synology.com>
-Date:   Tue, 3 Aug 2021 15:36:50 +0800
+        id S238316AbhHCSzZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Aug 2021 14:55:25 -0400
+Received: from mout.gmx.net ([212.227.17.21]:54333 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238385AbhHCSzZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Aug 2021 14:55:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628016907;
+        bh=oEecvV0oeHw/fM4TUI0N66b2DGAZm6lMNIVUa70X0Qs=;
+        h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
+        b=XhV/wTEtlbO9EmIeCinLvSaYRy8I4DmAVNNQxQzblkh2XA5WDmu9tp+CsuWzRwL0l
+         OKGeOZeY+jZW7pe7KZJ7zC/nLgDbgeO2qyUD7aStF9R4Pyp/jBasQxoiEd2Hm7eEAe
+         nXQ3kE2jOgETb6l4pIO+1Ph8HHPZY55gcb5apIJg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [77.11.47.8] ([77.11.47.8]) by web-mail.gmx.net
+ (3c-app-gmx-bap48.server.lan [172.19.172.118]) (via HTTP); Tue, 3 Aug 2021
+ 20:55:07 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H6BpnTLqugMh7NrSSqdB4NE4HnuWPYmKOV79UD3v3UBsA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Antivirus: Avast (VPS 210803-0, 2021/8/3), Outbound message
-X-Antivirus-Status: Clean
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+Message-ID: <trinity-7b251a66-4376-4938-91f7-9fae2a72c5ef-1628016907507@3c-app-gmx-bap48>
+From:   telsch <telsch@gmx.de>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        linux-btrfs@vger.kernel.org
+Subject: Aw: Re: Random csum errors
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 3 Aug 2021 20:55:07 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20210802233850.GO10170@hungrycats.org>
+References: <trinity-59843172-879e-4efd-9b35-bbfed0ed52c6-1627914043406@3c-app-gmx-bap64>
+ <20210802233850.GO10170@hungrycats.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:/4Y7UM9tuLH/MYgXC/gQ0nZxIV4fV7mq8JvjIxabDXju6jWbh6RIxPDhhFqOIwshIn2VX
+ UotMixde807hDiNJ7BU9iKFb2JSLn49T0abfzy8imd/9bKG+Jsa76qn1jOvbPWNkEbPZB2KUIxK6
+ EyiccABpY05o7jHlYWAecbBAO4BZwQoULLdrmUKHV2X0tbuZYQy9+uFG5KklhHZIYAih4O07iLVQ
+ gbQAzp2G/5FLS0YjNNoRBY/6D6LbG54JKjmPUYDKS8zxE13mpH2K74mktXeiWqtBo++aVTbkHfYP
+ G4=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eGKhAwmnIE0=:NhttRT74Yk3wV9q8td2akY
+ ObPdSODeUOcOijdSTy/p1aQMKT0FluFp+JLFvnYCJhQmhyu6Adkq3Sq7sYwT2M6sFGL/Ir7fg
+ 4NER5TeDL6axaiq7zBghTyx9yI4C72t/ObpgyRO35cnNYZXMczaWxmxZocw3/uA9KE8jaT0i2
+ C2pKbC61PoIGt16mdjTKjMgQWqqvkZFVqU3O3h4p90WGlKwL1cAFx8tBLLVmy2iUdU8h+0EB/
+ /xuwjfCUdzdu2+ARVAzNFvpSRm9lG8sMOaUfe8S+o+2tGSnIceWEf4MwOWEyBzi4n0VcWjtww
+ krcoNgZyL/Fq+YfGwDxbiRpcpb131JkUsdMaGjeDrXuWC+HWqc8yGuATbdVHSRMTlnAz55jKE
+ S2FoZhpfQiyKG/y3K/fLO8VnfG/9WrgRADhEYaoP1MLyMJI7OUKItyIj+OwnI6VkrJbUfJLHA
+ wiuiF1wrxlcovnD+R0PJo+Q/duUeycVCl13g5tDuyOetJjO5ySqZ5vYtMJCt3Tlw2xr8C5rq2
+ NYETHDQaDzYLW/f7o2/PCavq49n/ETlkozHxyIVcn0SvyA8Ul58+2LZUYZ96lh9gz+JcvJtJ4
+ sLXlp6AXjFt2/VT/5ovh4Lacb71fWPqaR5g6zui6iX9TTSgMQQZ9fgIVQsYDDced5Y0UTK7qI
+ QwiypyKcnn6Pi4k4WqC500ItgNAeH2V8NikdDmpDVFbM+DqR8MEUzTyyGHkAQj6f7We3BUFlZ
+ j/OhjctursXkkz1rqudQAV6jbGDt0yNBq0Vy0TaMgJ5rmMTEll+SNXg+xLT8ByoxPY9zoInfd
+ 5uQTLAspmbVdDkTmNilzAEYVVyhBA==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Filipe Manana 於 2021/8/2 下午 07:28 寫道:
-> On Mon, Aug 2, 2021 at 11:41 AM robbieko <robbieko@synology.com> wrote:
->> From: Robbie Ko <robbieko@synology.com>
->>
->> When walk down/up tree fails, we did not abort the transaction,
->> nor did modify the root drop key, but the refs of some tree blocks
->> may have been removed in the transaction.
->>
->> Therefore, when we retry to delete subvol in the future, and
->> missing reference occurs when lookup extent info.
-> This sentence is confusing, it took me some time to understand it.
+> On Mon, Aug 02, 2021 at 04:20:43PM +0200, telsch wrote:
+> > Dear devs,
+> >
+> > since 26.07. scrub keeps reporting csum errors with random files.
+> > I replaced these files from backups. Then deleted the snapshots that s=
+till contained the
+> > the corrupt files. Snapshot with corrupt files I have determined with =
+md5sum, here I get an input/output error.
+> > Following new scrub, still finds new csum errors that did not exist be=
+fore.
+> >
+> > Beginning with Kernel 5.10.52, current 5.10.55
+> > btrfs-progs 5.13
+> >
+> > Disk layout with problems:
+> >
+> > mdadm raid10 4xhdd =3D> bcache =3D> luks
+> > mdadm raid6  4xhdd =3D> bcache =3D> luks
 >
-> Something like:
+> Missing information:  what are the model/firmware revision of the
+> devices, is the bcache in writeback or writethrough mode, how many
+> SSDs are there, is there a separate bcache SSD for each HDD or are
+> multiple HDDs sharing any bcache SSDs?
+
+1 SanDisk SDSSDA120G/Firmware Version: Z22000RL
+I'm using only one SSD in writearound mode for both arrays.
+
 >
-> Therefore when we retry to delete the subvolume in the future, we will
-> fail due to
-> the fact that some references were deleted in the previous attempt:
+> Based on the symptoms, the most likely case is there's one SSD or a
+> mdadm-mirrored pair of SSDs for bcache, and at least one SSD is failing.
+> It may be a SSD that is not rated for caching use cases, or a SSD with
+> firmware bugs that prevent reliable error reporting.  It's also possible
+> one or more HDDs is silently corrupting data, but that is less common
+> in the wild.
 >
->> ------------[ cut here ]------------
->> WARNING: at fs/btrfs/extent-tree.c:898 btrfs_lookup_extent_info+0x40a/0x4c0 [btrfs]()
->> CPU: 2 PID: 11618 Comm: btrfs-cleaner Tainted: P
->> Hardware name: Synology Inc. RS3617xs Series/Type2 - Board Product Name1, BIOS M.017 2019/10/16
->> ffffffff814c2246 ffffffff81036536 ffff88024a911d08 ffff880262de45b0
->> ffff8802448b5f20 ffff88024a9c1ad8 0000000000000000 ffffffffa08eb05a
->> 000008f84e72c000 0000000000000000 0000000000000001 0000000100000000
->> Call Trace:
->> [<ffffffff814c2246>] ? dump_stack+0xc/0x15
->> [<ffffffff81036536>] ? warn_slowpath_common+0x56/0x70
->> [<ffffffffa08eb05a>] ? btrfs_lookup_extent_info+0x40a/0x4c0 [btrfs]
->> [<ffffffffa08ee558>] ? do_walk_down+0x128/0x750 [btrfs]
->> [<ffffffffa08ebab4>] ? walk_down_proc+0x314/0x330 [btrfs]
->> [<ffffffffa08eec42>] ? walk_down_tree+0xc2/0xf0 [btrfs]
->> [<ffffffffa08f2bce>] ? btrfs_drop_snapshot+0x40e/0x9a0 [btrfs]
->> [<ffffffffa09096db>] ? btrfs_clean_one_deleted_snapshot+0xab/0xe0 [btrfs]
->> [<ffffffffa08fe970>] ? cleaner_kthread+0x280/0x320 [btrfs]
->> [<ffffffff81052eaf>] ? kthread+0xaf/0xc0
->> [<ffffffff81052e00>] ? kthread_create_on_node+0x110/0x110
->> [<ffffffff814c8c0d>] ? ret_from_fork+0x5d/0xb0
->> [<ffffffff81052e00>] ? kthread_create_on_node+0x110/0x110
->> ------------[ end trace ]------------
->> BTRFS error (device dm-1): Missing references.
->> BTRFS: error (device dm-1) in btrfs_drop_snapshot:9557: errno=-5 IO failure
->>
->> We fix this problem by abort trnasaction when walk down/up tree fails.
-> Typo in "trnasaction". Also "by aborting the transaction".
+> The writeback/writethrough question informs us how recoverable the
+> damage is.  Damage in writethrough mode is recoverable in some cases
+> by simply removing the cache and mounting the backing drives directly.
+> In writeback mode the data is already gone, and if the SSD fails before
+> the bcache can be fully flushed, the filesystem will be destroyed.
 >
-> Finally you should be more explicit about the problem, something like:
+> > Already replaced 2 old hdds with high Raw_Read_Error_Rate values.
 >
-> By not aborting the transaction, every future attempt to delete the
-> subvolume fails and we
-> end up never freeing all the extents used by the subvolume/snapshot.
-> By aborting the transaction we have a least the possibility to
-> succeeded after unmounting
-> and mounting again the filesystem.
+> 1.  Replace all SSDs in the system, or cleanly remove the SSD devices
+> from the bcache.  Silent corruption is a common early failure mode on
+> SSDs, and bcache doesn't use checksums to detect it.  If you continue
+> to use bcache in writeback mode with a bad SSD, it will corrupt more
+> and more data until the SSD finally dies, and the filesystem will be
+> unrecoverable after that.  If you're using bcache in writethrough mode,
+> the corruption will only be affecting reads, and you can simply remove
+> and discard the SSD without damaging the filesystem (it might even fix
+> previously uncorrectable data if the copy on the backing HDDs is intact)=
+.
+
+Thanks for your explanations!
+Since I am in writearound mode and the files that are corrupted were not
+rewritten, I had not thought about a failing SSD and corrupted bcache read=
+s.
+
+As last step I detached the caching device, and the previous input/output
+errors disapperd :) So you was right, the SSD looks faulty. Many thanks fo=
+r
+your help!
+
 >
-> Also use "btrfs: " instead of "Btrfs: " in the subject.
+> 2.  If that doesn't solve the problem, run mdadm checkarray and look at
+> /sys/block/md*/md/mismatch_cnt afterwards.  checkarray doesn't report
+> non-zero mismatch_cnt, so you'll need to check for it separately.
+> If the mismatch_cnt is non-zero, you'll have to figure out which
+> drive is at fault somehow.  Neither mdadm nor SMART will tell you if
+> one drive's cache RAM goes bad in an array:  mdadm doesn't know which
+> drive is correct when they have different contents, and generally SMART
+> cannot detect failures inside the disk's firmware runtime environment
+> that might affect data integrity like cache DRAM failure.  You might
+> be able to identify the bad drive by manually inspecting blocks with
+> different data, but there's no automated way to do this.
 
-Aborting the transaction is a safer practice.
+It seems Arch Linux does not provide the checkarray script, so i run the
+check manually - mismatch_cnt is still zero after.
 
-----------------------
-
-If we want to ensure drop progress, we need to check error handling in 
-different situations, which is a more complicated part.
-
-For example, we first modified wc->drop_progress and wc->drop_level in 
-do_walk_down, and then went to the free extent. If the free extent 
-fails, the drop_progress and drop_level are incorrect and cannot be 
-updated to root_item.
-
-----------------------
-
-In addition, I found a potential risk.
-
-We will unconditionally update wc->drop_progress and wc->drop_level back 
-to the root item, but the above two values ​​are 0 at the time of 
-initialization, and not initialized to root_item->drop_progress, 
-resulting in Clear root_item->drop_porgress to 0 during resume subvol 
-delete.
-
-Cause the drop key to be inconsistent.
-
-
-
-> Now my question is, why can't the problem be solved by ensuring we
-> persist a correct drop progress key?
 >
-> That is, if walk up or walk down fails, still try to update the drop
-> progress and the root item with the new drop progress - aborting the
-> transaction only if we get an error updating the root item.
->
-> Is there a reason why that can't be done? If that does not work, it
-> should be mentioned in the change log.
->
-> Thanks.
->
->
->> Signed-off-by: Robbie Ko <robbieko@synology.com>
->> ---
->>   fs/btrfs/extent-tree.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
->> index 268ce58d4569..49cdb7eeccb3 100644
->> --- a/fs/btrfs/extent-tree.c
->> +++ b/fs/btrfs/extent-tree.c
->> @@ -5659,8 +5659,10 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
->>                  }
->>          }
->>          btrfs_release_path(path);
->> -       if (err)
->> +       if (err) {
->> +               btrfs_abort_transaction(trans, err);
->>                  goto out_end_trans;
->> +       }
->>
->>          ret = btrfs_del_root(trans, &root->root_key);
->>          if (ret) {
->> --
->> 2.17.1
->>
->
-> --
-> Filipe David Manana,
->
-> “Whether you think you can, or you think you can't — you're right.”
+> 3.  To avoid future problems, break the mdadm arrays into separate
+> devices and put them all in a btrfs raid1 so in future btrfs can tell yo=
+u
+> immediately which device is corrupting your data.  (raid1 here to avoid
+> issues with striped access through a SSD cache).  This might be tricky
+> to achieve before the bad device is identified, because the bad device
+> will keep injecting corrupted data that will abort btrfs resize/device
+> delete operations.
 
+On new systems i have already used btrfs raid1 instead of mdadm.
 
-
--- 
-Avast 防毒軟體已檢查此封電子郵件的病毒。
-https://www.avast.com/antivirus
-
+>
+> > Aug 02 15:43:18 server kernel: BTRFS info (device dm-0): scrub: starte=
+d on devid 1
+> > Aug 02 15:46:06 server kernel: BTRFS warning (device dm-0): checksum e=
+rror at logical 462380818432 on dev /dev/mapper/root, physical 31640150016=
+, root 29539, inode 27412268, offset 131072, length 4096, links 1 (path: d=
+ocker-volumes/mayan-edms/media/document_cache/804391c5-e3fe-4941-96dc-ecc0=
+a1d5d8c9-23-1815-92bcac02c4a72586e21044c0b244b052f5747c7d2c25e6086ca89ca64=
+098e3f3)
+> > Aug 02 15:46:06 server kernel: BTRFS error (device dm-0): bdev /dev/ma=
+pper/root errs: wr 0, rd 0, flush 0, corrupt 414, gen 0
+> > Aug 02 15:46:06 server kernel: BTRFS error (device dm-0): unable to fi=
+xup (regular) error at logical 462380818432 on dev /dev/mapper/root
+> > Aug 02 15:47:25 server kernel: BTRFS info (device dm-0): scrub: finish=
+ed on devid 1 with status: 0
+>
