@@ -2,279 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9963DE6D9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Aug 2021 08:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDD13DE727
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Aug 2021 09:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbhHCGoE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Aug 2021 02:44:04 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35442 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233907AbhHCGoE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Aug 2021 02:44:04 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C814D20003
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Aug 2021 06:43:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627973032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=/YyZ6HSSW4Y2UKWOIRY8ka/DaNhhZgjs9LLQagKrncY=;
-        b=oMEHe32HsWR1nikCrHHyqijOkKms3oRFLoTuHbUxmq+ZCkIxQXxDEP7+kmEODGgrO68CXY
-        ur2lQkD3Hc5NW9f9XnM/PjwQCtEiHzLuqh9lnfaKmuGNS0BQAdK12C5AWrE0SlnX7EXkik
-        iZCwYWrbWxmEfLj9DnXmTbmmhuHG7G4=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 0DF8413709
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Aug 2021 06:43:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id OwwGMKflCGHVTgAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Aug 2021 06:43:51 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: properly cleanup the ordered extents if we hit critical error during bio assembly and submission
-Date:   Tue,  3 Aug 2021 14:43:49 +0800
-Message-Id: <20210803064349.201192-1-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
+        id S234148AbhHCHWS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Aug 2021 03:22:18 -0400
+Received: from mail.synology.com ([211.23.38.101]:49162 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233966AbhHCHWS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Aug 2021 03:22:18 -0400
+Subject: Re: [PATCH] Btrfs: fix root drop key mismatch when drop snapshot
+ fails
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1627975326; bh=mbCup/gC+gQdYwOobdJrtXDB9NdxqKn9I3Z75IN4Igg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=UbKRBKtya5wH7VZlkpiRnGUNiU3WU4Uz/tSRHGZgxC51QGOdVJ0EDbzH1F7ltm3h2
+         6oolfE0Olbu8BNATrktzCaPNhRr3WUECcKRRTSg7UMTEyKEg1VzmqR07viYMhvgEqd
+         3rapTJJFSk8sPKCBDEa0dy3regu9tEAXDrW/ePrI=
+To:     fdmanana@gmail.com
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20210802104004.733-1-robbieko@synology.com>
+ <CAL3q7H6BpnTLqugMh7NrSSqdB4NE4HnuWPYmKOV79UD3v3UBsA@mail.gmail.com>
+From:   robbieko <robbieko@synology.com>
+Message-ID: <625dc2dd-95ff-3806-0d47-909b7654b639@synology.com>
+Date:   Tue, 3 Aug 2021 15:24:33 +0800
 MIME-Version: 1.0
+In-Reply-To: <CAL3q7H6BpnTLqugMh7NrSSqdB4NE4HnuWPYmKOV79UD3v3UBsA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Antivirus: Avast (VPS 210803-0, 2021/8/3), Outbound message
+X-Antivirus-Status: Clean
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-If we hit a critical error (mostly -ENOMEM) inside
-__extent_writepage_io(), we could cause ordered extent hanging forever.
+Filipe Manana 於 2021/8/2 下午 07:28 寫道:
+> On Mon, Aug 2, 2021 at 11:41 AM robbieko <robbieko@synology.com> wrote:
+>> From: Robbie Ko <robbieko@synology.com>
+>>
+>> When walk down/up tree fails, we did not abort the transaction,
+>> nor did modify the root drop key, but the refs of some tree blocks
+>> may have been removed in the transaction.
+>>
+>> Therefore, when we retry to delete subvol in the future, and
+>> missing reference occurs when lookup extent info.
+> This sentence is confusing, it took me some time to understand it.
+>
+> Something like:
+>
+> Therefore when we retry to delete the subvolume in the future, we will
+> fail due to
+> the fact that some references were deleted in the previous attempt:
+>
+>> ------------[ cut here ]------------
+>> WARNING: at fs/btrfs/extent-tree.c:898 btrfs_lookup_extent_info+0x40a/0x4c0 [btrfs]()
+>> CPU: 2 PID: 11618 Comm: btrfs-cleaner Tainted: P
+>> Hardware name: Synology Inc. RS3617xs Series/Type2 - Board Product Name1, BIOS M.017 2019/10/16
+>> ffffffff814c2246 ffffffff81036536 ffff88024a911d08 ffff880262de45b0
+>> ffff8802448b5f20 ffff88024a9c1ad8 0000000000000000 ffffffffa08eb05a
+>> 000008f84e72c000 0000000000000000 0000000000000001 0000000100000000
+>> Call Trace:
+>> [<ffffffff814c2246>] ? dump_stack+0xc/0x15
+>> [<ffffffff81036536>] ? warn_slowpath_common+0x56/0x70
+>> [<ffffffffa08eb05a>] ? btrfs_lookup_extent_info+0x40a/0x4c0 [btrfs]
+>> [<ffffffffa08ee558>] ? do_walk_down+0x128/0x750 [btrfs]
+>> [<ffffffffa08ebab4>] ? walk_down_proc+0x314/0x330 [btrfs]
+>> [<ffffffffa08eec42>] ? walk_down_tree+0xc2/0xf0 [btrfs]
+>> [<ffffffffa08f2bce>] ? btrfs_drop_snapshot+0x40e/0x9a0 [btrfs]
+>> [<ffffffffa09096db>] ? btrfs_clean_one_deleted_snapshot+0xab/0xe0 [btrfs]
+>> [<ffffffffa08fe970>] ? cleaner_kthread+0x280/0x320 [btrfs]
+>> [<ffffffff81052eaf>] ? kthread+0xaf/0xc0
+>> [<ffffffff81052e00>] ? kthread_create_on_node+0x110/0x110
+>> [<ffffffff814c8c0d>] ? ret_from_fork+0x5d/0xb0
+>> [<ffffffff81052e00>] ? kthread_create_on_node+0x110/0x110
+>> ------------[ end trace ]------------
+>> BTRFS error (device dm-1): Missing references.
+>> BTRFS: error (device dm-1) in btrfs_drop_snapshot:9557: errno=-5 IO failure
+>>
+>> We fix this problem by abort trnasaction when walk down/up tree fails.
+> Typo in "trnasaction". Also "by aborting the transaction".
+>
+> Finally you should be more explicit about the problem, something like:
+>
+> By not aborting the transaction, every future attempt to delete the
+> subvolume fails and we
+> end up never freeing all the extents used by the subvolume/snapshot.
+> By aborting the transaction we have a least the possibility to
+> succeeded after unmounting
+> and mounting again the filesystem.
+>
+> Also use "btrfs: " instead of "Btrfs: " in the subject.
+>
+> Now my question is, why can't the problem be solved by ensuring we
+> persist a correct drop progress key?
 
-This will hang the filesystem.
+Aborting the transaction is a safer practice.
+If we want to ensure drop progress, we need to check error handling in 
+different situations, which is a more complicated part.
+For example, we first modified wc->drop_progress and wc->drop_level in 
+do_walk_down, and then went to the free extent. If the free extent 
+fails, the drop_progress and drop_level are incorrect and cannot be 
+updated to root_item. In addition, I found a potential risk. We will 
+unconditionally update wc->drop_progress and wc->drop_level back to the 
+root item, but the above two values ​​are 0 at the time of 
+initialization, and not initialized to root_item->drop_progress, 
+resulting in Clear root_item->drop_porgress to 0 during resume subvol 
+delete. Cause the drop key to be inconsistent.
 
-[CAUSE]
-If we hit a critical -ENOMEM error inside __extent_writepage_io(), the
-error will be finally passed to extent_write_cache_pages() and it will
-abort current writeback and no longer try to write back the remaining
-pages.
+That is, if walk up or walk down fails, still try to update the drop
+progress and the root item with the new drop progress - aborting the
+transaction only if we get an error updating the root item.
 
-The problem is, __extent_writepage() can call writepage_delalloc(),
-which can allocated one or more ordered extents.
+Is there a reason why that can't be done? If that does not work, it
+should be mentioned in the change log.
 
-Such ordered extents can cross several pages, at most 128MiB in size.
+Thanks.
 
-But when later __extent_writepage_io() fails, we don't even know whether
-we have allocated an ordered extent, nor its range.
 
-Thus we don't properly cleanup the allocated ordered extent range, and
-leave such ordered extent hanging there forever.
+>> Signed-off-by: Robbie Ko <robbieko@synology.com>
+>> ---
+>>   fs/btrfs/extent-tree.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+>> index 268ce58d4569..49cdb7eeccb3 100644
+>> --- a/fs/btrfs/extent-tree.c
+>> +++ b/fs/btrfs/extent-tree.c
+>> @@ -5659,8 +5659,10 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
+>>                  }
+>>          }
+>>          btrfs_release_path(path);
+>> -       if (err)
+>> +       if (err) {
+>> +               btrfs_abort_transaction(trans, err);
+>>                  goto out_end_trans;
+>> +       }
+>>
+>>          ret = btrfs_del_root(trans, &root->root_key);
+>>          if (ret) {
+>> --
+>> 2.17.1
+>>
+>
+> --
+> Filipe David Manana,
+>
+> “Whether you think you can, or you think you can't — you're right.”
 
-Thankfully, this can only happen for critical errors like -ENOMEM.
 
-[FIX]
-Introduce new members for struct extent_page_data, to record the start
-and end bytenr of the ordered extent ranges we have allocated.
 
-The range is not a perfect record, as it includes holes or clean pages.
-
-But that is good enough for us to do cleanup.
-The cleanup function will skip any uncached page, and only cleanup
-ranges with PageOrdered bit set.
-
-This is still not as accurate as the RFC "btrfs: eliminate the window
-between run delalloc range and bio submission" which binds ordered
-extent allocation and bio submission together.
-
-But at least we can handle such hangling ordered extent now.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 104 ++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 92 insertions(+), 12 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index a1a6ac787faf..ab0cfdb98555 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -145,6 +145,27 @@ struct extent_page_data {
- 
- 	/* tells the submit_bio code to use REQ_SYNC */
- 	unsigned int sync_io:1;
-+
-+	/*
-+	 * The following three members are used for error handling.
-+	 *
-+	 * If we hit error assembling the bios, we still need to cleanup
-+	 * the ordered extent. Those members are here to record the ordered
-+	 * extent range and bio assembly progress.
-+	 *
-+	 * The first delalloc range file offset started by this writeback.
-+	 * 0 means not initialized.
-+	 */
-+	u64 delalloc_start;
-+
-+	/*
-+	 * The last delalloc range file offset started by this writeback.
-+	 * 0 means not initialized.
-+	 */
-+	u64 delalloc_end;
-+
-+	/* The file offset of the start location to start bio assembly */
-+	u64 next;
- };
- 
- static int add_extent_changeset(struct extent_state *state, u32 bits,
-@@ -3763,6 +3784,22 @@ static void update_nr_written(struct writeback_control *wbc,
- 	wbc->nr_to_write -= nr_written;
- }
- 
-+static void update_epd_delalloc_range(struct extent_page_data *epd,
-+				      u64 delalloc_start,
-+				      u64 delalloc_end)
-+{
-+	/* Not initialized, used the values directly */
-+	if (epd->delalloc_start == 0) {
-+		epd->delalloc_start = delalloc_start;
-+		epd->delalloc_end = delalloc_end;
-+		return;
-+	}
-+
-+	/* Update the existing range */
-+	epd->delalloc_start = min(epd->delalloc_start, delalloc_start);
-+	epd->delalloc_end = max(epd->delalloc_end, delalloc_end);
-+}
-+
- /*
-  * helper for __extent_writepage, doing all of the delayed allocation setup.
-  *
-@@ -3775,6 +3812,7 @@ static void update_nr_written(struct writeback_control *wbc,
-  */
- static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 		struct page *page, struct writeback_control *wbc,
-+		struct extent_page_data *epd,
- 		u64 delalloc_start, unsigned long *nr_written)
- {
- 	u64 page_end = delalloc_start + PAGE_SIZE - 1;
-@@ -3800,6 +3838,9 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 					     page_offset(page), PAGE_SIZE);
- 			return ret;
- 		}
-+
-+		update_epd_delalloc_range(epd, delalloc_start, delalloc_end);
-+
- 		/*
- 		 * delalloc_end is already one less than the total length, so
- 		 * we don't subtract one from PAGE_SIZE
-@@ -3931,6 +3972,12 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 		u64 dirty_range_end;
- 		u32 iosize;
- 
-+		/*
-+		 * Record current file offset into epd, so when error happens
-+		 * we can cleanup the ordered extents properly.
-+		 */
-+		epd->next = cur;
-+
- 		if (cur >= i_size) {
- 			btrfs_writepage_endio_finish_ordered(inode, page, cur,
- 							     end, true);
-@@ -4024,6 +4071,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 			if (PageWriteback(page))
- 				btrfs_page_clear_writeback(fs_info, page, cur,
- 							   iosize);
-+			break;
- 		}
- 
- 		cur += iosize;
-@@ -4039,6 +4087,42 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 	return ret;
- }
- 
-+static void cleanup_ordered_ranges(struct btrfs_inode *inode,
-+				   struct extent_page_data *epd,
-+				   int ret)
-+{
-+	u64 cur = epd->next;
-+
-+	ASSERT(ret < 0);
-+
-+	/* Go through the remaining pages of the delalloc range */
-+	while (cur < epd->delalloc_end) {
-+		struct page *page;
-+		u64 page_end = round_down(cur, PAGE_SIZE) + PAGE_SIZE - 1;
-+		u64 range_end = min(epd->delalloc_end, page_end);
-+
-+		page = find_lock_page(inode->vfs_inode.i_mapping,
-+				      cur >> PAGE_SHIFT);
-+		/*
-+		 * The page can be invalidated, in that case we can just skip
-+		 * to next page.
-+		 */
-+		if (!page)
-+			goto next;
-+
-+		/*
-+		 * end_extent_writepage() will call
-+		 * btrfs_writepage_endio_finish_ordered() which will cleanup
-+		 * ordered extent according to its page Ordered bit.
-+		 */
-+		end_extent_writepage(page, ret, cur, range_end);
-+		unlock_page(page);
-+		put_page(page);
-+next:
-+		cur = range_end + 1;
-+	}
-+}
-+
- /*
-  * the writepage semantics are similar to regular writepage.  extent
-  * records are inserted to lock ranges in the tree, and as dirty areas
-@@ -4053,7 +4137,6 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- {
- 	struct inode *inode = page->mapping->host;
- 	u64 start = page_offset(page);
--	u64 page_end = start + PAGE_SIZE - 1;
- 	int ret;
- 	int nr = 0;
- 	size_t pg_offset;
-@@ -4088,7 +4171,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 	}
- 
- 	if (!epd->extent_locked) {
--		ret = writepage_delalloc(BTRFS_I(inode), page, wbc, start,
-+		ret = writepage_delalloc(BTRFS_I(inode), page, wbc, epd, start,
- 					 &nr_written);
- 		if (ret == 1)
- 			return 0;
-@@ -4132,20 +4215,17 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 	 * end_extent_writepage().
- 	 * Error can still be properly passed to higher layer as page will
- 	 * be set error, here we just don't handle the IO failure.
--	 *
--	 * NOTE: This is just a hotfix for subpage.
--	 * The root fix will be properly ending ordered extent when we hit
--	 * an error during writeback.
--	 *
--	 * But that needs a bigger refactoring, as we not only need to grab the
--	 * submitted OE, but also need to know exactly at which bytenr we hit
--	 * the error.
--	 * Currently the full page based __extent_writepage_io() is not
--	 * capable of that.
- 	 */
- 
- 	unlock_page(page);
- 	ASSERT(ret <= 0);
-+	/*
-+	 * We hit a critical error during bio submission, this will make us to
-+	 * abort any later page writeback.
-+	 * We need to cleanup the ordered extent we have added.
-+	 */
-+	if (ret < 0)
-+		cleanup_ordered_ranges(BTRFS_I(inode), epd, ret);
- 	return ret;
- }
- 
 -- 
-2.32.0
+Avast 防毒軟體已檢查此封電子郵件的病毒。
+https://www.avast.com/antivirus
 
