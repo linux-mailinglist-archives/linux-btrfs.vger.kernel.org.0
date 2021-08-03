@@ -2,30 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDD13DE727
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Aug 2021 09:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BE53DE73D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Aug 2021 09:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbhHCHWS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Aug 2021 03:22:18 -0400
-Received: from mail.synology.com ([211.23.38.101]:49162 "EHLO synology.com"
+        id S234108AbhHCHeh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Aug 2021 03:34:37 -0400
+Received: from mail.synology.com ([211.23.38.101]:39160 "EHLO synology.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233966AbhHCHWS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Aug 2021 03:22:18 -0400
+        id S234065AbhHCHee (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Aug 2021 03:34:34 -0400
 Subject: Re: [PATCH] Btrfs: fix root drop key mismatch when drop snapshot
  fails
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1627975326; bh=mbCup/gC+gQdYwOobdJrtXDB9NdxqKn9I3Z75IN4Igg=;
+        t=1627976063; bh=bBHI5hxjuEP1QRyZL7ShDjgNdVTpFiefjLsZpmDItkc=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=UbKRBKtya5wH7VZlkpiRnGUNiU3WU4Uz/tSRHGZgxC51QGOdVJ0EDbzH1F7ltm3h2
-         6oolfE0Olbu8BNATrktzCaPNhRr3WUECcKRRTSg7UMTEyKEg1VzmqR07viYMhvgEqd
-         3rapTJJFSk8sPKCBDEa0dy3regu9tEAXDrW/ePrI=
+        b=t1rUqY52VTKqpWS/iAVp+DVENkj6dsPOmJ/6HBW1JCd3dtUb+kbmGsYlH4UktltYX
+         kdfUjMWJoApSK2+si6Aqq/jyYkL7mxrfnrQCzWv6+sn8flQP0DSC6hF0eWu9/sjvl5
+         9SspWoFRiO5RXqayP1cqFh2JpQFWW6FzGpIRnArI=
 To:     fdmanana@gmail.com
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <20210802104004.733-1-robbieko@synology.com>
  <CAL3q7H6BpnTLqugMh7NrSSqdB4NE4HnuWPYmKOV79UD3v3UBsA@mail.gmail.com>
 From:   robbieko <robbieko@synology.com>
-Message-ID: <625dc2dd-95ff-3806-0d47-909b7654b639@synology.com>
-Date:   Tue, 3 Aug 2021 15:24:33 +0800
+Message-ID: <2e781b79-2b7c-f88f-17d4-9d237b65d67e@synology.com>
+Date:   Tue, 3 Aug 2021 15:36:50 +0800
 MIME-Version: 1.0
 In-Reply-To: <CAL3q7H6BpnTLqugMh7NrSSqdB4NE4HnuWPYmKOV79UD3v3UBsA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
@@ -97,33 +97,46 @@ Filipe Manana 於 2021/8/2 下午 07:28 寫道:
 > and mounting again the filesystem.
 >
 > Also use "btrfs: " instead of "Btrfs: " in the subject.
->
-> Now my question is, why can't the problem be solved by ensuring we
-> persist a correct drop progress key?
 
 Aborting the transaction is a safer practice.
+
+----------------------
+
 If we want to ensure drop progress, we need to check error handling in 
 different situations, which is a more complicated part.
+
 For example, we first modified wc->drop_progress and wc->drop_level in 
 do_walk_down, and then went to the free extent. If the free extent 
 fails, the drop_progress and drop_level are incorrect and cannot be 
-updated to root_item. In addition, I found a potential risk. We will 
-unconditionally update wc->drop_progress and wc->drop_level back to the 
-root item, but the above two values ​​are 0 at the time of 
+updated to root_item.
+
+----------------------
+
+In addition, I found a potential risk.
+
+We will unconditionally update wc->drop_progress and wc->drop_level back 
+to the root item, but the above two values ​​are 0 at the time of 
 initialization, and not initialized to root_item->drop_progress, 
 resulting in Clear root_item->drop_porgress to 0 during resume subvol 
-delete. Cause the drop key to be inconsistent.
+delete.
 
-That is, if walk up or walk down fails, still try to update the drop
-progress and the root item with the new drop progress - aborting the
-transaction only if we get an error updating the root item.
-
-Is there a reason why that can't be done? If that does not work, it
-should be mentioned in the change log.
-
-Thanks.
+Cause the drop key to be inconsistent.
 
 
+
+> Now my question is, why can't the problem be solved by ensuring we
+> persist a correct drop progress key?
+>
+> That is, if walk up or walk down fails, still try to update the drop
+> progress and the root item with the new drop progress - aborting the
+> transaction only if we get an error updating the root item.
+>
+> Is there a reason why that can't be done? If that does not work, it
+> should be mentioned in the change log.
+>
+> Thanks.
+>
+>
 >> Signed-off-by: Robbie Ko <robbieko@synology.com>
 >> ---
 >>   fs/btrfs/extent-tree.c | 4 +++-
