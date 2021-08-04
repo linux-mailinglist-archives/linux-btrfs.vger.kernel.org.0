@@ -2,162 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28353E0841
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Aug 2021 20:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD7E3E0A9D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Aug 2021 00:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239162AbhHDStt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Aug 2021 14:49:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39570 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239055AbhHDStr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Aug 2021 14:49:47 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 32E12222ED;
-        Wed,  4 Aug 2021 18:49:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628102974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rRsycK7Oj2BSBfmsGE+1jES0lQihLv0tkwk9gFaK21w=;
-        b=U+UHfE8cqFkYGxu9s5jatl4nq7UMFTcMYiLAoTY72okvmeOX1qnQ+cd1j2uZ5CI06G/oH6
-        YPIrf242q+f/jz2G4SzwGNWKU0aC5xlFdCVBSOJfQLgm3zSyLYCuycbz/2DfQoKMQtK3Bb
-        JH7Nov7Se1ver6EbFgQO+H3KpCxOwc4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DE22B13D24;
-        Wed,  4 Aug 2021 18:49:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id CGR+KTzhCmGFOQAAMHmgww
-        (envelope-from <mpdesouza@suse.com>); Wed, 04 Aug 2021 18:49:32 +0000
-From:   Marcos Paulo de Souza <mpdesouza@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, nborisov@suse.com,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH 7/7] btrfs: ioctl: Simplify btrfs_ioctl_get_subvol_info
-Date:   Wed,  4 Aug 2021 15:48:54 -0300
-Message-Id: <20210804184854.10696-8-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210804184854.10696-1-mpdesouza@suse.com>
-References: <20210804184854.10696-1-mpdesouza@suse.com>
+        id S235398AbhHDW4C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Aug 2021 18:56:02 -0400
+Received: from mout.gmx.net ([212.227.17.20]:50673 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230236AbhHDW4B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Aug 2021 18:56:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628117747;
+        bh=dwkUdpjKZAXybQHLpcOn9ebJ7ImbAAYw6bY4v7WCEaw=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=Hnkwnh4N0BCCu+xrQ8lfvFDBg2lgs/2+AV9mC1iWiKJoZX5SuDFyILx6SleCrUh9w
+         rTsnSoghCWUneqBnzkP2PdYfnZemoGB9GsTTV9eMQhDUkA8UbJKDOzqgoR2iPzpgz+
+         8r4L71JJUYP4NZCWW8F4skefq34g0Pi5/pQk3zuc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiaYJ-1mpPVt0e3z-00feuw; Thu, 05
+ Aug 2021 00:55:46 +0200
+To:     k g <klimaax@gmail.com>, linux-btrfs@vger.kernel.org
+References: <94bf3fad-fd41-ecc0-404c-ccd087fca05d@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Files/Folders invisibles with 'ls -a' but can 'cd' to folder
+Message-ID: <c11aea64-0f94-7cb1-886e-f6bc5050d7f2@gmx.com>
+Date:   Thu, 5 Aug 2021 06:55:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <94bf3fad-fd41-ecc0-404c-ccd087fca05d@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0y4K3XTrEH7+nfgUgCzNQoB+UK+6rhoyo9HVJL43mW9XOe1Q1wG
+ e7onBB971IO8qG0qlb3J6CUDyy9Ic8nbkMJxBWqg9sZe4lD1ahJ/iyqn2+Rk3F9S4jMGaMw
+ mTO5jceuFwzGaF0vdFuH/N6LM0aklK9CuSIXXhU9GbhtK1joZ6Ul6kHKZmmiTrhC1Qv34zy
+ sVU9BRBCYK/MqrlH/E30g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2MPB+XHazr4=:I/muApGJY7KGIcOFqM3ih9
+ JegKcMzsbzbr9Qj79YjeHllEOGCu2vMZgnm6GM7mwzzDUgUfZB5ySNw/wFpxR2xSgWwNJxZNx
+ DaEazDrJFjdWpb31usRnTbDSudNjQWu9otATlrOEkiPwV6yAGGSH/9ECs1hN2tTi+uzRygq2M
+ coRS0cTqnlhfcjOesy//Bc+nCcjBStqS7WT7G06aMD/ylRex5+XgC50yckEFdwirqj5/wQy8l
+ EgPrlg6yBa0DD9vfdZIAX+bzmFhWM4xxShy0A9CZHj4XHo8vdiqPTSAlw6uUpi60z6Cm3c9pZ
+ w2NB8WaECcT938qcSrF0kYuSfubRU3z+abm0XKw2dIKXnly8YuktaMjJkMFViz5pBJbMkuSaC
+ nZeL2x+oNu1fI5fw3Q+cgcLDEl/z37+LQ8PyzIDKkwnBHXj5WhuTODkWjrmxPOj6epvz71dYB
+ tLwXH/9ROugA5Hvw4Dfn1NshlMHXEzdqsrWW+qLWPJS322/U+AwdZWjZH3qPdxWnrSI5hF5yi
+ 9XpeS0nasfXbVSfDzInDcrJrp78DPmAeIjoE8ozzj6c3YMlN5rngm0eg/EvWRngdv/4VKF7TN
+ xU8YIOXBzAmZSoSRW+xXnn0VGabgLtvwY6QfLw8gbWATYcet4/rLJSaMnFliks9YaRcTxl7xO
+ nEW/0O/v+5vQ1PowWm/ok4HKKnliN2J2d+d8BMjHAUwpv7XGh2DSpPvOON+uXNihjXvCNXA0B
+ /C+PJKme4V22oJGyoKhx0aMYg8IAYfBGebSnZdOC8C0QtTJSdwLsvxZh1hjQYGYuzfPqftcOL
+ 8mSVq4r+87tEnlWWjpbBXCKsLETVYiXqYi+iz6VF7z/E6LzGTM0KPbIqtUbV29qA+dddNlauM
+ iGMhu7BGrxbAvGwZlEeOmjGDVpO3kh7E8A738WuRj9QABE5b6qIISocGRAy7t4k2emgiLc+m/
+ LdB4eAiradD8NW6Yqne3fwg5rbQCXB8HH/whB5nQtuyYqvus6WcaoJDW0huZnBxpAtNz9lV4j
+ fqnuT+atVIRwoQ6Xv4sKTQ0oo4jA3ATrmG0hUPViIUlIG8CI7nPW2lmjkvQPqENuWBKwArMor
+ +6LaOg15lBSpUXI29wpKXEbZuMDS7fHJI2tgVH6KWssxtBf4G1vjGtzUA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-By using btrfs_find_item we can simplify the code. Also, remove the
--ENOENT error condition, since it'll never hit. If find_item returns 0,
-it means it found the desired objectid and type, so it won't reach the -ENOENT
-condition.
 
-No functional changes.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- fs/btrfs/ioctl.c | 56 +++++++++++++++++++-----------------------------
- 1 file changed, 22 insertions(+), 34 deletions(-)
+On 2021/8/4 =E4=B8=8B=E5=8D=889:19, k g wrote:
+> Hi
+>
+>
+> As I say in my subject, I'm facing a weird problem with my btrfs
+> partition (I already sent this message on reddit /r/btrfs/ )
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index d09eaa83b5d2..2c57bea16c92 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2685,6 +2685,7 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
- 	unsigned long item_off;
- 	unsigned long item_len;
- 	struct inode *inode;
-+	u64 treeid;
- 	int slot;
- 	int ret = 0;
- 
-@@ -2702,15 +2703,15 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
- 	fs_info = BTRFS_I(inode)->root->fs_info;
- 
- 	/* Get root_item of inode's subvolume */
--	key.objectid = BTRFS_I(inode)->root->root_key.objectid;
--	root = btrfs_get_fs_root(fs_info, key.objectid, true);
-+	treeid = BTRFS_I(inode)->root->root_key.objectid;
-+	root = btrfs_get_fs_root(fs_info, treeid, true);
- 	if (IS_ERR(root)) {
- 		ret = PTR_ERR(root);
- 		goto out_free;
- 	}
- 	root_item = &root->root_item;
- 
--	subvol_info->treeid = key.objectid;
-+	subvol_info->treeid = treeid;
- 
- 	subvol_info->generation = btrfs_root_generation(root_item);
- 	subvol_info->flags = btrfs_root_flags(root_item);
-@@ -2737,44 +2738,31 @@ static int btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
- 	subvol_info->rtime.sec = btrfs_stack_timespec_sec(&root_item->rtime);
- 	subvol_info->rtime.nsec = btrfs_stack_timespec_nsec(&root_item->rtime);
- 
--	if (key.objectid != BTRFS_FS_TREE_OBJECTID) {
-+	if (treeid != BTRFS_FS_TREE_OBJECTID) {
- 		/* Search root tree for ROOT_BACKREF of this subvolume */
--		key.type = BTRFS_ROOT_BACKREF_KEY;
--		key.offset = 0;
--		ret = btrfs_search_slot(NULL, fs_info->tree_root, &key, path, 0, 0);
-+		ret = btrfs_find_item(fs_info->tree_root, path, treeid,
-+					BTRFS_ROOT_BACKREF_KEY, 0, &key);
- 		if (ret < 0) {
- 			goto out;
--		} else if (path->slots[0] >=
--			   btrfs_header_nritems(path->nodes[0])) {
--			ret = btrfs_next_leaf(fs_info->tree_root, path);
--			if (ret < 0) {
--				goto out;
--			} else if (ret > 0) {
--				ret = -EUCLEAN;
--				goto out;
--			}
-+		} else if (ret > 0) {
-+			ret = -EUCLEAN;
-+			goto out;
- 		}
- 
- 		leaf = path->nodes[0];
- 		slot = path->slots[0];
--		btrfs_item_key_to_cpu(leaf, &key, slot);
--		if (key.objectid == subvol_info->treeid &&
--		    key.type == BTRFS_ROOT_BACKREF_KEY) {
--			subvol_info->parent_id = key.offset;
--
--			rref = btrfs_item_ptr(leaf, slot, struct btrfs_root_ref);
--			subvol_info->dirid = btrfs_root_ref_dirid(leaf, rref);
--
--			item_off = btrfs_item_ptr_offset(leaf, slot)
--					+ sizeof(struct btrfs_root_ref);
--			item_len = btrfs_item_size_nr(leaf, slot)
--					- sizeof(struct btrfs_root_ref);
--			read_extent_buffer(leaf, subvol_info->name,
--					   item_off, item_len);
--		} else {
--			ret = -ENOENT;
--			goto out;
--		}
-+
-+		subvol_info->parent_id = key.offset;
-+
-+		rref = btrfs_item_ptr(leaf, slot, struct btrfs_root_ref);
-+		subvol_info->dirid = btrfs_root_ref_dirid(leaf, rref);
-+
-+		item_off = btrfs_item_ptr_offset(leaf, slot)
-+				+ sizeof(struct btrfs_root_ref);
-+		item_len = btrfs_item_size_nr(leaf, slot)
-+				- sizeof(struct btrfs_root_ref);
-+		read_extent_buffer(leaf, subvol_info->name,
-+				   item_off, item_len);
- 	}
- 
- 	if (copy_to_user(argp, subvol_info, sizeof(*subvol_info)))
--- 
-2.31.1
+Sorry, reddit is not really the go-to place for technical discussion nor
+bug report.
 
+>
+> It's in fact a btrfs partition in a raid5 synology system.
+
+We don't know how heavily backported the synology kernel is, thus it's
+normally better to ask for help from synology.
+
+>
+>
+>
+> 3 days ago, the volume 'crashed' (synology terms) ,however SMART data is
+> ok and I don't have sector relcocation errors or CRC.... I rebooted
+> several times , and after dozen of reboots my partition shows up , but 3
+> TB of 10 TB are missing, I made a scrub but it did made my missing files
+> appears.
+>
+>
+>
+> desperately I made a 'cd xyz' in a directory (I remember some of the
+> folder names) and it works ; and inside this folder I can do "ls" and
+> all files and subfolders appears .
+>
+> I made a copy elsewhere of some files and these ones are not corrupted
+> or bit roted.
+>
+>
+>
+> I don't want to make a btrfs check --repair of course.
+
+But "btrfs check" without --repair should be the best tool to show
+what's going wrong.
+
+Alternatively, "btrfs check --mode=3Dlowmem" could provide a better human
+readable output.
+
+>
+>
+>
+> Is there a way to "relink" indexes/root or whatever it is called to
+> bring back these files/folder visible and accessible with a safe command=
+ ?
+
+It's not that simple, from your description, it looks like the dir has
+some DIR_ITEM but no DIR_INDEX, thus it doesn't shows up in ls, but cd
+still work.
+
+This normally indicates much bigger problem.
+
+Thanks,
+Qu
+>
+> I'm planning to backup all , is 'btrfs restore' will access to these
+> "non visible" directories ?
+>
+>
+>
+> "I saw similar case here : The Directory Who Wasn't There : btrfs
+> (reddit.com) , but I can't find a reply that solve the problem"
+>
+>
+>
+> cdly
+>
