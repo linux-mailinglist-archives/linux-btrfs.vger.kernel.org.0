@@ -2,133 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1573DF9C5
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Aug 2021 04:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A655D3DFB4E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Aug 2021 08:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhHDCta (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Aug 2021 22:49:30 -0400
-Received: from mail.synology.com ([211.23.38.101]:34024 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229949AbhHDCt3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Aug 2021 22:49:29 -0400
-Received: from localhost.localdomain (unknown [10.17.32.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id BCFDC2E7C7D6;
-        Wed,  4 Aug 2021 10:49:16 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1628045356; bh=R8S6qBj9HXmslu6hVjv0JQs76b6GwuoypjvZXvVRyuQ=;
-        h=From:To:Cc:Subject:Date;
-        b=gyq6IuArVRwDoec7+WU7bbrIkHmQNywJvTcKY0XV7VLAiC+sHWqlTviT4EU9o6PT2
-         DKo1vKc+u8SBDU/vaZVMyViS7d51PwhDIBMN2VDZwOF1ny/5ybLDc5xVs+Kc/S0e5T
-         IRwsq0R6tMotZDyPUDjNPltAwgZc6ZKXiwuQBlrQ=
-From:   robbieko <robbieko@synology.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Robbie Ko <robbieko@synology.com>
-Subject: [PATCH v2] btrfs: fix root drop key inconsistent when drop subvolume/snapshot fails
-Date:   Wed,  4 Aug 2021 10:49:04 +0800
-Message-Id: <20210804024904.2598-1-robbieko@synology.com>
-X-Mailer: git-send-email 2.17.1
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S235505AbhHDGHr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Aug 2021 02:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229849AbhHDGHr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Aug 2021 02:07:47 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E2FC0613D5
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Aug 2021 23:07:34 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id l17so1317610ljn.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Aug 2021 23:07:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n3GM1WmsIpEYbzkOmqSqYvz4WAjqZe33RAJb0heONFo=;
+        b=ciIBxvuGav8qnlbUL2dJGvimIOsSDo9CgMIsRC3Kcavf1Lkj4sYjf+G6dJJuJaClI0
+         FLkUgVRNae0XMfbxtSF8ELYxQBEOHofOFF5OB8rAoNz+g0NkUYcUES+zUI45OEp+gbfs
+         f8FSn1nKungawCT5EMPK3+19T5y2Tjmm5zD/QWhdOuux7dyS9QVBGOvxpdPZ/8R8NFOs
+         H1dXlodSNCTE7FYxD7q7epX7IZXztYQX+WXYJ4zuaBs7A0Jb5MBrNHTYwsR7tdiM3FyS
+         k+e+2VG8MffCbU0HVHMfi9qCVg0EZoK5akEGQswuUs+k0e22Dx1ZFOdwWCVKjpbw36LD
+         gezw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n3GM1WmsIpEYbzkOmqSqYvz4WAjqZe33RAJb0heONFo=;
+        b=dOQ+gn5ol1U6rSXwoxHirHzMjtD61ghC6JwmLXzytNBkZAKYE//T5mNTt+GWq4KX28
+         JQEq9KvXEB63L+TEk6mR2qttYUsVI02YAp2lbwHDgKYR6qnsSlrrDodEX9R5UT73sft2
+         ua1VNd2jZ2CEUgoG8IccfjllZ/OhNiLuZ1vGJ/omYaBeqIhIENZktBmWNeq9OQg5bt74
+         /6S3OpshUP7gcLmY5wEIJhauwBAVlC9q8GZRve/16zMB337xAZnvwG6dfy+gkXewKu6w
+         A1zWeLD3D6BRIBJt9PApd4uQiwzVqgKGq/qIEdohsOciHw5sIWrU/C4bP3RHl3Pd2MDW
+         U1ng==
+X-Gm-Message-State: AOAM533NdtO7EVq6T9559QW7anPKh+6oLYfWeRrx0urm2YpVqXZC4hEL
+        c/PXvfOyKRxz+XJdW4v3sTiel7f4jjTXKg==
+X-Google-Smtp-Source: ABdhPJx2dzgS9CZg8M0RHNs37JorziX7LYRmHczZnbqjCyFvVKF8VlZJk62ZIldN40XvfBQkQBP58w==
+X-Received: by 2002:a2e:a288:: with SMTP id k8mr16429146lja.107.1628057252149;
+        Tue, 03 Aug 2021 23:07:32 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:812d:8c8a:31bb:abfc:e015:a7fa? ([2a00:1370:812d:8c8a:31bb:abfc:e015:a7fa])
+        by smtp.gmail.com with ESMTPSA id r15sm86396ljg.16.2021.08.03.23.07.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Aug 2021 23:07:31 -0700 (PDT)
+Subject: Re: Random csum errors
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        telsch <telsch@gmx.de>
+Cc:     linux-btrfs@vger.kernel.org
+References: <trinity-59843172-879e-4efd-9b35-bbfed0ed52c6-1627914043406@3c-app-gmx-bap64>
+ <20210802233850.GO10170@hungrycats.org>
+ <trinity-7b251a66-4376-4938-91f7-9fae2a72c5ef-1628016907507@3c-app-gmx-bap48>
+ <20210803211649.GP10170@hungrycats.org>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Message-ID: <3f14ef82-cf1b-db1e-adc5-8faa6a29698e@gmail.com>
+Date:   Wed, 4 Aug 2021 09:07:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210803211649.GP10170@hungrycats.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Robbie Ko <robbieko@synology.com>
+On 04.08.2021 00:16, Zygo Blaxell wrote:
+>>
+>> 1 SanDisk SDSSDA120G/Firmware Version: Z22000RL
+> 
+> I have some of those!  I can confirm they silently corrupt data as they
+> approach the end of their very short lives.  I've seen no evidence that
+> the firmware is able to detect or report any errors before the drive dies,
+> despite providing drives many opportunities to do so as they died.
+> 
 
-When walk down/up tree fails, we did not aborting the transaction,
-nor did modify the root drop key, but the refs of some tree blocks
-may have been removed in the transaction.
-
-Therefore when we retry to delete the subvolume in the future,
-we will fail due to the fact that some references were deleted
-in the previous attempt.
-
-------------[ cut here ]------------
-WARNING: at fs/btrfs/extent-tree.c:898 btrfs_lookup_extent_info+0x40a/0x4c0 [btrfs]()
-CPU: 2 PID: 11618 Comm: btrfs-cleaner Tainted: P
-Hardware name: Synology Inc. RS3617xs Series/Type2 - Board Product Name1, BIOS M.017 2019/10/16
-ffffffff814c2246 ffffffff81036536 ffff88024a911d08 ffff880262de45b0
-ffff8802448b5f20 ffff88024a9c1ad8 0000000000000000 ffffffffa08eb05a
-000008f84e72c000 0000000000000000 0000000000000001 0000000100000000
-Call Trace:
-[<ffffffff814c2246>] ? dump_stack+0xc/0x15
-[<ffffffff81036536>] ? warn_slowpath_common+0x56/0x70
-[<ffffffffa08eb05a>] ? btrfs_lookup_extent_info+0x40a/0x4c0 [btrfs]
-[<ffffffffa08ee558>] ? do_walk_down+0x128/0x750 [btrfs]
-[<ffffffffa08ebab4>] ? walk_down_proc+0x314/0x330 [btrfs]
-[<ffffffffa08eec42>] ? walk_down_tree+0xc2/0xf0 [btrfs]
-[<ffffffffa08f2bce>] ? btrfs_drop_snapshot+0x40e/0x9a0 [btrfs]
-[<ffffffffa09096db>] ? btrfs_clean_one_deleted_snapshot+0xab/0xe0 [btrfs]
-[<ffffffffa08fe970>] ? cleaner_kthread+0x280/0x320 [btrfs]
-[<ffffffff81052eaf>] ? kthread+0xaf/0xc0
-[<ffffffff81052e00>] ? kthread_create_on_node+0x110/0x110
-[<ffffffff814c8c0d>] ? ret_from_fork+0x5d/0xb0
-[<ffffffff81052e00>] ? kthread_create_on_node+0x110/0x110
-------------[ end trace ]-----------
-BTRFS error (device dm-1): Missing references.
-BTRFS: error (device dm-1) in btrfs_drop_snapshot:9557: errno=-5 IO failure
-
-By not aborting the transaction, every future attempt to delete the
-subvolume fails and we end up never freeing all the extents used by
-the subvolume/snapshot.
-
-By aborting the transaction we have a least the possibility to
-succeeded after unmounting and mounting again the filesystem.
-
-So we fix this problem by aborting the transaction when the walk down/up
-tree fails, which is a safer approach.
-
-In addition, we also added the initialization of drop_progress and
-drop_level.
-
-Signed-off-by: Robbie Ko <robbieko@synology.com>
----
- fs/btrfs/extent-tree.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 268ce58d4569..032a257fdb65 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -5539,10 +5539,14 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 		path->locks[level] = BTRFS_WRITE_LOCK;
- 		memset(&wc->update_progress, 0,
- 		       sizeof(wc->update_progress));
-+		memset(&wc->drop_progress, 0,
-+		       sizeof(wc->drop_progress));
- 	} else {
- 		btrfs_disk_key_to_cpu(&key, &root_item->drop_progress);
- 		memcpy(&wc->update_progress, &key,
- 		       sizeof(wc->update_progress));
-+		memcpy(&wc->drop_progress, &key,
-+		       sizeof(wc->drop_progress));
- 
- 		level = btrfs_root_drop_level(root_item);
- 		BUG_ON(level == 0);
-@@ -5588,6 +5592,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 
- 	wc->restarted = test_bit(BTRFS_ROOT_DEAD_TREE, &root->state);
- 	wc->level = level;
-+	wc->drop_level = level;
- 	wc->shared_level = -1;
- 	wc->stage = DROP_REFERENCE;
- 	wc->update_ref = update_ref;
-@@ -5659,8 +5664,10 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
- 		}
- 	}
- 	btrfs_release_path(path);
--	if (err)
-+	if (err) {
-+		btrfs_abort_transaction(trans, err);
- 		goto out_end_trans;
-+	}
- 
- 	ret = btrfs_del_root(trans, &root->root_key);
- 	if (ret) {
--- 
-2.17.1
-
+What about adding them to
+https://btrfs.wiki.kernel.org/index.php/Hardware_bugs?
