@@ -2,213 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191863E0C95
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Aug 2021 05:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFF83E0E6A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Aug 2021 08:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237140AbhHEDAQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Aug 2021 23:00:16 -0400
-Received: from mail.synology.com ([211.23.38.101]:44708 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229609AbhHEDAQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Aug 2021 23:00:16 -0400
-Subject: Re: [PATCH v2] btrfs: fix root drop key inconsistent when drop
- subvolume/snapshot fails
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1628132401; bh=lLPf/f3KnS6JfHyDEpSJk4dANSTGL9mvDwn6KsG1SyA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Vi1nRM2UFsjUrm+9ASEXbqIeJGff/SrbqlWR6kfR6b9VOE19onjDnxw9wYUR65QuT
-         my5/3akSLue2O+nf1U8oX/wwAnKV5Ra73UMoNhUbQeFUNkPSKZ2FnF+iW9cUfn/HZS
-         ZHEMwT1sW+r0O8C2CxTOk//L3g3c92wjK1ebN7TE=
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20210804024904.2598-1-robbieko@synology.com>
- <CAL3q7H74kDr+_R=RixVyu05zBxXNqTgYh+Wibmp3vffxjwA6Yg@mail.gmail.com>
-From:   robbieko <robbieko@synology.com>
-Message-ID: <58bbbb8f-06d6-2976-7cb7-afffe3c8436a@synology.com>
-Date:   Thu, 5 Aug 2021 11:02:23 +0800
+        id S234994AbhHEGdY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Aug 2021 02:33:24 -0400
+Received: from mout.gmx.net ([212.227.15.15]:40481 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234340AbhHEGdX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:33:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628145188;
+        bh=M0g8B3KRWfIiB1VQxqlUWpm2uumn4ZYzRN0joa+1/Y8=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=cd1ei332v9Gq8dJOs+RPV071r+evSn6TC8y3CdJ74XMWjxei+xi+8MD2AUBBWbZRb
+         qsjrW41lqcfiuXZOz5Mupgd8tiGib0drXFUxqFcfb6naFOjXrjF5iviuligWZwXkey
+         wVIsUvmfX4jMc8RLt9+IFT6Hp9rZPFwAsXDRadfU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MRTN9-1mYR9C0rIb-00NVW8; Thu, 05
+ Aug 2021 08:33:07 +0200
+Subject: Re: [PATCH 2/7] btrfs: backref: Use btrfs_find_item in
+ btrfs_find_one_extref
+To:     Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, nborisov@suse.com
+References: <20210804184854.10696-1-mpdesouza@suse.com>
+ <20210804184854.10696-3-mpdesouza@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <037aeb68-72f8-4ea3-e29b-145567df64f9@gmx.com>
+Date:   Thu, 5 Aug 2021 14:33:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H74kDr+_R=RixVyu05zBxXNqTgYh+Wibmp3vffxjwA6Yg@mail.gmail.com>
+In-Reply-To: <20210804184854.10696-3-mpdesouza@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Antivirus: Avast (VPS 210804-6, 2021/8/4), Outbound message
-X-Antivirus-Status: Clean
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Lqzj4hNKaJcI8aBmwR15ZPFqgbhekASubyb0HKHGtEwovc4ze4R
+ 5fxxgRrjeLiPzL7nXy/jlzNQRXe7pf0JYl8fyS3ZJ90zCRswjR7QTfsDT03GkEZE1jAfpLo
+ UKco1lTIM6Dl4+dSrHNXofzijbvURfTMSQ7Tu5ukF8PpEUu4TaYfQ1mSMaqXupdYBW5fFx1
+ 1SpWzABM0Y7tO4yYjXhOQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fWLKtAhu9zc=:PyC0GxaIjFf7MM6mS7uxcO
+ bulxv5Et/ogRa+MNk5gbFb5IMrY/0xpCD5qzUbEAVZ7BqJMT+WDt1dQQb9hMJO6H3ctDiLa4f
+ n176HVeomiP2D8LDhm2fuYkwTqyHe2PFdgwMWkTbd7iKJoL45T3bga/aI32D8cOkdlaI5obkN
+ KZQZuMuI7Shae/9jq+97i7iiC6TauZMDM4IYOYj2K8kndFaUiPh9vkQrappI8Ojwsq+B50NXX
+ yBSN340ln4xGp4YR+g+aMLbyw9uUiv+AQlNBWamY3abt0HkQPq3xDsQXf3Pr39GZ+EoxBXSek
+ 9WZ0IKm6kEriTSvK2lqUzEE/6KheErP1VI4gxiBNrWrrm8aheUFJvtlu31FMm4IcOTE3vcRmJ
+ GB/lXcBXdtPNontnsPLU3lFDgqrOqGfkrgtQ1qM+YaL/+WPLtAkL1vsA7/8Hc6g/9KcnpWDNE
+ Lmu9ztu9f1Ca+HVC5fQl4LcaU2r2piXMuGPSEVswYd8d6qlKNb6P5LBDa+h/evitGYbDABOiv
+ UDyfSmiEE8379bmGRs8Ipf6WygiiA8KsoHUGJ/SLAjXc539+bWlY+oWeF9jlq+EDke3TN0rQ5
+ bHYDMYzHGLR2JS8TDznoNtkH09vJYaQ2SX1w4nuM3ulT74d6X6oUQDWg7IGjjO+g1aakMIh7c
+ QIWulxtHDRcUpao06AgkT8jjyE+D1WfJzSmiKSS68ei0XyLkMnfP+ohZ71QgZdiag6bugvrC/
+ cgcW3JMj49fvfAhwqHPVFRMiXhqwjd5vGi8uVMCZscLqDK428C/yW4fVWGFvdVfGaWJ0xZhT9
+ u6dDHdXBuZ0ZjaHS8RG5eUlbb6HBDmpH5bDhmQkQAs5ntjyxJ2/dHcbXJlH8gv/h1IJFCFJPN
+ 7H57A7RqPMKh/KlPzvVPa8LKoeS7hqUu5JOnMAg1Hrkoe5gKXdYjNe48q+OSJwIQu+oYBQ4QN
+ ESjWrRodifDXEi5Th7mH5ctEdFgPxu888t/w1B/nalQIj8dybWA4KPz6cZ8kdNdJOnBuuvxp7
+ uVWQyqro5tTA6n1XPI1bWplQ+iboVziVEijTvE4zEJm5Hx6Kq7NjC5GXWok/s2GM4kYUUp5OA
+ tVaRCs4sBmixpl6TV9K0pMkF+dqLu8Atl39309zOyrnJseSQAp8jy/CMw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Filipe Manana 於 2021/8/4 下午 07:56 寫道:
-> On Wed, Aug 4, 2021 at 4:45 AM robbieko <robbieko@synology.com> wrote:
->> From: Robbie Ko <robbieko@synology.com>
->>
->> When walk down/up tree fails, we did not aborting the transaction,
->> nor did modify the root drop key, but the refs of some tree blocks
->> may have been removed in the transaction.
->>
->> Therefore when we retry to delete the subvolume in the future,
->> we will fail due to the fact that some references were deleted
->> in the previous attempt.
->>
->> ------------[ cut here ]------------
->> WARNING: at fs/btrfs/extent-tree.c:898 btrfs_lookup_extent_info+0x40a/0x4c0 [btrfs]()
->> CPU: 2 PID: 11618 Comm: btrfs-cleaner Tainted: P
->> Hardware name: Synology Inc. RS3617xs Series/Type2 - Board Product Name1, BIOS M.017 2019/10/16
->> ffffffff814c2246 ffffffff81036536 ffff88024a911d08 ffff880262de45b0
->> ffff8802448b5f20 ffff88024a9c1ad8 0000000000000000 ffffffffa08eb05a
->> 000008f84e72c000 0000000000000000 0000000000000001 0000000100000000
->> Call Trace:
->> [<ffffffff814c2246>] ? dump_stack+0xc/0x15
->> [<ffffffff81036536>] ? warn_slowpath_common+0x56/0x70
->> [<ffffffffa08eb05a>] ? btrfs_lookup_extent_info+0x40a/0x4c0 [btrfs]
->> [<ffffffffa08ee558>] ? do_walk_down+0x128/0x750 [btrfs]
->> [<ffffffffa08ebab4>] ? walk_down_proc+0x314/0x330 [btrfs]
->> [<ffffffffa08eec42>] ? walk_down_tree+0xc2/0xf0 [btrfs]
->> [<ffffffffa08f2bce>] ? btrfs_drop_snapshot+0x40e/0x9a0 [btrfs]
->> [<ffffffffa09096db>] ? btrfs_clean_one_deleted_snapshot+0xab/0xe0 [btrfs]
->> [<ffffffffa08fe970>] ? cleaner_kthread+0x280/0x320 [btrfs]
->> [<ffffffff81052eaf>] ? kthread+0xaf/0xc0
->> [<ffffffff81052e00>] ? kthread_create_on_node+0x110/0x110
->> [<ffffffff814c8c0d>] ? ret_from_fork+0x5d/0xb0
->> [<ffffffff81052e00>] ? kthread_create_on_node+0x110/0x110
->> ------------[ end trace ]-----------
->> BTRFS error (device dm-1): Missing references.
->> BTRFS: error (device dm-1) in btrfs_drop_snapshot:9557: errno=-5 IO failure
->>
->> By not aborting the transaction, every future attempt to delete the
->> subvolume fails and we end up never freeing all the extents used by
->> the subvolume/snapshot.
->>
->> By aborting the transaction we have a least the possibility to
->> succeeded after unmounting and mounting again the filesystem.
->>
->> So we fix this problem by aborting the transaction when the walk down/up
->> tree fails, which is a safer approach.
-> Ok, this still misses the explanation on why we can't solve the
-> problem by simply updating the drop_progress and drop_level when we
-> get an error from walk_up_tree() or walk_down_tree().
-
-I don't fully understand the walk up/down tree part, so I am not sure if 
-drop_progress and drop_level are correct. So it’s safer for me to abort 
-the transaction.
 
 
->> In addition, we also added the initialization of drop_progress and
->> drop_level.
-> So, this about initializing drop_progress and drop_level seems like a
-> separate change.
-> How is this related to the original problem?
+On 2021/8/5 =E4=B8=8A=E5=8D=882:48, Marcos Paulo de Souza wrote:
+> btrfs_find_one_extref is using btrfs_search_slot and iterating over the
+> slots, but in reality it only desires to find an extref, since there is
+> a break without any condition at the end of the while clause.
 >
-> It completely lacks an explanation about why it's needed, how it
-> relates to the original problem.
+> The function can be dramatically simplified by using btrfs_find_item, wh=
+ich
+> calls the btrfs_search_slot, compares if the objectid and type found
+> are the same of those passed as search key, and calls
+> btrfs_item_key_to_cpu if no error was found.
 >
-> If it's unrelated, then it should go into a separate patch with a
-> proper explanation in its changelog.
-
-This part is really not related to the original problem, but I think 
-there is a potential risk, I will separate it into another patch.
-
-
->> Signed-off-by: Robbie Ko <robbieko@synology.com>
->> ---
->>   fs/btrfs/extent-tree.c | 9 ++++++++-
->>   1 file changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
->> index 268ce58d4569..032a257fdb65 100644
->> --- a/fs/btrfs/extent-tree.c
->> +++ b/fs/btrfs/extent-tree.c
->> @@ -5539,10 +5539,14 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
->>                  path->locks[level] = BTRFS_WRITE_LOCK;
->>                  memset(&wc->update_progress, 0,
->>                         sizeof(wc->update_progress));
->> +               memset(&wc->drop_progress, 0,
->> +                      sizeof(wc->drop_progress));
-> I don't see why this is needed.
-> wc was allocated with kzalloc(), how can wc->drop_progress not be
-> already zeroed here?
-
-Yes, it's should all be zero.
-But I think the wording of update_progress should be consistent.
-
+> No functional changes.
 >
-> Also, walk_up_tree() and walk_down_tree() never read from
-> wc->drop_progress. We use wc->drop_progress only for storing after
-> walk up/walk down and then copy it into the root item for persistence.
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+But a small nitpick inlined below.
+
+> ---
+>   fs/btrfs/backref.c | 64 ++++++++--------------------------------------
+>   1 file changed, 11 insertions(+), 53 deletions(-)
 >
->>          } else {
->>                  btrfs_disk_key_to_cpu(&key, &root_item->drop_progress);
->>                  memcpy(&wc->update_progress, &key,
->>                         sizeof(wc->update_progress));
->> +               memcpy(&wc->drop_progress, &key,
->> +                      sizeof(wc->drop_progress));
-> Why is this needed?
-> Except when starting the subvolume/snapshot drop, before entering the
-> loop with the walk up and down logic, we never read wc->drop_progress.
+> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+> index 9e92faaafa02..57b955c8a875 100644
+> --- a/fs/btrfs/backref.c
+> +++ b/fs/btrfs/backref.c
+> @@ -1588,67 +1588,25 @@ int btrfs_find_one_extref(struct btrfs_root *roo=
+t, u64 inode_objectid,
+>   			  struct btrfs_inode_extref **ret_extref,
+>   			  u64 *found_off)
+>   {
+> -	int ret, slot;
+> +	int ret;
+>   	struct btrfs_key key;
+> -	struct btrfs_key found_key;
+>   	struct btrfs_inode_extref *extref;
+> -	const struct extent_buffer *leaf;
+>   	unsigned long ptr;
 >
-> wc->drop_progress is meant only for storing into the root_item after
-> each walk up/walk down iteration, we never read from it during the
-> walks.
-
-Indeed, drop_progress is only used to storing into the root item after 
-each walk up/down iteration. But this value is not updated every time, 
-when the stage is UPDATE_BACKREF, we may update 0 into to the root item, 
-resulting in inconsistent drop_progress.
-
-So I think we must initialize drop_progress and drop_level.
-
->>                  level = btrfs_root_drop_level(root_item);
->>                  BUG_ON(level == 0);
->> @@ -5588,6 +5592,7 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
->>
->>          wc->restarted = test_bit(BTRFS_ROOT_DEAD_TREE, &root->state);
->>          wc->level = level;
->> +       wc->drop_level = level;
-> I don't understand why this is needed too.
-> We never read from wc->drop_level during the walk up and walk down,
-> it's only used to store a level during/after each walk up and walk
-> down iteration, and if the walks succeeded we
-> set wc->drop_level to wc->level and then copy it into the root item.
-
-This is not always true.
-If the stage is UPDATE_BACKREF, drop_level and drop_progress will not be updated,
-so the root item may write 0, resulting in inconsistent drop_progress.
-
-
+> -	key.objectid =3D inode_objectid;
+> -	key.type =3D BTRFS_INODE_EXTREF_KEY;
+> -	key.offset =3D start_off;
+> -
+> -	ret =3D btrfs_search_slot(NULL, root, &key, path, 0, 0);
+> +	ret =3D btrfs_find_item(root, path, inode_objectid, BTRFS_INODE_EXTREF=
+_KEY,
+> +			      start_off, &key);
+>   	if (ret < 0)
+>   		return ret;
+> +	else if (ret > 0)
+> +		return -ENOENT;
 >
-> So please provide an explanation on why these initializations are
-> needed and how they relate to the original problem.
-> If they are not related to the original problem, then move them into a
-> separate patch, with all the proper explanations in the changelog.
->
-> Thanks.
->
->
->>          wc->shared_level = -1;
->>          wc->stage = DROP_REFERENCE;
->>          wc->update_ref = update_ref;
->> @@ -5659,8 +5664,10 @@ int btrfs_drop_snapshot(struct btrfs_root *root, int update_ref, int for_reloc)
->>                  }
->>          }
->>          btrfs_release_path(path);
->> -       if (err)
->> +       if (err) {
->> +               btrfs_abort_transaction(trans, err);
->>                  goto out_end_trans;
->> +       }
->>
->>          ret = btrfs_del_root(trans, &root->root_key);
->>          if (ret) {
->> --
->> 2.17.1
->>
->
+> -	while (1) {
+> -		leaf =3D path->nodes[0];
+> -		slot =3D path->slots[0];
+> -		if (slot >=3D btrfs_header_nritems(leaf)) {
+> -			/*
+> -			 * If the item at offset is not found,
+> -			 * btrfs_search_slot will point us to the slot
+> -			 * where it should be inserted. In our case
+> -			 * that will be the slot directly before the
+> -			 * next INODE_REF_KEY_V2 item. In the case
+> -			 * that we're pointing to the last slot in a
+> -			 * leaf, we must move one leaf over.
+> -			 */
+> -			ret =3D btrfs_next_leaf(root, path);
+> -			if (ret) {
+> -				if (ret >=3D 1)
+> -					ret =3D -ENOENT;
+> -				break;
+> -			}
+> -			continue;
+> -		}
+> -
+> -		btrfs_item_key_to_cpu(leaf, &found_key, slot);
+> -
+> -		/*
+> -		 * Check that we're still looking at an extended ref key for
+> -		 * this particular objectid. If we have different
+> -		 * objectid or type then there are no more to be found
+> -		 * in the tree and we can exit.
+> -		 */
+> -		ret =3D -ENOENT;
+> -		if (found_key.objectid !=3D inode_objectid)
+> -			break;
+> -		if (found_key.type !=3D BTRFS_INODE_EXTREF_KEY)
+> -			break;
+> -
+> -		ret =3D 0;
+> -		ptr =3D btrfs_item_ptr_offset(leaf, path->slots[0]);
+> -		extref =3D (struct btrfs_inode_extref *)ptr;
+> -		*ret_extref =3D extref;
+> -		if (found_off)
+> -			*found_off =3D found_key.offset;
+> -		break;
+> -	}
+> +	ptr =3D btrfs_item_ptr_offset(path->nodes[0], path->slots[0]);
 
+@ptr is only a temporary variable.
 
--- 
-Avast 防毒軟體已檢查此封電子郵件的病毒。
-https://www.avast.com/antivirus
+We can replace it with:
 
+extref =3D btrfs_item_ptr(path->nodes[0], path->slots[0], struct
+btrfs_inode_extref);
+
+Thanks,
+Qu
+> +	extref =3D (struct btrfs_inode_extref *)ptr;
+> +	*ret_extref =3D extref;
+> +	if (found_off)
+> +		*found_off =3D key.offset;
+>
+> -	return ret;
+> +	return 0;
+>   }
+>
+>   /*
+>
