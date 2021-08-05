@@ -2,225 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9AF3E16DC
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Aug 2021 16:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059C43E19CC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Aug 2021 18:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbhHEOYb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Aug 2021 10:24:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50154 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbhHEOYa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Aug 2021 10:24:30 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7039E1FE58;
-        Thu,  5 Aug 2021 14:24:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628173455; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Og8x/gyy+4nek1+IFr3K+t79ZOraRmhRrkC1xybmcWM=;
-        b=XN7frrdiM4Ylxy76oTplCKjXJ+4ZbO0llNR9l9lVcstWhf6Obpt1K0X4PbE/0FmPowBWOB
-        KIrRQ9LPCqLf5UGPtO5pSeymPxEbm9924y176thh76wNoChHjc/sL49favDCNQb9CUc6bV
-        r9ztmtr9qkqbiFljbAnZc66mQcpEOTU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628173455;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Og8x/gyy+4nek1+IFr3K+t79ZOraRmhRrkC1xybmcWM=;
-        b=xjqyK57RTEZyPJaBbEgpuPygNGP0vxlBN+zlMEpGx8mlfcAN0c7WxqM3xLsoHtS+NejrST
-        VeUAm8AVkYwS6NDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7BAED13D66;
-        Thu,  5 Aug 2021 14:24:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 32nmNof0C2GbZAAAMHmgww
-        (envelope-from <mpdesouza@suse.de>); Thu, 05 Aug 2021 14:24:07 +0000
-Message-ID: <00ab6e41219e5b863a1cac5cce86bf0a49da4945.camel@suse.de>
-Subject: Re: [PATCH 7/7] btrfs: ioctl: Simplify btrfs_ioctl_get_subvol_info
-From:   Marcos Paulo de Souza <mpdesouza@suse.de>
-To:     Anand Jain <anand.jain@oracle.com>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, nborisov@suse.com
-Date:   Thu, 05 Aug 2021 11:23:40 -0300
-In-Reply-To: <8b887a24-b676-360e-4cc1-d0dc0e0a0b19@oracle.com>
-References: <20210804184854.10696-1-mpdesouza@suse.com>
-         <20210804184854.10696-8-mpdesouza@suse.com>
-         <8b887a24-b676-360e-4cc1-d0dc0e0a0b19@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S232896AbhHEQrX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Aug 2021 12:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhHEQrW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Aug 2021 12:47:22 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF00C061765
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Aug 2021 09:47:06 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id a5-20020a05683012c5b029036edcf8f9a6so5794809otq.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Aug 2021 09:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=SXQoBno43GIZX8lTJTllDI2TcTfVVHzWfXlmutq/Vyw=;
+        b=OMb7cpOW9Cfys6FvLg28KoGXwyjXcONefpzOjlG2wBGkMovoDqvM/OZs5zstYpOQkD
+         9idkMlOKLw997b8x4hBu1c5CPLWrNOnyNjDJe2lSaln1kWa/P136qFvQiYrPpfv7BKxi
+         cxuPWAGi1BaFTvZiN+SYWLZ6dfrftDrBBPr68yIQB1M+3aBfEtNhN3Sb0L5SqycNrevE
+         oI/GE8v+fXk2qVTq52Wix2SUWXwkUSvLXLX+eTdtGldJu+z3xFrGPrZbOGxFxufHOt89
+         o/v2wVBTtjQepiO4dmkxOWkm5GT+ebu040yHowZTVtoqk5YxNHZ6+KZq4lH/QHWeYZP5
+         6wsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=SXQoBno43GIZX8lTJTllDI2TcTfVVHzWfXlmutq/Vyw=;
+        b=q6eVPvdCZ++HzZwC3kI5RdMWJSPLe95vZo6f6sN1vkedEGw8QHcKvkw9Cxaa6UxeIR
+         WebKwuNJ6G2em/D0wmtoDPO4rAc37NxNyh+4tzusX17HN2QNjLgcVtqttGrfoYQIlhA7
+         PR+ko/vVntI498WmE5oEgChCDfpAXKduYIjvwcrLOE0GgWyk9x1/g5uuyxbXEl4NhfMB
+         UNsj22FbnLbIHFVZKvrJE67ehIG3N3THkIkfgZg21/3zdU2Ix1aUljH51a9w+MM+bMAU
+         K/4swIBTi2NmFc00jRwUD6PEmHFHD/ChJdSqkzDmQwUD2Xqee2WIeIuXFX6JjTFXG5ub
+         s8og==
+X-Gm-Message-State: AOAM530WV9+vbQcXVjPcK+YeD3mMQiFqQ7A1A0X852+iSnd6hCntI/as
+        nhi+7GS+mXtiFrcYxAFRk1ICtQObtxFCcQQb/GooNibqVb0=
+X-Google-Smtp-Source: ABdhPJydxBaC/Pr7FSiCmYFnpP+a9cUtiUN6iqdtYYWtECNLbS6+Iug++L+cJdOJvSW6NunPQosTfIYSTymK51j8Bqs=
+X-Received: by 2002:a9d:410b:: with SMTP id o11mr4451462ote.211.1628182026128;
+ Thu, 05 Aug 2021 09:47:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From:   Dave T <davestechshop@gmail.com>
+Date:   Thu, 5 Aug 2021 12:46:54 -0400
+Message-ID: <CAGdWbB59ULVxpNnq5Og0SCri+qyz_cwDLFTLr5N7iVT9gb0w1A@mail.gmail.com>
+Subject: why is the same mount point repeatedly mounted in nested manner?
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 2021-08-05 at 20:13 +0800, Anand Jain wrote:
-> On 05/08/2021 02:48, Marcos Paulo de Souza wrote:
-> > By using btrfs_find_item we can simplify the code.
-> 
->   Yep. I like the idea.
-> 
-> > Also, remove the
-> > -ENOENT error condition, since it'll never hit. If find_item
-> > returns 0,
-> > it means it found the desired objectid and type, so it won't reach
-> > the -ENOENT
-> > condition.
-> > 
-> > No functional changes.
-> > 
-> > Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-> 
->   Looks good to me.
-> 
->   Reviewed-by: Anand Jain <anand.jain@oracle.com>
+I recently switched from snapper and snapsync to btrbk, which I
+generally prefer. However, I am running into one issue.
 
-Sorry, I believe that I did a mistake here.
+Background - from https://digint.ch/btrbk/doc/faq.html
+Btrbk is designed to operate on the subvolumes within a root
+subvolume. The author recommend booting linux from a btrfs subvolume,
+and using the btrfs root only as a container for subvolumes (i.e. NOT
+booting from "subvolid=3D5").
 
-See bellow.
+That's exactly what I'm doing.
 
-> 
-> Thanks, Anand
-> 
-> > ---
-> >   fs/btrfs/ioctl.c | 56 +++++++++++++++++++----------------------
-> > -------
-> >   1 file changed, 22 insertions(+), 34 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> > index d09eaa83b5d2..2c57bea16c92 100644
-> > --- a/fs/btrfs/ioctl.c
-> > +++ b/fs/btrfs/ioctl.c
-> > @@ -2685,6 +2685,7 @@ static int btrfs_ioctl_get_subvol_info(struct
-> > file *file, void __user *argp)
-> >   	unsigned long item_off;
-> >   	unsigned long item_len;
-> >   	struct inode *inode;
-> > +	u64 treeid;
-> >   	int slot;
-> >   	int ret = 0;
-> >   
-> > @@ -2702,15 +2703,15 @@ static int
-> > btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
-> >   	fs_info = BTRFS_I(inode)->root->fs_info;
-> >   
-> >   	/* Get root_item of inode's subvolume */
-> > -	key.objectid = BTRFS_I(inode)->root->root_key.objectid;
-> > -	root = btrfs_get_fs_root(fs_info, key.objectid, true);
-> > +	treeid = BTRFS_I(inode)->root->root_key.objectid;
-> > +	root = btrfs_get_fs_root(fs_info, treeid, true);
-> >   	if (IS_ERR(root)) {
-> >   		ret = PTR_ERR(root);
-> >   		goto out_free;
-> >   	}
-> >   	root_item = &root->root_item;
-> >   
-> > -	subvol_info->treeid = key.objectid;
-> > +	subvol_info->treeid = treeid;
-> >   
-> >   	subvol_info->generation = btrfs_root_generation(root_item);
-> >   	subvol_info->flags = btrfs_root_flags(root_item);
-> > @@ -2737,44 +2738,31 @@ static int
-> > btrfs_ioctl_get_subvol_info(struct file *file, void __user *argp)
-> >   	subvol_info->rtime.sec = btrfs_stack_timespec_sec(&root_item-
-> > >rtime);
-> >   	subvol_info->rtime.nsec = btrfs_stack_timespec_nsec(&root_item-
-> > >rtime);
-> >   
-> > -	if (key.objectid != BTRFS_FS_TREE_OBJECTID) {
-> > +	if (treeid != BTRFS_FS_TREE_OBJECTID) {
-> >   		/* Search root tree for ROOT_BACKREF of this subvolume
-> > */
-> > -		key.type = BTRFS_ROOT_BACKREF_KEY;
-> > -		key.offset = 0;
-> > -		ret = btrfs_search_slot(NULL, fs_info->tree_root, &key,
-> > path, 0, 0);
-> > +		ret = btrfs_find_item(fs_info->tree_root, path, treeid,
-> > +					BTRFS_ROOT_BACKREF_KEY, 0,
-> > &key);
-> >   		if (ret < 0) {
-> >   			goto out;
-> > -		} else if (path->slots[0] >=
-> > -			   btrfs_header_nritems(path->nodes[0])) {
-> > -			ret = btrfs_next_leaf(fs_info->tree_root,
-> > path);
-> > -			if (ret < 0) {
-> > -				goto out;
-> > -			} else if (ret > 0) {
-> > -				ret = -EUCLEAN;
-> > -				goto out;
-> > -			}
+The key point is that btrbk requires mounting the toplevel subvolume
+to perform its tasks.
 
-btrfs_next_leaf returns > 0 if it there aren't any other leaf. So, in
-this case, it can find another leaf.
+I'm using btrbk via a systemd timer. I have a daily and hourly timer
+set up. Each timer starts by mounting the btrfs root, performing the
+btrbk task, and unmounting the btrfs root.
 
-> > +		} else if (ret > 0) {
-> > +			ret = -EUCLEAN;
-> > +			goto out;
-> >   		}
+I create hourly snapshots and on a daily basis I use btrbk to transfer
+those to two different USB HDD's as well as to a remote server via
+SSH.
 
-This is wrong, since btrfs_find_item can return 1 is next_leaf returned
-something different OR if the objectid or type aren't the same.
+Here's the problem. I now end up (after some time) with a nested list
+of mounts for one particular mount point as shown below. I don't
+understand why or how this is happening. It does have side effects
+(disk access can hang). The apparent "cure" is to restart the nfs
+server service, but I'm still trying to understand the issue fully.
 
-In this case, the -ENOENT path can be reached, since there can be more
-leaves but with different objectid and type.
+# cat /etc/fstab
+UUID=3D28D099A-9D92-487C-8113-A231CAD0EEF2  /     btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvol=3D/@btrtop/snapshot
+0 0 #mounts my root filesystem
+UUID=3D28D099A-9D92-487C-8113-A231CAD0EEF2  /mnt/btrtop/root  btrfs
+noauto,nofail,rw,noatime,nodiratime,compress=3Dlzo,space_cache    0 0
+#mounts the top btrfs volume for btrbk access to all snapshots
+/var/cache/pacman       /srv/nfs/var/cache/pacman       none  bind  0 0
 
-In this case, with the following change, we would report such situation
-wrongly as -EUCLEAN.
-
-I'll rework this patch in the v2 of this patchset.
-
-> >   
-> >   		leaf = path->nodes[0];
-> >   		slot = path->slots[0];
-> > -		btrfs_item_key_to_cpu(leaf, &key, slot);
-> > -		if (key.objectid == subvol_info->treeid &&
-> > -		    key.type == BTRFS_ROOT_BACKREF_KEY) {
-> > -			subvol_info->parent_id = key.offset;
-> > -
-> > -			rref = btrfs_item_ptr(leaf, slot, struct
-> > btrfs_root_ref);
-> > -			subvol_info->dirid = btrfs_root_ref_dirid(leaf,
-> > rref);
-> > -
-> > -			item_off = btrfs_item_ptr_offset(leaf, slot)
-> > -					+ sizeof(struct
-> > btrfs_root_ref);
-> > -			item_len = btrfs_item_size_nr(leaf, slot)
-> > -					- sizeof(struct
-> > btrfs_root_ref);
-> > -			read_extent_buffer(leaf, subvol_info->name,
-> > -					   item_off, item_len);
-> > -		} else {
-> > -			ret = -ENOENT;
-> > -			goto out;
-> > -		}
-> > +
-> > +		subvol_info->parent_id = key.offset;
-> > +
-> > +		rref = btrfs_item_ptr(leaf, slot, struct
-> > btrfs_root_ref);
-> > +		subvol_info->dirid = btrfs_root_ref_dirid(leaf, rref);
-> > +
-> > +		item_off = btrfs_item_ptr_offset(leaf, slot)
-> > +				+ sizeof(struct btrfs_root_ref);
-> > +		item_len = btrfs_item_size_nr(leaf, slot)
-> > +				- sizeof(struct btrfs_root_ref);
-> > +		read_extent_buffer(leaf, subvol_info->name,
-> > +				   item_off, item_len);
-> >   	}
-> >   
-> >   	if (copy_to_user(argp, subvol_info, sizeof(*subvol_info)))
-> > 
-
+# findmnt -t btrfs
+TARGET                                      SOURCE
+                                       FSTYPE OPTIONS
+/
+/dev/mapper/xyz[/@btrtop/snapshot]                     btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=9C=E2=94=80/srv/nfs/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82 =E2=94=94=E2=94=80/srv/nfs/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82   =E2=94=94=E2=94=80/srv/nfs/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82     =E2=94=94=E2=94=80/srv/nfs/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82       =E2=94=94=E2=94=80/srv/nfs/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82         =E2=94=94=E2=94=80/srv/nfs/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82           =E2=94=94=E2=94=80/srv/nfs/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82             =E2=94=94=E2=94=80/srv/nfs/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=9C=E2=94=80/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82 =E2=94=94=E2=94=80/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82   =E2=94=94=E2=94=80/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82     =E2=94=94=E2=94=80/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82       =E2=94=94=E2=94=80/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82         =E2=94=94=E2=94=80/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
+=E2=94=82           =E2=94=94=E2=94=80/var/cache/pacman
+/dev/mapper/xyz[/@btrtop/snapshot/var/cache/pacman]    btrfs
+rw,noatime,nodiratime,compress=3Dlzo,space_cache,subvolid=3D3194,subvol=3D/=
+@btrtop/snapshot
