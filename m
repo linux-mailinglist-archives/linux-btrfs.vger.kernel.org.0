@@ -2,100 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029153E43A9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Aug 2021 12:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D978B3E4480
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Aug 2021 13:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbhHIKNW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Aug 2021 06:13:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234859AbhHIKNV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Aug 2021 06:13:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 633A661076;
-        Mon,  9 Aug 2021 10:12:59 +0000 (UTC)
-Date:   Mon, 9 Aug 2021 12:12:56 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-btrfs@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v4 00/21] btrfs: support idmapped mounts
-Message-ID: <20210809101256.cthg6pfcvovhmjei@wittgenstein>
-References: <20210727104900.829215-1-brauner@kernel.org>
- <20210802122827.aomsh5i3rljgm2r3@wittgenstein>
+        id S235081AbhHILQR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Aug 2021 07:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235063AbhHILQK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Aug 2021 07:16:10 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67999C061798
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Aug 2021 04:15:48 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id u10so22992404oiw.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Aug 2021 04:15:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=CbDYf9dY3JI48sPHkjUaEjq8kHKqW0CUt2xBW6NUraQ=;
+        b=jZn7UVwPt4CfZiPOOY8GGbIaEe6FLdk+6A/mX5frmrG1Z59DoGPFUDk4j4ouXG7f3c
+         6earUJVOZSN4fXfhI+FyVNnC2b9Xz/7UqrX13DZdz2XVobXzxbkkFkOLU4C7Z+Eie2cZ
+         UysW7oQMt/Xb/OykKugUOn1Z2AnGUlo7Cx8B+c4QGOkzraUnZ0yMIRKPUY1CwqR+GPwb
+         aPrwV7VZXpqxAgf9nmgN8Dl6xSORRBU+ZZcfSnzpeGjrP+6QaSwFKZcPTmjFm3b8vobr
+         LM4D5R/ZDuC496eUdjZEjg6VqCRzu3sLYznCLJSB2siz3viY5noGLZ9i5nk73L2tYCfx
+         2usw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=CbDYf9dY3JI48sPHkjUaEjq8kHKqW0CUt2xBW6NUraQ=;
+        b=TG+exBisvuNjY6ADaTbZ+hYBkBJphaVVb3KPbTYRbnS6CB1bsrfAgD+FhrGPb0rOpZ
+         5z4X/TGZqDq4s+PUTdBOU3uBESHAvDH1gaHXcrqSy/n6A+lj81BKarMuHGnSiHqydAOW
+         x9cLhVJhubCV7DSzaoKP5K7RiYqBgn/qUc3i/iNF2MNRnyeQOifiDpFSlWnFav9NDc+q
+         caPUE2+eUu2ZJg9+Yl96hEwC+IDY3zum3S72M1xwvXFsrYS+GMll9RJUPDbrR+FfPgvG
+         hd6auOkkRBDDjAyH6gUIvsthruz2EFUiySf7UovTxHedOnTSpjsop7TZHTgARI/05VuY
+         zzFw==
+X-Gm-Message-State: AOAM531h+7tIEPGXNA5DAVA1GKnFM9TNvmvHHiDEFjy9Iz3B2QQoy1wk
+        XJFu5BlUuyha8M+LJOJ9NfIf00zt1Fl5/YEowGux/I/ZOKK3Fg==
+X-Google-Smtp-Source: ABdhPJwx7t2d4mLMNGn16MZsgMtifENe+5RiXYtIZxSzLXGLLcxIXHJNR365rCWHvLiBORzucRj9uB2rmT3kC8AVoVY=
+X-Received: by 2002:aca:bcc4:: with SMTP id m187mr610765oif.164.1628507747651;
+ Mon, 09 Aug 2021 04:15:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210802122827.aomsh5i3rljgm2r3@wittgenstein>
+From:   Serhat Sevki Dincer <jfcgauss@gmail.com>
+Date:   Mon, 9 Aug 2021 14:15:36 +0300
+Message-ID: <CAPqC6xQcJa7y2mPWxRM7_kNtdawFgEtFtGLP0K2A_UXU0X6u8g@mail.gmail.com>
+Subject: max_inline: alternative values?
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 02:28:27PM +0200, Christian Brauner wrote:
-> On Tue, Jul 27, 2021 at 12:48:39PM +0200, Christian Brauner wrote:
-> > From: Christian Brauner <christian.brauner@ubuntu.com>
-> > 
-> > Hey everyone,
-> > 
-> > /* v4 */
-> > Rename new helper to lookup_one() and add new Reviewed-bys.
-> > 
-> > This series enables the creation of idmapped mounts on btrfs. On the list of
-> > filesystems btrfs was pretty high-up and requested quite often from userspace
-> > (cf. [1]). This series requires just a few changes to the vfs for specific
-> > lookup helpers that btrfs relies on to perform permission checking when looking
-> > up an inode. The changes are required to port some other filesystem as well.
-> > 
-> > The conversion of the necessary btrfs internals was fairly straightforward. No
-> > invasive changes were needed. I've decided to split up the patchset into very
-> > small individual patches. This hopefully makes the series more readable and
-> > fairly easy to review. The overall changeset is quite small.
-> > 
-> > All non-filesystem wide ioctls that peform permission checking based on inodes
-> > can be supported on idmapped mounts. There are really just a few restrictions.
-> > This should really only affect the deletion of subvolumes by subvolume id which
-> > can be used to delete any subvolume in the filesystem even though the caller
-> > might not even be able to see the subvolume under their mount. Other than that
-> > behavior on idmapped and non-idmapped mounts is identical for all enabled
-> > ioctls. People interested in idmappings on idmapped mounts should read [2].
-> > 
-> > The changeset has an associated new testsuite specific to btrfs. The
-> > core vfs operations that btrfs implements are covered by the generic
-> > idmapped mount testsuite. For the ioctls a new testsuite was added. It
-> > is sent alongside this patchset for ease of review but will very likely
-> > be merged independent of it.
-> > 
-> > All patches are based on v5.14-rc3.
-> > 
-> > The series can be pulled from:
-> > https://git.kernel.org/brauner/h/fs.idmapped.btrfs
-> > https://github.com/brauner/linux/tree/fs.idmapped.btrfs
-> > 
-> > The xfstests can be pulled from:
-> > https://git.kernel.org/brauner/xfstests-dev/h/fs.idmapped.btrfs
-> > https://github.com/brauner/xfstests/tree/fs.idmapped.btrfs
-> > 
-> > Note, the new btrfs xfstests patch is on top of a branch of mine
-> > containing a few more preliminary patches. So if you want to run the
-> > tests, please simply pull the branch and build from there.
-> > 
-> > The series has been tested with xfstests including the newly added btrfs
-> > specific test. All tests pass.
-> > There were three unrelated failures that I observed: btrfs/219,
-> > btrfs/2020 and btrfs/235. All three also fail on earlier kernels
-> > without the patch series applied.
-> 
-> Hey David,
-> 
-> Sorry to ping, could I answer the outstanding questions you had and are
-> you okay with this series?
+Hi,
 
-I stuffed the lookup helper (and nothing else) this btrfs conversion
-series needs into my tree and provided it under the tag
-fs.idmapped.v5.15
-at
-git://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git
-and merged it into my for-next.
+I was reading btrfs mount options and max_inline=2048 (by default)
+caught my attention.
+I could not find any benchmarks on the internet comparing different
+values for this parameter.
+The most detailed info I could find is below from May 2016, when 2048
+was set as default.
 
-Christian
+So on a new-ish 64-bit system (amd64 or arm64) with "SSD" (memory/file
+blocks are 4K,
+metadata profile "single" by default), how would max_inline=2048
+compare to say 3072 ?
+Do you know/have any benchmarks comparing different values on a
+typical linux installation in terms of:
+- performance
+- total disk usage
+What would be the "optimal" value for SSD on a typical desktop? server?
+
+Thanks a lot..
+
+Note:
+From: David Sterba <dsterba@suse.com>
+
+commit f7e98a7fff8634ae655c666dc2c9fc55a48d0a73 upstream.
+
+The current practical default is ~4k on x86_64 (the logic is more complex,
+simplified for brevity), the inlined files land in the metadata group and
+thus consume space that could be needed for the real metadata.
+
+The inlining brings some usability surprises:
+
+1) total space consumption measured on various filesystems and btrfs
+   with DUP metadata was quite visible because of the duplicated data
+   within metadata
+
+2) inlined data may exhaust the metadata, which are more precious in case
+   the entire device space is allocated to chunks (ie. balance cannot
+   make the space more compact)
+
+3) performance suffers a bit as the inlined blocks are duplicate and
+   stored far away on the device.
+
+Proposed fix: set the default to 2048
+
+This fixes namely 1), the total filesysystem space consumption will be on
+par with other filesystems.
+
+Partially fixes 2), more data are pushed to the data block groups.
+
+The characteristics of 3) are based on actual small file size
+distribution.
+
+The change is independent of the metadata blockgroup type (though it's
+most visible with DUP) or system page size as these parameters are not
+trival to find out, compared to file size.
