@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7219C3E3E90
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Aug 2021 05:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063C03E3E92
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Aug 2021 05:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbhHID6w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 8 Aug 2021 23:58:52 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58002 "EHLO
+        id S232979AbhHID6z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 8 Aug 2021 23:58:55 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58014 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232973AbhHID6u (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Aug 2021 23:58:50 -0400
+        with ESMTP id S232975AbhHID6y (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Aug 2021 23:58:54 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EAD0E1FD81;
-        Mon,  9 Aug 2021 03:58:27 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EF38E1FD81;
+        Mon,  9 Aug 2021 03:58:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628481507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1628481513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mBKlJwh6qPUtRQ+E2HqkVTJHsO/u/MDxgQK6gIYa7VU=;
-        b=vZK3Xk4amyGrprNAMoKyqaNBQzWd0n3dO2fy7u6Ty7bxFbLqsVr5jVN7al279PJNVKtVYD
-        A1VUXF/FZpn3y8DwXwlsYvR+30GAt9Qt6M9zGwbPmqBK8F4kj4R8avCu47bn4HfrkAooH6
-        wCeJwSKyW52qtp1vJRZn3+txeaTJDP8=
+        bh=G0ibLBgniy8dCGHqoQUyeVYBRb/qOQupZTOIJDvgt2g=;
+        b=wk060BaOhIZOXaR0QlITcFG7NDUq3rpdEZmceRtUc2s0dQyTHZsNc/2/knOfoV02wFTHxq
+        810lLyD7rnBbSoTrs7UnIJTXy/1W3DmHweCz0r8/v8mHHYUjmkjtKlQbije9IFgQ9X6Fc1
+        mSGOI1ul62Vo/e/HyywTWmgrM7nBQjc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628481507;
+        s=susede2_ed25519; t=1628481513;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mBKlJwh6qPUtRQ+E2HqkVTJHsO/u/MDxgQK6gIYa7VU=;
-        b=IA3WdHiugszLWTzSvxTOl2R9nYP3665i6nmXfjW9/ASLm4hoedmQSOY4zLWqMiF6werPtp
-        hUr+B305+yTYLeDQ==
+        bh=G0ibLBgniy8dCGHqoQUyeVYBRb/qOQupZTOIJDvgt2g=;
+        b=YzxzSz0ZacRppfs06O0PP5e2MS9+UCD9f4binoggxaCxVjU7n5Uiq+U0aMnOTCHM8mSRnO
+        b8OGCnPzWnPEaBBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CAE8F13A9F;
-        Mon,  9 Aug 2021 03:58:25 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 320BE13A9F;
+        Mon,  9 Aug 2021 03:58:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id EHv9IeGnEGHPBgAAMHmgww
-        (envelope-from <neilb@suse.de>); Mon, 09 Aug 2021 03:58:25 +0000
-Subject: [PATCH 2/4] btrfs: add numdevs= mount option.
+        id wB06OOanEGHZBgAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 09 Aug 2021 03:58:30 +0000
+Subject: [PATCH 3/4] VFS/btrfs: add STATX_TREE_ID
 From:   NeilBrown <neilb@suse.de>
 To:     Josef Bacik <josef@toxicpanda.com>, Chris Mason <clm@fb.com>,
         David Sterba <dsterba@suse.com>
@@ -53,7 +53,7 @@ Cc:     linux-fsdevel@vger.kernel.org,
         Linux NFS list <linux-nfs@vger.kernel.org>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Date:   Mon, 09 Aug 2021 13:55:27 +1000
-Message-ID: <162848132773.25823.8504921416553051353.stgit@noble.brown>
+Message-ID: <162848132775.25823.2813836616908535300.stgit@noble.brown>
 In-Reply-To: <162848123483.25823.15844774651164477866.stgit@noble.brown>
 References: <162848123483.25823.15844774651164477866.stgit@noble.brown>
 User-Agent: StGit/0.23
@@ -64,302 +64,159 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs currently allocates multiple anonymous bdev numbers to hide the
-fact that inode numbers are not unique across "subvolumes".
-Each subvol gets a different device number.
+A new 64bit field is added to the data that can be returned by statx() -
+the "tree id".
+The tree id serves two needs.
+1/ it extends the available inode number space.  While a filesystem
+   SHOULD ensure the inode number is unique across the filesystem,
+   this is sometimes impractical.  In such situations, 'tree id'
+   may be used to guarantee uniqueness.  It can identify a separate
+   allocation domain.
+   A particular case when separate allocation domains is useful
+   is when a directory tree can be effectively "reflink"ed.
+   Updating all inode numbers in such a tree is prohibitively expensive.
+2/ it can identify a collection of objects that provide a coherent
+   "tree" in some locally-defined sense.
 
-As described in a previous patch, this is incomplete, doesn't scale, and
-should be deprecated.  This patch is another step to deprecation.
+This patch uses STATX_TREE_ID to export the subvol id for btrfs.
 
-With mount option "-o numdevs=many", which is the default, the current
-behaviour is preserved.
+samples/vfs/test_statx.c is extended to report the treeid.
 
-With mount option "-o numdevs=1", the st_dev reported by stat() is
-exactly the number that appears in /proc/$PID/mountinfo (i.e.
-sb->s_dev).  This will prevent "du -x", "find -xdev" and similar tools
-from keeping within a subvol, but is otherwise quite functional.
-
-If numdevs=1 and inumbits=0, then there will often be inode number
-reuse, so that combination is forbidden and the default fo inumbits
-changes to BITS_PER_LONG*7/8.  With larger inumbits (close to
-BITS_PER_LONG), inode number reuse is still possible, but only with
-large or old filesystems.
-
-With mount option "-o numdevs=2", precisely two anon device numbers are
-allocated.  Each subvol gets the number that its parent isn't using.
-When subvols are moved, the device number reported will change if needed
-to differentiate from its parent.
-If a subvol with dependent subvols is moved and the device numbers need
-to change, the numbers in dependent subvols that are currently in cache
-will NOT change.  Fixing this is a stretch goal.
-
-Using numdevs=2 removes any problems with exhausting the number of
-available anon devs, and preserves the functionality of "du -x" and
-similar.  It may be a useful option for sites that experience exhaustion
-problems.
-
-numdevs=1 is, at this stage, most useful for exploring the consequences
-of fully deprecating the use of multiple device numbers.  It may also be
-useful for site that find they have no dependency on multiple device
-numbers.
+Also: a new superblock field is added: s_tree_id_bits.  This can store
+  the number of significant bits in the reported treeid.  It is
+  currently unused, but could be used by overlayfs to determine how
+  to add a filesystem number to the treeid to differentiate files in
+  different underlying filesystems.
 
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- fs/btrfs/ctree.h   |   17 +++++++++++++++--
- fs/btrfs/disk-io.c |   24 +++++++++++++++++++++---
- fs/btrfs/inode.c   |   29 ++++++++++++++++++++++++++++-
- fs/btrfs/ioctl.c   |    6 ++++--
- fs/btrfs/super.c   |   30 ++++++++++++++++++++++++++++++
- 5 files changed, 98 insertions(+), 8 deletions(-)
+ fs/btrfs/inode.c          |    4 ++++
+ fs/btrfs/super.c          |    1 +
+ fs/stat.c                 |    1 +
+ include/linux/fs.h        |    2 +-
+ include/linux/stat.h      |   13 +++++++++++++
+ include/uapi/linux/stat.h |    3 ++-
+ samples/vfs/test-statx.c  |    4 +++-
+ 7 files changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 0ef557db3a8b..2caedb8c8c6d 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -988,6 +988,14 @@ struct btrfs_fs_info {
- 	u32 stripesize;
- 
- 	unsigned short inumbits;
-+	/* num_devs can be:
-+	 * 1 - all files in all trees use sb->s_dev
-+	 * 2 - file trees alternate between using sb->s_dev and
-+	 *     secondary_anon_dev.
-+	 * 3 (BTTSF_MANY_DEVS) - Each subtree uses a unique ->anon_dev
-+	 */
-+	unsigned short num_devs;
-+	dev_t secondary_anon_dev;
- 
- 	/* Block groups and devices containing active swapfiles. */
- 	spinlock_t swapfile_pins_lock;
-@@ -1035,6 +1043,8 @@ struct btrfs_fs_info {
- #endif
- };
- 
-+#define BTRFS_MANY_DEVS	(3)
-+
- static inline struct btrfs_fs_info *btrfs_sb(struct super_block *sb)
- {
- 	return sb->s_fs_info;
-@@ -1176,10 +1186,13 @@ struct btrfs_root {
- 	 */
- 	struct radix_tree_root delayed_nodes_tree;
- 	/*
--	 * right now this just gets used so that a root has its own devid
--	 * for stat.  It may be used for more later
-+	 * If fs_info->num_devs == 3 (BTRFS_MANY_DEVS) anon_dev holds a device
-+	 * number to be reported by ->getattr().
-+	 * If fs_info->num_devs == 2, anon_dev is 0 and use_secondary_dev
-+	 * is true when this root uses the secondary, not primary, dev.
- 	 */
- 	dev_t anon_dev;
-+	bool use_secondary_dev;
- 
- 	spinlock_t root_item_lock;
- 	refcount_t refs;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 7f3bfa042d66..5127e2689756 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1516,7 +1516,8 @@ static int btrfs_init_fs_root(struct btrfs_root *root, dev_t anon_dev)
- 	 * userspace, the id pool is limited to 1M
- 	 */
- 	if (is_fstree(root->root_key.objectid) &&
--	    btrfs_root_refs(&root->root_item) > 0) {
-+	    btrfs_root_refs(&root->root_item) > 0 &&
-+	    root->fs_info->num_devs == BTRFS_MANY_DEVS) {
- 		if (!anon_dev) {
- 			ret = get_anon_bdev(&root->anon_dev);
- 			if (ret)
-@@ -3332,8 +3333,12 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	 * "-o inumbits" can over-ride this default.
- 	 * BITS_PER_LONG * 7 / 8 is a good value to use
- 	 */
--	if (fs_info->inumbits > BITS_PER_LONG)
--		fs_info->inumbits = 0;
-+	if (fs_info->inumbits > BITS_PER_LONG) {
-+		if (fs_info->num_devs == 1)
-+			fs_info->inumbits = BITS_PER_LONG * 7 / 8;
-+		else
-+			fs_info->inumbits = 0;
-+	}
- 
- 	features = btrfs_super_incompat_flags(disk_super) &
- 		~BTRFS_FEATURE_INCOMPAT_SUPP;
-@@ -3379,6 +3384,15 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	fs_info->csums_per_leaf = BTRFS_MAX_ITEM_SIZE(fs_info) / fs_info->csum_size;
- 	fs_info->stripesize = stripesize;
- 
-+	if (fs_info->num_devs == 0)
-+		/* set default value */
-+		fs_info->num_devs = BTRFS_MANY_DEVS;
-+
-+	if (fs_info->num_devs == 2) {
-+		err = get_anon_bdev(&fs_info->secondary_anon_dev);
-+		if (err)
-+			goto fail_alloc;
-+	}
- 	/*
- 	 * mixed block groups end up with duplicate but slightly offset
- 	 * extent buffers for the same range.  It leads to corruptions
-@@ -4446,6 +4460,10 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 
- 	btrfs_mapping_tree_free(&fs_info->mapping_tree);
- 	btrfs_close_devices(fs_info->fs_devices);
-+
-+	if (fs_info->secondary_anon_dev)
-+		free_anon_bdev(fs_info->secondary_anon_dev);
-+	fs_info->secondary_anon_dev = 0;
- }
- 
- int btrfs_buffer_uptodate(struct extent_buffer *buf, u64 parent_transid,
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 860cb5045123..30fa64cbe6dc 100644
+index 30fa64cbe6dc..c878726d090c 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -5966,6 +5966,8 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
- 			iput(inode);
- 			inode = ERR_PTR(ret);
- 		}
-+		if (fs_info->num_devs == 2)
-+			sub_root->use_secondary_dev = !root->use_secondary_dev;
+@@ -9215,6 +9215,10 @@ static int btrfs_getattr(struct user_namespace *mnt_userns,
+ 	case BTRFS_MANY_DEVS:
+ 		stat->dev = BTRFS_I(inode)->root->anon_dev;
  	}
- 
- 	return inode;
-@@ -9204,7 +9206,15 @@ static int btrfs_getattr(struct user_namespace *mnt_userns,
- 				  STATX_ATTR_NODUMP);
- 
- 	generic_fillattr(&init_user_ns, inode, stat);
--	stat->dev = BTRFS_I(inode)->root->anon_dev;
-+	/* If we don't set stat->dev here, sb->s_dev will be used */
-+	switch (btrfs_sb(inode->i_sb)->num_devs) {
-+	case 2:
-+		if (BTRFS_I(inode)->root->use_secondary_dev)
-+			stat->dev = btrfs_sb(inode->i_sb)->secondary_anon_dev;
-+		break;
-+	case BTRFS_MANY_DEVS:
-+		stat->dev = BTRFS_I(inode)->root->anon_dev;
++	if (request_mask & STATX_TREE_ID) {
++		stat->tree_id = BTRFS_I(inode)->root->root_key.objectid;
++		stat->result_mask |= STATX_TREE_ID;
 +	}
  
  	spin_lock(&BTRFS_I(inode)->lock);
  	delalloc_bytes = BTRFS_I(inode)->new_delalloc_bytes;
-@@ -9390,6 +9400,15 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 	if (new_inode->i_nlink == 1)
- 		BTRFS_I(new_inode)->dir_index = new_idx;
- 
-+	if (fs_info->num_devs == 2 &&
-+	    root->use_secondary_dev != dest->use_secondary_dev) {
-+		BTRFS_I(old_inode)->root->use_secondary_dev =
-+				!dest->use_secondary_dev;
-+		BTRFS_I(new_inode)->root->use_secondary_dev =
-+				!root->use_secondary_dev;
-+		// FIXME any subvols beneeath 'old_inode' or 'new_inode'
-+		// that are in cache are now wrong.
-+	}
- 	if (root_log_pinned) {
- 		btrfs_log_new_name(trans, BTRFS_I(old_inode), BTRFS_I(old_dir),
- 				   new_dentry->d_parent);
-@@ -9656,6 +9675,14 @@ static int btrfs_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		goto out_fail;
- 	}
- 
-+	if (fs_info->num_devs == 2 &&
-+	    root->use_secondary_dev != dest->use_secondary_dev) {
-+		BTRFS_I(old_inode)->root->use_secondary_dev =
-+				!dest->use_secondary_dev;
-+		// FIXME any subvols beneeath 'old_inode' that are
-+		// in cache are now wrong.
-+	}
-+
- 	if (old_inode->i_nlink == 1)
- 		BTRFS_I(old_inode)->dir_index = index;
- 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index e008a9ceb827..a246f91b4df4 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -522,7 +522,8 @@ static noinline int create_subvol(struct inode *dir,
- 	if (ret)
- 		goto fail_free;
- 
--	ret = get_anon_bdev(&anon_dev);
-+	if (fs_info->num_devs == BTRFS_MANY_DEVS)
-+		ret = get_anon_bdev(&anon_dev);
- 	if (ret < 0)
- 		goto fail_free;
- 
-@@ -729,7 +730,8 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- 	if (!pending_snapshot)
- 		return -ENOMEM;
- 
--	ret = get_anon_bdev(&pending_snapshot->anon_dev);
-+	if (fs_info->num_devs == BTRFS_MANY_DEVS)
-+		ret = get_anon_bdev(&pending_snapshot->anon_dev);
- 	if (ret < 0)
- 		goto free_pending;
- 	pending_snapshot->root_item = kzalloc(sizeof(struct btrfs_root_item),
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 5f3350e2f7ec..b1aecb834234 100644
+index b1aecb834234..e6d166150660 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -361,6 +361,7 @@ enum {
- 	Opt_discard_mode,
- 	Opt_inumbits,
- 	Opt_norecovery,
-+	Opt_numdevs,
- 	Opt_ratio,
- 	Opt_rescan_uuid_tree,
- 	Opt_skip_balance,
-@@ -431,6 +432,7 @@ static const match_table_t tokens = {
- 	{Opt_inumbits, "inumbits=%u"},
- 	{Opt_nodiscard, "nodiscard"},
- 	{Opt_norecovery, "norecovery"},
-+	{Opt_numdevs, "numdevs=%s"},
- 	{Opt_ratio, "metadata_ratio=%u"},
- 	{Opt_rescan_uuid_tree, "rescan_uuid_tree"},
- 	{Opt_skip_balance, "skip_balance"},
-@@ -849,8 +851,35 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 				ret = -EINVAL;
- 				goto out;
- 			}
-+			if (intarg == 0 && info->num_devs == 1) {
-+				btrfs_err(info,
-+					  "inumbits=0 not permitted when numdevs=1");
-+				ret = -EINVAL;
-+				goto out;
-+			}
- 			info->inumbits = intarg;
+@@ -1410,6 +1410,7 @@ static int btrfs_fill_super(struct super_block *sb,
+ #endif
+ 	sb->s_flags |= SB_I_VERSION;
+ 	sb->s_iflags |= SB_I_CGROUPWB;
++	sb->s_tree_id_bits = 48;
+ 
+ 	err = super_setup_bdi(sb);
+ 	if (err) {
+diff --git a/fs/stat.c b/fs/stat.c
+index 1fa38bdec1a6..2dd5d3d67793 100644
+--- a/fs/stat.c
++++ b/fs/stat.c
+@@ -580,6 +580,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
+ 	tmp.stx_dev_major = MAJOR(stat->dev);
+ 	tmp.stx_dev_minor = MINOR(stat->dev);
+ 	tmp.stx_mnt_id = stat->mnt_id;
++	tmp.stx_tree_id = stat->tree_id;
+ 
+ 	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+ }
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 640574294216..a777c1b1706a 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1482,7 +1482,7 @@ struct super_block {
+ 
+ 	unsigned int		s_max_links;
+ 	fmode_t			s_mode;
+-
++	short			s_tree_id_bits;
+ 	/*
+ 	 * The next field is for VFS *only*. No filesystems have any business
+ 	 * even looking at it. You had been warned.
+diff --git a/include/linux/stat.h b/include/linux/stat.h
+index fff27e603814..08ee409786b3 100644
+--- a/include/linux/stat.h
++++ b/include/linux/stat.h
+@@ -46,6 +46,19 @@ struct kstat {
+ 	struct timespec64 btime;			/* File creation time */
+ 	u64		blocks;
+ 	u64		mnt_id;
++	/* Treeid can be used to extend the inode number space.  Two inodes
++	 * with different 'tree_id' are different, even if 'ino' is the same
++	 * (though fs should make ino different as often as possible).
++	 * When tree_id is requested and STATX_TREE_ID is set in result_mask,
++	 * 'ino' MUST be unique across the filesystem.  Specifically, two
++	 * open files that report the same dev, ino, and tree_id MUST be
++	 * the same.
++	 * If a directory and an object in that directory have the same dev
++	 * and tree_id, they can be assumed to be in a meaningful tree, though
++	 * the meaning is subject to local interpretation.  The set of inodes
++	 * with a common tree_id is not required to be contiguous.
++	 */
++	u64		tree_id;
+ };
+ 
+ #endif
+diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+index 1500a0f58041..725cf3f8e873 100644
+--- a/include/uapi/linux/stat.h
++++ b/include/uapi/linux/stat.h
+@@ -124,7 +124,7 @@ struct statx {
+ 	__u32	stx_dev_minor;
+ 	/* 0x90 */
+ 	__u64	stx_mnt_id;
+-	__u64	__spare2;
++	__u64	stx_tree_id;
+ 	/* 0xa0 */
+ 	__u64	__spare3[12];	/* Spare space for future expansion */
+ 	/* 0x100 */
+@@ -152,6 +152,7 @@ struct statx {
+ #define STATX_BASIC_STATS	0x000007ffU	/* The stuff in the normal stat struct */
+ #define STATX_BTIME		0x00000800U	/* Want/got stx_btime */
+ #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
++#define STATX_TREE_ID		0x00002000U	/* Want/got stx_treeid and clean stX_ino */
+ 
+ #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+ 
+diff --git a/samples/vfs/test-statx.c b/samples/vfs/test-statx.c
+index 49c7a46cee07..c1141764fa2e 100644
+--- a/samples/vfs/test-statx.c
++++ b/samples/vfs/test-statx.c
+@@ -118,6 +118,8 @@ static void dump_statx(struct statx *stx)
  			break;
-+		case Opt_numdevs:
-+			if (info->num_devs) {
-+				; /* silently ignore attempts to change this */
-+			} else if (strcmp(args[0].from, "many") == 0) {
-+				info->num_devs = BTRFS_MANY_DEVS;
-+			} else if (strcmp(args[0].from, "1") == 0) {
-+				if (info->inumbits == 0) {
-+					btrfs_err(info,
-+"numdevs=1 not permitted with inumbits=0");
-+					ret = -EINVAL;
-+				}
-+				info->num_devs = 1;
-+			} else if (strcmp(args[0].from, "2") == 0) {
-+				info->num_devs = 2;
-+			} else {
-+				btrfs_err(info,
-+					  "numdevs must be \"1\", \"2\", or \"many\".");
-+				ret = -EINVAL;
-+				goto out;
-+			}
-+			break;
- 		case Opt_ratio:
- 			ret = match_int(&args[0], &intarg);
- 			if (ret)
-@@ -1559,6 +1588,7 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 	if (btrfs_test_opt(info, REF_VERIFY))
- 		seq_puts(seq, ",ref_verify");
- 	seq_printf(seq, ",inumbits=%u", info->inumbits);
-+	seq_printf(seq, ",numdevs=%u", info->num_devs);
- 	seq_printf(seq, ",subvolid=%llu",
- 		  BTRFS_I(d_inode(dentry))->root->root_key.objectid);
- 	subvol_name = btrfs_get_subvol_name_from_objectid(info,
+ 		}
+ 	}
++	if (stx->stx_mask & STATX_TREE_ID)
++		printf(" Tree: %-12llu", (unsigned long long) stx->stx_tree_id);
+ 	printf("\n");
+ 
+ 	if (stx->stx_mask & STATX_MODE)
+@@ -218,7 +220,7 @@ int main(int argc, char **argv)
+ 	struct statx stx;
+ 	int ret, raw = 0, atflag = AT_SYMLINK_NOFOLLOW;
+ 
+-	unsigned int mask = STATX_BASIC_STATS | STATX_BTIME;
++	unsigned int mask = STATX_BASIC_STATS | STATX_BTIME | STATX_TREE_ID;
+ 
+ 	for (argv++; *argv; argv++) {
+ 		if (strcmp(*argv, "-F") == 0) {
 
 
