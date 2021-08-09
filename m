@@ -2,225 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E8D3E4C4B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Aug 2021 20:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C33E3E4D2A
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Aug 2021 21:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbhHISoc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Aug 2021 14:44:32 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43868 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhHISob (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Aug 2021 14:44:31 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2DCD621F7B;
-        Mon,  9 Aug 2021 18:44:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628534650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OUQmLDvkp5bsQpslkYxl5dl/l1WIlAAllcfAJNtcjTw=;
-        b=Ty1zvZ2VFKfvmYl2SEeYhlN5UMh5DMTJsDdoKE/Btw+G2NP3wmYa53nHHoi0aTcH0U/1UI
-        WmDbB/bd+3Ha9q6CpjjBloWCU9qtOw9Byce5Wugz2YQElhCX5HvkcTiugcmplgqxMvOiMz
-        e36TlJGYv0gbXvKN2kNw9PSG+WCwsig=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id F109E136C1;
-        Mon,  9 Aug 2021 18:44:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id cphLOHl3EWEIRQAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Mon, 09 Aug 2021 18:44:09 +0000
-Subject: Re: [PATCH] btrfs-progs: Drop the type check in
- init_alloc_chunk_ctl_policy_regular
-To:     Marcos Paulo de Souza <mpdesouza@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-References: <20210809182613.4466-1-mpdesouza@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <c830b01e-08c5-c2fb-c322-3f216f53dd8e@suse.com>
-Date:   Mon, 9 Aug 2021 21:44:09 +0300
+        id S234133AbhHITig (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Aug 2021 15:38:36 -0400
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:58993 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232334AbhHITie (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Aug 2021 15:38:34 -0400
+X-Greylist: delayed 494 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Aug 2021 15:38:34 EDT
+Received: from venice.bhome ([78.14.51.162])
+        by smtp-32.iol.local with ESMTPA
+        id DAyDmeiNCPvRTDAyDmQIru; Mon, 09 Aug 2021 21:29:57 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1628537397; bh=LnZW1w6cHPeA1K5XITjhPzQiLTk1tEKTPF2DbkHzUIo=;
+        h=From;
+        b=hqREgUKny4Z8Gg8MRfkymNcZoBMBTQQILtyVE5fXFC4iqfehVVD3xVbhLpDGpTDVm
+         4Rg8bu07lFOAmvgUWcpzRzfLoROA9II5rvHcjOcVBao0jdR2H+80s6NUxnS2LZoM/v
+         1mGLsYi20O3bqJvo+Um+2CZ2iivhSA8MHdqPC4fp8ImqtJ43fNGX5HRyFO+4j5gPbj
+         2Nmh34AjuBiEXWbbSlYkelMviXQdm2aVBqbY0qKpTKVhp7CklliJcRkA3QHl+X09ju
+         GfrCHYe0w+TF5yNEWeyQ9cUTU+k7XSzpCXHpZwcuX3SZRd7vC3g78iPNW3pFfa3920
+         EfkGrNPlE0hvw==
+X-CNFS-Analysis: v=2.4 cv=NqgUz+RJ c=1 sm=1 tr=0 ts=61118235 cx=a_exe
+ a=Ti6mTMNpdsGjMP8CvYbp9A==:117 a=Ti6mTMNpdsGjMP8CvYbp9A==:17
+ a=IkcTkHD0fZMA:10 a=CngwRIvfAAAA:8 a=jzo5RBZyaXkscuvRem0A:9 a=QEXdDO2ut3YA:10
+ a=4_miDDMz0JLoEzr4jVLQ:22
+Reply-To: kreijack@inwind.it
+Subject: Re: why is the same mount point repeatedly mounted in nested manner?
+To:     Dave T <davestechshop@gmail.com>, devel@roosoft.ltd.uk,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Cc:     Phillip Susi <phill@thesusis.net>, kilobyte@angband.pl
+References: <CAGdWbB59ULVxpNnq5Og0SCri+qyz_cwDLFTLr5N7iVT9gb0w1A@mail.gmail.com>
+ <c906060a-9dbc-e5d1-8e85-832408249b4d@casa-di-locascio.net>
+ <CAGdWbB5Z=ARmsU66k7O3Hp=RcMTr-wV5Z880FvMdqN=m3c8Epw@mail.gmail.com>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <6f133a41-dbd6-ce42-b6aa-ae4e621ce816@libero.it>
+Date:   Mon, 9 Aug 2021 21:29:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210809182613.4466-1-mpdesouza@suse.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAGdWbB5Z=ARmsU66k7O3Hp=RcMTr-wV5Z880FvMdqN=m3c8Epw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfIVVzFDcOflsmRGOCR/mC+MgpUKTXuSlfmEMmR3ZmFL48KXHXe1zr4fsvMRnSpXhMqb82JyP9sN8/TjUWz7vG7YZuipkBuhDvhLdSfqNpvqwk3Oz8X/v
+ 8djkIg2fT4c/L6w28q2rQmEmoV6WkqHAqkvWls8XzWindribV39LZX/T2U7gs00nCoUQTl1K5PimLyhN1qqgL0BDc/V0tA1O7Y8F1fqmUB0Y1V9N4wQlCiwS
+ +l0t5WPWGDh6s7LRW+yc/cq75vcAcpxEPMxD/NQiR0SGRKcf9EWzEE4k9wltm/X4iOTDHRYwat9ieaLKgGKMtg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 8/8/21 9:48 PM, Dave T wrote:
+> On Sun, Aug 8, 2021 at 8:10 AM <devel@roosoft.ltd.uk> wrote:
+>>
+>> On 05/08/2021 17:46, Dave T wrote:
+[...]
+>>
+>> Try mounting the subvolume with it's subvolume ID. System only generates
+>> unit files from the fstab it does not follow them , so if you are vague
+>> in your fstab the systemd unit files will also be vague.
+> 
+> Thank you for the tip. I appreciate your interest in my issue.
+> However, I don't fully understand what to change.
+
+I think that Alexander is suggesting to add something like ',subvolid=5' to the line of fstab where /mnt/btrtop/root is mounted.
+
+I add that if it is a systemd bug, it would help to look at the .mount files generated by systemd:
+
+$ sudo ls /run/systemd/generator/*.mount
+....
+
+Can you share the content of the  systemd units where you ask to mount '/mnt/btrtop/root' ? It could help the diagnose.
+
+And finally, what happens if you mount/unmount from command line (e.g. manually) /mnt/btrtop/root ?
+
+BR
+
+> Here are the relevant lines from my fstab. I added line numbers
+> because the lines will get wrapped in email.  I don't see what part of
+> this is vague:
+> 
+> 1. # cat /etc/fstab
+> 2. UUID=28D099A-9D92-487C-8113-A231CAD0EEF2  /     btrfs
+> rw,noatime,nodiratime,compress=lzo,space_cache,subvol=/@btrtop/snapshot
+> 0 0
+> 3. UUID=28D099A-9D92-487C-8113-A231CAD0EEF2  /mnt/btrtop/root  btrfs
+> noauto,nofail,rw,noatime,nodiratime,compress=lzo,space_cache    0 0
+> 4. /var/cache/pacman       /srv/nfs/var/cache/pacman       none  bind  0 0
+
+I don't know if it matters, but why you set as 'none' the filesystem type ? However according to askubuntu/stackoverflow it seem the right thing to do...
+
+> 
+> The path /var/cache/pacman is not a subvolume, but it resides on btrfs
+> subvolume @btrtop/snapshot. @btrtop/snapshot is normally mounted at
+> "/" but for btrfs tasks, it is also mounted at /mnt/btrtop/root. This
+> additional mount operation seems to be causing these nested mounts of
+> my bind mount for  /srv/nfs/var/cache/pacman .
+> 
+> P.S. I cannot test without using systemd. (I'm not even sure I
+> remember how to use a non-systemd distro anymore!)
+> 
 
 
-On 9.08.21 г. 21:26, Marcos Paulo de Souza wrote:
-> [PROBLEM]
-> Our documentation says that a DATA block group can have up to 1G of
-> size, or the at most 10% of the filesystem size. Currently, by default,
-> mkfs.btrfs is creating an initial DATA block group of 8M of size,
-> regardless of the filesystem size. It happens because we check for the
-> ctl->type in init_alloc_chunk_ctl_policy_regular to be one of the
-> BTRFS_BLOCK_GROUP_PROFILE_MASK bits, which is not the case for SINGLE
-> (default) DATA block group:
-> 
-> $ mkfs.btrfs -f /storage/btrfs.disk
-> btrfs-progs v4.19.1
-> See http://btrfs.wiki.kernel.org for more information.
-> 
-> Label:              (null)
-> UUID:               39e3492f-41f2-4bd7-8c25-93032606b9fe
-> Node size:          16384
-> Sector size:        4096
-> Filesystem size:    55.00GiB
-> Block group profiles:
->   Data:             single            8.00MiB
->   Metadata:         DUP               1.00GiB
->   System:           DUP               8.00MiB
-> SSD detected:       no
-> Incompat features:  extref, skinny-metadata
-> Number of devices:  1
-> Devices:
->    ID        SIZE  PATH
->     1    55.00GiB  /storage/btrfs.disk
-> 
-> In this case, for single data profile, it should create a data block
-> group of 1G, since the filesystem if bigger than 50G.
-> 
-> [FIX]
-> Remove the check for BTRFS_BLOCK_GROUP_PROFILE_MASK in
-> init_alloc_chunk_ctl_policy_regular function. The ctl->stripe_size is
-> later on assigned to ctl.num_bytes, which is used by
-> btrfs_make_block_group to create the block group.
-> 
-> By removing the check we allow the code to always configure the correct
-> stripe_size regardless of the PROFILE, looking on the block group TYPE.
-> 
-> With the fix applied, it now created the BG correctly:
-> 
-> $ ./mkfs.btrfs -f /storage/btrfs.disk
-> btrfs-progs v5.10.1
-> See http://btrfs.wiki.kernel.org for more information.
-> 
-> Label:              (null)
-> UUID:               5145e343-5639-462d-82ee-3eb75dc41c31
-> Node size:          16384
-> Sector size:        4096
-> Filesystem size:    55.00GiB
-> Block group profiles:
->   Data:             single            1.00GiB
->   Metadata:         DUP               1.00GiB
->   System:           DUP               8.00MiB
-> SSD detected:       no
-> Zoned device:       no
-> Incompat features:  extref, skinny-metadata
-> Runtime features:
-> Checksum:           crc32c
-> Number of devices:  1
-> Devices:
->    ID        SIZE  PATH
->     1    55.00GiB  /storage/btrfs.disk
-> 
-> Using a disk >50G it creates a 1G single data block group. Another
-> example:
-> 
-> $ ./mkfs.btrfs -f /storage/btrfs2.disk
-> btrfs-progs v5.10.1
-> See http://btrfs.wiki.kernel.org for more information.
-> 
-> Label:              (null)
-> UUID:               c0910857-e512-4e76-9efa-50a475aafc87
-> Node size:          16384
-> Sector size:        4096
-> Filesystem size:    5.00GiB
-> Block group profiles:
->   Data:             single          512.00MiB
->   Metadata:         DUP             256.00MiB
->   System:           DUP               8.00MiB
-> SSD detected:       no
-> Zoned device:       no
-> Incompat features:  extref, skinny-metadata
-> Runtime features:
-> Checksum:           crc32c
-> Number of devices:  1
-> Devices:
->    ID        SIZE  PATH
->     1     5.00GiB  /storage/btrfs2.disk
-> 
-> The code now created a single data block group of 512M, which is exactly
-> 10% of the size of the filesystem, which is 5G in this case.
-> 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-I see no reason why we should care about BTRFS_BLOCK_GROUP_PROFILE_MASK
-when creating the chunks. Without this patch ctl's various member are
-being initialized to their defaults in init_alloc_chunk_ctl,
-subsequently in create_chunk, chunk_bytes_by_type returns
-return stripe_size * ctl->num_stripes; which is really SZ_8M * 1.
-
-> ---
-> 
->  This change mimics what the kernel currently does, which is set the stripe_size
->  regardless of the profile. Any thoughts on it? Thanks!
-> 
->  kernel-shared/volumes.c | 40 +++++++++++++++++++---------------------
->  1 file changed, 19 insertions(+), 21 deletions(-)
-> 
-> diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
-> index aeeb25fe..3677dd7c 100644
-> --- a/kernel-shared/volumes.c
-> +++ b/kernel-shared/volumes.c
-> @@ -1105,27 +1105,25 @@ static void init_alloc_chunk_ctl_policy_regular(struct btrfs_fs_info *info,
->  	u64 type = ctl->type;
->  	u64 percent_max;
->  
-> -	if (type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
-> -		if (type & BTRFS_BLOCK_GROUP_SYSTEM) {
-> -			ctl->stripe_size = SZ_8M;
-> -			ctl->max_chunk_size = ctl->stripe_size * 2;
-> -			ctl->min_stripe_size = SZ_1M;
-> -			ctl->max_stripes = BTRFS_MAX_DEVS_SYS_CHUNK;
-> -		} else if (type & BTRFS_BLOCK_GROUP_DATA) {
-> -			ctl->stripe_size = SZ_1G;
-> -			ctl->max_chunk_size = 10 * ctl->stripe_size;
-> -			ctl->min_stripe_size = SZ_64M;
-> -			ctl->max_stripes = BTRFS_MAX_DEVS(info);
-> -		} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
-> -			/* For larger filesystems, use larger metadata chunks */
-> -			if (info->fs_devices->total_rw_bytes > 50ULL * SZ_1G)
-> -				ctl->max_chunk_size = SZ_1G;
-> -			else
-> -				ctl->max_chunk_size = SZ_256M;
-> -			ctl->stripe_size = ctl->max_chunk_size;
-> -			ctl->min_stripe_size = SZ_32M;
-> -			ctl->max_stripes = BTRFS_MAX_DEVS(info);
-> -		}
-> +	if (type & BTRFS_BLOCK_GROUP_SYSTEM) {
-> +		ctl->stripe_size = SZ_8M;
-> +		ctl->max_chunk_size = ctl->stripe_size * 2;
-> +		ctl->min_stripe_size = SZ_1M;
-> +		ctl->max_stripes = BTRFS_MAX_DEVS_SYS_CHUNK;
-> +	} else if (type & BTRFS_BLOCK_GROUP_DATA) {
-> +		ctl->stripe_size = SZ_1G;
-> +		ctl->max_chunk_size = 10 * ctl->stripe_size;
-> +		ctl->min_stripe_size = SZ_64M;
-> +		ctl->max_stripes = BTRFS_MAX_DEVS(info);
-> +	} else if (type & BTRFS_BLOCK_GROUP_METADATA) {
-> +		/* For larger filesystems, use larger metadata chunks */
-> +		if (info->fs_devices->total_rw_bytes > 50ULL * SZ_1G)
-> +			ctl->max_chunk_size = SZ_1G;
-> +		else
-> +			ctl->max_chunk_size = SZ_256M;
-> +		ctl->stripe_size = ctl->max_chunk_size;
-> +		ctl->min_stripe_size = SZ_32M;
-> +		ctl->max_stripes = BTRFS_MAX_DEVS(info);
->  	}
->  
->  	/* We don't want a chunk larger than 10% of the FS */
-> 
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
