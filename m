@@ -2,133 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C023E53A7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 08:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721D83E53BD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 08:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236689AbhHJGkN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Aug 2021 02:40:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42190 "EHLO mail.kernel.org"
+        id S237257AbhHJGpe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Aug 2021 02:45:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231229AbhHJGkN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Aug 2021 02:40:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B50DD60238;
-        Tue, 10 Aug 2021 06:39:51 +0000 (UTC)
+        id S236783AbhHJGpb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Aug 2021 02:45:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08FC161051;
+        Tue, 10 Aug 2021 06:45:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628577591;
-        bh=Rt8OufpkIbsLyiXRCpS3gkfeWehc9wTsVDBkYN0Fyqw=;
+        s=k20201202; t=1628577910;
+        bh=RihM3RABZmtn7Il17pSYaqOqh9/sxVWCnBL30iutPmY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yjvl1922O0SS+tM6M/cH/Wh4ac8k7jnNBYQI3W7s14ozjpLmppXWgCgcwDZmjlBLM
-         o+MaylInt6EJVnKD3CsZrxrFU3sPk6A+SW5cQEVZkEspbXEbfD5f4dZe9MSMq6BHla
-         A3XuxUgpFM2zg8w5+tyHXXyAV6QREHdO/ehKjJ2t+dAwYvaYaNW8cUyDdsyuJWWFJV
-         w61ks7bG17YL0r48We5YJMifOo7sO+ZcnZDyPladHWOYABbCHRR4MPW9Bf/9SyuVHn
-         3Dn1LvlTmCYKzxbPAeYKZO2r1r+rG2JozMzYUzO/QJjzzAMq6Di8Gkv50b5sSfCZ1Y
-         6hKVXKdBIY4Mw==
-Date:   Mon, 9 Aug 2021 23:39:51 -0700
+        b=SKrsQI2eIw9IUPVB1RsHIgu6uSnb4gU5KpLZP8rtfqVjBV8CixZEiIaHb4vs8AMas
+         GT0R3ZenArX54wC57txe6nL+yCxzI7HjpE+NUh9tj5wrtRFMBrz8Qx1hqIMiwsVSvT
+         Sq8N07oUa9bsO38lE2pIkwzRosXfbbz+Xs342fW1qyt8uqF0l/RxxT+C60fy+dj1Qm
+         ShMHoYwVZaQk7kXM3z1OwtQnqL2tGKJqXC55jZ+DoZ9bSBCjyoFoR32IzLX0vIKzG/
+         9zpz4+/IBoBxUNYFMD7vP+chEh2OVccjEZK3YezTqYyUHFFtsbz2JDraMsOH95eV2H
+         TItJ3xdNBB/gA==
+Date:   Mon, 9 Aug 2021 23:45:09 -0700
 From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
         Matthew Wilcox <willy@infradead.org>,
         Andreas Gruenbacher <agruenba@redhat.com>,
         Shiyang Ruan <ruansy.fnst@fujitsu.com>,
         linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
         cluster-devel@redhat.com
-Subject: Re: [PATCH 19/30] iomap: switch iomap_bmap to use iomap_iter
-Message-ID: <20210810063951.GH3601443@magnolia>
+Subject: Re: [PATCH 11/30] iomap: add the new iomap_iter model
+Message-ID: <20210810064509.GI3601443@magnolia>
 References: <20210809061244.1196573-1-hch@lst.de>
- <20210809061244.1196573-20-hch@lst.de>
+ <20210809061244.1196573-12-hch@lst.de>
+ <20210809221047.GC3657114@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809061244.1196573-20-hch@lst.de>
+In-Reply-To: <20210809221047.GC3657114@dread.disaster.area>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 08:12:33AM +0200, Christoph Hellwig wrote:
-> Rewrite the ->bmap implementation based on iomap_iter.
+On Tue, Aug 10, 2021 at 08:10:47AM +1000, Dave Chinner wrote:
+> On Mon, Aug 09, 2021 at 08:12:25AM +0200, Christoph Hellwig wrote:
+> > The iomap_iter struct provides a convenient way to package up and
+> > maintain all the arguments to the various mapping and operation
+> > functions.  It is operated on using the iomap_iter() function that
+> > is called in loop until the whole range has been processed.  Compared
+> > to the existing iomap_apply() function this avoid an indirect call
+> > for each iteration.
+> > 
+> > For now iomap_iter() calls back into the existing ->iomap_begin and
+> > ->iomap_end methods, but in the future this could be further optimized
+> > to avoid indirect calls entirely.
+> > 
+> > Based on an earlier patch from Matthew Wilcox <willy@infradead.org>.
+> > 
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  fs/iomap/Makefile     |  1 +
+> >  fs/iomap/core.c       | 79 +++++++++++++++++++++++++++++++++++++++++++
+> >  fs/iomap/trace.h      | 37 +++++++++++++++++++-
+> >  include/linux/iomap.h | 56 ++++++++++++++++++++++++++++++
+> >  4 files changed, 172 insertions(+), 1 deletion(-)
+> >  create mode 100644 fs/iomap/core.c
+> > 
+> > diff --git a/fs/iomap/Makefile b/fs/iomap/Makefile
+> > index eef2722d93a183..6b56b10ded347a 100644
+> > --- a/fs/iomap/Makefile
+> > +++ b/fs/iomap/Makefile
+> > @@ -10,6 +10,7 @@ obj-$(CONFIG_FS_IOMAP)		+= iomap.o
+> >  
+> >  iomap-y				+= trace.o \
+> >  				   apply.o \
+> > +				   core.o \
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/iomap/fiemap.c | 31 +++++++++++++------------------
->  1 file changed, 13 insertions(+), 18 deletions(-)
-> 
-> diff --git a/fs/iomap/fiemap.c b/fs/iomap/fiemap.c
-> index acad09a8c188df..60daadba16c149 100644
-> --- a/fs/iomap/fiemap.c
-> +++ b/fs/iomap/fiemap.c
-> @@ -92,35 +92,30 @@ int iomap_fiemap(struct inode *inode, struct fiemap_extent_info *fi,
->  }
->  EXPORT_SYMBOL_GPL(iomap_fiemap);
->  
-> -static loff_t
-> -iomap_bmap_actor(struct inode *inode, loff_t pos, loff_t length,
-> -		void *data, struct iomap *iomap, struct iomap *srcmap)
-> -{
-> -	sector_t *bno = data, addr;
-> -
-> -	if (iomap->type == IOMAP_MAPPED) {
-> -		addr = (pos - iomap->offset + iomap->addr) >> inode->i_blkbits;
-> -		*bno = addr;
-> -	}
-> -	return 0;
-> -}
-> -
->  /* legacy ->bmap interface.  0 is the error return (!) */
->  sector_t
->  iomap_bmap(struct address_space *mapping, sector_t bno,
->  		const struct iomap_ops *ops)
->  {
-> -	struct inode *inode = mapping->host;
-> -	loff_t pos = bno << inode->i_blkbits;
-> -	unsigned blocksize = i_blocksize(inode);
-> +	struct iomap_iter iter = {
-> +		.inode	= mapping->host,
-> +		.pos	= (loff_t)bno << mapping->host->i_blkbits,
-> +		.len	= i_blocksize(mapping->host),
-> +		.flags	= IOMAP_REPORT,
-> +	};
->  	int ret;
->  
->  	if (filemap_write_and_wait(mapping))
->  		return 0;
->  
->  	bno = 0;
-> -	ret = iomap_apply(inode, pos, blocksize, 0, ops, &bno,
-> -			  iomap_bmap_actor);
-> +	while ((ret = iomap_iter(&iter, ops)) > 0) {
-> +		if (iter.iomap.type != IOMAP_MAPPED)
-> +			continue;
+> This creates a discontinuity in the iomap git history. Can you add
+> these new functions to iomap/apply.c, then when the old apply code
+> is removed later in the series rename the file to core.c? At least
+> that way 'git log --follow fs/iomap/core.c' will walk back into the
+> current history of fs/iomap/apply.c and the older pre-disaggregation
+> fs/iomap.c without having to take the tree back in time to find
+> those files...
 
-I still feel uncomfortable about this use of "continue" here, because it
-really means "call iomap_iter again to clean up and exit even though we
-know it won't even look for more iomaps to iterate".
+...or put the new code in apply.c, remove iomap_apply, and don't bother
+with the renaming at all?
 
-To me that feels subtly broken (I usually associate 'continue' with
-'go run the loop body again'), and even though bmap has been a quirky
-hot mess for 45 years, we don't need to make it even moreso.
+I don't see much reason to break the git history.  This is effectively a
+new epoch in iomap, but that is plainly obvious from the function
+declarations.
 
-Can't this at least be rephrased as:
-
-	const uint bno_shift = (mapping->host->i_blkbits - SECTOR_SHIFT);
-
-	while ((ret = iomap_iter(&iter, ops)) > 0) {
-		if (iter.iomap.type == IOMAP_MAPPED)
-			bno = iomap_sector(iomap, iter.pos) << bno_shift;
-		/* leave iter.processed unset to stop iteration */
-	}
-
-to make the loop exit more explicit?
+I'll wander through the rest of the unreviewed patches tomorrow morning,
+these are merely my off-the-cuff impressions.
 
 --D
 
-> +		bno = (iter.pos - iter.iomap.offset + iter.iomap.addr) >>
-> +				mapping->host->i_blkbits;
-> +	}
-> +
->  	if (ret)
->  		return 0;
->  	return bno;
-> -- 
-> 2.30.2
 > 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
