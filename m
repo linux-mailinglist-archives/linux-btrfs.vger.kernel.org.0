@@ -2,28 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DE53E8608
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 00:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C373E8662
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 01:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhHJWYq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Aug 2021 18:24:46 -0400
-Received: from mout.gmx.net ([212.227.17.20]:49347 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231380AbhHJWYp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Aug 2021 18:24:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628634259;
-        bh=Eu4CMGvhXV0TU78vUeDJKA7P3O4ZlD1rA4nE9r00Rwg=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=bz/r/H35CQyTF1UO0BYF85FkCuBZR9BvoNcD60xj+TwkbH5EvxiAoOITfOQ9EzjZF
-         bHEW7+x9BAJYQh4lkUYX+vyKvzkSb40iwfELGKjhVF63JNchbcr6HvYMtgXhOGM7qf
-         JslHwQxNfab89BcWxJYCgwYbqGv9A3P7g1PyB6m8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MzQgC-1mzku22pns-00vMy4; Wed, 11
- Aug 2021 00:24:19 +0200
+        id S235306AbhHJXVi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Aug 2021 19:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235242AbhHJXVh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Aug 2021 19:21:37 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354E3C061765
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 16:21:15 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso1593109pjy.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 16:21:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=tf7tCf9Nvqz/LeCOEFo2sn88tOnwSoNDCWsCe4vuvYg=;
+        b=QgyFOmr9DE0AkrKH1uEIZ8k1E3lyAbMMSLu7KLNzxje3pabX4GaehMe5nZJpmp7YT4
+         EwIANmSwzUJDbthjwfrUL6L0C/g+ELd5DxBFLg49wIRyK6EIXfV8iSHgeOC8XsyEPk5Q
+         cqoHJ+DpLQw7spme/VXYzlwHzCRKZSl39ioS0wlBXRYEyvIjG8fmMNRQcjT+7op7ZR35
+         mAOcrIEYj4D+cxCU5yPBmuvYjEX6rN3c9Zt423KfVFj6STnhnIVZHbOWdlN81yN+1GAf
+         XAtEZttdERI/i1plnts1yg3+oRUBeuqGgDNJXoe9fzwEkA2r8bPkBiEvK8dQDon1c6vE
+         uRag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tf7tCf9Nvqz/LeCOEFo2sn88tOnwSoNDCWsCe4vuvYg=;
+        b=f9l0NvWFClR0v8kNseD6utSOoinWbfYkRLNgt5zxPHFn9v4ahsHC2KcJIXi7r0/pOo
+         buG12IHXxi/4JPNmjdy/Qqs9tgi7Uhcz200jJLCGi87LxnmZCuFUPlGAdm8EBNhT9hwE
+         a2M2HXGhCJav38auXQtuGY1XAMaC+xm1vUC1Tt4m7qTQC6qJDLAsItPr7G94W7u+DrHv
+         GFEZQmHvk2HDcytvHD+3TqQhzeB4V04VMMZ52wiQBZRwAkrgooLuL1Pj3OfZAmcdgbpq
+         aVTrim7+CmXoQa2t5m5huTy8Aly221eO0gT79AImWk2hTcHay/ZxtxlaVZT7jXjN0i4/
+         Vufg==
+X-Gm-Message-State: AOAM532L6vaOqZyjlgiCJlW7wEyLQNirco8Yy+hnW7NaqfaLvPHLV7Gw
+        1dW8C3FqByj6MaIIL7Ky/dE=
+X-Google-Smtp-Source: ABdhPJyPxsSOG2lVwLzw4xTkaWGSnH+AnJHWo/JjgHJe744DSYSAimkpAzSxnRKmvAAPKTuNUSUIGA==
+X-Received: by 2002:a17:902:7682:b029:12d:3a69:c6cb with SMTP id m2-20020a1709027682b029012d3a69c6cbmr1714940pll.65.1628637674410;
+        Tue, 10 Aug 2021 16:21:14 -0700 (PDT)
+Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
+        by smtp.gmail.com with ESMTPSA id y9sm29508026pgr.10.2021.08.10.16.21.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 16:21:13 -0700 (PDT)
 Subject: Re: Trying to recover data from SSD
-To:     Konstantin Svist <fry.kun@gmail.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
         Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
@@ -31,86 +58,67 @@ References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
  <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
  <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
  <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
-Date:   Wed, 11 Aug 2021 06:24:15 +0800
+ <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
+From:   Konstantin Svist <fry.kun@gmail.com>
+Message-ID: <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
+Date:   Tue, 10 Aug 2021 16:21:11 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RWFbkLeSt4i1NUvg6xVZ5C8P8YuaHySC3AU+QBsNyPyDsJ54ujb
- w48Gy1F/pxoIOK90CaWwk1udoM77Xwnmb4XsYmxGr1mMIRMXUGjizychKFbO8hyjZpRFLai
- nmLO/SuMAUGHqegHDHG7tE/7+6tFE2sQr//Pp0IRSGwDpCwPNyVAFnVwC+sXj05gHH5ZZ3d
- IwUDwUysYnM+M3+va+zfA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bTMBJOYxJ/c=:JuWyt37RFNLe2BPVpoHyn8
- //Jv3seXmwj0X/0jb9iIszN9oHBaVUDVOmbBMawSdQI8+oPX1/elvTVaX8GaQxkcX7kHBN16o
- m+UsB0TJ2sfOkDZRSzndpy4OqAInYP2ZoDYjEXH60GIKgUZdLiv8gNbSFIjsZaWwhUXNq20AG
- HKjM8U+VrKCgoW2utjVffHNBCbM/jlCmKFXuaSaIGZzNhIKSgD6eI9lRv2skQp0MBgleZivdN
- gllvl/mTujXVtzFmwlhEl5w2hz1+TrVQJO5H9gFjh0eJGEakhNhTOj9shJOC3lm4Iul7xzRrz
- 0fBBn3tVnOPbTBqPXVikSV9ow/VBVJmabnmAk6Re0pzf18MbtfVaLaYdIaRIV+tMQAxRvviZw
- WopwS/uT3DFDW2+0Q6VHnslJCQt9a3qzHx4UZOidlJTOEGPi1ArbTqXTJBAnhPeqBpczp3UQm
- aUvzPjUFUTrXVLoAiujh+b9LVeoPDQHdzZ/pPBxe+V9Fp72v4jssMpyT4cJXW5EOdKeewRi8x
- QZR1BBOvMaVVajy8p/i1O67/f1cwt4yuwGdwoKidRnM4cwOq5pqaZ7KSF38l4p4/7NCHj23y7
- Zlv1oy2sA5mfF9IUDwllCy5axBTOFpdKcXau4EUxO9lXq4NcbsPq1h9x3odtl4cDsATi0U4pT
- tMOHs6tTi8InKP1E/K9u+mG1LOjLI+xgjjNfXS6v5tTlSF2JGvrNZzyOlEi82sep1SX/eUhTD
- xjrosztcGPnzE9UkfGpErMHlWUCnh8vJjW5ZZLNKgNrv2b5Ye48qsCetiK+ghONGuWTsqeKwS
- adB8shJIHd1MZ4qons5rsJMamOsV6OowhBsIitP5NSOIve22HzSWN9nPI37I1TiywI3iz2lfQ
- oD6Q3I76IgUzd3jHukhQaIy8tPOl05L/ZPVHjINWGIp3vlAuzKZ/d49fK30Yn1Ag1t7OhuWQV
- Yjpw320aCB6Af7TsJGObqT0cao4DGIg7aMfM5T9R1UR8yc4aftDjUComniS5FABRjpCvdjHo6
- K1dr22cb43xo/jnHCigf9w4c1q9FEGoWXWDjapeuU8/61RfTxyScm/E1mCbmvDYr7fmBzbtG9
- l0mJcaY7ZPlLXm06e6b8mAj443YWwdEPFJy9YowErIXTFHW+hYfnkjN/Q==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/8/11 =E4=B8=8A=E5=8D=8812:12, Konstantin Svist wrote:
+On 8/10/21 15:24, Qu Wenruo wrote:
 >
->>> I don't know how to do that (corrupt the extent tree)
+> On 2021/8/11 上午12:12, Konstantin Svist wrote:
 >>
->> There is the more detailed version:
->> https://lore.kernel.org/linux-btrfs/744795fa-e45a-110a-103e-13caf597299=
-a@gmx.com/
->
->
-> So, here's what I get:
->
->
-> # btrfs ins dump-tree -t root /dev/sdb3 |grep -A5 'item 0 key (EXTENT_TR=
-EE'
->
->  =C2=A0=C2=A0=C2=A0 item 0 key (EXTENT_TREE ROOT_ITEM 0) itemoff 15844 i=
-temsize 439
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 generation 166932 root_dirid 0 by=
-tenr 786939904 level 2 refs 1
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 lastsnap 0 byte_limit 0 bytes_use=
-d 50708480 flags 0x0(none)
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 uuid 00000000-0000-0000-0000-0000=
-00000000
->  =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 drop key (0 UNKNOWN.0 0) level 0
->  =C2=A0=C2=A0=C2=A0 item 1 key (DEV_TREE ROOT_ITEM 0) itemoff 15405 item=
-size 439
->
->
-> # btrfs-map-logical -l 786939904 /dev/sdb3
->
-> checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
-> checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
-> checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
-> bad tree block 952483840, bytenr mismatch, want=3D952483840, have=3D0
-> ERROR: failed to read block groups: Input/output error
-> Open ctree failed
->
->
->
-> Sooooo.. now what..?
->
-With v5.11 or newer kernel, mount it with "-o rescue=3Dall,ro".
+>>>> I don't know how to do that (corrupt the extent tree)
+>>>
+>>> There is the more detailed version:
+>>> https://lore.kernel.org/linux-btrfs/744795fa-e45a-110a-103e-13caf597299a@gmx.com/
+>>>
+>>
+>>
+>> So, here's what I get:
+>>
+>>
+>> # btrfs ins dump-tree -t root /dev/sdb3 |grep -A5 'item 0 key
+>> (EXTENT_TREE'
+>>
+>>      item 0 key (EXTENT_TREE ROOT_ITEM 0) itemoff 15844 itemsize 439
+>>          generation 166932 root_dirid 0 bytenr 786939904 level 2 refs 1
+>>          lastsnap 0 byte_limit 0 bytes_used 50708480 flags 0x0(none)
+>>          uuid 00000000-0000-0000-0000-000000000000
+>>          drop key (0 UNKNOWN.0 0) level 0
+>>      item 1 key (DEV_TREE ROOT_ITEM 0) itemoff 15405 itemsize 439
+>>
+>>
+>> # btrfs-map-logical -l 786939904 /dev/sdb3
+>>
+>> checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
+>> checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
+>> checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
+>> bad tree block 952483840, bytenr mismatch, want=952483840, have=0
+>> ERROR: failed to read block groups: Input/output error
+>> Open ctree failed
+>>
+>>
+>>
+>> Sooooo.. now what..?
+>>
+> With v5.11 or newer kernel, mount it with "-o rescue=all,ro".
 
-Thanks,
-Qu
+
+Sorry, I guess that wasn't clear: that error above is what I get while
+trying to corrupt the extent tree as per your guide.
+
+
+That said, my kernel is 5.13.* (without your patch) and this mount
+command still fails as before
+
+
