@@ -2,113 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE8E3E5DDD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 16:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92D13E5E57
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 16:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238309AbhHJO1I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Aug 2021 10:27:08 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36178 "EHLO
+        id S241891AbhHJOsR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Aug 2021 10:48:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39216 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241521AbhHJO0j (ORCPT
+        with ESMTP id S241888AbhHJOsR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:26:39 -0400
+        Tue, 10 Aug 2021 10:48:17 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4D7BC22078;
-        Tue, 10 Aug 2021 14:26:16 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id A535922069;
+        Tue, 10 Aug 2021 14:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628605576;
+        t=1628606873;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+Wj0/ZvSfj0MxUIX2Hm9nFlQIZba0/qLQ4OObUIe2yY=;
-        b=2+d88YCjtaebu4/4bsBsvyYRlwglvc7snDCI2HCs9qjG/7aWX0wwBPzhQGND99/49INSsi
-        5os5iqSwU0FqCSEon2g96XHTvc7KHpANNDFd8cC3MlThfonUxd79dVLruO70aXGgu8z4nr
-        DSfAjNSVmGguWVllclMmYsZ1aqJ/lWs=
+        bh=ZXgUDpthW2OynnerkUSI9ncot/jTWw3Mje0HGVpvSOk=;
+        b=B4snsSGjvqXYEDt7EW2kCxQaLSPWgr92uic0ZyPn7howDUGh1lrPItNbXjWzec1tGBB+m1
+        QvwSU0+FDF41LS1QrLE1XKOvNJqRE4qBPxAOl1w2OPDvd9b44Ll6ceOX0VJ6qD12bWb0PC
+        KR1hvhQnAbcyJNDNNyDsVBf6+XhgZtE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628605576;
+        s=susede2_ed25519; t=1628606873;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+Wj0/ZvSfj0MxUIX2Hm9nFlQIZba0/qLQ4OObUIe2yY=;
-        b=ghgoPVPiNLBcRo/X5aGUeqZ3Y23OFYp3HOM8IVQ9/sCgCUR7/fBWhhcxL4bIoxzOtG9fht
-        4jAD74c3Z4jZQ5Dw==
+        bh=ZXgUDpthW2OynnerkUSI9ncot/jTWw3Mje0HGVpvSOk=;
+        b=kXrET8bwDB4LJEwOvResuNqKaxrA9xE42Jik6S40kcY7CSgp8x32EkGrEx5iDSwmCGXKOd
+        O9nR2z7X/a93cyBg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 45258A3B8B;
-        Tue, 10 Aug 2021 14:26:16 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 9BD40A3B89;
+        Tue, 10 Aug 2021 14:47:53 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EA30CDA880; Tue, 10 Aug 2021 16:23:23 +0200 (CEST)
-Date:   Tue, 10 Aug 2021 16:23:23 +0200
+        id 5E0F6DA880; Tue, 10 Aug 2021 16:45:01 +0200 (CEST)
+Date:   Tue, 10 Aug 2021 16:45:01 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Subject: Re: [PATCH] btrfs: fix NULL pointer dereference when deleting device
- by invalid id
-Message-ID: <20210810142323.GX5047@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: sysfs: map sysfs files to their path
+Message-ID: <20210810144501.GY5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>
-References: <20210806102415.304717-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <437f0a236348a3376ac2baeab564460491c7fa12.1628603355.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210806102415.304717-1-wqu@suse.com>
+In-Reply-To: <437f0a236348a3376ac2baeab564460491c7fa12.1628603355.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 06:24:15PM +0800, Qu Wenruo wrote:
-> [BUG]
-> It's super easy to trigger NULL pointer dereference, just by removing a
-> non-exist device id:
+On Tue, Aug 10, 2021 at 09:55:59PM +0800, Anand Jain wrote:
+> Sysfs file has grown big. It takes some time to locate the correct
+> struct attribute to add new files. Create a table and map the
+> struct attribute to its sysfs path.
 > 
->  # mkfs.btrfs -f -m single -d single /dev/test/scratch1 \
-> 				     /dev/test/scratch2
->  # mount /dev/test/scratch1 /mnt/btrfs
->  # btrfs device remove 3 /mnt/btrfs
+> Also, fix the comment about the debug sysfs path.
+> And add the comments to the attributes instead of attribute group,
+> where sysfs file names are defined.
 > 
-> Then we have the following kernel NULL pointer dereference:
-> 
->  BUG: kernel NULL pointer dereference, address: 0000000000000000
->  #PF: supervisor read access in kernel mode
->  #PF: error_code(0x0000) - not-present page
->  PGD 0 P4D 0
->  Oops: 0000 [#1] PREEMPT SMP NOPTI
->  CPU: 9 PID: 649 Comm: btrfs Not tainted 5.14.0-rc3-custom+ #35
->  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
->  RIP: 0010:btrfs_rm_device+0x4de/0x6b0 [btrfs]
->   btrfs_ioctl+0x18bb/0x3190 [btrfs]
->   ? lock_is_held_type+0xa5/0x120
->   ? find_held_lock.constprop.0+0x2b/0x80
->   ? do_user_addr_fault+0x201/0x6a0
->   ? lock_release+0xd2/0x2d0
->   ? __x64_sys_ioctl+0x83/0xb0
->   __x64_sys_ioctl+0x83/0xb0
->   do_syscall_64+0x3b/0x90
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> [CAUSE]
-> Commit a27a94c2b0c7 ("btrfs: Make btrfs_find_device_by_devspec return
-> btrfs_device directly") moves the "missing" device path check into
-> btrfs_rm_device().
-> 
-> But btrfs_rm_device() itself can have case where it only receives
-> @devid, with NULL as @device_path.
-> 
-> In that case, calling strcmp() on NULL will trigger the NULL pointer
-> dereference.
-> 
-> Before that commit, we handle the "missing" case inside
-> btrfs_find_device_by_devspec(), which will not check @device_path at all
-> if @devid is provided, thus no way to trigger the bug.
-> 
-> [FIX]
-> Before calling strcmp(), also make sure @device_path is not NULL.
-> 
-> Fixes: a27a94c2b0c7 ("btrfs: Make btrfs_find_device_by_devspec return btrfs_device directly")
-> Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v2: Add sysfs path in the attribute definitions.
 
-Thanks for the report and fix, added to misc-next.
+Thanks, I've reworded and reformatted some of the comments. Added to
+misc-next.
+
+> + * qgroup_attrs				/sys/fs/btrfs/<uuid>/qgroups/<subvol-id>
+
+This is not subvolid but the "level_qgroupid" formatted qgroup id.
