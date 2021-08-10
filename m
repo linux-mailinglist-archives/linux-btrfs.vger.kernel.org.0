@@ -2,128 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0773E86D8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 01:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823463E86DB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 01:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235775AbhHJXzH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Aug 2021 19:55:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235629AbhHJXzG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Aug 2021 19:55:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17DF360F38;
-        Tue, 10 Aug 2021 23:54:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628639684;
-        bh=AV8haKON3va+IX/XR/OXY1ILfZLO1kB0OfxvrA3lTzs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=USLSLnG13PQITsLD2mDDGZH2aDgy+6mYUgrczJbCZ5jLqaQEy5KlutaFp59nIxpo4
-         GBDkn3YInbaS42ydqA8axN5wXHkVBF/JS/jepyLgBqbIbZLWmjemdXf9XjUpmTP58r
-         LyfoabbENsMSLELCltHAn0SpmWxH5Pc+KlfR5D2dnUU3Wj0RKc4cNUZlCyeALBa5ij
-         HPEM1Tb9KQomkzzIsw75fr57bMzLRM0b8PWq15m2GbRMrgZKMrRqoRMxz74C3Opc9q
-         9xnerjP7C0ElM7wmBlTES65qDE6gr+NPzUklLBrhoOsgDdcuTOWSaSVcx+GQdDHP6+
-         STysCs1DmH+ag==
-Date:   Tue, 10 Aug 2021 16:54:43 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
-        cluster-devel@redhat.com
-Subject: Re: [PATCH 15/30] iomap: switch iomap_zero_range to use iomap_iter
-Message-ID: <20210810235443.GN3601443@magnolia>
-References: <20210809061244.1196573-1-hch@lst.de>
- <20210809061244.1196573-16-hch@lst.de>
+        id S235918AbhHJXzP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Aug 2021 19:55:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35498 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235832AbhHJXzM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Aug 2021 19:55:12 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6AF851FE86
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 23:54:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628639689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=Rm7OkTetM2N9hGCl9yF+/qUlNP7EMY/75K4BGTihix8=;
+        b=NhEdTnuuvPDmi4Vd9vDFWNiKWqWpzqWwIs1SQb07uRqeEjfXXDy2WsS0emfX17/aFVTbm2
+        5abOML4QdABl9LQjeg/kt4H1w1Ty7dkj7gxH6EnOrXIxR+k7pPAdeFuQQMi8v2GeFalKhp
+        z0lgWaW0s3Q/CsXDE+MpaSt6o+Phqo0=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 9C6C113664
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 23:54:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id LOChFsgRE2FVGQAAGKfGzw
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 23:54:48 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: map-logical: handle corrupted fs better
+Date:   Wed, 11 Aug 2021 07:54:45 +0800
+Message-Id: <20210810235445.44567-1-wqu@suse.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809061244.1196573-16-hch@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 08:12:29AM +0200, Christoph Hellwig wrote:
-> Switch iomap_zero_range to use iomap_iter.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Currently if running btrfs-map-logical on a filesystem with corrupted
+extent tree, it will fail due to open_ctree() error.
 
-Straightforward.
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+But the truth is, btrfs-map-logical only requires chunk tree to do
+logical bytenr mapping.
 
---D
+Make btrfs-map-logical more robust by:
 
-> ---
->  fs/iomap/buffered-io.c | 36 ++++++++++++++++++------------------
->  1 file changed, 18 insertions(+), 18 deletions(-)
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 4f525727462f33..3a23f7346938fb 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -896,11 +896,12 @@ static s64 iomap_zero(struct inode *inode, loff_t pos, u64 length,
->  	return iomap_write_end(inode, pos, bytes, bytes, page, iomap, srcmap);
->  }
->  
-> -static loff_t iomap_zero_range_actor(struct inode *inode, loff_t pos,
-> -		loff_t length, void *data, struct iomap *iomap,
-> -		struct iomap *srcmap)
-> +static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
->  {
-> -	bool *did_zero = data;
-> +	struct iomap *iomap = &iter->iomap;
-> +	struct iomap *srcmap = iomap_iter_srcmap(iter);
-> +	loff_t pos = iter->pos;
-> +	loff_t length = iomap_length(iter);
->  	loff_t written = 0;
->  
->  	/* already zeroed?  we're done. */
-> @@ -910,10 +911,11 @@ static loff_t iomap_zero_range_actor(struct inode *inode, loff_t pos,
->  	do {
->  		s64 bytes;
->  
-> -		if (IS_DAX(inode))
-> +		if (IS_DAX(iter->inode))
->  			bytes = dax_iomap_zero(pos, length, iomap);
->  		else
-> -			bytes = iomap_zero(inode, pos, length, iomap, srcmap);
-> +			bytes = iomap_zero(iter->inode, pos, length, iomap,
-> +					   srcmap);
->  		if (bytes < 0)
->  			return bytes;
->  
-> @@ -931,19 +933,17 @@ int
->  iomap_zero_range(struct inode *inode, loff_t pos, loff_t len, bool *did_zero,
->  		const struct iomap_ops *ops)
->  {
-> -	loff_t ret;
-> -
-> -	while (len > 0) {
-> -		ret = iomap_apply(inode, pos, len, IOMAP_ZERO,
-> -				ops, did_zero, iomap_zero_range_actor);
-> -		if (ret <= 0)
-> -			return ret;
-> -
-> -		pos += ret;
-> -		len -= ret;
-> -	}
-> +	struct iomap_iter iter = {
-> +		.inode		= inode,
-> +		.pos		= pos,
-> +		.len		= len,
-> +		.flags		= IOMAP_ZERO,
-> +	};
-> +	int ret;
->  
-> -	return 0;
-> +	while ((ret = iomap_iter(&iter, ops)) > 0)
-> +		iter.processed = iomap_zero_iter(&iter, did_zero);
-> +	return ret;
->  }
->  EXPORT_SYMBOL_GPL(iomap_zero_range);
->  
-> -- 
-> 2.30.2
-> 
+- Loosen the open_ctree() requirement
+  Now it doesn't require an extent tree to work.
+
+- Don't return error for map_one_extent()
+  Function map_one_extent() is too lookup extent tree to ensure there is
+  at least one extent for the range we're looking for.
+
+  But since now we don't require extent tree at all, there is no hard
+  requirement for that function.
+  Thus here we change it to return void, and only do the check when
+  possible.
+
+Now btrfs-map-logical can work on a filesystem with corrupted extent
+tree.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ btrfs-map-logical.c | 50 +++++++++++----------------------------------
+ 1 file changed, 12 insertions(+), 38 deletions(-)
+
+diff --git a/btrfs-map-logical.c b/btrfs-map-logical.c
+index b35677730374..f06a612f6c14 100644
+--- a/btrfs-map-logical.c
++++ b/btrfs-map-logical.c
+@@ -38,8 +38,8 @@
+  * */
+ static FILE *info_file;
+ 
+-static int map_one_extent(struct btrfs_fs_info *fs_info,
+-			  u64 *logical_ret, u64 *len_ret, int search_forward)
++static void map_one_extent(struct btrfs_fs_info *fs_info,
++			   u64 *logical_ret, u64 *len_ret, int search_forward)
+ {
+ 	struct btrfs_path *path;
+ 	struct btrfs_key key;
+@@ -52,7 +52,7 @@ static int map_one_extent(struct btrfs_fs_info *fs_info,
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+-		return -ENOMEM;
++		return;
+ 
+ 	key.objectid = logical;
+ 	key.type = 0;
+@@ -94,7 +94,11 @@ out:
+ 		if (len_ret)
+ 			*len_ret = len;
+ 	}
+-	return ret;
++	/*
++	 * Ignore any error for extent item lookup, it can be corrupted
++	 * extent tree or whatever. In that case, just ignore the
++	 * extent item lookup and reset @ret to 0.
++	 */
+ }
+ 
+ static int __print_mapping_info(struct btrfs_fs_info *fs_info, u64 logical,
+@@ -261,7 +265,8 @@ int main(int argc, char **argv)
+ 	radix_tree_init();
+ 	cache_tree_init(&root_cache);
+ 
+-	root = open_ctree(dev, 0, 0);
++	root = open_ctree(dev, 0, OPEN_CTREE_PARTIAL |
++				  OPEN_CTREE_NO_BLOCK_GROUPS);
+ 	if (!root) {
+ 		fprintf(stderr, "Open ctree failed\n");
+ 		free(output_file);
+@@ -293,34 +298,7 @@ int main(int argc, char **argv)
+ 	cur_len = bytes;
+ 
+ 	/* First find the nearest extent */
+-	ret = map_one_extent(root->fs_info, &cur_logical, &cur_len, 0);
+-	if (ret < 0) {
+-		errno = -ret;
+-		fprintf(stderr, "Failed to find extent at [%llu,%llu): %m\n",
+-			cur_logical, cur_logical + cur_len);
+-		goto out_close_fd;
+-	}
+-	/*
+-	 * Normally, search backward should be OK, but for special case like
+-	 * given logical is quite small where no extents are before it,
+-	 * we need to search forward.
+-	 */
+-	if (ret > 0) {
+-		ret = map_one_extent(root->fs_info, &cur_logical, &cur_len, 1);
+-		if (ret < 0) {
+-			errno = -ret;
+-			fprintf(stderr,
+-				"Failed to find extent at [%llu,%llu): %m\n",
+-				cur_logical, cur_logical + cur_len);
+-			goto out_close_fd;
+-		}
+-		if (ret > 0) {
+-			fprintf(stderr,
+-				"Failed to find any extent at [%llu,%llu)\n",
+-				cur_logical, cur_logical + cur_len);
+-			goto out_close_fd;
+-		}
+-	}
++	map_one_extent(root->fs_info, &cur_logical, &cur_len, 0);
+ 
+ 	while (cur_logical + cur_len >= logical && cur_logical < logical +
+ 	       bytes) {
+@@ -328,11 +306,7 @@ int main(int argc, char **argv)
+ 		u64 real_len;
+ 
+ 		found = 1;
+-		ret = map_one_extent(root->fs_info, &cur_logical, &cur_len, 1);
+-		if (ret < 0)
+-			goto out_close_fd;
+-		if (ret > 0)
+-			break;
++		map_one_extent(root->fs_info, &cur_logical, &cur_len, 1);
+ 		/* check again if there is overlap. */
+ 		if (cur_logical + cur_len < logical ||
+ 		    cur_logical >= logical + bytes)
+-- 
+2.32.0
+
