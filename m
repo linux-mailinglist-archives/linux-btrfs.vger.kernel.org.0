@@ -2,72 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32643E5C86
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 16:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE8E3E5DDD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 16:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241665AbhHJOIH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Aug 2021 10:08:07 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33682 "EHLO
+        id S238309AbhHJO1I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Aug 2021 10:27:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36178 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237375AbhHJOIG (ORCPT
+        with ESMTP id S241521AbhHJO0j (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:08:06 -0400
+        Tue, 10 Aug 2021 10:26:39 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A3D0A22062;
-        Tue, 10 Aug 2021 14:07:43 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4D7BC22078;
+        Tue, 10 Aug 2021 14:26:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628604463;
+        t=1628605576;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DMs8nU2YD+I63e26L5U8N070O+IQMQlSVoygDwr3Uvw=;
-        b=ejDPTWR/eg3J4pM9qmPRjnZmy1CrbHXU+e8FC6FCYHevR4gosTaO97lhratox4wa6IdQzw
-        Alcn5uqkHTo9V59my6MPQdfrKJBojdSBpgV1yzAxr7n0WKr9DbKs3uA7c8h9r1LQiTNCxE
-        +Yl3ZDox9UC41YkS+Hdbn/kTVSyjxgE=
+        bh=+Wj0/ZvSfj0MxUIX2Hm9nFlQIZba0/qLQ4OObUIe2yY=;
+        b=2+d88YCjtaebu4/4bsBsvyYRlwglvc7snDCI2HCs9qjG/7aWX0wwBPzhQGND99/49INSsi
+        5os5iqSwU0FqCSEon2g96XHTvc7KHpANNDFd8cC3MlThfonUxd79dVLruO70aXGgu8z4nr
+        DSfAjNSVmGguWVllclMmYsZ1aqJ/lWs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628604463;
+        s=susede2_ed25519; t=1628605576;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DMs8nU2YD+I63e26L5U8N070O+IQMQlSVoygDwr3Uvw=;
-        b=1A6Swlb4XGuY/JkIBhVjKtQu2/8ze2+baDutUG3lk8NLH3jRNI5rowxkD3E7IZNT0rbbtH
-        KOBtaqQJSbwDNYBA==
+        bh=+Wj0/ZvSfj0MxUIX2Hm9nFlQIZba0/qLQ4OObUIe2yY=;
+        b=ghgoPVPiNLBcRo/X5aGUeqZ3Y23OFYp3HOM8IVQ9/sCgCUR7/fBWhhcxL4bIoxzOtG9fht
+        4jAD74c3Z4jZQ5Dw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 4B555A3B88;
-        Tue, 10 Aug 2021 14:07:43 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 45258A3B8B;
+        Tue, 10 Aug 2021 14:26:16 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 23065DA880; Tue, 10 Aug 2021 16:04:51 +0200 (CEST)
-Date:   Tue, 10 Aug 2021 16:04:51 +0200
+        id EA30CDA880; Tue, 10 Aug 2021 16:23:23 +0200 (CEST)
+Date:   Tue, 10 Aug 2021 16:23:23 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: zoned: add ASSERTs on splitting extent_map
-Message-ID: <20210810140451.GW5047@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Subject: Re: [PATCH] btrfs: fix NULL pointer dereference when deleting device
+ by invalid id
+Message-ID: <20210810142323.GX5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>
-References: <20210809002918.2686884-1-naohiro.aota@wdc.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        butt3rflyh4ck <butterflyhuangxx@gmail.com>
+References: <20210806102415.304717-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809002918.2686884-1-naohiro.aota@wdc.com>
+In-Reply-To: <20210806102415.304717-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 09:29:18AM +0900, Naohiro Aota wrote:
-> We call split_zoned_em() on an extent_map on submitting a bio for it. Thus,
-> we can assume the extent_map is PINNED, not LOGGING, and in the modified
-> list. Add ASSERT()s to ensure the  extent_maps after the split also has the
-> proper flags set and are in the modified list.
+On Fri, Aug 06, 2021 at 06:24:15PM +0800, Qu Wenruo wrote:
+> [BUG]
+> It's super easy to trigger NULL pointer dereference, just by removing a
+> non-exist device id:
 > 
-> Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> Suggested-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>  # mkfs.btrfs -f -m single -d single /dev/test/scratch1 \
+> 				     /dev/test/scratch2
+>  # mount /dev/test/scratch1 /mnt/btrfs
+>  # btrfs device remove 3 /mnt/btrfs
+> 
+> Then we have the following kernel NULL pointer dereference:
+> 
+>  BUG: kernel NULL pointer dereference, address: 0000000000000000
+>  #PF: supervisor read access in kernel mode
+>  #PF: error_code(0x0000) - not-present page
+>  PGD 0 P4D 0
+>  Oops: 0000 [#1] PREEMPT SMP NOPTI
+>  CPU: 9 PID: 649 Comm: btrfs Not tainted 5.14.0-rc3-custom+ #35
+>  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+>  RIP: 0010:btrfs_rm_device+0x4de/0x6b0 [btrfs]
+>   btrfs_ioctl+0x18bb/0x3190 [btrfs]
+>   ? lock_is_held_type+0xa5/0x120
+>   ? find_held_lock.constprop.0+0x2b/0x80
+>   ? do_user_addr_fault+0x201/0x6a0
+>   ? lock_release+0xd2/0x2d0
+>   ? __x64_sys_ioctl+0x83/0xb0
+>   __x64_sys_ioctl+0x83/0xb0
+>   do_syscall_64+0x3b/0x90
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> [CAUSE]
+> Commit a27a94c2b0c7 ("btrfs: Make btrfs_find_device_by_devspec return
+> btrfs_device directly") moves the "missing" device path check into
+> btrfs_rm_device().
+> 
+> But btrfs_rm_device() itself can have case where it only receives
+> @devid, with NULL as @device_path.
+> 
+> In that case, calling strcmp() on NULL will trigger the NULL pointer
+> dereference.
+> 
+> Before that commit, we handle the "missing" case inside
+> btrfs_find_device_by_devspec(), which will not check @device_path at all
+> if @devid is provided, thus no way to trigger the bug.
+> 
+> [FIX]
+> Before calling strcmp(), also make sure @device_path is not NULL.
+> 
+> Fixes: a27a94c2b0c7 ("btrfs: Make btrfs_find_device_by_devspec return btrfs_device directly")
+> Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Added to misc-next, thanks.
+Thanks for the report and fix, added to misc-next.
