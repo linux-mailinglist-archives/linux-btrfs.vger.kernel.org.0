@@ -2,75 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971613E5C85
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 16:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32643E5C86
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 16:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238889AbhHJOHq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Aug 2021 10:07:46 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34852 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237375AbhHJOHq (ORCPT
+        id S241665AbhHJOIH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Aug 2021 10:08:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33682 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237375AbhHJOIG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Aug 2021 10:07:46 -0400
+        Tue, 10 Aug 2021 10:08:06 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 2D695200B9;
-        Tue, 10 Aug 2021 14:07:23 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id A3D0A22062;
+        Tue, 10 Aug 2021 14:07:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1628604443;
+        t=1628604463;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ok+5PZ4Wccz0hdrjClnsxQOONPiU0T6dDCCUsxFO3j8=;
-        b=mLY4XBs/Jo2O3j6m2412n0TZL2Loqn9h2T89v3X1Huu+HJ33kEEsEEqCfBbcpdm2EUbh8F
-        BAkYRUrA3XdNf/bHfrnjNyTDKFsuSkx5pnmq8pwyfVYco2uB8xRZ4vG5Rmkab4LV4gZ87Z
-        Wv3Mdz//fwS6MWAfFRpPXCV5p/Fsgv0=
+        bh=DMs8nU2YD+I63e26L5U8N070O+IQMQlSVoygDwr3Uvw=;
+        b=ejDPTWR/eg3J4pM9qmPRjnZmy1CrbHXU+e8FC6FCYHevR4gosTaO97lhratox4wa6IdQzw
+        Alcn5uqkHTo9V59my6MPQdfrKJBojdSBpgV1yzAxr7n0WKr9DbKs3uA7c8h9r1LQiTNCxE
+        +Yl3ZDox9UC41YkS+Hdbn/kTVSyjxgE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1628604443;
+        s=susede2_ed25519; t=1628604463;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ok+5PZ4Wccz0hdrjClnsxQOONPiU0T6dDCCUsxFO3j8=;
-        b=CJgslxqRLCzaUehonPi9WY+8ncC257RT3iRB1WwnFy4v4kBv0x26wiydrzF4xLG6XIH1tP
-        hGg4OxjbrvCbbMBg==
+        bh=DMs8nU2YD+I63e26L5U8N070O+IQMQlSVoygDwr3Uvw=;
+        b=1A6Swlb4XGuY/JkIBhVjKtQu2/8ze2+baDutUG3lk8NLH3jRNI5rowxkD3E7IZNT0rbbtH
+        KOBtaqQJSbwDNYBA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 23BFEA3B8A;
-        Tue, 10 Aug 2021 14:07:23 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 4B555A3B88;
+        Tue, 10 Aug 2021 14:07:43 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AE002DA880; Tue, 10 Aug 2021 16:04:30 +0200 (CEST)
-Date:   Tue, 10 Aug 2021 16:04:30 +0200
+        id 23065DA880; Tue, 10 Aug 2021 16:04:51 +0200 (CEST)
+Date:   Tue, 10 Aug 2021 16:04:51 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-Subject: Re: [PATCH v2] fstests: btrfs/244: add test case to verify the
- behavior of deleting non-existing device
-Message-ID: <20210810140430.GV5047@twin.jikos.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: zoned: add ASSERTs on splitting extent_map
+Message-ID: <20210810140451.GW5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        fstests@vger.kernel.org
-References: <20210806113333.328261-1-wqu@suse.com>
- <5547039c-2989-e9d7-6126-15877758b3f0@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>
+References: <20210809002918.2686884-1-naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5547039c-2989-e9d7-6126-15877758b3f0@suse.com>
+In-Reply-To: <20210809002918.2686884-1-naohiro.aota@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 02:42:36PM +0300, Nikolay Borisov wrote:
-> > +if [ $ret -ne 1 ]; then
-> > +	echo "Unexpected return value from btrfs command, has $ret expected 1"
-> > +fi
+On Mon, Aug 09, 2021 at 09:29:18AM +0900, Naohiro Aota wrote:
+> We call split_zoned_em() on an extent_map on submitting a bio for it. Thus,
+> we can assume the extent_map is PINNED, not LOGGING, and in the modified
+> list. Add ASSERT()s to ensure the  extent_maps after the split also has the
+> proper flags set and are in the modified list.
 > 
-> <rant>
-> This just shows how broken progs are w.r.t return values. The generally
-> accepted return value is 0 on success, yet it returns 1 on success since
-> the functions implementing this functionality in progs treat the return
-> value as a boolean.
-> </rant>
+> Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Suggested-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Heh, not following the common convention of 0 for success, !0 for errors
-would be crazy and hardly left unnoticed by users.
+Added to misc-next, thanks.
