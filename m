@@ -2,274 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C764F3E7D17
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 18:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2173E7D38
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Aug 2021 18:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbhHJQD6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Aug 2021 12:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58412 "EHLO
+        id S233687AbhHJQMi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Aug 2021 12:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhHJQD6 (ORCPT
+        with ESMTP id S229512AbhHJQMh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Aug 2021 12:03:58 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12698C0613C1
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 09:03:36 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so22597086oti.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 09:03:36 -0700 (PDT)
+        Tue, 10 Aug 2021 12:12:37 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641B7C0613C1
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 09:12:15 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id e19so8234812pla.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 09:12:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=et+Q+EICSzKOj7ICh8ReV9Ar/XLd8FSv1JUcaI4Y3pI=;
-        b=kOApaazRmidjeDh18zBfVqf7+6upvb3Hd8afwnx6MULF71O9Vq4dMBS/lWTt9Ofum6
-         vX9KxQCQBJm24B0xcZVuhNce1ErAHvDApWJg4I30h/xxpZW1z5hCkjfFx02AMKpLmpYL
-         Rnw4jQPjq//xDhcuYHGENFrBHfKjtBdutFPEOFK2pC5H8sW3yJ+/8EfX4GRZKPbdLFsw
-         4unqMllHkPXn/RiQ2H30PGOLpPscdObtf7Tvq5F26FGIy+axlUtpqr84ffBNqW6FQmA/
-         ecLFtoQzupxAqUKcg7ji6Z8dOhHTtwrjfZFJDbbOuMAnFUa11w/0ybGTMPRTFfZJx7Q2
-         id1A==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=fX3lJNFAs6js88H6GjFl1Jc95WMA3P44zHxsjDKgatU=;
+        b=iAPjYak864no52uPmDirgNfOpEp1Oh6C+i8eM52Lor1qJzV1uyP85QQ/JJ8z/igbrQ
+         7H+LMQuvjgppDAx9m+5g/dG1vXo9/Z1KDum3//w7mpmwAyhZ13DaQzS6hrt0uV2gRiH9
+         z6xg3scCLwy86m5pPEhz1sZ+A1MMUcSxTs6x7mqeJa9fs1wkkFoBM23WkISmY9F8HPLv
+         m5VDwR6kHEBjJP1Wf+jq6h5oE6fNTZvqntoHUgzKsjiqaQx26HTRUUhYWoU+KqFZAcwO
+         eAyGWAWpxVCvn1Gd9a2pqp2HdauVFxeq/f0SfXvIzTN1lzJnHMnHZC4DN35OR9cmRGEE
+         3A1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=et+Q+EICSzKOj7ICh8ReV9Ar/XLd8FSv1JUcaI4Y3pI=;
-        b=ZYHqH9ttPa5Mz19uY9OqbM6bOoOYYFwSCujBgPn0yneOxrk4uUpWvKwL9st4vrsI5T
-         BgNcVj3nA+2Pm6CFjdSXsxFWAFrpvHQ+wquYZQFzlukIURUxr7c2NJbvq/NuhHWyeI5+
-         0m5mMVna+7905jeKzUwjJSJgEdLxUn1UFexcYKql5oVJcxal64b23DVnr08QFa0+AhI4
-         gvndE+344VZ91f5tHKHB+PVjj5d8Ge29hzEONkP+wp4aUh5SaYLNm0TEbLeShXXh7oRM
-         CYE92bm1s4qcozeADs3qM0X3Eb7zLekSuTazzK58RpO5k1gmYWObkAfxZPYmzVh51sM6
-         45jg==
-X-Gm-Message-State: AOAM5304HRtRfU1kWkD6ZLG+h3AvzzwNv8mIn0EgETE9wHtBR/ma93IG
-        My6J0olbyTTI4U30oEKvIDyL1Z1GWt0d0Iyi4eo=
-X-Google-Smtp-Source: ABdhPJyz/+srX4v33nYhGf3ZwS4dm9Tw3WGMvTdaFCZDGFFyXVglCba4jHadpilwLm7y1Ht079SV5IpbRd6+tnQRtvU=
-X-Received: by 2002:a9d:6359:: with SMTP id y25mr6469364otk.274.1628611415357;
- Tue, 10 Aug 2021 09:03:35 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=fX3lJNFAs6js88H6GjFl1Jc95WMA3P44zHxsjDKgatU=;
+        b=gZvrtC0hJ644/40h7qzUhi/gkqri+s7WT4be0pXyIgAAF+gO4Tc0SwLGpCouVEeuT8
+         NSbo4bTigrwsjt1cPvp2kRv8vanvXBK+Q89/+415UiI1hgM4mvZxl9g/8wLb7xc97ApM
+         fhpylO+y2hF1o9gmMiSDBKxxU73MfLZL9DTMa60LeVrACXbSH1FuN2B+9Iw0herF5s8Y
+         Cp6Wx9e/bFcY5rv0CKZ2++Yb7eaNyQZuZcNLZkzCA1xwItPnh6GqYXTaTPocxmdtH+Je
+         m487MhFjz6ZjliKzsNispwP7dNdh0qc02KPDDNkG+Rsz0EFj+u5j44ZItTtT2u7ThqMt
+         /uYQ==
+X-Gm-Message-State: AOAM531P5WG8mm0lxzO4Fj1esj4OEQWAwUJBWg/3t+y4m3evdDzOhavR
+        jTCgOBsSA1DggaxrSF+emao=
+X-Google-Smtp-Source: ABdhPJw8luQ7eepvnSx4AbdYjyLNIPoKNi/EW5QqUDZwNnIinVg67Lx7nfUOzFleMLNXfCv/Vo3qkw==
+X-Received: by 2002:a65:6111:: with SMTP id z17mr963960pgu.335.1628611934775;
+        Tue, 10 Aug 2021 09:12:14 -0700 (PDT)
+Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
+        by smtp.gmail.com with ESMTPSA id om9sm3306432pjb.40.2021.08.10.09.12.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 09:12:14 -0700 (PDT)
+Subject: Re: Trying to recover data from SSD
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
+ <46f3b990-ec2d-6508-249e-8954bf356e89@gmx.com>
+ <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
+ <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
+From:   Konstantin Svist <fry.kun@gmail.com>
+Message-ID: <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
+Date:   Tue, 10 Aug 2021 09:12:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CAGdWbB59ULVxpNnq5Og0SCri+qyz_cwDLFTLr5N7iVT9gb0w1A@mail.gmail.com>
- <c906060a-9dbc-e5d1-8e85-832408249b4d@casa-di-locascio.net>
- <CAGdWbB5Z=ARmsU66k7O3Hp=RcMTr-wV5Z880FvMdqN=m3c8Epw@mail.gmail.com>
- <6f133a41-dbd6-ce42-b6aa-ae4e621ce816@libero.it> <CAGdWbB7KOzsWUEJWtKDfTD-hXOeh+Rhvk1iuXeRMjdqxVhA_uw@mail.gmail.com>
- <2074ef97-dbc2-d588-3000-622ffcf7e062@inwind.it>
-In-Reply-To: <2074ef97-dbc2-d588-3000-622ffcf7e062@inwind.it>
-From:   Dave T <davestechshop@gmail.com>
-Date:   Tue, 10 Aug 2021 12:03:24 -0400
-Message-ID: <CAGdWbB46hPUYHj6FTi777DL=SASVyQ9wE4_5oyFtAWBos4xa9g@mail.gmail.com>
-Subject: Re: why is the same mount point repeatedly mounted in nested manner?
-To:     kreijack@inwind.it
-Cc:     devel@roosoft.ltd.uk,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Phillip Susi <phill@thesusis.net>, kilobyte@angband.pl
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 11:43 AM Goffredo Baroncelli <kreijack@inwind.it> w=
-rote:
+
+>> I don't know how to do that (corrupt the extent tree)
 >
-> On 8/9/21 10:15 PM, Dave T wrote:
-> > On Mon, Aug 9, 2021 at 3:29 PM Goffredo Baroncelli <kreijack@libero.it>=
- wrote:
-> >>
-> [...]
->
-> >
-> > Also, in recent days I stopped mounting and umounting /mnt/btrtop/root
-> > and just left it mounted all the time. However, when checking today, I
-> > still found a nested mount:
-> >
-> > =E2=94=9C=E2=94=80/srv/nfs/var/cache/pacman
-> > =E2=94=82
-> > =E2=94=82 =E2=94=94=E2=94=80/srv/nfs/var/cache/pacman
-> >
-> >
->
-> Ok, so it seems that these mounts are triggered not by the mount of /mnt/=
-btrtop/root (see below). What is the output of
->
-> $ systemctl --reverse list-dependencies -- srv-nfs-var-cache-pacman.mount
->
-
-srv-nfs-var-cache-pacman.mount
-=E2=97=8F =E2=94=9C=E2=94=80nfs-server.service
-=E2=97=8F =E2=94=94=E2=94=80local-fs.target
-=E2=97=8F   =E2=94=94=E2=94=80sysinit.target
-=E2=97=8B     =E2=94=9C=E2=94=80btrbk-daily.service
-=E2=97=8F     =E2=94=9C=E2=94=80btrbk-daily.timer
-=E2=97=8B     =E2=94=9C=E2=94=80btrbk.service
-=E2=97=8F     =E2=94=9C=E2=94=80btrbk.timer
-=E2=97=8F     =E2=94=9C=E2=94=80dbus.service
-=E2=97=8F     =E2=94=9C=E2=94=80dbus.socket
-=E2=97=8F     =E2=94=9C=E2=94=80dhcpcd.service
-=E2=97=8F     =E2=94=9C=E2=94=80getty@tty1.service
-=E2=97=8F     =E2=94=9C=E2=94=80gssproxy.service
-=E2=97=8B     =E2=94=9C=E2=94=80keymap_ds.service
-=E2=97=8B     =E2=94=9C=E2=94=80logrotate.service
-=E2=97=8F     =E2=94=9C=E2=94=80logrotate.timer
-=E2=97=8B     =E2=94=9C=E2=94=80man-db.service
-=E2=97=8F     =E2=94=9C=E2=94=80man-db.timer
-=E2=97=8B     =E2=94=9C=E2=94=80nfs-utils.service
-=E2=97=8B     =E2=94=9C=E2=94=80users_permissions.service
-=E2=97=8F     =E2=94=9C=E2=94=80users_permissions.timer
-=E2=97=8B     =E2=94=9C=E2=94=80shadow.service
-=E2=97=8F     =E2=94=9C=E2=94=80shadow.timer
-=E2=97=8B     =E2=94=9C=E2=94=80snapper-cleanup.service
-=E2=97=8F     =E2=94=9C=E2=94=80snapper-cleanup.timer
-=E2=97=8F     =E2=94=9C=E2=94=80sshd.service
-=E2=97=8B     =E2=94=9C=E2=94=80sshdgenkeys.service
-=E2=97=8B     =E2=94=9C=E2=94=80systemd-ask-password-wall.service
-=E2=97=8F     =E2=94=9C=E2=94=80systemd-logind.service
-=E2=97=8F     =E2=94=9C=E2=94=80systemd-tmpfiles-clean.timer
-=E2=97=8F     =E2=94=9C=E2=94=80systemd-user-sessions.service
-=E2=97=8F     =E2=94=9C=E2=94=80user-runtime-dir@1000.service
-=E2=97=8F     =E2=94=9C=E2=94=80user@1000.service
-=E2=97=8F     =E2=94=9C=E2=94=80basic.target
-=E2=97=8B     =E2=94=82 =E2=94=9C=E2=94=80initrd.target
-=E2=97=8F     =E2=94=82 =E2=94=94=E2=94=80multi-user.target
-=E2=97=8F     =E2=94=82   =E2=94=94=E2=94=80graphical.target
-=E2=97=8B     =E2=94=94=E2=94=80rescue.target
+> There is the more detailed version:
+> https://lore.kernel.org/linux-btrfs/744795fa-e45a-110a-103e-13caf597299a@gmx.com/
 
 
-This looks interesting -- some of those dependencies are very
-unexpected to me. I look forward to your take on what this output
-indicates. I don't understand why there is a connection between
-srv-nfs-var-cache-pacman.mount and btrbk.service, for example. (I
-included btrbk.service with source listings you requested below.)
-
->
-> [...]
-> >
-> > As mentioned, I have (temporarily) stopped unmounting these volumes
-> > and I just leave them mounted all the time. The logs now look like
-> > this:
-> >
-> > Aug 06 03:00:14 btrbk_run.sh[3022708]: mounting btrbk btrtop volumes...
-> > Aug 06 03:00:14 btrbk_run.sh[3022708]: INFO: [/mnt/btrtop/root] (1 of
-> > 3) was already mounted. Nothing to do.
-> > Aug 06 03:00:14 btrbk_run.sh[3022708]: INFO: [/mnt/btrtop/home] (2 of
-> > 3) was already mounted. Nothing to do.
-> > Aug 06 03:00:14 btrbk_run.sh[3022708]: INFO: [/mnt/btrtop/user] (3 of
-> > 3) was already mounted. Nothing to do.
->
-> This told another story. It seems that "btrbk" itself already try to moun=
-t the btrfs subvolume. I understood that it was the systemd unit to do that=
-. Could you share the content of btrbk_run.sh ?
->
-
-# systemctl cat btrbk.service
-# /usr/lib/systemd/system/btrbk.service
-[Unit]
-Description=3Dbtrbk backup
-Documentation=3Dman:btrbk(1)
-
-[Service]
-Type=3Doneshot
-ExecStart=3D/usr/bin/btrbk run
-
-# /etc/systemd/system/btrbk.service.d/override.conf
-[Service]
-ExecStart=3D
-ExecStart=3D/usr/local/bin/btrbk_run.sh
+So, here's what I get:
 
 
-# cat /usr/local/bin/btrbk_run.sh
-#!/bin/bash
+# btrfs ins dump-tree -t root /dev/sdb3 |grep -A5 'item 0 key (EXTENT_TREE'
 
-/usr/local/bin/btrbk_mount
-
-/usr/bin/btrbk --config /etc/btrbk/btrbk.conf run
-
-# 2021-08-05 My first troubleshooting step is to disable unmounting
-these shares.
-# /usr/local/bin/btrbk-umount
+    item 0 key (EXTENT_TREE ROOT_ITEM 0) itemoff 15844 itemsize 439
+        generation 166932 root_dirid 0 bytenr 786939904 level 2 refs 1
+        lastsnap 0 byte_limit 0 bytes_used 50708480 flags 0x0(none)
+        uuid 00000000-0000-0000-0000-000000000000
+        drop key (0 UNKNOWN.0 0) level 0
+    item 1 key (DEV_TREE ROOT_ITEM 0) itemoff 15405 itemsize 439
 
 
-# cat /usr/local/bin/btrbk_mount
-#!/bin/bash
+# btrfs-map-logical -l 786939904 /dev/sdb3
 
-btrbk_mount() {
-
-echo "mounting btrbk btrtop volumes..."
-
-findmnt /mnt/btrtop/root
-if [[ $? -ne 0 ]]; then \
-  mount /mnt/btrtop/root
-  if [[ $? -ne 0 ]]; then \
-    echo "ERROR: failed to mount [/mnt/btrtop/root] (1 of 3)"
-  else
-    echo "OK: mounted [/mnt/btrtop/root] (1 of 3)"
-  fi
-else
-  echo "INFO: [/mnt/btrtop/root] (1 of 3) was already mounted. Nothing to d=
-o."
-fi
-findmnt /mnt/btrtop/home
-if [[ $? -ne 0 ]]; then \
-  mount /mnt/btrtop/home
-  if [[ $? -ne 0 ]]; then \
-    echo "ERROR: failed to mount [/mnt/btrtop/home] (2 of 3)"
-  else
-    echo "OK: mounted [/mnt/btrtop/home] (2 of 3)"
-  fi
-else
-  echo "INFO: [/mnt/btrtop/home] (2 of 3) was already mounted. Nothing to d=
-o."
-fi
-findmnt /mnt/btrtop/user
-if [[ $? -ne 0 ]]; then \
-  mount /mnt/btrtop/user
-  if [[ $? -ne 0 ]]; then \
-    echo "ERROR: failed to mount [/mnt/btrtop/user] (3 of 3)"
-  else
-    echo "OK: mounted mount [/mnt/btrtop/user] (3 of 3)"
-  fi
-else
-  echo "INFO: [/mnt/btrtop/user] (3 of 3) was already mounted. Nothing to d=
-o."
-fi
-
-echo "Finished mounting btrbk btrtop volumes."
-
-}
-
-btrbk_mount
-
-# end of file /usr/local/bin/btrbk_mount
+checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
+checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
+checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
+bad tree block 952483840, bytenr mismatch, want=952483840, have=0
+ERROR: failed to read block groups: Input/output error
+Open ctree failed
 
 
->
-> > Aug 06 03:00:14 btrbk_run.sh[3022708]: Finished mounting btrbk btrtop v=
-olumes.
-> > Aug 06 04:00:14 btrbk_run.sh[3033520]: mounting btrbk btrtop volumes...
-> > Aug 06 04:00:14 btrbk_run.sh[3033520]: INFO: [/mnt/btrtop/root] (1 of
-> > 3) was already mounted. Nothing to do.
-> > Aug 06 04:00:14 btrbk_run.sh[3033520]: INFO: [/mnt/btrtop/home] (2 of
-> > 3) was already mounted. Nothing to do.
-> > Aug 06 04:00:14 btrbk_run.sh[3033520]: INFO: [/mnt/btrtop/user] (3 of
-> > 3) was already mounted. Nothing to do.
-> > Aug 06 04:00:14 btrbk_run.sh[3033520]: Finished mounting btrbk btrtop v=
-olumes.
-> >
-> >>
-> >>>
-> >>> The path /var/cache/pacman is not a subvolume, but it resides on btrf=
-s
-> >>> subvolume @btrtop/snapshot. @btrtop/snapshot is normally mounted at
-> >>> "/" but for btrfs tasks, it is also mounted at /mnt/btrtop/root. This
-> >>> additional mount operation seems to be causing these nested mounts of
-> >>> my bind mount for  /srv/nfs/var/cache/pacman .
-> >>>
-> >>> P.S. I cannot test without using systemd. (I'm not even sure I
-> >>> remember how to use a non-systemd distro anymore!)
-> >>>
-> >>
-> >>
-> >> --
-> >> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> >> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
->
->
-> --
-> gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-> Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+
+Sooooo.. now what..?
