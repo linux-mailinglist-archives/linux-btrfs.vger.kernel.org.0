@@ -2,312 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C493E8744
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 02:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116D03E89B0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 07:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235798AbhHKAbm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Aug 2021 20:31:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231423AbhHKAbl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Aug 2021 20:31:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D366860EB9;
-        Wed, 11 Aug 2021 00:31:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628641878;
-        bh=gBI34d3C+kxYXbvJ/grq+YaqzvQXqhA5HY0T+jbkLgE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nKze7mBDFVcCSar0LHAm8ewmyshJaDLeBhF8/Ch7M1p2CiB5A86HFpOKW7lMfCCtS
-         qbqdyDNoVm2l2MyhtFhuFTpa8lLdHU2XUPJZWL3YlI18vxr9dMB7Nxk+BGhN2ZqFRl
-         x+Ev9SNarHvCGvuMpffGjjDo7TsCzN3cdPieEzfUgtrQRfbQCNA1jrO8vvvsFvUyMu
-         i0pqXLZfDUmAYCUo2NWe1qNhTJWnoxXGUwLUUjxytKPrtoPDZEt8mjlKfNIWI321AF
-         66F+4eFE9SivNFNmWthiaeVBFu9FNOJog8hRII4rQuxemw2km1vFjX0tGySEVss+lX
-         TAHBnfJeaAF2A==
-Date:   Tue, 10 Aug 2021 17:31:18 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
-        cluster-devel@redhat.com
-Subject: Re: [PATCH 11/30] iomap: add the new iomap_iter model
-Message-ID: <20210811003118.GT3601466@magnolia>
-References: <20210809061244.1196573-1-hch@lst.de>
- <20210809061244.1196573-12-hch@lst.de>
+        id S234105AbhHKFWd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Aug 2021 01:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229730AbhHKFWc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Aug 2021 01:22:32 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C45CC061765
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 22:22:09 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id g12-20020a17090a7d0cb0290178f80de3d8so2711154pjl.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Aug 2021 22:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=j1O4wIErcvCmgm7VwQUUawmCP0iB+1J2JZ6tqjzhPuY=;
+        b=Bqq29N9Q4MIJgYm/MaOgk5k9GSnGiL5143DH25AhSvPsKp/OmgqapBZ54pKiJOKHmb
+         PYK58IIbzZ40NWCBAKnVmnTD3Z73iGMolO8Hf5fGdA11+ku5KEvgJ42FT0tnB6eTTO0K
+         xsflcplSTJ9kK/cSFIYXuYz4iuNm20uLJIXzYxlb15SVOufeKARVC64YZTCGW/Hz0Vuv
+         fO27lH33ZlyJMmiz5de3sAAvCjwUowR5ON60SIwV7AZyW0IoKZVUqXboEFhVJ60Lcl68
+         M3C8q++M6eNg7WzjgnhoOr9gDrHLHe3A+votqdOgOcUcQGiCVpCTF1flNGMaV3GGqHeX
+         nSnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=j1O4wIErcvCmgm7VwQUUawmCP0iB+1J2JZ6tqjzhPuY=;
+        b=lczq+dkEwapign0OqtOQLd65cg8FY3WEwaitVqPGs78owLO0YancdGRSwKaKR3njOn
+         rdJD8FlHE/t7L/42K9oQhGdHba+vlXcSUBC1oHH+8f9ExF6BEOxO5fCzbcMb9wU3SbuR
+         ewknGJ6DuXNinLBVl88cJC0r4FyMUhkVw6NKW25RaHnNIYfbDENj33MDlxL4P5Xt/d7C
+         w/hNM41M+fKBLcCOXKCJyWkwOPsN5z4oAd4gErMcnRpjrX2g+sHtBviEWk9tkOrR2jGD
+         tPPvK06MvoC+8flDVyZsuI3ZgQezpUHoAcWqfZuG9UE4HebVfx/NACgod0aY4uY1hJG/
+         pAPw==
+X-Gm-Message-State: AOAM5334rNS619J2Tb0RPai5V+NiIJ1E1Z8A9nGvuuRwFfLlcJz3aiN5
+        sEEW6B+m0fJhiWH8qD1XQN4=
+X-Google-Smtp-Source: ABdhPJwPUxfQWS0FUGus+ok8F0jmJ76BjRFRCksC3lDxPklsSBzR13JPdElrnaUBl2ANh6rSv6XXiA==
+X-Received: by 2002:a17:902:70c2:b029:12d:4d0b:6f22 with SMTP id l2-20020a17090270c2b029012d4d0b6f22mr2806678plt.32.1628659328660;
+        Tue, 10 Aug 2021 22:22:08 -0700 (PDT)
+Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
+        by smtp.gmail.com with ESMTPSA id mr18sm23760482pjb.39.2021.08.10.22.22.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Aug 2021 22:22:07 -0700 (PDT)
+Subject: Re: Trying to recover data from SSD
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
+ <46f3b990-ec2d-6508-249e-8954bf356e89@gmx.com>
+ <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
+ <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
+ <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
+ <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
+ <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
+ <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
+From:   Konstantin Svist <fry.kun@gmail.com>
+Message-ID: <544e3e73-5490-2cae-c889-88d80e583ac4@gmail.com>
+Date:   Tue, 10 Aug 2021 22:22:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809061244.1196573-12-hch@lst.de>
+In-Reply-To: <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 08:12:25AM +0200, Christoph Hellwig wrote:
-> The iomap_iter struct provides a convenient way to package up and
-> maintain all the arguments to the various mapping and operation
-> functions.  It is operated on using the iomap_iter() function that
-> is called in loop until the whole range has been processed.  Compared
-> to the existing iomap_apply() function this avoid an indirect call
-> for each iteration.
-> 
-> For now iomap_iter() calls back into the existing ->iomap_begin and
-> ->iomap_end methods, but in the future this could be further optimized
-> to avoid indirect calls entirely.
-> 
-> Based on an earlier patch from Matthew Wilcox <willy@infradead.org>.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/iomap/Makefile     |  1 +
->  fs/iomap/core.c       | 79 +++++++++++++++++++++++++++++++++++++++++++
->  fs/iomap/trace.h      | 37 +++++++++++++++++++-
->  include/linux/iomap.h | 56 ++++++++++++++++++++++++++++++
->  4 files changed, 172 insertions(+), 1 deletion(-)
->  create mode 100644 fs/iomap/core.c
-> 
-> diff --git a/fs/iomap/Makefile b/fs/iomap/Makefile
-> index eef2722d93a183..6b56b10ded347a 100644
-> --- a/fs/iomap/Makefile
-> +++ b/fs/iomap/Makefile
-> @@ -10,6 +10,7 @@ obj-$(CONFIG_FS_IOMAP)		+= iomap.o
->  
->  iomap-y				+= trace.o \
->  				   apply.o \
-> +				   core.o \
->  				   buffered-io.o \
->  				   direct-io.o \
->  				   fiemap.o \
-> diff --git a/fs/iomap/core.c b/fs/iomap/core.c
-> new file mode 100644
-> index 00000000000000..89a87a1654e8e6
-> --- /dev/null
-> +++ b/fs/iomap/core.c
-> @@ -0,0 +1,79 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 Christoph Hellwig.
-> + */
-> +#include <linux/fs.h>
-> +#include <linux/iomap.h>
-> +#include "trace.h"
-> +
-> +static inline int iomap_iter_advance(struct iomap_iter *iter)
-> +{
-> +	/* handle the previous iteration (if any) */
-> +	if (iter->iomap.length) {
-> +		if (iter->processed <= 0)
-> +			return iter->processed;
-> +		if (WARN_ON_ONCE(iter->processed > iomap_length(iter)))
-> +			return -EIO;
-> +		iter->pos += iter->processed;
-> +		iter->len -= iter->processed;
-> +		if (!iter->len)
-> +			return 0;
-> +	}
-> +
-> +	/* clear the state for the next iteration */
-> +	iter->processed = 0;
-> +	memset(&iter->iomap, 0, sizeof(iter->iomap));
-> +	memset(&iter->srcmap, 0, sizeof(iter->srcmap));
-> +	return 1;
-> +}
-> +
-> +static inline void iomap_iter_done(struct iomap_iter *iter)
+On 8/10/21 16:54, Qu Wenruo wrote:
+>
+>
+> On 2021/8/11 上午7:21, Konstantin Svist wrote:
+>> On 8/10/21 15:24, Qu Wenruo wrote:
+>>>
+>>> On 2021/8/11 上午12:12, Konstantin Svist wrote:
+>>>>
+>>>>>> I don't know how to do that (corrupt the extent tree)
+>>>>>
+>>>>> There is the more detailed version:
+>>>>> https://lore.kernel.org/linux-btrfs/744795fa-e45a-110a-103e-13caf597299a@gmx.com/
+>>>>>
+>>>>>
+>>>>
+>>>>
+>>>> So, here's what I get:
+>>>>
+>>>>
+>>>> # btrfs ins dump-tree -t root /dev/sdb3 |grep -A5 'item 0 key
+>>>> (EXTENT_TREE'
+>>>>
+>>>>       item 0 key (EXTENT_TREE ROOT_ITEM 0) itemoff 15844 itemsize 439
+>>>>           generation 166932 root_dirid 0 bytenr 786939904 level 2
+>>>> refs 1
+>>>>           lastsnap 0 byte_limit 0 bytes_used 50708480 flags 0x0(none)
+>>>>           uuid 00000000-0000-0000-0000-000000000000
+>>>>           drop key (0 UNKNOWN.0 0) level 0
+>>>>       item 1 key (DEV_TREE ROOT_ITEM 0) itemoff 15405 itemsize 439
+>>>>
+>>>>
+>>>> # btrfs-map-logical -l 786939904 /dev/sdb3
+>>>>
+>>>> checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
+>>>> checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
+>>>> checksum verify failed on 952483840 wanted 0x00000000 found 0xb6bde3e4
+>>>> bad tree block 952483840, bytenr mismatch, want=952483840, have=0
+>>>> ERROR: failed to read block groups: Input/output error
+>>>> Open ctree failed
+>>>>
+>>>>
+>>>>
+>>>> Sooooo.. now what..?
+>>>>
+>>> With v5.11 or newer kernel, mount it with "-o rescue=all,ro".
+>>
+>>
+>> Sorry, I guess that wasn't clear: that error above is what I get while
+>> trying to corrupt the extent tree as per your guide.
+>
+> Oh, that btrfs-map-logical is requiring unnecessary trees to continue.
+>
+> Can you re-compile btrfs-progs with the attached patch?
+> Then the re-compiled btrfs-map-logical should work without problem.
 
-I wonder why this is a separate function, since it only has debugging
-warnings and tracepoints?
 
-> +{
-> +	WARN_ON_ONCE(iter->iomap.offset > iter->pos);
-> +	WARN_ON_ONCE(iter->iomap.length == 0);
-> +	WARN_ON_ONCE(iter->iomap.offset + iter->iomap.length <= iter->pos);
-> +
-> +	trace_iomap_iter_dstmap(iter->inode, &iter->iomap);
-> +	if (iter->srcmap.type != IOMAP_HOLE)
-> +		trace_iomap_iter_srcmap(iter->inode, &iter->srcmap);
-> +}
-> +
-> +/**
-> + * iomap_iter - iterate over a ranges in a file
-> + * @iter: iteration structue
-> + * @ops: iomap ops provided by the file system
-> + *
-> + * Iterate over filesystem-provided space mappings for the provided file range.
-> + *
-> + * This function handles cleanup of resources acquired for iteration when the
-> + * filesystem indicates there are no more space mappings, which means that this
-> + * function must be called in a loop that continues as long it returns a
-> + * positive value.  If 0 or a negative value is returned, the caller must not
-> + * return to the loop body.  Within a loop body, there are two ways to break out
-> + * of the loop body:  leave @iter.processed unchanged, or set it to a negative
-> + * errno.
 
-Thanks for improving the documentation.
+Awesome, that worked to map the sector & mount the partition.. but I
+still can't access subvol_root, where the recent data is:
 
-Modulo the question about iomap_iter_done, I guess this looks all right
-to me.  As far as apply.c vs. core.c, I'm not wildly passionate about
-either naming choice (I would have called it iter.c) but ... fmeh.
+[root@fry ~]# mount -oro,rescue=all /dev/sdb3 /mnt/
+[root@fry ~]# ll /mnt/
+ls: cannot access '/mnt/subvol_root': Input/output error
+total 0
+d?????????? ? ?    ?     ?            ? subvol_root
+drwxr-xr-x. 1 root root 12 Mar 18 20:55 subvol_snapshots
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
---D
+dmesg:
 
-> + */
-> +int iomap_iter(struct iomap_iter *iter, const struct iomap_ops *ops)
-> +{
-> +	int ret;
-> +
-> +	if (iter->iomap.length && ops->iomap_end) {
-> +		ret = ops->iomap_end(iter->inode, iter->pos, iomap_length(iter),
-> +				iter->processed > 0 ? iter->processed : 0,
-> +				iter->flags, &iter->iomap);
-> +		if (ret < 0 && !iter->processed)
-> +			return ret;
-> +	}
-> +
-> +	trace_iomap_iter(iter, ops, _RET_IP_);
-> +	ret = iomap_iter_advance(iter);
-> +	if (ret <= 0)
-> +		return ret;
-> +
-> +	ret = ops->iomap_begin(iter->inode, iter->pos, iter->len, iter->flags,
-> +			       &iter->iomap, &iter->srcmap);
-> +	if (ret < 0)
-> +		return ret;
-> +	iomap_iter_done(iter);
-> +	return 1;
-> +}
-> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
-> index e9cd5cc0d6ba40..1012d7af6b689b 100644
-> --- a/fs/iomap/trace.h
-> +++ b/fs/iomap/trace.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->  /*
-> - * Copyright (c) 2009-2019 Christoph Hellwig
-> + * Copyright (c) 2009-2021 Christoph Hellwig
->   *
->   * NOTE: none of these tracepoints shall be considered a stable kernel ABI
->   * as they can change at any time.
-> @@ -140,6 +140,8 @@ DEFINE_EVENT(iomap_class, name,	\
->  	TP_ARGS(inode, iomap))
->  DEFINE_IOMAP_EVENT(iomap_apply_dstmap);
->  DEFINE_IOMAP_EVENT(iomap_apply_srcmap);
-> +DEFINE_IOMAP_EVENT(iomap_iter_dstmap);
-> +DEFINE_IOMAP_EVENT(iomap_iter_srcmap);
->  
->  TRACE_EVENT(iomap_apply,
->  	TP_PROTO(struct inode *inode, loff_t pos, loff_t length,
-> @@ -179,6 +181,39 @@ TRACE_EVENT(iomap_apply,
->  		   __entry->actor)
->  );
->  
-> +TRACE_EVENT(iomap_iter,
-> +	TP_PROTO(struct iomap_iter *iter, const void *ops,
-> +		 unsigned long caller),
-> +	TP_ARGS(iter, ops, caller),
-> +	TP_STRUCT__entry(
-> +		__field(dev_t, dev)
-> +		__field(u64, ino)
-> +		__field(loff_t, pos)
-> +		__field(loff_t, length)
-> +		__field(unsigned int, flags)
-> +		__field(const void *, ops)
-> +		__field(unsigned long, caller)
-> +	),
-> +	TP_fast_assign(
-> +		__entry->dev = iter->inode->i_sb->s_dev;
-> +		__entry->ino = iter->inode->i_ino;
-> +		__entry->pos = iter->pos;
-> +		__entry->length = iomap_length(iter);
-> +		__entry->flags = iter->flags;
-> +		__entry->ops = ops;
-> +		__entry->caller = caller;
-> +	),
-> +	TP_printk("dev %d:%d ino 0x%llx pos %lld length %lld flags %s (0x%x) ops %ps caller %pS",
-> +		  MAJOR(__entry->dev), MINOR(__entry->dev),
-> +		   __entry->ino,
-> +		   __entry->pos,
-> +		   __entry->length,
-> +		   __print_flags(__entry->flags, "|", IOMAP_FLAGS_STRINGS),
-> +		   __entry->flags,
-> +		   __entry->ops,
-> +		   (void *)__entry->caller)
-> +);
-> +
->  #endif /* _IOMAP_TRACE_H */
->  
->  #undef TRACE_INCLUDE_PATH
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 76bfc5d16ef49d..aac4176ea16439 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -161,6 +161,62 @@ struct iomap_ops {
->  			ssize_t written, unsigned flags, struct iomap *iomap);
->  };
->  
-> +/**
-> + * struct iomap_iter - Iterate through a range of a file
-> + * @inode: Set at the start of the iteration and should not change.
-> + * @pos: The current file position we are operating on.  It is updated by
-> + *	calls to iomap_iter().  Treat as read-only in the body.
-> + * @len: The remaining length of the file segment we're operating on.
-> + *	It is updated at the same time as @pos.
-> + * @processed: The number of bytes processed by the body in the most recent
-> + *	iteration, or a negative errno. 0 causes the iteration to stop.
-> + * @flags: Zero or more of the iomap_begin flags above.
-> + * @iomap: Map describing the I/O iteration
-> + * @srcmap: Source map for COW operations
-> + */
-> +struct iomap_iter {
-> +	struct inode *inode;
-> +	loff_t pos;
-> +	u64 len;
-> +	s64 processed;
-> +	unsigned flags;
-> +	struct iomap iomap;
-> +	struct iomap srcmap;
-> +};
-> +
-> +int iomap_iter(struct iomap_iter *iter, const struct iomap_ops *ops);
-> +
-> +/**
-> + * iomap_length - length of the current iomap iteration
-> + * @iter: iteration structure
-> + *
-> + * Returns the length that the operation applies to for the current iteration.
-> + */
-> +static inline u64 iomap_length(const struct iomap_iter *iter)
-> +{
-> +	u64 end = iter->iomap.offset + iter->iomap.length;
-> +
-> +	if (iter->srcmap.type != IOMAP_HOLE)
-> +		end = min(end, iter->srcmap.offset + iter->srcmap.length);
-> +	return min(iter->len, end - iter->pos);
-> +}
-> +
-> +/**
-> + * iomap_iter_srcmap - return the source map for the current iomap iteration
-> + * @i: iteration structure
-> + *
-> + * Write operations on file systems with reflink support might require a
-> + * source and a destination map.  This function retourns the source map
-> + * for a given operation, which may or may no be identical to the destination
-> + * map in &i->iomap.
-> + */
-> +static inline struct iomap *iomap_iter_srcmap(struct iomap_iter *i)
-> +{
-> +	if (i->srcmap.type != IOMAP_HOLE)
-> +		return &i->srcmap;
-> +	return &i->iomap;
-> +}
-> +
->  /*
->   * Main iomap iterator function.
->   */
-> -- 
-> 2.30.2
-> 
+[532051.071515] BTRFS info (device sdb3): enabling all of the rescue options
+[532051.071521] BTRFS info (device sdb3): ignoring data csums
+[532051.071523] BTRFS info (device sdb3): ignoring bad roots
+[532051.071524] BTRFS info (device sdb3): disabling log replay at mount time
+[532051.071526] BTRFS info (device sdb3): disk space caching is enabled
+[532051.071528] BTRFS info (device sdb3): has skinny extents
+[532051.077018] BTRFS warning (device sdb3): sdb3 checksum verify failed
+on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6 level 2
+[532051.077710] BTRFS warning (device sdb3): sdb3 checksum verify failed
+on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6 level 2
+[532052.705324] BTRFS error (device sdb3): bad tree block start, want
+920748032 have 0
+[532052.705934] BTRFS error (device sdb3): bad tree block start, want
+920748032 have 0
+
