@@ -2,162 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A864B3E9AC8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 00:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0D63E9AF4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 00:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhHKWNy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Aug 2021 18:13:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55910 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232226AbhHKWNy (ORCPT
+        id S232498AbhHKWe5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Aug 2021 18:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232434AbhHKWe5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Aug 2021 18:13:54 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C89C71FEF2;
-        Wed, 11 Aug 2021 22:13:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1628720008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FeGzUTvoCN8Wlt5hyL5qJ6Nm2upHl5bZr9FlYzW5TQ0=;
-        b=yIgC1og83IS8ikDuUa+qhuKWoRiaFZpJQmCJxxkDPM8DsMrrvq5GROc6puqtu3oDd3jOTq
-        DwVI/+GcUIDgt2Jfxdv8k904Utq59utZDQWjNG+amg5vxH2zsmMUVfk35LCfJyJFB8PEbU
-        eIDLG5MRhGprNTj4px4r0NpIl3c+TQ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1628720008;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FeGzUTvoCN8Wlt5hyL5qJ6Nm2upHl5bZr9FlYzW5TQ0=;
-        b=8W2baWzFIFgDvTP8YHv8VfmQD59nHIEjVMGlpp67VhTsoI5tbZnt9ZATQRtUnjXKW4mSse
-        tDnOxeGJjByd16DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EBC4A13AE6;
-        Wed, 11 Aug 2021 22:13:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id C9QcKoZLFGHxKwAAMHmgww
-        (envelope-from <neilb@suse.de>); Wed, 11 Aug 2021 22:13:26 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 11 Aug 2021 18:34:57 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E3FC061765
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Aug 2021 15:34:32 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso7497153pjb.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Aug 2021 15:34:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=blmY+Dlh1rVKvP9LoUByfTzlspf06JIp06Um7rPstFs=;
+        b=E2eXLhdsytp0tmpD+lZnGef/fmO2goKVJnymfLkPh1vE7rmme0ybAxYXOWre3zcyms
+         N0XAS5m467+TQ/tSUVmn4UQDPBi6kwjtbU2EAI0vDAH7Pt6pSCHV7p6W4/5Z6oEuA3AO
+         /d8AwBqItV4cNRGxVKcyogcF9DiX6wvtiaVHo6bjrCFIdfx+TzuqSbi2dCmnFrI+LhH1
+         7KlAJctYCJbS7VJAhV1PpJ8TvL7laugjjQOy8aZqD994AjqRoy3MoAWWav1MC4Yk4OwB
+         BzABbz57LEhITJH9oXS8Kctsx+hNjAy2F8R89jNCQjgbok/Fd0pC77IKcjqKf501K1pu
+         JDVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=blmY+Dlh1rVKvP9LoUByfTzlspf06JIp06Um7rPstFs=;
+        b=q/bGeIuN7kQYlMb0CxgtMQKFRokqBc6f3iGow6pLP7vsd+M0wUwyHnWKXJWmvYIbBG
+         S0SaEyGfze/Ej904R6KeUw0lSzOaBJmRU6PPVk5mOLEddEazvD+aQfoNEBsbHEGqa/y9
+         rP255TvJFzWWnfdcKAtvGd2V+VCIY4uEVDT1z6UqUtw2HuhOnJQRylsPXAtbd05jiirO
+         bz+dvR3sg4VG7jeTUHa0uqGNDAXs8FO5a1HxLy9Ls5hhbQOVLg8NWcQ6jsvYEkujnaDm
+         UbG98f9QrpsuwLEgXCqphprOux2c/pL3uNP6Ysak0+9Rf41ZZcz0BOvDta/H3Tn0Ltfb
+         hooA==
+X-Gm-Message-State: AOAM531QZ9rvIZ9igf+TYf4/nIVkCert7ojJrCkVaSyLJmMaK01/a9wL
+        7ddLJTW7yfVNptf5wPmZLPo=
+X-Google-Smtp-Source: ABdhPJzYKTDu4MzeJ1cc6DLG8Bn0YVyol+jDUmhEp93PeiKnPVaCRbprxEggkow7f6GiD+bX15mOEA==
+X-Received: by 2002:a17:902:ea02:b029:12c:916f:ff1f with SMTP id s2-20020a170902ea02b029012c916fff1fmr925213plg.45.1628721272184;
+        Wed, 11 Aug 2021 15:34:32 -0700 (PDT)
+Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
+        by smtp.gmail.com with ESMTPSA id n1sm604147pgt.63.2021.08.11.15.34.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Aug 2021 15:34:31 -0700 (PDT)
+Subject: Re: Trying to recover data from SSD
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
+ <46f3b990-ec2d-6508-249e-8954bf356e89@gmx.com>
+ <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
+ <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
+ <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
+ <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
+ <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
+ <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
+ <544e3e73-5490-2cae-c889-88d80e583ac4@gmail.com>
+ <c03628f0-585c-cfa8-5d80-bd1f1e4fb9c1@gmx.com>
+ <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
+ <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
+ <238d1f6c-20a9-f002-e03a-722175c63bd6@gmail.com>
+ <4bd90f4a-7ced-3477-f113-eee72bc05cbb@gmx.com>
+From:   Konstantin Svist <fry.kun@gmail.com>
+Message-ID: <fab2dab5-41bb-43f2-5396-451d66df3917@gmail.com>
+Date:   Wed, 11 Aug 2021 15:34:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Josef Bacik" <josef@toxicpanda.com>
-Cc:     "Chris Mason" <clm@fb.com>, "David Sterba" <dsterba@suse.com>,
-        linux-fsdevel@vger.kernel.org,
-        "Linux NFS list" <linux-nfs@vger.kernel.org>,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH/RFC 0/4] Attempt to make progress with btrfs dev number
- strangeness.
-In-reply-to: <e6496956-0df3-6232-eecb-5209b28ca790@toxicpanda.com>
-References: <162848123483.25823.15844774651164477866.stgit@noble.brown>,
- <e6496956-0df3-6232-eecb-5209b28ca790@toxicpanda.com>
-Date:   Thu, 12 Aug 2021 08:13:23 +1000
-Message-id: <162872000356.22261.854151210687377005@noble.neil.brown.name>
+In-Reply-To: <4bd90f4a-7ced-3477-f113-eee72bc05cbb@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 11 Aug 2021, Josef Bacik wrote:
->=20
-> I think this is a step in the right direction, but I want to figure out a w=
-ay to=20
-> accomplish this without magical mount points that users must be aware of.
+On 8/11/21 14:51, Qu Wenruo wrote:
+>
+>
+> On 2021/8/12 上午3:33, Konstantin Svist wrote:
+>> On 8/10/21 22:49, Qu Wenruo wrote:
+>>>
+>>>
+>>> On 2021/8/11 下午1:34, Konstantin Svist wrote:
+>>>> On 8/10/21 22:24, Qu Wenruo wrote:
+>>>>>
+>>>>>
+>>>>> On 2021/8/11 下午1:22, Konstantin Svist wrote:
+>>>>>> On 8/10/21 16:54, Qu Wenruo wrote:
+>>>>>>>
+>>>>>>> Oh, that btrfs-map-logical is requiring unnecessary trees to
+>>>>>>> continue.
+>>>>>>>
+>>>>>>> Can you re-compile btrfs-progs with the attached patch?
+>>>>>>> Then the re-compiled btrfs-map-logical should work without problem.
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> Awesome, that worked to map the sector & mount the partition.. but I
+>>>>>> still can't access subvol_root, where the recent data is:
+>>>>>
+>>>>> Is subvol_root a subvolume?
+>>>>>
+>>>>> If so, you can try to mount the subvolume using subvolume id.
+>>>>>
+>>>>> But in that case, it would be not much different than using
+>>>>> btrfs-restore with "-r" option.
+>>>>
+>>>>
+>>>> Yes it is.
+>>>>
+>>>> # mount -oro,rescue=all,subvol=subvol_root /dev/sdb3 /mnt/
+>>>> mount: /mnt: can't read superblock on /dev/sdb3.
+>>>
+>>> I mean using subvolid=<number>
+>>>
+>>> Using subvol= will still trigger the same path lookup code and get
+>>> aborted by the IO error.
+>>>
+>>> To get the number, I guess the regular tools are not helpful.
+>>>
+>>> You may want to manually exam the root tree:
+>>>
+>>> # btrfs ins dump-tree -t root <device>
+>>>
+>>> Then look for the keys like (<number> ROOT_ITEM <0 or number>), and try
+>>> passing the first number to "subvolid=" option.
+>>
+>> This works (and numbers seem to be the same as from dump-tree):
+>> # mount -oro,rescue=all /dev/sdb3 /mnt/
+>> # btrfs su li /mnt/
+>> ID 257 gen 166932 top level 5 path subvol_root
+>> ID 258 gen 56693 top level 5 path subvol_snapshots
+>> ID 498 gen 56479 top level 258 path subvol_snapshots/29/snapshot
+>> ID 499 gen 56642 top level 258 path subvol_snapshots/30/snapshot
+>> ID 500 gen 56691 top level 258 path subvol_snapshots/31/snapshot
+>>
+>> This also works (not what I want):
+>> # mount -oro,rescue=all,subvol=subvol_snapshots /dev/sdb3 /mnt/
+>>
+>>
+>> But this doesn't:
+>>
+>> # mount -oro,rescue=all,subvolid=257 /dev/sdb3 /mnt/
+>> mount: /mnt: can't read superblock on /dev/sdb3.
+>>
+>> dmesg:
+>> BTRFS error (device sdb3): bad tree block start, want 920748032 have 0
+>>
+>>
+> Then it means, the tree blocks of that subvolume is corrupted, thus no
+> way to read that subvolume, unfortunately.
+>
+> Thanks,
+> Qu
 
-magic mount *options* ???
 
->=20
-> I think the stat() st_dev ship as sailed, we're stuck with that.  However=20
-> Christoph does have a valid point where it breaks the various info spit out=
- by=20
-> /proc.  You've done a good job with the treeid here, but it still makes it =
+Shouldn't there be an earlier generation of this subvolume's tree block
+somewhere on the disk? Would all of them have gotten overwritten already?
 
-> impossible for somebody to map the st_dev back to the correct mount.
+Any hope for any individual files, if not for subvolume?
 
-The ship might have sailed, but it is not water tight.  And as the world
-it round, it can still come back to bite us from behind.
-Anything can be transitioned away from, whether it is devfs or 32-bit
-time or giving different device numbers to different file-trees.
 
-The linkage between device number and and filesystem is quite strong.
-We could modified all of /proc and /sys/ and audit and whatever else to
-report the fake device number, but we cannot get the fake device number
-into the mount table (without making the mount table unmanageablely
-large). =20
-And if subtrees aren't in the mount-table for the NFS server, I don't
-think they should be in the mount-table of the NFS client.  So we cannot
-export them to NFS.
 
-I understand your dislike for mount options.  An alternative with
-different costs and benefits would be to introduce a new filesystem type
-- btrfs2 or maybe betrfs.  This would provide numdevs=3D1 semantics and do
-whatever we decided was best with inode numbers.  How much would you
-hate that?
 
->=20
-> I think we aren't going to solve that problem, at least not with stat().  I=
-=20
-> think with statx() spitting out treeid we have given userspace a way to=20
-> differentiate subvolumes, and so we should fix statx() to spit out the the =
-super=20
-> block device, that way new userspace things can do their appropriate lookup=
- if=20
-> they so choose.
-
-I don't think we should normalize having multiple devnums per filesystem
-by encoding it in statx().  It *would* make sense to add a btrfs ioctl
-which reports the real device number of a file.  Tools that really need
-to work with btrfs could use that, but it would always be obvious that
-it was an exception.
-
->=20
-> This leaves the problem of nfsd.  Can you just integrate this new treeid in=
-to=20
-> nfsd, and use that to either change the ino within nfsd itself, or do somet=
-hing=20
-> similar to what your first patchset did and generate a fsid based on the tr=
-eeid?
-
-I would only want nfsd to change the inode number.  I no longer think it
-is acceptable for nfsd to report different device number (as I mention
-above).
-I would want the new inode number to be explicitly provided by the
-filesystem.  Whether that is a new export_operation or a new field in
-'struct kstat' doesn't really bother me.  I'd *prefer* it to be st_ino,
-but I can live without that.
-
-On the topic of inode numbers....  I've recently learned that btrfs
-never reuses inode (objectid) numbers (except possibly after an
-unmount).  Equally it doesn't re-use subvol numbers.  How much does this
-contribute to the 64 bits not being enough for subtree+inode?
-
-It would be nice if we could be comfortable limiting the objectid number
-to 40 bits and the root.objectid (filetree) number to 24 bits, and
-combine them into a 64bit inode number.
-
-If we added a inode number reuse scheme that was suitably performant,
-would that make this possible?  That would remove the need for a treeid,
-and allow us to use project-id to identify subtrees.
-
->=20
-> Mount options are messy, and are just going to lead to distro's turning the=
-m on=20
-> without understanding what's going on and then we have to support them fore=
-ver.=20
->   I want to get this fixed in a way that we all hate the least with as litt=
-le=20
-> opportunity for confused users to make bad decisions.  Thanks,
-
-Hence my question: how much do you hate creating a new filesystem type
-to fix the problems?
-
-Thanks,
-NeilBrown
