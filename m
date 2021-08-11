@@ -2,191 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119353E89DE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 07:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639E43E89E4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 07:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234325AbhHKFpe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Aug 2021 01:45:34 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33888 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234112AbhHKFpd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Aug 2021 01:45:33 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A55352200D
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Aug 2021 05:45:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628660709; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=XLK7v1D1tAK47kGiNJn5MJMU0v4ggYF5s2QtUJjS8jo=;
-        b=pvkaMyYnSlgZdnW05IlInEq0eKnV2NeB4JHoy1IvdnA9/ECcCmh8A0c8AQIWIe9qnoN5tC
-        J7i6LphXcUgwIz8+U0xK/R+4j89Rm/IVkFSi53/7omOQ+t+78sOJRDnuRU5c/3MAnidkhg
-        O69sUjInPkl0lgDFiBIthEwfDAfStGg=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C71DE137DA
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Aug 2021 05:45:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id ifspIORjE2FWTAAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Aug 2021 05:45:08 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [RFC PATCH] btrfs: prevent falloc to mix inline and regular extents
-Date:   Wed, 11 Aug 2021 13:45:05 +0800
-Message-Id: <20210811054505.186828-1-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
+        id S234112AbhHKFuE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Aug 2021 01:50:04 -0400
+Received: from mout.gmx.net ([212.227.15.15]:41709 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233651AbhHKFuC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Aug 2021 01:50:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628660971;
+        bh=F0IVwZXy3kFQp5MI5dTuF3wDhwB/l+O4WI8C6lnTgtg=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=HCQTcfrFziV5QOXoyCPbS2EnAcB/kZVS7kk16laTd5nmcDtNfPxn5UBChYg36hKeF
+         nDM/DBDXiLB+IKL6hoTZ75hixgSdoI70gB3EPAZczyVXCMnAdXpKM1CJBtaLZDt3nE
+         nG4gSsdG7toiC3p1ME9pxSm2LdvrHDoVTXMce6uQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMXQ5-1mVUx32Abv-00Jdca; Wed, 11
+ Aug 2021 07:49:31 +0200
+Subject: Re: Trying to recover data from SSD
+To:     Konstantin Svist <fry.kun@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
+ <46f3b990-ec2d-6508-249e-8954bf356e89@gmx.com>
+ <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
+ <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
+ <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
+ <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
+ <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
+ <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
+ <544e3e73-5490-2cae-c889-88d80e583ac4@gmail.com>
+ <c03628f0-585c-cfa8-5d80-bd1f1e4fb9c1@gmx.com>
+ <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
+Date:   Wed, 11 Aug 2021 13:49:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vdw7e03Jn4vb8ZhBxG0llBHNmTK+9ApjHFkvA2npfFNej7msDIm
+ y19Ru+FqDQCIQniLBg53MXVfXCCnk+nhb5qO75UPjqeSCNS4rg5+V3FNV3VfdL4i3DMd1iT
+ yKpQRHleN7tdc6ba0FpwBu7vkrZxAV4k7AHC7hyAFfXcD/fmwnHT3HXVJSvFAHLmQJAV/BS
+ IIC+MtB5xj+/t/APNvzuw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:w18WhfvwUO8=:7TRVrwTMDsvk2Crz9Bb+0z
+ /nwMMw8Ov2SsVqyeDYa2iS/AKtI47uxgpx/subrBmaMa2+YEKVP3MQ/kR++FAeaT7bt+f0KJO
+ niruqr7vYfwGcLRMHfmWL5Ne0ptonLDmZszPjn38fycXyeJIN5TqZPGi4je/nzpUp1fiR1oh9
+ XxqE+iq81MJ7X8nuf86w47QoVc0x6fqJrV8F3GPBENN8UjhHw4hJn3NWAvnY5B/fMyNDe1QeO
+ dZT+w3CNtPoMSoJGzUFCOOvGv68wJPClx16/an4+Mpo8orx3xqXWYoLi3NCr9yKaMGjHGfwUc
+ IldKS5+HjwwCRma39dbnFJTFRfuSJPPOnWtKERraVYPpW97wKRf1WMag3yjcPJAJmoZro4umQ
+ e28DkQbN+4tk4xKWN9zQ9UYVeuHdZArC7HBwplaOLOO2Sbaq0/+4MrEXQmOdE+xkzYiGdTYTL
+ sSU9Ytw/nnDqf3fEV3w68IBFgplzqW5FkXr5yXEIZ4u07nEVxsXlRGf4SqFIh2PUrVOvgUXHV
+ +ZYGEMSmBuP50aKE77klb+azgfDnBn8flNXG6AWEuDypYpmeO2cqHtMRkNnZlqCiRyXV3nGli
+ skIkpic0gm9cWNfD0BJ2Hjz/dWFYW9JbGqosZ+dH6SUqPAuNWN6/4dhLP2AEFiC1pH3DBM7f1
+ +0Zwqb4rx/MIoW1sNzVriSdOTF+uYX3aPS3VPWlwDbWP+xYpHnAe9eB+/B4S1UuDrSTkzYIyF
+ /NVJjBjfX7ZyobC6eY5bzMlLvAyQqwKH09KFaOLQjIMwN675V8jhQ/eMu8iXmJJtepOCglaly
+ vYWtisAkfBONeWpOHRQpDgdyxxl0StjfnL5TlE4lJu+nvot7kgtCSTgVwuLPre+LrOaoJ9Ig3
+ kDqckV32w5pHJXtqRhFdgaeLQpa1NmXY10eOKyc21iNSJ8cnzTV3dgUVNBtnUHCSPnzHXeEiG
+ dz5Iz79mRTRnWDcCBclMlUbe2MVZAs8n02VrK1YYUeiCf2A52IkNf9yuRHv1OzsSMRwFq2vXw
+ f2duYfWEubOQrsJexTQmMnXoKf4COFhj96IRn+JchzsRL3T7+UTncaWhj3ngRXY6lw4xqrqRD
+ 4hNH+mtVg6CfaNybczOUAc/Z2IgnxJsrF9+QaqiaGGdZ31l1iCqzASiww==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[PROBLEM]
-The following script can create a fs with mixed inline and regular
-extents:
 
- mkfs.btrfs -f -s 4k $dev
- mount $dev $mnt -o nospace_cache
 
- xfs_io -f -c "pwrite 0 1k" -c "sync" \
-	-c "falloc 0 4k" -c "pwrite 4k 4k" $mnt/file
- umount $mnt
+On 2021/8/11 =E4=B8=8B=E5=8D=881:34, Konstantin Svist wrote:
+> On 8/10/21 22:24, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/8/11 =E4=B8=8B=E5=8D=881:22, Konstantin Svist wrote:
+>>> On 8/10/21 16:54, Qu Wenruo wrote:
+>>>>
+>>>> Oh, that btrfs-map-logical is requiring unnecessary trees to continue=
+.
+>>>>
+>>>> Can you re-compile btrfs-progs with the attached patch?
+>>>> Then the re-compiled btrfs-map-logical should work without problem.
+>>>
+>>>
+>>>
+>>> Awesome, that worked to map the sector & mount the partition.. but I
+>>> still can't access subvol_root, where the recent data is:
+>>
+>> Is subvol_root a subvolume?
+>>
+>> If so, you can try to mount the subvolume using subvolume id.
+>>
+>> But in that case, it would be not much different than using
+>> btrfs-restore with "-r" option.
+>
+>
+> Yes it is.
+>
+> # mount -oro,rescue=3Dall,subvol=3Dsubvol_root /dev/sdb3 /mnt/
+> mount: /mnt: can't read superblock on /dev/sdb3.
 
-It will result the following file extents layout:
+I mean using subvolid=3D<number>
 
-        item 5 key (257 INODE_REF 256) itemoff 15869 itemsize 14
-                index 2 namelen 4 name: file
-        item 6 key (257 EXTENT_DATA 0) itemoff 14824 itemsize 1045
-                generation 8 type 0 (inline)
-                inline extent data size 1024 ram_bytes 1024 compression 0 (none)
-        item 7 key (257 EXTENT_DATA 4096) itemoff 14771 itemsize 53
-                generation 8 type 1 (regular)
-                extent data disk byte 13631488 nr 4096
-                extent data offset 0 nr 4096 ram 4096
-                extent compression 0 (none)
+Using subvol=3D will still trigger the same path lookup code and get
+aborted by the IO error.
 
-Which mixes inline and regular extents.
+To get the number, I guess the regular tools are not helpful.
 
-Without above falloc operation, we would get proper regular extent only
-layout.
+You may want to manually exam the root tree:
 
-[CAUSE]
-Normally we rely on btrfs_truncate_block() to convert the inline extent
-to regular extent.
+# btrfs ins dump-tree -t root <device>
 
-For example, if without falloc(), at the 2nd pwrite, we will call
-btrfs_truncate_block() to zero the tailing part of the inline extent,
-then at writeback time, we find the isize is larger than inline
-threshold and will not create inline extent, but write back the first
-sector as regular extent.
+Then look for the keys like (<number> ROOT_ITEM <0 or number>), and try
+passing the first number to "subvolid=3D" option.
 
-While in falloc, although we also call btrfs_truncate_block(), it's
-called before we enlarge the inode size.
+Thanks,
+Qu
 
-And we start writeback of the range immediately, with inode size
-unchanged.
-
-This means, we just re-create an inline extent inside btrfs_fallocate().
-
-[FIX]
-Only call btrfs_truncate_block() after we have updated inode size inside
-btrfs_fallocate().
-
-By this later writeback will properly writeback the first sector as
-regular extent.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Reason for RFC:
-
-There is a long existing discussion on whether we should allow mixing
-inline and regular extents.
-
-I totally understand the idea that mixing such extents won't cause
-anything wrong, the existing kernel can handle them pretty well, and no
-data corruption or whatever.
-
-But since it's really not that simple to create such mixed extents
-(except the method mentioned above), I really don't believe that's the
-expected behavior.
-
-Thus even it's not a big deal, I still want to prevent such mixed
-extents.
----
- fs/btrfs/file.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 7ff577005d0f..a09cf02537b4 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3325,6 +3325,7 @@ static long btrfs_fallocate(struct file *file, int mode,
- 	struct falloc_range *range;
- 	struct falloc_range *tmp;
- 	struct list_head reserve_list;
-+	u64 old_isize;
- 	u64 cur_offset;
- 	u64 last_byte;
- 	u64 alloc_start;
-@@ -3365,6 +3366,7 @@ static long btrfs_fallocate(struct file *file, int mode,
- 	}
- 
- 	btrfs_inode_lock(inode, BTRFS_ILOCK_MMAP);
-+	old_isize = i_size_read(inode);
- 
- 	if (!(mode & FALLOC_FL_KEEP_SIZE) && offset + len > inode->i_size) {
- 		ret = inode_newsize_ok(inode, offset + len);
-@@ -3373,7 +3375,7 @@ static long btrfs_fallocate(struct file *file, int mode,
- 	}
- 
- 	/*
--	 * TODO: Move these two operations after we have checked
-+	 * TODO: Move this operation after we have checked
- 	 * accurate reserved space, or fallocate can still fail but
- 	 * with page truncated or size expanded.
- 	 *
-@@ -3384,15 +3386,6 @@ static long btrfs_fallocate(struct file *file, int mode,
- 					alloc_start);
- 		if (ret)
- 			goto out;
--	} else if (offset + len > inode->i_size) {
--		/*
--		 * If we are fallocating from the end of the file onward we
--		 * need to zero out the end of the block if i_size lands in the
--		 * middle of a block.
--		 */
--		ret = btrfs_truncate_block(BTRFS_I(inode), inode->i_size, 0, 0);
--		if (ret)
--			goto out;
- 	}
- 
- 	/*
-@@ -3515,6 +3508,18 @@ static long btrfs_fallocate(struct file *file, int mode,
- out_unlock:
- 	unlock_extent_cached(&BTRFS_I(inode)->io_tree, alloc_start, locked_end,
- 			     &cached_state);
-+
-+	/*
-+	 * If we are fallocating from the end of the file onward we
-+	 * need to zero out the end of the block if i_size lands in the
-+	 * middle of a block.
-+	 *
-+	 * This needs to be done after isize update, or the truncated sector
-+	 * will still be written back as inline extent, resulting mixing
-+	 * inline and regular extents.
-+	 */
-+	if (!ret && offset + len > old_isize)
-+		ret = btrfs_truncate_block(BTRFS_I(inode), old_isize, 0, 0);
- out:
- 	btrfs_inode_unlock(inode, BTRFS_ILOCK_MMAP);
- 	/* Let go of our reservation. */
--- 
-2.32.0
-
+>
+> dmesg has the same errors, though..
+>
+> Anything else I can do?
+>
