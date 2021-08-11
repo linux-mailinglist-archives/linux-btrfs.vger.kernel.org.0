@@ -2,150 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247883E98D1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 21:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C6C3E995C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 22:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhHKTeS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Aug 2021 15:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
+        id S230270AbhHKUIC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Aug 2021 16:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbhHKTeR (ORCPT
+        with ESMTP id S229655AbhHKUIC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Aug 2021 15:34:17 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754FBC061765
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Aug 2021 12:33:53 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e15so4022524plh.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Aug 2021 12:33:53 -0700 (PDT)
+        Wed, 11 Aug 2021 16:08:02 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189F3C061765;
+        Wed, 11 Aug 2021 13:07:38 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id c24so8272362lfi.11;
+        Wed, 11 Aug 2021 13:07:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=sPGbDLhnQPtHq95uClk/vh7MWjxsqjWIqRO1dKdc54o=;
-        b=FCqLJQVFuOvxa+8NvSR4iwIxFeWueUgBIZsiX79LRdSp9lHuuISIjcm6wtK64io7KQ
-         wDSqnGbLK3JK7Od1AXrtgmN9u9jgB2/FhXFe0kenhphD0BLVVo6SmvOxJmwq9ZXEZUq5
-         e/GRaNEKu66lfY+93Tg421DExK/nLkFZA+rWvwUu8FkiNBSiF3gt55OWODrcWaFv2Bzw
-         zGmDukiy+TowbpQPUPMoNtfWiyd9j5Xk1nihf2EKpq9TyF5qRq5VfF/o32N9xpjyPAga
-         shzycvZA3rLsQASyGe8AFwFb6lmHS9gPs+A9KIveWCCALM/mk3K+x9qUfGWUfF7Qwv5n
-         j0Ag==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6x/Ii2bZE05v6ZuwKQcPDMHG6HP7Qj7fPV8rl2juls0=;
+        b=LkdVKZdciMSClp8si2q44wywjxt8r3IN6TppA4H2TIPu+0+91MXgkz7z1e2+cYx5bI
+         FFl24k22TB9SAb1U6LpW3yIVJMqKxbb+iuhqE0nuiyu34CH/K+GttoXzqCcEItavH5Es
+         onq/90eG/hFmvZr+r3t0FtWJEQmNb4ojZxADmVa2jb3HNeklXwxjMFJ1E1dK0TbVBQSI
+         p8wOruNV8Cik61hmh2G77K9c0671XGyJaRyHTrmF9QuoyEG6l1xhGQU38I0tekpQIHZF
+         7b5EArW/vmqy67abzu1C8OKde7KDB6QUiDyCnNx+uLPq0NJT3YsZ1TBBj+Pl+HY2uZn5
+         4KIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=sPGbDLhnQPtHq95uClk/vh7MWjxsqjWIqRO1dKdc54o=;
-        b=RGJC4xpF3uA3DyYyT+cCJEh44/9UszscqDzQTj3gBnOTua/QuorXIXDQPcgt6LasqG
-         cVGZ6Nans3Cn7fyphWHJ2tCXUXV6D+GLXu9GkDEGRWyNf2WWhXsqCpHB2sYOpu9z9vJy
-         bng9Orxpw0OYSVn4iCRFWJPwJSD6/6tl+HEz8eV3SdzQshhp3lknIGImdVydrj5Cl5TI
-         NAgbqSpBqWaUNRvstSkEyEKie//XrF5JoQDFXQJl/eswIQunC0bc6UdrCndKe4MhWfHQ
-         0OOzGQZT3iSNc01S0xuRdLoKCDJx6iy4WExVVvP1isobdAnrW0cZW/hqB42zjG46a6MB
-         3fZA==
-X-Gm-Message-State: AOAM533WX3fzjHMUM0BtvHsslB7TktBA7lhLxVKRY8a38vmtikh2YEOV
-        Y7kCrMhHQE+NRzm/b7612vA=
-X-Google-Smtp-Source: ABdhPJytuuGzNkFAGkfNW+NrG0pEKwzUoKzuL0I5v3LxlM/+NHfVgKhBSnFUM/gbnGkVN4wKcQJvqw==
-X-Received: by 2002:a63:496:: with SMTP id 144mr272537pge.353.1628710432857;
-        Wed, 11 Aug 2021 12:33:52 -0700 (PDT)
-Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
-        by smtp.gmail.com with ESMTPSA id 23sm254477pgk.89.2021.08.11.12.33.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Aug 2021 12:33:52 -0700 (PDT)
-Subject: Re: Trying to recover data from SSD
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
- <46f3b990-ec2d-6508-249e-8954bf356e89@gmx.com>
- <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
- <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
- <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
- <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
- <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
- <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
- <544e3e73-5490-2cae-c889-88d80e583ac4@gmail.com>
- <c03628f0-585c-cfa8-5d80-bd1f1e4fb9c1@gmx.com>
- <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
- <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
-From:   Konstantin Svist <fry.kun@gmail.com>
-Message-ID: <238d1f6c-20a9-f002-e03a-722175c63bd6@gmail.com>
-Date:   Wed, 11 Aug 2021 12:33:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6x/Ii2bZE05v6ZuwKQcPDMHG6HP7Qj7fPV8rl2juls0=;
+        b=YGJCJl77edHkEji32purXXXhxCCNwM9hXmS33Dh+EknO57S8dIAfQE6Fm/+NXOgITA
+         1cHd31OBahmMSJ1Jnz2SCHzB6UH1QGMWFHh9wbwi+OcZEHoM1JMvHvUInidNA0p61vLZ
+         BTeyh4ZfmFDWzIHYKI9aB7o4QF3CgQvvF7gG39B4OucR63fcvoAOg+4BWYDKq4P8a5rg
+         iQh3lueZ+2VvoM4wcIsSkuqnv8ZO/spPQCAJpsEpJQriwDfhMExBFL2tnYLy5Dunr9jl
+         XyKfCrcVY15XEaHuZH7gimJmuiGvQKTLP8X8RcMoi/zWudMjmgY/E5gjgdfT2EorZdOb
+         w9IA==
+X-Gm-Message-State: AOAM532klzV8WvmEdHD3mCfPix6Bh2YTyhf2G84uFVn89vwfWKoNu+FJ
+        HbzY1orZbaXpt1AOYWgsIPkxc5O69c52KvS3S9U=
+X-Google-Smtp-Source: ABdhPJy2RDrh2NEyZNAkYxs6FdawzbOZTa+AN1/da3WGSDF8im1sQA9aDuHZYtgmT0LRESl9xE9jAQ==
+X-Received: by 2002:a05:6512:3f90:: with SMTP id x16mr374331lfa.518.1628712456173;
+        Wed, 11 Aug 2021 13:07:36 -0700 (PDT)
+Received: from localhost.localdomain ([46.109.162.86])
+        by smtp.gmail.com with ESMTPSA id u9sm32038lfc.278.2021.08.11.13.07.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Aug 2021 13:07:35 -0700 (PDT)
+From:   =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?D=C4=81vis=20Mos=C4=81ns?= <davispuh@gmail.com>
+Subject: [PATCH] btrfs: Allow read-only mount with corrupted extent tree
+Date:   Wed, 11 Aug 2021 23:07:17 +0300
+Message-Id: <20210811200717.48344-1-davispuh@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/10/21 22:49, Qu Wenruo wrote:
->
->
-> On 2021/8/11 下午1:34, Konstantin Svist wrote:
->> On 8/10/21 22:24, Qu Wenruo wrote:
->>>
->>>
->>> On 2021/8/11 下午1:22, Konstantin Svist wrote:
->>>> On 8/10/21 16:54, Qu Wenruo wrote:
->>>>>
->>>>> Oh, that btrfs-map-logical is requiring unnecessary trees to
->>>>> continue.
->>>>>
->>>>> Can you re-compile btrfs-progs with the attached patch?
->>>>> Then the re-compiled btrfs-map-logical should work without problem.
->>>>
->>>>
->>>>
->>>> Awesome, that worked to map the sector & mount the partition.. but I
->>>> still can't access subvol_root, where the recent data is:
->>>
->>> Is subvol_root a subvolume?
->>>
->>> If so, you can try to mount the subvolume using subvolume id.
->>>
->>> But in that case, it would be not much different than using
->>> btrfs-restore with "-r" option.
->>
->>
->> Yes it is.
->>
->> # mount -oro,rescue=all,subvol=subvol_root /dev/sdb3 /mnt/
->> mount: /mnt: can't read superblock on /dev/sdb3.
->
-> I mean using subvolid=<number>
->
-> Using subvol= will still trigger the same path lookup code and get
-> aborted by the IO error.
->
-> To get the number, I guess the regular tools are not helpful.
->
-> You may want to manually exam the root tree:
->
-> # btrfs ins dump-tree -t root <device>
->
-> Then look for the keys like (<number> ROOT_ITEM <0 or number>), and try
-> passing the first number to "subvolid=" option. 
+Currently if there's any corruption at all in extent tree
+(eg. even single bit) then mounting will fail with:
+"failed to read block groups: -5" (-EIO)
+It happens because we immediately abort on first error when
+searching in extent tree for block groups.
 
-This works (and numbers seem to be the same as from dump-tree):
-# mount -oro,rescue=all /dev/sdb3 /mnt/
-# btrfs su li /mnt/
-ID 257 gen 166932 top level 5 path subvol_root
-ID 258 gen 56693 top level 5 path subvol_snapshots
-ID 498 gen 56479 top level 258 path subvol_snapshots/29/snapshot
-ID 499 gen 56642 top level 258 path subvol_snapshots/30/snapshot
-ID 500 gen 56691 top level 258 path subvol_snapshots/31/snapshot
+Now with this patch if `ignorebadroots` option is specified
+then we handle such case and continue by removing already
+created block groups and creating dummy block groups.
 
-This also works (not what I want):
-# mount -oro,rescue=all,subvol=subvol_snapshots /dev/sdb3 /mnt/
+Signed-off-by: Dāvis Mosāns <davispuh@gmail.com>
+---
+ fs/btrfs/block-group.c | 20 ++++++++++++++++++++
+ fs/btrfs/disk-io.c     |  4 ++--
+ fs/btrfs/disk-io.h     |  2 ++
+ 3 files changed, 24 insertions(+), 2 deletions(-)
 
-
-But this doesn't:
-
-# mount -oro,rescue=all,subvolid=257 /dev/sdb3 /mnt/
-mount: /mnt: can't read superblock on /dev/sdb3.
-
-dmesg:
-BTRFS error (device sdb3): bad tree block start, want 920748032 have 0
-
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 9e7d9d0c763d..80b9bb9afb8c 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2212,6 +2212,26 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+ 	ret = check_chunk_block_group_mappings(info);
+ error:
+ 	btrfs_free_path(path);
++
++	if (ret == -EIO && btrfs_test_opt(info, IGNOREBADROOTS)) {
++
++		if (btrfs_super_log_root(info->super_copy) != 0) {
++			btrfs_warn(info, "Ignoring tree-log replay due to extent tree corruption!");
++			btrfs_set_super_log_root(info->super_copy, 0);
++		}
++
++		btrfs_put_block_group_cache(info);
++		btrfs_stop_all_workers(info);
++		btrfs_free_block_groups(info);
++		ret = btrfs_init_workqueues(info, NULL);
++		if (ret)
++			return ret;
++		ret = btrfs_init_space_info(info);
++		if (ret)
++			return ret;
++		return fill_dummy_bgs(info);
++	}
++
+ 	return ret;
+ }
+ 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index a59ab7b9aea0..b1ad9c85d578 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2115,7 +2115,7 @@ static int read_backup_root(struct btrfs_fs_info *fs_info, u8 priority)
+ }
+ 
+ /* helper to cleanup workers */
+-static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
++void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+ {
+ 	btrfs_destroy_workqueue(fs_info->fixup_workers);
+ 	btrfs_destroy_workqueue(fs_info->delalloc_workers);
+@@ -2283,7 +2283,7 @@ static void btrfs_init_qgroup(struct btrfs_fs_info *fs_info)
+ 	mutex_init(&fs_info->qgroup_rescan_lock);
+ }
+ 
+-static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
++int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+ 		struct btrfs_fs_devices *fs_devices)
+ {
+ 	u32 max_active = fs_info->thread_pool_size;
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 0e7e9526b6a8..41348c8d3f9a 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -139,6 +139,8 @@ int btrfs_get_free_objectid(struct btrfs_root *root, u64 *objectid);
+ int btrfs_init_root_free_objectid(struct btrfs_root *root);
+ int __init btrfs_end_io_wq_init(void);
+ void __cold btrfs_end_io_wq_exit(void);
++void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info);
++int btrfs_init_workqueues(struct btrfs_fs_info *fs_info, struct btrfs_fs_devices *fs_devices);
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ void btrfs_set_buffer_lockdep_class(u64 objectid,
+-- 
+2.32.0
 
