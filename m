@@ -2,93 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556173E9392
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 16:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539CA3E93EE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 16:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbhHKOVf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Aug 2021 10:21:35 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:64262 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbhHKOV2 (ORCPT
+        id S232662AbhHKOtm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Aug 2021 10:49:42 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41352 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232645AbhHKOtm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Aug 2021 10:21:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1628691664; x=1660227664;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=IXGcHTvcO8/97MMlcg6RC9p5lmMrS0EvWusxl5o2mPo=;
-  b=RodUagJlVrx5D5cENy9LMEp7YcQYsAkVx6eQMN2Qq2zS7oTrUGk/q7TL
-   KK3Z83V06CbaC7n4QcLyQmRKt3xFVXckSrIhJe7jcMnZAKnfgcRim9qrG
-   kADk/IRR5IN+NgUJTFIUJOnJ1aAzp8jMJa1Bc5tJOfIhPuA2Nr0RjIygA
-   AdUDy9YgC9Bp50ZmWN+6U7gUcTMakMiLqKngrMphSRk5VYm1JthFhLuR8
-   WFj5iV/JW+9T8Gy19U/wxLWhCdAoCc2uVMn+3pWwRm+NBmpwjhCRmZCF/
-   7NkULO3t9wISaY+PpTH6pHNWZdpsd3x6ocpijv8erZuZ3HXk6DmPgJ4QD
-   A==;
-X-IronPort-AV: E=Sophos;i="5.84,313,1620662400"; 
-   d="scan'208";a="288506686"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Aug 2021 22:21:04 +0800
-IronPort-SDR: zqmdcPOKnagUIrzbkniSCvNZlmsYy4dfopJ4NR7duF50Nc+CKa9j0lP6U19p+jqsFjHXgpN3r4
- 9y9+y/ujeNCtBg/hux2EVbzE9aLsHg4BZhrN7p27JqsPV21tuIQBHqkSm58iOurGbBBegSCdPT
- 8iM1faf480dXc8jJBxvXNY/deiECmh9ntaKQOJxyW3x90m7Mq2mAV/y4nIDQpDV+rBm3etp4PY
- /ciG3SqAG7OFnYByH4L46naXm0zLgiIxlLGWeqwuYkGIL8/hBMwZ86qjqJEx60iHJ7ZHU2Q3Xs
- m8VuIlq7wVfm6mMMSrz0MGBl
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 06:56:34 -0700
-IronPort-SDR: sdwbAEqzWLXkmuiau7TrmMwCpVKn+Cjb1m+gdUymCvtVQ4XURUhIzf8rCQnbtmMjBj5u5NGNtA
- IL5svIeUsKEmABwqOh1o6ZFwXNm+VuqR/LmLcb5ZlrGBo3W1PCocgUQR3PcPWgPI6cgYt7yYNc
- RTpuxF4xtjeYUOWrlEgatE0hF5/U5v6gZyF33ndNPSVelM1+yUt4B29Eck6NPAMmucJRckFBUn
- 1Ioa72zEtz2/hzmDlku1STj5coW+/+FLr+LFj7Frk/jQXvugY45slIagCDYyLwTPKzKT9cPRyO
- qy8=
-WDCIronportException: Internal
-Received: from ffs5zf2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.58.251])
-  by uls-op-cesaip01.wdc.com with ESMTP; 11 Aug 2021 07:21:03 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 17/17] btrfs: zoned: finish relocating block group
-Date:   Wed, 11 Aug 2021 23:16:41 +0900
-Message-Id: <0abc5803aae3b4be8fdb3c74d7c4e9b4199b0257.1628690222.git.naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1628690222.git.naohiro.aota@wdc.com>
-References: <cover.1628690222.git.naohiro.aota@wdc.com>
+        Wed, 11 Aug 2021 10:49:42 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9388120189;
+        Wed, 11 Aug 2021 14:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628693357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=eqY6iEglgQKmW4WY04TNf7fYzVRF44pB9MgLhUXwE9k=;
+        b=QhdWTThqft6WvgeE7Z754bsdGioImyDsueW09ED4BWvwUQD+WS5moRDXLHlMTyD/tATZ65
+        ZR3B5JEMv/AUIpoqj5wQG+ahCsFiVljSzW3TNr4BtBVhlAUQ5a5tmlYwjxDyrSV17F9pnK
+        BQA5KJjAkZOwyo5znmqqHUDJIfG5+24=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E8BE13C17;
+        Wed, 11 Aug 2021 14:49:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id j4/ZFGvjE2ErSAAAMHmgww
+        (envelope-from <mpdesouza@suse.com>); Wed, 11 Aug 2021 14:49:15 +0000
+From:   Marcos Paulo de Souza <mpdesouza@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Cc:     dsterba@suse.com, guaneryu@gmail.com, wqu@suse.com,
+        Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCH v3] btrfs/177: Add filesystem resize filter
+Date:   Wed, 11 Aug 2021 11:49:03 -0300
+Message-Id: <20210811144903.1425-1-mpdesouza@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We will no longer write to a relocating block group. So, we can finish it
-now.
+Commit 78aa1d95dd99 ("btrfs-progs: fi resize: make output more
+readable") added the device id of the resized fs along with a pretty
+printed size. Create a new filter to simplify the output message using
+size in bytes.
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 ---
- fs/btrfs/relocation.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 914d403b4415..63d2b22cf438 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -25,6 +25,7 @@
- #include "backref.h"
- #include "misc.h"
- #include "subpage.h"
-+#include "zoned.h"
+ Changes since v2:
+ * Check the output to verify if the resize really happened (Qu)
+
+ Changes since v1:
+ * Do not adapt the output message to the newer format (Qu)
+
+ common/filter.btrfs | 24 ++++++++++++++++++++++++
+ tests/btrfs/177     |  8 +++++---
+ tests/btrfs/177.out |  4 ++--
+ 3 files changed, 31 insertions(+), 5 deletions(-)
+
+diff --git a/common/filter.btrfs b/common/filter.btrfs
+index d4169cc6..fd422e08 100644
+--- a/common/filter.btrfs
++++ b/common/filter.btrfs
+@@ -72,6 +72,30 @@ _filter_btrfs_compress_property()
+ 	sed -e "s/compression=\(lzo\|zlib\|zstd\)/COMPRESSION=XXX/g"
+ }
  
- /*
-  * Relocation overview
-@@ -4063,6 +4064,9 @@ int btrfs_relocate_block_group(struct btrfs_fs_info *fs_info, u64 group_start)
- 				 rc->block_group->start,
- 				 rc->block_group->length);
- 
-+	ret = btrfs_zone_finish(rc->block_group);
-+	WARN_ON(ret && ret != -EAGAIN);
++# Eliminate the differences between the old and new output formats
++# Old format:
++# 	Resize 'SCRATCH_MNT' of '1073741824'
++# New format:
++# 	Resize device id 1 (SCRATCH_DEV) from 3.00GiB to 1.00GiB
++# Convert both outputs to:
++# 	Resized to 1073741824
++_filter_btrfs_filesystem_resize()
++{
++        local _field
++        local _val
++        local _suffix
++        _field=`$AWK_PROG '{print $NF}' | tr -d "'"`
++        # remove trailing zeroes
++        _val=`echo $_field | $AWK_PROG '{print $1 * 1}'`
++        # get the first unit char, for example return G in case we have GiB
++        _suffix=`echo $_field | grep -o "[GMB]"`
++        if [ -z "$_suffix" ]; then
++                _suffix="B"
++        fi
++        _val=`echo "$_val$_suffix" | _filter_size_to_bytes`
++	echo "Resized to $_val"
++}
 +
- 	while (1) {
- 		int finishes_stage;
+ # filter error messages from btrfs prop, optionally verify against $1
+ # recognized message(s):
+ #  "object is not compatible with property: label"
+diff --git a/tests/btrfs/177 b/tests/btrfs/177
+index 966d29d7..ff241bed 100755
+--- a/tests/btrfs/177
++++ b/tests/btrfs/177
+@@ -10,6 +10,7 @@
+ _begin_fstest auto quick swap balance
  
+ . ./common/filter
++. ./common/filter.btrfs
+ . ./common/btrfs
+ 
+ # Modify as appropriate.
+@@ -36,8 +37,8 @@ dd if=/dev/zero of="$SCRATCH_MNT/refill" bs=4096 >> $seqres.full 2>&1
+ # Now add more space and create a swap file. We know that the first $fssize
+ # of the filesystem was used, so the swap file must be in the new part of the
+ # filesystem.
+-$BTRFS_UTIL_PROG filesystem resize $((3 * fssize)) "$SCRATCH_MNT" | \
+-							_filter_scratch
++$BTRFS_UTIL_PROG filesystem resize $((3 * fssize)) "$SCRATCH_MNT" |
++						_filter_btrfs_filesystem_resize
+ _format_swapfile "$swapfile" $((32 * 1024 * 1024))
+ swapon "$swapfile"
+ 
+@@ -55,7 +56,8 @@ $BTRFS_UTIL_PROG filesystem resize 1G "$SCRATCH_MNT" 2>&1 | grep -o "Text file b
+ swapoff "$swapfile"
+ 
+ # It should work again after swapoff.
+-$BTRFS_UTIL_PROG filesystem resize $fssize "$SCRATCH_MNT" | _filter_scratch
++$BTRFS_UTIL_PROG filesystem resize $fssize "$SCRATCH_MNT" |
++						_filter_btrfs_filesystem_resize
+ 
+ status=0
+ exit
+diff --git a/tests/btrfs/177.out b/tests/btrfs/177.out
+index 63aca0e5..eb374d34 100644
+--- a/tests/btrfs/177.out
++++ b/tests/btrfs/177.out
+@@ -1,4 +1,4 @@
+ QA output created by 177
+-Resize 'SCRATCH_MNT' of '3221225472'
++Resized to 3221225472
+ Text file busy
+-Resize 'SCRATCH_MNT' of '1073741824'
++Resized to 1073741824
 -- 
-2.32.0
+2.31.1
 
