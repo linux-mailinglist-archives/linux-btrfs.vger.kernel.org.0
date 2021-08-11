@@ -2,127 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0601E3E9450
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 17:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8363E944F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 17:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhHKPNW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S232910AbhHKPNW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 11 Aug 2021 11:13:22 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:39981 "EHLO
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:39984 "EHLO
         esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232960AbhHKPNT (ORCPT
+        with ESMTP id S232909AbhHKPNV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Aug 2021 11:13:19 -0400
+        Wed, 11 Aug 2021 11:13:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1628694774; x=1660230774;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=UAJxyvk/jy+U6vgpw3DQptAkGFjcE3AVUBJ403T3DzA=;
-  b=gOfVUaU7sDvlXKoQc74Go1d/53BoVio5+ClwQHFTiYMciQhUD9CvEfWC
-   5ZAGVLCc8TGe6rJBulTtyimjxpfuB6lb+sTn6nEEbmExiBwBlIHT8zkEQ
-   w4hqALv1ZEEtXqzGu1tT1P2e87dghPgiiOOk5Y+sbfYHrL46yoQt5xr2t
-   TYnnXGuEtOzbFhBdy9xdjZU6dvaiX1kS4Bhm/cOb7duM3vSzVIaFbTYqf
-   yxTks3VjIx5c4MoyozPWpNClPPNfGOiT6Q6hpZWPb9AXF/ZGyGL8tEDm+
-   NfOgkD1AWdDzFiVzT+IWyMhHhw9qDPtqSoKpXPitBiQtb9c6p4iZ97X+l
-   Q==;
+  t=1628694776; x=1660230776;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Jp04U75vX5scCP7VtbLDhOyHbGzvl6TPnQ5nIrQ4LRs=;
+  b=lWLveeOw4bII3HXMCNqV3i/0GGIzu5eUIjyPmMY+GKTkVPn2l0W9GG3W
+   ovmHZSWZRLFqf5HuEVd3z+0NUdKX8fF4vfDK3YXLEuRUl5Pp9LlUMP0UF
+   6RUHuMyesmwjj3rbAoNLbTJq8NuEE1ga9a3KbURylE7nA9gUxEu62BtOA
+   GnpzvUOt7fTRwSrYKQRpa8yLsBmF+8Y9sxVUs47GiILnvfbfl2wTadEsJ
+   ailzJM86ULvHOjS94R3bxWhIlG3QAy8WGT//lMpgSYPkNEV0HXEVfRtHp
+   xGD+06Bbo82RIpMtazeO9MZ3XLT9PUPOInubX7OSd3DahI3VuxcoqmTnC
+   A==;
 X-IronPort-AV: E=Sophos;i="5.84,313,1620662400"; 
-   d="scan'208";a="176942551"
+   d="scan'208";a="176942555"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Aug 2021 23:12:54 +0800
-IronPort-SDR: EvesHUStSv9OLA3+4p02blHZQkc5h3NMTwn5Ti9kCQnXHsv1qpcyA/JHg+qfKHx1kmOnu3G+Ca
- Ninx664ry+olBElxvj4qm+T/jM0umhpoHFZRkjeK70ah4qzoDZnSJCDtLY5QrDMIA4L/92I80C
- jDBA/Zil0yN+JcN2BZARG7NqWJegDDKSJj1NHOMWwpDEWsWZRLha92SBSeJdMB4oUvkPNs0o+e
- baFd5bn+JDIqVWM3i5liPjvahfSc4y9lXrtESdvNdNa1gyRtc3tCqDUxSdVgjsZN096PFOCtWt
- N4Oa0DvtiL41Vs6OAwxsjo+f
+  by ob1.hgst.iphmx.com with ESMTP; 11 Aug 2021 23:12:55 +0800
+IronPort-SDR: VRcyhJFYE7Ivu7G4n269fU1q/837lGy9EQTxb0KNxVAF1tLbOsBSzI8Ex+xyQ1oZl17fv1S4p6
+ W78Of475Nmk90/25eYHGLg6j/TkpwCFbnS7QFqfFWErn2JuZb9XiFeSwbFfYR/rks0bBAUXwkA
+ eQwCXDj8tVPMgVvoaWQc5kxsZzl6/5C/wHvD+PnUYpATEgmC/xcX6gRebu08FXgmMFKUYCcSnH
+ Zw5P84Sxwncb4GOdo2+rvoEqn4A5s602z4uO5WuaytDYvVElxYlcyCWrS8nh2APrfmNxy0g4no
+ dy9eu5VpeIwxtit9Zy6AqODc
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 07:48:25 -0700
-IronPort-SDR: YZ54i88+8kiEu1mERhg1SMY/BEYy5jZ3Z/ESME6cIi9tBGjgsj5OxHVXzzoH/M9bkDI0VdQkxM
- /FgS/n7yF2trvaHKKJxaE0oxVrl8B/57fPfKkNK650s4OOWt7U9KtReUCP+l/sW4s75A3x1xV1
- 6tjOO5q1ekfT4xYBvxwUm9zOEM45u+ImSYKiYmwef5LHg/62v+UoToVJcOTdimnu3+J7QqbwMu
- VFOK7PVkcKRCdGo3QkW4GAkwSMy9XIJr8iO8sffGEoOF1/cuX9CETFHKi/ai/vEfZvyOZnGxyL
- 2Ps=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2021 07:48:26 -0700
+IronPort-SDR: rPLCKwagFuzPiNIymfwV+v+NCTSpLYImbacOyPSVsn0scK6OemitK6r+jsHiMGfcoYDjrHOgHO
+ qeOMZIj4U4wb7k1mzzuIHbqoD62jIVZXJTwNN71eF6MPz6JoC4mpe3Iobx/Fr6bNyOzxHRrAtH
+ oCgbaSHH1a2Vag3EgyUJ/HgwzEEnVoUyaWJgF3fNl183SaC1n1FwyOTqrO24UC0GT/3WteobWC
+ /yotAYZZmc0gWQxe+g89hdAPlOyja/Da+lvGklvwPrt4zedZ1LuUbmmCc1WnyrUwW+iSyGgrY1
+ GJg=
 WDCIronportException: Internal
 Received: from ffs5zf2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.58.251])
-  by uls-op-cesaip02.wdc.com with ESMTP; 11 Aug 2021 08:12:55 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 11 Aug 2021 08:12:56 -0700
 From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     fstests@vger.kernel.org
 Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v2 0/8] fstests: add checks for testing zoned btrfs
-Date:   Thu, 12 Aug 2021 00:12:24 +0900
-Message-Id: <20210811151232.3713733-1-naohiro.aota@wdc.com>
+Subject: [PATCH v2 1/8] common/rc: introduce minimal fs size check
+Date:   Thu, 12 Aug 2021 00:12:25 +0900
+Message-Id: <20210811151232.3713733-2-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210811151232.3713733-1-naohiro.aota@wdc.com>
+References: <20210811151232.3713733-1-naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This series revisit my old series to test zoned btrfs [1].
+_scratch_mkfs_sized() create a file system with specified size
+limit. It can, however, too small for certain kind of devices. For
+example, zoned btrfs requires at least 5 zones to make a file system.
 
-[1] https://lore.kernel.org/fstests/PH0PR04MB7416870032582BC2A8FC5AD99B299@PH0PR04MB7416.namprd04.prod.outlook.com/T/
+This commit introduces MIN_FSSIZE, which specify the minimum size of the
+possible file system. We can set this variable e.g. $ZONE_SIZE *
+$MIN_ZONE_COUNT.
 
-Several tests are failing on zoned btrfs, but actually they are invalid.
-There are two reasons of the failures. One is creating too small
-filesystem. Since zoned btrfs needs at lease 5 zones (= 1.25 GB if zone
-size = 256MB) to create a filesystem, tests creating e.g., 1 GB filesystem
-will fail.
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ README    |  4 ++++
+ common/rc | 12 ++++++++++++
+ 2 files changed, 16 insertions(+)
 
-The other reason is lacking of zone support of some dm targets and loop
-device. So, they need to skip the test if the testing device is zoned.
-
-Patches 1 to 4 handle the too small file system failure.
-
-And, patches 5 to 8 add checks for tests requiring non-zoned devices.
-
-Naohiro Aota (8):
-  common/rc: introduce minimal fs size check
-  common/rc: fix blocksize detection for btrfs
-  btrfs/057: use _scratch_mkfs_sized to set filesystem size
-  fstests: btrfs: add minimal file system size check
-  common: add zoned block device checks
-  shared/032: add check for zoned block device
-  fstests: btrfs: add checks for zoned block device
-  fstests: generic: add checks for zoned block device
-
- README            |  4 ++++
- common/btrfs      | 18 ++++++++++++++++++
- common/dmerror    |  3 +++
- common/dmhugedisk |  3 +++
- common/rc         | 24 +++++++++++++++++++++++-
- tests/btrfs/003   | 13 +++++++++----
- tests/btrfs/011   | 21 ++++++++++++---------
- tests/btrfs/012   |  2 ++
- tests/btrfs/023   |  2 ++
- tests/btrfs/049   |  2 ++
- tests/btrfs/057   |  2 +-
- tests/btrfs/116   |  2 ++
- tests/btrfs/124   |  4 ++++
- tests/btrfs/125   |  2 ++
- tests/btrfs/131   |  2 ++
- tests/btrfs/136   |  2 ++
- tests/btrfs/140   |  2 ++
- tests/btrfs/141   |  1 +
- tests/btrfs/142   |  1 +
- tests/btrfs/143   |  1 +
- tests/btrfs/148   |  2 ++
- tests/btrfs/150   |  1 +
- tests/btrfs/151   |  1 +
- tests/btrfs/156   |  1 +
- tests/btrfs/157   |  3 +++
- tests/btrfs/158   |  3 +++
- tests/btrfs/175   |  1 +
- tests/btrfs/194   |  2 +-
- tests/btrfs/195   |  8 ++++++++
- tests/btrfs/197   |  1 +
- tests/btrfs/198   |  1 +
- tests/btrfs/215   |  1 +
- tests/btrfs/236   | 33 ++++++++++++++++++++-------------
- tests/generic/108 |  1 +
- tests/generic/471 |  1 +
- tests/generic/570 |  1 +
- tests/shared/032  |  2 ++
- 37 files changed, 145 insertions(+), 29 deletions(-)
-
+diff --git a/README b/README
+index 18f7a6bc3ff0..b9877b7d8b1b 100644
+--- a/README
++++ b/README
+@@ -117,6 +117,10 @@ Preparing system for tests:
+                name of a file to compress; and it must accept '-d -f -k' and
+                the name of a file to decompress.  In other words, it must
+                emulate gzip.
++	     - Set MIN_FSSIZE to specify the minimal size (bytes) of a
++               filesystem we can create. Setting this parameter will
++               skip the tests creating a filesystem less than
++               MIN_FSSIZE.
+ 
+         - or add a case to the switch in common/config assigning
+           these variables based on the hostname of your test
+diff --git a/common/rc b/common/rc
+index e04d9365d902..4cb062e2fd3f 100644
+--- a/common/rc
++++ b/common/rc
+@@ -956,6 +956,16 @@ _available_memory_bytes()
+ 	fi
+ }
+ 
++_check_minimal_fs_size()
++{
++	local fssize=$1
++
++	if [ -n "$MIN_FSSIZE" ]; then
++		[ $MIN_FSSIZE -gt "$fssize" ] &&
++			_notrun "specified filesystem size is too small"
++	fi
++}
++
+ # Create fs of certain size on scratch device
+ # _scratch_mkfs_sized <size in bytes> [optional blocksize]
+ _scratch_mkfs_sized()
+@@ -989,6 +999,8 @@ _scratch_mkfs_sized()
+ 
+ 	local blocks=`expr $fssize / $blocksize`
+ 
++	_check_minimal_fs_size $fssize
++
+ 	if [ -b "$SCRATCH_DEV" ]; then
+ 		local devsize=`blockdev --getsize64 $SCRATCH_DEV`
+ 		[ "$fssize" -gt "$devsize" ] && _notrun "Scratch device too small"
 -- 
 2.32.0
 
