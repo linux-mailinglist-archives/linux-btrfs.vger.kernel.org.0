@@ -2,106 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE033E97BB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 20:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0166A3E987F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 21:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhHKShq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Aug 2021 14:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbhHKShq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Aug 2021 14:37:46 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53253C061765
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Aug 2021 11:37:22 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id az7so3472594qkb.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Aug 2021 11:37:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=NnkAERkTJDIOaISkUr96TXB5KoMU2u/0IqNwewHan38=;
-        b=vfeGvDpMOLLOwRGap2q5pHZv35WV3e2ld6/JkZbg/Muve86TZEKMUIBe7Pr2sHWrNK
-         46Vc4Z7/fv9SjbvqLSepeFMXf3pkEzDP9dcVZ47oQ6NVAidfmKARMCbzCVo7qKmrkLmv
-         4X1+fYm5VVA9z2tfT1Z5DVrs3HbGWWqIbQ7pdiLM/lI6ZJKIvws0yxUnT6jJzHsGixZ9
-         EECdY00sgBEfe/Ags4YxJnUZkc6vmbVGoTmGC2UK4wOU1983wV/s2FShkiX6NhHSpxGR
-         e9g0lobB7GnyvBmnrtdvCDna0barI666J9dOlvHs+L+Dz5tXCIkyhDFIMOq1TBMFhowD
-         VIIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NnkAERkTJDIOaISkUr96TXB5KoMU2u/0IqNwewHan38=;
-        b=sKsRcYWg4rmXYPB8VfhPnnZh2V/c/n/jaYxrHARuwEGTxM0OwiXQAl3gRdGtkaga8P
-         vIk95ciyZhZjplR9OWghTQtet3uQDySl6JI+QjUlALJlimyqYZLKBjHb+BToDB1OxH9Y
-         KsiN1gNNwLSiJ2MjKxqwPuqbuCJRgfPncrRMYrQWdD2XPAwDbTp5k46i7UIQ3KrZq4+m
-         8wAMwdTyt9akaxN7igUoDORPtxbFF6VyoVk7oDARxxQAkkqW1BDfnoHVFBuF6GAiPIno
-         qRwmpwZfdvhx6O1rk5JFRrtHVbJKeR1CRfc94p69/ddzxoBpsrUmR3Wuf2eRVeRq3u9h
-         ergA==
-X-Gm-Message-State: AOAM533qrMAAgoAvJf1CTvfDTlSRWOtNh0+oRxG7Tee93RAnG/gNGdwu
-        AF4bscfkP4VwJ5n4umiJZyIL4wZIQH7LOw==
-X-Google-Smtp-Source: ABdhPJymvRReL1XpUtE1gxNlwlYuyosNPNyuLK8qmJIHrxqsXRctomAK42Mx3i1enayZYZ2ktaXC9g==
-X-Received: by 2002:a05:620a:897:: with SMTP id b23mr439712qka.88.1628707041157;
-        Wed, 11 Aug 2021 11:37:21 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id g22sm12278836qkm.33.2021.08.11.11.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Aug 2021 11:37:20 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/2] btrfs: do not do preemptive flushing if the majority is global rsv
-Date:   Wed, 11 Aug 2021 14:37:16 -0400
-Message-Id: <faca8afcd0564108b1f2fd60c4a24dacc4aa6107.1628706812.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1628706812.git.josef@toxicpanda.com>
-References: <cover.1628706812.git.josef@toxicpanda.com>
+        id S231403AbhHKTRf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Aug 2021 15:17:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhHKTRd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Aug 2021 15:17:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2319261008;
+        Wed, 11 Aug 2021 19:17:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628709429;
+        bh=HYP5EtxajWkABNMFHRo45yMkJeoxaVDZxIAzfo20Yl4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EHq64V+fcbZHO4BnMB9448Da/s+hxcL9tiIdwZ8DH2YrLm/XprjNCo2fG7aZHgprw
+         HDxN96m9CxBIHQ1tu3wY6Xq+bV2rVg/zHik0pQrHqPK9jbyleF3QktTRpRkAOljNUV
+         B7uToFKKyH7LMmroHSjtx3CVjX13SAXcnaGA4ldaES5GurlL2zZoYCCrqVvYYkxOmV
+         3r5jJxNzLLKZGsG6a9BDCIL2/2DDR/fvmnvlPThE6MCsVyscBcaPwtuy9oH9pknQfG
+         DoqpwN42fIQZ2/cY1xmmyF4C4dCzSZ9h5mODYadiKbzuXyNjj0Z2OJzxNoC1bS0cde
+         4rMxFhNWIuxXA==
+Date:   Wed, 11 Aug 2021 12:17:08 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH 11/30] iomap: add the new iomap_iter model
+Message-ID: <20210811191708.GF3601443@magnolia>
+References: <20210809061244.1196573-1-hch@lst.de>
+ <20210809061244.1196573-12-hch@lst.de>
+ <20210811003118.GT3601466@magnolia>
+ <20210811053856.GA1934@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811053856.GA1934@lst.de>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A common characteristic of the bug report where preemptive flushing was
-going full tilt was the fact that the vast majority of the free metadata
-space was used up by the global reserve.  The hard 90% threshold would
-cover the majority of these cases, but to be even smarter we should take
-into account how much of the outstanding reservations are covered by the
-global block reserve.  If the global block reserve accounts for the vast
-majority of outstanding reservations, skip preemptive flushing, as it
-will likely just cause churn and pain.
+On Wed, Aug 11, 2021 at 07:38:56AM +0200, Christoph Hellwig wrote:
+> On Tue, Aug 10, 2021 at 05:31:18PM -0700, Darrick J. Wong wrote:
+> > > +static inline void iomap_iter_done(struct iomap_iter *iter)
+> > 
+> > I wonder why this is a separate function, since it only has debugging
+> > warnings and tracepoints?
+> 
+> The reason for these two sub-helpers was to force me to structure the
+> code so that Matthews original idea of replacing ->iomap_begin and
+> ->iomap_end with a single next callback so that iomap_iter could
+> be inlined into callers and the indirect calls could be elided is
+> still possible.  This would only be useful for a few specific
+> methods (probably dax and direct I/O) where we care so much, but it
+> seemed like a nice idea conceptually so I would not want to break it.
+> 
+> OTOH we could just remove this function for now and do that once needed.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=212185
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/space-info.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+<shrug>
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index ddb4878e94df..2fce15d58b55 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -741,6 +741,20 @@ static bool need_preemptive_reclaim(struct btrfs_fs_info *fs_info,
- 	     global_rsv_size) >= thresh)
- 		return false;
- 
-+	used = space_info->bytes_may_use + space_info->bytes_pinned;
-+
-+	/* The total reservation belongs to the global rsv, don't flush. */
-+	if (global_rsv_size >= used)
-+		return false;
-+
-+	/*
-+	 * 128m is 1/4 of the maximum global rsv size.  If we have less than
-+	 * that devoted to other reservations then there's no sense in flushing,
-+	 * we don't have a lot of things that need flushing.
-+	 */
-+	if ((used - global_rsv_size) <= SZ_128M)
-+		return false;
-+
- 	/*
- 	 * We have tickets queued, bail so we don't compete with the async
- 	 * flushers.
--- 
-2.26.3
+> > Modulo the question about iomap_iter_done, I guess this looks all right
+> > to me.  As far as apply.c vs. core.c, I'm not wildly passionate about
+> > either naming choice (I would have called it iter.c) but ... fmeh.
+> 
+> iter.c is also my preference, but in the end I don't care too much.
 
+Ok.  My plan for this is to change this patch to add the new iter code
+to apply.c, and change patch 24 to remove iomap_apply.  I'll add a patch
+on the end to rename apply.c to iter.c, which will avoid breaking the
+history.
+
+I'll send the updated patches as replies to this series to avoid
+spamming the list, since I also have a patchset of bugfixes to send out
+and don't want to overwhelm everyone.
+
+--D
