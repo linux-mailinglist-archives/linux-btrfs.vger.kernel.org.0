@@ -2,150 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0923E8A45
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 08:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C383E8AB0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Aug 2021 09:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234770AbhHKGkT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Aug 2021 02:40:19 -0400
-Received: from mout.gmx.net ([212.227.15.19]:42467 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234609AbhHKGkT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Aug 2021 02:40:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628663991;
-        bh=gaU5i+t7N5T5+ZjwCc3jhv62kMIkZRj1D8JgX3miY+I=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=P9xgxIw4W6og36cYa3PpYfMuvKcjgDBzrLMh/1MwPvOWE5NVBBMAasAH6eRvJi+Zn
-         taiVykqttKVnik5y2VVz+vYQhJOWimkrnUv407S7oYv+chS8zEttKHn8a8jO1sNmRE
-         7I7tBRkfTkVp2f18/pV8IHBh203TRMEVni1sV5yQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mqb1W-1mrOEA2T1E-00mZ27; Wed, 11
- Aug 2021 08:39:51 +0200
-Subject: Re: [PATCH] btrfs: zoned: fix ordered extent boundary calculation
-To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>
-References: <20210811063708.2520540-1-naohiro.aota@wdc.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <cb4636c9-5cee-7d53-7068-c6e29471c06a@gmx.com>
-Date:   Wed, 11 Aug 2021 14:39:47 +0800
+        id S235092AbhHKHD2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Aug 2021 03:03:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42550 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234760AbhHKHD1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Aug 2021 03:03:27 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9F463220DC;
+        Wed, 11 Aug 2021 07:03:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1628665383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XbaCz4LWNEvaumF6dsz7XQmrnnxx4wf+tK6kcEsEGTM=;
+        b=A713rWvcVHOeP5n3KpZRFi5vZY85nh9NLwjZ2zgVrKKIPnSIPh49alCcxrNCVhjtHyhWB4
+        NfssW1Bf0k/2L8uBXvMD4zATnkN/cbB3oiH8W/am8esL94X0y7KQBMHleukabuxwtnS6kQ
+        VRcNVOMUq3gH3MBR7q0tY/wj9Grfcl8=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 70BB0137FE;
+        Wed, 11 Aug 2021 07:03:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id z92HGCd2E2HCWgAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Wed, 11 Aug 2021 07:03:03 +0000
+Subject: Re: [PATCH] btrfs-progs: map-logical: handle corrupted fs better
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210810235445.44567-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <a9c908a2-ada5-24ab-dc01-ebd686294000@suse.com>
+Date:   Wed, 11 Aug 2021 10:03:02 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210811063708.2520540-1-naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210810235445.44567-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:E5hybpT+s8AypFKbrv0zAwrw47lmiQFyAfrgA8x5gm2cetcPCR2
- rkAtSchPWm31Yx/8272CoBCLh1kusOpdgb6DkqgFRKqv1uXM+7tKtNRvhuvoAg07xhVb0mM
- 5lPxF9a9Wa25tXjyjpxkHsCuknNO+qgHCCTTKUnoZCR9tTALbjIaKVsOtfVxBnCfch+/bfa
- /XYCCOBk/CQIJKdaTXL5g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9HLYNyaCu/8=:mYryqT3A23nchFhPf9NhhW
- Tu5b7+ZbBWWg58MfYFZ9oyakuysTZdUM0svb9ueWyBG/3VzJVVjhlPchy2X577HtpIA/ivZTQ
- 28ASYA0Lp8wwJhiMD11gmIppRxSgtSxFt5DT4SVpMopZHrICO1nWmdrURTk/m4trcrQFULPFt
- 2QPVXSOU2pGG8ZFkLTMIBqawClrFIT+jhbShisiDLXeyC13etcZn1/7mglFUL46FT6ioX9eCQ
- 2kuFUaqnxLZIGhmQN3zh8ogEr7p5P6W4tGqkiBz7vIX6QwGRa3eNv+IosCjerjbp4nai0aJe2
- iI3PkbzwBI8U/LLiEJIIpoxg2Ft2aV9ghXhLENoSjC9LUKSUpPg4hosD0GfkWxNfuFan4nqpY
- s4ia44ai2csek5GWHhKkUN8n9N0J6HXCe7KvsYYHa1eLOpxGfYo/8F3vWmg/jpoOiHEtGx9tG
- wY1v4na6eH+J5u0tHqtGYEb/dl+D/71HKy9uYIVPKxFhVJPbINw/IwqONO1+nSVjj0Rlbw3lJ
- 1FNjTazuyB1mZ9Yas3k4lBZ2w8fyPotradrmRilWLuew/KklXY/taimrF7E8wgGKrS3iSJaK5
- MmR+RGOniCa6Ak6UWfqK2p/jCR8njYV+aR+rb6MT2vWarwlwhbWHydGpngOecWrREffbHv48U
- owVB2vpKlFLt6yy/Ysv4RjL7pzgimXl3SsSNxoKBf5AgBascPl7Lk5OxHpxjqcVgCJdBvYI4h
- 8KMlkC9RAsH7hKh2IV8xpvbBbqyhHvSchO1SAHn6b9Ppv8pN0bsL1sSiNbgmpo89/cEPw0vqI
- UVWgUY/yzKh4y0ia1DqQtCpvGHFjlfLEtMrnYxCSh5FOeIJ/i8Fyy+W3qWfFR/E5JHJn5Bzbd
- SFhFL4Ic0C51ggfXvURSrXeRrCfRo8/dK+rTE8zOqCl7gaSex/sCOevGh3RclkcOOtkLJyiPc
- EqKd1Gk15BqCaoH9pVlIG7N7ljjtVYUSPd94eyMf7hRQkEGEE7dbhTbM2ueS7a0Lz7aLm1kOi
- OzjqZ+vdsDYnsAQdwg5pNuQmia3zSSAR1Ron+aPCQiOce/S0WXbhmRxgtrjBAMg/pMzlOireq
- 6aNKnUw4OtGoKXqD6QSHfENCo/iNsT8Jh6e3lyF8s4SUuY6JgjcxT076w==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/8/11 =E4=B8=8B=E5=8D=882:37, Naohiro Aota wrote:
-> btrfs_lookup_ordered_extent() should be queried with the offset in a fil=
-e
-> instead of the logical address. Pass the file offset from
-> submit_extent_page() to calc_bio_boundaries().
->
-> Also, calc_bio_boundaries() relies on the bio's operation flag, so move =
-the
-> call site after setting it.
->
-> Fixes: 390ed29b817e ("btrfs: refactor submit_extent_page() to make bio a=
-nd its flag tracing easier")
-> Cc: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
+On 11.08.21 г. 2:54, Qu Wenruo wrote:
+> Currently if running btrfs-map-logical on a filesystem with corrupted
+> extent tree, it will fail due to open_ctree() error.
+> 
+> But the truth is, btrfs-map-logical only requires chunk tree to do
+> logical bytenr mapping.
+> 
+> Make btrfs-map-logical more robust by:
+> 
+> - Loosen the open_ctree() requirement
+>   Now it doesn't require an extent tree to work.
+> 
+> - Don't return error for map_one_extent()
+>   Function map_one_extent() is too lookup extent tree to ensure there is
+>   at least one extent for the range we're looking for.
+> 
+>   But since now we don't require extent tree at all, there is no hard
+>   requirement for that function.
+>   Thus here we change it to return void, and only do the check when
+>   possible.
+> 
+> Now btrfs-map-logical can work on a filesystem with corrupted extent
+> tree.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->   fs/btrfs/extent_io.c | 13 +++++++------
->   1 file changed, 7 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 7d4c03762374..c353bfd89dfc 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3241,7 +3241,7 @@ static int btrfs_bio_add_page(struct btrfs_bio_ctr=
-l *bio_ctrl,
->   }
->
->   static int calc_bio_boundaries(struct btrfs_bio_ctrl *bio_ctrl,
-> -			       struct btrfs_inode *inode)
-> +			       struct btrfs_inode *inode, u64 file_offset)
->   {
->   	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
->   	struct btrfs_io_geometry geom;
-> @@ -3283,7 +3283,7 @@ static int calc_bio_boundaries(struct btrfs_bio_ct=
-rl *bio_ctrl,
->   	}
->
->   	/* Ordered extent not yet created, so we're good */
-> -	ordered =3D btrfs_lookup_ordered_extent(inode, logical);
-> +	ordered =3D btrfs_lookup_ordered_extent(inode, file_offset);
->   	if (!ordered) {
->   		bio_ctrl->len_to_oe_boundary =3D U32_MAX;
->   		return 0;
-> @@ -3300,7 +3300,7 @@ static int alloc_new_bio(struct btrfs_inode *inode=
-,
->   			 struct writeback_control *wbc,
->   			 unsigned int opf,
->   			 bio_end_io_t end_io_func,
-> -			 u64 disk_bytenr, u32 offset,
-> +			 u64 disk_bytenr, u32 offset, u64 file_offset,
->   			 unsigned long bio_flags)
->   {
->   	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
-> @@ -3317,13 +3317,13 @@ static int alloc_new_bio(struct btrfs_inode *ino=
-de,
->   		bio =3D btrfs_bio_alloc(disk_bytenr + offset);
->   	bio_ctrl->bio =3D bio;
->   	bio_ctrl->bio_flags =3D bio_flags;
-> -	ret =3D calc_bio_boundaries(bio_ctrl, inode);
-> -	if (ret < 0)
-> -		goto error;
->   	bio->bi_end_io =3D end_io_func;
->   	bio->bi_private =3D &inode->io_tree;
->   	bio->bi_write_hint =3D inode->vfs_inode.i_write_hint;
->   	bio->bi_opf =3D opf;
-> +	ret =3D calc_bio_boundaries(bio_ctrl, inode, file_offset);
-> +	if (ret < 0)
-> +		goto error;
->   	if (wbc) {
->   		struct block_device *bdev;
->
-> @@ -3398,6 +3398,7 @@ static int submit_extent_page(unsigned int opf,
->   		if (!bio_ctrl->bio) {
->   			ret =3D alloc_new_bio(inode, bio_ctrl, wbc, opf,
->   					    end_io_func, disk_bytenr, offset,
-> +					    page_offset(page) + cur,
->   					    bio_flags);
->   			if (ret < 0)
->   				return ret;
->
+>  btrfs-map-logical.c | 50 +++++++++++----------------------------------
+>  1 file changed, 12 insertions(+), 38 deletions(-)
+> 
+> diff --git a/btrfs-map-logical.c b/btrfs-map-logical.c
+> index b35677730374..f06a612f6c14 100644
+> --- a/btrfs-map-logical.c
+> +++ b/btrfs-map-logical.c
+> @@ -38,8 +38,8 @@
+>   * */
+>  static FILE *info_file;
+>  
+> -static int map_one_extent(struct btrfs_fs_info *fs_info,
+> -			  u64 *logical_ret, u64 *len_ret, int search_forward)
+> +static void map_one_extent(struct btrfs_fs_info *fs_info,
+> +			   u64 *logical_ret, u64 *len_ret, int search_forward)
+>  {
+>  	struct btrfs_path *path;
+>  	struct btrfs_key key;
+> @@ -52,7 +52,7 @@ static int map_one_extent(struct btrfs_fs_info *fs_info,
+>  
+>  	path = btrfs_alloc_path();
+>  	if (!path)
+> -		return -ENOMEM;
+> +		return;
+>  
+>  	key.objectid = logical;
+>  	key.type = 0;
+> @@ -94,7 +94,11 @@ out:
+>  		if (len_ret)
+>  			*len_ret = len;
+>  	}
+> -	return ret;
+> +	/*
+> +	 * Ignore any error for extent item lookup, it can be corrupted
+> +	 * extent tree or whatever. In that case, just ignore the
+> +	 * extent item lookup and reset @ret to 0.
+> +	 */
+>  }
+>  
+>  static int __print_mapping_info(struct btrfs_fs_info *fs_info, u64 logical,
+> @@ -261,7 +265,8 @@ int main(int argc, char **argv)
+>  	radix_tree_init();
+>  	cache_tree_init(&root_cache);
+>  
+> -	root = open_ctree(dev, 0, 0);
+> +	root = open_ctree(dev, 0, OPEN_CTREE_PARTIAL |
+> +				  OPEN_CTREE_NO_BLOCK_GROUPS);
+>  	if (!root) {
+>  		fprintf(stderr, "Open ctree failed\n");
+>  		free(output_file);
+> @@ -293,34 +298,7 @@ int main(int argc, char **argv)
+>  	cur_len = bytes;
+>  
+>  	/* First find the nearest extent */
+> -	ret = map_one_extent(root->fs_info, &cur_logical, &cur_len, 0);
+> -	if (ret < 0) {
+> -		errno = -ret;
+> -		fprintf(stderr, "Failed to find extent at [%llu,%llu): %m\n",
+> -			cur_logical, cur_logical + cur_len);
+> -		goto out_close_fd;
+> -	}
+> -	/*
+> -	 * Normally, search backward should be OK, but for special case like
+> -	 * given logical is quite small where no extents are before it,
+> -	 * we need to search forward.
+> -	 */
+> -	if (ret > 0) {
+> -		ret = map_one_extent(root->fs_info, &cur_logical, &cur_len, 1);
+> -		if (ret < 0) {
+> -			errno = -ret;
+> -			fprintf(stderr,
+> -				"Failed to find extent at [%llu,%llu): %m\n",
+> -				cur_logical, cur_logical + cur_len);
+> -			goto out_close_fd;
+> -		}
+> -		if (ret > 0) {
+> -			fprintf(stderr,
+> -				"Failed to find any extent at [%llu,%llu)\n",
+> -				cur_logical, cur_logical + cur_len);
+> -			goto out_close_fd;
+> -		}
+> -	}
+> +	map_one_extent(root->fs_info, &cur_logical, &cur_len, 0);
+
+
+You essentially make map_one_extent fail silently in this case how can
+the call to it be reliable at all? Shouldn't it be removed altogether?
+alternatively, the function can be made to return an error, yet it
+should be up to the caller to choose to ignore it. Also if the tree is
+corrupted what pervents for the btrfs_search_slot in map_one_extent to
+return 0 which will trigger a BUG_ON ?
+
+
+Furthermore with map_one_extent present the semantics of the program is
+that it prints the logical mapping of the real extent rather then the
+passed in bytes. Because the user is allowed to pass an offset for which
+there isn't a real extent. So if we want to retain this your change is a
+no-go. OTOH if we want to have btrfs_map_logical to serve as a simple
+calculation aid i.e you pass in some logical byte, irrespective whether
+it contains a real extent or not, and have the program return what the
+physical mapping is then map_one_extent becomes redundant altogether.
+
+<snip>
