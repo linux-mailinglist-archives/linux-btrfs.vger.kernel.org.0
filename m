@@ -2,205 +2,293 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6753E9BE1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 03:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9AA83E9BE8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 03:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbhHLBSx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Aug 2021 21:18:53 -0400
-Received: from mout.gmx.net ([212.227.17.21]:46193 "EHLO mout.gmx.net"
+        id S233020AbhHLBXt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Aug 2021 21:23:49 -0400
+Received: from mout.gmx.net ([212.227.17.20]:59833 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232302AbhHLBSx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Aug 2021 21:18:53 -0400
+        id S229948AbhHLBXt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Aug 2021 21:23:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1628731104;
-        bh=s4TPzSUhfukmCxdFmHvsr7cqjj0iK2ey5Dj4uY5OQZo=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=YUzbPpO/z4Hhv3bjJhdMZXSyYMoi7nKc7OBxVvucCuS5vvBbpxSnyipW9DHShMI1g
-         Olulz3aqMg5mplFZXV2VIWswCv1rpWp2Qe2dsYsjCFS0Te6gnnAWYuuOPb0OOIcnyr
-         s8u2dKGJklSpkAnUKywLvRzSBMVEy0ssufnaRyjs=
+        s=badeba3b8450; t=1628731403;
+        bh=x9AQiB8eSdbBy+sr7az7G/fcECTziDPB2X8vrF9GDwU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=JDdkMRTf081fk21NRPGbkp7y2EL75cMpQaNcSohhPMYBPquAXlJPtiEhFkZbOkDd9
+         2yC6/Tq41YvTEsD36cKC02OcRCdKF8z8Sdy5LcL80fsEeJnIp821JzrFZY2YW7LKM2
+         TjCBPumBC8eVLOdGl1pQjWAOws+aZxBowvmuPK5U=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6UZl-1mC3Xy43HF-006sbL; Thu, 12
- Aug 2021 03:18:24 +0200
-To:     Konstantin Svist <fry.kun@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
- <46f3b990-ec2d-6508-249e-8954bf356e89@gmx.com>
- <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
- <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
- <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
- <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
- <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
- <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
- <544e3e73-5490-2cae-c889-88d80e583ac4@gmail.com>
- <c03628f0-585c-cfa8-5d80-bd1f1e4fb9c1@gmx.com>
- <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
- <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
- <238d1f6c-20a9-f002-e03a-722175c63bd6@gmail.com>
- <4bd90f4a-7ced-3477-f113-eee72bc05cbb@gmx.com>
- <fab2dab5-41bb-43f2-5396-451d66df3917@gmail.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2V4J-1nFXrJ1S6J-013rFl; Thu, 12
+ Aug 2021 03:23:23 +0200
+Subject: Re: Files/Folders invisibles with 'ls -a' but can 'cd' to folder
+To:     k g <klimaax@gmail.com>, linux-btrfs@vger.kernel.org
+References: <94bf3fad-fd41-ecc0-404c-ccd087fca05d@gmail.com>
+ <c11aea64-0f94-7cb1-886e-f6bc5050d7f2@gmx.com>
+ <1bbcdbaf-ecf3-a116-f26e-a2edcc36e536@gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Trying to recover data from SSD
-Message-ID: <60a21bca-d133-26c0-4768-7d9a70f9d102@gmx.com>
-Date:   Thu, 12 Aug 2021 09:18:20 +0800
+Message-ID: <c0ae05e7-6e17-2f73-8d14-7f10ac1d817c@gmx.com>
+Date:   Thu, 12 Aug 2021 09:23:19 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <fab2dab5-41bb-43f2-5396-451d66df3917@gmail.com>
+In-Reply-To: <1bbcdbaf-ecf3-a116-f26e-a2edcc36e536@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Pxo3TODGxBBAT3JKS+yFN504yTgk3o9vjDGEgR+IhPe7kFvubTa
- 1q10gPXock8XScWUyZjDiZqfyfUvrZ28tvhKsKmGWuQxRaXoDrSVA13maCEGwTO9wWhofLx
- SMAGxLbGWkil+KaJ7LVhJEgjXK70FnzuQKVD7fqcPegX+hYF/5UdvjdGGh8JLIyK4nO60bI
- qg3sphFFiKrWkevWOfmlw==
+X-Provags-ID: V03:K1:HPyABF2pqlLVtzYqF6YbWEHm8VZ/xoe5s8rE1Ih1VO/QFRPuQCK
+ +kZ1GBIs/nIk904Pa2gf6UpG9iameC28P2GuLFCkRF8ds3cJW+f1Sf4HNkHFCeTL6mUTvEC
+ bcZJKVm9abLntmF5XgsE33zC2/f06YNaWr1UflBn0PpkbAOXdDyj2g6zUbmoe1Lu12hPyD0
+ xEz5zsdyGE6FBz+htZJ0A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6Ko9dx47Zc4=:VeWGpfK0xJIY5Oe8xi4Ya9
- pExZpZsaRfBa3mOZJ3I6jCGRAzq5DP50ZWPcEhPpftzyf80maQcWXICnU4eRzR0nXmLWm1sGt
- lTvEXgNyfL8e840NqnHyUqmohEnaJqsviLe2m/74HgW9UQx2nSd/h2UVIfEH4I6+IbjVRLsXV
- u75FZBdPL7fVulMFmDzZQ+LNTHPO+fwsDs+tLbGrUX5Mk0sPGUQ7o2PFpwf7+vde1U9TLfg5n
- tof2k6OPl50MiwoJBF/KpEfm0D9KRTD/1Lpaj2a7g4RwnjG7PVygq5zTkMdLNXcBH4yc33AcL
- 3xsUd2VSM3v4yDJHdWGyrwQdWIRAYLOvw5i4bmNGMYLEQoU4y21Of2B8bpjR0L8bXF+zkTIOS
- 05hFJrfr98gf9ZNRud0Fit4YFQ+Jw8alA73kyMZAJdX4P629rq2851rto5ibD3lFpXxfgJjef
- th5rtVjNknd6432QQabkFl0t8uAzmAMTFbDX1qEG/v0FcGEt+bI51cH6QUXKSlcYj38lK5Z3A
- jh6AQcKBYh/Vei4OofjLTuL25fmOp6kjYB+w6YblXL2QcJXNtZuW/eK+MNeqz8TtCqJ98l14/
- /YjX0XQVLOb/FI9XHOuRAQw+m6KJ5iAvdhWywlCJvtmpVBmoVe4MubdXVwoKFypI9uM2LzQzw
- fW0H+4eWh5+NtFoSvvR1TSGQXoIxZ5A7G/iJ5vc922qegqR4fyqtN3/P5spqbqIBrVX5TMWCK
- ayv2gWVjHPRsERnnvbB/J71f5LUxTBmLexcVBY9qPTUYVra8iJhHu9lr4/76R2ShBEA03vhzI
- EUUbLyYgXn/ldxLLXVeqkoWjr2nYallIdae5bgpNJ6FzUiOgXVBvcX16+HNKbAuJWWqfAGe6t
- uhr5qEfw725n6K4L0n9RPFwJaFLSsCSEccV3pHTNmlkUHoC/E5dwcNaQcq0iDT1idLn6f/S2p
- t+wh1Ba18jw2fBJrfJpzjDsZSUJOyb1lHLa/3DqqP2PrR/L8rGFJBS/QdgsDPpSSWg6HAIkMM
- mq/ESTTt/h8HHNyK1WVaxfhhUkS1dQPaHtz73PGQhTvqJm8vzawZA4CtY8KQMIbjgFG31xb82
- zvDdyuNxW06EJ5aAE2HTIMit4vF+q5cCS54SWJMGDeycT2UvuXkQEUiRw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0S1SDmT9hN4=:OS9zrrBz6Y9qEIOXrM+VSd
+ MWhWqcDFk+RW9LicUy5nAJ49yhhd1ApubrN6LPtRYT0ARZstSI99GlSrU1v9jr2EhOTnOKZlZ
+ 5sq06v+dqEOseyQzhFQq4T6M4XXax1OngGneqcrBr/j4BdokfWbB3eYlgxHN6xc9G4K4AWuNp
+ mv568M2HYfANFFwSW7YMu6lMd4R27SDx3VU65JzdCn+D91CuTCiEPY7MbaMfJIz9lzDvJUZov
+ vTqDi0ZL4wdZ1d8jMuTGa+ZR8SRTk+GQiQ13Pz0DTkJ+xGJvEsLOhW68VJgEH2VOVvPaTiWd6
+ /+pJPOuqp+D4hk8JY6ZvqUgIEwWN0FUskyCCRY0fptaUIgvrFEYm9dpWDotS2p6Lv4rDg+3hP
+ ToeOb5W54dj7C0GnCOMl/bWV2cKeLAfley9ShNyHAgLoAj20vfAMmORYv2qnb5bF79dLpSOmJ
+ 4yQDmz1x61ubyD3MeKizBP0VEC53qWMFcK/TPVDe7y6lnM3rN1Zysm+uEx+f372SON22Ixqt9
+ /McssUoMR/dFc2aoXn+lEclb3QLy9ubElGJvqPSVwzUDDFCuBMcjU4TQvmH450VSfY8IAvCT3
+ uFs2UQihsp7eIr5a0Re8hC+TUe5Jjai8RmUuqO6cmf+deTHQ4SggP7DrB4uhG8Yi9xLizzMmg
+ 8huuRc8f8IfOONey782Dnpm39k1AhFi/P70WHt8x7Q4bxQwp4NU2ZUdYxeCAPBm5rYplgmKeh
+ YzbaBtfcIzBkW6unIdfKI5KkNHO/7xv4rlur6TT/ggOmxnseMpUcGIFNDNvlF7mr0zXqxJBlo
+ trTSKaeUGYFldImC/+uCtNWXIYP2H2gG3iQ1zJkmADExADEK2ovFCe/hPzcClSMhVdnxmz/vZ
+ 2pLTGBFoXshbtSwqkzwy/giuig9Eq8AkFoZqQHsnpPxstATWTUPo9c3pfVVXxJALdGAU8lcgV
+ cTMfNS1WkDHqclNzUsnN2U9ehDiqaTzAZM8uc/ff2ScAH6uCr78u5P5pkT2C9S4UsbU9YrMet
+ F7+sGMHF1/BWy4DrC6t/qe/38qRJOshJuALbWYvpAl1BD1Dn5yix6s+fLctqcoKA+PlGkG324
+ SNI4m2/SrC+YJ98KWoqUlR8keG0MIG1PIJmWkPULljlgGPVFadvlTh9dg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/8/12 =E4=B8=8A=E5=8D=886:34, Konstantin Svist wrote:
-> On 8/11/21 14:51, Qu Wenruo wrote:
->>
->>
->> On 2021/8/12 =E4=B8=8A=E5=8D=883:33, Konstantin Svist wrote:
->>> On 8/10/21 22:49, Qu Wenruo wrote:
->>>>
->>>>
->>>> On 2021/8/11 =E4=B8=8B=E5=8D=881:34, Konstantin Svist wrote:
->>>>> On 8/10/21 22:24, Qu Wenruo wrote:
->>>>>>
->>>>>>
->>>>>> On 2021/8/11 =E4=B8=8B=E5=8D=881:22, Konstantin Svist wrote:
->>>>>>> On 8/10/21 16:54, Qu Wenruo wrote:
->>>>>>>>
->>>>>>>> Oh, that btrfs-map-logical is requiring unnecessary trees to
->>>>>>>> continue.
->>>>>>>>
->>>>>>>> Can you re-compile btrfs-progs with the attached patch?
->>>>>>>> Then the re-compiled btrfs-map-logical should work without proble=
-m.
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> Awesome, that worked to map the sector & mount the partition.. but=
- I
->>>>>>> still can't access subvol_root, where the recent data is:
->>>>>>
->>>>>> Is subvol_root a subvolume?
->>>>>>
->>>>>> If so, you can try to mount the subvolume using subvolume id.
->>>>>>
->>>>>> But in that case, it would be not much different than using
->>>>>> btrfs-restore with "-r" option.
->>>>>
->>>>>
->>>>> Yes it is.
->>>>>
->>>>> # mount -oro,rescue=3Dall,subvol=3Dsubvol_root /dev/sdb3 /mnt/
->>>>> mount: /mnt: can't read superblock on /dev/sdb3.
->>>>
->>>> I mean using subvolid=3D<number>
->>>>
->>>> Using subvol=3D will still trigger the same path lookup code and get
->>>> aborted by the IO error.
->>>>
->>>> To get the number, I guess the regular tools are not helpful.
->>>>
->>>> You may want to manually exam the root tree:
->>>>
->>>> # btrfs ins dump-tree -t root <device>
->>>>
->>>> Then look for the keys like (<number> ROOT_ITEM <0 or number>), and t=
-ry
->>>> passing the first number to "subvolid=3D" option.
->>>
->>> This works (and numbers seem to be the same as from dump-tree):
->>> # mount -oro,rescue=3Dall /dev/sdb3 /mnt/
->>> # btrfs su li /mnt/
->>> ID 257 gen 166932 top level 5 path subvol_root
->>> ID 258 gen 56693 top level 5 path subvol_snapshots
->>> ID 498 gen 56479 top level 258 path subvol_snapshots/29/snapshot
->>> ID 499 gen 56642 top level 258 path subvol_snapshots/30/snapshot
->>> ID 500 gen 56691 top level 258 path subvol_snapshots/31/snapshot
->>>
->>> This also works (not what I want):
->>> # mount -oro,rescue=3Dall,subvol=3Dsubvol_snapshots /dev/sdb3 /mnt/
->>>
->>>
->>> But this doesn't:
->>>
->>> # mount -oro,rescue=3Dall,subvolid=3D257 /dev/sdb3 /mnt/
->>> mount: /mnt: can't read superblock on /dev/sdb3.
->>>
->>> dmesg:
->>> BTRFS error (device sdb3): bad tree block start, want 920748032 have 0
->>>
->>>
->> Then it means, the tree blocks of that subvolume is corrupted, thus no
->> way to read that subvolume, unfortunately.
->>
->> Thanks,
->> Qu
+On 2021/8/12 =E4=B8=8A=E5=8D=885:54, k g wrote:
+> Hi Qu ,
 >
 >
-> Shouldn't there be an earlier generation of this subvolume's tree block
-> somewhere on the disk? Would all of them have gotten overwritten already=
-?
+> Thanks for your valuable answers,
+>
+>
+> The synology system I'm using has btrfs tools v4. I compiled a v5
+> version because "btrfs check" version 4 returns "Couldn't open file syst=
+em"
+>
+>
+> a little bit late, (I'm 1000 km away from my crashed server, I'm doing
+> all of this remotly) ,Here is some output of btrfs check I made today
+> (output is very long , here is some samples of the messages returned)
+>
+>
+> Opening filesystem to check...
+> Checking filesystem on /dev/md2
+> UUID: 306faa08-9e17-406b-924e-57e06e2c2763
+> [1/7] checking root items=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 (0:03:47 elapsed, 4389038
+> items checked)
+> [2/7] checking extents=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 (0:06:51 elapsed, 3092
+> items checked)
+> cache and super generation don't match, space cache will be invalidated
+> [3/7] checking free space cache=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (0:00:00 elapsed)
+> [4/7] checking fs roots=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 (0:00:00 elapsed, 2 items
+> checked)
+> found 196033421312 bytes used, error(s) found
+> total csum bytes: 15533120
+> total tree bytes: 50102272
+> total fs tree bytes: 17711104
+> total extent tree bytes: 31784960
+> btree space waste bytes: 10681343
+> file data blocks allocated: 0
+>  =C2=A0referenced 0
+>
+>
+> ERROR: child eb corrupted: parent bytenr=3D229829935104 item=3D4 parent
+> level=3D2 child bytenr=3D229931827200 child level=3D0
 
-Then it will be more complex and I can't ensure any good result.
+This is the worst case, metadata corruption between nodes and leaves.
 
-Firstly you need to find an older root tree:
+> ERROR: extent[193738493952, 16384] referencer count mismatch (root: 257,
+> owner: 226748, offset: 0) wanted: 1, have: 0
+> parent transid verify failed on 229931827200 wanted 11406678 found 11406=
+670
+> Ignoring transid failure
+> ERROR: child eb corrupted: parent bytenr=3D229829935104 item=3D4 parent
+> level=3D2 child bytenr=3D229931827200 child level=3D0
+> ERROR: extent[193738510336, 16384] referencer count mismatch (root: 257,
+> owner: 226749, offset: 0) wanted: 1, have: 0
+>
+> ERROR: extent [197244026880 16384] referencer bytenr mismatch, wanted:
+> 197244026880, have: 229859393536
+> ERROR: extent [197244043264 16384] referencer bytenr mismatch, wanted:
+> 197244043264, have: 229859393536
+>
+> parent transid verify failed on 229931827200 wanted 11406678 found 11406=
+670
+> Ignoring transid failure
 
-# btrfs ins dump-super -f /dev/sdb3 | grep backup_tree_root
-                 backup_tree_root:       30687232        gen: 2317
-  level: 0
-                 backup_tree_root:       30834688        gen: 2318
-  level: 0
-                 backup_tree_root:       30408704        gen: 2319
-  level: 0
-                 backup_tree_root:       31031296        gen: 2316
-  level: 0
+Furthermore, transid mismatch...
 
-Then try the bytenr in their reverse generation order in btrfs ins
-dump-tree:
-(The latest one should be the current root, thus you can skip it)
+>
+>
+> WARNING: tree block [197151997952, 197152014336) crosses 64K page
+> boudnary, may cause problem for 64K page system
+> WARNING: tree block [197152063488, 197152079872) crosses 64K page
+> boudnary, may cause problem for 64K page system
+>
+> Wrong key of child node/leaf, wanted: (197244633088, 169, 0), have:
+> (40699577, 108, 0)
+> Wrong generation of child node/leaf, wanted: 11406682, have: 11406670
+> parent transid verify failed on 229934661632 wanted 11406672 found 11406=
+677
+> Ignoring transid failure
+>
+> ERROR: block group[9778059280384 10737418240] used 0 but extent items
+> used 10735706112
+> ERROR: block group[9788796698624 10737418240] used 0 but extent items
+> used 10736922624
+>
+> leaf parent key incorrect 229908168704
+> parent transid verify failed on 229908168704 wanted 11406668 found 11406=
+678
+> Ignoring transid failure
+>
+>
+> ERROR: free space cache inode 41584067 has invalid mode: has 0100644
+> expect 0100600
+> parent transid verify failed on 229926993920 wanted 11406669 found 11406=
+676
+> Ignoring transid failure
+> parent transid verify failed on 229958598656 wanted 11406672 found 11406=
+678
+> Ignoring transid failure
+> ERROR: child eb corrupted: parent bytenr=3D229823332352 item=3D5 parent
+> level=3D1 child bytenr=3D229958598656 child level=3D1
+> ERROR: errors found in fs roots
+> extent buffer leak: start 229934661632 len 16384
+> extent buffer leak: start 229823561728 len 16384
+> extent buffer leak: start 229931532288 len 16384
+> extent buffer leak: start 229931827200 len 16384
 
-# btrfs ins dump-tree -b 30834688 /dev/sdb3 | grep "(257 ROOT_ITEM" -A 5
+Overall, the metadata is mostly screwed up, thus the DIR_ITEM/DIR_INDEX
+mismatch happens.
 
-Then grab the bytenr of the subvolume 257, then pass the bytenr to
-btrfs-restore:
+>
+>
+>
+> By "luck" I have a sql dump that contain 80% of the paths of the lost
+> files, so I can make a bash or python script to recover them (by doing a
+> copy elsewhere or mv two times the hidden folders)
+>
+> unfortunately, these path are samba paths and some of them are mangled
+> (I did not manage, or had the time to reverse engineer the samba source
+> code to rebuild linux paths from samba mangled path despite that I asked
+> some help in stackoverflow...)
+>
+> But before starting building these scripts , I want to have=C2=A0 your
+> feedback before launching any maintenance operation, or at best a
+> procedure to relink these DIR_INDEX
 
-# btrfs-restore -f <bytenr> /dev/sdb3 <restore_path>
+It's way worse than just DIR_INDEX/DIR_ITEM missing, it's some metadata
+corruption that mostly screw up the filesystem.
 
-The chance is already pretty low, good luck.
+I would go btrfs-restore directly to salvage as much data as possible.
 
 Thanks,
 Qu
 
 >
-> Any hope for any individual files, if not for subvolume?
+>
+> all the best.
+>
+> .k.
 >
 >
 >
->
+> On 05/08/2021 00:55, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/8/4 =E4=B8=8B=E5=8D=889:19, k g wrote:
+>>> Hi
+>>>
+>>>
+>>> As I say in my subject, I'm facing a weird problem with my btrfs
+>>> partition (I already sent this message on reddit /r/btrfs/ )
+>>
+>> Sorry, reddit is not really the go-to place for technical discussion no=
+r
+>> bug report.
+>>
+>>>
+>>> It's in fact a btrfs partition in a raid5 synology system.
+>>
+>> We don't know how heavily backported the synology kernel is, thus it's
+>> normally better to ask for help from synology.
+>>
+>>>
+>>>
+>>>
+>>> 3 days ago, the volume 'crashed' (synology terms) ,however SMART data =
+is
+>>> ok and I don't have sector relcocation errors or CRC.... I rebooted
+>>> several times , and after dozen of reboots my partition shows up , but=
+ 3
+>>> TB of 10 TB are missing, I made a scrub but it did made my missing fil=
+es
+>>> appears.
+>>>
+>>>
+>>>
+>>> desperately I made a 'cd xyz' in a directory (I remember some of the
+>>> folder names) and it works ; and inside this folder I can do "ls" and
+>>> all files and subfolders appears .
+>>>
+>>> I made a copy elsewhere of some files and these ones are not corrupted
+>>> or bit roted.
+>>>
+>>>
+>>>
+>>> I don't want to make a btrfs check --repair of course.
+>>
+>> But "btrfs check" without --repair should be the best tool to show
+>> what's going wrong.
+>>
+>> Alternatively, "btrfs check --mode=3Dlowmem" could provide a better hum=
+an
+>> readable output.
+>>
+>>>
+>>>
+>>>
+>>> Is there a way to "relink" indexes/root or whatever it is called to
+>>> bring back these files/folder visible and accessible with a safe
+>>> command ?
+>>
+>> It's not that simple, from your description, it looks like the dir has
+>> some DIR_ITEM but no DIR_INDEX, thus it doesn't shows up in ls, but cd
+>> still work.
+>>
+>> This normally indicates much bigger problem.
+>>
+>> Thanks,
+>> Qu
+>>>
+>>> I'm planning to backup all , is 'btrfs restore' will access to these
+>>> "non visible" directories ?
+>>>
+>>>
+>>>
+>>> "I saw similar case here : The Directory Who Wasn't There : btrfs
+>>> (reddit.com) , but I can't find a reply that solve the problem"
+>>>
+>>>
+>>>
+>>> cdly
+>>>
