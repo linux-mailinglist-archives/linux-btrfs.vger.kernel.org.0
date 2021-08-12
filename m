@@ -2,120 +2,201 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB8B3E9E1C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 07:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284BF3E9E2F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 07:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234435AbhHLFsv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Aug 2021 01:48:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34394 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234361AbhHLFsu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Aug 2021 01:48:50 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 994F51FF11
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 05:48:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628747304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MPzkHBOW+BacwdLEm7wtbV2+j4CQfYw/o4xR05ZfomQ=;
-        b=eHJsWqeJ2PwGq2cGTWT9O0zTPkQ41XiH3P4wra3M539cKffkl8jdeTSR1zMPzd7coLZ9vH
-        TX9hX8t6g5XNFImc40usbQga9dHwU+Ufs52Ca5Gb7kit9/YCUNXA6M/kE569JUL9aT0KWy
-        cLTyll48d4d5ezow9v6yx4bX0vWS0NA=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D393613838
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 05:48:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id APQdJSe2FGG4ZwAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 05:48:23 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v6 4/4] btrfs-progs: image: fix restored image size misalignment
-Date:   Thu, 12 Aug 2021 13:48:15 +0800
-Message-Id: <20210812054815.192405-5-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210812054815.192405-1-wqu@suse.com>
-References: <20210812054815.192405-1-wqu@suse.com>
+        id S234487AbhHLF5s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Aug 2021 01:57:48 -0400
+Received: from mout.gmx.net ([212.227.15.15]:35891 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233072AbhHLF5q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Aug 2021 01:57:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1628747838;
+        bh=Xfa15CCQoJDmZJDYPBVV7SosU7hM+KgHXTKEdYFilN4=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=F824ucGJud+Rn7b6E5xCq4UhOKxeMAHZURg58mtTNGq577B3u32Sla3QGLiX/9Xun
+         Jt+pC63NmlFqGM40A4P/rThfhCLOk0IVfydsFfX8uQyxxOan3VMliBCBQrmh9pcvvl
+         zuhCtjPtNrboDp3tdEkc+3ZPHJWerMVgwiuII+hs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MTRR0-1mfaTZ3YSq-00TlvB; Thu, 12
+ Aug 2021 07:57:18 +0200
+To:     Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Cc:     dsterba@suse.com, guaneryu@gmail.com, wqu@suse.com
+References: <20210811144903.1425-1-mpdesouza@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH v3] btrfs/177: Add filesystem resize filter
+Message-ID: <dae3d33f-c588-9a79-35c0-01cd433f630b@gmx.com>
+Date:   Thu, 12 Aug 2021 13:57:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210811144903.1425-1-mpdesouza@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qOt3e4Kzu176hRd3+oQAtW4bGTfeKAwAC0RADdnwgYbxteA1o6P
+ M80du6SjRCPcc3GfSOohIrbOmjSVXHyCOeWKYVccmWkXp4eOJS0J1kcyMvG0vbU9cDLUB8N
+ Cw4xkLTQnBbGa9iwAa8SE7ISFN2EqyuhrqjtfGewtqX7RJE/YRT3+98z6smu9i8y/H7uPRo
+ +A49DGXPxfBRt9CM8NX+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4Uil7cAFbaM=:ZAJ2Si9uoNROhTpOgU0bgh
+ E6GDDldvBIf+ZpVxI2CnWzxV0f6OBEOYXFLSc6aVFMJHHIP2FXL5FMAMrcWoue5C9kXNDApCI
+ nr0Kzh1Yr5nDC+B0ET6ZKMvfqFB4fs0jtHWRJeup/KdQj6fcLLN0K4SzjmpjgTiD8EzxlV5e2
+ bQimCdh9w3OWUjX1SepYqrKxNeR2g1t3then8fWIZEQRVE9zhlMfgleBG1BNcTwdx5pEirjGi
+ fHOdMi0aY5AihBM0jHsqbZ3H+EKL3AmlxnIcMVO4xgeGrBhmUHybn407diKsi08jp1aDAhb/V
+ KuGgqraEDGF+UxVtp6qX+snMdtdaBf4OPwV8y1IBac7dB/HwMMgbGpNPm9d2LwHP9ZO6V3gux
+ kZ5yQdndEDIfsiNYiaq5AmfdXXsaqPXC0s2IlIZnW5NrBAqB5eaOB82PqX83rJFdoMMcbEtla
+ 2cSysBzElxkUUbFKTFbxQZjhTYTaPC1WdEOz1Nr0Wi/cmdsvmeZ/RNTlhFZTzjVtdyLaBCxdj
+ 4b0Xmfr56BDpT1BB09Gu2tuYappdYP27vEt61eyQ5+OcQYwqxU2NYKv1IJwO1LIEiMiSfOt1V
+ GOIRLORs4yvrHNEODw3C3MCV6KFIWAWeNmx31NtKctdM1l8wb3VyY6BkTIxhghlNrkq9T2zwq
+ RUeJMuuvyMyVGJ+xQzWAgkDhJO7C75na4/bvUQJ4FrTMHG7FUnsJSIoHOuhcMInTLEA801QJx
+ /+NnxckmC5J+zRLufZk+fnihLKxl2STVXmeWI/Fdow275os8pDq4lXgJIKBMfjVH/Y9zHviHW
+ LPJUMqmHZjxxQOM/fvPXcgKQ74Kq1h3Jt3NojFLZNn5d9WOJoznbl7fkhLqZttZDStp6bfqaM
+ nx6W+OeUD8C+Q95V3YS3uSu78iYmYUcuXqF6N/CshQGu2wjB8riiQV/bjQy9PO1caqhYYsRvg
+ 7BoDoo28rkthJIwwAFFGEDCnPEUIJQwWkhqjXPztjufXvqNph19uwZIPvCoN89HsFNck8voEV
+ pxLX+8thLV6Nn7Z9P0uOU2qZE93ykqVgnkEHygLAxqfdd0+m6bbMq2QhJQcFUHtWTCA6nct32
+ 6KEhu8DzmYVi+GEfMMmvhvWMKrEhHG8vdV5A00i/8TUgR9/Bhpb/25dog==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a small device size misalignment between the super block device
-size and the device extent size:
-total_bytes             10737418240 	<<<
-bytes_used              15097856
-dev_item.total_bytes    10737418240
-dev_item.bytes_used     1094713344
 
-        item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
-                devid 1 total_bytes 1095761920 bytes_used 1094713344
-				    ^^^^^^^^^^
 
-[CAUSE]
-In fixup_device_size(), we only reset superblock device item size, which
-will be overwritten in write_dev_supers() using
-btrfs_device::total_bytes.
+On 2021/8/11 =E4=B8=8B=E5=8D=8810:49, Marcos Paulo de Souza wrote:
+> Commit 78aa1d95dd99 ("btrfs-progs: fi resize: make output more
+> readable") added the device id of the resized fs along with a pretty
+> printed size. Create a new filter to simplify the output message using
+> size in bytes.
 
-And it doesn't touch btrfs_superblock::total_bytes either.
+Finally we can get rid of the false alert!
 
-[FIX]
-So fix the small mismatch by also resetting btrfs_device::total_bytes,
-btrfs_device::bytes_used and btrfs_superblock::total_bytes.
+>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>
+>   Changes since v2:
+>   * Check the output to verify if the resize really happened (Qu)
+>
+>   Changes since v1:
+>   * Do not adapt the output message to the newer format (Qu)
+>
+>   common/filter.btrfs | 24 ++++++++++++++++++++++++
+>   tests/btrfs/177     |  8 +++++---
+>   tests/btrfs/177.out |  4 ++--
+>   3 files changed, 31 insertions(+), 5 deletions(-)
+>
+> diff --git a/common/filter.btrfs b/common/filter.btrfs
+> index d4169cc6..fd422e08 100644
+> --- a/common/filter.btrfs
+> +++ b/common/filter.btrfs
+> @@ -72,6 +72,30 @@ _filter_btrfs_compress_property()
+>   	sed -e "s/compression=3D\(lzo\|zlib\|zstd\)/COMPRESSION=3DXXX/g"
+>   }
+>
+> +# Eliminate the differences between the old and new output formats
+> +# Old format:
+> +# 	Resize 'SCRATCH_MNT' of '1073741824'
+> +# New format:
+> +# 	Resize device id 1 (SCRATCH_DEV) from 3.00GiB to 1.00GiB
+> +# Convert both outputs to:
+> +# 	Resized to 1073741824
 
-Thankfully since commit 73dd4e3c87c9 ("btrfs-progs: image: Don't modify
-the chunk and device tree if the source dump is single device") single
-device dump won't have such problem, but it's still worthy for
-multi-device dump.
+Great comments on the old and new outputs.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- image/main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+It's fine for the existing 177 usage, as its size is always fixed and
+always GiB aligned.
 
-diff --git a/image/main.c b/image/main.c
-index 9af62c98a793..c50bcfde6a36 100644
---- a/image/main.c
-+++ b/image/main.c
-@@ -2375,6 +2375,7 @@ static int fixup_device_size(struct btrfs_trans_handle *trans,
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	struct btrfs_dev_item *dev_item;
- 	struct btrfs_dev_extent *dev_ext;
-+	struct btrfs_device *dev;
- 	struct btrfs_path path;
- 	struct extent_buffer *leaf;
- 	struct btrfs_root *root = fs_info->chunk_root;
-@@ -2393,6 +2394,8 @@ static int fixup_device_size(struct btrfs_trans_handle *trans,
- 	key.type = BTRFS_DEV_EXTENT_KEY;
- 	key.offset = (u64)-1;
- 
-+	dev = list_first_entry(&fs_info->fs_devices->devices,
-+				struct btrfs_device, dev_list);
- 	ret = btrfs_search_slot(NULL, fs_info->dev_root, &key, &path, 0, 0);
- 	if (ret < 0) {
- 		errno = -ret;
-@@ -2426,6 +2429,9 @@ static int fixup_device_size(struct btrfs_trans_handle *trans,
- 
- 	btrfs_set_stack_device_total_bytes(dev_item, dev_size);
- 	btrfs_set_stack_device_bytes_used(dev_item, mdres->alloced_chunks);
-+	dev->total_bytes = dev_size;
-+	dev->bytes_used = mdres->alloced_chunks;
-+	btrfs_set_super_total_bytes(fs_info->super_copy, dev_size);
- 	ret = fstat(out_fd, &buf);
- 	if (ret < 0) {
- 		error("failed to stat result image: %m");
--- 
-2.32.0
 
+But if the helper is going to be used by other test cases, we need to
+take the accuracy loss into consideration.
+
+For the new output, we only have two digits accuracy, if we convert the
+output to binary, it will cause some inaccuracy.
+
+E.g. if some tests is utilize device size like 4,000,000,000 bytes, the
+pretty output will be 3.72 GiB, and if you convert it back to bytes, it
+will be 3994319585.28 bytes.
+
+Not to mention you also deleted the trailing zeros, which further damage
+the accuracy.
+
+I don't have any better idea to solve it though, thus I guess we'd
+better just add some comment about this problem and call it a day.
+
+Thanks,
+Qu
+
+> +_filter_btrfs_filesystem_resize()
+> +{
+> +        local _field
+> +        local _val
+> +        local _suffix
+> +        _field=3D`$AWK_PROG '{print $NF}' | tr -d "'"`
+> +        # remove trailing zeroes
+> +        _val=3D`echo $_field | $AWK_PROG '{print $1 * 1}'`
+> +        # get the first unit char, for example return G in case we have=
+ GiB
+> +        _suffix=3D`echo $_field | grep -o "[GMB]"`
+> +        if [ -z "$_suffix" ]; then
+> +                _suffix=3D"B"
+> +        fi
+> +        _val=3D`echo "$_val$_suffix" | _filter_size_to_bytes`
+> +	echo "Resized to $_val"
+> +}
+> +
+>   # filter error messages from btrfs prop, optionally verify against $1
+>   # recognized message(s):
+>   #  "object is not compatible with property: label"
+> diff --git a/tests/btrfs/177 b/tests/btrfs/177
+> index 966d29d7..ff241bed 100755
+> --- a/tests/btrfs/177
+> +++ b/tests/btrfs/177
+> @@ -10,6 +10,7 @@
+>   _begin_fstest auto quick swap balance
+>
+>   . ./common/filter
+> +. ./common/filter.btrfs
+>   . ./common/btrfs
+>
+>   # Modify as appropriate.
+> @@ -36,8 +37,8 @@ dd if=3D/dev/zero of=3D"$SCRATCH_MNT/refill" bs=3D4096=
+ >> $seqres.full 2>&1
+>   # Now add more space and create a swap file. We know that the first $f=
+ssize
+>   # of the filesystem was used, so the swap file must be in the new part=
+ of the
+>   # filesystem.
+> -$BTRFS_UTIL_PROG filesystem resize $((3 * fssize)) "$SCRATCH_MNT" | \
+> -							_filter_scratch
+> +$BTRFS_UTIL_PROG filesystem resize $((3 * fssize)) "$SCRATCH_MNT" |
+> +						_filter_btrfs_filesystem_resize
+>   _format_swapfile "$swapfile" $((32 * 1024 * 1024))
+>   swapon "$swapfile"
+>
+> @@ -55,7 +56,8 @@ $BTRFS_UTIL_PROG filesystem resize 1G "$SCRATCH_MNT" 2=
+>&1 | grep -o "Text file b
+>   swapoff "$swapfile"
+>
+>   # It should work again after swapoff.
+> -$BTRFS_UTIL_PROG filesystem resize $fssize "$SCRATCH_MNT" | _filter_scr=
+atch
+> +$BTRFS_UTIL_PROG filesystem resize $fssize "$SCRATCH_MNT" |
+> +						_filter_btrfs_filesystem_resize
+>
+>   status=3D0
+>   exit
+> diff --git a/tests/btrfs/177.out b/tests/btrfs/177.out
+> index 63aca0e5..eb374d34 100644
+> --- a/tests/btrfs/177.out
+> +++ b/tests/btrfs/177.out
+> @@ -1,4 +1,4 @@
+>   QA output created by 177
+> -Resize 'SCRATCH_MNT' of '3221225472'
+> +Resized to 3221225472
+>   Text file busy
+> -Resize 'SCRATCH_MNT' of '1073741824'
+> +Resized to 1073741824
+>
