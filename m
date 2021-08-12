@@ -2,94 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E940A3E9EB8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 08:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EAB3E9ECD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 08:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234562AbhHLGm6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Aug 2021 02:42:58 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60472 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbhHLGm6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Aug 2021 02:42:58 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B130522156;
-        Thu, 12 Aug 2021 06:42:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628750552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q6mohj9c8KaGz1DPunKJD0IcQey84b+cV6BnGvAQz28=;
-        b=CmGiKnhV/OUENBd64Zz/wGLp7xvgZ8hDofLHzJrZhf8GQetQxxKEhqzTXdkMCm3chhIf1a
-        /bxFJeQsXK53gf7+3H0BodzfKQ+TmTmP/OR25rvZp7LiZ7IutZH+kIdxzj1LTQWUMsYO/u
-        pEdlNw69kkLexENBQ+tRTgucElv7rnw=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 8AC371363C;
-        Thu, 12 Aug 2021 06:42:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 2v5xH9jCFGH1cQAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Thu, 12 Aug 2021 06:42:32 +0000
-Subject: Re: [PATCH 2/4] btrfs-progs: map-logical: reject unaligned
- logical/bytes pair
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210812053508.175737-1-wqu@suse.com>
- <20210812053508.175737-3-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <d0141759-2ae0-f425-a020-3ddeb328b144@suse.com>
-Date:   Thu, 12 Aug 2021 09:42:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234620AbhHLGtn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Aug 2021 02:49:43 -0400
+Received: from verein.lst.de ([213.95.11.211]:43083 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233567AbhHLGtm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Aug 2021 02:49:42 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 39FE567373; Thu, 12 Aug 2021 08:49:15 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 08:49:14 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH 11/30] iomap: add the new iomap_iter model
+Message-ID: <20210812064914.GA27145@lst.de>
+References: <20210809061244.1196573-1-hch@lst.de> <20210809061244.1196573-12-hch@lst.de> <20210811003118.GT3601466@magnolia> <20210811053856.GA1934@lst.de> <20210811191708.GF3601443@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20210812053508.175737-3-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811191708.GF3601443@magnolia>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 12.08.21 г. 8:35, Qu Wenruo wrote:
-> Btrfs filesystem is a block filesystem, there is no sense to support
-> unaligned logical/bytes pair.
+On Wed, Aug 11, 2021 at 12:17:08PM -0700, Darrick J. Wong wrote:
+> > iter.c is also my preference, but in the end I don't care too much.
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  btrfs-map-logical.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/btrfs-map-logical.c b/btrfs-map-logical.c
-> index eff0b89dbec6..21f00fa20ce8 100644
-> --- a/btrfs-map-logical.c
-> +++ b/btrfs-map-logical.c
-> @@ -289,6 +289,16 @@ int main(int argc, char **argv)
->  
->  	if (bytes == 0)
->  		bytes = root->fs_info->sectorsize;
-> +
-> +	if (!IS_ALIGNED(logical, root->fs_info->sectorsize) ||
-> +	    !IS_ALIGNED(bytes, root->fs_info->sectorsize)) {
-> +		ret = -EINVAL;
-> +		error(
-> +	"invalid logical/bytes, both need to aligned to %u, have %llu and %llu",
-> +			root->fs_info->sectorsize, logical, bytes);
+> Ok.  My plan for this is to change this patch to add the new iter code
+> to apply.c, and change patch 24 to remove iomap_apply.  I'll add a patch
+> on the end to rename apply.c to iter.c, which will avoid breaking the
+> history.
 
-In order to be more graceful I'd say print this as a warning and do the
-alignment automatically, informing the user this has been performed.
+What history?  There is no shared code, so no shared history and.
 
-> +		goto close;
-> +	}
-> +
->  	cur_logical = logical;
->  	cur_len = bytes;
->  
 > 
+> I'll send the updated patches as replies to this series to avoid
+> spamming the list, since I also have a patchset of bugfixes to send out
+> and don't want to overwhelm everyone.
+
+Just as a clear statement:  I think this dance is obsfucation and doesn't
+help in any way.  But if that's what it takes..
