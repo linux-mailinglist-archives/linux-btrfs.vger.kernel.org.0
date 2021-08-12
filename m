@@ -2,138 +2,208 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058B63EA953
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 19:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BD13EA97F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 19:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234913AbhHLRS7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Aug 2021 13:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        id S235913AbhHLRb5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Aug 2021 13:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbhHLRS7 (ORCPT
+        with ESMTP id S235761AbhHLRb4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Aug 2021 13:18:59 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70E2C061756;
-        Thu, 12 Aug 2021 10:18:33 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id b7so3147523uav.11;
-        Thu, 12 Aug 2021 10:18:33 -0700 (PDT)
+        Thu, 12 Aug 2021 13:31:56 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDCEC061756;
+        Thu, 12 Aug 2021 10:31:31 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id bo18so10982544pjb.0;
+        Thu, 12 Aug 2021 10:31:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QdEoiEm2g87WEk1R+kcH8dP+gD3NMDBzItDtGLAECqQ=;
-        b=Maj5ogTMuXE9JhrNZ11AhIMsp5tTxLz/V8yVKh30hYxE4fUTz1uiJNsZSuq74Devir
-         Jwp4TdxQdNyrPi8GcGIsnhXSr7DhK5ZWIkf2RsxpMGdNucjO9DvDUvA1hIlcyYJIYxeI
-         9ei4AdEYACvrlpE155zly+Rhe9OvVoyQq4JSL6hoVFMYPj8v1i582Ykdg9ScA2ILLlrN
-         ZkJIhdNkV6qmS/pVfBMSjG7DtrF00R2GVo3Rzjw3nOnOWHF83ewr87+zgpuNB+g0P5cI
-         JivWira21RuWKhYIgbbBNU5+KPxXT4jiS/PFA16iOZlDKg9PXD6s+I2027WfIn3x6lW8
-         svIA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Gz94TVtxWNiNSVxbOnKzfxVBuQm8AVcJ5cdmFzvQsHA=;
+        b=Ue5MKLSRbXzCOAY6QQQGD8iKv/ERXos1bKdb+w4oTJTLY526gD4sOXiPUiWGlfiUEn
+         FJ2csHMR4GvMjHtpJ0X4L773Ju55sxEaUa7llMKM3gq+nKnqd+bLE0QEkSRvXjPHO5Kh
+         5Dec9b61ELYl7Wu+3l9aQxPGLXDmOBnSCx8JIVdAu6c8Na8ZGbsfrKgu7tLyYjEqQMpr
+         hwWUYpG7LszTqS5pC5NMIk9twQ0r4YkqKJZR08VDU+CDOv4xxmjudj/OvtvyN/O7kMHq
+         JPbW9rvLIiDJ2RRaNKlHARLWUWQfzP1mQRC6KSR2YFESJgR0Nm3ewgBDHLlaQmtc1TQC
+         lV/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QdEoiEm2g87WEk1R+kcH8dP+gD3NMDBzItDtGLAECqQ=;
-        b=LTnmlY4ioruyBc/4tvqqxw+0wvIjCghfaTzQ7dUfrP6lqb2w0mncEZJZIP099tPGD1
-         M9r3EbFmknKJd/ZTcb7T61h7llaQmD+Q+68pn7CGIElwvntUosxvBeowhzpoYHpYohN7
-         oh2eJs/XcjnvpsPZzXNxq7n0jJz0M94VztWDGYmUieiu1780ko41gWYfP0lGviBgt9je
-         H0hZlO6JguUskHmNRFeSgZu4fbl5yr91dUu6Mp1mNIR4YJrkZ5HYvGCydojMXCmTR9B3
-         skpUjDc82Keyvxzb4MiHNwz4RRxRXrUr6uhxzBVqmBLpI0LxOQRTe4IoHhBLJPx8Jni0
-         4Slg==
-X-Gm-Message-State: AOAM531PDjMLBXnviKofG5OhvPofI3eQiWMNBIU/3nkJAQvQqcQXJckS
-        933RMfueFml6J5I4MyaBHZpTEgT29qPVp8UPU4c=
-X-Google-Smtp-Source: ABdhPJyMNVmeBiPIR+zewL1EcXlBuiKdVqN6+pG8Ga6QfOvVWjmSsa3RuqLALtDIUzOpYZBvfgq9vA1PV7KQY0PnRM0=
-X-Received: by 2002:ab0:3ca7:: with SMTP id a39mr3519098uax.127.1628788712864;
- Thu, 12 Aug 2021 10:18:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Gz94TVtxWNiNSVxbOnKzfxVBuQm8AVcJ5cdmFzvQsHA=;
+        b=DwqhWWzgNmVlnZqmkn1jct0Jc6tB7Tp384rjr1QMKrCbuVyP/PMShtpmqrP9aPuTR5
+         ssmxDCOUvVCoVSe5/J5F5rz/pQkvlnUVQ7AKUa60gxCKr8gqq0taGK73EQhhxKP6cAe1
+         wbNbFF6w+uk3cP36qtn1t+fKBZdgQ7Z20wWjWPfMuf1t0My6rZ461QOAIgq2aopxzEfR
+         zZZmma7RAMazh6ao+8S6RcnGmdYYprztd1ztCrUGguwPswhsbSzUJtvbLYJ3om4sxQzu
+         Di2ntmZfpMbPwL/yMf+a+oWda2Sai4zbaz8RY83MHUBz7/LOsXFrYZsaP2ih4g7E62Ko
+         syZw==
+X-Gm-Message-State: AOAM533KFFyFsAiR2nJF3KpRJDWn+R5GBoDGqhULb+v8edcxe1PTal3U
+        56Ugf8wpwDtxmuG+p0f5h/s=
+X-Google-Smtp-Source: ABdhPJxLh78LmXjViINrWmcaGjkKurD4OZxwOI8f6s2qMJRnPKh3vytXUKVirwW7ppftgZbydtS1yg==
+X-Received: by 2002:a17:902:b593:b0:12d:7aa5:de2d with SMTP id a19-20020a170902b59300b0012d7aa5de2dmr3547930pls.31.1628789491181;
+        Thu, 12 Aug 2021 10:31:31 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id a18sm3211465pjq.15.2021.08.12.10.31.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 10:31:30 -0700 (PDT)
+Subject: Re: [PATCH v2] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
+ <20210812103851.GC5047@twin.jikos.cz>
+ <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
+ <20210812155032.GL5047@twin.jikos.cz>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
+Date:   Fri, 13 Aug 2021 01:31:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210811200717.48344-1-davispuh@gmail.com> <ccd23bbb-1404-0727-383f-2412a5d4df36@toxicpanda.com>
-In-Reply-To: <ccd23bbb-1404-0727-383f-2412a5d4df36@toxicpanda.com>
-From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date:   Thu, 12 Aug 2021 20:18:21 +0300
-Message-ID: <CAOE4rSwuW4uZR5kBhmctdUqLnyE9Vpcj19qibeLUxWoB4B6opQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Allow read-only mount with corrupted extent tree
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210812155032.GL5047@twin.jikos.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-tre=C5=A1d., 2021. g. 11. aug., plkst. 23:41 =E2=80=94 lietot=C4=81js Josef=
- Bacik
-(<josef@toxicpanda.com>) rakst=C4=ABja:
->
-> On 8/11/21 4:07 PM, D=C4=81vis Mos=C4=81ns wrote:
-> > Currently if there's any corruption at all in extent tree
-> > (eg. even single bit) then mounting will fail with:
-> > "failed to read block groups: -5" (-EIO)
-> > It happens because we immediately abort on first error when
-> > searching in extent tree for block groups.
-> >
-> > Now with this patch if `ignorebadroots` option is specified
-> > then we handle such case and continue by removing already
-> > created block groups and creating dummy block groups.
-> >
->
-> Already done and queue'ed up for the next release
->
-> btrfs: rescue: allow ibadroots to skip bad extent tree when reading block=
- group
-> items
+On 12/8/21 11:50 pm, David Sterba wrote:
+> On Thu, Aug 12, 2021 at 11:43:16PM +0800, Desmond Cheong Zhi Xi wrote:
+>> On 12/8/21 6:38 pm, David Sterba wrote:
+>>> On Tue, Jul 27, 2021 at 03:13:03PM +0800, Desmond Cheong Zhi Xi wrote:
+>>>> When removing a writeable device in __btrfs_free_extra_devids, the rw
+>>>> device count should be decremented.
+>>>>
+>>>> This error was caught by Syzbot which reported a warning in
+>>>> close_fs_devices because fs_devices->rw_devices was not 0 after
+>>>> closing all devices. Here is the call trace that was observed:
+>>>>
+>>>>     btrfs_mount_root():
+>>>>       btrfs_scan_one_device():
+>>>>         device_list_add();   <---------------- device added
+>>>>       btrfs_open_devices():
+>>>>         open_fs_devices():
+>>>>           btrfs_open_one_device();   <-------- writable device opened,
+>>>> 	                                     rw device count ++
+>>>>       btrfs_fill_super():
+>>>>         open_ctree():
+>>>>           btrfs_free_extra_devids():
+>>>> 	  __btrfs_free_extra_devids();  <--- writable device removed,
+>>>> 	                              rw device count not decremented
+>>>> 	  fail_tree_roots:
+>>>> 	    btrfs_close_devices():
+>>>> 	      close_fs_devices();   <------- rw device count off by 1
+>>>>
+>>>> As a note, prior to commit cf89af146b7e ("btrfs: dev-replace: fail
+>>>> mount if we don't have replace item with target device"), rw_devices
+>>>> was decremented on removing a writable device in
+>>>> __btrfs_free_extra_devids only if the BTRFS_DEV_STATE_REPLACE_TGT bit
+>>>> was not set for the device. However, this check does not need to be
+>>>> reinstated as it is now redundant and incorrect.
+>>>>
+>>>> In __btrfs_free_extra_devids, we skip removing the device if it is the
+>>>> target for replacement. This is done by checking whether device->devid
+>>>> == BTRFS_DEV_REPLACE_DEVID. Since BTRFS_DEV_STATE_REPLACE_TGT is set
+>>>> only on the device with devid BTRFS_DEV_REPLACE_DEVID, no devices
+>>>> should have the BTRFS_DEV_STATE_REPLACE_TGT bit set after the check,
+>>>> and so it's redundant to test for that bit.
+>>>>
+>>>> Additionally, following commit 82372bc816d7 ("Btrfs: make
+>>>> the logic of source device removing more clear"), rw_devices is
+>>>> incremented whenever a writeable device is added to the alloc
+>>>> list (including the target device in btrfs_dev_replace_finishing), so
+>>>> all removals of writable devices from the alloc list should also be
+>>>> accompanied by a decrement to rw_devices.
+>>>>
+>>>> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+>>>> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+>>>> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+>>>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>>>> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>>>> ---
+>>>>    fs/btrfs/volumes.c | 1 +
+>>>>    1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>>> index 807502cd6510..916c25371658 100644
+>>>> --- a/fs/btrfs/volumes.c
+>>>> +++ b/fs/btrfs/volumes.c
+>>>> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+>>>>    		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+>>>>    			list_del_init(&device->dev_alloc_list);
+>>>>    			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+>>>> +			fs_devices->rw_devices--;
+>>>>    		}
+>>>>    		list_del_init(&device->dev_list);
+>>>>    		fs_devices->num_devices--;
+>>>
+>>> I've hit a crash on master branch with stacktrace very similar to one
+>>> this bug was supposed to fix. It's a failed assertion on device close.
+>>> This patch was the last one to touch it and it matches some of the
+>>> keywords, namely the BTRFS_DEV_STATE_REPLACE_TGT bit that used to be in
+>>> the original patch but was not reinstated in your fix.
+>>>
+>>> I'm not sure how reproducible it is, right now I have only one instance
+>>> and am hunting another strange problem. They could be related.
+>>>
+>>> assertion failed: !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state), in fs/btrfs/volumes.c:1150
+>>>
+>>> https://susepaste.org/view/raw/18223056 full log with other stacktraces,
+>>> possibly relatedg
+>>>
+>>
+>> Looking at the logs, it seems that a dev_replace was started, then
+>> suspended. But it wasn't canceled or resumed before the fs devices were
+>> closed.
+>>
+>> I'll investigate further, just throwing some observations out there.
+> 
+> Thanks. I'm testing the patch revert, no crash after first loop, I'll
+> run a few more to be sure as it's not entirely reliable.
+> 
+> Sending the revert is option of last resort as we're approaching end of
+> 5.14 dev cycle and the crash prevents testing (unlike the fuzzer
+> warning).
+> 
 
-Nice!
-Originally I submitted this patch in March, but it went nowhere so resent.
-Anyway I tested that other patch and it has limitation that it won't
-handle log replay error so need to use both
-rescue=3Dignorebadroots,nologreplay
-But other than it seems to work fine.
+I might be missing something, so any thoughts would be appreciated. But 
+I don't think the assertion in btrfs_close_one_device is correct.
 
-Here's output when not using nologreplay
+ From what I see, this crash happens when close_ctree is called while a 
+dev_replace hasn't completed. In close_ctree, we suspend the 
+dev_replace, but keep the replace target around so that we can resume 
+the dev_replace procedure when we mount the root again. This is the call 
+trace:
 
-[ 1886.281376] BTRFS info (device sde): ignoring bad roots
-[ 1886.281381] BTRFS info (device sde): disk space caching is enabled
-[ 1886.281383] BTRFS info (device sde): has skinny extents
-[ 1886.365608] BTRFS info (device sde): bdev /dev/sdq errs: wr 0, rd
-0, flush 0, corrupt 473, gen 0
-[ 1886.365618] BTRFS info (device sde): bdev /dev/sdi errs: wr 31626,
-rd 18765, flush 178, corrupt 5841, gen 0
-[ 1886.365623] BTRFS info (device sde): bdev /dev/sdo errs: wr 6867,
-rd 2640, flush 178, corrupt 1066, gen 0
-[ 1900.249267] BTRFS warning (device sde): checksum verify failed on
-21057125941248 wanted 0x5a4526a7 found 0x25949991 level 0
-[ 1902.323362] BTRFS error (device sde): parent transid verify failed
-on 21057111523328 wanted 2262739 found 2262698
-[ 1902.519338] BTRFS error (device sde): bad tree block start, want
-21057108836352 have 524288
-[ 1902.940022] BTRFS warning (device sde): checksum verify failed on
-21057097302016 wanted 0x8b2501e9 found 0x5b8ab9a3 level 0
-[ 1902.946715] BTRFS error (device sde): parent transid verify failed
-on 21057097302016 wanted 2262739 found 2262696
-[ 1902.950727] BTRFS info (device sde): start tree-log replay
-[ 1911.289738] BTRFS warning (device sde): checksum verify failed on
-21057127661568 wanted 0xd1506ed9 found 0x22ab750a level 0
-[ 1911.293266] BTRFS warning (device sde): checksum verify failed on
-21057107017728 wanted 0x9120eaee found 0x35b2df28 level 0
-[ 1911.326093] BTRFS: error (device sde) in __btrfs_free_extent:3069:
-errno=3D-5 IO failure
-[ 1911.326101] BTRFS: error (device sde) in
-btrfs_run_delayed_refs:2150: errno=3D-5 IO failure
-[ 1911.326106] BTRFS warning (device sde): Skipping commit of aborted
-transaction.
-[ 1911.326108] BTRFS: error (device sde) in cleanup_transaction:1945:
-errno=3D-5 IO failure
-[ 1911.326190] BTRFS warning (device sde): checksum verify failed on
-21057107017728 wanted 0x9120eaee found 0xd00e16cf level 0
-[ 1911.326317] BTRFS warning (device sde): checksum verify failed on
-21057107017728 wanted 0x9120eaee found 0xd00e16cf level 0
-[ 1911.326922] BTRFS: error (device sde) in btrfs_replay_log:2417:
-errno=3D-5 IO failure (Failed to recover log tree)
-[ 1912.160913] BTRFS error (device sde): parent transid verify failed
-on 21057111736320 wanted 2262739 found 2262698
-[ 1914.666177] BTRFS error (device sde): open_ctree failed
+   close_ctree():
+     btrfs_dev_replace_suspend_for_unmount();
+     btrfs_close_devices():
+       btrfs_close_fs_devices():
+         btrfs_close_one_device():
+           ASSERT(!test_bit(BTRFS_DEV_STATE_REPLACE_TGT, 
+&device->dev_state));
 
-Best regards,
-D=C4=81vis
+However, since the replace target sticks around, there is a device with 
+BTRFS_DEV_STATE_REPLACE_TGT set, and we fail the assertion in 
+btrfs_close_one_device.
+
+Two options I can think of:
+
+- We could remove the assertion.
+
+- Or we could clear the BTRFS_DEV_STATE_REPLACE_TGT bit in 
+btrfs_dev_replace_suspend_for_unmount. This is fine since the bit is set 
+again in btrfs_init_dev_replace if the dev_replace->replace_state is 
+BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED. But this approach strikes me as 
+a little odd because the device is still the replace target when 
+mounting in the future.
+
+Thoughts?
