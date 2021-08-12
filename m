@@ -2,184 +2,179 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC2B3EA122
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 10:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA3D3EA30C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 12:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235533AbhHLI7L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Aug 2021 04:59:11 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:10510 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234600AbhHLI7K (ORCPT
+        id S235345AbhHLKmL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Aug 2021 06:42:11 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41704 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232653AbhHLKmK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Aug 2021 04:59:10 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17C8v5CI029083;
-        Thu, 12 Aug 2021 08:58:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : cc : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=KD8CiAAVwm2Ju5owb3JrjRGSsL23Ta7HTSTeGVEJRMU=;
- b=wG4wCvX1X1911a5+SpfZt9NFtRbFxFQDZIqrpMxASkY7npAVA/cngROhbmsdjqwj+7ue
- yp4UnP4ovLlj2XlAAfsYTmqQ3dHVxVpARWgnmiApmhaKOs2wEu89/WOUDiNYDZQBpo0i
- 7uQ9D9JBkXNs/OYIRVfqE5DfKDPRzSKJeyJK8KRPOkA91+VZ500sDlfm7mpYe4xEI/NX
- gMyzNevXtleG43u7lw2oaUCTgZQsUfiVuOeAtp52lOLY9bVom05/bhX8xrMPBzj+cRS+
- gHtJMV0czIN03YFYF4hOu2PhTCeEDuB6O/F44awNqdpxdgYYEN9xv2wXaUlVSbD3075q UQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : cc : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=KD8CiAAVwm2Ju5owb3JrjRGSsL23Ta7HTSTeGVEJRMU=;
- b=uEg6cM5VLw4rrhfjuXowO+Zm52E2aMHpNgmK5ShMST2KtOSDk6U5AImDzxVCR4xdTztf
- grlj88wquEqi60N6H02T0fHIRR1yJ5FmQOqQtjFnK6SkIf9GF7vO9uHz/VqRu3YzvG4e
- qO4m20M3KLPgQcp1qt4xIef1uUXS3jB4OJ8n197S55AunRdWTL6mj55FFZ7jnLQRl6dr
- lQNdfUY5y+DV3PKj0pVO8qqubQ4XLb8OVCzQQ5GWMywqutKIMawUBb2ld7D92f7D0FqE
- ivgrb8Dkd32NCkh33rZT1VznGWVmd8n/QphmrCV5EUdJRDOQiCl0UW+zaqTf0ylULtHk hw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3acd64agcp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Aug 2021 08:58:42 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17C8uaDl140410;
-        Thu, 12 Aug 2021 08:58:41 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
-        by aserp3030.oracle.com with ESMTP id 3abx3xfhy8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Aug 2021 08:58:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GExYx0GYO7+6NI/RwybFfj9EE7cS2UuI6yem8UwThu3/CGG5PcL4E8d/Vh3GxzRrXeylRnzYZ1sE7N/jrCXCnmE0GxtBFNfx7PW0P8YMVKUheCtniMwgjLdcPbKNtyHY8msJFTR0D22vWTlabUgbilJxV6NNJfQ+qmnHobWg+Ksu20XRuJV6Ine4ajjyvf10yzbpt8kW7Rc8tO3cKdjtr37mXRf3aqB9YcArcg4k+YNsTOG0veO3qOUXrReLPANqVFPCYBJIJb1FKFuhHos4bCMF/w1wrIBybQTuHWNXeXIk7LvViL4g4irUPhce8hFv9I/N/xf7ttgw7kBHn4/WJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KD8CiAAVwm2Ju5owb3JrjRGSsL23Ta7HTSTeGVEJRMU=;
- b=Qtk80fA54ZRdsms96Ev4wq9Wqj7ZoiEzhtbq4UVXmVngaPPQxNj2VtVCvjQr1DgHI5o8YsDRm6r/Q88l2SOcOiTvPbUUil/uqE+Bw46hDfUPZdUR1wOn6gQEdNS07ixG5SbI0oR2qY1KJODYoJQ/FDw3v6annjFxLjuxrv6xguVdB3s+B8mtlU5cXvzBgyV8wmlw+nJh6WxtTHpcNF1mtzhGTkeV8XjokztBgzZCO9U5EtdNyGEyuKG50pPTIeL+I1tqegK4B60vOVqn39mikKlSZKICpkbXhgBsgmT+qZhwE+g5aHFgkYbQW1FE8F6u9wIZROV0Qn0gjYrfiwvHWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KD8CiAAVwm2Ju5owb3JrjRGSsL23Ta7HTSTeGVEJRMU=;
- b=nLRofVqUV1EyEnT7B0oUHWwi66HGSQUmJ71eCZDW+oY+ALVa1AP0toetOrjJAA8nUrCTz/N2mRRUmcxcIUv2mC7FNIYoV6sux4i3tykKHsd1/Y041vKuD77DGBqNJyfCFz81Rr17pRPqLTcXuRacnYpQvjoJ9hUxlJhC2uwbtKo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by BLAPR10MB5281.namprd10.prod.outlook.com (2603:10b6:208:30f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Thu, 12 Aug
- 2021 08:58:39 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a%4]) with mapi id 15.20.4394.025; Thu, 12 Aug 2021
- 08:58:39 +0000
-Subject: Re: [PATCH] btrfs: reduce return argument of btrfs_chunk_readonly
-To:     Nikolay Borisov <nborisov@suse.com>
-References: <32a8d585312548c69ca242c6fd671755f78ddace.1628609924.git.anand.jain@oracle.com>
- <da5074a6-c0bb-a844-bbfe-c57f38bba876@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Message-ID: <249bb6d8-4be1-90b6-1893-c7d0adef1a0b@oracle.com>
-Date:   Thu, 12 Aug 2021 16:58:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <da5074a6-c0bb-a844-bbfe-c57f38bba876@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR06CA0131.apcprd06.prod.outlook.com
- (2603:1096:1:1d::33) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
+        Thu, 12 Aug 2021 06:42:10 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A46AD22268;
+        Thu, 12 Aug 2021 10:41:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1628764904;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WLaDCGpLgaD0uedP6SFyCk6Ki6nEduqBk8ElNDyTxhQ=;
+        b=J6twbbsaOTo7Lkl3c0ZHTYlP3y6pBfORenklXCr/1RZsljM3NkkI2KihowQqTW2F+UCRy1
+        fSRMa6c2CHIi2QfvSr8TVeowE+1CAmvvBZfJqdOr9EXq/e/iO1irNN8WsCNqC3VLxhdTKH
+        Xakx8oGZSdFdK2UU4mLmrhv04jny0v4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1628764904;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WLaDCGpLgaD0uedP6SFyCk6Ki6nEduqBk8ElNDyTxhQ=;
+        b=GWCVhMT+df21pSNaxBg2B9NW00p3GClvwR6jmNgBi9ETh0pyV54RSk7OSpTwE33o5bI8pw
+        t9mNi0/gU/m8e5Dw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 81987A3ED3;
+        Thu, 12 Aug 2021 10:41:44 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 35D2FDA733; Thu, 12 Aug 2021 12:38:51 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 12:38:51 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        anand.jain@oracle.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+Message-ID: <20210812103851.GC5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.109] (39.109.186.25) by SG2PR06CA0131.apcprd06.prod.outlook.com (2603:1096:1:1d::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14 via Frontend Transport; Thu, 12 Aug 2021 08:58:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 78d6c0b4-787c-43aa-8740-08d95d6f606d
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5281:
-X-Microsoft-Antispam-PRVS: <BLAPR10MB5281FE2BF28B79C979118D2FE5F99@BLAPR10MB5281.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e+3dxVDARBrkoVGHxtrXfPluxETGvRCxON4/HFyeKeZvg8dz/0qubLgjW8C8o7yRdFuZ81AAT9PS/tVZrsPaPNtl05q6vBY/xArkVKin63vIrie0tNZlGpknsaGQafLahLyAw35CPiEZEawDDhw2w7XhvUQBRG6fIR4E4mB6B8Dzh1pv6jMJhYAc+Vs0Mjh957mqfdFk3vRDiqPfRHcBkDZVVEvmAxCitSFo7CWkI6NiA3DYe0VbpnOPpsZOHVlbAVDW61T6//pb+LCecfkLmgSE0uWqpLD5OZhVFQmfDOpmYfx8PECy4TAn7oVFTWaZQets9e3hlwKI0cOdmJ3XJc0gT8Pxn39zWwe7WmBuJZq5MH9WzDUCQWJv1NpjWf2PDJfNrB7+XWkZ8x5LM/F+HXTBuOcIkqhOro+PO0JitWtpGcLRDuJPYFdty4GwIyxeFws6FuuYK0T7xphiOqiqhALHPzY2PQAYpOlCcVQ9hOqEtyfimzTnOXfd6ZqqQTvTgM9fx/4Nuf0xrcDU6SF28O+MdMr2d+Dw+5/9QA8ydReLdgZelTezurm+1t59XCSoZjbChVhvDegpxkRoBafqrUgN7OSFyMDYWu3q/IwQX3wIy4DVacP1kMMYd5DBpL1fH9YZVFKSbqU088FNx7AXTM2FQFuM57WY6aw9ZsD2mj3uMwuiBfPXjRZZMaS/gwaEk6HOHhu9gkmn6SzcZqOxs6xmNyfNsDZOHI7EZTFuDiw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(346002)(396003)(376002)(136003)(36756003)(186003)(31686004)(6486002)(4326008)(31696002)(66476007)(66556008)(66946007)(86362001)(2906002)(38100700002)(2616005)(6916009)(956004)(478600001)(16576012)(8936002)(316002)(6666004)(8676002)(26005)(5660300002)(44832011)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?alAxaWR5aVNnbU9vUDFLelJ1MVU1eHZWanRuZWNTSzlQN2VlOTZkdkx3TU9z?=
- =?utf-8?B?Z1F6dUowRUU4dTZkdzF4K1ozeEg2UEhwNVlHMDN3djRiZkVmY2hoSy95L1Bu?=
- =?utf-8?B?aDdNTnBncVBPNmxYYmthTGZySVo1TUI3YUZlVVFpbVRpcHNtdVBZVHAxdTkv?=
- =?utf-8?B?b3JFYy9sS1g4aktiY2JsK2NQN0g4KzdBbGJXWUNkMUtJQVNHV2UyNnUxUUtL?=
- =?utf-8?B?cHh1N29pNEZWNkMvekhtTldZVUtCaWNJeUQ4cDVQdFVKL0VVMDNVMkx1ZFAr?=
- =?utf-8?B?c2p0WlIwY2h5SFhybEJiZlhhSm5WcFFwUUxFWTNLQnltejNGZXBEL3Jlb2tw?=
- =?utf-8?B?bnNKY010bk0rZk1mMmNuNW4vSTBkS0UvMmUvQ1hqanBMelU2V3NOOFlyRG13?=
- =?utf-8?B?MjlSQ0JjckdKdncxRUZGSDBseURvK3ZZNzB2bVlaRTVDTEd4RmlpejB3UFd1?=
- =?utf-8?B?NVk5RVdHMjF4VjAyVkRaZ1kxam1IbmV0anNqQzlUTmJqcWdhQ01sMDA1eEdy?=
- =?utf-8?B?ZitZZVdSWDhSNEtONzIwcXMvOE8vTVJHZnV4elRLY0w5MkxiUExiQmFLNWZH?=
- =?utf-8?B?aHk1ZFE5Y2d1blNYVlErSFErUkphL3pvekR4bzBoc3lBUVFTTmFHeUJocnZq?=
- =?utf-8?B?QUFZWnVBOUF4eXdZVk5VV1l0enJ4cVVHaUkxVWo0TTNBd0w4ZFhRdllzVmFB?=
- =?utf-8?B?cWNMamdnME5TanlQMGxxOHBuQ1VoWTdZd1FmNTU5OHBxWlZlbGYwY2RFUExV?=
- =?utf-8?B?L1NFeDJBejlHQjlIY0pVam9UTnBERE0rSW9ibGFKNXdUOFpYVFdYUGVjSzhY?=
- =?utf-8?B?UEVaV3ZUNUVtbUZoelRqTWJDWDRodTFtVFV6WDlhK2t6YVYzM3ZvZ0RmM0Ft?=
- =?utf-8?B?V1A3ZFgyVzB0WXJBSGNLNzNXU3BVa0QvZWk2ZG5VaU9INmNDNFNRVFhhMXJv?=
- =?utf-8?B?enBGaEtVUzNNYW5LYzJ1MENqaStjUkdSV2NYVjdyOFNnR2ZjamNxREVVT0l6?=
- =?utf-8?B?LzRSclJtVEwzLzhjMXdCZlJOVTE0cklHMkJoQURXSHZqa2wzbE1NdjZkcmVK?=
- =?utf-8?B?V2pJeUQ5VTZUdUpYUUdCQ0pwU3Rycll3S09tci96eEdWRmpzTmlOVnU2MUNG?=
- =?utf-8?B?ZVRCazNKc1J4NWdMemZVaHF5OGQvQ2x0dnhmR0xqTzd4dlNJbUcxNHd1RnhJ?=
- =?utf-8?B?YTB3M2pNSEFXMHBNeVhudElubXZ2RUJ5dXkxWVBXRE1xZjdKM2E4U3lOTVdO?=
- =?utf-8?B?aXNhaWZLWnhBNm9ENC9YbWJETWM3UUtTNXJlWTRiUmEvNmZrTDljUUxlR3Yw?=
- =?utf-8?B?cWR4Q1RHVzltYTN2VytQZGhycEVyeTNnOHE5RzJqUGhmd0p3OUVxdTFFZWxw?=
- =?utf-8?B?QVZ6Ynh2VGhOcktXekdFcFBmN0tyWEhNUklycTJkK25HK1ZqQ2RxRU5oMlk2?=
- =?utf-8?B?QU5IZ0lLNC9JajFJM2ErN0RldWZZa1kzWXVwZlcwMHJrdjFuVW80d3hZZmZ5?=
- =?utf-8?B?ZVFzTU9HVSt3K0RXc01mZEp4eE5rb2ZoeDBpdzZYNzJvcE1DTjBJNjhiZVJI?=
- =?utf-8?B?YzFSVE1mMGZHbGd6Zk5FUVdxVDN5KzdyVnl1U2dKZzlrS05XRnFjWEpJMXdQ?=
- =?utf-8?B?bVB1eFg1UFZzT3Q2OXVEbW0wSk9OKzhzV2pRWTJqYlZ0ZDlyRjJvUnZuV1py?=
- =?utf-8?B?QVQvR1lmRkpReVlTbSs1RlNOK2NMb211RE1UR0RpQWhGa09CRXJaNVVGYS9v?=
- =?utf-8?Q?54TM0XKHBjDFX0628m4sa9fbmV+rYhDUpyJY64O?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 78d6c0b4-787c-43aa-8740-08d95d6f606d
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Aug 2021 08:58:39.1095
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2RCeiOJlFj1632TuMGl+CPkEQ/2wAre9sjnZbbfIxQMPNb0XqZ+NGwL9TqkY6KH2Sk4ROS9dRz+3SaxH18n2Cw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5281
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10073 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
- spamscore=0 phishscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108120058
-X-Proofpoint-GUID: nmuEA3cviBC5r9o4ue_KuRVnUbL7Sa9I
-X-Proofpoint-ORIG-GUID: nmuEA3cviBC5r9o4ue_KuRVnUbL7Sa9I
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727071303.113876-1-desmondcheongzx@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/08/2021 15:15, Nikolay Borisov wrote:
+On Tue, Jul 27, 2021 at 03:13:03PM +0800, Desmond Cheong Zhi Xi wrote:
+> When removing a writeable device in __btrfs_free_extra_devids, the rw
+> device count should be decremented.
 > 
+> This error was caught by Syzbot which reported a warning in
+> close_fs_devices because fs_devices->rw_devices was not 0 after
+> closing all devices. Here is the call trace that was observed:
 > 
-> On 10.08.21 г. 18:48, Anand Jain wrote:
->> btrfs_chunk_readonly() checks if the given chunk is writeable. It returns
->> 1 for readonly, and 0 for writeable. So the return argument type bool
->> shall suffice instead of the current type int.
->>
->> Also, rename btrfs_chunk_readonly() to btrfs_chunk_writeable() as we check
->> if the bg is writeable, and helps to keep the logic at the parent function
->> simpler.
+>   btrfs_mount_root():
+>     btrfs_scan_one_device():
+>       device_list_add();   <---------------- device added
+>     btrfs_open_devices():
+>       open_fs_devices():
+>         btrfs_open_one_device();   <-------- writable device opened,
+> 	                                     rw device count ++
+>     btrfs_fill_super():
+>       open_ctree():
+>         btrfs_free_extra_devids():
+> 	  __btrfs_free_extra_devids();  <--- writable device removed,
+> 	                              rw device count not decremented
+> 	  fail_tree_roots:
+> 	    btrfs_close_devices():
+> 	      close_fs_devices();   <------- rw device count off by 1
+> 
+> As a note, prior to commit cf89af146b7e ("btrfs: dev-replace: fail
+> mount if we don't have replace item with target device"), rw_devices
+> was decremented on removing a writable device in
+> __btrfs_free_extra_devids only if the BTRFS_DEV_STATE_REPLACE_TGT bit
+> was not set for the device. However, this check does not need to be
+> reinstated as it is now redundant and incorrect.
+> 
+> In __btrfs_free_extra_devids, we skip removing the device if it is the
+> target for replacement. This is done by checking whether device->devid
+> == BTRFS_DEV_REPLACE_DEVID. Since BTRFS_DEV_STATE_REPLACE_TGT is set
+> only on the device with devid BTRFS_DEV_REPLACE_DEVID, no devices
+> should have the BTRFS_DEV_STATE_REPLACE_TGT bit set after the check,
+> and so it's redundant to test for that bit.
+> 
+> Additionally, following commit 82372bc816d7 ("Btrfs: make
+> the logic of source device removing more clear"), rw_devices is
+> incremented whenever a writeable device is added to the alloc
+> list (including the target device in btrfs_dev_replace_finishing), so
+> all removals of writable devices from the alloc list should also be
+> accompanied by a decrement to rw_devices.
+> 
+> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+> Reported-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+> Tested-by: syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  fs/btrfs/volumes.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 807502cd6510..916c25371658 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+>  		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+>  			list_del_init(&device->dev_alloc_list);
+>  			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+> +			fs_devices->rw_devices--;
+>  		}
+>  		list_del_init(&device->dev_list);
+>  		fs_devices->num_devices--;
 
+I've hit a crash on master branch with stacktrace very similar to one
+this bug was supposed to fix. It's a failed assertion on device close.
+This patch was the last one to touch it and it matches some of the
+keywords, namely the BTRFS_DEV_STATE_REPLACE_TGT bit that used to be in
+the original patch but was not reinstated in your fix.
 
-> I don't see how the logic is kept simpler, given that you just invert
-> it.
+I'm not sure how reproducible it is, right now I have only one instance
+and am hunting another strange problem. They could be related.
 
-  IMO it is simpler to read. No? In btrfs_chunk_readonly(), we consider a
-  chunk is readonly when the device it is on has _no_ DEV_STATE_WRITEABLE
-  flag set.  So rename to btrfs_chunk_writeable() is correct. We also use
-  readonly to the filesystem.
+assertion failed: !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state), in fs/btrfs/volumes.c:1150
 
-  I will wait to see if David also has the same opinion. I am ok to drop
-  this part.
+https://susepaste.org/view/raw/18223056 full log with other stacktraces,
+possibly relatedg
 
-> IMO changing the argument to bool without renaming the function is a
-> sufficient change and it will result in a lot smaller diff.
-
-  OK.
-
-Thx, Anand
+[ 3310.383268] kernel BUG at fs/btrfs/ctree.h:3431!
+[ 3310.384586] invalid opcode: 0000 [#1] PREEMPT SMP
+[ 3310.385848] CPU: 1 PID: 3982 Comm: umount Tainted: G        W         5.14.0-rc5-default+ #1532
+[ 3310.388216] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+[ 3310.391054] RIP: 0010:assertfail.constprop.0+0x18/0x1a [btrfs]
+[ 3310.397628] RSP: 0018:ffffb7a5454c7db8 EFLAGS: 00010246
+[ 3310.399079] RAX: 0000000000000068 RBX: ffff978364b91c00 RCX: 0000000000000000
+[ 3310.400990] RDX: 0000000000000000 RSI: ffffffffabee13c4 RDI: 00000000ffffffff
+[ 3310.402504] RBP: ffff9783523a4c00 R08: 0000000000000001 R09: 0000000000000001
+[ 3310.404025] R10: 0000000000000000 R11: 0000000000000001 R12: ffff9783523a4d18
+[ 3310.405074] R13: 0000000000000000 R14: 0000000000000004 R15: 0000000000000003
+[ 3310.406130] FS:  00007f61c8f42800(0000) GS:ffff9783bd800000(0000) knlGS:0000000000000000
+[ 3310.407649] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 3310.409022] CR2: 000056190cffa810 CR3: 0000000030b96002 CR4: 0000000000170ea0
+[ 3310.410111] Call Trace:
+[ 3310.410561]  btrfs_close_one_device.cold+0x11/0x55 [btrfs]
+[ 3310.411788]  close_fs_devices+0x44/0xb0 [btrfs]
+[ 3310.412654]  btrfs_close_devices+0x48/0x160 [btrfs]
+[ 3310.413449]  generic_shutdown_super+0x69/0x100
+[ 3310.414155]  kill_anon_super+0x14/0x30
+[ 3310.414802]  btrfs_kill_super+0x12/0x20 [btrfs]
+[ 3310.415767]  deactivate_locked_super+0x2c/0xa0
+[ 3310.416562]  cleanup_mnt+0x144/0x1b0
+[ 3310.417153]  task_work_run+0x59/0xa0
+[ 3310.417744]  exit_to_user_mode_loop+0xe7/0xf0
+[ 3310.418440]  exit_to_user_mode_prepare+0xaf/0xf0
+[ 3310.419425]  syscall_exit_to_user_mode+0x19/0x50
+[ 3310.420281]  do_syscall_64+0x4a/0x90
+[ 3310.420934]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[ 3310.421718] RIP: 0033:0x7f61c91654db
