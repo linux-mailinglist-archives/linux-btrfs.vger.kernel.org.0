@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DDE3E9E1B
+	by mail.lfdr.de (Postfix) with ESMTP id BFB8B3E9E1C
 	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 07:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbhHLFst (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Aug 2021 01:48:49 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34388 "EHLO
+        id S234435AbhHLFsv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Aug 2021 01:48:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:34394 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbhHLFss (ORCPT
+        with ESMTP id S234361AbhHLFsu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Aug 2021 01:48:48 -0400
+        Thu, 12 Aug 2021 01:48:50 -0400
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 613801FF10
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 05:48:23 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 994F51FF11
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 05:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1628747303; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1628747304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+YuT83uT7/RI9uQqJszVrJflonSixLS5jVPn5auLRPY=;
-        b=TS0rB8f+qF9P8jwPHhvN235iyBIxlXhGEOMi8Bu/n2rXbaVovMcUCkIIVmTjnBJqO5hiIR
-        SPbtRQM2Shoj3Iq3e14+q1PqvIxQKmCvcr0Yh+yUsJIphZ2N0mSk3QU540lFZ4RwBiRNQr
-        vwm88KIMJ8bDUNVmp37KKBKSzpvrMMk=
+        bh=MPzkHBOW+BacwdLEm7wtbV2+j4CQfYw/o4xR05ZfomQ=;
+        b=eHJsWqeJ2PwGq2cGTWT9O0zTPkQ41XiH3P4wra3M539cKffkl8jdeTSR1zMPzd7coLZ9vH
+        TX9hX8t6g5XNFImc40usbQga9dHwU+Ufs52Ca5Gb7kit9/YCUNXA6M/kE569JUL9aT0KWy
+        cLTyll48d4d5ezow9v6yx4bX0vWS0NA=
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 9AAC313838
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 05:48:22 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D393613838
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 05:48:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id ENKYFia2FGG4ZwAAGKfGzw
+        id APQdJSe2FGG4ZwAAGKfGzw
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 05:48:22 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 05:48:23 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v6 3/4] btrfs-progs: image: reduce memory requirement for decompression
-Date:   Thu, 12 Aug 2021 13:48:14 +0800
-Message-Id: <20210812054815.192405-4-wqu@suse.com>
+Subject: [PATCH v6 4/4] btrfs-progs: image: fix restored image size misalignment
+Date:   Thu, 12 Aug 2021 13:48:15 +0800
+Message-Id: <20210812054815.192405-5-wqu@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210812054815.192405-1-wqu@suse.com>
 References: <20210812054815.192405-1-wqu@suse.com>
@@ -52,310 +52,70 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With recent change to enlarge max_pending_size to 256M for data dump,
-the decompress code requires quite a lot of memory space. (256M * 4).
+[BUG]
+There is a small device size misalignment between the super block device
+size and the device extent size:
+total_bytes             10737418240 	<<<
+bytes_used              15097856
+dev_item.total_bytes    10737418240
+dev_item.bytes_used     1094713344
 
-The main reason behind it is, we're using wrapped uncompress() function
-call, which needs the buffer to be large enough to contain the
-decompressed data.
+        item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
+                devid 1 total_bytes 1095761920 bytes_used 1094713344
+				    ^^^^^^^^^^
 
-This patch will re-work the decompress work to use inflate() which can
-resume it decompression so that we can use a much smaller buffer size.
+[CAUSE]
+In fixup_device_size(), we only reset superblock device item size, which
+will be overwritten in write_dev_supers() using
+btrfs_device::total_bytes.
 
-This patch choose to use 512K buffer size.
+And it doesn't touch btrfs_superblock::total_bytes either.
 
-Now the memory consumption for restore is reduced to
- Cluster data size + 512K * nr_running_threads
+[FIX]
+So fix the small mismatch by also resetting btrfs_device::total_bytes,
+btrfs_device::bytes_used and btrfs_superblock::total_bytes.
 
-Instead of the original one:
- Cluster data size + 1G * nr_running_threads
+Thankfully since commit 73dd4e3c87c9 ("btrfs-progs: image: Don't modify
+the chunk and device tree if the source dump is single device") single
+device dump won't have such problem, but it's still worthy for
+multi-device dump.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- image/main.c | 222 +++++++++++++++++++++++++++++++++------------------
- 1 file changed, 146 insertions(+), 76 deletions(-)
+ image/main.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/image/main.c b/image/main.c
-index 4cb842be26fb..9af62c98a793 100644
+index 9af62c98a793..c50bcfde6a36 100644
 --- a/image/main.c
 +++ b/image/main.c
-@@ -1361,130 +1361,200 @@ static void write_backup_supers(int fd, u8 *buf)
- 	}
- }
+@@ -2375,6 +2375,7 @@ static int fixup_device_size(struct btrfs_trans_handle *trans,
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct btrfs_dev_item *dev_item;
+ 	struct btrfs_dev_extent *dev_ext;
++	struct btrfs_device *dev;
+ 	struct btrfs_path path;
+ 	struct extent_buffer *leaf;
+ 	struct btrfs_root *root = fs_info->chunk_root;
+@@ -2393,6 +2394,8 @@ static int fixup_device_size(struct btrfs_trans_handle *trans,
+ 	key.type = BTRFS_DEV_EXTENT_KEY;
+ 	key.offset = (u64)-1;
  
--static void *restore_worker(void *data)
-+/*
-+ * Restore one item.
-+ *
-+ * For uncompressed data, it's just reading from work->buf then write to output.
-+ * For compressed data, since we can have very large decompressed data
-+ * (up to 256M), we need to consider memory usage. So here we will fill buffer
-+ * then write the decompressed buffer to output.
-+ */
-+static int restore_one_work(struct mdrestore_struct *mdres,
-+			    struct async_work *async, u8 *buffer, int bufsize)
- {
--	struct mdrestore_struct *mdres = (struct mdrestore_struct *)data;
--	struct async_work *async;
--	size_t size;
--	u8 *buffer;
--	u8 *outbuf;
--	int outfd;
-+	z_stream strm;
-+	int buf_offset = 0;	/* offset inside work->buffer */
-+	int out_offset = 0;	/* offset for output */
-+	int out_len;
-+	int outfd = fileno(mdres->out);
-+	int compress_method = mdres->compress_method;
- 	int ret;
--	int compress_size = current_version->max_pending_size * 4;
++	dev = list_first_entry(&fs_info->fs_devices->devices,
++				struct btrfs_device, dev_list);
+ 	ret = btrfs_search_slot(NULL, fs_info->dev_root, &key, &path, 0, 0);
+ 	if (ret < 0) {
+ 		errno = -ret;
+@@ -2426,6 +2429,9 @@ static int fixup_device_size(struct btrfs_trans_handle *trans,
  
--	outfd = fileno(mdres->out);
--	buffer = malloc(compress_size);
--	if (!buffer) {
--		error("not enough memory for restore worker buffer");
--		pthread_mutex_lock(&mdres->mutex);
--		if (!mdres->error)
--			mdres->error = -ENOMEM;
--		pthread_mutex_unlock(&mdres->mutex);
--		pthread_exit(NULL);
-+	ASSERT(is_power_of_2(bufsize));
-+
-+	if (compress_method == COMPRESS_ZLIB) {
-+		strm.zalloc = Z_NULL;
-+		strm.zfree = Z_NULL;
-+		strm.opaque = Z_NULL;
-+		strm.avail_in = async->bufsize;
-+		strm.next_in = async->buffer;
-+		strm.avail_out = 0;
-+		strm.next_out = Z_NULL;
-+		ret = inflateInit(&strm);
-+		if (ret != Z_OK) {
-+			error("failed to initialize decompress parameters: %d",
-+				ret);
-+			return ret;
-+		}
- 	}
-+	while (buf_offset < async->bufsize) {
-+		bool compress_end = false;
-+		int read_size = min_t(u64, async->bufsize - buf_offset,
-+				      bufsize);
- 
--	while (1) {
--		u64 bytenr, physical_dup;
--		off_t offset = 0;
--		int err = 0;
--
--		pthread_mutex_lock(&mdres->mutex);
--		while (!mdres->nodesize || list_empty(&mdres->list)) {
--			if (mdres->done) {
--				pthread_mutex_unlock(&mdres->mutex);
--				goto out;
-+		/* Read part */
-+		if (compress_method == COMPRESS_ZLIB) {
-+			if (strm.avail_out == 0) {
-+				strm.avail_out = bufsize;
-+				strm.next_out = buffer;
- 			}
--			pthread_cond_wait(&mdres->cond, &mdres->mutex);
--		}
--		async = list_entry(mdres->list.next, struct async_work, list);
--		list_del_init(&async->list);
--
--		if (mdres->compress_method == COMPRESS_ZLIB) {
--			size = compress_size;
- 			pthread_mutex_unlock(&mdres->mutex);
--			ret = uncompress(buffer, (unsigned long *)&size,
--					 async->buffer, async->bufsize);
-+			ret = inflate(&strm, Z_NO_FLUSH);
- 			pthread_mutex_lock(&mdres->mutex);
--			if (ret != Z_OK) {
--				error("decompression failed with %d", ret);
--				err = -EIO;
-+			switch (ret) {
-+			case Z_NEED_DICT:
-+				ret = Z_DATA_ERROR;
-+				__attribute__ ((fallthrough));
-+			case Z_DATA_ERROR:
-+			case Z_MEM_ERROR:
-+				goto out;
-+			}
-+			if (ret == Z_STREAM_END) {
-+				ret = 0;
-+				compress_end = true;
- 			}
--			outbuf = buffer;
-+			out_len = bufsize - strm.avail_out;
- 		} else {
--			outbuf = async->buffer;
--			size = async->bufsize;
-+			/* No compress, read as many data as possible */
-+			memcpy(buffer, async->buffer + buf_offset, read_size);
-+
-+			buf_offset += read_size;
-+			out_len = read_size;
- 		}
- 
-+		/* Fixup part */
- 		if (!mdres->multi_devices) {
- 			if (async->start == BTRFS_SUPER_INFO_OFFSET) {
--				memcpy(mdres->original_super, outbuf,
-+				memcpy(mdres->original_super, buffer,
- 				       BTRFS_SUPER_INFO_SIZE);
- 				if (mdres->old_restore) {
--					update_super_old(outbuf);
-+					update_super_old(buffer);
- 				} else {
--					ret = update_super(mdres, outbuf);
--					if (ret)
--						err = ret;
-+					ret = update_super(mdres, buffer);
-+					if (ret < 0)
-+						goto out;
- 				}
- 			} else if (!mdres->old_restore) {
--				ret = fixup_chunk_tree_block(mdres, async, outbuf, size);
-+				ret = fixup_chunk_tree_block(mdres, async,
-+							     buffer, out_len);
- 				if (ret)
--					err = ret;
-+					goto out;
- 			}
- 		}
- 
-+		/* Write part */
- 		if (!mdres->fixup_offset) {
-+			int size = out_len;
-+			off_t offset = 0;
-+
- 			while (size) {
-+				u64 logical = async->start + out_offset + offset;
- 				u64 chunk_size = size;
--				physical_dup = 0;
-+				u64 physical_dup = 0;
-+				u64 bytenr;
-+
- 				if (!mdres->multi_devices && !mdres->old_restore)
- 					bytenr = logical_to_physical(mdres,
--						     async->start + offset,
--						     &chunk_size,
--						     &physical_dup);
-+							logical, &chunk_size,
-+							&physical_dup);
- 				else
--					bytenr = async->start + offset;
-+					bytenr = logical;
- 
--				ret = pwrite64(outfd, outbuf+offset, chunk_size,
--					       bytenr);
-+				ret = pwrite64(outfd, buffer + offset, chunk_size, bytenr);
- 				if (ret != chunk_size)
--					goto error;
-+					goto write_error;
- 
- 				if (physical_dup)
--					ret = pwrite64(outfd, outbuf+offset,
--						       chunk_size,
--						       physical_dup);
-+					ret = pwrite64(outfd, buffer + offset,
-+						       chunk_size, physical_dup);
- 				if (ret != chunk_size)
--					goto error;
-+					goto write_error;
- 
- 				size -= chunk_size;
- 				offset += chunk_size;
- 				continue;
--
--error:
--				if (ret < 0) {
--					error("unable to write to device: %m");
--					err = errno;
--				} else {
--					error("short write");
--					err = -EIO;
--				}
- 			}
- 		} else if (async->start != BTRFS_SUPER_INFO_OFFSET) {
--			ret = write_data_to_disk(mdres->info, outbuf, async->start, size, 0);
-+			ret = write_data_to_disk(mdres->info, buffer,
-+						 async->start, out_len, 0);
- 			if (ret) {
- 				error("failed to write data");
- 				exit(1);
- 			}
- 		}
- 
--
- 		/* backup super blocks are already there at fixup_offset stage */
--		if (!mdres->multi_devices && async->start == BTRFS_SUPER_INFO_OFFSET)
--			write_backup_supers(outfd, outbuf);
-+		if (async->start == BTRFS_SUPER_INFO_OFFSET &&
-+		    !mdres->multi_devices)
-+			write_backup_supers(outfd, buffer);
-+		out_offset += out_len;
-+		if (compress_end) {
-+			inflateEnd(&strm);
-+			break;
-+		}
-+	}
-+	return ret;
-+
-+write_error:
-+	if (ret < 0) {
-+		error("unable to write to device: %m");
-+		ret = -errno;
-+	} else {
-+		error("short write");
-+		ret = -EIO;
-+	}
-+out:
-+	if (compress_method == COMPRESS_ZLIB)
-+		inflateEnd(&strm);
-+	return ret;
-+}
-+
-+static void *restore_worker(void *data)
-+{
-+	struct mdrestore_struct *mdres = (struct mdrestore_struct *)data;
-+	struct async_work *async;
-+	u8 *buffer;
-+	int ret;
-+	int buffer_size = SZ_512K;
-+
-+	buffer = malloc(buffer_size);
-+	if (!buffer) {
-+		error("not enough memory for restore worker buffer");
-+		pthread_mutex_lock(&mdres->mutex);
-+		if (!mdres->error)
-+			mdres->error = -ENOMEM;
-+		pthread_mutex_unlock(&mdres->mutex);
-+		pthread_exit(NULL);
-+	}
-+
-+	while (1) {
-+		pthread_mutex_lock(&mdres->mutex);
-+		while (!mdres->nodesize || list_empty(&mdres->list)) {
-+			if (mdres->done) {
-+				pthread_mutex_unlock(&mdres->mutex);
-+				goto out;
-+			}
-+			pthread_cond_wait(&mdres->cond, &mdres->mutex);
-+		}
-+		async = list_entry(mdres->list.next, struct async_work, list);
-+		list_del_init(&async->list);
- 
--		if (err && !mdres->error)
--			mdres->error = err;
-+		ret = restore_one_work(mdres, async, buffer, buffer_size);
-+		if (ret < 0) {
-+			mdres->error = ret;
-+			pthread_mutex_unlock(&mdres->mutex);
-+			goto out;
-+		}
- 		mdres->num_items--;
- 		pthread_mutex_unlock(&mdres->mutex);
- 
+ 	btrfs_set_stack_device_total_bytes(dev_item, dev_size);
+ 	btrfs_set_stack_device_bytes_used(dev_item, mdres->alloced_chunks);
++	dev->total_bytes = dev_size;
++	dev->bytes_used = mdres->alloced_chunks;
++	btrfs_set_super_total_bytes(fs_info->super_copy, dev_size);
+ 	ret = fstat(out_fd, &buf);
+ 	if (ret < 0) {
+ 		error("failed to stat result image: %m");
 -- 
 2.32.0
 
