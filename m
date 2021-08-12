@@ -2,235 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F1E3EA60D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 15:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B051F3EA60F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Aug 2021 15:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237782AbhHLNzZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Aug 2021 09:55:25 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:14212 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237820AbhHLNyf (ORCPT
+        id S237793AbhHLNz2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Aug 2021 09:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237815AbhHLNzY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Aug 2021 09:54:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1628776450; x=1660312450;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3COVlyNHYvAKkccrO/2zL0YSa9+zJb0lv0ZDmiI6fWs=;
-  b=RRQJ9yBuLytMTGKKV4E4TCKA9u8TX0yb+GoNHB/AE4+SRwIOPeIV5CsY
-   JezMYG+MismTzmcwmF0LF+IuRxpodq5ITdrvBGeB/0M2RtU25WPQmGarB
-   MIwt9YvvBwjZOt5FCIgOnVKltU94UYWUDa2qVO68imGW+QE7M65eml8o8
-   RPdubLPEiFcWR2LDRBWCAnJSP+sM/HqySSqi+oEIO/pXVo10/a+sf+19b
-   lftemu+r+UuTbimaBZ/0tCuxHlTpTf0ueCSC9lzmYkVwEoxQUJ0Gd6k3b
-   59PXWuEf4LEOMUyrlpqX7g66Lqsg1tM9nGsp8zxgcYqTrw+gt1fkck2SQ
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.84,316,1620662400"; 
-   d="scan'208";a="181849473"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Aug 2021 21:54:04 +0800
-IronPort-SDR: ScwQNBQwfSA2u+Y80QeCoPA+GJTuMyGthl6a9qXbyBTg5d5PdowmYCE3Cwwly1Bjh821RBR0iy
- O2iIthDT9nMfB9v7Z3wIVz3BvjSfCPl/oG0tD+TsXHJGx0gvKFVbzs8xhaEj+F3uhGgn48S6Yb
- 7jfEGP62KeEmfBi2Xz1dty8WCjcnLG+Rn3VkioweLXlyk562T4iA+n9vL2Hu5mLeCAmDIcvOm6
- SlqZIJzyfQdKX32GnMkzde+kCogYLz/wbxzoZfn96S1xln4J7w9APEI8IKAGWHD3DSU9BNxvBh
- PxMlCpjp4/regI9Wvn5c4h3N
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 06:31:23 -0700
-IronPort-SDR: cD0KVASAFJ5gp9sYzCjx6KAbJMrZeAznkaCDX6Rtl8QBGUlRIJcUTVLkDUmbOGu9AryGaobChg
- 3DDyz/LPchIUmaG1rAXSkPbW0qvU8GZklWCuuIilhDBFccn0YnBFahtS8ivx0J/pxdl//MWtfH
- Wb95gUAK6iuCwpId7IQW0cnqexCCfZcBGQ3NhyCm4MclXvxXa8kxAaC3qd4MhIW2PTSLWtuJ35
- H0LzNRNWQLEI/ZRANs3XA6q222oPH9Lul1N5Sg7gAoqak3Y2gZb089Ck60Vk+WTVU3KZppAI1J
- cOw=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 12 Aug 2021 06:54:04 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: exclude relocation and page writeback
-Date:   Thu, 12 Aug 2021 22:53:49 +0900
-Message-Id: <a858fb2ff980db27b3638e92f7d2d7a416b8e81e.1628776260.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 12 Aug 2021 09:55:24 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7574DC0617A8
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 06:54:58 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id f91so3144351qva.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Aug 2021 06:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ll3gJ2kWTJ1Ddm5xPCWd0fQRm1CZSo4h409/G1+k1XQ=;
+        b=G9AudWhNticUyEE9OKaig1qZDgxUdA6TrvuNS7xs+5+AQeYm/JbQW1Ao7qjJ7Ameve
+         qgU9tiTbZRdTTAsTu79ZSiztZOpLCuYzinoWn4GUKcaMwbWr3v50V0BKfypAH4KHUQ4Q
+         yHAAgBkaFGVMkx3I33q5cihVmSomx2oFde6OyO289Svuj0DaqLU+tmHgDrTrAciuhXKg
+         80VpoF/x7IkUNklk/WZTHWhyiDdTdbZfpIwbX5sEwwbOY8xs5+1yBa7ZpHt9vhB76n81
+         vgB8NTNdeXnZqXAVgprUSJ0XzJMdOy2MYznfLAeiuodzOU716rl+K2VvxH9XdMW6LBIj
+         Bh5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ll3gJ2kWTJ1Ddm5xPCWd0fQRm1CZSo4h409/G1+k1XQ=;
+        b=tHZqyU/JQ6qiXzOuAS3rlu53fMBWQ4dky1nqfOW/jx5kFqpevsq8w6ogFN9XWcFuXC
+         MGTkhddm4k/+IYRPATj+cFe5JnWtr5DabAsIMmOMLf+4WEzHYijDcW1uxc+fBnUihSwx
+         bxomFSI1KdLheQX3ffjg7rTgwY/AVbBjjgd12r/fU6qX/koyulmrKsmNE8xGWG+gCaqe
+         wiUG8dg7TeBmhniRFcidfBxT2oZAt+xO9g3dR/cblJDTtLKEx1iv5V3SK354CyEwo+bQ
+         JPdA4R3KgcIS7h/Di127T0PkQqJY6TGfIQ7EHdiTQawahJ7eaVdsFxiGFDPPIdIGzNRN
+         XGLA==
+X-Gm-Message-State: AOAM530YIunyi9qRlTq6rWpsF/AElSCtTV3eWIAlSQb22IMcOe0YTLww
+        mYgKJImGZTv2qgfEq4zWrj3r9tVX311o6A==
+X-Google-Smtp-Source: ABdhPJyHTHpSJyITjiOPCkH+9qLxvHn7fErOIMq6FjPyWkOIoMB/2n9TOv/bIlPVFumWYV5hVYA5ZQ==
+X-Received: by 2002:a0c:8525:: with SMTP id n34mr3997200qva.19.1628776496865;
+        Thu, 12 Aug 2021 06:54:56 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11c1::110c? ([2620:10d:c091:480::1:4885])
+        by smtp.gmail.com with ESMTPSA id bl26sm1317894qkb.34.2021.08.12.06.54.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 06:54:56 -0700 (PDT)
+Subject: Re: [PATCH/RFC 0/4] Attempt to make progress with btrfs dev number
+ strangeness.
+To:     NeilBrown <neilb@suse.de>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        linux-fsdevel@vger.kernel.org,
+        Linux NFS list <linux-nfs@vger.kernel.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <162848123483.25823.15844774651164477866.stgit@noble.brown>
+ <e6496956-0df3-6232-eecb-5209b28ca790@toxicpanda.com>
+ <162872000356.22261.854151210687377005@noble.neil.brown.name>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <6571d3fb-34ea-0f22-4fbe-995e5568e044@toxicpanda.com>
+Date:   Thu, 12 Aug 2021 09:54:54 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <162872000356.22261.854151210687377005@noble.neil.brown.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Relocation in a zoned filesystem can fail with a transaction abort with
-error -22 (EINVAL). This happens because the relocation code assumes that
-the extents we relocated the data to have the same size the source extents
-had and ensures this by preallocating the extents.
+On 8/11/21 6:13 PM, NeilBrown wrote:
+> On Wed, 11 Aug 2021, Josef Bacik wrote:
+>>
+>> I think this is a step in the right direction, but I want to figure out a way to
+>> accomplish this without magical mount points that users must be aware of.
+> 
+> magic mount *options* ???
+> 
+>>
+>> I think the stat() st_dev ship as sailed, we're stuck with that.  However
+>> Christoph does have a valid point where it breaks the various info spit out by
+>> /proc.  You've done a good job with the treeid here, but it still makes it
+>> impossible for somebody to map the st_dev back to the correct mount.
+> 
+> The ship might have sailed, but it is not water tight.  And as the world
+> it round, it can still come back to bite us from behind.
+> Anything can be transitioned away from, whether it is devfs or 32-bit
+> time or giving different device numbers to different file-trees.
+> 
+> The linkage between device number and and filesystem is quite strong.
+> We could modified all of /proc and /sys/ and audit and whatever else to
+> report the fake device number, but we cannot get the fake device number
+> into the mount table (without making the mount table unmanageablely
+> large).
+> And if subtrees aren't in the mount-table for the NFS server, I don't
+> think they should be in the mount-table of the NFS client.  So we cannot
+> export them to NFS.
+> 
+> I understand your dislike for mount options.  An alternative with
+> different costs and benefits would be to introduce a new filesystem type
+> - btrfs2 or maybe betrfs.  This would provide numdevs=1 semantics and do
+> whatever we decided was best with inode numbers.  How much would you
+> hate that?
+> 
 
-But in a zoned filesystem we can't preallocate the extents as this would
-break the sequential write required rule. Therefore it can happen that the
-writeback process kicks in while we're still adding pages to a
-delallocation range and starts writing out dirty pages.
+A lot more ;).
 
-This then creates destination extents that are smaller than the source
-extents, triggering the following safety check in get_new_location():
+>>
+>> I think we aren't going to solve that problem, at least not with stat().  I
+>> think with statx() spitting out treeid we have given userspace a way to
+>> differentiate subvolumes, and so we should fix statx() to spit out the the super
+>> block device, that way new userspace things can do their appropriate lookup if
+>> they so choose.
+> 
+> I don't think we should normalize having multiple devnums per filesystem
+> by encoding it in statx().  It *would* make sense to add a btrfs ioctl
+> which reports the real device number of a file.  Tools that really need
+> to work with btrfs could use that, but it would always be obvious that
+> it was an exception.
 
- 1034         if (num_bytes != btrfs_file_extent_disk_num_bytes(leaf, fi)) {
- 1035                 ret = -EINVAL;
- 1036                 goto out;
- 1037         }
+That's not what I'm saying.  I'm saying that stat() continues to behave the way 
+it currently does, for legacy users.
 
-One possible solution to address this problem is to mutually exclude page
-writeback and adding pages to the relocation inode. This ensures, that
-we're not submitting an extent before all needed pages have been added to
-it.
+And then for statx() it returns the correct devnum like any other file system, 
+with the augmentation of the treeid so that future userspace programs can use 
+the treeid to decide if they want to wander into a subvolume.
 
-Introduce a new lock in the btrfs_inode which is only taken *IFF* the
-inode is a data relocation inode on a zoned filesystem to mutually exclude
-relocation's construction of extents and page writeback.
+This way moving forward we have a way to map back to a mount point because 
+statx() will return the actual devnum for the mountpoint, and then we can use 
+the treeid to be smart about when we wander into a subvolume.
 
-Fixes: 32430c614844 ("btrfs: zoned: enable relocation on a zoned filesystem")
-Reported-by: David Sterba <dsterba@suse.com>
-Cc: Filipe Manana <fdmanana@suse.com>
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/btrfs_inode.h |  3 +++
- fs/btrfs/extent_io.c   |  4 ++++
- fs/btrfs/inode.c       |  1 +
- fs/btrfs/relocation.c  | 10 +++++++---
- fs/btrfs/zoned.h       | 27 +++++++++++++++++++++++++++
- 5 files changed, 42 insertions(+), 3 deletions(-)
+And if we're going to add a treeid, I would actually like to add a parent_treeid 
+as well so we could tell if we're a snapshot or just a normal subvolume.
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 76ee1452c57b..954e772f18e8 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -231,6 +231,9 @@ struct btrfs_inode {
- 
- 	struct rw_semaphore i_mmap_lock;
- 	struct inode vfs_inode;
-+
-+	/* Protects relocation from page writeback on a zoned FS */
-+	struct mutex relocation_lock;
- };
- 
- static inline u32 btrfs_inode_sectorsize(const struct btrfs_inode *inode)
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 96de6e70d06c..59c79eb51612 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5005,7 +5005,9 @@ static int extent_write_cache_pages(struct address_space *mapping,
- 				continue;
- 			}
- 
-+			btrfs_zoned_relocation_io_lock(BTRFS_I(inode));
- 			ret = __extent_writepage(page, wbc, epd);
-+			btrfs_zoned_relocation_io_unlock(BTRFS_I(inode));
- 			if (ret < 0) {
- 				done = 1;
- 				break;
-@@ -5056,7 +5058,9 @@ int extent_write_full_page(struct page *page, struct writeback_control *wbc)
- 		.sync_io = wbc->sync_mode == WB_SYNC_ALL,
- 	};
- 
-+	btrfs_zoned_relocation_io_lock(BTRFS_I(page->mapping->host));
- 	ret = __extent_writepage(page, wbc, &epd);
-+	btrfs_zoned_relocation_io_unlock(BTRFS_I(page->mapping->host));
- 	ASSERT(ret <= 0);
- 	if (ret < 0) {
- 		end_write_bio(&epd, ret);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index afe9dcda860b..8e8e56f79a86 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9120,6 +9120,7 @@ struct inode *btrfs_alloc_inode(struct super_block *sb)
- 	INIT_LIST_HEAD(&ei->delayed_iput);
- 	RB_CLEAR_NODE(&ei->rb_node);
- 	init_rwsem(&ei->i_mmap_lock);
-+	mutex_init(&ei->relocation_lock);
- 
- 	return inode;
- }
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 914d403b4415..8630d45e0fca 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -25,6 +25,7 @@
- #include "backref.h"
- #include "misc.h"
- #include "subpage.h"
-+#include "zoned.h"
- 
- /*
-  * Relocation overview
-@@ -3069,8 +3070,6 @@ static int relocate_one_page(struct inode *inode, struct file_ra_state *ra,
- 	unlock_page(page);
- 	put_page(page);
- 
--	balance_dirty_pages_ratelimited(inode->i_mapping);
--	btrfs_throttle(fs_info);
- 	if (btrfs_should_cancel_balance(fs_info))
- 		ret = -ECANCELED;
- 	return ret;
-@@ -3111,9 +3110,14 @@ static int relocate_file_extent_cluster(struct inode *inode,
- 		goto out;
- 
- 	last_index = (cluster->end - offset) >> PAGE_SHIFT;
-+	btrfs_zoned_relocation_io_lock(BTRFS_I(inode));
- 	for (index = (cluster->start - offset) >> PAGE_SHIFT;
--	     index <= last_index && !ret; index++)
-+	     index <= last_index && !ret; index++) {
- 		ret = relocate_one_page(inode, ra, cluster, &cluster_nr, index);
-+	}
-+	btrfs_zoned_relocation_io_unlock(BTRFS_I(inode));
-+	balance_dirty_pages_ratelimited(inode->i_mapping);
-+	btrfs_throttle(fs_info);
- 	if (btrfs_is_zoned(fs_info) && !ret)
- 		ret = btrfs_wait_ordered_range(inode, 0, (u64)-1);
- 	if (ret == 0)
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index 4b299705bb12..70d2d65bf5cc 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -8,6 +8,7 @@
- #include "volumes.h"
- #include "disk-io.h"
- #include "block-group.h"
-+#include "btrfs_inode.h"
- 
- /*
-  * Block groups with more than this value (percents) of unusable space will be
-@@ -304,6 +305,32 @@ static inline void btrfs_zoned_meta_io_unlock(struct btrfs_fs_info *fs_info)
- 	mutex_unlock(&fs_info->zoned_meta_io_lock);
- }
- 
-+static inline void btrfs_zoned_relocation_io_lock(struct btrfs_inode *inode)
-+{
-+	struct btrfs_root *root = inode->root;
-+
-+	if (!btrfs_is_zoned(root->fs_info))
-+		return;
-+
-+	if (root->root_key.objectid != BTRFS_DATA_RELOC_TREE_OBJECTID)
-+		return;
-+
-+	mutex_lock(&inode->relocation_lock);
-+}
-+
-+static inline void btrfs_zoned_relocation_io_unlock(struct btrfs_inode *inode)
-+{
-+	struct btrfs_root *root = inode->root;
-+
-+	if (!btrfs_is_zoned(root->fs_info))
-+		return;
-+
-+	if (root->root_key.objectid != BTRFS_DATA_RELOC_TREE_OBJECTID)
-+		return;
-+
-+	mutex_unlock(&inode->relocation_lock);
-+}
-+
- static inline void btrfs_clear_treelog_bg(struct btrfs_block_group *bg)
- {
- 	struct btrfs_fs_info *fs_info = bg->fs_info;
--- 
-2.32.0
+> 
+>>
+>> This leaves the problem of nfsd.  Can you just integrate this new treeid into
+>> nfsd, and use that to either change the ino within nfsd itself, or do something
+>> similar to what your first patchset did and generate a fsid based on the treeid?
+> 
+> I would only want nfsd to change the inode number.  I no longer think it
+> is acceptable for nfsd to report different device number (as I mention
+> above).
+> I would want the new inode number to be explicitly provided by the
+> filesystem.  Whether that is a new export_operation or a new field in
+> 'struct kstat' doesn't really bother me.  I'd *prefer* it to be st_ino,
+> but I can live without that.
+>
 
+Right, I'm not saying nfsd has to propagate our dev_t thing, I'm saying that you 
+could accomplish the same behavior without the mount options.  We add either a 
+new SB_I_HAS_TREEID or FS_HAS_TREEID, depending on if you prefer to tag the sb 
+or the fs_type, and then NFS does the inode number magic transformation 
+automatically and we are good to go.
+
+> On the topic of inode numbers....  I've recently learned that btrfs
+> never reuses inode (objectid) numbers (except possibly after an
+> unmount).  Equally it doesn't re-use subvol numbers.  How much does this
+> contribute to the 64 bits not being enough for subtree+inode?
+> 
+> It would be nice if we could be comfortable limiting the objectid number
+> to 40 bits and the root.objectid (filetree) number to 24 bits, and
+> combine them into a 64bit inode number.
+> 
+> If we added a inode number reuse scheme that was suitably performant,
+> would that make this possible?  That would remove the need for a treeid,
+> and allow us to use project-id to identify subtrees.
+> 
+
+We had a resuse scheme, we deprecated and deleted it.  I don't want to 
+arbitrarily limit objectid's to work around this issue.
+
+>>
+>> Mount options are messy, and are just going to lead to distro's turning them on
+>> without understanding what's going on and then we have to support them forever.
+>>    I want to get this fixed in a way that we all hate the least with as little
+>> opportunity for confused users to make bad decisions.  Thanks,
+> 
+> Hence my question: how much do you hate creating a new filesystem type
+> to fix the problems?
+> 
+
+I'm still not convinced we can't solve this without adding new options or 
+fstypes.  I think flags to indicate that we're special and to use a treeid that 
+we stuff into the inode would be a reasonable solution.  That being said I'm a 
+little sleep deprived so I could be missing why my plan is a bad one, so I'm 
+willing to be convinced that mount options are the solution to this, but I want 
+to make sure we're damned certain that's the best way forward.  Thanks,
+
+Josef
