@@ -2,92 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893FB3EB56F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Aug 2021 14:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D3E3EB722
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Aug 2021 16:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240271AbhHMM0f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Aug 2021 08:26:35 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:34829 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229474AbhHMM0e (ORCPT
+        id S240795AbhHMOzz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Aug 2021 10:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240862AbhHMOzy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Aug 2021 08:26:34 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9FB345C010D;
-        Fri, 13 Aug 2021 08:26:06 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 13 Aug 2021 08:26:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=O0lENVBH+WntImBlijDZKATpdAC
-        IiNeSXStEESHrN30=; b=Mc0Xfv+8Q6hr0aQiMjQaDAb+UhbQbsgTyRYHMUZPpcT
-        ZgCd+XeEOJuLugNsugVv/nqPwB2DDMhiCElDiauqHjrAytruDBAVZpAUed8uQU7y
-        IJ5BsnwPQypG+qw4vNb+olLa9YxBcKM6tN8fNeWLJiUj9IEyByEV02aipdmJESZ4
-        N6Y0TYN16GnqlXoMFv1uRqedXeVUz3D0dGgqIE16oZy8JJ0aU/5FQqtycjDfoGnK
-        78/HBG43SjMzjBzRaQNU9O8X0lUJpEUs0xfdwgzdLIAUX8AKazf0EPjhC5YfBdao
-        jAc4P+cMqtTqMe6zDd7jUD4BnrRNmmtD9dU6lH+uMWw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=O0lENV
-        BH+WntImBlijDZKATpdACIiNeSXStEESHrN30=; b=ee8+d9Mjek15jqzP6hyf4p
-        B6EHtGxHSzylYZz/S7ngMW557BnTIHZgaNkzMifCPkllMdh3VSjvIjmOQQwlWbMx
-        vYG94tCWVm+sKi5SqHxuR/sd4vajyekODPQHMHobaaJ/GQzLGvPDxL6MDbKg/A6m
-        40mwJCDRYIzPZjXnDEDBhuR4wCh8DO2DhGICBMe05mQHD21Dw9o7knufybNtkmV6
-        xGaAwqGE2n0W14v88U1FMH7J91msDt5ITP/gLIr3HVUqUUmDNjaOT1nkcgZ8drEY
-        ySe0sn13D/Qj2EZeEXH7QsHxoKn/InLA0x7D9U4VnNg3ns1uOmPgqFQ3KRoOD6uQ
-        ==
-X-ME-Sender: <xms:3mQWYWNEozgrjv__eCdn7_B21NICRut9KnkcBwTpyW769scdCDShZg>
-    <xme:3mQWYU8sL_pN5R-gx9hDMxLkLrdutaIotq0LK1dA8RIGA2H1jFUx8hjjaJRN3zeQj
-    llIcrC5Bf4iVQ>
-X-ME-Received: <xmr:3mQWYdQvGTpEb3uCzAJyAu8G5QwqrtYuRYGpBQYcdIjKfLdw1oftIkmMgqD1WJmxeeNbO3EuILGgFyFbK1_RzO0Qys8NI1nY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrkeehgdehvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:3mQWYWtBBZIzTYC2PHW8sbzD5KAyXLipUekFgXnkSsC-p_S36lE6gg>
-    <xmx:3mQWYefA6jm5k3dJ0q_xMSkhWH0fXhgwoUGZQ990NkZUwSB8cHb_Ag>
-    <xmx:3mQWYa1IHjpxjQOz4vV-vsc3xaQeroKhDj94H75kKCz51rqCVB08bw>
-    <xmx:3mQWYVy1g1ZuFg0PeJMUik7IAu1iVB92__Wx7KMx_W3q3xuJ393jjg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Aug 2021 08:26:05 -0400 (EDT)
-Date:   Fri, 13 Aug 2021 14:26:03 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, fdmanana@suse.com
-Subject: Re: [PATCH stable-5.4.y 0/3] btrfs: backport hang fixes due to
- commit c53e9653605d
-Message-ID: <YRZk20TQpSiGiis7@kroah.com>
-References: <cover.1628854236.git.anand.jain@oracle.com>
+        Fri, 13 Aug 2021 10:55:54 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B92C061756
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Aug 2021 07:55:27 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id b1so8514934qtx.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Aug 2021 07:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ord6dLO+z3tSqMluPoWbEXl83RV8BHZzW5vBO+d0n/Q=;
+        b=hgkSPbVdYXzvqli8P66Phz0CPr9SOyrnkiDQZlIalXmD+R4Tv6F4Q0mdTZ8ba/5gfw
+         oW1EGDpsyyxofq3osqzZ0JTzPhDrpqZlP+vn8bYROr23Q+UBOPDDdnyWVVohWCxzq1hx
+         bRkxlkTqNb8//cOL3t3dD52d/bzIZ0z4eWv3bMCJkpCRPRwOvahUZJeBavJL9uzVAzMq
+         15aM0SGYrjQ3iAfBA0zor5ytYemmWvJcLG8bvIENG1Nn7zn+fQLal6SGG4TMtX6/fCSd
+         vkemQr4G5bYEe8mP8fIrGiXexmOMyZ2/KfQt8ph/u2OLc36usfiyMeRhtQupbr3eGVKV
+         SJ0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ord6dLO+z3tSqMluPoWbEXl83RV8BHZzW5vBO+d0n/Q=;
+        b=Kf2+5IJhx4w6bpiRLhHPT43ir2+XJun4swH+IvPEHPz2oMIbnTNoCSihx4OivkTMeY
+         Uv/RqvjxnwkTEmqrkjhJCsx4f5zZvHlr+Vf7U7KSMjh0OVELlWFFVEVhTEh2nHcAry9c
+         bK0N/eSre8OZ4z1930tc1WWAZUVrs1VRzMuLm5Dx0E/yWH5RnDl7pODcdbpa9mfRFOaS
+         tr9ciwNnrW5a9wR1B9zosbVJrPNpUQbgeUPYnLZp6aW0J0Oqe8Xfu/3HpH1CG3vTUzjp
+         auPzVjf+MTz0O7sdH+/7mYH1JZDsbrOaNVB6Rz83qSTWxC7aWD1B6NtpfcrvZtBhhvAO
+         DcyA==
+X-Gm-Message-State: AOAM531uxY0d6D5b9o//eDvM34JkR66nDoNLX5rTcLQF7Jj4n4JGrvhl
+        FX5zgS3ZzgrOOCDCev4wL9PxGVVQiSLNuw==
+X-Google-Smtp-Source: ABdhPJzAQXuY0uNisq+xRrRLyGeEvUigyuZkaRswLSO2w1GpIjgHghfO6ezxij4RdEixPivFf9pV8Q==
+X-Received: by 2002:ac8:682:: with SMTP id f2mr2289567qth.55.1628866526046;
+        Fri, 13 Aug 2021 07:55:26 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id o63sm1090299qkf.4.2021.08.13.07.55.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 07:55:25 -0700 (PDT)
+Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for
+ btrfs export
+To:     NeilBrown <neilb@suse.de>, Christoph Hellwig <hch@infradead.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+ <162881913686.1695.12479588032010502384@noble.neil.brown.name>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <ebffa324-0d42-4227-b162-0dad19144943@toxicpanda.com>
+Date:   Fri, 13 Aug 2021 10:55:23 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1628854236.git.anand.jain@oracle.com>
+In-Reply-To: <162881913686.1695.12479588032010502384@noble.neil.brown.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 08:12:22PM +0800, Anand Jain wrote:
-> Further to the commit c53e9653605d (btrfs: qgroup: try to flush qgroup 
-> space when we get -EDQUOT) there are three fixes as below.
+On 8/12/21 9:45 PM, NeilBrown wrote:
 > 
-> 6f23277a49e6 btrfs: qgroup: don't commit transaction when we already hold the handle
-> 4d14c5cde5c2 btrfs: don't flush from btrfs_delayed_inode_reserve_metadata
-> f9baa501b4fd btrfs: fix deadlock when cloning inline extents and using qgroups
+> [[This patch is a minimal patch which addresses the current problems
+>    with nfsd and btrfs, in a way which I think is most supportable, least
+>    surprising, and least likely to impact any future attempts to more
+>    completely fix the btrfs file-identify problem]]
 > 
-> Commits 6f23277a49e6 and 4d14c5cde5c2 above are straightforward and are
-> part of this series.
+> BTRFS does not provide unique inode numbers across a filesystem.
+> It *does* provide unique inode numbers with a subvolume and
+> uses synthetic device numbers for different subvolumes to ensure
+> uniqueness for device+inode.
 > 
-> However, commit f9baa501b4fd above is more complicated to backport.
-> Furthermore, the bug mentioned in the commit f9baa501b4fd might not
-> trigger on 5.4.y as its related commit 05a5a7621ce66c ("Btrfs: implement
-> full reflink support for inline extents") is not backported to 5.4.y.
+> nfsd cannot use these varying device numbers.  If nfsd were to
+> synthesise different stable filesystem ids to give to the client, that
+> would cause subvolumes to appear in the mount table on the client, even
+> though they don't appear in the mount table on the server.  Also, NFSv3
+> doesn't support changing the filesystem id without a new explicit
+> mount on the client (this is partially supported in practice, but
+> violates the protocol specification).
+> 
+> So currently, the roots of all subvolumes report the same inode number
+> in the same filesystem to NFS clients and tools like 'find' notice that
+> a directory has the same identity as an ancestor, and so refuse to
+> enter that directory.
+> 
+> This patch allows btrfs (or any filesystem) to provide a 64bit number
+> that can be xored with the inode number to make the number more unique.
+> Rather than the client being certain to see duplicates, with this patch
+> it is possible but extremely rare.
+> 
+> The number than btrfs provides is a swab64() version of the subvolume
+> identifier.  This has most entropy in the high bits (the low bits of the
+> subvolume identifer), while the inoe has most entropy in the low bits.
+> The result will always be unique within a subvolume, and will almost
+> always be unique across the filesystem.
+> 
 
-Queued up, thanks.
+This is a reasonable approach to me, solves the problem without being overly 
+complicated and side-steps the thornier issues around how we deal with 
+subvolumes.  I'll leave it up to the other maintainers of the other fs'es to 
+weigh in, but for me you can add
 
-greg k-h
+Acked-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
