@@ -2,160 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FFA3EB389
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Aug 2021 11:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2037F3EB3A2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Aug 2021 11:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239809AbhHMJuy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Aug 2021 05:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239370AbhHMJux (ORCPT
+        id S239729AbhHMJ4S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Aug 2021 05:56:18 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:26538 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233222AbhHMJ4R (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Aug 2021 05:50:53 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A81C061756
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Aug 2021 02:50:27 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id a20so11252563plm.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Aug 2021 02:50:27 -0700 (PDT)
+        Fri, 13 Aug 2021 05:56:17 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17D9q8f9000594;
+        Fri, 13 Aug 2021 09:55:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=N0jjRAcqOAmIH7H56qUewV3eIR22IURT1mXSOBCAsXo=;
+ b=XjikVhW1EUHxF7zXTqT9Eai854kIkIgqql03CnhcIXBa06VGsXZl65ybBjiao/m/tVUT
+ WsSlz32O7geYDE76GsHJ9n5wot+A131qMF7hCg3Iev6nHgUVXgzQfRLvAJrb9IU9HN8W
+ meGTWof5GQAsomaLy/zS+o+RogeBcXN5ZWzgO6sexDQ7VlderAg6nwHzVmVGYHOf8ILi
+ YITK3aS+5M06xyAmTQ97i2lcYpzXiIu14k1QAY2M3YTUUEouQ2DPy/X4aGcr/ZqkpWYy
+ k1431YtVa0/sAU8gdb0NEB3LGLhykC2dzaX2xBjeclnwSEOU8H+epXxIRxKMQhIjlEwm ZA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=N0jjRAcqOAmIH7H56qUewV3eIR22IURT1mXSOBCAsXo=;
+ b=t/NbkslSMCD20hrw1tmkRsXdSiIRVtFk4LZaPSjkzoqjdjHLQjG/HFpkNDW47beZv9TD
+ 6yqAqp9RFCKVRfwJTe00tk8gBJyrhjz7NSNfpJ7T4q6wI1um6bz/IeqzYHe8T5qnnDVy
+ lGrmhO7rgiAokEcNYQMQ+uKKNa1cRh+aDpf35igGSpalgH4156rHbJUXy0xGLJsJpk8G
+ c3Ht8qlVrVrO07WZIxckqlPPZH/bzLYt/amjZO296+bhRRVzsy2QM/2ul9NRqNB3gKcZ
+ SeoFbHgNjChLgn76xEJ+I56f+d8trcc6WjWhV8sZ20GLE2J88FwlWTghjMYW+OKT7n7j Og== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ad2ajjfta-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Aug 2021 09:55:50 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17D9oZQv035899;
+        Fri, 13 Aug 2021 09:55:49 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
+        by aserp3020.oracle.com with ESMTP id 3accrdrqnv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Aug 2021 09:55:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ivldzazIzN8yNgBj/XgnbE+bLdDXTo1+U8DNLe9FZZAL2HULF3HA2GNtnK5J+VwqYTg6A3NvowSG7QwE6hrT2rhWvFmzRtMVBJv/R42xD0xpQBo/H09frn40dQ+DX1TNMC7MYHVVEEE0vNTcRH+SpFhz0HI054Q4lrVHJN7pH4gib/MONksl6PIci5r9jyN9IqEDnyQ8+Zg5Max47UgIbtv3AUkSxTrcRVS6ykYrFlA+ihVNPX6kgGagfLjdYh5hJlczS3yjU+su0Wl5faoItXr7+cgqDvNSdxMoCXs1HUy8sK47flAiiw7LAIbJOuEObTVo3nY4WbYWLQ+IppKO/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N0jjRAcqOAmIH7H56qUewV3eIR22IURT1mXSOBCAsXo=;
+ b=JGQHPDUa/kBOt0I5pyd+J7dNC3z0WoZwx/r6vHEBWLNQD7pTt0PK0AH/jChakkJV/o5n4P70226d0qxuAFT0nQasiUJVluQUIccDSFPf2e6ZKfmclO0QWtR+vKiZBqmKbWbBNTfOgXvALYVSVCYBT/ZAAjwLOW1NZ1cG+G9P2FtStJ4TyqoBb+X51L/+danWT4x/SFwh9Err98dW2BDd7WEVXbIRwFy+jK4Mowip4Fb6GqwlKZg41FY6OJR6gneo5cSZeaRnr8S4DxQ1NRRUS470C+Y5gj7B/uuHcH8qL05tDTmtQYU9DCjiC7GI1sDAIe1bfzGGG0Bisxz5eTZ/dQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=npju6duDfWR4M7/ATX/hEM2A8DrkxTY++6U/e3Gx3Bk=;
-        b=N/RgqMn/rUUpmRH/O949tscnLkTB+vVexbvPfUDisteEt3vvPBU/uBZXcNDhZ6ln1B
-         oPORzLoEB0TV4SrGomNfroZ6UyQJ5uCAGo9y4AniKQyv97oZPfRHAOZt1Hhx5nALl7Qg
-         Nph9QBmxra344bi236GaUGrJNH9if8QlZZZzfIDqFAGumch3CCCf9Qi68+ppjGTO+lfS
-         xUCtWFRs4lMngcF18SZ6+s2B85mltCi0eAqySiYsSujswlLPkF2LmY462xGF8n7p2tP1
-         JraaXUsDMk/81V/4BFJAnOxBrE0Vg9Wr8Moit97e87Xdkn8dnehSe0Y9XlSQHOWZJreZ
-         sOMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=npju6duDfWR4M7/ATX/hEM2A8DrkxTY++6U/e3Gx3Bk=;
-        b=WXmKRn1f6Ko1mMY8m8Zuhd2dU1ycyo2wSbBp4PYUJn9B33uBxc4zvM8G8f2jl4klUH
-         skO6/QrAV/6ER0e0mcWZuis1FoZcOtuSc8kIG0FDJ+9Qm5X4577Vl9pjQ3BwgwBsatdH
-         zwdMBCLbnJDEOa4YumR0iWYJIf6VDSjC+C07HpC1T6qcxFCr7h4rZi8MtTpR/2mMzm06
-         zqY8lewbR+v9uROqyxXJjxjZP3DvCQK9Rs3gBX4Fn1xyiV4bXwHjDbL6wU3bjEGhHNf9
-         KNdVUvXV/pWJeEW6sVTYlCxCI8ByOKICWt8uAuOWWlRinlAnt3cp2jv3OljoBXN55lBl
-         ni7Q==
-X-Gm-Message-State: AOAM531/1hi9Wk7ZTxcQ36Dc00MdDNkGc/5zvIAmFuPfQXoG/zLlxu+j
-        81Xq8uPjxbIB+iqRPbfBcKbyEl+wxw/ESEimCtNIPenD5zw=
-X-Google-Smtp-Source: ABdhPJyaipSzy5QV4Z98iRM0VGAdSn8aE4s+iyym9ziKHQKaZqxlAmYQXYn+icmqZz0hqNFX/c9hjrhfYOWuAD3isDo=
-X-Received: by 2002:a17:903:22c7:b029:12c:4621:a2fd with SMTP id
- y7-20020a17090322c7b029012c4621a2fdmr1464350plg.61.1628848226425; Fri, 13 Aug
- 2021 02:50:26 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N0jjRAcqOAmIH7H56qUewV3eIR22IURT1mXSOBCAsXo=;
+ b=KupKAkDEIJ0RCd/0d/1Po/+1DSEepD0Dj9lRbqBu1mdQEKvtiutJayhA2B34HUzdkFe7UOK/g33vWCb3DhmrDinhgNNaTV6YrR3YUI1xj/vptsCOozBZD54dFITS6pL6IMEVfyLHlldhaS/H1b+R8m57wH5p9Wsf+QpzK7onxaQ=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BLAPR10MB4852.namprd10.prod.outlook.com (2603:10b6:208:30f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.19; Fri, 13 Aug
+ 2021 09:55:47 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4415.019; Fri, 13 Aug 2021
+ 09:55:47 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH 0/7] make btrfs/153 sucessful on 5.4.y
+Date:   Fri, 13 Aug 2021 17:55:23 +0800
+Message-Id: <cover.1628845854.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR03CA0124.apcprd03.prod.outlook.com
+ (2603:1096:4:91::28) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-References: <2729231.WZja5ltl65@ananda>
-In-Reply-To: <2729231.WZja5ltl65@ananda>
-From:   =?UTF-8?Q?Sebastian_D=C3=B6ring?= <moralapostel@gmail.com>
-Date:   Fri, 13 Aug 2021 11:50:00 +0200
-Message-ID: <CADkZQamczB9yqw_Eump8uJJ11ez_kmr2V=HU8S_vnO1Q-Ux9KA@mail.gmail.com>
-Subject: Re: Corruption errors on Samsung 980 Pro
-To:     Martin Steigerwald <martin@lichtvoll.de>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (39.109.186.25) by SG2PR03CA0124.apcprd03.prod.outlook.com (2603:1096:4:91::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.9 via Frontend Transport; Fri, 13 Aug 2021 09:55:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 592d7da8-9e17-4d85-0f71-08d95e408647
+X-MS-TrafficTypeDiagnostic: BLAPR10MB4852:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BLAPR10MB48526F6119BDCD6069EE29C1E5FA9@BLAPR10MB4852.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1417;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3OPoRpbIQFxapOy+S3Hg0o2/2a4ecnJhm235WY4KZf6pGDnLAwBnsHZvSwMJ9CWL/YUxrSUd1KFNlNPsbsBhvVrfMQMGk8bGTcklITzH/RJAo+Ihdqs4QV0GGbZ9OFj7EEpC7UAYzOPrShxowmNpqLV9LtahAwBvz4OOuWwM/QgAxLClBShYo/A5X4aOAbnenj5PsWEawg91KWxsaOpTPZI8p/YxAus3y/tjz4h90dMzmhposaozdUn+Fim7sF+wuULUu7CwXRv/NfrLL0zZzoen0F5cI7959nW8zPeJHLq7JvpB11CAhxYI7naQ4KL32tXjKPC3aTRTNxEnU1oFSeiw+vAeG1mDAynmqXrlhULJQN8dXQ1qXcVOSvb2kOL5fQyfTxI4B5em/845iQ3IzARm2my2uugfP9akPbhPePSG98ApAq9/Z6kctNYgqjv1zQYNtley4HMb7AlPNH3oDqhgCB6xGdyuIIIVbfteeY9Rf95VQV8wVJ+OsRM7YazMzFHjMH8p4UzKzygz8wHIr7wsYQUZaTeKOQyqI+OD5745Nvegyrc6GsDHqTBRCxc7f5hDTAWoaAMd/sE0rH8BgsA9hw+8/uhUSBrOUmAdy+43nMES+f1cKrTwtk27Krba9hzBIdzygoJREfHD97n2QGD4BZAojSJISRvqqGXj0ZzTimaM4HTRLScxCPkfulewYJCSm4T5NR/VpfxOy1kN0Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39860400002)(366004)(376002)(346002)(107886003)(8936002)(8676002)(2906002)(478600001)(316002)(83380400001)(44832011)(4326008)(450100002)(956004)(2616005)(86362001)(186003)(66946007)(26005)(66476007)(6666004)(6486002)(6512007)(52116002)(66556008)(36756003)(5660300002)(38350700002)(38100700002)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+MvyrsbaAtCrtt/xmEKiHwgZIREUSQj3N1eAMaj/IbtPfkIdxLtqx+XQaaut?=
+ =?us-ascii?Q?2jSbW/WorRjvKCakIHY6kSbl8LGT3u8o5UbvZDRLpvezyTQKTg33z43Dpzn+?=
+ =?us-ascii?Q?X1rltqEf+sdFyfZ/qRXBvvMCV3HuuG2a4Wk0DnZrM9+8oaHN83DMZ4/mYt42?=
+ =?us-ascii?Q?1ET8IAXppZDypTk/qJVkA7HkH/rx62QdGrb9g+mQphsIFaW5Zi169AN4I7UW?=
+ =?us-ascii?Q?5o60BpY2attJIaeb0uGtSehxT7/sPVSp1LJVLzqd2omh3k81ETXs52V5Kv2R?=
+ =?us-ascii?Q?Y6A5IeEeSOhFN1RC7bY8Hvn5o4IH5psTyLQBONNIe17GceY521t0Ffqcv/mK?=
+ =?us-ascii?Q?qVgqMdGYZEaCqZ0wgsNAlJW27G8QXLrHxQgJZrKsYBzZxtAKs//FpRA8wVVi?=
+ =?us-ascii?Q?rEb8iAdV8ASBHVUio2m6AWeSJT+XrKr9Z2C/dH5UX5gr4sGaTQnYe0+jnjeJ?=
+ =?us-ascii?Q?hvRoqwTVmJ2DihPi3zHSfFiBD0N8PEAs5e+qnuBBfTPkcZq1oVESK6zKekOU?=
+ =?us-ascii?Q?1YNMhSgq5212Kw8oa8pU+pFbCqvu8FZpC2dEED7tTH/wAO0oqHTM5R/KqVq9?=
+ =?us-ascii?Q?bgArB+gyFEIRZtfN9SFCuseDJ+v3x6podAwQemaJiVW72uexEfEWXrUcox/6?=
+ =?us-ascii?Q?/wI5c6iPOd9rPOXT/7+FlVkaV5DtrRAmHUt5xJtsaW2gzS1gNOLSmFZiVFSp?=
+ =?us-ascii?Q?V+cW5Gg7IDDsAmY6FT/K4/JdT+HE14psOLtBZc+/h+th00X8IunGczZI9Ti/?=
+ =?us-ascii?Q?xPwfDB3Qf6YSvIsJ6vCtuiexLEapPA0UdbgKqDyGRzawncLu1MtxqRMyNcgf?=
+ =?us-ascii?Q?qrNGwrQvL/KGoSvCjk9bLBf5FBL+dz+r7m3iOfhdQK2es40y76QT/cCBZ8sD?=
+ =?us-ascii?Q?c1j3515X+pdnohDSmlrjvrYYivCMKY7K/MOsT5gy1CIK59vjxV4Mji8X/375?=
+ =?us-ascii?Q?eXBMxmL51orPq0OaK/+Mdi/0LgRV+SU+QxXaaC5Tpxoo1RezRi1IXTavIxAI?=
+ =?us-ascii?Q?yh/maow+VpxZLG3A0r/igZKBwqaTrhARMizn3t8Z9EBSuoP1lTSRFYIKyxzu?=
+ =?us-ascii?Q?F2YivEh+8DbtDTNVq2IWdLfCtNAE3UjyY7CSek0KS5gQ0aZpwjuAnVs5FMWw?=
+ =?us-ascii?Q?o5hNyvZxlJ7FTD+spOj12p25PsvFvfPlng4wnPA6WHsvqFjQYZ/AIRW9t2T1?=
+ =?us-ascii?Q?TFx9F6RuKM1cep/C67ZnJOvHFk2TxMuZjy+v7rVSFBySBhL7kfnK85UeutTu?=
+ =?us-ascii?Q?3ovIUELLRYH0Y2CfTL5CXOZuAbV+qPcL+Elt3rFKRqt2aifUQ1+bFBfwuaHo?=
+ =?us-ascii?Q?EPjlRrK5etZFz5ElUnQGspIW?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 592d7da8-9e17-4d85-0f71-08d95e408647
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Aug 2021 09:55:47.6643
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W7xMVDxHKWBEYS3tov3Elxw/vm6jfwkNlscWp7myU5xyxgQP8EOh8Yt7xjvx5aC8sWJif7+yDlxc2RdWmw/IyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4852
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10074 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=840
+ malwarescore=0 adultscore=0 spamscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108130059
+X-Proofpoint-ORIG-GUID: GXQbje2TBrm3a2pe08YIu7pcmhtUnxy1
+X-Proofpoint-GUID: GXQbje2TBrm3a2pe08YIu7pcmhtUnxy1
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
->It is BTRFS single profile on LVM on LUKS. Mount options are:
+Patch 1-2 and 5 helps to fix the conflicts smoothly.
+Patch 3-4 and 6 fixes the regression as reported by the
+                test case btrfs/153 and comes from the below patch-set
+                (btrfs: qgroup: Fix the long-existing regression of btrfs/153)
+Patch 7 fixes lockdep Warning as in the commit log now reported by
+the test case btrfs/153 on 5.4.y
 
-...
+Filipe Manana (1):
+  btrfs: fix lockdep splat when enabling and disabling qgroups
 
->I thought that a Samsung 980 Pro can easily handle "discard=async" so I
-used it.
+Nikolay Borisov (2):
+  btrfs: make qgroup_free_reserved_data take btrfs_inode
+  btrfs: make btrfs_qgroup_reserve_data take btrfs_inode
 
-LUKS doesn't do discard unless you explicitly enable and force it. Have you?
+Qu Wenruo (4):
+  btrfs: qgroup: allow to unreserve range without releasing other ranges
+  btrfs: qgroup: try to flush qgroup space when we get -EDQUOT
+  btrfs: transaction: Cleanup unused TRANS_STATE_BLOCKED
+  btrfs: qgroup: remove ASYNC_COMMIT mechanism in favor of reserve
+    retry-after-EDQUOT
 
-Am Fr., 16. Juli 2021 um 17:10 Uhr schrieb Martin Steigerwald
-<martin@lichtvoll.de>:
->
-> Hello.
->
-> I migrated to a different laptop and this one has a 2TB Samsung 980 Pro drive
-> (not a 2TB Samsung 870 Evo Plus which previously had problems).
->
-> I thought this time I would be fine, but I just got:
->
-> [63168.287911] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63168.287925] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
-> [63168.346552] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63168.346567] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
-> [63168.346685] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63168.346708] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
-> [63168.346859] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63168.346873] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
-> [63299.490367] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63299.490384] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
-> [63299.572849] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63299.572866] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
-> [63299.573151] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63299.573168] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
-> [63299.573286] BTRFS warning (device dm-3): csum failed root 1372 ino 2295743 off 2718461952 csum 0x48be03222606a29d expected csum 0x0100000026004000 mirror 1
-> [63299.573295] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
-> [63588.902631] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> [63588.902647] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 13, gen 0
-> [63588.949614] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> [63588.949628] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 14, gen 0
-> [63588.949849] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> [63588.949855] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 15, gen 0
-> [63588.950087] BTRFS warning (device dm-3): csum failed root 1372 ino 4895964 off 34850111488 csum 0x21941ce6e9739bd6 expected csum 0xc113140701000000 mirror 1
-> [63588.950099] BTRFS error (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 16, gen 0
->
-> during a backup.
->
-> According to rsync this is related (why does BTRFS does not report the
-> affected file?)
->
-> Create a snapshot of '/home' in '/zeit/home/backup-2021-07-16-16:40:13'
-> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/output error (5)
-> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/akonadi/search_db/email/postlist.glass": Input/output error (5)
-> ERROR: martin/.local/share/akonadi/search_db/email/postlist.glass failed verification -- update discarded.
-> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/baloo/index": Input/output error (5)
-> rsync: [sender] read errors mapping "/zeit/home/backup-2021-07-16-16:40:13/martin/.local/share/baloo/index": Input/output error (5)
-> ERROR: martin/.local/share/baloo/index failed verification -- update discarded.
->
-> Both are frequently written to files (both Baloo and Akonadi have very crazy
-> I/O patterns that, I would not have thought so, can even satisfy an NVMe SSD).
->
-> I thought that a Samsung 980 Pro can easily handle "discard=async" so I
-> used it.
->
-> This is on a ThinkPad T14 Gen1 with AMD Ryzen 7 PRO 4750U and 32 GiB of RAM.
->
-> It is BTRFS single profile on LVM on LUKS. Mount options are:
->
-> rw,relatime,lazytime,compress=zstd:3,ssd,space_cache=v2,subvolid=1054,subvol=/home
->
-> Smartctl has no errors.
->
-> I only use a few (less than 10) subvolumes.
->
-> I do not have any other errors in kernel log, so I bet this may not be
-> "discard=async" related. Any idea?
->
-> Could it have to do with a sudden switching off the laptop (there had
-> been quite some reasons cause at least with a AMD model of this laptop
-> in combination with an USB-C dock by Lenovo there are quite some stability
-> issues)? I would have hoped that the Samsung 980 Pro would still be
-> equipped to complete the outstanding write operation, but maybe it has
-> no capacitor for this.
->
-> I am really surprised by the what I experienced about the reliability of
-> SSDs I recently bought. I did not see a failure within a month with any
-> of the older SSDs. I hope this does not point at a severe worsening of
-> the quality. Probably I have to fit another SSD in there and use BTRFS
-> RAID 1 again to protect at least part of the data from errors like this.
->
-> Any idea about this? I bet you may not have any, as there is not block
-> I/O related errors in the log, but if you have, by all means share your
-> thoughts. Thank you.
->
-> Both files can be recreated. So I bet I will just remove them.
->
-> Best,
-> --
-> Martin
->
->
+ fs/btrfs/ctree.h          |  13 +-
+ fs/btrfs/delalloc-space.c |   2 +-
+ fs/btrfs/disk-io.c        |   4 +-
+ fs/btrfs/file.c           |   7 +-
+ fs/btrfs/qgroup.c         | 308 ++++++++++++++++++++++++++++----------
+ fs/btrfs/qgroup.h         |   2 +-
+ fs/btrfs/transaction.c    |  16 +-
+ fs/btrfs/transaction.h    |  15 --
+ 8 files changed, 246 insertions(+), 121 deletions(-)
+
+-- 
+2.31.1
+
