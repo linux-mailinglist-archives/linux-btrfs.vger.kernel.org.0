@@ -2,98 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2B83EC9E2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Aug 2021 17:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDB43EC9E3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Aug 2021 17:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234332AbhHOPUl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Aug 2021 11:20:41 -0400
-Received: from out20-111.mail.aliyun.com ([115.124.20.111]:33392 "EHLO
-        out20-111.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232412AbhHOPUk (ORCPT
+        id S234448AbhHOPVx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 Aug 2021 11:21:53 -0400
+Received: from out20-2.mail.aliyun.com ([115.124.20.2]:47820 "EHLO
+        out20-2.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232412AbhHOPVr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Aug 2021 11:20:40 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.5672719|-1;CH=green;DM=|CONTINUE|false|;DS=||;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=guan@eryu.me;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.L.lErU._1629040807;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.L.lErU._1629040807)
-          by smtp.aliyun-inc.com(10.147.42.241);
-          Sun, 15 Aug 2021 23:20:08 +0800
-Date:   Sun, 15 Aug 2021 23:20:07 +0800
+        Sun, 15 Aug 2021 11:21:47 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08590187|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0746984-0.00142545-0.923876;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=guan@eryu.me;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.L.l6UhU_1629040875;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.L.l6UhU_1629040875)
+          by smtp.aliyun-inc.com(10.147.42.198);
+          Sun, 15 Aug 2021 23:21:16 +0800
+Date:   Sun, 15 Aug 2021 23:21:15 +0800
 From:   Eryu Guan <guan@eryu.me>
 To:     Naohiro Aota <naohiro.aota@wdc.com>
 Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 8/8] fstests: generic: add checks for zoned block
- device
-Message-ID: <YRkwp1l/qVjg7x9m@desktop>
+Subject: Re: [PATCH v2 0/8] fstests: add checks for testing zoned btrfs
+Message-ID: <YRkw67HXU2vtOLAz@desktop>
 References: <20210811151232.3713733-1-naohiro.aota@wdc.com>
- <20210811151232.3713733-9-naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811151232.3713733-9-naohiro.aota@wdc.com>
+In-Reply-To: <20210811151232.3713733-1-naohiro.aota@wdc.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 12:12:32AM +0900, Naohiro Aota wrote:
-> Modify generic tests to require non-zoned block device
+On Thu, Aug 12, 2021 at 12:12:24AM +0900, Naohiro Aota wrote:
+> This series revisit my old series to test zoned btrfs [1].
 > 
-> generic/108 is disabled on zoned block device because the LVM device not
-> always aligned to the zone boundary.
+> [1] https://lore.kernel.org/fstests/PH0PR04MB7416870032582BC2A8FC5AD99B299@PH0PR04MB7416.namprd04.prod.outlook.com/T/
 > 
-> generic/471 is disabled because we cannot enable NoCoW on zoned btrfs.
+> Several tests are failing on zoned btrfs, but actually they are invalid.
+> There are two reasons of the failures. One is creating too small
+> filesystem. Since zoned btrfs needs at lease 5 zones (= 1.25 GB if zone
+> size = 256MB) to create a filesystem, tests creating e.g., 1 GB filesystem
+> will fail.
 > 
-> generic/570 is disabled because swap file which require nocow is not usable
-> on zoned btrfs.
+> The other reason is lacking of zone support of some dm targets and loop
+> device. So, they need to skip the test if the testing device is zoned.
 > 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  tests/generic/108 | 1 +
->  tests/generic/471 | 1 +
->  tests/generic/570 | 1 +
->  3 files changed, 3 insertions(+)
-> 
-> diff --git a/tests/generic/108 b/tests/generic/108
-> index 7dd426c19030..b51bce9f9bce 100755
-> --- a/tests/generic/108
-> +++ b/tests/generic/108
-> @@ -35,6 +35,7 @@ _require_scratch_nocheck
->  _require_block_device $SCRATCH_DEV
->  _require_scsi_debug
->  _require_command "$LVM_PROG" lvm
-> +_require_non_zoned_device $SCRATCH_DEV
+> Patches 1 to 4 handle the too small file system failure.
 
-I think in generic/108 and generic/570 we should only check zoned device
-if FSTYP is btrfs in in generic/471. And also need comments to explain
-the reason to do so.
+I've applied patch 1-4 and 6.
 
 Thanks,
 Eryu
 
->  
->  lvname=lv_$seq
->  vgname=vg_$seq
-> diff --git a/tests/generic/471 b/tests/generic/471
-> index dab06f3a315c..66b7d6946a9f 100755
-> --- a/tests/generic/471
-> +++ b/tests/generic/471
-> @@ -37,6 +37,7 @@ mkdir $testdir
->  # all filesystems, use a NOCOW file on btrfs.
->  if [ $FSTYP == "btrfs" ]; then
->  	_require_chattr C
-> +	_require_non_zoned_device $TEST_DEV
->  	touch $testdir/f1
->  	$CHATTR_PROG +C $testdir/f1
->  fi
-> diff --git a/tests/generic/570 b/tests/generic/570
-> index 7d03acfe3c44..71928f0ac980 100755
-> --- a/tests/generic/570
-> +++ b/tests/generic/570
-> @@ -25,6 +25,7 @@ _supported_fs generic
->  _require_test_program swapon
->  _require_scratch_nocheck
->  _require_block_device $SCRATCH_DEV
-> +_require_non_zoned_device "$SCRATCH_DEV"
->  test -e /dev/snapshot && _notrun "userspace hibernation to swap is enabled"
->  
->  $MKSWAP_PROG "$SCRATCH_DEV" >> $seqres.full
+> 
+> And, patches 5 to 8 add checks for tests requiring non-zoned devices.
+> 
+> Naohiro Aota (8):
+>   common/rc: introduce minimal fs size check
+>   common/rc: fix blocksize detection for btrfs
+>   btrfs/057: use _scratch_mkfs_sized to set filesystem size
+>   fstests: btrfs: add minimal file system size check
+>   common: add zoned block device checks
+>   shared/032: add check for zoned block device
+>   fstests: btrfs: add checks for zoned block device
+>   fstests: generic: add checks for zoned block device
+> 
+>  README            |  4 ++++
+>  common/btrfs      | 18 ++++++++++++++++++
+>  common/dmerror    |  3 +++
+>  common/dmhugedisk |  3 +++
+>  common/rc         | 24 +++++++++++++++++++++++-
+>  tests/btrfs/003   | 13 +++++++++----
+>  tests/btrfs/011   | 21 ++++++++++++---------
+>  tests/btrfs/012   |  2 ++
+>  tests/btrfs/023   |  2 ++
+>  tests/btrfs/049   |  2 ++
+>  tests/btrfs/057   |  2 +-
+>  tests/btrfs/116   |  2 ++
+>  tests/btrfs/124   |  4 ++++
+>  tests/btrfs/125   |  2 ++
+>  tests/btrfs/131   |  2 ++
+>  tests/btrfs/136   |  2 ++
+>  tests/btrfs/140   |  2 ++
+>  tests/btrfs/141   |  1 +
+>  tests/btrfs/142   |  1 +
+>  tests/btrfs/143   |  1 +
+>  tests/btrfs/148   |  2 ++
+>  tests/btrfs/150   |  1 +
+>  tests/btrfs/151   |  1 +
+>  tests/btrfs/156   |  1 +
+>  tests/btrfs/157   |  3 +++
+>  tests/btrfs/158   |  3 +++
+>  tests/btrfs/175   |  1 +
+>  tests/btrfs/194   |  2 +-
+>  tests/btrfs/195   |  8 ++++++++
+>  tests/btrfs/197   |  1 +
+>  tests/btrfs/198   |  1 +
+>  tests/btrfs/215   |  1 +
+>  tests/btrfs/236   | 33 ++++++++++++++++++++-------------
+>  tests/generic/108 |  1 +
+>  tests/generic/471 |  1 +
+>  tests/generic/570 |  1 +
+>  tests/shared/032  |  2 ++
+>  37 files changed, 145 insertions(+), 29 deletions(-)
+> 
 > -- 
 > 2.32.0
