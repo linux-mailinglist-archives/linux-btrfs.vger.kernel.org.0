@@ -2,107 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDB43EC9E3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Aug 2021 17:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675823ECAAF
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Aug 2021 21:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbhHOPVx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Aug 2021 11:21:53 -0400
-Received: from out20-2.mail.aliyun.com ([115.124.20.2]:47820 "EHLO
-        out20-2.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232412AbhHOPVr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Aug 2021 11:21:47 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08590187|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0746984-0.00142545-0.923876;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=guan@eryu.me;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.L.l6UhU_1629040875;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.L.l6UhU_1629040875)
-          by smtp.aliyun-inc.com(10.147.42.198);
-          Sun, 15 Aug 2021 23:21:16 +0800
-Date:   Sun, 15 Aug 2021 23:21:15 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/8] fstests: add checks for testing zoned btrfs
-Message-ID: <YRkw67HXU2vtOLAz@desktop>
-References: <20210811151232.3713733-1-naohiro.aota@wdc.com>
+        id S229743AbhHOTfj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 15 Aug 2021 15:35:39 -0400
+Received: from rin.romanrm.net ([51.158.148.128]:41256 "EHLO rin.romanrm.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229502AbhHOTfj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 15 Aug 2021 15:35:39 -0400
+Received: from natsu (natsu2.home.romanrm.net [IPv6:fd39::e99e:8f1b:cfc9:ccb8])
+        by rin.romanrm.net (Postfix) with SMTP id 105091A0;
+        Sun, 15 Aug 2021 19:35:05 +0000 (UTC)
+Date:   Mon, 16 Aug 2021 00:35:05 +0500
+From:   Roman Mamedov <rm@romanrm.net>
+To:     Goffredo Baroncelli <kreijack@libero.it>
+Cc:     NeilBrown <neilb@suse.de>, Christoph Hellwig <hch@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for
+ btrfs export
+Message-ID: <20210816003505.7b3e9861@natsu>
+In-Reply-To: <bf49ef31-0c86-62c8-7862-719935764036@libero.it>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+        <162881913686.1695.12479588032010502384@noble.neil.brown.name>
+        <bf49ef31-0c86-62c8-7862-719935764036@libero.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811151232.3713733-1-naohiro.aota@wdc.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 12:12:24AM +0900, Naohiro Aota wrote:
-> This series revisit my old series to test zoned btrfs [1].
-> 
-> [1] https://lore.kernel.org/fstests/PH0PR04MB7416870032582BC2A8FC5AD99B299@PH0PR04MB7416.namprd04.prod.outlook.com/T/
-> 
-> Several tests are failing on zoned btrfs, but actually they are invalid.
-> There are two reasons of the failures. One is creating too small
-> filesystem. Since zoned btrfs needs at lease 5 zones (= 1.25 GB if zone
-> size = 256MB) to create a filesystem, tests creating e.g., 1 GB filesystem
-> will fail.
-> 
-> The other reason is lacking of zone support of some dm targets and loop
-> device. So, they need to skip the test if the testing device is zoned.
-> 
-> Patches 1 to 4 handle the too small file system failure.
+On Sun, 15 Aug 2021 09:39:08 +0200
+Goffredo Baroncelli <kreijack@libero.it> wrote:
 
-I've applied patch 1-4 and 6.
+> I am sure that it was discussed already but I was unable to find any track
+> of this discussion. But if the problem is the collision between the inode
+> number of different subvolume in the nfd export, is it simpler if the export
+> is truncated to the subvolume boundary ? It would be more coherent with the
+> current behavior of vfs+nfsd.
 
-Thanks,
-Eryu
+See this bugreport thread which started it all:
+https://www.spinics.net/lists/linux-btrfs/msg111172.html
 
-> 
-> And, patches 5 to 8 add checks for tests requiring non-zoned devices.
-> 
-> Naohiro Aota (8):
->   common/rc: introduce minimal fs size check
->   common/rc: fix blocksize detection for btrfs
->   btrfs/057: use _scratch_mkfs_sized to set filesystem size
->   fstests: btrfs: add minimal file system size check
->   common: add zoned block device checks
->   shared/032: add check for zoned block device
->   fstests: btrfs: add checks for zoned block device
->   fstests: generic: add checks for zoned block device
-> 
->  README            |  4 ++++
->  common/btrfs      | 18 ++++++++++++++++++
->  common/dmerror    |  3 +++
->  common/dmhugedisk |  3 +++
->  common/rc         | 24 +++++++++++++++++++++++-
->  tests/btrfs/003   | 13 +++++++++----
->  tests/btrfs/011   | 21 ++++++++++++---------
->  tests/btrfs/012   |  2 ++
->  tests/btrfs/023   |  2 ++
->  tests/btrfs/049   |  2 ++
->  tests/btrfs/057   |  2 +-
->  tests/btrfs/116   |  2 ++
->  tests/btrfs/124   |  4 ++++
->  tests/btrfs/125   |  2 ++
->  tests/btrfs/131   |  2 ++
->  tests/btrfs/136   |  2 ++
->  tests/btrfs/140   |  2 ++
->  tests/btrfs/141   |  1 +
->  tests/btrfs/142   |  1 +
->  tests/btrfs/143   |  1 +
->  tests/btrfs/148   |  2 ++
->  tests/btrfs/150   |  1 +
->  tests/btrfs/151   |  1 +
->  tests/btrfs/156   |  1 +
->  tests/btrfs/157   |  3 +++
->  tests/btrfs/158   |  3 +++
->  tests/btrfs/175   |  1 +
->  tests/btrfs/194   |  2 +-
->  tests/btrfs/195   |  8 ++++++++
->  tests/btrfs/197   |  1 +
->  tests/btrfs/198   |  1 +
->  tests/btrfs/215   |  1 +
->  tests/btrfs/236   | 33 ++++++++++++++++++++-------------
->  tests/generic/108 |  1 +
->  tests/generic/471 |  1 +
->  tests/generic/570 |  1 +
->  tests/shared/032  |  2 ++
->  37 files changed, 145 insertions(+), 29 deletions(-)
-> 
-> -- 
-> 2.32.0
+In there the reporting user replied that it is strongly not feasible for them
+to export each individual snapshot.
+
+> In fact in btrfs a subvolume is a complete filesystem, with an "own
+> synthetic" device. We could like or not this solution, but this solution is
+> the more aligned to the unix standard, where for each filesystem there is a
+> pair (device, inode-set). NFS (by default) avoids to cross the boundary
+> between the filesystems. So why in BTRFS this should be different ?
+
+From the user point of view subvolumes are basically directories; that they
+are "complete filesystems"* is merely a low-level implementation detail.
+
+* well except they are not, as you cannot 'dd' a subvolume to another
+blockdevice.
+
+> Why don't rename "ino_uniquifier" as "ino_and_subvolume" and leave to the
+> filesystem the work to combine the inode and the subvolume-id ?
+>
+> I am worried that the logic is split between the filesystem, which
+> synthesizes the ino_uniquifier, and to NFS which combine to the inode. I am
+> thinking that this combination is filesystem specific; for BTRFS is a simple
+> xor but for other filesystem may be a more complex operation, so leaving an
+> half in the filesystem and another half to the NFS seems to not optimal if
+> other filesystem needs to use ino_uniquifier.
+
+I wondered a bit myself, what are the downsides of just doing the
+uniquefication inside Btrfs, not leaving that to NFSD?
+
+I mean not even adding the extra stat field, just return the inode itself with
+that already applied. Surely cannot be any worse collision-wise, than
+different subvolumes straight up having the same inode numbers as right now?
+
+Or is it a performance concern, always doing more work, for something which
+only NFSD has needed so far.
+
+-- 
+With respect,
+Roman
