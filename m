@@ -2,110 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0406B3ED8DC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Aug 2021 16:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEB63ED8F3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Aug 2021 16:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhHPOY3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Aug 2021 10:24:29 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34962 "EHLO
+        id S232322AbhHPO2H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Aug 2021 10:28:07 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35500 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhHPOY2 (ORCPT
+        with ESMTP id S230071AbhHPO2G (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Aug 2021 10:24:28 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3264D21D5C;
-        Mon, 16 Aug 2021 14:23:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629123836;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 16 Aug 2021 10:28:06 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4516721D5C;
+        Mon, 16 Aug 2021 14:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629124054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LszuKe80hGtngKdJr+SZ3MBj8T/CKqYOiAtGQL8GZYo=;
-        b=f23QzlCI0RjMxTY/M98n4sSoSjZaKRMqxhto7VdXg99cocpC1pGRTGZc31FxrBtmbORIOw
-        h1EFmPM6pvUjyIygGKAZUULVqDoqJ4rp48y+XG/K4SUmYsF4t0gy0XmdMdLjVAjFuoYaIS
-        fbv0Spn33e9zGXOyRdKQKERNgZslp9o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629123836;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LszuKe80hGtngKdJr+SZ3MBj8T/CKqYOiAtGQL8GZYo=;
-        b=3LU6PHxULmIemCWafJpexNWhZcTDP4z4TGKaBKPFld/A55meubNfjjOb6ZYqMr/6yd7f7S
-        fU4jGTAEOJeaP4Dw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 29766A3B85;
-        Mon, 16 Aug 2021 14:23:56 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 80F50DA72C; Mon, 16 Aug 2021 16:21:00 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 16:21:00 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        bh=d+1JUzLaQ1xu0U4b8YVphLC0cB0yXD8WoYWapO83CXA=;
+        b=AH56QkxsdL/0XO+oY6dAy+QloH+4SwvkvHgA0M8nz13Q5erYIh2bCxzy7mlC6c7JEpcPUN
+        FwoB7fFDzecFzkg/5ja8r1hcbOOIVkDcGllN2+ZGHytx7zjsVmarsNSLCIIQ6Cktk0mySs
+        iWf7Nijo7ZJ5gtgoDIkEH42wz2PERwA=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 09128136A6;
+        Mon, 16 Aug 2021 14:27:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id kOo5O9V1GmFCRwAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Mon, 16 Aug 2021 14:27:33 +0000
+Subject: Re: [PATCH 2/2] btrfs: subpage: pack all subpage bitmaps into a
+ larger bitmap
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: replace BUG_ON() in btrfs_csum_one_bio() with
- proper error handling
-Message-ID: <20210816142100.GD5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210802065447.178726-1-wqu@suse.com>
- <20210802065447.178726-3-wqu@suse.com>
- <594df624-3895-8787-9058-a00dba01c0cc@suse.com>
- <5e516629-05f1-7750-1f0d-34cd73e8b52f@gmx.com>
- <7953dbaf-7b7a-2279-0ac0-63bb51a51f1d@suse.com>
+References: <20210816060036.57788-1-wqu@suse.com>
+ <20210816060036.57788-3-wqu@suse.com>
+ <bcda08a2-c014-10d7-64c8-1ac29b0f43ab@suse.com>
+ <417cfed7-e7c6-8c51-254b-7a76533b96c8@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <892a4b32-a2f9-56f4-17b8-a494c287dfc8@suse.com>
+Date:   Mon, 16 Aug 2021 17:27:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <417cfed7-e7c6-8c51-254b-7a76533b96c8@gmx.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7953dbaf-7b7a-2279-0ac0-63bb51a51f1d@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 11:49:38AM +0300, Nikolay Borisov wrote:
-> 
-> 
-> On 2.08.21 г. 11:03, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2021/8/2 下午3:53, Nikolay Borisov wrote:
-> >>
-> >>
-> >> On 2.08.21 г. 9:54, Qu Wenruo wrote:
-> >>> The BUG_ON() in btrfs_csum_one_bio() means we're trying to submit a bio
-> >>> while we don't have ordered extent for it at all.
-> >>>
-> >>> Normally this won't happen and is indeed a code logical error.
-> >>>
-> >>> But previous fix has already shown another possibility that, some call
-> >>> sites don't handle error properly and submit the write bio after its
-> >>> ordered extent has already been cleaned up.
-> >>>
-> >>> This patch will add an extra safe net by replacing the BUG_ON() to
-> >>> proper error handling.
-> >>>
-> >>> And even if some day we hit a regression that we're submitting bio
-> >>> without an ordered extent, we will return error and the pages will be
-> >>> marked Error, and being caught properly.
-> >>
-> >> Would this hamper debugability? I.e it will result in some writes
-> >> failing with an error, right?
-> > 
-> > Yes, it will make such corner case way more silent than before.
-> > 
-> > But IMHO the existing BUG_ON() is also overkilled.
-> > 
-> > Maybe converting it to WARN_ON() would be a good middle land?
-> 
-> If this can occur only due to code bugs I'd prefer to leave it as a
-> BUG_ON. Ideally this should only trigger on developer machines when
-> testing code changes.
 
-I'd rather see a WARN_ON + the error handling code, a BUG_ON will shoot
-down the whole machine. In this case it's probably serious enough but
-in the long run we want to get rid of BUG_ONs that can be reasonably
-handled.
+
+On 16.08.21 г. 16:41, Qu Wenruo wrote:
+> 
+> 
+> On 2021/8/16 下午6:26, Nikolay Borisov wrote:
+>>
+>>
+>> On 16.08.21 г. 9:00, Qu Wenruo wrote:
+>>> Currently we use u16 bitmap to make 4k sectorsize work for 64K page
+>>> size.
+>>>
+>>> But this u16 bitmap is not large enough to contain larger page size like
+>>> 128K, nor is space efficient for 16K page size.
+>>>
+>>> To handle both cases, here we pack all subpage bitmaps into a larger
+>>> bitmap, now btrfs_subpage::bitmaps[] will be the ultimate bitmap for
+>>> subpage usage.
+>>>
+>>> Each sub-bitmap will has its start bit number recorded in
+>>> btrfs_subpage_info::*_start, and its bitmap length will be recorded in
+>>> btrfs_subpage_info::bitmap_nr_bits.
+>>>
+>>> All subpage bitmap operations will be converted from using direct u16
+>>> operations to bitmap operations, with above *_start calculated.
+>>>
+>>> For 64K page size with 4K sectorsize, this should not cause much
+>>> difference.
+>>> While for 16K page size, we will only need 1 unsigned long (u32) to
+>>> restore the bitmap.
+>>> And will be able to support 128K page size in the future.
+>>>
+
+<snip>
+
+>>
+>> offtopic: Instead of having a bunch of those checks can't we replace
+>> them with ASSERTS and ensure that the decision whether we do subpage or
+>> not is taken at a higher level ?
+> 
+> Nope, in this particular call site, btrfs_alloc_subpage() can be called
+> with regular page size.
+> 
+> I guess it's better to rename this function like btrfs_prepare_page()?
+
+There are currently 2 callers:
+
+btrfs_attach_subpage - this one only calls it iff sectorsize != alloc_subage
+
+alloc_extent_buffer - here it's called unconditionally but that can
+easily be rectified with an if(subpage) check
+
+<snip>
+
+
+>> 2 argument of find_next_zero_bit is 'size' which would be nbits as it
+>> expects the size to be in bits , not start + nbit. Every logical bitmap
+>> in ->bitmaps is defined by [start, nbits] no ? Unfortunately there is a
+>> discrepancy between the order of documentation and the order of actual
+>> arguments in the definition of this function....
+> 
+> IT'S A TRAP!
+> 
+> Paramater 2 (@size) is the total size of the search range, it should be
+> larger than the 3rd parameter.
+
+It's not even that it's the end index of the bit we are looking for. I.e
+if we want to check bits 20-29 we'd pass 20 as start, and 29 as size ...
+This is fucked, but it is what it is. I guess the documentation of the
+bits function is dodgy...
+
+<snip>
