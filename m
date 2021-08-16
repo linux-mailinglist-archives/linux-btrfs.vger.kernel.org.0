@@ -2,519 +2,220 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F003ECE3D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Aug 2021 08:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BBC3ECE6B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Aug 2021 08:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233173AbhHPGBQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Aug 2021 02:01:16 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:36250 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233236AbhHPGBP (ORCPT
+        id S233130AbhHPGII (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Aug 2021 02:08:08 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:17926 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232958AbhHPGH2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Aug 2021 02:01:15 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 07BE31FE72
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Aug 2021 06:00:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629093643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F0nTKUnerQFYsNu5VqUEAq+TEp0PyHcTFho8TVNP7A0=;
-        b=DaC6i1GaZl/Ofu2ZNG/M4AzEUju0JTQqCPtCyOsh45PNLq8k0abhbjWmxweXZ6HIHrSX1F
-        oF77V6wnZnJhdA9RK933tfcC6TCPXOQZMiqscCzn7yIIpld9rrxS/s+fidJuYlIIoWXDl4
-        Z1es65uwV8NQLK8xFOeMaO8j+b8Az1k=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 39294136A6
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Aug 2021 06:00:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 2CkjOgn/GWE3UQAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Aug 2021 06:00:41 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: subpage: pack all subpage bitmaps into a larger bitmap
-Date:   Mon, 16 Aug 2021 14:00:36 +0800
-Message-Id: <20210816060036.57788-3-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210816060036.57788-1-wqu@suse.com>
-References: <20210816060036.57788-1-wqu@suse.com>
+        Mon, 16 Aug 2021 02:07:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1629094017; x=1660630017;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=y9XLj5gbGW2nTNMRYSKrY7tuDNti3fEwcG59ZYfRVSI=;
+  b=Ut8eLNdrkEnfwpUgcvrqvOyGKlJmVxRrv8PNEMI0g94AORDkEp+scL2m
+   aX67bht2/wcWyWyVUoyQ/WF8CNXfn6gUwmQNwt5HBPOTWotTwdGiNAvp0
+   duJOhnweq3cYfRcPLS9eTcq9nGwOVMVuMCQKeHbxjHwa1UZPiYjGpUvNu
+   ACgWux0DaN04rMcUPXsnQR4sIqMbspu8F638f8ZAkm57BIiEsS2U4Qi5a
+   j7HU3rOCTluRbHl6HabiRHPQcUBujR8r/0H7qEbcLpRrM6kVouUwziXE7
+   y5Yxaqm5/dU1yh/DjNR+HmbWmsDEcRYemCiiDH2PWklrLLx1QyrDlUArp
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.84,324,1620662400"; 
+   d="scan'208";a="288926952"
+Received: from mail-mw2nam08lp2174.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.174])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Aug 2021 14:06:52 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a4p1LruHMGkpm4XZLU754OirYCTqIuSDulYhflNg87xRX76fo9KagV2ifxOYko7DVSNdfoK91taRAkkPF06rbSidow2SE7ZBG5UMMeiPtAgNkGX2+eLVFDvbm7FYuTLwEbzi4Nkb3Al6w8h6f+D9DmQAIi0cntpKq7nLX7n9OIzoTyqukuhKt2lyV4uyjSBZVUkZvaItA9Jg7b9+dvMSrO0N/ENHVoMN+d1+ytzV9UXH93bg/dz4uiFIstMx6tDHtKBdyyjB1151yHIWaXAMGCZq2dPY/zXRnyH01Y/0tOG2pcLX+kluuUsRc2tjS/k/rzxmBtRqlHY35B5Lx4Kosg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x3EpmysbYrb5Rf1rfHUGoTHUcO3eAOAycfXKjRRL570=;
+ b=GPSnLQLf+U5NPod4cIp1JrFdz0uSwNiOfI2mI2+ii/akypErCisrj94UOyaeGNuDeT53ONLFqkitiMuwNki9QiClGAI1RVdvbzLjpI0CJ8KlwfG7q+Fndx8QIQRChpP+ShHuS6zq8MdQg0mxCnXHK8GDgYiiSD4I0Wk3O/xtfd2JZCZ7kqm7DXoMrVX7nWFpNc8MVm5AacAS4vLhMZJ7mTX4ltdwH668W9nI1m4HORMOjntUj0Lv2ANi7qKSlYqsAE6/dgh0yBPuY2b5+wWliISFcYp8e86whBc1guQWsB3ITLjsotg3UaEVuXvtgFzL7Cy1TmPaOLAT74sNIpImMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x3EpmysbYrb5Rf1rfHUGoTHUcO3eAOAycfXKjRRL570=;
+ b=GOsPHPi2t4zC7oVsSMqAb3mICwpLMZ9zd1HbRDH8a0SWChf37cWNle9lprLO6sJQLDUNc12czZV5PLvy6Q7drsxa4+5GCD5PevuHFo7wibuoErHQru/cWNGRvp5Sx5aoNjxkZipwxl+/cYOGrYaF5XUw/0uXeMCkB3p2pHxdw6A=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by SJ0PR04MB8376.namprd04.prod.outlook.com (2603:10b6:a03:3d8::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Mon, 16 Aug
+ 2021 06:06:50 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::413e:7e96:6547:b28b]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::413e:7e96:6547:b28b%6]) with mapi id 15.20.4415.023; Mon, 16 Aug 2021
+ 06:06:50 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Eryu Guan <guan@eryu.me>
+CC:     "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2 5/8] common: add zoned block device checks
+Thread-Topic: [PATCH v2 5/8] common: add zoned block device checks
+Thread-Index: AQHXjsNjims4RDIp2kCN7bDTZTcH6at0qhgAgAECLwA=
+Date:   Mon, 16 Aug 2021 06:06:50 +0000
+Message-ID: <20210816060650.t42isw3iljbc2j2j@naota-xeon>
+References: <20210811151232.3713733-1-naohiro.aota@wdc.com>
+ <20210811151232.3713733-6-naohiro.aota@wdc.com> <YRkn5uj9Yp/W3hYF@desktop>
+In-Reply-To: <YRkn5uj9Yp/W3hYF@desktop>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: eryu.me; dkim=none (message not signed)
+ header.d=none;eryu.me; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 895c4408-c027-4c25-5c90-08d9607c09d5
+x-ms-traffictypediagnostic: SJ0PR04MB8376:
+x-microsoft-antispam-prvs: <SJ0PR04MB83764E74E5CA91110679169B8CFD9@SJ0PR04MB8376.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XJ4BZgYRZgcEAzZxsxhBdXhzbNaxHZbOsnReSaBVX8qcLMGcj5g7+bOPtoxb91CBoZtuadxHlhEWRN2k6ScK7oDfdydO1Zzb5h/No5LavdEMKQo4/dQz30/BNRuZUVWdgryUPSXRNM1ye4j+lllrvBIq4k9m8iB8K1AsmNsTYNeBjajJewqpietmTnQ3pJRu4jGbXuIR1IrGQDZSQftc48kdMJTXKfdnyl/RzQNNInnhbmT8lvn2kODC6fzyRJhzDe+zjGPvs9SjkERHcHk0a6kOLF2svk2VI9e7n00F4t6DGQ+KZFuKRrkJvD7kiXIDRSHGdMx3NEZm/c1lwKuSBLNo8hNE6B13u1PcHuXUmV+Gs97sTpNJEn5G7ubSH0nXKM6mLr9ryOS2s1SehOGSno2RKDeXHSvH4dTDgZjPQwJTR+eAZewdAgdvJhU6S7Xtflb378usO7xvWF5grLiooc6cWx3BSPQIHhiwpI7bQVWaNuLaVaQT+xNaANTK79Zv+jUgCCoKN06ucp9aD4Qyb/LiIh4acXnoK6PLInjt05tg97xuRObRlF9kJR7IaBWKz2Bk+dzWiEdSzVvfvJ7QQrJ9yl5WGSxHDh5fw8+6b34vO9V+6YAMeW0ePvaovDBlj3qyfbEPjRTDMSW/ZqcpJgJGgFxsxEO7iiCzmO1QIom1IwZgnWv2RZ43iTtRjuLU29gvUbTJRnkPpy9832cB/A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(366004)(396003)(346002)(39860400002)(376002)(26005)(6512007)(9686003)(2906002)(1076003)(8676002)(33716001)(66556008)(66476007)(64756008)(186003)(66446008)(4326008)(71200400001)(76116006)(66946007)(8936002)(91956017)(6916009)(54906003)(86362001)(478600001)(38100700002)(6486002)(6506007)(83380400001)(5660300002)(122000001)(316002)(38070700005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fzQ28tBT/kUlzhEKdYiWkW8b/4ZLv7uazmmm1KsKTskm7MLt5qxweX2WvDFr?=
+ =?us-ascii?Q?tAmKhqM0f7nOEpF4ILZoOOg6KavW5lC9XV3YNVN0jXejNOEBi6lGCHeaDb0e?=
+ =?us-ascii?Q?PEVySt3N3B6M9FXqRGiSEB5sjfcf8dJ05CvohwI0AhR/nPby67jTF4qdOFz+?=
+ =?us-ascii?Q?p8ntG5JuDMlj3392jJreDABlvBhqzKB++DxSN3dsINXWipwUJslNxD0zMxVF?=
+ =?us-ascii?Q?4tQUHqCkNTdQicM2bkHv/QoIxldhKSCQswdU6m7FFIyVZvA5HGzokdeRTNjk?=
+ =?us-ascii?Q?WtmAqpXrlH1ZJDsUG9HLM+kghuXsY33aC2VNtUTIi47cV+NmjfWZtBX+spQg?=
+ =?us-ascii?Q?0Cx6e0ZQcr+mvMlGtfaNzcsNk3JVF0xrBkyDjALacya4fIMcbnRUk1czJ0mB?=
+ =?us-ascii?Q?VFg/SkDKyJiG38rwfXjv3G7rtJ0o2i+TPZc7Ib/hfqNzjo8xgvtOiAu0BaPQ?=
+ =?us-ascii?Q?hFECbJxtz12cKAv2xfQTH9Gn0sa8YpMb+HYj60jzt0sjuXdXQLzfBDRxxxwE?=
+ =?us-ascii?Q?Dyu0I+HS60mgIsFMfFplaCqo42tOt+4LDvzjc3WUbbz+LXG3yvOi1fyrpaWs?=
+ =?us-ascii?Q?j3CiSxrYwL2ZRq5U1526bnk7vUYiHjNLVjmirfeoVzZer63Ug8Ha+pMJdZK3?=
+ =?us-ascii?Q?bdZp3nU2yjahy89jiJDczN7vtUw/6/hUCx/TVs/v78JDgsD/JpqWcDQma7tY?=
+ =?us-ascii?Q?yOibRl7b0pK/83cfZnY32HyrkiFK4ZmGGrKUeM85F9Dc8mOY6nScOtgHyave?=
+ =?us-ascii?Q?5bWET9rqk3diCbgbSKF6nRlzATwJQiVR9ZPkqpI2BSXO3wep13oG/eq5/hnD?=
+ =?us-ascii?Q?k2inG9Z0uwUM88Z9wTGkROX9lueGuttUFUE2XNh0Uh1wp2ISwhG5DqlZR0cJ?=
+ =?us-ascii?Q?zHwg9inik2Xzl5NnWj0N2jCssMk2IpCiTFj1k6mTeEaSzO59oiyMmj6wuPvX?=
+ =?us-ascii?Q?R8VMgdM6crrNUvUt81OTxzvlPnqh86OsLueLlyYjHYrDJEvd4eZWsrPL7UEA?=
+ =?us-ascii?Q?mBnbeXyz+1C56+qtfGw+ksaIlhmaUx5BW5PJNzZeAlfKX5O5VKYuaLh9uTEk?=
+ =?us-ascii?Q?AdPP/Z0ZXWr6p/7bSL4VTKDTcPjoPVLvJkniwWN/sDHwdJ03G0JkDeZUrXmt?=
+ =?us-ascii?Q?HK7Q0i20DcHk3X6lwUoh6DhqFAU4dFxX3iM2cNNa9NubHd0wKWkM3xSHp2j2?=
+ =?us-ascii?Q?xHA9WWzi/BXG6a4q/I5sDIMSZDSqPGJt/sQB0DfXSZJJJKynLSsXAhf9Stbd?=
+ =?us-ascii?Q?s9zFGDKRjAJsp/bFzir5Y1BmXH4LYRT2YtBFA3tk02BuDNWSw7R066wDx3jh?=
+ =?us-ascii?Q?8eA0wV515YtYGrMK4hkqry1F5y+zmE2lUR+ecHGofRMEbQ=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <FFE9CA6874BD7A49BC46A22B6F98157A@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 895c4408-c027-4c25-5c90-08d9607c09d5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2021 06:06:50.5739
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pHZUu7v2LAo76qwQ9E+9jMGQGnjiq+XYCEbTgXkA+5V+RjDvvbds1bZHhIDwDnQZdng67CU1oR9nwahRrv9C9A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB8376
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently we use u16 bitmap to make 4k sectorsize work for 64K page
-size.
+On Sun, Aug 15, 2021 at 10:42:46PM +0800, Eryu Guan wrote:
+> On Thu, Aug 12, 2021 at 12:12:29AM +0900, Naohiro Aota wrote:
+> > dm-error and dm-snapshot does not have DM_TARGET_ZONED_HM nor
+> > DM_TARGET_MIXED_ZONED_MODEL feature and does not implement
+> > .report_zones(). So, it cannot pass the zone information from the down
+> > layer (zoned device) to the upper layer.
+> >=20
+> > Loop device also cannot pass the zone information.
+> >=20
+> > This patch requires non-zoned block device for the tests using these
+> > ones.
+> >=20
+> > Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> > ---
+> >  common/dmerror    | 3 +++
+> >  common/dmhugedisk | 3 +++
+> >  common/rc         | 7 +++++++
+> >  3 files changed, 13 insertions(+)
+> >=20
+> > diff --git a/common/dmerror b/common/dmerror
+> > index 01a4c8b5e52d..64ee78d85b95 100644
+> > --- a/common/dmerror
+> > +++ b/common/dmerror
+> > @@ -15,6 +15,9 @@ _dmerror_setup()
+> >  	export DMLINEAR_TABLE=3D"0 $blk_dev_size linear $dm_backing_dev 0"
+> > =20
+> >  	export DMERROR_TABLE=3D"0 $blk_dev_size error $dm_backing_dev 0"
+> > +
+> > +	# dm-error cannot handle zone information
+> > +	_require_non_zoned_device "${dm_backing_dev}"
+>=20
+> We should really do the check in _require rules not in _setup()
+> functions. Please see below.
+>=20
+> >  }
+> > =20
+> >  _dmerror_init()
+> > diff --git a/common/dmhugedisk b/common/dmhugedisk
+> > index 502f0243772d..715f95efde29 100644
+> > --- a/common/dmhugedisk
+> > +++ b/common/dmhugedisk
+> > @@ -16,6 +16,9 @@ _dmhugedisk_init()
+> >  	local dm_backing_dev=3D$SCRATCH_DEV
+> >  	local chunk_size=3D"$2"
+> > =20
+> > +	# We cannot ensure sequential writes on the backing device
+> > +	_require_non_zoned_device $dm_backing_dev
+> > +
+> >  	if [ -z "$chunk_size" ]; then
+> >  		chunk_size=3D512
+> >  	fi
+> > diff --git a/common/rc b/common/rc
+> > index 7b80820ff680..03b7e0310a84 100644
+> > --- a/common/rc
+> > +++ b/common/rc
+> > @@ -1837,6 +1837,9 @@ _require_loop()
+> >      else
+> >  	_notrun "This test requires loopback device support"
+> >      fi
+> > +
+> > +    # loop device does not handle zone information
+> > +    _require_non_zoned_device ${TEST_DEV}
+> >  }
+> > =20
+> >  # this test requires kernel support for a secondary filesystem
+> > @@ -1966,6 +1969,10 @@ _require_dm_target()
+> >  	if [ $? -ne 0 ]; then
+> >  		_notrun "This test requires dm $target support"
+> >  	fi
+> > +
+> > +	if [ $target =3D thin-pool ]; then
+> > +		_require_non_zoned_device ${SCRATCH_DEV}
+> > +	fi
+>=20
+> I think we could move all check here, based on $target, e.g.
+>=20
+> 	case $target in
+> 	thin-pool|error|snapshot)
+> 		_require_non_zoned_device ${SCRATCH_DEV}
+> 		;;
+> 	esac
 
-But this u16 bitmap is not large enough to contain larger page size like
-128K, nor is space efficient for 16K page size.
+I see. It looks far better. I'll do so.
 
-To handle both cases, here we pack all subpage bitmaps into a larger
-bitmap, now btrfs_subpage::bitmaps[] will be the ultimate bitmap for
-subpage usage.
-
-Each sub-bitmap will has its start bit number recorded in
-btrfs_subpage_info::*_start, and its bitmap length will be recorded in
-btrfs_subpage_info::bitmap_nr_bits.
-
-All subpage bitmap operations will be converted from using direct u16
-operations to bitmap operations, with above *_start calculated.
-
-For 64K page size with 4K sectorsize, this should not cause much difference.
-While for 16K page size, we will only need 1 unsigned long (u32) to
-restore the bitmap.
-And will be able to support 128K page size in the future.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c |  58 ++++++++++--------
- fs/btrfs/subpage.c   | 137 +++++++++++++++++++++++++++++--------------
- fs/btrfs/subpage.h   |  19 +-----
- 3 files changed, 130 insertions(+), 84 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 543f87ea372e..e428d6208bb7 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3865,10 +3865,9 @@ static void find_next_dirty_byte(struct btrfs_fs_info *fs_info,
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
- 	u64 orig_start = *start;
- 	/* Declare as unsigned long so we can use bitmap ops */
--	unsigned long dirty_bitmap;
- 	unsigned long flags;
--	int nbits = (orig_start - page_offset(page)) >> fs_info->sectorsize_bits;
--	int range_start_bit = nbits;
-+	int nbits = offset_in_page(orig_start) >> fs_info->sectorsize_bits;
-+	int range_start_bit = nbits + fs_info->subpage_info->dirty_start;
- 	int range_end_bit;
- 
- 	/*
-@@ -3883,11 +3882,14 @@ static void find_next_dirty_byte(struct btrfs_fs_info *fs_info,
- 
- 	/* We should have the page locked, but just in case */
- 	spin_lock_irqsave(&subpage->lock, flags);
--	dirty_bitmap = subpage->dirty_bitmap;
-+	bitmap_next_set_region(subpage->bitmaps, &range_start_bit, &range_end_bit,
-+			       fs_info->subpage_info->dirty_start +
-+			       fs_info->subpage_info->bitmap_nr_bits);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- 
--	bitmap_next_set_region(&dirty_bitmap, &range_start_bit, &range_end_bit,
--			       BTRFS_SUBPAGE_BITMAP_SIZE);
-+	range_start_bit -= fs_info->subpage_info->dirty_start;
-+	range_end_bit -= fs_info->subpage_info->dirty_start;
-+
- 	*start = page_offset(page) + range_start_bit * fs_info->sectorsize;
- 	*end = page_offset(page) + range_end_bit * fs_info->sectorsize;
- }
-@@ -4613,7 +4615,7 @@ static int submit_eb_subpage(struct page *page,
- 	int submitted = 0;
- 	u64 page_start = page_offset(page);
- 	int bit_start = 0;
--	const int nbits = BTRFS_SUBPAGE_BITMAP_SIZE;
-+	const int nbits = fs_info->subpage_info->bitmap_nr_bits;
- 	int sectors_per_node = fs_info->nodesize >> fs_info->sectorsize_bits;
- 	int ret;
- 
-@@ -4634,7 +4636,8 @@ static int submit_eb_subpage(struct page *page,
- 			break;
- 		}
- 		spin_lock_irqsave(&subpage->lock, flags);
--		if (!((1 << bit_start) & subpage->dirty_bitmap)) {
-+		if (!test_bit(bit_start + fs_info->subpage_info->dirty_start,
-+			      subpage->bitmaps)) {
- 			spin_unlock_irqrestore(&subpage->lock, flags);
- 			spin_unlock(&page->mapping->private_lock);
- 			bit_start++;
-@@ -7178,32 +7181,41 @@ void memmove_extent_buffer(const struct extent_buffer *dst,
- 	}
- }
- 
-+#define GANG_LOOKUP_SIZE	16
- static struct extent_buffer *get_next_extent_buffer(
- 		struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
- {
--	struct extent_buffer *gang[BTRFS_SUBPAGE_BITMAP_SIZE];
-+	struct extent_buffer *gang[GANG_LOOKUP_SIZE];
- 	struct extent_buffer *found = NULL;
- 	u64 page_start = page_offset(page);
--	int ret;
--	int i;
-+	u64 cur = page_start;
- 
- 	ASSERT(in_range(bytenr, page_start, PAGE_SIZE));
--	ASSERT(PAGE_SIZE / fs_info->nodesize <= BTRFS_SUBPAGE_BITMAP_SIZE);
- 	lockdep_assert_held(&fs_info->buffer_lock);
- 
--	ret = radix_tree_gang_lookup(&fs_info->buffer_radix, (void **)gang,
--			bytenr >> fs_info->sectorsize_bits,
--			PAGE_SIZE / fs_info->nodesize);
--	for (i = 0; i < ret; i++) {
--		/* Already beyond page end */
--		if (gang[i]->start >= page_start + PAGE_SIZE)
--			break;
--		/* Found one */
--		if (gang[i]->start >= bytenr) {
--			found = gang[i];
--			break;
-+	while (cur < page_start + PAGE_SIZE) {
-+		int ret;
-+		int i;
-+
-+		ret = radix_tree_gang_lookup(&fs_info->buffer_radix,
-+				(void **)gang, cur >> fs_info->sectorsize_bits,
-+				min_t(unsigned int, GANG_LOOKUP_SIZE,
-+				      PAGE_SIZE / fs_info->nodesize));
-+		if (ret == 0)
-+			goto out;
-+		for (i = 0; i < ret; i++) {
-+			/* Already beyond page end */
-+			if (gang[i]->start >= page_start + PAGE_SIZE)
-+				goto out;
-+			/* Found one */
-+			if (gang[i]->start >= bytenr) {
-+				found = gang[i];
-+				break;
-+			}
- 		}
-+		cur = gang[ret - 1]->start + gang[ret - 1]->len;
- 	}
-+out:
- 	return found;
- }
- 
-diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
-index 014256d47beb..9d6da9f2d77e 100644
---- a/fs/btrfs/subpage.c
-+++ b/fs/btrfs/subpage.c
-@@ -139,10 +139,14 @@ int btrfs_alloc_subpage(const struct btrfs_fs_info *fs_info,
- 			struct btrfs_subpage **ret,
- 			enum btrfs_subpage_type type)
- {
-+	unsigned int real_size;
-+
- 	if (fs_info->sectorsize == PAGE_SIZE)
- 		return 0;
- 
--	*ret = kzalloc(sizeof(struct btrfs_subpage), GFP_NOFS);
-+	real_size = BITS_TO_LONGS(fs_info->subpage_info->total_nr_bits) *
-+		    sizeof(unsigned long) + sizeof(struct btrfs_subpage);
-+	*ret = kzalloc(real_size, GFP_NOFS);
- 	if (!*ret)
- 		return -ENOMEM;
- 	spin_lock_init(&(*ret)->lock);
-@@ -324,37 +328,60 @@ void btrfs_page_end_writer_lock(const struct btrfs_fs_info *fs_info,
- 		unlock_page(page);
- }
- 
--/*
-- * Convert the [start, start + len) range into a u16 bitmap
-- *
-- * For example: if start == page_offset() + 16K, len = 16K, we get 0x00f0.
-- */
--static u16 btrfs_subpage_calc_bitmap(const struct btrfs_fs_info *fs_info,
--		struct page *page, u64 start, u32 len)
-+static bool bitmap_test_range_all_set(unsigned long *addr, unsigned start,
-+				      unsigned int nbits)
- {
--	const int bit_start = offset_in_page(start) >> fs_info->sectorsize_bits;
--	const int nbits = len >> fs_info->sectorsize_bits;
-+	unsigned int found_zero;
- 
--	btrfs_subpage_assert(fs_info, page, start, len);
-+	found_zero = find_next_zero_bit(addr, start + nbits, start);
-+	if (found_zero == start + nbits)
-+		return true;
-+	return false;
-+}
- 
--	/*
--	 * Here nbits can be 16, thus can go beyond u16 range. We make the
--	 * first left shift to be calculate in unsigned long (at least u32),
--	 * then truncate the result to u16.
--	 */
--	return (u16)(((1UL << nbits) - 1) << bit_start);
-+static bool bitmap_test_range_all_zero(unsigned long *addr, unsigned start,
-+				       unsigned int nbits)
-+{
-+	unsigned int found_set;
-+
-+	found_set = find_next_bit(addr, start + nbits, start);
-+	if (found_set == start + nbits)
-+		return true;
-+	return false;
- }
- 
-+#define subpage_calc_start_bit(fs_info, page, name, start, len)		\
-+({									\
-+	unsigned int start_bit;						\
-+									\
-+	btrfs_subpage_assert(fs_info, page, start, len);		\
-+	start_bit = offset_in_page(start) >> fs_info->sectorsize_bits;	\
-+	start_bit += fs_info->subpage_info->name##_start;		\
-+	start_bit;							\
-+})
-+
-+#define subpage_test_bitmap_all_set(fs_info, subpage, name)		\
-+ 	bitmap_test_range_all_set(subpage->bitmaps,			\
-+			fs_info->subpage_info->name##_start,		\
-+			fs_info->subpage_info->bitmap_nr_bits)
-+
-+#define subpage_test_bitmap_all_zero(fs_info, subpage, name)		\
-+ 	bitmap_test_range_all_zero(subpage->bitmaps,			\
-+			fs_info->subpage_info->name##_start,		\
-+			fs_info->subpage_info->bitmap_nr_bits)
-+
- void btrfs_subpage_set_uptodate(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							uptodate, start, len);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->uptodate_bitmap |= tmp;
--	if (subpage->uptodate_bitmap == U16_MAX)
-+	bitmap_set(subpage->bitmaps, start_bit,
-+		   len >> fs_info->sectorsize_bits);
-+	if (subpage_test_bitmap_all_set(fs_info, subpage, uptodate))
- 		SetPageUptodate(page);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
-@@ -363,11 +390,13 @@ void btrfs_subpage_clear_uptodate(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							uptodate, start, len);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->uptodate_bitmap &= ~tmp;
-+	bitmap_clear(subpage->bitmaps, start_bit,
-+		     len >> fs_info->sectorsize_bits);
- 	ClearPageUptodate(page);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
-@@ -376,11 +405,13 @@ void btrfs_subpage_set_error(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							error, start, len);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->error_bitmap |= tmp;
-+	bitmap_set(subpage->bitmaps, start_bit,
-+		   len >> fs_info->sectorsize_bits);
- 	SetPageError(page);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
-@@ -389,12 +420,14 @@ void btrfs_subpage_clear_error(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							error, start, len);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->error_bitmap &= ~tmp;
--	if (subpage->error_bitmap == 0)
-+	bitmap_clear(subpage->bitmaps, start_bit,
-+		     len >> fs_info->sectorsize_bits);
-+	if (subpage_test_bitmap_all_zero(fs_info, subpage, error))
- 		ClearPageError(page);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
-@@ -403,11 +436,13 @@ void btrfs_subpage_set_dirty(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							dirty, start, len);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->dirty_bitmap |= tmp;
-+	bitmap_set(subpage->bitmaps, start_bit,
-+		   len >> fs_info->sectorsize_bits);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- 	set_page_dirty(page);
- }
-@@ -426,13 +461,15 @@ bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							dirty, start, len);
- 	unsigned long flags;
- 	bool last = false;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->dirty_bitmap &= ~tmp;
--	if (subpage->dirty_bitmap == 0)
-+	bitmap_clear(subpage->bitmaps, start_bit,
-+		     len >> fs_info->sectorsize_bits);
-+	if (subpage_test_bitmap_all_zero(fs_info, subpage, dirty)) 
- 		last = true;
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- 	return last;
-@@ -452,11 +489,13 @@ void btrfs_subpage_set_writeback(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							writeback, start, len);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->writeback_bitmap |= tmp;
-+	bitmap_set(subpage->bitmaps, start_bit,
-+		   len >> fs_info->sectorsize_bits);
- 	set_page_writeback(page);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
-@@ -465,12 +504,14 @@ void btrfs_subpage_clear_writeback(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							writeback, start, len);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->writeback_bitmap &= ~tmp;
--	if (subpage->writeback_bitmap == 0) {
-+	bitmap_clear(subpage->bitmaps, start_bit,
-+		     len >> fs_info->sectorsize_bits);
-+	if (subpage_test_bitmap_all_zero(fs_info, subpage, writeback)) {
- 		ASSERT(PageWriteback(page));
- 		end_page_writeback(page);
- 	}
-@@ -481,11 +522,13 @@ void btrfs_subpage_set_ordered(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							ordered, start, len);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->ordered_bitmap |= tmp;
-+	bitmap_set(subpage->bitmaps, start_bit,
-+		   len >> fs_info->sectorsize_bits);
- 	SetPageOrdered(page);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
-@@ -494,12 +537,14 @@ void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
- 		struct page *page, u64 start, u32 len)
- {
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
--	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len);
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
-+							ordered, start, len);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&subpage->lock, flags);
--	subpage->ordered_bitmap &= ~tmp;
--	if (subpage->ordered_bitmap == 0)
-+	bitmap_clear(subpage->bitmaps, start_bit,
-+		     len >> fs_info->sectorsize_bits);
-+	if (subpage_test_bitmap_all_zero(fs_info, subpage, ordered))
- 		ClearPageOrdered(page);
- 	spin_unlock_irqrestore(&subpage->lock, flags);
- }
-@@ -512,12 +557,14 @@ bool btrfs_subpage_test_##name(const struct btrfs_fs_info *fs_info,	\
- 		struct page *page, u64 start, u32 len)			\
- {									\
- 	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private; \
--	const u16 tmp = btrfs_subpage_calc_bitmap(fs_info, page, start, len); \
-+	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,	\
-+						name, start, len);	\
- 	unsigned long flags;						\
- 	bool ret;							\
- 									\
- 	spin_lock_irqsave(&subpage->lock, flags);			\
--	ret = ((subpage->name##_bitmap & tmp) == tmp);			\
-+	ret = bitmap_test_range_all_set(subpage->bitmaps, start_bit, 	\
-+				len >> fs_info->sectorsize_bits);	\
- 	spin_unlock_irqrestore(&subpage->lock, flags);			\
- 	return ret;							\
- }
-@@ -610,5 +657,5 @@ void btrfs_page_assert_not_dirty(const struct btrfs_fs_info *fs_info,
- 		return;
- 
- 	ASSERT(PagePrivate(page) && page->private);
--	ASSERT(subpage->dirty_bitmap == 0);
-+	ASSERT(subpage_test_bitmap_all_zero(fs_info, subpage, dirty));
- }
-diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
-index ea90ba42c97b..6276947c4020 100644
---- a/fs/btrfs/subpage.h
-+++ b/fs/btrfs/subpage.h
-@@ -5,12 +5,6 @@
- 
- #include <linux/spinlock.h>
- 
--/*
-- * Maximum page size we support is 64K, minimum sector size is 4K, u16 bitmap
-- * is sufficient. Regular bitmap_* is not used due to size reasons.
-- */
--#define BTRFS_SUBPAGE_BITMAP_SIZE	16
--
- /*
-  * Extra info for subpapge bitmap.
-  *
-@@ -44,10 +38,6 @@ struct btrfs_subpage_info {
- struct btrfs_subpage {
- 	/* Common members for both data and metadata pages */
- 	spinlock_t lock;
--	u16 uptodate_bitmap;
--	u16 error_bitmap;
--	u16 dirty_bitmap;
--	u16 writeback_bitmap;
- 	/*
- 	 * Both data and metadata needs to track how many readers are for the
- 	 * page.
-@@ -64,14 +54,11 @@ struct btrfs_subpage {
- 		 * manages whether the subpage can be detached.
- 		 */
- 		atomic_t eb_refs;
--		/* Structures only used by data */
--		struct {
--			atomic_t writers;
- 
--			/* Tracke pending ordered extent in this sector */
--			u16 ordered_bitmap;
--		};
-+		/* Structures only used by data */
-+		atomic_t writers;
- 	};
-+	unsigned long bitmaps[];
- };
- 
- enum btrfs_subpage_type {
--- 
-2.32.0
-
+> Thanks,
+> Eryu
+>=20
+> >  }
+> > =20
+> >  _zone_type()
+> > --=20
+> > 2.32.0=
