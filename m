@@ -2,98 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B500E3ED4DB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Aug 2021 15:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED7A3ED5AE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Aug 2021 15:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236853AbhHPNFr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Aug 2021 09:05:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48088 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237246AbhHPNFc (ORCPT
+        id S235882AbhHPNNO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Aug 2021 09:13:14 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45100 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238040AbhHPNLb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Aug 2021 09:05:32 -0400
+        Mon, 16 Aug 2021 09:11:31 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 281C421ADD;
-        Mon, 16 Aug 2021 13:05:00 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 937041FE69;
+        Mon, 16 Aug 2021 13:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629119100;
+        t=1629119458;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=hI025OVT3wc2r744FvXDKVsj5mV8jY2bQLWMP5jriow=;
-        b=wjeXDcxQb/BXkoXSUBmW/bCoZwXfDPIJCKiZMxX5i+aOdi/V0ZJuMregtX2oI7q8a9nzsn
-        y2RLl5LVXfSfNncdXgzs/W7aENI0uSHYzRxnmzdeFY8WIJ0aDHh3kod5U7WBgcg7KNXYTx
-        kkX+AyCgWi9csDs8BGM3lU7GLoQlYlQ=
+        bh=/u6zdalyqa+5+vMaqrWzA2uKZg7pUjc2eXI+1VED3As=;
+        b=keFdcG4zwRhJl6p4eRQmSBTmUtCny94Pt29DFToOpAKfvFjvKRc5P8WKC1JKZb7I/z7Z3J
+        KVzLGHUJ8iuB+Ux6x2hK4PTO//k0//PTn5lUPTHmBqtqH7Sv8lAA4y+Iqd7jKtO4oiTYWA
+        xbE1rDRdgcFDdiXI00tbscsn0Z1Jo0o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629119100;
+        s=susede2_ed25519; t=1629119458;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=hI025OVT3wc2r744FvXDKVsj5mV8jY2bQLWMP5jriow=;
-        b=E2Cio/R2iKU0KrX767/C/N6Zjzrprz0E+dKKs5DN+e25ikcoIYLeFw6CaMkEIXLCX3KJ1p
-        ievNM0M0dyJbufBQ==
+        bh=/u6zdalyqa+5+vMaqrWzA2uKZg7pUjc2eXI+1VED3As=;
+        b=rrBMd2/az9c+YDhzWEynqjQn5qWfefGpqZyHRGyUZMPUtpp/SF4KlaoE9wCRFGRU9RjQPt
+        Nr6dqelFgwv6D4CA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 21671A3B94;
-        Mon, 16 Aug 2021 13:05:00 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 89D35A3BA5;
+        Mon, 16 Aug 2021 13:10:58 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6AE5FDA72C; Mon, 16 Aug 2021 15:02:04 +0200 (CEST)
-Date:   Mon, 16 Aug 2021 15:02:04 +0200
+        id CFACADA72C; Mon, 16 Aug 2021 15:08:02 +0200 (CEST)
+Date:   Mon, 16 Aug 2021 15:08:02 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: avoid unnecessarily logging directories that had
- no changes
-Message-ID: <20210816130204.GZ5047@twin.jikos.cz>
+To:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, fdmanana@suse.com
+Subject: Re: [PATCH] btrfs: tree-log: Check btrfs_lookup_data_extent return
+ value
+Message-ID: <20210816130802.GA5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <ffa14771bb6d672a2a74d92625bd024013b3f8ce.1627580467.git.fdmanana@suse.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com, fdmanana@suse.com
+References: <20210802123400.2687-1-mpdesouza@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ffa14771bb6d672a2a74d92625bd024013b3f8ce.1627580467.git.fdmanana@suse.com>
+In-Reply-To: <20210802123400.2687-1-mpdesouza@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 06:52:46PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon, Aug 02, 2021 at 09:34:00AM -0300, Marcos Paulo de Souza wrote:
+> Function btrfs_lookup_data_extent calls btrfs_search_slot to verify if
+> the EXTENT_ITEM exists in the extent tree. btrfs_search_slot can return
+> values bellow zero if an error happened.
 > 
-> There are several cases where when logging an inode we need to log its
-> parent directories or logging subdirectories when logging a directory.
+> Function replay_one_extent currently check if the search found something
+> (0 returned) and increments the reference, and if not, it seems to evaluate as
+> 'not found'.
 > 
-> There are cases however where we end up logging a directory even if it was
-> not changed in the current transaction, no dentries added or removed since
-> the last transaction. While this is harmless from a functional point of
-> view, it is a waste time as it brings no advantage.
+> Fix the condition by checking if the value was bellow zero and return early.
 > 
-> One example where this is triggered is the following:
-> 
->   $ mkfs.btrfs -f /dev/sdc
->   $ mount /dev/sdc /mnt
-> 
->   $ mkdir /mnt/A
->   $ mkdir /mnt/B
->   $ mkdir /mnt/C
-> 
->   $ touch /mnt/A/foo
->   $ ln /mnt/A/foo /mnt/B/bar
->   $ ln /mnt/A/foo /mnt/C/baz
-> 
->   $ sync
-> 
->   $ rm -f /mnt/A/foo
->   $ xfs_io -c "fsync" /mnt/B/bar
-> 
-> This last fsync ends up logging directories A, B and C, however we only
-> need to log directory A, as B and C were not changed since the last
-> transaction commit.
-> 
-> So fix this by changing need_log_inode(), to return false in case the
-> given inode is a directory and has a ->last_trans value smaller than the
-> current transaction's ID.
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
 Added to misc-next, thanks.
