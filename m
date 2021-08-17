@@ -2,95 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD14E3EF5B6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 00:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EA43EF669
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 01:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbhHQWWf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Aug 2021 18:22:35 -0400
-Received: from mout.gmx.net ([212.227.15.18]:46609 "EHLO mout.gmx.net"
+        id S236705AbhHRAA2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Aug 2021 20:00:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229729AbhHQWWe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Aug 2021 18:22:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629238918;
-        bh=v74K2et05XkBEvzgfNbw9FesZEcNVX3/5QRh87vZrAY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=dNPWA2ug2JTWYt0v+Ua0vHji5kxRl7zoQrgxs5bmm0a6GrBw9qs+3pzBfZd4ZZDMP
-         A5W2vYNQzvRmK5LbZRu+wvGTtDCYZd89M4R0Xi3nCa+yWa4GxS9t7zXdj7N8Xk4s/f
-         KM4TPttv5A5dpY0pWM86Odsmfom37I7MFpprLFy8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M72oH-1m9ENu1RJX-008aRS; Wed, 18
- Aug 2021 00:21:57 +0200
-Subject: Re: [PATCH] btrfs-progs: cmds/subvolume: try to delete subvolume by
- id when its path can't be reoslved
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210628102628.354173-1-wqu@suse.com>
- <20210817133244.GN5047@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <a6f697bd-99f8-0732-a3ee-1992b5dcd004@gmx.com>
-Date:   Wed, 18 Aug 2021 06:21:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232706AbhHRAA2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Aug 2021 20:00:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6567260EB9;
+        Tue, 17 Aug 2021 23:59:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629244794;
+        bh=Wfx3Y0nP/Ey2r1cqjk8qWCiVxohx7Hoz1DnRoDuIHjk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vK+3DSipz6gTMnyLTNBRUd585U15nYiphDYK8LfYObt0jfSEn45/jINo9JbBkPF3q
+         E1U1HzkSgga7fQoQJpxnhhjWqz7O9pB5/yVuhIejucbQ8s9sY0VSYIhBpx0Z5IRSkO
+         BN6VbS0/4zocN8du1A6GiIlsjGSbVUVggAp15ba+hmrqBhawDGayEBMX7AK4acI+aK
+         aJdIfjhUFHItcC08v2qZTKvTS7TEua6Nnpl/pBOeQ0mYg6oIQSbQE2D6PS6mfUyvzw
+         Y1IZtgeYh7JJ9LqNH5zsWiNfX38C1a1sSR7IbAPYq5uewNwaCYc0U8XreBB51ZYfz9
+         g0Fl7cM6IyXIQ==
+Date:   Tue, 17 Aug 2021 16:59:54 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] common: add zoned block device checks
+Message-ID: <20210817235954.GA12612@magnolia>
+References: <20210816113510.911606-1-naohiro.aota@wdc.com>
+ <20210816113510.911606-2-naohiro.aota@wdc.com>
 MIME-Version: 1.0
-In-Reply-To: <20210817133244.GN5047@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6gHxYcQ4KotjLP/nSUdIi9PiwAybRPCW1S5tMIsvEF5VFg4Q30o
- /1sejunUsWsf8gWLybN5XHh0jO76OhgbPjSGW9jkmq3v9/NYzSWyG7Qr9vryLyk0zfCJ5LO
- +86Bd87CwceEsZZQl/ds9tMgQHo70A/L0bm9xjdPcdHyYLG5TUvNXJYCEaQ7dK3fA1DHSo1
- YW6tcB135EOehBABxefqQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QfRZaXxv/84=:zqCJrouoNKYsGJd3Nh7AQ3
- K02c/Y1JMY2ZdxzmNhWg8eQS8Dqwvao2dvOQrMnO4JRjATyfYjD3JCQewisw8xvqgvE+jAxKl
- oT9fS5TI/eKUpvYgB5y2MS9w+/zQcccX8kuYIy8rcwBC0tr4uF8NyPJUQT1/AXRqmedladlyE
- ou6Lf1kyyGqhM77iZvqOPV+Ma/cE/JrMIHNfsEBYxitXwTj1+T0WDgjMyztwPx5J7LwdMd6KO
- jvNWE+Caq+Cq/k5efEHa4VhiC/mv7aBt1sDD0UvPa/qeI7NEf5O8JhH2uZnXi5sVaNILwTvRN
- TyrfOlcmpsd14mbtCatrYPSmyghydYUDznRMx/h5Krxfflk24+z93qGH4Bp/EPEclfsIHJ4ui
- 7bWB5Hd6MNL9DF2KnYnPH7yRoZFPc2QlM7K/LsnHlKWAmBFrg5KaYUEx9Oif3INcKu+t9FBNy
- vmGpmGKkCZMUUeiKQu1NLf0rq4susujSc5/1Zsfq9ohqBb82gxp3MPipPUgaqqTK4J5ZA7XVO
- 4Aqi38+wyqgc77C/WOQHFwriWi072tl9of3+0z02MCVMUER9i5vYcDiZovHmWDUZxRB1XGCZ5
- KrWyWSw4P4XgzYADKPogjp7rBOiyYKkrDyv5y0tkekQNiciVH4v4/tGIrFndfjP2ijqiFSVoK
- 6nt13AhI1iADEJ3xgII7tdmBG5SA0shxeat/MHaLZZowDN0MOm6gHER7u95rzrxG9GdtGeNbi
- Q54jQ7K4lHeYWr5EM2YVBWWVir4Ljm9WKhSZ9+dBsNGHWFFtZ44TddquzlSjYTtzqlioZ+YBW
- w+mDUkdrIaa2C9bxxqEAGHU4w7/JcD4n+HO1E+zGBFpiCS1pVtxOJ/YnMrrNG72tyPpdfPw2P
- p/4gj+YA7zuRbCU1aWPuMrfu+n/D17uQ+6zzHF3dAUqPzhTnTEZ4e7HLiIiKWBkX414fd2zNI
- uIkF5UiCRhBxm9z/a/rnhDJ8dmNg9S48XFsczNeWjWW7LP8DvcvBh2lE0ui1YoQutRNYAim+Z
- 3Dtt7bym2k34jrlht02FliPPflaI3UxVs4qCE5snh0zSmIxpHzImALcBECmRacBq0Qpygv4aG
- Y0DahZQtxBjt+i1wWenOB+FZmaNhqzkywWRSjUrEtT2vaPAjQB8Z8vgWg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816113510.911606-2-naohiro.aota@wdc.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Aug 16, 2021 at 08:35:08PM +0900, Naohiro Aota wrote:
+> dm-error and dm-snapshot does not have DM_TARGET_ZONED_HM nor
+> DM_TARGET_MIXED_ZONED_MODEL feature and does not implement
+> .report_zones(). So, it cannot pass the zone information from the down
+> layer (zoned device) to the upper layer.
+> 
+> Loop device also cannot pass the zone information.
+> 
+> This patch requires non-zoned block device for the tests using these
+> ones.
+> 
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>  common/rc | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/common/rc b/common/rc
+> index 84757fc1755e..e0b6d50854c6 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -1837,6 +1837,9 @@ _require_loop()
+>      else
+>  	_notrun "This test requires loopback device support"
+>      fi
+> +
+> +    # loop device does not handle zone information
+> +    _require_non_zoned_device ${TEST_DEV}
 
+Is this true of loop devices sitting on top of zoned block devices?
 
-On 2021/8/17 =E4=B8=8B=E5=8D=889:32, David Sterba wrote:
-> On Mon, Jun 28, 2021 at 06:26:28PM +0800, Qu Wenruo wrote:
->> There is a recent report of ghost subvolumes where such subvolumes has
->> no ROOT_REF/BACKREF, and 0 root ref.
->> But without an orphan item, thus kernel won't queue them for cleanup.
->>
->> Such ghost subvolumes are just here to take up space, and no way to
->> delete them except by btrfs check, which will try to fix the problem by
->> adding orphan item.
->>
->> There is a kernel patch submitted to allow btrfs to detect such ghost
->> subvolumes and queue them for cleanup.
->>
->> But btrfs-progs will not continue to call the ioctl if it can't find th=
-e
->> full subvolume path.
->>
->> Thus this patch will loose the restriction by allowing btrfs-progs to
->> continue to call the ioctl even if it can't grab the subvolume path.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> Added to devel, thanks. Please send a test case.
->
-That needs kernel support, and I didn't see kernel patch get merged yet.
+If so, then the rest looks good to me.
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-Thanks,
-Qu
+--D
+
+>  }
+>  
+>  # this test requires kernel support for a secondary filesystem
+> @@ -1966,6 +1969,16 @@ _require_dm_target()
+>  	if [ $? -ne 0 ]; then
+>  		_notrun "This test requires dm $target support"
+>  	fi
+> +
+> +	# dm-error cannot handle the zone information
+> +	#
+> +	# dm-snapshot and dm-thin-pool cannot ensure sequential writes on
+> +	# the backing device
+> +	case $target in
+> +	error|snapshot|thin-pool)
+> +		_require_non_zoned_device ${SCRATCH_DEV}
+> +		;;
+> +	esac
+>  }
+>  
+>  _zone_type()
+> -- 
+> 2.32.0
+> 
