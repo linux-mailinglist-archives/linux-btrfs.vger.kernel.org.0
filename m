@@ -2,86 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5D13EE4F7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Aug 2021 05:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935353EE7D6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Aug 2021 09:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233777AbhHQDV7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Aug 2021 23:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233724AbhHQDV4 (ORCPT
+        id S234994AbhHQHzk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Aug 2021 03:55:40 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50632 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234581AbhHQHzj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Aug 2021 23:21:56 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6718C061764
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Aug 2021 20:21:22 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id g138so12785385wmg.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Aug 2021 20:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0lZ4J7SaB4lb3aijoDZQbeEsj9OqvUX5DO55f3uOqIg=;
-        b=zsgIophswREAtHehy4SzO6SJdSgX6KSvUJpnOZK4PrDAzn0u0gayuDstlxNNRDMoqP
-         ByHyPnROfMNbADOUZ5TXE+N4No1r5bS+XLpX4JNde/FGiKtTQZsbWo1uGQPxs8nJSYAS
-         oGL4mhQeLyQF2EtXL94xpU/mxkMJ9P3Za8A/ZzNTlREPkv+JerJ4VzB7f5TzU58gX9Ff
-         pEOjtCawnwNKGQlLSGFU94VGG14D8WjKD8OYWSsmqFkABXNiQibyXSrtGj4Vy92YXN80
-         MX+mUIqmbtLaFpt/401IBL1U+yMDBy0PuSUUUHFb2Kky/T3os9xvUBg/F4kC8Dp/41q/
-         4/AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0lZ4J7SaB4lb3aijoDZQbeEsj9OqvUX5DO55f3uOqIg=;
-        b=IidR+DAlWT5KAYIZDnDXAPMVcCtwNLYxKknLsqcBbuhJaFY0WOacZc+2AmGyk+CCkW
-         /T/k0wg791hQDCf1BNX9sRymP5uS41dhOson7A8Db/1Wie5Vl9bkqwjSqr1M/LU/7OBn
-         y5pKqZKifLIvydrF7xff0p/76x1WXxVCvuaM+1Bjy1TLrWAk8pIt++rtv3qMuaCe2aTP
-         AC9DorOgku/GB8ElgYJWKt+3INXH+CIoREiY97GjfibpfDhtF140lXzHbi4oDrPpw3ST
-         EZIRGgi+IpM/rWZQVrAIUhA+ZXongk1SeeDc2FkZtHzhfYbibZa9UNxO6rMCoiGdnYge
-         LTXQ==
-X-Gm-Message-State: AOAM5319+iktC0qyVPMlx+i9Qegx3Tep/zfK0+wxsyKP4QYaumF4tbLy
-        SAY8eIVf9MHX+E6OZRrXWTed9oqKyETyMl0YaFxcMA==
-X-Google-Smtp-Source: ABdhPJwYNpuXL7orgNztNAof9Cv/cJaxiwnJPypOlljPzHjtZx1eMxMv58iRHIyVIzNXTsK8aWZ86N+GsxsqWAFqj+g=
-X-Received: by 2002:a1c:2b04:: with SMTP id r4mr1048979wmr.168.1629170481470;
- Mon, 16 Aug 2021 20:21:21 -0700 (PDT)
+        Tue, 17 Aug 2021 03:55:39 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 10D7521E1C;
+        Tue, 17 Aug 2021 07:55:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629186906; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gtybRWIMxmqyyRlcEUA9AyVxO0u20D/NS5QIOJTjwKo=;
+        b=NKVFyaYkHP01180Ym6o8u75bBo3BJH3P5ZunG86l6uVY4IdmLW/90P38BDuwcqHlMC5q0b
+        ZK4WuXRU8DiWfIMRGJje7PT4gZffubG7odoexK2UOB+ZjfcADmZQH+/rO8SZtgZ2iB5so6
+        5k+lb4RHUMxhNDILCnz9e/Ovpbd0YT8=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E10AD13318;
+        Tue, 17 Aug 2021 07:55:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id ZBplNFlrG2GpcAAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Tue, 17 Aug 2021 07:55:05 +0000
+Subject: Re: [PATCH v2] btrfs: replace BUG_ON() in btrfs_csum_one_bio() with
+ proper error handling
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210816235540.9475-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <8babcc1b-2456-8632-7b56-f9867d333a0d@suse.com>
+Date:   Tue, 17 Aug 2021 10:55:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CAJCQCtQEp1a=sf8hO7zL5PHz-7NLjMv-A2nXGCEkNCos+nVA6Q@mail.gmail.com>
- <PH0PR04MB74160F856BD39F9942E8C51C9BFD9@PH0PR04MB7416.namprd04.prod.outlook.com>
-In-Reply-To: <PH0PR04MB74160F856BD39F9942E8C51C9BFD9@PH0PR04MB7416.namprd04.prod.outlook.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 16 Aug 2021 21:21:05 -0600
-Message-ID: <CAJCQCtRrAoNtukFev8-zTHOcEYzTzxtp9ENRLkKPH4_mB882Yw@mail.gmail.com>
-Subject: Re: 5.14-0-rc5, splat in block_group_cache_tree_search while __btrfs_unlink_inode
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210816235540.9475-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 1:17 AM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
->
-> On 14/08/2021 06:33, Chris Murphy wrote:
-> > I get the following call trace about 0.6s after dnf completes an
-> > update which I imagine deletes many files. I'll try to reproduce and
-> > get /proc/lock_stat
-> >
-> > [   95.674507] kernel: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-> > [   95.676537] kernel: turning off the locking correctness validator.
-> > [   95.676537] kernel: Please attach the output of /proc/lock_stat to
-> > the bug report
->
-> That can be "fixed" by bumping CONFIG_LOCKDEP_CHAINS_BITS.
-> I have it set to 18 here.
 
-Fedora is using CONFIG_LOCKDEP_CHAINS_BITS=16
 
-If the consensus is we should use 18 here, I'll get a PR submitted to
-the kernel dev team.
+On 17.08.21 г. 2:55, Qu Wenruo wrote:
+> There is a BUG_ON() in btrfs_csum_one_bio() to catch code logic error.
+> 
+> It has indeed caught several bugs during subpage development.
+> 
+> But the BUG_ON() itself will bring down the whole system which is
+> sometimes overkilled.
+> 
+> Replace it with a WARN() and exit gracefully, so that it won't crash the
+> whole system while we can still catch the code logic error.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Re-send as an independent patch
+> - Add WARN() to catch the code logic error
+> ---
+>  fs/btrfs/file-item.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 2673c6ba7a4e..7f58d80a480f 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -665,7 +665,18 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
+>  
+>  		if (!ordered) {
+>  			ordered = btrfs_lookup_ordered_extent(inode, offset);
+> -			BUG_ON(!ordered); /* Logic error */
+> +			/*
+> +			 * The bio range is not covered by any ordered extent,
+> +			 * must be a code logic error.
+> +			 */
+> +			if (unlikely(!ordered)) {
+> +				WARN(1, KERN_WARNING
+> +		"no ordered extent for root %llu ino %llu offset %llu\n",
+> +				     inode->root->root_key.objectid,
+> +				     btrfs_ino(inode), offset);
+> +				kvfree(sums);
+> +				return BLK_STS_IOERR;
+> +			}
 
-Thanks,
+nit: How about :
 
--- 
-Chris Murphy
+if (WARN_ON(!ordered)  {
+btrfs_err(foo)
+}
+
+That way you get the unlikely(!ordered) 'for free' and the code is
+somewhat cleaner IMO.
+
+While at it I also have to say the structure of the inner loop is rather
+iffy, because it's really if/else with an implicit 'else'. How about
+converting it to https://paste.ubuntu.com/p/kyWsRrkzWq/
+
+>  		}
+>  
+>  		nr_sectors = BTRFS_BYTES_TO_BLKS(fs_info,
+> 
