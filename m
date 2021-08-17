@@ -2,119 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47E23EF451
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Aug 2021 23:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7F33EF45C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Aug 2021 23:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbhHQVAn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Aug 2021 17:00:43 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33012 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhHQVAm (ORCPT
+        id S229869AbhHQVHr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Aug 2021 17:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232647AbhHQVHq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Aug 2021 17:00:42 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4AAFA1FF76;
-        Tue, 17 Aug 2021 21:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629234008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hYYjNyJpYdVJjRypJ8b053Yh8yokZ/R9CHAHxGyrX8s=;
-        b=kCR923jHjvcjUVxz1ksbx/Ny+ZQH5lGsTzkYDEF3mYSkG8knTnFlX6eDMUp3owN7gHh8xl
-        uZeLmxQ5UKsvUnMmT/Pf8ETjyU008Gzq4fFxvJ3mIRjuqh42ee/2dzTtch2tFJSikdgiGL
-        yjrxFK4Sl/t/9kAcogx4/V5twZMhMq8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0232F13A72;
-        Tue, 17 Aug 2021 21:00:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id j2uJL1YjHGFXKAAAMHmgww
-        (envelope-from <mpdesouza@suse.com>); Tue, 17 Aug 2021 21:00:06 +0000
-From:   Marcos Paulo de Souza <mpdesouza@suse.com>
+        Tue, 17 Aug 2021 17:07:46 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85EDC0613CF
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 14:07:12 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so7422984pjb.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 14:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ifEyWOEWl5Nw2lfaWWMjDfhWjw1d7zOJ4aJ2plb67Sw=;
+        b=n/sAVmuY9CIYVhjQ1u8YuEheUBxiDAT3Qq5KhqBh9pEWH1NIbUvHYCj82lGsB/m3oJ
+         8xQaJNDHdtVaHqaXN7awyXGJ7tt8dNa2LUPtBQh93BkED8iDD28XaRW5lTNtlZ/1zfPU
+         16xY9Z+0z3MSNZ0dB0EjUfBbRqHhdzKujD/lA9zfmZyZof/6r27SHtXTN14WTntTv4mM
+         8J2InWbzw74K72hBkaPQgUC2lUcOVSptHdKickgE8ZuASeW3f4fb2t7w/VOdQ0HrZ2rd
+         bxtguNPv7HcKbqzS2tCjPBObnWb/89afr1pyZOun3WBRyQzQ2jKAZQLeX5iPkun+8rvQ
+         JznA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ifEyWOEWl5Nw2lfaWWMjDfhWjw1d7zOJ4aJ2plb67Sw=;
+        b=X3YR6Gk7euD+ozvZAxxKe0E2J6UclpA5RaXnQBOZviNyhYlt/B0F3XQhhsmtXJHq27
+         nV+oiEguMFnRQWNOtzSGgG7vvlCzUw/t05WWkEUhJmQTLEtnUpxPqwQh3tkTLrPyk6uo
+         OCZXwR0+97Q3ZikPrILAqgsIdlCln9+CSaYMVjM4NBxqJ5+m48jp3J2Nq4IyaF8ZGCiF
+         FdpR+d3Sr4pN9UdOqn7cXXC4DdcWD5USpB95ujCRRZw0Q9b3E0oGQu3VrdV7PhCGoU02
+         vR46A50fqZv8FtiYHzKdLOdMAusXBM54VpJ+3CdA9nhH2rnQEP1DWkwiT3QJsRiB/mvW
+         34TA==
+X-Gm-Message-State: AOAM5303jHdgSxCV8YkS7fMN04m54X6M+LFvUkAyNLKClaC6yb/uv1p3
+        KnQiu2Or/qrzO49v+QVKJWI2VEVwaDDGpA==
+X-Google-Smtp-Source: ABdhPJz/IZROrp97aDIRUXdDu/LOy3ugJNxfLXXcCcN00ssDpDS72383ZPqnJkHn/I0sxXPz5dBB6A==
+X-Received: by 2002:a17:90a:7283:: with SMTP id e3mr5556175pjg.65.1629234431937;
+        Tue, 17 Aug 2021 14:07:11 -0700 (PDT)
+Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:df70])
+        by smtp.gmail.com with ESMTPSA id c9sm4205194pgq.58.2021.08.17.14.07.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 14:07:07 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, nborisov@suse.com,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: [PATCH] btrfs-progs: tests: Verify block group size in mkfs
-Date:   Tue, 17 Aug 2021 17:59:24 -0300
-Message-Id: <20210817205924.373-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.31.1
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org
+Subject: [PATCH v10 00/14] btrfs: add ioctls and send/receive support for reading/writing compressed data
+Date:   Tue, 17 Aug 2021 14:06:32 -0700
+Message-Id: <cover.1629234193.git.osandov@fb.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 222e622683e9 ("btrfs-progs: drop type check in¬
-init_alloc_chunk_ctl_policy_regular") fixed the calculation of the
-initial data block group on mkfs time, when the profile is single.
+From: Omar Sandoval <osandov@fb.com>
 
-This new test ensures that the size of the initial block group is 1G, or
-at least 10% of the total filesystem size.
+This series has three parts: new Btrfs ioctls for reading/writing
+compressed data, support for sending compressed data via Btrfs send, and
+btrfs-progs support for sending/receiving compressed data and writing it
+with the new ioctl.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- .../024-mkfs-single-bg-size/test.sh           | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
- create mode 100755 tests/mkfs-tests/024-mkfs-single-bg-size/test.sh
+The Btrfs ioctls for reading compressed data from a file without
+decompressing it and for writing compressed data directly to a file are
+adapted from my previous attempt to do this as an extension to
+preadv2/pwritev2 [1]. We weren't able to come up with a generic
+interface that everyone was happy with, so we're going to do this
+ourselves in Btrfs. If another user comes along, we can generalize it
+then. Test cases are here [2]
 
-diff --git a/tests/mkfs-tests/024-mkfs-single-bg-size/test.sh b/tests/mkfs-tests/024-mkfs-single-bg-size/test.sh
-new file mode 100755
-index 00000000..a84cbbeb
---- /dev/null
-+++ b/tests/mkfs-tests/024-mkfs-single-bg-size/test.sh
-@@ -0,0 +1,45 @@
-+#!/bin/bash
-+# Regression test for mkfs.btrfs using single data block group
-+# Expected behavior: it should create a data block group of 1G, or at least up
-+# to 10% of the filesystem size if it's size is < 50G.
-+# Commit that fixed the issue: 222e622683e9 ("btrfs-progs: drop type check in
-+# init_alloc_chunk_ctl_policy_regular")
-+
-+source "$TEST_TOP/common"
-+
-+check_prereq mkfs.btrfs
-+check_prereq btrfs
-+
-+verify_single_bg_size()
-+{
-+	local bg_size
-+	local dev_size
-+	local expected_bg_size
-+	dev_size="$1"
-+	expected_bg_size="$2"
-+
-+	prepare_test_dev $dev_size
-+	bg_size=`$SUDO_HELPER "$TOP/mkfs.btrfs" -f "$TEST_DEV" | awk '/single/ {print $NF}'`
-+
-+	if [[ "$bg_size" != "$expected_bg_size" ]]; then
-+		_fail "mkfs.btrfs created a data block group of size $bg_size, but expected $expected_bg_size"
-+	fi
-+}
-+
-+setup_root_helper
-+
-+# using 5G as disk size should create a bg with 10% of the total disk size,
-+# which is 512MiB
-+verify_single_bg_size "5G" "512.00MiB"
-+
-+# Same here, 10% of the disk size
-+verify_single_bg_size "1G" "102.38MiB"
-+verify_single_bg_size "1500M" "150.00MiB"
-+verify_single_bg_size "7G" "716.75MiB"
-+verify_single_bg_size "9G" "921.56MiB"
-+
-+# From 1G on, it should create a block group of 1G of size
-+verify_single_bg_size "10G" "1.00GiB"
-+verify_single_bg_size "11G" "1.00GiB"
-+verify_single_bg_size "50G" "1.00GiB"
-+verify_single_bg_size "51G" "1.00GiB"
+Patches 1 and 2 are VFS changes exporting a couple of helpers for checks
+needed by reads and writes. Patches 3-7 are preparatory Btrfs changes
+for compressed reads and writes. Patch 8 adds the compressed read ioctl
+and patch 9 adds the compressed write ioctl.
+
+The main use-case for this interface is Btrfs send/receive. Currently,
+when sending data from one compressed filesystem to another, the sending
+side decompresses the data and the receiving side recompresses it before
+writing it out. This is wasteful and can be avoided if we can just send
+and write compressed extents.
+
+Patches 10-14 add the Btrfs send support. See the previous posting for
+more details and benchmarks [3]. Patches 10-12 prepare some protocol
+changes for send stream v2. Patch 13 implements compressed send. Patch
+14 enables send stream v2 and compressed send in the send ioctl when
+requested.
+
+These patches are based on Dave Sterba's Btrfs misc-next branch [4],
+which is in turn currently based on v5.14-rc6.
+
+1: https://lore.kernel.org/linux-fsdevel/cover.1623972518.git.osandov@fb.com/
+2: https://github.com/osandov/xfstests/tree/btrfs-encoded-io
+3: https://lore.kernel.org/linux-btrfs/cover.1615922753.git.osandov@fb.com/
+4: https://github.com/kdave/btrfs-devel/tree/misc-next
+
+Omar Sandoval (14):
+  fs: export rw_verify_area()
+  fs: export variant of generic_write_checks without iov_iter
+  btrfs: don't advance offset for compressed bios in
+    btrfs_csum_one_bio()
+  btrfs: add ram_bytes and offset to btrfs_ordered_extent
+  btrfs: support different disk extent size for delalloc
+  btrfs: optionally extend i_size in cow_file_range_inline()
+  btrfs: add definitions + documentation for encoded I/O ioctls
+  btrfs: add BTRFS_IOC_ENCODED_READ
+  btrfs: add BTRFS_IOC_ENCODED_WRITE
+  btrfs: add send stream v2 definitions
+  btrfs: send: write larger chunks when using stream v2
+  btrfs: send: allocate send buffer with alloc_page() and vmap() for v2
+  btrfs: send: send compressed extents with encoded writes
+  btrfs: send: enable support for stream v2 and compressed writes
+
+ fs/btrfs/compression.c     |  12 +-
+ fs/btrfs/compression.h     |   6 +-
+ fs/btrfs/ctree.h           |  17 +-
+ fs/btrfs/delalloc-space.c  |  18 +-
+ fs/btrfs/file-item.c       |  35 +-
+ fs/btrfs/file.c            |  68 ++-
+ fs/btrfs/inode.c           | 911 +++++++++++++++++++++++++++++++++----
+ fs/btrfs/ioctl.c           | 213 +++++++++
+ fs/btrfs/ordered-data.c    | 124 ++---
+ fs/btrfs/ordered-data.h    |  25 +-
+ fs/btrfs/relocation.c      |   2 +-
+ fs/btrfs/send.c            | 307 +++++++++++--
+ fs/btrfs/send.h            |  32 +-
+ fs/internal.h              |   5 -
+ fs/read_write.c            |  41 +-
+ include/linux/fs.h         |   2 +
+ include/uapi/linux/btrfs.h | 149 +++++-
+ 17 files changed, 1690 insertions(+), 277 deletions(-)
+
+The btrfs-progs patches were written by Boris Burkov with some updates
+from me. Patches 1-4 are preparation. Patch 5 implements encoded writes.
+Patch 6 implements the fallback to decompressing. Patches 7 and 8
+implement the other commands. Patch 9 adds the new `btrfs send` options.
+Patch 10 adds a test case.
+
+Boris Burkov (10):
+  btrfs-progs: receive: support v2 send stream larger tlv_len
+  btrfs-progs: receive: dynamically allocate sctx->read_buf
+  btrfs-progs: receive: support v2 send stream DATA tlv format
+  btrfs-progs: receive: add send stream v2 cmds and attrs to send.h
+  btrfs-progs: receive: process encoded_write commands
+  btrfs-progs: receive: encoded_write fallback to explicit decode and
+    write
+  btrfs-progs: receive: process fallocate commands
+  btrfs-progs: receive: process setflags ioctl commands
+  btrfs-progs: send: stream v2 ioctl flags
+  btrfs-progs: receive: add tests for basic encoded_write send/receive
+
+ Documentation/btrfs-receive.asciidoc          |   4 +
+ Documentation/btrfs-send.asciidoc             |  16 +-
+ cmds/receive-dump.c                           |  31 +-
+ cmds/receive.c                                | 347 +++++++++++++++++-
+ cmds/send.c                                   |  54 ++-
+ common/send-stream.c                          | 157 ++++++--
+ common/send-stream.h                          |   7 +
+ ioctl.h                                       | 149 +++++++-
+ libbtrfsutil/btrfs.h                          |  17 +-
+ send.h                                        |  19 +-
+ .../049-receive-write-encoded/test.sh         | 114 ++++++
+ 11 files changed, 871 insertions(+), 44 deletions(-)
+ create mode 100755 tests/misc-tests/049-receive-write-encoded/test.sh
+
 -- 
-2.31.1
+2.32.0
 
