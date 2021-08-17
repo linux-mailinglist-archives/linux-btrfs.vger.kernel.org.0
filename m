@@ -2,96 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB293EE099
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Aug 2021 01:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB3E3EE469
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Aug 2021 04:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhHPX4R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Aug 2021 19:56:17 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53232 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232470AbhHPX4Q (ORCPT
+        id S233639AbhHQCfY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Aug 2021 22:35:24 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:57420 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233528AbhHQCfX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Aug 2021 19:56:16 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DE4A91FEFA
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Aug 2021 23:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629158143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=wcxRXq+dllcC0fnWwQiir1od3vxMuUPVIopSt4N4j94=;
-        b=s0WzwC//KoWu2yXY5ei31ErvW0x94nqi3w0fGlV2V+LOnO5SeLUtg/e4/8ZwKQbADkVdzr
-        WVp3zxVhjxTCYNTK7un95GM1gGPB4ddxgIkAMObDgkzTEqdFRcelAo1OEizUG+e+1kuVzc
-        qk3ApGWBbLaxh+Sqb7x1aXVErHU5WFY=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1A54013B95
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Aug 2021 23:55:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id N9aMMv76GmFcKAAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Aug 2021 23:55:42 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: replace BUG_ON() in btrfs_csum_one_bio() with proper error handling
-Date:   Tue, 17 Aug 2021 07:55:40 +0800
-Message-Id: <20210816235540.9475-1-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 16 Aug 2021 22:35:23 -0400
+Received: from dread.disaster.area (pa49-195-182-146.pa.nsw.optusnet.com.au [49.195.182.146])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id AFB4F869CF3;
+        Tue, 17 Aug 2021 12:34:46 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1mFow9-001ajs-JP; Tue, 17 Aug 2021 12:34:45 +1000
+Date:   Tue, 17 Aug 2021 12:34:45 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, nvdimm@lists.linux.dev,
+        cluster-devel@redhat.com
+Subject: Re: [PATCH v2.1 11/30] iomap: add the new iomap_iter model
+Message-ID: <20210817023445.GG3657114@dread.disaster.area>
+References: <20210809061244.1196573-1-hch@lst.de>
+ <20210809061244.1196573-12-hch@lst.de>
+ <20210811191720.GG3601443@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811191720.GG3601443@magnolia>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
+        a=QpfB3wCSrn/dqEBSktpwZQ==:117 a=QpfB3wCSrn/dqEBSktpwZQ==:17
+        a=kj9zAlcOel0A:10 a=MhDmnRu9jo8A:10 a=JfrnYn6hAAAA:8 a=VwQbUJbxAAAA:8
+        a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=25Yfc8azc3NZfLh1rZQA:9
+        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a BUG_ON() in btrfs_csum_one_bio() to catch code logic error.
+On Wed, Aug 11, 2021 at 12:17:20PM -0700, Darrick J. Wong wrote:
+> From: Christoph Hellwig <hch@lst.de>
+> 
+> The iomap_iter struct provides a convenient way to package up and
+> maintain all the arguments to the various mapping and operation
+> functions.  It is operated on using the iomap_iter() function that
+> is called in loop until the whole range has been processed.  Compared
+> to the existing iomap_apply() function this avoid an indirect call
+> for each iteration.
+> 
+> For now iomap_iter() calls back into the existing ->iomap_begin and
+> ->iomap_end methods, but in the future this could be further optimized
+> to avoid indirect calls entirely.
+> 
+> Based on an earlier patch from Matthew Wilcox <willy@infradead.org>.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> [djwong: add to apply.c to preserve git history of iomap loop control]
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
 
-It has indeed caught several bugs during subpage development.
+Looks like a straight translation of Christoph's original. Seems
+fine to me as a simepl step towards preserving the git history.
 
-But the BUG_ON() itself will bring down the whole system which is
-sometimes overkilled.
-
-Replace it with a WARN() and exit gracefully, so that it won't crash the
-whole system while we can still catch the code logic error.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Re-send as an independent patch
-- Add WARN() to catch the code logic error
----
- fs/btrfs/file-item.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 2673c6ba7a4e..7f58d80a480f 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -665,7 +665,18 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
- 
- 		if (!ordered) {
- 			ordered = btrfs_lookup_ordered_extent(inode, offset);
--			BUG_ON(!ordered); /* Logic error */
-+			/*
-+			 * The bio range is not covered by any ordered extent,
-+			 * must be a code logic error.
-+			 */
-+			if (unlikely(!ordered)) {
-+				WARN(1, KERN_WARNING
-+		"no ordered extent for root %llu ino %llu offset %llu\n",
-+				     inode->root->root_key.objectid,
-+				     btrfs_ino(inode), offset);
-+				kvfree(sums);
-+				return BLK_STS_IOERR;
-+			}
- 		}
- 
- 		nr_sectors = BTRFS_BYTES_TO_BLKS(fs_info,
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 -- 
-2.32.0
-
+Dave Chinner
+david@fromorbit.com
