@@ -2,91 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DC33F09D1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 19:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F203F0A3B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 19:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbhHRRDJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 13:03:09 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43174 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbhHRRC7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:02:59 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 690D021FDB;
-        Wed, 18 Aug 2021 17:02:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629306143;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VzsXE/r6slCGihYuMb+ShiK0lSo6DP7ypPku37llAA0=;
-        b=Gvn6Kj7tFgJqgvnUgjc+RRDaCHm/8kLKozm1sk/LAHDcR9kecUVNeyxak6St6CzE+kNHck
-        Trh7nRFEloVHlYV4kDJdW1F6gDtzpAzT0CghK0dXNrQT7jTETUDxZY/rbI84tpdl8NeW8T
-        yaYamQr5sl+LmJo6KD3zaVRsrGUpXB4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629306143;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VzsXE/r6slCGihYuMb+ShiK0lSo6DP7ypPku37llAA0=;
-        b=3ycOZr3IFrBBpM+ZHRLH8RX+50nyqx5wC26rHpN0nNGw1nr9XZAdsvJJl4O2stc23ywjeg
-        zQFk6TypRd4ZNGCQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5ED1DA3B98;
-        Wed, 18 Aug 2021 17:02:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 576DFDA72C; Wed, 18 Aug 2021 18:59:26 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 18:59:24 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v4 2/2] btrfs-progs: cmds: Add subcommand that dumps file
- extents
-Message-ID: <20210818165924.GV5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sidong Yang <realwakka@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-References: <20210718064601.3435-1-realwakka@gmail.com>
- <20210718064601.3435-3-realwakka@gmail.com>
- <20210817133022.GM5047@twin.jikos.cz>
- <20210818003819.GA2365@realwakka>
+        id S231800AbhHRRZY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 13:25:24 -0400
+Received: from smtp-31.italiaonline.it ([213.209.10.31]:37578 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229889AbhHRRZY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Aug 2021 13:25:24 -0400
+Received: from venice.bhome ([78.12.137.210])
+        by smtp-31.iol.local with ESMTPA
+        id GPJ0mO7iazHnRGPJ0mwspf; Wed, 18 Aug 2021 19:24:47 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1629307487; bh=GS9nRlQPrwPW5RmZBrGAuNY0KO6xdcgHq2IdmWkZkM0=;
+        h=From;
+        b=K18tIs04pet4ULW4ZVjRomSsC/aGo6zxsQFjZAed84drfLTtbsuiknoQtzK11gHcD
+         Q9UQw971yo00B9/oN6j7susEZNOFT8gQ8rfhXRDH0j+25rOw6RgoJOAtY3r0ZtXD9/
+         KpMq/w1wUltQ5VBjKyFVVKRRCTmHJxOZSVDLn7PUhDiUaKsRIxgfnUTbhvzqnPn3py
+         vtZ1ZIRPwLNDG4iUMNmFufDd0uRYgJEpts9bELVA50ExEMfGVZk/fyA4w4uxylnrUd
+         MXaEoOiY/3S3QH/RqFtYFWSwJKik5YRsM3SHeq59xveUnbDn0KMreAK5nL03UKlSwk
+         /dw1rGcJoWVmA==
+X-CNFS-Analysis: v=2.4 cv=L6DY/8f8 c=1 sm=1 tr=0 ts=611d425f cx=a_exe
+ a=VHyfYjYfg3XpWvNRQl5wtg==:117 a=VHyfYjYfg3XpWvNRQl5wtg==:17
+ a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8 a=Uq0mbvy6AAAA:8 a=zmC5LoGOwyVqHsGVwkYA:9
+ a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=9nAYT2xhiIK_ZOnRzmc7:22
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for
+ btrfs export
+To:     NeilBrown <neilb@suse.de>
+Cc:     Roman Mamedov <rm@romanrm.net>,
+        Christoph Hellwig <hch@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
+ <162881913686.1695.12479588032010502384@noble.neil.brown.name>
+ <bf49ef31-0c86-62c8-7862-719935764036@libero.it>
+ <20210816003505.7b3e9861@natsu>
+ <ee167ffe-ad11-ea95-1bd5-c43f273b345a@libero.it>
+ <162906443866.1695.6446438554332029261@noble.neil.brown.name>
+ <d8d67284-8d53-ed97-f387-81b27d17fdde@inwind.it>
+ <162923637125.9892.2416104366790758503@noble.neil.brown.name>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+Message-ID: <ba85200b-feb9-14ba-aa5a-993a598deba6@inwind.it>
+Date:   Wed, 18 Aug 2021 19:24:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818003819.GA2365@realwakka>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <162923637125.9892.2416104366790758503@noble.neil.brown.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfAuTy7JQ4T3/6Jol4BdjMEfQ5nej97/lfxbjHPjdhKSDj5/9VTqbDuag/uk8TDxtlzDJJZ6BdB5xggeWuoD/VzeSZYOUbV8WjfWno+rpIlH3i/MLbWRP
+ KYpseUTykNZ+jJgNHXy/NVYsHpEZ06WL1i8/4siRO9LGVNx9RsNcdeLOCsNLhZ7RLjkXfFkVP8cyxYHoiUGyx9Nx6UVCZ8+2tVtFrLL08QmcougXGLGqCMye
+ 8/3ZWeGexMZSfs+vRT2L56vZ4PYl603v27fhPdXR22t+ZwhQrgKQlsi41in7mq1p7qUzaQ81bFeTJyeWEJYfUKu3u78UWE0Jf2sB30E5zDN58db7NDPFjuEZ
+ bnPTLGCIMWRWEowNPwJ5bX0WdMFAvNnewXHzHcQaFYM2LLhzsffmegmxC66uaE/EJBAtJ9pA9wg04K+QC3gwj+SGlNzuKzaUAfsFe8N6+21Ci1ysozZCHtEo
+ GT6X1+zjJtOplT3p2OWT2oCdQx4ua8fXdxneyGpbsuQO5vvZCoOSrRs+FNQ=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 12:38:19AM +0000, Sidong Yang wrote:
-> On Tue, Aug 17, 2021 at 03:30:22PM +0200, David Sterba wrote:
-> > On Sun, Jul 18, 2021 at 06:46:01AM +0000, Sidong Yang wrote:
-> > > This patch adds an subcommand in inspect-internal. It dumps file extents of
-> > > the file that user provided. It helps to show the internal information
-> > > about file extents comprise the file.
-> > 
-> > Do you have an example of the output? That's the most interesting part.
-> > Thanks.
+On 8/17/21 11:39 PM, NeilBrown wrote:
+> On Wed, 18 Aug 2021, kreijack@inwind.it wrote:
+>> On 8/15/21 11:53 PM, NeilBrown wrote:
+>>> On Mon, 16 Aug 2021, kreijack@inwind.it wrote:
+>>>> On 8/15/21 9:35 PM, Roman Mamedov wrote:
 > 
-> Thanks for reply.
-> This is an example of the output below.
+>>>>
+>>>> However looking at the 'exports' man page, it seems that NFS has already an
+>>>> option to cover these cases: 'crossmnt'.
+>>>>
+>>>> If NFSd detects a "child" filesystem (i.e. a filesystem mounted inside an already
+>>>> exported one) and the "parent" filesystem is marked as 'crossmnt',  the client mount
+>>>> the parent AND the child filesystem with two separate mounts, so there is not problem of inode collision.
+>>>
+>>> As you acknowledged, you haven't read the whole back-story.  Maybe you
+>>> should.
+>>>
+>>> https://lore.kernel.org/linux-nfs/20210613115313.BC59.409509F4@e16-tech.com/
+>>> https://lore.kernel.org/linux-nfs/162848123483.25823.15844774651164477866.stgit@noble.brown/
+>>> https://lore.kernel.org/linux-btrfs/162742539595.32498.13687924366155737575.stgit@noble.brown/
+>>>
+>>> The flow of conversation does sometimes jump between threads.
+>>>
+>>> I'm very happy to respond you questions after you've absorbed all that.
+>>
+>> Hi Neil,
+>>
+>> I read the other threads.  And I still have the opinion that the nfsd
+>> crossmnt behavior should be a good solution for the btrfs subvolumes.
 > 
-> # ./btrfs inspect-internal dump-file-extent /mnt/test1
-> type = regular, start = 2097152, len = 3227648, disk_bytenr = 0, disk_num_bytes = 0, offset = 0, compression = none
-> type = regular, start = 5324800, len = 16728064, disk_bytenr = 0, disk_num_bytes = 0, offset = 0, compression = none
-> type = regular, start = 22052864, len = 8486912, disk_bytenr = 0, disk_num_bytes = 0, offset = 0, compression = none
-> type = regular, start = 30572544, len = 36540416, disk_bytenr = 0, disk_num_bytes = 0, offset = 0, compression = none
-> type = regular, start = 67112960, len = 5299630080, disk_bytenr = 0, disk_num_bytes = 0, offset = 0, compression = none
+> Thanks for reading it all.  Let me join the dots for you.
+> 
+[...]
+> 
+> Alternately we could change the "crossmnt" functionality to treat a
+> change of st_dev as though it were a mount point.  I posted patches to
+> do this too.  This hits the same sort of problems in a different way.
+> If NFSD reports that is has crossed a "mount" by providing a different
+> filesystem-id to the client, then the client will create a new mount
+> point which will appear in /proc/mounts.  
 
-This resembles a debugging output, something like we have for
-tracepoints but I think this should be more human readable, with
-possiblity of parsing by scripts/tools.
+Yes, this is my proposal.
 
-So to not just duplicate what filefrag or xfs_io -c fiemap do, we can
-optionally enhance the information with the specifics of btrfs, like on
-which devices the extents are, which compression is there etc. But the
-basic output should be more or less like filefrag.
+> It might be less likely that
+> many thousands of subvolumes are accessed over NFS than locally, but it
+> is still entirely possible.  
+
+I don't think that it would be so unlikely. Think about a file indexer
+and/or a 'find' command runned in the folder that contains the snapshots...
+
+> I don't want the NFS client to suffer a
+> problem that btrfs doesn't impose locally.  
+
+The solution is not easy. In fact we are trying to map a u64 x u64 space to a u64 space. The true is that we
+cannot guarantee that a collision will not happen. We can only say that for a fresh filesystem is near
+impossible, but for an aged filesystem it is unlikely but possible.
+
+We already faced real case where we exhausted the inode space in the 32 bit arch.What is the chances that the subvolumes ever created count is greater  2^24 and the inode number is greater  2^40 ? The likelihood is low but not 0...
+
+Some random toughs:
+- the new inode number are created merging the original inode-number (in the lower bit) and the object-id of the subvolume (in higher bit). We could add a warning when these bits overlap:
+
+	if (fls(stat->ino) >= ffs(stat->ino_uniquifer))
+		printk("NFSD: Warning possible inode collision...")
+
+More smarter heuristic can be developed, like doing the check against the maximum value if inode and the maximum value of the subvolume once at mount time....
+
+- for the inode number it is an expensive operation (even tough it exists/existed for the 32bit processor), but we could reuse the object-id after it is freed
+
+- I think that we could add an option to nfsd or btrfs (not a default behavior) to avoid to cross the subvolume boundary
+
+> And 'private' subvolumes
+> could again appear on a public list if they were accessed via NFS.
+
+(wrongly) I never considered  a similar scenario. However I think that these could be anonymized using a alias (the name of the path to mount is passed by nfsd, so it could create an alias that will be recognized by nfsd when the clienet requires it... complex but doable...)
+
+> 
+> Thanks,
+> NeilBrown
+> 
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
