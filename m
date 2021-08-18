@@ -2,110 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D113F0D6D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 23:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC463F0DA7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 23:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234243AbhHRVe2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 17:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234174AbhHRVeX (ORCPT
+        id S234214AbhHRVrF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 17:47:05 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51944 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234083AbhHRVrF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 17:34:23 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71729C0613D9
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:48 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id t190so4770309qke.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=3FBUpnqTbYqnGXZTMtSDgp9MOQ/S8lJ9K99Z0c/fGZM=;
-        b=iCiF6Gv8Q6INlvwi0zK/na0NeCXudfpDNoYMdxw+8fOCJdctmpkQaaMBtFMdgazhHZ
-         tEsl6ZUoj3hnsE7oyN4vEI0IRbBs6tAx5+Dl3cbK0ON8DnnxX/1Bb3Knn4UIinJkS6tk
-         oL3mcWEZV+G1C802hA1dLithZZA2zZoR/o4SqLJ+3iO03rfLGZrpjHVNesvegv4IRRa2
-         gx/7gWBZqiQiAIpRNzGbR00l9CnHKxnBp4CI2fatiQ/sjNHBa84GxZYNqgbFhrbX6Ski
-         7mBgsKsEPuIZjjLRwPOCiGltZfKtMi0a4eCUa57TsCzKCdZj8dLLi+SOVvOkn5hREHY9
-         OReg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3FBUpnqTbYqnGXZTMtSDgp9MOQ/S8lJ9K99Z0c/fGZM=;
-        b=T5tyOTILe26s6cdRVKeeltKp46bwG+g9T9Q0baCWOs0imTaDwrIEMtcnQk2vvysb/I
-         NNTVjYEs+7OP+aqmFp62lKOp+W6OXmbQmxXrx+ND/IPtT+iXN8wtZV3fNl0itshJJFbH
-         tQf0zseTWeJWYH9AGiXb8pPg+cUf/3aVR736DK1xASmoKFv2RDwsK9CzzYJxqyRqndy5
-         YrUPuMGx47oA0hzMhE0IA824Wg0ZLGZMW5ItDYrOUKVTxVQGIyQkBolfLYb7wgRcad76
-         2nkCKJh2xMFDnGOygDCqBLZiDXVHuTpksymhMOzHaBlL5J3XdQhbF3zCRAGLEkYBYvP5
-         I0Sw==
-X-Gm-Message-State: AOAM5337SfqtuoVVL/nGJEoHrfwwTAR3z1OW/pDnI/T4QmYJWz9MNtal
-        X6AWyloOSRWhW+8EITXrBdmsKYZRkTJvNQ==
-X-Google-Smtp-Source: ABdhPJzOVv5w3jz/r3/TBnCu0eaBiBPLcuH7qeyP26rihM2N+d+AlzqBuIFcd3kubkmyJSn06Ms7XA==
-X-Received: by 2002:a37:e14:: with SMTP id 20mr353885qko.229.1629322427371;
-        Wed, 18 Aug 2021 14:33:47 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id b21sm543186qtt.91.2021.08.18.14.33.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 14:33:45 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 12/12] btrfs-progs: add a test image with an invalid super bytes_used
-Date:   Wed, 18 Aug 2021 17:33:24 -0400
-Message-Id: <bf00f0d76278db3659a5655d8f493ff16f3f28a7.1629322156.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1629322156.git.josef@toxicpanda.com>
-References: <cover.1629322156.git.josef@toxicpanda.com>
+        Wed, 18 Aug 2021 17:47:05 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BEC421FD35;
+        Wed, 18 Aug 2021 21:46:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629323188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EgHjDINeg2XxswsLMKYY8ZYuGYfWFxsr/oizjLTGkDI=;
+        b=m+0f9bZAyBHdJsXm1OkOfyvu516lqC/mc9IjlxxzKON9hVJFV/XJNw3erhe4jsSQTai0jF
+        Yzl4FYW5INAZ8AjDOs56/rv+GI+g8RlfugzB9XQvWIoNzOFkfoTn43BXLnVQbCXdKRQ35n
+        AMq6MDvlK9nO/2z06ZJvzXrvmgr0E9E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629323188;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EgHjDINeg2XxswsLMKYY8ZYuGYfWFxsr/oizjLTGkDI=;
+        b=LrX1ws6muGBnWTia7XCdv35pvSAvSnCNEnEn0qFFMYpgvOoW/F1f2SFXi3tgQGDlzr5oUv
+        GDPZCQVkvJYWFQCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 91E3213DD5;
+        Wed, 18 Aug 2021 21:46:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id suahE7F/HWFwXwAAMHmgww
+        (envelope-from <neilb@suse.de>); Wed, 18 Aug 2021 21:46:25 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Wang Yugui" <wangyugui@e16-tech.com>
+Cc:     "Christoph Hellwig" <hch@infradead.org>,
+        "Josef Bacik" <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
+        "David Sterba" <dsterba@suse.com>,
+        "Alexander Viro" <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for btrfs export
+In-reply-to: <20210818225454.9558.409509F4@e16-tech.com>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>,
+ <162881913686.1695.12479588032010502384@noble.neil.brown.name>,
+ <20210818225454.9558.409509F4@e16-tech.com>
+Date:   Thu, 19 Aug 2021 07:46:22 +1000
+Message-id: <162932318266.9892.13600254282844823374@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is used to validate the detection and correction code in both fsck
-modes for an invalid bytes_used value in the super block.
+On Thu, 19 Aug 2021, Wang Yugui wrote:
+> Hi,
+> 
+> We use  'swab64' to combinate 'subvol id' and 'inode' into 64bit in this
+> patch.
+> 
+> case1:
+> 'subvol id': 16bit => 64K, a little small because the subvol id is
+> always increase?
+> 'inode':	48bit * 4K per node, this is big enough.
+> 
+> case2:
+> 'subvol id': 24bit => 16M,  this is big enough.
+> 'inode':	40bit * 4K per node => 4 PB.  this is a little small?
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- .../.lowmem_repairable                           |   0
- .../051-invalid-super-bytes-used/default.img.xz  | Bin 0 -> 1060 bytes
- 2 files changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 tests/fsck-tests/051-invalid-super-bytes-used/.lowmem_repairable
- create mode 100644 tests/fsck-tests/051-invalid-super-bytes-used/default.img.xz
+I don't know what point you are trying to make with the above.
 
-diff --git a/tests/fsck-tests/051-invalid-super-bytes-used/.lowmem_repairable b/tests/fsck-tests/051-invalid-super-bytes-used/.lowmem_repairable
-new file mode 100644
-index 00000000..e69de29b
-diff --git a/tests/fsck-tests/051-invalid-super-bytes-used/default.img.xz b/tests/fsck-tests/051-invalid-super-bytes-used/default.img.xz
-new file mode 100644
-index 0000000000000000000000000000000000000000..20d6af898690038ba5e3f7f3852f699413a7f15a
-GIT binary patch
-literal 1060
-zcmV+<1l#-lH+ooF000E$*0e?f03iVu0001VFXf}+6aNF`T>wRyj;C3^v%$$4d1ocf
-zjjaF1$8Jv*pMMm%#9U8wBSY$t`hql!7fWN#!<KoG7QbgI5Zz59AG36Vz1Z(#I0~Ln
-z3JKK~H5jCU<u;c6IpGR%0p(Y1WzO5tieFMrVv97@7Gm*yDDf8GPy!w=xShqKM$Hbm
-zNcld}wm#`Gky6*aiFfO+#g4Pry^cWVoFmH0VBeS~uQB0-tE>9)m~LUu{3h{cCV}n!
-zW)j69{DZ;^4fwk&(@SrTPYl1&-d)dlKfc5eTWtvaaT3+KYdkYPq^__%7Cr|^=lv8x
-z%X#@fQz>K*kIy&~JE`|+LnwNXr>^@~gg`$X!^enj{MM+Qk;qkdaYSe0zikAnG$AyN
-z%hIp4{EhUpHVZf~sgUl}ybGx$gBffDVBF7(%IweseM7z#2OYAV_+^+V+j+fA%W}fc
-ztW$!wvbbD7mmZTXE=T>9l4%pam5o<OA~-y2ZDRM-QL~v6TDXKleUF?ALnGlA7~&lR
-z0q!@;zV*Y$Qh)gnX(oJR*Iu0}O>Wqfy31;MWh?)Wit!p!yl!SKcNBMb`cc>fa<5G6
-zCPLe%*Vw+j@@8j4Sn<j~apvG>hM2ja(Ycw(;E=od)VY^PtFDz(Y?dy_HfQ}3Y20gS
-z-t+TT?)DNjw`uj9E#Xdmutgz=9)f=XJ){7(wKS`QI)KkMJGX^;Mw}5CVh3&e-|Nz8
-z#xJ^>@ol)mT8Mg(u=fuV%zGVUY0JGnTk<f>2tUD57AmS(<o(nfm6zE)U|?D+{k~s}
-z5`lUF<7(8yv^0iUH*Ps&US#EKgBpJ#)F~Np^2gMoB5@yIdz(nik(sj?*J7sWVnw1s
-zorCvu>Cx%M<Y6H_Q~HoHzM208Z&CJ<3W!YP>D0RE-&Wlc){tTY21u}MNMj3C?bZOg
-zYNo{!+@KC%>W3*ihg`;{_lWQvsRXSfgLOq#)6xKI6_u~N5hsk{o<;;yEi>!k>sTgc
-z$BdTv^NvrZ$?Z8&jqFAaE4bR>22AD#3*mR8U$!asT12H?EQuLPCrIcH7el(xev3hL
-zQAZ|(`U@M8)fHnVK^&S4EMN{O5{g9PF}@wqoi=P39rIae4i8Y~TSurLWEZ6Sxx~s~
-zXWtlT7;2?3<S;PdEkVsK4-X>Z=0eg@s@X`Pb0)`FgKF=kq5e?)|3dK)AYPa%)=75r
-zJ1rQgvK#p3?1^k+W2E1T-3mMF>o8h_=GipTN`KdfpZ&&w+3F%(bk;sr{ITgm@F<x-
-z-=1Yn$&27By)uiajG+wuCz_6dz;K{fS0x7)SmmNq{N)3a2BtnE463(n5vKrsu3*jw
-e*LMW~0e}dAs0aWryM7<B#Ao{g000001X)^oc?S^y
+> 
+> Is there a way to 'bit-swap' the subvol id, rather the current byte-swap?
 
-literal 0
-HcmV?d00001
+Sure:
+   for (i=0; i<64; i++) {
+        new = (new << 1) | (old & 1)
+        old >>= 1;
+   }
 
--- 
-2.26.3
+but would it gain anything significant?
 
+Remember what the goal is.  Most apps don't care at all about duplicate
+inode numbers - only a few do, and they only care about a few inodes.
+The only bug I actually have a report of is caused by a directory having
+the same inode as an ancestor.  i.e.  in lots of cases, duplicate inode
+numbers won't be noticed.
+
+The behaviour of btrfs over NFS RELIABLY causes exactly this behaviour
+of a directory having the same inode number as an ancestor.  The root of
+a subtree will *always* do this.  If we JUST changed the inode numbers
+of the roots of subtrees, then most observed problems would go away.  It
+would change from "trivial to reproduce" to "rarely happens".  The patch
+I actually propose makes it much more unlikely than that.  Even if
+duplicate inode numbers do happen, the chance of them being noticed is
+infinitesimal.  Given that, there is no point in minor tweaks unless
+they can make duplicate inode numbers IMPOSSIBLE.
+
+> 
+> If not, maybe it is a better balance if we combinate 22bit subvol id and
+> 42 bit inode?
+
+This would be better except when it is worse.  We cannot know which will
+happen more often.
+
+As long as BTRFS allows object-ids and root-ids combined to use more
+than 64 bits there can be no perfect solution.  There are many possible
+solutions that will be close to perfect in practice.  swab64() is the
+simplest that I could think of.  Picking any arbitrary cut-off (22/42,
+24/40, ...) is unlikely to be better, and could is some circumstances be
+worse.
+
+My preference would be for btrfs to start re-using old object-ids and
+root-ids, and to enforce a limit (set at mkfs or tunefs) so that the
+total number of bits does not exceed 64.  Unfortunately the maintainers
+seem reluctant to even consider this.
+
+NeilBrown
