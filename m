@@ -2,84 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1D13F0196
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 12:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8C63F01E2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 12:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233847AbhHRK1w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 06:27:52 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38218 "EHLO
+        id S234618AbhHRKjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 06:39:24 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40148 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbhHRK1v (ORCPT
+        with ESMTP id S230072AbhHRKjO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 06:27:51 -0400
+        Wed, 18 Aug 2021 06:39:14 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id ACB871FFA9;
-        Wed, 18 Aug 2021 10:27:16 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id A89C41FFB2;
+        Wed, 18 Aug 2021 10:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629282436;
+        t=1629283119;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9Py6WIz7801K0e4IiAoaq0D1+TSpQ0rbvCigVZ2b/FU=;
-        b=YosYNrIBgs0g0M13x1CSGret7Ns5VSq6Jak4XvB2CMfWqGLqxX2EOBUE8CQLCbHL5O1nUq
-        FxPyR3anm5vwnfIp0Aa2TdDHGEaaIVWP+XkqYjpodV/wca9vAJtDa5eq8RjkdygVAbcwpu
-        boMrY6rptZbEQ/DAwQNfOYbrXlKhSeY=
+        bh=gh5oD6NiNI8ERzrlEi/6l99jHJ9GGjIt4IojBXOrGQM=;
+        b=I54rpaREMC23a9Z2mDVNyLBWfVskoeyUi0EA6+/bmzYbAfYSzuKpVmeNtjZriLxuqJZS/Z
+        gD/UQ0M5QpmQ3zWMs2GkNTHOfVuUJMrjrnJ6SedoiN3P6Lr+RKkrlZWRrRMmfjPnRjMNAL
+        wtDh4G7ro7u07fJjlv1+IF6M0EgiOuU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629282436;
+        s=susede2_ed25519; t=1629283119;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9Py6WIz7801K0e4IiAoaq0D1+TSpQ0rbvCigVZ2b/FU=;
-        b=R3kpv9pQwFytDUtRsLdfOD7IPTWFCyG/2INKUP8iYE7a8x1A9pqDmnYJZkx1N4y1HlFJ2D
-        rhzOPdIjK0oOY8Dw==
+        bh=gh5oD6NiNI8ERzrlEi/6l99jHJ9GGjIt4IojBXOrGQM=;
+        b=TFms3kg3LlB1QfoRxwkhw/AtoFGMYwKpAnVLnmq032pPwa/YeLsSPaNqZbHo8DQJ2yaCid
+        gjEPhi+cCVCDELAg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id A5BA1A3B99;
-        Wed, 18 Aug 2021 10:27:16 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id A0B98A3B94;
+        Wed, 18 Aug 2021 10:38:39 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 10FF9DA72C; Wed, 18 Aug 2021 12:24:19 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 12:24:19 +0200
+        id E9501DA72C; Wed, 18 Aug 2021 12:35:42 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 12:35:42 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v2] btrfs: rename btrfs_alloc_chunk to btrfs_create_chunk
-Message-ID: <20210818102419.GQ5047@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com, nborisov@suse.com
+Subject: Re: [PATCH] btrfs-progs: Drop the type check in
+ init_alloc_chunk_ctl_policy_regular
+Message-ID: <20210818103542.GR5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <20210705091643.3404691-1-nborisov@suse.com>
- <eb7458e5-6c4d-c02a-2b81-d12f476822a9@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com, nborisov@suse.com
+References: <20210809182613.4466-1-mpdesouza@suse.com>
+ <20210817132419.GK5047@twin.jikos.cz>
+ <04abaf84-12e3-3983-dee4-a5073ec786f1@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <eb7458e5-6c4d-c02a-2b81-d12f476822a9@suse.com>
+In-Reply-To: <04abaf84-12e3-3983-dee4-a5073ec786f1@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 09:26:54AM +0300, Nikolay Borisov wrote:
+On Wed, Aug 18, 2021 at 01:17:46PM +0800, Qu Wenruo wrote:
+> On 2021/8/17 下午9:24, David Sterba wrote:
+> > On Mon, Aug 09, 2021 at 03:26:13PM -0300, Marcos Paulo de Souza wrote:
+> >>
+> >> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> >> ---
+> >>
+> >>   This change mimics what the kernel currently does, which is set the stripe_size
+> >>   regardless of the profile. Any thoughts on it? Thanks!
+> >
+> > Makes sense to unify that, it works well for the large sizes. Please
+> > write tests that verify that the chunk sizes are correct after mkfs on
+> > various device sizes. Patch added to devel, thanks.
 > 
+> It in fact makes fsck/025 to fail, bisection points to this patch
+> surprisingly.
 > 
-> On 5.07.21 г. 12:16, Nikolay Borisov wrote:
-> > The user facing function used to allocate new chunks is
-> > btrfs_chunk_alloc, unfortunately there is yet another similar sounding
-> > function - btrfs_alloc_chunk. This creates confusion, especially since
-> > the latter function can be considered "private" in the sense that it
-> > implements the first stage of chunk creation and as such is called by
-> > btrfs_chunk_alloc.
-> > 
-> > To avoid the awkwardness that comes with having similarly named but
-> > distinctly different in their purpose function rename btrfs_alloc_chunk
-> > to btrfs_create_chunk, given that the main purpose of this function is
-> > to orchestrate the whole process of allocating a chunk - reserving space
-> > into devices, deciding on characteristics of the stripe size and
-> > creating the in-memory structures.
-> > 
-> > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> Now "mkfs.btrfs -f" on a 128M file will just fail.
 > 
-> Ping
+> This looks like a big problem to me though...
 
-Please refresh the patch and resend, thanks.
+This is known that the small filesystem size and intial chunk layout is
+not scaled properly, the patch OTOH fixes the more common case where the
+normal block group sizes fit and leave enough room for the rest.
+
+Can the test 025 be scaled up so we don't have to create the 128M
+filesystem? I'd rather go that way.
