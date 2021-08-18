@@ -2,257 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFF03EFA23
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 07:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675443EFA2A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 07:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237872AbhHRFes (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 01:34:48 -0400
-Received: from mout.gmx.net ([212.227.17.21]:42425 "EHLO mout.gmx.net"
+        id S237838AbhHRFhY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 01:37:24 -0400
+Received: from mout.gmx.net ([212.227.17.21]:35033 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237839AbhHRFer (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 01:34:47 -0400
+        id S237812AbhHRFhQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Aug 2021 01:37:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629264850;
-        bh=7Hp/6ngMXHnGLPZOgAWzhNLPD0aQzm4cSa+5QacxLPo=;
-        h=X-UI-Sender-Class:From:To:References:Subject:Date:In-Reply-To;
-        b=k/rJhqvzMzruXOb4apT1rboBsr1wMOxHVg6mLpBHJwya3F8lLjzXhFpPtH1Udj5fY
-         QVgJ3iQG1WEQt+O2ycSQgOGW8lR/UC+UCM2hFu/hD8aNDL6PTLM1ezMu5wT3eICei0
-         DulVNJRDZvwDjZvCRGAxLQuA50OG+T+US9FsbByQ=
+        s=badeba3b8450; t=1629264996;
+        bh=Jbbuenk2MhUMfqwx4LHpScY/jLKsqJ3VtK1RYccxuBA=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=JMgV/d5rpt1FAt4Mi5RDXDwMHVu5evBqo7cto2qE10pucv6aZXfkJB4uZDY5Lo178
+         +4dFrzWjqhGi41U4X5Z3D0u80oPvgDDNdTyIeBz7Qtay/1D9MkaFewxNdH+G5I/8TJ
+         LgvAVu1GMLMaToc/9PHfbU9q2n2EtmDhLcXVQZac=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3DJl-1mDCLU2IO5-003bAP; Wed, 18
- Aug 2021 07:34:10 +0200
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     dsterba@suse.cz, Marcos Paulo de Souza <mpdesouza@suse.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com, nborisov@suse.com
-References: <20210809182613.4466-1-mpdesouza@suse.com>
- <20210817132419.GK5047@twin.jikos.cz>
- <04abaf84-12e3-3983-dee4-a5073ec786f1@gmx.com>
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MysW2-1n35mb3xOk-00vxbV; Wed, 18
+ Aug 2021 07:36:36 +0200
 Subject: Re: [PATCH] btrfs-progs: Drop the type check in
  init_alloc_chunk_ctl_policy_regular
-Message-ID: <663a1ce1-09e5-e0dd-e957-98984818b64d@gmx.com>
-Date:   Wed, 18 Aug 2021 13:34:06 +0800
+To:     Anand Jain <anand.jain@oracle.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, nborisov@suse.com
+References: <20210809182613.4466-1-mpdesouza@suse.com>
+ <63cd4e76-72b4-7b99-ae94-075dfaf78bb7@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <39f171e0-7c3c-7194-4265-e688d2df097e@gmx.com>
+Date:   Wed, 18 Aug 2021 13:36:32 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <04abaf84-12e3-3983-dee4-a5073ec786f1@gmx.com>
+In-Reply-To: <63cd4e76-72b4-7b99-ae94-075dfaf78bb7@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:y2yVj3aecoBCwYy0R0GhPEqE1yfO7vDmalgTHgTYoLn1dcL2HFu
- b2xooaD/EPGGD5i7zuQKu1bT0km5lsgKZ8uicv+zmq0WdIjzS5ckMXXFozxqaFSEzdlVzEr
- IwYYxN9BX0FYsuoawm6QTkTYZEkSXrJopy7YioHr3YSMle/9eH3Zkyox6otTqHKUCvM5P2S
- +UXMVJL2r7E1QNmvV3Twg==
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:L9wlIvgAw6bOZzACJxYbREg3xRypGlro0ev37cNTxkV890AMg7F
+ 7e7ZCK5TI18+LzGoCUdwMfE2Y8rfnXy39ZPKyV5uLVeLDaoJbccp8R9k0q3EGdDZJn+29Yp
+ +wzFm2XY+kpcnlN19wZyvVgMWwqDSlWNM+aHpfFIf3NtsQQEqgcC71PDqniJKjdWhZlGZba
+ k1FcSGgBn032BBdyjieDA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sdACVQ6IM5A=:2Zk/F18qEvTyqYEUHDSNTf
- pdNAHQoJfgFm3R2LuP6XIj6hKmRlV8x2O4y13W2FMuy5g+6+VtpJrwjZfTvJpA+ccY+IqUWx9
- ZQUEVt4BnggZ+LrcmI3dF6hynLv70OgkKbMmaVKwOsQfMRFYLsaBu+Yo5ciHn7SE6lBZpxxX/
- grv0ZEpdaezu6huKOivP9VmLzlHGp0vKI6OfAj9O7zC6AIOH6XjeKHXYS4AhPoN5IFUi0q8x6
- RgmkT3ygdOBQ1smdvCvPsBbEiQZS4ZC3cRXV1D5b77cmba/QNuOK2LIcb2QXhF7lDTNyGjtky
- ciK2xIeeTEs/BZpKbycW1JVRLlSO7GQorKHWsIAewshvxviemG8zl4PBVxqs9xz9xIgalyGfz
- 9rc3rNoWA6J7Vs6kQ4gG5sUKyz+6hAK/5hEMbT4hFmPQyAaDdRH1Z/xPm0d+piXxxUv1jsakW
- XKABWDqAKpvp18O6W3m777NlCFsRoBIc0nXZ3dRJy5NSm23q6tai04ZrG39tqj2UW3U/qTO4H
- OtrsOZGundNe+gQjVLvr2OCxAz3iifaQH/Zv43JzKlphMxtxv/K+0hz6XNVTRKwyAMYTSBbXJ
- YgUvwjUvk2FndTqkpPkTNPYR8Fv6SP6JsSM33vyaKmJAmBmd8uQuEQdH3jdo8RmmR/BK/4edu
- vgdxtKhhlZL05WMUrEgonNrWok2Omi4zxXYlB52yjruhQCKY5u4gvuvkGKhUkUEfc5sxX8mdT
- mFlM6mAHF4Zb47CZYI2uj0Tn5PQaF67sTBklAFbLZKbGjwSjOTKndNJ+/uZxHdDN26yEfpAYD
- 4h6ho2XrNnImT9CW3SZb2nQo4rogPRAK8ZPiPKpwmoCfO1UU+qHiOrkkD0W8jNljHX6sgAqEv
- 7vrmi9l8Rvf+syO8vXm+ksre2VNG5vzEZctY4THZLKY3gRpZRARSve3DSBfkemkOr2+95S1BK
- vcbkObZS/huTlNAt+OSx7eLkxjg9CNykR5f00pRewkplQNvM0muMJTD4gjiLaFhEOU7ZSik9h
- DiWTBF6HrfulnKJgGXaMRezkUybszB+svxomNgzz8YvtjOmz+XJPw/KbxTzg3nQ39pfCa06c9
- y7f1oZjdRgp7U3LE4gZP63C9if/PRTE113pYCgCQoRV9qLfghgDokdZOQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xdZ6e7eP5YA=:KJtopIoPcp23I5QOXtoFB1
+ JLvszkm0vjsJ8n7Y6ZUf3CH8x5fWrQp00AAYRpstMyYstSeBw6CQASTryiSHla6JJlXfZsdcI
+ iV47VycPaA9Fj6g8BSuTdh7UE5X1KKbR4QXdfsR4Hv37bXWv6vLiJ1MYPp02rsBIW7t+CAhK4
+ wZcNZ/fN4ZqinNHjnFWFEs2JpoYUTxpGQzRszxFG0RJnK45hWm4WJ3MoDZl4cLuP8p6YKFXQ7
+ 2B/2+fzHpTXKyRWipIjWBISIksLToiTcQs+xoJyaTf80PbgxpTw8/yoy1UCdXWqHPOe1Snpo2
+ PC7AacxOZwtlfx6iHL9Wh+M/RNgQw+2aER3cLSVZQZw7lhM4peAJDsnzUDYox8QWeGDjz/MzQ
+ HC6p675MYC73Tf1FkdLGdSpci1tyG+gvbrBtTLzARg+oTjhkaB2JsCVXzMyaEYIWuAC87ImJl
+ 0FwXB6NVvFd5Tk9aFNKpsLAQ7T8FXPIeeLpfS/XPecEWZID8BFk/Q6Q5Njb3ptAQ6l/IjFhpE
+ TD27m0ruO/Hm0QYlbnoc273ZeXpboPbt+wWoF0fJi4zyIxXfP2SFoMYXFFkxKbXSSfSDAFd2s
+ lr4ZaLwr+LBwXPrQk5HHIcBRaU3ZYuiYAjlN6mtE0Iqh964uBSCkr8yOMEVmXBe5UTo4xbwpz
+ TcqzkmLYd7NGjyTJyULKQmcApSeh/AljkfDal8KW+bmd2go9wJ0PMMyd67cK4WGCk+Kr4ooFS
+ Ix93LTov8/OwyAC+KETt0VpT/eXjPdaC3T4y2D9u3ZxfeMMg5WzSWca2IORHJFDjw98JFO4qp
+ 3WIhu+L4LBJjNOhCjiFMuetePw65J7DGc9+Gy0rcHV+4/Dw+1Qkhd+CFb1kbVZbNwGSZXFFC0
+ o2vAB6cu4WJYQhfhTyKVfqUW7Ccd14zaOjgF6xWsp/E99gZlqxwTq3iZ9O3ZJ4qtdekVTaMqY
+ llWSWd3bXURaCCj/+QoxWprJAiMN9woE6Syp4PUW5zKpx3L4Nsj97fR2HOZonAT0AOAIq/q8o
+ BVrU2LWWZ3o8IwZMYP/NigsGSseud1EdDZYscrlvMPGXM+yHoxBkB9nA7H+EffyEpZMcg9q56
+ ISuPpaAtq/AxD8OPgwHDmoGL76vyKkjte9p947jG64cA8Oxp/BXc77Axg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/8/18 =E4=B8=8B=E5=8D=881:17, Qu Wenruo wrote:
->
->
-> On 2021/8/17 =E4=B8=8B=E5=8D=889:24, David Sterba wrote:
->> On Mon, Aug 09, 2021 at 03:26:13PM -0300, Marcos Paulo de Souza wrote:
->>> [PROBLEM]
->>> Our documentation says that a DATA block group can have up to 1G of
->>> size, or the at most 10% of the filesystem size. Currently, by default=
-,
->>> mkfs.btrfs is creating an initial DATA block group of 8M of size,
->>> regardless of the filesystem size. It happens because we check for the
->>> ctl->type in init_alloc_chunk_ctl_policy_regular to be one of the
->>> BTRFS_BLOCK_GROUP_PROFILE_MASK bits, which is not the case for SINGLE
->>> (default) DATA block group:
->>>
->>> $ mkfs.btrfs -f /storage/btrfs.disk
->>> btrfs-progs v4.19.1
->>> See http://btrfs.wiki.kernel.org for more information.
->>>
->>> Label:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 (null)
->>> UUID:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 39e3492f-41f2-4bd7-8c25-93032606b9fe
->>> Node size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 16384
->>> Sector size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4096
->>> Filesystem size:=C2=A0=C2=A0=C2=A0 55.00GiB
->>> Block group profiles:
->>> =C2=A0=C2=A0 Data:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 single=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 8.00MiB
->>> =C2=A0=C2=A0 Metadata:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- DUP=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 1.00GiB
->>> =C2=A0=C2=A0 System:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 DUP=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 8.00MiB
->>> SSD detected:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
->>> Incompat features:=C2=A0 extref, skinny-metadata
->>> Number of devices:=C2=A0 1
->>> Devices:
->>> =C2=A0=C2=A0=C2=A0 ID=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SIZE=
-=C2=A0 PATH
->>> =C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0 55.00GiB=C2=A0 /storage/b=
-trfs.disk
->>>
->>> In this case, for single data profile, it should create a data block
->>> group of 1G, since the filesystem if bigger than 50G.
->>>
->>> [FIX]
->>> Remove the check for BTRFS_BLOCK_GROUP_PROFILE_MASK in
->>> init_alloc_chunk_ctl_policy_regular function. The ctl->stripe_size is
->>> later on assigned to ctl.num_bytes, which is used by
->>> btrfs_make_block_group to create the block group.
->>>
->>> By removing the check we allow the code to always configure the correc=
-t
->>> stripe_size regardless of the PROFILE, looking on the block group TYPE=
-.
->>>
->>> With the fix applied, it now created the BG correctly:
->>>
->>> $ ./mkfs.btrfs -f /storage/btrfs.disk
->>> btrfs-progs v5.10.1
->>> See http://btrfs.wiki.kernel.org for more information.
->>>
->>> Label:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 (null)
->>> UUID:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 5145e343-5639-462d-82ee-3eb75dc41c31
->>> Node size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 16384
->>> Sector size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4096
->>> Filesystem size:=C2=A0=C2=A0=C2=A0 55.00GiB
->>> Block group profiles:
->>> =C2=A0=C2=A0 Data:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 single=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 1.00GiB
->>> =C2=A0=C2=A0 Metadata:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- DUP=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 1.00GiB
->>> =C2=A0=C2=A0 System:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 DUP=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 8.00MiB
->>> SSD detected:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
->>> Zoned device:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
->>> Incompat features:=C2=A0 extref, skinny-metadata
->>> Runtime features:
->>> Checksum:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-crc32c
->>> Number of devices:=C2=A0 1
->>> Devices:
->>> =C2=A0=C2=A0=C2=A0 ID=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SIZE=
-=C2=A0 PATH
->>> =C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0 55.00GiB=C2=A0 /storage/b=
-trfs.disk
->>>
->>> Using a disk >50G it creates a 1G single data block group. Another
->>> example:
->>>
->>> $ ./mkfs.btrfs -f /storage/btrfs2.disk
->>> btrfs-progs v5.10.1
->>> See http://btrfs.wiki.kernel.org for more information.
->>>
->>> Label:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 (null)
->>> UUID:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 c0910857-e512-4e76-9efa-50a475aafc87
->>> Node size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 16384
->>> Sector size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4096
->>> Filesystem size:=C2=A0=C2=A0=C2=A0 5.00GiB
->>> Block group profiles:
->>> =C2=A0=C2=A0 Data:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 single=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 512.00MiB
->>> =C2=A0=C2=A0 Metadata:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- DUP=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 256.00MiB
->>> =C2=A0=C2=A0 System:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 DUP=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 8.00MiB
->>> SSD detected:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
->>> Zoned device:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 no
->>> Incompat features:=C2=A0 extref, skinny-metadata
->>> Runtime features:
->>> Checksum:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-crc32c
->>> Number of devices:=C2=A0 1
->>> Devices:
->>> =C2=A0=C2=A0=C2=A0 ID=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SIZE=
-=C2=A0 PATH
->>> =C2=A0=C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0 5.00GiB=C2=A0 /stor=
-age/btrfs2.disk
->>>
->>> The code now created a single data block group of 512M, which is exact=
-ly
->>> 10% of the size of the filesystem, which is 5G in this case.
->>>
->>> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
->>> ---
->>>
->>> =C2=A0 This change mimics what the kernel currently does, which is set=
- the
->>> stripe_size
->>> =C2=A0 regardless of the profile. Any thoughts on it? Thanks!
->>
->> Makes sense to unify that, it works well for the large sizes. Please
->> write tests that verify that the chunk sizes are correct after mkfs on
->> various device sizes. Patch added to devel, thanks.
->>
->
-> It in fact makes fsck/025 to fail, bisection points to this patch
-> surprisingly.
->
-> Now "mkfs.btrfs -f" on a 128M file will just fail.
->
-> This looks like a big problem to me though...
-
-The cause here is that, we changed the minimal stripe size for SINGLE
-profile.
-
-The old code for profile SINGLE will not go through any of the type
-specific limits, and falls back to use the default limits, which has
-only 1MiB minimal stripe limit.
-
-While the new code changes the minimal stripe length to 64MiB.
-
-Furthermore, currently mkfs using default profiles will lead to the
-following chunk layout:
-
-   Data:             single            8.00MiB
-   Metadata:         DUP              32.00MiB
-   System:           DUP               8.00MiB
-
-This means, System + Metadata will eat up 80MiB already (40MiB x2 caused
-by DUP profile). leaving only 48 MiB space left for data, which is
-smaller than the 64MiB minimal stripe requirement.
-
-In fact, this behavior is still not the same as kernel, as kernel can
-create 16MiB SINGLE data chunk without any problem, so the 64MiB limit
-is not correct either.
-
-Since we're here, I hope we can work on the initial chunk size with
-better flexibility, not creating too large metadata chunk which easily
-eat up half of the space.
-
-Thanks,
-Qu
->
-> Thanks,
-> Qu
+DQoNCk9uIDIwMjEvOC8xOCDkuIvljYgxOjI3LCBBbmFuZCBKYWluIHdyb3RlOg0KPiBPbiAxMC8w
+OC8yMDIxIDAyOjI2LCBNYXJjb3MgUGF1bG8gZGUgU291emEgd3JvdGU6DQo+PiBbUFJPQkxFTV0N
+Cj4+IE91ciBkb2N1bWVudGF0aW9uIHNheXMgdGhhdCBhIERBVEEgYmxvY2sgZ3JvdXAgY2FuIGhh
+dmUgdXAgdG8gMUcgb2YNCj4+IHNpemUsIG9yIHRoZSBhdCBtb3N0IDEwJSBvZiB0aGUgZmlsZXN5
+c3RlbSBzaXplLiBDdXJyZW50bHksIGJ5IGRlZmF1bHQsDQo+PiBta2ZzLmJ0cmZzIGlzIGNyZWF0
+aW5nIGFuIGluaXRpYWwgREFUQSBibG9jayBncm91cCBvZiA4TSBvZiBzaXplLA0KPj4gcmVnYXJk
+bGVzcyBvZiB0aGUgZmlsZXN5c3RlbSBzaXplLiBJdCBoYXBwZW5zIGJlY2F1c2Ugd2UgY2hlY2sg
+Zm9yIHRoZQ0KPj4gY3RsLT50eXBlIGluIGluaXRfYWxsb2NfY2h1bmtfY3RsX3BvbGljeV9yZWd1
+bGFyIHRvIGJlIG9uZSBvZiB0aGUNCj4+IEJUUkZTX0JMT0NLX0dST1VQX1BST0ZJTEVfTUFTSyBi
+aXRzLCB3aGljaCBpcyBub3QgdGhlIGNhc2UgZm9yIFNJTkdMRQ0KPj4gKGRlZmF1bHQpIERBVEEg
+YmxvY2sgZ3JvdXA6DQo+IA0KPiANCj4+ICQgbWtmcy5idHJmcyAtZiAvc3RvcmFnZS9idHJmcy5k
+aXNrDQo+PiBidHJmcy1wcm9ncyB2NC4xOS4xDQo+PiBTZWUgaHR0cDovL2J0cmZzLndpa2kua2Vy
+bmVsLm9yZyBmb3IgbW9yZSBpbmZvcm1hdGlvbi4NCj4+DQo+PiBMYWJlbDrCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCAobnVsbCkNCj4+IFVVSUQ6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCAzOWUzNDkyZi00MWYyLTRiZDctOGMyNS05MzAzMjYwNmI5ZmUNCj4+IE5vZGUgc2l6ZTrCoMKg
+wqDCoMKgwqDCoMKgwqAgMTYzODQNCj4+IFNlY3RvciBzaXplOsKgwqDCoMKgwqDCoMKgIDQwOTYN
+Cj4+IEZpbGVzeXN0ZW0gc2l6ZTrCoMKgwqAgNTUuMDBHaUINCj4+IEJsb2NrIGdyb3VwIHByb2Zp
+bGVzOg0KPj4gwqDCoCBEYXRhOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzaW5nbGXCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIDguMDBNaUINCj4+IMKgwqAgTWV0YWRhdGE6wqDCoMKgwqDCoMKgwqDC
+oCBEVVDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDEuMDBHaUINCj4+IMKgwqAgU3lzdGVt
+OsKgwqDCoMKgwqDCoMKgwqDCoMKgIERVUMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgOC4w
+ME1pQg0KPj4gU1NEIGRldGVjdGVkOsKgwqDCoMKgwqDCoCBubw0KPj4gSW5jb21wYXQgZmVhdHVy
+ZXM6wqAgZXh0cmVmLCBza2lubnktbWV0YWRhdGENCj4+IE51bWJlciBvZiBkZXZpY2VzOsKgIDEN
+Cj4+IERldmljZXM6DQo+PiDCoMKgwqAgSUTCoMKgwqDCoMKgwqDCoCBTSVpFwqAgUEFUSA0KPj4g
+wqDCoMKgwqAgMcKgwqDCoCA1NS4wMEdpQsKgIC9zdG9yYWdlL2J0cmZzLmRpc2sNCj4+DQo+PiBJ
+biB0aGlzIGNhc2UsIGZvciBzaW5nbGUgZGF0YSBwcm9maWxlLCBpdCBzaG91bGQgY3JlYXRlIGEg
+ZGF0YSBibG9jaw0KPj4gZ3JvdXAgb2YgMUcsIHNpbmNlIHRoZSBmaWxlc3lzdGVtIGlmIGJpZ2dl
+ciB0aGFuIDUwRy4NCj4+DQo+PiBbRklYXQ0KPj4gUmVtb3ZlIHRoZSBjaGVjayBmb3IgQlRSRlNf
+QkxPQ0tfR1JPVVBfUFJPRklMRV9NQVNLIGluDQo+PiBpbml0X2FsbG9jX2NodW5rX2N0bF9wb2xp
+Y3lfcmVndWxhciBmdW5jdGlvbi4gVGhlIGN0bC0+c3RyaXBlX3NpemUgaXMNCj4+IGxhdGVyIG9u
+IGFzc2lnbmVkIHRvIGN0bC5udW1fYnl0ZXMsIHdoaWNoIGlzIHVzZWQgYnkNCj4+IGJ0cmZzX21h
+a2VfYmxvY2tfZ3JvdXAgdG8gY3JlYXRlIHRoZSBibG9jayBncm91cC4NCj4+DQo+PiBCeSByZW1v
+dmluZyB0aGUgY2hlY2sgd2UgYWxsb3cgdGhlIGNvZGUgdG8gYWx3YXlzIGNvbmZpZ3VyZSB0aGUg
+Y29ycmVjdA0KPj4gc3RyaXBlX3NpemUgcmVnYXJkbGVzcyBvZiB0aGUgUFJPRklMRSwgbG9va2lu
+ZyBvbiB0aGUgYmxvY2sgZ3JvdXAgVFlQRS4NCj4+DQo+PiBXaXRoIHRoZSBmaXggYXBwbGllZCwg
+aXQgbm93IGNyZWF0ZWQgdGhlIEJHIGNvcnJlY3RseToNCj4+DQo+PiAkIC4vbWtmcy5idHJmcyAt
+ZiAvc3RvcmFnZS9idHJmcy5kaXNrDQo+PiBidHJmcy1wcm9ncyB2NS4xMC4xDQo+PiBTZWUgaHR0
+cDovL2J0cmZzLndpa2kua2VybmVsLm9yZyBmb3IgbW9yZSBpbmZvcm1hdGlvbi4NCj4+DQo+PiBM
+YWJlbDrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAobnVsbCkNCj4+IFVVSUQ6wqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCA1MTQ1ZTM0My01NjM5LTQ2MmQtODJlZS0zZWI3NWRjNDFjMzEN
+Cj4+IE5vZGUgc2l6ZTrCoMKgwqDCoMKgwqDCoMKgwqAgMTYzODQNCj4+IFNlY3RvciBzaXplOsKg
+wqDCoMKgwqDCoMKgIDQwOTYNCj4+IEZpbGVzeXN0ZW0gc2l6ZTrCoMKgwqAgNTUuMDBHaUINCj4+
+IEJsb2NrIGdyb3VwIHByb2ZpbGVzOg0KPj4gwqDCoCBEYXRhOsKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBzaW5nbGXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDEuMDBHaUINCj4+IMKgwqAgTWV0YWRh
+dGE6wqDCoMKgwqDCoMKgwqDCoCBEVVDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDEuMDBH
+aUINCj4+IMKgwqAgU3lzdGVtOsKgwqDCoMKgwqDCoMKgwqDCoMKgIERVUMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgOC4wME1pQg0KPj4gU1NEIGRldGVjdGVkOsKgwqDCoMKgwqDCoCBubw0K
+Pj4gWm9uZWQgZGV2aWNlOsKgwqDCoMKgwqDCoCBubw0KPj4gSW5jb21wYXQgZmVhdHVyZXM6wqAg
+ZXh0cmVmLCBza2lubnktbWV0YWRhdGENCj4+IFJ1bnRpbWUgZmVhdHVyZXM6DQo+PiBDaGVja3N1
+bTrCoMKgwqDCoMKgwqDCoMKgwqDCoCBjcmMzMmMNCj4+IE51bWJlciBvZiBkZXZpY2VzOsKgIDEN
+Cj4+IERldmljZXM6DQo+PiDCoMKgwqAgSUTCoMKgwqDCoMKgwqDCoCBTSVpFwqAgUEFUSA0KPj4g
+wqDCoMKgwqAgMcKgwqDCoCA1NS4wMEdpQsKgIC9zdG9yYWdlL2J0cmZzLmRpc2sNCj4+DQo+PiBV
+c2luZyBhIGRpc2sgPjUwRyBpdCBjcmVhdGVzIGEgMUcgc2luZ2xlIGRhdGEgYmxvY2sgZ3JvdXAu
+IEFub3RoZXINCj4+IGV4YW1wbGU6DQo+Pg0KPj4gJCAuL21rZnMuYnRyZnMgLWYgL3N0b3JhZ2Uv
+YnRyZnMyLmRpc2sNCj4+IGJ0cmZzLXByb2dzIHY1LjEwLjENCj4+IFNlZSBodHRwOi8vYnRyZnMu
+d2lraS5rZXJuZWwub3JnIGZvciBtb3JlIGluZm9ybWF0aW9uLg0KPj4NCj4+IExhYmVsOsKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIChudWxsKQ0KPj4gVVVJRDrCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIGMwOTEwODU3LWU1MTItNGU3Ni05ZWZhLTUwYTQ3NWFhZmM4Nw0KPj4gTm9kZSBz
+aXplOsKgwqDCoMKgwqDCoMKgwqDCoCAxNjM4NA0KPj4gU2VjdG9yIHNpemU6wqDCoMKgwqDCoMKg
+wqAgNDA5Ng0KPj4gRmlsZXN5c3RlbSBzaXplOsKgwqDCoCA1LjAwR2lCDQo+PiBCbG9jayBncm91
+cCBwcm9maWxlczoNCj4+IMKgwqAgRGF0YTrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc2luZ2xl
+wqDCoMKgwqDCoMKgwqDCoMKgIDUxMi4wME1pQg0KPj4gwqDCoCBNZXRhZGF0YTrCoMKgwqDCoMKg
+wqDCoMKgIERVUMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAyNTYuMDBNaUINCj4+IMKgwqAgU3lz
+dGVtOsKgwqDCoMKgwqDCoMKgwqDCoMKgIERVUMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+OC4wME1pQg0KPj4gU1NEIGRldGVjdGVkOsKgwqDCoMKgwqDCoCBubw0KPj4gWm9uZWQgZGV2aWNl
+OsKgwqDCoMKgwqDCoCBubw0KPj4gSW5jb21wYXQgZmVhdHVyZXM6wqAgZXh0cmVmLCBza2lubnkt
+bWV0YWRhdGENCj4+IFJ1bnRpbWUgZmVhdHVyZXM6DQo+PiBDaGVja3N1bTrCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBjcmMzMmMNCj4+IE51bWJlciBvZiBkZXZpY2VzOsKgIDENCj4+IERldmljZXM6DQo+
+PiDCoMKgwqAgSUTCoMKgwqDCoMKgwqDCoCBTSVpFwqAgUEFUSA0KPj4gwqDCoMKgwqAgMcKgwqDC
+oMKgIDUuMDBHaULCoCAvc3RvcmFnZS9idHJmczIuZGlzaw0KPj4NCj4+IFRoZSBjb2RlIG5vdyBj
+cmVhdGVkIGEgc2luZ2xlIGRhdGEgYmxvY2sgZ3JvdXAgb2YgNTEyTSwgd2hpY2ggaXMgZXhhY3Rs
+eQ0KPj4gMTAlIG9mIHRoZSBzaXplIG9mIHRoZSBmaWxlc3lzdGVtLCB3aGljaCBpcyA1RyBpbiB0
+aGlzIGNhc2UuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogTWFyY29zIFBhdWxvIGRlIFNvdXphIDxt
+cGRlc291emFAc3VzZS5jb20+DQo+IA0KPiBMb29rcyBnb29kIHRvIG1lLg0KPiANCj4gSSBob3Bl
+IHRoZXJlIGlzbid0IGFueSB4ZnN0ZXN0cy90ZXN0cy9idHJmcyB0ZXN0IGNhc2UgdGhhdCBpcyBo
+YXJkY29kZWQNCj4gdG8gdGhlIG9sZGVyIGJsb2NrIGdyb3VwIGFsbG9jIChsaWtlIHN3YXAgZmls
+ZSB0ZXN0IHdpdGggcmVsb2NhdGlvbj8pLg0KPiBCdXQgdGhlbiB0aGUgdGVzdCBjYXNlIHdpbGwg
+bmVlZCBhIGZpeCwgbm90IGJ0cmZzLXByb2dzLiBTbw0KDQpXZWxsLCBmc2NrLzAyNSB3aWxsIGZh
+aWwsIGFuZCBpdCdzIG5vdCB0aGUgdGVzdCBjYXNlIG5lZWRzIGEgZml4Li4uDQoNCldlIGp1c3Qg
+c3VkZGVubHkgY2FuJ3QgbWtmcyBvbiBhIDEyOE1pQiBkZXZpY2UgZHVlIHRvIHRoZSBlbmxhcmdl
+ZCANCm1pbmltYWwgc3RyaXBlIGxlbmd0aCBvZiBkYXRhIGNodW5rcy4NCg0KVGhpcyBzdGlsbCBl
+eHBvc2VzIGEgYmVoYXZpb3IgZGlmZmVyZW5jZSBiZXR3ZWVuIGtlcm5lbCBhbmQgYnRyZnMtcHJv
+Z3MuLi4NCg0KVGhhbmtzLA0KUXUNCj4gDQo+IFJldmlld2VkLWJ5OiBBbmFuZCBKYWluIDxhbmFu
+ZC5qYWluQG9yYWNsZS5jb20+DQo+IA0KPiBUaGFua3MsIEFuYW5kDQo+IA0KPj4gLS0tDQo+Pg0K
+Pj4gwqAgVGhpcyBjaGFuZ2UgbWltaWNzIHdoYXQgdGhlIGtlcm5lbCBjdXJyZW50bHkgZG9lcywg
+d2hpY2ggaXMgc2V0IHRoZSANCj4+IHN0cmlwZV9zaXplDQo+PiDCoCByZWdhcmRsZXNzIG9mIHRo
+ZSBwcm9maWxlLiBBbnkgdGhvdWdodHMgb24gaXQ/IFRoYW5rcyENCj4+DQo+PiDCoCBrZXJuZWwt
+c2hhcmVkL3ZvbHVtZXMuYyB8IDQwICsrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0t
+LS0tLS0NCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCAyMSBkZWxldGlv
+bnMoLSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEva2VybmVsLXNoYXJlZC92b2x1bWVzLmMgYi9rZXJu
+ZWwtc2hhcmVkL3ZvbHVtZXMuYw0KPj4gaW5kZXggYWVlYjI1ZmUuLjM2NzdkZDdjIDEwMDY0NA0K
+Pj4gLS0tIGEva2VybmVsLXNoYXJlZC92b2x1bWVzLmMNCj4+ICsrKyBiL2tlcm5lbC1zaGFyZWQv
+dm9sdW1lcy5jDQo+PiBAQCAtMTEwNSwyNyArMTEwNSwyNSBAQCBzdGF0aWMgdm9pZCANCj4+IGlu
+aXRfYWxsb2NfY2h1bmtfY3RsX3BvbGljeV9yZWd1bGFyKHN0cnVjdCBidHJmc19mc19pbmZvICpp
+bmZvLA0KPj4gwqDCoMKgwqDCoCB1NjQgdHlwZSA9IGN0bC0+dHlwZTsNCj4+IMKgwqDCoMKgwqAg
+dTY0IHBlcmNlbnRfbWF4Ow0KPj4gLcKgwqDCoCBpZiAodHlwZSAmIEJUUkZTX0JMT0NLX0dST1VQ
+X1BST0ZJTEVfTUFTSykgew0KPj4gLcKgwqDCoMKgwqDCoMKgIGlmICh0eXBlICYgQlRSRlNfQkxP
+Q0tfR1JPVVBfU1lTVEVNKSB7DQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdGwtPnN0cmlw
+ZV9zaXplID0gU1pfOE07DQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdGwtPm1heF9jaHVu
+a19zaXplID0gY3RsLT5zdHJpcGVfc2l6ZSAqIDI7DQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBjdGwtPm1pbl9zdHJpcGVfc2l6ZSA9IFNaXzFNOw0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgY3RsLT5tYXhfc3RyaXBlcyA9IEJUUkZTX01BWF9ERVZTX1NZU19DSFVOSzsNCj4+IC3CoMKg
+wqDCoMKgwqDCoCB9IGVsc2UgaWYgKHR5cGUgJiBCVFJGU19CTE9DS19HUk9VUF9EQVRBKSB7DQo+
+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdGwtPnN0cmlwZV9zaXplID0gU1pfMUc7DQo+PiAt
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdGwtPm1heF9jaHVua19zaXplID0gMTAgKiBjdGwtPnN0
+cmlwZV9zaXplOw0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY3RsLT5taW5fc3RyaXBlX3Np
+emUgPSBTWl82NE07DQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdGwtPm1heF9zdHJpcGVz
+ID0gQlRSRlNfTUFYX0RFVlMoaW5mbyk7DQo+PiAtwqDCoMKgwqDCoMKgwqAgfSBlbHNlIGlmICh0
+eXBlICYgQlRSRlNfQkxPQ0tfR1JPVVBfTUVUQURBVEEpIHsNCj4+IC3CoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIC8qIEZvciBsYXJnZXIgZmlsZXN5c3RlbXMsIHVzZSBsYXJnZXIgbWV0YWRhdGEgY2h1
+bmtzICovDQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoaW5mby0+ZnNfZGV2aWNlcy0+
+dG90YWxfcndfYnl0ZXMgPiA1MFVMTCAqIFNaXzFHKQ0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBjdGwtPm1heF9jaHVua19zaXplID0gU1pfMUc7DQo+PiAtwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBlbHNlDQo+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGN0bC0+
+bWF4X2NodW5rX3NpemUgPSBTWl8yNTZNOw0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY3Rs
+LT5zdHJpcGVfc2l6ZSA9IGN0bC0+bWF4X2NodW5rX3NpemU7DQo+PiAtwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBjdGwtPm1pbl9zdHJpcGVfc2l6ZSA9IFNaXzMyTTsNCj4+IC3CoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIGN0bC0+bWF4X3N0cmlwZXMgPSBCVFJGU19NQVhfREVWUyhpbmZvKTsNCj4+IC3C
+oMKgwqDCoMKgwqDCoCB9DQo+PiArwqDCoMKgIGlmICh0eXBlICYgQlRSRlNfQkxPQ0tfR1JPVVBf
+U1lTVEVNKSB7DQo+PiArwqDCoMKgwqDCoMKgwqAgY3RsLT5zdHJpcGVfc2l6ZSA9IFNaXzhNOw0K
+Pj4gK8KgwqDCoMKgwqDCoMKgIGN0bC0+bWF4X2NodW5rX3NpemUgPSBjdGwtPnN0cmlwZV9zaXpl
+ICogMjsNCj4+ICvCoMKgwqDCoMKgwqDCoCBjdGwtPm1pbl9zdHJpcGVfc2l6ZSA9IFNaXzFNOw0K
+Pj4gK8KgwqDCoMKgwqDCoMKgIGN0bC0+bWF4X3N0cmlwZXMgPSBCVFJGU19NQVhfREVWU19TWVNf
+Q0hVTks7DQo+PiArwqDCoMKgIH0gZWxzZSBpZiAodHlwZSAmIEJUUkZTX0JMT0NLX0dST1VQX0RB
+VEEpIHsNCj4+ICvCoMKgwqDCoMKgwqDCoCBjdGwtPnN0cmlwZV9zaXplID0gU1pfMUc7DQo+PiAr
+wqDCoMKgwqDCoMKgwqAgY3RsLT5tYXhfY2h1bmtfc2l6ZSA9IDEwICogY3RsLT5zdHJpcGVfc2l6
+ZTsNCj4+ICvCoMKgwqDCoMKgwqDCoCBjdGwtPm1pbl9zdHJpcGVfc2l6ZSA9IFNaXzY0TTsNCj4+
+ICvCoMKgwqDCoMKgwqDCoCBjdGwtPm1heF9zdHJpcGVzID0gQlRSRlNfTUFYX0RFVlMoaW5mbyk7
+DQo+PiArwqDCoMKgIH0gZWxzZSBpZiAodHlwZSAmIEJUUkZTX0JMT0NLX0dST1VQX01FVEFEQVRB
+KSB7DQo+PiArwqDCoMKgwqDCoMKgwqAgLyogRm9yIGxhcmdlciBmaWxlc3lzdGVtcywgdXNlIGxh
+cmdlciBtZXRhZGF0YSBjaHVua3MgKi8NCj4+ICvCoMKgwqDCoMKgwqDCoCBpZiAoaW5mby0+ZnNf
+ZGV2aWNlcy0+dG90YWxfcndfYnl0ZXMgPiA1MFVMTCAqIFNaXzFHKQ0KPj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgY3RsLT5tYXhfY2h1bmtfc2l6ZSA9IFNaXzFHOw0KPj4gK8KgwqDCoMKgwqDC
+oMKgIGVsc2UNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGN0bC0+bWF4X2NodW5rX3NpemUg
+PSBTWl8yNTZNOw0KPj4gK8KgwqDCoMKgwqDCoMKgIGN0bC0+c3RyaXBlX3NpemUgPSBjdGwtPm1h
+eF9jaHVua19zaXplOw0KPj4gK8KgwqDCoMKgwqDCoMKgIGN0bC0+bWluX3N0cmlwZV9zaXplID0g
+U1pfMzJNOw0KPj4gK8KgwqDCoMKgwqDCoMKgIGN0bC0+bWF4X3N0cmlwZXMgPSBCVFJGU19NQVhf
+REVWUyhpbmZvKTsNCj4+IMKgwqDCoMKgwqAgfQ0KPj4gwqDCoMKgwqDCoCAvKiBXZSBkb24ndCB3
+YW50IGEgY2h1bmsgbGFyZ2VyIHRoYW4gMTAlIG9mIHRoZSBGUyAqLw0KPj4NCj4gDQo=
