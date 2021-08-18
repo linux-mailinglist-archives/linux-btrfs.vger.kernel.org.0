@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869213F0D6B
+	by mail.lfdr.de (Postfix) with ESMTP id D04CF3F0D6C
 	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 23:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhHRVe1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S234237AbhHRVe1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Wed, 18 Aug 2021 17:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234027AbhHRVeS (ORCPT
+        with ESMTP id S234031AbhHRVeU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 17:34:18 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445CDC061764
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:43 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id az7so4773548qkb.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:43 -0700 (PDT)
+        Wed, 18 Aug 2021 17:34:20 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32DBC061764
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:44 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id t68so4761625qkf.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=vwZ5jBL5egFitM5gfoIJEh+cvYe69lKb16NGwWPKnYI=;
-        b=ku+8zN+kGMsMyhNylDZ+5C3NREbH3+insfpyWOIC915MO2WDGzI8gseP1er5Gt4mVq
-         6uqXpBNjnEt3dvTG05Q6PVZtRtqBWiP/TmjOS2zucPY7ww5BXXlJj622o0MFzmbLsXzw
-         BHv2KIykdcwR/Z48tV39SmdmWHcxMW5bnTKDiVcOH1tGt5nM9BvCi8IlQaVDzbfNt+0t
-         DjgfTIBv/xjinh4K2mJdNRckwkf60kif6AiRgjJp+l/APyfT+wZU8j3RgeiWvo4famJ+
-         aIGcIvG1GLWtlybdCZzpVR9wXozdTpIs/c+j5orIWXhnfnpKIJh/q13ymNPghd8wi2S0
-         DufA==
+        bh=DswvzFcPEbl9P5cSIRr8UzGdk0zmvN47Ia4PEe/avis=;
+        b=eRmvZLoR/y/4AfCU2FodssdZYMbeeq/Xtq/MjluJ351oP4/EGSc9Ftr4+k61ULN++o
+         Refq+hgmFGzlnzC3I2N2bO3LLiV4066KqS//w7UUkgAfwn2AahsdTRxDvdGgzz8F56qV
+         bSSTXcQRN+wbMJ1i+swZJn6sXlBOhzZ7ELpl0CzUQjVT7wTCaM8fTRNeEMbmiIvFB11X
+         lsMiKEoaNe429lijbC6iZS3JUGnAZaZulsWTFNYiR8gpGxD9vIIzniYGu+9HNrfZNH0/
+         c/btlsE2IGWUkG+f68yF3frJuyfOjuJoKCsxlhnufwIwfPwMSZZHrL9d4fMYiZHcq3A1
+         qFEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vwZ5jBL5egFitM5gfoIJEh+cvYe69lKb16NGwWPKnYI=;
-        b=ZnliBvoj8vzosEtkaYtciJb0W5mmZzsn99H0+H0l5oTI0ovCwKXxpkBw9tGwSA46Ik
-         PXfBSETBjan4ErGNQps1fqOyzbVE0CwXlNRigjh7fjdrNeLVl2pR2X7W9XMxsceTiSOL
-         XWKirtkZOTs+Ir8CQZxmquMjysiWzMIP/cJpX+rJn8hYfYN1KIp1DmYk0G9yNqcv3Onl
-         qzb9JeND+y0aBnb/mNBdWU8PnRoHUY0uqIgxuXR5yZO7fR1GyDsilypqX/ZdDEfRDF62
-         mQBROhy1JMhqkl9TvSj8A8bFveBQ3AFkagGb17VN4eFQRNA+UNO8D5g8FXPa10idQ62j
-         AL+Q==
-X-Gm-Message-State: AOAM532EKvKTVals0q7hpLM5vQTYLb9NVuwOAHt2ClggPLTxYH89kMVK
-        aN5D0J6njbzfjirIRr4I4tPjDM/Yk2WOFQ==
-X-Google-Smtp-Source: ABdhPJwRY26wJ7eY47IIfGjNBb1NUWf86ycoYLY23Ht3Bmn+WxDnEQid7hSFlE9ETtbAXbDRAFtXEA==
-X-Received: by 2002:ae9:e858:: with SMTP id a85mr371353qkg.97.1629322422220;
-        Wed, 18 Aug 2021 14:33:42 -0700 (PDT)
+        bh=DswvzFcPEbl9P5cSIRr8UzGdk0zmvN47Ia4PEe/avis=;
+        b=YrBbLO+mWe9XSIl5SVuJpb+xdH0cMWrK+SJxIOSQp00R3Log8iFFweW56cmqPFXtSt
+         AN/wTC+t267P452+ju4wgcQbL8beTWD20Whp7Pf3OQLOwVCXFZvjwsj9N6le2NlsVwVw
+         MyRBlWn2jlRg9nQfkf3o0EVRpblbyWwcDHzqGIftGkfwfA2ylBWK/7xDh7KnPuepY6Bq
+         Q8ogXH2ZIvpumJNvW8arVoNeIuzf1xT5Hp7RBWWWfyQMtZn+WYpE33qnjj7ml7bH4esZ
+         /MmswZX3AwFBTcvAm7aU3jgCOdZGzNvenxyCZRftwPQQbYH/mxcepbwwXSNCv1J23BdW
+         rMFw==
+X-Gm-Message-State: AOAM5319YJpsJBtTjOv+S6phRZgkAQoPPXFYTXNre0b9hjGZ/vTzWKli
+        KtDFe6SvpiiaZG2l8uUsCWSE7zIkHN2pEw==
+X-Google-Smtp-Source: ABdhPJxCyfSG0PWoW3VoAQj63n0XfJCj/7ICWSzOkFDRgzTJ8Ioza7UnoupJJAkNQ0nG0kR0EbIPdA==
+X-Received: by 2002:a05:620a:2298:: with SMTP id o24mr352650qkh.235.1629322423889;
+        Wed, 18 Aug 2021 14:33:43 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d7sm557304qth.70.2021.08.18.14.33.41
+        by smtp.gmail.com with ESMTPSA id h140sm566655qke.112.2021.08.18.14.33.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 14:33:41 -0700 (PDT)
+        Wed, 18 Aug 2021 14:33:43 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 10/12] btrfs-progs: check btrfs_super_used in lowmem check
-Date:   Wed, 18 Aug 2021 17:33:22 -0400
-Message-Id: <ebeaf9c035019f2d5b210ad752caca5655c69edc.1629322156.git.josef@toxicpanda.com>
+Subject: [PATCH v2 11/12] btrfs-progs: add a test image with a corrupt block group item
+Date:   Wed, 18 Aug 2021 17:33:23 -0400
+Message-Id: <5f2e5e13597f2f96503657abdf4ff25fcf74a8c2.1629322156.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1629322156.git.josef@toxicpanda.com>
 References: <cover.1629322156.git.josef@toxicpanda.com>
@@ -62,74 +62,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We can already fix this problem with the block accounting code, we just
-need to keep track of how much we should have used on the file system,
-and then check it against the bytes_super.  The repair just piggy backs
-on the block group used repair.
+This image has a broken used field of a block group item to validate
+fsck does the correct thing.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/mode-lowmem.c | 13 ++++++++++++-
- check/mode-lowmem.h |  1 +
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ .../.lowmem_repairable                           |   0
+ .../050-invalid-block-group-used/default.img.xz  | Bin 0 -> 1036 bytes
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 tests/fsck-tests/050-invalid-block-group-used/.lowmem_repairable
+ create mode 100644 tests/fsck-tests/050-invalid-block-group-used/default.img.xz
 
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 14815519..dacc5445 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -28,6 +28,7 @@
- #include "check/mode-lowmem.h"
- 
- static u64 last_allocated_chunk;
-+static u64 total_used = 0;
- 
- static int calc_extent_flag(struct btrfs_root *root, struct extent_buffer *eb,
- 			    u64 *flags_ret)
-@@ -3654,6 +3655,8 @@ next:
- out:
- 	btrfs_release_path(&path);
- 
-+	total_used += used;
-+
- 	if (total != used) {
- 		error(
- 		"block group[%llu %llu] used %llu but extent items used %llu",
-@@ -5556,6 +5559,14 @@ next:
- 	}
- out:
- 
-+	if (total_used != btrfs_super_bytes_used(gfs_info->super_copy)) {
-+		fprintf(stderr,
-+			"super bytes used %llu mismatches actual used %llu\n",
-+			btrfs_super_bytes_used(gfs_info->super_copy),
-+			total_used);
-+		err |= SUPER_BYTES_USED_ERROR;
-+	}
-+
- 	if (repair) {
- 		ret = end_avoid_extents_overwrite();
- 		if (ret < 0)
-@@ -5568,7 +5579,7 @@ out:
- 		if (ret)
- 			err |= ret;
- 		else
--			err &= ~BG_ACCOUNTING_ERROR;
-+			err &= ~(BG_ACCOUNTING_ERROR|SUPER_BYTES_USED_ERROR);
- 	}
- 
- 	btrfs_release_path(&path);
-diff --git a/check/mode-lowmem.h b/check/mode-lowmem.h
-index da9f8600..0bcc338b 100644
---- a/check/mode-lowmem.h
-+++ b/check/mode-lowmem.h
-@@ -48,6 +48,7 @@
- #define DIR_ITEM_HASH_MISMATCH	(1<<24) /* Dir item hash mismatch */
- #define INODE_MODE_ERROR	(1<<25) /* Bad inode mode */
- #define INVALID_GENERATION	(1<<26)	/* Generation is too new */
-+#define SUPER_BYTES_USED_ERROR	(1<<27)	/* Super bytes_used is invalid */
- 
- /*
-  * Error bit for low memory mode check.
+diff --git a/tests/fsck-tests/050-invalid-block-group-used/.lowmem_repairable b/tests/fsck-tests/050-invalid-block-group-used/.lowmem_repairable
+new file mode 100644
+index 00000000..e69de29b
+diff --git a/tests/fsck-tests/050-invalid-block-group-used/default.img.xz b/tests/fsck-tests/050-invalid-block-group-used/default.img.xz
+new file mode 100644
+index 0000000000000000000000000000000000000000..6425ba16349395416fc1918ce4c386059d618409
+GIT binary patch
+literal 1036
+zcmV+n1oQj-H+ooF000E$*0e?f03iVu0001VFXf}+6aNFrT>wRyj;C3^v%$$4d1rE0
+zjjaF1$8Jv*pMMbE@{&83eAipquzP5y*Z^dMFaaah{5${uN^u50JUj3Gv&TKFetZNb
+zeGi-h_Sc-xdQ?TDr}!X-75pO<Qv3dfP)udQ#2BMlhKV!<)h0wx#0gBFB3oujWhIL&
+zL%Q_)XZGuT<s*G=df*h(28)|6jezRgn^fw3f_X9cr>3s7;Q#Cs@eB}(-tDiTrOkuL
+zr-`Q{!4@d7$vYR${O40b$KD!sxV##0^*`8ePjSki5__Mw0>a{sam+nk%_Taf1QUIl
+zCPC+p!>ol%J~2Y3anuU4qT<_;R2!C0z*;OS_X<C(1PY_piT;4cC;rb`fiOWnUh;Y5
+z+VpHb7TtwJG9h(H?eIvX{dw_9_d^y!4q2*1)lacoD~cQb2zYFYf$yU6F73JuP-a_~
+z^nRPN>lH|4cwp*YYCcEjpgm>gLEL94KJ)NIDw(fAxBE)HBeuH?SFG)P2n*qCcX@dj
+zl6!cB_HK~tM6u@FF~?28<QXd$N2j((D}P0X*4u&8MljFY;=CO4qv}A|Yfk0*J1L<0
+zvtlIvVt#RxD#E>(XL*Vme;}!4%~G!$l6uxm(%@F-`~K9;P=VVx6iDWsw2&F)MC!ne
+z{yU2uSdn?OJQ<Lt*^Y0*dZ}@9Mbh>k99D$H$r|?eQ%u-&&dW^Q%ogbbG<!ht<u}AO
+zPK!nm?T;rPEW*}JR&_-PG_1)0l`D=?gQ%=PFA7tIi*Hc#g_0U1=2f8&+0+M2vL0@Y
+zRepZ8%3sj#@uRLS03@G+a$5t}CT2~i>`T74qDMIaXhLRLP+<sRw5KZtAG@&9m`Ls0
+zS5b66v3%FLAinwOLU5f}@`Y!nIlBhSV}9k)|B|7ydoH$5f8x-VX7s|n=;9N;KXH?H
+z@kBA19X?ijYFlm44FX3(6!04T9(Yd!8hL5JWd}`cJ{=UOnZVNi<^S&%@5!isxf&15
+z3`Qf*v}A6h?C9<3y1jv7oiCsGu3lhGk{+-4VN_WAkphoN6}JCC>j+OmK|vlc6+Q+8
+z>i9;tP|5yL$Hg>IZhAK@v(3YzO&IxH_W<yblu5-O+ic3l3LzTL=eJ!H;1FmLNMh9z
+zP}b#vH2+}dMT<T6wQ}~GA0mWw5XZl*-GXoYp{R!3<B4{}7<uJK<0J_L%nX=dW8jjl
+zJo6(aM0F6xZK|Og`Pbn0U-IJOVOIUa)MDdsCv%q+fGEK_y4SF$G)B_i)~Dk);s!z~
+zd&otC2e}ecZOkpbFV;}uV=M0f0000E#S;ff2MZnm0p$mPs0aWTvKPg%#Ao{g00000
+G1X)_aZ2)fo
+
+literal 0
+HcmV?d00001
+
 -- 
 2.26.3
 
