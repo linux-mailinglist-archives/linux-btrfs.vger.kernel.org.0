@@ -2,217 +2,304 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DCD3EFD1F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 08:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5346E3EFE20
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 09:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238080AbhHRGuS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 02:50:18 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:53118 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238791AbhHRGuO (ORCPT
+        id S239540AbhHRHqB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 03:46:01 -0400
+Received: from eu-shark2.inbox.eu ([195.216.236.82]:58538 "EHLO
+        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239533AbhHRHpY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 02:50:14 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17I6kKJv022770;
-        Wed, 18 Aug 2021 06:49:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=UIZ6GQLI8urJEqYivt/YDOENvtwIqiudEKUh8iWpWhc=;
- b=cM09ubqGK9qB/KJ9BBnd5CWpaDgVj1LEuUH2MkWepKR06uuffDvm5ij+qJ04g8iKnsyD
- Xn9ie5AkUz12jXzB/yKFm21/piXc/UlAWggFnOCc+sCrw7l79JC4qNBb78+aGP6VjTKZ
- 28vOs9SwmsWXRgkFaMjQeHkIkJnUOFPJfRDFinciv7eKw2Mx6qhLIJReW+mq3ey9nyzO
- 8LH/CipsfEbGcH24davjKPbMnjQDGE6kLUrfGur1x5jLR0uKgIuIfXzVJdr1O9HPBlDj
- AtpY09WFKcBptiPi+IIBJNYE8kTAt7yeMXDJOQ4x3YkHNJz4KmFsRJU2i6SAotPCquYt +A== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=UIZ6GQLI8urJEqYivt/YDOENvtwIqiudEKUh8iWpWhc=;
- b=CRUX06E6YNg2eGzMVWB2OGD228tvgIL8wtombQLO5X3xdKf3rRIlSdnh01cPZJ43E+JE
- 3/Qm7OyUEXwYjKAS5ujvtIMl6N8At0UdiN01TjGAIG2+dvoE0yAyDSLH2D8qeVJHNNWX
- P1xk7YU+41fgpO6djDqS/tEvKfUIhBUVok+ViS8Vmxipv3qxBQZvd/yTq6v1w4ziWU2n
- yRxxzZNFQV9IDNWEx4XtCsJaY/2/anFAvkpYCtr0yNnfWqlH3hwUgsffwZWE/SMGsVy9
- YTYfuxojli4fum2dZGUPGKBnhmXByg5z2ZhlsxonKZmgfRnnmGaG9hRvXatj1R6nr3fO 5g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3agw7t006y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Aug 2021 06:49:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17I6eqtP133354;
-        Wed, 18 Aug 2021 06:49:34 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
-        by aserp3020.oracle.com with ESMTP id 3ae5n8x9th-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 18 Aug 2021 06:49:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OEstHdXmcIgZK8mvaCxjOdmbYvGg6kwJD35mFvGmTs0c1ln7GY9e93qmnzKsltTpchoh3UZvuajvBvrt4N88FltP9z1tEbwJvDMipbpAyLme452nwRjM/p884nc6uWYHaIMSKAVmy/5p9snWJr/10FslWyZvhvjkTCBYwt8cQxpXhMoVJdpDjOgSvO5aBk0p+jVoyhVhTQ0YWYVMxBRPP+ZE+7oZKZu2aTCnHrvhOXxfJ7pw0DgBA8tfzoJGNAv8DTu4jpzuZtsCd7imOM1nRxBvsQcbDLDfmdTAabJ+QnwxBt+O2gbnDT4yGI5QjCByIOFf1rxDT6810rV7kOuKNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UIZ6GQLI8urJEqYivt/YDOENvtwIqiudEKUh8iWpWhc=;
- b=CRb6noch7jdszbcKqJQNFGd69Je9dTjnxBZcxDmFMmL90tRLBRa/UvAtMtRQ2wMamc4mxTJbApec8oXiyYLjnDS+QGiVDd6gwvR8Di/a+V0beIF0Mqcu42O0Tms6Orggkw1iiPHFml1dzFbKu9oBjhaz80lNGNEDlYgZErV+mtCMRliiEO1DtI7Z1re6FQIe2POFPNZScdb5hdaTxmRGGv4JZ2tvOlAQfy9z0ZD9o0OBm/QeVBP+PoMNCnuqhfRKvw69WbnZ10vgizAbxW9rP7KfkJhhgfPTdUPEEQYGL/FQW5l8l0ZGkQ0yfn0f7Spofm3dTWfLxZrFCFgbc985BA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UIZ6GQLI8urJEqYivt/YDOENvtwIqiudEKUh8iWpWhc=;
- b=uAN6WulPf6FXaSL/5btlcJxdTbt5IgW9XxvIjaImFWEGnmcBkgJQGCv4y7slaTXGv2sYQahzA6bRWImft3uyslOLSBHTQYq0WTx5Z3oypMvndB7/NPU1Vxi/G3H00qPcJrCOjVQTOa1YVeBeIckQ7pghyrNXyk4GUwPRxfaheZw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by BL0PR10MB2914.namprd10.prod.outlook.com (2603:10b6:208:79::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.21; Wed, 18 Aug
- 2021 06:49:32 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4415.023; Wed, 18 Aug 2021
- 06:49:32 +0000
-Subject: Re: [PATCH] btrfs: update comment for fs_devices::seed_list in
- btrfs_rm_device
-To:     Nikolay Borisov <nborisov@suse.com>, Su Yue <l@damenly.su>
+        Wed, 18 Aug 2021 03:45:24 -0400
+Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
+        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id AE6621E006F2;
+        Wed, 18 Aug 2021 10:44:48 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1629272688; bh=bmh8d2jNUJ35/R0HDY8zFTfjioLwB4D4zLCZ6PwnzDU=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to;
+        b=WYHsSHblNVh7MywaTVU2ABxnTX/qrNQQmX80zMpZ7FxZBq4tuhugHWPf35OQKzi8Y
+         ZSV+Besrcu/p5UiH6RQvnh/ZIRk3t6InEjPf2BalH4hGlqQW7kYdaprqSehO48gsAS
+         sLxGBUB2674nspzzwxWnRSXuMryOvC/k5dg7Y3R0=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id A565A1E0063D;
+        Wed, 18 Aug 2021 10:44:48 +0300 (EEST)
+Received: from eu-shark2.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id D7M-PWgiJNNA; Wed, 18 Aug 2021 10:44:48 +0300 (EEST)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 14C3C1E0063C;
+        Wed, 18 Aug 2021 10:44:48 +0300 (EEST)
+Received: from nas (unknown [49.65.73.48])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id AA2D21BE00FE;
+        Wed, 18 Aug 2021 10:44:46 +0300 (EEST)
+References: <20210818041944.5793-1-l@damenly.su>
+ <1b42b3aa-0363-36ad-df5c-4d9d86b8cc97@oracle.com>
+User-agent: mu4e 1.5.8; emacs 27.2
+From:   Su Yue <l@damenly.su>
+To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
-References: <20210818041548.5692-1-l@damenly.su>
- <ce1a0cc1-b616-36e3-8c58-4edde5f924cf@oracle.com>
- <a8f575fc-2741-6379-5b89-62353a54cc8f@oracle.com>
- <548ca0ec-4a57-3d20-cfa9-39521560feb7@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <436a36bb-b2bc-1b15-08ab-3782fcb4ac81@oracle.com>
-Date:   Wed, 18 Aug 2021 14:49:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <548ca0ec-4a57-3d20-cfa9-39521560feb7@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0169.apcprd04.prod.outlook.com (2603:1096:4::31)
- To MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+Subject: Re: [PATCH V2] btrfs: traverse seed devices if fs_devices::devices
+ is empty in show_devname
+Date:   Wed, 18 Aug 2021 15:30:19 +0800
+Message-ID: <7dgjfbca.fsf@damenly.su>
+In-reply-to: <1b42b3aa-0363-36ad-df5c-4d9d86b8cc97@oracle.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.109] (39.109.186.25) by SG2PR04CA0169.apcprd04.prod.outlook.com (2603:1096:4::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17 via Frontend Transport; Wed, 18 Aug 2021 06:49:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b88b08c3-5d30-46c5-e484-08d96214557e
-X-MS-TrafficTypeDiagnostic: BL0PR10MB2914:
-X-Microsoft-Antispam-PRVS: <BL0PR10MB2914B99C0253068D0AF1ED33E5FF9@BL0PR10MB2914.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:605;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XmChv7dZ0G6iGBxb2I8UiCH/TIsQQEnGQ55m4JpXh0/vs7mI7teLUf0W3gTbLuwytz1mrSyUvxt5FxCmQx6b4BP29xj3gHc9lTM1FcXavkKRIBRUxvDglfixmNV9ydjabdfrEnJ2Ug0cRh4iJ6HFxIotBfoZiS4QksQQTF2gYyhgNdpS1urvNG7rN0pO+znK9SaiqxcCGcbxA79NTl4touvQxHs4gVA1x2ipRFUOGsyn+rDrbEpK7lWv/CIIcMKHb698EEBAMLmtwlQK5IkKwXL4rp4c8Lsi2r7zZnQQULU6/XTPM3SeCgQ7cuWlNcYFX9zZ0NK5QjKnSJalpqosqSgdvyh1+6b9+CEUKM8bg1zXsvq3XczPCmKraFd6yczTwk3S6KeK0XsRHZ9Ioeoha5W+BVKw6kAQWJG6L0kfAPusobm9d8FdYVpQIpFYTPFw+lWr0vX62gFCMPxhFYudGqDk8D/2Ax63ceg+NiC+/+dRCPlBRQaTlDeoyJDoFNphs6czAabjjLmv9mPmhuVWNYDUfI9Dg2lWBMNPcd9QKDqgTgMJql+UIB4R2JzbsQFZM0kgWrpUmRCy8bBiU4/1VP6z2IKrQnjU17VALBSWD1+5vN0XVuiJUiJqXTdOvpCjDFzRD88CCOD3Ij5JyXFcCE4rDgqgi30xwtLIVLiXxRa0MJPQyItrKd3k7+dbI6EdZtkRUHqAayBWs8G63RnW5CoA4PZZtL33JsA7exvQfZYabsnrw3XCirZ0kEhXXMCO
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(366004)(136003)(396003)(346002)(15650500001)(16576012)(2906002)(6486002)(53546011)(316002)(6666004)(956004)(44832011)(66556008)(8936002)(2616005)(31696002)(8676002)(86362001)(478600001)(31686004)(38100700002)(110136005)(4326008)(83380400001)(186003)(36756003)(66476007)(66946007)(5660300002)(26005)(781001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N3NsRmQwSHI1TGR1TERMdkdLZTRTVllOTWphZ0wySENSK2xOS1lTY1RjRHI4?=
- =?utf-8?B?OEhOM0I0NUVMT3dpMEhXVnJsYVZ0TGpaMld2SkNvdWVDaTY5emxQdUNDbGtr?=
- =?utf-8?B?dGYzUlVEVDg1RlpZeXI5YUZXYUpKRVN4eTZ5SUFybHpuOVEzRXowMFdMQWQ5?=
- =?utf-8?B?bDJtdHk1YTJGeVFFYmtCQnIrSGpLUXJibmlmUVFoWkpHQStKUnR3a1Q4R0Rv?=
- =?utf-8?B?cXV1MFN6dVU2aG1sRE9EalMvV1J1dmo1dlRTZThMTjhUS1NrR2FaTU9PSFNZ?=
- =?utf-8?B?SUhuYXhEZ3pxbWRIbVhvSlhCSFVFSjFLeWlITDl5U1NkWk0wc203YlRibFdS?=
- =?utf-8?B?dWowdEk1L2UvSE5ZOW5UNFJQUGkzNDZJckcwbFNnYlk1SExXTHlINkdHZjZs?=
- =?utf-8?B?N2hEU051SGlNL2hwY0lvUnowVmxvOHM1ZDVOREdUL2psQ3dyQzdYalJuNFdw?=
- =?utf-8?B?VFByUndBOEYxQTBiZFVWWCtDSk15VHJDV3BhNzVSMnUwdjYwZ3ExWkJndFFD?=
- =?utf-8?B?Q01rTFIvWlh1Nzd2ZVVDZXF6L0NhYmV5TS9aRjJEZ2FIY1o3MlBqaTduNktM?=
- =?utf-8?B?UEVUMFJSQUNTbEZWd1FuL05jTG5tWGdFVVFYcXJ0Q3M0cXcwalpUSG5rVnpr?=
- =?utf-8?B?N01jci9UL3UzN2wvYWd0VU50MWlHbjNjdHB4aVN2TkVIcUxROExVcnQ1SE5u?=
- =?utf-8?B?Y3FvNTVpclQ4Z2tJMTUveDYvKzYxN3ZVM0cwMTNHelRLTG51aGdXbENnWXRt?=
- =?utf-8?B?Vit6eTZvS2p1Y3NheUFMYWJsZWlLdjhHWjkwTDMrUTkxUGFMem13Ny95Vll1?=
- =?utf-8?B?b2FuYjlPRkMxTXZLS0hWcHhpRzgwM1FsUTVjbk5XeVQ1bisvTU16MHBXZXdi?=
- =?utf-8?B?Q2RxQk9Ib2lXUCtNckJBOHBDZmw0THBUODlzcGIrQm1ub25Nb0xjY2JUWTlN?=
- =?utf-8?B?Mjg5cjRBZ2RYUHhZaHNNeWhVY2l5RGZPN2N0cytPeXFhV3NwTmNISnY5VmYw?=
- =?utf-8?B?cGFUM082TXlkREk5ek5FOE1NaE5VdTc3c3V4Z1ZQNG5xRjhOWEM2N0lSNERn?=
- =?utf-8?B?bzlPTzh1cnkyWW9XaXJsYXNTbUx6TENLNUFUSnhsczg4V2N2OXNCUms1cGNp?=
- =?utf-8?B?N09GM0RFRUVPVlNaRmlOZFRrOG04MjhuTXpCZWhFclRqNXFFanFkWVFpMEdz?=
- =?utf-8?B?bGlrWUtEaWx6emlOV0p4MjFGek1vTjVlL2FNZjQySG9RYVJBZHg0WlZoSmNv?=
- =?utf-8?B?Nko1b0hMSlhVYjFTSGFPcU5yc254enZBSHRFa2lrVzhxYTROR0FzTDNtQjZS?=
- =?utf-8?B?ckdhNkcrL0hoYUZWUm9KK1ZPN3lESnBQWnZNcUJqVHFTNjdQWHpoTE1jdUZu?=
- =?utf-8?B?VTRiVGkxZkdxejJwZkhNOWp2Nm92YlVoSzhWMWNweitQTXE0WjNHR0tSMk9I?=
- =?utf-8?B?WndqMHJHdkxpcVlTaGtqSXVDNVNXU3dDRXJEcmNHS3M4dUFGYlVRWkdWK3Vk?=
- =?utf-8?B?a0dJRTNoQ2N6N3djWlZud0xiT0lLVkhMTDJlWWthRXpxVTRmT05sQ3VsaFlO?=
- =?utf-8?B?Mm5xeSsweVNGMS9XNHl1bDR1SXVURUVWTVgrNmhPVVNXckJQZ256aDVTYTRD?=
- =?utf-8?B?eGVDMnlsTGkxekQxV0YrUmNiZ28yM1JGVEhDb2ZkMncxRlRWR2RCUU9BdWVX?=
- =?utf-8?B?MHVEbzhPeVlqakRsckFUT1hXbUZEQ21KS0RpbjRjcnArVlhmMEliSmVCNEhk?=
- =?utf-8?Q?YWuVArl4odlTuEYiXPqqGec58JQZDhKuUx5STBh?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b88b08c3-5d30-46c5-e484-08d96214557e
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 06:49:32.4147
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0atLJAdzpWZern7kHsFToLVhlCedgCgNh0Rr0Nq2/DHR/cG+cComvktkMzknul7Zcef3OsofLK8liTkluNYolQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB2914
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10079 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 bulkscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108180042
-X-Proofpoint-ORIG-GUID: lgDkTGH6xiG9K6bf022lFhV70ZisloSc
-X-Proofpoint-GUID: lgDkTGH6xiG9K6bf022lFhV70ZisloSc
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: 6N1mlpY9aTPX9ELSPXaeWkYr1kpEWOT7/eKk1x5HmHPmU1qJf04NURK/nm1yS2A=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+On Wed 18 Aug 2021 at 14:48, Anand Jain <anand.jain@oracle.com> 
+wrote:
 
-On 18/08/2021 14:20, Nikolay Borisov wrote:
-> 
-> 
-> On 18.08.21 г. 9:13, Anand Jain wrote:
+> On 18/08/2021 12:19, Su Yue wrote:
+>> while running btrfs/238 in my test box, the following warning 
+>> occurs
+>> in high chance:
 >>
+>> ------------[ cut here  ]------------
+>> WARNING: CPU: 3 PID: 481 at fs/btrfs/super.c:2509 
+>> btrfs_show_devname+0x104/0x1e8 [btrfs]
+>> CPU: 2 PID: 1 Comm: systemd Tainted: G        W  O 
+>> 5.14.0-rc1-custom #72
+>> Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+>> Call trace:
+>>    btrfs_show_devname+0x108/0x1b4 [btrfs]
+>>    show_mountinfo+0x234/0x2c4
+>>    m_show+0x28/0x34
+>>    seq_read_iter+0x12c/0x3c4
+>>    vfs_read+0x29c/0x2c8
+>>    ksys_read+0x80/0xec
+>>    __arm64_sys_read+0x28/0x34
+>>    invoke_syscall+0x50/0xf8
+>>    do_el0_svc+0x88/0x138
+>>    el0_svc+0x2c/0x8c
+>>    el0t_64_sync_handler+0x84/0xe4
+>>    el0t_64_sync+0x198/0x19c
+>> ---[ end trace 3efd7e5950b8af05  ]---
 >>
->> On 18/08/2021 12:25, Anand Jain wrote:
->>> On 18/08/2021 12:15, Su Yue wrote:
->>>> Update it since commit 944d3f9fac61 ("btrfs: switch seed device to
->>>> list api") did conversion from fs_devices::seed to
->>>> fs_devices::seed_list.
->>>>
->>>> Signed-off-by: Su Yue <l@damenly.su>
->>>
+>
+>> It's also reproducible by creating a sprout filesystem and 
+>> reading
+>> /proc/self/mounts in parallel.
+>
+>   ok. This explains.
+>
 >>
+>> The warning is produced if btrfs_show_devname() can't find any 
+>> available
+>> device in fs_info->fs_devices->devices which is protected by 
+>> RCU.
+>
+>
+>> The warning is desirable to exercise there is at least one 
+>> device in the
+>> mounted filesystem. However, it's not always true for a 
+>> sprouting fs.
+>
+>
+> Right. When the code is running from line 2596 (including) until 
+> line
+> 2607, there are chances that the fs_info->fs_devices->devices 
+> list is
+> empty. Or those devices are moving to 
+> fs_info->fs_devices->seed_list.
+>
+>
+> 2596                 ret = btrfs_prepare_sprout(fs_info);
+> 2597                 if (ret) {
+> 2598                         btrfs_abort_transaction(trans, 
+> ret);
+> 2599                         goto error_trans;
+> 2600                 }
+> 2601         }
+> 2602
+> 2603         device->fs_devices = fs_devices;
+> 2604
+> 2605         mutex_lock(&fs_devices->device_list_mutex);
+> 2606         mutex_lock(&fs_info->chunk_mutex);
+> 2607         list_add_rcu(&device->dev_list, 
+> &fs_devices->devices);
+>
+>
 >>
->>> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>> While a new device is being added into fs to be sprouted, call 
+>> stack is:
+>>   btrfs_ioctl_add_dev
+>>    btrfs_init_new_device
+>>      btrfs_prepare_sprout
+>>        list_splice_init_rcu(&fs_devices->devices, 
+>>        &seed_devices->devices,
+>>        synchronize_rcu);
+>>      list_add_rcu(&device->dev_list, &fs_devices->devices);
 >>
->>   Ah. No. I have remove my RB...
->>>
->>>> ---
->>>>    fs/btrfs/volumes.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>> index 70f94b75f25a..fcc2fede9ffc 100644
->>>> --- a/fs/btrfs/volumes.c
->>>> +++ b/fs/btrfs/volumes.c
->>>> @@ -2203,7 +2203,7 @@ int btrfs_rm_device(struct btrfs_fs_info
->>>> *fs_info, const char *device_path,
->>>>        /*
->>>>         * In normal cases the cur_devices == fs_devices. But in case
->>>>         * of deleting a seed device, the cur_devices should point to
->>>> -     * its own fs_devices listed under the fs_devices->seed.
->>>> +     * its own fs_devices listed under the fs_devices->seed_list.
+>> Looking at btrfs_prepare_sprout(), every new RCU reader will 
+>> read a
+>> empty fs_devices->devices once synchronize_rcu() is called.
+>> After commit 4faf55b03823 ("btrfs: don't traverse into the seed 
+>> devices
+>> in show_devname"), btrfs_show_devname() won't looking into
+>> fs_devices->seed_list even there is no device in 
+>> fs_devices->devices.
 >>
+>> And since commit 88c14590cdd6 ("btrfs: use RCU in 
+>> btrfs_show_devname for
+>> device list traversal"), btrfs_show_devname() only uses RCU 
+>> without mutex
+>> lock taken for device list traversal. The function read an 
+>> empty
+>> fs_devices->devices and found no device in the list then 
+>> triggers the
+>> warning. The commit just enlarged the window that the fs device 
+>> list
+>> could be empty. Even btrfs_show_devname() uses mutex_lock(), 
+>> there is a
+>> tiny chance to read an empty devices list between 
+>> mutex_unlock() in
+>> btrfs_prepare_sprout() and next mutex_lock() in 
+>> btrfs_init_new_device().
 >>
->> fs_devices->seed is correct.
+>> So take device_list_mutex then traverse fs_devices->seed_list 
+>> to seek
+>> for a seed device if no device was found in 
+>> fs_devices->devices.
+>> Since a normal fs always has devices in fs_device->devices and 
+>> the
+>> window is small enough, the mutex lock is not too heavy.
 >>
->> 222 struct btrfs_fs_devices {
->> ::
->> 257         struct btrfs_fs_devices *seed;
-> 
-> You are clearly looking at the wrong tree since seed got removed exactly
-> in the cited patch above.
+>> Signed-off-by: Su Yue <l@damenly.su>
+>>
+>> ---
+>> Changelog:
+>> v2:
+>>      Try to traverse fs_devices->seed_list instead of removing 
+>>      the
+>>        WARN_ON().
+>>      Change the subject.
+>>      Add description of fix.
+>> ---
+>>   fs/btrfs/super.c | 41 
+>>   ++++++++++++++++++++++++++++++++++++++---
+>>   1 file changed, 38 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+>> index d07b18b2b250..31e723eb2ccf 100644
+>> --- a/fs/btrfs/super.c
+>> +++ b/fs/btrfs/super.c
+>> @@ -2482,7 +2482,9 @@ static int btrfs_unfreeze(struct 
+>> super_block *sb)
+>>   static int btrfs_show_devname(struct seq_file *m, struct 
+>>   dentry *root)
+>>   {
+>>   	struct btrfs_fs_info *fs_info = btrfs_sb(root->d_sb);
+>> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+>>   	struct btrfs_device *dev, *first_dev = NULL;
+>> +	struct btrfs_fs_devices *seed_devices;
+>>
+>>   	/*
+>>   	 * Lightweight locking of the devices. We should not need
+>> @@ -2492,7 +2494,7 @@ static int btrfs_show_devname(struct 
+>> seq_file *m, struct dentry *root)
+>>   	 * least until the rcu_read_unlock.
+>>   	 */
+>>   	rcu_read_lock();
+>> -	list_for_each_entry_rcu(dev, 
+>> &fs_info->fs_devices->devices, dev_list) {
+>> +	list_for_each_entry_rcu(dev, &fs_devices->devices, 
+>> dev_list) {
+>>   		if (test_bit(BTRFS_DEV_STATE_MISSING, 
+>>   &dev->dev_state))
+>>   			continue;
+>>   		if (!dev->name)
+>> @@ -2503,9 +2505,42 @@ static int btrfs_show_devname(struct 
+>> seq_file *m, struct dentry *root)
+>>
+>>   	if (first_dev)
+>>   		seq_escape(m, rcu_str_deref(first_dev->name), " 
+>>   \t\n\\");
+>> -	else
+>> -		WARN_ON(1);
+>>   	rcu_read_unlock();
+>> +
+>> +	if (first_dev)
+>> +		return 0;
+>> +
+>> +	/*
+>> +	 * While the fs is sprouting, above fs_devices->devices 
+>> could be empty
+>> +	 * if the RCU read happened in the window between when
+>> +	 * fs_devices->devices was spliced into 
+>> seed_devices->devices in
+>> +	 * btrfs_prepare_sprout() and new device is not added to
+>> +	 * fs_devices->devices in btrfs_init_new_device().
+>> +	 *
+>> +	 * Take device_list_mutex to make sure seed_devices has 
+>> been added into
+>> +	 * fs_devices->seed_list then we can traverse it.
+>> +	 */
+>> +	mutex_lock(&fs_devices->device_list_mutex);
+>
+>
+> possible fix:
+>   As the problem is from line 2596 to 2607 (above) can we move
+>      list_add_rcu(&device->dev_list, &fs_devices->devices);
+>   into btrfs_prepare_sprout() so that it shall reduce the racing 
+>   window.
+>
+Seems a feasible fix in another way. If the new device is to be 
+added
+by btrfs_prepare_sprout(), then almost everything (num_devices, 
+total
+bytes) what is updated in the mutex block starting from line 2607 
+should
+be moved into the mutex blcok btrfs_prepare_sprout() inside?
+Then the code path looks more complex...
 
-  Yep, I notice a little late.
+> And,
+>   We have learned that taking device_list_mutex in this thread 
+>   will end
+>   up with a lockdep warning. We might need a new fs_info state 
+>   to
+>   indicate that FS is sprouting.
+>
+Not confident in design :) I guess it's up to David.
 
+Thanks.
 
+--
+Su
+> Thanks, Anand
+>
+>> +	list_for_each_entry(seed_devices, &fs_devices->seed_list, 
+>> seed_list) {
+>> +		list_for_each_entry(dev, &seed_devices->devices, 
+>> dev_list) {
+>> +			if (test_bit(BTRFS_DEV_STATE_MISSING, 
+>> &dev->dev_state))
+>> +				continue;
+>> +			if (!dev->name)
+>> +				continue;
+>> +			if (!first_dev || dev->devid < first_dev->devid)
+>> +				first_dev = dev;
+>> +		}
+>> +	}
+>> +
+>> +	if (first_dev) {
+>> +		rcu_read_lock();
+>> +		seq_escape(m, rcu_str_deref(first_dev->name), " 
+>> \t\n\\");
+>> +		rcu_read_unlock();
+>> +	} else {
+>> +		WARN_ON(1);
+>> +	}
+>> +	mutex_unlock(&fs_devices->device_list_mutex);
+>> +
+>>   	return 0;
+>>   }
 >>
->> Thanks, Anand
->>
->>
->>>>         */
->>>>        cur_devices = device->fs_devices;
->>>>        mutex_lock(&fs_devices->device_list_mutex);
->>>>
->>>
 >>
