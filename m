@@ -2,97 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A383F0087
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 11:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0123F00BB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 11:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233139AbhHRJco (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 05:32:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39800 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbhHRJcU (ORCPT
+        id S231539AbhHRJkV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 05:40:21 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58910 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231569AbhHRJkU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:32:20 -0400
+        Wed, 18 Aug 2021 05:40:20 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6BDC422065;
-        Wed, 18 Aug 2021 09:31:24 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8E88B1FF9D;
+        Wed, 18 Aug 2021 09:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629279084;
+        t=1629279585;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=MjEVLCKBlTSswofPN1pNmxlP19qpFPg2jUD4se0XdyA=;
-        b=Vce+IAwmUDcfv2b7QGyi2Dv7EKo/Co6jwhdkPnVadZs3PhYLf7tUr6B9fRUUxtOcBZk6+N
-        B9XQg+cRWkemeBBWnWGk1wfHVQuq5Xnz4OC/hrrv7YBobuFDHB3iZwPRwWeZB5fMRC+UY8
-        0ZVGoxSYWv4akI4SI4AnM5BUhMcP4k4=
+        bh=q25E3lESNFvdjWR7/jgy/qknNSvv2mT1La7ECgqQIxU=;
+        b=oE+XgT1isj1PujMDKlEulEAhcX6Zj9WxZB04CHcg6oIXybHPNotkzIX6kP5J8GPDojnFnQ
+        f1BQI3/wObEw+vFfKhPexKZRgyd3p9KIKZExGfBQUSjaFtHW2RGpSEMm3/tJ8XS4Ez2AEq
+        bIWPOlZV1amtA6Vyt5efufElTQfbXFc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629279084;
+        s=susede2_ed25519; t=1629279585;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=MjEVLCKBlTSswofPN1pNmxlP19qpFPg2jUD4se0XdyA=;
-        b=SFOFKtThDem3M1F/rOZMlyJlFmdOZ4+c7ISuV48nRhjMQ1VbfvtT61ULNqlr3zoJHsVSVM
-        ACnXbdzsW0b8HLBQ==
+        bh=q25E3lESNFvdjWR7/jgy/qknNSvv2mT1La7ECgqQIxU=;
+        b=aq4aD0IK9jDDBRrQKIXaTI2i2DPbvldIFuqKSAk4lgYUUX5g9SFV4mNZjMQpzCxHBeBxYZ
+        OBn6qv25McxAwIBA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 4E36EA3B94;
-        Wed, 18 Aug 2021 09:31:24 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 5E32FA3B93;
+        Wed, 18 Aug 2021 09:39:45 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B0437DA72C; Wed, 18 Aug 2021 11:28:27 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 11:28:27 +0200
+        id C3D9BDA72C; Wed, 18 Aug 2021 11:36:48 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 11:36:48 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 49/63] btrfs: Use memset_startat() to clear end of
- struct
-Message-ID: <20210818092827.GO5047@twin.jikos.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>
+Subject: Re: [PATCH] btrfs: zoned: exclude relocation and page writeback
+Message-ID: <20210818093648.GP5047@suse.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-50-keescook@chromium.org>
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>
+References: <a858fb2ff980db27b3638e92f7d2d7a416b8e81e.1628776260.git.johannes.thumshirn@wdc.com>
+ <20210812142558.GI5047@suse.cz>
+ <PH0PR04MB7416785CF79EF72CCDCF931E9BF99@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <20210812145017.GJ5047@suse.cz>
+ <PH0PR04MB741690FBBB6A43279E9F1ED89BFE9@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210818060533.3569517-50-keescook@chromium.org>
+In-Reply-To: <PH0PR04MB741690FBBB6A43279E9F1ED89BFE9@PH0PR04MB7416.namprd04.prod.outlook.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 11:05:19PM -0700, Kees Cook wrote:
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memset(), avoid intentionally writing across
-> neighboring fields.
-> 
-> Use memset_startat() so memset() doesn't get confused about writing
-> beyond the destination member that is intended to be the starting point
-> of zeroing through the end of the struct.
-> 
-> Cc: Chris Mason <clm@fb.com>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: linux-btrfs@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Tue, Aug 17, 2021 at 02:21:51PM +0000, Johannes Thumshirn wrote:
+> On 12/08/2021 16:53, David Sterba wrote:
+> > On Thu, Aug 12, 2021 at 02:40:59PM +0000, Johannes Thumshirn wrote:
+> >> On 12/08/2021 16:28, David Sterba wrote:
 
-Acked-by: David Sterba <dsterba@suse.com>
+> I did some testing with the inode lock and it looks good but does not 
+> necessarily fix all possible problems, i.e. if a ordered extent is being
+> split due to whatever device limits (zone append, max sector size, etc),
+> the assumptions we have in relocation code aren't met again.
+> 
+> So the heavy lifting solution with having a dedicated temporary relocation
+> block group (like the treelog block group we already have for zoned) and using
+> regular writes looks like the only solution taking care of all of these problems.
+
+So that means that the minimum number of zones increases again, right.
+If the separate relocation zone fixes this and possibly other problems
+then fine, but as you said this is heavy weight solution.
+
+We will need a mechanims with a spare block group/zone for emergency
+cases where we're running out of usable metadata space and need to
+relocate so this could be building on the same framework. But for first
+implementation reserving another block group sounds easier.
