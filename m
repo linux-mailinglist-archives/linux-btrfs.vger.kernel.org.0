@@ -2,154 +2,387 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F203F0A3B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 19:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF023F0AC6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 20:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhHRRZY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 13:25:24 -0400
-Received: from smtp-31.italiaonline.it ([213.209.10.31]:37578 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229889AbhHRRZY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 13:25:24 -0400
-Received: from venice.bhome ([78.12.137.210])
-        by smtp-31.iol.local with ESMTPA
-        id GPJ0mO7iazHnRGPJ0mwspf; Wed, 18 Aug 2021 19:24:47 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
-        t=1629307487; bh=GS9nRlQPrwPW5RmZBrGAuNY0KO6xdcgHq2IdmWkZkM0=;
-        h=From;
-        b=K18tIs04pet4ULW4ZVjRomSsC/aGo6zxsQFjZAed84drfLTtbsuiknoQtzK11gHcD
-         Q9UQw971yo00B9/oN6j7susEZNOFT8gQ8rfhXRDH0j+25rOw6RgoJOAtY3r0ZtXD9/
-         KpMq/w1wUltQ5VBjKyFVVKRRCTmHJxOZSVDLn7PUhDiUaKsRIxgfnUTbhvzqnPn3py
-         vtZ1ZIRPwLNDG4iUMNmFufDd0uRYgJEpts9bELVA50ExEMfGVZk/fyA4w4uxylnrUd
-         MXaEoOiY/3S3QH/RqFtYFWSwJKik5YRsM3SHeq59xveUnbDn0KMreAK5nL03UKlSwk
-         /dw1rGcJoWVmA==
-X-CNFS-Analysis: v=2.4 cv=L6DY/8f8 c=1 sm=1 tr=0 ts=611d425f cx=a_exe
- a=VHyfYjYfg3XpWvNRQl5wtg==:117 a=VHyfYjYfg3XpWvNRQl5wtg==:17
- a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8 a=Uq0mbvy6AAAA:8 a=zmC5LoGOwyVqHsGVwkYA:9
- a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=9nAYT2xhiIK_ZOnRzmc7:22
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for
- btrfs export
-To:     NeilBrown <neilb@suse.de>
-Cc:     Roman Mamedov <rm@romanrm.net>,
-        Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
- <162881913686.1695.12479588032010502384@noble.neil.brown.name>
- <bf49ef31-0c86-62c8-7862-719935764036@libero.it>
- <20210816003505.7b3e9861@natsu>
- <ee167ffe-ad11-ea95-1bd5-c43f273b345a@libero.it>
- <162906443866.1695.6446438554332029261@noble.neil.brown.name>
- <d8d67284-8d53-ed97-f387-81b27d17fdde@inwind.it>
- <162923637125.9892.2416104366790758503@noble.neil.brown.name>
-From:   Goffredo Baroncelli <kreijack@inwind.it>
-Message-ID: <ba85200b-feb9-14ba-aa5a-993a598deba6@inwind.it>
-Date:   Wed, 18 Aug 2021 19:24:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229841AbhHRSIX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 14:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhHRSIV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Aug 2021 14:08:21 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B737CC0613D9
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 11:07:46 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so9475447pjr.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 11:07:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bgi+u30ADL5qAUBsITAW8rYqpY0ExP8Ilge2KjgCxl0=;
+        b=aY7Gv/1P1ww0PFzv/SpBbUA8lvn4NGQ3y1ukivnK1MpNm9PZrjzO60JRCzjs1MhQQa
+         2aaT7vXl0rObrHk6OGFGlS2a9cfxsSGVpjRuCfRF1iNEe2UobdCUjC5iXKnqQRxLfH1X
+         nPm9+PPzBSBGZ9nFyg24Ty3sZG/DL4POwHy1FmJcbt/tg0JgIA2f5GCGrPfZwqJPjYEA
+         8fz60rZfghhmkzBjuFm/PGhNmfAJn/V6xaDwjzvQWrR6GMJsab6P5RzdFoFPC+6lx/At
+         htrclTm2OX1qSW4M23hQBADV9xkvYijNg/MaJSCQN9vQ/USQ7hRaQdQo4eg3dGVMNJwB
+         MxCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bgi+u30ADL5qAUBsITAW8rYqpY0ExP8Ilge2KjgCxl0=;
+        b=WZ/2inEMDmmSksN4HJ08p1eCZRKT2p54BdwZeGIx3l04B1TPNYA6873HcR6bpmrBmB
+         7VmFkQJMTpIqiqlTppkPXRFJ1fS1JwOb+dV6omEFuLLmRwq/2P2F4dQXXLlbkN0SSrRL
+         8FNo6sypG2bAuSj8LEHjycvt+o972lrQvbbNWyPRzQ1tlKYYq3oGGRGo8Sc8W/Y3ack/
+         qmPIh8bDR1+CBBpZpnKpfnpzg6/aGTtGwQJjijzfIlB04am+cbiaZK86sjLSp4+KYcos
+         ezjnX/MVofvt3xw/nShYQ9l1nd0IflAmOFP0xodwgqm/Y3yPxq0CxgOn2jclYKl3jc5B
+         4bIA==
+X-Gm-Message-State: AOAM533bUV5wSDLZQQR0m6abYpVtPvMWZIbvEpsl7zSN6HVRjGaaxAJO
+        31pThYO84msBro6pisBKn/ruFvFT6BKy3g==
+X-Google-Smtp-Source: ABdhPJz9AmKluTiUkqlSXVIa9lO7Hw37mDklIBre4pAgvVEe2KXQAYoxw1MAS0lJPPnyEadfvbgriQ==
+X-Received: by 2002:a17:90a:de16:: with SMTP id m22mr10550255pjv.38.1629310065758;
+        Wed, 18 Aug 2021 11:07:45 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:1e84])
+        by smtp.gmail.com with ESMTPSA id b12sm472931pff.63.2021.08.18.11.07.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 11:07:45 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 11:07:43 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v10 06/10] btrfs-progs: receive: encoded_write fallback
+ to explicit decode and write
+Message-ID: <YR1Mb0i6Fk1LggJb@relinquished.localdomain>
+References: <cover.1629234193.git.osandov@fb.com>
+ <27ad30578c6e4347ff4161183c55ba6dee2e9227.1629234282.git.osandov@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <162923637125.9892.2416104366790758503@noble.neil.brown.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfAuTy7JQ4T3/6Jol4BdjMEfQ5nej97/lfxbjHPjdhKSDj5/9VTqbDuag/uk8TDxtlzDJJZ6BdB5xggeWuoD/VzeSZYOUbV8WjfWno+rpIlH3i/MLbWRP
- KYpseUTykNZ+jJgNHXy/NVYsHpEZ06WL1i8/4siRO9LGVNx9RsNcdeLOCsNLhZ7RLjkXfFkVP8cyxYHoiUGyx9Nx6UVCZ8+2tVtFrLL08QmcougXGLGqCMye
- 8/3ZWeGexMZSfs+vRT2L56vZ4PYl603v27fhPdXR22t+ZwhQrgKQlsi41in7mq1p7qUzaQ81bFeTJyeWEJYfUKu3u78UWE0Jf2sB30E5zDN58db7NDPFjuEZ
- bnPTLGCIMWRWEowNPwJ5bX0WdMFAvNnewXHzHcQaFYM2LLhzsffmegmxC66uaE/EJBAtJ9pA9wg04K+QC3gwj+SGlNzuKzaUAfsFe8N6+21Ci1ysozZCHtEo
- GT6X1+zjJtOplT3p2OWT2oCdQx4ua8fXdxneyGpbsuQO5vvZCoOSrRs+FNQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <27ad30578c6e4347ff4161183c55ba6dee2e9227.1629234282.git.osandov@fb.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/17/21 11:39 PM, NeilBrown wrote:
-> On Wed, 18 Aug 2021, kreijack@inwind.it wrote:
->> On 8/15/21 11:53 PM, NeilBrown wrote:
->>> On Mon, 16 Aug 2021, kreijack@inwind.it wrote:
->>>> On 8/15/21 9:35 PM, Roman Mamedov wrote:
+On Tue, Aug 17, 2021 at 02:06:52PM -0700, Omar Sandoval wrote:
+> From: Boris Burkov <boris@bur.io>
 > 
->>>>
->>>> However looking at the 'exports' man page, it seems that NFS has already an
->>>> option to cover these cases: 'crossmnt'.
->>>>
->>>> If NFSd detects a "child" filesystem (i.e. a filesystem mounted inside an already
->>>> exported one) and the "parent" filesystem is marked as 'crossmnt',  the client mount
->>>> the parent AND the child filesystem with two separate mounts, so there is not problem of inode collision.
->>>
->>> As you acknowledged, you haven't read the whole back-story.  Maybe you
->>> should.
->>>
->>> https://lore.kernel.org/linux-nfs/20210613115313.BC59.409509F4@e16-tech.com/
->>> https://lore.kernel.org/linux-nfs/162848123483.25823.15844774651164477866.stgit@noble.brown/
->>> https://lore.kernel.org/linux-btrfs/162742539595.32498.13687924366155737575.stgit@noble.brown/
->>>
->>> The flow of conversation does sometimes jump between threads.
->>>
->>> I'm very happy to respond you questions after you've absorbed all that.
->>
->> Hi Neil,
->>
->> I read the other threads.  And I still have the opinion that the nfsd
->> crossmnt behavior should be a good solution for the btrfs subvolumes.
+> An encoded_write can fail if the file system it is being applied to does
+> not support encoded writes or if it can't find enough contiguous space
+> to accommodate the encoded extent. In those cases, we can likely still
+> process an encoded_write by explicitly decoding the data and doing a
+> normal write.
 > 
-> Thanks for reading it all.  Let me join the dots for you.
+> Add the necessary fallback path for decoding data compressed with zlib,
+> lzo, or zstd. zlib and zstd have reusable decoding context data
+> structures which we cache in the receive context so that we don't have
+> to recreate them on every encoded_write.
 > 
-[...]
+> Finally, add a command line flag for force-decompress which causes
+> receive to always use the fallback path rather than first attempting the
+> encoded write.
 > 
-> Alternately we could change the "crossmnt" functionality to treat a
-> change of st_dev as though it were a mount point.  I posted patches to
-> do this too.  This hits the same sort of problems in a different way.
-> If NFSD reports that is has crossed a "mount" by providing a different
-> filesystem-id to the client, then the client will create a new mount
-> point which will appear in /proc/mounts.  
-
-Yes, this is my proposal.
-
-> It might be less likely that
-> many thousands of subvolumes are accessed over NFS than locally, but it
-> is still entirely possible.  
-
-I don't think that it would be so unlikely. Think about a file indexer
-and/or a 'find' command runned in the folder that contains the snapshots...
-
-> I don't want the NFS client to suffer a
-> problem that btrfs doesn't impose locally.  
-
-The solution is not easy. In fact we are trying to map a u64 x u64 space to a u64 space. The true is that we
-cannot guarantee that a collision will not happen. We can only say that for a fresh filesystem is near
-impossible, but for an aged filesystem it is unlikely but possible.
-
-We already faced real case where we exhausted the inode space in the 32 bit arch.What is the chances that the subvolumes ever created count is greater  2^24 and the inode number is greater  2^40 ? The likelihood is low but not 0...
-
-Some random toughs:
-- the new inode number are created merging the original inode-number (in the lower bit) and the object-id of the subvolume (in higher bit). We could add a warning when these bits overlap:
-
-	if (fls(stat->ino) >= ffs(stat->ino_uniquifer))
-		printk("NFSD: Warning possible inode collision...")
-
-More smarter heuristic can be developed, like doing the check against the maximum value if inode and the maximum value of the subvolume once at mount time....
-
-- for the inode number it is an expensive operation (even tough it exists/existed for the 32bit processor), but we could reuse the object-id after it is freed
-
-- I think that we could add an option to nfsd or btrfs (not a default behavior) to avoid to cross the subvolume boundary
-
-> And 'private' subvolumes
-> could again appear on a public list if they were accessed via NFS.
-
-(wrongly) I never considered  a similar scenario. However I think that these could be anonymized using a alias (the name of the path to mount is passed by nfsd, so it could create an alias that will be recognized by nfsd when the clienet requires it... complex but doable...)
-
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  Documentation/btrfs-receive.asciidoc |   4 +
+>  cmds/receive.c                       | 266 ++++++++++++++++++++++++++-
+>  2 files changed, 261 insertions(+), 9 deletions(-)
 > 
-> Thanks,
-> NeilBrown
-> 
+> diff --git a/Documentation/btrfs-receive.asciidoc b/Documentation/btrfs-receive.asciidoc
+> index e4c4d2c0..354a71dc 100644
+> --- a/Documentation/btrfs-receive.asciidoc
+> +++ b/Documentation/btrfs-receive.asciidoc
+> @@ -60,6 +60,10 @@ By default the mountpoint is searched in '/proc/self/mounts'.
+>  If '/proc' is not accessible, eg. in a chroot environment, use this option to
+>  tell us where this filesystem is mounted.
+>  
+> +--force-decompress::
+> +if the stream contains compressed data (see '--compressed-data' in
+> +`btrfs-send`(8)), always decompress it instead of writing it with encoded I/O.
+> +
+>  --dump::
+>  dump the stream metadata, one line per operation
+>  +
+> diff --git a/cmds/receive.c b/cmds/receive.c
+> index b43c298f..7506f992 100644
+> --- a/cmds/receive.c
+> +++ b/cmds/receive.c
+> @@ -40,6 +40,10 @@
+>  #include <sys/xattr.h>
+>  #include <uuid/uuid.h>
+>  
+> +#include <lzo/lzo1x.h>
+> +#include <zlib.h>
+> +#include <zstd.h>
+> +
+>  #include "kernel-shared/ctree.h"
+>  #include "ioctl.h"
+>  #include "cmds/commands.h"
+> @@ -79,6 +83,12 @@ struct btrfs_receive
+>  	struct subvol_uuid_search sus;
+>  
+>  	int honor_end_cmd;
+> +
+> +	int force_decompress;
+> +
+> +	/* Reuse stream objects for encoded_write decompression fallback */
+> +	ZSTD_DStream *zstd_dstream;
+> +	z_stream *zlib_stream;
+>  };
+>  
+>  static int finish_subvol(struct btrfs_receive *rctx)
+> @@ -989,9 +999,222 @@ static int process_update_extent(const char *path, u64 offset, u64 len,
+>  	return 0;
+>  }
+>  
+> +static int decompress_zlib(struct btrfs_receive *rctx, const char *encoded_data,
+> +			   u64 encoded_len, char *unencoded_data,
+> +			   u64 unencoded_len)
+> +{
+> +	bool init = false;
+> +	int ret;
+> +
+> +	if (!rctx->zlib_stream) {
+> +		init = true;
+> +		rctx->zlib_stream = malloc(sizeof(z_stream));
+> +		if (!rctx->zlib_stream) {
+> +			error("failed to allocate zlib stream %m");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +	rctx->zlib_stream->next_in = (void *)encoded_data;
+> +	rctx->zlib_stream->avail_in = encoded_len;
+> +	rctx->zlib_stream->next_out = (void *)unencoded_data;
+> +	rctx->zlib_stream->avail_out = unencoded_len;
+> +
+> +	if (init) {
+> +		rctx->zlib_stream->zalloc = Z_NULL;
+> +		rctx->zlib_stream->zfree = Z_NULL;
+> +		rctx->zlib_stream->opaque = Z_NULL;
+> +		ret = inflateInit(rctx->zlib_stream);
+> +	} else {
+> +		ret = inflateReset(rctx->zlib_stream);
+> +	}
+> +	if (ret != Z_OK) {
+> +		error("zlib inflate init failed: %d", ret);
+> +		return -EIO;
+> +	}
+> +
+> +	while (rctx->zlib_stream->avail_in > 0 &&
+> +	       rctx->zlib_stream->avail_out > 0) {
+> +		ret = inflate(rctx->zlib_stream, Z_FINISH);
+> +		if (ret == Z_STREAM_END) {
+> +			break;
+> +		} else if (ret != Z_OK) {
+> +			error("zlib inflate failed: %d", ret);
+> +			return -EIO;
+> +		}
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int decompress_zstd(struct btrfs_receive *rctx, const char *encoded_buf,
+> +			   u64 encoded_len, char *unencoded_buf,
+> +			   u64 unencoded_len)
+> +{
+> +	ZSTD_inBuffer in_buf = {
+> +		.src = encoded_buf,
+> +		.size = encoded_len
+> +	};
+> +	ZSTD_outBuffer out_buf = {
+> +		.dst = unencoded_buf,
+> +		.size = unencoded_len
+> +	};
+> +	size_t ret;
+> +
+> +	if (!rctx->zstd_dstream) {
+> +		rctx->zstd_dstream = ZSTD_createDStream();
+> +		if (!rctx->zstd_dstream) {
+> +			error("failed to create zstd dstream");
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +	ret = ZSTD_initDStream(rctx->zstd_dstream);
+> +	if (ZSTD_isError(ret)) {
+> +		error("failed to init zstd stream: %s", ZSTD_getErrorName(ret));
+> +		return -EIO;
+> +	}
+> +	while (in_buf.pos < in_buf.size && out_buf.pos < out_buf.size) {
+> +		ret = ZSTD_decompressStream(rctx->zstd_dstream, &out_buf, &in_buf);
+> +		if (ret == 0) {
+> +			break;
+> +		} else if (ZSTD_isError(ret)) {
+> +			error("failed to decompress zstd stream: %s",
+> +			      ZSTD_getErrorName(ret));
+> +			return -EIO;
+> +		}
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int decompress_lzo(const char *encoded_data, u64 encoded_len,
+> +			  char *unencoded_data, u64 unencoded_len,
+> +			  unsigned int page_size)
+> +{
+> +	uint32_t total_len;
+> +	size_t in_pos, out_pos;
+> +
+> +	if (encoded_len < 4) {
+> +		error("lzo header is truncated");
+> +		return -EIO;
+> +	}
+> +	memcpy(&total_len, encoded_data, 4);
+> +	total_len = le32toh(total_len);
+> +	if (total_len > encoded_len) {
+> +		error("lzo header is invalid");
+> +		return -EIO;
+> +	}
+> +
+> +	in_pos = 4;
+> +	out_pos = 0;
+> +	while (in_pos < total_len && out_pos < unencoded_len) {
+> +		size_t page_remaining;
+> +		uint32_t src_len;
+> +		lzo_uint dst_len;
+> +		int ret;
+> +
+> +		page_remaining = -in_pos % page_size;
+> +		if (page_remaining < 4) {
+> +			if (total_len - in_pos <= page_remaining)
+> +				break;
+> +			in_pos += page_remaining;
+> +		}
+> +
+> +		if (total_len - in_pos < 4) {
+> +			error("lzo segment header is truncated");
+> +			return -EIO;
+> +		}
+> +
+> +		memcpy(&src_len, encoded_data + in_pos, 4);
+> +		src_len = le32toh(src_len);
+> +		in_pos += 4;
+> +		if (src_len > total_len - in_pos) {
+> +			error("lzo segment header is invalid");
+> +			return -EIO;
+> +		}
+> +
+> +		dst_len = page_size;
+> +		ret = lzo1x_decompress_safe((void *)(encoded_data + in_pos),
+> +					    src_len,
+> +					    (void *)(unencoded_data + out_pos),
+> +					    &dst_len, NULL);
+> +		if (ret != LZO_E_OK) {
+> +			error("lzo1x_decompress_safe failed: %d", ret);
+> +			return -EIO;
+> +		}
+> +
+> +		in_pos += src_len;
+> +		out_pos += dst_len;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int decompress_and_write(struct btrfs_receive *rctx,
+> +				const char *encoded_data, u64 offset,
+> +				u64 encoded_len, u64 unencoded_file_len,
+> +				u64 unencoded_len, u64 unencoded_offset,
+> +				u32 compression)
+> +{
+> +	int ret = 0;
+> +	size_t pos;
+> +	ssize_t w;
+> +	char *unencoded_data;
+> +	int page_shift;
+> +
+> +	unencoded_data = calloc(unencoded_len, 1);
+> +	if (!unencoded_data) {
+> +		error("allocating space for unencoded data failed: %m");
+> +		return -errno;
+> +	}
+> +
+> +	switch (compression) {
+> +	case BTRFS_ENCODED_IO_COMPRESSION_ZLIB:
+> +		ret = decompress_zlib(rctx, encoded_data, encoded_len,
+> +				      unencoded_data, unencoded_len);
+> +		if (ret)
+> +			goto out;
+> +		break;
+> +	case BTRFS_ENCODED_IO_COMPRESSION_ZSTD:
+> +		ret = decompress_zstd(rctx, encoded_data, encoded_len,
+> +				      unencoded_data, unencoded_len);
+> +		if (ret)
+> +			goto out;
+> +		break;
+> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_4K:
+> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_8K:
+> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_16K:
+> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_32K:
+> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_64K:
+> +		page_shift = compression - BTRFS_ENCODED_IO_COMPRESSION_LZO_4K + 12;
+> +		ret = decompress_lzo(encoded_data, encoded_len, unencoded_data,
+> +				     unencoded_len, 1U << page_shift);
+> +		if (ret)
+> +			goto out;
+> +		break;
+> +	default:
+> +		error("unknown compression: %d", compression);
+> +		ret = -EOPNOTSUPP;
+> +		goto out;
+> +	}
+> +
+> +	pos = unencoded_offset;
+> +	while (pos < unencoded_file_len) {
+> +		w = pwrite(rctx->write_fd, unencoded_data + pos,
+> +			   unencoded_file_len - pos, offset);
+> +		if (w < 0) {
+> +			ret = -errno;
+> +			error("writing unencoded data failed: %m");
+> +			goto out;
+> +		}
+> +		pos += w;
+> +		offset += w;
+> +	}
+> +out:
+> +	free(unencoded_data);
+> +	return ret;
+> +}
+> +
+>  static int process_encoded_write(const char *path, const void *data, u64 offset,
+> -	u64 len, u64 unencoded_file_len, u64 unencoded_len,
+> -	u64 unencoded_offset, u32 compression, u32 encryption, void *user)
+> +				 u64 len, u64 unencoded_file_len,
+> +				 u64 unencoded_len, u64 unencoded_offset,
+> +				 u32 compression, u32 encryption, void *user)
+>  {
+>  	int ret;
+>  	struct btrfs_receive *rctx = user;
+> @@ -1007,6 +1230,7 @@ static int process_encoded_write(const char *path, const void *data, u64 offset,
+>  		.compression = compression,
+>  		.encryption = encryption,
+>  	};
+> +	bool encoded_write = !rctx->force_decompress;
+>  
+>  	if (encryption) {
+>  		error("encoded_write: encryption not supported");
+> @@ -1023,13 +1247,21 @@ static int process_encoded_write(const char *path, const void *data, u64 offset,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = ioctl(rctx->write_fd, BTRFS_IOC_ENCODED_WRITE, &encoded);
+> -	if (ret < 0) {
+> -		ret = -errno;
+> -		error("encoded_write: writing to %s failed: %m", path);
+> -		return ret;
+> +	if (encoded_write) {
+> +		ret = ioctl(rctx->write_fd, BTRFS_IOC_ENCODED_WRITE, &encoded);
+> +		if (ret >= 0)
+> +			return 0;
+> +		/* Fall back for these errors, fail hard for anything else. */
+> +		if (errno != ENOSPC && errno != EOPNOTSUPP && errno != EINVAL) {
 
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+Just caught something that I missed in the conversion, this needs to be
+ENOTTY instead of EOPNOTSUPP.
