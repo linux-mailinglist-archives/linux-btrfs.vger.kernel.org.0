@@ -2,90 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0123F00BB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 11:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0C03F00FF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 11:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhHRJkV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 05:40:21 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58910 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbhHRJkU (ORCPT
+        id S232782AbhHRJy3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 05:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232769AbhHRJy2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 05:40:20 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8E88B1FF9D;
-        Wed, 18 Aug 2021 09:39:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629279585;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q25E3lESNFvdjWR7/jgy/qknNSvv2mT1La7ECgqQIxU=;
-        b=oE+XgT1isj1PujMDKlEulEAhcX6Zj9WxZB04CHcg6oIXybHPNotkzIX6kP5J8GPDojnFnQ
-        f1BQI3/wObEw+vFfKhPexKZRgyd3p9KIKZExGfBQUSjaFtHW2RGpSEMm3/tJ8XS4Ez2AEq
-        bIWPOlZV1amtA6Vyt5efufElTQfbXFc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629279585;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q25E3lESNFvdjWR7/jgy/qknNSvv2mT1La7ECgqQIxU=;
-        b=aq4aD0IK9jDDBRrQKIXaTI2i2DPbvldIFuqKSAk4lgYUUX5g9SFV4mNZjMQpzCxHBeBxYZ
-        OBn6qv25McxAwIBA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5E32FA3B93;
-        Wed, 18 Aug 2021 09:39:45 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C3D9BDA72C; Wed, 18 Aug 2021 11:36:48 +0200 (CEST)
-Date:   Wed, 18 Aug 2021 11:36:48 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH] btrfs: zoned: exclude relocation and page writeback
-Message-ID: <20210818093648.GP5047@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>
-References: <a858fb2ff980db27b3638e92f7d2d7a416b8e81e.1628776260.git.johannes.thumshirn@wdc.com>
- <20210812142558.GI5047@suse.cz>
- <PH0PR04MB7416785CF79EF72CCDCF931E9BF99@PH0PR04MB7416.namprd04.prod.outlook.com>
- <20210812145017.GJ5047@suse.cz>
- <PH0PR04MB741690FBBB6A43279E9F1ED89BFE9@PH0PR04MB7416.namprd04.prod.outlook.com>
+        Wed, 18 Aug 2021 05:54:28 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EB7C061764
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 02:53:54 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id 90so735393uax.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 02:53:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=2r5QEaJzPfLDO9Y4hYWQZMhbtnR5vDkZe9HSeEjDq5M=;
+        b=EihDpyOJh00tlwvcoWTny3X/nV4C+ZqrlNDhoM1V126ESsM07Hl2CIxAu/lYaEsoGX
+         xLvEoPg4j2mElvvJ34EHXy5wX2cZ10v+kZX3PJMS2pOXeE/5zDRQpVK0DWI2iWbl2XLK
+         FOw4g6rckHaKvLzDF2l4bCxfWDDcwvpEXN2Xyxer2M61dm+lApt3vKr6L58Lp3WAkGAo
+         84tgA28G3GywVPZHvMS8lcTd4jDNY9IMfOxWq4YmZ31gGKCdRs1QZcH7VCXPnAOB7My5
+         91j8CKZkXiH+MweKzjCC3vTIHR5fT3Q9XobAFjUlK++0N4euxAKcKaTrQygbwOQH0BSM
+         QL5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=2r5QEaJzPfLDO9Y4hYWQZMhbtnR5vDkZe9HSeEjDq5M=;
+        b=SoKJ9AsErTNeVo0FSGXdA7ZDf2gQ4oMFt4lQrJ1l+/V+n9rJ1prlHjWD+92Ya+z7pt
+         trAibIXOZgElN7fyxKCC1GahFHcdML7pbdDnTX3xlS0IgI7RSlPpj9dGqslWuaL+7g8a
+         Bne9I59gxO/AeRyVuIjE4zfRkedba/Qf37hVT1HSKGGLCSrEL0k3HmmnnZyRMJBA7f5+
+         PiB55C78c111CtAgZFaHCbYOUHO8h13Mb8Qo0zuTVNOUVWqobVGApDV1Y1PG+wkhYo6L
+         lIEvouL55AehEwECNpMgy5sZmZ4GjZQo8RhFbJlFwP+f/Pebuh5qwI1H2M1/nOmGWs0w
+         nwzw==
+X-Gm-Message-State: AOAM532Kc086Qe+gq6K3pCFMhRv9mOfMFe7RTVsAS/Fpjtr6czb/hHlW
+        Q8VtQzOursmP3GY/4UZm4mECVOWC/9aHyR3PdpM=
+X-Google-Smtp-Source: ABdhPJxc2D/zJ5TD7FK4Yy9QGe4LUOCdzfv0XbgUtVFO4CwGbvyjXR/77A3jJZJnNcrHEXRfgg40kB1DnRVpDVt+5z4=
+X-Received: by 2002:ab0:5a2c:: with SMTP id l41mr5839600uad.24.1629280433508;
+ Wed, 18 Aug 2021 02:53:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR04MB741690FBBB6A43279E9F1ED89BFE9@PH0PR04MB7416.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Received: by 2002:a67:2e49:0:0:0:0:0 with HTTP; Wed, 18 Aug 2021 02:53:53
+ -0700 (PDT)
+Reply-To: elciksabri27@gmail.com
+From:   "Mr.Sabri Elcik" <rogatedidier@gmail.com>
+Date:   Wed, 18 Aug 2021 09:53:53 +0000
+Message-ID: <CAFizC-PLOusXj_PmLh3g63iT+C-+AeqDATMVYboSZ8E+GDAZvA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 02:21:51PM +0000, Johannes Thumshirn wrote:
-> On 12/08/2021 16:53, David Sterba wrote:
-> > On Thu, Aug 12, 2021 at 02:40:59PM +0000, Johannes Thumshirn wrote:
-> >> On 12/08/2021 16:28, David Sterba wrote:
+-- 
+Hello
 
-> I did some testing with the inode lock and it looks good but does not 
-> necessarily fix all possible problems, i.e. if a ordered extent is being
-> split due to whatever device limits (zone append, max sector size, etc),
-> the assumptions we have in relocation code aren't met again.
-> 
-> So the heavy lifting solution with having a dedicated temporary relocation
-> block group (like the treelog block group we already have for zoned) and using
-> regular writes looks like the only solution taking care of all of these problems.
-
-So that means that the minimum number of zones increases again, right.
-If the separate relocation zone fixes this and possibly other problems
-then fine, but as you said this is heavy weight solution.
-
-We will need a mechanims with a spare block group/zone for emergency
-cases where we're running out of usable metadata space and need to
-relocate so this could be building on the same framework. But for first
-implementation reserving another block group sounds easier.
+Amanda
+Did you receive my last message sent to you?
