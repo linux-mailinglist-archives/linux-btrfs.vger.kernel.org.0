@@ -2,112 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EB53F02B2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 13:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C823F0395
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 14:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235018AbhHRL10 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 07:27:26 -0400
-Received: from mout.gmx.net ([212.227.17.22]:36457 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234903AbhHRL1Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 07:27:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629286008;
-        bh=eKJRaXgtgMHVcJr7E8nQiwvXiuavp2HjYNiSXb8m0fY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=fuc1tKLGrOxpuchgUlNfR6xdI5aAD9xtMht70hlpckROgfxHn9pgJ7gmC6GJy0wDq
-         pXNdk0C+tyFCIRV/kwci3bfXbJ9uQUHmJRNDpTcUZMkxLrQsNq/7x8LDf0qe5Dn/Al
-         xyDJZO8t0U+icxq9sTypMwgssyW9Z0cih0hODu6o=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7R1J-1n8Fly21Ov-017j9s; Wed, 18
- Aug 2021 13:26:48 +0200
-Subject: Re: [PATCH] btrfs-progs: Drop the type check in
- init_alloc_chunk_ctl_policy_regular
-To:     dsterba@suse.cz, Marcos Paulo de Souza <mpdesouza@suse.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com, nborisov@suse.com
-References: <20210809182613.4466-1-mpdesouza@suse.com>
- <20210817132419.GK5047@twin.jikos.cz>
- <04abaf84-12e3-3983-dee4-a5073ec786f1@gmx.com>
- <20210818103542.GR5047@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <9c0ac24c-b43d-419b-c1c7-4f8a226d4f62@gmx.com>
-Date:   Wed, 18 Aug 2021 19:26:43 +0800
+        id S235832AbhHRMMs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 08:12:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:54246 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236104AbhHRMM0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Aug 2021 08:12:26 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 84D611FFB9;
+        Wed, 18 Aug 2021 12:11:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629288706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oauaeid5kS8iNTdftSWve3mbzui9gaYKkQjJR8xXV+M=;
+        b=emX8Scy806YkPO6OgPhs+s1Hg88Ap1y3FrF0J5tgfPJeDGS4z6Yz2BytlbTGAfWepiYSeH
+        OCFt8Qbk4e1IGF3VzudM+o6L7SNtaXkxX9wMSR4ip0pnYftEvzXx0Yw+Wg7cZuigyEB5xv
+        pi41uqhHsrA0mRGxmWsW7w++dHlvknE=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 329EA1371C;
+        Wed, 18 Aug 2021 12:11:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id j7O2CQL5HGExRgAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Wed, 18 Aug 2021 12:11:46 +0000
+Subject: Re: [PATCH] btrfs: fix a potential double put bug and some related
+ use-after-free bugs
+To:     Wentao_Liang <Wentao_Liang_g@163.com>, clm@fb.com
+Cc:     josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210818091518.4825-1-Wentao_Liang_g@163.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <1dea8c28-8ca6-83d4-8eb0-84fe1ebb7cc9@suse.com>
+Date:   Wed, 18 Aug 2021 15:11:45 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210818103542.GR5047@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210818091518.4825-1-Wentao_Liang_g@163.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IcOEEUWhZlfp2t1UBVbOIrRGThdDC1SyfeBWi20H/+7/roIwtaJ
- eKHr99YMDxFyDWGtbTwkxBMJjVndyuM4fUzCl4vKSoBdk7YMwpjQK84kwkMwg8XBNoNA25G
- c4nIaYZrOZ/xAgstAygYN7O2stnT0R7yLP88tib4hsVT0bouyKU75zuGe8xgAp+bDFh2qR0
- 68DfgvouDR4T1EXTI3BJA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZiU86rcked4=:JCZ0sq5GgCi/XXd2q3zqlz
- CZRuawn/fsNos0LGKyEP4j1CcJkF3T3rM0BXutkh/hVp4mGruNF6WWi1gFsA0oMJWBDMu3Xeg
- lN6UppmdwT0YGvI8vJv7jj5+x5+mfOJmzxPyXhxDW2kxs2Lz7GgjrKr0/eDszHGJqi8XvTliB
- mdBS505THsWKjingscPcQomgv49FY5xTpXxuUocy7nI4/4OEx+7gFuBoC1tLtNUj4cwYMBLKR
- OaPzqT1nSAWwu5Qs7RxRWP0bZtqABWVaUSM0PvjVgNnDmva0ofZI26VIwMCpEzrRN3w9B0NAD
- eOksLu+lHxFziAhHua5psgQ+gKBtNG93ua9JnL65szHETm0XgzJs8AA4a3pZVJbDCa6p8V8E8
- GYdGdoCWYKTJngX3DlHN3KxKubFMnOTi2ng902gswCMcAkzLEJlr+Bp8wMShvI+ZFXuk9llwn
- XmpqtjfWbOkYbG+jZ8iOVKlBWNqIL3Yj4Bv0l73hGDRdeH015cribzYsc0ES7XrpFIL2B2TsZ
- /qRFW8KbFSQVZ7FWVB64d4zfiiNmPPFMRofTQWZZUU4jjegPAPHlJqR7aXqEL12gBRrdOFdUU
- XU+By61EMZ6lfBa+BDwyhXZiHAdte/gbymFWu3MpcekmTVLjbURxL8+7Yuk7+TEay854xA96F
- wbgxWUIjT9koQ0VcDNZmpjA4uTG+C/kSAxWwxz3eHI+hlQWSD2w8SPSCappuef27dd66zUDZN
- 6EDH+kBaHrTEv2BbhtejA38XaETwNaa3lmG/U02OxnMSU4mseQVnY937+mHkRvY+41R/nhi/0
- Yt6VqBj08hO6jzBoXkCSOT72NNt/v7D26CM0VGrZNLa0NjAzRqKO3CLznov1IfVqHJ141D5tA
- xCUfB8+bYehBkYK6rBcW12/Nxz8UUx7gYEUrpntdJZlQlwMi5f3gKlz11t6NaqbUEMoihfnkv
- ve+ox3fhmB6AwzHCWvxMkF0+mXyvrAi7HCXfl0QxOW2fMI9ivdNqLwZ5Z6aLg4djAwfMv73ma
- Z0DxlE7rkxWDYlm4RtAF/ZrVm2gTbZb1FHRH8ux8trxexARIoEAdDtpOgYV/sk794gpgFfZMk
- Y0Ib3n3CUXiZYVGHyXROpn0/0/3iQatNfyheeJciU3zuSDHrhL+CqYMcg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/8/18 =E4=B8=8B=E5=8D=886:35, David Sterba wrote:
-> On Wed, Aug 18, 2021 at 01:17:46PM +0800, Qu Wenruo wrote:
->> On 2021/8/17 =E4=B8=8B=E5=8D=889:24, David Sterba wrote:
->>> On Mon, Aug 09, 2021 at 03:26:13PM -0300, Marcos Paulo de Souza wrote:
->>>>
->>>> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
->>>> ---
->>>>
->>>>    This change mimics what the kernel currently does, which is set th=
-e stripe_size
->>>>    regardless of the profile. Any thoughts on it? Thanks!
->>>
->>> Makes sense to unify that, it works well for the large sizes. Please
->>> write tests that verify that the chunk sizes are correct after mkfs on
->>> various device sizes. Patch added to devel, thanks.
->>
->> It in fact makes fsck/025 to fail, bisection points to this patch
->> surprisingly.
->>
->> Now "mkfs.btrfs -f" on a 128M file will just fail.
->>
->> This looks like a big problem to me though...
->
-> This is known that the small filesystem size and intial chunk layout is
-> not scaled properly, the patch OTOH fixes the more common case where the
-> normal block group sizes fit and leave enough room for the rest.
->
-> Can the test 025 be scaled up so we don't have to create the 128M
-> filesystem? I'd rather go that way.
->
-Sure, we can scale up the size, but this still indicates the problem of
-the progs chunk allocator.
+On 18.08.21 г. 12:15, Wentao_Liang wrote:
+> In line 2955 (#1), "btrfs_put_block_group(cache);" drops the reference to
+> cache and may cause the cache to be released. However, in line 3014, the
+> cache is dropped again by the same put function (#4). Double putting the
+> cache can lead to an incorrect reference count.
+> 
+> Furthermore, according to the definition of btrfs_put_block_group() in fs/
+> btrfs/block-group.c, if the reference count of the cache is one at the
+> first put, it will be freed by kfree(). Using it again may result in the
+> use-after-free flaw. In fact, after the first put (line 2955), the cache
+> is also accessed in a few places (#2, #3), e.g., lines 2967, 2973, 2974,
+> ….
+> 
+> We believe that the first put of the cache is unnecessary (#1).
+> We can fix the above bugs by removing the redundant
+> "btrfs_put_block_group(cache);" in line 2955 (#1).
+> 
+> 2951         if (!list_empty(&cache->io_list)) {
+> ...
+> 2955             btrfs_put_block_group(cache);
+> 				 //#1 the first drop to cache (unnecessary)
+> ...
+> 2957         }
+> ...
+> 2967         cache_save_setup(cache, trans, path); //#2 use the cache
+> ...
+> 2972          //#3 use the cache several times
+> 
+> 2973         if (!ret && cache->disk_cache_state == BTRFS_DC_SETUP) {
+> 2974             cache->io_ctl.inode = NULL;
+> 2975             ret = btrfs_write_out_cache(trans, cache, path);
+> 2976             if (ret == 0 && cache->io_ctl.inode) {
+> 2977                 num_started++;
+> 2978                 should_put = 0;
+> 2979                 list_add_tail(&cache->io_list, io);
+> 2980             } else {
+> ...
+> 2985                 ret = 0;
+> 2986             }
+> 2987         }
+> 2988         if (!ret) {
+> 2989             ret = update_block_group_item(trans, path, cache);
+> ...
+> 3003             if (ret == -ENOENT) {
+> ...
+> 3006                 ret = update_block_group_item(trans, path, cache);
+> 3007             }
+> ...
+> 3010         }
+> 3011
+> ...
+> 3013         if (should_put)
+> 3014             btrfs_put_block_group(cache);
+> 				//#4 the second drop to cache
+> 
+> Signed-off-by: Wentao_Liang <Wentao_Liang_g@163.com>
 
-So far that's the only failure, but that also means, the minimal device
-size calculation is no longer correct.
 
-As kernel has no problem allocate SINGLE chunk smaller than 64M.
-
-I'd prefer to unify the minimal stripe size with kernel.
-(And of course, also do proper chunk size calculation for metadata chunks)
-
-Thanks,
-Qu
+Apart form the patch being buggy you have not demonstrated why doing 2
+put block groups is actually given that there are invariant that
+guarantee bg will have at least 2 refs held. So it seems you have
+produced the patch without considering the big picture of how btrfs'
+block group state machine works.
