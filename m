@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04CF3F0D6C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 23:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D113F0D6D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 23:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhHRVe1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 17:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
+        id S234243AbhHRVe2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 17:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234031AbhHRVeU (ORCPT
+        with ESMTP id S234174AbhHRVeX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 17:34:20 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32DBC061764
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:44 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id t68so4761625qkf.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:44 -0700 (PDT)
+        Wed, 18 Aug 2021 17:34:23 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71729C0613D9
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:48 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id t190so4770309qke.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=DswvzFcPEbl9P5cSIRr8UzGdk0zmvN47Ia4PEe/avis=;
-        b=eRmvZLoR/y/4AfCU2FodssdZYMbeeq/Xtq/MjluJ351oP4/EGSc9Ftr4+k61ULN++o
-         Refq+hgmFGzlnzC3I2N2bO3LLiV4066KqS//w7UUkgAfwn2AahsdTRxDvdGgzz8F56qV
-         bSSTXcQRN+wbMJ1i+swZJn6sXlBOhzZ7ELpl0CzUQjVT7wTCaM8fTRNeEMbmiIvFB11X
-         lsMiKEoaNe429lijbC6iZS3JUGnAZaZulsWTFNYiR8gpGxD9vIIzniYGu+9HNrfZNH0/
-         c/btlsE2IGWUkG+f68yF3frJuyfOjuJoKCsxlhnufwIwfPwMSZZHrL9d4fMYiZHcq3A1
-         qFEg==
+        bh=3FBUpnqTbYqnGXZTMtSDgp9MOQ/S8lJ9K99Z0c/fGZM=;
+        b=iCiF6Gv8Q6INlvwi0zK/na0NeCXudfpDNoYMdxw+8fOCJdctmpkQaaMBtFMdgazhHZ
+         tEsl6ZUoj3hnsE7oyN4vEI0IRbBs6tAx5+Dl3cbK0ON8DnnxX/1Bb3Knn4UIinJkS6tk
+         oL3mcWEZV+G1C802hA1dLithZZA2zZoR/o4SqLJ+3iO03rfLGZrpjHVNesvegv4IRRa2
+         gx/7gWBZqiQiAIpRNzGbR00l9CnHKxnBp4CI2fatiQ/sjNHBa84GxZYNqgbFhrbX6Ski
+         7mBgsKsEPuIZjjLRwPOCiGltZfKtMi0a4eCUa57TsCzKCdZj8dLLi+SOVvOkn5hREHY9
+         OReg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DswvzFcPEbl9P5cSIRr8UzGdk0zmvN47Ia4PEe/avis=;
-        b=YrBbLO+mWe9XSIl5SVuJpb+xdH0cMWrK+SJxIOSQp00R3Log8iFFweW56cmqPFXtSt
-         AN/wTC+t267P452+ju4wgcQbL8beTWD20Whp7Pf3OQLOwVCXFZvjwsj9N6le2NlsVwVw
-         MyRBlWn2jlRg9nQfkf3o0EVRpblbyWwcDHzqGIftGkfwfA2ylBWK/7xDh7KnPuepY6Bq
-         Q8ogXH2ZIvpumJNvW8arVoNeIuzf1xT5Hp7RBWWWfyQMtZn+WYpE33qnjj7ml7bH4esZ
-         /MmswZX3AwFBTcvAm7aU3jgCOdZGzNvenxyCZRftwPQQbYH/mxcepbwwXSNCv1J23BdW
-         rMFw==
-X-Gm-Message-State: AOAM5319YJpsJBtTjOv+S6phRZgkAQoPPXFYTXNre0b9hjGZ/vTzWKli
-        KtDFe6SvpiiaZG2l8uUsCWSE7zIkHN2pEw==
-X-Google-Smtp-Source: ABdhPJxCyfSG0PWoW3VoAQj63n0XfJCj/7ICWSzOkFDRgzTJ8Ioza7UnoupJJAkNQ0nG0kR0EbIPdA==
-X-Received: by 2002:a05:620a:2298:: with SMTP id o24mr352650qkh.235.1629322423889;
-        Wed, 18 Aug 2021 14:33:43 -0700 (PDT)
+        bh=3FBUpnqTbYqnGXZTMtSDgp9MOQ/S8lJ9K99Z0c/fGZM=;
+        b=T5tyOTILe26s6cdRVKeeltKp46bwG+g9T9Q0baCWOs0imTaDwrIEMtcnQk2vvysb/I
+         NNTVjYEs+7OP+aqmFp62lKOp+W6OXmbQmxXrx+ND/IPtT+iXN8wtZV3fNl0itshJJFbH
+         tQf0zseTWeJWYH9AGiXb8pPg+cUf/3aVR736DK1xASmoKFv2RDwsK9CzzYJxqyRqndy5
+         YrUPuMGx47oA0hzMhE0IA824Wg0ZLGZMW5ItDYrOUKVTxVQGIyQkBolfLYb7wgRcad76
+         2nkCKJh2xMFDnGOygDCqBLZiDXVHuTpksymhMOzHaBlL5J3XdQhbF3zCRAGLEkYBYvP5
+         I0Sw==
+X-Gm-Message-State: AOAM5337SfqtuoVVL/nGJEoHrfwwTAR3z1OW/pDnI/T4QmYJWz9MNtal
+        X6AWyloOSRWhW+8EITXrBdmsKYZRkTJvNQ==
+X-Google-Smtp-Source: ABdhPJzOVv5w3jz/r3/TBnCu0eaBiBPLcuH7qeyP26rihM2N+d+AlzqBuIFcd3kubkmyJSn06Ms7XA==
+X-Received: by 2002:a37:e14:: with SMTP id 20mr353885qko.229.1629322427371;
+        Wed, 18 Aug 2021 14:33:47 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h140sm566655qke.112.2021.08.18.14.33.43
+        by smtp.gmail.com with ESMTPSA id b21sm543186qtt.91.2021.08.18.14.33.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 14:33:43 -0700 (PDT)
+        Wed, 18 Aug 2021 14:33:45 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 11/12] btrfs-progs: add a test image with a corrupt block group item
-Date:   Wed, 18 Aug 2021 17:33:23 -0400
-Message-Id: <5f2e5e13597f2f96503657abdf4ff25fcf74a8c2.1629322156.git.josef@toxicpanda.com>
+Subject: [PATCH v2 12/12] btrfs-progs: add a test image with an invalid super bytes_used
+Date:   Wed, 18 Aug 2021 17:33:24 -0400
+Message-Id: <bf00f0d76278db3659a5655d8f493ff16f3f28a7.1629322156.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1629322156.git.josef@toxicpanda.com>
 References: <cover.1629322156.git.josef@toxicpanda.com>
@@ -62,46 +62,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This image has a broken used field of a block group item to validate
-fsck does the correct thing.
+This is used to validate the detection and correction code in both fsck
+modes for an invalid bytes_used value in the super block.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
  .../.lowmem_repairable                           |   0
- .../050-invalid-block-group-used/default.img.xz  | Bin 0 -> 1036 bytes
+ .../051-invalid-super-bytes-used/default.img.xz  | Bin 0 -> 1060 bytes
  2 files changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 tests/fsck-tests/050-invalid-block-group-used/.lowmem_repairable
- create mode 100644 tests/fsck-tests/050-invalid-block-group-used/default.img.xz
+ create mode 100644 tests/fsck-tests/051-invalid-super-bytes-used/.lowmem_repairable
+ create mode 100644 tests/fsck-tests/051-invalid-super-bytes-used/default.img.xz
 
-diff --git a/tests/fsck-tests/050-invalid-block-group-used/.lowmem_repairable b/tests/fsck-tests/050-invalid-block-group-used/.lowmem_repairable
+diff --git a/tests/fsck-tests/051-invalid-super-bytes-used/.lowmem_repairable b/tests/fsck-tests/051-invalid-super-bytes-used/.lowmem_repairable
 new file mode 100644
 index 00000000..e69de29b
-diff --git a/tests/fsck-tests/050-invalid-block-group-used/default.img.xz b/tests/fsck-tests/050-invalid-block-group-used/default.img.xz
+diff --git a/tests/fsck-tests/051-invalid-super-bytes-used/default.img.xz b/tests/fsck-tests/051-invalid-super-bytes-used/default.img.xz
 new file mode 100644
-index 0000000000000000000000000000000000000000..6425ba16349395416fc1918ce4c386059d618409
+index 0000000000000000000000000000000000000000..20d6af898690038ba5e3f7f3852f699413a7f15a
 GIT binary patch
-literal 1036
-zcmV+n1oQj-H+ooF000E$*0e?f03iVu0001VFXf}+6aNFrT>wRyj;C3^v%$$4d1rE0
-zjjaF1$8Jv*pMMbE@{&83eAipquzP5y*Z^dMFaaah{5${uN^u50JUj3Gv&TKFetZNb
-zeGi-h_Sc-xdQ?TDr}!X-75pO<Qv3dfP)udQ#2BMlhKV!<)h0wx#0gBFB3oujWhIL&
-zL%Q_)XZGuT<s*G=df*h(28)|6jezRgn^fw3f_X9cr>3s7;Q#Cs@eB}(-tDiTrOkuL
-zr-`Q{!4@d7$vYR${O40b$KD!sxV##0^*`8ePjSki5__Mw0>a{sam+nk%_Taf1QUIl
-zCPC+p!>ol%J~2Y3anuU4qT<_;R2!C0z*;OS_X<C(1PY_piT;4cC;rb`fiOWnUh;Y5
-z+VpHb7TtwJG9h(H?eIvX{dw_9_d^y!4q2*1)lacoD~cQb2zYFYf$yU6F73JuP-a_~
-z^nRPN>lH|4cwp*YYCcEjpgm>gLEL94KJ)NIDw(fAxBE)HBeuH?SFG)P2n*qCcX@dj
-zl6!cB_HK~tM6u@FF~?28<QXd$N2j((D}P0X*4u&8MljFY;=CO4qv}A|Yfk0*J1L<0
-zvtlIvVt#RxD#E>(XL*Vme;}!4%~G!$l6uxm(%@F-`~K9;P=VVx6iDWsw2&F)MC!ne
-z{yU2uSdn?OJQ<Lt*^Y0*dZ}@9Mbh>k99D$H$r|?eQ%u-&&dW^Q%ogbbG<!ht<u}AO
-zPK!nm?T;rPEW*}JR&_-PG_1)0l`D=?gQ%=PFA7tIi*Hc#g_0U1=2f8&+0+M2vL0@Y
-zRepZ8%3sj#@uRLS03@G+a$5t}CT2~i>`T74qDMIaXhLRLP+<sRw5KZtAG@&9m`Ls0
-zS5b66v3%FLAinwOLU5f}@`Y!nIlBhSV}9k)|B|7ydoH$5f8x-VX7s|n=;9N;KXH?H
-z@kBA19X?ijYFlm44FX3(6!04T9(Yd!8hL5JWd}`cJ{=UOnZVNi<^S&%@5!isxf&15
-z3`Qf*v}A6h?C9<3y1jv7oiCsGu3lhGk{+-4VN_WAkphoN6}JCC>j+OmK|vlc6+Q+8
-z>i9;tP|5yL$Hg>IZhAK@v(3YzO&IxH_W<yblu5-O+ic3l3LzTL=eJ!H;1FmLNMh9z
-zP}b#vH2+}dMT<T6wQ}~GA0mWw5XZl*-GXoYp{R!3<B4{}7<uJK<0J_L%nX=dW8jjl
-zJo6(aM0F6xZK|Og`Pbn0U-IJOVOIUa)MDdsCv%q+fGEK_y4SF$G)B_i)~Dk);s!z~
-zd&otC2e}ecZOkpbFV;}uV=M0f0000E#S;ff2MZnm0p$mPs0aWTvKPg%#Ao{g00000
-G1X)_aZ2)fo
+literal 1060
+zcmV+<1l#-lH+ooF000E$*0e?f03iVu0001VFXf}+6aNF`T>wRyj;C3^v%$$4d1ocf
+zjjaF1$8Jv*pMMm%#9U8wBSY$t`hql!7fWN#!<KoG7QbgI5Zz59AG36Vz1Z(#I0~Ln
+z3JKK~H5jCU<u;c6IpGR%0p(Y1WzO5tieFMrVv97@7Gm*yDDf8GPy!w=xShqKM$Hbm
+zNcld}wm#`Gky6*aiFfO+#g4Pry^cWVoFmH0VBeS~uQB0-tE>9)m~LUu{3h{cCV}n!
+zW)j69{DZ;^4fwk&(@SrTPYl1&-d)dlKfc5eTWtvaaT3+KYdkYPq^__%7Cr|^=lv8x
+z%X#@fQz>K*kIy&~JE`|+LnwNXr>^@~gg`$X!^enj{MM+Qk;qkdaYSe0zikAnG$AyN
+z%hIp4{EhUpHVZf~sgUl}ybGx$gBffDVBF7(%IweseM7z#2OYAV_+^+V+j+fA%W}fc
+ztW$!wvbbD7mmZTXE=T>9l4%pam5o<OA~-y2ZDRM-QL~v6TDXKleUF?ALnGlA7~&lR
+z0q!@;zV*Y$Qh)gnX(oJR*Iu0}O>Wqfy31;MWh?)Wit!p!yl!SKcNBMb`cc>fa<5G6
+zCPLe%*Vw+j@@8j4Sn<j~apvG>hM2ja(Ycw(;E=od)VY^PtFDz(Y?dy_HfQ}3Y20gS
+z-t+TT?)DNjw`uj9E#Xdmutgz=9)f=XJ){7(wKS`QI)KkMJGX^;Mw}5CVh3&e-|Nz8
+z#xJ^>@ol)mT8Mg(u=fuV%zGVUY0JGnTk<f>2tUD57AmS(<o(nfm6zE)U|?D+{k~s}
+z5`lUF<7(8yv^0iUH*Ps&US#EKgBpJ#)F~Np^2gMoB5@yIdz(nik(sj?*J7sWVnw1s
+zorCvu>Cx%M<Y6H_Q~HoHzM208Z&CJ<3W!YP>D0RE-&Wlc){tTY21u}MNMj3C?bZOg
+zYNo{!+@KC%>W3*ihg`;{_lWQvsRXSfgLOq#)6xKI6_u~N5hsk{o<;;yEi>!k>sTgc
+z$BdTv^NvrZ$?Z8&jqFAaE4bR>22AD#3*mR8U$!asT12H?EQuLPCrIcH7el(xev3hL
+zQAZ|(`U@M8)fHnVK^&S4EMN{O5{g9PF}@wqoi=P39rIae4i8Y~TSurLWEZ6Sxx~s~
+zXWtlT7;2?3<S;PdEkVsK4-X>Z=0eg@s@X`Pb0)`FgKF=kq5e?)|3dK)AYPa%)=75r
+zJ1rQgvK#p3?1^k+W2E1T-3mMF>o8h_=GipTN`KdfpZ&&w+3F%(bk;sr{ITgm@F<x-
+z-=1Yn$&27By)uiajG+wuCz_6dz;K{fS0x7)SmmNq{N)3a2BtnE463(n5vKrsu3*jw
+e*LMW~0e}dAs0aWryM7<B#Ao{g000001X)^oc?S^y
 
 literal 0
 HcmV?d00001
