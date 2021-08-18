@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E8E3EF998
+	by mail.lfdr.de (Postfix) with ESMTP id DA9A13EF999
 	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 06:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237672AbhHREkD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 00:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
+        id S237689AbhHREkE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 00:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbhHREkB (ORCPT
+        with ESMTP id S237688AbhHREkD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:40:01 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD51BC061764
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 21:39:27 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id t16so598203qta.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 21:39:27 -0700 (PDT)
+        Wed, 18 Aug 2021 00:40:03 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DB4C061764
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 21:39:29 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id y144so1598420qkb.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 21:39:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=UKrYz/gXwyXuYNqxlnQrNZvk8Szq25t+W8rM5yA+JJg=;
-        b=MLNsAy9f3/uOyDVe0zlcrlU6D1d/qx423cTkxpm9Jt/yuO24RjesLEkAvo0mH/fo6P
-         Y0fgIQ0Oik/UvP8mYkKNHa4ucxZth6F/tedXemVvwxOAuaCHjOHVOVnF9rqw6t7kCD25
-         cAFInKIUtbA8fnKXoZ5DXmF8I2UiL/amFPRPH6uXZkYjK/PT1I8QN480S2lyO+6CPiD6
-         UvXMCY3vkxjx8tE4yQIpnbRKztwBnggSp7o3XwJ+/t/TAN7p7wHQh0cz/iZNGb98jJFA
-         BHlhXrhierlFO9mExJ1C5oZaeFNGUbaUOHdnYYYXJ2h7ca8W/2fTNfO6YMcx6ZHAadyR
-         tlsw==
+        bh=KlAFMvyodKTeL/ciKdjnKqs7TvkNCdw0hAPkc5XC1LE=;
+        b=lJC8KNm2jSzqsONd1uhUld5aoOtd8SvQK3PvLartMnaTo7Rb02ufilKCWo9Us4Kikp
+         CebDpRNE18eKHHqA2X1eA3qUm7fzwukUItmZSzdPIXdk2NR+3wC0X4l2Q3QsuQ7qIDm7
+         tvWAsTIxy63Clc+3CD1w99F+mHOLQsVJlkWimruNBtw8ANwhpThEMBx/6tL+a2nRl94K
+         qhrl2+YRVxM7DKDYkxY8sPTwBXXFrMkHIjDWimy1wMMl8XMYK8Xmlb843PSYc9uJ/WdW
+         C0MYceJfAyaT/fNV2Nd4aFF9jmpYU8G+pm/LXG4HH8khSG0r4vL4v3F012ulQk7MFtRN
+         j58A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UKrYz/gXwyXuYNqxlnQrNZvk8Szq25t+W8rM5yA+JJg=;
-        b=rQRKDuzDKQ19c8XeCrjYoyNAQTdb371/AC5CX7RitV306hCiTRuvxfNJPk9gp4FWO2
-         frShB4/Iz6TE1lHzWUhIeNZElacnVlMVGhxqRRKILc/70oFAaP71dHZpUz4qFPdVa9/d
-         L5f0RcJV/tbUNNPFd9mEj15M5drkVUi7SLNUxWjOg472UIlBQ8xf1gXtLryiv2x1tPIc
-         F7j+1iUJ90usnKSzsuftgDolrFSDQQ1ejz6GejxdajuwdM9pUB/+fUHj7NP/WDBt5dRm
-         bO5WUhd+n4dhJt1TF/o3EtqsmWhzOTuoc0V1pSdC2S9xolEm7WRSyvZLmN5znLyYV++T
-         ZJyg==
-X-Gm-Message-State: AOAM533BnsXGEh8QxhC+STyAGXGiXdN9JjhxpKcnYzJlnIBEe+c9l3M9
-        XhFI5vb8eteEqj5qHnu+tmrKm27uZhwqMQ==
-X-Google-Smtp-Source: ABdhPJzRzBQ4PvfiIXeplm2CLAiCtv+mzql3S5mAWT8W/RYn0KzBHOkr8X0JzWOfagHWEPayYETBBA==
-X-Received: by 2002:a05:622a:1106:: with SMTP id e6mr6240744qty.172.1629261566636;
-        Tue, 17 Aug 2021 21:39:26 -0700 (PDT)
+        bh=KlAFMvyodKTeL/ciKdjnKqs7TvkNCdw0hAPkc5XC1LE=;
+        b=FPjIQWp68gCnURioo4EIDPFvBu/3pZbKp6gjAoVvSOuRAg2Eq3vtyaP9F2/tbBwkcL
+         Iu1URgWn4MYP1vm2n0C6/iw9QSXvBBNqZ8Pl0vmX74FdaX+9qDtehjDPdXPA9MMxhXdl
+         Sll7UJCKKtByCu/CApB4dzg3ruoSXd8w2JO4ePN5phl04VRGTC0r6k88EnaEwA8IZdWx
+         SRahMnE8zNcJuVurRc6YPqm82y+B+tbE4CwLMbKgmcHfANfOqlAIcnQd8lt54JNZr8eV
+         5BBPfAa7pTMB2NbkaWEIbHN4uyxWRiY/gP8XSMzVoyEXOp5y9GJImHdvv2fgyOIyva9Y
+         PCYQ==
+X-Gm-Message-State: AOAM531yRLDcE4OcdcBvT+plvdh+Ar5wBeSJ3xG1Pz72bf1H//bMRLJ4
+        fAsFUvgdJJkVnQjQf5CSFBly1/hnvm2M3w==
+X-Google-Smtp-Source: ABdhPJwpUuG1ql2/ggC6defeO6VGMDq4W3h6Hc1ubsW+ZWEPxJIjFEp9VDvD8lWYWtRrRwAJM8shfA==
+X-Received: by 2002:ae9:ebc4:: with SMTP id b187mr7633516qkg.303.1629261568176;
+        Tue, 17 Aug 2021 21:39:28 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id n189sm2959041qka.69.2021.08.17.21.39.26
+        by smtp.gmail.com with ESMTPSA id j127sm2881219qkf.20.2021.08.17.21.39.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 21:39:26 -0700 (PDT)
+        Tue, 17 Aug 2021 21:39:27 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/3] btrfs-progs: make check detect and fix invalid used for block groups
-Date:   Wed, 18 Aug 2021 00:39:21 -0400
-Message-Id: <feba5f8a5a79da9abe564655c5e7d74fbdbe976c.1629261403.git.josef@toxicpanda.com>
+Subject: [PATCH 3/3] btrfs-progs: add a test image with a corrupt block group item
+Date:   Wed, 18 Aug 2021 00:39:22 -0400
+Message-Id: <2234171d997113ba7256a28249ad1993dbe74b79.1629261403.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1629261403.git.josef@toxicpanda.com>
 References: <cover.1629261403.git.josef@toxicpanda.com>
@@ -62,209 +62,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The lowmem mode validates the used field of the block group item, but
-the normal mode does not.  Fix this by keeping a running tally of what
-we think the used value for the block group should be, and then if it
-mismatches report an error and fix the problem if we have repair set.
-We have to keep track of pending extents because we process leaves as we
-see them, so it could be much later in the process that we find the
-block group item to associate the extents with.
+This image has a broken used field of a block group item to validate
+fsck does the correct thing.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/common.h |  5 +++
- check/main.c   | 89 +++++++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 90 insertions(+), 4 deletions(-)
+ .../050-invalid-block-group-used/default.img.xz  | Bin 0 -> 1036 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 tests/fsck-tests/050-invalid-block-group-used/default.img.xz
 
-diff --git a/check/common.h b/check/common.h
-index e72379a0..ba4e291e 100644
---- a/check/common.h
-+++ b/check/common.h
-@@ -37,10 +37,14 @@ struct block_group_record {
- 	u64 offset;
- 
- 	u64 flags;
-+
-+	u64 disk_used;
-+	u64 actual_used;
- };
- 
- struct block_group_tree {
- 	struct cache_tree tree;
-+	struct extent_io_tree pending_extents;
- 	struct list_head block_groups;
- };
- 
-@@ -141,6 +145,7 @@ u64 calc_stripe_length(u64 type, u64 length, int num_stripes);
- static inline void block_group_tree_init(struct block_group_tree *tree)
- {
- 	cache_tree_init(&tree->tree);
-+	extent_io_tree_init(&tree->pending_extents);
- 	INIT_LIST_HEAD(&tree->block_groups);
- }
- 
-diff --git a/check/main.c b/check/main.c
-index a8851815..f7285865 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -5083,9 +5083,27 @@ static void free_block_group_record(struct cache_extent *cache)
- 
- void free_block_group_tree(struct block_group_tree *tree)
- {
-+	extent_io_tree_cleanup(&tree->pending_extents);
- 	cache_tree_free_extents(&tree->tree, free_block_group_record);
- }
- 
-+static void update_block_group_used(struct block_group_tree *tree,
-+				    u64 bytenr, u64 num_bytes)
-+{
-+	struct cache_extent *bg_item;
-+	struct block_group_record *bg_rec;
-+
-+	bg_item = lookup_cache_extent(&tree->tree, bytenr, num_bytes);
-+	if (!bg_item) {
-+		set_extent_dirty(&tree->pending_extents, bytenr,
-+				 bytenr + num_bytes - 1);
-+		return;
-+	}
-+	bg_rec = container_of(bg_item, struct block_group_record,
-+			      cache);
-+	bg_rec->actual_used += num_bytes;
-+}
-+
- int insert_device_extent_record(struct device_extent_tree *tree,
- 				struct device_extent_record *de_rec)
- {
-@@ -5270,6 +5288,7 @@ btrfs_new_block_group_record(struct extent_buffer *leaf, struct btrfs_key *key,
- 
- 	ptr = btrfs_item_ptr(leaf, slot, struct btrfs_block_group_item);
- 	rec->flags = btrfs_block_group_flags(leaf, ptr);
-+	rec->disk_used = btrfs_block_group_used(leaf, ptr);
- 
- 	INIT_LIST_HEAD(&rec->list);
- 
-@@ -5281,6 +5300,7 @@ static int process_block_group_item(struct block_group_tree *block_group_cache,
- 				    struct extent_buffer *eb, int slot)
- {
- 	struct block_group_record *rec;
-+	u64 start, end;
- 	int ret = 0;
- 
- 	rec = btrfs_new_block_group_record(eb, key, slot);
-@@ -5289,6 +5309,22 @@ static int process_block_group_item(struct block_group_tree *block_group_cache,
- 		fprintf(stderr, "Block Group[%llu, %llu] existed.\n",
- 			rec->objectid, rec->offset);
- 		free(rec);
-+		return ret;
-+	}
-+
-+	while (!find_first_extent_bit(&block_group_cache->pending_extents,
-+				      rec->objectid, &start, &end,
-+				      EXTENT_DIRTY)) {
-+		u64 len;
-+
-+		if (start >= rec->objectid + rec->offset)
-+			break;
-+		start = max(start, rec->objectid);
-+		len = min(end - start + 1,
-+			  rec->objectid + rec->offset - start);
-+		rec->actual_used += len;
-+		clear_extent_dirty(&block_group_cache->pending_extents, start,
-+				   start + len - 1);
- 	}
- 
- 	return ret;
-@@ -5352,6 +5388,7 @@ process_device_extent_item(struct device_extent_tree *dev_extent_cache,
- 
- static int process_extent_item(struct btrfs_root *root,
- 			       struct cache_tree *extent_cache,
-+			       struct block_group_tree *block_group_cache,
- 			       struct extent_buffer *eb, int slot)
- {
- 	struct btrfs_extent_item *ei;
-@@ -5380,6 +5417,8 @@ static int process_extent_item(struct btrfs_root *root,
- 		num_bytes = key.offset;
- 	}
- 
-+	update_block_group_used(block_group_cache, key.objectid, num_bytes);
-+
- 	if (!IS_ALIGNED(key.objectid, gfs_info->sectorsize)) {
- 		error("ignoring invalid extent, bytenr %llu is not aligned to %u",
- 		      key.objectid, gfs_info->sectorsize);
-@@ -6348,13 +6387,13 @@ static int run_next_block(struct btrfs_root *root,
- 				continue;
- 			}
- 			if (key.type == BTRFS_EXTENT_ITEM_KEY) {
--				process_extent_item(root, extent_cache, buf,
--						    i);
-+				process_extent_item(root, extent_cache,
-+						    block_group_cache, buf, i);
- 				continue;
- 			}
- 			if (key.type == BTRFS_METADATA_ITEM_KEY) {
--				process_extent_item(root, extent_cache, buf,
--						    i);
-+				process_extent_item(root, extent_cache,
-+						    block_group_cache, buf, i);
- 				continue;
- 			}
- 			if (key.type == BTRFS_EXTENT_CSUM_KEY) {
-@@ -8599,6 +8638,41 @@ static int deal_root_from_list(struct list_head *list,
- 	return ret;
- }
- 
-+static int check_block_groups(struct block_group_tree *bg_cache)
-+{
-+	struct btrfs_trans_handle *trans;
-+	struct cache_extent *item;
-+	struct block_group_record *bg_rec;
-+	int ret = 0;
-+
-+	for (item = first_cache_extent(&bg_cache->tree); item;
-+	     item = next_cache_extent(item)) {
-+		bg_rec = container_of(item, struct block_group_record,
-+				      cache);
-+		if (bg_rec->disk_used == bg_rec->actual_used)
-+			continue;
-+		fprintf(stderr,
-+			"block group[%llu %llu] used %llu but extent items used %llu\n",
-+			bg_rec->objectid, bg_rec->offset, bg_rec->disk_used,
-+			bg_rec->actual_used);
-+		ret = -1;
-+	}
-+
-+	if (!repair || !ret)
-+		return ret;
-+
-+	trans = btrfs_start_transaction(gfs_info->extent_root, 1);
-+	if (IS_ERR(trans)) {
-+		ret = PTR_ERR(trans);
-+		fprintf(stderr, "Failed to start a transaction\n");
-+		return ret;
-+	}
-+
-+	ret = btrfs_fix_block_accounting(trans);
-+	btrfs_commit_transaction(trans, gfs_info->extent_root);
-+	return ret ? ret : -EAGAIN;
-+}
-+
- /**
-  * parse_tree_roots - Go over all roots in the tree root and add each one to
-  *		      a list.
-@@ -8890,6 +8964,13 @@ again:
- 		goto out;
- 	}
- 
-+	ret = check_block_groups(&block_group_cache);
-+	if (ret) {
-+		if (ret == -EAGAIN)
-+			goto loop;
-+		goto out;
-+	}
-+
- 	ret = check_devices(&dev_cache, &dev_extent_cache);
- 	if (ret && err)
- 		ret = err;
+diff --git a/tests/fsck-tests/050-invalid-block-group-used/default.img.xz b/tests/fsck-tests/050-invalid-block-group-used/default.img.xz
+new file mode 100644
+index 0000000000000000000000000000000000000000..6425ba16349395416fc1918ce4c386059d618409
+GIT binary patch
+literal 1036
+zcmV+n1oQj-H+ooF000E$*0e?f03iVu0001VFXf}+6aNFrT>wRyj;C3^v%$$4d1rE0
+zjjaF1$8Jv*pMMbE@{&83eAipquzP5y*Z^dMFaaah{5${uN^u50JUj3Gv&TKFetZNb
+zeGi-h_Sc-xdQ?TDr}!X-75pO<Qv3dfP)udQ#2BMlhKV!<)h0wx#0gBFB3oujWhIL&
+zL%Q_)XZGuT<s*G=df*h(28)|6jezRgn^fw3f_X9cr>3s7;Q#Cs@eB}(-tDiTrOkuL
+zr-`Q{!4@d7$vYR${O40b$KD!sxV##0^*`8ePjSki5__Mw0>a{sam+nk%_Taf1QUIl
+zCPC+p!>ol%J~2Y3anuU4qT<_;R2!C0z*;OS_X<C(1PY_piT;4cC;rb`fiOWnUh;Y5
+z+VpHb7TtwJG9h(H?eIvX{dw_9_d^y!4q2*1)lacoD~cQb2zYFYf$yU6F73JuP-a_~
+z^nRPN>lH|4cwp*YYCcEjpgm>gLEL94KJ)NIDw(fAxBE)HBeuH?SFG)P2n*qCcX@dj
+zl6!cB_HK~tM6u@FF~?28<QXd$N2j((D}P0X*4u&8MljFY;=CO4qv}A|Yfk0*J1L<0
+zvtlIvVt#RxD#E>(XL*Vme;}!4%~G!$l6uxm(%@F-`~K9;P=VVx6iDWsw2&F)MC!ne
+z{yU2uSdn?OJQ<Lt*^Y0*dZ}@9Mbh>k99D$H$r|?eQ%u-&&dW^Q%ogbbG<!ht<u}AO
+zPK!nm?T;rPEW*}JR&_-PG_1)0l`D=?gQ%=PFA7tIi*Hc#g_0U1=2f8&+0+M2vL0@Y
+zRepZ8%3sj#@uRLS03@G+a$5t}CT2~i>`T74qDMIaXhLRLP+<sRw5KZtAG@&9m`Ls0
+zS5b66v3%FLAinwOLU5f}@`Y!nIlBhSV}9k)|B|7ydoH$5f8x-VX7s|n=;9N;KXH?H
+z@kBA19X?ijYFlm44FX3(6!04T9(Yd!8hL5JWd}`cJ{=UOnZVNi<^S&%@5!isxf&15
+z3`Qf*v}A6h?C9<3y1jv7oiCsGu3lhGk{+-4VN_WAkphoN6}JCC>j+OmK|vlc6+Q+8
+z>i9;tP|5yL$Hg>IZhAK@v(3YzO&IxH_W<yblu5-O+ic3l3LzTL=eJ!H;1FmLNMh9z
+zP}b#vH2+}dMT<T6wQ}~GA0mWw5XZl*-GXoYp{R!3<B4{}7<uJK<0J_L%nX=dW8jjl
+zJo6(aM0F6xZK|Og`Pbn0U-IJOVOIUa)MDdsCv%q+fGEK_y4SF$G)B_i)~Dk);s!z~
+zd&otC2e}ecZOkpbFV;}uV=M0f0000E#S;ff2MZnm0p$mPs0aWTvKPg%#Ao{g00000
+G1X)_aZ2)fo
+
+literal 0
+HcmV?d00001
+
 -- 
 2.26.3
 
