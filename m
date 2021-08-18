@@ -2,105 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9A13EF999
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 06:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52463EF9EA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 07:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237689AbhHREkE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 00:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237688AbhHREkD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 00:40:03 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DB4C061764
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 21:39:29 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id y144so1598420qkb.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 21:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=KlAFMvyodKTeL/ciKdjnKqs7TvkNCdw0hAPkc5XC1LE=;
-        b=lJC8KNm2jSzqsONd1uhUld5aoOtd8SvQK3PvLartMnaTo7Rb02ufilKCWo9Us4Kikp
-         CebDpRNE18eKHHqA2X1eA3qUm7fzwukUItmZSzdPIXdk2NR+3wC0X4l2Q3QsuQ7qIDm7
-         tvWAsTIxy63Clc+3CD1w99F+mHOLQsVJlkWimruNBtw8ANwhpThEMBx/6tL+a2nRl94K
-         qhrl2+YRVxM7DKDYkxY8sPTwBXXFrMkHIjDWimy1wMMl8XMYK8Xmlb843PSYc9uJ/WdW
-         C0MYceJfAyaT/fNV2Nd4aFF9jmpYU8G+pm/LXG4HH8khSG0r4vL4v3F012ulQk7MFtRN
-         j58A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KlAFMvyodKTeL/ciKdjnKqs7TvkNCdw0hAPkc5XC1LE=;
-        b=FPjIQWp68gCnURioo4EIDPFvBu/3pZbKp6gjAoVvSOuRAg2Eq3vtyaP9F2/tbBwkcL
-         Iu1URgWn4MYP1vm2n0C6/iw9QSXvBBNqZ8Pl0vmX74FdaX+9qDtehjDPdXPA9MMxhXdl
-         Sll7UJCKKtByCu/CApB4dzg3ruoSXd8w2JO4ePN5phl04VRGTC0r6k88EnaEwA8IZdWx
-         SRahMnE8zNcJuVurRc6YPqm82y+B+tbE4CwLMbKgmcHfANfOqlAIcnQd8lt54JNZr8eV
-         5BBPfAa7pTMB2NbkaWEIbHN4uyxWRiY/gP8XSMzVoyEXOp5y9GJImHdvv2fgyOIyva9Y
-         PCYQ==
-X-Gm-Message-State: AOAM531yRLDcE4OcdcBvT+plvdh+Ar5wBeSJ3xG1Pz72bf1H//bMRLJ4
-        fAsFUvgdJJkVnQjQf5CSFBly1/hnvm2M3w==
-X-Google-Smtp-Source: ABdhPJwpUuG1ql2/ggC6defeO6VGMDq4W3h6Hc1ubsW+ZWEPxJIjFEp9VDvD8lWYWtRrRwAJM8shfA==
-X-Received: by 2002:ae9:ebc4:: with SMTP id b187mr7633516qkg.303.1629261568176;
-        Tue, 17 Aug 2021 21:39:28 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j127sm2881219qkf.20.2021.08.17.21.39.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 21:39:27 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 3/3] btrfs-progs: add a test image with a corrupt block group item
-Date:   Wed, 18 Aug 2021 00:39:22 -0400
-Message-Id: <2234171d997113ba7256a28249ad1993dbe74b79.1629261403.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1629261403.git.josef@toxicpanda.com>
-References: <cover.1629261403.git.josef@toxicpanda.com>
+        id S236055AbhHRFS3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 01:18:29 -0400
+Received: from mout.gmx.net ([212.227.17.22]:45905 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229449AbhHRFS2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Aug 2021 01:18:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629263870;
+        bh=kq8x7szJDMF5QDZ4FReFnrQLmrW0bwkiT7aBbw7GX2A=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=ZARGD2rSMzLWAACgYdFlr/noh9hEH4SZhOBecpGMzPR23c/90ebRusz/HJIIefgxu
+         uMYvzEVbFsSdUj8bxsqTFSWIDCkop2A3UWsCZ7lksbFR4i/ZVtuuLTpUDSkhywswLV
+         6yihmgD80cvbcfu7SohuGTlXoVh5yEBNqdbO9JqA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0X8u-1n1Qin3NMy-00wUmb; Wed, 18
+ Aug 2021 07:17:50 +0200
+Subject: Re: [PATCH] btrfs-progs: Drop the type check in
+ init_alloc_chunk_ctl_policy_regular
+To:     dsterba@suse.cz, Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com, nborisov@suse.com
+References: <20210809182613.4466-1-mpdesouza@suse.com>
+ <20210817132419.GK5047@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <04abaf84-12e3-3983-dee4-a5073ec786f1@gmx.com>
+Date:   Wed, 18 Aug 2021 13:17:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210817132419.GK5047@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:bTobMJ3kBB8ZUTMAyNjmLwydwUqdEeI16ltAx0LpPgK3E9qYmzZ
+ 4IcVSH+CZBQcsinkWaCBKSZIwOwk/Vdw+o+cG81ApxwVuFcu0lq5K/WO52Lzb1CipLQJSqZ
+ GVEnlb8XO90Xxie9OdwL8YRtqToP7izB+LM910Lz3Tvmn3BkuZg04MrUNpqvDqDB+Eqawda
+ y2isnY+nX11n+s/lfUuxQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kCg3+9tDzBI=:Tqw0We/hIm+vZ4Yf0xqLke
+ wyM7ubQI+vyFMxZbBNfYNwhztfIiWj7dcCw7QzXGXHxX/en/NRM4EEjDaV58tkUfsVfN60mak
+ 1RgbdPFxr33Jg7B+i5+hkcgsv+I87/WFsHpEIVpGkYUkRCDHaUsEfJjrd9UMBrXuK3lbk9ry1
+ 2fZKSAkStPFHMFrkZ1AdUgqmEpEHsXyXEx6ylTJrLCaJqvXPNRnU96i4o3YpnhMER7Ow0Fms/
+ ySkZqGH8WgUIWjzF4YwaUBwzjBVA7wWoURjFLKoxEpc7eJz/rTQs3agxoLh+dD8XjtCSyu7fh
+ 4DdtaXvt0JCzsm62ssnnkzBbYZ8FJp1ECUA4cZEiZi23vLJk0XHJDIjUL9YSCRWy/pFdCMAIR
+ oHQXrjiIAhIAJ/+HusDWebog+TthkJGnxecNwbxLYRR5e+H5ePx1xUZKoRYN6bIGuk7I5TFpB
+ KAmMNvfBdQwuKkfdCgEpMmLb32HBGB4cWvIPwteHGAGME185P53qb/Rcp15NVvEeznnwqX5af
+ 2ZYnNRtZT1uo9MpPOqKrHFJzOkRmZERZStAt0lBwtLn57yCJD05nG4hZC3t0q9M1kExs8MClv
+ tlv40133chCDo6ij9dRsTU6cRshElsdFVLFLdS/ChC0pez63sFxc7WhgSxMB9DPgMwYbVYbB8
+ up9pt9K6l946vxN/KdFQDJiRIP0mMF7mHukdlh/dtYG2K1kqknJJiyoGfTNl6lGwU/vxoUIdI
+ AnZMIEzTHBZjZ90CRXeBDRvyNLQsGnQw56gk8qZHliuZBq/ok4RiXKp+87TgAaUuRIujwY8Xw
+ BKvh7vIdB5mVrs9KlZXe1SrSGAwpjISz8FTO6L9HKN9/UaYihT//eMFJSnhsGWAIRmAxWKE11
+ oR1q2LK2jOg0I13emjbZdGeyfeIG/f6TxaO/vX1jRDWHgfxOzEu4dDtmWKuAPYPIjKoA+Olj3
+ x06V9B97GTjODSEKgS6nAzDSzb3x3eiqRp2mwULQRxeS9xYQCRLcFqMZklkRc6IAZwtyelER/
+ FVjsz0edpA74j+63KwUe7Mc9atjKunVBZdYrzbNiSQ115B5+sbooHOs4yL9Cj9GJT16OMX5Rc
+ rr04lVEjAtGtZ3/ZR+07B7LbILghbh33T6O5T0+u7XHfdIJlx4V2HDD/w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This image has a broken used field of a block group item to validate
-fsck does the correct thing.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- .../050-invalid-block-group-used/default.img.xz  | Bin 0 -> 1036 bytes
- 1 file changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 tests/fsck-tests/050-invalid-block-group-used/default.img.xz
 
-diff --git a/tests/fsck-tests/050-invalid-block-group-used/default.img.xz b/tests/fsck-tests/050-invalid-block-group-used/default.img.xz
-new file mode 100644
-index 0000000000000000000000000000000000000000..6425ba16349395416fc1918ce4c386059d618409
-GIT binary patch
-literal 1036
-zcmV+n1oQj-H+ooF000E$*0e?f03iVu0001VFXf}+6aNFrT>wRyj;C3^v%$$4d1rE0
-zjjaF1$8Jv*pMMbE@{&83eAipquzP5y*Z^dMFaaah{5${uN^u50JUj3Gv&TKFetZNb
-zeGi-h_Sc-xdQ?TDr}!X-75pO<Qv3dfP)udQ#2BMlhKV!<)h0wx#0gBFB3oujWhIL&
-zL%Q_)XZGuT<s*G=df*h(28)|6jezRgn^fw3f_X9cr>3s7;Q#Cs@eB}(-tDiTrOkuL
-zr-`Q{!4@d7$vYR${O40b$KD!sxV##0^*`8ePjSki5__Mw0>a{sam+nk%_Taf1QUIl
-zCPC+p!>ol%J~2Y3anuU4qT<_;R2!C0z*;OS_X<C(1PY_piT;4cC;rb`fiOWnUh;Y5
-z+VpHb7TtwJG9h(H?eIvX{dw_9_d^y!4q2*1)lacoD~cQb2zYFYf$yU6F73JuP-a_~
-z^nRPN>lH|4cwp*YYCcEjpgm>gLEL94KJ)NIDw(fAxBE)HBeuH?SFG)P2n*qCcX@dj
-zl6!cB_HK~tM6u@FF~?28<QXd$N2j((D}P0X*4u&8MljFY;=CO4qv}A|Yfk0*J1L<0
-zvtlIvVt#RxD#E>(XL*Vme;}!4%~G!$l6uxm(%@F-`~K9;P=VVx6iDWsw2&F)MC!ne
-z{yU2uSdn?OJQ<Lt*^Y0*dZ}@9Mbh>k99D$H$r|?eQ%u-&&dW^Q%ogbbG<!ht<u}AO
-zPK!nm?T;rPEW*}JR&_-PG_1)0l`D=?gQ%=PFA7tIi*Hc#g_0U1=2f8&+0+M2vL0@Y
-zRepZ8%3sj#@uRLS03@G+a$5t}CT2~i>`T74qDMIaXhLRLP+<sRw5KZtAG@&9m`Ls0
-zS5b66v3%FLAinwOLU5f}@`Y!nIlBhSV}9k)|B|7ydoH$5f8x-VX7s|n=;9N;KXH?H
-z@kBA19X?ijYFlm44FX3(6!04T9(Yd!8hL5JWd}`cJ{=UOnZVNi<^S&%@5!isxf&15
-z3`Qf*v}A6h?C9<3y1jv7oiCsGu3lhGk{+-4VN_WAkphoN6}JCC>j+OmK|vlc6+Q+8
-z>i9;tP|5yL$Hg>IZhAK@v(3YzO&IxH_W<yblu5-O+ic3l3LzTL=eJ!H;1FmLNMh9z
-zP}b#vH2+}dMT<T6wQ}~GA0mWw5XZl*-GXoYp{R!3<B4{}7<uJK<0J_L%nX=dW8jjl
-zJo6(aM0F6xZK|Og`Pbn0U-IJOVOIUa)MDdsCv%q+fGEK_y4SF$G)B_i)~Dk);s!z~
-zd&otC2e}ecZOkpbFV;}uV=M0f0000E#S;ff2MZnm0p$mPs0aWTvKPg%#Ao{g00000
-G1X)_aZ2)fo
+On 2021/8/17 =E4=B8=8B=E5=8D=889:24, David Sterba wrote:
+> On Mon, Aug 09, 2021 at 03:26:13PM -0300, Marcos Paulo de Souza wrote:
+>> [PROBLEM]
+>> Our documentation says that a DATA block group can have up to 1G of
+>> size, or the at most 10% of the filesystem size. Currently, by default,
+>> mkfs.btrfs is creating an initial DATA block group of 8M of size,
+>> regardless of the filesystem size. It happens because we check for the
+>> ctl->type in init_alloc_chunk_ctl_policy_regular to be one of the
+>> BTRFS_BLOCK_GROUP_PROFILE_MASK bits, which is not the case for SINGLE
+>> (default) DATA block group:
+>>
+>> $ mkfs.btrfs -f /storage/btrfs.disk
+>> btrfs-progs v4.19.1
+>> See http://btrfs.wiki.kernel.org for more information.
+>>
+>> Label:              (null)
+>> UUID:               39e3492f-41f2-4bd7-8c25-93032606b9fe
+>> Node size:          16384
+>> Sector size:        4096
+>> Filesystem size:    55.00GiB
+>> Block group profiles:
+>>    Data:             single            8.00MiB
+>>    Metadata:         DUP               1.00GiB
+>>    System:           DUP               8.00MiB
+>> SSD detected:       no
+>> Incompat features:  extref, skinny-metadata
+>> Number of devices:  1
+>> Devices:
+>>     ID        SIZE  PATH
+>>      1    55.00GiB  /storage/btrfs.disk
+>>
+>> In this case, for single data profile, it should create a data block
+>> group of 1G, since the filesystem if bigger than 50G.
+>>
+>> [FIX]
+>> Remove the check for BTRFS_BLOCK_GROUP_PROFILE_MASK in
+>> init_alloc_chunk_ctl_policy_regular function. The ctl->stripe_size is
+>> later on assigned to ctl.num_bytes, which is used by
+>> btrfs_make_block_group to create the block group.
+>>
+>> By removing the check we allow the code to always configure the correct
+>> stripe_size regardless of the PROFILE, looking on the block group TYPE.
+>>
+>> With the fix applied, it now created the BG correctly:
+>>
+>> $ ./mkfs.btrfs -f /storage/btrfs.disk
+>> btrfs-progs v5.10.1
+>> See http://btrfs.wiki.kernel.org for more information.
+>>
+>> Label:              (null)
+>> UUID:               5145e343-5639-462d-82ee-3eb75dc41c31
+>> Node size:          16384
+>> Sector size:        4096
+>> Filesystem size:    55.00GiB
+>> Block group profiles:
+>>    Data:             single            1.00GiB
+>>    Metadata:         DUP               1.00GiB
+>>    System:           DUP               8.00MiB
+>> SSD detected:       no
+>> Zoned device:       no
+>> Incompat features:  extref, skinny-metadata
+>> Runtime features:
+>> Checksum:           crc32c
+>> Number of devices:  1
+>> Devices:
+>>     ID        SIZE  PATH
+>>      1    55.00GiB  /storage/btrfs.disk
+>>
+>> Using a disk >50G it creates a 1G single data block group. Another
+>> example:
+>>
+>> $ ./mkfs.btrfs -f /storage/btrfs2.disk
+>> btrfs-progs v5.10.1
+>> See http://btrfs.wiki.kernel.org for more information.
+>>
+>> Label:              (null)
+>> UUID:               c0910857-e512-4e76-9efa-50a475aafc87
+>> Node size:          16384
+>> Sector size:        4096
+>> Filesystem size:    5.00GiB
+>> Block group profiles:
+>>    Data:             single          512.00MiB
+>>    Metadata:         DUP             256.00MiB
+>>    System:           DUP               8.00MiB
+>> SSD detected:       no
+>> Zoned device:       no
+>> Incompat features:  extref, skinny-metadata
+>> Runtime features:
+>> Checksum:           crc32c
+>> Number of devices:  1
+>> Devices:
+>>     ID        SIZE  PATH
+>>      1     5.00GiB  /storage/btrfs2.disk
+>>
+>> The code now created a single data block group of 512M, which is exactl=
+y
+>> 10% of the size of the filesystem, which is 5G in this case.
+>>
+>> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+>> ---
+>>
+>>   This change mimics what the kernel currently does, which is set the s=
+tripe_size
+>>   regardless of the profile. Any thoughts on it? Thanks!
+>
+> Makes sense to unify that, it works well for the large sizes. Please
+> write tests that verify that the chunk sizes are correct after mkfs on
+> various device sizes. Patch added to devel, thanks.
+>
 
-literal 0
-HcmV?d00001
+It in fact makes fsck/025 to fail, bisection points to this patch
+surprisingly.
 
--- 
-2.26.3
+Now "mkfs.btrfs -f" on a 128M file will just fail.
 
+This looks like a big problem to me though...
+
+Thanks,
+Qu
