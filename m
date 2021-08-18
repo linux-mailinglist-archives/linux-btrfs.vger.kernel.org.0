@@ -2,387 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF023F0AC6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 20:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3963F0AEF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 20:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhHRSIX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 14:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhHRSIV (ORCPT
+        id S232328AbhHRSPk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 14:15:40 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38070 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232326AbhHRSPh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 14:08:21 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B737CC0613D9
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 11:07:46 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so9475447pjr.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 11:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bgi+u30ADL5qAUBsITAW8rYqpY0ExP8Ilge2KjgCxl0=;
-        b=aY7Gv/1P1ww0PFzv/SpBbUA8lvn4NGQ3y1ukivnK1MpNm9PZrjzO60JRCzjs1MhQQa
-         2aaT7vXl0rObrHk6OGFGlS2a9cfxsSGVpjRuCfRF1iNEe2UobdCUjC5iXKnqQRxLfH1X
-         nPm9+PPzBSBGZ9nFyg24Ty3sZG/DL4POwHy1FmJcbt/tg0JgIA2f5GCGrPfZwqJPjYEA
-         8fz60rZfghhmkzBjuFm/PGhNmfAJn/V6xaDwjzvQWrR6GMJsab6P5RzdFoFPC+6lx/At
-         htrclTm2OX1qSW4M23hQBADV9xkvYijNg/MaJSCQN9vQ/USQ7hRaQdQo4eg3dGVMNJwB
-         MxCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bgi+u30ADL5qAUBsITAW8rYqpY0ExP8Ilge2KjgCxl0=;
-        b=WZ/2inEMDmmSksN4HJ08p1eCZRKT2p54BdwZeGIx3l04B1TPNYA6873HcR6bpmrBmB
-         7VmFkQJMTpIqiqlTppkPXRFJ1fS1JwOb+dV6omEFuLLmRwq/2P2F4dQXXLlbkN0SSrRL
-         8FNo6sypG2bAuSj8LEHjycvt+o972lrQvbbNWyPRzQ1tlKYYq3oGGRGo8Sc8W/Y3ack/
-         qmPIh8bDR1+CBBpZpnKpfnpzg6/aGTtGwQJjijzfIlB04am+cbiaZK86sjLSp4+KYcos
-         ezjnX/MVofvt3xw/nShYQ9l1nd0IflAmOFP0xodwgqm/Y3yPxq0CxgOn2jclYKl3jc5B
-         4bIA==
-X-Gm-Message-State: AOAM533bUV5wSDLZQQR0m6abYpVtPvMWZIbvEpsl7zSN6HVRjGaaxAJO
-        31pThYO84msBro6pisBKn/ruFvFT6BKy3g==
-X-Google-Smtp-Source: ABdhPJz9AmKluTiUkqlSXVIa9lO7Hw37mDklIBre4pAgvVEe2KXQAYoxw1MAS0lJPPnyEadfvbgriQ==
-X-Received: by 2002:a17:90a:de16:: with SMTP id m22mr10550255pjv.38.1629310065758;
-        Wed, 18 Aug 2021 11:07:45 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:1e84])
-        by smtp.gmail.com with ESMTPSA id b12sm472931pff.63.2021.08.18.11.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 11:07:45 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 11:07:43 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v10 06/10] btrfs-progs: receive: encoded_write fallback
- to explicit decode and write
-Message-ID: <YR1Mb0i6Fk1LggJb@relinquished.localdomain>
-References: <cover.1629234193.git.osandov@fb.com>
- <27ad30578c6e4347ff4161183c55ba6dee2e9227.1629234282.git.osandov@fb.com>
+        Wed, 18 Aug 2021 14:15:37 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 045B51FFDA;
+        Wed, 18 Aug 2021 18:15:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629310500;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e+vGQeCzqTu4Tac6tcu1Tm2U2c4m9XDHxw+Z1wp0bwE=;
+        b=ehI2i3gt7nz4V8cSz0Bj2P+d6jw9Fhwfr+WN39Jy78ikDc6ubtnYEWuSE/mzuLXHUmG4Mq
+        4ozDFETACNXoUyjxfdmNVWDKlCmXQmXFvmpGhWPYOhjVp3Y2pVwrP+KZ3rc38q09yGa7js
+        i7SU7ziim5CckOgMNzRzWO5v9zvQnmg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629310500;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e+vGQeCzqTu4Tac6tcu1Tm2U2c4m9XDHxw+Z1wp0bwE=;
+        b=TQvc+nlNHSZFkyhGOG2dnr2aKVxgIgioH090vBClTKE04pFrCRjQ/Zmwm3e6+4BCOY1xNs
+        79P46UJyfXj7OECw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id F1234A3B9C;
+        Wed, 18 Aug 2021 18:14:59 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A4110DA72C; Wed, 18 Aug 2021 20:12:02 +0200 (CEST)
+Date:   Wed, 18 Aug 2021 20:12:01 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] btrfs-progs: tests: also check subpage warning for
+ type 2 test cases
+Message-ID: <20210818181200.GW5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210818064420.866803-1-wqu@suse.com>
+ <20210818064420.866803-2-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <27ad30578c6e4347ff4161183c55ba6dee2e9227.1629234282.git.osandov@fb.com>
+In-Reply-To: <20210818064420.866803-2-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 02:06:52PM -0700, Omar Sandoval wrote:
-> From: Boris Burkov <boris@bur.io>
+On Wed, Aug 18, 2021 at 02:44:18PM +0800, Qu Wenruo wrote:
+> There are two types of test cases:
 > 
-> An encoded_write can fail if the file system it is being applied to does
-> not support encoded writes or if it can't find enough contiguous space
-> to accommodate the encoded extent. In those cases, we can likely still
-> process an encoded_write by explicitly decoding the data and doing a
-> normal write.
+> - Type 1 (without test.sh)
+> - Type 2 (test.sh, mostly will override check_image())
 > 
-> Add the necessary fallback path for decoding data compressed with zlib,
-> lzo, or zstd. zlib and zstd have reusable decoding context data
-> structures which we cache in the receive context so that we don't have
-> to recreate them on every encoded_write.
+> For Type 2 tests, we check subpage related warnings of btrfs-check, but
+> didn't check it for Type 1 test cases.
 > 
-> Finally, add a command line flag for force-decompress which causes
-> receive to always use the fallback path rather than first attempting the
-> encoded write.
+> In fact, Type 1 test cases are more important, as they involve repair,
+> which can generate new tree blocks, and we want to make sure such new
+> tree blocks won't cause subpage related warnings.
 > 
-> Signed-off-by: Boris Burkov <boris@bur.io>
+> This patch will add the extra check for Type 1 test cases.
+> 
+> And it will make sure the subpage related warnings are really from this
+> test case, to prevent false alerts.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  Documentation/btrfs-receive.asciidoc |   4 +
->  cmds/receive.c                       | 266 ++++++++++++++++++++++++++-
->  2 files changed, 261 insertions(+), 9 deletions(-)
+>  tests/common | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/btrfs-receive.asciidoc b/Documentation/btrfs-receive.asciidoc
-> index e4c4d2c0..354a71dc 100644
-> --- a/Documentation/btrfs-receive.asciidoc
-> +++ b/Documentation/btrfs-receive.asciidoc
-> @@ -60,6 +60,10 @@ By default the mountpoint is searched in '/proc/self/mounts'.
->  If '/proc' is not accessible, eg. in a chroot environment, use this option to
->  tell us where this filesystem is mounted.
+> diff --git a/tests/common b/tests/common
+> index 805a447c84ce..a6f75c7ce237 100644
+> --- a/tests/common
+> +++ b/tests/common
+> @@ -423,13 +423,23 @@ check_image()
+>  {
+>  	local image
 >  
-> +--force-decompress::
-> +if the stream contains compressed data (see '--compressed-data' in
-> +`btrfs-send`(8)), always decompress it instead of writing it with encoded I/O.
+> +	tmp_output=$(mktemp --tmpdir btrfs-progs-test-check-image.XXXXXX)
 > +
->  --dump::
->  dump the stream metadata, one line per operation
->  +
-> diff --git a/cmds/receive.c b/cmds/receive.c
-> index b43c298f..7506f992 100644
-> --- a/cmds/receive.c
-> +++ b/cmds/receive.c
-> @@ -40,6 +40,10 @@
->  #include <sys/xattr.h>
->  #include <uuid/uuid.h>
+>  	image=$1
+>  	echo "testing image $(basename $image)" >> "$RESULTS"
+> -	"$TOP/btrfs" check "$image" >> "$RESULTS" 2>&1
+> +	"$TOP/btrfs" check "$image" &> "$tmp_output"
+
+So this captures the output but does not store it into the results file
+
+>  	[ $? -eq 0 ] && _fail "btrfs check should have detected corruption"
+
+and when this fails, we lack that information.
 >  
-> +#include <lzo/lzo1x.h>
-> +#include <zlib.h>
-> +#include <zstd.h>
+
+> +	cat "$tmp_output" >> "$RESULTS"
+
+So this should probably go before the 'check' call.
+
+> +	# Also make sure no subpage related warnings
+> +	check_test_results "$tmp_output" "$testname"
 > +
->  #include "kernel-shared/ctree.h"
->  #include "ioctl.h"
->  #include "cmds/commands.h"
-> @@ -79,6 +83,12 @@ struct btrfs_receive
->  	struct subvol_uuid_search sus;
->  
->  	int honor_end_cmd;
+>  	run_check "$TOP/btrfs" check --repair --force "$image"
+> -	run_check "$TOP/btrfs" check "$image"
+> +	run_check_stdout "$TOP/btrfs" check "$image" &> "$tmp_output"
 > +
-> +	int force_decompress;
-> +
-> +	/* Reuse stream objects for encoded_write decompression fallback */
-> +	ZSTD_DStream *zstd_dstream;
-> +	z_stream *zlib_stream;
->  };
->  
->  static int finish_subvol(struct btrfs_receive *rctx)
-> @@ -989,9 +999,222 @@ static int process_update_extent(const char *path, u64 offset, u64 len,
->  	return 0;
+> +	# Also make sure no subpage related warnings for the repaired image
+> +	check_test_results "$tmp_output" "$testname"
+> +	rm -f "$tmp_output"
 >  }
 >  
-> +static int decompress_zlib(struct btrfs_receive *rctx, const char *encoded_data,
-> +			   u64 encoded_len, char *unencoded_data,
-> +			   u64 unencoded_len)
-> +{
-> +	bool init = false;
-> +	int ret;
-> +
-> +	if (!rctx->zlib_stream) {
-> +		init = true;
-> +		rctx->zlib_stream = malloc(sizeof(z_stream));
-> +		if (!rctx->zlib_stream) {
-> +			error("failed to allocate zlib stream %m");
-> +			return -ENOMEM;
-> +		}
-> +	}
-> +	rctx->zlib_stream->next_in = (void *)encoded_data;
-> +	rctx->zlib_stream->avail_in = encoded_len;
-> +	rctx->zlib_stream->next_out = (void *)unencoded_data;
-> +	rctx->zlib_stream->avail_out = unencoded_len;
-> +
-> +	if (init) {
-> +		rctx->zlib_stream->zalloc = Z_NULL;
-> +		rctx->zlib_stream->zfree = Z_NULL;
-> +		rctx->zlib_stream->opaque = Z_NULL;
-> +		ret = inflateInit(rctx->zlib_stream);
-> +	} else {
-> +		ret = inflateReset(rctx->zlib_stream);
-> +	}
-> +	if (ret != Z_OK) {
-> +		error("zlib inflate init failed: %d", ret);
-> +		return -EIO;
-> +	}
-> +
-> +	while (rctx->zlib_stream->avail_in > 0 &&
-> +	       rctx->zlib_stream->avail_out > 0) {
-> +		ret = inflate(rctx->zlib_stream, Z_FINISH);
-> +		if (ret == Z_STREAM_END) {
-> +			break;
-> +		} else if (ret != Z_OK) {
-> +			error("zlib inflate failed: %d", ret);
-> +			return -EIO;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int decompress_zstd(struct btrfs_receive *rctx, const char *encoded_buf,
-> +			   u64 encoded_len, char *unencoded_buf,
-> +			   u64 unencoded_len)
-> +{
-> +	ZSTD_inBuffer in_buf = {
-> +		.src = encoded_buf,
-> +		.size = encoded_len
-> +	};
-> +	ZSTD_outBuffer out_buf = {
-> +		.dst = unencoded_buf,
-> +		.size = unencoded_len
-> +	};
-> +	size_t ret;
-> +
-> +	if (!rctx->zstd_dstream) {
-> +		rctx->zstd_dstream = ZSTD_createDStream();
-> +		if (!rctx->zstd_dstream) {
-> +			error("failed to create zstd dstream");
-> +			return -ENOMEM;
-> +		}
-> +	}
-> +	ret = ZSTD_initDStream(rctx->zstd_dstream);
-> +	if (ZSTD_isError(ret)) {
-> +		error("failed to init zstd stream: %s", ZSTD_getErrorName(ret));
-> +		return -EIO;
-> +	}
-> +	while (in_buf.pos < in_buf.size && out_buf.pos < out_buf.size) {
-> +		ret = ZSTD_decompressStream(rctx->zstd_dstream, &out_buf, &in_buf);
-> +		if (ret == 0) {
-> +			break;
-> +		} else if (ZSTD_isError(ret)) {
-> +			error("failed to decompress zstd stream: %s",
-> +			      ZSTD_getErrorName(ret));
-> +			return -EIO;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int decompress_lzo(const char *encoded_data, u64 encoded_len,
-> +			  char *unencoded_data, u64 unencoded_len,
-> +			  unsigned int page_size)
-> +{
-> +	uint32_t total_len;
-> +	size_t in_pos, out_pos;
-> +
-> +	if (encoded_len < 4) {
-> +		error("lzo header is truncated");
-> +		return -EIO;
-> +	}
-> +	memcpy(&total_len, encoded_data, 4);
-> +	total_len = le32toh(total_len);
-> +	if (total_len > encoded_len) {
-> +		error("lzo header is invalid");
-> +		return -EIO;
-> +	}
-> +
-> +	in_pos = 4;
-> +	out_pos = 0;
-> +	while (in_pos < total_len && out_pos < unencoded_len) {
-> +		size_t page_remaining;
-> +		uint32_t src_len;
-> +		lzo_uint dst_len;
-> +		int ret;
-> +
-> +		page_remaining = -in_pos % page_size;
-> +		if (page_remaining < 4) {
-> +			if (total_len - in_pos <= page_remaining)
-> +				break;
-> +			in_pos += page_remaining;
-> +		}
-> +
-> +		if (total_len - in_pos < 4) {
-> +			error("lzo segment header is truncated");
-> +			return -EIO;
-> +		}
-> +
-> +		memcpy(&src_len, encoded_data + in_pos, 4);
-> +		src_len = le32toh(src_len);
-> +		in_pos += 4;
-> +		if (src_len > total_len - in_pos) {
-> +			error("lzo segment header is invalid");
-> +			return -EIO;
-> +		}
-> +
-> +		dst_len = page_size;
-> +		ret = lzo1x_decompress_safe((void *)(encoded_data + in_pos),
-> +					    src_len,
-> +					    (void *)(unencoded_data + out_pos),
-> +					    &dst_len, NULL);
-> +		if (ret != LZO_E_OK) {
-> +			error("lzo1x_decompress_safe failed: %d", ret);
-> +			return -EIO;
-> +		}
-> +
-> +		in_pos += src_len;
-> +		out_pos += dst_len;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int decompress_and_write(struct btrfs_receive *rctx,
-> +				const char *encoded_data, u64 offset,
-> +				u64 encoded_len, u64 unencoded_file_len,
-> +				u64 unencoded_len, u64 unencoded_offset,
-> +				u32 compression)
-> +{
-> +	int ret = 0;
-> +	size_t pos;
-> +	ssize_t w;
-> +	char *unencoded_data;
-> +	int page_shift;
-> +
-> +	unencoded_data = calloc(unencoded_len, 1);
-> +	if (!unencoded_data) {
-> +		error("allocating space for unencoded data failed: %m");
-> +		return -errno;
-> +	}
-> +
-> +	switch (compression) {
-> +	case BTRFS_ENCODED_IO_COMPRESSION_ZLIB:
-> +		ret = decompress_zlib(rctx, encoded_data, encoded_len,
-> +				      unencoded_data, unencoded_len);
-> +		if (ret)
-> +			goto out;
-> +		break;
-> +	case BTRFS_ENCODED_IO_COMPRESSION_ZSTD:
-> +		ret = decompress_zstd(rctx, encoded_data, encoded_len,
-> +				      unencoded_data, unencoded_len);
-> +		if (ret)
-> +			goto out;
-> +		break;
-> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_4K:
-> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_8K:
-> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_16K:
-> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_32K:
-> +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_64K:
-> +		page_shift = compression - BTRFS_ENCODED_IO_COMPRESSION_LZO_4K + 12;
-> +		ret = decompress_lzo(encoded_data, encoded_len, unencoded_data,
-> +				     unencoded_len, 1U << page_shift);
-> +		if (ret)
-> +			goto out;
-> +		break;
-> +	default:
-> +		error("unknown compression: %d", compression);
-> +		ret = -EOPNOTSUPP;
-> +		goto out;
-> +	}
-> +
-> +	pos = unencoded_offset;
-> +	while (pos < unencoded_file_len) {
-> +		w = pwrite(rctx->write_fd, unencoded_data + pos,
-> +			   unencoded_file_len - pos, offset);
-> +		if (w < 0) {
-> +			ret = -errno;
-> +			error("writing unencoded data failed: %m");
-> +			goto out;
-> +		}
-> +		pos += w;
-> +		offset += w;
-> +	}
-> +out:
-> +	free(unencoded_data);
-> +	return ret;
-> +}
-> +
->  static int process_encoded_write(const char *path, const void *data, u64 offset,
-> -	u64 len, u64 unencoded_file_len, u64 unencoded_len,
-> -	u64 unencoded_offset, u32 compression, u32 encryption, void *user)
-> +				 u64 len, u64 unencoded_file_len,
-> +				 u64 unencoded_len, u64 unencoded_offset,
-> +				 u32 compression, u32 encryption, void *user)
->  {
->  	int ret;
->  	struct btrfs_receive *rctx = user;
-> @@ -1007,6 +1230,7 @@ static int process_encoded_write(const char *path, const void *data, u64 offset,
->  		.compression = compression,
->  		.encryption = encryption,
->  	};
-> +	bool encoded_write = !rctx->force_decompress;
->  
->  	if (encryption) {
->  		error("encoded_write: encryption not supported");
-> @@ -1023,13 +1247,21 @@ static int process_encoded_write(const char *path, const void *data, u64 offset,
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = ioctl(rctx->write_fd, BTRFS_IOC_ENCODED_WRITE, &encoded);
-> -	if (ret < 0) {
-> -		ret = -errno;
-> -		error("encoded_write: writing to %s failed: %m", path);
-> -		return ret;
-> +	if (encoded_write) {
-> +		ret = ioctl(rctx->write_fd, BTRFS_IOC_ENCODED_WRITE, &encoded);
-> +		if (ret >= 0)
-> +			return 0;
-> +		/* Fall back for these errors, fail hard for anything else. */
-> +		if (errno != ENOSPC && errno != EOPNOTSUPP && errno != EINVAL) {
-
-Just caught something that I missed in the conversion, this needs to be
-ENOTTY instead of EOPNOTSUPP.
+>  # Extract a usable image from packed formats
+> -- 
+> 2.32.0
