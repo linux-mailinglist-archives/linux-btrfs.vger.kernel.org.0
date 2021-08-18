@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9703F0D68
+	by mail.lfdr.de (Postfix) with ESMTP id E73FD3F0D69
 	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 23:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234180AbhHRVeX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 17:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
+        id S234203AbhHRVeZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 17:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234078AbhHRVeN (ORCPT
+        with ESMTP id S234104AbhHRVeP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 17:34:13 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5933C061764
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:38 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id t190so4769856qke.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:38 -0700 (PDT)
+        Wed, 18 Aug 2021 17:34:15 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFCEC061764
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:40 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id p22so4744403qki.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 14:33:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=q74zopsXykN2lNWEGAhZ8fcvtFizImgt1JxUWfbB6yc=;
-        b=J2Yo2wjZu3UQ9w6oU704YrEirr26CvjpuNR+zvqk2nv3t6LWBvs9yiV8W+u/ttzjxd
-         sZX4SrirxaG0eNBfory3t2cWqJAZ4dDeHYeuVQkV77WwHVZwE8f0ksvKcBIZR1cODNil
-         hnBzU91kAVJ2QuFAb8AnjUritDgg7vI+TwWt3tIpS7U20KuhOwPbLkifecX8hASM23bK
-         3+eCkFjUYMoPiVLlnNOCLr+3IJ1yqA5C4RpQyjIDGYFZsLaZjCo2p3sHP3t5Orm5gf16
-         Y+d897SYY6NEUL4/DvaeR1V36JY83bBVnmyxdo2+6DatwfPulkiHC4+CEiawhFAV4TsB
-         TxAA==
+        bh=Mi60Sc6SQjLu8sHMbP+Hr4eafAooRqAFReCSjpOWlZo=;
+        b=VwBqLG9gQGSaVzzMoN+XVKoBVyaMUEXLLHqLNPYeJjC566RVImIpOicdhdq5oLymKO
+         C7kyP4qybtaTdoqSMjyFSfNtIXE+qqo3NAC/ZoNdI3oHZhn44vUBo3JZ+tm9KlSZf6NA
+         ItOFUxzgulyHerfuzveS/rcCZigmbp0RbA17WcWm24m98hXWujgQq3K3Pp2v8l+68csU
+         5zHTiEBxhrJq5SyTuBvkVpf0Z3vUYc0bcdH8PZzQvVyiQpp4jss2DrKHGEw+yHIoDyHg
+         lOWVBbuKfT/jN2XtXvT2AoukmetZkuFHKdM0FENk/QZ9LRI/Atx5dxPvww6Ie3QKF9rY
+         Cr6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=q74zopsXykN2lNWEGAhZ8fcvtFizImgt1JxUWfbB6yc=;
-        b=T+MlwCl9VnJBJPQlluoAuOb4+qKzlod7v6FjVaXEAzpSH5+4CI7aGVA4+z/s2v3+Wb
-         Qk/2Lp9RRQ15J2wxzMm0xNdcRtxOW31KJg8K11tMvvvuKxpsEzSj22ap38w0TElTiGkH
-         91K3vvG+jxau54884x+lgKuSEjokPQqrPgqGftxDf4Cq7h3e4/TC91Ia+cNwsPCz8grS
-         K036+McTur1Xf1bGaiLf5zVGezlywsH1bI8Gu3HBZaujitsSwa6b3LaexplEzPBAmZ3u
-         7TtR8cNjfZ0F0fcWLdtPv1Ory45iZIU9FVmw/a0RKMcWZYFnXGSDfo6RR8189nAStJSH
-         GVBw==
-X-Gm-Message-State: AOAM532NuXY69kXO5hSeLRY2x+vQiXe9+j1N5CKHbSJ6tS0Owxugel83
-        DQ0Z4axr/oYHMNS84JD9LSt6HXvWWPB0aw==
-X-Google-Smtp-Source: ABdhPJydgtIyvBiGkFNYfXUnrrRXq6pGTXLvuh5FNSVVna0FwRqFWwf0MHbVsZz89Ob0k08MIbxZpg==
-X-Received: by 2002:a37:6697:: with SMTP id a145mr376286qkc.5.1629322417610;
-        Wed, 18 Aug 2021 14:33:37 -0700 (PDT)
+        bh=Mi60Sc6SQjLu8sHMbP+Hr4eafAooRqAFReCSjpOWlZo=;
+        b=oS6WJURWYpqPBKS+qH2+0tztmuCU8mMtUR/jGWzKdoRIB2aCKC/TVOabpAiTDnzatB
+         RsvsHxx0tGtXYxdyMwT9oWfBVY+qaP4tIP4SBm+HSyXJfwd0HFEENtOfUJfKppND1slA
+         RxFaUncRrfiILTBzvxbNfxPqUH2HOYTNEwi9vyjNFbveLH1O8VGUou9A8NAvUP+rapke
+         S1ZkQ3utbybpXQM4dH0owtlYPz5zyO1BAyMEWmixl6aCFWcuTTemHwGuj5A1lMsT5YJu
+         XZt+JyO+RypR5loJTsugAycNBYc5sVK9LjgN7g2mXz5FGKKQWU3LMvmfjQ+gakH5S/Ks
+         9jvQ==
+X-Gm-Message-State: AOAM530QwLAUR5Vpmd+MYGhmcI6r2wSapedLwwi4fp3cAxE7IRxSIyUH
+        jceqIxoHhBqvepJMI063wMU5cRqo57EzYw==
+X-Google-Smtp-Source: ABdhPJxkelYO0OWAGQBc0cZTh4l2A9puHexTm7AWu8y/2K4oWlS9u5WbGWU9YikTltLVI/3XBUYrGQ==
+X-Received: by 2002:a37:44d:: with SMTP id 74mr347883qke.267.1629322419096;
+        Wed, 18 Aug 2021 14:33:39 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y13sm615104qkj.124.2021.08.18.14.33.37
+        by smtp.gmail.com with ESMTPSA id d20sm579935qkl.13.2021.08.18.14.33.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 14:33:37 -0700 (PDT)
+        Wed, 18 Aug 2021 14:33:38 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 07/12] btrfs-progs: add the ability to corrupt fields of the super block
-Date:   Wed, 18 Aug 2021 17:33:19 -0400
-Message-Id: <7c5a5c52f3cf9ba6b0188b5509e39de93f6bb662.1629322156.git.josef@toxicpanda.com>
+Subject: [PATCH v2 08/12] btrfs-progs: make check detect and fix invalid used for block groups
+Date:   Wed, 18 Aug 2021 17:33:20 -0400
+Message-Id: <9b24d30f3703d7d714c4bb37ce817d1eaa92980b.1629322156.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1629322156.git.josef@toxicpanda.com>
 References: <cover.1629322156.git.josef@toxicpanda.com>
@@ -62,133 +62,209 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Doing the extent tree v2 work I generated an invalid super block with
-the wrong bytes_used set, and only noticed because it affected the block
-groups as well.  Neither modes of fsck check for a valid bytes_used, so
-add the ability to corrupt this field so I can generate a testcase for
-fsck.
+The lowmem mode validates the used field of the block group item, but
+the normal mode does not.  Fix this by keeping a running tally of what
+we think the used value for the block group should be, and then if it
+mismatches report an error and fix the problem if we have repair set.
+We have to keep track of pending extents because we process leaves as we
+see them, so it could be much later in the process that we find the
+block group item to associate the extents with.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- btrfs-corrupt-block.c | 66 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 65 insertions(+), 1 deletion(-)
+ check/common.h |  5 +++
+ check/main.c   | 89 +++++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 90 insertions(+), 4 deletions(-)
 
-diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
-index 80622f29..7e576897 100644
---- a/btrfs-corrupt-block.c
-+++ b/btrfs-corrupt-block.c
-@@ -355,6 +355,24 @@ enum btrfs_block_group_field {
- 	BTRFS_BLOCK_GROUP_ITEM_BAD,
+diff --git a/check/common.h b/check/common.h
+index e72379a0..ba4e291e 100644
+--- a/check/common.h
++++ b/check/common.h
+@@ -37,10 +37,14 @@ struct block_group_record {
+ 	u64 offset;
+ 
+ 	u64 flags;
++
++	u64 disk_used;
++	u64 actual_used;
  };
  
-+enum btrfs_super_field {
-+	BTRFS_SUPER_FIELD_FLAGS,
-+	BTRFS_SUPER_FIELD_TOTAL_BYTES,
-+	BTRFS_SUPER_FIELD_BYTES_USED,
-+	BTRFS_SUPER_FIELD_BAD,
-+};
-+
-+static enum btrfs_super_field convert_super_field(char *field)
+ struct block_group_tree {
+ 	struct cache_tree tree;
++	struct extent_io_tree pending_extents;
+ 	struct list_head block_groups;
+ };
+ 
+@@ -141,6 +145,7 @@ u64 calc_stripe_length(u64 type, u64 length, int num_stripes);
+ static inline void block_group_tree_init(struct block_group_tree *tree)
+ {
+ 	cache_tree_init(&tree->tree);
++	extent_io_tree_init(&tree->pending_extents);
+ 	INIT_LIST_HEAD(&tree->block_groups);
+ }
+ 
+diff --git a/check/main.c b/check/main.c
+index 3f6db8f8..af9e0ff3 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -5083,9 +5083,27 @@ static void free_block_group_record(struct cache_extent *cache)
+ 
+ void free_block_group_tree(struct block_group_tree *tree)
+ {
++	extent_io_tree_cleanup(&tree->pending_extents);
+ 	cache_tree_free_extents(&tree->tree, free_block_group_record);
+ }
+ 
++static void update_block_group_used(struct block_group_tree *tree,
++				    u64 bytenr, u64 num_bytes)
 +{
-+	if (!strncmp(field, "flags", FIELD_BUF_LEN))
-+		return BTRFS_SUPER_FIELD_FLAGS;
-+	if (!strncmp(field, "total_bytes", FIELD_BUF_LEN))
-+		return BTRFS_SUPER_FIELD_TOTAL_BYTES;
-+	if (!strncmp(field, "bytes_used", FIELD_BUF_LEN))
-+		return BTRFS_SUPER_FIELD_BYTES_USED;
-+	return BTRFS_SUPER_FIELD_BAD;
++	struct cache_extent *bg_item;
++	struct block_group_record *bg_rec;
++
++	bg_item = lookup_cache_extent(&tree->tree, bytenr, num_bytes);
++	if (!bg_item) {
++		set_extent_dirty(&tree->pending_extents, bytenr,
++				 bytenr + num_bytes - 1);
++		return;
++	}
++	bg_rec = container_of(bg_item, struct block_group_record,
++			      cache);
++	bg_rec->actual_used += num_bytes;
 +}
 +
- static enum btrfs_block_group_field convert_block_group_field(char *field)
+ int insert_device_extent_record(struct device_extent_tree *tree,
+ 				struct device_extent_record *de_rec)
  {
- 	if (!strncmp(field, "used", FIELD_BUF_LEN))
-@@ -460,6 +478,41 @@ static u8 generate_u8(u8 orig)
+@@ -5270,6 +5288,7 @@ btrfs_new_block_group_record(struct extent_buffer *leaf, struct btrfs_key *key,
+ 
+ 	ptr = btrfs_item_ptr(leaf, slot, struct btrfs_block_group_item);
+ 	rec->flags = btrfs_block_group_flags(leaf, ptr);
++	rec->disk_used = btrfs_block_group_used(leaf, ptr);
+ 
+ 	INIT_LIST_HEAD(&rec->list);
+ 
+@@ -5281,6 +5300,7 @@ static int process_block_group_item(struct block_group_tree *block_group_cache,
+ 				    struct extent_buffer *eb, int slot)
+ {
+ 	struct block_group_record *rec;
++	u64 start, end;
+ 	int ret = 0;
+ 
+ 	rec = btrfs_new_block_group_record(eb, key, slot);
+@@ -5289,6 +5309,22 @@ static int process_block_group_item(struct block_group_tree *block_group_cache,
+ 		fprintf(stderr, "Block Group[%llu, %llu] existed.\n",
+ 			rec->objectid, rec->offset);
+ 		free(rec);
++		return ret;
++	}
++
++	while (!find_first_extent_bit(&block_group_cache->pending_extents,
++				      rec->objectid, &start, &end,
++				      EXTENT_DIRTY)) {
++		u64 len;
++
++		if (start >= rec->objectid + rec->offset)
++			break;
++		start = max(start, rec->objectid);
++		len = min(end - start + 1,
++			  rec->objectid + rec->offset - start);
++		rec->actual_used += len;
++		clear_extent_dirty(&block_group_cache->pending_extents, start,
++				   start + len - 1);
+ 	}
+ 
+ 	return ret;
+@@ -5352,6 +5388,7 @@ process_device_extent_item(struct device_extent_tree *dev_extent_cache,
+ 
+ static int process_extent_item(struct btrfs_root *root,
+ 			       struct cache_tree *extent_cache,
++			       struct block_group_tree *block_group_cache,
+ 			       struct extent_buffer *eb, int slot)
+ {
+ 	struct btrfs_extent_item *ei;
+@@ -5380,6 +5417,8 @@ static int process_extent_item(struct btrfs_root *root,
+ 		num_bytes = key.offset;
+ 	}
+ 
++	update_block_group_used(block_group_cache, key.objectid, num_bytes);
++
+ 	if (!IS_ALIGNED(key.objectid, gfs_info->sectorsize)) {
+ 		error("ignoring invalid extent, bytenr %llu is not aligned to %u",
+ 		      key.objectid, gfs_info->sectorsize);
+@@ -6348,13 +6387,13 @@ static int run_next_block(struct btrfs_root *root,
+ 				continue;
+ 			}
+ 			if (key.type == BTRFS_EXTENT_ITEM_KEY) {
+-				process_extent_item(root, extent_cache, buf,
+-						    i);
++				process_extent_item(root, extent_cache,
++						    block_group_cache, buf, i);
+ 				continue;
+ 			}
+ 			if (key.type == BTRFS_METADATA_ITEM_KEY) {
+-				process_extent_item(root, extent_cache, buf,
+-						    i);
++				process_extent_item(root, extent_cache,
++						    block_group_cache, buf, i);
+ 				continue;
+ 			}
+ 			if (key.type == BTRFS_EXTENT_CSUM_KEY) {
+@@ -8619,6 +8658,41 @@ static int deal_root_from_list(struct list_head *list,
  	return ret;
  }
  
-+static int corrupt_super_block(struct btrfs_root *root, char *field)
++static int check_block_groups(struct block_group_tree *bg_cache)
 +{
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	enum btrfs_super_field corrupt_field;
-+	u64 orig, bogus;
++	struct btrfs_trans_handle *trans;
++	struct cache_extent *item;
++	struct block_group_record *bg_rec;
++	int ret = 0;
 +
-+	corrupt_field = convert_super_field(field);
-+	if (corrupt_field == BTRFS_SUPER_FIELD_BAD) {
-+		fprintf(stderr, "Invalid field %s\n", field);
-+		return -EINVAL;
++	for (item = first_cache_extent(&bg_cache->tree); item;
++	     item = next_cache_extent(item)) {
++		bg_rec = container_of(item, struct block_group_record,
++				      cache);
++		if (bg_rec->disk_used == bg_rec->actual_used)
++			continue;
++		fprintf(stderr,
++			"block group[%llu %llu] used %llu but extent items used %llu\n",
++			bg_rec->objectid, bg_rec->offset, bg_rec->disk_used,
++			bg_rec->actual_used);
++		ret = -1;
 +	}
 +
-+	switch (corrupt_field) {
-+	case BTRFS_SUPER_FIELD_FLAGS:
-+		orig = btrfs_super_flags(fs_info->super_copy);
-+		bogus = generate_u64(orig);
-+		btrfs_set_super_flags(fs_info->super_copy, bogus);
-+		break;
-+	case BTRFS_SUPER_FIELD_TOTAL_BYTES:
-+		orig = btrfs_super_total_bytes(fs_info->super_copy);
-+		bogus = generate_u64(orig);
-+		btrfs_set_super_total_bytes(fs_info->super_copy, bogus);
-+		break;
-+	case BTRFS_SUPER_FIELD_BYTES_USED:
-+		orig = btrfs_super_bytes_used(fs_info->super_copy);
-+		bogus = generate_u64(orig);
-+		btrfs_set_super_bytes_used(fs_info->super_copy, bogus);
-+		break;
-+	default:
-+		return -EINVAL;
++	if (!repair || !ret)
++		return ret;
++
++	trans = btrfs_start_transaction(gfs_info->extent_root, 1);
++	if (IS_ERR(trans)) {
++		ret = PTR_ERR(trans);
++		fprintf(stderr, "Failed to start a transaction\n");
++		return ret;
 +	}
 +
-+	return write_all_supers(fs_info);
++	ret = btrfs_fix_block_accounting(trans);
++	btrfs_commit_transaction(trans, gfs_info->extent_root);
++	return ret ? ret : -EAGAIN;
 +}
 +
- static int corrupt_block_group(struct btrfs_root *root, u64 bg, char *field)
- {
- 	struct btrfs_trans_handle *trans;
-@@ -1240,6 +1293,7 @@ int main(int argc, char **argv)
- 	int corrupt_di = 0;
- 	int delete = 0;
- 	int should_corrupt_key = 0;
-+	int corrupt_super = 0;
- 	u64 metadata_block = 0;
- 	u64 inode = 0;
- 	u64 file_extent = (u64)-1;
-@@ -1274,11 +1328,12 @@ int main(int argc, char **argv)
- 			{ "root", no_argument, NULL, 'r'},
- 			{ "csum", required_argument, NULL, 'C'},
- 			{ "block-group", required_argument, NULL, 'B'},
-+			{ "super", no_argument, NULL, 's'},
- 			{ "help", no_argument, NULL, GETOPT_VAL_HELP},
- 			{ NULL, 0, NULL, 0 }
- 		};
- 
--		c = getopt_long(argc, argv, "l:c:b:eEkuUi:f:x:m:K:I:D:d:r:C:B:",
-+		c = getopt_long(argc, argv, "l:c:b:eEkuUi:f:x:m:K:I:D:d:r:C:B:s",
- 				long_options, NULL);
- 		if (c < 0)
- 			break;
-@@ -1344,6 +1399,9 @@ int main(int argc, char **argv)
- 			case 'B':
- 				block_group = arg_strtou64(optarg);
- 				break;
-+			case 's':
-+				corrupt_super = 1;
-+				break;
- 			case GETOPT_VAL_HELP:
- 			default:
- 				print_usage(c != GETOPT_VAL_HELP);
-@@ -1491,6 +1549,12 @@ int main(int argc, char **argv)
- 		ret = corrupt_block_group(root, block_group, field);
- 		goto out_close;
+ /**
+  * parse_tree_roots - Go over all roots in the tree root and add each one to
+  *		      a list.
+@@ -8910,6 +8984,13 @@ again:
+ 		goto out;
  	}
-+	if (corrupt_super) {
-+		if (*field == 0)
-+			print_usage(1);
-+		ret = corrupt_super_block(root, field);
-+		goto out_close;
+ 
++	ret = check_block_groups(&block_group_cache);
++	if (ret) {
++		if (ret == -EAGAIN)
++			goto loop;
++		goto out;
 +	}
- 	/*
- 	 * If we made it here and we have extent set then we didn't specify
- 	 * inode and we're screwed.
++
+ 	ret = check_devices(&dev_cache, &dev_extent_cache);
+ 	if (ret && err)
+ 		ret = err;
 -- 
 2.26.3
 
