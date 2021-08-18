@@ -2,119 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDA63EFA54
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 07:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1759C3EFC53
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 08:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237797AbhHRFqd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 01:46:33 -0400
-Received: from mout.gmx.net ([212.227.17.20]:44149 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237588AbhHRFqd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 01:46:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629265552;
-        bh=SHWGHwkpF7nBzloiYtdhV+Ng9rFY934QL1dlnrsyiXs=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=AKuUnkOYWcJNYt6yxpEzWBRPIZXt2oBIQrDa53ab5Xcnr5PNazYfz79GSTd0oRKVO
-         mhYxHgAtuIg/O2tEbEa/xJSzq+KlPNWhLsqTg86VbxWWfQzHgb7ILxpqa41o4zFxLn
-         c+YAxxb3EMZusvm0pBOTArPk1jFgo4v88qpsBMnE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MaJ81-1mbUJm3vRV-00WBDF; Wed, 18
- Aug 2021 07:45:52 +0200
-Subject: Re: [PATCH 0/3] btrfs-progs: make check handle invalid bg items
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1629261403.git.josef@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <a521379e-f584-b84d-5763-5420fbe4bdb2@gmx.com>
-Date:   Wed, 18 Aug 2021 13:45:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239137AbhHRGYz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 02:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238419AbhHRGYs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Aug 2021 02:24:48 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECFDC0617AF
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 23:24:13 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id w13-20020a17090aea0db029017897a5f7bcso1617627pjy.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Aug 2021 23:24:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wNrSyu18+TQvxqozBk6dKmc83xjPuqXEkZM9+CZkQs8=;
+        b=hq0RZc8pvhUdG6LQCrGBNQbN7VTMq2CkOF4QQtsj4WrxV2UTBN34Md8Gi7LkipMBy6
+         xL7jSFJnNHOowLO3Jca2aK8bMlaJLC+laeAIEoH1LMm2sWoMULTrkMcKoRbBAsM8UOpd
+         ihsdkkeDmGTdleDP1YZNWHcSi4UiGfzn3DsyI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wNrSyu18+TQvxqozBk6dKmc83xjPuqXEkZM9+CZkQs8=;
+        b=h+ruMYCz47lXMKFaSsrTHuEoED1TQMTuj9a1ObTX0Fc+1MrAG0f+i/DkLHI2TpjQ6t
+         QJhMJ5dUeVnDFA8O1tQpn3k57Tz1/lsAZ9XzKtoSjgQWPaW/I62zcVghtDFuoOpSd2TH
+         gVd8gGrGXYWOWvZpVQ0XaviQxq7Svh7zjNWQmfGsNTpNFQZrKKhLc6+rj9mxHOiU36Ej
+         UiWiXZr6I5tvpIpBzCGwKHJ8WKXGRR1Nx5YYDkCLS9M86oHfZ8dCMi80g07vGz1vs1Rd
+         0cCY7utZuov43h3SyGpyupVaKs9b0pDxnhbDOjk9/z20VNIJu2DBR5vFNjoAZcSVJRkU
+         TyuQ==
+X-Gm-Message-State: AOAM532yxQ9FFyZ61MH8njFFW+IjlCk9wlqQJ/tHcExwhuomSFQP6OSi
+        sSknfsJXz7I7IVjKjRS9yXWXKw==
+X-Google-Smtp-Source: ABdhPJxMkEdSe0VUFwn+z4vxkdsUFqJ2UwImPieDkAd2A7unXagJo2uR8zh40lbVDVJdC8iJXw8UiA==
+X-Received: by 2002:a17:902:cec3:b0:12d:92c4:1ea6 with SMTP id d3-20020a170902cec300b0012d92c41ea6mr5911733plg.36.1629267853392;
+        Tue, 17 Aug 2021 23:24:13 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y13sm2710073pjr.50.2021.08.17.23.24.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 23:24:12 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 49/63] btrfs: Use memset_startat() to clear end of struct
+Date:   Tue, 17 Aug 2021 23:05:19 -0700
+Message-Id: <20210818060533.3569517-50-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210818060533.3569517-1-keescook@chromium.org>
+References: <20210818060533.3569517-1-keescook@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1629261403.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kuvkyOJJ1a5qPe7jM0b92s0b/HG/SKr3jdtM6Dj9ZR0IO1NnJHe
- 8hv10VVV7lYzork3LIWikvijdcCyKebMBQ8B5IeM+c4KKzWG8c8QH/9waI+tEjPons3Dola
- ari3B2fzlzbkFVQzOoDE8Gt2rErnbKWYq81WyaSqCJIE0szYrx0QtcWqDmsxyZLw6U6+9G2
- 8hPFJAXHiRHxsWCDDw+dw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:d7XLhdAowaM=:kRCEuH3AroFs+qXIAp02Fy
- bI5M4Na/IF1UAii0UxIOEaOocir8UYTcfR+0LQKSXPM2TJDQK37l9aT93lsdcHSD+iwCvZwX2
- mvAcVH/KF9TQdSHIA0zsKo1XN0NUy3yrqklUkNgTTMtXlSE6LKAZiRNyiM/pOxHRPaahjCLwS
- vnY94VMVkShbrX9NWrRPYOMISOp6Q25C5Kl8Jjx2NEkUrXb0lttwzKEpJqbgAJxoEcakWEdNe
- QxWudeGOZFNZjXuSQC3zxL6gQLV0FxTEywhFrmIogc5W0vFtfzY9OwXAK9ULn7V0mQJiDbRgx
- IeRgy8Ls09Mxmn+xZ/ZTqDw6eZws57mnknShg+xZkEvQrU2ZM1IhMe6jpiKEibYCwgp6t42xB
- 1BKuiRAFOGhJHqghMIt2r2in4WN+i26+Ave+5x430vSC+3PLktyeGgjxlsdYfIkDhVkjx+35E
- iTBb5dTEeKwxOKesuEbs1sTpna4c69pIq5JrGYhrunEqHPBugOv0QG6S0EAdRBBkA6JtdDGh2
- SVsFeYT+8ATy4U1/nknpuwRtBitDA6iRKYFFHL8hHyaTNrTHGY/xyHqx2DxbmytAJyyH/0RI3
- 3Mv1PtOAK7pp+UXmT+eeQyer20PX8rBMUhf13rqiREMq8qHsqu/xKAKBr73iGoBPoBQegRGqp
- NanjFEjLDA2Hmlt4qZz0HPcNyLd5u7Kp03OAOVJpBlOgj1OUzXNcqKRqHiUE4sbHGNA7jF8bu
- Pu4ycZp/zVED3Ps41hRAk2Sn5AZtXxiyrOz1QNr+498eZDtuhIflVNFiEvb8tJdnmWwDOfEcQ
- 9pYxMeB4bji+gIB/H7iZfcGDbeE+VokH47jsRYx/MknrupFXytULgZ9W3DQYiyVPS3sTO6gkh
- kC6lzMAPCjzp00VLX+6eRoTa5+ZnRQ8H4vqkKxcekmxPLv62JLSUvEwh2HmH5zolO9tkKuUFv
- DVsNyPzo3JVuOT7jQQtNljavNIBoBT92q4r1kEu+DUZlzBHmGQuMiKR2hQLau7Oa192qNqtZx
- RfDLxx1HC/4xJOHMm0eCB5rqrHdTCeoPe3BQzZhk78uJCNeRo3aEmWMmK1cRz2faHkbt10Bd8
- QcpWLAn5NQpULDswEQvTdrkoPhp32idEFtDlwJ3qV7dBJzYUKiBeFZgMA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1202; h=from:subject; bh=j07ODF9kjbRRiHohObgJ1N/RHPZCTrQAmspnQvku4YA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHKMpNf/1TOA8EHO13yPM2WoVQcddjcJSpXNg/q95 NGD5Kx+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyjKQAKCRCJcvTf3G3AJiFDD/ 43YRq8chsycAfEPzeH3ODP8oX8vzyejO0KZxGwB29jISLONkndclAADo87JB841bplfSqHF4g/N0Yr 9BPUFM/u9aD6MYInBsgRcfvidkMVdvLwJHJroTXouReKf+wENJpCE42XqDFb6/OHW+qszfq48l2ZsZ vlrJcOJH5B/7MGz2vGlPOqarS6QPhKxELyHgWma5US/BF+fmqXoGyLI96PzJHBVwD8Fv1vRW+FZyYX mS0c778XSYdo50TMLiLEeybc58/w6WbytsuOe2gDRaDra0L+tnQU3bUemlEwF/otdXngLgjznL3aHr 03wBbU/uuuYnsF2VxKSH3eTmyOXxM0Fc0gfhMAHlPYOx3FWaj25UujliZBiwYTeajzJsMlNaMxhyYC CNKnLKNfyeqkcnmjrNFG0fLVNoy2o0OR5zMuoedsu9e9ywbM82GfxRkHbOU9ZMZ5GgY2NMQXjzSHXm JS7ECNId/+w48q42Qz1RDDbkk71kX5clz/7ywEULnxcdaVF9VLida+SAjBnEmtDTTT5a3LFsbnweA7 31UgpReo5DWgV9+9dvXi/NGJgP+uufVyB7FGtNrTHKNpqkfmCVfC6YFh7uVwrtuLat1U/8LUy3Rdgf RT0NM3pRRzNQ/fI9ZSg5+8wsIv5qwbvYlgUlhc046qXy22//QbKOPQkqvAQQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memset(), avoid intentionally writing across
+neighboring fields.
 
+Use memset_startat() so memset() doesn't get confused about writing
+beyond the destination member that is intended to be the starting point
+of zeroing through the end of the struct.
 
-On 2021/8/18 =E4=B8=8B=E5=8D=8812:39, Josef Bacik wrote:
-> Hello,
->
-> While writing code for extent tree v2
+Cc: Chris Mason <clm@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/btrfs/root-tree.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Any doc on the extent tree v2?
+diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+index 702dc5441f03..12ceb14a1141 100644
+--- a/fs/btrfs/root-tree.c
++++ b/fs/btrfs/root-tree.c
+@@ -39,10 +39,8 @@ static void btrfs_read_root_item(struct extent_buffer *eb, int slot,
+ 		need_reset = 1;
+ 	}
+ 	if (need_reset) {
+-		memset(&item->generation_v2, 0,
+-			sizeof(*item) - offsetof(struct btrfs_root_item,
+-					generation_v2));
+-
++		/* Clear all members from generation_v2 onwards. */
++		memset_startat(item, 0, generation_v2);
+ 		generate_random_guid(item->uuid);
+ 	}
+ }
+-- 
+2.30.2
 
-Maybe it's a good chance for me to prompt my previous skinny block group
-tree?
-
-As that would greatly reduce mount time, and since it will introduce
-incompat flags anyway, it may be a good time to pack those two features
-together?
-
-> I noticed that I was generating a fs with
-> an invalid block group ->used value.  However fsck wasn't catching this,=
- because
-> we don't actuall check the used value of the block group items in normal=
- mode.
-> lowmem mode does this properly thankfully, so this only needs to be adde=
-d to the
-> normal fsck mode.
-
-Lowmem mode has a lot of hidden extra checks waiting to be found. :)
-
->
-> I've added code to btrfs-corrupt-block to generate the corrupt image I n=
-eed for
-> the test case.  Then of course the actual patch to detect and fix the pr=
-oblem.
-> Thanks,
->
-> Josef
->
-
-For the whole series:
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-> Josef Bacik (3):
->    btrfs-progs: add the ability to corrupt block group items
->    btrfs-progs: make check detect and fix invalid used for block groups
->    btrfs-progs: add a test image with a corrupt block group item
->
->   btrfs-corrupt-block.c                         | 108 +++++++++++++++++-
->   check/common.h                                |   5 +
->   check/main.c                                  |  89 ++++++++++++++-
->   .../default.img.xz                            | Bin 0 -> 1036 bytes
->   4 files changed, 197 insertions(+), 5 deletions(-)
->   create mode 100644 tests/fsck-tests/050-invalid-block-group-used/defau=
-lt.img.xz
->
