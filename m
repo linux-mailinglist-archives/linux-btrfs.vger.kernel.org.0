@@ -2,109 +2,239 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A90C3F06B8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 16:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62DD3F0731
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Aug 2021 16:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234069AbhHROb4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Aug 2021 10:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231303AbhHROb4 (ORCPT
+        id S239672AbhHROza (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 18 Aug 2021 10:55:30 -0400
+Received: from out20-111.mail.aliyun.com ([115.124.20.111]:48890 "EHLO
+        out20-111.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239565AbhHROz3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Aug 2021 10:31:56 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809D8C061764
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 07:31:21 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id o123so3144594qkf.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 07:31:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=4+JJ75JWVkq5ZOMhPvZAqJUQ4/2oSB+1YyuKCcdYdck=;
-        b=eFix7tKDW7+2O6sZTFCJI5yK8Ud1WXa4hwYEffCzu6ihMzO1u2GswfgCGlPq9cEDv1
-         oWP3cAloNPACoM+a4w2vg5uwz7+nUCyLc0SsRt0woUy5TEQuDMDzkflXAnngVCyVDSDQ
-         0UxCt0hkF7YF9XsqQJTBZ6D5AgCyireCQ2lX/baRrI98EIx1kDccT4li5zdXpWboTPHL
-         fxKb+HNCvy7B6dnw5QhMgW7+JX+aA4I5d2z3p8B3O83VBglxxd45fvh8AlATfi8gqJb1
-         TVw4QpTcP47wcifnCk3Tc34SbPYNwpsQc+xb3B30cU1cgNxJdO5jGzZ+fVn91EeS8WfQ
-         d0kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=4+JJ75JWVkq5ZOMhPvZAqJUQ4/2oSB+1YyuKCcdYdck=;
-        b=LbzceRfstoAHnzm1SrHI/PTDv9q+/PB5yG80ZdtnsILHh+uNlk9OzGbGggbJzXPizX
-         I10zLc0XUri6q+AweR00x6J9NOj/Gwu/pT1hUPMWG2RzIui3oERBsW/s6LEeXJlFwAFH
-         UvG8LY3TXUCZSh/Di8gLknSPX1s1AKQD/+AH3NfFW2v6S01nWS5n61W0SdrVno9m8p2O
-         en4c4KcC2QaragAYUNhee0fn96zdZVJzkrFlZHZWie+G0RYVaqaYzrWfsNHAp/RbjH84
-         VNeKkt/vgbRNID2rlyboatRTVVf3oD334ogzGjHtkv7RYWIDlaMoI+nx7gZNVNi34pQP
-         WrfA==
-X-Gm-Message-State: AOAM533jMMjA3anTlrlshcSUiG1AEggDrRHly312Zd5n1UD6QnPrRov5
-        HFR4xL1iO9FPCJv9E7/2ggb54l+aTMKlhqxeqw0=
-X-Google-Smtp-Source: ABdhPJxEZezhcxbYVtfqTKAEt4YSPE/2fm8BgE6VaqZ2hWE/3mpsmhcm0nxiw2iPREDwUaQVeR3aPXrCa/480G3iNLg=
-X-Received: by 2002:a37:ab15:: with SMTP id u21mr9658288qke.439.1629297080579;
- Wed, 18 Aug 2021 07:31:20 -0700 (PDT)
+        Wed, 18 Aug 2021 10:55:29 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04525916|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.684325-0.00469371-0.310981;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.L2MpJn6_1629298491;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.L2MpJn6_1629298491)
+          by smtp.aliyun-inc.com(10.147.41.121);
+          Wed, 18 Aug 2021 22:54:52 +0800
+Date:   Wed, 18 Aug 2021 22:54:55 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     "NeilBrown" <neilb@suse.de>
+Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for btrfs export
+Cc:     "Christoph Hellwig" <hch@infradead.org>,
+        "Josef Bacik" <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
+        "David Sterba" <dsterba@suse.com>,
+        "Alexander Viro" <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+In-Reply-To: <162881913686.1695.12479588032010502384@noble.neil.brown.name>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown> <162881913686.1695.12479588032010502384@noble.neil.brown.name>
+Message-Id: <20210818225454.9558.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6214:12b0:0:0:0:0 with HTTP; Wed, 18 Aug 2021 07:31:20
- -0700 (PDT)
-Reply-To: mrs.jessicamojoh03@gmail.com
-From:   Martial Akakpo <michellecynthia173@gmail.com>
-Date:   Wed, 18 Aug 2021 07:31:20 -0700
-Message-ID: <CALJZeUYxF2M8BTjTJfGfowFQQwBrW4Vg7=4nsqYEJrz=6a0_9Q@mail.gmail.com>
-Subject: Dear Good Friend.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Good Friend.
+Hi,
 
-I am happy to inform you about my success in getting those funds
-transferred under the cooperation of a new partner from Indonesia.
-Presently I am in Indonesia for investment projects with my own share
-of the total sum. Meanwhile, I didn=E2=80=99t forget your past efforts and
-attempts to assist me in transferring those funds despite the fact
-that it failed us somehow. Now contact my secretary in Togo Lome his
-name is Mrs.Jessica Mojoh
+We use  'swab64' to combinate 'subvol id' and 'inode' into 64bit in this
+patch.
+
+case1:
+'subvol id': 16bit => 64K, a little small because the subvol id is
+always increase?
+'inode':	48bit * 4K per node, this is big enough.
+
+case2:
+'subvol id': 24bit => 16M,  this is big enough.
+'inode':	40bit * 4K per node => 4 PB.  this is a little small?
+
+Is there a way to 'bit-swap' the subvol id, rather the current byte-swap?
+
+If not, maybe it is a better balance if we combinate 22bit subvol id and
+42 bit inode?
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/08/18
+
+> 
+> [[This patch is a minimal patch which addresses the current problems
+>   with nfsd and btrfs, in a way which I think is most supportable, least
+>   surprising, and least likely to impact any future attempts to more
+>   completely fix the btrfs file-identify problem]]
+> 
+> BTRFS does not provide unique inode numbers across a filesystem.
+> It *does* provide unique inode numbers with a subvolume and
+> uses synthetic device numbers for different subvolumes to ensure
+> uniqueness for device+inode.
+> 
+> nfsd cannot use these varying device numbers.  If nfsd were to
+> synthesise different stable filesystem ids to give to the client, that
+> would cause subvolumes to appear in the mount table on the client, even
+> though they don't appear in the mount table on the server.  Also, NFSv3
+> doesn't support changing the filesystem id without a new explicit
+> mount on the client (this is partially supported in practice, but
+> violates the protocol specification).
+> 
+> So currently, the roots of all subvolumes report the same inode number
+> in the same filesystem to NFS clients and tools like 'find' notice that
+> a directory has the same identity as an ancestor, and so refuse to
+> enter that directory.
+> 
+> This patch allows btrfs (or any filesystem) to provide a 64bit number
+> that can be xored with the inode number to make the number more unique.
+> Rather than the client being certain to see duplicates, with this patch
+> it is possible but extremely rare.
+> 
+> The number than btrfs provides is a swab64() version of the subvolume
+> identifier.  This has most entropy in the high bits (the low bits of the
+> subvolume identifer), while the inoe has most entropy in the low bits.
+> The result will always be unique within a subvolume, and will almost
+> always be unique across the filesystem.
+> 
+> Signed-off-by: NeilBrown <neilb@suse.de>
+> ---
+>  fs/btrfs/inode.c     |  4 ++++
+>  fs/nfsd/nfs3xdr.c    | 17 ++++++++++++++++-
+>  fs/nfsd/nfs4xdr.c    |  9 ++++++++-
+>  fs/nfsd/xdr3.h       |  2 ++
+>  include/linux/stat.h | 17 +++++++++++++++++
+>  5 files changed, 47 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 0117d867ecf8..989fdf2032d5 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -9195,6 +9195,10 @@ static int btrfs_getattr(struct user_namespace *mnt_userns,
+>  	generic_fillattr(&init_user_ns, inode, stat);
+>  	stat->dev = BTRFS_I(inode)->root->anon_dev;
+>  
+> +	if (BTRFS_I(inode)->root->root_key.objectid != BTRFS_FS_TREE_OBJECTID)
+> +		stat->ino_uniquifier =
+> +			swab64(BTRFS_I(inode)->root->root_key.objectid);
+> +
+>  	spin_lock(&BTRFS_I(inode)->lock);
+>  	delalloc_bytes = BTRFS_I(inode)->new_delalloc_bytes;
+>  	inode_bytes = inode_get_bytes(inode);
+> diff --git a/fs/nfsd/nfs3xdr.c b/fs/nfsd/nfs3xdr.c
+> index 0a5ebc52e6a9..669e2437362a 100644
+> --- a/fs/nfsd/nfs3xdr.c
+> +++ b/fs/nfsd/nfs3xdr.c
+> @@ -340,6 +340,7 @@ svcxdr_encode_fattr3(struct svc_rqst *rqstp, struct xdr_stream *xdr,
+>  {
+>  	struct user_namespace *userns = nfsd_user_namespace(rqstp);
+>  	__be32 *p;
+> +	u64 ino;
+>  	u64 fsid;
+>  
+>  	p = xdr_reserve_space(xdr, XDR_UNIT * 21);
+> @@ -377,7 +378,10 @@ svcxdr_encode_fattr3(struct svc_rqst *rqstp, struct xdr_stream *xdr,
+>  	p = xdr_encode_hyper(p, fsid);
+>  
+>  	/* fileid */
+> -	p = xdr_encode_hyper(p, stat->ino);
+> +	ino = stat->ino;
+> +	if (stat->ino_uniquifier && stat->ino_uniquifier != ino)
+> +		ino ^= stat->ino_uniquifier;
+> +	p = xdr_encode_hyper(p, ino);
+>  
+>  	p = encode_nfstime3(p, &stat->atime);
+>  	p = encode_nfstime3(p, &stat->mtime);
+> @@ -1151,6 +1155,17 @@ svcxdr_encode_entry3_common(struct nfsd3_readdirres *resp, const char *name,
+>  	if (xdr_stream_encode_item_present(xdr) < 0)
+>  		return false;
+>  	/* fileid */
+> +	if (!resp->dir_have_uniquifier) {
+> +		struct kstat stat;
+> +		if (fh_getattr(&resp->fh, &stat) == nfs_ok)
+> +			resp->dir_ino_uniquifier = stat.ino_uniquifier;
+> +		else
+> +			resp->dir_ino_uniquifier = 0;
+> +		resp->dir_have_uniquifier = 1;
+> +	}
+> +	if (resp->dir_ino_uniquifier &&
+> +	    resp->dir_ino_uniquifier != ino)
+> +		ino ^= resp->dir_ino_uniquifier;
+>  	if (xdr_stream_encode_u64(xdr, ino) < 0)
+>  		return false;
+>  	/* name */
+> diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
+> index 7abeccb975b2..ddccf849c29c 100644
+> --- a/fs/nfsd/nfs4xdr.c
+> +++ b/fs/nfsd/nfs4xdr.c
+> @@ -3114,10 +3114,14 @@ nfsd4_encode_fattr(struct xdr_stream *xdr, struct svc_fh *fhp,
+>  					fhp->fh_handle.fh_size);
+>  	}
+>  	if (bmval0 & FATTR4_WORD0_FILEID) {
+> +		u64 ino = stat.ino;
+> +		if (stat.ino_uniquifier &&
+> +		    stat.ino_uniquifier != stat.ino)
+> +			ino ^= stat.ino_uniquifier;
+>  		p = xdr_reserve_space(xdr, 8);
+>  		if (!p)
+>  			goto out_resource;
+> -		p = xdr_encode_hyper(p, stat.ino);
+> +		p = xdr_encode_hyper(p, ino);
+>  	}
+>  	if (bmval0 & FATTR4_WORD0_FILES_AVAIL) {
+>  		p = xdr_reserve_space(xdr, 8);
+> @@ -3285,6 +3289,9 @@ nfsd4_encode_fattr(struct xdr_stream *xdr, struct svc_fh *fhp,
+>  			if (err)
+>  				goto out_nfserr;
+>  			ino = parent_stat.ino;
+> +			if (parent_stat.ino_uniquifier &&
+> +			    parent_stat.ino_uniquifier != ino)
+> +				ino ^= parent_stat.ino_uniquifier;
+>  		}
+>  		p = xdr_encode_hyper(p, ino);
+>  	}
+> diff --git a/fs/nfsd/xdr3.h b/fs/nfsd/xdr3.h
+> index 933008382bbe..b4f9f3c71f72 100644
+> --- a/fs/nfsd/xdr3.h
+> +++ b/fs/nfsd/xdr3.h
+> @@ -179,6 +179,8 @@ struct nfsd3_readdirres {
+>  	struct xdr_buf		dirlist;
+>  	struct svc_fh		scratch;
+>  	struct readdir_cd	common;
+> +	u64			dir_ino_uniquifier;
+> +	int			dir_have_uniquifier;
+>  	unsigned int		cookie_offset;
+>  	struct svc_rqst *	rqstp;
+>  
+> diff --git a/include/linux/stat.h b/include/linux/stat.h
+> index fff27e603814..a5188f42ed81 100644
+> --- a/include/linux/stat.h
+> +++ b/include/linux/stat.h
+> @@ -46,6 +46,23 @@ struct kstat {
+>  	struct timespec64 btime;			/* File creation time */
+>  	u64		blocks;
+>  	u64		mnt_id;
+> +	/*
+> +	 * BTRFS does not provide unique inode numbers within a filesystem,
+> +	 * depending on a synthetic 'dev' to provide uniqueness.
+> +	 * NFSd cannot make use of this 'dev' number so clients often see
+> +	 * duplicate inode numbers.
+> +	 * For BTRFS, 'ino' is unlikely to use the high bits.  It puts
+> +	 * another number in ino_uniquifier which:
+> +	 * - has most entropy in the high bits
+> +	 * - is different precisely when 'dev' is different
+> +	 * - is stable across unmount/remount
+> +	 * NFSd can xor this with 'ino' to get a substantially more unique
+> +	 * number for reporting to the client.
+> +	 * The ino_uniquifier for a directory can reasonably be applied
+> +	 * to inode numbers reported by the readdir filldir callback.
+> +	 * It is NOT currently exported to user-space.
+> +	 */
+> +	u64		ino_uniquifier;
+>  };
+>  
+>  #endif
+> -- 
+> 2.32.0
 
 
-Mrs.Jessica Mojoh.
-
-Email: { mrs.jessicamojoh03@gmail.com  }
-
- Contact him and ask him to send you the total of $920.000.00.{Nine
-Hundred And Twenty Thousand United States Dollars} which I kept for
-your past efforts and attempts to assist me in this matter. I
-appreciate your efforts at that time very much. So feel free and get
-in touch with my Secretary Mrs.Jessica Mojoh and instruct him where to
-send the amount to you. Please do let me know immediately you receive
-it so that we can share the joy after all the suffering at that time.
-Do send to  Mrs.Jessica Mojoh, your contact details.
-
-Your Full Names=E2=80=A6...........................................
-
-You=E2=80=99re Address=E2=80=A6............................................=
-..
-
-Cell Phone Number=E2=80=A6........................................
-
-Your occupation................................................
-
-Your Age=E2=80=A6.....................................................
-
-To enable him to submit your details to my paying bank the Ned Bank
-Togo Lome to wire your compensation money to your nominated bank
-account/Bank Check or they can send to you an authorized bank atm
-master card to your address for you to withdraw the money from any
-bank atm machine in your country.
-
-In the moment, I am very busy here because of the investment projects
-which me and the new partner are having at hand, finally, remember
-that I had forwarded instruction to my secretary on your behalf to
-receive that money, so feel free to get in touch with Mrs.Jessica
-Mojoh he will send the amount to you without any delay.
-
-Thanks and God bless you.
-Mrs.Jessica Mojoh
