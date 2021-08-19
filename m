@@ -2,213 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A563F129E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 06:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3FB3F12D4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 07:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhHSEyf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Aug 2021 00:54:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52225 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229868AbhHSEye (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Aug 2021 00:54:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629348838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DYUR2yrRBDOoqdaGfM0jUoL4Nv+fDfxlMLBm1iQy4og=;
-        b=TIQWqnLW032tqGx7zIe084tew/MouWhdQMccLGzmhKmOIAf1jC6AviJvnFGxD+xGScsIUs
-        1cYvtqIwrwwZE54Sd9Nzc8SiuJVRVgN97jOgMED3WYHHQXuSJjuIV8EQNvYdcfMZK3BwCR
-        4t7AqU+RQ7NA0xkuvPc6X99C/sqEaT0=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-W0sgcjZPPf2PjC-EIVcLsA-1; Thu, 19 Aug 2021 00:53:56 -0400
-X-MC-Unique: W0sgcjZPPf2PjC-EIVcLsA-1
-Received: by mail-pj1-f72.google.com with SMTP id b11-20020a17090aa58b00b00179d6c73f29so1026147pjq.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Aug 2021 21:53:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=DYUR2yrRBDOoqdaGfM0jUoL4Nv+fDfxlMLBm1iQy4og=;
-        b=d/IyHtQOisjVPdItygb5aejY1Pj2UTSjAOANoB3CSl5j4LM3/qJl2CqtKiDYoBzH8+
-         ez7+ZVMs5I/p+M/Kc6x2sTzB+ol64ShL+CzfKPWc+VootBXsQh5zV/TZhD/EIq6Ad8OZ
-         SrVYcbhYk3WAanLnnyCyDQ9UMosRZQ2kuevEP0QFlU8hbYWnzjhZ4ciNsMguV7fplVVM
-         jo/jFbLN4aAiXAhMIiUZpDjljpxvT1kAGRgUQcXjPVGhvAVjEhjs1DWR4w3sUWnj5HE0
-         mluMNyXfEsNup88XtCUgBZpuKa9y9RDGZWnl6//YHuhskQPRGpN6yR4dmZvjifPGL+yR
-         tRdw==
-X-Gm-Message-State: AOAM531exWCXBBcruej2hqXEfuOt9cpQFHfj1tBQ5rzAFhzOZlILUzA1
-        oOTGapUxXFyUuXbu8JKy2WVmrfaBuU6hGbuDNnaxsM0dZ+lsQdeHCDsEXZxORnn5b5D8D82gKrX
-        gCoXHWEQRrAsxClZVlAmldCQ=
-X-Received: by 2002:a17:902:690a:b0:12d:86cf:d981 with SMTP id j10-20020a170902690a00b0012d86cfd981mr10233118plk.39.1629348835425;
-        Wed, 18 Aug 2021 21:53:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTwlPzBxgGrKGY60dayzMAHDaDEDhpkimgsYFVvJXjtkvG82QRU9WAYTDsbNJJ2qLzpmLh9A==
-X-Received: by 2002:a17:902:690a:b0:12d:86cf:d981 with SMTP id j10-20020a170902690a00b0012d86cfd981mr10233102plk.39.1629348835165;
-        Wed, 18 Aug 2021 21:53:55 -0700 (PDT)
-Received: from fedora ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id r3sm1478297pff.119.2021.08.18.21.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 21:53:54 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 13:14:31 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Xu Yu <xuyu@linux.alibaba.com>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, hch@infradead.org, riteshh@linux.ibm.com,
-        tytso@mit.edu, gavin.dg@linux.alibaba.com,
-        fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] generic: add swapfile maxpages regression test
-Message-ID: <20210819051431.z3q46fswvkwnwmgn@fedora>
-Mail-Followup-To: "Darrick J. Wong" <djwong@kernel.org>,
-        Xu Yu <xuyu@linux.alibaba.com>, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, hch@infradead.org, riteshh@linux.ibm.com,
-        tytso@mit.edu, gavin.dg@linux.alibaba.com,
-        fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <db99c25a8e2a662046e498fd13e5f0c35364164a.1629286473.git.xuyu@linux.alibaba.com>
- <20210819014326.GC12597@magnolia>
+        id S229804AbhHSFlX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Aug 2021 01:41:23 -0400
+Received: from mout.gmx.net ([212.227.15.19]:48029 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhHSFlX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Aug 2021 01:41:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629351642;
+        bh=7ZKs5HncNqy+1J4Mxw4oWJErdKuCoYdmg13s2Bi8xOo=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=X/XoFUsdut/FkkPTtk/a9MliHdTW4CqYWdaiDSRu0ZJebiHTkpewB7wB0i4kkPseq
+         vlnEoVX1T8TR9zmGdjgjQ5vyoGeqlNaBpgiLRm+DNr4iWLe4UvQW8BZbxYQpXp7Mi8
+         o3ye3Ho7ckkBaf8CldGyIX1cPginsMChYbn3nP10=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdvmO-1mp5zz1daw-00b2Ts; Thu, 19
+ Aug 2021 07:40:42 +0200
+Subject: Re: [PATCH v2 01/12] btrfs-progs: fix running lowmem check tests
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1629322156.git.josef@toxicpanda.com>
+ <45ba3fd15ba81f18136d9f6a7e10e7d6bc2422d5.1629322156.git.josef@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <b278ec67-3774-829d-8a0c-c49e25fd9be7@gmx.com>
+Date:   Thu, 19 Aug 2021 13:40:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819014326.GC12597@magnolia>
+In-Reply-To: <45ba3fd15ba81f18136d9f6a7e10e7d6bc2422d5.1629322156.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:731mwuTLQz+fBPVJ8PeWc2USaQLndLzFCmaRwfB5nkLquGP4ZZZ
+ y/ug+jZ+mviCa5zrZNxHU00JRPYxYfLgG2UOHvesZkFtLOdjOnM6nEZxIH86gMpNILpmIFC
+ T0JoNiStq63f1/h5EDfJ1SnzfaqT8uzvnz1yveUdV5H+wI3LAaqeCcIVzk28DboPXn7JZYI
+ KyYktkse/OI1xreVImIdA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZBWNYsYlEFs=:VY+RpErmZL9ji8/pUd5bwP
+ DXRztrHPy6Yt+y0LKMWKmRHLCo9rxhpf7FirbiVrM7cCLVAdbjON9bSvnJk82K7Z16gmkMGhd
+ GN696SU6Xhp9lqvIMoB8ateJFPS3ZfmaRQLUinc3jBxG/7t2KRiqAhWGxV2sBYwq+1McdzNfr
+ ABfzW2zr7sT7KnDNTdHwoMKb0MkV3qC6qlJ3mYckzLLpB1uh4glb7We676la90yIrwYb9pDzU
+ l25eX/E+7852jVsnkp2yNcgvWbUgNhWv4Q+SY1XUJGJ2MQ8fLucuy1fCf3AZUKtHsMrkuHRuM
+ q1jQc4dKflQQgXlh8pBf5k8V3rzkBNxSgC9+BxShmGwDc8NQ70Qwy4E8hKsOzoH5XvMsmy1N4
+ QIdKZIiQeoXwvLN8K2TD2ohtCCbplZWHTqFNly652J8Fo31erDwZPx6um8bPQen9VIYTwPpMu
+ 0tdb8enWXSR907tC40c8tXK0o8okt53bIe7oEkinTYBquwzXmNqM5Z6FuR1ve3yB79CX0QQGV
+ DrnDCOjqctYXe+euEkIjb0GuZljdvL8Ycz0R3GYD3uKrD1HoNqoEhTBeiVZdE8LhmIOsjfOYu
+ VIMzSU7g4m4aeXamjNGOwsFORClVDSfEE5Fagj7q6nn6m150I3uJEi/zfDoNB3BmG6Y9HJ2lS
+ NFCotAIdRMBXnb2YrWau3NRR9OkB51qXiiLG3tBuESsiLqVavmK2OX02GcXCsz0LiuoiUl0o2
+ GzO1jW+EWi8iekTjSgGhRjIPOp1f219OeOX/LGpe1SSO1CYFxf/fZ/ZICFFC2qzYU5rlpMnPn
+ 1iQkP7D+NNh6K4l5RepxkGuyGMNSUko1QveaP8BwBv7gPUDf/sarwPTAhdmGLgwM5z5TQZYvh
+ pAH8b7gm81k23diKcqR1XSzcope0lRmi6uSyfEyndYJjVq+YK2GtkVmGNCjrv4u53c2CxhUjO
+ u4Ix4SldS8RCiNZwO7F9/CtJEfP1v4FBzqkH8CLFGFWi8uBDh3In3zBZlMKau/yFrmY4Lmq5d
+ y7A+zKKkp/f7foMuF5DX7RfMXcJGFxW4p2ayoil2769Dfy6umMDMVLe9rJyYQiimDiyEZrGYe
+ L/UqdxsA50UovTl3DIw/8EsE+jbf+P2oREWO89r7uayQF13j9KQkdHFOw==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 06:43:26PM -0700, Darrick J. Wong wrote:
-> From: Darrick J. Wong <djwong@kernel.org>
-> 
-> Add regression test for "mm/swap: consider max pages in
-> iomap_swapfile_add_extent".
-> 
-> Cc: Gang Deng <gavin.dg@linux.alibaba.com>
-> Cc: Xu Yu <xuyu@linux.alibaba.com>
-> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+
+
+On 2021/8/19 =E4=B8=8A=E5=8D=885:33, Josef Bacik wrote:
+> When I added the invalid super image I saw that the lowmem tests were
+> passing, despite not having the detection code yet.  Turns out this is
+> because we weren't using a run command helper which does the proper
+> expansion and adds the --mode=3Dlowmem option.  Fix this to use the prop=
+er
+> handler, and now the lowmem test fails properly without my patch to add
+> this support to the lowmem mode.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+
+Thanks,
+Qu
 > ---
-
-The code logic looks good to me. And [1][2]... so I think this test
-is good. But of course, wait for more review points from cc list.
-
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
-[1]
-Test passed on old kernel without this regression (xfs fails):
-
-# ./check generic/727                                                                                                                    
-FSTYP         -- ext4
-PLATFORM      -- Linux/x86_64 xx-xxxx-xx 4.18.0-xxx.el8.x86_64+debug #1 SMP Wed Jul 14 12:35:49 EDT 2021
-MKFS_OPTIONS  -- /dev/mapper/rhel-xx-xxxx-xx-xfscratch
-MOUNT_OPTIONS -- -o acl,user_xattr -o context=system_u:object_r:root_t:s0 /dev/mapper/rhel-xx-xxxx-xx-xfscratch /mnt/scratch
-
-generic/727      15s
-Ran: generic/727
-Passed all 1 tests
-
-[2]
-Reproduced on new kernel with this regression:
-
-# ./check generic/727
-FSTYP         -- ext4
-PLATFORM      -- Linux/x86_64 xxx-xxxx-xx 5.14.0-rc4-xfs #14 SMP Thu Aug 12 00:56:07 CST 2021
-MKFS_OPTIONS  -- /dev/mapper/testvg-scratchdev
-MOUNT_OPTIONS -- -o acl,user_xattr -o context=system_u:object_r:root_t:s0 /dev/mapper/testvg-scratchdev /mnt/scratch
-
-generic/727     - output mismatch (see /root/git/xfstests-dev/results//generic/727.out.bad)
-    --- tests/generic/727.out   2021-08-19 11:20:14.677794743 +0800
-    +++ /root/git/xfstests-dev/results//generic/727.out.bad     2021-08-19 11:21:46.654450307 +0800
-    @@ -1,2 +1,3 @@
-     QA output created by 727
-    +swapon added 2044 pages, expected 1020
-     Silence is golden
-    ...
-    (Run 'diff -u /root/git/xfstests-dev/tests/generic/727.out /root/git/xfstests-dev/results//generic/727.out.bad'  to see the entire diff)
-Ran: generic/727
-Failures: generic/727
-Failed 1 of 1 tests
-
->  tests/generic/727     |   62 +++++++++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/727.out |    2 ++
->  2 files changed, 64 insertions(+)
->  create mode 100755 tests/generic/727
->  create mode 100644 tests/generic/727.out
-> 
-> diff --git a/tests/generic/727 b/tests/generic/727
-> new file mode 100755
-> index 00000000..a546ad51
-> --- /dev/null
-> +++ b/tests/generic/727
-> @@ -0,0 +1,62 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Oracle.  All Rights Reserved.
-> +#
-> +# FS QA Test 727
-> +#
-> +# Regression test for "mm/swap: consider max pages in iomap_swapfile_add_extent"
-> +
-> +# Xu Yu found that the iomap swapfile activation code failed to constrain
-> +# itself to activating however many swap pages that the mm asked us for.  This
-> +# is an deviation in behavior from the classic swapfile code.  It also leads to
-> +# kernel memory corruption if the swapfile is cleverly constructed.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto swap
-> +
-> +# Override the default cleanup function.
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +	test -n "$swapfile" && swapoff $swapfile &> /dev/null
-> +}
-> +
-> +# real QA test starts here
-> +_supported_fs generic
-> +_require_scratch_swapfile
-> +
-> +_scratch_mkfs >> $seqres.full
-> +_scratch_mount >> $seqres.full
-> +
-> +# Assuming we're not borrowing a FAT16 partition from Windows 3.1, we need an
-> +# unlikely enough name that we can grep /proc/swaps for this.
-> +swapfile=$SCRATCH_MNT/386spart.par
-> +_format_swapfile $swapfile 1m >> $seqres.full
-> +
-> +swapfile_pages() {
-> +	local swapfile="$1"
-> +
-> +	grep "$swapfile" /proc/swaps | awk '{print $3}'
-> +}
-> +
-> +_swapon_file $swapfile
-> +before_pages=$(swapfile_pages "$swapfile")
-> +swapoff $swapfile
-> +
-> +# Extend the length of the swapfile but do not rewrite the header.
-> +# The subsequent swapon should set up 1MB worth of pages, not 2MB.
-> +$XFS_IO_PROG -f -c 'pwrite 1m 1m' $swapfile >> $seqres.full
-> +
-> +_swapon_file $swapfile
-> +after_pages=$(swapfile_pages "$swapfile")
-> +swapoff $swapfile
-> +
-> +# Both swapon attempts should have found the same number of pages.
-> +test "$before_pages" -eq "$after_pages" || \
-> +	echo "swapon added $after_pages pages, expected $before_pages"
-> +
-> +# success, all done
-> +echo Silence is golden
-> +status=0
-> +exit
-> diff --git a/tests/generic/727.out b/tests/generic/727.out
-> new file mode 100644
-> index 00000000..2de2b4b2
-> --- /dev/null
-> +++ b/tests/generic/727.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 727
-> +Silence is golden
-> 
-
+>   tests/common | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/tests/common b/tests/common
+> index 805a447c..5b255689 100644
+> --- a/tests/common
+> +++ b/tests/common
+> @@ -425,9 +425,8 @@ check_image()
+>
+>   	image=3D$1
+>   	echo "testing image $(basename $image)" >> "$RESULTS"
+> -	"$TOP/btrfs" check "$image" >> "$RESULTS" 2>&1
+> -	[ $? -eq 0 ] && _fail "btrfs check should have detected corruption"
+> -
+> +	run_mustfail "btrfs check should have detected corruption" \
+> +		"$TOP/btrfs" check "$image"
+>   	run_check "$TOP/btrfs" check --repair --force "$image"
+>   	run_check "$TOP/btrfs" check "$image"
+>   }
+>
