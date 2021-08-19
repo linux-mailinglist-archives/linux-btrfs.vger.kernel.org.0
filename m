@@ -2,64 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5663F3F12DA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 07:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA853F12DC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 07:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhHSFn4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Aug 2021 01:43:56 -0400
-Received: from mout.gmx.net ([212.227.15.18]:44345 "EHLO mout.gmx.net"
+        id S229990AbhHSFp4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Aug 2021 01:45:56 -0400
+Received: from mout.gmx.net ([212.227.15.19]:59645 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhHSFnz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Aug 2021 01:43:55 -0400
+        id S229782AbhHSFpz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Aug 2021 01:45:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629351796;
-        bh=cWLqvi7slIhlQxPzqnge/heIOCzYUh1ripDut7bh5i4=;
+        s=badeba3b8450; t=1629351914;
+        bh=0faJSBM5VY14VQfO0ZFZKP7bgyy0Tm/aj4oq30MeFcg=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Ir3MauYRJ9zhrvdwuaZMUcERdQugOIwvsCdOHXHTVDdbwvaQTU1rwRvyXrzz2o3/L
-         rpD3CrrDhogJd6u+0QQMHonI4io5kOr3B22vL6X1vuXE9db7jRN5mI+729GQGa0QGN
-         ztbFXlEzylIYYKVZGNlOPZyRGL1MSThjK5+cZ+ww=
+        b=QeQiltX+mpuxA1e11UQQmo7NB19J4ehL6bGTi1pv80fKzhsLcTE2P+CLcayW7fW/X
+         Ro5BiscKzIVpQVoHKRI6cppvRq6mtNxC4+PhPdHu7AcbKuNhm6JxfySoEnxF0Cem9z
+         DZ6k6o8g3DC6rEyztY9kyWzrd4xyDsmlur2ihe+M=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mwfai-1n18m12gHa-00yDA7; Thu, 19
- Aug 2021 07:43:16 +0200
-Subject: Re: [PATCH v2 03/12] btrfs-progs: propagate fs root errors in lowmem
- mode
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmlT2-1mxrUl3E6I-00joXG; Thu, 19
+ Aug 2021 07:45:14 +0200
+Subject: Re: [PATCH v2 04/12] btrfs-progs: propagate extent item errors in
+ lowmem mode
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1629322156.git.josef@toxicpanda.com>
- <8a8235462677d3a7c1cf21a8bd3244d929f1466e.1629322156.git.josef@toxicpanda.com>
+ <06d91ded263de8668fdbb72d86eb26ab4dfaec45.1629322156.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <66a6e051-982a-905e-b891-66d9ec0f7a30@gmx.com>
-Date:   Thu, 19 Aug 2021 13:43:12 +0800
+Message-ID: <e0df5fff-4b59-b48a-4e78-b8ea1a98c1c0@gmx.com>
+Date:   Thu, 19 Aug 2021 13:45:10 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <8a8235462677d3a7c1cf21a8bd3244d929f1466e.1629322156.git.josef@toxicpanda.com>
+In-Reply-To: <06d91ded263de8668fdbb72d86eb26ab4dfaec45.1629322156.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tSUr5XFjQdqtXjsB7h2O9tiJisfBR288TIB5M9uSAUROwUKYYXP
- VXF30umXFpLS4OU5gSDNmz2Omjj2ya3ojP9K+W5iBkOzmK/7bpQ0XV6uAwn2Cf0CRxFYU47
- 15nFYc1TDcoatjd9dOk0uYAo/V/xeZYAUZ1fyVgIgWyVDjbyOUR9YV82Eve+rZkrcE1mQFv
- lrM3JQz25Yv76xcNL6WUQ==
+X-Provags-ID: V03:K1:PA2W4mxasAPNui+kc9JfBAZkeaexJtH4RouaXx06hHbW6JJrdf2
+ 1MmToQ1w+c1wipexUJ9sA4z0QGlW78V3ezDRtwJGyBzjbTM371ZUivoOXqYoybSe7KC5Lj3
+ SEEx8QyWzmbPolI+ObLUv0o1FVMIfZ43hTldO4pRarzvUzGOzpq5d8SvT/UPngBwrkGDdWb
+ RZyZOkic7w3ejapsJIHOQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:44QtpvOtahA=:ZIwJ+wK2FAkpzP7fgAa+Ah
- k7Se/0c6Hi/s0L65Hk3ywGoC25glKgtAnE68P2q/ExjBh3/ZN9VCmBmozNmQpSPHfRCYMDnXk
- H02U9svKnKttZJ3Xd4GdMnM3mNs6Wa5oviYYe5Pzg+VA9NeG9AszInl+E07pGdWuDjAW6dtk0
- 5IigHPdu2d2t3Xm/7nHLT6YebcKh7s2Bbl1+rXDNo3jmsnX83f3rEyPO4KahiRblEs2wq4UXl
- QIvwgP/w3Aknwqyp1MGuSG02JtnKir3UPPTx7xjY+hitl3JcjUTQ2ayWHZOh1GLFqUc4AbnuW
- BjBxI9gW4KjaNjfLtkRbc3DwnYnSCzkK+yqLdnPyx4fHZX1QQP14mt3OYwJl/Ah2n4BCt2ptN
- LuBIOpzLpwOulGEJLPHQ0KuEzMCv1j452MhBO+VgSzzbeocfsb5M6qTJN8zCJo+b0LGzTBEhf
- X6pT+49RedLNoe4qhug7cNAn7eST8CvQZvp/tz9RNm/F9ym9UuxwRvzLkW067qRMlAl1OiDw5
- SmV0QJve9wCAHkmm5yc4qbr0kJmtX+jdbQWfeyQ+z/D33NWhkNxo/sIz3VeaAeY2+wq+r+GaW
- vnAQrlSipRhdDdU8Ip0Js4vmb8bJ6dcIgzrT5XPEtCnCy+LwZusqFcaUOHzc+pOu/kbYypnBd
- j5zttk8ySwJYXhdfyzxUU9/4ftXqUUFfL15tvGEErf3J1rEW3z5RQ7HJ/E/3TwMnaOkI/Tcab
- 6p+FUdQUlUy8K3XeI/NsjqbQ6LPCxLwhmiNpycHmgYc1JgWQgklfV1Dnh3oB3dyLZjt5ZWvYE
- 3xugV5EzXOOWweCXQTzFQh0ZKsqTEJ3bFurxUO+g0T0yN8wAWptDH4bYElFnsX77arFgU87tt
- sGA6GJXOnQi03vLofURxBifGgUxbfFYGMjSCwJC7PMhG8EgbWXjB9tXWYDZ8aFR6JQdlXxRoK
- L59mEKd88QPpHiIv5d0Hz6vjYBw+NN49gMc7olkqvADAiKs7E3fql8CnoZ31H67ap+W2l8Y6z
- ZR035zG5krHmIhEe3cuXyu8EcitF9LCRNKZcI2J8tc88xNdTBBqshT0UIgdguQedOUYohZkPN
- et0CNAu0+/O/ZA39g/VmTwANbtCBjVJS6rH85ED4VVKOcJ42uPFpegIkA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:m/bTs2HXctk=:b2HWlCNzGQdW5n/wxbY5uY
+ HHO2OBxBMdSSl560TUxdPqY9WUfWcKqLbKYHQLvZvpiDHgl8euIEOzE624unDlwEXvRiB6Hhu
+ zWdPZCgvW3vbw14cmpf2ygpX5YBKMKt+M9wpu7qdgKH9oCu7XzQNHeZ++CwHHYUIQFKBoOjkT
+ se7RVvV3f9LxO/5SsFb/3Q1L/9dLfthwvZ/o8G3NkvebUUv1aJAkofgUKvYz+fQ63HUeBNIg7
+ 5tsLKbRZ4bt049V80prlbq0jTGQcWZWzlvPbxxIwdH3vylWkTVlS2fzcohmZzKMEtVBTZ5skw
+ 1joS4CNZ2KbBXTQugtyQ+7p8Gy+dYTP9JxAFRmtqgpb9Sgaft47hGMjRdsGARF1bTdV6FUWt9
+ d6gZqOYsXlP0DjB+E1//tXevzT+WyjJgL6PWXo7EpFi2EJhyyU9U7B4IE5KjLBfpyLW8OKdj9
+ 27peEM8kBZ3qCOfPQmkJOdGCfd9xm2zajEOJVze9cqmKvAtbBPbzvqvXmeqTFUisI2udpusLn
+ ZESiuJOnvZz1cK16RDEw/OmHbLRC8R4dsBqn6gnWPZr6sKrlConDCBGm8EiS5J4rN0ln9ITB5
+ WHSgwblIvmAgp7evxQYQt1hrfWBs8LFNUPnuN+WFSFrtfPqu2p9+1FEpGdfr3/ZYujt/kIYkL
+ mXQtoPae+7XmcfmqYlenYs+zmREOqkN3EqFGs46N+U12cp4Ze0jvpErFdiwB9SIjn7jzWPquJ
+ ldboUxZnh24hX28DRnOeTZDphAxAMZn7Djm+/SbLWR+L6sfNpdAXkzWtJz7FxivSCxu1rhsxB
+ vn0d3i4vLIHceDJUEpDJRG4rZDqLOD9PqA+aY/7VCKim5D4GrZ/J4dxSmXMlgehzrHQ7X9DzL
+ n8oF2e92Lx7fL4I80ABNGJo1Bvjv9Ywl4t/MA01tWvS1e0Lp8Q6Lz70ChJRMj4ZjfwHRrxrf7
+ 5Hydprq/lSR4MmZe7Cx9qNcNfqrfPYq6k8d82/Pd+lVwUZ+kNBP3urENpsNAABXuvKmUMNn8b
+ dW4gf15a4+Zj3NzTVyd/7rd01EgF8gyNLoRe0/4TnF63GANzO0eFZ3bVGsAqnHF+TFWcCUSbS
+ Ni7ejTmVv8N81dzBpUwW5o38ExyI63AkcFBdsgpBFaqYhp0en5/HJjUVQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -67,9 +67,11 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/8/19 =E4=B8=8A=E5=8D=885:33, Josef Bacik wrote:
-> We have a check that will return an error only if ret < 0, but we return
-> the lowmem specific errors which are all > 0.  Fix this by simply
-> checking if (ret).  This allows test 010 to pass with lowmem properly.
+> Test 044 was failing with lowmem because it was not bubbling up the
+> error to the user.  This is because we try to allow repair the
+> opportunity to clear the error, however if repair isn't set we simply do
+> not add the temporary error to the main error return variable.  Fix this
+> by adding the tmp_err to err before moving on to the next item.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
@@ -78,21 +80,19 @@ Reviewed-by: Qu Wenruo <wqu@suse.com>
 Thanks,
 Qu
 > ---
->   check/mode-lowmem.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   check/mode-lowmem.c | 1 +
+>   1 file changed, 1 insertion(+)
 >
 > diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-> index 7fc7d467..d278c927 100644
+> index d278c927..14815519 100644
 > --- a/check/mode-lowmem.c
 > +++ b/check/mode-lowmem.c
-> @@ -5204,7 +5204,7 @@ static int check_btrfs_root(struct btrfs_root *roo=
-t, int check_all)
->   		 * missing we will skip it forever.
->   		 */
->   		ret =3D check_fs_first_inode(root);
-> -		if (ret < 0)
-> +		if (ret)
->   			return FATAL_ERROR;
+> @@ -4390,6 +4390,7 @@ next:
+>   		goto next;
 >   	}
+>
+> +	err |=3D tmp_err;
+>   	ptr_offset +=3D btrfs_extent_inline_ref_size(type);
+>   	goto next;
 >
 >
