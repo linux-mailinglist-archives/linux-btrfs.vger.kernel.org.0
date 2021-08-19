@@ -2,87 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C813C3F14CC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 10:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E79B3F151E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 10:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhHSIF7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Aug 2021 04:05:59 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52998 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237366AbhHSIFf (ORCPT
+        id S237323AbhHSIYm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Aug 2021 04:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237167AbhHSIYl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Aug 2021 04:05:35 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C97CC220AB;
-        Thu, 19 Aug 2021 08:04:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629360298; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lbt5bilk+mkKsR6yUASoh7dcllM614kqXGh7Nu0wzoo=;
-        b=HnGjtNie99tOrT/G6xAkAinVZGXKrEkd3TtISCnDr7ZK/kY3wJGQe0R9Zq9F+r5ZOLjVz2
-        ebfGVvrwn220PiBhCmnWbS3zyThRMgeuk66KP7NKpeqJXkqQ5vRjgpHVFqzd9UJanmCUdq
-        br/xb1p6xlOVR0VYVzESkpdpD1K4Szg=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 9B99A136DD;
-        Thu, 19 Aug 2021 08:04:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id rc2QIqoQHmE8EgAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Thu, 19 Aug 2021 08:04:58 +0000
-Subject: Re: [PATCH] btrfs: reflink: Assure length != 0 in btrfs_extent_same()
-To:     Sidong Yang <realwakka@gmail.com>,
+        Thu, 19 Aug 2021 04:24:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46829C061575;
+        Thu, 19 Aug 2021 01:24:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=O/9AmCHEhTz3mJ3YpncuUEt6iO
+        kel653nzgWmdKxIvSSrCDfzar+eekblcqnPWTzAqliQkouejC4fJqDmdCrlhgi3fyabZfoP1sQ06e
+        LEIUtsZ8tqasFIlJRFnIhDAKzDwQm6IGLtxyArCv5fWL4rJwNrbarDTjin+jbYygUxI9ggC+JxajT
+        g+Fyd6gfFxHzvT9BFQ0k/lyhllNb+OgK8EmgcpdfmAyln74CAY8cHYzdbMORGVSHNe9i36ZnPBOPv
+        N4lQOgAG8xKiaHKASpTBS/hf1TcAZ20h5KMoYv+ctKP62mq8yNUQRDLzELiz7De3numt48njVPeD/
+        2GLzyHNA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGdKB-004oaT-8c; Thu, 19 Aug 2021 08:23:13 +0000
+Date:   Thu, 19 Aug 2021 09:22:55 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Xu Yu <xuyu@linux.alibaba.com>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, hch@infradead.org, riteshh@linux.ibm.com,
+        tytso@mit.edu, gavin.dg@linux.alibaba.com,
+        fstests <fstests@vger.kernel.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20210818160815.1820-1-realwakka@gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <e6423897-3886-73b1-42dc-5e24ca792682@suse.com>
-Date:   Thu, 19 Aug 2021 11:04:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Subject: Re: [PATCH] generic: add swapfile maxpages regression test
+Message-ID: <YR4U30PIGlBNv7P1@infradead.org>
+References: <db99c25a8e2a662046e498fd13e5f0c35364164a.1629286473.git.xuyu@linux.alibaba.com>
+ <20210819014326.GC12597@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20210818160815.1820-1-realwakka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819014326.GC12597@magnolia>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Looks good,
 
-
-On 18.08.21 г. 19:08, Sidong Yang wrote:
-> btrfs_extent_same() cannot be called with zero length. Because when
-> length is zero, it would be filtered by condition in
-> btrfs_remap_file_range(). But if this function is used in other case in
-> future, it can make ret as uninitialized.
-> 
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-
-This is not sufficient, with the assert compiled out the error would
-still be in place. It seem that it is sufficient to initialize ret to
-some non-arbitrary value i.e -EINVAL ?
-
-> ---
->  fs/btrfs/reflink.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-> index 9b0814318e72..69eb50f2f0b4 100644
-> --- a/fs/btrfs/reflink.c
-> +++ b/fs/btrfs/reflink.c
-> @@ -653,6 +653,7 @@ static int btrfs_extent_same(struct inode *src, u64 loff, u64 olen,
->  	u64 i, tail_len, chunk_count;
->  	struct btrfs_root *root_dst = BTRFS_I(dst)->root;
->  
-> +	ASSERT(olen);
->  	spin_lock(&root_dst->root_item_lock);
->  	if (root_dst->send_in_progress) {
->  		btrfs_warn_rl(root_dst->fs_info,
-> 
+Reviewed-by: Christoph Hellwig <hch@lst.de>
