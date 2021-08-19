@@ -2,63 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3FB3F12D4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 07:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861E83F12D9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 07:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhHSFlX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Aug 2021 01:41:23 -0400
-Received: from mout.gmx.net ([212.227.15.19]:48029 "EHLO mout.gmx.net"
+        id S230062AbhHSFnY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Aug 2021 01:43:24 -0400
+Received: from mout.gmx.net ([212.227.15.18]:56147 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229451AbhHSFlX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Aug 2021 01:41:23 -0400
+        id S229990AbhHSFnY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Aug 2021 01:43:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629351642;
-        bh=7ZKs5HncNqy+1J4Mxw4oWJErdKuCoYdmg13s2Bi8xOo=;
+        s=badeba3b8450; t=1629351763;
+        bh=tfaWysZt3tOagGBkLkLgrm3i6dbgxtQrNXq8pWODf+w=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=X/XoFUsdut/FkkPTtk/a9MliHdTW4CqYWdaiDSRu0ZJebiHTkpewB7wB0i4kkPseq
-         vlnEoVX1T8TR9zmGdjgjQ5vyoGeqlNaBpgiLRm+DNr4iWLe4UvQW8BZbxYQpXp7Mi8
-         o3ye3Ho7ckkBaf8CldGyIX1cPginsMChYbn3nP10=
+        b=GKAY4blMagPLhABXT2VGzjXfpF6Ab7t72cs/EJ8vZSNDd5gsNwFkpKPD/Fs+AxtNw
+         PG4Wety+yNFHFKkv9Wf8eG0EF2kgheqp1I7X9OheRBu7X1iN3+S2HYDnmzAp3lE6Qq
+         qgN4jG2/L8HAWhDrtlAPQDVqOICkcATRwDCqimWw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdvmO-1mp5zz1daw-00b2Ts; Thu, 19
- Aug 2021 07:40:42 +0200
-Subject: Re: [PATCH v2 01/12] btrfs-progs: fix running lowmem check tests
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3UZ6-1mH8mu26ra-000aaT; Thu, 19
+ Aug 2021 07:42:43 +0200
+Subject: Re: [PATCH v2 02/12] btrfs-progs: do not infinite loop on corrupt
+ keys with lowmem mode
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1629322156.git.josef@toxicpanda.com>
- <45ba3fd15ba81f18136d9f6a7e10e7d6bc2422d5.1629322156.git.josef@toxicpanda.com>
+ <aaaf2cadf66d9e573e2dbcc3e8fab7984ce42f99.1629322156.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <b278ec67-3774-829d-8a0c-c49e25fd9be7@gmx.com>
-Date:   Thu, 19 Aug 2021 13:40:38 +0800
+Message-ID: <05f2cfc1-ab2f-0e92-13ef-488a9e7d716c@gmx.com>
+Date:   Thu, 19 Aug 2021 13:42:39 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <45ba3fd15ba81f18136d9f6a7e10e7d6bc2422d5.1629322156.git.josef@toxicpanda.com>
+In-Reply-To: <aaaf2cadf66d9e573e2dbcc3e8fab7984ce42f99.1629322156.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:731mwuTLQz+fBPVJ8PeWc2USaQLndLzFCmaRwfB5nkLquGP4ZZZ
- y/ug+jZ+mviCa5zrZNxHU00JRPYxYfLgG2UOHvesZkFtLOdjOnM6nEZxIH86gMpNILpmIFC
- T0JoNiStq63f1/h5EDfJ1SnzfaqT8uzvnz1yveUdV5H+wI3LAaqeCcIVzk28DboPXn7JZYI
- KyYktkse/OI1xreVImIdA==
+X-Provags-ID: V03:K1:meZbJgR4zmc82VLbaCeZoNj1tw/Q/qhmONQ3inEKcQ/9L9gUwlb
+ orT0p333m1f86RtWZ/j5/MAAcs/ET8M2KPPbbONSWAUwSVOsSpruPyBSS2oHFWO7j/JRvcg
+ ZWDKBQlDUe0NubN68z4PRKRZXcOyalpXUx0NcE5DyPggdYqpAsQbwCriW0hKZ1aHZcPaX/2
+ bkAn/ceKljKBV49GALANw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZBWNYsYlEFs=:VY+RpErmZL9ji8/pUd5bwP
- DXRztrHPy6Yt+y0LKMWKmRHLCo9rxhpf7FirbiVrM7cCLVAdbjON9bSvnJk82K7Z16gmkMGhd
- GN696SU6Xhp9lqvIMoB8ateJFPS3ZfmaRQLUinc3jBxG/7t2KRiqAhWGxV2sBYwq+1McdzNfr
- ABfzW2zr7sT7KnDNTdHwoMKb0MkV3qC6qlJ3mYckzLLpB1uh4glb7We676la90yIrwYb9pDzU
- l25eX/E+7852jVsnkp2yNcgvWbUgNhWv4Q+SY1XUJGJ2MQ8fLucuy1fCf3AZUKtHsMrkuHRuM
- q1jQc4dKflQQgXlh8pBf5k8V3rzkBNxSgC9+BxShmGwDc8NQ70Qwy4E8hKsOzoH5XvMsmy1N4
- QIdKZIiQeoXwvLN8K2TD2ohtCCbplZWHTqFNly652J8Fo31erDwZPx6um8bPQen9VIYTwPpMu
- 0tdb8enWXSR907tC40c8tXK0o8okt53bIe7oEkinTYBquwzXmNqM5Z6FuR1ve3yB79CX0QQGV
- DrnDCOjqctYXe+euEkIjb0GuZljdvL8Ycz0R3GYD3uKrD1HoNqoEhTBeiVZdE8LhmIOsjfOYu
- VIMzSU7g4m4aeXamjNGOwsFORClVDSfEE5Fagj7q6nn6m150I3uJEi/zfDoNB3BmG6Y9HJ2lS
- NFCotAIdRMBXnb2YrWau3NRR9OkB51qXiiLG3tBuESsiLqVavmK2OX02GcXCsz0LiuoiUl0o2
- GzO1jW+EWi8iekTjSgGhRjIPOp1f219OeOX/LGpe1SSO1CYFxf/fZ/ZICFFC2qzYU5rlpMnPn
- 1iQkP7D+NNh6K4l5RepxkGuyGMNSUko1QveaP8BwBv7gPUDf/sarwPTAhdmGLgwM5z5TQZYvh
- pAH8b7gm81k23diKcqR1XSzcope0lRmi6uSyfEyndYJjVq+YK2GtkVmGNCjrv4u53c2CxhUjO
- u4Ix4SldS8RCiNZwO7F9/CtJEfP1v4FBzqkH8CLFGFWi8uBDh3In3zBZlMKau/yFrmY4Lmq5d
- y7A+zKKkp/f7foMuF5DX7RfMXcJGFxW4p2ayoil2769Dfy6umMDMVLe9rJyYQiimDiyEZrGYe
- L/UqdxsA50UovTl3DIw/8EsE+jbf+P2oREWO89r7uayQF13j9KQkdHFOw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KB0LqBF2raM=:SlF31Ld76W8zgSUz17YmhT
+ fgqlCisJhtJyR5CRDiccEx7GtWsn/3nBrI3h9tFy8uhqoXTq0L0QP4BpUrXLHE7ku4hTFsO/e
+ la+qoY05QsVCR4MiuSvThnW5mxDKplYeus5Z009pWZeig7ZJzritwn991mb3yoHf6l/ZKIfFS
+ w1TluPhhpJ/zPaP5mo53w0ePXtxHEgdXaQPTMJRw/UvQq6kcz/RAN9d1gvGcC/UNYyqpeidYr
+ U4Pd6F0bIXMTmov9QOmZWvcfd4g16VWJ27xivokb8zF1yAKmlIkPvxUW1NR9TBw8NDmdmzgLi
+ czy0rfTq0BerbHKX57gRxhYxm5R5QpXlPsCVuc/zg87Uw0SGF5IC4JrBAKOPekm45il+aoa2g
+ UH2gPDpFAV1GYeEo32TM8bPmJdtsQM59Xn42N5RSPCThXe1Tw34JX419Qk3NicGmLCyJEAxR1
+ myF/zTDgzh6U1kVXFbjm1UU4pNx9be2sgr/ixUTn5FuK+iFltYWIEEn9QmE6Gx74rZ8MinkHv
+ zpmhHZgNKJUepLzj1NUlbnGJQpiMMCAr3XDQlU6y39TOKNGeXohafI3f2q0WjjGXfQIdEhmgq
+ SYx9A4XnFEetECmhyQ1sAsMUWLgzEGzPuGdvklxtk0y7OpZsnM9JvZTArgXQAnszWKsd42IYx
+ m5kaYguRcxX6njrrIwq962zuu1MPKHTBd3B4zgpAMLVi///THq3JxqAlqg5KBwyBSFvMVLo+3
+ dfTT2g2swgEcpRR08Oih1BCHrGA3C48K+h9IgX4tCiQoJFYHzB+eBFnSNymfkSoS4lw48WvwU
+ qqn8hgpc/Qgb9t3tVBkv8vbl9piDH2D4eYeEyV/M63/jYbWZipvpmKtOx9Eo6/X4ROPb3ULzu
+ Pe8wDcP9dsXIjzDOcb9z+rA6DFF1wjW9ialvX4JefNLfYN1613UF5JYoaexjYgGEd83rbva+T
+ K4FvmBw3lPwZ21EsCSFvTv0sEazRh6as7VdFpWU00QDAi3PeRWLprpNchtp1d3UKTtT838RF5
+ tBOJz3o8qbFJmFnmwIgj+XWC9fQmFngvdW3DQ6aTY41dZnlddmVV2kbnbSKoRH0hCurSuyvns
+ KcBZSi3h1RobzlZCHlsTXYphwujCdtqS6LKrrko3md7UGA3MT96mvhGRQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -66,38 +67,47 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/8/19 =E4=B8=8A=E5=8D=885:33, Josef Bacik wrote:
-> When I added the invalid super image I saw that the lowmem tests were
-> passing, despite not having the detection code yet.  Turns out this is
-> because we weren't using a run command helper which does the proper
-> expansion and adds the --mode=3Dlowmem option.  Fix this to use the prop=
-er
-> handler, and now the lowmem test fails properly without my patch to add
-> this support to the lowmem mode.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> By enabling the lowmem checks properly I uncovered the case where test
+> 007 will infinite loop at the detection stage.  This is because when
+> checking the inode item we will just btrfs_next_item(), and because we
+> ignore check tree block failures at read time we don't get an -EIO from
+> btrfs_next_leaf.  Generally what check usually does is validate the
+> leaves/nodes as we hit them, but in this case we're not doing that.  Fix
+> this by checking the leaf if we move to the next one and if it fails
+> bail.  This allows us to pass the 007 test with lowmem.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Doesn't this mean btrfs_next_item() is not doing what it should do?
+
+Normally we would expect btrfs_next_item() to return -EIO other than
+manually checking the returned leaf.
 
 Thanks,
 Qu
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->   tests/common | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
+>   check/mode-lowmem.c | 9 +++++++++
+>   1 file changed, 9 insertions(+)
 >
-> diff --git a/tests/common b/tests/common
-> index 805a447c..5b255689 100644
-> --- a/tests/common
-> +++ b/tests/common
-> @@ -425,9 +425,8 @@ check_image()
->
->   	image=3D$1
->   	echo "testing image $(basename $image)" >> "$RESULTS"
-> -	"$TOP/btrfs" check "$image" >> "$RESULTS" 2>&1
-> -	[ $? -eq 0 ] && _fail "btrfs check should have detected corruption"
-> -
-> +	run_mustfail "btrfs check should have detected corruption" \
-> +		"$TOP/btrfs" check "$image"
->   	run_check "$TOP/btrfs" check --repair --force "$image"
->   	run_check "$TOP/btrfs" check "$image"
->   }
+> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+> index 323e66bc..7fc7d467 100644
+> --- a/check/mode-lowmem.c
+> +++ b/check/mode-lowmem.c
+> @@ -2675,6 +2675,15 @@ static int check_inode_item(struct btrfs_root *ro=
+ot, struct btrfs_path *path)
+>   	while (1) {
+>   		btrfs_item_key_to_cpu(path->nodes[0], &last_key, path->slots[0]);
+>   		ret =3D btrfs_next_item(root, path);
+> +
+> +		/*
+> +		 * New leaf, we need to check it and see if it's valid, if not
+> +		 * we need to bail otherwise we could end up stuck.
+> +		 */
+> +		if (path->slots[0] =3D=3D 0 &&
+> +		    btrfs_check_leaf(gfs_info, NULL, path->nodes[0]))
+> +			ret =3D -EIO;
+> +
+>   		if (ret < 0) {
+>   			/* out will fill 'err' rusing current statistics */
+>   			goto out;
 >
