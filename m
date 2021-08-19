@@ -2,68 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 012AE3F2079
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 21:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8837C3F2171
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Aug 2021 22:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234686AbhHSTTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Aug 2021 15:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234404AbhHSTTn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:19:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29A2960C3E;
-        Thu, 19 Aug 2021 19:19:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629400740;
-        bh=G4Xi5HqBpDKXc3j8L3BAi3I6X+w5fRA9RfqQJZDwZ6U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DKYaiP2jBBnH1RR4rjXN3jRVSy+5vnbbXYywiyLOVOSuO/3MALXCdglgMHTTW9C9M
-         Zowih9jRJ3Rdazk+4MwPK5ZalhjHgGEq3ZPEBcA/HqNp7F24aiXaB3RkHLHhLSqHkB
-         pUZKYDzUliRwhFDFuquYq/G6nKqqlyN84l1aYSzZhHwJgCQ5fkhUGrt4S9gGIUy9Js
-         LGzTCT1Qgogk+r46ksP0B5WBNDw09Up0gw04WoH8Z7+1tUAEKhhWvjO47gTELGwkc/
-         ZiosKehlu/dlXBeFVd/kZZC0n2VjE8e/4IxH10S5dr5eU56GAyCLXT77tLZkYcJ1GJ
-         1oWNQF3cDsdCw==
-Date:   Thu, 19 Aug 2021 12:18:59 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     fstests <fstests@vger.kernel.org>, Xu Yu <xuyu@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        riteshh@linux.ibm.com, tytso@mit.edu, gavin.dg@linux.alibaba.com,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] generic: test swapping process pages in and out of a
- swapfile
-Message-ID: <20210819191859.GH12664@magnolia>
-References: <20210819182646.GD12612@magnolia>
- <YR6paxMLClZ8WaaT@casper.infradead.org>
+        id S234942AbhHSUR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Aug 2021 16:17:26 -0400
+Received: from bee.birch.relay.mailchannels.net ([23.83.209.14]:33017 "EHLO
+        bee.birch.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231856AbhHSUR0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Aug 2021 16:17:26 -0400
+X-Sender-Id: instrampxe0y3a|x-authsender|calestyo@scientia.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id D510E782164;
+        Thu, 19 Aug 2021 20:00:18 +0000 (UTC)
+Received: from mailgw-01.dd24.net (100-96-99-6.trex.outbound.svc.cluster.local [100.96.99.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id BF8497820B1;
+        Thu, 19 Aug 2021 20:00:14 +0000 (UTC)
+X-Sender-Id: instrampxe0y3a|x-authsender|calestyo@scientia.net
+Received: from mailgw-01.dd24.net (mailgw-01.dd24.net [193.46.215.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.96.99.6 (trex/6.3.3);
+        Thu, 19 Aug 2021 20:00:18 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authsender|calestyo@scientia.net
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Troubled-Reign: 39c8d7026f3cc80b_1629403216415_1707753347
+X-MC-Loop-Signature: 1629403216415:1857796178
+X-MC-Ingress-Time: 1629403216415
+Received: from heisenberg.scientia.net (p57b04748.dip0.t-ipconnect.de [87.176.71.72])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: calestyo@scientia.net)
+        by smtp.dd24.net (Postfix) with ESMTPSA id 62AAA5FC35;
+        Thu, 19 Aug 2021 20:00:07 +0000 (UTC)
+Message-ID: <61edec6fd6d3704d55adf6888341e50b56df11d5.camel@scientia.net>
+Subject: Re: failed to read the system array: -2 / open_ctree failed
+From:   Christoph Anton Mitterer <calestyo@scientia.net>
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+Date:   Thu, 19 Aug 2021 22:00:06 +0200
+In-Reply-To: <9775aead-8884-dfb6-d877-a38c093e696d@suse.com>
+References: <2d56668e7c0f83531c6e46b9582bc4a0704e690a.camel@scientia.net>
+         <9775aead-8884-dfb6-d877-a38c093e696d@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YR6paxMLClZ8WaaT@casper.infradead.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 07:56:43PM +0100, Matthew Wilcox wrote:
-> On Thu, Aug 19, 2021 at 11:26:46AM -0700, Darrick J. Wong wrote:
-> > +	printf("Dirtying memory.\n");
-> > +	fflush(stdout);
-> > +
-> > +	/* Dirty the memory to force this program to be swapped out. */
-> > +	for (p = pstart; p < pend; p += pagesize)
-> > +		*p = 'X';
-> 
-> What I liked about dhowells' program was that it checked whether the
-> pages brought back in from swap were the same ones that had been written
-> to swap.  As a block filesystem person, you only know the misery of having
-> swap go behind your back to the block device.  As a network filesystem
-> person, David is acutely aware of the misery of having to remember to
-> use page_file_index() instead of page->index in order to avoid reading
-> a page from the wrong offset in the swap partition.
-> 
-> Yes, our swap code is nasty in many different ways, why do you ask?
+Hey Nikolay, Anand.
 
-Wheeee, I'll go change it to store per-page data in each page and check
-it on the way back.
+After some further testing last night, it seems that a rootdelay=60
+options solves the whole issue (and turning it off again, brings it
+back in most boots).
 
---D
+So in the end, no btrfs issue at all.
+
+Still a bit strange the whole thing - I'd have expected the device file
+to appear only once after the device is really usable.
+
+
+Thanks,
+Chris.
+
