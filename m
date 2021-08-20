@@ -2,60 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363103F2830
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 10:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878103F2884
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 10:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhHTIPb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Aug 2021 04:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhHTIP3 (ORCPT
+        id S232354AbhHTIe6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Aug 2021 04:34:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50354 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231757AbhHTIe5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:15:29 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26806C061575
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 01:14:52 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 79-20020a1c0452000000b002e6cf79e572so8510411wme.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 01:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=946dasPjAWBCyHv0z8WZsGljYefDLZcXIAiOh+MJJpw=;
-        b=M+7fY8D57CscAs2NV3iUafvUH3y3EDTuml8SYRcXF128+HDMuooaxdXpCB6h0u4Qd0
-         46/zWElJVLQnrPJcdRlECE0lMV6mFfA7DgkMqNAtUKaDHA3/HfBOzJeOVkXJEmA1cbGV
-         m80e2k/wqM/wmmwQPFGQmjvpG2K9mtH8IlUcR3lYWq8uvkLa5pdXkHx7aETAzbTqnIMJ
-         23omyF2mbwKB5IxOuVVyLav2TDGJ7Owm+u2uMeYr8ZfuM+RwpBPVJxpMLTWyD5lNwEg2
-         eROd/v27cONIqujIcs0Ub6/jwODIBDmzoLVvCYXR5dd6GLALZ0u1zZE5Gq3WhNfcvD+3
-         dW5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=946dasPjAWBCyHv0z8WZsGljYefDLZcXIAiOh+MJJpw=;
-        b=eq1j931UDdnI+KUNaDxCfApxuD/lwDu0kwMEPDnNxYMJkCAjpz0n3Iwo6xpC5NmVnc
-         lEfzCb/ZCfzKvFponfPNAPWpoNvFhPbGDDgQyelByje6ek7wAWNEyhl+91EpqYQEzbPo
-         nOcQOuVOeSw42zo8y7gL3cH5Wp1Ef5LpyYwo9lU7MwxqHMdmndjTxwDuepJnJouvbQwL
-         Xum2zPLr1uU9lK69aCHdfVj0zSKKdt6cWdthYhuJRcNowX/7MY69ukYFxTM5UetW+VNX
-         akmYvggG2LQ18xqljwvBPoyrHbcMGWVF906coZusA22/mhN4iZGNEO7fgjonExrwaA0z
-         JQiQ==
-X-Gm-Message-State: AOAM532ZDDhO9ZOOIff+WIrpbgaS+h6qB/cWTRvnaAWdgjzfNgr1xa/p
-        FRdNFGkkvVOWI65jB+NPTIE6Bc6bHUNvqsXLFe4=
-X-Google-Smtp-Source: ABdhPJxFX1TI12EonY8VrlmJzDtmB5rocO15bkUwuy7oFd7BD8G5YXBNUjtdAGWYoNTragIB7JvMhU7r2d+WfM/9xq8=
-X-Received: by 2002:a1c:4d13:: with SMTP id o19mr2481557wmh.183.1629447290480;
- Fri, 20 Aug 2021 01:14:50 -0700 (PDT)
+        Fri, 20 Aug 2021 04:34:57 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C2CAF1FDED;
+        Fri, 20 Aug 2021 08:34:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629448458; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j+c4ZdoO8G3O0f17auzxwdS43shP61k6ykFaMeET9zc=;
+        b=kgL7kgRwc1KAWXp4SiKa78J18a/qP8swIOcpzhjvUV1kV28on5m4oqN2Wc2gDMX4zERi3o
+        +4ArWoRzPN95r4isDdmq3ZiyuEJDia5dUeczIE8zR8yV0ZkTQq+9UGq0O1RnDIIKK4e7ox
+        eqRe74lyZsC2iPkXAFr4RePMjhQBBsU=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 66B2A13883;
+        Fri, 20 Aug 2021 08:34:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id MwKKFgppH2EdTAAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Fri, 20 Aug 2021 08:34:18 +0000
+Subject: Re: [PATCH v10 04/14] btrfs: add ram_bytes and offset to
+ btrfs_ordered_extent
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org
+References: <cover.1629234193.git.osandov@fb.com>
+ <463897807ed0366188b9966ae5b722daaf299ec0.1629234193.git.osandov@fb.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <e69e1e3c-6338-d0e4-626a-a2fa9886de7a@suse.com>
+Date:   Fri, 20 Aug 2021 11:34:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: by 2002:a7b:c936:0:0:0:0:0 with HTTP; Fri, 20 Aug 2021 01:14:49
- -0700 (PDT)
-Reply-To: lawhouz121@gmail.com
-From:   "Barr. Michael Atsou" <henleyiana261@gmail.com>
-Date:   Fri, 20 Aug 2021 08:14:49 +0000
-Message-ID: <CAD3FEYkSbXWgmGqdBWBwX3e4-HHZJXoL7PJdHhsiXva+uRZhLQ@mail.gmail.com>
-Subject: Hi there.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <463897807ed0366188b9966ae5b722daaf299ec0.1629234193.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-This is about your family.
+
+
+On 18.08.21 г. 0:06, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> Currently, we only create ordered extents when ram_bytes == num_bytes
+> and offset == 0. However, RWF_ENCODED writes may create extents which
+> only refer to a subset of the full unencoded extent, so we need to plumb
+
+Can you give an example of such a case?
+
