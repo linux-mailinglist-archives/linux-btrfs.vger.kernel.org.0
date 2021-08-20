@@ -2,149 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3338C3F280E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 10:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC39C3F280A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 10:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhHTIAt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Aug 2021 04:00:49 -0400
-Received: from eu-shark2.inbox.eu ([195.216.236.82]:34734 "EHLO
-        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhHTIAt (ORCPT
+        id S230099AbhHTIAN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Aug 2021 04:00:13 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60744 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229739AbhHTIAM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:00:49 -0400
-Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
-        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id 012A01E00699;
-        Fri, 20 Aug 2021 11:00:10 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1629446410; bh=1GFEBKrTlpAHNcmVSrGaIJSpsUIPQNSOYSyL2ifCvdQ=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to;
-        b=SsDY56RN5DAnmNMzU6WPFj9a+Txzu5lm+6seQmT+ZULDfb7dZaiDvGhwV9AiJXp7l
-         gSAJ0gy+C8tUYQEzvdVIIMTQUGYMfAfrhdl2KNXk7B4HZuz2H/7kY12U7Lh0LEaS2y
-         yuyTT50RQITuYMpKE3Nkzhwmkg4Dlj+EX6RGT5+U=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id ED5AE1E00671;
-        Fri, 20 Aug 2021 11:00:09 +0300 (EEST)
-Received: from eu-shark2.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id zJrYy-8tT-Hs; Fri, 20 Aug 2021 11:00:09 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id A92AE1E0066A;
-        Fri, 20 Aug 2021 11:00:09 +0300 (EEST)
-Received: from nas (unknown [49.65.73.48])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id C75AF1BE013A;
-        Fri, 20 Aug 2021 11:00:07 +0300 (EEST)
-References: <cover.1629396187.git.anand.jain@oracle.com>
- <8b8e72c87d0ee97da1b2e243a24b68d84d0ac3b9.1629396187.git.anand.jain@oracle.com>
-User-agent: mu4e 1.5.8; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Subject: Re: [PATCH RFC 2/3] btrfs: consolidate device_list_mutex in
- prepare_sprout to its parent
-Date:   Fri, 20 Aug 2021 15:51:03 +0800
-Message-ID: <y28weeg4.fsf@damenly.su>
-In-reply-to: <8b8e72c87d0ee97da1b2e243a24b68d84d0ac3b9.1629396187.git.anand.jain@oracle.com>
+        Fri, 20 Aug 2021 04:00:12 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D552122161;
+        Fri, 20 Aug 2021 07:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629446369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fX0iF/Va7fLkHv5IISyOTys0XVxkkhe6oRnstITZ1+U=;
+        b=XYBOdlx0IT7mnCdcVyoLsM6/7PMWjd3yauhTMxCuWw3nFslFYl7irzM1d9iFsIXtc/RZeB
+        H8agiIYIYpurRXcl7ksKOQJ5qzfsbNzrEWQJ6yWK6VK9Y3SDTMVg8XBSFt74yXcEP+NBGF
+        oq3214rXlGLHu2Yhy/k5YWd26C0iIpE=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7AB791333E;
+        Fri, 20 Aug 2021 07:59:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id Xn1tG+FgH2HzQwAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Fri, 20 Aug 2021 07:59:29 +0000
+Subject: Re: [PATCH v10 02/14] fs: export variant of generic_write_checks
+ without iov_iter
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org
+References: <cover.1629234193.git.osandov@fb.com>
+ <237db7dc485834d3d359b5765f07ebf7c3514f3a.1629234193.git.osandov@fb.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <ae6f8c7e-3b9b-bd95-140d-b556ce04df8f@suse.com>
+Date:   Fri, 20 Aug 2021 10:59:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: 6N1ml5Y9aTPX9ELYI3baDBgxqjROX/Ph8/vJrhAZwzvmU1qJf04NURK/nm1yS2A=
+In-Reply-To: <237db7dc485834d3d359b5765f07ebf7c3514f3a.1629234193.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-On Fri 20 Aug 2021 at 02:18, Anand Jain <anand.jain@oracle.com> 
-wrote:
 
-> btrfs_prepare_sprout() moves seed devices into its own struct 
-> fs_devices,
-> so that its parent function btrfs_init_new_device() can add the 
-> new sprout
-> device to fs_info->fs_devices.
->
-> Both btrfs_prepare_sprout() and btrfs_init_new_device() needs
-> device_list_mutex. But they are holding it sequentially, thus 
-> creates a
-> small window to an opportunity to race. Close this opportunity 
-> and hold
-> device_list_mutex common to both btrfs_init_new_device() and
-> btrfs_prepare_sprout().
->
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+On 18.08.21 г. 0:06, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> Encoded I/O in Btrfs needs to check a write with a given logical size
+> without an iov_iter that matches that size (because the iov_iter we have
+> is for the compressed data). So, factor out the parts of
+> generic_write_check() that expect an iov_iter into a new
+> __generic_write_checks() function and export that.
+> 
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 > ---
-> RFC because I haven't identified the other thread which could 
-> race with
-> this, but still does this cleanup makes sense?
->
->  fs/btrfs/volumes.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 91b8422b3f67..f490d1897c56 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -2366,6 +2366,8 @@ static int btrfs_prepare_sprout(struct 
-> btrfs_fs_info *fs_info)
->  	u64 super_flags;
->
->  	lockdep_assert_held(&uuid_mutex);
-> +	lockdep_assert_held(&fs_devices->device_list_mutex);
+>  fs/read_write.c    | 40 ++++++++++++++++++++++------------------
+>  include/linux/fs.h |  1 +
+>  2 files changed, 23 insertions(+), 18 deletions(-)
+> 
+> diff --git a/fs/read_write.c b/fs/read_write.c
+> index 0029ff2b0ca8..3bddd5ee7f64 100644
+> --- a/fs/read_write.c
+> +++ b/fs/read_write.c
+> @@ -1633,6 +1633,26 @@ int generic_write_check_limits(struct file *file, loff_t pos, loff_t *count)
+>  	return 0;
+>  }
+>  
+> +/* Like generic_write_checks(), but takes size of write instead of iter. */
+> +int __generic_write_checks(struct kiocb *iocb, loff_t *count)
+> +{
+> +	struct file *file = iocb->ki_filp;
+> +	struct inode *inode = file->f_mapping->host;
 > +
->
-Just a reminder: clone_fs_devices() still takes the mutex in 
-misc-next.
+> +	if (IS_SWAPFILE(inode))
+> +		return -ETXTBSY;
 
->  	if (!fs_devices->seeding)
->  		return -EINVAL;
->
-> @@ -2397,7 +2399,6 @@ static int btrfs_prepare_sprout(struct 
-> btrfs_fs_info *fs_info)
->  	INIT_LIST_HEAD(&seed_devices->alloc_list);
->  	mutex_init(&seed_devices->device_list_mutex);
->
-> -	mutex_lock(&fs_devices->device_list_mutex);
->  	list_splice_init_rcu(&fs_devices->devices, 
->  &seed_devices->devices,
->  			      synchronize_rcu);
->  	list_for_each_entry(device, &seed_devices->devices, dev_list)
-> @@ -2413,7 +2414,6 @@ static int btrfs_prepare_sprout(struct 
-> btrfs_fs_info *fs_info)
->  	generate_random_uuid(fs_devices->fsid);
->  	memcpy(fs_devices->metadata_uuid, fs_devices->fsid, 
->  BTRFS_FSID_SIZE);
->  	memcpy(disk_super->fsid, fs_devices->fsid, BTRFS_FSID_SIZE);
-> -	mutex_unlock(&fs_devices->device_list_mutex);
->
->  	super_flags = btrfs_super_flags(disk_super) &
->  		      ~BTRFS_SUPER_FLAG_SEEDING;
-> @@ -2588,6 +2588,7 @@ int btrfs_init_new_device(struct 
-> btrfs_fs_info *fs_info, const char *device_path
->  	device->dev_stats_valid = 1;
->  	set_blocksize(device->bdev, BTRFS_BDEV_BLOCKSIZE);
->
-> +	mutex_lock(&fs_devices->device_list_mutex);
->  	if (seeding_dev) {
->  		btrfs_clear_sb_rdonly(sb);
->  		ret = btrfs_prepare_sprout(fs_info);
->
-the erorr case:
-if (ret) {
-    mutex_unlock(&fs_devices->device_list_mutex);
-    ...
-}
+ Missing 'if(!count) return 0' from original code ?
 
-Thanks.
-
---
-Su
-
-> @@ -2599,7 +2600,6 @@ int btrfs_init_new_device(struct 
-> btrfs_fs_info *fs_info, const char *device_path
->
->  	device->fs_devices = fs_devices;
->
-> -	mutex_lock(&fs_devices->device_list_mutex);
->  	mutex_lock(&fs_info->chunk_mutex);
->  	list_add_rcu(&device->dev_list, &fs_devices->devices);
->  	list_add(&device->dev_alloc_list, &fs_devices->alloc_list);
+<snip>
