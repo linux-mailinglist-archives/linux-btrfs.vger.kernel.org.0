@@ -2,128 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37C83F2528
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 05:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7713F2532
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 05:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238049AbhHTDJs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Aug 2021 23:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237843AbhHTDJs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:09:48 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F72BC061575;
-        Thu, 19 Aug 2021 20:09:11 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id c17so7821165pgc.0;
-        Thu, 19 Aug 2021 20:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=qCF4/seF7RLY1q6lnR93coNbkwtTN6+2XurjY+dQfE4=;
-        b=MpVDd8OIwStYu3cwSGBo2H4zWmi0UVtlkW5aK8+VgORn6NI4Jn/bj283M3cOC9nBTL
-         Ry0gyxlkP0H+tVd1gsA9ZN2R9UK1OZe6I0XaH470Y2gfrt0V/8CFQK39bgAeVPN3GL16
-         OYcGkL9GliahrPQ9w9MdyCdgzEnjoePEJqe1W6kS5zIwsuL5oe1vwXdt4rdPewCHc4//
-         Wwurxy18x2zbd+QcUR0iL7UlFiouhCQeMhB3ahGpEGvSFJPr+OgjbcyuWZ/L/ZtzuQ4N
-         LNNlOSnnY0P6znJy7gO6AccrReFLTT9hyL1OqEIMh/thTJ+YLuuv7I9axmClvSUq+OmN
-         sluA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qCF4/seF7RLY1q6lnR93coNbkwtTN6+2XurjY+dQfE4=;
-        b=MsSQmDvl6tljcX/KYilDicFVqRVGp/p6+e0gWmfVQDJyIjUh+j92bqBUOnTjG9Rb3W
-         PO8jwJIXjVfyCp5rTXDewWf/pb3ynULAQ0TZv9wSwP1b83GyF+eHu0uSYEUPd7/m5fiU
-         JseJVx8nkiX6KnVb8CWr26bPiifbqw6bv7rOL1RgHJ+ukqebBN2YPVKdaui7oRvhXHUs
-         FEJv/iNP8JpIG4HR07yh4h8EmUmzL+LfqqUnusDXxv+YMqeHCW1EQASuCgpFs6/rUNjS
-         TygklrIBjIM//z1aDZ3CiwPddhwUw8Tc7qvqvKVkkkXPe4E8+i1SzouzKd/0HWAOsWqx
-         Z4vg==
-X-Gm-Message-State: AOAM530OZ7h8SBTNOYrTO+Nps1UnDjtvFxHy1XzuZLRY/jhoLBKXQkVv
-        5o7WRM+NYZA5JHWO9xPugLk=
-X-Google-Smtp-Source: ABdhPJwWvTRLKgPLJGt0czPA0HrZCZM/JaeHbR+IDCn0cIskZrWmoZRFUVcQBLzAI4OPfbw4Hhi6eQ==
-X-Received: by 2002:a62:864b:0:b029:3c7:7197:59fc with SMTP id x72-20020a62864b0000b02903c7719759fcmr17470644pfd.59.1629428950608;
-        Thu, 19 Aug 2021 20:09:10 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id f5sm5365847pfe.128.2021.08.19.20.09.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 20:09:09 -0700 (PDT)
-Subject: Re: [PATCH v2] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210727071303.113876-1-desmondcheongzx@gmail.com>
- <20210812103851.GC5047@twin.jikos.cz>
- <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
- <20210812155032.GL5047@twin.jikos.cz>
- <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
- <20210813085137.GQ5047@twin.jikos.cz>
- <a5690ae1-28ba-a933-6473-e9c1e5480f0c@gmail.com>
- <20210813103032.GR5047@twin.jikos.cz>
- <89172356-335f-1ca3-d3a2-78fac7ef93fb@gmail.com>
- <20210819173403.GI5047@twin.jikos.cz>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <e9c5bb00-b609-aff9-fc95-ca1c5b9c2899@gmail.com>
-Date:   Fri, 20 Aug 2021 11:09:05 +0800
+        id S238049AbhHTDRw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Aug 2021 23:17:52 -0400
+Received: from mout.gmx.net ([212.227.17.21]:55315 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238160AbhHTDRm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Aug 2021 23:17:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629429391;
+        bh=V5XZJQsl6GSU/nN3lVaCUhZx1eo1YnmpBA/pDoQCiog=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=GbPdpoznZaRuE5D2d1ytyoqbqAh2kmVF5Zk0NPT35btiW5QtQ7V+VRAIsYzKcHt1t
+         V5RleeB/ooOSmIp8Y203RCkppycyhocknbaklkWA0bU5Qd8jR0Jkhw5YrSLjfIYyYp
+         Ake4jpyhDlrTk4GMbN6m1MeapdvTc/amrRuDcMIY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmlXK-1mxQmP02VS-00jqVm; Fri, 20
+ Aug 2021 05:16:31 +0200
+To:     jing yangyang <cgel.zte@gmail.com>, Chris Mason <clm@fb.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20210820023229.11369-1-jing.yangyang@zte.com.cn>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH linux-next] fs: btrfs: fix returnvar.cocci warnings
+Message-ID: <900f28f9-6efe-48a7-246f-797a9aa48c07@gmx.com>
+Date:   Fri, 20 Aug 2021 11:16:24 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210819173403.GI5047@twin.jikos.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210820023229.11369-1-jing.yangyang@zte.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1Eb3Xh2BClx/T3S4d2pYDXg2iPk43ppjnD4Aw069EVEIIWTqTPr
+ B4bF7Whl9O88FfS/0LBNlQhnKKJPmTlx13zDCqZD0lZ2wA4Ui0zseN9xe7BVsTjg0aJk5Yb
+ YLy9EPPD6bA5suUMntxeyrnU6w2hQBwdQMVcL4Slp4AJIF5l8GaHyNEWpJ40bUjeZsDMKIn
+ e/AY+LAiqpcHTtcKEDFpg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wrz3KltuxhI=:aX8//oYvG0j9hP7cs8mwP4
+ KhwzEhAk64V8hxZohgtVhORYIRPYbSHJZOWHLWHfThnVAozpMtfKi5GEMOzxYDxI5ds51EojG
+ EgxoBdjQewTPBm7mtjcwkDP+Y9C3TVlPymOVS7uQtRORwF3IfnIsIclwmU1quZ2mslkn2DoA3
+ D6aOKOrHkmH9qmux10ws08ckntaF3J5Wz5i8FXHeyAE9AGa3k7vPRlZoyBTHCQeDo/gxurYfi
+ fthWk1xVS7VKH5QQ3pFnjgUYqVFDQNW69zSUyoEGYDNvbwN0Gw513CMDySYpYxmLByovqjIbk
+ P2RSrw6TSiuAwATJ1AYWLoEdqCTsZoxgnCQREFsdjuaPLpYeAfuIAYZY2xO4vHfolTcgwV4iB
+ foii0UrkcTD9GrdYMZKyltKOfMztW3JlX0vCsOduzEzwAJ33BJYkH6hp3u7jeAYom1aWbrqoF
+ vW63wB7KeQ4MubyVyBKzry6Vwp3VXeEuOt4yBp2ZHauipQg+rbZQ2pnnse2BrXE8/zL1g4R9d
+ 1mzXNZLbdWArbia3K0MJOhJD3ee3CwxNALid7P7iGzybzO2tZvB+RHsF/UtxiYk4XZl8SDkmG
+ AzYYb+zyL6nnDdlc/PUeQYbp4f6cQI9c1YvWhkjvEO0eVekYjncqrp7kBxkA+cBSqk+MTCHJ/
+ ozW7Il2LhfZz5hehkfBTPkuRi3OADbswM5vmuBCZKsdeZfTdNYsGHWIejaWaSCm01vSd+8FVN
+ Vu39RNBf4uYsPqbgYpDwj8mnZ6M9an7yncIIQqDEBJPyD76G408AaLR70oGGRr5WgS/2XwvSZ
+ AjG0LxbaPSBH3ZUFUDLwRynv1b2xaZzn9wOEhfWatsPhsVKQL2sZ/eCVLbThKNgC/H9JVZiYc
+ UgPQApN6ZgVVvCpt2hrv5eS4eO6jrJeQ7dDNjfm+QezmJkyw1phFjcKutNt6eebjjsR5DiCZo
+ 5PWC1nLN6QzVaYsyvNYBaWECUyR2edMODbcXjqpAVmuXBOgbxBzuXdfTIOHgzDIbtOI/IvlpP
+ pC/GOn1rTSXjfuIabah/Cq5/WZKls8jDyLQToebdikJWyfsupX8IwIlPHuk+Y7mc67FXjtrHv
+ nbkCdWNdqu1203JvsrHvBKBhhkih6s08jliQ66urmv9z9f9YiW62JjN8w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 20/8/21 1:34 am, David Sterba wrote:
-> On Fri, Aug 20, 2021 at 01:11:58AM +0800, Desmond Cheong Zhi Xi wrote:
->>>>> The option #2 does not sound safe because the TGT bit is checked in
->>>>> several places where device list is queried for various reasons, even
->>>>> without a mounted filesystem.
->>>>>
->>>>> Removing the assertion makes more sense but I'm still not convinced that
->>>>> the this is expected/allowed state of a closed device.
->>>>>
->>>>
->>>> Would it be better if we cleared the REPLACE_TGT bit only when closing
->>>> the device where device->devid == BTRFS_DEV_REPLACE_DEVID?
->>>>
->>>> The first conditional in btrfs_close_one_device assumes that we can come
->>>> across such a device. If we come across it, we should properly reset it.
->>>>
->>>> If other devices has this bit set, the ASSERT will still catch it and
->>>> let us know something is wrong.
->>>
->>> That sounds great.
->>>
->>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>> index 70f94b75f25a..a5afebb78ecf 100644
->>>> --- a/fs/btrfs/volumes.c
->>>> +++ b/fs/btrfs/volumes.c
->>>> @@ -1130,6 +1130,9 @@ static void btrfs_close_one_device(struct btrfs_device *device)
->>>>                    fs_devices->rw_devices--;
->>>>            }
->>>>     
->>>> +       if (device->devid == BTRFS_DEV_REPLACE_DEVID)
->>>> +               clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
->>>> +
->>>>            if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
->>>>                    fs_devices->missing_devices--;
->>>
->>> I'll do a few test rounds, thanks.
->>
->> Just following up. Did that resolve the issue or is further
->> investigation needed?
-> 
-> The fix seems to work, I haven't seen the assertion fail anymore,
-> incidentally the crash also stopped to show up on an unpatched branch.
-> 
 
-Sounds good, thanks for the update. If there's anything else I can help 
-with, please let me know.
+
+On 2021/8/20 =E4=B8=8A=E5=8D=8810:32, jing yangyang wrote:
+> Remove unneeded variables when "0" can be returned.
+>
+> Generated by: scripts/coccinelle/misc/returnvar.cocci
+>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+> ---
+>   fs/btrfs/extent_map.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+> index 4a8e02f..58860d7 100644
+> --- a/fs/btrfs/extent_map.c
+> +++ b/fs/btrfs/extent_map.c
+> @@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tr=
+ee, struct extent_map *em)
+>   int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 le=
+n,
+>   		       u64 gen)
+>   {
+> -	int ret =3D 0;
+>   	struct extent_map *em;
+>   	bool prealloc =3D false;
+>
+
+Please just check the lines below:
+
+	em =3D lookup_extent_mapping(tree, start, len);
+
+	WARN_ON(!em || em->start !=3D start);
+
+	if (!em)
+		goto out;
+
+This looks more like a missing error handling.
+
+Thus the proper way to fix it is not just simply remove the "int ret =3D
+0;" line (which compiler is more than able to optimize it out), but
+properly add the error handling, and modify the only caller to catch
+such error properly.
+
+Some diff like the below would be more meaningful:
+
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index 4a8e02f7b6c7..9182d747a50e 100644
+=2D-- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -303,10 +303,11 @@ int unpin_extent_cache(struct extent_map_tree
+*tree, u64 start, u64 len,
+  	write_lock(&tree->lock);
+  	em =3D lookup_extent_mapping(tree, start, len);
+
+-	WARN_ON(!em || em->start !=3D start);
+-
+-	if (!em)
++	if (!em || em->start !=3D start) {
++		WARN(1, KERN_WARNING "unexpected extent mapping\n");
++		ret =3D -EUCLEAN;
+  		goto out;
++	}
+
+  	em->generation =3D gen;
+  	clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 2aa9646bce56..313b0a314c0b 100644
+=2D-- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2989,6 +2989,7 @@ static int btrfs_finish_ordered_io(struct
+btrfs_ordered_extent *ordered_extent)
+  	u64 start, end;
+  	int compress_type =3D 0;
+  	int ret =3D 0;
++	int ret2;
+  	u64 logical_len =3D ordered_extent->num_bytes;
+  	bool freespace_inode;
+  	bool truncated =3D false;
+@@ -3076,8 +3077,11 @@ static int btrfs_finish_ordered_io(struct
+btrfs_ordered_extent *ordered_extent)
+  						ordered_extent->disk_num_bytes);
+  		}
+  	}
+-	unpin_extent_cache(&inode->extent_tree, ordered_extent->file_offset,
++	ret2 =3D unpin_extent_cache(&inode->extent_tree,
+ordered_extent->file_offset,
+  			   ordered_extent->num_bytes, trans->transid);
++	if (ret2 < 0 && !ret)
++		ret =3D ret2;
++
+  	if (ret < 0) {
+  		btrfs_abort_transaction(trans, ret);
+  		goto out;
+
+
+Thanks,
+Qu
+> @@ -328,7 +327,7 @@ int unpin_extent_cache(struct extent_map_tree *tree,=
+ u64 start, u64 len,
+>   	free_extent_map(em);
+>   out:
+>   	write_unlock(&tree->lock);
+> -	return ret;
+> +	return 0;
+>
+>   }
+>
+>
