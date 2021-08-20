@@ -2,123 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BD33F2A76
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 13:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22CE3F2A78
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 13:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239093AbhHTLBc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Aug 2021 07:01:32 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50898 "EHLO
+        id S239103AbhHTLCF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Aug 2021 07:02:05 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50958 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239046AbhHTLBb (ORCPT
+        with ESMTP id S231852AbhHTLCE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:01:31 -0400
+        Fri, 20 Aug 2021 07:02:04 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6889B1FE02;
-        Fri, 20 Aug 2021 11:00:53 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 1FB401FE03;
+        Fri, 20 Aug 2021 11:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629457253;
+        t=1629457286;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0tUfYUIN2qZ0QxiAenWyGbNtKppvAyiAcTO0iByjHaA=;
-        b=0ulLxZz5H8Xw2D+y6CxBUyrg5mcXr2IW0c7n7bM9vy0A4iFbAcKa0HKrRb127uujimuB8X
-        iM1wfV39RRaYXZ5Y7Vou/bCEHZwEVv1LVom6cOq2rKQamY7+4acA+PDAMn3vBtdBmDIL+b
-        i7kRuT428SHjX8hFPUp4olozr/tFRu8=
+        bh=JeRjLjwQhRqYl9HoHzlGb6oujq7wKFT0mdf81J1lNx0=;
+        b=RJ/Hdaoib0dDB4d1GdtcW3qfzpK/CLYIfXn/gYFFw/BOqbGEXvVYcw6zb0xJ5WfmrON8lP
+        ALPaiXPE1LmXFmvWNDkQG1Gvs3wFZWAAHk3IFkzg+0RPEKaaRRBW3S29EuEoK8dm064LT9
+        JYwyXAIZKqBlzMUEwOUWgfzz3/jnfKQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629457253;
+        s=susede2_ed25519; t=1629457286;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0tUfYUIN2qZ0QxiAenWyGbNtKppvAyiAcTO0iByjHaA=;
-        b=rLSrDXSk8cEBiZhBHrHJx34hMVbLo1Kl0sxbAV3e55r6aehFXfMgdMGE5dtb78WeszKryx
-        lg1BjgQoB0NvgQCw==
+        bh=JeRjLjwQhRqYl9HoHzlGb6oujq7wKFT0mdf81J1lNx0=;
+        b=wjYdJtwhWia0lEM7XI7U7xBXdE0VTkqjL1/bBxurEXO9O9dseihR+h9snGQoIB94sWqnNM
+        98QpeQF4fI+aUDDA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5E18DA3B84;
-        Fri, 20 Aug 2021 11:00:53 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 0C561A3B8B;
+        Fri, 20 Aug 2021 11:01:26 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AE84EDA730; Fri, 20 Aug 2021 12:57:55 +0200 (CEST)
-Date:   Fri, 20 Aug 2021 12:57:55 +0200
+        id 5FDECDA730; Fri, 20 Aug 2021 12:58:28 +0200 (CEST)
+Date:   Fri, 20 Aug 2021 12:58:28 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, l@damenly.su
-Subject: Re: [PATCH RFC 3/3] btrfs: use latest_bdev in btrfs_show_devname
-Message-ID: <20210820105755.GM5047@twin.jikos.cz>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+Message-ID: <20210820105828.GN5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com, l@damenly.su
-References: <cover.1629396187.git.anand.jain@oracle.com>
- <9a06b04b9003f86c3300e497b35b0ef0310c84c0.1629396187.git.anand.jain@oracle.com>
+Mail-Followup-To: dsterba@suse.cz,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210812103851.GC5047@twin.jikos.cz>
+ <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
+ <20210812155032.GL5047@twin.jikos.cz>
+ <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
+ <20210813085137.GQ5047@twin.jikos.cz>
+ <a5690ae1-28ba-a933-6473-e9c1e5480f0c@gmail.com>
+ <20210813103032.GR5047@twin.jikos.cz>
+ <89172356-335f-1ca3-d3a2-78fac7ef93fb@gmail.com>
+ <20210819173403.GI5047@twin.jikos.cz>
+ <e9c5bb00-b609-aff9-fc95-ca1c5b9c2899@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9a06b04b9003f86c3300e497b35b0ef0310c84c0.1629396187.git.anand.jain@oracle.com>
+In-Reply-To: <e9c5bb00-b609-aff9-fc95-ca1c5b9c2899@gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 02:18:14AM +0800, Anand Jain wrote:
-> latest_bdev is updated according to the changes to the device list.
-> That means we could use the latest_bdev to show the device name in
-> /proc/self/mounts. So this patch makes that change.
+On Fri, Aug 20, 2021 at 11:09:05AM +0800, Desmond Cheong Zhi Xi wrote:
+> On 20/8/21 1:34 am, David Sterba wrote:
+> > On Fri, Aug 20, 2021 at 01:11:58AM +0800, Desmond Cheong Zhi Xi wrote:
+> >>>>> The option #2 does not sound safe because the TGT bit is checked in
+> >>>>> several places where device list is queried for various reasons, even
+> >>>>> without a mounted filesystem.
+> >>>>>
+> >>>>> Removing the assertion makes more sense but I'm still not convinced that
+> >>>>> the this is expected/allowed state of a closed device.
+> >>>>>
+> >>>>
+> >>>> Would it be better if we cleared the REPLACE_TGT bit only when closing
+> >>>> the device where device->devid == BTRFS_DEV_REPLACE_DEVID?
+> >>>>
+> >>>> The first conditional in btrfs_close_one_device assumes that we can come
+> >>>> across such a device. If we come across it, we should properly reset it.
+> >>>>
+> >>>> If other devices has this bit set, the ASSERT will still catch it and
+> >>>> let us know something is wrong.
+> >>>
+> >>> That sounds great.
+> >>>
+> >>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> >>>> index 70f94b75f25a..a5afebb78ecf 100644
+> >>>> --- a/fs/btrfs/volumes.c
+> >>>> +++ b/fs/btrfs/volumes.c
+> >>>> @@ -1130,6 +1130,9 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+> >>>>                    fs_devices->rw_devices--;
+> >>>>            }
+> >>>>     
+> >>>> +       if (device->devid == BTRFS_DEV_REPLACE_DEVID)
+> >>>> +               clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
+> >>>> +
+> >>>>            if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
+> >>>>                    fs_devices->missing_devices--;
+> >>>
+> >>> I'll do a few test rounds, thanks.
+> >>
+> >> Just following up. Did that resolve the issue or is further
+> >> investigation needed?
+> > 
+> > The fix seems to work, I haven't seen the assertion fail anymore,
+> > incidentally the crash also stopped to show up on an unpatched branch.
+> > 
 > 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> 
-> RFC because
-> 1. latest_bdev might not be the lowest devid but, we showed
-> the lowest devid in /proc/self/mount.
-> 2. The device's path is not shown now but, previously we did.
-> So does these break ABI? Maybe yes for 2 howabout for 1 above?
+> Sounds good, thanks for the update. If there's anything else I can help 
+> with, please let me know.
 
-The path needs to be preserved, that would break a lot of things..
-
->  fs/btrfs/super.c | 25 +++----------------------
->  1 file changed, 3 insertions(+), 22 deletions(-)
-> 
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 1f9dd1a4faa3..4ad3fe174c41 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -2464,30 +2464,11 @@ static int btrfs_unfreeze(struct super_block *sb)
->  static int btrfs_show_devname(struct seq_file *m, struct dentry *root)
->  {
->  	struct btrfs_fs_info *fs_info = btrfs_sb(root->d_sb);
-> -	struct btrfs_device *dev, *first_dev = NULL;
-> +	char name[BDEVNAME_SIZE];
->  
-> -	/*
-> -	 * Lightweight locking of the devices. We should not need
-> -	 * device_list_mutex here as we only read the device data and the list
-> -	 * is protected by RCU.  Even if a device is deleted during the list
-> -	 * traversals, we'll get valid data, the freeing callback will wait at
-> -	 * least until the rcu_read_unlock.
-> -	 */
-> -	rcu_read_lock();
-> -	list_for_each_entry_rcu(dev, &fs_info->fs_devices->devices, dev_list) {
-> -		if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state))
-> -			continue;
-> -		if (!dev->name)
-> -			continue;
-> -		if (!first_dev || dev->devid < first_dev->devid)
-> -			first_dev = dev;
-> -	}
-> +	seq_escape(m, bdevname(fs_info->fs_devices->latest_bdev, name),
-> +		   " \t\n\\");
-
-No protection at all? So what if latest_bdev or latest_dev gets updated
-in parallel with devicre remove and there's a window where the pointer
-is invalid but still is accessed. The whole point of RCU section here is
-to prevent that.
-
->  
-> -	if (first_dev)
-> -		seq_escape(m, rcu_str_deref(first_dev->name), " \t\n\\");
-> -	else
-> -		WARN_ON(1);
-> -	rcu_read_unlock();
->  	return 0;
->  }
->  
-> -- 
-> 2.31.1
+So are you going to send the patch with the fix?
