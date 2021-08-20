@@ -2,131 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AE23F2C68
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 14:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAE13F2C73
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 14:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237885AbhHTMqC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Aug 2021 08:46:02 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38374 "EHLO
+        id S240375AbhHTMu1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Aug 2021 08:50:27 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39830 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236181AbhHTMqB (ORCPT
+        with ESMTP id S231685AbhHTMu1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:46:01 -0400
+        Fri, 20 Aug 2021 08:50:27 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 23F2820159;
-        Fri, 20 Aug 2021 12:45:23 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id C9BA720159;
+        Fri, 20 Aug 2021 12:49:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629463523;
+        t=1629463788;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=rI3dxgVKpfvq+OnPnj13U7DxAhtcO/GYTmYdTz7nD78=;
-        b=q9nyNp9zqD3Hevo6v/SoZU440byXGkPqnE+wDmjTKylTq1B92PvHxFyfCiAeWQ3q5hmjxu
-        9kOFIs1Iz+zoD3TCcjYpt25DYEpJLaIUZ0+ar0VUl4eSw2npEfpJScrYPru4IPWlCySMo8
-        23lhtg64l3ilwl6aVEgv/Tq9Om6PVZM=
+        bh=xyC5mINrhWgONeXlrooIJTxKWXn4ltLEARnh0odoQ8g=;
+        b=eaNKS9h/M4TMbn1znWuH4FpOR4B0bXb4rx2Q3ryvs7IbGLpK6fZNygTHGqDLRMt5gP0Gcm
+        h4ZOuC0VqSVjvmSS47O0iCRVyC0RkOVvlCCV5zWyw/y7z8gqQhHzS4Pe2vAmKClU0F0mEk
+        GEoaKJdo7cKa9RY1n3IgoN6RNZz2NKI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629463523;
+        s=susede2_ed25519; t=1629463788;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=rI3dxgVKpfvq+OnPnj13U7DxAhtcO/GYTmYdTz7nD78=;
-        b=2xbPxigxOeBwZzKdwV6Z+yRniXynKAGWteg1W+jPn1iZ2kKgk6i1Tzn7DVNQEQVSAKrMa1
-        Cj7+1RG0F9JdAkDA==
+        bh=xyC5mINrhWgONeXlrooIJTxKWXn4ltLEARnh0odoQ8g=;
+        b=jWp/Zoi7YYrQWgRqJHmAqeuXf3/RDyK65/zS3a+sF9lXJK8smCJ64WNIT1UnfeTKqCVh8O
+        wfaNryyFmDdUxxDw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 1A4F1A3B84;
-        Fri, 20 Aug 2021 12:45:23 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id C0C99A3B88;
+        Fri, 20 Aug 2021 12:49:48 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5C3F0DA892; Fri, 20 Aug 2021 14:42:25 +0200 (CEST)
-Date:   Fri, 20 Aug 2021 14:42:25 +0200
+        id 0EBE1DA8C5; Fri, 20 Aug 2021 14:46:50 +0200 (CEST)
+Date:   Fri, 20 Aug 2021 14:46:49 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] btrfs-progs: tests: also check subpage warning for
- type 2 test cases
-Message-ID: <20210820124225.GQ5047@twin.jikos.cz>
+Subject: Re: [PATCH 0/3] btrfs-progs: make subpage warnings more strict
+Message-ID: <20210820124649.GR5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20210818064420.866803-1-wqu@suse.com>
- <20210818064420.866803-2-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210818064420.866803-2-wqu@suse.com>
+In-Reply-To: <20210818064420.866803-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 02:44:18PM +0800, Qu Wenruo wrote:
+On Wed, Aug 18, 2021 at 02:44:17PM +0800, Qu Wenruo wrote:
+> For the incoming support of more page sizes for subpage RW mount, we
+> will require tree blocks to be nodesize aligned.
 > 
-> And it will make sure the subpage related warnings are really from this
-> test case, to prevent false alerts.
+> This patch prepare such restrict warnings for btrfs-check and update
+> self-tests to handle them.
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  tests/common | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tests/common b/tests/common
-> index 805a447c84ce..a6f75c7ce237 100644
-> --- a/tests/common
-> +++ b/tests/common
-> @@ -423,13 +423,23 @@ check_image()
->  {
->  	local image
->  
-> +	tmp_output=$(mktemp --tmpdir btrfs-progs-test-check-image.XXXXXX)
-> +
->  	image=$1
->  	echo "testing image $(basename $image)" >> "$RESULTS"
-> -	"$TOP/btrfs" check "$image" >> "$RESULTS" 2>&1
-> +	"$TOP/btrfs" check "$image" &> "$tmp_output"
->  	[ $? -eq 0 ] && _fail "btrfs check should have detected corruption"
->  
-> +	cat "$tmp_output" >> "$RESULTS"
-> +	# Also make sure no subpage related warnings
-> +	check_test_results "$tmp_output" "$testname"
-> +
->  	run_check "$TOP/btrfs" check --repair --force "$image"
-> -	run_check "$TOP/btrfs" check "$image"
-> +	run_check_stdout "$TOP/btrfs" check "$image" &> "$tmp_output"
-> +
-> +	# Also make sure no subpage related warnings for the repaired image
-> +	check_test_results "$tmp_output" "$testname"
-> +	rm -f "$tmp_output"
->  }
+> Currently all convert/fsck/misc can pass except one unrelated
+> regression, fsck/025, which is caused by "btrfs-progs: Drop the type
+> check in init_alloc_chunk_ctl_policy_regular".
 
-Applied with the following fixup
+I've dropped the test 025 for now so we can do the tests.
 
---- a/tests/common
-+++ b/tests/common
-@@ -422,15 +422,17 @@ check_dm_target_support()
- check_image()
- {
-        local image
-+       local tmp_output
- 
-        tmp_output=$(mktemp --tmpdir btrfs-progs-test-check-image.XXXXXX)
- 
-        image=$1
-        echo "testing image $(basename $image)" >> "$RESULTS"
-        "$TOP/btrfs" check "$image" &> "$tmp_output"
--       [ $? -eq 0 ] && _fail "btrfs check should have detected corruption"
--
-+       ret=$?
-        cat "$tmp_output" >> "$RESULTS"
-+       [ "$ret" -eq 0 ] && _fail "btrfs check should have detected corruption"
-+
-        # Also make sure no subpage related warnings
-        check_test_results "$tmp_output" "$testname"
- 
-@@ -439,7 +441,7 @@ check_image()
- 
-        # Also make sure no subpage related warnings for the repaired image
-        check_test_results "$tmp_output" "$testname"
--       rm -f "$tmp_output"
-+       rm -f -- "$tmp_output"
- }
- 
- # Extract a usable image from packed formats
+> All fsck images except fsck/018 are newer enough to have all their tree
+> blocks nodesize aligned, so they won't cause any new warnings.
+> But still, for read-only tests, we will skip the subpage warnings as we
+> only want to ensure our writes from btrfs-progs won't cause new subpage
+> warnings.
+> 
+> Qu Wenruo (3):
+>   btrfs-progs: tests: also check subpage warning for type 2 test cases
+>   btrfs-progs: tests: don't check subpage related warnings for fsck type
+>     1 tests
+>   btrfs-progs: require full nodesize alignement for subpage support
+
+Added to devel, thanks.
