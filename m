@@ -2,198 +2,265 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AF83F28FA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 11:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44E53F28F9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 11:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235887AbhHTJOa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Aug 2021 05:14:30 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:19276 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232991AbhHTJO3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:14:29 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17K9Agg2001324;
-        Fri, 20 Aug 2021 09:13:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=QKnFeLwtF7T2/jbSQV9Dgfcko+I3N+dFh9MnzUH60g8=;
- b=lZ/hCvkDxwT7XD6uyf8oID4tacH9airp2oeAaeJUXswXzyd3ENb3UHnsoybhDxl2C0hY
- PYzYLBNAvKB/qL+pE9LIr3VNoGwAA0qxXoGkpAlOoraO7QH+FR3pp2wzXZUR2w7fBfDR
- BXjUcX7SpLFTjpPNbcC6FUHH3NhwGWL1iq+HzO+14NoeCeGIlzdRL/iCV5Ld7hs2c3Lz
- xlDVhbj7ugu+q8K2/I9gHRLCckuK5Os4auoqOZlPnT6ODnj9S/bGr+8oXHl9D/5+Mjc2
- tbcH3LXdq012tPugaoPg8vcT7zJFpHbLgw6mnAl/TyX8YR058DVWwEGOfLfG2LKsoVpW IQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=QKnFeLwtF7T2/jbSQV9Dgfcko+I3N+dFh9MnzUH60g8=;
- b=BEopjs55TRqQkMEfxYBDQc6XgDKDesNnxIP79UhUDeXLXqwot79tna7XPRNMvnSQ4Me4
- FRfplRN3aAn+GRdPWGYxG/kLDTXauKAmrk1WHuwyXAhuRMWKfr0NYYmDbYm51NHqofGI
- ZgjZJ4RNGIJaN4uDSCsuSIZoc0UpUGHrqwNFcb29nxpxPIVDlyf6SAKYLh6THTgmkrdk
- xS8kMCPO4sj09VIXC8KCO4QWDL4fi4vTrm0wIH26+oZmlTefGO2ChgBLJ8r3kriX/3iC
- +ACmzlyiColgUJqG5NKFIRyTgRJYClxPU23DC6DUgXdcFjOPcnwc6eueTCT2Iavq2Uhk ug== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3agu24p276-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Aug 2021 09:13:43 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17K95AAk015961;
-        Fri, 20 Aug 2021 09:13:41 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
-        by aserp3030.oracle.com with ESMTP id 3ae3vn73d9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Aug 2021 09:13:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YMopZ2kLx3+1d8X+OiBRC6PtzBKSPrzYGm770wjxWMC4SkJziGl+eT6360xnxRosQ35EDK6HQrx7zy4HQT5AGvFDvtLwqbgSU2pU20sPksX+seoNnJbVqBQG9trzfgUOaWWNMC0mfOsi71qTP7S0NBcoXHj6vhawIMPlnt9G4kzGSd40E1kkY9SqiabtD16OYwOMXXIur4HMLkNRBb8PFNR5zsjkJIqhv+/WhFywMQs14dj4mePyuUB10Y2TT26iFf2nzLDIPGEas7Awlz7eUzvA3YuaTg5QzBsFGoKRIT4hV6stF+WhxWZbJxR4S0l7uCLYsoUa54266roSAF1QXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QKnFeLwtF7T2/jbSQV9Dgfcko+I3N+dFh9MnzUH60g8=;
- b=LurtcXxHtTCIZklVub/Rjl8bemdKG55iGN5MayZLu5L5BFvbd9zfVkuwCWUGa1XEeKdJv1NIIqZWghconBHBwx93cIuVNZsTc2PNLv64xwYBBKuAi1VKcKynLmvqnyFrCx3NWCC+dfXJeinGRQHpuoysVkKVbPQECkbbGf2Iz6xfXrwuXVI5OlFnAKgDbUkHZBMYIy5/JUVJltr/MHvCAVMTzyEtdSzVZlRpcXlQj8I8nBnykeI0bXsQ/+Sv8YCwcQmEd1nwvWHnz/5tnBVl/XreYJ1zQcmID+SU5/TlbeZNrjSJeZywirDyioAoECi5DJkH7bCeQBv9N3a9bXxzRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QKnFeLwtF7T2/jbSQV9Dgfcko+I3N+dFh9MnzUH60g8=;
- b=Z+k7qLofdRBkhuhSjuA8oldg1AW7JaSJYE7AcGwExwDrldEZ9N3k5cEGVxq3CpMwc7+OyWGUWsI2Q34djqESWPijWLaHA7IvAO6TLbvS7L/Ae8iX/XlyB5eX0/MyE+DRXPSEZ9/LDQKOkqpBqH05vSrU3Ea5yYUKAOS3AbmZhes=
-Authentication-Results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB3982.namprd10.prod.outlook.com (2603:10b6:208:1bc::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.19; Fri, 20 Aug
- 2021 09:13:39 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4415.023; Fri, 20 Aug 2021
- 09:13:39 +0000
-Subject: Re: [PATCH RFC 3/3] btrfs: use latest_bdev in btrfs_show_devname
-To:     Su Yue <l@damenly.su>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <cover.1629396187.git.anand.jain@oracle.com>
- <9a06b04b9003f86c3300e497b35b0ef0310c84c0.1629396187.git.anand.jain@oracle.com>
- <1r6ofu54.fsf@damenly.su>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <332e2d65-a258-8bf8-8f26-9571535e7075@oracle.com>
-Date:   Fri, 20 Aug 2021 17:13:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S235818AbhHTJO0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Aug 2021 05:14:26 -0400
+Received: from mout.gmx.net ([212.227.17.21]:44883 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232991AbhHTJOZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Aug 2021 05:14:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629450821;
+        bh=mv68t2KMUNZ8GHcJbnlnEl3mJiU8oOKfYlzayd9FKHE=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=Fe7GOohfRYSNo6CSkrBejOKh/M/QuJF/OOI6PLeTIITi42OxOtq+xy8BgfaPWqQRs
+         IXnKzkpTkb0hEZGxtMYvinFCNY/HKcCvoN9I1/w4ikD0DsnbmB5jqEc81tN85GICBH
+         YjeyO0vxpSd3hnv3YbEtK4OYEtsp95JzpGos6o08=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7sHy-1mC2WE3hhK-004xoS; Fri, 20
+ Aug 2021 11:13:41 +0200
+To:     Nikolay Borisov <nborisov@suse.com>,
+        Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org, Qu Wenruo <wqu@suse.com>
+References: <cover.1629234193.git.osandov@fb.com>
+ <a00b59623219c8a07f2c22f80ef1466d0f182d77.1629234193.git.osandov@fb.com>
+ <1b495420-f4c6-6988-c0b1-9aa8a7aa952d@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH v10 06/14] btrfs: optionally extend i_size in
+ cow_file_range_inline()
+Message-ID: <2eae3b11-d9aa-42b1-122e-49bd40258d9b@gmx.com>
+Date:   Fri, 20 Aug 2021 17:13:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-In-Reply-To: <1r6ofu54.fsf@damenly.su>
+MIME-Version: 1.0
+In-Reply-To: <1b495420-f4c6-6988-c0b1-9aa8a7aa952d@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0091.apcprd02.prod.outlook.com
- (2603:1096:4:90::31) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.109] (39.109.186.25) by SG2PR02CA0091.apcprd02.prod.outlook.com (2603:1096:4:90::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Fri, 20 Aug 2021 09:13:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2a667363-19a6-4bf5-1d0c-08d963bacc56
-X-MS-TrafficTypeDiagnostic: MN2PR10MB3982:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB3982BAC053D68C3814F56BD0E5C19@MN2PR10MB3982.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: byxoSMXkLSxW6R+MJshix0loBJcMXGxm/mdl0MONUjTB3hdxs5oG+60LN0LvcxE5z4QJd+0wf3HDVBMqN0Ja5Lmzp/DbDPrQ4oQLnTbIZZ4uJaV5XVGeNaNwAyewaO0ctOweV4huWfrT9kXGC3b+gd63niUctHYqXffqrRfj2Kv/rfFfqP5FjQp+ENay7eOtC+ZMofl6jlUsx/8pwSDwQnbnFirzH1tI/ZP3beQTQyK3EFP0awZw/hdwc2JznHnon4v1PoTPOGbXR4Bqe0uci5zoESFc4Os7FTKq0NFrFyIvoStnGSUy6OQVE3/JwQV1NVy2KnuutPha+RfzLp1sljOVOJCTZtjENHOLJ72EymztvLIRC+vzTL/mtON3q8CBvn2EpXd3oQ6C7syDyfapHzAeK4/GZHbpLgX3ZyDi0PXcfAqmWH4aqqzL8CW+pecDW2EqFXkIsU26Q81mA0Xy1C+PRrVW0HAYWoSWi7XOHP9Hzo6RM+/TrJyDKBvsDcI83C32wvPNLDO1Zn5QKKq+Iq+8kcIH051SPoqf/s2ekDQQ8jJLpSMEgdxBViMM53rZjbV6yS3yNnYRRntxUlNGAqHLx4QV8MUWdzvK7oAiaTjiDkPkB6t+X5BxBHF9SQ0Bq8P3ZSy7wpkoU0MBVvyETEQBO1j0jnaHuW6DuOS7W1ups/Q/bIIEbfxB+PUxzWaLWTY/3f5nIHI7AOAlsCvXo/G3gjPopKNhCwU6jmk7S1HkOErbo9ejsFHdEF2iEg2/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66476007)(66556008)(2616005)(186003)(508600001)(2906002)(4326008)(44832011)(5660300002)(6486002)(53546011)(6666004)(66946007)(8936002)(31686004)(38100700002)(83380400001)(316002)(16576012)(36756003)(86362001)(31696002)(26005)(6916009)(8676002)(956004)(781001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aW1uVlM4c1RnWllENTFvZ29xaHAxNURMVlY1dE9TWGF3NjZQQm52RmZMUHBH?=
- =?utf-8?B?QnovdDdQaDNEK29NUXNsWEU1dVF0ZFExV2wwOHBTMmZObkdOS2p2WTA0TVVH?=
- =?utf-8?B?Tk1pY01tMXM2TjA5VmpWOUE5VWRlNHQ0TjI3YlJKTytCdFZoNDVXZkJGWGlj?=
- =?utf-8?B?aVFkVENNTTgrREVDRlRhSnJWbks5WTZJUVBPZDFld01TWURNcFNZOWZ3Umw0?=
- =?utf-8?B?aG54YkJYYjRjQlJEc3E4WnJwZmYyV3FOdno3Tk5jaTBCZXcraitYZjZCZUFB?=
- =?utf-8?B?cmk4WVh0QkdUS2VGYTk3Z1g0Yi91R1Z2TE02Z0lFK0YrYUZvUmY0M1QwbHlX?=
- =?utf-8?B?NzZYS2hLbG5OVWZPY0lhVldSdTRUMktTODl4d3lCSWpZNDg4TTNETmtKQW50?=
- =?utf-8?B?VmRyY3JDVm90WUFMOUwxT3dEZDlieTc2Q1J5dklZeWM5VjNIY0tISG9FY1pI?=
- =?utf-8?B?c1hGWEJNMm1nSUNWZmI1VUNWSmdVRkhhVkR2SHBUVmpqRUF3eThLdlhHWWZs?=
- =?utf-8?B?R01BcFhhYUUzV21XMTBXU3pFZFNiZ2E0bHRmS3VjVFVVdGpVS1FSdis1KzVR?=
- =?utf-8?B?VDRqdEtvd2cycndGZXFnbGJNZU5VbVRRS21BVUl2NVdPRGZrTy9zVWVkU2xH?=
- =?utf-8?B?dXBqTCs0cmxPZ2p1NGJMeGlGN0hiZldaUTFJQWtoay90dHFHSmp6ZDBZOGdx?=
- =?utf-8?B?bE8zbnMrL3BKcmRYalJlcFlaMloyaE4xd3VudkZwRTRUZ3JiL0VaR2liUzE4?=
- =?utf-8?B?Y1BMSGZTdjZ4NE5jN1huMjNlY0Z4U21YN29Kc1hUaUNDWlFML3c1SFJrRy94?=
- =?utf-8?B?ZFVUZmZZYWxhS3MxcDBoYnN2eEJrTnN1em9JMjhDenBna0paR2I2SHpvVWZt?=
- =?utf-8?B?R1NSenlMczhWS1p4YjlBVnlZRzMyTUR2RHhUeVpJeXZ5REJnMXc2eENTeHln?=
- =?utf-8?B?RDZFck5lMG0zZytDR1d4cU5zVWxaaWJtUnVwdnN4OXJaYmxGUE1JeGVFeWxL?=
- =?utf-8?B?RmNSVUV2Z3B2OFQ5LzdoZXBsd1JwNWtNdUFvakhFWkNMM3haVi96U25sK0tX?=
- =?utf-8?B?OEh4VHpMSnRwNWlhbDFxTFg3QTd4U1orSFFMRjlVS0hoRGgzRU5PQjk4b1pC?=
- =?utf-8?B?YjJpN0RIWlg2Smg1RCtVNnZkRXd0ZjIyM0JNSmp5UkhDWVJKZlBVb1lmN2VV?=
- =?utf-8?B?LzlqTTdyZTRFeUZrdHVRMjlmQjllY3Fvc1o3V1IvWVdMTFlDR2ZvclRVMlF2?=
- =?utf-8?B?TkEzUDJ2c3hoVTF2b0EzSldYQ3FFV0lIUEs0cGcwNXBhSVdPQWdGMzhDOXU0?=
- =?utf-8?B?bHFkUDlxQ0V5bnRHMVRyNnJ1MnJuVXljTDNjSVJETGVaR2ltdDZsR2ZDM2N4?=
- =?utf-8?B?bFpLS2hUTURSVjNienJ3Q2luaS9sUFFLVE00M21xTXRkTlBnMjJvbXVyOTNy?=
- =?utf-8?B?SnJEVDV5cFBsUDRaRU1rcFhET1lWL1l5Q3lKdDRxaWdCUlY4Yk5ycDFQN1dR?=
- =?utf-8?B?STI1QXppeDYzTW54a09RS2krYnNBcDNFaEdkcTl4cjlNL2tXZGVtM3B2NVpM?=
- =?utf-8?B?STExbXlLU1Q3ZXpYejRVN091Z1o4K0lkUDRvNlN0a25LV25KZWg1aFkwMkI2?=
- =?utf-8?B?VXJpOWtFMUpFdGFWd1RabnlFS3AvODhYWHB1WnNpbnhpdVBzY2Q5U2tib3Bj?=
- =?utf-8?B?L0Flb3lrMGVOZXdUbG1WcHhSd2c2bzVXSTRQemRYMURZNWFvaGZxSjNlcnp4?=
- =?utf-8?Q?qk9COJlje+GEUrb+EfQkiNLOWyKA9VxB96LkrUL?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a667363-19a6-4bf5-1d0c-08d963bacc56
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 09:13:39.4232
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tBBZHOz4QLtIWKu7b88f7Tv7sa7zrKcQiC65Y+mAnNeWEqqysxh4wh9dYeyLuzkRGJG5r8c3u1LgO6TahVJtnw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3982
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10081 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 spamscore=0 bulkscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108200052
-X-Proofpoint-GUID: ywlA13JCPXlddVdR3Bhhm5R-j7yCIpCO
-X-Proofpoint-ORIG-GUID: ywlA13JCPXlddVdR3Bhhm5R-j7yCIpCO
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:aulkFjfLhLeRWSv8bX8WIfa6s+amzSZjKJsdcFS0E6pGAMtu711
+ PxpHgCfAHFFxZ5IZTWQepyJKPMX68UGWhjYs89kX+7q8BiNiQ5h1MrhNHFc5pAYshwQnBBj
+ NoKQ47uB6a/XwzlB/mOXXZz9SorhljQllKYWReqZBLpdf5dm23Y66r8vWduDC1YrDMrQYmN
+ FzPKD/6NGMtaKwjNVxwYA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iWYbzrOcXyY=:H3yecQ+4AboPf/dkIYPiGI
+ D/NO5yfWhjRufIV/3KYcKhFSnh0oN3w2A+WhcPOJUlrrES9LSiSvxNEFhnxVKrBBOfnTYXV+I
+ fAd1gDDc7oENlUxExy0Ddl6OjEHbGm04OHuh7Qf839hKw3hsV88cyCbTHCo3ZoDlRgx/BmP4o
+ cJE/2yacqf/KxXFZ4eIpX6/m1RyexT6+C83AXcfQJlnHp73I2vQvwh097s2ofR1bQuEt9S7+y
+ isTcNkYX8nz15JOvsadyJQIAgShieynEfbni59vgI6VE9lBM0ct8gO4+rrOpgm5VIGiIQD7Q9
+ F6C//KCVt9Rzql1b/p/394QtX10DHwkEuTJnes/eNOCWpiXJVZ5/vycEVU7/t5ITjTuFWu/yi
+ LANifOO6PKOo3h71IODshnDK5HJEGmRriIo7k85xEVsiqm2haEEm38cMcBcdcN95bO1V5K0oQ
+ WaIWIeLP0kDokOC0+zcszvFtJE06Y92Fo+rNTZrLhq9XXDstkmTAuXN6cc9KcZUBJ7BGWxdPo
+ zADIUxjojt2ze95KopbZSbrxvQ+xy1tB37vCCPEnbQM4vW0AMRa+xhrsT3AGa59G8J+U3mbES
+ e9V6l3EiYNLsGct7uZeV2REpN/LS846QjK9Nru2f1YUFZ3uoTGNvLdC6dfathO1654k0OnDDX
+ mv3KVizdCmS4ZhuWvYlGYFBFHakFB5Zgx/IYoXx6AMFhLBHBSxfqITmho8UvmhUfZDagEEkaQ
+ G11sdwj2lX1uS5eEdcPdstfCPdpEq82sk06fqzuHH2DqHIlfLC5bLSmf+il3xqPf+C8Av45Nv
+ ZDzwyv2NZ9ADs4HxKQ9CreU+QAzcma3+dgMEQL6K1+4UyL1Ng+oPx8ke5WNrB29jXFtIDXXGH
+ C++/mdvkIgMAexukjXNuRZPfuJQarbuJbnnOggpYnOINV+KESNZAhQ5UrD8blWA9qV77RDFCW
+ jZAxRo/G9TkDctTD5uVw1NbAtJNa37fFzUbvN304Z2zqAcSXSqQkYmmXsM7u9BufqrSpvP5uX
+ 7TAuJN0nk1tI9IxPQp2FeSDM+CSqq8TxL4OTm94yzEm48PbkTH1C+eCRkkhxHYgxNHSSRkIDH
+ kA3jk0iCv2mPNyo+MNsxcF1e5DtmpEm4LMRfbOE7zH7J8af5AXVtOUE/g==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 20/08/2021 15:31, Su Yue wrote:
-> 
-> On Fri 20 Aug 2021 at 02:18, Anand Jain <anand.jain@oracle.com> wrote:
-> 
->> latest_bdev is updated according to the changes to the device list.
->> That means we could use the latest_bdev to show the device name in
->> /proc/self/mounts. So this patch makes that change.
+On 2021/8/20 =E4=B8=8B=E5=8D=884:51, Nikolay Borisov wrote:
+>
+>
+> On 18.08.21 =D0=B3. 0:06, Omar Sandoval wrote:
+>> From: Omar Sandoval <osandov@fb.com>
 >>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> Currently, an inline extent is always created after i_size is extended
+>> from btrfs_dirty_pages(). However, for encoded writes, we only want to
+>> update i_size after we successfully created the inline extent.
+
+To me, the idea of write first then update isize is just going to cause
+tons of inline extent related prblems.
+
+The current example is falloc, which only update the isize after the
+falloc finishes.
+
+This behavior has already bothered me quite a lot, as it can easily
+create mixed inline and regular extents.
+
+Can't we remember the old isize (with proper locking), enlarge isize
+(with holes filled), do the write.
+
+If something wrong happened, we truncate the isize back to its old isize.
+
+>> Add an
+>> update_i_size parameter to cow_file_range_inline() and
+>> insert_inline_extent() and pass in the size of the extent rather than
+>> determining it from i_size. Since the start parameter is always passed
+>> as 0, get rid of it and simplify the logic in these two functions. Whil=
+e
+>> we're here, let's document the requirements for creating an inline
+>> extent.
+>>
+>> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>> Signed-off-by: Omar Sandoval <osandov@fb.com>
 >> ---
+>>   fs/btrfs/inode.c | 100 +++++++++++++++++++++++-----------------------=
+-
+>>   1 file changed, 48 insertions(+), 52 deletions(-)
 >>
->> RFC because
->> 1. latest_bdev might not be the lowest devid but, we showed
->> the lowest devid in /proc/self/mount.
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 708d8ab098bc..0b5ff14aa7fd 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -236,9 +236,10 @@ static int btrfs_init_inode_security(struct btrfs_=
+trans_handle *trans,
+>>   static int insert_inline_extent(struct btrfs_trans_handle *trans,
+>>   				struct btrfs_path *path, bool extent_inserted,
+>>   				struct btrfs_root *root, struct inode *inode,
+>> -				u64 start, size_t size, size_t compressed_size,
+>> +				size_t size, size_t compressed_size,
+>>   				int compress_type,
+>> -				struct page **compressed_pages)
+>> +				struct page **compressed_pages,
+>> +				bool update_i_size)
+>>   {
+>>   	struct extent_buffer *leaf;
+>>   	struct page *page =3D NULL;
+>> @@ -247,7 +248,7 @@ static int insert_inline_extent(struct btrfs_trans_=
+handle *trans,
+>>   	struct btrfs_file_extent_item *ei;
+>>   	int ret;
+>>   	size_t cur_size =3D size;
+>> -	unsigned long offset;
+>> +	u64 i_size;
+>>
+>>   	ASSERT((compressed_size > 0 && compressed_pages) ||
+>>   	       (compressed_size =3D=3D 0 && !compressed_pages));
+>> @@ -260,7 +261,7 @@ static int insert_inline_extent(struct btrfs_trans_=
+handle *trans,
+>>   		size_t datasize;
+>>
+>>   		key.objectid =3D btrfs_ino(BTRFS_I(inode));
+>> -		key.offset =3D start;
+>> +		key.offset =3D 0;
+>>   		key.type =3D BTRFS_EXTENT_DATA_KEY;
+>>
+>>   		datasize =3D btrfs_file_extent_calc_inline_size(cur_size);
+>> @@ -297,12 +298,10 @@ static int insert_inline_extent(struct btrfs_tran=
+s_handle *trans,
+>>   		btrfs_set_file_extent_compression(leaf, ei,
+>>   						  compress_type);
+>>   	} else {
+>> -		page =3D find_get_page(inode->i_mapping,
+>> -				     start >> PAGE_SHIFT);
+>> +		page =3D find_get_page(inode->i_mapping, 0);
+>>   		btrfs_set_file_extent_compression(leaf, ei, 0);
+>>   		kaddr =3D kmap_atomic(page);
+>> -		offset =3D offset_in_page(start);
+>> -		write_extent_buffer(leaf, kaddr + offset, ptr, size);
+>> +		write_extent_buffer(leaf, kaddr, ptr, size);
+>>   		kunmap_atomic(kaddr);
+>>   		put_page(page);
+>>   	}
+>> @@ -313,8 +312,8 @@ static int insert_inline_extent(struct btrfs_trans_=
+handle *trans,
+>>   	 * We align size to sectorsize for inline extents just for simplicit=
+y
+>>   	 * sake.
+>>   	 */
+>> -	size =3D ALIGN(size, root->fs_info->sectorsize);
+>> -	ret =3D btrfs_inode_set_file_extent_range(BTRFS_I(inode), start, size=
+);
+>> +	ret =3D btrfs_inode_set_file_extent_range(BTRFS_I(inode), 0,
+>> +					ALIGN(size, root->fs_info->sectorsize));
+>>   	if (ret)
+>>   		goto fail;
+>>
+>> @@ -327,7 +326,13 @@ static int insert_inline_extent(struct btrfs_trans=
+_handle *trans,
+>>   	 * before we unlock the pages.  Otherwise we
+>>   	 * could end up racing with unlink.
+>>   	 */
+>> -	BTRFS_I(inode)->disk_i_size =3D inode->i_size;
+>> +	i_size =3D i_size_read(inode);
+>> +	if (update_i_size && size > i_size) {
+>> +		i_size_write(inode, size);
+>> +		i_size =3D size;
+>> +	}
+>> +	BTRFS_I(inode)->disk_i_size =3D i_size;
+>> +
+>>   fail:
+>>   	return ret;
+>>   }
+>> @@ -338,35 +343,31 @@ static int insert_inline_extent(struct btrfs_tran=
+s_handle *trans,
+>>    * does the checks required to make sure the data is small enough
+>>    * to fit as an inline extent.
+>>    */
+>> -static noinline int cow_file_range_inline(struct btrfs_inode *inode, u=
+64 start,
+>> -					  u64 end, size_t compressed_size,
+>> +static noinline int cow_file_range_inline(struct btrfs_inode *inode, u=
+64 size,
+>> +					  size_t compressed_size,
+>>   					  int compress_type,
+>> -					  struct page **compressed_pages)
+>> +					  struct page **compressed_pages,
+>> +					  bool update_i_size)
+>>   {
+>>   	struct btrfs_drop_extents_args drop_args =3D { 0 };
+>>   	struct btrfs_root *root =3D inode->root;
+>>   	struct btrfs_fs_info *fs_info =3D root->fs_info;
+>>   	struct btrfs_trans_handle *trans;
+>> -	u64 isize =3D i_size_read(&inode->vfs_inode);
+>> -	u64 actual_end =3D min(end + 1, isize);
+>> -	u64 inline_len =3D actual_end - start;
+>> -	u64 aligned_end =3D ALIGN(end, fs_info->sectorsize);
+>> -	u64 data_len =3D inline_len;
+>> +	u64 data_len =3D compressed_size ? compressed_size : size;
+>>   	int ret;
+>>   	struct btrfs_path *path;
+>>
+>> -	if (compressed_size)
+>> -		data_len =3D compressed_size;
+>> -
+>> -	if (start > 0 ||
+>> -	    actual_end > fs_info->sectorsize ||
+>> +	/*
+>> +	 * We can create an inline extent if it ends at or beyond the current
+>> +	 * i_size, is no larger than a sector (decompressed), and the (possib=
+ly
+>> +	 * compressed) data fits in a leaf and the configured maximum inline
+>> +	 * size.
+>> +	 */
+>
+> Urgh, just some days ago Qu was talking about how awkward it is to have
+> mixed extents in a file. And now, AFAIU, you are making them more likely
+> since now they can be created not just at the beginning of the file but
+> also after i_size write. While this won't be a problem in and of itself
+> it goes just the opposite way of us trying to shrink the possible cases
+> when we can have mixed extents.
+
+Tree-checker should reject such inline extent at non-zero offset.
+
+> Qu what is your take on that?
+
+My question is, why encoded write needs to bother the inline extents at al=
+l?
+
+My intuition of such encoded write is, it should not create inline
+extents at all.
+
+Or is there any special use-case involved for encoded write?
+
+Thanks,
+Qu
 
 
->> 2. The device's path is not shown now but, previously we did.
->> So does these break ABI? Maybe yes for 2 howabout for 1 above?
-
-  In v2 I am fix the path part. By replacing latest_bdev to latest_dev
-  which means it shall hold the pointer to btrfs_device instead of
-  just to its bdev.
-
-> Mabybe a naive question but I have no time to dive into btrfs code
-> recently. If a device which has highest devid was replaced, will the
-> new device be the fs_devices->latest_bdev instead of the existing older
-> one?
-
-  It is handled by btrfs_assign_next_active_device().
-
-  If the replace source device is also the latest_dev then after replace
-  it shall point to the replace target device. So the new device path is
-  seen in /proc/self/mounts. Which is fine and normal to expect.
-
-  Similarly btrfs_assign_next_active_device() is called during remove
-  device as well.
-
-  There is a bug that we didn't update the latest_bdev when we sprout
-  I am fixing this as well in v2.
-
-Thanks.
+>
+> <snip>
+>
