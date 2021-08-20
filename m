@@ -2,254 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6F93F326F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 19:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1D83F3286
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 19:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234970AbhHTRtI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Aug 2021 13:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
+        id S235318AbhHTRxE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Aug 2021 13:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234308AbhHTRtI (ORCPT
+        with ESMTP id S229940AbhHTRxC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:49:08 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A83DC061757
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 10:48:30 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so7858577pjb.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 10:48:30 -0700 (PDT)
+        Fri, 20 Aug 2021 13:53:02 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA67C061575;
+        Fri, 20 Aug 2021 10:52:24 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so1539693pjx.5;
+        Fri, 20 Aug 2021 10:52:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=oDw9JQn7vr4FgthPf7YyzlLqJ+cCwfdETdPUxePdPaQ=;
-        b=q/7IycLqHV9nhmB5jzY0K+T+yMqRclGEea3ADyEq6+HiNXH4Mpf99xYsvQeD6i4JnC
-         zfkpfY3rlngQcOMSDo9hVZbxN+lvuxSwGwftlDWVkjdqNBrdRCl8/iL+mPRR2H/VcXo0
-         7GHA/kYEhdSlfZvGgI+Xv3q3TcxV7zC0FAv63k6kQmdR9DkVnbHz5YvmuWTDswy3c6YI
-         71iuy97qpOESdRNgTsJipIv7IpoFpXsYGDGEUbWPwRWs0CXMsd5euiJnQg3XSL364vzc
-         tkLlx3AW8ixJrMg0m8iAb/bP3ndyw/ZZobSvm1HPUd4zFssBzdIUBSzstxQv/PU52q+w
-         fZlg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Gb5HcaUUjNzoxlEdIwt0oiuotNKbOWBhybKn0uIYBE=;
+        b=CHSZ+64z/dhipp2kjC7peGVVbBKkJsNnCsHAcFaKMTcFj5/YSjIzv//G3hfEMf8BAI
+         Jg3jwc66NhGkhq5rn+GmiSo17Lg7Te53Bk+4frUWCv1PXEtoQsgI3zQfUvDlkVmHexNL
+         W/QV3XNkn9rZO9aIA+yJ4pVp33TkfSzvxM3eVx6HpoNLXH9jWg+kGUiYkQIlwxmvsMY5
+         xW/exZDnehAODSufHsx/ftHtmzpw5YMzmZ9dfz4V0KzaPI0eXcrqJTGBnB5sqS2gzwSt
+         QZBmGXkYBqSZMX0hfQdvhHnbDGks1Q9TDQyLdTB0BSP5LQDU0whMS32NR/p/nWbO20Rt
+         e5TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=oDw9JQn7vr4FgthPf7YyzlLqJ+cCwfdETdPUxePdPaQ=;
-        b=WxS0bZmE2VHhFYRV9Me4iLmZybdVq+TwmeyUGXWZffl0XSp7rZ3FnnnqAovNMIDJ7e
-         c/S/RjH+4QnOxDCZtTtfBXUJBDquD6MYFl07weT8iqUUyKrdoOaD1QUuA2ETHrV4YTTW
-         lXLj9FDKV101XScPK6mqkh58xMNWWZV/X5Rrfh9N5JiIQ6O0UHidUpinqpeINK0z+UPW
-         MRJS6TH0i2uXgXGe3ju3LAX1HFJSXVG67MtWsmCdV+LIUVHifPr2wF9t0qqEHnK7ENyQ
-         Fz1oBRxYJkzUusK31U5Xx6ma5U/I/Mfr7yM9Dmb3aaV2EUNjglZjKf8f2yMrshlv+RtS
-         YZRw==
-X-Gm-Message-State: AOAM531w5W8s5AqapvJvRklWlbV9v0Sgmharf7mEdZb+fgJr4ofXctR5
-        jef6st0iF7Zpn6uOzEQbzDU7tQ==
-X-Google-Smtp-Source: ABdhPJzDyzGoSd6w3JNBealpMnwcSToFAhL/IKzW0rpNJKxQ3ceF9rKlpNdqp4e8CUZafcIq4CoL6g==
-X-Received: by 2002:a17:902:c40e:b029:12c:cbce:2d18 with SMTP id k14-20020a170902c40eb029012ccbce2d18mr17316489plk.60.1629481709625;
-        Fri, 20 Aug 2021 10:48:29 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:4387])
-        by smtp.gmail.com with ESMTPSA id h20sm7392798pfc.32.2021.08.20.10.48.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7Gb5HcaUUjNzoxlEdIwt0oiuotNKbOWBhybKn0uIYBE=;
+        b=Uq14ug22Xrhb8HdWpgr84n0LGKOh5TtXJ9OFZxWKvyBt8NWCBdOEmS1yP72HrhYEBo
+         1dGynCJ2ajfcUfCHYT5NVHV+eUhssuzdITI1iUmj4M+DjBb6SmQbJLggyF1XBHxtguIp
+         o/uaxA71TUJBT0Dtw64FRzgkbcGDsFeUnIDjKZlI+4h5/k8rlA2Lq2KYYVMM35yK9lGJ
+         rROUrxLGi9gUtOeeUUUNU3E9vyy5BRA4l+msca0ZOS8NQQcrV4DYj+/sGgysIPBzoWOq
+         1yb76ud1+hUzplVp/ehqRMgUC1bhQWxzTk92UMj+FZ1TmiTG06T3zqTQh0umL5mhY8yY
+         zKmw==
+X-Gm-Message-State: AOAM530Yg1PBBStAVhZsHhVVEVtXm1ms0HmE7wiCJdWH1dnPZuhTSUH3
+        rVIGEc1Eqch/vNEBumHKYkM=
+X-Google-Smtp-Source: ABdhPJz6C+FGa9mgyW9TmLSmQDRM+ddq9D7Tx7bpb33rAW0KcRAMDkGycPFmP6bg+jUHzimX6LJYoA==
+X-Received: by 2002:a17:902:d918:b029:12d:22d5:869a with SMTP id c24-20020a170902d918b029012d22d5869amr17140791plz.82.1629481944347;
+        Fri, 20 Aug 2021 10:52:24 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id i6sm7632364pfa.44.2021.08.20.10.52.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 10:48:29 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 10:48:27 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v10 07/14] btrfs: add definitions + documentation for
- encoded I/O ioctls
-Message-ID: <YR/q69Tiz6PFqFJN@relinquished.localdomain>
-References: <cover.1629234193.git.osandov@fb.com>
- <9bd601f8c5494342d8c7d8aaa86aa815c2118173.1629234193.git.osandov@fb.com>
- <1e9a95f4-01a3-c356-a348-2992d63c867f@suse.com>
+        Fri, 20 Aug 2021 10:52:23 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] btrfs: reset replace target device to allocation state on close
+Date:   Sat, 21 Aug 2021 01:50:40 +0800
+Message-Id: <20210820175040.586806-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1e9a95f4-01a3-c356-a348-2992d63c867f@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 11:56:37AM +0300, Nikolay Borisov wrote:
-> 
-> 
-> On 18.08.21 г. 0:06, Omar Sandoval wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> > 
-> > In order to allow sending and receiving compressed data without
-> > decompressing it, we need an interface to write pre-compressed data
-> > directly to the filesystem and the matching interface to read compressed
-> > data without decompressing it. This adds the definitions for ioctls to
-> > do that and detailed explanations of how to use them.
-> > 
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > ---
-> >  include/uapi/linux/btrfs.h | 132 +++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 132 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-> > index d7d3cfead056..95da52955894 100644
-> > --- a/include/uapi/linux/btrfs.h
-> > +++ b/include/uapi/linux/btrfs.h
-> > @@ -861,6 +861,134 @@ struct btrfs_ioctl_get_subvol_rootref_args {
-> >  		__u8 align[7];
-> >  };
-> >  
-> > +/*
-> > + * Data and metadata for an encoded read or write.
-> > + *
-> > + * Encoded I/O bypasses any encoding automatically done by the filesystem (e.g.,
-> > + * compression). This can be used to read the compressed contents of a file or
-> > + * write pre-compressed data directly to a file.
-> > + *
-> > + * BTRFS_IOC_ENCODED_READ and BTRFS_IOC_ENCODED_WRITE are essentially
-> > + * preadv/pwritev with additional metadata about how the data is encoded and the
-> > + * size of the unencoded data.
-> > + *
-> > + * BTRFS_IOC_ENCODED_READ fills the given iovecs with the encoded data, fills
-> > + * the metadata fields, and returns the size of the encoded data. It reads one
-> > + * extent per call. It can also read data which is not encoded.
-> > + *
-> > + * BTRFS_IOC_ENCODED_WRITE uses the metadata fields, writes the encoded data
-> > + * from the iovecs, and returns the size of the encoded data. Note that the
-> > + * encoded data is not validated when it is written; if it is not valid (e.g.,
-> > + * it cannot be decompressed), then a subsequent read may return an error.
-> > + *
-> > + * Since the filesystem page cache contains decoded data, encoded I/O bypasses
-> > + * the page cache. Encoded I/O requires CAP_SYS_ADMIN.
-> > + */
-> > +struct btrfs_ioctl_encoded_io_args {
-> > +	/* Input parameters for both reads and writes. */
-> > +
-> > +	/*
-> > +	 * iovecs containing encoded data.
-> > +	 *
-> > +	 * For reads, if the size of the encoded data is larger than the sum of
-> > +	 * iov[n].iov_len for 0 <= n < iovcnt, then the ioctl fails with
-> > +	 * ENOBUFS.
-> > +	 *
-> > +	 * For writes, the size of the encoded data is the sum of iov[n].iov_len
-> > +	 * for 0 <= n < iovcnt. This must be less than 128 KiB (this limit may
-> > +	 * increase in the future). This must also be less than or equal to
-> > +	 * unencoded_len.
-> > +	 */
-> > +	const struct iovec __user *iov;
-> > +	/* Number of iovecs. */
-> > +	unsigned long iovcnt;
-> > +	/*
-> > +	 * Offset in file.
-> > +	 *
-> > +	 * For writes, must be aligned to the sector size of the filesystem.
-> > +	 */
-> > +	__s64 offset;
-> > +	/* Currently must be zero. */
-> > +	__u64 flags;
-> > +
-> > +	/*
-> > +	 * For reads, the following members are filled in with the metadata for
-> > +	 * the encoded data.
-> > +	 * For writes, the following members must be set to the metadata for the
-> > +	 * encoded data.
-> > +	 */
-> > +
-> > +	/*
-> > +	 * Length of the data in the file.
-> > +	 *
-> > +	 * Must be less than or equal to unencoded_len - unencoded_offset. For
-> > +	 * writes, must be aligned to the sector size of the filesystem unless
-> > +	 * the data ends at or beyond the current end of the file.
-> > +	 */
-> > +	__u64 len;
-> > +	/*
-> > +	 * Length of the unencoded (i.e., decrypted and decompressed) data.
-> > +	 *
-> > +	 * For writes, must be no more than 128 KiB (this limit may increase in
-> > +	 * the future). If the unencoded data is actually longer than
-> > +	 * unencoded_len, then it is truncated; if it is shorter, then it is
-> > +	 * extended with zeroes.
-> > +	 */
-> > +	__u64 unencoded_len;
-> > +	/*
-> > +	 * Offset from the first byte of the unencoded data to the first byte of
-> > +	 * logical data in the file.
-> > +	 *
-> > +	 * Must be less than unencoded_len.
-> > +	 */
-> > +	__u64 unencoded_offset;
-> > +	/*
-> > +	 * BTRFS_ENCODED_IO_COMPRESSION_* type.
-> > +	 *
-> > +	 * For writes, must not be BTRFS_ENCODED_IO_COMPRESSION_NONE.
-> > +	 */
-> > +	__u32 compression;
-> > +	/* Currently always BTRFS_ENCODED_IO_ENCRYPTION_NONE. */
-> > +	__u32 encryption;
-> > +	/*
-> > +	 * Reserved for future expansion.
-> > +	 *
-> > +	 * For reads, always returned as zero. Users should check for non-zero
-> > +	 * bytes. If there are any, then the kernel has a newer version of this
-> > +	 * structure with additional information that the user definition is
-> > +	 * missing.
-> > +	 *
-> > +	 * For writes, must be zeroed.
-> > +	 */
-> > +	__u8 reserved[32];
-> > +};
-> > +
-> > +/* Data is not compressed. */
-> > +#define BTRFS_ENCODED_IO_COMPRESSION_NONE 0
-> > +/* Data is compressed as a single zlib stream. */
-> > +#define BTRFS_ENCODED_IO_COMPRESSION_ZLIB 1
-> > +/*
-> > + * Data is compressed as a single zstd frame with the windowLog compression
-> > + * parameter set to no more than 17.
-> > + */
-> > +#define BTRFS_ENCODED_IO_COMPRESSION_ZSTD 2
-> > +/*
-> > + * Data is compressed page by page (using the page size indicated by the name of
-> > + * the constant) with LZO1X and wrapped in the format documented in
-> > + * fs/btrfs/lzo.c. For writes, the compression page size must match the
-> > + * filesystem page size.
-> > + */
-> > +#define BTRFS_ENCODED_IO_COMPRESSION_LZO_4K 3
-> > +#define BTRFS_ENCODED_IO_COMPRESSION_LZO_8K 4
-> > +#define BTRFS_ENCODED_IO_COMPRESSION_LZO_16K 5
-> > +#define BTRFS_ENCODED_IO_COMPRESSION_LZO_32K 6
-> > +#define BTRFS_ENCODED_IO_COMPRESSION_LZO_64K 7
-> > +#define BTRFS_ENCODED_IO_COMPRESSION_TYPES 8
-> > +
-> > +/* Data is not encrypted. */
-> > +#define BTRFS_ENCODED_IO_ENCRYPTION_NONE 0
-> > +#define BTRFS_ENCODED_IO_ENCRYPTION_TYPES 1
-> 
-> How about an enums for encryption/compression.
+This crash was observed with a failed assertion on device close:
 
-With #define, the user can use #ifdef to check if the constants are
-defined and provide their own definitions if not (that's what I did in
-the xfstests example programs). Another option is the enum+#define
-pattern:
+  BTRFS: Transaction aborted (error -28)
+  WARNING: CPU: 1 PID: 3902 at fs/btrfs/extent-tree.c:2150 btrfs_run_delayed_refs+0x1d2/0x1e0 [btrfs]
+  Modules linked in: btrfs blake2b_generic libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compress lzo_decompress raid6_pq loop
+  CPU: 1 PID: 3902 Comm: kworker/u8:4 Not tainted 5.14.0-rc5-default+ #1532
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+  Workqueue: events_unbound btrfs_async_reclaim_metadata_space [btrfs]
+  RIP: 0010:btrfs_run_delayed_refs+0x1d2/0x1e0 [btrfs]
+  RSP: 0018:ffffb7a5452d7d80 EFLAGS: 00010282
+  RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+  RDX: 0000000000000001 RSI: ffffffffabee13c4 RDI: 00000000ffffffff
+  RBP: ffff97834176a378 R08: 0000000000000001 R09: 0000000000000001
+  R10: 0000000000000000 R11: 0000000000000001 R12: ffff97835195d388
+  R13: 0000000005b08000 R14: ffff978385484000 R15: 000000000000016c
+  FS:  0000000000000000(0000) GS:ffff9783bd800000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 000056190d003fe8 CR3: 000000002a81e005 CR4: 0000000000170ea0
+  Call Trace:
+   flush_space+0x197/0x2f0 [btrfs]
+   btrfs_async_reclaim_metadata_space+0x139/0x300 [btrfs]
+   process_one_work+0x262/0x5e0
+   worker_thread+0x4c/0x320
+   ? process_one_work+0x5e0/0x5e0
+   kthread+0x144/0x170
+   ? set_kthread_struct+0x40/0x40
+   ret_from_fork+0x1f/0x30
+  irq event stamp: 19334989
+  hardirqs last  enabled at (19334997): [<ffffffffab0e0c87>] console_unlock+0x2b7/0x400
+  hardirqs last disabled at (19335006): [<ffffffffab0e0d0d>] console_unlock+0x33d/0x400
+  softirqs last  enabled at (19334900): [<ffffffffaba0030d>] __do_softirq+0x30d/0x574
+  softirqs last disabled at (19334893): [<ffffffffab0721ec>] irq_exit_rcu+0x12c/0x140
+  ---[ end trace 45939e308e0dd3c7 ]---
+  BTRFS: error (device vdd) in btrfs_run_delayed_refs:2150: errno=-28 No space left
+  BTRFS info (device vdd): forced readonly
+  BTRFS warning (device vdd): failed setting block group ro: -30
+  BTRFS info (device vdd): suspending dev_replace for unmount
+  assertion failed: !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state), in fs/btrfs/volumes.c:1150
+  ------------[ cut here ]------------
+  kernel BUG at fs/btrfs/ctree.h:3431!
+  invalid opcode: 0000 [#1] PREEMPT SMP
+  CPU: 1 PID: 3982 Comm: umount Tainted: G        W         5.14.0-rc5-default+ #1532
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+  RIP: 0010:assertfail.constprop.0+0x18/0x1a [btrfs]
+  RSP: 0018:ffffb7a5454c7db8 EFLAGS: 00010246
+  RAX: 0000000000000068 RBX: ffff978364b91c00 RCX: 0000000000000000
+  RDX: 0000000000000000 RSI: ffffffffabee13c4 RDI: 00000000ffffffff
+  RBP: ffff9783523a4c00 R08: 0000000000000001 R09: 0000000000000001
+  R10: 0000000000000000 R11: 0000000000000001 R12: ffff9783523a4d18
+  R13: 0000000000000000 R14: 0000000000000004 R15: 0000000000000003
+  FS:  00007f61c8f42800(0000) GS:ffff9783bd800000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 000056190cffa810 CR3: 0000000030b96002 CR4: 0000000000170ea0
+  Call Trace:
+   btrfs_close_one_device.cold+0x11/0x55 [btrfs]
+   close_fs_devices+0x44/0xb0 [btrfs]
+   btrfs_close_devices+0x48/0x160 [btrfs]
+   generic_shutdown_super+0x69/0x100
+   kill_anon_super+0x14/0x30
+   btrfs_kill_super+0x12/0x20 [btrfs]
+   deactivate_locked_super+0x2c/0xa0
+   cleanup_mnt+0x144/0x1b0
+   task_work_run+0x59/0xa0
+   exit_to_user_mode_loop+0xe7/0xf0
+   exit_to_user_mode_prepare+0xaf/0xf0
+   syscall_exit_to_user_mode+0x19/0x50
+   do_syscall_64+0x4a/0x90
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-enum {
-	BTRFS_ENCODED_IO_COMPRESSION_NONE,
-#define BTRFS_ENCODED_IO_COMPRESSION_NONE BTRFS_ENCODED_IO_COMPRESSION_NONE
-	BTRFS_ENCODED_IO_COMPRESSION_ZLIB,
-#define BTRFS_ENCODED_IO_COMPRESSION_ZLIB BTRFS_ENCODED_IO_COMPRESSION_ZLIB
-	BTRFS_ENCODED_IO_COMPRESSION_ZSTD,
-#define BTRFS_ENCODED_IO_COMPRESSION_ZSTD BTRFS_ENCODED_IO_COMPRESSION_ZSTD
-	BTRFS_ENCODED_IO_COMPRESSION_LZO_4K,
-#define BTRFS_ENCODED_IO_COMPRESSION_LZO_4K BTRFS_ENCODED_IO_COMPRESSION_LZO_4K
-	BTRFS_ENCODED_IO_COMPRESSION_LZO_8K,
-#define BTRFS_ENCODED_IO_COMPRESSION_LZO_8K BTRFS_ENCODED_IO_COMPRESSION_LZO_8K
-	BTRFS_ENCODED_IO_COMPRESSION_LZO_16K,
-#define BTRFS_ENCODED_IO_COMPRESSION_LZO_16K BTRFS_ENCODED_IO_COMPRESSION_LZO_16K
-	BTRFS_ENCODED_IO_COMPRESSION_LZO_32K,
-#define BTRFS_ENCODED_IO_COMPRESSION_LZO_32K BTRFS_ENCODED_IO_COMPRESSION_LZO_32K
-	BTRFS_ENCODED_IO_COMPRESSION_LZO_64K,
-#define BTRFS_ENCODED_IO_COMPRESSION_LZO_64K BTRFS_ENCODED_IO_COMPRESSION_LZO_64K
-	BTRFS_ENCODED_IO_COMPRESSION_TYPES,
-};
+This happens when close_ctree is called while a dev_replace hasn't
+completed. In close_ctree, we suspend the dev_replace, but keep the
+replace target around so that we can resume the dev_replace procedure
+when we mount the root again. This is the call trace:
 
-But that seems to confuse people. I don't feel strongly one way or
-another.
+  close_ctree():
+    btrfs_dev_replace_suspend_for_unmount();
+    btrfs_close_devices():
+      btrfs_close_fs_devices():
+        btrfs_close_one_device():
+          ASSERT(!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
+                 &device->dev_state));
+
+However, since the replace target sticks around, there is a device
+with BTRFS_DEV_STATE_REPLACE_TGT set on close, and we fail the
+assertion in btrfs_close_one_device.
+
+To fix this, if we come across the replace target device when
+closing, we should properly reset it back to allocation state. This
+fix also ensures that if a non-target device has a corrupted state and
+has the BTRFS_DEV_STATE_REPLACE_TGT bit set, the assertion will still
+catch the error.
+
+Reported-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+---
+ fs/btrfs/volumes.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 70f94b75f25a..a5afebb78ecf 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1130,6 +1130,9 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+ 		fs_devices->rw_devices--;
+ 	}
+ 
++	if (device->devid == BTRFS_DEV_REPLACE_DEVID)
++		clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
++
+ 	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
+ 		fs_devices->missing_devices--;
+ 
+-- 
+2.25.1
+
