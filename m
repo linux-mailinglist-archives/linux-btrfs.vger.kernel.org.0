@@ -2,176 +2,228 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7713F2532
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 05:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230853F253C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 05:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238049AbhHTDRw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Aug 2021 23:17:52 -0400
-Received: from mout.gmx.net ([212.227.17.21]:55315 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238160AbhHTDRm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:17:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629429391;
-        bh=V5XZJQsl6GSU/nN3lVaCUhZx1eo1YnmpBA/pDoQCiog=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=GbPdpoznZaRuE5D2d1ytyoqbqAh2kmVF5Zk0NPT35btiW5QtQ7V+VRAIsYzKcHt1t
-         V5RleeB/ooOSmIp8Y203RCkppycyhocknbaklkWA0bU5Qd8jR0Jkhw5YrSLjfIYyYp
-         Ake4jpyhDlrTk4GMbN6m1MeapdvTc/amrRuDcMIY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmlXK-1mxQmP02VS-00jqVm; Fri, 20
- Aug 2021 05:16:31 +0200
-To:     jing yangyang <cgel.zte@gmail.com>, Chris Mason <clm@fb.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210820023229.11369-1-jing.yangyang@zte.com.cn>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH linux-next] fs: btrfs: fix returnvar.cocci warnings
-Message-ID: <900f28f9-6efe-48a7-246f-797a9aa48c07@gmx.com>
-Date:   Fri, 20 Aug 2021 11:16:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210820023229.11369-1-jing.yangyang@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S238125AbhHTDWk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Aug 2021 23:22:40 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:42322 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234992AbhHTDWk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 19 Aug 2021 23:22:40 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0710E1FDC4;
+        Fri, 20 Aug 2021 03:22:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629429722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0xSJweskMgKoYMe78pePMNq3+/2rhnz/dBWi67W7q1k=;
+        b=flmoyUSyCnt24ccxeTnw1hA0u1S5FBebKMxW0azKyGryHhRvrBDzTz036qFY5ejiOYt+E2
+        bEf6Rg6/Z1pbJ0scQTaTfTm5LMHB+ajwpJ+soe3KYnBZkJkjpbgm61cVgjMJtMCTbPihv5
+        /rPYevn8hlnwFSSTbRxPms6mbOwUMVU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629429722;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0xSJweskMgKoYMe78pePMNq3+/2rhnz/dBWi67W7q1k=;
+        b=FRytQFrerAhJFvBk83AJ6/93pRaCnPkcrknxD4Lvj6jtXcsREq8IXXTxqm12jHUKr7vFpu
+        eCtxxxzylJ7Y0mCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42A9C13A88;
+        Fri, 20 Aug 2021 03:21:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5XlFANYfH2GLSQAAMHmgww
+        (envelope-from <neilb@suse.de>); Fri, 20 Aug 2021 03:21:57 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1Eb3Xh2BClx/T3S4d2pYDXg2iPk43ppjnD4Aw069EVEIIWTqTPr
- B4bF7Whl9O88FfS/0LBNlQhnKKJPmTlx13zDCqZD0lZ2wA4Ui0zseN9xe7BVsTjg0aJk5Yb
- YLy9EPPD6bA5suUMntxeyrnU6w2hQBwdQMVcL4Slp4AJIF5l8GaHyNEWpJ40bUjeZsDMKIn
- e/AY+LAiqpcHTtcKEDFpg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wrz3KltuxhI=:aX8//oYvG0j9hP7cs8mwP4
- KhwzEhAk64V8hxZohgtVhORYIRPYbSHJZOWHLWHfThnVAozpMtfKi5GEMOzxYDxI5ds51EojG
- EgxoBdjQewTPBm7mtjcwkDP+Y9C3TVlPymOVS7uQtRORwF3IfnIsIclwmU1quZ2mslkn2DoA3
- D6aOKOrHkmH9qmux10ws08ckntaF3J5Wz5i8FXHeyAE9AGa3k7vPRlZoyBTHCQeDo/gxurYfi
- fthWk1xVS7VKH5QQ3pFnjgUYqVFDQNW69zSUyoEGYDNvbwN0Gw513CMDySYpYxmLByovqjIbk
- P2RSrw6TSiuAwATJ1AYWLoEdqCTsZoxgnCQREFsdjuaPLpYeAfuIAYZY2xO4vHfolTcgwV4iB
- foii0UrkcTD9GrdYMZKyltKOfMztW3JlX0vCsOduzEzwAJ33BJYkH6hp3u7jeAYom1aWbrqoF
- vW63wB7KeQ4MubyVyBKzry6Vwp3VXeEuOt4yBp2ZHauipQg+rbZQ2pnnse2BrXE8/zL1g4R9d
- 1mzXNZLbdWArbia3K0MJOhJD3ee3CwxNALid7P7iGzybzO2tZvB+RHsF/UtxiYk4XZl8SDkmG
- AzYYb+zyL6nnDdlc/PUeQYbp4f6cQI9c1YvWhkjvEO0eVekYjncqrp7kBxkA+cBSqk+MTCHJ/
- ozW7Il2LhfZz5hehkfBTPkuRi3OADbswM5vmuBCZKsdeZfTdNYsGHWIejaWaSCm01vSd+8FVN
- Vu39RNBf4uYsPqbgYpDwj8mnZ6M9an7yncIIQqDEBJPyD76G408AaLR70oGGRr5WgS/2XwvSZ
- AjG0LxbaPSBH3ZUFUDLwRynv1b2xaZzn9wOEhfWatsPhsVKQL2sZ/eCVLbThKNgC/H9JVZiYc
- UgPQApN6ZgVVvCpt2hrv5eS4eO6jrJeQ7dDNjfm+QezmJkyw1phFjcKutNt6eebjjsR5DiCZo
- 5PWC1nLN6QzVaYsyvNYBaWECUyR2edMODbcXjqpAVmuXBOgbxBzuXdfTIOHgzDIbtOI/IvlpP
- pC/GOn1rTSXjfuIabah/Cq5/WZKls8jDyLQToebdikJWyfsupX8IwIlPHuk+Y7mc67FXjtrHv
- nbkCdWNdqu1203JvsrHvBKBhhkih6s08jliQ66urmv9z9f9YiW62JjN8w==
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Amir Goldstein" <amir73il@gmail.com>
+Cc:     "Roman Mamedov" <rm@romanrm.net>,
+        "Goffredo Baroncelli" <kreijack@libero.it>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Josef Bacik" <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
+        "David Sterba" <dsterba@suse.com>,
+        "Alexander Viro" <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "Linux NFS Mailing List" <linux-nfs@vger.kernel.org>,
+        "Linux Btrfs" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for btrfs export
+In-reply-to: <CAOQ4uxiry7HcRtqY3DehNi4_PTLjxN0uMrw-oYcX9TgehC6m6w@mail.gmail.com>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>,
+ <162881913686.1695.12479588032010502384@noble.neil.brown.name>,
+ <bf49ef31-0c86-62c8-7862-719935764036@libero.it>,
+ <20210816003505.7b3e9861@natsu>,
+ <162906585094.1695.15815972140753474778@noble.neil.brown.name>,
+ <CAOQ4uxiry7HcRtqY3DehNi4_PTLjxN0uMrw-oYcX9TgehC6m6w@mail.gmail.com>
+Date:   Fri, 20 Aug 2021 13:21:54 +1000
+Message-id: <162942971499.9892.4386273250573040668@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, 19 Aug 2021, Amir Goldstein wrote:
+> On Mon, Aug 16, 2021 at 1:21 AM NeilBrown <neilb@suse.de> wrote:
+> >
+> > There are a few ways to handle this more gracefully.
+> >
+> > 1/ We could get btrfs to hand out new filehandles as well as new inode
+> > numbers, but still accept the old filehandles.  Then we could make the
+> > inode number reported be based on the filehandle.  This would be nearly
+> > seamless but rather clumsy to code.  I'm not *very* keen on this idea,
+> > but it is worth keeping in mind.
+> >
+>=20
+> So objects would change their inode number after nfs inode cache is
+> evicted and while nfs filesystem is mounted. That does not sound ideal.
 
+No.  Almost all filehandle lookups happen in the context of some other
+filehandle.  If the provided context is an old-style filehandle, we
+provide an old-style filehandle for the lookup.  There is already code
+in nfsd to support this (as we have in the past changed how filesystems
+are identified).
 
-On 2021/8/20 =E4=B8=8A=E5=8D=8810:32, jing yangyang wrote:
-> Remove unneeded variables when "0" can be returned.
->
-> Generated by: scripts/coccinelle/misc/returnvar.cocci
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
-> ---
->   fs/btrfs/extent_map.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-> index 4a8e02f..58860d7 100644
-> --- a/fs/btrfs/extent_map.c
-> +++ b/fs/btrfs/extent_map.c
-> @@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tr=
-ee, struct extent_map *em)
->   int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 le=
-n,
->   		       u64 gen)
->   {
-> -	int ret =3D 0;
->   	struct extent_map *em;
->   	bool prealloc =3D false;
->
+It would only be if the mountpoint filehandle (which is fetched without
+that context) went out of cache that inode numbers would change.  That
+would mean that the filesystem (possibly an automount) was unmounted.
+When it was remounted it could have a different device number anyway, so
+having different inode numbers would be of little consequence.
 
-Please just check the lines below:
+>=20
+> But I am a bit confused about the problem.
+> If the export is of the btrfs root, then nfs client cannot access any
+> subvolumes (right?) - that was the bug report, so the value of inode
+> numbers in non-root subvolumes is not an issue.
 
-	em =3D lookup_extent_mapping(tree, start, len);
+Not correct.  All objects in the filesystem are fully accessible.  The
+only problem is that some pairs of objects have the same inode number.
+This causes some programs like 'find' and 'du' to behave differently to
+expectations.  They will refuse to even look in a subvolume, because it
+looks like doing so could cause an infinite loop.  The values of inode
+numbers in non-root subvolumes is EXACTLY the issue.
 
-	WARN_ON(!em || em->start !=3D start);
+> If export is of non-root subvolume, then why bother changing anything
+> at all? Is there a need to traverse into sub-sub-volumes?
+>=20
+> > 2/ We could add a btrfs mount option to control whether the uniquifier
+> > was set or not.  This would allow the sysadmin to choose when to manage
+> > any breakage.  I think this is my preference, but Josef has declared an
+> > aversion to mount options.
+> >
+> > 3/ We could add a module parameter to nfsd to control whether the
+> > uniquifier is merged in.  This again gives the sysadmin control, and it
+> > can be done despite any aversion from btrfs maintainers.  But I'd need
+> > to overcome any aversion from the nfsd maintainers, and I don't know how
+> > strong that would be yet. (A new export option isn't really appropriate.
+> > It is much more work to add an export option than the add a mount option).
+> >
+>=20
+> That is too bad, because IMO from users POV, "fsid=3Dbtrfsroot" or "cross-s=
+ubvol"
+> export option would have been a nice way to describe and opt-in to this new
+> functionality.
+>=20
+> But let's consider for a moment the consequences of enabling this functiona=
+lity
+> automatically whenever exporting a btrfs root volume without "crossmnt":
+>=20
+> 1. Objects inside a subvol that are inaccessible(?) with current
+> nfs/nfsd without
+>     "crossmnt" will become accessible after enabling the feature -
+> this will match
+>     the user experience of accessing btrfs on the host
 
-	if (!em)
-		goto out;
+Not correct - as above.
 
-This looks more like a missing error handling.
+> 2. The inode numbers of the newly accessible objects would not match the in=
+ode
+>     numbers on the host fs (no big deal?)
 
-Thus the proper way to fix it is not just simply remove the "int ret =3D
-0;" line (which compiler is more than able to optimize it out), but
-properly add the error handling, and modify the only caller to catch
-such error properly.
+Unlikely to be a problem.  Inode numbers have no meaning beyond the facts
+that:
+  - they are stable for the lifetime of the object
+  - they are unique within a filesystem (except btrfs lies about
+    filesystems)
+  - they are not zero
 
-Some diff like the below would be more meaningful:
+The facts only need to be equally true on the NFS server and client..
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 4a8e02f7b6c7..9182d747a50e 100644
-=2D-- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -303,10 +303,11 @@ int unpin_extent_cache(struct extent_map_tree
-*tree, u64 start, u64 len,
-  	write_lock(&tree->lock);
-  	em =3D lookup_extent_mapping(tree, start, len);
+> 3. The inode numbers of objects in a snapshot would not match the inode
+>     numbers of the original (pre-snapshot) objects (acceptable tradeoff for
+>     being able to access the snapshot objects without bloating /proc/mounts=
+?)
 
--	WARN_ON(!em || em->start !=3D start);
--
--	if (!em)
-+	if (!em || em->start !=3D start) {
-+		WARN(1, KERN_WARNING "unexpected extent mapping\n");
-+		ret =3D -EUCLEAN;
-  		goto out;
-+	}
+This also should not be a problem.  Files in different snapshots are
+different things that happen to share storage (like reflinks).
+Comparing inode numbers between places which report different st_dev
+does not fit within the meaning of inode numbers.
 
-  	em->generation =3D gen;
-  	clear_bit(EXTENT_FLAG_PINNED, &em->flags);
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2aa9646bce56..313b0a314c0b 100644
-=2D-- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2989,6 +2989,7 @@ static int btrfs_finish_ordered_io(struct
-btrfs_ordered_extent *ordered_extent)
-  	u64 start, end;
-  	int compress_type =3D 0;
-  	int ret =3D 0;
-+	int ret2;
-  	u64 logical_len =3D ordered_extent->num_bytes;
-  	bool freespace_inode;
-  	bool truncated =3D false;
-@@ -3076,8 +3077,11 @@ static int btrfs_finish_ordered_io(struct
-btrfs_ordered_extent *ordered_extent)
-  						ordered_extent->disk_num_bytes);
-  		}
-  	}
--	unpin_extent_cache(&inode->extent_tree, ordered_extent->file_offset,
-+	ret2 =3D unpin_extent_cache(&inode->extent_tree,
-ordered_extent->file_offset,
-  			   ordered_extent->num_bytes, trans->transid);
-+	if (ret2 < 0 && !ret)
-+		ret =3D ret2;
-+
-  	if (ret < 0) {
-  		btrfs_abort_transaction(trans, ret);
-  		goto out;
+> 4. The inode numbers of objects in a subvol observed via this "cross-subvol"
+>     export would not match the inode numbers of the same objects observed
+>     via an individual subvol export
 
+The device number would differ too, so the relative values of the inode
+numbers would be irrelevant.
+
+> 5. st_ino conflicts are possible when multiplexing subvol id and inode numb=
+er.
+>     overlayfs resolved those conflicts by allocating an inode number from a
+>     reserved non-persistent inode range, which may cause objects to change
+>     their inode number during the lifetime on the filesystem (sensible
+> tradeoff?)
+>=20
+> I think that #4 is a bit hard to swallow and #3 is borderline acceptable...
+> Both and quite hard to document and to set expectations as a non-opt-in
+> change of behavior when exporting btrfs root.
+>=20
+> IMO, an nfsd module parameter will give some control and therefore is
+> a must, but it won't make life easier to document and set user expectations
+> when the semantics are not clearly stated in the exports table.
+>=20
+> You claim that "A new export option isn't really appropriate."
+> but your only argument is that "It is much more work to add
+> an export option than the add a mount option".
+>=20
+> With all due respect, for this particular challenge with all the
+> constraints involved, this sounds like a pretty weak argument.
+>=20
+> Surely, adding an export option is easier than slowly changing all
+> userspace tools to understand subvolumes? a solution that you had
+> previously brought up.
+>=20
+> Can you elaborate some more about your aversion to a new
+> export option.
+
+Export options are bits in a 32bit word - so both user-space and kernel
+need to agree on names for them.  We are currently using 18, so there is
+room to grow.  It is a perfectly reasonable way to implement sensible
+features.  It is, I think, a poor way to implement hacks to work around
+misfeatures in filesystems.
+
+This is the core of my dislike for adding an export option.  Using one
+effectively admits that what btrfs is doing is a valid thing to do.  I
+don't think it is.  I don't think we want any other filesystem developer
+to think that they can emulate the behaviour because support is already
+provided.
+
+If we add any configuration to support btrfs, I would much prefer it to
+be implemented in fs/btrfs, and if not, then with loud warnings that it
+works around a deficiency in btrfs.
+  /sys/modules/nfsd/parameters/btrfs_export_workaround
 
 Thanks,
-Qu
-> @@ -328,7 +327,7 @@ int unpin_extent_cache(struct extent_map_tree *tree,=
- u64 start, u64 len,
->   	free_extent_map(em);
->   out:
->   	write_unlock(&tree->lock);
-> -	return ret;
-> +	return 0;
->
->   }
->
->
+NeilBrown
