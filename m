@@ -2,102 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18F83F24C6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 04:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96F43F2509
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 04:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237552AbhHTCdP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Aug 2021 22:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237269AbhHTCdO (ORCPT
+        id S237872AbhHTCzC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Aug 2021 22:55:02 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41088 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237618AbhHTCzC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:33:14 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4813C061575;
-        Thu, 19 Aug 2021 19:32:37 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id jv8so4789866qvb.3;
-        Thu, 19 Aug 2021 19:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=45Ie1z4VxtL1rF2JDkZOWOkx7F6LyrXzIAa5uB+jCfc=;
-        b=Glmp0TXEWhNQ1phOM+WfBxzO9W4/akCWOXzUD0S5Kyh0YY4HdTMmXtfSFDZ2g9wNeF
-         Q3lgWPsxH1XIct9TQO6jw7NIl3Y+G1cEuG3dMQ0rDWA1R1ETnk7D/sxvkA/7NletOKNy
-         FbLA4q8fgKKJg8LMw8CHmb6AIHxX52Ova9OcoOYjX5hO/+53UtrMIiPieq2EcUGt5DWD
-         oa5yUTYsNfWlrQ/GAFHtiouvhpYQN1qkboCAiRhL5elAEQKXEaU814XQZ2hVqGlR28d5
-         1ehkqPkiqjDtn18vBBlFMkY7jbGlL3jqLpLwL7UfIXHaxigkH3d41oefXOno0OOjCkLF
-         XNqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=45Ie1z4VxtL1rF2JDkZOWOkx7F6LyrXzIAa5uB+jCfc=;
-        b=Wxgq2s6ipgtZB6W+viX1xBlZzcj+OSYEJUlEMQGN6uh0EWjsOn4efrY6USbuWLUUC/
-         ItSOzWe4p6mNDLjpMMay8gwXXbGlSwxk5bCiGrm7OgwN+/CyA9lz0KFNMExbHOgIJmtE
-         72jROQpfRjoLVL5cVVrp78H4/pGgeNTLX++lKSGXRz7Xv4OIlGOi2DD9gc2Dn2SXPgrC
-         IMi5+2jwipO2k6N9GPv+ubFFOWXRcrdWXa3yqMrpa1q7WeKPE0NBe5UWU8GT44HCkLWJ
-         tJK0bjBo2/TI40w1zI3w+4yTIrYAcq25EhjO9Kmg45t9kIgW+cxxDRlPjkun0/Ya/ILc
-         ngUA==
-X-Gm-Message-State: AOAM533Det2T8ZNT1ODWsihkzkgatVYsOEwQdqdThL9Pymu0zAMgnIj+
-        U06payaN+WCE784174rfbdw=
-X-Google-Smtp-Source: ABdhPJw1h1V3KuvLC9h+hn3rnYHag6Ai3spYchHZBRWK6YQUbDAQSoPXZxzkUv9jOV85/0TA9nS4ow==
-X-Received: by 2002:a0c:d801:: with SMTP id h1mr17750376qvj.60.1629426757218;
-        Thu, 19 Aug 2021 19:32:37 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id bk3sm2256977qkb.103.2021.08.19.19.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 19:32:36 -0700 (PDT)
-From:   jing yangyang <cgel.zte@gmail.com>
-X-Google-Original-From: jing yangyang <jing.yangyang@zte.com.cn>
-To:     Chris Mason <clm@fb.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] fs: btrfs: fix returnvar.cocci warnings
-Date:   Thu, 19 Aug 2021 19:32:29 -0700
-Message-Id: <20210820023229.11369-1-jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 19 Aug 2021 22:55:02 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EA2F61FDC4;
+        Fri, 20 Aug 2021 02:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629428063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F2zXkDjop7FqBMhamhO77clbpIHPjjrwzFjux/7s1ko=;
+        b=z+IPtxhwiCQj54wnCS9E5A5YF6gzhj5OsnYDX7vxvzFu5g0zYPiEt8yStLdHNjubFiXE51
+        +Y9zgpIgHQcImMYiiGCU1mpBg7iopNb8gLiIklur05Q8qr3s+cLhvREVLjvLMKKs2Dy/fw
+        SsR77vKyLkXXzii/fmtg/g62CYIfTWQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629428063;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F2zXkDjop7FqBMhamhO77clbpIHPjjrwzFjux/7s1ko=;
+        b=LNo5jCN08kHhgnFlBs5FjaEIjsNN3buPVTXqLgQxZEvYiVzdIPZPmylYGIg/bfFFP5qGGK
+        HyFZM2eoVTDbPFCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77F5B13ABC;
+        Fri, 20 Aug 2021 02:54:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NhGdDVwZH2H8QwAAMHmgww
+        (envelope-from <neilb@suse.de>); Fri, 20 Aug 2021 02:54:20 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
+Cc:     "Wang Yugui" <wangyugui@e16-tech.com>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Josef Bacik" <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
+        "David Sterba" <dsterba@suse.com>,
+        "Alexander Viro" <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for btrfs export
+In-reply-to: <20210819021910.GB29026@hungrycats.org>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>,
+ <162881913686.1695.12479588032010502384@noble.neil.brown.name>,
+ <20210818225454.9558.409509F4@e16-tech.com>,
+ <162932318266.9892.13600254282844823374@noble.neil.brown.name>,
+ <20210819021910.GB29026@hungrycats.org>
+Date:   Fri, 20 Aug 2021 12:54:17 +1000
+Message-id: <162942805745.9892.7512463857897170009@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Remove unneeded variables when "0" can be returned.
+On Thu, 19 Aug 2021, Zygo Blaxell wrote:
+> On Thu, Aug 19, 2021 at 07:46:22AM +1000, NeilBrown wrote:
+> > 
+> > Remember what the goal is.  Most apps don't care at all about duplicate
+> > inode numbers - only a few do, and they only care about a few inodes.
+> > The only bug I actually have a report of is caused by a directory having
+> > the same inode as an ancestor.  i.e.  in lots of cases, duplicate inode
+> > numbers won't be noticed.
+> 
+> rsync -H and cpio's hardlink detection can be badly confused.  They will
+> think distinct files with the same inode number are hardlinks.  This could
+> be bad if you were making backups (though if you're making backups over
+> NFS, you are probably doing something that could be done better in a
+> different way).
 
-Generated by: scripts/coccinelle/misc/returnvar.cocci
+Yes, they could get confused.  inode numbers remain unique within a
+"subvolume" so you would need to do at backup of multiple subtrees to
+hit a problem.  Certainly possible, but probably less common.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
----
- fs/btrfs/extent_map.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> 40 bit inodes would take about 20 years to collide with 24-bit subvols--if
+> you are creating an average of 1742 inodes every second.  Also at the
+> same time you have to be creating a subvol every 37 seconds to occupy
+> the colliding 25th bit of the subvol ID.  Only the highest inode number
+> in any subvol counts--if your inode creation is spread out over several
+> different subvols, you'll need to make inodes even faster.
+> 
+> For reference, my high scores are 17 inodes per second and a subvol
+> every 595 seconds (averaged over 1 year).  Burst numbers are much higher,
+> but one has to spend some time _reading_ the files now and then.
+> 
+> I've encountered other btrfs users with two orders of magnitude higher
+> inode creation rates than mine.  They are barely squeaking under the
+> 20-year line--or they would be, if they were creating snapshots 50 times
+> faster than they do today.
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 4a8e02f..58860d7 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
- int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
- 		       u64 gen)
- {
--	int ret = 0;
- 	struct extent_map *em;
- 	bool prealloc = false;
- 
-@@ -328,7 +327,7 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
- 	free_extent_map(em);
- out:
- 	write_unlock(&tree->lock);
--	return ret;
-+	return 0;
- 
- }
- 
--- 
-1.8.3.1
+I do like seeing concrete numbers, thanks.  How many of these inodes and
+subvols remain undeleted?  Supposing inode numbers were reused, how many
+bits might you need?
 
+
+> > My preference would be for btrfs to start re-using old object-ids and
+> > root-ids, and to enforce a limit (set at mkfs or tunefs) so that the
+> > total number of bits does not exceed 64.  Unfortunately the maintainers
+> > seem reluctant to even consider this.
+> 
+> It was considered, implemented in 2011, and removed in 2020.  Rationale
+> is in commit b547a88ea5776a8092f7f122ddc20d6720528782 "btrfs: start
+> deprecation of mount option inode_cache".  It made file creation slower,
+> and consumed disk space, iops, and memory to run.  Nobody used it.
+> Newer on-disk data structure versions (free space tree, 2015) didn't
+> bother implementing inode_cache's storage requirement.
+
+Yes, I saw that.  Providing reliable functional certainly can impact
+performance and consume disk-space.  That isn't an excuse for not doing
+it. 
+I suspect that carefully tuned code could result in typical creation
+times being unchanged, and mean creation times suffering only a tiny
+cost.  Using "max+1" when the creation rate is particularly high might
+be a reasonable part of managing costs.
+Storage cost need not be worse than the cost of tracking free blocks
+on the device.
+
+"Nobody used it" is odd.  It implies it would have to be explicitly
+enabled, and all it would provide anyone is sane behaviour.  Who would
+imagine that to be an optional extra.
+
+NeilBrown
 
