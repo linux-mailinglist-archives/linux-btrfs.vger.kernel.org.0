@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109F83F3457
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 21:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068CC3F3459
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Aug 2021 21:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237697AbhHTTMl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Aug 2021 15:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
+        id S237905AbhHTTMn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Aug 2021 15:12:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236293AbhHTTMl (ORCPT
+        with ESMTP id S236293AbhHTTMm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:12:41 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF5FC061575
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 12:12:03 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id ay33so426248qkb.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 12:12:03 -0700 (PDT)
+        Fri, 20 Aug 2021 15:12:42 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C8FC061575
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 12:12:04 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id ay33so426311qkb.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 12:12:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=E39NJkVoX77icZxvOWA3SIiLRZoqd0Z49yMAWMLhmg0=;
-        b=I9gO0uVtC5JurSYBX2SxJGK+KJpIz0DTLCMvTJF2KQvyZm7Mj+WDGDu7WL9AYvZhOe
-         1VP35XaIOtHSKFty49sYx/c0VbHZ2TiyDwG98J/lvNbnO3UaUsXsSVl/3rA8peCRc9j4
-         mMiY23XrJ+5H2nkt45xxhR0BjYXA1vGR1tLXSWIxvjpdRX85pW7yHszDpMCB41JmBBwc
-         ww4Mzdp4j8ArXLCgKUOQCUZLH79QsdJExiOZn7SMMjPQnh1bhntj17fh99LNW6oDfcrB
-         YQY6q4X7Rpdf59xcZEvVucMOHVrjm5+QYJUVC57e0rKXGNsp23rdzdCYM6FKZkv23Akj
-         f9tg==
+        bh=tMfV38eV/it+FglvzpiOOjeV+ZflshZt7CzKbZSqAk4=;
+        b=KGHel75R/lThZswyZLx4KPdIYcYeHnpf/PbcHokndTGl14MHl/SzPtwckp2zVzREWu
+         T8JpHDpM2gX1Yhyv+U6TRmEo/EGm1yEZN6ZGM/xMvHI8lndjkQWSIiJEk5y6frGwZlhL
+         B5W2JYeUMUR75X5NpCNJQ2Bru5oUhBH1BKWkBCIOChuHhhmwRrBSxeDYpCarWVwRuW/1
+         DRAS/AEY4FvURvTS6tM7YeOeBcGg7Sushh3H6btOrX+SJ5IReBaaDpBZ06Aqon+Su4CJ
+         Et7raSuvMOC7ArJFoQKf4dqCNIA8KotLO5I39D5Wr71DBQu950ezU/M7sdmWT7ySoewq
+         nNqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=E39NJkVoX77icZxvOWA3SIiLRZoqd0Z49yMAWMLhmg0=;
-        b=ZvlA9dN+YNPMDPUZS41WFhpaH6VdRXKRqt//8RS8Xm+L3062iCj4uRPY3XgTGzJ41X
-         EpXQ/AAi2kKUY17e5tzNf9HW1QGg1V/vZmgDegJWjOd/sm4u8MsycrBV0j2Jxj73jHLQ
-         h6hLPsLzz4CuTFw7N/FcBOmCbeN5DNJ9AynH3gg83xOz0k/f7qy2eXIQI9cyhPFX5hYU
-         9cphGhK1IhUr2AH+VbKb57kjnjskVKToR0YVgWozEtGSr5qlZvnUQN502hTjGPt/+XHI
-         sU073LO2QBX55WySt4PoiTPlZIxMN5mnVnNVDmTQK5PpelG2LQlQcD9hz+qfuOWwL+oP
-         Uokg==
-X-Gm-Message-State: AOAM533lywA7e1jvC/1ezdCXQyZr1LajUD10iiJq0t3FRf/GaPTYQ2zR
-        gej5blRtrve7YiY7CLTm4n1Q9r67YYBxSA==
-X-Google-Smtp-Source: ABdhPJxWZmGd/nG11nhmRLKqTlXs7ERXPVGq2/YXjljlKsnhKoiIwy2jxuofudQX/qBfblFU8lMz5A==
-X-Received: by 2002:a37:803:: with SMTP id 3mr10424579qki.127.1629486721992;
-        Fri, 20 Aug 2021 12:12:01 -0700 (PDT)
+        bh=tMfV38eV/it+FglvzpiOOjeV+ZflshZt7CzKbZSqAk4=;
+        b=ufwWKp2lpfArKal2UxuCgvYB2rbBHCUABy6hHRXWchc7Zn249V3oWlOB89eaP+hRB2
+         A2KuKqKYYV9QeNMe6v8oa3g72zGGfqu/XJsgs5/uBkyHZQmGASoiMEes1XB/ZQboZHFB
+         4vhdlpSzw4ERKCSYe44+aefrajcJiWmbsuFYmbEfa5WXag7uBsH3N+/Z4I2HqAIkXydU
+         9u0hKXO36KCrJLtO2TSztT9epzTFjW55Qgf/HBVmbqudKqf0yFFm+vNmes76pRD4+ZUC
+         +6aS+Vco1vRS8iopb/9znsyewoqOYtkOOCMfW2F/Xl5UDMk1u5+aZsZQAg1k9wlXwvVn
+         ZrRQ==
+X-Gm-Message-State: AOAM531D9OzrFH+PwVwYYbrLOuDE5eOk5ZOoJjhY8oCzEjb2QwrZmjYX
+        12gev0yF6Qqhd8o/asftceUOVQ5nmRFRXQ==
+X-Google-Smtp-Source: ABdhPJwvJLzYpfzNCpmjLJMZZt0izASI8fHxgNAg/kSOLntAcXQJGmqzBx/4XoHy9Vj9SfZwWrpmyw==
+X-Received: by 2002:a05:620a:d4d:: with SMTP id o13mr10311459qkl.466.1629486723308;
+        Fri, 20 Aug 2021 12:12:03 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j10sm2864941qta.85.2021.08.20.12.12.01
+        by smtp.gmail.com with ESMTPSA id z6sm3584561qke.24.2021.08.20.12.12.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 12:12:01 -0700 (PDT)
+        Fri, 20 Aug 2021 12:12:03 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/9] btrfs-progs: use blocks_nr to determine the super used bytes
-Date:   Fri, 20 Aug 2021 15:11:50 -0400
-Message-Id: <1d73b314e14e03f4fe7a70475822f534fd5914e4.1629486429.git.josef@toxicpanda.com>
+Subject: [PATCH 3/9] btrfs-progs: allocate blocks from the start of the temp system chunk
+Date:   Fri, 20 Aug 2021 15:11:51 -0400
+Message-Id: <2677d6c2568dcdc4eef9ef89e6d0a8d0a45960a8.1629486429.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1629486429.git.josef@toxicpanda.com>
 References: <cover.1629486429.git.josef@toxicpanda.com>
@@ -62,46 +62,47 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We were setting the superblock's used bytes to a static number.  However
-the number of blocks we have to write has the correct used size, so just
-add up the total number of blocks we're allocating as we determine their
-offsets.  This value will be used later which is why I'm calculating it
-this way instead of doing the math to set the bytes_super specifically.
+During mkfs we skip allocating a block for the super block, however
+because we're using the blocks array iterator to determine the offset of
+our block we're leaving a hole at the beginning of the temporary chunk.
+This isn't a problem per-se, but I'm going to start generating the free
+space tree at make_btrfs() time and having this hole makes the free
+space tree creation slightly more complicated.
+
+Instead keep track of which block we're on so that we start from the
+actual offset of the system chunk.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- mkfs/common.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ mkfs/common.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/mkfs/common.c b/mkfs/common.c
-index e9ff529a..8902d39e 100644
+index 8902d39e..0e747301 100644
 --- a/mkfs/common.c
 +++ b/mkfs/common.c
-@@ -162,6 +162,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 	u64 ref_root;
- 	u32 array_size;
- 	u32 item_size;
-+	u64 total_used = 0;
- 	int skinny_metadata = !!(cfg->features &
- 				 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA);
- 	u64 num_bytes;
-@@ -207,6 +208,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+@@ -153,6 +153,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	u8 chunk_tree_uuid[BTRFS_UUID_SIZE];
+ 	u8 *ptr;
+ 	int i;
++	int cnt;
+ 	int ret;
+ 	int blocks_nr = ARRAY_SIZE(extent_tree_v1_blocks);
+ 	int blk;
+@@ -203,11 +204,11 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	uuid_generate(chunk_tree_uuid);
+ 
+ 	cfg->blocks[MKFS_SUPER_BLOCK] = BTRFS_SUPER_INFO_OFFSET;
+-	for (i = 0; i < blocks_nr; i++) {
++	for (cnt = 0, i = 0; i < blocks_nr; i++) {
+ 		blk = blocks[i];
  		if (blk == MKFS_SUPER_BLOCK)
  			continue;
- 		cfg->blocks[blk] = system_group_offset + cfg->nodesize * i;
-+		total_used += cfg->nodesize;
+-		cfg->blocks[blk] = system_group_offset + cfg->nodesize * i;
++		cfg->blocks[blk] = system_group_offset + cfg->nodesize * cnt++;
+ 		total_used += cfg->nodesize;
  	}
  
- 	btrfs_set_super_bytenr(&super, cfg->blocks[MKFS_SUPER_BLOCK]);
-@@ -216,7 +218,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
- 	btrfs_set_super_root(&super, cfg->blocks[MKFS_ROOT_TREE]);
- 	btrfs_set_super_chunk_root(&super, cfg->blocks[MKFS_CHUNK_TREE]);
- 	btrfs_set_super_total_bytes(&super, num_bytes);
--	btrfs_set_super_bytes_used(&super, 6 * cfg->nodesize);
-+	btrfs_set_super_bytes_used(&super, total_used);
- 	btrfs_set_super_sectorsize(&super, cfg->sectorsize);
- 	super.__unused_leafsize = cpu_to_le32(cfg->nodesize);
- 	btrfs_set_super_nodesize(&super, cfg->nodesize);
 -- 
 2.26.3
 
