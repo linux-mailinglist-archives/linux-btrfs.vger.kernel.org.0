@@ -2,142 +2,245 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6973F3822
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Aug 2021 04:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981A93F3B12
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Aug 2021 16:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbhHUC45 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Aug 2021 22:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhHUC44 (ORCPT
+        id S231829AbhHUOvY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 21 Aug 2021 10:51:24 -0400
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:57284 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231491AbhHUOvY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Aug 2021 22:56:56 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF8EC061575
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 19:56:18 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id j187so10223119pfg.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Aug 2021 19:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=6rCwQfaqDz1mvPBT77pjDTQGN8/bqaZlNkvzK2fWJCg=;
-        b=RhO9GnUIRWdkSsdVyJqcoHsAtcP/l63QKN4um3hRojcd8PMpa+DPROXCLqzi3KhsAS
-         0PBkibLfYXK8auq2IdzJ29iIBrjkYjZvz/Hejlf3sbesO1JozBYXv9siCMp7bBUA09gz
-         M4tu9obnRgozP090lu8WNvsgpTtvn29kG+wI9Q10beks8AZ0Z7GbMLz0HnTA6gp/OqFm
-         vtUXkVHW3Ku+y3WfJx2UORyO0UvW2a3xmYj3KVaf+VbVFijQMnfi2qCl9sT+ucjHYoWe
-         SELw/FryF63UEI+/QhAA6x6IBF2h0mSRObsdeht8xKvhZ8lh23PQjK/fl+Xmp6S7QJSI
-         QOww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=6rCwQfaqDz1mvPBT77pjDTQGN8/bqaZlNkvzK2fWJCg=;
-        b=tm+2rEigYiDjyuET86On7TGj55lruvxsDBHCZsORSf8ZQg1wCftu3JDwkSOEYfzS+P
-         e/LTgbtkWPxIgDBPacyPK9ZPW7Gvbq/Etr79EW2Xl4mYj2F1dLq9RVBhcsFRHu4QfJqN
-         oKfrESwWoRgZbZyd0joZJe6+n4H1G6bBUpiAx4KtzdgIzhN3gJQ5uPZ1hYwP/7R7dCFQ
-         C/TtVvlmfj2ZmdP3fnfEyffGvN6GOkCO6poHp6LiIrOoKOU04wf24cdewg72BOFwhIt+
-         5sgjPDtR52jIFwAHzGthv7YelUff7sqQyM4BoutSJmfV35yHA9UKXCR+bz2CR8EokHRM
-         Igag==
-X-Gm-Message-State: AOAM532UuWpaHRnxidRgkzQJUDi+/wD9W8SebF1EFiV+nU9KxEaC7cuW
-        i3TO4tANVU805Rcz2+rlATM=
-X-Google-Smtp-Source: ABdhPJxshGk3bcQ+pDOpfFIqcPnzT6FdK3vdtuuNC0Cvs0iCD4fhHFPKHO3z2+NW862IDtg8PwJEjw==
-X-Received: by 2002:a65:41c6:: with SMTP id b6mr21569724pgq.206.1629514577441;
-        Fri, 20 Aug 2021 19:56:17 -0700 (PDT)
-Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
-        by smtp.gmail.com with ESMTPSA id 64sm8394681pfy.114.2021.08.20.19.56.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 19:56:15 -0700 (PDT)
-Subject: Re: Trying to recover data from SSD
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
- <46f3b990-ec2d-6508-249e-8954bf356e89@gmx.com>
- <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
- <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
- <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
- <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
- <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
- <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
- <544e3e73-5490-2cae-c889-88d80e583ac4@gmail.com>
- <c03628f0-585c-cfa8-5d80-bd1f1e4fb9c1@gmx.com>
- <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
- <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
- <238d1f6c-20a9-f002-e03a-722175c63bd6@gmail.com>
- <4bd90f4a-7ced-3477-f113-eee72bc05cbb@gmx.com>
- <fab2dab5-41bb-43f2-5396-451d66df3917@gmail.com>
- <60a21bca-d133-26c0-4768-7d9a70f9d102@gmx.com>
-From:   Konstantin Svist <fry.kun@gmail.com>
-Message-ID: <7e8394c9-9eb3-c593-9473-5c40d80428a5@gmail.com>
-Date:   Fri, 20 Aug 2021 19:56:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sat, 21 Aug 2021 10:51:24 -0400
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 835976C007B6;
+        Sat, 21 Aug 2021 17:50:42 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1629557442; bh=EVr+1x8s9GzrAVjvaUJuYKHctxs8BTyJTGKSRV5fJTI=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to;
+        b=Qk28HJczyCHZPcWB21Dp8QCZ5RxIEd6YBW/lgDjtz5ce1n8VR89DNh/o9OEYLlskl
+         D2nM1DoF2R+0P1jr9DxQuO1nP/nGrmY+KWYs/7ftFF3uNYlfBrfgh1qzfLm++3OnOM
+         +ntKgjxHzxM1ski/oee480ZST3Er6UO7Wcki8SiY=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 7590B6C007AB;
+        Sat, 21 Aug 2021 17:50:42 +0300 (EEST)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id phXb5du8LQrU; Sat, 21 Aug 2021 17:50:42 +0300 (EEST)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 100696C007A4;
+        Sat, 21 Aug 2021 17:50:42 +0300 (EEST)
+Received: from nas (unknown [49.65.73.48])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 87B791BE009C;
+        Sat, 21 Aug 2021 17:50:37 +0300 (EEST)
+References: <cover.1629458519.git.anand.jain@oracle.com>
+ <61d6dafaff6a119f56782fb35b2374411585b634.1629458519.git.anand.jain@oracle.com>
+User-agent: mu4e 1.5.8; emacs 27.2
+From:   Su Yue <l@damenly.su>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
+Subject: Re: [PATCH v3 2/4] btrfs: save latest btrfs_device instead of its
+ block_device in fs_devices
+Date:   Sat, 21 Aug 2021 22:46:58 +0800
+In-reply-to: <61d6dafaff6a119f56782fb35b2374411585b634.1629458519.git.anand.jain@oracle.com>
+Message-ID: <v93yets9.fsf@damenly.su>
 MIME-Version: 1.0
-In-Reply-To: <60a21bca-d133-26c0-4768-7d9a70f9d102@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: +dBm1NUOBlzQh1+nQ3rcDQU2qyxVPp7o+PvJoxAq4meDUSOAd1YLVQ6wnnJyRWA=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/11/21 18:18, Qu Wenruo wrote:
->
->
-> On 2021/8/12 上午6:34, Konstantin Svist wrote:
->>
->> Shouldn't there be an earlier generation of this subvolume's tree block
->> somewhere on the disk? Would all of them have gotten overwritten
->> already?
->
-> Then it will be more complex and I can't ensure any good result.
 
+On Fri 20 Aug 2021 at 19:28, Anand Jain <anand.jain@oracle.com> 
+wrote:
 
-It was already pretty complex and results were never guaranteed :)
-
-
+> In preparation to fix a bug in btrfs_show_devname(), save the 
+> device with
+> the largest generation in fs_info instead of just its bdev. So 
+> that
+> btrfs_show_devname() can read device's name.
 >
-> Firstly you need to find an older root tree:
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v2: born
+> v3: -
+>  fs/btrfs/disk-io.c   |  6 +++---
+>  fs/btrfs/extent_io.c |  2 +-
+>  fs/btrfs/inode.c     |  2 +-
+>  fs/btrfs/procfs.c    |  6 +++---
 >
-> # btrfs ins dump-super -f /dev/sdb3 | grep backup_tree_root
->                 backup_tree_root:       30687232        gen: 2317
->  level: 0
->                 backup_tree_root:       30834688        gen: 2318
->  level: 0
->                 backup_tree_root:       30408704        gen: 2319
->  level: 0
->                 backup_tree_root:       31031296        gen: 2316
->  level: 0
+
+Try to test the patchset but...
+I can't find procfs in Linus/master, kdave/misc-next, v5.14-rc6 
+even
+through Google search.
+
+--
+Su
+
+>  fs/btrfs/super.c     |  2 +-
+>  fs/btrfs/volumes.c   | 10 +++++-----
+>  fs/btrfs/volumes.h   |  2 +-
+>  7 files changed, 15 insertions(+), 15 deletions(-)
 >
-> Then try the bytenr in their reverse generation order in btrfs ins
-> dump-tree:
-> (The latest one should be the current root, thus you can skip it)
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 1052437cec64..c0d2c093b874 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3228,12 +3228,12 @@ int __cold open_ctree(struct super_block 
+> *sb, struct btrfs_fs_devices *fs_device
+>  	mapping_set_gfp_mask(fs_info->btree_inode->i_mapping, 
+>  GFP_NOFS);
+>  	btrfs_init_btree_inode(fs_info);
 >
-> # btrfs ins dump-tree -b 30834688 /dev/sdb3 | grep "(257 ROOT_ITEM" -A 5
+> -	invalidate_bdev(fs_devices->latest_bdev);
+> +	invalidate_bdev(fs_devices->latest_dev->bdev);
 >
-> Then grab the bytenr of the subvolume 257, then pass the bytenr to
-> btrfs-restore:
+>  	/*
+>  	 * Read super block and check the signature bytes only
+>  	 */
+> -	disk_super = btrfs_read_dev_super(fs_devices->latest_bdev);
+> +	disk_super = 
+> btrfs_read_dev_super(fs_devices->latest_dev->bdev);
+>  	if (IS_ERR(disk_super)) {
+>  		err = PTR_ERR(disk_super);
+>  		goto fail_alloc;
+> @@ -3466,7 +3466,7 @@ int __cold open_ctree(struct super_block 
+> *sb, struct btrfs_fs_devices *fs_device
+>  	 * below in btrfs_init_dev_replace().
+>  	 */
+>  	btrfs_free_extra_devids(fs_devices);
+> -	if (!fs_devices->latest_bdev) {
+> +	if (!fs_devices->latest_dev->bdev) {
+>  		btrfs_err(fs_info, "failed to read devices");
+>  		goto fail_tree_roots;
+>  	}
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index aaddd7225348..edf0162c9020 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -3327,7 +3327,7 @@ static int alloc_new_bio(struct 
+> btrfs_inode *inode,
+>  	if (wbc) {
+>  		struct block_device *bdev;
 >
-> # btrfs-restore -f <bytenr> /dev/sdb3 <restore_path>
+> -		bdev = fs_info->fs_devices->latest_bdev;
+> +		bdev = fs_info->fs_devices->latest_dev->bdev;
+>  		bio_set_dev(bio, bdev);
+>  		wbc_init_bio(wbc, bio);
+>  	}
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 2aa9646bce56..ceedcd54e6d2 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -7961,7 +7961,7 @@ static int btrfs_dio_iomap_begin(struct 
+> inode *inode, loff_t start,
+>  		iomap->type = IOMAP_MAPPED;
+>  	}
+>  	iomap->offset = start;
+> -	iomap->bdev = fs_info->fs_devices->latest_bdev;
+> +	iomap->bdev = fs_info->fs_devices->latest_dev->bdev;
+>  	iomap->length = len;
 >
-> The chance is already pretty low, good luck.
+>  	if (write && btrfs_use_zone_append(BTRFS_I(inode), 
+>  em->block_start))
+> diff --git a/fs/btrfs/procfs.c b/fs/btrfs/procfs.c
+> index 30eaeca07aeb..2c3bb474c28f 100644
+> --- a/fs/btrfs/procfs.c
+> +++ b/fs/btrfs/procfs.c
+> @@ -291,9 +291,9 @@ void btrfs_print_fsinfo(struct seq_file 
+> *seq)
+>  					bdevname(fs_info->sb->s_bdev, b) :
+>  					"null");
+>  		BTRFS_SEQ_PRINT2("\tlatest_bdev:\t\t%s\n",
+> -				fs_devices->latest_bdev ?
+> -					bdevname(fs_devices->latest_bdev, b) :
+> -					"null");
+> +				  fs_devices->latest_dev->bdev ?
+> +				  bdevname(fs_devices->latest_dev->bdev, b) :
+> +				  "null");
 >
-> Thanks,
-> Qu 
-
-
-
-When I run dump-tree, I get this:
-
-# btrfs ins dump-tree -b 787070976 /dev/sdb3 | grep "(257 ROOT_ITEM" -A 5
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-Csum didn't match
-WARNING: could not setup extent tree, skipping it
-
-The same exact offset fails checksum for all 4 backup roots, any way
-around this?
-
-
+>  		fs_state_to_str(fs_info, fs_str);
+>  		BTRFS_SEQ_PRINT2("\tfs_state:\t\t%s\n", fs_str);
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 1f9dd1a4faa3..64ecbdb50c1a 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1706,7 +1706,7 @@ static struct dentry 
+> *btrfs_mount_root(struct file_system_type *fs_type,
+>  		goto error_close_devices;
+>  	}
+>
+> -	bdev = fs_devices->latest_bdev;
+> +	bdev = fs_devices->latest_dev->bdev;
+>  	s = sget(fs_type, btrfs_test_super, btrfs_set_super, flags | 
+>  SB_NOSEC,
+>  		 fs_info);
+>  	if (IS_ERR(s)) {
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 51cf68785782..958503c8a854 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1091,7 +1091,7 @@ void btrfs_free_extra_devids(struct 
+> btrfs_fs_devices *fs_devices)
+>  	list_for_each_entry(seed_dev, &fs_devices->seed_list, 
+>  seed_list)
+>  		__btrfs_free_extra_devids(seed_dev, &latest_dev);
+>
+> -	fs_devices->latest_bdev = latest_dev->bdev;
+> +	fs_devices->latest_dev = latest_dev;
+>
+>  	mutex_unlock(&uuid_mutex);
+>  }
+> @@ -1206,7 +1206,7 @@ static int open_fs_devices(struct 
+> btrfs_fs_devices *fs_devices,
+>  		return -EINVAL;
+>
+>  	fs_devices->opened = 1;
+> -	fs_devices->latest_bdev = latest_dev->bdev;
+> +	fs_devices->latest_dev = latest_dev;
+>  	fs_devices->total_rw_bytes = 0;
+>  	fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_REGULAR;
+>  	fs_devices->read_policy = BTRFS_READ_POLICY_PID;
+> @@ -1968,7 +1968,7 @@ static struct btrfs_device * 
+> btrfs_find_next_active_device(
+>  }
+>
+>  /*
+> - * Helper function to check if the given device is part of 
+> s_bdev / latest_bdev
+> + * Helper function to check if the given device is part of 
+> s_bdev / latest_dev
+>   * and replace it with the provided or the next active device, 
+>   in the context
+>   * where this function called, there should be always be 
+>   another device (or
+>   * this_dev) which is active.
+> @@ -1987,8 +1987,8 @@ void __cold 
+> btrfs_assign_next_active_device(struct btrfs_device *device,
+>  			(fs_info->sb->s_bdev == device->bdev))
+>  		fs_info->sb->s_bdev = next_device->bdev;
+>
+> -	if (fs_info->fs_devices->latest_bdev == device->bdev)
+> -		fs_info->fs_devices->latest_bdev = next_device->bdev;
+> +	if (fs_info->fs_devices->latest_dev->bdev == device->bdev)
+> +		fs_info->fs_devices->latest_dev = next_device;
+>  }
+>
+>  /*
+> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+> index 4c941b4dd269..150b4cd8f81f 100644
+> --- a/fs/btrfs/volumes.h
+> +++ b/fs/btrfs/volumes.h
+> @@ -246,7 +246,7 @@ struct btrfs_fs_devices {
+>  	/* Highest generation number of seen devices */
+>  	u64 latest_generation;
+>
+> -	struct block_device *latest_bdev;
+> +	struct btrfs_device *latest_dev;
+>
+>  	/* all of the devices in the FS, protected by a mutex
+>  	 * so we can safely walk it to write out the supers without
