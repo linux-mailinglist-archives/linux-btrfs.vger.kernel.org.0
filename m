@@ -2,138 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A1C3F37DA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Aug 2021 03:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A9B3F37E4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Aug 2021 03:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240660AbhHUBFu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Aug 2021 21:05:50 -0400
-Received: from mout.gmx.net ([212.227.17.22]:43619 "EHLO mout.gmx.net"
+        id S240931AbhHUBMW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Aug 2021 21:12:22 -0400
+Received: from mout.gmx.net ([212.227.15.19]:55623 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229783AbhHUBFu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Aug 2021 21:05:50 -0400
+        id S229783AbhHUBMW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Aug 2021 21:12:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629507908;
-        bh=wgMVcuoQ3fcCQU5a1VnM3O8D3MDUvBSwwINhdFAgv40=;
-        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
-        b=Ad/ZJWCuiVAiXuutcqiFOaWYL7wQNLDIXJqx6webDujHQMPSZgmSb0qGxlgDNMUaS
-         nNyvAIRsEZWXXF0wVAau7co4Q9dRugWabggl9JkED9o0UakwCA9jNLxRkbRdNPitS9
-         opDDaI7B8ZdayznfVQbAIv4m7Q00X0qKbDi+rX54=
+        s=badeba3b8450; t=1629508297;
+        bh=rsF/9Y1W4s1enmJfcUq4mHsHRWaNu+mxRl2OdfIvAgA=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=g793vqVgDJaWziIvPveR3zO42yA25TL4ZoStHPtjuGCPiV/EtCjx0ylNALT8fgUUC
+         tD4nB5Q3TBJJB774AV0M758IkZUb5dLjLd7iFitlE+8eOO3OSewA/Yh3I6lvnbvbJ3
+         /tyJVXanAE1Er6advmrfEm1X7GSSqBcUPYO5AeyE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3bX1-1n0Aus2w0B-010ZqV; Sat, 21
- Aug 2021 03:05:08 +0200
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210812054815.192405-1-wqu@suse.com>
- <20210820131625.GU5047@twin.jikos.cz>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWics-1mWbcL1syW-00X57a; Sat, 21
+ Aug 2021 03:11:37 +0200
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org, Qu Wenruo <wqu@suse.com>
+References: <cover.1629234193.git.osandov@fb.com>
+ <a00b59623219c8a07f2c22f80ef1466d0f182d77.1629234193.git.osandov@fb.com>
+ <1b495420-f4c6-6988-c0b1-9aa8a7aa952d@suse.com>
+ <2eae3b11-d9aa-42b1-122e-49bd40258d9b@gmx.com>
+ <YR/wQPJcv25vPIp7@relinquished.localdomain>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v6 0/4] btrfs-progs: image: new data dump feature
-Message-ID: <99322fd3-8c9f-50f7-44f1-02f649b22bc8@gmx.com>
-Date:   Sat, 21 Aug 2021 09:04:58 +0800
+Subject: Re: [PATCH v10 06/14] btrfs: optionally extend i_size in
+ cow_file_range_inline()
+Message-ID: <d7e302f9-7230-0065-c908-86c10d77d738@gmx.com>
+Date:   Sat, 21 Aug 2021 09:11:26 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210820131625.GU5047@twin.jikos.cz>
+In-Reply-To: <YR/wQPJcv25vPIp7@relinquished.localdomain>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RWit0+kmYIVMAHrejoWM5glWI7KeiCzEW+GgMr7y7Y6FGPUltXJ
- xS9xOpAQCTjW66CgU1qNeWYg+tWjNsgztbZ6rJ3rg8Lf20kP6vH4T0rH/MvTJsMmwD6ckgm
- yK8SoKe9NoUA2dfxc0uSPe0oQSQDQ6GjrM/mW+x5ZrfgrHknp/lxv4+G8jzFybRnTP2A4Av
- V7BmytHH1ppbBCMMuQIsw==
+X-Provags-ID: V03:K1:tzl6/9YY2KjiUvi9znImUVGUZC+JDucaRnNpDPUYlX0PtGesSmH
+ gM1lE6SiNcGQPuCHr7cJ01lxfUMsApgYpSxwk97dXKu+hS0B/zCHPoM0Lp6ntuwtJf0M7Ix
+ C0KMwRj668judAheWL4iqoxWl347QP9ndaWGhTYdD/4iKYMitMmVmJF9rmJJ+RyAmqEl+St
+ ifvMetmP0cYGsU4EFi8NA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4YlK8wGG5nA=:YnkakzREgdZJ0TfbM3Yt91
- Fl6ivHIV5iwhHbxbS42G1Y+IIhOdwSu+yY1FyDaoPgA9lBn5tMi4MIz5zjuFtmPxDwHeobCqs
- skQ0ADK1auF5FqLDuLpTd6FyDCIdNersZ/CHASYDLKFZHLLUSFZISO7VOWT29ciOfU5gRZg+c
- sBGX+UqfPbwxYRJ9cRE4vLLuAd4YL2WAhG3hAwXpIjcpt+v4JoW2VrUCr9bb6RCcohOx3nabT
- BHe1t7i9UcAbmuzQZP/VpGYe7FHCux86cxjLjMTS7+PkEngA8yBRDZNk1Ctq0C46L/pYWv13E
- QZ1pTbz6Vae4zTzIjX5RJ7NyEhNr4sVOpI0ML3/Tr9KiVtgiA3Qg3w71/lXJ0W/xJSP6GnMJY
- sFXPmJGNXQ7QORlrv5gIXfP2Vg6S+n6DhuIBLSDZxlEMR1QdppiTzmlwXncs3+ERV9ZhD9Oi8
- gOoxNeRwikiHh7eqixz97L3AchSbEZZbpPIsh4Vkt12Lp+/iQ7YultBp+1OEe6OTbw0/p5fHl
- BxMfQukByMsP6/rd5cDAzjduB/MItsbM6kC5jqw8BMi9afe26YZQI/NN84feB15I+xiFQKElp
- SyMhd7c1Z81gkDh85KUuDsqNeDgZuSL41WJ2wRlFezrBQuKgpUVLQEg8IhhA6u8xaHxa1Mjd9
- add+elEuRszQGC0lhp3NhDJ1McMSJ3wYkrA00zZdMu/pYDB5/i8xhJdIawAn2Bu/0PPbxTL5z
- McHie6FyTerRBsriDxJlL+TLBDSWv3Amf15RJVGMcQ1Y6BdCLtnRdirpKDaFFw/SGSMHXMJM7
- FiSXY0eaZGxUNPIrd9zmgNE/yNLEbIDhbVcgCozODXpaypE8ppATFIOFN1bMFGY6ay/AmxiQX
- TKtlHop5klIKx6w8VizZ4i4ymrhXT+bFVd+vmrUhr8frIHfxcH+zgcUD3rHvyT7LJpZJ+JrNo
- UJbPGbjxuZnmPhYpSC/tIw+xl2+xtci6jw+peijkzggJYjsnyvj3RV8EOiqa6bZ2apouRVlX1
- 8eF3Aftu2ZDteowcLAEV3eVSf/RTmu5biFoHUfIAr7qQsAZqO4uu3U9cNDPrQlp9LLeO+EMbi
- e+REnWmxRvIZchlukvr8TZpB0D1jsAX932f/GqUPUkXyunGrqn9VY3VOg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:idshmnk7gLU=:lriiHwSXKZR5/OrHIHhgfV
+ TQ5WnIqEkTa1NJWP3yc7pbQI4isq60A/3ZxaqJm2l4ieHIo1spF6WzNlKpIj6UNnqfoBv63GC
+ hN9TOKw/TrOo8F3+8EtVDJVf3j+OM3aUVqLMHgnZbKWEIrtpiQIPgfLfcoWjZhKPyVCHVUTN8
+ hJr54x3WxrwIJ7Q/r3BB7RiHGEuTEPV9njxUZkTDOth7Ib7RKTF39sFRn9G/4tCKL9uvaaqDY
+ lg9k981Ell1x9HHGBEcmw/f1Kxkidr5zb3s1wCyUWMdqyw3A3PBWOoqR436mOm0cFljnzewLR
+ 0RLBRxPjIpQbUNuvD1EwdXNNYJVWMdcBDER8eo+/rzbbV/DtJlzRDzsrYhwWpg0EVQAfliR+1
+ vBIl4PkfPUq82Q3JjU4WeF0R/e8U0FmdRJAoBbeGaUZ0z3pOexN8rb6nL6OrlfLxjMnyQd4Bd
+ Cs/83jNjkZ2W3rQJuL8SFWdnkDU8MNRqV/DfCuLxj9p3ZNeZvNYufRqwIWYX4UaNPTh2l4F8l
+ VFft66kDQZG9d7BNPg/+DUKW9m09ubgZwmu7MfRmVS+VSp2UUPPhhIqnyY1vENSOR1OSM90D7
+ UPKTXdZe3kGBDQM87+1kqmeXKVpko8oVx4QhchgTtoWgczXkbDxKFdMrU312gJyTnuSH0YsZC
+ iWR0vrY3a2aELbel1cplsNGKy4QYrAjNyYC35uegG7UN4jFKcU6wFcHXWpIbMsvKSyYnls8Qx
+ nxlssSQPy7yzLXKVbbDuKy5Vv875AqyQB5cjsS5AtnlUbHxI/Ww3xlblR88ntNjp3AJXOrJoI
+ PY0HZJU0Y9+A03xUE3SNoMysmhcEIRIZPlc31kNdFg8/Ds7Yal7MBC2Ca5H4LbCCWdg/gpoRb
+ a04lE6xyqJ0gE5qsABqbdW0/FAtLki1HpCdNEQtxrou8p+9d9NiHWOqQPg+moOVuoo/CgXU8N
+ hA/vKavZ8LsvMXl43+xqS5DxFCFudbCmxP5dag1v70K1Wtp0C1ZGk+wrig4pFjJ4qm50W+G22
+ 5lHOz7fwzPNJCXOvYHOB3GNzg0XEqQ3+smxA1SrKAouxA2o9FBESuOS7NRMz0su9TQeeOUtUi
+ y1DuDEq8Ct7UZGC+znvi4eNyZVolm/mNuHn4cVDtvoGamRbW55FHsNtEQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/8/20 =E4=B8=8B=E5=8D=889:16, David Sterba wrote:
-> On Thu, Aug 12, 2021 at 01:48:11PM +0800, Qu Wenruo wrote:
->> This patchset includes the following features:
+On 2021/8/21 =E4=B8=8A=E5=8D=882:11, Omar Sandoval wrote:
+> On Fri, Aug 20, 2021 at 05:13:34PM +0800, Qu Wenruo wrote:
 >>
->> - Introduce data dump feature to dump the whole fs.
->>    This will introduce a new magic number to prevent old btrfs-image to
->>    hit failure as the item size limit is enlarged.
->>    Patch 1 and 2.
 >>
->> - Reduce memory usage for compressed data dump restore
->>    This is mostly due to the fact that we have much larger
->>    max_pending_size introduced by data dump(256K -> 256M).
->>    Using 4 * max_pending_size for each decompress thread as buffer is w=
-ay
->>    too expensive now.
->>    Use proper inflate() to replace uncompress() calls.
->>    Patch 3
+>> On 2021/8/20 =E4=B8=8B=E5=8D=884:51, Nikolay Borisov wrote:
+>>>
+>>>
+>>> On 18.08.21 =D0=B3. 0:06, Omar Sandoval wrote:
+>>>> From: Omar Sandoval <osandov@fb.com>
+>>>>
+>>>> Currently, an inline extent is always created after i_size is extende=
+d
+>>>> from btrfs_dirty_pages(). However, for encoded writes, we only want t=
+o
+>>>> update i_size after we successfully created the inline extent.
 >>
->> - A fix for small dev extent size mismatch with superblock
->>    This no longer affects single device dump restore, thus it's only
->>    for multi-device dump restore.
->>    Patch 4
+>> To me, the idea of write first then update isize is just going to cause
+>> tons of inline extent related prblems.
+>>
+>> The current example is falloc, which only update the isize after the
+>> falloc finishes.
+>>
+>> This behavior has already bothered me quite a lot, as it can easily
+>> create mixed inline and regular extents.
 >
-> So this looks like a big thing, new format, new version, bringing all
-> the fun and problems with proper format design, description and
-> validation - that we don't have for v1 either. How would old progs
-> version handle the new version?
+> Do you have an example of how this would happen? I have the inode and
+> extent bits locked during an encoded write, and I see that fallocate
+> does the same.
 
-They just won't recognize the format at all.
+xfs_io -f -c "pwrite 0 1K" -c "sync" -c "falloc 0 4k" -c "pwrite 4k 4k"
 
-That's why I'm introducing a new magic as a newer version, not just
-changing the limits of v1 image.
+The [0, 1K) will be written as inline without doubt.
 
-> There's no proper detection so it could
-> just try to use the dump and then fail at some random point (I haven't
-> tried, just gusessing).
+Then we go to falloc, it will try to zero the range [1K, 4K), but it
+doesn't increase the isize.
+Thus the page [0, 4k) will still be written back as inline, since isize
+is still 1K.
 
-The magic is at the very beginning of the dump, so no way to get screwed
-up at some random point.
-
-Just like this:
-
-$ ./btrfs-image -d /dev/test/test  /tmp/output
-$ btrfs-image  -r /tmp/output ~/test.img
-ERROR: bad header in metadump image
-ERROR: failed to build chunk tree
-ERROR: restore failed: -5
->
-> The version cannot be selected explicitly on the command line, only -d
-> would silently change it.
-
-Because there is no need to change the version for metadata only dump.
-Nothing is changed for metadata only routine.
+Later [4K, 8K) will be written back as regular, causing mixed extents.
 
 >
-> The documentation should also come with the patch though it might not be
-> complete until we agree on the whole feature or implementation, but not
-> even updating the command line interface in manual page happens way too
-> often and I randomly notice and have to fix it myself.
+>> Can't we remember the old isize (with proper locking), enlarge isize
+>> (with holes filled), do the write.
+>>
+>> If something wrong happened, we truncate the isize back to its old isiz=
+e.
+>>
+[...]
+>>>
+>>> Urgh, just some days ago Qu was talking about how awkward it is to hav=
+e
+>>> mixed extents in a file. And now, AFAIU, you are making them more like=
+ly
+>>> since now they can be created not just at the beginning of the file bu=
+t
+>>> also after i_size write. While this won't be a problem in and of itsel=
+f
+>>> it goes just the opposite way of us trying to shrink the possible case=
+s
+>>> when we can have mixed extents.
+>>
+>> Tree-checker should reject such inline extent at non-zero offset.
 >
-> Data in the dump could be useful but I'd still like to see some usecase
-> description.
+> This change does not allow creating inline extents at a non-zero offset.
+>
+>>> Qu what is your take on that?
+>>
+>> My question is, why encoded write needs to bother the inline extents at=
+ all?
+>>
+>> My intuition of such encoded write is, it should not create inline
+>> extents at all.
+>>
+>> Or is there any special use-case involved for encoded write?
+>
+> We create compressed inline extents with normal writes. We should be
+> able to send and receive them without converting them into regular
+> extents.
+>
+But my first impression for any encoded write is that, they should work
+like DIO, thus everything should be sectorsize aligned.
 
-The main case is to properly dump data so that we can verify the data
-mismatch and maybe find some clue on which is to blame (hardware or
-ourselves).
-
-Of course, creative users may also want to use this feature to do
-offline backup.
+Then why could they create inline extent? As inline extent can only be
+possible when the isize is smaller than sectorsize.
 
 Thanks,
 Qu
