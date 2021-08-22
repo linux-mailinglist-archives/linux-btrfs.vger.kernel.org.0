@@ -2,101 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058F33F3E3B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Aug 2021 09:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6F93F3E3C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Aug 2021 09:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhHVHCx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Aug 2021 03:02:53 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44182 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbhHVHCt (ORCPT
+        id S231153AbhHVHJ4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Aug 2021 03:09:56 -0400
+Received: from pio-pvt-msa1.bahnhof.se ([79.136.2.40]:60210 "EHLO
+        pio-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhHVHJz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Aug 2021 03:02:49 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9E8DA21E5A
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Aug 2021 07:02:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629615728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4q/8JHdE9sSopcd9a8r0G+RKGptipRPa+vhG6x+Zvv0=;
-        b=AUxmOmqPgDBWr1jCmBDeFHlTx1UBXJq/RhqNhDpR5Px8jg6PO7EwiD+XFnnT06KhdByoM7
-        LavNfQ3ZQydxBNiwxc/GrPqkLwBRx50+PCo4ha3kSGpPuIv2jyY0XYePmJfWfLEMs0867s
-        zrU7iJdgQx2+4GM8Z9/UDdn/aIntf5E=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id DBA4B13C43
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Aug 2021 07:02:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id eEoqJ2/2IWHLBwAAGKfGzw
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Aug 2021 07:02:07 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 4/4] btrfs: skip subtree scan if it's too high to avoid low stall in btrfs_commit_transaction()
-Date:   Sun, 22 Aug 2021 15:02:00 +0800
-Message-Id: <20210822070200.36953-5-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210822070200.36953-1-wqu@suse.com>
-References: <20210822070200.36953-1-wqu@suse.com>
+        Sun, 22 Aug 2021 03:09:55 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id 2747A3F4CB;
+        Sun, 22 Aug 2021 09:09:13 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -1.901
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.901 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, NICE_REPLY_A=-0.001]
+        autolearn=ham autolearn_force=no
+Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8F66PGz8gcfj; Sun, 22 Aug 2021 09:09:11 +0200 (CEST)
+Received: by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id A418E3F4B4;
+        Sun, 22 Aug 2021 09:09:11 +0200 (CEST)
+Received: from [192.168.0.10] (port=58220)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1mHhbT-0000vz-0w; Sun, 22 Aug 2021 09:09:11 +0200
+From:   Forza <forza@tnonline.net>
+Subject: Re: Support for compressed inline extents
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <afa2742.c084f5d6.17b6b08dffc@tnonline.net>
+ <20210822054549.GC29026@hungrycats.org>
+Message-ID: <1097af0f-fb9e-3c68-24b9-2232748ed77c@tnonline.net>
+Date:   Sun, 22 Aug 2021 09:09:10 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210822054549.GC29026@hungrycats.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs qgroup has a long history of bringing performance penalty in
-btrfs_commit_transaction().
+On 2021-08-22 07:45, Zygo Blaxell wrote:
+> On Sun, Aug 22, 2021 at 01:25:48AM +0200, Forza wrote:
+>> I'd like to see the option to allow compressed extents to be inlined. It
+>> could greatly reduce disk usage and speed up small files by avoiding
+>> extra seeks.
+>>
+>> I tried to understand why we don't allow
+>> it but could only find this reference
+>> https://btrfs.wiki.kernel.org/index.php/On-disk_Format#EXTENT_DATA_.286c.29
+>>
+>> "the extent is inline, the remaining item bytes are the data bytes
+>> (n bytes in case no compression/encryption/other encoding is used)."
+>>
+>> Is the limitation in the disk format or perhaps in the compression
+>> heuristics?
+> 
+> A far better question is "when did we _stop_ compressing inlined extents",
+> and the answer is in v5.14-rc1: f2165627319f "btrfs: compression: don't
+> try to compress if we don't have enough pages".  This check affects
+> inlined extents, so they are never compressed after 5.14.  Oops.
 
-Although we tried our best to migrate such impact, there is still a
-unsolved call site, btrfs_drop_snapshot().
+I don't understand this comment as you say below we do not allow 
+compressed (encoded) data inline? Do you mean we only used to compress 
+data inline if the original uncompressed data would fit inline too?
 
-This function will find the highest shared tree block and modify its
-extent ownership to do a subvolume/snapshot dropping.
+> 
+>> Not all use cases would benefit, and we'd have more metadata, which
+>> increase the risk of enospc. But i think it could be very valuable
+>> nonetheless. For example mail servers, source code/CI, webservers, and
+>> others that commonly deal with many small but highly compressible files.
+>>
+>>
+>> I did a quick test by copying all files smaller than 8192 bytes from
+>> my home server. The filesystem has 90GiB used.
+> 
+> An 8192 byte file cannot currently be inline (on a 4K page size system)
+> because the read code in btrfs assumes inline extents always fit inside
+> one page after decoding.
+> 
+> What you're really asking here is "can we have an arbitrary length
+> of compressed inline extent, as long as the encoded version fits in a
+> metadata block" and the short answer is "not with this on-disk format,"
+> because existing readers cannot cope with it.  If we are to consider this,
+> it requires an incompatible format change.
 
-Such change will affect the whole subtree, and cause tons of qgroup
-dirty extents and stall btrfs_commit_transaction().
+Yes, this is what I meant. As long as the resulting data after 
+compression would fit inline, we should allow it to be inlined.
 
-To avoid such problem, we can simply skip such subtree accounting if
-it's too high.
-Of course, the cost is to mark qgroup inconsistent.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/qgroup.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 291c404e8718..c650258f5cec 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -2248,6 +2248,19 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans_handle *trans,
- 	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags))
- 		return 0;
- 
-+	/*
-+	 * This function only get called for snapshot drop, if we hit a high
-+	 * node here, it means we are going to change ownership for quite a lot
-+	 * of extents, which will greatly slow down btrfs_commit_transaction().
-+	 *
-+	 * So here if we find a high tree here, we just skip the accounting and
-+	 * mark qgroup inconsistent.
-+	 */
-+	if (root_level >= 4) {
-+		qgroup_mark_inconsistent(fs_info);
-+		return 0;
-+	}
-+
- 	if (!extent_buffer_uptodate(root_eb)) {
- 		ret = btrfs_read_buffer(root_eb, root_gen, root_level, NULL);
- 		if (ret)
--- 
-2.32.0
-
+> 
+>> The result was 357129 files, 207605 inline. 792MiB disk usage, 1.0GiB
+>> data size, or 1.1% of fs usage.
+>>
+>> Zstd compressed them, which gave 295419 files inline. Total data size
+>> 500MiB. The size of the inlined files is 208MiB.
+>>
+>> Uncompressed the inlined files to see how much of the original data
+>> could have been compressed and inlined. 599MiB total data with 501MiB
+>> disk usage and 207576 inlined files.
+>>
+>> All in all we would save 501-208=293MiB, which is very good. Ontop of
+>> this we'd have savings because we avoid padding up to 4kiB block size
+>> due to inlining. Also my test only included files less than 8kiB. It
+>> is possible that many files larger than this could be compressed to
+>> less than max_inline size.
+>>
+>>
+>> Thanks
