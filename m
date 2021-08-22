@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE973F4033
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Aug 2021 17:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114E03F4034
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Aug 2021 17:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbhHVPCl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Aug 2021 11:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
+        id S234060AbhHVPCn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Aug 2021 11:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233549AbhHVPCk (ORCPT
+        with ESMTP id S233549AbhHVPCm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Aug 2021 11:02:40 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B0BC061575
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Aug 2021 08:01:59 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id a21so13109582pfh.5
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Aug 2021 08:01:59 -0700 (PDT)
+        Sun, 22 Aug 2021 11:02:42 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B110C061575
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Aug 2021 08:02:01 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id mq3so10292218pjb.5
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Aug 2021 08:02:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/hHQlvCD4tlmsz4u8LFymAhoPacC3jHv2ra01z7ta9U=;
-        b=AqEGAYr98caXYNm0e143aZMN2ecn8UGBnjR/QcoTTHJTS0waFboi3abV4m5VsfxVxa
-         3ZH/YkM6ey845TBkOivLVbh6azDR+PKG0+djTydLDjTzZ6VV0ZrPM31KyTte7flECvy2
-         vFi83vBPwA28Wl23MK89p8I6bHxbL8W+wHlJ/7QEIZhRxZFmZalCfqJ0g3Kwjv8gwBNC
-         rGvb2AXlwFaWLzinHwE8CqrUOjkWNf0Do6TDdLH+/yAB8U/XECiP0qNX68TWgMrmifur
-         Sv6i/GRSwZc+NAm29X3PciPHBr7LStIQJzJ3WrgkJi9v2k5gB2xumD+LGdrO6R2vbTBu
-         B7AA==
+        bh=GUqt/HOa7tYeaazdC6LR3UwsHpiwY4kdrFXz9A5yQYU=;
+        b=a1OLj1kXzsCOWKXY5EQ/WyJPRA5K8+ZmcnUJNW+hD6VabYLORMFxBbytdqPa1uPs9o
+         vTtfoLgxHDDX+qng6RPQodXRGIlkXyo2pNLyRfjyHHIH0PX1plDF5eUwRbansydt/+Kx
+         7yvO37hGMfflkuiyqg+J8KY2BRuMFGCnw4zxtNzPAjO1Sy7vzeb1m1QnuRSBlB5cpccy
+         d5a66MJiHf64Yrk7iJBty1F1i09xY/IDKZHe+J4swMnzwl9USSkrQmKsMP+q+s9dvp7U
+         px0/lkmTCCJ4iibUkQZWg32qejagDUcEpOnk+ORXdCyRbUU4qhToyKb9aqqOl1rrnZmI
+         J8NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/hHQlvCD4tlmsz4u8LFymAhoPacC3jHv2ra01z7ta9U=;
-        b=a61BftLwwt3MJZzoWPGwm+AkAziUGAuDIhBGbc5DI4iA2JfuSLwVPoNmGgtrmbom07
-         qFFLnx8s3/I2Y8MDhvX6aJQMN2JVOWun9j6OpZBKE1ZbBy+wKmXB6tp7xr34Hbc4MmPo
-         0p5rgKeidbLV9ov9sAyr8py16E1WVUIIF/D5JGGLD4hUouJU2q2lTmEmAIYuYXHb2WJY
-         hwZDuJiTSIKRxq3wrIrrcjRJnHUMcGVXwv+iHvem+3x+9YDZHTS8/kY/59Kfr0Q0eem1
-         6J1Z7hqKJ6P8rqF4mifv5lC5OnYHVRWeFSB2XkTn/ZBi0pucSE73DFXbbIXsHM6XjsfB
-         ReCQ==
-X-Gm-Message-State: AOAM531xN82ZIoAhPLNhNRXED0wsXHMHe9oY579OYD2C8A2FFK8vha6d
-        7QndzyRuXwc5NlVmj5ehtM4KUAvSo8h2tg==
-X-Google-Smtp-Source: ABdhPJyP4SYYzkUZFOF+KgefhjKWaox5xREjOpBsVnDDIPDAsJmfbqZWVY9/PbZJDPDEqe6RMVSo+w==
-X-Received: by 2002:a05:6a00:b86:b0:3e2:33d2:d15c with SMTP id g6-20020a056a000b8600b003e233d2d15cmr30178695pfj.10.1629644519076;
-        Sun, 22 Aug 2021 08:01:59 -0700 (PDT)
+        bh=GUqt/HOa7tYeaazdC6LR3UwsHpiwY4kdrFXz9A5yQYU=;
+        b=BMdKgvzIRf3IeHoT3LuWWJogWxC/aa1+TMNLo1UWygDwtYM2Pzosb08oYFcxcRn0HK
+         2/PorWzlSTZ6tvjMGNQ+zmqS2t/0xVivOEkeIoX7AwBn1IDlEw8LjyKIeAxL8wJWfWPN
+         bI6967vmghORDILuGWFO+bsfKXA/0WjT6G8owNB67f9/mZUMzCnJoIhOmpo1XwCMBicD
+         ZVDiMyoSY0A02jNmZqf0gm1MoWC5bWZ6HYHDKqJ5OqvjXqDKQoEEug2zGRWJSqr4+rtV
+         4TIkgp4qHbC80qCeeTLYIIQmqbQOm0VMdjTg0cMaRgXzU5drNqeoRen299K9HnB9CPo0
+         95Kw==
+X-Gm-Message-State: AOAM532IIRTE+rABwPgYGsKtaWtyuxW8KSyDm72Yx5ciUpHFybc+sKW/
+        jFaYjqZTP4kD1a64BrazPGjMkVBSLMMIhg==
+X-Google-Smtp-Source: ABdhPJx/zo/JmH9uaSKxHZM6RGLQjewMdclCGdlRGC2TLcHoWrtrLxGRv4INSwCowlWz0z2PUlVizg==
+X-Received: by 2002:a17:90a:2b89:: with SMTP id u9mr15247895pjd.116.1629644520762;
+        Sun, 22 Aug 2021 08:02:00 -0700 (PDT)
 Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id n185sm13992266pfn.171.2021.08.22.08.01.57
+        by smtp.gmail.com with ESMTPSA id n185sm13992266pfn.171.2021.08.22.08.01.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 08:01:58 -0700 (PDT)
+        Sun, 22 Aug 2021 08:02:00 -0700 (PDT)
 From:   Sidong Yang <realwakka@gmail.com>
 To:     linux-btrfs <linux-btrfs@vger.kernel.org>,
         David Sterba <dsterba@suse.cz>,
         Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH v5 1/2] btrfs-progs: export util functions about file extent items
-Date:   Sun, 22 Aug 2021 15:01:39 +0000
-Message-Id: <20210822150140.44152-2-realwakka@gmail.com>
+Subject: [PATCH v5 2/2] btrfs-progs: cmds: Add subcommand that dumps file extents
+Date:   Sun, 22 Aug 2021 15:01:40 +0000
+Message-Id: <20210822150140.44152-3-realwakka@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210822150140.44152-1-realwakka@gmail.com>
 References: <20210822150140.44152-1-realwakka@gmail.com>
@@ -65,92 +65,246 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch export two functions that convert enum about file extents to
-string. It can be used in other code like inspect-internal command. And
-this patch also make compress_type_to_str() function more safe by using
-strncpy() than strcpy().
+This patch adds an subcommand in inspect-internal. It dumps file extents of
+the file that user provided. It helps to show the internal information
+about file extents comprise the file. It supports json format by using
+formatted printing. An example is below.
+
+{
+  "__header": {
+    "version": "1"
+  },
+  "file-extents": [
+    {
+      "start": "0",
+      "disk_bytenr": "21651456",
+      "disk_num_bytes": "4096",
+      "offset": "0",
+      "len": "65536",
+      "compression": "zstd",
+      "type": "regular"
+    },
+    {
+      "start": "65536",
+      "len": "131072",
+      "compression": "none",
+      "type": "hole"
+    }
+  ]
+}
 
 Signed-off-by: Sidong Yang <realwakka@gmail.com>
 ---
- kernel-shared/print-tree.c | 18 +++++++++---------
- kernel-shared/print-tree.h |  5 +++++
- 2 files changed, 14 insertions(+), 9 deletions(-)
+ Makefile                         |   2 +-
+ cmds/commands.h                  |   2 +-
+ cmds/inspect-dump-file-extents.c | 161 +++++++++++++++++++++++++++++++
+ cmds/inspect.c                   |   1 +
+ 4 files changed, 164 insertions(+), 2 deletions(-)
+ create mode 100644 cmds/inspect-dump-file-extents.c
 
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index e5d4b453..ce1c0ed3 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -338,27 +338,27 @@ static void print_uuids(struct extent_buffer *eb)
- 	printf("fs uuid %s\nchunk uuid %s\n", fs_uuid, chunk_uuid);
- }
- 
--static void compress_type_to_str(u8 compress_type, char *ret)
-+void btrfs_compress_type_to_str(u8 compress_type, char *ret)
- {
- 	switch (compress_type) {
- 	case BTRFS_COMPRESS_NONE:
--		strcpy(ret, "none");
-+		strncpy(ret, "none", BTRFS_COMPRESS_STR_LEN);
- 		break;
- 	case BTRFS_COMPRESS_ZLIB:
--		strcpy(ret, "zlib");
-+		strncpy(ret, "zlib", BTRFS_COMPRESS_STR_LEN);
- 		break;
- 	case BTRFS_COMPRESS_LZO:
--		strcpy(ret, "lzo");
-+		strncpy(ret, "lzo", BTRFS_COMPRESS_STR_LEN);
- 		break;
- 	case BTRFS_COMPRESS_ZSTD:
--		strcpy(ret, "zstd");
-+		strncpy(ret, "zstd", BTRFS_COMPRESS_STR_LEN);
- 		break;
- 	default:
--		sprintf(ret, "UNKNOWN.%d", compress_type);
-+		snprintf(ret, BTRFS_COMPRESS_STR_LEN, "UNKNOWN.%d", compress_type);
- 	}
- }
- 
--static const char* file_extent_type_to_str(u8 type)
-+const char* btrfs_file_extent_type_to_str(u8 type)
- {
- 	switch (type) {
- 	case BTRFS_FILE_EXTENT_INLINE: return "inline";
-@@ -376,12 +376,12 @@ static void print_file_extent_item(struct extent_buffer *eb,
- 	unsigned char extent_type = btrfs_file_extent_type(eb, fi);
- 	char compress_str[16];
- 
--	compress_type_to_str(btrfs_file_extent_compression(eb, fi),
-+	btrfs_compress_type_to_str(btrfs_file_extent_compression(eb, fi),
- 			     compress_str);
- 
- 	printf("\t\tgeneration %llu type %hhu (%s)\n",
- 			btrfs_file_extent_generation(eb, fi),
--			extent_type, file_extent_type_to_str(extent_type));
-+			extent_type, btrfs_file_extent_type_to_str(extent_type));
- 
- 	if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
- 		printf("\t\tinline extent data size %u ram_bytes %llu compression %hhu (%s)\n",
-diff --git a/kernel-shared/print-tree.h b/kernel-shared/print-tree.h
-index 80fb6ef7..3b96e89d 100644
---- a/kernel-shared/print-tree.h
-+++ b/kernel-shared/print-tree.h
-@@ -33,6 +33,8 @@ enum {
- 	BTRFS_PRINT_TREE_DEFAULT = BTRFS_PRINT_TREE_BFS,
- };
- 
-+#define BTRFS_COMPRESS_STR_LEN 12
-+
- void btrfs_print_tree(struct extent_buffer *eb, unsigned int mode);
- void btrfs_print_leaf(struct extent_buffer *eb, unsigned int mode);
- 
-@@ -43,4 +45,7 @@ void print_objectid(FILE *stream, u64 objectid, u8 type);
- void print_key_type(FILE *stream, u64 objectid, u8 type);
- void btrfs_print_superblock(struct btrfs_super_block *sb, int full);
- 
-+void btrfs_compress_type_to_str(u8 compress_type, char *ret);
-+const char* btrfs_file_extent_type_to_str(u8 type);
-+
+diff --git a/Makefile b/Makefile
+index a1cc457b..911e16de 100644
+--- a/Makefile
++++ b/Makefile
+@@ -156,7 +156,7 @@ cmds_objects = cmds/subvolume.o cmds/filesystem.o cmds/device.o cmds/scrub.o \
+ 	       cmds/restore.o cmds/rescue.o cmds/rescue-chunk-recover.o \
+ 	       cmds/rescue-super-recover.o \
+ 	       cmds/property.o cmds/filesystem-usage.o cmds/inspect-dump-tree.o \
+-	       cmds/inspect-dump-super.o cmds/inspect-tree-stats.o cmds/filesystem-du.o \
++	       cmds/inspect-dump-super.o cmds/inspect-tree-stats.o cmds/inspect-dump-file-extents.o cmds/filesystem-du.o \
+ 	       mkfs/common.o check/mode-common.o check/mode-lowmem.o
+ libbtrfs_objects = common/send-stream.o common/send-utils.o kernel-lib/rbtree.o btrfs-list.o \
+ 		   kernel-lib/radix-tree.o common/extent-cache.o kernel-shared/extent_io.o \
+diff --git a/cmds/commands.h b/cmds/commands.h
+index 8fa85d6c..55de248e 100644
+--- a/cmds/commands.h
++++ b/cmds/commands.h
+@@ -154,5 +154,5 @@ DECLARE_COMMAND(select_super);
+ DECLARE_COMMAND(dump_super);
+ DECLARE_COMMAND(debug_tree);
+ DECLARE_COMMAND(rescue);
+-
++DECLARE_COMMAND(inspect_dump_file_extents);
  #endif
+diff --git a/cmds/inspect-dump-file-extents.c b/cmds/inspect-dump-file-extents.c
+new file mode 100644
+index 00000000..5f5469a3
+--- /dev/null
++++ b/cmds/inspect-dump-file-extents.c
+@@ -0,0 +1,161 @@
++/*
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public
++ * License v2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public
++ * License along with this program; if not, write to the
++ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
++ * Boston, MA 021110-1307, USA.
++ */
++
++#include <unistd.h>
++#include <stdio.h>
++#include <fcntl.h>
++
++#include <sys/ioctl.h>
++
++#include "common/utils.h"
++#include "common/format-output.h"
++#include "cmds/commands.h"
++#include "kernel-shared/print-tree.h"
++
++static const char * const cmd_inspect_dump_file_extents_usage[] = {
++	"btrfs inspect-internal dump-extent path",
++	"Dump file extent in a textual form",
++	NULL
++};
++
++static const struct rowspec dump_file_extents_rowspec[] = {
++	{ .key = "device", .fmt = "%s", .out_text = "device", .out_json = "device" },
++	{ .key = "type", .fmt = "%s", .out_text = "type", .out_json = "type" },
++	{ .key = "start", .fmt = "%u", .out_text = "start", .out_json = "start" },
++	{ .key = "len", .fmt = "%u", .out_text = "len", .out_json = "len" },
++	{ .key = "disk_bytenr", .fmt = "%u", .out_text = "disk_bytenr", .out_json = "disk_bytenr" },
++	{ .key = "disk_num_bytes", .fmt = "%u", .out_text = "disk_num_bytes", .out_json = "disk_num_bytes" },
++	{ .key = "offset", .fmt = "%u", .out_text = "offset", .out_json = "offset" },
++	{ .key = "compression", .fmt = "%s", .out_text = "compression", .out_json = "compression" },
++	ROWSPEC_END
++};
++
++static int cmd_inspect_dump_file_extents(const struct cmd_struct *cmd,
++										 int argc, char **argv)
++{
++	int fd;
++	struct stat statbuf;
++	struct btrfs_ioctl_ino_lookup_args lookup;
++	struct btrfs_ioctl_search_args args;
++	struct btrfs_ioctl_search_key *sk = &args.key;
++	struct btrfs_file_extent_item *extent_item;
++	struct btrfs_ioctl_search_header *header;
++	u64 start, buf_off;
++	int ret, i;
++
++	struct format_ctx fctx;
++
++	fd = open(argv[optind], O_RDONLY);
++	if (fd < 0) {
++		error("cannot open %s: %m", argv[optind]);
++		ret = 1;
++		goto out;
++	}
++
++	if (fstat(fd, &statbuf) < 0) {
++		error("failed to fstat %s: %m", argv[optind]);
++		ret = 1;
++		goto out;
++	}
++
++	lookup.treeid = 0;
++	lookup.objectid = BTRFS_FIRST_FREE_OBJECTID;
++
++	if (ioctl(fd, BTRFS_IOC_INO_LOOKUP, &lookup) < 0) {
++		error("failed to lookup inode %s: %m", argv[optind]);
++		ret = 1;
++		goto out;
++	}
++
++	sk->tree_id = lookup.treeid;
++	sk->min_objectid = statbuf.st_ino;
++	sk->max_objectid = statbuf.st_ino;
++	sk->min_offset = 0;
++	sk->max_offset = UINT64_MAX;
++	sk->min_transid = 0;
++	sk->max_transid = UINT64_MAX;
++	sk->min_type = sk->max_type = BTRFS_EXTENT_DATA_KEY;
++	sk->nr_items = UINT32_MAX;
++
++again:
++	if (ioctl(fd, BTRFS_IOC_TREE_SEARCH, &args)) {
++		error("failed to search tree ioctl %s: %m", argv[optind]);
++		ret = 1;
++		goto out;
++	}
++
++	buf_off = 0;
++	fmt_start(&fctx, dump_file_extents_rowspec, 24, 0);
++	fmt_print_start_group(&fctx, "file-extents", JSON_TYPE_ARRAY);
++	for(i=0; i<sk->nr_items; ++i) {
++		header = (struct btrfs_ioctl_search_header *)(args.buf + buf_off);
++
++		if (btrfs_search_header_type(header) == BTRFS_EXTENT_DATA_KEY) {
++			u64 len, disk_bytenr, disk_num_bytes, offset;
++			const char *type_str;
++			char compress_str[BTRFS_COMPRESS_STR_LEN];
++
++			extent_item = (struct btrfs_file_extent_item *)(header + 1);
++			fmt_print_start_group(&fctx, NULL, JSON_TYPE_MAP);
++
++			start = btrfs_search_header_offset(header);
++			fmt_print(&fctx, "start", start);
++			type_str = btrfs_file_extent_type_to_str(extent_item->type);
++			btrfs_compress_type_to_str(extent_item->compression, compress_str);
++
++			switch (extent_item->type) {
++			case BTRFS_FILE_EXTENT_INLINE:
++				len = le64_to_cpu(extent_item->ram_bytes);
++				break;
++			case BTRFS_FILE_EXTENT_REG:
++			case BTRFS_FILE_EXTENT_PREALLOC:
++				len = le64_to_cpu(extent_item->num_bytes);
++				disk_bytenr = le64_to_cpu(extent_item->disk_bytenr);
++				if (disk_bytenr) {
++					disk_num_bytes = le64_to_cpu(extent_item->disk_num_bytes);
++					offset = le64_to_cpu(extent_item->offset);
++					fmt_print(&fctx, "disk_bytenr", disk_bytenr);
++					fmt_print(&fctx, "disk_num_bytes", disk_num_bytes);
++					fmt_print(&fctx, "offset", offset);
++
++				} else {
++					type_str = "hole";
++				}
++				break;
++			}
++
++			fmt_print(&fctx, "len", len);
++			fmt_print(&fctx, "compression", compress_str);
++			fmt_print(&fctx, "type", type_str);
++			fmt_print_end_group(&fctx, NULL);
++		}
++		buf_off += sizeof(*header) + btrfs_search_header_len(header);
++	}
++	fmt_print_end_group(&fctx, "file-extents");
++	fmt_end(&fctx);
++
++	if (sk->nr_items > 512) {
++		sk->nr_items = UINT32_MAX;
++		sk->min_offset = start + 1;
++		goto again;
++	}
++	ret = 0;
++out:
++	close(fd);
++	return ret;
++}
++
++DEFINE_COMMAND_WITH_FLAGS(inspect_dump_file_extents, "dump-file-extents", CMD_FORMAT_JSON);
+diff --git a/cmds/inspect.c b/cmds/inspect.c
+index 2ef5f4b6..dfb0e27b 100644
+--- a/cmds/inspect.c
++++ b/cmds/inspect.c
+@@ -696,6 +696,7 @@ static const struct cmd_group inspect_cmd_group = {
+ 		&cmd_struct_inspect_dump_tree,
+ 		&cmd_struct_inspect_dump_super,
+ 		&cmd_struct_inspect_tree_stats,
++		&cmd_struct_inspect_dump_file_extents,
+ 		NULL
+ 	}
+ };
 -- 
 2.25.1
 
