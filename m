@@ -2,126 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F893F3EA7
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Aug 2021 10:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D823F3F05
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Aug 2021 13:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhHVIev (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Aug 2021 04:34:51 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:39860 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbhHVIev (ORCPT
+        id S233199AbhHVLP1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 22 Aug 2021 07:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232822AbhHVLP0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Aug 2021 04:34:51 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 078AEB41909; Sun, 22 Aug 2021 04:33:56 -0400 (EDT)
-Date:   Sun, 22 Aug 2021 04:33:56 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Forza <forza@tnonline.net>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Support for compressed inline extents
-Message-ID: <20210822083356.GE29026@hungrycats.org>
-References: <afa2742.c084f5d6.17b6b08dffc@tnonline.net>
- <20210822054549.GC29026@hungrycats.org>
- <1097af0f-fb9e-3c68-24b9-2232748ed77c@tnonline.net>
+        Sun, 22 Aug 2021 07:15:26 -0400
+Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225FFC061575
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Aug 2021 04:14:46 -0700 (PDT)
+Received: from ananda.localnet (unknown [IPv6:2001:a62:1a4b:c500:dae2:aa83:6ba6:8ba9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id DFAA62A822E
+        for <linux-btrfs@vger.kernel.org>; Sun, 22 Aug 2021 13:14:42 +0200 (CEST)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: It's broke, Jim. BTRFS mounted read only after corruption errors on Samsung 980 Pro
+Date:   Sun, 22 Aug 2021 13:14:39 +0200
+Message-ID: <9070016.RUGz74dYir@ananda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1097af0f-fb9e-3c68-24b9-2232748ed77c@tnonline.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin2 smtp.mailfrom=martin@lichtvoll.de
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 09:09:10AM +0200, Forza wrote:
-> On 2021-08-22 07:45, Zygo Blaxell wrote:
-> > On Sun, Aug 22, 2021 at 01:25:48AM +0200, Forza wrote:
-> > > I'd like to see the option to allow compressed extents to be inlined. It
-> > > could greatly reduce disk usage and speed up small files by avoiding
-> > > extra seeks.
-> > > 
-> > > I tried to understand why we don't allow
-> > > it but could only find this reference
-> > > https://btrfs.wiki.kernel.org/index.php/On-disk_Format#EXTENT_DATA_.286c.29
-> > > 
-> > > "the extent is inline, the remaining item bytes are the data bytes
-> > > (n bytes in case no compression/encryption/other encoding is used)."
-> > > 
-> > > Is the limitation in the disk format or perhaps in the compression
-> > > heuristics?
-> > 
-> > A far better question is "when did we _stop_ compressing inlined extents",
-> > and the answer is in v5.14-rc1: f2165627319f "btrfs: compression: don't
-> > try to compress if we don't have enough pages".  This check affects
-> > inlined extents, so they are never compressed after 5.14.  Oops.
-> 
-> I don't understand this comment as you say below we do not allow compressed
-> (encoded) data inline? Do you mean we only used to compress data inline if
-> the original uncompressed data would fit inline too?
+Hi!
 
-The old code had two conditions and both must be met:
+This might be a sequel of:
 
-	1.  encoded data size <= max_inline mount parameter (default
-	page_size / 2)
+Corruption errors on Samsung 980 Pro
 
-	2.  unencoded data size < page_size (must fit in a single page
-	without filling it).
+https://lore.kernel.org/linux-btrfs/2729231.WZja5ltl65@ananda/
 
-So with compression you can fit up to 4095 bytes in an inline extent on
-a page-size-4096 machine; however, the data must compress to 2048 bytes
-or less (or whatever the max_inline limit is set to).  If the compressed
-data doesn't fit inline, it gets stored uncompressed in a normal data
-block, since the compression can't save any space.
+As the checksum errors I had gone away after clearing the v2 space cache,
+I thought I can continue using this BTRFS filesystem. Maybe I was wrong
+about that.
 
-Without compression, it's much simpler:  only the extent's length matters,
-it's inline or not inline.
+However it could also be something new, as I had a laptop battery power
+outage. For some reason the laptop did not suspend or hibernate probably
+and ate up all battery power. I think I set Plasma desktop to hibernate
+before at 5% of battery left, but maybe hibernation did not work. I will set
+it to properly shutdown the machine instead as that might be more reliable.
 
-The new code adds a third condition which must also be met:
 
-	3.  unencoded data size > page_size
+Same hardware: ThinkPad T14 AMD Gen 1 with AMD Ryzen 7 PRO 4750U and
+32 GiB of RAM, Samsung 980 Pro 2 TB drive, kernel 5.14-rc4. Distribution is
+Devuan ceres. BTRFS tools version is 5.10.1-2. However I can and I will update
+to 5.13-1 from Debian experimental, please let me know whether you like
+me to rerun the BTRFS check below.
 
-Condition 3 and condition 2 can never be true at the same time, so new
-kernel code cannot compress any extent that could possibly be inline.
+BTRFS with ZSTD compression and xxhash checksums on top of dm-crypt
+with discards enabled.
 
-> > > Not all use cases would benefit, and we'd have more metadata, which
-> > > increase the risk of enospc. But i think it could be very valuable
-> > > nonetheless. For example mail servers, source code/CI, webservers, and
-> > > others that commonly deal with many small but highly compressible files.
-> > > 
-> > > 
-> > > I did a quick test by copying all files smaller than 8192 bytes from
-> > > my home server. The filesystem has 90GiB used.
-> > 
-> > An 8192 byte file cannot currently be inline (on a 4K page size system)
-> > because the read code in btrfs assumes inline extents always fit inside
-> > one page after decoding.
-> > 
-> > What you're really asking here is "can we have an arbitrary length
-> > of compressed inline extent, as long as the encoded version fits in a
-> > metadata block" and the short answer is "not with this on-disk format,"
-> > because existing readers cannot cope with it.  If we are to consider this,
-> > it requires an incompatible format change.
-> 
-> Yes, this is what I meant. As long as the resulting data after compression
-> would fit inline, we should allow it to be inlined.
+On copying a bunch of files from another laptop via rsync to this one I got:
 
-There's nothing about the disk format that would prevent this, except that
-no implementations exist that could read it correctly.
+ananda kernel: [10593.681336] BTRFS error (device dm-3): incorrect extent count for 250203865088; counted 1339, expe
+ananda kernel: [10593.681352] BTRFS: error (device dm-3) in convert_free_space_to_extents:452: errno=-5 IO failure
+ananda kernel: [10593.681357] BTRFS info (device dm-3): forced readonly
+ananda kernel: [10593.681361] BTRFS: error (device dm-3) in add_to_free_space_tree:1037: errno=-5 IO failure
+ananda kernel: [10593.681365] BTRFS: error (device dm-3) in __btrfs_free_extent:3195: errno=-5 IO failure
+ananda kernel: [10593.681369] BTRFS: error (device dm-3) in btrfs_run_delayed_refs:2150: errno=-5 IO failure
 
-> > > The result was 357129 files, 207605 inline. 792MiB disk usage, 1.0GiB
-> > > data size, or 1.1% of fs usage.
-> > > 
-> > > Zstd compressed them, which gave 295419 files inline. Total data size
-> > > 500MiB. The size of the inlined files is 208MiB.
-> > > 
-> > > Uncompressed the inlined files to see how much of the original data
-> > > could have been compressed and inlined. 599MiB total data with 501MiB
-> > > disk usage and 207576 inlined files.
-> > > 
-> > > All in all we would save 501-208=293MiB, which is very good. Ontop of
-> > > this we'd have savings because we avoid padding up to 4kiB block size
-> > > due to inlining. Also my test only included files less than 8kiB. It
-> > > is possible that many files larger than this could be compressed to
-> > > less than max_inline size.
-> > > 
-> > > 
-> > > Thanks
+I think I rebooted and tried again, same result. Then I un-mounted the
+filesystem and tried to mount it again, I got:
+
+BTRFS info (device dm-3): use zstd compression, level 3
+BTRFS info (device dm-3): using free space tree
+BTRFS info (device dm-3): has skinny extents
+BTRFS info (device dm-3): bdev /dev/mapper/nvme-home errs: wr 0, rd 0, flush 0, corrupt 10, gen 0
+BTRFS info (device dm-3): enabling ssd optimizations
+BTRFS info (device dm-3): start tree-log replay
+BTRFS error (device dm-3): incorrect extent count for 250203865088; counted 1339, expected 1337
+BTRFS: error (device dm-3) in convert_free_space_to_extents:452: errno=-5 IO failure
+BTRFS: error (device dm-3) in add_to_free_space_tree:1037: errno=-5 IO failure
+BTRFS: error (device dm-3) in __btrfs_free_extent:3195: errno=-5 IO failure
+BTRFS: error (device dm-3) in btrfs_run_delayed_refs:2150: errno=-5 IO failure
+BTRFS: error (device dm-3) in btrfs_replay_log:2415: errno=-5 IO failure (Failed to recover log tree)
+BTRFS error (device dm-3): incorrect extent count for 250203865088; counted 1343, expected 1341
+BTRFS error (device dm-3): open_ctree failed
+
+Thus I used:
+
+btrfs rescue zero-log /dev/nvme/home
+
+This worked.
+
+I copied over all files to a new LV with BTRFS, this time
+I thought I remove some non standard settings. I went with the standard
+crc32c checksums instead of xxhash which I formatted the defective BTRFS
+with. Rsync reported from files from Akonadi PostgreSQL database as
+vanished, I had errors in the log about them. Also another files had
+I/O errrors:
+
+linux/.git/objects/pack/pack-cb70e9315626d28754bab943baa468dde6e773d8.pack
+
+I replaced broken or missing files, were just 10 files or so, from backup.
+So I have a working /home filesystem again.
+
+I also went back to kernel 5.13.9 in order to exclude any BTRFS bugs in rc
+candidate kernel.
+
+I still have the old defect BTRFS filesystem, I renamed its LV to
+"homedefect".
+
+BTRFS reported corruption errors above. I thought these were checksum
+errors. But:
+
+% mount /dev/nvme/homedefect /mnt/tmp
+% btrfs scrub status /mnt/tmp
+UUID:             […]
+Scrub started:    Sun Aug 22 12:50:18 2021
+Status:           finished
+Duration:         0:01:56
+Total to scrub:   183.95GiB
+Rate:             1.58GiB/s
+Error summary:    no errors found
+
+BTRFS check reports:
+
+% btrfs check /dev/nvme/homedefect 
+Opening filesystem to check...
+Checking filesystem on /dev/nvme/homedefect
+UUID: […]
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space tree
+cache and super generation don't match, space cache will be invalidated
+[4/7] checking fs roots
+root 1054 inode 156198 errors 200, dir isize wrong
+root 1054 inode 2082825 errors 1000, some csum missing
+root 1054 inode 6474658 errors 1, no inode item
+        unresolved ref dir 156198 index 5145 namelen 11 name global.stat filetype 1 errors 5, no dir item, no inode ref
+root 1054 inode 6474661 errors 1, no inode item
+        unresolved ref dir 156198 index 5146 namelen 10 name global.tmp filetype 1 errors 5, no dir item, no inode ref
+        unresolved ref dir 156198 index 5151 namelen 11 name global.stat filetype 1 errors 5, no dir item, no inode ref
+root 1054 inode 6474662 errors 1, no inode item
+        unresolved ref dir 156198 index 5148 namelen 13 name db_16401.stat filetype 1 errors 5, no dir item, no inode ref
+root 1054 inode 6474663 errors 1, no inode item
+        unresolved ref dir 156198 index 5150 namelen 9 name db_0.stat filetype 1 errors 5, no dir item, no inode ref
+root 1054 inode 6474664 errors 1, no inode item
+        unresolved ref dir 156198 index 5152 namelen 10 name global.tmp filetype 1 errors 5, no dir item, no inode ref
+        unresolved ref dir 156198 index 5157 namelen 11 name global.stat filetype 1 errors 5, no dir item, no inode ref
+root 1054 inode 6474665 errors 1, no inode item
+        unresolved ref dir 156198 index 5154 namelen 13 name db_16401.stat filetype 1 errors 5, no dir item, no inode ref
+root 1054 inode 6474666 errors 1, no inode item
+        unresolved ref dir 156198 index 5156 namelen 9 name db_0.stat filetype 1 errors 5, no dir item, no inode ref
+root 1054 inode 6474667 errors 1, no inode item
+        unresolved ref dir 156198 index 5158 namelen 10 name global.tmp filetype 1 errors 5, no dir item, no inode ref
+
+[… those are Akonadi PostgreSQL database files …]
+
+ERROR: errors found in fs roots
+found 197513216000 bytes used, error(s) found
+total csum bytes: 380971416
+total tree bytes: 2439495680
+total fs tree bytes: 1756971008
+total extent tree bytes: 237273088
+btree space waste bytes: 299415459
+file data blocks allocated: 237875302400
+ referenced 221107453952
+
+
+Can you do anything with it?
+
+I will be keeping the defect filesystem for a while, so if you want me to
+try anything with it, let me know. I can also try to run some diagnostic
+commands. I do have a working /home and I have the luxury that I can
+keep the broken one around for a while, so I can run some experiments
+on it, in case it helps you to determine on how this happened and how
+to prevent it. Of course, I also accept if you say that the circumstances
+of this make it difficult to find the root cause. I'd like to find it, but I
+also found:
+
+Unfortunately also from time to time there are kernel crashes after
+resuming from hibernation. Overall I am not yet satisfied with the
+stability of Linux on this machine.
+
+Once I even had what appeared to be an endless loop with ps aux –
+it repeated the same process list over and over and over again.
+
+Whether there is a relation between all of this, I don't know.
+
+I did a memory test with Lenovo's own UEFI based diagnostic tool and
+this did not reveal anything. memtest86+ does not appear to start on this
+machine. I did not yet test memtest86 without the plus yet.
+
+Best,
+-- 
+Martin
+
+
