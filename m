@@ -2,195 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2176D3F53A8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7157A3F53AD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhHWXdE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 19:33:04 -0400
-Received: from mout.gmx.net ([212.227.17.20]:50391 "EHLO mout.gmx.net"
+        id S233256AbhHWXfZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 19:35:25 -0400
+Received: from mout.gmx.net ([212.227.15.19]:51759 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhHWXdD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:33:03 -0400
+        id S233182AbhHWXfZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Aug 2021 19:35:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629761533;
-        bh=mVehhbyodt+j7tlMOfap5tCDadNAkrLaPtHAWZ5lH5I=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=SEPsfNqP3EB5HJ6uv0CnpRUmWGP+MdYJiRnbhAqdVuYqTUsIPzN+H12VmvMuRP5m6
-         ta6m1CP5p0g8G8xS3eSAfuINQYEGSluzwMxQv3V6ehgipkCurEc3N0oUxpZMQqDQOa
-         9G76TRVUDbFs6c17+r7ms9a4SBVTEFrXylPBk8HM=
+        s=badeba3b8450; t=1629761677;
+        bh=d59tLIRDiul/Kkv4JjYoWhkMh7lhao212hVFsC51F4o=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=PKiBsT6shamXAXggc+/62Bli+piO0V5acAUBMTWyUikKzoxNKqlEANzR9hICuzonI
+         OIc8/POeYINjGYQBzrUdhab1frNgbgi7Cm2KNdF/Ab17jhYQeHZiZiBrLxNOvKBhXz
+         i/2cJcCSLyZw58LrfH+wRC9hBI9USDXTxRKuECDI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QWG-1mMjGe1DvM-004PIY; Tue, 24
- Aug 2021 01:32:12 +0200
-Subject: Re: [PATCH v10 06/14] btrfs: optionally extend i_size in
- cow_file_range_inline()
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-api@vger.kernel.org, Qu Wenruo <wqu@suse.com>
-References: <cover.1629234193.git.osandov@fb.com>
- <a00b59623219c8a07f2c22f80ef1466d0f182d77.1629234193.git.osandov@fb.com>
- <1b495420-f4c6-6988-c0b1-9aa8a7aa952d@suse.com>
- <2eae3b11-d9aa-42b1-122e-49bd40258d9b@gmx.com>
- <YR/wQPJcv25vPIp7@relinquished.localdomain>
- <d7e302f9-7230-0065-c908-86c10d77d738@gmx.com>
- <YSPl/psinnRhev4x@relinquished.localdomain>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MtwUw-1nAQc42dDQ-00uMgO; Tue, 24
+ Aug 2021 01:34:37 +0200
+Subject: Re: [PATCH v2 02/12] btrfs-progs: do not infinite loop on corrupt
+ keys with lowmem mode
+To:     Josef Bacik <josef@toxicpanda.com>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1629322156.git.josef@toxicpanda.com>
+ <aaaf2cadf66d9e573e2dbcc3e8fab7984ce42f99.1629322156.git.josef@toxicpanda.com>
+ <05f2cfc1-ab2f-0e92-13ef-488a9e7d716c@gmx.com>
+ <20210823150408.GD5047@twin.jikos.cz>
+ <029e900b-500c-937f-322e-1d64b3259355@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <5a35da37-1504-361a-46bc-3fe1c1846871@gmx.com>
-Date:   Tue, 24 Aug 2021 07:32:06 +0800
+Message-ID: <d4ec5a5f-45c6-7d25-6137-b3206880763c@gmx.com>
+Date:   Tue, 24 Aug 2021 07:34:33 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YSPl/psinnRhev4x@relinquished.localdomain>
+In-Reply-To: <029e900b-500c-937f-322e-1d64b3259355@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ALVYKneymACxNyLkPITy2zot7uBFJnMtBV183FvGjjZvDpfqV9l
- gr2sBe/qThYAGFzS2uwfxPjfhWiQhjjJyconS/IwzndGSPQ/ZR4Q1yGL2TxLHFEOM1Uq2mK
- JbQwSqo/xvZlI/sRqqMWmUNoonJ2By4WqvsMrGP96yiGyFL2NMpzsl7ReV7Y697cWL+UdjU
- Kf2AkFhhI9NBACLYK72Mw==
+X-Provags-ID: V03:K1:8bqM9oySeOJ3ioyJKClkiptg/N81meTzMRob1MOV4Iy2CbDmdBf
+ vYOT0l7QDZKkCJfNUnlcr2nidQYV98AnkmEuxg0tjDpFj1Vg1xfQdtZ12sGPOVik2MBfF3q
+ FT5eVmtaLyojjnN+Eu2R4+FvABFGBmL7EvidA/UYImpymq7afvbP/kCy8iB4RUpL1nwVAOo
+ pGv9pRvfBeEcGRTU8BDpw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WE30JcqmvQU=:GNqOng74jaS0Pej8Yi7i5Q
- YdzZQIXQ+DYTtJjOlTKTtmhsgL3pWYnoLZz3sY3ABO1liyyzaPcfr1Dsuff7umGS0ffbWFYml
- 3ExZD+461SGAuwmqqfyYptB6I4VRaMjMKLRYzCzudpc4fkTB25+gkdHlDW9BhQ+mG2KxTpgf8
- iujgqSzQqHHtHT9mTBhh/iIKmfpFzoPpXy3DO0w7794oC5D4P4ph0FaWHrpPBEe84+eV0bXhd
- +uK3q4N30t31WC2EbbZ7NQK7tJpn+aQA7Fi8vMntpBaAcKMXJyWaCv2rhrutOkLoIMMJJnsA6
- EePPmUmf6knnAeuEBJgmwM8KxfuLoIoOfWIGgFvxgufAi9YDuGhl+2Uaq2ebg0xlR72VhmDtW
- jenJUH5Yiuh7YeRbyICj3O5wPzZk01+0S8XCRzPke03ETKlsGb+j2HBaraWjnqOg8qfLFM0Xw
- 7gWWfeTstcUTvmoMnAkW7Jg0g4B/oesDzJlmbOcaLjenLoVdysvI4zN7NZnFsX65dDwovq26+
- Fev7aNrAq1tMz33rR6Ri6k7PZ8vtszk5Xv8/UyfUZ3uLgejGbzWYkDfWo/M1s1QTG+hHfRMn3
- Fcv5LOt19V/8/+2eS73rAG0UCSZ0/gA0VCHKeUkT4ltDynZDfaUCmX4o66073hQd0vPDxDoa+
- 0xCQ18ywzD1chTf5LBjdqJ97YdMe3v3pEbH+o83TqaFWR9kWoQxpBzbfL+s/W0Q6gvcWzRgFq
- j+tt8RtkX9Vd35DhUxw70bhkTcEx5bhMgZp4H8LuU3Zdwris3tTaIgTXikU5B9sPwOCvSS3bi
- v2Yxu9hxcPlbJbo/Rl/MaB8PH58QJdP6ZhVpj66oBY/62bDv/P9jf5gBa/yBBjx08C/Mp1q7r
- JeYcjCjZv1noy52aygWoI2SLKC+dUc2xdw08iyZu994ZUeY5Tcw6xA18i8v5DqgEf6alMjzYB
- runMALBy53eHt0Hx2zfkM/tS+NbI9t/XOWpN4XwRdqkpYQIfQg/EGSV7TT4mjvSorBVYz87Pv
- CPj3j7EoqvQpWW8QwbLIsGmdDqGD48RK8bPK85XSsb8pTY69nG4i5ZuBUDaMw4jLV/iYkGOxC
- C1YKZAzR4lTmwbe+TMzjJtsJ4MyeYNaXEVONbWgUb+fQ+5PDMsS6acRQg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:StDw7V6hx3c=:2NcfXBjzqnojSBfOsNLYB/
+ Fy7p93MCx0dWH/ppofFKU157Aw/Xq4Pe/hxeK3ludZoARkRVbQz56Pt00s5LZgjCQpG5O4Q3Z
+ 6PNGdktrq/3gB62y9VIz5IczFfiwt1cXthAPmiPRVl8ZHhAKKAg6BK7+DwQUy3TqiYRUlQkbq
+ sszeeb/TYB775N+/My/z3vAIKNzrN2myGXb4gs4EvWnyi/vtlvnrSOMycn3ok8xt9qhxaqCGR
+ jMXJBVEXe1gCnVvUqP2+lMst1rSnpEnsIaeQPqahlX/fO86p877bkfVVLP2NUulejXWh5rmP8
+ hdMAQU8yk7XzdP/TuVjJOXNB0GW98wBwOassUi0SXC0XNhl/0sJUy6KtuMcl383A+z3UQ01Vo
+ zSAZep+7xwxhGAs3jscyRTQr97plEbBjWuf0nPFEAeUFO8pZluQTVEA4Ioev5svutp2KNmrc3
+ c9p/bU5i1OkWAu7CUpvhuw98IA3YIEDbPJI4GeKCjr1sFXniVKD4NlDbRBc//PeLcxZUKnieG
+ snDLnr8IRbaZ/lxdSKDR2iesqXXg87Eq5YTzlVNBUt0GxecyW3lghs92SKw3Ym56nf88wutT4
+ 4tiHtnMZ8MwG0vb+iGYKj0pRYQGs/6ysst/9eFlQgag2ow+iZc4/GNfsslKK23u8YeA9VHnG9
+ 6/gkjem2aBDD27v79GHumDJLHLh8AL1HOG95PGI1KIxTW84oENY5YdJjIyWD3f1iYSC6uO8Pq
+ BUB7VX33bOs2nalPMMCZyhxlI8EtMw/cSDFBKu8pjIG4ul+aJK8kK4bCMWIDxM0FUOUax6wXp
+ m/pHpCvU1YfdCWDgxA03HnOjeepOZW4UXqj1tObPXuElK8UjuQaBdkWr4AQDf+v7/w+1SGaRF
+ fZqlWTQL9Z7WiTuVSSPSNOCxU9nQpVwWom5VfsYG3c5eid0Wm8Ytr5sqjiQLFJWHMLLjteJvs
+ A5rTnpdcBDPeg6CBtQ6CfKqpCEKpZjPlmg+aWbdMW22efWgy43GmgSNjbFzrZTNUKtOXZZPhn
+ VrVTlcjHMseAztX51qCvazGq3cAlgbJOjyBLhUH4xnJtNQOa8DCp677yRvoA5JpFUJycwfKDT
+ J7TM2AWo9DZt+KXWD2ulGZP41xi+6Y+nWzi7ollrrzklWvRAkHp3amJ+w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/8/24 =E4=B8=8A=E5=8D=882:16, Omar Sandoval wrote:
-> On Sat, Aug 21, 2021 at 09:11:26AM +0800, Qu Wenruo wrote:
->>
->>
->> On 2021/8/21 =E4=B8=8A=E5=8D=882:11, Omar Sandoval wrote:
->>> On Fri, Aug 20, 2021 at 05:13:34PM +0800, Qu Wenruo wrote:
->>>>
->>>>
->>>> On 2021/8/20 =E4=B8=8B=E5=8D=884:51, Nikolay Borisov wrote:
->>>>>
->>>>>
->>>>> On 18.08.21 =D0=B3. 0:06, Omar Sandoval wrote:
->>>>>> From: Omar Sandoval <osandov@fb.com>
->>>>>>
->>>>>> Currently, an inline extent is always created after i_size is exten=
-ded
->>>>>> from btrfs_dirty_pages(). However, for encoded writes, we only want=
- to
->>>>>> update i_size after we successfully created the inline extent.
->>>>
->>>> To me, the idea of write first then update isize is just going to cau=
-se
->>>> tons of inline extent related prblems.
->>>>
->>>> The current example is falloc, which only update the isize after the
->>>> falloc finishes.
->>>>
->>>> This behavior has already bothered me quite a lot, as it can easily
->>>> create mixed inline and regular extents.
+On 2021/8/24 =E4=B8=8A=E5=8D=882:44, Josef Bacik wrote:
+> On 8/23/21 11:04 AM, David Sterba wrote:
+>> On Thu, Aug 19, 2021 at 01:42:39PM +0800, Qu Wenruo wrote:
 >>>
->>> Do you have an example of how this would happen? I have the inode and
->>> extent bits locked during an encoded write, and I see that fallocate
->>> does the same.
+>>>
+>>> On 2021/8/19 =E4=B8=8A=E5=8D=885:33, Josef Bacik wrote:
+>>>> By enabling the lowmem checks properly I uncovered the case where tes=
+t
+>>>> 007 will infinite loop at the detection stage.=C2=A0 This is because =
+when
+>>>> checking the inode item we will just btrfs_next_item(), and because w=
+e
+>>>> ignore check tree block failures at read time we don't get an -EIO fr=
+om
+>>>> btrfs_next_leaf.=C2=A0 Generally what check usually does is validate =
+the
+>>>> leaves/nodes as we hit them, but in this case we're not doing that.
+>>>> Fix
+>>>> this by checking the leaf if we move to the next one and if it fails
+>>>> bail.=C2=A0 This allows us to pass the 007 test with lowmem.
+>>>
+>>> Doesn't this mean btrfs_next_item() is not doing what it should do?
+>>>
+>>> Normally we would expect btrfs_next_item() to return -EIO other than
+>>> manually checking the returned leaf.
 >>
->> xfs_io -f -c "pwrite 0 1K" -c "sync" -c "falloc 0 4k" -c "pwrite 4k 4k"
+>> That's an interesting point, I think we rely on that behaviour
+>> elsewhere too.
 >>
->> The [0, 1K) will be written as inline without doubt.
->>
->> Then we go to falloc, it will try to zero the range [1K, 4K), but it
->> doesn't increase the isize.
->> Thus the page [0, 4k) will still be written back as inline, since isize
->> is still 1K.
->>
->> Later [4K, 8K) will be written back as regular, causing mixed extents.
 >
-> I'll have to read fallocate more closely to follow what's going on here
-> and figure out if it applies to encoded writes. Please help me out if
-> you see how this would be an issue with encoded writes.
+> This is the result of how we deal with corrupt blocks.=C2=A0 We will hap=
+pily
+> read corrupt blocks with check, because we expect check to do it's own
+> btrfs_check_node/btrfs_check_leaf().=C2=A0 The problem here is that if t=
+he
+> block is corrupt it's still in cache, and so btrfs_next_leaf() will
+> return it because the buffer is marked uptodate.
 
-This won't cause anything wrong, if the encoded writes follows the
-existing inline extents requirement (always at offset 0).
-
-Otherwise, the read path could be affected to handle inlined extent at
-non-zero offset.
+Shouldn't we prevent the corrupted block from entering the cache?
 
 >
->>>> Can't we remember the old isize (with proper locking), enlarge isize
->>>> (with holes filled), do the write.
->>>>
->>>> If something wrong happened, we truncate the isize back to its old is=
-ize.
->>>>
->> [...]
->>>>>
->>>>> Urgh, just some days ago Qu was talking about how awkward it is to h=
-ave
->>>>> mixed extents in a file. And now, AFAIU, you are making them more li=
-kely
->>>>> since now they can be created not just at the beginning of the file =
-but
->>>>> also after i_size write. While this won't be a problem in and of its=
-elf
->>>>> it goes just the opposite way of us trying to shrink the possible ca=
-ses
->>>>> when we can have mixed extents.
->>>>
->>>> Tree-checker should reject such inline extent at non-zero offset.
->>>
->>> This change does not allow creating inline extents at a non-zero offse=
-t.
->>>
->>>>> Qu what is your take on that?
->>>>
->>>> My question is, why encoded write needs to bother the inline extents =
-at all?
->>>>
->>>> My intuition of such encoded write is, it should not create inline
->>>> extents at all.
->>>>
->>>> Or is there any special use-case involved for encoded write?
->>>
->>> We create compressed inline extents with normal writes. We should be
->>> able to send and receive them without converting them into regular
->>> extents.
->>>
->> But my first impression for any encoded write is that, they should work
->> like DIO, thus everything should be sectorsize aligned.
->>
->> Then why could they create inline extent? As inline extent can only be
->> possible when the isize is smaller than sectorsize.
->
-> ENCODED_WRITE is not defined as "O_DIRECT, but encoded". It happens to
-> have some resemblance to O_DIRECT because we have alignment requirements
-> for new extents and because we bypass the page cache, but there's no
-> reason to copy arbitrary restrictions from O_DIRECT. If someone is using
-> ENCODED_WRITE to write compressed data, then they care about space
-> efficiency, so we should make efficient use of inline extents.
->
-Then as long as the inline extent requirement for 0 offset is still
-followed, I'll be fine with that.
+> It looks like search does the extra check_block() specifically to catch
+> this case, so I'll fix next_leaf to do the same thing as well.=C2=A0 Tha=
+nks,
 
-But for non-zero offset inline extent? It looks like a much larger
-change, and may affect read path.
+OK for now I think it's fine to have the extra check.
 
-So I'd prefer we keep the 0 offset requirement for inline extent, and
-find a better way to work around.
+It won't cause any harm even if we solved the cache problem in the future.
 
 Thanks,
 Qu
+
+>
+> Josef
