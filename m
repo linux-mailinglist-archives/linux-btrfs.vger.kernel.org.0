@@ -2,123 +2,234 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5167E3F51DC
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2D33F51DD
 	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 22:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbhHWUPm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 16:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        id S232408AbhHWUPn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 16:15:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbhHWUPk (ORCPT
+        with ESMTP id S232404AbhHWUPm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:15:40 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2531C061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 13:14:57 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id t190so20622135qke.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 13:14:57 -0700 (PDT)
+        Mon, 23 Aug 2021 16:15:42 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A85C061575
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 13:14:59 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id t4so6223583qkb.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 13:14:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=VwLUP9vrGKw8YyQ1DhcU0JCM9Cq8gja//jEtDs3Cb2M=;
-        b=wTyuQsRSv9ziLUzWghEFZhuGjUKOIcfEs8ByiEdsvOvX+mXLEgrKB6beLt+2n+TTMB
-         EfOftukhv4tHX/a0i4sCeS7b1Tpottv+jQIrOS6nHh//a16e1KSCIl+59hkoyEG9UN2F
-         zmNrvyiKMReGwoWVjxa84/bKklnNUhN4aA62+wCuESfqhQ4qxcEyWxR8QnT41XsTDLy8
-         QMIXr2NeOk1NRHdZxTfE+FtCupNVlcFF0vCEyz0FPzISv1FKkfhQO7/IHAlKXTMJRxXC
-         zOy8Rtx5W9Ca1pkWgh3qdKoCaa2tke9dwZ+GkkPum9qzQDJIaV6RZSDTvp1CQbtyBQzn
-         2+yg==
+        bh=D+2jZRy7/aZMd3WdFd2lIGfMuqdFaSIxMjPxzmvi5UE=;
+        b=VsS9YF7PQkQipxoYKjs+BuM4yI1VcT7R2IQv7Sh9sh12GcHl8QI1TJDCHUWOCWklpG
+         Ov5sgkVqyFIp5LO51au3iE5L4MWhh7HIanXso0Lm1liMuFLpGlzEHVBZOghFetdVBbae
+         tsqgnYRF7tyHv7FnKZeTEP7dS+u+ZpR11rL7AOj9py0fno9GCMRbmfzpJjl26j+d8S0A
+         AHAsz4aFRTSVMMfWMFdJd2FGhQqxAurDxGC1G6cssnV4lfmuE5rnHclBVuvwCNOn9RAc
+         OlgBBj+oqcnQl6Dba9hZ0KYicjXoUZJrx4MNHpscXnvhwYW0Gr/fhAsi6xjs+r1zm5VF
+         cJqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VwLUP9vrGKw8YyQ1DhcU0JCM9Cq8gja//jEtDs3Cb2M=;
-        b=i5rYJlJ3aCBR/z5rymZvhDOacdB0mM6n8mDiBcEqm/i5tSoY6DAUu/CPhXtAdMGJNi
-         tvfgl4xumk7MMXG1P4p9Nir5Fbs1+bmfTsI2c/r1Jr/dXrM+9FA7YA4k0K7xddUvhtqF
-         c0io69fmGtQMvNvLBUvD33SsjT54IgbuAcEZbCCs5HkXIjr64REp+cfJphdZBn4cPNZ1
-         7dVTCozTsaMw1u8FgnEs2jSldW+ANV78ZGuxELyY49fPbYJHNM5SsiH+SNhjs7g0hIKA
-         y0BaEuUivm6itlpMgF4+trleuZ28EviBdBa69+dzL3Ai7xgkSzMBQhvl4rqOtKtDhQlu
-         LNXw==
-X-Gm-Message-State: AOAM533JDcw9bXPi9Zqu/VPiJ9mjPfbKPcf+hAhHOyMNbu4dIUMfaQBa
-        5pi/2Agmqp41FbnwXPcCX3eofEPwqTP/6A==
-X-Google-Smtp-Source: ABdhPJw2LdBP6B4FtI4CPoQCXR30PwYPY5VJ3hJI6FiTRLoY1//V8SJuNSw9BNROVKZcqrmA+sF5+Q==
-X-Received: by 2002:a37:8407:: with SMTP id g7mr23060523qkd.123.1629749696672;
-        Mon, 23 Aug 2021 13:14:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=D+2jZRy7/aZMd3WdFd2lIGfMuqdFaSIxMjPxzmvi5UE=;
+        b=Ys9CwHAbgrsn4aZHfguABGmQmoboCzg5bzfZCMOXVPFIok89yKVceLj3zaN2re8xWb
+         pN2QEvvzRVLB86Cb13ztX/EdJoHiLXab64pi+XIA4jdI3/jF3j71hS9099OmQD6Op7z1
+         vkRWLuqy5InfIyQZVHSbLyfZk3qep1db4NxowxOk0izI0qyZl8E8TxqTJQxjybYhFJ4f
+         2YQUz29r71qrWQfrO9wLSqI+Ny0vOGf3bV2v1XCR8w+TVWIgqCiedK+9u4Kt8liFz3EM
+         +7VXmWYCCJa7yHB7laLfQLey5dg1ygWAcHTJ+gBzQS23itAdx8Mp9NouQQATJRz1V1xr
+         ABoQ==
+X-Gm-Message-State: AOAM530ibFfEVBfGDxq5HYkOZXnT/gfDbsSQi/BwUrFkBIq8WdwPxJWy
+        Fx6dPZ8mpzq1lPZCBaRMBFM0H3/AiFMnmg==
+X-Google-Smtp-Source: ABdhPJxivbI6ciYjpKM/7x6WIUuwRD7BFrlTboss++D+U33Qo13yY/fv7tGaeHzbUeDi0VYKEdfo2g==
+X-Received: by 2002:a37:84c3:: with SMTP id g186mr22225847qkd.276.1629749698214;
+        Mon, 23 Aug 2021 13:14:58 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j127sm9205492qkf.20.2021.08.23.13.14.56
+        by smtp.gmail.com with ESMTPSA id h24sm1548374qtp.63.2021.08.23.13.14.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 13:14:56 -0700 (PDT)
+        Mon, 23 Aug 2021 13:14:57 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 00/10] btrfs-progs: mkfs fixes and prep work for extent tree v2
-Date:   Mon, 23 Aug 2021 16:14:45 -0400
-Message-Id: <cover.1629749291.git.josef@toxicpanda.com>
+Subject: [PATCH v2 01/10] btrfs-progs: mkfs: use an associative array for init blocks
+Date:   Mon, 23 Aug 2021 16:14:46 -0400
+Message-Id: <c3a3598c387f9a7637f3549527f23f0eec7df3e5.1629749291.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1629749291.git.josef@toxicpanda.com>
+References: <cover.1629749291.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-v1->v2:
-- Rebase onto devel+block group used patches.
-- Dropped MKFS_SUPER_BLOCK as suggested by Qu.
-- Make sure to recow the free space root now that we're generating it at
-  make_btrfs() time.
-- Rewored the titles to include the target area.
-- Dropped "btrfs-progs: allocate blocks from the start of the temp system chunk"
-  as it is no longer needed with the MKFS_SUPER_BLOCK dropping.
-- Add a patch to make sure ->ref_cows and ->track_dirty is set properly on roots
-  if we read roots directly.
+Extent tree v2 will not create an extent tree or csum tree initially,
+and it will create a block group tree.  To handle this we want to rework
+the initial mkfs step to take an array of the blocks we want to create
+and use the array to keep track of which blocks we need to create.
 
---- Original email ---
-Hello,
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ mkfs/common.c | 53 ++++++++++++++++++++++++++++++++-------------------
+ mkfs/common.h | 10 ++++++++++
+ 2 files changed, 43 insertions(+), 20 deletions(-)
 
-In order to reduce the amount of pain the reviewers have to endure I'm going to
-be sending any prepatory patches separately from the actual feature work.
-
-To that end this is the first batch of preparatory patches.  These are to make
-working with mkfs a lot easier for the changes I'm making.  These are all fixes
-or enhancements that can apply currently.  The only thing that is extent tree v2
-specific is the last patch, which adds the incompat flag.
-
-I've added the patch for the incompat flag because I will have other preparatory
-patches that add helpers that essentially do
-
-if (!btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
-	/* Do the old thing. */
-
-and then have patches after that add the extent tree v2 magic.  I think this
-will make it easier to break up the work, but if we're not comfortable reserving
-the bit then I'm fine with dropping that last patch.  It will just mean future
-prep work will have to come along with the feature enablement patches.
-
-I've tested this with make test to validate I didn't break anything.  Thanks,
-
-Josef
-
-Josef Bacik (10):
-  btrfs-progs: mkfs: use an associative array for init blocks
-  btrfs-progs: mkfs: get rid of MKFS_SUPER_BLOCK
-  btrfs-progs: mkfs: use blocks_nr to determine the super used bytes
-  btrfs-progs: mkfs: set nritems based on root items written
-  btrfs-progs: mkfs: add helper for writing empty tree nodes
-  btrfs-progs: make sure track_dirty and ref_cows is set properly
-  btrfs-progs: mkfs: add the block group item in make_btrfs()
-  btrfs-progs: add add_block_group_free_space helper
-  btrfs-progs: mkfs: generate free space tree at make_btrfs() time
-  btrfs-progs: add the incompat flag for extent tree v2
-
- kernel-shared/ctree.h           |   1 +
- kernel-shared/disk-io.c         |   5 +-
- kernel-shared/extent-tree.c     |   2 +
- kernel-shared/free-space-tree.c |  26 ++++
- kernel-shared/free-space-tree.h |   2 +
- mkfs/common.c                   | 212 ++++++++++++++++++++++++--------
- mkfs/common.h                   |  19 ++-
- mkfs/main.c                     |  24 ++--
- 8 files changed, 224 insertions(+), 67 deletions(-)
-
+diff --git a/mkfs/common.c b/mkfs/common.c
+index 2c041224..35ee4bff 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -31,16 +31,18 @@
+ #include "mkfs/common.h"
+ 
+ static u64 reference_root_table[] = {
+-	[1] =	BTRFS_ROOT_TREE_OBJECTID,
+-	[2] =	BTRFS_EXTENT_TREE_OBJECTID,
+-	[3] =	BTRFS_CHUNK_TREE_OBJECTID,
+-	[4] =	BTRFS_DEV_TREE_OBJECTID,
+-	[5] =	BTRFS_FS_TREE_OBJECTID,
+-	[6] =	BTRFS_CSUM_TREE_OBJECTID,
++	[MKFS_ROOT_TREE]	=	BTRFS_ROOT_TREE_OBJECTID,
++	[MKFS_EXTENT_TREE]	=	BTRFS_EXTENT_TREE_OBJECTID,
++	[MKFS_CHUNK_TREE]	=	BTRFS_CHUNK_TREE_OBJECTID,
++	[MKFS_DEV_TREE]		=	BTRFS_DEV_TREE_OBJECTID,
++	[MKFS_FS_TREE]		=	BTRFS_FS_TREE_OBJECTID,
++	[MKFS_CSUM_TREE]	=	BTRFS_CSUM_TREE_OBJECTID,
+ };
+ 
+ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+-			struct extent_buffer *buf)
++				  struct extent_buffer *buf,
++				  const enum btrfs_mkfs_block *blocks,
++				  int blocks_nr)
+ {
+ 	struct btrfs_root_item root_item;
+ 	struct btrfs_inode_item *inode_item;
+@@ -49,6 +51,7 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+ 	u32 itemoff;
+ 	int ret = 0;
+ 	int blk;
++	int i;
+ 	u8 uuid[BTRFS_UUID_SIZE];
+ 
+ 	memset(buf->data + sizeof(struct btrfs_header), 0,
+@@ -71,7 +74,8 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+ 	btrfs_set_disk_key_offset(&disk_key, 0);
+ 	itemoff = __BTRFS_LEAF_DATA_SIZE(cfg->nodesize) - sizeof(root_item);
+ 
+-	for (blk = 0; blk < MKFS_BLOCK_COUNT; blk++) {
++	for (i = 0; i < blocks_nr; i++) {
++		blk = blocks[i];
+ 		if (blk == MKFS_SUPER_BLOCK || blk == MKFS_ROOT_TREE
+ 		    || blk == MKFS_CHUNK_TREE)
+ 			continue;
+@@ -145,10 +149,13 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	struct btrfs_chunk *chunk;
+ 	struct btrfs_dev_item *dev_item;
+ 	struct btrfs_dev_extent *dev_extent;
++	const enum btrfs_mkfs_block *blocks = extent_tree_v1_blocks;
+ 	u8 chunk_tree_uuid[BTRFS_UUID_SIZE];
+ 	u8 *ptr;
+ 	int i;
+ 	int ret;
++	int blocks_nr = ARRAY_SIZE(extent_tree_v1_blocks);
++	int blk;
+ 	u32 itemoff;
+ 	u32 nritems = 0;
+ 	u64 first_free;
+@@ -195,7 +202,10 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	uuid_generate(chunk_tree_uuid);
+ 
+ 	cfg->blocks[MKFS_SUPER_BLOCK] = BTRFS_SUPER_INFO_OFFSET;
+-	for (i = 1; i < MKFS_BLOCK_COUNT; i++) {
++	for (i = 0; i < blocks_nr; i++) {
++		blk = blocks[i];
++		if (blk == MKFS_SUPER_BLOCK)
++			continue;
+ 		cfg->blocks[i] = system_group_offset + cfg->nodesize * (i - 1);
+ 	}
+ 
+@@ -236,7 +246,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 			    btrfs_header_chunk_tree_uuid(buf),
+ 			    BTRFS_UUID_SIZE);
+ 
+-	ret = btrfs_create_tree_root(fd, cfg, buf);
++	ret = btrfs_create_tree_root(fd, cfg, buf, blocks, blocks_nr);
+ 	if (ret < 0)
+ 		goto out;
+ 
+@@ -245,30 +255,33 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 		cfg->nodesize - sizeof(struct btrfs_header));
+ 	nritems = 0;
+ 	itemoff = __BTRFS_LEAF_DATA_SIZE(cfg->nodesize);
+-	for (i = 1; i < MKFS_BLOCK_COUNT; i++) {
++	for (i = 0; i < blocks_nr; i++) {
++		blk = blocks[i];
++		if (blk == MKFS_SUPER_BLOCK)
++			continue;
+ 		item_size = sizeof(struct btrfs_extent_item);
+ 		if (!skinny_metadata)
+ 			item_size += sizeof(struct btrfs_tree_block_info);
+ 
+-		if (cfg->blocks[i] < first_free) {
++		if (cfg->blocks[blk] < first_free) {
+ 			error("block[%d] below first free: %llu < %llu",
+-					i, (unsigned long long)cfg->blocks[i],
++					i, (unsigned long long)cfg->blocks[blk],
+ 					(unsigned long long)first_free);
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+-		if (cfg->blocks[i] < cfg->blocks[i - 1]) {
++		if (cfg->blocks[blk] < cfg->blocks[blocks[i - 1]]) {
+ 			error("blocks %d and %d in reverse order: %llu < %llu",
+-				i, i - 1,
+-				(unsigned long long)cfg->blocks[i],
+-				(unsigned long long)cfg->blocks[i - 1]);
++				blk, blocks[i - 1],
++				(unsigned long long)cfg->blocks[blk],
++				(unsigned long long)cfg->blocks[blocks[i - 1]]);
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
+ 		/* create extent item */
+ 		itemoff -= item_size;
+-		btrfs_set_disk_key_objectid(&disk_key, cfg->blocks[i]);
++		btrfs_set_disk_key_objectid(&disk_key, cfg->blocks[blk]);
+ 		if (skinny_metadata) {
+ 			btrfs_set_disk_key_type(&disk_key,
+ 						BTRFS_METADATA_ITEM_KEY);
+@@ -292,8 +305,8 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 		nritems++;
+ 
+ 		/* create extent ref */
+-		ref_root = reference_root_table[i];
+-		btrfs_set_disk_key_objectid(&disk_key, cfg->blocks[i]);
++		ref_root = reference_root_table[blk];
++		btrfs_set_disk_key_objectid(&disk_key, cfg->blocks[blk]);
+ 		btrfs_set_disk_key_offset(&disk_key, ref_root);
+ 		btrfs_set_disk_key_type(&disk_key, BTRFS_TREE_BLOCK_REF_KEY);
+ 		btrfs_set_item_key(buf, &disk_key, nritems);
+diff --git a/mkfs/common.h b/mkfs/common.h
+index ea87c3ca..378da6bd 100644
+--- a/mkfs/common.h
++++ b/mkfs/common.h
+@@ -55,6 +55,16 @@ enum btrfs_mkfs_block {
+ 	MKFS_BLOCK_COUNT
+ };
+ 
++static const enum btrfs_mkfs_block extent_tree_v1_blocks[] = {
++	MKFS_SUPER_BLOCK,
++	MKFS_ROOT_TREE,
++	MKFS_EXTENT_TREE,
++	MKFS_CHUNK_TREE,
++	MKFS_DEV_TREE,
++	MKFS_FS_TREE,
++	MKFS_CSUM_TREE,
++};
++
+ struct btrfs_mkfs_config {
+ 	/* Label of the new filesystem */
+ 	const char *label;
 -- 
 2.26.3
 
