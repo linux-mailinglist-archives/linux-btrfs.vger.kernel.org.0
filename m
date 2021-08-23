@@ -2,168 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F08E3F53C2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7099A3F53D6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhHWXrt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 19:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        id S233333AbhHWXw5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 19:52:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbhHWXrs (ORCPT
+        with ESMTP id S233355AbhHWXwz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:47:48 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CE7C061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 16:47:05 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id f22so11511981qkm.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 16:47:05 -0700 (PDT)
+        Mon, 23 Aug 2021 19:52:55 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5A2C061575
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 16:52:11 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so567781pjb.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 16:52:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=0pqipm8sPf8xPyv0vFDUKXCZDKjXgevKwBMboEtmI/k=;
-        b=HbXnMVVoSbGsxIRqsvcjcN3wel3QBtmo/ZBj6t8OKhSRVhGT8SQovQ1jlKeNEPuvdS
-         STYxxE+kKcP8UYoUREBBqdeE2e9ADuzYoGBlnDHr3YNwl97JClEvcldxEfYg+m7Le6u6
-         A+Qzpx/krW36+67CKLZHRN3q8Ertj2OW/dRdcbiUVkmwSuGUMphm5BTTn1Ebh48Owwrh
-         +PjJLfN/Ow3EJbu2pzLurUQ3bAx+QqQ110gIU6Kl8rCC/xZBESbXh2vQW0+zmt2Ebe6H
-         C6RnIOcAVWglP1pB8r6YdPkIDhZuD1MLdzNPJacwXkX5gyzIQjsH0ewqSrpaAmf9gLgV
-         9ZsQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=W4ssqRQDcvGYyotlGQXJ7FPsnctHnDcWnfipF58GxTU=;
+        b=jC2eZ2lp/L2QHzEG7+6He0zLQnouTP6MM2HdVm+Vb4C+v81HmhkOFAliogd2DAPQy6
+         hZx2r8ASRv/Rjccwawu+D86IsjUpYKWirhdGxrgVqQ2xOsiG/TAQUIcyalUGpv5AwqrH
+         GNvcWZ5E6l3zbCmZIuLsdwpUr0OQknL/SQEzQaJArOgdly7uYLebXhxkXflquyuk+r5a
+         uUar8NcnY/hAYXu8OOA6FKA0NLj9xMbN4YOcEHPUz20NR8/cDwdAWldcM8QgfIBBM2Nt
+         hXAgwuRnvaIK0LEgPnvAufj7panncLoWXGzRzor8cRq+wwyBYTsXBEhTIXB0OvI5R562
+         Qjcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0pqipm8sPf8xPyv0vFDUKXCZDKjXgevKwBMboEtmI/k=;
-        b=jNH1MfrDNqsNxL91ydB1cysv/ImvxaPdB2oqNPwTSe50P3w2ljHgfzPGqTr6Qusqap
-         SduM4BD35AZbbTQqayPPNvky/0Z1c+EOCULS2/pjfL4zyaiqRx7pZZQ1Y+sDyE0yO74X
-         VMzbyxODur5rVMbZA9wtZPpyrc9VTzUGTY0IZvGsHQrI9aBPWGIHNYMjKNC2Zfi9B24p
-         ErQSKrp4aaXvvoa7K5uy7pO2XWmOUFr+VUGaomIYIcdXY6bMtih934+j4yS5UTfAzRdV
-         eVhfKOZXqjZadGRojIa2i1P8UQXZyLr5R7xUAPrg7rq/8m4yC3JqE8kOlJYpLULwxmIv
-         zy1w==
-X-Gm-Message-State: AOAM5317m7+9BWu/m7ZAUK8ErX2VCaJZCLUJc3axLA1zZJgakWBoP7Y3
-        JOuDTPunwT/qA4n9oeswqHz77w==
-X-Google-Smtp-Source: ABdhPJyKIHtsxDB5/Q6mdmIKxQBimbgd2C+BUKxbTAg22rHPCkgNt+7T0MEIfIHynbiaGlLqvPwsaA==
-X-Received: by 2002:a37:81c2:: with SMTP id c185mr23851926qkd.446.1629762424621;
-        Mon, 23 Aug 2021 16:47:04 -0700 (PDT)
-Received: from localhost.localdomain (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id u6sm9497903qkp.49.2021.08.23.16.47.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 16:47:04 -0700 (PDT)
-Subject: Re: [PATCH 6/9] btrfs-progs: add the block group item in make_btrfs()
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1629486429.git.josef@toxicpanda.com>
- <d433af292d5e99ff194bc6362133e64704ecd006.1629486429.git.josef@toxicpanda.com>
- <72de3cea-aee0-a7e4-d585-bf9ea749e53b@gmx.com>
- <080b9285-9af0-0f51-4b3e-e9f357004920@toxicpanda.com>
- <f1c7b1c0-04cb-48ad-c728-5fc5429d7001@gmx.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <66c5ecee-9f4f-0980-18d2-f1053952ee99@toxicpanda.com>
-Date:   Mon, 23 Aug 2021 19:47:03 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=W4ssqRQDcvGYyotlGQXJ7FPsnctHnDcWnfipF58GxTU=;
+        b=ZiojcxfWd4b5acE3UcCDnikVXwRlFBH+vJhv7H3DUpASPO3SJDThxcIHm85swOipdp
+         JzVTRzJ8W01CfdXFEUtyT6M6F9Ox+axK5V8gtkC+CZbeHvea1dMxRGDjwzdU7DNNLHLq
+         nsRAbDgKndElAdYw9hppAojdOBlpo7ESkGPZ4fpskfxguHq2k6KF2waux4dJBiFK7GJ7
+         aXLbjV+LeVcsE6OsYcPEwLlj2MTzAQaZSD+4Fg7AkG0xzg61HmXb6AEvVM4NguybkTqJ
+         f9F0WtDw0U2iZJWKqlxFoko1bfS47RYDFIdWU7Qtzdl6I6y3q0CgMPp7LKGu8oZIgp7e
+         aclQ==
+X-Gm-Message-State: AOAM5300DXrwJcNlvKTOe/Ct6WpI1Y+iDE8rNikxTw7wXEgD8ETuXFHa
+        rew+sTiQ5xH4GCBZcgZ76oE=
+X-Google-Smtp-Source: ABdhPJxTlUjeh8r12IOAA+ViktFDRyEySb2usQYLm+AAFJRTSO5F8/j9cAEmN++WFsyNcVObVZrTXA==
+X-Received: by 2002:a17:902:fe81:b0:133:851e:5923 with SMTP id x1-20020a170902fe8100b00133851e5923mr8995892plm.25.1629762731293;
+        Mon, 23 Aug 2021 16:52:11 -0700 (PDT)
+Received: from realwakka ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id z4sm302277pjl.53.2021.08.23.16.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 16:52:11 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 23:51:34 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.cz>,
+        Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH v2] btrfs: reflink: Initialize return value in
+ btrfs_extent_same()
+Message-ID: <20210823235134.GA45534@realwakka>
+References: <20210820004100.35823-1-realwakka@gmail.com>
+ <CAL3q7H5UvRXk7TLQOt-bnkN4Tca-v7c6JBW6vz90KEaYJuMp1g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f1c7b1c0-04cb-48ad-c728-5fc5429d7001@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H5UvRXk7TLQOt-bnkN4Tca-v7c6JBW6vz90KEaYJuMp1g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/23/21 7:37 PM, Qu Wenruo wrote:
+On Mon, Aug 23, 2021 at 10:44:08AM +0100, Filipe Manana wrote:
+> On Fri, Aug 20, 2021 at 1:42 AM Sidong Yang <realwakka@gmail.com> wrote:
+> >
+> > btrfs_extent_same() cannot be called with zero length. This patch add
+> > code that initialize ret as -EINVAL to make it safe.
 > 
-> 
-> On 2021/8/24 上午4:04, Josef Bacik wrote:
->> On 8/23/21 5:00 AM, Qu Wenruo wrote:
->>>
->>>
->>> On 2021/8/21 上午3:11, Josef Bacik wrote:
->>>> Currently we build a bare-bones file system in make_btrfs(), and 
->>>> then we
->>>> load it up and fill in the rest of the file system after the fact.  One
->>>> thing we omit in make_btrfs() is the block group item for the temporary
->>>> system chunk we allocate, because we just add it after we've opened the
->>>> file system.
->>>>
->>>> However I want to be able to generate the free space tree at
->>>> make_btrfs() time, because extent tree v2 will not have an extent tree
->>>> that has every block allocated in the system.  In order to do this I
->>>> need to make sure that the free space tree entries are added on block
->>>> group creation, which is annoying if we have to add this chunk after
->>>> I've created a free space tree.
->>>>
->>>> So make future work simpler by simply adding our block group item at
->>>> make_btrfs() time, this way I can do the right things with the free
->>>> space tree in the generic make block group code without needing a
->>>> special case for our temporary system chunk.
->>>>
->>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->>>> ---
->>>>   mkfs/common.c | 31 +++++++++++++++++++++++++++++++
->>>>   mkfs/main.c   |  9 ++-------
->>>>   2 files changed, 33 insertions(+), 7 deletions(-)
->>>>
->>>> diff --git a/mkfs/common.c b/mkfs/common.c
->>>> index 9263965e..cba97687 100644
->>>> --- a/mkfs/common.c
->>>> +++ b/mkfs/common.c
->>>> @@ -190,6 +190,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config
->>>> *cfg)
->>>>       u64 num_bytes;
->>>>       u64 system_group_offset = BTRFS_BLOCK_RESERVED_1M_FOR_SUPER;
->>>>       u64 system_group_size = BTRFS_MKFS_SYSTEM_GROUP_SIZE;
->>>> +    bool add_block_group = true;
->>>>
->>>>       if ((cfg->features & BTRFS_FEATURE_INCOMPAT_ZONED)) {
->>>>           system_group_offset = cfg->zone_size * BTRFS_NR_SB_LOG_ZONES;
->>>> @@ -283,6 +284,36 @@ int make_btrfs(int fd, struct btrfs_mkfs_config
->>>> *cfg)
->>>>           if (blk == MKFS_SUPER_BLOCK)
->>>>               continue;
->>>>
->>>> +        /* Add the block group item for our temporary chunk. */
->>>> +        if (cfg->blocks[blk] > system_group_offset &&
->>>> +            add_block_group) {
->>>
->>> This makes the block group item always be the first item.
->>>
->>> But for skinny metadata, METADATA_ITEM is smaller than BLOCK_GROUP_ITEM,
->>> meaning it should be before BLOCK_GROUP_ITEM.
->>>
->>> Won't this cause the extent tree has a bad key order?
->>>
->>
->> No because it's based on the actual bytenr.  We'll insert the extent
->> item entry first, and then move to the next block and if it's past the
->> first block we add the block group item, and then the actual extent
->> item.  So it goes
->>
->> first block X gets extent item inserted
->> X+1 > X, insert block group item
->> insert X+1 extent item.
->>
-> 
-> But then what if we go non-skinny metadata?
-> 
-> Then block group item is always before any extent item.
-> 
+> I suppose the motivation of the patch is to fix a warning from smatch,
+> or other similar tools, about 'ret' not being initialized when olen is
+> 0.
 
-         item 0 key (1048576 METADATA_ITEM 0) itemoff 16259 itemsize 24
-                 refs 1 gen 1 flags TREE_BLOCK
-                 tree block skinny level 0
-         item 1 key (1048576 TREE_BLOCK_REF 1) itemoff 16259 itemsize 0
-                 tree block backref
-         item 2 key (1048576 BLOCK_GROUP_ITEM 4194304) itemoff 16235 
-itemsize 24
-                 block group used 98304 chunk_objectid 256 flags SYSTEM
-         item 3 key (1064960 METADATA_ITEM 0) itemoff 16211 itemsize 24
-                 refs 1 gen 1 flags TREE_BLOCK
-                 tree block skinny level 0
+Yes, Actually I used smatch you said.
 
+> Initializing 'ret' to some value surely makes the warning go away,
+> even though it's not possible for olen to be 0 at btrfs_extent_same(),
+> as that
+> is filtered up in the call chain.
+> 
+> However setting to -EINVAL by default is confusing and counter
+> intuitive because dedupe operations are supposed to return 0 (success)
+> for a 0 length range.
 
-This is what it looks like.  We're basing it off of the key.objectid. 
-If the key.objectid's match, which they will, the block group will 
-always be after it all.  It's doing the right thing.  Thanks,
+Yeah, I think it depends on btrfs_extent_same()'s concept. It does
+nothing when 0 length. It's okay if we consider it's normal operation
+and it seems natural.
 
-Josef
+>
+> So 'ret' should be initialized to 0 to avoid any confusion.
+
+Agree. I want to know other people's thoughts.
+
+Thanks,
+Sidong
+ 
+> Thanks.
+> 
+> >
+> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> > ---
+> > v2:
+> >  - Removed assert and added initializing ret
+> > ---
+> >  fs/btrfs/reflink.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+> > index 9b0814318e72..864f42198c5c 100644
+> > --- a/fs/btrfs/reflink.c
+> > +++ b/fs/btrfs/reflink.c
+> > @@ -653,6 +653,7 @@ static int btrfs_extent_same(struct inode *src, u64 loff, u64 olen,
+> >         u64 i, tail_len, chunk_count;
+> >         struct btrfs_root *root_dst = BTRFS_I(dst)->root;
+> >
+> > +       ret = -EINVAL;
+> >         spin_lock(&root_dst->root_item_lock);
+> >         if (root_dst->send_in_progress) {
+> >                 btrfs_warn_rl(root_dst->fs_info,
+> > --
+> > 2.25.1
+> >
+> 
+> 
+> -- 
+> Filipe David Manana,
+> 
+> “Whether you think you can, or you think you can't — you're right.”
