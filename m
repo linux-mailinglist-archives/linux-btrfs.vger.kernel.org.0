@@ -2,181 +2,422 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9713F438C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 05:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9693A3F440E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 06:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhHWDEf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Aug 2021 23:04:35 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:52114 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230401AbhHWDEe (ORCPT
+        id S229913AbhHWEG4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 00:06:56 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33676 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhHWEGz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Aug 2021 23:04:34 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17MJxaIF023554;
-        Mon, 23 Aug 2021 03:03:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=ic7gCQv0w7Sb6vEdZw+sHwG8T3Lgk3slt75lPQglIUc=;
- b=wDM22H6dSK9dUYd8vQWMo70qnNckPBYVxDsWiFv3wl5Do4k5ySnPldmxJLanZ+I9DPPF
- E+M06JlPpWt0Crwaz6YbPgBZgNe+XvWalgIkZCohCDpmFxKUGyamBOgk+GsilTmdPYGl
- z4EfcVtCSU/svlio/BdnC8DIWDwZmWq2YvaBlO3/Hs3xt0AG7mDe7EvYJpNCs92Oava9
- u3P6Cykwavp8dhHWYvQoyTfa82eoKG7ti6RUNIcU1lPYmAr9G20j0e4FXHZBEJ/H1ZNK
- PNW1t3sU7qkOZlbY/32V4OZCkjmXIf7A3NmuhFpY7zciY8j7p9U8xmziZQMVCxyfoW7o 8Q== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=ic7gCQv0w7Sb6vEdZw+sHwG8T3Lgk3slt75lPQglIUc=;
- b=HX5v9IMWlpQwMTtovZ585O00StKcFqQq9r1H6LORL5AeMd1GhpmCwgnfBJTxKisOm+lN
- hSnoKCoWTiqagb3pQUxvOIh1NMRJre92FRWQ75+BO4ONoNvk8AnMLNTnqizI7utRpvgU
- jh1xmIEL8PG1oBMnhIGpr9cfW1FTGrr3zWwAHitbqsmRHisih5fP34p0yJ38JNCEsFRR
- OnaTurDPbOfbE+ZGFyA7PB9pRYtswqw5KLTTRaDWmU6PaMBus6OoGCbIkqnIIQrUTHlL
- wHowc+vgyfpSh6ytq86dQYUYtIUWj0u7YayM2/eeouuqusfrTZhTWvx8441PIuc6S5MP 0Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3akw7n88ny-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 03:03:44 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17N318mg103437;
-        Mon, 23 Aug 2021 03:03:43 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2048.outbound.protection.outlook.com [104.47.56.48])
-        by aserp3020.oracle.com with ESMTP id 3ajsa2hvu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 03:03:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GqHtan0fNTp3LY2L+HYqpzrqpLgqJQnJUgR1qh0g1QZ4FToiixu06/DwnPr4ob1Vwz8eZuiBDqcQKLVM3w0J0FwinEywEo7CE4pGOi5qjG4Sjfb+INaGXy6uNinwULuTjkdiEeJ6LPbHA4VvqK3YZnwbP9FbGIvUNoWuYV5vMgk1r08efmEgLUr+nhayfLCUjMSTTLVa52Gu5P5lw0J9JMFY8ooOSvhIavZeNeovp/2OrUvUgYneNWaA7wHM+5R4HVvFy4D7LrgWdyLlM0W3b0Hco5G3Ht40nvXPIDiLnCdT/bWEi/A+N09Wu7kdOpNdmp5N5ZFHR6AfXwOygJPtOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ic7gCQv0w7Sb6vEdZw+sHwG8T3Lgk3slt75lPQglIUc=;
- b=SHpZI6SB3opknwtL0tbMz4J+qQvNtMMkPlRD4Pd8F1wZ/Lgos0hlnkcv15uvbszc1wciM1CBXXtXUZooTJEajhJF5n+L8PWJk3Bw/YAUvUQWQ4F+F0A4PUzHOmA11fvMGdDl1TakVM0ioIldFl4F4IHQ83IkkmMriwH5R5oFw+97yPJFcYkJL+gB+MEs74SjaWAVcWSqF2wnML6a41LREycqPhYBYwgOSqCEN1bjRpVdIqzPtnufMaWsSTQ0huEk+adK1OhQLOaA0uHQt2tU2cbfpZVst7MeievGYfIZSgbh+QTk6z/xpMUM0W12o4SdpRN0yUaGUjAGK6t3tf/KdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ic7gCQv0w7Sb6vEdZw+sHwG8T3Lgk3slt75lPQglIUc=;
- b=MnfPkmmL7bhkG1Ew3U2i7AlQBWAOWpYQoZAGvpG1kpsU/c+B6/vNPM+lHbT3RilGSh/h6BGjebNSAFaneMB2xGCcF/VQPrE8fWl3Bkr50N/t4fgbz4BfanQNqVyd8kJeS6IvbjHecYi7HE2uurZXWYfjgb2bTJhLPRgIoe1rfzU=
-Authentication-Results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4016.namprd10.prod.outlook.com (2603:10b6:208:180::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.23; Mon, 23 Aug
- 2021 03:03:42 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 03:03:42 +0000
-Subject: Re: [PATCH v3 2/4] btrfs: save latest btrfs_device instead of its
- block_device in fs_devices
-To:     Su Yue <l@damenly.su>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <cover.1629458519.git.anand.jain@oracle.com>
- <61d6dafaff6a119f56782fb35b2374411585b634.1629458519.git.anand.jain@oracle.com>
- <v93yets9.fsf@damenly.su>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <658811fe-1b7f-9af5-1676-ec204e3a72c3@oracle.com>
-Date:   Mon, 23 Aug 2021 11:03:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-In-Reply-To: <v93yets9.fsf@damenly.su>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR01CA0169.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::25) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
+        Mon, 23 Aug 2021 00:06:55 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8C8A01FF64;
+        Mon, 23 Aug 2021 04:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629691572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kTJSK/nOpJTwRwH5m9/+1Ty9EFKACF4xxFZSG57m9pk=;
+        b=uArUm/LwjNAoiYoEOQIi2iANU39jkKgAMYD6Eu55QbQsguETSWvGOEw4FKL9ZJFOeqn8S8
+        0hWWLwtK+ryPTYkbSESwX0HPoMHUCEtrt5Et4y1NpI2NmvpfHvK4er8/egQdlT3qef4nAN
+        x2jOyQJ1s7yf+o9Tfm2WabUreIciHxg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629691572;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kTJSK/nOpJTwRwH5m9/+1Ty9EFKACF4xxFZSG57m9pk=;
+        b=tyfAva2kIQHJgR61qBDFokyYhj3WaRF2D1Tysn2GKcJ7+TyrnsXc0MicE/S7y1nygeGn4/
+        5mv5lFRMawc8XWAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 15BCA13A61;
+        Mon, 23 Aug 2021 04:06:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id F6O4MLAeI2F7KQAAMHmgww
+        (envelope-from <neilb@suse.de>); Mon, 23 Aug 2021 04:06:08 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2406:3003:2006:2288:db8b:d340:b999:7977] (2406:3003:2006:2288:db8b:d340:b999:7977) by SG2PR01CA0169.apcprd01.prod.exchangelabs.com (2603:1096:4:28::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 03:03:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2db702ea-f99c-4c07-4ec5-08d965e29ccf
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4016:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4016ADA38F32989A3F3C7CF7E5C49@MN2PR10MB4016.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SdAO0tdIXA8t0Cx7H7Y52w3QTm07edNJn/FKcpc9qMPOZhKmr1ZIYQsoaCaOtkAoeeOXCxGc9dFdf2RmQpoUtF4gkn3JSxcJuK13U5suFhNDePK1XC81b9/b87z9WIWy+veUQ7tlW8D5j4I5OnnhE2DGXS9R06YJPuYYNOvz0k/cecyiXPKSaPAOKK9Et1DbNvcWxplcH1hcbm0jTbSsKUBJHmDFVviPSH4nvYOI2EWIcNyxFlG3YdNQM7KQ0VU5b6Ke9kwS/xZJEXgkaKRYkJJ7ev56JUaVpv099AI6Lg/42jEZRYjwG/wIsHEccUlJ/xvxnDT95IrmfxqUByZhJvfP+K65RdsgT5YuJBvTHz8sxFdXNmHkV8/wCTdaL6wdj9ER1psPP2qN1q5+34QX12ZFxkkDfug+YvBBVrcyFot/rFC0R8ZQCjw7DUevzdiwHxtniJzmUK74fBveGF9MREWrAX2nXqFODigR29uTQSLsFhI8X4vQqPnTqky0MYYeuO91fkpNmo7YRbbhUdT3fsw92Hp9Wg7mL1xnD2qC+Eeb3xfu29+7cZl+7f05whQlhF9KXChFDJM0D6KvN+7p3MNGbOZZFCroQ8tszcjfVSw+V5wADZA2ikEkoWG14MyIvkhWHbwsq+st0RTJQbNXAZDRc+oF90fFyzVyOiUDOJzRCSkIuJzzTfVxMcTyNDR4ctCVfvfYd+ppONbHdrIVWA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(36756003)(66476007)(66556008)(6486002)(316002)(5660300002)(2616005)(44832011)(38100700002)(4326008)(31686004)(53546011)(8676002)(66946007)(86362001)(31696002)(8936002)(186003)(4744005)(6666004)(6916009)(2906002)(781001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YTRLVVlmVWFQbkxDeTcxa0N4NkZIOHp0aUZJb2NFMWFCZ0Nrd1E3SHVMTUp0?=
- =?utf-8?B?TU5WakZ0M0lDTGcwY0UyVnVhSVpjOHZzNk5aQVg5VEZXUFlYR3ZwcHZqbFRO?=
- =?utf-8?B?QWJxMWEzWGlDMHBUN1BlRzRnUVNoSHJPd1JnUmhDTG56a0YwM040UkYrTUJN?=
- =?utf-8?B?b0ZEVjRJdzluZVVpMVB4V3p6bzBEczZoUEdTMlN1RC9EbSs4QnVPTnFWeWxX?=
- =?utf-8?B?ZjVWeVZPektvazBrV2hUejNIeXRhYmJLRFlnM0lzelh3NndkQitrTUx5cm5H?=
- =?utf-8?B?eUJqeEthWkw5LzBnU045RUR1VGg2QUhwa2pYcEFKOUJJRVlXcTE1MUdtWGNG?=
- =?utf-8?B?MGV4SWFXOVpYVWt1T1lXMUVHcUFrWG5ENEdMZnNWakZvZlJURWtVS2x0OTJK?=
- =?utf-8?B?Z3JieFVXMkhTdWtYR3ZCaTc5ZmpkWnRBZzVNZGlyY3I1K1NwYUNXMVNuVkky?=
- =?utf-8?B?Q0l3V3BxRFdrREpVMXZROTlaUk95V2ozV2UzV2t5Z3dPM1UrZlEyK1FqRHJw?=
- =?utf-8?B?LzFlSnRkQkljbXBLRlAyQ3NoRUdtVjF5OUhTZmZWRWhVcWNDR2lwQ2xUK09v?=
- =?utf-8?B?cVc3S0I3RFJEcHEyOGE3SlM3ZkdmUmQxTTY4UDhEOWZaWWk5NU1lcGRKWjdU?=
- =?utf-8?B?NnRsRSs4dWVxL0czR09HbTN1b28wTS9pS2FUY2RtS3I2ZU8xWHFmRnVmeDJM?=
- =?utf-8?B?cmxUd2l3YStWN3FSQ1BUdEZTdGZYLzFSZ3hHV0l6RzdKWXFGMW45ak9TSjhp?=
- =?utf-8?B?aGl6Z3NBRkNvaEI0V09RdEk4OTh3N3ZiY2crdXQyMjc4SXNDWC85cWhaekJ3?=
- =?utf-8?B?N0ExcWxmQy95K2JPMU93andhdXdIdzNvVVlYSXBDZ2tkWlRoY3JuaUdud3U3?=
- =?utf-8?B?VFNhcUxPYmhGeHMvRmZRckcvNGo2TDA4YjhCeGNkTDg1ZDV3d1dYcUdnUThP?=
- =?utf-8?B?NjhVYkNNWFBPMnl2SXM5emVxdTlGK2cwYml0UEs5aXpKS2FLN2QvcTEySDVF?=
- =?utf-8?B?dGlqR2l2WnVIYXNEU1NSMElEZWpTYWRPcjFTSVlCK1B2MTZqL21ZeDQ3TStr?=
- =?utf-8?B?d1M2YXZlWERyM2FrUlpPWVdKM1dRRjZ0bTdPNHRTdGg2dTNZQmhvVzVVVUNI?=
- =?utf-8?B?cDBLdzFuUzdlOXcyTUkwOENkZWZtd0tBeC9lMmpmaC9PbGxUdkg3d0J3RjF3?=
- =?utf-8?B?VUlsM2VZTEM1bEIyTElJU28rQXl5YWhJWFZCeTBiZHJ6Y2V1N2JxN3JOU2xM?=
- =?utf-8?B?S3lMMTJLK0RUcGJRZWRjSDdZNFovYWNmbkxPVlh1bFNrWjdOYXU3THpNWGRp?=
- =?utf-8?B?WUtNWVhweVJIbXE3OWE2d2pta0dVSGtncGlvcE11UWJybjcwUWtDQ09CZmhT?=
- =?utf-8?B?QnZNa3RFYmdoR3JYTm9RU0lIdG0zVEFqY2NxbDE2VlJaVXc3N3A1Q1FKVWt6?=
- =?utf-8?B?VnJBQjV3b3VMWEEyUEhJMnExZGloMmVhRXBQL1pjbnF6OWNHTWhGdXg1U1ZP?=
- =?utf-8?B?dVB0Q1h3VkhPOVdaallPMHFqMERMbG04QVdBVG91NHlxUG9YbmxEajhwcUhJ?=
- =?utf-8?B?UzJGSDJ2VC9OYVBISkgvbE5raXFWL3BLSzdaL0o0Sit2MzNrZkJMejFCdDlm?=
- =?utf-8?B?Y2Y5R1RKbDlmdnJSendQaXFSeExWTGZSbGZBOE1GUGdUOXJWTzE5dnVCNHM0?=
- =?utf-8?B?bUR5Rk1oOHc1eDRzNlhvblluUk5hOEdsRmlFYUNnOWRIUGRKMG5USXJnQ3l1?=
- =?utf-8?B?aVBESHV2SXN4YXpSb0U2Qnk2SDgxNm5Ka3RtR1RWbXpIWEM0cEdyQzJWZ3Fw?=
- =?utf-8?B?Mno1VjdCRDhZSjI3WEVrM2lkUFJPV055cmdPQTd2cVhyOVdPL2NPTUcxbFlr?=
- =?utf-8?Q?pUjYT9PdcunJc?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2db702ea-f99c-4c07-4ec5-08d965e29ccf
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 03:03:42.1703
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4BsME+BlpaTDdnmhUbHbMrL1nEOU7UF42he//EyuLewjm/a2Tzp0RlEXmXyA1Wx4ncEMm8Oe2l1zxgCanJGBoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4016
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10084 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108230016
-X-Proofpoint-GUID: Cvb-T2PKKi2HCzDJ1dO38mG8FFdlvPAB
-X-Proofpoint-ORIG-GUID: Cvb-T2PKKi2HCzDJ1dO38mG8FFdlvPAB
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Chris Mason" <clm@fb.com>, "David Sterba" <dsterba@suse.com>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Josef Bacik" <josef@toxicpanda.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>
+Cc:     "Roman Mamedov" <rm@romanrm.net>,
+        "Goffredo Baroncelli" <kreijack@libero.it>,
+        "Alexander Viro" <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] BTRFS/NFSD: provide more unique inode number for btrfs export
+In-reply-to: <162906585094.1695.15815972140753474778@noble.neil.brown.name>
+References: <162742539595.32498.13687924366155737575.stgit@noble.brown>,
+ <162881913686.1695.12479588032010502384@noble.neil.brown.name>,
+ <bf49ef31-0c86-62c8-7862-719935764036@libero.it>,
+ <20210816003505.7b3e9861@natsu>,
+ <162906585094.1695.15815972140753474778@noble.neil.brown.name>
+Date:   Mon, 23 Aug 2021 14:05:54 +1000
+Message-id: <162969155423.9892.18322100025025288277@noble.neil.brown.name>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+BTRFS does not provide unique inode numbers across a filesystem.
+It only provide unique inode numbers within a subvolume and
+uses synthetic device numbers for different subvolumes to ensure
+uniqueness for device+inode.
 
-On 21/8/21 10:46 pm, Su Yue wrote:
-> 
-> On Fri 20 Aug 2021 at 19:28, Anand Jain <anand.jain@oracle.com> wrote:
-> 
->> In preparation to fix a bug in btrfs_show_devname(), save the device with
->> the largest generation in fs_info instead of just its bdev. So that
->> btrfs_show_devname() can read device's name.
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->> v2: born
->> v3: -
->>  fs/btrfs/disk-io.c   |  6 +++---
->>  fs/btrfs/extent_io.c |  2 +-
->>  fs/btrfs/inode.c     |  2 +-
->>  fs/btrfs/procfs.c    |  6 +++---
+nfsd cannot use these varying synthetic device numbers.  If nfsd were to
+synthesise different stable filesystem ids to give to the client, that
+would cause subvolumes to appear in the mount table on the client, even
+though they don't appear in the mount table on the server.  Also, NFSv3
+doesn't support changing the filesystem id without a new explicit mount
+on the client (this is partially supported in practice, but violates the
+protocol specification and has problems in some edge cases).
 
-  Oops. It got in my boilerplate codes.
-  I will fix and send v4.
+So currently, the roots of all subvolumes report the same inode number
+in the same filesystem to NFS clients and tools like 'find' notice that
+a directory has the same identity as an ancestor, and so refuse to
+enter that directory.
 
-Thanks, Anand
+This patch allows btrfs (or any filesystem) to provide a 64bit number
+that can be xored with the inode number to make the number more unique.
+Rather than the client being certain to see duplicates, with this patch
+it is possible but extremely rare.
+
+The number that btrfs provides is a swab64() version of the subvolume
+identifier.  This has most entropy in the high bits (the low bits of the
+subvolume identifer), while the inode has most entropy in the low bits.
+The result will always be unique within a subvolume, and will almost
+always be unique across the filesystem.
+
+If an upgrade of the NFS server caused all inode numbers in an exportfs
+BTRFS filesystem to appear to the client to change, the client may not
+handle this well.  The Linux client will cause any open files to become
+'stale'.  If the mount point changed inode number, the whole mount would
+become inaccessible.
+
+To avoid this, an unused byte in the filehandle (fh_auth) has been
+repurposed as "fh_options".  (The use of #defines make fh_flags a
+problematic choice).  The new behaviour of uniquifying inode number is
+only activated when this bit is set.
+
+NFSD will only set this bit in filehandles it reports if the filehandle
+of the parent (provided by the client) contains the bit, or if
+ - the filehandle for the parent is not provided or is for a different
+   export and
+ - the filehandle refers to a BTRFS filesystem.
+
+Thus if you have a BTRFS filesystem originally mounted from a server
+without this patch, the flag will never be set and the current behaviour
+will continue.  Only once you re-mount the filesystem (or the filesystem
+is re-auto-mounted) will the inode numbers change.  When that happens,
+it is likely that the filesystem st_dev number seen on the client will
+change anyway.
+
+Signed-off-by: NeilBrown <neilb@suse.de>
+---
+ fs/btrfs/inode.c                |  4 ++++
+ fs/nfsd/nfs3xdr.c               | 15 ++++++++++++++-
+ fs/nfsd/nfs4xdr.c               |  7 ++++---
+ fs/nfsd/nfsfh.c                 | 13 +++++++++++--
+ fs/nfsd/nfsfh.h                 | 22 ++++++++++++++++++++++
+ fs/nfsd/xdr3.h                  |  2 ++
+ include/linux/stat.h            | 18 ++++++++++++++++++
+ include/uapi/linux/nfsd/nfsfh.h | 18 ++++++++++++------
+ 8 files changed, 87 insertions(+), 12 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 0117d867ecf8..989fdf2032d5 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -9195,6 +9195,10 @@ static int btrfs_getattr(struct user_namespace *mnt_us=
+erns,
+ 	generic_fillattr(&init_user_ns, inode, stat);
+ 	stat->dev =3D BTRFS_I(inode)->root->anon_dev;
+=20
++	if (BTRFS_I(inode)->root->root_key.objectid !=3D BTRFS_FS_TREE_OBJECTID)
++		stat->ino_uniquifier =3D
++			swab64(BTRFS_I(inode)->root->root_key.objectid);
++
+ 	spin_lock(&BTRFS_I(inode)->lock);
+ 	delalloc_bytes =3D BTRFS_I(inode)->new_delalloc_bytes;
+ 	inode_bytes =3D inode_get_bytes(inode);
+diff --git a/fs/nfsd/nfs3xdr.c b/fs/nfsd/nfs3xdr.c
+index 0a5ebc52e6a9..19d14f11f79a 100644
+--- a/fs/nfsd/nfs3xdr.c
++++ b/fs/nfsd/nfs3xdr.c
+@@ -340,6 +340,7 @@ svcxdr_encode_fattr3(struct svc_rqst *rqstp, struct xdr_s=
+tream *xdr,
+ {
+ 	struct user_namespace *userns =3D nfsd_user_namespace(rqstp);
+ 	__be32 *p;
++	u64 ino;
+ 	u64 fsid;
+=20
+ 	p =3D xdr_reserve_space(xdr, XDR_UNIT * 21);
+@@ -377,7 +378,8 @@ svcxdr_encode_fattr3(struct svc_rqst *rqstp, struct xdr_s=
+tream *xdr,
+ 	p =3D xdr_encode_hyper(p, fsid);
+=20
+ 	/* fileid */
+-	p =3D xdr_encode_hyper(p, stat->ino);
++	ino =3D nfsd_uniquify_ino(fhp, stat);
++	p =3D xdr_encode_hyper(p, ino);
+=20
+ 	p =3D encode_nfstime3(p, &stat->atime);
+ 	p =3D encode_nfstime3(p, &stat->mtime);
+@@ -1151,6 +1153,17 @@ svcxdr_encode_entry3_common(struct nfsd3_readdirres *r=
+esp, const char *name,
+ 	if (xdr_stream_encode_item_present(xdr) < 0)
+ 		return false;
+ 	/* fileid */
++	if (!resp->dir_have_uniquifier) {
++		struct kstat stat;
++		if (fh_getattr(&resp->fh, &stat) =3D=3D nfs_ok)
++			resp->dir_ino_uniquifier =3D
++				nfsd_ino_uniquifier(&resp->fh, &stat);
++		else
++			resp->dir_ino_uniquifier =3D 0;
++		resp->dir_have_uniquifier =3D true;
++	}
++	if (resp->dir_ino_uniquifier !=3D ino)
++		ino ^=3D resp->dir_ino_uniquifier;
+ 	if (xdr_stream_encode_u64(xdr, ino) < 0)
+ 		return false;
+ 	/* name */
+diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
+index 7abeccb975b2..5ed894ceebb0 100644
+--- a/fs/nfsd/nfs4xdr.c
++++ b/fs/nfsd/nfs4xdr.c
+@@ -3114,10 +3114,11 @@ nfsd4_encode_fattr(struct xdr_stream *xdr, struct svc=
+_fh *fhp,
+ 					fhp->fh_handle.fh_size);
+ 	}
+ 	if (bmval0 & FATTR4_WORD0_FILEID) {
++		u64 ino =3D nfsd_uniquify_ino(fhp, &stat);
+ 		p =3D xdr_reserve_space(xdr, 8);
+ 		if (!p)
+ 			goto out_resource;
+-		p =3D xdr_encode_hyper(p, stat.ino);
++		p =3D xdr_encode_hyper(p, ino);
+ 	}
+ 	if (bmval0 & FATTR4_WORD0_FILES_AVAIL) {
+ 		p =3D xdr_reserve_space(xdr, 8);
+@@ -3274,7 +3275,7 @@ nfsd4_encode_fattr(struct xdr_stream *xdr, struct svc_f=
+h *fhp,
+=20
+ 		p =3D xdr_reserve_space(xdr, 8);
+ 		if (!p)
+-                	goto out_resource;
++			goto out_resource;
+ 		/*
+ 		 * Get parent's attributes if not ignoring crossmount
+ 		 * and this is the root of a cross-mounted filesystem.
+@@ -3284,7 +3285,7 @@ nfsd4_encode_fattr(struct xdr_stream *xdr, struct svc_f=
+h *fhp,
+ 			err =3D get_parent_attributes(exp, &parent_stat);
+ 			if (err)
+ 				goto out_nfserr;
+-			ino =3D parent_stat.ino;
++			ino =3D nfsd_uniquify_ino(fhp, &parent_stat);
+ 		}
+ 		p =3D xdr_encode_hyper(p, ino);
+ 	}
+diff --git a/fs/nfsd/nfsfh.c b/fs/nfsd/nfsfh.c
+index c475d2271f9c..e97ed957a379 100644
+--- a/fs/nfsd/nfsfh.c
++++ b/fs/nfsd/nfsfh.c
+@@ -172,7 +172,7 @@ static __be32 nfsd_set_fh_dentry(struct svc_rqst *rqstp, =
+struct svc_fh *fhp)
+=20
+ 		if (--data_left < 0)
+ 			return error;
+-		if (fh->fh_auth_type !=3D 0)
++		if ((fh->fh_options & ~NFSD_FH_OPTION_ALL) !=3D 0)
+ 			return error;
+ 		len =3D key_len(fh->fh_fsid_type) / 4;
+ 		if (len =3D=3D 0)
+@@ -569,6 +569,7 @@ fh_compose(struct svc_fh *fhp, struct svc_export *exp, st=
+ruct dentry *dentry,
+=20
+ 	struct inode * inode =3D d_inode(dentry);
+ 	dev_t ex_dev =3D exp_sb(exp)->s_dev;
++	u8 options =3D 0;
+=20
+ 	dprintk("nfsd: fh_compose(exp %02x:%02x/%ld %pd2, ino=3D%ld)\n",
+ 		MAJOR(ex_dev), MINOR(ex_dev),
+@@ -585,6 +586,14 @@ fh_compose(struct svc_fh *fhp, struct svc_export *exp, s=
+truct dentry *dentry,
+ 	/* If we have a ref_fh, then copy the fh_no_wcc setting from it. */
+ 	fhp->fh_no_wcc =3D ref_fh ? ref_fh->fh_no_wcc : false;
+=20
++	if (ref_fh && ref_fh->fh_export =3D=3D exp) {
++		options =3D ref_fh->fh_handle.fh_options;
++	} else {
++		/* Set options as needed */
++		if (exp->ex_path.mnt->mnt_sb->s_magic =3D=3D BTRFS_SUPER_MAGIC)
++			options |=3D NFSD_FH_OPTION_INO_UNIQUIFY;
++	}
++
+ 	if (ref_fh =3D=3D fhp)
+ 		fh_put(ref_fh);
+=20
+@@ -615,7 +624,7 @@ fh_compose(struct svc_fh *fhp, struct svc_export *exp, st=
+ruct dentry *dentry,
+ 	} else {
+ 		fhp->fh_handle.fh_size =3D
+ 			key_len(fhp->fh_handle.fh_fsid_type) + 4;
+-		fhp->fh_handle.fh_auth_type =3D 0;
++		fhp->fh_handle.fh_options =3D options;
+=20
+ 		mk_fsid(fhp->fh_handle.fh_fsid_type,
+ 			fhp->fh_handle.fh_fsid,
+diff --git a/fs/nfsd/nfsfh.h b/fs/nfsd/nfsfh.h
+index 6106697adc04..1144a98c2951 100644
+--- a/fs/nfsd/nfsfh.h
++++ b/fs/nfsd/nfsfh.h
+@@ -84,6 +84,28 @@ enum fsid_source {
+ };
+ extern enum fsid_source fsid_source(const struct svc_fh *fhp);
+=20
++enum nfsd_fh_options {
++	NFSD_FH_OPTION_INO_UNIQUIFY =3D 1,	/* BTRFS only */
++
++	NFSD_FH_OPTION_ALL =3D 1
++};
++
++static inline u64 nfsd_ino_uniquifier(const struct svc_fh *fhp,
++				      const struct kstat *stat)
++{
++	if (fhp->fh_handle.fh_options & NFSD_FH_OPTION_INO_UNIQUIFY)
++		return stat->ino_uniquifier;
++	return 0;
++}
++
++static inline u64 nfsd_uniquify_ino(const struct svc_fh *fhp,
++				    const struct kstat *stat)
++{
++	u64 u =3D nfsd_ino_uniquifier(fhp, stat);
++	if (u !=3D stat->ino)
++		return stat->ino ^ u;
++	return stat->ino;
++}
+=20
+ /*
+  * This might look a little large to "inline" but in all calls except
+diff --git a/fs/nfsd/xdr3.h b/fs/nfsd/xdr3.h
+index 933008382bbe..d9b6c8314bbb 100644
+--- a/fs/nfsd/xdr3.h
++++ b/fs/nfsd/xdr3.h
+@@ -179,6 +179,8 @@ struct nfsd3_readdirres {
+ 	struct xdr_buf		dirlist;
+ 	struct svc_fh		scratch;
+ 	struct readdir_cd	common;
++	u64			dir_ino_uniquifier;
++	bool			dir_have_uniquifier;
+ 	unsigned int		cookie_offset;
+ 	struct svc_rqst *	rqstp;
+=20
+diff --git a/include/linux/stat.h b/include/linux/stat.h
+index fff27e603814..0f3f74d302f8 100644
+--- a/include/linux/stat.h
++++ b/include/linux/stat.h
+@@ -46,6 +46,24 @@ struct kstat {
+ 	struct timespec64 btime;			/* File creation time */
+ 	u64		blocks;
+ 	u64		mnt_id;
++	/*
++	 * BTRFS does not provide unique inode numbers within a filesystem,
++	 * depending on a synthetic 'dev' to provide uniqueness.
++	 * NFSd cannot make use of this 'dev' number so clients often see
++	 * duplicate inode numbers.
++	 * For BTRFS, 'ino' is unlikely to use the high bits until the filesystem
++	 * has created a great many inodes.
++	 * It puts another number in ino_uniquifier which:
++	 * - has most entropy in the high bits
++	 * - is different precisely when 'dev' is different
++	 * - is stable across unmount/remount
++	 * NFSd can xor this with 'ino' to get a substantially more unique
++	 * number for reporting to the client.
++	 * The ino_uniquifier for a directory can reasonably be applied
++	 * to inode numbers reported by the readdir filldir callback.
++	 * It is NOT currently exported to user-space.
++	 */
++	u64		ino_uniquifier;
+ };
+=20
+ #endif
+diff --git a/include/uapi/linux/nfsd/nfsfh.h b/include/uapi/linux/nfsd/nfsfh.h
+index 427294dd56a1..59311df4b476 100644
+--- a/include/uapi/linux/nfsd/nfsfh.h
++++ b/include/uapi/linux/nfsd/nfsfh.h
+@@ -38,11 +38,17 @@ struct nfs_fhbase_old {
+  * The file handle starts with a sequence of four-byte words.
+  * The first word contains a version number (1) and three descriptor bytes
+  * that tell how the remaining 3 variable length fields should be handled.
+- * These three bytes are auth_type, fsid_type and fileid_type.
++ * These three bytes are options, fsid_type and fileid_type.
+  *
+  * All four-byte values are in host-byte-order.
+  *
+- * The auth_type field is deprecated and must be set to 0.
++ * The options field (previously auth_type) can be used when nfsd behaviour
++ * needs to change in a non-compatible way, usually for some specific
++ * filesystem.  Options should only be set in filehandles for filesystems wh=
+ich
++ * need them.
++ * Current values:
++ *   1  -  BTRFS only.  Cause stat->ino_uniquifier to be used to improve ino=
+de
++ *         number uniqueness.
+  *
+  * The fsid_type identifies how the filesystem (or export point) is
+  *    encoded.
+@@ -67,7 +73,7 @@ struct nfs_fhbase_new {
+ 	union {
+ 		struct {
+ 			__u8		fb_version_aux;	/* =3D=3D 1, even =3D> nfs_fhbase_old */
+-			__u8		fb_auth_type_aux;
++			__u8		fb_options_aux;
+ 			__u8		fb_fsid_type_aux;
+ 			__u8		fb_fileid_type_aux;
+ 			__u32		fb_auth[1];
+@@ -76,7 +82,7 @@ struct nfs_fhbase_new {
+ 		};
+ 		struct {
+ 			__u8		fb_version;	/* =3D=3D 1, even =3D> nfs_fhbase_old */
+-			__u8		fb_auth_type;
++			__u8		fb_options;
+ 			__u8		fb_fsid_type;
+ 			__u8		fb_fileid_type;
+ 			__u32		fb_auth_flex[]; /* flexible-array member */
+@@ -106,11 +112,11 @@ struct knfsd_fh {
+=20
+ #define	fh_version		fh_base.fh_new.fb_version
+ #define	fh_fsid_type		fh_base.fh_new.fb_fsid_type
+-#define	fh_auth_type		fh_base.fh_new.fb_auth_type
++#define	fh_options		fh_base.fh_new.fb_options
+ #define	fh_fileid_type		fh_base.fh_new.fb_fileid_type
+ #define	fh_fsid			fh_base.fh_new.fb_auth_flex
+=20
+ /* Do not use, provided for userspace compatiblity. */
+-#define	fh_auth			fh_base.fh_new.fb_auth
++#define	fh_auth			fh_base.fh_new.fb_options
+=20
+ #endif /* _UAPI_LINUX_NFSD_FH_H */
+--=20
+2.32.0
+
