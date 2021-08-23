@@ -2,165 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277233F5275
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 22:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C243F5391
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhHWUw5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 16:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbhHWUw4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:52:56 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C32C061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 13:52:13 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so852488pjt.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 13:52:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=newfietech-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding:thread-index:content-language;
-        bh=cN4G448tw+MnnMUKER4HBXxxF05LVmiACEwf5tZflUA=;
-        b=UG31eToLqq/9lKNk0xS708q8HBbfyheohIrzxqYgFKKLFBrmoOqx24dUtGIZMErEFc
-         tQA4QwdOjDoP8chYp63KLz/sH9U6D+HEqmQRH8S8LCWUk/LXk0dnfgCsAV5pTmpW0gZR
-         M+S6fbrrY9myLJuVDix1upKIftwnPvfo2F1WqAE8AIih/NmXwS2tvq3cqYzryrgLIzpn
-         YZWh735BHIKuxMC8V92hKM/19vmw/Nz/susWI8EqGgFqatUztLr73T4lWTquhL79AnpG
-         3xWCzmsTWcS18qnEjdaov94iXpD7Kd0I4sbx349bbzZimikmgftqZcb/INA0FhUDKE9P
-         MV6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding:thread-index:content-language;
-        bh=cN4G448tw+MnnMUKER4HBXxxF05LVmiACEwf5tZflUA=;
-        b=uRtkqxzocpmoWbWqhChFa9hajRR+dNOUIAXdh+igwFYZJDQH0RcTxLeyS2RB+fJOVC
-         JyHOQkIak3pLfAekyHo86eFCtME+35TwBhTWJmqQ80JVh7SXxJj9Voj3CK0iOE+uFcXI
-         iljFMCZyK+AUY0loZJbdC68mKQ8iMo4cclT/z6A7mU8MAV5qP3TmuRIFQOJ1FDeQI4na
-         pDsqWB3OMG1x0B+jpaP1mnBief8Kd3/9m+N5OVDzCBqK9mD1FccuVz+q7LIGlCre1RNS
-         pa4YfScHrVsuaa8w94uechZJe9dIWqOHzmIXNih6W76hUsPAfqurNjeEZ93VFLt21br3
-         reAA==
-X-Gm-Message-State: AOAM531oDOG2SovcNWP4tOJ0upT3Qu+WnqUcp7Jile8SFOBDHzTjUr95
-        cqnH6LdztmMDlSuuzsW2jYwk4Ii2df4kMxTM
-X-Google-Smtp-Source: ABdhPJyiKzhGmOfFsWxLa5lVE39sJvUCiie5HfluQEtYmmjdQQuKm42YeuhHLtJUhPV/0K7skuClHg==
-X-Received: by 2002:a17:902:7049:b0:131:bdef:522d with SMTP id h9-20020a170902704900b00131bdef522dmr14138140plt.85.1629751932684;
-        Mon, 23 Aug 2021 13:52:12 -0700 (PDT)
-Received: from R9 (d137-186-110-25.abhsia.telus.net. [137.186.110.25])
-        by smtp.gmail.com with ESMTPSA id ge6sm128115pjb.52.2021.08.23.13.52.11
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 23 Aug 2021 13:52:12 -0700 (PDT)
-From:   <weldon@newfietech.com>
-To:     <linux-btrfs@vger.kernel.org>
-Subject: BTRFS fails mount after power failure
-Date:   Mon, 23 Aug 2021 14:52:10 -0600
-Message-ID: <005201d79860$befd1b60$3cf75220$@newfietech.com>
+        id S233239AbhHWXP7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 19:15:59 -0400
+Received: from mout.gmx.net ([212.227.15.19]:33699 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233165AbhHWXP4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Aug 2021 19:15:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629760510;
+        bh=KBs6RtpqQdsF2qo3WjobXHB6IQVnNhr6jsB3iatrIqU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=WHhT2nJV4I75pwYVPsK4QhX7lov9bk2Hx/+Bv5buSlRAz69tr9a59l5qoAwbccrjJ
+         0w95X18n6M2cm+7jl37LVuuGg//0b1+JrmWwhBNx4LQDxyRnT9fQcQKu0uqH6F4ffA
+         R0cyJu2XkR6jORsSsHEtTnyGGNfH6evRVcQ1Ukm0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MUXpK-1mR8pR0odc-00QUkh; Tue, 24
+ Aug 2021 01:15:09 +0200
+Subject: Re: [PATCH v2 3/4] btrfs: introduce btrfs_subpage_bitmap_info
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210817093852.48126-1-wqu@suse.com>
+ <20210817093852.48126-4-wqu@suse.com> <20210823164130.GF5047@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <252f4d9d-d0f0-54a2-0d1b-6a7ef2f38a5f@gmx.com>
+Date:   Tue, 24 Aug 2021 07:15:06 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="iso-8859-1"
+In-Reply-To: <20210823164130.GF5047@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AdeYYK13y5DIhpmsSQihSFnAc1knqg==
-Content-Language: en-ca
+X-Provags-ID: V03:K1:5XEbsrxfoz5lFlLx4AaLGQudoL//3ALriMqcP5lAvzXwy4Z/VPE
+ 4b3BanOtFG+jniCF/+j3ZeIOb3c6WqC763X17E+vj9p5Iaw2CbLEHVx8xr3nhzn9Ij0L+W/
+ +olLrVnrot5+kgda4afWKmhlG+kVOGsrx6Y8YiBsxqMK8ETsNlVC0EKtbWdkqQ6RwE+EpZb
+ S/ainEFmwTrTGCwIAwz0A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7tNj81tHzhY=:yFm6jhTlG1Tb2h6Tn0KBxH
+ MiHcT62o7qlDYq3cifbuWrIUKRNa1QsVPRzxdcYSdStIl7UCcJPepjyGPy6Z85FmHlbN6tsM9
+ 6h5EZLdizptA0F7wwguxe3Szkafe/jmKBI8MhGipUKnWBRc8fQozjVW13ujdaxj8zRm13ESAc
+ WqqvRKXox+AAOkC74B9BVBiCXHk8nn7zTVUpRQ9vFu3O60i4hULSBZCRIj/K4Fh+jUBrQ2T6U
+ 2wN6P0wJc26ScFhXELYaUhxyV1mI/sZbgCU8jhqAqxYYpA0zeUnNQ2wi75VAK4rB/QLDBCVH0
+ JyyGO++RPZLsVeSNOP1oMJq0t3sFdmf3XszjJpQYYJj42Aj6PbqwWAw3mj7vBRjfZBZ+GgglH
+ RwnFnHbJOVf6Y0uvXX1p24SrMI/XqKtxYDkgMTtBFCB0GOi1sOy7deGoJUmOEJ8bEzS1fNzEX
+ 8S8/+hYOEP+7Ekd4Bi+YdET+D6Uh8/lrINniBoTbEQz96KZDlCmPSOp2oQCA4PxDhR5UbDmNY
+ NVrwX9BYF6V/s/UhhSw7X0sgIynYiwckCTBExkuFyb8CW6K2sngmyOEfEpI04BQgHTgjMfVjX
+ MjBzbxY0mye5nI6pDULQKXl6maTMcj7IJQYxoX9KodwLNiKgisi3+2gPQ3veZRHdUkA97Ly0C
+ N42Z/wWl+/lsthr6d2rH3EpBpcbTwYUrKWjjYImGlUGX2dgH9lFmaFyETHey1fIa4qdioywPD
+ CEliHBRh1F8/VPm+qYJY4tckp6muR1gZ4HJn2UaZbi7tB25o/yyR9VNjnAK4pLZ0y0WNi0Clj
+ NM0CotyfYTiW19+xHWwKjpMxO6MIQ6DkG505tqiQ4hyBKJ/YbpBmSOA2Pu+88shG3RrYd+yxu
+ c35m9YrVx8Q8ICnUIfhISrAE3XJS6P4bdiGdzE9lMrdFUGDHIfsiOuALsLdmALqetopu86Gp1
+ nb2YGLsAj15YUeiy8mWtQKV/klr/LTfBLz4kbfr4L+tWqP95XQpa0GZa1DWFD2Z9ezpsPZ336
+ ai1EL5YDO3YnVOT5zfZREFD/4HSzgghm35Drw9YtR2xbMqze0BirM2ew/qwqL9HTXiG/y9VnL
+ mou3cfiBDrOfhkh2hGIR5N20vu0okQ+kkr/uSo3OvnKtKa6Oregs4OXCg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Good day folks,
 
-I awoke this morning to find that my UPS had died overnight and my =
-Ubuntu
-server with a 14.5TB (Raid 5) BTRFS volume went down with it.=A0 The =
-machine
-rebooted fine and the hardware reports no errors, however the BTRFS =
-volume
-will no longer mount.  The OS boots fine, the 14.5TB volume is for data
-storage only.=A0 gparted shows the volume/partition,=A0 and correctly =
-reports
-space used as well as total size.  I've never encountered this type of =
-issue
-over the past year while using btrfs and I'm not sure where to start.=A0 =
-A
-number of google search results express caution when attempting to
-recover/repair, so I'm hoping for some expert advice.
 
-My dmesg log exceeds the 100,000 bytes restriction, so I'm unable to =
-attach
-it, so please ask if there's anything specific I can include otherwise.
+On 2021/8/24 =E4=B8=8A=E5=8D=8812:41, David Sterba wrote:
+> On Tue, Aug 17, 2021 at 05:38:51PM +0800, Qu Wenruo wrote:
+>> Currently we use fixed size u16 bitmap for subpage bitmap.
+>> This is fine for 4K sectorsize with 64K page size.
+>>
+>> But for 4K sectorsize and larger page size, the bitmap is too small,
+>> while for smaller page size like 16K, u16 bitmaps waste too much space.
+>>
+>> Here we introduce a new helper structure, btrfs_subpage_bitmap_info, to
+>> record the proper bitmap size, and where each bitmap should start at.
+>>
+>> By this, we can later compact all subpage bitmaps into one u32 bitmap.
+>>
+>> This patch is the first step towards such compact bitmap.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/ctree.h   |  1 +
+>>   fs/btrfs/disk-io.c | 12 +++++++++---
+>>   fs/btrfs/subpage.c | 35 +++++++++++++++++++++++++++++++++++
+>>   fs/btrfs/subpage.h | 36 ++++++++++++++++++++++++++++++++++++
+>>   4 files changed, 81 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>> index f07c82fafa04..a5297748d719 100644
+>> --- a/fs/btrfs/ctree.h
+>> +++ b/fs/btrfs/ctree.h
+>> @@ -899,6 +899,7 @@ struct btrfs_fs_info {
+>>   	struct btrfs_workqueue *scrub_workers;
+>>   	struct btrfs_workqueue *scrub_wr_completion_workers;
+>>   	struct btrfs_workqueue *scrub_parity_workers;
+>> +	struct btrfs_subpage_info *subpage_info;
+>>
+>>   	struct btrfs_discard_ctl discard_ctl;
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index 2f9515dccce0..3355708919d0 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -1644,6 +1644,7 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_=
+info)
+>>   	btrfs_extent_buffer_leak_debug_check(fs_info);
+>>   	kfree(fs_info->super_copy);
+>>   	kfree(fs_info->super_for_commit);
+>> +	kfree(fs_info->subpage_info);
+>>   	kvfree(fs_info);
+>>   }
+>>
+>> @@ -3392,12 +3393,12 @@ int __cold open_ctree(struct super_block *sb, s=
+truct btrfs_fs_devices *fs_device
+>>   		goto fail_alloc;
+>>   	}
+>>
+>> -	if (sectorsize !=3D PAGE_SIZE) {
+>> +	if (sectorsize < PAGE_SIZE) {
+>> +		struct btrfs_subpage_info *subpage_info;
+>> +
+>>   		btrfs_warn(fs_info,
+>>   		"read-write for sector size %u with page size %lu is experimental",
+>>   			   sectorsize, PAGE_SIZE);
+>> -	}
+>> -	if (sectorsize !=3D PAGE_SIZE) {
+>>   		if (btrfs_super_incompat_flags(fs_info->super_copy) &
+>>   			BTRFS_FEATURE_INCOMPAT_RAID56) {
+>>   			btrfs_err(fs_info,
+>> @@ -3406,6 +3407,11 @@ int __cold open_ctree(struct super_block *sb, st=
+ruct btrfs_fs_devices *fs_device
+>>   			err =3D -EINVAL;
+>>   			goto fail_alloc;
+>>   		}
+>> +		subpage_info =3D kzalloc(sizeof(*subpage_info), GFP_NOFS);
+>> +		if (!subpage_info)
+>> +			goto fail_alloc;
+>> +		btrfs_init_subpage_info(subpage_info, sectorsize);
+>> +		fs_info->subpage_info =3D subpage_info;
+>>   	}
+>>
+>>   	ret =3D btrfs_init_workqueues(fs_info, fs_devices);
+>> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+>> index ae6c68370a95..c4fb2ce52207 100644
+>> --- a/fs/btrfs/subpage.c
+>> +++ b/fs/btrfs/subpage.c
+>> @@ -63,6 +63,41 @@
+>>    *   This means a slightly higher tree locking latency.
+>>    */
+>>
+>> +void btrfs_init_subpage_info(struct btrfs_subpage_info *subpage_info,
+>> +			     u32 sectorsize)
+>> +{
+>> +	unsigned int cur =3D 0;
+>> +	unsigned int nr_bits;
+>> +
+>> +	/*
+>> +	 * Just in case we have super large PAGE_SIZE that unsigned int is no=
+t
+>> +	 * enough to contain the number of sectors for the minimal sectorsize=
+.
+>> +	 */
+>> +	BUILD_BUG_ON(UINT_MAX * SZ_4K < PAGE_SIZE);
+>
+> Do you seriously expect such hardware to exist? We know there are arches
+> with 256K page and that's perhaps the maximum we should care about now
+> but UINT_MAX * 4K is 16TiB, 2^44. CPUs are barely capable of addressing
+> 2^40 physical address space, making assertions about page size orders of
+> magnitude larger than that is insane.
+>
+My original idea is to use U8 for those members to save some bytes, for
+that case, the BUILD_BUG_ON() would make sense.
 
-# uname -a
-Linux onyx 5.4.0-81-generic #91-Ubuntu SMP Thu Jul 15 19:09:17 UTC 2021
-x86_64 x86_64 x86_64 GNU/Linux
+But finally I moved to use unsigned int, now the BUILD_BUG_ON() makes no
+sense and can be removed.
 
-# btrfs --version
-btrfs-progs v5.4.1
-
-# btrfs fi show
-Label: 'Data'  uuid: 7f500ee1-32b7-45a3-b1e9-deb7e1f59632
-        Total devices 1 FS bytes used 7.17TiB
-        devid    1 size 14.50TiB used 7.40TiB path /dev/sdb1
-
-# dmesg | grep sdb
-[    2.312875] sd 32:0:1:0: [sdb] Very big device. Trying to use READ
-CAPACITY(16).
-[    2.313010] sd 32:0:1:0: [sdb] 31138512896 512-byte logical blocks: =
-(15.9
-TB/14.5 TiB)
-[    2.313062] sd 32:0:1:0: [sdb] Write Protect is off
-[    2.313065] sd 32:0:1:0: [sdb] Mode Sense: 61 00 00 00
-[    2.313116] sd 32:0:1:0: [sdb] Cache data unavailable
-[    2.313119] sd 32:0:1:0: [sdb] Assuming drive cache: write through
-[    2.333321] sd 32:0:1:0: [sdb] Very big device. Trying to use READ
-CAPACITY(16).
-[    2.396761]  sdb: sdb1
-[    2.397170] sd 32:0:1:0: [sdb] Very big device. Trying to use READ
-CAPACITY(16).
-[    2.397261] sd 32:0:1:0: [sdb] Attached SCSI disk
-[    4.709963] BTRFS: device label Data devid 1 transid 120260 /dev/sdb1
-[   21.849570] BTRFS info (device sdb1): disk space caching is enabled
-[   21.849573] BTRFS info (device sdb1): has skinny extents
-[   22.023224] BTRFS error (device sdb1): parent transid verify failed =
-on
-7939752886272 wanted 120260 found 120262
-[   22.047940] BTRFS error (device sdb1): parent transid verify failed =
-on
-7939752886272 wanted 120260 found 120265
-[   22.047949] BTRFS warning (device sdb1): failed to read tree root
-[   22.089003] BTRFS error (device sdb1): open_ctree failed
-
-root@onyx:/home/weldon# btrfs-find-root /dev/sdb1
-parent transid verify failed on 7939752886272 wanted 120260 found 120262
-parent transid verify failed on 7939752886272 wanted 120260 found 120265
-parent transid verify failed on 7939752886272 wanted 120260 found 120265
-Ignoring transid failure
-WARNING: could not setup extent tree, skipping it
-Couldn't setup device tree
-Superblock thinks the generation is 120260
-Superblock thinks the level is 1
-Well block 7939758882816(gen: 120264 level: 1) seems good, but
-generation/level doesn't match, want gen: 120260 level: 1
-Well block 7939747938304(gen: 120263 level: 1) seems good, but
-generation/level doesn't match, want gen: 120260 level: 1
-Well block 7939756146688(gen: 120262 level: 1) seems good, but
-generation/level doesn't match, want gen: 120260 level: 1
-Well block 7939751559168(gen: 120261 level: 0) seems good, but
-generation/level doesn't match, want gen: 120260 level: 1
-
-*** A large selection of block references was removed due to character
-count... if needed, I can resend with the full output.
-
-Well block 1316967743488(gen: 1293 level: 0) seems good, but
-generation/level doesn't match, want gen: 120260 level: 1
-Well block 1316909662208(gen: 1283 level: 0) seems good, but
-generation/level doesn't match, want gen: 120260 level: 1
-Well block 1316908711936(gen: 1283 level: 0) seems good, but
-generation/level doesn't match, want gen: 120260 level: 1
-root@onyx:/home#
-
-Any help or assistance would be greatly appreciated.  Important data has
-been backed up, however if it's possible to recover without thrashing =
-the
-entire volume, that would be preferred.
-
-Regards,
-Weldon
-
+Thanks,
+Qu
