@@ -2,98 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC163F4CF7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 17:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3D23F4D0B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 17:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhHWPD1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 11:03:27 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52456 "EHLO
+        id S230468AbhHWPHw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 11:07:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52950 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbhHWPDL (ORCPT
+        with ESMTP id S230386AbhHWPHv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:03:11 -0400
+        Mon, 23 Aug 2021 11:07:51 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5B15121FD3;
-        Mon, 23 Aug 2021 15:02:27 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4115721FDE;
+        Mon, 23 Aug 2021 15:07:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629730947;
+        t=1629731228;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LEuL7qT/kqvHPaqPBBlsNB7vy63lFLKh+ZjcFOC5BFI=;
-        b=IdLjY7wIhIR6Yr7Ou3D8hlH3tUIwjEcgaFlfAL99H634CDenNL25jeO79ZbXG1EzRio8P8
-        I31bSCxt4WbLCFJhbRCjvv5U342KUVLzxH5lNU8cRp7FxvTMX+5ZT7NRsYGBtyqt89V0g8
-        W7HKXrfbUhN0eJgCDodA+nQvZlYmRJo=
+        bh=Tv1CiltLTfPcBv9BYhK/5S+U5E1GUdKv8ycd7XgpvfU=;
+        b=R8gCSdPE9DXY+bSY66oOqYHtAvLfefhpTkYsq3CTlzbZ0s3cuVH274gMm0qeh7fMjnT0bt
+        PWgrkRbd6OQlspS37lZRbf/fU4Jz+so6Gdcvut1LmhsEx9/6h851FPmmjST9tavV5PqU+1
+        dZNLst+I9LK+ohZTH7tlGHJimMtnOzw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629730947;
+        s=susede2_ed25519; t=1629731228;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LEuL7qT/kqvHPaqPBBlsNB7vy63lFLKh+ZjcFOC5BFI=;
-        b=WEekTEKkbVKQgkzz9saT9SF00zFm8clyr6fd+78IC9L+h6cX8PPMfG6kZUjU9p4dFLjQey
-        g/tNzhX7SLk5vgBw==
+        bh=Tv1CiltLTfPcBv9BYhK/5S+U5E1GUdKv8ycd7XgpvfU=;
+        b=PVO/5SarAKibvKDBdZUY8Dzx74H2zZPk+PgL6g3AQrNJdAS8CQKBs5wyju1a2OQMhRPeA/
+        J2EOGSZCCkZCJ/DA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 54DFFA3BBB;
-        Mon, 23 Aug 2021 15:02:27 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 396D5A3BB9;
+        Mon, 23 Aug 2021 15:07:08 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B6F5EDA725; Mon, 23 Aug 2021 16:59:27 +0200 (CEST)
-Date:   Mon, 23 Aug 2021 16:59:27 +0200
+        id D2FE5DA725; Mon, 23 Aug 2021 17:04:08 +0200 (CEST)
+Date:   Mon, 23 Aug 2021 17:04:08 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 07/12] btrfs-progs: add the ability to corrupt fields
- of the super block
-Message-ID: <20210823145927.GC5047@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 02/12] btrfs-progs: do not infinite loop on corrupt
+ keys with lowmem mode
+Message-ID: <20210823150408.GD5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
 References: <cover.1629322156.git.josef@toxicpanda.com>
- <7c5a5c52f3cf9ba6b0188b5509e39de93f6bb662.1629322156.git.josef@toxicpanda.com>
+ <aaaf2cadf66d9e573e2dbcc3e8fab7984ce42f99.1629322156.git.josef@toxicpanda.com>
+ <05f2cfc1-ab2f-0e92-13ef-488a9e7d716c@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7c5a5c52f3cf9ba6b0188b5509e39de93f6bb662.1629322156.git.josef@toxicpanda.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <05f2cfc1-ab2f-0e92-13ef-488a9e7d716c@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 05:33:19PM -0400, Josef Bacik wrote:
-> Doing the extent tree v2 work I generated an invalid super block with
-> the wrong bytes_used set, and only noticed because it affected the block
-> groups as well.  Neither modes of fsck check for a valid bytes_used, so
-> add the ability to corrupt this field so I can generate a testcase for
-> fsck.
+On Thu, Aug 19, 2021 at 01:42:39PM +0800, Qu Wenruo wrote:
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  btrfs-corrupt-block.c | 66 ++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 65 insertions(+), 1 deletion(-)
 > 
-> diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
-> index 80622f29..7e576897 100644
-> --- a/btrfs-corrupt-block.c
-> +++ b/btrfs-corrupt-block.c
-> @@ -355,6 +355,24 @@ enum btrfs_block_group_field {
->  	BTRFS_BLOCK_GROUP_ITEM_BAD,
->  };
->  
-> +enum btrfs_super_field {
-> +	BTRFS_SUPER_FIELD_FLAGS,
-> +	BTRFS_SUPER_FIELD_TOTAL_BYTES,
-> +	BTRFS_SUPER_FIELD_BYTES_USED,
-> +	BTRFS_SUPER_FIELD_BAD,
-> +};
-> +
-> +static enum btrfs_super_field convert_super_field(char *field)
-> +{
-> +	if (!strncmp(field, "flags", FIELD_BUF_LEN))
-> +		return BTRFS_SUPER_FIELD_FLAGS;
-> +	if (!strncmp(field, "total_bytes", FIELD_BUF_LEN))
-> +		return BTRFS_SUPER_FIELD_TOTAL_BYTES;
-> +	if (!strncmp(field, "bytes_used", FIELD_BUF_LEN))
-> +		return BTRFS_SUPER_FIELD_BYTES_USED;
-> +	return BTRFS_SUPER_FIELD_BAD;
+> On 2021/8/19 上午5:33, Josef Bacik wrote:
+> > By enabling the lowmem checks properly I uncovered the case where test
+> > 007 will infinite loop at the detection stage.  This is because when
+> > checking the inode item we will just btrfs_next_item(), and because we
+> > ignore check tree block failures at read time we don't get an -EIO from
+> > btrfs_next_leaf.  Generally what check usually does is validate the
+> > leaves/nodes as we hit them, but in this case we're not doing that.  Fix
+> > this by checking the leaf if we move to the next one and if it fails
+> > bail.  This allows us to pass the 007 test with lowmem.
+> 
+> Doesn't this mean btrfs_next_item() is not doing what it should do?
+> 
+> Normally we would expect btrfs_next_item() to return -EIO other than
+> manually checking the returned leaf.
 
-There's a more feature-complete utility to modify super block fields
-btrfs-sb-mod, this would be duplicated in corrupt-block.
+That's an interesting point, I think we rely on that behaviour
+elsewhere too.
+
