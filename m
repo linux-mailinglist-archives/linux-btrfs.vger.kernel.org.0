@@ -2,106 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D233F506A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 20:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C143F5091
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 20:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhHWSfI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 14:35:08 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48526 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhHWSfI (ORCPT
+        id S230506AbhHWSp3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 14:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229883AbhHWSp2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:35:08 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C2D682204E;
-        Mon, 23 Aug 2021 18:34:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629743664;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CTNSMoPQ1ZBNPS/mHBXR19RYpvs/XfuaCBrnFMumBw0=;
-        b=d8qv6L0Lqw/BhUqxqekYuXeLFZj0ncvne9MHqXuoaR3pA1FRqVnrpCDr4bxWPoCR0RJ/3h
-        0Q8tdRK18QLRtJvXc95o2YLqvYRMeVvMOJynSgds6WPBexlgvxAh6fZmRbY44JXWbAYPhX
-        Cud7L9S1eeIT2pd4hFCD9QRcRHuPafQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629743664;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CTNSMoPQ1ZBNPS/mHBXR19RYpvs/XfuaCBrnFMumBw0=;
-        b=cYpuP0F6QHdTEzYNYgWLQ9xQavGESjk9EwPD46EgsAOzi2n+FL+3SvVGtL2MBfXIiYLqah
-        jsA5KjD83OKFroAQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id BB2A7A3BBB;
-        Mon, 23 Aug 2021 18:34:24 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A67ADDA725; Mon, 23 Aug 2021 20:31:24 +0200 (CEST)
-Date:   Mon, 23 Aug 2021 20:31:23 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 00/12] btrfs-progs: make check handle invalid bg items
-Message-ID: <20210823183123.GN5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Mon, 23 Aug 2021 14:45:28 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7FBDC061575
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 11:44:45 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id t190so20308774qke.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 11:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=dtTN6sXbqT6fwOdnZWz2TmRo4jJvatmNmgcYHN31oHc=;
+        b=M0zCpYkZb73DANkXmktlYaG7dnMkm2dQG6jLtjSOBO3iPuBGBuQRLYYqTfRRTaMh+J
+         K6xFHBVjV4H40FeKWzjbAmN7mF957WFrlV0FXQioKtWHlGWAn/YLaoo8uEP9YtbSntTw
+         4NPZjyYfwar2nKynrm+xCpJPsWIIxk9gxaI+8ZwEz7ltKwhvGWtrV2vMOX++EejdPQEg
+         Q+XwJNKI4pThdNwvtdakgM12EnbVNRBEd1c76+7uP/RqlqQgJ953LEzwqGCg/E7Sl2aZ
+         9NM67gnNEK2d+Dt36iQonZl9uF2ggymq015IzQYSi3z5bpNyxXTANxuT7OzklR+FQChC
+         b6OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dtTN6sXbqT6fwOdnZWz2TmRo4jJvatmNmgcYHN31oHc=;
+        b=kMYWYZa3bjB/PZbaR1SIj+jQcgzvXu7IqleYOftRzieGjg69aeidUanMJjVFH05apA
+         GQjA3fmLv1BKWo5eeMGOk7dnIirEIDwc6ctTHcxI1iMtiOA7WLSsQRp4N1Q5HjNnz8U1
+         wELMi5xfDtSi7LQkQGjnkvsFH+x5UBA+Nr5fm0tQ8vAP4YHNDLe6X/oemuKI/x0o1RQ+
+         JQ39aQjsSGeudXgZHTF4Ye/FJ0dUMr/y9vuX2kSTrOu+yE9wM/9riKK3DmUvYqG97ZeT
+         QSx7nkQgE4RyP/ghMrnDZOJAa7ZZNqNJnGp+KCrNLOialGlB2oRfoFydFohehh1FIyUZ
+         pKYQ==
+X-Gm-Message-State: AOAM531WwnX5VO8ImBINWrjxa6qtTG06Pnle1tAlBMF4lO5OgDAhGAiY
+        KnGu++QF/SsnNHpmPv/Adpc08g==
+X-Google-Smtp-Source: ABdhPJwXVdfKh2jknb+d8g62FbtmqCFXuBoYLdve58Im4gCupHKjperva6AUT3ZWtgjOtuN5ciMtHQ==
+X-Received: by 2002:a37:d54:: with SMTP id 81mr22215480qkn.103.1629744284925;
+        Mon, 23 Aug 2021 11:44:44 -0700 (PDT)
+Received: from localhost.localdomain (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id l14sm7016241qtj.26.2021.08.23.11.44.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 11:44:44 -0700 (PDT)
+Subject: Re: [PATCH v2 02/12] btrfs-progs: do not infinite loop on corrupt
+ keys with lowmem mode
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
 References: <cover.1629322156.git.josef@toxicpanda.com>
+ <aaaf2cadf66d9e573e2dbcc3e8fab7984ce42f99.1629322156.git.josef@toxicpanda.com>
+ <05f2cfc1-ab2f-0e92-13ef-488a9e7d716c@gmx.com>
+ <20210823150408.GD5047@twin.jikos.cz>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <029e900b-500c-937f-322e-1d64b3259355@toxicpanda.com>
+Date:   Mon, 23 Aug 2021 14:44:43 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1629322156.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210823150408.GD5047@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 05:33:12PM -0400, Josef Bacik wrote:
-> v1->v2:
-> - Discovered that we also don't check bytes_super in the superblock, add that
->   checking and repair ability since it's coupled with the block group used
->   repair.
-> - Discovered that we haven't actually been setting --mode=lowmem for the initial
->   image check if we do make test-check-lowmem, we only do it after the repair.
->   Fixed this.
-> - Now that we're properly testing error detection in all of the test cases, I
->   found 3 problems with the --mode=lowmem mode, one infinite loop and two places
->   we weren't properly propagating the error code up to the user.
-> - My super repair thing tripped a case where we wouldn't clean up properly for
->   unaligned extent records, fixed this as well.
-> - Add another test image for the corrupted super bytes.
-> - Realize that you need a special .lowmem_repairable file in order for the
->   lowmem repair code to run against images, so did that for both testcases.
+On 8/23/21 11:04 AM, David Sterba wrote:
+> On Thu, Aug 19, 2021 at 01:42:39PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/8/19 上午5:33, Josef Bacik wrote:
+>>> By enabling the lowmem checks properly I uncovered the case where test
+>>> 007 will infinite loop at the detection stage.  This is because when
+>>> checking the inode item we will just btrfs_next_item(), and because we
+>>> ignore check tree block failures at read time we don't get an -EIO from
+>>> btrfs_next_leaf.  Generally what check usually does is validate the
+>>> leaves/nodes as we hit them, but in this case we're not doing that.  Fix
+>>> this by checking the leaf if we move to the next one and if it fails
+>>> bail.  This allows us to pass the 007 test with lowmem.
+>>
+>> Doesn't this mean btrfs_next_item() is not doing what it should do?
+>>
+>> Normally we would expect btrfs_next_item() to return -EIO other than
+>> manually checking the returned leaf.
 > 
-> --- Original email ---
-> Hello,
+> That's an interesting point, I think we rely on that behaviour
+> elsewhere too.
 > 
-> While writing code for extent tree v2 I noticed that I was generating a fs with
-> an invalid block group ->used value.  However fsck wasn't catching this, because
-> we don't actuall check the used value of the block group items in normal mode.
-> lowmem mode does this properly thankfully, so this only needs to be added to the
-> normal fsck mode.
-> 
-> I've added code to btrfs-corrupt-block to generate the corrupt image I need for
-> the test case.  Then of course the actual patch to detect and fix the problem.
-> Thanks,
-> 
-> Josef
-> 
-> Josef Bacik (12):
->   btrfs-progs: fix running lowmem check tests
->   btrfs-progs: do not infinite loop on corrupt keys with lowmem mode
->   btrfs-progs: propagate fs root errors in lowmem mode
->   btrfs-progs: propagate extent item errors in lowmem mode
->   btrfs-progs: do not double add unaligned extent records
->   btrfs-progs: add the ability to corrupt block group items
->   btrfs-progs: add the ability to corrupt fields of the super block
->   btrfs-progs: make check detect and fix invalid used for block groups
->   btrfs-progs: make check detect and fix problems with super_bytes_used
->   btrfs-progs: check btrfs_super_used in lowmem check
->   btrfs-progs: add a test image with a corrupt block group item
->   btrfs-progs: add a test image with an invalid super bytes_used
 
-There are some comments or question so I haven't merged the patches yet
-(not merged: 2, 5, 8, 9, 11, 12). Please have a look, rebase on top of
-devel should cleanly drop the merged patches from the series.
+This is the result of how we deal with corrupt blocks.  We will happily 
+read corrupt blocks with check, because we expect check to do it's own 
+btrfs_check_node/btrfs_check_leaf().  The problem here is that if the 
+block is corrupt it's still in cache, and so btrfs_next_leaf() will 
+return it because the buffer is marked uptodate.
+
+It looks like search does the extra check_block() specifically to catch 
+this case, so I'll fix next_leaf to do the same thing as well.  Thanks,
+
+Josef
