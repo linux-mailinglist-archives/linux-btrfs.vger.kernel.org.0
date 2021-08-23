@@ -2,51 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482693F4F7A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 19:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D783F4F87
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 19:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhHWR2E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 13:28:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42800 "EHLO
+        id S229471AbhHWReJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 13:34:09 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43364 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhHWR2E (ORCPT
+        with ESMTP id S229694AbhHWReI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:28:04 -0400
+        Mon, 23 Aug 2021 13:34:08 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 5658221F8F;
-        Mon, 23 Aug 2021 17:27:20 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 15A3922012;
+        Mon, 23 Aug 2021 17:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629739640;
+        t=1629740005;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yvV3QCnRX2j1Lh8S+WcfMq5jCoyYfJMy3JfPymYJxGI=;
-        b=hWOPWF/0DYPOO+xHSqy7R8YY8Cs3tI3iQ6sWGlCjwbYXTE6XmQpk4RJmTYLnGC26Fx4Guv
-        /+Id1RzGPjZpSr8bXoUkjsB8xnzpzKUCsdnB7ZWCIu6ToGcKE4ZNSnOYA58YtFYDrbq8oC
-        mmTQZb7r7w2rJ1TV/TQZPZ9tweTkcmI=
+        bh=uvuPH3FPSInSGU1pNJwdSZS6UaRlPLEdcgxMX9HBDhc=;
+        b=klfKBkhDe4aoGovRBLHj8MLykrza3xPgupOgZpm9LEvPuOuqsP/jaGOVauE3Aikk3k57zl
+        01Q67ALuGTElVaT2UswAQrI3gYiG5dXClXVaEjJOA+RVVB7Z/7lsuM0zsP+JdSr70BVV26
+        dVmyHNuvaCE8pgIKwB7LQt2mzJYr09s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629739640;
+        s=susede2_ed25519; t=1629740005;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yvV3QCnRX2j1Lh8S+WcfMq5jCoyYfJMy3JfPymYJxGI=;
-        b=/2ncg/4cpkTGUDtiDB0jYLdZTfAwsM3r2Pxyx8TOWk8sK0dLGhfF6BxJEY3VXzZqfpkDUE
-        FkBq52L88DsrOEDQ==
+        bh=uvuPH3FPSInSGU1pNJwdSZS6UaRlPLEdcgxMX9HBDhc=;
+        b=GIz9VgguVLgAorKfESMIEzJONcN0y6vK11Xult7Xb33EXahEJ9+8OZrL9WCVr2znXg6OU9
+        hAoaGUXq07JrKZAw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 4F43BA3BB4;
-        Mon, 23 Aug 2021 17:27:20 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 0F095A3BB0;
+        Mon, 23 Aug 2021 17:33:25 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BD7B8DA725; Mon, 23 Aug 2021 19:24:20 +0200 (CEST)
-Date:   Mon, 23 Aug 2021 19:24:20 +0200
+        id 9CF56DA725; Mon, 23 Aug 2021 19:30:25 +0200 (CEST)
+Date:   Mon, 23 Aug 2021 19:30:25 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, mpdesouza@suse.com
+Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH RFC 0/4] btrfs: qgroup: rescan enhancement related to
  INCONSISTENT flag
-Message-ID: <20210823172420.GL5047@twin.jikos.cz>
+Message-ID: <20210823173025.GM5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, mpdesouza@suse.com
+        linux-btrfs@vger.kernel.org
 References: <20210822070200.36953-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -97,17 +97,17 @@ On Sun, Aug 22, 2021 at 03:01:56PM +0800, Qu Wenruo wrote:
 > 
 > Reason for RFC:
 > - If the runtime qgroup flags are acceptable
-> 
+
+As long as it's internal I think it's ok.
+
 > - If the behavior of marking qgroup inconsistent when dropping large
 >   subvolumes
-> 
+
+That could be a bit problematic because user never knows if the rescan
+has been started or not.
+
 > - If the lifespan of runtime qgroup flags are acceptable
 >   They have longer than needed lifespan (from inconsistent time point to
 >   next rescan), not sure if it's OK.
 
-How is this related to the patch from Marcos?
-
-https://lore.kernel.org/linux-btrfs/20210617123436.28327-1-mpdesouza@suse.com/
-
-If there's way to cancel the rescan, does this patchset fix the possible
-problems?
+On first read I haven't found anything obviously problematic.
