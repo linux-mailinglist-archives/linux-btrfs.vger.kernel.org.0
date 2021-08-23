@@ -2,106 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B103F4E13
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 18:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366793F4E4F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 18:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbhHWQOh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 12:14:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42172 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHWQOh (ORCPT
+        id S229743AbhHWQ0g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 12:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhHWQ0f (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:14:37 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DA0301FFCE;
-        Mon, 23 Aug 2021 16:13:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629735233;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EPHsXOwW/dztGkfBvxT23L3MDIME5WeJBaqCXakrjn8=;
-        b=lBxxb/GMTrSxDaqWs6Knv82OzNUCGqV2cmDvr9jL1r55x5BB/Rytgxn3Ib21fKmJ5k2dxS
-        8yEpbMvl1UXf1LDSV7qU6vabD4ttVppvIlD+/2a0qX0tlOJBCC7RWo8vyzEivlUDtd2iP7
-        EalCtOGJe6wbyxcRtUbgy1rVbBmJZQY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629735233;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EPHsXOwW/dztGkfBvxT23L3MDIME5WeJBaqCXakrjn8=;
-        b=cLpoBdcdeEO81cIg9lBAzjoDOiFLw/7z/cMI0k5h1h2C6DPO+3nBan2TigqZjVdVD80Iaf
-        yYqJ8TTRQv4c3FAg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D249CA3BC5;
-        Mon, 23 Aug 2021 16:13:53 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2C0EBDA725; Mon, 23 Aug 2021 18:10:53 +0200 (CEST)
-Date:   Mon, 23 Aug 2021 18:10:53 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 1/9] btrfs-progs: use an associative array for init mkfs
- blocks
-Message-ID: <20210823161053.GE5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1629486429.git.josef@toxicpanda.com>
- <9e4cd53b74631be7c4bf78653de2d931d53dce3c.1629486429.git.josef@toxicpanda.com>
- <ffdac968-e865-2435-484d-9ebd763603e5@gmx.com>
+        Mon, 23 Aug 2021 12:26:35 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAF1C061575
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 09:25:53 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id n12so10484147plf.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 09:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=p061j9B/6ND8YUwXhaRH3L9LEowEcO2xCsyCI0EdoxM=;
+        b=XhL+fXuesM/S6iiqv0ospEXOl7FvuwTlKup4Q0N/bZemrfQNjDLwyFlEvyuvjRpFIM
+         mLhQBFhwju7iZ2vUlS3Ky26FwxYes+2Av0l8MZ4Rq9jMyVFfltQigNchan/wABA5CZjS
+         NBJ1acZmvTwvC2vlptNK5K8AGmu8SeeGITd6e+bgq3XxYpf1dyibiWEw1fEyTr/RfVl7
+         Brn1K2bqIsQ+vyuz5JUvARYO7rkW6i3bEqoxpGKZNZ4lYSyARAw5pU6a+KQvBt4Ea0He
+         TkobqwZaMV9SSbbR0ATFzki684389fLsC4QX+4dGVxANgEJzFFPyP00PNmSjpph9L0QA
+         wo+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=p061j9B/6ND8YUwXhaRH3L9LEowEcO2xCsyCI0EdoxM=;
+        b=kf0WxLpXN3aelP53TQqMigMB4+kuFT29BwMsg4CZfzMvhjygQtruJBTu75TpdSLTpu
+         P6lyx8xdmnoMaJVe+Ff7DUDeNZl7vaq5sTL0jvqrtNmKwViuqJlIZS/UbxNlabmedYkN
+         0Oe0F88BOoOBIvKRTSPZNHibKABh/K2tHE3NPpnBn+NZoP0ivfVxtL13VQxX41hZuL8C
+         sWR4EAG5gETBWb6wF8Dab2rBtttBODaI3Sps07+tAq2ZqXf7TKaBaHrsttKDzDf6UZDY
+         YsFCcNXS8maUoJSDBJ7TpmEFJeaghcrh8DmHxTG0jpsZmTVtuSvyiiaDJkDdJ7wtuj36
+         ELLw==
+X-Gm-Message-State: AOAM531X7/zHxR2CsAuzBmgWRHK+SoS+NQiX/naWhCKLJ9dUzBkYsqMf
+        e0PfAbNxMaZxWg0FB9EBpPlnC05wE+UPt4dNReI=
+X-Google-Smtp-Source: ABdhPJxsPmCb506c95a32WUXshWPQjGN64X8wLLT1bs5612tP9wBB6OaER83xgbw32iEDHDBYHcc7Gmq7Xf5UHHjzqs=
+X-Received: by 2002:a17:90b:613:: with SMTP id gb19mr10219704pjb.77.1629735952710;
+ Mon, 23 Aug 2021 09:25:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ffdac968-e865-2435-484d-9ebd763603e5@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Received: by 2002:a05:6a10:9591:0:0:0:0 with HTTP; Mon, 23 Aug 2021 09:25:52
+ -0700 (PDT)
+Reply-To: sroomf70@gmail.com
+From:   "Mr. David Aminu" <davidaminu1@gmail.com>
+Date:   Mon, 23 Aug 2021 09:25:52 -0700
+Message-ID: <CALe=1L01sDSdfxKYmz_Qq8GGpW1OLDpYymytLi+sTe-Xu_jqUQ@mail.gmail.com>
+Subject: Greetings,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 04:42:24PM +0800, Qu Wenruo wrote:
-> On 2021/8/21 上午3:11, Josef Bacik wrote:
-> > Extent tree v2 will not create an extent tree or csum tree initially,
-> > and it will create a block group tree.  To handle this we want to rework
-> > the initial mkfs step to take an array of the blocks we want to create
-> > and use the array to keep track of which blocks we need to create.
-> >
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >   mkfs/common.c | 56 ++++++++++++++++++++++++++++++++-------------------
-> >   mkfs/common.h | 10 +++++++++
-> >   2 files changed, 45 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/mkfs/common.c b/mkfs/common.c
-> > index 2c041224..e9ff529a 100644
-> > --- a/mkfs/common.c
-> > +++ b/mkfs/common.c
-> > @@ -31,16 +31,18 @@
-> >   #include "mkfs/common.h"
-> >
-> >   static u64 reference_root_table[] = {
-> > -	[1] =	BTRFS_ROOT_TREE_OBJECTID,
-> > -	[2] =	BTRFS_EXTENT_TREE_OBJECTID,
-> > -	[3] =	BTRFS_CHUNK_TREE_OBJECTID,
-> > -	[4] =	BTRFS_DEV_TREE_OBJECTID,
-> > -	[5] =	BTRFS_FS_TREE_OBJECTID,
-> > -	[6] =	BTRFS_CSUM_TREE_OBJECTID,
-> > +	[MKFS_ROOT_TREE]	=	BTRFS_ROOT_TREE_OBJECTID,
-> > +	[MKFS_EXTENT_TREE]	=	BTRFS_EXTENT_TREE_OBJECTID,
-> > +	[MKFS_CHUNK_TREE]	=	BTRFS_CHUNK_TREE_OBJECTID,
-> > +	[MKFS_DEV_TREE]		=	BTRFS_DEV_TREE_OBJECTID,
-> > +	[MKFS_FS_TREE]		=	BTRFS_FS_TREE_OBJECTID,
-> > +	[MKFS_CSUM_TREE]	=	BTRFS_CSUM_TREE_OBJECTID,
-> >   };
-> 
-> Can we use a bitmap for these combinations?
-> 
-> So that we just need one parameter to indicate what trees we want.
+-- 
+Greetings,
+From Mr. David Aminu, please a huge amount payment was made into your
+account. please do not hesitate to reply as soon as you receive this
+message. awaiting your urgent notice please.
 
-The array can also define order, in followup patches there the free
-space tree added to the end.
+Thanks
+Mr. David Aminu,
+Foreign Remittance
+
+Best regards
+Prof. Dr Diane
