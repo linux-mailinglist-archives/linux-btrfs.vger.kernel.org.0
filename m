@@ -2,348 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FDD3F5394
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63BB3F5397
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhHWXRj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 19:17:39 -0400
-Received: from mout.gmx.net ([212.227.17.21]:54009 "EHLO mout.gmx.net"
+        id S233134AbhHWXVD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 19:21:03 -0400
+Received: from mout.gmx.net ([212.227.17.22]:36511 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233137AbhHWXRj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:17:39 -0400
+        id S233093AbhHWXVB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Aug 2021 19:21:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629760612;
-        bh=5KwuG2BM2XKMVlbbnLVzAswuL1v7kq/NRv0o74paOis=;
+        s=badeba3b8450; t=1629760814;
+        bh=BddUW0tlBSSi2efSwZC+tl4dKmzgRlI38PVDMJ5VQXg=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=jyH+DjkQ3AktnwmRA/osL7TFRVPcUMmG95LLSgKlt8tHPN7aA8tAJ+wHMQYEwXvJn
-         bQqiDpT72XsVS85ttK6oVLDfwkaoNUfeHhdzZAIS1wL9wrvyFLvmex5YYlRPLfMC+y
-         iV+P6CXl82ngWyOC5+3lC0ypCnX5O0asSed7ibwM=
+        b=IX5d16HhQCnOQpyWBegKCnetQ5O2MRnMF9lLtMmcsrc3C7RWeKBIQd93IjGpaYfF5
+         yhtVyRxepXASeUYL4NxZ0uvQ+B2McKyuiQJcY21rGjPCskXvukO+Sn+FyuUSpIZ8Wl
+         1K/EuzeX3GRep+Yj1VL2m2HWbzDq3j1V4pNOPcGM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MTzfG-1mRh5S0Cwc-00R5E2; Tue, 24
- Aug 2021 01:16:52 +0200
-Subject: Re: [PATCH v2 4/4] btrfs: subpage: pack all subpage bitmaps into a
- larger bitmap
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7QxB-1n6FzE13Sn-017oiY; Tue, 24
+ Aug 2021 01:20:14 +0200
+Subject: Re: [PATCH v6 0/4] btrfs-progs: image: new data dump feature
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20210817093852.48126-1-wqu@suse.com>
- <20210817093852.48126-5-wqu@suse.com> <20210823165746.GH5047@twin.jikos.cz>
+References: <20210812054815.192405-1-wqu@suse.com>
+ <20210823171958.GK5047@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <4a9947e2-f92f-0b69-01e5-67cc8dc5bea5@gmx.com>
-Date:   Tue, 24 Aug 2021 07:16:49 +0800
+Message-ID: <cd4b123a-604c-24ab-cf8a-f97ad5486c13@gmx.com>
+Date:   Tue, 24 Aug 2021 07:20:10 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210823165746.GH5047@twin.jikos.cz>
+In-Reply-To: <20210823171958.GK5047@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vz9JsuGUqV1VTmLxP4WDue5RzMbn0qXUxh9Dk/+b+cbS2QNkP2k
- gH5eFjIsYoqTEEvch7qb5SU2MiU+zKDbx4eff6NlqKwonPqTPAHWoN+Dzm+Zfd7Q0rAcZtr
- YayrfNBsHLpGM1omL+deXA9s2o40U1D93GF1oVjUJBii4uLcIdS7hTv9iBzjJVg9xgrt2ZP
- IkGP2skXaOfzXiv9JnfGw==
+X-Provags-ID: V03:K1:n5xMl1Ns2UEpDYkceyhkWchO90PzKw8v2G4XCgFLZJZXtHiaX76
+ gLUyoVMx9nkCq4RI0pdkiK6Z49QZotWwPrjkYGStVEy+3Tk4AsAOdKKqEMfX/485KAQN04M
+ HxH32NJyo9mUq6vinnYLR6fqWhgIkZ8eMcbAIvBohXuWpiNLDlVGUcK0zVqv9pT3seXFDzJ
+ SB8OUu7CMuz/AVfbwOwgQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0EfNsK0uclU=:XMpCXMYSa7VfeXYMFazIBc
- /+NAACz5DF+NxqmDgJ1Hr3lfkG8VVHGYCVnnRKHfRYeHUkf9WJNmXvPa8lgmSF0bFKJ3Y+E8d
- FhZezrxy56c1C0CL2PosyuCifXB2UViv+13QBUdfSse746RJpKZW4vcsLVx8BBhS2Tl+kCKW2
- fFitE8gPk5itZrcCtRytad58IRxN6NtrbmRXNBnypKv8apFky0npLclC13NIKdiQHwitMoRlY
- voK0kpW+Foge8Y4ksK/rZ7TcisADvdTKRcu6o4nS4mrWrYU/vnidXU743bB8MjP5TouZseuDp
- wigb5kCpLP7CNlMyw+NniQS89I5OhAo4fvWcFqHbWSVrqUXMfvYdRSVdvLPWDG/iEA+namrgn
- cggdSCWcUIq66Qr/S1aBVM7Vl04UW529iASZDGgox4O2e6kliuJxCTXdZWiQ7vu2QCc49Q+Oi
- Zq2yo09tKCu/P+vcgZaITG4fbIhIzBSb1rdGFCgd2Ee8pBZ3Qwuqwmfr8hOiOFFTbf1kZCm45
- h+UZ/AaZCbbcTB9WrEV3ic8zKYOLtzX/BPwgz1OtCIQzJM1U3JqbZqHABt8BpCv1s8nYACJNq
- Bzf0Op/7bjzaMIgNMjuZuG/eDOenGFra/pHUgyqRYU8iZAF3doY+b0qSAgUdxw3y2LWNQ1f/t
- tnM/j3FOqfc0+Vby2EhC8DRgNH1+vI53nPyKnvD7lsKkq+FXSq6OXexsC56UyHO3x73aVDXBg
- OBpVGfG+0t9y6kkWufgohwgBHLt5E3Nw41UtkCrp/M/PtyuLrVLK/yI/TVrDYPYo4oD5ahw0r
- 8n2QWqJ27yi2igfokG6m+TVK0YJm/xIvoAzk7qPFqeGap2qm3hfkclMGzuNhtb1EzDg4E+BRZ
- ISh9VyubNu82bDkb2hNvONyXFRgNYSMfRPOp5FRhePhLZFrnJngaaMNf4atyIivDdpZARqzCB
- ShDe8bRI7C/zdkjYW54Gqs6OvvNSHm5ZogPCSMQWlEl7b1+bFO3JEga2vIVQ6P7yOxw45Th39
- paoyw9sGiAtCuoQsn8c2HvRTnwTvNSBVXLp9LGA8ftOSI9YYn+T8rOoNuom0CE7Ww1539Q17o
- n34CvWWOGk9rDQV+C8cgJDsXTqxGBmwcZvi6QODUCrB49c0pAC5zeRW2w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:U9F5vH2TwsA=:kgfMf0ej3Zn4SwOl4P3add
+ I7CxgQTaL5kL72kbxJ+UrujzYNzSZ18+Rkmt5zQyWmbFmedYkz3t0ZUB9IThwkMpa1DdvJciW
+ mU6nSK/NecHooKZXvMMh28isyzm4Vf+//o8e5NcqpMzOFDWS+CctW8aDNkMAd9fENcGWxTQAj
+ BJUrIW7Cm34QT0qWaiQaj10Xd1UgHQ9XidwewD1DdB1DV61yzokqpKclSjgDbLzd7FS9B8LJD
+ QfvhFCmyXXaPVxL49dDeWOq5zCx+vCIlILPWQSHXIcHZw6HKlO+rMC7siKkSl+MlGIniiBXvw
+ n4aDaht8LeHVQcFuAKvGIkY+06XFqcu3kcMce/l1WWlAgpmr+bUEmkfo1pljt7whGkHydAd1m
+ wxrWfts3vcv2CRCaWWu7pnvrzU4f4+MzcYlOWD5DnTdL5PhfQlPvmcW11SxXiuq+uLa2YmruB
+ Vly1Tq7tjol6OovLXDmXm0fM7vNURcZ81cAYTgH8r7WV7gJmsJopyJE0LKKbAFvSZX4250I5G
+ gQPyvvvbijUVchO1eZSTcoyffXbshopll8jTMmdm7oP7jnBNqQcEBxh9sPdBjByGpLAlZ7xTa
+ TSbdpRdP1/x/yWI1OCMTO6viZCktvGHzvb+qaTA0MiMsDXdvuwwLyoWmI1X68yCt6ZsOf9fMF
+ G9Hf8KVqq7uTPYnWRtiRyE4SDj6oG8VjhzRfKHbwPaSTeCqidOWVLtKVVDsswqSAC5rHhxytm
+ BPTPjB6MAWASU8xvTQN9LgLwpZDO8yfcBlf/S+8LH2shk5QVj1jSuIYn8LeIC5z/GFwbUgxmN
+ PsZVwceVdRhkkzTkKhAdkLy8RC/YhuG1xguqSrRB3CvYvtHoOBX0Q4cojV2pmgsQZmjlpqtb0
+ VwOF6lmTyAKe9GTH7j/LHiS3pNuQituRPb5HqLvkjwiLay+ql+LW9/Zlzemsx3iD/GQ6dW+dY
+ K/m7spGe42ReZxOqgNspDMvh9v3ZlPf1RBTCZVlLCANucQrpbYuNyjIkJ7aYgAYq0LKNzQbC7
+ MPZFfWJ1LWmh1HOSjh0KlED1IviLsdR0zOnQA+9syM5g21fh+oq4ZK+noOZzrfUD2ZeVXxLRQ
+ bc4a+frh3yVAUM25wdsEOWNDvzRPjAqt80GqlhpEPhSAb3R4zSypdaVdA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/8/24 =E4=B8=8A=E5=8D=8812:57, David Sterba wrote:
-> On Tue, Aug 17, 2021 at 05:38:52PM +0800, Qu Wenruo wrote:
->> Currently we use u16 bitmap to make 4k sectorsize work for 64K page
->> size.
+On 2021/8/24 =E4=B8=8A=E5=8D=881:19, David Sterba wrote:
+> On Thu, Aug 12, 2021 at 01:48:11PM +0800, Qu Wenruo wrote:
+>> This patchset includes the following features:
 >>
->> But this u16 bitmap is not large enough to contain larger page size lik=
-e
->> 128K, nor is space efficient for 16K page size.
+>> - Introduce data dump feature to dump the whole fs.
+>>    This will introduce a new magic number to prevent old btrfs-image to
+>>    hit failure as the item size limit is enlarged.
+>>    Patch 1 and 2.
 >>
->> To handle both cases, here we pack all subpage bitmaps into a larger
->> bitmap, now btrfs_subpage::bitmaps[] will be the ultimate bitmap for
->> subpage usage.
+>> - Reduce memory usage for compressed data dump restore
+>>    This is mostly due to the fact that we have much larger
+>>    max_pending_size introduced by data dump(256K -> 256M).
+>>    Using 4 * max_pending_size for each decompress thread as buffer is w=
+ay
+>>    too expensive now.
+>>    Use proper inflate() to replace uncompress() calls.
+>>    Patch 3
 >>
->> Each sub-bitmap will has its start bit number recorded in
->> btrfs_subpage_info::*_start, and its bitmap length will be recorded in
->> btrfs_subpage_info::bitmap_nr_bits.
->>
->> All subpage bitmap operations will be converted from using direct u16
->> operations to bitmap operations, with above *_start calculated.
->>
->> For 64K page size with 4K sectorsize, this should not cause much
->> difference.
->>
->> While for 16K page size, we will only need 1 unsigned long (u32) to
->> store all the bitmaps, which saves quite some space.
->>
->> Furthermore, this allows us to support larger page size like 128K and
->> 258K.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/extent_io.c |  59 +++++++++++--------
->>   fs/btrfs/subpage.c   | 136 +++++++++++++++++++++++++++++-------------=
--
->>   fs/btrfs/subpage.h   |  19 +-----
->>   3 files changed, 129 insertions(+), 85 deletions(-)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 3c5770d47a95..fcb25ff86ea9 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -3856,10 +3856,9 @@ static void find_next_dirty_byte(struct btrfs_fs=
-_info *fs_info,
->>   	struct btrfs_subpage *subpage =3D (struct btrfs_subpage *)page->priv=
-ate;
->>   	u64 orig_start =3D *start;
->>   	/* Declare as unsigned long so we can use bitmap ops */
->> -	unsigned long dirty_bitmap;
->>   	unsigned long flags;
->> -	int nbits =3D (orig_start - page_offset(page)) >> fs_info->sectorsize=
-_bits;
->> -	int range_start_bit =3D nbits;
->> +	int range_start_bit =3D fs_info->subpage_info->dirty_offset +
->> +		(offset_in_page(orig_start) >> fs_info->sectorsize_bits);
+>> - A fix for small dev extent size mismatch with superblock
+>>    This no longer affects single device dump restore, thus it's only
+>>    for multi-device dump restore.
+>>    Patch 4
 >
-> There are several instances of fs_info->subpage_info so that warrants a
-> temporary variable.
+> I'll merge this patchset and try it with the new experimental build (now
+> in devel). Which means that the feature would have to be explicitly
+> enabled with configure --enable-experimental. This is to get us some
+> time to work on it and not be blocked nor block a release of progs.
 >
->>   	int range_end_bit;
->>
->>   	/*
->> @@ -3874,11 +3873,14 @@ static void find_next_dirty_byte(struct btrfs_f=
-s_info *fs_info,
->>
->>   	/* We should have the page locked, but just in case */
->>   	spin_lock_irqsave(&subpage->lock, flags);
->> -	dirty_bitmap =3D subpage->dirty_bitmap;
->> +	bitmap_next_set_region(subpage->bitmaps, &range_start_bit, &range_end=
-_bit,
->> +			       fs_info->subpage_info->dirty_offset +
->> +			       fs_info->subpage_info->bitmap_nr_bits);
->>   	spin_unlock_irqrestore(&subpage->lock, flags);
->>
->> -	bitmap_next_set_region(&dirty_bitmap, &range_start_bit, &range_end_bi=
-t,
->> -			       BTRFS_SUBPAGE_BITMAP_SIZE);
->> +	range_start_bit -=3D fs_info->subpage_info->dirty_offset;
->> +	range_end_bit -=3D fs_info->subpage_info->dirty_offset;
->> +
->>   	*start =3D page_offset(page) + range_start_bit * fs_info->sectorsize=
-;
->>   	*end =3D page_offset(page) + range_end_bit * fs_info->sectorsize;
->>   }
->> @@ -4602,12 +4604,11 @@ static int submit_eb_subpage(struct page *page,
->>   	int submitted =3D 0;
->>   	u64 page_start =3D page_offset(page);
->>   	int bit_start =3D 0;
->> -	const int nbits =3D BTRFS_SUBPAGE_BITMAP_SIZE;
->>   	int sectors_per_node =3D fs_info->nodesize >> fs_info->sectorsize_bi=
-ts;
->>   	int ret;
->>
->>   	/* Lock and write each dirty extent buffers in the range */
->> -	while (bit_start < nbits) {
->> +	while (bit_start < fs_info->subpage_info->bitmap_nr_bits) {
->>   		struct btrfs_subpage *subpage =3D (struct btrfs_subpage *)page->pri=
-vate;
->>   		struct extent_buffer *eb;
->>   		unsigned long flags;
->> @@ -4623,7 +4624,8 @@ static int submit_eb_subpage(struct page *page,
->>   			break;
->>   		}
->>   		spin_lock_irqsave(&subpage->lock, flags);
->> -		if (!((1 << bit_start) & subpage->dirty_bitmap)) {
->> +		if (!test_bit(bit_start + fs_info->subpage_info->dirty_offset,
->> +			      subpage->bitmaps)) {
->>   			spin_unlock_irqrestore(&subpage->lock, flags);
->>   			spin_unlock(&page->mapping->private_lock);
->>   			bit_start++;
->> @@ -7170,32 +7172,41 @@ void memmove_extent_buffer(const struct extent_=
-buffer *dst,
->>   	}
->>   }
->>
->> +#define GANG_LOOKUP_SIZE	16
->>   static struct extent_buffer *get_next_extent_buffer(
->>   		struct btrfs_fs_info *fs_info, struct page *page, u64 bytenr)
->>   {
->> -	struct extent_buffer *gang[BTRFS_SUBPAGE_BITMAP_SIZE];
->> +	struct extent_buffer *gang[GANG_LOOKUP_SIZE];
->>   	struct extent_buffer *found =3D NULL;
->>   	u64 page_start =3D page_offset(page);
->> -	int ret;
->> -	int i;
->> +	u64 cur =3D page_start;
->>
->>   	ASSERT(in_range(bytenr, page_start, PAGE_SIZE));
->> -	ASSERT(PAGE_SIZE / fs_info->nodesize <=3D BTRFS_SUBPAGE_BITMAP_SIZE);
->>   	lockdep_assert_held(&fs_info->buffer_lock);
->>
->> -	ret =3D radix_tree_gang_lookup(&fs_info->buffer_radix, (void **)gang,
->> -			bytenr >> fs_info->sectorsize_bits,
->> -			PAGE_SIZE / fs_info->nodesize);
->> -	for (i =3D 0; i < ret; i++) {
->> -		/* Already beyond page end */
->> -		if (gang[i]->start >=3D page_start + PAGE_SIZE)
->> -			break;
->> -		/* Found one */
->> -		if (gang[i]->start >=3D bytenr) {
->> -			found =3D gang[i];
->> -			break;
->> +	while (cur < page_start + PAGE_SIZE) {
->> +		int ret;
->> +		int i;
->> +
->> +		ret =3D radix_tree_gang_lookup(&fs_info->buffer_radix,
->> +				(void **)gang, cur >> fs_info->sectorsize_bits,
->> +				min_t(unsigned int, GANG_LOOKUP_SIZE,
->> +				      PAGE_SIZE / fs_info->nodesize));
->> +		if (ret =3D=3D 0)
->> +			goto out;
->> +		for (i =3D 0; i < ret; i++) {
->> +			/* Already beyond page end */
->> +			if (gang[i]->start >=3D page_start + PAGE_SIZE)
->> +				goto out;
->> +			/* Found one */
->> +			if (gang[i]->start >=3D bytenr) {
->> +				found =3D gang[i];
->> +				goto out;
->> +			}
->>   		}
->> +		cur =3D gang[ret - 1]->start + gang[ret - 1]->len;
->>   	}
->> +out:
->>   	return found;
->>   }
->>
->> diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
->> index c4fb2ce52207..578095c52a0f 100644
->> --- a/fs/btrfs/subpage.c
->> +++ b/fs/btrfs/subpage.c
->> @@ -142,10 +142,13 @@ struct btrfs_subpage *btrfs_alloc_subpage(const s=
-truct btrfs_fs_info *fs_info,
->>   					  enum btrfs_subpage_type type)
->>   {
->>   	struct btrfs_subpage *ret;
->> +	unsigned int real_size;
->>
->>   	ASSERT(fs_info->sectorsize < PAGE_SIZE);
->>
->> -	ret =3D kzalloc(sizeof(struct btrfs_subpage), GFP_NOFS);
->> +	real_size =3D struct_size(ret, bitmaps,
->> +			BITS_TO_LONGS(fs_info->subpage_info->total_nr_bits));
->> +	ret =3D kzalloc(real_size, GFP_NOFS);
->>   	if (!ret)
->>   		return ERR_PTR(-ENOMEM);
->>
->> @@ -328,37 +331,60 @@ void btrfs_page_end_writer_lock(const struct btrf=
-s_fs_info *fs_info,
->>   		unlock_page(page);
->>   }
->>
->> -/*
->> - * Convert the [start, start + len) range into a u16 bitmap
->> - *
->> - * For example: if start =3D=3D page_offset() + 16K, len =3D 16K, we g=
-et 0x00f0.
->> - */
->> -static u16 btrfs_subpage_calc_bitmap(const struct btrfs_fs_info *fs_in=
-fo,
->> -		struct page *page, u64 start, u32 len)
->> +static bool bitmap_test_range_all_set(unsigned long *addr, unsigned in=
-t start,
->> +				      unsigned int nbits)
->>   {
->> -	const int bit_start =3D offset_in_page(start) >> fs_info->sectorsize_=
-bits;
->> -	const int nbits =3D len >> fs_info->sectorsize_bits;
->> +	unsigned int found_zero;
->>
->> -	btrfs_subpage_assert(fs_info, page, start, len);
->> +	found_zero =3D find_next_zero_bit(addr, start + nbits, start);
->> +	if (found_zero =3D=3D start + nbits)
->> +		return true;
->> +	return false;
->> +}
->>
->> -	/*
->> -	 * Here nbits can be 16, thus can go beyond u16 range. We make the
->> -	 * first left shift to be calculate in unsigned long (at least u32),
->> -	 * then truncate the result to u16.
->> -	 */
->> -	return (u16)(((1UL << nbits) - 1) << bit_start);
->> +static bool bitmap_test_range_all_zero(unsigned long *addr, unsigned i=
-nt start,
->> +				       unsigned int nbits)
->> +{
->> +	unsigned int found_set;
->> +
->> +	found_set =3D find_next_bit(addr, start + nbits, start);
->> +	if (found_set =3D=3D start + nbits)
->> +		return true;
->> +	return false;
->>   }
->>
->> +#define subpage_calc_start_bit(fs_info, page, name, start, len)		\
->> +({									\
->> +	unsigned int start_bit;						\
->> +									\
->> +	btrfs_subpage_assert(fs_info, page, start, len);		\
->> +	start_bit =3D offset_in_page(start) >> fs_info->sectorsize_bits;	\
->> +	start_bit +=3D fs_info->subpage_info->name##_offset;		\
->> +	start_bit;							\
->> +})
->> +
->> +#define subpage_test_bitmap_all_set(fs_info, subpage, name)		\
->> +	bitmap_test_range_all_set(subpage->bitmaps,			\
->> +			fs_info->subpage_info->name##_offset,		\
->> +			fs_info->subpage_info->bitmap_nr_bits)
->> +
->> +#define subpage_test_bitmap_all_zero(fs_info, subpage, name)		\
->> +	bitmap_test_range_all_zero(subpage->bitmaps,			\
->> +			fs_info->subpage_info->name##_offset,		\
->> +			fs_info->subpage_info->bitmap_nr_bits)
->> +
->>   void btrfs_subpage_set_uptodate(const struct btrfs_fs_info *fs_info,
->>   		struct page *page, u64 start, u32 len)
->>   {
->>   	struct btrfs_subpage *subpage =3D (struct btrfs_subpage *)page->priv=
-ate;
->> -	const u16 tmp =3D btrfs_subpage_calc_bitmap(fs_info, page, start, len=
-);
->> +	unsigned int start_bit =3D subpage_calc_start_bit(fs_info, page,
->> +							uptodate, start, len);
->>   	unsigned long flags;
->>
->>   	spin_lock_irqsave(&subpage->lock, flags);
->> -	subpage->uptodate_bitmap |=3D tmp;
->> -	if (subpage->uptodate_bitmap =3D=3D U16_MAX)
->> +	bitmap_set(subpage->bitmaps, start_bit,
->> +		   len >> fs_info->sectorsize_bits);
+> To mark it as experimental the key bits enabling the interface need to
+> be behind if (EXPERIMENTAL) or under #if EXPERIMENTAL, but that should
+> be it. Please update the patchset accordingly. This is the first attempt
+> to do that so we may need to tweak something but I'd like to establish
+> this kind of patch flow for the future and your patchset looks like a
+> good testing ground. Thanks for volunteering.
 >
-> All the bitmap_* calls like this and the parameter fit one line.
->
-But that's over 80 chars.
 
-I understand now our standard no longer requires 80 chars as hard limit,
-but isn't it seill recommended to keep inside the 80 chars limit?
+The experimental feature looks like a perfect place for us to play around.
+
+No need to bother back compatibility (for a while at least), and can
+still get some good feedback (though not from most end users).
+
+Let me update the patchset to be the first test bed.
 
 Thanks,
 Qu
