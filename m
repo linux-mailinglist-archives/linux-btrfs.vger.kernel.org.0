@@ -2,163 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE4E3F53B1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23C13F53BA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbhHWXiZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 19:38:25 -0400
-Received: from mout.gmx.net ([212.227.17.21]:48945 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233093AbhHWXiZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:38:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629761857;
-        bh=52tZtgxqc6N7uHGa6Yzz8oQVDeKtlXDCAPVIzVqVZ4M=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=hgnLBa8Ih1YkqAX6tdlaD6xZUcwwgZw+noGc2h2vlhOF8G6t9s9XeHztAvrI94nX0
-         LfxRtaC7smNmnWn5AoPHQcliGBhjg0AH0cyI4YYSEmoAzONPZ2kQCM0g8X6iQMst5s
-         c9T4ZkBAAxlWZv2Vb45DEJzZjjJnq4Xjhaum79f0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkYbu-1mkTrq41BW-00m2XT; Tue, 24
- Aug 2021 01:37:37 +0200
-Subject: Re: [PATCH 6/9] btrfs-progs: add the block group item in make_btrfs()
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1629486429.git.josef@toxicpanda.com>
- <d433af292d5e99ff194bc6362133e64704ecd006.1629486429.git.josef@toxicpanda.com>
- <72de3cea-aee0-a7e4-d585-bf9ea749e53b@gmx.com>
- <080b9285-9af0-0f51-4b3e-e9f357004920@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <f1c7b1c0-04cb-48ad-c728-5fc5429d7001@gmx.com>
-Date:   Tue, 24 Aug 2021 07:37:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233093AbhHWXq5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 19:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233227AbhHWXqy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Aug 2021 19:46:54 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E00C06175F
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 16:46:11 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so585990pjq.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 16:46:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=mmb9QhGfp85d1j6oVD2UpQrvT2lgsqs0P3HseXWNRW0=;
+        b=i/ncSj+jpCKCXXBFvHyJqUxOlQwwNeb+T68r+CZ19bGK9iOsdtXjrhpHBs2dC5AIVW
+         svkvDNuR2R7o76puPQN1vFv38aQNtV0HTYrgFYw+pGt5eIsmlJnekbVy8TYqx2mWEydb
+         Vh+umlenb6luwSr8W913wNjfNKYsllIKCp+8HWVZ4uPFMhbxbZ7fOERDSj2m1Q5+YEvo
+         /NEHxFxzMirY9xxFG/p52m34EL6fAN8hce9Ix8kvNxcC6mI5J4HYteHykcFySGbhr2wl
+         nHqwlPv/1HYTWg99Fz0NpjanJlnXzsWlnxv092sP1uY9HJIeVyKLSzgM2Ta1jj+5LYZP
+         IBFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=mmb9QhGfp85d1j6oVD2UpQrvT2lgsqs0P3HseXWNRW0=;
+        b=iSBZCanJ7AMbE/TD+8fSGl/FmrWa2O+IHHYlIOhqhVcSIZjxstUxb+52tSjWXqqQts
+         9h2kzUZR4144xTbAlkAvA04skJsK2r0tOe+l/Wg2WHkZ2z0qDn8t6WVA9DyCrZmro0E9
+         odNtbSiWagkVEFZ9lAISN3trwO8fA3ovQqdHbQ2Ww1q8erTLQYXvVTLRX81Ehj1pAzmW
+         G5DpwN4SEmtJwdZzz4OHWPGcAE5OWyEmyNvsZm/0vqzyQl4h7hy+drvr54DC6qiJVC5K
+         vVii+WwXULIMPD//Pl7AMJJ8HQX2mZZLVs5eo6alXLK1qYW9y69BoktB03ArsOemS3c3
+         HBFQ==
+X-Gm-Message-State: AOAM5303ZLldC5bRG9QKXGd8It9r5PQ8Yo348ZvuZI50XIev3Zauz8h4
+        4oVfnS7JlcmxaOBABkYTt3m6KQ==
+X-Google-Smtp-Source: ABdhPJyRJam+Dk6RoVqEHFVFNafYswiqLRNselBAUirhTVizoAXqhDMNha8bn8f3eNwHOyTmjxzA4w==
+X-Received: by 2002:a17:902:9009:b0:12d:8de4:bc2d with SMTP id a9-20020a170902900900b0012d8de4bc2dmr30955096plp.44.1629762370928;
+        Mon, 23 Aug 2021 16:46:10 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:40e1])
+        by smtp.gmail.com with ESMTPSA id p10sm16296451pfw.28.2021.08.23.16.46.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 16:46:10 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 16:46:08 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org, Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH v10 06/14] btrfs: optionally extend i_size in
+ cow_file_range_inline()
+Message-ID: <YSQzQNMLy3qOY9VW@relinquished.localdomain>
+References: <cover.1629234193.git.osandov@fb.com>
+ <a00b59623219c8a07f2c22f80ef1466d0f182d77.1629234193.git.osandov@fb.com>
+ <1b495420-f4c6-6988-c0b1-9aa8a7aa952d@suse.com>
+ <2eae3b11-d9aa-42b1-122e-49bd40258d9b@gmx.com>
+ <YR/wQPJcv25vPIp7@relinquished.localdomain>
+ <d7e302f9-7230-0065-c908-86c10d77d738@gmx.com>
+ <YSPl/psinnRhev4x@relinquished.localdomain>
+ <5a35da37-1504-361a-46bc-3fe1c1846871@gmx.com>
 MIME-Version: 1.0
-In-Reply-To: <080b9285-9af0-0f51-4b3e-e9f357004920@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:O2iKei5oGC5QKtX/7KRRNHz1Z60DgtCgvK61TMANSfSK2pNWFVe
- sFFf2U4/z9hDRum7tx8QBrOBxqSK0JW/MnRTOerL3PRb2vcdXky1+tEQII4o6iwEgloB4ja
- vsjQ11jKHAfgZ9W7R1Kk9v8Nd2BhzeEj2ukD7jJIv6Rog1B+ajd+rcAtCfpk0i1QDMX9vp/
- HuSJRs7D/tEcwRYsIBjPA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Wy2fIrTgYSA=:Tu9CU4ceQXv/RSDNQrZN/z
- w7lcOU9tJpyCvFr1K1x6DX43TtEh0S/HRx9F6RUDYT6H58OsbDA4sAjmirjcxu3s1EmZTSqyt
- 6tWOHMlnsIN6k9qX/5gcABxZlHHXGXOTE8OWLOJzrZ2k+Ik4fC7/ZC9t1k5ABeprbptSu2ndg
- rIE7673oVxWMbzvVmSMuuZFGQ3GQbc3Y/xlMbMMIHXxWQKIBhKeSj3OwCs6aQ9epGYvMZfyez
- XkhmRoRDIASqo/HxhRYl0vn4GTOBroAYbB2lExVukirVjzE+6uyzFLuOF0Pxaa/QlYN1EbJXM
- YmyWYIneGYGDDRY47uHzz/LezIDbnEWJOmrzBy7coJUYeOZoJReVvEVgXkOCargda+IMcXuGY
- 3JJe4yxHhH4IvNzE4cXOfPDqO/kCvKPq7SIo9qfyatAxNqbPfYoX0dekhMFz5KribTlguxQe7
- n7c8p8AWREH28eN6X2SS406emVd6VfaHN4LX12ygsNvaXFhUfhGQsgZEbQXp7uE+XyUAivryD
- 0OB13Ucfs5LMHMp+GnbwgY2l/UHmIS/6GXYEW9ysvlZ3oxtucvRPTefNmU8rIVu6MrIQiP7xh
- FyG7ITnlaV090B6helnKA0MMwAoEwsYnd8ojmDhhIquGYztoVl0Shq7H3Qg+NUp14/cNi4b/Q
- DFgDSO/XywVQx+XDDC/nuxdUyNx9ETY3QWeMnNjo4RgwprtiHETcqscWdAQpjwmIb/esThZKl
- pqeBATjxY4Jq2dfy5qZkTjia4Yg0on9c2E4dbrZxtNqmTy1YnnoL4QZEFjn3nLVMr9q/IngD1
- LzAgwDa9Fh4SZIqS8KEC6oIQWwUdEc+qUn61t+vYPU/Rf1K5idJ7zzL9b54jOrK0001tCVvf0
- UuCp1Cbhu/ZpMU3utZTZbVDaXnBXVk1ur5Vo6zGVqzzSIU4KWCK5ESDHYBZnBwnNG1IPA84qe
- DacHinE0qanIBmfwfgzvidL/eOItXo2+S7mnMYFMww/vAnVPjy/JLregTTjeUdCLZMrXgVGHD
- 7PIkRHRefmZowpJuLPmbxPGBH0YEJrxukJJkHgdsP5Cn/MtQUsiN3cZyEHae9+kYMKDDw/Oo8
- gr16ZT24QX2y1feB8NUOW0xuDpEj0WAwvtgT6ecdzEZEnNIY+1VA5+RgQ==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a35da37-1504-361a-46bc-3fe1c1846871@gmx.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Aug 24, 2021 at 07:32:06AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2021/8/24 上午2:16, Omar Sandoval wrote:
+> > On Sat, Aug 21, 2021 at 09:11:26AM +0800, Qu Wenruo wrote:
+> > > 
+> > > 
+> > > On 2021/8/21 上午2:11, Omar Sandoval wrote:
+> > > > On Fri, Aug 20, 2021 at 05:13:34PM +0800, Qu Wenruo wrote:
+> > > > > 
+> > > > > 
+> > > > > On 2021/8/20 下午4:51, Nikolay Borisov wrote:
+> > > > > > 
+> > > > > > 
+> > > > > > On 18.08.21 г. 0:06, Omar Sandoval wrote:
+> > > > > > > From: Omar Sandoval <osandov@fb.com>
+> > > > > > > 
+> > > > > > > Currently, an inline extent is always created after i_size is extended
+> > > > > > > from btrfs_dirty_pages(). However, for encoded writes, we only want to
+> > > > > > > update i_size after we successfully created the inline extent.
+> > > > > 
+> > > > > To me, the idea of write first then update isize is just going to cause
+> > > > > tons of inline extent related prblems.
+> > > > > 
+> > > > > The current example is falloc, which only update the isize after the
+> > > > > falloc finishes.
+> > > > > 
+> > > > > This behavior has already bothered me quite a lot, as it can easily
+> > > > > create mixed inline and regular extents.
+> > > > 
+> > > > Do you have an example of how this would happen? I have the inode and
+> > > > extent bits locked during an encoded write, and I see that fallocate
+> > > > does the same.
+> > > 
+> > > xfs_io -f -c "pwrite 0 1K" -c "sync" -c "falloc 0 4k" -c "pwrite 4k 4k"
+> > > 
+> > > The [0, 1K) will be written as inline without doubt.
+> > > 
+> > > Then we go to falloc, it will try to zero the range [1K, 4K), but it
+> > > doesn't increase the isize.
+> > > Thus the page [0, 4k) will still be written back as inline, since isize
+> > > is still 1K.
+> > > 
+> > > Later [4K, 8K) will be written back as regular, causing mixed extents.
+> > 
+> > I'll have to read fallocate more closely to follow what's going on here
+> > and figure out if it applies to encoded writes. Please help me out if
+> > you see how this would be an issue with encoded writes.
+> 
+> This won't cause anything wrong, if the encoded writes follows the
+> existing inline extents requirement (always at offset 0).
+> 
+> Otherwise, the read path could be affected to handle inlined extent at
+> non-zero offset.
+> 
+> > 
+> > > > > Can't we remember the old isize (with proper locking), enlarge isize
+> > > > > (with holes filled), do the write.
+> > > > > 
+> > > > > If something wrong happened, we truncate the isize back to its old isize.
+> > > > > 
+> > > [...]
+> > > > > > 
+> > > > > > Urgh, just some days ago Qu was talking about how awkward it is to have
+> > > > > > mixed extents in a file. And now, AFAIU, you are making them more likely
+> > > > > > since now they can be created not just at the beginning of the file but
+> > > > > > also after i_size write. While this won't be a problem in and of itself
+> > > > > > it goes just the opposite way of us trying to shrink the possible cases
+> > > > > > when we can have mixed extents.
+> > > > > 
+> > > > > Tree-checker should reject such inline extent at non-zero offset.
+> > > > 
+> > > > This change does not allow creating inline extents at a non-zero offset.
+> > > > 
+> > > > > > Qu what is your take on that?
+> > > > > 
+> > > > > My question is, why encoded write needs to bother the inline extents at all?
+> > > > > 
+> > > > > My intuition of such encoded write is, it should not create inline
+> > > > > extents at all.
+> > > > > 
+> > > > > Or is there any special use-case involved for encoded write?
+> > > > 
+> > > > We create compressed inline extents with normal writes. We should be
+> > > > able to send and receive them without converting them into regular
+> > > > extents.
+> > > > 
+> > > But my first impression for any encoded write is that, they should work
+> > > like DIO, thus everything should be sectorsize aligned.
+> > > 
+> > > Then why could they create inline extent? As inline extent can only be
+> > > possible when the isize is smaller than sectorsize.
+> > 
+> > ENCODED_WRITE is not defined as "O_DIRECT, but encoded". It happens to
+> > have some resemblance to O_DIRECT because we have alignment requirements
+> > for new extents and because we bypass the page cache, but there's no
+> > reason to copy arbitrary restrictions from O_DIRECT. If someone is using
+> > ENCODED_WRITE to write compressed data, then they care about space
+> > efficiency, so we should make efficient use of inline extents.
+> > 
+> Then as long as the inline extent requirement for 0 offset is still
+> followed, I'll be fine with that.
+> 
+> But for non-zero offset inline extent? It looks like a much larger
+> change, and may affect read path.
+> 
+> So I'd prefer we keep the 0 offset requirement for inline extent, and
+> find a better way to work around.
 
-
-On 2021/8/24 =E4=B8=8A=E5=8D=884:04, Josef Bacik wrote:
-> On 8/23/21 5:00 AM, Qu Wenruo wrote:
->>
->>
->> On 2021/8/21 =E4=B8=8A=E5=8D=883:11, Josef Bacik wrote:
->>> Currently we build a bare-bones file system in make_btrfs(), and then =
-we
->>> load it up and fill in the rest of the file system after the fact.=C2=
-=A0 One
->>> thing we omit in make_btrfs() is the block group item for the temporar=
-y
->>> system chunk we allocate, because we just add it after we've opened th=
-e
->>> file system.
->>>
->>> However I want to be able to generate the free space tree at
->>> make_btrfs() time, because extent tree v2 will not have an extent tree
->>> that has every block allocated in the system.=C2=A0 In order to do thi=
-s I
->>> need to make sure that the free space tree entries are added on block
->>> group creation, which is annoying if we have to add this chunk after
->>> I've created a free space tree.
->>>
->>> So make future work simpler by simply adding our block group item at
->>> make_btrfs() time, this way I can do the right things with the free
->>> space tree in the generic make block group code without needing a
->>> special case for our temporary system chunk.
->>>
->>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->>> ---
->>> =C2=A0 mkfs/common.c | 31 +++++++++++++++++++++++++++++++
->>> =C2=A0 mkfs/main.c=C2=A0=C2=A0 |=C2=A0 9 ++-------
->>> =C2=A0 2 files changed, 33 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/mkfs/common.c b/mkfs/common.c
->>> index 9263965e..cba97687 100644
->>> --- a/mkfs/common.c
->>> +++ b/mkfs/common.c
->>> @@ -190,6 +190,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config
->>> *cfg)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 num_bytes;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 system_group_offset =3D BTRFS_BLOCK=
-_RESERVED_1M_FOR_SUPER;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 system_group_size =3D BTRFS_MKFS_SY=
-STEM_GROUP_SIZE;
->>> +=C2=A0=C2=A0=C2=A0 bool add_block_group =3D true;
->>>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((cfg->features & BTRFS_FEATURE_INCO=
-MPAT_ZONED)) {
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 system_group_of=
-fset =3D cfg->zone_size * BTRFS_NR_SB_LOG_ZONES;
->>> @@ -283,6 +284,36 @@ int make_btrfs(int fd, struct btrfs_mkfs_config
->>> *cfg)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (blk =3D=3D =
-MKFS_SUPER_BLOCK)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 continue;
->>>
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Add the block group ite=
-m for our temporary chunk. */
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cfg->blocks[blk] > sys=
-tem_group_offset &&
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ad=
-d_block_group) {
->>
->> This makes the block group item always be the first item.
->>
->> But for skinny metadata, METADATA_ITEM is smaller than BLOCK_GROUP_ITEM=
-,
->> meaning it should be before BLOCK_GROUP_ITEM.
->>
->> Won't this cause the extent tree has a bad key order?
->>
->
-> No because it's based on the actual bytenr.=C2=A0 We'll insert the exten=
-t
-> item entry first, and then move to the next block and if it's past the
-> first block we add the block group item, and then the actual extent
-> item.=C2=A0 So it goes
->
-> first block X gets extent item inserted
-> X+1 > X, insert block group item
-> insert X+1 extent item.
->
-
-But then what if we go non-skinny metadata?
-
-Then block group item is always before any extent item.
-
-Thanks,
-Qu
-
-> Thanks,
->
-> Josef
+Ah, okay. I didn't get rid of the 0 offset requirement and I have no
+plans to. In fact, this patch kind of does the opposite: it gets rid of
+the start parameter to cow_file_range_inline() because it doesn't make
+sense for it to ever be anything other than 0 (and we're already
+checking that start == 0 in the callers).
