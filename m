@@ -2,94 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207243F4CBE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 16:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC163F4CF7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 17:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhHWO6V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 10:58:21 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60044 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhHWO6U (ORCPT
+        id S231640AbhHWPD1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 11:03:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52456 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230364AbhHWPDL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:58:20 -0400
+        Mon, 23 Aug 2021 11:03:11 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8062D1FFFF;
-        Mon, 23 Aug 2021 14:57:37 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5B15121FD3;
+        Mon, 23 Aug 2021 15:02:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629730657;
+        t=1629730947;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=vIb6yaqqNQ8/tIpNN0+ITQj9s0yKXzTtV5BT/hcW6aU=;
-        b=HK5CiKqEW+9/sxxboSGA8Ien+AMwsuZpOpqp3FuJdlY9MJMiFVwp2Kng3/2rA3zqF9/TDy
-        nXhs6xV9MLQNhPJM1W8WCkgYVUWzlQW7EhoMQs+gd/4Fy/29TnQkASCMKpSIn4mtUmOKp0
-        VdXhdEjiGhamnV0OH6pxzJt5auLjBwc=
+        bh=LEuL7qT/kqvHPaqPBBlsNB7vy63lFLKh+ZjcFOC5BFI=;
+        b=IdLjY7wIhIR6Yr7Ou3D8hlH3tUIwjEcgaFlfAL99H634CDenNL25jeO79ZbXG1EzRio8P8
+        I31bSCxt4WbLCFJhbRCjvv5U342KUVLzxH5lNU8cRp7FxvTMX+5ZT7NRsYGBtyqt89V0g8
+        W7HKXrfbUhN0eJgCDodA+nQvZlYmRJo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629730657;
+        s=susede2_ed25519; t=1629730947;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=vIb6yaqqNQ8/tIpNN0+ITQj9s0yKXzTtV5BT/hcW6aU=;
-        b=NlgVkmyn6OQlnrwkNz/3FjUHWP2MtR2r3j4W2Itj4k9hetLhIG5JJk135bchfrxIriffkA
-        YsE1VorZm5zUDJBA==
+        bh=LEuL7qT/kqvHPaqPBBlsNB7vy63lFLKh+ZjcFOC5BFI=;
+        b=WEekTEKkbVKQgkzz9saT9SF00zFm8clyr6fd+78IC9L+h6cX8PPMfG6kZUjU9p4dFLjQey
+        g/tNzhX7SLk5vgBw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 776EDA3BBE;
-        Mon, 23 Aug 2021 14:57:37 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 54DFFA3BBB;
+        Mon, 23 Aug 2021 15:02:27 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5EF89DA725; Mon, 23 Aug 2021 16:54:36 +0200 (CEST)
-Date:   Mon, 23 Aug 2021 16:54:36 +0200
+        id B6F5EDA725; Mon, 23 Aug 2021 16:59:27 +0200 (CEST)
+Date:   Mon, 23 Aug 2021 16:59:27 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 01/12] btrfs-progs: fix running lowmem check tests
-Message-ID: <20210823145436.GB5047@twin.jikos.cz>
+Subject: Re: [PATCH v2 07/12] btrfs-progs: add the ability to corrupt fields
+ of the super block
+Message-ID: <20210823145927.GC5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
 References: <cover.1629322156.git.josef@toxicpanda.com>
- <45ba3fd15ba81f18136d9f6a7e10e7d6bc2422d5.1629322156.git.josef@toxicpanda.com>
+ <7c5a5c52f3cf9ba6b0188b5509e39de93f6bb662.1629322156.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <45ba3fd15ba81f18136d9f6a7e10e7d6bc2422d5.1629322156.git.josef@toxicpanda.com>
+In-Reply-To: <7c5a5c52f3cf9ba6b0188b5509e39de93f6bb662.1629322156.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 05:33:13PM -0400, Josef Bacik wrote:
-> When I added the invalid super image I saw that the lowmem tests were
-> passing, despite not having the detection code yet.  Turns out this is
-> because we weren't using a run command helper which does the proper
-> expansion and adds the --mode=lowmem option.  Fix this to use the proper
-> handler, and now the lowmem test fails properly without my patch to add
-> this support to the lowmem mode.
+On Wed, Aug 18, 2021 at 05:33:19PM -0400, Josef Bacik wrote:
+> Doing the extent tree v2 work I generated an invalid super block with
+> the wrong bytes_used set, and only noticed because it affected the block
+> groups as well.  Neither modes of fsck check for a valid bytes_used, so
+> add the ability to corrupt this field so I can generate a testcase for
+> fsck.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  tests/common | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  btrfs-corrupt-block.c | 66 ++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 65 insertions(+), 1 deletion(-)
 > 
-> diff --git a/tests/common b/tests/common
-> index 805a447c..5b255689 100644
-> --- a/tests/common
-> +++ b/tests/common
-> @@ -425,9 +425,8 @@ check_image()
+> diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
+> index 80622f29..7e576897 100644
+> --- a/btrfs-corrupt-block.c
+> +++ b/btrfs-corrupt-block.c
+> @@ -355,6 +355,24 @@ enum btrfs_block_group_field {
+>  	BTRFS_BLOCK_GROUP_ITEM_BAD,
+>  };
 >  
->  	image=$1
->  	echo "testing image $(basename $image)" >> "$RESULTS"
-> -	"$TOP/btrfs" check "$image" >> "$RESULTS" 2>&1
-> -	[ $? -eq 0 ] && _fail "btrfs check should have detected corruption"
-> -
-> +	run_mustfail "btrfs check should have detected corruption" \
-> +		"$TOP/btrfs" check "$image"
+> +enum btrfs_super_field {
+> +	BTRFS_SUPER_FIELD_FLAGS,
+> +	BTRFS_SUPER_FIELD_TOTAL_BYTES,
+> +	BTRFS_SUPER_FIELD_BYTES_USED,
+> +	BTRFS_SUPER_FIELD_BAD,
+> +};
+> +
+> +static enum btrfs_super_field convert_super_field(char *field)
+> +{
+> +	if (!strncmp(field, "flags", FIELD_BUF_LEN))
+> +		return BTRFS_SUPER_FIELD_FLAGS;
+> +	if (!strncmp(field, "total_bytes", FIELD_BUF_LEN))
+> +		return BTRFS_SUPER_FIELD_TOTAL_BYTES;
+> +	if (!strncmp(field, "bytes_used", FIELD_BUF_LEN))
+> +		return BTRFS_SUPER_FIELD_BYTES_USED;
+> +	return BTRFS_SUPER_FIELD_BAD;
 
-This seems correct but Qu sent a patch that processes the output looking
-for some specific error messages so I've applied his version
-("btrfs-progs: tests: also check subpage warning for check_image cases")
-
->  	run_check "$TOP/btrfs" check --repair --force "$image"
->  	run_check "$TOP/btrfs" check "$image"
->  }
-> -- 
-> 2.26.3
+There's a more feature-complete utility to modify super block fields
+btrfs-sb-mod, this would be duplicated in corrupt-block.
