@@ -2,93 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631223F4F02
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 19:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FC53F4F73
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 19:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhHWRJX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 13:09:23 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49252 "EHLO
+        id S230391AbhHWRXn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 13:23:43 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50188 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbhHWRJU (ORCPT
+        with ESMTP id S231176AbhHWRXm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:09:20 -0400
+        Mon, 23 Aug 2021 13:23:42 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 02A751FFCC;
-        Mon, 23 Aug 2021 17:08:37 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id A425F1FFD4;
+        Mon, 23 Aug 2021 17:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629738517;
+        t=1629739378;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wkw7/ZAUft+GihjClVKjv7OQAI8DysG/ktO4yFg9bnc=;
-        b=URUH7gz1HLQzLxPaupWAXrXUEGh5jr1zJ5FPni63Vyb1KQlGHv6D5j+/xZ65h+tywIJ2t/
-        yyyshBNfvQm5hT11MYJ7LxvHJmqc8FBrHG8wSjPdjWDpQpA/I09RDZb5INPV9rbYXYjfoC
-        SP1PimKvENDh06W+QCjpvnlaebChdl8=
+        bh=QxJR1CAmUsR2iRLocbncSLUZJytLJR+wmczfmryqMr8=;
+        b=EW3zLw9PGcOnFBn7pkVrSFAnEm7kEhQaFVc4/Be3vQxcj/77cSPJgyMIaNYl1CPf6tjks2
+        guqEANgNKGiGb2neuk5eHteXDZ0oFnwdeWOtEIkww7a54sPEoWCTlN3mGTDa9JckicgQkt
+        e8zn7PL6nbxOl5UPkXcz7j77ZZPt4OQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629738517;
+        s=susede2_ed25519; t=1629739378;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wkw7/ZAUft+GihjClVKjv7OQAI8DysG/ktO4yFg9bnc=;
-        b=aTXuA6IF1T7m0ilbD66cQpU+Mi4ymXdwVBlGWY9sBvbN5LgvPdVgy9KRLjmYEfR6Qckjg7
-        pmruqs3JKsbOBoBw==
+        bh=QxJR1CAmUsR2iRLocbncSLUZJytLJR+wmczfmryqMr8=;
+        b=+ou3lB1UqYDxwheu7M9uN1LNTO8HEhc1BoXxmfhp5nEd2N/49RgZpTibOGVboXmI0jvpao
+        SUThjAqDVmcEpSAQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id F020FA3BBA;
-        Mon, 23 Aug 2021 17:08:36 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 9BAE4A3BB0;
+        Mon, 23 Aug 2021 17:22:58 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 69697DA725; Mon, 23 Aug 2021 19:05:37 +0200 (CEST)
-Date:   Mon, 23 Aug 2021 19:05:37 +0200
+        id 20F97DA725; Mon, 23 Aug 2021 19:19:59 +0200 (CEST)
+Date:   Mon, 23 Aug 2021 19:19:58 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] btrfs: subpage: pack all subpage bitmaps into a
- larger bitmap
-Message-ID: <20210823170537.GJ5047@twin.jikos.cz>
+Subject: Re: [PATCH v6 0/4] btrfs-progs: image: new data dump feature
+Message-ID: <20210823171958.GK5047@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20210817093852.48126-1-wqu@suse.com>
+References: <20210812054815.192405-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210817093852.48126-1-wqu@suse.com>
+In-Reply-To: <20210812054815.192405-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 05:38:48PM +0800, Qu Wenruo wrote:
-> Currently we use u16 bitmap to make 4k sectorsize work for 64K page
-> size.
+On Thu, Aug 12, 2021 at 01:48:11PM +0800, Qu Wenruo wrote:
+> This patchset includes the following features:
 > 
-> But this u16 bitmap is not large enough to contain larger page size like
-> 128K, nor is space efficient for 16K page size.
+> - Introduce data dump feature to dump the whole fs.
+>   This will introduce a new magic number to prevent old btrfs-image to
+>   hit failure as the item size limit is enlarged.
+>   Patch 1 and 2.
 > 
-> To handle both cases, here we pack all subpage bitmaps into a larger
-> bitmap, now btrfs_subpage::bitmaps[] will be the ultimate bitmap for
-> subpage usage.
+> - Reduce memory usage for compressed data dump restore
+>   This is mostly due to the fact that we have much larger
+>   max_pending_size introduced by data dump(256K -> 256M).
+>   Using 4 * max_pending_size for each decompress thread as buffer is way
+>   too expensive now.
+>   Use proper inflate() to replace uncompress() calls.
+>   Patch 3
 > 
-> This is the first step towards more page size support.
-> 
-> Although to really enable extra page size like 16K and 128K, we need to
-> rework the metadata alignment check.
-> Which will happen in another patchset.
-> 
-> Changelog:
-> v2:
-> - Add two refactor patches to make btrfs_alloc_subpage() more readable
-> - Fix a break inside two loops bug
-> - Rename subpage_info::*_start to subpage_info::*_offset
-> - Add extra comment on what each subpage_info::*_offset works
-> 
-> 
-> Qu Wenruo (4):
->   btrfs: only call btrfs_alloc_subpage() when sectorsize is smaller than
->     PAGE_SIZE
->   btrfs: make btrfs_alloc_subpage() to return struct btrfs_subpage *
->     directly
->   btrfs: introduce btrfs_subpage_bitmap_info
->   btrfs: subpage: pack all subpage bitmaps into a larger bitmap
+> - A fix for small dev extent size mismatch with superblock
+>   This no longer affects single device dump restore, thus it's only
+>   for multi-device dump restore.
+>   Patch 4
 
-With a few fixups added to misc-next, thanks. I haven't tested it on
-subpage config.
+I'll merge this patchset and try it with the new experimental build (now
+in devel). Which means that the feature would have to be explicitly
+enabled with configure --enable-experimental. This is to get us some
+time to work on it and not be blocked nor block a release of progs.
+
+To mark it as experimental the key bits enabling the interface need to
+be behind if (EXPERIMENTAL) or under #if EXPERIMENTAL, but that should
+be it. Please update the patchset accordingly. This is the first attempt
+to do that so we may need to tweak something but I'd like to establish
+this kind of patch flow for the future and your patchset looks like a
+good testing ground. Thanks for volunteering.
