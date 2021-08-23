@@ -2,104 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53ACE3F539D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8773F53A4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233278AbhHWXW4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 19:22:56 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49252 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233232AbhHWXW4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:22:56 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D3A9420019;
-        Mon, 23 Aug 2021 23:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629760931; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C7BBVvHaQw/s+KITQeP577sqWBVDyFdUma/can/bxpE=;
-        b=edSs3Cs2bRbe3wwxDwxWAQ9KkrRQSbqpE8pyiBzj8LmIDreY1QLcC0kCnQUDtYPncYpsZi
-        c78F4UyB1UADRlWMV870uphXPLDA3/YCYvUrHNmdX7qvx5ij98ZEU2w7DjsxRCbpI0bfLh
-        jCs2KlnzqcQnVUOMmmJLiHaFMOyNs1I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629760931;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C7BBVvHaQw/s+KITQeP577sqWBVDyFdUma/can/bxpE=;
-        b=OycGFkFf79VlirrFV/hlYK8bqfQ/Ha/b+aLB997bk3Us0/M//inY93I1sWozTg5KYHPmic
-        +YWzXHXK3yD1jGAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6559113BB4;
-        Mon, 23 Aug 2021 23:22:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5EnCCKAtJGFDLQAAMHmgww
-        (envelope-from <neilb@suse.de>); Mon, 23 Aug 2021 23:22:08 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S233237AbhHWX2k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 19:28:40 -0400
+Received: from mout.gmx.net ([212.227.15.15]:49973 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229478AbhHWX2j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Aug 2021 19:28:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629761273;
+        bh=wGyEyx2UFE+Qr5FGkk+WmXb5g7QebBwRk8/mGK1ycoQ=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=gqyct3j+YLh6ioZ4L/T0QrZgIRgh0Ds8jENOWh/ujNbvvby1ovmXEOq1OOweAy5CE
+         cWl9hagI+sNGH2aC3lBKosGE4TQWqEYZw4nZ6r0jk6TihDK2oI4ELWFMAz8cSOY6MS
+         ePCdar/hmuYNn9eZA85ldpB70p/RLEfRya9HvgIE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbzyP-1mtYaF3ozP-00dWDb; Tue, 24
+ Aug 2021 01:27:53 +0200
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, mpdesouza@suse.com
+References: <20210822070200.36953-1-wqu@suse.com>
+ <20210823172420.GL5047@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH RFC 0/4] btrfs: qgroup: rescan enhancement related to
+ INCONSISTENT flag
+Message-ID: <ac47fa45-e2cf-a2f0-046c-60a77027c9e9@gmx.com>
+Date:   Tue, 24 Aug 2021 07:27:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
-Cc:     "Wang Yugui" <wangyugui@e16-tech.com>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "Josef Bacik" <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        "Chuck Lever" <chuck.lever@oracle.com>, "Chris Mason" <clm@fb.com>,
-        "David Sterba" <dsterba@suse.com>,
-        "Alexander Viro" <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for btrfs export
-In-reply-to: <20210822192917.GF29026@hungrycats.org>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>,
- <162881913686.1695.12479588032010502384@noble.neil.brown.name>,
- <20210818225454.9558.409509F4@e16-tech.com>,
- <162932318266.9892.13600254282844823374@noble.neil.brown.name>,
- <20210819021910.GB29026@hungrycats.org>,
- <162942805745.9892.7512463857897170009@noble.neil.brown.name>,
- <20210822192917.GF29026@hungrycats.org>
-Date:   Tue, 24 Aug 2021 09:22:05 +1000
-Message-id: <162976092544.9892.3996716616493030747@noble.neil.brown.name>
+In-Reply-To: <20210823172420.GL5047@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:V8qLfUE3vIIQ/TSelz+WA0ZmMGjti6r2wpH6fax2nSmNKEfWGQY
+ YTiKrfX/2jatHXejxeomhSlsK1lssdSHvxkcCup+Vbv3a9WgsLoqeuNjNpccw1bFn02pXtD
+ 7pluZ02IMJzVV8FM2GSwfE7U/f+2IQpYD3a2dOH/Igo7xU8ivIcRqFWGED5w0vFtvVth0/6
+ kERWZUkY4Hv+5+LSFC1aw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:d9OsWFl6FXU=:HYGaMyo1NWx7W9vpzTuUPl
+ blNXf6Hj6uFsOse7sPW1y8B21mFZFYNp84E83s/pAcwtpXoFHp9Bjk3oQv+ISq9uk+5QqDNOx
+ 2cKkXsz1Ry8Y4qjyJfxtf/B3sVqpP8770zqjadj3QoOaJ9Ktli+Row9VxYW6QjSbTgzkrzhU6
+ O7qppVeXPnD/xLfh3V+fiOtV6SklUJeAfeLYBvSLiumY6CHjzJCAfrMK4Z76Th0AqfFOhnErs
+ qat/5KW5QbYjAe9ufjYsJKQPUKCCHcoRnvvHocyhuQ8CdhhWUYts7dRyuulJ+ONVmmdfPmVLa
+ SszLY7JfLcOv8qKSETK9Wk3Dt337uaicPWOP0cik5s4k9pdZXsqonqeVYeECNZs7bpW4B+5I+
+ +7P72GX7zph1x14rAJwB39z7uYWC3VD4mW8j5yD4fcp/YcxYDIAhyEVAJ8xbr+8ROoYcJLpVP
+ WP5hb5lNM9jJQxQU3886Qk0hDYdghxiB1zUozbEUSYOPuiN2E9dspr+YsFvatqLe6fEx4K4K+
+ FVwM7H5K0jvJ+LA2Uc1iRChn2oW1Ph4/7gg6RhQU966KOMaYA9BMfZhCtjkCmVKvPaKgMONZO
+ AL65AfjtpTO+P0gd35DrZuTSE9330ArXKs8skXCu0gtcjE75mOIbZPF4zJDAUXHmn62tF7peI
+ tPFj20aWoHDZjC8lPqgUq4KGy9gar/3jBrhqd7AIufQKDwOMiSkZmvWM1tRZpF72cjFsL/jAS
+ 8wo+Hx5w09kVigxLRrJ4Db5Q63U0juEc9ALEWUAn8OwJTfHhPlHKFtW9W51pDnHc6aI45SGLT
+ HXJsPU+YFKF8ktdZTU6JhWGbT+n2Xuxb56WnilWCt3euOX4BE8M41OgdLOClESiAngzzIuGDX
+ voM1BTILv9UmsgR4mxQLRiTQxsf8GNuuheTQjNKHZWZbsa7aYGWNgCHcVgPLlNmZ9DnrCECuy
+ h0Hj6B4ZFOiXFCi+n8LHQGWd6ZBi5wKaZPooowmInQCgm2uxby35B5p8smDrGEXP8osTnp9Yd
+ 8DFDLzVOnDaksv3WndAY1KFXCUoiFsrb+9e21EYOAnIhf6ntwlOxtDkGMltIyZaS6TYf7P9z1
+ uNuuv102v03I3fuVS8KZRNJ6UcQ56q61IT7tzJH2h4hb6/kim9T1U9f7Q==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 23 Aug 2021, Zygo Blaxell wrote:
-...
-> 
-> Subvol IDs are not reusable.  They are embedded in shared object ownership
-> metadata, and persist for some time after subvols are deleted.
-...
-> 
-> The cost of _tracking_ free object IDs is trivial compared to the cost
-> of _reusing_ an object ID on btrfs.
 
-One possible approach to these two objections is to decouple inode
-numbers from object ids.
-The inode number becomes just another piece of metadata stored in the
-inode.
-struct btrfs_inode_item has four spare u64s, so we could use one of
-those.
-struct btrfs_dir_item would need to store the inode number too.  What
-is location.offset used for?  Would a diritem ever point to a non-zero
-offset?  Could the 'offset' be used to store the inode number?
 
-This could even be added to existing filesystems I think.  It might not
-be easy to re-use inode numbers smaller than the largest at the time the
-extension was added, but newly added inode numbers could be reused after
-they were deleted.
+On 2021/8/24 =E4=B8=8A=E5=8D=881:24, David Sterba wrote:
+> On Sun, Aug 22, 2021 at 03:01:56PM +0800, Qu Wenruo wrote:
+>> There is a long existing window that if we did some operations marking
+>> qgroup INCONSISTENT during a qgroup rescan, the INCONSISTENT bit will b=
+e
+>> cleared by rescan, leaving incorrect qgroup numbers unnoticed.
+>>
+>> Furthermore, when we mark qgroup INCONSISTENT, we can in theory skip al=
+l
+>> qgroup accountings.
+>> Since the numbers are already crazy, we don't really need to waste time
+>> updating something that's already wrong.
+>>
+>> So here we introduce two runtime flags:
+>>
+>> - BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN
+>>    To inform any running rescan to exit immediately and don't clear
+>>    the INCONSISTENT bit on its exit.
+>>
+>> - BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING
+>>    To inform qgroup code not to do any accounting for dirty extents.
+>>
+>>    But still allow operations on qgroup relationship to be continued.
+>>
+>> Both flags will be set when an operation marks the qgroup INCONSISTENT
+>> and only get cleared when a new rescan is started.
+>>
+>>
+>> With those flags, we can have the following enhancement:
+>>
+>> - Prevent qgroup rescan to clear inconsistent flag which should be kept
+>>    If an operation marks qgroup inconsistent when a rescan is running,
+>>    qgroup rescan will clear the inconsistent flag while the qgroup
+>>    numbers are already wrong.
+>>
+>> - Skip qgroup accountings while qgroup numbers are already inconsistent
+>>
+>> - Skip huge subtree accounting when dropping subvolumes
+>>    With the obvious cost of marking qgroup inconsistent
+>>
+>>
+>> Reason for RFC:
+>> - If the runtime qgroup flags are acceptable
+>>
+>> - If the behavior of marking qgroup inconsistent when dropping large
+>>    subvolumes
+>>
+>> - If the lifespan of runtime qgroup flags are acceptable
+>>    They have longer than needed lifespan (from inconsistent time point =
+to
+>>    next rescan), not sure if it's OK.
+>
+> How is this related to the patch from Marcos?
+>
+> https://lore.kernel.org/linux-btrfs/20210617123436.28327-1-mpdesouza@sus=
+e.com/
+>
+> If there's way to cancel the rescan, does this patchset fix the possible
+> problems?
+>
 
-Just a thought...
+It's a coincidence, as my primary objective here is to solve the final
+piece of qgroup slow down from subvolume dropping.
 
-NeilBrown
+Although the solution I take would not require ioctl to cancel a rescan
+and also works for cases like qgroup inherit.
+
+Thanks,
+Qu
