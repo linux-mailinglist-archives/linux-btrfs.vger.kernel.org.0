@@ -2,136 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8773F53A4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2176D3F53A8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbhHWX2k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 19:28:40 -0400
-Received: from mout.gmx.net ([212.227.15.15]:49973 "EHLO mout.gmx.net"
+        id S233194AbhHWXdE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 19:33:04 -0400
+Received: from mout.gmx.net ([212.227.17.20]:50391 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229478AbhHWX2j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:28:39 -0400
+        id S229478AbhHWXdD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Aug 2021 19:33:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629761273;
-        bh=wGyEyx2UFE+Qr5FGkk+WmXb5g7QebBwRk8/mGK1ycoQ=;
-        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
-        b=gqyct3j+YLh6ioZ4L/T0QrZgIRgh0Ds8jENOWh/ujNbvvby1ovmXEOq1OOweAy5CE
-         cWl9hagI+sNGH2aC3lBKosGE4TQWqEYZw4nZ6r0jk6TihDK2oI4ELWFMAz8cSOY6MS
-         ePCdar/hmuYNn9eZA85ldpB70p/RLEfRya9HvgIE=
+        s=badeba3b8450; t=1629761533;
+        bh=mVehhbyodt+j7tlMOfap5tCDadNAkrLaPtHAWZ5lH5I=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=SEPsfNqP3EB5HJ6uv0CnpRUmWGP+MdYJiRnbhAqdVuYqTUsIPzN+H12VmvMuRP5m6
+         ta6m1CP5p0g8G8xS3eSAfuINQYEGSluzwMxQv3V6ehgipkCurEc3N0oUxpZMQqDQOa
+         9G76TRVUDbFs6c17+r7ms9a4SBVTEFrXylPBk8HM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbzyP-1mtYaF3ozP-00dWDb; Tue, 24
- Aug 2021 01:27:53 +0200
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, mpdesouza@suse.com
-References: <20210822070200.36953-1-wqu@suse.com>
- <20210823172420.GL5047@twin.jikos.cz>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QWG-1mMjGe1DvM-004PIY; Tue, 24
+ Aug 2021 01:32:12 +0200
+Subject: Re: [PATCH v10 06/14] btrfs: optionally extend i_size in
+ cow_file_range_inline()
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-api@vger.kernel.org, Qu Wenruo <wqu@suse.com>
+References: <cover.1629234193.git.osandov@fb.com>
+ <a00b59623219c8a07f2c22f80ef1466d0f182d77.1629234193.git.osandov@fb.com>
+ <1b495420-f4c6-6988-c0b1-9aa8a7aa952d@suse.com>
+ <2eae3b11-d9aa-42b1-122e-49bd40258d9b@gmx.com>
+ <YR/wQPJcv25vPIp7@relinquished.localdomain>
+ <d7e302f9-7230-0065-c908-86c10d77d738@gmx.com>
+ <YSPl/psinnRhev4x@relinquished.localdomain>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH RFC 0/4] btrfs: qgroup: rescan enhancement related to
- INCONSISTENT flag
-Message-ID: <ac47fa45-e2cf-a2f0-046c-60a77027c9e9@gmx.com>
-Date:   Tue, 24 Aug 2021 07:27:49 +0800
+Message-ID: <5a35da37-1504-361a-46bc-3fe1c1846871@gmx.com>
+Date:   Tue, 24 Aug 2021 07:32:06 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210823172420.GL5047@twin.jikos.cz>
+In-Reply-To: <YSPl/psinnRhev4x@relinquished.localdomain>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:V8qLfUE3vIIQ/TSelz+WA0ZmMGjti6r2wpH6fax2nSmNKEfWGQY
- YTiKrfX/2jatHXejxeomhSlsK1lssdSHvxkcCup+Vbv3a9WgsLoqeuNjNpccw1bFn02pXtD
- 7pluZ02IMJzVV8FM2GSwfE7U/f+2IQpYD3a2dOH/Igo7xU8ivIcRqFWGED5w0vFtvVth0/6
- kERWZUkY4Hv+5+LSFC1aw==
+X-Provags-ID: V03:K1:ALVYKneymACxNyLkPITy2zot7uBFJnMtBV183FvGjjZvDpfqV9l
+ gr2sBe/qThYAGFzS2uwfxPjfhWiQhjjJyconS/IwzndGSPQ/ZR4Q1yGL2TxLHFEOM1Uq2mK
+ JbQwSqo/xvZlI/sRqqMWmUNoonJ2By4WqvsMrGP96yiGyFL2NMpzsl7ReV7Y697cWL+UdjU
+ Kf2AkFhhI9NBACLYK72Mw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:d9OsWFl6FXU=:HYGaMyo1NWx7W9vpzTuUPl
- blNXf6Hj6uFsOse7sPW1y8B21mFZFYNp84E83s/pAcwtpXoFHp9Bjk3oQv+ISq9uk+5QqDNOx
- 2cKkXsz1Ry8Y4qjyJfxtf/B3sVqpP8770zqjadj3QoOaJ9Ktli+Row9VxYW6QjSbTgzkrzhU6
- O7qppVeXPnD/xLfh3V+fiOtV6SklUJeAfeLYBvSLiumY6CHjzJCAfrMK4Z76Th0AqfFOhnErs
- qat/5KW5QbYjAe9ufjYsJKQPUKCCHcoRnvvHocyhuQ8CdhhWUYts7dRyuulJ+ONVmmdfPmVLa
- SszLY7JfLcOv8qKSETK9Wk3Dt337uaicPWOP0cik5s4k9pdZXsqonqeVYeECNZs7bpW4B+5I+
- +7P72GX7zph1x14rAJwB39z7uYWC3VD4mW8j5yD4fcp/YcxYDIAhyEVAJ8xbr+8ROoYcJLpVP
- WP5hb5lNM9jJQxQU3886Qk0hDYdghxiB1zUozbEUSYOPuiN2E9dspr+YsFvatqLe6fEx4K4K+
- FVwM7H5K0jvJ+LA2Uc1iRChn2oW1Ph4/7gg6RhQU966KOMaYA9BMfZhCtjkCmVKvPaKgMONZO
- AL65AfjtpTO+P0gd35DrZuTSE9330ArXKs8skXCu0gtcjE75mOIbZPF4zJDAUXHmn62tF7peI
- tPFj20aWoHDZjC8lPqgUq4KGy9gar/3jBrhqd7AIufQKDwOMiSkZmvWM1tRZpF72cjFsL/jAS
- 8wo+Hx5w09kVigxLRrJ4Db5Q63U0juEc9ALEWUAn8OwJTfHhPlHKFtW9W51pDnHc6aI45SGLT
- HXJsPU+YFKF8ktdZTU6JhWGbT+n2Xuxb56WnilWCt3euOX4BE8M41OgdLOClESiAngzzIuGDX
- voM1BTILv9UmsgR4mxQLRiTQxsf8GNuuheTQjNKHZWZbsa7aYGWNgCHcVgPLlNmZ9DnrCECuy
- h0Hj6B4ZFOiXFCi+n8LHQGWd6ZBi5wKaZPooowmInQCgm2uxby35B5p8smDrGEXP8osTnp9Yd
- 8DFDLzVOnDaksv3WndAY1KFXCUoiFsrb+9e21EYOAnIhf6ntwlOxtDkGMltIyZaS6TYf7P9z1
- uNuuv102v03I3fuVS8KZRNJ6UcQ56q61IT7tzJH2h4hb6/kim9T1U9f7Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WE30JcqmvQU=:GNqOng74jaS0Pej8Yi7i5Q
+ YdzZQIXQ+DYTtJjOlTKTtmhsgL3pWYnoLZz3sY3ABO1liyyzaPcfr1Dsuff7umGS0ffbWFYml
+ 3ExZD+461SGAuwmqqfyYptB6I4VRaMjMKLRYzCzudpc4fkTB25+gkdHlDW9BhQ+mG2KxTpgf8
+ iujgqSzQqHHtHT9mTBhh/iIKmfpFzoPpXy3DO0w7794oC5D4P4ph0FaWHrpPBEe84+eV0bXhd
+ +uK3q4N30t31WC2EbbZ7NQK7tJpn+aQA7Fi8vMntpBaAcKMXJyWaCv2rhrutOkLoIMMJJnsA6
+ EePPmUmf6knnAeuEBJgmwM8KxfuLoIoOfWIGgFvxgufAi9YDuGhl+2Uaq2ebg0xlR72VhmDtW
+ jenJUH5Yiuh7YeRbyICj3O5wPzZk01+0S8XCRzPke03ETKlsGb+j2HBaraWjnqOg8qfLFM0Xw
+ 7gWWfeTstcUTvmoMnAkW7Jg0g4B/oesDzJlmbOcaLjenLoVdysvI4zN7NZnFsX65dDwovq26+
+ Fev7aNrAq1tMz33rR6Ri6k7PZ8vtszk5Xv8/UyfUZ3uLgejGbzWYkDfWo/M1s1QTG+hHfRMn3
+ Fcv5LOt19V/8/+2eS73rAG0UCSZ0/gA0VCHKeUkT4ltDynZDfaUCmX4o66073hQd0vPDxDoa+
+ 0xCQ18ywzD1chTf5LBjdqJ97YdMe3v3pEbH+o83TqaFWR9kWoQxpBzbfL+s/W0Q6gvcWzRgFq
+ j+tt8RtkX9Vd35DhUxw70bhkTcEx5bhMgZp4H8LuU3Zdwris3tTaIgTXikU5B9sPwOCvSS3bi
+ v2Yxu9hxcPlbJbo/Rl/MaB8PH58QJdP6ZhVpj66oBY/62bDv/P9jf5gBa/yBBjx08C/Mp1q7r
+ JeYcjCjZv1noy52aygWoI2SLKC+dUc2xdw08iyZu994ZUeY5Tcw6xA18i8v5DqgEf6alMjzYB
+ runMALBy53eHt0Hx2zfkM/tS+NbI9t/XOWpN4XwRdqkpYQIfQg/EGSV7TT4mjvSorBVYz87Pv
+ CPj3j7EoqvQpWW8QwbLIsGmdDqGD48RK8bPK85XSsb8pTY69nG4i5ZuBUDaMw4jLV/iYkGOxC
+ C1YKZAzR4lTmwbe+TMzjJtsJ4MyeYNaXEVONbWgUb+fQ+5PDMsS6acRQg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/8/24 =E4=B8=8A=E5=8D=881:24, David Sterba wrote:
-> On Sun, Aug 22, 2021 at 03:01:56PM +0800, Qu Wenruo wrote:
->> There is a long existing window that if we did some operations marking
->> qgroup INCONSISTENT during a qgroup rescan, the INCONSISTENT bit will b=
-e
->> cleared by rescan, leaving incorrect qgroup numbers unnoticed.
->>
->> Furthermore, when we mark qgroup INCONSISTENT, we can in theory skip al=
-l
->> qgroup accountings.
->> Since the numbers are already crazy, we don't really need to waste time
->> updating something that's already wrong.
->>
->> So here we introduce two runtime flags:
->>
->> - BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN
->>    To inform any running rescan to exit immediately and don't clear
->>    the INCONSISTENT bit on its exit.
->>
->> - BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING
->>    To inform qgroup code not to do any accounting for dirty extents.
->>
->>    But still allow operations on qgroup relationship to be continued.
->>
->> Both flags will be set when an operation marks the qgroup INCONSISTENT
->> and only get cleared when a new rescan is started.
+On 2021/8/24 =E4=B8=8A=E5=8D=882:16, Omar Sandoval wrote:
+> On Sat, Aug 21, 2021 at 09:11:26AM +0800, Qu Wenruo wrote:
 >>
 >>
->> With those flags, we can have the following enhancement:
+>> On 2021/8/21 =E4=B8=8A=E5=8D=882:11, Omar Sandoval wrote:
+>>> On Fri, Aug 20, 2021 at 05:13:34PM +0800, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> On 2021/8/20 =E4=B8=8B=E5=8D=884:51, Nikolay Borisov wrote:
+>>>>>
+>>>>>
+>>>>> On 18.08.21 =D0=B3. 0:06, Omar Sandoval wrote:
+>>>>>> From: Omar Sandoval <osandov@fb.com>
+>>>>>>
+>>>>>> Currently, an inline extent is always created after i_size is exten=
+ded
+>>>>>> from btrfs_dirty_pages(). However, for encoded writes, we only want=
+ to
+>>>>>> update i_size after we successfully created the inline extent.
+>>>>
+>>>> To me, the idea of write first then update isize is just going to cau=
+se
+>>>> tons of inline extent related prblems.
+>>>>
+>>>> The current example is falloc, which only update the isize after the
+>>>> falloc finishes.
+>>>>
+>>>> This behavior has already bothered me quite a lot, as it can easily
+>>>> create mixed inline and regular extents.
+>>>
+>>> Do you have an example of how this would happen? I have the inode and
+>>> extent bits locked during an encoded write, and I see that fallocate
+>>> does the same.
 >>
->> - Prevent qgroup rescan to clear inconsistent flag which should be kept
->>    If an operation marks qgroup inconsistent when a rescan is running,
->>    qgroup rescan will clear the inconsistent flag while the qgroup
->>    numbers are already wrong.
+>> xfs_io -f -c "pwrite 0 1K" -c "sync" -c "falloc 0 4k" -c "pwrite 4k 4k"
 >>
->> - Skip qgroup accountings while qgroup numbers are already inconsistent
+>> The [0, 1K) will be written as inline without doubt.
 >>
->> - Skip huge subtree accounting when dropping subvolumes
->>    With the obvious cost of marking qgroup inconsistent
+>> Then we go to falloc, it will try to zero the range [1K, 4K), but it
+>> doesn't increase the isize.
+>> Thus the page [0, 4k) will still be written back as inline, since isize
+>> is still 1K.
 >>
->>
->> Reason for RFC:
->> - If the runtime qgroup flags are acceptable
->>
->> - If the behavior of marking qgroup inconsistent when dropping large
->>    subvolumes
->>
->> - If the lifespan of runtime qgroup flags are acceptable
->>    They have longer than needed lifespan (from inconsistent time point =
-to
->>    next rescan), not sure if it's OK.
+>> Later [4K, 8K) will be written back as regular, causing mixed extents.
 >
-> How is this related to the patch from Marcos?
->
-> https://lore.kernel.org/linux-btrfs/20210617123436.28327-1-mpdesouza@sus=
-e.com/
->
-> If there's way to cancel the rescan, does this patchset fix the possible
-> problems?
->
+> I'll have to read fallocate more closely to follow what's going on here
+> and figure out if it applies to encoded writes. Please help me out if
+> you see how this would be an issue with encoded writes.
 
-It's a coincidence, as my primary objective here is to solve the final
-piece of qgroup slow down from subvolume dropping.
+This won't cause anything wrong, if the encoded writes follows the
+existing inline extents requirement (always at offset 0).
 
-Although the solution I take would not require ioctl to cancel a rescan
-and also works for cases like qgroup inherit.
+Otherwise, the read path could be affected to handle inlined extent at
+non-zero offset.
+
+>
+>>>> Can't we remember the old isize (with proper locking), enlarge isize
+>>>> (with holes filled), do the write.
+>>>>
+>>>> If something wrong happened, we truncate the isize back to its old is=
+ize.
+>>>>
+>> [...]
+>>>>>
+>>>>> Urgh, just some days ago Qu was talking about how awkward it is to h=
+ave
+>>>>> mixed extents in a file. And now, AFAIU, you are making them more li=
+kely
+>>>>> since now they can be created not just at the beginning of the file =
+but
+>>>>> also after i_size write. While this won't be a problem in and of its=
+elf
+>>>>> it goes just the opposite way of us trying to shrink the possible ca=
+ses
+>>>>> when we can have mixed extents.
+>>>>
+>>>> Tree-checker should reject such inline extent at non-zero offset.
+>>>
+>>> This change does not allow creating inline extents at a non-zero offse=
+t.
+>>>
+>>>>> Qu what is your take on that?
+>>>>
+>>>> My question is, why encoded write needs to bother the inline extents =
+at all?
+>>>>
+>>>> My intuition of such encoded write is, it should not create inline
+>>>> extents at all.
+>>>>
+>>>> Or is there any special use-case involved for encoded write?
+>>>
+>>> We create compressed inline extents with normal writes. We should be
+>>> able to send and receive them without converting them into regular
+>>> extents.
+>>>
+>> But my first impression for any encoded write is that, they should work
+>> like DIO, thus everything should be sectorsize aligned.
+>>
+>> Then why could they create inline extent? As inline extent can only be
+>> possible when the isize is smaller than sectorsize.
+>
+> ENCODED_WRITE is not defined as "O_DIRECT, but encoded". It happens to
+> have some resemblance to O_DIRECT because we have alignment requirements
+> for new extents and because we bypass the page cache, but there's no
+> reason to copy arbitrary restrictions from O_DIRECT. If someone is using
+> ENCODED_WRITE to write compressed data, then they care about space
+> efficiency, so we should make efficient use of inline extents.
+>
+Then as long as the inline extent requirement for 0 offset is still
+followed, I'll be fine with that.
+
+But for non-zero offset inline extent? It looks like a much larger
+change, and may affect read path.
+
+So I'd prefer we keep the 0 offset requirement for inline extent, and
+find a better way to work around.
 
 Thanks,
 Qu
