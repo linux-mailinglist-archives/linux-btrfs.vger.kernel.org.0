@@ -2,164 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6DF3F5043
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 20:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D233F506A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 20:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhHWSRf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 14:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhHWSRf (ORCPT
+        id S231151AbhHWSfI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 14:35:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48526 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230021AbhHWSfI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:17:35 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB60C06175F
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 11:16:52 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id j2so6242102pll.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 11:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=T/e63Wf9ypRN+awlAfBRrCYYd/VbmaKsvsurvbA7wIc=;
-        b=m1nJ6UQpUZMQZEXws4qV4EMMw/Piswr/u1pJ1Yds/EbyDZvmhzmYhDnNG1D84SOJaB
-         78Kf8ONJYlrhYKgoB5+PnpGVNxiPK3D9sR0rDkjCqi/uXNXD6T7wIUuqRjXCPHiC6EZg
-         PBSYAMLhvYeDJ6rgS9H0bDc9UQ24GFEatSu/wckPceE31k9hf6xIlZPptBe95SwFBhLG
-         eHGehbY0VXNnu7PROw0pOrH8ifZ+gICUyN3DT7Dsbu1yPDX7wKm7kj+MhHwF4VPoP85H
-         IxHdXlNflBQfbmLa3FBfLXDzNVSW+9j6i2MgwQ7hbwsZA4zEuPkjf39LYfsLMveA02QO
-         Bm4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=T/e63Wf9ypRN+awlAfBRrCYYd/VbmaKsvsurvbA7wIc=;
-        b=pXYe5nJS9dwJH9G/WIM7xT8I6pdlLaAC1aNcZ4bUyFl6AGwrbykSeB7Aw/NPxnSlvB
-         qjyfcbByCecvkVItabofdwCIEEwOr4NGnlMZZzvkoXQ5TPYbtzR162XdD+zY5/+fSUFw
-         MSgxqWExXyhcgydIzTbaBxdia0v3l4rHvzLZZbdcvTE/2n0CGrtrryMLuZoR+b5xu5rU
-         CviF0gMTV1DIDh09TgEcgc32FkE+86kQCU3J+0eoipKQ+u9ZTpjT71ME3pNYeijVqkic
-         U0U6i8eVutCf29hIIOv9PorC4eRB/LpT48T1ctxmOyL6AmY0dpXUINom1QkV2Pf6SF8H
-         nkiQ==
-X-Gm-Message-State: AOAM531VsAbJ369oxqmhE0h0x/ik405GWakneWo1aMisXEkZDDcmkK6Y
-        xO8HFh960Yl5vtItf/IdkZ9rIQ==
-X-Google-Smtp-Source: ABdhPJwZTTW2hZHD7QyizDV9IFI2swHkdvV9me5AhDi2mpH2G8+f2xJkz+ELwp8qyk9MSBYX7j1pPw==
-X-Received: by 2002:a17:902:c94b:b0:130:ad84:990a with SMTP id i11-20020a170902c94b00b00130ad84990amr16825171pla.1.1629742611714;
-        Mon, 23 Aug 2021 11:16:51 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:40e1])
-        by smtp.gmail.com with ESMTPSA id t5sm16892169pfd.133.2021.08.23.11.16.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 11:16:51 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 11:16:30 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-api@vger.kernel.org, Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH v10 06/14] btrfs: optionally extend i_size in
- cow_file_range_inline()
-Message-ID: <YSPl/psinnRhev4x@relinquished.localdomain>
-References: <cover.1629234193.git.osandov@fb.com>
- <a00b59623219c8a07f2c22f80ef1466d0f182d77.1629234193.git.osandov@fb.com>
- <1b495420-f4c6-6988-c0b1-9aa8a7aa952d@suse.com>
- <2eae3b11-d9aa-42b1-122e-49bd40258d9b@gmx.com>
- <YR/wQPJcv25vPIp7@relinquished.localdomain>
- <d7e302f9-7230-0065-c908-86c10d77d738@gmx.com>
+        Mon, 23 Aug 2021 14:35:08 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C2D682204E;
+        Mon, 23 Aug 2021 18:34:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629743664;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CTNSMoPQ1ZBNPS/mHBXR19RYpvs/XfuaCBrnFMumBw0=;
+        b=d8qv6L0Lqw/BhUqxqekYuXeLFZj0ncvne9MHqXuoaR3pA1FRqVnrpCDr4bxWPoCR0RJ/3h
+        0Q8tdRK18QLRtJvXc95o2YLqvYRMeVvMOJynSgds6WPBexlgvxAh6fZmRbY44JXWbAYPhX
+        Cud7L9S1eeIT2pd4hFCD9QRcRHuPafQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629743664;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CTNSMoPQ1ZBNPS/mHBXR19RYpvs/XfuaCBrnFMumBw0=;
+        b=cYpuP0F6QHdTEzYNYgWLQ9xQavGESjk9EwPD46EgsAOzi2n+FL+3SvVGtL2MBfXIiYLqah
+        jsA5KjD83OKFroAQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id BB2A7A3BBB;
+        Mon, 23 Aug 2021 18:34:24 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A67ADDA725; Mon, 23 Aug 2021 20:31:24 +0200 (CEST)
+Date:   Mon, 23 Aug 2021 20:31:23 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 00/12] btrfs-progs: make check handle invalid bg items
+Message-ID: <20210823183123.GN5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1629322156.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d7e302f9-7230-0065-c908-86c10d77d738@gmx.com>
+In-Reply-To: <cover.1629322156.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 09:11:26AM +0800, Qu Wenruo wrote:
+On Wed, Aug 18, 2021 at 05:33:12PM -0400, Josef Bacik wrote:
+> v1->v2:
+> - Discovered that we also don't check bytes_super in the superblock, add that
+>   checking and repair ability since it's coupled with the block group used
+>   repair.
+> - Discovered that we haven't actually been setting --mode=lowmem for the initial
+>   image check if we do make test-check-lowmem, we only do it after the repair.
+>   Fixed this.
+> - Now that we're properly testing error detection in all of the test cases, I
+>   found 3 problems with the --mode=lowmem mode, one infinite loop and two places
+>   we weren't properly propagating the error code up to the user.
+> - My super repair thing tripped a case where we wouldn't clean up properly for
+>   unaligned extent records, fixed this as well.
+> - Add another test image for the corrupted super bytes.
+> - Realize that you need a special .lowmem_repairable file in order for the
+>   lowmem repair code to run against images, so did that for both testcases.
 > 
+> --- Original email ---
+> Hello,
 > 
-> On 2021/8/21 上午2:11, Omar Sandoval wrote:
-> > On Fri, Aug 20, 2021 at 05:13:34PM +0800, Qu Wenruo wrote:
-> > > 
-> > > 
-> > > On 2021/8/20 下午4:51, Nikolay Borisov wrote:
-> > > > 
-> > > > 
-> > > > On 18.08.21 г. 0:06, Omar Sandoval wrote:
-> > > > > From: Omar Sandoval <osandov@fb.com>
-> > > > > 
-> > > > > Currently, an inline extent is always created after i_size is extended
-> > > > > from btrfs_dirty_pages(). However, for encoded writes, we only want to
-> > > > > update i_size after we successfully created the inline extent.
-> > > 
-> > > To me, the idea of write first then update isize is just going to cause
-> > > tons of inline extent related prblems.
-> > > 
-> > > The current example is falloc, which only update the isize after the
-> > > falloc finishes.
-> > > 
-> > > This behavior has already bothered me quite a lot, as it can easily
-> > > create mixed inline and regular extents.
-> > 
-> > Do you have an example of how this would happen? I have the inode and
-> > extent bits locked during an encoded write, and I see that fallocate
-> > does the same.
+> While writing code for extent tree v2 I noticed that I was generating a fs with
+> an invalid block group ->used value.  However fsck wasn't catching this, because
+> we don't actuall check the used value of the block group items in normal mode.
+> lowmem mode does this properly thankfully, so this only needs to be added to the
+> normal fsck mode.
 > 
-> xfs_io -f -c "pwrite 0 1K" -c "sync" -c "falloc 0 4k" -c "pwrite 4k 4k"
+> I've added code to btrfs-corrupt-block to generate the corrupt image I need for
+> the test case.  Then of course the actual patch to detect and fix the problem.
+> Thanks,
 > 
-> The [0, 1K) will be written as inline without doubt.
+> Josef
 > 
-> Then we go to falloc, it will try to zero the range [1K, 4K), but it
-> doesn't increase the isize.
-> Thus the page [0, 4k) will still be written back as inline, since isize
-> is still 1K.
-> 
-> Later [4K, 8K) will be written back as regular, causing mixed extents.
+> Josef Bacik (12):
+>   btrfs-progs: fix running lowmem check tests
+>   btrfs-progs: do not infinite loop on corrupt keys with lowmem mode
+>   btrfs-progs: propagate fs root errors in lowmem mode
+>   btrfs-progs: propagate extent item errors in lowmem mode
+>   btrfs-progs: do not double add unaligned extent records
+>   btrfs-progs: add the ability to corrupt block group items
+>   btrfs-progs: add the ability to corrupt fields of the super block
+>   btrfs-progs: make check detect and fix invalid used for block groups
+>   btrfs-progs: make check detect and fix problems with super_bytes_used
+>   btrfs-progs: check btrfs_super_used in lowmem check
+>   btrfs-progs: add a test image with a corrupt block group item
+>   btrfs-progs: add a test image with an invalid super bytes_used
 
-I'll have to read fallocate more closely to follow what's going on here
-and figure out if it applies to encoded writes. Please help me out if
-you see how this would be an issue with encoded writes.
-
-> > > Can't we remember the old isize (with proper locking), enlarge isize
-> > > (with holes filled), do the write.
-> > > 
-> > > If something wrong happened, we truncate the isize back to its old isize.
-> > > 
-> [...]
-> > > > 
-> > > > Urgh, just some days ago Qu was talking about how awkward it is to have
-> > > > mixed extents in a file. And now, AFAIU, you are making them more likely
-> > > > since now they can be created not just at the beginning of the file but
-> > > > also after i_size write. While this won't be a problem in and of itself
-> > > > it goes just the opposite way of us trying to shrink the possible cases
-> > > > when we can have mixed extents.
-> > > 
-> > > Tree-checker should reject such inline extent at non-zero offset.
-> > 
-> > This change does not allow creating inline extents at a non-zero offset.
-> > 
-> > > > Qu what is your take on that?
-> > > 
-> > > My question is, why encoded write needs to bother the inline extents at all?
-> > > 
-> > > My intuition of such encoded write is, it should not create inline
-> > > extents at all.
-> > > 
-> > > Or is there any special use-case involved for encoded write?
-> > 
-> > We create compressed inline extents with normal writes. We should be
-> > able to send and receive them without converting them into regular
-> > extents.
-> > 
-> But my first impression for any encoded write is that, they should work
-> like DIO, thus everything should be sectorsize aligned.
-> 
-> Then why could they create inline extent? As inline extent can only be
-> possible when the isize is smaller than sectorsize.
-
-ENCODED_WRITE is not defined as "O_DIRECT, but encoded". It happens to
-have some resemblance to O_DIRECT because we have alignment requirements
-for new extents and because we bypass the page cache, but there's no
-reason to copy arbitrary restrictions from O_DIRECT. If someone is using
-ENCODED_WRITE to write compressed data, then they care about space
-efficiency, so we should make efficient use of inline extents.
+There are some comments or question so I haven't merged the patches yet
+(not merged: 2, 5, 8, 9, 11, 12). Please have a look, rebase on top of
+devel should cleanly drop the merged patches from the series.
