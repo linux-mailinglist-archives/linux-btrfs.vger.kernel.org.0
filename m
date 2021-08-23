@@ -2,124 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7157A3F53AD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE4E3F53B1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 01:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbhHWXfZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 19:35:25 -0400
-Received: from mout.gmx.net ([212.227.15.19]:51759 "EHLO mout.gmx.net"
+        id S233201AbhHWXiZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 19:38:25 -0400
+Received: from mout.gmx.net ([212.227.17.21]:48945 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233182AbhHWXfZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:35:25 -0400
+        id S233093AbhHWXiZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Aug 2021 19:38:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629761677;
-        bh=d59tLIRDiul/Kkv4JjYoWhkMh7lhao212hVFsC51F4o=;
+        s=badeba3b8450; t=1629761857;
+        bh=52tZtgxqc6N7uHGa6Yzz8oQVDeKtlXDCAPVIzVqVZ4M=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=PKiBsT6shamXAXggc+/62Bli+piO0V5acAUBMTWyUikKzoxNKqlEANzR9hICuzonI
-         OIc8/POeYINjGYQBzrUdhab1frNgbgi7Cm2KNdF/Ab17jhYQeHZiZiBrLxNOvKBhXz
-         i/2cJcCSLyZw58LrfH+wRC9hBI9USDXTxRKuECDI=
+        b=hgnLBa8Ih1YkqAX6tdlaD6xZUcwwgZw+noGc2h2vlhOF8G6t9s9XeHztAvrI94nX0
+         LfxRtaC7smNmnWn5AoPHQcliGBhjg0AH0cyI4YYSEmoAzONPZ2kQCM0g8X6iQMst5s
+         c9T4ZkBAAxlWZv2Vb45DEJzZjjJnq4Xjhaum79f0=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MtwUw-1nAQc42dDQ-00uMgO; Tue, 24
- Aug 2021 01:34:37 +0200
-Subject: Re: [PATCH v2 02/12] btrfs-progs: do not infinite loop on corrupt
- keys with lowmem mode
-To:     Josef Bacik <josef@toxicpanda.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1629322156.git.josef@toxicpanda.com>
- <aaaf2cadf66d9e573e2dbcc3e8fab7984ce42f99.1629322156.git.josef@toxicpanda.com>
- <05f2cfc1-ab2f-0e92-13ef-488a9e7d716c@gmx.com>
- <20210823150408.GD5047@twin.jikos.cz>
- <029e900b-500c-937f-322e-1d64b3259355@toxicpanda.com>
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkYbu-1mkTrq41BW-00m2XT; Tue, 24
+ Aug 2021 01:37:37 +0200
+Subject: Re: [PATCH 6/9] btrfs-progs: add the block group item in make_btrfs()
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1629486429.git.josef@toxicpanda.com>
+ <d433af292d5e99ff194bc6362133e64704ecd006.1629486429.git.josef@toxicpanda.com>
+ <72de3cea-aee0-a7e4-d585-bf9ea749e53b@gmx.com>
+ <080b9285-9af0-0f51-4b3e-e9f357004920@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <d4ec5a5f-45c6-7d25-6137-b3206880763c@gmx.com>
-Date:   Tue, 24 Aug 2021 07:34:33 +0800
+Message-ID: <f1c7b1c0-04cb-48ad-c728-5fc5429d7001@gmx.com>
+Date:   Tue, 24 Aug 2021 07:37:33 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <029e900b-500c-937f-322e-1d64b3259355@toxicpanda.com>
+In-Reply-To: <080b9285-9af0-0f51-4b3e-e9f357004920@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8bqM9oySeOJ3ioyJKClkiptg/N81meTzMRob1MOV4Iy2CbDmdBf
- vYOT0l7QDZKkCJfNUnlcr2nidQYV98AnkmEuxg0tjDpFj1Vg1xfQdtZ12sGPOVik2MBfF3q
- FT5eVmtaLyojjnN+Eu2R4+FvABFGBmL7EvidA/UYImpymq7afvbP/kCy8iB4RUpL1nwVAOo
- pGv9pRvfBeEcGRTU8BDpw==
+X-Provags-ID: V03:K1:O2iKei5oGC5QKtX/7KRRNHz1Z60DgtCgvK61TMANSfSK2pNWFVe
+ sFFf2U4/z9hDRum7tx8QBrOBxqSK0JW/MnRTOerL3PRb2vcdXky1+tEQII4o6iwEgloB4ja
+ vsjQ11jKHAfgZ9W7R1Kk9v8Nd2BhzeEj2ukD7jJIv6Rog1B+ajd+rcAtCfpk0i1QDMX9vp/
+ HuSJRs7D/tEcwRYsIBjPA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:StDw7V6hx3c=:2NcfXBjzqnojSBfOsNLYB/
- Fy7p93MCx0dWH/ppofFKU157Aw/Xq4Pe/hxeK3ludZoARkRVbQz56Pt00s5LZgjCQpG5O4Q3Z
- 6PNGdktrq/3gB62y9VIz5IczFfiwt1cXthAPmiPRVl8ZHhAKKAg6BK7+DwQUy3TqiYRUlQkbq
- sszeeb/TYB775N+/My/z3vAIKNzrN2myGXb4gs4EvWnyi/vtlvnrSOMycn3ok8xt9qhxaqCGR
- jMXJBVEXe1gCnVvUqP2+lMst1rSnpEnsIaeQPqahlX/fO86p877bkfVVLP2NUulejXWh5rmP8
- hdMAQU8yk7XzdP/TuVjJOXNB0GW98wBwOassUi0SXC0XNhl/0sJUy6KtuMcl383A+z3UQ01Vo
- zSAZep+7xwxhGAs3jscyRTQr97plEbBjWuf0nPFEAeUFO8pZluQTVEA4Ioev5svutp2KNmrc3
- c9p/bU5i1OkWAu7CUpvhuw98IA3YIEDbPJI4GeKCjr1sFXniVKD4NlDbRBc//PeLcxZUKnieG
- snDLnr8IRbaZ/lxdSKDR2iesqXXg87Eq5YTzlVNBUt0GxecyW3lghs92SKw3Ym56nf88wutT4
- 4tiHtnMZ8MwG0vb+iGYKj0pRYQGs/6ysst/9eFlQgag2ow+iZc4/GNfsslKK23u8YeA9VHnG9
- 6/gkjem2aBDD27v79GHumDJLHLh8AL1HOG95PGI1KIxTW84oENY5YdJjIyWD3f1iYSC6uO8Pq
- BUB7VX33bOs2nalPMMCZyhxlI8EtMw/cSDFBKu8pjIG4ul+aJK8kK4bCMWIDxM0FUOUax6wXp
- m/pHpCvU1YfdCWDgxA03HnOjeepOZW4UXqj1tObPXuElK8UjuQaBdkWr4AQDf+v7/w+1SGaRF
- fZqlWTQL9Z7WiTuVSSPSNOCxU9nQpVwWom5VfsYG3c5eid0Wm8Ytr5sqjiQLFJWHMLLjteJvs
- A5rTnpdcBDPeg6CBtQ6CfKqpCEKpZjPlmg+aWbdMW22efWgy43GmgSNjbFzrZTNUKtOXZZPhn
- VrVTlcjHMseAztX51qCvazGq3cAlgbJOjyBLhUH4xnJtNQOa8DCp677yRvoA5JpFUJycwfKDT
- J7TM2AWo9DZt+KXWD2ulGZP41xi+6Y+nWzi7ollrrzklWvRAkHp3amJ+w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Wy2fIrTgYSA=:Tu9CU4ceQXv/RSDNQrZN/z
+ w7lcOU9tJpyCvFr1K1x6DX43TtEh0S/HRx9F6RUDYT6H58OsbDA4sAjmirjcxu3s1EmZTSqyt
+ 6tWOHMlnsIN6k9qX/5gcABxZlHHXGXOTE8OWLOJzrZ2k+Ik4fC7/ZC9t1k5ABeprbptSu2ndg
+ rIE7673oVxWMbzvVmSMuuZFGQ3GQbc3Y/xlMbMMIHXxWQKIBhKeSj3OwCs6aQ9epGYvMZfyez
+ XkhmRoRDIASqo/HxhRYl0vn4GTOBroAYbB2lExVukirVjzE+6uyzFLuOF0Pxaa/QlYN1EbJXM
+ YmyWYIneGYGDDRY47uHzz/LezIDbnEWJOmrzBy7coJUYeOZoJReVvEVgXkOCargda+IMcXuGY
+ 3JJe4yxHhH4IvNzE4cXOfPDqO/kCvKPq7SIo9qfyatAxNqbPfYoX0dekhMFz5KribTlguxQe7
+ n7c8p8AWREH28eN6X2SS406emVd6VfaHN4LX12ygsNvaXFhUfhGQsgZEbQXp7uE+XyUAivryD
+ 0OB13Ucfs5LMHMp+GnbwgY2l/UHmIS/6GXYEW9ysvlZ3oxtucvRPTefNmU8rIVu6MrIQiP7xh
+ FyG7ITnlaV090B6helnKA0MMwAoEwsYnd8ojmDhhIquGYztoVl0Shq7H3Qg+NUp14/cNi4b/Q
+ DFgDSO/XywVQx+XDDC/nuxdUyNx9ETY3QWeMnNjo4RgwprtiHETcqscWdAQpjwmIb/esThZKl
+ pqeBATjxY4Jq2dfy5qZkTjia4Yg0on9c2E4dbrZxtNqmTy1YnnoL4QZEFjn3nLVMr9q/IngD1
+ LzAgwDa9Fh4SZIqS8KEC6oIQWwUdEc+qUn61t+vYPU/Rf1K5idJ7zzL9b54jOrK0001tCVvf0
+ UuCp1Cbhu/ZpMU3utZTZbVDaXnBXVk1ur5Vo6zGVqzzSIU4KWCK5ESDHYBZnBwnNG1IPA84qe
+ DacHinE0qanIBmfwfgzvidL/eOItXo2+S7mnMYFMww/vAnVPjy/JLregTTjeUdCLZMrXgVGHD
+ 7PIkRHRefmZowpJuLPmbxPGBH0YEJrxukJJkHgdsP5Cn/MtQUsiN3cZyEHae9+kYMKDDw/Oo8
+ gr16ZT24QX2y1feB8NUOW0xuDpEj0WAwvtgT6ecdzEZEnNIY+1VA5+RgQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/8/24 =E4=B8=8A=E5=8D=882:44, Josef Bacik wrote:
-> On 8/23/21 11:04 AM, David Sterba wrote:
->> On Thu, Aug 19, 2021 at 01:42:39PM +0800, Qu Wenruo wrote:
->>>
->>>
->>> On 2021/8/19 =E4=B8=8A=E5=8D=885:33, Josef Bacik wrote:
->>>> By enabling the lowmem checks properly I uncovered the case where tes=
-t
->>>> 007 will infinite loop at the detection stage.=C2=A0 This is because =
-when
->>>> checking the inode item we will just btrfs_next_item(), and because w=
+On 2021/8/24 =E4=B8=8A=E5=8D=884:04, Josef Bacik wrote:
+> On 8/23/21 5:00 AM, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/8/21 =E4=B8=8A=E5=8D=883:11, Josef Bacik wrote:
+>>> Currently we build a bare-bones file system in make_btrfs(), and then =
+we
+>>> load it up and fill in the rest of the file system after the fact.=C2=
+=A0 One
+>>> thing we omit in make_btrfs() is the block group item for the temporar=
+y
+>>> system chunk we allocate, because we just add it after we've opened th=
 e
->>>> ignore check tree block failures at read time we don't get an -EIO fr=
-om
->>>> btrfs_next_leaf.=C2=A0 Generally what check usually does is validate =
-the
->>>> leaves/nodes as we hit them, but in this case we're not doing that.
->>>> Fix
->>>> this by checking the leaf if we move to the next one and if it fails
->>>> bail.=C2=A0 This allows us to pass the 007 test with lowmem.
+>>> file system.
 >>>
->>> Doesn't this mean btrfs_next_item() is not doing what it should do?
+>>> However I want to be able to generate the free space tree at
+>>> make_btrfs() time, because extent tree v2 will not have an extent tree
+>>> that has every block allocated in the system.=C2=A0 In order to do thi=
+s I
+>>> need to make sure that the free space tree entries are added on block
+>>> group creation, which is annoying if we have to add this chunk after
+>>> I've created a free space tree.
 >>>
->>> Normally we would expect btrfs_next_item() to return -EIO other than
->>> manually checking the returned leaf.
+>>> So make future work simpler by simply adding our block group item at
+>>> make_btrfs() time, this way I can do the right things with the free
+>>> space tree in the generic make block group code without needing a
+>>> special case for our temporary system chunk.
+>>>
+>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>>> ---
+>>> =C2=A0 mkfs/common.c | 31 +++++++++++++++++++++++++++++++
+>>> =C2=A0 mkfs/main.c=C2=A0=C2=A0 |=C2=A0 9 ++-------
+>>> =C2=A0 2 files changed, 33 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/mkfs/common.c b/mkfs/common.c
+>>> index 9263965e..cba97687 100644
+>>> --- a/mkfs/common.c
+>>> +++ b/mkfs/common.c
+>>> @@ -190,6 +190,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config
+>>> *cfg)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 num_bytes;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 system_group_offset =3D BTRFS_BLOCK=
+_RESERVED_1M_FOR_SUPER;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 system_group_size =3D BTRFS_MKFS_SY=
+STEM_GROUP_SIZE;
+>>> +=C2=A0=C2=A0=C2=A0 bool add_block_group =3D true;
+>>>
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((cfg->features & BTRFS_FEATURE_INCO=
+MPAT_ZONED)) {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 system_group_of=
+fset =3D cfg->zone_size * BTRFS_NR_SB_LOG_ZONES;
+>>> @@ -283,6 +284,36 @@ int make_btrfs(int fd, struct btrfs_mkfs_config
+>>> *cfg)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (blk =3D=3D =
+MKFS_SUPER_BLOCK)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 continue;
+>>>
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Add the block group ite=
+m for our temporary chunk. */
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cfg->blocks[blk] > sys=
+tem_group_offset &&
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ad=
+d_block_group) {
 >>
->> That's an interesting point, I think we rely on that behaviour
->> elsewhere too.
+>> This makes the block group item always be the first item.
+>>
+>> But for skinny metadata, METADATA_ITEM is smaller than BLOCK_GROUP_ITEM=
+,
+>> meaning it should be before BLOCK_GROUP_ITEM.
+>>
+>> Won't this cause the extent tree has a bad key order?
 >>
 >
-> This is the result of how we deal with corrupt blocks.=C2=A0 We will hap=
-pily
-> read corrupt blocks with check, because we expect check to do it's own
-> btrfs_check_node/btrfs_check_leaf().=C2=A0 The problem here is that if t=
-he
-> block is corrupt it's still in cache, and so btrfs_next_leaf() will
-> return it because the buffer is marked uptodate.
-
-Shouldn't we prevent the corrupted block from entering the cache?
-
+> No because it's based on the actual bytenr.=C2=A0 We'll insert the exten=
+t
+> item entry first, and then move to the next block and if it's past the
+> first block we add the block group item, and then the actual extent
+> item.=C2=A0 So it goes
 >
-> It looks like search does the extra check_block() specifically to catch
-> this case, so I'll fix next_leaf to do the same thing as well.=C2=A0 Tha=
-nks,
+> first block X gets extent item inserted
+> X+1 > X, insert block group item
+> insert X+1 extent item.
+>
 
-OK for now I think it's fine to have the extra check.
+But then what if we go non-skinny metadata?
 
-It won't cause any harm even if we solved the cache problem in the future.
+Then block group item is always before any extent item.
 
 Thanks,
 Qu
 
+> Thanks,
 >
 > Josef
