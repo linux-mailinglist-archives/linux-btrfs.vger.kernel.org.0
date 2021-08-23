@@ -2,58 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228273F5137
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 21:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4E83F5139
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Aug 2021 21:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbhHWTYI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 15:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
+        id S232123AbhHWTYM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Aug 2021 15:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbhHWTYF (ORCPT
+        with ESMTP id S232088AbhHWTYL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:24:05 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA08C061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 12:23:22 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id c19so3902768qte.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 12:23:22 -0700 (PDT)
+        Mon, 23 Aug 2021 15:24:11 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA35C061757
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 12:23:28 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id ay33so8929437qkb.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Aug 2021 12:23:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jPb0H7JzwTjjClcrSxiCdWbNjpJlwJ237JM1twecaGM=;
-        b=d0zbV9K108WofXmP4WHSvKN0J+ofKcbOg1sn2LPfu0njOzerAWlPNjC7ZtX5aUPiid
-         2ywq4vKGQ5xT9QIR0jfJ9MQik5n5pk7xiAFFIQYc1rOuo+AOK7j5Smjbf4u+ktTpHW/H
-         3Aph+cmlI+RfUyW7LBOwOclbIsOk/U3bt7Mp/UCDRZNyvZK3KGdLkEw+KHplhvmuL/jV
-         F5j1n8/Te/bScEii78WJwQUz0Gd8twEi+Xnk9ZVPuzo85I8JyXIv+r2KhkCiQODOIGP7
-         KrfC9tMxvmSMkn/puuekWW0Li7zfAva+5Teqq/mSATghn5xaMyww0glUY4yi11FxMOq9
-         qWNA==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=W++HpZkxxxn1o4o7hCkKWt345ONJhv7pJt9f92Wai+E=;
+        b=nB+5dwwwqMYi7x5+jMP3kjVvIxoNn09qkz+iGkOfreGf+S/KaywE420E89W7NiDyBj
+         5Px/bYD2CEVOBw66IubJw5XQVPjmhTTns0ENxI2zLJXbMDQTAuHZrt8DZvdpDp0VGrMr
+         B0CHG6qxjJecO0E803N336tXrNXKyJMiPrg+qhOLnlW5zVms/gh1QswwnLm85covI/VH
+         umhk309yOQCDIU9udnbBMpl6aSCqKsTF0hvLvNZEx+4ZFDvINEOE4uEy7uhZ66RVfWGO
+         1mPlFMScOtuROPjhIYOva+De7UkP1ELhVLptswdb3r98P8VMl53cgnvD8vfyS8JkJL/p
+         Hyxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jPb0H7JzwTjjClcrSxiCdWbNjpJlwJ237JM1twecaGM=;
-        b=eLXOSyfC6w3xzbAEXJmttnBHQ228D0yhZ0GpNauGwlsOpATJ6VhEeUDGwPjmMxBP6A
-         c99+D4K9kA0XE07+3X8IC4GbnHa9LC95QCTZGz88gXcpTbnJq4a8FhWUX6Urf06WOTBj
-         n+l/3Fk0UiQOrSldn344LfXFS0XcEUxBbjV3oxy20D1bzMQCJ8i118pW5jV3rFObNY3J
-         q+IkirxAMbmtR4+7FYWK7npD5nqGrOTlfNdIPMsfBy1IKbgmKkypzi/Rq5sGR0rYabpR
-         ifTGCJ2lI6eJObAG4f4yCR+mlPgjm44lF7PC523LH0UDPiyuDUj2fjjFB0UYvCTtiGsR
-         ViNA==
-X-Gm-Message-State: AOAM530/bnkgt0y3XBlHGvODHmDUs+1AC2GNq46p5rSycfnZtkO22rMG
-        ZwLW+j67ZxAAMqtRcmlTxjpxXgbcWm57Bw==
-X-Google-Smtp-Source: ABdhPJxsN+ZS2hHj30m5s/r6dRbr+Fwb+nek9mHDu4v6HHeMrUZUi5/m2xUZ1K5Q+gkyBiklhhOijw==
-X-Received: by 2002:a05:622a:591:: with SMTP id c17mr2684481qtb.319.1629746601173;
-        Mon, 23 Aug 2021 12:23:21 -0700 (PDT)
+        bh=W++HpZkxxxn1o4o7hCkKWt345ONJhv7pJt9f92Wai+E=;
+        b=K6qRvji82txSEDCD1DmyV40osN77ugX3JF2dyuIbnPnkraEKDGymfs7hBxh39kJkBJ
+         I7cdJgNnDpsoMhQM00xHCzriPw2AbzIyE7YCmMlhcfrewbAMnp1xuOoOdYE1NYecOukj
+         e+1AJKMaA9r9NVGQHmPvDFZ4IpEtG5Lv2/VXZFCobiwW9HuwWRj68Tm39nq68mLCEgrv
+         bUVm6BtYxHJkScDF45FDzMYD7FahwAJUZyDpiA1NzCTzXJsqQU9a2+o0VCfYBBOOfS/+
+         JvIrYFiEujIzeEMz3FMQ6DuBg5fot5ixs3XpY6Ta99gR/7yiu8/r/nDAE0ex55LYtpNd
+         qUNw==
+X-Gm-Message-State: AOAM532sb25cQ4NejhwvXErdrgmEgevd171bivMU9rUh4+eCXiEB4q2h
+        My0Pu3lSsoSi2wYhr5zuv5GwHa88LvTNtA==
+X-Google-Smtp-Source: ABdhPJzz9ZoEVFM7KHAlhaUUHVmgwuH5Hrc1hiDfvYLm5FAsqxIk3utvMVB+Q+YOl3+Bq1F1WJHCQg==
+X-Received: by 2002:a05:620a:1212:: with SMTP id u18mr20310102qkj.154.1629746602580;
+        Mon, 23 Aug 2021 12:23:22 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id 62sm7214273qtg.58.2021.08.23.12.23.20
+        by smtp.gmail.com with ESMTPSA id q7sm9176839qkm.68.2021.08.23.12.23.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 12:23:20 -0700 (PDT)
+        Mon, 23 Aug 2021 12:23:22 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     Qu Wenruo <wqu@suse.com>
-Subject: [PATCH v3 4/9] btrfs-progs: check: propagate extent item errors in lowmem mode
-Date:   Mon, 23 Aug 2021 15:23:08 -0400
-Message-Id: <6ae6b4aa924329001685e8717c7db77ca33f805e.1629746415.git.josef@toxicpanda.com>
+Subject: [PATCH v3 5/9] btrfs-progs: do not double add unaligned extent records
+Date:   Mon, 23 Aug 2021 15:23:09 -0400
+Message-Id: <9369a488d508519a4bea2742dfd0bdadccf4dc99.1629746415.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1629746415.git.josef@toxicpanda.com>
 References: <cover.1629746415.git.josef@toxicpanda.com>
@@ -63,30 +62,58 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Test 044 was failing with lowmem because it was not bubbling up the
-error to the user.  This is because we try to allow repair the
-opportunity to clear the error, however if repair isn't set we simply do
-not add the temporary error to the main error return variable.  Fix this
-by adding the tmp_err to err before moving on to the next item.
+The repair cycle in the main check will drop all of our cache and loop
+through again to make sure everything is still good to go.
+Unfortunately we record our unaligned extent records on a per-root list
+so they can be retrieved when we're checking the fs roots.  This isn't
+straightforward to clean up, so instead simply check our current list of
+unaligned extent records when we are adding a new one to make sure we're
+not duplicating our efforts.  This makes us able to pass 001 with my
+super bytes_used fix applied.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/mode-lowmem.c | 1 +
- 1 file changed, 1 insertion(+)
+ check/main.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 507873ce..cb8e3ab8 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -4381,6 +4381,7 @@ next:
- 		goto next;
- 	}
+diff --git a/check/main.c b/check/main.c
+index 81b6650f..6f77b5ff 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -7928,6 +7928,8 @@ static int record_unaligned_extent_rec(struct extent_record *rec)
  
-+	err |= tmp_err;
- 	ptr_offset += btrfs_extent_inline_ref_size(type);
- 	goto next;
+ 	rbtree_postorder_for_each_entry_safe(back, tmp,
+ 					     &rec->backref_tree, node) {
++		bool skip = false;
++
+ 		if (back->full_backref || !back->is_data)
+ 			continue;
  
+@@ -7943,6 +7945,24 @@ static int record_unaligned_extent_rec(struct extent_record *rec)
+ 		if (IS_ERR_OR_NULL(dest_root))
+ 			continue;
+ 
++		/*
++		 * If we repaired something and restarted we could potentially
++		 * try to add this unaligned record multiple times, so check
++		 * before we add a new one.
++		 */
++		list_for_each_entry(urec, &dest_root->unaligned_extent_recs,
++				    list) {
++			if (urec->objectid == dest_root->objectid &&
++			    urec->owner == dback->owner &&
++			    urec->bytenr == rec->start) {
++				skip = true;
++				break;
++			}
++		}
++
++		if (skip)
++			continue;
++
+ 		urec = malloc(sizeof(struct unaligned_extent_rec_t));
+ 		if (!urec)
+ 			return -ENOMEM;
 -- 
 2.26.3
 
