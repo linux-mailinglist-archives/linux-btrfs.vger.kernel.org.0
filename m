@@ -2,370 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14653F5598
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 03:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B017A3F577B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 07:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232186AbhHXBzl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Aug 2021 21:55:41 -0400
-Received: from mout.gmx.net ([212.227.17.22]:49669 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229742AbhHXBzk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Aug 2021 21:55:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629770095;
-        bh=d+A5181v5lnGNMvCoWerOA3udcTE2YHCtVeehtSSO8Y=;
-        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
-        b=Xh/J214LuacPKpOcvJcboEtInwem+IO1/xcATBSVA0yn4LVEB0rMfrlBOsug1lRJD
-         hqQmdyYcj/Txk1MqCk0+n4BhLjpAAUt5jJPRsQ/gT3nfotPs+732sHPQcvmFMipMnY
-         zHx5XP8ZPFiX/JEOu2zoJvDvjuEFKREw7X5sDFUA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1My36N-1nFXFJ2N6V-00zVh5; Tue, 24
- Aug 2021 03:54:55 +0200
-To:     weldon@newfietech.com, linux-btrfs@vger.kernel.org
-References: <005201d79860$befd1b60$3cf75220$@newfietech.com>
- <0be8ec2b-7226-f3d1-a02b-608e757bda24@gmx.com>
- <001401d7987c$7bb81ff0$73285fd0$@newfietech.com>
- <3dd47d33-7a85-7cec-ca36-f949a3a43b8a@gmx.com>
- <002001d79882$5d855ab0$18901010$@newfietech.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: BTRFS fails mount after power failure
-Message-ID: <baf8e19a-8d47-b8d4-47eb-6673ea1e2408@gmx.com>
-Date:   Tue, 24 Aug 2021 09:54:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230023AbhHXFGd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Aug 2021 01:06:33 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:64000 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229646AbhHXFGc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Aug 2021 01:06:32 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17O0xBfb012065;
+        Tue, 24 Aug 2021 05:05:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=Kfmn7Ipr/LAP3MZABIkHbhXFdDHvQIkko1C/VmaUKxI=;
+ b=fHCvkyVxKNLUNsy47M5IEbbLKAC0YiNXR9VEy2PVwqFTlxl1pVITtfa8M7QAcLrYE8H8
+ qKhRSwUoTpDxy2C4Qh6WgUJfrDbILNZZi52zqO6rHIwLLdG0MJwQLCLqMI5KYjfQnWm3
+ Dt/yIoblGXGT648Xck1OsfG+qvod5qUIEO5s7PzGZMBvdmqgbeYIX7fpPvBBcwXNfobp
+ NAhSQJXAR5z15wueM1+ZuB8qO6qbvrbmtoUXqFUAbQprP6P8Xbul5rm1ExPQu93vQcu7
+ g+G1sXjvWEgneKY7HT6AoIo0mEtM1g/dAf1A9SFrzkTWivjoflkIDO8D1zaGj8R74VSW jg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=Kfmn7Ipr/LAP3MZABIkHbhXFdDHvQIkko1C/VmaUKxI=;
+ b=qi8X/zHZ3ZaHAszyPC48vHuuhdvygzNPSkrfWbLLnY7ylW+YluMIuMBgbiCxy0RUId1d
+ YoNNZi/UVxKgsPQot6SA5jD/pxS5DF9g8UYCij17VFkCfJnD4B7oxNcVWtrLrYI3v9t2
+ 0hnCGYe3NBdFWxDUgIzk8z1+m0IughvRYCUbUcMdrp2NfR19U8/MTsKmkX1w0RLZ2UCf
+ XaWD58MjgfOGTrLlBq4PC7dt/pltUvJFgHgU2Mbp1bzQnvgxy9F1ifG4IkHJ0dscIAI4
+ 4CaeBJf67lpW3BrnrLgKILCXTKC7tVdLg0YmWiF1jcQ8hvmiL0Z9wuopP2yLuTQewImP 9g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3akw7nbab9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Aug 2021 05:05:41 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17O55J6i121827;
+        Tue, 24 Aug 2021 05:05:41 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2172.outbound.protection.outlook.com [104.47.55.172])
+        by aserp3030.oracle.com with ESMTP id 3ajqhdwwk3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Aug 2021 05:05:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MC+hKlZGJ2HJXZ9/5+p8tz1+eCMdTN7/TkABqN3W409UryZPZdnHz6ehYn/fEOQVGUXG0+affHME4N/CL53VIyS/OCjHffQr6IE+Uqo6d3k4qWbkqp1e534sbn/abMBIaP1JumT0xkNDbpudc4O+HlS3ZQ6HMxAuhJN1Uk5L/fQu5I8HdZkjo9iBo2FxUGgU+ZGEe+2cQuIus8IrDraxjz/EDitQPCwhY9OCyuAcXnmK+6wu4yZEK1ZeEob1szdixcbyFMXWg8tEpt2Gzvc6XVeFt7gs3upBbbp4p91hDQ0X+6+d1GsgEfpRmkGBTc0BUt+9Rwpgaq4k1jYCKHfIDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kfmn7Ipr/LAP3MZABIkHbhXFdDHvQIkko1C/VmaUKxI=;
+ b=lpM2z0BGABghzrfiEDZtKzMtsCFCxExCXE+e5PlbirkfwddNQdnJUZlqt9D5uoa273yZhFLKDNQknnnV5USaUc0nVT709LMN+OcbjbofEFotWNMrUZg9HGGnf59cm5z9egpe8BW6XANomZhg8r+3fJaVnMfPNHH5/q94KlsQdcPjKvbIRmQFcs2xFB8cWKK8y909+UzX8rxbK0umVcFdlZOx9QBu/3Y3KvAnMgVFu5s0sh7I9PZHGAQ1qOZ6dwzrgwtmJ/TOFZGU5d++AOQJJLd/JMHTFqPNfPSFJJ5dJaXMSWZqy05X53/QmooUjrszQ8rggVsZjWNG9Cw1ORG3pQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kfmn7Ipr/LAP3MZABIkHbhXFdDHvQIkko1C/VmaUKxI=;
+ b=gUCOfzFdMGIjeC45iUHHC9V557WCqpOSGi/igvrdjTDWltFlHN5D8XoPPHDrXJ+DBLhid/vzJTwyYRwaX5xSf+xE6nY4aZJcuxNn2WT7uJvPS+HvY1V+ZaD5O0FpIHfW07hWc6XOpoitkrviRQGLF2Ta6SRdIlCypN0SQzAw7Wc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BL0PR10MB3428.namprd10.prod.outlook.com (2603:10b6:208:7c::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.24; Tue, 24 Aug
+ 2021 05:05:38 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4436.024; Tue, 24 Aug 2021
+ 05:05:38 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, l@damenly.su
+Subject: [PATCH V5 0/4] btrf_show_devname related fixes
+Date:   Tue, 24 Aug 2021 13:05:18 +0800
+Message-Id: <cover.1629780501.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR03CA0127.apcprd03.prod.outlook.com
+ (2603:1096:4:91::31) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-In-Reply-To: <002001d79882$5d855ab0$18901010$@newfietech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CQL4seTTucBhU6ISHwTbU8kRa40zhfUi73BFpIQz87X8rJxZd3+
- YZGhjcpNbdQg8NkZIEehDnsPyxzKIQE9RnhkueWPtcD2hQsELvkUjwZOEli12T0/C0kODFS
- V4mE2T0F7xTdNuKy24eA/zdVdBlJHVR8gcmsi0jg7O9RyZoOWbcF0bL7maqx8jo8gt7exq8
- +45VF0I7UOFbOeNIVrOjw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vJ8HVMN2N2Y=:lqgo8NTjvnsHTljFqH9ASG
- YzCL/cmCctcIVJN6bvL6Ie7CTloQYiI7xaB9ALqIWwoSg8/GcR3xWxFLoAklAZ8Nh+cp7/mvI
- miGfAhs0RyRntEkYpZNAkC2J9UDwjeQn243eIDuj4U8+5FncsZbtKFw5Vjxi0DF9ykExRwIuN
- FFECfVwFcnOKJBsdtkyrMtz34B9CowxwdnYX7MvUEWxwGj1W2J5OQigTljrt+XWa7ZTeGX4O2
- jjt0qHChBdXNPMRMtVI8y9wpy98ecWDsz2hFNEL8b49y+S8yE9D6PRRPKZlRiN5N94WJ+p+57
- dSJNB/4z5R0dVS+MTmhj8LJXykZLqlvkcjKO1bbUD6Q4uIiQMih8HsGI4QNAfHnNbl1BBpPtN
- WAs6RXWS/hMM3nfur1EIkmEICCc/4oiTBWjz9IcEJtY6bvPbrzn/f29AlmDiKSjLFen/JYg3g
- zaMceU93ikmToMqO78yumTNP+WemM6WNu7zg1rx34/QJThXhME7qhtvJPS+HdKQdCBAIinArg
- GYxsH8bGF6QkuT7k8200W2nkNFah/Uc3dLi7B9haCNpZR8l9SiOrgmdchT98moVstYbEmWeRb
- WgwJaF1th61QL/M0oNbS6kfR5wxA1hO3uTds2vZS85T/K8NXkuZs2SgsqNOtJUcDfPenUHiq3
- 8oRYmYkGrZNgEcI4W1iuC7EUKg33GV06pUnCFm6ycoGR1NmgocpZvkw0ffLOju2Qy99fv4v7u
- Y1B3thFXF7nQEIVor/s9CJhK7+CSfeLw1hsdYmtfQdAkwtb92WS4385JXFB4Y+8Vl8XAqgqBr
- i2F+U0V2cjinIyDRIBeTOooVMKjzVP4eQaWJlLkjEGGl2BPHiY9AcmUcjp/MplGlx4PEEkhZz
- /z9JF2oaF12sKy9VhfNhnLJ2srm3G25U5rtfIr1qmMRe+O+xo2h9AbhVHEn90gX8skdvcKF26
- vVtJZNzqpgzpf+qDbsH7TMbThT7MVYPyoMyOskIGgzmebOVHJ/q0RZd9zHE6WrvER4jzirrdg
- 7xgBd6RAhuOHDMvYc1tCMk7VLTNG23LqHzSqqm5FXv4ym8rqySL1SB8IPFZx3CGwg80Ev4F2Z
- 8kmuzgD3YOt1e2KznZkzQL2yhkq2Opx5HQNh+rJgi3IE1b9GzluWC9neg==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (39.109.186.25) by SG2PR03CA0127.apcprd03.prod.outlook.com (2603:1096:4:91::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.6 via Frontend Transport; Tue, 24 Aug 2021 05:05:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 51faedec-2472-4e55-5c21-08d966bcd008
+X-MS-TrafficTypeDiagnostic: BL0PR10MB3428:
+X-Microsoft-Antispam-PRVS: <BL0PR10MB3428498203AD3BE0130ADD89E5C59@BL0PR10MB3428.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SPe1Qwthbyyw3Ba1ELaWUDLWGCPfdMPbTPl0NKPo7WLCImauyGs+NWUm4lFRjdY4hJjidnSCPi9YbZoB4bJwziXEiShyxDPQTehrHYe58Cq5kLdbev31/4wKfXr2As+6GC+9WL9jQgNJ7fF95wRIoHiJAXLg4BAtCzYTtymWEogw4TxfmfbCA6hDZFPDQktD8jU6nxp/stqNeZiS8h1hj/RxGDtB/hw2ozfFkr65A9KzcKXzFfttr4gbX0WxoB8PYo1P69LkO1hSBMawTUiZ2xiF6+sURUDSRfZXgLNrvgn0m9mXmaA/iaGqsB/8qplSJ2OacCproQOutD6uyRWG3NiHM3D/BXNmhtBEaINV8uZdMhTCiTlqXQH63/9UTQQWH+Xa6NUP9kPMNSe98E6OUfulMUBk3ILqXHeQ/n1SS4wZHVxkB/X+Y99MXk9Sk45dZxoOqwon46o2UTRAFLF40K/FOAU139iXwvzRz+kPMKOlVO4ZsGtV6Vq7PJYold2EUF0i2GG3Ppqc2iBjlZUqLQ9MWxo/9WiG9eo/2ZcAH7ytnx9CkIOs68ZjbkFs6n3CKLrxbBEGyXUiwDGlZY6gYOnZaTdt/2ESOWuhW1O0xzR8NCudB6cnBcAT+5GVBnUqkV1N4e6JeedGeKsbjaqudrB8YIQoeA/PeKi7mwoklWNU2SjkDgD5tw7tv4aQ4iTnokq/XIreACRPwJZ+7FBYrOKgzsrERaVJ156fGbeosL7GuQy7kN8E74pkGzuQBhIjv12nXclbtwe3oXQP1BpqMQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(346002)(396003)(136003)(8936002)(6506007)(6512007)(956004)(86362001)(8676002)(2616005)(66476007)(38100700002)(66946007)(966005)(38350700002)(83380400001)(5660300002)(66556008)(478600001)(52116002)(6486002)(316002)(186003)(4326008)(26005)(6916009)(36756003)(2906002)(6666004)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SkNbtHgAaTvrhYZlRLIvqBEQ6WZekV4i+f/ZQt4ytBfVBz4gBQbjco3FcY1f?=
+ =?us-ascii?Q?j6iTLGAkg8aC++CmWicQnIsTyOufTH31Cv9QpXstHOKsbstkdWfM6Ubb+kQy?=
+ =?us-ascii?Q?ZpoT5A1tUGXONltkKW/lEiBuVqHOarssfB+j+2Y8VPJfHs1krSu+cWCh6pTg?=
+ =?us-ascii?Q?Q/SKzEBuh3Er2K7TS4334tJbHlLV68l0QRFSi3qzdqIedUGvZMZuWXxdsdqK?=
+ =?us-ascii?Q?XvuIwFY0VSNIp2AmQvn7u46QwxQbk99k5w/7zjPJKHCmmu4qkKTkRR9D3nJM?=
+ =?us-ascii?Q?4rbiZ09/bfRfV3PK0R2I0z98GkgQ/YWHnMhnzkp0heKinv2CTUcIU/7HKlEg?=
+ =?us-ascii?Q?HVYLKLYAbwJr21Rf0KFWBVe7diPvnGP3Za7fUrWQW9uePHItTlXG4UQoVuwo?=
+ =?us-ascii?Q?BnTjywGPmtrq0KhDDho1EDuXC6yysYvWrsBwi8ZPcekS3UYW/D079TzVEW2z?=
+ =?us-ascii?Q?TcgbCEJ+I4RseWwulbfR6cgb96a9oFC+1HJrroNNCDqZESIgZmWiDSoZRBrV?=
+ =?us-ascii?Q?wGZeCMbJJD2Bw8JNjZ+vimGlILTqAKzhJIhLhsZpVIK6SUEAGyTcIQkDzCMb?=
+ =?us-ascii?Q?jI7nodrtQpf8xpn54SkWKKHsWeFCC0t/Jea9HmzAN4yBeA1YI4JYt/teFgzh?=
+ =?us-ascii?Q?rMDGsVUPea+FV03KopviodemjYtY0oR49mDJKz0tKDcD3/UfpHb7MHKGU9K/?=
+ =?us-ascii?Q?gOTLEPnv9lAfHT59pA8DiwdKrCVg2Lhpsd8vqxLkxPFlgvD7qsY2+grG3dRo?=
+ =?us-ascii?Q?9x1X1K1dM+J0gOv3YPNSA4lzt++K8uGk9xefIKelnxgMaWu+9I3UYKp9O67i?=
+ =?us-ascii?Q?TSX8gm0rf6HOu9KW0ofn08fn2ib9nBnSausOywwdZ8W+3F35gBQRX+CnS7AM?=
+ =?us-ascii?Q?msqY6SnPSxBd+2VYC+V4bibRilFlyJKUFuvw06+FRseTgnrvB0yLaOTofch+?=
+ =?us-ascii?Q?xnoOpESMMGMldde2bIRMGfGCjn/BGYoysAfrAwmatket496pXtmg4hHsVpot?=
+ =?us-ascii?Q?0IyjLkSw29u6G1zxweQFqBtJiEjS4hjQ3kkZDf/d1TVPor2RgMqtNAulowRs?=
+ =?us-ascii?Q?eNsVXfRE5gPZB0YQYbVdD3B6m987mb8qxrv/QoaFFBqaIy4KUQngqsaUyx1c?=
+ =?us-ascii?Q?FcZ146Ohlhsx+CCwxdaz2PQQcCKIEm8BxVWaCVutmsbQoA/Xt4vhOD9qxPNn?=
+ =?us-ascii?Q?I2BpT5IAvJ92ypdvQwXyZy2bf74axFgwNuOC3IXjuF0+HrGd1OY0H/hBdDjI?=
+ =?us-ascii?Q?5+1J9XmfRmHRw0G8qQchY3X4/2Nu9YYlgYtngEyuIOfbEJURGjqt2yPmKVmm?=
+ =?us-ascii?Q?Yc+zgr2TdFywpp+5duMJy4ue?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51faedec-2472-4e55-5c21-08d966bcd008
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 05:05:38.3025
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2DCd1S4m+C0OiDhgqV0/6THh8Oo2t0A00Q/OyefWOs3Kfiy5pA4TFMfPekVQkA05O/+62BEow3Q0tpsoueiPXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB3428
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10085 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108240031
+X-Proofpoint-GUID: hAYDpIhVH1_zw4UGL8lx7k1YDRXq1j0b
+X-Proofpoint-ORIG-GUID: hAYDpIhVH1_zw4UGL8lx7k1YDRXq1j0b
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+v5: Patches reorged.
+ Patch (btrfs: consolidate device_list_mutex in prepare_sprout to its parent)
+ moved into a new set as it has a dependency on an older patch in the ML.
+ Change log updated.
+v4: Fix unrelated changes
+v3: Add missing rcu_lock in show_devname
+v2: Use latest_dev so that device path is also shown
 
+Su Yue reported [1] warn() as a result of a race between the following two
+threads,
+  Thread-A: function stack leading to btrfs_prepare_sprout()
+and
+  Thread-B: function stack leading to btrfs_show_devname()
 
-On 2021/8/24 =E4=B8=8A=E5=8D=888:52, weldon@newfietech.com wrote:
-> I've attached the complete results of the btrfs-find-root command.
->
-> If I understood your directions correctly, below is the result:
->
-> root@onyx:/home# btrfs check -r 7939758882816 /dev/sdb1
-> Opening filesystem to check...
-> parent transid verify failed on 7939758882816 wanted 120260 found 120264
-> parent transid verify failed on 7939758882816 wanted 120260 found 120264
-> parent transid verify failed on 7939758882816 wanted 120260 found 120264
-> Ignoring transid failure
-> parent transid verify failed on 7939751723008 wanted 120264 found 120262
-> parent transid verify failed on 7939751723008 wanted 120264 found 120266
-> parent transid verify failed on 7939751723008 wanted 120264 found 120266
-> Ignoring transid failure
-> parent transid verify failed on 7939735683072 wanted 120264 found 120263
-> parent transid verify failed on 7939735683072 wanted 120261 found 120264
-> Ignoring transid failure
-> parent transid verify failed on 7939734437888 wanted 120264 found 120253
+[1]  https://patchwork.kernel.org/project/linux-btrfs/patch/20210818041944.5793-1-l@damenly.su/
 
-Well, there are more transid errors than I thought.
+While btrfs_prepare_sprout() moves the fs_devices::devices into
+fs_devices::seed_list, the btrfs_show_devname searched for the devices
+and found none, leading to the warning as in [1] (above).
 
-This mostly means the RAID controller is not resilvering the correct
-data out.
-Thus metadata COW is broken.
+The btrfs_prepare_sprout() uses device_list_mutex however
+btrfs_show_devname() don't and, the device_list_mutex in
+btrfs_show_devname() was removed by the patch 88c14590cdd6
+(btrfs: use RCU in btrfs_show_devname for device list traversal)
+for the perforamcne reasons.
 
-Thus the only thing we can do is data salvaging using btrfs-restore,
-which is far from ideal.
-Thus it's recommended to restore from backup.
+This series does not intend to reintroduce the device_list_mutex in
+btrfs_prepare_sprout() but instead saves the pointer to btrfs_devices
+in the fs_devices::latest_dev so that btrfs_show_devname() can use it.
 
+patch 1 converts fs_devices::latest_bdev type from struct block_device to
+        struct btrfs_device and renames it to latest_dev
+patch 2 btrfs_show_devname() uses the fs_devices::latest_dev::name to show
+        the device path in the /proc/self/mounts
+patch 3 fixes a stale latest_dev pointer after the sprout operation
+patch 4 fixes an old comment about the function btrfs_show_devname()
 
-In this particular case, since the RAID5 controller is involved, there
-isn't much thing we can do from btrfs realm.
+Anand Jain (4):
+  btrfs: convert latest_bdev type to struct btrfs_device and rename
+  btrfs: use latest_dev in btrfs_show_devname
+  btrfs: update latest_dev when we sprout
+  btrfs: fix comment about the btrfs_show_devname
 
-Thus I'd recommend to not to use the RAID5 controller, but connect all
-those disks directly so the kernel can manage them directly.
+ fs/btrfs/disk-io.c   |  6 +++---
+ fs/btrfs/extent_io.c |  2 +-
+ fs/btrfs/inode.c     |  2 +-
+ fs/btrfs/super.c     | 26 ++++----------------------
+ fs/btrfs/volumes.c   | 17 ++++++++---------
+ fs/btrfs/volumes.h   |  2 +-
+ 6 files changed, 18 insertions(+), 37 deletions(-)
 
+-- 
+2.31.1
 
-Then build btrfs RAID10 on top of these disks.
-The cost is obvious, only half of the disks can really be utilized, but
-it should get rid of the unreliable RAID5 controller.
-
-Thanks,
-Qu
-> Checking filesystem on /dev/sdb1
-> UUID: 7f500ee1-32b7-45a3-b1e9-deb7e1f59632
-> [1/7] checking root items
-> Error: could not find extent items for root 18446744073709551607
-> ERROR: failed to repair root items: No such file or directory
-> root@onyx:/home#
->
-> root@onyx:/home# btrfs check -r 7939747938304 /dev/sdb1
-> Opening filesystem to check...
-> parent transid verify failed on 7939747938304 wanted 120260 found 120263
-> parent transid verify failed on 7939747938304 wanted 120260 found 120265
-> parent transid verify failed on 7939747938304 wanted 120260 found 120265
-> Ignoring transid failure
-> ERROR: could not setup extent tree
-> ERROR: cannot open file system
-> root@onyx:/home#
->
-> root@onyx:/home# btrfs check -r 7939756146688 /dev/sdb1
-> Opening filesystem to check...
-> parent transid verify failed on 7939756146688 wanted 120260 found 120262
-> parent transid verify failed on 7939756146688 wanted 120260 found 120264
-> parent transid verify failed on 7939756146688 wanted 120260 found 120264
-> Ignoring transid failure
-> ERROR: could not setup extent tree
-> ERROR: cannot open file system
-> root@onyx:/home#
->
-> root@onyx:/home# btrfs check -r 7939751559168  /dev/sdb1
-> Opening filesystem to check...
-> parent transid verify failed on 7939751559168 wanted 120260 found 120261
-> parent transid verify failed on 7939751559168 wanted 120260 found 120261
-> parent transid verify failed on 7939751559168 wanted 120260 found 120261
-> Ignoring transid failure
-> ERROR: could not setup extent tree
-> ERROR: cannot open file system
-> root@onyx:/home#
->
-> Thanks again,
-> Weldon
->
->
-> -----Original Message-----
-> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-> Sent: August 23, 2021 6:39 PM
-> To: weldon@newfietech.com; linux-btrfs@vger.kernel.org
-> Subject: Re: BTRFS fails mount after power failure
->
->
->
-> On 2021/8/24 =E4=B8=8A=E5=8D=888:10, weldon@newfietech.com wrote:
->> Thank you for the reply Qu.
->>
->> The hardware setup is a bit wonky in a home lab, but is as follows:
->>
->> Dell PowerEdge R510 Chassis
->> Dell PERC H700
->> 6 * 4TB SATA Disks in a RAID 5 configuration
->
-> The RAID5 is not provided by btrfs, but some hardware RAID controller?
->
-> Then we don't need to bother the btrfs RAID5 bug.
->
-> But still, this means the RAID controller or the hdd is not doing proper=
- flush/fua.
->
-> This means, next time your UPS went down or a kernel crash happens, you =
-may still hit a similar problem.
->
-> And this time, we're pretty sure it's less possible to blame btrfs code.
->
->
->> ESXi 6.5 hypervisor sees storage as local DELL Disk, 18.19TB
->>
->> 17.66TB Provisioned as a Datastore on the hypervisor, VMFS5.
->> - 14.5TB provisioned as a vmdk and presented as local disk to Ubuntu
->> virtual machine, mounted as /data (btrfs)
->> - 200GB provisioned as vmdk and presented as local disk to Ubuntu
->> virtual machine, mounted as / (ext4)
->>
->> Happy and willing to try any suggestions you may have.
->>
->> root@onyx:/home# btrfs ins dump-tree /dev/sdb1
->
-> My bad, I mean "btrfs ins dump-super -fFa", but that's for the case of b=
-trfs RAID5 setup.
->
-> Since you're using hardware RAID5 controller, we can go direct to the re=
-covery part.
->
-> Your previous find-root output would be pretty helpful.
->
-> You can try btrfs-check with -r option:
->
-> # btrfs check -r 7939758882816 /dev/sdb1
->
-> To see how many errors it throws. if it had almost no error, then it has=
- a pretty high chance to recover the data.
->
-> You can also try other bytenr from your find-root output, but I guess yo=
-u only need to try the first 4 bytenrs.
->
-> Thanks,
-> Qu
->
->> btrfs-progs v5.4.1
->> parent transid verify failed on 7939752886272 wanted 120260 found
->> 120262 parent transid verify failed on 7939752886272 wanted 120260
->> found 120265 parent transid verify failed on 7939752886272 wanted
->> 120260 found 120265 Ignoring transid failure
->> WARNING: could not setup extent tree, skipping it Couldn't setup
->> device tree
->> ERROR: unable to open /dev/sdb1
->> root@onyx:/home#
->>
->>
->> Thanks in advance,
->> Weldon
->>
->>
->> -----Original Message-----
->> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
->> Sent: August 23, 2021 5:55 PM
->> To: weldon@newfietech.com; linux-btrfs@vger.kernel.org
->> Subject: Re: BTRFS fails mount after power failure
->>
->>
->>
->> On 2021/8/24 =E4=B8=8A=E5=8D=884:52, weldon@newfietech.com wrote:
->>> Good day folks,
->>>
->>> I awoke this morning to find that my UPS had died overnight and my
->>> Ubuntu server with a 14.5TB (Raid 5) BTRFS volume went down with it.
->>
->> RAID5 has known write hole bug, and although that bug won't cause immed=
-iate problems, it slowly degrades the whole array with each corrupted sect=
-or or unexpected power loss.
->>
->> This would eventually bring down the array with enough degradation.
->>
->>>    The machine
->>> rebooted fine and the hardware reports no errors, however the BTRFS
->>> volume  will no longer mount.  The OS boots fine, the 14.5TB volume
->>> is for data  storage only.  gparted shows the volume/partition,  and
->>> correctly reports  space used as well as total size.  I've never
->>> encountered this type of issue  over the past year while using btrfs
->>> and I'm not sure where to start.  A  number of google search results
->>> express caution when attempting to  recover/repair, so I'm hoping for =
-some expert advice.
->>>
->>> My dmesg log exceeds the 100,000 bytes restriction, so I'm unable to
->>> attach it, so please ask if there's anything specific I can include ot=
-herwise.
->>>
->>> # uname -a
->>> Linux onyx 5.4.0-81-generic #91-Ubuntu SMP Thu Jul 15 19:09:17 UTC
->>> 2021
->>> x86_64 x86_64 x86_64 GNU/Linux
->>>
->>> # btrfs --version
->>> btrfs-progs v5.4.1
->>>
->>> # btrfs fi show
->>> Label: 'Data'  uuid: 7f500ee1-32b7-45a3-b1e9-deb7e1f59632
->>>            Total devices 1 FS bytes used 7.17TiB
->>>            devid    1 size 14.50TiB used 7.40TiB path /dev/sdb1
->>>
->>> # dmesg | grep sdb
->>> [    2.312875] sd 32:0:1:0: [sdb] Very big device. Trying to use READ
->>> CAPACITY(16).
->>> [    2.313010] sd 32:0:1:0: [sdb] 31138512896 512-byte logical blocks:=
- (15.9
->>> TB/14.5 TiB)
->>> [    2.313062] sd 32:0:1:0: [sdb] Write Protect is off
->>> [    2.313065] sd 32:0:1:0: [sdb] Mode Sense: 61 00 00 00
->>> [    2.313116] sd 32:0:1:0: [sdb] Cache data unavailable
->>> [    2.313119] sd 32:0:1:0: [sdb] Assuming drive cache: write through
->>> [    2.333321] sd 32:0:1:0: [sdb] Very big device. Trying to use READ
->>> CAPACITY(16).
->>> [    2.396761]  sdb: sdb1
->>> [    2.397170] sd 32:0:1:0: [sdb] Very big device. Trying to use READ
->>> CAPACITY(16).
->>> [    2.397261] sd 32:0:1:0: [sdb] Attached SCSI disk
->>> [    4.709963] BTRFS: device label Data devid 1 transid 120260 /dev/sd=
-b1
->>> [   21.849570] BTRFS info (device sdb1): disk space caching is enabled
->>> [   21.849573] BTRFS info (device sdb1): has skinny extents
->>> [   22.023224] BTRFS error (device sdb1): parent transid verify failed=
- on
->>> 7939752886272 wanted 120260 found 120262
->>> [   22.047940] BTRFS error (device sdb1): parent transid verify failed=
- on
->>> 7939752886272 wanted 120260 found 120265
->>
->> This already shows some mismatch in on-disk data and recovered data fro=
-m parity.
->>
->> This shows the on-disk data and parity have drifted from each other, ex=
-actly the write hole problem.
->>
->> Furthermore, the disk has newer data than what we expect.
->>
->> What's the device model? It looks like a misbehavior, not sure if it's =
-from the hardware, or the btrfs code.
->> As RAID56 is already marked as unsafe for a while, not that much love n=
-or code fix is directed to RAID56, thus both cases are possible.
->>
->>> [   22.047949] BTRFS warning (device sdb1): failed to read tree root
->>> [   22.089003] BTRFS error (device sdb1): open_ctree failed
->>>
->>> root@onyx:/home/weldon# btrfs-find-root /dev/sdb1 parent transid
->>> verify failed on 7939752886272 wanted 120260 found 120262 parent
->>> transid verify failed on 7939752886272 wanted 120260 found 120265
->>> parent transid verify failed on 7939752886272 wanted 120260 found
->>> 120265 Ignoring transid failure
->>> WARNING: could not setup extent tree, skipping it Couldn't setup
->>> device tree Superblock thinks the generation is 120260 Superblock
->>> thinks the level is 1 Well block 7939758882816(gen: 120264 level: 1)
->>> seems good, but generation/level doesn't match, want gen: 120260
->>> level: 1 Well block 7939747938304(gen: 120263 level: 1) seems good,
->>> but generation/level doesn't match, want gen: 120260 level: 1 Well
->>> block 7939756146688(gen: 120262 level: 1) seems good, but
->>> generation/level doesn't match, want gen: 120260 level: 1 Well block
->>> 7939751559168(gen: 120261 level: 0) seems good, but generation/level
->>> doesn't match, want gen: 120260 level: 1
->>>
->>> *** A large selection of block references was removed due to
->>> character count... if needed, I can resend with the full output.
->>>
->>> Well block 1316967743488(gen: 1293 level: 0) seems good, but
->>> generation/level doesn't match, want gen: 120260 level: 1 Well block
->>> 1316909662208(gen: 1283 level: 0) seems good, but generation/level
->>> doesn't match, want gen: 120260 level: 1 Well block 1316908711936(gen:
->>> 1283 level: 0) seems good, but generation/level doesn't match, want
->>> gen: 120260 level: 1 root@onyx:/home#
->>>
->>> Any help or assistance would be greatly appreciated.  Important data
->>> has been backed up, however if it's possible to recover without
->>> thrashing the entire volume, that would be preferred.
->>
->> First thing first, don't expect too much about magically turning the fs=
- back to fully functional status.
->> Transid error is always tricky for btrfs.
->>
->>
->> But for your case, I'm guessing your sdb1 does not have the latest supe=
-r block.
->> We have newer tree roots on disk, but older super block.
->>
->> Maybe you would like to try "btrfs ins dump-tree" on all the involved d=
-isks, and find if there is newer super blocks.
->>
->> Thanks,
->> Qu
->>>
->>> Regards,
->>> Weldon
->>>
->>
