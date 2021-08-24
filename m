@@ -2,250 +2,303 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56763F5797
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 07:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE78B3F57BF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 07:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhHXF2s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Aug 2021 01:28:48 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:48186 "EHLO
+        id S234496AbhHXFzU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Aug 2021 01:55:20 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:11294 "EHLO
         mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229937AbhHXF2s (ORCPT
+        by vger.kernel.org with ESMTP id S234052AbhHXFzT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Aug 2021 01:28:48 -0400
+        Tue, 24 Aug 2021 01:55:19 -0400
 Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17O0xBsO014822;
-        Tue, 24 Aug 2021 05:28:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2021-07-09;
- bh=JRwOBavrmnwa0KEjazWUqHweYxpw28L1HZaIIGO/CzA=;
- b=NdjZueOBhMw+PhFbA7YpNpR4gZ07m6zD/0A6ksqo27cmmB8msHjHz9f58QEYOKiyBNvi
- +IRR5sMOet4S0g3NLuYsw+bKXrX1R7ggWrLkhXkFMK9fM99zoa/BEMdVUC7XJQ88HlFG
- gs1uOfE3NUHucFxmALYUWEyz4cXwz6xH9LbI1BtUdqD1A9X9BaQCDcRAG0uACLS6aG+Q
- ACUesiL7lgV6UVOAFOgV2KA/FJpW8OlnucXGPesIzymhDRli3dVwLp4GMQuJsTic43NO
- L5WqxVL8YZIrVAw6vUA/vcmEK4QLgBzfkrYKYwVQs5tPPRCJi0MQ5NQ4354A8pV/r60b yw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=JRwOBavrmnwa0KEjazWUqHweYxpw28L1HZaIIGO/CzA=;
- b=vAALDUtoYYAZTbAmlc3umkqLUmMDWjpQ+4tN9tR4cSYCWeC+vOVyVn0QTuTHJNlh3Iq2
- p+vqqwCnj9u7GTFzmtmLR21EBm41ciuKWIO5LcIBhQI6w1Mtph6qHFTDycaTGIt91wVw
- iIse2hG0Q9vapL1GcLBq3re54ZL2jrrCIbBEY3Oq/CDHK8qgNL0eNaGhacpIFg+x8GRD
- 7YCUn0H25STtYCe82NMgQxqfsVFXYRao7ZxK4bx4Se36Jefm/44Xp+0cUxmPRbmd1KEu
- bexJfngfgsyyjMqV4OihzYel/O8cib/rg1+NkmUpiKW5Wo62ETCauhjWRa5MG5q3Cbj7 Cg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3akuswkcxp-1
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17O0x6fY014800;
+        Tue, 24 Aug 2021 05:54:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=bLLldLRqHpOXTTVa2eGdB36Ib0ZrzQnW8jcuB2koxWQ=;
+ b=n6EmKxMjw2208dQN4ws/jvlmSFMioCqZad8SgMv6khGT8PvF8ZGsp/Eeo1bjtjpto0wR
+ iv1fzGZqI7HQ91c5+C/IIngojp05DDqB/ATSgOB+yojE3jTW/OY6tuc/7bjuu3xLw3cz
+ eXniZLXfQzcnFgdAVm4356xIRvYuH+AEOKSrliwLlnjUyj1SNlaRWi0Gi8HOlXtjr1bR
+ 42yhT4gI0chltcxfYC14vamZK2lbHzmX1IAxZvlMexoDL1uJntpUmHnuCY3wkZwiusfJ
+ 7NWomptt3QcN8884zmfocwIViJTmXPIXpZzzxXCvXHT3frO3JKefFFPPDncVgshk3PeL pA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=bLLldLRqHpOXTTVa2eGdB36Ib0ZrzQnW8jcuB2koxWQ=;
+ b=W+HGzw5JxOL5iQ+52aDc93090/tyOFvkA6v7/WMrkNVde0oxib1cVBSjyHhOyHCK++kd
+ mU/0/MFrcNG0uLTFAcA8GhL5v66c2I1O0ZbgLUg3bo1UqZqe4ztKmN3045eA1VygO/T/
+ sYV5L0AY3yCelVq/OClz0pEwEDnI3cvrTx+WsBD6A1spbr4Ug7ha49WK6X3ep3PJ6zHD
+ cIFlhRujMSIUymj9muteD33FnW74i8blCNe9Kd6mWON1N5ZmbwgkZiNho8lMmRTUJqpT
+ madOn/3EKoiMkz9rcqntQAfvJVsPyr1IMl2azenJ53DTgwd/2rAs4N86ITqnfp7f+wXd JQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3akuswkedv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Aug 2021 05:28:01 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17O5PJUd181995;
-        Tue, 24 Aug 2021 05:28:00 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by aserp3030.oracle.com with ESMTP id 3ajqhdxwqg-1
+        Tue, 24 Aug 2021 05:54:33 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17O5jDVN149222;
+        Tue, 24 Aug 2021 05:54:32 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
+        by aserp3020.oracle.com with ESMTP id 3ajsa4nhxd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Aug 2021 05:28:00 +0000
+        Tue, 24 Aug 2021 05:54:32 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NOcKsOT1DXz/HQAh6LiH6X3Le7wD4tpm6wAvz/hO7NHbOreH6Y4awjgRTaJdAyMLNq8hTv8T50Cq8adlYfPUiWeR0UAESu6OceeX/NUYyynANG0XZQ7hBznoZL1xonnGIjyOzNCmZG2FwNtvRjAfkBXWw3+7Pq/UI03ivvc/FQu1+Ira87fSmXbPxyOLUI3cXgzyE0+P+sTaenTG8EZn5chwctZg+2hlIidh+bRbAoby0g2q4dZciPgs1rT2+DswFdddVZh5vtXDtBzG2qgMzSlN2UHeKgnI0YjfQQN7173x3ZYCLF+ig/PTeuUqUDtaEeogTQNtzmlTHoAsC4uHMQ==
+ b=eFvABQSxhyJdOCteZKjU1FcUyRw5qGfNKo9dYLVNPPWmg5OQNI8NETMFU7OFCZsjZuc7yw8lHjJPoJCHGt37vBfFB5a6rFVmFdKgpwgT0epIQAnQA9uCC5nq1bfShrrVGCXggNwBerzQPXhcA3J8z65i3agSgpJzIY/BhkpsOl/59Z24xc1PT0pz3B7BRT+OIU7odoJAVkRaCcS6ym5AFlpWSv6L2OB3zSKdyoGJeKeeKp1oU0j+RBoWccyUDVwpdfni1GTzH7wXCYEAOzpFlfXqAn5k653rAML8YMmRPXTy+U74Ds2yrP7pYQ/iGW4MzMhtyimOfBUnsCRjXOPaqw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JRwOBavrmnwa0KEjazWUqHweYxpw28L1HZaIIGO/CzA=;
- b=gmXHIs3cjZZbaw3j+JNjV+4iXl2ScUAvKXhVDiw/P9MObTOPr/laC2QJhJJc3L13Y8TS2OOtBRUJOMQFT9Hvdg6b5K9UGGjG5Qy5vQj3Y3sZhZvhlxnx0HONarfL5BIoq2zGVhNxnDk3WZo6brh4FFd7y6M+/FkY/eWSJXjCQmEnav22G5lvt07sMpuY8OHcwQUQPCDlIEcUbSfZP123TUzAm2bvjgw4V4k0hqCwXS6S9akAcPXioQ6XNd4Nz4K24OQZmGYFRXtIGizrO8lttqOdjR4LXfaB8J+4lKXzg+w4mQ+NOyo2ik3C3IdEZzLf22Z617l+tDwqNIIerkwb8w==
+ bh=bLLldLRqHpOXTTVa2eGdB36Ib0ZrzQnW8jcuB2koxWQ=;
+ b=VfDWxrtpE10bVywzuo257u/6fzkNyTrI5PWNGIzo8n0KdlgfxLNFR3K4vU3dtj2G/H56GV9L7mPmwfFFBvDUKbA4CGNatged7Nk1ccAYlOoPZTmbgz3hFYElCZ8LeQ8U+vpd9+0MJVY03sMPbLNJ7j5cugKgk1DXw49crE60W1f6TQYXJY6Qf5R5MNRchn1XvX19I5oonXdae7Xsz7aZpQIlVyrFXeV0IggH4ZLZlKMySymw6ma2too7p6bHnALOH23PW7oYHxXdhEoaTh5RBSsZMDnlwadDT5iQIn2AN0oR0yJuwuyPMk6IQ0uh41TSWL5PChvzSV82sz69oLtAzg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JRwOBavrmnwa0KEjazWUqHweYxpw28L1HZaIIGO/CzA=;
- b=XBe/7BHuWwdhuSHbdUrZ0GsFMkQs2eAYm1R92kEtoMRmniZiJGosquLAh7k8+gFRHs+ILp5gYWXASJqALgCGy5J+a58BPn8Y9NtvO/lHSXIct9f+cqZ0B7YVRRptblEmaG8NyKIT3vPhZvtou7kkJ5y9qznWEfMXTg/BP4pRXHw=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+ bh=bLLldLRqHpOXTTVa2eGdB36Ib0ZrzQnW8jcuB2koxWQ=;
+ b=jeWovj1BU96jZD3nB9xr/jNHms4Fhfms1L7fi9NeQBkk06fEqJr87ibKtrVkE7Z6WIEH28nysc+gJEVYcrJTSI+gCkkHvI2e5cxRf1X4q/eQK55p4ozrIqWzkpPR41B6uQbOHe9ViP+/Lb7A3g0V3/2JgaHxhjszMFyE4x+93ao=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=oracle.com;
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4046.namprd10.prod.outlook.com (2603:10b6:208:1b5::18) with
+ by MN2PR10MB3837.namprd10.prod.outlook.com (2603:10b6:208:183::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Tue, 24 Aug
- 2021 05:27:57 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Tue, 24 Aug
+ 2021 05:54:30 +0000
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4436.024; Tue, 24 Aug 2021
- 05:27:57 +0000
+ 05:54:30 +0000
 From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-Subject: [PATCH RESEND] btrfs: reduce return argument of btrfs_chunk_readonly
-Date:   Tue, 24 Aug 2021 13:27:42 +0800
-Message-Id: <32a8d585312548c69ca242c6fd671755f78ddace.1628609924.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.31.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0140.apcprd06.prod.outlook.com
- (2603:1096:1:1f::18) To MN2PR10MB4128.namprd10.prod.outlook.com
+Subject: Re: [PATCH] btrfs: fix max max_inline for pagesize=64K
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
+References: <bfb8ebd29d6890022ddf74cea37d85798292f6d4.1628346277.git.anand.jain@oracle.com>
+ <20210816151026.GE5047@twin.jikos.cz>
+Message-ID: <d418c51c-abc5-d08a-aa20-7781cfe1741c@oracle.com>
+Date:   Tue, 24 Aug 2021 13:54:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20210816151026.GE5047@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR01CA0170.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::26) To MN2PR10MB4128.namprd10.prod.outlook.com
  (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (39.109.186.25) by SG2PR06CA0140.apcprd06.prod.outlook.com (2603:1096:1:1f::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 05:27:56 +0000
+Received: from [192.168.10.109] (39.109.186.25) by SG2PR01CA0170.apcprd01.prod.exchangelabs.com (2603:1096:4:28::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 05:54:29 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 147c3a78-0296-4e27-260e-08d966bfee81
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4046:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB40463A594C34EE9B05CCDD5FE5C59@MN2PR10MB4046.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Office365-Filtering-Correlation-Id: 001791ba-96f8-4164-0e5f-08d966c3a3e7
+X-MS-TrafficTypeDiagnostic: MN2PR10MB3837:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR10MB38370777D9AC11A6A6EB2FC7E5C59@MN2PR10MB3837.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PvyUb2RyBwMzIBGZSWW9T1gZIOlwS4UieSwm7As6nJLb3b0OiBxtzErUN4bb8rWuPwNzufMDjpAg7oOlKZfK4D/d3g2KImWEeA7Kp0DjogMcAI/ww7y7A5NvprXBQOlFJuCM1DIWbdl/zTIjBwmyd+rjjm7R4Zu71ficLu+X7ixCi9IVr5FRQfWUQnD+k0FgGNZpPixfo3v+8Roji6BpLzjkORJ6AnXWMzaPqW8dwpjhh2FAHENhKDaJ9/LsZMy4gvgy4eSQA9o6Aj7y+fqxAth0NCHcs1pEPBcCSFsdNXVqJaV5DdbIPZXt2XlfqrDGqPMEO0PqeDleMKV3v4xjkWugY3GxWh90SeVi0rF/kk5S8Jbbah8MZ5ee+niBq5VsYdCQ3ESI5V+BzMdK2UTfKxvAcIDFYjyAlx72wlxlyt0VELklKSTxV0nN4PHK6aw69xOGezQkd5MZqqM15hCLre8qOINS2xB4mENG81sDlpFDLfFmIfR3BLERoC/6ONz3xBbxH7ffCtsJB0Y2+zJH/DMOK45xJf19O89F0fUEdPnh5Rrd9MzpEY1ewPJcfq+DaBQrsO2D0PFgccoZpuXOTvROYX+3wyukEcJyzjBapiSHkk594J4j1zfc/w7l64PhurpE1YXz0G9sfEj+CldlBZzrD4S5w1tr5P/RS/QPEmEmE9MWJ45Tjg3OoGKQ2svE5zoMLNV9Of8NcUGM102tLw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(136003)(346002)(376002)(8676002)(66946007)(8936002)(6512007)(38100700002)(66556008)(6486002)(66476007)(44832011)(956004)(83380400001)(36756003)(26005)(186003)(6666004)(478600001)(52116002)(6916009)(5660300002)(2906002)(4326008)(316002)(86362001)(6506007)(38350700002)(2616005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 7KR33S+Zg4ue4K32b3KQhdt3w0auiEDuN8AusEuRSSraPWNjowTUf24SzcFlDsoS30lHQq1NFo7KVxRnkdkNAMZgW/P55KpCKjnYsY+dtqfvMRRtj9AO/k75XpGKUjYyA5FFovXMUDFgPrGJSgXQxVlPB+7UiUhTGp9VEiGf3SNCZQoTS1FKyxGNecodxNUK1TmpmFXc102NsDSXPb5WbpbgtRICkQSIVfKFPBb2pZ6xJUNXnwrAF4JI/FPSPn39Ii8mxk9dpnsCbs4xJFnOeZ4nqyFIrPqq2y+tU22Ku5GGems/EQXpefxbrcZsVF92tEc+t/8CR2dSxIg9ShYZ/8JGfM+y3PimkYLfSy4IktSBXzJY0p7Bpj3mWRbtg5J53ih/9PTVGJcCGN8LNfXJ1Agh9pk3naYWsdAgOj5PhZqkf8yXFywdcFnxezKtXPjrBbA8wRMx47DFAQHYgL7JjAXurFc/5AA1wrmtOTsMHWba+a8gMy9zjippkBVTlUwkpkscp5dZgPt61iXpOwTmCu8EzxK/mCB3yDxapwpa22WogL0sSjRSy89a9pZtxwGq4/m+JignPt7l9P5GM1ilgwuXO0sx3WkfUHUKG994DziJdtej6hppsSZRsKrU+vQBdeysZGs3jFaOX3G9begq9o2DUZjzhCQyE18lc3MMYwqkQXju7FTz8U56PsJy9wo8mq5AZN+jZPr2WDaaAX0a0w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(366004)(136003)(376002)(6486002)(86362001)(8676002)(2906002)(31686004)(36756003)(2616005)(478600001)(53546011)(31696002)(6636002)(186003)(956004)(6862004)(66556008)(38100700002)(6666004)(66476007)(37006003)(316002)(66946007)(44832011)(26005)(5660300002)(8936002)(83380400001)(16576012)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OviydhxKq+ZgA/8yEpOZcG3TQV2d+Fl5zBFxTynrwZN/r0gC8/0tekILqQtN?=
- =?us-ascii?Q?QiF0ZQKW923yJ+RRfvSDX05jk3F7rkB+Ewha8eSFeahpHanzYdg3m4tnONGD?=
- =?us-ascii?Q?cBALM8Fkat4TvRqH2n+RH1HXbUhI7/lM36J0hgaVviFUmA4KFVR/MHoZzRCG?=
- =?us-ascii?Q?Dfen4HUhd52GU03BayCFa4WME+kov5KdcADTT+nTcOsUckl2PFTx3dQcLIh9?=
- =?us-ascii?Q?B4uVLHVg1chpeEScGgoM0cGUgziIVG2RCNHBV7wc6k5/I9UYMbdtHwJ1sPQf?=
- =?us-ascii?Q?oU9LqH9zSHMJGlBGTbcvTdFwVBUIef7P4zbhnP4Y3TvGdjlaEPyCH2Vb8pIz?=
- =?us-ascii?Q?sIEerk5szkMARuOp/CqvbiDV2y1HAdrD4Q+TIJsugTqSRBLsQuzKKB1BqwqX?=
- =?us-ascii?Q?z+Fv0HlZyBrpkLSpIweIc0ghagp8pTEoOG/81syJ0U1U2HsY7kSzZVc5bHtg?=
- =?us-ascii?Q?flyzsJBbVw+7MJ3x3cBbnFintBjUaB5NSF+f5K7JmWkkkj5A/TDRFTjSS2DD?=
- =?us-ascii?Q?c4UuZ5B0RI8/wqxp6ZcqWquC9KwdhKV8dNawzk9eVczO7/v9EYz+3d25cjwL?=
- =?us-ascii?Q?YGr6R4VeugBMsvvKHrZQr1RBHR3g82c8LeLIGvJFQMXoMLWsd/HLgPZpTbxE?=
- =?us-ascii?Q?mwT82LvfNJvbaVFThmy38Y9Bff83OhRnZyZyvKq+W4BU7dUK9Oh++RHpcIwB?=
- =?us-ascii?Q?yeAZPFz9a9zseKR8wtkJ/F9fOZZO0mU0u2GaX7stnZnuKSdG8uGLdpvUW1y1?=
- =?us-ascii?Q?36zG4gj3KE3vDnKWBDrGSU3EtdB9WYnKqHkQmsjjg1xNBCWL+ejB5WTGBaeU?=
- =?us-ascii?Q?XR2C2tn5CY792HfHyjFNIPR2vTprhEhaGyAi8JdAI/samSHT0oxE74Rw/mFV?=
- =?us-ascii?Q?TjbFiufIxVURsNT5eSv6JUbOMK9NKp2JJ5GxfUNQuxSQ5JVCMjgQQPpAQcmr?=
- =?us-ascii?Q?/pEEAtvd/7tINyStYL5JQ9O1LUOmmWFb+m4OdmJ9bj87B5Y/cgh9R7Jg2lF/?=
- =?us-ascii?Q?Z1r0BV7TeGfi6wQF86ZTuqxtdPQPuo+3WCjgphJK7E42bVr88MDblldRN+jU?=
- =?us-ascii?Q?rFVqteO+yZmZCHV9MNrxL2xsVdViKWnslrxT3O4ZY7gFdaF5r+D9vNYm6RG1?=
- =?us-ascii?Q?w7bah0jEjXpLyCgONAm/7Mhs3RpNmhHq1WbzbWUkINEc5AF2Yp/wrnzzzJ6e?=
- =?us-ascii?Q?W9Qze6EIG85NLur5f58dHeQax6LyzLaW90wMFe+lZ51gou+NhiOHk4KbxE22?=
- =?us-ascii?Q?D5s+k0gnzm/DmlJLQbfIcoeiQqC8KzdLYx6rgH+XpqTPBV1+u5bJ53TC6/iU?=
- =?us-ascii?Q?FXXzO/tBPbBJl7Rt1sfSf09l?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K1hQZTlnK01hby9UYzhvNUtZRmtGeWxEV0NiSEZkdVJZUEdrbEJidiszbmtT?=
+ =?utf-8?B?NG9pNDBBV0dWTDgremtvL2lmUGY5L1lodE5sUVdjWnAvWm53a2VPWVg3Z3dQ?=
+ =?utf-8?B?V0JZeVB3MW45UEpnRE5yRUdpdTNDWk80b0VOZHVNeExJL1lER2R5dDY3cHRi?=
+ =?utf-8?B?cW1VaHdRVXZ5Z29zWWVLVWxuVWQ4NzlydDFiRXVJOUU0Qmh0L2NGN0JLbXQ4?=
+ =?utf-8?B?aTg2ZTNEM0xKb21LMi95ZE1DY2VPbTNWRkFEYWdGYjRkRkc4cVFQb2JXNVV3?=
+ =?utf-8?B?SldndjExWkRWVzVQalZUNjY0bTFZWFd1bW1HWnNsL0k2WldCY0RQcjk2VzVl?=
+ =?utf-8?B?cEw5ZnFYMTdxUEI5dVBtTkM4eVNlK1dvcnlHa0R3Y1k4UUxud2RRVk16aE5k?=
+ =?utf-8?B?T3JIc0lVYVBma2JpaG5LYXQ2KzQ4YXByU3NqaUN2OHQ3RGFlMkhtdUVTa0w0?=
+ =?utf-8?B?OGdhR3VENCtmazBkNEptdDNKbVhUT1RqOW8yL2o0SUNYYnhGL2NOZExib3lp?=
+ =?utf-8?B?VUUrTFRuWGNjZ0dtSDVHSE1CaklpR3FzWTFzeVgwTHl1elQ2bFhFaUlqcUpM?=
+ =?utf-8?B?M3pwbjJBcmlOZlFBc3pYMWZnUkpCeGJNVmpvNVNVY3RGK1Zha1hQMHZXdSth?=
+ =?utf-8?B?MDNNZjdrNGszU3c5SWM4MG9rK09PaFhHZkN2ZEtQUmxWaHNsV0pvYlBjTHJL?=
+ =?utf-8?B?OUxxY0l0enZsb0UxVER3QURJVE9Zc3ZWTHpiM0tudkRrMU1ta1dSRjlPc0Jx?=
+ =?utf-8?B?NDQ1ZXN6YVRRcDVKVk5CdUd3SDVzeVFnczMycTc0eUhjanh3MS9FUlJoNEVw?=
+ =?utf-8?B?WVFZRnVoS2ZMNDRMOFVWWTZHZ29HNG9UZklodmNlZ1ErRmNtN2E0bW1FU0JH?=
+ =?utf-8?B?VnUwamVDbUVOTUhLVHpvaGQ0VlRzNzBLSUhUQXd1d3llT1lTOTJ2b2twejlv?=
+ =?utf-8?B?ekJ2b0FBVEd1RVo2amdxQ0Qwd0xhc1A5eDlyVXk3YWxQTGNvWnQ5VDJDMWla?=
+ =?utf-8?B?eFhoc1VkckM1NGR0aTVOWStMVmZlemc5NTN4OEdMVmljdForL3VOeU5qdk8x?=
+ =?utf-8?B?endGbjNTYUljOWhpUXhPcUw1TWJvb2xCL00wMnJyd2dQbnA2aWk3SFc2YnZ3?=
+ =?utf-8?B?WjV2bjFueFdVZ1kzVjdjSitzMWROZDlxUkFpcVB1UmdEbnIxMnh2UlIxbWdQ?=
+ =?utf-8?B?TmNzaGUxNEVKTm5Yd0hNN2tycjJZZDZodjM3SjBXdENBL1dFTlFkQ1pFN3pu?=
+ =?utf-8?B?TVp6aXcxU2VmKzNWNVBGeGw3VFpBM01LK2FKZWZWQlNKb3lHVFVtdGxwbGJu?=
+ =?utf-8?B?R0ZsKzRmdDNVVVRtWjF6YS9ITmVVMHFzSUZ6b01KSVpadnVNSzVsejJoZnNI?=
+ =?utf-8?B?S1IvTnQveGloeVg3cHpEZTlydjdwZ09jeGFFczlTWkV2a3J1Rm0wa3hHb1Bu?=
+ =?utf-8?B?VHJHZGJkZmdMZCtpcXh2R0lXZ2ZhZFZOeWZ2aXJZekt1NngxR2hQMEFlT05a?=
+ =?utf-8?B?ZnJrdG9vRTdZQTQ3dzg1QVpMVFEvOWF2OWVRa3lhT2k1QU5IY2xqUG16VkZY?=
+ =?utf-8?B?V0E3QkVLWUhEenp2VkR3d29neVp6K2lYaGRMOFl2MGZkOHAzL0tpRm1kbXFt?=
+ =?utf-8?B?dFoxUFZPL0dBSHZ1T0xlemZnQUN0TkhBQkhKMFROS1pldWUwenRFd1BpZXdP?=
+ =?utf-8?B?dTBmYVVjV3BKMHkwY1EzTVZCbnBGNzU3NkF6NTRLVTVaVTRZK0V2NGkvZnBZ?=
+ =?utf-8?Q?YNo5JQb7mbrWgGF8OcXOcyLYFCpSJhneIC1yjoz?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 147c3a78-0296-4e27-260e-08d966bfee81
+X-MS-Exchange-CrossTenant-Network-Message-Id: 001791ba-96f8-4164-0e5f-08d966c3a3e7
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 05:27:57.7008
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 05:54:30.5295
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jjg0AB1rABqxeqro8Fc50vQmd9OaR+I8C2aDcCum7StBdUtlWzmAUvGWVZ4MXrfHbfsxJsY4Ha8gSsdtpnTc6g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4046
+X-MS-Exchange-CrossTenant-UserPrincipalName: Xy504JHWp18zWUwbdn+cqNss38X0I8G91VX1SA2DTZYIax5T9IgzAllZctu5fxF3XPPQGTiL/aj/hfpsbj/5Kg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3837
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10085 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108240034
-X-Proofpoint-ORIG-GUID: sUvYizjHWJuWnqHd9-fNnIrzbtya5N7S
-X-Proofpoint-GUID: sUvYizjHWJuWnqHd9-fNnIrzbtya5N7S
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108240037
+X-Proofpoint-ORIG-GUID: JeLYRfnxj3NwZ8cFYlaIQwnROSMUi8Ap
+X-Proofpoint-GUID: JeLYRfnxj3NwZ8cFYlaIQwnROSMUi8Ap
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_chunk_readonly() checks if the given chunk is writeable. It returns
-1 for readonly, and 0 for writeable. So the return argument type bool
-shall suffice instead of the current type int.
+On 16/08/2021 23:10, David Sterba wrote:
+> On Tue, Aug 10, 2021 at 11:23:44PM +0800, Anand Jain wrote:
+>> The mount option max_inline ranges from 0 to the sectorsize (which is
+>> equal to pagesize). But we parse the mount options too early and before
+>> the sectorsize is a cache from the superblock. So the upper limit of
+>> max_inline is unaware of the actual sectorsize. And is limited by the
+>> temporary sectorsize 4096 (as below), even on a system where the default
+>> sectorsize is 64K.
+> 
 
-Also, rename btrfs_chunk_readonly() to btrfs_chunk_writeable() as we check
-if the bg is writeable, and helps to keep the logic at the parent function
-simpler to understand.
+> So the question is what's a sensible value for >4K sectors, which is 64K
+> in this case.
+> 
+> Generally we allow setting values that may make sense only for some
+> limited usecase and leave it up to the user to decide.
+>
+> The inline files reduce the slack space and on 64K sectors it could be
+> more noticeable than on 4K sectors. It's a trade off as the inline data
+> are stored in metadata blocks that are considered more precious.
+>
+> Do you have any analysis of file size distribution on 64K systems for
+> some normal use case like roo partition?
+>
+> I think this is worth fixing so to be in line with constraints we have
+> for 4K sectors but some numbers would be good too.
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/block-group.c | 17 ++++++++++-------
- fs/btrfs/volumes.c     | 12 ++++++------
- fs/btrfs/volumes.h     |  2 +-
- 3 files changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index a3b830b8410a..d7e06b4bae26 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2062,15 +2062,18 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 	link_block_group(cache);
- 
- 	set_avail_alloc_bits(info, cache->flags);
--	if (btrfs_chunk_readonly(info, cache->start)) {
-+	if (btrfs_chunk_writeable(info, cache->start)) {
-+		if (cache->used == 0) {
-+			ASSERT(list_empty(&cache->bg_list));
-+			if (btrfs_test_opt(info, DISCARD_ASYNC))
-+				btrfs_discard_queue_work(&info->discard_ctl, cache);
-+			else
-+				btrfs_mark_bg_unused(cache);
-+		}
-+	} else {
- 		inc_block_group_ro(cache, 1);
--	} else if (cache->used == 0) {
--		ASSERT(list_empty(&cache->bg_list));
--		if (btrfs_test_opt(info, DISCARD_ASYNC))
--			btrfs_discard_queue_work(&info->discard_ctl, cache);
--		else
--			btrfs_mark_bg_unused(cache);
- 	}
-+
- 	return 0;
- error:
- 	btrfs_put_block_group(cache);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 87d4c34ea35b..9cb4ed90888d 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5568,17 +5568,17 @@ static inline int btrfs_chunk_max_errors(struct map_lookup *map)
- 	return btrfs_raid_array[index].tolerated_failures;
- }
- 
--int btrfs_chunk_readonly(struct btrfs_fs_info *fs_info, u64 chunk_offset)
-+bool btrfs_chunk_writeable(struct btrfs_fs_info *fs_info, u64 chunk_offset)
- {
- 	struct extent_map *em;
- 	struct map_lookup *map;
--	int readonly = 0;
- 	int miss_ndevs = 0;
- 	int i;
-+	bool ret = true;
- 
- 	em = btrfs_get_chunk_map(fs_info, chunk_offset, 1);
- 	if (IS_ERR(em))
--		return 1;
-+		return false;
- 
- 	map = em->map_lookup;
- 	for (i = 0; i < map->num_stripes; i++) {
-@@ -5589,7 +5589,7 @@ int btrfs_chunk_readonly(struct btrfs_fs_info *fs_info, u64 chunk_offset)
- 		}
- 		if (!test_bit(BTRFS_DEV_STATE_WRITEABLE,
- 					&map->stripes[i].dev->dev_state)) {
--			readonly = 1;
-+			ret = false;
- 			goto end;
- 		}
- 	}
-@@ -5600,10 +5600,10 @@ int btrfs_chunk_readonly(struct btrfs_fs_info *fs_info, u64 chunk_offset)
- 	 * set it readonly.
- 	 */
- 	if (miss_ndevs > btrfs_chunk_max_errors(map))
--		readonly = 1;
-+		ret = false;
- end:
- 	free_extent_map(em);
--	return readonly;
-+	return ret;
- }
- 
- void btrfs_mapping_tree_free(struct extent_map_tree *tree)
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index b082250b42e0..4e1627b64a84 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -492,7 +492,7 @@ int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset);
- int btrfs_cancel_balance(struct btrfs_fs_info *fs_info);
- int btrfs_create_uuid_tree(struct btrfs_fs_info *fs_info);
- int btrfs_uuid_scan_kthread(void *data);
--int btrfs_chunk_readonly(struct btrfs_fs_info *fs_info, u64 chunk_offset);
-+bool btrfs_chunk_writeable(struct btrfs_fs_info *fs_info, u64 chunk_offset);
- int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
- 			 u64 *start, u64 *max_avail);
- void btrfs_dev_stat_inc_and_print(struct btrfs_device *dev, int index);
--- 
-2.31.1
+Default max_inline for sectorsize=64K is an interesting topic and
+probably long. If time permits, I will look into it.
+Furthermore, we need test cases and a repo that can hold it (and
+also add  read_policy test cases there).
+
+IMO there is no need to hold this patch in search of optimum default
+max_inline for 64K systems.
+
+This patch reports and fixes a bug due to which we are limited to test
+max_inline only up to 4K on a 64K pagesize system. Not as our document
+claimed as below.
+-----------------
+  man -s 5 btrfs
+  ::
+         max_inline=bytes
+            (default: min(2048, page size) )
+  ::
+	In practice, this value is limited by the filesystem block size
+	(named sectorsize at mkfs time), and memory page size of the
+	system.
+-----------------
+
+
+  more below.
+
+>>
+>> disk-io.c
+>> ::
+>> 2980         /* Usable values until the real ones are cached from the superblock */
+>> 2981         fs_info->nodesize = 4096;
+>> 2982         fs_info->sectorsize = 4096;
+>>
+>> Fix this by reading the superblock sectorsize before the mount option parse.
+>>
+>> Reported-by: Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>>   fs/btrfs/disk-io.c | 49 +++++++++++++++++++++++-----------------------
+>>   1 file changed, 25 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>> index 2dd56ee23b35..d9505b35c7f5 100644
+>> --- a/fs/btrfs/disk-io.c
+>> +++ b/fs/btrfs/disk-io.c
+>> @@ -3317,6 +3317,31 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>>   	 */
+>>   	fs_info->compress_type = BTRFS_COMPRESS_ZLIB;
+>>   
+>> +	/*
+>> +	 * flag our filesystem as having big metadata blocks if
+>> +	 * they are bigger than the page size
+> 
+> Please fix/reformat/improve any comments that are in moved code.
+
+  I think you are pointing to s/f/F and 80 chars long? Will fix.
+
+Thanks, Anand
+
+> 
+>> +	 */
+>> +	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
+>> +		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
+>> +			btrfs_info(fs_info,
+>> +				"flagging fs with big metadata feature");
+>> +		features |= BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
+>> +	}
+>> +
+>> +	/* btrfs_parse_options uses fs_info::sectorsize, so read it here */
+>> +	nodesize = btrfs_super_nodesize(disk_super);
+>> +	sectorsize = btrfs_super_sectorsize(disk_super);
+>> +	stripesize = sectorsize;
+>> +	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
+>> +	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
+>> +
+>> +	/* Cache block sizes */
+>> +	fs_info->nodesize = nodesize;
+>> +	fs_info->sectorsize = sectorsize;
+>> +	fs_info->sectorsize_bits = ilog2(sectorsize);
+>> +	fs_info->csums_per_leaf = BTRFS_MAX_ITEM_SIZE(fs_info) / fs_info->csum_size;
+>> +	fs_info->stripesize = stripesize;
+> 
+> It looks that there are no invariants broken by moving that code, so ok.
+> 
+>> +
+>>   	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
+>>   	if (ret) {
+>>   		err = ret;
+>> @@ -3343,30 +3368,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>>   	if (features & BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA)
+>>   		btrfs_info(fs_info, "has skinny extents");
+>>   
+>> -	/*
+>> -	 * flag our filesystem as having big metadata blocks if
+>> -	 * they are bigger than the page size
+>> -	 */
+>> -	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
+>> -		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
+>> -			btrfs_info(fs_info,
+>> -				"flagging fs with big metadata feature");
+>> -		features |= BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
+>> -	}
+>> -
+>> -	nodesize = btrfs_super_nodesize(disk_super);
+>> -	sectorsize = btrfs_super_sectorsize(disk_super);
+>> -	stripesize = sectorsize;
+>> -	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
+>> -	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
+>> -
+>> -	/* Cache block sizes */
+>> -	fs_info->nodesize = nodesize;
+>> -	fs_info->sectorsize = sectorsize;
+>> -	fs_info->sectorsize_bits = ilog2(sectorsize);
+>> -	fs_info->csums_per_leaf = BTRFS_MAX_ITEM_SIZE(fs_info) / fs_info->csum_size;
+>> -	fs_info->stripesize = stripesize;
+>> -
+>>   	/*
+>>   	 * mixed block groups end up with duplicate but slightly offset
+>>   	 * extent buffers for the same range.  It leads to corruptions
+>> -- 
+>> 2.27.0
 
