@@ -2,173 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726563F595C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 09:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693893F5969
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Aug 2021 09:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234750AbhHXHue (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Aug 2021 03:50:34 -0400
-Received: from mout.gmx.net ([212.227.15.15]:56725 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234616AbhHXHue (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:50:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629791387;
-        bh=vn/8bsVQlzs8Z8bCof+YXwW10aTNt+XPMmCaYmsTRP4=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ST+IOvBxcc3m6ejwsL7zZ7ooUMBgHIPEGr6Dcq/qAO7jY+OTEVWZVtwVVSTdomcVD
-         yFdOcPa/hJSHuqMsqb/7RE0M14B+aSsN+qIYOnGhnqeXTQitrfcZSAMIYKADEfJWjD
-         V9gzqKWWir7h+0qBj4DobIFSGMoUv4Usnuq35wSM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M4axg-1mHsxY2iUY-001iLu; Tue, 24
- Aug 2021 09:49:47 +0200
-Subject: Re: [PATCH RFC 0/4] btrfs: qgroup: rescan enhancement related to
- INCONSISTENT flag
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210822070200.36953-1-wqu@suse.com>
- <20210823173025.GM5047@twin.jikos.cz>
- <9d957532-5473-feba-6ad6-695d459a85bb@gmx.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <30cf7d9a-c1da-ac96-ba92-c8456692f854@gmx.com>
-Date:   Tue, 24 Aug 2021 15:49:43 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <9d957532-5473-feba-6ad6-695d459a85bb@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S234880AbhHXHwx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Aug 2021 03:52:53 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:64999 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234705AbhHXHww (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Aug 2021 03:52:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1629791528; x=1661327528;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=RTmbCYRSMmmU4dnRAb7l59s7fjZNzc1tYTFtWNz2+AM=;
+  b=BpGJ+YK/ALOwSFxmNvn7opDu7M3Tzaqfnz/72M47YvUPMQmIhV8BKnY3
+   9MEbXpJ+khvf0N0WQfw/3O+wFgjplXxIVKJx6Xwr3AIpJ/pPXOtQpPz8v
+   FjIERiQhStqEmb/gT+nTzb7Fig6zoC6JE4/sGvl9DWE1REvQxzXHBx/Fh
+   m3I6oH+YAaxXuzZpVillWX75q04AYiBho0lC2Ml2BXjydCN6OfN4qLQ0E
+   1sdhD70mO59j51c+o0wg75o++6Y8yoar1xpCZXV5hAmLE0EG6XpNxnj/L
+   Kkoccbcvut6DfIsW7vnqtsBZwFcZN0mf47fOzw90FzghnIkBT1NnCdYkz
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.84,346,1620662400"; 
+   d="scan'208";a="182983317"
+Received: from mail-dm3nam07lp2041.outbound.protection.outlook.com (HELO NAM02-DM3-obe.outbound.protection.outlook.com) ([104.47.56.41])
+  by ob1.hgst.iphmx.com with ESMTP; 24 Aug 2021 15:52:07 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PinwriIO1YHixwpvTjliz3Cs90QPtyPxiHGeXm3TzyP8nN0SJT/5pz0kJQWGRPWhfWyJrszghHr3BJi2X/vQCSCFCRLWZCqXIBUJKc48iV+LgSRZRyisxVdWDa782UlQfo33ca5Cwp5HkUiXH6pkBhfCpTomwrLFcJCL5i7xx9opJpA0JLYTd0elK9RHJjWXXfGxqkzCDZpIW25fgBVSJtvJAaxL054sPsSfCdYA1pmBFzy3sncfv+poEj7E59OUFT4ZjBQ4MGYv7b4UT8dutaSnrvgPPG5vOYPv6ZVmkaHNbsEpXdntN66Y1vn81zlnHZQRkv0HMEcSCob0/CBk+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5bjaXLPr1ooo8xHiOejrV73EgUAF6EUmUHnvXkarTA4=;
+ b=NPkvBcWRLytmcJv+Xeo8xJmgAvISIOOO0YfiEPvHsS4FlY4A2BYdGZDHY0N41Adn9GqJgOEEtFK5Q5BHk/eigcRq9f2txxUU0S1PTWzpr+ohdipScJKMdeBcBsfXRvGdruqfuow+kOP3LhbE5B1i5Zd60Qs8fk7fzVzZOo3cLRFG+fZANi9v7Vb9UvqCR/5ahWW/Y7XW2eAClIXrQiqdl2OgbdwJKaIr8PYSV063ydBeJdaq7q134tlZ4ni/5f0M4jjH+3o95b4EAsjqk2kZPM8jqXJkju7kOlyZ6pMf7ZLWKlxbJ92UYjSp3f/of0gZOn6JHtVCz4RVCDySq17ImA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5bjaXLPr1ooo8xHiOejrV73EgUAF6EUmUHnvXkarTA4=;
+ b=oxQU2mqBWU///oE5xBERIU+NITR1CUH+dBkebcxjN8JkntA1uG6XmJfgGBv4P6sefc7d65lPkP61r74CHYxI4CswdGfSpytFYzsEYmYOzoVy+cUQfiL76JvmOApYyiv63+CflTsNMwueg8h0UCvgVMBM1KsGgOo0C3gvK4hUSzE=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7255.namprd04.prod.outlook.com (2603:10b6:510:9::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Tue, 24 Aug
+ 2021 07:52:07 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::f1f1:286c:f903:3351]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::f1f1:286c:f903:3351%6]) with mapi id 15.20.4436.025; Tue, 24 Aug 2021
+ 07:52:07 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2 01/17] btrfs: zoned: load zone capacity information
+ from devices
+Thread-Topic: [PATCH v2 01/17] btrfs: zoned: load zone capacity information
+ from devices
+Thread-Index: AQHXlPWL22aAwNIKp0+mxHQmhu13LA==
+Date:   Tue, 24 Aug 2021 07:52:07 +0000
+Message-ID: <PH0PR04MB7416F32152931E2E2ECE52BA9BC59@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <cover.1629349224.git.naohiro.aota@wdc.com>
+ <e9838065577ce7c6f030ec3254bd001355ae0bb1.1629349224.git.naohiro.aota@wdc.com>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 07f18370-6d64-4308-66a0-08d966d41240
+x-ms-traffictypediagnostic: PH0PR04MB7255:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR04MB725573413366AE22412203FD9BC59@PH0PR04MB7255.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1169;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QKMv0fhfiwFEP5dfzwJkUryyWHeklkh/z9pKmg0wi3v0vFvn/fatUsOzsNZzhQ0EhfTRwoJVvpgmcdXzgLb0irNqE5zjuUtQjYy1kkPlm7FBXV5bjZLvT4NkjXbHuFSQxWflAs2HvQY5CwTucFPg9WPTCroZ1m0sBjzErfe/n+HWboxKB3bqAsDr3WSDDTlTW7Njj3H9iiSkmyhP8qKJIoI0I6tGSH7n77/q3zcsjB5dPvhKGHi7YsfFZsLsfH2wTV1aFiostM1O+H/XkBTPyj28t1NV0IwtHdi80hLDcbD3faKx4saAkQPH2STGKjzwEXJFgEAmmyBeMH7Wq57Y1J/tFIUHgxukFJnsAQY6l6j6ngDkMrad9nrrvXD39FB6/4G1NCFgkstfOb5hqsdxytCYxoII/SuLGbMF8lB3hm14LPedsqiJmhytubCrmZonPBAtQFTkXn0ODVcQ3QmXQE2ELHHaElEixTrjCh3cymgtdnjXXBjfhIDIHc7+2hxXHpxGH4LYCmSmlZUmoeffy/ave0jh/zSoJFpvE9x3YaUAMFAtHIQHE2ClP3bQgzPyey+Txw3755rD0WYXeh50KlLPJLOB8EqkvvNtp38BW5E/MA1sUcNC82p0d09n+7Hi1BzKVxrfTdLoF0ZRguFEFC8FX+7IlxIdj3simrINovEP8bAtk5GWoZmxkQ4lU8J5G4M+xSm3Oh6IJ9L4H+Z0WA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(366004)(136003)(53546011)(6506007)(7696005)(4326008)(8936002)(4744005)(8676002)(316002)(86362001)(71200400001)(2906002)(33656002)(55016002)(122000001)(186003)(76116006)(38070700005)(83380400001)(9686003)(52536014)(5660300002)(66556008)(64756008)(66446008)(66946007)(38100700002)(66476007)(110136005)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?XJt7+BIIyP7giFJc/rBwa3WPenSGXiixhUHFHVi3uenFKWGFRf03Lq6D9OMG?=
+ =?us-ascii?Q?bbucL+z2tWYlZl4jkEdqStHRVpNpVj1RDnu9GRYcqHihrduVPvhz1dnSuosd?=
+ =?us-ascii?Q?M0y+a30RNpI2E1882Lc4SY2FFwZ2bjb+jRt6ixuwDzjlYjupKjBd2PATi0Vr?=
+ =?us-ascii?Q?gI5j5Gvl12l6/fJ+DE4GsVDkVZTVmvkCfTzkuqO2dl0DmkjZ7DWWdKwh0izM?=
+ =?us-ascii?Q?f5ALPbhHpR3JrxyzRCtz5SlU0zyFX+TsuU5AfmN/qePxbDeZYkwxh5CsyXB5?=
+ =?us-ascii?Q?GnEciuAF9IP/vwcW4hz8yNsT60PKnAPuD+vFVmsyDx7vKatatKZ/pE8GneNf?=
+ =?us-ascii?Q?CEhcl+/u8yXkMYDwEdLOk4f8fHjO4WXir60m6U5zNg8OImAJ/xnjcSeFVtPq?=
+ =?us-ascii?Q?JNusTC8K+pI9LFgDh2ue+FgOXOP6GWgMb/yNf2OsKvF8yqnMHNCDSLwNg6ry?=
+ =?us-ascii?Q?bm4pG/ZgTx+51/t8xrurFjsKtCD+oQJg5qs967xPqKccopetG8a1Py76XbBh?=
+ =?us-ascii?Q?V2U3nUt/t5A9fd/jzNBg/wn07GlA/NxdOvysct7O72OsEUs0V0GbvMXCN8bj?=
+ =?us-ascii?Q?fH74QI747Zqdp6Paee8knf9H7luYM0+RwdD0fBProPj7Fd0yG16ir16SiBmB?=
+ =?us-ascii?Q?QPy51r8lRIs6C9g8V3ClsRrFJLBOnxww0mQ96u6MhfbA7SRxGaW0tdKbKqsj?=
+ =?us-ascii?Q?4RgaJGW1erThoGLF44El1Nk7XZHd0cxesbaGevtcX5wjEfcQxaaVYBWP1YDT?=
+ =?us-ascii?Q?98z87rzeXH73SDGqubhrKSfAqwTd2FaoIIj4UmG+OfphvEZ39649b182jG4p?=
+ =?us-ascii?Q?rMqvdi4mBQm72zGtZkQpTWnRZWtIwRCnF2keWOFXkLHMF+ThRYc/5Kxz1HAG?=
+ =?us-ascii?Q?jO7UUbmeKZVj7AR66ZZwnh87gSYG6Oepi4m48iamWu0z/5wKzijgEc1grE3I?=
+ =?us-ascii?Q?dlInGbyDRAdiBWNNefKxnIBHCjxoEmPiWL6t5c1DXvgOBxd7k0Q3Q3dCax8z?=
+ =?us-ascii?Q?fNf8ti9JxF2kchi1nzFDNlyUqsaoMYXqiCjzbQsI6wNzL5mRtSRIH1UjvZXA?=
+ =?us-ascii?Q?237QmvU/tPwP9BNj8VsT4R4zfa62VTy+z8YMt0W1y+LjWOLGCDPfgLVgM6fm?=
+ =?us-ascii?Q?sOkHKut+VXLCVunmw7/XqNCedsi8+t3YC6vvR5GCQKbhIaToM8I0CTPK0oG5?=
+ =?us-ascii?Q?3andyG3sGBAlPCnBUvQeRw9FCExAa2mE3HA151qvn9LA0R+i9TqDi8NZ1wBv?=
+ =?us-ascii?Q?fU0YoRzv1g+Q13pgo4w/d+uPEgUjw0qZbfRv31SUuPiawrJH4uxJ/E1CtDY5?=
+ =?us-ascii?Q?wty6OtzgjCfg9POhX7oIWMb4MJww8WoFynQhwaVy9JdGkIB7rWhtaE5raOth?=
+ =?us-ascii?Q?RLHpUqhhbs77C1ecwH/MqHDmNHKGYSdZaLS3/mYdMLI/GgddrQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mCFAgxwMu5EsggG+KslfnfVxDc5wKpJp1ycCbtuffOpNXFVXs8h
- cONFF/DyQeoYAgWP2aa7axddT7eH4xAwwdRg4wvGvwZgyfihDvdq8lctrv6uNVULY/Y5DEF
- DcVatysOLPg5Aqq7jM+/0cGUc9mDNZk4Fg7tJtPlj56hefpDZkKaJx56U7aRxKtRyRaPTF9
- v6yecmhn6v9eRuScO5xtA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:t/2QEfb4Pzo=:wor9+Jega3hS/vAVGEkG/Q
- tD5RClalHvz3Nj4RUpiOXUoM+ybvkrJklZseyk1gt9ktaIIEBYZ0ApWKQxh2fY0jz6dLWO/y9
- yexNL+3ac66FUlOWpXZE+Innu1twodJIyQ1wGwHjLdKlTJiMcak3Vzy3DtYnk5aNfUvQFpCtv
- Bd11Wi0WO4zhhM0zboPlPDo6/7lAAHJdkgPDopOUwZSTDa/uU6mWF8B9yNj+YmnTr0ejnACuV
- i9VahVDWg21ejwnoG2MIiS1Qkza1bCak3vJdgviYuABjeJh+czvZdFNEzZzGmtrTGJidEFaBG
- T4Pn7ez2W4HFawTt4CHwrX1dl3e1I/O5mWP6/opYRHUHttgosnRCSvSU3W3zJpe6el0Fthpkc
- o65Ga7QTDXQrdWJaXCi/yUqPNKOIDjNvBPYkq9mvaNPlDwyGnimF/eZrMqip6WL6JCTC9hXBt
- 3uYT5ytd6acVVXX/ln35selYu5ENy5OZ+Re0+xN18G3NYtHZiknFbuF2iYAV1AF9oRi0swEDp
- QLYRQF/CmaolCYLiQInH5F/GG21gQBq2eZVOGT0gua8GCehdierjUQV5/mHPxHQkXeLJFf7L4
- AGiGDfnULRejzypVLvQHTZooKbz/XUOESzq2Nply3wKbM7cYoJ5Wbxch83gk8+9minQDILBt7
- oYAL4KEdjpKKIQ9TI765Qw/XrMUCCD0hMOYodF9+PZexKFgedvGv76U+6nJp8dqwEI5UASEUO
- pPJSOntWE55xbdsR2YgaqSHoPeTrpGmuPCGy+1KyI0deQxhwBFotMokElnFvyE3/V/NYM6AyQ
- up/0JM8Xcdtxuq2OiRQ56w7IU/PJnAA1HnMFSbdpsP/QQWrKr42F2SGaGseBXvPw2CSiyhSZw
- MUZl9r7u/ho9Op8OyBah4unvwRfRJJESK9YZfDKW5RY4bOhUtSJAJsfpKP7SpmLXQ3FJ1mBuT
- RcK/yF3kfKliv1c7HqzVhNmWM/0EMUcGjeKbzd5hGdFsOX1fwpZTRVqMLJKR1aEmRtCHii4AO
- GA35+7mk344N7AVUHnyzp8ARaVMWQUwp89HaVHfcrmZkjCNBUZvG97IfhtEjUrt3fCdnkI6kq
- g5ZqMgzWDzvCeMT8/S+iS6u2kxDJw6asaPx94EUbckVEOsW8h8gb+Bfsw==
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07f18370-6d64-4308-66a0-08d966d41240
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Aug 2021 07:52:07.3402
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: evK2qFv5vopzhNAP4/4ykw7P4aV7FERL9eLFB+oNOTQSfNG6XaC4BFuYI/CI6gaHqnhun6lir7wUi5wYACXcAvdaHHGXiAq8pxCES4b04AE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7255
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/8/24 =E4=B8=8B=E5=8D=882:54, Qu Wenruo wrote:
->
->
-> On 2021/8/24 =E4=B8=8A=E5=8D=881:30, David Sterba wrote:
->> On Sun, Aug 22, 2021 at 03:01:56PM +0800, Qu Wenruo wrote:
->>> There is a long existing window that if we did some operations marking
->>> qgroup INCONSISTENT during a qgroup rescan, the INCONSISTENT bit will =
-be
->>> cleared by rescan, leaving incorrect qgroup numbers unnoticed.
->>>
->>> Furthermore, when we mark qgroup INCONSISTENT, we can in theory skip a=
-ll
->>> qgroup accountings.
->>> Since the numbers are already crazy, we don't really need to waste tim=
-e
->>> updating something that's already wrong.
->>>
->>> So here we introduce two runtime flags:
->>>
->>> - BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN
->>> =C2=A0=C2=A0 To inform any running rescan to exit immediately and don'=
-t clear
->>> =C2=A0=C2=A0 the INCONSISTENT bit on its exit.
->>>
->>> - BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING
->>> =C2=A0=C2=A0 To inform qgroup code not to do any accounting for dirty =
-extents.
->>>
->>> =C2=A0=C2=A0 But still allow operations on qgroup relationship to be c=
-ontinued.
->>>
->>> Both flags will be set when an operation marks the qgroup INCONSISTENT
->>> and only get cleared when a new rescan is started.
->>>
->>>
->>> With those flags, we can have the following enhancement:
->>>
->>> - Prevent qgroup rescan to clear inconsistent flag which should be kep=
-t
->>> =C2=A0=C2=A0 If an operation marks qgroup inconsistent when a rescan i=
-s running,
->>> =C2=A0=C2=A0 qgroup rescan will clear the inconsistent flag while the =
-qgroup
->>> =C2=A0=C2=A0 numbers are already wrong.
->>>
->>> - Skip qgroup accountings while qgroup numbers are already inconsisten=
-t
->>>
->>> - Skip huge subtree accounting when dropping subvolumes
->>> =C2=A0=C2=A0 With the obvious cost of marking qgroup inconsistent
->>>
->>>
->>> Reason for RFC:
->>> - If the runtime qgroup flags are acceptable
->>
->> As long as it's internal I think it's ok.
->>
->>> - If the behavior of marking qgroup inconsistent when dropping large
->>> =C2=A0=C2=A0 subvolumes
->>
->> That could be a bit problematic because user never knows if the rescan
->> has been started or not.
->
-> I guess for the end users, the new behavior means they should know which
-> operations could cancel rescan and cause qgroup to be inconsistent.
->
-> For now, only qgroup inherit (snapshot creation with -i option or qgroup
-> assign) and large subvolume dropping can cause such situation.
->
-> If there is something like snapper running, we can teach snapper to
-> check the qgroup status with an interval.
->
-> But for non-snapper qgroup users, it can indeed be problematic,
-> especially considering how frequently snapshot dropping can be.
->
-> Any better idea on how to balance the performance and qgroup consistency=
-?
-
-Another idea is to allow the user to specify the threshold to skip
-certain subtree drop.
-
-And by default, we set the threshold to MAX_LEVEL, so no subtree will be
-skipped (aka, super slow drop, but no sudden qgroup related slow down).
-
-For the qgroup inherit case, it's no difference, any caller that would
-bring qgroup inconsistent should know what they are doing.
-Thus only the subvolume drop is the key.
-
-Any idea for the interface? Per-fs sysfs? Or mount option?
-
-Thanks,
-Qu
->
-> Thanks,
-> Qu
->
->>
->>> - If the lifespan of runtime qgroup flags are acceptable
->>> =C2=A0=C2=A0 They have longer than needed lifespan (from inconsistent =
-time
->>> point to
->>> =C2=A0=C2=A0 next rescan), not sure if it's OK.
->>
->> On first read I haven't found anything obviously problematic.
->>
+On 19/08/2021 14:27, Naohiro Aota wrote:=0A=
+> The ZNS specification introduces the concept of a Zone Capacity.  A zone=
+=0A=
+> capacity is an additional per-zone attribute that indicates the number of=
+=0A=
+> usable logical blocks within each zone, starting from the first logical=
+=0A=
+> block of each zone. It is always smaller or equal to the zone size.=0A=
+> =0A=
+> With the SINGLE profile, we can set a block group's "capacity" as the sam=
+e=0A=
+> as the underlying zone's Zone Capacity. We will limit the allocation not=
+=0A=
+> to exceed in a following commit.=0A=
+> =0A=
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>=0A=
+> ---=0A=
+=0A=
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
