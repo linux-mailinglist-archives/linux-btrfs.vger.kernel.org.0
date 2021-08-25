@@ -2,138 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3193F6F54
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Aug 2021 08:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688563F6F7A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Aug 2021 08:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238194AbhHYGUO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Aug 2021 02:20:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54078 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237993AbhHYGUN (ORCPT
+        id S238314AbhHYG2M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Aug 2021 02:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237913AbhHYG2L (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Aug 2021 02:20:13 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3F9DE220E8;
-        Wed, 25 Aug 2021 06:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629872367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=vQexncvdJaSNQlHFxhSlxShkEc02UWk1vJ+MLNm2x30=;
-        b=HOAVw9kd/5vr9SNgi1P7bm4OEL2s2/3e/lavvpMMvMqGTkfyW6hC0gu7lyBobERe/oTX4M
-        IaITdomr77ziM+/IIohAkkBRU7AKNIL/LBgC55VDEfGHyFVnbVHD9TgBJ3mk1rayHCVwMf
-        va9G/+Gzhn73LvnyRcN6iauQd/MwMF8=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 34DBB13732;
-        Wed, 25 Aug 2021 06:19:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 5qisOO3gJWH+WwAAGKfGzw
-        (envelope-from <wqu@suse.com>); Wed, 25 Aug 2021 06:19:25 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] fstests: btrfs/246: add test case to make sure btrfs can create compressed inline extent
-Date:   Wed, 25 Aug 2021 14:19:23 +0800
-Message-Id: <20210825061923.13770-1-wqu@suse.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 25 Aug 2021 02:28:11 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7487C061757;
+        Tue, 24 Aug 2021 23:27:25 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id 22so25970145qkg.2;
+        Tue, 24 Aug 2021 23:27:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jyR/CYBwCSq/eASUQ7zPxYfp2tq9E82LCICgQ+jT9OU=;
+        b=ddMOA86mIVJbs76Im8lYIB6JkibxFKwy5fUR6alDJYtvXr9PnOh8xBKTPBF7eJeohY
+         2kLDC0VqgMuXTcPGqq6eQCO6cpcZJ408UBN5l6qd3A7OiI9Mzf5H/jnPu7HDYfUJokpK
+         0TjCCpvRWUfjbB/c0F4jA+GZqxebDXJPobZgmO0ySjKNSHIpxjbDaATFi1K6ZhYad2jo
+         YmEBpsswOyjl8XN8V8bnG8rT7aiLhE8LhtLCw3ngd4LDbgulX9f8yBaEs0/+LrzQt8aB
+         iKY3XY9vY/g54JGI73CNOamD89Blmra8Qg6c3lLIj4rZzXdU68sRtXCGN2/CTd9PEdMs
+         1/nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jyR/CYBwCSq/eASUQ7zPxYfp2tq9E82LCICgQ+jT9OU=;
+        b=XlOnXgHSsARGEaq1LaiQiiHuSj3/6fAkhOHJRHYrYA1GsuQvhXvKuyxNMhNCCKHuo5
+         nIO0MSnFMZ4k6y6uop8NYdLkY9fmMDAJSH+dpIfHiPfGmyK0kWQGpoWwHOuvmPhbGbZw
+         IZ9HUmsr7A9IrAI4Shq7Oe86LSsFMJ9r3Y+to4GdhXwEfn1qj9x2LpMzAvbNH+0sH9DY
+         TAGA8rK1+BFBmXXjP6a+Zg2hcqA13Hn72jb9fiP9ZHDl+jC3sE3v+tWc5Mim9EC1nV/w
+         OyQXDgjrL3Dw2jPTspZ8dvQcMTf3waJaXvwGZ0rqsToM5DZ+M0O3Ae+4k4GLg6ePXOwJ
+         /4ug==
+X-Gm-Message-State: AOAM531hDbUq/dfziQqjZwFKIdBLIDyrOLKy5VDJvaWv8htN/hl/ZK3J
+        UUutoa+qPJpnuwVSBhrVuRU/ZJJAP0k=
+X-Google-Smtp-Source: ABdhPJyntecO96KhAS8GRvVfQB9FqlptG468oiKnISwSYDYmV+noNPEKiYbVsmR+mQiDBj3dIxTnMw==
+X-Received: by 2002:ae9:e502:: with SMTP id w2mr18743218qkf.200.1629872845187;
+        Tue, 24 Aug 2021 23:27:25 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id z6sm8351002qtq.78.2021.08.24.23.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 23:27:24 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Chris Mason <clm@fb.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] fs:disk-io: emove unneeded variable
+Date:   Tue, 24 Aug 2021 23:27:17 -0700
+Message-Id: <20210825062717.70060-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs has the ability to inline small file extents into its metadata,
-and such inlined extents can be further compressed if needed.
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-The new test case is for a regression caused by commit f2165627319f
-("btrfs: compression: don't try to compress if we don't have enough
-pages").
+Eliminate the following coccicheck warning:
+./fs/btrfs/disk-io.c:4630: 5-8:
+ Unneeded variable  "ret". Return "0" on line 4638
 
-That commit prevents btrfs from creating compressed inline extents, even
-"-o compress,max_inline=2048" is specified, only uncompressed inline
-extents can be created.
-
-The test case will use "btrfs inspect dump-tree" to verify the created
-extent is both inlined and compressed.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- tests/btrfs/246     | 50 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/246.out |  2 ++
- 2 files changed, 52 insertions(+)
- create mode 100755 tests/btrfs/246
- create mode 100644 tests/btrfs/246.out
+ fs/btrfs/disk-io.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/tests/btrfs/246 b/tests/btrfs/246
-new file mode 100755
-index 00000000..15bb064d
---- /dev/null
-+++ b/tests/btrfs/246
-@@ -0,0 +1,50 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 246
-+#
-+# Make sure btrfs can create compressed inline extents
-+#
-+. ./common/preamble
-+_begin_fstest auto quick compress
-+
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	rm -r -f $tmp.*
-+}
-+
-+# Import common functions.
-+. ./common/filter
-+# For __populate_find_inode()
-+. ./common/populate
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch
-+
-+_scratch_mkfs > /dev/null
-+_scratch_mount -o compress,max_inline=2048
-+
-+# This should create compressed inline extent
-+$XFS_IO_PROG -f -c "pwrite 0 2048" $SCRATCH_MNT/foobar > /dev/null
-+ino=$(__populate_find_inode $SCRATCH_MNT/foobar)
-+_scratch_unmount
-+
-+$BTRFS_UTIL_PROG inspect dump-tree -t 5 $SCRATCH_DEV | \
-+	grep "($ino EXTENT_DATA 0" -A2 > $tmp.dump-tree
-+echo "dump tree result for ino $ino:" >> $seqres.full
-+cat $tmp.dump-tree >> $seqres.full
-+
-+grep -q "inline extent" $tmp.dump-tree || echo "no inline extent found"
-+grep -q "compression 1" $tmp.dump-tree || echo "no compressed extent found"
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/246.out b/tests/btrfs/246.out
-new file mode 100644
-index 00000000..287f7983
---- /dev/null
-+++ b/tests/btrfs/246.out
-@@ -0,0 +1,2 @@
-+QA output created by 246
-+Silence is golden
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index a66e2cb..e531c4c 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4627,7 +4627,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+ 	struct rb_node *node;
+ 	struct btrfs_delayed_ref_root *delayed_refs;
+ 	struct btrfs_delayed_ref_node *ref;
+-	int ret = 0;
+ 
+ 	delayed_refs = &trans->delayed_refs;
+ 
+@@ -4635,7 +4634,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+ 	if (atomic_read(&delayed_refs->num_entries) == 0) {
+ 		spin_unlock(&delayed_refs->lock);
+ 		btrfs_debug(fs_info, "delayed_refs has NO entry");
+-		return ret;
++		return 0;
+ 	}
+ 
+ 	while ((node = rb_first_cached(&delayed_refs->href_root)) != NULL) {
+@@ -4698,7 +4697,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+ 
+ 	spin_unlock(&delayed_refs->lock);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
 -- 
-2.31.1
+1.8.3.1
+
 
