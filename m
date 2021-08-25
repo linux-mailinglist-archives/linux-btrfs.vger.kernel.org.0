@@ -2,95 +2,171 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B933F76C0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Aug 2021 16:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C0E3F7737
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Aug 2021 16:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239399AbhHYOCO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Aug 2021 10:02:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36138 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232058AbhHYOCN (ORCPT
+        id S241383AbhHYOZk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Aug 2021 10:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240327AbhHYOZj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Aug 2021 10:02:13 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1D90F21F0B;
-        Wed, 25 Aug 2021 14:01:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629900087;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ukqSmFbtmNvPlRcy74O0sh8yzvXPfakQ5vsvpJtxC2g=;
-        b=sDi0ttpwxs51lYhbv9GGqYhk8aM6HAaO6Rw/pku2LE9ZkcEtkny5NTbza8jB3FuVhGESBo
-        XqPkGgToSgCG7+EGaKr2Uz2yjoThBZBC7mAd0IwLlS64h5Rprsu180akL8P02HglAHXqu3
-        6zWXxkBrK3RYBhQnBkGv9vCVG1ZAlhY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629900087;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ukqSmFbtmNvPlRcy74O0sh8yzvXPfakQ5vsvpJtxC2g=;
-        b=cU+Uc/YXMTZt09zKGMx5/x5jw8Co9EsppKz5miH+BEY79KP1iMfcd+X33WT6yivg0+hHnO
-        5rne65gFKtVX26BQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 1350EA3B89;
-        Wed, 25 Aug 2021 14:01:27 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 97477DA7FB; Wed, 25 Aug 2021 15:58:39 +0200 (CEST)
-Date:   Wed, 25 Aug 2021 15:58:39 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 00/10] btrfs-progs: mkfs fixes and prep work for
- extent tree v2
-Message-ID: <20210825135839.GK3379@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1629749291.git.josef@toxicpanda.com>
+        Wed, 25 Aug 2021 10:25:39 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FD1C061757;
+        Wed, 25 Aug 2021 07:24:53 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id j9so13820613qvt.4;
+        Wed, 25 Aug 2021 07:24:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Y43QiB49VzgqxoCVEJ8vauJRzbdb8+qpGK6YvTlBg3c=;
+        b=KpO3BIyO2VOfJwR//VZ5tYhyVERlBPVxlr7h9WfSSHKAxoTL9rYdeTQdRF3IkSKNI0
+         eQULjN6nW5mX0l9TMIn3wXyq0xt5DdGvD1DYaI0tMYlEULaDzAJ1lao1Dex5x5H17K/P
+         8KTzm8eQc64DqPDu947a9pwjnlacxCz+BjJYUfoN0zOiX3KTwu4OZi+LfiqUp9unHlof
+         iLz+ytTU2HXcSKkbEzMKEckbZtIpyfIWJn4wyKAan6rRaMC7lcnlL7AUnXCLUzof27BF
+         2hHgS7nGWKwXtktxGPH7P2WVgAWqYbvZgDXP2cbNH4MPFWScpHYs/k6TBAzlw/HiKRL4
+         vtpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Y43QiB49VzgqxoCVEJ8vauJRzbdb8+qpGK6YvTlBg3c=;
+        b=m4Ea4bEKH0hPt+4X5lyunRT+gy+6tM/o8qUVe9Lv0/MOjj07SDO3smVkz4wut4dCAb
+         oEiVHIwJbg02ngSJ7pGm/63psUM1xwZggrXuCS5I2LkCLTdo0mGJN4OaPAvfKWQZYDLU
+         j3fX2aIBsS0RnxJbcmS1J5LQkYSKSBrF2T6tyBQoGVsDHksdq5KEs+4QjOsd8f8iMrWR
+         NWZWKtdR+UJ+KBIqEpuhdSJxMnDwdlAS3ffgaFYtgB+GVXfvGcbi37RTJR8turw+Iudt
+         1NFdtu71fmS5U6lggcfXDWK3pDnVUVD6eSsyKF8YfqnU4vAyvldFZ3LIErSop146oIMZ
+         8LRQ==
+X-Gm-Message-State: AOAM533wY+qVsgNrcphCtGSTCmWmsNuUHrk+FZVI/WHW4MDlPGldAQjo
+        alt5vTkVQOCLiZx9t1BTpRyfNgeRAA9Ogm2n9Fk=
+X-Google-Smtp-Source: ABdhPJzoEnPsAsqrXO8LDUgqLHDEbjZFYJMFbnJiYvJnAjUIc/5dTBb7N5/bqaxZwVX3HqXPAWg1zHXhZGxbIkimuzw=
+X-Received: by 2002:ad4:4a04:: with SMTP id m4mr26408597qvz.42.1629901492960;
+ Wed, 25 Aug 2021 07:24:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1629749291.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20210825061923.13770-1-wqu@suse.com>
+In-Reply-To: <20210825061923.13770-1-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 25 Aug 2021 15:24:41 +0100
+Message-ID: <CAL3q7H6eaGgL8e3OPQMOb-E9wKR5JQTV5pzEAsMvbaSCpZY1rA@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs/246: add test case to make sure btrfs can
+ create compressed inline extent
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 04:14:45PM -0400, Josef Bacik wrote:
-> In order to reduce the amount of pain the reviewers have to endure I'm going to
-> be sending any prepatory patches separately from the actual feature work.
-> 
-> To that end this is the first batch of preparatory patches.  These are to make
-> working with mkfs a lot easier for the changes I'm making.  These are all fixes
-> or enhancements that can apply currently.  The only thing that is extent tree v2
-> specific is the last patch, which adds the incompat flag.
-> 
-> I've added the patch for the incompat flag because I will have other preparatory
-> patches that add helpers that essentially do
-> 
-> if (!btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
-> 	/* Do the old thing. */
-> 
-> and then have patches after that add the extent tree v2 magic.  I think this
-> will make it easier to break up the work, but if we're not comfortable reserving
-> the bit then I'm fine with dropping that last patch.  It will just mean future
-> prep work will have to come along with the feature enablement patches.
+On Wed, Aug 25, 2021 at 7:19 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> Btrfs has the ability to inline small file extents into its metadata,
+> and such inlined extents can be further compressed if needed.
+>
+> The new test case is for a regression caused by commit f2165627319f
+> ("btrfs: compression: don't try to compress if we don't have enough
+> pages").
+>
+> That commit prevents btrfs from creating compressed inline extents, even
+> "-o compress,max_inline=3D2048" is specified, only uncompressed inline
+> extents can be created.
+>
+> The test case will use "btrfs inspect dump-tree" to verify the created
+> extent is both inlined and compressed.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/246     | 50 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/246.out |  2 ++
+>  2 files changed, 52 insertions(+)
+>  create mode 100755 tests/btrfs/246
+>  create mode 100644 tests/btrfs/246.out
+>
+> diff --git a/tests/btrfs/246 b/tests/btrfs/246
+> new file mode 100755
+> index 00000000..15bb064d
+> --- /dev/null
+> +++ b/tests/btrfs/246
+> @@ -0,0 +1,50 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
+> +#
+> +# FS QA Test 246
+> +#
+> +# Make sure btrfs can create compressed inline extents
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick compress
+> +
+> +# Override the default cleanup function.
+> +_cleanup()
+> +{
+> +       cd /
+> +       rm -r -f $tmp.*
+> +}
+> +
+> +# Import common functions.
+> +. ./common/filter
+> +# For __populate_find_inode()
+> +. ./common/populate
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_require_scratch
+> +
+> +_scratch_mkfs > /dev/null
+> +_scratch_mount -o compress,max_inline=3D2048
+> +
+> +# This should create compressed inline extent
+> +$XFS_IO_PROG -f -c "pwrite 0 2048" $SCRATCH_MNT/foobar > /dev/null
+> +ino=3D$(__populate_find_inode $SCRATCH_MNT/foobar)
+> +_scratch_unmount
+> +
+> +$BTRFS_UTIL_PROG inspect dump-tree -t 5 $SCRATCH_DEV | \
+> +       grep "($ino EXTENT_DATA 0" -A2 > $tmp.dump-tree
+> +echo "dump tree result for ino $ino:" >> $seqres.full
+> +cat $tmp.dump-tree >> $seqres.full
+> +
+> +grep -q "inline extent" $tmp.dump-tree || echo "no inline extent found"
+> +grep -q "compression 1" $tmp.dump-tree || echo "no compressed extent fou=
+nd"
+> +
+> +echo "Silence is golden"
 
-Going through the patches I don't think mentioning the extent tree v2
-makes sense in case the patch is an independent cleanup or refactors
-some code to be a bit more generic.
+While here, we could also check that we are able to read exactly what
+we wrote before, after evicting the page (e.g. after a call to
+_scratch_cycle_mount).
+Other than that, it looks ok.
 
-The actual incompat bit could be reserved but it would be better to keep
-it in the future patchset implementing some significant part of the
-extent tree v2.
+Thanks.
 
-Even with the "if (EXTENT_TREE_V2)" in place it becomes the
-implementation and given that I haven't read the whole design doc for
-that I'm worried that once I find time for that and would suggest some
-changes the reply would be "no I did it this way, it's implemented,
-would require too many changes".
 
-Would be good to keep mentioning the v2 tree maybe to the cover letter
-so we know what's the motivation but in the changelogs it's confusing as
-we don't have any base point for that.
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/246.out b/tests/btrfs/246.out
+> new file mode 100644
+> index 00000000..287f7983
+> --- /dev/null
+> +++ b/tests/btrfs/246.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 246
+> +Silence is golden
+> --
+> 2.31.1
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
