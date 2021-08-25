@@ -2,109 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5826F3F7892
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Aug 2021 17:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0344A3F7DF8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Aug 2021 23:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241566AbhHYPdO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Aug 2021 11:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
+        id S231920AbhHYVvR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Aug 2021 17:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240994AbhHYPdO (ORCPT
+        with ESMTP id S229707AbhHYVvQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:33:14 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1EFC061757
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Aug 2021 08:32:28 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id t4so9761059vsm.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Aug 2021 08:32:28 -0700 (PDT)
+        Wed, 25 Aug 2021 17:51:16 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC553C061757
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Aug 2021 14:50:29 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id y34so1919100lfa.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Aug 2021 14:50:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=+WETVmQlhD/YqHShj4PuL8qu89xAfQXa3V2bcAm0tKE=;
-        b=p35kKqIrVr5zvt2GVJZBmvtc/uwzjzD4ExasNkS1Dc0zReb4U4RBpO6PLjFI/djnrd
-         kb2zHrronWFpXE5uyfpPUmwH/Sqqz8V0UVaz1RtrR/p5joqXb2WBAxCVf4egkLDt9ykq
-         DSoN/dyS9q/nLQ8GMVLrxqZOkc8k/HtEdIRG0tU1agLEzzOAgMHjbtXHXASN1ADwmWAR
-         zrEA5UCQEO4mXwY0WaFZG6bxWLIxcTViTrFxlK29l9vFYR5DA/Dd1K0x1Buhmnvak1dQ
-         hmucoNOm2hevOh3IMGEvw4rS/aGJybNO1MdP4zHwoPx93nK7KxKtNzWnpi98zVTcibFM
-         NkBA==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=ZA9CVWStdrZs+NC9Qcsnrq3Kp/Xs9X1EpfvFc9LH0JU=;
+        b=uL6iyUw+U0mYvwxkJ9sM5DXMOXyK0YJMtpQhlM71W41zBqVhwJCdEAGEaazUjjBJg5
+         wu0a+rmC1z4hXyq9d5R3Pnr17kYp/7OLd3U7Bvso19lV8RZR1/NJweoa58brUOE0WDeU
+         n4iWIQh1IkdZkYO5OCvtV6zg3OFNGE/jHJXAjLRyVYaeFUFiAwedOnKFK26vUCFW+f1l
+         cHOHGxMvYpUbpQ4LDhbOgSNYBOoLhZUzF4TGTTn8PS8kVotx6Sl+0eb/S/HvhgtQy9FW
+         L6gJSt1/es+HCD7nNls19egxgL+sGqoleYvtv1P7OeMswA8EC9BPBpwyFHVukoL2Kcu7
+         S3pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=+WETVmQlhD/YqHShj4PuL8qu89xAfQXa3V2bcAm0tKE=;
-        b=I4TeH8ck70ttSGegu4QzREYQJxjKzFs+O7Oh0MAc40ov0aARwS+yJeFWfgTkW9UbrS
-         FwCF7s4548VrjWnlgJA154i+gzVPzA2C++NNiaPWDR14FKjVkYwClIXJbqKvgij7NekM
-         Lho3SUCn7UfQBWPQNKjo68Q18a7nIPF3pFru4zhGGUUgHbIUuRLuDPdZqBYCaEnF9hks
-         qXoQm/bun/9Vh68IvHsgfqDepziZHlsNZAjsmTSoiFGppv0PSPW2KatsxaZzvA++952Q
-         ed8jgTSbSKIY2ivGoZBl2mlUVynysV7T1gMjMTdIL+qDwkfRmxkmtjNIv9rupTbyxYd+
-         jXyw==
-X-Gm-Message-State: AOAM531l+IsYMO+2otoq/ylPw/PdG8mr3QAe+nk08dV5wBN433M9MRWi
-        6ApIfYy6YgS8mrhD3X3zNlyYByTmr+TKWb8VV6Q=
-X-Google-Smtp-Source: ABdhPJw7N+r+ZQjHRIzdHeUjgu0SIp+6lavfdLvyapalLQyR4rpTj3V/itC97LqW38IGvd4xKuc156p5U97Td01CFDM=
-X-Received: by 2002:a05:6102:cd1:: with SMTP id g17mr10420426vst.22.1629905543517;
- Wed, 25 Aug 2021 08:32:23 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=ZA9CVWStdrZs+NC9Qcsnrq3Kp/Xs9X1EpfvFc9LH0JU=;
+        b=clSE7IVes4SLe33T5W3VRz9OZai/5YlIVPr5yQ10I0QU9ziZlR0hk3eLlu0Xhfr+X3
+         eultgPGz9wXh5h1SaxVPSMKP74TVb7PJMGkzTWeeYn+9N+4eN7ojPJOCi18y4BLBJuie
+         Oxq0VKshJLtVB/Aw0YPLhPc4L30FWj0pzayuH3xJro8As+fiEEjN1WIgBTpY5Wiq4KlG
+         xPsl7LCYD8uReHRZAr4beZ2y4KYrgQtnTH/541lzofUh7pxcakftsxvPS9u7/0DCgEdY
+         1c1+1bQVi/s3Vmo4fgK6iofhs1hk8feHCDeyIzcpjoXVub++z3bENv3DaMEERtGEfA8R
+         lJkA==
+X-Gm-Message-State: AOAM531i7cbiP1nkuRviVgAEuU+dDQFghEquwHKEanMDjI1oUPAh2UiM
+        3AWt3UO7ggyJ1AMLpx/JOrHgyod+jxlwN+AUiUworUskF6Y=
+X-Google-Smtp-Source: ABdhPJwxVOQBX4lmgTQ9PHbmuYIgVvsySBJ2Ks+wyJl+VRYC9r2M67ab6prZ7FMxgLWUg0/9EJaksJSWjzX9O1SdL3M=
+X-Received: by 2002:ac2:5fe5:: with SMTP id s5mr186285lfg.540.1629928228231;
+ Wed, 25 Aug 2021 14:50:28 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a59:cea4:0:b029:200:6655:e518 with HTTP; Wed, 25 Aug 2021
- 08:32:23 -0700 (PDT)
-Reply-To: mrs.jessicamojoh03@gmail.com
-From:   Martial Akakpo <bankubabank9@gmail.com>
-Date:   Wed, 25 Aug 2021 08:32:23 -0700
-Message-ID: <CAGFjWakHQ4T=tFYrjGvQOTaKwzJSz27kzBH5+5DjD8rt_FW=GQ@mail.gmail.com>
-Subject: Dear Good Friend.
-To:     undisclosed-recipients:;
+From:   Evan Zimmerman <wolfblitz98@gmail.com>
+Date:   Wed, 25 Aug 2021 14:50:18 -0700
+Message-ID: <CA+9Jo8u1RbB=pzPj6bpAYLc5BGaZe2S17s-SxA8t+bm-D=wj-g@mail.gmail.com>
+Subject: BTRFS - Error After Power Outage
+To:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Good Friend.
+Hello!
 
-I am happy to inform you about my success in getting those funds
-transferred under the cooperation of a new partner from Indonesia.
-Presently I am in Indonesia for investment projects with my own share
-of the total sum. Meanwhile, I didn=E2=80=99t forget your past efforts and
-attempts to assist me in transferring those funds despite that it
-failed us somehow. Now contact my secretary in Togo Lome his name is
-Mrs.Jessica Mojoh
+I have a multi device btrfs array of 6 devices that is timing out or
+otherwise failing to mount on boot causing me to enter recovery mode,
+though I can manually mount the drives in recovery mode and can still
+see my data.
 
+I was working in my house the other day, when our power had gone out.
+I turned my Debian server back on and it started up in emergency mode
+saying BTRFS error: open_ctree failed. I also got a "failed to mount
+/mnt/data", which is where I have my data.
 
-Mrs.Jessica Mojoh.
+Now, I've had a similar problem before where I believe one of my
+EasyStore drives was taking too long to be read from and causing
+Debian to boot into emergency mode, but after restarting it a few
+times, it would manage to finally boot up. This "fix" is not working
+this time around and I fear something corrupted during that power
+outage.
 
-Email: { mrs.jessicamojoh03@gmail.com  }
+I'm hoping to get some advice on this to see what I can do to get
+things up and running again. Now, trying to mount manually actually
+worked in emergency mode. Thank you in advance for any help you all
+can provide!
 
-Phone +228 93559661, Contact him and ask him to send you the total of
-$920.000.00.{Nine Hundred And Twenty Thousand United States Dollars}
-which I kept for your past efforts and attempts to assist me in this
-matter. I appreciate your efforts at that time very much. So feel free
-and get in touch with my Secretary Mrs.Jessica Mojoh and instruct him
-where to send the amount to you. Please do let me know immediately you
-receive it so that we can share the joy after all the suffering at
-that time. Do send to  Mrs.Jessica Mojoh, your contact details.
+# uname -a
+Linux [server_name] 5.9.0-5-amd64 #1 SMP Debian 5.9.15-1 (2020-12-17)
+x86_64 GNU/Linux
 
-Your Full Names=E2=80=A6...........................................
+# btrfs --version
+btrfs-progs v5.9
 
-You=E2=80=99re Address=E2=80=A6............................................=
-..
+# btrfs fi show
+Label: 'Media'  uuid: c29b9859-ae32-4be2-ad28-9193c9ebcc87
+Total devices 6 FS bytes used 28.24TiB
+devid    1 size 10.91TiB used 9.80TiB path /dev/sdd
+devid    2 size 2.73TiB used 2.68TiB path /dev/sdc
+devid    3 size 3.64TiB used 3.58TiB path /dev/sdb
+devid    4 size 2.73TiB used 2.67TiB path /dev/sde
+devid    5 size 2.73TiB used 1.61TiB path /dev/sdf
+devid    6 size 9.10TiB used 7.98TiB path /dev/sdg
 
-Cell Phone Number=E2=80=A6........................................
-
-Your occupation................................................
-
-Your Age=E2=80=A6.....................................................
-
-To enable him to submit your details to my paying bank the Ned Bank
-Togo Lome to wire your compensation money to your nominated bank
-account/Bank Check or they can send to you an authorized bank atm
-master card to your address for you to withdraw the money from any
-bank atm machine in your country.
-
-In the moment, I am very busy here because of the investment projects
-which me and the new partner are having at hand, finally, remember
-that I had forwarded instruction to my secretary on your behalf to
-receive that money, so feel free to get in touch with Mrs.Jessica
-Mojoh he will send the amount to you with out any delay.
-
-Thanks and God bless you.
-Mrs.Jessica Mojoh
+# dmesg | grep btrfs
+[   16.106923] BTRFS: device label Media devid 6 transid 3072649
+/dev/sdg scanned by systemd-udevd (301)
+[   16.492767] BTRFS info (device sdd): setting incompat feature flag
+for COMPRESS_ZSTD (0x10)
+[   16.492768] BTRFS info (device sdd): force zstd compression, level 2
+[   16.492768] BTRFS info (device sdd): using free space tree
+[   16.492769] BTRFS info (device sdd): has skinny extents
+[  114.864229] BTRFS error (device sdd): open_ctree failed
