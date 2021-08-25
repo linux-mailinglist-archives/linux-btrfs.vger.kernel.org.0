@@ -2,143 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0D93F6D4B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Aug 2021 04:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED923F6D5A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Aug 2021 04:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236978AbhHYCHw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Aug 2021 22:07:52 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:38354 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234840AbhHYCHv (ORCPT
+        id S237088AbhHYCPU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Aug 2021 22:15:20 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:39042 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236930AbhHYCPS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Aug 2021 22:07:51 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 74DE1B47F3B; Tue, 24 Aug 2021 22:06:56 -0400 (EDT)
-Date:   Tue, 24 Aug 2021 22:06:56 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Wang Yugui <wangyugui@e16-tech.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] VFS/BTRFS/NFSD: provide more unique inode number for
- btrfs export
-Message-ID: <20210825020655.GH29026@hungrycats.org>
-References: <162742539595.32498.13687924366155737575.stgit@noble.brown>
- <162881913686.1695.12479588032010502384@noble.neil.brown.name>
- <20210818225454.9558.409509F4@e16-tech.com>
- <162932318266.9892.13600254282844823374@noble.neil.brown.name>
- <20210819021910.GB29026@hungrycats.org>
- <162942805745.9892.7512463857897170009@noble.neil.brown.name>
- <20210822192917.GF29026@hungrycats.org>
- <162976092544.9892.3996716616493030747@noble.neil.brown.name>
+        Tue, 24 Aug 2021 22:15:18 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17OLbBBi015031;
+        Wed, 25 Aug 2021 02:14:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : cc : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=xmulUNMWhAbTX7/a5Jf/pULK4zS5SiqY5dMwh8j7lrU=;
+ b=h6Be8inLUh+Q/v18VtmU5asQnfPjt1yVu6lRPrufbah9k1bS3n77GhAHlK03ietpGynS
+ 3fhWpirW83bZZycDqWN554TMPk3NXxdqe/UmBhnqGzYPQX6TRQoS4SmPyQnvnTeCtYo1
+ x8T53PUvwEkpI2JM7BzuW09Q1iwu6Ciu/EXGLG91Rm/VGi1VZog6U+CfRsMgicc82lLt
+ mQGUXhK83cd5NWKaxAQPhO2lQ8lrt0VYp2ES71rP6B5kffB5ErY8mgg943zt5mnvvQTB
+ r9SH7nPCBCJpry9bTAlf/HjF1JA3N12E6nd+dPtJUgFsxu+C08Ehf1Mpsvj2LyabJ21Q gg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : cc : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=xmulUNMWhAbTX7/a5Jf/pULK4zS5SiqY5dMwh8j7lrU=;
+ b=j8JdR9p3jB5H2wmExeO6aPO1Nb3/GL9z1tjEDHGTwlrqV6h8Meg/3v40B2jO9xANgG1k
+ jCNnaSHisglDW07FNZVI7KPBfrDCIDc9h85BB+3E5xRv7LgVs3Bpvha2sn8+qae+7oTW
+ XKATEbyJ7gvEWlfJv4QwLJhc0doy9kXV0bZxB1K9boJZl0Qpnm9+cYo7t6OAv+9SJw1F
+ GR2ebhqR/MAnGDaGI47XX2r4jYTNVM+KZSJjKcfLAYJq4v1jQeAQRrCiphQKzbyZq+uY
+ MvbA5btst4oHBjlHNLoqB1F3vr3ulmU6RRlz5By56GItcL5c6uM4rKdvXTkS0CR0eYV2 2Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3amwh6j6kw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Aug 2021 02:14:19 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17P25SoZ021892;
+        Wed, 25 Aug 2021 02:14:18 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+        by userp3020.oracle.com with ESMTP id 3akb8vws22-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Aug 2021 02:14:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g6ZP+7J54DPwAZApztsEkGd8GWf0AVSKW8pQkifRbDULHuexeCr1PMup15Y+NItIe18H3OqJ8VwrjGbo5E85NAP2ImOX2Xg4wC2uawwIO9xFaLpp8a7/Ads0RD0DOSvwVxF9u4MuhjyQ5rwOAsPGBNcaeHxIgykPRwDilzkrstyCTFcz1Y+Mf44y1Ey+LM49jM57Tw2HaY62qP3x2+9q08fhL/cnZSjZQSq0Q7g3c/1KQnc9s97IKom6vlCF8Gi5X/T1rSr4Kr7fEDswa+dlXmEJUgcR/jq8UYZRSL1IeDfjdZRP1owS+TvvFUFGs9pSP9TR9/Ce92m2NTdSlhnNdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xmulUNMWhAbTX7/a5Jf/pULK4zS5SiqY5dMwh8j7lrU=;
+ b=DFEj5K6j0aH9X/cNoX6lXynpG2bxv2YcH5BTOJE8lcPT+53QQn36UMJ2YdsrcNbtInrBv1Y5TeSt9dvWRWw6smPwQkC4jIaG5hqHpcCk30r6a53MOFBXSuQ8Hn14Dul28oplRYEbLcQkOOFBCj3Sy/aOBUvGebtJ5erKFnD213i08KFK86j3cJrOmvz6RPzEWiEhn8bEApUsJlM6gQqzea3lITRXHVgjQO+Fn62xGP+jPKpx0VE9pxJT1vSOqDFALA1Qxpm7e0qLo0GN4EcIhalidi0ti6krYLQYWnxgm+sO1HiFy3PlKnY03c+LOtjo0xWs430JkzJAzAMPBRtc4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xmulUNMWhAbTX7/a5Jf/pULK4zS5SiqY5dMwh8j7lrU=;
+ b=XgmZkqogXJF/xwBogvsktaOvmlcR6YG4r1+vXVTJG61seqsr1V7LA4oHSHX4RzMjMMx8Pws8siLXNyz4Yo+lVHaLdVOpaPW3HD6RIquopF8Xhq0RVXCUigQ3dhhrjiVyvMFqaD/VQrwG2+tRi3S9rc0gc4ejGXBnWNsXoNC8DK8=
+Authentication-Results: damenly.su; dkim=none (message not signed)
+ header.d=none;damenly.su; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BLAPR10MB5313.namprd10.prod.outlook.com (2603:10b6:208:331::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Wed, 25 Aug
+ 2021 02:14:15 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
+ 02:14:15 +0000
+Subject: Re: [PATCH v4 0/4] btrf_show_devname related fixes
+To:     dsterba@suse.cz, dsterba@suse.com
+References: <cover.1629458519.git.anand.jain@oracle.com>
+ <20210823194618.GT5047@twin.jikos.cz>
+ <b0792837-0227-0404-315e-d4a5d7ca4a2c@oracle.com>
+ <20210824161106.GD3379@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, l@damenly.su
+Message-ID: <a3af668b-a91a-548f-4ec5-1104bd831a78@oracle.com>
+Date:   Wed, 25 Aug 2021 10:13:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20210824161106.GD3379@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR03CA0131.apcprd03.prod.outlook.com
+ (2603:1096:4:91::35) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162976092544.9892.3996716616493030747@noble.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.109] (39.109.186.25) by SG2PR03CA0131.apcprd03.prod.outlook.com (2603:1096:4:91::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.6 via Frontend Transport; Wed, 25 Aug 2021 02:14:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f29b8886-752f-448b-1960-08d9676e0967
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5313:
+X-Microsoft-Antispam-PRVS: <BLAPR10MB53137CC87C3EF3775AC47E50E5C69@BLAPR10MB5313.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vbxdLKNrJITTTDwm8AgyK8AtqK+XY5KVG+o2X6Dxv736b7pGyLcJl0pOO1FlBiSfbeMhhbyYaTDSgHpHeiYBch0Sf/cmMlF1aO1bZUXSjiekAbBIzzw4ggNbCV6HK3FGq05yu66M3C8iVJPM5Y5nQKfNyhrIOJvJUywyKuB78T9JckiyfUZxqWlz71z37B1qo2y25tEsioZdLcTfpt9bL7qMbKlNaOFLCUl6YOb4YuUA8mCHllWcu0MdwJnsSNh5eB6+jMWOgnt6CFmQv6YSdRP4wi54rICeoWRMDHcZ1UPHTKXMAAOGwbxFKB3InSVnoA+uRzXZyA0M/sQu03ECWxrVNmRRvbWKoNpCRZNKkeHSCruT3cqfbi0AA+Xvfecs/4S4PxsX+oWUUGC12JAk9mAbIBxu0PyYZkaS1WS1RQAg4OK1b8X9qp+aNUerOKOpE2rCwoJG+nlRJidH79ZF+x7ylKR+fmwOm0VMNvojD5JAoyt4oGU9L1Y/pEl/zO8uNpY7U1zfxoB0HYGlQvX7gBMqme7dk/lQw3AQ5RBEilKxqAyGSEoshb0NOppnGj3g74nxsQAWVC51qwxYmWtubwZ6gOOI/0DuKeXxTyW9dtpFDqBnyJIxv4lxYoLVgoJvDuwgp5QiyrRHR3l5e20Hklc6zjZxWVfayI++XJBjhjS95Lz4kH1fJA7twXWS6ytszuF7C9eaBx/BnSKk5+9tgX5B3IBSkHaAi2CV2Ts8XkDgniMthpfDGSY7iRDd91vkBw9FX60F6WvrK6wMdzIoicomdIqNgpcIyiXlSnh1J89EzwvOgnNz5j4djUFA90ZMgp7Qy2r5nl0+6O+RYhzJfA8iJOX02ZnAwS6S+qKs6Zo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(366004)(346002)(136003)(396003)(31696002)(66556008)(31686004)(36756003)(8936002)(66946007)(316002)(6666004)(6486002)(66476007)(5660300002)(8676002)(53546011)(966005)(478600001)(16576012)(38100700002)(26005)(186003)(44832011)(2906002)(956004)(2616005)(4326008)(86362001)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bEh3MTZjLzhmZTlEMFZkTW41NmprY1lsQmVybGNDZytmQ0VIOEorNnMrQ1hj?=
+ =?utf-8?B?U08xN0hKWXZCWGZmMC91bmFhV0w2N2tvTnpuWG5GcjQ4M0RGMGR2UHVud0VH?=
+ =?utf-8?B?NjZHNkRLWUJ3R2FHVGRmWTVsV0RpM3ZVcEJ5WmNSb25VSlNoTGs0Rnk3eUtE?=
+ =?utf-8?B?SGZVcjR5SytueVd5TFR3aytkcStEWDB0RmhaV3J4anRNNzR4T2NFUk0yWFps?=
+ =?utf-8?B?aWd0cDBaMTBrRThmTkFyeWNlbGRZMGR6L0JNYkV2RHZlVlRPRHRZZy9QVmdm?=
+ =?utf-8?B?QWlpUi82R21EYUZXejcyd1UveWxGZ2YwcWp4dzJYZXpUcWRGdDBPRkd1TzlW?=
+ =?utf-8?B?a2pUUGo4ZGxaTHF4d09JTm0zSHNrMW9lVW1iNXZEVW9tK3Q0d1pZbVpXOTJT?=
+ =?utf-8?B?SWdWODhWZ2M2WnEzSXlvT1VKeG93UEhucDZMdWRPR2RNaFhYS1RMTzBUbGlS?=
+ =?utf-8?B?YU1vTnRLQk51S2c4R1JJZkFkYUtxTUtDcjJrS3ozVFBjU2dNWkRlWVpobDBj?=
+ =?utf-8?B?cUxmWCtNYnVxeEpBVlUxdkRGc0trRVlhK0U4a2hOSTFwdWFpUFg1MzQrVkRZ?=
+ =?utf-8?B?UnRHOEk5T1pVWHJiOVdmbkl2NU1HM1dzMVNMNW5teTAzQWkrMFFpQjlYOGJI?=
+ =?utf-8?B?bVRaanV3eStaQzhoQW5tSlh5WDRweXFjVFhnUHQySVljcjAyMjZrUVRJVkRk?=
+ =?utf-8?B?Y1dnTmFCVkQvRk1qc1Nrc1RBYkx3UVNUSWhBTThtamdZYVhnT0lVZlhxM2N5?=
+ =?utf-8?B?VUprWitqZkpQUnNIWVVDcjRKcExjWUtMcjhTMDFNSk1nR0FHUHFmTlZHMWVV?=
+ =?utf-8?B?bGNYN1ZzeUhmWFpnNFk4bUFlNlVGYnBiVzJxOFB4RnFBYlhzRFl6U3FJdkxs?=
+ =?utf-8?B?d3orNHQvQmlqV051S1hXeWs2UTB1U2NKU0k1YzdibjJzMzd1VGQ1c3ZMR3lF?=
+ =?utf-8?B?SjlPaHVLcWYwS1grZ0MyRjE2WG1HMDJEWlRJdlNlQ1NXNEsvTXZmbGFzdmt0?=
+ =?utf-8?B?dzZ2MWM4b3lLa3V4NzF2MytWRVJwUGtsMExRNmwzWVB2N09sZ3NuMXNwcmhj?=
+ =?utf-8?B?ZmN2ZEg4aFd3K0VCUitXL2tjdEFGa2V4RTVZb0RmcXZadnhoNDJQSFd2YkpJ?=
+ =?utf-8?B?bkVnZk4rb1poRC9HYllHaTU2QkczTGZSU2NRMVJwTEZvZllmMERLMHJ3Y2Y4?=
+ =?utf-8?B?TFlzcmhFeFBEbm8zak1aeG1lZVpGVUptcExhNFQwNUxKYTR6RExvb0Q5eW5w?=
+ =?utf-8?B?U1QvUWcvR3Q2L3hQNjJrK2wrZ2RUVDZKWjZvT1RYaGxxcStSeTltd0tPWHBK?=
+ =?utf-8?B?WENUQ3B2cHBBRm1BcTY0WTV6eXUyR2JvTERpWEJPUnpyMThTS29qZ29KWU5x?=
+ =?utf-8?B?QkFDa2ZvYVA2YWlDN2pSdGZCMHhYdk1WV2hQbDFIN0xydjExcnNyRlBRM0pz?=
+ =?utf-8?B?cVlSc2gwSnc4QkZUeWVGZllZaHBhOWI1Wi91R3J3WjFUdFk5QkwyZkgrS2Y1?=
+ =?utf-8?B?TXRoT2ZDT0hvbE1OQ21pYzk2K0pTVDl3S3ZtUHlRbGRGRHo4Uy9QWk1sL1h6?=
+ =?utf-8?B?T1A3Q2M5ZzRJVHM5blMzVWpCVkdMbER4b0FZNUZyVVJRUTBLYW5JV0FZVFdK?=
+ =?utf-8?B?VTdSZERDSW5RblgzS3pOWlRkcEVaYXlXU2I3d1l4MHJsVjREVURwb0xkRnA3?=
+ =?utf-8?B?d3JvSDI3VERFMEJpbHhValRNaUdCTnNvQW4vZHVYQ2hUWFJmQlZzRitRTFdP?=
+ =?utf-8?Q?xYNkS0hc7G+vJ3NozAdgNkj2rQ++9OVTxCn83h2?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f29b8886-752f-448b-1960-08d9676e0967
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 02:14:15.2277
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zmdc1QIBOmH5ePEDfINc1WICE4oj/XE2FGqMjobVDbHOfQAmzXH10+QNAvLRtAoHLlbO1SBu6MianBMwPTYQVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5313
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10086 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108250011
+X-Proofpoint-ORIG-GUID: RjL1B2gF1fTYqawEj6lfhgcZaZUJwxg0
+X-Proofpoint-GUID: RjL1B2gF1fTYqawEj6lfhgcZaZUJwxg0
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 09:22:05AM +1000, NeilBrown wrote:
-> On Mon, 23 Aug 2021, Zygo Blaxell wrote:
-> ...
-> > 
-> > Subvol IDs are not reusable.  They are embedded in shared object ownership
-> > metadata, and persist for some time after subvols are deleted.
-> ...
-> > 
-> > The cost of _tracking_ free object IDs is trivial compared to the cost
-> > of _reusing_ an object ID on btrfs.
+On 25/08/2021 00:11, David Sterba wrote:
+> On Tue, Aug 24, 2021 at 08:28:09AM +0800, Anand Jain wrote:
+>>
+>>
+>> On 24/08/2021 03:46, David Sterba wrote:
+>>> On Mon, Aug 23, 2021 at 07:31:38PM +0800, Anand Jain wrote:
+>>>> These fixes are inspired by the bug report and its discussions in the
+>>>> mailing list subject
+>>>>    btrfs: traverse seed devices if fs_devices::devices is empty in show_devname
+>>>>
+>>>> And depends on the patch
+>>>>    [PATCH v2] btrfs: fix lockdep warning while mounting sprout fs
+>>>> in the ML
+>>>>
+>>>> v4:
+>>>>    Fix unrelated changes in 2/4
+>>>> v3:
+>>>>    Fix rcu_lock in the patch 3/4
+>>>>
+>>>> Anand Jain (4):
+>>>>     btrfs: consolidate device_list_mutex in prepare_sprout to its parent
+>>>>     btrfs: save latest btrfs_device instead of its block_device in
+>>>>       fs_devices
+>>>>     btrfs: use latest_dev in btrfs_show_devname
+>>>>     btrfs: update latest_dev when we sprout
+>>>
+>>> Patchset survived one round of fstests and I haven't seen the lockdep
+>>> warning in btrfs/020 that's caused by some unrelated work in loop device
+>>> driver.
+>>
+>>
+>>> There's a series from Josef to fix it by shuffling locking,
+>>
+>>    Hm. Is it a recent patch? I can't find.
 > 
-> One possible approach to these two objections is to decouple inode
-> numbers from object ids.
+> https://lore.kernel.org/linux-btrfs/cover.1627419595.git.josef@toxicpanda.com/
 
-This would be reasonable for subvol IDs (I thought of it earlier in this
-thread, but didn't mention it because I wasn't going to be the first to
-open that worm can ;).
+Thx.
+It is the same fix I sent ~3months before in the ML[1].
+If you want, I can refresh [1] and include 1/4 (in this patchset)
+into a separate patchset.
 
-There aren't very many subvol IDs and they're not used as frequently
-as inodes, so a lookup table to remap them to smaller numbers to save
-st_ino bit-space wouldn't be unreasonably expensive.  If we stop right
-here and use the [some_zeros:reversed_subvol:inode] bit-packing scheme
-you proposed for NFS, that seems like a reasonable plan.  It would have
-48 bits of usable inode number space, ~440000 file creates per second
-for 20 years with up to 65535 snapshots, the same number of bits that
-ZFS has in its inodes.
+[1]
+https://patchwork.kernel.org/project/linux-btrfs/patch/23a8830f3be500995e74b45f18862e67c0634c3d.1614793362.git.anand.jain@oracle.com/
 
-Once that subvol ID mapping tree exists, it could also map subvol inode
-numbers to globally unique numbers.  Each tree item would contain a map of
-[subvol_inode1..subvol_inode2] that maps the inode numbers in the subvol
-into the global inode number space at [global_inode1..global_inode2].
-When a snapshot is created, the snapshot gets a copy of all the origin
-subvol's inode ranges, but with newly allocated base offsets.  If the
-original subvol needs new inodes, it gets a new chunk from the global
-inode allocator.  If the snapshot subvol needs new inodes, it gets a
-different new chunk from the global allocator.  The minimum chunk might
-be a million inodes or so to avoid having to allocate new chunks all the
-time, but not so high to make the code completely untested (or testers
-just set the minchunk to 1000 inodes).
-
-The question I have (and why I didn't propose this earlier) is whether
-this scheme is any real improvement over dividing the subvol:inode space
-by bit packing.  If you have one subvol that has 3 billion existing inodes
-in it, every snapshot of that subvol is going to burn up roughly 2^-32 of
-the available globally unique inode numbers.  If we burn 3 billion inodes
-instead of 4 billion per subvol, it only gets 25% more lifespan for the
-filesystem, and the allocation of unique inode spaces and tracking inode
-space usage will add cost to every single file creation and snapshot
-operation.  If your oldest/biggest subvol only has a million inodes in
-it, all of the above is pure cost:  you can create billions of snapshots,
-never repeat any object IDs, and never worry about running out.
-
-I'd want to see cost/benefit simulations of:
-
-	this plan,
-
-	the simpler but less efficient bit-packing plan,
-
-	'cp -a --reflink' to a new subvol and start over every 20 years
-	when inodes run out,
-
-	and online garbage-collection/renumbering schemes that allow
-	users to schedule the inode renumbering costs in overnight
-	batches instead of on every inode create.
-
-> The inode number becomes just another piece of metadata stored in the
-> inode.
-> struct btrfs_inode_item has four spare u64s, so we could use one of
-> those.
-> struct btrfs_dir_item would need to store the inode number too.  What
-> is location.offset used for?  Would a diritem ever point to a non-zero
-> offset?  Could the 'offset' be used to store the inode number?
-
-Offset is used to identify subvol roots at the moment, but so far that
-means only values 0 and UINT64_MAX are used.  It seems possible to treat
-all other values as inode numbers.  Don't quote me on that--I'm not an
-expert on this structure.
-
-> This could even be added to existing filesystems I think.  It might not
-> be easy to re-use inode numbers smaller than the largest at the time the
-> extension was added, but newly added inode numbers could be reused after
-> they were deleted.
-
-We'd need a structure to track reusable inode numbers and it would have to
-be kept up to date to work, so this feature would necessarily come with an
-incompat bit.  Whether you borrow bits from existing structures or make
-extended new structures doesn't matter at that point, though obviously
-for something as common as inodes it would be bad to make them bigger.
-
-Some of the btrfs userspace API uses inode numbers, but unless I missed
-something, it could all be converted to use object numbers directly
-instead.
-
-> Just a thought...
 > 
-> NeilBrown
+>>    Is it about device_list_mutex (as in cleanup patch 1 above) or
+>> btrfs_show_devname() (which patches 2-4 fixes)?
+> 
+> Relatd to device locking, so device list mutex and also uuid mutex IIRC.
+> 
+
+
