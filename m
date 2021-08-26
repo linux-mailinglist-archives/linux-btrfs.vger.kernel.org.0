@@ -2,59 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1D83F8E38
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 20:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94FF3F8ECD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 21:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243413AbhHZSxj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Aug 2021 14:53:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243350AbhHZSxj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:53:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D3CC261037;
-        Thu, 26 Aug 2021 18:52:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630003971;
-        bh=exzlZmAfx7XoWDN6zboi85bMGq8VcbfoWZD9a0PExpA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=IxrTz3OyYylv1YvvkEgHl8GKsQ5U+t2XetNep7eda2PvOYX90dEHO3lzIjYH5tW8H
-         eWEJEbxhA2CkxlVdqnlZppyuRNs6Dk+wVGHR3wePmKZyzddqcMH49ic/ORD9QPiBc5
-         hr6c69qkCl8Ss3hEKGFmARDXFlS2OIkCekPy21nORM5dewNowxl82JH6/BhWi5P2RG
-         wh32ofx5mnZFlhtFdfjjED9I+ig/DQehq1FMLrZ2jcorAidtVKKLGgyJxU1BD3GrzY
-         wi/69ycL0/HZbNjFcZ7PVfdq8qGjjx0JOACLNNdew7tuWJzBPUCy/Qx5vs04iG+rBA
-         wBcflod7gtVPQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C452760972;
-        Thu, 26 Aug 2021 18:52:51 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fix for 5.14-rc
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1629897022.git.dsterba@suse.com>
-References: <cover.1629897022.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1629897022.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc7-tag
-X-PR-Tracked-Commit-Id: 4e9655763b82a91e4c341835bb504a2b1590f984
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9b49ceb8545b8eca68c03388a07ecca7caa5d9c1
-Message-Id: <163000397174.15844.10404432096604090598.pr-tracker-bot@kernel.org>
-Date:   Thu, 26 Aug 2021 18:52:51 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S243484AbhHZTjk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Aug 2021 15:39:40 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:54086 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243480AbhHZTjk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Aug 2021 15:39:40 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E04A31FEAB;
+        Thu, 26 Aug 2021 19:38:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630006731;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b/lrvpf6WDhl+xAG8BzejCFv/J8xCcqn9pkfEE2Ujw4=;
+        b=xjzJDH7USp0EshMuTkNtc+hyqZS/wTwWJt5NPa+Lvl7HxF4Wj7VWd74lqy2EKIblv5ugV6
+        aBx93kKfw4iNLGnXshBz0YJ93TAv7/EXq28r4dEE9wUoAY9rn333tPJ6aO7jRiV/1nb2tE
+        xpQs3LeUmc5gmR+YdyHQdU+2hf8cDDs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630006731;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b/lrvpf6WDhl+xAG8BzejCFv/J8xCcqn9pkfEE2Ujw4=;
+        b=UHSz1Mj5FTY8rLnR3DrxLqbjk67FEnR42f9MHUl4SJnpwC5MwPd4OrOiUu95y8hNudtG1n
+        C3se6yg4JgyQ/4Bw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id C0204A3B8E;
+        Thu, 26 Aug 2021 19:38:51 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 50E47DA7F3; Thu, 26 Aug 2021 21:36:03 +0200 (CEST)
+Date:   Thu, 26 Aug 2021 21:36:02 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: Regression in v5.14-rc1: f2165627319f btrfs: compression: don't
+ try to compress if we don't have enough pages
+Message-ID: <20210826193602.GR3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        linux-btrfs@vger.kernel.org
+References: <20210822055115.GD29026@hungrycats.org>
+ <20210823111715.GW5047@twin.jikos.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823111715.GW5047@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Thu, 26 Aug 2021 12:15:55 +0200:
+On Mon, Aug 23, 2021 at 01:17:15PM +0200, David Sterba wrote:
+> On Sun, Aug 22, 2021 at 01:51:15AM -0400, Zygo Blaxell wrote:
+> > Before this commit:
+> > 
+> > 	# head /dev/zero -c 4095 > inline
+> > 	# compsize inline
+> > 	Type       Perc     Disk Usage   Uncompressed Referenced  
+> > 	TOTAL        0%       18B         3.9K         3.9K       
+> > 	zstd         0%       18B         3.9K         3.9K       
+> > 
+> > After this commit:
+> > 
+> > 	# head /dev/zero -c 4095 > inline                                                                        
+> > 	# compsize inline                                                                                        
+> > 	Processed 1 file, 1 regular extents (1 refs), 0 inline.                                                                                      
+> > 	Type       Perc     Disk Usage   Uncompressed Referenced                                                                                     
+> > 	TOTAL      100%      4.0K         4.0K         4.0K                                                                                          
+> > 	none       100%      4.0K         4.0K         4.0K                                                                                          
+> > 
+> > This change makes the metadata sizes of trees of small files (e.g. source
+> > checkouts) blow up.
+> > 
+> > It looks like we need to look at the offset of the extent, as well as
+> > its length.
+> 
+> Thanks for the report, my bad, I'll look into it.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc7-tag
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9b49ceb8545b8eca68c03388a07ecca7caa5d9c1
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+The patch has been reverted in Linus' tree so it'll be in 5.14 final and
+will be in the upcoming stable updates according to their release
+schedule.
