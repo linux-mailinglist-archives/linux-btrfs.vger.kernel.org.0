@@ -2,78 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E638A3F8786
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 14:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD89B3F87BD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 14:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241872AbhHZMbw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Aug 2021 08:31:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55932 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241164AbhHZMbv (ORCPT
+        id S241096AbhHZMk1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Aug 2021 08:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242485AbhHZMkW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Aug 2021 08:31:51 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 669C7222EC;
-        Thu, 26 Aug 2021 12:31:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629981063;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KoJy1aMcnGz2d5BI1Oq7+rN51mM6Kykn/IiK3JHfpQc=;
-        b=GmrnlHNpdeoNTre8EFkdNjHGJYxa+5nJJl7KodVeGOB4fwJljnLy5X2fY3PdwQxXPHkJ9m
-        oRf9j6r7LDcfvJ+HvyNmTIwb3J29uoIHN6nrgLMdi7RGWcJrMoKB5de6gIGEpzDgIB+3Lk
-        rWSV+f8G8eaA8KX5UHGTOaiyba/y9ZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629981063;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KoJy1aMcnGz2d5BI1Oq7+rN51mM6Kykn/IiK3JHfpQc=;
-        b=VQleSbXDrc6Y5yl8+WndMVutLTut54Kx/ZR5X8A7JDA5f6ccQBqwujZC0myHOb7q+JbLw0
-        OH6snjycsrLRgfCA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 608B6A3B8B;
-        Thu, 26 Aug 2021 12:31:03 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4A8F1DA7FB; Thu, 26 Aug 2021 14:28:15 +0200 (CEST)
-Date:   Thu, 26 Aug 2021 14:28:15 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs-progs: check: enhance the csum mismatch error
- message
-Message-ID: <20210826122815.GL3379@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210826064036.21660-1-wqu@suse.com>
+        Thu, 26 Aug 2021 08:40:22 -0400
+Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D6DC061757
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Aug 2021 05:39:34 -0700 (PDT)
+Received: from ananda.localnet (unknown [IPv6:2001:a62:1a50:c000:ace4:a413:6354:110a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 86D892ABE1D
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Aug 2021 14:39:33 +0200 (CEST)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: It's broke, Jim. BTRFS mounted read only after corruption errors on Samsung 980 Pro
+Date:   Thu, 26 Aug 2021 14:39:32 +0200
+Message-ID: <2483116.FlZDIz5lkP@ananda>
+In-Reply-To: <2925925.e1IPqPlo5U@ananda>
+References: <9070016.RUGz74dYir@ananda> <2925925.e1IPqPlo5U@ananda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826064036.21660-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin2 smtp.mailfrom=martin@lichtvoll.de
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 02:40:33PM +0800, Qu Wenruo wrote:
-> This patchset will change the csum mismatch error message for data csum
-> mismatch, from the old almost meaningless output:
+Martin Steigerwald - 26.08.21, 12:44:05 CEST:
+> Could
 > 
->   [5/7] checking csums against data
->   mirror 1 bytenr 13631488 csum 19 expected csum 152 <<<
->   ERROR: errors found in csum tree
+> [GIT PULL] Btrfs fix for 5.14-rc
 > 
-> To a more human readable output:
+> https://lore.kernel.org/linux-btrfs/cover.1629897022.git.dsterba@suse.
+> com/T/#u
 > 
->   [5/7] checking csums against data
->   mirror 1 bytenr 13631488 csum 0x13fec125 expected csum 0x98757625
->   ERROR: errors found in csum tree
+> be related to this issue?
 > 
-> Qu Wenruo (3):
->   btrfs-progs: move btrfs_format_csum() to common/utils.[ch]
->   btrfs-progs: slightly enhance btrfs_format_csum()
->   btrfs-progs: check: output proper csum values for --check-data-csum
+> One of the backtraces mention a kernel memory allocated failure that
+> could be related to compression.
 
-Nice, added to devel, thanks.
+yeah, but this reverted patch would have disabled compression for 
+certain cases, so not related as my kernels do not yet carry that 
+revert.
+
+Best,
+-- 
+Martin
+
+
