@@ -2,76 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45F93F8AE5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 17:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD06D3F8C62
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 18:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242917AbhHZPVd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Aug 2021 11:21:33 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51712 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242904AbhHZPVd (ORCPT
+        id S243085AbhHZQna (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Aug 2021 12:43:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38052 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232835AbhHZQn3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Aug 2021 11:21:33 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0D6212233C;
-        Thu, 26 Aug 2021 15:20:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629991245;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BBprdSqD8VKP2rhFRgmlqwFIgjKC4P72prvIXotP8C8=;
-        b=k1FOLiu3XinukZgZv6YhvDXJ8VK8TdCHiuTkUgsrAf0gvBM+KAKVpAO7DnCHKBVXJwztIj
-        5cT+j5aHUwLEKcXyLu58UKiYpEUS1uZBCamGe16Kp78hX2hkqKWQYwGOZ8qQTQ8Ac75USF
-        qX5yeWhm7flJMhYeEvlCyQLGpe5AmXk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629991245;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BBprdSqD8VKP2rhFRgmlqwFIgjKC4P72prvIXotP8C8=;
-        b=AJDxstaAfbnrULHrUyO+qNYab44yPp+1uDWo+6w3bbwubgRKw6uYwagFtUNIFk4cM2L1xG
-        v9eKjFtsIvrBkdBA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 05E70A3B89;
-        Thu, 26 Aug 2021 15:20:45 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D7220DA7F3; Thu, 26 Aug 2021 17:17:56 +0200 (CEST)
-Date:   Thu, 26 Aug 2021 17:17:56 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sidong Yang <realwakka@gmail.com>
-Cc:     David Sterba <dsterba@suse.cz>, Filipe Manana <fdmanana@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH v3] btrfs: reflink: Initialize return value to 0 in
- btrfs_extent_same()
-Message-ID: <20210826151756.GN3379@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sidong Yang <realwakka@gmail.com>,
-        Filipe Manana <fdmanana@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>
-References: <20210826144436.19600-1-realwakka@gmail.com>
+        Thu, 26 Aug 2021 12:43:29 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4912E1FE58;
+        Thu, 26 Aug 2021 16:42:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629996161; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=KKtFjiMujbnrVMLjjBZJHLTvzY/m0c3RKoZnOaZmnGA=;
+        b=flFB2rBcfhX9VPP3J6ECr6r2KBf6nLnEIkZPp6XbMnJrmqPybCwB0Z1hd0yBbTqQibMUqd
+        KIMCSYlN1SJ+SeQscDSC/WtaoKn2d2apLbCYGV0DR5HJR5XEhZ8VowgXNUiuY8S+bRZV7c
+        MW0nx42ZslAhZFaGKcswwvSTdxE5m4E=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 19D6913B20;
+        Thu, 26 Aug 2021 16:42:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kSBANH/EJ2EVIQAAMHmgww
+        (envelope-from <mpdesouza@suse.com>); Thu, 26 Aug 2021 16:42:39 +0000
+From:   Marcos Paulo de Souza <mpdesouza@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com, Marcos Paulo de Souza <mpdesouza@suse.com>
+Subject: [PATCHv2 0/8]  btrfs: Create macro to iterate slots
+Date:   Thu, 26 Aug 2021 13:40:46 -0300
+Message-Id: <20210826164054.14993-1-mpdesouza@suse.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826144436.19600-1-realwakka@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 02:44:36PM +0000, Sidong Yang wrote:
-> This patch fixes a warning reported by smatch. It reported that ret
-> could be returned without initialized. 0 would be proper value for
-> initializing ret. Because dedupe operations are supposed to to return
-> 0 for a 0 length range.
-> 
-> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> ---
-> v2:
->  - Removed assert and added initializing ret
-> v3:
->  - Changed initializing value to 0
+There is a common pattern when search for a key in btrfs:
 
-I've slightly rephrased the changelog, added to misc-next, thanks.
+ * Call btrfs_search_slot
+ * Endless loop
+     * If the found slot is bigger than the current items in the leaf, check the
+       next one
+     * If still not found in the next leaf, return 1
+     * Do something with the code
+     * Increment current slot, and continue
+
+This pattern can be improved by creating an iterator macro, similar to
+those for_each_X already existing in the linux kernel. using this
+approach means to reduce significantly boilerplate code, along making it
+easier to newcomers to understand how to code works.
+
+This patchset survived a complete fstest run.
+
+Changes from v1:
+ * Separate xattr changes from the macro introducing code (Johannes)
+
+Changes from RFC:
+ * Add documentation to btrfs_for_each_slot macro and btrfs_valid_slot function
+   (David)
+ * Add documentation about the ret variable used as a macro argument (David)
+ * Match function argument from prototype and implementation (David)
+ * Changed ({ }) block to only () in btrfs_for_each_slot macro (David)
+ * Add more patches to show the code being reduced by using this approach
+   (Nikolay)
+
+Marcos Paulo de Souza (8):
+  fs: btrfs: Introduce btrfs_for_each_slot
+  btrfs: block-group: use btrfs_for_each_slot in find_first_block_group
+  btrfs: dev-replace: Use btrfs_for_each_slot in
+    mark_block_group_to_copy
+  btrfs: dir-item: use btrfs_for_each_slot in
+    btrfs_search_dir_index_item
+  btrfs: inode: use btrfs_for_each_slot in btrfs_read_readdir
+  btrfs: send: Use btrfs_for_each_slot macro
+  btrfs: volumes: use btrfs_for_each_slot in btrfs_read_chunk_tree
+  btrfs: xattr: Use btrfs_for_each_slot macro in btrfs_listxattr
+
+ fs/btrfs/block-group.c |  33 +-----
+ fs/btrfs/ctree.c       |  28 ++++++
+ fs/btrfs/ctree.h       |  25 +++++
+ fs/btrfs/dev-replace.c |  51 ++--------
+ fs/btrfs/dir-item.c    |  27 +----
+ fs/btrfs/inode.c       |  46 ++++-----
+ fs/btrfs/send.c        | 222 +++++++++++------------------------------
+ fs/btrfs/volumes.c     |  23 ++---
+ fs/btrfs/xattr.c       |  40 +++-----
+ 9 files changed, 169 insertions(+), 326 deletions(-)
+
+-- 
+2.31.1
+
