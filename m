@@ -2,131 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97823F8D97
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 20:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B156E3F8DAB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 20:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243274AbhHZSJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Aug 2021 14:09:16 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52602 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhHZSJO (ORCPT
+        id S238494AbhHZSNz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Aug 2021 14:13:55 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46586 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232729AbhHZSNy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Aug 2021 14:09:14 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 259FE22301;
-        Thu, 26 Aug 2021 18:08:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630001306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 26 Aug 2021 14:13:54 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 25C781FEA7;
+        Thu, 26 Aug 2021 18:13:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630001586;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rPJo1teyamndI4lEKoVAD9Qt2Smv/ONWaaScuC4Ve2o=;
-        b=LhXtiAYtUaGc/4EiE0bwz6J7z1GB19AVe2Ray/sCSjj7toPIPxourr3Kil0AY2dv1HwaWx
-        R6mSpTDwxVLmGy35D2zLnpPYupeLRlmqzWnQO/2HDe5/9ez5t0jVbWWppe3hg2l1ESarXw
-        QjBxgqMbRRHaiW3Bk6Wa/aK1SjOx9OM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630001306;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        bh=DihxGUg+emuqdPblNt0ChR6gTaK6XR/dqkG7Jzj6Vxc=;
+        b=ORi+hbzRnP1HRUq4nmLztaqdpg2FpaPn3lI0D43laPGXWdW/ef87ybsLSaOwbS6EgQIFWD
+        MmRIwaFrKApAvxb3YW+V8SSa5NH39fTbIexZxyOWvw/UwQFhMbC0KbqboUthoiI6CPrW94
+        9+BSMbVs4s3bJ4djFX1gPEe8/3fKEdY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630001586;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rPJo1teyamndI4lEKoVAD9Qt2Smv/ONWaaScuC4Ve2o=;
-        b=TdWpU8d8UCoKO5ykXztEfWhMrp1L+bo7dACzFD94pGg9Lgpnr5QBy0IgrmxgY7OjFf5W/q
-        826u4LFP0nezBgAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0C47A13C9A;
-        Thu, 26 Aug 2021 18:08:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Hbu7MZjYJ2F5NwAAMHmgww
-        (envelope-from <mpdesouza@suse.de>); Thu, 26 Aug 2021 18:08:24 +0000
-Message-ID: <1619bc963c3006b433b19d95a52b68c8fc584a63.camel@suse.de>
-Subject: Re: [PATCHv2 0/8]  btrfs: Create macro to iterate slots
-From:   Marcos Paulo de Souza <mpdesouza@suse.de>
-To:     Marcos Paulo de Souza <mpdesouza@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com
-Date:   Thu, 26 Aug 2021 15:06:45 -0300
-In-Reply-To: <20210826164054.14993-1-mpdesouza@suse.com>
-References: <20210826164054.14993-1-mpdesouza@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        bh=DihxGUg+emuqdPblNt0ChR6gTaK6XR/dqkG7Jzj6Vxc=;
+        b=0zYhmxq+iDK9h9ZhyrBkKJd4qthoeoAowK4xRAV+mYZ88E5j69+tZUgsSLtwuOx1Q3OuMt
+        8gDedqCOwwcPWcBQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1DB5FA3B8B;
+        Thu, 26 Aug 2021 18:13:06 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B386CDA7F3; Thu, 26 Aug 2021 20:10:17 +0200 (CEST)
+Date:   Thu, 26 Aug 2021 20:10:17 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: reduce return argument of btrfs_chunk_readonly
+Message-ID: <20210826181017.GP3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <32a8d585312548c69ca242c6fd671755f78ddace.1628609924.git.anand.jain@oracle.com>
+ <da5074a6-c0bb-a844-bbfe-c57f38bba876@suse.com>
+ <249bb6d8-4be1-90b6-1893-c7d0adef1a0b@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <249bb6d8-4be1-90b6-1893-c7d0adef1a0b@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 2021-08-26 at 13:40 -0300, Marcos Paulo de Souza wrote:
-> There is a common pattern when search for a key in btrfs:
+On Thu, Aug 12, 2021 at 04:58:30PM +0800, Anand Jain wrote:
+> On 11/08/2021 15:15, Nikolay Borisov wrote:
+> > On 10.08.21 г. 18:48, Anand Jain wrote:
+> >> btrfs_chunk_readonly() checks if the given chunk is writeable. It returns
+> >> 1 for readonly, and 0 for writeable. So the return argument type bool
+> >> shall suffice instead of the current type int.
+> >>
+> >> Also, rename btrfs_chunk_readonly() to btrfs_chunk_writeable() as we check
+> >> if the bg is writeable, and helps to keep the logic at the parent function
+> >> simpler.
 > 
->  * Call btrfs_search_slot
->  * Endless loop
->      * If the found slot is bigger than the current items in the
-> leaf, check the
->        next one
->      * If still not found in the next leaf, return 1
->      * Do something with the code
->      * Increment current slot, and continue
+> > I don't see how the logic is kept simpler, given that you just invert
+> > it.
 > 
-> This pattern can be improved by creating an iterator macro, similar
-> to
-> those for_each_X already existing in the linux kernel. using this
-> approach means to reduce significantly boilerplate code, along making
-> it
-> easier to newcomers to understand how to code works.
-> 
-> This patchset survived a complete fstest run.
+>   IMO it is simpler to read. No? In btrfs_chunk_readonly(), we consider a
+>   chunk is readonly when the device it is on has _no_ DEV_STATE_WRITEABLE
+>   flag set.  So rename to btrfs_chunk_writeable() is correct. We also use
+>   readonly to the filesystem.
 
-My bad, I only added v2 to the cover-letter, but the only change from
-v1 is that now the xattr changes are in a separate patch.
-
-> 
-> Changes from v1:
->  * Separate xattr changes from the macro introducing code (Johannes)
-> 
-> Changes from RFC:
->  * Add documentation to btrfs_for_each_slot macro and
-> btrfs_valid_slot function
->    (David)
->  * Add documentation about the ret variable used as a macro argument
-> (David)
->  * Match function argument from prototype and implementation (David)
->  * Changed ({ }) block to only () in btrfs_for_each_slot macro
-> (David)
->  * Add more patches to show the code being reduced by using this
-> approach
->    (Nikolay)
-> 
-> Marcos Paulo de Souza (8):
->   fs: btrfs: Introduce btrfs_for_each_slot
->   btrfs: block-group: use btrfs_for_each_slot in
-> find_first_block_group
->   btrfs: dev-replace: Use btrfs_for_each_slot in
->     mark_block_group_to_copy
->   btrfs: dir-item: use btrfs_for_each_slot in
->     btrfs_search_dir_index_item
->   btrfs: inode: use btrfs_for_each_slot in btrfs_read_readdir
->   btrfs: send: Use btrfs_for_each_slot macro
->   btrfs: volumes: use btrfs_for_each_slot in btrfs_read_chunk_tree
->   btrfs: xattr: Use btrfs_for_each_slot macro in btrfs_listxattr
-> 
->  fs/btrfs/block-group.c |  33 +-----
->  fs/btrfs/ctree.c       |  28 ++++++
->  fs/btrfs/ctree.h       |  25 +++++
->  fs/btrfs/dev-replace.c |  51 ++--------
->  fs/btrfs/dir-item.c    |  27 +----
->  fs/btrfs/inode.c       |  46 ++++-----
->  fs/btrfs/send.c        | 222 +++++++++++--------------------------
-> ----
->  fs/btrfs/volumes.c     |  23 ++---
->  fs/btrfs/xattr.c       |  40 +++-----
->  9 files changed, 169 insertions(+), 326 deletions(-)
-> 
-
+The logic in the function is to check for each stripe if it has
+writeable flag and short cuircit if not, and this follows as we're
+indeed checking for the writeable status. Further there's a check for
+the missing devices that can drop previous witebale status. This all
+reads as the the main point is 'writeable' status, so I'm fine with the
+rename.
