@@ -2,148 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD1E3F8D66
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 19:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97823F8D97
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 20:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243253AbhHZR4w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Aug 2021 13:56:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52050 "EHLO
+        id S243274AbhHZSJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Aug 2021 14:09:16 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52602 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbhHZR4w (ORCPT
+        with ESMTP id S230306AbhHZSJO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Aug 2021 13:56:52 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D8EEC22250;
-        Thu, 26 Aug 2021 17:56:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630000563;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 26 Aug 2021 14:09:14 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 259FE22301;
+        Thu, 26 Aug 2021 18:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630001306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nXfobjmj/8TTZF7uPDNa3J2GdzvCVAHLNKXg65F+XL4=;
-        b=JuAq9AKb7FUQFttltQzmR1pgZlbNW9lqmcAx7EQpbdIwAVatTHy6skQKCnzy3yhHo6Cjmh
-        3kbP+zDsBj+/aZnb/ATu1zYihKSxFGzDh33jBiJRi5eJP6NT4FRzrwPiXyy4DdKlWYnKJH
-        OsUW4G+ixB/Ive/fNDPRmYgU0sQZgbo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630000563;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        bh=rPJo1teyamndI4lEKoVAD9Qt2Smv/ONWaaScuC4Ve2o=;
+        b=LhXtiAYtUaGc/4EiE0bwz6J7z1GB19AVe2Ray/sCSjj7toPIPxourr3Kil0AY2dv1HwaWx
+        R6mSpTDwxVLmGy35D2zLnpPYupeLRlmqzWnQO/2HDe5/9ez5t0jVbWWppe3hg2l1ESarXw
+        QjBxgqMbRRHaiW3Bk6Wa/aK1SjOx9OM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630001306;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nXfobjmj/8TTZF7uPDNa3J2GdzvCVAHLNKXg65F+XL4=;
-        b=SVEdE1vZgoJJ+D8TRSWivU6lL/pxcyrkxTZZ3GxTuS4Od6gODd74tRM6M2doRE6b2sp0Jj
-        0FW7F1itaYvp4RAg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D12CFA3B8B;
-        Thu, 26 Aug 2021 17:56:03 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7E175DA7F3; Thu, 26 Aug 2021 19:53:15 +0200 (CEST)
-Date:   Thu, 26 Aug 2021 19:53:14 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
-        Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
-Subject: Re: [PATCH] btrfs: fix max max_inline for pagesize=64K
-Message-ID: <20210826175314.GO3379@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org,
-        Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
-References: <bfb8ebd29d6890022ddf74cea37d85798292f6d4.1628346277.git.anand.jain@oracle.com>
- <20210816151026.GE5047@twin.jikos.cz>
- <d418c51c-abc5-d08a-aa20-7781cfe1741c@oracle.com>
+        bh=rPJo1teyamndI4lEKoVAD9Qt2Smv/ONWaaScuC4Ve2o=;
+        b=TdWpU8d8UCoKO5ykXztEfWhMrp1L+bo7dACzFD94pGg9Lgpnr5QBy0IgrmxgY7OjFf5W/q
+        826u4LFP0nezBgAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0C47A13C9A;
+        Thu, 26 Aug 2021 18:08:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Hbu7MZjYJ2F5NwAAMHmgww
+        (envelope-from <mpdesouza@suse.de>); Thu, 26 Aug 2021 18:08:24 +0000
+Message-ID: <1619bc963c3006b433b19d95a52b68c8fc584a63.camel@suse.de>
+Subject: Re: [PATCHv2 0/8]  btrfs: Create macro to iterate slots
+From:   Marcos Paulo de Souza <mpdesouza@suse.de>
+To:     Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+Date:   Thu, 26 Aug 2021 15:06:45 -0300
+In-Reply-To: <20210826164054.14993-1-mpdesouza@suse.com>
+References: <20210826164054.14993-1-mpdesouza@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d418c51c-abc5-d08a-aa20-7781cfe1741c@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 01:54:21PM +0800, Anand Jain wrote:
-> On 16/08/2021 23:10, David Sterba wrote:
-> > On Tue, Aug 10, 2021 at 11:23:44PM +0800, Anand Jain wrote:
-> >> The mount option max_inline ranges from 0 to the sectorsize (which is
-> >> equal to pagesize). But we parse the mount options too early and before
-> >> the sectorsize is a cache from the superblock. So the upper limit of
-> >> max_inline is unaware of the actual sectorsize. And is limited by the
-> >> temporary sectorsize 4096 (as below), even on a system where the default
-> >> sectorsize is 64K.
-> > 
+On Thu, 2021-08-26 at 13:40 -0300, Marcos Paulo de Souza wrote:
+> There is a common pattern when search for a key in btrfs:
 > 
-> > So the question is what's a sensible value for >4K sectors, which is 64K
-> > in this case.
-> > 
-> > Generally we allow setting values that may make sense only for some
-> > limited usecase and leave it up to the user to decide.
-> >
-> > The inline files reduce the slack space and on 64K sectors it could be
-> > more noticeable than on 4K sectors. It's a trade off as the inline data
-> > are stored in metadata blocks that are considered more precious.
-> >
-> > Do you have any analysis of file size distribution on 64K systems for
-> > some normal use case like roo partition?
-> >
-> > I think this is worth fixing so to be in line with constraints we have
-> > for 4K sectors but some numbers would be good too.
+>  * Call btrfs_search_slot
+>  * Endless loop
+>      * If the found slot is bigger than the current items in the
+> leaf, check the
+>        next one
+>      * If still not found in the next leaf, return 1
+>      * Do something with the code
+>      * Increment current slot, and continue
 > 
-> Default max_inline for sectorsize=64K is an interesting topic and
-> probably long. If time permits, I will look into it.
-> Furthermore, we need test cases and a repo that can hold it (and
-> also add  read_policy test cases there).
+> This pattern can be improved by creating an iterator macro, similar
+> to
+> those for_each_X already existing in the linux kernel. using this
+> approach means to reduce significantly boilerplate code, along making
+> it
+> easier to newcomers to understand how to code works.
 > 
-> IMO there is no need to hold this patch in search of optimum default
-> max_inline for 64K systems.
+> This patchset survived a complete fstest run.
 
-Yeah, I'm more interested in some reasonable value, now the default is
-2048 but probably it should be sectorsize/2 in general.
+My bad, I only added v2 to the cover-letter, but the only change from
+v1 is that now the xattr changes are in a separate patch.
 
-> This patch reports and fixes a bug due to which we are limited to test
-> max_inline only up to 4K on a 64K pagesize system. Not as our document
-> claimed as below.
-> -----------------
->   man -s 5 btrfs
->   ::
->          max_inline=bytes
->             (default: min(2048, page size) )
->   ::
-> 	In practice, this value is limited by the filesystem block size
-> 	(named sectorsize at mkfs time), and memory page size of the
-> 	system.
-> -----------------
 > 
+> Changes from v1:
+>  * Separate xattr changes from the macro introducing code (Johannes)
 > 
->   more below.
+> Changes from RFC:
+>  * Add documentation to btrfs_for_each_slot macro and
+> btrfs_valid_slot function
+>    (David)
+>  * Add documentation about the ret variable used as a macro argument
+> (David)
+>  * Match function argument from prototype and implementation (David)
+>  * Changed ({ }) block to only () in btrfs_for_each_slot macro
+> (David)
+>  * Add more patches to show the code being reduced by using this
+> approach
+>    (Nikolay)
 > 
-> >>
-> >> disk-io.c
-> >> ::
-> >> 2980         /* Usable values until the real ones are cached from the superblock */
-> >> 2981         fs_info->nodesize = 4096;
-> >> 2982         fs_info->sectorsize = 4096;
-> >>
-> >> Fix this by reading the superblock sectorsize before the mount option parse.
-> >>
-> >> Reported-by: Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
-> >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> >> ---
-> >>   fs/btrfs/disk-io.c | 49 +++++++++++++++++++++++-----------------------
-> >>   1 file changed, 25 insertions(+), 24 deletions(-)
-> >>
-> >> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> >> index 2dd56ee23b35..d9505b35c7f5 100644
-> >> --- a/fs/btrfs/disk-io.c
-> >> +++ b/fs/btrfs/disk-io.c
-> >> @@ -3317,6 +3317,31 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
-> >>   	 */
-> >>   	fs_info->compress_type = BTRFS_COMPRESS_ZLIB;
-> >>   
-> >> +	/*
-> >> +	 * flag our filesystem as having big metadata blocks if
-> >> +	 * they are bigger than the page size
-> > 
-> > Please fix/reformat/improve any comments that are in moved code.
+> Marcos Paulo de Souza (8):
+>   fs: btrfs: Introduce btrfs_for_each_slot
+>   btrfs: block-group: use btrfs_for_each_slot in
+> find_first_block_group
+>   btrfs: dev-replace: Use btrfs_for_each_slot in
+>     mark_block_group_to_copy
+>   btrfs: dir-item: use btrfs_for_each_slot in
+>     btrfs_search_dir_index_item
+>   btrfs: inode: use btrfs_for_each_slot in btrfs_read_readdir
+>   btrfs: send: Use btrfs_for_each_slot macro
+>   btrfs: volumes: use btrfs_for_each_slot in btrfs_read_chunk_tree
+>   btrfs: xattr: Use btrfs_for_each_slot macro in btrfs_listxattr
 > 
->   I think you are pointing to s/f/F and 80 chars long? Will fix.
+>  fs/btrfs/block-group.c |  33 +-----
+>  fs/btrfs/ctree.c       |  28 ++++++
+>  fs/btrfs/ctree.h       |  25 +++++
+>  fs/btrfs/dev-replace.c |  51 ++--------
+>  fs/btrfs/dir-item.c    |  27 +----
+>  fs/btrfs/inode.c       |  46 ++++-----
+>  fs/btrfs/send.c        | 222 +++++++++++--------------------------
+> ----
+>  fs/btrfs/volumes.c     |  23 ++---
+>  fs/btrfs/xattr.c       |  40 +++-----
+>  9 files changed, 169 insertions(+), 326 deletions(-)
+> 
 
-Yes, already fixed in the committed version in misc-next, thanks.
