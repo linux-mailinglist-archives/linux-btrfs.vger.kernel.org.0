@@ -2,113 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75D73F84C7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 11:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8F53F8535
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Aug 2021 12:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240955AbhHZJtN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Aug 2021 05:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240851AbhHZJtM (ORCPT
+        id S241305AbhHZKTd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Aug 2021 06:19:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56700 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234041AbhHZKTd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Aug 2021 05:49:12 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32502C061757
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Aug 2021 02:48:25 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id t190so2628952qke.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Aug 2021 02:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=I8xGH2sRZaj0k0dkpjYZtqnGjVbFR1p/k3rgsQ1BalY=;
-        b=nhZ4NvttE1QfmR+5hx2APfTiAYau7EnikOUk+hnuEsns8RneJtaKY21/qrUGc8s1Wf
-         12E+VxjT3jkMgivrHaxMPQf79u8W/MXKBH5aOgwc5Mpm9V08IIxwiypvaKsUeOTCx7Xn
-         1fkIR61g3Kj0XoTQYL9EUkBb+gCnTWpkPJB2v7TrvB89mxGdnSsYtrCpmD7KqRGvrDWu
-         yjTPOreCrk+6QO8GypLglxBn9MRRpoeDQ2lGN9lpgyaBzsk4zDxyFgqii2Qgo/qCViIq
-         GdTrDOLhXZ4Ay95S7FLhnurQRnRfC23bANVO6mWXYFyRqS1wZ1h+XgAvyH6OOzU/mLop
-         yzow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=I8xGH2sRZaj0k0dkpjYZtqnGjVbFR1p/k3rgsQ1BalY=;
-        b=Ak6+l5Gaw8u7JOl9u+ymLwlGd0xUP9aR/IBAMni/qOhuoQ4oJSAPrpxocVB8vYP9/G
-         9O79/9BQLfagSTOGd7d/tmmxJ3webVV/dhr9d014nRp26gTg/mY3oEkm9OsIyQPecDMy
-         5Gj8v+zUncP0/gskEPPD+q+tDhPOpG0SlByK+U4TNxoHoGuNRYhp2tpVgKhd7QIPofGc
-         AwqVuzJ5i2JNQEgJwpG8Jq+CQWv5Lx+1F5DO5jVbd17YsFtafRYg5Nu4FsWSssZdxS5O
-         m60xRKgF8AyxN7sJa04//dnOqfN10reInUFuEQdjRh0n6xGhObMDQlrhTk1solClyaIL
-         +IOw==
-X-Gm-Message-State: AOAM532U94nSh+fugoI/+DEREJls3h4i+qQWX2FU4oK5YqSIi1Gl1UyF
-        wipjQKweDldoxJgDmPMTLPdrdHMwayVo5dN3BQe2YyDL
-X-Google-Smtp-Source: ABdhPJz5UJcHPB1qX15jh7auC2Xa858hQ1ZvEX/VqHXHtCyvL5h+0fCdGEUIo49JzakbXwppgBtZN5jMKIqx+R/DWlQ=
-X-Received: by 2002:a05:620a:916:: with SMTP id v22mr2672009qkv.338.1629971304386;
- Thu, 26 Aug 2021 02:48:24 -0700 (PDT)
+        Thu, 26 Aug 2021 06:19:33 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 130392017A;
+        Thu, 26 Aug 2021 10:18:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629973125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ENOg+DLwI+IVUsb6INfCzAyMbURqpjRPsVPb3bU0s4M=;
+        b=fWFv3oZhsigK5PX2TjCC8g9DHgY+WCaJGU1r6/VU1blEkK98uakfy/dcXgu5+WUaJ4yyey
+        bspRq+eWorbDgMIb8c0tqAJWyhca2NcOmgtZsjKOCaUXg8GdLzfFNUIVWxcSWhHW5BQMQo
+        CuHMlWlIwNFYTMrf+l8O297xlVjEyBI=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 0CC42A3B94;
+        Thu, 26 Aug 2021 10:18:45 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 17A0BDA7FB; Thu, 26 Aug 2021 12:15:56 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fix for 5.14-rc
+Date:   Thu, 26 Aug 2021 12:15:55 +0200
+Message-Id: <cover.1629897022.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMkEVXCdihawH1PgS6TiMchQ@mail.gmail.com>
-In-Reply-To: <CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMkEVXCdihawH1PgS6TiMchQ@mail.gmail.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 26 Aug 2021 10:48:13 +0100
-Message-ID: <CAL3q7H5P1+s5LOa6TutNhPKOyWUA7hifjD1XuhBP6_e3SQzR8Q@mail.gmail.com>
-Subject: Re: Backup failing with "failed to clone extents" error
-To:     Darrell Enns <darrell@darrellenns.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 12:25 AM Darrell Enns <darrell@darrellenns.com> wro=
-te:
->
-> I'm seeing a similar issue to the one previously posted by Matt
-> Huszagh. btrfs send gives errors like this:
-> ERROR: failed to clone extents to <some file>: Invalid argument
+Hi,
 
-Do you know if it's an attempt to clone from a file to itself, or
-cloning between different files?
+here's one more fix that I think qualifies for a late merge. It's a
+revert of a one-liner fix that meanwhile got backported to stable
+kernels and we got reports from users.
 
-If you pass '-vvv' to the 'btrfs receive' command, it will help to
-identify that.
+The broken fix prevents creating compressed inline extents, which could
+be noticeable on space consumption.
 
->
-> This mostly seems to occur with sqlite files (such as the ones in
-> firefox profiles).
->
-> This was supposed to be fixed by
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3D9722b10148504c4153a74a9c89725af271e490fc
-> (included in 5.5.3+). However, I'm still seeing the error with 5.3.12.
+Technically it's a regression as the patch was merged in 5.14-rc1
+but got propagated to several stable kernels and has higher exposure
+than a "typical" development cycle bug.
 
-By 5.3.12, you mean 5.13.12, right?
+Please pull, thanks.
 
-> The test case provided in the previous fix does not trigger the error
-> for me, so perhaps it's a slightly different issue?
+----------------------------------------------------------------
+The following changes since commit 3f79f6f6247c83f448c8026c3ee16d4636ef8d4f:
 
-Perhaps. It will help to know if it's a clone within the same file or
-between different files, and offset and length arguments.
+  btrfs: prevent rename2 from exchanging a subvol with a directory from different parents (2021-08-16 13:33:23 +0200)
 
-Have you generated the send stream with 5.13.12, or any other kernel
-release with the fix, or with a kernel version without that fix (which
-was the last regarding extent cloning)?
-What matters here is the kernel version used to generate the send
-stream, not the kernel version of the destination (where you do the
-'receive' operation).
+are available in the Git repository at:
 
-Thanks.
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc7-tag
 
->
-> Please CC me on replies.
->
-> Thanks,
-> Darrell
+for you to fetch changes up to 4e9655763b82a91e4c341835bb504a2b1590f984:
 
+  Revert "btrfs: compression: don't try to compress if we don't have enough pages" (2021-08-25 15:08:19 +0200)
 
+----------------------------------------------------------------
+Qu Wenruo (1):
+      Revert "btrfs: compression: don't try to compress if we don't have enough pages"
 
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
