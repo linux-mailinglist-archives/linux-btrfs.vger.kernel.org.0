@@ -2,67 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267103F9C37
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Aug 2021 18:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538E93F9C68
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Aug 2021 18:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245548AbhH0QOQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Aug 2021 12:14:16 -0400
-Received: from mail-qk1-f182.google.com ([209.85.222.182]:42777 "EHLO
-        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234108AbhH0QOO (ORCPT
+        id S233956AbhH0Q3Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Aug 2021 12:29:16 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58312 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230173AbhH0Q3K (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:14:14 -0400
-Received: by mail-qk1-f182.google.com with SMTP id t4so7695923qkb.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Aug 2021 09:13:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=h0yS26bXm088SOJvWrtl/gwCe0N9LalHAkl6xNyRPxY=;
-        b=ZU8oyVQycKVEIQoMAtljd0qzLSKcGkAIvHzWEMNKsj4fhewhLC7Osbzn7WUUCvEQ+C
-         4Op+oe9Kf8tS4v+3Ie1UOmMnbvn9IppDUiBa+5nOCRYwIZ0a8n/Jz+phWNvr1dJf9S5y
-         puL4X3vkpNKta9b9+UIUfudY2Bd8xoIQ4znysbfTrxVhHTp4IDmDAuDrXn72oEJncwTd
-         cHFllg5xf38isZ8xHWpx2SPU1v6t8QHNGA2EOBggiZclj9qmaeElZVl2HH161ZER4xvs
-         Wp76guszuqy8W8Jot++9AOrxbth/p9yZ6V4qnetz8RQX1JIBepUBtkrlYRdtafOSHpxe
-         O62g==
-X-Gm-Message-State: AOAM530BhuqonJ9IixKl+70uw822HQidc6Ieo3PyRxPBLrOkyyiGR8D3
-        evpgFTfkYacfr4BEdrruMCiZOPmQj4Akvw==
-X-Google-Smtp-Source: ABdhPJz2dMUCclR/rHuAo6c4fAZWe9EhlE9OXhDN41kOKDejWHNfobrrz0JTghqkvsqk8yJrQhTi8g==
-X-Received: by 2002:a05:620a:430f:: with SMTP id u15mr10152096qko.32.1630080804733;
-        Fri, 27 Aug 2021 09:13:24 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id v24sm3767892qtq.17.2021.08.27.09.13.24
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Aug 2021 09:13:24 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id x140so13617976ybe.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Aug 2021 09:13:24 -0700 (PDT)
-X-Received: by 2002:a25:d991:: with SMTP id q139mr6826445ybg.148.1630080804269;
- Fri, 27 Aug 2021 09:13:24 -0700 (PDT)
+        Fri, 27 Aug 2021 12:29:10 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 345F622328;
+        Fri, 27 Aug 2021 16:28:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630081701;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u0xMh2m63TJOg81PBKZGdpst1Ebpv3NcfIrnSbia8Mc=;
+        b=vr6hGou1Cc3e+62VLFRRBQ2cqNAHcncJiJP/V86p3HN565OdA1+eN3ipDGnlQ+L97aEX5s
+        2Cs+YtoSCKbD9ilHMn5kVV3geo65o91Vgfq3a8wIifDTZqEKspOekPw94d4Y53OoqTjTsr
+        yCOJGUZjlj59bBWTUOX7r3AFvV2bZ0g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630081701;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u0xMh2m63TJOg81PBKZGdpst1Ebpv3NcfIrnSbia8Mc=;
+        b=8LtpzcRalhac3leOfvR5wZtNyXB9aCLavaUCtkiDKDDSF8An3OaRSZF+09mGumkePzu5rI
+        8P/1H2CLvaiDB8Cw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id D7577A3B9C;
+        Fri, 27 Aug 2021 16:28:20 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A8453DA7F3; Fri, 27 Aug 2021 18:25:31 +0200 (CEST)
+Date:   Fri, 27 Aug 2021 18:25:31 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 00/17] ZNS Support for Btrfs
+Message-ID: <20210827162530.GY3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1629349224.git.naohiro.aota@wdc.com>
 MIME-Version: 1.0
-From:   Vladimir Panteleev <git@vladimir.panteleev.md>
-Date:   Fri, 27 Aug 2021 16:13:08 +0000
-X-Gmail-Original-Message-ID: <CAHhfkvxH8NMR5wrKtDU-9SSgHjtk+0kuHixV0Q-t47FCW7Ra2g@mail.gmail.com>
-Message-ID: <CAHhfkvxH8NMR5wrKtDU-9SSgHjtk+0kuHixV0Q-t47FCW7Ra2g@mail.gmail.com>
-Subject: Deadlock on 5.13.8 when running bees?
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1629349224.git.naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi there,
+On Thu, Aug 19, 2021 at 09:19:07PM +0900, Naohiro Aota wrote:
+> This series extends zoned support for Zoned Namespace (ZNS) SSDs [1].
+> 
+> [1] https://zonedstorage.io/introduction/zns/
+> 
+> This series is available on GitHub at
+> v1    https://github.com/naota/linux/tree/btrfs-zns-v1
+> HEAD  https://github.com/naota/linux/tree/btrfs-zns
+> 
+> The ZNS specification introduces extra functionalities listed below.
+> 
+>   - No conventional zones
+>   - Zone Append write command
+>   - Zone Capacity
+>   - Active Zones
+> 
+> 
+> Naohiro Aota (17):
+>   btrfs: zoned: load zone capacity information from devices
+>   btrfs: zoned: move btrfs_free_excluded_extents out from
+>     btrfs_calc_zone_unusable
+>   btrfs: zoned: calculate free space from zone capacity
+>   btrfs: zoned: tweak reclaim threshold for zone capacity
+>   btrfs: zoned: consider zone as full when no more SB can be written
+>   btrfs: zoned: locate superblock position using zone capacity
+>   btrfs: zoned: finish superblock zone once no space left for new SB
+>   btrfs: zoned: load active zone information from devices
+>   btrfs: zoned: introduce physical_map to btrfs_block_group
+>   btrfs: zoned: implement active zone tracking
+>   btrfs: zoned: load active zone info for block group
+>   btrfs: zoned: activate block group on allocation
+>   btrfs: zoned: activate new block group
+>   btrfs: move ffe_ctl one level up
+>   btrfs: zoned: avoid chunk allocation if active block group has enough
+>     space
+>   btrfs: zoned: finish fully written block group
+>   btrfs: zoned: finish relocating block group
 
-Esteemed Zygo suggested that I report this here. I was running bees on
-a btrfs volume that was a few days old after having transferred a
-snapshot to it, and bees hung in a not seemingly healthy way. The
-system load was 15 while not doing much else, and a bees process
-seemed to be stuck consuming 100% CPU in a syscall that it would not
-return from. Here are some relevant logs and dmesg excerpts:
-
-"task blocked for more than ...":
-https://dump.cy.md/464b43eec01aad04e762e6329323a309/15%3A42%3A20-upload.txt
-
-echo w > /proc/sysrq-trigger:
-https://dump.cy.md/6efc6a7116aebe9bbd4a6fb0b9e3d91e/15%3A43%3A02-upload.txt
-
-Hope this helps!
+This is contained in the zoned mode and I don't see much reason to hold
+it back, so it's in misc-next now. I've fixed some minor style issues.
+In case there are small fixups worth folding please let me know,
+otherwise please send separate patches. Thanks.
