@@ -2,86 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395163F96C7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Aug 2021 11:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C0C3F970D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Aug 2021 11:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244668AbhH0JWD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Aug 2021 05:22:03 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36798 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232282AbhH0JWC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Aug 2021 05:22:02 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E1AFC2236D;
-        Fri, 27 Aug 2021 09:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630056072;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZjYcYL04fczge0xU/GI870F3yDVatDT3EvGr73D+alo=;
-        b=oasU/Uze/701Lvsdkj+5e9BdatqIc9aEOEt4gJgwQekGgWKQwS7SgEv0kmHK91IyxEpYmy
-        PT8UrDvR3EqHHv6cjkFZVdZ0iigP3bQefzjZuF5iXFL18atrM7SQrlHMRyfdBqavIEBIk0
-        yke2jjDBeuN6AxxCspqKBKPSdfxkmW4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630056072;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZjYcYL04fczge0xU/GI870F3yDVatDT3EvGr73D+alo=;
-        b=1xgwLolICaX6WZd/C7z1Buggj7TBASy5kbFXmbGtr4x5ecHy6OcPxhJHavvaf86CgBKN7F
-        EhMTtCIWdy1qSyCg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id DBD8AA3B93;
-        Fri, 27 Aug 2021 09:21:12 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 691C1DA7F3; Fri, 27 Aug 2021 11:18:24 +0200 (CEST)
-Date:   Fri, 27 Aug 2021 11:18:24 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v5 00/11] btrfs: defrag: rework to support sector perfect
- defrag
-Message-ID: <20210827091824.GU3379@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210806081242.257996-1-wqu@suse.com>
- <20210823194303.GS5047@twin.jikos.cz>
+        id S244674AbhH0Jcy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Aug 2021 05:32:54 -0400
+Received: from mout.gmx.net ([212.227.15.18]:45983 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244579AbhH0Jcy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 27 Aug 2021 05:32:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630056718;
+        bh=38dg/dX+rs/7QRWXb+DaCjdsl+m+eS3swmbv3blSdCM=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=jS/SBadqwerheBtbl/dDrSe99brzqfVlKdt9SWuipzsOeuHc1IY7XqYRzF9AC0Cbh
+         YTjLs7MkJfQBUuaO9miAtKnVRyhRW37GXjwcYo3uxOaNFMVm05MuUPvGmL+Pqqff1V
+         5NfDRfgMJGrfWFjVhzMNfe0n0/BabK19WQrVqF4A=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4QwW-1n36Oe02SM-011S5d; Fri, 27
+ Aug 2021 11:31:58 +0200
+Subject: Re: [PATCH] Revert "btrfs: compression: don't try to compress if we
+ don't have enough pages"
+To:     dsterba@suse.cz, Wang Yugui <wangyugui@e16-tech.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210825054142.11579-1-wqu@suse.com>
+ <20210827114153.19CB.409509F4@e16-tech.com>
+ <025d8f85-a86c-63be-14be-a3f1e2170107@gmx.com>
+ <20210827083532.GS3379@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <467cadfd-8b30-5a9e-9b7a-812cb4902185@gmx.com>
+Date:   Fri, 27 Aug 2021 17:31:54 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823194303.GS5047@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210827083532.GS3379@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:GRVpEB02u7wSE8D9uIXBGg6SlMsnY5UDmqHW531cTKgHH0uHWqN
+ K469huIYPIxkFwNFhVMTfJjqvy+OeT7FnXG9EfWlKskTcjX+knywdGmH2Jp8oZV0tOWM01u
+ dKAlAz56DUAHFUfkNlU7IeBVGAqd6iDNm0hL75yIYF4goIaaKeFvvbDm4wVkypOeovV6Vzr
+ wA/mJBXuB43RM8m6/8YeA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:koe4eaNMX7Y=:JAStQt06tjLXvAd8w9L9F1
+ /UcpoF9M2fgWiML4E7OofRlPzk7bnbAD28XQ5j+dUOvlOIYcTIPiZZ7tRWC0Et/BpA2TlnayP
+ BsqjS0hKfmiozYpovumup4P0ceIeGGg+xs7Dd4Y1/brTurdMZDvXi3OMyUnrASRorA2W8Z8N4
+ 7yMzim0glIZ102Q6G5j1dlCks4E2IBRQcS3gsfg1+5nP8FLR6F5lJPuoqXXzSV7poShpMQmar
+ 57GYvgYu1DwwlfLeEu5gsOh8l5eSCEzOCvh2lmpJlfqOqePchPvVZTgl6KkiQ9YdAbLTU5PD8
+ jPvsTTwd3gqt7yHSWUp62rREvmDHK5uZdifp1tZtG7JHyoGwCEm9TLPHG/bRd79ODwCJ4xIfK
+ W7e3jVXtB+mcpN0L8oE3tRFLfZkop4yW1awBeWVdEVri5ti3ZByrw7FFCNYOP7ncFt337clSL
+ 5IGZxDAuKPKFd6TIbjOrpt7rc+MTwyrKcKbYtBJxMWabGFStjbyYfGgj74f0vNXnfhQBntkY4
+ 5e/YLIBz0pU0KDZ3q/1D4wzlyqwGlu0D/iSFK16RmYXVdZoNF45zJ98sYDByXKQr9sc3rckeF
+ S1u3njQidc9VFr2J/z09fq1nfaB2LJj4dAP15ZsxBmeHhGZbPBf5+1qX+rlC+y069rHvUnwQU
+ FaoMLL2PAZFYvs0dV3g3+bNkWPntFS7K3l7Kr7ngEFZP+lc4FmU+SMW63pCOoxj9CKFey2PJJ
+ y+cKJfj0XdMvjSNPbhFPgVennmpCD1ORR0LkOoVp55R9e+Md7gnJwf/KEGcVpEQgVfaPk6EC9
+ uHnswGz9bR2gOLEBNaU03LzHe1cvKTDscCEG1aB9u6iMA1uKD6r6Nf7zLwKnimyh8PaeQ2LAh
+ GPLmoTGJu2QCAf09SlGtzD/QZfw7pSvDQ+PV/PVlTY7o8yn2Un7EAkv2IAcKmBCXiqegRYGV8
+ xir+tgYV1TVS80W8K5F67S/KcrUI8J4frqfSLJUdbaC7aiP1pgy+u4U0W8bJVfhEA9rCGWk7K
+ fbbzQwJmAIF+dqsjuDKDhMEYu1djyNjCDcG7VwnV4bgQHXCd5VuOfXSqH6GW/Rr4rqjbYCh+f
+ O9wgBIkocOWMvdd0LTAGaRCFduAarHf5Gz6hyEUAQFc7w/mZjGnkfWjWA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 09:43:03PM +0200, David Sterba wrote:
-> On Fri, Aug 06, 2021 at 04:12:31PM +0800, Qu Wenruo wrote:
-> > Now both regular sectorsize and subpage sectorsize can pass defrag test
-> > group.
-> 
-> > Qu Wenruo (11):
-> >   btrfs: defrag: pass file_ra_state instead of file for
-> >     btrfs_defrag_file()
-> >   btrfs: defrag: also check PagePrivate for subpage cases in
-> >     cluster_pages_for_defrag()
-> >   btrfs: defrag: replace hard coded PAGE_SIZE to sectorsize
-> >   btrfs: defrag: extract the page preparation code into one helper
-> >   btrfs: defrag: introduce a new helper to collect target file extents
-> >   btrfs: defrag: introduce a helper to defrag a continuous prepared
-> >     range
-> >   btrfs: defrag: introduce a helper to defrag a range
-> >   btrfs: defrag: introduce a new helper to defrag one cluster
-> >   btrfs: defrag: use defrag_one_cluster() to implement
-> >     btrfs_defrag_file()
-> >   btrfs: defrag: remove the old infrastructure
-> >   btrfs: defrag: enable defrag for subpage case
-> 
-> The patch 9 was taken from your git repository. Patchset now in a topic
-> branch, I'll do one round and then move it to misc-next. Any followups
-> please send as separate patches, thanks.
 
-Now moved to misc-next, thanks.
+
+On 2021/8/27 =E4=B8=8B=E5=8D=884:35, David Sterba wrote:
+> On Fri, Aug 27, 2021 at 01:04:56PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/8/27 =E4=B8=8A=E5=8D=8811:41, Wang Yugui wrote:
+>>> Hi,
+>>>
+>>> With this patch, kernel panic when xfstest btrfs/244
+>>
+>> It's completely unrelated.
+>>
+>> The fix for btrfs/244 is beadb3347de2 ("btrfs: fix NULL pointer
+>> dereference when deleting device by invalid id").
+>
+> The commit has been tagged for 5.4 but I don't see it in the stable
+> repo, there are no conflicts when applying. I don't know why,
+> nevertheless I can ask for merging it again.
+>
+
+I guess it's because the patch is not pushed for mainline yet?
+
+The latest pull only contains my revert for the compressed inline, not
+this one...
+
+Thanks,
+Qu
