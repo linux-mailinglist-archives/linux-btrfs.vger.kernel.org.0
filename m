@@ -2,101 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538E93F9C68
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Aug 2021 18:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846B93F9E6B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Aug 2021 19:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233956AbhH0Q3Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Aug 2021 12:29:16 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58312 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230173AbhH0Q3K (ORCPT
+        id S233925AbhH0SAd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Aug 2021 14:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236657AbhH0SAc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Aug 2021 12:29:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 345F622328;
-        Fri, 27 Aug 2021 16:28:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630081701;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u0xMh2m63TJOg81PBKZGdpst1Ebpv3NcfIrnSbia8Mc=;
-        b=vr6hGou1Cc3e+62VLFRRBQ2cqNAHcncJiJP/V86p3HN565OdA1+eN3ipDGnlQ+L97aEX5s
-        2Cs+YtoSCKbD9ilHMn5kVV3geo65o91Vgfq3a8wIifDTZqEKspOekPw94d4Y53OoqTjTsr
-        yCOJGUZjlj59bBWTUOX7r3AFvV2bZ0g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630081701;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u0xMh2m63TJOg81PBKZGdpst1Ebpv3NcfIrnSbia8Mc=;
-        b=8LtpzcRalhac3leOfvR5wZtNyXB9aCLavaUCtkiDKDDSF8An3OaRSZF+09mGumkePzu5rI
-        8P/1H2CLvaiDB8Cw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D7577A3B9C;
-        Fri, 27 Aug 2021 16:28:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A8453DA7F3; Fri, 27 Aug 2021 18:25:31 +0200 (CEST)
-Date:   Fri, 27 Aug 2021 18:25:31 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 00/17] ZNS Support for Btrfs
-Message-ID: <20210827162530.GY3379@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-        David Sterba <dsterba@suse.com>, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org
-References: <cover.1629349224.git.naohiro.aota@wdc.com>
+        Fri, 27 Aug 2021 14:00:32 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1ABC0613CF
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Aug 2021 10:59:43 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id b6so11629270wrh.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Aug 2021 10:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KSsXNz3QYERscFqfJuTWMQZJwUXAy/j9f5RStY/7zVE=;
+        b=POxgdhiSl+YeBC60daf9ZvrVE4iPWBGa8q/K2W10kDjDW9+fHcKizAP8HuoWjdCqHG
+         yAFWg6D6vHvXJ3haNdrHDWnecX4H9FD/v4yb+BBr0g3b6jdYq4SayHWv+jT0mYYvxPbE
+         fyJ9bmUb3EJMMHqZb1Neil21JTytuUugBpYqwQlXT8SUtY2s4FCJFdDlSAp5Agc7S0U1
+         aVi4ScrxymS8C8R6OYplr3Mm8O/OmoQ91jIPVBvLD6TJT1DVN+MaDq+dy+MnukQZxCLT
+         rVD9ClhYB0pUBxAdawBm06kBJNFA294SrsTApAUOn34CwKRr1zgELezXheM8g3uYpLJj
+         1dFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KSsXNz3QYERscFqfJuTWMQZJwUXAy/j9f5RStY/7zVE=;
+        b=UfZGuu/+/oqxS/Wvim3U/kMbgFOo3hrVSvcdtma8Ocvm6yUTOKh/uZ+D+huXw7me8+
+         p+9ovYsQwSkPPq2ONOy4QQ/MD+Kx4pVf9tat5WJLypaxMNWtiHaF5Y5eg86c0V95mXBa
+         I6s/l4sk4/rRTQsq3lFhKwB1WAIIqpTpNBeHBCCpbHP8Ql5vQZGF1nldmGXxdtdCRKJC
+         oxwBprDk6nHN/9+AgpnCHjT9Nrluz9GFbe2vimEZPqagwhpXILd2LgsioHArdYlU/jUj
+         FyXWOb+ywSx2uaPSRMDFd9yRYLPoxTE53+JcjxoqieRLUCncYq/zmJzubGiQv6A0vzHZ
+         cJIg==
+X-Gm-Message-State: AOAM5303MDkNatZKVF8V3/kYqQTg+DXXRIjw3vBh3EJbu+RPOh0cUZyK
+        oVGCPhVF3KtmKdqHtNAePoX1KQXEjLgXvcBIHU0=
+X-Google-Smtp-Source: ABdhPJx5Hg+azuAwzE9f8gbao9+FnTdtsD1ezuNHJlV4SXMYBhCX6WGQwXKNBib+m0wC237f/f46RyOeP3HPWgmu51M=
+X-Received: by 2002:adf:9f05:: with SMTP id l5mr11570635wrf.188.1630087181943;
+ Fri, 27 Aug 2021 10:59:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1629349224.git.naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Received: by 2002:a5d:6dc6:0:0:0:0:0 with HTTP; Fri, 27 Aug 2021 10:59:41
+ -0700 (PDT)
+Reply-To: drrhananna@gmail.com
+From:   drranna henry <drrannahery1@gmail.com>
+Date:   Fri, 27 Aug 2021 18:59:41 +0100
+Message-ID: <CANe8PXp3RKE5dJVv_0oSSR9kJYTmPT3FHFmoi_GzoSrVz14kQA@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 09:19:07PM +0900, Naohiro Aota wrote:
-> This series extends zoned support for Zoned Namespace (ZNS) SSDs [1].
-> 
-> [1] https://zonedstorage.io/introduction/zns/
-> 
-> This series is available on GitHub at
-> v1    https://github.com/naota/linux/tree/btrfs-zns-v1
-> HEAD  https://github.com/naota/linux/tree/btrfs-zns
-> 
-> The ZNS specification introduces extra functionalities listed below.
-> 
->   - No conventional zones
->   - Zone Append write command
->   - Zone Capacity
->   - Active Zones
-> 
-> 
-> Naohiro Aota (17):
->   btrfs: zoned: load zone capacity information from devices
->   btrfs: zoned: move btrfs_free_excluded_extents out from
->     btrfs_calc_zone_unusable
->   btrfs: zoned: calculate free space from zone capacity
->   btrfs: zoned: tweak reclaim threshold for zone capacity
->   btrfs: zoned: consider zone as full when no more SB can be written
->   btrfs: zoned: locate superblock position using zone capacity
->   btrfs: zoned: finish superblock zone once no space left for new SB
->   btrfs: zoned: load active zone information from devices
->   btrfs: zoned: introduce physical_map to btrfs_block_group
->   btrfs: zoned: implement active zone tracking
->   btrfs: zoned: load active zone info for block group
->   btrfs: zoned: activate block group on allocation
->   btrfs: zoned: activate new block group
->   btrfs: move ffe_ctl one level up
->   btrfs: zoned: avoid chunk allocation if active block group has enough
->     space
->   btrfs: zoned: finish fully written block group
->   btrfs: zoned: finish relocating block group
+-- 
+Dear Friend.
 
-This is contained in the zoned mode and I don't see much reason to hold
-it back, so it's in misc-next now. I've fixed some minor style issues.
-In case there are small fixups worth folding please let me know,
-otherwise please send separate patches. Thanks.
+My names are Dr Rhama a banker in one of the bank in my country
+African. I Hoped that you will not expose or betray this trust and
+confident that i am about to repose on you for the mutual benefit of
+our both families. I need your urgent assistance in transferring the
+sum of $5.5 million U.S into your account. Please I would like you to
+keep this proposal as a top secret, I will give more details , my
+picture, family picture and working ID will send to you, For Expenses
+Am the one to take care of expenses, it is my responsibility for
+expenses. As soon as i hear from you i will give you more detail also
+the next thing to do.
+
+Please indicate your willingness by sending the below information for
+more clarification and easy communication.
+For more details, Contact me for more details.
+(1) Your Full Name...............................
+(2) Your Age And Sex............................
+(3) Your Contact Address..................
+(4) Your Private Phone N0..........
+(5) Your Country Of Origin..................
+(6) Your Occupation.........................
+
+Trusting to hear from you immediately.
+Thanks & Best Regards,
+Dr Rhama Henry
