@@ -2,181 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F21D3FA66B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Aug 2021 17:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED383FA7FA
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Aug 2021 01:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbhH1PRc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 28 Aug 2021 11:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
+        id S232017AbhH1XQz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 28 Aug 2021 19:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhH1PRb (ORCPT
+        with ESMTP id S230074AbhH1XQy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 28 Aug 2021 11:17:31 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FE7C061756
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Aug 2021 08:16:41 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id j4so21020403lfg.9
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Aug 2021 08:16:41 -0700 (PDT)
+        Sat, 28 Aug 2021 19:16:54 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE497C061756
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 Aug 2021 16:16:03 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso7479035pjq.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 Aug 2021 16:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=qCiUfC4/MDAYg02wQKjMVQOjhacHjNbDOESgYL1wS1g=;
-        b=qZDWleblyvfjPINz1GikYO5jVX/Z7xYfQaBTT4dAH2AEQ9uhukAArt4KPf/xVnE0cR
-         l04+UK2TPtIJDn1Kql7ai430a5iBFYAa6Ntm5JiG0Ipd1CJV00iojC9Vjlkb558NQSu5
-         TWw90dkUvjUvzNP1jV4NNw6+lO75Y4v9+UO6HZDP8ZQ0BYD+45ZuK2Pzto+HTb8ZkhJw
-         yQaWtsctp5XNQjoPSykef7+ujM3wQRsvEFKAo8tfVBBIauY6oDeKH97R+ct1RP00Us8/
-         52XxBVuJBOdGmOruN0TSBYb+1lEEa6juZauWl6B0QreU3w9TCKn3tcmGkYTfUJYf27IV
-         Miww==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=3+F4IHd+C1OwwNPNDahYmd2udWMchbowbg9lYa4MSY4=;
+        b=qOdQarYZ1eQZYW88sYs1p4gYqFYdyZPdogosuSpzyvoxQ4gdNYLERHjRPgorXbH2/q
+         a3z6wJJuPAsiSL36pHcXTD9u6Svi/gJkwcsxj0jqJ8/A1p/KdmBaglEM3RRdNYgaoDpc
+         V0BveP67OxojkumuSJWqpxWUjWHn/4z5E5QklgybeZkLAX9VU2NzR9zte6nWRcyhpVOQ
+         9c9PSdP1iajl5+YEwHoMOIaesmYm3cCSMIjsGsf3yxPNQBRv6hXz3h65Xujfk2y02vq7
+         pUGUk0whAIg3FvErBXkN1On2OnQbW+iYwaS83ZdLDzF42yd+6JXgb2EenmPj7R4sF+DS
+         gOlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=qCiUfC4/MDAYg02wQKjMVQOjhacHjNbDOESgYL1wS1g=;
-        b=MtLn51HKKeU52itF0p3fmQw+NwRlu04y+ml9FwY8eWs+rzUzuS2W1CgTXaptJ5UjSq
-         HZsNee2hP/1RapSHDm95qQOfG1177mC2GHfGf6CsLFCMWbVWP6SkAwuKAuFqxwV+74pN
-         IfwFfXd6k/m9uUBk1eAM1aj6ugxYE8DODIx8CZQc9EJWi4D6J5M2MgLbeCwMEU/6PP/F
-         QICQT6fBPFFR/4LsX0cDgvnjpELAxsZsDh80LGJVn0L2EoPe6WLWOVqul0QiXqh5+TtS
-         3ztoMsej4VvvIE9BT9D9XDEYHyjilJLz3wkpoDttGw1l34Mfwd+IMcBUmH9nONZfxV6O
-         kTIQ==
-X-Gm-Message-State: AOAM53107/Kv+aEgvLYU5bMaUlFKJNKW7/5EA5alTHkIXiDi3JMj1I+C
-        trMe+Xq7XsCWooBcKchYGYEf+ik4UiFfugQ6wYY=
-X-Google-Smtp-Source: ABdhPJyVRmTzf3q4WgV1JDRnXcZymbY7pxi3AMyA9MEWM3mmbn2Z2P1PhCpTfiSxmU8s90HEfsASQMlsc24DMAYu0us=
-X-Received: by 2002:ac2:4e62:: with SMTP id y2mr11209223lfs.9.1630163799463;
- Sat, 28 Aug 2021 08:16:39 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=3+F4IHd+C1OwwNPNDahYmd2udWMchbowbg9lYa4MSY4=;
+        b=pUvHXGVjv6JMgMUblRI0cJQYh2k345wr8WeclRLJaGMKDEc5WU6INugMfKsniNeXDA
+         QtdwfLRATtdr//3G0yCR9iMNUz7+KwqQU8h7f6jIE+ryVX07iVvfnKmIw5ihp1FMppuO
+         CP1bBx4B/W7ZUd5TOYW3Hz7TjEceHmw6y5mxMa4MQtVzJ4gTwevmz4OeI2SuBu7YFRJZ
+         6P9VKhX1BHDbQrPFtK5f0a79ZvzVdq7Z54YIV8Ie9/DRqFoB0pR6ha6pRZll/zOJ2p7l
+         +ecrg898Q+FbdpjKM4bCTiQiysVoVsLGF8DU11HvW6TsB/rT76E96XrOisgT9WW/GirW
+         v97Q==
+X-Gm-Message-State: AOAM533f5SIjyXHAq6LboSK0wbA14Ki+feRZ29jCpIEL+qdFeoc2Q4aj
+        9XHHa8YyNLCIe3ZNkVAxjYs=
+X-Google-Smtp-Source: ABdhPJxv9AfIZPt/NZ2d/IcIOdfa65Yft4MBd1qJsV3ZIOuvzg15x6wi6uC/F5MjnGA8y21MxOZPzA==
+X-Received: by 2002:a17:90a:bb82:: with SMTP id v2mr30938156pjr.125.1630192563004;
+        Sat, 28 Aug 2021 16:16:03 -0700 (PDT)
+Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
+        by smtp.gmail.com with ESMTPSA id z9sm10142476pfn.22.2021.08.28.16.16.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 28 Aug 2021 16:16:01 -0700 (PDT)
+Subject: Re: Trying to recover data from SSD
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
+ <46f3b990-ec2d-6508-249e-8954bf356e89@gmx.com>
+ <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
+ <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
+ <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
+ <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
+ <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
+ <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
+ <544e3e73-5490-2cae-c889-88d80e583ac4@gmail.com>
+ <c03628f0-585c-cfa8-5d80-bd1f1e4fb9c1@gmx.com>
+ <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
+ <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
+ <238d1f6c-20a9-f002-e03a-722175c63bd6@gmail.com>
+ <4bd90f4a-7ced-3477-f113-eee72bc05cbb@gmx.com>
+ <fab2dab5-41bb-43f2-5396-451d66df3917@gmail.com>
+ <60a21bca-d133-26c0-4768-7d9a70f9d102@gmx.com>
+ <7e8394c9-9eb3-c593-9473-5c40d80428a5@gmail.com>
+ <1785017b-e23b-e93d-5b78-2aa40170fe62@gmail.com>
+ <14a9a98c-50fc-eb7b-804b-2fe36775b5fa@gmx.com>
+From:   Konstantin Svist <fry.kun@gmail.com>
+Message-ID: <36652872-850c-fe92-9fcd-c9c95dc25d65@gmail.com>
+Date:   Sat, 28 Aug 2021 16:16:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <1629824687-21014-1-git-send-email-zhanglikernel@gmail.com> <20210826183406.GQ3379@twin.jikos.cz>
-In-Reply-To: <20210826183406.GQ3379@twin.jikos.cz>
-From:   li zhang <zhanglikernel@gmail.com>
-Date:   Sat, 28 Aug 2021 23:16:28 +0800
-Message-ID: <CAAa-AG=sS_4siP0Jgb_-C_j4oc7JHY98GxXr2KfY+FN-pYJtnQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs-progs: Fix the issues btrfs-convert don't
- recognition ext4 i_{a,c,a}time_extra
-To:     David Sterba <dsterba@suse.cz>, Li Zhang <zhanglikernel@gmail.com>,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <14a9a98c-50fc-eb7b-804b-2fe36775b5fa@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Cool, thanks!
+On 8/27/21 23:16, Qu Wenruo wrote:
+>
+>
+> On 2021/8/28 下午1:57, Konstantin Svist wrote:
+>> On 8/20/21 19:56, Konstantin Svist wrote:
+>>> On 8/11/21 18:18, Qu Wenruo wrote:
+>>>>
+>>>> On 2021/8/12 上午6:34, Konstantin Svist wrote:
+>>>>> Shouldn't there be an earlier generation of this subvolume's tree
+>>>>> block
+>>>>> somewhere on the disk? Would all of them have gotten overwritten
+>>>>> already?
+>>>> Then it will be more complex and I can't ensure any good result.
+>>>
+>>> It was already pretty complex and results were never guaranteed :)
+>>>
+>>>
+>>>> Firstly you need to find an older root tree:
+>>>>
+>>>> # btrfs ins dump-super -f /dev/sdb3 | grep backup_tree_root
+>>>>                  backup_tree_root:       30687232        gen: 2317
+>>>>   level: 0
+>>>>                  backup_tree_root:       30834688        gen: 2318
+>>>>   level: 0
+>>>>                  backup_tree_root:       30408704        gen: 2319
+>>>>   level: 0
+>>>>                  backup_tree_root:       31031296        gen: 2316
+>>>>   level: 0
+>>>>
+>>>> Then try the bytenr in their reverse generation order in btrfs ins
+>>>> dump-tree:
+>>>> (The latest one should be the current root, thus you can skip it)
+>>>>
+>>>> # btrfs ins dump-tree -b 30834688 /dev/sdb3 | grep "(257 ROOT_ITEM"
+>>>> -A 5
+>>>>
+>>>> Then grab the bytenr of the subvolume 257, then pass the bytenr to
+>>>> btrfs-restore:
+>>>>
+>>>> # btrfs-restore -f <bytenr> /dev/sdb3 <restore_path>
+>>>>
+>>>> The chance is already pretty low, good luck.
+>>>>
+>>>> Thanks,
+>>>> Qu
+>>>
+>>>
+>>> When I run dump-tree, I get this:
+>>>
+>>> # btrfs ins dump-tree -b 787070976 /dev/sdb3 | grep "(257 ROOT_ITEM"
+>>> -A 5
+>>> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+>>> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+>>> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+>>> Csum didn't match
+>>> WARNING: could not setup extent tree, skipping it
+>>>
+>>> The same exact offset fails checksum for all 4 backup roots, any way
+>>> around this?
+>
+> When without the grep, is there any output?
 
-Is there any possibility that the version of the GNU build system caused
-the ./configure error
-to be generated? On my machine, I produced a valid ./configure, and my
-compilation
-environment is as follows:
-aclocal:    aclocal (GNU automake) 1.13.4
-autoconf:   autoconf (GNU Autoconf) 2.69
-autoheader: autoheader (GNU Autoconf) 2.69
-automake:   automake (GNU automake) 1.13.4
-OS: centos 7.6
 
-David Sterba <dsterba@suse.cz> =E4=BA=8E2021=E5=B9=B48=E6=9C=8827=E6=97=A5=
-=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=882:36=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Wed, Aug 25, 2021 at 01:04:47AM +0800, Li Zhang wrote:
-> > Hi, I ran convert-tests.sh, and it reported that the
-> > 019-ext4-copy-timestamps test failed. The log  is as
-> > follows
-> >
-> > ...
-> > mount -o loop -t ext4 btrfs-progs/tests/test.img btrfs-progs/tests/mnt
-> > =3D=3D=3D=3D=3D=3D RUN CHECK touch btrfs-progs/tests/mnt/file
-> > =3D=3D=3D=3D=3D=3D RUN CHECK stat btrfs-progs/tests/mnt/file
-> > File: 'btrfs-progs/tests/mnt/file'
-> > Size: 0           Blocks: 0          IO Block: 4096   regular empty fil=
-e
-> > Device: 700h/1792d  Inode: 13          Links: 1
-> > Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root=
-)
-> > Context: unconfined_u:object_r:unlabeled_t:s0
-> > Access: 2021-08-24 22:10:21.999209679 +0800
-> > Modify: 2021-08-24 22:10:21.999209679 +0800
-> > Change: 2021-08-24 22:10:21.999209679 +0800
-> > ...
-> > btrfs-progs/btrfs-convert btrfs-progs/tests/test.img
-> > ...
-> > =3D=3D=3D=3D=3D=3D RUN CHECK mount -t btrfs -o loop btrfs-progs/tests/t=
-est.img btrfs-progs/tests/mnt
-> > =3D=3D=3D=3D=3D=3D RUN CHECK stat btrfs-progs/tests/mnt/file
-> > File: 'btrfs-progs/tests/mnt/file'
-> > Size: 0           Blocks: 0          IO Block: 4096   regular empty fil=
-e
-> > Device: 2ch/44d Inode: 267         Links: 1
-> > Access: (0644/-rw-r--r--)  Uid: (    0/    root)   Gid: (    0/    root=
-)
-> > Context: unconfined_u:object_r:unlabeled_t:s0
-> > Access: 2021-08-24 22:10:21.000000000 +0800
-> > Modify: 2021-08-24 22:10:21.000000000 +0800
-> > Change: 2021-08-24 22:10:21.000000000 +0800
-> > ...
-> > atime on converted inode does not match
-> > test failed for case 019-ext4-copy-timestamps
-> >
-> > Obviously, the log says that btrfs-convert does not
-> > support nanoseconds. I looked at the source code and
-> > found that only if ext2_fs.h defines EXT4_EPOCH_MASK
-> > btrfs-convert to support nanoseconds. But in e2fsprogs,
-> > EXT4_EPOCH_MASK was introduced in v1.43, but in some
-> > older versions, such as v1.40, e2fsprogs actually
-> > supports nanoseconds. It seems that if struct ext2_inode_large
-> > contains the i_atime_extra member, ext4 is supports
-> > nanoseconds, so I updated the logic to determine whether the
-> > current ext4 file system supports nanosecond precision.
-> > In addition, I imported some definitions to encode and
-> > decode tv_nsec (copied from e2fsprogs source code).
->
-> So it's supportable even up to the old versions (1.40 was released in
-> 2007) with the updated detection, nice.
->
-> > ---
-> >  configure.ac | 16 +++++++++++++++-
-> >  1 file changed, 15 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/configure.ac b/configure.ac
-> > index c4fa461..20297c5 100644
-> > --- a/configure.ac
-> > +++ b/configure.ac
-> > @@ -253,7 +253,21 @@ AX_CHECK_DEFINE([linux/fiemap.h], [FIEMAP_EXTENT_S=
-HARED], [],
-> >  AX_CHECK_DEFINE([ext2fs/ext2_fs.h], [EXT4_EPOCH_MASK],
-> >               [AC_DEFINE([HAVE_EXT4_EPOCH_MASK_DEFINE], [1],
-> >                          [Define to 1 if e2fsprogs defines EXT4_EPOCH_M=
-ASK])],
-> > -             [AC_MSG_WARN([no definition of EXT4_EPOCH_MASK found, pro=
-bably old e2fsprogs, no 64bit time precision of converted images])])
-> > +        [have_ext4_epoch_mask_define=3Dno])
-> > +
-> > +AS_IF([test "x$have_ext4_epoch_mask_define" =3D xno], [
-> > +    AC_CHECK_MEMBERS([struct ext2_inode_large.i_atime_extra],
-> > +        [
-> > +            AC_DEFINE([HAVE_EXT4_EPOCH_MASK_DEFINE], [1], [Define to 1=
- if ext2_inode_large includes i_atime_extra]),
-> > +            AC_DEFINE([EXT4_EPOCH_BITS], [2],[for encode and decode tv=
-_nsec in ext2 inode]),
-> > +            AC_DEFINE([EXT4_EPOCH_MASK], [((1 << EXT4_EPOCH_BITS) - 1)=
-], [For encode and decode tv_nsec info in ext2 inode]),
-> > +            AC_DEFINE([EXT4_NSEC_MASK],  [(~0UL << EXT4_EPOCH_BITS)], =
-[For encode and decode tv_nsec info in ext2 inode]),
-> > +            AC_DEFINE([inode_includes(size, field)],[m4_normalize[(siz=
-e >=3D (sizeof(((struct ext2_inode_large *)0)->field) + offsetof(struct ext=
-2_inode_large, field)))]],
->
-> The "," can't be at the end of the AC_DEFINE lines, this does not
-> produce valid ./configure and fails with
->
-> checking for FIEMAP_EXTENT_SHARED defined in linux/fiemap.h... yes
-> checking for EXT4_EPOCH_MASK defined in ext2fs/ext2_fs.h... yes
-> checking for struct ext2_inode_large.i_atime_extra... yes
-> ./configure: line 6487: ,: command not found
-> ./configure: line 6490: ,: command not found
-> ./configure: line 6493: ,: command not found
-> ./configure: line 6496: ,: command not found
->
-> because the "," appear in the final file as separate commands. Removing t=
-hem
-> produces valid script and the detection works.
->
-> Added to devel, thanks.
+# btrfs ins dump-tree -b 787070976 /dev/sdb3
+btrfs-progs v5.13.1
+checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+Csum didn't match
+WARNING: could not setup extent tree, skipping it
+node 787070976 level 1 items 7 free space 486 generation 166932 owner
+ROOT_TREE
+node 787070976 flags 0x1(WRITTEN) backref revision 1
+fs uuid 44a768e0-28ba-4c6a-8eef-18ffa8c27d1b
+chunk uuid a8a06213-eebf-40d8-ab1a-914f621fbe1c
+    key (EXTENT_TREE ROOT_ITEM 0) block 787087360 gen 166932
+    key (277 INODE_ITEM 0) block 197491195904 gen 56511
+    key (305 INODE_ITEM 0) block 778174464 gen 166929
+    key (366 EXTENT_DATA 0) block 197491949568 gen 56511
+    key (428 INODE_ITEM 0) block 36175872 gen 166829
+    key (476 INODE_ITEM 0) block 787234816 gen 166932
+    key (FREE_SPACE UNTYPED 99888398336) block 780812288 gen 166929
+
+# btrfs ins dump-tree -b 778108928 /dev/sdb3
+btrfs-progs v5.13.1
+checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+Csum didn't match
+WARNING: could not setup extent tree, skipping it
+node 778108928 level 1 items 7 free space 486 generation 166929 owner
+ROOT_TREE
+node 778108928 flags 0x1(WRITTEN) backref revision 1
+fs uuid 44a768e0-28ba-4c6a-8eef-18ffa8c27d1b
+chunk uuid a8a06213-eebf-40d8-ab1a-914f621fbe1c
+    key (EXTENT_TREE ROOT_ITEM 0) block 778125312 gen 166929
+    key (277 INODE_ITEM 0) block 197491195904 gen 56511
+    key (305 INODE_ITEM 0) block 778174464 gen 166929
+    key (366 EXTENT_DATA 0) block 197491949568 gen 56511
+    key (428 INODE_ITEM 0) block 36175872 gen 166829
+    key (476 INODE_ITEM 0) block 780730368 gen 166929
+    key (FREE_SPACE UNTYPED 99888398336) block 780812288 gen 166929
+
+..and 2 more from other backup_tree_roots
+
+
