@@ -2,218 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9C33FA7FE
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Aug 2021 01:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1573FA800
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Aug 2021 01:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhH1XbP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 28 Aug 2021 19:31:15 -0400
-Received: from mout.gmx.net ([212.227.17.20]:36147 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230074AbhH1XbP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 28 Aug 2021 19:31:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630193422;
-        bh=cYRjSdFijmB5P23E0MtV+wY9wY3bD9h1NCPFQevcTAU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Oi6pS9RCTaYVq4gUnJpDtc5Xrhdeh6vuUY+SVTmgIQoUjq5PwTme03mRbi+zr7vjL
-         HvWdl27eYedkMWDSpeCr0cEn72JP+/UzXuVWRdCflEH5lmiHHqsC4XAH9Q2Uh2Z6pG
-         hjXUglisLJ/qCgzKG3qbdkEkF8rJOzl0Qc/MKCDs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N49hB-1n2DzI3Ge9-0108eG; Sun, 29
- Aug 2021 01:30:22 +0200
-Subject: Re: Trying to recover data from SSD
-To:     Konstantin Svist <fry.kun@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
- <46f3b990-ec2d-6508-249e-8954bf356e89@gmx.com>
- <CADQtc0=GDa-v_byewDmUHqr-TrX_S734ezwhLYL9OSkX-jcNOw@mail.gmail.com>
- <04ce5d53-3028-16a3-cc1d-ee4e048acdba@gmx.com>
- <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
- <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
- <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
- <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
- <544e3e73-5490-2cae-c889-88d80e583ac4@gmail.com>
- <c03628f0-585c-cfa8-5d80-bd1f1e4fb9c1@gmx.com>
- <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
- <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
- <238d1f6c-20a9-f002-e03a-722175c63bd6@gmail.com>
- <4bd90f4a-7ced-3477-f113-eee72bc05cbb@gmx.com>
- <fab2dab5-41bb-43f2-5396-451d66df3917@gmail.com>
- <60a21bca-d133-26c0-4768-7d9a70f9d102@gmx.com>
- <7e8394c9-9eb3-c593-9473-5c40d80428a5@gmail.com>
- <1785017b-e23b-e93d-5b78-2aa40170fe62@gmail.com>
- <14a9a98c-50fc-eb7b-804b-2fe36775b5fa@gmx.com>
- <36652872-850c-fe92-9fcd-c9c95dc25d65@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <cebedd98-1fe4-731f-fc54-5366c8f18a2f@gmx.com>
-Date:   Sun, 29 Aug 2021 07:30:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S232580AbhH1Xsj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 28 Aug 2021 19:48:39 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:21042 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232475AbhH1Xsj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 28 Aug 2021 19:48:39 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17SCquXR031952;
+        Sat, 28 Aug 2021 23:47:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=c5eiDxPtme9KEPc8Y3O+BLB7dmSnHRshNg7hMAV65Zc=;
+ b=nATd68ArECOPbSsDnWFHAEl3up1rVRjaXcWDXoNRKaSrCVh7I+jNlZ13Mvc7bdfIv0WT
+ ZL8ZcLww4LFUZn4oo1Cn8LaLZ8JwpVr9aJqMCYQ1n3j4fgKd0Ex4EWVR6xQtIGHiiSlR
+ MZdfZWXJm4969ft3kcTa7QAXTLCqvE7GatENipIrU/NURiC7ib4cGFN0xF4t99njCXBD
+ hc5bws2BBi1WYpMTYudAHDAkTgVwkQOffP0J5O2CrnBT3She+FS4cfr5AIDnsxv1DvJc
+ ITSomj6cRIx7EyM+VQTvOvatvT/6QDhhCs1KgDKoS5EG8sKkOuUp6GGws5xE//UWtjSk uA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=c5eiDxPtme9KEPc8Y3O+BLB7dmSnHRshNg7hMAV65Zc=;
+ b=ehHpmRSARFv3YCsS2WfIkw1SkczWT8vLSs9h7hA5yq8T3D29WA04EpWb2cY4feE7RhYZ
+ Dl6WBg8oeLXSH+wX9wBlpBaJzcEMwrduLUvOyR796jor8v1vpZbewhn1GInkJk0hLAUM
+ 3KXlNREWxilW1CMqiFXuDZOtRDR68UJf3TtnvHuMF2NJjqYIAl+GwQAIx9tLJ1WHwvZL
+ ROP55lYYEUDuqnV3akhPEhArFpdQfxVtmrEblK/AOPKuO9Oq7td8Neh8+jgqtKxtRsGu
+ OC5/gNnY01jy/iH1ONv/3gXKUbmrM+t9jdknPOsGPsGkK/OHsW3HGj8Z2526uGCLneE+ 5Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3aqbx20y3g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 28 Aug 2021 23:47:47 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17SNfSpd090779;
+        Sat, 28 Aug 2021 23:47:46 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
+        by aserp3020.oracle.com with ESMTP id 3aqcy0su0y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 28 Aug 2021 23:47:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ColYstCNG2hzB/38wLBgUUHTQu2pFl4HJhD70lM42GuUkNqcSHz7iPJUHTjAqMhCyh1LPKKZw9sp8HkNIgesM98YBAwKyiuMlZ+pVT+RwWGDU+sSNkMwNGseY+cZ/JDoJD4hy+caMjGvOTicMzNQN3pR/2g28vSGI4GLCr+cgtDrgML6B22y00aJ1xXbzVDOCavQYsx8Ttg7XNTsN4NbQf/21j8qIKuP87x/1XZCLjYe05uOd05idE2RESueN31H0mwhhgxfxZ2tOWGQ5xoPAREaxemujVaSjsBiC+CLHH0KeXGBOljr/EpJBGbZeped4v4kmzUx+0j2ztpfRJ/xZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c5eiDxPtme9KEPc8Y3O+BLB7dmSnHRshNg7hMAV65Zc=;
+ b=SBMPpCUsmokQzNI9vC6SAf/YIh1+Aa2rkMWRjjsozQUfQlKJT6qqzubi1TH8mA4dRwswWQn6gWg5v4K5rtymUT5dctzzk5pGvEy8UXq76jssmKmWxnL+Jo0iLWSTcQuhGTWXkd8uCkriqImWc7bRO5BmDiLJUO17uKxyYpejnkZFZuLQVNbhsIltKEaHdVsE9R7GKcl2wK0DCQpzNYuFZurNHTRGR4GGBF9bfJdNVbSngaCxPQOV4M2R5cTDmYrczKZyh0TWgKAs5bYWpeAF/E7v09MxrBnwbedmJDiwFE+8a4oyghzvD1Qeb6YUQU6uRQ+ItSRIh4gxPmQfG9waoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c5eiDxPtme9KEPc8Y3O+BLB7dmSnHRshNg7hMAV65Zc=;
+ b=FdXH4EzVxJFhUfIk/8X9SdqkXpCE/iltfOxHb0T9auIZktERdOfQzo/wTeAgQjhS5hpd7c+MrIIiW9yZHUtgRVFkG/oz/ce2wNP/lG7MZfrSPLwbmv84wtI9Dqv2YOwh8wAXusUnuqCbl1v3ekSo/145rblk0ABdoP+3r8BXz5M=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB3982.namprd10.prod.outlook.com (2603:10b6:208:1bc::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Sat, 28 Aug
+ 2021 23:47:44 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4436.024; Sat, 28 Aug 2021
+ 23:47:44 +0000
+Subject: Re: btrfs mount takes too long time
+To:     Jingyun He <jingyun.ho@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAHQ7scVGPAwEGQOq3Kmn75GJzyzSQ9qrBBZrHFu+4YWQhGE0Lw@mail.gmail.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <ce0a558f-0fab-4d52-f2d1-1faf4fb1777c@oracle.com>
+Date:   Sun, 29 Aug 2021 07:47:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <36652872-850c-fe92-9fcd-c9c95dc25d65@gmail.com>
+In-Reply-To: <CAHQ7scVGPAwEGQOq3Kmn75GJzyzSQ9qrBBZrHFu+4YWQhGE0Lw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:g/xTvlTwM1oIW+Syo/sHZ4Cff2ZsGpKb8m2P0MqskxkOPUUo/ez
- pcyezDx45FtsgglS0lHvP2QNEime2Wf6gIvw1XfXPonbdEUweBA15MgMyWVNjhQBjzP5lUm
- J+uSL/1LfLSN28ci2LITdISzmFv2b9Ep8GRb6gDwvpSWboijliFsUXxgQrhrsmR+7htgRKH
- 912/Ld9kiHjtqRfribjng==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4OxmtfO1whY=:sGAdeMqVktivX5uHr/7Ra2
- UGQMry0TV1RGmwvKVk+tIqbUQp3NuPMCGDUUt43PzKobvF4JZ7/q8wFutVvSsmidWG+C8jURi
- 4ZgubGD6QqSTK7K6ZcUsR+ziVNUiOtQg9JfcUHDA3GoyH9GYnYLylllRDqWuxbgnmj8Xne3xQ
- lZkVu+zmHMJ60uuBHen9oV3XvUUWXzXn1Y0q2DAG1fJZTh+8cqe1Aj8yqe7LPMwkKOU7uFT60
- 7oVxbYAfNr8gegE6FsvDKLd661xtAfnbGIb4ZoM8RA8wGwO3N0/qA+px7J5KVIpyzt0ncT2wB
- p92di/EPxq1fWtWq8DoPKRsr8ZZJxZj86EKuG+IKJ0pTNupydvS4w/9BCbBmWRjdrOlaIg3rF
- /w8th5LDAV8dIO1bC/k3NfNJKcITLZvvKwp1x/0NPWoZn0SD/g98HTG3pFw/n2rTANGZavaOv
- R0sMtK0pRiDeFE8ULoJ1pjX75yYIVCQfUkEyNiyl3ETeJ8zhrPm+Vopeqpo7q3FRiXzuTjT8/
- VB10mpQS6UP1XcP9P06p/nlmKXlmALZ6SHzXwggn8xOVCyWyH3xn3JZo3bKAHV5/4cLhQ7xrk
- qAgRBGxRIfyGTwaHJG+qLTCFdaLtF4X/gY9DFKWzbpR2XXqLaM3yGAZBgNcXlZRUpRLnOiRWc
- gW5Y9S+HyQkITntkW1sS+Vgo4noxehA7l++ZyMjNSMTcGp1/R861vw5TtVHrXNC6NaGe6a3i7
- E3749NQq25PMTsyAJFbdctM1nLSIGtenMpv1SJvKGq7hXVVSejsJl7BG6kIRPHEJtSnoQkuR0
- CqKUHgBeDpNy55gzAJ7KiylVoyV4Cq4EzZOOFtWLEvaXAsi9Dh3DiWZXEIwZEGUMfYdF0HkXB
- 4qlWwRjXTHB2UkQgQwa8CvRtWSEFb9yf4PwIwGgdRCAVODAS88hL2gMIMqSIOPQoAmFe97dvB
- rMNcFMsYWhAz4PPkNb8GszB9euVTgx9WTPIJL65gL+vt0EuxHe5nCcZ/F7PYIYWIWGctUolw0
- nVtWTbL7mzjrFDhbMYQTLgaN3p0Gi4pl/EDOkCTDM+vuhfiSlMm6c1cylXsLAsc6Lz6Wrm+NE
- kuWDDI8XR0zInRb6s3Pzeg55EqbT0G48FTPOH3jFwqrkAYzd9ZhcRHPQQ==
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0054.apcprd02.prod.outlook.com
+ (2603:1096:4:54::18) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.109] (39.109.186.25) by SG2PR02CA0054.apcprd02.prod.outlook.com (2603:1096:4:54::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Sat, 28 Aug 2021 23:47:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f04e6c59-86d7-446f-f12b-08d96a7e3b46
+X-MS-TrafficTypeDiagnostic: MN2PR10MB3982:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB3982F77AC890F6248DE18ACFE5C99@MN2PR10MB3982.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: roHlZEE8T9Ua4jH/4KiLwdZ+s5rpE5bUDtCk+oZvHzS9JVinb82ugwwVkQD60hBsCHq4ZEYmrPKxjpNg2rABr7boe+vvlUEcHeujaVJ8+rWMj2n6YM8SYj4asmGuhHixe7zRt7GRIoDcEIlNAUYvcEqsj6ziRQ+suMMdnPx82yr0TSJwmOcART/3ZnIORV3bJVwKLEBYb+/i8BTGCFjcXbWzBUhN8Q8IOCo2MjyAIOHZULbLZYFK5E+L2DrP+uIctoXdpWACF4Q38zT2trybl9RTQd5juhROCXCQkvk3HRHrPAdmy+GLUsuF07nwV0T2CkKrBs+Hw0T1pXiu5IsU5+MIiVdIWa21m+HLcYqTX9KIAK9WVnJd1u4xJJJs3GlXyBUL/+TQxpfXf0L/0cmFnzD6iAEdboCOAEXvUoAT22ZWJ36x7w/kdZ5/LFZ/2OJPbJEGbyZ7a2xJcAk9Js88Tylzzu5DbETQ4m4Ai39pxRb+Lh9MqsyPVUOCgX2X2smHD9+MQ2n9xNn2GVn0xiRm1rEpitmgocri6tyS/Lv/zA/Ug+O6wmtHs49hAGt9XouEz/FHTAab8w9H8jMwcBtyF24qMmTAimAn0HC2A67iLyuzezigpD+B806unrUlyR74jZAOZIFS29RN6/IQM6W7JUrkJDLVzRANxI8lrU6h1vzmpV50rGsa2GgNqnSE4/INg9KRxaNWsgtCoXi+zHiaVb4fFk6sz/VKSVDA53Pv+Qkr9TU6qm/eB8EWqzc6DIzGL6u1pTB2BZjGxGeuDhxL7jvfjxpa3lb4VW5DNryGAgic4L/Nu+S1FEQhEL2aqupr
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(36756003)(66556008)(4744005)(186003)(83380400001)(2906002)(8676002)(6666004)(26005)(44832011)(6486002)(66946007)(53546011)(2616005)(66476007)(956004)(86362001)(316002)(31686004)(16576012)(966005)(5660300002)(31696002)(508600001)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bkhUbHBoYncwNmVPTUdGMkhQNGJVUlhKaStZbjFoR1BpWXBKQld3UjE2bElN?=
+ =?utf-8?B?VVJseTgzRnB5bGtrcFkzbnV3a3p3VDlHdm9TTkp6ZEF1d3hnb1owQmR0NWZJ?=
+ =?utf-8?B?YVBiVTE5YkEvY1pBbjNJS3EwS1VqSlJVRkdFUDY5aTFsWUVBcElRaGg2NVBH?=
+ =?utf-8?B?ZllIWWN3T0kvSlFHbldQTWU2N08xUTAxWm1LL2hhTzY0Q2hPc3ZWS3FsVWtJ?=
+ =?utf-8?B?Zlh0ZEgzMFJ0U3pSYUVoVXN2ek8zRDNmNm4yMWpYL1ZRSmRxcklObFlwTUpM?=
+ =?utf-8?B?SGdGZ1diZFEyUFZYWmhVQ1ROcjV0bHd5SCsrL2VNUFNiNnREelB2M2xZY09V?=
+ =?utf-8?B?alZ0N1JBQmNnQ3N5KzZLa1VueGZ1SHY5RGtaOXlKcGNEdTJ3aGRMRUtUbktD?=
+ =?utf-8?B?YWNNNDhzQU5PME0vcUdpRDVNYWppVUd2NkdIUE0rdElCM28vUjZTWEI3QXhk?=
+ =?utf-8?B?SzJWQ2FLYVhjaElVb2RMaFlyUllmZyttL2JhK1J4ekFMWTBzYVgyazBGbTFv?=
+ =?utf-8?B?KzZ6T2JSUWpHazdHY0ZYZDVBYmZiNlBJMm1rN0VYSkpYaGd0RXc1ZFdQLzhu?=
+ =?utf-8?B?aEFrek5EcmZ6REdDKzZSU3pmUWZpeW1NNzBwK0c1RzlaeVkyZ3FCTWFFU0JQ?=
+ =?utf-8?B?ajllUjJLZThFMHdzS0FzcWR6dkdlQXBjSjQrMVcrY2g2SFJWZUN0VDhTQndR?=
+ =?utf-8?B?MUdSOGFtNDBjMnJUU2VTWnVqMEdhMVpLMEt5Sm1LSkJ1TFJYaXhSL1h3bDJ5?=
+ =?utf-8?B?eWZFMUJsODhnQ0lPVzVnZGJWaDZ2YnNJekNGRW9uM01NdFBXdStQdnJmU0VT?=
+ =?utf-8?B?dkw5SnRFMkI2TGVKMWxyUXpDaHo2dkc0emh1eGN1VklibVRKSWxTUHh3cHdm?=
+ =?utf-8?B?SVAvRkYzcHBWa2lVZWE0RFlDeTVFU3ppS09Sd1RGeFc5eEt1cXNUWk9hOFhz?=
+ =?utf-8?B?cVkrZ3lEUWY5bTRoTFFqY0RwRGYwN0NqakFsTlByWGs0cXY1YStXWjEwaXht?=
+ =?utf-8?B?NGxzRGd5Q2w5OEFQT3AxeWZPVXd6NTh1cWtMRkRUN0RmdmlGcDg4eUUzNGwv?=
+ =?utf-8?B?K2Flc2pDN0pEcFVnUkhiRTBvejBaOFZ5OFQyMnB1cXBIaDVGUCs5MGp5ZVV4?=
+ =?utf-8?B?TlBiNGp3YjNPQmNxRVpocFZHNnE2VXIwVXdha1B5N1ZOSkRHd3RYYTVjcktw?=
+ =?utf-8?B?RDlBWXBUVjV2MmRMMGhTclVDTDRPSXROZlA2VXdnZ1VMbWovWmltVUFsM0d2?=
+ =?utf-8?B?TkJNb2tZeVBydXJGR1VjdXZpMnNmNlRkMUNpNlREUldubEJkelo1aVo3eEJ3?=
+ =?utf-8?B?TnlRdWR2VnFxVlR3bmhTYXNKWDBvZlVvZE9ONVZwUkMyY3pWL2dTdkdnMHdY?=
+ =?utf-8?B?dFBDSDFSWVFGMWNaaHg4NDZpMHN6RUxnOUVqRHl3b2hEVnAxQ3RGcFAyWk1M?=
+ =?utf-8?B?T1ZXNFZvU0NpQ29BOXAyTzJiQkhxYUVZd0MxbWlpYm9YZnFPR085b0pQbmhv?=
+ =?utf-8?B?QjVqbVdmRUhLMDNtT3Y2eWRuZ2NOWTFwcDBDZmkwdjMwS3o5NzRKWlE0QStl?=
+ =?utf-8?B?WVdCQkRSM29jdlo4MFZ4UmV4Wm5CVFJ4RVh0YUIveWgzMUpYL0RlZFhEaUN0?=
+ =?utf-8?B?L0pleTNTQkIvT0JEcmMyMWo4L0dvSy9ISVAvbm51dUpuaFpIRGk0bWdpb3pN?=
+ =?utf-8?B?bDlLaWNZTXFZZk9Dam5NNU1pSHkvSWcxb0V1d0Frb0RoUGp2VGJWNloxTnJT?=
+ =?utf-8?Q?EMKV6b413IiwxKNs+xTCDKzq0yMYfxA0/ZyBH+D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f04e6c59-86d7-446f-f12b-08d96a7e3b46
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Aug 2021 23:47:44.6268
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6Kd0bSfFixALSYJNj9xvx36t7Jjh3aF5e960i0WvKLAoX0CC43eCLubTQnA8sNwpT9QU32/uT4boFfGJtEEzsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3982
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10090 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108280168
+X-Proofpoint-GUID: WzOuJzUOYg83hX-hu9nxmpm9_dRfMqQe
+X-Proofpoint-ORIG-GUID: WzOuJzUOYg83hX-hu9nxmpm9_dRfMqQe
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 28/08/2021 19:58, Jingyun He wrote:
+> Hello, all
+> I'm new to btrfs, I have a HM-SMR 14TB disk, I have formatted it to
+> btrfs to store the files.
+> 
+> When the device is almost full, it needs about 5 mins to mount the device.
+> 
+> Is it normal? is there any mount option that I can use to reduce the mount time?
+> 
 
 
-On 2021/8/29 =E4=B8=8A=E5=8D=887:16, Konstantin Svist wrote:
-> On 8/27/21 23:16, Qu Wenruo wrote:
->>
->>
->> On 2021/8/28 =E4=B8=8B=E5=8D=881:57, Konstantin Svist wrote:
->>> On 8/20/21 19:56, Konstantin Svist wrote:
->>>> On 8/11/21 18:18, Qu Wenruo wrote:
->>>>>
->>>>> On 2021/8/12 =E4=B8=8A=E5=8D=886:34, Konstantin Svist wrote:
->>>>>> Shouldn't there be an earlier generation of this subvolume's tree
->>>>>> block
->>>>>> somewhere on the disk? Would all of them have gotten overwritten
->>>>>> already?
->>>>> Then it will be more complex and I can't ensure any good result.
->>>>
->>>> It was already pretty complex and results were never guaranteed :)
->>>>
->>>>
->>>>> Firstly you need to find an older root tree:
->>>>>
->>>>> # btrfs ins dump-super -f /dev/sdb3 | grep backup_tree_root
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 backup_tree_root:=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 30687232=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gen: 2317
->>>>>  =C2=A0=C2=A0level: 0
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 backup_tree_root:=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 30834688=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gen: 2318
->>>>>  =C2=A0=C2=A0level: 0
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 backup_tree_root:=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 30408704=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gen: 2319
->>>>>  =C2=A0=C2=A0level: 0
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 backup_tree_root:=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 31031296=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gen: 2316
->>>>>  =C2=A0=C2=A0level: 0
->>>>>
->>>>> Then try the bytenr in their reverse generation order in btrfs ins
->>>>> dump-tree:
->>>>> (The latest one should be the current root, thus you can skip it)
->>>>>
->>>>> # btrfs ins dump-tree -b 30834688 /dev/sdb3 | grep "(257 ROOT_ITEM"
->>>>> -A 5
->>>>>
->>>>> Then grab the bytenr of the subvolume 257, then pass the bytenr to
->>>>> btrfs-restore:
->>>>>
->>>>> # btrfs-restore -f <bytenr> /dev/sdb3 <restore_path>
->>>>>
->>>>> The chance is already pretty low, good luck.
->>>>>
->>>>> Thanks,
->>>>> Qu
->>>>
->>>>
->>>> When I run dump-tree, I get this:
->>>>
->>>> # btrfs ins dump-tree -b 787070976 /dev/sdb3 | grep "(257 ROOT_ITEM"
->>>> -A 5
->>>> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b=
-6
->>>> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b=
-6
->>>> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b=
-6
->>>> Csum didn't match
->>>> WARNING: could not setup extent tree, skipping it
->>>>
->>>> The same exact offset fails checksum for all 4 backup roots, any way
->>>> around this?
->>
->> When without the grep, is there any output?
->
->
-> # btrfs ins dump-tree -b 787070976 /dev/sdb3
-> btrfs-progs v5.13.1
-> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-> Csum didn't match
-> WARNING: could not setup extent tree, skipping it
-> node 787070976 level 1 items 7 free space 486 generation 166932 owner
-> ROOT_TREE
-> node 787070976 flags 0x1(WRITTEN) backref revision 1
-> fs uuid 44a768e0-28ba-4c6a-8eef-18ffa8c27d1b
-> chunk uuid a8a06213-eebf-40d8-ab1a-914f621fbe1c
->  =C2=A0=C2=A0=C2=A0 key (EXTENT_TREE ROOT_ITEM 0) block 787087360 gen 16=
-6932
->  =C2=A0=C2=A0=C2=A0 key (277 INODE_ITEM 0) block 197491195904 gen 56511
->  =C2=A0=C2=A0=C2=A0 key (305 INODE_ITEM 0) block 778174464 gen 166929
->  =C2=A0=C2=A0=C2=A0 key (366 EXTENT_DATA 0) block 197491949568 gen 56511
->  =C2=A0=C2=A0=C2=A0 key (428 INODE_ITEM 0) block 36175872 gen 166829
->  =C2=A0=C2=A0=C2=A0 key (476 INODE_ITEM 0) block 787234816 gen 166932
->  =C2=A0=C2=A0=C2=A0 key (FREE_SPACE UNTYPED 99888398336) block 780812288=
- gen 166929
+  We need to figure out the function taking a longer time (maybe it is
+  read-block-groups). I have similar reports on the non zoned device
+  as well (with a few TB full of data). But there is no good data yet
+  to analyse.
 
-My bad, I forgot to add "--follow" option for "btrfs ins dump-tree"
+  Could you please collect the trace data from the ftracegraph
+  from here [1] (It needs trace-cmd).
 
-So the full command is:
+  [1] https://github.com/asj/btrfstrace.git
 
-$ btrfs ins dump-tree -b 787070976 --follow /dev/sdb3
+  Run it as in the example below:
 
-Then you should be able to find "(257 ROOT_ITEM".
+  umount /btrfs;
 
-Thanks,
-Qu
+  ./ftracegraph open_ctree 3 "*:mod:btrfs" "mount /dev/vg/scratch0 /btrfs"
 
->
-> # btrfs ins dump-tree -b 778108928 /dev/sdb3
-> btrfs-progs v5.13.1
-> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-> Csum didn't match
-> WARNING: could not setup extent tree, skipping it
-> node 778108928 level 1 items 7 free space 486 generation 166929 owner
-> ROOT_TREE
-> node 778108928 flags 0x1(WRITTEN) backref revision 1
-> fs uuid 44a768e0-28ba-4c6a-8eef-18ffa8c27d1b
-> chunk uuid a8a06213-eebf-40d8-ab1a-914f621fbe1c
->  =C2=A0=C2=A0=C2=A0 key (EXTENT_TREE ROOT_ITEM 0) block 778125312 gen 16=
-6929
->  =C2=A0=C2=A0=C2=A0 key (277 INODE_ITEM 0) block 197491195904 gen 56511
->  =C2=A0=C2=A0=C2=A0 key (305 INODE_ITEM 0) block 778174464 gen 166929
->  =C2=A0=C2=A0=C2=A0 key (366 EXTENT_DATA 0) block 197491949568 gen 56511
->  =C2=A0=C2=A0=C2=A0 key (428 INODE_ITEM 0) block 36175872 gen 166829
->  =C2=A0=C2=A0=C2=A0 key (476 INODE_ITEM 0) block 780730368 gen 166929
->  =C2=A0=C2=A0=C2=A0 key (FREE_SPACE UNTYPED 99888398336) block 780812288=
- gen 166929
->
-> ..and 2 more from other backup_tree_roots
->
->
+  cat /tmp/ftracegraph.out
+
+
+Thanks, Anand
+
+
+
+> Thank you.
+> 
+
