@@ -2,216 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7E33FAE53
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Aug 2021 22:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0953FAEB7
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Aug 2021 23:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235969AbhH2UDA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Aug 2021 16:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235868AbhH2UDA (ORCPT
+        id S235370AbhH2VaG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Aug 2021 17:30:06 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:41058 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231800AbhH2VaG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Aug 2021 16:03:00 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAF5C061575
-        for <linux-btrfs@vger.kernel.org>; Sun, 29 Aug 2021 13:02:07 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id q68so11348282pga.9
-        for <linux-btrfs@vger.kernel.org>; Sun, 29 Aug 2021 13:02:07 -0700 (PDT)
+        Sun, 29 Aug 2021 17:30:06 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17TEOV92026248;
+        Sun, 29 Aug 2021 21:29:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=TAPnvasaW/OAzBVqJEW8s27ZXEXCOUshtqk9qpgP9as=;
+ b=IwowbwedOLdmHvBOOsiDN8KF678K6XMCkydPfDokDf/aazBIYS08hZC1h16V8KoJBBmg
+ 6DoETrLX+mWezWvWqOoRJP5U5dS3OrYtqne9CG+a4H0lM36HuwFoevAMYtVThZZd3Dxm
+ LkBPzGh8nZlcOGQcpGyKdePS3ijWLM3d64T4ZI+pl47X5WrTRktmVx7OXXv2DznwazMd
+ 0ZIPXouNt5GGyRVRb87yd3k4LCBIRhd0o+EXK5cnW+KS3YXtgJ5M51o6b6+jzQHrMSym
+ 58YUUEizI3EvwUs8edKOZhKkB3aNH8+jKXKw3NBD0dC9W5jdr3kipyLFozSaKbs/Tolx Vg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=TAPnvasaW/OAzBVqJEW8s27ZXEXCOUshtqk9qpgP9as=;
+ b=xk6vrrFHzNaRdirNgCNLbeVpXSbZ+hWMfENt37pJR8e2WDZYVdVl1WrFDD3+tVKrhnqW
+ seL6VG67Uq+QskwBkHVJ20orLaMnRhCwcwwkfnqkZWBVnLqglOIIyD9BiJ4mMGJBmhsO
+ Y/3iT+oAjLn0150uwqhk9NeZYGupTLZBeiSQOG17iBV/yAtzPXRMCbZDLME0YWWX0Rsv
+ /DNpPP/GJfoy7h3iN1SY+ok/xrJiqI8qaxlORwUAl7glOa/fS4ETsibHLEJooFiGzwzl
+ iSsBnT1P4fv6ezfHW8P3eoi3mxPlBescKDF9NkqsKEHrIhJuYV4yJGph0j7fLzrw9DTz gA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3arbymg79w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 29 Aug 2021 21:29:09 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17TLBW2c036779;
+        Sun, 29 Aug 2021 21:29:08 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
+        by aserp3020.oracle.com with ESMTP id 3aqcy1t2ec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 29 Aug 2021 21:29:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MoN7eBSHmMSGyQVwo7FB1hccMS9djW0HMIHqSQ4ot45SnpfOzz8px3j6qlDbmpd39v7NyGHZ/H/uFK94FwzU2Tv13or0KNuKRMANCZFFrM1OE4dxYtcwNfzJVdTRr23I3AopnILzhpQWFnLkx+rDEzMuPoHFPZJ+GHxf0Df/H8jPQKca8DpsW5bRoIdwHgBFIxX/Y7DVA0DYTdI6qXI0T5gyjPmbX1rOVgxxB0H5R/E1AGQZU5nGIgwrCI1bbXAfnYHfBqdIE6aPGidCWVNJJLp29vKegM0NZs5vrdt6UUIr0cUYk101IelYsRcGdPwO2XpQ+0YPyDTCn3sMHwHPmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TAPnvasaW/OAzBVqJEW8s27ZXEXCOUshtqk9qpgP9as=;
+ b=VsZODSNFJls0kHx2bZe169Z43VBO50JsfR8ZwNntDBgL2aP3yGQBRpWtmdENG9tjmAaAAQ0bWLfKBArHDZpQMJJXTpdMGd7Rpvus7pdqCZn9Y7T7J0hu+xXjlNTwouZmEDMXMCXV8qpvfaCwzPxFmZtjGvhSGXfUf7lUEh9Je97OFttTogq12NbG492v1h59rvAQoTBl7wkd5rw84HcbgbAuB8JI6xEoWbikz80CO2fSSrSBcRhbYzlPjv38a6+mqHB6lqr3ih/+RZvcGeYHbtxMoO4sIFuqq8Er+xJYWQJw9ANSWjKiIexk8fuDOn/6yWSzpCYAcgmCnuzYdnHLuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=DSRMYpXUlWEn3ZK+ewumta/haEIY9FlrZ8jQsmiqJKk=;
-        b=IunugvwTAEd5OQNLY9nulNK9feReoBxJrB8CgEoWPHjzidVtxjBkuKu+/0GBy/UTJQ
-         cglO8yoL5hO9lBVL1iGHGop+QkVa/x1e4Zl1Z3skxTyXAPcK64+jjCzlQ6oGD8P9PZmd
-         vVvdfLxw2Hc5MrUtcl+YYhubbKGN9x11JcqiPo0supUracHGe5dQOD/QBDfRNYh3CKrP
-         bjyxDBth0ikB0gb27TCGHtQsYNzFfYBGejBKQdkr38/xwOtAeMlHo7HfafN3RlagOf5C
-         a4zaMKSf/zurxnsXxRXke1fKa7lqhSdU4nTbDxXthrAGu5gKZcJcAco7iBe81jhZozb/
-         557A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=DSRMYpXUlWEn3ZK+ewumta/haEIY9FlrZ8jQsmiqJKk=;
-        b=iGEw6FhVQ0KFltzi+eEKiyfGF5sEf61poV9oRMcD0Tvpn+ahn+uER+ibq4XZZM0Vs5
-         gdKWbh3f4D6iBMlLLk0rIpGre3jPZ4PltO3CkhyYIrMb0CgpOePf1wuFs9kJVti9CxN+
-         m3C5P78VO5MRSe3Hf0WOWy0Q671n9cRBwmpmooWLom4YwCaVpyEJHCWVaqEz3otILNc+
-         IJumRhEJFpSyN6RdqcKqync9HoVR462vRTMjsGjmCK80PIpUlUia8v+nTUwMmhHTKqsR
-         aTWLomDVQdLhHsY7fssohNMx39GN+2roET2VntgX6DiIw4xS35huOrwEYyVmwUoKXqWZ
-         6KwQ==
-X-Gm-Message-State: AOAM53338St2gRWtC7C0ValXgJuiQ0xY2NzmN1kQalpiru6Q5eEaK4Um
-        YVMF6b11p+K1FYJqz8BSHfZC+cCr0d3mGg==
-X-Google-Smtp-Source: ABdhPJw0xSzGifSUablwogZz4gIR7fYMioLnwYyWlxoEdyiC8XYa/UHxnJlS3ubqtguKn6u7HI4qTw==
-X-Received: by 2002:a62:88d7:0:b0:3fd:b2db:79c5 with SMTP id l206-20020a6288d7000000b003fdb2db79c5mr4179932pfd.21.1630267326958;
-        Sun, 29 Aug 2021 13:02:06 -0700 (PDT)
-Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
-        by smtp.gmail.com with ESMTPSA id l185sm12513159pfd.62.2021.08.29.13.02.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Aug 2021 13:02:05 -0700 (PDT)
-Subject: Re: Trying to recover data from SSD
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
- <7f42b532-07b4-5833-653f-bef148be5d9a@gmail.com>
- <1c066a71-bc66-3b12-c566-bac46d740960@gmx.com>
- <d60cca92-5fe2-6059-3591-8830ca9cf35c@gmail.com>
- <c7fed97e-d034-3af1-2072-65a9bb0e49ef@gmx.com>
- <544e3e73-5490-2cae-c889-88d80e583ac4@gmail.com>
- <c03628f0-585c-cfa8-5d80-bd1f1e4fb9c1@gmx.com>
- <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
- <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
- <238d1f6c-20a9-f002-e03a-722175c63bd6@gmail.com>
- <4bd90f4a-7ced-3477-f113-eee72bc05cbb@gmx.com>
- <fab2dab5-41bb-43f2-5396-451d66df3917@gmail.com>
- <60a21bca-d133-26c0-4768-7d9a70f9d102@gmx.com>
- <7e8394c9-9eb3-c593-9473-5c40d80428a5@gmail.com>
- <1785017b-e23b-e93d-5b78-2aa40170fe62@gmail.com>
- <14a9a98c-50fc-eb7b-804b-2fe36775b5fa@gmx.com>
- <36652872-850c-fe92-9fcd-c9c95dc25d65@gmail.com>
- <cebedd98-1fe4-731f-fc54-5366c8f18a2f@gmx.com>
- <d0ebdff7-10f0-c8f3-e098-18f651a149d8@gmail.com>
- <597bd681-c7ba-075c-4376-142695b91f93@gmx.com>
-From:   Konstantin Svist <fry.kun@gmail.com>
-Message-ID: <4a5d64fd-637c-bd8a-fe6f-db1bb20942c2@gmail.com>
-Date:   Sun, 29 Aug 2021 13:02:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <597bd681-c7ba-075c-4376-142695b91f93@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TAPnvasaW/OAzBVqJEW8s27ZXEXCOUshtqk9qpgP9as=;
+ b=pxKKiCX5cj6PwQpOd6gTDhvorO5KP6bcBjTBeTpusgBk99Xf2A5yGMCjC5ROUziu4TiH5odsJmLYUNmGYlo8PUJDTl5cjPY4UfvDNTrn4FhSTUjgcOgab3CpQjwkKpE3i60s9ARsRJfWF4aXGpe4ifWjzr+C7OcoYxLdTocBUe8=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB3773.namprd10.prod.outlook.com (2603:10b6:208:1b6::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Sun, 29 Aug
+ 2021 21:29:05 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4436.024; Sun, 29 Aug 2021
+ 21:29:05 +0000
+Subject: Re: [PATCH stable-5.4.y] btrfs: fix race between marking inode needs
+ to be logged and log syncing
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+References: <2f474ee209a89b42c2471aab71a0df038f7e8d4c.1629969541.git.anand.jain@oracle.com>
+ <YSsvSQR0qHhLeI6C@kroah.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <3b67845a-9d24-95d8-9dcf-845df319c0a6@oracle.com>
+Date:   Mon, 30 Aug 2021 05:28:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <YSsvSQR0qHhLeI6C@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR0401CA0005.apcprd04.prod.outlook.com
+ (2603:1096:3:1::15) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.109] (39.109.186.25) by SG2PR0401CA0005.apcprd04.prod.outlook.com (2603:1096:3:1::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Sun, 29 Aug 2021 21:29:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0fcd8dc3-029d-4600-5f4d-08d96b3406f1
+X-MS-TrafficTypeDiagnostic: MN2PR10MB3773:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB3773729BA9052084003546CCE5CA9@MN2PR10MB3773.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: feiXHsz6B6HwT/pAU2KlB8ywk4nDkv9gNWx39MMn9jmzhwGsc2HDg11O8GiQciilzoiyeb3OONUCRm8TCyuAQrx1vXCpq/MczGOuUFx1hrhI6HTx0fm1fkCN8yi3GQyA3rpu0XqApyigG1G26lTN1tBvjDEvSU6O23PF/I5HpEdaRWwv1/4hBAU5fmlg3jU/WAwNY7VcAsz2M5atOb93qeZ47rgqOIHbglqn/BcqsiCAOcy7FqhgU128rvIQ2cXhziYXmpkTOpYdGS2I/BdGyaPoiddIJhU/a9AT8nNwXrGqKcL9zrNpLt8pGnv4tEsoJ6jji0ipI5jsIE0itEPI7QffKloI0cU7a3qGQZGSEHUPt6XlNk+Za3sigg6ANOkfCfjSnPS+XFLLqMDbQHdtZhcQwRqe2vQTgtKfoBXeRvU5vjqPO8HJMqPeMyPJnrg8+Zi6zUZ2smP/Z7Np5OMRebkOMty9Q0oFzJhKRKgmZcr8rNBi1QKmo4pHcbQfRSIxfmi10+ec7lpRSSEhPbRZu5IEDCsvHbKfbSpgZ0jaTvmrLJ4zfzRkH31f87g5zlwjhDo8CEBL7ClxzFE9OZp/NhSukyAwsbKfScDjKyoG970Y1CK+mm7gWlxWY8pmXb7tcBr/W6C9v846i9qw2wAwfY5vlLERrMe88vpg+dOWTqDhkxbFbQ/yGwbrtuAiXBFV1bDX8FoXLdVNzcKi+eNq5qcVMfOOux/JUkwwXbEABgo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(346002)(39860400002)(366004)(376002)(31686004)(4326008)(6666004)(478600001)(26005)(316002)(2906002)(16576012)(8936002)(186003)(36756003)(86362001)(38100700002)(31696002)(5660300002)(66556008)(53546011)(4744005)(6486002)(6916009)(44832011)(956004)(2616005)(66476007)(66946007)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K3ZYYWRFK3hIdmlGYnk4eU1VYVd4UEVoSEFqenh2QldNNEhvWmk0RzFtOXZF?=
+ =?utf-8?B?NlFMUHByWnZjTlhZV1d0dkRhQm5TZ0F1K092c1NQTTZ0K3hrQWRNRFhLYUVp?=
+ =?utf-8?B?TDltbjJOa0VjcGN0YmVITWgyUmE0R2hRVXB3OXpUVmxYNWlJQzJsSDVoZHlE?=
+ =?utf-8?B?QkdaVUpPSU9wQU54SkpRZkZXMVY0QW9NMEUydG8wQzUwcGNoT1pMN3o3djVT?=
+ =?utf-8?B?VEdSUFhRYndCVCs3MjFZUEtvL2pQbENrUmdsVktiRWs4aHpRWXIzdWl1b21r?=
+ =?utf-8?B?UTdPa0lFLzNjaDlSOXVyVmlocTFMQzBDakZsSldSMncrNVJmWjB5YlkxRlF3?=
+ =?utf-8?B?b2h2dTVLTE1FbTJYMGdJeUVNdFdvWE9IZEkwejR0elo0SHlwTWhhUy9IUXB4?=
+ =?utf-8?B?UWRBMEdRRHNLWHFaSjVNanAxdFpURVFvV0RGQTcwZm9ISU5tTk5PWEN1TXI0?=
+ =?utf-8?B?cVk1VHZHQXQvaVBEb2hxbmhrbjBqSWt1bDdNM25taE96VTRRekJTaDFqNWFG?=
+ =?utf-8?B?UUROWFRWSTk0MUR2YUUvSlNVTGc0NE9LRi8vRkhnVDVHZ2RLREVFZE0vOUxL?=
+ =?utf-8?B?Z1daUW9HZksrT0lVaU9COWNSS1ViRTIybDBVdEtGT29USkJvWm0vbFU3L1B4?=
+ =?utf-8?B?dGxMQVV0b0RBdG42cWxTaG1NRVFkdDNDMFBobFlyOUlNTnB0bHBjOFZMa0lT?=
+ =?utf-8?B?M1NaWkxNd29ESXhqYWUwQWZiNFg5aS9TSGxzRlFrNVNGVFU2aTRZQ3JrQWF2?=
+ =?utf-8?B?MTBZSUIzSUZJSVppTDA0UE11UUYvTG5tN1R1NW8zbjBGanE5aHByNS9kL3Zh?=
+ =?utf-8?B?S1NVbjdJbTFIbFYya1NIK1dKVmRsL28wS0xEakNjWDFZMXFwOEcyNEFFdkc5?=
+ =?utf-8?B?T1ZVNngzRHFLQkRMMHRaS2NLY0doVUZhazJla2I4YnNZS2pwSGYyK0FyTHR6?=
+ =?utf-8?B?VWJaamkrcllwb1NBRWVLVHZKaTJQWmdpQnhzWFNRMGJIRW1GN3BWT0MrK0dy?=
+ =?utf-8?B?MWlydnp5UjA2eGxnWHp5L1N4blJZODdpR2Z6TTZkbmpESEY4UDZLeFd3K2Vh?=
+ =?utf-8?B?bkttUklVb3JEMHhvQTY4bGdxSFNWOTJoVkJtbmtwa2xlQUp3U0EwemNscDQ5?=
+ =?utf-8?B?ZVVzQWxmdjhNWk10Z2tsUktocHZIM05WMzRpQWJmc3p0bjZvNXM5YzZyYk96?=
+ =?utf-8?B?ZktwaEJUYStrWlVMaFNJSFNvZ09mZkNGYTJTc2locWFNNklxWVVVK3YrNjRP?=
+ =?utf-8?B?cGlBYld0dnZUQUdkVkJFZXh5S3Jydk1NM0JBNzZ0emMrRWNaREpDWVUzOE1q?=
+ =?utf-8?B?ZjNQMkNSWmFzVEMrTVhQOWhJRnVON0VCVWVvR1RBQVJqWitkREpQL2hSRmRx?=
+ =?utf-8?B?bkdzU1lxc2xQNUdpWWc0clFGalZ3bnlmUHVrcTRhazdzdHNIQ3JQbTlGWWRW?=
+ =?utf-8?B?TnR5WWEwUkM2WjdqcitPcFM1WXpKWkVOWGZkc2haM3dMN1dRV1Y5bjNxY0pI?=
+ =?utf-8?B?YjhFdU5pdS8zWThuY0JNb2UxNnZURmVpakt0OXhka3l4VEhYemx6TDErd0N3?=
+ =?utf-8?B?bGlic1lQbGlrVlNtWHlFSVRnVXkzczRaWnIzRGt6dDI0eUdsQXk0Wk4yS21y?=
+ =?utf-8?B?Q0F5ZDVlR3dteUZQTDMrTHMrbEFZVHZIVHZhenhEOHJlQWpaZ0N2QTNrTHVh?=
+ =?utf-8?B?SGYzWnB3elg4OWE3S0JrcTZ2YUJIRWFDVHBvZCtTenlvRTNmU2FuamxnNVNC?=
+ =?utf-8?Q?wjmuINEW1+qgtjI7VrTZ66RDuewV9XmASc8Tk+Q?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0fcd8dc3-029d-4600-5f4d-08d96b3406f1
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2021 21:29:05.2481
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: o3p2w+mVRct9VpbQpGqSuyRtPXMng4tiFqN1AHqALEqMjS7nHo6u9LPBoLUEOuTyV0jCtDqnRTjR7O2ul8eakw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3773
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10091 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108290137
+X-Proofpoint-ORIG-GUID: erSdHsUfXtGyuFlOgh-kL1J1BggBlWt5
+X-Proofpoint-GUID: erSdHsUfXtGyuFlOgh-kL1J1BggBlWt5
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/29/21 00:19, Qu Wenruo wrote:
->
->
-> On 2021/8/29 下午2:34, Konstantin Svist wrote:
+On 29/08/2021 14:55, Greg KH wrote:
+> On Sat, Aug 28, 2021 at 06:37:28AM +0800, Anand Jain wrote:
+>> From: Filipe Manana <fdmanana@suse.com>
 >>
->> # btrfs ins dump-tree -b 787070976 --follow /dev/sdb3 | grep "(257
->> ROOT_ITEM" -A 5
->> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
->> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
->> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
->> Csum didn't match
->> WARNING: could not setup extent tree, skipping it
->>      item 13 key (257 ROOT_ITEM 0) itemoff 13147 itemsize 439
->>          generation 166932 root_dirid 256 bytenr 786726912 level 2
->> refs 1
->>          lastsnap 56690 byte_limit 0 bytes_used 1013104640 flags
->> 0x0(none)
->>          uuid 1ac60d28-6f11-2842-aca2-b1574b108336
->>          ctransid 166932 otransid 8 stransid 0 rtransid 0
->>          ctime 1627959592.718936423 (2021-08-02 19:59:52)
->>
->>
->> # btrfs restore -Divf 786726912 /dev/sdb3 .
->> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
->> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
->> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
->> Csum didn't match
->> WARNING: could not setup extent tree, skipping it
->> This is a dry-run, no files are going to be restored
->> checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
->> checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
->> checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
->> bad tree block 920748032, bytenr mismatch, want=920748032, have=0
->> ERROR: search for next directory entry failed: -5
->
-> This all zero means the data on-disk are wiped.
->
-> Either not reaching disk or discarded.
->
-> Neither is a good thing.
->
->>
->>
->> 1st set of "checksum verify failed" has different addresses, but the
->> last set always has 920748032
->
-> Have you tried other bytenrs from find-root?
+>> commit bc0939fcfab0d7efb2ed12896b1af3d819954a14 upstream.
+> 
+> 5.10 also needs this, can you provide a working backport for that as
+> well so that no one would get a regression if they moved to a newer
+> kernel release?  Then we could take this patch.
 
+Ok, will do. Why are we keen on stable-5.10.y only, while there are
+other stable releases in between?
 
-Is it normal that they all fail on the same exact block? Sounds
-suspicious to me.
+I just found that this patch applies conflict-free for the stable-5.4.y
+to stable-5.8.y, you may consider integrating.
 
+I will send a separate backport for stable-5.10.y.
 
-The other 3 attempts:
+Thanks, Anand
 
-
-# btrfs ins dump-super -f /dev/sdb3 | grep backup_tree_root
-        backup_tree_root:    787070976    gen: 166932    level: 1
-        backup_tree_root:    778108928    gen: 166929    level: 1
-        backup_tree_root:    781172736    gen: 166930    level: 1
-        backup_tree_root:    786399232    gen: 166931    level: 1
-
-# btrfs ins dump-tree -b 786399232 --follow /dev/sdb3 | grep "(257
-ROOT_ITEM" -A 5
-[...]
-    item 13 key (257 ROOT_ITEM 0) itemoff 13147 itemsize 439
-        generation 166931 root_dirid 256 bytenr 781467648 level 2 refs 1
-        lastsnap 56690 byte_limit 0 bytes_used 1013104640 flags 0x0(none)
-
-[...]
-
-# btrfs restore -Divf 781467648 /dev/sdb3 .
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-Csum didn't match
-WARNING: could not setup extent tree, skipping it
-This is a dry-run, no files are going to be restored
-checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
-checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
-checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
-bad tree block 920748032, bytenr mismatch, want=920748032, have=0
-ERROR: search for next directory entry failed: -5
-
-# btrfs ins dump-tree -b 781172736 --follow /dev/sdb3 | grep "(257
-ROOT_ITEM" -A 5
-[...]
-    item 13 key (257 ROOT_ITEM 0) itemoff 13147 itemsize 439
-        generation 166930 root_dirid 256 bytenr 780828672 level 2 refs 1
-        lastsnap 56690 byte_limit 0 bytes_used 1013104640 flags 0x0(none)
-[...]
-
-
-# btrfs restore -Divf 780828672 /dev/sdb3 .
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-Csum didn't match
-WARNING: could not setup extent tree, skipping it
-This is a dry-run, no files are going to be restored
-checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
-checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
-checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
-bad tree block 920748032, bytenr mismatch, want=920748032, have=0
-ERROR: search for next directory entry failed: -5
-
-# btrfs ins dump-tree -b 778108928 --follow /dev/sdb3 | grep "(257
-ROOT_ITEM" -A 5
-[...]
-
-   item 13 key (257 ROOT_ITEM 0) itemoff 13147 itemsize 439
-        generation 166929 root_dirid 256 bytenr 102760448 level 2 refs 1
-        lastsnap 56690 byte_limit 0 bytes_used 1013104640 flags 0x0(none)
-[...]
-
-
-# btrfs restore -Divf 102760448 /dev/sdb3 .
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
-Csum didn't match
-WARNING: could not setup extent tree, skipping it
-This is a dry-run, no files are going to be restored
-checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
-checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
-checksum verify failed on 920748032 wanted 0x00000000 found 0xb6bde3e4
-bad tree block 920748032, bytenr mismatch, want=920748032, have=0
-ERROR: search for next directory entry failed: -5
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
