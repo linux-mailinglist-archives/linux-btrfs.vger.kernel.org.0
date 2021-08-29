@@ -2,129 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8C93FAC25
-	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Aug 2021 16:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50733FAD27
+	for <lists+linux-btrfs@lfdr.de>; Sun, 29 Aug 2021 18:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbhH2OLD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 29 Aug 2021 10:11:03 -0400
-Received: from out20-87.mail.aliyun.com ([115.124.20.87]:55122 "EHLO
-        out20-87.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235398AbhH2OLC (ORCPT
+        id S235548AbhH2Qci (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 29 Aug 2021 12:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230441AbhH2Qch (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 29 Aug 2021 10:11:02 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07598105|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.621035-0.00304223-0.375923;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=guan@eryu.me;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.LCCfxqt_1630246208;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.LCCfxqt_1630246208)
-          by smtp.aliyun-inc.com(10.147.41.158);
-          Sun, 29 Aug 2021 22:10:09 +0800
-Date:   Sun, 29 Aug 2021 22:10:08 +0800
-From:   Eryu Guan <guan@eryu.me>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Eryu Guan <guaneryu@gmail.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] fstests: btrfs/246: add test case to make sure btrfs
- can create compressed inline extent
-Message-ID: <YSuVQBEX0WU4NQzv@desktop>
-References: <20210826053432.13146-1-wqu@suse.com>
- <YSuOr0XhCgVBcnc8@desktop>
- <e85d5800-8f4a-5bca-a5a6-e537f2fb998a@suse.com>
+        Sun, 29 Aug 2021 12:32:37 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B732CC061575
+        for <linux-btrfs@vger.kernel.org>; Sun, 29 Aug 2021 09:31:45 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id x5so13162666ill.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 29 Aug 2021 09:31:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=mM4D/H21YxqRWkmTnoD2+rbp+XKo+/P1KeNC9uoVsMU=;
+        b=ldvhuZNApTTpGLLTkTBUxYvoFaPz8Tj9BpR/bBMS9Sy784/Nlx2V6uV9o4nuUkHEek
+         yJsrWmPhErIKgA9q/XF0npJzeoPwL3GaAoUIPBc+G0ael7e/9UVE8eAVgjlz4zEd5pL4
+         V4Z1WHiXsWR+y55EXGLXN/1wrtPCWkzRhlPy2jzFB/hEQKpWn+ywpdXG2sIeofTTFQHt
+         M84KNUuVHS7qzXES19LcXmViQdpN8120FvhApbkf/lt0BU4JSB7bPUMn4jhniHe9ePcx
+         E0BJYz446Cfps9t/FxfqUU9QIHsP4iqewehv89w6DlMAF0vRdCz13sCHCzP7DNP14OHT
+         /owg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=mM4D/H21YxqRWkmTnoD2+rbp+XKo+/P1KeNC9uoVsMU=;
+        b=UQUV9fWhbRC/L8XdoezSAxf/iGekXeV14DaQ+U2JRZFHu5MP0lfXXYMHiwEqPqLE5z
+         UBVc57DyuqOM6q4HWVTtGiHoVYX8m8HQxbeNsUEsWCfBeCPzJSM6e1pD7RwfyETQDhq9
+         JTJ6cJs9OP+2KJjzzJzg5jpAlEcvMRwU6SRtAetoION/YxxUAePPcQ23ZB6pC65hG730
+         yLhtGmCEuPnCeBi30l7SWj8/AIq9+h3dFuQ/RdXJWupzQAiAlIn5K1lysBTow4SJU+zm
+         MLz7lvDgq9e47p0OPb+qGZLbNbL/8iuFfDShT8dBwLvdhQ62U3Rq4SY0zbuyRYGUwYPo
+         5mCw==
+X-Gm-Message-State: AOAM530ZZy/T/KzHTfxs6rJOoZjZbW+jlseTQ/C0MW9113RbzkBSaele
+        IU2k8lqR3g4Hu8ZSlP7KM5b6fuDI9DOBbZO+seI=
+X-Google-Smtp-Source: ABdhPJyCSxU+pgmLBnLZxUwmZPAc7hIC3c2i4zgneuUygGG3feuFS5noL2T3+PvnKnCzowFw16IXzbUndHYYAari3rU=
+X-Received: by 2002:a05:6e02:1a0e:: with SMTP id s14mr13260942ild.48.1630254705199;
+ Sun, 29 Aug 2021 09:31:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e85d5800-8f4a-5bca-a5a6-e537f2fb998a@suse.com>
+Received: by 2002:a6b:c8d4:0:0:0:0:0 with HTTP; Sun, 29 Aug 2021 09:31:44
+ -0700 (PDT)
+Reply-To: cherrykona25@hotmail.com
+From:   Cherry Kona <barr.xaviergbesse.tg@gmail.com>
+Date:   Sun, 29 Aug 2021 09:31:44 -0700
+Message-ID: <CADK-NB3SZkw-FNeYX7K9cnJjRboiwKAxsg_Db=yy4-Okcki_4w@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 09:49:05PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2021/8/29 下午9:42, Eryu Guan wrote:
-> > On Thu, Aug 26, 2021 at 01:34:32PM +0800, Qu Wenruo wrote:
-> > > Btrfs has the ability to inline small file extents into its metadata,
-> > > and such inlined extents can be further compressed if needed.
-> > > 
-> > > The new test case is for a regression caused by commit f2165627319f
-> > > ("btrfs: compression: don't try to compress if we don't have enough
-> > > pages").
-> > > 
-> > > That commit prevents btrfs from creating compressed inline extents, even
-> > > "-o compress,max_inline=2048" is specified, only uncompressed inline
-> > > extents can be created.
-> > > 
-> > > The test case will make sure that the content of the small file is
-> > > consistent between cycle mount, then use "btrfs inspect dump-tree" to
-> > > verify the created extent is both inlined and compressed.
-> > > 
-> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > 
-> > Is there a proposed fix available that could be referenced in the commit
-> > log?
-> 
-> The upstream commit is 4e9655763b82 ("Revert "btrfs: compression: don't try
-> to compress if we don't have enough pages""), which is merged after I
-> submitted the patch.
-
-Ok. It also could be helpful to just include the proposed patch title if
-it's not merged yet.
-
-> 
-> > 
-> > > ---
-> > > Changelog:
-> > > v2:
-> > > - Also output the sha256sum to make sure the content is consistent
-> > > ---
-> > >   tests/btrfs/246     | 53 +++++++++++++++++++++++++++++++++++++++++++++
-> > >   tests/btrfs/246.out |  5 +++++
-> > >   2 files changed, 58 insertions(+)
-> > >   create mode 100755 tests/btrfs/246
-> > >   create mode 100644 tests/btrfs/246.out
-> > > 
-> > > diff --git a/tests/btrfs/246 b/tests/btrfs/246
-> > > new file mode 100755
-> > > index 00000000..e0d8016f
-> > > --- /dev/null
-> > > +++ b/tests/btrfs/246
-> > > @@ -0,0 +1,53 @@
-> > > +#! /bin/bash
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
-> > > +#
-> > > +# FS QA Test 246
-> > > +#
-> > > +# Make sure btrfs can create compressed inline extents
-> > > +#
-> > > +. ./common/preamble
-> > > +_begin_fstest auto quick compress
-> > > +
-> > > +# Override the default cleanup function.
-> > > +_cleanup()
-> > > +{
-> > > +	cd /
-> > > +	rm -r -f $tmp.*
-> > > +}
-> > > +
-> > > +# Import common functions.
-> > > +. ./common/filter
-> > > +# For __populate_find_inode()
-> > > +. ./common/populate
-> > 
-> > This function starts with double underscore, I take it as a 'private'
-> > function in common/populate. But all it does is returning the inode
-> > number of the given file, I think we could just open-code it in this
-> > test as
-> > 
-> > ino=$(stat -c %i $SCRATCH_MNT/foobar)
-> > 
-> > Otherwise test looks fine to me.
-> 
-> Mind me to send an update to include the fix in commit message and use the
-> local ino helper?
-
-You're responding quickly, I haven't finalized this week's update yet,
-so I can add the fix commit info and remove __populate_find_inode on
-commit :)
-
-Thanks,
-Eryu
+-- 
+Please with honesty did you receive my last message i sent to you?
