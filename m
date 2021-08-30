@@ -2,182 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E313FB11E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 08:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343A73FB1AA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 09:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhH3GXb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Aug 2021 02:23:31 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:46382 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232091AbhH3GXa (ORCPT
+        id S233836AbhH3HLv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Aug 2021 03:11:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:37040 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232855AbhH3HLs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Aug 2021 02:23:30 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17U5hjE2026235;
-        Mon, 30 Aug 2021 06:22:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=dp3335obk6p2cbLou1AApvVc+Pju2QLAXSx4xIcQdQk=;
- b=E5B83ct2nubWdMENJWGTWfE1CeBBzFoW0/s9OkFTiOxPcL0MiPody8AAfDETQXEJ9z7I
- XFSpgoEzZA7LCudPViirgCtAYjRFQzK0foeAjcKAXmmHKwAWhat1s7f751nNIATEjAuL
- mDyRaS12sVmsKYcehLL0mgpCJVZqI/FgG2TcBcsJs7I/yMp5bGpNJaPVCnbWhjZnYoXz
- /N0dqmpdYpFmQvK8JKM6HlYt4ckkLelPPoZkQyNtvgzrJ0vzvQmN6H1hlG45cFBBMwKn
- affiQYYfgIkrjWC8KSpkgfyUBwDqD1pB+fDvCIP3QBpaFPPGl5ul+k5RU58F+dzJitO7 rg== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=dp3335obk6p2cbLou1AApvVc+Pju2QLAXSx4xIcQdQk=;
- b=mmv3Ocxs3EHIFM1fX04/JJhUulvokR5XDZ+LfI2w8oHTpYsmd/Vn96x1wmO47CRQfKwm
- /K0/Es4Fl3M/CP6+N+jRfhoIXneZ8b6ixsnMUJSbYOSKP9MJwAh0fQePgEFbynDBUDBn
- DLT3cu995zXJsJM7C3HW2bU5hHRWbFEBAyjDDe0RcJotoxRMAj6a11BfBbgXuBHN8Ugf
- GuaTP2MTALJ+eATuQqwgnOLOc4sAy+K2oytMEWXuAhPZID0LRb3tGlHoF+RR3M25OYmO
- oWnu4SlPVNLXXriXfJbD973pumQj/Fvnsa2tAmXx5Tz/8iCaSUGsYeYCO8mff/zu83Dv UQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3arbymgnx8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Aug 2021 06:22:33 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17U6JkHU051859;
-        Mon, 30 Aug 2021 06:22:31 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
-        by userp3020.oracle.com with ESMTP id 3aqxwqtx3u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 30 Aug 2021 06:22:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MsbinGgPhyI3gznBSDHHtrBuDLsG4T3PLzKStfzkb+FVgmxcqBV8tk8Hs4OJLbqdMsa780Z6IOkXqIkjom9caUDTnrS98urXeydmRp/7tBattihvOYg6M4uj/uuI3VpzN623zX57QRu3xTB/91TEH39v8zxPBREOCw5V0RT9bz7lM5YOc0q1/HNToGCcOqYmxYZhDsUoY5Kz7NdfCgXthVVOiI3W3ae9nS8BuWXJlMNeWYmkAqe8Ym2VCFlEyb28pgEAbxdFt+TNFCjVhP3xk0s/I+cDzy+B56iTtw2I4A6Ss1dUgUCj0P5WBlQCoyR8rVQO6kWh+Y6X3HUbLUUSlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dp3335obk6p2cbLou1AApvVc+Pju2QLAXSx4xIcQdQk=;
- b=oJVdD+h/IYo+fXtDHvCrxp7RZ9mGmVEuA7moxwaY8ZmMLkVuZw1/uGBVGvUbaJTEALdW1CaVyhxyvojBma5HQ/IpsnV48qDIcb8Y4sBN3pLI13t7adYW+DvQShoNuZ1o9+GAtFIGwpNx5vxZXOc0C+uPFz75PKRnqVO6c7fiwtZC/XLBblKYKYzjH09drzIdIV6YsDhzDJQ16y2jaiquhu5onCmT316Mmvjw1SLP8c8038i6XBeikeDRbLYaBKn59uKqoqyS9XssAqB+rRNf7TGeK+6DEXUDGDPC+nuOYg2S3e3CWGSpZjBFOMtqNcaiDdACiLpy4tmpbOfasBUc9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dp3335obk6p2cbLou1AApvVc+Pju2QLAXSx4xIcQdQk=;
- b=WoTED6WGDDHrBIxRMD3WkDDvcOEcCl7dVb/p0umtl38C217XOVzZETHmKudLr88THeZHS1gTnCb1wBT0ulJHWIbiCU47oTTrvZw66Fp8wJ2psuXlFnxZuA+aBjcZddtlY2AFNJr1wFNQS9Bu9eM1imAT8iLeeEloTQS0tldbnBc=
-Authentication-Results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4013.namprd10.prod.outlook.com (2603:10b6:208:185::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Mon, 30 Aug
- 2021 06:22:29 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::b813:4805:31e:d36a%5]) with mapi id 15.20.4436.024; Mon, 30 Aug 2021
- 06:22:29 +0000
-Subject: Re: [PATCH stable-5.4.y] btrfs: fix race between marking inode needs
- to be logged and log syncing
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <2f474ee209a89b42c2471aab71a0df038f7e8d4c.1629969541.git.anand.jain@oracle.com>
- <YSsvSQR0qHhLeI6C@kroah.com>
- <3b67845a-9d24-95d8-9dcf-845df319c0a6@oracle.com>
- <YSxy5yPpWMKClYCK@kroah.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <a0868a8e-7078-94b3-53ee-43d7739e562e@oracle.com>
-Date:   Mon, 30 Aug 2021 14:22:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <YSxy5yPpWMKClYCK@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR06CA0178.apcprd06.prod.outlook.com
- (2603:1096:1:1e::32) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
+        Mon, 30 Aug 2021 03:11:48 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 00D781FDDF;
+        Mon, 30 Aug 2021 07:10:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630307452; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z2pKf/WfUGHEThNb4vpByybduSWm9sOmXHngqIDAuRQ=;
+        b=B4Kw0WXjlW2xg75hnTqB94kya2aPmOPCS/nlzDb4VRfNswqYUlmpWjyWv4odfFUjGheT56
+        kefocaWdkFDbe8atnwG8B/IgTGGafB+/ReQtGlvM0IvXk4Jg9qJPoOzJe4+0wmlJYmQaIl
+        j6kT2KSWI/JYMDWCkXUG4rL4KuCk1Fs=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B8F801365C;
+        Mon, 30 Aug 2021 07:10:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 1deZKXuELGENEwAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Mon, 30 Aug 2021 07:10:51 +0000
+Subject: Re: [PATCH] btrfs: Add test for rename exchange behavior between
+ subvolumes
+To:     Eryu Guan <guan@eryu.me>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20210819131456.304721-1-nborisov@suse.com>
+ <YSuUAT27PfryyyRq@desktop>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <1f480dc9-e3a2-90a8-27c5-b8090a5ff9c6@suse.com>
+Date:   Mon, 30 Aug 2021 10:10:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.109] (39.109.186.25) by SG2PR06CA0178.apcprd06.prod.outlook.com (2603:1096:1:1e::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Mon, 30 Aug 2021 06:22:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 375ddbf2-4fbb-4746-4c6a-08d96b7e8b1d
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4013:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4013DA15E8A8F2AA1851E171E5CB9@MN2PR10MB4013.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q3lBi/pv6gDj7hux21V8U0aJpUm5bEoZGGQjkb4nYCO5DDzWmneXcWxatrvxYjOXRlS7W6TZb4kHw5uD5xUewsJugfhYz/yHClWXiXS8V8hnR8Kjf/Hb87ogG3018Sw90/REnOoqNcOxXweCohyDylZPIJMlXJ7+xyHFneF5EHcrQGD8xRKf9DI02W8DXVdi+VhdlkF9TdjIXb47Wbrox1iE8Ptq2MqdbEDqoHJWvXejHRDXOOQbs5qsLILjXK9u15o323zBg8CebhSWtvK63KHU6st7MJc9/HyV7JMbyHI+4yVivOPYslEXeSunKybFrW8crwS2XjoyqJFbtvPOaTgwKDGwWBfrR96yIwfKTesHg/IU1UrDXrgMJ7aS3jRLzHBF90sarLVTB3CDTdAueTCAtRYUfKdpFraPzHKAXCrIA1Ik51Jq0m8rRfn24f3yswlgTb/P1umzOPeerLVvdgn5xe0RSfM6m9ynUTm6aECxVD5wB5PrbffrzfInPpuvjVbp9gn0egLi+/N008dbhLnK+qNJDb56NMFyzI7gAf2Q8YkDVqs6CcwttsHaE5Y1tjIaasH8rGEQNadlUPCvUpAYiUTx3N17ZT2fYiVOKVszeNZH/GaI2AMeLNx4wWimlkBAHZurZxS76XfpprhmMhDWAhIjmSKSH/cw6DLnNSAKDjYpKisIr21mvZU+nOPsYKx2Q/V0rL1nrZyghd5dXLwvsvCxLu/e96O7aORM7Ypm7pITo2MzCTCCaSts3sL4UdlsiVJMsqupBy78tj0aJZslznMUVyZQgi/7j9456VNo7Qu5cPjj106xslaMSVC0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(39860400002)(396003)(376002)(31696002)(8936002)(38100700002)(6486002)(31686004)(44832011)(86362001)(53546011)(5660300002)(36756003)(26005)(66476007)(66556008)(956004)(4744005)(66946007)(6666004)(15974865002)(2906002)(316002)(16576012)(2616005)(4326008)(6916009)(186003)(8676002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TThLbWR6cklOYk8zUk9kWlpZeEVuWjdKYTR5dG5NbzV3SUJSSWdHdy9rRmJD?=
- =?utf-8?B?Z1kzZkVMVk1GUVNEU0dtNkNwbHVteTN2T1NHNkhzbytUT0ZVMXhhVENUZ2h4?=
- =?utf-8?B?RVBUaHVYUWFJYWpDeGdtcG9OU2dnOXRsNVp4QkRvRXhxVEtZbjZ3cHlJNmFs?=
- =?utf-8?B?S3JMd2JseFhPS0VEaUtDbU81M1FXREtkam91NVlEeHVCU3VpekptNjhlVldY?=
- =?utf-8?B?amlpU3lCOFdjSUk0eTJnekJlUUJ2YkRIT2Y1dzhOSVBYeDU5c2IrVzdYNjhZ?=
- =?utf-8?B?LzlnQnkrRFFBd1ZMT05hZ0oraXBDNDNJUjZoL212YXhyVW0yeWpob2JkQkhP?=
- =?utf-8?B?aU5FRVFIdjczOU1taTBoUGtNTThuZzZBT1ErMVVrMDZtTjhGNVVSOXpMUHVY?=
- =?utf-8?B?eUdrbFpZaHdMSmJtbEtFRVRtTUordlVlaEwvS28xcG9aUEJGMzh4RFpua3FI?=
- =?utf-8?B?dDhKUUoxU1o5T2kwMWxDdTlnSTdJNVVEeW82UTlFRnIzaUxKcHc2NHZKeWxq?=
- =?utf-8?B?K2pDQWxJUm5sekw4Q1VxbmVja2dMWGZiSzA4NXdtelRVRTZQSWp1Y0hHTnRs?=
- =?utf-8?B?K2RObjc5YWY1Mmx3SCtIUUdmTGg4UllTK0VBYkVwdXI2bXkyT1cxdVJoNGlm?=
- =?utf-8?B?dUxWVWZGUzZ1ZlJ6ckNPYjNjNFgrcFdXUVFUUDVpZFN5cnA5eG5QRlJpY0k3?=
- =?utf-8?B?a2loTFdDcS9YZFVGbXdxZGovekx3RkxWUmNlcGlCTUp5eEZIalE4T29WTE9Z?=
- =?utf-8?B?RElOUFc2QVUyM0xrZ3lHRTdmV0Y1UDhyOXVYd01RNkZ0SWFEakg5OTRnL0g2?=
- =?utf-8?B?dDRIR1B1UGxBcUpXMjhGVXpsNVN2VEpCd2dwcWFydjZCU1ZvUWlzaVpMSnNX?=
- =?utf-8?B?N2YzeDdNbzJYdkRENTROQTlHaHJxWjNmTXhsb1pYSXQycTVuQTBPUU9XcnRz?=
- =?utf-8?B?NGQ3SmcwOTNQMTljRzBwUURDUDBwQU5VNlp4TGJ1TmhhUXN4MmhGMnRET2JC?=
- =?utf-8?B?K3lFK2FaTGhLQjQvRTBjK1p0aXZ4S3J1ZU03QjladUpXK01veFNwY2N3NWRr?=
- =?utf-8?B?aEh4Q3ZpMWZJRzI3cDZOM2hadTZydDVFeHRBNjBrc29ITjNqRWd3cmZpUER0?=
- =?utf-8?B?OGRZOW9CbTA2L0Rhd3Y3MlVhWGltUXVxOXIyQ0VxRnRBU1ZrYUZKbGRnLzlh?=
- =?utf-8?B?REk2ZGc5QUR5QW9EOVNtblU2VzduTXB5THIyclFrY1U3NlZySi92aTV5Rm14?=
- =?utf-8?B?OEZ4SXorY3hDVmlWd0xjcktIemluR01QTjZMM0ZnQWRUa1diU1FSVmx3S09C?=
- =?utf-8?B?NEhzZENkc3lrWm1LVFBkNmdZNzAxaHJNODhzem5OaGxBVDJuZDFIUXNWNDh0?=
- =?utf-8?B?QXpqNkxnUVB4MFV1SUl6Y0lLTVRLU3ZLcFFHdTlqeC9JTnNlU0w1cEFTV3p2?=
- =?utf-8?B?Q0NUK0VsRmxXOVBvUVhKYXlydEpHSjNoQVBGdjlSQk43RjdqQUVyamdRc0M4?=
- =?utf-8?B?a0FCekUrTmEzWTJEaGdBNlJ2S3MwYk8xQm8wUXQyRmh6M1l2SkZWZE9uVGlF?=
- =?utf-8?B?anljTHNLc3FDN1lwbjZ0LytQTnl5ZVQ3QzBnWmVSOVFzbFRsRERnK2U1b2Yr?=
- =?utf-8?B?Y2toNkNiWjFLTWZmM1k0emd2R2MxdlhTVC84WFZpanFlcE5nNXlwV1BkZUNO?=
- =?utf-8?B?akFIVXV0WHF1aElicG1JUW96Wnhva1p6MVRzK0JpVXpxUkRLa29GSURzcnRr?=
- =?utf-8?Q?WNKRqzA2eHaBB/s4fC9oCeXMtX5zT4NQtpX78oL?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 375ddbf2-4fbb-4746-4c6a-08d96b7e8b1d
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 06:22:29.4387
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uKY9Gu9CLnUbf4gJtTRPZAi+SUvBuB2Hh1yd7Zu9RwukecUs1x+4Jw21DWNgXL1W/7rLMCAjCIphahRjh/05lg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4013
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10091 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 suspectscore=0 spamscore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108300044
-X-Proofpoint-ORIG-GUID: TmcOQuJCwE8fr2ScRC4POpEuSXSLcHEZ
-X-Proofpoint-GUID: TmcOQuJCwE8fr2ScRC4POpEuSXSLcHEZ
+In-Reply-To: <YSuUAT27PfryyyRq@desktop>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 30/08/2021 13:55, Greg KH wrote:
-> On Mon, Aug 30, 2021 at 05:28:57AM +0800, Anand Jain wrote:
->> On 29/08/2021 14:55, Greg KH wrote:
->>> On Sat, Aug 28, 2021 at 06:37:28AM +0800, Anand Jain wrote:
->>>> From: Filipe Manana <fdmanana@suse.com>
->>>>
->>>> commit bc0939fcfab0d7efb2ed12896b1af3d819954a14 upstream.
->>>
->>> 5.10 also needs this, can you provide a working backport for that as
->>> well so that no one would get a regression if they moved to a newer
->>> kernel release?  Then we could take this patch.
->>
->> Ok, will do. Why are we keen on stable-5.10.y only, while there are
->> other stable releases in between?
+On 29.08.21 г. 17:04, Eryu Guan wrote:
+> On Thu, Aug 19, 2021 at 04:14:56PM +0300, Nikolay Borisov wrote:
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 > 
-> There are no other stable releases in between that are currently
-> supported.  Please see the front page of www.kernel.org for the active
-> list.
+> I noticed that test currently fails with v5.15-rc6 kernel as
+> 
+>   cross-subvol tree/symb -> Invalid cross-device link
+>   cross-subvol tree/dire -> Invalid cross-device link
+>   cross-subvol tree/tree -> Invalid cross-device link
+>  -Invalid cross-device link---
+> 
+> So is there any background info about this test? Is it motivated by a
+> known bug? If so is there a proposed fix available?
+> 
+> Some descriptions would be good in commit log.
+> 
+>>  tests/btrfs/246     | 46 +++++++++++++++++++++++++++++++++++++++++++++
+>>  tests/btrfs/246.out | 27 ++++++++++++++++++++++++++
+>>  2 files changed, 73 insertions(+)
+>>  create mode 100755 tests/btrfs/246
+>>  create mode 100644 tests/btrfs/246.out
+>>
+>> diff --git a/tests/btrfs/246 b/tests/btrfs/246
+>> new file mode 100755
+>> index 000000000000..0934932d1f22
+>> --- /dev/null
+>> +++ b/tests/btrfs/246
+>> @@ -0,0 +1,46 @@
+>> +#! /bin/bash
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
+>> +#
+>> +# FS QA Test 246
+>> +#
+>> +# Tests rename exchange behavior across subvolumes 
+> 
+> Trailing white space in above line
+> 
+>> +#
+>> +. ./common/preamble
+>> +_begin_fstest auto quick rename
+> 
+> Should be in 'subvol' group as well.
+> 
+>> +
+>> +# Import common functions.
+>> + . ./common/renameat2
+>> +
+>> +# real QA test starts here
+>> +
+>> +# Modify as appropriate.
+>> +_supported_fs btrfs
+>> +_require_renameat2 exchange
+>> +_require_scratch
+>> +
+>> +_scratch_mkfs >> $seqres.full 2>&1
+>> +_scratch_mount
+>> +
+>> +# Create 2 subvols to use as parents for the rename ops
+>> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1 1>/dev/null
+>> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol2 1>/dev/null
+> 
+> The "1" in "1>/dev/null" could be dropped.
 
-  Ah. Thx. I was confused by the stable-5.x.y branches in the repo.
+Nope, that's intentional because I want to disregard the usual output of:
+Create subvolume '/media/scratch/subvol1'
 
--Anand
+Yet in case an error occurs I want it to fail the test.
+
+
+
+> 
+>> +
+>> +# _rename_tests_source_dest internally expects the flags variable to contain
+>> +# specific options to rename syscall. Ensure cross subvol ops are forbidden
+>> +flags="-x"
+>> +_rename_tests_source_dest $SCRATCH_MNT/subvol1/src $SCRATCH_MNT/subvol2/dst "cross-subvol"
+> 
+> I think _rename_tests_source_dest should be updated to take flags as
+> arguments instead of inheriting $flags variable from caller. That could
+> be done in a separate patch as preparation.
+
+I agree, will implement this.
+
+<snip>
+
+>> +sync
+> 
+> A global sync seems a bit heavy, does syncfs on scratch fs work? Or does
+> umounting scratch dev work? If so we could depend on the test harness to
+> umount scratch dev after each test.
+
+Yeah, the unmount at the end of the test is sufficient to trigger the
+failure.
+
+<snip>
