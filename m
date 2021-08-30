@@ -2,59 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17863FBD4D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 22:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456BC3FBD7A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 22:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234122AbhH3UMb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Aug 2021 16:12:31 -0400
-Received: from mail-lf1-f52.google.com ([209.85.167.52]:44708 "EHLO
-        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231499AbhH3UMa (ORCPT
+        id S235057AbhH3Uli (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Aug 2021 16:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233943AbhH3Ulh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Aug 2021 16:12:30 -0400
-Received: by mail-lf1-f52.google.com with SMTP id s10so8823446lfr.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 13:11:36 -0700 (PDT)
+        Mon, 30 Aug 2021 16:41:37 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95966C061575
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 13:40:43 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id c206so10030128ybb.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 13:40:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rE6fxA9549BnEQ+EYVOlpaHBoZIs66OZ+9CO/PUQNOs=;
+        b=BJgaxkCin/A+44OTHHsQYqLRNzZw9mgbk+jmeP6wM23PfYBhH/VtXUg/0HT0oXMKX/
+         OE3LXBE+SFuaZSKdO1+s7qKoIMZNQjLSDrqrCNh/AgEPSRXiJxYwebv0lP77dlbsRnfV
+         XzlI+LaCO0Rup4eDtbyLduCYbkrIOzvs9ggvJr7Ef+kuPewaRmLYJ8m2chwgwfVUD3kb
+         a2GllAY52S2CqBxUYYGzYUk5froaySGGoRtWOSALmA8ehyJogRqDazBOvv4vd4UYqQwx
+         nSKYy/fwqvV5j2VIXYYUB8Zh0cWgSPEBhFmexjSzPnvLHhGnh/bO0HXJXbNb6+LhwSfN
+         p6VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2jZEfzAy5uj7b+GMwr8YRz5GROc6RuRgiy+DAW+hklE=;
-        b=DH1D3uedcw/yx9QGEGynCuL+zFmUVTrVS+A6oB7+4Qi5L+vJj3P/VB+qcHZMDKIVmz
-         7xNvIK5mP1MnIFGGnIBMEKqwW1n/UVtA26QP6bCPvfkB4up7YqACocRzGVpAkd0764Ic
-         9DaSZfm3HuKcScmSyzNWCouzxS5RCRf5kvOmuTtD9iwWoRQJ57omysuJHtejnCIVF75E
-         N2AlOWeGNzN5ieFuzRrWaO0+J+SnQ6tSpTFe4b1Um2R2eKPwFE/yAH5qGbjZOjBjSd+4
-         7uea6i9gWoo0RyzX3Ewqs1QrR27hlHzHaNSKkNYSzfIZ5PjS4FkEsNl9gYLbsvw1f3Jg
-         5tWQ==
-X-Gm-Message-State: AOAM530YB5eC+E4rSmlz6kMADYb4YBD45yRWx2YzdxVTAS8BesoSoi5R
-        S9zWT0QoiogaieQk9Fa2Aw5kDmu/Tpol93h9NUxn4Tuc/n0=
-X-Google-Smtp-Source: ABdhPJw/Uo4E5JyN5li1LqQp1oCUuvJ0aGaJt7OdWrO/n4l/eAlSZzfrYy48My4C+B423vWV8hAtqLmJVplZZoNL7Jg=
-X-Received: by 2002:a05:6512:32ca:: with SMTP id f10mr10283624lfg.411.1630354295496;
- Mon, 30 Aug 2021 13:11:35 -0700 (PDT)
+        bh=rE6fxA9549BnEQ+EYVOlpaHBoZIs66OZ+9CO/PUQNOs=;
+        b=eYxBZO7kDpAtg5RKffJUwg3nLQ2fpoDlctRPCLoJxBgqPmJ6L6sZYWIO3gJYIBKVxf
+         bVeG8WNeWhnaRxwbcBkz1vombj1r9mjxWftk1XVpdQ/YzJ+PQcJdAP5J2HU9RpTsCdkE
+         z5Csk3jsPzhx334OPNuC9xHxdAFsO6J9OmNma+REHpBvm0n9urT4ltNlvBUeWq8ErTde
+         kupvGLAZGrdtKSTboH9Yt+2CVJAG3JUWt8w9rIytsIJXsqznORKNQmeJvY6Dr2e7fbq4
+         IZSiouqohzfIh3Ps3QuTOjUqR6/AciGHRYg03ZMUPymO255zQ4va6hXNPjTLQ5eY9GQV
+         e7hw==
+X-Gm-Message-State: AOAM532B74NQMB1RFLr+xEs33fFz6bt2zCfnkiIGlF4z159VLdJ34EdT
+        y3JXt7xMpG0j1C+NbvBxLMeHlktQmZzUEgWVUhTZxQD3NpmAEfGI
+X-Google-Smtp-Source: ABdhPJyuEfG/+leoglCNvZAN5cAoCmHXM9BnFFwQJ6ENd7WkiCxPNFzyJX89meqw49wUQk4lDf0M+ap5wmD7PKedyHM=
+X-Received: by 2002:a25:be48:: with SMTP id d8mr26424760ybm.521.1630356042880;
+ Mon, 30 Aug 2021 13:40:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMkEVXCdihawH1PgS6TiMchQ@mail.gmail.com>
- <CAL3q7H5P1+s5LOa6TutNhPKOyWUA7hifjD1XuhBP6_e3SQzR8Q@mail.gmail.com>
- <CAOaVUnU6z8U0a2T7a0cLg1U=b1bfyq_xHa8hoXMnu6Qv1E-z+g@mail.gmail.com>
- <CAL3q7H7kbgsiTfLWWYJikuWOFP9yXSdgav2EEonx98pPhSEQNA@mail.gmail.com>
- <CAOaVUnV9FJSVBxmX-tAeZJCq+0rPoY2zga8nuw_toC=tdt8K0w@mail.gmail.com>
- <CAL3q7H5xkGiLcfMYDb8qHw9Uo-yoaEHZ7ZabGHhcHfXXAKrWYA@mail.gmail.com>
- <CAOaVUnUwoq69UZ_ajoxYYOHk8RRgGPNZrcm9YzcmXfDgy24Nfw@mail.gmail.com>
- <CAL3q7H67Nc7vZrCpxAhoWxHObhFn=mgOra+tFt3MjqMSXVFXfQ@mail.gmail.com>
- <CAL3q7H46BpkE+aa00Y71SfTizpOo+4ADhBHU2vme4t-aYO6Zuw@mail.gmail.com>
- <CAOaVUnXXVmGvu-swEkNG-N474BcMAGO1rKvx26RADbQ=OREZUg@mail.gmail.com>
- <CAL3q7H5UH012m=19sj=4ob-d_LbWqb63t7tYz9bmz1wXyFcctw@mail.gmail.com>
- <CAOaVUnVL508_0xJovhLqxv_zWmROEt-DnmQVkNkTwp0GHPND=Q@mail.gmail.com>
- <CAL3q7H7MxhvzLAe1pv+R8J=fNrEX2bDMw1xWUcoZsCCG-mL5Mg@mail.gmail.com> <CAOaVUnXB4qoAyVcm3H03Bj2rukZ+nbSzOdB4TsKpJjH8sqOr7g@mail.gmail.com>
-In-Reply-To: <CAOaVUnXB4qoAyVcm3H03Bj2rukZ+nbSzOdB4TsKpJjH8sqOr7g@mail.gmail.com>
-From:   Darrell Enns <darrell@darrellenns.com>
-Date:   Mon, 30 Aug 2021 13:11:24 -0700
-Message-ID: <CAOaVUnUOm3kaNPFriH3OdOEiVMyyv=8sCE+SdUXMZSMBQwtAYQ@mail.gmail.com>
-Subject: Re: Backup failing with "failed to clone extents" error
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtSXKHSToLeOOconR_nKeuk8RjGjT7_z2QvV9=2zHfYB6g@mail.gmail.com>
+ <CAJCQCtSjuEg8LAedxaqpRCOEq5BgegB7=QVJP8Sq3iZUFWn1rw@mail.gmail.com> <CAJCQCtQPvw23CGvR307L-VyPSpZi3ovC3N+xp7OaMNrxSWir_w@mail.gmail.com>
+In-Reply-To: <CAJCQCtQPvw23CGvR307L-VyPSpZi3ovC3N+xp7OaMNrxSWir_w@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 30 Aug 2021 14:40:27 -0600
+Message-ID: <CAJCQCtSC4mx6cNf3mGDOEeWhJaTXK8s+WNWRTRDMt99k8O3LPw@mail.gmail.com>
+Subject: Re: 5.13.8, enospc with 6G unused
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Is it the destination inode that matters? The inode of places.sqlite
-on the destination is 400186.
+Following the add device, filtered balance, remove device dance:
+
+Overall:
+    Device size:                  27.52GiB
+    Device allocated:             21.52GiB
+    Device unallocated:            6.00GiB
+    Device missing:                  0.00B
+    Used:                         21.15GiB
+    Free (estimated):              6.30GiB      (min: 6.30GiB)
+    Free (statfs, df):             6.30GiB
+    Data ratio:                       1.00
+    Metadata ratio:                   1.00
+    Global reserve:               55.50MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+Data,single: Size:21.01GiB, Used:20.70GiB (98.56%)
+   /dev/mapper/luks-4ac739d9-8d73-4913-89ac-656c79f89835          21.01GiB
+
+Metadata,single: Size:520.00MiB, Used:456.52MiB (87.79%)
+   /dev/mapper/luks-4ac739d9-8d73-4913-89ac-656c79f89835         520.00MiB
+
+System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
+   /dev/mapper/luks-4ac739d9-8d73-4913-89ac-656c79f89835           4.00MiB
+
+Unallocated:
+   /dev/mapper/luks-4ac739d9-8d73-4913-89ac-656c79f89835           6.00GiB
+
+
+So it's back to functional again but does seem like some kind of bug
+that it had not allocated another metadata block group sooner when it
+could have. Once all the space was locked up as data bg's, it was
+inevitably going to get stuck like this.
+
+
+Chris Murphy
