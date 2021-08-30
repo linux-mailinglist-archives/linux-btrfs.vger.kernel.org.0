@@ -2,155 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8467B3FB5F0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 14:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5433FB62D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 14:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbhH3MYE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Aug 2021 08:24:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47170 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhH3MYD (ORCPT
+        id S233581AbhH3Mh7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Aug 2021 08:37:59 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:32906 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhH3Mh6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Aug 2021 08:24:03 -0400
+        Mon, 30 Aug 2021 08:37:58 -0400
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 94B06220D8;
-        Mon, 30 Aug 2021 12:23:08 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1C03F20096;
+        Mon, 30 Aug 2021 12:37:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630326188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
+        t=1630327024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=J6YWRh0J5ebuFLe/wmaai0ZaZpxU/PYtkJbm2D0JYEY=;
-        b=lS42YwEL0mDqOV1rXj4or2rmaPuT4PgoyeoV0M+14jUlUrEMjINi1Cf2ZX6i34I3x3u6xN
-        pob5jsSuyURav51fQ2envx6SKXoAxMgmMCYemiU7cNIWC0WMsFdVn2TFoZ6y66wirVlOoR
-        rWHuacVo6RKI2TS28+4p0oXHB0gMWdU=
+        bh=xnj8eko+cRsR5dEynR4dFx5R46zkSn/EBJxPHMBNxwk=;
+        b=udLTa1bqjj29vg//3CMNPmhpZkik0VXQpFUkromPRzVJ3FQ5dmBFj4NtbFAwR0qzPOlCCB
+        iO89AYZu/X6CkosQRIaMXdAG2+ZkKHcblmWE2pGS2RT2VSnjed4W+j5+hfJp7/rhJs4lzJ
+        2kOnrRI0jl9ru3SMewzpupxM7RKG8QY=
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 575F613738;
-        Mon, 30 Aug 2021 12:23:08 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id D0A4C137BB;
+        Mon, 30 Aug 2021 12:37:03 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id sAyVEqzNLGHOYwAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Mon, 30 Aug 2021 12:23:08 +0000
+        id Kbs1MO/QLGGPZwAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Mon, 30 Aug 2021 12:37:03 +0000
+Subject: Re: [PATCH 1/8] fs: btrfs: Introduce btrfs_for_each_slot
+To:     Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     dsterba@suse.com
+References: <20210826164054.14993-1-mpdesouza@suse.com>
+ <20210826164054.14993-2-mpdesouza@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH V2 2/2] btrfs: Add test for rename/exchange behavior between subvolumes
-Date:   Mon, 30 Aug 2021 15:23:06 +0300
-Message-Id: <20210830122306.882081-2-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210830122306.882081-1-nborisov@suse.com>
-References: <20210830122306.882081-1-nborisov@suse.com>
+Message-ID: <99e18442-6ed7-f968-46e2-3491dee7ec12@suse.com>
+Date:   Mon, 30 Aug 2021 15:37:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210826164054.14993-2-mpdesouza@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This tests ensures that renames/exchanges across subvolumes work only
-for other subvolumes and are otherwise forbidden and fail.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
-Changes in V2:
- * Added cross-subvol rename tests
- * Added cross-subvol subvolume rename test
- * Added ordinary volume rename test
- * Removed explicit sync
 
- tests/btrfs/246     | 43 +++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/246.out | 27 +++++++++++++++++++++++++++
- 2 files changed, 70 insertions(+)
- create mode 100755 tests/btrfs/246
- create mode 100644 tests/btrfs/246.out
+On 26.08.21 г. 19:40, Marcos Paulo de Souza wrote:
+> There is a common pattern when search for a key in btrfs:
+> 
+>  * Call btrfs_search_slot
+>  * Endless loop
+>          * If the found slot is bigger than the current items in the leaf, check the
+>            next one
+>          * If still not found in the next leaf, return 1
+>          * Do something with the code
+>          * Increment current slot, and continue
+> 
+> This pattern can be improved by creating an iterator macro, similar to
+> those for_each_X already existing in the linux kernel. Using this
+> approach means to reduce significantly boilerplate code, along making it
+> easier to newcomers to understand how to code works.
+> 
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> ---
+>  fs/btrfs/ctree.c | 28 ++++++++++++++++++++++++++++
+>  fs/btrfs/ctree.h | 25 +++++++++++++++++++++++++
+>  2 files changed, 53 insertions(+)
+> 
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 84627cbd5b5b..b1aa6e3987d0 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -2122,6 +2122,34 @@ int btrfs_search_backwards(struct btrfs_root *root, struct btrfs_key *key,
+>  	return ret;
+>  }
+>  
+> +/* Search for a valid slot for the given path.
+> + * @root: The root node of the tree.
+> + * @key: Will contain a valid item if found.
+> + * @path: The start point to validate the slot.
+> + *
+> + * Return 0 if the item is valid, 1 if not found and < 0 if error.
+> + */
+> +int btrfs_valid_slot(struct btrfs_root *root, struct btrfs_key *key,
 
-diff --git a/tests/btrfs/246 b/tests/btrfs/246
-new file mode 100755
-index 000000000000..eeb12bb457a8
---- /dev/null
-+++ b/tests/btrfs/246
-@@ -0,0 +1,43 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 246
-+#
-+# Tests rename exchange behavior when subvolumes are involved. This is also a
-+# regression test for 3f79f6f6247c ("btrfs: prevent rename2 from exchanging a
-+# subvol with a directory from different parents").
-+#
-+. ./common/preamble
-+_begin_fstest auto quick rename subvol
-+
-+# Import common functions.
-+ . ./common/renameat2
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_renameat2 exchange
-+_require_scratch
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount
-+
-+# Create 2 subvols to use as parents for the rename ops
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1 1>/dev/null
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol2 1>/dev/null
-+
-+# Ensure cross subvol ops are forbidden
-+_rename_tests_source_dest $SCRATCH_MNT/subvol1/src $SCRATCH_MNT/subvol2/dst "cross-subvol" "-x"
-+
-+# Prepare a subvolume and a directory whose parents are different subvolumes
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1/sub-subvol 1>/dev/null
-+mkdir $SCRATCH_MNT/subvol2/dir
-+
-+# Ensure exchanging a subvol with a dir when both parents are different fails
-+$here/src/renameat2 -x $SCRATCH_MNT/subvol1/sub-subvol $SCRATCH_MNT/subvol2/dir
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/246.out b/tests/btrfs/246.out
-new file mode 100644
-index 000000000000..d50dc28b1b40
---- /dev/null
-+++ b/tests/btrfs/246.out
-@@ -0,0 +1,27 @@
-+QA output created by 246
-+cross-subvol none/none -> No such file or directory
-+cross-subvol none/regu -> No such file or directory
-+cross-subvol none/symb -> No such file or directory
-+cross-subvol none/dire -> No such file or directory
-+cross-subvol none/tree -> No such file or directory
-+cross-subvol regu/none -> No such file or directory
-+cross-subvol regu/regu -> Invalid cross-device link
-+cross-subvol regu/symb -> Invalid cross-device link
-+cross-subvol regu/dire -> Invalid cross-device link
-+cross-subvol regu/tree -> Invalid cross-device link
-+cross-subvol symb/none -> No such file or directory
-+cross-subvol symb/regu -> Invalid cross-device link
-+cross-subvol symb/symb -> Invalid cross-device link
-+cross-subvol symb/dire -> Invalid cross-device link
-+cross-subvol symb/tree -> Invalid cross-device link
-+cross-subvol dire/none -> No such file or directory
-+cross-subvol dire/regu -> Invalid cross-device link
-+cross-subvol dire/symb -> Invalid cross-device link
-+cross-subvol dire/dire -> Invalid cross-device link
-+cross-subvol dire/tree -> Invalid cross-device link
-+cross-subvol tree/none -> No such file or directory
-+cross-subvol tree/regu -> Invalid cross-device link
-+cross-subvol tree/symb -> Invalid cross-device link
-+cross-subvol tree/dire -> Invalid cross-device link
-+cross-subvol tree/tree -> Invalid cross-device link
-+Invalid cross-device link
---
-2.17.1
+nit: The name of this function is a bit misleading since it's not really
+a predicate, more like a function that returns the value and if it can't
+return the current value pointed to by path it gets the next leaf. I
+guess a more apt name would be "btrfs_get_next_valid_item" or some such.
 
+> +		     struct btrfs_path *path)
+> +{
+> +	while (1) {
+> +		int ret;
+> +		const int slot = path->slots[0];
+> +		const struct extent_buffer *leaf = path->nodes[0];
+> +
+> +		if (slot >= btrfs_header_nritems(leaf)) {
+> +			ret = btrfs_next_leaf(root, path);
+> +			if (ret)
+> +				return ret;
+> +			continue;
+> +		}
+> +		btrfs_item_key_to_cpu(leaf, key, slot);
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * adjust the pointers going up the tree, starting at level
+>   * making sure the right key of each node is points to 'key'.
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index f07c82fafa04..1e3c4a7741ca 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -2912,6 +2912,31 @@ int btrfs_next_old_leaf(struct btrfs_root *root, struct btrfs_path *path,
+>  int btrfs_search_backwards(struct btrfs_root *root, struct btrfs_key *key,
+>  			   struct btrfs_path *path);
+>  
+> +int btrfs_valid_slot(struct btrfs_root *root, struct btrfs_key *key,
+> +		     struct btrfs_path *path);
+> +
+> +/* Search in @root for a given @key, and store the slot found in @found_key.
+> + * @root: The root node of the tree.
+> + * @key: The key we are looking for.
+> + * @found_key: Will hold the found item.
+> + * @path: Holds the current slot/leaf.
+> + * @iter_ret: Contains the returned value from btrfs_search_slot and
+> + *            btrfs_valid_slot, whatever is executed later.
+> + *
+> + * The iter_ret is an output variable that will contain the result of the
+> + * btrfs_search_slot if it returns an error, or the value returned from
+> + * btrfs_valid_slot otherwise. The return value can be 0 if the something was
+> + * found, 1 if there weren't bigger leaves, and <0 if error.
+> + */
+> +#define btrfs_for_each_slot(root, key, found_key, path, iter_ret)		\
+> +	for (iter_ret = btrfs_search_slot(NULL, root, key, path, 0, 0);		\
+> +		(								\
+> +			iter_ret >= 0 &&					\
+> +			(iter_ret = btrfs_valid_slot(root, found_key, path)) == 0 \
+> +		);								  \
+> +		path->slots[0]++						  \
+> +	)
+> +
+>  static inline int btrfs_next_old_item(struct btrfs_root *root,
+>  				      struct btrfs_path *p, u64 time_seq)
+>  {
+> 
