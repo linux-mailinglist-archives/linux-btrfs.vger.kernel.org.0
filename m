@@ -2,48 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5382B3FBC85
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 20:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BCC3FBCC5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 21:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbhH3SgI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Aug 2021 14:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhH3SgI (ORCPT
+        id S232138AbhH3TJP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Aug 2021 15:09:15 -0400
+Received: from mail-lf1-f54.google.com ([209.85.167.54]:33694 "EHLO
+        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231736AbhH3TJP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Aug 2021 14:36:08 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCEAC061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 11:35:14 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id a10so16695166qka.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 11:35:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=F4C8FA5qjblqw9MqS8IoSzulq6kxeP4sGsUyt6Vx2Tk=;
-        b=OxNeI7tJ4Q/Pqcdx6TgcovwpIb33OJzKHaDERCkPn2e1MnedqE1IOQ1uU4Yb4tCeRO
-         CuuDDKXMgA0T7drsau0SRKF9Gr5kFGFCkRQug8kgZEeNmGvu9IoKuVh20dwpPOyVvnu3
-         SNbABYYX5usVOHBjNMC0bCAvMDdQYfGhsKfdmD8u5JyalH9eS6mOhOkSuLZ8mtzInE4d
-         x43So/AcBa1gLEkw8fW8qNyr/eNOaAWjr135op8py19ONukaBc3uClc1vAougefT2i1H
-         j1IA/MrfC68qm+9Mwz2c6E3BaCiZF5OKEYBa9t+MoOt95RsfQEfoCgxrTb4S4Oz9ulcD
-         DNiw==
+        Mon, 30 Aug 2021 15:09:15 -0400
+Received: by mail-lf1-f54.google.com with SMTP id p38so33453666lfa.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 12:08:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=F4C8FA5qjblqw9MqS8IoSzulq6kxeP4sGsUyt6Vx2Tk=;
-        b=OU4u9ims4+qflN6eDCclcq55iZpnvzLguQlEtLJiQi3fiHKCJAkY5yUD1SUUuzkPvb
-         iGwXdSBmtSlBQRiV73dWusyxpgei8vCAxkdnTJt08eTKYiHxMyi+j/Hb4RqSg5Abqszo
-         gzFm7irSYkUTtcslfx2nl2QyKJ+6WgqUTVtNK7+ZYSLoAtUOV5z1NKldILXIdp3N5xx5
-         k93UglaEnf2Q8NhIsaebpT+0dIh2O0EsNbC8tvMiXoN0MJbF+mMOU9+U5E3SbJNNYCrv
-         5XyVLzMm7zG1bvpCQPnkrwWZXDdKPWzBTGzzgQBH8LICUM1OiUO1iI4CQnnGJz5ocJk+
-         UtiQ==
-X-Gm-Message-State: AOAM530xca4hT9fLnmoKSpYD3W07DCgDUgfsX0rUGtwvzZpGid/cp+Va
-        CE5G93KjEiclMfoEN0VYyoEONOXCnvUQ6RrJS+Zg/q3JWLg=
-X-Google-Smtp-Source: ABdhPJxm83X8PHK7JvQl462GqWx2UgOXFcrhjNLFsM13HEnmkzPciwok5lJ+4mr7oB5RbPct32GtDq6ANfzt+/0YloM=
-X-Received: by 2002:a05:620a:444b:: with SMTP id w11mr23655924qkp.479.1630348513551;
- Mon, 30 Aug 2021 11:35:13 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XKdXrfUWiKul/R0Ht2C1noK7U5YABoCTXn18esa4TCI=;
+        b=WqwZVzDv8nJDZZ2CVzROO5QRSVUwIa4dAVUOpkk8ppiu7RX3SxQ1LOhv/PCirVF2i9
+         yvn1An2Y0K4MYTOsaPH6mAz2Dw6erZIh5VGLh3+TQVfkKl/uYkuRuHJm/8GeK5wGLpT/
+         nJqvAS6g0RbIWX/71Gklx7cZzg8nRDBGB86ylcUc7VWiAS0tp+l3Z0id985YP7z1s17E
+         CSfkuc95a2rMKUWfVYs0lx7Kxf9biwVS++2/CrCGQ62QSKQdq7L9l0LJNhAy3cRRx6DH
+         SLMfJIecF3YBdTbiOkv6kg0GfvQ+OPoTHgIta1sPepgZzOvBhJ5m+OtOhtFkDuSlAS3T
+         eWSQ==
+X-Gm-Message-State: AOAM530VFRGbuP7HzHruSdFSXa4/5t/WS0zi9Z2Q7h7pRvfAlpqdk/j0
+        pMuGzd15GUdKquBAS/RJnmBAfkzJpEWOxIrk/lRlmm8g1Aw=
+X-Google-Smtp-Source: ABdhPJzNAlhNH4F0YzzCRtvhXa8/avR3tXdCKrq+3Nxher1fW7Js1/VWZuXHstOFPxetvbgfPDO08NocO9cIjBjYOdA=
+X-Received: by 2002:a05:6512:21c3:: with SMTP id d3mr17196038lft.226.1630350500058;
+ Mon, 30 Aug 2021 12:08:20 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMkEVXCdihawH1PgS6TiMchQ@mail.gmail.com>
  <CAL3q7H5P1+s5LOa6TutNhPKOyWUA7hifjD1XuhBP6_e3SQzR8Q@mail.gmail.com>
@@ -53,48 +39,29 @@ References: <CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMkEVXCdihawH1PgS6TiMchQ@mail.gmail.com>
  <CAL3q7H5xkGiLcfMYDb8qHw9Uo-yoaEHZ7ZabGHhcHfXXAKrWYA@mail.gmail.com>
  <CAOaVUnUwoq69UZ_ajoxYYOHk8RRgGPNZrcm9YzcmXfDgy24Nfw@mail.gmail.com>
  <CAL3q7H67Nc7vZrCpxAhoWxHObhFn=mgOra+tFt3MjqMSXVFXfQ@mail.gmail.com>
- <CAL3q7H46BpkE+aa00Y71SfTizpOo+4ADhBHU2vme4t-aYO6Zuw@mail.gmail.com> <CAOaVUnXXVmGvu-swEkNG-N474BcMAGO1rKvx26RADbQ=OREZUg@mail.gmail.com>
-In-Reply-To: <CAOaVUnXXVmGvu-swEkNG-N474BcMAGO1rKvx26RADbQ=OREZUg@mail.gmail.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 30 Aug 2021 19:34:37 +0100
-Message-ID: <CAL3q7H5UH012m=19sj=4ob-d_LbWqb63t7tYz9bmz1wXyFcctw@mail.gmail.com>
+ <CAL3q7H46BpkE+aa00Y71SfTizpOo+4ADhBHU2vme4t-aYO6Zuw@mail.gmail.com>
+ <CAOaVUnXXVmGvu-swEkNG-N474BcMAGO1rKvx26RADbQ=OREZUg@mail.gmail.com> <CAL3q7H5UH012m=19sj=4ob-d_LbWqb63t7tYz9bmz1wXyFcctw@mail.gmail.com>
+In-Reply-To: <CAL3q7H5UH012m=19sj=4ob-d_LbWqb63t7tYz9bmz1wXyFcctw@mail.gmail.com>
+From:   Darrell Enns <darrell@darrellenns.com>
+Date:   Mon, 30 Aug 2021 12:08:09 -0700
+Message-ID: <CAOaVUnVL508_0xJovhLqxv_zWmROEt-DnmQVkNkTwp0GHPND=Q@mail.gmail.com>
 Subject: Re: Backup failing with "failed to clone extents" error
-To:     Darrell Enns <darrell@darrellenns.com>
+To:     fdmanana@gmail.com
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 6:38 PM Darrell Enns <darrell@darrellenns.com> wrot=
-e:
->
-> I still have the snapshots, and will try and test with the debug patch
-> later today. I am actually using -c. I was doing this using snap-sync
-> (https://github.com/wesbarnett/snap-sync), which uses -c. The full
-> command for my test is:
->
-> btrfs send -vvv -c /.snapshots/327/snapshot
-> /.snapshots/374/snapshot/|pv|btrfs receive /mnt/backup/test
->
-> This is taken directly from what snap-sync does (just with the added
-> verbosity). Is -c potentially part of the problem?
+Yes, those are the correct IDs:
+$btrfs subvolume list /|grep '\(881\)\|\(977\)'
+ID 881 gen 35385 top level 453 path .snapshots/327/snapshot
+ID 977 gen 39922 top level 453 path .snapshots/374/snapshot
 
-Nop, as long as:
-
-1) /.snapshots/327/snapshot is the snapshot with ID 881;
-2) /.snapshots/374/snapshot is the snapshot with ID 977.
-
-Passing only one -c without a -p, is the equivalent of using a -p with
-the same argument (and no -c argument).
-
-Thanks, for trying it out!
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+The only thing I get in dmesg when running with the debug patch is this:
+[   97.010373] BTRFS info (device dm-3): disk space caching is enabled
+[   97.010375] BTRFS info (device dm-3): has skinny extents
+[  209.435073] BTRFS info (device dm-3): clone: -EINVAL other, src
+400186 (root 2789) dst 400186 (root 2789), off 79134720 destoff
+79134720 len 4751360 olen 4751360, src i_size 83886080 dst i_size
+83886080 bs 4096 remap_flags 0
