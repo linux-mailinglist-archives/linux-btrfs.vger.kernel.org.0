@@ -2,88 +2,197 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44EA03FB84A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 16:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3BF3FB8AC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 17:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbhH3O3j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Aug 2021 10:29:39 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47680 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237445AbhH3O3i (ORCPT
+        id S237296AbhH3PCj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Aug 2021 11:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237123AbhH3PCj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Aug 2021 10:29:38 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 96E8622096;
-        Mon, 30 Aug 2021 14:28:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630333723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vgJMcVdpmONaB3cVaRoAG2QQphpCV64IYb5574ybOU8=;
-        b=g/o3kmLatlEQtTHgYm0PmRHqsWaoHo5neVhtPoAE+ohi2qlippJDwcZV2/J7Mj+Mhi0NHB
-        RbK4s4QvuMBHh8SI7qoL8nsSYTFelslWv3vI66oVrFHUISpJJkzTEfq6nZN8li3Ny57Nxe
-        g+VcOH2MxW6TAmp+A+pNqMI9lCsC/dY=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6353513990;
-        Mon, 30 Aug 2021 14:28:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 3ON5FRvrLGE9BgAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Mon, 30 Aug 2021 14:28:43 +0000
-Subject: Re: [PATCH v2 3/4] btrfs: introduce btrfs_subpage_bitmap_info
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210817093852.48126-1-wqu@suse.com>
- <20210817093852.48126-4-wqu@suse.com>
- <7b9c1c27-1938-4702-e6b2-db5a840f7a84@suse.com>
- <20210823164540.GG5047@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <7f090871-17c5-cad2-b30a-807ff8509d1d@suse.com>
-Date:   Mon, 30 Aug 2021 17:28:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 30 Aug 2021 11:02:39 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636F8C061575;
+        Mon, 30 Aug 2021 08:01:45 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id c19so11886736qte.7;
+        Mon, 30 Aug 2021 08:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=TGM5KPoztdGWIn09bQ9Ii42F5RCnfkHNQpM2VuCOXAA=;
+        b=EKOqzOLqeypK4pONnJjcEuZt/2oxXRPaVTkx32Du+iEZN+MeKz9e/lmmznjW1EZynv
+         iYiLkDoE7vzJdJXUqVQ92fK10Tnme2r55tEpqmHkKvnBJNJjb6jEIANWUm+SPdcV3pix
+         mCI1lHml0DQljUFZHPbxWUU+a+adbIbKusH+xQaFmYFql2ekB6LJ+2WvwCfnni6DSsMu
+         +p+/rTGlvNJQb6ozsQyHJzFOgfpHT/sVa97bFQJmkjBQ+B82+VV989g5irSzeHvtokTZ
+         YFZSDVw9Y5wYTjYnLFZO07wFD0QF2d/POCYR/En/YBGlJOLlg+JzdiVt9sWx0dwicOlt
+         Ihwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=TGM5KPoztdGWIn09bQ9Ii42F5RCnfkHNQpM2VuCOXAA=;
+        b=pc9dkDQGtQVZfhBJDf9lK+AWAot1dejoaGkFABs052wWree2ipt1t9FEh7Bx1/JC6W
+         D5p1LxVHT249YRQ3BcGnPMiLAVVnvp9BtCOHcVKI+LPIXvhjd7OIWp8Jlf3cQfyz/cTj
+         gwCJm5SVK4er17nx7VjRL0vKTYa2LHofz+HMCUIrqMk81/0zbCzcDn/kGmqgE2aGeKU7
+         DPAyVkyLgx9ehK/+hfokt2G6c561fWwEaWCcbNRvVAVVJ6g4KnNbqLZjgVv3yPrGpjdk
+         r7QcUHd+KwsR4ndzlgfBUt8bz0UREu8HNbtROBk39hmIzTEGvaBdcmG4XpRl9Uzn7Dht
+         RSPg==
+X-Gm-Message-State: AOAM530D2Q/kw+FWPkY2UMN0TXFp8Ie8F6UtO0qQbs6OJKSaYBBlnd+C
+        ecO2DR2IgDAzYB+kLwVf00TMCUpDoqPPt/JNg2maPKbgmDg=
+X-Google-Smtp-Source: ABdhPJxuCQgq16wPBy7/cPtjvBzkG8xjzFpXaQAdya/WDxlNLmGvw0wprMEKRKX1xLc32BwbicSnzSEkaB1BXIoVZ+U=
+X-Received: by 2002:ac8:424c:: with SMTP id r12mr21237201qtm.183.1630335692208;
+ Mon, 30 Aug 2021 08:01:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210823164540.GG5047@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210830122306.882081-1-nborisov@suse.com> <20210830122306.882081-2-nborisov@suse.com>
+In-Reply-To: <20210830122306.882081-2-nborisov@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 30 Aug 2021 16:01:21 +0100
+Message-ID: <CAL3q7H5Hv4c9z=W4a+NQXfiPUNU3KsTmuanYQ1G_EJrigbsACQ@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] btrfs: Add test for rename/exchange behavior
+ between subvolumes
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Aug 30, 2021 at 1:23 PM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+> This tests ensures that renames/exchanges across subvolumes work only
+> for other subvolumes and are otherwise forbidden and fail.
+>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+> Changes in V2:
+>  * Added cross-subvol rename tests
+>  * Added cross-subvol subvolume rename test
+>  * Added ordinary volume rename test
+>  * Removed explicit sync
+>
+>  tests/btrfs/246     | 43 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/246.out | 27 +++++++++++++++++++++++++++
+>  2 files changed, 70 insertions(+)
+>  create mode 100755 tests/btrfs/246
+>  create mode 100644 tests/btrfs/246.out
+>
+> diff --git a/tests/btrfs/246 b/tests/btrfs/246
+> new file mode 100755
+> index 000000000000..eeb12bb457a8
+> --- /dev/null
+> +++ b/tests/btrfs/246
+> @@ -0,0 +1,43 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
+> +#
+> +# FS QA Test 246
+> +#
+> +# Tests rename exchange behavior when subvolumes are involved. This is a=
+lso a
+> +# regression test for 3f79f6f6247c ("btrfs: prevent rename2 from exchang=
+ing a
+> +# subvol with a directory from different parents").
+
+And it's also a regression test for commit 3f79f6f6247c83 ("btrfs:
+prevent rename2 from exchanging a subvol with a directory from
+different parents"),
+which is actually the fix that motivated v1 of this test case.
+
+> +#
+> +. ./common/preamble
+> +_begin_fstest auto quick rename subvol
+> +
+> +# Import common functions.
+> + . ./common/renameat2
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_require_renameat2 exchange
+> +_require_scratch
+> +
+> +_scratch_mkfs >> $seqres.full 2>&1
+> +_scratch_mount
+> +
+> +# Create 2 subvols to use as parents for the rename ops
+> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1 1>/dev/null
+> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol2 1>/dev/null
+> +
+> +# Ensure cross subvol ops are forbidden
+> +_rename_tests_source_dest $SCRATCH_MNT/subvol1/src $SCRATCH_MNT/subvol2/=
+dst "cross-subvol" "-x"
+> +
+> +# Prepare a subvolume and a directory whose parents are different subvol=
+umes
+> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1/sub-subvol 1>/dev=
+/null
+> +mkdir $SCRATCH_MNT/subvol2/dir
+> +
+> +# Ensure exchanging a subvol with a dir when both parents are different =
+fails
+> +$here/src/renameat2 -x $SCRATCH_MNT/subvol1/sub-subvol $SCRATCH_MNT/subv=
+ol2/dir
+
+Where is the test for renaming a subvolume and the test(s) for regular rena=
+mes?
+The v2 changelog mentions those tests were added, but all the tests I
+see here are doing rename exchanges only.
+
+I must have missed something subtle.
+
+Thanks.
+
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/246.out b/tests/btrfs/246.out
+> new file mode 100644
+> index 000000000000..d50dc28b1b40
+> --- /dev/null
+> +++ b/tests/btrfs/246.out
+> @@ -0,0 +1,27 @@
+> +QA output created by 246
+> +cross-subvol none/none -> No such file or directory
+> +cross-subvol none/regu -> No such file or directory
+> +cross-subvol none/symb -> No such file or directory
+> +cross-subvol none/dire -> No such file or directory
+> +cross-subvol none/tree -> No such file or directory
+> +cross-subvol regu/none -> No such file or directory
+> +cross-subvol regu/regu -> Invalid cross-device link
+> +cross-subvol regu/symb -> Invalid cross-device link
+> +cross-subvol regu/dire -> Invalid cross-device link
+> +cross-subvol regu/tree -> Invalid cross-device link
+> +cross-subvol symb/none -> No such file or directory
+> +cross-subvol symb/regu -> Invalid cross-device link
+> +cross-subvol symb/symb -> Invalid cross-device link
+> +cross-subvol symb/dire -> Invalid cross-device link
+> +cross-subvol symb/tree -> Invalid cross-device link
+> +cross-subvol dire/none -> No such file or directory
+> +cross-subvol dire/regu -> Invalid cross-device link
+> +cross-subvol dire/symb -> Invalid cross-device link
+> +cross-subvol dire/dire -> Invalid cross-device link
+> +cross-subvol dire/tree -> Invalid cross-device link
+> +cross-subvol tree/none -> No such file or directory
+> +cross-subvol tree/regu -> Invalid cross-device link
+> +cross-subvol tree/symb -> Invalid cross-device link
+> +cross-subvol tree/dire -> Invalid cross-device link
+> +cross-subvol tree/tree -> Invalid cross-device link
+> +Invalid cross-device link
+> --
+> 2.17.1
+>
 
 
-On 23.08.21 г. 19:45, David Sterba wrote:
-> On Tue, Aug 17, 2021 at 01:11:43PM +0300, Nikolay Borisov wrote:
->>> +/*
->>> + * Extra info for subpapge bitmap.
->>> + *
->>> + * For subpage we pack all uptodate/error/dirty/writeback/ordered
->>> + * bitmaps into one larger bitmap.
->>> + *
->>> + * This structure records how they are organized in such bitmap:
->>> + *
->>> + * /- uptodate_offset	/- error_offset	/- dirty_offset
->>> + * |			|		|
->>> + * v			v		v
->>> + * |u|u|u|u|........|u|u|e|e|.......|e|e| ...	|o|o|
->>
->> nit: the 'e' that the dirty offset is pointing to should be a 'd', I'm
->> sure David can fix this while merging.
-> 
-> I don't see any 'e' under the dirty offset arrow, there's just 'o' and
-> the arrow points to end of |e|e| and continues with ...
-> 
+--=20
+Filipe David Manana,
 
-What I wanted to say is that every arrow beneat the respective type -
-uptodate/error/dirty should point to a letter corresponding to the first
-letter of the respective word. I.e the dirty offset points into ...
-whilst the |o|o| at the end likely mean "other" but is confusing i.e
-dirty offset should be pointing to a |d| box.
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
