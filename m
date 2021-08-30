@@ -2,70 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1F63FBD2A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 21:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56913FBD2D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Aug 2021 21:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbhH3Tuz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Aug 2021 15:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39058 "EHLO
+        id S234033AbhH3Tx5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Aug 2021 15:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231185AbhH3Tuy (ORCPT
+        with ESMTP id S234008AbhH3Tx4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Aug 2021 15:50:54 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1627C061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 12:50:00 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id n126so30392496ybf.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 12:50:00 -0700 (PDT)
+        Mon, 30 Aug 2021 15:53:56 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74933C061575
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 12:53:02 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id gf5so9026370qvb.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Aug 2021 12:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6VmiuSr7tFuiDv7Ztcal9YXliS9BB3d2FzSxR+M09uo=;
-        b=yFjFVRb3FGhbHhkMlwWUGMpLwEXp/PuJLL5zcJ0znaUPd3UENns67xK8wpt6Nzic9o
-         BNJ2iiHt9++77sDHFaF2OslDpmr//rPvRQAI8Lc3gjKRsv89U06gmZM+Yt7oZ/yby6R8
-         WRZZdVY0212J2fLRiD6XVrXxmhEsRhyDDYa2MQBAAiAC66dj5KAieBPTN0CYjhy8pgeT
-         Hb5+Vpw58pPR0U3iI6Pa1XWOxtdqatOvlk5WgWHjFYway3MXUdLweeYy3+/O/u6T1F9x
-         yeI+qC+cfQIbRMqUQqUHfni7j/9vE4qjm8T+6URLmg541DfSfkW95N6W5Y3y96jDIRIi
-         XFsA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Fe+HznumnxKKIZDcA2KBs6zAgwpU1GEnNMESfbfxOLw=;
+        b=aZtUCXDT/uCAaWtvgx6yC7m6H9CB92Llq8mRn9TNGUt1e6IlbK6TFsLa9/Oz9sV3TA
+         P2s5WDuLc65fNkjAD7HMkJWVkfAs07wRhvoIpIlkjblI7o3Uextp2U5KHZN5iA0H1VWL
+         sB3SkGgCPpClOR1tfmPWUNpwRB/4ZYPUIkYFHKYxHFIP1XrpdMU329jYxnbTEUyr5A82
+         jYe0y2WmNV/b+oWGHK4toBGtCbJ9o3lHNEJYJRxdXC4C3kUGQc/T6xF/Ad7pWVaTv1vv
+         XMEefA7z135viS++x/q773mBDTKNQc6H0rMSnK2qSygDGJExypHh12gwlulVBfSkcL7C
+         8jvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6VmiuSr7tFuiDv7Ztcal9YXliS9BB3d2FzSxR+M09uo=;
-        b=p3+mCLz3ChZ5xAu5xuln1zgHhToJOywjBJxpgU/jW0eu8osghERg4Y/DbHUQ0m0oyV
-         xjxznb00B1xjbpFUIsXI1+o9kKNEQHeloJrUaGhl3bMyQ1JTwzl5U1WCurygOuh42jql
-         E+94yP9W28rhWyF9ntvbArs9p6ZiWrK7OrjL3HX1CE/AwjYRLuUMW2McJ1oV56q6mx3f
-         3XiwvOmrrjGI3FuPRdPCVvxG4JQb/7R1EvzGk+zgdaue2c9cf2iHgpkSpK/JUXhlFo7o
-         VY448Q2q1Z1zOtHid9tTmYWgiWR2YeMUbrO+M6Wvl8zt8kUoYfY2trLyZLqF4SisR4Bo
-         mTKQ==
-X-Gm-Message-State: AOAM530ON7xkhhX74lWWpxE0sE3z1oY9y8UKNKtyT7GwzIRdJ417Qr/Q
-        FzSHJ4FapInOMP68aAzMwL8VYdRwu8h41WsUxKv7LcZb4/DJWNAp
-X-Google-Smtp-Source: ABdhPJx+VKZ7rCByeqCkj/ruK+DuAMBBYyo6T01mdmePmJXOxQbuoB9FQsbISUJOCGLET1msu7X7ul9Z9aKtT0Mkb4I=
-X-Received: by 2002:a25:6cc1:: with SMTP id h184mr24564921ybc.240.1630352998869;
- Mon, 30 Aug 2021 12:49:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Fe+HznumnxKKIZDcA2KBs6zAgwpU1GEnNMESfbfxOLw=;
+        b=oD1SMesHIFHlbQqQ82aEEblCRW+4nxGnHB3J9Ra1nafuwq/eUYh1mRCM+XoPheUCF8
+         GeHoyPC1hyZ5RtdY0PXLHH2OS4Y+rZ39gvBaq8J5gi1i9DzCkjywGmKQlUs0V5gDe5BY
+         2JHF3iVfxUp+poy1EYLwKjKg1YJeK4kqfhstdd5XIpvXAvkpZF0rTYNrDfG/RLyMyCcy
+         Kg2rLpnKTpqtUYDMM8rlfMI3C28CDMDtZE9urPBy/GdXNTvo6i6KCz9coz+SsR+7WTKK
+         w1cPgi7e6mtoO7RJEFnxEo3iS4s3CCkP0Pv5HLrp360ccwnVq01D6O6w1k7TuWWo7joK
+         F02g==
+X-Gm-Message-State: AOAM530bjUPdLKruckYfvohLly0oPCp8yi/0+QgS80pZHSNqQRneynQ1
+        R32+VaiwdXZPLZ1ASpWLw9s4S65qW1omgEwf06BfJ8JK
+X-Google-Smtp-Source: ABdhPJyK/abU+oWCtX+2lGasmIa8kMyev4lQ6Lhd4Ccrq96i4L9bhcOg3d0nj0/oRj6J1u/6CsDml7xF80kD6ZURTYA=
+X-Received: by 2002:ad4:4f50:: with SMTP id eu16mr24463482qvb.27.1630353181659;
+ Mon, 30 Aug 2021 12:53:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJCQCtSXKHSToLeOOconR_nKeuk8RjGjT7_z2QvV9=2zHfYB6g@mail.gmail.com>
-In-Reply-To: <CAJCQCtSXKHSToLeOOconR_nKeuk8RjGjT7_z2QvV9=2zHfYB6g@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 30 Aug 2021 13:49:42 -0600
-Message-ID: <CAJCQCtSjuEg8LAedxaqpRCOEq5BgegB7=QVJP8Sq3iZUFWn1rw@mail.gmail.com>
-Subject: Re: 5.13.8, enospc with 6G unused
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMkEVXCdihawH1PgS6TiMchQ@mail.gmail.com>
+ <CAL3q7H5P1+s5LOa6TutNhPKOyWUA7hifjD1XuhBP6_e3SQzR8Q@mail.gmail.com>
+ <CAOaVUnU6z8U0a2T7a0cLg1U=b1bfyq_xHa8hoXMnu6Qv1E-z+g@mail.gmail.com>
+ <CAL3q7H7kbgsiTfLWWYJikuWOFP9yXSdgav2EEonx98pPhSEQNA@mail.gmail.com>
+ <CAOaVUnV9FJSVBxmX-tAeZJCq+0rPoY2zga8nuw_toC=tdt8K0w@mail.gmail.com>
+ <CAL3q7H5xkGiLcfMYDb8qHw9Uo-yoaEHZ7ZabGHhcHfXXAKrWYA@mail.gmail.com>
+ <CAOaVUnUwoq69UZ_ajoxYYOHk8RRgGPNZrcm9YzcmXfDgy24Nfw@mail.gmail.com>
+ <CAL3q7H67Nc7vZrCpxAhoWxHObhFn=mgOra+tFt3MjqMSXVFXfQ@mail.gmail.com>
+ <CAL3q7H46BpkE+aa00Y71SfTizpOo+4ADhBHU2vme4t-aYO6Zuw@mail.gmail.com>
+ <CAOaVUnXXVmGvu-swEkNG-N474BcMAGO1rKvx26RADbQ=OREZUg@mail.gmail.com>
+ <CAL3q7H5UH012m=19sj=4ob-d_LbWqb63t7tYz9bmz1wXyFcctw@mail.gmail.com> <CAOaVUnVL508_0xJovhLqxv_zWmROEt-DnmQVkNkTwp0GHPND=Q@mail.gmail.com>
+In-Reply-To: <CAOaVUnVL508_0xJovhLqxv_zWmROEt-DnmQVkNkTwp0GHPND=Q@mail.gmail.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 30 Aug 2021 20:52:25 +0100
+Message-ID: <CAL3q7H7MxhvzLAe1pv+R8J=fNrEX2bDMw1xWUcoZsCCG-mL5Mg@mail.gmail.com>
+Subject: Re: Backup failing with "failed to clone extents" error
+To:     Darrell Enns <darrell@darrellenns.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-After remounting with enospc_debug and rerunning btrfs balance start
--dlimit=1 and there is a ton of output...
+On Mon, Aug 30, 2021 at 8:08 PM Darrell Enns <darrell@darrellenns.com> wrot=
+e:
+>
+> Yes, those are the correct IDs:
+> $btrfs subvolume list /|grep '\(881\)\|\(977\)'
+> ID 881 gen 35385 top level 453 path .snapshots/327/snapshot
+> ID 977 gen 39922 top level 453 path .snapshots/374/snapshot
+>
+> The only thing I get in dmesg when running with the debug patch is this:
+> [   97.010373] BTRFS info (device dm-3): disk space caching is enabled
+> [   97.010375] BTRFS info (device dm-3): has skinny extents
+> [  209.435073] BTRFS info (device dm-3): clone: -EINVAL other, src
+> 400186 (root 2789) dst 400186 (root 2789), off 79134720 destoff
+> 79134720 len 4751360 olen 4751360, src i_size 83886080 dst i_size
+> 83886080 bs 4096 remap_flags 0
 
-full dmesg
-https://drive.google.com/file/d/1QjsWOCzzYckvXqDroKrAsuG80UGH1AlZ/view?usp=sharing
+Hum. Are you running exactly the same send operation, with the same snapsho=
+ts?
+Because there are no errors for inode 400698 (the one that previously faile=
+d).
 
-There are no snapshots. Three subvolumes. There's nothing unusual
-about this file system.
+That means either the previous send operation was not running, but
+instead some other for other snapshots (roots), or it ran with success
+and those errors are from some other send operation with other roots.
+
+Also, do you have any dedupe tool running in between the send operations?
+If you do, that might be doing deduplication on the snapshots and
+changing the extent layout of the inodes in a way that makes the
+previous send that failed to succeed now.
+
+Thanks.
 
 
-Chris Murphy
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
