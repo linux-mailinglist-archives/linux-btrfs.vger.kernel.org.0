@@ -2,48 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF283FC67F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Aug 2021 13:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DBCA3FC682
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Aug 2021 13:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhHaLWI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Aug 2021 07:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S240993AbhHaLXG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Aug 2021 07:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhHaLWH (ORCPT
+        with ESMTP id S239576AbhHaLXF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:22:07 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B93C061575
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 04:21:10 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d2so14220631qto.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 04:21:10 -0700 (PDT)
+        Tue, 31 Aug 2021 07:23:05 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B13C7C061575
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 04:22:10 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id ew6so10092210qvb.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 04:22:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=D5Kx+78CnioB9qKaf7oS/HxHOnD5wAUKj2q/ghP85WU=;
-        b=Dt8QqJty00QmZd3hzlV1MTFlw/Py8lnhdMCLj6LgKZGcLBtL9U+clDUYGGeUUwkZAM
-         PDLI9rE+FhaxY2hQ9LOoqVbJ/0dB62ZhlhJx/G2oOcKBgsyyorbBa445nW563GmF0VsR
-         FDo7kG5sn820bba9wLusgLEyH4f21FXWXxhpF8bWsnk4AjaXgJYilsCi2g3rw5c1eNBn
-         pHHGgn1TN5C4CLT6Ur/GOnSgtOWgGKi470HA6Xrj30Zk7BGpV0ge5JlCNJkGIczisGxB
-         nUFoLkDk6niKQSLNZtrAU81p2eNYnnWes+yIM71hugnYC7YRCFI21iieKHX9bZcUhAx0
-         62gw==
+         :subject:to:cc:content-transfer-encoding;
+        bh=qedAv8cgRW+lyO+mYCUNqrvWuH3+WzLppepdqwnS7Bc=;
+        b=rZUdc7rEwJQ81+JPDCYWB15Rqb3iBYhnX6H2HLD//2NB1pb6qaHZw2voBxLKePr00H
+         CEZzfMrFXRHCaBlTvYzT1p3k11fPgOAjo66TB6gegRZ7i9YdbNkdn+m1XIaMXFMKQbC9
+         g+WjihZ1PJ33aDDJTAgszr82ws/gH7Mye4nSxd9nSnlyqXSuM7huO/J+UZEXDmggUX/J
+         sII9SDF2T1mUYiYgaDtEGBC8hhfnIprWo2ZlWgk4BCS67YMpKs49t4SZ+Nl5ReWwucwf
+         au28KO6Ntfn4V6Nx9RYW1oHMDalNTXiUW2SjGshH6rDBfLGT14veoZ0NqTygmyhUAHec
+         SPsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=D5Kx+78CnioB9qKaf7oS/HxHOnD5wAUKj2q/ghP85WU=;
-        b=mAKh+KUaGoqSEqlAeUiVfU4td70TPeBMpF83fCbzzoYqLqbS9VyuCC1Y7JKtNzf62Q
-         Loc7gGTr93SEi2gjO+sMmnXzGQGHgPF6/1BpMBpK6AjB7ALNdMGhUPwFd/XZ2xoJWBdB
-         PEYPju6A8xCg/pNxwEfBPZD2uIO6u1WKBZQFxkFr6JHzvuKmntSCf9mTb5PkS7HcXvQq
-         1W/vY9gJWSXioob1QXCVlAJMpEXBjoLJH5FdE8vNKbJgaDUqCiQGmCwNJbgpelAomCUF
-         0WhOtmEOoonoZ94R+LWCYFBFRNdwk6aXJai+4yMkE2FHUiBCEL0cj1o7DL+mjtSSX1UO
-         dJPA==
-X-Gm-Message-State: AOAM532bmprQkDjg7zVKGizqqHEl8GqWEuBOQXXsaz3LxRhdGFUGkzT4
-        YOANi7y6wOA0pQr/siOrZWzoKLZjYUe9sLXZ6xDIs3x0R7Q=
-X-Google-Smtp-Source: ABdhPJxrnBz45RQ6s7aAelf9JSFFyoNZf6q7Pi9RD6JZoE8Hcz4RUm8qkLNJYtVEv3iMjpUk4T5RboWuCWYargDj5KQ=
-X-Received: by 2002:a05:622a:254:: with SMTP id c20mr2141377qtx.213.1630408869202;
- Tue, 31 Aug 2021 04:21:09 -0700 (PDT)
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=qedAv8cgRW+lyO+mYCUNqrvWuH3+WzLppepdqwnS7Bc=;
+        b=aHOhtHxz/mljHXV0RlGruDuoW/Z5MRIpLRmH8bAO56Fy+M8IxBj5raMbHUW2gToknj
+         qaj0p9TvOQpSraL3qAgp6r4R/kWMSWV6yejujNT6sjO1NdQUcd29K4mUSE/uKqWwrbuY
+         SibMBaCf5HY+22hvbLAhLQk3mkpnXeOnW6+87v4fTcGBNH4q/54OzTTubKUVGctZmdpw
+         j9Tp8Yraal2tcwW57vlZjRvZJ8k/HUURToj9JMggsoqA4/v+IQn4IoCCqkcty/hqg9L2
+         3+n/PDZrSgfKQcmk4eBwmQxae5RMHB5qyjnoerVw1D5qc1o5pkpLoGRmRZuQzWtn6DM5
+         y9pQ==
+X-Gm-Message-State: AOAM531NIjf8mvwh0M05fb0auyNejm6Kkk+/mf/YzkUuRxwIi07RvsG5
+        oDb3QueQi9cOIrWArU4Nh/DLIFeWDFlODk4hvW6OcH2i
+X-Google-Smtp-Source: ABdhPJx04ebksKT/rPNC2JBKonsbqNx8xCenmQBwQ4D2OrHb5TluVcmmVBavnCES31X7cS9jfz6ZC6UkqOL1czTWwf0=
+X-Received: by 2002:a0c:ac48:: with SMTP id m8mr22061892qvb.28.1630408929869;
+ Tue, 31 Aug 2021 04:22:09 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMkEVXCdihawH1PgS6TiMchQ@mail.gmail.com>
  <CAL3q7H5P1+s5LOa6TutNhPKOyWUA7hifjD1XuhBP6_e3SQzR8Q@mail.gmail.com>
@@ -59,88 +59,100 @@ References: <CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMkEVXCdihawH1PgS6TiMchQ@mail.gmail.com>
  <CAOaVUnVL508_0xJovhLqxv_zWmROEt-DnmQVkNkTwp0GHPND=Q@mail.gmail.com>
  <CAL3q7H7MxhvzLAe1pv+R8J=fNrEX2bDMw1xWUcoZsCCG-mL5Mg@mail.gmail.com>
  <CAOaVUnXB4qoAyVcm3H03Bj2rukZ+nbSzOdB4TsKpJjH8sqOr7g@mail.gmail.com>
- <CAL3q7H7vTFggDHDq=j+es_O3GWX2nvq3kqp3TsmX=8jd7JhM1A@mail.gmail.com> <CAOaVUnW6nb-c-5c56rX4wON-f+JvZGzJmc5FMPx-fZGwUp6T1g@mail.gmail.com>
-In-Reply-To: <CAOaVUnW6nb-c-5c56rX4wON-f+JvZGzJmc5FMPx-fZGwUp6T1g@mail.gmail.com>
+ <CAL3q7H7vTFggDHDq=j+es_O3GWX2nvq3kqp3TsmX=8jd7JhM1A@mail.gmail.com>
+ <CAOaVUnW6nb-c-5c56rX4wON-f+JvZGzJmc5FMPx-fZGwUp6T1g@mail.gmail.com> <CAL3q7H6h+_7P7BG11V1VXaLe+6M+Nt=mT3n51nZ2iqXSZFUmOA@mail.gmail.com>
+In-Reply-To: <CAL3q7H6h+_7P7BG11V1VXaLe+6M+Nt=mT3n51nZ2iqXSZFUmOA@mail.gmail.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 31 Aug 2021 12:20:32 +0100
-Message-ID: <CAL3q7H6h+_7P7BG11V1VXaLe+6M+Nt=mT3n51nZ2iqXSZFUmOA@mail.gmail.com>
+Date:   Tue, 31 Aug 2021 12:21:33 +0100
+Message-ID: <CAL3q7H5p9WBravwa6un5jsQUb24a+Xw1PvKpt=iBdHp4wirm8g@mail.gmail.com>
 Subject: Re: Backup failing with "failed to clone extents" error
 To:     Darrell Enns <darrell@darrellenns.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="0000000000007d008405cad9255f"
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---0000000000007d008405cad9255f
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Aug 31, 2021 at 3:46 AM Darrell Enns <darrell@darrellenns.com> wrot=
-e:
+On Tue, Aug 31, 2021 at 12:20 PM Filipe Manana <fdmanana@gmail.com> wrote:
 >
-> Debug output from the latest patch attached. Here's the error:
-> BTRFS info (device dm-3): clone: -EINVAL other, src 400186 (root 2792)
-> dst 400186 (root 2792), off 79134720 destoff 79134720 len 4751360 olen
-> 4751360, src i_size 83886080 dst i_size 83886080 bs 4096 remap_flags 0
+> On Tue, Aug 31, 2021 at 3:46 AM Darrell Enns <darrell@darrellenns.com> wr=
+ote:
+> >
+> > Debug output from the latest patch attached. Here's the error:
+> > BTRFS info (device dm-3): clone: -EINVAL other, src 400186 (root 2792)
+> > dst 400186 (root 2792), off 79134720 destoff 79134720 len 4751360 olen
+> > 4751360, src i_size 83886080 dst i_size 83886080 bs 4096 remap_flags 0
+>
+> Yep, the same weird thing as before.
+>
+> So the receiving filesystem gets that error, which is perfectly valid
+> since we are asking to clone from the same inode to the same inode in
+> the same root (snapshot) with the same source and destination offsets
+> - source range and target range overlap, whence the error.
+>
+> However, if we go the dmesg log:
+>
+> [   99.834090] BTRFS info (device dm-0): send: clone_range() start ino
+> 400698 offset 79134720 send root 977, clone root 881 ino 400698 offset
+> 79134720 data_offset 491520 len 4751360 disk_byte 308100730880
+> clone_src_i_size 83886080 next_write_offset 79134720
+> [   99.834094] BTRFS info (device dm-0): send: clone_range() step 1
+> ino 400698 offset 79134720, root offset 79134720 ino 400698
+> data_offset 491520 len 4751360, key.offset 78675968 ext_len 5210112
+> clone_data_offset 32768 found disk_byte 308100730880 next_write_offset
+> 79134720
+> [   99.834096] BTRFS info (device dm-0): send: clone_range() step
+> 2-1-2 ino 400698 offset 79134720, root offset 79134720 ino 400698
+> data_offset 491520 len 4751360, clone_len 4751360
+> [   99.834112] BTRFS info (device dm-0): send: clone_range() end ino
+> 400698 offset 79134720 send root 977, clone root 881 ino 400698 offset
+> 79134720 data_offset 491520 len 0 disk_byte 308100730880
+> clone_src_i_size 83886080 next_write_offset 79134720 ret 0
+>
+> We see that send is issuing a clone command using different roots
+> (snapshots) for the clone operation (send root is 977 and clone root
+> is 881).
+> The root/snapshot IDs are different in the source and destination
+> filesystems - that's normal and it's what happens most of the time.
+> However I don't understand how is the inode number different, nor much
+> less how the receiver attempts to use the same root/snapshot as both
+> the source and destination for the clone operation - it should use
+> different roots/snapshots.
+>
+> Ok, so, here's another kernel debug patch and also a patch for
+> btrfs-progs, both added as attachments.
+>
+> The kernel one also at:  https://pastebin.com/raw/nfHfRuy7
+> And the progs one also at:  https://pastebin.com/raw/9CbN9C0H
+>
+> When you run 'btrfs receive', you'll have to pass '-vvv' to it in
+> order to get the debug output.
+>
+> Also, please provide the output of:
+>
+> 1) btrfs subvolume list -puqR <source fs mount path>
+> 2) btrfs subvolume list -puqR <destination fs mount path>
+> 3) cat /proc/mounts
+>
+> I'm starting to suspect that somewhere, possibly the receiving side,
+> we make confusion with the snapshot uuids or generate wrong paths for
+> the clone operation.
 
-Yep, the same weird thing as before.
+Also, what's the btrfs-progs version being used? (type "btrfs
+--version" to get it)
 
-So the receiving filesystem gets that error, which is perfectly valid
-since we are asking to clone from the same inode to the same inode in
-the same root (snapshot) with the same source and destination offsets
-- source range and target range overlap, whence the error.
-
-However, if we go the dmesg log:
-
-[   99.834090] BTRFS info (device dm-0): send: clone_range() start ino
-400698 offset 79134720 send root 977, clone root 881 ino 400698 offset
-79134720 data_offset 491520 len 4751360 disk_byte 308100730880
-clone_src_i_size 83886080 next_write_offset 79134720
-[   99.834094] BTRFS info (device dm-0): send: clone_range() step 1
-ino 400698 offset 79134720, root offset 79134720 ino 400698
-data_offset 491520 len 4751360, key.offset 78675968 ext_len 5210112
-clone_data_offset 32768 found disk_byte 308100730880 next_write_offset
-79134720
-[   99.834096] BTRFS info (device dm-0): send: clone_range() step
-2-1-2 ino 400698 offset 79134720, root offset 79134720 ino 400698
-data_offset 491520 len 4751360, clone_len 4751360
-[   99.834112] BTRFS info (device dm-0): send: clone_range() end ino
-400698 offset 79134720 send root 977, clone root 881 ino 400698 offset
-79134720 data_offset 491520 len 0 disk_byte 308100730880
-clone_src_i_size 83886080 next_write_offset 79134720 ret 0
-
-We see that send is issuing a clone command using different roots
-(snapshots) for the clone operation (send root is 977 and clone root
-is 881).
-The root/snapshot IDs are different in the source and destination
-filesystems - that's normal and it's what happens most of the time.
-However I don't understand how is the inode number different, nor much
-less how the receiver attempts to use the same root/snapshot as both
-the source and destination for the clone operation - it should use
-different roots/snapshots.
-
-Ok, so, here's another kernel debug patch and also a patch for
-btrfs-progs, both added as attachments.
-
-The kernel one also at:  https://pastebin.com/raw/nfHfRuy7
-And the progs one also at:  https://pastebin.com/raw/9CbN9C0H
-
-When you run 'btrfs receive', you'll have to pass '-vvv' to it in
-order to get the debug output.
-
-Also, please provide the output of:
-
-1) btrfs subvolume list -puqR <source fs mount path>
-2) btrfs subvolume list -puqR <destination fs mount path>
-3) cat /proc/mounts
-
-I'm starting to suspect that somewhere, possibly the receiving side,
-we make confusion with the snapshot uuids or generate wrong paths for
-the clone operation.
-
-Thanks!
+>
+> Thanks!
+>
+>
+>
+> --
+> Filipe David Manana,
+>
+> =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you'=
+re right.=E2=80=9D
 
 
 
@@ -149,176 +161,3 @@ Filipe David Manana,
 
 =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
  right.=E2=80=9D
-
---0000000000007d008405cad9255f
-Content-Type: text/x-patch; charset="US-ASCII"; name="debug_send_clone_3.patch"
-Content-Disposition: attachment; filename="debug_send_clone_3.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kszz0odj0>
-X-Attachment-Id: f_kszz0odj0
-
-ZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL3JlZmxpbmsuYyBiL2ZzL2J0cmZzL3JlZmxpbmsuYwppbmRl
-eCA0YTVmMmMzNWMwMzQuLmE0YTAwZGI5ZDU0NyAxMDA2NDQKLS0tIGEvZnMvYnRyZnMvcmVmbGlu
-ay5jCisrKyBiL2ZzL2J0cmZzL3JlZmxpbmsuYwpAQCAtNzgwLDYgKzc4MCwxMyBAQCBzdGF0aWMg
-aW50IGJ0cmZzX3JlbWFwX2ZpbGVfcmFuZ2VfcHJlcChzdHJ1Y3QgZmlsZSAqZmlsZV9pbiwgbG9m
-Zl90IHBvc19pbiwKIAkvKiBEb24ndCBtYWtlIHRoZSBkc3QgZmlsZSBwYXJ0bHkgY2hlY2tzdW1t
-ZWQgKi8KIAlpZiAoKEJUUkZTX0koaW5vZGVfaW4pLT5mbGFncyAmIEJUUkZTX0lOT0RFX05PREFU
-QVNVTSkgIT0KIAkgICAgKEJUUkZTX0koaW5vZGVfb3V0KS0+ZmxhZ3MgJiBCVFJGU19JTk9ERV9O
-T0RBVEFTVU0pKSB7CisJCWlmICghKHJlbWFwX2ZsYWdzICYgUkVNQVBfRklMRV9ERURVUCkpIHsK
-KwkJCXN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZvID0gQlRSRlNfSShpbm9kZV9pbiktPnJv
-b3QtPmZzX2luZm87CisKKwkJCWJ0cmZzX2luZm8oZnNfaW5mbywgImNsb25lOiBub2RhdGFzdW0g
-bWlzbWF0Y2gsIHNyYyAlbGx1IChyb290ICVsbHUpIGRzdCAlbGx1IChyb290ICVsbHUpIiwKKwkJ
-CQkgICBidHJmc19pbm8oQlRSRlNfSShpbm9kZV9pbikpLCBCVFJGU19JKGlub2RlX2luKS0+cm9v
-dC0+cm9vdF9rZXkub2JqZWN0aWQsCisJCQkJICAgYnRyZnNfaW5vKEJUUkZTX0koaW5vZGVfb3V0
-KSksIEJUUkZTX0koaW5vZGVfb3V0KS0+cm9vdC0+cm9vdF9rZXkub2JqZWN0aWQpOworCQl9CiAJ
-CXJldHVybiAtRUlOVkFMOwogCX0KIApAQCAtODYzLDkgKzg3MCwxNiBAQCBsb2ZmX3QgYnRyZnNf
-cmVtYXBfZmlsZV9yYW5nZShzdHJ1Y3QgZmlsZSAqc3JjX2ZpbGUsIGxvZmZfdCBvZmYsCiAJc3Ry
-dWN0IGlub2RlICpkc3RfaW5vZGUgPSBmaWxlX2lub2RlKGRzdF9maWxlKTsKIAlib29sIHNhbWVf
-aW5vZGUgPSBkc3RfaW5vZGUgPT0gc3JjX2lub2RlOwogCWludCByZXQ7Ci0KLQlpZiAocmVtYXBf
-ZmxhZ3MgJiB+KFJFTUFQX0ZJTEVfREVEVVAgfCBSRU1BUF9GSUxFX0FEVklTT1JZKSkKKwlzdHJ1
-Y3QgYnRyZnNfZnNfaW5mbyAqZnNfaW5mbyA9IEJUUkZTX0koc3JjX2lub2RlKS0+cm9vdC0+ZnNf
-aW5mbzsKKwljb25zdCBsb2ZmX3Qgb2xlbiA9IGxlbjsKKworCWlmIChyZW1hcF9mbGFncyAmIH4o
-UkVNQVBfRklMRV9ERURVUCB8IFJFTUFQX0ZJTEVfQURWSVNPUlkpKSB7CisJCWJ0cmZzX2luZm8o
-ZnNfaW5mbywgImNsb25lOiAtRUlOVkFMIGZsYWdzLCBzcmMgJWxsdSAocm9vdCAlbGx1KSBkc3Qg
-JWxsdSAocm9vdCAlbGx1KSwgb2ZmICVsbGQgZGVzdG9mZiAlbGxkIGxlbiAlbGxkIG9sZW4gJWxs
-ZCwgc3JjIGlfc2l6ZSAlbGxkIGRzdCBpX3NpemUgJWxsZCBicyAlbHUgcmVtYXBfZmxhZ3MgJXUi
-LAorCQkJICAgYnRyZnNfaW5vKEJUUkZTX0koc3JjX2lub2RlKSksIEJUUkZTX0koc3JjX2lub2Rl
-KS0+cm9vdC0+cm9vdF9rZXkub2JqZWN0aWQsCisJCQkgICBidHJmc19pbm8oQlRSRlNfSShkc3Rf
-aW5vZGUpKSwgQlRSRlNfSShkc3RfaW5vZGUpLT5yb290LT5yb290X2tleS5vYmplY3RpZCwKKwkJ
-CSAgIG9mZiwgZGVzdG9mZiwgbGVuLCBvbGVuLCBpX3NpemVfcmVhZChzcmNfaW5vZGUpLCBpX3Np
-emVfcmVhZChkc3RfaW5vZGUpLCBkc3RfaW5vZGUtPmlfc2ItPnNfYmxvY2tzaXplLCByZW1hcF9m
-bGFncyk7CiAJCXJldHVybiAtRUlOVkFMOworCX0KIAogCWlmIChzYW1lX2lub2RlKSB7CiAJCWJ0
-cmZzX2lub2RlX2xvY2soc3JjX2lub2RlLCBCVFJGU19JTE9DS19NTUFQKTsKQEAgLTg3Niw2ICs4
-OTAsMTEgQEAgbG9mZl90IGJ0cmZzX3JlbWFwX2ZpbGVfcmFuZ2Uoc3RydWN0IGZpbGUgKnNyY19m
-aWxlLCBsb2ZmX3Qgb2ZmLAogCiAJcmV0ID0gYnRyZnNfcmVtYXBfZmlsZV9yYW5nZV9wcmVwKHNy
-Y19maWxlLCBvZmYsIGRzdF9maWxlLCBkZXN0b2ZmLAogCQkJCQkgICZsZW4sIHJlbWFwX2ZsYWdz
-KTsKKwlpZiAocmV0ID09IC1FSU5WQUwgJiYgIShyZW1hcF9mbGFncyAmIFJFTUFQX0ZJTEVfREVE
-VVApKQorCQlidHJmc19pbmZvKGZzX2luZm8sICJjbG9uZTogLUVJTlZBTCBvdGhlciwgc3JjICVs
-bHUgKHJvb3QgJWxsdSkgZHN0ICVsbHUgKHJvb3QgJWxsdSksIG9mZiAlbGxkIGRlc3RvZmYgJWxs
-ZCBsZW4gJWxsZCBvbGVuICVsbGQsIHNyYyBpX3NpemUgJWxsZCBkc3QgaV9zaXplICVsbGQgYnMg
-JWx1IHJlbWFwX2ZsYWdzICV1IiwKKwkJCSAgIGJ0cmZzX2lubyhCVFJGU19JKHNyY19pbm9kZSkp
-LCBCVFJGU19JKHNyY19pbm9kZSktPnJvb3QtPnJvb3Rfa2V5Lm9iamVjdGlkLAorCQkJICAgYnRy
-ZnNfaW5vKEJUUkZTX0koZHN0X2lub2RlKSksIEJUUkZTX0koZHN0X2lub2RlKS0+cm9vdC0+cm9v
-dF9rZXkub2JqZWN0aWQsCisJCQkgICBvZmYsIGRlc3RvZmYsIGxlbiwgb2xlbiwgaV9zaXplX3Jl
-YWQoc3JjX2lub2RlKSwgaV9zaXplX3JlYWQoZHN0X2lub2RlKSwgZHN0X2lub2RlLT5pX3NiLT5z
-X2Jsb2Nrc2l6ZSwgcmVtYXBfZmxhZ3MpOwogCWlmIChyZXQgPCAwIHx8IGxlbiA9PSAwKQogCQln
-b3RvIG91dF91bmxvY2s7CiAKZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL3NlbmQuYyBiL2ZzL2J0cmZz
-L3NlbmQuYwppbmRleCBhZmRjYmU3ODQ0ZTAuLjI1ODkzZTE3YTk1YiAxMDA2NDQKLS0tIGEvZnMv
-YnRyZnMvc2VuZC5jCisrKyBiL2ZzL2J0cmZzL3NlbmQuYwpAQCAtNTAzNyw2ICs1MDM3LDcgQEAg
-c3RhdGljIGludCBzZW5kX2Nsb25lKHN0cnVjdCBzZW5kX2N0eCAqc2N0eCwKIHsKIAlpbnQgcmV0
-ID0gMDsKIAlzdHJ1Y3QgZnNfcGF0aCAqcDsKKwlzdHJ1Y3QgZnNfcGF0aCAqcDI7CiAJdTY0IGdl
-bjsKIAogCWJ0cmZzX2RlYnVnKHNjdHgtPnNlbmRfcm9vdC0+ZnNfaW5mbywKQEAgLTUwNDQsOSAr
-NTA0NSwxOCBAQCBzdGF0aWMgaW50IHNlbmRfY2xvbmUoc3RydWN0IHNlbmRfY3R4ICpzY3R4LAog
-CQkgICAgb2Zmc2V0LCBsZW4sIGNsb25lX3Jvb3QtPnJvb3QtPnJvb3Rfa2V5Lm9iamVjdGlkLAog
-CQkgICAgY2xvbmVfcm9vdC0+aW5vLCBjbG9uZV9yb290LT5vZmZzZXQpOwogCisJV0FSTl9PTihj
-bG9uZV9yb290LT5yb290ID09IHNjdHgtPnNlbmRfcm9vdCAmJgorCQljbG9uZV9yb290LT5pbm8g
-PT0gc2N0eC0+Y3VyX2lubyAmJgorCQljbG9uZV9yb290LT5vZmZzZXQgPT0gb2Zmc2V0KTsKKwog
-CXAgPSBmc19wYXRoX2FsbG9jKCk7CiAJaWYgKCFwKQogCQlyZXR1cm4gLUVOT01FTTsKKwlwMiA9
-IGZzX3BhdGhfYWxsb2MoKTsKKwlpZiAoIXAyKSB7CisJCWZzX3BhdGhfZnJlZShwKTsKKwkJcmV0
-dXJuIC1FTk9NRU07CisJfQogCiAJcmV0ID0gYmVnaW5fY21kKHNjdHgsIEJUUkZTX1NFTkRfQ19D
-TE9ORSk7CiAJaWYgKHJldCA8IDApCkBAIC01MDU2LDYgKzUwNjYsOCBAQCBzdGF0aWMgaW50IHNl
-bmRfY2xvbmUoc3RydWN0IHNlbmRfY3R4ICpzY3R4LAogCWlmIChyZXQgPCAwKQogCQlnb3RvIG91
-dDsKIAorCWZzX3BhdGhfY29weShwMiwgcCk7CisKIAlUTFZfUFVUX1U2NChzY3R4LCBCVFJGU19T
-RU5EX0FfRklMRV9PRkZTRVQsIG9mZnNldCk7CiAJVExWX1BVVF9VNjQoc2N0eCwgQlRSRlNfU0VO
-RF9BX0NMT05FX0xFTiwgbGVuKTsKIAlUTFZfUFVUX1BBVEgoc2N0eCwgQlRSRlNfU0VORF9BX1BB
-VEgsIHApOwpAQCAtNTA5MywxMSArNTEwNSwyMSBAQCBzdGF0aWMgaW50IHNlbmRfY2xvbmUoc3Ry
-dWN0IHNlbmRfY3R4ICpzY3R4LAogCVRMVl9QVVRfVTY0KHNjdHgsIEJUUkZTX1NFTkRfQV9DTE9O
-RV9PRkZTRVQsCiAJCQljbG9uZV9yb290LT5vZmZzZXQpOwogCisJYnRyZnNfaW5mbyhzY3R4LT5z
-ZW5kX3Jvb3QtPmZzX2luZm8sCisJCSAgICJzZW5kX2Nsb25lOiBpbm8gJWxsdSBjbG9uZV9pbm8g
-JWxsdSBzZW5kX3Jvb3QgJWxsdSBjbG9uZV9yb290ICVsbHUgb2Zmc2V0ICVsbHUgY2xvbmVfb2Zm
-c2V0ICVsbHUgaW5vX3BhdGggJXMgY2xvbmVfcGF0aCAlcyBzZW5kX3Jvb3RfdXVpZCAlcFUgc2Vu
-ZF9yb290X3JlY2VpdmVkX3V1aWQgJXBVIGNsb25lX3Jvb3RfdXVpZCAlcFUgY2xvbmVfcm9vdF9y
-ZWNlaXZlZF91dWlkICVwVSIsCisJCSAgIHNjdHgtPmN1cl9pbm8sIGNsb25lX3Jvb3QtPmlubywg
-c2N0eC0+c2VuZF9yb290LT5yb290X2tleS5vYmplY3RpZCwKKwkJICAgY2xvbmVfcm9vdC0+cm9v
-dC0+cm9vdF9rZXkub2JqZWN0aWQsIG9mZnNldCwgY2xvbmVfcm9vdC0+b2Zmc2V0LAorCQkgICBw
-Mi0+c3RhcnQsIHAtPnN0YXJ0LCBzY3R4LT5zZW5kX3Jvb3QtPnJvb3RfaXRlbS51dWlkLAorCQkg
-ICBzY3R4LT5zZW5kX3Jvb3QtPnJvb3RfaXRlbS5yZWNlaXZlZF91dWlkLAorCQkgICBjbG9uZV9y
-b290LT5yb290LT5yb290X2l0ZW0udXVpZCwKKwkJICAgY2xvbmVfcm9vdC0+cm9vdC0+cm9vdF9p
-dGVtLnJlY2VpdmVkX3V1aWQpOworCiAJcmV0ID0gc2VuZF9jbWQoc2N0eCk7CiAKIHRsdl9wdXRf
-ZmFpbHVyZToKIG91dDoKIAlmc19wYXRoX2ZyZWUocCk7CisJZnNfcGF0aF9mcmVlKHAyKTsKIAly
-ZXR1cm4gcmV0OwogfQogCkBAIC01MjgwLDYgKzUzMDIsNyBAQCBzdGF0aWMgaW50IGNsb25lX3Jh
-bmdlKHN0cnVjdCBzZW5kX2N0eCAqc2N0eCwKIAlzdHJ1Y3QgYnRyZnNfa2V5IGtleTsKIAlpbnQg
-cmV0OwogCXU2NCBjbG9uZV9zcmNfaV9zaXplID0gMDsKKwlzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAq
-ZnNfaW5mbyA9IHNjdHgtPnNlbmRfcm9vdC0+ZnNfaW5mbzsKIAogCS8qCiAJICogUHJldmVudCBj
-bG9uaW5nIGZyb20gYSB6ZXJvIG9mZnNldCB3aXRoIGEgbGVuZ3RoIG1hdGNoaW5nIHRoZSBzZWN0
-b3IKQEAgLTUzNDksNiArNTM3MiwxMCBAQCBzdGF0aWMgaW50IGNsb25lX3JhbmdlKHN0cnVjdCBz
-ZW5kX2N0eCAqc2N0eCwKIAkJCXBhdGgtPnNsb3RzWzBdLS07CiAJfQogCisJYnRyZnNfaW5mbyhm
-c19pbmZvLCAic2VuZDogY2xvbmVfcmFuZ2UoKSBzdGFydCBpbm8gJWxsdSBvZmZzZXQgJWxsdSBz
-ZW5kIHJvb3QgJWxsdSwgY2xvbmUgcm9vdCAlbGx1IGlubyAlbGx1IG9mZnNldCAlbGx1IGRhdGFf
-b2Zmc2V0ICVsbHUgbGVuICVsbHUgZGlza19ieXRlICVsbHUgY2xvbmVfc3JjX2lfc2l6ZSAlbGx1
-IG5leHRfd3JpdGVfb2Zmc2V0ICVsbHUiLAorCQkgICBzY3R4LT5jdXJfaW5vLCBvZmZzZXQsIHNj
-dHgtPnNlbmRfcm9vdC0+cm9vdF9rZXkub2JqZWN0aWQsIGNsb25lX3Jvb3QtPnJvb3QtPnJvb3Rf
-a2V5Lm9iamVjdGlkLCBjbG9uZV9yb290LT5pbm8sIGNsb25lX3Jvb3QtPm9mZnNldCwgZGF0YV9v
-ZmZzZXQsIGxlbiwKKwkJICAgZGlza19ieXRlLCBjbG9uZV9zcmNfaV9zaXplLCBzY3R4LT5jdXJf
-aW5vZGVfbmV4dF93cml0ZV9vZmZzZXQpOworCiAJd2hpbGUgKHRydWUpIHsKIAkJc3RydWN0IGV4
-dGVudF9idWZmZXIgKmxlYWYgPSBwYXRoLT5ub2Rlc1swXTsKIAkJaW50IHNsb3QgPSBwYXRoLT5z
-bG90c1swXTsKQEAgLTU0MTcsNiArNTQ0NCwxMSBAQCBzdGF0aWMgaW50IGNsb25lX3JhbmdlKHN0
-cnVjdCBzZW5kX2N0eCAqc2N0eCwKIAkJCWV4dF9sZW4gPSBjbG9uZV9zcmNfaV9zaXplIC0ga2V5
-Lm9mZnNldDsKIAogCQljbG9uZV9kYXRhX29mZnNldCA9IGJ0cmZzX2ZpbGVfZXh0ZW50X29mZnNl
-dChsZWFmLCBlaSk7CisKKwkJYnRyZnNfaW5mbyhmc19pbmZvLCAic2VuZDogY2xvbmVfcmFuZ2Uo
-KSBzdGVwIDEgaW5vICVsbHUgb2Zmc2V0ICVsbHUsIHJvb3Qgb2Zmc2V0ICVsbHUgaW5vICVsbHUg
-ZGF0YV9vZmZzZXQgJWxsdSBsZW4gJWxsdSwga2V5Lm9mZnNldCAlbGx1IGV4dF9sZW4gJWxsdSBj
-bG9uZV9kYXRhX29mZnNldCAlbGx1IGZvdW5kIGRpc2tfYnl0ZSAlbGx1IG5leHRfd3JpdGVfb2Zm
-c2V0ICVsbHUiLAorCQkJICAgc2N0eC0+Y3VyX2lubywgb2Zmc2V0LCBjbG9uZV9yb290LT5vZmZz
-ZXQsIGNsb25lX3Jvb3QtPmlubywgZGF0YV9vZmZzZXQsIGxlbiwga2V5Lm9mZnNldCwgZXh0X2xl
-biwgY2xvbmVfZGF0YV9vZmZzZXQsIGJ0cmZzX2ZpbGVfZXh0ZW50X2Rpc2tfYnl0ZW5yKGxlYWYs
-IGVpKSwKKwkJCSAgIHNjdHgtPmN1cl9pbm9kZV9uZXh0X3dyaXRlX29mZnNldCk7CisKIAkJaWYg
-KGJ0cmZzX2ZpbGVfZXh0ZW50X2Rpc2tfYnl0ZW5yKGxlYWYsIGVpKSA9PSBkaXNrX2J5dGUpIHsK
-IAkJCWNsb25lX3Jvb3QtPm9mZnNldCA9IGtleS5vZmZzZXQ7CiAJCQlpZiAoY2xvbmVfZGF0YV9v
-ZmZzZXQgPCBkYXRhX29mZnNldCAmJgpAQCAtNTQ2Miw2ICs1NDk0LDkgQEAgc3RhdGljIGludCBj
-bG9uZV9yYW5nZShzdHJ1Y3Qgc2VuZF9jdHggKnNjdHgsCiAKIAkJCQlzbGVuID0gQUxJR05fRE9X
-TihzcmNfZW5kIC0gY2xvbmVfcm9vdC0+b2Zmc2V0LAogCQkJCQkJICBzZWN0b3JzaXplKTsKKwkJ
-CQlidHJmc19pbmZvKGZzX2luZm8sICJzZW5kOiBjbG9uZV9yYW5nZSgpIHN0ZXAgMi0xLTEgaW5v
-ICVsbHUgb2Zmc2V0ICVsbHUsIHJvb3Qgb2Zmc2V0ICVsbHUgaW5vICVsbHUgZGF0YV9vZmZzZXQg
-JWxsdSBsZW4gJWxsdSwgY2xvbmVfbGVuICVsbHUgc3JjX2VuZCAlbGx1IHNsZW4gJWxsdSIsCisJ
-CQkJCSAgIHNjdHgtPmN1cl9pbm8sIG9mZnNldCwgY2xvbmVfcm9vdC0+b2Zmc2V0LCBjbG9uZV9y
-b290LT5pbm8sIGRhdGFfb2Zmc2V0LCBsZW4sIGNsb25lX2xlbiwgc3JjX2VuZCwgc2xlbik7CisK
-IAkJCQlpZiAoc2xlbiA+IDApIHsKIAkJCQkJcmV0ID0gc2VuZF9jbG9uZShzY3R4LCBvZmZzZXQs
-IHNsZW4sCiAJCQkJCQkJIGNsb25lX3Jvb3QpOwpAQCAtNTQ3MSwxMCArNTUwNiwxNSBAQCBzdGF0
-aWMgaW50IGNsb25lX3JhbmdlKHN0cnVjdCBzZW5kX2N0eCAqc2N0eCwKIAkJCQlyZXQgPSBzZW5k
-X2V4dGVudF9kYXRhKHNjdHgsIG9mZnNldCArIHNsZW4sCiAJCQkJCQkgICAgICAgY2xvbmVfbGVu
-IC0gc2xlbik7CiAJCQl9IGVsc2UgeworCQkJCWJ0cmZzX2luZm8oZnNfaW5mbywgInNlbmQ6IGNs
-b25lX3JhbmdlKCkgc3RlcCAyLTEtMiBpbm8gJWxsdSBvZmZzZXQgJWxsdSwgcm9vdCBvZmZzZXQg
-JWxsdSBpbm8gJWxsdSBkYXRhX29mZnNldCAlbGx1IGxlbiAlbGx1LCBjbG9uZV9sZW4gJWxsdSIs
-CisJCQkJCSAgIHNjdHgtPmN1cl9pbm8sIG9mZnNldCwgY2xvbmVfcm9vdC0+b2Zmc2V0LCBjbG9u
-ZV9yb290LT5pbm8sIGRhdGFfb2Zmc2V0LCBsZW4sIGNsb25lX2xlbik7CisKIAkJCQlyZXQgPSBz
-ZW5kX2Nsb25lKHNjdHgsIG9mZnNldCwgY2xvbmVfbGVuLAogCQkJCQkJIGNsb25lX3Jvb3QpOwog
-CQkJfQogCQl9IGVsc2UgeworCQkJYnRyZnNfaW5mbyhmc19pbmZvLCAic2VuZDogY2xvbmVfcmFu
-Z2UoKSBzdGVwIDItMiBpbm8gJWxsdSBvZmZzZXQgJWxsdSwgcm9vdCBvZmZzZXQgJWxsdSBpbm8g
-JWxsdSBkYXRhX29mZnNldCAlbGx1IGxlbiAlbGx1IGNsb25lX2xlbiAlbGx1IiwKKwkJCQkgICBz
-Y3R4LT5jdXJfaW5vLCBvZmZzZXQsIGNsb25lX3Jvb3QtPm9mZnNldCwgY2xvbmVfcm9vdC0+aW5v
-LCBkYXRhX29mZnNldCwgbGVuLCBjbG9uZV9sZW4pOwogCQkJcmV0ID0gc2VuZF9leHRlbnRfZGF0
-YShzY3R4LCBvZmZzZXQsIGNsb25lX2xlbik7CiAJCX0KIApAQCAtNTUxMSw2ICs1NTUxLDEwIEBA
-IHN0YXRpYyBpbnQgY2xvbmVfcmFuZ2Uoc3RydWN0IHNlbmRfY3R4ICpzY3R4LAogCWVsc2UKIAkJ
-cmV0ID0gMDsKIG91dDoKKwlidHJmc19pbmZvKGZzX2luZm8sICJzZW5kOiBjbG9uZV9yYW5nZSgp
-IGVuZCBpbm8gJWxsdSBvZmZzZXQgJWxsdSBzZW5kIHJvb3QgJWxsdSwgY2xvbmUgcm9vdCAlbGx1
-IGlubyAlbGx1IG9mZnNldCAlbGx1IGRhdGFfb2Zmc2V0ICVsbHUgbGVuICVsbHUgZGlza19ieXRl
-ICVsbHUgY2xvbmVfc3JjX2lfc2l6ZSAlbGx1IG5leHRfd3JpdGVfb2Zmc2V0ICVsbHUgcmV0ICVk
-IiwKKwkJICAgc2N0eC0+Y3VyX2lubywgb2Zmc2V0LCBzY3R4LT5zZW5kX3Jvb3QtPnJvb3Rfa2V5
-Lm9iamVjdGlkLCBjbG9uZV9yb290LT5yb290LT5yb290X2tleS5vYmplY3RpZCwgY2xvbmVfcm9v
-dC0+aW5vLCBjbG9uZV9yb290LT5vZmZzZXQsIGRhdGFfb2Zmc2V0LCBsZW4sCisJCSAgIGRpc2tf
-Ynl0ZSwgY2xvbmVfc3JjX2lfc2l6ZSwgc2N0eC0+Y3VyX2lub2RlX25leHRfd3JpdGVfb2Zmc2V0
-LCByZXQpOworCiAJYnRyZnNfZnJlZV9wYXRoKHBhdGgpOwogCXJldHVybiByZXQ7CiB9Cg==
---0000000000007d008405cad9255f
-Content-Type: text/x-patch; charset="US-ASCII"; name="btrfs-progs_debug_receive.patch"
-Content-Disposition: attachment; filename="btrfs-progs_debug_receive.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kszz17st1>
-X-Attachment-Id: f_kszz17st1
-
-ZGlmZiAtLWdpdCBhL2NtZHMvcmVjZWl2ZS5jIGIvY21kcy9yZWNlaXZlLmMKaW5kZXggNGRkMDFm
-ZDMuLjBlMjg1ZDNkIDEwMDY0NAotLS0gYS9jbWRzL3JlY2VpdmUuYworKysgYi9jbWRzL3JlY2Vp
-dmUuYwpAQCAtNzgxLDYgKzc4MSwxNiBAQCBzdGF0aWMgaW50IHByb2Nlc3NfY2xvbmUoY29uc3Qg
-Y2hhciAqcGF0aCwgdTY0IG9mZnNldCwgdTY0IGxlbiwKIAkJCSJjbG9uZSAlcyAtIHNvdXJjZT0l
-cyBzb3VyY2Ugb2Zmc2V0PSVsbHUgb2Zmc2V0PSVsbHUgbGVuZ3RoPSVsbHVcbiIsCiAJCQlwYXRo
-LCBjbG9uZV9wYXRoLCBjbG9uZV9vZmZzZXQsIG9mZnNldCwgbGVuKTsKIAorCWlmIChiY29uZi52
-ZXJib3NlID49IDIpIHsKKwkJY2hhciB1dWlkX3N0cl8xW0JUUkZTX1VVSURfVU5QQVJTRURfU0la
-RV07CisJCWNoYXIgdXVpZF9zdHJfMltCVFJGU19VVUlEX1VOUEFSU0VEX1NJWkVdOworCisJCXV1
-aWRfdW5wYXJzZShjbG9uZV91dWlkLCB1dWlkX3N0cl8xKTsKKwkJdXVpZF91bnBhcnNlKHJjdHgt
-PmN1cl9zdWJ2b2wucmVjZWl2ZWRfdXVpZCwgdXVpZF9zdHJfMik7CisJCWZwcmludGYoc3RkZXJy
-LCAiY2xvbmVfdXVpZD0lcyByZWNlaXZlZF91dWlkPSVzIGZ1bGxfY2xvbmVfcGF0aD0lcyByb290
-X3BhdGg9JXMgZnVsbF9wYXRoPSVzXG4iLAorCQkJdXVpZF9zdHJfMSwgdXVpZF9zdHJfMiwgZnVs
-bF9jbG9uZV9wYXRoLCByY3R4LT5yb290X3BhdGgsIGZ1bGxfcGF0aCk7CisJfQorCiAJY2xvbmVf
-YXJncy5zcmNfZmQgPSBjbG9uZV9mZDsKIAljbG9uZV9hcmdzLnNyY19vZmZzZXQgPSBjbG9uZV9v
-ZmZzZXQ7CiAJY2xvbmVfYXJncy5zcmNfbGVuZ3RoID0gbGVuOwo=
---0000000000007d008405cad9255f--
