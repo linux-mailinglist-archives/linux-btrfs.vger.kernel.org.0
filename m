@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2802C3FC9C3
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4913FC9C4
 	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Aug 2021 16:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237678AbhHaObq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Aug 2021 10:31:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58370 "EHLO mail.kernel.org"
+        id S237918AbhHaObr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Aug 2021 10:31:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237549AbhHaObo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:31:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6F1D60FD8
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 14:30:48 +0000 (UTC)
+        id S237632AbhHaObp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 31 Aug 2021 10:31:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A64E961059
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 14:30:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630420249;
-        bh=DT8kBgsaziRrz+Iny1jEA3YQcE5jOgnFonGAAqiMOMY=;
+        s=k20201202; t=1630420250;
+        bh=dbdnbw3WXX9MMObUGdj2wJmI7Al2Y2QJqYtxoLRWHI8=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=aiDp6YsIiVVZCK5VSjSkejGGgSmInyzM5nZ/Kz82MLsRQQuuKRgzG1edE+TV7OEvS
-         RK2K5gzyMUOKI1p+2cmW7H/uyidLkchuwwLRwYVM4+FKatD/ldjtdt+d8pKlOYdhTJ
-         i/LoUqygFom3zoYxZaZFZMbPDbV12Me1wNjJkXJ0eXsNvOCGCBfp6hSgkIwPnQ4kx9
-         VMn4kIjSuS0gRLdRwfFMmVlVp1qsVLx3Whumq10eP5TafWS75nMnHZktwoufhGA/tR
-         U3fZ17fWCvCuL+g8LS50MSFWzbTg5+YHJfQzHmepY8xlIZhQW1TvzKHHnGMlv5SoM0
-         B6gCQ4JZ01AHw==
+        b=puhm597qrGFe8syOJADXSJOC3E7Jl9YJc9sEuHjM/mCqAbAopPQjTSjYbGm4wCjF4
+         DToi1d8YNef/xnGB00VFceNWTSB1+d/yhkcXc2bS0cPMkMaJpPPDzNxOWBO8iiji0v
+         qrpYpjmv4Q9zV7D8truHJZ7X+xM5TR/WqlPASmsgJeyNo39MQzDHt8snl7yUNKXPcd
+         BSs8XDE/Cb14aUpLeUqVh+PL1Q6e/S1CPLtZWJruo5TShg+XcWJIjgA6pSPYVnDRrq
+         8yLii59wXUsijstdBW6Eh26z4DMKGG+hE9jpot3Ll+/jTOuUaiEFbpu0yIo6JdfCYb
+         o0DRVifxvOTeg==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 07/10] btrfs: avoid expensive search when truncating inode items from the log
-Date:   Tue, 31 Aug 2021 15:30:37 +0100
-Message-Id: <7050db12201d7f42ad0216563bf0a81c53d85836.1630419897.git.fdmanana@suse.com>
+Subject: [PATCH 08/10] btrfs: avoid search for logged i_size when logging inode if possible
+Date:   Tue, 31 Aug 2021 15:30:38 +0100
+Message-Id: <0be2c59c9010242e2b6a86d4ecf430355d98bb4e.1630419897.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1630419897.git.fdmanana@suse.com>
 References: <cover.1630419897.git.fdmanana@suse.com>
@@ -39,22 +39,11 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Whenever we are logging a file inode in full sync mode we call
-btrfs_truncate_inode_items() to delete items of the inode we may have
-previously logged.
-
-That results in doing a btree search for deletion, which is expensive
-because it always acquires write locks for extent buffers at levels 2, 1
-and 0, and it balances any node that is less than half full. Acquiring
-the write locks can block the task if the extent buffers are already
-locked by another task or block other tasks attempting to lock them,
-which is specially bad in case of log trees since they are small due to
-their short life, with a root node at a level typically not greater than
-level 2.
-
-If we know that we are logging the inode for the first time in the current
-transaction, we can skip the call to btrfs_truncate_inode_items(), avoiding
-the deletion search. This change does that.
+If we are logging that an inode exists and the inode was not logged
+before, we can avoid searching in the log tree for the inode item since we
+know it does not exists. That wastes time and adds more lock contention on
+the extent buffers of the log tree when there are other tasks that are
+logging other inodes.
 
 This patch is part of a patch set comprised of the following patches:
 
@@ -69,29 +58,27 @@ This patch is part of a patch set comprised of the following patches:
   btrfs: avoid attempt to drop extents when logging inode for the first time
   btrfs: do not commit delayed inode when logging a file in full sync mode
 
-This is patch 7/10 and test results are listed in the change log of the
+This is patch 8/10 and test results are listed in the change log of the
 last patch in the set.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/btrfs/tree-log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 3abd11a0beda..e07f0ac1627a 100644
+index e07f0ac1627a..206268aa42a4 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -5471,7 +5471,9 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 					  &inode->runtime_flags);
- 				clear_bit(BTRFS_INODE_COPY_EVERYTHING,
- 					  &inode->runtime_flags);
--				ret = truncate_inode_items(trans, log, inode, 0, 0);
-+				if (inode_logged(trans, inode))
-+					ret = truncate_inode_items(trans, log,
-+								   inode, 0, 0);
- 			}
- 		} else if (test_and_clear_bit(BTRFS_INODE_COPY_EVERYTHING,
- 					      &inode->runtime_flags) ||
+@@ -5442,7 +5442,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 			max_key_type = BTRFS_XATTR_ITEM_KEY;
+ 		ret = drop_inode_items(trans, log, path, inode, max_key_type);
+ 	} else {
+-		if (inode_only == LOG_INODE_EXISTS) {
++		if (inode_only == LOG_INODE_EXISTS && inode_logged(trans, inode)) {
+ 			/*
+ 			 * Make sure the new inode item we write to the log has
+ 			 * the same isize as the current one (if it exists).
 -- 
 2.28.0
 
