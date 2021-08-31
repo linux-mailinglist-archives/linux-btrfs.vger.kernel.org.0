@@ -2,120 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2D33FC515
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Aug 2021 11:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB7C3FC516
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Aug 2021 11:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbhHaJuD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Aug 2021 05:50:03 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52124 "EHLO
+        id S234150AbhHaJuF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Aug 2021 05:50:05 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52130 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233369AbhHaJuC (ORCPT
+        with ESMTP id S233809AbhHaJuE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:50:02 -0400
+        Tue, 31 Aug 2021 05:50:04 -0400
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 00DAE221C7
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 09:49:07 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5B115221C9
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 09:49:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630403347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=W892LH+49DnEaiUTc2wF4UpGB0FuS8x7MER/3GNxBX8=;
-        b=ZJ4BsWPXkrWYuXP/zFLkpXdK4FptS1ZwpIcTaS8G/wS3JxSQSvg9A5NLRR3Y5yB25JY2XU
-        dS1je+pTTgUsaHBLOy4MFX/s1TAgBoyQcXfEuRhAb55TcQWJB3c/ePSFrnatHQibw0UxDJ
-        UpBpFUolYGroZDld7g5YaQz8BcrCbV8=
+        t=1630403348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QqgwYz/Qzw12vSTPCFO7SHwsXBtzcEyiYQ9Pwjej8yk=;
+        b=KxkZGZmyNZlqv15qt5rn7EjoJZehXtYSYofPlHu7IP1ImV7Gy8EvDKCjhwai+D7MoTGcQL
+        qlXLH5j09UJeUG83DnLbVPQTujoNYe5C0z1WquTmIzPnEP96RWF/GVuVQSiOaITHXpLgk8
+        FeqloU2RFX3a200aPVj6MnTTtRv3Zg4=
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 27FBE136DF
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 09:49:05 +0000 (UTC)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 82668136DF
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 09:49:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id J60/NRH7LWGMcgAAGKfGzw
+        id IFWKDxP7LWGMcgAAGKfGzw
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 09:49:05 +0000
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 09:49:07 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/5] btrfs: qgroup: address the performance penalty for subvolume dropping
-Date:   Tue, 31 Aug 2021 17:48:58 +0800
-Message-Id: <20210831094903.111432-1-wqu@suse.com>
+Subject: [PATCH 1/5] btrfs: sysfs: introduce qgroup global attribute groups
+Date:   Tue, 31 Aug 2021 17:48:59 +0800
+Message-Id: <20210831094903.111432-2-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210831094903.111432-1-wqu@suse.com>
+References: <20210831094903.111432-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs qgroup has a long history of bringing huge performance penalty,
-from subvolume dropping to balance.
+Although we already have info kobject for each qgroup, we don't have
+global qgroup info attributes to show things like qgroup flags.
 
-Although we solved the problem for balance, but the subvolume dropping
-problem is still unresolved, as we really need to do all the costly
-backref for all the involved subtrees, or qgroup numbers will be
-inconsistent.
+Add this qgroups attribute groups, and the first member is qgroup_flags,
+which is a read-only attribute to show human readable qgroup flags.
 
-But the performance penalty is sometimes too big, so big that it's
-better just to disable qgroup, do the drop, then do the rescan.
+The path is:
+ /sys/fs/btrfs/<uuid>/qgroups/qgroup_flags
 
-This patchset will address the problem by introducing a user
-configurable sysfs interface, to allow certain high subtree dropping to
-mark qgroup inconsistent, and skip the whole accounting.
+The output would look like:
+ ON | INCONSISTENT
 
-The following things are needed for this objective:
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/sysfs.c | 67 +++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 63 insertions(+), 4 deletions(-)
 
-- New qgroups attributes
-
-  Instead of plain qgroup kobjects, we need extra attributes like
-  drop_subtree_threshold.
-
-  This patchset will introduce two new attributes to the existing
-  qgroups kobject:
-  * qgroups_flags
-    To indicate the qgroup status flags like ON, RESCAN, INCONSISTENT.
-
-  * drop_subtree_threshold
-    To show the subtree dropping level threshold.
-    The default value is BTRFS_MAX_LEVEL (8), which means all subtree
-    dropping will go through the qgroup accounting, while costly it will
-    try to keep qgroup numbers as consistent as possible.
-
-    Users can specify values like 3, meaning any subtree which is at
-    level 3 or higher will mark qgroup inconsistent and skip all the
-    costly accounting.
-
-    This only affects subvolume dropping.
-
-- Skip qgroup accounting when the numbers are already inconsistent
-
-  But still keeps the qgroup relationship correct, thus users can keep
-  its qgroup organization while do the rescan later.
-
-
-This sysfs interface needs user space tools to monitor and set the
-values for each btrfs.
-
-Currently the target user space tool is snapper, which by default
-utilizes qgroups for its space-aware snapshots reclaim mechanism.
-
-Qu Wenruo (5):
-  btrfs: sysfs: introduce qgroup global attribute groups
-  btrfs: introduce BTRFS_QGROUP_STATUS_FLAGS_MASK for later expansion
-  btrfs: introduce BTRFS_QGROUP_RUNTIME_FLAG_CANCEL_RESCAN
-  btrfs: introduce BTRFS_QGROUP_RUNTIME_FLAG_NO_ACCOUNTING to skip
-    qgroup accounting
-  btrfs: skip subtree scan if it's too high to avoid low stall in
-    btrfs_commit_transaction()
-
- fs/btrfs/ctree.h                |   1 +
- fs/btrfs/disk-io.c              |   1 +
- fs/btrfs/qgroup.c               |  87 +++++++++++++++++++-------
- fs/btrfs/qgroup.h               |   3 +
- fs/btrfs/sysfs.c                | 106 ++++++++++++++++++++++++++++++--
- include/uapi/linux/btrfs_tree.h |   4 ++
- 6 files changed, 176 insertions(+), 26 deletions(-)
-
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 25a6f587852b..72edc6011d01 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -1825,6 +1825,62 @@ int btrfs_sysfs_add_mounted(struct btrfs_fs_info *fs_info)
+ 	return error;
+ }
+ 
++static ssize_t qgroup_flags_show(struct kobject *qgroups_kobj,
++				 struct kobj_attribute *a,
++				 char *buf)
++{
++	struct btrfs_fs_info *fs_info = to_fs_info(qgroups_kobj->parent);
++	u64 qgroup_flags;
++	bool first = true;
++	int ret = 0;
++
++	spin_lock(&fs_info->qgroup_lock);
++	qgroup_flags = fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAGS_MASK;
++	spin_unlock(&fs_info->qgroup_lock);
++
++	if (qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_ON) {
++		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
++				(first ? "" : " | "), "ON");
++		first = false;
++	}
++	if (qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_RESCAN) {
++		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
++				(first ? "" : " | "), "RESCAN");
++		first = false;
++	}
++	if (qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT) {
++		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
++				(first ? "" : " | "), "INCONSISTENT");
++		first = false;
++	}
++	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
++	return ret;
++}
++
++BTRFS_ATTR(qgroups, qgroup_flags, qgroup_flags_show);
++
++/*
++ * Qgroups global info
++ *
++ * Path: /sys/fs/btrfs/<uuid>/qgroups/
++ */
++static struct attribute *qgroups_attrs[] = {
++	BTRFS_ATTR_PTR(qgroups, qgroup_flags),
++	NULL
++};
++ATTRIBUTE_GROUPS(qgroups);
++
++static void qgroups_release(struct kobject *kobj)
++{
++	kfree(kobj);
++}
++
++static struct kobj_type qgroups_ktype = {
++	.sysfs_ops = &kobj_sysfs_ops,
++	.default_groups = qgroups_groups,
++	.release = qgroups_release,
++};
++
+ static inline struct btrfs_fs_info *qgroup_kobj_to_fs_info(struct kobject *kobj)
+ {
+ 	return to_fs_info(kobj->parent->parent);
+@@ -1950,11 +2006,14 @@ int btrfs_sysfs_add_qgroups(struct btrfs_fs_info *fs_info)
+ 	if (fs_info->qgroups_kobj)
+ 		return 0;
+ 
+-	fs_info->qgroups_kobj = kobject_create_and_add("qgroups", fsid_kobj);
+-	if (!fs_info->qgroups_kobj) {
+-		ret = -ENOMEM;
++	fs_info->qgroups_kobj = kmalloc(sizeof(struct kobject), GFP_KERNEL);
++	if (!fs_info->qgroups_kobj)
++		return -ENOMEM;
++
++	ret = kobject_init_and_add(fs_info->qgroups_kobj, &qgroups_ktype,
++				   fsid_kobj, "qgroups");
++	if (ret < 0)
+ 		goto out;
+-	}
+ 	rbtree_postorder_for_each_entry_safe(qgroup, next,
+ 					     &fs_info->qgroup_tree, node) {
+ 		ret = btrfs_sysfs_add_one_qgroup(fs_info, qgroup);
 -- 
 2.33.0
 
