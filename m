@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6393FC9BD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Aug 2021 16:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5377B3FC9BE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Aug 2021 16:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237258AbhHaObk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Aug 2021 10:31:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
+        id S237332AbhHaObl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Aug 2021 10:31:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237090AbhHaObj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Aug 2021 10:31:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ADFD600AA
-        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 14:30:43 +0000 (UTC)
+        id S235064AbhHaObk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 31 Aug 2021 10:31:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DECD06103A
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 14:30:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630420244;
-        bh=3BeRmkv6P3cbmG067wTUoKLRXf2KsuOgyt07YUW3nWE=;
+        s=k20201202; t=1630420245;
+        bh=BwGkgLxRwHPtT/YiIFdgelnN0mqD+sfG54Hvym8MoJc=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=OsJKaGnVLqvtjx9aqp8Ep1ayXV5p4bvO3RhD2WPapZPeieF0b1xPwrqua3SId1+m/
-         7YAJgAaY1B1W5KIYDRpeiYWnTCoxzkgytXABcjJsxaByRUeWzC2uy1qs21WkLyEMBN
-         8hVPlUN7cXceuw892cBWEemxlZumJLuEySVw7Gx7t/bjM11vGGwlP1PHMQCjur8Eex
-         vkob/A+fbSVJsr/42S3yooQJS2GmpgxylNTMr7ws3JlfXS0hKWECSc2WE48uYffWVU
-         dqUCTwXye9snzX323O35SNTdm+kzxzndtOc8/K/pF5iTuS3nr9PiskbLDtebqknMK2
-         6VZqdVPzsoQrw==
+        b=GqWPv+teROKec4DdFok9/tI9fsAqTjlUKWihUc3rGVyeuRshfVA31TBJIKsWLUK2K
+         YNqnuf6W1z6Zvtcvx/S26t0Ak05SJQJCga3tu6ofdmoC2xb7SKdAfBux1MKu6Au1jE
+         XJ7i+jaWOmQgwztGcn2j8YZjNJGBOoh5/RIqX0MARqJgSQ4cSZhSlKqsykYJynevX4
+         zSjkgSc7cjnFPkceMGtf8/XUAD3rXFfWvYrHML5HW84asDUEtzpZaSiD40mYTN/Z6v
+         3ulGtT1FnZvOrHGa0Q5xX/rwOK5mAbbE/qxLMrj3unQEoflcLJIBg044eVkdqlaWm0
+         dtjLpEOZUaNzQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 01/10] btrfs: check if a log tree exists at inode_logged()
-Date:   Tue, 31 Aug 2021 15:30:31 +0100
-Message-Id: <b12fe76b6f4272d17f01b628915089136ccbbe1a.1630419897.git.fdmanana@suse.com>
+Subject: [PATCH 02/10] btrfs: remove no longer needed checks for NULL log context
+Date:   Tue, 31 Aug 2021 15:30:32 +0100
+Message-Id: <8274e3e690821c28331e59b35174ea787a32bf30.1630419897.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1630419897.git.fdmanana@suse.com>
 References: <cover.1630419897.git.fdmanana@suse.com>
@@ -39,22 +39,12 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-In case an inode was never logged since it was loaded from disk and was
-modified in the current transaction (its ->last_trans matches the ID of
-the current transaction), inode_logged() returns true even if there's no
-existing log tree. In this case we can simply check if a log tree exists
-and return false if it does not. This avoids a caller of inode_logged()
-doing some unnecessary, but harmless, work.
-
-For btrfs_log_new_name() it avoids it logging an inode in case it was
-never logged since it was loaded from disk and there is currently no log
-tree for the inode's root. For the remaining callers of inode_logged(),
-btrfs_del_dir_entries_in_log() and btrfs_del_inode_ref_in_log(), it has
-no effect since they already check if a log tree exists through their
-calls to join_running_log_trans().
-
-So just add a check to inode_logged() to verify if a log tree exists, and
-return false if it does not.
+Since commit 75b463d2b47aef ("btrfs: do not commit logs and transactions
+during link and rename operations"), we always pass a non-NULL log context
+to btrfs_log_inode_parent() and therefore to all the functions that it
+calls. So remove the checks we have all over the place that test for a
+NULL log context, making the code shorter and easier to read, as well as
+reducing the size of the generated code.
 
 This patch is part of a patch set comprised of the following patches:
 
@@ -69,28 +59,89 @@ This patch is part of a patch set comprised of the following patches:
   btrfs: avoid attempt to drop extents when logging inode for the first time
   btrfs: do not commit delayed inode when logging a file in full sync mode
 
-This is patch 1/10 and test results are listed in the change log of the
+This is patch 2/10 and test results are listed in the change log of the
 last patch in the set.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/btrfs/tree-log.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index f7efc26aa82a..0342b1614978 100644
+index 0342b1614978..7f5c586efe3c 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -3434,6 +3434,9 @@ static bool inode_logged(struct btrfs_trans_handle *trans,
- 	if (inode->logged_trans == trans->transid)
- 		return true;
+@@ -207,7 +207,7 @@ static int start_log_trans(struct btrfs_trans_handle *trans,
+ 	}
  
-+	if (!test_bit(BTRFS_ROOT_HAS_LOG_TREE, &inode->root->state))
-+		return false;
-+
+ 	atomic_inc(&root->log_writers);
+-	if (ctx && !ctx->logging_new_name) {
++	if (!ctx->logging_new_name) {
+ 		int index = root->log_transid % 2;
+ 		list_add_tail(&ctx->list, &root->log_ctxs[index]);
+ 		ctx->log_transid = root->log_transid;
+@@ -3019,9 +3019,6 @@ static void wait_for_writer(struct btrfs_root *root)
+ static inline void btrfs_remove_log_ctx(struct btrfs_root *root,
+ 					struct btrfs_log_ctx *ctx)
+ {
+-	if (!ctx)
+-		return;
+-
+ 	mutex_lock(&root->log_mutex);
+ 	list_del_init(&ctx->list);
+ 	mutex_unlock(&root->log_mutex);
+@@ -3765,8 +3762,7 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
+ 			 */
+ 			di = btrfs_item_ptr(src, i, struct btrfs_dir_item);
+ 			btrfs_dir_item_key_to_cpu(src, di, &tmp);
+-			if (ctx &&
+-			    (btrfs_dir_transid(src, di) == trans->transid ||
++			if ((btrfs_dir_transid(src, di) == trans->transid ||
+ 			     btrfs_dir_type(src, di) == BTRFS_FT_DIR) &&
+ 			    tmp.type != BTRFS_ROOT_ITEM_KEY)
+ 				ctx->log_new_dentries = true;
+@@ -5225,7 +5221,7 @@ static int copy_inode_items_to_log(struct btrfs_trans_handle *trans,
+ 					&other_ino, &other_parent);
+ 			if (ret < 0) {
+ 				return ret;
+-			} else if (ret > 0 && ctx &&
++			} else if (ret > 0 &&
+ 				   other_ino != btrfs_ino(BTRFS_I(ctx->inode))) {
+ 				if (ins_nr > 0) {
+ 					ins_nr++;
+@@ -5566,8 +5562,7 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
+ 	 * So keep it simple for this case and just don't flag the ancestors as
+ 	 * logged.
+ 	 */
+-	if (!ctx ||
+-	    !(S_ISDIR(inode->vfs_inode.i_mode) && ctx->logging_new_name &&
++	if (!(S_ISDIR(inode->vfs_inode.i_mode) && ctx->logging_new_name &&
+ 	      &inode->vfs_inode != ctx->inode)) {
+ 		spin_lock(&inode->lock);
+ 		inode->logged_trans = trans->transid;
+@@ -5920,11 +5915,10 @@ static int btrfs_log_all_parents(struct btrfs_trans_handle *trans,
+ 				continue;
+ 			}
+ 
+-			if (ctx)
+-				ctx->log_new_dentries = false;
++			ctx->log_new_dentries = false;
+ 			ret = btrfs_log_inode(trans, root, BTRFS_I(dir_inode),
+ 					      LOG_INODE_ALL, ctx);
+-			if (!ret && ctx && ctx->log_new_dentries)
++			if (!ret && ctx->log_new_dentries)
+ 				ret = log_new_dir_dentries(trans, root,
+ 						   BTRFS_I(dir_inode), ctx);
+ 			btrfs_add_delayed_iput(dir_inode);
+@@ -6185,7 +6179,7 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
+ 		goto end_trans;
+ 	}
+ 
+-	if (S_ISDIR(inode->vfs_inode.i_mode) && ctx && ctx->log_new_dentries)
++	if (S_ISDIR(inode->vfs_inode.i_mode) && ctx->log_new_dentries)
+ 		log_dentries = true;
+ 
  	/*
- 	 * The inode's logged_trans is always 0 when we load it (because it is
- 	 * not persisted in the inode item or elsewhere). So if it is 0, the
 -- 
 2.28.0
 
