@@ -2,94 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D8D3FC68D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Aug 2021 13:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2883FC768
+	for <lists+linux-btrfs@lfdr.de>; Tue, 31 Aug 2021 14:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241480AbhHaL2F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Aug 2021 07:28:05 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44082 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241476AbhHaL2E (ORCPT
+        id S230466AbhHaMj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Aug 2021 08:39:57 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51432 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229762AbhHaMj5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Aug 2021 07:28:04 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3BCAB20163;
-        Tue, 31 Aug 2021 11:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630409228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 31 Aug 2021 08:39:57 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 860C122240;
+        Tue, 31 Aug 2021 12:39:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630413541;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1+/TE50rHS/eHJix9V/ai8hQ66CTbTJWeMAfo3Vg9Go=;
-        b=cL/uGgzymjjuZjX1BoysDUttMUwfpdNbvTCN2vFwq/eiBykyxcvYChyZdqDxQW3bjk0k6r
-        JaLg1mcatjWVCvMuxCj8H6qzJxGc74Vmtjve/cssxhUTW2oNBzoxQF5RE1tJUk7vxa4CH8
-        Ty++zrUPH2F9LuxhpEMJfvE/CuDzlsU=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id DDDA913A8B;
-        Tue, 31 Aug 2021 11:27:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id ktULMwsSLmGcDAAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Tue, 31 Aug 2021 11:27:07 +0000
-Subject: Re: [PATCH 5/8] btrfs: inode: use btrfs_for_each_slot in
- btrfs_read_readdir
-To:     dsterba@suse.cz, Marcos Paulo de Souza <mpdesouza@suse.com>,
-        linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <20210826164054.14993-1-mpdesouza@suse.com>
- <20210826164054.14993-6-mpdesouza@suse.com>
- <f9647be1-25a9-e29b-4524-9b5ebf752567@suse.com>
- <20210831111051.GH3379@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <b61685b1-db19-872f-8c9e-74dfe6c80ca7@suse.com>
-Date:   Tue, 31 Aug 2021 14:27:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=f2ohMeFmeZ8EQAw0r5nu+IId8wVa5fP57NfcDcInm+c=;
+        b=v27qbZtoqtJs1+rnLnTZCb4811HHlH4/ZEwextkrNZgPDcJImWQsnAT4TXrOgoMD6bUpJH
+        5fusClo2khAAxm0Neui4HXpKykW5MphIGy4VU4Iw4Xfz5JiyAep5oUpRLYrQHbZs/xKrmT
+        jYy1hwofBtFlSp+dR/ISAxB9+eYnlOg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630413541;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f2ohMeFmeZ8EQAw0r5nu+IId8wVa5fP57NfcDcInm+c=;
+        b=7RiQ+CfqqcWoodXSivBX8fkU51QMA02H9aRHlGQ/qjDxC9PWRu602swgh/XFKkwiLBT+26
+        td0lnJv9TIrcOrBQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 7FBDAA3B9C;
+        Tue, 31 Aug 2021 12:39:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BF3A2DA8C1; Tue, 31 Aug 2021 14:36:10 +0200 (CEST)
+Date:   Tue, 31 Aug 2021 14:36:10 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: 5.13.8, enospc with 6G unused
+Message-ID: <20210831123610.GJ3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtSXKHSToLeOOconR_nKeuk8RjGjT7_z2QvV9=2zHfYB6g@mail.gmail.com>
+ <CAJCQCtSjuEg8LAedxaqpRCOEq5BgegB7=QVJP8Sq3iZUFWn1rw@mail.gmail.com>
+ <CAJCQCtQPvw23CGvR307L-VyPSpZi3ovC3N+xp7OaMNrxSWir_w@mail.gmail.com>
+ <CAJCQCtSC4mx6cNf3mGDOEeWhJaTXK8s+WNWRTRDMt99k8O3LPw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210831111051.GH3379@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJCQCtSC4mx6cNf3mGDOEeWhJaTXK8s+WNWRTRDMt99k8O3LPw@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 31.08.21 г. 14:10, David Sterba wrote:
-> On Mon, Aug 30, 2021 at 04:05:28PM +0300, Nikolay Borisov wrote:
->>> @@ -6137,35 +6136,19 @@ static int btrfs_real_readdir(struct file *file, struct dir_context *ctx)
->>>  	key.offset = ctx->pos;
->>>  	key.objectid = btrfs_ino(BTRFS_I(inode));
->>>  
->>> -	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
->>> -	if (ret < 0)
->>> -		goto err;
->>> -
->>> -	while (1) {
->>> +	btrfs_for_each_slot(root, &key, &found_key, path, iter_ret) {
->>
->> I don't think it's necessary to use iter_ret, instead you can use ret
->> directly. Because if either btrfs_search_slot return an error or
->> btrfs_valid_slot then ret would be set to the respective return value
->> and the body of the loop won't be executed at all, no?
+On Mon, Aug 30, 2021 at 02:40:27PM -0600, Chris Murphy wrote:
+> Following the add device, filtered balance, remove device dance:
 > 
-> Yeah thre's no reason to add another variable in this case. As long as
-> the loop body does not use ret internally, then reusing ret is fine.
+> Overall:
+>     Device size:                  27.52GiB
+>     Device allocated:             21.52GiB
+>     Device unallocated:            6.00GiB
+>     Device missing:                  0.00B
+>     Used:                         21.15GiB
+>     Free (estimated):              6.30GiB      (min: 6.30GiB)
+>     Free (statfs, df):             6.30GiB
+>     Data ratio:                       1.00
+>     Metadata ratio:                   1.00
+>     Global reserve:               55.50MiB      (used: 0.00B)
+>     Multiple profiles:                  no
 > 
-> The point of having an explicit return value for the iterator is to be
-> able to read the reason of failure after the iterator scope ends, so it
-> can't be defined inside. We'd need to be careful to make sure that the
-> iterator 'ret' is never used inside the body so that could be also
-> useful to put to the documentation. I think a coccinelle script can be
-> also useful to catch such things.
+> Data,single: Size:21.01GiB, Used:20.70GiB (98.56%)
+>    /dev/mapper/luks-4ac739d9-8d73-4913-89ac-656c79f89835          21.01GiB
 > 
+> Metadata,single: Size:520.00MiB, Used:456.52MiB (87.79%)
+>    /dev/mapper/luks-4ac739d9-8d73-4913-89ac-656c79f89835         520.00MiB
+> 
+> System,single: Size:4.00MiB, Used:16.00KiB (0.39%)
+>    /dev/mapper/luks-4ac739d9-8d73-4913-89ac-656c79f89835           4.00MiB
+> 
+> Unallocated:
+>    /dev/mapper/luks-4ac739d9-8d73-4913-89ac-656c79f89835           6.00GiB
+> 
+> 
+> So it's back to functional again but does seem like some kind of bug
+> that it had not allocated another metadata block group sooner when it
+> could have. Once all the space was locked up as data bg's, it was
+> inevitably going to get stuck like this.
 
-Actually even if 'ret' is used inside the loop body it's still fine.
-That's because as soon as we call the btrfs_valid_item (aka iter) and it
-returns an error we break from the loop.
+That the metadata chunks don't get allocated timely in advance is sort
+of known and not fixed to my knowledge. Also, it's the reason why free
+space tree is not yet default.
