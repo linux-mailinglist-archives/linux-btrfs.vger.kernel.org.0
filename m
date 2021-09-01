@@ -2,92 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857903FD6B2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 11:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EBD3FD896
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 13:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243467AbhIAJXe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Sep 2021 05:23:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60126 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243470AbhIAJX2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Sep 2021 05:23:28 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DCC2C202A8;
-        Wed,  1 Sep 2021 09:22:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630488150; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fx9Ocja+mh8pDvDaUtoNhVHhSYw7PeCEJ52bur4lgbQ=;
-        b=XenSPa6raNuSm9q3twXF8rsLobZnjLpPbbDg90aytXHxhSQVMOTqD6dY/7j12ADqeO7hLW
-        YcmLtwEVDIjg57CTi5yFEIImnvoWWowLsGcfknDxIn47op6XZxm9zKHPTnvV7S1z+Y36RM
-        YAuibVszXESimnyJzoumOxBruPR1bdc=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id A98F513A3E;
-        Wed,  1 Sep 2021 09:22:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id KpSiJlZGL2H4GAAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Wed, 01 Sep 2021 09:22:30 +0000
-Subject: Re: [PATCH 1/2] btrfs: use num_device to check for the last surviving
- seed device
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <cover.1630478246.git.anand.jain@oracle.com>
- <d9c89b1740a876b3851fcf358f22809aa7f1ad2a.1630478246.git.anand.jain@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <ea5d6985-7c7d-3147-e0b6-fac17a2e298f@suse.com>
-Date:   Wed, 1 Sep 2021 12:22:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S242007AbhIALVP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Sep 2021 07:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241833AbhIALVO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Sep 2021 07:21:14 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29DCC061575
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Sep 2021 04:20:17 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id c206so4297074ybb.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Sep 2021 04:20:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=BOfU+yyIVy7PMOcQ/MV4jj1msAM4he4lQcDPcXPtn0g1ZalgqMwAsr/OtwEKdvV1p9
+         zjjwNKQcH/m0L5JZPmHnaJlfeGN6VFyn2B+QXnoZnsbsbnBHV03p+KSo3S8fhoggucbA
+         NQ/g93Wv7JZI5hGtSTB45EtMf1GmVK56ZzExvUg31mbKQKUeSmy0uSmCN76cU35m5paD
+         kOxZtg1PGhh1YMCxm/hO18QW0FmVXcChTOFgMMRol+E1FnhHufXCjp4T6wxFMhhjqkiC
+         7GaRDR3EnAvVjENbD8nt/IJbaBYrltEKdHl0KTzrjz7hLjLiSWXX2ULqQf1bURvCTln0
+         71Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=NWKMZ//AyFWFbpFk6FF66OtPadVuan7a1ybZS8hGNR8=;
+        b=NSOJHmqFDJEEy1vbDEXNnBcleMrgv+0ie4tP4DxmG+9O4SL1pbjsqwXrFQTtGxgFZt
+         fdoLM3yxA6PZxQS8H+ZzDqQNx+/1UyyJ6yyuMayNJfqB4SIedFhZuUwGa0Z0cjQgDbfd
+         lvHTLNbG8oty0jcam8WZJwfCnroiDmQTrvP0s9roENCus7lhP47faa3p5A2mdkK94TkC
+         mtG5pRB8t+boOcNNgyTuHBweYZcX8mA/JG4sDniMODVflWN6Acyy2kbQDGY7AvrU+kQA
+         8rwTgqGHcAMtWxZb/V8InEs+w625HGm49TTB7b74A8t+eezSmiicHy0q+TZETLZ+WEsB
+         yXpQ==
+X-Gm-Message-State: AOAM530SHxZvWPuxZMGlgpSboqAztN+jpFW+ez8Oj0aGge3P+CmeZ4pw
+        +fyhGUkEzv/ASzvRTig064Pwow5tHlnnFqSbgXY=
+X-Google-Smtp-Source: ABdhPJxrQiwJcsxBUkoDEHfwazdkPO8E2m7STTpGjKRbkg6croIUmAXqiXsRm6pj4GAsmklcNW1DMlete3fOlqZsLYI=
+X-Received: by 2002:a25:ac0d:: with SMTP id w13mr35211008ybi.367.1630495216796;
+ Wed, 01 Sep 2021 04:20:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d9c89b1740a876b3851fcf358f22809aa7f1ad2a.1630478246.git.anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6918:230a:b0:58:ea61:819e with HTTP; Wed, 1 Sep 2021
+ 04:20:15 -0700 (PDT)
+Reply-To: robertandersonhappy1@gmail.com
+From:   robert <nnadinawafo11@gmail.com>
+Date:   Wed, 1 Sep 2021 04:20:15 -0700
+Message-ID: <CAPhDfr0mEi5N+LTvUC4CSqijX=Ze5Srcvs_Qb6_4NrLsc=k3WQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Attention Please,
 
+I am Bar. uchenna ilobi ,  How are you, I hope you are fine and
+healthy? This is to inform you that i have concluded the transaction
+successfully with the help of a new partner from Venezuela and now the
+fund has been transferred to Venezuela into the bank account of the
+new partner.
 
-On 1.09.21 г. 9:43, Anand Jain wrote:
-> For both sprout and seed fsids,
->  btrfs_fs_devices::num_devices provides device count including missing
->  btrfs_fs_devices::open_devices provides device count excluding missing
-> 
-> We create a dummy struct btrfs_device for the missing device, so
-> num_devices != open_devices when there is a missing device.
-> 
-> In btrfs_rm_devices() we wrongly check for %cur_devices->open_devices
-> before freeing the seed fs_devices. Instead we should check for
-> %cur_devices->num_devices.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Meanwhile, I have decided to compensate you with the sum of
+US$350,000.00 (thiree Hundred and Fifty Thousand United States
+Dollars) due to your past effort, though you disappointed me along the
+line. But nevertheless I am very happy for the successful ending of
+the transaction without any problem and that is the reason why i have
+decided to compensate you with the sum of US$350,000.00 so that you
+will share the joy with me.
 
-Is there a sequence of step that reproduce the problem?
+I advise you to contact my secretary for Atm Card of US$350.000.00,
+which I kept for you. Contact him now without any delay.
 
-> ---
->  fs/btrfs/volumes.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 53ead67b625c..5b36859a7b5e 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -2184,7 +2184,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
->  	synchronize_rcu();
->  	btrfs_free_device(device);
->  
-> -	if (cur_devices->open_devices == 0) {
-> +	if (cur_devices->num_devices == 0) {
->  		list_del_init(&cur_devices->seed_list);
->  		close_fs_devices(cur_devices);
->  		free_fs_devices(cur_devices);
-> 
+Name: solomon brandy
+
+Email:solomonbrandyfiveone@gmail.com
+
+Kindly reconfirm to him the following below information:
+
+Your full name_________________________
+Your address__________________________
+Your country___________________________
+Your age______________________________
+Your occupation________________________
+Your cell Phone number______________________
+
+Note that if you did not send him the above information complete, he
+will not release the Atm card to you because he has to be sure that it
+is you. Ask him to send you the total sum of ($350.000.00 ) Atm card,
+which I kept for you.
+
+Best regards,
+
+Mr. uchenna ilobi
