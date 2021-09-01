@@ -2,252 +2,214 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A178C3FD072
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 02:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FAD3FD0D4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 03:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241226AbhIAAvS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 31 Aug 2021 20:51:18 -0400
-Received: from eu-shark2.inbox.eu ([195.216.236.82]:46004 "EHLO
-        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbhIAAvR (ORCPT
+        id S241664AbhIABji (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 31 Aug 2021 21:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241332AbhIABjd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 31 Aug 2021 20:51:17 -0400
-Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
-        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id A7E001E0067C;
-        Wed,  1 Sep 2021 03:50:20 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1630457420; bh=6YiV5FS/0CHJLYAtl6BfhQE7dE7+U8xZO61WnABEO6k=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to;
-        b=q+DuZanO4ZOQiV7/qL7t41kDgFgNBq2sZGvmKXb+VFWwxTW0AyZ2SiZQFOJwDZPdF
-         LKBba+lWk893bPYqlcBsEozMbu7rQdB01ETvBLR5rZJbjEiOTcL41qgTfv8J2xZktM
-         WAe9oM/G+pKJjeqTElFZb2uhUW080u0fqD6bPb78=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 9ED521E00676;
-        Wed,  1 Sep 2021 03:50:20 +0300 (EEST)
-Received: from eu-shark2.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id dcZ2qIWoPolG; Wed,  1 Sep 2021 03:50:20 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 29F2B1E00668;
-        Wed,  1 Sep 2021 03:50:20 +0300 (EEST)
-Received: from nas (unknown [49.65.73.48])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 46AF21BE00BA;
-        Wed,  1 Sep 2021 03:50:18 +0300 (EEST)
-References: <cover.1630370459.git.anand.jain@oracle.com>
- <215cb0c88d2b84557f8ec27e3f03c1c188df2935.1630370459.git.anand.jain@oracle.com>
-User-agent: mu4e 1.7.0; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Subject: Re: [PATCH V5 1/2] btrfs: fix lockdep warning while mounting sprout fs
-Date:   Wed, 01 Sep 2021 08:49:24 +0800
-In-reply-to: <215cb0c88d2b84557f8ec27e3f03c1c188df2935.1630370459.git.anand.jain@oracle.com>
-Message-ID: <o89dp1a2.fsf@damenly.su>
+        Tue, 31 Aug 2021 21:39:33 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F818C061575
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 18:38:37 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so3126070pje.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 31 Aug 2021 18:38:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=HQmScti7QNBPCK4gDOewjzW4WcJQ2nsBS9jeGZ6Q/10=;
+        b=jh4au50XUNZoxBBqH21LtPZcqwVdEkfO0zJ4sx37QVtnJDph4zzOX+NQqsSDC2AXmO
+         O7MdPXPSaOujylSjT/QtFqTsLe29o74rbeDgOSv0IYwtpFUGvvRhzgVl/+KoJaWDA+ff
+         eKMwKBoEN/KFbtcrhz/b3tics/tVm1mbc4rLTe6Vc4bujG+habgzLWK42fGOjDpa5Sd9
+         amV2vVZv6Ij+KaTY0/1R2CA4wX3w7t0SDX28UKFtnUgeMRSgIrzfBV8p+KDDGEn79bBS
+         mUyRLRDiRq6UN4C3Nj96mFNr7wfwzWzDNUoYT7Fp1F5ByXqBQ3f//Jt/OLn0Gpv74tfb
+         lywA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HQmScti7QNBPCK4gDOewjzW4WcJQ2nsBS9jeGZ6Q/10=;
+        b=H03HjCTfHBAzF9u4nG0xD8+geSjN6aU+jGLylEaqGig++dD2Kr59wk35AWqVJNxUmd
+         kKU6Y6BcTaobF8fuiTYSVt6xR9aYWWg3XJWYY0kKlcJBh2CV2a5Nh0Lrxi5MGDA9Leo0
+         KGmBTcFsJ1Mz9DPndigSqSrHxK+4ozXxC3C3K7z4TYXmmXkHE6ZRM29yMz7U/WLsrNFz
+         jeB0DzDjQkHIfbi/XadkoQzO/vNDXXK6tmn4szB5tYh7KprGPJTnUK+UbIgGG/QBv1JX
+         uFjDX6cKwz1iqJtGfApu0xd8yEbaIwh6V+cgBTRGUJz11yLnyhvTV9E8dKPTCTJYvWlp
+         8irA==
+X-Gm-Message-State: AOAM532U9uRChxn/Pqu23NDIWmxh7TcyMO+yfhYBmhp394vxEzrjsPt2
+        g6blD6R+HDAjMs4OJ42cA0/+XfUM6/q9kA==
+X-Google-Smtp-Source: ABdhPJyXOXhG98znuTf+7nGdMjkMXrEj6A9zwFDkqcvArkEn/COjcGE35noRh1S01T+XmAMdKeEXpQ==
+X-Received: by 2002:a17:902:cec1:b0:138:e176:9676 with SMTP id d1-20020a170902cec100b00138e1769676mr7304406plg.65.1630460316824;
+        Tue, 31 Aug 2021 18:38:36 -0700 (PDT)
+Received: from [192.168.2.53] (108-201-186-146.lightspeed.sntcca.sbcglobal.net. [108.201.186.146])
+        by smtp.gmail.com with ESMTPSA id r15sm15548533pfh.45.2021.08.31.18.38.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 31 Aug 2021 18:38:36 -0700 (PDT)
+Subject: Re: Trying to recover data from SSD
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <67691486-9dd9-6837-d485-30279d3d3413@gmail.com>
+ <d7c65e1d-6f4e-484b-a52f-60084160969f@gmail.com>
+ <2684f59f-679d-5ee7-2591-f0a4ea4e9fbe@gmx.com>
+ <238d1f6c-20a9-f002-e03a-722175c63bd6@gmail.com>
+ <4bd90f4a-7ced-3477-f113-eee72bc05cbb@gmx.com>
+ <fab2dab5-41bb-43f2-5396-451d66df3917@gmail.com>
+ <60a21bca-d133-26c0-4768-7d9a70f9d102@gmx.com>
+ <7e8394c9-9eb3-c593-9473-5c40d80428a5@gmail.com>
+ <1785017b-e23b-e93d-5b78-2aa40170fe62@gmail.com>
+ <14a9a98c-50fc-eb7b-804b-2fe36775b5fa@gmx.com>
+ <36652872-850c-fe92-9fcd-c9c95dc25d65@gmail.com>
+ <cebedd98-1fe4-731f-fc54-5366c8f18a2f@gmx.com>
+ <d0ebdff7-10f0-c8f3-e098-18f651a149d8@gmail.com>
+ <597bd681-c7ba-075c-4376-142695b91f93@gmx.com>
+ <4a5d64fd-637c-bd8a-fe6f-db1bb20942c2@gmail.com>
+ <5858520a-ca82-0552-140d-9702fc7dad94@gmx.com>
+ <74809aba-047e-ca7a-e5b4-d64287ddd81d@gmail.com>
+ <3fbd1db5-97f7-8d8f-e217-3a7086eb74b0@gmx.com>
+ <aa33b83f-b822-b1d8-9fe4-5cf4ab45c3e1@gmail.com>
+ <64eb1b22-a9c0-e429-4407-cdfd6af4e031@gmx.com>
+From:   Konstantin Svist <fry.kun@gmail.com>
+Message-ID: <dc35d674-1dd8-d67a-0e78-b38bf1a638ca@gmail.com>
+Date:   Tue, 31 Aug 2021 18:38:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: 6N1ml5Y9aTPX9ELYI3baDBgxqjROX/Ph8/vYpBBYmnv7MyaHf0wLTGPJkCwpDWA=
+In-Reply-To: <64eb1b22-a9c0-e429-4407-cdfd6af4e031@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 8/31/21 04:05, Qu Wenruo wrote:
+>
+>
+> On 2021/8/31 下午2:25, Konstantin Svist wrote:
+>> On 8/30/21 00:20, Qu Wenruo wrote:
+>>>
+>>> On 2021/8/30 上午11:48, Konstantin Svist wrote:
+>>>>
+>>>> I'm hoping to find several important files at this point, definitely
+>>>> don't need the whole FS..
+>>>>
+>>>> So when I run this, I get about 190 lines like
+>>>>
+>>>>       key (256 INODE_ITEM 0) block 920748032 gen 166878
+>>>>       key (52607 DIR_ITEM 988524606) block 1078902784 gen 163454
+>>>>       key (52607 DIR_INDEX 18179) block 189497344 gen 30
+>>>>       key (174523 INODE_REF 52607) block 185942016 gen 30
+>>>>       key (361729 EXTENT_DATA 0) block 785907712 gen 166931
+>>>>       key (381042 XATTR_ITEM 3817753667) block 1027391488 gen 120910
+>>>
+>>> Can you provide the full output? (both stdout and stderr)
+>>>
+>>> If you're concerning about the filenames, "btrfs ins dump-tree" has
+>>> --hide-names to mask all the file/dir names.
+>>>
+>>> 190 lines look too few than expected, thus means some tree blocks are
+>>> not read out properly.
+>>>
+>>> You may want to try other bytenr to see which gives the most amount of
+>>> output (thus most possible to restore some data).
+>>
+>> ## Naming these BTR1..4
+>> # btrfs ins dump-super -f /dev/sdb3 | grep backup_tree_root | sort -rk 4
+>>          backup_tree_root:    787070976    gen: 166932    level: 1  
+>> ### BTR1
+>>          backup_tree_root:    786399232    gen: 166931    level: 1  
+>> ### BTR2
+>>          backup_tree_root:    781172736    gen: 166930    level: 1  
+>> ### BTR3
+>>          backup_tree_root:    778108928    gen: 166929    level: 1  
+>> ### BTR4
+>>
+>> ### BTR1:
+>> # btrfs ins dump-tree -b 787070976 --follow /dev/sdb3 | grep "(257
+>> ROOT_ITEM" -A 5
+>> ...
+>>     item 13 key (257 ROOT_ITEM 0) itemoff 13147 itemsize 439
+>>          generation 166932 root_dirid 256 bytenr 786726912 level 2 refs
+>> 1      ### naming this RI1
+>>          lastsnap 56690 byte_limit 0 bytes_used 1013104640 flags
+>> 0x0(none)
+>> ...
+>>
+>> BTR1 -> RI1 786726912
+>> BTR2 -> RI2 781467648
+>> BTR3 -> RI3 780828672
+>> BTR4 -> RI3 102760448
+>>
+>> ### inpsecting RI2
+>> # btrfs ins dump-tree -b 781467648 --follow --bfs /dev/sdb3
+>>> RI2.inspect.stdout 2>RI2.inspect.stderr
+>> <outputs attached>
+>>
+>> One of the lines of this output is
+>>          key (2334458 DIR_ITEM 3564787518) block 196816535552 gen 56498
+>>
+>>>> I tried to pass these into restore, but it's not liking it:
+>>>>
+>>>> # btrfs restore -Divf 196816535552 /dev/sdb3 .
+>>>
+>>> Where the bytenr 196816535552 is from?
+>>
+>> ^^^ output from inspect RI2 -> DIR_ITEM. Probably wrong usage? :)
+>
+> OK, that seems to be out of the way btrfs-restore can handle.
+>
+>>
+>>
+>>>
+>>>> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+>>>> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+>>>> checksum verify failed on 786939904 wanted 0xcdcdcdcd found 0xc375d6b6
+>>>> Csum didn't match
+>>>> WARNING: could not setup extent tree, skipping it
+>>>
+>>> This part is expected, it just tries to read extent tree which is
+>>> manually corrupted.
+>>>
+>>>> This is a dry-run, no files are going to be restored
+>>>> Done searching
+>>>
+>>> While this is not expected, as it doesn't even show any research
+>>> attempts, is the bytenr from the subtree of the subvolume 257?
+>>
+>>
+>> Interestingly, I tried --dfs instead of --bfs and there are a lot more
+>> entries, including filenames
+>>
+>
+> BTW, thanks to the output and stderr, it shows exactly what's going
+> wrong.
+>
+> The offending tree block, 920748032, is the first one.
+>
+> If using --dfs, it will go through each child until reaches the leaves,
+> before going to next tree block.
+>
+> And if the first child is corrupted, then it gives up immediately.
+>
+> That's why I'm explicitly specifying --bfs, which will skip the
+> corrupted child (and its children) and go next tree blocks directly,
+> thus have the best chance to recovery the contents.
+>
+> For the worst case, I guess you have to use "btrfs ins dump-tree" to
+> recovery your files, and then "btrfs-map-logical" to grab the data from
+> disk directly.
+>
+> Meanwhile I guess I should put some time to enhance btrfs-restore to
+> handle the corruption you're hitting, so that we can continue to next
+> good tree block, without being bothered by early corrupted tree blocks. 
 
-On Tue 31 Aug 2021 at 09:21, Anand Jain <anand.jain@oracle.com> 
-wrote:
 
-> Following test case reproduces lockdep warning.
->
->  Test case:
->
->  $ mkfs.btrfs -f <dev1>
->  $ btrfstune -S 1 <dev1>
->  $ mount <dev1> <mnt>
->  $ btrfs device add <dev2> <mnt> -f
->  $ umount <mnt>
->  $ mount <dev2> <mnt>
->  $ umount <mnt>
->
-> The warning claims a possible ABBA deadlock between the threads 
-> initiated by
-> [#1] btrfs device add and [#0] the mount.
->
-> ======================================================
-> [ 540.743122] WARNING: possible circular locking dependency 
-> detected
-> [ 540.743129] 5.11.0-rc7+ #5 Not tainted
-> [ 540.743135] 
-> ------------------------------------------------------
-> [ 540.743142] mount/2515 is trying to acquire lock:
-> [ 540.743149] ffffa0c5544c2ce0 
-> (&fs_devs->device_list_mutex){+.+.}-{4:4}, at: 
-> clone_fs_devices+0x6d/0x210 [btrfs]
-> [ 540.743458] but task is already holding lock:
-> [ 540.743461] ffffa0c54a7932b8 (btrfs-chunk-00){++++}-{4:4}, at: 
-> __btrfs_tree_read_lock+0x32/0x200 [btrfs]
-> [ 540.743541] which lock already depends on the new lock.
-> [ 540.743543] the existing dependency chain (in reverse order) 
-> is:
->
-> [ 540.743546] -> #1 (btrfs-chunk-00){++++}-{4:4}:
-> [ 540.743566] down_read_nested+0x48/0x2b0
-> [ 540.743585] __btrfs_tree_read_lock+0x32/0x200 [btrfs]
-> [ 540.743650] btrfs_read_lock_root_node+0x70/0x200 [btrfs]
-> [ 540.743733] btrfs_search_slot+0x6c6/0xe00 [btrfs]
-> [ 540.743785] btrfs_update_device+0x83/0x260 [btrfs]
-> [ 540.743849] btrfs_finish_chunk_alloc+0x13f/0x660 [btrfs] <--- 
-> device_list_mutex
-> [ 540.743911] btrfs_create_pending_block_groups+0x18d/0x3f0 
-> [btrfs]
-> [ 540.743982] btrfs_commit_transaction+0x86/0x1260 [btrfs]
-> [ 540.744037] btrfs_init_new_device+0x1600/0x1dd0 [btrfs]
-> [ 540.744101] btrfs_ioctl+0x1c77/0x24c0 [btrfs]
-> [ 540.744166] __x64_sys_ioctl+0xe4/0x140
-> [ 540.744170] do_syscall_64+0x4b/0x80
-> [ 540.744174] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> [ 540.744180] -> #0 (&fs_devs->device_list_mutex){+.+.}-{4:4}:
-> [ 540.744184] __lock_acquire+0x155f/0x2360
-> [ 540.744188] lock_acquire+0x10b/0x5c0
-> [ 540.744190] __mutex_lock+0xb1/0xf80
-> [ 540.744193] mutex_lock_nested+0x27/0x30
-> [ 540.744196] clone_fs_devices+0x6d/0x210 [btrfs]
-> [ 540.744270] btrfs_read_chunk_tree+0x3c7/0xbb0 [btrfs]
-> [ 540.744336] open_ctree+0xf6e/0x2074 [btrfs]
-> [ 540.744406] btrfs_mount_root.cold.72+0x16/0x127 [btrfs]
-> [ 540.744472] legacy_get_tree+0x38/0x90
-> [ 540.744475] vfs_get_tree+0x30/0x140
-> [ 540.744478] fc_mount+0x16/0x60
-> [ 540.744482] vfs_kern_mount+0x91/0x100
-> [ 540.744484] btrfs_mount+0x1e6/0x670 [btrfs]
-> [ 540.744536] legacy_get_tree+0x38/0x90
-> [ 540.744537] vfs_get_tree+0x30/0x140
-> [ 540.744539] path_mount+0x8d8/0x1070
-> [ 540.744541] do_mount+0x8d/0xc0
-> [ 540.744543] __x64_sys_mount+0x125/0x160
-> [ 540.744545] do_syscall_64+0x4b/0x80
-> [ 540.744547] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> [ 540.744551] other info that might help us debug this:
-> [ 540.744552] Possible unsafe locking scenario:
->
-> [ 540.744553] CPU0 				CPU1
-> [ 540.744554] ---- 				----
-> [ 540.744555] lock(btrfs-chunk-00);
-> [ 540.744557] 
-> lock(&fs_devs->device_list_mutex);
-> [ 540.744560] 					lock(btrfs-chunk-00);
-> [ 540.744562] lock(&fs_devs->device_list_mutex);
-> [ 540.744564]
->  *** DEADLOCK ***
->
-> [ 540.744565] 3 locks held by mount/2515:
-> [ 540.744567] #0: ffffa0c56bf7a0e0 
-> (&type->s_umount_key#42/1){+.+.}-{4:4}, at: 
-> alloc_super.isra.16+0xdf/0x450
-> [ 540.744574] #1: ffffffffc05a9628 (uuid_mutex){+.+.}-{4:4}, at: 
-> btrfs_read_chunk_tree+0x63/0xbb0 [btrfs]
-> [ 540.744640] #2: ffffa0c54a7932b8 (btrfs-chunk-00){++++}-{4:4}, 
-> at: __btrfs_tree_read_lock+0x32/0x200 [btrfs]
-> [ 540.744708]
->  stack backtrace:
-> [ 540.744712] CPU: 2 PID: 2515 Comm: mount Not tainted 
-> 5.11.0-rc7+ #5
->
-> But the device_list_mutex in clone_fs_devices() is redundant, as 
-> explained
-> below.
-> Two threads [1]  and [2] (below) could lead to 
-> clone_fs_device().
->
-> [1]
-> open_ctree <== mount sprout fs
->  btrfs_read_chunk_tree()
->   mutex_lock(&uuid_mutex) <== global lock
->   read_one_dev()
->    open_seed_devices()
->     clone_fs_devices() <== seed fs_devices
->      mutex_lock(&orig->device_list_mutex) <== seed fs_devices
->
-> [2]
-> btrfs_init_new_device() <== sprouting
->  mutex_lock(&uuid_mutex); <== global lock
->  btrfs_prepare_sprout()
->    lockdep_assert_held(&uuid_mutex)
->    clone_fs_devices(seed_fs_device) <== seed fs_devices
->
-> Both of these threads hold uuid_mutex which is sufficient to 
-> protect
-> getting the seed device(s) freed while we are trying to clone it 
-> for
-> sprouting [2] or mounting a sprout [1] (as above). A mounted 
-> seed
-> device can not free/write/replace because it is read-only. An 
-> unmounted
-> seed device can free by btrfs_free_stale_devices(), but it needs 
-> uuid_mutex.
-> So this patch removes the unnecessary device_list_mutex in 
-> clone_fs_devices().
-> And adds a lockdep_assert_held(&uuid_mutex) in 
-> clone_fs_devices().
->
-> Reported-by: Su Yue <l@damenly.su>
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->
+Thanks again for looking into this!
 
-Tested-by: Su Yue <l@damenly.su>
+Should I wait for a patch or is there something else I can do meanwhile?
 
---
-Su
-> ---
-> v5: Vet test case in the changelog.
-> v2: Remove Martin's Reported-by and Tested-by.
->     Add Su's Reported-by.
->     Add lockdep_assert_held check.
->     Update the changelog, make it relevant to the current 
->     misc-next
->
->  fs/btrfs/volumes.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index abdc392f6ef9..fa9fe47b5b68 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -558,6 +558,8 @@ static int btrfs_free_stale_devices(const 
-> char *path,
->  	struct btrfs_device *device, *tmp_device;
->  	int ret = 0;
->
-> +	lockdep_assert_held(&uuid_mutex);
-> +
->  	if (path)
->  		ret = -ENOENT;
->
-> @@ -988,11 +990,12 @@ static struct btrfs_fs_devices 
-> *clone_fs_devices(struct btrfs_fs_devices *orig)
->  	struct btrfs_device *orig_dev;
->  	int ret = 0;
->
-> +	lockdep_assert_held(&uuid_mutex);
-> +
->  	fs_devices = alloc_fs_devices(orig->fsid, NULL);
->  	if (IS_ERR(fs_devices))
->  		return fs_devices;
->
-> -	mutex_lock(&orig->device_list_mutex);
->  	fs_devices->total_devices = orig->total_devices;
->
->  	list_for_each_entry(orig_dev, &orig->devices, dev_list) {
-> @@ -1024,10 +1027,8 @@ static struct btrfs_fs_devices 
-> *clone_fs_devices(struct btrfs_fs_devices *orig)
->  		device->fs_devices = fs_devices;
->  		fs_devices->num_devices++;
->  	}
-> -	mutex_unlock(&orig->device_list_mutex);
->  	return fs_devices;
->  error:
-> -	mutex_unlock(&orig->device_list_mutex);
->  	free_fs_devices(fs_devices);
->  	return ERR_PTR(ret);
->  }
+
