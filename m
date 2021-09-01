@@ -2,113 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325623FD299
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 06:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C1A3FD3EC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 08:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241890AbhIAEzB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Sep 2021 00:55:01 -0400
-Received: from omta012.uswest2.a.cloudfilter.net ([35.164.127.235]:45494 "EHLO
-        omta012.uswest2.a.cloudfilter.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230483AbhIAEzA (ORCPT
+        id S242237AbhIAGoT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Sep 2021 02:44:19 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:2938 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242118AbhIAGoQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 1 Sep 2021 00:55:00 -0400
-Received: from cxr.smtp.a.cloudfilter.net ([10.0.17.148])
-        by cmsmtp with ESMTP
-        id L7OQmW5LHeXrBLIGBms807; Wed, 01 Sep 2021 04:54:03 +0000
-Received: from ws ([24.255.45.226])
-        by cmsmtp with ESMTPSA
-        id LIGAmSNd2KYuOLIGAmcRTO; Wed, 01 Sep 2021 04:54:03 +0000
-Authentication-Results: cox.net; auth=pass (LOGIN)
- smtp.auth=1i5t5.duncan@cox.net
-X-Authority-Analysis: v=2.4 cv=b63RXvKx c=1 sm=1 tr=0 ts=612f076b
- a=rsvNbDP3XdDalhZof1p64w==:117 a=rsvNbDP3XdDalhZof1p64w==:17
- a=kj9zAlcOel0A:10 a=1SD6Td3LhPHhN1caRMoA:9 a=CjuIK1q_8ugA:10
-Date:   Tue, 31 Aug 2021 21:54:01 -0700
-From:   Duncan <1i5t5.duncan@cox.net>
-To:     Andrej Friesen <andre.friesen@gmail.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: Questions about BTRFS balance and scrub on non-RAID setup
-Message-ID: <20210831215401.6928aeef@ws>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-pc-linux-gnu)
+        Wed, 1 Sep 2021 02:44:16 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1816Atat006304
+        for <linux-btrfs@vger.kernel.org>; Wed, 1 Sep 2021 06:43:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=+AI2D4XBB/cEux1FFoVzhbtStSf55C1S0ibR8196N7w=;
+ b=lQyr94DeEbWDZHbWz9rTuZm6mv8IZKtmSt/VfuW6ITlzd4GxFNYtrbNkOUo2q46jTGmk
+ sC57dVe8BU+1V0XAMYuje+qpcXlFV/hGW/Kh55gJYIoSAsUISPeslXXKwT8GT1NyeM6K
+ 72xvc2lcElin810iMjyVRpbqy0dnlm7U/ujHKne2nqSbpabVpm8c/uThbXlqgVjh8vdH
+ +Qg05l8syCYpVbuYPmvC35vi2+En/KWw4gdd6A+gwIqDVfCFPgu0UaSdjzCgQ9g0lkVP
+ p+TyAt/QBupDkjj6h9BRaXd7As6IIuneN7UZsYBGYbJ5TbkRqi6TWfX/XtYWg58zgNbP xw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=+AI2D4XBB/cEux1FFoVzhbtStSf55C1S0ibR8196N7w=;
+ b=B7b5l5k3j3a92O58yE1OCNGIfcJRjJqGnJCt2zSWak0+6YHNwGSXwCdaNXv9ruI2hugy
+ 40Dqi9GfyLf5MIPO7ovgdjQ26A2tURtujQJyOIEX3iPHB4YSFiburhasdzYOJWwtll2s
+ M2j9HQRIeXmS9jaFImO3dPyrhhNZzJZX0ybAnck3JFtbK1UbxGHK/hwbhvvKTDVwX3g5
+ NfSeYA5PAzoL+UlzOY01vFirKGp/F702r/KL/Pa5DyVB4/MZMUDLccqmidQ/9xJ/2nF5
+ ob1tUJOckjaN7Z2X2Y4bCbVAvOZ98yOibGun6cb7uuwkjVnJ7NeWhFC0Wd0KLjM+mA/g iQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3asf66kfhg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Sep 2021 06:43:19 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1816QOuK003073
+        for <linux-btrfs@vger.kernel.org>; Wed, 1 Sep 2021 06:43:18 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by userp3030.oracle.com with ESMTP id 3arpf5vyey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Sep 2021 06:43:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=And30impb6UQxJSgot0rXoab/YmlCaYKlY3v2umnDvZbTd/i5nyZQj8KKoL/3fcs/8PXjmdkH4Uj+Ax+aI4PLF5flxkLDMIajJZR8q/VR1L12VUySPIlb6BkCkw4UHfW0MNxwfQsL45yrEKh9HYkPAH5JfadldXs/flghTXXMwFNmXpIUhFK5/vlzpPj48OOyTgMKkDb/r9KeAAf4ZF0vPxfzC0U+pF6uIk7IpiCbA9Lu6GcnV+VAyrLEwqrcCr9sZu8MXqhiv8oAVyh5fSPWgzMCDaftlgFj+ZShdDtx48HC8qnrnadeWjeYVSiJJhKXGryMLwueUs8YwdpuIrJ0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+AI2D4XBB/cEux1FFoVzhbtStSf55C1S0ibR8196N7w=;
+ b=lYW1QMk2NXQ2U4csZ4ZAiOp9YGYn/MF0xTNGPiUgnjxRsQ25JSbM8XJqhT9sYGnwTGeA8nwxIOunVJqfJE+2aGsrwQWQ8AiAs70PcZ1InR9ApBi37nl4sIMJlaGt48MMOkmD68yzXRcGpaMOCLXp9vQZlGX49Jjd5Qmvx1Y4FmqHgL0bvNI//5jAJ4A/zpcO5HNLr6N3EmbgncWNa+s9pHDB8qWo8GEW0042BGR/vYYfRbbUl9q4JDKhD6g1L6GicYxdCCj1QGCBQYssFX6LEsugsoUSeKg7r9EhhZFzi2iH43vpZO9VtSckHqpnQDkdb46tHmfFHNZLZB2lTzFbaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+AI2D4XBB/cEux1FFoVzhbtStSf55C1S0ibR8196N7w=;
+ b=EPaxXyEPiSl6fOasZuNkfe9r0X+XAhaaJZU7r46IOcqguabGeEH6oRdcslhncMsHJrpoTpQAZ2/EUV8n4pep0vhgE0GrrxeIMnAxxBsWZAHiZwA7/AKC5SqqMX7+wp/t0OlKqN+qsPR1MMccrvqDH7sH/NG22ak0KkKekrmqURs=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from DM6PR10MB4123.namprd10.prod.outlook.com (2603:10b6:5:210::10)
+ by DM6PR10MB2795.namprd10.prod.outlook.com (2603:10b6:5:70::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Wed, 1 Sep
+ 2021 06:43:16 +0000
+Received: from DM6PR10MB4123.namprd10.prod.outlook.com
+ ([fe80::99af:5f7e:6cb7:922]) by DM6PR10MB4123.namprd10.prod.outlook.com
+ ([fe80::99af:5f7e:6cb7:922%8]) with mapi id 15.20.4457.024; Wed, 1 Sep 2021
+ 06:43:16 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] Fix device count check btrfs_rm_devices() and add comments
+Date:   Wed,  1 Sep 2021 14:43:00 +0800
+Message-Id: <cover.1630478246.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0109.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:40::13) To DM6PR10MB4123.namprd10.prod.outlook.com
+ (2603:10b6:5:210::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfD0uRw8gLpQH1c4hE6Z2Y3eHO3oCvc0LZwC7xqER2qWGrNSi1LvlPu4lcQlh00IcQ6dHhPsgQLT/2UMEEPWgPP9sVeJLaxQf+XXhDhxw9gvzACwPwbtu
- 133UkE2GBirMt0zDGOeuXlRXdeIYtjnbjwKw1MTGOjckozUr0O/y8E5N/ZtDFUmBl+XwsADHIAh/8draBxeXHep5plJsYx6sR5R/9hkr8vdTfwilzImvjNgK
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (39.109.186.25) by SG2PR01CA0109.apcprd01.prod.exchangelabs.com (2603:1096:4:40::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Wed, 1 Sep 2021 06:43:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 26aa19f0-a690-4800-41da-08d96d13c6fe
+X-MS-TrafficTypeDiagnostic: DM6PR10MB2795:
+X-Microsoft-Antispam-PRVS: <DM6PR10MB27958E70B4A957E5EB48EF5EE5CD9@DM6PR10MB2795.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8+jwU0g6+XsAMnbtG3DOfWZXU7TuFLJmk7LkF64eO8YCHt/zFN8ejzDpr2erYJpSyaXoh/lXvJP9DcYxxfNqkYfmEWm7bqshHnCS7EgZbMMBuqQtJFKGTxVLt74m3hTQMZOEKWujJfiFukoUQ/Cm84XSzBwVLO3JmKCK8JISJFwepSQU3CS399FYlkVizVGaYRWE8F1j11BiAJG1fjYSmgXMRuBpS1W70UIJghjuyU++89U3aDHA4MHPO/eJ7mxgiOdD+JqEou2GDR5ocp3qxL0naZDv4+wIKMQ5OXE15PKlre8GKW4XSzLi/807G96eZzDg56Qz4JFgXzjJ4ADpzZ9QsjYygwEStP9crm+GPKsIsklAixfjXxB+/R6PAR+g9fu1GmBij8Z3BbsQwUtjWvT1U50bwQEpWHNpc8JAvbYaF3JUKQ2aDZY/czSFBbf8ffwviNTJuShFXl1oJYgblT/7T7POBPiHhK5uEVw9qB42YFqCleQYB7dlBviP7yz6A8yTmtD/dH7BFIW6BMqaVnJ1zFoEBqp16McM3pdd4Y+mbajTkkqBQxqbgp0kExTyOMPZmmS6OxjwYSdsHZe3tJCWEp36mAVxPmahZWXDo9BqPg1x89zQfVXcUEJFYyS+JpWubb/0wHiXNToMznq+lG5mb0u/CL6y0CPQuW1CaNJvjQ70B+oeXsnkKn17buDl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4123.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(346002)(39860400002)(66946007)(6512007)(26005)(186003)(316002)(86362001)(38100700002)(8676002)(66476007)(52116002)(6486002)(83380400001)(478600001)(38350700002)(36756003)(44832011)(2616005)(66556008)(4744005)(8936002)(6666004)(6916009)(6506007)(5660300002)(956004)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?52d7C7yBT0SVbjJpGFAtNw/BgHe8M6ZymUX+daWtRSjfKYWiq8wtox7hO/Y5?=
+ =?us-ascii?Q?Elsh+K+NoEh0IPefspzXuDxTSQ5/Szm1nx6F7PpxszyfFGbs0recTwRaghqu?=
+ =?us-ascii?Q?3l36/CsdLfC3QwU87QwFXtKhI8dkMbMqc/7QthQ52sYZE+v5HVhJS80y3dBc?=
+ =?us-ascii?Q?cowIZFs5VFHD6Wq2pnyIy+phvQFR2Qh4SQkUUgPGczAFF4DirPl613XdOFMH?=
+ =?us-ascii?Q?8fRpDq5hiYta2M9M9PZ4pVxQCuoDBPTZu0Vierqiv94WtkGmnTE+0cOZJHdH?=
+ =?us-ascii?Q?Bk7vz1Gu5oAgxOMr4iFokBhroPAhlQ2lKlvcoLXiR2yqonjcvyN25chY7dR+?=
+ =?us-ascii?Q?WUFqRC2sS70roe8RZQ/Dshlkt1gu2GO6fxJSOPVIiH6N/vCYBWrUeqG85MyV?=
+ =?us-ascii?Q?mhQdq/fg0xa2VV13fDZf48inqMU0wx06ZNFvxs4AoLY1mLAjdNN18xeXXh2Q?=
+ =?us-ascii?Q?8HQcgVVPLupgCkFFqCz8GUfVVVhLzz1A2+3sCGk1V1DwqK2R7vVZSZnZzQZH?=
+ =?us-ascii?Q?sl3djxy+NmBPPbys1ncmI/D70/TLErnJ9hQ7gM7vDX5rqinHxj4x9rzXFbYx?=
+ =?us-ascii?Q?iwN/fHWYYES6tE5IP/y9sCReeNnS21NfTuaE02q8jR3QiJm91lanlqs9RC1L?=
+ =?us-ascii?Q?wq196aJ27Uj4ZATe0hyhvjGvBozdzuBIkF8kEGV/NGlVgfqbBJsEAM5fp63q?=
+ =?us-ascii?Q?ksO5lstqhsWaGJ6NkXadyNgkIp55c79V6QQumjzL2yta3VggtMoepOF7pqRd?=
+ =?us-ascii?Q?aLokT3CFksZjSA334830rmuP+MvcQrDmTCDnkZRdJs5MabfgJyZbjM9oMby0?=
+ =?us-ascii?Q?GHwpis3CQPAdmEFjjTsW5EAitq/LEWyF51viBcSE5jGIZKSXaKLl4NbTABjs?=
+ =?us-ascii?Q?yCqVkj79QfhmvwNlyq1PEFqM8AKHh6/9oVX8bB3WlBSaGEgvkLrn5Y9vDbqC?=
+ =?us-ascii?Q?4tvitQoAhELRPni/uAFRH+oQ1COna/KVUSn/VjTsfJM3XKa9IT51TM8Ja3q5?=
+ =?us-ascii?Q?1z2dPIbEQnROnZ0xqdup04dMYm1Sy5RL2ap9jg/ahklMrbPi1aN4gGrOzvk6?=
+ =?us-ascii?Q?m1s24cSNij2U0OsvqCmlKVMYtf9PFJZo4FdA5V+66hiRf33U0h8J5dZThn/d?=
+ =?us-ascii?Q?ZNvlGIigthiZkPc9Nl0MSFrTQmWRbi+griBhJLlsdaZN+XolmtfsnFbzIu/0?=
+ =?us-ascii?Q?2eN8m9SoYbGujInqPW408/8w11K7HPjfV+Er8bQh6dWhGGZfqMPLHmpMUitj?=
+ =?us-ascii?Q?B3V3LGYC20ZoWl7uMbil4kuFhJz05BdtdaDR3/L+Ldefr8DnqbDluJwIqx57?=
+ =?us-ascii?Q?o1V2XqIbWeoEz4HJjdTr+Qoo?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26aa19f0-a690-4800-41da-08d96d13c6fe
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4123.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2021 06:43:16.3368
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nNHJaVKbD+oJOGA+sGdf1V6FNu//lme8wZc67kjjZDZSDRvBdiwtYJCaVyuXEKW+0QtyKuyZFr8dGzTV3SqmXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB2795
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10093 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
+ spamscore=0 mlxlogscore=977 adultscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2109010035
+X-Proofpoint-GUID: wk3hzk6Ho_rh-_iTLBMpM1z0098EM_zh
+X-Proofpoint-ORIG-GUID: wk3hzk6Ho_rh-_iTLBMpM1z0098EM_zh
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Andrej Friesen posted on Tue, 31 Aug 2021 10:17:07 +0200 as excerpted:
+Patch 1/2 fixes a bug that we checked open_devices to check if the deleted
+device was the last surviving device in the seed fsid.
+Patch 2/2 adds comments about the device counts in struct btrfs_fs_devices.
 
->> You probably want to use autodefrag or a custom defragmentation
->> solution too. We weren't satisfied with autodefrag in some situations
->> (were clearly fragmentation crept in and IO performance suffered
->> until a manual defrag) and developed our own scheduler for triggering
->> defragmentation based on file writes and slow full filesystem scans,
-> 
-> The ceph cluster only uses SSDs therefore I guess we do not suffer
-> from fragmentation problem as with HDDs. As far as I understood SSDs.
+Anand Jain (2):
+  btrfs: use num_device to check for the last surviving seed device
+  btrfs: add comments for device counts in struct btrfs_fs_devices
 
-Since I saw mention of btrfs snapshots as well...
-
-It's worth mentioning that defrag (of course) triggers a write-out of
-the new defragmented data, which because btrfs snapshots are cow-based
-(copy- on-write), duplicates blocks still locked into place by existing 
-snapshots.  With rewrite-in-place write patterns (typical
-write-patterns for database or VM image usage), defrag and repeated
-snapshots this can eat up space rather fast.
-
-(They tried snapshot-aware defrag at one point but due to the exploded 
-complexity of dealing with all the COW-references the performance just 
-wasn't within the realm of practical as the defrag ended up making
-little forward progress, so that was dropped in favor of a defrag that
-would break the cow-references and thus use extra space, but at least
-/worked/ for its labeled purpose.)
-
-So I'd suggest choosing either one or the other, either snapshotting or 
-defrag, don't try to use both in combination, or at least limit their 
-usage in combination and keep an eye on space usage, deleting snapshots 
-and/or reducing defrag frequency to some fraction of the snapshot 
-frequency as necessary.
-
-For ssds, autodefrag without manual defrag may be a reasonable
-compromise (it's one I like personally but my use-case isn't
-commercial), tho it is said that autodefrag may be a performance
-bottleneck for some database (and I suspect VM-image as well)
-use-cases, but I suspect autodefrag on ssds should both mitigate the
-performance issue and likely eliminate the need for more intensive
-manual/scheduled defrag runs.
-
-The other thing to consider with below-btrfs-level snapshotting, and
-I'm out-of-league for ceph/rdb but know it's definitely a problem with
-lvm, is that btrfs due to its multi-device functionality cannot be
-allowed to see other snapshots of the filesystem with the same btrfs
-UUID.  (Btrfs- scan is what would make btrfs aware of them, but udev
-typically triggers btrfs-scan when it detects new devices, and with lvm
-at least, udev device detection can trigger somewhat unexpectedly.)
-Because when btrfs sees these other devices with the same btrfs UUID,
-it considers them additional devices of a multi-device btrfs and can
-attempt to write to them instead of the original target device,
-potentially creating all sorts of mayhem!
-
-Like I said I'm out-of-league with ceph, etc, and have no idea if this 
-even applies with it, but when I saw rdb snapshots mentioned I thought
-of the lvm snapshots problem and thought it was worth a heads-up, in
-case further investigation is necessary.
-
-Likewise I saw the mention of quotas and balance.  Balance with quotas 
-running similarly explodes due to constant recalculation of the quota
-as the balance does its thing, increasing balance time dramatically and 
-often out of the realm of the practical.  So if quotas are needed, 
-minimize the use of balance, and if a balance is necessary, turning off 
-quotas temporarily may be the only way to make reasonable forward 
-progress on the balance.
-
-But it sounds like btrfs quotas may not be necessary, thus avoiding
-that problem entirely. =:^)
+ fs/btrfs/volumes.c |  2 +-
+ fs/btrfs/volumes.h | 19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+), 1 deletion(-)
 
 -- 
-Duncan - List replies preferred.   No HTML msgs.
-"Every nonfree program has a lord, a master --
-and if you use the program, he is your master."  Richard Stallman
+2.31.1
+
