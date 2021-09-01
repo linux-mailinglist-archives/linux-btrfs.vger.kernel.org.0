@@ -2,201 +2,262 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE033FE0D9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 19:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F36B3FE0EE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 19:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345738AbhIARDG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Sep 2021 13:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344623AbhIARDF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Sep 2021 13:03:05 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B905FC061796
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Sep 2021 10:02:04 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id m4so74283pll.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Sep 2021 10:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9YobspOtAz1+Sdf06vQkAR93CT6czB2ar8/rJ/GZ6Cs=;
-        b=DVF0QuoysMADKI+Uk36IrlUjkmNaQEVFqpz7H8AfZLLH+3ksTzrXUSKxzeF2JXN17U
-         Cy0/k8dB97mVQzSKQrT3T3IslRY0NnSrIQV5smt13P0uVmXBaL4PcXirOc3vjmjeidvs
-         ZETEsWMLQ+NXpgME1Nd4aznuyidqux52JXSI6yrpDqzj2iLsmwgu1Mtq2CHrKv2CAvln
-         n+JgMoCz2dld8xMQBENigy4Hu1U6okMOmOPVwBHbdPWMgmcUlHjUx6AM/FrGxJQLLQV9
-         wiYNiDRxaDTHkwDcKzENMDpn1cQIcyw7j3LmD/SDtHmfeVELR0ia7YZGkWPvIeSXBghm
-         f3Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9YobspOtAz1+Sdf06vQkAR93CT6czB2ar8/rJ/GZ6Cs=;
-        b=aGN/igv2MONRkxIqmTnmNyK7/mhaWd8IGPGFhUpOSUqNA3rY+RfY6VKXijOiEyBQAW
-         t6HIlX6u+2ZXIf9Q1wAZO7WMHUWvHULA20ZVtLvo1pGlXxRqaD0i9S4jPrhtCmiidtxh
-         oYhRblHRpkC6Cl897eckf0RDxQEOcasEJYeFuTbh7CxUAgnP5hICA4fGzQW0HEKSi923
-         pldGrJBnwB4yUMN/cXmLiavqp1ufDeoQBYcctMePBQ0Ijw/wPiwZowqsg5duV5Z6ZAQN
-         PG5rYz3Hmts/qYZxSkhpS36N53xVVhfXc1aTldANtHiOtTBRN/4Qqtl/c8CHU5N7zDTK
-         lfRg==
-X-Gm-Message-State: AOAM532tBijB2ahCCu1WrxNa5hXx7m094yFxp+sxkfgvuKEty3W4t+5e
-        fT/5bc8ZCFHVA6s0BqzMynwRqmT0w39RmA==
-X-Google-Smtp-Source: ABdhPJxlfcEIPskxwVOEb8HGmwea/3letveiP0TIoBbY71RY9I7yYXBsq7m4I1vfiL+CZvoGyJHCsg==
-X-Received: by 2002:a17:90b:38cd:: with SMTP id nn13mr405391pjb.108.1630515723923;
-        Wed, 01 Sep 2021 10:02:03 -0700 (PDT)
-Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:a2b2])
-        by smtp.gmail.com with ESMTPSA id y7sm58642pff.206.2021.09.01.10.02.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 10:02:03 -0700 (PDT)
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: [PATCH v11 10/10] btrfs-progs: receive: add tests for basic encoded_write send/receive
-Date:   Wed,  1 Sep 2021 10:01:19 -0700
-Message-Id: <c48dbaee54ec45a822d734ef08f76c2414291eb1.1630515568.git.osandov@fb.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1630514529.git.osandov@fb.com>
-References: <cover.1630514529.git.osandov@fb.com>
+        id S1345536AbhIARJg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Sep 2021 13:09:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54942 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345585AbhIARJa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Sep 2021 13:09:30 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id F20402244D;
+        Wed,  1 Sep 2021 17:08:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630516108;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z6U3ZBfhSbNKQ0pny0fz/02o+gUqEhmhnJq0oBwj5kk=;
+        b=eKL6CzuQHxC6qGilsP8UwJE8uG2MTCQHsIXkL4XfXlM08F0T/NXGdqCiJivWXKomlMGf3k
+        ZwSJfXwZgZUlOqFNekg/KBoc7JPutyl0eFo8OJlpHjkilKuq9a2YqL1H2GoRn0gTv9e3Uz
+        Z8EwcT3BynzQJaz4ZwSwo9BkFlO2sb0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630516108;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z6U3ZBfhSbNKQ0pny0fz/02o+gUqEhmhnJq0oBwj5kk=;
+        b=PMm4/Znxcne3zdiwSPJUMqxExpNTsqNKEGtAAzWRm4EoV7ATG85FZHHJsBIaI7KRD0K8vk
+        WprV01bTba3N3dCg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id CE607A3B85;
+        Wed,  1 Sep 2021 17:08:28 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 96061DA835; Wed,  1 Sep 2021 19:08:27 +0200 (CEST)
+Date:   Wed, 1 Sep 2021 19:08:26 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 2/7] btrfs: do not take the uuid_mutex in
+ btrfs_rm_device
+Message-ID: <20210901170826.GO3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1627419595.git.josef@toxicpanda.com>
+ <4f7529acd33594df9b0b06f7011d8cd4d195fc29.1627419595.git.josef@toxicpanda.com>
+ <495dbc7e-dd93-e43a-3af1-6597f35d38e8@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <495dbc7e-dd93-e43a-3af1-6597f35d38e8@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Boris Burkov <boris@bur.io>
+On Wed, Sep 01, 2021 at 08:01:24PM +0800, Anand Jain wrote:
+> On 28/07/2021 05:01, Josef Bacik wrote:
+> > We got the following lockdep splat while running xfstests (specifically
+> > btrfs/003 and btrfs/020 in a row) with the new rc.  This was uncovered
+> > by 87579e9b7d8d ("loop: use worker per cgroup instead of kworker") which
+> > converted loop to using workqueues, which comes with lockdep
+> > annotations that don't exist with kworkers.  The lockdep splat is as
+> > follows
+> > 
+> > ======================================================
+> > WARNING: possible circular locking dependency detected
+> > 5.14.0-rc2-custom+ #34 Not tainted
+> > ------------------------------------------------------
+> > losetup/156417 is trying to acquire lock:
+> > ffff9c7645b02d38 ((wq_completion)loop0){+.+.}-{0:0}, at: flush_workqueue+0x84/0x600
+> > 
+> > but task is already holding lock:
+> > ffff9c7647395468 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x41/0x650 [loop]
+> > 
+> > which lock already depends on the new lock.
+> > 
+> > the existing dependency chain (in reverse order) is:
+> > 
+> > -> #5 (&lo->lo_mutex){+.+.}-{3:3}:
+> >         __mutex_lock+0xba/0x7c0
+> >         lo_open+0x28/0x60 [loop]
+> >         blkdev_get_whole+0x28/0xf0
+> >         blkdev_get_by_dev.part.0+0x168/0x3c0
+> >         blkdev_open+0xd2/0xe0
+> >         do_dentry_open+0x163/0x3a0
+> >         path_openat+0x74d/0xa40
+> >         do_filp_open+0x9c/0x140
+> >         do_sys_openat2+0xb1/0x170
+> >         __x64_sys_openat+0x54/0x90
+> >         do_syscall_64+0x3b/0x90
+> >         entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > 
+> > -> #4 (&disk->open_mutex){+.+.}-{3:3}:
+> >         __mutex_lock+0xba/0x7c0
+> >         blkdev_get_by_dev.part.0+0xd1/0x3c0
+> >         blkdev_get_by_path+0xc0/0xd0
+> >         btrfs_scan_one_device+0x52/0x1f0 [btrfs]
+> >         btrfs_control_ioctl+0xac/0x170 [btrfs]
+> >         __x64_sys_ioctl+0x83/0xb0
+> >         do_syscall_64+0x3b/0x90
+> >         entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > 
+> > -> #3 (uuid_mutex){+.+.}-{3:3}:
+> >         __mutex_lock+0xba/0x7c0
+> >         btrfs_rm_device+0x48/0x6a0 [btrfs]
+> >         btrfs_ioctl+0x2d1c/0x3110 [btrfs]
+> >         __x64_sys_ioctl+0x83/0xb0
+> >         do_syscall_64+0x3b/0x90
+> >         entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > 
+> > -> #2 (sb_writers#11){.+.+}-{0:0}:
+> >         lo_write_bvec+0x112/0x290 [loop]
+> >         loop_process_work+0x25f/0xcb0 [loop]
+> >         process_one_work+0x28f/0x5d0
+> >         worker_thread+0x55/0x3c0
+> >         kthread+0x140/0x170
+> >         ret_from_fork+0x22/0x30
+> > 
+> > -> #1 ((work_completion)(&lo->rootcg_work)){+.+.}-{0:0}:
+> >         process_one_work+0x266/0x5d0
+> >         worker_thread+0x55/0x3c0
+> >         kthread+0x140/0x170
+> >         ret_from_fork+0x22/0x30
+> > 
+> > -> #0 ((wq_completion)loop0){+.+.}-{0:0}:
+> >         __lock_acquire+0x1130/0x1dc0
+> >         lock_acquire+0xf5/0x320
+> >         flush_workqueue+0xae/0x600
+> >         drain_workqueue+0xa0/0x110
+> >         destroy_workqueue+0x36/0x250
+> >         __loop_clr_fd+0x9a/0x650 [loop]
+> >         lo_ioctl+0x29d/0x780 [loop]
+> >         block_ioctl+0x3f/0x50
+> >         __x64_sys_ioctl+0x83/0xb0
+> >         do_syscall_64+0x3b/0x90
+> >         entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > 
+> > other info that might help us debug this:
+> > Chain exists of:
+> >    (wq_completion)loop0 --> &disk->open_mutex --> &lo->lo_mutex
+> >   Possible unsafe locking scenario:
+> >         CPU0                    CPU1
+> >         ----                    ----
+> >    lock(&lo->lo_mutex);
+> >                                 lock(&disk->open_mutex);
+> >                                 lock(&lo->lo_mutex);
+> >    lock((wq_completion)loop0);
+> > 
+> >   *** DEADLOCK ***
+> > 1 lock held by losetup/156417:
+> >   #0: ffff9c7647395468 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x41/0x650 [loop]
+> > 
+> > stack backtrace:
+> > CPU: 8 PID: 156417 Comm: losetup Not tainted 5.14.0-rc2-custom+ #34
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+> > Call Trace:
+> >   dump_stack_lvl+0x57/0x72
+> >   check_noncircular+0x10a/0x120
+> >   __lock_acquire+0x1130/0x1dc0
+> >   lock_acquire+0xf5/0x320
+> >   ? flush_workqueue+0x84/0x600
+> >   flush_workqueue+0xae/0x600
+> >   ? flush_workqueue+0x84/0x600
+> >   drain_workqueue+0xa0/0x110
+> >   destroy_workqueue+0x36/0x250
+> >   __loop_clr_fd+0x9a/0x650 [loop]
+> >   lo_ioctl+0x29d/0x780 [loop]
+> >   ? __lock_acquire+0x3a0/0x1dc0
+> >   ? update_dl_rq_load_avg+0x152/0x360
+> >   ? lock_is_held_type+0xa5/0x120
+> >   ? find_held_lock.constprop.0+0x2b/0x80
+> >   block_ioctl+0x3f/0x50
+> >   __x64_sys_ioctl+0x83/0xb0
+> >   do_syscall_64+0x3b/0x90
+> >   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > RIP: 0033:0x7f645884de6b
+> > 
+> > Usually the uuid_mutex exists to protect the fs_devices that map
+> > together all of the devices that match a specific uuid.  In rm_device
+> > we're messing with the uuid of a device, so it makes sense to protect
+> > that here.
+> > 
+> > However in doing that it pulls in a whole host of lockdep dependencies,
+> > as we call mnt_may_write() on the sb before we grab the uuid_mutex, thus
+> > we end up with the dependency chain under the uuid_mutex being added
+> > under the normal sb write dependency chain, which causes problems with
+> > loop devices.
+> > 
+> > We don't need the uuid mutex here however.  If we call
+> > btrfs_scan_one_device() before we scratch the super block we will find
+> > the fs_devices and not find the device itself and return EBUSY because
+> > the fs_devices is open.  If we call it after the scratch happens it will
+> > not appear to be a valid btrfs file system.
+> > 
+> > We do not need to worry about other fs_devices modifying operations here
+> > because we're protected by the exclusive operations locking.
+> > 
+> > So drop the uuid_mutex here in order to fix the lockdep splat.
+> 
+> I think uuid_mutex should stay. Here is why.
+> 
+>   While thread A takes %device at line 816 and deref at line 880.
+>   Thread B can completely remove and free that %device.
+>   As of now these threads are mutual exclusive using uuid_mutex.
+> 
+> Thread A
+> 
+> btrfs_control_ioctl()
+>    mutex_lock(&uuid_mutex);
+>      btrfs_scan_one_device()
+>        device_list_add()
+>        {
+>   815                 mutex_lock(&fs_devices->device_list_mutex);
+> 
+>   816                 device = btrfs_find_device(fs_devices, devid,
+>   817                                 disk_super->dev_item.uuid, NULL);
+> 
+>   880         } else if (!device->name || strcmp(device->name->str, path)) {
+> 
+>   933                         if (device->bdev->bd_dev != path_dev) {
+> 
+>   982         mutex_unlock(&fs_devices->device_list_mutex);
+>         }
+> 
+> 
+> Thread B
+> 
+> btrfs_rm_device()
+> 
+> 2069         mutex_lock(&uuid_mutex);  <-- proposed to remove
+> 
+> 2150         mutex_lock(&fs_devices->device_list_mutex);
+> 
+> 2172         mutex_unlock(&fs_devices->device_list_mutex);
+> 
+> 2180                 btrfs_scratch_superblocks(fs_info, device->bdev,
+> 2181                                           device->name->str);
+> 
+> 2183         btrfs_close_bdev(device);
+> 2184         synchronize_rcu();
+> 2185         btrfs_free_device(device);
+> 
+> 2194         mutex_unlock(&uuid_mutex);  <-- proposed to remove
 
-Adapt the existing send/receive tests by passing '-o --force-compress'
-to the mount commands in a new test. After writing a few files in the
-various compression formats, send/receive them with and without
---force-decompress to test both the encoded_write path and the
-fallback to decode+write.
+Yeah, I think this is the reason why uuid mutex exists at all, serialize
+scanning (mounted or unmounted) with device list operations on mounted
+filesystems (eg. removing).
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- .../049-receive-write-encoded/test.sh         | 114 ++++++++++++++++++
- 1 file changed, 114 insertions(+)
- create mode 100755 tests/misc-tests/049-receive-write-encoded/test.sh
+> Well, I don't have a better option to fix this issue as of now.
 
-diff --git a/tests/misc-tests/049-receive-write-encoded/test.sh b/tests/misc-tests/049-receive-write-encoded/test.sh
-new file mode 100755
-index 00000000..b9390e88
---- /dev/null
-+++ b/tests/misc-tests/049-receive-write-encoded/test.sh
-@@ -0,0 +1,114 @@
-+#!/bin/bash
-+#
-+# test that we can send and receive encoded writes for three modes of
-+# transparent compression: zlib, lzo, and zstd.
-+
-+source "$TEST_TOP/common"
-+
-+check_prereq mkfs.btrfs
-+check_prereq btrfs
-+
-+setup_root_helper
-+prepare_test_dev
-+
-+here=`pwd`
-+
-+# assumes the filesystem exists, and does mount, write, snapshot, send, unmount
-+# for the specified encoding option
-+send_one() {
-+	local str
-+	local subv
-+	local snap
-+
-+	algorithm="$1"
-+	shift
-+	str="$1"
-+	shift
-+
-+	subv="subv-$algorithm"
-+	snap="snap-$algorithm"
-+
-+	run_check_mount_test_dev "-o" "compress-force=$algorithm"
-+	cd "$TEST_MNT" || _fail "cannot chdir to TEST_MNT"
-+
-+	run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$subv"
-+	run_check $SUDO_HELPER dd if=/dev/zero of="$subv/file1" bs=1M count=1
-+	run_check $SUDO_HELPER dd if=/dev/zero of="$subv/file2" bs=500K count=1
-+	run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r "$subv" "$snap"
-+	run_check $SUDO_HELPER "$TOP/btrfs" send -f "$str" "$snap" "$@"
-+
-+	cd "$here" || _fail "cannot chdir back to test directory"
-+	run_check_umount_test_dev
-+}
-+
-+receive_one() {
-+	local str
-+	str="$1"
-+	shift
-+
-+	run_check_mkfs_test_dev
-+	run_check_mount_test_dev
-+	run_check $SUDO_HELPER "$TOP/btrfs" receive "$@" -v -f "$str" "$TEST_MNT"
-+	run_check_umount_test_dev
-+	run_check rm -f -- "$str"
-+}
-+
-+test_one_write_encoded() {
-+	local str
-+	local algorithm
-+	algorithm="$1"
-+	shift
-+	str="$here/stream-$algorithm.stream"
-+
-+	run_check_mkfs_test_dev
-+	send_one "$algorithm" "$str" --compressed-data
-+	receive_one "$str" "$@"
-+}
-+
-+test_one_stream_v1() {
-+	local str
-+	local algorithm
-+	algorithm="$1"
-+	shift
-+	str="$here/stream-$algorithm.stream"
-+
-+	run_check_mkfs_test_dev
-+	send_one "$algorithm" "$str" --stream-version 1
-+	receive_one "$str" "$@"
-+}
-+
-+test_mix_write_encoded() {
-+	local strzlib
-+	local strlzo
-+	local strzstd
-+	strzlib="$here/stream-zlib.stream"
-+	strlzo="$here/stream-lzo.stream"
-+	strzstd="$here/stream-zstd.stream"
-+
-+	run_check_mkfs_test_dev
-+
-+	send_one "zlib" "$strzlib" --compressed-data
-+	send_one "lzo" "$strlzo" --compressed-data
-+	send_one "zstd" "$strzstd" --compressed-data
-+
-+	receive_one "$strzlib"
-+	receive_one "$strlzo"
-+	receive_one "$strzstd"
-+}
-+
-+test_one_write_encoded "zlib"
-+test_one_write_encoded "lzo"
-+test_one_write_encoded "zstd"
-+
-+# with decompression forced
-+test_one_write_encoded "zlib" "--force-decompress"
-+test_one_write_encoded "lzo" "--force-decompress"
-+test_one_write_encoded "zstd" "--force-decompress"
-+
-+# send stream v1
-+test_one_stream_v1 "zlib"
-+test_one_stream_v1 "lzo"
-+test_one_stream_v1 "zstd"
-+
-+# files use a mix of compression algorithms
-+test_mix_write_encoded
--- 
-2.33.0
+Me neither. In general removing a lock allows sections to compete for
+the resources and given that we've had some weird interactions of
+mount/scan triggered by syzkaller I'm reluctant to just drop uuid mutex.
 
+The reasoning of this patch concerns mounted filesystems AFAICS, not
+scanning triggered by the control ioctl.
