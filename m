@@ -2,60 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4FE3FDE86
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 17:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FB63FDEBF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 17:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243667AbhIAPYo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Sep 2021 11:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
+        id S1343748AbhIAPfs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Sep 2021 11:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233979AbhIAPYn (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Sep 2021 11:24:43 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B301DC061575
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Sep 2021 08:23:46 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id b10so4496563ioq.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Sep 2021 08:23:46 -0700 (PDT)
+        with ESMTP id S1343746AbhIAPfr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Sep 2021 11:35:47 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BF4C061575
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Sep 2021 08:34:50 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id s10so7185499lfr.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Sep 2021 08:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=nsH4CrKT3J6+fs9dWVy3c039Y9wb3g5ZuRIL9UvGmwA=;
-        b=hZE09qPXvkARpUEUd6c7aKm2qHARK3nCmaNjKBYept9cHg5QzkAZs9r0UM4r55k2ar
-         o0fptg/W2LVyJGZ/CDheTFOB7qzA5UpZ5ZcKRhxERO4y+b1bGc5STN+Yfu7Ybjf0bNQ+
-         kEiieRAZ1CI+Hw35bWh+x3Tbumyi0u4Y9cS9QRAwhBVD8KiWKTQArhfSdXCS8OBQOSWn
-         8xpiSEan7YYO0fiSH40zcUnz66HeX56QezGWr8YPZi4cGsEoZP98lvZ5yvbJwGplEGT3
-         ByswgPCtww9ykvjjvqIjsg5/YI2ApGYVQBbHvn+yQc3kSknbPJJYprpcjD40As7nuxFZ
-         GGyw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vrg8aqHkw1KISY9lPYCUpjyiMtgkqHx6nEqcxYGDCUw=;
+        b=nQDUTx+J6thberegnbAQDX6AzVJstCsV2A+JmPmqa3039XuCHgQ2GG88eh0DyyBgnl
+         nrroegCQgKC3TvOK1t4t/G1MB17JSD++/3hGFHdlwPnWfck6/rmfYkLEFl/pH5avZbm/
+         7IKPh11Y2U2uO/bgarf3FaiAFgvDbVYYaA8S1HzVY0JSBDU2REU1XP5f5RzO44uajujF
+         XkaR7AIzU8AbLfcIXnNL1fPuInr3oSAS2ugJ4He6zcjEv3lkkjGgrjsIdszghWZvNp+m
+         97KgYv8UP7X4bsTDGVV8gfmBsNR5vjpJvYRszRitrHh16ZMndieioktn6Gdn2e3efIhY
+         v5Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=nsH4CrKT3J6+fs9dWVy3c039Y9wb3g5ZuRIL9UvGmwA=;
-        b=FTdHkFXi7WGuS0N60f4jybLhdBuh0gkwsUwGgZC5MyD75hlOGFLKGGWznP9tnHJ+a+
-         j1BEJSLxJmnb66MraItZbVcjCFFuFiNPLhan9ge+tVIXOkhwTi02W7M9q+kynRMtM5JB
-         Pgl5fIH8L4WRNmf3gnc7aY2bnQCuQVfcMj9M5+NQj6E8E/a/y6beQBETPsDwX2GYJBbR
-         n2B/l7hbJgvv63hnk7+u1aD4dCN8FTRdF/bc+I5vDieb2yubibvFbTlMU7bFt+pokWg/
-         TiMzxgk7t1ef7eNu6VNIIy65IBIeZhhcfuiXkdAnrqpSL6/T16rbA04TJsn+PsyKBnoP
-         PaIQ==
-X-Gm-Message-State: AOAM533EQvb87BYbI2OSnzc6hAhz0uVTKh1eaqE4LiuKQOlNoFk6h4vV
-        VNGcwdXhFEYgYhd+uR3Bv/onUtJdVKwtTbbORZ0=
-X-Google-Smtp-Source: ABdhPJxa4ZwKqXrEq9NddIIQP2yLSQV3qHRhq2ivj46WBLnVlDgPb1lNvBpcIKv5xn58oAcH72ror3j2ftJVkZXbr1g=
-X-Received: by 2002:a05:6638:2641:: with SMTP id n1mr131935jat.117.1630509826195;
- Wed, 01 Sep 2021 08:23:46 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vrg8aqHkw1KISY9lPYCUpjyiMtgkqHx6nEqcxYGDCUw=;
+        b=dwORIiBhoduerFRUcD34MCA8EfhIAUqR4xZyaysuxQZHQ4Pk3CrpAomfb4vByPohlH
+         5XbCAHTeIoX/PieFfuK0ziHrfeGANixS3ag6AXd/Jm+kbP4jbKSqAuTBruHRWrN6XJ5q
+         gJAqQy8KWp0CkCAZnvw4IN1eCrxpH4Z05O66W5EaupqIkp4X4QZvNQpqe/DB2YF5y6Sc
+         HDctpJ16HiPNQYeJOkY5Ku/D6VpuC7K8zx2zfyC6ypt08xGyOEeq7cRQe/aJrt79VAo9
+         i9/e3PdCUdvaIT/VdKSvkOvnjSl1tzmt1SwHsJwevIMFzOaRuos8p8vfBFyDtuOwDiJW
+         vUCw==
+X-Gm-Message-State: AOAM530JDDp0iGQpKk0GeDYa7wo0pPHeQ+hi8hPHunis0yx5u7ri+DFn
+        ys3IM9Xc1JKYJHAzsKFa4GVJcZOrZzQ=
+X-Google-Smtp-Source: ABdhPJxKIk3LqGon+kLMXVKf20RsCsuUjsMxLhGdxsu1MfVVHQt3Tbd59IL42SJ+LSVvdwVZ/fCaBA==
+X-Received: by 2002:ac2:530d:: with SMTP id c13mr26260145lfh.445.1630510488531;
+        Wed, 01 Sep 2021 08:34:48 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:812d:8deb:5c9c:cef9:590c:9452? ([2a00:1370:812d:8deb:5c9c:cef9:590c:9452])
+        by smtp.gmail.com with ESMTPSA id v14sm3315lji.32.2021.09.01.08.34.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 08:34:48 -0700 (PDT)
+Subject: Re: Backup failing with "failed to clone extents" error
+To:     fdmanana@gmail.com, Darrell Enns <darrell@darrellenns.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMkEVXCdihawH1PgS6TiMchQ@mail.gmail.com>
+ <CAL3q7H67Nc7vZrCpxAhoWxHObhFn=mgOra+tFt3MjqMSXVFXfQ@mail.gmail.com>
+ <CAL3q7H46BpkE+aa00Y71SfTizpOo+4ADhBHU2vme4t-aYO6Zuw@mail.gmail.com>
+ <CAOaVUnXXVmGvu-swEkNG-N474BcMAGO1rKvx26RADbQ=OREZUg@mail.gmail.com>
+ <CAL3q7H5UH012m=19sj=4ob-d_LbWqb63t7tYz9bmz1wXyFcctw@mail.gmail.com>
+ <CAOaVUnVL508_0xJovhLqxv_zWmROEt-DnmQVkNkTwp0GHPND=Q@mail.gmail.com>
+ <CAL3q7H7MxhvzLAe1pv+R8J=fNrEX2bDMw1xWUcoZsCCG-mL5Mg@mail.gmail.com>
+ <CAOaVUnXB4qoAyVcm3H03Bj2rukZ+nbSzOdB4TsKpJjH8sqOr7g@mail.gmail.com>
+ <CAL3q7H7vTFggDHDq=j+es_O3GWX2nvq3kqp3TsmX=8jd7JhM1A@mail.gmail.com>
+ <CAOaVUnW6nb-c-5c56rX4wON-f+JvZGzJmc5FMPx-fZGwUp6T1g@mail.gmail.com>
+ <CAL3q7H6h+_7P7BG11V1VXaLe+6M+Nt=mT3n51nZ2iqXSZFUmOA@mail.gmail.com>
+ <CAL3q7H5p9WBravwa6un5jsQUb24a+Xw1PvKpt=iBdHp4wirm8g@mail.gmail.com>
+ <CAOaVUnXDzd-+jvq95DGpYcV7mApomrViDhiyjm-BdPz5MvFqZg@mail.gmail.com>
+ <CAL3q7H5y6z7rRu-ZsZe_WXeHteWx1edZi+L3-UL0aa0oYg+qQA@mail.gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Message-ID: <7a858635-2491-cccd-0a29-d1a1d0c9d313@gmail.com>
+Date:   Wed, 1 Sep 2021 18:34:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Sender: zakpaobube@gmail.com
-Received: by 2002:a05:6e02:667:0:0:0:0 with HTTP; Wed, 1 Sep 2021 08:23:45
- -0700 (PDT)
-From:   Jenny Ross <jrs61644@gmail.com>
-Date:   Wed, 1 Sep 2021 15:23:45 +0000
-X-Google-Sender-Auth: Kz7zfwqiocRU_4RtXafPxsO1f9E
-Message-ID: <CAE2s6NLcfo7tKPrvhP_3GVhWUaUJixoJKFGM6f+E9Qy=ws-H5w@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAL3q7H5y6z7rRu-ZsZe_WXeHteWx1edZi+L3-UL0aa0oYg+qQA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello, my name is Jenny Ross, please your attention is needed, i have
-something to share with you.
+On 01.09.2021 17:50, Filipe Manana wrote:
+> On Tue, Aug 31, 2021 at 5:48 PM Darrell Enns <darrell@darrellenns.com> wrote:
+>>
+>> It's btrfs-progs v5.13.1. Debug logs are attached.
+> 
+> Ok, now I see what's going on.
+> 
+> Somehow you have at least two snapshots (with IDs 881 and 977 on the
+> send filesystem), that have the same 'received_uuid' -
+> e346e5a1-536c-8d42-ba33-c5452dec7888.
+> So these snapshots were received from some other filesystem in the past.
+> 
+
+Is there any reason "btrfs receive" does not show actual id of subvolume
+used as clone source in its log messages?
