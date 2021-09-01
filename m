@@ -2,82 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74B33FDF93
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 18:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534953FE090
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Sep 2021 19:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245121AbhIAQRp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Sep 2021 12:17:45 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47408 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234245AbhIAQRo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Sep 2021 12:17:44 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8EE8022567;
-        Wed,  1 Sep 2021 16:16:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630513006;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hWSMchZddacTOjlQTfdbSi8hvg8k1wW1+gK9i1Kz3AU=;
-        b=Oc0+XQWGarlqAoHGJasOA3l/AGc1zMHT8+76EZH8ppm/eSnVgClwQbzMvsm1BHQ9ByAAGn
-        u6ONg8LDK4KNNHDsY1SCmIpgS4x7O26X3NdrD8q8NdD6ozvPvn27B/6ZGOsjwSa7aTR1/N
-        Y6m4d9UuzpkpMkjS5tpMUuE89sI5egA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630513006;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hWSMchZddacTOjlQTfdbSi8hvg8k1wW1+gK9i1Kz3AU=;
-        b=gkACFM5NuoirkH7KYxccTc4LGp91IJf3SrkplXAJGuJz50Vi5ZWTYQ5Dy4AWE7QYGSxgca
-        10/MdvKT62+tvBAA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 85A90A3BA7;
-        Wed,  1 Sep 2021 16:16:46 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9E9ABDA835; Wed,  1 Sep 2021 18:16:45 +0200 (CEST)
-Date:   Wed, 1 Sep 2021 18:16:45 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        l@damenly.su
-Subject: Re: [PATCH v4 0/4] btrf_show_devname related fixes
-Message-ID: <20210901161645.GN3379@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org, l@damenly.su
-References: <cover.1629458519.git.anand.jain@oracle.com>
- <20210823194618.GT5047@twin.jikos.cz>
- <b0792837-0227-0404-315e-d4a5d7ca4a2c@oracle.com>
- <20210824161106.GD3379@twin.jikos.cz>
- <a3af668b-a91a-548f-4ec5-1104bd831a78@oracle.com>
- <20210831154008.GK3379@suse.cz>
- <27d0980b-6d04-ae45-701a-62660779b5ed@oracle.com>
+        id S245229AbhIARCZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Sep 2021 13:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344358AbhIARCY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Sep 2021 13:02:24 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADA5C0613C1
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Sep 2021 10:01:27 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so211231pjt.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Sep 2021 10:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7z/2dlf0grWEDBYN4uBpH9eN+dQign0MVAnQPoL4FCI=;
+        b=SGmKIf7tlBfPr0guxBZYwXYtkwbjtmVtlw9BMNNqkPuJhTMnou2pWpE4TpZmX0S3To
+         XUU3YH5kDpAJ+xm2pyr9HgCcURxQOVRD50zql7kLN0CWkR4+udpILV4r1RN8lPet/Ex0
+         uY24+XJmgclryg30uZ8aFnDfa7dN2YI6oT3AfXrGHYxULPBDLZSKaHyHBmm/o3NYVcim
+         Zb1sDtKxrboGjedha9wrONqzvumRG74Cdven23JFKXblkKXizJAPrhasp5qn5l90V5i3
+         ggUrYsBLDskiK0jp8Dotk4/SObvW/TdcsYIFYdBaIYPO8UfoVtQKhar2hSivP1cApQzX
+         /bww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7z/2dlf0grWEDBYN4uBpH9eN+dQign0MVAnQPoL4FCI=;
+        b=cpx08K1mfDSdl8yt5bMf+sKQFBMRINO6RoC+MDCzIuW2JEqYyJTp+J/45w2nrJa/AU
+         rBMjYa2kiKugiWrbI3IfTs3DsCP72e7AFMQKSea4v7MxPDqaLOK2XAaqIYV3EqzQq6UZ
+         dGuTQG0BUjDdnEj4JvK+GkXBxcFm1qjEFeWzMo/fVo+5fvAvrgzHuJxD8HNXezMUR3YR
+         h74x5MklXZYeUW59eAQBpyJo84WZ3RlgfTmcoWzysNaGV0K9FBNzlsT4H8qic6lhqbcQ
+         0lBCsC8BnwHb6ABGrloNKxvKzLOR0VZVIK3Zif/Wny4gYya52n5oR1CXwIJT8tdPpYgE
+         dgXg==
+X-Gm-Message-State: AOAM5313oczlXkRANduAYMMASIIm1+Bg04t6gY1/ws4fP+/Ap3ANU9Ng
+        gXv/1lj0H1CYTXnmlCCoE0x7q9cufLoKlQ==
+X-Google-Smtp-Source: ABdhPJytGmKyXo5rkmIO4tgwrK5+2+MBFj7bC+6lm3wyFfgwR0hVBdgwITuwmiJeZ8yyGgOFeDGTCA==
+X-Received: by 2002:a17:90a:1991:: with SMTP id 17mr342058pji.149.1630515686879;
+        Wed, 01 Sep 2021 10:01:26 -0700 (PDT)
+Received: from relinquished.tfbnw.net ([2620:10d:c090:400::5:a2b2])
+        by smtp.gmail.com with ESMTPSA id y7sm58642pff.206.2021.09.01.10.01.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 10:01:26 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Subject: [PATCH v11 00/14] btrfs: add ioctls and send/receive support for reading/writing compressed data
+Date:   Wed,  1 Sep 2021 10:00:55 -0700
+Message-Id: <cover.1630514529.git.osandov@fb.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <27d0980b-6d04-ae45-701a-62660779b5ed@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 04:18:41PM +0800, Anand Jain wrote:
-> > But anyway now the 5.15 branch is out and there are several patches
-> > regarding the devices so I'm going to spend time on that.
-> 
->   Thx. That includes read_policy patchset as well? Let me know so that I
->   can refresh/resend.
+From: Omar Sandoval <osandov@fb.com>
 
-Yeah we should finalize that, we have all the building blocks ready.
-What's remaining is proper benchmarking, IIRC we haven't found a good
-default policy yet.
+This series has three parts: new Btrfs ioctls for reading/writing
+compressed data, support for sending compressed data via Btrfs send, and
+btrfs-progs support for sending/receiving compressed data and writing it
+with the new ioctl.
 
-> 
-> >  Also because
-> > the recent updates to loop devices started to trigger lockdep warnings
-> > that make testing harder and we're missing lockdep in many tests.
-> 
->   I am reviewing the patch 1 and 2 in Josef list.
+Patches 1 and 2 are VFS changes exporting a couple of helpers for checks
+needed by reads and writes. Patches 3-7 are preparatory Btrfs changes
+for compressed reads and writes. Patch 8 adds the compressed read ioctl
+and patch 9 adds the compressed write ioctl.
 
-Thanks, reviewing the whole batch should be easier now.
+The main use-case for this interface is Btrfs send/receive. Currently,
+when sending data from one compressed filesystem to another, the sending
+side decompresses the data and the receiving side recompresses it before
+writing it out. This is wasteful and can be avoided if we can just send
+and write compressed extents.
+
+Patches 10-14 add the Btrfs send support. See the previous posting for
+more details and benchmarks [1]. Patches 10-12 prepare some protocol
+changes for send stream v2. Patch 13 implements compressed send. Patch
+14 enables send stream v2 and compressed send in the send ioctl when
+requested.
+
+These patches are based on Dave Sterba's Btrfs misc-next branch [2],
+which is in turn currently based on v5.14-rc7. Test cases are here [3].
+
+Changes since v10 [4]:
+
+Addressed Dave's and Nikolay's comments, mostly stylistic.
+
+- Renamed __generic_write_checks() to generic_write_checks_count().
+- Add missing count == 0 check to generic_write_checks_count().
+- Used in_range() macro in btrfs_csum_one_bio().
+- Renamed page_offsets variable to use_page_offsets in
+  btrfs_csum_one_bio().
+- Removed conditional on offset increment in btrfs_csum_one_bio().
+- Fixed stale reference to RWF_ENCODED in comment.
+
+1: https://lore.kernel.org/linux-btrfs/cover.1615922753.git.osandov@fb.com/
+2: https://github.com/kdave/btrfs-devel/tree/misc-next
+3: https://github.com/osandov/xfstests/tree/btrfs-encoded-io
+4: https://lore.kernel.org/linux-btrfs/cover.1629234193.git.osandov@fb.com/
+
+Omar Sandoval (14):
+  fs: export rw_verify_area()
+  fs: export variant of generic_write_checks without iov_iter
+  btrfs: don't advance offset for compressed bios in
+    btrfs_csum_one_bio()
+  btrfs: add ram_bytes and offset to btrfs_ordered_extent
+  btrfs: support different disk extent size for delalloc
+  btrfs: optionally extend i_size in cow_file_range_inline()
+  btrfs: add definitions + documentation for encoded I/O ioctls
+  btrfs: add BTRFS_IOC_ENCODED_READ
+  btrfs: add BTRFS_IOC_ENCODED_WRITE
+  btrfs: add send stream v2 definitions
+  btrfs: send: write larger chunks when using stream v2
+  btrfs: send: allocate send buffer with alloc_page() and vmap() for v2
+  btrfs: send: send compressed extents with encoded writes
+  btrfs: send: enable support for stream v2 and compressed writes
+
+ fs/btrfs/compression.c     |  12 +-
+ fs/btrfs/compression.h     |   6 +-
+ fs/btrfs/ctree.h           |  17 +-
+ fs/btrfs/delalloc-space.c  |  18 +-
+ fs/btrfs/file-item.c       |  32 +-
+ fs/btrfs/file.c            |  68 ++-
+ fs/btrfs/inode.c           | 911 +++++++++++++++++++++++++++++++++----
+ fs/btrfs/ioctl.c           | 213 +++++++++
+ fs/btrfs/ordered-data.c    | 124 ++---
+ fs/btrfs/ordered-data.h    |  25 +-
+ fs/btrfs/relocation.c      |   2 +-
+ fs/btrfs/send.c            | 307 +++++++++++--
+ fs/btrfs/send.h            |  32 +-
+ fs/internal.h              |   5 -
+ fs/read_write.c            |  34 +-
+ include/linux/fs.h         |   2 +
+ include/uapi/linux/btrfs.h | 149 +++++-
+ 17 files changed, 1686 insertions(+), 271 deletions(-)
+
+The btrfs-progs patches were written by Boris Burkov with some updates
+from me. Patches 1-4 are preparation. Patch 5 implements encoded writes.
+Patch 6 implements the fallback to decompressing. Patches 7 and 8
+implement the other commands. Patch 9 adds the new `btrfs send` options.
+Patch 10 adds a test case.
+
+Changes from v10:
+
+- Fixed feature fallback to check for ENOTTY instead of EOPNOTSUPP.
+
+Boris Burkov (10):
+  btrfs-progs: receive: support v2 send stream larger tlv_len
+  btrfs-progs: receive: dynamically allocate sctx->read_buf
+  btrfs-progs: receive: support v2 send stream DATA tlv format
+  btrfs-progs: receive: add send stream v2 cmds and attrs to send.h
+  btrfs-progs: receive: process encoded_write commands
+  btrfs-progs: receive: encoded_write fallback to explicit decode and
+    write
+  btrfs-progs: receive: process fallocate commands
+  btrfs-progs: receive: process setflags ioctl commands
+  btrfs-progs: send: stream v2 ioctl flags
+  btrfs-progs: receive: add tests for basic encoded_write send/receive
+
+ Documentation/btrfs-receive.asciidoc          |   4 +
+ Documentation/btrfs-send.asciidoc             |  16 +-
+ cmds/receive-dump.c                           |  31 +-
+ cmds/receive.c                                | 347 +++++++++++++++++-
+ cmds/send.c                                   |  54 ++-
+ common/send-stream.c                          | 157 ++++++--
+ common/send-stream.h                          |   7 +
+ ioctl.h                                       | 149 +++++++-
+ libbtrfsutil/btrfs.h                          |  17 +-
+ send.h                                        |  19 +-
+ .../049-receive-write-encoded/test.sh         | 114 ++++++
+ 11 files changed, 871 insertions(+), 44 deletions(-)
+ create mode 100755 tests/misc-tests/049-receive-write-encoded/test.sh
+
+-- 
+2.33.0
+
