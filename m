@@ -2,72 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60A33FF025
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 17:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B5B3FF02F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 17:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345788AbhIBP1k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 11:27:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40148 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345698AbhIBP1k (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 11:27:40 -0400
+        id S1345781AbhIBP3U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 11:29:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37088 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345689AbhIBP3Q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 11:29:16 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 50FB81FFB9;
-        Thu,  2 Sep 2021 15:26:40 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4BB9B225BF;
+        Thu,  2 Sep 2021 15:28:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630596400;
+        t=1630596497;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1wl2cw3h4WwhXXiT5vsBYJYaYhGV35VXD7xW0oMOfr4=;
-        b=PL8m5cnnA1CCQjZscy8+yHYUqTKHK/07/FuT9rlTrvlleuGftXiSs6FcxqTyM/GonwuEUL
-        RWP9B+SP7AVawgxV9imcglfN8IM3FkUwgN1dDH+SUHg5e+SbSNEJrx8//brULM8d4cbjUC
-        2F8j9dT8g0O0dbZveg7SN4uUU0DhzJw=
+        bh=uOiLVx6DDpiOVqwzmgO67c4gRx1DIEl6pnHLlVAZWA0=;
+        b=ftKBrsIgQG7rq1l0R0WnAtdo5aycHTEt8b6Gyp39lhJWtKNCLCODPgoFEmo/Rkmr8q3SNt
+        qKn+MfIfl2LHKzVorRxkv5dps153/oSeICB3rlOtmZjgeFZ4Gij6UwBkMXAEgIE0Ar29yQ
+        GPtgu2B1p/fcA3WeHRvUicvTkld0E28=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630596400;
+        s=susede2_ed25519; t=1630596497;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=1wl2cw3h4WwhXXiT5vsBYJYaYhGV35VXD7xW0oMOfr4=;
-        b=+97kWHsSTnB8Nx6DJZX54mmmvnkwC9V/7J19MHtv0RIDdsnmP/Ip75CAVZG3SPZrQOeEkV
-        fXwnCh16XXfwowDA==
+        bh=uOiLVx6DDpiOVqwzmgO67c4gRx1DIEl6pnHLlVAZWA0=;
+        b=wtJNX6mfDUpfaorDo1rvRiQcso6lrcZ21U/R+4qJFV0+weygC4LkUAUvXGmOEO30KURUe8
+        kP9l2xGe1RBz/AAQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 47C28A3BA3;
-        Thu,  2 Sep 2021 15:26:40 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 4426AA3BB4;
+        Thu,  2 Sep 2021 15:28:17 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DCCC7DA72B; Thu,  2 Sep 2021 17:26:38 +0200 (CEST)
-Date:   Thu, 2 Sep 2021 17:26:38 +0200
+        id 28C40DA72B; Thu,  2 Sep 2021 17:28:16 +0200 (CEST)
+Date:   Thu, 2 Sep 2021 17:28:16 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, l@damenly.su
-Subject: Re: [PATCH V5 0/4] btrf_show_devname related fixes
-Message-ID: <20210902152638.GW3379@twin.jikos.cz>
+Subject: Re: [PATCH V5 1/2] btrfs: fix lockdep warning while mounting sprout
+ fs
+Message-ID: <20210902152816.GX3379@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
         linux-btrfs@vger.kernel.org, dsterba@suse.com, l@damenly.su
-References: <cover.1629780501.git.anand.jain@oracle.com>
+References: <cover.1630370459.git.anand.jain@oracle.com>
+ <215cb0c88d2b84557f8ec27e3f03c1c188df2935.1630370459.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1629780501.git.anand.jain@oracle.com>
+In-Reply-To: <215cb0c88d2b84557f8ec27e3f03c1c188df2935.1630370459.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 01:05:18PM +0800, Anand Jain wrote:
-> Su Yue reported [1] warn() as a result of a race between the following two
-> threads,
->   Thread-A: function stack leading to btrfs_prepare_sprout()
-> and
->   Thread-B: function stack leading to btrfs_show_devname()
+On Tue, Aug 31, 2021 at 09:21:28AM +0800, Anand Jain wrote:
+> Following test case reproduces lockdep warning.
 > 
-> [1]  https://patchwork.kernel.org/project/linux-btrfs/patch/20210818041944.5793-1-l@damenly.su/
+>  Test case:
 > 
-> Anand Jain (4):
->   btrfs: convert latest_bdev type to struct btrfs_device and rename
->   btrfs: use latest_dev in btrfs_show_devname
->   btrfs: update latest_dev when we sprout
->   btrfs: fix comment about the btrfs_show_devname
+>  $ mkfs.btrfs -f <dev1>
+>  $ btrfstune -S 1 <dev1>
+>  $ mount <dev1> <mnt>
+>  $ btrfs device add <dev2> <mnt> -f
+>  $ umount <mnt>
+>  $ mount <dev2> <mnt>
+>  $ umount <mnt>
+> 
+> The warning claims a possible ABBA deadlock between the threads initiated by
+> [#1] btrfs device add and [#0] the mount.
+> 
+> ======================================================
+> [ 540.743122] WARNING: possible circular locking dependency detected
+> [ 540.743129] 5.11.0-rc7+ #5 Not tainted
+> [ 540.743135] ------------------------------------------------------
+> [ 540.743142] mount/2515 is trying to acquire lock:
+> [ 540.743149] ffffa0c5544c2ce0 (&fs_devs->device_list_mutex){+.+.}-{4:4}, at: clone_fs_devices+0x6d/0x210 [btrfs]
+> [ 540.743458] but task is already holding lock:
+> [ 540.743461] ffffa0c54a7932b8 (btrfs-chunk-00){++++}-{4:4}, at: __btrfs_tree_read_lock+0x32/0x200 [btrfs]
+> [ 540.743541] which lock already depends on the new lock.
+> [ 540.743543] the existing dependency chain (in reverse order) is:
+> 
+> [ 540.743546] -> #1 (btrfs-chunk-00){++++}-{4:4}:
+> [ 540.743566] down_read_nested+0x48/0x2b0
+> [ 540.743585] __btrfs_tree_read_lock+0x32/0x200 [btrfs]
+> [ 540.743650] btrfs_read_lock_root_node+0x70/0x200 [btrfs]
+> [ 540.743733] btrfs_search_slot+0x6c6/0xe00 [btrfs]
+> [ 540.743785] btrfs_update_device+0x83/0x260 [btrfs]
+> [ 540.743849] btrfs_finish_chunk_alloc+0x13f/0x660 [btrfs] <--- device_list_mutex
+> [ 540.743911] btrfs_create_pending_block_groups+0x18d/0x3f0 [btrfs]
+> [ 540.743982] btrfs_commit_transaction+0x86/0x1260 [btrfs]
+> [ 540.744037] btrfs_init_new_device+0x1600/0x1dd0 [btrfs]
+> [ 540.744101] btrfs_ioctl+0x1c77/0x24c0 [btrfs]
+> [ 540.744166] __x64_sys_ioctl+0xe4/0x140
+> [ 540.744170] do_syscall_64+0x4b/0x80
+> [ 540.744174] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> [ 540.744180] -> #0 (&fs_devs->device_list_mutex){+.+.}-{4:4}:
+> [ 540.744184] __lock_acquire+0x155f/0x2360
+> [ 540.744188] lock_acquire+0x10b/0x5c0
+> [ 540.744190] __mutex_lock+0xb1/0xf80
+> [ 540.744193] mutex_lock_nested+0x27/0x30
+> [ 540.744196] clone_fs_devices+0x6d/0x210 [btrfs]
+> [ 540.744270] btrfs_read_chunk_tree+0x3c7/0xbb0 [btrfs]
+> [ 540.744336] open_ctree+0xf6e/0x2074 [btrfs]
+> [ 540.744406] btrfs_mount_root.cold.72+0x16/0x127 [btrfs]
+> [ 540.744472] legacy_get_tree+0x38/0x90
+> [ 540.744475] vfs_get_tree+0x30/0x140
+> [ 540.744478] fc_mount+0x16/0x60
+> [ 540.744482] vfs_kern_mount+0x91/0x100
+> [ 540.744484] btrfs_mount+0x1e6/0x670 [btrfs]
+> [ 540.744536] legacy_get_tree+0x38/0x90
+> [ 540.744537] vfs_get_tree+0x30/0x140
+> [ 540.744539] path_mount+0x8d8/0x1070
+> [ 540.744541] do_mount+0x8d/0xc0
+> [ 540.744543] __x64_sys_mount+0x125/0x160
+> [ 540.744545] do_syscall_64+0x4b/0x80
+> [ 540.744547] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> [ 540.744551] other info that might help us debug this:
+> [ 540.744552] Possible unsafe locking scenario:
+> 
+> [ 540.744553] CPU0 				CPU1
+> [ 540.744554] ---- 				----
+> [ 540.744555] lock(btrfs-chunk-00);
+> [ 540.744557] 					lock(&fs_devs->device_list_mutex);
+> [ 540.744560] 					lock(btrfs-chunk-00);
+> [ 540.744562] lock(&fs_devs->device_list_mutex);
+> [ 540.744564]
+>  *** DEADLOCK ***
+> 
+> [ 540.744565] 3 locks held by mount/2515:
+> [ 540.744567] #0: ffffa0c56bf7a0e0 (&type->s_umount_key#42/1){+.+.}-{4:4}, at: alloc_super.isra.16+0xdf/0x450
+> [ 540.744574] #1: ffffffffc05a9628 (uuid_mutex){+.+.}-{4:4}, at: btrfs_read_chunk_tree+0x63/0xbb0 [btrfs]
+> [ 540.744640] #2: ffffa0c54a7932b8 (btrfs-chunk-00){++++}-{4:4}, at: __btrfs_tree_read_lock+0x32/0x200 [btrfs]
+> [ 540.744708]
+>  stack backtrace:
+> [ 540.744712] CPU: 2 PID: 2515 Comm: mount Not tainted 5.11.0-rc7+ #5
+> 
+> But the device_list_mutex in clone_fs_devices() is redundant, as explained
+> below.
+> Two threads [1]  and [2] (below) could lead to clone_fs_device().
+> 
+> [1]
+> open_ctree <== mount sprout fs
+>  btrfs_read_chunk_tree()
+>   mutex_lock(&uuid_mutex) <== global lock
+>   read_one_dev()
+>    open_seed_devices()
+>     clone_fs_devices() <== seed fs_devices
+>      mutex_lock(&orig->device_list_mutex) <== seed fs_devices
+> 
+> [2]
+> btrfs_init_new_device() <== sprouting
+>  mutex_lock(&uuid_mutex); <== global lock
+>  btrfs_prepare_sprout()
+>    lockdep_assert_held(&uuid_mutex)
+>    clone_fs_devices(seed_fs_device) <== seed fs_devices
+> 
+> Both of these threads hold uuid_mutex which is sufficient to protect
+> getting the seed device(s) freed while we are trying to clone it for
+> sprouting [2] or mounting a sprout [1] (as above). A mounted seed
+> device can not free/write/replace because it is read-only. An unmounted
+> seed device can free by btrfs_free_stale_devices(), but it needs uuid_mutex.
+> So this patch removes the unnecessary device_list_mutex in clone_fs_devices().
+> And adds a lockdep_assert_held(&uuid_mutex) in clone_fs_devices().
+> 
+> Reported-by: Su Yue <l@damenly.su>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-Added to misc-next, with some minor fixups, thanks.
+For the record, this patch has been added to misc-next.
