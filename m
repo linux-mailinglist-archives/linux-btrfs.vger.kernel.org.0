@@ -2,154 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370D83FF729
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 00:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB673FF72A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 00:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347637AbhIBW3v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 18:29:51 -0400
-Received: from mout.gmx.net ([212.227.17.21]:45733 "EHLO mout.gmx.net"
+        id S235822AbhIBWbm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 18:31:42 -0400
+Received: from mout.gmx.net ([212.227.15.15]:44125 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347658AbhIBW3u (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:29:50 -0400
+        id S231642AbhIBWbl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Sep 2021 18:31:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630621728;
-        bh=2/bzs/sDv0drcwsgnCUWG0UL2BWbeqo6Cnl4tZhE9BM=;
+        s=badeba3b8450; t=1630621840;
+        bh=myApfS3LM3TiMvFc7+izW/TPD6++ql5ARSG2YKgtoXY=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=IS8arSON88EMOteFnIJS7EhbKeHRLNsS4UmlghC8Isx6OoNLlmRwjiAYSfFhjZziz
-         nT8IDUQefyUGs7kgWQkmmuzdRUUu6KRfCE8BpGifP60eKqsyM/alE0YPY2XF/kSxMP
-         kkCk12ZmKVS7AljD2/b4bFfL+ZIn4O5isK9TTJfc=
+        b=c5P36V+NzUTrZbnDEesPkt6QYbu05wamZaaKhl0HjPAt8la+Wu+fgg8mGt0tUoI3w
+         1EQxcsfdHLAmDEXKxsW0t5jFyq5Xde993ld7Om+3dtcENmmL/aLsNLkq1TUnvpGSPP
+         Db9pqUOtYie+pkMf59E6hjZJLOtYUOQSH6eFPxL8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMobU-1meYXr2Q7w-00IiL3; Fri, 03
- Sep 2021 00:28:48 +0200
-Subject: Re: [PATCH 0/5] btrfs: qgroup: address the performance penalty for
- subvolume dropping
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZCfD-1mPzrS2kmf-00VBZH; Fri, 03
+ Sep 2021 00:30:40 +0200
+Subject: Re: [PATCH 1/5] btrfs: sysfs: introduce qgroup global attribute
+ groups
 To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20210831094903.111432-1-wqu@suse.com>
- <20210902162502.GZ3379@twin.jikos.cz>
+ <20210831094903.111432-2-wqu@suse.com> <20210902162840.GA3379@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <4b802b76-4875-7ed4-8ffd-fee978b5932e@gmx.com>
-Date:   Fri, 3 Sep 2021 06:28:44 +0800
+Message-ID: <9f48f55f-a4f3-ad0c-e48e-1da02b0ef068@gmx.com>
+Date:   Fri, 3 Sep 2021 06:30:36 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210902162502.GZ3379@twin.jikos.cz>
+In-Reply-To: <20210902162840.GA3379@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NzmB4qMEspUItedvfnOEZW3ekO1OO/x23LxlCmXZw2eXsWOXYeq
- 8f2G5Vo1QwkbLWxZ3acM4SM/tn8ORr5WDQd6ygZNIMbn2svER6UmMIm1cvff4mtWBJm0GBb
- hUqUA+ksdRiwyBnUtIDThHkuvrXZCufSqPUZDLvZIZ31xmilUGUVD9Iea0y5vgN30L7TupM
- wymPv7oegJOsixQwxLh/Q==
+X-Provags-ID: V03:K1:es5knGGKF9clQekQiE9KcRT2+6xGrEMiIBHehgjs14An3ZkkfAE
+ AqypJB3ixR9+YHeGiMYIFO9zG1tsT4KRGLfdeFrUb2s25TEfPS0VTdfubUNeZbGHtKm23Se
+ wT3YiFwAX3Oh28jBfEPnm3TYb+Cku57ScZZATY5m8aGT4c1RWJDX8qo6oNkLo6HZXvTjU8g
+ ExZwrD7jXPAc1Aplgcf0A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3Tc57niCuIg=:OBJR/MPGv6TUBtR2qdNAX7
- UuFFMtY0yZZJ/Imj4eIUYaux+UGvxEfYpRJsV6rSQN4Iu1F4RBj8bx0aVw1WvTIDNj3F8xD9t
- qqp9fYG8mEBR9isXY4cr25xlyOZigks06Zzw/CeL7fLj/5XC8xtGIVLasRVGn0U9bKlVtlK5/
- 3lOOC129fL1TEv1+dMPEcZWTvQ5ufupZG2aW88sVNFoNvTkUs+xXCrR6eeDOm4jZcSF72ivgx
- BDjLKj/VC0U/lBtBOaWzecaG0Ho5bbM6ojlrLjeWdMuUfDAShfw06SQEzlXaJA1BdWbKtlgXZ
- smSWXUttGXyUQaeFXYf+tjh2j17Iqo2w7RFIDYzjmS77+m4M2Ex3qm8HHwYHBU1r/M7vwwhAS
- o5z0CWo0l/nkDCuI3OHKscB8kk9Y7ul9JTcn11HRGKOR6vt6i8oxaFXLg4lvvgQdR/wofYMcn
- U62V87V3u38hAHinmsKRjEJdd+voNt0MpEicZtnFUw/mTdbCxcGr1KTdyS/lpAlmpzdwXRM4H
- aoVJc6/EMwXOn6HR1JQ/Af/8OUbW8MFT055SJ2UPqwEt0N1lItCCyaIqKcoYrDOFkENP0kKuR
- dwkUV5WNyoA4oSPyivf7C8FAt0yifs1ftiNEuGZrge7b/VVStuYYu+uazIaDJjitaXxdLD6Rt
- VUmRubExnhPb0Lj9ntlAogwHZH2qSqHAleh99Ahc8zkGI+RNK+ThpIEC3K7J8mcJQmnCzqamq
- 9lYMjFWWhDMXFfFhpa0Gt64BN1qnZaso4iIuRBkzwgQ7fFDmbjLVKSBhJIUhe0pPbN4dre0ck
- hr7Xh8DKPBK6rEgk6hUtVH3vLmEDCNdY+RJlk/R6Wq731qixyZkO2Gh8gaXZX55jz4AmPQJcn
- n+GDSVMJG5KSTeZ45q52YRZTl5MpwuH0KsS6HHimODSB6hgz/zNZro7sEb8nzsP1hNbHAXjUN
- czKgfwQGz0aYWkR1hRnj7UewJu+rKrRXJ8WffRPsp6MPne1TzdSxUlM3kF4MexITvTjHe01Fg
- zWvQZf0M4dzmtGR4RXODl5QFFtQ8DznSKKibTDzI4KIMin8GoYeCI/LUOEW5v913x7pJ4ZCOF
- ldqPdEG9v5KzMLMP9oba95uFWeJ/rzz2ELwRagWRcxXm+VrZO5rCEBU3w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XCJDfqk7Jxs=:jRneOOd4+7DblhPIIviAEp
+ nJMhvZE0fTLqBUruy9rfp+JBqEymh0XNSXMW5UE4Kx1QqrA5fik2FiIk+IInXcpFWnQ777LtP
+ /of0CI9Paa/pzdirB0RWu/xJtvOhPl2lM4+9bx6Bl/b4g34VthjOAQX/mvrk4mRy2JXAvkv4G
+ UtKwUoaQ+2eftcog1XMO5LuvbWmnHynGMT/nyXfkrooxtXklFqEVeHCPtk6d82mjkjncZV591
+ Uo2RftodnjDBIGtQZrU5SExGA7aMcp/GYuPEbCxw4QuKohqE5dc2qgYLWURZ86+VqqF88IR/D
+ oJ8j9lwrcsUrk4U2LFAgQzX65EV4hLuQL+o4tRyaTCX49SpbAjgQjTz4sGMnvWv5y8GzYKKkJ
+ QzbpK0xCw5PDlTVBNsJKbGOKYYS3ptxurNiU3hciPvFXe4ViaFlvd8/Xr3zk3MjG85aqysLfr
+ kFvAMS9MxgHcDpEbQmZ8YWOySGccqC/5ef0OJ9TMQbTFrnR3WK250oNYVW/MuD4CGus0m7taW
+ 03HkDwjPmNXXDnMotmJQrK2uMEnLw0TX67tLr1COCcoBIq3Xdx7JcGs/XY6GCcyFHxK/LMjAH
+ /frCtaySQB+DyHE00yqMybS/5rKgP2ykVmf1kkfa36i79Y4oD+4xehs0JAnw7yvFXHGdp4u56
+ edL3nnMQgRjSsGnN5+XXb6+4ERPLFhs11AT9OePBQEXVPon9x+GGbXTS/P2AKsaZVsD/OVZ/N
+ nuyZrntiaHpesZd4ouuy9Xto97e10z7w49jOVaZrhyRfF04anO39u/dT+Sxq4NF9U+mNiSKml
+ yw/fMq6POmuTSl2SGY2d79t8v/DG6WWrLWE5L7YF/RM9na+df7nr4IV1FQmLeUle2WcFtF5fE
+ Ja2ez/4Gsh05tEEntMosJoJpHZ3VWwBmbuBhl0T6PQmHhGZ8FYHQ850rKlnCsaSPOFJ+uWGU4
+ l3pltg2PhIkWAGl8bcLQqo75T5TGEqqIhDydihjUdUEY8aF6xG6UTirznWDtISSMULVFIszkF
+ 8y3rNLl0FgMWkY3e7JIu29EOJQcR/cT310JYLajAu0+gI3FjnPmNfObzskTiatB37MYfMAmWh
+ Qbq1PMhtgMqDPyfDoFttYV48kuNut7T610ybo5SFcADq8DgAf0ThKkHaA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/9/3 =E4=B8=8A=E5=8D=8812:25, David Sterba wrote:
-> On Tue, Aug 31, 2021 at 05:48:58PM +0800, Qu Wenruo wrote:
->> Btrfs qgroup has a long history of bringing huge performance penalty,
->> from subvolume dropping to balance.
+On 2021/9/3 =E4=B8=8A=E5=8D=8812:28, David Sterba wrote:
+> On Tue, Aug 31, 2021 at 05:48:59PM +0800, Qu Wenruo wrote:
+>> Although we already have info kobject for each qgroup, we don't have
+>> global qgroup info attributes to show things like qgroup flags.
 >>
->> Although we solved the problem for balance, but the subvolume dropping
->> problem is still unresolved, as we really need to do all the costly
->> backref for all the involved subtrees, or qgroup numbers will be
->> inconsistent.
+>> Add this qgroups attribute groups, and the first member is qgroup_flags=
+,
+>> which is a read-only attribute to show human readable qgroup flags.
 >>
->> But the performance penalty is sometimes too big, so big that it's
->> better just to disable qgroup, do the drop, then do the rescan.
+>> The path is:
+>>   /sys/fs/btrfs/<uuid>/qgroups/qgroup_flags
 >>
->> This patchset will address the problem by introducing a user
->> configurable sysfs interface, to allow certain high subtree dropping to
->> mark qgroup inconsistent, and skip the whole accounting.
->>
->> The following things are needed for this objective:
->>
->> - New qgroups attributes
->>
->>    Instead of plain qgroup kobjects, we need extra attributes like
->>    drop_subtree_threshold.
->>
->>    This patchset will introduce two new attributes to the existing
->>    qgroups kobject:
->>    * qgroups_flags
->>      To indicate the qgroup status flags like ON, RESCAN, INCONSISTENT.
->>
->>    * drop_subtree_threshold
->>      To show the subtree dropping level threshold.
->>      The default value is BTRFS_MAX_LEVEL (8), which means all subtree
->>      dropping will go through the qgroup accounting, while costly it wi=
-ll
->>      try to keep qgroup numbers as consistent as possible.
->>
->>      Users can specify values like 3, meaning any subtree which is at
->>      level 3 or higher will mark qgroup inconsistent and skip all the
->>      costly accounting.
->>
->>      This only affects subvolume dropping.
->>
->> - Skip qgroup accounting when the numbers are already inconsistent
->>
->>    But still keeps the qgroup relationship correct, thus users can keep
->>    its qgroup organization while do the rescan later.
->>
->>
->> This sysfs interface needs user space tools to monitor and set the
->> values for each btrfs.
->>
->> Currently the target user space tool is snapper, which by default
->> utilizes qgroups for its space-aware snapshots reclaim mechanism.
+>> The output would look like:
+>>   ON | INCONSISTENT
 >
-> This is an interesting approach, though I'm there are some usability
-> questions. First as a user, how do I know I need to use it?  The height
-> of the subvolume fs tree is not easily accessible.
-
-The generic idea is, if you're using qgroup and find btrfs-cleaner
-taking all CPU for a while, then it's the case.
-
+> So that's another format of sysfs file, we should try to keep them
+> consistent or follow common practices. The recommended way for sysfs is
+> to have one file per value, and here it follows the known states.
 >
-> The sysfs file is not protected in any way so multiple tools can decide
-> to set it to different values. And whether rescan is required or not
-> depends on the value so setting it.
-
-That's true, but shouldn't that be the problem of the users?
-
+> So eg
 >
-> It might be better to set the level (or a bit) to the subvol deletion
-> request, eg. a "fast" mode that would internally use maximum height 3 to
-> do slow deletion and anything else for fast leaving qgroup numbers
-> inconsistent.
+> /sys/fs/.../qgroups/enabled		-> 0 or 1
+> /sys/fs/.../qgroups/inconsistent	-> 0 or 1
+> ...
 >
-The problem is, the qgroup part is completely optional, thus I'm not
-sure if it's a good idea to add new interface just for an optional feature=
-.
+> The files can be also writable so rescan can be triggered from sysfs, or
+> quotas disabled eventually. For the start exporting the state would be
+> sufficient though.
+>
+OK, that sounds indeed better than the current solution.
 
-Furthermore, when deleting a subvolume, it's only unlinked, the real
-deletion can happen after a mount cycle, in that case, runtime values
-will be lost.
+Although there may be a small window that one reading 3 attributes could
+get inconsistent view, as it's no longer atomic.
 
-If we really want consistent behavior, then we need new on-disk format,
-which looks overkilled to me.
+Would that be a problem?
 
 Thanks,
 Qu
