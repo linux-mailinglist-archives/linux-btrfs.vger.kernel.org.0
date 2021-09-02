@@ -2,88 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2F03FEF73
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 16:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52F03FEF92
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 16:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345442AbhIBOaD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 10:30:03 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52772 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345492AbhIBOaA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 10:30:00 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CF6F722615;
-        Thu,  2 Sep 2021 14:28:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630592939; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S1345462AbhIBOjR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 10:39:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57540 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345354AbhIBOjQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 10:39:16 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 9C12A1FFA8;
+        Thu,  2 Sep 2021 14:38:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630593497;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Jm2AgDp7twhbKkq7PmxYcC7QSqL8y7AMzmsDoDiY9hs=;
-        b=rc/nKyI8PDCRUjnDgLoHQNYwKyX/s90DeVT17V88mAvC6jSXmtXem090GkW4+/uetptYL3
-        rvd8HUEugq4c5DRrMFyRJqpA1LFZ/mgwlkcsk/StoQBrBDTWHrLKEcVAOkklGVuK5KZbx8
-        iDqYxcTmYTar1tRBjljxVE0AM49KfWs=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7A8E41372E;
-        Thu,  2 Sep 2021 14:28:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id SCqIG6vfMGF0KQAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Thu, 02 Sep 2021 14:28:59 +0000
-Subject: Re: [PATCH 1/2] btrfs-progs: fi show: Print missing device for a
- mounted file system
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20210902100643.1075385-1-nborisov@suse.com>
- <b2f9ea09-7fdb-dd3f-2e58-3cdfed65cf12@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <44803fc4-8f7d-2bda-f7b3-06017f6d5b39@suse.com>
-Date:   Thu, 2 Sep 2021 17:28:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=KS9fF29jgYpZeGh7okmxONBxc/PWDUAnfublMJojU1U=;
+        b=P+J6EJFfHTWtemgQ25hHsQOYwuHkhUfVkRlivG5AS9h+1SEngEa2+J1feNONKeflsbq9r3
+        2Q0Tfw0JekAEZRCX9KB6ysu5aj7XS/tugOQYuoI2G3Nyib9paII8dkc67lu+oS170wzPct
+        7EYg0tZtpfnYXZ9Nf0m/7cobfMBSZh4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630593497;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KS9fF29jgYpZeGh7okmxONBxc/PWDUAnfublMJojU1U=;
+        b=pk66Yz4TTzrKToFXXds6Sj/gcpftgMrpS1QtdEYED120mg/pUVj0YKJlQfwsRBZmUPUice
+        7b5nNyUvukbTg/Bg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 926FCA3B87;
+        Thu,  2 Sep 2021 14:38:17 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6494ADA72B; Thu,  2 Sep 2021 16:38:16 +0200 (CEST)
+Date:   Thu, 2 Sep 2021 16:38:16 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com, l@damenly.su
+Subject: Re: [PATCH V5 4/4] btrfs: fix comment about the btrfs_show_devname
+Message-ID: <20210902143816.GV3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com, l@damenly.su
+References: <cover.1629780501.git.anand.jain@oracle.com>
+ <c3e2f34f0d328196dd7cd6bdae67a8219cef840c.1629780501.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <b2f9ea09-7fdb-dd3f-2e58-3cdfed65cf12@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3e2f34f0d328196dd7cd6bdae67a8219cef840c.1629780501.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Aug 24, 2021 at 01:05:22PM +0800, Anand Jain wrote:
+> There were few lock dep warnings because btrfs_show_devname() was using
+> device_list_mutex as recorded in the commits
+>   ccd05285e7f (btrfs: fix a possible umount deadlock)
 
+Commit ccd05285e7f does not exist in my tree, but the subject matches
+0ccd05285e7f. Please format the references like it's done for the Fixes:
+tag with HASH ("Subject"). Nobody types that by hand, a simple git alias
+does that for free:
 
-On 2.09.21 г. 14:44, Anand Jain wrote:
-> On 02/09/2021 18:06, Nikolay Borisov wrote:
->> Currently when a device is missing for a mounted filesystem the output
->> that is produced is unhelpful:
->>
->> Label: none  uuid: 139ef309-021f-4b98-a3a8-ce230a83b1e2
->>     Total devices 2 FS bytes used 128.00KiB
->>     devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
->>     *** Some devices missing
->>
->> While the context which prints this is perfectly capable of showing
->> which device exactly is missing, like so:
->>
->> Label: none  uuid: 4a85a40b-9b79-4bde-8e52-c65a550a176b
->>     Total devices 2 FS bytes used 128.00KiB
->>     devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
->>     devid    2 size 0 used 0 path /dev/loop1 ***MISSING***
->>
->> This is a lot more usable output as it presents the user with the id
->> of the missing device and its path.
-> 
-> Looks better. How does this fair in the case of unmounted btrfs? Because
-> btrfs fi show is supposed to work on an unmounted btrfs to help find
-> btrfs devices.
-
-On unmounted fs the output is unchanged - i.e we simply print "missing
-device" because there is no way to derive the name of the missing
-device. Check print_one_uuid for reference.
-
-<snip>
+.gitconfig:
+[alias]
+	one = show -s --pretty='format:%h (\"%s\")'
