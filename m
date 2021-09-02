@@ -2,147 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4082E3FF32E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 20:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370D83FF729
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 00:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhIBSX2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 14:23:28 -0400
-Received: from mail57.us4.mandrillapp.com ([205.201.136.57]:11915 "EHLO
-        mail57.us4.mandrillapp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241841AbhIBSXZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:23:25 -0400
-X-Greylist: delayed 1080 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Sep 2021 14:23:25 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nexedi.com;
-        s=mandrill; t=1630605863; i=jm@nexedi.com;
-        bh=nQ6uIJALnoFytDZD1bWNUGrHYCSOC0cFQlM1kGbnzk0=;
-        h=From:Subject:To:Cc:Message-Id:Date:MIME-Version:Content-Type:
-         Content-Transfer-Encoding;
-        b=jmFMd/4QUfkCIEa8FfOrIVqhmlZPfW/5O+BDCuOBSuUv7ULDKoLqCFE8OjJ6hElEo
-         Iw9UpU25eEYkTc32RGC6EMI+9SXo/2KQcprcszzZ0fK9GTnByNGDsr/vkZw4MchmP6
-         SzprbC+nW51eqsE1cvmmdnlcPHISXewKEMqGqaqw=
-Received: from pmta15.mandrill.prod.suw01.rsglab.com (localhost [127.0.0.1])
-        by mail57.us4.mandrillapp.com (Mailchimp) with ESMTP id 4H0pj33vqzz35hcjD
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Sep 2021 18:04:23 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mandrillapp.com; 
- i=@mandrillapp.com; q=dns/txt; s=mandrill; t=1630605863; h=From : 
- Subject : To : Cc : Message-Id : Date : MIME-Version : Content-Type : 
- Content-Transfer-Encoding : From : Subject : Date : X-Mandrill-User : 
- List-Unsubscribe; bh=nQ6uIJALnoFytDZD1bWNUGrHYCSOC0cFQlM1kGbnzk0=; 
- b=lLu/rmUzcDUyC70Od72lUQrXZJ3zxZxvzZeyg9j2o95xnELnd7FAA2RIuEJpCuCIFygKN9
- 8rC2YwqvbI1fHWOhEP3QdlI29aTw9gJkO91+bGtuV9eoSPzY98L5FVPO+ciWPJ3NtErKeBo4
- /Fvo8gf0ouy3c/l6gctsKeqo0qHzE=
-From:   Julien Muchembled <jm@nexedi.com>
-Subject: fallocate + ftruncate
-Received: from [87.98.221.171] by mandrillapp.com id 539f960afd6b473ab2bd29241ad79c24; Thu, 02 Sep 2021 18:04:23 +0000
-To:     linux-btrfs@vger.kernel.org
-Cc:     Vincent Pelletier <vincent@nexedi.com>
-Message-Id: <ed3642c2-682e-08a1-f18d-2d63409b7631@nexedi.com>
-X-Report-Abuse: Please forward a copy of this message, including all headers, to abuse@mandrill.com
-X-Report-Abuse: You can also report abuse here: http://mandrillapp.com/contact/abuse?id=31050260.539f960afd6b473ab2bd29241ad79c24
-X-Mandrill-User: md_31050260
-Feedback-ID: 31050260:31050260.20210902:md
-Date:   Thu, 02 Sep 2021 18:04:23 +0000
+        id S1347637AbhIBW3v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 18:29:51 -0400
+Received: from mout.gmx.net ([212.227.17.21]:45733 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347658AbhIBW3u (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Sep 2021 18:29:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630621728;
+        bh=2/bzs/sDv0drcwsgnCUWG0UL2BWbeqo6Cnl4tZhE9BM=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=IS8arSON88EMOteFnIJS7EhbKeHRLNsS4UmlghC8Isx6OoNLlmRwjiAYSfFhjZziz
+         nT8IDUQefyUGs7kgWQkmmuzdRUUu6KRfCE8BpGifP60eKqsyM/alE0YPY2XF/kSxMP
+         kkCk12ZmKVS7AljD2/b4bFfL+ZIn4O5isK9TTJfc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMobU-1meYXr2Q7w-00IiL3; Fri, 03
+ Sep 2021 00:28:48 +0200
+Subject: Re: [PATCH 0/5] btrfs: qgroup: address the performance penalty for
+ subvolume dropping
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210831094903.111432-1-wqu@suse.com>
+ <20210902162502.GZ3379@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <4b802b76-4875-7ed4-8ffd-fee978b5932e@gmx.com>
+Date:   Fri, 3 Sep 2021 06:28:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210902162502.GZ3379@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NzmB4qMEspUItedvfnOEZW3ekO1OO/x23LxlCmXZw2eXsWOXYeq
+ 8f2G5Vo1QwkbLWxZ3acM4SM/tn8ORr5WDQd6ygZNIMbn2svER6UmMIm1cvff4mtWBJm0GBb
+ hUqUA+ksdRiwyBnUtIDThHkuvrXZCufSqPUZDLvZIZ31xmilUGUVD9Iea0y5vgN30L7TupM
+ wymPv7oegJOsixQwxLh/Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3Tc57niCuIg=:OBJR/MPGv6TUBtR2qdNAX7
+ UuFFMtY0yZZJ/Imj4eIUYaux+UGvxEfYpRJsV6rSQN4Iu1F4RBj8bx0aVw1WvTIDNj3F8xD9t
+ qqp9fYG8mEBR9isXY4cr25xlyOZigks06Zzw/CeL7fLj/5XC8xtGIVLasRVGn0U9bKlVtlK5/
+ 3lOOC129fL1TEv1+dMPEcZWTvQ5ufupZG2aW88sVNFoNvTkUs+xXCrR6eeDOm4jZcSF72ivgx
+ BDjLKj/VC0U/lBtBOaWzecaG0Ho5bbM6ojlrLjeWdMuUfDAShfw06SQEzlXaJA1BdWbKtlgXZ
+ smSWXUttGXyUQaeFXYf+tjh2j17Iqo2w7RFIDYzjmS77+m4M2Ex3qm8HHwYHBU1r/M7vwwhAS
+ o5z0CWo0l/nkDCuI3OHKscB8kk9Y7ul9JTcn11HRGKOR6vt6i8oxaFXLg4lvvgQdR/wofYMcn
+ U62V87V3u38hAHinmsKRjEJdd+voNt0MpEicZtnFUw/mTdbCxcGr1KTdyS/lpAlmpzdwXRM4H
+ aoVJc6/EMwXOn6HR1JQ/Af/8OUbW8MFT055SJ2UPqwEt0N1lItCCyaIqKcoYrDOFkENP0kKuR
+ dwkUV5WNyoA4oSPyivf7C8FAt0yifs1ftiNEuGZrge7b/VVStuYYu+uazIaDJjitaXxdLD6Rt
+ VUmRubExnhPb0Lj9ntlAogwHZH2qSqHAleh99Ahc8zkGI+RNK+ThpIEC3K7J8mcJQmnCzqamq
+ 9lYMjFWWhDMXFfFhpa0Gt64BN1qnZaso4iIuRBkzwgQ7fFDmbjLVKSBhJIUhe0pPbN4dre0ck
+ hr7Xh8DKPBK6rEgk6hUtVH3vLmEDCNdY+RJlk/R6Wq731qixyZkO2Gh8gaXZX55jz4AmPQJcn
+ n+GDSVMJG5KSTeZ45q52YRZTl5MpwuH0KsS6HHimODSB6hgz/zNZro7sEb8nzsP1hNbHAXjUN
+ czKgfwQGz0aYWkR1hRnj7UewJu+rKrRXJ8WffRPsp6MPne1TzdSxUlM3kF4MexITvTjHe01Fg
+ zWvQZf0M4dzmtGR4RXODl5QFFtQ8DznSKKibTDzI4KIMin8GoYeCI/LUOEW5v913x7pJ4ZCOF
+ ldqPdEG9v5KzMLMP9oba95uFWeJ/rzz2ELwRagWRcxXm+VrZO5rCEBU3w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I'd like to report what seems to be a Btrfs bug. XFS does not have this issue.
 
-On a machine (kernel 4.19.181) that has several RocksDB databases, some on XFS and other on Btrfs, we noticed that disk usage increases significantly faster on Btrfs. RocksDB pattern for SST files is:
 
-1. fallocate(A)
-2. write(B) with B < A
-3. fruncate(B)
-4. close
+On 2021/9/3 =E4=B8=8A=E5=8D=8812:25, David Sterba wrote:
+> On Tue, Aug 31, 2021 at 05:48:58PM +0800, Qu Wenruo wrote:
+>> Btrfs qgroup has a long history of bringing huge performance penalty,
+>> from subvolume dropping to balance.
+>>
+>> Although we solved the problem for balance, but the subvolume dropping
+>> problem is still unresolved, as we really need to do all the costly
+>> backref for all the involved subtrees, or qgroup numbers will be
+>> inconsistent.
+>>
+>> But the performance penalty is sometimes too big, so big that it's
+>> better just to disable qgroup, do the drop, then do the rescan.
+>>
+>> This patchset will address the problem by introducing a user
+>> configurable sysfs interface, to allow certain high subtree dropping to
+>> mark qgroup inconsistent, and skip the whole accounting.
+>>
+>> The following things are needed for this objective:
+>>
+>> - New qgroups attributes
+>>
+>>    Instead of plain qgroup kobjects, we need extra attributes like
+>>    drop_subtree_threshold.
+>>
+>>    This patchset will introduce two new attributes to the existing
+>>    qgroups kobject:
+>>    * qgroups_flags
+>>      To indicate the qgroup status flags like ON, RESCAN, INCONSISTENT.
+>>
+>>    * drop_subtree_threshold
+>>      To show the subtree dropping level threshold.
+>>      The default value is BTRFS_MAX_LEVEL (8), which means all subtree
+>>      dropping will go through the qgroup accounting, while costly it wi=
+ll
+>>      try to keep qgroup numbers as consistent as possible.
+>>
+>>      Users can specify values like 3, meaning any subtree which is at
+>>      level 3 or higher will mark qgroup inconsistent and skip all the
+>>      costly accounting.
+>>
+>>      This only affects subvolume dropping.
+>>
+>> - Skip qgroup accounting when the numbers are already inconsistent
+>>
+>>    But still keeps the qgroup relationship correct, thus users can keep
+>>    its qgroup organization while do the rescan later.
+>>
+>>
+>> This sysfs interface needs user space tools to monitor and set the
+>> values for each btrfs.
+>>
+>> Currently the target user space tool is snapper, which by default
+>> utilizes qgroups for its space-aware snapshots reclaim mechanism.
+>
+> This is an interesting approach, though I'm there are some usability
+> questions. First as a user, how do I know I need to use it?  The height
+> of the subvolume fs tree is not easily accessible.
 
-And no more modification after that.
+The generic idea is, if you're using qgroup and find btrfs-cleaner
+taking all CPU for a while, then it's the case.
 
-It took us a while to understand what's going on because strangely, even 'btrfs filesystem du' does not report the actual disk usage. compsize does, e.g.
+>
+> The sysfs file is not protected in any way so multiple tools can decide
+> to set it to different values. And whether rescan is required or not
+> depends on the value so setting it.
 
-  # stat mariadb/#rocksdb/164719.sst
-    File: mariadb/#rocksdb/164719.sst
-    Size: 8127109         Blocks: 15880      IO Block: 4096   regular file
-  Device: 33h/51d Inode: 24913       Links: 1
-  ...
-  # compsize -b mariadb/#rocksdb/164719.sst
-  Type       Perc     Disk Usage   Uncompressed Referenced
-  TOTAL      100%     147640320    147640320    8130560
-  none       100%     147640320    147640320    8130560
+That's true, but shouldn't that be the problem of the users?
 
-Almost 140MB wasted.
+>
+> It might be better to set the level (or a bit) to the subvol deletion
+> request, eg. a "fast" mode that would internally use maximum height 3 to
+> do slow deletion and anything else for fast leaving qgroup numbers
+> inconsistent.
+>
+The problem is, the qgroup part is completely optional, thus I'm not
+sure if it's a good idea to add new interface just for an optional feature=
+.
 
-compsize is a bit old but btrfs-search-metadata confirms there's only 1 extent:
-  inode objectid 24913 generation 184524 transid 184524 size 8127109 nbytes 8130560 block_group 0 mode 0100640 nlink 1 uid 982 gid 1019 rdev 0 flags 0x10(PREALLOC)
-  inode ref list objectid 24913 parent_objectid 283 size 1
-    inode ref index 24528 name utf-8 '164719.sst'
-  extent data at 0 generation 184524 ram_bytes 147640320 compression none type regular disk_bytenr 1210397491200 disk_num_bytes 147640320 offset 0 num_bytes 8130560
+Furthermore, when deleting a subvolume, it's only unlinked, the real
+deletion can happen after a mount cycle, in that case, runtime values
+will be lost.
 
-I could reproduce the issue on kernel 5.13.9, with the following program:
+If we really want consistent behavior, then we need new on-disk format,
+which looks overkilled to me.
 
-#define _GNU_SOURCE
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-
-int main(int argc, char *argv[])
-{
-  char buf[4096];
-  int fd = open(argv[1], O_CREAT|O_WRONLY|O_EXCL, 0666);
-  if (fd < 0 || fallocate(fd, FALLOC_FL_KEEP_SIZE, 0, 1<<24) < 0)
-    return -1;
-  size_t n = 0;
-  for (ssize_t i; i = read(0, buf, sizeof buf);) {
-    if (i < 0 || write(fd, buf, i) != i)
-      return -1;
-    n += i;
-  }
-  if (ftruncate(fd, n) < 0 ||
-      close(fd) < 0)
-    return -1;
-  return 0;
-}
-
-$ ./tst dst < src # src size should be < 16MiB
-
-$ stat dst 
-  File: dst
-  Size: 19374           Blocks: 40         IO Block: 4096   regular file
-Device: 3eh/62d Inode: 2253170     Links: 1
-...
-
-$ compsize -b dst 
-Processed 1 file, 1 regular extents (1 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced  
-TOTAL      100%     16777216     16777216     20480       
-prealloc   100%     16777216     16777216     20480       
-
-'btrfs fi defrag dst' does nothing, probably because there's only 1 extent.
-
-While trying to fix the file, I found what may be another bug. I tried many options of /usr/bin/fallocate without success. But the strangest is:
-
-$ fallocate -p -o 19374 -l 16777216 dst
-
-I hoped that deallocation shrinks the extent but instead it appends a second one:
-
-$ compsize -b dst 
-Processed 1 file, 2 regular extents (2 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced  
-TOTAL      100%     16781312     16781312     20480       
-none       100%     16781312     16781312     20480       
-
-Ironically, now that I have a second extent:
-
-$ btrfs fi defrag dst
-
-$ compsize -b dst 
-Processed 1 file, 1 regular extents (1 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced  
-TOTAL      100%     20480        20480        20480       
-none       100%     20480        20480        20480       
-
-Julien
+Thanks,
+Qu
