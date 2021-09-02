@@ -2,155 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115BB3FF1E3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 18:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAE53FF1E4
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 18:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346469AbhIBQ5Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 12:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234446AbhIBQ5X (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 12:57:23 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D263DC061575
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Sep 2021 09:56:24 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id d6so2084681vsr.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Sep 2021 09:56:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vpXrJx3DD4mE2SiaRmTzwvAkvYHEAlZ0VMeFXoZm0WE=;
-        b=aUMyBcowv96ZV1yP0CHLYCjlRKQ3Y5lVwzsJ5fp41//j3wzZqzvqV3BbqrnI25KTa/
-         TA8pZIlsNWZhfbJj0tEd7Db19KZUCAFvicoi3udTMxs+zcyq+HK8oMTdw3DRQgSY+DCi
-         nSSccpxdYvi8+R5Sijs2ni9P8wRxnFehbdytx4VFo5yPOlcLHlrqBgTtZeHxjc6bPfR4
-         Yr/RnZ0K0otEJUKw81kVrXhws6w/KO1o0teGK3XBBt1G4KWlXC6nTXsuakYxhsehh+gb
-         I3lhrhvzSes7mTWT/VezNTp7mdYlxuqY+U4as5NOr67xKEOJduHYKCiYSItAfm3PMBk3
-         hKHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vpXrJx3DD4mE2SiaRmTzwvAkvYHEAlZ0VMeFXoZm0WE=;
-        b=JucJDlKcniOjpfsT8qn+tG/lmxYQ5MoGmPx/t6JwbSwVASLnLsdWyo/jEuzF7J23Zn
-         POyHxEIVBNUzoNkQwrv5ILot2jYTUgnXZzUx1S9Uam/PXZ5jZ5IaUXsjvULY5pVmboXN
-         tJzn0mMRq97inHS5PIidNxkNHJgKdZJPx+tbe4Vuu/mbf6mvEEWC7nn/TVOjcFPcECST
-         4YyBNdqhA7AOGruISQv//VFbK0G2ep84IsNTdrCEP90f7pWGZmqXrzhcET+fl0gFHzLP
-         E+GhyqOEUQHOovoj5miaO0qMttAk0t+LPx0JnV6pTQvLylYS7MSrIvzMX9BN33B1Uax4
-         /hxg==
-X-Gm-Message-State: AOAM5323GfeRHK8IsORT5WMGZOWozz8QXphviHL8S38bZqPwndAsLtOZ
-        +tI2c2JBdpSCtiFSOoVmQTy4dxnTSfDzI8rN5LQ=
-X-Google-Smtp-Source: ABdhPJx0fEKO9FzxyDnb8ejmHDQu/TImj3GnqjfvPprrnkf+9zd2hX/vY6Gsxro2e+xpH9/+vLCkSvTvcnWehwpNR7E=
-X-Received: by 2002:a67:f98d:: with SMTP id b13mr3297868vsq.58.1630601783941;
- Thu, 02 Sep 2021 09:56:23 -0700 (PDT)
+        id S1346476AbhIBQ53 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 12:57:29 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59116 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234446AbhIBQ52 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 12:57:28 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 60C1C1FFC5;
+        Thu,  2 Sep 2021 16:56:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630601787;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=df7HzHyVYApHRZEulGEy86znFm2/rkvsmZIQ8fZ3e5Y=;
+        b=GXXBbYZfEgu1GrwhEWOWlyk8yvBWfh5NCRmqHQKhF8mW3mxijeEaM+gIA42ffbZR3ogtnO
+        R4Be/tzjmnpcH7Q+pGSKfnfi4MB15Vu4wCmoaUvJfgUPBfdaeInNyOsg8NSc23w2bUkqPm
+        p4hnnjX24mRb8twnILZYLq97RF4nlGY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630601787;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=df7HzHyVYApHRZEulGEy86znFm2/rkvsmZIQ8fZ3e5Y=;
+        b=dNZyeRKtH1Lmc7H9/InM1beffsunlmifXKyEIVSVELqP++FJn1s/J6CnFDLWVJ7HlkYCfp
+        FbiEOob6A718YwDQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 59C65A3BB7;
+        Thu,  2 Sep 2021 16:56:27 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 290CFDA72B; Thu,  2 Sep 2021 18:56:26 +0200 (CEST)
+Date:   Thu, 2 Sep 2021 18:56:25 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/10] btrfs: set of small optimizations for inode logging
+Message-ID: <20210902165625.GB3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <cover.1630419897.git.fdmanana@suse.com>
 MIME-Version: 1.0
-References: <CAHQ7scVGPAwEGQOq3Kmn75GJzyzSQ9qrBBZrHFu+4YWQhGE0Lw@mail.gmail.com>
- <ce0a558f-0fab-4d52-f2d1-1faf4fb1777c@oracle.com> <CAHQ7scVkHp8Lcfxx2QZXv2ghkW-nYpiFGntyZa0Toz2hU3S-tQ@mail.gmail.com>
- <b0feb23e-4a18-efd7-eeaf-832ef0cf6860@oracle.com> <CAHQ7scUiNLVD_4---ArBet-0DqzfmmH5Y9JgQY0grYrUv8yhiQ@mail.gmail.com>
- <c2d2a244-f77c-e0a4-d266-db011fc4154b@oracle.com> <CAOE4rSx5+9jXEE2ra5qYOiZWpVU=EcB1MadEf_35fa0M3MZyiw@mail.gmail.com>
- <a0990c37-0b94-53e7-051e-ee7667c4bc94@oracle.com>
-In-Reply-To: <a0990c37-0b94-53e7-051e-ee7667c4bc94@oracle.com>
-From:   =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>
-Date:   Thu, 2 Sep 2021 19:56:12 +0300
-Message-ID: <CAOE4rSzkodTb0DFOS4C1tDU-7PVie9v5Sa=yTHHKS5YWQXnKMQ@mail.gmail.com>
-Subject: Re: btrfs mount takes too long time
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Jingyun He <jingyun.ho@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1630419897.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-ceturtd., 2021. g. 2. sept., plkst. 00:31 =E2=80=94 lietot=C4=81js Anand Ja=
-in
-(<anand.jain@oracle.com>) rakst=C4=ABja:
->
-> On 02/09/2021 00:11, D=C4=81vis Mos=C4=81ns wrote:
-> > pirmd., 2021. g. 30. aug., plkst. 16:08 =E2=80=94 lietot=C4=81js Anand =
-Jain
-> > (<anand.jain@oracle.com>) rakst=C4=ABja:
-> >>
-> >> open_ctree() took 228254398 us. And 98% of it that is 225418272 us
-> >> was taken by btrfs_read_block_groups().
-> >>
-> >> -------------------
-> >>    1) $ 225418272 us | } /* btrfs_read_block_groups [btrfs] */
-> >>    1) * 16934.96 us | btrfs_check_rw_degradable [btrfs]();
-> >>    0) 0.967 us | btrfs_apply_pending_changes [btrfs]();
-> >>    0) 0.239 us | btrfs_read_qgroup_config [btrfs]();
-> >>    0) * 21017.34 us | btrfs_get_root_ref [btrfs]();
-> >>    0) + 15.717 us | btrfs_start_pre_rw_mount [btrfs]();
-> >>    0) 0.865 us | btrfs_discard_resume [btrfs]();
-> >>    0) $ 228254398 us | } /* open_ctree [btrfs] */
-> >> -------------------
-> >>
-> >> Now we need to run the same thing on btrfs_read_block_groups(),
-> >> could you please run.. [1] (no need of the time).
-> >>
-> >> [1]
-> >>     $ umount /btrfs;
-> >>     $./ftracegraph btrfs_read_block_groups 2 "*:mod:btrfs" "mount
-> >> /dev/vg/scratch0 /btrfs"
-> >>
-> >> Thanks, Anand
-> >>
-> >>
-> >
-> > Hi,
-> >
-> > I also have a btrfs filesystem that takes a while to mount.
-> > So I'm interested if this could be improved.
-> >
-> > $ ./ftracegraph open_ctree 2 "*:mod:btrfs" "time mount /dev/md127 -o
-> > space_cache=3Dv2,compress=3Dzstd,acl,subvol=3DData /mnt/Data/"
->
->   It is better if we don't use the time prefix for the mount command
->   here. The ftrace, traces time syscall as well, which is unessential.
->   And we lose a lot of trace-buffer to it.
->
-> > kernel.ftrace_enabled =3D 1
-> >
-> > real    1m33,638s
-> > user    0m0,000s
-> > sys     0m1,130s
-> >
-> > Here's the trace output https://d=C4=81vis.lv/files/ftracegraph.out.gz
-> >
-> > The filesystem is on top of RAID6 mdadm array which is from 9x 3TB HDDs=
-.
->
->   So here is a case of a non-zoned device.
->
->   Again it is btrfs_read_block_groups() which is taking ~98% of the time.
->
->     3) $ 91607669 us |    } /* btrfs_read_block_groups [btrfs] */
->     3) # 9399.566 us |    btrfs_check_rw_degradable [btrfs]();
->     3)   0.922 us    |    btrfs_apply_pending_changes [btrfs]();
->     3) ! 186.540 us  |    btrfs_read_qgroup_config [btrfs]();
->     3) * 26109.92 us |    btrfs_get_root_ref [btrfs]();
->     3) + 23.965 us   |    btrfs_start_pre_rw_mount [btrfs]();
->     3)   1.192 us    |    btrfs_discard_resume [btrfs]();
->     3) $ 93501136 us |  } /* open_ctree [btrfs] */
->
->   Could we pls get this?
->
->   $ ./ftracegraph btrfs_read_block_groups 2 "*:mod:btrfs" "mount ..."
->
->   Hopefully, there won't be a trace-buffer rollover here, as we saw in
->   the other case so that we could account for all the time spent.
+On Tue, Aug 31, 2021 at 03:30:30PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> The following patchset adds a few optimizations for inode logging, along
+> with some necessary refactorings/cleanups to be able to implement them.
+> Test results are in the change log of the last patch.
+> 
+> Filipe Manana (10):
+>   btrfs: check if a log tree exists at inode_logged()
+>   btrfs: remove no longer needed checks for NULL log context
+>   btrfs: do not log new dentries when logging that a new name exists
+>   btrfs: always update the logged transaction when logging new names
+>   btrfs: avoid expensive search when dropping inode items from log
+>   btrfs: add helper to truncate inode items when logging inode
+>   btrfs: avoid expensive search when truncating inode items from the log
+>   btrfs: avoid search for logged i_size when logging inode if possible
+>   btrfs: avoid attempt to drop extents when logging inode for the first time
+>   btrfs: do not commit delayed inode when logging a file in full sync mode
 
-Sure, here https://d=C4=81vis.lv/files/ftracegraph_v2.out.gz
-
->   Also, let's understand how many block groups are there.
->
->   $ btrfs in dump-tree <dev> | grep BLOCK_GROUP_ITEM | wc -l
-
-It's 22660
-Also by the way `-t EXTENT_TREE` should be faster
-
-Best regards,
-D=C4=81vis
+Added to misc-next, thanks.
