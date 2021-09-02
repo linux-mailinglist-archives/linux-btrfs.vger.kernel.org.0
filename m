@@ -2,225 +2,212 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88893FEDA5
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 14:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1912E3FEE32
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 14:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344311AbhIBMSv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 08:18:51 -0400
-Received: from mout.gmx.net ([212.227.15.18]:34349 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234142AbhIBMSv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:18:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630585071;
-        bh=QqR9GxhkF/5FVeYrf4HgqjR9dpvUjM/tCri54jDUSpg=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=dwmpJePD4l4LfUef5K19oEkaDSQiSCAfpATJaUHzAcd2bCuO6OAqv02aag9G8QLOX
-         FKNZGYPGJEFhfHJysNmJOTZp+02HxhOpXN9b462OgAflsqG6qfvS57GgInQ/vUmb1X
-         P/BVU73KbCI9+ouIcdxzw4pS6rkceFVVS8uFIuyU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXp5a-1mTSk61QTM-00YCuD; Thu, 02
- Sep 2021 14:17:50 +0200
-Subject: Re: [PATCH 1/2] btrfs-progs: fi show: Print missing device for a
- mounted file system
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210902100643.1075385-1-nborisov@suse.com>
- <c5930e90-ca5b-4089-6f2e-830af6576baa@gmx.com>
- <7c4ecbc6-41a7-5375-42cc-9bf87ff35507@suse.com>
- <5030bc35-fdda-b297-94e4-d484f8aee444@gmx.com>
- <4da2f41d-c1e0-1da9-e4c9-bfe87067a6af@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <b5dba5a6-256b-ee5c-57f2-84e9875e6c0a@gmx.com>
-Date:   Thu, 2 Sep 2021 20:17:47 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1344807AbhIBM7W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 08:59:22 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60740 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344902AbhIBM7V (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 08:59:21 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 17A591FF97;
+        Thu,  2 Sep 2021 12:58:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630587502;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OtR/WSv+c64ZdsF7J1nMGklf1ytIHCgOcNZidPvIN3Y=;
+        b=L35A4tiekulVgoZ2oNC5h/ZeqXOCe5ICkOt6fENQ3iXf8PG8Fn2gi1TCel2+9mFYINkxMg
+        E3hAtfFOSI3lUNCu3BSL1yIncyx4Tq0r2ebDSo2YIf+KMCDX0DQ9ANR84UDfEiXu5sknLe
+        wu5GeSDo0/VDvwO9W10cTvAeNHdrPBc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630587502;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OtR/WSv+c64ZdsF7J1nMGklf1ytIHCgOcNZidPvIN3Y=;
+        b=H3sXT9ib4qtrOsujHbfu+AncZQckwmpvXt5TUK8wG1HgQM2Xdap/FUKJW/25sQ9LbUgz2J
+        H1ecO20YAnMMsDBw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 06C14A3B9F;
+        Thu,  2 Sep 2021 12:58:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B2BB2DA72B; Thu,  2 Sep 2021 14:58:20 +0200 (CEST)
+Date:   Thu, 2 Sep 2021 14:58:20 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 2/7] btrfs: do not take the uuid_mutex in
+ btrfs_rm_device
+Message-ID: <20210902125820.GR3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1627419595.git.josef@toxicpanda.com>
+ <4f7529acd33594df9b0b06f7011d8cd4d195fc29.1627419595.git.josef@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <4da2f41d-c1e0-1da9-e4c9-bfe87067a6af@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FhW5RlAOpoyltkzeb5IHNIr4l2S3I+dYnlRZCCFR6FhV2y5E7Og
- 46+ej7mV8DuUku7lUCyW8VXUCUMW+nNJgxxxsfS49IYRB+MhnLYY9VL2LoEPTnzXn1BI7Wl
- c2CTaDBhxnpkpd0T+I+ikxif0f1GbjiX2qA4ffHSBI+t1qFC9JYe1mhYlyXQOM9i9PDg+pj
- M+93CLAwiK909H3jkKunQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:X6R386o4oR8=:z8s+ms7mW59roul5SjMc5C
- qeYJmmU2pv7X1u5Av7yDj19IpnEm/mnm3s70OAWTmhHZF9cwA9CACufR6mOljms+uNSu3GZzM
- nhcVcduQSuFhP/2lgi5hKlI+8lGFlFT5DbCtBIriHCzXjfyW3ulp+y2lmV8Wth9MHF/tTWjL2
- RqRhv8uEZzlv1YCDWJTAD67eOITY0AQ4baOoX1QrgeRazftebjfq78Yd1FPODGyKimYgvOVYS
- hMrQw6YEamm0RvE5fVSNdjKnV6o/GC8LljrIfqUP47DvVfKvWAbV74M1UPuSvy5wQp9guHyT2
- 31YbZrYT1WA0JqTo85UO3fPlfbUoVcABS3yulueGEHTjaQ8QIjFSRHBhBEKznCBlszMgnjZSl
- 8lBtsqu4tB1Fs0by2pv74DuCVJlZMtyqzbtT6mGBeghaFemNgbvq8AI3TsU5AiVWX+Degs56E
- cUfEaX1D0QokHQeC85oaqnOSC3qoi6OKcdwcdSY1lK9PH2tMAdA0tUfRJpSnJ99XkISxB4aVf
- feOzMQ6pbqFG9De2OaBRBEpWlC8t/R1vdp7kW+j5brohjMTGuESs+Akh2HTkmB7AQ5R2jbP1D
- jN2VA9qEuSJna6+XW1nUNghM3v7c0DO7pGH/BXqhpXVay17Ec2maxzrrHLSgDdk+SqimgyyY3
- gfJp2Qsfe4CiJXj0PKWyK2TmNpbxP/NsiLWg0kZVorEuZmBpuFXtd+R0hbJU1t4t/QbvghdcG
- fR0+IG8986S/ks57LcAJkKvWQsfD4IN1HJlxpKzrIAsA0lsBQTAQcbYHgCsInT4kOdb8j3uZg
- SIUhONEINx9DZRUNghDNEHgQreA4+mUdJX/IaBSNjhA4eyJPJ54bO7v/3ZIlm8rzB9Uot/CQA
- pWbWh9CbkNG+VMKG0DQjRzUfX114A48nFft+gYqDDDtibl83OY6DSab4o1pouqLDsPYn/viVC
- YPBLDP6e4Y6069GJL3tHZo4Kg0ogq/7nmH18EbByc1u8RUMc2Ox4xyxNlC1n09L5gZwh21p32
- dW8gRYJjRxZmUFj+GRVLU7GrAQdTAIYTktFE4QrcMBjY3jkRfue+INcJmP0hb7H/tPzpzA6Ub
- 4chHh+1Yk7SQxInwLiRKUxEFBBVNm3w5LFuxSLOX2gN4IQtwg57z8CgTQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f7529acd33594df9b0b06f7011d8cd4d195fc29.1627419595.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Jul 27, 2021 at 05:01:14PM -0400, Josef Bacik wrote:
+> We got the following lockdep splat while running xfstests (specifically
+> btrfs/003 and btrfs/020 in a row) with the new rc.  This was uncovered
+> by 87579e9b7d8d ("loop: use worker per cgroup instead of kworker") which
+> converted loop to using workqueues, which comes with lockdep
+> annotations that don't exist with kworkers.  The lockdep splat is as
+> follows
+> 
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.14.0-rc2-custom+ #34 Not tainted
+> ------------------------------------------------------
+> losetup/156417 is trying to acquire lock:
+> ffff9c7645b02d38 ((wq_completion)loop0){+.+.}-{0:0}, at: flush_workqueue+0x84/0x600
+> 
+> but task is already holding lock:
+> ffff9c7647395468 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x41/0x650 [loop]
+> 
+> which lock already depends on the new lock.
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #5 (&lo->lo_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0xba/0x7c0
+>        lo_open+0x28/0x60 [loop]
+>        blkdev_get_whole+0x28/0xf0
+>        blkdev_get_by_dev.part.0+0x168/0x3c0
+>        blkdev_open+0xd2/0xe0
+>        do_dentry_open+0x163/0x3a0
+>        path_openat+0x74d/0xa40
+>        do_filp_open+0x9c/0x140
+>        do_sys_openat2+0xb1/0x170
+>        __x64_sys_openat+0x54/0x90
+>        do_syscall_64+0x3b/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> -> #4 (&disk->open_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0xba/0x7c0
+>        blkdev_get_by_dev.part.0+0xd1/0x3c0
+>        blkdev_get_by_path+0xc0/0xd0
+>        btrfs_scan_one_device+0x52/0x1f0 [btrfs]
+>        btrfs_control_ioctl+0xac/0x170 [btrfs]
+>        __x64_sys_ioctl+0x83/0xb0
+>        do_syscall_64+0x3b/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> -> #3 (uuid_mutex){+.+.}-{3:3}:
+>        __mutex_lock+0xba/0x7c0
+>        btrfs_rm_device+0x48/0x6a0 [btrfs]
+>        btrfs_ioctl+0x2d1c/0x3110 [btrfs]
+>        __x64_sys_ioctl+0x83/0xb0
+>        do_syscall_64+0x3b/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> -> #2 (sb_writers#11){.+.+}-{0:0}:
+>        lo_write_bvec+0x112/0x290 [loop]
+>        loop_process_work+0x25f/0xcb0 [loop]
+>        process_one_work+0x28f/0x5d0
+>        worker_thread+0x55/0x3c0
+>        kthread+0x140/0x170
+>        ret_from_fork+0x22/0x30
+> 
+> -> #1 ((work_completion)(&lo->rootcg_work)){+.+.}-{0:0}:
+>        process_one_work+0x266/0x5d0
+>        worker_thread+0x55/0x3c0
+>        kthread+0x140/0x170
+>        ret_from_fork+0x22/0x30
+> 
+> -> #0 ((wq_completion)loop0){+.+.}-{0:0}:
+>        __lock_acquire+0x1130/0x1dc0
+>        lock_acquire+0xf5/0x320
+>        flush_workqueue+0xae/0x600
+>        drain_workqueue+0xa0/0x110
+>        destroy_workqueue+0x36/0x250
+>        __loop_clr_fd+0x9a/0x650 [loop]
+>        lo_ioctl+0x29d/0x780 [loop]
+>        block_ioctl+0x3f/0x50
+>        __x64_sys_ioctl+0x83/0xb0
+>        do_syscall_64+0x3b/0x90
+>        entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> other info that might help us debug this:
+> Chain exists of:
+>   (wq_completion)loop0 --> &disk->open_mutex --> &lo->lo_mutex
+>  Possible unsafe locking scenario:
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&lo->lo_mutex);
+>                                lock(&disk->open_mutex);
+>                                lock(&lo->lo_mutex);
+>   lock((wq_completion)loop0);
+> 
+>  *** DEADLOCK ***
+> 1 lock held by losetup/156417:
+>  #0: ffff9c7647395468 (&lo->lo_mutex){+.+.}-{3:3}, at: __loop_clr_fd+0x41/0x650 [loop]
+> 
+> stack backtrace:
+> CPU: 8 PID: 156417 Comm: losetup Not tainted 5.14.0-rc2-custom+ #34
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+> Call Trace:
+>  dump_stack_lvl+0x57/0x72
+>  check_noncircular+0x10a/0x120
+>  __lock_acquire+0x1130/0x1dc0
+>  lock_acquire+0xf5/0x320
+>  ? flush_workqueue+0x84/0x600
+>  flush_workqueue+0xae/0x600
+>  ? flush_workqueue+0x84/0x600
+>  drain_workqueue+0xa0/0x110
+>  destroy_workqueue+0x36/0x250
+>  __loop_clr_fd+0x9a/0x650 [loop]
+>  lo_ioctl+0x29d/0x780 [loop]
+>  ? __lock_acquire+0x3a0/0x1dc0
+>  ? update_dl_rq_load_avg+0x152/0x360
+>  ? lock_is_held_type+0xa5/0x120
+>  ? find_held_lock.constprop.0+0x2b/0x80
+>  block_ioctl+0x3f/0x50
+>  __x64_sys_ioctl+0x83/0xb0
+>  do_syscall_64+0x3b/0x90
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f645884de6b
+> 
+> Usually the uuid_mutex exists to protect the fs_devices that map
+> together all of the devices that match a specific uuid.  In rm_device
+> we're messing with the uuid of a device, so it makes sense to protect
+> that here.
+> 
+> However in doing that it pulls in a whole host of lockdep dependencies,
+> as we call mnt_may_write() on the sb before we grab the uuid_mutex, thus
+> we end up with the dependency chain under the uuid_mutex being added
+> under the normal sb write dependency chain, which causes problems with
+> loop devices.
+> 
+> We don't need the uuid mutex here however.  If we call
+> btrfs_scan_one_device() before we scratch the super block we will find
+> the fs_devices and not find the device itself and return EBUSY because
+> the fs_devices is open.  If we call it after the scratch happens it will
+> not appear to be a valid btrfs file system.
 
+This is a bit hand wavy but the critical part of the correctness proof,
+and it's not explaining it enough IMO. The important piece happens in
+device_list_add, the fs_devices lookup and EBUSY, but all that is now
+excluded completely by the uuid_mutex from running in parallel with any
+part of rm_device.
 
-On 2021/9/2 =E4=B8=8B=E5=8D=886:59, Nikolay Borisov wrote:
->
->
-> On 2.09.21 =D0=B3. 13:46, Qu Wenruo wrote:
->>
->>
->> On 2021/9/2 =E4=B8=8B=E5=8D=886:41, Nikolay Borisov wrote:
->>>
->>>
->>> On 2.09.21 =D0=B3. 13:27, Qu Wenruo wrote:
->>>>
->>>>
->>>> On 2021/9/2 =E4=B8=8B=E5=8D=886:06, Nikolay Borisov wrote:
->>>>> Currently when a device is missing for a mounted filesystem the outp=
-ut
->>>>> that is produced is unhelpful:
->>>>>
->>>>> Label: none=C2=A0 uuid: 139ef309-021f-4b98-a3a8-ce230a83b1e2
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Total devices 2 FS bytes used 128.00K=
-iB
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 5.00Gi=
-B used 1.26GiB path /dev/loop0
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0*** Some devices missing
->>>>>
->>>>> While the context which prints this is perfectly capable of showing
->>>>> which device exactly is missing, like so:
->>>>>
->>>>> Label: none=C2=A0 uuid: 4a85a40b-9b79-4bde-8e52-c65a550a176b
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Total devices 2 FS bytes used 128.00K=
-iB
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 1 size 5.00Gi=
-B used 1.26GiB path /dev/loop0
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0devid=C2=A0=C2=A0=C2=A0 2 size 0 used=
- 0 path /dev/loop1 ***MISSING***
->>>>>
->>>>> This is a lot more usable output as it presents the user with the id
->>>>> of the missing device and its path.
->>>>
->>>> The idea is pretty awesome.
->>>>
->>>> Just one question, if one device is missing, how could we know its pa=
-th?
->>>> Thus does the device path output make any sense?
->>>
->>> The path is not canonicalized but otherwise the paths comes from
->>> btrfs_ioctl_dev_info_args which is filled by a call to get_fs_info whe=
-re
->>> we call get_device_info for every device in the fs_info.
->>>
->>> So the path is really dev->name from kernel space or if we don't have =
-a
->>> dev->name it will be 0. In either case it's useful that we get the dev=
-id
->>> so that the user can do :
->>>
->>> btrfs device remove 2 (if we take the above example), alternatively th=
-e
->>> path would be a NULL-terminated string which aka empty. I guess that's
->>> still better than simply saying *some devices are missing*
->>
->> Definitely the devid output is way better than the existing output.
->>
->> I just wonder can we skip the path completely since it's missing (and
->> under most case its NULL anyway).
->>
->> Despite that, I'm completely fine with the patch.
->
-> As you can see form the test I have added this was tested rather
-> synthetically by simply moving a loop device, in this case the device's
-> record was still in the fs_devices and had the name, though the name
-> itself couldn't be acted on. So omitting the path entirely is definitely
-> something we could do, but I'd rather try and be a bit cleverer, simply
-> checking if the name is null or not and if not just print it?
+This means that the state of the device is seen complete by each (scan,
+rm device). Without the uuid mutex the scaning can find the signature,
+then try to lookup the device in the list, while in parallel the rm
+device changes the signature or manipulates the list. But not everything
+is covered by the device list mutex so there are combinations of both
+tasks with some in-progress state.  Also count in the RCU protection.
 
-Oh, I forgot the case where the stall path may still be there.
-
-In that case your existing one should be enough to handle it.
-
-printf() can handle NULL pointer for %s without problem.
-
-Then it should be OK.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
->
->>
->> Thanks,
->> Qu
->>
->>>
->>>>
->>>> Thanks,
->>>> Qu
->>>>>
->>>>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->>>>> ---
->>>>>  =C2=A0=C2=A0 cmds/filesystem.c | 7 +++----
->>>>>  =C2=A0=C2=A0 1 file changed, 3 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
->>>>> index db8433ba3542..ff13de6ac990 100644
->>>>> --- a/cmds/filesystem.c
->>>>> +++ b/cmds/filesystem.c
->>>>> @@ -295,7 +295,6 @@ static int print_one_fs(struct
->>>>> btrfs_ioctl_fs_info_args *fs_info,
->>>>>  =C2=A0=C2=A0 {
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int i;
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int fd;
->>>>> -=C2=A0=C2=A0=C2=A0 int missing =3D 0;
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char uuidbuf[BTRFS_UUID_UNPARS=
-ED_SIZE];
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_ioctl_dev_info_ar=
-gs *tmp_dev_info;
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>>>> @@ -325,8 +324,10 @@ static int print_one_fs(struct
->>>>> btrfs_ioctl_fs_info_args *fs_info,
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Add=
- check for missing devices even mounted */
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fd =3D=
- open((char *)tmp_dev_info->path, O_RDONLY);
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (fd=
- < 0) {
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-missing =3D 1;
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-printf("\tdevid %4llu size 0 used 0 path %s
->>>>> ***MISSING***\n",
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tmp_dev_info->devid,tmp_d=
-ev_info->path);
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 continue;
->>>>> +
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 close(=
-fd);
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 canoni=
-cal_path =3D path_canonicalize((char
->>>>> *)tmp_dev_info->path);
->>>>> @@ -339,8 +340,6 @@ static int print_one_fs(struct
->>>>> btrfs_ioctl_fs_info_args *fs_info,
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(c=
-anonical_path);
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>>
->>>>> -=C2=A0=C2=A0=C2=A0 if (missing)
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printf("\t*** Some devic=
-es missing\n");
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printf("\n");
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>>>>  =C2=A0=C2=A0 }
->>>>>
->>>>
->>
+From high level it is what you say about ordering scan/scratch, but
+otherwise I'm not convinced that the change is not subtly breaking
+something.
