@@ -2,203 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910273FF7F8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 01:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED8A3FF80F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 01:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346279AbhIBXmj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 19:42:39 -0400
-Received: from mout.gmx.net ([212.227.17.21]:55415 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346276AbhIBXmi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Sep 2021 19:42:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630626098;
-        bh=21EKrJjlrilG4hd8By8yqsoXh6i/d6kOnWlFxSkq6tQ=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=g2OnRR/8VbnFMvJ7MJMXILuQLBu7CeKT1udqBaGQLQU5YPkNMZhDiuF7ZH3W6KSoG
-         Z/uHSlMYnbcaMJ6ZbfumSc9dEWHdepE5P6qJD2aNShZILzdwbX0bmrSxLHN07JuA40
-         WCy+eZy/PQ2EvzlM4oZA1ml8+Y1s6QGlh/6G/3JU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mnpnm-1mkot12Bq6-00pQ3j; Fri, 03
- Sep 2021 01:41:38 +0200
-Subject: Re: fallocate + ftruncate
-To:     Julien Muchembled <jm@nexedi.com>, linux-btrfs@vger.kernel.org
-Cc:     Vincent Pelletier <vincent@nexedi.com>
-References: <ed3642c2-682e-08a1-f18d-2d63409b7631@nexedi.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <0aa8496e-a666-8fda-8a50-78b4f7890b20@gmx.com>
-Date:   Fri, 3 Sep 2021 07:41:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S242797AbhIBXwd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 19:52:33 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:28076 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233282AbhIBXwc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Sep 2021 19:52:32 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 182MsGDt023065;
+        Thu, 2 Sep 2021 23:51:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=vSwX0vLQ1w5t3W9Kf2ak+69vOyUHOgNB/z+GikLXk/Q=;
+ b=NuE2ntqqAKLSA/tHy71Uqn7t+5x12ZURsrlTewr0mOpk9++db3GpuokJ5cQiPjm3gadl
+ jE5rHzuV4s9XvcWvk7naA+EXytZ8vwngIZcVfUWN6Ql/sPFCTle8FJD/DQz7bmkzEQPo
+ POaWxJEGd2zxE2PtGwNDbPH29I45YBZ1znQK4Q5/hJLM9WL0i1bWAXREtcC5fjWbjP5r
+ agDywrG87UlNyK9CyGHxbFpuJzCI9+Ciz17uL6RoDaY36yl2KciBK4LvGK+8kR4LLdse
+ f4CrPAdTelfdYi0kYuj+LhH3HAxc98+Jhn1AL5uxv1B3VNHuNrt9Ki5HCv9EzCbwiRdf gw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=vSwX0vLQ1w5t3W9Kf2ak+69vOyUHOgNB/z+GikLXk/Q=;
+ b=WBKMT7SD93vu1DGaqWT6UGPzT7EPhXpZiCtQejGpGwKURjpDhL2CvHgOeWudqdE8DaZ5
+ FW5ZQdmbtlZkkmezZZfkZqhPqN00XWSeyQokr/VNezSbS3QW0cTIU6yt6/Qq79TaKWUM
+ UMtxq/3dScMsBE305JO9r89yXVDySNRom6i+1Q2gfkxmSR7hmoninRWbVvuaS/o8/Ozi
+ YIBn+x5KI1mSQ0RbtuzLOZruuZqjlQ/hY4cnai/YpNwgDwigfUAp/zn6rcKrDB4graS9
+ QF1cdIlp7xkYxHR6nhzImM4PmYDJn7y09LepDHnOrJKyMiUY9Lu3zn2EVx2c8L1iBEV6 Rw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3atdvymmgx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Sep 2021 23:51:24 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 182Njxms115984;
+        Thu, 2 Sep 2021 23:51:23 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by userp3020.oracle.com with ESMTP id 3ate00pefm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Sep 2021 23:51:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aLCRM2tNSafEQwGr8P4OWxUF2/bpqOD9XdDWzeRBTQ2iULxuAZ9TeNuDP55JQLsM5/iKOazW0JYQxKF1feFKvNNWqYmMpVAT8mvgozwpzDux+HLxWK5Qx24D8emAiNlLO13Dn+9WEGyHJXPuIesI953TWuhn59GhqGs4FLfXvuzi+cnEbRjn13Eaee/K38XYsXk2sMW0GCIv6fbxndMVy8sjoLeS34d3TbzjZwV/FIkctJmphRn8jVO5HHbCxGX05YNKoFkskZFdmEK5yC3egzP8StUWM1GQK3M2JR1CWOZCO+d2A+UbL3oJQyfBmIo8pxSDxEni9ybDstwwhxkTGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=vSwX0vLQ1w5t3W9Kf2ak+69vOyUHOgNB/z+GikLXk/Q=;
+ b=N1lsUJEnu9fGBjubJaZEx4xVWPuMUcPcbSXDwOBMv0wHJKdmdTqbMdkUDhd87QjnTo8oWhqnaVPEbSwAVD/cwv9hRwBUuyEf2Eouv1rE+yacRVZo9BmR4WgyI2zuUzUyvgphqNZhLtxBQBF7yXHAT9nIymHBv3CtaX+swa5cwl+vXtmC2HYkPyeD236fbESQDtsn7y+8Nvx3MaYuAZslmjpzr0gucJu2uiwL6gBvhEaWrbnliYAGL0hBs7O4z6GD4PDh0Sm88Ro2IqikyQqtHCi7uumUV/pZ6xbU8WUZqV8UEKJFLPoYbJT1fWPCTiKkI/foi5bmz7uw8yqUGXJICQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vSwX0vLQ1w5t3W9Kf2ak+69vOyUHOgNB/z+GikLXk/Q=;
+ b=dCU6LU6536gyCkocJQHF6yc050Vggh3z4Vjyk0zUZ0XLnTl8p60o8ZhTCKNWCT9Kz8LH998p+06/SeugTdud5ieB6dFVYeRMXq8jJzdCMrU2VS8aLqTUpvnMsmQGtdFWH434IHvekg0JQms2bcpvplAlYVZsXcYEK8hAulwgdeI=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BL0PR10MB2932.namprd10.prod.outlook.com (2603:10b6:208:30::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17; Thu, 2 Sep
+ 2021 23:51:19 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9%6]) with mapi id 15.20.4478.020; Thu, 2 Sep 2021
+ 23:51:19 +0000
+Subject: Re: [PATCH V5 1/2] btrfs: fix lockdep warning while mounting sprout
+ fs
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     l@damenly.su, linux-btrfs@vger.kernel.org, dsterba@suse.com
+References: <cover.1630370459.git.anand.jain@oracle.com>
+ <215cb0c88d2b84557f8ec27e3f03c1c188df2935.1630370459.git.anand.jain@oracle.com>
+ <5c9c7e1e-7909-f9a7-6e4d-9265e1bd0d5b@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <c71323a0-edb2-3994-babf-4ff8c3fac1e8@oracle.com>
+Date:   Fri, 3 Sep 2021 07:51:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <ed3642c2-682e-08a1-f18d-2d63409b7631@nexedi.com>
+In-Reply-To: <5c9c7e1e-7909-f9a7-6e4d-9265e1bd0d5b@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GrVSV/lRrjVgssfQ9i2B0wTxCuDn4JMW8CX77qk5GogFGWB1GIY
- UNe8WgzvhbZnQcQ1LhzehKR3spFZ9wCXyDSjQKJzu1L1ttLGu9OXAt6Zb7Rj8PhwPDhxVJB
- Vp43R8K5kSIrvDJcwOKjRE5BTaBRY/+OB/J2lSqpfzrtMVPAdlIDXVy21wvQu/xv5srk8uK
- QiX76pBsuc1PfNIb/4B5g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ym6/QFkKZhw=:c/2K5JEdnzUDDL03UIDId1
- SHaYZ5XLidQc5vJVXJ9fHl/+zPTOB1kDdOOUR7VBYYzVa3ilPpnnbfh1mLzT0Qj0ozQnamT56
- +iXKu1iPl0eyeWfwFlMuRQO7UywWJXmhDIMhd4bmz9CrKnMEfu8CMuSXjjdGccesZcglyl7ac
- Tw+9qukT5OvYHkK/Yit7gPz03RGHcwOpAPEHhTojVa/lJ3WJQpH13VWbpvB8rpQls4y+0fcEM
- lCmZHt3dqemfagMZYzeetmjfQHXTlkEXptlQ/wSdkXM4zq4qeF0J2ihpxihURtRN3KbqJMNr8
- hqouj0Yhx7ECXqS8HOkltyCAbzem3k8fNRYzEdxA/863kDE2t/XmCd6Ry9BCdFtgatt3r37TY
- +hSGUbmApqxhIvKWBd0WoEAEnobw+wlBfIC+qUGj8UCQ4omEHam5MTwh3Kq5nOVklmKEQBlKl
- qTl+qNYFfw4OuOX3oqUEY5qml3ZM0inpXKcU72sfSDfc9O5omTKQgGep/plOQnmOVEfSarkMB
- MBENWLb6P/Sv5Hn7fFNStLBQvdjQ7Ygcro+tkVlMAJ5al4Pdt+KKWSjZbCYwn8D481FfEZkta
- AC9vhEWZ2HAo9UEZoSucnT+5ESI7wTBDK6nNRfPhlw12Ao6uQLb8Rruyq2PCdRf/usZ8UzeKp
- wx7gbVpUuzXiZe5wDYCUC8B2pzULGAzLQbTy66ZThzQ85NjWZwab5VT0xJz+Q4tymnoY5quLY
- HsMw19F5qJH2ev9/Nx7W1KnJmFXGtxpoGwkTM8/5yaBiAdvGmN4E2g/snCA8ylCbc6qHjlP6W
- HuJaaMgWOsE6frhr6HnxO46qtX6N8THEOhbkEgU7tQ9JHAOFn/4Gm4A/jw/1AI/XGiKROXuw1
- F5LmILGjzV3D5yKimUdezXNnx2d7+bZS02AxFqvgOa3lGgoEm8wrHEmJBitMuRSVqSCt1URKO
- asFbi1o5wvEc6YGCBeeGb3jypc/cAwf9JKvuOiBLWDtk0cVrkUPcdkH4mYv5sLITrrp5ra9DP
- u3OiEROuQtNZ5pjGTKEJgOVfefzN6z6PTb+YENoD3xQ+aa0vhXedW8agH2bLgY1AIHM5c904G
- +F2+aEx/2YEoRh8bJLWmNtQZH7Uhu3Bp2VfS2UfuCZbgd/micLC8D2Etg==
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR01CA0143.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::23) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
+MIME-Version: 1.0
+Received: from [192.168.10.109] (39.109.186.25) by SG2PR01CA0143.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Thu, 2 Sep 2021 23:51:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c596d140-e8fc-4a19-b8a5-08d96e6c8f5b
+X-MS-TrafficTypeDiagnostic: BL0PR10MB2932:
+X-Microsoft-Antispam-PRVS: <BL0PR10MB29329806F0EB7CBE1CDEDCC4E5CE9@BL0PR10MB2932.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:308;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4pgunOauLtqPwPk6KjRgD9GyXh2l1WQeuZzd8+YgZJFGY+TZi39JSBgEPE+HEvcVfhUX/TvYXkkIQk/b3nZn7CW8DEGus1LNCAHhFqmpyqpuJ5qXF1TItweb7Riz4EZFWiyvOoQUhvF9hQjO9zdY/wve0f+826q2vEkdi7tPOE1XYcsWVQklajULeooy0mgW51pJ9YR97D8ulf1NcLRHZdJsqXg4YVWNsek2hW+aqHimfB3OKI5ClORIqyl6Qul3xHw6JSgY/r6/2SRUbfd3AKDWG1/bjWzEsdjiD4RB56GesC7sWOAypER+leUuZngQVnoNoy16upH1zi5iLDpTOZ61kF5F5j03UmVUfeRDmmKz+XqdH2yzKpdXy/iQFyy0ManJcnDdrKAP6MHkw6l3Hkq0BCPe9TtgkZSZAS/ehnAps8a1WriRt33S/vC2XDeqKDaF56lkGkL5mXIGHvrBRymb84tNgUFcEMn7YFLLhmu+ETZn+f+nrPqO5Uyag+5mDV8UrI61poF7Oocf9zJykZGVeVQS8fVNN59r4sy5W+aQJ39/5vpqjUMavR1/YLJar5TvSuchothpS5km/3fiTVeTZQe2cq7SBMm6GpzZ9uABaV9xb7EiE4TRGR584mx08jJ8ynfQOynGDx9/Fz3ZXC+X/PXAgr+HgFc7d+5IKzrDWE0wNd9NGooIPKEvyDZT3seuiZAxDVXjz0boTnKiJA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(136003)(39860400002)(366004)(376002)(6666004)(36756003)(31686004)(26005)(6486002)(31696002)(83380400001)(86362001)(5660300002)(44832011)(66946007)(66556008)(4744005)(956004)(2616005)(66476007)(4326008)(316002)(16576012)(186003)(38100700002)(2906002)(8936002)(53546011)(6916009)(8676002)(478600001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?STMxWWNMU3VMYzZGQlpMcndGUlBaUlQ1dkIyczlFMWdRRkZ6NWRQSkNqbnVV?=
+ =?utf-8?B?RnlFVFpTUFF3djBrb1lwVlZDS1JuRlVPMjI2ekIxUnhUT2RmVkZXYXRua0Y2?=
+ =?utf-8?B?ekEvTlcxcWo0c0NzL0pzNmZCMGpQRWdVNzRuZEJzbm1BNDJxZ29zNFJtZzJt?=
+ =?utf-8?B?NlNuaExzSitGK3pRR1RNalg1VEVhekFHekxBT0lGZHhydmU4NFA1Y2orZWo2?=
+ =?utf-8?B?Yy9lVkF0ZVB0SGxUQTIrMEkxYkZSZGcyYUNYY3pUM2VhWlk5WkFsbTJOK05O?=
+ =?utf-8?B?anF5eUJlejVLYmliV1l1TG83LzMxY094ay9TSUxSYWd4d1h0VUtWMHg4YjJp?=
+ =?utf-8?B?V001Mk9SMzZhcnRidjRoa2RtQnJZUUhQTm1xUGU5UnJ6bE1IeGF5b0dORFBr?=
+ =?utf-8?B?T2xOUENQSWZaYjZwOWpBWjZHTktaSmFoc1ZUS1RoaXpyOFczZ2pESEQxNVhy?=
+ =?utf-8?B?N0pQSE84T0pMSTlXeVFPTWNlRFpBam9kckg3K2t0L3p4ZEM2QkFCa0tNLzhv?=
+ =?utf-8?B?YW1KT2tCMWdsdEVBUWpXRC80SDN4eFdDdEhmWmZZaThvd2ZtWG9iNkpSUzJS?=
+ =?utf-8?B?QnhXTUhjZXdBSVVaeXlkS0I3U2ZpSFlUcFltOXJmQm5XN3ZVQnJSd0hsNGg3?=
+ =?utf-8?B?Q1hzY2JEdkVnL0gybHVDRmUzL2VTV1hXRktrY3NJdi9FR1J1YnBUR3ovZnJx?=
+ =?utf-8?B?b3B6THJQRWlkaVJtSHl6a2tiMW9zaGNUemVMODR5dDJXWk1haWtMVkdtNzNR?=
+ =?utf-8?B?YzdqeXEybXFRVzJpQlNaWWdvMUNuN1hkQW51VmZLazErRmhiTjM5RVVXMFVY?=
+ =?utf-8?B?NTVqWkVSVzZEdFowN2x3MnNPaGFFWlJzbllvWm5VOUY3Nko2WnZpcld6bjRz?=
+ =?utf-8?B?amR2WDN3ZUlmRXY2NzBqRnJqK0xxSytneDdOYm9XSGZxTGFocHM1M2ZkTzhz?=
+ =?utf-8?B?OFplSWJ0dTlsMUlja3BKYkJTdEZXUmNMVmQ1VGZIQTkwN2l4T2VGeXUrMVRp?=
+ =?utf-8?B?M2lKV0J5dlV1L0NVUDRHOGltelZ5TXBYc1RMazFsNHB2R1NFbVYvN2oxZFEx?=
+ =?utf-8?B?NWwzS1BINkk0SUxNWWxoYTErVGtERmFPSENlOS92NWJsSndhZExWZVlJbEZr?=
+ =?utf-8?B?Z2NkR3Z0TW5vVFZmSUFDQnJ2QndzejMzdCsrYWVjZVk1b0pwbnM3N1hvY1g5?=
+ =?utf-8?B?Y2J0MFd6andoZTU5TG1PcjIzL3MycVdiMUtEYzdlcGNXZ0ViMnQ5L1VZMm50?=
+ =?utf-8?B?SktKTDlVUExHM1Q0ZHF0MnhNbGtRcnladjhUS0hSRkhwMXFhWkVNenFqV3Nn?=
+ =?utf-8?B?aEZJcmhueFBNcEdvN2ZVd0JhTEJNOVZHQ2ZRaFBPNDZyQ2lWUFVWWVZ2YVZq?=
+ =?utf-8?B?bWlibkJOMlBVSEdMWTZBNlFscitWL0lTOWdYN1l0ZURiOVQ3NVJkNEh4SDBV?=
+ =?utf-8?B?cFlTN1plN0hQZlFRRDhGRFhrVHVLbGo5Yy9QcE84Vzk3QVV2b3c4RERtN0JI?=
+ =?utf-8?B?WEtjSmJBTitoaVY4SSs3a2YwdHhFM3JmbkI0d01LazVlZTF5RXNPZysrSTNU?=
+ =?utf-8?B?L0xIcmV6T0ZVUWZWVittYlVwZVJBU3hzR2hXd0RwQzdtaUk1dFpMaGFsWWlB?=
+ =?utf-8?B?a2lvcUpub2x0cTNsOE5lVm9LeXFZalZJRnhDUXJQMktJb090VlI0Y05LYXJv?=
+ =?utf-8?B?S2lBU1VJWDMzUnZmc044ek04UXkvVkRzbURyZ3RDdzVFN3RzVitaMnQ3YkY1?=
+ =?utf-8?Q?2/8fcolZ/pKYA0YniT6r+ucBMMT3LrtWnAGc6Xn?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c596d140-e8fc-4a19-b8a5-08d96e6c8f5b
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 23:51:19.1686
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nC0eW6pvr+0y4CgPHnAoV0ESJD6gWnZkmhQabQKOD/FAYQkqNkTJbJp5CkG3paNLcmOX4vavfAsT7AzrldHl0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB2932
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10095 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 mlxscore=0 suspectscore=0 spamscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109020137
+X-Proofpoint-GUID: __1QOC7DXM8fH6iKuXWoJJovPOEazMMC
+X-Proofpoint-ORIG-GUID: __1QOC7DXM8fH6iKuXWoJJovPOEazMMC
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 31/08/2021 16:18, Nikolay Borisov wrote:
+> 
+> 
+> On 31.08.21 г. 4:21, Anand Jain wrote:
+>> Following test case reproduces lockdep warning.
+>>
+>>   Test case:
+>>
+>>   $ mkfs.btrfs -f <dev1>
+>>   $ btrfstune -S 1 <dev1>
+>>   $ mount <dev1> <mnt>
+>>   $ btrfs device add <dev2> <mnt> -f
+>>   $ umount <mnt>
+>>   $ mount <dev2> <mnt>
+>>   $ umount <mnt>
+>>
+>> The warning claims a possible ABBA deadlock between the threads initiated by
+>> [#1] btrfs device add and [#0] the mount.
+>>
+> 
+> Send this as an xfstest
+
+The above steps are the most common in the seed group of test cases.
+The first test case (btrfs/161) in the -g seed group already reproduces
+the lock dep warning.
+
+Any idea how do I reset the lockdep warning (without reboot) so that it
+will again report the same lockdep warning stack if it discovers again?
 
 
-On 2021/9/3 =E4=B8=8A=E5=8D=882:04, Julien Muchembled wrote:
-> I'd like to report what seems to be a Btrfs bug. XFS does not have this =
-issue.
->
-> On a machine (kernel 4.19.181) that has several RocksDB databases, some =
-on XFS and other on Btrfs, we noticed that disk usage increases significan=
-tly faster on Btrfs. RocksDB pattern for SST files is:
->
-> 1. fallocate(A)
-> 2. write(B) with B < A
-> 3. fruncate(B)
-> 4. close
+Thanks, Anand
 
-This is caused by btrfs extent bookend.
 
-For 1. We allocate an extent whose size is round_up(A, sectorsize)
+> 
+> <snip>
+> 
 
-Then 2 happens, which writes round_up(B, sectorsize) to the existing
-preallocated extent.
-So far so good.
 
-For 3, we just reduce the inode size, resizing the existing file extent
-just to point to part of the preallocated extent, and call it a day.
-
-The preallocated extent whose size is round_up(A, sectorsize) will only
-be freed if the whole extent is no longer used by any inode.
-
-Thus the truncate won't free any space.
-
-This is quite different from XFS, as XFS is CoW-when-needed, while btrfs
-is CoW-by-default.
-
-Thus btrfs frees its extent in a very lazy way.
-
-Thanks,
-Qu
->
-> And no more modification after that.
->
-> It took us a while to understand what's going on because strangely, even=
- 'btrfs filesystem du' does not report the actual disk usage. compsize doe=
-s, e.g.
->
->    # stat mariadb/#rocksdb/164719.sst
->      File: mariadb/#rocksdb/164719.sst
->      Size: 8127109         Blocks: 15880      IO Block: 4096   regular f=
-ile
->    Device: 33h/51d Inode: 24913       Links: 1
->    ...
->    # compsize -b mariadb/#rocksdb/164719.sst
->    Type       Perc     Disk Usage   Uncompressed Referenced
->    TOTAL      100%     147640320    147640320    8130560
->    none       100%     147640320    147640320    8130560
->
-> Almost 140MB wasted.
->
-> compsize is a bit old but btrfs-search-metadata confirms there's only 1 =
-extent:
->    inode objectid 24913 generation 184524 transid 184524 size 8127109 nb=
-ytes 8130560 block_group 0 mode 0100640 nlink 1 uid 982 gid 1019 rdev 0 fl=
-ags 0x10(PREALLOC)
->    inode ref list objectid 24913 parent_objectid 283 size 1
->      inode ref index 24528 name utf-8 '164719.sst'
->    extent data at 0 generation 184524 ram_bytes 147640320 compression no=
-ne type regular disk_bytenr 1210397491200 disk_num_bytes 147640320 offset =
-0 num_bytes 8130560
->
-> I could reproduce the issue on kernel 5.13.9, with the following program=
-:
->
-> #define _GNU_SOURCE
-> #include <sys/types.h>
-> #include <sys/stat.h>
-> #include <fcntl.h>
-> #include <unistd.h>
->
-> int main(int argc, char *argv[])
-> {
->    char buf[4096];
->    int fd =3D open(argv[1], O_CREAT|O_WRONLY|O_EXCL, 0666);
->    if (fd < 0 || fallocate(fd, FALLOC_FL_KEEP_SIZE, 0, 1<<24) < 0)
->      return -1;
->    size_t n =3D 0;
->    for (ssize_t i; i =3D read(0, buf, sizeof buf);) {
->      if (i < 0 || write(fd, buf, i) !=3D i)
->        return -1;
->      n +=3D i;
->    }
->    if (ftruncate(fd, n) < 0 ||
->        close(fd) < 0)
->      return -1;
->    return 0;
-> }
->
-> $ ./tst dst < src # src size should be < 16MiB
->
-> $ stat dst
->    File: dst
->    Size: 19374           Blocks: 40         IO Block: 4096   regular fil=
-e
-> Device: 3eh/62d Inode: 2253170     Links: 1
-> ...
->
-> $ compsize -b dst
-> Processed 1 file, 1 regular extents (1 refs), 0 inline.
-> Type       Perc     Disk Usage   Uncompressed Referenced
-> TOTAL      100%     16777216     16777216     20480
-> prealloc   100%     16777216     16777216     20480
->
-> 'btrfs fi defrag dst' does nothing, probably because there's only 1 exte=
-nt.
->
-> While trying to fix the file, I found what may be another bug. I tried m=
-any options of /usr/bin/fallocate without success. But the strangest is:
->
-> $ fallocate -p -o 19374 -l 16777216 dst
->
-> I hoped that deallocation shrinks the extent but instead it appends a se=
-cond one:
->
-> $ compsize -b dst
-> Processed 1 file, 2 regular extents (2 refs), 0 inline.
-> Type       Perc     Disk Usage   Uncompressed Referenced
-> TOTAL      100%     16781312     16781312     20480
-> none       100%     16781312     16781312     20480
->
-> Ironically, now that I have a second extent:
->
-> $ btrfs fi defrag dst
->
-> $ compsize -b dst
-> Processed 1 file, 1 regular extents (1 refs), 0 inline.
-> Type       Perc     Disk Usage   Uncompressed Referenced
-> TOTAL      100%     20480        20480        20480
-> none       100%     20480        20480        20480
->
-> Julien
->
