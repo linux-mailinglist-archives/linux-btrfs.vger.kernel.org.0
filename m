@@ -2,180 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21A83FF282
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 19:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4082E3FF32E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 20:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346979AbhIBRkq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 13:40:46 -0400
-Received: from mail.mailmag.net ([5.135.159.181]:58450 "EHLO mail.mailmag.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346968AbhIBRkq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:40:46 -0400
-X-Greylist: delayed 337 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Sep 2021 13:40:45 EDT
-Received: from authenticated-user (mail.mailmag.net [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.mailmag.net (Postfix) with ESMTPSA id 81EA3EC6821;
-        Thu,  2 Sep 2021 09:34:07 -0800 (AKDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net; s=mail;
-        t=1630604047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I2Bb+LoC4rSzBi0qSMqsLFqyiOjZEf5vNd2K2zfBp3c=;
-        b=MY/9BintACHId3SaXj0t5OkAjqf7pb+6Yx10Vbr6TkipLu1GTg/SSgf1APoKhRSKqQtf7G
-        6oku+XlzHv5DYCUoc3CMa5sT1BS6Hb2DP4ANlqe5MCTLelTWJ8Qt3dwhbFpGhONyMmQio3
-        PkiPfMLGxjxPHF/adGiXCs13x65dDkA=
+        id S231559AbhIBSX2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 14:23:28 -0400
+Received: from mail57.us4.mandrillapp.com ([205.201.136.57]:11915 "EHLO
+        mail57.us4.mandrillapp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241841AbhIBSXZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Sep 2021 14:23:25 -0400
+X-Greylist: delayed 1080 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Sep 2021 14:23:25 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nexedi.com;
+        s=mandrill; t=1630605863; i=jm@nexedi.com;
+        bh=nQ6uIJALnoFytDZD1bWNUGrHYCSOC0cFQlM1kGbnzk0=;
+        h=From:Subject:To:Cc:Message-Id:Date:MIME-Version:Content-Type:
+         Content-Transfer-Encoding;
+        b=jmFMd/4QUfkCIEa8FfOrIVqhmlZPfW/5O+BDCuOBSuUv7ULDKoLqCFE8OjJ6hElEo
+         Iw9UpU25eEYkTc32RGC6EMI+9SXo/2KQcprcszzZ0fK9GTnByNGDsr/vkZw4MchmP6
+         SzprbC+nW51eqsE1cvmmdnlcPHISXewKEMqGqaqw=
+Received: from pmta15.mandrill.prod.suw01.rsglab.com (localhost [127.0.0.1])
+        by mail57.us4.mandrillapp.com (Mailchimp) with ESMTP id 4H0pj33vqzz35hcjD
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Sep 2021 18:04:23 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mandrillapp.com; 
+ i=@mandrillapp.com; q=dns/txt; s=mandrill; t=1630605863; h=From : 
+ Subject : To : Cc : Message-Id : Date : MIME-Version : Content-Type : 
+ Content-Transfer-Encoding : From : Subject : Date : X-Mandrill-User : 
+ List-Unsubscribe; bh=nQ6uIJALnoFytDZD1bWNUGrHYCSOC0cFQlM1kGbnzk0=; 
+ b=lLu/rmUzcDUyC70Od72lUQrXZJ3zxZxvzZeyg9j2o95xnELnd7FAA2RIuEJpCuCIFygKN9
+ 8rC2YwqvbI1fHWOhEP3QdlI29aTw9gJkO91+bGtuV9eoSPzY98L5FVPO+ciWPJ3NtErKeBo4
+ /Fvo8gf0ouy3c/l6gctsKeqo0qHzE=
+From:   Julien Muchembled <jm@nexedi.com>
+Subject: fallocate + ftruncate
+Received: from [87.98.221.171] by mandrillapp.com id 539f960afd6b473ab2bd29241ad79c24; Thu, 02 Sep 2021 18:04:23 +0000
+To:     linux-btrfs@vger.kernel.org
+Cc:     Vincent Pelletier <vincent@nexedi.com>
+Message-Id: <ed3642c2-682e-08a1-f18d-2d63409b7631@nexedi.com>
+X-Report-Abuse: Please forward a copy of this message, including all headers, to abuse@mandrill.com
+X-Report-Abuse: You can also report abuse here: http://mandrillapp.com/contact/abuse?id=31050260.539f960afd6b473ab2bd29241ad79c24
+X-Mandrill-User: md_31050260
+Feedback-ID: 31050260:31050260.20210902:md
+Date:   Thu, 02 Sep 2021 18:04:23 +0000
 MIME-Version: 1.0
-Date:   Thu, 02 Sep 2021 17:34:06 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-From:   "Joshua" <joshua@mailmag.net>
-Message-ID: <620f54774033ffc75b1ab2a1d0ebabfd@mailmag.net>
-Subject: Re: btrfs mount takes too long time
-To:     "=?utf-8?B?RMSBdmlzIE1vc8SBbnM=?=" <davispuh@gmail.com>,
-        "Anand Jain" <anand.jain@oracle.com>,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Cc:     "Jingyun He" <jingyun.ho@gmail.com>,
-        "Johannes Thumshirn" <Johannes.Thumshirn@wdc.com>,
-        "David Sterba" <dsterba@suse.cz>
-In-Reply-To: <CAOE4rSzkodTb0DFOS4C1tDU-7PVie9v5Sa=yTHHKS5YWQXnKMQ@mail.gmail.com>
-References: <CAOE4rSzkodTb0DFOS4C1tDU-7PVie9v5Sa=yTHHKS5YWQXnKMQ@mail.gmail.com>
- <CAHQ7scVGPAwEGQOq3Kmn75GJzyzSQ9qrBBZrHFu+4YWQhGE0Lw@mail.gmail.com>
- <ce0a558f-0fab-4d52-f2d1-1faf4fb1777c@oracle.com>
- <CAHQ7scVkHp8Lcfxx2QZXv2ghkW-nYpiFGntyZa0Toz2hU3S-tQ@mail.gmail.com>
- <b0feb23e-4a18-efd7-eeaf-832ef0cf6860@oracle.com>
- <CAHQ7scUiNLVD_4---ArBet-0DqzfmmH5Y9JgQY0grYrUv8yhiQ@mail.gmail.com>
- <c2d2a244-f77c-e0a4-d266-db011fc4154b@oracle.com>
- <CAOE4rSx5+9jXEE2ra5qYOiZWpVU=EcB1MadEf_35fa0M3MZyiw@mail.gmail.com>
- <a0990c37-0b94-53e7-051e-ee7667c4bc94@oracle.com>
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net;
-        s=mail; t=1630604047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I2Bb+LoC4rSzBi0qSMqsLFqyiOjZEf5vNd2K2zfBp3c=;
-        b=K98/P9kuUcLYl+qFkw4JxkwH99EJVS92/SQEOZPNuP3wjRsn410bZWMibZueMvl3b9MBxQ
-        kta345276cEk+UiFUyL/He0xpxSY+E3Y1HMd8RVs718TE3OvjMdT9eGW5nraNPOcLj0Yfe
-        UezztHhaECwxJRDbo+6X3wLenKSOVj8=
-ARC-Seal: i=1; s=mail; d=mailmag.net; t=1630604047; a=rsa-sha256; cv=none;
-        b=IKr391NRIeyL/18+ARQu5Bk8RbBns/R17rXMxn6EtcecEObRKnBd0qYCnxT4Fux2zuUM4X
-        wP3vzGWtClcNhelubpk3f6RIAX5craoVoq8o/2S3QxJeQFDmBqL8E3COh9SR263lYRUeS1
-        h839ifwJr+t9yZk4lpu3FsPbW8gGP/0=
-ARC-Authentication-Results: i=1;
-        mail.mailmag.net;
-        auth=pass smtp.mailfrom=joshua@mailmag.net
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-September 2, 2021 9:56 AM, "D=C4=81vis Mos=C4=81ns" <davispuh@gmail.com> =
-wrote:
+I'd like to report what seems to be a Btrfs bug. XFS does not have this issue.
 
-> ceturtd., 2021. g. 2. sept., plkst. 00:31 =E2=80=94 lietot=C4=81js Anan=
-d Jain
-> (<anand.jain@oracle.com>) rakst=C4=ABja:
->=20
->>=20On 02/09/2021 00:11, D=C4=81vis Mos=C4=81ns wrote:
->> pirmd., 2021. g. 30. aug., plkst. 16:08 =E2=80=94 lietot=C4=81js Anand=
- Jain
->> (<anand.jain@oracle.com>) rakst=C4=ABja:
->>=20
->>=20open_ctree() took 228254398 us. And 98% of it that is 225418272 us
->> was taken by btrfs_read_block_groups().
->>=20
->>=20-------------------
->> 1) $ 225418272 us | } /* btrfs_read_block_groups [btrfs] */
->> 1) * 16934.96 us | btrfs_check_rw_degradable [btrfs]();
->> 0) 0.967 us | btrfs_apply_pending_changes [btrfs]();
->> 0) 0.239 us | btrfs_read_qgroup_config [btrfs]();
->> 0) * 21017.34 us | btrfs_get_root_ref [btrfs]();
->> 0) + 15.717 us | btrfs_start_pre_rw_mount [btrfs]();
->> 0) 0.865 us | btrfs_discard_resume [btrfs]();
->> 0) $ 228254398 us | } /* open_ctree [btrfs] */
->> -------------------
->>=20
->>=20Now we need to run the same thing on btrfs_read_block_groups(),
->> could you please run.. [1] (no need of the time).
->>=20
->>=20[1]
->> $ umount /btrfs;
->> $./ftracegraph btrfs_read_block_groups 2 "*:mod:btrfs" "mount
->> /dev/vg/scratch0 /btrfs"
->>=20
->>=20Thanks, Anand
->>=20
->>=20Hi,
->>=20
->>=20I also have a btrfs filesystem that takes a while to mount.
->> So I'm interested if this could be improved.
->>=20
->>=20$ ./ftracegraph open_ctree 2 "*:mod:btrfs" "time mount /dev/md127 -o
->> space_cache=3Dv2,compress=3Dzstd,acl,subvol=3DData /mnt/Data/"
->>=20
->>=20It is better if we don't use the time prefix for the mount command
->> here. The ftrace, traces time syscall as well, which is unessential.
->> And we lose a lot of trace-buffer to it.
->>=20
->>=20kernel.ftrace_enabled =3D 1
->>=20
->>=20real 1m33,638s
->> user 0m0,000s
->> sys 0m1,130s
->>=20
->>=20Here's the trace output https://d=C4=81vis.lv/files/ftracegraph.out.=
-gz
->>=20
->>=20The filesystem is on top of RAID6 mdadm array which is from 9x 3TB H=
-DDs.
->>=20
->>=20So here is a case of a non-zoned device.
->>=20
->>=20Again it is btrfs_read_block_groups() which is taking ~98% of the ti=
-me.
->>=20
->>=203) $ 91607669 us | } /* btrfs_read_block_groups [btrfs] */
->> 3) # 9399.566 us | btrfs_check_rw_degradable [btrfs]();
->> 3) 0.922 us | btrfs_apply_pending_changes [btrfs]();
->> 3) ! 186.540 us | btrfs_read_qgroup_config [btrfs]();
->> 3) * 26109.92 us | btrfs_get_root_ref [btrfs]();
->> 3) + 23.965 us | btrfs_start_pre_rw_mount [btrfs]();
->> 3) 1.192 us | btrfs_discard_resume [btrfs]();
->> 3) $ 93501136 us | } /* open_ctree [btrfs] */
->>=20
->>=20Could we pls get this?
->>=20
->>=20$ ./ftracegraph btrfs_read_block_groups 2 "*:mod:btrfs" "mount ..."
->>=20
->>=20Hopefully, there won't be a trace-buffer rollover here, as we saw in
->> the other case so that we could account for all the time spent.
->=20
->=20Sure, here https://d=C4=81vis.lv/files/ftracegraph_v2.out.gz
->=20
->>=20Also, let's understand how many block groups are there.
->>=20
->>=20$ btrfs in dump-tree <dev> | grep BLOCK_GROUP_ITEM | wc -l
->=20
->=20It's 22660
-> Also by the way `-t EXTENT_TREE` should be faster
+On a machine (kernel 4.19.181) that has several RocksDB databases, some on XFS and other on Btrfs, we noticed that disk usage increases significantly faster on Btrfs. RocksDB pattern for SST files is:
 
-Just to add more data, I have a 10-device raid1 array with ~86TB used.
+1. fallocate(A)
+2. write(B) with B < A
+3. fruncate(B)
+4. close
 
-My results:
-root@SERVER:~# btrfs in dump-tree -t EXTENT_TREE /dev/sdf | grep BLOCK_GR=
-OUP_ITEM | wc -l
-44986
+And no more modification after that.
 
-I estimate it takes ~83 seconds to mount. (by looking at dmesg) It someti=
-mes times out on boot and drops to recovery mode, as systemd will only wa=
-it 90 seconds, and for some reason 'x-systemd.mount-timeout=3D500' doesn'=
-t work
+It took us a while to understand what's going on because strangely, even 'btrfs filesystem du' does not report the actual disk usage. compsize does, e.g.
 
-Note that I defragment the subvolume and extent tree for each subvolume w=
-eekly, as it seems to reduce my mount times, and make it *usually* boot w=
-ithout dropping to recovery mode.
+  # stat mariadb/#rocksdb/164719.sst
+    File: mariadb/#rocksdb/164719.sst
+    Size: 8127109         Blocks: 15880      IO Block: 4096   regular file
+  Device: 33h/51d Inode: 24913       Links: 1
+  ...
+  # compsize -b mariadb/#rocksdb/164719.sst
+  Type       Perc     Disk Usage   Uncompressed Referenced
+  TOTAL      100%     147640320    147640320    8130560
+  none       100%     147640320    147640320    8130560
 
---Joshua
+Almost 140MB wasted.
+
+compsize is a bit old but btrfs-search-metadata confirms there's only 1 extent:
+  inode objectid 24913 generation 184524 transid 184524 size 8127109 nbytes 8130560 block_group 0 mode 0100640 nlink 1 uid 982 gid 1019 rdev 0 flags 0x10(PREALLOC)
+  inode ref list objectid 24913 parent_objectid 283 size 1
+    inode ref index 24528 name utf-8 '164719.sst'
+  extent data at 0 generation 184524 ram_bytes 147640320 compression none type regular disk_bytenr 1210397491200 disk_num_bytes 147640320 offset 0 num_bytes 8130560
+
+I could reproduce the issue on kernel 5.13.9, with the following program:
+
+#define _GNU_SOURCE
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+  char buf[4096];
+  int fd = open(argv[1], O_CREAT|O_WRONLY|O_EXCL, 0666);
+  if (fd < 0 || fallocate(fd, FALLOC_FL_KEEP_SIZE, 0, 1<<24) < 0)
+    return -1;
+  size_t n = 0;
+  for (ssize_t i; i = read(0, buf, sizeof buf);) {
+    if (i < 0 || write(fd, buf, i) != i)
+      return -1;
+    n += i;
+  }
+  if (ftruncate(fd, n) < 0 ||
+      close(fd) < 0)
+    return -1;
+  return 0;
+}
+
+$ ./tst dst < src # src size should be < 16MiB
+
+$ stat dst 
+  File: dst
+  Size: 19374           Blocks: 40         IO Block: 4096   regular file
+Device: 3eh/62d Inode: 2253170     Links: 1
+...
+
+$ compsize -b dst 
+Processed 1 file, 1 regular extents (1 refs), 0 inline.
+Type       Perc     Disk Usage   Uncompressed Referenced  
+TOTAL      100%     16777216     16777216     20480       
+prealloc   100%     16777216     16777216     20480       
+
+'btrfs fi defrag dst' does nothing, probably because there's only 1 extent.
+
+While trying to fix the file, I found what may be another bug. I tried many options of /usr/bin/fallocate without success. But the strangest is:
+
+$ fallocate -p -o 19374 -l 16777216 dst
+
+I hoped that deallocation shrinks the extent but instead it appends a second one:
+
+$ compsize -b dst 
+Processed 1 file, 2 regular extents (2 refs), 0 inline.
+Type       Perc     Disk Usage   Uncompressed Referenced  
+TOTAL      100%     16781312     16781312     20480       
+none       100%     16781312     16781312     20480       
+
+Ironically, now that I have a second extent:
+
+$ btrfs fi defrag dst
+
+$ compsize -b dst 
+Processed 1 file, 1 regular extents (1 refs), 0 inline.
+Type       Perc     Disk Usage   Uncompressed Referenced  
+TOTAL      100%     20480        20480        20480       
+none       100%     20480        20480        20480       
+
+Julien
