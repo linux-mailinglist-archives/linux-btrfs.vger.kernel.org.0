@@ -2,105 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A87F3FEBDB
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 12:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6E73FEC1D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 12:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbhIBKHp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 06:07:45 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56746 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231770AbhIBKHo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 06:07:44 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7FA962032D;
-        Thu,  2 Sep 2021 10:06:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630577205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E7EFweSKwSeuIqNHM/4vRMALDQCPv5XjNPBTa6l/sDw=;
-        b=PLLmKVKnWKNwatFlc8zeNx2u5yzirim9FJkIEm5D28ORjuuBnwa2qFFTWSbqLZxen1kHW9
-        a+s5f4jhZISBhh18HUFdx5poRNf7P6HMU+8SbgCZpxWGRGMzsGdO3FbIsmuPEuckNpA+Vl
-        7DF9yPgJxNoe/OAkz2CHynN/Y9E49Pk=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 527011371C;
-        Thu,  2 Sep 2021 10:06:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id YPWnETWiMGHGYQAAGKfGzw
-        (envelope-from <nborisov@suse.com>); Thu, 02 Sep 2021 10:06:45 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 2/2] btrfs-progs: tests: Add test for fi show
-Date:   Thu,  2 Sep 2021 13:06:43 +0300
-Message-Id: <20210902100643.1075385-2-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210902100643.1075385-1-nborisov@suse.com>
+        id S233719AbhIBK2O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 06:28:14 -0400
+Received: from mout.gmx.net ([212.227.17.21]:53301 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233716AbhIBK2N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Sep 2021 06:28:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630578432;
+        bh=QpBLU9sew9fn98rY/VIR3FP8U+SeQ0PuWgpmIVFKHDo=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=PL1Tpxbh3UfHgirAeK61gx88krMm1rfQCsC3g8IwEZLjfvHTpWk85hvXle1B6I4+J
+         jxUD9ThoRVSO02vI+j+h+Wy12giXkcTfkKEZQFkNZ11jgHRmwFVDNKhLnERtRVbTvC
+         ISGBCCqpflNvVEr5z27xA/yydf18xEeWUi5OHS28=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MUXtY-1mUZbj36gq-00QQQ7; Thu, 02
+ Sep 2021 12:27:12 +0200
+Subject: Re: [PATCH 1/2] btrfs-progs: fi show: Print missing device for a
+ mounted file system
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20210902100643.1075385-1-nborisov@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <c5930e90-ca5b-4089-6f2e-830af6576baa@gmx.com>
+Date:   Thu, 2 Sep 2021 18:27:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210902100643.1075385-1-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TLZh5xtxsKp0xHutLc4mvoFUZhha/Xxx/KiOxiKOMFaxWpsz7Mh
+ jsKvLGqX0fPbwF/Zamn0ny035J1fust3KS6T5j0/tymzSnoxts7j0gmR1ikpwOxjWgfRK6p
+ IZjQH4GLjpWMBJZ+phFQN38UMFV+ndKNtEAFPZnpGU6fX/VwAfhS39lWUpI32agLqrmD7cK
+ fHANEuA2P/RzmI4EMk5sw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1BV38TSOp+k=:ztAmJPTCIB3w/3isQzAcLr
+ tQxCxw7cyn4bq+lprL1oSrGYdaGdbH3V/2ZawUXnFUqQLPG0Uzx2iP7O3NGcvLoPEx73vNtGJ
+ q44bYs1tZBTl1H7xWj3YbHIGG+lOE+kEOIyz50/bx/916RBxxMvljDYkMOqes8ZlYYIa6sQmB
+ Hs+QE0YZL/N/0iGt/zGz5VFBvpxBuliWEXLjQHFqc+y8nrin2OIXKUyxvn7R4V7tt9hF9lgUx
+ VBZXhFkiSmfOUAVzVbJc2TcpiYD2Un9Qmr4qcIGEcIlsp2SwCJlFIqHG559i6R4en37vJsDP4
+ bJrh0zNZFPyGpVqFYj3s8NGyHK5XxoxnGOCYUNaLbIJMBgsmeLBtFiQUdsffW7RxRUNE5FqGo
+ 0rWwrpGbh2kGKW3cx/0KR66X7z45r2KQsdOBr3TfpMvcGz1IgGHjzfOJPtmABGD6xOjwoWcif
+ VvJnmdWkmrC2e9b2QX2bZOU8D+sovYKYyeNEP3eoT1HUvnYl+6TzxM/NIKSjiH2xXGHpqebng
+ 3spVVH06+rSFlMSD4CMiajoJzJKQQSl28DiNLRb5AZ14Wy5AbmJUGGFsgyQjrkvP4ScxEiSeT
+ i2TKUEd93gc47+hm8dQ8QVwjOomtLNxIBxa1v+y8FcfpcH/18rhsVOjI2YdlcmvHaxV+sNdxY
+ PdnBVKkKB4hS9bVmyT7yBfXA/QVxxuHFRruLYQBfr06DyqHe+jcSh5sk01W4j2SA55yi/2IC+
+ xBWG9bhh9Kxk75RsaCplMDAKO146KrHlZrbXyMJtzaLXDAqSGFL70YtRf09SO+BWmZmxkZzu9
+ DfhLRpfdFfR2Hi7El+S+qsA4ggf3TRwE6IydT6TQoHZJAS3dahJKwfelJxSQ4RHgrQRhKjVhC
+ /1egKsg1ELFIcNyzwuJeKajftX4s2ivMQl7cZmeXzfj5k/oQxDj0KESqPspW0Yd4QQ1EmmrWV
+ lrPLniWs9Qk6WGkVDlV7vB8N+b3EO742nwbyiq29L93FuHQbkZ9BM0ikk+ga/2wGCgeKkxL89
+ xobcY45ummatjV/7P7wSm1HDdjMHsT5e6is1hsSwcaM2U1PPmX4SLixJOmNCjvNpTh8wqqoAK
+ g7OgjwiNGaWKCid9tQIYXqlDUfuImEIbDZgstyugURq+5iNyeQC3NR89w==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add a test to ensure that 'btrfs fi show' on a mounted filesyste, which
-has a missing device will explicitly print which device is missing.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- tests/cli-tests/016-fi-show-missing/test.sh | 35 +++++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100755 tests/cli-tests/016-fi-show-missing/test.sh
 
-diff --git a/tests/cli-tests/016-fi-show-missing/test.sh b/tests/cli-tests/016-fi-show-missing/test.sh
-new file mode 100755
-index 000000000000..9df7afd5af94
---- /dev/null
-+++ b/tests/cli-tests/016-fi-show-missing/test.sh
-@@ -0,0 +1,35 @@
-+#!/bin/bash
-+#
-+# Test that if a device is missing for a mounted filesystem, btrfs fi show will
-+# show which device exactly is missing.
-+
-+source "$TEST_TOP/common"
-+
-+check_prereq mkfs.btrfs
-+check_prereq btrfs
-+
-+setup_root_helper
-+setup_loopdevs 2
-+prepare_loopdevs
-+
-+dev1=${loopdevs[1]}
-+dev2=${loopdevs[2]}
-+
-+run_check $SUDO_HELPER "$TOP"/mkfs.btrfs -f -draid1 $dev1 $dev2
-+# move the device, changing its path, simulating the device being missing
-+mv $dev2 /dev/loop-non-existent
-+
-+run_check $SUDO_HELPER mount -o degraded $dev1 $TEST_MNT
-+
-+if ! run_check_stdout $SUDO_HELPER "$TOP"/btrfs fi show $TEST_MNT | \
-+	grep -q "$dev2 \*\*\*MISSING\*\*\*"; then
-+
-+	_fail "Didn't find exact missing device"
-+fi
-+
-+mv /dev/loop-non-existent $dev2
-+
-+run_check $SUDO_HELPER umount $TEST_MNT
-+
-+cleanup_loopdevs
-+
--- 
-2.17.1
+On 2021/9/2 =E4=B8=8B=E5=8D=886:06, Nikolay Borisov wrote:
+> Currently when a device is missing for a mounted filesystem the output
+> that is produced is unhelpful:
+>
+> Label: none  uuid: 139ef309-021f-4b98-a3a8-ce230a83b1e2
+> 	Total devices 2 FS bytes used 128.00KiB
+> 	devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
+> 	*** Some devices missing
+>
+> While the context which prints this is perfectly capable of showing
+> which device exactly is missing, like so:
+>
+> Label: none  uuid: 4a85a40b-9b79-4bde-8e52-c65a550a176b
+> 	Total devices 2 FS bytes used 128.00KiB
+> 	devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
+> 	devid    2 size 0 used 0 path /dev/loop1 ***MISSING***
+>
+> This is a lot more usable output as it presents the user with the id
+> of the missing device and its path.
 
+The idea is pretty awesome.
+
+Just one question, if one device is missing, how could we know its path?
+Thus does the device path output make any sense?
+
+Thanks,
+Qu
+>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>   cmds/filesystem.c | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+> index db8433ba3542..ff13de6ac990 100644
+> --- a/cmds/filesystem.c
+> +++ b/cmds/filesystem.c
+> @@ -295,7 +295,6 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_a=
+rgs *fs_info,
+>   {
+>   	int i;
+>   	int fd;
+> -	int missing =3D 0;
+>   	char uuidbuf[BTRFS_UUID_UNPARSED_SIZE];
+>   	struct btrfs_ioctl_dev_info_args *tmp_dev_info;
+>   	int ret;
+> @@ -325,8 +324,10 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_=
+args *fs_info,
+>   		/* Add check for missing devices even mounted */
+>   		fd =3D open((char *)tmp_dev_info->path, O_RDONLY);
+>   		if (fd < 0) {
+> -			missing =3D 1;
+> +			printf("\tdevid %4llu size 0 used 0 path %s ***MISSING***\n",
+> +					tmp_dev_info->devid,tmp_dev_info->path);
+>   			continue;
+> +
+>   		}
+>   		close(fd);
+>   		canonical_path =3D path_canonicalize((char *)tmp_dev_info->path);
+> @@ -339,8 +340,6 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_a=
+rgs *fs_info,
+>   		free(canonical_path);
+>   	}
+>
+> -	if (missing)
+> -		printf("\t*** Some devices missing\n");
+>   	printf("\n");
+>   	return 0;
+>   }
+>
