@@ -2,149 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA883FE655
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 02:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B393FE668
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 02:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhIAXn0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Sep 2021 19:43:26 -0400
-Received: from mout.gmx.net ([212.227.15.19]:37057 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232322AbhIAXnZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 1 Sep 2021 19:43:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630539740;
-        bh=96vOlkCW9QNgDMqC2Dc5+oiELutoTopvJA4CO4sU+Y8=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=VNJU4gnSQA6eFyrCQT046/16k/17VOFCdHg7OwBjxKi0mhe+Z8KQyp8qGHsNA8EcB
-         Jm8/KpTlaSXVMX4SFk2nkj53MKUlBN5Ew4yBh9kgpH6waB5Hi9JaMtJ/d+n0IZTzkN
-         r/oSPJRmacwIfwrdJQC+AZHM1uhmO3CTj1ScED38=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M1HZo-1mOJgv2LBS-002ltm; Thu, 02
- Sep 2021 01:42:20 +0200
-Subject: Re: btrfs mount takes too long time
-To:     =?UTF-8?B?RMSBdmlzIE1vc8SBbnM=?= <davispuh@gmail.com>,
-        Anand Jain <anand.jain@oracle.com>
-Cc:     Jingyun He <jingyun.ho@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.cz>
-References: <CAHQ7scVGPAwEGQOq3Kmn75GJzyzSQ9qrBBZrHFu+4YWQhGE0Lw@mail.gmail.com>
- <ce0a558f-0fab-4d52-f2d1-1faf4fb1777c@oracle.com>
- <CAHQ7scVkHp8Lcfxx2QZXv2ghkW-nYpiFGntyZa0Toz2hU3S-tQ@mail.gmail.com>
- <b0feb23e-4a18-efd7-eeaf-832ef0cf6860@oracle.com>
- <CAHQ7scUiNLVD_4---ArBet-0DqzfmmH5Y9JgQY0grYrUv8yhiQ@mail.gmail.com>
- <c2d2a244-f77c-e0a4-d266-db011fc4154b@oracle.com>
- <CAOE4rSx5+9jXEE2ra5qYOiZWpVU=EcB1MadEf_35fa0M3MZyiw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <620763f1-2ff5-6421-47cc-96d7cc94fb96@gmx.com>
-Date:   Thu, 2 Sep 2021 07:42:15 +0800
+        id S243349AbhIBAQo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Sep 2021 20:16:44 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:37163 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243351AbhIBAQm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 1 Sep 2021 20:16:42 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id CED5A3200A17;
+        Wed,  1 Sep 2021 20:15:43 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 01 Sep 2021 20:15:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=p
+        kl5jr33CHl0Yp0ybS9PzOM32p/nLaGN95BaPBPfezM=; b=gGNosxEgwaTcxJAVT
+        Xrd7Jvg3ohX9lGMUnyetQ/htNPZzDGVH8yyJP0nb/TNoAGc2BeA2z8OErmo7S6H6
+        R+7vErOd1mTNHuW0NzR6EnMlwB9J7TOHCuR+XwTIwjjvqJxWI+LlTwBRdCZZkhFn
+        2njd4UWxUA/m/+Fm5Ck2gCueFzHqOi4ZgCHmr8vkujXTJcHEDY3OKTK0KP92BQNx
+        Kk7kG50i/M2QaT0Bb7vjj2jcGi3PFVxlOOzcgWKaDrmdn4w6HjQhqjz9BcUdTnNK
+        pPpWAJ+w8tmmTPWwgS1tgNHK6t3bKN6+CnvL+ZrhLRQ6cVMEXRGxFjXru6ozIxtK
+        pQFlA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=pkl5jr33CHl0Yp0ybS9PzOM32p/nLaGN95BaPBPfe
+        zM=; b=bp7e1iWNIFxGwUgRZtZWyTEeYKgOd3Cp6qQ5igC6QZTJ5C6ogDO0BgsIA
+        76dVcvtGXBZdzyRzWDDWWWcyeM/xEUCReqL1FTq0YPAM2ywrAJQYimpaRPipz0uI
+        kOzytSO2KDZ8/ocoPLxKvCDT+NssZSRGPfmFC7G5Ju5TVMeEkKy9hLugrnpm8NmV
+        NN66hyvJBY168OPGr5+HfRWbGjbbXV21zOC0jGRj6bCZt2dYszjL08PwpYZf814k
+        z3Tb6WHspyo470yuciFx+MhzYp1nsaUpum2TSq2a/Du4Wt++2dlHHYa52qbkPC1o
+        Z8ogLtmrVfY5TRno5NZcfMsTwXqCg==
+X-ME-Sender: <xms:rhcwYR01I6PMUHGbKGXOkzH9G3t4w7Ge8rQGycl3DPzTwYB6ugGawA>
+    <xme:rhcwYYHHZ3x29PxghxORnzNLGBB0rMnoi8Jpwaz7ns07HLgczSr8fS8moB1meNES1
+    KwP76JLqf24aGHRxA>
+X-ME-Received: <xmr:rhcwYR4wuvWs1pLRKuXRzoOYz1mLytwKlUQdSAXLSH3I52S81EGXL6bgpy92R7aL9tvB3Ag1rEU9qA2yOEhekL7Qdhc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgedgfedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgvmhhi
+    ucfirghuvhhinhcuoehrvghmihesghgvohhrghhirghnihhtrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeegheethfeiteduleeggeevffdvheeuffejueegtdfftdekffdvjeeitdfh
+    udffheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdr
+    tghomh
+X-ME-Proxy: <xmx:rhcwYe3cDIxeBWwjc9EhSC7RnND8D7rkvNdVmBusJt-En6ZIW7kL4Q>
+    <xmx:rhcwYUHDtpx__nNGlbqNOLTL_Rf1xgkba_Qahdj_jbMfwG6P6E2qXg>
+    <xmx:rhcwYf8kEMwxOP1lc0h26bP3UOkzA0Qn-UjXIWYbxKtRxBs631Jw8g>
+    <xmx:rxcwYfPyhQ_GeL71f5Vp000rqT12I89H9LfEdkSa0_n7pQv1biQ-hw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 1 Sep 2021 20:15:42 -0400 (EDT)
+Subject: Re: how to replace a failed drive?
+To:     Tomasz Chmielewski <mangoo@wpkg.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <b0bda3d5dba746c48bb264bea8ebc1cc@virtall.com>
+From:   Remi Gauvin <remi@georgianit.com>
+Message-ID: <da5c047c-971d-7dff-3bce-397d0432d49c@georgianit.com>
+Date:   Wed, 1 Sep 2021 20:15:41 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAOE4rSx5+9jXEE2ra5qYOiZWpVU=EcB1MadEf_35fa0M3MZyiw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <b0bda3d5dba746c48bb264bea8ebc1cc@virtall.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7PVTA20o8twjaK/iU5ly6sF73pjWsFDzGVQHBwnCUI9icZ2SlXQ
- 6JSdxoB+F0lJRbV/kTACFrc0m+JAbGskxzHVMkEtNw6t8IrK84ooRvLnvQFgdClACo3ZtvT
- Vsiyjb/Ofo4Zs4nuBxwlSdEmxx+DW9DdkjvRukyQNcDIOOB7saRofjOes1kfxPDZomjNGbE
- ydtjYtTAZagjtZ/I+QbOQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VmQGx90+mmY=:4TD9BbpzCPvEGt2DIKEVLM
- br06w/YaT1LgVLtAdAqAEpViHxqs3habOITGC/y3Ijm/z3KgdyTXZakSQG/cE7mJZ9f8dBwnE
- /2p8Dy585C3Es4GEg0Z/WX36xG64Ij/94cviZ7RXTYPADoqfinYfXxm0GCAxOJdOfr+y7Bw3x
- Z+DBZqQDWwoqtMDTp2lFLXgGqRb72vl9JxnTcN/TWTmHsm2tqvxHmW9gchBRY8CEGF1ZQ0E7K
- EkOx3vy2eLy1J8K4W3oKVVx27QZf6JMW7L9RQBWRYUk9G1YdZI2GasoMJJDt0xxn9zvfeW/zK
- 89jJqNK9MtE9jJWk8qiURHersUPH6/1ZK2anAa9IiP5je39bhDtnCSnEvwGbECjyMCI7Vg1WU
- LhHn9H3AsCcMXnc4yQGFP5+D1wl4HJ1RDThB7eFw16raHbcUHXe0TxnrEFgWUi6XfGNUntL4Z
- uLZes1HNPKSGR4v/WXwOh9a6JHqV1K+zoKoII1Jidf+lh4egYFOSFPxp3hSJOyIvt5bOsJPvc
- RjGt4GwodsOmXqqLOZaALX4EufCFEcynb31Z/QU76pImF9HkjxwvLdx9BOpiOGDqXZ3gTbHlJ
- THddr9ag6oB0WfYpekdRPLKQq4IgEFFxhQmH7xztAErqljyb2yco4BobEjbP7NWwA6GCPEjG5
- GAHTGKFF0ZDq/kdw+9D9NjiKDt5XTdYLvmDQgnD8E9fbJM0Pk6cjfQrnLDooeZB5HiDI5UU9I
- qvAc16D2LoXChEQBCbScGqS8QgUhv+fDG3D/8rWBAZprMBxWbDxZEV19jqMyIyfe7Q9nnTcvy
- QMKo8WpgAqCC3Tkyi7J8qSvZuwzru+bZwSFc3IWKq2pTsBg0bqu7KEtmyXAodU4qz+F2lIkfW
- /aBqUw6BmDT6rQ3BnhBwZWn1Cx5L6MRVDoy8O9OMQDRtT1/z+FoEyAeYIGE3seSel9UDj4bUa
- 3cUBncPByIdAWMP8i7z8E0wM5xFfBreyV/C/nkyyO/rk6287/MyjPq8buc3nYCFa8bErLMZxW
- EZuq8FJMPWH7oCSG9mErqdDShHPTTwzUHRjHlnQyP7E/junPWdrrIRtxmLKZBj/8bQbwCGFXH
- Cx9gOylnt4XgNoPJIvBCUgfssupDkEb2I/pNdQ/nA6IzITZYtmCMPnk7A==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 2021-09-01 6:07 p.m., Tomasz Chmielewski wrote:
+> I'm trying to follow
+> https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices#Replacing_failed_devices
+> to replace a failed drive. But it seems to be written by a person who
+> never attempted to replace a failed drive in btrfs filesystem, and who
+> never used mdadm RAID (to see how good RAID experience should look like).
+> 
+> What I have:
+> 
+> - RAID-10 over 4 devices (/dev/sd[a-d]2)
+> - 1 disk (/dev/sdb2) crashed and was no longer seen by the operating system
+> - it was replaced using hot-swapping - new drive registered itself as
+> /dev/sde
+> - I've partitioned /dev/sde, so that /dev/sde2 matches the size of other
+> btrfs devices
+> - because I couldn't remove the faulty device (it wouldn't go below my
+> current number of devices) I've added the new device to btrfs filesystem:
+> 
+> btrfs device add /dev/sde2 /data/lxd
+> 
+> 
+> Now, I wonder, how can I remove the disk which crashed?
+> 
+> # btrfs device delete /dev/sdb2 /data/lxd
+> ERROR: not a block device: /dev/sdb2
+> 
+> 
+> # btrfs device remove /dev/sdb2 /data/lxd
+> ERROR: not a block device: /dev/sdb2
+> 
+> 
+> # btrfs filesystem show /data/lxd
+> Label: 'lxd5'  uuid: 2b77b498-a644-430b-9dd9-2ad3d381448a
+>         Total devices 5 FS bytes used 2.84TiB
+>         devid    1 size 1.73TiB used 1.60TiB path /dev/sda2
+>         devid    3 size 1.73TiB used 1.60TiB path /dev/sdd2
+>         devid    4 size 1.73TiB used 1.60TiB path /dev/sdc2
+>         devid    6 size 1.73TiB used 0.00B path /dev/sde2
+>         *** Some devices missing
+> 
+> 
+> And, a gem:
+> 
+> # btrfs device delete missing /data/lxd
+> ERROR: error removing device 'missing': no missing devices found to remove
+> 
+> 
+> So according to "btrfs filesystem show /data/lxd" device is missing, but
+> according to "btrfs device delete missing /data/lxd" - no device is
+> missing. So confusing!
+> 
+> 
+> At this point, btrfs keeps producing massive amounts of logs -
+> gigabytes, like:
+> 
+> [39894585.659909] BTRFS error (device sda2): bdev /dev/sdb2 errs: wr
+> 60298373, rd 393827, flush 1565805, corrupt 0, gen 0
+> [39894585.660096] BTRFS error (device sda2): bdev /dev/sdb2 errs: wr
+> 60298374, rd 393827, flush 1565805, corrupt 0, gen 0
+> [39894585.660288] BTRFS error (device sda2): bdev /dev/sdb2 errs: wr
+> 60298375, rd 393827, flush 1565805, corrupt 0, gen 0
+> [39894585.660478] BTRFS error (device sda2): bdev /dev/sdb2 errs: wr
+> 60298376, rd 393827, flush 1565805, corrupt 0, gen 0
+> [39894585.660667] BTRFS error (device sda2): bdev /dev/sdb2 errs: wr
+> 60298377, rd 393827, flush 1565805, corrupt 0, gen 0
+> [39894585.660861] BTRFS error (device sda2): bdev /dev/sdb2 errs: wr
+> 60298378, rd 393827, flush 1565805, corrupt 0, gen 0
+> [39894585.661105] BTRFS error (device sda2): bdev /dev/sdb2 errs: wr
+> 60298379, rd 393827, flush 1565805, corrupt 0, gen 0
+> [39894585.661298] BTRFS error (device sda2): bdev /dev/sdb2 errs: wr
+> 60298380, rd 393827, flush 1565805, corrupt 0, gen 0
+> [39894585.747082] BTRFS warning (device sda2): lost page write due to IO
+> error on /dev/sdb2
+> [39894585.747214] BTRFS error (device sda2): error writing primary super
+> block to device 5
+> 
+> 
+> 
+> This is REALLY, REALLY very bad RAID experience.
+> 
+> How to recover at this point?
+> 
+> 
+> Tomasz Chmielewski
 
-
-On 2021/9/2 =E4=B8=8A=E5=8D=8812:11, D=C4=81vis Mos=C4=81ns wrote:
-> pirmd., 2021. g. 30. aug., plkst. 16:08 =E2=80=94 lietot=C4=81js Anand J=
-ain
-> (<anand.jain@oracle.com>) rakst=C4=ABja:
->>
->> open_ctree() took 228254398 us. And 98% of it that is 225418272 us
->> was taken by btrfs_read_block_groups().
->>
->> -------------------
->>    1) $ 225418272 us | } /* btrfs_read_block_groups [btrfs] */
-
-As long as it's not zoned device, this is a known problem.
-
-Block group items by its original design is scattered across the huge
-extent tree.
-
-Grabbing them all needs quite a lot of random IO, for large fs it's very
-time consuming.
-
-I have purposed a skinny bg tree design to put all block group items
-into one tree, so that would greatly speed up the whole mount process.
-And with user-space tool to do the convert.
-
-But recently Josef is developing a completely new extent tree design,
-which will include a similar design for it.
-
-For know I'm not sure what's the way to go, either we can wait for
-extent-tree-v2, or should we push for the middle ground skinny bg tree?
-
-David, Any idea on this?
-
-Thanks,
-Qu
->>    1) * 16934.96 us | btrfs_check_rw_degradable [btrfs]();
->>    0) 0.967 us | btrfs_apply_pending_changes [btrfs]();
->>    0) 0.239 us | btrfs_read_qgroup_config [btrfs]();
->>    0) * 21017.34 us | btrfs_get_root_ref [btrfs]();
->>    0) + 15.717 us | btrfs_start_pre_rw_mount [btrfs]();
->>    0) 0.865 us | btrfs_discard_resume [btrfs]();
->>    0) $ 228254398 us | } /* open_ctree [btrfs] */
->> -------------------
->>
->> Now we need to run the same thing on btrfs_read_block_groups(),
->> could you please run.. [1] (no need of the time).
->>
->> [1]
->>     $ umount /btrfs;
->>     $./ftracegraph btrfs_read_block_groups 2 "*:mod:btrfs" "mount
->> /dev/vg/scratch0 /btrfs"
->>
->> Thanks, Anand
->>
->>
->
-> Hi,
->
-> I also have a btrfs filesystem that takes a while to mount.
-> So I'm interested if this could be improved.
->
-> $ ./ftracegraph open_ctree 2 "*:mod:btrfs" "time mount /dev/md127 -o
-> space_cache=3Dv2,compress=3Dzstd,acl,subvol=3DData /mnt/Data/"
-> kernel.ftrace_enabled =3D 1
->
-> real    1m33,638s
-> user    0m0,000s
-> sys     0m1,130s
->
-> Here's the trace output https://d=C4=81vis.lv/files/ftracegraph.out.gz
->
-> The filesystem is on top of RAID6 mdadm array which is from 9x 3TB HDDs.
->
-> Best regards,
-> D=C4=81vis
->
