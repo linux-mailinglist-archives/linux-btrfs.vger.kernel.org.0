@@ -2,83 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336E03FF03F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 17:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480CD3FF14E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Sep 2021 18:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345838AbhIBPck (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Sep 2021 11:32:40 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41472 "EHLO
+        id S1346156AbhIBQ0E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Sep 2021 12:26:04 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53122 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345853AbhIBPci (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 11:32:38 -0400
+        with ESMTP id S235934AbhIBQ0E (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Sep 2021 12:26:04 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 942901FFB9;
-        Thu,  2 Sep 2021 15:31:29 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id E8C5020382;
+        Thu,  2 Sep 2021 16:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630596689;
+        t=1630599904;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tF0Klwcq51RKixweTldK4xWB6QJRjB6Pgp3dOtxTuNs=;
-        b=FwwmYn4rGdL7oAk+glZ469FkzwiuMhouu9awEJccf/wuYZlMQTKr0g1kdvfxKUdlhPlekw
-        45kzOOEW3PhjQTWXk4yuEzGcB7SZSz/rhPhsLtbPMwWBrWfcpIAOvnS6tW3S85fzKdGKN+
-        pkzQKR5qysRdwmo8mTKQG7bhP/5lV6Q=
+        bh=un9uvgee6I8cNno4S8CRlPoXS3z+/NvaWpUIRKlC2s4=;
+        b=v6SUgtKcDl5d+RDF/iSsriauava5phQjHI29Be2HYuvBLsVJZa9iRaMsW+AKpOWPnxnBfa
+        2A78o3Z75Xmh1HP2UvMj7AlmOynhzJnE9OkQQE5iwN5F9+eFrqdeVUAeWDMbtvG5ibJnF5
+        7hIJlpyk6Nm1CSWQW8P9Gtq9QAYA8/0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630596689;
+        s=susede2_ed25519; t=1630599904;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tF0Klwcq51RKixweTldK4xWB6QJRjB6Pgp3dOtxTuNs=;
-        b=Z5eZaY79x6FyZ0zmhOeO+sYH9mVfzbGvp+tWhQXxVCqM2z/LTKsIhSRH79spxpoxqCRKsG
-        Rem0nzRm4V7sWyCQ==
+        bh=un9uvgee6I8cNno4S8CRlPoXS3z+/NvaWpUIRKlC2s4=;
+        b=UMbhqp4uHp2SoRioVFoAPhQPgzsnub4/VW6VBE3apYbzki0Z5IV7SZHsVbNrIuiLasJaRg
+        bt26DvzYeZQluFDg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 8C4C1A3BBC;
-        Thu,  2 Sep 2021 15:31:29 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id DE7E7A3B9F;
+        Thu,  2 Sep 2021 16:25:04 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5C674DA72B; Thu,  2 Sep 2021 17:31:28 +0200 (CEST)
-Date:   Thu, 2 Sep 2021 17:31:28 +0200
+        id A745ADA72B; Thu,  2 Sep 2021 18:25:03 +0200 (CEST)
+Date:   Thu, 2 Sep 2021 18:25:02 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs: use num_device to check for the last
- surviving seed device
-Message-ID: <20210902153128.GY3379@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/5] btrfs: qgroup: address the performance penalty for
+ subvolume dropping
+Message-ID: <20210902162502.GZ3379@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <cover.1630478246.git.anand.jain@oracle.com>
- <d9c89b1740a876b3851fcf358f22809aa7f1ad2a.1630478246.git.anand.jain@oracle.com>
- <ea5d6985-7c7d-3147-e0b6-fac17a2e298f@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210831094903.111432-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ea5d6985-7c7d-3147-e0b6-fac17a2e298f@suse.com>
+In-Reply-To: <20210831094903.111432-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 12:22:30PM +0300, Nikolay Borisov wrote:
+On Tue, Aug 31, 2021 at 05:48:58PM +0800, Qu Wenruo wrote:
+> Btrfs qgroup has a long history of bringing huge performance penalty,
+> from subvolume dropping to balance.
+> 
+> Although we solved the problem for balance, but the subvolume dropping
+> problem is still unresolved, as we really need to do all the costly
+> backref for all the involved subtrees, or qgroup numbers will be
+> inconsistent.
+> 
+> But the performance penalty is sometimes too big, so big that it's
+> better just to disable qgroup, do the drop, then do the rescan.
+> 
+> This patchset will address the problem by introducing a user
+> configurable sysfs interface, to allow certain high subtree dropping to
+> mark qgroup inconsistent, and skip the whole accounting.
+> 
+> The following things are needed for this objective:
+> 
+> - New qgroups attributes
+> 
+>   Instead of plain qgroup kobjects, we need extra attributes like
+>   drop_subtree_threshold.
+> 
+>   This patchset will introduce two new attributes to the existing
+>   qgroups kobject:
+>   * qgroups_flags
+>     To indicate the qgroup status flags like ON, RESCAN, INCONSISTENT.
+> 
+>   * drop_subtree_threshold
+>     To show the subtree dropping level threshold.
+>     The default value is BTRFS_MAX_LEVEL (8), which means all subtree
+>     dropping will go through the qgroup accounting, while costly it will
+>     try to keep qgroup numbers as consistent as possible.
+> 
+>     Users can specify values like 3, meaning any subtree which is at
+>     level 3 or higher will mark qgroup inconsistent and skip all the
+>     costly accounting.
+> 
+>     This only affects subvolume dropping.
+> 
+> - Skip qgroup accounting when the numbers are already inconsistent
+> 
+>   But still keeps the qgroup relationship correct, thus users can keep
+>   its qgroup organization while do the rescan later.
 > 
 > 
-> On 1.09.21 г. 9:43, Anand Jain wrote:
-> > For both sprout and seed fsids,
-> >  btrfs_fs_devices::num_devices provides device count including missing
-> >  btrfs_fs_devices::open_devices provides device count excluding missing
-> > 
-> > We create a dummy struct btrfs_device for the missing device, so
-> > num_devices != open_devices when there is a missing device.
-> > 
-> > In btrfs_rm_devices() we wrongly check for %cur_devices->open_devices
-> > before freeing the seed fs_devices. Instead we should check for
-> > %cur_devices->num_devices.
-> > 
-> > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> This sysfs interface needs user space tools to monitor and set the
+> values for each btrfs.
 > 
-> Is there a sequence of step that reproduce the problem?
+> Currently the target user space tool is snapper, which by default
+> utilizes qgroups for its space-aware snapshots reclaim mechanism.
 
-Yeah that would be great, I don't have much idea what actually happens
-here and what is the bug.
+This is an interesting approach, though I'm there are some usability
+questions. First as a user, how do I know I need to use it?  The height
+of the subvolume fs tree is not easily accessible.
+
+The sysfs file is not protected in any way so multiple tools can decide
+to set it to different values. And whether rescan is required or not
+depends on the value so setting it.
+
+It might be better to set the level (or a bit) to the subvol deletion
+request, eg. a "fast" mode that would internally use maximum height 3 to
+do slow deletion and anything else for fast leaving qgroup numbers
+inconsistent.
