@@ -2,235 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226E2400334
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 18:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345D74007E4
+	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Sep 2021 00:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349745AbhICQYr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Sep 2021 12:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235745AbhICQYq (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Sep 2021 12:24:46 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A264C061575;
-        Fri,  3 Sep 2021 09:23:46 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id u21so4957833qtw.8;
-        Fri, 03 Sep 2021 09:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=JlR0f9FtNXgJ4F4NabMbkKgfsQNe1xOl1rzU86pM1xs=;
-        b=fA9gzx/fubG4zYdqRgqBNoJxftNYeMjPbw29938biNi2HuRfW0IcRg7fUaat/FEFTv
-         Cyi2Q1Gj8tJDV9fF0ebW6kZ4Z/g3gHiZSTq2TLZ4qH7KbypmmBGAc8D/yDtL93OpyppS
-         BMEiH79fz1BpPDFTYYuIDDS6N2fPNE3Cw7EflbO8d6Ekwlbg8MUHObqwxKArcuXMEaSU
-         JTfnrakl7iSs9TVMx5hlN5b5+ACc1j3+zaJWi+i2WMf2+C68cAC+6acoETe9GTksP16K
-         vgjakUCyRi1hhLX6weXN0BeumjdvuFrH5IcSGRujbKE6Bw43SaxFNGBcW/qeyJtsKu0q
-         BWqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=JlR0f9FtNXgJ4F4NabMbkKgfsQNe1xOl1rzU86pM1xs=;
-        b=o4JlI9UK7ZD5npAUiC1amBGvLqrumNe0qhTPRIYKX26RU3VIhRbk1Bg7/bE6EdiAvM
-         P7uGOaJ2ZOKbHSkL9u011qCBH+6fAKWoWKeIvV7zAukk1v9etJlvoqP9nZZjEubUBX9+
-         pkGmdqboL57uSI1qL0hiG7N0kDk+SZr47bUTlds9nf6f+fqNa4NkhL0b9cOXRov50gGw
-         uoc4GVkK8KG0SGb3RbXfPPVAZ6UBj9QxFNXgz7Vbwf80tZQEYiSVOnaJa6E65DL+cS8p
-         bFSIaxpyNSaJqVMUb+QqxUcEzmtVnXLiQyMKlT5+ir3oWkLQwbV3YiJfEkn4daxSRps6
-         OQIw==
-X-Gm-Message-State: AOAM533oARojEtmtQQZiWWaM2H52W8Sy9+vbTmb6AOTnzkDvsHJxXGwD
-        VnKMOWt9PCaDSwqYk16jUydmmP/Ptzz36kcm/ScZCXPf
-X-Google-Smtp-Source: ABdhPJz7lYFg23SpT9VZmTWFqlmIUQtIsM19Ylw8iXRCugCGtSWo84gh7GC8+U+6/SjWSXx0CEO/o01b6k2psyS7Eyo=
-X-Received: by 2002:ac8:5417:: with SMTP id b23mr4706974qtq.140.1630686225379;
- Fri, 03 Sep 2021 09:23:45 -0700 (PDT)
+        id S237312AbhICWZD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Sep 2021 18:25:03 -0400
+Received: from mout.gmx.net ([212.227.15.18]:33893 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234285AbhICWZD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Sep 2021 18:25:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630707838;
+        bh=HlOHBEyA5Qmx8U54xA4NrmWLfiHwP01L60zdHz1Mayw=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=AFtvuEu5NDVJ9O8OXEMHs8nKcgpvgFuIe2aePV6300FuNjdOZEC8ObdFm7VZJ7Mr0
+         dzkL3s7vWClk1wzliMn6rk4fwQf5hCIBW7rIPxQ/XyYnTyLd5g4AOgD/qSfUqwbg3c
+         S/PqP5McCWAXBhfB17udyTxp9RxIGneZjTyUj1NU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MY68d-1mUK3615tV-00YP4U; Sat, 04
+ Sep 2021 00:23:57 +0200
+Subject: Re: [PATCH 1/3] btrfs-progs: use btrfs_key for btrfs_check_node() and
+ btrfs_check_leaf()
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210902130843.120176-1-wqu@suse.com>
+ <20210902130843.120176-2-wqu@suse.com> <20210903140207.GE3379@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <7946f5ee-13e4-c5c9-d48f-1d0fd80e5f69@gmx.com>
+Date:   Sat, 4 Sep 2021 06:23:54 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210830122306.882081-2-nborisov@suse.com> <20210830153641.893416-1-nborisov@suse.com>
-In-Reply-To: <20210830153641.893416-1-nborisov@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 3 Sep 2021 17:23:09 +0100
-Message-ID: <CAL3q7H6Ww7eU=aXEmOYpcT8Vrbnp=_iU8FBYPd4T4rrp1KCuCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: Add test for rename/exchange behavior between subvolumes
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210903140207.GE3379@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UcCAnuxKDcqvy6xiKYxNcbUt/3AVCwx89/SZtZVD3fJ0OITX0FI
+ qRW5+fDrBwkDPh6s82YnxHDBa4IgwF/+ngQmB2uSayiOMK3DPiQS4nX0SQcPEjARRrQ20i+
+ sdh53RD2FfbE2m/TVmM3S8amnUyd+gN6o4HUocZ1EQgHgy006mJwUwOvsyHeGphmUbUWoZh
+ 6HhIeCDRM6FDcDnW9tJzg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:o1k3Ay1RpK4=:uC5pri7K1LU6+QUYIHZ5hs
+ tyYQB70wj+b4vGg1Xz6kaOFBLXI+ndgJYAO3nKrTSXiShZZPNozjcr7fxWZpXFnwCFD9uPyfv
+ m8lp+uF8JxX5OzyncfVtrHJ8B4iTLxHRCkri4UePpH0saf3MGfj9yJJAlZt/Eo7PM0CDRqgsR
+ 5TLfF9E5jmdsffQIhEDzMVh/Ev8EhaP1I9YBdKPmZha9JtErWJRsjv/8bpDo9Jg88Sw4oxku5
+ e0Ax9Sg2Nb1YYzzRt9zjxQ1I3g0tfw37X43qTPEIvZHBE4KfflxG/mz/XtAEWi/CgzXagexZc
+ hZGzSW2ywTjoNtibQV1otfEsGb3l4hDVjT7eaJoigazKgGkQ6JGKydVMj08+t6UJrUFRlB3xg
+ EKLsZJ/XVWtM0ZEL25ZLoq9FG4wgdXH4u9v1bJgwJnU8Am6AH0iRW89JBv7FHoi7M8T3tfKh/
+ FrNn03YWHeSVU5Tm/kdGE7VhHNqu/9joEhqbyLARH2JeNfBUMuaWJry5buZKOgrg/3O9p9qRd
+ /VdERGuiGDoFrhFZD8xCKPFcJ1mTEu0l9oYxVw31QDwVC1U+lXPVA6LzjkTEGeD0CQPLk/i9d
+ RNnLn67TWDCBVnkVELeh0Ls6g6NWrFAGyrERKO2NV8bGOqRKqabXSDLDhO1j0W6NMPshSLYT5
+ X1pjKvyLNK0tvhTUgdKxiO3YVqoyiCdZEWQwyXOOZrio3Sv0b6Ltg3iNBKbAjrMXV+bxxJM5r
+ zUhL0R9x797gMv8xSgIf3scA0LwdvBZ/IWppQ6bkws2+lFn8ZYybN+OJ5uon2WYwUWBayhd7h
+ oeRyZUzmyO/ID7e3NZMB3fZ9XmmWZxVZ4n2ibAbxzZpv2wbY44cc2XGwvqCjvYCbcwN3EADUO
+ Yq1HbmP6LJcCOkrBxRQKaZQ5LV27w+S0APwyrrT7+Rsa3+UuxzKgWRWpJzKG8K0kKtL9xNLoE
+ gvLNPNDazbeuqmME13Go6n8EjuOortfFFc3r+es6OWky+kzZShac/hnBh5AOrxtl7fbHN5bpE
+ 7+T5Gk5f+C/EggGU1rFqQiBVsw3Qj6PeTcmDp9BhjYYR0FZY3l1Ht4YgBn+wFvw/oFFDvLdsE
+ saYnEt01tm5Lc7ulKpqjj2AhIBOe3T5QtnkIh38uXSoGETQVIGBiF0BFQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 4:38 PM Nikolay Borisov <nborisov@suse.com> wrote:
->
-> This tests ensures that renames/exchanges across subvolumes work only
-> for other subvolumes and are otherwise forbidden and fail.
->
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Looks good, thanks.
-
-> ---
-> This is the real v2.
->
-> Changes in V2:
->  * Added cross-subvol rename tests
->  * Added cross-subvol subvolume rename test
->  * Added ordinary volume rename test
->  * Removed explicit sync
->
->
->  tests/btrfs/246     | 60 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/246.out | 54 ++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 114 insertions(+)
->  create mode 100755 tests/btrfs/246
->  create mode 100644 tests/btrfs/246.out
->
-> diff --git a/tests/btrfs/246 b/tests/btrfs/246
-> new file mode 100755
-> index 000000000000..53039df38993
-> --- /dev/null
-> +++ b/tests/btrfs/246
-> @@ -0,0 +1,60 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
-> +#
-> +# FS QA Test 246
-> +#
-> +# Tests rename/exchange behavior when subvolumes are involved. Rename/ex=
-changes
-> +# across subvolumes are forbidden. This is also a regression test for
-> +# 3f79f6f6247c ("btrfs: prevent rename2 from exchanging a subvol with a
-> +# directory from different parents").
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick rename subvol
-> +
-> +# Import common functions.
-> + . ./common/renameat2
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_require_renameat2 exchange
-> +_require_scratch
-> +
-> +_scratch_mkfs >> $seqres.full 2>&1
-> +_scratch_mount
-> +
-> +# Create 2 subvols to use as parents for the rename ops
-> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1 1>/dev/null
-> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol2 1>/dev/null
-> +
-> +# Ensure cross subvol ops are forbidden
-> +_rename_tests_source_dest $SCRATCH_MNT/subvol1/src $SCRATCH_MNT/subvol2/=
-dst "cross-subvol" "-x"
-> +
-> +# Prepare a subvolume and a directory whose parents are different subvol=
-umes
-> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1/sub-subvol 1>/dev=
-/null
-> +mkdir $SCRATCH_MNT/subvol2/dir
-> +
-> +# Ensure exchanging a subvol with a dir when both parents are different =
-fails
-> +$here/src/renameat2 -x $SCRATCH_MNT/subvol1/sub-subvol $SCRATCH_MNT/subv=
-ol2/dir
-> +
-> +echo "ordinary rename"
-> +# Test also ordinary renames
-> +_rename_tests_source_dest $SCRATCH_MNT/subvol1/src $SCRATCH_MNT/subvol2/=
-dst "cross-subvol"
-> +
-> +echo "subvolumes rename"
-> +# Rename subvol1/sub-subvol -> subvol2/sub-subvol
-> +$here/src/renameat2  $SCRATCH_MNT/subvol1/sub-subvol $SCRATCH_MNT/subvol=
-2/sub-subvol
-> +# Now create another subvol under subvol1/
-> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/subvol1/sub-subvol 1>/dev=
-/null
-> +# and exchange the two
-> +$here/src/renameat2 -x $SCRATCH_MNT/subvol2/sub-subvol $SCRATCH_MNT/subv=
-ol1/sub-subvol
-> +
-> +# simple rename of a subvolume in the same directory, should catch
-> +# 4871c1588f92 ("Btrfs: use right root when checking for hash collision"=
-)
-> +mv $SCRATCH_MNT/subvol2/ $SCRATCH_MNT/subvol2.
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/246.out b/tests/btrfs/246.out
-> new file mode 100644
-> index 000000000000..5db90cf2bd9a
-> --- /dev/null
-> +++ b/tests/btrfs/246.out
-> @@ -0,0 +1,54 @@
-> +QA output created by 246
-> +cross-subvol none/none -> No such file or directory
-> +cross-subvol none/regu -> No such file or directory
-> +cross-subvol none/symb -> No such file or directory
-> +cross-subvol none/dire -> No such file or directory
-> +cross-subvol none/tree -> No such file or directory
-> +cross-subvol regu/none -> No such file or directory
-> +cross-subvol regu/regu -> Invalid cross-device link
-> +cross-subvol regu/symb -> Invalid cross-device link
-> +cross-subvol regu/dire -> Invalid cross-device link
-> +cross-subvol regu/tree -> Invalid cross-device link
-> +cross-subvol symb/none -> No such file or directory
-> +cross-subvol symb/regu -> Invalid cross-device link
-> +cross-subvol symb/symb -> Invalid cross-device link
-> +cross-subvol symb/dire -> Invalid cross-device link
-> +cross-subvol symb/tree -> Invalid cross-device link
-> +cross-subvol dire/none -> No such file or directory
-> +cross-subvol dire/regu -> Invalid cross-device link
-> +cross-subvol dire/symb -> Invalid cross-device link
-> +cross-subvol dire/dire -> Invalid cross-device link
-> +cross-subvol dire/tree -> Invalid cross-device link
-> +cross-subvol tree/none -> No such file or directory
-> +cross-subvol tree/regu -> Invalid cross-device link
-> +cross-subvol tree/symb -> Invalid cross-device link
-> +cross-subvol tree/dire -> Invalid cross-device link
-> +cross-subvol tree/tree -> Invalid cross-device link
-> +Invalid cross-device link
-> +ordinary rename
-> +cross-subvol none/none -> No such file or directory
-> +cross-subvol none/regu -> No such file or directory
-> +cross-subvol none/symb -> No such file or directory
-> +cross-subvol none/dire -> No such file or directory
-> +cross-subvol none/tree -> No such file or directory
-> +cross-subvol regu/none -> Invalid cross-device link
-> +cross-subvol regu/regu -> Invalid cross-device link
-> +cross-subvol regu/symb -> Invalid cross-device link
-> +cross-subvol regu/dire -> Is a directory
-> +cross-subvol regu/tree -> Is a directory
-> +cross-subvol symb/none -> Invalid cross-device link
-> +cross-subvol symb/regu -> Invalid cross-device link
-> +cross-subvol symb/symb -> Invalid cross-device link
-> +cross-subvol symb/dire -> Is a directory
-> +cross-subvol symb/tree -> Is a directory
-> +cross-subvol dire/none -> Invalid cross-device link
-> +cross-subvol dire/regu -> Not a directory
-> +cross-subvol dire/symb -> Not a directory
-> +cross-subvol dire/dire -> Invalid cross-device link
-> +cross-subvol dire/tree -> Invalid cross-device link
-> +cross-subvol tree/none -> Invalid cross-device link
-> +cross-subvol tree/regu -> Not a directory
-> +cross-subvol tree/symb -> Not a directory
-> +cross-subvol tree/dire -> Invalid cross-device link
-> +cross-subvol tree/tree -> Invalid cross-device link
-> +subvolumes rename
-> --
-> 2.17.1
->
 
 
---=20
-Filipe David Manana,
+On 2021/9/3 =E4=B8=8B=E5=8D=8810:02, David Sterba wrote:
+> On Thu, Sep 02, 2021 at 09:08:41PM +0800, Qu Wenruo wrote:
+>> In kernel space we hardly use btrfs_disk_key, unless for very lowlevel
+>> code.
+>>
+>> There is no need to intentionally use btrfs_disk_key in btrfs-progs
+>> either.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> This fails on fsck/001 test
+>
+>      [TEST/fsck]   001-bad-file-extent-bytenr
+> failed to restore image ./default_case.img
+> basename: missing operand
+> Try 'basename --help' for more information.
+> failed: /labs/dsterba/gits/btrfs-progs/btrfs check --repair --force
+> make: *** [Makefile:413: test-fsck] Error 1
+>
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Not reproducible locally.
+
+And of course, for such lowlevel change I would run all tests on it.
+
+Mind to share the base?
+
+I'm basing all my patches on the following commit:
+
+commit 06bae7076265242f118471ce8c4340dcc5e3f555 (david/devel)
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Mon Aug 23 15:23:13 2021 -0400
+
+     btrfs-progs: tests: add image with an invalid super bytes_used
+
+And I also re-checked the test on this patch, it also passes locally.
+
+Thanks,
+Qu
