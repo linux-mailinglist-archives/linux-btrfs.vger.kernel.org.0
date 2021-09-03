@@ -2,75 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3594000E9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 16:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376B34000F1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 16:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235701AbhICODL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Sep 2021 10:03:11 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:46958 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbhICODL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Sep 2021 10:03:11 -0400
+        id S235200AbhICOFB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Sep 2021 10:05:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56526 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235068AbhICOFB (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Sep 2021 10:05:01 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E128E225AC;
-        Fri,  3 Sep 2021 14:02:08 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 565B4203E0;
+        Fri,  3 Sep 2021 14:04:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630677728;
+        t=1630677840;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JX4YmXBXM9tXdQ7SFyABMhbYlPPumW2TGTcOVOnC3mM=;
-        b=Nf4ByWELm/jL6FLxTZC6cEFX0w6pjRY5H6DwCIWXScL66VOKb2NMNlz3uHMTKNLvYoDQV6
-        2aYCZcKLQYhrcXJTV8SySQHB1QKJgl14bTsQUq6ae09BNAfwd7qVgkh3HpBp3DaK0sA6T/
-        izyubMBJApZR9n2PEiVfjA1V0b5o3a4=
+        bh=F8sUECfA/DsOHaemzjxO6+uzrK8BJUBjncGprOdVWsU=;
+        b=GhmcfMRbfuk2lCxip+8hU2//5yPFL14wvl5174r6lO0LmBv+JJPIc3zC5Vf5eQpU6CiqKO
+        skmLygKVpDqb8bAdcE7JCMsYwPqhzlDZW2qwvW7izmC/ZpjvxaUoVgh1XQmtoHnKBS51bg
+        E0Z6CfEFriol79spKBhFglUlBzpZ344=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630677728;
+        s=susede2_ed25519; t=1630677840;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JX4YmXBXM9tXdQ7SFyABMhbYlPPumW2TGTcOVOnC3mM=;
-        b=/J7L68pld99KUq7TSs2kzhVHswowbtFoLTVwt70J483HU/LDZulmzPdRuYZbRO2+0oG/VH
-        STx9J8zRaWClBgCg==
+        bh=F8sUECfA/DsOHaemzjxO6+uzrK8BJUBjncGprOdVWsU=;
+        b=htRP2tBmR0ArBSGm3Fhw/upK5LGZA/vIby+Uq46CZ5yV3ur9DypBz9qLWD0u/tB9rc1m44
+        F2tRI+sfw35vE6BA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id DB3E0A3B97;
-        Fri,  3 Sep 2021 14:02:08 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 4E473A3BBB;
+        Fri,  3 Sep 2021 14:04:00 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 295A8DA89C; Fri,  3 Sep 2021 16:02:07 +0200 (CEST)
-Date:   Fri, 3 Sep 2021 16:02:07 +0200
+        id 9632DDA89C; Fri,  3 Sep 2021 16:03:58 +0200 (CEST)
+Date:   Fri, 3 Sep 2021 16:03:58 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] btrfs-progs: use btrfs_key for btrfs_check_node()
- and btrfs_check_leaf()
-Message-ID: <20210903140207.GE3379@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20210902130843.120176-1-wqu@suse.com>
- <20210902130843.120176-2-wqu@suse.com>
+Subject: Re: [PATCH 1/5] btrfs: sysfs: introduce qgroup global attribute
+ groups
+Message-ID: <20210903140358.GF3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210831094903.111432-1-wqu@suse.com>
+ <20210831094903.111432-2-wqu@suse.com>
+ <20210902162840.GA3379@twin.jikos.cz>
+ <9f48f55f-a4f3-ad0c-e48e-1da02b0ef068@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210902130843.120176-2-wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9f48f55f-a4f3-ad0c-e48e-1da02b0ef068@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 09:08:41PM +0800, Qu Wenruo wrote:
-> In kernel space we hardly use btrfs_disk_key, unless for very lowlevel
-> code.
+On Fri, Sep 03, 2021 at 06:30:36AM +0800, Qu Wenruo wrote:
 > 
-> There is no need to intentionally use btrfs_disk_key in btrfs-progs
-> either.
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> On 2021/9/3 上午12:28, David Sterba wrote:
+> > On Tue, Aug 31, 2021 at 05:48:59PM +0800, Qu Wenruo wrote:
+> >> Although we already have info kobject for each qgroup, we don't have
+> >> global qgroup info attributes to show things like qgroup flags.
+> >>
+> >> Add this qgroups attribute groups, and the first member is qgroup_flags,
+> >> which is a read-only attribute to show human readable qgroup flags.
+> >>
+> >> The path is:
+> >>   /sys/fs/btrfs/<uuid>/qgroups/qgroup_flags
+> >>
+> >> The output would look like:
+> >>   ON | INCONSISTENT
+> >
+> > So that's another format of sysfs file, we should try to keep them
+> > consistent or follow common practices. The recommended way for sysfs is
+> > to have one file per value, and here it follows the known states.
+> >
+> > So eg
+> >
+> > /sys/fs/.../qgroups/enabled		-> 0 or 1
+> > /sys/fs/.../qgroups/inconsistent	-> 0 or 1
+> > ...
+> >
+> > The files can be also writable so rescan can be triggered from sysfs, or
+> > quotas disabled eventually. For the start exporting the state would be
+> > sufficient though.
+> >
+> OK, that sounds indeed better than the current solution.
+> 
+> Although there may be a small window that one reading 3 attributes could
+> get inconsistent view, as it's no longer atomic.
+> 
+> Would that be a problem?
 
-This fails on fsck/001 test
-
-    [TEST/fsck]   001-bad-file-extent-bytenr
-failed to restore image ./default_case.img
-basename: missing operand
-Try 'basename --help' for more information.
-failed: /labs/dsterba/gits/btrfs-progs/btrfs check --repair --force
-make: *** [Makefile:413: test-fsck] Error 1
+I hope not, the status can change after reading the sysfs files anyway.
