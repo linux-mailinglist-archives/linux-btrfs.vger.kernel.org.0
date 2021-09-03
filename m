@@ -2,102 +2,200 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2655400172
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 16:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AE04001C0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 17:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349515AbhICOqM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Sep 2021 10:46:12 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:12660 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349135AbhICOqJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Sep 2021 10:46:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1630680310; x=1662216310;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+Ohw8+ybSIjVsjs5LzNsaXBrxLTuHbJ9sIJFja805HI=;
-  b=Ybk6+y7s53MB2iR58aprpx45JqW3XPvOXczg7MK+RMV7nam4i5u/XVhv
-   4gMXDvVaElKeu9NnWYo3i9PWC1d975YdBjSq/FPFOshcWgazbFdUR1RV4
-   0WVIHegcRlTkjwasbXluQPAjLnNglcaDQ1/8yaN9NSlVeoEMzozj7vSWS
-   IFX3ofDIZNMcAQPe9fRkMu6a80ZHpwqiycwSUSTn7QHCy7o8hK4vWwjnZ
-   /jbYSiVKvjK4gt3SbqCao8TN9mvJukrUAd66ywb1Zx5apTY0Y2zT1++nP
-   elGuLW4jkI4U4NHxdOae4RRZXagvWs+9UGPipRwmO88BxWA70IU4msRor
-   w==;
-X-IronPort-AV: E=Sophos;i="5.85,265,1624291200"; 
-   d="scan'208";a="179681189"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Sep 2021 22:45:10 +0800
-IronPort-SDR: 1lQk6pd0v+EGDQG1zpJYcN+s0Mo/RPYM7TnYQi8a3SxhV8oXZzgcBFLwVpRszPgjuv5I5WzQI7
- /IzhgoFNOp/J7m0b8zlrEK4Ef640hjAUGHtXUicP1xM0YuOgRvbUvhLWLdR7t/6qTZ79QWCGqo
- OG4bxIxlx/cRiAlJyQ7E0+CZRJhyGykkyafvrIdZ1rtNJvMvSoRNuJrwYcG4YUtANB7g5SqUH7
- 2kgqVoQBitlZ9a/QOBHceTJ+wqRWSe+8Q9jHn60w0/rzXJ+M8Xrf/91Xy0CeMTIELDhqairjq7
- 0qSITCVd5NDw0WW3EI0p4vey
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 07:20:12 -0700
-IronPort-SDR: Am02pkSW4UFvIuJEFHD/qmYeCH6jxeszT5E1QTPI+9ui15jC4U0h456ddzwGT5hS5xt6Pxt9Gy
- ctUsTlioknOmTygiHDRGsSidLYjNROP20Semi5rPok5gZbH12Q2llfpU6it5z71l2lVdep7jfl
- 1IPAymEY3iIqvfcJpmBGr4DJESG3Dpw/lns0oFS7Uh1G8sEpdsgGMQgZUZzwSAdmMJCEoVZTkw
- oF77xICqDoLIZD/OwrSVFno+hpMta3JB5dWn2tKJ/W2pdr34RxHT18jpR3QaBlnI0LPmpf144s
- 4ow=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 03 Sep 2021 07:45:08 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 6/6] btrfs: rename setup_extent_mapping in relocation code
-Date:   Fri,  3 Sep 2021 23:44:47 +0900
-Message-Id: <87ead9c989e3d09804d9d210f16075a4930eab07.1630679569.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1630679569.git.johannes.thumshirn@wdc.com>
-References: <cover.1630679569.git.johannes.thumshirn@wdc.com>
+        id S241902AbhICPJa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Sep 2021 11:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239566AbhICPJ2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Sep 2021 11:09:28 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34734C061575;
+        Fri,  3 Sep 2021 08:08:28 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id b64so6127130qkg.0;
+        Fri, 03 Sep 2021 08:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=dfVAyRi3egcPmrpkkX6mL213sIGpEaRWvxdiTkq+xW8=;
+        b=EWcq229FL/ntUEq82qpPUWBWKHdqlgiM75aaopWI0EXKXMdaGvWC9k5+Djmpf9cuh4
+         b8Px+qCiOFbdSlTTv3bCUWjo/NV+fV2FfDhtVBTe+11Hyzzc0GtfIzt9fM6pWJdOsQTo
+         Hw091772P+VcEN0wpXd2QJDN5P2CBMbRXMqIqUPHoTTS4oCbdr33nxJebB3k0cLE1JVx
+         35kVoZO3fqZcIp7tDFWrd/ielCIlkFmjs/qNYQvB0vIZOGZG2GKfB2JH//Zfs1FulZVX
+         gOTOWaFGN1mnjDgUBankLRTMLHBaoKykGiP6F5yFw7iKyEEFMRF86tzacUtCHWKO2oZM
+         RWbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=dfVAyRi3egcPmrpkkX6mL213sIGpEaRWvxdiTkq+xW8=;
+        b=sn4I3exGBD8q3ec6r19GyxvO/DYghe4OBEERsdUgPGoZbcQjCSnZoPH0W8ElPrWPUN
+         SwNZlBRv22SrdqangNRNmk7vvOa0LCVWYThNyStC0wCFR+DxO7UgW7iahvnuyX6s1iTw
+         2ciMdRDN59Ux7sT2RYYJXDEDY7mmUfNosKrLUczPQZTG9iz/6GdFadhZWA6ONa7SJdoY
+         jkKoG3z90NvIFV+vWkKTMBf7njkLli+9Rv5Gucy2iQx7xdCqPPLSLQcsWlZIdk0gD6SB
+         O1Vq+L4if7upBjk7PAm4P87M5r8pDovMCpy/ZEPR7NUGsqNsKVd3JjpjZigMwfTlJ/Ov
+         898A==
+X-Gm-Message-State: AOAM532cDxzb+6noWwUqtI1AwOMnLgJhio91jNhBcxSFEDqpWDJhdrAp
+        dai/eoe+hnfRZfnYqxj814bKbbpC0+eFN4dm1gM=
+X-Google-Smtp-Source: ABdhPJxOxNoEKZDrnzr5I27hdDLrYAI3fzlDltFTJm77mMKSv9gWkp9I05ZDbo+9/cQzt6JSbVvTx3kldRbLUD+SG7w=
+X-Received: by 2002:a05:620a:2844:: with SMTP id h4mr3924402qkp.388.1630681707290;
+ Fri, 03 Sep 2021 08:08:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+In-Reply-To: <20210827164926.1726765-1-agruenba@redhat.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 3 Sep 2021 16:07:51 +0100
+Message-ID: <CAL3q7H709FSbHtinPRqe6XtZEvhmkSVBhFHUGMiVDW7Ngb3wrQ@mail.gmail.com>
+Subject: Re: [PATCH v7 00/19] gfs2: Fix mmap + page fault deadlocks
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In btrfs we have two functions called setup_extent_mapping, one in
-the extent_map code and one in the relocation code. While both are private
-to their respective implementation, this can still be confusing for the
-reader.
+On Fri, Aug 27, 2021 at 5:51 PM Andreas Gruenbacher <agruenba@redhat.com> w=
+rote:
+>
+> Hi all,
+>
+> here's another update on top of v5.14-rc7.  Changes:
+>
+>  * Some of the patch descriptions have been improved.
+>
+>  * Patch "gfs2: Eliminate ip->i_gh" has been moved further to the front.
+>
+> At this point, I'm not aware of anything that still needs fixing,
 
-So rename the version in relocation.c to setup_relocation_extent_mapping.
-No functional change otherwise.
+Hi, thanks for doing this.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/relocation.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+In btrfs we also have a deadlock (after the conversion to use iomap
+for direct IO) triggered by your recent test case for fstests,
+generic/647 [1].
+Even though we can fix it in btrfs without touching iomap, iov_iter,
+etc, it would be too complex for such a rare and exotic case (a user
+passing a buffer for a direct IO read/write that is memory mapped to
+the same file range of the operation is very uncommon at least). But
+this patchset would make the fix much simpler and cleaner.
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 6f668bc01cd1..bf93e11b6d4e 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2880,8 +2880,8 @@ static noinline_for_stack int prealloc_file_extent_cluster(
- }
- 
- static noinline_for_stack
--int setup_extent_mapping(struct inode *inode, u64 start, u64 end,
--			 u64 block_start)
-+int setup_relocation_extent_mapping(struct inode *inode, u64 start, u64 end,
-+				    u64 block_start)
- {
- 	struct extent_map_tree *em_tree = &BTRFS_I(inode)->extent_tree;
- 	struct extent_map *em;
-@@ -3080,7 +3080,7 @@ static int relocate_file_extent_cluster(struct inode *inode,
- 
- 	file_ra_state_init(ra, inode->i_mapping);
- 
--	ret = setup_extent_mapping(inode, cluster->start - offset,
-+	ret = setup_relocation_extent_mapping(inode, cluster->start - offset,
- 				   cluster->end - offset, cluster->start);
- 	if (ret)
- 		goto out;
--- 
-2.32.0
+One thing I noticed is that, for direct IO reads, despite setting the
+->nofault attribute of the iov_iter to true, we can still get page
+faults while in the iomap code.
+This happens when reading from holes and unwritten/prealloc extents,
+because iomap calls iov_iter_zero() and this seems to ignore the value
+of ->nofault.
+Is that intentional? I can get around it by surrounding the iomap call
+with pagefault_disable() / pagefault_enable(), but it seems odd to do
+so, given that iov_iter->nofault was set to true.
 
+[1] https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=3Dd3c=
+bdabffc4cb28850e97bc7bd8a7a1460db94e5
+
+Thanks.
+
+>
+>
+> The first two patches are independent of the core of this patch queue
+> and I've asked the respective maintainers to have a look, but I've not
+> heard back from them.  The first patch should just go into Al's tree;
+> it's a relatively straight-forward fix.  The second patch really needs
+> to be looked at; it might break things:
+>
+>   iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+>   powerpc/kvm: Fix kvm_use_magic_page
+>
+>
+> Al and Linus seem to have a disagreement about the error reporting
+> semantics that functions fault_in_{readable,writeable} and
+> fault_in_iov_iter_{readable,writeable} should have.  I've implemented
+> Linus's suggestion of returning the number of bytes not faulted in and I
+> think that being able to tell if "nothing", "something" or "everything"
+> could be faulted in does help, but I'll live with anything that allows
+> us to make progress.
+>
+>
+> The iomap changes should ideally be reviewed by Christoph; I've not
+> heard from him about those.
+>
+>
+> Thanks,
+> Andreas
+>
+> Andreas Gruenbacher (16):
+>   iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+>   powerpc/kvm: Fix kvm_use_magic_page
+>   gup: Turn fault_in_pages_{readable,writeable} into
+>     fault_in_{readable,writeable}
+>   iov_iter: Turn iov_iter_fault_in_readable into
+>     fault_in_iov_iter_readable
+>   iov_iter: Introduce fault_in_iov_iter_writeable
+>   gfs2: Add wrapper for iomap_file_buffered_write
+>   gfs2: Clean up function may_grant
+>   gfs2: Move the inode glock locking to gfs2_file_buffered_write
+>   gfs2: Eliminate ip->i_gh
+>   gfs2: Fix mmap + page fault deadlocks for buffered I/O
+>   iomap: Fix iomap_dio_rw return value for user copies
+>   iomap: Support partial direct I/O on user copy failures
+>   iomap: Add done_before argument to iomap_dio_rw
+>   gup: Introduce FOLL_NOFAULT flag to disable page faults
+>   iov_iter: Introduce nofault flag to disable page faults
+>   gfs2: Fix mmap + page fault deadlocks for direct I/O
+>
+> Bob Peterson (3):
+>   gfs2: Eliminate vestigial HIF_FIRST
+>   gfs2: Remove redundant check from gfs2_glock_dq
+>   gfs2: Introduce flag for glock holder auto-demotion
+>
+>  arch/powerpc/kernel/kvm.c           |   3 +-
+>  arch/powerpc/kernel/signal_32.c     |   4 +-
+>  arch/powerpc/kernel/signal_64.c     |   2 +-
+>  arch/x86/kernel/fpu/signal.c        |   7 +-
+>  drivers/gpu/drm/armada/armada_gem.c |   7 +-
+>  fs/btrfs/file.c                     |   7 +-
+>  fs/btrfs/ioctl.c                    |   5 +-
+>  fs/ext4/file.c                      |   5 +-
+>  fs/f2fs/file.c                      |   2 +-
+>  fs/fuse/file.c                      |   2 +-
+>  fs/gfs2/bmap.c                      |  60 +----
+>  fs/gfs2/file.c                      | 245 ++++++++++++++++++--
+>  fs/gfs2/glock.c                     | 340 +++++++++++++++++++++-------
+>  fs/gfs2/glock.h                     |  20 ++
+>  fs/gfs2/incore.h                    |   5 +-
+>  fs/iomap/buffered-io.c              |   2 +-
+>  fs/iomap/direct-io.c                |  21 +-
+>  fs/ntfs/file.c                      |   2 +-
+>  fs/xfs/xfs_file.c                   |   6 +-
+>  fs/zonefs/super.c                   |   4 +-
+>  include/linux/iomap.h               |  11 +-
+>  include/linux/mm.h                  |   3 +-
+>  include/linux/pagemap.h             |  58 +----
+>  include/linux/uio.h                 |   4 +-
+>  lib/iov_iter.c                      | 103 +++++++--
+>  mm/filemap.c                        |   4 +-
+>  mm/gup.c                            | 139 +++++++++++-
+>  27 files changed, 785 insertions(+), 286 deletions(-)
+>
+> --
+> 2.26.3
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
