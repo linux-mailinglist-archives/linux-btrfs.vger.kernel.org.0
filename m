@@ -2,107 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DCD4000CD
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 15:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3594000E9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Sep 2021 16:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348751AbhICNyT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Sep 2021 09:54:19 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53802 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348494AbhICNyS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Sep 2021 09:54:18 -0400
+        id S235701AbhICODL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Sep 2021 10:03:11 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46958 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229818AbhICODL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Sep 2021 10:03:11 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 4194D203E3;
-        Fri,  3 Sep 2021 13:53:18 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id E128E225AC;
+        Fri,  3 Sep 2021 14:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630677198;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        t=1630677728;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Yz/vcz3WdQSGQoVQbM+ohJZlpB3SizW3NHyWNO9xIVg=;
-        b=oTpcNNMH4lS3hFBUY5NCRl4QZVi9KSMr/TU58YTXP5m7lPMO+6qCoRtPa6mo71x18XKUe/
-        5fQVbC8QetYJ5Iw2sCtQm7no/yaPoRj21ymrH+Fusn1ct/kOsPcqzEO1xzcWmH1WHfE0Wh
-        LyFBFk2LmKdLWM9pOkO76Haxmu29Mfo=
+        bh=JX4YmXBXM9tXdQ7SFyABMhbYlPPumW2TGTcOVOnC3mM=;
+        b=Nf4ByWELm/jL6FLxTZC6cEFX0w6pjRY5H6DwCIWXScL66VOKb2NMNlz3uHMTKNLvYoDQV6
+        2aYCZcKLQYhrcXJTV8SySQHB1QKJgl14bTsQUq6ae09BNAfwd7qVgkh3HpBp3DaK0sA6T/
+        izyubMBJApZR9n2PEiVfjA1V0b5o3a4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630677198;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1630677728;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Yz/vcz3WdQSGQoVQbM+ohJZlpB3SizW3NHyWNO9xIVg=;
-        b=MH9meY2Lc6WJE7wK/vp+ckgsJfHkHT5Wxx3NO3aUZr+LGI55/WQtFEYS2q9FdGCy8Cf6Ed
-        4GJa6fcWsc1GhkCA==
+        bh=JX4YmXBXM9tXdQ7SFyABMhbYlPPumW2TGTcOVOnC3mM=;
+        b=/J7L68pld99KUq7TSs2kzhVHswowbtFoLTVwt70J483HU/LDZulmzPdRuYZbRO2+0oG/VH
+        STx9J8zRaWClBgCg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 11C81A3BBF;
-        Fri,  3 Sep 2021 13:53:18 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id DB3E0A3B97;
+        Fri,  3 Sep 2021 14:02:08 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5FD14DA72B; Fri,  3 Sep 2021 15:53:16 +0200 (CEST)
-Date:   Fri, 3 Sep 2021 15:53:16 +0200
+        id 295A8DA89C; Fri,  3 Sep 2021 16:02:07 +0200 (CEST)
+Date:   Fri, 3 Sep 2021 16:02:07 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 00/10] btrfs-progs: mkfs fixes and prep work for
- extent tree v2
-Message-ID: <20210903135316.GD3379@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] btrfs-progs: use btrfs_key for btrfs_check_node()
+ and btrfs_check_leaf()
+Message-ID: <20210903140207.GE3379@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1629749291.git.josef@toxicpanda.com>
- <20210825135839.GK3379@twin.jikos.cz>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210902130843.120176-1-wqu@suse.com>
+ <20210902130843.120176-2-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210825135839.GK3379@twin.jikos.cz>
+In-Reply-To: <20210902130843.120176-2-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 03:58:39PM +0200, David Sterba wrote:
-> On Mon, Aug 23, 2021 at 04:14:45PM -0400, Josef Bacik wrote:
-> > In order to reduce the amount of pain the reviewers have to endure I'm going to
-> > be sending any prepatory patches separately from the actual feature work.
-> > 
-> > To that end this is the first batch of preparatory patches.  These are to make
-> > working with mkfs a lot easier for the changes I'm making.  These are all fixes
-> > or enhancements that can apply currently.  The only thing that is extent tree v2
-> > specific is the last patch, which adds the incompat flag.
-> > 
-> > I've added the patch for the incompat flag because I will have other preparatory
-> > patches that add helpers that essentially do
-> > 
-> > if (!btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
-> > 	/* Do the old thing. */
-> > 
-> > and then have patches after that add the extent tree v2 magic.  I think this
-> > will make it easier to break up the work, but if we're not comfortable reserving
-> > the bit then I'm fine with dropping that last patch.  It will just mean future
-> > prep work will have to come along with the feature enablement patches.
+On Thu, Sep 02, 2021 at 09:08:41PM +0800, Qu Wenruo wrote:
+> In kernel space we hardly use btrfs_disk_key, unless for very lowlevel
+> code.
 > 
-> Going through the patches I don't think mentioning the extent tree v2
-> makes sense in case the patch is an independent cleanup or refactors
-> some code to be a bit more generic.
-
-I've rephrased some of the changelogs regarding v2.
-
-> The actual incompat bit could be reserved but it would be better to keep
-> it in the future patchset implementing some significant part of the
-> extent tree v2.
+> There is no need to intentionally use btrfs_disk_key in btrfs-progs
+> either.
 > 
-> Even with the "if (EXTENT_TREE_V2)" in place it becomes the
-> implementation and given that I haven't read the whole design doc for
-> that I'm worried that once I find time for that and would suggest some
-> changes the reply would be "no I did it this way, it's implemented,
-> would require too many changes".
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-The design is still flexile enough for the questions I had so we can
-proceed.
+This fails on fsck/001 test
 
-> Would be good to keep mentioning the v2 tree maybe to the cover letter
-> so we know what's the motivation but in the changelogs it's confusing as
-> we don't have any base point for that.
-
-So the plan is to merge it as the experimental feature and patches will
-arrive, which means referencing v2 extent tree is ok and you can keep
-using it.
-
-Patches added to devel.
+    [TEST/fsck]   001-bad-file-extent-bytenr
+failed to restore image ./default_case.img
+basename: missing operand
+Try 'basename --help' for more information.
+failed: /labs/dsterba/gits/btrfs-progs/btrfs check --repair --force
+make: *** [Makefile:413: test-fsck] Error 1
