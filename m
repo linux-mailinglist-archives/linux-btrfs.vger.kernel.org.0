@@ -2,123 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62507400B6C
-	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Sep 2021 15:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7366D400B71
+	for <lists+linux-btrfs@lfdr.de>; Sat,  4 Sep 2021 15:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbhIDNDU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 4 Sep 2021 09:03:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
+        id S232809AbhIDNL3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 4 Sep 2021 09:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhIDNDT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 4 Sep 2021 09:03:19 -0400
+        with ESMTP id S231229AbhIDNL3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 4 Sep 2021 09:11:29 -0400
 Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0729C061575
-        for <linux-btrfs@vger.kernel.org>; Sat,  4 Sep 2021 06:02:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5871C061575
+        for <linux-btrfs@vger.kernel.org>; Sat,  4 Sep 2021 06:10:27 -0700 (PDT)
 Received: from ananda.localnet (unknown [IPv6:2001:a62:1a07:2600:4496:b139:ff3b:5dc0])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 588672B459D;
-        Sat,  4 Sep 2021 15:02:14 +0200 (CEST)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 1727A2B45B4;
+        Sat,  4 Sep 2021 15:10:26 +0200 (CEST)
 From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Duncan <1i5t5.duncan@cox.net>
-Subject: Re: It's broke, Jim. BTRFS mounted read only after corruption errors
-Date:   Sat, 04 Sep 2021 15:02:11 +0200
-Message-ID: <5034273.TbR5U6c5FD@ananda>
-In-Reply-To: <20210831194501.175dadf1@ws>
-References: <20210831194501.175dadf1@ws>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: It's broke, Jim. BTRFS mounted read only after corruption errors on Samsung 980 Pro
+Date:   Sat, 04 Sep 2021 15:10:25 +0200
+Message-ID: <10160891.dnzDEemO5X@ananda>
+In-Reply-To: <20210830044550.GI29026@hungrycats.org>
+References: <9070016.RUGz74dYir@ananda> <2069411.iu4ZIu9ccT@ananda> <20210830044550.GI29026@hungrycats.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
 Authentication-Results: mail.lichtvoll.de;
         auth=pass smtp.auth=martin2 smtp.mailfrom=martin@lichtvoll.de
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Duncan.
+Hi Zygo.
 
-Duncan - 01.09.21, 04:45:01 CEST:
-> Martin Steigerwald posted on Sun, 22 Aug 2021 13:14:39 +0200 as
-> 
-> excerpted:
-> > This might be a sequel of:
+Thank you for your hints.
+
+Zygo Blaxell - 30.08.21, 06:45:50 CEST:
+> On Thu, Aug 26, 2021 at 10:17:33AM +0200, Martin Steigerwald wrote:
+[…]
+> > Last time suspected XXHASH as the culprit, just a gut feeling. So I
+> > used the standard crc32c. Cause I did not think of it I initially
+> > used space cache
+> > v1. But I switched it to space cache v2 I think yesterday.
 > > 
-> > Corruption errors on Samsung 980 Pro
-> > 
-> > https://lore.kernel.org/linux-btrfs/2729231.WZja5ltl65@ananda/
+> > Anyway it can't be xxhash cause crc32c also causes trouble.
 > 
-> I saw on the previous thread some discussion of trim/discard but lost
-> track of whether you're still trying to enable it in the mount options
-> or not.
+> Normally if the drive (or scheduler for that matter) was the problem,
+> you would get mostly parent transid verify failed and csum errors,
+> and every btrfs check error would be preceded by a csum verify
+> failure.
+> 
+> This is not happening here, so the drive is probably fine (unless it's
+> corrupting the hibernation image, but you can verify that by enabling
+> hashes on the hibernation image).
 
-I have it enabled for the Samsung 980 Pro, but still disabled for the 
-Samsung 860 SSD. Which it seems makes sense, considering:
+My bet is also that the drive is fine.
 
-Samsung 860/870 SSDs Continue Causing Problems For Linux Users
+> > My current theory is this:
+> > 
+> > It happens that after resume from hibernation the kernel stops
+> > working correcly. A few seconds till maybe a minute or two after
+> > hibernation. I captured the backtraces in the log this time. See
+> > below.
+> > 
+> > There is some BTRFS backtrace, but it appears to be related to
+> > obtaining kernel memory, and then also a general protection fault.
+> > I saw general protection faults before already on this machine, but
+> > never anywhere else.
+> 
+> That's a very bad sign.  If there are random GPFs, you'll need to take
+> the machine out of production until they are resolved.  Either
+> something is externally corrupting kernel RAM (like RAM failure or a
+> firmware bug) or there's a bug in the kernel that is corrupting
+> kernel RAM (like a use-after-free or hibernation code bug).
 
-https://www.phoronix.com/scan.php?page=news_item&px=Samsung-860-870-More-Quirks
+Yeah. I avoid hibernation for now.
 
-I may just avoid those drives for the future.
+> > My idea now is if the kernel crashes while BTRFS likes to write
+> > something BTRFS might not be consistent afterwards.
+> 
+> That isn't how btrfs works.  btrfs orders writes so that if the kernel
+> is operating correctly, but simply stops writing to the filesystem at
+> any time, no corruption occurs (the filesystem simply reverts to the
+> previously committed transaction) (assuming no raid5/6).
 
-> I'd suggest *NOT* enabling trim/discard on any samsung SSDs unless you
-> are extremely confident that it is well tested and known to work on
-> your particular model, because...
+Or I think I did not word it clearly enough. I said "crash" but thought 
+about a longer term failure scenario as you outlined below:
 
-Well, after I do not hibernate the ThinkPad T14 AMD Gen 1 anymore, I had 
-no issues again.
+> A _completely different_ scenario is that the kernel's memory is
+> corrupted, but the kernel does not stop immediately--it continues
+> writing to the filesystem, unaware of corruption, persisting bad data
+> on disk. If the kernel doesn't crash immediately, btrfs can complete
+> transactions with bad metadata.  In that case, btrfs (or any
+> filesystem) will be damaged, as will any data that machine touches. 
+> The damage may not be repairable as it will bypass or destroy
+> filesystem data integrity protections.
 
-> Now it's quite possible that your newer 980 pro model handles
-> queued-trim properly, but it's also possible that it still doesn't,
-> while the kernel blacklist might have been updated assuming it does,
-> or that the blacklist isn't applying for some reason. And given that
-> you're seeing problems, probably better safe than sorry. I'd leave
-> discard disabled.
+That is exactly what I think might have happened.
 
-Well, you could be right there. But since I did have no issues again, 
-queued trims may just work with Samsung 980 Pro.
+So I think there is not much of a point to keep my "homedefect" logical 
+volume around. No developer asked me to do anything to obtain further 
+information on the issue. If it stays like that for say another week, I 
+will return the 300G for the "homedefect" LV to the wear leveling pool 
+of the SSD.
 
-> Another consideration for btrfs is the older root-blocks that are not
-> normally immediately overwritten, that thus remain available to use
-> for repair/recovery should that be necessary.   Because they're
-> technically no longer in use the discard mount option clears these
-> along with other unused blocks, so they're no longer an option for
-> repair/recover. =:^(
+> > I still think it shall survive
+> > a sudden interruption when writting data even if the cause for that
+> > is a kernel crash, but as Linux is a monolithic kernel, whatever
+> > has caused the kernel mal function may affect BTRFS as well.
+> 
+> It doesn't matter if the kernel is monolithic.  RAM is monolithic.
+> RAM corruption, however caused, can and will break everything in RAM,
+> whether it is kernel, userspace, or firmware.
 
-Hmmm, that is an interesting consideration for using fstrim -av with a 
-cron job and in case of a corruption hope that it was not just at the 
-time the cron job triggered.
+I think it could matter in case of a software bug, i.e. another kernel 
+component accidentally writing into memory BTRFS uses. This would be 
+prevented by a micro kernel.
 
-However, I do tend to eventually put another 42 mm m2 SSD into the 
-laptop and thus skip adding a 4G modem to it. Then I could protect 
-critical data with BTRFS RAID1 or BTRFS send/receive or hourly backups. 
-Actually BTRFS RAID1 prevented me from data loss with the old ThinkPad 
-T520 where there were checksum errors after sudden power loss on Crucial 
-m500 mSATA SSD.
+> > So what I will try next is to shutdown the machine after each day or
+> > just
+> > keep it in standby and hope the battery will not take damage from
+> > it. In other words I will aim at avoiding hibernation. Its hard for
+> > me. I use it
+> > on all of my laptops and now I have the fastest laptop I ever had so
+> > far,
+> > but I cannot seem to use it reliably anymore. The faster the laptop,
+> > the faster it crashes if it does, so to say.
+> > 
+> > Any other ideas, theories, hints?
+> 
+> Start a memory tester running (e.g. 'memtester' or '7z b 9999 -md=xxM'
+> where xx is large enough to allocate most of the free RAM), do
+> hibernation and resume, and see if the memory tester reports failure
+> after resume.
 
-> The alternative (beyond possibly deliberately leaving some
-> unpartitioned free-space for the ssd wear-leveling algorithm to work
-> with, in addition to the unreported space it already reserves for
-> that purpose) is fstrim.
+I may still do this. However I already run the UEFI Lenovo Diagnostic 
+tool and had it do a memory test. It appears to be fine. I did the quick 
+test but then also ran a good part, but not all of a several hour long 
+test. No issues.
 
-I always leave some space for that as long as I still have some left. At 
-the moment I have plenty of space left. I think I will remove 300G 
-homedefect LV soon enough in case no BTRFS developer wants some other 
-debug data from the defective filesystem.
+> If so, you have firmware data integrity issues, or there is a bug in
+> the hibernation code.
+> 
+> Use suspend-to-RAM as a workaround (unless that corrupts memory too).
 
-> At least on my systemd-option gentoo, there's a weekly fstrim
-> scheduled (see fstrim.service and fstrim.timer, owned by the
-> util-linux package), tho I don't recall whether I had to enable it or
-> whether it was enabled automatically.
-
-No systemd here, however I can do a cron job.
-
-Well as it works at the moment as long as I avoid hibernate, I think I 
-keep it that way. And since with Linux 5.14 the deeper sleep state 
-(S0ix), labeled as "Windows 10" mode in firmware settings, seems to work 
-well enough. I'd still prefer true hibernation, but it is just not 
-stable enough on this machine at the moment.
+Yeap, that is what I am using at the moment. It does not seem to corrupt 
+memory. So without hibernation and without the USB-C dock which 
+triggered all kinds of issues with network driver for that r8152 card in 
+there and all kind of other strange issues, the laptop appears to finally 
+be stable. Seems for AMD based Gen 1 ThinkPads, I bet Gen 2 as well 
+there is still some R&D needed to get them stable in these situations as 
+well.
 
 Best,
 -- 
