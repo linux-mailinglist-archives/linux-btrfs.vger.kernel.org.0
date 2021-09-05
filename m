@@ -2,119 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F071F400EC6
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Sep 2021 11:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6036E400F8C
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Sep 2021 14:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236644AbhIEJKn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Sep 2021 05:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37536 "EHLO
+        id S237921AbhIEMP3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Sep 2021 08:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhIEJKm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Sep 2021 05:10:42 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D822C061575
-        for <linux-btrfs@vger.kernel.org>; Sun,  5 Sep 2021 02:09:39 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id a25so7066148ejv.6
-        for <linux-btrfs@vger.kernel.org>; Sun, 05 Sep 2021 02:09:39 -0700 (PDT)
+        with ESMTP id S234382AbhIEMP2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Sep 2021 08:15:28 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE36C061575
+        for <linux-btrfs@vger.kernel.org>; Sun,  5 Sep 2021 05:14:25 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id c17so3860101pgc.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 05 Sep 2021 05:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=mCCG0TZuJ3VQddK3ds0UKsyp103aPaFqEsL+R25NeQE=;
-        b=pZuI6C2myYGD/PVPVt287ihwmbjr0TEX/Cb0REPBQWOnjh90A/jZslBoyvoGHRs9Kz
-         4+Zex041sj3hZ4yfQtic/hXAicmqUVFfvAtC3qaV8RNYg67c7g5oj4RMqb6ULqIu/i2e
-         jzt/Sz76sfecXgVH2ayYAxEq+Z0bHowpTjTJ409qxBX3m2Bt2ucy1gTId1Jb5005nO5s
-         sClu0pPoLDSrvNNjjltw36knTSF/gk9Hm3gAoAr/pJ/AdQibBVcY6sZlpol/y0CL3HNA
-         Xb/XG2JzDNxw/gUJKpsDkLZ/RzHylrwB7IV+Q8bGIfd89z5yROQKbaYWA6MWmSNRvM1s
-         TWgA==
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=e908GPDHUJFAFBG18NLZHAXSRpwWQYW9FozSerkDzFc=;
+        b=cllpbNOyDdDHhpLgVk+RUJqt1Wm/+dad2j4wQDrF8mFS6+e4rksK95q0E1mOa+ScmL
+         gXGAHAzPHFTzKzcCj/qMhfbW4UyaZdBjWBTWK85pMg3fPKI2uwvVCeQp6PRRlxyPCtFZ
+         qBboGhJlTHDgfXLRzbupOAIQuglHMxi3cS+OMYe4Ol8yWTYFCxAlnd0sh93AYCyAafA7
+         eGjpe2JoZ09tFHWU1ycgAP7PjZxzEQEEo1dKqbmFSixjEB8u9ffYk6z3kKzNy7owxiYh
+         F7kFOX25Plxr3lmvNd4Nt9gq6ZwygaN5R7nDlTIwjD4gK2t5VJmB8pgrsZ4O+lSNKpK7
+         yp7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=mCCG0TZuJ3VQddK3ds0UKsyp103aPaFqEsL+R25NeQE=;
-        b=V63sQJ4Ofzp4RzclxcU+uPDUQdA58AB+5DdBJzejmZ0N1rSNnpdkAhqpf36rzoLXoX
-         cnznLW1jaxfCvjJ7EW7/x28g59khcrh4NfY0akSaGAeXOITPOOY9c7IlhpnZiY6Fn6Jn
-         hABMdC8J/BXxtJafsOddGXKxtTtifmCpzvko7bP/PjbI+W4TloOBTXDKYNE6RDmopEs1
-         yJLP+aiJXRYTMVoneyakxd7JE6uxyGY79KIVGuAh1PiSlmecy1CmBV/nP7NpB8sFg1By
-         bewzgPZf7xg9ulXYK2JfsDZjc2vS4tSPNOgp6v6VXiu3FDZRbc9trIkV6uXLvYXFrDnc
-         OIFA==
-X-Gm-Message-State: AOAM532HwmuF+ysLWCWIIII94m+HQv4koFfJ3AxOKiRdYmLccHdqf394
-        eU4T3usvI72Shwxk4VKWNSOZKriflQImX7eCKPQ=
-X-Google-Smtp-Source: ABdhPJztiWNbSZoYnUjRdEgiqW5WzFBErUu1xDx4Pw28Vl96QlUu9JBnT2xlThRuEBvo1OX6t/XbQDFbFTSZPiJXZvw=
-X-Received: by 2002:a17:906:544f:: with SMTP id d15mr8096262ejp.520.1630832978057;
- Sun, 05 Sep 2021 02:09:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=e908GPDHUJFAFBG18NLZHAXSRpwWQYW9FozSerkDzFc=;
+        b=r0YWuPNUcOvGhgDpVgq1YsUPCaIFU18Ft6K7jEWvGzRq3FnSMRiUcDcW8/FPSzllMB
+         j8c/DH388BYuOzrl2WJNL8d0rZW68sZxqg43uLged0Be1d6VpGv/5L6VZ236mmaGzw8S
+         LJk3+mllaXuXpVUjmredPlGFqIO1N7K0c9jT3dP7LdX1R2vB2Bw5XD7DlLf5iLQu+Ckq
+         ut33VfH7InQI5LUzEzn9zC1qYTphN48WIx0z8Pu2PrCkOiGbZvP20hDk5XrXKuuK6YZv
+         98bROmtfLfm4x4F1z/WzNqdXkkhMCUwptLVp240CFiwu8ryQB8g0foWtR811zNPM4Z3e
+         1nrQ==
+X-Gm-Message-State: AOAM532astZf9bke2JBplIHIxI4FBd0ux08TIzAtGl34C42CTDDIrST0
+        lawrljeJdz0VQixRQEe5WcNcay33by8=
+X-Google-Smtp-Source: ABdhPJxoVSe9MSGlP45U+1h5mOQZzdqVvfOANxvSdy/ZWhP9MpPYbFAEMLzA4XqB5wBcioJjDg7VLg==
+X-Received: by 2002:a62:2cc8:0:b0:412:65da:cb with SMTP id s191-20020a622cc8000000b0041265da00cbmr7216255pfs.36.1630844064625;
+        Sun, 05 Sep 2021 05:14:24 -0700 (PDT)
+Received: from realwakka ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id v26sm4695855pfi.207.2021.09.05.05.14.23
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 05:14:24 -0700 (PDT)
+Date:   Sun, 5 Sep 2021 12:14:17 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: An question for FICLONERANGE ioctl
+Message-ID: <20210905121417.GA1774@realwakka>
 MIME-Version: 1.0
-Received: by 2002:ab4:9992:0:0:0:0:0 with HTTP; Sun, 5 Sep 2021 02:09:37 -0700 (PDT)
-Reply-To: cristinacampeell@outlook.com
-From:   "Mrs. Cristina Campbell" <bishopman101@gmail.com>
-Date:   Sun, 5 Sep 2021 10:09:37 +0100
-Message-ID: <CA+qVeJ96tS8+W8ASex6LaM8F=zEjeu2HndVpFx6pGntsWn4Zww@mail.gmail.com>
-Subject: Kannst du mir helfen?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Lieber geliebter,
+Hi, All.
+I've tried to handle btrfs-progs issue.
+(https://github.com/kdave/btrfs-progs/issues/396)
 
-Bitte lesen Sie dies langsam und sorgf=C3=A4ltig durch, da es sich
-m=C3=B6glicherweise um eine der wichtigsten E-Mails handelt, die Sie jemals
-erhalten. Ich bin Mrs. Cristina Campbell, ich war mit dem sp=C3=A4ten
-Edward Campbell verheiratet. Er arbeitete fr=C3=BCher f=C3=BCr die Shell
-Petroleum Development Company London und war auch ein erfahrener
-Bauunternehmer in der Region Ostasien. Er starb am Montag, 31. Juli
-2003 in Paris. Wir waren sieben Jahre ohne Kind verheiratet.
+And I tested some code like below.
 
-W=C3=A4hrend Sie dies lesen, m=C3=B6chte ich nicht, dass Sie Mitleid mit mi=
-r
-haben, denn ich glaube, dass jeder eines Tages sterben wird. Bei mir
-wurde Speiser=C3=B6hrenkrebs diagnostiziert und mein Arzt sagte mir, dass
-ich aufgrund meiner komplizierten Gesundheitsprobleme nicht lange
-durchhalten w=C3=BCrde.
+src_fd = open(src_path, O_RDONLY);
+if (src_fd < 0) {
+	error("cannot open src path %s", src_path);
+	return 1;
+}
 
-Ich m=C3=B6chte, dass Gott mir barmherzig ist und meine Seele akzeptiert,
-deshalb habe ich beschlossen, Almosen an Wohlt=C3=A4tigkeitsorganisationen
-/ Kirchen / buddhistische Tempel / Moscheen / mutterlose Babys /
-weniger Privilegierte und Witwen zu geben, da ich m=C3=B6chte, dass dies
-eine der letzten guten Taten ist Ich tue es auf der Erde, bevor ich
-sterbe. Bisher habe ich Geld an einige Wohlt=C3=A4tigkeitsorganisationen in
-Schottland, Wales, Luxemburg, Finnland und Brasilien verteilt. Jetzt,
-wo sich mein Gesundheitszustand so stark verschlechtert hat, kann ich
-das nicht mehr selbst machen.
+dest_fd = open(dest_path, O_WRONLY|O_CREAT, 0666);
+if (dest_fd < 0) {
+    close(src_fd);
+    error("cannot open dest path %s", dest_path);
+    return 1;
+}
 
-Ich habe einmal Mitglieder meiner Familie gebeten, eines meiner Konten
-zu schlie=C3=9Fen und das Geld, das ich dort habe, an
-Wohlt=C3=A4tigkeitsorganisationen in =C3=96sterreich, Belgien, Deutschland,
-Italien und der Schweiz zu verteilen, sie weigerten sich und behielten
-das Geld f=C3=BCr sich. Daher vertraue ich nicht sie nicht mehr, da sie
-anscheinend nicht mit dem zufrieden sind, was ich ihnen hinterlassen
-habe. Das letzte von meinem Geld, von dem niemand wei=C3=9F, ist die
-riesige Bareinzahlung von sechs Millionen US-Dollar $ 6.000.000,00,
-die ich bei einer Bank in Thailand habe, bei der ich den Fonds
-hinterlegt habe. Ich m=C3=B6chte, dass Sie diesen Fonds f=C3=BCr
-Wohlt=C3=A4tigkeitsprogramme verwenden und die Menschheit in Ihrem Land
-unterst=C3=BCtzen, wenn Sie nur aufrichtig sind.
+range.src_fd = src_fd;
+range.src_offset = src_offset;
+range.src_length = length;
+range.dest_offset = dest_offset;
 
-Ich habe diese Entscheidung getroffen, weil ich kein Kind habe, das
-dieses Geld erben wird, ich habe keine Angst vor dem Tod, daher wei=C3=9F
-ich, wohin ich gehe. Ich wei=C3=9F, dass ich im Scho=C3=9F des Herrn sein w=
-erde.
-Sobald ich Ihre Antwort erhalten habe, werde ich Ihnen den Kontakt der
-Bank mitteilen und Ihnen eine Vollmacht ausstellen, die Sie als
-urspr=C3=BCnglichen Beg=C3=BCnstigten dieses Fonds erm=C3=A4chtigt, dieses
-Wohlt=C3=A4tigkeitsprogramm sofort in Ihrem Land zu beginnen.
+ret = ioctl(dest_fd, FICLONERANGE, &range);
 
-Ich m=C3=B6chte, dass Sie immer f=C3=BCr mich beten. Jede Verz=C3=B6gerung =
-Ihrer
-Antwort wird mir Raum geben, eine andere Person zu diesem Zweck zu
-finden. Wenn Sie kein Interesse haben, bitte ich um Entschuldigung f=C3=BCr
-die Kontaktaufnahme. Sie erreichen mich mit oder antworten Sie mir
-unter meiner privaten E-Mail: (cristinacampeell@outlook.com).
+And this ioctl call failed with error code invalid arguments when length!=0.
+I tried to understand FICLONERANGE man page but I think there is no clue
+about this. I traced kernel code and found out it goes fail in
+generic_remap_checks(). There is an condition checks if req_count is
+correct size and it makes test code fails. 
 
+I don't know about this condition but it seems that it can be passed for
+setting REMAP_FILE_CAN_SHORTEN. Is there any way to setting remap_flags
+in FICLONERANGE ioctl call?
 
-Vielen Dank,
-Dein,
-Frau Cristina Campbell
-Email; cristinacampeell@outlook.com
+Also it would be pleased that if you provide some documentation about
+this.
+
+Sorry for writing without thinking deeply.
+
+Thanks,
+Sidong
