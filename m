@@ -2,139 +2,661 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272A340161E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 07:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05EC401642
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 08:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239193AbhIFF6S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Sep 2021 01:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232461AbhIFF6R (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Sep 2021 01:58:17 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740E9C061575
-        for <linux-btrfs@vger.kernel.org>; Sun,  5 Sep 2021 22:57:13 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id w8so5674796pgf.5
-        for <linux-btrfs@vger.kernel.org>; Sun, 05 Sep 2021 22:57:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Hkn91udIkldYGs/d0DcsITcmtG9k3LaXfmAddPhrYmY=;
-        b=nWb0fKqpxeH3PzRAbzOzdd72VPSN7IoVDl49PEkPz96zIQzzS7geUXkyIgWs+SfEFl
-         gvz0jYlPL5/iK4hDyinE7UzfCZ+IqYJGPReV7pMb0OZaq06PK7yaEo7ZxBRhCWwAhh19
-         Xr0pb5EW5SV5O0XW6MxJWcV28JJk89IE08kwzjAHvphw0WRwWEXu19LsFeZPx/qTFB1/
-         AcfQYNvbeyI28jx2zXjXW8usxu8dJmPeYoS7WBEom9QWHwp3USyXhAMNXJMd2gIgf1wc
-         p8B/ObNNrF5wfXWzxfctqVqC/Y+/IIzmgsgz/TFNq7Y0Jv80vpLjPKoYPel+zXt3M32R
-         hU8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Hkn91udIkldYGs/d0DcsITcmtG9k3LaXfmAddPhrYmY=;
-        b=Ppk10nXlHvC7n/ealX4EOMluOLy1fDZe3EXQ6Xiuln6reI1as8wR4uzm2pltBmzsUP
-         c0E+wwIysDKM6PJsJ98F01wxu5ScnyiZWwCC7jAbJvkG4Pw4GDeJ8lcxoOCBegz296Xg
-         dOPKmiodWbbIpm04AoEWP7bodLzQM2+6wwImR4my4clRymEu39DaCOak66tndIWWoq9J
-         jVTWY7qkpfKPRSxO6KcNns3NFYMHsKYxEZvdPnWfLu0DzHvg31XGFQNT7SCoBlc+UPdB
-         Qu1KO/1yMhFiXM7GyZz9RoM7Ybux+EVM6SETBVmUo+w7kpmO3gTHWPPYsiFifdix/FY7
-         v8Uw==
-X-Gm-Message-State: AOAM5337ngXbSrdRf7X6B9QARYRPMzHPdFd0UGILNRQHp1zylItlrdkC
-        ltr3/19V17RNOaFbG97+jky/3WOV9Fg=
-X-Google-Smtp-Source: ABdhPJydZ39R44byjaBOHeZ87wMsxum5Jf+HNkAJnzmVUYj3bvPAK6FCSRoSurCqtzq/m1/p3h44ig==
-X-Received: by 2002:a63:1f5b:: with SMTP id q27mr10917009pgm.324.1630907833002;
-        Sun, 05 Sep 2021 22:57:13 -0700 (PDT)
-Received: from realwakka ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id 22sm7599455pgn.88.2021.09.05.22.57.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 22:57:12 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 05:57:04 +0000
-From:   Sidong Yang <realwakka@gmail.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: An question for FICLONERANGE ioctl
-Message-ID: <20210906055704.GA2467@realwakka>
-References: <20210905121417.GA1774@realwakka>
- <526c81c1-1362-e24d-6664-2028c46f6353@gmx.com>
+        id S239684AbhIFGOs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Sep 2021 02:14:48 -0400
+Received: from mail-4323.protonmail.ch ([185.70.43.23]:25759 "EHLO
+        mail-4323.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239679AbhIFGOr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Sep 2021 02:14:47 -0400
+X-Greylist: delayed 81564 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Sep 2021 02:14:46 EDT
+Date:   Mon, 06 Sep 2021 06:13:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1630908819; bh=Ff0pMSE7JTioU8kjTR+R/zxwT/y+ecMXri1EUB3Zo70=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=aOGoBCZGfMNBqenQ2trqRSf5fK/iS9jooG82bX/u4GCP7XQUNYGdwM8bcLQJ+r2Sn
+         gSEkND53hZ7QmbyaoNaBBLUNlzzN2+pMDMspA9KdZUkIGKxuAcZ5tdKe6aV+Vnmmtg
+         LrBiaU9I46GDO4xNlMlJUZgXzXEIwk971iApU4PpwQ7reaxLpFze5DeRYSPPbrWn2S
+         7BmGQgm6nWkEJaFdTWU1BoqFRv9d/yNr88W9xiYlpqgI6/CKpjuGscesQjX9ASKHQi
+         jRe6gl4e6jzOxMA8ZuUC6yGuKkUfYEikT01DijQPv6s0xG+XPOwPzwQMXXF3xOpljr
+         bK4ZegHqdTjeQ==
+To:     Qu Wenruo <wqu@suse.com>
+From:   ahipp0 <ahipp0@pm.me>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Reply-To: ahipp0 <ahipp0@pm.me>
+Subject: Re: BTRFS critical: corrupt leaf; BTRFS warning csum failed, expected csum 0x00000000 on AMD Ryzen 7 4800H, Samsung SSD 970 EVO Plus
+Message-ID: <BhXDP0Vx_AExb9FuTS6hEpr1eRkrux_n7AoNG-T1HOvtJaM7mkRN2Yifk5tIoodD5wSEfErIrpbNISVqeQyJU_w6-VePY5T060AxrmLqOf0=@pm.me>
+In-Reply-To: <a043852e-d552-1ce3-4b35-bdbb1793f8ad@suse.com>
+References: <IZ0izVVsQVN4TIg_nsujavw6xz3UG-k0C53QTbeghmAryLDm5vf13M_UyrvBZ9tgDT5Mh8VXrMKBfGNju1_FBaCksUTcqZRnfuRydexvfvA=@pm.me> <01bb7749-eccd-5a3e-eee3-3320c89ce075@gmx.com> <ozcaaGlwEFFj_mq4ZFf_hu1RHtOGruGz8Dwb8HHPEUhCn8Sn3G5BhbJxsMefPbtwacd-dcCJmCv6TbdX1Fdx4r-J_GoHa1rAbB4L4QQWZb0=@pm.me> <5ebaf4e2-a96e-a34a-f509-2a29154149eb@gmx.com> <tDw4sk7EvCGMpj-jprKJJ0hhti2ZS7oRNek_3A3F8IUrhpxQpMPgKRxrhBmWJoMqhA6iZ_OkO2qRUVYrtnB44rv02yPUh0YZe8Adc0IX1R8=@pm.me> <44dc1e9a-7739-f007-5189-00fd81c0ef26@suse.com> <nlXbBH0TVIiMesk038DMLcR8tUOPa5gWVCWyxtyMLXSgC0l-MItGpoGQQSzXKNC1ZHcj1NXtZqU2czoEA-BTgSgWY6fwv-HPClN7D0PTxIc=@pm.me> <a043852e-d552-1ce3-4b35-bdbb1793f8ad@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <526c81c1-1362-e24d-6664-2028c46f6353@gmx.com>
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha512; boundary="------9f835499f19799155766bccc9a37ee5095fa860ea3404e0252ba5cd8bf510507"; charset=utf-8
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 09:13:06AM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2021/9/5 下午8:14, Sidong Yang wrote:
-> > Hi, All.
-> > I've tried to handle btrfs-progs issue.
-> > (https://github.com/kdave/btrfs-progs/issues/396)
-> > 
-> > And I tested some code like below.
-> > 
-> > src_fd = open(src_path, O_RDONLY);
-> > if (src_fd < 0) {
-> > 	error("cannot open src path %s", src_path);
-> > 	return 1;
-> > }
-> > 
-> > dest_fd = open(dest_path, O_WRONLY|O_CREAT, 0666);
-> > if (dest_fd < 0) {
-> >      close(src_fd);
-> >      error("cannot open dest path %s", dest_path);
-> >      return 1;
-> > }
-> > 
-> > range.src_fd = src_fd;
-> > range.src_offset = src_offset;
-> > range.src_length = length;
-> > range.dest_offset = dest_offset;
-> 
-> Mind to give an example of the value?
-It was src_offset = 0, src_length = 10, dest_offset = 0.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------9f835499f19799155766bccc9a37ee5095fa860ea3404e0252ba5cd8bf510507
+Content-Type: multipart/mixed;boundary=---------------------01a2c9e0bbed30f950859cdda0714121
 
-> 
-> One quick hint to the invalid arguments is:
-> 
-> - Range alignment
->   The src/dst offset must be aligned to the block size of the
->   filesystem.
->   For btrfs, the sectorsize is currently the same as page size,
->   thus both src/dest and length must be aligned to 4K for x86.
+-----------------------01a2c9e0bbed30f950859cdda0714121
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
 
-I think it's because of this. I set too small value. It works with
-length 4K. If reflink cmd in btrfs-progs exists, Users should set the
-length aligned?
+On Monday, September 6th, 2021 at 1:20 AM, Qu wrote:
 
-Thanks,
-Sidong
-> 
-> Thus a more detailed example can be much better for us to understand the
-> problem.
-> 
+> On 2021/9/6 =E4=B8=8B=E5=8D=8812:07, ahipp0 wrote:
+> =
+
+
+> [...]
+> =
+
+
+> > > Those offending blocks are some data extents.
+> > =
+
+
+> > $ sudo ./btrfs inspect-internal logical-resolve 3109511168 /mnt/hippo/
+> > =
+
+
+> > /mnt/hippo/home-andrey/.config/SpiderOakONE/tss_external_blocks_pandor=
+a_sqliite_database/00000011
+> > =
+
+
+> > $ sudo ./btrfs inspect-internal logical-resolve 3121950720 /mnt/hippo/
+> > =
+
+
+> > /mnt/hippo/home-andrey/.config/SpiderOakONE/tss_external_blocks_pandor=
+a_sqliite_database/00000011
+> > =
+
+
+> > I remember it was complaining about the file when I was backing things=
+ up.
+> > =
+
+
+> > This file can be easily dropped -- I already rebuilt SpiderOak databas=
+e anyway since I couldn't back it up.
+> =
+
+
+> You can try to delete them, but the problem is, if it doesn't work well,
+> =
+
+
+> it can cause btrfs to abort transaction (aka, turns into read-only mount=
+).
+> =
+
+
+> Thus you may want to delete them, sync the fs, check the dmesg to make
+> =
+
+
+> sure the fs is still fine.
+
+Hm, looks like it didn't complain.
+(I just nuked the whole .config/SpiderOakONE directory)
+
+> If that works, then btrfs-check again to make sure the problem is gone.
+
+Looks much better now:
+
+$ sudo ./btrfs check /dev/nvme0n1p4
+Opening filesystem to check...
+Checking filesystem on /dev/nvme0n1p4
+UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+root 257 inode 488887 errors 1000, some csum missing
+root 257 inode 488889 errors 1000, some csum missing
+root 257 inode 488895 errors 1000, some csum missing
+root 257 inode 488963 errors 1000, some csum missing
+root 257 inode 488964 errors 1000, some csum missing
+root 257 inode 488966 errors 1000, some csum missing
+root 257 inode 488967 errors 1000, some csum missing
+ERROR: errors found in fs roots
+found 70414278656 bytes used, error(s) found
+total csum bytes: 68552088
+total tree bytes: 209338368
+total fs tree bytes: 111853568
+total extent tree bytes: 14024704
+btree space waste bytes: 41823418
+file data blocks allocated: 73253691392
+ referenced 70072770560
+
+
+$ sudo ./btrfs check --mode=3Dlowmem /dev/nvme0n1p4
+Opening filesystem to check...
+Checking filesystem on /dev/nvme0n1p4
+UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+ERROR: root 257 EXTENT_DATA[488887 4096] csum missing, have: 0, expected: =
+12288
+ERROR: root 257 EXTENT_DATA[488889 4096] csum missing, have: 0, expected: =
+16384
+ERROR: root 257 EXTENT_DATA[488895 0] csum missing, have: 0, expected: 122=
+88
+ERROR: root 257 EXTENT_DATA[488963 0] csum missing, have: 0, expected: 819=
+2
+ERROR: root 257 EXTENT_DATA[488964 0] csum missing, have: 0, expected: 819=
+2
+ERROR: root 257 EXTENT_DATA[488966 0] csum missing, have: 0, expected: 819=
+2
+ERROR: root 257 EXTENT_DATA[488967 0] csum missing, have: 0, expected: 819=
+2
+ERROR: errors found in fs roots
+found 70414278656 bytes used, error(s) found
+total csum bytes: 68552088
+total tree bytes: 209338368
+total fs tree bytes: 111853568
+total extent tree bytes: 14024704
+btree space waste bytes: 41823418
+file data blocks allocated: 73253691392
+ referenced 70072770560
+
+
+Seems like these inodes with zero csums can all be removed too since it's =
+some Steam (built-in browser?) cache.
+
+$ for i in 488887 488889 488895 488963 488964 488966 488967 ; do sudo ./bt=
+rfs inspect-internal inode-resolve "$i" /mnt/hippo/ ; done
+/mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/Cache/=
+f3778f4fc6657764_0
+/mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/Cache/=
+fc05b030bc3ab2bc_0
+/mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/Cache/=
+aa9d1c627d0d4ae1_0
+/mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/Cache/=
+24ede0e2ab3e0575_0
+/mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/Cache/=
+5aa559bb0d57bd6a_0
+/mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/Cache/=
+da80b0a1607292bd_0
+/mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/Cache/=
+90b6c5585a06e357_0
+
+$ for i in 488887 488889 488895 488963 488964 488966 488967 ; do stat $(su=
+do ./btrfs inspect-internal inode-resolve "$i" /mnt/hippo/) ; done
+File: /mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/=
+Cache/f3778f4fc6657764_0
+Size: 15094           Blocks: 32         IO Block: 4096   regular file
+Device: 3bh/59d Inode: 488887      Links: 1
+Access: (0600/-rw-------)  Uid: ( 1000/  andrey)   Gid: ( 1000/  andrey)
+Access: 2021-09-03 23:23:30.297522881 -0400
+Modify: 2021-09-03 23:23:30.705560160 -0400
+Change: 2021-09-03 23:23:30.705560160 -0400
+Birth: -
+File: /mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/=
+Cache/fc05b030bc3ab2bc_0
+Size: 19104           Blocks: 40         IO Block: 4096   regular file
+Device: 3bh/59d Inode: 488889      Links: 1
+Access: (0600/-rw-------)  Uid: ( 1000/  andrey)   Gid: ( 1000/  andrey)
+Access: 2021-09-03 23:23:30.509542251 -0400
+Modify: 2021-09-03 23:23:30.893577338 -0400
+Change: 2021-09-03 23:23:30.893577338 -0400
+Birth: -
+File: /mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/=
+Cache/aa9d1c627d0d4ae1_0
+Size: 8406            Blocks: 24         IO Block: 4096   regular file
+Device: 3bh/59d Inode: 488895      Links: 1
+Access: (0600/-rw-------)  Uid: ( 1000/  andrey)   Gid: ( 1000/  andrey)
+Access: 2021-09-03 23:23:35.802021943 -0400
+Modify: 2021-09-03 23:23:37.138141842 -0400
+Change: 2021-09-03 23:23:37.138141842 -0400
+Birth: -
+File: /mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/=
+Cache/24ede0e2ab3e0575_0
+Size: 7844            Blocks: 16         IO Block: 4096   regular file
+Device: 3bh/59d Inode: 488963      Links: 1
+Access: (0600/-rw-------)  Uid: ( 1000/  andrey)   Gid: ( 1000/  andrey)
+Access: 2021-09-03 23:23:40.054401865 -0400
+Modify: 2021-09-03 23:23:40.362429172 -0400
+Change: 2021-09-03 23:23:40.362429172 -0400
+Birth: -
+File: /mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/=
+Cache/5aa559bb0d57bd6a_0
+Size: 7473            Blocks: 16         IO Block: 4096   regular file
+Device: 3bh/59d Inode: 488964      Links: 1
+Access: (0600/-rw-------)  Uid: ( 1000/  andrey)   Gid: ( 1000/  andrey)
+Access: 2021-09-03 23:23:40.054401865 -0400
+Modify: 2021-09-03 23:23:40.370429882 -0400
+Change: 2021-09-03 23:23:40.370429882 -0400
+Birth: -
+File: /mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/=
+Cache/da80b0a1607292bd_0
+Size: 5808            Blocks: 16         IO Block: 4096   regular file
+Device: 3bh/59d Inode: 488966      Links: 1
+Access: (0600/-rw-------)  Uid: ( 1000/  andrey)   Gid: ( 1000/  andrey)
+Access: 2021-09-03 23:23:40.054401865 -0400
+Modify: 2021-09-03 23:23:40.226417115 -0400
+Change: 2021-09-03 23:23:40.226417115 -0400
+Birth: -
+File: /mnt/hippo//home-andrey/.steam/debian-installation/config/htmlcache/=
+Cache/90b6c5585a06e357_0
+Size: 7110            Blocks: 16         IO Block: 4096   regular file
+Device: 3bh/59d Inode: 488967      Links: 1
+Access: (0600/-rw-------)  Uid: ( 1000/  andrey)   Gid: ( 1000/  andrey)
+Access: 2021-09-03 23:23:40.054401865 -0400
+Modify: 2021-09-03 23:23:40.362429172 -0400
+Change: 2021-09-03 23:23:40.362429172 -0400
+Birth: -
+
+Seems like these files were all created within 10 seconds of each other.
+
+After deleting the whole /mnt/hippo//home-andrey/.steam/debian-installatio=
+n/config/htmlcache/Cache directory,
+it seems the filesystem is clean.
+
+$ sudo ./btrfs check /dev/nvme0n1p4
+Opening filesystem to check...
+Checking filesystem on /dev/nvme0n1p4
+UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 70097395712 bytes used, no error found
+total csum bytes: 68235972
+total tree bytes: 206290944
+total fs tree bytes: 109363200
+total extent tree bytes: 13598720
+btree space waste bytes: 41683028
+file data blocks allocated: 72939855872
+ referenced 69761359872
+
+$ sudo ./btrfs check --mode=3Dlowmem /dev/nvme0n1p4
+Opening filesystem to check...
+Checking filesystem on /dev/nvme0n1p4
+UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs done with fs roots in lowmem mode, skipping
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 70097395712 bytes used, no error found
+total csum bytes: 68235972
+total tree bytes: 206290944
+total fs tree bytes: 109363200
+total extent tree bytes: 13598720
+btree space waste bytes: 41683028
+file data blocks allocated: 72939855872
+ referenced 69761359872
+
+$ sudo ./btrfs scrub status /mnt/hippo/
+UUID:             2b69016b-e03b-478a-84cd-f794eddfebd5
+Scrub started:    Mon Sep  6 02:06:54 2021
+Status:           finished
+Duration:         0:00:22
+Total to scrub:   65.28GiB
+Rate:             2.97GiB/s
+Error summary:    no errors found
+
+
+Can the filesystem now be considered clean as in "never corrupted"?
+Or is there still a reason to reformat it?
+
+Would using DUP profile for metadata and system help with this kind of cor=
+ruption?
+Would it be generally advisable to use it going forward?
+
+
+> =
+
+
+> The csum missing problem is not a big deal, that can be easily deleted
+> by finding inode 31924 of subvolume 257 and delete it.
+> Or you can easily ignore it completely.
+
+Seems like it's gone already:
+
+$ sudo ./btrfs inspect-internal inode-resolve 31924 /mnt/hippo/
+ERROR: ino paths ioctl: No such file or directory
+
+> =
+
+
 > Thanks,
+> =
+
+
 > Qu
-> > 
-> > ret = ioctl(dest_fd, FICLONERANGE, &range);
-> > 
-> > And this ioctl call failed with error code invalid arguments when length!=0.
-> > I tried to understand FICLONERANGE man page but I think there is no clue
-> > about this. I traced kernel code and found out it goes fail in
-> > generic_remap_checks(). There is an condition checks if req_count is
-> > correct size and it makes test code fails.
-> > 
-> > I don't know about this condition but it seems that it can be passed for
-> > setting REMAP_FILE_CAN_SHORTEN. Is there any way to setting remap_flags
-> > in FICLONERANGE ioctl call?
-> > 
-> > Also it would be pleased that if you provide some documentation about
-> > this.
-> > 
-> > Sorry for writing without thinking deeply.
-> > 
-> > Thanks,
-> > Sidong
-> > 
+> =
+
+
+> > > Can you use some newer btrfs-progs and run check on it again? (not y=
+et
+> > > =
+
+
+> > > repair)
+> > =
+
+
+> > > This time in both original and lowmem mode.
+> > =
+
+
+> > > As the involved btrfs-progs is pretty old, thus newer btrfs-progs (t=
+he
+> > > =
+
+
+> > > newer the better) may cause some difference.
+> > > =
+
+
+> > > (Sorry, I should mention it earlier)
+> > =
+
+
+> > No worries.
+> > =
+
+
+> > Just built the latest tag from btrfs-progs repository with
+> > =
+
+
+> > ./configure --prefix=3D"${PWD}/_install" --disable-documentation --dis=
+able-shared --disable-convert --disable-python --disable-zoned
+> > =
+
+
+> > $ ./btrfs --version
+> > =
+
+
+> > btrfs-progs v5.13.1
+> > =
+
+
+> > $ sudo ./btrfs check --mode=3Dlowmem /dev/nvme0n1p4
+> > =
+
+
+> > Opening filesystem to check...
+> > =
+
+
+> > Checking filesystem on /dev/nvme0n1p4
+> > =
+
+
+> > UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+> > =
+
+
+> > [1/7] checking root items
+> > =
+
+
+> > [2/7] checking extents
+> > =
+
+
+> > [3/7] checking free space cache
+> > =
+
+
+> > [4/7] checking fs roots
+> > =
+
+
+> > ERROR: root 257 EXTENT_DATA[31924 5689344] csum missing, have: 36864, =
+expected: 40960
+> > =
+
+
+> > ERROR: errors found in fs roots
+> > =
+
+
+> > found 71181221888 bytes used, error(s) found
+> > =
+
+
+> > total csum bytes: 69299516
+> > =
+
+
+> > total tree bytes: 212942848
+> > =
+
+
+> > total fs tree bytes: 113672192
+> > =
+
+
+> > total extent tree bytes: 14925824
+> > =
+
+
+> > btree space waste bytes: 42179056
+> > =
+
+
+> > file data blocks allocated: 86059712512
+> > =
+
+
+> > referenced 70790922240
+> > =
+
+
+> > $ sudo ./btrfs check /dev/nvme0n1p4
+> > =
+
+
+> > Opening filesystem to check...
+> > =
+
+
+> > Checking filesystem on /dev/nvme0n1p4
+> > =
+
+
+> > UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+> > =
+
+
+> > [1/7] checking root items
+> > =
+
+
+> > [2/7] checking extents
+> > =
+
+
+> > extent item 3109511168 has multiple extent items
+> > =
+
+
+> > ref mismatch on [3109511168 2105344] extent item 1, found 5
+> > =
+
+
+> > backref disk bytenr does not match extent record, bytenr=3D3109511168,=
+ ref bytenr=3D3111489536
+> > =
+
+
+> > backref bytes do not match extent backref, bytenr=3D3109511168, ref by=
+tes=3D2105344, backref bytes=3D8192
+> > =
+
+
+> > backref disk bytenr does not match extent record, bytenr=3D3109511168,=
+ ref bytenr=3D3111260160
+> > =
+
+
+> > backref bytes do not match extent backref, bytenr=3D3109511168, ref by=
+tes=3D2105344, backref bytes=3D8192
+> > =
+
+
+> > backref disk bytenr does not match extent record, bytenr=3D3109511168,=
+ ref bytenr=3D3111411712
+> > =
+
+
+> > backref bytes do not match extent backref, bytenr=3D3109511168, ref by=
+tes=3D2105344, backref bytes=3D12288
+> > =
+
+
+> > backref disk bytenr does not match extent record, bytenr=3D3109511168,=
+ ref bytenr=3D3111436288
+> > =
+
+
+> > backref bytes do not match extent backref, bytenr=3D3109511168, ref by=
+tes=3D2105344, backref bytes=3D16384
+> > =
+
+
+> > backpointer mismatch on [3109511168 2105344]
+> > =
+
+
+> > extent item 3121950720 has multiple extent items
+> > =
+
+
+> > ref mismatch on [3121950720 2220032] extent item 1, found 4
+> > =
+
+
+> > backref disk bytenr does not match extent record, bytenr=3D3121950720,=
+ ref bytenr=3D3124080640
+> > =
+
+
+> > backref bytes do not match extent backref, bytenr=3D3121950720, ref by=
+tes=3D2220032, backref bytes=3D8192
+> > =
+
+
+> > backref disk bytenr does not match extent record, bytenr=3D3121950720,=
+ ref bytenr=3D3123773440
+> > =
+
+
+> > backref bytes do not match extent backref, bytenr=3D3121950720, ref by=
+tes=3D2220032, backref bytes=3D8192
+> > =
+
+
+> > backref disk bytenr does not match extent record, bytenr=3D3121950720,=
+ ref bytenr=3D3124051968
+> > =
+
+
+> > backref bytes do not match extent backref, bytenr=3D3121950720, ref by=
+tes=3D2220032, backref bytes=3D12288
+> > =
+
+
+> > backpointer mismatch on [3121950720 2220032]
+> > =
+
+
+> > ERROR: errors found in extent allocation tree or chunk allocation
+> > =
+
+
+> > [3/7] checking free space cache
+> > =
+
+
+> > [4/7] checking fs roots
+> > =
+
+
+> > root 257 inode 31924 errors 1000, some csum missing
+> > =
+
+
+> > ERROR: errors found in fs roots
+> > =
+
+
+> > found 71181148160 bytes used, error(s) found
+> > =
+
+
+> > total csum bytes: 69299516
+> > =
+
+
+> > total tree bytes: 212942848
+> > =
+
+
+> > total fs tree bytes: 113672192
+> > =
+
+
+> > total extent tree bytes: 14925824
+> > =
+
+
+> > btree space waste bytes: 42179056
+> > =
+
+
+> > file data blocks allocated: 86059712512
+> > =
+
+
+> > referenced 70790922240
+> > =
+
+
+> > > Thanks,
+> > =
+
+
+> > > Qu
+-----------------------01a2c9e0bbed30f950859cdda0714121--
+
+--------9f835499f19799155766bccc9a37ee5095fa860ea3404e0252ba5cd8bf510507
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: ProtonMail
+
+wnUEARYKAAYFAmE1sWYAIQkQansmvPyL2SsWIQSmC4s1WhXLLzG+OkVqeya8
+/IvZK59bAQCWFMcauJqD+JyYfsA8oHAHzfu2aJGtXRBMhSQ2HP5vIAD/Uv+E
+tfgoEtEAJZvSO/cMDJXXWUh1OEulinDM8zAT9AI=
+=edq9
+-----END PGP SIGNATURE-----
+
+
+--------9f835499f19799155766bccc9a37ee5095fa860ea3404e0252ba5cd8bf510507--
+
