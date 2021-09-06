@@ -2,119 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C38401B34
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 14:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F2F401C57
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 15:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242258AbhIFM26 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Sep 2021 08:28:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56720 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242247AbhIFM25 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Sep 2021 08:28:57 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E5CB41FEEE;
-        Mon,  6 Sep 2021 12:27:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630931270;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q5Gjv/o2r31Pg5vgSEoAXdlHZThs4FawYEtj69ES0+s=;
-        b=Wjec5BuFH/snRU+lj0EWXJqw1F4PdiMVA37DDVriVRPiWzNFBLTMKM+So6qgjp8cBOY/qw
-        mLKxW4bglIuDqnshO4dHOIsK58LZE/JEXPlTsU3dQChorU5/ge+QzD9/+bwdt4nGYB2374
-        Ttk8f5ucNkvnpjn9swZWaWNBoOv0zCM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630931270;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q5Gjv/o2r31Pg5vgSEoAXdlHZThs4FawYEtj69ES0+s=;
-        b=y8Fm6tjaBOyin7BFqKGEf25V2DvFHbrdu1O/xm6qRqlDTwZCeG5RsNRnYtAbEYpos5US/D
-        R0+7g9L9iR25S/Cw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id DB451A3B88;
-        Mon,  6 Sep 2021 12:27:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 83674DA781; Mon,  6 Sep 2021 14:27:47 +0200 (CEST)
-Date:   Mon, 6 Sep 2021 14:27:47 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Baptiste Lepers <baptiste.lepers@gmail.com>
-Cc:     "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: transaction: Fix misplaced barrier in
- btrfs_record_root_in_trans
-Message-ID: <20210906122747.GG3379@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Baptiste Lepers <baptiste.lepers@gmail.com>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210906012559.8605-1-baptiste.lepers@gmail.com>
+        id S242495AbhIFNfp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Sep 2021 09:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242482AbhIFNfp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Sep 2021 09:35:45 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9688AC061575
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Sep 2021 06:34:40 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id c5so3958380plz.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Sep 2021 06:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zwloAR36W/p6vXlIWIqtNOL/yOJESCe4TSraHJC/sx4=;
+        b=FrBrUDfgYkRPOgIBVTcr/RwEdb4fw5TORiuxdVmk8FfHk7bYvPTNlfAfcGns8lJm4A
+         ly1CPZq9vZzDJQOgUa2k3QmZ6LMGdSGzpJ+0YVb0ik1r7iRUL8SsdNT+MvGYHErWZ0NA
+         6sGkfbwYgCcmZTIdK8NLgLZqIoo8NWDupygNzgSXwT1SAaY8kZ7PC1foEFx+klDhA+4l
+         orqrcd7+5pap7JOWx8uZqcYNjfWWRy0nmIvehLGj/x19LIJ2JAJexLcHmPs5Li520K8a
+         mIKdKsttKhicB+F1Je6USgcmOTy65X9nV2nmyA3Rt0r5CAuJ9rVTiPvc321id94aIK5+
+         RDUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zwloAR36W/p6vXlIWIqtNOL/yOJESCe4TSraHJC/sx4=;
+        b=PkevsCtY9IWhCpHf4AKt8Utf1saBBCQdfrGXonyj18aN62ZHICo+v9cDDn1TEb671O
+         UmnX7qrKlAQQdcXEuf1zse21wuN7ytlaFKrDAszQxSUf9Jmq+sdj8WYQx02n6lZEoR7A
+         /1OhyH7g9140La7UKbW8FrDLw7MhKIL+D4g87VkqoY5SgMoNUpHELlERPU6dKfhWVPT0
+         toKf7PQzwg4J1/f4idwmO3W7SYe5dYdTIb8eLxqUml01oA43MeHEKkPbYGOemMhu2R8s
+         89we5Rj2MSl6Nv5Jp7SkGxIi2pF9BRs4mPrD+ZQRIUJQ8VqB+BXIthMld3RWTxRB0GSX
+         LMyQ==
+X-Gm-Message-State: AOAM532LR01qqCO1EWRyseO0cn6Tn6lydsnLp1H/503ScHKZo5352/f6
+        80QUdqX5lQxIwiUJx0YRF3Z3vqMJAYY=
+X-Google-Smtp-Source: ABdhPJwTY+zEORT9ODqygMR3rOeQD7vexZZVRfFJESIIjAGuvXuxkewFBYBTW/AnVAZIhT8lIhFg/Q==
+X-Received: by 2002:a17:90a:9912:: with SMTP id b18mr14306407pjp.46.1630935279921;
+        Mon, 06 Sep 2021 06:34:39 -0700 (PDT)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id p9sm8046371pfq.15.2021.09.06.06.34.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 06:34:39 -0700 (PDT)
+From:   Sidong Yang <realwakka@gmail.com>
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH] btrfs-progs: props: init compression prop_handlers with field name
+Date:   Mon,  6 Sep 2021 13:34:32 +0000
+Message-Id: <20210906133432.5485-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210906012559.8605-1-baptiste.lepers@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 11:25:59AM +1000, Baptiste Lepers wrote:
-> Per comment, record_root_in_trans orders the writes of the root->state
-> and root->last_trans:
->       set_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
->       smp_wmb();
->       root->last_trans = trans->transid;
-> 
-> But the barrier that enforces the order on the read side is misplaced:
->      smp_rmb(); <-- misplaced
->      if (root->last_trans == trans->transid &&
->     <-- missing barrier here -->
->             !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
-> 
-> This patches fixes the ordering and wraps the racy accesses with
-> READ_ONCE and WRITE_ONCE calls to avoid load/store tearing.
-> 
-> Fixes: 7585717f304f5 ("Btrfs: fix relocation races")
-> Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
-> ---
->  fs/btrfs/transaction.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 14b9fdc8aaa9..a609222e6704 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -437,7 +437,7 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
->  				   (unsigned long)root->root_key.objectid,
->  				   BTRFS_ROOT_TRANS_TAG);
->  		spin_unlock(&fs_info->fs_roots_radix_lock);
-> -		root->last_trans = trans->transid;
-> +		WRITE_ONCE(root->last_trans, trans->transid);
->  
->  		/* this is pretty tricky.  We don't want to
->  		 * take the relocation lock in btrfs_record_root_in_trans
-> @@ -489,7 +489,7 @@ int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
->  			       struct btrfs_root *root)
->  {
->  	struct btrfs_fs_info *fs_info = root->fs_info;
-> -	int ret;
-> +	int ret, last_trans;
->  
->  	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
->  		return 0;
-> @@ -498,8 +498,9 @@ int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
->  	 * see record_root_in_trans for comments about IN_TRANS_SETUP usage
->  	 * and barriers
->  	 */
-> +	last_trans = READ_ONCE(root->last_trans);
->  	smp_rmb();
-> -	if (root->last_trans == trans->transid &&
-> +	if (last_trans == trans->transid &&
->  	    !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+Compression prop_handler is initialized without field name. This patch
+corrects that it's initialized with field name.
 
-Aren't the smp_rmb barriers supposed to be used before the condition?
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+ props.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/props.c b/props.c
+index aeb48679..81509e48 100644
+--- a/props.c
++++ b/props.c
+@@ -186,7 +186,8 @@ const struct prop_handler prop_handlers[] = {
+ 		.name = "compression",
+ 		.desc = "compression algorithm for the file or directory",
+ 		.read_only = 0,
+-	 	.types = prop_object_inode, prop_compression
++		.types = prop_object_inode,
++		.handler = prop_compression
+ 	},
+ 	{NULL, NULL, 0, 0, NULL}
+ };
+-- 
+2.25.1
+
