@@ -2,105 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D745B401D61
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 17:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22676401E68
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 18:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbhIFPGP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Sep 2021 11:06:15 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:60335 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhIFPGO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Sep 2021 11:06:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1630940709; x=1662476709;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=lwN7i8oYcDhYizeYOytqLePr7a5ni/5tD53IO5z2CGA=;
-  b=qzQB3R2ZF42A+BzDf1dSNvW2SkeqQWeCteAxijKpYoRB1s06QethLAx2
-   yw6JOINXpfqRYqbkPv7SIjOAp3jivy4QJ0R9eDeD9w4gs9cINUUFKNga9
-   n60xY056B3dUbyBcKHSyb30qZmuubal9YlrZWl3V1/bUdT98vAfychx8p
-   jfoMILyL/BneHsMO5W9I7/EX/m8+IxIWkHcoSftN5qvdgvnYhDZsOOqlJ
-   mgu4GTUf1IVJgPdsbqI1Gb7NIHc5IaZ/t9KwiSVq4fHwKXReqQb2jbyzg
-   FCExg6zB30AVM2ibiwjDvLUGvGWD9/f20DYKPvGbwg4pqyC8F2tlsHi3B
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.85,272,1624291200"; 
-   d="scan'208";a="283095376"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Sep 2021 23:05:01 +0800
-IronPort-SDR: wtj43KcONZZ2jgd0MlnVIWIxw28hFOlJGLn+3t2MQn5rdfbrxyRDZqUdbk8MuxxGyxploZHiki
- kYwF0xQxm88s3B52c8Bs/noiEmu/QnoMpBjvjWLAHa9A0ZGjmLyj221p5aeH/+0ycjcfouO5T3
- fOf4sEF9T7xl3nwrDHRK7KjlUIlhazosA0vTHtd1reXeGpCfCQ4QLrzVnANXObl07e8YoRKo+/
- MSZ78BhhCbLIS/QsKtLHJfHJ4T/K2STLL+fxMLf8HtDw4s3MX9x3yfQf45BWs9jvx0WliEhFfS
- KHMJ+dOcU1cTnPWq7GvApymf
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 07:40:01 -0700
-IronPort-SDR: pFAZicz/Jb+WpMWj1wJX2hDiTt2Gd2NhF/Hi1mHHWwH85+dunGMeaIEHTYAXtHBzRhIyai1/TD
- yPGvgdjr+UPtWNGbZJhkY5nTiSKBfFdY9kS8cpM3BLUEvUeIytxNnvHJWDj3OTmgc4MXTmxwwr
- 2TT8vonusY0ZXCRQegfBsgaKH0u/fx7W160exrbV3aC2DLS+GcHaRSN8jquLkQ0gqk16W+Zu8+
- tDaI3BL9X89868lsAsPusImg4NjFpBSDnfWOMNrJbjwLlWFzgcSrFq+C76SfcfMUXD+TY9QzEV
- O3E=
-WDCIronportException: Internal
-Received: from 8x4k3x2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.51.17])
-  by uls-op-cesaip02.wdc.com with ESMTP; 06 Sep 2021 08:05:02 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: fix double counting of split ordered extent
-Date:   Tue,  7 Sep 2021 00:04:28 +0900
-Message-Id: <20210906150428.2399128-1-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.33.0
+        id S244185AbhIFQdx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Sep 2021 12:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244197AbhIFQds (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Sep 2021 12:33:48 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D296C0617AD
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 Sep 2021 09:32:43 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id a1so7343652ilj.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 Sep 2021 09:32:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Hi0ERA05Hh6q+34+Ou3AtyiRWoG/jVLdZcB+Ekv+M3g=;
+        b=AQXQzDCQYveoXX8TzTwuiAk/FEyR3wCuvC9VFUOgylxIOdg1EFZyjuPsYQnAcX6J45
+         hGQ/TLw/xoIRE4dR4duos/11L9nUC9pcUBl/RXv6WkJZOj9GF3K+dFgRBHNvOmD3hg/2
+         8aWexR+OCBkLd9FzUsmw6Mf2hXMKPJJYu5JOjAjvp1WIk7xCdh9mnYnLj+26R+tY7rgo
+         HJPLbs6wPd+nl87UvFskxFfDoXbe22pxgW1zf9L/3TdM0lyau7vB+LmM0EAyEmYoeoMO
+         ZhwZDLJwTAD2meT4nF7FnViJ3hJIW4496YAschcWJBrRRFI5yQJjoNMRwEQgQiqRwsUz
+         E0sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Hi0ERA05Hh6q+34+Ou3AtyiRWoG/jVLdZcB+Ekv+M3g=;
+        b=O0LzJqX6MTaTeNtV8o+1ymTE3zKWhx+fAccX0cbrJALwUkN0tOAe7iE8u2GWJbRaQB
+         vuUPE6ps7azcmx7sWm+z0oeXkcX9Q51OLEHsIWprckQ/8nLXtlN/AarrrajrFrwcC2MN
+         YmT+Z043dzwj/qxGy0QWIflkXOzBOjnRlUgp5aoq3GPCFBEV0M+B9yGRjI187pMdaHb4
+         rtA5PUIbXNG1Z2GuU0aKmDK9TdUnaaJ+nOrQpPrz+kEKN3B+4A0FjxFifwCGVBktqSeK
+         bZwCz+Baeg62vuqYmnPe88jTaTKRvV/AFjDhls6DCcVt74iL/mpjve0qwHINpDggYHyH
+         pVkA==
+X-Gm-Message-State: AOAM531kbV+u7FXZKxmykTnafH4ckCEOzppNWUPZE0Toxf64BbFzmONz
+        UIAsp0QwOvMkBI8RxWDWkiifz5sVB7MB7vG2yYs=
+X-Google-Smtp-Source: ABdhPJyNYLbPp58BcQ7mI7j8eL1xi4DRM/CVSKmP+XLlKZnpaM0c4B2zxnkjBdrMYYyKOgNolLHbsclwr0lft4or1UU=
+X-Received: by 2002:a05:6e02:1ca6:: with SMTP id x6mr8854675ill.86.1630945961991;
+ Mon, 06 Sep 2021 09:32:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6e02:1d86:0:0:0:0 with HTTP; Mon, 6 Sep 2021 09:32:41
+ -0700 (PDT)
+Reply-To: suzara.wans2021@gmail.com
+From:   Mrs Suzara Maling Wan <mr.brueshands4world@gmail.com>
+Date:   Mon, 6 Sep 2021 09:32:41 -0700
+Message-ID: <CABvx5tpkSnzTGw2hd3awtMaYZ6SrrR=GwA3X22LN=2t5+bDtOw@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_add_ordered_extent_*() add num_bytes to fs_info->ordered_bytes.
-Then, splitting an ordered extent will call btrfs_add_ordered_extent_*()
-again for split extents, leading to double counting of the region of
-a split extent. These leaked bytes are finally reported at unmount time
-as follow.
-
-BTRFS info (device dm-1): at unmount dio bytes count 364544
-
-This commit fixes the double counting by subtracting split extent's size
-from fs_info->ordered_bytes.
-
-Fixes: d22002fd37bd ("btrfs: zoned: split ordered extent when bio is sent")
-Cc: stable@vger.kernel.org # 5.12+
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/ordered-data.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index edb65abf0393..6b51fd2ec5ac 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -1049,6 +1049,7 @@ static int clone_ordered_extent(struct btrfs_ordered_extent *ordered, u64 pos,
- 				u64 len)
- {
- 	struct inode *inode = ordered->inode;
-+	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
- 	u64 file_offset = ordered->file_offset + pos;
- 	u64 disk_bytenr = ordered->disk_bytenr + pos;
- 	u64 num_bytes = len;
-@@ -1066,6 +1067,13 @@ static int clone_ordered_extent(struct btrfs_ordered_extent *ordered, u64 pos,
- 	else
- 		type = __ffs(flags_masked);
- 
-+	/*
-+	 * The splitting extent is already counted and will be added again
-+	 * in btrfs_add_ordered_extent_*(). Subtract num_bytes to avoid
-+	 * double counting.
-+	 */
-+	percpu_counter_add_batch(&fs_info->ordered_bytes, -num_bytes,
-+				 fs_info->delalloc_batch);
- 	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered->flags)) {
- 		WARN_ON_ONCE(1);
- 		ret = btrfs_add_ordered_extent_compress(BTRFS_I(inode),
 -- 
-2.33.0
+My names are Mrs Suzara Maling Wan, I am a Nationality of the Republic
+of the Philippine presently base in West Africa B/F, dealing with
+exportation of Gold, I was diagnose of blood Causal decease, and my
+doctor have announce to me that I have few days to leave due to the
+condition of my sickness.
 
+I have a desire to build an orphanage home in your country of which i
+cannot execute the project myself due to my present health condition,
+I am willing to hand over the project under your care for you to help
+me fulfill my dreams and desire of building an orphanage home in your
+country.
+
+Reply in you are will to help so that I can direct you to my bank for
+the urgent transfer of the fund/money require for the project to your
+account as I have already made the fund/money available.
+
+With kind regards
+Mrs Suzara Maling Wan
