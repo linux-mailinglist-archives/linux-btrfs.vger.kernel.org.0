@@ -2,168 +2,258 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B5A401665
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 08:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4284016B0
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 09:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239556AbhIFGbc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Sep 2021 02:31:32 -0400
-Received: from mout.gmx.net ([212.227.15.19]:54711 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231271AbhIFGbb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Sep 2021 02:31:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630909825;
-        bh=tcWx+rI8nzx4rhwjp9tdnrII8ivW/sY7wDDrHGJL/wE=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=d5SBm8OR0XXD1RfiabHwhIiGXk0e0YCIRMXpLCVt2Hu/Tf/rji8ygMAPWZtJXIcSJ
-         jECNYPGTT4jb9GTp8VAg9P9lIjaOtPfvhplgGhK0RFtBpqDG5bk+p2FmueCMCt/oyG
-         9Q+FEM5JctWkMOkVJNKNqMJOs5Cw3Y1GErMrJUYs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MXXuH-1mSvbb2p39-00YxPg; Mon, 06
- Sep 2021 08:30:25 +0200
-To:     Sidong Yang <realwakka@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20210905121417.GA1774@realwakka>
- <526c81c1-1362-e24d-6664-2028c46f6353@gmx.com>
- <20210906055704.GA2467@realwakka>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: An question for FICLONERANGE ioctl
-Message-ID: <3544e1ef-7723-0de2-471b-658bc1ba145e@gmx.com>
-Date:   Mon, 6 Sep 2021 14:30:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239795AbhIFHB7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Sep 2021 03:01:59 -0400
+Received: from mail-4323.protonmail.ch ([185.70.43.23]:34607 "EHLO
+        mail-4323.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238906AbhIFHB7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Sep 2021 03:01:59 -0400
+Date:   Mon, 06 Sep 2021 07:00:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1630911653; bh=PnsFzpoajL4VAQ7uj9p3Xi2k8uWKiL77YJLScBb4hGQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=lIELCXm4VbpsQ7LIaYI5kJ79egzkfJUY8pkBFnvuU2YzBMOnOToWPrxWV60dnsp/+
+         SbvuqZ5jkQBLd8Y+9+lHesckp6N6NoigBpfPYCn1EjS+KOAS3CT0djKHstD5rw7Kr0
+         Nc3W7R+B57w7l0rvviYpCUr4vs7ilUR0HM4V/L4vZ56pXuC2JYFNJmoJmsDyEHaOZM
+         7aGiR9AbF+FFDBQYzhyVt5aTdkL7Q9Xjj9/dRyvumFVOkJvl/cDyjnT1AoB+M977bF
+         finxGL2NluVYL/FDMHaY8GjKGxAQgjMcJRGy9MLO0APng0MFqp1w12Bxeq6vfnRbOb
+         1kUG6K/Wzw+rQ==
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+From:   ahipp0 <ahipp0@pm.me>
+Cc:     Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Reply-To: ahipp0 <ahipp0@pm.me>
+Subject: Re: BTRFS critical: corrupt leaf; BTRFS warning csum failed, expected csum 0x00000000 on AMD Ryzen 7 4800H, Samsung SSD 970 EVO Plus
+Message-ID: <C5tOxTE7_J1eoIcALQiUE09PG9c3gVTon54gyKHZRgDJlTI0QOVoff0zeu2REq4iHD2cWwsVmIbMTmxnBUW3Uv4_grN69kCgSRAXcWusVsY=@pm.me>
+In-Reply-To: <7de2d71d-5c75-8215-d5c9-35b4c4f092ca@gmx.com>
+References: <IZ0izVVsQVN4TIg_nsujavw6xz3UG-k0C53QTbeghmAryLDm5vf13M_UyrvBZ9tgDT5Mh8VXrMKBfGNju1_FBaCksUTcqZRnfuRydexvfvA=@pm.me> <01bb7749-eccd-5a3e-eee3-3320c89ce075@gmx.com> <ozcaaGlwEFFj_mq4ZFf_hu1RHtOGruGz8Dwb8HHPEUhCn8Sn3G5BhbJxsMefPbtwacd-dcCJmCv6TbdX1Fdx4r-J_GoHa1rAbB4L4QQWZb0=@pm.me> <5ebaf4e2-a96e-a34a-f509-2a29154149eb@gmx.com> <tDw4sk7EvCGMpj-jprKJJ0hhti2ZS7oRNek_3A3F8IUrhpxQpMPgKRxrhBmWJoMqhA6iZ_OkO2qRUVYrtnB44rv02yPUh0YZe8Adc0IX1R8=@pm.me> <44dc1e9a-7739-f007-5189-00fd81c0ef26@suse.com> <nlXbBH0TVIiMesk038DMLcR8tUOPa5gWVCWyxtyMLXSgC0l-MItGpoGQQSzXKNC1ZHcj1NXtZqU2czoEA-BTgSgWY6fwv-HPClN7D0PTxIc=@pm.me> <a043852e-d552-1ce3-4b35-bdbb1793f8ad@suse.com> <BhXDP0Vx_AExb9FuTS6hEpr1eRkrux_n7AoNG-T1HOvtJaM7mkRN2Yifk5tIoodD5wSEfErIrpbNISVqeQyJU_w6-VePY5T060AxrmLqOf0=@pm.me> <7de2d71d-5c75-8215-d5c9-35b4c4f092ca@gmx.com>
 MIME-Version: 1.0
-In-Reply-To: <20210906055704.GA2467@realwakka>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:W8t1Hsy4Cze8mMDPDBOBp1mjgP102XkLdMLV1TeuoatixpFhxuQ
- i5CfrENZZxGsHCYBJdL7dCtsGRjKHOeB9NCjXYI6dnVNNLXsuDWIxpESEbLGSxwjga7A5c7
- TRWr6vVQsrpjcorKSlhTLznwesaGbcvpBdixn6eldRMwi7Dj9oAWiNtq581oMKuDTA7JL6I
- gMUO+pSg0eO9ot6yCq6ZA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Sj1F7QYPZdI=:DLGU7dx47CxaadP4ZRTwbV
- ZHie7/gIfoXbjTjY9aI4zrZlOomEsXGFXruPftWg7ox/01cesk6vpe/PMsT+8Y2B19257Rr60
- TIrd4+Fg82ZejofkCVeGpDLfiRBQcijDIyVN1C0iBtH1NwXWyHI9fdU7B4Diwt02bXCLqMLSJ
- mksmgCoeOOmuJTpBocjKfZUYIAnq9zsFs/oFIIGABZXQ76QAfcIjroaiBLEOOa6FNHHOhcpm5
- Q7miQ9zlt9zIugiawGAGETMxr8Mt7aDk//gyWJFwUDkvK8kxw7ZR7bbeBt8QmvOSPlMDTP3Jc
- 8Ly8ggsmMH9PF52KNrDTAKApCU134jfd/p5tUEo8BsOl24b6zrdF44AA8Oa7uwDGCh4vw+erj
- XYbV+NRcj1MP19rP96VLiPfiIJrCf4IQpeTWRresL78V+hG7E+MHL8SsOodC6F2NHH6BNPX5A
- 8U6+9ngG9khlC+A4pOOZ0AM1pnM6gLnmYlp9XrT3qgRmRm9KBFQpa/oFAt+ll2D1kZnC7/I1M
- b/MOBiFcUgaf2cVGIQYFK/jaq+TPRzTNQbzfzSAHXsKALknQYB+wcU6wq889ootBfgYPXzGFl
- lFWT0HcdMwLWQ8LEa5bQ0K1l9IbZocmTaS4QDLFteDBi0ltixBi1HjB1NFUSuwHx58mLPyE8m
- 5CswnZe064vggJcCe2agXK0rL4D1nuHO7nhSWP0a0PlOucuf5AG6wADoeaYbaMlZoha0QvCmY
- AVDSPQk2pZZqF5dAk5JczQBOgJGr6j4URJQYSz1vUBMd8Ho5lbeK/VYmg90DEhZRjOZRvuxr/
- LIpYG7CKaR7ywU9DxX3n0Ko3PWmzv4L14FucP+O6768MaQkAuP2/pdgkohehmIFbLKkfhi+wJ
- ttlpBJd9YXqdp/1kfPxjQXKs4VLfwY7TLx9VwNMDbzgtPKsOxC1sIzjZsDMnp8WSzsBI9sf+6
- rupGpL/4Yg6ossk/UmfqQuOE4o5TPxPU9wzov4d7L5Xaz6ewGBZyJX2WVsV4XC34ikHhwJidb
- fI1Lc5xURMscH+Sb6Cc0XSVpWO+hNTeuO7ofnOJ23d1U71hquM07xy1AiO9SFZi4OMuwcXIJZ
- 3AmEB5NDcdVxWdQSS+AxIT76L5jczVbJ8H24vYIQzVLRLzXYpY69y75fw==
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha512; boundary="------0b9cf88ac98f102ee31705d1afdef912559962066e026fb03c2c96e7b5ced55d"; charset=utf-8
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------0b9cf88ac98f102ee31705d1afdef912559962066e026fb03c2c96e7b5ced55d
+Content-Type: multipart/mixed;boundary=---------------------5ca69195cc0ae1fa187a178f1f9d8d0d
+
+-----------------------5ca69195cc0ae1fa187a178f1f9d8d0d
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
+
+On Monday, September 6th, 2021 at 2:28 AM, Qu wrote:
+
+<snip>
+
+> > $ sudo ./btrfs check --mode=3Dlowmem /dev/nvme0n1p4
+> > Opening filesystem to check...
+> > Checking filesystem on /dev/nvme0n1p4
+> > UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+> > [1/7] checking root items
+> > [2/7] checking extents
+> > [3/7] checking free space cache
+> > [4/7] checking fs roots
+> > ERROR: root 257 EXTENT_DATA[488887 4096] csum missing, have: 0, expect=
+ed: 12288
+> > ERROR: root 257 EXTENT_DATA[488889 4096] csum missing, have: 0, expect=
+ed: 16384
+> > ERROR: root 257 EXTENT_DATA[488895 0] csum missing, have: 0, expected:=
+ 12288
+> > ERROR: root 257 EXTENT_DATA[488963 0] csum missing, have: 0, expected:=
+ 8192
+> > ERROR: root 257 EXTENT_DATA[488964 0] csum missing, have: 0, expected:=
+ 8192
+> > ERROR: root 257 EXTENT_DATA[488966 0] csum missing, have: 0, expected:=
+ 8192
+> > ERROR: root 257 EXTENT_DATA[488967 0] csum missing, have: 0, expected:=
+ 8192
+> > ERROR: errors found in fs roots
+> > found 70414278656 bytes used, error(s) found
+> > total csum bytes: 68552088
+> > total tree bytes: 209338368
+> > total fs tree bytes: 111853568
+> > total extent tree bytes: 14024704
+> > btree space waste bytes: 41823418
+> > file data blocks allocated: 73253691392
+> > referenced 70072770560
+> =
 
 
-On 2021/9/6 =E4=B8=8B=E5=8D=881:57, Sidong Yang wrote:
-> On Mon, Sep 06, 2021 at 09:13:06AM +0800, Qu Wenruo wrote:
->>
->>
->> On 2021/9/5 =E4=B8=8B=E5=8D=888:14, Sidong Yang wrote:
->>> Hi, All.
->>> I've tried to handle btrfs-progs issue.
->>> (https://github.com/kdave/btrfs-progs/issues/396)
->>>
->>> And I tested some code like below.
->>>
->>> src_fd =3D open(src_path, O_RDONLY);
->>> if (src_fd < 0) {
->>> 	error("cannot open src path %s", src_path);
->>> 	return 1;
->>> }
->>>
->>> dest_fd =3D open(dest_path, O_WRONLY|O_CREAT, 0666);
->>> if (dest_fd < 0) {
->>>       close(src_fd);
->>>       error("cannot open dest path %s", dest_path);
->>>       return 1;
->>> }
->>>
->>> range.src_fd =3D src_fd;
->>> range.src_offset =3D src_offset;
->>> range.src_length =3D length;
->>> range.dest_offset =3D dest_offset;
->>
->> Mind to give an example of the value?
-> It was src_offset =3D 0, src_length =3D 10, dest_offset =3D 0.
-Oh, that's the case.
+> Even at this stage, your fs is considered clean already.
+> =
 
->
->>
->> One quick hint to the invalid arguments is:
->>
->> - Range alignment
->>    The src/dst offset must be aligned to the block size of the
->>    filesystem.
->>    For btrfs, the sectorsize is currently the same as page size,
->>    thus both src/dest and length must be aligned to 4K for x86.
->
-> I think it's because of this. I set too small value. It works with
-> length 4K. If reflink cmd in btrfs-progs exists, Users should set the
-> length aligned?
 
-Reflink/clone/dedupe all work based on block size.
+> The missing csum is really not a big deal.
 
-Currently all these major files systems (ext*/xfs/btrfs/f2fs) in linux
-are block filesystems, which means block size is their minimal unit of
-read/write.
+Ah, ok.
 
-For data stored on-disk, they are all aligned to block size and smaller
-ranges are padded to meet block alignment.
+<snip>
 
-So is such ioctls (and things like direct IO).
+> > =
 
-Thus no matter what the user-space wrapper is, the kernel ioctl still
-requires block size alignment.
 
-Thanks,
-Qu
+> > After deleting the whole /mnt/hippo//home-andrey/.steam/debian-install=
+ation/config/htmlcache/Cache directory,
+> > it seems the filesystem is clean.
+> > =
 
->
+
+> > $ sudo ./btrfs check /dev/nvme0n1p4
+> > Opening filesystem to check...
+> > Checking filesystem on /dev/nvme0n1p4
+> > UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+> > [1/7] checking root items
+> > [2/7] checking extents
+> > [3/7] checking free space cache
+> > [4/7] checking fs roots
+> > [5/7] checking only csums items (without verifying data)
+> > [6/7] checking root refs
+> > [7/7] checking quota groups skipped (not enabled on this FS)
+> > found 70097395712 bytes used, no error found
+> > total csum bytes: 68235972
+> > total tree bytes: 206290944
+> > total fs tree bytes: 109363200
+> > total extent tree bytes: 13598720
+> > btree space waste bytes: 41683028
+> > file data blocks allocated: 72939855872
+> > referenced 69761359872
+> > =
+
+
+> > $ sudo ./btrfs check --mode=3Dlowmem /dev/nvme0n1p4
+> > Opening filesystem to check...
+> > Checking filesystem on /dev/nvme0n1p4
+> > UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+> > [1/7] checking root items
+> > [2/7] checking extents
+> > [3/7] checking free space cache
+> > [4/7] checking fs roots
+> > [5/7] checking only csums items (without verifying data)
+> > [6/7] checking root refs done with fs roots in lowmem mode, skipping
+> > [7/7] checking quota groups skipped (not enabled on this FS)
+> > found 70097395712 bytes used, no error found
+> > total csum bytes: 68235972
+> > total tree bytes: 206290944
+> > total fs tree bytes: 109363200
+> > total extent tree bytes: 13598720
+> > btree space waste bytes: 41683028
+> > file data blocks allocated: 72939855872
+> > referenced 69761359872
+> > =
+
+
+> > $ sudo ./btrfs scrub status /mnt/hippo/
+> > UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+> > Scrub started: Mon Sep 6 02:06:54 2021
+> > Status: finished
+> > Duration: 0:00:22
+> > Total to scrub: 65.28GiB
+> > Rate: 2.97GiB/s
+> > Error summary: no errors found
+> > =
+
+
+> > Can the filesystem now be considered clean as in "never corrupted"?
+> > =
+
+
+> > Or is there still a reason to reformat it?
+> =
+
+
+> It's completely clean now, congratulations.
+
+Woo-hoo, awesome, thank you so much for your help!!
+
+BTRFS rocks!
+
+> BTW, you may want to migrate to v2 space cache.
+
+Ah, OK, migrated.
+I guess I used v1 just because it's the default.
+
+$ sudo ./btrfs check --clear-space-cache v1 /dev/nvme0n1p4
+Opening filesystem to check...
+Checking filesystem on /dev/nvme0n1p4
+UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+Free space cache cleared
+
+$ sudo ./btrfs check --clear-space-cache v2 /dev/nvme0n1p4
+Opening filesystem to check...
+Checking filesystem on /dev/nvme0n1p4
+UUID: 2b69016b-e03b-478a-84cd-f794eddfebd5
+no free space cache v2 to clear
+
+$ mount -o noatime,subvol=3Dandrey,space_cache=3Dv2 /dev/nvme0n1p4 /mnt/hi=
+ppo/
+$
+
+
+> The relation between v1 cache problem and the block group item mismatch
+> problem is still unknown, but I guess v1 space cache may cause the probl=
+em.
+> =
+
+
+> Thus going to v2 would be a little more safe, and faster.
+
+Huh, ok, let's see how v2 performs now.
+
+> > Would using DUP profile for metadata and system help with this kind of=
+ corruption?
+> =
+
+
+> Nope, the original corruption looks like some bug in btrfs code,
+> DUP/RAID1 won't help to prevent it at all.
+
+Oh, even RAID1 wouldn't have helped?
+
+> But v5.11 kernel (and newer) can prevent such problem, with their
+> boosted sanity check.
+
+That's great!
+
+> > Would it be generally advisable to use it going forward?
+> You can use the fs without any problem.
+
+Nice!
+
+Is it generally advisable to use DUP profile for metadata and system going=
+ forward?
+
+> =
+
+
 > Thanks,
-> Sidong
->>
->> Thus a more detailed example can be much better for us to understand th=
-e
->> problem.
->>
->> Thanks,
->> Qu
->>>
->>> ret =3D ioctl(dest_fd, FICLONERANGE, &range);
->>>
->>> And this ioctl call failed with error code invalid arguments when leng=
-th!=3D0.
->>> I tried to understand FICLONERANGE man page but I think there is no cl=
-ue
->>> about this. I traced kernel code and found out it goes fail in
->>> generic_remap_checks(). There is an condition checks if req_count is
->>> correct size and it makes test code fails.
->>>
->>> I don't know about this condition but it seems that it can be passed f=
-or
->>> setting REMAP_FILE_CAN_SHORTEN. Is there any way to setting remap_flag=
-s
->>> in FICLONERANGE ioctl call?
->>>
->>> Also it would be pleased that if you provide some documentation about
->>> this.
->>>
->>> Sorry for writing without thinking deeply.
->>>
->>> Thanks,
->>> Sidong
->>>
->
+> =
+
+
+> Qu
+-----------------------5ca69195cc0ae1fa187a178f1f9d8d0d--
+
+--------0b9cf88ac98f102ee31705d1afdef912559962066e026fb03c2c96e7b5ced55d
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: ProtonMail
+
+wnUEARYKAAYFAmE1vH8AIQkQansmvPyL2SsWIQSmC4s1WhXLLzG+OkVqeya8
+/IvZKyghAP9BTtMufJUYieizB1Zqj/ZxjafNRzVTAH1nWKNqOTEyGQEAjvG+
++kV90YSXgX06dxPsfVDI1bem05j/7aJMv4zidQU=
+=07tF
+-----END PGP SIGNATURE-----
+
+
+--------0b9cf88ac98f102ee31705d1afdef912559962066e026fb03c2c96e7b5ced55d--
+
