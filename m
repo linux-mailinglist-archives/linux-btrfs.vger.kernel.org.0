@@ -2,127 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFD0401267
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 03:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE57C4014CF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Sep 2021 03:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhIFBOU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Sep 2021 21:14:20 -0400
-Received: from mout.gmx.net ([212.227.15.18]:56903 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235625AbhIFBOS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 5 Sep 2021 21:14:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630890789;
-        bh=0zOYc/Ouo7jj3B8MZsUCY2NC/8vaDxcP9WKuCzgUKYc=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ZEsv5+hdVN9lwCJmxrhrY6Ih114o/8U6Dy1jSdVm3fyjmGt4B96jr/6pg+ttLLuyV
-         3AcfmMcD27KPKanlCc+Noius+WzbXLjW/A3xvMbWflqEtVwrRPkVwkFm+/Oo1fwifQ
-         lHL9rO920bdGFNFGIu4ot3yLw/EgL4Et0/5jjkTI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1My36T-1nAtxr3EJb-00zWyV; Mon, 06
- Sep 2021 03:13:09 +0200
-Subject: Re: An question for FICLONERANGE ioctl
-To:     Sidong Yang <realwakka@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20210905121417.GA1774@realwakka>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <526c81c1-1362-e24d-6664-2028c46f6353@gmx.com>
-Date:   Mon, 6 Sep 2021 09:13:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210905121417.GA1774@realwakka>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VE/rZdegSelHACAZabG048CePgTn+hEoxRloYu3mmd0EN8cyGrz
- 4yw7TIVnWsaT3wUw7F7HbMQznfOFZ9MlJOMPAlK7DkLieNeRObrsBqUXMLTxGLHG132bsgx
- tY39eQU+TCzko9J40nbJ28FkR4bXJqiR6bcXfQxqjd3eQw6707IOInLkDffo1tXQJqiJ1IN
- YX07d5Js98LFNSt5d1V8w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6Bhw5vc64mY=:Vbt2xxoxUkTuglcJhXfrni
- PBN2dwK8tBJBIoewRX6+Fv0nnOreJ+h00lRgrP07xxDuee/E2jo3pq0KNd1S4OE3yAf43GcGG
- UFIk4AJgJ8tq4Od74LM9f11QVUBWlJe2bu5FI3rpnLAKCsB3l/wKT/GvjPdr7fB5z15+G+vS6
- aCLI7To4JouHgSs3REho5BKKsAfoUH4eNaFT+4B1ubfbSr7zySZggDbiFnztZAVfYgJh68CL7
- QKDoJdpOrURTQ7KANQKQqTFRBW8GU1L3vcUbkfGK1UYT9Z3lcNoyQfSresNZGiSz7XcMgU6oi
- zcBhOObi2r2naDHlaKFFIYcFiYPjP+9Zj0hd0VdckE8ZZ/0lbV3Wi4yZ6NOaqiN9CpDL540rg
- G8iSUWNA6qo4LRZv/Lg3H0LPdc/8n25xy5jYUtdY1N9big6s32goYaRsv5+LZxq7NGA3X7tDI
- a84uHcHGc1ZD74qUFbSFJYSfZtMggrh2RZYpymc02kgxAtKKAreQ1L9PnZsqW8SCIjvj2dijw
- HTN2qpZkyN4vzP3rRu4df9U9HO/WzHowzxkDFTvpHFR8DeoO7Yyv7yxr/vQGe6YdqooETYwT3
- HaGgPBWNMu7y+u1r1zBVYr76m/XtJ0qxe9r63RK6SLzvy9jcwEmqsE/fgV7qyaAlgnOA4IOdi
- bbhGkXVNtBSnq+d/tZts0bDQ4HRXj4sijerZE3Xh/6jmEh6hY3tXTvmOShGtT+hd6+4Y3ae+n
- 5yyJunIo1MIp8A5fMR7/mcoxVq6QhUO1lGaCEfNA4KQIC5RMHZz0UrTc+r0cCMnzA53RXd62j
- Sn8b+tdXa4/1R0717mZUU+2fpPAvyplDn4K5L20QPikwKBqSMOV5LBPlUezsdAc2MX06b9wg3
- zvV8ZexythhyprzzdrlTFHMwC3Fz8tmIN6S3kQXXZux8si5yI47rWWyP0xjN0a+MeNml8fpVO
- zsNv+/LVPAj8WE3S9euJ/TM6b1MbALmquD3akVEiZamCaVCLEBF8hF7W6IFo7+lcJaQGDb8FN
- t70iqTnKkJCt7ryoKIeoZZ4v/CT7YKyR1XMnGrULKq6FtMKOZ+77bxX8xFqVY5cdDEebX8IxP
- POs57MySjyFfVSKZERs7Ru8IloPsiHReJBLX9gR0sHK0BYucJElGW3wEw==
+        id S1351538AbhIFBhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Sep 2021 21:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352952AbhIFBfn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Sep 2021 21:35:43 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87A5C03402D;
+        Sun,  5 Sep 2021 18:26:17 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id s11so5129723pgr.11;
+        Sun, 05 Sep 2021 18:26:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=U5+OTcrgpUWYvSOZI25Dv1p9CkDmlMuTgp823JwS0Eo=;
+        b=o4ueH59tFqroOxjL4Oac1yYTasmmrWP5A4eL3k+PVAgLcTPNiio3UpflbTK/Dz5f4t
+         +mnYaCN8al7ZV6xvCaCtpRqIJUpbiI6HNPYVrBAaLG0PkM6dduwb+oODuphe1FdUR+T7
+         dT1lRkc1p3zC3J281QU1hjy74vVOP7kM58Gx57Aeoi1sn9O3nDcuoEQJWJjn6ytRibrt
+         2OB5wxr8tghOP8mLJCtYsjLEbN5xbUglhHa0H88SAfXYj3u+zBmrIwwHVeeYFneHpNHq
+         OXUx4owGz/ahGhzT0Iu5WSid6ED9F2qEYju8Y/3pMubetW8h2H7wlK1v4Wo3+9ymYjwN
+         Tmyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=U5+OTcrgpUWYvSOZI25Dv1p9CkDmlMuTgp823JwS0Eo=;
+        b=RaOF07VFycV4SumxB63BQiItYwXWSekOQ4aV4mCBfGx/Z4yJ1Gw3ruPwQplqmxdyVe
+         /aiS7VguEPsRbjdzLjBN1g6Q2GhRXE1M/+pQbhV9VtvkCkN5XgqRpiKxRHG+SDDxMODj
+         Yy34oL2LcFl6f+z3HgAGDKyDYr2+6fyVeGw8PalGTKjQ9NYdFetjMmJLUWrwUmjyVc22
+         JBARmaSjzPKxY4p/GwKUgN1dlzt4WLva4bRSlwq2ZEYS6j3KMSO2eyPELNw8T/6egayA
+         Ev3MI4i9plXT5AWeQD7Aymr6xx/0YzDJtgXoJJOMG95CPeX1zB3yBOimsU2V5Jw6sKXF
+         TP5w==
+X-Gm-Message-State: AOAM530CC+piOLd3V55k92YSXQDWQ68s97GoiFeTPVA/7Xa7oLsGdAnu
+        hS/Q7XHSYC9/8DTXvDBwiafgxhAH//A=
+X-Google-Smtp-Source: ABdhPJxp90gkysPp87AozF1PGRbhDkRC/HlEK1Vhcths1EaumrYeqOHjwvwiWyDNN8Iodvaadu4WxQ==
+X-Received: by 2002:a63:b218:: with SMTP id x24mr9353331pge.335.1630891577127;
+        Sun, 05 Sep 2021 18:26:17 -0700 (PDT)
+Received: from localhost (natp-s01-129-78-56-229.gw.usyd.edu.au. [129.78.56.229])
+        by smtp.gmail.com with ESMTPSA id i7sm6836150pgd.56.2021.09.05.18.26.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Sep 2021 18:26:16 -0700 (PDT)
+From:   Baptiste Lepers <baptiste.lepers@gmail.com>
+Cc:     "Paul E . McKenney" <paulmck@linux.ibm.com>,
+        Baptiste Lepers <baptiste.lepers@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: transaction: Fix misplaced barrier in btrfs_record_root_in_trans
+Date:   Mon,  6 Sep 2021 11:25:59 +1000
+Message-Id: <20210906012559.8605-1-baptiste.lepers@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Per comment, record_root_in_trans orders the writes of the root->state
+and root->last_trans:
+      set_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
+      smp_wmb();
+      root->last_trans = trans->transid;
 
+But the barrier that enforces the order on the read side is misplaced:
+     smp_rmb(); <-- misplaced
+     if (root->last_trans == trans->transid &&
+    <-- missing barrier here -->
+            !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
 
-On 2021/9/5 =E4=B8=8B=E5=8D=888:14, Sidong Yang wrote:
-> Hi, All.
-> I've tried to handle btrfs-progs issue.
-> (https://github.com/kdave/btrfs-progs/issues/396)
->
-> And I tested some code like below.
->
-> src_fd =3D open(src_path, O_RDONLY);
-> if (src_fd < 0) {
-> 	error("cannot open src path %s", src_path);
-> 	return 1;
-> }
->
-> dest_fd =3D open(dest_path, O_WRONLY|O_CREAT, 0666);
-> if (dest_fd < 0) {
->      close(src_fd);
->      error("cannot open dest path %s", dest_path);
->      return 1;
-> }
->
-> range.src_fd =3D src_fd;
-> range.src_offset =3D src_offset;
-> range.src_length =3D length;
-> range.dest_offset =3D dest_offset;
+This patches fixes the ordering and wraps the racy accesses with
+READ_ONCE and WRITE_ONCE calls to avoid load/store tearing.
 
-Mind to give an example of the value?
+Fixes: 7585717f304f5 ("Btrfs: fix relocation races")
+Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+---
+ fs/btrfs/transaction.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-One quick hint to the invalid arguments is:
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 14b9fdc8aaa9..a609222e6704 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -437,7 +437,7 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
+ 				   (unsigned long)root->root_key.objectid,
+ 				   BTRFS_ROOT_TRANS_TAG);
+ 		spin_unlock(&fs_info->fs_roots_radix_lock);
+-		root->last_trans = trans->transid;
++		WRITE_ONCE(root->last_trans, trans->transid);
+ 
+ 		/* this is pretty tricky.  We don't want to
+ 		 * take the relocation lock in btrfs_record_root_in_trans
+@@ -489,7 +489,7 @@ int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_root *root)
+ {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+-	int ret;
++	int ret, last_trans;
+ 
+ 	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
+ 		return 0;
+@@ -498,8 +498,9 @@ int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
+ 	 * see record_root_in_trans for comments about IN_TRANS_SETUP usage
+ 	 * and barriers
+ 	 */
++	last_trans = READ_ONCE(root->last_trans);
+ 	smp_rmb();
+-	if (root->last_trans == trans->transid &&
++	if (last_trans == trans->transid &&
+ 	    !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+ 		return 0;
+ 
+-- 
+2.17.1
 
-- Range alignment
-   The src/dst offset must be aligned to the block size of the
-   filesystem.
-   For btrfs, the sectorsize is currently the same as page size,
-   thus both src/dest and length must be aligned to 4K for x86.
-
-Thus a more detailed example can be much better for us to understand the
-problem.
-
-Thanks,
-Qu
->
-> ret =3D ioctl(dest_fd, FICLONERANGE, &range);
->
-> And this ioctl call failed with error code invalid arguments when length=
-!=3D0.
-> I tried to understand FICLONERANGE man page but I think there is no clue
-> about this. I traced kernel code and found out it goes fail in
-> generic_remap_checks(). There is an condition checks if req_count is
-> correct size and it makes test code fails.
->
-> I don't know about this condition but it seems that it can be passed for
-> setting REMAP_FILE_CAN_SHORTEN. Is there any way to setting remap_flags
-> in FICLONERANGE ioctl call?
->
-> Also it would be pleased that if you provide some documentation about
-> this.
->
-> Sorry for writing without thinking deeply.
->
-> Thanks,
-> Sidong
->
