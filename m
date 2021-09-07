@@ -2,77 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16571402A7A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Sep 2021 16:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90572402A99
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Sep 2021 16:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbhIGOOe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Sep 2021 10:14:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52430 "EHLO
+        id S237382AbhIGOTa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Sep 2021 10:19:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52916 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbhIGOOd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Sep 2021 10:14:33 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C33DD20007;
-        Tue,  7 Sep 2021 14:13:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631024006;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        with ESMTP id S237377AbhIGOT3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Sep 2021 10:19:29 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C13C01FFF5;
+        Tue,  7 Sep 2021 14:18:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631024302; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hfvDzJ3vf6mSHqJCzxjE+uxgPaJy6fq0ogpV1dNJSm4=;
-        b=rLpN5N4WNnOgbDKDdoYGi6zhiaPXRAB7jeBy0PiH+VXlnvRqBf7kQ9eg+/5UGCE2z8/mec
-        7npvJBrAPT0tqp3SRpS8Y8RqI3tsSwuTB/dIzUM4TAXN2NXTBKZS9dVcXCdjimgV3BQYwK
-        fwi33HYHAnz4V9DQLUQp7WKmd0ZtHOM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631024006;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hfvDzJ3vf6mSHqJCzxjE+uxgPaJy6fq0ogpV1dNJSm4=;
-        b=gCrsAZsC9fJGiR5H7ZmSdIhsUmvpgRks5eHD9OXCi1epYu6aQWZl+Ptmo91hECvTth74M0
-        Lb9DuBPuPT4Vb+Cg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id BBB79A3B8C;
-        Tue,  7 Sep 2021 14:13:26 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A22DCDA7E1; Tue,  7 Sep 2021 16:13:22 +0200 (CEST)
-Date:   Tue, 7 Sep 2021 16:13:22 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: replace BUG_ON() in btrfs_csum_one_bio() with
- proper error handling
-Message-ID: <20210907141321.GP3379@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210816235540.9475-1-wqu@suse.com>
+        bh=1q8/tTiCt7HCdwMm97i/USbP8oeU4+nq8IN4PZNV7l4=;
+        b=NMeCdTmK65Gf/c95GsyzD99jq25lj3R+OIfezTjV6YdBUNQEOwlFdkTbFmTSNH+Wh1sLPw
+        TAHGSDm9v9iEETl8L03JF468vOSIxMmRyNnohgdm8bjwoVv9M03kLM9r1+5LsOBr8N4zKE
+        ORE+jasNyXa7FqowqlZFoOfunJt9i90=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 939F413A45;
+        Tue,  7 Sep 2021 14:18:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id axLVIK50N2FFCAAAGKfGzw
+        (envelope-from <nborisov@suse.com>); Tue, 07 Sep 2021 14:18:22 +0000
+Subject: Re: [PATCH 1/2] btrfs-progs: fi show: Print missing device for a
+ mounted file system
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20210902100643.1075385-1-nborisov@suse.com>
+ <20210907135041.GO3379@twin.jikos.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <3dc01a8c-4b87-c37b-7c61-4dca76a92783@suse.com>
+Date:   Tue, 7 Sep 2021 17:18:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816235540.9475-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210907135041.GO3379@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 07:55:40AM +0800, Qu Wenruo wrote:
-> There is a BUG_ON() in btrfs_csum_one_bio() to catch code logic error.
-> 
-> It has indeed caught several bugs during subpage development.
-> 
-> But the BUG_ON() itself will bring down the whole system which is
-> sometimes overkilled.
-> 
-> Replace it with a WARN() and exit gracefully, so that it won't crash the
-> whole system while we can still catch the code logic error.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Re-send as an independent patch
-> - Add WARN() to catch the code logic error
 
-Added to misc-next, without changes. The way with separate condition and
-WARN is ok for now.
+
+On 7.09.21 г. 16:50, David Sterba wrote:
+> There was a discussion regarding the output, so what's the last version?
+> The path is not always available, so how does the output look like in
+> that case? I'd vote against the *** markers and rather establish some
+> parseable format, like
+> 
+>  	devid    2 size 0 used 0 MISSING (last: /dev/loop1)
+> 
+> The path is optional so it would bebetter to put it at the end.
+
+I'm fine with this format, will send updated patches.
