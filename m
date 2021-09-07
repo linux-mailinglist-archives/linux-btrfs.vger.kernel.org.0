@@ -2,82 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B69C402A28
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Sep 2021 15:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16571402A7A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Sep 2021 16:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhIGNwC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Sep 2021 09:52:02 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60922 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230232AbhIGNvw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Sep 2021 09:51:52 -0400
+        id S233856AbhIGOOe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Sep 2021 10:14:34 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52430 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233059AbhIGOOd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Sep 2021 10:14:33 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DF0DF220CD;
-        Tue,  7 Sep 2021 13:50:45 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id C33DD20007;
+        Tue,  7 Sep 2021 14:13:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631022645;
+        t=1631024006;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PYC7e5k1cSSpXALcWYX5WNB6pcicF+YzYj4qIPVWaOc=;
-        b=o5N/yeZrP2NBd8H92Mk7ta+KcHEb2C7IMyU/wXU1RYYvmSSY0Ra9b0CwQ3mFcMS0wms0Cw
-        eiM7ElEGxJArXRvNGW9SKBxl2JQm+r8ppE5emPsWQBAMSkFtZzC4ThJI9Wz4Z/bB+RLB3X
-        L8at1Hm9QeS/B+p5aeJh+5aYndpwMI4=
+        bh=hfvDzJ3vf6mSHqJCzxjE+uxgPaJy6fq0ogpV1dNJSm4=;
+        b=rLpN5N4WNnOgbDKDdoYGi6zhiaPXRAB7jeBy0PiH+VXlnvRqBf7kQ9eg+/5UGCE2z8/mec
+        7npvJBrAPT0tqp3SRpS8Y8RqI3tsSwuTB/dIzUM4TAXN2NXTBKZS9dVcXCdjimgV3BQYwK
+        fwi33HYHAnz4V9DQLUQp7WKmd0ZtHOM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631022645;
+        s=susede2_ed25519; t=1631024006;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=PYC7e5k1cSSpXALcWYX5WNB6pcicF+YzYj4qIPVWaOc=;
-        b=uaBdDzsGLesqv2FvFnogIqxzJzyXaLyRLhn9EVB+JBek9t+RNBuDVY5jX41e3DcdnhTYbv
-        3M7O/6uGyQUbPJAA==
+        bh=hfvDzJ3vf6mSHqJCzxjE+uxgPaJy6fq0ogpV1dNJSm4=;
+        b=gCrsAZsC9fJGiR5H7ZmSdIhsUmvpgRks5eHD9OXCi1epYu6aQWZl+Ptmo91hECvTth74M0
+        Lb9DuBPuPT4Vb+Cg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D7ADBA3BA0;
-        Tue,  7 Sep 2021 13:50:45 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id BBB79A3B8C;
+        Tue,  7 Sep 2021 14:13:26 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 96C88DA7E1; Tue,  7 Sep 2021 15:50:41 +0200 (CEST)
-Date:   Tue, 7 Sep 2021 15:50:41 +0200
+        id A22DCDA7E1; Tue,  7 Sep 2021 16:13:22 +0200 (CEST)
+Date:   Tue, 7 Sep 2021 16:13:22 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs-progs: fi show: Print missing device for a
- mounted file system
-Message-ID: <20210907135041.GO3379@twin.jikos.cz>
+Subject: Re: [PATCH v2] btrfs: replace BUG_ON() in btrfs_csum_one_bio() with
+ proper error handling
+Message-ID: <20210907141321.GP3379@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20210902100643.1075385-1-nborisov@suse.com>
+References: <20210816235540.9475-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210902100643.1075385-1-nborisov@suse.com>
+In-Reply-To: <20210816235540.9475-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 01:06:42PM +0300, Nikolay Borisov wrote:
-> Currently when a device is missing for a mounted filesystem the output
-> that is produced is unhelpful:
+On Tue, Aug 17, 2021 at 07:55:40AM +0800, Qu Wenruo wrote:
+> There is a BUG_ON() in btrfs_csum_one_bio() to catch code logic error.
 > 
-> Label: none  uuid: 139ef309-021f-4b98-a3a8-ce230a83b1e2
-> 	Total devices 2 FS bytes used 128.00KiB
-> 	devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
-> 	*** Some devices missing
+> It has indeed caught several bugs during subpage development.
 > 
-> While the context which prints this is perfectly capable of showing
-> which device exactly is missing, like so:
+> But the BUG_ON() itself will bring down the whole system which is
+> sometimes overkilled.
 > 
-> Label: none  uuid: 4a85a40b-9b79-4bde-8e52-c65a550a176b
-> 	Total devices 2 FS bytes used 128.00KiB
-> 	devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
-> 	devid    2 size 0 used 0 path /dev/loop1 ***MISSING***
+> Replace it with a WARN() and exit gracefully, so that it won't crash the
+> whole system while we can still catch the code logic error.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Re-send as an independent patch
+> - Add WARN() to catch the code logic error
 
-There was a discussion regarding the output, so what's the last version?
-The path is not always available, so how does the output look like in
-that case? I'd vote against the *** markers and rather establish some
-parseable format, like
-
- 	devid    2 size 0 used 0 MISSING (last: /dev/loop1)
-
-The path is optional so it would bebetter to put it at the end.
+Added to misc-next, without changes. The way with separate condition and
+WARN is ok for now.
