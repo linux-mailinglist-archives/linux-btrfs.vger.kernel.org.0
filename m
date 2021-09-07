@@ -2,101 +2,294 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C99402CD3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Sep 2021 18:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B969E402D63
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Sep 2021 19:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234706AbhIGQ3o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Sep 2021 12:29:44 -0400
-Received: from smtp-31.italiaonline.it ([213.209.10.31]:52678 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233877AbhIGQ3n (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:29:43 -0400
-Received: from venice.bhome ([78.12.137.210])
-        by smtp-31.iol.local with ESMTPA
-        id Ndxbm3HVhzHnRNdxbmp1ob; Tue, 07 Sep 2021 18:28:35 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1631032115; bh=nQLj5CebZj4o2dI9KIGBzfbvEB3MbRNy70xXMx/+UvE=;
-        h=From;
-        b=swawNr3b+OJa6Og2IyJYlKalQ/2jg/Q2mWGfQCn2oeHr5F8t51Pejt6+tuc5XT2Ih
-         uOW3eGe1xwgEfSNonP9fgcL1Z47crDO1UDNuOBi4ahssHADK4Eb1XIKYIKK1hg+87L
-         T+BoA6QYiQBg1xDMUPcsu1yR/5VmjJxJxgqVaL6pFgjKVM6WtYzpGlWdRuUYwnbPcu
-         UedWZy08lI59skWUu/OxNYz5r3pC/uVQ4Lncb3ycFg1Yy7K/rKifAIXZ30JmdBHXWW
-         fRcWbfhIkX0pFIW/H3awHLvSVIzgaz/drh1J4vm5Rc37H7qbqfz2mv4LlGHXsjcQb1
-         1+7lyKX1ZIkBg==
-X-CNFS-Analysis: v=2.4 cv=L6DY/8f8 c=1 sm=1 tr=0 ts=61379333 cx=a_exe
- a=VHyfYjYfg3XpWvNRQl5wtg==:117 a=VHyfYjYfg3XpWvNRQl5wtg==:17
- a=IkcTkHD0fZMA:10 a=1xae1QhLAAAA:8 a=GcwI0rFiquSfpKI_1SsA:9 a=QEXdDO2ut3YA:10
- a=b-fQNwddwzsWbJgTXFiA:22
-Reply-To: kreijack@inwind.it
-Subject: Re: [PATCH 1/2] btrfs-progs: fi show: Print missing device for a
- mounted file system
-To:     g.btrfs@cobb.uk.net, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210902100643.1075385-1-nborisov@suse.com>
- <c5930e90-ca5b-4089-6f2e-830af6576baa@gmx.com>
- <7c4ecbc6-41a7-5375-42cc-9bf87ff35507@suse.com>
- <5030bc35-fdda-b297-94e4-d484f8aee444@gmx.com>
- <4da2f41d-c1e0-1da9-e4c9-bfe87067a6af@suse.com>
- <b5dba5a6-256b-ee5c-57f2-84e9875e6c0a@gmx.com>
- <757eb738-a9f0-0c6b-a713-dc89122eb5f6@cobb.uk.net>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <42717291-444f-cfc2-ea5c-95bd7b9a8c29@libero.it>
-Date:   Tue, 7 Sep 2021 18:28:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1345560AbhIGRDd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Sep 2021 13:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345365AbhIGRDc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Sep 2021 13:03:32 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29573C061575
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Sep 2021 10:02:25 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id x10so2274878ilm.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 Sep 2021 10:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=wyrick.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yh9Bjhud8hpy2dywfiBfXMfKlvzpfMGMQpFa54WsJnI=;
+        b=L/tTJs6M05xRy4qflAgPj+xjAW+5nMc8vmhCe2Af2mPpmRtH9+5hqC8rvZQye7zsxA
+         cvM+3n0c2RJ3sK5jF3iwH1a+JpTsYm+eD3yGMk5vJp/FCGfm+qnCWvU6y42M0kiS0Uh6
+         P/MVUX2cW4VpXDmn6ogIA3H8sttE7C7sn4uv0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yh9Bjhud8hpy2dywfiBfXMfKlvzpfMGMQpFa54WsJnI=;
+        b=jqa1fngw+Qwutrj8tn38vgVx06XQDp7ZE6Kio652AHx7g6uDkEHSvavEjIIUSpuYgC
+         JBG1ySv8q1/1nfwRw8m3iiNYptbJ+ELlkkeaff6SRtXfLuKYBWIv1VCTX7PKRUjTPGmT
+         9ehgi9+yI9dGBSDkT/EAdMAudJWamUTcN3KiVD441p9+CMCJy4qioi14X3Sv0T230zpo
+         zu4PyxvmHoRv0Ru6YDBuLT/nCwUHXDyhuPiAlAyfxUaUHrGWwv8Xl/hHgdZKZ1K6QHzj
+         EQP/zNvyEXpSta+r5f+MUqwRUBOJDadocA4in07gHBFWbPz1KEiE6UPNQfZwtZVBPqWq
+         oyYA==
+X-Gm-Message-State: AOAM532mEW7Yb3w+EIl/g1030gkQ4489fNiAReBiX3nSnVMoWtZXy+Oo
+        45F0qugSXf7qeJG4KHBVxuZaNyqMRmMMwA==
+X-Google-Smtp-Source: ABdhPJww9xzmCFpiijBPdGO2jFJiSWRRCBvHHDxVjn7fcghnSFDBKLnCDy30WzUNgLsMOph+CA2xdg==
+X-Received: by 2002:a05:6e02:4c3:: with SMTP id f3mr13002481ils.248.1631034144212;
+        Tue, 07 Sep 2021 10:02:24 -0700 (PDT)
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
+        by smtp.gmail.com with ESMTPSA id h25sm6198563ila.78.2021.09.07.10.02.23
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 10:02:23 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id a22so5686394iok.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 Sep 2021 10:02:23 -0700 (PDT)
+X-Received: by 2002:a02:cc59:: with SMTP id i25mr16130628jaq.125.1631034143457;
+ Tue, 07 Sep 2021 10:02:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <757eb738-a9f0-0c6b-a713-dc89122eb5f6@cobb.uk.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfL8B3Zb4MrBcdbsxQP4QpNe77adBaf1j5XsNBJ2Uj+ZY52QCO0qp1Ur34aOChFB5IlVHgnXYPbk4xkx2ZWvG//4z/J8dFgUdu9p1WxvqIMoqXTQLngak
- W3+uUPnlcYpBUIUC40TMkk7pM53njx7d9Vc6+wJ4yFdZgFTYQv6Um1AJ6Jq31ohLsCYUQLivVWKDV2e0PhPAw7VbLWF+mTMPMeqwYKXqkwkQAxcwCYSwzHQB
- 18LdvLgtru0GV7hKjf7g3cVmzbjTdw3wfZ+duve+q70Sr+D0UkwDutrIW9YJM1TG
+References: <CAA_aC9-ZAdGC15HY-Q0S-N2M1OukST5BjAk9=WsD+NArCkCFUA@mail.gmail.com>
+ <3139b2df-438c-ba40-2565-1f760e6d1edb@gmx.com> <9c2afb5f-e854-d743-3849-727f527e877b@gmx.com>
+ <CAA_aC99-C8xOf7EAvJAMk2ZkYSaN2vyK7YFMw06utQ0T+tsh9A@mail.gmail.com>
+ <6e03129e-f8c8-a00b-2afe-97a82d06c11e@gmx.com> <CAA_aC98OWWQHT8vGMQcDMHmsCEVZ+Aw30SdMeqrAa=y1qrV72w@mail.gmail.com>
+ <7f8fde51-f920-06be-fdad-0cf59816adca@gmx.com> <CAA_aC98-x6vKp53gbtw+Ds5gF+LH6yYn2vqK0TPLE4GduHjsEA@mail.gmail.com>
+ <dbf70317-43af-4c70-b5d8-22a993228065@oracle.com> <CAA_aC9-2ZA2+MOYbzMK+Sm_iwyPGCoaZYotJ0gShJURFv0-Xog@mail.gmail.com>
+ <362347bd-dca2-6074-c2c1-e453edd2a455@gmx.com>
+In-Reply-To: <362347bd-dca2-6074-c2c1-e453edd2a455@gmx.com>
+From:   Robert Wyrick <rob@wyrick.org>
+Date:   Tue, 7 Sep 2021 11:02:12 -0600
+X-Gmail-Original-Message-ID: <CAA_aC98_gr2Gt+1YO=meG7b5mEofVLok88Hgf4605CN1zYp+ow@mail.gmail.com>
+Message-ID: <CAA_aC98_gr2Gt+1YO=meG7b5mEofVLok88Hgf4605CN1zYp+ow@mail.gmail.com>
+Subject: Re: Next steps in recovery?
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/6/21 6:47 PM, g.btrfs@cobb.uk.net wrote:
-> 
-> On 02/09/2021 13:17, Qu Wenruo wrote:
->>
-[...]
-> I realise this comment might be too late so feel free to ignore it if
-> so. Could this path name potentially conflict with a (new) device using
-> the same name? For example, could someone have created a new /dev/loop1?
-> Or could a USB disk /dev/sdf1 (say) have been removed and a different
-> disk inserted and acquired the /dev/sdf1 name? Or would that be
-> prevented in the case where "the device's record was still in the
-> fs_devices"?
-> 
-> If so, I think this could be very confusing to the user trying to work
-> out what has happened. Maybe the output needs to change to something like:
-> 
-> devid    2 size 0 used 0 last seen as /dev/loop1 ***MISSING***
-> 
-> "last seen as" could just be "previously". Or, to make it even clearer
-> that this is just a hint to help the user understand which device is
-> missing, maybe something like "(last mounted as /dev/loop1)".
-> 
+Ran a repair:
 
+$ sudo ./btrfs check --repair -p /dev/sda  # I did NOT make install,
+just ran from the compiled directory
+enabling repair mode
+WARNING:
 
-My 2¢:
+Do not use --repair unless you are advised to do so by a developer
+or an experienced user, and then only after having accepted that no
+fsck can successfully repair all types of filesystem corruption. Eg.
+some software or hardware bugs can fatally damage a volume.
+The operation will start in 10 seconds.
+Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1
+Starting repair.
+Opening filesystem to check...
+Checking filesystem on /dev/sda
+UUID: 75f1f45c-552e-4ae2-a56f-46e44b6647cf
+[1/7] checking root items                      (0:00:59 elapsed,
+2649102 items checked)
+Fixed 0 roots.
+Reset extent item (38179182174208) generation to 4057084elapsed,
+1116143 items checked)
+No device size related problem found           (0:02:22 elapsed,
+1116143 items checked)
+[2/7] checking extents                         (0:02:23 elapsed,
+1116143 items checked)
+cache and super generation don't match, space cache will be invalidated
+[3/7] checking free space cache                (0:00:00 elapsed)
+Deleting bad dir index [8348950,96,3] root 259 (0:00:25 elapsed,
+106695 items checked)
+repairing missing dir index item for inode 834922400:26 elapsed,
+108893 items checked)
+[4/7] checking fs roots                        (0:01:04 elapsed,
+217787 items checked)
+[5/7] checking csums (without verifying data)  (0:00:04 elapsed,
+12350321 items checked)
+[6/7] checking root refs                       (0:00:00 elapsed, 4
+items checked)
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 15729059057664 bytes used, no error found
+total csum bytes: 15313288548
+total tree bytes: 18286739456
+total fs tree bytes: 1791819776
+total extent tree bytes: 229130240
+btree space waste bytes: 1018844959
+file data blocks allocated: 51587230502912
+ referenced 15627926712320
 
-   Label: none  uuid: 4a85a40b-9b79-4bde-8e52-c65a550a176b
-	  Total devices 2 FS bytes used 128.00KiB
-   	  devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
-	  devid    2 size 0 used 0 ***MISSING*** (last seen as /dev/loop1)
+I can now mount the filesystem successfully!  Thank you for your help.
 
-I suggest to swap MISSING and 'last seen as...' part, because I think that the most
-important part of the message is MISSING.
+I do have some additional questions if you don't mind...
+I am already using RAID 1 to handle single disk outages.  I assume
+things could have gone much worse and I could have lost the whole
+filesystem.  Aside from backups (I know, I know), is there anything
+else I can do to prevent such issues or make them easier to recover
+from?  Could this problem have been avoided/detected earlier?  This
+wasn't a disk failure and according to memtest86+, it wasn't due to
+bad memory either....  I don't run scrubs very often.  Should I?  I
+guess the more general question is:  What are the best practices for
+maintaining a healthy btrfs file system?
 
+Thanks again!
 
-> Graham
-> 
-
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
+On Mon, Sep 6, 2021 at 10:53 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2021/9/7 =E4=B8=8B=E5=8D=8812:36, Robert Wyrick wrote:
+> > What exactly would i be disabling?  I don't know what zoned does.
+>
+> The zoned device support.
+>
+> If you don't have any host-managed zoned device, there is no reason you
+> would like to enable it.
+>
+> https://zonedstorage.io/introduction/
+>
+> Thanks,
+> Qu
+>
+> >
+> > On Mon, Sep 6, 2021, 9:07 PM Anand Jain <anand.jain@oracle.com> wrote:
+> >>
+> >> On 07/09/2021 10:36, Robert Wyrick wrote:
+> >>> Trying to build latest btrfs-progs.  I'm seeing errors in the configu=
+re script.
+> >>>
+> >>> $ cat /etc/os-release
+> >>> NAME=3D"Linux Mint"
+> >>> VERSION=3D"20.2 (Uma)"
+> >>> ID=3Dlinuxmint
+> >>> ID_LIKE=3Dubuntu
+> >>> PRETTY_NAME=3D"Linux Mint 20.2"
+> >>> VERSION_ID=3D"20.2"
+> >>> HOME_URL=3D"https://www.linuxmint.com/"
+> >>> SUPPORT_URL=3D"https://forums.linuxmint.com/"
+> >>> BUG_REPORT_URL=3D"http://linuxmint-troubleshooting-guide.readthedocs.=
+io/en/latest/"
+> >>> PRIVACY_POLICY_URL=3D"https://www.linuxmint.com/"
+> >>> VERSION_CODENAME=3Duma
+> >>> UBUNTU_CODENAME=3Dfocal
+> >>>
+> >>> $ uname -a
+> >>> Linux bigbox 5.11.0-27-generic #29~20.04.1-Ubuntu SMP Wed Aug 11
+> >>> 15:58:17 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+> >>>
+> >>> $ ./configure
+> >>> checking for gcc... gcc
+> >>> checking whether the C compiler works... yes
+> >>> checking for C compiler default output file name... a.out
+> >>> checking for suffix of executables...
+> >>> checking whether we are cross compiling... no
+> >>> checking for suffix of object files... o
+> >>> checking whether we are using the GNU C compiler... yes
+> >>> checking whether gcc accepts -g... yes
+> >>> checking for gcc option to accept ISO C89... none needed
+> >>> checking how to run the C preprocessor... gcc -E
+> >>> checking for grep that handles long lines and -e... /bin/grep
+> >>> checking for egrep... /bin/grep -E
+> >>> checking for ANSI C header files... yes
+> >>> checking for sys/types.h... yes
+> >>> checking for sys/stat.h... yes
+> >>> checking for stdlib.h... yes
+> >>> checking for string.h... yes
+> >>> checking for memory.h... yes
+> >>> checking for strings.h... yes
+> >>> checking for inttypes.h... yes
+> >>> checking for stdint.h... yes
+> >>> checking for unistd.h... yes
+> >>> checking minix/config.h usability... no
+> >>> checking minix/config.h presence... no
+> >>> checking for minix/config.h... no
+> >>> checking whether it is safe to define __EXTENSIONS__... yes
+> >>> checking for gcc... (cached) gcc
+> >>> checking whether we are using the GNU C compiler... (cached) yes
+> >>> checking whether gcc accepts -g... (cached) yes
+> >>> checking for gcc option to accept ISO C89... (cached) none needed
+> >>> checking whether C compiler accepts -std=3Dgnu90... yes
+> >>> checking build system type... x86_64-pc-linux-gnu
+> >>> checking host system type... x86_64-pc-linux-gnu
+> >>> checking for an ANSI C-conforming const... yes
+> >>> checking for working volatile... yes
+> >>> checking whether byte ordering is bigendian... no
+> >>> checking for special C compiler options needed for large files... no
+> >>> checking for _FILE_OFFSET_BITS value needed for large files... no
+> >>> checking for a BSD-compatible install... /usr/bin/install -c
+> >>> checking whether ln -s works... yes
+> >>> checking for ar... ar
+> >>> checking for rm... /bin/rm
+> >>> checking for rmdir... /bin/rmdir
+> >>> checking for openat... yes
+> >>> checking for reallocarray... yes
+> >>> checking for clock_gettime... yes
+> >>> checking linux/perf_event.h usability... yes
+> >>> checking linux/perf_event.h presence... yes
+> >>> checking for linux/perf_event.h... yes
+> >>> checking linux/hw_breakpoint.h usability... yes
+> >>> checking linux/hw_breakpoint.h presence... yes
+> >>> checking for linux/hw_breakpoint.h... yes
+> >>> checking for pkg-config... /usr/bin/pkg-config
+> >>> checking pkg-config is at least version 0.9.0... yes
+> >>> checking execinfo.h usability... yes
+> >>> checking execinfo.h presence... yes
+> >>> checking for execinfo.h... yes
+> >>> checking for backtrace... yes
+> >>> checking for backtrace_symbols_fd... yes
+> >>> checking for xmlto... /usr/bin/xmlto
+> >>> checking for mv... /bin/mv
+> >>> checking for a sed that does not truncate output... /bin/sed
+> >>> checking for asciidoc... /usr/bin/asciidoc
+> >>> checking for asciidoctor... no
+> >>> checking for EXT2FS... yes
+> >>> checking for COM_ERR... yes
+> >>> checking for REISERFS... yes
+> >>> checking for FIEMAP_EXTENT_SHARED defined in linux/fiemap.h... yes
+> >>> checking for EXT4_EPOCH_MASK defined in ext2fs/ext2_fs.h... yes
+> >>> checking linux/blkzoned.h usability... yes
+> >>> checking linux/blkzoned.h presence... yes
+> >>> checking for linux/blkzoned.h... yes
+> >>> checking for struct blk_zone.capacity... no
+> >>> checking for BLKGETZONESZ defined in linux/blkzoned.h... yes
+> >>
+> >>> configure: error: linux/blkzoned.h does not provide blk_zone.capacity
+> >>
+> >>
+> >>>
+> >>> ---
+> >>>
+> >>> Info on the file in question (linux/blkzoned.h):
+> >>>
+> >>> $ dpkg -S /usr/include/linux/blkzoned.h
+> >>> linux-libc-dev:amd64: /usr/include/linux/blkzoned.h
+> >>>
+> >>> $ dpkg -l linux-libc-dev
+> >>> Desired=3DUnknown/Install/Remove/Purge/Hold
+> >>> | Status=3DNot/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWai=
+t/Trig-pend
+> >>> |/ Err?=3D(none)/Reinst-required (Status,Err: uppercase=3Dbad)
+> >>> ||/ Name                 Version      Architecture Description
+> >>> +++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>> ii  linux-libc-dev:amd64 5.4.0-81.91  amd64        Linux Kernel
+> >>> Headers for development
+> >>>
+> >>>
+> >>> So it appears that linux-libc-dev is way out-dated compared to my
+> >>> kernel.  I don't know how to update it, though... there doesn't appea=
+r
+> >>> to be a newer version available.
+> >>
+> >> You could disable the zoned.
+> >>
+> >>     ./configure --disable-zoned
+> >>
+> >>
+> >>
+> >>
+> >>
