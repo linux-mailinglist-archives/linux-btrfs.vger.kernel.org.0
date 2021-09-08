@@ -2,420 +2,412 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0329D403199
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 01:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A3E40327F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 04:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbhIGXle (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Sep 2021 19:41:34 -0400
-Received: from mout.gmx.net ([212.227.15.19]:32979 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231519AbhIGXld (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Sep 2021 19:41:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631058023;
-        bh=Kyym+ujUKsFT07CJc0SgmUkBrWVulUNZDSHYXhV2Dus=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=jsgtAQL1eMPVk80MZpzQtJ/6X4MUe5ANx4HGP2FRne8Hn+a+h0P9FUiJilZ75jwas
-         CcHbphwv8t70M+KuR9N6uYRIN19njgEuEo8JhwfJbOIhts2nDg+70dicyV934ACPcq
-         O0MIi0u9oZmWE84dS+QG14v8NdpHgu6Z7g2L291k=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0XCw-1n8pXu1CRY-00wUOp; Wed, 08
- Sep 2021 01:40:22 +0200
-Subject: Re: [PATCH v2 00/26] btrfs: limited subpage compressed write support
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210829052458.15454-1-wqu@suse.com>
- <20210907180228.GS3379@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <56749aba-4760-0f0a-e626-b2954d61b0d5@gmx.com>
-Date:   Wed, 8 Sep 2021 07:40:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1347175AbhIHCLk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Sep 2021 22:11:40 -0400
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:51738 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347165AbhIHCLf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Sep 2021 22:11:35 -0400
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id B08E56C008A4;
+        Wed,  8 Sep 2021 05:10:26 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1631067026; bh=ahuKqFoY8ETu98nctNZsFsE7qg2q88WR5nAktGsB2e8=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to;
+        b=K4ZIT/5rNzmsWiPDHNY+rJ4r63yzU+MJM60+n65Fv4vXUUa1nxtIUS/HYiCW8gZ7q
+         OIsfN99tNtl34S3i+HjZg4CzRNp8y2HGHUV1TRJWXVdkuohx1sAKSdRGss505ObRx8
+         sAOnipgxtR0M94u2IVYYLGg8BDnzY+fhZDtRoXes=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id A16566C008A1;
+        Wed,  8 Sep 2021 05:10:26 +0300 (EEST)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id fBS77fS3IGbe; Wed,  8 Sep 2021 05:10:23 +0300 (EEST)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 010816C008A0;
+        Wed,  8 Sep 2021 05:10:23 +0300 (EEST)
+Received: from nas (unknown [117.89.173.253])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id DCC211BE0121;
+        Wed,  8 Sep 2021 05:10:20 +0300 (EEST)
+References: <CAA_aC9-ZAdGC15HY-Q0S-N2M1OukST5BjAk9=WsD+NArCkCFUA@mail.gmail.com>
+ <3139b2df-438c-ba40-2565-1f760e6d1edb@gmx.com>
+ <9c2afb5f-e854-d743-3849-727f527e877b@gmx.com>
+ <CAA_aC99-C8xOf7EAvJAMk2ZkYSaN2vyK7YFMw06utQ0T+tsh9A@mail.gmail.com>
+ <6e03129e-f8c8-a00b-2afe-97a82d06c11e@gmx.com>
+ <CAA_aC98OWWQHT8vGMQcDMHmsCEVZ+Aw30SdMeqrAa=y1qrV72w@mail.gmail.com>
+ <7f8fde51-f920-06be-fdad-0cf59816adca@gmx.com>
+ <CAA_aC98-x6vKp53gbtw+Ds5gF+LH6yYn2vqK0TPLE4GduHjsEA@mail.gmail.com>
+ <dbf70317-43af-4c70-b5d8-22a993228065@oracle.com>
+ <CAA_aC9-2ZA2+MOYbzMK+Sm_iwyPGCoaZYotJ0gShJURFv0-Xog@mail.gmail.com>
+ <362347bd-dca2-6074-c2c1-e453edd2a455@gmx.com>
+ <CAA_aC98_gr2Gt+1YO=meG7b5mEofVLok88Hgf4605CN1zYp+ow@mail.gmail.com>
+ <ddb57c10-3581-0089-d84a-4935644bef5a@gmx.com>
+User-agent: mu4e 1.7.0; emacs 27.2
+From:   Su Yue <l@damenly.su>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Robert Wyrick <rob@wyrick.org>, Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Next steps in recovery?
+Date:   Wed, 08 Sep 2021 09:59:22 +0800
+In-reply-to: <ddb57c10-3581-0089-d84a-4935644bef5a@gmx.com>
+Message-ID: <lf47byws.fsf@damenly.su>
 MIME-Version: 1.0
-In-Reply-To: <20210907180228.GS3379@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XxTpmmGUFbjw2MEBURS/vJHt1yHixJwi7+uojCAjM/Br2XA1jm/
- Zw31OoY8ybiIn8niCyOkJja3Tt73R4kUG93NuvDRHmpecLoZO7yEalC/dYLeR3nwpCsRYo/
- XPl/6X57YYjcoPyi8ZDofk2aOr7oTlirqcLalXyqUcdTfKR72NOmeeKNeF49Pf/SL4Jay76
- pnG5ZCA8oIVgnfsTghRNA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gWDzlgK9mVM=:0rcKlNcWAMJf8yUvGKMmGR
- vnlJP0AJXoxF2g/pd5+RsGQ7YKx2gqn/LXZWeQzGASLqrd44q0ni3YAk+X2sMtXwFlDixYxY6
- 5ey7QHotTl7PnzjXlNNMbMjvgz9BWTDxpXshub57cT6dy4qTJVYtcniV1QzkeYC9aC8m3DZ0N
- IgXDk+CsT50cRXtNq3quri+fsIHxUZskH2zxpC7Dvz7nErYwMAMhkbjdJCyNMyZ+9lsmXicKB
- tzAvojHyR7VNpEaoZ+ASiTE2TBlJmEzFdSHl3UWY81Wt8UeYTCAdFJlykJfLQzoPs/4hKIGt3
- 0o4Hap6XwXLI0u052d3UXZUq5KzIn1fPhYSQVwizO2/Xh8sG9/1FCdWdyJ3fekCMLgg1f3HD3
- wZhF2ctEmYTGmxsDSV4a1fVEKBDjbRPahMx8rwgSw/scbBZaKVnOSmBgKDNWz7n3PRJInnf9i
- 61HsUGiZOCJyTfnRUYq1LW97cHKtjnf3SQRzhUb2taXRzl3Zt+GGcyJkXnvHG31U3M4fIFPd0
- u0DxQ2uf8QEFBE6J/FDD+HT4unKtQlMUMf9dO9czi/Ou2DpxCXdvL6ACq1Yk2EzNqJlb2R7Pc
- usQPe+k8KIV8UGTAsRUMHqrfUV9NqloGvvroh9CGL/OQpPwA6b3dsoAbmfh3AsUxy/+Tcwiny
- uHoa7Nhi0lR8JEVKZ7gqOvCBl2P1Ti+/mqtU//sxdPAPbAR+lCKd4F5BmxY/FE1/lSMW8sVNF
- lf18UQ4y6AMypIUUl+LWGzZhIC6Gk/gNLLZHk68jmTcw44+nz3DgpjXe3N3yn6yZt58g4gsYj
- fzgWESo5JyK9pnJQcG191P43/UciQCZxvJQ7XueGjyTDQjaujjLUm/XgfUgg1hdC9GMxrqru7
- CIA4ECGceHZm5b/cPQCghnJR4eNL3sLWLiqsAGWuqtxbGRTpwyCmkc3I+bDLRyktg3xGl5SV5
- lvNgHJpp0+dCVdpbhbDwOaW+w770HgRSJXaj+aPDsa5EyI6ewm8itsjScarSmtHVp4XztAZVl
- kqAG6FyHmCDERPj73ZwiWVzV1GxFwOgG7Lm5k25XwlFipaqZqdjdyTif7OaNAaB+PTfRgLdv7
- A4tcHjSqU0uFEEJG2JXsQA0UYjw9auKZaXO4fNli6PEel22S+6op2QMMw==
+X-Virus-Scanned: OK
+X-ESPOL: 885mlYtJBDatlF+mQGXcAAUr3FREHLKl55TJ3W4ngBmJPCqYHDwAURa3nG5+Tn28uCM=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+On Wed 08 Sep 2021 at 07:15, Qu Wenruo <quwenruo.btrfs@gmx.com>=20
+wrote:
 
-On 2021/9/8 =E4=B8=8A=E5=8D=882:02, David Sterba wrote:
-> Crash in btrfs/138
-
-Any reproducibility?
-
-I retried a dozen runs, no reproduce yet.
-
-Although it's x86_64, I also tried on aarch64 with 64K page size, the same=
-.
-
-My current base is:
-
-commit 23fe0a532654a92093f4fb59845d40bdcf74c1a6 (david/misc-next)
-Author: Kari Argillander <kari.argillander@gmail.com>
-Date:   Tue Aug 31 00:51:52 2021 +0300
-
-     btrfs: use correct header for div_u64 in misc.h
-
-
+> On 2021/9/8 =E4=B8=8A=E5=8D=881:02, Robert Wyrick wrote:
+>> Ran a repair:
+>>
+>> $ sudo ./btrfs check --repair -p /dev/sda  # I did NOT make=20
+>> install,
+>> just ran from the compiled directory
+>> enabling repair mode
+>> WARNING:
+>>
+>> Do not use --repair unless you are advised to do so by a=20
+>> developer
+>> or an experienced user, and then only after having accepted=20
+>> that no
+>> fsck can successfully repair all types of filesystem=20
+>> corruption. Eg.
+>> some software or hardware bugs can fatally damage a volume.
+>> The operation will start in 10 seconds.
+>> Use Ctrl-C to stop it.
+>> 10 9 8 7 6 5 4 3 2 1
+>> Starting repair.
+>> Opening filesystem to check...
+>> Checking filesystem on /dev/sda
+>> UUID: 75f1f45c-552e-4ae2-a56f-46e44b6647cf
+>> [1/7] checking root items                      (0:00:59=20
+>> elapsed,
+>> 2649102 items checked)
+>> Fixed 0 roots.
+>> Reset extent item (38179182174208) generation to=20
+>> 4057084elapsed,
+>> 1116143 items checked)
+>> No device size related problem found           (0:02:22=20
+>> elapsed,
+>> 1116143 items checked)
+>> [2/7] checking extents                         (0:02:23=20
+>> elapsed,
+>> 1116143 items checked)
+>> cache and super generation don't match, space cache will be=20
+>> invalidated
+>> [3/7] checking free space cache                (0:00:00=20
+>> elapsed)
+>> Deleting bad dir index [8348950,96,3] root 259 (0:00:25=20
+>> elapsed,
+>> 106695 items checked)
+>> repairing missing dir index item for inode 834922400:26=20
+>> elapsed,
+>> 108893 items checked)
+>> [4/7] checking fs roots                        (0:01:04=20
+>> elapsed,
+>> 217787 items checked)
+>> [5/7] checking csums (without verifying data)  (0:00:04=20
+>> elapsed,
+>> 12350321 items checked)
+>> [6/7] checking root refs                       (0:00:00=20
+>> elapsed, 4
+>> items checked)
+>> [7/7] checking quota groups skipped (not enabled on this FS)
+>> found 15729059057664 bytes used, no error found
+>> total csum bytes: 15313288548
+>> total tree bytes: 18286739456
+>> total fs tree bytes: 1791819776
+>> total extent tree bytes: 229130240
+>> btree space waste bytes: 1018844959
+>> file data blocks allocated: 51587230502912
+>>   referenced 15627926712320
+>>
+>> I can now mount the filesystem successfully!  Thank you for=20
+>> your help.
+>>
+>> I do have some additional questions if you don't mind...
+>> I am already using RAID 1 to handle single disk outages.
 >
-> btrfs/138		[17:47:31][ 3286.600120] run fstests btrfs/138 at 2021-09-07 =
-17:47:31
-> [ 3286.932138] BTRFS: device fsid 438a1e94-63da-4e19-a479-3bc7d9b9b93a d=
-evid 1 transid 5 /dev/vdb scanned by mkfs.btrfs (22121)
-> [ 3286.958963] BTRFS info (device vdb): flagging fs with big metadata fe=
-ature
-> [ 3286.960269] BTRFS info (device vdb): disk space caching is enabled
-> [ 3286.961378] BTRFS info (device vdb): has skinny extents
-> [ 3286.965129] BTRFS info (device vdb): checking UUID tree
-> [ 3334.373345] BTRFS info (device vdb): flagging fs with big metadata fe=
-ature
-> [ 3334.374919] BTRFS info (device vdb): disk space caching is enabled
-> [ 3334.376099] BTRFS info (device vdb): has skinny extents
-> [ 3334.456496] BTRFS info (device vdb): setting incompat feature flag fo=
-r COMPRESS_LZO (0x8)
-> [ 3334.708351] BUG: kernel NULL pointer dereference, address: 0000000000=
-000000
-> [ 3334.709746] #PF: supervisor read access in kernel mode
-> [ 3334.710727] #PF: error_code(0x0000) - not-present page
-> [ 3334.711741] PGD 0 P4D 0
-> [ 3334.712341] Oops: 0000 [#1] PREEMPT SMP
-> [ 3334.713178] CPU: 2 PID: 22182 Comm: kworker/u8:7 Not tainted 5.14.0-r=
-c7-default+ #1561
-> [ 3334.714773] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
-OS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-> [ 3334.716942] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
-> [ 3334.718197] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrfs=
-]
-
-Any code context for the RIP?
-
-Thanks,
-Qu
-
-> [ 3334.723372] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
-> [ 3334.724418] RAX: 0000000000000000 RBX: 0000000000000fff RCX: 00000000=
-00000000
-> [ 3334.725777] RDX: 0000000000000b3d RSI: 0000000000016000 RDI: 00000000=
-00000000
-> [ 3334.727117] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09: ffff9f1d=
-45f34000
-> [ 3334.728517] R10: ffff9f1d7de00000 R11: 0000000000000000 R12: ffff9f1d=
-5a812000
-> [ 3334.729878] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15: 00000000=
-00000000
-> [ 3334.731211] FS:  0000000000000000(0000) GS:ffff9f1d7da00000(0000) knl=
-GS:0000000000000000
-> [ 3334.732756] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 3334.733821] CR2: 0000000000000000 CR3: 0000000076a0f002 CR4: 00000000=
-00170ea0
-> [ 3334.735253] Call Trace:
-> [ 3334.735873]  lzo_compress_pages+0x182/0x320 [btrfs]
-> [ 3334.736901]  btrfs_compress_pages+0xbc/0x130 [btrfs]
-> [ 3334.737910]  compress_file_range+0x3ae/0x820 [btrfs]
-> [ 3334.738876]  ? rcu_read_lock_sched_held+0x12/0x70
-> [ 3334.739943]  ? submit_compressed_extents+0xc0/0xc0 [btrfs]
-> [ 3334.741058]  async_cow_start+0x12/0x30 [btrfs]
-> [ 3334.741933]  btrfs_work_helper+0xd6/0x1d0 [btrfs]
-> [ 3334.742987]  process_one_work+0x262/0x5e0
-> [ 3334.743869]  ? exit_to_user_mode_prepare+0x1b2/0x1c0
-> [ 3334.744869]  ? process_one_work+0x5e0/0x5e0
-> [ 3334.745780]  worker_thread+0x55/0x3c0
-> [ 3334.746598]  ? process_one_work+0x5e0/0x5e0
-> [ 3334.747456]  kthread+0x144/0x170
-> [ 3334.748139]  ? set_kthread_struct+0x40/0x40
-> [ 3334.748995]  ret_from_fork+0x1f/0x30
-> [ 3334.749787] Modules linked in: dm_flakey dm_mod btrfs blake2b_generic=
- libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compr=
-ess lzo_decompress raid6_pq loop
-> [ 3334.752514] CR2: 0000000000000000
-> [ 3334.753164] ---[ end trace f1f62e4293ace345 ]---
-> [ 3334.753177] BUG: kernel NULL pointer dereference, address: 0000000000=
-000000
-> [ 3334.753887] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrfs=
-]
-> [ 3334.754968] #PF: supervisor read access in kernel mode
-> [ 3334.756704] #PF: error_code(0x0000) - not-present page
-> [ 3334.759238] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
-> [ 3334.760011] PGD 0 P4D 0
-> [ 3334.760787] RAX: 0000000000000000 RBX: 0000000000000fff RCX: 00000000=
-00000000
-> [ 3334.760790] RDX: 0000000000000b3d RSI: 0000000000016000 RDI: 00000000=
-00000000
-> [ 3334.761227] Oops: 0000 [#2] PREEMPT SMP
-> [ 3334.762222] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09: ffff9f1d=
-45f34000
-> [ 3334.763228] CPU: 1 PID: 30809 Comm: kworker/u8:10 Tainted: G      D  =
-         5.14.0-rc7-default+ #1561
-> [ 3334.763828] R10: ffff9f1d7de00000 R11: 0000000000000000 R12: ffff9f1d=
-5a812000
-> [ 3334.764833] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
-OS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-> [ 3334.766165] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15: 00000000=
-00000000
-> [ 3334.767166] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
-> [ 3334.769097] FS:  0000000000000000(0000) GS:ffff9f1d7da00000(0000) knl=
-GS:0000000000000000
-> [ 3334.770482]
-> [ 3334.771422] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 3334.772857] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrfs=
-]
-> [ 3334.773201] CR2: 0000000000000000 CR3: 0000000076a0f002 CR4: 00000000=
-00170ea0
-> [ 3334.779303] RSP: 0018:ffffa7c446f47c20 EFLAGS: 00010293
-> [ 3334.780739] RAX: 0000000000000000 RBX: 0000000000000fff RCX: 00000000=
-00000000
-> [ 3334.783079] RDX: 0000000000000b47 RSI: 0000000000016000 RDI: 00000000=
-00000000
-> [ 3334.784979] RBP: ffffa7c446f47cc4 R08: 0000000000000b47 R09: ffff9f1d=
-1d088000
-> [ 3334.786059] R10: ffff9f1d7de00000 R11: 0000000000000000 R12: ffff9f1d=
-249ba000
-> [ 3334.786654] R13: 0000000000000000 R14: ffffa7c446f47cc4 R15: 00000000=
-00000000
-> [ 3334.787216] FS:  0000000000000000(0000) GS:ffff9f1d7d800000(0000) knl=
-GS:0000000000000000
-> [ 3334.788178] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 3334.788721] CR2: 0000000000000000 CR3: 0000000026af4005 CR4: 00000000=
-00170ea0
-> [ 3334.789281] Call Trace:
-> [ 3334.789527]  lzo_compress_pages+0x182/0x320 [btrfs]
-> [ 3334.790013]  btrfs_compress_pages+0xbc/0x130 [btrfs]
-> [ 3334.790468]  compress_file_range+0x3ae/0x820 [btrfs]
-> [ 3334.790921]  ? rcu_read_lock_sched_held+0x12/0x70
-> [ 3334.791327]  ? submit_compressed_extents+0xc0/0xc0 [btrfs]
-> [ 3334.792104]  async_cow_start+0x12/0x30 [btrfs]
-> [ 3334.792615]  btrfs_work_helper+0xd6/0x1d0 [btrfs]
-> [ 3334.793059]  process_one_work+0x262/0x5e0
-> [ 3334.793440]  ? process_one_work+0x5e0/0x5e0
-> [ 3334.793807]  worker_thread+0x55/0x3c0
-> [ 3334.794131]  ? process_one_work+0x5e0/0x5e0
-> [ 3334.794489]  kthread+0x144/0x170
-> [ 3334.794787]  ? set_kthread_struct+0x40/0x40
-> [ 3334.795151]  ret_from_fork+0x1f/0x30
-> [ 3334.795537] Modules linked in: dm_flakey dm_mod btrfs blake2b_generic=
- libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compr=
-ess lzo_decompress raid6_pq loop
-> [ 3334.797011] CR2: 0000000000000000
-> [ 3334.797315] ---[ end trace f1f62e4293ace346 ]---
-> [ 3334.797341] BUG: kernel NULL pointer dereference, address: 0000000000=
-000000
-> [ 3334.797704] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrfs=
-]
-> [ 3334.803174] #PF: supervisor read access in kernel mode
-> [ 3334.804664] #PF: error_code(0x0000) - not-present page
-> [ 3334.806086] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
-> [ 3334.806515] PGD 0
-> [ 3334.806515]
-> [ 3334.806516] P4D 0
-> [ 3334.806939] RAX: 0000000000000000 RBX: 0000000000000fff RCX: 00000000=
-00000000
-> [ 3334.807153]
-> [ 3334.807331] RDX: 0000000000000b3d RSI: 0000000000016000 RDI: 00000000=
-00000000
-> [ 3334.807703] Oops: 0000 [#3] PREEMPT SMP
-> [ 3334.808689] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09: ffff9f1d=
-45f34000
-> [ 3334.808921] CPU: 2 PID: 12629 Comm: kworker/u8:16 Tainted: G      D  =
-         5.14.0-rc7-default+ #1561
-> [ 3334.809492] R10: ffff9f1d7de00000 R11: 0000000000000000 R12: ffff9f1d=
-5a812000
-> [ 3334.809831] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
-OS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-> [ 3334.810388] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15: 00000000=
-00000000
-> [ 3334.811138] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
-> [ 3334.812090] FS:  0000000000000000(0000) GS:ffff9f1d7d800000(0000) knl=
-GS:0000000000000000
-> [ 3334.814225]
-> [ 3334.814227] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrfs=
-]
-> [ 3334.815124] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 3334.817404] CR2: 0000000000000000 CR3: 0000000026af4005 CR4: 00000000=
-00170ea0
-> [ 3334.817643] RSP: 0018:ffffa7c4462a7c20 EFLAGS: 00010293
-> [ 3334.823627] RAX: 0000000000000000 RBX: 0000000000000fff RCX: 00000000=
-00000000
-> [ 3334.824686] RDX: 0000000000000b20 RSI: 0000000000013000 RDI: 00000000=
-00000000
-> [ 3334.825690] RBP: ffffa7c4462a7cc4 R08: 0000000000000b20 R09: ffff9f1d=
-0e25c000
-> [ 3334.826514] R10: ffff9f1d7de00000 R11: 0000000000000000 R12: ffff9f1d=
-16c9a000
-> [ 3334.827798] R13: 0000000000000000 R14: ffffa7c4462a7cc4 R15: 00000000=
-00000000
-> [ 3334.829022] FS:  0000000000000000(0000) GS:ffff9f1d7da00000(0000) knl=
-GS:0000000000000000
-> [ 3334.831687] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 3334.832449] CR2: 0000000000000000 CR3: 0000000076a0f002 CR4: 00000000=
-00170ea0
-> [ 3334.833424] Call Trace:
-> [ 3334.833856]  lzo_compress_pages+0x182/0x320 [btrfs]
-> [ 3334.834594]  btrfs_compress_pages+0xbc/0x130 [btrfs]
-> [ 3334.835428]  compress_file_range+0x3ae/0x820 [btrfs]
-> [ 3334.836500]  ? rcu_read_lock_sched_held+0x12/0x70
-> [ 3334.837485]  ? submit_compressed_extents+0xc0/0xc0 [btrfs]
-> [ 3334.838699]  async_cow_start+0x12/0x30 [btrfs]
-> [ 3334.839737]  btrfs_work_helper+0xd6/0x1d0 [btrfs]
-> [ 3334.840694]  process_one_work+0x262/0x5e0
-> [ 3334.841483]  ? process_one_work+0x5e0/0x5e0
-> [ 3334.842355]  worker_thread+0x55/0x3c0
-> [ 3334.843458]  ? process_one_work+0x5e0/0x5e0
-> [ 3334.844679]  kthread+0x144/0x170
-> [ 3334.848139]  ? set_kthread_struct+0x40/0x40
-> [ 3334.849036]  ret_from_fork+0x1f/0x30
-> [ 3334.849753] Modules linked in: dm_flakey dm_mod btrfs blake2b_generic=
- libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compr=
-ess lzo_decompress raid6_pq loop
-> [ 3334.853981] CR2: 0000000000000000
-> [ 3334.854724] ---[ end trace f1f62e4293ace347 ]---
-> [ 3334.855728] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrfs=
-]
-> [ 3334.861741] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
-> [ 3334.862726] RAX: 0000000000000000 RBX: 0000000000000fff RCX: 00000000=
-00000000
-> [ 3334.863989] RDX: 0000000000000b3d RSI: 0000000000016000 RDI: 00000000=
-00000000
-> [ 3334.865758] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09: ffff9f1d=
-45f34000
-> [ 3334.867185] R10: ffff9f1d7de00000 R11: 0000000000000000 R12: ffff9f1d=
-5a812000
-> [ 3334.868428] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15: 00000000=
-00000000
-> [ 3334.869858] FS:  0000000000000000(0000) GS:ffff9f1d7da00000(0000) knl=
-GS:0000000000000000
-> [ 3334.871360] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 3334.872497] CR2: 0000000000000000 CR3: 0000000076a0f002 CR4: 00000000=
-00170ea0
-> [ 3334.873307] BUG: sleeping function called from invalid context at inc=
-lude/linux/percpu-rwsem.h:49
-> [ 3334.874422] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 12=
-629, name: kworker/u8:16
-> [ 3334.875559] INFO: lockdep is turned off.
-> [ 3334.876390] irq event stamp: 0
-> [ 3334.876962] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> [ 3334.877656] hardirqs last disabled at (0): [<ffffffff9d066794>] copy_=
-process+0x514/0x17e0
-> [ 3334.878434] softirqs last  enabled at (0): [<ffffffff9d066794>] copy_=
-process+0x514/0x17e0
-> [ 3334.879105] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> [ 3334.879748] CPU: 2 PID: 12629 Comm: kworker/u8:16 Tainted: G      D  =
-         5.14.0-rc7-default+ #1561
-> [ 3334.882202] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
-OS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-> [ 3334.884399] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
-> [ 3334.885295] Call Trace:
-> [ 3334.885608]  ? wake_up_klogd+0x29/0x90
-> [ 3334.886045]  dump_stack_lvl+0x45/0x59
-> [ 3334.886405]  ___might_sleep.cold+0x107/0x132
-> [ 3334.887080]  exit_signals+0x1d/0x360
-> [ 3334.887534]  do_exit+0xa2/0x4a0
-> [ 3334.888203]  rewind_stack_do_exit+0x17/0x17
-> [ 3334.889005] RIP: 0000:0x0
-> [ 3334.889588] Code: Unable to access opcode bytes at RIP 0xffffffffffff=
-ffd6.
-> [ 3334.890916] RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 000=
-0000000000000
-> [ 3334.892556] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000=
-00000000
-> [ 3334.893452] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000=
-00000000
-> [ 3334.894030] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000=
-00000000
-> [ 3334.894607] R10: 0000000000000000 R11: 0000000000000000 R12: 00000000=
-00000000
-> [ 3334.895181] R13: 0000000000000000 R14: 0000000000000000 R15: 00000000=
-00000000
-> [ 3334.940770] BUG: kernel NULL pointer dereference, address: 0000000000=
-000000
-> [ 3334.942068] #PF: supervisor read access in kernel mode
-> [ 3334.942907] #PF: error_code(0x0000) - not-present page
-> [ 3334.943832] PGD 0 P4D 0
-> [ 3334.944322] Oops: 0000 [#4] PREEMPT SMP
-> [ 3334.944956] CPU: 3 PID: 12136 Comm: kworker/u8:13 Tainted: G      D W=
-         5.14.0-rc7-default+ #1561
-> [ 3334.946320] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BI=
-OS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-> [ 3334.949150] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
-> [ 3334.950820] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrfs=
-]
-> [ 3334.956308] RSP: 0018:ffffa7c4456bfc20 EFLAGS: 00010293
-> [ 3334.957453] RAX: 0000000000000000 RBX: 0000000000000fff RCX: 00000000=
-00000000
-> [ 3334.958890] RDX: 0000000000000b56 RSI: 0000000000007000 RDI: 00000000=
-00000000
-> [ 3334.960140] RBP: ffffa7c4456bfcc4 R08: 0000000000000b56 R09: ffff9f1d=
-09658000
-> [ 3334.961348] R10: ffff9f1d7de00000 R11: 0000000000000000 R12: ffff9f1d=
-248aa000
-> [ 3334.963742] R13: 0000000000000000 R14: ffffa7c4456bfcc4 R15: 00000000=
-00000000
-> [ 3334.969393] FS:  0000000000000000(0000) GS:ffff9f1d7dc00000(0000) knl=
-GS:0000000000000000
-> [ 3334.971288] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 3334.973754] CR2: 0000000000000000 CR3: 00000000117ee006 CR4: 00000000=
-00170ea0
-> [ 3334.975493] Call Trace:
-> [ 3334.976151]  lzo_compress_pages+0x182/0x320 [btrfs]
-> [ 3334.977397]  btrfs_compress_pages+0xbc/0x130 [btrfs]
-> [ 3334.978906]  compress_file_range+0x3ae/0x820 [btrfs]
-> [ 3334.980271]  ? rcu_read_lock_sched_held+0x12/0x70
-> [ 3334.981391]  ? submit_compressed_extents+0xc0/0xc0 [btrfs]
-> [ 3334.982740]  async_cow_start+0x12/0x30 [btrfs]
-> [ 3334.983962]  btrfs_work_helper+0xd6/0x1d0 [btrfs]
-> [ 3334.986359]  process_one_work+0x262/0x5e0
-> [ 3334.987320]  worker_thread+0x55/0x3c0
-> [ 3334.988282]  ? process_one_work+0x5e0/0x5e0
-> [ 3334.989283]  kthread+0x144/0x170
-> [ 3334.990107]  ? set_kthread_struct+0x40/0x40
-> [ 3334.991160]  ret_from_fork+0x1f/0x30
-> [ 3334.992044] Modules linked in: dm_flakey dm_mod btrfs blake2b_generic=
- libcrc32c crc32c_intel xor zstd_decompress zstd_compress xxhash lzo_compr=
-ess lzo_decompress raid6_pq loop
-> [ 3334.995615] CR2: 0000000000000000
-> [ 3334.996498] ---[ end trace f1f62e4293ace348 ]---
-> [ 3334.997623] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrfs=
-]
-> [ 3335.003578] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
-> [ 3335.004802] RAX: 0000000000000000 RBX: 0000000000000fff RCX: 00000000=
-00000000
-> [ 3335.006422] RDX: 0000000000000b3d RSI: 0000000000016000 RDI: 00000000=
-00000000
-> [ 3335.008009] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09: ffff9f1d=
-45f34000
-> [ 3335.009396] R10: ffff9f1d7de00000 R11: 0000000000000000 R12: ffff9f1d=
-5a812000
-> [ 3335.010622] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15: 00000000=
-00000000
-> [ 3335.011865] FS:  0000000000000000(0000) GS:ffff9f1d7dc00000(0000) knl=
-GS:0000000000000000
-> [ 3335.013416] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 3335.014513] CR2: 0000000000000000 CR3: 00000000117ee006 CR4: 00000000=
-00170ea0
+> One thing to note is, RAID is not perfect, not even close to=20
+> proper backup.
 >
+> RAID is really only suitable to handle disk failures, nothing=20
+> more than
+> that.
+>
+> In a spectrum of backup, RAID is really just better than=20
+> nothing.
+>
+> In this particular case, all the corruption is from bitflips,=20
+> thus all
+> copies are corrupted, no profile can save the day.
+>
+>>  I assume
+>> things could have gone much worse and I could have lost the=20
+>> whole
+>> filesystem.
+>
+> If you're using newer kernels all time, the kernel can detect=20
+> the extent
+> generation problem before writing the corrupted data back to=20
+> disk, thus
+> save the day.
+>
+>>  Aside from backups (I know, I know), is there anything
+>> else I can do to prevent such issues or make them easier to=20
+>> recover
+>> from?
+>
+> Newer kernel (v5.11 and newer) can prevent it.
+> Although when such rejection happens, it will not feel that=20
+> comfort
+> though, as it would mostly result the fs to go RO.
+> But still way better than writing bad data onto disks.
+>
+>>  Could this problem have been avoided/detected earlier?
+>
+> Yes, newer kernel.
+>
+>>  This
+>> wasn't a disk failure and according to memtest86+, it wasn't=20
+>> due to
+>> bad memory either....
+>
+> I still don't believe, maybe you can try to run memtester (which=20
+> is ran
+> in user space, and since we have kernel doing the page mapping,=20
+> it may
+> expose a different workload on the memory controller than=20
+> memtest86+)
+>
+And testmem5 using config anta777 may help. It's widely used to=20
+test
+memory stability after overclocking but runs on evil Windows=20
+though.
+It won't take too much time. Two cicles test of 64G memory=20
+consumes
+about 4~6 hours.
+
+--
+Su
+
+Subject
+> Since the extent generation corruption is a super obvious=20
+> bitflip.
+>
+>>  I don't run scrubs very often.  Should I?
+>
+> For newer kernels, the corruption can be rejected in first=20
+> place, thus
+> the scrub is only going to detect problems already in the fs.
+>
+> For older kernels, scrub won't detect the problem anyw.
+>
+> So I guess you don't need that frequent scrub, but it's still=20
+> recommended.
+> Maybe monthly?
+>
+>>  I
+>> guess the more general question is:  What are the best=20
+>> practices for
+>> maintaining a healthy btrfs file system?
+>
+> Well, healthy hardware, balanced kernel version between cutting=20
+> edge and
+> stable.
+> Personally I'm more towards cutting edge thought.
+>
+> Thanks,
+> Qu
+>
+>>
+>> Thanks again!
+>>
+>> On Mon, Sep 6, 2021 at 10:53 PM Qu Wenruo=20
+>> <quwenruo.btrfs@gmx.com> wrote:
+>>>
+>>>
+>>>
+>>> On 2021/9/7 =E4=B8=8B=E5=8D=8812:36, Robert Wyrick wrote:
+>>>> What exactly would i be disabling?  I don't know what zoned=20
+>>>> does.
+>>>
+>>> The zoned device support.
+>>>
+>>> If you don't have any host-managed zoned device, there is no=20
+>>> reason you
+>>> would like to enable it.
+>>>
+>>> https://zonedstorage.io/introduction/
+>>>
+>>> Thanks,
+>>> Qu
+>>>
+>>>>
+>>>> On Mon, Sep 6, 2021, 9:07 PM Anand Jain=20
+>>>> <anand.jain@oracle.com> wrote:
+>>>>>
+>>>>> On 07/09/2021 10:36, Robert Wyrick wrote:
+>>>>>> Trying to build latest btrfs-progs.  I'm seeing errors in=20
+>>>>>> the configure script.
+>>>>>>
+>>>>>> $ cat /etc/os-release
+>>>>>> NAME=3D"Linux Mint"
+>>>>>> VERSION=3D"20.2 (Uma)"
+>>>>>> ID=3Dlinuxmint
+>>>>>> ID_LIKE=3Dubuntu
+>>>>>> PRETTY_NAME=3D"Linux Mint 20.2"
+>>>>>> VERSION_ID=3D"20.2"
+>>>>>> HOME_URL=3D"https://www.linuxmint.com/"
+>>>>>> SUPPORT_URL=3D"https://forums.linuxmint.com/"
+>>>>>> BUG_REPORT_URL=3D"http://linuxmint-troubleshooting-guide.readthedocs=
+.io/en/latest/"
+>>>>>> PRIVACY_POLICY_URL=3D"https://www.linuxmint.com/"
+>>>>>> VERSION_CODENAME=3Duma
+>>>>>> UBUNTU_CODENAME=3Dfocal
+>>>>>>
+>>>>>> $ uname -a
+>>>>>> Linux bigbox 5.11.0-27-generic #29~20.04.1-Ubuntu SMP Wed=20
+>>>>>> Aug 11
+>>>>>> 15:58:17 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+>>>>>>
+>>>>>> $ ./configure
+>>>>>> checking for gcc... gcc
+>>>>>> checking whether the C compiler works... yes
+>>>>>> checking for C compiler default output file name... a.out
+>>>>>> checking for suffix of executables...
+>>>>>> checking whether we are cross compiling... no
+>>>>>> checking for suffix of object files... o
+>>>>>> checking whether we are using the GNU C compiler... yes
+>>>>>> checking whether gcc accepts -g... yes
+>>>>>> checking for gcc option to accept ISO C89... none needed
+>>>>>> checking how to run the C preprocessor... gcc -E
+>>>>>> checking for grep that handles long lines and -e...=20
+>>>>>> /bin/grep
+>>>>>> checking for egrep... /bin/grep -E
+>>>>>> checking for ANSI C header files... yes
+>>>>>> checking for sys/types.h... yes
+>>>>>> checking for sys/stat.h... yes
+>>>>>> checking for stdlib.h... yes
+>>>>>> checking for string.h... yes
+>>>>>> checking for memory.h... yes
+>>>>>> checking for strings.h... yes
+>>>>>> checking for inttypes.h... yes
+>>>>>> checking for stdint.h... yes
+>>>>>> checking for unistd.h... yes
+>>>>>> checking minix/config.h usability... no
+>>>>>> checking minix/config.h presence... no
+>>>>>> checking for minix/config.h... no
+>>>>>> checking whether it is safe to define __EXTENSIONS__... yes
+>>>>>> checking for gcc... (cached) gcc
+>>>>>> checking whether we are using the GNU C compiler...=20
+>>>>>> (cached) yes
+>>>>>> checking whether gcc accepts -g... (cached) yes
+>>>>>> checking for gcc option to accept ISO C89... (cached) none=20
+>>>>>> needed
+>>>>>> checking whether C compiler accepts -std=3Dgnu90... yes
+>>>>>> checking build system type... x86_64-pc-linux-gnu
+>>>>>> checking host system type... x86_64-pc-linux-gnu
+>>>>>> checking for an ANSI C-conforming const... yes
+>>>>>> checking for working volatile... yes
+>>>>>> checking whether byte ordering is bigendian... no
+>>>>>> checking for special C compiler options needed for large=20
+>>>>>> files... no
+>>>>>> checking for _FILE_OFFSET_BITS value needed for large=20
+>>>>>> files... no
+>>>>>> checking for a BSD-compatible install... /usr/bin/install=20
+>>>>>> -c
+>>>>>> checking whether ln -s works... yes
+>>>>>> checking for ar... ar
+>>>>>> checking for rm... /bin/rm
+>>>>>> checking for rmdir... /bin/rmdir
+>>>>>> checking for openat... yes
+>>>>>> checking for reallocarray... yes
+>>>>>> checking for clock_gettime... yes
+>>>>>> checking linux/perf_event.h usability... yes
+>>>>>> checking linux/perf_event.h presence... yes
+>>>>>> checking for linux/perf_event.h... yes
+>>>>>> checking linux/hw_breakpoint.h usability... yes
+>>>>>> checking linux/hw_breakpoint.h presence... yes
+>>>>>> checking for linux/hw_breakpoint.h... yes
+>>>>>> checking for pkg-config... /usr/bin/pkg-config
+>>>>>> checking pkg-config is at least version 0.9.0... yes
+>>>>>> checking execinfo.h usability... yes
+>>>>>> checking execinfo.h presence... yes
+>>>>>> checking for execinfo.h... yes
+>>>>>> checking for backtrace... yes
+>>>>>> checking for backtrace_symbols_fd... yes
+>>>>>> checking for xmlto... /usr/bin/xmlto
+>>>>>> checking for mv... /bin/mv
+>>>>>> checking for a sed that does not truncate output...=20
+>>>>>> /bin/sed
+>>>>>> checking for asciidoc... /usr/bin/asciidoc
+>>>>>> checking for asciidoctor... no
+>>>>>> checking for EXT2FS... yes
+>>>>>> checking for COM_ERR... yes
+>>>>>> checking for REISERFS... yes
+>>>>>> checking for FIEMAP_EXTENT_SHARED defined in=20
+>>>>>> linux/fiemap.h... yes
+>>>>>> checking for EXT4_EPOCH_MASK defined in ext2fs/ext2_fs.h...=20
+>>>>>> yes
+>>>>>> checking linux/blkzoned.h usability... yes
+>>>>>> checking linux/blkzoned.h presence... yes
+>>>>>> checking for linux/blkzoned.h... yes
+>>>>>> checking for struct blk_zone.capacity... no
+>>>>>> checking for BLKGETZONESZ defined in linux/blkzoned.h...=20
+>>>>>> yes
+>>>>>
+>>>>>> configure: error: linux/blkzoned.h does not provide=20
+>>>>>> blk_zone.capacity
+>>>>>
+>>>>>
+>>>>>>
+>>>>>> ---
+>>>>>>
+>>>>>> Info on the file in question (linux/blkzoned.h):
+>>>>>>
+>>>>>> $ dpkg -S /usr/include/linux/blkzoned.h
+>>>>>> linux-libc-dev:amd64: /usr/include/linux/blkzoned.h
+>>>>>>
+>>>>>> $ dpkg -l linux-libc-dev
+>>>>>> Desired=3DUnknown/Install/Remove/Purge/Hold
+>>>>>> |=20
+>>>>>> Status=3DNot/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait=
+/Trig-pend
+>>>>>> |/ Err?=3D(none)/Reinst-required (Status,Err: uppercase=3Dbad)
+>>>>>> ||/ Name                 Version      Architecture=20
+>>>>>> Description
+>>>>>> +++-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D-=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>>>> ii  linux-libc-dev:amd64 5.4.0-81.91  amd64        Linux=20
+>>>>>> Kernel
+>>>>>> Headers for development
+>>>>>>
+>>>>>>
+>>>>>> So it appears that linux-libc-dev is way out-dated compared=20
+>>>>>> to my
+>>>>>> kernel.  I don't know how to update it, though... there=20
+>>>>>> doesn't appear
+>>>>>> to be a newer version available.
+>>>>>
+>>>>> You could disable the zoned.
+>>>>>
+>>>>>      ./configure --disable-zoned
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>>
