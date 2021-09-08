@@ -2,394 +2,446 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91DC403839
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 12:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A28B340388E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 13:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348131AbhIHKvp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Sep 2021 06:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53412 "EHLO mail.kernel.org"
+        id S233769AbhIHLM0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Sep 2021 07:12:26 -0400
+Received: from mout.gmx.net ([212.227.15.15]:52285 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235100AbhIHKvp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Sep 2021 06:51:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 092EF6113C
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Sep 2021 10:50:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631098237;
-        bh=XxsmUdBjaYVkj75EVOKWAII6p9Z4ThzM+COUDB2w1I0=;
-        h=From:To:Subject:Date:From;
-        b=hn//bNWy4Fd5yMvtyTcf0IY4mVOXSJPYF4GpPgLLYVMFPL3mb5sCbTQGEDFusVLkH
-         VXI4QCZvGzR5mZffm/eVkpx6HQY+ccdWRjqyocJ1t8nc2qdTe1u34DThoblYkrz5oI
-         yJTWNcwcOsHi3QKI7DPihfDYUHHZgEIf8cKLtUl1OxZIp/pfqHFrEihqqcv39Ty2jf
-         zCU2QYR1GW/AMUntf1PfkOZnUKlukufUN6Av/mLybXIimLaKiERH9NFxDNIQ236P2t
-         hkiyZrzmZU80T2138ZmkqgAUQQlcWJe6jCdeDucR32tGpfn8rFfKQwbZRpTIqDh7zW
-         fed0g3PdIMi7A==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix deadlock due to page faults during direct IO reads and writes
-Date:   Wed,  8 Sep 2021 11:50:34 +0100
-Message-Id: <e6366328b37847ce815502beaeaf2cce7a9af874.1631096590.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S232630AbhIHLMZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Sep 2021 07:12:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631099475;
+        bh=u2GALTnGkCfNhR+v5wOIP+p66E4CSvk8YPzcLgLsAvs=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Vd+L7ERSzLvyZI5Mhp8cWuhLas31m9fbXF9+vKQ592Yv7AzOY1HCUj0Vr01IR5+J9
+         u9mqfDQHpeXM6n3HsMgkuAYbVHItwwOrGZhl8MRq9mBcz9E9z5lcXXtcXQ89J+EVQc
+         G8EC8xfHV/y3g96eeXjb7+/TijQLPRZGzKM59J4k=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MkHMZ-1mmI1L2V57-00kjPi; Wed, 08
+ Sep 2021 13:11:15 +0200
+Subject: Re: [PATCH v2 00/26] btrfs: limited subpage compressed write support
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210829052458.15454-1-wqu@suse.com>
+ <20210907180228.GS3379@twin.jikos.cz>
+ <56749aba-4760-0f0a-e626-b2954d61b0d5@gmx.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <94351727-3c29-d7d1-273a-adc75045b25a@gmx.com>
+Date:   Wed, 8 Sep 2021 19:11:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <56749aba-4760-0f0a-e626-b2954d61b0d5@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XllXibfbaGALOmDcJgG8NoAPN7dsEVUpb7NbT6Cmdz4FUEfTWfW
+ m7oiMwHdzJTxF9cG+MWgk8jgp3TS21Jk70Fh4ud373grZSikwfd/rbOXlIZFdQHM4OqnmeD
+ z2E/x7F7MUbT+UpONZh0PHUK84GANEeih4NdrlfL2lmmT2W2tkGg2nQv4IiVlDCf/702Y76
+ h86txIh9qywGfQU1ieUXQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:11BOBEVNpQw=:R++JAfkkQvVIz0uOXAmvoy
+ 0IsLM9S03O2uV2eEZy1hGWDGcG/n5+79btlwKV5NsBqGzAFLtkdxUODIJYqVvZJDdygZYe7Qv
+ YCz4/CwCZKJhn9ACMCZVGQISL+BcKOwa+DHnhvitGdgnAC6e0s3himby8WGSVmRsZsM0g5ttN
+ UZzcjG6XtKVrp+9wOVRpdDrSVRyQ0NklZ65gI5OvKqJsGqvoB/eL1aaMzovaP1rg/hSzBzEDa
+ WCKkBIOzMlu+CkWT635zrnN91al6raOhm4o11OIAza9/TeVNjHQ2qPkSsWL6mRYpytCCoymUD
+ 5Lw57UAmbyWi7o5n9sH8NR0TdYCLP0qHzYvYr5ZgSCuI1vKSz0AbrFhhf3jdAGsoSbFZ4QrSF
+ RHyhnplRXLLYUWkMpvv597MK3jMGaXF6O8S68cAV7havRYhBtAaJJGEuRPOUJapOAwJObc0By
+ BosQRUhnZzLgLdMjky3f802sLjbOuwHf6kUtlRIfstYzqiMrEJFr1Udjn7bQUUAe5QlWsfav4
+ QDUSvE/vTkQDaFJOwwDckjLcdR4lhPhc2PdBctq8w6wtblGtl9dqPRN2/OIFLExRP4zBQZRHt
+ imNAOgGD4WBmd1jFvMAT64J7sbU4O/GeCjEkYqB8AF06SGaXYaSQKMAM4Hs6kLz1QuX4SD5zV
+ 9aFKDE/yYn2XjEH0S94jslkv4RLgIZtL5cGPy38iMsZ+/K9z1cJGIP+JKL8nl/Ny4NFW8mVXM
+ oxRRQ6bvcydTHCSyrT2WIwl6OJgrW4rWjydw9y9u3eHiCiFSoxRTxzf6pIcodtQ6XkuMt6YOC
+ Qjyrqs4/ESoxR2CwY6tw9WkRA0edCjV8WW3SMFCEUN0Ym1PVB5HGYIio/fh9ixgOljHuQViib
+ rPbv9JUVbcOwCiwNm+t2iA06M6jPdin8i3R9OX9erJzRy5s26y2ubwV7EvzHOAdSyYsfHoN/N
+ AwgdaZtk3AoRcnjcurKVjL8ZMe2fHQSKY/LUDZQmzQUXxIojl+MSgm+GRiEowsLbDn5bKeX0j
+ e+IYslmZ1Qho7F1lrl++s91PnPDRvnIAICiBbEPAsPx5qqIaNP3NRafhEyz1PPHPqP/fSpUR2
+ 0ghUsA2HKQK4fJgthLFJI95MBJ7HEheVgEZBgtI3O0w+FkrldSu/NSUXQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-If we do a direct IO read or write when the buffer given by the user is
-memory mapped to the file range we are going to do IO, we end up ending
-in a deadlock. This is triggered by the new test case generic/647 from
-fstests.
 
-For a direct IO read we get a trace like this:
+On 2021/9/8 =E4=B8=8A=E5=8D=887:40, Qu Wenruo wrote:
+>
+>
+> On 2021/9/8 =E4=B8=8A=E5=8D=882:02, David Sterba wrote:
+>> Crash in btrfs/138
+>
+> Any reproducibility?
+>
+> I retried a dozen runs, no reproduce yet.
+>
+> Although it's x86_64, I also tried on aarch64 with 64K page size, the sa=
+me.
+>
+> My current base is:
+>
+> commit 23fe0a532654a92093f4fb59845d40bdcf74c1a6 (david/misc-next)
+> Author: Kari Argillander <kari.argillander@gmail.com>
+> Date:=C2=A0=C2=A0 Tue Aug 31 00:51:52 2021 +0300
+>
+>  =C2=A0=C2=A0=C2=A0 btrfs: use correct header for div_u64 in misc.h
 
-[  967.872718] INFO: task mmap-rw-fault:12176 blocked for more than 120 seconds.
-[  967.874161]       Not tainted 5.14.0-rc7-btrfs-next-95 #1
-[  967.874909] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  967.875983] task:mmap-rw-fault   state:D stack:    0 pid:12176 ppid: 11884 flags:0x00000000
-[  967.875992] Call Trace:
-[  967.875999]  __schedule+0x3ca/0xe10
-[  967.876015]  schedule+0x43/0xe0
-[  967.876020]  wait_extent_bit.constprop.0+0x1eb/0x260 [btrfs]
-[  967.876109]  ? do_wait_intr_irq+0xb0/0xb0
-[  967.876118]  lock_extent_bits+0x37/0x90 [btrfs]
-[  967.876150]  btrfs_lock_and_flush_ordered_range+0xa9/0x120 [btrfs]
-[  967.876184]  ? extent_readahead+0xa7/0x530 [btrfs]
-[  967.876214]  extent_readahead+0x32d/0x530 [btrfs]
-[  967.876253]  ? lru_cache_add+0x104/0x220
-[  967.876255]  ? kvm_sched_clock_read+0x14/0x40
-[  967.876258]  ? sched_clock_cpu+0xd/0x110
-[  967.876263]  ? lock_release+0x155/0x4a0
-[  967.876271]  read_pages+0x86/0x270
-[  967.876274]  ? lru_cache_add+0x125/0x220
-[  967.876281]  page_cache_ra_unbounded+0x1a3/0x220
-[  967.876291]  filemap_fault+0x626/0xa20
-[  967.876303]  __do_fault+0x36/0xf0
-[  967.876308]  __handle_mm_fault+0x83f/0x15f0
-[  967.876322]  handle_mm_fault+0x9e/0x260
-[  967.876327]  __get_user_pages+0x204/0x620
-[  967.876332]  ? get_user_pages_unlocked+0x69/0x340
-[  967.876340]  get_user_pages_unlocked+0xd3/0x340
-[  967.876349]  internal_get_user_pages_fast+0xbca/0xdc0
-[  967.876366]  iov_iter_get_pages+0x8d/0x3a0
-[  967.876374]  bio_iov_iter_get_pages+0x82/0x4a0
-[  967.876379]  ? lock_release+0x155/0x4a0
-[  967.876387]  iomap_dio_bio_actor+0x232/0x410
-[  967.876396]  iomap_apply+0x12a/0x4a0
-[  967.876398]  ? iomap_dio_rw+0x30/0x30
-[  967.876414]  __iomap_dio_rw+0x29f/0x5e0
-[  967.876415]  ? iomap_dio_rw+0x30/0x30
-[  967.876420]  ? lock_acquired+0xf3/0x420
-[  967.876429]  iomap_dio_rw+0xa/0x30
-[  967.876431]  btrfs_file_read_iter+0x10b/0x140 [btrfs]
-[  967.876460]  new_sync_read+0x118/0x1a0
-[  967.876472]  vfs_read+0x128/0x1b0
-[  967.876477]  __x64_sys_pread64+0x90/0xc0
-[  967.876483]  do_syscall_64+0x3b/0xc0
-[  967.876487]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  967.876490] RIP: 0033:0x7fb6f2c038d6
-[  967.876493] RSP: 002b:00007fffddf586b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000011
-[  967.876496] RAX: ffffffffffffffda RBX: 0000000000001000 RCX: 00007fb6f2c038d6
-[  967.876498] RDX: 0000000000001000 RSI: 00007fb6f2c17000 RDI: 0000000000000003
-[  967.876499] RBP: 0000000000001000 R08: 0000000000000003 R09: 0000000000000000
-[  967.876501] R10: 0000000000001000 R11: 0000000000000246 R12: 0000000000000003
-[  967.876502] R13: 0000000000000000 R14: 00007fb6f2c17000 R15: 0000000000000000
+Still no reproduce after rebasing the patches to latest misc-next.
 
-This happens because at btrfs_dio_iomap_begin() we lock the extent range
-and return with it locked - we only unlock in the endio callback, at
-end_bio_extent_readpage() -> endio_readpage_release_extent(). Then after
-iomap called the btrfs_dio_iomap_begin() callback, it triggers the page
-faults that resulting in reading the pages, through the readahead callback
-btrfs_readahead(), and through there we end to attempt to lock again the
-same extent range (or a subrange of what we locked before), resulting in
-the deadlock.
+So I guess it's not that reproducible even on your side?
 
-For a direct IO write, the scenario is a bit different, and it results in
-trace like this:
-
-[ 1132.442520] run fstests generic/647 at 2021-08-31 18:53:35
-[ 1330.349355] INFO: task mmap-rw-fault:184017 blocked for more than 120 seconds.
-[ 1330.350540]       Not tainted 5.14.0-rc7-btrfs-next-95 #1
-[ 1330.351158] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 1330.351900] task:mmap-rw-fault   state:D stack:    0 pid:184017 ppid:183725 flags:0x00000000
-[ 1330.351906] Call Trace:
-[ 1330.351913]  __schedule+0x3ca/0xe10
-[ 1330.351930]  schedule+0x43/0xe0
-[ 1330.351935]  btrfs_start_ordered_extent+0x108/0x1c0 [btrfs]
-[ 1330.352020]  ? do_wait_intr_irq+0xb0/0xb0
-[ 1330.352028]  btrfs_lock_and_flush_ordered_range+0x8c/0x120 [btrfs]
-[ 1330.352064]  ? extent_readahead+0xa7/0x530 [btrfs]
-[ 1330.352094]  extent_readahead+0x32d/0x530 [btrfs]
-[ 1330.352133]  ? lru_cache_add+0x104/0x220
-[ 1330.352135]  ? kvm_sched_clock_read+0x14/0x40
-[ 1330.352138]  ? sched_clock_cpu+0xd/0x110
-[ 1330.352143]  ? lock_release+0x155/0x4a0
-[ 1330.352151]  read_pages+0x86/0x270
-[ 1330.352155]  ? lru_cache_add+0x125/0x220
-[ 1330.352162]  page_cache_ra_unbounded+0x1a3/0x220
-[ 1330.352172]  filemap_fault+0x626/0xa20
-[ 1330.352176]  ? filemap_map_pages+0x18b/0x660
-[ 1330.352184]  __do_fault+0x36/0xf0
-[ 1330.352189]  __handle_mm_fault+0x1253/0x15f0
-[ 1330.352203]  handle_mm_fault+0x9e/0x260
-[ 1330.352208]  __get_user_pages+0x204/0x620
-[ 1330.352212]  ? get_user_pages_unlocked+0x69/0x340
-[ 1330.352220]  get_user_pages_unlocked+0xd3/0x340
-[ 1330.352229]  internal_get_user_pages_fast+0xbca/0xdc0
-[ 1330.352246]  iov_iter_get_pages+0x8d/0x3a0
-[ 1330.352254]  bio_iov_iter_get_pages+0x82/0x4a0
-[ 1330.352259]  ? lock_release+0x155/0x4a0
-[ 1330.352266]  iomap_dio_bio_actor+0x232/0x410
-[ 1330.352275]  iomap_apply+0x12a/0x4a0
-[ 1330.352278]  ? iomap_dio_rw+0x30/0x30
-[ 1330.352292]  __iomap_dio_rw+0x29f/0x5e0
-[ 1330.352294]  ? iomap_dio_rw+0x30/0x30
-[ 1330.352306]  btrfs_file_write_iter+0x238/0x480 [btrfs]
-[ 1330.352339]  new_sync_write+0x11f/0x1b0
-[ 1330.352344]  ? NF_HOOK_LIST.constprop.0.cold+0x31/0x3e
-[ 1330.352354]  vfs_write+0x292/0x3c0
-[ 1330.352359]  __x64_sys_pwrite64+0x90/0xc0
-[ 1330.352365]  do_syscall_64+0x3b/0xc0
-[ 1330.352369]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[ 1330.352372] RIP: 0033:0x7f4b0a580986
-[ 1330.352379] RSP: 002b:00007ffd34d75418 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-[ 1330.352382] RAX: ffffffffffffffda RBX: 0000000000001000 RCX: 00007f4b0a580986
-[ 1330.352383] RDX: 0000000000001000 RSI: 00007f4b0a3a4000 RDI: 0000000000000003
-[ 1330.352385] RBP: 00007f4b0a3a4000 R08: 0000000000000003 R09: 0000000000000000
-[ 1330.352386] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-[ 1330.352387] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Unlike for reads, at btrfs_dio_iomap_begin() we return with the extent
-range unlocked, but later when the page faults are triggered and we try
-to read the extents, we end up btrfs_lock_and_flush_ordered_range() where
-we find the ordered extent for our write, created by the iomap callback
-btrfs_dio_iomap_begin(), and we wait for it to complete, which makes us
-deadlock since we can't complete the ordered extent without reading the
-pages (the iomap code only submits the bio after the pages are faulted
-in).
-
-Fix this by setting the nofault attribute of the given iov_iter and retry
-the direct IO read/write if we get an -EFAULT error returned from iomap.
-For reads, also disable page faults completely, this is because when we
-read from a hole or a prealloc extent, we can still trigger page faults
-due to the call to iov_iter_zero() done by iomap - at the momemnt, it is
-oblivious to the value of the ->nofault attribute of an iov_iter.
-We also need to keep track of the number of bytes written or read, and
-pass it to iomap_dio_rw(), as well as use the new flag IOMAP_DIO_PARTIAL.
-
-This depends on the iov_iter and iomap changes done by a recent patchset
-from Andreas Gruenbacher, which is not yet merged to Linus' tree at the
-moment of this writing. The cover letter has the following subject:
-
-   "[PATCH v7 00/19] gfs2: Fix mmap + page fault deadlocks"
-
-The thread can be found at:
-
-https://lore.kernel.org/all/20210827164926.1726765-1-agruenba@redhat.com/
-
-Fixing these issues could be done without the iov_iter and iomap changes
-introduced in that patchset, however it would be much more complex due to
-the need of reordering some operations for writes and having to be able
-to pass some state through nested and deep call chains, which would be
-particularly cumbersome for reads - for example make the readahead and
-the endio handlers for page reads be aware we are in a direct IO read
-context and know which inode and extent range we locked before.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
-
-As noted in the changelog, this currently depends on an unmerged patchset
-that changes the iov_iter and iomap code. Unfortunately without that
-patchset merged, the solution for this bug would be much more complex
-and hairy.
-
- fs/btrfs/file.c | 128 ++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 112 insertions(+), 16 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 9d41b28c67ba..a020fa5b077c 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1904,16 +1904,17 @@ static ssize_t check_direct_IO(struct btrfs_fs_info *fs_info,
- 
- static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- {
-+	const bool is_sync_write = (iocb->ki_flags & IOCB_DSYNC);
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file_inode(file);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	loff_t pos;
- 	ssize_t written = 0;
- 	ssize_t written_buffered;
-+	size_t prev_left = 0;
- 	loff_t endbyte;
- 	ssize_t err;
- 	unsigned int ilock_flags = 0;
--	struct iomap_dio *dio = NULL;
- 
- 	if (iocb->ki_flags & IOCB_NOWAIT)
- 		ilock_flags |= BTRFS_ILOCK_TRY;
-@@ -1956,23 +1957,79 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 		goto buffered;
- 	}
- 
--	dio = __iomap_dio_rw(iocb, from, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
--			     0, 0);
-+	/*
-+	 * We remove IOCB_DSYNC so that we don't deadlock when iomap_dio_rw()
-+	 * calls generic_write_sync() (through iomap_dio_complete()), because
-+	 * that results in calling fsync (btrfs_sync_file()) which will try to
-+	 * lock the inode in exclusive/write mode.
-+	 */
-+	if (is_sync_write)
-+		iocb->ki_flags &= ~IOCB_DSYNC;
- 
--	btrfs_inode_unlock(inode, ilock_flags);
-+	/*
-+	 * The iov_iter can be mapped to the same file range we are writing to.
-+	 * If that's the case, then we will deadlock in the iomap code, because
-+	 * it first calls our callback btrfs_dio_iomap_begin(), which will create
-+	 * an ordered extent, and after that it will fault in the pages that the
-+	 * iov_iter refers to. During the fault in we end up in the readahead
-+	 * pages code (starting at btrfs_readahead()), which will lock the range,
-+	 * find that ordered extent and then wait for it to complete (at
-+	 * btrfs_lock_and_flush_ordered_range()), resulting in a deadlock since
-+	 * obviously the ordered extent can never complete as we didn't submit
-+	 * yet the respective bio(s). This always happens when the buffer is
-+	 * memory mapped to the same file range, since the iomap DIO code always
-+	 * invalidates pages in the target file range (after starting and waiting
-+	 * for any writeback).
-+	 *
-+	 * So here we disable page faults in the iov_iter and then retry if we
-+	 * got -EFAULT, faulting in the pages before the retry.
-+	 */
-+again:
-+	from->nofault = true;
-+	err = iomap_dio_rw(iocb, from, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
-+			   IOMAP_DIO_PARTIAL, written);
-+	from->nofault = false;
- 
--	if (IS_ERR_OR_NULL(dio)) {
--		err = PTR_ERR_OR_ZERO(dio);
--		if (err < 0 && err != -ENOTBLK)
--			goto out;
--	} else {
--		written = iomap_dio_complete(dio);
-+	if (err > 0)
-+		written = err;
-+
-+	if (iov_iter_count(from) > 0 && (err == -EFAULT || err > 0)) {
-+		const size_t left = iov_iter_count(from);
-+		/*
-+		 * We have more data left to write. Try to fault in as many as
-+		 * possible of the remainder pages and retry. We do this without
-+		 * releasing and locking again the inode, to prevent races with
-+		 * truncate.
-+		 *
-+		 * Also, in case the iov refers to pages in the file range of the
-+		 * file we want to write to (due to a mmap), we could enter an
-+		 * infinite loop if we retry after faulting the pages in, since
-+		 * iomap will invalidate any pages in the range early on, before
-+		 * it tries to fault in the pages of the iov. So we keep track of
-+		 * how much was left of iov in the previous EFAULT and fallback
-+		 * to buffered IO in case we haven't made any progress.
-+		 */
-+		if (left == prev_left) {
-+			err = -ENOTBLK;
-+		} else {
-+			fault_in_iov_iter_readable(from, left);
-+			prev_left = left;
-+			goto again;
-+		}
- 	}
- 
--	if (written < 0 || !iov_iter_count(from)) {
--		err = written;
-+	btrfs_inode_unlock(inode, ilock_flags);
-+
-+	/*
-+	 * Add back IOCB_DSYNC. Our caller, btrfs_file_write_iter(), will do
-+	 * the fsync (call generic_write_sync()).
-+	 */
-+	if (is_sync_write)
-+		iocb->ki_flags |= IOCB_DSYNC;
-+
-+	/* If 'err' is -ENOTBLK then it means we must fallback to buffered IO. */
-+	if ((err < 0 && err != -ENOTBLK) || !iov_iter_count(from))
- 		goto out;
--	}
- 
- buffered:
- 	pos = iocb->ki_pos;
-@@ -1997,7 +2054,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 	invalidate_mapping_pages(file->f_mapping, pos >> PAGE_SHIFT,
- 				 endbyte >> PAGE_SHIFT);
- out:
--	return written ? written : err;
-+	return err < 0 ? err : written;
- }
- 
- static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
-@@ -3649,6 +3706,7 @@ static int check_direct_read(struct btrfs_fs_info *fs_info,
- static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	struct inode *inode = file_inode(iocb->ki_filp);
-+	ssize_t read = 0;
- 	ssize_t ret;
- 
- 	if (fsverity_active(inode))
-@@ -3658,10 +3716,48 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
- 		return 0;
- 
- 	btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
-+again:
-+	/*
-+	 * This is similar to what we do for direct IO writes, see the comment
-+	 * at btrfs_direct_write(), but we also disable page faults in addition
-+	 * to disabling them only at the iov_iter level. This is because when
-+	 * reading from a hole or prealloc extent, iomap calls iov_iter_zero(),
-+	 * which can still trigger page fault ins despite having set ->nofault
-+	 * to true of our 'to' iov_iter.
-+	 *
-+	 * The difference to direct IO writes is that we deadlock when trying
-+	 * to lock the extent range in the inode's tree during he page reads
-+	 * triggered by the fault in (while for writes it is due to waiting for
-+	 * our own ordered extent). This is because for direct IO reads,
-+	 * btrfs_dio_iomap_begin() returns with the extent range locked, which
-+	 * is only unlocked in the endio callback (end_bio_extent_readpage()).
-+	 */
-+	pagefault_disable();
-+	to->nofault = true;
- 	ret = iomap_dio_rw(iocb, to, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
--			   0, 0);
-+			   IOMAP_DIO_PARTIAL, read);
-+	to->nofault = false;
-+	pagefault_enable();
-+
-+	if (ret > 0)
-+		read = ret;
-+
-+	if (iov_iter_count(to) > 0 && (ret == -EFAULT || ret > 0)) {
-+		/*
-+		 * We have more data left to read. Try to fault in as many as
-+		 * possible of the remainder pages and retry.
-+		 *
-+		 * Unlike for direct IO writes, in case the iov refers to the
-+		 * file and range we are reading from (due to a mmap), we don't
-+		 * need to worry about an infinite loop (see btrfs_direct_write())
-+		 * because iomap does not invalidate pages for reads, only does
-+		 * it for writes.
-+		 */
-+		fault_in_iov_iter_writeable(to, iov_iter_count(to));
-+		goto again;
-+	}
- 	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
--	return ret;
-+	return ret < 0 ? ret : read;
- }
- 
- static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
--- 
-2.33.0
-
+Thanks,
+Qu
+>
+>
+>>
+>> btrfs/138=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 [17:47:31][ 3286.60=
+0120] run fstests btrfs/138 at
+>> 2021-09-07 17:47:31
+>> [ 3286.932138] BTRFS: device fsid 438a1e94-63da-4e19-a479-3bc7d9b9b93a
+>> devid 1 transid 5 /dev/vdb scanned by mkfs.btrfs (22121)
+>> [ 3286.958963] BTRFS info (device vdb): flagging fs with big metadata
+>> feature
+>> [ 3286.960269] BTRFS info (device vdb): disk space caching is enabled
+>> [ 3286.961378] BTRFS info (device vdb): has skinny extents
+>> [ 3286.965129] BTRFS info (device vdb): checking UUID tree
+>> [ 3334.373345] BTRFS info (device vdb): flagging fs with big metadata
+>> feature
+>> [ 3334.374919] BTRFS info (device vdb): disk space caching is enabled
+>> [ 3334.376099] BTRFS info (device vdb): has skinny extents
+>> [ 3334.456496] BTRFS info (device vdb): setting incompat feature flag
+>> for COMPRESS_LZO (0x8)
+>> [ 3334.708351] BUG: kernel NULL pointer dereference, address:
+>> 0000000000000000
+>> [ 3334.709746] #PF: supervisor read access in kernel mode
+>> [ 3334.710727] #PF: error_code(0x0000) - not-present page
+>> [ 3334.711741] PGD 0 P4D 0
+>> [ 3334.712341] Oops: 0000 [#1] PREEMPT SMP
+>> [ 3334.713178] CPU: 2 PID: 22182 Comm: kworker/u8:7 Not tainted
+>> 5.14.0-rc7-default+ #1561
+>> [ 3334.714773] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+>> BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+>> [ 3334.716942] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+>> [ 3334.718197] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrf=
+s]
+>
+> Any code context for the RIP?
+>
+> Thanks,
+> Qu
+>
+>> [ 3334.723372] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
+>> [ 3334.724418] RAX: 0000000000000000 RBX: 0000000000000fff RCX:
+>> 0000000000000000
+>> [ 3334.725777] RDX: 0000000000000b3d RSI: 0000000000016000 RDI:
+>> 0000000000000000
+>> [ 3334.727117] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09:
+>> ffff9f1d45f34000
+>> [ 3334.728517] R10: ffff9f1d7de00000 R11: 0000000000000000 R12:
+>> ffff9f1d5a812000
+>> [ 3334.729878] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15:
+>> 0000000000000000
+>> [ 3334.731211] FS:=C2=A0 0000000000000000(0000) GS:ffff9f1d7da00000(000=
+0)
+>> knlGS:0000000000000000
+>> [ 3334.732756] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 3334.733821] CR2: 0000000000000000 CR3: 0000000076a0f002 CR4:
+>> 0000000000170ea0
+>> [ 3334.735253] Call Trace:
+>> [ 3334.735873]=C2=A0 lzo_compress_pages+0x182/0x320 [btrfs]
+>> [ 3334.736901]=C2=A0 btrfs_compress_pages+0xbc/0x130 [btrfs]
+>> [ 3334.737910]=C2=A0 compress_file_range+0x3ae/0x820 [btrfs]
+>> [ 3334.738876]=C2=A0 ? rcu_read_lock_sched_held+0x12/0x70
+>> [ 3334.739943]=C2=A0 ? submit_compressed_extents+0xc0/0xc0 [btrfs]
+>> [ 3334.741058]=C2=A0 async_cow_start+0x12/0x30 [btrfs]
+>> [ 3334.741933]=C2=A0 btrfs_work_helper+0xd6/0x1d0 [btrfs]
+>> [ 3334.742987]=C2=A0 process_one_work+0x262/0x5e0
+>> [ 3334.743869]=C2=A0 ? exit_to_user_mode_prepare+0x1b2/0x1c0
+>> [ 3334.744869]=C2=A0 ? process_one_work+0x5e0/0x5e0
+>> [ 3334.745780]=C2=A0 worker_thread+0x55/0x3c0
+>> [ 3334.746598]=C2=A0 ? process_one_work+0x5e0/0x5e0
+>> [ 3334.747456]=C2=A0 kthread+0x144/0x170
+>> [ 3334.748139]=C2=A0 ? set_kthread_struct+0x40/0x40
+>> [ 3334.748995]=C2=A0 ret_from_fork+0x1f/0x30
+>> [ 3334.749787] Modules linked in: dm_flakey dm_mod btrfs
+>> blake2b_generic libcrc32c crc32c_intel xor zstd_decompress
+>> zstd_compress xxhash lzo_compress lzo_decompress raid6_pq loop
+>> [ 3334.752514] CR2: 0000000000000000
+>> [ 3334.753164] ---[ end trace f1f62e4293ace345 ]---
+>> [ 3334.753177] BUG: kernel NULL pointer dereference, address:
+>> 0000000000000000
+>> [ 3334.753887] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrf=
+s]
+>> [ 3334.754968] #PF: supervisor read access in kernel mode
+>> [ 3334.756704] #PF: error_code(0x0000) - not-present page
+>> [ 3334.759238] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
+>> [ 3334.760011] PGD 0 P4D 0
+>> [ 3334.760787] RAX: 0000000000000000 RBX: 0000000000000fff RCX:
+>> 0000000000000000
+>> [ 3334.760790] RDX: 0000000000000b3d RSI: 0000000000016000 RDI:
+>> 0000000000000000
+>> [ 3334.761227] Oops: 0000 [#2] PREEMPT SMP
+>> [ 3334.762222] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09:
+>> ffff9f1d45f34000
+>> [ 3334.763228] CPU: 1 PID: 30809 Comm: kworker/u8:10 Tainted: G
+>> D=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.14.0-rc=
+7-default+ #1561
+>> [ 3334.763828] R10: ffff9f1d7de00000 R11: 0000000000000000 R12:
+>> ffff9f1d5a812000
+>> [ 3334.764833] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+>> BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+>> [ 3334.766165] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15:
+>> 0000000000000000
+>> [ 3334.767166] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+>> [ 3334.769097] FS:=C2=A0 0000000000000000(0000) GS:ffff9f1d7da00000(000=
+0)
+>> knlGS:0000000000000000
+>> [ 3334.770482]
+>> [ 3334.771422] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 3334.772857] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrf=
+s]
+>> [ 3334.773201] CR2: 0000000000000000 CR3: 0000000076a0f002 CR4:
+>> 0000000000170ea0
+>> [ 3334.779303] RSP: 0018:ffffa7c446f47c20 EFLAGS: 00010293
+>> [ 3334.780739] RAX: 0000000000000000 RBX: 0000000000000fff RCX:
+>> 0000000000000000
+>> [ 3334.783079] RDX: 0000000000000b47 RSI: 0000000000016000 RDI:
+>> 0000000000000000
+>> [ 3334.784979] RBP: ffffa7c446f47cc4 R08: 0000000000000b47 R09:
+>> ffff9f1d1d088000
+>> [ 3334.786059] R10: ffff9f1d7de00000 R11: 0000000000000000 R12:
+>> ffff9f1d249ba000
+>> [ 3334.786654] R13: 0000000000000000 R14: ffffa7c446f47cc4 R15:
+>> 0000000000000000
+>> [ 3334.787216] FS:=C2=A0 0000000000000000(0000) GS:ffff9f1d7d800000(000=
+0)
+>> knlGS:0000000000000000
+>> [ 3334.788178] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 3334.788721] CR2: 0000000000000000 CR3: 0000000026af4005 CR4:
+>> 0000000000170ea0
+>> [ 3334.789281] Call Trace:
+>> [ 3334.789527]=C2=A0 lzo_compress_pages+0x182/0x320 [btrfs]
+>> [ 3334.790013]=C2=A0 btrfs_compress_pages+0xbc/0x130 [btrfs]
+>> [ 3334.790468]=C2=A0 compress_file_range+0x3ae/0x820 [btrfs]
+>> [ 3334.790921]=C2=A0 ? rcu_read_lock_sched_held+0x12/0x70
+>> [ 3334.791327]=C2=A0 ? submit_compressed_extents+0xc0/0xc0 [btrfs]
+>> [ 3334.792104]=C2=A0 async_cow_start+0x12/0x30 [btrfs]
+>> [ 3334.792615]=C2=A0 btrfs_work_helper+0xd6/0x1d0 [btrfs]
+>> [ 3334.793059]=C2=A0 process_one_work+0x262/0x5e0
+>> [ 3334.793440]=C2=A0 ? process_one_work+0x5e0/0x5e0
+>> [ 3334.793807]=C2=A0 worker_thread+0x55/0x3c0
+>> [ 3334.794131]=C2=A0 ? process_one_work+0x5e0/0x5e0
+>> [ 3334.794489]=C2=A0 kthread+0x144/0x170
+>> [ 3334.794787]=C2=A0 ? set_kthread_struct+0x40/0x40
+>> [ 3334.795151]=C2=A0 ret_from_fork+0x1f/0x30
+>> [ 3334.795537] Modules linked in: dm_flakey dm_mod btrfs
+>> blake2b_generic libcrc32c crc32c_intel xor zstd_decompress
+>> zstd_compress xxhash lzo_compress lzo_decompress raid6_pq loop
+>> [ 3334.797011] CR2: 0000000000000000
+>> [ 3334.797315] ---[ end trace f1f62e4293ace346 ]---
+>> [ 3334.797341] BUG: kernel NULL pointer dereference, address:
+>> 0000000000000000
+>> [ 3334.797704] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrf=
+s]
+>> [ 3334.803174] #PF: supervisor read access in kernel mode
+>> [ 3334.804664] #PF: error_code(0x0000) - not-present page
+>> [ 3334.806086] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
+>> [ 3334.806515] PGD 0
+>> [ 3334.806515]
+>> [ 3334.806516] P4D 0
+>> [ 3334.806939] RAX: 0000000000000000 RBX: 0000000000000fff RCX:
+>> 0000000000000000
+>> [ 3334.807153]
+>> [ 3334.807331] RDX: 0000000000000b3d RSI: 0000000000016000 RDI:
+>> 0000000000000000
+>> [ 3334.807703] Oops: 0000 [#3] PREEMPT SMP
+>> [ 3334.808689] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09:
+>> ffff9f1d45f34000
+>> [ 3334.808921] CPU: 2 PID: 12629 Comm: kworker/u8:16 Tainted: G
+>> D=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.14.0-rc=
+7-default+ #1561
+>> [ 3334.809492] R10: ffff9f1d7de00000 R11: 0000000000000000 R12:
+>> ffff9f1d5a812000
+>> [ 3334.809831] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+>> BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+>> [ 3334.810388] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15:
+>> 0000000000000000
+>> [ 3334.811138] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+>> [ 3334.812090] FS:=C2=A0 0000000000000000(0000) GS:ffff9f1d7d800000(000=
+0)
+>> knlGS:0000000000000000
+>> [ 3334.814225]
+>> [ 3334.814227] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrf=
+s]
+>> [ 3334.815124] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 3334.817404] CR2: 0000000000000000 CR3: 0000000026af4005 CR4:
+>> 0000000000170ea0
+>> [ 3334.817643] RSP: 0018:ffffa7c4462a7c20 EFLAGS: 00010293
+>> [ 3334.823627] RAX: 0000000000000000 RBX: 0000000000000fff RCX:
+>> 0000000000000000
+>> [ 3334.824686] RDX: 0000000000000b20 RSI: 0000000000013000 RDI:
+>> 0000000000000000
+>> [ 3334.825690] RBP: ffffa7c4462a7cc4 R08: 0000000000000b20 R09:
+>> ffff9f1d0e25c000
+>> [ 3334.826514] R10: ffff9f1d7de00000 R11: 0000000000000000 R12:
+>> ffff9f1d16c9a000
+>> [ 3334.827798] R13: 0000000000000000 R14: ffffa7c4462a7cc4 R15:
+>> 0000000000000000
+>> [ 3334.829022] FS:=C2=A0 0000000000000000(0000) GS:ffff9f1d7da00000(000=
+0)
+>> knlGS:0000000000000000
+>> [ 3334.831687] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 3334.832449] CR2: 0000000000000000 CR3: 0000000076a0f002 CR4:
+>> 0000000000170ea0
+>> [ 3334.833424] Call Trace:
+>> [ 3334.833856]=C2=A0 lzo_compress_pages+0x182/0x320 [btrfs]
+>> [ 3334.834594]=C2=A0 btrfs_compress_pages+0xbc/0x130 [btrfs]
+>> [ 3334.835428]=C2=A0 compress_file_range+0x3ae/0x820 [btrfs]
+>> [ 3334.836500]=C2=A0 ? rcu_read_lock_sched_held+0x12/0x70
+>> [ 3334.837485]=C2=A0 ? submit_compressed_extents+0xc0/0xc0 [btrfs]
+>> [ 3334.838699]=C2=A0 async_cow_start+0x12/0x30 [btrfs]
+>> [ 3334.839737]=C2=A0 btrfs_work_helper+0xd6/0x1d0 [btrfs]
+>> [ 3334.840694]=C2=A0 process_one_work+0x262/0x5e0
+>> [ 3334.841483]=C2=A0 ? process_one_work+0x5e0/0x5e0
+>> [ 3334.842355]=C2=A0 worker_thread+0x55/0x3c0
+>> [ 3334.843458]=C2=A0 ? process_one_work+0x5e0/0x5e0
+>> [ 3334.844679]=C2=A0 kthread+0x144/0x170
+>> [ 3334.848139]=C2=A0 ? set_kthread_struct+0x40/0x40
+>> [ 3334.849036]=C2=A0 ret_from_fork+0x1f/0x30
+>> [ 3334.849753] Modules linked in: dm_flakey dm_mod btrfs
+>> blake2b_generic libcrc32c crc32c_intel xor zstd_decompress
+>> zstd_compress xxhash lzo_compress lzo_decompress raid6_pq loop
+>> [ 3334.853981] CR2: 0000000000000000
+>> [ 3334.854724] ---[ end trace f1f62e4293ace347 ]---
+>> [ 3334.855728] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrf=
+s]
+>> [ 3334.861741] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
+>> [ 3334.862726] RAX: 0000000000000000 RBX: 0000000000000fff RCX:
+>> 0000000000000000
+>> [ 3334.863989] RDX: 0000000000000b3d RSI: 0000000000016000 RDI:
+>> 0000000000000000
+>> [ 3334.865758] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09:
+>> ffff9f1d45f34000
+>> [ 3334.867185] R10: ffff9f1d7de00000 R11: 0000000000000000 R12:
+>> ffff9f1d5a812000
+>> [ 3334.868428] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15:
+>> 0000000000000000
+>> [ 3334.869858] FS:=C2=A0 0000000000000000(0000) GS:ffff9f1d7da00000(000=
+0)
+>> knlGS:0000000000000000
+>> [ 3334.871360] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 3334.872497] CR2: 0000000000000000 CR3: 0000000076a0f002 CR4:
+>> 0000000000170ea0
+>> [ 3334.873307] BUG: sleeping function called from invalid context at
+>> include/linux/percpu-rwsem.h:49
+>> [ 3334.874422] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid:
+>> 12629, name: kworker/u8:16
+>> [ 3334.875559] INFO: lockdep is turned off.
+>> [ 3334.876390] irq event stamp: 0
+>> [ 3334.876962] hardirqs last=C2=A0 enabled at (0): [<0000000000000000>]=
+ 0x0
+>> [ 3334.877656] hardirqs last disabled at (0): [<ffffffff9d066794>]
+>> copy_process+0x514/0x17e0
+>> [ 3334.878434] softirqs last=C2=A0 enabled at (0): [<ffffffff9d066794>]
+>> copy_process+0x514/0x17e0
+>> [ 3334.879105] softirqs last disabled at (0): [<0000000000000000>] 0x0
+>> [ 3334.879748] CPU: 2 PID: 12629 Comm: kworker/u8:16 Tainted: G
+>> D=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.14.0-rc=
+7-default+ #1561
+>> [ 3334.882202] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+>> BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+>> [ 3334.884399] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+>> [ 3334.885295] Call Trace:
+>> [ 3334.885608]=C2=A0 ? wake_up_klogd+0x29/0x90
+>> [ 3334.886045]=C2=A0 dump_stack_lvl+0x45/0x59
+>> [ 3334.886405]=C2=A0 ___might_sleep.cold+0x107/0x132
+>> [ 3334.887080]=C2=A0 exit_signals+0x1d/0x360
+>> [ 3334.887534]=C2=A0 do_exit+0xa2/0x4a0
+>> [ 3334.888203]=C2=A0 rewind_stack_do_exit+0x17/0x17
+>> [ 3334.889005] RIP: 0000:0x0
+>> [ 3334.889588] Code: Unable to access opcode bytes at RIP
+>> 0xffffffffffffffd6.
+>> [ 3334.890916] RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX:
+>> 0000000000000000
+>> [ 3334.892556] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
+>> 0000000000000000
+>> [ 3334.893452] RDX: 0000000000000000 RSI: 0000000000000000 RDI:
+>> 0000000000000000
+>> [ 3334.894030] RBP: 0000000000000000 R08: 0000000000000000 R09:
+>> 0000000000000000
+>> [ 3334.894607] R10: 0000000000000000 R11: 0000000000000000 R12:
+>> 0000000000000000
+>> [ 3334.895181] R13: 0000000000000000 R14: 0000000000000000 R15:
+>> 0000000000000000
+>> [ 3334.940770] BUG: kernel NULL pointer dereference, address:
+>> 0000000000000000
+>> [ 3334.942068] #PF: supervisor read access in kernel mode
+>> [ 3334.942907] #PF: error_code(0x0000) - not-present page
+>> [ 3334.943832] PGD 0 P4D 0
+>> [ 3334.944322] Oops: 0000 [#4] PREEMPT SMP
+>> [ 3334.944956] CPU: 3 PID: 12136 Comm: kworker/u8:13 Tainted: G=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 D
+>> W=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 5.14.0-rc7-default+ #=
+1561
+>> [ 3334.946320] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+>> BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
+>> [ 3334.949150] Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+>> [ 3334.950820] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrf=
+s]
+>> [ 3334.956308] RSP: 0018:ffffa7c4456bfc20 EFLAGS: 00010293
+>> [ 3334.957453] RAX: 0000000000000000 RBX: 0000000000000fff RCX:
+>> 0000000000000000
+>> [ 3334.958890] RDX: 0000000000000b56 RSI: 0000000000007000 RDI:
+>> 0000000000000000
+>> [ 3334.960140] RBP: ffffa7c4456bfcc4 R08: 0000000000000b56 R09:
+>> ffff9f1d09658000
+>> [ 3334.961348] R10: ffff9f1d7de00000 R11: 0000000000000000 R12:
+>> ffff9f1d248aa000
+>> [ 3334.963742] R13: 0000000000000000 R14: ffffa7c4456bfcc4 R15:
+>> 0000000000000000
+>> [ 3334.969393] FS:=C2=A0 0000000000000000(0000) GS:ffff9f1d7dc00000(000=
+0)
+>> knlGS:0000000000000000
+>> [ 3334.971288] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 3334.973754] CR2: 0000000000000000 CR3: 00000000117ee006 CR4:
+>> 0000000000170ea0
+>> [ 3334.975493] Call Trace:
+>> [ 3334.976151]=C2=A0 lzo_compress_pages+0x182/0x320 [btrfs]
+>> [ 3334.977397]=C2=A0 btrfs_compress_pages+0xbc/0x130 [btrfs]
+>> [ 3334.978906]=C2=A0 compress_file_range+0x3ae/0x820 [btrfs]
+>> [ 3334.980271]=C2=A0 ? rcu_read_lock_sched_held+0x12/0x70
+>> [ 3334.981391]=C2=A0 ? submit_compressed_extents+0xc0/0xc0 [btrfs]
+>> [ 3334.982740]=C2=A0 async_cow_start+0x12/0x30 [btrfs]
+>> [ 3334.983962]=C2=A0 btrfs_work_helper+0xd6/0x1d0 [btrfs]
+>> [ 3334.986359]=C2=A0 process_one_work+0x262/0x5e0
+>> [ 3334.987320]=C2=A0 worker_thread+0x55/0x3c0
+>> [ 3334.988282]=C2=A0 ? process_one_work+0x5e0/0x5e0
+>> [ 3334.989283]=C2=A0 kthread+0x144/0x170
+>> [ 3334.990107]=C2=A0 ? set_kthread_struct+0x40/0x40
+>> [ 3334.991160]=C2=A0 ret_from_fork+0x1f/0x30
+>> [ 3334.992044] Modules linked in: dm_flakey dm_mod btrfs
+>> blake2b_generic libcrc32c crc32c_intel xor zstd_decompress
+>> zstd_compress xxhash lzo_compress lzo_decompress raid6_pq loop
+>> [ 3334.995615] CR2: 0000000000000000
+>> [ 3334.996498] ---[ end trace f1f62e4293ace348 ]---
+>> [ 3334.997623] RIP: 0010:copy_compressed_data_to_page+0x1f7/0x2b0 [btrf=
+s]
+>> [ 3335.003578] RSP: 0018:ffffa7c44a0c7c20 EFLAGS: 00010293
+>> [ 3335.004802] RAX: 0000000000000000 RBX: 0000000000000fff RCX:
+>> 0000000000000000
+>> [ 3335.006422] RDX: 0000000000000b3d RSI: 0000000000016000 RDI:
+>> 0000000000000000
+>> [ 3335.008009] RBP: ffffa7c44a0c7cc4 R08: 0000000000000b3d R09:
+>> ffff9f1d45f34000
+>> [ 3335.009396] R10: ffff9f1d7de00000 R11: 0000000000000000 R12:
+>> ffff9f1d5a812000
+>> [ 3335.010622] R13: 0000000000000000 R14: ffffa7c44a0c7cc4 R15:
+>> 0000000000000000
+>> [ 3335.011865] FS:=C2=A0 0000000000000000(0000) GS:ffff9f1d7dc00000(000=
+0)
+>> knlGS:0000000000000000
+>> [ 3335.013416] CS:=C2=A0 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 3335.014513] CR2: 0000000000000000 CR3: 00000000117ee006 CR4:
+>> 0000000000170ea0
+>>
