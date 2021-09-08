@@ -2,123 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54EF403E33
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 19:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEA4403E64
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 19:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352337AbhIHROH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Sep 2021 13:14:07 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:52385 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232976AbhIHROG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Sep 2021 13:14:06 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 30BD55C0112;
-        Wed,  8 Sep 2021 13:12:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 08 Sep 2021 13:12:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=Ah2negzH6LsSLgNhreDrTvTJ/PG
-        OOoBYoy8FY6tlTY0=; b=TogOGhndRBgHXQiejk6KX2VQ8zt9R2akeB3aGUpgMB3
-        6j1MtYyJsmZULNgrUvZx3sh3H2EWVN4vlTKdX8zZPEwFUlZtuXJClQFP3bqRoDh4
-        8rRHHzLsyJJLiJYdwL8ekr+jBbz1cbeHvHvP+KzhWJbXSJlegm0X5hXKb2OLwhJU
-        /+4VJwFbzvApbWy/VAbYREpwAN9ChsJWBt3hSOtlzNfWvRPE2abxceNPk1zaoNeY
-        v9fvtAMmNzT0EtH99Z25zg/6j62BUsr8nnqBreUGVMOB1368/OrByKmkJiOutSRP
-        8xkHhJYNSBEVztZg+Jbbt0sy8m/yrZhQ6GJqRCuurXw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Ah2neg
-        zH6LsSLgNhreDrTvTJ/PGOOoBYoy8FY6tlTY0=; b=GTRGd9CUpU013j6qCgDRh0
-        WRlI7OP6ncXvF3Kh5i/riRNOCLpNWm5sI0KYVSE2QiK+lxzEv3LbmkY0XafSl4F1
-        YfKBF/AeNcVcvo/9I02NI/eJs6qJ4EsNf3KR0g591XSK8+mg4gyEWnDGCUlNdEyE
-        oz285u6CDurLc/W+6SWFgQzyAPld7s0LTLxmqb84u40vClYt7eLWm18uc6+3R7MV
-        934pLlEse5XwaBobSW3ClkkvMWk840jxWQXCkogTYjM/5kSJQ0JdJgoLTEvIyw+7
-        1xkGw+JJTGyXn35wF/pUvs75I8SrlLkXgczw9Ov638BECWZSGbqml5Uvf2kiPWDQ
-        ==
-X-ME-Sender: <xms:Ge84YYTPFcEMu11yifYEA6t3C7wJhSHqM7gGFwWX5bndmeLoOladUQ>
-    <xme:Ge84YVwPYNzxyhy4ZmO-uyoWT1ogVGxmCGHzddUb_Kke--dbN_mfwcR8Imxi-03Vf
-    RrTQ6ndXCryxcs-2ms>
-X-ME-Received: <xmr:Ge84YV2K4wqmnS9PWrhswDr_zNL0CsGXQk_Mbp9EQXptN9Ym6no9afJ217MEWXbqBbthZP3FGjXpSVLGwCkrx8E0Ure-Lw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefjedguddtkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhr
-    rdhioheqnecuggftrfgrthhtvghrnhepheduveelkeeiteelveeiuefhudehtdeigfehke
-    effeegledvueevgefgudeuveefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:Ge84YcDj0IlPCT3f0WfTdrxflKsMshXBuJuo24unWjpztPmVGD4D2Q>
-    <xmx:Ge84YRg90wszxQt4lt5YdHwci5LO_zTxlhLLaSpVdYuRsvOf9q1OeQ>
-    <xmx:Ge84YYov23RpCtJvEEUlebbzB8xmdIr1SZOEoAWkhG5V-uyAchRtbA>
-    <xmx:Gu84YRK2AqUKXwPdKSGsDCy1bhqFliNs9tSAv7UODjl2najx1D5LoQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 8 Sep 2021 13:12:57 -0400 (EDT)
-Date:   Wed, 8 Sep 2021 10:12:56 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix transaction handle leak after verity rollback
- failure
-Message-ID: <YTjvGGW0YYMF3bEH@zen>
-References: <b390e518f2091df52fd314806cce52fd00a19a00.1631114872.git.fdmanana@suse.com>
+        id S1352494AbhIHRdu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Sep 2021 13:33:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350194AbhIHRdt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Sep 2021 13:33:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 570FC60F5E
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Sep 2021 17:32:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631122361;
+        bh=VpP8jtds6pMtov9pXmEzNqsAxUi6HobJTkO5H2AovPo=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=Bje4ifSDNTcpBLz6Mj2y778JWQ/91tmbop4cBeuvUbpvUUr4Q3taYNnvvrrRNzJHe
+         Mu6mvK8HjL8Gwri18sLTsDT+cuxNe8jZn3X5l16nc04s/tQNCaUMDJplEXpbkiI4Yg
+         8WgA2ce/LUvZGH9grRErcbl+bzorlxE+N2aAE/k8z+lWn7On28O73z0wsdIpXu/gxJ
+         lUVXhocHpl6gpmpyBhtOf5sztS0ZpRaM3+9PCLgOMCkeojrwXB07XpR6cu9DsuW9NA
+         D8HwZTokQ+FUxAPtoKknOmLsaBnU5ZBOj/D76ua9VrYSzQPnQx9tO0BPlH999H/Lcy
+         0sdhWM4zIiTzg==
+Received: by mail-qv1-f54.google.com with SMTP id s16so1770396qvt.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Sep 2021 10:32:41 -0700 (PDT)
+X-Gm-Message-State: AOAM533yOaX9MIayVT/bxNy7JCpVy86Tuf/yGGCItmyAxImtZ46rnSEo
+        oxS7H5yblfhNB02o35aJZAqJiXebXT4HWVy8VtQ=
+X-Google-Smtp-Source: ABdhPJxwjntBOAcBZFSNDzajTooH4+vUKBovget1xwuaOqLTFFTkXfJXK1SMrYESoK6rPXuqCUCNjmdC0nef2BqtUwI=
+X-Received: by 2002:a0c:a88a:: with SMTP id x10mr5213983qva.66.1631122360528;
+ Wed, 08 Sep 2021 10:32:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b390e518f2091df52fd314806cce52fd00a19a00.1631114872.git.fdmanana@suse.com>
+References: <cover.1631026981.git.fdmanana@suse.com> <dcf9de78faa6ec5cef443d031a987c87301805b1.1631026981.git.fdmanana@suse.com>
+ <89c736d1-2e8c-b9ef-40a0-298b94fcebde@oracle.com> <CAL3q7H4B76EqcUY2Ynb1T4d16LqRvyS-41tf8Ze=gfg6ZqGdFg@mail.gmail.com>
+ <20210908163039.GT3379@twin.jikos.cz>
+In-Reply-To: <20210908163039.GT3379@twin.jikos.cz>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Wed, 8 Sep 2021 18:32:04 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7++M2P6vOC4fzXg5zovd_pQ3DWxHwNVs5Z3RcGGZ2ypg@mail.gmail.com>
+Message-ID: <CAL3q7H7++M2P6vOC4fzXg5zovd_pQ3DWxHwNVs5Z3RcGGZ2ypg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] btrfs: fix mount failure due to past and transient
+ device flush error
+To:     David Sterba <dsterba@suse.cz>,
+        Filipe Manana <fdmanana@kernel.org>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 04:29:26PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> During a verity rollback, if we fail to update the inode or delete the
-> orphan, we abort the transaction and return without releasing our
-> transaction handle. Fix that by releasing the handle.
-> 
-> Fixes: 146054090b0859 ("btrfs: initial fsverity support")
-> Fixes: 705242538ff348 ("btrfs: verity metadata orphan items")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Oops, I thoughtlessly assumed abort also released the handle. Thank you
-for the fix!
-Reviewed-by: Boris Burkov <boris@bur.io>
-> ---
->  fs/btrfs/verity.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
-> index 28d443d3ef93..4968535dfff0 100644
-> --- a/fs/btrfs/verity.c
-> +++ b/fs/btrfs/verity.c
-> @@ -451,7 +451,7 @@ static int del_orphan(struct btrfs_trans_handle *trans, struct btrfs_inode *inod
->   */
->  static int rollback_verity(struct btrfs_inode *inode)
->  {
-> -	struct btrfs_trans_handle *trans;
-> +	struct btrfs_trans_handle *trans = NULL;
->  	struct btrfs_root *root = inode->root;
->  	int ret;
->  
-> @@ -473,6 +473,7 @@ static int rollback_verity(struct btrfs_inode *inode)
->  	trans = btrfs_start_transaction(root, 2);
->  	if (IS_ERR(trans)) {
->  		ret = PTR_ERR(trans);
-> +		trans = NULL;
->  		btrfs_handle_fs_error(root->fs_info, ret,
->  			"failed to start transaction in verity rollback %llu",
->  			(u64)inode->vfs_inode.i_ino);
-> @@ -490,8 +491,9 @@ static int rollback_verity(struct btrfs_inode *inode)
->  		btrfs_abort_transaction(trans, ret);
->  		goto out;
->  	}
-> -	btrfs_end_transaction(trans);
->  out:
-> +	if (trans)
-> +		btrfs_end_transaction(trans);
->  	return ret;
->  }
->  
-> -- 
-> 2.33.0
-> 
+On Wed, Sep 8, 2021 at 5:30 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Wed, Sep 08, 2021 at 03:26:55PM +0100, Filipe Manana wrote:
+> > On Wed, Sep 8, 2021 at 3:20 PM Anand Jain <anand.jain@oracle.com> wrote:
+> > >
+> > > On 07/09/2021 23:15, fdmanana@kernel.org wrote:
+> > > > From: Filipe Manana <fdmanana@suse.com>
+> > > >
+> > > > When we get an error flushing one device, during a super block commit, we
+> > > > record the error in the device structure, in the field 'last_flush_error'.
+> > > > This is used to later check if we should error out the super block commit,
+> > > > depending on whether the number of flush errors is greater than or equals
+> > > > to the maximum tolerated device failures for a raid profile.
+> > >
+> > >
+> > > > However if we get a transient device flush error, unmount the filesystem
+> > > > and later try to mount it, we can fail the mount because we treat that
+> > > > past error as critical and consider the device is missing.
+> > >
+> > > > Even if it's
+> > > > very likely that the error will happen again, as it's probably due to a
+> > > > hardware related problem, there may be cases where the error might not
+> > > > happen again.
+> > >
+> > >   But is there an impact due to flush error, like storage cache lost few
+> > > block? If so, then the current design is correct. No?
+> >
+> > If there was a flush error, then we aborted the current transaction
+> > and set the filesystem to error state.
+> > We only write the super block if we are able to do the device flushes.
+>
+> Should the last_flush_error be reset in btrfs_close_one_device once the
+> filesystem is unmounted? I wonder if we should allow leaking the status
+> past the mount and care in the next one.
+
+Yes, that's a simpler and more logical approach.
+Will send a new version doing it that way. Thanks.
