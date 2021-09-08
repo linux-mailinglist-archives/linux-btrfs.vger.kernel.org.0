@@ -2,115 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69C3403D78
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 18:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EBE403D79
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 18:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348125AbhIHQUu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Sep 2021 12:20:50 -0400
+        id S1348697AbhIHQUw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Sep 2021 12:20:52 -0400
 Received: from esa5.hgst.iphmx.com ([216.71.153.144]:3327 "EHLO
         esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347311AbhIHQUu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Sep 2021 12:20:50 -0400
+        with ESMTP id S1347311AbhIHQUv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Sep 2021 12:20:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1631117981; x=1662653981;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=TG6vG+SgnO4GuDBQMBITEFOJnuJHxrBIBnPwLBYzIig=;
-  b=BqynckarqTaPdfwde2mB/ZYWKZdz/B+90lnTshrIR0MSa3ZVKpH5gcmM
-   M42HWUgX2LaMRPfWbauhUp3y6x+DEui4GXcp39+c/z7JQgly49JSNydFy
-   slGgwq12VoDlVRGkz+lBa4o6jAomrw4mM7Fh0G0L1KV6OsGDSjvgVl0Mw
-   zKk22tJmeWAg4QivWH+nL4PDx4Yj0lBfXRhWHqWyqLfRVKt+phKHXjZH1
-   sPmZ8lCHKKcK5MRvQ1B6Q7i9QyAESk6Gf6O1zp+4bchPCRg2S6jGb3gp2
-   rFvGViODzczNKQcFxVyxcCXidl0nt/BLfjOHcaSltL6b3VpSWQ9soRruA
-   Q==;
+  t=1631117982; x=1662653982;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=GYpFKNRpd41hqGMfWj37r2AMYvC9qtlunoHuJXbFeGA=;
+  b=iy7OQ7fvQz1APDottisZdHbmFpVXBdjldOkenDtJEBhd/aXSB8KEqCFY
+   qflSZfqmU916EWpIHzeB9uczqkTYOucMNXflHZsNgGBKdV49cRMAtXRV+
+   SyKZ++Hv11wnGdwxqD4V84rf/B2AyW8WoM0dzt9abhJwyqj0Wf7YBtbUs
+   9RpPUJRfc9jmtU6NByj8Bnz2q3VdAyqWuo2MUTh23DOQGZhkeStcz9oa1
+   HYmPKfPp5WM+b6Rq+gxxKSdoFfC62wXuEMdM+zK9BRBEeXmZCK2wO6w31
+   qXwPa273kYRKzP7/uSs3ura6iMP8kpE4VnJbMGNaVmoXHrTLf0jQ/LNOm
+   w==;
 X-IronPort-AV: E=Sophos;i="5.85,278,1624291200"; 
-   d="scan'208";a="179493933"
+   d="scan'208";a="179493935"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Sep 2021 00:19:41 +0800
-IronPort-SDR: BadK6WdIXZwfZ/5D5YqnYZ0oVZgCES5jtBch8vZUkIS+tY07wb7wYMEX8gmxGq+SpGeT5jcbok
- i6OFFv/gAv0BE1obM0LdPY32yJuj5OYu4vsBH8EV8lz9S40cHhHGUKwww1JpDSaLIN9K4XK4w7
- Fm0f02HaAl9e8fV5L0VUR4kkFCM8YRUKkS2Mx8QBmRnlup8NyKlOFcCJZKtR2rt/KfaUnPlZmK
- mJW6y1Yu4QsYqekPf6AuTNqkqS0xJ0i1YflMFURwjda44gRwR1KSigt+o7QfnZkkN2F4bx4Hrw
- mTR/rUujMBZm0047aoQ42q8k
+  by ob1.hgst.iphmx.com with ESMTP; 09 Sep 2021 00:19:42 +0800
+IronPort-SDR: IDMvioCEgkKC5T+XypvCrIAY0Al9xFL3wLEmPyO6XpsFxDudn9Ma7jTOr/kYoudM97iNiSf6dy
+ hq+NUYx+EuV4/E6Aq2GupLFDtJd916Zn/cKYPfes4ksPDcM/gQvh/jhn7hs5P/WYfnE5VR31bb
+ p0Npcq0wZy2W9pnNcpkQ7BJ5BldhJ12r5qKXBV32vsRictYHDE94Mzn3Odj3qpsFZcbVvNECtq
+ uU8+QGuL/YSx9yms/Sg/3b24f6MEIWR9TjafhyjcQy18JLRfWZQgGf+nL33GfVxnalqtz2Ni3O
+ mxRMX46pykoIr3mxeOODdam4
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 08:54:38 -0700
-IronPort-SDR: d3rncuDmU9AbwXVcsZ2kpTkoo1PCq9bIdrj3QGf5lIDzrPu2j11Gd4T/TtyfphWJi/FJAv+eAt
- jRlW5zdplzAeEvE6ZfCFlj4wEmcxtNktk6TlmLUwh63qpeOmPYjNV54Bn9XMBuTmC8Vt8eTZdV
- Cqix7wBgAuQVpr5bZWZBpFYfRGFTDauuveA10RfdkKhsv7jPv3MszdNLbgc/7huMp5nq6smWRq
- 7muOLmgiAo27ajDLQYaFcHgkoqUd9mNVev1N2/4T8ZfEHKSs5Ai9zYFPwErv7+tqP4+37nH4Pz
- stg=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 08:54:40 -0700
+IronPort-SDR: x4xUruK5I4s9SmY6jbW6areFNtNR0FCs8lKnAQIfxk/0nbQlwtdgA4DLY2V4+PRk0PQT9e4Ick
+ GIf1uOuQMakrXHKxLDxLoocWu2wOvfs57szJzUy28DdIz8G5eX7IB0CKysam3M1QmOs/h7D1bo
+ cBYZGQRylL334jnfI7ahCk0rccPobWWhiC0KdaiPX7/COpDIrZrRZRMDrOpcO6Ye17XKxX/7+Z
+ XO68CwkQWWn73IFKechDEjCmiOXkQRUQmGUlrLAXb0KkSbrpOH5wYjQc2RGS8pn9sR4zOcyA03
+ iFY=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 08 Sep 2021 09:19:42 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 08 Sep 2021 09:19:43 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
         Damien Le Moal <Damien.LeMoal@wdc.com>,
         Naohiro Aota <Naohiro.Aota@wdc.com>,
         Filipe Manana <fdmanana@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 0/8] btrfs: zoned: unify relocation on a zoned and regular FS
-Date:   Thu,  9 Sep 2021 01:19:24 +0900
-Message-Id: <cover.1631117101.git.johannes.thumshirn@wdc.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v2 1/8] btrfs: introduce btrfs_is_data_reloc_root
+Date:   Thu,  9 Sep 2021 01:19:25 +0900
+Message-Id: <79cc0b662b3ece2d27b22ba35535ad58b0b0755d.1631117101.git.johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1631117101.git.johannes.thumshirn@wdc.com>
+References: <cover.1631117101.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-A while ago David reported a bug in zoned btrfs' relocation code. The bug is
-triggered because relocation on a zoned filesystem does not preallocate the
-extents it copies and a writeback process running in parallel can cause a
-split of the written extent. But splitting extents is currently not allowed on
-relocation as it assumes a one to one copy of the relocated extents.
+There are several places in our codebase where we check if a root is the
+root of the data reloc tree and subsequent patches will introduce more.
 
-This causes transaction aborts and the filessytem switching to read-only in
-order to prevent further damage.
+Factor out the check into a small helper function instead of open coding
+it multiple times.
 
-The first patch in this series is just a preparation to avoid overly long
-lines in follow up patches. Patch number two adds a dedicated block group for
-relocation on a zoned filesystem. Number three excludes multiple processes
-from adding pages to a relocation inode in a zoned filesystem. Patch four
-switches relocation from REQ_OP_ZONE_APPEND to regular REQ_OP_WRITE, five
-prepares an ASSERT()ion that we can enter the nocow path on a zoned filesystem
-under very special circumstances and the sixth patch then switches the
-relocation code for a zoned filesystem to using the same code path as we use
-on a non zoned filesystem. As the changes before have made the prerequisites
-to do so. The last two patches in this series are just a simple rename of a
-function whose name we have twice in the btrfs codebase but with a different
-purpose in different files and a cleanup of a complicated boolean comparison
-into an if to make it stand out.
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ fs/btrfs/ctree.h       |  5 +++++
+ fs/btrfs/disk-io.c     |  2 +-
+ fs/btrfs/extent-tree.c |  2 +-
+ fs/btrfs/inode.c       | 19 ++++++++-----------
+ fs/btrfs/relocation.c  |  2 +-
+ 5 files changed, 16 insertions(+), 14 deletions(-)
 
-Changes to v1:
-- Added patches 3 and 8
-- Added comments to patches 4 and 5 (Naohiro)
-- Move btrfs_clear_data_reloc_bg() out of line (David)
-- Untangle the 'skip' assing into an if (David)
-- Commented new fs_info members (David)
-
-Johannes Thumshirn (8):
-  btrfs: introduce btrfs_is_data_reloc_root
-  btrfs: zoned: add a dedicated data relocation block group
-  btrfs: zoned: only allow one process to add pages to a relocation
-    inode
-  btrfs: zoned: use regular writes for relocation
-  btrfs: check for relocation inodes on zoned btrfs in should_nocow
-  btrfs: zoned: allow preallocation for relocation inodes
-  btrfs: rename setup_extent_mapping in relocation code
-  btrfs: zoned: let the for_treelog test in the allocator stand out
-
- fs/btrfs/block-group.c |  1 +
- fs/btrfs/ctree.h       | 12 +++++++++
- fs/btrfs/disk-io.c     |  3 ++-
- fs/btrfs/extent-tree.c | 60 +++++++++++++++++++++++++++++++++++++-----
- fs/btrfs/extent_io.c   |  7 +++++
- fs/btrfs/inode.c       | 29 +++++++++++---------
- fs/btrfs/relocation.c  | 43 +++++-------------------------
- fs/btrfs/zoned.c       | 21 +++++++++++++++
- fs/btrfs/zoned.h       |  4 ++-
- 9 files changed, 123 insertions(+), 57 deletions(-)
-
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 38870ae46cbb..8cc0b29e24ee 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3846,6 +3846,11 @@ static inline bool btrfs_is_zoned(const struct btrfs_fs_info *fs_info)
+ 	return fs_info->zoned != 0;
+ }
+ 
++static inline bool btrfs_is_data_reloc_root(const struct btrfs_root *root)
++{
++	return root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID;
++}
++
+ /*
+  * We use page status Private2 to indicate there is an ordered extent with
+  * unfinished IO.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 7d80e5b22d32..d63c5e776a96 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1500,7 +1500,7 @@ static int btrfs_init_fs_root(struct btrfs_root *root, dev_t anon_dev)
+ 		goto fail;
+ 
+ 	if (root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID &&
+-	    root->root_key.objectid != BTRFS_DATA_RELOC_TREE_OBJECTID) {
++	    !btrfs_is_data_reloc_root(root)) {
+ 		set_bit(BTRFS_ROOT_SHAREABLE, &root->state);
+ 		btrfs_check_and_init_root_item(&root->root_item);
+ 	}
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 7d03ffa04bce..239e09f7239a 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2376,7 +2376,7 @@ int btrfs_cross_ref_exist(struct btrfs_root *root, u64 objectid, u64 offset,
+ 
+ out:
+ 	btrfs_free_path(path);
+-	if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID)
++	if (btrfs_is_data_reloc_root(root))
+ 		WARN_ON(ret > 0);
+ 	return ret;
+ }
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a3ce50289888..e89e16a9c56c 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1150,7 +1150,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 	 * fails during the stage where it updates the bytenr of file extent
+ 	 * items.
+ 	 */
+-	if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID)
++	if (btrfs_is_data_reloc_root(root))
+ 		min_alloc_size = num_bytes;
+ 	else
+ 		min_alloc_size = fs_info->sectorsize;
+@@ -1186,8 +1186,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 		if (ret)
+ 			goto out_drop_extent_cache;
+ 
+-		if (root->root_key.objectid ==
+-		    BTRFS_DATA_RELOC_TREE_OBJECTID) {
++		if (btrfs_is_data_reloc_root(root)) {
+ 			ret = btrfs_reloc_clone_csums(inode, start,
+ 						      cur_alloc_size);
+ 			/*
+@@ -1503,8 +1502,7 @@ static int fallback_to_cow(struct btrfs_inode *inode, struct page *locked_page,
+ 			   int *page_started, unsigned long *nr_written)
+ {
+ 	const bool is_space_ino = btrfs_is_free_space_inode(inode);
+-	const bool is_reloc_ino = (inode->root->root_key.objectid ==
+-				   BTRFS_DATA_RELOC_TREE_OBJECTID);
++	const bool is_reloc_ino = btrfs_is_data_reloc_root(inode->root);
+ 	const u64 range_bytes = end + 1 - start;
+ 	struct extent_io_tree *io_tree = &inode->io_tree;
+ 	u64 range_start = start;
+@@ -1866,8 +1864,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 			btrfs_dec_nocow_writers(fs_info, disk_bytenr);
+ 		nocow = false;
+ 
+-		if (root->root_key.objectid ==
+-		    BTRFS_DATA_RELOC_TREE_OBJECTID)
++		if (btrfs_is_data_reloc_root(root))
+ 			/*
+ 			 * Error handled later, as we must prevent
+ 			 * extent_clear_unlock_delalloc() in error handler
+@@ -2206,7 +2203,7 @@ void btrfs_clear_delalloc_extent(struct inode *vfs_inode,
+ 		if (btrfs_is_testing(fs_info))
+ 			return;
+ 
+-		if (root->root_key.objectid != BTRFS_DATA_RELOC_TREE_OBJECTID &&
++		if (!btrfs_is_data_reloc_root(root) &&
+ 		    do_list && !(state->state & EXTENT_NORESERVE) &&
+ 		    (*bits & EXTENT_CLEAR_DATA_RESV))
+ 			btrfs_free_reserved_data_space_noquota(fs_info, len);
+@@ -2531,7 +2528,7 @@ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+ 		goto mapit;
+ 	} else if (async && !skip_sum) {
+ 		/* csum items have already been cloned */
+-		if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID)
++		if (btrfs_is_data_reloc_root(root))
+ 			goto mapit;
+ 		/* we're doing a write, do the async checksumming */
+ 		ret = btrfs_wq_submit_bio(inode, bio, mirror_num, bio_flags,
+@@ -3307,7 +3304,7 @@ unsigned int btrfs_verify_data_csum(struct btrfs_io_bio *io_bio, u32 bio_offset,
+ 		u64 file_offset = pg_off + page_offset(page);
+ 		int ret;
+ 
+-		if (root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID &&
++		if (btrfs_is_data_reloc_root(root) &&
+ 		    test_range_bit(io_tree, file_offset,
+ 				   file_offset + sectorsize - 1,
+ 				   EXTENT_NODATASUM, 1, NULL)) {
+@@ -4008,7 +4005,7 @@ noinline int btrfs_update_inode(struct btrfs_trans_handle *trans,
+ 	 * without delay
+ 	 */
+ 	if (!btrfs_is_free_space_inode(inode)
+-	    && root->root_key.objectid != BTRFS_DATA_RELOC_TREE_OBJECTID
++	    && !btrfs_is_data_reloc_root(root)
+ 	    && !test_bit(BTRFS_FS_LOG_RECOVERING, &fs_info->flags)) {
+ 		btrfs_update_root_times(trans, root);
+ 
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 63d2b22cf438..3c9c0aab7fc3 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -4391,7 +4391,7 @@ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
+ 		return 0;
+ 
+ 	BUG_ON(rc->stage == UPDATE_DATA_PTRS &&
+-	       root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID);
++	       btrfs_is_data_reloc_root(root));
+ 
+ 	level = btrfs_header_level(buf);
+ 	if (btrfs_header_generation(buf) <=
 -- 
 2.32.0
 
