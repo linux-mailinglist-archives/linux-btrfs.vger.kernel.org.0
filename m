@@ -2,188 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D2F403EE2
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 20:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11A6403F22
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 20:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235991AbhIHSOl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Sep 2021 14:14:41 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54968 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhIHSOk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Sep 2021 14:14:40 -0400
+        id S1345602AbhIHSe1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Sep 2021 14:34:27 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47464 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235730AbhIHSe0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Sep 2021 14:34:26 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 179E51FDAA
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Sep 2021 18:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631124811; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=349lRvE9XwnMz3B6SaLPTQwMwZvGRmdsEzKfLaSfd60=;
-        b=vNeVkghWlrNrTnpD3W1DegrnPL4dnNfSNtf3Qq7nBeAQINfIF2wJW/WB+fFeX+FssmZLj0
-        y4XJw2b90Zb6qZXDLHRSjsKmvt/WB/l0EtsaGAMCbdLkjKMvdTB0lRRp0cwO087BvchMyc
-        jEYODxYJXJb6LeGnNNlsIJ08sCB9UaQ=
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9BF07222AD;
+        Wed,  8 Sep 2021 18:33:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631125997;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HLFetVNjaDGTmp5I78ZM5aOVp5gcP2xREMuD2OSlmzE=;
+        b=CT2DLXGd9XI0s38bFK7NrrS0DAr7Wy9Fnj2A1a4rnQru7PK+f/tNom+KZIPjqd4Hv6L9iN
+        /3VRU9vrb+bVuWeXL+Lzs8PKg0Rxmcyjmdy8VEiy6y0kN53zgIMJY7eEk9DQPx+vZOuYuF
+        unj5KnnnQkVDLZn1LBtVPA5p/JECHeQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631125997;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HLFetVNjaDGTmp5I78ZM5aOVp5gcP2xREMuD2OSlmzE=;
+        b=jv+T56BSkYo4siRvtjRKegJ4wvgwsqMFdSt6pBjEx8tY5M4lCO6U0cFtMuye3cHzTPyCq8
+        5S3lCplgSabr8qBw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 11060A3B92
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Sep 2021 18:13:31 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 91709A3B8C;
+        Wed,  8 Sep 2021 18:33:17 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6FD95DA7E1; Wed,  8 Sep 2021 20:13:26 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs pre-release 5.14-rc1
-Date:   Wed,  8 Sep 2021 20:13:26 +0200
-Message-Id: <20210908181326.17046-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.33.0
+        id EED72DA7E1; Wed,  8 Sep 2021 20:33:12 +0200 (CEST)
+Date:   Wed, 8 Sep 2021 20:33:12 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Martin Raiber <martin@urbackup.org>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: Remove received information from snapshot on
+ ro->rw switch
+Message-ID: <20210908183312.GU3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Martin Raiber <martin@urbackup.org>,
+        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210908135135.1474055-1-nborisov@suse.com>
+ <0102017bc64308e0-f75c4f13-349c-4c2c-a77d-f037340f07c1-000000@eu-west-1.amazonses.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0102017bc64308e0-f75c4f13-349c-4c2c-a77d-f037340f07c1-000000@eu-west-1.amazonses.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Wed, Sep 08, 2021 at 04:34:47PM +0000, Martin Raiber wrote:
+> On 08.09.2021 15:51 Nikolay Borisov wrote:
+> > Currently when a read-only snapshot is received and subsequently its
+> > ro property is set to false i.e. switched to rw-mode the
+> > received_uuid/stime/rtime/stransid/rtransid of that subvol remains
+> > intact. However, once the received volume is switched to RW mode we
+> > cannot guaranteee that it contains the same data, so it makes sense
+> > to remove those fields which indicate this volume was ever
+> > send/received. Additionally, sending such volume can cause conflicts
+> > due to the presence of received_uuid.
+> >
+> > Preserving the received_uuid (and related fields) after transitioning the
+> > snapshot from RO to RW and then changing the snapshot has a potential for
+> > causing send to fail in many unexpected ways if we later turn it back to
+> > RO and use it for an incremental send operation.
+> >
+> > A recent example, in the thread to which the Link tag below points to, we
+> > had a user with a filesystem that had multiple snapshots with the same
+> > received_uuid but with different content due to a transition from RO to RW
+> > and then back to RO. When an incremental send was attempted using two of
+> > those snapshots, it resulted in send emitting a clone operation that was
+> > intended to clone from the parent root to the send root - however because
+> > both roots had the same received_uuid, the receiver ended up picking the
+> > send root as the source root for the clone operation, which happened to
+> > result in the clone operation to fail with -EINVAL, due to the source and
+> > destination offsets being the same (and on the same root and file). In this
+> > particular case there was no harm, but we could end up in a case where the
+> > clone operation succeeds but clones wrong data due to picking up an
+> > incorrect root - as in the case of multiple snapshots with the same
+> > received_uuid, it has no way to know which one is the correct one if they
+> > have different content.
+> Not to overly discourage this change but I think this will cause some
+> issues in user space.
 
-this is a pre-release of btrfs-progs, 5.14-rc1.
+That this change can cause issues for users is the reason why it hasn't
+been merged. The change on the kernel side is simple, but I've been
+missing the progs part and the "what-if"s that happen in practice.
 
-The proper release is scheduled to Friday, +2 days (2021-09-10).
+This hasn't been communicated properly so we've got resends without
+changes. I had a chat with Nikolay about what's missing so hopefully we
+can move forward this time.
 
-Potentially breaking changes:
+> For example I had the problem of partial subvols after a sudden
+> restart during receive. No problem, just receive to a directory that
+> gets deleted on startup then move the subvol to the final location
+> after completion. To move the subvol it needs to be temporarily set rw
+> for some reason. I'm sure there is some better solution but patterns
+> like this might be out there.
 
-* libbtrfs with reduced exported symbols, only covering needs of snapper, so
-  anything else will probably break (but we aren't aware of anything else using
-  the library besides ioctls)
-
-Features:
-
-* convert
-  * can generate/copy/set the uuid
-  * output has been updated to be more in line with the formatting that's eg. in mkfs
-* check
-  * able to fix more problems in block groups or super block
-* mkfs
-  * degenerate raid0/raid10 support (coming in kernel 5.15)
-* image
-  * improved output in case of error
-
-Fixes:
-
-* better detection of 64bit timestamp support in e2fsprogs
-
-Experimental features:
-
-In order to get various features or patchsets merged and not rot in the
-mailinglist, there's a configure option --enable-experimental that guards that
-they won't be built by default. The idea is to merge code in a reasonable shape
-but potentially unfinished or without stable interface (name, output, ...).
-Each feature has a tracking issue so we can keep the overview and communicate
-what's still pending.
-
-That poses some risk of bloating the repository with dead code, but right now
-it's a risk I'm willing to take in order to get in more contributions. Dead
-code could be deleted eventually, with the optional build it's without the
-problems of breaking user scripts and backward compatibility.
-
-The feedback loop for progs patches is too long in some cases and I'm afraid
-this discouraged many useful contributions.
-
-This kind of lowers the quality barrier, but hopefully on the entry side only.
-Promoting experimental feature to stable will happen after we're sure it meets
-the release criteria.
-
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
-
-Shortlog:
-
-David Sterba (46):
-      btrfs-progs: convert: new option to copy or specify uuid
-      btrfs-progs: tests: add test for convert --uuid option
-      btrfs-progs: convert: rename context volume_name to label
-      btrfs-progs: remove stale command declarations
-      btrfs-progs: convert: update default output
-      btrfs-progs: build: add configure time option to enable experimental features
-      btrfs-progs: corupt-block: leave only long option for --block-group
-      btrfs-progs: mkfs: allow degenerate raid0/raid10
-      btrfs-progs: tests: add mkfs test for raid0/1 and raid10/2
-      btrfs-progs: copy some raid_attr helpers from kernel
-      btrfs-progs: add and use bit masks for RAID1 and RAID56 profiles
-      btrfs-progs: parse profile name from the raid table
-      btrfs-progs: split parsing helpers from utils.c
-      btrfs-progs: move number and range parsing helpers to parse-utils.c
-      btrfs-progs: factor out profile parsing to common utils
-      btrfs-progs: mkfs: use common parser of bg profiles
-      btrfs-progs: factor out compression type name parsing to common utils
-      btrfs-progs: unify GPL header comments
-      btrfs-progs: rename parse_qgroupid
-      btrfs-progs: factor out plain qgroupid parsing
-      btrfs-progs: move parse_qgroupid to parse utils
-      btrfs-progs: qgroup create: accept only valid qgroupid
-      btrfs-progs: move btrfs_tree_search2_ioctl_supported to fsfeatures.c
-      btrfs-progs: use raid attr table in group_profile_max_safe_loss
-      btrfs-progs: rename and move group_profile_max_safe_loss
-      btrfs-progs: tests: do dm target detection by one
-      btrfs-progs: tests: allow alternate name for dm target detection
-      btrfs-progs: tests: properly load dm-thin in mkfs/017
-      btrfs-progs: tests: add templates for most common test types
-      btrfs-progs: move qgroup.h to cmds/
-      btrfs-progs: merge qgroup.c into cmds/qgroup.c
-      btrfs-progs: unexport local qgroup helpers
-      btrfs-progs: add prefixes to exported qgroup helpers
-      btrfs-progs: remove prefix from all static qgroup helpers
-      btrfs-progs: move all private definitions to cmds/qgroup.c
-      btrfs-progs: move send.h to kernel-shared/
-      btrfs-progs: remove stale declaration from send.h
-      btrfs-progs: move props.h to cmds/
-      btrfs-progs: merge props.c to cmds/property.c
-      btrfs-progs: move btrfsck.h to check/
-      btrfs-progs: open code btrfs_list_get_path_rootid
-      btrfs-progs: tests: add more API coverage to library-test
-      btrfs-progs: libbtrfs: drop btrfs-list.h, raid56.h and btrfsck.h
-      btrfs-progs: libbtrfs: cleanup libbtrfs.sym exports
-      btrfs-progs: libbtrfs: hide unused symbols, same version
-      Btrfs progs v5.14-rc1
-
-Josef Bacik (22):
-      btrfs-progs: corrupt-block: add ability to corrupt block group items
-      btrfs-progs: check: detect and fix invalid used for block groups
-      btrfs-progs: tests: add image with a corrupt block group item
-      btrfs-progs: propagate fs root errors in lowmem mode
-      btrfs-progs: propagate extent item errors in lowmem mode
-      btrfs-progs: check btrfs_super_used in lowmem check
-      btrfs-progs: tests: fix running check mode lowmem tests
-      btrfs-progs: check blocks in btrfs_next_sibling_block
-      btrfs-progs: check: do not double add unaligned extent records
-      btrfs-progs: check: do not infinite loop on corrupt keys with lowmem mode
-      btrfs-progs: check: detect and fix problems with super_bytes_used
-      btrfs-progs: tests: add image with an invalid super bytes_used
-      btrfs-progs: mkfs: use an associative array for init blocks
-      btrfs-progs: mkfs: get rid of MKFS_SUPER_BLOCK
-      btrfs-progs: mkfs: use blocks_nr to determine the super used bytes
-      btrfs-progs: mkfs: set nritems based on root items written
-      btrfs-progs: mkfs: add helper for writing empty tree nodes
-      btrfs-progs: make sure track_dirty and ref_cows is set properly
-      btrfs-progs: mkfs: add the block group item in make_btrfs()
-      btrfs-progs: add add_block_group_free_space helper
-      btrfs-progs: mkfs: generate free space tree at make_btrfs() time
-      btrfs-progs: add the incompat flag for extent tree v2
-
-Li Zhang (1):
-      btrfs-progs: build: fix detection of ext4 i_{a,c,a}time_extra
-
-Qu Wenruo (15):
-      btrfs-progs: mkfs: set super_cache_generation to 0 if we're using free space tree
-      btrfs-progs: subvol delete: try to delete subvolume by id when its path can't be resolved
-      btrfs-progs: tests: also check subpage warning for check_image cases
-      btrfs-progs: tests: don't check subpage related warnings for simple fsck tests
-      btrfs-progs: require full nodesize alignement for subpage support
-      btrfs-progs: image: introduce framework for more dump versions
-      btrfs-progs: image: introduce -d option to dump data
-      btrfs-progs: image: reduce memory requirements for decompression
-      btrfs-progs: image: fix restored image size misalignment
-      btrfs-progs: move btrfs_format_csum() to common/utils.[ch]
-      btrfs-progs: slightly enhance btrfs_format_csum()
-      btrfs-progs: check: output proper csum values for --check-data-csum
-      btrfs-progs: use btrfs_key for btrfs_check_node() and btrfs_check_leaf()
-      btrfs-progs: backport btrfs_check_leaf() from kernel
-      btrfs-progs: backport btrfs_check_node() from kernel
-
-Sidong Yang (1):
-      btrfs-progs: props: init compression prop_handlers with field name
-
+Thanks, that's a case we should take into account. And there are
+probably more, but I'm not using send/receive much so that's another
+reason why I've been hesitant to merge the patch due to lack of
+understanding of the use case.
