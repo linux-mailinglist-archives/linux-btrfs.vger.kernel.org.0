@@ -2,104 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C30403D80
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 18:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C53C0403D98
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Sep 2021 18:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349298AbhIHQVC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Sep 2021 12:21:02 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:3327 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349076AbhIHQVA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Sep 2021 12:21:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1631117992; x=1662653992;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+cft4bI0eM90VfULfvmQ+jRCnOmlZuKmxc8x3bJP46E=;
-  b=TSzd2ITGZ5cwPGegGNym+qdizt4X1BIOd/67iBw6kT/jVw4cVN7xRRn/
-   UD3lHpgwqqr8p4gjWF0tuAS3/LfzTWqOiS8IQs3uDJ1GIl8ePfOFPbHWx
-   b6y4T+eRv1BKshdWt76bPT9sRF4Td6pioy7684bC1+FhwUcMujgUsKULQ
-   2P6dqywHPnW9/wSZ3yLNIRK9FX06neYLz9+BeexkQHpQn2SF2qlZJe/1y
-   Hl/wcr1RjcpN2mxWaLUkL0wVuEgbDftdFR1oRMMuathrBpvRXm6oOdk5w
-   aOsbVUqqFUhjNoWUw3aDnkeG3+Ti0HjiuBGL649X7G+OUDy0/d14J0s7H
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.85,278,1624291200"; 
-   d="scan'208";a="179493954"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Sep 2021 00:19:52 +0800
-IronPort-SDR: C+DstAMeYIL6u9mHUJVMzWbBgyjC30kbBxKYun4lroN84OeeItvFu72QcUoPEZX8lR8NYm4tAE
- vKR/5BcBY7CvCKZDzNJgwQjfuhQVQrD02pw07MxK4DbXwpTZTlYCLXxaix2ICfmnxgeP31JmsC
- XNhkYAkhp8Rsz2JB/JWC1SmwBkeu3O/zjpWn21T3Ln3GpFNG/d27K2ly9gDuOXTc4cf5qohNE/
- yk17tHhzlHbzJw3IChH/XM6Ko1DMvfsmCP3aYt6GqolAQl1nUD0zQ65LKAmywiaaQ780te1QOT
- jFcBd91C9OiKLi+4kFq8mmSp
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 08:54:49 -0700
-IronPort-SDR: KceCkPUJrKUMq2OzFIajylS6nPtPsNZobzspn3UFSFKai+aA1HQtsFWwuqjJhUqIcXk3Id/ybK
- 75qbrMOauO0F/TYCxemYNyLNjoo0hwKD1hxOoS5LD43EHl5D8r3IK5h2KFx+o2vFc8TOIUru4o
- T1QE1abUCyyKX6bpY4jxpEJijzha/HzUFioSurGU9R8V3VVrl56Sd+TXlPvRK95V4PXZrixmNu
- ujXaJ2ojH2NqLVMwjDoAbULai4Hdkoc7CZUGKLRI1l6FfPS7E3u4/1MpsYqg/ZfK8UG3efkV9i
- sr0=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 08 Sep 2021 09:19:52 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Filipe Manana <fdmanana@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 8/8] btrfs: zoned: let the for_treelog test in the allocator stand out
-Date:   Thu,  9 Sep 2021 01:19:32 +0900
-Message-Id: <d808d1647e93712f80219fce21ea991c97078bfd.1631117101.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1631117101.git.johannes.thumshirn@wdc.com>
-References: <cover.1631117101.git.johannes.thumshirn@wdc.com>
+        id S1348946AbhIHQby (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Sep 2021 12:31:54 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34168 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233540AbhIHQbx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Sep 2021 12:31:53 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C75DD22296;
+        Wed,  8 Sep 2021 16:30:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631118644;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HpBW3bvMPBTxV7lfrE2L3xUcfenoZIvgAhZIObnjmpM=;
+        b=QB5kNYklH+QYNMhH+5mPTr6YF4++6Xe3gVdhb8DqNB2l6rFuActUYozE/u1LYqyeMqeP7r
+        DRIwxzKuLpckkGdC+X6L6qE2t68uu/v/KpwHm/wFDojWOhHj1zu5xknnaLWaOwHVINuhFf
+        wS2UkOiwpYLvF1sE2OrB7dW1yjIuuws=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631118644;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HpBW3bvMPBTxV7lfrE2L3xUcfenoZIvgAhZIObnjmpM=;
+        b=EerxA210RH79SAwnBArRMjkoj71aea16aRUuSSI2e5F9JeKPZlfQLfVxkc1uVbeAzHyL7m
+        bYUDlMvCShvKSqAA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id BF6DAA3B98;
+        Wed,  8 Sep 2021 16:30:44 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 160E9DA7E1; Wed,  8 Sep 2021 18:30:40 +0200 (CEST)
+Date:   Wed, 8 Sep 2021 18:30:40 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/2] btrfs: fix mount failure due to past and transient
+ device flush error
+Message-ID: <20210908163039.GT3379@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <cover.1631026981.git.fdmanana@suse.com>
+ <dcf9de78faa6ec5cef443d031a987c87301805b1.1631026981.git.fdmanana@suse.com>
+ <89c736d1-2e8c-b9ef-40a0-298b94fcebde@oracle.com>
+ <CAL3q7H4B76EqcUY2Ynb1T4d16LqRvyS-41tf8Ze=gfg6ZqGdFg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H4B76EqcUY2Ynb1T4d16LqRvyS-41tf8Ze=gfg6ZqGdFg@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The statement which decides if an extent allocation on a zoned device is
-for the dedicated tree-log block-group or not and if we can use the block
-group we picked for this allocation is not easy to read but an important
-part of the allocator.
+On Wed, Sep 08, 2021 at 03:26:55PM +0100, Filipe Manana wrote:
+> On Wed, Sep 8, 2021 at 3:20 PM Anand Jain <anand.jain@oracle.com> wrote:
+> >
+> > On 07/09/2021 23:15, fdmanana@kernel.org wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > >
+> > > When we get an error flushing one device, during a super block commit, we
+> > > record the error in the device structure, in the field 'last_flush_error'.
+> > > This is used to later check if we should error out the super block commit,
+> > > depending on whether the number of flush errors is greater than or equals
+> > > to the maximum tolerated device failures for a raid profile.
+> >
+> >
+> > > However if we get a transient device flush error, unmount the filesystem
+> > > and later try to mount it, we can fail the mount because we treat that
+> > > past error as critical and consider the device is missing.
+> >
+> > > Even if it's
+> > > very likely that the error will happen again, as it's probably due to a
+> > > hardware related problem, there may be cases where the error might not
+> > > happen again.
+> >
+> >   But is there an impact due to flush error, like storage cache lost few
+> > block? If so, then the current design is correct. No?
+> 
+> If there was a flush error, then we aborted the current transaction
+> and set the filesystem to error state.
+> We only write the super block if we are able to do the device flushes.
 
-Rewrite into an if condition instead of a plain boolean test to make it
-stand out more, like the version which tests for the dedicated
-data-relocation block-group.
-
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/extent-tree.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 708dc6492f97..77ad7bd3b22e 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3763,7 +3763,7 @@ static int do_allocation_zoned(struct btrfs_block_group *block_group,
- 	u64 log_bytenr;
- 	u64 data_reloc_bytenr;
- 	int ret = 0;
--	bool skip;
-+	bool skip = false;
- 
- 	ASSERT(btrfs_is_zoned(block_group->fs_info));
- 
-@@ -3773,8 +3773,9 @@ static int do_allocation_zoned(struct btrfs_block_group *block_group,
- 	 */
- 	spin_lock(&fs_info->treelog_bg_lock);
- 	log_bytenr = fs_info->treelog_bg;
--	skip = log_bytenr && ((ffe_ctl->for_treelog && bytenr != log_bytenr) ||
--			      (!ffe_ctl->for_treelog && bytenr == log_bytenr));
-+	if (log_bytenr && ((ffe_ctl->for_treelog && bytenr != log_bytenr) ||
-+			   (!ffe_ctl->for_treelog && bytenr == log_bytenr)))
-+		skip = true;
- 	spin_unlock(&fs_info->treelog_bg_lock);
- 	if (skip)
- 		return 1;
--- 
-2.32.0
-
+Should the last_flush_error be reset in btrfs_close_one_device once the
+filesystem is unmounted? I wonder if we should allow leaking the status
+past the mount and care in the next one.
