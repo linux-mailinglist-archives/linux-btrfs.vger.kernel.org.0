@@ -2,39 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9C84055D3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 15:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C99D94056B7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 15:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356182AbhIINNz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Sep 2021 09:13:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43552 "EHLO mail.kernel.org"
+        id S1356348AbhIINW7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Sep 2021 09:22:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355735AbhIINDl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 9 Sep 2021 09:03:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D29536327F;
-        Thu,  9 Sep 2021 11:59:53 +0000 (UTC)
+        id S1358646AbhIINJN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Sep 2021 09:09:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E38E632C4;
+        Thu,  9 Sep 2021 12:01:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188794;
-        bh=zxIikZRaq4hB/3fhVzLvGkoBhdcJrIX7mwAZc2aU5dU=;
+        s=k20201202; t=1631188862;
+        bh=KLDurVxlx1hWtKb5UDrXd64l5rnC8bciW0pwPME/qY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cv3zKUggy89WJEzni4DqAYroAQKT1Dg4rrA8q8++xleb7XB2PNAJnY+QzieAab/6d
-         qLnfY2Qwne9Arl7u8WSiu8ssIKah12bnrb78VrQfHxh1T34uoyNumKsIAFiRX556p5
-         FS9lw70dNYs3EDgPp1XDH5aH4f1vLbZ5KEYdXGJfHiB3yeQ2G1XBe+iUp6arUybdAp
-         lZQ7FLVezUN1+iqVWXQMCoIF2j945JMPVk2WeGIg5KrGPpPF/9Ejab+XlgcIa+WyhW
-         oi2hCwM7/HtjzKzZbLyWnofay/7I18SdPGOEYkhH2LwHTxBTHZzYya8wKh7I+OwnUE
-         1E5byOfZY7V/A==
+        b=N7XaRD2e3wXWBZ6e0vnfaJ51wXR2brkb9uv0jWj+49RKG5is3AQ1VMJcFwGdsANPt
+         xT9zY4tkTuFjuz5+zsK2K96Vbz8SQlXYeQmpqoD/lABtkIXcNXgUjOvEkXwEgOWM4y
+         /C8yUChXnqKVROXf46tf7R2xumD5QMqbZLaHv2ajsE9C+nwbRJmRe45Mn39sKpHTKm
+         NurSxF2IZNlCD1v3ycVfm4kBl2vuWtVNrmeq0Nwav2SrIcAoGU74+3pOLuoR7UvnNq
+         zKxu6Na7P7PnEDBWr7k11ExkMvDMKC7gozWnwmlyapNlVxlEfp+yebWVa1lVXSnLd3
+         iy8wYzYC9fMEg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>, Ritesh Harjani <riteshh@linux.ibm.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>,
+Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 43/59] btrfs: subpage: fix race between prepare_pages() and btrfs_releasepage()
-Date:   Thu,  9 Sep 2021 07:58:44 -0400
-Message-Id: <20210909115900.149795-43-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 37/48] btrfs: subpage: check if there are compressed extents inside one page
+Date:   Thu,  9 Sep 2021 08:00:04 -0400
+Message-Id: <20210909120015.150411-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909115900.149795-1-sashal@kernel.org>
-References: <20210909115900.149795-1-sashal@kernel.org>
+In-Reply-To: <20210909120015.150411-1-sashal@kernel.org>
+References: <20210909120015.150411-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,86 +43,98 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit e0467866198f7f536806f39e5d0d91ae8018de08 ]
+[ Upstream commit 3670e6451bc9c39ab3a46f1da19360219e4319f3 ]
 
 [BUG]
-When running generic/095, there is a high chance to crash with subpage
-data RW support:
+When testing experimental subpage compressed write support, it hits a
+NULL pointer dereference inside read path:
 
- assertion failed: PagePrivate(page) && page->private
- ------------[ cut here ]------------
- kernel BUG at fs/btrfs/ctree.h:3403!
- Internal error: Oops - BUG: 0 [#1] SMP
- CPU: 1 PID: 3567 Comm: fio Tainted: 5.12.0-rc7-custom+ #17
- Hardware name: Khadas VIM3 (DT)
+ Unable to handle kernel NULL pointer dereference at virtual address 0000000000000018
+ pc : __pi_memcmp+0x28/0x1ec
+ lr : check_data_csum+0xd0/0x274 [btrfs]
  Call trace:
-  assertfail.constprop.0+0x28/0x2c [btrfs]
-  btrfs_subpage_assert+0x80/0xa0 [btrfs]
-  btrfs_subpage_set_uptodate+0x34/0xec [btrfs]
-  btrfs_page_clamp_set_uptodate+0x74/0xa4 [btrfs]
-  btrfs_dirty_pages+0x160/0x270 [btrfs]
-  btrfs_buffered_write+0x444/0x630 [btrfs]
-  btrfs_direct_write+0x1cc/0x2d0 [btrfs]
-  btrfs_file_write_iter+0xc0/0x160 [btrfs]
-  new_sync_write+0xe8/0x180
-  vfs_write+0x1b4/0x210
-  ksys_pwrite64+0x7c/0xc0
-  __arm64_sys_pwrite64+0x24/0x30
-  el0_svc_common.constprop.0+0x70/0x140
-  do_el0_svc+0x28/0x90
-  el0_svc+0x2c/0x54
-  el0_sync_handler+0x1a8/0x1ac
-  el0_sync+0x170/0x180
- Code: f0000160 913be042 913c4000 955444bc (d4210000)
- ---[ end trace 3fdd39f4cccedd68 ]---
+  __pi_memcmp+0x28/0x1ec
+  btrfs_verify_data_csum+0xf4/0x244 [btrfs]
+  end_bio_extent_readpage+0x1d0/0x6b0 [btrfs]
+  bio_endio+0x15c/0x1dc
+  end_workqueue_fn+0x44/0x64 [btrfs]
+  btrfs_work_helper+0x74/0x250 [btrfs]
+  process_one_work+0x1d4/0x47c
+  worker_thread+0x180/0x400
+  kthread+0x11c/0x120
+  ret_from_fork+0x10/0x30
+ Code: 54000261 d100044c d343fd8c f8408403 (f8408424)
+ ---[ end trace 9e2c59f33ea40866 ]---
 
 [CAUSE]
-Although prepare_pages() calls find_or_create_page(), which returns the
-page locked, but in later prepare_uptodate_page() calls, we may call
-btrfs_readpage() which will unlock the page before it returns.
+When reading two compressed extents inside the same page, like the
+following layout, we trigger above crash:
 
-This leaves a window where btrfs_releasepage() can sneak in and release
-the page, clearing page->private and causing above ASSERT().
+	0	32K	64K
+	|-------|\\\\\\\|
+	     |	     \- Compressed extent (A)
+	     \--------- Compressed extent (B)
+
+For compressed read, we don't need to populate its io_bio->csum, as we
+rely on compressed_bio->csum to verify the compressed data, and then
+copy the decompressed to inode pages.
+
+Normally btrfs_verify_data_csum() skip such page by checking and
+clearing its PageChecked flag
+
+But since that flag is still for the full page, when endio for inode
+page range [0, 32K) gets executed, it clears PageChecked flag for the
+full page.
+
+Then when endio for inode page range [32K, 64K) gets executed, since the
+page no longer has PageChecked flag, it just continues checking, even
+though io_bio->csum is NULL.
 
 [FIX]
-In prepare_uptodate_page(), we should not only check page->mapping, but
-also PagePrivate() to ensure we are still holding the correct page which
-has proper fs context setup.
+Thankfully there are only two users of PageChecked bit:
 
-Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Tested-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+- Cow fixup
+  Since subpage has its own way to trace page dirty (dirty_bitmap) and
+  ordered bit (ordered_bitmap), it should never trigger cow fixup.
+
+- Compressed read
+  We can distinguish such read by just checking io_bio->csum.
+
+So just check io_bio->csum before doing the verification to avoid such
+NULL pointer dereference.
+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/file.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index dd2504322a87..7798355098db 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1343,7 +1343,18 @@ static int prepare_uptodate_page(struct inode *inode,
- 			unlock_page(page);
- 			return -EIO;
- 		}
--		if (page->mapping != inode->i_mapping) {
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index b744e7d33d87..1b2c7256c931 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3195,6 +3195,20 @@ static int btrfs_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
+ 		return 0;
+ 	}
+ 
++	/*
++	 * For subpage case, above PageChecked is not safe as it's not subpage
++	 * compatible.
++	 * But for now only cow fixup and compressed read utilize PageChecked
++	 * flag, while in this context we can easily use io_bio->csum to
++	 * determine if we really need to do csum verification.
++	 *
++	 * So for now, just exit if io_bio->csum is NULL, as it means it's
++	 * compressed read, and its compressed data csum has already been
++	 * verified.
++	 */
++	if (io_bio->csum == NULL)
++		return 0;
 +
-+		/*
-+		 * Since btrfs_readpage() will unlock the page before it
-+		 * returns, there is a window where btrfs_releasepage() can
-+		 * be called to release the page.
-+		 * Here we check both inode mapping and PagePrivate() to
-+		 * make sure the page was not released.
-+		 *
-+		 * The private flag check is essential for subpage as we need
-+		 * to store extra bitmap using page->private.
-+		 */
-+		if (page->mapping != inode->i_mapping || !PagePrivate(page)) {
- 			unlock_page(page);
- 			return -EAGAIN;
- 		}
+ 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+ 		return 0;
+ 
 -- 
 2.30.2
 
