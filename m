@@ -2,71 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E564055D1
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 15:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5D7405833
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 15:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355939AbhIINNx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Sep 2021 09:13:53 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44910 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353709AbhIINDl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Sep 2021 09:03:41 -0400
+        id S1356238AbhIINr7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Sep 2021 09:47:59 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59406 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354364AbhIINoA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Sep 2021 09:44:00 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B4A4422367;
-        Thu,  9 Sep 2021 13:02:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631192529;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r5lfdoUKeH0kmo/VAVCjyEyeBxk1DucjJPKK50iG0W8=;
-        b=kHLnbPNiNr5u1ZwG5eUSdXan3c4Sf4Qhflbg9DzWfEiMwnJ1UZfZ0IMQx8GE2OGIhV2PVJ
-        Y+Lf5LzlFQw/ogrqncnsgYhkGG8WemXPtZrH0XEytMcMoLr+06xZZLTa8oNFHrk1zPuz9R
-        AWtLTBjeF7lcrWWpoAuI3uHvnIrHrhA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631192529;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r5lfdoUKeH0kmo/VAVCjyEyeBxk1DucjJPKK50iG0W8=;
-        b=eVgQonJBNAJg1DEcOsOZpX2ReZCbE4Y2fHxZvDewVneULyY6YTDEJv/xRHAw5rEbHoSTvg
-        fWANgVfHaRCNYpBQ==
+        by smtp-out2.suse.de (Postfix) with ESMTP id EAD0A1FDF7;
+        Thu,  9 Sep 2021 13:42:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631194965; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=3ISr5Wy3LjLhnW/1KWlACzvbvjuhuLsSDnIci94YHJc=;
+        b=jQI0PMTvL7GnqDENDwSEJRencQrKafOHTloMw/HeF15Cg18d0jrX+W8SNZXDpNlyMmiyZv
+        itBocKHCZhZNNFEd8y88xAxGEwr/AYvxbrxQDh5fMOs2+58diyUd9eEIxLgqPf55yMISpz
+        LkvuJ7mWafOu6nsG82B7Sifn8SNUyM4=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id AB395A437D;
-        Thu,  9 Sep 2021 13:02:09 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id E400FA4407;
+        Thu,  9 Sep 2021 13:42:45 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id ACA1FDA7A9; Thu,  9 Sep 2021 15:02:04 +0200 (CEST)
-Date:   Thu, 9 Sep 2021 15:02:04 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.4 28/35] btrfs: subpage: fix race between
- prepare_pages() and btrfs_releasepage()
-Message-ID: <20210909130204.GX15306@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>, Ritesh Harjani <riteshh@linux.ibm.com>,
-        Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210909120116.150912-1-sashal@kernel.org>
- <20210909120116.150912-28-sashal@kernel.org>
+        id CC359DA7A9; Thu,  9 Sep 2021 15:42:40 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.15-rc1
+Date:   Thu,  9 Sep 2021 15:42:37 +0200
+Message-Id: <cover.1631193109.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909120116.150912-28-sashal@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 08:01:09AM -0400, Sasha Levin wrote:
-> From: Qu Wenruo <wqu@suse.com>
-> 
-> [ Upstream commit e0467866198f7f536806f39e5d0d91ae8018de08 ]
+Hi,
 
-Please drop this patch from stable queue, thanks.
+a few fixes that don't need to be delayed, though I don't mind if you
+merge this post rc1. Please pull, thanks.
+
+* fix max_inline mount option limit on 64k page system
+
+* lockdep fixes
+  * update bdev time in a safer way
+  * move bdev put outside of sb write section when removing device
+  * fix possible deadlock when mounting seed/sprout filesystem
+
+* zoned mode: fix split extent accounting
+
+* minor include fixup
+
+----------------------------------------------------------------
+The following changes since commit 0d977e0eba234e01a60bdde27314dc21374201b3:
+
+  btrfs: reset replace target device to allocation state on close (2021-08-23 13:57:18 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-tag
+
+for you to fetch changes up to f79645df806565a03abb2847a1d20e6930b25e7e:
+
+  btrfs: zoned: fix double counting of split ordered extent (2021-09-07 14:30:41 +0200)
+
+----------------------------------------------------------------
+Anand Jain (2):
+      btrfs: fix upper limit for max_inline for page size 64K
+      btrfs: fix lockdep warning while mounting sprout fs
+
+Josef Bacik (2):
+      btrfs: update the bdev time directly when closing
+      btrfs: delay blkdev_put until after the device remove
+
+Kari Argillander (1):
+      btrfs: use correct header for div_u64 in misc.h
+
+Naohiro Aota (1):
+      btrfs: zoned: fix double counting of split ordered extent
+
+ fs/btrfs/disk-io.c      | 48 ++++++++++++++++++++++++------------------------
+ fs/btrfs/ioctl.c        | 15 +++++++++++----
+ fs/btrfs/misc.h         |  2 +-
+ fs/btrfs/ordered-data.c |  8 ++++++++
+ fs/btrfs/volumes.c      | 48 +++++++++++++++++++++++++++++++-----------------
+ fs/btrfs/volumes.h      |  3 ++-
+ 6 files changed, 77 insertions(+), 47 deletions(-)
