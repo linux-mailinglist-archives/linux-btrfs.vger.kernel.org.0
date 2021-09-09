@@ -2,69 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B80405A31
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 17:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BB4405A41
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 17:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233058AbhIIP36 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Sep 2021 11:29:58 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44790 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbhIIP35 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Sep 2021 11:29:57 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6BD622234A;
-        Thu,  9 Sep 2021 15:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631201327;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=irzPsgvHbS6vKMMh9rCBN1HIb1GsKrTPKZbTgW9ZD88=;
-        b=HFb4zvBmzne4onWfQV6QamP5YcmvqwTNI3A9C9MkztPDc5Ykrkff2S7f382cnEA9ybl8MA
-        Hk8KMzJaB6cztO2eO4FuHvYAugElzT3B9ZF58u2l6h7qORyrhBP9JPAOVdFA32LCHXEs7S
-        pMGVZXtoN2p+lovueT+BLwXCz0WbLCs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631201327;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=irzPsgvHbS6vKMMh9rCBN1HIb1GsKrTPKZbTgW9ZD88=;
-        b=q8O63g5znf8bMjtCeM0h4+jd58tMs7d9rNFrExgMdOppe0QsZ/R/38VYPqk4pT2kInwhFp
-        lP7/6SfFP+oWFsBw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 6602AA3B99;
-        Thu,  9 Sep 2021 15:28:47 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8B4CFDA7A9; Thu,  9 Sep 2021 17:28:41 +0200 (CEST)
-Date:   Thu, 9 Sep 2021 17:28:40 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix transaction handle leak after verity rollback
- failure
-Message-ID: <20210909152840.GZ15306@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        id S232455AbhIIPkh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Sep 2021 11:40:37 -0400
+Received: from a4-2.smtp-out.eu-west-1.amazonses.com ([54.240.4.2]:45933 "EHLO
+        a4-2.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229745AbhIIPkg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Sep 2021 11:40:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=vbsgq4olmwpaxkmtpgfbbmccllr2wq3g; d=urbackup.org; t=1631201965;
+        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=OU5SBBwjwyQouvpQ8WXrMPiqxu1NXr04IWqA1Fd8cBM=;
+        b=dQwYL8c+6Fl2rvKNlnx1qidjhq7faLrykwo657Ya37ag8iKHo4GYt6cx807dnBAl
+        24LkUW3GtUlwT5GC7zDwp40FdHgxLFq/iw4u+TiELfBPC4I/T1LZhpNZOWTCyGXIY/K
+        3ATfybuGQTej983xJ0GZaTW30jivb++DH2b19lec=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=uku4taia5b5tsbglxyj6zym32efj7xqv; d=amazonses.com; t=1631201965;
+        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+        bh=OU5SBBwjwyQouvpQ8WXrMPiqxu1NXr04IWqA1Fd8cBM=;
+        b=SMr/VH5VUfVjztrmWr9eC0XOw10k/fyTHeMuHT2UjD/XomDVCdMK8CNsYp719Oi1
+        ay0QblBPV8d+3bBr31cN0rqiPnJLA8YcAPdrPiP+xCInhr04TGsNV5Y7JcAOXAPg2Su
+        Iy2GQrj8EqHO3zI1IG7WsC01ZWNSoGhapwxG01QE=
+Subject: Re: [PATCH v2] btrfs: Remove received information from snapshot on
+ ro->rw switch
+To:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        Nikolay Borisov <nborisov@suse.com>, dsterba@suse.cz,
         linux-btrfs@vger.kernel.org
-References: <b390e518f2091df52fd314806cce52fd00a19a00.1631114872.git.fdmanana@suse.com>
+References: <20210908135135.1474055-1-nborisov@suse.com>
+ <0102017bc64308e0-f75c4f13-349c-4c2c-a77d-f037340f07c1-000000@eu-west-1.amazonses.com>
+ <20210908183312.GU3379@twin.jikos.cz>
+ <44c16ed8-89fe-a38b-0304-a84dfd4a5335@cobb.uk.net>
+ <50fea163-afe6-bb4a-04c5-f3e4ed4c6bd3@suse.com>
+ <b15813b9-bd23-e2a5-b8a4-1c2fcbb0e019@cobb.uk.net>
+From:   Martin Raiber <martin@urbackup.org>
+Message-ID: <0102017bcb36b388-4e540593-6da5-495d-ba53-ee8d5245c050-000000@eu-west-1.amazonses.com>
+Date:   Thu, 9 Sep 2021 15:39:25 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b390e518f2091df52fd314806cce52fd00a19a00.1631114872.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <b15813b9-bd23-e2a5-b8a4-1c2fcbb0e019@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+X-SES-Outgoing: 2021.09.09-54.240.4.2
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 04:29:26PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> During a verity rollback, if we fail to update the inode or delete the
-> orphan, we abort the transaction and return without releasing our
-> transaction handle. Fix that by releasing the handle.
-> 
-> Fixes: 146054090b0859 ("btrfs: initial fsverity support")
-> Fixes: 705242538ff348 ("btrfs: verity metadata orphan items")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On 09.09.2021 11:37 Graham Cobb wrote:
+> On 09/09/2021 07:46, Nikolay Borisov wrote:
+>
+>
+> On 9.09.21 г. 0:24, Graham Cobb wrote:
+>>> On 08/09/2021 19:33, David Sterba wrote:
+>>>> On Wed, Sep 08, 2021 at 04:34:47PM +0000, Martin Raiber wrote:
+>>> <snip>
+>>>
+>>>>> For example I had the problem of partial subvols after a sudden
+>>>>> restart during receive. No problem, just receive to a directory that
+>>>>> gets deleted on startup then move the subvol to the final location
+>>>>> after completion. To move the subvol it needs to be temporarily set rw
+>>>>> for some reason. I'm sure there is some better solution but patterns
+>>>>> like this might be out there.
+>>>> Thanks, that's a case we should take into account. And there are
+>>>> probably more, but I'm not using send/receive much so that's another
+>>>> reason why I've been hesitant to merge the patch due to lack of
+>>>> understanding of the use case.
+>>>>
+>>> This seems to be an important change to make, but is user-affecting. A
+>>> few ideas:
+>>>
+>>> 1) Can it be made optional? On by default but possible to turn off
+>>> (mount option, sys file, ...) if you really need to retain the current
+>>> behaviour.
+>> But the current behavior is buggy and non-intentional so it should be
+>> rectified. Basically we've made it easy for users to do something which
+>> they shouldn't really be doing, they then bear the consequences and come
+>> to the mailing list for support thinking something is broken.
+> Yes, I agree completely. I was disappointed the change wasn't made last
+> time this was discussed on the list. But it wasn't. And I think that was
+> because of concern over the impact: the change will break some users'
+> workflows or scripts and could break some important tools, apps or
+> things like distro installation/upgrade scripts. That was the purpose of
+> my suggestions: to break down barriers which might delay making this happen.
+>
+>>> 2) Is there a way to engage with the developers and user community for
+>>> popular tools which make heavy use of snapshotting and/or send/receive
+>>> for discussion and testing? For example, btrbk, snapper, distros.
+> The point of this suggestion was to address David's concern of not
+> understanding the use case. This could be useful when discussing the
+> timing of the fix (and whether it can be backported to stable kernels).
+>
+>>> 3) How about adding an IOCTL to allow the user to set/delete the
+>>> received_uuid? Only intended for cases which really need to emulate the
+>>> removed behaviour. This could be a less complex long term solution than
+>>> keeping option 1 indefinitely.
+> And this suggestion was to make it "possible" to work round the change
+> but, in practice, harder than just doing the right thing :-) I agree
+> this is probably too far.
 
-Added to misc-next, thanks.
+5) Have a new subvol flag and only reset received uuid on ro -> rw if this new subvol flag is set. At this point it is completely backwards compatible (if older kernels ignore unknown subvol flags?). Then change btrfs-progs to set this flag during receive (under whatever policy btrfs-progs has for backwards-compatibility). Maybe only for v2 streams but that might further delay the transition. btrfs_ioctl_received_subvol_args even has an already existing flags member.
+
