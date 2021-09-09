@@ -2,231 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31A940410E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 00:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18F040425E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 02:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbhIHWhW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Sep 2021 18:37:22 -0400
-Received: from mout.gmx.net ([212.227.17.20]:37247 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229997AbhIHWhW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Sep 2021 18:37:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631140565;
-        bh=gL07eQyYezpnTlrdlrrmdchsgFri+AcHDiRhzStt2XY=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=SK4ay6dyG3UOMRrZpnvDtY4pKPjK6rrvVoS8Z65eiaRzwywfOOBlGJVgp4PzP5DyS
-         tMmamRgeacDTYdTqF37x/TuaQRRhoDBO45FYz8bghRYizowknM0pLMMfa4djyq9Mp9
-         ChsEz1t0J6Xt7yFeeYtJsq6+Da6bc+UsMkDSnz6g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MA7KU-1mDbWo1CbC-00BeEM; Thu, 09
- Sep 2021 00:36:04 +0200
-To:     Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20210803055348.170042-1-wqu@suse.com> <YTjstM7duaGeAgwK@zen>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH] btrfs: don't call end_extent_writepage() in
- __extent_writepage() when IO failed
-Message-ID: <ab98bc8b-851f-0cca-594a-8638359e07c0@gmx.com>
-Date:   Thu, 9 Sep 2021 06:36:01 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1348817AbhIIAtA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Sep 2021 20:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348785AbhIIAs7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Sep 2021 20:48:59 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5FBC061575
+        for <linux-btrfs@vger.kernel.org>; Wed,  8 Sep 2021 17:47:51 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id l9so128560vsb.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 Sep 2021 17:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=hj6fo7RhHswmMoROQxBi1Qi00TB4E9nmrvjo5kmco3M=;
+        b=bAUiKknjrYkujVH4dlofq7OD9xVjjAABL0Uo7V51N3qJ8NEJ710Nk1A2W++tdop+qD
+         lqAQ4S/h3nGG1h9aThnhoeLCxi+VPV5qlwZqAq4FZx0GHsTvEB6gWUWEcWzU+ZHenpmv
+         Q0G4i6MZHIna1Js0eCv45pw9GbRDgIER8YwtCOp2l2MASC3pXGS9FtuGjNQEsoPYrTQZ
+         zCtAoSSUp9SjQ2ITlsupzicm86wU3qsoEKbLeg9saxTVxDDpNWs9zrGtJy+OwYCmbRIG
+         V15Oza4Pe5cEQ4qsN0RI0IKLgdyTRdwvjtbcebDiVpmVOBxMYI/7ZLOKZyLLIL1BLa/q
+         enOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=hj6fo7RhHswmMoROQxBi1Qi00TB4E9nmrvjo5kmco3M=;
+        b=MPV0xmrg+kpM7PybwdWSGsMdz1b6Fw8u9tnZgmCf14Z49k6lV4CPelMeigRbWeNxUG
+         S1cwIDVr2cU5nUyoGF9I+jipEkrvd/m5VoqnfIIIa7jIvR9Pu02OjGoZ9b98k9ROyQ/s
+         tcSEP3j6ofUac1SseWOwbeNv2HrStrI0HINBi+gQrhdrOhSGexyXKgL+xFkS/hEEPJpK
+         uqIMdc+M4GEmXsKSAKoG17Cb+DG8L+b7MM2s+Si8+s+pmupBfxNYdwdj3k/RQZiKqVcm
+         RvnvoqKhQq7eYSwCTf+kcTz3CjyhCjAq/ZL9dmrhTnaJPUSaJVR83hMgmk5doESHfaXI
+         KI1Q==
+X-Gm-Message-State: AOAM532PtngnIQDFlpbIRVDy/4XF88ZNNCZ5v3GOI9gyQyf89f63vt8y
+        OfIaF564wg3xx6cyoY7BSpa7y/xmUV5P3re5N1s+GznAIig3gg==
+X-Google-Smtp-Source: ABdhPJxoLakCz8MO5RVS7boGK/rHTObZlit61zx63Z3wb+Q6quRqAgC3h60QGoL2ZMFCUvC9mAJQqDU0Ouic0EXZLrA=
+X-Received: by 2002:a05:6102:222d:: with SMTP id d13mr135022vsb.2.1631148470334;
+ Wed, 08 Sep 2021 17:47:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YTjstM7duaGeAgwK@zen>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:MeB/lZ58G76Q7wIj4qx++c9ETCxwXm7FxeILVzuK/7fu23wqvD+
- aNFb50eGKtB5Bf4cMxZN6AwdyAJjQ1hC0OvFptDjNtMKNlzQrXqvc0FTTRB3UmkUbJDDlJC
- bz16UTj83ughXA4ugikmq2CdvlwWbJAQM9SBf9nZBkvTmvGsMGy6VbJyinlEGiMAZhkIfjW
- JUzWYPTpe6z5/cpfxHhZA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:B+/kvYV/co0=:+Qb3vE7yr9RoT/DUS0K833
- /Mof9hVHwX6fGI+xDRt/l8/RlEdDSSyX2ZYsTraUbb01Yp/jboyrn1iZh9M9lHAJNcE4r1Oao
- eeXYQah5GvIA6f3TF3Oy8JgiPZPQn+rzDN3uI9EaWTQ2XxQE7PQ/+KNhuNRQGLXQs/CIvbJfe
- nE3Oa4gd6HT2ccLu8nfUd0R9D8pTa262M9BW71oJpMOt7IFNzURji9mj3Oppxh/M1znoBZH3t
- VXOBzIrtwYEiKGD5+tYZKVwVMlwroi4p/7DC7qvV18kmI7dL679ysrydtY4DAp7b3SHtQm80A
- 77EAxWaFKiZSlE9a9ownniDWfqY0ULz1qQbxM9d0SW6Ym0iXy+uK974UYIytKJtqeWLLOyjJy
- HbgmNAU3JJ2h7oMmqrg3iOyu2UhbwbXNKd0hdeHQWkVn7hQ8dkKKKXEvWfnKUgsJUsqSfp4UP
- TWH51Pn/o7ZF3/bpWUwNo3fw89/27FGIybe14l6x53LiSOplysCizloDAbyuZPNwngW3mIxBZ
- RmtFQuZ7EcoFONlDoDC6OxoRfNTqflOa5AHdKvQwuBUMor4epqcUc10KmAL2xN+H1I1vMsRAk
- 7CiGNRtpQR/WtAgi16HUdpcjp+A0nffvY5Pi7mS8B2eQHpBE+8qotJU9QpFveAm4sqKYZqZVY
- bVFs+lr6ttrAZMzqwB+SMUCTg/2NZAJCEcx85rcdLWF90uXoQDr3Wxqkyk8tVQ7TOcuS2njj5
- ztXI4LT2nC8TnaTlBt3mUIDF3Sk6VYC99TpsRV13TEQZEo/o9/B1FckH9yL6pfRnCyROgq6mY
- fO/7Z37gYJcwehqV56CsG5Zxk03/bfr22NugXNWve9S3t1LN1j5OPizdGgdLBX5Be7GvUU0l5
- U1pOAOnPTR3jK+QmvVntNc25HC1oaX5f61Qu+MKV5hWuHMDh/kTs7c2MvVjpKfQW52Jw93vft
- hOu6sEnKH7tDzo5iWb6OoAD1L+Erp22hwP5OqXJVKYUhbJlVXx2fBqVN4ooMDQXKULqd9YWEL
- jJrVEABUUHo/ZtmerXA/UcCbzSW60dSIyTzNdmf2WMAVpfTRUfLEk1gwLCG7v7ngrzwWGgL0s
- E4e3U+JhrZqVac=
+From:   Sam Edwards <cfsworks@gmail.com>
+Date:   Wed, 8 Sep 2021 18:47:39 -0600
+Message-ID: <CAH5Ym4h9ffTSx_EuBOvfkCkagf5QHLOM1wBzBukAACCVwNxj0g@mail.gmail.com>
+Subject: Corruption suspiciously soon after upgrade to 5.14.1; filesystem less
+ than 5 weeks old
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello list,
 
+First, I should say that there's no urgency here on my part.
+Everything important is very well backed up, and even the
+"unimportant" files (various configs) seem readable. I imaged the
+partition without even attempting a repair. Normally, my inclination
+would be to shrug this off and recreate the filesystem.
 
-On 2021/9/9 =E4=B8=8A=E5=8D=881:03, Boris Burkov wrote:
-> On Tue, Aug 03, 2021 at 01:53:48PM +0800, Qu Wenruo wrote:
->> [BUG]
->> When running generic/475 with 64K page size and 4K sectorsize (aka
->> subpage), it can trigger the following BUG_ON() inside
->> btrfs_csum_one_bio(), the possibility is around 1/20 ~ 1/5:
->>
->> 	bio_for_each_segment(bvec, bio, iter) {
->> 		if (!contig)
->> 			offset =3D page_offset(bvec.bv_page) + bvec.bv_offset;
->>
->> 		if (!ordered) {
->> 			ordered =3D btrfs_lookup_ordered_extent(inode, offset);
->> 			BUG_ON(!ordered); /* Logic error */ <<<<
->> 		}
->>
->> 		nr_sectors =3D BTRFS_BYTES_TO_BLKS(fs_info,
->>
->> [CAUSE]
->> Test case generic/475 uses dm-errors to emulate IO failure.
->>
->> Here if we have a page cache which has the following delalloc range:
->>
->> 	0		32K		64K
->> 	|/////|		|////|		|
->> 	\- [0, 4K)	\- [32K, 36K)
->>
->> And then __extent_writepage() can go through the following race:
->>
->> 	T1 (writeback)		|	T2 (endio)
->> --------------------------------+----------------------------------
->> __extent_writepage()		|
->> |- writepage_delalloc()		|
->> |  |- run_delalloc_range()	|
->> |  |  Add OE for [0, 4K)	|
->> |  |- run_delalloc_range()	|
->> |     Add OE for [32K, 36K)	|
->> |				|
->> |- __extent_writepage_io()	|
->> |  |- submit_extent_page()	|
->> |  |  |- Assemble the bio for	|
->> |  |     range [0, 4K)		|
->> |  |- submit_extent_page()	|
->> |  |  |- Submit the bio for	|
->> |  |  |  range [0, 4K)		|
->> |  |  |				| end_bio_extent_writepage()
->> |  |  |				| |- error =3D -EIO;
->> |  |  |				| |- end_extent_writepage( error=3D-EIO);
->> |  |  |				|    |- writepage_endio_finish_ordered()
->> |  |  |				|    |  Remove OE for range [0, 4K)
->> |  |  |				|    |- btrfs_page_set_error()
->> |  |- submit_extent_page()	|
->> |     |- Assemble the bio for	|
->> |        range [32K, 36K)	|
->> |- if (PageError(page))		|
->> |- end_extent_writepage()	|
->>     |- endio_finish_ordered()	|
->>        Remove OE [32K, 36K)	|
->> 				|
->> Submit bio for [32K, 36K)	|
->> |- btrfs_csum_one_bio()		|
->>     |- BUG_ON(!ordered_extent)	|
->>        OE [32K, 36K) is already  |
->>        removed.			|
->>
->> This can only happen for subpage case, as for regular sectorsize, we
->> never submit current page, thus IO error will never mark the current
->> page Error.
->>
->> [FIX]
->> Just remove the end_extent_writepage() call and the if (PageError())
->> check.
->>
->> As mentioned, the end_extent_writepage() never really get executed for
->> regular sectorsize, and could cause above BUG_ON() for subpage.
->
-> I was a little surprised to see this assertion, because it begs the
-> question: "why was this call added in the first place?"
->
-> As best as I can tell, it was introduced by Filipe in
-> "Btrfs: fix hang on error (such as ENOSPC) when writing extent pages"
->
-> That looks like a reasonably niche case that might not be covered by
-> xfstests, so I was wondering if you had already convinced yourself that
-> it no longer applies.
+However, I'd like to help investigate the root cause, because:
+1. This happened suspiciously soon (see my timeline in the link below)
+after upgrading to kernel 5.14.1, so may be a serious regression.
+2. The filesystem was created less than 5 weeks ago, so the possible
+causes are relatively few.
+3. My last successful btrfs scrub was just before upgrading to 5.14.1,
+hopefully narrowing possible root causes even more.
+4. I have imaged the partition and am thus willing to attempt risky
+experimental repairs. (Mostly for the sake of reporting if they work.)
 
-Not that niche, since the commit message provides a reproducer.
+Disk setup: NVMe SSD, GPT partition, dm-crypt, btrfs as root fs (no LVM)
+OS: Gentoo
+Earliest kernel ever used: 5.10.52-gentoo
+First kernel version used for "real" usage: 5.13.8
+Relevant information: See my Gist,
+https://gist.github.com/CFSworks/650280371fc266b2712d02aa2f4c24e8
+Misc. notes: I have run "fstrim /" on occasion, but don't have
+discards enabled automatically. I doubt TRIM is the culprit, but I
+can't rule it out.
 
->
-> I'll try to see if I can reproduce his issue with this patch, or if the
-> code has changed by enough that it no longer reproduces.
+My primary hypothesis is that there's some write bug in Linux 5.14.1.
+I installed some package updates right before btrfs detected the
+problem, and most of the files in the `btrfs check` output look like
+they were created as part of those updates.
 
-There are a lot of more code change since 2014, one of the core change
-is 524272607e88 ("btrfs: Handle delalloc error correctly to avoid
-ordered extent hang"), which adds proper error handling in
-run_delalloc_range().
+My secondary hypothesis is that creating and/or using the swapfile
+caused some kind of silent corruption that didn't become a detectable
+issue until several further writes later.
 
-Feel free to add if you find more commits enhancing the error handling pat=
-h.
+Let me know if there's anything else I should try/provide!
 
-But for now, from the original reproducer and the existing ENOSPC test
-groups, I don't think there is anything extra you need to worry.
-
-Thanks,
-Qu
-
->
->>
->> This also means, inside __extent_writepage() we should not bother any I=
-O
->> failure, but only focus on the error hit during bio assembly and
->> submission.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/extent_io.c | 14 +++++++++-----
->>   1 file changed, 9 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index e665779c046d..a1a6ac787faf 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -4111,8 +4111,8 @@ static int __extent_writepage(struct page *page, =
-struct writeback_control *wbc,
->>   	 * Here we used to have a check for PageError() and then set @ret an=
-d
->>   	 * call end_extent_writepage().
->>   	 *
->> -	 * But in fact setting @ret here will cause different error paths
->> -	 * between subpage and regular sectorsize.
->> +	 * But in fact setting @ret and call end_extent_writepage() here will
->> +	 * cause different error paths between subpage and regular sectorsize=
-.
->>   	 *
->>   	 * For regular page size, we never submit current page, but only add
->>   	 * current page to current bio.
->> @@ -4124,7 +4124,12 @@ static int __extent_writepage(struct page *page,=
- struct writeback_control *wbc,
->>   	 * thus can get PageError() set by submitted bio of the same page,
->>   	 * while our @ret is still 0.
->>   	 *
->> -	 * So here we unify the behavior and don't set @ret.
->> +	 * The same is also for end_extent_writepage(), which can finish
->> +	 * ordered extent before submitting the real bio, causing
->> +	 * BUG_ON() in btrfs_csum_one_bio().
->> +	 *
->> +	 * So here we unify the behavior and don't set @ret nor call
->> +	 * end_extent_writepage().
->>   	 * Error can still be properly passed to higher layer as page will
->>   	 * be set error, here we just don't handle the IO failure.
->>   	 *
->> @@ -4138,8 +4143,7 @@ static int __extent_writepage(struct page *page, =
-struct writeback_control *wbc,
->>   	 * Currently the full page based __extent_writepage_io() is not
->>   	 * capable of that.
->>   	 */
->> -	if (PageError(page))
->> -		end_extent_writepage(page, ret, start, page_end);
->> +
->>   	unlock_page(page);
->>   	ASSERT(ret <=3D 0);
->>   	return ret;
->> --
->> 2.32.0
->>
+Regards,
+Sam
