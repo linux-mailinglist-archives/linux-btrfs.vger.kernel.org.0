@@ -2,68 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAB4404D50
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 14:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813F14055CE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Sep 2021 15:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243934AbhIIMBj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Sep 2021 08:01:39 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34680 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345089AbhIIL7f (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Sep 2021 07:59:35 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 226232237B;
-        Thu,  9 Sep 2021 11:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631188705;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pruN5hWifbYMlRtAyhOCyVp+chQU+hTNuDbEIgsZYFA=;
-        b=0canCd3xyLhjU4t0eRDdI2LTkGCVVKtdyAfcX2JOTu494YUAh0GoU2AWd+/2WQt+SIkJUt
-        Y8yND0jTt/eQpGvbxVMm2h6KssI1HMmF2qlcDj/iNX5JkHnDZq/VQTe5wH0Q5gP+/zAtuN
-        sUa0hYkaNEB7J+ViepRYsVp31w3EtjA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631188705;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pruN5hWifbYMlRtAyhOCyVp+chQU+hTNuDbEIgsZYFA=;
-        b=hB9ACBwq+/sBw2S1lsTYHaSLYm21XDIOsWx8hyBSbi6zQd8aXIq3axGVo8vWLREoYCWu6b
-        w3piknbdjmYhR6DQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 18604A3CA9;
-        Thu,  9 Sep 2021 11:58:25 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1F65DDA7A9; Thu,  9 Sep 2021 13:58:20 +0200 (CEST)
-Date:   Thu, 9 Sep 2021 13:58:20 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.13 174/219] btrfs: subpage: fix false alert
- when relocating partial preallocated data extents
-Message-ID: <20210909115820.GJ15306@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210909114635.143983-1-sashal@kernel.org>
- <20210909114635.143983-174-sashal@kernel.org>
+        id S1355795AbhIINNr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Sep 2021 09:13:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1355722AbhIINDl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Sep 2021 09:03:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADEF263297;
+        Thu,  9 Sep 2021 11:59:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631188793;
+        bh=uxL42fZAAhxLSwJoqNIcbQYrbpGX3Mu4MOW/SrCw2k8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ihgDSw1HPoJ56N+nxvSl+ZBVEYDmhEX75+3jZwGfWTEtm6Xpy+DzBYUkhmnIO32E+
+         uoKsGZJQXJWOjzICKxdmasGI3VbZSBUkpyVThsWrJAiRWzcieZP8kFtyqMLIVWpksx
+         7XyxOVQOWioe3jGUrIqG6Yhd1KUo9s0ejwFe5udGSNxT4qyCqxGJgg3wcRZDjuZTmH
+         ulQE6exEVN1zSTc5VefvbcN92TcECl6oGN6meZGvxX+k1rUgedia7XnSePrOA6tYK3
+         pSzrmvk5dy1TArgcRoQ3O615Vk5O/lAbqSHUty0u63MvmqwlW97j8RTs5wyYLmxz3d
+         xLs70HRtqzutA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 42/59] btrfs: subpage: check if there are compressed extents inside one page
+Date:   Thu,  9 Sep 2021 07:58:43 -0400
+Message-Id: <20210909115900.149795-42-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210909115900.149795-1-sashal@kernel.org>
+References: <20210909115900.149795-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210909114635.143983-174-sashal@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 07:45:50AM -0400, Sasha Levin wrote:
-> From: Qu Wenruo <wqu@suse.com>
-> 
-> [ Upstream commit e3c62324e470c0a89df966603156b34fccd01708 ]
+From: Qu Wenruo <wqu@suse.com>
 
-Please drop this patch from stable queue, thanks.
+[ Upstream commit 3670e6451bc9c39ab3a46f1da19360219e4319f3 ]
+
+[BUG]
+When testing experimental subpage compressed write support, it hits a
+NULL pointer dereference inside read path:
+
+ Unable to handle kernel NULL pointer dereference at virtual address 0000000000000018
+ pc : __pi_memcmp+0x28/0x1ec
+ lr : check_data_csum+0xd0/0x274 [btrfs]
+ Call trace:
+  __pi_memcmp+0x28/0x1ec
+  btrfs_verify_data_csum+0xf4/0x244 [btrfs]
+  end_bio_extent_readpage+0x1d0/0x6b0 [btrfs]
+  bio_endio+0x15c/0x1dc
+  end_workqueue_fn+0x44/0x64 [btrfs]
+  btrfs_work_helper+0x74/0x250 [btrfs]
+  process_one_work+0x1d4/0x47c
+  worker_thread+0x180/0x400
+  kthread+0x11c/0x120
+  ret_from_fork+0x10/0x30
+ Code: 54000261 d100044c d343fd8c f8408403 (f8408424)
+ ---[ end trace 9e2c59f33ea40866 ]---
+
+[CAUSE]
+When reading two compressed extents inside the same page, like the
+following layout, we trigger above crash:
+
+	0	32K	64K
+	|-------|\\\\\\\|
+	     |	     \- Compressed extent (A)
+	     \--------- Compressed extent (B)
+
+For compressed read, we don't need to populate its io_bio->csum, as we
+rely on compressed_bio->csum to verify the compressed data, and then
+copy the decompressed to inode pages.
+
+Normally btrfs_verify_data_csum() skip such page by checking and
+clearing its PageChecked flag
+
+But since that flag is still for the full page, when endio for inode
+page range [0, 32K) gets executed, it clears PageChecked flag for the
+full page.
+
+Then when endio for inode page range [32K, 64K) gets executed, since the
+page no longer has PageChecked flag, it just continues checking, even
+though io_bio->csum is NULL.
+
+[FIX]
+Thankfully there are only two users of PageChecked bit:
+
+- Cow fixup
+  Since subpage has its own way to trace page dirty (dirty_bitmap) and
+  ordered bit (ordered_bitmap), it should never trigger cow fixup.
+
+- Compressed read
+  We can distinguish such read by just checking io_bio->csum.
+
+So just check io_bio->csum before doing the verification to avoid such
+NULL pointer dereference.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/inode.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 275a89b8e4b8..211a254a6702 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3280,6 +3280,20 @@ static int btrfs_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
+ 		return 0;
+ 	}
+ 
++	/*
++	 * For subpage case, above PageChecked is not safe as it's not subpage
++	 * compatible.
++	 * But for now only cow fixup and compressed read utilize PageChecked
++	 * flag, while in this context we can easily use io_bio->csum to
++	 * determine if we really need to do csum verification.
++	 *
++	 * So for now, just exit if io_bio->csum is NULL, as it means it's
++	 * compressed read, and its compressed data csum has already been
++	 * verified.
++	 */
++	if (io_bio->csum == NULL)
++		return 0;
++
+ 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+ 		return 0;
+ 
+-- 
+2.30.2
+
