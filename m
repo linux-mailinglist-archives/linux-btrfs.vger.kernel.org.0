@@ -2,210 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95BFA4066A5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Sep 2021 07:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5454066E2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Sep 2021 07:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhIJFPc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Sep 2021 01:15:32 -0400
-Received: from mout.gmx.net ([212.227.17.20]:40651 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230037AbhIJFPa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Sep 2021 01:15:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631250857;
-        bh=wgU2Pazzfv4KNm2IG2VzNHkcdtN56QcnXWeqUrOE9Fg=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=H8wl9R+8sMvTHXLxJVMmq7sIMBnd1yQBLy9ej3X4IlhKsnbictU2tNdAiLquK9wpk
-         0nsgga97aoZ8rg4laP7HzQLuKOGNBSCsCQ1vdoUIC9eRDgKCwN28cuK4Qtvm7zIhxC
-         GGi76ukZsvzkEnlqHug/SCV/y5SNIX+yCQeWAiwE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MO9z7-1mZm5p3Pw1-00OWPX; Fri, 10
- Sep 2021 07:14:17 +0200
-Subject: Re: [PATCH v2] btrfs: Remove received information from snapshot on
- ro->rw switch
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.cz>
-References: <20210908135135.1474055-1-nborisov@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <12145208-1d34-2d0f-9ddd-d664e6bf1d15@gmx.com>
-Date:   Fri, 10 Sep 2021 13:14:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S230386AbhIJFlD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Sep 2021 01:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230324AbhIJFlC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 Sep 2021 01:41:02 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51385C061574
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Sep 2021 22:39:52 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id o124so583883vsc.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 09 Sep 2021 22:39:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=uqMhLqBMeTkDse2vwaUdXZUNRtkJHFaSBtc2C0jecaY=;
+        b=V7zgliy0tx+ecBMtD8FT6caQ8a0Ny7Uh3TtO/JM8EchxNSBQ+C9Z4tZnvcaBC1Vkx4
+         qRtBye3oFRX0vuXq3QUgK6U7SgqPWLxhJMmvBEblqU1gAsxw6ZdDB6TX28l0evreWAT1
+         y7WbbDj9Rg4iQr6X5B7EaWIAGl2KjB04jewZInPbZDyTbCYj7HiPVYr64v3Y4qzB8YxV
+         +c6ChwgokTkbeOmZs9XXP8w9Ffkl4MPYHhm8VNlL5wcKTz8EsjRmMjQKzqVTZFi7YyyH
+         GQ3O1VcQXThSa+RizQeRJk73HYSBemvV3LfFL+a3aivUlhbm/AT9G+wlP3O62qHTpqH6
+         bRIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=uqMhLqBMeTkDse2vwaUdXZUNRtkJHFaSBtc2C0jecaY=;
+        b=jqP7PmP2Zy19UGyN6LtxeVeT5y8oUjWOW7Yir3sM3ht0WNkq1ObmJmUu3iWhS3Lpwe
+         S9hgBwPUofKS2y+rYEkjCH5ogWB5e4H8nktRNJT3WQ9zBoJkZXjVIm+s+xtaFEfttTQH
+         8v2OnVaZmdwNiSc7cFmif0aodn9mUicAi0EzrCZCInWD9MMlDY+op29fk1gwjqhaCrvW
+         rI9Txamig3MtCObaKYSCDYX0zGGXD70nQxBv3bzYd2iMCKAQNctRRo9y6XfHdl6qGEa5
+         wsgNhFywow7wmK7C1OUHOJmk8gMFXbyGcyc2t2lU6gliUJS74LLl/WC8Nebv9fk55AVr
+         rG+A==
+X-Gm-Message-State: AOAM530O0Cf2dwgHVzsHCVcFVBEcxPlzub0tIdEgJOd2VURc0vQd9Keo
+        HgEWsipIfaXTn7umKtNqpnP2NgLTfpViBf6bKqPbrgeexe0=
+X-Google-Smtp-Source: ABdhPJwlNpaNgkEZIVNfXkzbHEzolIKP8r1Q+02X+BgBfstQ3fYOX3etH+djDpy9D1NDKWG7hkrLLRf9b5ecmZ2/FNQ=
+X-Received: by 2002:a05:6102:30a1:: with SMTP id y1mr3179702vsd.27.1631252391195;
+ Thu, 09 Sep 2021 22:39:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210908135135.1474055-1-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/FZEiLSEMnqzpBwnSHWXUSNJ6Lj4b4HoHz3DhMHX4K/DDgv0PuA
- IPBVO1EAdnHG3a2hE0DcUKzC4apIhaZe9bgAAmrHGyWNy9KA+zwYAFVWToaXmUF9w0z4F9S
- WAKNtr9JhwdQreIjojBm0oId6wjEuqYl7v83vE/tbkiQarIKgI7ASkXdC0LabHGVoodiufd
- v2pbX8IGyItPWdZDU4Drg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aSFVbz8d64M=:X/8BPC0JBsQSrIb1kGObEf
- Hgt3ySiHTwkKa2FBCzRXfwIoEkXa04715uVzD9nTsKRjKzJQ2CtukVRGGy2tSLsIlE8yqzrKQ
- NCaH5O6q7TGT1d2DP2lvfkCEwQ96I3ly1Xd+ZZrvUJpsnawEBIi5j1UBWaewIjpeueps9+Oyg
- CEnzrx9xVk4Uhl8ltj+7Fg8874aHcdtmnezQsKw/x4Zjce2plBSbB4pjffO8ljOLhQCNISoTA
- lt6iVwUJgjnTvpjWAWa+2JPA4h+Sv/8q9qv34c2SohIo/kFr6aCC23hIeldcYt1oLv2M7Acae
- cp3qWjkftinpysFrVilm77qhd6/ULIXzbEV0P7azlYCQBV86Kt6q0Ou1G27lavQwPtiLOyS7k
- 3eCWbVoDgIV3oV0bqICVL3vBm1fQ0y4WYwnXLa95A7+WIsJ9ljLe/jt2lgTWbi2rqKwOlXV+/
- knmjH0tfKBSyDYLqW1SMCi6IivZEmk0dVIoJp9pe1UmDnR3Cud0Kwh30e1C6+qnEwCYzVp4v+
- kijYLDJfVn+tA1a+43ohQRhwz+92ExlpAqvR5XPfYcBlTmmwwPxct0WeLGls9OoGsnIMVM7AS
- LlTdmw4ZCXSKMkjeKbkMOg1vA15Vyek47ufxk2g3jjl74xgjAt+bbnr8aNsOmvLsrd2H/SYSE
- cuG2hniqhQin8h79/N9tKwguJJCwR9xeE0HljGV2wFU0dJfcLMXds2RGpM1aHPm6i2wHQAb+O
- 2pPMLNnGHkYOIWchCAhTlMq2YlyXIBxsjm/a5opfFjFqWod9mSuLlclBj7BzzH7PNSZEOU1rr
- OqNSjNYtAy6G7SGJ+GeLQcvp8ufGUY0l3c91j/tFDl/DMZwHYKkFvqMb58o7Rz0ZaMdi8ZAcM
- soShiOOtsNalwuI1gk1xt00KWZgrYqRsZ86BXVMQvyK+FRN7ykvIuqex0JgExhWEADmJqqRfz
- ZFP9u7kfr/knDgtPNBospsb/MjfGRi5JqQe4gh9af5Kx7wOL1JbZFjIiedKRHLx2KzOox1m0I
- J1YjPOrd/VCOeAUXrPtbWdnH9jOP4ZvsBhdBm6LU9LWo/DQXfPcPqnvqzkyyW+7yGVMSNbs7Q
- QKWG7E9A2My+vA=
+References: <CAH5Ym4h9ffTSx_EuBOvfkCkagf5QHLOM1wBzBukAACCVwNxj0g@mail.gmail.com>
+In-Reply-To: <CAH5Ym4h9ffTSx_EuBOvfkCkagf5QHLOM1wBzBukAACCVwNxj0g@mail.gmail.com>
+From:   Sam Edwards <cfsworks@gmail.com>
+Date:   Thu, 9 Sep 2021 23:39:38 -0600
+Message-ID: <CAH5Ym4i25_VsQZoy5_gURuUJiNZGQM84aWqn5YJuQxtXW+DAgg@mail.gmail.com>
+Subject: Re: Corruption suspiciously soon after upgrade to 5.14.1; filesystem
+ less than 5 weeks old
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello again,
+
+I've checked the hardware. The RAM tests out okay and SSD reads seem
+consistent. I'd be very surprised if this was hardware failure,
+though: the system isn't nearly old enough for degradation and I
+haven't seen any of the tell-tale signs of defective hardware.
+
+Also, if this was due to bit flips in the SSD, the dm-crypt layer
+would amplify that across the 128-bit AES blocks (cipher mode is XTS).
+I'm not seeing signs of that either.
+
+I'm now pretty familiar with btrfs inspect-internal and have checked
+the trees manually. Absolutely nothing looks corrupt, but several
+leaf/node blocks are outdated. More interesting is the byte range of
+blocks that were "rolled back": 1065332064256-1065565601792, by my
+count. That fits pretty nicely in 256 MiB. This range is also not even
+close to aligned on a 256 MiB boundary in LBA terms - even taking into
+account luks and partition offsets. Thus this seems more like a
+software cache that didn't get flushed rather than a SSD bug.
+
+So, question: does the btrfs module use 256 MiB as a default size for
+write-back cache pages anywhere? Or might this problem reside deeper
+in the block storage system?
+
+Also, for what it's worth: the last generation to be written before
+these inconsistencies seems to be 66303. Files written as part of that
+transaction have a birth date of Sep. 7. That's during the same boot
+as the failure to read-only, which suggests that the cached buffer
+wasn't merely "not saved before a previous shutdown" but rather
+"discarded without being written back." Thoughts?
+
+Cheers,
+Sam
 
 
-On 2021/9/8 =E4=B8=8B=E5=8D=889:51, Nikolay Borisov wrote:
-> Currently when a read-only snapshot is received and subsequently its
-> ro property is set to false i.e. switched to rw-mode the
-> received_uuid/stime/rtime/stransid/rtransid of that subvol remains
-> intact. However, once the received volume is switched to RW mode we
-> cannot guaranteee that it contains the same data, so it makes sense
-> to remove those fields which indicate this volume was ever
-> send/received. Additionally, sending such volume can cause conflicts
-> due to the presence of received_uuid.
+On Wed, Sep 8, 2021 at 6:47 PM Sam Edwards <cfsworks@gmail.com> wrote:
 >
-> Preserving the received_uuid (and related fields) after transitioning th=
-e
-> snapshot from RO to RW and then changing the snapshot has a potential fo=
-r
-> causing send to fail in many unexpected ways if we later turn it back to
-> RO and use it for an incremental send operation.
+> Hello list,
 >
-> A recent example, in the thread to which the Link tag below points to, w=
-e
-> had a user with a filesystem that had multiple snapshots with the same
-> received_uuid but with different content due to a transition from RO to =
-RW
-> and then back to RO. When an incremental send was attempted using two of
-> those snapshots, it resulted in send emitting a clone operation that was
-> intended to clone from the parent root to the send root - however becaus=
-e
-> both roots had the same received_uuid, the receiver ended up picking the
-> send root as the source root for the clone operation, which happened to
-> result in the clone operation to fail with -EINVAL, due to the source an=
-d
-> destination offsets being the same (and on the same root and file). In t=
-his
-> particular case there was no harm, but we could end up in a case where t=
-he
-> clone operation succeeds but clones wrong data due to picking up an
-> incorrect root - as in the case of multiple snapshots with the same
-> received_uuid, it has no way to know which one is the correct one if the=
-y
-> have different content.
+> First, I should say that there's no urgency here on my part.
+> Everything important is very well backed up, and even the
+> "unimportant" files (various configs) seem readable. I imaged the
+> partition without even attempting a repair. Normally, my inclination
+> would be to shrug this off and recreate the filesystem.
 >
-> Link: https://lore.kernel.org/linux-btrfs/CAOaVUnV3L6RpcqJ5gaqzNXWXK0VMk=
-EVXCdihawH1PgS6TiMchQ@mail.gmail.com/
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> Suggested-by: David Sterba <dsterba@suse.cz>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Will add some warning for btrfs-progs to educate users.
-
-Thanks,
-Qu
-> ---
->   fs/btrfs/ioctl.c | 41 +++++++++++++++++++++++++++++++++++------
->   1 file changed, 35 insertions(+), 6 deletions(-)
+> However, I'd like to help investigate the root cause, because:
+> 1. This happened suspiciously soon (see my timeline in the link below)
+> after upgrading to kernel 5.14.1, so may be a serious regression.
+> 2. The filesystem was created less than 5 weeks ago, so the possible
+> causes are relatively few.
+> 3. My last successful btrfs scrub was just before upgrading to 5.14.1,
+> hopefully narrowing possible root causes even more.
+> 4. I have imaged the partition and am thus willing to attempt risky
+> experimental repairs. (Mostly for the sake of reporting if they work.)
 >
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 9eb0c1eb568e..67709d274489 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -1927,9 +1927,11 @@ static noinline int btrfs_ioctl_subvol_setflags(s=
-truct file *file,
->   	struct inode *inode =3D file_inode(file);
->   	struct btrfs_fs_info *fs_info =3D btrfs_sb(inode->i_sb);
->   	struct btrfs_root *root =3D BTRFS_I(inode)->root;
-> +	struct btrfs_root_item *root_item =3D &root->root_item;
->   	struct btrfs_trans_handle *trans;
->   	u64 root_flags;
->   	u64 flags;
-> +	bool clear_received_state =3D false;
->   	int ret =3D 0;
+> Disk setup: NVMe SSD, GPT partition, dm-crypt, btrfs as root fs (no LVM)
+> OS: Gentoo
+> Earliest kernel ever used: 5.10.52-gentoo
+> First kernel version used for "real" usage: 5.13.8
+> Relevant information: See my Gist,
+> https://gist.github.com/CFSworks/650280371fc266b2712d02aa2f4c24e8
+> Misc. notes: I have run "fstrim /" on occasion, but don't have
+> discards enabled automatically. I doubt TRIM is the culprit, but I
+> can't rule it out.
 >
->   	if (!inode_owner_or_capable(file_mnt_user_ns(file), inode))
-> @@ -1960,9 +1962,9 @@ static noinline int btrfs_ioctl_subvol_setflags(st=
-ruct file *file,
->   	if (!!(flags & BTRFS_SUBVOL_RDONLY) =3D=3D btrfs_root_readonly(root))
->   		goto out_drop_sem;
+> My primary hypothesis is that there's some write bug in Linux 5.14.1.
+> I installed some package updates right before btrfs detected the
+> problem, and most of the files in the `btrfs check` output look like
+> they were created as part of those updates.
 >
-> -	root_flags =3D btrfs_root_flags(&root->root_item);
-> +	root_flags =3D btrfs_root_flags(root_item);
->   	if (flags & BTRFS_SUBVOL_RDONLY) {
-> -		btrfs_set_root_flags(&root->root_item,
-> +		btrfs_set_root_flags(root_item,
->   				     root_flags | BTRFS_ROOT_SUBVOL_RDONLY);
->   	} else {
->   		/*
-> @@ -1971,9 +1973,10 @@ static noinline int btrfs_ioctl_subvol_setflags(s=
-truct file *file,
->   		 */
->   		spin_lock(&root->root_item_lock);
->   		if (root->send_in_progress =3D=3D 0) {
-> -			btrfs_set_root_flags(&root->root_item,
-> +			btrfs_set_root_flags(root_item,
->   				     root_flags & ~BTRFS_ROOT_SUBVOL_RDONLY);
->   			spin_unlock(&root->root_item_lock);
-> +			clear_received_state =3D true;
->   		} else {
->   			spin_unlock(&root->root_item_lock);
->   			btrfs_warn(fs_info,
-> @@ -1984,14 +1987,40 @@ static noinline int btrfs_ioctl_subvol_setflags(=
-struct file *file,
->   		}
->   	}
+> My secondary hypothesis is that creating and/or using the swapfile
+> caused some kind of silent corruption that didn't become a detectable
+> issue until several further writes later.
 >
-> -	trans =3D btrfs_start_transaction(root, 1);
-> +	/*
-> +	 * 1 item for updating the uuid root in the root tree
-> +	 * 1 item for actually removing the uuid record in the uuid tree
-> +	 */
-> +	trans =3D btrfs_start_transaction(root, 2);
->   	if (IS_ERR(trans)) {
->   		ret =3D PTR_ERR(trans);
->   		goto out_reset;
->   	}
+> Let me know if there's anything else I should try/provide!
 >
-> -	ret =3D btrfs_update_root(trans, fs_info->tree_root,
-> -				&root->root_key, &root->root_item);
-> +	if (clear_received_state &&
-> +	    !btrfs_is_empty_uuid(root_item->received_uuid)) {
-> +
-> +		ret =3D btrfs_uuid_tree_remove(trans, root_item->received_uuid,
-> +					     BTRFS_UUID_KEY_RECEIVED_SUBVOL,
-> +					     root->root_key.objectid);
-> +
-> +		if (ret && ret !=3D -ENOENT) {
-> +			btrfs_abort_transaction(trans, ret);
-> +			btrfs_end_transaction(trans);
-> +			goto out_reset;
-> +		}
-> +
-> +		memset(root_item->received_uuid, 0, BTRFS_UUID_SIZE);
-> +		btrfs_set_root_stransid(root_item, 0);
-> +		btrfs_set_root_rtransid(root_item, 0);
-> +		btrfs_set_stack_timespec_sec(&root_item->stime, 0);
-> +		btrfs_set_stack_timespec_nsec(&root_item->stime, 0);
-> +		btrfs_set_stack_timespec_sec(&root_item->rtime, 0);
-> +		btrfs_set_stack_timespec_nsec(&root_item->rtime, 0);
-> +	}
-> +
-> +	ret =3D btrfs_update_root(trans, fs_info->tree_root, &root->root_key,
-> +				root_item);
->   	if (ret < 0) {
->   		btrfs_end_transaction(trans);
->   		goto out_reset;
->
+> Regards,
+> Sam
