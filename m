@@ -2,235 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34681407366
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Sep 2021 00:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC254073DA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Sep 2021 01:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhIJWgQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Sep 2021 18:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhIJWgL (ORCPT
+        id S233121AbhIJX16 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Sep 2021 19:27:58 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:53831 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234809AbhIJX15 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Sep 2021 18:36:11 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9679FC061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Sep 2021 15:34:59 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id x137so2980799vsx.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 Sep 2021 15:34:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mAY2NbUwY1hhoUaKYJNq2HZPXPSg7YQRCWn2WDac6jw=;
-        b=ImyzOA90R60D0W12anS6n7q1XzwdjS47aCxsUpoiBHTlveyiQP2xVBZI5Z+mA7Jogy
-         pbC052/9Yimyw3/xq7hWitNwq9dWIWP/4UOGif5HMyJ/s47Q/529F4TtgN3KmQZA3EeC
-         4EI6+CUVyA2a/alXSm4lkwbiyqDpHiXlH9NUTx99dxUMA6Ibpw0SmaEq9g07OjIgPflq
-         DRPcXpFov//oKlHsIPgQIvDGwpY/4CLbYmjGmHxzcdJ/0y5RXdA/ucqR3fxrxNtFDKBo
-         2INGDpn/77ZlC3zIrUHYz1TdzDeFo1G2oJkFoRaA6H2cVG0fCclP4QudSk8QlPpG5C6+
-         Wrkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mAY2NbUwY1hhoUaKYJNq2HZPXPSg7YQRCWn2WDac6jw=;
-        b=flXBn7n6cVooSN7saZPiOk+iklAdym/j8QHy6knN95DeLimwlTtepAhHUZDoFf3Fmj
-         sPa6ETps+MrEj3bpNqDIBLuq1zPhpaP8jtRXO9Yzurt/2LTYSoH68SQbffPZw1r1DF0r
-         muFzEGZ/9z97vlJWX0IVmw2JXy+/AhKyjliYTgqVGrFYrI+Qj7Wc10E65lAAtCv/3Jiu
-         WCpTX6eYHExuV5Vq+1RUu/k6E46u03pOsAZp/2B9Hb+uZ4v29tnrnPUT+UWl6RQnhsLZ
-         EWkhiKW2mdWv4R6ClslvY8vX96os8lyDX2luLliKsyLGrAlbSqr6/+6Z/tdnQS2194rD
-         IKbQ==
-X-Gm-Message-State: AOAM532Fe9y+g4jJKa6I+u1nK2kIhGe0QvFq8h590ghXAovvorfiNVAc
-        DJR/8xSP2acEfUYFhK7CGbpdCPwvGVabf0SkpG2B0L76xt38Kg==
-X-Google-Smtp-Source: ABdhPJyoyYWzavQ4XeAweq3Nt0hZMYgHFY0K8kq/M4CX6JmSD2ot3MINAzNww7ai3PJYeX2zvB/DuTPLvKf1+R0LLeM=
-X-Received: by 2002:a05:6102:282c:: with SMTP id ba12mr8262424vsb.56.1631313298611;
- Fri, 10 Sep 2021 15:34:58 -0700 (PDT)
+        Fri, 10 Sep 2021 19:27:57 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 3FE8A32009EB;
+        Fri, 10 Sep 2021 19:26:45 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 10 Sep 2021 19:26:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
+        :from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=blysUmnk2XTW/TcdYRg10520RuM
+        YXczWb4Fb1H+ji+Q=; b=a6+oZwa55tSlX/+a1ck2zfg3gGmtrUTVP6SuaI+MqQP
+        2RJSK7XdKUyBg+DyBy+IpdzaostZHcb/bpxu3J5ooqfZpubVI8kR60iGsO5v3XXY
+        V3+obo9vHODJYzITqFbxZp/E8N4k1q0RquQSo3yS76KnWBcE3d9aFx2158lvCpIX
+        L5zc/Ygak15RHkwpBlB3NbDOnN2LprLOzI1Yd4NP6acA5CXflI12cH3HabLMDqY5
+        QpoVjsfHD8hPq5Oc3VlwNOwMhjZkbs6zLBK5IxERjRbejvrd3fcBbrT6f6foE+NG
+        miZobD+C3eQ3+/vFUCvNVaA7FYLd1z7QRSIqCnusDyA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=blysUm
+        nk2XTW/TcdYRg10520RuMYXczWb4Fb1H+ji+Q=; b=aSje/wGSO72gt2Us5+tBP0
+        xu4oJT2hMqEo/JrffJyU8AU0IgkX5zeUd7Lw3I9P1j5ydL1KPchffkZUb7xBXbP8
+        4VshRHDGrgl3mdWEEKMSz7BGsKa7kMEppaQOT+ZHdj6O/NyOzMRaXCvPRP/MXf49
+        Spj23bwbwRSCpj+oe+gDnN06YOy3ADlsPoNxQ80tyQ5Vr8v5t5ED2TU27WRttBOu
+        7ktlUsxKec4bsSw4U4NzeaxNWleHoMndwBGdzhhvDOh+4l/BI7pH92Maht1kgyKh
+        pmVtTPvCXXt6Y7KrIu1tMsZeNCbIGUcmXj33vINrZHetsCHpWMFj7aEOWcgWybrg
+        ==
+X-ME-Sender: <xms:tOk7YQXYkyQFiWOS4gSODo6zUrQZhpeNVQqLr623yjLiPUDO0YJfIw>
+    <xme:tOk7YUmUmSk3Fx2hScYtUnDhgrsD88TmNjWt3swj9xDPCjejvmSLEArJ4qaCJWd8T
+    5CDpnArESmNb-w6pI4>
+X-ME-Received: <xmr:tOk7YUYRSqrFXE2EhNaer8LhsvOm0LVGLwJUlX8KYWJFHX7s_cU8tGjoQlL0jo89SYxNZt_RvEefX0Yf59U4D6TJOYMFQw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegvddgvddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
+    duveelkeeiteelveeiuefhudehtdeigfehkeeffeegledvueevgefgudeuveefnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihho
+X-ME-Proxy: <xmx:tOk7YfWqefIZ6hDP8z53dgjyIY9xC0tKSpQ1u9jdH_Tri63qotKmKw>
+    <xmx:tOk7YamshdnAQHixhZ85tzlwhBDhwSW5X78i4CSi31tg4OrWXX4lww>
+    <xmx:tOk7YUf2vPF7aDma20Dq0vUBdsKra0yV3vf8Fw-YVhQKpp9dR4dC4w>
+    <xmx:tOk7Ycg9PR3izqXkUfY66gJoZM1O-EiK_ViM2w18EV04HV9-W8NhzA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 10 Sep 2021 19:26:44 -0400 (EDT)
+Date:   Fri, 10 Sep 2021 16:26:42 -0700
+From:   Boris Burkov <boris@bur.io>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v4 4/4] generic: test fs-verity EFBIG scenarios
+Message-ID: <YTvpsib6hrp/9ZPY@zen>
+References: <cover.1620248200.git.boris@bur.io>
+ <508058f805a45808764a477e9ad04353a841cf53.1620248200.git.boris@bur.io>
+ <YK1c62bh1WQ/h45O@sol.localdomain>
 MIME-Version: 1.0
-References: <CAH5Ym4h9ffTSx_EuBOvfkCkagf5QHLOM1wBzBukAACCVwNxj0g@mail.gmail.com>
- <CAH5Ym4i25_VsQZoy5_gURuUJiNZGQM84aWqn5YJuQxtXW+DAgg@mail.gmail.com>
- <aed0ec2b-3fe0-3574-b7e5-24f2e3da27ce@gmx.com> <CAH5Ym4gd7UhT=cSAjb-zMQ3baU08+SzKnGmXmAVD_8FdhzqF9w@mail.gmail.com>
- <c9c46006-32d3-7de7-bd0b-ff7380c684e6@gmx.com>
-In-Reply-To: <c9c46006-32d3-7de7-bd0b-ff7380c684e6@gmx.com>
-From:   Sam Edwards <cfsworks@gmail.com>
-Date:   Fri, 10 Sep 2021 16:34:47 -0600
-Message-ID: <CAH5Ym4gZgGLuL8svHLmOaqACLfQJpXCGLmfP3bK0NCic9E_LdQ@mail.gmail.com>
-Subject: Re: Corruption suspiciously soon after upgrade to 5.14.1; filesystem
- less than 5 weeks old
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YK1c62bh1WQ/h45O@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 2:31 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
-> If you have hit read-only problem, then it's definitely btrfs' problem,
-> and we're very interesting to see what's the cause.
+On Tue, May 25, 2021 at 01:24:11PM -0700, Eric Biggers wrote:
+> On Wed, May 05, 2021 at 02:04:46PM -0700, Boris Burkov wrote:
+> > diff --git a/tests/generic/632 b/tests/generic/632
+> > new file mode 100755
+> > index 00000000..5a5ed576
+> > --- /dev/null
+> > +++ b/tests/generic/632
+> > @@ -0,0 +1,86 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (c) 2021 Facebook, Inc.  All Rights Reserved.
+> > +#
+> > +# FS QA Test 632
+> > +#
+> > +# Test some EFBIG scenarios with very large files.
+> > +# To create the files, use pwrite with an offset close to the
+> > +# file system's max file size.
+> 
+> Can you please make this comment properly describe the purpose of this test?
+> As-is it doesn't mention that it is related to fs-verity at all, let alone to
+> specific filesystems' implementations of fs-verity.
 
-I'm in full agreement that RO is a sign of a malfunction; but I was
-saying that the malfunction may be deeper in the stack, meaning the RO
-is not necessarily due to a design/implementation error in btrfs, but
-is rather the only sensible course of action when faced with certain
-circumstances outside of its control.
+Sorry for disappearing on this one for a while.
 
-> Checksum error doesn't sound correct. Can be another indication of
-> missing writes.
->
-> But this also means, the corruption is even older.
+Oops, good point. In addressing your and Eryu's points, I realized that
+this isn't really a generic test, since as you say, it assumes the
+filesystem's implementation. Further, I think it is plausible for an fs
+to cache the Merkle tree pages some other way which wouldn't need to
+EFBIG for large files. With that said, I do think it's a useful test of
+an edge case I got wrong several times in the btrfs implementation.
 
-Here is the checksum error (the very first indication of something
-amiss on the day in question):
-BTRFS warning (device dm-0): checksum verify failed on 1065332064256
-wanted 0x04ca393a found 0xd5f0b823 level 0
-BTRFS error (device dm-0): parent transid verify failed on
-1065332064256 wanted 66552 found 66543
+I am leaning towards making this a btrfs specific test. Just wanted to
+double check with you if you think ext4 and f2fs would benefit from
+running this test too..
 
-Since it's coupled directly with a transid mismatch, I think this just
-means the csum tree is current while the node is not. That is,
-0x04ca393a is the correct checksum for generation 66552 of leaf
-1065332064256, but that generation has gone missing and instead we
-find generation 66543, which has checksum 0xd5f0b823.
+> 
+> > +max_sz=$(_get_max_file_size)
+> > +_fsv_scratch_begin_subtest "way too big: fail on first merkle block"
+> > +# have to go back by 4096 from max to not hit the fsverity MAX_DEPTH check.
+> 
+> What is meant by the "fsverity MAX_DEPTH" check?
 
-> As long as you don't do forced shutdown, nor btrfs check --repair, the
-> v1 cache should not mismatch.
+If you use $max_sz or $max_sz-1 (or anything bigger than $max_sz-4096)
+the vfs fsverity code will conclude the tree will exceed MAX_LEVELS. I
+got LEVELS and DEPTH mixed up.
 
-I have never even heard of btrfs check --repair until this incident (a
-testament to btrfs's general durability).
+> 
+> > +$XFS_IO_PROG -fc "pwrite -q $(($max_sz - 4096)) 1" $fsv_file
+> > +_fsv_enable $fsv_file |& _filter_scratch
+> 
+> Using the "truncate" xfs_io command instead of "pwrite" would probably make more
+> sense here, as the goal is to just create a file of a specific size.
 
-I checked and both shutdowns immediately before the "has wrong amount
-of free space" warnings were clean. On the 10th, there was an unclean
-shutdown a little earlier in the day - there may have been some
-leftover issues from that.
+In my memory, truncate didn't work for btrfs, but it took me a while to
+get this to work, so I might have made some silly mistake early on with
+truncate. I'll try again to be sure.
 
-> This is too crazy that I can't even imagine what could survive.
->
-> [...]
->
-> But to me, this is really too crazy...
+> 
+> > +
+> > +# The goal of this second test is to make a big enough file that we trip the
+> > +# EFBIG codepath, but not so big that we hit it immediately as soon as we try
+> > +# to write a Merkle leaf. Because of the layout of the Merkle tree that
+> > +# fs-verity uses, this is a bit complicated to compute dynamically.
+> > +
+> > +# The layout of the Merkle tree has the leaf nodes last, but writes them first.
+> > +# To get an interesting overflow, we need the start of L0 to be < MAX but the
+> > +# end of the merkle tree (EOM) to be past MAX. Ideally, the start of L0 is only
+> > +# just smaller than MAX, so that we don't have to write many blocks to blow up.
+> > +
+> > +# 0                        EOF round-to-64k L7L6L5 L4   L3    L2    L1  L0 MAX  EOM
+> > +# |-------------------------|               ||-|--|---|----|-----|------|--|!!!!!|
+> > +
+> > +# Given this structure, we can compute the size of the file that yields the
+> > +# desired properties:
+> > +# sz + 64k + sz/128^8 + sz/128^7 + ... + sz/128^2 < MAX
+> > +# (128^8)sz + (128^8)64k + sz + (128)sz + (128^2)sz + ... + (128^6)sz < (128^8)MAX
+> > +# sz(128^8 + 128^6 + 128^5 + 128^4 + 128^3 + 128^2 + 128 + 1) < (128^8)(MAX - 64k)
+> > +# sz < (128^8/(128^8 + (128^6 + ... 1))(MAX - 64k)
+> > +#
+> > +# Do the actual caclulation with 'bc' and 20 digits of precision.
+> 
+> This calculation isn't completely accurate because it doesn't round the levels
+> to a block boundary.  Nor does it consider that the 64K is an alignment rather
+> than a fixed amount added.
+> 
+> But for the test you don't need the absolute largest file whose level 1 doesn't
+> exceed the limit, but rather just one almost that large.
+> 
+> So it would be okay to add 64K as a fixed amount, along with 4K for every level
+> on top of the 'sz/128^(level+1)' you already have, to get an over-estimate of
+> the amount of extra space needed to cache the Merkle tree.
+> 
+> But please make it clear that it's an over-estimate, and hence an under-estimate
+> of the file size desired for the test.
+> 
+> Also please document that this is all assuming SHA-256 with 4K blocks, and also
+> that the maximum file size is assumed to fit in 64 bits; hence the consideration
+> of 8 levels is sufficient.
 
-It is a contrived idea, yes. :)
+Agreed with all of this, will do.
 
-But the subject it explores is relevant: how btrfs would react to a
-slice of an active partition spontaneously reverting to the data it
-held several minutes prior.
-
-That is, a "missing writes" problem where the writes don't go missing
-until a few minutes *after* they succeed.
-
-> The final protection is the logical bytenr, where btrfs can map its
-> chunks at any logical bytenr, thus even at the same physical location,
-> they can have different logical bytenr.
-
-THIS is an interesting lead. Until this point I had been interpreting
-bytenr as a physical partition offset. Now that I've learned about the
-chunk tree, I found that all missing writes were to chunk
-1065173909504.
-
-That chunk has a physical offset of 999675658240. So, there is exactly
-a 61 GiB difference between bytenr and partition offset. (This seems
-to be true of the neighboring chunks as well, and as that's a nice
-round number, I think this is the correct offset.)
-
-However, if the physical offset were to change momentarily (i.e. for a
-few minutes), then writes to that chunk would end up diverted to some
-other location on disk. Once the physical offset changes back, the
-chunk will appear to revert back to the same data it held a few
-minutes prior. In effect, causing the "retroactive missing writes"
-phenomenon I'm seeing.
-
-This would also leave behind evidence, in that the missing writes
-would have to have gone *somewhere* on disk, and as long as they
-weren't overwritten, I can track them down by scanning the whole disk
-for tree nodes with the proper bytenr/transid. I think I'll spend some
-time today trying to do that, as that would confirm this idea.
-
-The only remaining question is why the physical offset would have
-changed for only a few minutes. I didn't do a rebalance, although I
-think I was running low on available space around the time, so maybe
-btrfs was making some last-minute adjustments to the chunk tree to
-compensate for that? The transid of the chunk tree node describing
-this chunk is 58325, which is well before the problems started
-happening. Perhaps the chunk tree was updated in-memory, used for
-physical writes, but then reverted? Does this sound like something
-btrfs might do?
-
-Or maybe a cosmic ray flipped a bit in the in-memory copy of the
-physical offset of the chunk. Unlikely, but possible. :)
-
-> I'd say, there is no way to repair.
-> Only data salvage is possible for generic transid mismatch.
-
-Bah. Well, not a problem -- but that will take me a fair amount of
-time. I'll want to investigate this and figure out what went wrong
-*before* I go through the trouble of recreating my filesystem. I don't
-want to spend a day restoring backups only to have the same problem
-happen again a week later.
-
-> >
-> > Or is the whole a sudden power loss, nor do any btrfs check --repair between, the "wrong amount of free space" warning is already an indicator of something FUBAR at this point and I should just zero the
-> > partition and restore from backups?
->
-> I guess so.
->
-> The repair for transid is never ensured to be safe, as core btrfs
-> mechanism is already broken.
->
-> Thanks,
-> Qu
->
-> >
-> > Thank you for your time,
-> > Sam
-> >
-> >> Thanks,
-> >> Qu
-> >>
-> >>>
-> >>> Cheers,
-> >>> Sam
-> >>>
-> >>>
-> >>> On Wed, Sep 8, 2021 at 6:47 PM Sam Edwards <cfsworks@gmail.com> wrote:
-> >>>>
-> >>>> Hello list,
-> >>>>
-> >>>> First, I should say that there's no urgency here on my part.
-> >>>> Everything important is very well backed up, and even the
-> >>>> "unimportant" files (various configs) seem readable. I imaged the
-> >>>> partition without even attempting a repair. Normally, my inclination
-> >>>> would be to shrug this off and recreate the filesystem.
-> >>>>
-> >>>> However, I'd like to help investigate the root cause, because:
-> >>>> 1. This happened suspiciously soon (see my timeline in the link below)
-> >>>> after upgrading to kernel 5.14.1, so may be a serious regression.
-> >>>> 2. The filesystem was created less than 5 weeks ago, so the possible
-> >>>> causes are relatively few.
-> >>>> 3. My last successful btrfs scrub was just before upgrading to 5.14.1,
-> >>>> hopefully narrowing possible root causes even more.
-> >>>> 4. I have imaged the partition and am thus willing to attempt risky
-> >>>> experimental repairs. (Mostly for the sake of reporting if they work.)
-> >>>>
-> >>>> Disk setup: NVMe SSD, GPT partition, dm-crypt, btrfs as root fs (no LVM)
-> >>>> OS: Gentoo
-> >>>> Earliest kernel ever used: 5.10.52-gentoo
-> >>>> First kernel version used for "real" usage: 5.13.8
-> >>>> Relevant information: See my Gist,
-> >>>> https://gist.github.com/CFSworks/650280371fc266b2712d02aa2f4c24e8
-> >>>> Misc. notes: I have run "fstrim /" on occasion, but don't have
-> >>>> discards enabled automatically. I doubt TRIM is the culprit, but I
-> >>>> can't rule it out.
-> >>>>
-> >>>> My primary hypothesis is that there's some write bug in Linux 5.14.1.
-> >>>> I installed some package updates right before btrfs detected the
-> >>>> problem, and most of the files in the `btrfs check` output look like
-> >>>> they were created as part of those updates.
-> >>>>
-> >>>> My secondary hypothesis is that creating and/or using the swapfile
-> >>>> caused some kind of silent corruption that didn't become a detectable
-> >>>> issue until several further writes later.
-> >>>>
-> >>>> Let me know if there's anything else I should try/provide!
-> >>>>
-> >>>> Regards,
-> >>>> Sam
+> 
+> - Eric
