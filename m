@@ -2,112 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34613406886
+	by mail.lfdr.de (Postfix) with ESMTP id A31CE406887
 	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Sep 2021 10:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbhIJIe5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Sep 2021 04:34:57 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57138 "EHLO
+        id S231788AbhIJIe6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 Sep 2021 04:34:58 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57146 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhIJIe5 (ORCPT
+        with ESMTP id S231775AbhIJIe5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 10 Sep 2021 04:34:57 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 195661FE4F;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5B59920209;
         Fri, 10 Sep 2021 08:33:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1631262826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ILNKz9uaAjD4xSPLXcZSb3C2P17URGYLyZwyT/6Q1kM=;
-        b=CwClGyxulD599XoQa619UzQwleNeQB89oXV72NJ3EZyqaYcvhs4Q/RaJ9DHQ2tmjJ17ejX
-        z2u2L9Y4PFGPJGoEWL6Vxlv/AnX69nUPUtRwJfgR9G8YTfxH7xLxQqaxQn6N59Ec7WR1X6
-        lp6u2IngN3sa6QGP1SxXWGkc8HdmpB0=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JwPDu4/Qr8DhYSdJSEQVs0TiF/mkzw6366sMYc9l0iA=;
+        b=MYDF6dXmeT7wRV67M9zjdv9gabzYVoozXkd2JnfUShFm0JShgcyExp2e4FF43B8TL0sYp2
+        d/yFIBJmjMTfqS1HBSpZnQmQmZab80AW7x5fT/n4qkroe5nxYDDpO5ylZL9rOfH0D2jdLW
+        SxxbPu71SA7PyjgrCam13Lc8EfL5wwY=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD74213D15;
-        Fri, 10 Sep 2021 08:33:45 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2BBF313D15;
+        Fri, 10 Sep 2021 08:33:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id skCHM2kYO2EBVAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Fri, 10 Sep 2021 08:33:45 +0000
+        id aM2kB2oYO2EBVAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Fri, 10 Sep 2021 08:33:46 +0000
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2 1/2] btrfs-progs: fi show: Print missing device for a mounted file system
-Date:   Fri, 10 Sep 2021 11:33:43 +0300
-Message-Id: <20210910083344.1876661-1-nborisov@suse.com>
+Subject: [PATCH v2 2/2] btrfs-progs: tests: Add test for fi show
+Date:   Fri, 10 Sep 2021 11:33:44 +0300
+Message-Id: <20210910083344.1876661-2-nborisov@suse.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210910083344.1876661-1-nborisov@suse.com>
+References: <20210910083344.1876661-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently when a device is missing for a mounted filesystem the output
-that is produced is unhelpful:
-
-Label: none  uuid: 139ef309-021f-4b98-a3a8-ce230a83b1e2
-	Total devices 2 FS bytes used 128.00KiB
-	devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
-	*** Some devices missing
-
-While the context which prints this is perfectly capable of showing
-which device exactly is missing, like so:
-
-Label: none  uuid: 4a85a40b-9b79-4bde-8e52-c65a550a176b
-	Total devices 2 FS bytes used 128.00KiB
-	devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
-	devid    2 size 0 used 0 path /dev/loop1 MISSING
-
-This is a lot more usable output as it presents the user with the id
-of the missing device and its path.
+Add a test to ensure that 'btrfs fi show' on a mounted filesyste, which
+has a missing device will explicitly print which device is missing.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
-
 V2:
- * Removed stars around MISSING
- cmds/filesystem.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ * Adjust output to detect
 
-diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-index db8433ba3542..dadd4c82a9b0 100644
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -295,7 +295,6 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
- {
- 	int i;
- 	int fd;
--	int missing = 0;
- 	char uuidbuf[BTRFS_UUID_UNPARSED_SIZE];
- 	struct btrfs_ioctl_dev_info_args *tmp_dev_info;
- 	int ret;
-@@ -325,8 +324,10 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
- 		/* Add check for missing devices even mounted */
- 		fd = open((char *)tmp_dev_info->path, O_RDONLY);
- 		if (fd < 0) {
--			missing = 1;
-+			printf("\tdevid %4llu size 0 used 0 path %s MISSING\n",
-+					tmp_dev_info->devid, tmp_dev_info->path);
- 			continue;
+ tests/cli-tests/016-fi-show-missing/test.sh | 35 +++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+ create mode 100755 tests/cli-tests/016-fi-show-missing/test.sh
+
+diff --git a/tests/cli-tests/016-fi-show-missing/test.sh b/tests/cli-tests/016-fi-show-missing/test.sh
+new file mode 100755
+index 000000000000..e24a85d05410
+--- /dev/null
++++ b/tests/cli-tests/016-fi-show-missing/test.sh
+@@ -0,0 +1,35 @@
++#!/bin/bash
++#
++# Test that if a device is missing for a mounted filesystem, btrfs fi show will
++# show which device exactly is missing.
 +
- 		}
- 		close(fd);
- 		canonical_path = path_canonicalize((char *)tmp_dev_info->path);
-@@ -339,8 +340,6 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
- 		free(canonical_path);
- 	}
-
--	if (missing)
--		printf("\t*** Some devices missing\n");
- 	printf("\n");
- 	return 0;
- }
++source "$TEST_TOP/common"
++
++check_prereq mkfs.btrfs
++check_prereq btrfs
++
++setup_root_helper
++setup_loopdevs 2
++prepare_loopdevs
++
++dev1=${loopdevs[1]}
++dev2=${loopdevs[2]}
++
++run_check $SUDO_HELPER "$TOP"/mkfs.btrfs -f -draid1 $dev1 $dev2
++# move the device, changing its path, simulating the device being missing
++mv $dev2 /dev/loop-non-existent
++
++run_check $SUDO_HELPER mount -o degraded $dev1 $TEST_MNT
++
++if ! run_check_stdout $SUDO_HELPER "$TOP"/btrfs fi show $TEST_MNT | \
++	grep -q "$dev2 MISSING"; then
++
++	_fail "Didn't find exact missing device"
++fi
++
++mv /dev/loop-non-existent $dev2
++
++run_check $SUDO_HELPER umount $TEST_MNT
++
++cleanup_loopdevs
++
 --
 2.17.1
 
