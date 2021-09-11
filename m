@@ -2,352 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B9B4079A7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Sep 2021 18:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BD5407A67
+	for <lists+linux-btrfs@lfdr.de>; Sat, 11 Sep 2021 22:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbhIKQ5s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Sep 2021 12:57:48 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:43614 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbhIKQ5r (ORCPT
+        id S234087AbhIKUm2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 11 Sep 2021 16:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhIKUm1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Sep 2021 12:57:47 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 5C217B72363; Sat, 11 Sep 2021 12:56:34 -0400 (EDT)
-Date:   Sat, 11 Sep 2021 12:56:34 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Sam Edwards <cfsworks@gmail.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Corruption suspiciously soon after upgrade to 5.14.1; filesystem
- less than 5 weeks old
-Message-ID: <20210911165634.GK29026@hungrycats.org>
-References: <CAH5Ym4h9ffTSx_EuBOvfkCkagf5QHLOM1wBzBukAACCVwNxj0g@mail.gmail.com>
- <CAH5Ym4i25_VsQZoy5_gURuUJiNZGQM84aWqn5YJuQxtXW+DAgg@mail.gmail.com>
- <aed0ec2b-3fe0-3574-b7e5-24f2e3da27ce@gmx.com>
- <CAH5Ym4gd7UhT=cSAjb-zMQ3baU08+SzKnGmXmAVD_8FdhzqF9w@mail.gmail.com>
- <20210911042414.GJ29026@hungrycats.org>
- <CAH5Ym4jNgs1iJufbmCDOS6N=k+YH4nZTSQ7j-MrM3mp8M0Yn2g@mail.gmail.com>
+        Sat, 11 Sep 2021 16:42:27 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19D4C061574
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Sep 2021 13:41:14 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id bd1so8340310oib.5
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Sep 2021 13:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=E1gGnD+4VzjaN4fKuWiIUIZt6QJcH1BElULlRGhd9uE=;
+        b=RfoKERdRNu34CbvYb3kMhsZhXiUxV8yoIFe0uID8Yz1NGJPVBN+3BNy7Ybj/aCrYnl
+         3TomONs1tYkkmC1ZiQ1x/KLssvv278t2DE/KpfLx1uBLMePvp3zFQ6Vax9OoSWuSAgmZ
+         X/9l7jVn6XsB4xc1EFXyGj9IvLJe1jsWKWxfLEmvFCQH2xjQjL3gk+H7duoeNJIUASnY
+         eOHJNmHtYCFjpZS0P/ahPA9HPwOb93XLj+k4TXlRsee4AlQS0o46Q1Vawnn+FgzHO/uS
+         B2OLNysLro0nQt/dBDuhNgb1JS087TvqM4Bngf2VPsp2bx8X+kP481zLbylEzz7WfM4T
+         tAMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=E1gGnD+4VzjaN4fKuWiIUIZt6QJcH1BElULlRGhd9uE=;
+        b=wCi/0atXplEbqHkYbE6fCh926sedYMRNZnyNr5cmBgO0e5Uv/Le2uu/F5GZzw+596Q
+         N+iIncwee90XzgxwSwlM7ulYRNVIjeOflTy+daxTt23pJcNgt6gKzn1TeaXZGIxxtLZJ
+         wsfW6PbLqZVq0hQH81DJSnG6y7YylhgKu1hBNKL4xn+/dvMyJV1rqSB+zGUA15Q+EtZF
+         nLwq3UdgVQXvQ2iaEY1bi2szCmeJooD5yv2xfqVuQ+cjvB2Y3K1vodN6+ibsEXmWca3D
+         UclFxSkJlocO9VMHomY0v6AJQNlQunZhbOHTA2RoPdakb0De4zcGHNOrvJKhoUoEtYVZ
+         d4bg==
+X-Gm-Message-State: AOAM531bKEUXFAQMYZ9wkw2in/xcBRn678A5k6Fnd7Ph0Ut9t4HuBkd6
+        Vw2TkUTvGF3Lgf82FkNpI2TcsPJwmwE8Buj98PI9jYfOd6c=
+X-Google-Smtp-Source: ABdhPJzatIdmgopeplGGMdM1/lnsuA6rbdqmxrC0/M3A6legjIkQ6xpc5rlTJJcS8hD4sVllcu6h/nBn1LvVCmej/PE=
+X-Received: by 2002:aca:b80b:: with SMTP id i11mr2770767oif.26.1631392874074;
+ Sat, 11 Sep 2021 13:41:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH5Ym4jNgs1iJufbmCDOS6N=k+YH4nZTSQ7j-MrM3mp8M0Yn2g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAGdWbB5i2QumFah3aCxC7Zwg1TPGMS-_7nsPxeuJu+JZ-bGYew@mail.gmail.com>
+In-Reply-To: <CAGdWbB5i2QumFah3aCxC7Zwg1TPGMS-_7nsPxeuJu+JZ-bGYew@mail.gmail.com>
+From:   Dave T <davestechshop@gmail.com>
+Date:   Sat, 11 Sep 2021 16:41:03 -0400
+Message-ID: <CAGdWbB57aE9fmuS3ZU1oBxK3Gqd+7YMRL2oGYzwhvT3=s=45MQ@mail.gmail.com>
+Subject: Re: seeking advice for a backup server (accepting btrfs receive
+ streams via SSH)
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 11:07:04PM -0600, Sam Edwards wrote:
-> Pretty much everything you've said scans with what I'm seeing over here.
->
-> Sadly I can't easily replace, remove, or augment the drive. It's
-> inside a laptop that doesn't look like it was designed for user
-> serviceability. I don't even have any assurances that it isn't
-> soldered to the board.
->
-> I included the SMART information when I posted my Gist. Take whatever
-> info you need.
+Hello. I have a server on a LAN that will act as a backup target for
+clients that use btrbk to send snapshots via SSH.
 
-For the list, that data is:
+After my initial attempt, the backup server became extremely slow. I
+don't know the cause yet, and I'm starting to investigate.
 
-	Model Number:                       NVMe CA6-8D1024
-	Serial Number:                      <redacted>
-	Firmware Version:                   ERA0901
-	PCI Vendor ID:                      0x1e95
-	PCI Vendor Subsystem ID:            0x1dbe
-	Total NVM Capacity:                 1,024,209,543,168 [1.02 TB]
+The first thing I would like to know from this group is whether there
+are special considerations for configuring or managing a server that
+will receive many btrfs snapshots from other devices.
 
-It's not one I've seen previously reported, but there's a huge variety
-of SSD firmware in the field.
+For example, do the general rules about limiting the number of
+snapshots on a volume still apply in this case?
 
-> Best,
-> Sam
->
->
-> On Fri, Sep 10, 2021 at 10:24 PM Zygo Blaxell
-> <ce3g8jdj@umail.furryterror.org> wrote:
-> >
-> > On Fri, Sep 10, 2021 at 01:44:51AM -0600, Sam Edwards wrote:
-> > > Hi Qu,
-> > >
-> > > Thank you very much for your insight. It is also helpful to know that
-> > > I appear to be understanding the btrfs internals properly. :)
-> > >
-> > > On Fri, Sep 10, 2021 at 12:17 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> > > > But for SSD/HDD, we're more cautious about any transid error.
-> > > >
-> > > > There are already known bad disks which don't follow FLUSH requests,
-> > > > thus leads to super easy transid mismatch on powerloss:
-> > > >
-> > > > https://btrfs.wiki.kernel.org/index.php/Hardware_bugs
-> > >
-> > > I strongly believe now that the SSD hardware/firmware is not the
-> > > issue. Not only was the last "power loss"-type event on the 5th (which
-> > > appears to have caused no damage), the issue appeared while the system
-> > > was running -- a SSD firmware problem of that magnitude should have
-> > > been apparent long before I upgraded to 5.14.1.
-> >
-> > Have you reported the model and firmware revision of the SSD?
-> > This is critical information for identifying firmware problems.
-> >
-> > Write cache firmware failures are not only triggered by power losses.
-> > They can be triggered by underlying media failures and SSD embedded DRAM
-> > failures.  This kind of firmware bug would show zero symptoms before
-> > (and sometimes during) the triggering failure event.  When it happens,
-> > there may be no indication of failure other than a whole lot of "parent
-> > transid verify failed" and related errors that appear out of nowhere
-> > during otherwise normal operation.  Such failures are often accompanied
-> > by bus timeouts and resets, but it can also happen with no external
-> > indication if there is no write in progress at the time of failure.
-> >
-> > There are roughly 40 distinct block addresses affected in your check log,
-> > clustered in two separate 256 MB blocks.  That looks fairly normal--the
-> > btrfs allocator packs related updates close together to take advantage
-> > of sequential write performance, so all of a dropped transaction's
-> > writes would have nearby addresses.  The variation in transid is also
-> > normal--the new tree pages refer to old tree pages of various ages and
-> > replace old tree pages of various ages themselves.
-> >
-> > The parent transid verify messages appear in identical pairs, which is
-> > consistent with a dropped cache write on a single drive with dup metadata.
-> > Btrfs will try to read both mirror copies if the first one is wrong.
-> > Both writes occur at the same time, so both writes can be in the drive's
-> > write cache when the contents of the drive's DRAM are lost.
-> >
-> > The other errors are consistent with consequences of these failures.
-> > Leaf pages of the metadata trees are no longer reachable because a path
-> > to these leaf nodes, or the nodes themselves, do not exist on disk.
-> > Items within the missing leaf pages (like csums, inodes, dirents, and
-> > backrefs) cannot be found when references to these items from other
-> > parts of the filesystem are checked, so you get a lot of missing
-> > directory entries, backrefs, and csums.
-> >
-> > Other failure modes can generate this pattern (e.g. host RAM corruption
-> > and kernel bugs) but other failure modes often leave other indications
-> > that are not present in these logs.  There's no information here
-> > that points to some failure mode other than a write cache failure.
-> > btrfs is designed to reliably detect write cache failures, so based on
-> > the information so far I wouldn't suspect anything else.
-> >
-> > > > > So, question: does the btrfs module use 256 MiB as a default size for
-> > > > > write-back cache pages anywhere?
-> > > >
-> > > > No.
-> > > >
-> > > > > Or might this problem reside deeper
-> > > > > in the block storage system?
-> > > >
-> > > > So if possible, please test without dm-crypto to make sure it's really
-> > > > btrfs causing the problem.
-> > >
-> > > Since you don't find the 256 MiB size evocative of any component of
-> > > btrfs, I am also willing to say that this likely isn't a fault in
-> > > btrfs. So, I think this is now an exercise in ruling out btrfs
-> > > completely (before I move on to investigating devicemapper, the crypto
-> > > target, the NVMe driver, and the block storage system as a whole) and
-> > > further studying the filesystem to gain insight as to how this
-> > > happened.
-> > >
-> > > > > Also, for what it's worth: the last generation to be written before
-> > > > > these inconsistencies seems to be 66303. Files written as part of that
-> > > > > transaction have a birth date of Sep. 7. That's during the same boot
-> > > > > as the failure to read-only,
-> > > >
-> > > > That's interesting.
-> > > >
-> > > > Btrfs aborts transaction when it hits critical metadata problems to
-> > > > prevent further damage, but I still remember some possible corruption
-> > > > caused by aborting transaction in the old days.
-> > > > But those corruptions should not exist in v5.14.
-> > >
-> > > I understand "aborts" to mean, "if btrfs is in the middle of a write
-> > > transaction, and in the process discovers existing metadata corruption
-> > > (e.g. tree node generation mismatch) already on-disk, it will undo any
-> > > earlier modifications already written to disk as part of that
-> > > transaction" -- is this correct? If so, I don't believe there was any
-> > > existing metadata corruption on the disk beforehand, so I doubt the
-> > > abort mechanism is at fault here.
-> > >
-> > > > Furthermore, the read-only flips itself is more important, do you have
-> > > > the dmesg of that incident?
-> > >
-> > > Sadly, I wasn't able to save the dmesg (for obvious reasons), but I do
-> > > recall logs complaining of checksum failures and transid mismatches. I
-> > > did make note of the block bytenrs, which were in the interval
-> > > [1065332047872, 1065391243264] which itself appears to be part of the
-> > > same 256 MiB "slice" as I found before.
-> > >
-> > > > Recently we also see some corrupted free space cache causing problems.
-> > >
-> > > I infer "problems" to mean, "free space cache indicates block X is
-> > > free though it is not, so btrfs allocates a new tree node or extent at
-> > > that location, overwriting necessary data"?
-> > >
-> > > If so, I don't think this is the case here either. If an older node is
-> > > overwritten with a newer one, I would expect the transid mismatches to
-> > > be that the found IDs are *greater* than the wanted IDs. I am finding
-> > > valid, but *older*, tree nodes in the affected region. This seems like
-> > > a "lost writes" kind of problem to me, not overwrites.
-> > >
-> > > However I did note some free space cache errors in my timeline.txt
-> > > file over on the Github Gist. If you believe that this is still a
-> > > likelihood, I can investigate further.
-> > >
-> > > > If you're going to re-test this, mind to use space cache v2 to do the
-> > > > tests?
-> > > >
-> > > > > which suggests that the cached buffer
-> > > > > wasn't merely "not saved before a previous shutdown" but rather
-> > > > > "discarded without being written back." Thoughts?
-> > > >
-> > > > This should not be a thing for btrfs.
-> > > >
-> > > > Btrfs COW protects its metadata, as long as there is no problem in btrfs
-> > > > itself allocating new tree blocks to ex you're reporting some RO
-> > > > incidents, then I guess the COW mechanism may be broken at that time
-> > > > alreadyisting blocks in the same transaction, we're completely safe.
-> > >
-> > > Again, making sure I understand you correctly: Btrfs, by design,
-> > > *never* modifies an active tree node/leaf. It will instead copy the
-> > > node/leaf it wishes to modify into memory, perform the modifications
-> > > there, save the modified copy at a free location on disk, and then
-> > > recursively modify parents (using the same process) all the way back
-> > > to the superblock(s).
-> > >
-> > > And so, if power is lost in the middle of this process (i.e. before
-> > > the superblock is updated), then the old paths down the trees are
-> > > intact. The transaction is lost, but existing metadata is protected.
-> > > Correct?
-> >
-> > If btrfs stops writing to the filesystem immediately, either because a
-> > power failure stopped the kernel running, or a metadata integrity failure
-> > error was detected, then existing metadata is protected.
-> >
-> > If btrfs does _not_ stop writing immediately (e.g. the disk does not
-> > notify btrfs of write failure) and commits a transaction after writes are
-> > dropped, then metadata will be destroyed by later transactions because
-> > they will assume the previously written data is present on disk when it
-> > is not.
-> >
-> > > > But considering you're reporting some RO incidents, then I guess the COW
-> > > > mechanism may be broken at that time already.
-> > > > (Maybe abort leads to some corrupted free space cache?)
-> > >
-> > > Hypothetically, suppose one were to try this experiment:
-> > > 1. Set up a brand-new machine, which has 2 independent but equally-sized disks.
-> > > 2. On disk A, create a btrfs and mount it. Use it as a normal rootfs
-> > > for a while, and then unmount it.
-> > > 3. Image disk A to disk B (perhaps obfuscating the image so that it
-> > > doesn't confuse btrfs's RAID logic).
-> > > 4. Remount disk A and begin using it heavily (reads and writes). At a
-> > > random moment, instantly copy a 256 MiB slice from disk B onto disk A,
-> > > choosing an offset that has recently been written on disk A, while
-> > > disk A is still mounted.
-> > >
-> > > Would this cause csum failures, transid mismatches, a RO incident, and
-> > > the general output from "btrfs check" that I posted?
-> >
-> > It would, but in far larger quantities (thousands of blocks instead of
-> > just a few dozen).
-> >
-> > If you have two disks you could run btrfs raid1 on them.  Failures on
-> > one disk will be corrected by reading from the other.  Pairing disks by
-> > different vendors in large numbers is an excellent way to quickly learn
-> > which models are bad.
-> >
-> > > If so, I think the problem is that a write-back cache, somewhere
-> > > deeper in the block storage stack (i.e. not btrfs) simply...
-> > > *discarded* a contiguous 256 MiB worth of data that btrfs thought had
-> > > been successfully written, and the RO incident was due to btrfs
-> > > suddenly seeing old data resurface. Does this seem like the best
-> > > working hypothesis currently?
-> >
-> > No, we would expect _much_ more damage than your check run reported.
-> >
-> > > Also: Per your expert opinion, what would be the best way to repair
-> > > disk A (without the benefit of disk B, heh) in the experiment above? I
-> > > imagine the affected slice itself is not salvageable, and will have to
-> > > be forcibly marked as free space, and in the process throwing out any
-> > > references to tree nodes that happened to reside there, meaning I'll
-> > > lose a whole bunch of extents, inodes, csum tree entries, and so on...
-> > > and in turn I'd lose a random assortment of files. I'm actually okay
-> > > with that, because I can diff the surviving files against my last
-> > > backup and restore whatever was deleted.
-> >
-> > You'd have to reinsert all the surviving (and up to date) leaf nodes
-> > into new trees, then remove any dangling references, then verify all
-> > the surviving data.  That's more total IO than mkfs + restore, and
-> > requires significant memory and CPU as well.
-> >
-> > > Or is the whole thing FUBAR at this point and I should just zero the
-> > > partition and restore from backups?
-> >
-> > If you have backups, it's usually faster to restore them.
-> >
-> > I'd put that drive on probation for a while--maybe use it only in raid1
-> > setups, or turn off its write cache, or run a stress test for a while
-> > to see if it fails again.
-> >
-> > Certainly if you suspect the 5.14 kernel then it would be worthwhile to
-> > retest the drive with an older kernel, or test different drives with a
-> > newer kernel.  If you can reproduce the issue with multiple drives that
-> > is always an interesting bug report.
-> >
-> > We want to know your drive model and firmware revision.  If everyone who
-> > owns one of these drives reports the same problem, we know the problem
-> > is in the drive firmware.  If we see the problem across multiple drives
-> > then we know it's somewhere else.
-> >
-> > > Thank you for your time,
-> > > Sam
-> > >
-> > > > Thanks,
-> > > > Qu
-> > > >
-> > > > >
-> > > > > Cheers,
-> > > > > Sam
-> > > > >
-> > > > >
-> > > > > On Wed, Sep 8, 2021 at 6:47 PM Sam Edwards <cfsworks@gmail.com> wrote:
-> > > > >>
-> > > > >> Hello list,
-> > > > >>
-> > > > >> First, I should say that there's no urgency here on my part.
-> > > > >> Everything important is very well backed up, and even the
-> > > > >> "unimportant" files (various configs) seem readable. I imaged the
-> > > > >> partition without even attempting a repair. Normally, my inclination
-> > > > >> would be to shrug this off and recreate the filesystem.
-> > > > >>
-> > > > >> However, I'd like to help investigate the root cause, because:
-> > > > >> 1. This happened suspiciously soon (see my timeline in the link below)
-> > > > >> after upgrading to kernel 5.14.1, so may be a serious regression.
-> > > > >> 2. The filesystem was created less than 5 weeks ago, so the possible
-> > > > >> causes are relatively few.
-> > > > >> 3. My last successful btrfs scrub was just before upgrading to 5.14.1,
-> > > > >> hopefully narrowing possible root causes even more.
-> > > > >> 4. I have imaged the partition and am thus willing to attempt risky
-> > > > >> experimental repairs. (Mostly for the sake of reporting if they work.)
-> > > > >>
-> > > > >> Disk setup: NVMe SSD, GPT partition, dm-crypt, btrfs as root fs (no LVM)
-> > > > >> OS: Gentoo
-> > > > >> Earliest kernel ever used: 5.10.52-gentoo
-> > > > >> First kernel version used for "real" usage: 5.13.8
-> > > > >> Relevant information: See my Gist,
-> > > > >> https://gist.github.com/CFSworks/650280371fc266b2712d02aa2f4c24e8
-> > > > >> Misc. notes: I have run "fstrim /" on occasion, but don't have
-> > > > >> discards enabled automatically. I doubt TRIM is the culprit, but I
-> > > > >> can't rule it out.
-> > > > >>
-> > > > >> My primary hypothesis is that there's some write bug in Linux 5.14.1.
-> > > > >> I installed some package updates right before btrfs detected the
-> > > > >> problem, and most of the files in the `btrfs check` output look like
-> > > > >> they were created as part of those updates.
-> > > > >>
-> > > > >> My secondary hypothesis is that creating and/or using the swapfile
-> > > > >> caused some kind of silent corruption that didn't become a detectable
-> > > > >> issue until several further writes later.
-> > > > >>
-> > > > >> Let me know if there's anything else I should try/provide!
-> > > > >>
-> > > > >> Regards,
-> > > > >> Sam
+Thanks for any input.
