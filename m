@@ -2,159 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642F54081E6
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Sep 2021 23:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CBF408233
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Sep 2021 01:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236492AbhILVkl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 Sep 2021 17:40:41 -0400
-Received: from mail.linuxsystems.it ([79.7.78.67]:60961 "EHLO
-        mail.linuxsystems.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236532AbhILVkh (ORCPT
+        id S236622AbhILXIf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Sep 2021 19:08:35 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:43646 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236546AbhILXIf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 Sep 2021 17:40:37 -0400
-Received: by mail.linuxsystems.it (Postfix, from userid 33)
-        id 649F221036F; Sun, 12 Sep 2021 23:23:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxsystems.it;
-        s=linuxsystems.it; t=1631481813;
-        bh=iwfNs7NLOmS/Zqtcj2YalE9w6cs1AteCtpGCzxqEMwU=;
-        h=To:Subject:Date:From:Cc:In-Reply-To:References:From;
-        b=c/VIhxDHinBEr0cd5CB51AfN84KibmQmNFgrc8dmNiSCuWLv1ui+cDx89Z1YLBe4B
-         5Hk6p4f02163g0au1CTbfFI+3y7m8K2QAJACsRkYiLtY2mqyqxgSB2YfcXFzGUJf/5
-         wfJAVynI5p9EccPUAmStCZ3j85mm76Jp47KL+QPA=
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Unmountable / uncheckable Fedora 34 btrfs: failed to read block  groups: -5 open_ctree failed
-X-PHP-Originating-Script: 0:rcube.php
+        Sun, 12 Sep 2021 19:08:35 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id E2E6EB7448D; Sun, 12 Sep 2021 19:07:19 -0400 (EDT)
+Date:   Sun, 12 Sep 2021 19:07:19 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Sam Edwards <cfsworks@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Subject: Re: Corruption suspiciously soon after upgrade to 5.14.1; filesystem
+ less than 5 weeks old
+Message-ID: <20210912230719.GL29026@hungrycats.org>
+References: <CAH5Ym4h9ffTSx_EuBOvfkCkagf5QHLOM1wBzBukAACCVwNxj0g@mail.gmail.com>
+ <CAH5Ym4i25_VsQZoy5_gURuUJiNZGQM84aWqn5YJuQxtXW+DAgg@mail.gmail.com>
+ <aed0ec2b-3fe0-3574-b7e5-24f2e3da27ce@gmx.com>
+ <CAH5Ym4gd7UhT=cSAjb-zMQ3baU08+SzKnGmXmAVD_8FdhzqF9w@mail.gmail.com>
+ <20210911042414.GJ29026@hungrycats.org>
+ <CAH5Ym4jNgs1iJufbmCDOS6N=k+YH4nZTSQ7j-MrM3mp8M0Yn2g@mail.gmail.com>
+ <20210911165634.GK29026@hungrycats.org>
+ <CAH5Ym4isja5hs73ibcACH5cm00=F43cG+m_sNtFjkJ_oRZJT1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Sun, 12 Sep 2021 23:23:33 +0200
-From:   =?UTF-8?Q?Niccol=C3=B2_Belli?= <darkbasic@linuxsystems.it>
-Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <22ac9237-68dd-5bc3-71e1-6a4a32427852@gmx.com>
-References: <0303d1f618b815714fe62a6eb90f55ca@linuxsystems.it>
- <22ac9237-68dd-5bc3-71e1-6a4a32427852@gmx.com>
-Message-ID: <02f428314a995fa1deea171af9685b9a@linuxsystems.it>
-X-Sender: darkbasic@linuxsystems.it
-User-Agent: Roundcube Webmail/1.1.5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAH5Ym4isja5hs73ibcACH5cm00=F43cG+m_sNtFjkJ_oRZJT1g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I think I've managed to recover the vast majority of my files:
+On Sun, Sep 12, 2021 at 12:12:13AM -0600, Sam Edwards wrote:
+> On Sat, Sep 11, 2021 at 10:56 AM Zygo Blaxell
+> <ce3g8jdj@umail.furryterror.org> wrote:
+> > It's not one I've seen previously reported, but there's a huge variety
+> > of SSD firmware in the field.
+> 
+> It seems to be a very newly released SSD. It's possible that the
+> reason nobody else has reported issues with it yet is that nobody else
+> who owns one of these has yet met the conditions for this problem to
+> occur. All the more reason to figure this out, I say.
+> 
+> I've been working to verify what you've said previously (and to rule
+> out any contrary hypotheses - like chunks momentarily having the wrong
+> physical offset). One point I can't corroborate is:
+> 
+> > There are roughly 40 distinct block addresses affected in your check log,
+> > clustered in two separate 256 MB blocks.
+> 
+> The only missing writes that I see are in a single 256 MiB cluster
+> (belonging to chunk 1065173909504). What is the other 256 MiB cluster
+> that you are seeing? 
 
-$ sudo cp -a avd var 
-/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6/
-cp: avd/Pixel_4_API_30.avd/userdata-qemu.img.qcow2: recupero delle 
-informazioni degli extent non riuscito: Errore di input/output
+Hex addresses from your parent transid verify failed messages:
 
-$ sudo cp -a snapshots/home/375/snapshot 
-/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6/home
-cp: 
-snapshots/home/375/snapshot/niko/devel/beach/client/android/.gradle/checksums/sha1-checksums.bin: 
-recupero delle informazioni degli extent non riuscito: Errore di 
-input/output
+	f80ad70000
+	f80ad74000
+	f80c11c000
+	f80c6dc000
+	f80c6e8000
+	f80c704000
+	f80dd04000
+	f80e320000
+	f80e3a4000
+	f80e3cc000
 
-$ sudo cp -a snapshots/root/3004/snapshot 
-/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6/root
+	f8167c8000
+	f8167e0000
+	f818a68000
+	f818a6c000
+	f818a70000
+	f818a74000
+	f818a7c000
+	f818a80000
+	f818a84000
+	f818a8c000
 
-$ sudo cp -a snapshots/images/3/snapshot 
-/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6/images
-cp: snapshots/images/3/snapshot/OSX-KVM/mac_hdd_ng.img: recupero delle 
-informazioni degli extent non riuscito: Errore di input/output
-cp: snapshots/images/3/snapshot/OSX-KVM/BaseSystem.img: recupero delle 
-informazioni degli extent non riuscito: Errore di input/output
+"leaf parent key incorrect" has a similar distribution.
 
-The only valuable thing I've lost seems to be an hackintosh vm I use for 
-development, but I can create another one.
+There is less than 256MB distance from the first to the last, but they
+occupy two separate 256MB-aligned regions (f800000000 and f810000000).
+If there is dup metadata then these blocks occupy four separate 256MB
+regions, as there is some space between duplicate regions (in logical
+address space).
 
-[ 2213.532522] BTRFS warning (device loop0): Skipping commit of aborted 
-transaction.
-[ 2213.532526] ------------[ cut here ]------------
-[ 2213.532527] BTRFS: Transaction aborted (error -28)
-[ 2213.532565] WARNING: CPU: 2 PID: 3061 at fs/btrfs/transaction.c:1946 
-btrfs_commit_transaction.cold+0xf2/0x2ef [btrfs]
-[ 2213.532609] Modules linked in: loop ext4 mbcache jbd2 ses enclosure 
-scsi_transport_sas uas usb_storage cmac ccm xt_conntrack xt_MASQUERADE 
-nf_conntrack_netlink nfnetlink xt_addrtype iptable_filter iptable_nat 
-nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter overlay 
-bridge stp llc snd_hda_codec_hdmi bnep uvcvideo videobuf2_vmalloc 
-videobuf2_memops videobuf2_v4l2 videobuf2_common btusb videodev btrtl 
-btbcm btintel mc bluetooth ecdh_generic ecc crc16 joydev 
-intel_spi_platform intel_spi mousedev spi_nor iTCO_wdt mei_wdt 
-intel_pmc_bxt mtd mei_hdcp iTCO_vendor_support intel_rapl_msr wmi_bmof 
-dell_laptop i915 dell_wmi dell_smbios dell_wmi_descriptor iwlmvm 
-x86_pkg_temp_thermal intel_powerclamp coretemp sparse_keymap snd_ctl_led 
-dcdbas snd_hda_codec_realtek i2c_algo_bit snd_hda_codec_generic ttm 
-ledtrig_audio mac80211 kvm_intel snd_hda_intel libarc4 snd_intel_dspcfg 
-dell_smm_hwmon kvm irqbypass rapl intel_cstate iwlwifi 
-snd_intel_sdw_acpi drm_kms_helper intel_uncore snd_hda_codec
-[ 2213.532656]  pcspkr psmouse processor_thermal_device_pci_legacy 
-i2c_i801 cec processor_thermal_device snd_hda_core 
-processor_thermal_rfim cfg80211 i2c_smbus processor_thermal_mbox 
-intel_gtt intel_pch_thermal agpgart snd_hwdep processor_thermal_rapl 
-syscopyarea lpc_ich rfkill snd_pcm sysfillrect intel_rapl_common mei_me 
-snd_timer sysimgblt snd soundcore fb_sys_fops intel_soc_dts_iosf mei wmi 
-int3403_thermal i2c_hid_acpi video dw_dmac i2c_hid int3402_thermal 
-int3400_thermal int340x_thermal_zone acpi_thermal_rel acpi_pad mac_hid 
-nls_iso8859_1 vfat fat crypto_user drm fuse ip_tables x_tables btrfs 
-blake2b_generic libcrc32c crc32c_generic xor raid6_pq dm_crypt cbc 
-encrypted_keys trusted asn1_encoder tee hid_multitouch usbhid dm_mod 
-serio_raw rtsx_pci_sdmmc mmc_core atkbd libps2 crct10dif_pclmul 
-crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd 
-cryptd rtsx_pci xhci_pci xhci_pci_renesas tpm_crb i8042 serio tpm_tis 
-tpm_tis_core tpm rng_core pl2303 mos7720 parport
-[ 2213.532705] CPU: 2 PID: 3061 Comm: btrfs-transacti Not tainted 
-5.14.0-1-git-11152-g78e709522d2c #1 
-4337bfa7fd23c500813a836e2184863944fac299
-[ 2213.532708] Hardware name: Dell Inc. XPS 13 9343/0X2GW3, BIOS A20 
-06/06/2019
-[ 2213.532709] RIP: 0010:btrfs_commit_transaction.cold+0xf2/0x2ef 
-[btrfs]
-[ 2213.532746] Code: 28 48 89 04 24 48 89 c2 49 8b 44 24 28 48 39 c2 75 
-30 0f 0b 0f 0b 48 8b 45 50 eb a1 89 de 48 c7 c7 c8 e7 6e c0 e8 2f 4b 3a 
-d9 <0f> 0b eb a9 48 8b 7d 50 89 da 48 c7 c6 f8 e7 6e c0 e8 62 ba ff ff
-[ 2213.532748] RSP: 0018:ffffaa6401eebde0 EFLAGS: 00010282
-[ 2213.532750] RAX: 0000000000000000 RBX: 00000000ffffffe4 RCX: 
-0000000000000027
-[ 2213.532751] RDX: ffff9be716518728 RSI: 0000000000000001 RDI: 
-ffff9be716518720
-[ 2213.532752] RBP: ffff9be577d1c8f0 R08: 0000000000000000 R09: 
-ffffaa6401eebc10
-[ 2213.532754] R10: ffffaa6401eebc08 R11: ffffffff9aaccca8 R12: 
-ffff9be55293b200
-[ 2213.532755] R13: ffff9be6d303b000 R14: ffff9be577d1c948 R15: 
-ffffaa6401eebe78
-[ 2213.532756] FS:  0000000000000000(0000) GS:ffff9be716500000(0000) 
-knlGS:0000000000000000
-[ 2213.532758] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2213.532759] CR2: 000055d4b013fbd0 CR3: 0000000065a10005 CR4: 
-00000000003706e0
-[ 2213.532760] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
-0000000000000000
-[ 2213.532761] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
-0000000000000400
-[ 2213.532763] Call Trace:
-[ 2213.532767]  transaction_kthread+0x12e/0x1a0 [btrfs 
-1ccea181fc519646bf0a24aa8f854515e5e21f83]
-[ 2213.532799]  ? btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs 
-1ccea181fc519646bf0a24aa8f854515e5e21f83]
-[ 2213.532830]  kthread+0x132/0x160
-[ 2213.532834]  ? set_kthread_struct+0x40/0x40
-[ 2213.532836]  ret_from_fork+0x22/0x30
-[ 2213.532841] ---[ end trace a9ee4fb88980a146 ]---
-[ 2213.532843] BTRFS: error (device loop0) in cleanup_transaction:1946: 
-errno=-28 No space left
-[ 2224.518838] BTRFS warning (device loop0): checksum verify failed on 
-21348679680 wanted 0xd05bf9be found 0x2874489b level 1
-[ 2227.041189] BTRFS warning (device loop0): checksum verify failed on 
-21348679680 wanted 0xd05bf9be found 0x2874489b level 1
+256MB is far too large for a plausible erase block size, 1GB is even
+less likely.
 
-This error is weird instead, considering it's mounted ro it shouldn't 
-complain about no space being left.
+> What shows that writes to that range went
+> missing, too? (Or by "affected" do you only mean "involved in the
+> damaged transactions in some way"?)
 
-By the way I didn't get any kind of I/O error while restoring avd, home 
-or images with btrfs restore: what's the difference with ibadroots?
+"parent transid verify failed" is btrfs for "there is a reference to a
+block at this location, but the block was not written and a different
+(usually older) block was found instead."  "leaf parent key incorrect"
+is a synonym.  The named block is almost always a missing write.
 
-Niccolò
+I don't see any signs of more than one transaction being affected.
+With 20 distinct pages of metadata lost we'd expect up to 60,000 items
+with reference problems, but there are only about 9000 unique error
+items.  If there was more damage to leaf pages, especially from other
+transactions, I'd expect more unique errors.
 
+> I do find it interesting that, of a few dozen missing writes, all of
+> them are clustered together, while other writes in the same
+> transactions appear to have had a perfect success rate. My expectation
+> for drive cache failure would have been that *all* writes (during the
+> incident) get the same probability of being dropped. All of the
+> failures being grouped like that can only mean one thing... I just
+> don't know what it is. :)
+
+That's not how write caches work--they are not giant FIFO queues.
+
+Write caches reorder writes in close temporal proximity (i.e. writes
+that occurred close together in time rather than in space).  There is
+necessarily reordering in the failure case--if there was no reordering,
+in a strictly FIFO cache, there would be no btrfs errors because without
+reordering the last persisted transaction would be completely persisted
+with all its metadata intact (there may be later transactions that were
+lost, but if none of their writes persisted then those transactions
+didn't really happen).
+
+The cache does not occupy all of the DRAM in the device--usually it is
+only a handful of pages, because the firmware will drain the cache to
+flash as quickly as possible.  btrfs quite often has to stop to read data
+from disk during a transaction, giving the drive time to catch up flushing
+out the cache.  This results in a small number of writes in flight.
+
+So there might be e.g. writes to blocks A, B, C, D, E, F, barrier, G,
+and those are reordered in write cache as A, D, E, F, G, B, C, and then
+the last 2 writes are lost by a drive problem.  Writes to locations A,
+D, E, F, and G are persisted (G might be the superblock update,
+completing the transaction and updating root pointers to all the trees)
+while writes to B and C are not (these are the "leaf parent key incorrect"
+and "parent transid verify failed" errors, where a parent node in a tree
+points to a block that does not contain the matching child).
+
+Reordering like the above is allowed, but only if the drive can guarantee
+results equivalent to the original ordering with the barrier constraint
+(e.g. it has big capacitors or SLC write cache).  The drive can legally
+write G earlier if and only if it can guarantee it will finish writing
+all of A-F, even if power is lost, host sends a reset, or media fails.
+
+> So, the prime suspect at this point is the SSD firmware. Once I have a
+> little more information, I'll (try to) share what I find with the
+> vendor. Ideally I'd like to narrow down which of 3 components of the
+> firmware apparently contains the fault:
+> 1. Write back cache: Most likely, although not certain at this point.
+> If I turn off the write cache and the problem goes away, I'll know.
+
+Disabling write cache is the most common workaround, and often successful
+if the drive is still healthy.
+
+> 2. NVMe command queues: Perhaps there is some race condition where 2
+> writes submitted on different queues will, under some circumstances,
+> cause one/both of the writes to be ignored.
+
+That often happens to drives as they fail.  Firmware reboots due to a
+bug in error handling code or hardware fault, and doesn't remember what
+was in its write cache.
+
+Also if there is a transport failure and the host resets the bus, the
+drive firmware might have its write cache forcibly erased before being
+able to write it.  The spec says that doesn't happen, but some vendors
+are demonstrably unable to follow spec.
+
+> 3. LBA mapper: Given the pattern of torn writes, it's possible that
+> some LBAs were not updated to the new PBAs after some of the writes. I
+> find this pretty unlikely for a handful of reasons (trying to write a
+> non-erased block should result in an internal error, old PBA should be
+> erased, ...)
+
+That's an SSD-specific restatement of #1 (failure to persist data before
+reporting successfully completed write to the host, and returning previous
+versions of data on later reads of the same address).
+
+SSDs don't necessarily erase old blocks immediately--a large, empty or
+frequently discarded SSD might not erase old blocks for months.
+
+All of the above fit into the general category of "drive drops some
+writes, out of order, when some triggering failure occurs."  If you have
+access to the drive's firmware on github, you could check out the code,
+determine which bug is occurring, and send a pull request with the fix.
+If you don't, usually the practical solution is to choose a different
+drive vendor, unless you're ordering enough units to cause drive
+manufacturer shareholders to panic when you stop.
+
+Also you need to be _really_ sure it's the drive, and this information
+casts some doubt on that theory:
+
+> However, even if this is a firmware/hardware issue, I remain
+> unconvinced that it's purely coincidence just how quickly this
+> happened after the upgrade to 5.14.x. In addition to this corruption,
+> there are the 2 incidents where the system became unresponsive under
+> I/O load (and the second was purely reads from trying to image the
+> SSD). Those problems didn't occur when booting a rescue USB with an
+> older kernel. So some change which landed in 5.14.x may have changed
+> the drive command pattern in some important way to trigger the SSD
+> fault (esp, in the case of possibility #2 above). That gives me hope
+> that, if nothing else, we may be able to add a device quirk to Linux
+> and minimize future damage that way. :)
+
+Yeah, if something horrible happened in the Linux 5.14 baremetal NVME
+hardware drivers or PCIe subsystem in general, then it could produce
+symptoms like these.  It wouldn't be the first time a regression in
+other parts of Linux was detected by a flood of btrfs errors.
+
+Device resets might trigger write cache losses and then all the above
+"firmware" symptoms (but the firmware is not at fault, it is getting
+disrupted by the host) (unless you are a stickler for the letter of the
+spec that says write cache must be immune to host action).
+
+Linux 5.14 btrfs on VMs seems OK.  I run tests continuously on new Linux
+kernels to detect btrfs and lvm regressions early, and nothing like this
+has happened on my humble fleet.  My test coverage is limited--it
+won't detect a baremetal NVME transport issue, as that's handled by the
+host kernel not the VM guest.
+
+> Bayes calls out from beyond the grave and demands that, before I try
+> any experiments, I first establish the base rate of these corruptions
+> under current conditions. So that means rebuilding my filesystem from
+> backups and continuing to use it exactly as I have been, prepared for
+> this problem to happen again. Being prepared means stepping up my
+> backup frequency, so I'll first set up a btrbk server that can accept
+> hourly backups.
+
+Sound methodology.
+
+> Wish me luck,
+
+Good luck!
+
+> Sam
