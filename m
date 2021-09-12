@@ -2,151 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91577407AA7
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Sep 2021 00:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60835407C04
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Sep 2021 08:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhIKWXs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 11 Sep 2021 18:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
+        id S229784AbhILGNj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Sep 2021 02:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhIKWXr (ORCPT
+        with ESMTP id S229512AbhILGNi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 11 Sep 2021 18:23:47 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9566CC061574
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Sep 2021 15:22:34 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id c8-20020a9d6c88000000b00517cd06302dso7628204otr.13
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Sep 2021 15:22:34 -0700 (PDT)
+        Sun, 12 Sep 2021 02:13:38 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F67DC061574
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Sep 2021 23:12:25 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id g2so4029239uad.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 11 Sep 2021 23:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=Z3f3ORpCN5dmioEQxJT6DQyP5/xPbWrqoTnhUWvcMwg=;
-        b=XZDVR/QlrGALoVgHH/tyrmrRtd3C66d6FzRSsj+r3yR9CeaJTCuF75rLb1Vc1t7bwa
-         gJmiVah2TFYnyzim5KTHScPw3/ISna+6NLTI25MtukiQcFRGTbBz0N59MVLCYbJa+d9K
-         KnWad5Ua8Jpgy5mOf8YhYSM6HEero+OjAkX/2ZVwWAJYquugDileM7za5yojGRh+XBRn
-         qE8R24b1NzYwySVgYDGS6aAKs7ENTXFuBdtHBshra1zRdcHPifggss6Cr1ewuIgH2joq
-         c2lmgo0FfAf3QbgqdYyN47ocF28GCaR+V/wcvoHy484HJgHyNjfrKJMnogWmzqc+6Xx1
-         8tkw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eNi6stothPxaJHAxFaXuEG7Q1bc8S9CfCXMQeGQvkIU=;
+        b=RwVj/CeLhT5r3BQFD2+XCBvdfopLp537fE6bkCfdmfstS1+dTlGDu/delAlU0hEKf8
+         RApqM8g9PLLbvbyoiPZlDiklcsz2sRJhgqJ6xsbaWpnapaiVB3RKbkB7vE7OBFhP12iN
+         iAuDokKXiNM0MbXDz8PcjyoljDZOMH//AGNehZEtvlXoVrcizJrcAUnMgZY4fpnwzUlB
+         44lGLVcn2Xnvxr/nrCKtg/8AyTS3plqFk5tFRebRX5bAw7F9PXIhAEVJ2V6eXHcLjzH+
+         zkgrmLHpLE9Kp6JoWi4GicaGSy5I3GfuxatTlnGoCZPX4qTQWBBAxUOTyO5iqkbK2Fcz
+         bG0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=Z3f3ORpCN5dmioEQxJT6DQyP5/xPbWrqoTnhUWvcMwg=;
-        b=5mYbzFjGXMcJlh3LYYyrZZ2GrkFHwv/5/VWpeWFfPKlNwY5IFCd5L3HXnWfTWyt1Y/
-         8NvUk+609jeg+xF84pfFLkcSMUK/P5qAbdKzJmNhprn08T0eefwlw/LiRpEj+nyyJ99p
-         XjGj/hFydLtW89n3ArwmdcnU/GtoYe2f2j0cpJa5B6SSgquovoich7OEu9TXZAlVEgx9
-         aWF6/kK5EUbIeiyxztcg3sHeH+vmhY4d/Ej6jloNSZgbKtKjbeIDDxGy5kEdWDVHuol1
-         pr3Vo1rl+KmrzTeAJZkTNcrdmblnxgERAsRiBHK8Ry9tYlZnycQze/RfWKP+eo/+o1dI
-         P37Q==
-X-Gm-Message-State: AOAM533bc2lz96r8lbRhAdjXuWxi6axvjCcZm2gsfeOnQiJkcquKWrE8
-        2t83QBP0FHJAkf4HwHe3CD43rPcLJVv1nEACmxkxhL1dGRc=
-X-Google-Smtp-Source: ABdhPJwlaimwgvjcVYfKwFseD70RkZ8EraGMT0ecSMduZIAEfLFKBUAzpXkjtLl/U947yWq++Zc+G2pKJssvTyIl+cg=
-X-Received: by 2002:a9d:721b:: with SMTP id u27mr3929814otj.214.1631398953947;
- Sat, 11 Sep 2021 15:22:33 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=eNi6stothPxaJHAxFaXuEG7Q1bc8S9CfCXMQeGQvkIU=;
+        b=cSQAGOEO6OTLWgIFt8oEEWhpitmgBQIhUCg27lGQ9iAqGW9bsMJO+OfrQIKTrw2N2y
+         oLjbekuCOY6Q8inQmQlfrPNn2gLb84TdeB0JgH/F7r4mmnY2FjpKjjW84/9yZV98BBeV
+         7TjsPUIqlCG2W6bKi3XvKzAyO3UQxKbk0ivXnswakMCd1jlwbxxVlMlN8WBSnl2mqNOq
+         gl173HtvBsZFk9OecBIDsQPoMfii6MTxtLkRIiu/z3A17X8dJKbcU4Xc9kYKst0F7pfX
+         h6RzwpWuqVKuuwEUU271hKPoSdFWgjJK9pqLwSgE8e6btdFwlw3H35+e/95RQbDCdiie
+         URWQ==
+X-Gm-Message-State: AOAM5303UjnrfYmdLRwonrQBk0OTOrSewUnoJq59tzqgh2qP6peuTPK0
+        12Hyocm3kQGRnWiJa4F8l/UmSI0L8wS/xaxwX4ckDlxu5RM=
+X-Google-Smtp-Source: ABdhPJzxmsodGEJPKXZ1Lij3DqlJhwNgLJc8OoNjiJaksGkIcLXQVZZuwcRbno/s14PD/BQRdokJeri8KQAsDlYTQO0=
+X-Received: by 2002:ab0:448:: with SMTP id 66mr2278374uav.64.1631427144287;
+ Sat, 11 Sep 2021 23:12:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGdWbB5i2QumFah3aCxC7Zwg1TPGMS-_7nsPxeuJu+JZ-bGYew@mail.gmail.com>
- <CAGdWbB57aE9fmuS3ZU1oBxK3Gqd+7YMRL2oGYzwhvT3=s=45MQ@mail.gmail.com> <f041b06.ddfa8457.17bd6e185d0@tnonline.net>
-In-Reply-To: <f041b06.ddfa8457.17bd6e185d0@tnonline.net>
-From:   Dave T <davestechshop@gmail.com>
-Date:   Sat, 11 Sep 2021 18:22:22 -0400
-Message-ID: <CAGdWbB5-uN57GF90K06yE8bw5O-S4Le+YZ-aNx3-BUSoa6hWbQ@mail.gmail.com>
-Subject: Re: seeking advice for a backup server (accepting btrfs receive
- streams via SSH)
-To:     Forza <forza@tnonline.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAH5Ym4h9ffTSx_EuBOvfkCkagf5QHLOM1wBzBukAACCVwNxj0g@mail.gmail.com>
+ <CAH5Ym4i25_VsQZoy5_gURuUJiNZGQM84aWqn5YJuQxtXW+DAgg@mail.gmail.com>
+ <aed0ec2b-3fe0-3574-b7e5-24f2e3da27ce@gmx.com> <CAH5Ym4gd7UhT=cSAjb-zMQ3baU08+SzKnGmXmAVD_8FdhzqF9w@mail.gmail.com>
+ <20210911042414.GJ29026@hungrycats.org> <CAH5Ym4jNgs1iJufbmCDOS6N=k+YH4nZTSQ7j-MrM3mp8M0Yn2g@mail.gmail.com>
+ <20210911165634.GK29026@hungrycats.org>
+In-Reply-To: <20210911165634.GK29026@hungrycats.org>
+From:   Sam Edwards <cfsworks@gmail.com>
+Date:   Sun, 12 Sep 2021 00:12:13 -0600
+Message-ID: <CAH5Ym4isja5hs73ibcACH5cm00=F43cG+m_sNtFjkJ_oRZJT1g@mail.gmail.com>
+Subject: Re: Corruption suspiciously soon after upgrade to 5.14.1; filesystem
+ less than 5 weeks old
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 6:01 PM Forza <forza@tnonline.net> wrote:
->
->
->
-> ---- From: Dave T <davestechshop@gmail.com> -- Sent: 2021-09-11 - 22:41 ----
->
-> > Hello. I have a server on a LAN that will act as a backup target for
-> > clients that use btrbk to send snapshots via SSH.
-> >
-> > After my initial attempt, the backup server became extremely slow. I
-> > don't know the cause yet, and I'm starting to investigate.
-> >
-> > The first thing I would like to know from this group is whether there
-> > are special considerations for configuring or managing a server that
-> > will receive many btrfs snapshots from other devices.
-> >
-> > For example, do the general rules about limiting the number of
-> > snapshots on a volume still apply in this case?
-> >
-> > Thanks for any input.
->
->
-> It's hard to say much without more detailed information about your set up, such as hardware configuration, filesystem setup, etc.
+On Sat, Sep 11, 2021 at 10:56 AM Zygo Blaxell
+<ce3g8jdj@umail.furryterror.org> wrote:
+> It's not one I've seen previously reported, but there's a huge variety
+> of SSD firmware in the field.
 
-I can offer any additional info needed. Rather than guess at what
-anyone wants to see, I will respond with the info upon request.
+It seems to be a very newly released SSD. It's possible that the
+reason nobody else has reported issues with it yet is that nobody else
+who owns one of these has yet met the conditions for this problem to
+occur. All the more reason to figure this out, I say.
 
-> What do you consider slow?
+I've been working to verify what you've said previously (and to rule
+out any contrary hypotheses - like chunks momentarily having the wrong
+physical offset). One point I can't corroborate is:
 
-The connected clients will freeze for several minutes, up to 15
-minutes or more sometimes. It was not just "normal slow" it was
-unusable. These periods of extreme slowness did not correspond, as far
-as I could tell, to the moments when clients were running any btrbk
-operations. It seemed random.
+> There are roughly 40 distinct block addresses affected in your check log,
+> clustered in two separate 256 MB blocks.
 
-I started over with a "new" (i.e., repurposed) server and so far it
-seems OK in testing with just a few clients. But before I go too far
-down this path I want to make sure the general idea is workable,
-assuming I have adequate hardware.
+The only missing writes that I see are in a single 256 MiB cluster
+(belonging to chunk 1065173909504). What is the other 256 MiB cluster
+that you are seeing? What shows that writes to that range went
+missing, too? (Or by "affected" do you only mean "involved in the
+damaged transactions in some way"?)
 
-> Some pointers to look at may be
+I do find it interesting that, of a few dozen missing writes, all of
+them are clustered together, while other writes in the same
+transactions appear to have had a perfect success rate. My expectation
+for drive cache failure would have been that *all* writes (during the
+incident) get the same probability of being dropped. All of the
+failures being grouped like that can only mean one thing... I just
+don't know what it is. :)
 
-Thank you for offering these pointers.
+So, the prime suspect at this point is the SSD firmware. Once I have a
+little more information, I'll (try to) share what I find with the
+vendor. Ideally I'd like to narrow down which of 3 components of the
+firmware apparently contains the fault:
+1. Write back cache: Most likely, although not certain at this point.
+If I turn off the write cache and the problem goes away, I'll know.
+2. NVMe command queues: Perhaps there is some race condition where 2
+writes submitted on different queues will, under some circumstances,
+cause one/both of the writes to be ignored.
+3. LBA mapper: Given the pattern of torn writes, it's possible that
+some LBAs were not updated to the new PBAs after some of the writes. I
+find this pretty unlikely for a handful of reasons (trying to write a
+non-erased block should result in an internal error, old PBA should be
+erased, ...)
 
-> * deleting snapshots can cause increased I/O.
+However, even if this is a firmware/hardware issue, I remain
+unconvinced that it's purely coincidence just how quickly this
+happened after the upgrade to 5.14.x. In addition to this corruption,
+there are the 2 incidents where the system became unresponsive under
+I/O load (and the second was purely reads from trying to image the
+SSD). Those problems didn't occur when booting a rescue USB with an
+older kernel. So some change which landed in 5.14.x may have changed
+the drive command pattern in some important way to trigger the SSD
+fault (esp, in the case of possibility #2 above). That gives me hope
+that, if nothing else, we may be able to add a device quirk to Linux
+and minimize future damage that way. :)
 
-Under what circumstances? Do you mean that when there are a lot of
-snapshots, deleting some may cause increased I/O? Deletions are
-managed per client by the btrbk config running on that client. btrbk
-sends snapshot diffs (incremental backups) to the backup server
-according to the schedule on each client, and it removes existing
-backups that exceed the allotted qty.
+Bayes calls out from beyond the grave and demands that, before I try
+any experiments, I first establish the base rate of these corruptions
+under current conditions. So that means rebuilding my filesystem from
+backups and continuing to use it exactly as I have been, prepared for
+this problem to happen again. Being prepared means stepping up my
+backup frequency, so I'll first set up a btrbk server that can accept
+hourly backups.
 
-> * atimes can affect snapshots as they mean cow of metadata. Mount as noatime.
-
-I am already doing that.
-
-> * exclude snapshots from mlocate/updatedb and other indexing services. I forgot once and ended up with several gb database... :D
-
-I am not aware of these services (mlocate/updatedb and other indexing
-services). Do you have tips for finding any such running services or
-what some of the others might be?
-
-# which mlocate
-which: no mlocate in
-(/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl)
-# man mlocate
-No manual entry for mlocate
-
-The mlocate package is not installed by my package manager.
-
-I got similar results for updatedb.
-
-> * space_cache=v2 can be helpful, but it increases metadata usage a little.
-
-I am using space_cache=v2 on the main volumes, which includes where
-these "backups" are saved. The root (os) volume itself hasn't been
-converted from space_cache v1 yet (b/c I haven't had time to read up
-on that).
-
-> * monitor disk usage allocation with 'btrfs filesystem usage /mnt'
-
-That's a very vague recommendation. I'm already doing regular balance,
-scrub and making sure the disks are not out of space.
->
-> Good luck.
->
-Thank you for replying. Can I assume that it is generally OK to use a
-backup server in this way where it will receive (over time) hundreds
-or thousands of backups (incremental usually) via btrbk running on
-different clients?
+Wish me luck,
+Sam
