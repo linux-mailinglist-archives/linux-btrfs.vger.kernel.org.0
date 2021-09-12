@@ -2,132 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60835407C04
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Sep 2021 08:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EF0407CF2
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Sep 2021 12:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhILGNj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 Sep 2021 02:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhILGNi (ORCPT
+        id S233454AbhILKvl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Sep 2021 06:51:41 -0400
+Received: from mail.linuxsystems.it ([79.7.78.67]:56303 "EHLO
+        mail.linuxsystems.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhILKvk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 Sep 2021 02:13:38 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F67DC061574
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Sep 2021 23:12:25 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id g2so4029239uad.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 11 Sep 2021 23:12:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eNi6stothPxaJHAxFaXuEG7Q1bc8S9CfCXMQeGQvkIU=;
-        b=RwVj/CeLhT5r3BQFD2+XCBvdfopLp537fE6bkCfdmfstS1+dTlGDu/delAlU0hEKf8
-         RApqM8g9PLLbvbyoiPZlDiklcsz2sRJhgqJ6xsbaWpnapaiVB3RKbkB7vE7OBFhP12iN
-         iAuDokKXiNM0MbXDz8PcjyoljDZOMH//AGNehZEtvlXoVrcizJrcAUnMgZY4fpnwzUlB
-         44lGLVcn2Xnvxr/nrCKtg/8AyTS3plqFk5tFRebRX5bAw7F9PXIhAEVJ2V6eXHcLjzH+
-         zkgrmLHpLE9Kp6JoWi4GicaGSy5I3GfuxatTlnGoCZPX4qTQWBBAxUOTyO5iqkbK2Fcz
-         bG0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eNi6stothPxaJHAxFaXuEG7Q1bc8S9CfCXMQeGQvkIU=;
-        b=cSQAGOEO6OTLWgIFt8oEEWhpitmgBQIhUCg27lGQ9iAqGW9bsMJO+OfrQIKTrw2N2y
-         oLjbekuCOY6Q8inQmQlfrPNn2gLb84TdeB0JgH/F7r4mmnY2FjpKjjW84/9yZV98BBeV
-         7TjsPUIqlCG2W6bKi3XvKzAyO3UQxKbk0ivXnswakMCd1jlwbxxVlMlN8WBSnl2mqNOq
-         gl173HtvBsZFk9OecBIDsQPoMfii6MTxtLkRIiu/z3A17X8dJKbcU4Xc9kYKst0F7pfX
-         h6RzwpWuqVKuuwEUU271hKPoSdFWgjJK9pqLwSgE8e6btdFwlw3H35+e/95RQbDCdiie
-         URWQ==
-X-Gm-Message-State: AOAM5303UjnrfYmdLRwonrQBk0OTOrSewUnoJq59tzqgh2qP6peuTPK0
-        12Hyocm3kQGRnWiJa4F8l/UmSI0L8wS/xaxwX4ckDlxu5RM=
-X-Google-Smtp-Source: ABdhPJzxmsodGEJPKXZ1Lij3DqlJhwNgLJc8OoNjiJaksGkIcLXQVZZuwcRbno/s14PD/BQRdokJeri8KQAsDlYTQO0=
-X-Received: by 2002:ab0:448:: with SMTP id 66mr2278374uav.64.1631427144287;
- Sat, 11 Sep 2021 23:12:24 -0700 (PDT)
+        Sun, 12 Sep 2021 06:51:40 -0400
+X-Greylist: delayed 437 seconds by postgrey-1.27 at vger.kernel.org; Sun, 12 Sep 2021 06:51:39 EDT
+Received: by mail.linuxsystems.it (Postfix, from userid 33)
+        id CB0E4210237; Sun, 12 Sep 2021 12:27:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxsystems.it;
+        s=linuxsystems.it; t=1631442441;
+        bh=3kq2bknD32n98YVVHlIqrGeHwoEpG4aeDSOZD1w7B28=;
+        h=To:Subject:Date:From:From;
+        b=jQps8WQZiaKs6l2khA71mYrw8CxEYzswmle3LZ5LAeP3qZzERcyTW15lsX1bY6/xy
+         SK7J7C0MCWZ7phjFSxMKUwfN/z+gWlErCFkcxlN6zMTP+aS4UolYLkvheLS2F2pXM6
+         C+TzF/aOQpen+64UUxFknkKCJgV4EVvnAHbIhwr8=
+To:     linux-btrfs@vger.kernel.org
+Subject: Unmountable / uncheckable Fedora 34 btrfs: failed to read block  groups: -5 open_ctree failed
+X-PHP-Originating-Script: 0:rcube.php
 MIME-Version: 1.0
-References: <CAH5Ym4h9ffTSx_EuBOvfkCkagf5QHLOM1wBzBukAACCVwNxj0g@mail.gmail.com>
- <CAH5Ym4i25_VsQZoy5_gURuUJiNZGQM84aWqn5YJuQxtXW+DAgg@mail.gmail.com>
- <aed0ec2b-3fe0-3574-b7e5-24f2e3da27ce@gmx.com> <CAH5Ym4gd7UhT=cSAjb-zMQ3baU08+SzKnGmXmAVD_8FdhzqF9w@mail.gmail.com>
- <20210911042414.GJ29026@hungrycats.org> <CAH5Ym4jNgs1iJufbmCDOS6N=k+YH4nZTSQ7j-MrM3mp8M0Yn2g@mail.gmail.com>
- <20210911165634.GK29026@hungrycats.org>
-In-Reply-To: <20210911165634.GK29026@hungrycats.org>
-From:   Sam Edwards <cfsworks@gmail.com>
-Date:   Sun, 12 Sep 2021 00:12:13 -0600
-Message-ID: <CAH5Ym4isja5hs73ibcACH5cm00=F43cG+m_sNtFjkJ_oRZJT1g@mail.gmail.com>
-Subject: Re: Corruption suspiciously soon after upgrade to 5.14.1; filesystem
- less than 5 weeks old
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 12 Sep 2021 06:27:21 -0400
+From:   =?UTF-8?Q?Niccol=C3=B2_Belli?= <darkbasic@linuxsystems.it>
+Message-ID: <0303d1f618b815714fe62a6eb90f55ca@linuxsystems.it>
+X-Sender: darkbasic@linuxsystems.it
+User-Agent: Roundcube Webmail/1.1.5
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 10:56 AM Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org> wrote:
-> It's not one I've seen previously reported, but there's a huge variety
-> of SSD firmware in the field.
+Unfortunately my Fedora's btrfs partition failed again. Yet no idea of 
+the culprit because memtest passes and the drive is good.
+The system freezed and I had to reset (magic Sysrq keys didn't work 
+either), being welcomed by an unmountable fs.
 
-It seems to be a very newly released SSD. It's possible that the
-reason nobody else has reported issues with it yet is that nobody else
-who owns one of these has yet met the conditions for this problem to
-occur. All the more reason to figure this out, I say.
+This is what I get when I try to mount it:
 
-I've been working to verify what you've said previously (and to rule
-out any contrary hypotheses - like chunks momentarily having the wrong
-physical offset). One point I can't corroborate is:
+$ sudo mount /dev/nvme0n1p6 /mnt/
+mount: /mnt: wrong fs type, bad option, bad superblock on 
+/dev/nvme0n1p6, missing codepage or helper program, or other error.
 
-> There are roughly 40 distinct block addresses affected in your check log,
-> clustered in two separate 256 MB blocks.
+[  375.964495] BTRFS info (device nvme0n1p6): disk space caching is 
+enabled
+[  375.964499] BTRFS info (device nvme0n1p6): has skinny extents
+[  375.977169] BTRFS warning (device nvme0n1p6): checksum verify failed 
+on 21348679680 wanted 0xd05bf9be found 0x2874489b level 1
+[  375.977179] BTRFS error (device nvme0n1p6): failed to read block 
+groups: -5
+[  375.978953] BTRFS error (device nvme0n1p6): open_ctree failed
 
-The only missing writes that I see are in a single 256 MiB cluster
-(belonging to chunk 1065173909504). What is the other 256 MiB cluster
-that you are seeing? What shows that writes to that range went
-missing, too? (Or by "affected" do you only mean "involved in the
-damaged transactions in some way"?)
+Check fails to run:
 
-I do find it interesting that, of a few dozen missing writes, all of
-them are clustered together, while other writes in the same
-transactions appear to have had a perfect success rate. My expectation
-for drive cache failure would have been that *all* writes (during the
-incident) get the same probability of being dropped. All of the
-failures being grouped like that can only mean one thing... I just
-don't know what it is. :)
+$ sudo btrfs check /dev/nvme0n1p6
+Opening filesystem to check...
+checksum verify failed on 21348679680 wanted 0xd05bf9be found 0x2874489b
+checksum verify failed on 21348679680 wanted 0xd05bf9be found 0x2874489b
+Csum didn't match
+ERROR: failed to read block groups: Input/output error
+ERROR: cannot open file system
 
-So, the prime suspect at this point is the SSD firmware. Once I have a
-little more information, I'll (try to) share what I find with the
-vendor. Ideally I'd like to narrow down which of 3 components of the
-firmware apparently contains the fault:
-1. Write back cache: Most likely, although not certain at this point.
-If I turn off the write cache and the problem goes away, I'll know.
-2. NVMe command queues: Perhaps there is some race condition where 2
-writes submitted on different queues will, under some circumstances,
-cause one/both of the writes to be ignored.
-3. LBA mapper: Given the pattern of torn writes, it's possible that
-some LBAs were not updated to the new PBAs after some of the writes. I
-find this pretty unlikely for a handful of reasons (trying to write a
-non-erased block should result in an internal error, old PBA should be
-erased, ...)
+usebackuproot didn't help either:
 
-However, even if this is a firmware/hardware issue, I remain
-unconvinced that it's purely coincidence just how quickly this
-happened after the upgrade to 5.14.x. In addition to this corruption,
-there are the 2 incidents where the system became unresponsive under
-I/O load (and the second was purely reads from trying to image the
-SSD). Those problems didn't occur when booting a rescue USB with an
-older kernel. So some change which landed in 5.14.x may have changed
-the drive command pattern in some important way to trigger the SSD
-fault (esp, in the case of possibility #2 above). That gives me hope
-that, if nothing else, we may be able to add a device quirk to Linux
-and minimize future damage that way. :)
+$ sudo mount -o rescue=usebackuproot /dev/nvme0n1p6 /mnt/
+mount: /mnt: wrong fs type, bad option, bad superblock on 
+/dev/nvme0n1p6, missing codepage or helper program, or other error.
 
-Bayes calls out from beyond the grave and demands that, before I try
-any experiments, I first establish the base rate of these corruptions
-under current conditions. So that means rebuilding my filesystem from
-backups and continuing to use it exactly as I have been, prepared for
-this problem to happen again. Being prepared means stepping up my
-backup frequency, so I'll first set up a btrbk server that can accept
-hourly backups.
+I tried btrfs rescue but it didn't lead to a mountable fs:
 
-Wish me luck,
-Sam
+$ sudo btrfs rescue super-recover /dev/nvme0n1p6
+All supers are valid, no need to recover
+
+$ sudo btrfs rescue zero-log /dev/nvme0n1p6
+Clearing log on /dev/nvme0n1p6, previous log_root 21344239616, level 0
+
+$ sudo btrfs rescue chunk-recover /dev/nvme0n1p6
+Scanning: DONE in dev0
+Check chunks successfully with no orphans
+Chunk tree recovered successfully
+
+I did manage to recover some data with btrfs restore (no idea how much 
+of it):
+
+$ sudo btrfs restore /dev/nvme0n1p6 
+/run/media/liveuser/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6_restore/
+Skipping snapshot snapshot
+[...lots of snapper snapshots]
+Skipping snapshot root
+
+I really did want to use rescue=skipbg 
+(https://lwn.net/Articles/822242/) or rescue=onlyfs 
+(https://lwn.net/ml/linux-btrfs/20200701144438.7613-1-josef@toxicpanda.com/) 
+but it seems that neither managed to reach upstream :(
+
+btrfs restore really sucks compared to the previous recovery options 
+because it gives you no way to list your subvolumes or to recover a 
+specific snapshot.
+
+I've also looked at 
+https://en.opensuse.org/SDB:BTRFS#How_to_repair_a_broken.2Funmountable_btrfs_filesystem 
+to see if I had any other options left, but it seems I will have to 
+reinstall from scratch.
+
+We truly need a better way to recovery-mount partitions, along w/ better 
+tools to at least *try* fixing them.
+
+Niccolo'
