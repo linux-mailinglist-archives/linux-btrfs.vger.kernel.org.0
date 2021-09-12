@@ -2,140 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFBD407DAA
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Sep 2021 15:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F263407E6A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Sep 2021 18:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235409AbhILNgr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 Sep 2021 09:36:47 -0400
-Received: from mout.gmx.net ([212.227.15.15]:37649 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235291AbhILNgq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 Sep 2021 09:36:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631453720;
-        bh=jMsWKiyqdkw8eQs41tZ5Avgwxm9Sb3eL+Fwhflf2/vY=;
-        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
-        b=BF8QDWXkYeoy+RyowkPW/ylhiUproJ987TjXEiHxPa1Ec/Fg9logNtDbmnna1yvtP
-         f8Lrf688mfkXjnzqwLuax1qcEUZcb81QkVdTkBI5AhWi97q/IsQ0gwI1F3tWjq8dQ2
-         NK6xo/D3kyIb0c985sGSarCt1QFdL2533yeDjWcI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mn2aD-1mobz622JL-00k7kM; Sun, 12
- Sep 2021 15:35:20 +0200
-To:     =?UTF-8?Q?Niccol=c3=b2_Belli?= <darkbasic@linuxsystems.it>
+        id S229726AbhILQI1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Sep 2021 12:08:27 -0400
+Received: from mail.linuxsystems.it ([79.7.78.67]:58217 "EHLO
+        mail.linuxsystems.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhILQI1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 12 Sep 2021 12:08:27 -0400
+Received: by mail.linuxsystems.it (Postfix, from userid 33)
+        id 7434F210244; Sun, 12 Sep 2021 17:51:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxsystems.it;
+        s=linuxsystems.it; t=1631461885;
+        bh=HtMVELN8ClfZ6/tfXgLWmcqeTfYCA8+zAzKdFy3TAZ8=;
+        h=To:Subject:Date:From:Cc:In-Reply-To:References:From;
+        b=M04FH8G4/hZT+1S7e9cRSjY9jjV6If22GQnEMomeujbgF84tLLw0WZ64wlAR4Ydjj
+         PCSr1d5mF7Ai37k946mPl/+mW3td1oOPxbgqKiYasE4jlklMAgfPaiooF9onlqKqXc
+         q2KylDZ9EF1ynx/VgTXd+9yGxoxCiG6U1+5/Vjr8=
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Unmountable / uncheckable Fedora 34 btrfs: failed to read block  groups: -5 open_ctree failed
+X-PHP-Originating-Script: 0:rcube.php
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Sun, 12 Sep 2021 17:51:25 +0200
+From:   =?UTF-8?Q?Niccol=C3=B2_Belli?= <darkbasic@linuxsystems.it>
 Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <e71b92f4-43ba-1544-07c7-2dcc1dbf546c@gmx.com>
 References: <0303d1f618b815714fe62a6eb90f55ca@linuxsystems.it>
  <22ac9237-68dd-5bc3-71e1-6a4a32427852@gmx.com>
  <7163096f475d3c31d7513c22277ad00f@linuxsystems.it>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Unmountable / uncheckable Fedora 34 btrfs: failed to read block
- groups: -5 open_ctree failed
-Message-ID: <e71b92f4-43ba-1544-07c7-2dcc1dbf546c@gmx.com>
-Date:   Sun, 12 Sep 2021 21:35:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <7163096f475d3c31d7513c22277ad00f@linuxsystems.it>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/5l8vxLsEmq7eQXGoZGgbSYuA5bxPTW/FaJGyHU3AlSbW3wJzpw
- LEVntxqL5Ak9MC+y5tBtqHtHvXPJpl5+lXk27eFhMowa7fe2KP7SuxLcHcdbVy5RKgQZDyD
- UunAz8wg5eePZr+c8Pma4LMgmkC6GLnaFyBIvCm29u5Ht7h6ulbXsfgHjXco4QGqTDiuQbh
- 5Y4BWLQgTO+fBDY3GMRMA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2jkJnbUgCjM=:8lnOjzwCm9NESAM2CivOhb
- Uana5w6uzvtnxK/6QGt/tatbf6kZ0uV6Hbizn1EA7Ukp1V95zRAD71wJjFeJ4Jej2Jlh8KlaR
- TDxeijsYx4aF9ApBjrF0XqhBRZmfMVjWYsVYgzy60UX/kJB1J9nUWIDGdNZb34j3bLHhsdOEj
- U0MCvsQwRRXmxOle2wX23j2nP9wB/XRygZoGLIdBzQVCu3cSdwOVOQPm6N/D58MKKDQZBIM0U
- /bDO1jFz4lsqkiZn3YNiH4PKaEO6snegqEOiLi5VXmYjJDkRpvGv+ARJHpIYfLXl6Kv/6ZOLe
- 1bW/+zCO5TnOWPPYc/n4wqFQrSrlT8x+U2tUQYaJWisdaGVfJFYYEVeEQSkvLod3rQh8HhkZ1
- stjZ/Gpd54mQVCAwRYHED2oof20NNHC6MB6XTUgfFMOX48dsStU36yTohG5Bzd4hTK37w2N0U
- pkkK0w4naQ3UTzFqwhu0hY72NHRyx3Cpn72r3pF5QMNjnNx/dDAgUZuM8fYNYzLBI3Aq0JST4
- sWEvuYyXxLgWlNZ9RK3uuG+uO+y9HTYfrSNyCJ4y9qCpGuekPBzkwSx9i1t/OQYTm8Ul71sj0
- YG+udlRd8jmUhYcLYuRo7hsy/dK5JMZ0p2g0ZP35bKprNtAUwTZOSmrCl8odBVLevVVSBbbpB
- ZRzeL5BErlq3NY3+sUdrbYSmXgpD8o7jEIn08//dUiE2XbrBfOAIyEjW/3AUBcqehgnIHNcVi
- 1LiUpu3E1VtMmJWXxuZYdQph0v/reKgQX0EktxbSIfq6XNnZTLmT2qaEvhRn59BYao9WLrNU/
- DFhyFbAdRu4rjrowsdOkgCUGVLtkciXs+3mnk11GeFpIK6bAsJ5gdYOa0RE1gw1hba1V4uWhV
- jyul9B/h56DShYYsdUzas9SgKDkcixyjIPhzfpfvJSyIAjy1BIjSp6fBmW/YHy1mu1VdjxKcj
- Lpm/a6cLCzUhVpMbeRKUeKWiQyw2po8fU/VRab9RMC58i8vVjyIoXDUDFhJyXRXrcIPEtp7j9
- zAC7K3R/WxLjTgHUd4EGPBvu+vTDs0SszaQX0/sGOqQ9ykqCommofstQjLSM5083+fCuDQVHo
- bj7SIAxROoJCyw=
+ <e71b92f4-43ba-1544-07c7-2dcc1dbf546c@gmx.com>
+Message-ID: <7294d85b7a0b3386be95fbe2d1ec6f9b@linuxsystems.it>
+X-Sender: darkbasic@linuxsystems.it
+User-Agent: Roundcube Webmail/1.1.5
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Il 2021-09-12 15:35 Qu Wenruo ha scritto:
+> My bad, the commit is 2b29726c473b ("btrfs: rescue: allow ibadroots to
+> skip bad extent tree when reading block group items"), which is only
+> merged into the incoming v5.15-rc1.
 
+I've compiled linux-git master and tried again:
 
-On 2021/9/12 =E4=B8=8B=E5=8D=887:41, Niccol=C3=B2 Belli wrote:
-> Il 2021-09-12 07:14 Qu Wenruo ha scritto:
->> No, it's already in the upstream, in v5.11.
->>
->> Just a different name, "rescue=3Dibadroots" or "rescue=3Dignorebadroots=
-".
->> And it get enhanced to handle the exact case you're hitting, in v5.14.
->>
->>
->> So please try first using "rescue=3Dibadroots" (need to be mounted with
->> RO), then check your fs.
->
-> $ sudo mount -o ro,rescue=3Dibadroots /dev/nvme0n1p6 /mnt/
-> mount: /mnt: wrong fs type, bad option, bad superblock on
-> /dev/nvme0n1p6, missing codepage or helper program, or other error.
->
-> $ btrfs --version
-> btrfs-progs v5.14
->
-> $ uname -a
-> Linux localhost-live 5.14.0-60.fc35.x86_64 #1 SMP Mon Aug 30 16:45:32
-> UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+$ uname -a
+Linux arch-laptop 5.14.0-1-git-11152-g78e709522d2c #1 SMP PREEMPT Sun, 
+12 Sep 2021 12:53:13 +0000 x86_64 GNU/Linux
 
-My bad, the commit is 2b29726c473b ("btrfs: rescue: allow ibadroots to
-skip bad extent tree when reading block group items"), which is only
-merged into the incoming v5.15-rc1.
->
-> [10496.832659] BTRFS info (device nvme0n1p6): ignoring bad roots
-> [10496.832663] BTRFS info (device nvme0n1p6): disk space caching is enab=
-led
-> [10496.832664] BTRFS info (device nvme0n1p6): has skinny extents
-> [10496.845607] BTRFS warning (device nvme0n1p6): checksum verify failed
-> on 21348679680 wanted 0xd05bf9be found 0x2874489b level 1
-> [10496.845616] BTRFS error (device nvme0n1p6): failed to read block
-> groups: -5
-> [10496.846085] BTRFS error (device nvme0n1p6): open_ctree failed
->
-> Before doing so I restored a previous dd copy of the partition since you
-> said that chunk-recover could have been somewhat dangerous.
+$ sudo mount -o ro,rescue=ibadroots 
+/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6.img.copy 
+/mnt2/
+mount: /mnt2: can't read superblock on /dev/loop0.
 
-If you have dd copy, then things can be much easier to handle.
+[  196.277414] loop: module loaded
+[  196.278228] loop0: detected capacity change from 0 to 207618048
+[  196.736456] BTRFS: device label fedora_localhost-live devid 1 transid 
+1029644 /dev/loop0 scanned by mount (2730)
+[  196.736819] BTRFS info (device loop0): flagging fs with big metadata 
+feature
+[  196.736825] BTRFS info (device loop0): ignoring bad roots
+[  196.736826] BTRFS info (device loop0): disk space caching is enabled
+[  196.736827] BTRFS info (device loop0): has skinny extents
+[  197.408704] BTRFS warning (device loop0): checksum verify failed on 
+21348679680 wanted 0xd05bf9be found 0x2874489b level 1
+[  197.408843] BTRFS info (device loop0): start tree-log replay
+[  197.408847] BTRFS warning (device loop0): log replay required on RO 
+media
+[  197.409458] BTRFS error (device loop0): open_ctree failed
 
-The easiest way to make ibadroots to work in such situation is, to
-manually destroy extent tree root manually.
+So I've added nologreplay and it did the trick:
 
-# btrfs ins dump-tree -t root <dev> | \
-   grep "(EXTENT_TREE ROOT_ITEM 0)" -A3
-	item 0 key (EXTENT_TREE ROOT_ITEM 0) itemoff 15844 itemsize 439
-		generation 21 root_dirid 0 bytenr 1359085568 level 0 refs 1
-		lastsnap 0 byte_limit 0 bytes_used 16384 flags 0x0(none)
-		uuid 00000000-0000-0000-0000-000000000000
+$ sudo mount -o ro,rescue=nologreplay:ibadroots 
+/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6.img.copy 
+/mnt2/
 
-Grab the bytenr ("1359085568" in my example).
+[  416.913016] loop0: detected capacity change from 0 to 207618048
+[  416.918895] BTRFS info (device loop0): flagging fs with big metadata 
+feature
+[  416.918903] BTRFS info (device loop0): disabling log replay at mount 
+time
+[  416.918905] BTRFS info (device loop0): ignoring bad roots
+[  416.918907] BTRFS info (device loop0): disk space caching is enabled
+[  416.918908] BTRFS info (device loop0): has skinny extents
+[  416.929887] BTRFS warning (device loop0): checksum verify failed on 
+21348679680 wanted 0xd05bf9be found 0x2874489b level 1
 
-Then use the btrfs-map-logical from the following branch of btrfs-progs:
-https://github.com/adam900710/btrfs-progs/tree/map_logical_rework
+$ sudo btrfs subvolume list /mnt2 | grep -v snapshot | grep -v docker
+ID 256 gen 1029644 top level 5 path home
+ID 265 gen 1029641 top level 256 path home/niko/.cache
+ID 912 gen 1029406 top level 5 path images
+ID 2428 gen 359129 top level 5 path var
+ID 2429 gen 1026054 top level 2428 path var/tmp
+ID 2430 gen 1029044 top level 2428 path var/cache
+ID 2433 gen 1029641 top level 5 path root
+ID 2653 gen 1029641 top level 5 path avd
 
-(The current btrfs-map-logical can't handle extent tree well)
+$ ls -al /mnt2
+totale 16
+drwxr-xr-x 1 root root  58 16 giu 19.09 .
+drwxr-xr-x 1 root root 198 12 set 17.50 ..
+drwxr-xr-x 1 niko niko  72 26 ago 10.22 avd
+drwxr-xr-x 1 root root  28 16 apr 10.25 home
+drwxrwxrwx 1 niko niko  96 20 ago 17.23 images
+dr-xr-xr-x 1 root root 196 24 ago 14.58 root
+drwxr-xr-x 1 root root  28 16 apr 10.21 snapshots
+drwxr-xr-x 1 root root  16 13 giu 00.10 var
 
-$ btrfs-map-logical -l 1359085568 <dev>
-mirror 1 logical 1359085568 physical 1367474176 device /dev/test/test
-mirror 2 logical 1359085568 physical 1635909632 device /dev/test/test
+Apart from backing my files up, what else should I be able to do at this 
+point?
 
-Then corrupt the first 4 bytes of each copy (in your case, there should
-be only one copy) using its physical bytenr"
+I've tried scrubbing but it's a no go:
 
-$ xfs_io -f -c "pwrite 1367474176 4" <dev>
+$ sudo btrfs scrub start /dev/loop0
+scrub started on /dev/loop0, fsid d3d387d6-eb5e-4b4b-9a9c-581d74fb56b4 
+(pid=3255)
 
-Then rescue=3Dibadroots should work as expected.
+$ sudo btrfs scrub status /dev/loop0
+UUID:             d3d387d6-eb5e-4b4b-9a9c-581d74fb56b4
+Scrub started:    Sun Sep 12 18:00:30 2021
+Status:           aborted
+Duration:         0:00:00
+Total to scrub:   97.27GiB
+Rate:             0.00B/s
+Error summary:    no errors found
 
-Thanks,
-Qu
+Any chance to recover the partition?
+
+Niccolò
