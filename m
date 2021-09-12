@@ -2,181 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4667D407F0C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Sep 2021 19:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642F54081E6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 12 Sep 2021 23:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhILRsu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 Sep 2021 13:48:50 -0400
-Received: from pio-pvt-msa1.bahnhof.se ([79.136.2.40]:59840 "EHLO
-        pio-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhILRst (ORCPT
+        id S236492AbhILVkl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 Sep 2021 17:40:41 -0400
+Received: from mail.linuxsystems.it ([79.7.78.67]:60961 "EHLO
+        mail.linuxsystems.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236532AbhILVkh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 Sep 2021 13:48:49 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id B81BF3F524;
-        Sun, 12 Sep 2021 19:47:33 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -1.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, NICE_REPLY_A=-0.001, URIBL_BLOCKED=0.001]
-        autolearn=ham autolearn_force=no
-Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vK7WQuxfudYw; Sun, 12 Sep 2021 19:47:32 +0200 (CEST)
-Received: by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id A43BC3F3DD;
-        Sun, 12 Sep 2021 19:47:32 +0200 (CEST)
-Received: from [192.168.0.10] (port=59451)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1mPTZj-000B3Q-TL; Sun, 12 Sep 2021 19:47:31 +0200
-From:   Forza <forza@tnonline.net>
-Subject: Re: seeking advice for a backup server (accepting btrfs receive
- streams via SSH)
-To:     Dave T <davestechshop@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAGdWbB5i2QumFah3aCxC7Zwg1TPGMS-_7nsPxeuJu+JZ-bGYew@mail.gmail.com>
- <CAGdWbB57aE9fmuS3ZU1oBxK3Gqd+7YMRL2oGYzwhvT3=s=45MQ@mail.gmail.com>
- <f041b06.ddfa8457.17bd6e185d0@tnonline.net>
- <CAGdWbB5-uN57GF90K06yE8bw5O-S4Le+YZ-aNx3-BUSoa6hWbQ@mail.gmail.com>
-Message-ID: <68ab63fd-5981-5b8c-cad1-f11b22a33169@tnonline.net>
-Date:   Sun, 12 Sep 2021 19:47:31 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Sun, 12 Sep 2021 17:40:37 -0400
+Received: by mail.linuxsystems.it (Postfix, from userid 33)
+        id 649F221036F; Sun, 12 Sep 2021 23:23:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxsystems.it;
+        s=linuxsystems.it; t=1631481813;
+        bh=iwfNs7NLOmS/Zqtcj2YalE9w6cs1AteCtpGCzxqEMwU=;
+        h=To:Subject:Date:From:Cc:In-Reply-To:References:From;
+        b=c/VIhxDHinBEr0cd5CB51AfN84KibmQmNFgrc8dmNiSCuWLv1ui+cDx89Z1YLBe4B
+         5Hk6p4f02163g0au1CTbfFI+3y7m8K2QAJACsRkYiLtY2mqyqxgSB2YfcXFzGUJf/5
+         wfJAVynI5p9EccPUAmStCZ3j85mm76Jp47KL+QPA=
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Unmountable / uncheckable Fedora 34 btrfs: failed to read block  groups: -5 open_ctree failed
+X-PHP-Originating-Script: 0:rcube.php
 MIME-Version: 1.0
-In-Reply-To: <CAGdWbB5-uN57GF90K06yE8bw5O-S4Le+YZ-aNx3-BUSoa6hWbQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Sun, 12 Sep 2021 23:23:33 +0200
+From:   =?UTF-8?Q?Niccol=C3=B2_Belli?= <darkbasic@linuxsystems.it>
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <22ac9237-68dd-5bc3-71e1-6a4a32427852@gmx.com>
+References: <0303d1f618b815714fe62a6eb90f55ca@linuxsystems.it>
+ <22ac9237-68dd-5bc3-71e1-6a4a32427852@gmx.com>
+Message-ID: <02f428314a995fa1deea171af9685b9a@linuxsystems.it>
+X-Sender: darkbasic@linuxsystems.it
+User-Agent: Roundcube Webmail/1.1.5
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I think I've managed to recover the vast majority of my files:
 
+$ sudo cp -a avd var 
+/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6/
+cp: avd/Pixel_4_API_30.avd/userdata-qemu.img.qcow2: recupero delle 
+informazioni degli extent non riuscito: Errore di input/output
 
-On 2021-09-12 00:22, Dave T wrote:
-> On Sat, Sep 11, 2021 at 6:01 PM Forza <forza@tnonline.net> wrote:
->>
->>
->>
->> ---- From: Dave T <davestechshop@gmail.com> -- Sent: 2021-09-11 - 22:41 ----
->>
->>> Hello. I have a server on a LAN that will act as a backup target for
->>> clients that use btrbk to send snapshots via SSH.
->>>
->>> After my initial attempt, the backup server became extremely slow. I
->>> don't know the cause yet, and I'm starting to investigate.
->>>
->>> The first thing I would like to know from this group is whether there
->>> are special considerations for configuring or managing a server that
->>> will receive many btrfs snapshots from other devices.
->>>
->>> For example, do the general rules about limiting the number of
->>> snapshots on a volume still apply in this case?
->>>
->>> Thanks for any input.
->>
->>
->> It's hard to say much without more detailed information about your set up, such as hardware configuration, filesystem setup, etc.
-> 
-> I can offer any additional info needed. Rather than guess at what
-> anyone wants to see, I will respond with the info upon request.
+$ sudo cp -a snapshots/home/375/snapshot 
+/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6/home
+cp: 
+snapshots/home/375/snapshot/niko/devel/beach/client/android/.gradle/checksums/sha1-checksums.bin: 
+recupero delle informazioni degli extent non riuscito: Errore di 
+input/output
 
-For example what kinds of disks do you use (make and model)? SMR drives 
-can have really poor performance on lots of metadata IO.
+$ sudo cp -a snapshots/root/3004/snapshot 
+/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6/root
 
-And show output of "btrfs filesystem usage -T /mnt/"
+$ sudo cp -a snapshots/images/3/snapshot 
+/run/media/niko/3ea0705c-21c9-4ba9-80ee-5a511cb2a093/nvme0n1p6/images
+cp: snapshots/images/3/snapshot/OSX-KVM/mac_hdd_ng.img: recupero delle 
+informazioni degli extent non riuscito: Errore di input/output
+cp: snapshots/images/3/snapshot/OSX-KVM/BaseSystem.img: recupero delle 
+informazioni degli extent non riuscito: Errore di input/output
 
-> 
->> What do you consider slow?
-> 
-> The connected clients will freeze for several minutes, up to 15
-> minutes or more sometimes. It was not just "normal slow" it was
-> unusable. These periods of extreme slowness did not correspond, as far
-> as I could tell, to the moments when clients were running any btrbk
-> operations. It seemed random.
-> 
-> I started over with a "new" (i.e., repurposed) server and so far it
-> seems OK in testing with just a few clients. But before I go too far
-> down this path I want to make sure the general idea is workable,
-> assuming I have adequate hardware.
+The only valuable thing I've lost seems to be an hackintosh vm I use for 
+development, but I can create another one.
 
-This sounds like it is connected to snapshot deletions. They can cause 
-long stalls while btrfs is in transaction. I am using btrfs myself like 
-this for backups and I have not noticed it myself, however I have heard 
-from users in the IRC forum #btrfs (https://web.libera.chat/#btrfs) that 
-it can happen. Mostly, I think, those systems are heavily loaded.
+[ 2213.532522] BTRFS warning (device loop0): Skipping commit of aborted 
+transaction.
+[ 2213.532526] ------------[ cut here ]------------
+[ 2213.532527] BTRFS: Transaction aborted (error -28)
+[ 2213.532565] WARNING: CPU: 2 PID: 3061 at fs/btrfs/transaction.c:1946 
+btrfs_commit_transaction.cold+0xf2/0x2ef [btrfs]
+[ 2213.532609] Modules linked in: loop ext4 mbcache jbd2 ses enclosure 
+scsi_transport_sas uas usb_storage cmac ccm xt_conntrack xt_MASQUERADE 
+nf_conntrack_netlink nfnetlink xt_addrtype iptable_filter iptable_nat 
+nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter overlay 
+bridge stp llc snd_hda_codec_hdmi bnep uvcvideo videobuf2_vmalloc 
+videobuf2_memops videobuf2_v4l2 videobuf2_common btusb videodev btrtl 
+btbcm btintel mc bluetooth ecdh_generic ecc crc16 joydev 
+intel_spi_platform intel_spi mousedev spi_nor iTCO_wdt mei_wdt 
+intel_pmc_bxt mtd mei_hdcp iTCO_vendor_support intel_rapl_msr wmi_bmof 
+dell_laptop i915 dell_wmi dell_smbios dell_wmi_descriptor iwlmvm 
+x86_pkg_temp_thermal intel_powerclamp coretemp sparse_keymap snd_ctl_led 
+dcdbas snd_hda_codec_realtek i2c_algo_bit snd_hda_codec_generic ttm 
+ledtrig_audio mac80211 kvm_intel snd_hda_intel libarc4 snd_intel_dspcfg 
+dell_smm_hwmon kvm irqbypass rapl intel_cstate iwlwifi 
+snd_intel_sdw_acpi drm_kms_helper intel_uncore snd_hda_codec
+[ 2213.532656]  pcspkr psmouse processor_thermal_device_pci_legacy 
+i2c_i801 cec processor_thermal_device snd_hda_core 
+processor_thermal_rfim cfg80211 i2c_smbus processor_thermal_mbox 
+intel_gtt intel_pch_thermal agpgart snd_hwdep processor_thermal_rapl 
+syscopyarea lpc_ich rfkill snd_pcm sysfillrect intel_rapl_common mei_me 
+snd_timer sysimgblt snd soundcore fb_sys_fops intel_soc_dts_iosf mei wmi 
+int3403_thermal i2c_hid_acpi video dw_dmac i2c_hid int3402_thermal 
+int3400_thermal int340x_thermal_zone acpi_thermal_rel acpi_pad mac_hid 
+nls_iso8859_1 vfat fat crypto_user drm fuse ip_tables x_tables btrfs 
+blake2b_generic libcrc32c crc32c_generic xor raid6_pq dm_crypt cbc 
+encrypted_keys trusted asn1_encoder tee hid_multitouch usbhid dm_mod 
+serio_raw rtsx_pci_sdmmc mmc_core atkbd libps2 crct10dif_pclmul 
+crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd 
+cryptd rtsx_pci xhci_pci xhci_pci_renesas tpm_crb i8042 serio tpm_tis 
+tpm_tis_core tpm rng_core pl2303 mos7720 parport
+[ 2213.532705] CPU: 2 PID: 3061 Comm: btrfs-transacti Not tainted 
+5.14.0-1-git-11152-g78e709522d2c #1 
+4337bfa7fd23c500813a836e2184863944fac299
+[ 2213.532708] Hardware name: Dell Inc. XPS 13 9343/0X2GW3, BIOS A20 
+06/06/2019
+[ 2213.532709] RIP: 0010:btrfs_commit_transaction.cold+0xf2/0x2ef 
+[btrfs]
+[ 2213.532746] Code: 28 48 89 04 24 48 89 c2 49 8b 44 24 28 48 39 c2 75 
+30 0f 0b 0f 0b 48 8b 45 50 eb a1 89 de 48 c7 c7 c8 e7 6e c0 e8 2f 4b 3a 
+d9 <0f> 0b eb a9 48 8b 7d 50 89 da 48 c7 c6 f8 e7 6e c0 e8 62 ba ff ff
+[ 2213.532748] RSP: 0018:ffffaa6401eebde0 EFLAGS: 00010282
+[ 2213.532750] RAX: 0000000000000000 RBX: 00000000ffffffe4 RCX: 
+0000000000000027
+[ 2213.532751] RDX: ffff9be716518728 RSI: 0000000000000001 RDI: 
+ffff9be716518720
+[ 2213.532752] RBP: ffff9be577d1c8f0 R08: 0000000000000000 R09: 
+ffffaa6401eebc10
+[ 2213.532754] R10: ffffaa6401eebc08 R11: ffffffff9aaccca8 R12: 
+ffff9be55293b200
+[ 2213.532755] R13: ffff9be6d303b000 R14: ffff9be577d1c948 R15: 
+ffffaa6401eebe78
+[ 2213.532756] FS:  0000000000000000(0000) GS:ffff9be716500000(0000) 
+knlGS:0000000000000000
+[ 2213.532758] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2213.532759] CR2: 000055d4b013fbd0 CR3: 0000000065a10005 CR4: 
+00000000003706e0
+[ 2213.532760] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+0000000000000000
+[ 2213.532761] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
+0000000000000400
+[ 2213.532763] Call Trace:
+[ 2213.532767]  transaction_kthread+0x12e/0x1a0 [btrfs 
+1ccea181fc519646bf0a24aa8f854515e5e21f83]
+[ 2213.532799]  ? btrfs_cleanup_transaction.isra.0+0x590/0x590 [btrfs 
+1ccea181fc519646bf0a24aa8f854515e5e21f83]
+[ 2213.532830]  kthread+0x132/0x160
+[ 2213.532834]  ? set_kthread_struct+0x40/0x40
+[ 2213.532836]  ret_from_fork+0x22/0x30
+[ 2213.532841] ---[ end trace a9ee4fb88980a146 ]---
+[ 2213.532843] BTRFS: error (device loop0) in cleanup_transaction:1946: 
+errno=-28 No space left
+[ 2224.518838] BTRFS warning (device loop0): checksum verify failed on 
+21348679680 wanted 0xd05bf9be found 0x2874489b level 1
+[ 2227.041189] BTRFS warning (device loop0): checksum verify failed on 
+21348679680 wanted 0xd05bf9be found 0x2874489b level 1
 
-> 
->> Some pointers to look at may be
-> 
-> Thank you for offering these pointers.
-> 
->> * deleting snapshots can cause increased I/O.
-> 
-> Under what circumstances? Do you mean that when there are a lot of
-> snapshots, deleting some may cause increased I/O? Deletions are
-> managed per client by the btrbk config running on that client. btrbk
-> sends snapshot diffs (incremental backups) to the backup server
-> according to the schedule on each client, and it removes existing
-> backups that exceed the allotted qty.
+This error is weird instead, considering it's mounted ro it shouldn't 
+complain about no space being left.
 
-It would be some time after someone (btrbk) issue a "btrfs subvolume 
-delete".
+By the way I didn't get any kind of I/O error while restoring avd, home 
+or images with btrfs restore: what's the difference with ibadroots?
 
-An alternative can be to to "rm -rf", which itself is slower, but can 
-have less of an overall impact.
-
-> 
->> * atimes can affect snapshots as they mean cow of metadata. Mount as noatime.
-> 
-> I am already doing that.
-> 
->> * exclude snapshots from mlocate/updatedb and other indexing services. I forgot once and ended up with several gb database... :D
-> 
-> I am not aware of these services (mlocate/updatedb and other indexing
-> services). Do you have tips for finding any such running services or
-> what some of the others might be?
-> 
-> # which mlocate
-> which: no mlocate in
-> (/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl)
-> # man mlocate
-> No manual entry for mlocate
-> 
-> The mlocate package is not installed by my package manager.
-> 
-> I got similar results for updatedb.
-
-This was just a guess based on my own experience.
-
-> 
->> * space_cache=v2 can be helpful, but it increases metadata usage a little.
-> 
-> I am using space_cache=v2 on the main volumes, which includes where
-> these "backups" are saved. The root (os) volume itself hasn't been
-> converted from space_cache v1 yet (b/c I haven't had time to read up
-> on that).
-> 
->> * monitor disk usage allocation with 'btrfs filesystem usage /mnt'
-> 
-> That's a very vague recommendation. I'm already doing regular balance,
-> scrub and making sure the disks are not out of space.
-
-What I mean here is to avoid running close to full as that is not good 
-for a COW filesystem.
-
->>
->> Good luck.
->>
-> Thank you for replying. Can I assume that it is generally OK to use a
-> backup server in this way where it will receive (over time) hundreds
-> or thousands of backups (incremental usually) via btrbk running on
-> different clients?
-> 
-
-I would say it is generally OK!
-
+Niccolò
 
