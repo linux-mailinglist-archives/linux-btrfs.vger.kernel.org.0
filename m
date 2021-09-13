@@ -2,71 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E18408ACE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Sep 2021 14:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55585408C2C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Sep 2021 15:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237134AbhIMMPZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Sep 2021 08:15:25 -0400
-Received: from mail.linuxsystems.it ([79.7.78.67]:39166 "EHLO
-        mail.linuxsystems.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236646AbhIMMPZ (ORCPT
+        id S240047AbhIMNOO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Sep 2021 09:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236675AbhIMNNz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Sep 2021 08:15:25 -0400
-Received: by mail.linuxsystems.it (Postfix, from userid 33)
-        id A668B21037B; Mon, 13 Sep 2021 13:58:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxsystems.it;
-        s=linuxsystems.it; t=1631534300;
-        bh=Y0M7vjgcVU+ZQYZPO9dojKmczHTuGZjexcOq0pVFKO0=;
-        h=To:Subject:Date:From:Cc:In-Reply-To:References:From;
-        b=G1O1NqZH3znFE8ovJ18wAbHw+qRIutlyePVpqtPFRaG3qBu2rHj2MtbByU2bj4EVc
-         zCHW54fuTalrNkTzZUCbo9DjwGyzF2pH+e/4Iv1toQDvl3KD14vTZ3UvUTqpQE4XZW
-         9ydZURiiuXigEBIpIwY35EpqeiPsZUL1V0PEqZZQ=
-To:     Qu Wenruo <wqu@suse.com>
-Subject: Re: Unmountable / uncheckable Fedora 34 btrfs: failed to read block  groups: -5 open_ctree failed
-X-PHP-Originating-Script: 0:rcube.php
+        Mon, 13 Sep 2021 09:13:55 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44573C061760
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Sep 2021 06:12:39 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id p2so13981429oif.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 Sep 2021 06:12:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=k6cSVKU1e44RP91DAh5s7in03pflQmRKbBJalfQ3J+M=;
+        b=mocmSBYvRffa+b3CYDb+oYRgOIfTOlgPfilIDcc34A+JQ/wSVEtUf9jOML6vyylXwL
+         szGDEoM7pwTKQJrzYye5QwkGyUzomPMrbOqbfZnTFJAv1eYYRPLWke3AsNYJdX0B6YnN
+         cyGhzKDjn7cUAR7tK0ngQ90ClemhXUC/PU5dOxB1YKpNjSbpSXNpK3yEeWtr7mYFiBfc
+         Khz5Fe85RUDYZba/ml+eDs4+B6l2SAgXdXzx+6Qu7KOpQ1lHUW3Ht08fT1TS8t6L92+F
+         +9VdnrjDpPx2e1bwmAqQ4SFWjRTkPSuKbxgP6aopryb3Hr3gI1+MVNLI1RHzwC8Qw1+I
+         B9og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=k6cSVKU1e44RP91DAh5s7in03pflQmRKbBJalfQ3J+M=;
+        b=oU4Chj+1u73L1Rte7UI9MYa40scDFvjAqJeZwLrAdPZCgToLPXf2CoGvo6yAxSZzrh
+         fHuQAE1LSTKt+ZwPXk5igtpbKSvvNR8g8RlEWq6zjxYiRJBPxouVePxGt/JvF+l9keKG
+         zsk7NBVh42NmvL4NwHCKzevd8iQyyIGeH/RPP9Tqhhk5WbOy0R7xYGzImCmx9H19ZLYd
+         K34nLtGQXeBzci+pg1wqiJq7d0JGbURXzpEPDA0V6EdmyItcquWdjrjwBmHgqa+r92df
+         Mn6Y7F2IiRgBhgbhw3uBS2LTwdxvMxa4O9oEON3BzOlD1qC82ISTCQ+zEwZ9H05mQ4Ga
+         ZxSw==
+X-Gm-Message-State: AOAM530FZkuWo1L8WIsvq8zbDKn7FyVIauSYRQGrUbRzoX5DA2uRP9f1
+        6JkO3d9rOk3E4AaGUKcsO6T97H15A2mehm880kCpUqm2YH0=
+X-Google-Smtp-Source: ABdhPJy+oOgrJa0V1E2PUYf61uzLcgVFMpz2kLpKZ0DkUALTq2+Xh7tiORC2yfGBnYWLZnDZyplOMuiCIeezHJ+Jscg=
+X-Received: by 2002:a05:6808:3099:: with SMTP id bl25mr4436171oib.44.1631538758595;
+ Mon, 13 Sep 2021 06:12:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 13 Sep 2021 07:58:20 -0400
-From:   =?UTF-8?Q?Niccol=C3=B2_Belli?= <darkbasic@linuxsystems.it>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-In-Reply-To: <98a6a966-cee7-cddd-3c53-fa2e209ed180@suse.com>
-References: <0303d1f618b815714fe62a6eb90f55ca@linuxsystems.it>
- <22ac9237-68dd-5bc3-71e1-6a4a32427852@gmx.com>
- <02f428314a995fa1deea171af9685b9a@linuxsystems.it>
- <5a1cc167-0b9d-8a89-11e4-cfe388bd2659@suse.com>
- <75440780864f97ea54d12ff95a395864@linuxsystems.it>
- <98a6a966-cee7-cddd-3c53-fa2e209ed180@suse.com>
-Message-ID: <f278527ec652f21aa3b280e9886bc96f@linuxsystems.it>
-X-Sender: darkbasic@linuxsystems.it
-User-Agent: Roundcube Webmail/1.1.5
+References: <CAGdWbB5i2QumFah3aCxC7Zwg1TPGMS-_7nsPxeuJu+JZ-bGYew@mail.gmail.com>
+ <CAGdWbB57aE9fmuS3ZU1oBxK3Gqd+7YMRL2oGYzwhvT3=s=45MQ@mail.gmail.com>
+ <f041b06.ddfa8457.17bd6e185d0@tnonline.net> <CAGdWbB5-uN57GF90K06yE8bw5O-S4Le+YZ-aNx3-BUSoa6hWbQ@mail.gmail.com>
+ <68ab63fd-5981-5b8c-cad1-f11b22a33169@tnonline.net>
+In-Reply-To: <68ab63fd-5981-5b8c-cad1-f11b22a33169@tnonline.net>
+From:   Dave T <davestechshop@gmail.com>
+Date:   Mon, 13 Sep 2021 09:12:27 -0400
+Message-ID: <CAGdWbB5xH=AfZVyJ+Biy5go5Aqm0JXfw=SU0gxh5OSrkXgr-aw@mail.gmail.com>
+Subject: Re: seeking advice for a backup server (accepting btrfs receive
+ streams via SSH)
+To:     Forza <forza@tnonline.net>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Il 2021-09-13 04:05 Qu Wenruo ha scritto:
-> For those errors, not even a single dmesg error?
+> >> * deleting snapshots can cause increased I/O.
+> >
+> > Under what circumstances? Do you mean that when there are a lot of
+> > snapshots, deleting some may cause increased I/O? Deletions are
+> > managed per client by the btrbk config running on that client. btrbk
+> > sends snapshot diffs (incremental backups) to the backup server
+> > according to the schedule on each client, and it removes existing
+> > backups that exceed the allotted qty.
+>
+> It would be some time after someone (btrbk) issue a "btrfs subvolume
+> delete".
+>
+> An alternative can be to to "rm -rf", which itself is slower, but can
+> have less of an overall impact.
 
-Nope.
+That's interesting. I would have guessed that using "rm -rf" to remove
+subvolumes that are part of a chain of incremental backups would lead
+to problems such as the backups not being complete or future
+incremental backups failing.
 
-> Anyway, if you have most data recovered and have dd copy at hand, then
-> you may want to try fully recovery the fs to RW state, by some
-> aggressive method:
-> 
-> # btrfs check --init-extent-tree --repair <dev>
-> 
-> This command will try to rebuild the extent tree completely, it uses
-> existing trees to rebuild, thus requires the fs has nothing else but
-> only extent tree corrupted.
-> 
-> This is *dangerous*, so the final call is still on you.
-> But if you really hit no other error messages during the full fs
-> recovery, then it looks like only extent tree is corrupted, and may
-> worthy a try.
-> 
-> BTW, since you're already using rescue=nologreplay, you may want to
-> zero the log before rebuilding the extent tree.
+> > The connected clients will freeze for several minutes, up to 15
+> > minutes or more sometimes. It was not just "normal slow" it was
+> > unusable. These periods of extreme slowness did not correspond, as far
+> > as I could tell, to the moments when clients were running any btrbk
+> > operations. It seemed random.
+> >
+> > I started over with a "new" (i.e., repurposed) server and so far it
+> > seems OK in testing with just a few clients. But before I go too far
+> > down this path I want to make sure the general idea is workable,
+> > assuming I have adequate hardware.
+>
+> This sounds like it is connected to snapshot deletions. They can cause
+> long stalls while btrfs is in transaction. I am using btrfs myself like
+> this for backups and I have not noticed it myself, however I have heard
+> from users in the IRC forum #btrfs (https://web.libera.chat/#btrfs) that
+> it can happen. Mostly, I think, those systems are heavily loaded.
+>
 
-3 and a half hours later and it's still building the extent tree.
-I gave up and made a new fs from scratch.
+OK, I think you may be right that it is related to snapshot deletions.
+This gives me some ideas to pursue.
+
+> >>
+> > Thank you for replying. Can I assume that it is generally OK to use a
+> > backup server in this way where it will receive (over time) hundreds
+> > or thousands of backups (incremental usually) via btrbk running on
+> > different clients?
+> >
+>
+> I would say it is generally OK!
+
+Thanks again. This is enough to encourage me to persist with this plan.
+
+> What I mean here is to avoid running close to full as that is not good for a COW filesystem.
+
+I never let btrfs storage devices get more than about 75 or 80% full
+according to btrfs fi usage cmd, and most are at 50% or less. Sending
+cmd output wouldn't help now because I recently deleted everything
+from the backup target drive to start over. The drive is nearly empty,
+atm.
+
+In terms of hardware, it hasn't changed recently. I've been doing
+hourly btrfs snapshots and daily send | receive backups for years on
+generally the same hardware and there were no performance issues. The
+problems started recently when I did 2 things:
+
+1. switched to btrbk
+2. started sending the daily send | receive backups to a server on the
+LAN instead of to local USB attached storage.
+
+The SMR backup disk in the server is currently a HGST HUH721212ALE600
+10.9T, which is definitely a better disk than what is inside the
+low-end WD Passport USB HDDs I was using.
+
+The client devices (hosts) are generally running Samsung SSD's like:
+
+Samsung SSD 970 EVO Plus
+Samsung SSD 980 PRO
+
+Since the recent performance problems don't coincide with any hardware
+changes, and I am not seeing any hardware-related errors, I will focus
+my troubleshooting on my btrbk configuration.
