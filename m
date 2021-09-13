@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C53740A046
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 00:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4922740A06D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 00:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343587AbhIMWhl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Sep 2021 18:37:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51224 "EHLO mail.kernel.org"
+        id S1349322AbhIMWjI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Sep 2021 18:39:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348540AbhIMWgT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Sep 2021 18:36:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 466DC61264;
-        Mon, 13 Sep 2021 22:34:53 +0000 (UTC)
+        id S1348590AbhIMWhK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Sep 2021 18:37:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C96E361244;
+        Mon, 13 Sep 2021 22:35:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631572494;
-        bh=ETpVQSwpxkaAEHQVsNgAMc1p4CFbMmq91RXhU9kNmgs=;
+        s=k20201202; t=1631572512;
+        bh=wRwm4+eOwbfg1VAQhYMF0xT/PRQJ2jWWPwpd4DP+qa4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=anMtnVR38w2Tkp2gGCSAPXClSZJShN3NQnBuKZaXAfGITDF/FjQi69OLO8nT1LRtv
-         rjiAhsg74qcPuGGuP0uukV9Mc/7Nl4yjyxUNRbcD0mh6erpGaSrSvi5SS8B35bBgpJ
-         lvZm+LIqUhEkXMml6N96kjoZQ9bY/1+1XesO1GMJHxkU8NevvovC2eZCO3vo5kTbFj
-         llj+xXvr7jVjtyXaogs5mG0muMdyNKxJ0cdmBfXUFrXbBRyEyq6y2gza3wj1SR5gfM
-         EymQbn71uIC3JDW4SGUtjWHvhdoqT+QE5ebrg2v3v7IihPdSoXfUyfc0/iXD2EDcfj
-         x3QWnFTrMCmeQ==
+        b=TpanLh4xq+7tvBbaT9IxI/bCdqITYpXK8/3tbL2yAO7Jj55ACs1JTE87bp+5Jg9As
+         IX5nmMhn+E6/bFBS2gfdb+aGgNVnXEUXnfmYcgBgjOH1TMwi3DYoSWA2gZNnZ1tPIR
+         b/Yj/ltyzdpI+rmic36IzRL7HyfpG+/+IXV7zYI9aU1eOSVYOpHAgdLjZcD0UZQkC4
+         7csA4tORf93e3FD4LpJHttsPXyXrwaygE2BRIiChxjX/fLNFi1jZEIiKBhNApgJghx
+         VCq8aVmBsQeeuYzOSB1MkoBqauorC5rGOiavDay1iI/5np74PBc99atOK6DsXpcQYK
+         ufmUAnj0JftwA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Anand Jain <anand.jain@oracle.com>, Su Yue <l@damenly.su>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 09/16] btrfs: fix lockdep warning while mounting sprout fs
-Date:   Mon, 13 Sep 2021 18:34:35 -0400
-Message-Id: <20210913223442.435885-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 06/12] btrfs: fix lockdep warning while mounting sprout fs
+Date:   Mon, 13 Sep 2021 18:34:58 -0400
+Message-Id: <20210913223504.436087-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210913223442.435885-1-sashal@kernel.org>
-References: <20210913223442.435885-1-sashal@kernel.org>
+In-Reply-To: <20210913223504.436087-1-sashal@kernel.org>
+References: <20210913223504.436087-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -167,10 +167,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 003960c484a1..a01cec6ae5ff 100644
+index e882c790292f..4851e1e7ea35 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -568,6 +568,8 @@ static int btrfs_free_stale_devices(const char *path,
+@@ -742,6 +742,8 @@ static int btrfs_free_stale_devices(const char *path,
  	struct btrfs_device *device, *tmp_device;
  	int ret = 0;
  
@@ -179,7 +179,7 @@ index 003960c484a1..a01cec6ae5ff 100644
  	if (path)
  		ret = -ENOENT;
  
-@@ -999,11 +1001,12 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
+@@ -1181,11 +1183,12 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
  	struct btrfs_device *orig_dev;
  	int ret = 0;
  
@@ -193,7 +193,7 @@ index 003960c484a1..a01cec6ae5ff 100644
  	fs_devices->total_devices = orig->total_devices;
  
  	list_for_each_entry(orig_dev, &orig->devices, dev_list) {
-@@ -1035,10 +1038,8 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
+@@ -1217,10 +1220,8 @@ static struct btrfs_fs_devices *clone_fs_devices(struct btrfs_fs_devices *orig)
  		device->fs_devices = fs_devices;
  		fs_devices->num_devices++;
  	}
