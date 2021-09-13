@@ -2,92 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53F5408C73
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Sep 2021 15:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B36408C76
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 Sep 2021 15:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239494AbhIMNTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Sep 2021 09:19:51 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39374 "EHLO
+        id S239715AbhIMNTw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Sep 2021 09:19:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:39380 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238752AbhIMNSr (ORCPT
+        with ESMTP id S238759AbhIMNSr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 13 Sep 2021 09:18:47 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F044621FEC;
-        Mon, 13 Sep 2021 13:17:30 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 39DFD21FEE;
+        Mon, 13 Sep 2021 13:17:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631539050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=fCEnKmR3VDuqMF5XQ7RbOvFwOj8x+HuPef79xPSh/IM=;
-        b=IRpwtHF06XAkT30QsFkKhAA16D64ZN/uNvXwcefqATtPHdlSbTWjZP5wfe8ygyq1KU6cVf
-        zSbgx/DPyoVzhM0ofcFSzMHaDh6wbfFSmuiAIs72+sMplXLAO8dCdwnj3Kdzxl+27pXcj5
-        sPFwUy8Y/rr456EjBl2nOFQG+VC2u5Q=
+        t=1631539051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vv/gG8G89P6rFNPsnWEw6K7c21EAxPPukjRDdyBNNxA=;
+        b=jPqaKyMZPZFAtb1N+2qHrQvRB3zl5yurJ1XRIjkkV++mu0S6bBqRmRvGFwd2+yL5TAaJW3
+        461wzPc3MgtF7//e6uWiYq4uKA4yGtOiihEUn3MwtOk5KVlntfd+A0EmZCLjrXTSBY+8Kz
+        MUN5NOVuLtAgymx2049YYxJJjl17n60=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C33C213AB4;
-        Mon, 13 Sep 2021 13:17:30 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0BE1813AB4;
+        Mon, 13 Sep 2021 13:17:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 01kpLWpPP2FNOwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 13 Sep 2021 13:17:30 +0000
+        id QHiDAGtPP2FNOwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 13 Sep 2021 13:17:31 +0000
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 0/8] Implement progs support for removing received uuid on RW vols
-Date:   Mon, 13 Sep 2021 16:17:21 +0300
-Message-Id: <20210913131729.37897-1-nborisov@suse.com>
+Subject: [PATCH 1/8] btrfs-progs: Add btrfs_is_empty_uuid
+Date:   Mon, 13 Sep 2021 16:17:22 +0300
+Message-Id: <20210913131729.37897-2-nborisov@suse.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210913131729.37897-1-nborisov@suse.com>
+References: <20210913131729.37897-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This series is the userspace counter part to a kernel patch titled:
-"btrfs: Remove received information from snapshot on ro->rw switch". This will
-mainly serve people running old kernels that won't have this patch to be able to
-remove received uuid et al from snapshots which have been switched RO->RW. This
-is to ensure consistency.
+This utility function is needed by the RO->RW snapshot detection code.
 
-First 3 patches are preparatory ones which pull needed code from the kernel as
-well as removing some arguments making respective functions as close to their
-kernel counterparts as possible. This enables to simply copy btrfs_uuid_tree_remove
-with no changes from the kernel.
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ kernel-shared/ctree.h     |  2 ++
+ kernel-shared/uuid-tree.c | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
 
-Next 2 patches implement detection and repair support for RO->RW-switched volumes
-which have been received. And the final patch is an fs image with a received
-subvolume that has been switched to RW following a receive.
-
-Nikolay Borisov (8):
-  btrfs-progs: Add btrfs_is_empty_uuid
-  btrfs-progs: Remove root argument from btrfs_fixup_low_keys
-  btrfs-progs: Remove fs_info argument from leaf_data_end
-  btrfs-progs: Remove root argument from btrfs_truncate_item
-  btrfs-progs: Add btrfs_uuid_tree_remove
-  btrfs-progs: check/original: Implement removing received data for RW
-    subvols
-  btrfs-progs: check/lowmem: Implement received info clearing for RW
-    volumes
-  btrfs-progs: tests: Add test for received information removal
-
- check/main.c                                  |  48 ++++++++-
- check/mode-lowmem.c                           |  38 +++++++
- kernel-shared/ctree.c                         |  62 +++++-------
- kernel-shared/ctree.h                         |  12 ++-
- kernel-shared/dir-item.c                      |   2 +-
- kernel-shared/extent-tree.c                   |   2 +-
- kernel-shared/file-item.c                     |   4 +-
- kernel-shared/inode-item.c                    |   4 +-
- kernel-shared/uuid-tree.c                     |  93 ++++++++++++++++++
- .../050-subvol-recv-clear/test.raw.xz         | Bin 0 -> 493524 bytes
- 10 files changed, 216 insertions(+), 49 deletions(-)
- create mode 100644 tests/fsck-tests/050-subvol-recv-clear/test.raw.xz
-
---
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 3cca60323e3d..f53436a7f38b 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -2860,6 +2860,8 @@ int btrfs_lookup_uuid_received_subvol_item(int fd, const u8 *uuid,
+ int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
+ 			u64 subvol_id_cpu);
+ 
++int btrfs_is_empty_uuid(u8 *uuid);
++
+ static inline int is_fstree(u64 rootid)
+ {
+ 	if (rootid == BTRFS_FS_TREE_OBJECTID ||
+diff --git a/kernel-shared/uuid-tree.c b/kernel-shared/uuid-tree.c
+index 21115a4d2d09..51a7b5d9ff5d 100644
+--- a/kernel-shared/uuid-tree.c
++++ b/kernel-shared/uuid-tree.c
+@@ -109,3 +109,14 @@ int btrfs_lookup_uuid_received_subvol_item(int fd, const u8 *uuid,
+ 					  BTRFS_UUID_KEY_RECEIVED_SUBVOL,
+ 					  subvol_id);
+ }
++
++int btrfs_is_empty_uuid(u8 *uuid)
++{
++	int i;
++
++	for (i = 0; i < BTRFS_UUID_SIZE; i++) {
++		if (uuid[i])
++			return 0;
++	}
++	return 1;
++}
+-- 
 2.17.1
 
