@@ -2,137 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4801640A6FA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 08:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281EB40A6FB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 08:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240327AbhING7W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Sep 2021 02:59:22 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43434 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240277AbhING7V (ORCPT
+        id S240359AbhING7f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Sep 2021 02:59:35 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:46262 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240388AbhING7e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:59:21 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 681A42002E;
-        Tue, 14 Sep 2021 06:58:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631602683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=sAX8RMHWW3HL7u94rX9TYHBHFFSIu3mLUl8BpTP6G0o=;
-        b=rxRwDBCk+IOdAa45uaIncE1a71FvQX9BF4+abc6vs+fGoP556TPDfDsznFQxB6gdWmScsB
-        FxxXpSdcx9Q35JUN0VmRuSCKjEFAL6AMp1amx+JBLcDp63V4Y9uyk6KN4e1cvQs3n2xt8N
-        2KNF2tMnyVpkY840zhgolPIqaGHpBz8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 61D1A13E4F;
-        Tue, 14 Sep 2021 06:58:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5xPtCPpHQGFMcAAAMHmgww
-        (envelope-from <wqu@suse.com>); Tue, 14 Sep 2021 06:58:02 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Hao Sun <sunhao.th@gmail.com>
-Subject: [PATCH] btrfs: unlock the newly allocated extent buffer in btrfs_alloc_tree_block()
-Date:   Tue, 14 Sep 2021 14:57:59 +0800
-Message-Id: <20210914065759.38793-1-wqu@suse.com>
-X-Mailer: git-send-email 2.33.0
+        Tue, 14 Sep 2021 02:59:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1631602696; x=1663138696;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=HN+1CBG0Ui2dpjKYcN70WlYaswrlZWZohtYNg8pc+EQ=;
+  b=aIINDFw9iC6Fp1oURyOUvwU64b01Ri8J0RDTUa5oM+khiWtBqiute1he
+   M+BixA4wi0iRh6b+mXZ2KmufFOmZylYi0HjN1hD0dAyaenjkaomsdiNbe
+   8QWJ0kr1p+kiMjcSIaeyLUMvSdHSFWFgDBAs8rwzzvizRORcXWcbJILvi
+   WLF7iiF9fBpD+VPI71RITAmKGzJo/tfMH+JVLq3EwyyFN3iZ+76EKCCli
+   3jfINVBoR9uidUZUpwK2r7OBoYfh4tuCM4E+J0QJWQ4/QzBSULF9l7PMR
+   isjkhs78XQ3enTFs4e3TUYuzKYDD47xOqQ/sRav3vSjG1xLIxfW9hwvpf
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.85,292,1624291200"; 
+   d="scan'208";a="179941834"
+Received: from mail-dm6nam10lp2109.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.109])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Sep 2021 14:58:15 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FmPkH6eANvoMlZlNC3D07o1ma7UNj6h7JGG95aFo4TPb5o8Dkr8uTQCCLBWuvud+UA1LqPRRDOxi/dMODZg2kyuBvSCr46fTXGjAMF+ULELovEjmD8tnKvolXyABm+f44RkRUrZSZYD/OrA1n/Xq+95RU8PXMlI99d9Gydsz3q1xT+IWErA2YLHqgZVCZAUcoNuD4+ECssbAiWaq9smdYpO9yf/tz1/197ZT/mvUREFm3PCbE1tPJF1Wmth84oGQ+2PCAz32RuOMPM7x3DmWrX7wltYME4gM6Aa/PTWm1RQRyqTW7xVoabSeXfWn445ixq5LWuF/7q6ZiE7npLtQ0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=HN+1CBG0Ui2dpjKYcN70WlYaswrlZWZohtYNg8pc+EQ=;
+ b=ktOKC36uHT+jdOBC5E89h57Sb+Ce2BVgVB+OMKj536NDKd0rmbW9riS2Xv8LMHdSb2IwT5RDwbbGF/B3pJraKDhO275LIwJ7H75xYG1Itv768AkgMadcHDDPKzc/xxvkhQRMll/S/1HzOffj5Zue3uD5hEhp2O39/C54cAuFirVGDWs1+dqnOGiIsA72G0An08LI0mqIkIwvZKy6Mt7IJXmnp2YNwV2WWILoTKCKeK05FtSkN15qkGyGeJh+2D0/dEgeQFzcQIS+Kv3tH4MPD6qBNo6MArhk2TBPhbLXMazr8OrT6WCTXEC9ybb61yf2cG4secilOuCk09gTu1YYdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HN+1CBG0Ui2dpjKYcN70WlYaswrlZWZohtYNg8pc+EQ=;
+ b=gd8LrIbu2xyBFcZicBZN5ERgXkFPJ35yJrg2WL0kDzvzCiVgAdI8yk6Ntq0YOJt5okkopmeIVFfYt/4q+y+einBpyfImAUQ8WMR33bsITBxY1rwPUplrTkpTRn/7TsT4jHCgUnDHwD3/ylfOiMbwklRqblPwpP7PvEj5ajS5Q54=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7671.namprd04.prod.outlook.com (2603:10b6:510:5a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.17; Tue, 14 Sep
+ 2021 06:58:15 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::5d0d:3d52:2041:885a]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::5d0d:3d52:2041:885a%4]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
+ 06:58:15 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH v2 0/8] btrfs: zoned: unify relocation on a zoned and
+ regular FS
+Thread-Topic: [PATCH v2 0/8] btrfs: zoned: unify relocation on a zoned and
+ regular FS
+Thread-Index: AQHXpM1c/7n606eZOUKl08CIivL4BQ==
+Date:   Tue, 14 Sep 2021 06:58:15 +0000
+Message-ID: <PH0PR04MB7416421FD16B6C4DE322545E9BDA9@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <cover.1631117101.git.johannes.thumshirn@wdc.com>
+ <20210913155105.GC15306@twin.jikos.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8006b808-6f27-4808-666e-08d9774d0681
+x-ms-traffictypediagnostic: PH0PR04MB7671:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR04MB767133167D4AD0D345D8A8EA9BDA9@PH0PR04MB7671.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4i2BzhjVe70LrKjwM9UZIeq2J7ygH1poCdjgrw/OZ+dfjR2ZdpOD3JljiMfx51cZIbuBsAz9fBqgNCk3WfEpF7adDXKeXSlc836ZXrY3rnbDUojSMgnTMzx5MYpbjqLX9F8WrZscRv5FsAzDd/R8UUG5k+DbscEN3XT8Ci4JvFKuiiNnn2l8Mj7of3oBJt32pD3+8pnjSPGXBEsQGW1HiWOMef1SlSmLvW4FpSMxzd2DAJ8aidn2jLwSX2p902GAa/EJ55EdEuBaTG36X8lefdP0WA/ZCaJkhXLO/O3U9yTl/KQk9qdS9H7DTvR3jxOe4aUxofJgLoFYX+A647oFyXxltVX9XPxw8JTbX1h5s+GSkRQHtYKNCKtWFQkrnjKYds9z5vSl4NUkYG2Nb0BEF3xay+tbeYPY2CeP8LnNRZJkJ8KQv8OaRPgp+8Yud3o2cbhejV/8lRGqI0t+4PMFn4RvA6o3UzYcjUM0sbr+lkJdpapQlxzXZt9GrDiSf+OhnrodXQxxXUwjiLmDU79RTiSu2Q5UwoAaCkjVSAq5qiBsqdlOEh9Ei30oazu3ukL4i8cewYXuCPmsRKy9dXXt126u0p1+vSultRyzlY4V1afgWDoRAZAVbyVTmwvv63yD/EKvE0XD1Dl3nkRn7EBRgj1vYOx7kJZGLa5RhjA0K1X3uuS5xs9JdHxhGtcO8EhMyivvLfHfTA/6vuwR66Pb9w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(39860400002)(136003)(366004)(66446008)(91956017)(71200400001)(64756008)(33656002)(76116006)(66946007)(66556008)(54906003)(5660300002)(2906002)(186003)(38100700002)(66476007)(53546011)(6506007)(4326008)(38070700005)(55016002)(9686003)(122000001)(8676002)(86362001)(478600001)(6916009)(558084003)(52536014)(8936002)(7696005)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?dTZ91xted5qNZLoD+OwGd7xJmwHnz/6TFf+48GbbJNYgJVd64qh6xzLYpveS?=
+ =?us-ascii?Q?HliE1vJD3IsUmWB4kZD+mz6mN0K5lUtvMrb3Op6F5+uNU9yLZVH2Mo0vqkqj?=
+ =?us-ascii?Q?hdjd0zXBdxKSXC15CoBT04xfc/btE0RNs+bZN3IerMmWhKVU296gZ+xRUcq5?=
+ =?us-ascii?Q?vvL7WfKjlMINEJkFucg/2vhW0vyYur/BOjDAssJOXyDX1voN7JbXDwkq+I65?=
+ =?us-ascii?Q?RYYSvSno0roBHtLJibf95/+0FeBbWboWk6YhSVnvlNCybUeCr3w9mGJPAK+x?=
+ =?us-ascii?Q?vF273v+lGFO8Z7DqTpvFJAPH/GBBOP/pXV2r5KC/B/5178C4CDIA2NeMFo69?=
+ =?us-ascii?Q?cRXA8Zd/90fLdxumjgDVa3MaIuoCER7+W6JWqvZenkQoVgs+bDEG1i0uYeDg?=
+ =?us-ascii?Q?bRaDV6MrVdiAMZK08JqDs++HJvA+lMDN4YriFaJr680j4GG9OfAZX+8NuGzz?=
+ =?us-ascii?Q?lwBvBk3GJ7Sm2+1vrVXVcBsS+HX/1hXGeKKSsXUe7VMDvzi2ThvKsItprG1R?=
+ =?us-ascii?Q?KlML0W0cimvtLTttw9QxauzJuji4lKGwgMCrRRNNJSRdv39YBj9oJL5p7m8Y?=
+ =?us-ascii?Q?AdgT+W50WnnvOxuto+6k0hrB4gwIUsQWBKUA51Xx/7ALLj0z6RaGnHkjvSEA?=
+ =?us-ascii?Q?ttGu2e0f5WXW7ZxqYc6igM2A71p3SgOAm3Z//XXoDHMC9XOxihLl4LTM0baz?=
+ =?us-ascii?Q?4ar4U/bse0y+ibcChUGSFaC7+pf0rNCFmG1bsi8fnw/7+e1bxnZLjxoxZR7R?=
+ =?us-ascii?Q?VkLq1tbY2IQpZuS3/PSbQGmj/AY/zUo6LWpBzQoT7P1pFELm7w1cgKr7/XHk?=
+ =?us-ascii?Q?K3ImkuUboUispsVl4U2rhhSFcIY8b4bFAz69Hf50YF6rgBb21bw3n3a24DV8?=
+ =?us-ascii?Q?Uw7oWVvpvAPAppR5gqTrAnKoNJ/hSI78ffVMVghrp72lSm4beoA5wnqa+aKw?=
+ =?us-ascii?Q?9J4T4p8gqzMmhbjy1/vSyaElWjZkMAA6prLmZDuEcExwKO1c2FIHJ+xN4JsC?=
+ =?us-ascii?Q?edkTGwzmnDMtWvrL9ASTQdVSeoAlX+nfs6lEY4ZoMV0++2Ghkdtsfu9wMI/I?=
+ =?us-ascii?Q?WZwkYaP9r40ZUsYYWQaz2CuZh5qBZkZZkfSFKIWK4ixmViJKIkGyZJPEN8ew?=
+ =?us-ascii?Q?IlxfZp8lap6paUG3DPyDSSvuZqNZrtQtVJbyG7kgdGdcXM4AqZRoe6cHMT5J?=
+ =?us-ascii?Q?Rwlt4bZDaU2AB5HFsJ4n9t5OVZezqzWfmPA7MnnR8hmDTkVWEO4lAs9FdNLi?=
+ =?us-ascii?Q?hKEiJ3Dmyo46TVk2jOnqA18qYtfyJCShH1O2T5nIoUMKUfYGfYen5oNdPyNB?=
+ =?us-ascii?Q?V/R9iQhLXjcgN/ztsjlWjZH4anrJUhvN8xhAAzd5nnq0if1M/gQ4yI+2XsFi?=
+ =?us-ascii?Q?EL4t/HOTM5SgigaIzpq0su801jmYBhIfVSW28Dx3an/92oYmRw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8006b808-6f27-4808-666e-08d9774d0681
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2021 06:58:15.3313
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZkrQVl2umhZGemsi6J8QCWQEKkuQdl5uChzjkkGDDVXe72ls/mhIucBlL63ZYPRBzzPeqh9lZB4scmFwb8RTpkZFfd1+R+sM5zDXp9FQcZc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7671
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a very detailed bug report that injected ENOMEM error could
-leave a tree block locked while we return to user-space:
-
-  BTRFS info (device loop0): enabling ssd optimizations
-  FAULT_INJECTION: forcing a failure.
-  name failslab, interval 1, probability 0, space 0, times 0
-  CPU: 0 PID: 7579 Comm: syz-executor Not tainted 5.15.0-rc1 #16
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-  rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-  Call Trace:
-   __dump_stack lib/dump_stack.c:88 [inline]
-   dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
-   fail_dump lib/fault-inject.c:52 [inline]
-   should_fail+0x13c/0x160 lib/fault-inject.c:146
-   should_failslab+0x5/0x10 mm/slab_common.c:1328
-   slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
-   slab_alloc_node mm/slub.c:3120 [inline]
-   slab_alloc mm/slub.c:3214 [inline]
-   kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
-   btrfs_alloc_delayed_extent_op fs/btrfs/delayed-ref.h:299 [inline]
-   btrfs_alloc_tree_block+0x38c/0x670 fs/btrfs/extent-tree.c:4833
-   __btrfs_cow_block+0x16f/0x7d0 fs/btrfs/ctree.c:415
-   btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
-   btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
-   btrfs_insert_empty_items+0x80/0xf0 fs/btrfs/ctree.c:3905
-   btrfs_new_inode+0x311/0xa60 fs/btrfs/inode.c:6530
-   btrfs_create+0x12b/0x270 fs/btrfs/inode.c:6783
-   lookup_open+0x660/0x780 fs/namei.c:3282
-   open_last_lookups fs/namei.c:3352 [inline]
-   path_openat+0x465/0xe20 fs/namei.c:3557
-   do_filp_open+0xe3/0x170 fs/namei.c:3588
-   do_sys_openat2+0x357/0x4a0 fs/open.c:1200
-   do_sys_open+0x87/0xd0 fs/open.c:1216
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-  RIP: 0033:0x46ae99
-  Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-  89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-  01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-  RSP: 002b:00007f46711b9c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000055
-  RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-  RDX: 0000000000000000 RSI: 00000000000000a1 RDI: 0000000020005800
-  RBP: 00007f46711b9c80 R08: 0000000000000000 R09: 0000000000000000
-  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000017
-  R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffc129da6e0
-
-  ================================================
-  WARNING: lock held when returning to user space!
-  5.15.0-rc1 #16 Not tainted
-  ------------------------------------------------
-  syz-executor/7579 is leaving the kernel with locks still held!
-  1 lock held by syz-executor/7579:
-   #0: ffff888104b73da8 (btrfs-tree-01/1){+.+.}-{3:3}, at:
-  __btrfs_tree_lock+0x2e/0x1a0 fs/btrfs/locking.c:112
-
-[CAUSE]
-In btrfs_alloc_tree_block(), after btrfs_init_new_buffer(), the new
-extent buffer @buf is locked, but if later operations like adding
-delayed tree ref fails, we just free @buf without unlocking it,
-resulting above warning.
-
-[FIX]
-Unlock @buf in out_free_buf: tag.
-
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CACkBjsZ9O6Zr0KK1yGn=1rQi6Crh1yeCRdTSBxx9R99L4xdn-Q@mail.gmail.com/
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent-tree.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index c88e7727a31a..8aa981ffe7b7 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -4898,6 +4898,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
- out_free_delayed:
- 	btrfs_free_delayed_extent_op(extent_op);
- out_free_buf:
-+	btrfs_tree_unlock(buf);
- 	free_extent_buffer(buf);
- out_free_reserved:
- 	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 0);
--- 
-2.33.0
-
+On 13/09/2021 17:51, David Sterba wrote:=0A=
+> =0A=
+> I did a few minor fixups, patches moved from topic branch to misc-next.=
+=0A=
+> Thanks.=0A=
+> =0A=
+=0A=
+Thanks.=0A=
