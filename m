@@ -2,63 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEE140A248
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 03:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EF240A254
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 03:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236261AbhINBER (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Sep 2021 21:04:17 -0400
-Received: from mout.gmx.net ([212.227.15.19]:39213 "EHLO mout.gmx.net"
+        id S237031AbhINBIm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Sep 2021 21:08:42 -0400
+Received: from mout.gmx.net ([212.227.17.20]:57147 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236397AbhINBEK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Sep 2021 21:04:10 -0400
+        id S230404AbhINBIl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Sep 2021 21:08:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631581372;
-        bh=Dio5Kg+yH0m/9Af7ccqlFqsypyUPdHqH30z/Jgn6AMQ=;
+        s=badeba3b8450; t=1631581643;
+        bh=izl4kUDJWqWj7Zr2fzNiuJk/2RAmGwaP+OCtj3nFwog=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=luD3rOLhoWUV+AGWgNyvD+V/8sljR28dgksQ/8mBGUCUzbuGMqNQFs+k2kBm+0/HO
-         MXCHZi/4OM7aSP/TmAj8YpCX56TUU5IOa4kLv+p7YR88MOt60KpYKO7FAdt2ONF15X
-         2JF1X2zeARJ5Q35CyBBNQjusaWSDeCIA1gjZpZ9A=
+        b=NgCARNKbClVsVczFe9Pv9suuPj8XgDQ913a5BkQxVmTdDPDwI1j6W90SxeDi57AIf
+         pI1lgTQUrkDdOemvyjvbDXuJhyYbHJBgt244tnLtAPsr1dKz8Yc1Z3M9cd/QM/byP2
+         7HIvTdywSx5w1rt1bJl29QczduhyH9cXBbsKnpwQ=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M8ygO-1mJsZJ1Mmc-00645G; Tue, 14
- Sep 2021 03:02:51 +0200
-Subject: Re: [PATCH 4/8] btrfs-progs: Remove root argument from
- btrfs_truncate_item
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLzBp-1mhCeZ2Ozh-00Hw0Q; Tue, 14
+ Sep 2021 03:07:23 +0200
+Subject: Re: [PATCH 5/8] btrfs-progs: Add btrfs_uuid_tree_remove
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20210913131729.37897-1-nborisov@suse.com>
- <20210913131729.37897-5-nborisov@suse.com>
+ <20210913131729.37897-6-nborisov@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <dd4e6c86-e5fe-adf4-326d-3d9500cd7187@gmx.com>
-Date:   Tue, 14 Sep 2021 09:02:48 +0800
+Message-ID: <f84fe95a-1469-9e39-2813-4111fe258390@gmx.com>
+Date:   Tue, 14 Sep 2021 09:07:20 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210913131729.37897-5-nborisov@suse.com>
+In-Reply-To: <20210913131729.37897-6-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:I3l8qfT1jMTZ8hKsUvJ7mwdreIJLwzdeUSfxx74tokzEazeQ9p6
- Mb7/V2J0GbnIaHeiQlxaTAw9KuUChvhNGvAGs9uv/AdRQHQIsY7fxk3wrlxOXPx6gNqwCNO
- rH4j8KvHZ/KMCMEwaREKyqpMAyYPePUiivkRuDAaezdCrhNENR6EjXsd15nkxpgnCF6mj1D
- VdR18qhzG9S6SBzdExlvA==
+X-Provags-ID: V03:K1:GGxLwWwpPS1R9Y0G1IEc9ZwGmsQCghEL0r4VQOaU8WU36WdYZrM
+ 0FGwHsu+mfKPyvfcLOzrh6iJvoN/eUoIL+vGibUlJzvPnst7y7x/hBizClav/emzqQkBYw7
+ 0zWe3JAUDpY2sCjyCLz05WXvvC5S37QeQnofiQ2UDJP1QP1VSh6yS+vk8MFs2DL+xvZ1edT
+ K1v2UHixYMj2QFMnYn24g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+APSZSFTrNk=:Slm+umP5jd6ElOJgYWdBT6
- Kji1odm27SS3phif2U0TfnK+OyYhlCvAY7/1aY88XT+vpZYvreDIaOKCczuoOOkCdkMxwzjcz
- luMwAgJnDUDdhWwClAh9BRnqOprqRrcVrOx40uLf/XGC6oL0qSyRYSWNBiUvDg6tK9SekGrDb
- YhA5LXRRaUm//eNMZeGoi8xPqr+hEU3rXHaI15MiYdRXnylGxWVokcWPMh3nW8vVbSY0fdUyM
- wTXgAXBcvq6AP65nJivFr+AaK8gTlr0ccajUBAABghQ/+UWRa3de2pjCT/aewUBJ75tQZPtLO
- UEKaIIgQOEDY+TZzgZU2oQK9Wfqb9PBpPl4rr6q4xiG6vZ9DiJAQSOYOV0HViseIgJzWz91lh
- lrlwZ2LoUPrQF0Ju+X6UEYFaij8/XMYke0zsSeJ3u1Wk6g56+LTAoY7c0y7NN36h7bu+GNEP2
- TMTD0ongCNO/Izu1cjyHPWVSwqaSShn1Hs+vFV3BqAndg0uD6T7WemslQf7n59cgrawZdiBXT
- pxtmpcRMYePJ8fP+JI887hi4tDnbqbHZeXCkSgF6y92RClNCWCSiKqgUPJrYzS834wb1fOcih
- YX9iiZ9fz1Khi0695nJZsOafLhGYK18cpvfg1ldUJ0YaJ2nVr+nuiA93yQo6uY5KDz7f+JITU
- 0rMPJ7CEBjNvL4RtVdUicm7DdWzNmp8RUc+/7zKCdDC7qkUmOp9j7NT/b8hy137koeDOUqEud
- IDeO6Py1fQlofnWsEnCBAn9JtKdoWpXB2khTneYnqD3nsRgEtvwCnKzNw1oAxXNFcRoujUfqA
- lM+zht+2EzLTsL8v9vYFlXp1pE4qa3AsY189bHNdu6Rjqujkopfb6Aj7PmZHiKmqsL/xLLO+G
- F19u82HDWp0jTMxVISpc3/jdH5//UYQKquLnchP6nR2ru2ZJDKvNlzwpObZh04XWl5Kz8LJvh
- K0SaFGJKsTweNR14l+nwjcvwezfzCkjg+vdh8qDjLek6nb6D7X5Rm/3ACZ6U40r6yOA71x3UX
- 13ykjmg5CLEvrK4F4mo8ntjPQmN54iK9xLDdd/LB6umAbUllpktZ9nirpr0xnCRMGEAh+02JF
- CyPFB0/wy0bIWw=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Nv6/D22u/g8=:GN3BkIrWeDTeZyM4l+AT/p
+ hNCq1z+mUDQs5RpT9913h57MQz3YcUtUBjRDXS2RnFFN7zbB+7zvXjhSXdJwftc0pB8Sqd/nB
+ KbqlDcfuPXbbpwm2ndRnMfLZbvWoOTIV3y8jTHCHrWnQWKh3KonGHR1oL6AkVe2s39qTYLOd2
+ x8mPfJrmIpCJ2eCNmLSHFfD7kQSic+sxIg1abw7jjHvULwQVBGXdlQWIfmvhxBV8G91En5B95
+ 0CoObN9P5pQN6PhdmPmYJCWvqWFOQdcOh7ovDzAmRtyxDuVLpXdGB6cgMENjiRtKWZAxTekd6
+ mSgM5P569yF54/RxaWODmmGwaFZYTZTDDsD0h0GR6zbQRqdT7O7iy20b2+ZWCUWqSGXjtN5t3
+ PcUAPjo8PbXLR2+lZVJZYKy+cg/yWG4CrKxvRvjjrEAEndvE0V0Hl+ZzFRGl6h8GcEd4pPvEN
+ /TL9Dk3CCIp7VnfJDDJDe4PSvVUWeNyayq7t3pbgk4nWpvuLMd623ZPWiKCsyVtoTypGc97Yg
+ irj4SotMxlYT4tbhjSy+l5/095tpveYpbjEKto/IR+7noiPaudRfMOuoiten/QYtGed6NYQuJ
+ OZa3gbqIxoMIRaL+CL0dMlKCmH0jhMsAgfjZnnPbY1LC+GWQdd1Fnm8AEfHwOXUnCFjhZbSu4
+ HEbhM+y+Yz0/La/Y0u8dHbD1pEwtQky8RedY54kWaahhu3dHgquNuahR92+Pi+lTXRbKhQh54
+ 17ftLM53CkMY1/IeZD5BISpKj70PoBIqRpjrw1/7p+wvvEi2EDlnkmQF/yF/f1C9i5/pdz3m2
+ pV71OPkuo9gfALFqBnk85RWnoJ55xBtQ68NSaJH2LfdZBQtT8cEqT0gfdF1jmQtvMSWcYUiTc
+ 5BKG6MpnRJRJPA7zz7QRi2F/G8bKlPP3rK99dij3o527pMcxhuFtrsnWHTKgdEioLUQxxkB0U
+ zLI/s7ZEmCbVUldCNxr3pVXceJleBUFZszzUZ7Ybc8wWqvTZYm5mC0c1N97Wnqm0ktsCFoi+x
+ slu7icXH/Mooz9KyupBSxYdiydqV7K/+pUkVURZP9peUMuYPeWr2PRa4L6dd4LSLOBH/PMwOH
+ Abt3E9w3qM+urI=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -66,134 +65,135 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/9/13 =E4=B8=8B=E5=8D=889:17, Nikolay Borisov wrote:
-> This function lies in the kernel-shared directory and is supposed to be
-> close to 1:1 copy with its kernel counterpart, yet it takes one extra
-> argument - root. But this is now unused to simply remove it.
+> It will be used to clear received data on RW snapshots that were
+> received.
 >
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>   kernel-shared/ctree.h     |  3 ++
+>   kernel-shared/uuid-tree.c | 82 +++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 85 insertions(+)
+>
+> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+> index 91a85796a678..158281a9fd67 100644
+> --- a/kernel-shared/ctree.h
+> +++ b/kernel-shared/ctree.h
+> @@ -2860,6 +2860,9 @@ int btrfs_uuid_tree_add(struct btrfs_trans_handle =
+*trans, u8 *uuid, u8 type,
+>   			u64 subvol_id_cpu);
+>
+>   int btrfs_is_empty_uuid(u8 *uuid);
+> +int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, u8 *uuid, =
+u8 type,
+> +               u64 subid);
+> +
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+I have checked the callers in the incoming check patches, they are all
+starting a new trans on uuid tree, thus there is no need to start a
+trans out of this function.
+
+Let's just pass the subvolume root into the function, and start a new
+trans in side the function.
+
+So that we only need one parameter @root, everything else can be fetched
+from @root, and we can also modify the root item and uuid tree just in
+one go.
 
 Thanks,
 Qu
-> ---
->   kernel-shared/ctree.c       | 3 +--
->   kernel-shared/ctree.h       | 3 +--
->   kernel-shared/dir-item.c    | 2 +-
->   kernel-shared/extent-tree.c | 2 +-
->   kernel-shared/file-item.c   | 4 ++--
->   kernel-shared/inode-item.c  | 4 ++--
->   6 files changed, 8 insertions(+), 10 deletions(-)
 >
-> diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
-> index 77766c2a7931..78f94c6cd42f 100644
-> --- a/kernel-shared/ctree.c
-> +++ b/kernel-shared/ctree.c
-> @@ -2545,8 +2545,7 @@ int btrfs_split_item(struct btrfs_trans_handle *tr=
-ans,
->   	return ret;
->   }
->
-> -int btrfs_truncate_item(struct btrfs_root *root, struct btrfs_path *pat=
-h,
-> -			u32 new_size, int from_end)
-> +int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from=
-_end)
+>   static inline int is_fstree(u64 rootid)
 >   {
->   	int ret =3D 0;
->   	int slot;
-> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-> index a17bf50e29b4..91a85796a678 100644
-> --- a/kernel-shared/ctree.h
-> +++ b/kernel-shared/ctree.h
-> @@ -2670,8 +2670,7 @@ int btrfs_create_root(struct btrfs_trans_handle *t=
-rans,
->   		      struct btrfs_fs_info *fs_info, u64 objectid);
->   int btrfs_extend_item(struct btrfs_root *root, struct btrfs_path *path=
-,
->   		u32 data_size);
-> -int btrfs_truncate_item(struct btrfs_root *root, struct btrfs_path *pat=
-h,
-> -			u32 new_size, int from_end);
-> +int btrfs_truncate_item(struct btrfs_path *path, u32 new_size, int from=
-_end);
->   int btrfs_split_item(struct btrfs_trans_handle *trans,
->   		     struct btrfs_root *root,
->   		     struct btrfs_path *path,
-> diff --git a/kernel-shared/dir-item.c b/kernel-shared/dir-item.c
-> index 7dc606c132b5..590b79a929d3 100644
-> --- a/kernel-shared/dir-item.c
-> +++ b/kernel-shared/dir-item.c
-> @@ -284,7 +284,7 @@ int btrfs_delete_one_dir_name(struct btrfs_trans_han=
-dle *trans,
->   		start =3D btrfs_item_ptr_offset(leaf, path->slots[0]);
->   		memmove_extent_buffer(leaf, ptr, ptr + sub_item_len,
->   			item_len - (ptr + sub_item_len - start));
-> -		btrfs_truncate_item(root, path, item_len - sub_item_len, 1);
-> +		btrfs_truncate_item(path, item_len - sub_item_len, 1);
+> diff --git a/kernel-shared/uuid-tree.c b/kernel-shared/uuid-tree.c
+> index 51a7b5d9ff5d..0f0fbf667dda 100644
+> --- a/kernel-shared/uuid-tree.c
+> +++ b/kernel-shared/uuid-tree.c
+> @@ -120,3 +120,85 @@ int btrfs_is_empty_uuid(u8 *uuid)
 >   	}
->   	return ret;
+>   	return 1;
 >   }
-> diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-> index 056a9256b9a4..a8e0c1e60e2e 100644
-> --- a/kernel-shared/extent-tree.c
-> +++ b/kernel-shared/extent-tree.c
-> @@ -1166,7 +1166,7 @@ static int update_inline_extent_backref(struct btr=
-fs_trans_handle *trans,
->   			memmove_extent_buffer(leaf, ptr, ptr + size,
->   					      end - ptr - size);
->   		item_size -=3D size;
-> -		ret =3D btrfs_truncate_item(root, path, item_size, 1);
-> +		ret =3D btrfs_truncate_item(path, item_size, 1);
->   		BUG_ON(ret);
->   	}
->   	btrfs_mark_buffer_dirty(leaf);
-> diff --git a/kernel-shared/file-item.c b/kernel-shared/file-item.c
-> index 7e16b747e36c..c910e27e5a5d 100644
-> --- a/kernel-shared/file-item.c
-> +++ b/kernel-shared/file-item.c
-> @@ -362,7 +362,7 @@ static noinline int truncate_one_csum(struct btrfs_r=
-oot *root,
->   		 */
->   		u32 new_size =3D (bytenr - key->offset) / blocksize;
->   		new_size *=3D csum_size;
-> -		ret =3D btrfs_truncate_item(root, path, new_size, 1);
-> +		ret =3D btrfs_truncate_item(path, new_size, 1);
->   		BUG_ON(ret);
->   	} else if (key->offset >=3D bytenr && csum_end > end_byte &&
->   		   end_byte > key->offset) {
-> @@ -375,7 +375,7 @@ static noinline int truncate_one_csum(struct btrfs_r=
-oot *root,
->   		u32 new_size =3D (csum_end - end_byte) / blocksize;
->   		new_size *=3D csum_size;
->
-> -		ret =3D btrfs_truncate_item(root, path, new_size, 0);
-> +		ret =3D btrfs_truncate_item(path, new_size, 0);
->   		BUG_ON(ret);
->
->   		key->offset =3D end_byte;
-> diff --git a/kernel-shared/inode-item.c b/kernel-shared/inode-item.c
-> index 4e009746de0e..67173eb141d8 100644
-> --- a/kernel-shared/inode-item.c
-> +++ b/kernel-shared/inode-item.c
-> @@ -311,7 +311,7 @@ int btrfs_del_inode_extref(struct btrfs_trans_handle=
- *trans,
->   	memmove_extent_buffer(leaf, ptr, ptr + del_len,
->   			      item_size - (ptr + del_len - item_start));
->
-> -	btrfs_truncate_item(root, path, item_size - del_len, 1);
-> +	btrfs_truncate_item(path, item_size - del_len, 1);
->
->   out:
->   	btrfs_free_path(path);
-> @@ -432,7 +432,7 @@ int btrfs_del_inode_ref(struct btrfs_trans_handle *t=
-rans,
->   	item_start =3D btrfs_item_ptr_offset(leaf, path->slots[0]);
->   	memmove_extent_buffer(leaf, ptr, ptr + sub_item_len,
->   			      item_size - (ptr + sub_item_len - item_start));
-> -	btrfs_truncate_item(root, path, item_size - sub_item_len, 1);
-> +	btrfs_truncate_item(path, item_size - sub_item_len, 1);
->   	btrfs_mark_buffer_dirty(path->nodes[0]);
->   out:
->   	btrfs_free_path(path);
+> +
+> +int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, u8 *uuid, =
+u8 type,
+> +		u64 subid)
+> +{
+> +	struct btrfs_fs_info *fs_info =3D trans->fs_info;
+> +	struct btrfs_root *uuid_root =3D fs_info->uuid_root;
+> +	int ret;
+> +	struct btrfs_path *path =3D NULL;
+> +	struct btrfs_key key;
+> +	struct extent_buffer *eb;
+> +	int slot;
+> +	unsigned long offset;
+> +	u32 item_size;
+> +	unsigned long move_dst;
+> +	unsigned long move_src;
+> +	unsigned long move_len;
+> +
+> +	if (!uuid_root) {
+> +		ret =3D -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	btrfs_uuid_to_key(uuid, &key);
+> +	key.type =3D type;
+> +
+> +	path =3D btrfs_alloc_path();
+> +	if (!path) {
+> +		ret =3D -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	ret =3D btrfs_search_slot(trans, uuid_root, &key, path, -1, 1);
+> +	if (ret < 0) {
+> +		warning("error %d while searching for uuid item!", ret);
+> +		goto out;
+> +	}
+> +	if (ret > 0) {
+> +		ret =3D -ENOENT;
+> +		goto out;
+> +	}
+> +
+> +
+> +	eb =3D path->nodes[0];
+> +	slot =3D path->slots[0];
+> +	offset =3D btrfs_item_ptr_offset(eb, slot);
+> +	item_size =3D btrfs_item_size_nr(eb, slot);
+> +	if (!IS_ALIGNED(item_size, sizeof(u64))) {
+> +		warning("uuid item with illegal size %lu!",	(unsigned long)item_size)=
+;
+> +		ret =3D -ENOENT;
+> +		goto out;
+> +	}
+> +	while (item_size) {
+> +		__le64 read_subid;
+> +
+> +		read_extent_buffer(eb, &read_subid, offset, sizeof(read_subid));
+> +		if (le64_to_cpu(read_subid) =3D=3D subid)
+> +			break;
+> +		offset +=3D sizeof(read_subid);
+> +		item_size -=3D sizeof(read_subid);
+> +	}
+> +
+> +	if (!item_size) {
+> +		ret =3D -ENOENT;
+> +		goto out;
+> +	}
+> +
+> +	item_size =3D btrfs_item_size_nr(eb, slot);
+> +	if (item_size =3D=3D sizeof(subid)) {
+> +		ret =3D btrfs_del_item(trans, uuid_root, path);
+> +		goto out;
+> +	}
+> +
+> +	move_dst =3D offset;
+> +	move_src =3D offset + sizeof(subid);
+> +	move_len =3D item_size - (move_src - btrfs_item_ptr_offset(eb, slot));
+> +	memmove_extent_buffer(eb, move_dst, move_src, move_len);
+> +	btrfs_truncate_item(path, item_size - sizeof(subid), 1);
+> +
+> +out:
+> +	btrfs_free_path(path);
+> +	return ret;
+> +}
 >
