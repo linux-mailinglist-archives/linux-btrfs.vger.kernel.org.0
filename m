@@ -2,53 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5E140AAE7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 11:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9A540AB35
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 11:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhINJdI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Sep 2021 05:33:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47308 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhINJdI (ORCPT
+        id S230035AbhINJ4a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Sep 2021 05:56:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43434 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhINJ43 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:33:08 -0400
+        Tue, 14 Sep 2021 05:56:29 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3E12A1FDD3;
-        Tue, 14 Sep 2021 09:31:50 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E3AE921F1E;
+        Tue, 14 Sep 2021 09:55:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631611910; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1631613310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=APRvrED9rvtWowSBxY3ndU1jLjDW+kpj/G+go1Op1DM=;
-        b=GA5flshiFNolX5I/VSweV8c6V1RPibZWu2UEKOS6bY4s/DnQEgNaN9nSeup8HNUmWPSTCe
-        angSNnmgIWFAMg66uDUG09e1t/tbOnso1fQt1+Ci1fabi7xIv0TfRdkUC3Wb/XRdDxAhbo
-        zsUFdCsiS6uhW4mV/dg8fNuS/1l/R0E=
+        bh=qoG1fjr4wuBvAqS6bG7WIyoHl3aLqM6QTKH5KXkG1o4=;
+        b=aYY41/NMqFgf+ndbpQs6VvoEOutg9d0L4zdtB1CdsydchVnOt5xtx5Rp0aDAu3n5Z4j+4X
+        aEyQg5Q9VBzLJTa2f3M+8cuRCpcncuLjqb6mtJ/Lm6wTeTfxJgSn3/P1pW/4SLRh8SGtyE
+        2gxYUVtrXGEGrJSsFtVseWB4WbngyNU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A81F13E55;
-        Tue, 14 Sep 2021 09:31:49 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE08A13E55;
+        Tue, 14 Sep 2021 09:55:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id vomLOwVsQGFXRgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 14 Sep 2021 09:31:49 +0000
-Subject: Re: [PATCH v2 0/8] Implement progs support for removing received uuid
- on RW vols
+        id GuXpK35xQGFsUwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 14 Sep 2021 09:55:10 +0000
+Subject: Re: [PATCH v2 7/8] btrfs-progs: check: Implement removing received
+ data for RW subvols
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
 References: <20210914090558.79411-1-nborisov@suse.com>
- <f75b31ce-9f33-4706-e187-dd0911d22f7d@gmx.com>
+ <20210914090558.79411-8-nborisov@suse.com>
+ <15295190-51cb-7fff-c9dd-1f604a177064@gmx.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <0dd22937-8879-af0f-df90-4ceb20d7d449@suse.com>
-Date:   Tue, 14 Sep 2021 12:31:49 +0300
+Message-ID: <646edbe5-d652-2ea3-7202-3d5304b0e54f@suse.com>
+Date:   Tue, 14 Sep 2021 12:55:10 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <f75b31ce-9f33-4706-e187-dd0911d22f7d@gmx.com>
+In-Reply-To: <15295190-51cb-7fff-c9dd-1f604a177064@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -58,62 +59,107 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 14.09.21 г. 12:30, Qu Wenruo wrote:
+On 14.09.21 г. 12:25, Qu Wenruo wrote:
 > 
 > 
 > On 2021/9/14 下午5:05, Nikolay Borisov wrote:
->> Here's V2 which takes into account Qu's suggestions, namely:
+>> Making a received subvolume RO should preclude doing an incremental send
+>> of said subvolume since it can't be guaranteed that nothing changed in
+>> the structure and this in turn has correctness implications for send.
 >>
->> - Add a helper which contains the common code to clear receive-related
->> data
->> - Now there is a single patch which impements the check/clear for both
->> orig and
->> lowmem modes
->> - Added Reviewed-by from Qu.
+>> There is a pending kernel change that implements this behavior and
+>> ensures that in the future RO volumes which are switched to RW can't be
+>> used for incremental send. However, old kernels won't have that patch
+>> backported. To ensure there is a supported way for users to put their
+>> subvolumes in sane state let's implement the same functionality in
+>> progs.
 >>
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>>   check/main.c        | 16 +++++++++++++++-
+>>   check/mode-lowmem.c | 11 ++++++++++-
+>>   2 files changed, 25 insertions(+), 2 deletions(-)
 >>
->> Nikolay Borisov (8):
->>    btrfs-progs: Add btrfs_is_empty_uuid
->>    btrfs-progs: Remove root argument from btrfs_fixup_low_keys
->>    btrfs-progs: Remove fs_info argument from leaf_data_end
->>    btrfs-progs: Remove root argument from btrfs_truncate_item
->>    btrfs-progs: Add btrfs_uuid_tree_remove
->>    btrfs-progs: Implement helper to remove received information of RW
->>      subvol
->>    btrfs-progs: check: Implement removing received data for RW subvols
->>    btrfs-progs: tests: Add test for received information removal
+>> diff --git a/check/main.c b/check/main.c
+>> index 6369bdd90656..9d3822a2ebae 100644
+>> --- a/check/main.c
+>> +++ b/check/main.c
+>> @@ -3544,6 +3544,7 @@ static int check_fs_root(struct btrfs_root *root,
+>>       int ret = 0;
+>>       int err = 0;
+>>       bool generation_err = false;
+>> +    bool rw_received_err = false;
+>>       int wret;
+>>       int level;
+>>       u64 super_generation;
+>> @@ -3658,6 +3659,19 @@ static int check_fs_root(struct btrfs_root *root,
+>>                       sizeof(found_key)));
+>>       }
 >>
->>   check/main.c                                  |  21 +++-
->>   check/mode-common.c                           |  40 ++++++++
->>   check/mode-common.h                           |   1 +
->>   check/mode-lowmem.c                           |  11 ++-
->>   kernel-shared/ctree.c                         |  62 +++++-------
->>   kernel-shared/ctree.h                         |  12 ++-
->>   kernel-shared/dir-item.c                      |   2 +-
->>   kernel-shared/extent-tree.c                   |   2 +-
->>   kernel-shared/file-item.c                     |   4 +-
->>   kernel-shared/inode-item.c                    |   4 +-
->>   kernel-shared/uuid-tree.c                     |  93 ++++++++++++++++++
->>   .../050-subvol-recv-clear/test.raw.xz         | Bin 0 -> 493524 bytes
+>> +    if (!((btrfs_root_flags(root_item) & BTRFS_ROOT_SUBVOL_RDONLY) ||
+>> +            btrfs_is_empty_uuid(root_item->received_uuid))) {
+>> +        error("Subvolume id: %llu is RW and has a received uuid",
+>> +                root->root_key.objectid);
+>> +        rw_received_err = true;
+>> +        if (repair) {
+>> +            ret = repair_received_subvol(root);
+>> +            if (ret)
+>> +                return ret;
+>> +            rw_received_err = false;
+>> +        }
+>> +    }
+>> +
+>>       while (1) {
+>>           ctx.item_count++;
+>>           wret = walk_down_tree(root, &path, wc, &level, &nrefs);
+>> @@ -3722,7 +3736,7 @@ static int check_fs_root(struct btrfs_root *root,
+>>
+>>       free_corrupt_blocks_tree(&corrupt_blocks);
+>>       gfs_info->corrupt_blocks = NULL;
+>> -    if (!ret && generation_err)
+>> +    if (!ret && (generation_err ||  rw_received_err))
+>>           ret = -1;
+>>       return ret;
+>>   }
+>> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+>> index 323e66bc4cb1..d8f783bea424 100644
+>> --- a/check/mode-lowmem.c
+>> +++ b/check/mode-lowmem.c
+>> @@ -5197,8 +5197,17 @@ static int check_btrfs_root(struct btrfs_root
+>> *root, int check_all)
+>>           ret = check_fs_first_inode(root);
+>>           if (ret < 0)
+>>               return FATAL_ERROR;
+>> -    }
+>>
+>> +        if (!((btrfs_root_flags(root_item) &
+>> BTRFS_ROOT_SUBVOL_RDONLY) ||
+>> +                    btrfs_is_empty_uuid(root_item->received_uuid))) {
+>> +            error("Subvolume id: %llu is RW and has a received uuid",
+>> +                  root->root_key.objectid);
+>> +            if (repair)
+>> +                ret = repair_received_subvol(root);
+>> +            if (ret < 0)
+>> +                return FATAL_ERROR;
+>> +        }
 > 
-> The image looks a little large than expected, so that the mailing list
-> is rejected the armored patch.
+> Not sure if we need to error out completely.
 > 
-> Can we use btrfs-image? As there is no need for special layout which
-> can't be dumped by btrfs-image.
-> Thus using btrfs-image -c9 would save quite some space.
+> I guess continue the check would be better?
 
-Well I did use a raw image, compressed with xz. But sure, I'll look into
-this but for the time being will wait to gather more feedback.
-
+There's that, but we still need to find a way to signify there is an
+error. So for lowmem mode the possibility is to introduce yet another
+bit (from 26 to 27) to signify this particular problem. Ok, will fix it
+in the next iteration but I'm still waiting for more feedback,
+especially from David.
+> 
+> Despite that, everything looks good to me.
 > 
 > Thanks,
 > Qu
-> 
->>   12 files changed, 202 insertions(+), 50 deletions(-)
->>   create mode 100644 tests/fsck-tests/050-subvol-recv-clear/test.raw.xz
+>> +    }
 >>
->> -- 
->> 2.17.1
+>>       level = btrfs_header_level(root->node);
+>>       btrfs_init_path(&path);
 >>
 > 
