@@ -2,202 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D084740A3CD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 04:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D413540A426
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 05:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236352AbhINCqE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 Sep 2021 22:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235956AbhINCqD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 Sep 2021 22:46:03 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A4EC061574;
-        Mon, 13 Sep 2021 19:44:47 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id w19so6357507pfn.12;
-        Mon, 13 Sep 2021 19:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=qZTDoKWjUVrHhi6g+OATSUlsfhBVuaOdE41ITJ/HY9E=;
-        b=ObLqSDRz5pf0EdVYNCSTJFsaGJEa9wg6WOZjh1/ofOf6otrbysVsx06nCqTM4ruhxp
-         UVft9gLmmjqHToU8WAa1mIUooF0le61WIrPXJfYTM+zOhayKN4d6dPjz7NcGRAFlpqGB
-         mGrmvx1OnVFUtNLKw0oJCO8gb/WuGqVexURmjEXWzGbkJ3iNxQIk3XpHjFZoAlZynvFp
-         exjoFdXVoNRzpSDFigVVEyK/H3K7azDiQCDxYbsP8L54cZ/Kr+ylPiOIorKGc1Nmw7iV
-         gLn7JCxyISMJQQ4C0GBYWkjDpSAqeN/JkNiIFyglXY2YLQJAPHwhSSBxy3g9Q/ic1eD6
-         QMNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=qZTDoKWjUVrHhi6g+OATSUlsfhBVuaOdE41ITJ/HY9E=;
-        b=3H1VBmR89sbaMPXsxPQiA5K3Qvrs6mEZ4fPahsu9P7v9u5mTLuo6Uu+cVro5et2qrv
-         l0VJ2amj+EBG9RW/HSmrAeoylhxzu4zpQczfxxFDFwZIaxNzggaRGqrlQukv6+qN9VEG
-         5iPqN0hk2mClRZt3JglEREj9Jcrb34opQWtFsXeo4ArSqiql1RiqkfsXcVOdsyN3jBjK
-         it4fI8SMfEgySDUL88NOSjq9WHl9wYB9cIbDF1+lJ4IB/5REP+6kJ9hwXICXlDRjcnM9
-         g4OI3GInPub29B1+AdhE2QKGCfv3fbHwSUAtfvHdrCY++9E2sPbjNLDjPigXRCM42P1P
-         UWMg==
-X-Gm-Message-State: AOAM5316/hDYf/Du6eL4eEtICE2Nf5fPk4vtqiZhR3kR7Zwi5kkf5m+t
-        64dnnaqu9kuiknxQOwfy1iDRMdzwuk97uxYsjA==
-X-Google-Smtp-Source: ABdhPJxRNs/meKkYeLfMGX8+uCJhvjXEQrqcghlJg3qOijQ+KUBT2TXoYCzrFZ4SQQYiogYw1L6UdDOoK5rvIvN92k4=
-X-Received: by 2002:a62:920b:0:b0:3ec:7912:82be with SMTP id
- o11-20020a62920b000000b003ec791282bemr2563999pfd.34.1631587486741; Mon, 13
- Sep 2021 19:44:46 -0700 (PDT)
-MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Tue, 14 Sep 2021 10:44:35 +0800
-Message-ID: <CACkBjsZuFQykH=vQmy0n_mE1ACpiy1t48dvbUT0wtfBuHC4RFw@mail.gmail.com>
-Subject: INFO: task hung in btrfs_alloc_tree_block
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org
+        id S238318AbhINDKX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 Sep 2021 23:10:23 -0400
+Received: from mout.gmx.net ([212.227.15.19]:58885 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237372AbhINDKX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 Sep 2021 23:10:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631588938;
+        bh=PpI+dROIruJsSS+oTc9h0XopWCPCfVRRN/mbE6iGnKg=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=Ab7kA9R/gUNM09TBs/iz3N3cY7RhREUsbapb1S+4Z+Y3p2XnpjLWmT/PE9I/+gDle
+         fdjVOE+197ekeoC5X0qY6UniJFe43ToBBDgFTznRUeJvacwYCimW3TFbSOA7LYtlYY
+         N+Zr/r+WiCI/b5laklIj4g/6VpzBz/uzVS10IV7g=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMXQ5-1mANTS14gJ-00JZ5Q; Tue, 14
+ Sep 2021 05:08:57 +0200
+To:     Hao Sun <sunhao.th@gmail.com>, clm@fb.com, dsterba@suse.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+References: <CACkBjsbA4vLi8JRft7rDCvdksFbfzN-MeDtWcAYPQHJt_jXw2g@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: WARNING in __btrfs_update_delayed_inode
+Message-ID: <cb1ae339-afc8-3e8c-2f6e-32c59a4a6716@gmx.com>
+Date:   Tue, 14 Sep 2021 11:08:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <CACkBjsbA4vLi8JRft7rDCvdksFbfzN-MeDtWcAYPQHJt_jXw2g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:o70K8vyu9AgUxwocZdXhXcb1N1v1OJyANWQQiX+jAFOe1HW7bo2
+ YHkIDD/j8L3hi7TRaGJQ5MfUwjzPRStpj4vukDIfdiM1pzj3VVOjlvb52vL/YlfTWgX+rKm
+ Y0ZqFalMG/k8M58wWZQ+pUZa2QEK9Rs9valdtrsXa/7NTmpIwagqq0jHPs7Y2jeiFdA4NjP
+ ttCpr6YUMJlRk6LnrEUSw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5FLvVtSKg8g=:LH+WcdzDjoYA/piUcrLkV7
+ rlD0/3PQ5FPazwi2p9vUcdsqXABnXGLsz9uhrREcQ3foYdc72ZDt0ZLsXjqzQLjqHSThWLS+B
+ RYlRy1brPxCMjSlTXE+anI1Vx23kSukaK0mGtpiGidZioJr0KAAIzPm+ua0Wp/t0P7zI6s511
+ Odyj73xlxNN+7Vq/ITU1s1WgjmHmUL3INy6h1HMelyYmBveY0Uf9wtOzqEeLhIRaoR0cf7BgY
+ dTff7k7L+l1M/qUmkaZbfob4zHb/JhrTIM70JeB0zDrT/6DlrxYH28wWWAEW3ibWUWmEFm/QH
+ e/AF7dbIn0ou+KSM86A+nmsAUnPU8c+DijRuYN2liHs7koqyJeDBxVIyUVcF7oLX7BRc5Rnra
+ sUJPsIsjn8jJMHKzWDxNunRRusJHGm/x9diyP3/6fUZ6mJLM6RyAugIowJF/NkJcwBK8CtT6s
+ GnRYKvs6Pjngtd/F9QdQRvuHviGMpMD5QLe+viAohiCsuCEtMgnWIm01yp/QKad9YcUPzRuat
+ f8kDfO9SxexzmOYdUxJc5bRHEdkstDo/oqDMGBrtgpGhpt8j8Rt60jvzrI4vQmlxCh7DcecHK
+ zilpd3/j0iY9dOqqHL+RksBGKHbefWaGKYEkV7QDcPj11DV5buwcWVql/72Apb4EyUATRk5wW
+ dWz0JfTShY0xXKgT664GpLZ6I5hc+P8Wobsl+eu9KoJypRPBuvTfn1IbxhRkn5HRI16DzXI8U
+ SMPQTtV4uv3USRrgAHnZDt6AKt3XZ1o3t7Y/+oqK5iWQmlXHJX92sMvjqLwBm/Bpbhv7/Cz9W
+ hNQ1Fsl00IQytqZTv2wL2hwfjx79I5iG1Vosz5PPIZcMar7G9TqQ3X/gvB+Q7w+9IO8j+Q1kz
+ 9WcvdqFSG4h/JIswJ93/FC1pgRpRvWprFHT9IvthRHfEF/qTZdM6SxwGcc16M97RsrAKba6Dc
+ I8v6bsvxV3jIeUatbU34GEoDPgaF/ETgYCdmcP+kqn0JIUjwu2wnKmCbrT1q5SscE5Y1OHyAC
+ O2/w6DpW2p+obuLMLxbrsK64VIxFdL50IXE1TZDGNVUJSskTAXBfZMzyvRFmnGs/Ym6048ExK
+ d2Vz69k1YNfYXBjP9WUGUU899fVPJky+nycaJHmVz8iM2n/1r5OYgo3Qi6QL7BzPvGF4Z/6gq
+ KZJp0AwfCnlHOySsR/LlLcNNMP
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
 
-HEAD commit: 6880fa6c5660 Linux 5.15-rc1
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1U3ei_jCODG9N5UHOspSRmykrEDSey3Qn/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHTLJvsUdWcgB/view?usp=sharing
+On 2021/9/14 =E4=B8=8A=E5=8D=8810:11, Hao Sun wrote:
+> Hello,
+>
+> When using Healer to fuzz the latest Linux kernel, the following crash
+> was triggered.
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+Hey, it's a warning, not a crash.
 
-INFO: task syz-executor:6566 blocked for more than 143 seconds.
-      Not tainted 5.15.0-rc1 #16
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor    state:D stack:10632 pid: 6566 ppid:     1 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x323/0xae0 kernel/sched/core.c:6287
- schedule+0x36/0xe0 kernel/sched/core.c:6366
- rwsem_down_write_slowpath kernel/locking/rwsem.c:1107 [inline]
- __down_write_common.part.13+0x356/0x7a0 kernel/locking/rwsem.c:1262
- __btrfs_tree_lock+0x2e/0x1a0 fs/btrfs/locking.c:112
- btrfs_init_new_buffer fs/btrfs/extent-tree.c:4740 [inline]
- btrfs_alloc_tree_block+0x19c/0x670 fs/btrfs/extent-tree.c:4818
- __btrfs_cow_block+0x16f/0x7d0 fs/btrfs/ctree.c:415
- btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
- btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
- btrfs_update_root+0x6b/0x430 fs/btrfs/root-tree.c:134
- commit_fs_roots+0x151/0x220 fs/btrfs/transaction.c:1373
- btrfs_commit_transaction+0x443/0x1430 fs/btrfs/transaction.c:2265
- btrfs_sync_fs+0x9a/0x430 fs/btrfs/super.c:1426
- __sync_filesystem fs/sync.c:39 [inline]
- sync_filesystem+0x9b/0xd0 fs/sync.c:67
- generic_shutdown_super+0x30/0x170 fs/super.c:448
- kill_anon_super+0x15/0x30 fs/super.c:1057
- btrfs_kill_super+0x19/0x30 fs/btrfs/super.c:2348
- deactivate_locked_super+0x43/0x80 fs/super.c:335
- deactivate_super+0x53/0x80 fs/super.c:366
- cleanup_mnt+0x138/0x1b0 fs/namespace.c:1137
- task_work_run+0x86/0xd0 kernel/task_work.c:164
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
- exit_to_user_mode_prepare+0x271/0x280 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46c777
-RSP: 002b:00007ffc3accc0b8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000046c777
-RDX: 0000000000404e22 RSI: 0000000000000002 RDI: 00007ffc3accc180
-RBP: 00007ffc3accc180 R08: 00000000025c8033 R09: 0000000000000009
-R10: 00000000fffffffb R11: 0000000000000246 R12: 00000000004e38c6
-R13: 00007ffc3accd230 R14: 00007ffc3accd22c R15: 0000000000000006
-INFO: lockdep is turned off.
-NMI backtrace for cpu 1
-CPU: 1 PID: 39 Comm: khungtaskd Not tainted 5.15.0-rc1 #16
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
- nmi_cpu_backtrace+0x1e9/0x210 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x120/0x180 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0x4e1/0x980 kernel/hung_task.c:295
- kthread+0x178/0x1b0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 1 to CPUs 0,2-3:
-NMI backtrace for cpu 2 skipped: idling at native_safe_halt
-arch/x86/include/asm/irqflags.h:51 [inline]
-NMI backtrace for cpu 2 skipped: idling at arch_safe_halt
-arch/x86/include/asm/irqflags.h:89 [inline]
-NMI backtrace for cpu 2 skipped: idling at default_idle+0xb/0x10
-arch/x86/kernel/process.c:716
-NMI backtrace for cpu 0
-CPU: 0 PID: 3014 Comm: systemd-journal Not tainted 5.15.0-rc1 #16
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:__seccomp_filter+0x29/0x890 kernel/seccomp.c:1173
-Code: 00 41 57 41 56 49 89 f6 41 55 41 54 55 53 48 83 ec 60 65 48 8b
-04 25 28 00 00 00 48 89 44 24 58 31 c0 89 7c 24 08 89 54 24 0c <e8> 62
-b3 ff ff 4d 85 f6 0f 84 ed 03 00 00 e8 54 b3 ff ff 65 48 8b
-RSP: 0018:ffffc900008a3e50 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: ffff888104294480 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000027
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000027
-R13: 0000000000000002 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f0e1f6808c0(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0e1cac7000 CR3: 000000000e6b1000 CR4: 0000000000750ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- __secure_computing+0x66/0x150 kernel/seccomp.c:1311
- syscall_trace_enter.isra.17+0x9c/0x270 kernel/entry/common.c:68
- do_syscall_64+0x15/0xb0 arch/x86/entry/common.c:76
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f0e1e919f17
-Code: ff ff ff 48 8b 4d a0 0f b7 51 fe 48 8b 4d a8 66 89 54 08 fe e9
-1a ff ff ff 66 2e 0f 1f 84 00 00 00 00 00 b8 27 00 00 00 0f 05 <c3> 0f
-1f 84 00 00 00 00 00 b8 6e 00 00 00 0f 05 c3 0f 1f 84 00 00
-RSP: 002b:00007ffd23799818 EFLAGS: 00000206 ORIG_RAX: 0000000000000027
-RAX: ffffffffffffffda RBX: 00005565147301e0 RCX: 00007f0e1e919f17
-RDX: 00007ffd237998d8 RSI: 0000000000000001 RDI: 00005565147301e0
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000069 R11: 0000000000000206 R12: 00007ffd237998d8
-R13: 0000000000000bc6 R14: 00007ffd2379c6c0 R15: 00007ffd23799cd0
-NMI backtrace for cpu 3 skipped: idling at native_safe_halt
-arch/x86/include/asm/irqflags.h:51 [inline]
-NMI backtrace for cpu 3 skipped: idling at arch_safe_halt
-arch/x86/include/asm/irqflags.h:89 [inline]
-NMI backtrace for cpu 3 skipped: idling at default_idle+0xb/0x10
-arch/x86/kernel/process.c:716
-----------------
-Code disassembly (best guess):
-   0: 00 41 57              add    %al,0x57(%rcx)
-   3: 41 56                push   %r14
-   5: 49 89 f6              mov    %rsi,%r14
-   8: 41 55                push   %r13
-   a: 41 54                push   %r12
-   c: 55                    push   %rbp
-   d: 53                    push   %rbx
-   e: 48 83 ec 60          sub    $0x60,%rsp
-  12: 65 48 8b 04 25 28 00 mov    %gs:0x28,%rax
-  19: 00 00
-  1b: 48 89 44 24 58        mov    %rax,0x58(%rsp)
-  20: 31 c0                xor    %eax,%eax
-  22: 89 7c 24 08          mov    %edi,0x8(%rsp)
-  26: 89 54 24 0c          mov    %edx,0xc(%rsp)
-* 2a: e8 62 b3 ff ff        callq  0xffffb391 <-- trapping instruction
-  2f: 4d 85 f6              test   %r14,%r14
-  32: 0f 84 ed 03 00 00    je     0x425
-  38: e8 54 b3 ff ff        callq  0xffffb391
-  3d: 65                    gs
-  3e: 48                    rex.W
-  3f: 8b                    .byte 0x8b
+>
+> HEAD commit: 6880fa6c5660 Linux 5.15-rc1
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/1nhxxAfMLAbaBRaJdyjKU56syabhlgjsO/view?u=
+sp=3Dsharing
+> kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHTLJ=
+vsUdWcgB/view?usp=3Dsharing
+> Syzlang reproducer:
+> https://drive.google.com/file/d/15RurS3tTTpzu-fdhlQYS-qY_vpx5RoFX/view?u=
+sp=3Dsharing
+>
+> Sorry, I don't have a C reproducer for this crash but have a Syzlang
+> reproducer. Also, hope the symbolized report can help.
+> Here are the instructions on how to execute Syzlang prog:
+> https://github.com/google/syzkaller/blob/master/docs/executing_syzkaller=
+_programs.md
+>
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+>
+> FAULT_INJECTION: forcing a failure.
+> name failslab, interval 1, probability 0, space 0, times 0
+> CPU: 3 PID: 7821 Comm: syz-executor Not tainted 5.15.0-rc1 #16
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+>   fail_dump lib/fault-inject.c:52 [inline]
+>   should_fail+0x13c/0x160 lib/fault-inject.c:146
+>   should_failslab+0x5/0x10 mm/slab_common.c:1328
+>   slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
+>   slab_alloc_node mm/slub.c:3120 [inline]
+>   slab_alloc mm/slub.c:3214 [inline]
+>   kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
+>   btrfs_alloc_delayed_extent_op fs/btrfs/delayed-ref.h:299 [inline]
+>   btrfs_alloc_tree_block+0x38c/0x670 fs/btrfs/extent-tree.c:4833
+>   __btrfs_cow_block+0x16f/0x7d0 fs/btrfs/ctree.c:415
+>   btrfs_cow_block+0x12a/0x300 fs/btrfs/ctree.c:570
+>   btrfs_search_slot+0x6b0/0xee0 fs/btrfs/ctree.c:1768
+>   btrfs_lookup_inode+0x50/0x110 fs/btrfs/inode-item.c:408
+>   __btrfs_update_delayed_inode+0x81/0x370 fs/btrfs/delayed-inode.c:948
+>   btrfs_commit_inode_delayed_inode+0x14a/0x160 fs/btrfs/delayed-inode.c:=
+1189
+>   btrfs_log_inode+0x438/0x1ab0 fs/btrfs/tree-log.c:5385
+>   btrfs_log_inode_parent+0x272/0x1110 fs/btrfs/tree-log.c:6168
+>   btrfs_log_dentry_safe+0x3a/0x50 fs/btrfs/tree-log.c:6269
+>   btrfs_sync_file+0x2cd/0x760 fs/btrfs/file.c:2264
+>   vfs_fsync_range+0x48/0xa0 fs/sync.c:200
+>   generic_write_sync include/linux/fs.h:2955 [inline]
+>   btrfs_file_write_iter+0x34f/0x510 fs/btrfs/file.c:2034
+>   call_write_iter include/linux/fs.h:2163 [inline]
+>   new_sync_write+0x18d/0x260 fs/read_write.c:507
+>   vfs_write+0x43b/0x4a0 fs/read_write.c:594
+>   ksys_write+0xd2/0x120 fs/read_write.c:647
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x46ae99
+> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f040bcc8c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 000000000078c158 RCX: 000000000046ae99
+> RDX: 000000000000001b RSI: 0000000020005a00 RDI: 0000000000000008
+> RBP: 00007f040bcc8c80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000002c
+> R13: 0000000000000000 R14: 000000000078c158 R15: 00007ffcfffddd60
+> ------------[ cut here ]------------
+> WARNING: CPU: 3 PID: 7821 at fs/btrfs/delayed-inode.c:995
+
+Any error causing btrfs to abort transaction (except -EIO) will cause
+btrfs to output extra waing messages for debug purpose.
+
+So all these warnings are *expected*.
+
+Thanks,
+Qu
+
+> __btrfs_update_delayed_inode+0x318/0x370 fs/btrfs/delayed-inode.c:995
+> Modules linked in:
+> CPU: 3 PID: 7821 Comm: syz-executor Not tainted 5.15.0-rc1 #16
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> RIP: 0010:__btrfs_update_delayed_inode+0x318/0x370 fs/btrfs/delayed-inod=
+e.c:995
+> Code: a8 c8 19 00 00 03 72 24 e8 f5 26 43 ff 83 fd fb 74 3f 83 fd e2
+> 74 3a e8 e6 26 43 ff 89 ee 48 c7 c7 38 25 39 85 e8 08 2e 2e ff <0f> 0b
+> e8 d1 26 43 ff 89 e9 ba e3 03 00 00 4c 89 f7 48 c7 c6 70 39
+> RSP: 0018:ffffc9000b13ba28 EFLAGS: 00010286
+> RAX: 0000000000000000 RBX: ffff88810a46b090 RCX: ffffc90002791000
+> RDX: 0000000000040000 RSI: ffffffff812d18bc RDI: 00000000ffffffff
+> RBP: 00000000fffffff4 R08: 0000000000000000 R09: 0000000000000001
+> R10: ffffc9000b13b840 R11: 0000000000000007 R12: ffff88810e51eb60
+> R13: 00000000fffffff4 R14: ffff88810248f0d0 R15: ffff888111df8000
+> FS:  00007f040bcc9700(0000) GS:ffff88813dd00000(0000) knlGS:000000000000=
+0000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000400200 CR3: 000000010e5d6000 CR4: 0000000000750ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+>   btrfs_commit_inode_delayed_inode+0x14a/0x160 fs/btrfs/delayed-inode.c:=
+1189
+>   btrfs_log_inode+0x438/0x1ab0 fs/btrfs/tree-log.c:5385
+>   btrfs_log_inode_parent+0x272/0x1110 fs/btrfs/tree-log.c:6168
+>   btrfs_log_dentry_safe+0x3a/0x50 fs/btrfs/tree-log.c:6269
+>   btrfs_sync_file+0x2cd/0x760 fs/btrfs/file.c:2264
+>   vfs_fsync_range+0x48/0xa0 fs/sync.c:200
+>   generic_write_sync include/linux/fs.h:2955 [inline]
+>   btrfs_file_write_iter+0x34f/0x510 fs/btrfs/file.c:2034
+>   call_write_iter include/linux/fs.h:2163 [inline]
+>   new_sync_write+0x18d/0x260 fs/read_write.c:507
+>   vfs_write+0x43b/0x4a0 fs/read_write.c:594
+>   ksys_write+0xd2/0x120 fs/read_write.c:647
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x46ae99
+> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f040bcc8c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 000000000078c158 RCX: 000000000046ae99
+> RDX: 000000000000001b RSI: 0000000020005a00 RDI: 0000000000000008
+> RBP: 00007f040bcc8c80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000002c
+> R13: 0000000000000000 R14: 000000000078c158 R15: 00007ffcfffddd60
+>
