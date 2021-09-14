@@ -2,127 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 768E640ACD1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 13:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91C040AEAB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 15:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhINLxk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Sep 2021 07:53:40 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45476 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbhINLxi (ORCPT
+        id S233155AbhINNOT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Sep 2021 09:14:19 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49562 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233087AbhINNOT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Sep 2021 07:53:38 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AE87621D62;
-        Tue, 14 Sep 2021 11:52:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631620340; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=yS52rij573e/7nmA5rvtwQVMbZRG/ZCCMtdLxUFhUbY=;
-        b=m0MBff7khhGG9qLDkIZSvXsPMenGmmZ/1ze0pZ9SRn6Ig3rlC5fqT/TV13oTs5g/HUl8ZY
-        GfZTn3r+nvIOzNn7G9iYww4l3TYdMLZzee0dgJVUSI20aUnwj2+y0wY4hpwCurog65XZc4
-        DshiKG6+Lae0szuJ+dOT3XRQowJLJXA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6F86A13342;
-        Tue, 14 Sep 2021 11:52:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vazHGPSMQGHMFgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 14 Sep 2021 11:52:20 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     fstests@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
-Subject: [RFC PATCH] btrfs: Add test for received information deletion upon RO->RW switch
-Date:   Tue, 14 Sep 2021 14:52:19 +0300
-Message-Id: <20210914115219.95720-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 14 Sep 2021 09:14:19 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 28ED320111;
+        Tue, 14 Sep 2021 13:13:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631625181;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x1xCRaXBi8hU9uZsLdOK0OCoJxupLBRsWIjvmEz3tTc=;
+        b=izGt9wM7Bf1bewIML68qFihwFBEMj3ZO2k/yAslKRc0sUYHGdU713FRbxK+ZEw5DG/ndSW
+        AnyZJ0NhLghM7eHM+a5ioJXnga3Woj5tj0woJ6+5i9Z1sjd8obKGFhnSqutByTE3dho6/8
+        xDP7oL+rJhsO+xPnkxFiT0WZKVJyL0A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631625181;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x1xCRaXBi8hU9uZsLdOK0OCoJxupLBRsWIjvmEz3tTc=;
+        b=S5mlhBRSoK3HUMAXKsE4AToVnywWrlL5wUd1+Y8JPwMqcvXmWEYi20cfszqhGMia7ux03h
+        HF8OBY2Urr2gIbBw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1FCABA3B90;
+        Tue, 14 Sep 2021 13:13:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 39B7FDA781; Tue, 14 Sep 2021 15:12:53 +0200 (CEST)
+Date:   Tue, 14 Sep 2021 15:12:53 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Su Yue <l@damenly.su>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: make btrfs_node_key static inline
+Message-ID: <20210914131253.GA9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Su Yue <l@damenly.su>,
+        linux-btrfs@vger.kernel.org
+References: <20210914105335.28760-1-l@damenly.su>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210914105335.28760-1-l@damenly.su>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
+On Tue, Sep 14, 2021 at 06:53:35PM +0800, Su Yue wrote:
+> It looks strange that btrfs_node_key is in struct-funcs.c.
+> So move it to ctree.h and make it static inline.
 
-Sending this now for initial review and completness' sake and once there is a
-final decision that we are taking the route of removing this functionality
-for users then it can be merged.
+"looks strange" is not a sufficient reason. Inlining a function means
+that the body will be expanded at each call site, bloating the binary
+code. Have you measured the impact of that?
 
-
- tests/btrfs/248     | 47 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/248.out |  2 ++
- 2 files changed, 49 insertions(+)
- create mode 100755 tests/btrfs/248
- create mode 100644 tests/btrfs/248.out
-
-diff --git a/tests/btrfs/248 b/tests/btrfs/248
-new file mode 100755
-index 000000000000..13a2b92900ad
---- /dev/null
-+++ b/tests/btrfs/248
-@@ -0,0 +1,47 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 248
-+#
-+# Test that stransid/rtransid and received_uuid are being reset when a RO
-+# snapshot is switched to RW.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick send subvol
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch
-+
-+_require_btrfs_command inspect-internal dump-tree
-+_require_btrfs_command property
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount
-+
-+# Create a snapshot and send it, so that it has the necessary fields populated
-+$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/ro-snap &>> $seqres.full
-+$BTRFS_UTIL_PROG send $SCRATCH_MNT/ro-snap -f $SCRATCH_MNT/snap.send &>>$seqres.full
-+$BTRFS_UTIL_PROG subvolume delete $SCRATCH_MNT/ro-snap &>>$seqres.full
-+$BTRFS_UTIL_PROG receive -f $SCRATCH_MNT/snap.send $SCRATCH_MNT 2>>$seqres.full
-+
-+# Flip the RO->RW switch and ensure that relevant fields are zeroed out
-+$BTRFS_UTIL_PROG property set -ts $SCRATCH_MNT/ro-snap ro false
-+
-+$BTRFS_UTIL_PROG inspect-internal dump-tree -t1 $SCRATCH_DEV | $AWK_PROG '
-+	/received_uuid/ {print "received_uuid present"}
-+
-+	/stransid/ {
-+		if ($6 != 0) {print "send trans id not 0"}
-+
-+		if ($8 != 0) {print "received trans id not 0"}
-+	}
-+
-+'
-+# success, all done
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/btrfs/248.out b/tests/btrfs/248.out
-new file mode 100644
-index 000000000000..58af9173bea3
---- /dev/null
-+++ b/tests/btrfs/248.out
-@@ -0,0 +1,2 @@
-+QA output created by 248
-+Silence is golden
---
-2.17.1
-
+There's some performance cost of an non-inline function due to the call
+overhead but it does not make sense to inline a function that's called
+rarely and not in a tight loop. If you grep for the function you'd see
+that it's called eg. once per function or in a loop that's not
+performance critical on first sight (eg. in reada_for_search).
