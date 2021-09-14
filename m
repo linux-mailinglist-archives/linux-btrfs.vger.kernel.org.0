@@ -2,116 +2,203 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8C340A58A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 06:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0872D40A58D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 06:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239266AbhINEqo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Sep 2021 00:46:44 -0400
-Received: from mout.gmx.net ([212.227.15.15]:46693 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232829AbhINEqn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Sep 2021 00:46:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631594719;
-        bh=6VXQSgwsXSdmo/m+d795endairul62ZGVBHgG0rMVO4=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=PXAHK6UQq4xbFDsF8HUJTdFKVIiZPts7ODOsNDQ6HPGFtMMVr4IFjg/yJWh6IhwO1
-         qP03R8699/Ppz+cq9HG69YR1TogQXNw6m3FaEYEXW2FtY4ExEAZeDzGAR/ovP57ZGK
-         Tfq68O1dA+YycfPKijvvhVap4JiS3tIh6JLRZJkI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MrhUE-1nDcol0hbI-00niys; Tue, 14
- Sep 2021 06:45:19 +0200
-Subject: Re: INFO: task hung in btrfs_alloc_tree_block
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CACkBjsZuFQykH=vQmy0n_mE1ACpiy1t48dvbUT0wtfBuHC4RFw@mail.gmail.com>
- <1ffc5484-b68e-22db-349c-d1e0c31f9562@gmx.com>
- <CACkBjsbUnPQ1J5HpXW-be2jb_h2k8d4b2p-epp5pUek_Rf0reQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <52b5e79f-6b56-2d90-6927-86b2faa295b9@gmx.com>
-Date:   Tue, 14 Sep 2021 12:45:15 +0800
+        id S234125AbhINEuU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Sep 2021 00:50:20 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56952 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230311AbhINEuT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Sep 2021 00:50:19 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id ED8861FDCC;
+        Tue, 14 Sep 2021 04:49:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631594941; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AW2kzkDBOg0XUCmxQF8gtpG9FW5LcLCjIHnqioBHc/Q=;
+        b=jpClqFfuQrtptNNvHl5wilvq4pesBUrNW9sjtTBg2KNGj36hdcmfE2Ykq2SykQkA1i+XEE
+        x1e9NwTVgFx//FULVQIllLzxJJ9ogdpCeAxd+410uBLrzU1OVoKSixdUyaRoRficlW4k1X
+        K43LvGMKdK+VaSES9PBCY3IkKwDYdIk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C71EE13E48;
+        Tue, 14 Sep 2021 04:49:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IN4WLr0pQGEUQAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 14 Sep 2021 04:49:01 +0000
+Subject: Re: [PATCH 5/8] btrfs-progs: Add btrfs_uuid_tree_remove
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <20210913131729.37897-1-nborisov@suse.com>
+ <20210913131729.37897-6-nborisov@suse.com>
+ <f84fe95a-1469-9e39-2813-4111fe258390@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <922efc8b-3422-fa61-7936-692b95ada411@suse.com>
+Date:   Tue, 14 Sep 2021 07:49:01 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CACkBjsbUnPQ1J5HpXW-be2jb_h2k8d4b2p-epp5pUek_Rf0reQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <f84fe95a-1469-9e39-2813-4111fe258390@gmx.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tULegFjIvGnbxA/NfaYS99DxwIcCjszgLTd2YibruRy57x7WKAE
- cbgL7cnKqI/dnF0QhsICC5m/6/9oQkaX2AjyJvfuq/TK6GjlXcXs/rba+OtmK9HqCerOXqw
- 631w4Ur/vqgc2PnR99IXSrRC6E4HCCb4/xo55b6umObulzerXkK/Kfy62+Jt+4o3GM5rGNy
- IyDz04OCBrv2v1YIOBIOA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FUHTIJppHZw=:jtuonRwitxbBSl9snPw0IF
- rhHQB8puxH5xYDNsrUhGOdSyqvvXKE5pCxM9DFCtU1pln9uSyorrPbtNoyazloK+3wo5IgW4B
- KCjkOENm+xvuxoaafyP1UW18MFxcgDk2qyFoZAE0keiAQK1QB4UwOpQ0SSUrgszVJ/z6v1tBE
- 1rMe5fmWEfL1b7AwttHKH1Ys7oR9oXBqbf0BEHn0IiW+FifUfXxOkDdHEDDMgK9pX56GajR07
- soa2nUr6SAVOY98f3B7zqpdkmAmegMWx1vSN1/cVx88WU3JaQr49eNUcEFjaXCtzd3+zNMzOF
- a6WbtW50IHk2JfBztEJlgfjlldzmE1gPeED1xZDWjBiuaZdPmOUJkPq5n3JxJEIlLJnCd46Lt
- cENaDYTQcAVYO/YrgMubLAiAqarHGaKNvKW7wBy5n5OGfPYEu6v1FJlpRz4l2gOBj2wJIl6BQ
- lc2FwHVGw52NXshvMhIapWsFSrykgmRMYDgPFm4SV3B33y5LdwBabbYtxzRNdPVC0Ke5qLlNX
- qxHac2uJKFmvsZ3a5DOlh29+uKdMvh6nJnary3P9fYBsda9xj179TKbfxCAjG9a90b/ze9tqs
- ns3Z2Nz3NaEl4ku9tRjBuPlMpWOYaSecBoMvi2yGD6XVEpIj5c63WYBRTa4lnO+S9VmT4G30y
- vFi0Wvq+RnC7GjAEk2SSHdJ1Eg/yPQRaynqSRZ+YBYbPNGR2CI/wRnR0ktAdfJxsHOKUeiRIu
- 41pwXHO6qpAB4AsDq0iNLWrOIQ9WlEI+R2gVLbv4ocpnobSV+ad7ijftZHytozPaY3kVLfrGd
- YDzVti4h3O9kVoRyG59BrLreBHP6Xa1WVoShRniZWkjAZ/IhLpco5gfKN7Wt2RBQd3De6Jxv4
- DIzW5dvNYedsvmXF/mTAUWu6cyC08PuWtTAjuVzGx8+fZeaOg5EewWMemwqu3XxeQ0fnHoAlv
- zyxgy+3qNDGVU8WzDm4Qw/LiSaSsUDmOQzOr98XdgfmfI8NNPL8YbLtQQJrrbD4CgTegO4sih
- frZAFChnHE6LWsOCiOQU4ROECtOIQtIawlscks1FVw9YTyKWzGgZJMIkuYIV7RifKkz992mHU
- K8WFL9wx+or3zn67L8m2DRQ/yfp+TsScymrm1xvybuWeDCwkmRmcVwW1qxzf4aven4AhgfeEn
- Y2Wr8aJY/xre4nP4bHOoL2RFg2
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/9/14 =E4=B8=8A=E5=8D=8811:22, Hao Sun wrote:
-> Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8814=E6=
-=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=8811:13=E5=86=99=E9=81=93=EF=BC=
-=9A
+On 14.09.21 г. 4:07, Qu Wenruo wrote:
+> 
+> 
+> On 2021/9/13 下午9:17, Nikolay Borisov wrote:
+>> It will be used to clear received data on RW snapshots that were
+>> received.
 >>
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>>   kernel-shared/ctree.h     |  3 ++
+>>   kernel-shared/uuid-tree.c | 82 +++++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 85 insertions(+)
 >>
+>> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+>> index 91a85796a678..158281a9fd67 100644
+>> --- a/kernel-shared/ctree.h
+>> +++ b/kernel-shared/ctree.h
+>> @@ -2860,6 +2860,9 @@ int btrfs_uuid_tree_add(struct
+>> btrfs_trans_handle *trans, u8 *uuid, u8 type,
+>>               u64 subvol_id_cpu);
 >>
->> On 2021/9/14 =E4=B8=8A=E5=8D=8810:44, Hao Sun wrote:
->>> Hello,
->>>
->>> When using Healer to fuzz the latest Linux kernel, the following crash
->>> was triggered.
->>>
->>> HEAD commit: 6880fa6c5660 Linux 5.15-rc1
->>> git tree: upstream
->>> console output:
->>> https://drive.google.com/file/d/1U3ei_jCODG9N5UHOspSRmykrEDSey3Qn/view=
-?usp=3Dsharing
->>> kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHT=
-LJvsUdWcgB/view?usp=3Dsharing
->>
->> Any recorded info for the injected errors during the test?
->>
->> It's hanging on a tree lock, without knowing the error injected, it's
->> really hard to find out what's the cause.
->>
->
-> The `task hang` happened without any fault injection.
-> Based on the recorded logs
-> (https://drive.google.com/file/d/1x7u4JfyeL8WhetacBsPDVXm48SvVJUo7/view?=
-usp=3Dsharing
-> and https://drive.google.com/file/d/1U3ei_jCODG9N5UHOspSRmykrEDSey3Qn/vi=
-ew?usp=3Dsharing),
-> no fault-injection log was printed before the task hang.
+>>   int btrfs_is_empty_uuid(u8 *uuid);
+>> +int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, u8
+>> *uuid, u8 type,
+>> +               u64 subid);
+>> +
+> 
+> I have checked the callers in the incoming check patches, they are all
+> starting a new trans on uuid tree, thus there is no need to start a
+> trans out of this function.
+> 
+> Let's just pass the subvolume root into the function, and start a new
+> trans in side the function.
+> 
+> So that we only need one parameter @root, everything else can be fetched
+> from @root, and we can also modify the root item and uuid tree just in
+> one go.
 
-OK, then it seems like a big problem.
+I disagree, this function is a direct copy from the kernel with the only
+adjustment that btrfs_uuid_to_key doesn't set key.type. If I change it
+in progs then this means it won't be unified with the kernel when this
+happens (if ever). I really rather keep shared functions as close as
+possible.
 
-Any workload log from the fuzzer so we can try to reproduce?
-
-Or just using the tool?
-
-Thanks,
-Qu
->
-> Regards
-> Hao
->
+> 
+> Thanks,
+> Qu
+>>
+>>   static inline int is_fstree(u64 rootid)
+>>   {
+>> diff --git a/kernel-shared/uuid-tree.c b/kernel-shared/uuid-tree.c
+>> index 51a7b5d9ff5d..0f0fbf667dda 100644
+>> --- a/kernel-shared/uuid-tree.c
+>> +++ b/kernel-shared/uuid-tree.c
+>> @@ -120,3 +120,85 @@ int btrfs_is_empty_uuid(u8 *uuid)
+>>       }
+>>       return 1;
+>>   }
+>> +
+>> +int btrfs_uuid_tree_remove(struct btrfs_trans_handle *trans, u8
+>> *uuid, u8 type,
+>> +        u64 subid)
+>> +{
+>> +    struct btrfs_fs_info *fs_info = trans->fs_info;
+>> +    struct btrfs_root *uuid_root = fs_info->uuid_root;
+>> +    int ret;
+>> +    struct btrfs_path *path = NULL;
+>> +    struct btrfs_key key;
+>> +    struct extent_buffer *eb;
+>> +    int slot;
+>> +    unsigned long offset;
+>> +    u32 item_size;
+>> +    unsigned long move_dst;
+>> +    unsigned long move_src;
+>> +    unsigned long move_len;
+>> +
+>> +    if (!uuid_root) {
+>> +        ret = -EINVAL;
+>> +        goto out;
+>> +    }
+>> +
+>> +    btrfs_uuid_to_key(uuid, &key);
+>> +    key.type = type;
+>> +
+>> +    path = btrfs_alloc_path();
+>> +    if (!path) {
+>> +        ret = -ENOMEM;
+>> +        goto out;
+>> +    }
+>> +
+>> +    ret = btrfs_search_slot(trans, uuid_root, &key, path, -1, 1);
+>> +    if (ret < 0) {
+>> +        warning("error %d while searching for uuid item!", ret);
+>> +        goto out;
+>> +    }
+>> +    if (ret > 0) {
+>> +        ret = -ENOENT;
+>> +        goto out;
+>> +    }
+>> +
+>> +
+>> +    eb = path->nodes[0];
+>> +    slot = path->slots[0];
+>> +    offset = btrfs_item_ptr_offset(eb, slot);
+>> +    item_size = btrfs_item_size_nr(eb, slot);
+>> +    if (!IS_ALIGNED(item_size, sizeof(u64))) {
+>> +        warning("uuid item with illegal size %lu!",    (unsigned
+>> long)item_size);
+>> +        ret = -ENOENT;
+>> +        goto out;
+>> +    }
+>> +    while (item_size) {
+>> +        __le64 read_subid;
+>> +
+>> +        read_extent_buffer(eb, &read_subid, offset, sizeof(read_subid));
+>> +        if (le64_to_cpu(read_subid) == subid)
+>> +            break;
+>> +        offset += sizeof(read_subid);
+>> +        item_size -= sizeof(read_subid);
+>> +    }
+>> +
+>> +    if (!item_size) {
+>> +        ret = -ENOENT;
+>> +        goto out;
+>> +    }
+>> +
+>> +    item_size = btrfs_item_size_nr(eb, slot);
+>> +    if (item_size == sizeof(subid)) {
+>> +        ret = btrfs_del_item(trans, uuid_root, path);
+>> +        goto out;
+>> +    }
+>> +
+>> +    move_dst = offset;
+>> +    move_src = offset + sizeof(subid);
+>> +    move_len = item_size - (move_src - btrfs_item_ptr_offset(eb, slot));
+>> +    memmove_extent_buffer(eb, move_dst, move_src, move_len);
+>> +    btrfs_truncate_item(path, item_size - sizeof(subid), 1);
+>> +
+>> +out:
+>> +    btrfs_free_path(path);
+>> +    return ret;
+>> +}
+>>
+> 
