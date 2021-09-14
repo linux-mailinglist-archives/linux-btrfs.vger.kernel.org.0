@@ -2,63 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D4D40AABA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 11:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778BC40AACB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 11:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbhINJZT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Sep 2021 05:25:19 -0400
-Received: from mout.gmx.net ([212.227.17.20]:48419 "EHLO mout.gmx.net"
+        id S229624AbhINJ1H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Sep 2021 05:27:07 -0400
+Received: from mout.gmx.net ([212.227.15.19]:59925 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhINJZS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:25:18 -0400
+        id S229551AbhINJ1G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Sep 2021 05:27:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631611439;
-        bh=tLQjPgKudA4UmZj37h4My90h9ETFaCt4QYomMlwTNFk=;
+        s=badeba3b8450; t=1631611546;
+        bh=Usk8J37CGAQ2nk8QMd0wdWstrRNXxRKuToSR6J5X56o=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=hJI/l3T7F6Koex/a1IT+T5VtRnRH4YqRbZp24Zp0HgsMu+2JwaAveTMqgw3uyf/Fs
-         KkiRderf08U4Y4gM3urmAs/R7eO0jWHnJSiBIPaw68yZ+kpjnI8CRBZz78FgH5h0mC
-         yYUhOpNw4yadGb9gRHNTbV6ibA6XQTjMPLuNdhr4=
+        b=X4zkBeQSks4dZLGOXvohq5X2/hBF4hzyiV5s7tM+srJMJLlqQJ1SpmI60rTGeJMGY
+         HjNI3Sp1k7gn6ZVSq2hxIez9syr6+ilLSn4LhVtp2yYMvTuyOSrgghgmLf80dKFc62
+         4Mrn4C1rZxXVbj3cxb96ai9xIKF3AjGSywb74To4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1wpt-1msyVb4B7h-012F6K; Tue, 14
- Sep 2021 11:23:59 +0200
-Subject: Re: [PATCH v2 6/8] btrfs-progs: Implement helper to remove received
- information of RW subvol
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4z6k-1mrbyf2ubU-010xgk; Tue, 14
+ Sep 2021 11:25:46 +0200
+Subject: Re: [PATCH v2 7/8] btrfs-progs: check: Implement removing received
+ data for RW subvols
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20210914090558.79411-1-nborisov@suse.com>
- <20210914090558.79411-7-nborisov@suse.com>
+ <20210914090558.79411-8-nborisov@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <c3e85419-011a-02e4-736e-ae463349d6ea@gmx.com>
-Date:   Tue, 14 Sep 2021 17:23:56 +0800
+Message-ID: <15295190-51cb-7fff-c9dd-1f604a177064@gmx.com>
+Date:   Tue, 14 Sep 2021 17:25:43 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210914090558.79411-7-nborisov@suse.com>
+In-Reply-To: <20210914090558.79411-8-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Lgr0H/rIQkeHngan57Ss2lvVqajCSJcld/DefryHudnxU4YV9dK
- fR7wqiJAqfTjtAJtMrcSq/qiGEta0nTnZpilaCmAxdHiJzCzGhlvK3oHVPvCAoHEpjabZf7
- Q5wM12t3GJGoh+an3y7AGWZL9poCmUTFD9d3XfoyHCKqXn6VZB+msWaJGCwpiJoDw7cKUQH
- 5vqtYwgONzvtcSm8+daSQ==
+X-Provags-ID: V03:K1:SYsodzPe3it8oBz+taZwCHl1dTgo0aoKcc7YjRBo+khveRr/43Q
+ f7Jfz4T7CGe9Y25CVpgAjDKSzRbQ4gQCpHHAva+lijE8ptpdkst0OO0dkGS2Uqn08vEAeuG
+ /u2G0mwT2Nq2XeuXtMmd4k5gPU5K75+WvXpTNtiir7uSqH7LTe9jD99FDwg3SREk0E3wKlw
+ asPSsPKy+qrPjchqx+qRA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:RN7SvvKnBfY=:FT1iZedTczTXoVKjE28Coz
- 3SEJ7Byjm5BmJ+hlRQNpalq1hln5EsZmIh7BnyKnDTYdcbpadvQIPGLTrQSekKD4AwiNhY3MK
- ONhGzoTRTCy5ze74lXbHF8Crc7bfYvAP1OJr7NX99ZhBGsaCDdFNFwo6jkMjx9O0XZO++Ndsz
- BmAdHi2JoUIDFS8S7lnEuPMuuiCmwtVoDoH/M7eoZaMNQs8704MR+X6uiaccVY91/zqbxqIsM
- xvxvjLmgFBylN4TVf888Z/qB9Q77TobHlAdKlXjWm8aehoM6wWRRRQHpr0RdXmHShOWUU4uK4
- ZFqWqkiG8wQr8I/N9ndP8WJ/Td4WaLvTzQeSQx5595eybyMWOSD1gWyac4gj6Z7XdE/dPuB5R
- mmUvAYz2mD3yOg0/ceUcubjtCMFaJmVOpnjEntPha4kkT1j0D9eVI1jvJiXq/zS1lxYHhOwVj
- CbJZJ+Xpf6Ru99adINMmp5fvDa4TqsDrWwXBgP7GCXJjo2R20wN7ns7pSkcq4tgc65kmM6lvQ
- dBUVo0w2F/AvZNmt0PAGh7wvLuYI7lW8H+ia6ZH1Y/q8Tie4AF2AXuKNYtcFMRkrgEpi+s0fE
- tcVrR6WEzNOH7Xh+3Exv2myNEq8M9zIGumMLeRpTHFYZRwZcaNREjnVezyek3q1/tt0kYDkBN
- xokhF9A5KUxDs1ex0EziUWHutY04EXjhk5SwYbZspmWLU5vfFL0NEerHpKvUnqkMBqSAW+Z5m
- cRDmagrBjpb2hDByqfeUmjfh7afjsT7SZVrForLVm4eyAg2xwS61eFuJycKOv603/fy/DvZ63
- bfM17e0TtwwyxXRzd+gbTho/YSv1rder8X5hoeNW1jnYlvBC+vtoiexhBC5AStTDAUa1CaNUZ
- rxQnaFzE5t0+OnVE1dpVJvbUpK03Khk82iB40zrx+jU3KQeGTGUzaNJHIp5hxRfKfgN6WThpZ
- zRtq4wFMvi8pI22iXP1iFzKnBanOWcdF2lLo0PDhx2SGIoB72jNd1Ty7W4eNSejcfBhVSbp+p
- mjn0pWmitYkR71+y52ZeCdEQH5t9Lm2Nilvhbndb8Z7lkMmFcsU6yPD9+5v/zB2jWd87m1lx2
- UwZd6Kdvvm2D0s=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LPisTfUS/Ew=:IbRFc9WTV20w7G+dHwwamK
+ annJr+pwy4HvRc+BkgyaDo2FM04gCgENygC9aDhdO3XiJUbo89fQqHSKFmwHoAKQs74bX4wmL
+ 5V3OvbW9SdYGu1cd2ZbUONFQQ0V4aU+rMIxQrpGbphmfAliA1elMB/mPcAVRkib0AicXUAyQo
+ JicB9PBLG/znYM16bafBV6mKfCKwnnXHUYNP2tT5ySU34CQ2qsNINrfai5H0PLRgQ0Xr090md
+ NGGE9qEVMZh1U7LfGVR0oyPC77UJZ7ltgm9xt7Hd4CYoQmHkQrfVFImDD41IZSSMohlOx9jMV
+ 3Zu9lC1ZQy25B8iQqB2uYSk0cRb1fTNesAeG28GFDwokItrSC4SRmitrZEKKOAL4sQXG9PWrY
+ 6Sxj1Zpt6kOVh/y5Mt7GQDzAA/rv617uXRs3k9JTdxstJxI+enylUotd+VjEgZ7sMaN2vREA4
+ JemMvrh0ogqXJQJum9wZugSUCCsLsKK+ufvsIwTFwMXPbCGorrObd1QBgCRbksvGr4a8fgBA8
+ fsetKjQfUk45zzBYtusam17iWyXXOC1W+LKz/fLPvnvTnAGFnkWU2WeQbmfLW6cwx76qcESHz
+ FOngAEuWuKB2slGfF21ix304112McXh4YqmNpq2iK4ptTz6y5DQ0dIAR/Sy3CX5n2gfWbw4ZB
+ iEAbX9n/RbeX3JuoBEUSq7aRpxABrNtTJTL8tWd+VEgL7ni8Xj+zY9BQo0kFOrA9QbEyg7dmh
+ 9CWUuQXF1gnRPyzhNcbqm/ubbbL5mzFwegq37lB8APGSxKrkdgDc5MQwcH8Ka/tk/lHrBrvbk
+ 2r8v1VRrOG0OL2WhfyJFZ1LtUvSDDPCYGMXgNVDIWhS2E3kT6aziUFtu/jCoHL8JdBLaCgjf1
+ Xz7xdcz3RE2wpQ45GtXxcLC9OM7sVTXfAE2XU/pWrPe6mx9XoA3UgT4jQAyEIEOfU6rXOc1wt
+ zJNeW8ghh0AVP/I+Pxd33xWSwaqVPoC77JYCBEWGR/h2pp62Q/1ikQgVWsn7GIB8KPbieUZ6P
+ /Mu2lqJy9yaGNpO+pq3pE4Y2FzAe5z1EVKHHnpZjgQ5nt76M3K5j8Sj7KjI1x94+FTnQeHdnx
+ eXI5Fx3cyK4+DY=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -66,78 +66,95 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/9/14 =E4=B8=8B=E5=8D=885:05, Nikolay Borisov wrote:
+> Making a received subvolume RO should preclude doing an incremental send
+> of said subvolume since it can't be guaranteed that nothing changed in
+> the structure and this in turn has correctness implications for send.
+>
+> There is a pending kernel change that implements this behavior and
+> ensures that in the future RO volumes which are switched to RW can't be
+> used for incremental send. However, old kernels won't have that patch
+> backported. To ensure there is a supported way for users to put their
+> subvolumes in sane state let's implement the same functionality in
+> progs.
+>
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>   check/main.c        | 16 +++++++++++++++-
+>   check/mode-lowmem.c | 11 ++++++++++-
+>   2 files changed, 25 insertions(+), 2 deletions(-)
+>
+> diff --git a/check/main.c b/check/main.c
+> index 6369bdd90656..9d3822a2ebae 100644
+> --- a/check/main.c
+> +++ b/check/main.c
+> @@ -3544,6 +3544,7 @@ static int check_fs_root(struct btrfs_root *root,
+>   	int ret =3D 0;
+>   	int err =3D 0;
+>   	bool generation_err =3D false;
+> +	bool rw_received_err =3D false;
+>   	int wret;
+>   	int level;
+>   	u64 super_generation;
+> @@ -3658,6 +3659,19 @@ static int check_fs_root(struct btrfs_root *root,
+>   					sizeof(found_key)));
+>   	}
+>
+> +	if (!((btrfs_root_flags(root_item) & BTRFS_ROOT_SUBVOL_RDONLY) ||
+> +			btrfs_is_empty_uuid(root_item->received_uuid))) {
+> +		error("Subvolume id: %llu is RW and has a received uuid",
+> +				root->root_key.objectid);
+> +		rw_received_err =3D true;
+> +		if (repair) {
+> +			ret =3D repair_received_subvol(root);
+> +			if (ret)
+> +				return ret;
+> +			rw_received_err =3D false;
+> +		}
+> +	}
+> +
+>   	while (1) {
+>   		ctx.item_count++;
+>   		wret =3D walk_down_tree(root, &path, wc, &level, &nrefs);
+> @@ -3722,7 +3736,7 @@ static int check_fs_root(struct btrfs_root *root,
+>
+>   	free_corrupt_blocks_tree(&corrupt_blocks);
+>   	gfs_info->corrupt_blocks =3D NULL;
+> -	if (!ret && generation_err)
+> +	if (!ret && (generation_err ||  rw_received_err))
+>   		ret =3D -1;
+>   	return ret;
+>   }
+> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+> index 323e66bc4cb1..d8f783bea424 100644
+> --- a/check/mode-lowmem.c
+> +++ b/check/mode-lowmem.c
+> @@ -5197,8 +5197,17 @@ static int check_btrfs_root(struct btrfs_root *ro=
+ot, int check_all)
+>   		ret =3D check_fs_first_inode(root);
+>   		if (ret < 0)
+>   			return FATAL_ERROR;
+> -	}
+>
+> +		if (!((btrfs_root_flags(root_item) & BTRFS_ROOT_SUBVOL_RDONLY) ||
+> +					btrfs_is_empty_uuid(root_item->received_uuid))) {
+> +			error("Subvolume id: %llu is RW and has a received uuid",
+> +				  root->root_key.objectid);
+> +			if (repair)
+> +				ret =3D repair_received_subvol(root);
+> +			if (ret < 0)
+> +				return FATAL_ERROR;
+> +		}
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Not sure if we need to error out completely.
+
+I guess continue the check would be better?
+
+Despite that, everything looks good to me.
 
 Thanks,
 Qu
-> ---
->   check/mode-common.c | 40 ++++++++++++++++++++++++++++++++++++++++
->   check/mode-common.h |  1 +
->   2 files changed, 41 insertions(+)
->
-> diff --git a/check/mode-common.c b/check/mode-common.c
-> index 0059672c6402..7a5313280f3f 100644
-> --- a/check/mode-common.c
-> +++ b/check/mode-common.c
-> @@ -1301,3 +1301,43 @@ int repair_dev_item_bytes_used(struct btrfs_fs_in=
-fo *fs_info,
->   	btrfs_abort_transaction(trans, ret);
->   	return ret;
->   }
-> +
-> +int repair_received_subvol(struct btrfs_root *root)
-> +{
-> +	struct btrfs_root_item *root_item =3D &root->root_item;
-> +	struct btrfs_trans_handle *trans;
-> +	int ret;
-> +
-> +	trans =3D btrfs_start_transaction(root, 2);
-> +	if (IS_ERR(trans))
-> +		return PTR_ERR(trans);
-> +
-> +	ret =3D btrfs_uuid_tree_remove(trans, root_item->received_uuid,
-> +			BTRFS_UUID_KEY_RECEIVED_SUBVOL, root->root_key.objectid);
-> +
-> +	if (ret && ret !=3D -ENOENT) {
-> +		btrfs_abort_transaction(trans, ret);
-> +		return ret;
 > +	}
-> +
-> +	memset(root_item->received_uuid, 0, BTRFS_UUID_SIZE);
-> +	btrfs_set_root_stransid(root_item, 0);
-> +	btrfs_set_root_rtransid(root_item, 0);
-> +	btrfs_set_stack_timespec_sec(&root_item->stime, 0);
-> +	btrfs_set_stack_timespec_nsec(&root_item->stime, 0);
-> +	btrfs_set_stack_timespec_sec(&root_item->rtime, 0);
-> +	btrfs_set_stack_timespec_nsec(&root_item->rtime, 0);
-> +
-> +	ret =3D btrfs_update_root(trans, gfs_info->tree_root, &root->root_key,
-> +			root_item);
-> +	if (ret < 0) {
-> +		btrfs_abort_transaction(trans, ret);
-> +		return ret;
-> +	}
-> +
-> +	ret =3D btrfs_commit_transaction(trans, gfs_info->tree_root);
-> +	if (!ret)
-> +		printf("Cleared received information for subvol: %llu\n",
-> +				root->root_key.objectid);
-> +	return ret;
-> +}
-> diff --git a/check/mode-common.h b/check/mode-common.h
-> index cdfb10d58cde..f1ec5dca0199 100644
-> --- a/check/mode-common.h
-> +++ b/check/mode-common.h
-> @@ -130,6 +130,7 @@ int reset_imode(struct btrfs_trans_handle *trans, st=
-ruct btrfs_root *root,
->   		struct btrfs_path *path, u64 ino, u32 mode);
->   int repair_imode_common(struct btrfs_root *root, struct btrfs_path *pa=
-th);
->   int check_repair_free_space_inode(struct btrfs_path *path);
-> +int repair_received_subvol(struct btrfs_root *root);
 >
->   /*
->    * Check if the inode mode @imode is valid
+>   	level =3D btrfs_header_level(root->node);
+>   	btrfs_init_path(&path);
 >
