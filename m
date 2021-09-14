@@ -2,137 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C7B40AA3B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 11:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E223040AA5C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 11:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231642AbhINJHY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Sep 2021 05:07:24 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42018 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbhINJHT (ORCPT
+        id S230268AbhINJNp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Sep 2021 05:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230442AbhINJNc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Sep 2021 05:07:19 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2A65F200E2;
-        Tue, 14 Sep 2021 09:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631610362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kb8zQhSDSbJRTiq4yCAmyCuZt4VjzKEZf2pEgIRC+cM=;
-        b=qZBbfds6IVTcWNAHnFttR4ImRID2WM3IreBIF4NyGBFlzfvj05OPI+rpUN8CkGwH+vk+r1
-        di2isfeaoqVjWzzNzkh1Hop2cssl5xlYI7fd3v6rtz3e+54MTy/Ja65Cj/CGa2Keokb1bv
-        zMcHN2Rar9IVzlkH5rrC++EJKaTrjPw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E82D913D3F;
-        Tue, 14 Sep 2021 09:06:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id oJDfNfllQGH5NwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 14 Sep 2021 09:06:01 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2 7/8] btrfs-progs: check: Implement removing received data for RW subvols
-Date:   Tue, 14 Sep 2021 12:05:57 +0300
-Message-Id: <20210914090558.79411-8-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210914090558.79411-1-nborisov@suse.com>
-References: <20210914090558.79411-1-nborisov@suse.com>
+        Tue, 14 Sep 2021 05:13:32 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4ACC061766
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Sep 2021 02:12:14 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id h29so13218115ila.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 Sep 2021 02:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=+MDYu2cZk5y6qEtCDaD7IWEU7wQ5JsJjonx7gGHCu64=;
+        b=XQBJQebXBbCO1t4k+VyWiq7ROMx+CjUwY8RwHRN8Q7Y0xOL8mCBIVEwAPW4VdBKuN+
+         ++BRoC3foSMphGsyobb/qrH+UASkf9rFbnGP+IOVkTQDaELMiCKwkPKFoawNHI+pboAO
+         HdFrhCYfCXLIdiJ4Xo6FxBUYbpiRrz3GwR5WXi1SMtTJ0PuYWlROcCb5Rvahdxc49DNd
+         jz4/2oDB6N1CBxjWBsCK0QvXjL1KChHTgHZ2ClQjYgd+1bUSSVFEjH9BAYpKv8jbGbFD
+         7e4jsECw93d1ZyhZ+aAgsz4DLMUJYH8glVE+LPE5efiRsJZ8fRWWgayFjURk2BnTYPpG
+         EH4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=+MDYu2cZk5y6qEtCDaD7IWEU7wQ5JsJjonx7gGHCu64=;
+        b=iVNNkz6YrvG8dKZZ3nCZvVS6Et67sa8TUB+8gfWnee79y4y84eRt9tKPZKk/HmsHLn
+         XlVmwbMqyr151wtx9fo/qxAtOcivq8yEZathRfJhmx6jRKdraIGH8lwnS2yeL8+3Rl1O
+         rgF3PIuWmxmsbISNsTPmINyEyKTSfqax+4pDDxOZEbralFlJvk2dimRSF2VHq6ojobLA
+         fJkPb+Ck6qM3h+3mjIkv1gkALT63xA0unFKRcllv72WNdJ0lb0+8n5etYrhpnqDSUyp4
+         PGTjHpDm45KEXC7hz3YThpKELQ+8XpMtO0gzM8J8sIJejkJatimspjLEglHdExdId3ah
+         /iaw==
+X-Gm-Message-State: AOAM533nYM5WZMxeD9qeGpO/U6Jk4LBYq95Q+ClwZTj+O8yAAjGoeevT
+        tVEsVC/VYpPdqrHJKr7rWSE3rmi8JVXv2JQs/z8=
+X-Google-Smtp-Source: ABdhPJzUNtKj+IBck/WTfeBsvSfGMMf5MVMhOUoTajAxWB5zvFAkrth89lEhnTgy1nQCK44I/wMtSiRFD+0AcJLCOLs=
+X-Received: by 2002:a92:dccc:: with SMTP id b12mr3760091ilr.304.1631610733801;
+ Tue, 14 Sep 2021 02:12:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Reply-To: mrakainkarim7@gmail.com
+Sender: mrsimbimustafa11@gmail.com
+Received: by 2002:a02:ba90:0:0:0:0:0 with HTTP; Tue, 14 Sep 2021 02:12:13
+ -0700 (PDT)
+From:   Mr Akain Karim <aeyuhlmy739@gmail.com>
+Date:   Tue, 14 Sep 2021 02:12:13 -0700
+X-Google-Sender-Auth: vKHunIQ16Z2xhGKDpFijrpExFpA
+Message-ID: <CAOXb1y6cDoC9gaAtMLeWZkwKAMi-7qxLX72yCDy9g=sbbE4X7w@mail.gmail.com>
+Subject: Greetings
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Making a received subvolume RO should preclude doing an incremental send
-of said subvolume since it can't be guaranteed that nothing changed in
-the structure and this in turn has correctness implications for send.
-
-There is a pending kernel change that implements this behavior and
-ensures that in the future RO volumes which are switched to RW can't be
-used for incremental send. However, old kernels won't have that patch
-backported. To ensure there is a supported way for users to put their
-subvolumes in sane state let's implement the same functionality in
-progs.
-
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- check/main.c        | 16 +++++++++++++++-
- check/mode-lowmem.c | 11 ++++++++++-
- 2 files changed, 25 insertions(+), 2 deletions(-)
-
-diff --git a/check/main.c b/check/main.c
-index 6369bdd90656..9d3822a2ebae 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -3544,6 +3544,7 @@ static int check_fs_root(struct btrfs_root *root,
- 	int ret = 0;
- 	int err = 0;
- 	bool generation_err = false;
-+	bool rw_received_err = false;
- 	int wret;
- 	int level;
- 	u64 super_generation;
-@@ -3658,6 +3659,19 @@ static int check_fs_root(struct btrfs_root *root,
- 					sizeof(found_key)));
- 	}
- 
-+	if (!((btrfs_root_flags(root_item) & BTRFS_ROOT_SUBVOL_RDONLY) ||
-+			btrfs_is_empty_uuid(root_item->received_uuid))) {
-+		error("Subvolume id: %llu is RW and has a received uuid",
-+				root->root_key.objectid);
-+		rw_received_err = true;
-+		if (repair) {
-+			ret = repair_received_subvol(root);
-+			if (ret)
-+				return ret;
-+			rw_received_err = false;
-+		}
-+	}
-+
- 	while (1) {
- 		ctx.item_count++;
- 		wret = walk_down_tree(root, &path, wc, &level, &nrefs);
-@@ -3722,7 +3736,7 @@ static int check_fs_root(struct btrfs_root *root,
- 
- 	free_corrupt_blocks_tree(&corrupt_blocks);
- 	gfs_info->corrupt_blocks = NULL;
--	if (!ret && generation_err)
-+	if (!ret && (generation_err ||  rw_received_err))
- 		ret = -1;
- 	return ret;
- }
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 323e66bc4cb1..d8f783bea424 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -5197,8 +5197,17 @@ static int check_btrfs_root(struct btrfs_root *root, int check_all)
- 		ret = check_fs_first_inode(root);
- 		if (ret < 0)
- 			return FATAL_ERROR;
--	}
- 
-+		if (!((btrfs_root_flags(root_item) & BTRFS_ROOT_SUBVOL_RDONLY) ||
-+					btrfs_is_empty_uuid(root_item->received_uuid))) {
-+			error("Subvolume id: %llu is RW and has a received uuid",
-+				  root->root_key.objectid);
-+			if (repair)
-+				ret = repair_received_subvol(root);
-+			if (ret < 0)
-+				return FATAL_ERROR;
-+		}
-+	}
- 
- 	level = btrfs_header_level(root->node);
- 	btrfs_init_path(&path);
 -- 
-2.17.1
-
+*Compliment of the day,I am Mr. Akain Karim,  I Have a Business Proposal of
+$10.5million for you and I  was compelled to use this medium due to the
+nature of this project, I have access to very vital information that can be
+used to transfer this huge amount of money, which may culminate into the
+investment of the said funds into your company or any lucrative venture in
+your country. If you will like to assist me as a partner then indicate your
+interest, after which we shall both discuss the modalities and the sharing
+percentage.Upon receipt of your reply on your expression of Interest.I will
+give you full details on how the business will be executed and I am open
+for negotiation.Thanks for your anticipated cooperation.Best RegardsMr. 	
+Akain Karim*  Please feel free to reach me on my e-mail:mrakainkarim7@gmail.com
