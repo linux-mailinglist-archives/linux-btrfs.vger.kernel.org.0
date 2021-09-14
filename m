@@ -2,148 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88D740B701
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 Sep 2021 20:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4AD40BB58
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Sep 2021 00:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhINSfu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Sep 2021 14:35:50 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:44043 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229728AbhINSft (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Sep 2021 14:35:49 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id B3B8F32009B2;
-        Tue, 14 Sep 2021 14:34:31 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 14 Sep 2021 14:34:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=zPRPCoCwEd+r9kLxKM6N96s6FwA
-        DbcSSHKQ2YSc+spc=; b=V4bJM2FMcCfjhpBrvF6JykskKEJIlPYsyGjyOWHswAR
-        mRUCFeKQtfy21hjT+KO6uUMnojdfUEy4wqN6sy2KyQdKFuR7zI4jc74HTtD7Mx+Y
-        T18+G4tP9RwAfnI9n+7utbM3jW6pFtCpMcIIB+urxGs5jRbLuFQwEnyQAVkm7xXn
-        rZ5iHSnjT02efcTHr9Lohiy9fvXYIGjh/oYDplCEd/RBaCJilUezSiKTcp5xfeFT
-        awDzYlNg7lrLg35+fNt9gDKyF2p5vHRodcW8jEV/GO3TEQfVjTI3Qq+9i/KwvnD8
-        mFME6sXVTNuY7uhQkyY/Jj28s99JmU3ach8/wUSuu3Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=zPRPCo
-        CwEd+r9kLxKM6N96s6FwADbcSSHKQ2YSc+spc=; b=iSnr+Uv0zrP6S8CKlEkk0Z
-        AQIcbwC6LLgbgc+EeLMTxquUPa8CmAaMBytq7SUESWGWQPofo68SyaAhITo82CSu
-        7tf1BOJz1O5g2JAIcxkve+7Iu2wnrEs6K9BKu8dWmpHYeUFjl6pIg0B1//PxmQsX
-        yhcEXQyBNtAcTKCQWuRs4qdXIXKcNlU2ExvBcsfN/ZthGHnuItAyd6HmKkHF0TcP
-        /VpKSqmIvK+Pv/DVkc6EqD0fAodpterwnJpmi8DUq0G2aFmpE/0FJurooPJ+GzpP
-        EWs+JuWyHtnBF9BWNARHRFqRwCkV2l71NzCPLC0IoMRui45p6iQrL8Upg78ATIhw
-        ==
-X-ME-Sender: <xms:N-tAYfFUDGE4vOMJ0uOfbkFr4bjJAHvFHnwh_e11rgymbeexjm5EvA>
-    <xme:N-tAYcXMsvpjidpJgKgAOtK0yz_s66A5SY_kp6SOmgrxHL6pGa_aG6RTUX2sWLnLd
-    ElWBGRvSJeZg6DvNvs>
-X-ME-Received: <xmr:N-tAYRKGFvUiUNKg8uCUkVoS0eRDqp5yWVygITZxb0xBvE-ZZMGJDK898mTvCZ5Z1Io3WV7ociiLpDKbXv8nHo5knt8rig>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudegledguddvfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhi
-    shcuuehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpe
-    ehudevleekieetleevieeuhfduhedtiefgheekfeefgeelvdeuveeggfduueevfeenucev
-    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhsse
-    gsuhhrrdhioh
-X-ME-Proxy: <xmx:N-tAYdGthhDBHOdLC-SNFL6A-arIjZjfcXYd5JC0rALMWYmByHjlQg>
-    <xmx:N-tAYVWMccDjuFrf_0NatbxT0zHQTxwCN9rFHWdXp0B0UT6nLEPkUw>
-    <xmx:N-tAYYO6r4laEGiAGQZ3ghlzsqQehPocKzhMj0JlrVNmAtZkehE_9A>
-    <xmx:N-tAYSjv3yS9JJCtriaHlbHexxHDHdrWhiFx2TYRVMjsR7-zOziUOw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Sep 2021 14:34:30 -0400 (EDT)
-Date:   Tue, 14 Sep 2021 11:34:29 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v6 2/3] btrfs: initial fsverity support
-Message-ID: <YUDrNR+72WMno10q@zen>
-References: <cover.1625083099.git.boris@bur.io>
- <797d6524e4e6386fc343cd5d0bcdd53878a6593e.1625083099.git.boris@bur.io>
- <YUDcy73zXVPneImG@sol.localdomain>
- <YUDgmgq1Q5l5e/K4@zen>
- <YUDiTFvaVZ4INJOO@sol.localdomain>
+        id S235918AbhINWV4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 Sep 2021 18:21:56 -0400
+Received: from mout.gmx.net ([212.227.15.18]:34431 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235754AbhINWVs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 Sep 2021 18:21:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631658019;
+        bh=GHiHqvHlE9FVXRvfz4x85/Cl9fFud602DGmTQdleiMA=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=RbZaJAf3KPKN9FTrrcGr2gUz3H2z5K/KKY4Lbpk0oeuDVJTFr/u+jfLQyrhOTzu24
+         PCXOMQiJzrBQRBGAuvZttLp5AkxYVto7WeUnnIayM3jD1ivDLKrATnu2LUP6wlIG05
+         TyDxrRGqLurgoaDw03EatYXimktVbWKXZ4i3y378=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3bWr-1mr7QX2gLr-010gNi; Wed, 15
+ Sep 2021 00:20:19 +0200
+Subject: Re: [PATCH v2 0/3] btrfs: btrfs_bio and btrfs_io_bio rename
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210914012543.12746-1-wqu@suse.com>
+ <20210914162553.GE9286@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <1bb216c9-27fb-f949-bc9b-d4ec129b9097@gmx.com>
+Date:   Wed, 15 Sep 2021 06:20:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUDiTFvaVZ4INJOO@sol.localdomain>
+In-Reply-To: <20210914162553.GE9286@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qtjHN1W/u9eI01EJehGiLwhHx2/O7XC3b93MhiDhRsnXTLxFvHz
+ 26NqhVn8jam+V6KVikK8GqID6nRZoFbMtD/Yp1D5NcZWPRWCbk+vLhzpPC4CjCxnmeMFtCP
+ tE8mUxAnSg4PKMx+feJ4rqU4s9zLqZaJn+YcQOWrwguWcNdqn78y3O+oa1eQONQvwLKOAdZ
+ UajNeb2JXwWhevyBmzPhA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PasGUhARzEU=:KSCylrgBFp/aL1CRA3ZDHT
+ uWBrdfxaMqe9lot5vc/zx9D8mFVpN/wOaqQeu8OCvl5qunBdKZuYnXReMuU8lt1OZQgo+B2ik
+ 8JB0EUdu50sQ3AAoDBEvAsKEmZLg4iq14AJVLpAgql2DKrWwAVp9qdIw/f9Ng+EBbIZXWvNlJ
+ y+6pzpfGbyIjTeyEB/98zxajRMVaLLDNP77UL4CkZxteIMDYw0q+TPqzymx5SYn1VIJQsLFJt
+ wsNld2bmZ+WY5K04WVOkMQX+mG6azYCHRRkwyKy0qKEwV61cTR/2MyUGx0B4/FslmuHWO5TAn
+ qPKvqvLu1Cb8g35p8sOpOF1Wrn0A28RCeN2GM7nNXysf5IOwErFcPjerjvLEdAQH0pd7NOn65
+ D9kRh7LCDJ3erKwX+XY3A4LRgDXFtRUGYNkg4Tcj2EwakTtv5EC8J73C/U0Wr20p1o23neStr
+ bMmncDhx0FoC8gpTNqYAQMwXoPWpJMKQhcJ46djOr5/7wN9kLS43mXZrxRO0u0dE2nCrapyaH
+ mn75QUwFWvALLXJz2JTamzuDKQYPUT5f2GT0yifkArv5PzMKJFLEDSDw56A03jPpWOS8JLbTU
+ YnMTHimDwLBkvomEKTSe/vXiU3I1JGCIgm+dZxT/8FCRjdAhtLhRMDgiek0VDnDEzUOZjrFwx
+ sTxFhQZkxD+aN/DTLEOq6mEVYwFJMStxpszn5hnAhOfR7We2wjUDIug4X5GKV9kV8VL0+fEP7
+ s9/b5X5pYArYjUIqrPwEcKbcygDtmniRMpNz+Y9WRjfivyDJt2BFuPk6iEzqmf/0AT7oWJdnH
+ VpdVVSbX1tNKleeR/KzRfd/BnNw5qSmaMZuccxwaW+0YmuLh6TKuWoYifvrUdY8xbYvMdjY46
+ yAFqQZf8mFoavBAp/CqJi7GQtsr8+GI8Yd35bySK+jcxEyqrcwUkGeNaYjoH4dcEB/tzplnRg
+ dAjTt2ZSBOdA8Huf8lnQkdAqB8LNkxlS3gapa3v97TV7OYc4lfLtzjCdVQjozGS2ACMT4BKzk
+ 75elNltEtGjjhK4FfZ0jT23pL/BFNfpUFVrEWSOFpYaKiyuAVdq0vdfa0aRFdaW/yDlnrTN8y
+ 1U0vuYr+4wAtuo=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 10:56:28AM -0700, Eric Biggers wrote:
-> On Tue, Sep 14, 2021 at 10:49:33AM -0700, Boris Burkov wrote:
-> > On Tue, Sep 14, 2021 at 10:32:59AM -0700, Eric Biggers wrote:
-> > > Hi Boris,
-> > > 
-> > > On Wed, Jun 30, 2021 at 01:01:49PM -0700, Boris Burkov wrote:
-> > > > Add support for fsverity in btrfs. To support the generic interface in
-> > > > fs/verity, we add two new item types in the fs tree for inodes with
-> > > > verity enabled. One stores the per-file verity descriptor and btrfs
-> > > > verity item and the other stores the Merkle tree data itself.
-> > > > 
-> > > > Verity checking is done in end_page_read just before a page is marked
-> > > > uptodate. This naturally handles a variety of edge cases like holes,
-> > > > preallocated extents, and inline extents. Some care needs to be taken to
-> > > > not try to verity pages past the end of the file, which are accessed by
-> > > > the generic buffered file reading code under some circumstances like
-> > > > reading to the end of the last page and trying to read again. Direct IO
-> > > > on a verity file falls back to buffered reads.
-> > > > 
-> > > > Verity relies on PageChecked for the Merkle tree data itself to avoid
-> > > > re-walking up shared paths in the tree. For this reason, we need to
-> > > > cache the Merkle tree data. Since the file is immutable after verity is
-> > > > turned on, we can cache it at an index past EOF.
-> > > > 
-> > > > Use the new inode ro_flags to store verity on the inode item, so that we
-> > > > can enable verity on a file, then rollback to an older kernel and still
-> > > > mount the file system and read the file. Since we can't safely write the
-> > > > file anymore without ruining the invariants of the Merkle tree, we mark
-> > > > a ro_compat flag on the file system when a file has verity enabled.
-> > > 
-> > > I want to mention the btrfs verity support in
-> > > Documentation/filesystems/fsverity.rst, and I have a couple questions:
-> > > 
-> > > 1. Is the ro_compat filesystem flag still a thing?  The commit message claims it
-> > >    is, and BTRFS_FEATURE_COMPAT_RO_VERITY is defined in the code, but it doesn't
-> > >    seem to actually be used.  It's not needed since you found a way to make the
-> > >    inode flags ro_compat instead, right?
-> > 
-> > I believe it is still being used, unless I messed up the patch I sent in
-> > the end. Taking a quick look, I think it's set at fs/btrfs/verity.c:558.
-> > 
-> > btrfs_set_fs_compat_ro(root->fs_info, VERITY);
-> > 
-> > I believe I still needed it because the tree checker doesn't scan every
-> > inode on the filesystem when you mount, so it would only freak out about
-> > a ro-compat inode later on if the inode didn't happen to be in a leaf
-> > that was being checked at mount time.
-> > 
-> 
-> Okay, so it is used.  (Due to the macro, it didn't show up when grepping.)
-> 
-> Doesn't it defeat the purpose of a ro_compat inode flag if the whole filesystem
-> is marked with a ro_compat feature flag, though?  I thought that the point of
-> the ro_compat inode flag is to allow old kernels to mount the filesystem
-> read-write, with only verity files being forced to read-only.  That would be
-> more flexible than ext4's implementation of fs-verity which forces the whole
-> filesystem to read-only.  But it seems you're forcing the whole filesystem to
-> read-only anyway?
-> 
-> - Eric
 
-I was thinking of it in terms of "RO compat is the goal" and having new
-inode flags totally broke that and was treated as a corruption of the
-inode regardless of the fs being ro/rw. I think a check on a live fs
-would just flip the fs ro, which was the goal anyway, but a check that
-happened during mount would fail the mount, even for a read-only fs. 
 
-Making it fully per file would be pretty cool! The only thing
-really missing as far as I can tell is a way to mark a file read only
-with the same semantics fsverity uses from within btrfs.
+On 2021/9/15 =E4=B8=8A=E5=8D=8812:25, David Sterba wrote:
+> On Tue, Sep 14, 2021 at 09:25:40AM +0800, Qu Wenruo wrote:
+>> The branch can be fetched from github, and is the preferred way to grab
+>> the code, as this patchset changed quite a lot of code.
+>> https://github.com/adam900710/linux/tree/chunk_refactor
+>>
+>> There are two structure, btrfs_io_bio and btrfs_bio, which have very
+>> similar names but completely different meanings.
+>>
+>> Btrfs_io_bio mostly works at logical bytenr layer (its
+>> bio->bi_iter.bi_sector points to btrfs logical bytenr), and just
+>> contains extra info like csum and mirror_num.
+>>
+>> And btrfs_io_bio is in fact the most utilized bio, as all data/metadata
+>> IO is using btrfs_io_bio.
+>>
+>> While btrfs_bio is completely a helper structure for stripe IO
+>> submission (RAID56 doesn't utilize it for IO submission).
+>>
+>> Such naming is completely anti-human.
+>>
+>> So this patchset will do the following renaming:
+>>
+>> - btrfs_bio -> btrfs_io_context
+>>    Since it's not really used by all bios (only mirrored profiles utili=
+ze
+>>    it), and it contains extra info for RAID56, it's not proper to name =
+it
+>>    with _bio suffix.
+>>
+>>    Later we can integrate btrfs_io_context pointer into the new
+>>    btrfs_bio.
+>>
+>> - btrfs_io_bio -> btrfs_bio
+>>    I originally plan to rename it to btrfs_logical_bio, but it's a litt=
+le
+>>    too long for a lot of functions.
+>
+> This sounds all good. The only dangerous thing is that btrfs_bio now
+> means something else, so that can become problem with backports or
+> requiring to do a mental switch when reading before/after the version it
+> appears.
+>
+So the original idea of btrfs_io_bio->btrfs_logical_bio would be better
+in this particular case, right?
 
-Boris
+Thanks,
+Qu
