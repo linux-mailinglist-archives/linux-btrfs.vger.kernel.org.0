@@ -2,195 +2,229 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D270440BE0A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Sep 2021 05:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFF140BF5C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Sep 2021 07:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhIODOX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 Sep 2021 23:14:23 -0400
-Received: from mout.gmx.net ([212.227.15.15]:56757 "EHLO mout.gmx.net"
+        id S235806AbhIOFfR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Sep 2021 01:35:17 -0400
+Received: from mout.gmx.net ([212.227.15.19]:49127 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229834AbhIODOW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 Sep 2021 23:14:22 -0400
+        id S230304AbhIOFfR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Sep 2021 01:35:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631675577;
-        bh=djn3yFVuMA4uupGafDcTwLChu6KJiUE1RWGXn5Tg5Y8=;
+        s=badeba3b8450; t=1631684031;
+        bh=WO8ktNjvPlDwOS807Fk+zCa8AUoQlNru5MtaSEoQgpg=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=fiF2ybA6/85v3g1Ou74TvQ+LRQu6SI+CC3QL6kGalQGZmWNlOMg0XCAlOR95uiuWx
-         qoy4LexoNZaqXqdcsNNZzfMq21Xgfcl7pvnGW76KYdYc48qYVsFDKZ0COI+dthYClu
-         TwUNM2YLaYpcevqO8NUyr7Qr+bid6q6hZ0LVQ3zE=
+        b=AohD4FHNsPDyTSdKt23lwVF/Jp0UPbbE9JPJe68bXtkdzuwEEtx05o3jJ1cND0r2W
+         bWEb/XCTAFzRm9UR3k5V6czCtSfpToLhvS/fD2pinANtl0EsBAU4AAs7jRWhn6wrle
+         PkOTpvQqMY18s5PotJ7PGMEbrJ3WpZOBC9/rDMQk=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdNcA-1mzg6a20dU-00ZQpC; Wed, 15
- Sep 2021 05:12:57 +0200
-Subject: Re: WARNING in btrfs_run_delayed_refs
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CACkBjsa0wQ5oDQh0CABfV-UoAa9czS6DAuAA0fBrM_HhVxd6+w@mail.gmail.com>
- <a911ac2c-d743-03ea-513d-0b9756808d17@gmx.com>
- <CACkBjsa6uQU9RGKVmtbkAjBkQn4QZNCWo5N_wq4RHjPcJKt2Kw@mail.gmail.com>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Md6Mj-1mziN20TT9-00aFsv; Wed, 15
+ Sep 2021 07:33:51 +0200
+Subject: Re: kernel BUG in __clear_extent_bit
+To:     Hao Sun <sunhao.th@gmail.com>, clm@fb.com, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <CACkBjsYjkubyQBvBy7aaQStk_i1UuCu7oPNYXhZhvhWvBCM3ag@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <94d7ce1c-61c4-9aa8-956d-f2299d87e7d1@gmx.com>
-Date:   Wed, 15 Sep 2021 11:12:52 +0800
+Message-ID: <145029f0-5bc5-73fd-14ee-75b5829a3334@gmx.com>
+Date:   Wed, 15 Sep 2021 13:33:47 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CACkBjsa6uQU9RGKVmtbkAjBkQn4QZNCWo5N_wq4RHjPcJKt2Kw@mail.gmail.com>
+In-Reply-To: <CACkBjsYjkubyQBvBy7aaQStk_i1UuCu7oPNYXhZhvhWvBCM3ag@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GZvXGIMhQazYYrYOOt7avPb5sQCuME6YYGGyp5cY4XEyk33zTi7
- Nzw++CRYqbg7bWoiEKcUAtUd9VcI2QbmUuLTChWqK1MMnVWyUK57ZZCo7EoeesgQlnqWgQD
- xCJNsGP7tLOjsVl/Zjl4e4psXaiL1OkstLt20VpWNA7QGNunEHV8NNDAHd5U2yOXXa2nox9
- pDeoe9ZsxD2yWLqgmizVg==
+X-Provags-ID: V03:K1:CUyibiy6EID5SmYXGfEXAESuRqQ2iVtShGZ5BGFrnO9a1rnrbeL
+ C8KftzNuFvgt2nD34cSmp5p97RF0reQ0FkesG9oahHL2XAl03RMiXBPDAq/Ur3oWMygXiMb
+ H8gofS1Ta34G1o2sAFJCq05fJiUm0eu578ewgq2Hcw4qqUrA/UErRfSzDMo1o1tFxIgz0eU
+ P0+K6rFDTF1Iu1NvREYeA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fzHvvz5/4n0=:vJFUgPwlwx2ZSMjaAdXvYf
- HQQ0KfXB27EvRu0gocsYo9E7GCBHu6w9hF2Zi9R7lmlmj77ltl9I0C/Uq0FUrYXTvW5ER3ZmH
- X2rKh1q9nj0Y3y6v88Y0/jOO+jbPadKcsLbR011B3XTo913+1mZwcfJHDRUVrWn7DOFNitN1g
- ZL9NvCzSxiQv/gqzDRylfh4LhQRgrp/9QLPL+7GjzcqcIhQ7vtg4+oKfuHXcKl3FH/kA0s0Wh
- v9C6oH2TLSPyrL+6qctWfTP6qurKjGaDVT430afSJK2T1eGXf+XmsvzYiint9qO6PpWTfQVh+
- QxtPkhZ1XLZScEz7Qv+EuV7g8QZcpWBV4+nnza48TpG5tkRuVbPZXYjH6/QVE1I7AQcHZOacZ
- ZEKw/XrEERh1MI0eSjEMuMXLU6LPgY19LEuFtMSI14eEiCIkmMT13Tt9ii2hqdPIWi+/uPd7K
- mqnoSinuPNqjN7+bW5bgTUuKC4bxWiy9t+E+cULDWMoRIeyyNCt4m2iaxMkH5n+L2ASwVWtqd
- 1PzJtVX+CC8s9yPEfLBnKOkTfhMjxACwiISYdbvg1MgBFHgBddADTGtUTI1MaSCOgq4VLMceq
- dXN52dG2xz+6JUu4FBxf0uQr6TB/t8qXgFNfTqS1/NxAfkk2vcX5eeDjRxjb3aIx4lA/ggEhD
- 3gu/x03hFjJ6Rj9WGtULSJiysKOJ1xcEsiXmnT2rTQ3twZE0NG6cSMJtz2RbpDXSCcW8QH22L
- VW8qA7Wq4b1vIQCz/pLYSZwUugDmhRE1JlwuM6lCpKkHgsjec3h5uQ/y5lviLcH3UJsXDIJbp
- Tv9OrMpBcUHveeIDeLmBJD8nL3LuElA7I5vMSHx1umoybob7kmszmvMRP7tnAjgBz4ZROt1V0
- phRSIwQZU9p7Pnu6gP0GMGjtmEoMju+AIfN44hkN49t/C1Agnk+ROCl8GrelCj0Tfp8ct4vc2
- aEXBubEVvhseD7RZGFmhaGv1AhuaTu7IatGk8NJ7svwdrVO8sWqs18ZkqjG2Cugtq99Z2tjSo
- zx4uh9vVpFXwA+Lbi2VzBqSzRDn1LDrvmgCgGOI/yAvMotXOIpL8pCM/WCtcqEzGsJKY3DoK3
- w4gy+nbW4G8bpTK5e28l1LxINsbgIWL+UunV4HI+4tLKyk5uY1gK0mASsDgMSO6p8j9ZJZ5Bn
- j4XWTm/yC3unKtzrNa5znr0c5C
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YGyfwt5POXw=:A9kRJ1v1pgb/6pmsYImxnP
+ E+QcmFHQCPpOQm4L1pUrgbxinOdY8tNq6fBvEsycbm3RJTWeKAj7NBaDzKADmgRynyhApGqkx
+ trN3zRF31tWX+PlbIujB3NXYGHmMJlUTnGU/9r+NfQcGDKFzwn+xJCl9YEHiWVnFfpIQ3XdmC
+ K5rIBuK2l6GqsVkJcuTqsGWC8duPizrAqILN1v3i1d+aylk6QtjIKjuDNVq28+4GJJFFl+FEt
+ yDQVU9HzQ3hmBOlfmEy4ObSbBLvwdyhVfHIUVawDT01CIeNqhCuAEeN311d0uYFNo1FLMR8IM
+ YY2Z8yrnMNtGloWsgP0yTz4fEUUl223+rFXJw9PCdWZA0H0BV6gjcro9kqJ3Sta2KPXy3/hyW
+ gpUHa9WKHYB6DIK2CW6RWTRiH/xTEzMmydWapQkLv/9hZzeUAa+mQPJTr1p8hrp+M7PfVkHdL
+ hud6IDt8DoGfvI6QLj/tWh7W74Ph1RkxtuVUMfFn+OK3RUkVhIWilMVZNJ8xSUupVnHqi4eug
+ Z9y5B7TGfH5Tq8S2udeLms9vSczPokdNRAFRz0dOcQ1SKHmTTkbU2PSRXfc7eSHI9QO1CsC3c
+ zaSNoklIE9YdV7nkboFi+CDjP6EugidCjJhAJopyzecv8j5FmQTW6MXqci4fLmHuv7C7OUrKc
+ GkujHnNAxXqKXFekyk+4vVTI7We5nz7/lCJWajQ9tN9B/7WfWM/RimqDEJXTVxK33DdaBgHe7
+ jb5ENnCwXnPW2peqUFGXqTvsRH+VvW1e6dPuVtxzJmy29uENjAKE1GxUkGDzPy5I+6mHHfyhJ
+ /jk4Uz5hAS9SWwwN+eLaoGqO9UUoNe/a3+HLe6E65NZ+cUgwM6MR95ZVdkT1nRHY6pZutQHWU
+ C+u43RzOtnVRSLJEhvblWFAGOzABNU14JMIGtEIvEZUN4r/xRiVyAzM/7uDoiO0GjPlZayF8i
+ RW9naXLcIvFdodMqsgT3yy6w9flk9wjJXy7fj70S0LvCFfDJRedHx38fFhGalL4BNqZoZFT0I
+ fz35wQK9N8JGKkaSA4zWA04D0TLYhmqntFBzWxCv7ymeWsDXGbqTXQAxaUsRXQ/lhRx2VTUEc
+ Ju33DzNWfXj7Ha73pqQh3N3RfuQk8Wo3/GhXDsZRQ01yv2omBt0XPMAi8cbbwXXh6ABjs2rW5
+ Js6tQtIIfsaY27kqahepTwliXH
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/9/15 =E4=B8=8A=E5=8D=8810:56, Hao Sun wrote:
-> Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=
-=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8A=E5=8D=8810:20=E5=86=99=E9=81=93=EF=BC=
-=9A
->>
->>
->>
->> On 2021/9/15 =E4=B8=8A=E5=8D=8810:14, Hao Sun wrote:
->>> Hello,
->>>
->>> When using Healer to fuzz the latest Linux kernel, the following crash
->>> was triggered.
->>>
->>> HEAD commit: 6880fa6c5660 Linux 5.15-rc1
->>> git tree: upstream
->>> console output:
->>> https://drive.google.com/file/d/1gd0dl74MyvvVAYqsCDKSGmcfpZszD0kt/view=
-?usp=3Dsharing
->>> kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHT=
-LJvsUdWcgB/view?usp=3Dsharing
->>> C reproducer: https://drive.google.com/file/d/1WKQukijOJ7D0NYk1iKf47FE=
-SjYfAjrlz/view?usp=3Dsharing
->>> Syzlang reproducer:
->>> https://drive.google.com/file/d/1Gi9-Mgbrjw1OI-ymO4zDVIFej2Qf4ppL/view=
-?usp=3Dsharing
->>>
->>> If you fix this issue, please add the following tag to the commit:
->>> Reported-by: Hao Sun <sunhao.th@gmail.com>
->>>
->>> loop11: detected capacity change from 0 to 32768
->>> BTRFS info (device loop11): disk space caching is enabled
->>> BTRFS info (device loop11): has skinny extents
->>> BTRFS info (device loop11): enabling ssd optimizations
->>> FAULT_INJECTION: forcing a failure.
->>> name failslab, interval 1, probability 0, space 0, times 0
->>> CPU: 0 PID: 7769 Comm: syz-executor Not tainted 5.15.0-rc1 #16
->>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
->>> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
->>> Call Trace:
->>>    __dump_stack lib/dump_stack.c:88 [inline]
->>>    dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
->>>    fail_dump lib/fault-inject.c:52 [inline]
->>>    should_fail+0x13c/0x160 lib/fault-inject.c:146
->>>    should_failslab+0x5/0x10 mm/slab_common.c:1328
->>>    slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
->>>    slab_alloc_node mm/slub.c:3120 [inline]
->>>    slab_alloc mm/slub.c:3214 [inline]
->>>    kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
->>>    __btrfs_free_extent.isra.53+0x7b/0x1180 fs/btrfs/extent-tree.c:2942
->>>    run_delayed_tree_ref fs/btrfs/extent-tree.c:1687 [inline]
->>>    run_one_delayed_ref fs/btrfs/extent-tree.c:1711 [inline]
->>>    btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:1952 [inline=
-]
->>>    __btrfs_run_delayed_refs+0x83e/0x1a00 fs/btrfs/extent-tree.c:2017
->>>    btrfs_run_delayed_refs+0xb1/0x2b0 fs/btrfs/extent-tree.c:2148
->>>    btrfs_commit_transaction+0x7d/0x1430 fs/btrfs/transaction.c:2065
->>>    btrfs_sync_fs+0x9a/0x430 fs/btrfs/super.c:1426
->>>    btrfs_ioctl+0x209b/0x3be0 fs/btrfs/ioctl.c:4970
->>>    vfs_ioctl fs/ioctl.c:51 [inline]
->>>    __do_sys_ioctl fs/ioctl.c:874 [inline]
->>>    __se_sys_ioctl fs/ioctl.c:860 [inline]
->>>    __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
->>>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>>    do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
->>>    entry_SYSCALL_64_after_hwframe+0x44/0xae
->>> RIP: 0033:0x46ae99
->>> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
->>> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
->>> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
->>> RSP: 002b:00007f8ac08c7c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
->>> RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
->>> RDX: 0000000000000000 RSI: 0000000000009408 RDI: 0000000000000003
->>> RBP: 00007f8ac08c7c80 R08: 0000000000000000 R09: 0000000000000000
->>> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
->>> R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffccc1d6390
->>> ------------[ cut here ]------------
->>> WARNING: CPU: 0 PID: 7769 at fs/btrfs/extent-tree.c:2150
->>> btrfs_run_delayed_refs+0x245/0x2b0 fs/btrfs/extent-tree.c:2150
->>
->> This is again btrfs_abort_transaction().
->>
->> This makes me wonder, should we add ENOMEM to abort transaction warning
->> condition to make the ENOMEM injection code happy.
->>
->> Mind to test the following diff?
->>
->> Thanks,
->> Qu
->>
->> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
->> index 8c6ee947a68d..6bc79f6716fa 100644
->> --- a/fs/btrfs/ctree.h
->> +++ b/fs/btrfs/ctree.h
->> @@ -3548,7 +3548,8 @@ do {
->>                   \
->>           /* Report first abort since mount */                    \
->>           if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,     \
->>                           &((trans)->fs_info->fs_state))) {       \
->> -               if ((errno) !=3D -EIO && (errno) !=3D -EROFS) {        =
-     \
->> +               if ((errno) !=3D -EIO && (errno) !=3D -EROFS &&     \
->> +                   (errno) !=3D -ENOMEM) {                       \
->>                           WARN(1, KERN_DEBUG                           =
-   \
->>                           "BTRFS: Transaction aborted (error %d)\n",   =
-   \
->>                           (errno));                                    =
-   \
->>
+On 2021/9/15 =E4=B8=8A=E5=8D=8810:20, Hao Sun wrote:
+> Hello,
 >
-> Just tested it. This did fixed most `WARNING` reports, e.g., "WARNING
-> in btrfs_add_link", "WARNING in btrfs_run_delayed_refs".
-> I think it would be better if we can judge whether the  `ENOMEM` is
-> caused by `fault injection` or not.
+> When using Healer to fuzz the latest Linux kernel, the following crash
+> was triggered.
 >
-This is really hard to distinguish.
+> HEAD commit: 6880fa6c5660 Linux 5.15-rc1
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/1-9wwV6-OmBcJvHGCbMbP5_uCVvrUdTp3/view?u=
+sp=3Dsharing
+> kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHTLJ=
+vsUdWcgB/view?usp=3Dsharing
+> C reproducer: https://drive.google.com/file/d/1eXePTqMQ5ZA0TWtgpTX50Ez4q=
+9ZKm_HE/view?usp=3Dsharing
+> Syzlang reproducer:
+> https://drive.google.com/file/d/11s13louoKZ7Uz0mdywM2jmE9B1JEIt8U/view?u=
+sp=3Dsharing
+>
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+>
+> loop1: detected capacity change from 0 to 32768
+> BTRFS info (device loop1): disk space caching is enabled
+> BTRFS info (device loop1): has skinny extents
+> BTRFS info (device loop1): enabling ssd optimizations
+> FAULT_INJECTION: forcing a failure.
+> name failslab, interval 1, probability 0, space 0, times 0
+> CPU: 1 PID: 25852 Comm: syz-executor Not tainted 5.15.0-rc1 #16
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+>   fail_dump lib/fault-inject.c:52 [inline]
+>   should_fail+0x13c/0x160 lib/fault-inject.c:146
+>   should_failslab+0x5/0x10 mm/slab_common.c:1328
+>   slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
+>   slab_alloc_node mm/slub.c:3120 [inline]
+>   slab_alloc mm/slub.c:3214 [inline]
+>   kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
+>   alloc_extent_state+0x1e/0x1c0 fs/btrfs/extent_io.c:340
 
-If the fuzzer test tool can do it by relating the transaction abort
-message with error injection log, it would save us a lot of time and
-prevent false alerts.
+This is the one of the core systems btrfs uses, and we really don't want
+that to fail.
 
-For now, I guess the above diff would be a quick and dirty filter for
-ENOMEM injection tests.
+Thus in fact it does some preallocation to prevent failure.
+
+But for error injection case, we can still hit BUG_ON() which is used to
+catch ENOMEM.
 
 Thanks,
 Qu
+
+>   alloc_extent_state_atomic include/linux/spinlock.h:403 [inline]
+>   __clear_extent_bit+0x646/0x6b0 fs/btrfs/extent_io.c:820
+>   try_release_extent_state fs/btrfs/extent_io.c:5218 [inline]
+>   try_release_extent_mapping+0x296/0x320 fs/btrfs/extent_io.c:5315
+>   __btrfs_releasepage fs/btrfs/inode.c:8493 [inline]
+>   btrfs_releasepage+0xcf/0x1a0 fs/btrfs/inode.c:8506
+>   try_to_release_page+0xe7/0x1c0 mm/filemap.c:3964
+>   invalidate_complete_page mm/truncate.c:203 [inline]
+>   invalidate_inode_page+0x10e/0x1d0 mm/truncate.c:255
+>   __invalidate_mapping_pages+0x104/0x310 mm/truncate.c:494
+>   btrfs_direct_write fs/btrfs/file.c:1997 [inline]
+>   btrfs_file_write_iter+0x398/0x510 fs/btrfs/file.c:2027
+>   call_write_iter include/linux/fs.h:2163 [inline]
+>   aio_write+0x165/0x360 fs/aio.c:1578
+>   __io_submit_one fs/aio.c:1833 [inline]
+>   io_submit_one+0x9dd/0x1490 fs/aio.c:1880
+>   __do_sys_io_submit fs/aio.c:1939 [inline]
+>   __se_sys_io_submit fs/aio.c:1909 [inline]
+>   __x64_sys_io_submit+0xba/0x310 fs/aio.c:1909
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x46ae99
+> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ff0725c5c48 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
+> RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
+> RDX: 0000000020005880 RSI: 0000000000000001 RDI: 00007ff07259d000
+> RBP: 00007ff0725c5c80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
+> R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffd0c8ba9c0
+> ------------[ cut here ]------------
+> kernel BUG at fs/btrfs/extent_io.c:821!
+> invalid opcode: 0000 [#1] PREEMPT SMP
+> CPU: 1 PID: 25852 Comm: syz-executor Not tainted 5.15.0-rc1 #16
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> RIP: 0010:__clear_extent_bit+0x653/0x6b0 fs/btrfs/extent_io.c:821
+> Code: 13 f5 ff ff 48 8b 7c 24 18 e8 d9 19 37 02 e9 ef fd ff ff e8 4f
+> d0 48 ff e8 6a df ff ff 48 85 c0 49 89 c6 75 99 e8 3d d0 48 ff <0f> 0b
+> e8 36 d0 48 ff 0f 0b e9 6f fe ff ff e8 2a d0 48 ff 48 8d 7b
+> RSP: 0018:ffffc9000d7a3968 EFLAGS: 00010212
+> RAX: 000000000002763c RBX: ffff88810f074000 RCX: ffffc90000b45000
+> RDX: 0000000000040000 RSI: ffffffff81eec1c3 RDI: ffffffff853cbec6
+> RBP: 0000000000000000 R08: 0000000000000088 R09: 0000000000000001
+> R10: ffffc9000d7a3838 R11: 0000000000000001 R12: 000000000000ffff
+> R13: 0000000000000fff R14: 0000000000000000 R15: ffff88810cd96788
+> FS:  00007ff0725c6700(0000) GS:ffff88813dc00000(0000) knlGS:000000000000=
+0000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ff07259d000 CR3: 000000001c337000 CR4: 0000000000750ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+>   try_release_extent_state fs/btrfs/extent_io.c:5218 [inline]
+>   try_release_extent_mapping+0x296/0x320 fs/btrfs/extent_io.c:5315
+>   __btrfs_releasepage fs/btrfs/inode.c:8493 [inline]
+>   btrfs_releasepage+0xcf/0x1a0 fs/btrfs/inode.c:8506
+>   try_to_release_page+0xe7/0x1c0 mm/filemap.c:3964
+>   invalidate_complete_page mm/truncate.c:203 [inline]
+>   invalidate_inode_page+0x10e/0x1d0 mm/truncate.c:255
+>   __invalidate_mapping_pages+0x104/0x310 mm/truncate.c:494
+>   btrfs_direct_write fs/btrfs/file.c:1997 [inline]
+>   btrfs_file_write_iter+0x398/0x510 fs/btrfs/file.c:2027
+>   call_write_iter include/linux/fs.h:2163 [inline]
+>   aio_write+0x165/0x360 fs/aio.c:1578
+>   __io_submit_one fs/aio.c:1833 [inline]
+>   io_submit_one+0x9dd/0x1490 fs/aio.c:1880
+>   __do_sys_io_submit fs/aio.c:1939 [inline]
+>   __se_sys_io_submit fs/aio.c:1909 [inline]
+>   __x64_sys_io_submit+0xba/0x310 fs/aio.c:1909
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x46ae99
+> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ff0725c5c48 EFLAGS: 00000246 ORIG_RAX: 00000000000000d1
+> RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
+> RDX: 0000000020005880 RSI: 0000000000000001 RDI: 00007ff07259d000
+> RBP: 00007ff0725c5c80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
+> R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffd0c8ba9c0
+> Modules linked in:
+> Dumping ftrace buffer:
+>     (ftrace buffer empty)
+> ---[ end trace 3bbc6e927d377de3 ]---
+> RIP: 0010:__clear_extent_bit+0x653/0x6b0 fs/btrfs/extent_io.c:821
+> Code: 13 f5 ff ff 48 8b 7c 24 18 e8 d9 19 37 02 e9 ef fd ff ff e8 4f
+> d0 48 ff e8 6a df ff ff 48 85 c0 49 89 c6 75 99 e8 3d d0 48 ff <0f> 0b
+> e8 36 d0 48 ff 0f 0b e9 6f fe ff ff e8 2a d0 48 ff 48 8d 7b
+> RSP: 0018:ffffc9000d7a3968 EFLAGS: 00010212
+> RAX: 000000000002763c RBX: ffff88810f074000 RCX: ffffc90000b45000
+> RDX: 0000000000040000 RSI: ffffffff81eec1c3 RDI: ffffffff853cbec6
+> RBP: 0000000000000000 R08: 0000000000000088 R09: 0000000000000001
+> R10: ffffc9000d7a3838 R11: 0000000000000001 R12: 000000000000ffff
+> R13: 0000000000000fff R14: 0000000000000000 R15: ffff88810cd96788
+> FS:  00007ff0725c6700(0000) GS:ffff88813dc00000(0000) knlGS:000000000000=
+0000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ff07259d000 CR3: 000000001c337000 CR4: 0000000000750ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+>
