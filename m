@@ -2,93 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CB540BF84
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Sep 2021 08:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3320B40C04E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 Sep 2021 09:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbhIOGDx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Sep 2021 02:03:53 -0400
-Received: from mout.gmx.net ([212.227.17.22]:50105 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230381AbhIOGDx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Sep 2021 02:03:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631685752;
-        bh=bfghdO1Q9G6pvA7kuK8vX7rmUloqCD+yLJeQRTfWqX8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Uq67OmJZlnW05E//vmmBg5f4xNOUPbe5EFcTYy8T460gdHqDX5zppW5ul6YzlGFlk
-         eHB09ZWvf1mdV6EWqkWwwxmMWXzsFVuKOzS+8QQkIf+zjZT8nwwqMxsuYPpFLjBfSz
-         rAG7iCa7pb4YSARNlvPRH31oV49YchgHrcvBXbco=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M7K3Y-1mY5dL0qHk-007o5B; Wed, 15
- Sep 2021 08:02:31 +0200
-Subject: Re: [PATCH v2 1/3] btrfs: rename btrfs_bio to btrfs_io_context
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210914012543.12746-1-wqu@suse.com>
- <20210914012543.12746-2-wqu@suse.com> <20210914164201.GF9286@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <a497de2f-0906-44fd-2f6b-0a1cbcbc9666@gmx.com>
-Date:   Wed, 15 Sep 2021 14:02:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236486AbhIOHSl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Sep 2021 03:18:41 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53834 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231317AbhIOHSl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Sep 2021 03:18:41 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BFF202219D
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Sep 2021 07:17:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1631690241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=GWGeUjGH1IzKXKjMROy4M/o5nmh+fhrmnc4+lxrxW2w=;
+        b=H/QCPoogNiGSXvQpyxDOQBr2olpIfEzFMH0AjDcFrk1y3MCrzlF5FyUY3Xey6Zj7psAErK
+        8uTc160Wbu4rC2gu1+ynqN0JKqPNy+T9FB8xbGuXSEz2PXNmwFrVY3zc5E7HBL2so4fZ8B
+        Q4ktfAsEna9Ymkk51Uz8APnuzRFV7m4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED38913C1A
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Sep 2021 07:17:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gcMaKwCeQWGxEAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 15 Sep 2021 07:17:20 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 0/3]  btrfs: btrfs_bio and btrfs_io_bio rename
+Date:   Wed, 15 Sep 2021 15:17:15 +0800
+Message-Id: <20210915071718.59418-1-wqu@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210914164201.GF9286@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PFlVt8USqAK/nNt029lMIaQ6z2hibYXwU8S0kBDNlWjNwJfBAiO
- /ONbCiXHNGlgggsnKFThJufd+xTYBpkb8QS2sSK5hzlHQt0ee+X8TtL0MpJCR3FprWJh/+J
- reSjAiqr3rKFsQU2jk8U3xuDE2CRieKOiC7s4OYbes0oSUyTilKMJYaJVVZlKhrJL3GkmyV
- 7bsq+CSVuZiGZxhKwltfQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rLCkiCbIcpA=:8c7MY7ULef+0l/4vCqy1U9
- Sq/yZ5aIO3JS59x4646hyTqwJCW3GosRNI6DcqM7DV+TLPFh+qcjMWae7iAjk+9qcLHHpAxNd
- tJnfbpv+onKb0cnYGIGzL9nPhfM+9McuvhJywvq2ZLtLkAM7435y/8/gmNSZ1qyb9xI/rHPgd
- e/e9JYktB7sUvSPs9kAAIYytBsQpsS7cfY1eShFke55P2eWYT7HyF1gWfpFGYGhZqknROiERh
- N/uTtXMe0gmVD4oOcyisWfaxP8L6I4xL/s0++0/xvK0AQ8OKZuK4QYe8stjkcsORit8c9o4PE
- NdQl9PeHVmkVxnGcdHmpBujGgpVM9lhSUeejmX8U8o7Zu35mK3nDzHQrhQfjObhxy3EofXkAz
- PF8+6kio//2J1xfgfHZOh70jXFeMoqfhLOmRl6Md5b5yEdG4Hax4hbW28eWtuZmsda97F1RPF
- bBzCrrlqXdQlZOGhvi3EE2XSUCAr/n5rH+XDZfWVObmW90xAieGumG60nRwSsKE8tkjWWZFbF
- wO1EFmcM3mk9uY+7FM1ZoYN89BkaOlvK1+0DLMs2sQIXIJ8xFtD9wGhxmML3LkIWN/3v6Nf3h
- eCUJuoD5wjK6hCbkS8/C4+LBEfcMl08d33f6EGuRZ0BgtDyNN0kbgybupQb2/uBWxxMmRQjWF
- iB4WnjFsFsypY3X4MymEKdSjjZZI3JHgISHzuAbC0YGL39YvZNGjATu9a+b/9ZQb4XoXACjPI
- 7LgYHD4xTAzFc+/ZSsaOl3kZo9pt7JTZX8kPqp59Yq/NHoCSVjd7gaSLyR5u1eiPVhZzjrps8
- aUWc5ct1OMUGD6dGCRFQN12iFOTDPcJ+oLH7r2egwrOY1CrmDCa/wK6LJovUUFd6FP976gmb+
- 7FZk9fHtd0UJ1oXLdqktkagb2zgjULtzVKAph3SFc6kCw/IbZewGVnKsovmrfV+T23wJzPMgy
- Xsxd0xSxRwFOhfPHJDymGKEUoCCRSi1KSOL5OKmrtyBdNObyENVRHTkKLSpbcqEG0bTALjbHJ
- hlMCOrCwEVnup/5hHIAKgRERxvbAKFMgFl1vt2wM8Lqi8aHPrONH6Cbhku/epKJt24wN8HQFq
- j123Wgt5Vj+D7A=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The branch can be fetched from github, and is the preferred way to grab
+the code, as this patchset changed quite a lot of code.
+https://github.com/adam900710/linux/tree/chunk_refactor
+
+There are two structure, btrfs_io_bio and btrfs_bio, which have very
+similar names but completely different meanings.
+
+Btrfs_io_bio mostly works at logical bytenr layer (its
+bio->bi_iter.bi_sector points to btrfs logical bytenr), and just
+contains extra info like csum and mirror_num.
+
+And btrfs_io_bio is in fact the most utilized bio, as all data/metadata
+IO is using btrfs_io_bio.
+
+While btrfs_bio is completely a helper structure for mirrored IO
+submission (utilized by SINGLE/DUP/RAID1/RAID10), and contains RAID56
+maps for RAID56 (it doesn't utilize this structure for IO submission
+tracking).
+
+Such naming is completely anti-human.
+
+So this patchset will do the following renaming:
+
+- btrfs_bio -> btrfs_io_context
+  Since it's not really used by all bios (only mirrored profiles utilize
+  it), and it contains extra info for RAID56, it's not proper to name it
+  with _bio suffix.
+
+  Later we can integrate btrfs_io_context pointer into the new
+  btrfs_bio.
+
+- btrfs_io_bio -> btrfs_logical_bio
+  It is intentional not to reuse "btrfs_bio", which could cause
+  confusion for later backport.
+
+Changelog:
+v2:
+- Rename btrfs_bio to btrfs_io_context (bioc)
+- Rename btrfs_io_bio to btrfs_bio
+  Both suggested by Nikolay
+
+v3:
+- Fixes whiespace problems
+  Caused by "dwi" vim commands
+
+- Update several modified comments
+
+- Rename btrfs_io_bio to btrfs_logical_bio
+  To avoid backport confusion.
 
 
-On 2021/9/15 =E4=B8=8A=E5=8D=8812:42, David Sterba wrote:
-> On Tue, Sep 14, 2021 at 09:25:41AM +0800, Qu Wenruo wrote:
->> The structure btrfs_bio is mostly used for stripe submission, and it it=
-s
->> used by SINGLE/DUP/RAID1*/RAID10, while only parse stripe map layout fo=
-r
->> RAID56.
->>
->> Currently it's not always bind to a bio, and contains more info for IO
->> context, thus renaming it will make the naming less confusing.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
-[...]
->>   {
->> -	struct btrfs_bio *bbio =3D rbio->bbio;
->> +	struct btrfs_io_context *bioc=3D rbio->bioc;
->
-> This looks like a systematic error with some replacement expression
-> missing the space before '=3D'
+Qu Wenruo (3):
+  btrfs: rename btrfs_bio to btrfs_io_context
+  btrfs: remove btrfs_bio_alloc() helper
+  btrfs: rename struct btrfs_io_bio to btrfs_logical_bio
 
-All my bad. I get too used to "dw" of vim, which will also delete the
-space after the current word.
+ fs/btrfs/check-integrity.c |   4 +-
+ fs/btrfs/compression.c     |  20 +--
+ fs/btrfs/ctree.h           |   6 +-
+ fs/btrfs/disk-io.c         |   2 +-
+ fs/btrfs/disk-io.h         |   2 +-
+ fs/btrfs/extent-tree.c     |  19 ++-
+ fs/btrfs/extent_io.c       | 116 ++++++++--------
+ fs/btrfs/extent_io.h       |   8 +-
+ fs/btrfs/extent_map.c      |   4 +-
+ fs/btrfs/file-item.c       |  12 +-
+ fs/btrfs/inode.c           |  50 +++----
+ fs/btrfs/raid56.c          | 135 +++++++++---------
+ fs/btrfs/raid56.h          |   8 +-
+ fs/btrfs/reada.c           |  26 ++--
+ fs/btrfs/scrub.c           | 130 +++++++++---------
+ fs/btrfs/volumes.c         | 272 ++++++++++++++++++-------------------
+ fs/btrfs/volumes.h         |  63 +++++----
+ fs/btrfs/zoned.c           |  16 +--
+ 18 files changed, 455 insertions(+), 438 deletions(-)
 
-I should use "de" instead...
+-- 
+2.33.0
 
-Thanks,
-Qu
