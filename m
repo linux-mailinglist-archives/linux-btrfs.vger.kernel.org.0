@@ -2,165 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2E140D016
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 01:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C2240D150
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 03:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232820AbhIOXQW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 Sep 2021 19:16:22 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:47239 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232882AbhIOXQU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 Sep 2021 19:16:20 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id B47383200A52;
-        Wed, 15 Sep 2021 19:14:59 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 15 Sep 2021 19:15:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=Wm4+CBAe4/4e6Yuyg/7NJvRDspi
-        yrShVFWj4jSF8rMs=; b=NRmtLSxnlEDn8mTb2rSdPXgsgwg2wldVfpp9/xJC8eZ
-        JVUvQIudKmDj4BV5W4nGAkAsYXI6Cd2H+v0EwiyEK3iObDE5wRtrjM6Tr/SfTfqt
-        pRInYIOLa4Zx5UeDP2iZV+cOp+I7RILrPahTlgTXG7SCx0Q4p2prQAhKRJ2jU4sv
-        E49ymNaJuGaUaEhRkBKpfOJAf0CrJRY2lUZY7wl4pR2ifo/Nu2m1UHl6rPSW9oj8
-        FP5OvuoonJ7cT0pecX8JBzORQNCs/xx4TxQFk/7x0R2F1ak3iOlB2DjPvsxPe/Cb
-        rX/vaHtUJ7cKpEZdQvBxDPOszNHm+xQToaqSmvWyj6g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Wm4+CB
-        Ae4/4e6Yuyg/7NJvRDspiyrShVFWj4jSF8rMs=; b=Ldki4FhnkD2fowUgR8/mkf
-        LqbIhrLVemvr4EHIsu9KopAoHhvARzcM30h5Vv4l9ydItdFX6IPF05qwYa213s8O
-        6+w9U+jYRCXeZoxEXjas39OwXaVVBYSrpdy5X+4q7PN/hWt3fbmgb20kisiuN8u9
-        Oo178/gCj1rqXHvOniCQep4KfHuQcL4GYh9LF0o+sX07rM1AcBArnbVsmGizMMnd
-        3JUBmRa9ytriVUnSjDjzFTAtNN6ka8yY7cHe1m5VSkHd8Hsfcg/72nZ3kmQTf1ek
-        O7f663cDCpeCcMwO80gbGUmTWXYWrhsTeAMLdy1zGEb/G1y7KUV4kzuMP2rvd5LQ
-        ==
-X-ME-Sender: <xms:c35CYb_LmaME6HEi3r22BT586wodc40LDhxEGbKJ__S681M15A6koQ>
-    <xme:c35CYXt2k5PyYCjFz0cdNLIQn1qITobpGkK3DcjToXkoU2eMvjLcM9JYP-bhM2qnz
-    5Oc_sAR5KG39VQjpoQ>
-X-ME-Received: <xmr:c35CYZBMAC181UmZM1JJ_mvwmokxP4NXUBdKWo62as2EWXFLT1SuGirDLRGzcEel7YI5lYX6yY6AcTa_Y9LQARYX0I_WRA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehfedgudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
-    duveelkeeiteelveeiuefhudehtdeigfehkeeffeegledvueevgefgudeuveefnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihho
-X-ME-Proxy: <xmx:c35CYXdljSfB67XA4fePk2aFN67NeXk_G2oNErPlEvEv2FFpw7R_oQ>
-    <xmx:c35CYQPiVNiOaWnShoKmclAof97oUH7BiKFaq_u5dSHAD7_1bZ1uBQ>
-    <xmx:c35CYZmJ3dQGn_UYNHp31AbxLYusp2_OCjirj1kxDMbjk9hysHt4JQ>
-    <xmx:c35CYZYMi99cZE5oG_ZQX-FDxkI3cD1KobHwHtE1NExEbcMST_X9Jw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 15 Sep 2021 19:14:58 -0400 (EDT)
-Date:   Wed, 15 Sep 2021 16:14:57 -0700
-From:   Boris Burkov <boris@bur.io>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v6 2/3] btrfs: initial fsverity support
-Message-ID: <YUJ+cVfWUXefucJ/@zen>
-References: <cover.1625083099.git.boris@bur.io>
- <797d6524e4e6386fc343cd5d0bcdd53878a6593e.1625083099.git.boris@bur.io>
- <YUDcy73zXVPneImG@sol.localdomain>
- <YUDgmgq1Q5l5e/K4@zen>
- <YUDiTFvaVZ4INJOO@sol.localdomain>
- <YUDrNR+72WMno10q@zen>
- <YUJbYyVZr543cfg0@sol.localdomain>
- <YUJfCbek5zy9f8YV@zen>
- <YUJhxbRGLAQa5LIW@sol.localdomain>
+        id S233637AbhIPBkh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 Sep 2021 21:40:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229816AbhIPBkg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 Sep 2021 21:40:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 171A761185;
+        Thu, 16 Sep 2021 01:39:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631756357;
+        bh=qiapaZb67wwUv941O9e/iIpg4NcRC50TGqFQbf4qXHo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cadutgf1ZfCzX5z3WVOk4howI0AgD1RNcLPqmp8PxFR/4/y6UX1vZM1LG4j26sRe9
+         jjhZlqZxObUx+K762pxoDBQjY36GxIiRoF9J4iR4A/mKsWyAp3/fwsvhR8mCQOP/gA
+         XC47oOq2cOai7vdexXAJyGyEEy6EfG2tjIp17dHc5F0vqdr39dIaIAg8safm+CaDHn
+         slh80w93XUsVV8Lc8CPsncSDprErEfP9FD/UZ1qk9Rnamf0UqVDjq9Xco3KbEgTBea
+         jPSbOcTpQU7b8wd3oBaFMUpTgw4Ves8I0zqqNqIn6gBUYVpXQgxf2FoMbAAHiS1vxd
+         ZlFT0zm9FBsFA==
+Date:   Wed, 15 Sep 2021 18:39:16 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Shameless plug for the FS Track at LPC next week!
+Message-ID: <20210916013916.GD34899@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YUJhxbRGLAQa5LIW@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 02:12:37PM -0700, Eric Biggers wrote:
-> On Wed, Sep 15, 2021 at 02:01:12PM -0700, Boris Burkov wrote:
-> > On Wed, Sep 15, 2021 at 01:45:23PM -0700, Eric Biggers wrote:
-> > > On Tue, Sep 14, 2021 at 11:34:29AM -0700, Boris Burkov wrote:
-> > > > > Okay, so it is used.  (Due to the macro, it didn't show up when grepping.)
-> > > > > 
-> > > > > Doesn't it defeat the purpose of a ro_compat inode flag if the whole filesystem
-> > > > > is marked with a ro_compat feature flag, though?  I thought that the point of
-> > > > > the ro_compat inode flag is to allow old kernels to mount the filesystem
-> > > > > read-write, with only verity files being forced to read-only.  That would be
-> > > > > more flexible than ext4's implementation of fs-verity which forces the whole
-> > > > > filesystem to read-only.  But it seems you're forcing the whole filesystem to
-> > > > > read-only anyway?
-> > > > > 
-> > > > > - Eric
-> > > > 
-> > > > I was thinking of it in terms of "RO compat is the goal" and having new
-> > > > inode flags totally broke that and was treated as a corruption of the
-> > > > inode regardless of the fs being ro/rw. I think a check on a live fs
-> > > > would just flip the fs ro, which was the goal anyway, but a check that
-> > > > happened during mount would fail the mount, even for a read-only fs. 
-> > > > 
-> > > > Making it fully per file would be pretty cool! The only thing
-> > > > really missing as far as I can tell is a way to mark a file read only
-> > > > with the same semantics fsverity uses from within btrfs.
-> > > 
-> > > I don't understand.  Why are you bothering with the ro_compat inode flag at all
-> > > if it doesn't actually work?
-> > > 
-> > > - Eric
-> > 
-> > Sorry I explained that really badly.
-> > 
-> > My first try was ro-compat bit only, that failed because btrfs couldn't
-> > add an inode flag in a ro-compat way before my changes, as it could
-> > fail to mount.
-> > 
-> > To fix that, I had to work on the inode flag compatibility, which
-> > evolved into this notion of inode ro-compat flags, which does work as
-> > expected: if you see a file with an unknown ro-compat flag it's an error
-> > if you aren't read-only. Read-only mount will never fail.
-> > 
-> > I think changing the semantics of the ro-compat inodes from:
-> > "an unknown ro inode flag -> fs ro" to
-> > "an unknown ro inode flag -> file ro"
-> > could be a big win. I don't think there is a rush to do that, though?
-> 
-> If you're forcing the filesystem to read-only anyway, why not just rely on the
-> filesystem-wide ro_compat flag, which you already implemented and which already
-> does that?  What benefit does the per-file ro_compat flag have, if it doesn't
-> actually make just the file read-only (which would be the expected behavior)?
-> You might as well just use a "regular" inode flag in that case.
-> 
-> - Eric
+Hi folks!
 
-I couldn't use a regular inode flag because the btrfs tree checker will
-call it an error when it sees a flag it doesn't recognize, regardless of
-compat bits or fs read-only status. This is extra painful if the inode
-with verity enabled is in a leaf that gets read in at mount time and
-gets checked then.
+The Linux Plumbers conference is next week!  The filesystems mini
+conference is next Tuesday, 21 September, starting at 14:00 UTC:
 
-a fake example of what was happening:
+https://linuxplumbersconf.org/event/11/sessions/111/#20210921
 
-mkfs.btrfs dev
-mount dev mnt
-touch /mnt/foo
-fsverity enable /mnt/foo
-<reboot to old kernel>
-mount dev mnt
-!!!FAIL!!!
-mount -o ro dev mnt
-!!!FAIL!!!
+(it's the light green column second from the right)
 
-To get around this, I added a new flag field that wasn't checked as
-aggressively -- and didn't call it an error on ro mount.
+As most of you are probably aware, LSFMM has been cancelled for a second
+year in a row, which leaves LPC as the only developer focused gathering
+this year.  This year's conference is virtual, like last year.  If you'd
+like to participate, it's not too late to register ($50 USD):
 
-There is more excruciating detail, that I won't poorly re-create here,
-in the commit message of:
-"btrfs: add ro compat flags to inodes"
+https://linuxplumbersconf.org/event/11/page/112-attend
 
-However, I really do agree that having done the work to add the new
-class of flags, it makes sense to try to take advantage of it the way
-you suggest, since per-file ro compat sounds a lot cooler than fs ro
-compat. I was just trying to do what I could to make the fs compat bit
-work at all.
+---
+
+The first session will be run by Matthew Wilcox, who will say something
+about the ongoing folio work, assuming Linus isn't going to pull it for
+5.15.  We'll see where things are in a week.
+
+Christian Brauner will run the second session, discussing what idmapped
+filesystem mounts are for and the current status of supporting more
+filesystems.
+
+---
+
+Next up will be a session run by me about both of the atomic file write
+features that have been variously proposed and asked for by various
+enterprisey users.  The first proposal refers to direct atomic file
+writes to storage hardware.  I /think/ this mostly involves enabling the
+relevant plumbing in the block layer and then wiring up iomap/xfs to use
+it.  Possibly also a new pwritev2 flag or file mode or something.
+
+(Christoph did this in 2019: https://lwn.net/Articles/789600/ )
+
+The /other/ atomic file write feature, of course, is my longstanding RFC
+to add a VFS call that enables atomic swapping of file contents, which
+enables a program to reflink a file's contents to an O_TMPFILE file,
+write some changes to the tempfile, and then swap /all/ the changed
+blocks back to the original file.  This call would be durable even if
+the system goes down.  The feature is actually the brainchild of the
+online filesystem repair effort, but I figured it wasn't so hard to
+extend a tendril to userspace to make it more generally useful.
+
+https://lwn.net/Articles/818977/
+https://lore.kernel.org/linux-fsdevel/161723932606.3149451.12366114306150243052.stgit@magnolia/
+
+---
+
+Allison will be running the fourth session about our current progress
+towards enabling sysadmins to shrink filesystems, and what pieces we're
+going to need to clear space from the end of the filesystem and then
+reduce the size.  FWIW Dave has been working on an inode relocation
+("reno") tool, and I've been working on a free space defragmenter that
+kind of barely works.  Originally this was a XFS-focused discussion, but
+it seems that Andreas still remembers the last time someone tried to add
+it to ext4.
+
+---
+
+Session #4 discusses the proliferation of cloud storage technologies and
+the new failure modes that Ted and I have observed with these devices.
+I think Ted had a few things to say about cloud devices, and due to the
+repeated requests I think it would be worth polling the audience to find
+out if they'd like filesystems to be more resilient (when possible) in
+the face of not-totally-reliable storage.  Obviously everyone wants that
+as a broad goal, but what should we pitch?  Metadata IO retries?
+Restoring lost information from a mirror?  Online repair?
+
+---
+
+The final session will be a presentation about the XFS roadmap for 2022.
+I'll start with a recap of the new features from last year's LTS that
+have been maturing this year, and which pieces have landed for this
+year's LTS kernel.
+
+I /hope/ that this will attract a conversation between (x)fs developers
+and real application developers about what features could be coming down
+the pipeline and what features would they most be interested in.
+
+---
+
+To all the XFS developers: it has been a very long time since I've seen
+all your faces!  I would love to have a developer BOF of some kind to
+see you all again, and to introduce Catherine Hoang (our newest
+addition) to the group.
+
+If nobody else shows up to the roadmap we could do it there, but I'd
+like to have /some/ kind of venue for everyone who don't find the
+timeslots convenient (i.e. Dave and Chandan).  This doesn't have to take
+a long time -- even a 15 minute meet and greet to help everyone
+(re)associate names with faces would go a long way towards feeling
+normal(ish) again. ;)
+
+--D
