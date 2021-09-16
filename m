@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E130F40D771
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 12:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370DA40D772
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 12:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236566AbhIPKdk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Sep 2021 06:33:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58526 "EHLO mail.kernel.org"
+        id S236574AbhIPKdm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Sep 2021 06:33:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236544AbhIPKdk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S236546AbhIPKdk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Thu, 16 Sep 2021 06:33:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67F8161214
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 Sep 2021 10:32:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34EBF61108
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 Sep 2021 10:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631788339;
-        bh=9ih1Uw0q5IxY6wV8aS8iXMK5h/jQvYq1TlOkqd/ms7s=;
+        s=k20201202; t=1631788340;
+        bh=oujLvOMxd57GsWzf68PsbLjdVyvAELHfe7LdXadtmlI=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Vew1hlLKM167IvBnZNzMrtQ+UHZezwEgxjzvNMMcQys43AqCni6rYg47ozqTaHj6F
-         XoQFp5cjAfSYZKJKn51RGISvU6aCr+jzWmWMDuFjEKoTfbXzjNwlFftwAp4mqAUiVk
-         tUFwqFNt38lUtQy60Vw/dUBwIeKFrP7KCyOaRuYLVfZhSe3JhFi1dYQ0LkzUShhBIF
-         U/B8QuD+hNg/O90qIpFHpQT0v2+M7IoS2FqD7goBFCWm0+urtnPOejvRLIXaB0QUnR
-         FISR+8gp0lUUKwQJAJPis5UHgK3sap+2VCWXPLIuOh0r6tpF9tEv9SFjQLpmCArDx+
-         EHSken6rvDObA==
+        b=SoUDEUlqhN51LbjHt1jUHwxNW81UMNXuul5aoRVOlXg6UBTkJMiqJjQB0DXnN0bum
+         6gFUOD02Hspu6PgJ9vA28a1iQAH1YLR9kQioO409YUXvsnghl2Ftwf1nebRalyIkUH
+         pT2CawOsQY3TvhrrxPaZvmnnF+SiNOVf7F1D7FkDYT4Z258cytgyI/LxA3BVGJctUm
+         0hStdhenOHH2dDSeZkUuDtsApyDvyWVOmTr6xZlXWi2NS4ZXYL0o26TDk89nbaQnjQ
+         afv2Y+I6TYCbt8TrTYc2Va1QnZgcl1xBnIZgSlgQA7S5PCV++1HNJHIrARAMenGSE9
+         SCWkoByhwpzKQ==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/5] btrfs: factor out the copying loop of dir items from log_dir_items()
-Date:   Thu, 16 Sep 2021 11:32:12 +0100
-Message-Id: <5e030e2b8815dae4a0dcacce187e26d5082dd433.1631787796.git.fdmanana@suse.com>
+Subject: [PATCH 4/5] btrfs: insert items in batches when logging a directory when possible
+Date:   Thu, 16 Sep 2021 11:32:13 +0100
+Message-Id: <c4d44a55990536486d74d7f71acf43e8fa649328.1631787796.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1631787796.git.fdmanana@suse.com>
 References: <cover.1631787796.git.fdmanana@suse.com>
@@ -39,10 +39,39 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-In preparation for the next change, move the loop that processes a leaf
-and copies its directory items to the log, into a separate helper
-function. This makes the next change simpler and it also helps making
-log_dir_items() a bit shorter (specially after the next change).
+When logging a directory, we scan its directory items from the subvolume
+tree and then copy one by one into the log tree. This is not efficient
+since we generally are able to insert several items in a batch, using a
+single btree operation for adding several items at once. The reason we
+copy items one by one is that we must check if each item was previously
+logged in the current transaction, and if it was we either overwrite it
+or skip it in case its content did not change in the subvolume tree (this
+can happen only for dir item keys, but not for dir index keys), and doing
+such check makes it a bit cumbersome to attempt batch insertions.
+
+However the chances for doing batch insertions are very frequent and
+always happen when:
+
+1) Logging the directory for the first time in the current transaction,
+   as none of the items exist in the log tree yet;
+
+2) Logging new dir index keys, because the offset for new dir index keys
+   comes from a monotonically increasing counter. This means if we keep
+   adding dentries to a directory, through creation of new files and
+   sub-directories or by adding new links or renaming from some other
+   directory into the one we are logging, all the new dir index keys
+   have a new offset that is greater than the offset of any previously
+   logged index keys, so we can insert them in batches into the log tree.
+
+For dir item keys, since their offset depends on the result of an hash
+function against the dentry's name, unless the directory is being logged
+for the first time in the current transaction, the chances being able to
+insert the items in the log using batches is pretty much random and not
+predictable, as it depends on the names of the dentries, but still happens
+often enough.
+
+So change directory logging to keep track of consecutive directory items
+that don't exist yet in the log and batch insert them.
 
 This patch is part of a patchset comprised of the following 5 patches:
 
@@ -52,196 +81,287 @@ This patch is part of a patchset comprised of the following 5 patches:
   btrfs: insert items in batches when logging a directory when possible
   btrfs: keep track of the last logged keys when logging a directory
 
-This is patch 3/5. The change log of the last patch (5/5) has performance
+This is patch 4/5. The change log of the last patch (5/5) has performance
 results.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 135 ++++++++++++++++++++++++--------------------
- 1 file changed, 75 insertions(+), 60 deletions(-)
+ fs/btrfs/tree-log.c | 217 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 180 insertions(+), 37 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 64db4bd8e965..3b1ec645b8d2 100644
+index 3b1ec645b8d2..66b1516a7a6a 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -3615,6 +3615,66 @@ static noinline int insert_dir_log_key(struct btrfs_trans_handle *trans,
+@@ -368,25 +368,11 @@ static int process_one_buffer(struct btrfs_root *log,
+ 	return ret;
+ }
+ 
+-/*
+- * Item overwrite used by replay and tree logging.  eb, slot and key all refer
+- * to the src data we are copying out.
+- *
+- * root is the tree we are copying into, and path is a scratch
+- * path for use in this function (it should be released on entry and
+- * will be released on exit).
+- *
+- * If the key is already in the destination tree the existing item is
+- * overwritten.  If the existing item isn't big enough, it is extended.
+- * If it is too large, it is truncated.
+- *
+- * If the key isn't in the destination yet, a new item is inserted.
+- */
+-static noinline int overwrite_item(struct btrfs_trans_handle *trans,
+-				   struct btrfs_root *root,
+-				   struct btrfs_path *path,
+-				   struct extent_buffer *eb, int slot,
+-				   struct btrfs_key *key)
++static int do_overwrite_item(struct btrfs_trans_handle *trans,
++			     struct btrfs_root *root,
++			     struct btrfs_path *path,
++			     struct extent_buffer *eb, int slot,
++			     struct btrfs_key *key)
+ {
+ 	int ret;
+ 	u32 item_size;
+@@ -403,10 +389,22 @@ static noinline int overwrite_item(struct btrfs_trans_handle *trans,
+ 	item_size = btrfs_item_size_nr(eb, slot);
+ 	src_ptr = btrfs_item_ptr_offset(eb, slot);
+ 
+-	/* look for the key in the destination tree */
+-	ret = btrfs_search_slot(NULL, root, key, path, 0, 0);
+-	if (ret < 0)
+-		return ret;
++	/* Our caller must have done a search for the key for us. */
++	ASSERT(path->nodes[0] != NULL);
++
++	/*
++	 * And the slot must point to the exact key or the slot where the key
++	 * should be at (the first item with a key greater than 'key')
++	 */
++	if (path->slots[0] < btrfs_header_nritems(path->nodes[0])) {
++		struct btrfs_key found_key;
++
++		btrfs_item_key_to_cpu(path->nodes[0], &found_key, path->slots[0]);
++		ret = btrfs_comp_cpu_keys(&found_key, key);
++		ASSERT(ret >= 0);
++	} else {
++		ret = 1;
++	}
+ 
+ 	if (ret == 0) {
+ 		char *src_copy;
+@@ -584,6 +582,36 @@ static noinline int overwrite_item(struct btrfs_trans_handle *trans,
  	return 0;
  }
  
-+static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
-+				  struct btrfs_inode *inode,
-+				  struct btrfs_path *path,
-+				  struct btrfs_path *dst_path,
-+				  int key_type,
-+				  struct btrfs_log_ctx *ctx)
++/*
++ * Item overwrite used by replay and tree logging.  eb, slot and key all refer
++ * to the src data we are copying out.
++ *
++ * root is the tree we are copying into, and path is a scratch
++ * path for use in this function (it should be released on entry and
++ * will be released on exit).
++ *
++ * If the key is already in the destination tree the existing item is
++ * overwritten.  If the existing item isn't big enough, it is extended.
++ * If it is too large, it is truncated.
++ *
++ * If the key isn't in the destination yet, a new item is inserted.
++ */
++static int overwrite_item(struct btrfs_trans_handle *trans,
++			  struct btrfs_root *root,
++			  struct btrfs_path *path,
++			  struct extent_buffer *eb, int slot,
++			  struct btrfs_key *key)
 +{
-+	struct btrfs_root *log = inode->root->log_root;
-+	struct extent_buffer *src = path->nodes[0];
-+	const int nritems = btrfs_header_nritems(src);
-+	const u64 ino = btrfs_ino(inode);
-+	int i;
++	int ret;
 +
-+	for (i = path->slots[0]; i < nritems; i++) {
-+		struct btrfs_key key;
-+		struct btrfs_dir_item *di;
-+		int ret;
++	/* Look for the key in the destination tree. */
++	ret = btrfs_search_slot(NULL, root, key, path, 0, 0);
++	if (ret < 0)
++		return ret;
 +
-+		btrfs_item_key_to_cpu(src, &key, i);
-+
-+		if (key.objectid != ino || key.type != key_type)
-+			return 1;
-+
-+		ret = overwrite_item(trans, log, dst_path, src, i, &key);
-+		if (ret < 0)
-+			return ret;
-+
-+		/*
-+		 * We must make sure that when we log a directory entry, the
-+		 * corresponding inode, after log replay, has a matching link
-+		 * count. For example:
-+		 *
-+		 * touch foo
-+		 * mkdir mydir
-+		 * sync
-+		 * ln foo mydir/bar
-+		 * xfs_io -c "fsync" mydir
-+		 * <crash>
-+		 * <mount fs and log replay>
-+		 *
-+		 * Would result in a fsync log that when replayed, our file inode
-+		 * would have a link count of 1, but we get two directory entries
-+		 * pointing to the same inode. After removing one of the names,
-+		 * it would not be possible to remove the other name, which
-+		 * resulted always in stale file handle errors, and would not be
-+		 * possible to rmdir the parent directory, since its i_size could
-+		 * never be decremented to the value BTRFS_EMPTY_DIR_SIZE,
-+		 * resulting in -ENOTEMPTY errors.
-+		 */
-+		di = btrfs_item_ptr(src, i, struct btrfs_dir_item);
-+		btrfs_dir_item_key_to_cpu(src, di, &key);
-+		if ((btrfs_dir_transid(src, di) == trans->transid ||
-+		     btrfs_dir_type(src, di) == BTRFS_FT_DIR) &&
-+		    key.type != BTRFS_ROOT_ITEM_KEY)
-+			ctx->log_new_dentries = true;
-+	}
-+
-+	return 0;
++	return do_overwrite_item(trans, root, path, eb, slot, key);
 +}
 +
  /*
-  * log all the items included in the current transaction for a given
-  * directory.  This also creates the range items in the log tree required
-@@ -3630,11 +3690,8 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 	struct btrfs_key min_key;
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_root *log = root->log_root;
--	struct extent_buffer *src;
- 	int err = 0;
- 	int ret;
--	int i;
--	int nritems;
- 	u64 first_offset = min_offset;
- 	u64 last_offset = (u64)-1;
- 	u64 ino = btrfs_ino(inode);
-@@ -3712,61 +3769,14 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 	 * from our directory
- 	 */
- 	while (1) {
--		struct btrfs_key tmp;
--		src = path->nodes[0];
--		nritems = btrfs_header_nritems(src);
--		for (i = path->slots[0]; i < nritems; i++) {
--			struct btrfs_dir_item *di;
+  * simple helper to read an inode off the disk from a given root
+  * This can only be called for subvolume roots and not for the log
+@@ -3615,6 +3643,68 @@ static noinline int insert_dir_log_key(struct btrfs_trans_handle *trans,
+ 	return 0;
+ }
+ 
++static int flush_dir_items_batch(struct btrfs_trans_handle *trans,
++				 struct btrfs_root *log,
++				 struct extent_buffer *src,
++				 struct btrfs_path *dst_path,
++				 int start_slot,
++				 int count)
++{
++	char *ins_data = NULL;
++	struct btrfs_key *ins_keys;
++	u32 *ins_sizes;
++	struct extent_buffer *dst;
++	struct btrfs_key key;
++	u32 item_size;
++	int ret;
++	int i;
++
++	ASSERT(count > 0);
++
++	if (count == 1) {
++		btrfs_item_key_to_cpu(src, &key, start_slot);
++		item_size = btrfs_item_size_nr(src, start_slot);
++		ins_keys = &key;
++		ins_sizes = &item_size;
++	} else {
++		ins_data = kmalloc(count * sizeof(u32) +
++				   count * sizeof(struct btrfs_key), GFP_NOFS);
++		if (!ins_data)
++			return -ENOMEM;
++
++		ins_sizes = (u32 *)ins_data;
++		ins_keys = (struct btrfs_key *)(ins_data + count * sizeof(u32));
++
++		for (i = 0; i < count; i++) {
++			const int slot = start_slot + i;
++
++			btrfs_item_key_to_cpu(src, &ins_keys[i], slot);
++			ins_sizes[i] = btrfs_item_size_nr(src, slot);
++		}
++	}
++
++	ret = btrfs_insert_empty_items(trans, log, dst_path, ins_keys, ins_sizes,
++				       count);
++	if (ret)
++		goto out;
++
++	dst = dst_path->nodes[0];
++	for (i = 0; i < count; i++) {
++		unsigned long src_offset;
++		unsigned long dst_offset;
++
++		dst_offset = btrfs_item_ptr_offset(dst, dst_path->slots[0]);
++		src_offset = btrfs_item_ptr_offset(src, start_slot + i);
++		copy_extent_buffer(dst, src, dst_offset, src_offset, ins_sizes[i]);
++		dst_path->slots[0]++;
++	}
++	btrfs_release_path(dst_path);
++out:
++	kfree(ins_data);
++
++	return ret;
++}
++
+ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 				  struct btrfs_inode *inode,
+ 				  struct btrfs_path *path,
+@@ -3626,21 +3716,22 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 	struct extent_buffer *src = path->nodes[0];
+ 	const int nritems = btrfs_header_nritems(src);
+ 	const u64 ino = btrfs_ino(inode);
++	const bool inode_logged_before = inode_logged(trans, inode);
++	bool last_found = false;
++	int batch_start = 0;
++	int batch_size = 0;
+ 	int i;
+ 
+ 	for (i = path->slots[0]; i < nritems; i++) {
+ 		struct btrfs_key key;
+-		struct btrfs_dir_item *di;
+ 		int ret;
+ 
+ 		btrfs_item_key_to_cpu(src, &key, i);
+ 
+-		if (key.objectid != ino || key.type != key_type)
+-			return 1;
 -
--			btrfs_item_key_to_cpu(src, &min_key, i);
--
--			if (min_key.objectid != ino || min_key.type != key_type)
--				goto done;
--
--			if (need_resched()) {
--				btrfs_release_path(path);
--				cond_resched();
--				goto search;
--			}
--
--			ret = overwrite_item(trans, log, dst_path, src, i,
--					     &min_key);
--			if (ret) {
-+		ret = process_dir_items_leaf(trans, inode, path, dst_path,
-+					     key_type, ctx);
-+		if (ret != 0) {
-+			if (ret < 0)
- 				err = ret;
--				goto done;
--			}
--
--			/*
--			 * We must make sure that when we log a directory entry,
--			 * the corresponding inode, after log replay, has a
--			 * matching link count. For example:
--			 *
--			 * touch foo
--			 * mkdir mydir
--			 * sync
--			 * ln foo mydir/bar
--			 * xfs_io -c "fsync" mydir
--			 * <crash>
--			 * <mount fs and log replay>
--			 *
--			 * Would result in a fsync log that when replayed, our
--			 * file inode would have a link count of 1, but we get
--			 * two directory entries pointing to the same inode.
--			 * After removing one of the names, it would not be
--			 * possible to remove the other name, which resulted
--			 * always in stale file handle errors, and would not
--			 * be possible to rmdir the parent directory, since
--			 * its i_size could never decrement to the value
--			 * BTRFS_EMPTY_DIR_SIZE, resulting in -ENOTEMPTY errors.
--			 */
--			di = btrfs_item_ptr(src, i, struct btrfs_dir_item);
--			btrfs_dir_item_key_to_cpu(src, di, &tmp);
--			if ((btrfs_dir_transid(src, di) == trans->transid ||
--			     btrfs_dir_type(src, di) == BTRFS_FT_DIR) &&
--			    tmp.type != BTRFS_ROOT_ITEM_KEY)
--				ctx->log_new_dentries = true;
-+			goto done;
- 		}
--		path->slots[0] = nritems;
-+		path->slots[0] = btrfs_header_nritems(path->nodes[0]);
+-		ret = overwrite_item(trans, log, dst_path, src, i, &key);
+-		if (ret < 0)
+-			return ret;
++		if (key.objectid != ino || key.type != key_type) {
++			last_found = true;
++			break;
++		}
  
  		/*
- 		 * look ahead to the next item and see if it is also
-@@ -3780,21 +3790,26 @@ static noinline int log_dir_items(struct btrfs_trans_handle *trans,
- 				err = ret;
- 			goto done;
- 		}
--		btrfs_item_key_to_cpu(path->nodes[0], &tmp, path->slots[0]);
--		if (tmp.objectid != ino || tmp.type != key_type) {
-+		btrfs_item_key_to_cpu(path->nodes[0], &min_key, path->slots[0]);
-+		if (min_key.objectid != ino || min_key.type != key_type) {
- 			last_offset = (u64)-1;
- 			goto done;
- 		}
- 		if (btrfs_header_generation(path->nodes[0]) != trans->transid) {
- 			ret = overwrite_item(trans, log, dst_path,
- 					     path->nodes[0], path->slots[0],
--					     &tmp);
-+					     &min_key);
- 			if (ret)
- 				err = ret;
- 			else
--				last_offset = tmp.offset;
-+				last_offset = min_key.offset;
- 			goto done;
- 		}
-+		if (need_resched()) {
-+			btrfs_release_path(path);
-+			cond_resched();
-+			goto search;
+ 		 * We must make sure that when we log a directory entry, the
+@@ -3664,15 +3755,67 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 		 * never be decremented to the value BTRFS_EMPTY_DIR_SIZE,
+ 		 * resulting in -ENOTEMPTY errors.
+ 		 */
+-		di = btrfs_item_ptr(src, i, struct btrfs_dir_item);
+-		btrfs_dir_item_key_to_cpu(src, di, &key);
+-		if ((btrfs_dir_transid(src, di) == trans->transid ||
+-		     btrfs_dir_type(src, di) == BTRFS_FT_DIR) &&
+-		    key.type != BTRFS_ROOT_ITEM_KEY)
+-			ctx->log_new_dentries = true;
++		if (!ctx->log_new_dentries) {
++			struct btrfs_dir_item *di;
++			struct btrfs_key di_key;
++
++			di = btrfs_item_ptr(src, i, struct btrfs_dir_item);
++			btrfs_dir_item_key_to_cpu(src, di, &di_key);
++			if ((btrfs_dir_transid(src, di) == trans->transid ||
++			     btrfs_dir_type(src, di) == BTRFS_FT_DIR) &&
++			    di_key.type != BTRFS_ROOT_ITEM_KEY)
++				ctx->log_new_dentries = true;
 +		}
++
++		if (!inode_logged_before)
++			goto add_to_batch;
++		/*
++		 * Check if the key was already logged before. If not we can add
++		 * it to a batch for bulk insertion.
++		 */
++		ret = btrfs_search_slot(NULL, log, &key, dst_path, 0, 0);
++		if (ret < 0) {
++			return ret;
++		} else if (ret > 0) {
++			btrfs_release_path(dst_path);
++			goto add_to_batch;
++		}
++
++		/*
++		 * Item exists in the log. Overwrite the item in the log if it
++		 * has different content or do nothing if it has exactly the same
++		 * content. And then flush the current batch if any - do it after
++		 * overwriting the current item, or we would deadlock otherwise,
++		 * since we are holding a path for the existing item.
++		 */
++		ret = do_overwrite_item(trans, log, dst_path, src, i, &key);
++		if (ret < 0)
++			return ret;
++
++		if (batch_size > 0) {
++			ret = flush_dir_items_batch(trans, log, src, dst_path,
++						    batch_start, batch_size);
++			if (ret < 0)
++				return ret;
++			batch_size = 0;
++		}
++		continue;
++add_to_batch:
++		if (batch_size == 0)
++			batch_start = i;
++		batch_size++;
  	}
- done:
- 	btrfs_release_path(path);
+ 
+-	return 0;
++	if (batch_size > 0) {
++		int ret;
++
++		ret = flush_dir_items_batch(trans, log, src, dst_path,
++					    batch_start, batch_size);
++		if (ret < 0)
++			return ret;
++	}
++
++	return last_found ? 1 : 0;
+ }
+ 
+ /*
 -- 
 2.33.0
 
