@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370DA40D772
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 12:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB4940D773
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 12:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236574AbhIPKdm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Sep 2021 06:33:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58540 "EHLO mail.kernel.org"
+        id S236603AbhIPKdn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Sep 2021 06:33:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236546AbhIPKdk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Sep 2021 06:33:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34EBF61108
+        id S236569AbhIPKdl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 Sep 2021 06:33:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02DA36120E
         for <linux-btrfs@vger.kernel.org>; Thu, 16 Sep 2021 10:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631788340;
-        bh=oujLvOMxd57GsWzf68PsbLjdVyvAELHfe7LdXadtmlI=;
+        s=k20201202; t=1631788341;
+        bh=xGfVYb3tTttFJoItX2xJJLGCARxkbI/KL+ZpsEh8N5w=;
         h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=SoUDEUlqhN51LbjHt1jUHwxNW81UMNXuul5aoRVOlXg6UBTkJMiqJjQB0DXnN0bum
-         6gFUOD02Hspu6PgJ9vA28a1iQAH1YLR9kQioO409YUXvsnghl2Ftwf1nebRalyIkUH
-         pT2CawOsQY3TvhrrxPaZvmnnF+SiNOVf7F1D7FkDYT4Z258cytgyI/LxA3BVGJctUm
-         0hStdhenOHH2dDSeZkUuDtsApyDvyWVOmTr6xZlXWi2NS4ZXYL0o26TDk89nbaQnjQ
-         afv2Y+I6TYCbt8TrTYc2Va1QnZgcl1xBnIZgSlgQA7S5PCV++1HNJHIrARAMenGSE9
-         SCWkoByhwpzKQ==
+        b=IxOa2pg5POtKzCjnxuRhaDdCUWW/qCa3P6emmyv1rKx+qKIOSdJYlCPSGn3OudCYM
+         J2uqAhYfLkk3Y/CZqhrs4WRRp0Dk4C0M1Mjcyii3wOmOQWtnHQT7vPoY3jdT53p4sS
+         mg5JrRLis9fLNoniwx3bU2KK8AtemxIxntBZD83efIaxr+W0+BqtMbaMP2VrfqhW3P
+         eKdeOyIHAndckL6Khu9T9V9rkpX7qwoA2KUFR/XPLOrsNjAK4a3QvcgIDDNe7fnT29
+         N0vb8HR26KkwT8A25ODLu+MPvzU2iv3KHCJ+1E6TEjCa1sAVaa3Ba7OTMZ6odctMOn
+         1JO/OfIUo8Mmw==
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/5] btrfs: insert items in batches when logging a directory when possible
-Date:   Thu, 16 Sep 2021 11:32:13 +0100
-Message-Id: <c4d44a55990536486d74d7f71acf43e8fa649328.1631787796.git.fdmanana@suse.com>
+Subject: [PATCH 5/5] btrfs: keep track of the last logged keys when logging a directory
+Date:   Thu, 16 Sep 2021 11:32:14 +0100
+Message-Id: <594ddba9ad74f43b02f2a58d37b3aac50a6b52b1.1631787796.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1631787796.git.fdmanana@suse.com>
 References: <cover.1631787796.git.fdmanana@suse.com>
@@ -39,39 +39,19 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When logging a directory, we scan its directory items from the subvolume
-tree and then copy one by one into the log tree. This is not efficient
-since we generally are able to insert several items in a batch, using a
-single btree operation for adding several items at once. The reason we
-copy items one by one is that we must check if each item was previously
-logged in the current transaction, and if it was we either overwrite it
-or skip it in case its content did not change in the subvolume tree (this
-can happen only for dir item keys, but not for dir index keys), and doing
-such check makes it a bit cumbersome to attempt batch insertions.
+After the first time we log a directory in the current transaction, for
+each directory item in a changed leaf of the subvolume tree, we have to
+check if we previously logged the item, in order to overwrite it in case
+its data changed or skip it in case its data hasn't changed.
 
-However the chances for doing batch insertions are very frequent and
-always happen when:
-
-1) Logging the directory for the first time in the current transaction,
-   as none of the items exist in the log tree yet;
-
-2) Logging new dir index keys, because the offset for new dir index keys
-   comes from a monotonically increasing counter. This means if we keep
-   adding dentries to a directory, through creation of new files and
-   sub-directories or by adding new links or renaming from some other
-   directory into the one we are logging, all the new dir index keys
-   have a new offset that is greater than the offset of any previously
-   logged index keys, so we can insert them in batches into the log tree.
-
-For dir item keys, since their offset depends on the result of an hash
-function against the dentry's name, unless the directory is being logged
-for the first time in the current transaction, the chances being able to
-insert the items in the log using batches is pretty much random and not
-predictable, as it depends on the names of the dentries, but still happens
-often enough.
-
-So change directory logging to keep track of consecutive directory items
-that don't exist yet in the log and batch insert them.
+Checking if we have logged each item before not only wastes times, but it
+also adds lock contention on the log tree. So in order to minimize the
+number of times we do such checks, keep track of the offset of the last
+key we logged for a directory and, on the next time we log the directory,
+skip the checks for any new keys that have an offset greater than the
+offset we have previously saved. This is specially effective for index
+keys, because the offset for these keys comes from a monotonically
+increasing counter.
 
 This patch is part of a patchset comprised of the following 5 patches:
 
@@ -81,287 +61,257 @@ This patch is part of a patchset comprised of the following 5 patches:
   btrfs: insert items in batches when logging a directory when possible
   btrfs: keep track of the last logged keys when logging a directory
 
-This is patch 4/5. The change log of the last patch (5/5) has performance
-results.
+This is patch 5/5.
+
+The following test was used on a non-debug kernel to measure the impact
+it has on a directory fsync:
+
+  $ cat test-dir-fsync.sh
+  #!/bin/bash
+
+  DEV=/dev/nvme0n1
+  MNT=/mnt/nvme0n1
+
+  NUM_NEW_FILES=100000
+  NUM_FILE_DELETES=1000
+
+  mkfs.btrfs -f $DEV
+  mount -o ssd $DEV $MNT
+
+  mkdir $MNT/testdir
+
+  for ((i = 1; i <= $NUM_NEW_FILES; i++)); do
+      echo -n > $MNT/testdir/file_$i
+  done
+
+  # fsync the directory, this will log the new dir items and the inodes
+  # they point to, because these are new inodes.
+  start=$(date +%s%N)
+  xfs_io -c "fsync" $MNT/testdir
+  end=$(date +%s%N)
+
+  dur=$(( (end - start) / 1000000 ))
+  echo "dir fsync took $dur ms after adding $NUM_NEW_FILES files"
+
+  # sync to force transaction commit and wipeout the log.
+  sync
+
+  del_inc=$(( $NUM_NEW_FILES / $NUM_FILE_DELETES ))
+  for ((i = 1; i <= $NUM_NEW_FILES; i += $del_inc)); do
+      rm -f $MNT/testdir/file_$i
+  done
+
+  # fsync the directory, this will only log dir items, there are no
+  # dentries pointing to new inodes.
+  start=$(date +%s%N)
+  xfs_io -c "fsync" $MNT/testdir
+  end=$(date +%s%N)
+
+  dur=$(( (end - start) / 1000000 ))
+  echo "dir fsync took $dur ms after deleting $NUM_FILE_DELETES files"
+
+  umount $MNT
+
+Test results with NUM_NEW_FILES set to 100 000 and 1 000 000:
+
+**** before patchset, 100 000 files, 1000 deletes ****
+
+dir fsync took 848 ms after adding 100000 files
+dir fsync took 175 ms after deleting 1000 files
+
+**** after patchset, 100 000 files, 1000 deletes ****
+
+dir fsync took 758 ms after adding 100000 files  (-11.2%)
+dir fsync took 63 ms after deleting 1000 files   (-94.1%)
+
+**** before patchset, 1 000 000 files, 1000 deletes ****
+
+dir fsync took 9945 ms after adding 1000000 files
+dir fsync took 473 ms after deleting 1000 files
+
+**** after patchset, 1 000 000 files, 1000 deletes ****
+
+dir fsync took 8677 ms after adding 1000000 files (-13.6%)
+dir fsync took 146 ms after deleting 1000 files   (-105.6%)
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 217 ++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 180 insertions(+), 37 deletions(-)
+ fs/btrfs/btrfs_inode.h | 39 ++++++++++++++++++++++++++++-----------
+ fs/btrfs/inode.c       |  6 ++++--
+ fs/btrfs/tree-log.c    | 41 +++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/tree-log.h    |  2 ++
+ 4 files changed, 75 insertions(+), 13 deletions(-)
 
+diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+index 76ee1452c57b..602b426c286d 100644
+--- a/fs/btrfs/btrfs_inode.h
++++ b/fs/btrfs/btrfs_inode.h
+@@ -138,17 +138,34 @@ struct btrfs_inode {
+ 	/* a local copy of root's last_log_commit */
+ 	int last_log_commit;
+ 
+-	/* total number of bytes pending delalloc, used by stat to calc the
+-	 * real block usage of the file
+-	 */
+-	u64 delalloc_bytes;
+-
+-	/*
+-	 * Total number of bytes pending delalloc that fall within a file
+-	 * range that is either a hole or beyond EOF (and no prealloc extent
+-	 * exists in the range). This is always <= delalloc_bytes.
+-	 */
+-	u64 new_delalloc_bytes;
++	union {
++		/*
++		 * Total number of bytes pending delalloc, used by stat to
++		 * calculate the real block usage of the file. This is used
++		 * only for files.
++		 */
++		u64 delalloc_bytes;
++		/*
++		 * The offset of the last dir item key that was logged.
++		 * This is used only for directories.
++		 */
++		u64 last_dir_item_offset;
++	};
++
++	union {
++		/*
++		 * Total number of bytes pending delalloc that fall within a file
++		 * range that is either a hole or beyond EOF (and no prealloc extent
++		 * exists in the range). This is always <= delalloc_bytes and this
++		 * is used only for files.
++		 */
++		u64 new_delalloc_bytes;
++		/*
++		 * The offset of the last dir index key that was logged.
++		 * This is used only for directories.
++		 */
++		u64 last_dir_index_offset;
++	};
+ 
+ 	/*
+ 	 * total number of bytes pending defrag, used by stat to check whether
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a3ce50289888..a82c14d637f3 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -9155,8 +9155,10 @@ void btrfs_destroy_inode(struct inode *vfs_inode)
+ 	WARN_ON(inode->block_rsv.reserved);
+ 	WARN_ON(inode->block_rsv.size);
+ 	WARN_ON(inode->outstanding_extents);
+-	WARN_ON(inode->delalloc_bytes);
+-	WARN_ON(inode->new_delalloc_bytes);
++	if (!S_ISDIR(vfs_inode->i_mode)) {
++		WARN_ON(inode->delalloc_bytes);
++		WARN_ON(inode->new_delalloc_bytes);
++	}
+ 	WARN_ON(inode->csum_bytes);
+ 	WARN_ON(inode->defrag_bytes);
+ 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 3b1ec645b8d2..66b1516a7a6a 100644
+index 66b1516a7a6a..30590ddd69ac 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -368,25 +368,11 @@ static int process_one_buffer(struct btrfs_root *log,
- 	return ret;
- }
- 
--/*
-- * Item overwrite used by replay and tree logging.  eb, slot and key all refer
-- * to the src data we are copying out.
-- *
-- * root is the tree we are copying into, and path is a scratch
-- * path for use in this function (it should be released on entry and
-- * will be released on exit).
-- *
-- * If the key is already in the destination tree the existing item is
-- * overwritten.  If the existing item isn't big enough, it is extended.
-- * If it is too large, it is truncated.
-- *
-- * If the key isn't in the destination yet, a new item is inserted.
-- */
--static noinline int overwrite_item(struct btrfs_trans_handle *trans,
--				   struct btrfs_root *root,
--				   struct btrfs_path *path,
--				   struct extent_buffer *eb, int slot,
--				   struct btrfs_key *key)
-+static int do_overwrite_item(struct btrfs_trans_handle *trans,
-+			     struct btrfs_root *root,
-+			     struct btrfs_path *path,
-+			     struct extent_buffer *eb, int slot,
-+			     struct btrfs_key *key)
- {
- 	int ret;
- 	u32 item_size;
-@@ -403,10 +389,22 @@ static noinline int overwrite_item(struct btrfs_trans_handle *trans,
- 	item_size = btrfs_item_size_nr(eb, slot);
- 	src_ptr = btrfs_item_ptr_offset(eb, slot);
- 
--	/* look for the key in the destination tree */
--	ret = btrfs_search_slot(NULL, root, key, path, 0, 0);
--	if (ret < 0)
--		return ret;
-+	/* Our caller must have done a search for the key for us. */
-+	ASSERT(path->nodes[0] != NULL);
-+
-+	/*
-+	 * And the slot must point to the exact key or the slot where the key
-+	 * should be at (the first item with a key greater than 'key')
-+	 */
-+	if (path->slots[0] < btrfs_header_nritems(path->nodes[0])) {
-+		struct btrfs_key found_key;
-+
-+		btrfs_item_key_to_cpu(path->nodes[0], &found_key, path->slots[0]);
-+		ret = btrfs_comp_cpu_keys(&found_key, key);
-+		ASSERT(ret >= 0);
-+	} else {
-+		ret = 1;
-+	}
- 
- 	if (ret == 0) {
- 		char *src_copy;
-@@ -584,6 +582,36 @@ static noinline int overwrite_item(struct btrfs_trans_handle *trans,
- 	return 0;
- }
- 
-+/*
-+ * Item overwrite used by replay and tree logging.  eb, slot and key all refer
-+ * to the src data we are copying out.
-+ *
-+ * root is the tree we are copying into, and path is a scratch
-+ * path for use in this function (it should be released on entry and
-+ * will be released on exit).
-+ *
-+ * If the key is already in the destination tree the existing item is
-+ * overwritten.  If the existing item isn't big enough, it is extended.
-+ * If it is too large, it is truncated.
-+ *
-+ * If the key isn't in the destination yet, a new item is inserted.
-+ */
-+static int overwrite_item(struct btrfs_trans_handle *trans,
-+			  struct btrfs_root *root,
-+			  struct btrfs_path *path,
-+			  struct extent_buffer *eb, int slot,
-+			  struct btrfs_key *key)
-+{
-+	int ret;
-+
-+	/* Look for the key in the destination tree. */
-+	ret = btrfs_search_slot(NULL, root, key, path, 0, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	return do_overwrite_item(trans, root, path, eb, slot, key);
-+}
-+
- /*
-  * simple helper to read an inode off the disk from a given root
-  * This can only be called for subvolume roots and not for the log
-@@ -3615,6 +3643,68 @@ static noinline int insert_dir_log_key(struct btrfs_trans_handle *trans,
- 	return 0;
- }
- 
-+static int flush_dir_items_batch(struct btrfs_trans_handle *trans,
-+				 struct btrfs_root *log,
-+				 struct extent_buffer *src,
-+				 struct btrfs_path *dst_path,
-+				 int start_slot,
-+				 int count)
-+{
-+	char *ins_data = NULL;
-+	struct btrfs_key *ins_keys;
-+	u32 *ins_sizes;
-+	struct extent_buffer *dst;
-+	struct btrfs_key key;
-+	u32 item_size;
-+	int ret;
-+	int i;
-+
-+	ASSERT(count > 0);
-+
-+	if (count == 1) {
-+		btrfs_item_key_to_cpu(src, &key, start_slot);
-+		item_size = btrfs_item_size_nr(src, start_slot);
-+		ins_keys = &key;
-+		ins_sizes = &item_size;
-+	} else {
-+		ins_data = kmalloc(count * sizeof(u32) +
-+				   count * sizeof(struct btrfs_key), GFP_NOFS);
-+		if (!ins_data)
-+			return -ENOMEM;
-+
-+		ins_sizes = (u32 *)ins_data;
-+		ins_keys = (struct btrfs_key *)(ins_data + count * sizeof(u32));
-+
-+		for (i = 0; i < count; i++) {
-+			const int slot = start_slot + i;
-+
-+			btrfs_item_key_to_cpu(src, &ins_keys[i], slot);
-+			ins_sizes[i] = btrfs_item_size_nr(src, slot);
-+		}
-+	}
-+
-+	ret = btrfs_insert_empty_items(trans, log, dst_path, ins_keys, ins_sizes,
-+				       count);
-+	if (ret)
-+		goto out;
-+
-+	dst = dst_path->nodes[0];
-+	for (i = 0; i < count; i++) {
-+		unsigned long src_offset;
-+		unsigned long dst_offset;
-+
-+		dst_offset = btrfs_item_ptr_offset(dst, dst_path->slots[0]);
-+		src_offset = btrfs_item_ptr_offset(src, start_slot + i);
-+		copy_extent_buffer(dst, src, dst_offset, src_offset, ins_sizes[i]);
-+		dst_path->slots[0]++;
-+	}
-+	btrfs_release_path(dst_path);
-+out:
-+	kfree(ins_data);
-+
-+	return ret;
-+}
-+
- static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
- 				  struct btrfs_inode *inode,
- 				  struct btrfs_path *path,
-@@ -3626,21 +3716,22 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
- 	struct extent_buffer *src = path->nodes[0];
+@@ -3717,11 +3717,17 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
  	const int nritems = btrfs_header_nritems(src);
  	const u64 ino = btrfs_ino(inode);
-+	const bool inode_logged_before = inode_logged(trans, inode);
-+	bool last_found = false;
-+	int batch_start = 0;
-+	int batch_size = 0;
+ 	const bool inode_logged_before = inode_logged(trans, inode);
++	u64 last_logged_key_offset;
+ 	bool last_found = false;
+ 	int batch_start = 0;
+ 	int batch_size = 0;
  	int i;
  
++	if (key_type == BTRFS_DIR_ITEM_KEY)
++		last_logged_key_offset = inode->last_dir_item_offset;
++	else
++		last_logged_key_offset = inode->last_dir_index_offset;
++
  	for (i = path->slots[0]; i < nritems; i++) {
  		struct btrfs_key key;
--		struct btrfs_dir_item *di;
  		int ret;
+@@ -3733,6 +3739,7 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 			break;
+ 		}
  
- 		btrfs_item_key_to_cpu(src, &key, i);
- 
--		if (key.objectid != ino || key.type != key_type)
--			return 1;
--
--		ret = overwrite_item(trans, log, dst_path, src, i, &key);
--		if (ret < 0)
--			return ret;
-+		if (key.objectid != ino || key.type != key_type) {
-+			last_found = true;
-+			break;
-+		}
- 
++		ctx->last_dir_item_offset = key.offset;
  		/*
  		 * We must make sure that when we log a directory entry, the
-@@ -3664,15 +3755,67 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
- 		 * never be decremented to the value BTRFS_EMPTY_DIR_SIZE,
- 		 * resulting in -ENOTEMPTY errors.
- 		 */
--		di = btrfs_item_ptr(src, i, struct btrfs_dir_item);
--		btrfs_dir_item_key_to_cpu(src, di, &key);
--		if ((btrfs_dir_transid(src, di) == trans->transid ||
--		     btrfs_dir_type(src, di) == BTRFS_FT_DIR) &&
--		    key.type != BTRFS_ROOT_ITEM_KEY)
--			ctx->log_new_dentries = true;
-+		if (!ctx->log_new_dentries) {
-+			struct btrfs_dir_item *di;
-+			struct btrfs_key di_key;
-+
-+			di = btrfs_item_ptr(src, i, struct btrfs_dir_item);
-+			btrfs_dir_item_key_to_cpu(src, di, &di_key);
-+			if ((btrfs_dir_transid(src, di) == trans->transid ||
-+			     btrfs_dir_type(src, di) == BTRFS_FT_DIR) &&
-+			    di_key.type != BTRFS_ROOT_ITEM_KEY)
-+				ctx->log_new_dentries = true;
-+		}
-+
-+		if (!inode_logged_before)
-+			goto add_to_batch;
-+		/*
-+		 * Check if the key was already logged before. If not we can add
-+		 * it to a batch for bulk insertion.
-+		 */
-+		ret = btrfs_search_slot(NULL, log, &key, dst_path, 0, 0);
-+		if (ret < 0) {
-+			return ret;
-+		} else if (ret > 0) {
-+			btrfs_release_path(dst_path);
-+			goto add_to_batch;
-+		}
+ 		 * corresponding inode, after log replay, has a matching link
+@@ -3769,6 +3776,15 @@ static int process_dir_items_leaf(struct btrfs_trans_handle *trans,
+ 
+ 		if (!inode_logged_before)
+ 			goto add_to_batch;
 +
 +		/*
-+		 * Item exists in the log. Overwrite the item in the log if it
-+		 * has different content or do nothing if it has exactly the same
-+		 * content. And then flush the current batch if any - do it after
-+		 * overwriting the current item, or we would deadlock otherwise,
-+		 * since we are holding a path for the existing item.
++		 * If we were logged before and have logged dir items, we can skip
++		 * checking if any item with a key offset larger than the last one
++		 * we logged is in the log tree, saving time and avoiding adding
++		 * contention on the log tree.
 +		 */
-+		ret = do_overwrite_item(trans, log, dst_path, src, i, &key);
-+		if (ret < 0)
-+			return ret;
++		if (key.offset > last_logged_key_offset)
++			goto add_to_batch;
+ 		/*
+ 		 * Check if the key was already logged before. If not we can add
+ 		 * it to a batch for bulk insertion.
+@@ -3995,9 +4011,31 @@ static noinline int log_directory_changes(struct btrfs_trans_handle *trans,
+ 	int ret;
+ 	int key_type = BTRFS_DIR_ITEM_KEY;
+ 
++	/*
++	 * If this is the first time we are being logged in the current
++	 * transaction, or we were logged before but the inode was evicted and
++	 * reloaded later, in which case its logged_trans is 0, reset the values
++	 * of the last logged key offsets. Note that we don't use the helper
++	 * function inode_logged() here - that is because the function returns
++	 * true after an inode eviction, assuming the worst case as it can not
++	 * know for sure if the inode was logged before. So we can not skip key
++	 * searches in the case the inode was evicted, because it may not have
++	 * been logged in this transaction and may have been logged in a past
++	 * transaction, so we need to reset the last dir item and index offsets
++	 * to (u64)-1.
++	 */
++	if (inode->logged_trans != trans->transid) {
++		inode->last_dir_item_offset = (u64)-1;
++		inode->last_dir_index_offset = (u64)-1;
++	}
+ again:
+ 	min_key = 0;
+ 	max_key = 0;
++	if (key_type == BTRFS_DIR_ITEM_KEY)
++		ctx->last_dir_item_offset = inode->last_dir_item_offset;
++	else
++		ctx->last_dir_item_offset = inode->last_dir_index_offset;
 +
-+		if (batch_size > 0) {
-+			ret = flush_dir_items_batch(trans, log, src, dst_path,
-+						    batch_start, batch_size);
-+			if (ret < 0)
-+				return ret;
-+			batch_size = 0;
-+		}
-+		continue;
-+add_to_batch:
-+		if (batch_size == 0)
-+			batch_start = i;
-+		batch_size++;
+ 	while (1) {
+ 		ret = log_dir_items(trans, inode, path, dst_path, key_type,
+ 				ctx, min_key, &max_key);
+@@ -4009,8 +4047,11 @@ static noinline int log_directory_changes(struct btrfs_trans_handle *trans,
  	}
  
--	return 0;
-+	if (batch_size > 0) {
-+		int ret;
-+
-+		ret = flush_dir_items_batch(trans, log, src, dst_path,
-+					    batch_start, batch_size);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return last_found ? 1 : 0;
+ 	if (key_type == BTRFS_DIR_ITEM_KEY) {
++		inode->last_dir_item_offset = ctx->last_dir_item_offset;
+ 		key_type = BTRFS_DIR_INDEX_KEY;
+ 		goto again;
++	} else {
++		inode->last_dir_index_offset = ctx->last_dir_item_offset;
+ 	}
+ 	return 0;
  }
- 
- /*
+diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
+index 731bd9c029f5..3ce6bdb76009 100644
+--- a/fs/btrfs/tree-log.h
++++ b/fs/btrfs/tree-log.h
+@@ -17,6 +17,8 @@ struct btrfs_log_ctx {
+ 	int log_transid;
+ 	bool log_new_dentries;
+ 	bool logging_new_name;
++	/* Tracks the last logged dir item/index key offset. */
++	u64 last_dir_item_offset;
+ 	struct inode *inode;
+ 	struct list_head list;
+ 	/* Only used for fast fsyncs. */
 -- 
 2.33.0
 
