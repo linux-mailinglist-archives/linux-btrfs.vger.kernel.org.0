@@ -2,91 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A43540D43C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 10:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A3C40D63F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 11:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhIPIFP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Sep 2021 04:05:15 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53916
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234850AbhIPIFC (ORCPT
+        id S235524AbhIPJch (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Sep 2021 05:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235321AbhIPJch (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Sep 2021 04:05:02 -0400
-Received: from LT2ubnt.fritz.box (unknown [46.253.247.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id DCFF53F345;
-        Thu, 16 Sep 2021 08:02:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631779367;
-        bh=71e9OL1S5S9bgGjtBy4TW+RgQHRN9YyU18N5+1yA9QI=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=PMCGl7vLUNxpUlgJ8rS0iozq/xQIR0bgx4ChWsqP1LYd5+9hUJREshiWMS85MuGlW
-         fD9f/DeUN/KQd4p9nmczBR102hS9t1hGg66gMDVV05wCN8jbFazvxcrT8+3I+zsd81
-         vrRxYyYbd9NlSmiWfH49LqrjFZATHWxrtzvkiLkL7oXZn6Eyuw00/6djH6YdV1rUbk
-         iP4Ff7Vp+H0UNpWP55ZVaZu2QqUWmsgFcH7Pws8QRob7yYAY89HS2NCyCpLXvB+RuO
-         9aIiE7kC+YSQSk6DUwNSGOx49lybBEbzwlJZJsgueuuqH4lzZdagVuwqyI2J2yNLf8
-         hHaiECE5UeXKQ==
-From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-To:     Marek Behun <marek.behun@nic.cz>, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, u-boot@lists.denx.de,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Subject: [PATCH 1/1] fs: btrfs: avoid superfluous messages
-Date:   Thu, 16 Sep 2021 10:02:45 +0200
-Message-Id: <20210916080245.42757-1-heinrich.schuchardt@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 16 Sep 2021 05:32:37 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80C0C061574;
+        Thu, 16 Sep 2021 02:31:16 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id ay33so6617051qkb.10;
+        Thu, 16 Sep 2021 02:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=A2Iia96pxfixNeVHvIK/3gOcz3FNSlkYOFHSjf8UkDs=;
+        b=Z/0MiOhFfYt3ctm+hYPOgoqkeqpc4XfpyHWwVbd74eONJWlNMsho7KwrMoMTt3jmNc
+         IHGITiqb+NJVoe+CSKNWczkOZDn/Zeu06X8K+3z/zy+6az59g+6vzCmShp051vzddETE
+         SHhCq3ic8q3VPnIrdPGqpQwUXQjnwD0KlCSGP9dy+jSJ4g2uGY2JJojE41TXz+99bJau
+         +a1O+gFpE2brtPe39Bvpi0LMUf+djwNgNg28/PyBBOXftD1nkgp2yUAwfslEkO9xLBIi
+         JsO2mtUyIjZiGZMf1xv/FcsOj94vHhMUiihKeUIKBa7GwFUt1PenY2fogiXF2bXeAYew
+         DHDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=A2Iia96pxfixNeVHvIK/3gOcz3FNSlkYOFHSjf8UkDs=;
+        b=J0Wu2fHpzw32hMWtvIB+yA6g2ndQ/2MjBMtY+8om3JxWQmvjH2iRtSVZZUkpw4Juwp
+         Qiq+XlUlBFxJlKKDOYPaZMchILya7GeWpTBkOnzjatk1dhLo7RRrduYc8+nTfA4ZnJhA
+         LMrN3blFhKUr+6mWe/hn4FD+GaPKtmm7diqTIAPMA8+Eoa8TQioNnjJtlUpumC4zC/ag
+         uLxzU1nTsLPk3V0/OXMYxmCKUDs2HtIMdCydLA/JKtvVn/hyAQsGBrNmOCURDGHfh+TY
+         hISMpCLJc05CuCmNGtlzgQO/5QTN4HyYDWFTOAs1u3WqMwTFfnSSdMTFw+D+zcFVpYwx
+         lFtQ==
+X-Gm-Message-State: AOAM5316ea3UVjZhUeyyttmUuGIx8zC/l4IdXFsyDL/ptcXGNqAQqbGY
+        nX5JM359OugpGA4jFawrbPHaaMZt5rq37DcdtKc=
+X-Google-Smtp-Source: ABdhPJw7tjiUFSlwG5uoIbh22odK4hg2khdmS0oT71+TN7k+0N2eSejm6G6mqzqb1Ws5vLyNIF1EGx3aNedCSoF8QMo=
+X-Received: by 2002:a05:620a:5a7:: with SMTP id q7mr4114196qkq.163.1631784676081;
+ Thu, 16 Sep 2021 02:31:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210906012559.8605-1-baptiste.lepers@gmail.com>
+In-Reply-To: <20210906012559.8605-1-baptiste.lepers@gmail.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 16 Sep 2021 10:30:40 +0100
+Message-ID: <CAL3q7H65GG54XcOOhn1Xc-4tMBO+NuLKrgC9AiFEY8=iqwGn+g@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: transaction: Fix misplaced barrier in btrfs_record_root_in_trans
+To:     Baptiste Lepers <baptiste.lepers@gmail.com>
+Cc:     "Paul E . McKenney" <paulmck@linux.ibm.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Output like the following is quite irritating:
+On Mon, Sep 6, 2021 at 2:38 AM Baptiste Lepers
+<baptiste.lepers@gmail.com> wrote:
+>
+> Per comment, record_root_in_trans orders the writes of the root->state
+> and root->last_trans:
+>       set_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
+>       smp_wmb();
+>       root->last_trans =3D trans->transid;
+>
+> But the barrier that enforces the order on the read side is misplaced:
+>      smp_rmb(); <-- misplaced
+>      if (root->last_trans =3D=3D trans->transid &&
+>     <-- missing barrier here -->
+>             !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+>
+> This patches fixes the ordering and wraps the racy accesses with
+> READ_ONCE and WRITE_ONCE calls to avoid load/store tearing.
+>
+> Fixes: 7585717f304f5 ("Btrfs: fix relocation races")
+> Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+> ---
+>  fs/btrfs/transaction.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 14b9fdc8aaa9..a609222e6704 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -437,7 +437,7 @@ static int record_root_in_trans(struct btrfs_trans_ha=
+ndle *trans,
+>                                    (unsigned long)root->root_key.objectid=
+,
+>                                    BTRFS_ROOT_TRANS_TAG);
+>                 spin_unlock(&fs_info->fs_roots_radix_lock);
+> -               root->last_trans =3D trans->transid;
+> +               WRITE_ONCE(root->last_trans, trans->transid);
+>
+>                 /* this is pretty tricky.  We don't want to
+>                  * take the relocation lock in btrfs_record_root_in_trans
+> @@ -489,7 +489,7 @@ int btrfs_record_root_in_trans(struct btrfs_trans_han=
+dle *trans,
+>                                struct btrfs_root *root)
+>  {
+>         struct btrfs_fs_info *fs_info =3D root->fs_info;
+> -       int ret;
+> +       int ret, last_trans;
 
-    => bootefi hello
-    Scanning disk mmc2.blk...
-    No valid Btrfs found
-    Bad magic number for SquashFS image.
-    ** Unrecognized filesystem type **
-    Scanning disk mmc1.blk...
-    No valid Btrfs found
-    Bad magic number for SquashFS image.
-    ** Unrecognized filesystem type **
-    Scanning disk mmc0.blk...
-    No valid Btrfs found
-    Bad magic number for SquashFS image.
-    ** Unrecognized filesystem type **
+last_trans should be u64, as root->last_trans is a u64.
 
-It is expected that most partitions don't contain a Btrfs. This is only
-worth a debug message.
+Other than that it looks good to me.
+Thanks.
 
-Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
----
- fs/btrfs/disk-io.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>
+>         if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
+>                 return 0;
+> @@ -498,8 +498,9 @@ int btrfs_record_root_in_trans(struct btrfs_trans_han=
+dle *trans,
+>          * see record_root_in_trans for comments about IN_TRANS_SETUP usa=
+ge
+>          * and barriers
+>          */
+> +       last_trans =3D READ_ONCE(root->last_trans);
+>         smp_rmb();
+> -       if (root->last_trans =3D=3D trans->transid &&
+> +       if (last_trans =3D=3D trans->transid &&
+>             !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+>                 return 0;
+>
+> --
+> 2.17.1
+>
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 12f9579fcf..7a4fb0d259 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0+
- #include <common.h>
- #include <fs_internal.h>
-+#include <log.h>
- #include <uuid.h>
- #include <memalign.h>
- #include "kernel-shared/btrfs_tree.h"
-@@ -918,7 +919,7 @@ static int btrfs_scan_fs_devices(struct blk_desc *desc,
- 
- 	ret = btrfs_scan_one_device(desc, part, fs_devices, &total_devs);
- 	if (ret) {
--		fprintf(stderr, "No valid Btrfs found\n");
-+		log_debug("No valid Btrfs found\n");
- 		return ret;
- 	}
- 	return 0;
--- 
-2.32.0
 
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
