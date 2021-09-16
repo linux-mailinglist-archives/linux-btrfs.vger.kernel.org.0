@@ -2,197 +2,231 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C77D40D3C3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 09:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E4840D3D7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 Sep 2021 09:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234791AbhIPH2I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 Sep 2021 03:28:08 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:3114 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234715AbhIPH2F (ORCPT
+        id S234835AbhIPHfv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 Sep 2021 03:35:51 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:8366 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234830AbhIPHft (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 Sep 2021 03:28:05 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18G59exT022454;
-        Thu, 16 Sep 2021 07:26:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=RNIGeKG9vbyG+FDcfCJovBhIFRJNQZJHau2duoVGlH4=;
- b=tZ83fPLd7TJzvYYskMGq+29XJVpbRaK8oWvZtLsQwwQJR9P8D8eOybANgd+YBybl2p8B
- Tw+Qp8sP2sN+uDeCv17wrITBHOli/wmouVqzjFnBEGAF+lLExKjeaqX0OMKLnjPNBIKD
- R6jFMg2uuGn9FccfSR6J77FHHb/BBZFIsPsP/jn/+E8VbHGJQmDRdLO65Sg9tBkRIibV
- 5hXr4pZjhzdGF+2mzcVE7Feb0EsjTNvxvoTvUyEmeJCqI18WbapY95pr5iMn5K1vPLMY
- qdAQo4ph4N24w0oGp33dd/+J2wR1Xcgy/jEJJ3Ok80xsu4rh5I2YY522s1KktbkCwN/d IA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=RNIGeKG9vbyG+FDcfCJovBhIFRJNQZJHau2duoVGlH4=;
- b=BNTzfjiCuNZKAU1cTvokb7lOM4XRi9nt4X9s5eja5tV7SUBO9cQYWuH687vOFAh4c5qg
- Bz137fndq/ev02OARi2NAxnzuLWj8ePJRUADgkWis/OL9U7X95+5/PaoOjqKuG3Muehx
- AbQ6ID4Rs+g+QBppASAlAF6Lm8q0+mCP/GOiyH0RH46x7JGHxOsUef2j4EQikTt/cArz
- m3JWK0z6J8cFCczivvRqOd29FLffdNLmPmtQsZworV1K5rhfBNgEQ3gKtP9awp5PwusT
- 2GKZJn9OZnu6oq3dSNZ4vDMIuI1Yjlhfk1fAYoYYGJrY+jVaaikPgED+upEZcQ5t6C0J 7g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b3jy7j7qs-1
+        Thu, 16 Sep 2021 03:35:49 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18G6Xoq4011510;
+        Thu, 16 Sep 2021 07:34:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=2vCIfbrd0FAHsAZfZmLM12TTKbgUfSSpxpEZwSFDZK8=;
+ b=QkVtFUS7irA7aMyw3YzVebna5apYcTfelTJyq7hePI2Tw1CqD3lCAB1U4u1nqgYXpU8x
+ FAQaw+qCPFHeBNf3MdmSFpgET1mlhNNmygOcZ3DW5e2M6Ef8QcH+41+r2fzGYrApCkFU
+ wo5LCTR1s4N+XUwZYLR2PSmpeOh5hjAofuChp2Kdq+UsRjazE4Z9ygLwj5sRlqpncCwO
+ 4io/rj9iH4o67iPia+/+fN3Wdbj3UM2/Kf23Og24L28FVU5NXcqsptxcfTLBy1OKQG3g
+ AoYVk4oQO+pYcolWvSlpH4znXR0YBwNdr0RmNMUbMaZIVq/8TtubvfzyFkEQu32Ftcit Vg== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=2vCIfbrd0FAHsAZfZmLM12TTKbgUfSSpxpEZwSFDZK8=;
+ b=eDVQuZek5v4cV2nfCpeVxpcof7/7N3czWSD1tyeN/jJy6mQ95tWJu1t4DF6Ypy4711lk
+ cjMAKFQvePu9RhGuGOI4RhtlOHotRqNgUfkp5LRljTqfQVowkL2WEsEIZAthO7LqT107
+ yTkcREn3NAPEo93XLnxuAKTb9/wRQ6+si4i1Cwbaq0oAuinf9hJxdDqHrKpQRBQEsfNm
+ OrFn8vg1GzFsEZP/oQTV/w+6L3o4+NGAG34O1Zisb3TzYEzEHARt7LYRBPGygbDJWwap
+ laNPpe0MU/1d5DBVicWjDSOCsJENGmnpLm7+bFILRqd4TR0Qj+blaizI+WbPZ2esqH9n uw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3b3vj10ma6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 07:26:42 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18G7Gd8h176985;
-        Thu, 16 Sep 2021 07:26:41 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2044.outbound.protection.outlook.com [104.47.73.44])
-        by aserp3030.oracle.com with ESMTP id 3b0jgfpdru-1
+        Thu, 16 Sep 2021 07:34:24 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18G7VFPi112780;
+        Thu, 16 Sep 2021 07:34:22 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by userp3030.oracle.com with ESMTP id 3b0hjxsvyw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Sep 2021 07:26:41 +0000
+        Thu, 16 Sep 2021 07:34:22 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PLWFA3upwU1R/TqKSLj1Aw7x4GdRfnD266n/5qfI48DJueD1QCbcNhLH5JjvHcYIWuDZP2Iy4fRdG9qDJyR54lQeKocnTltWZSegDIVX9j5BH85oos0yXqMkmK9kpmbrvjcR7hNfCfE7QulWP/uh5mEHrWWfKu0Ri5kvnaIHwRxeohPOJElJFB//ucHkhkNpQIXYBCFSH5Kexz3cZIgzkdoPMI2bPb5EZJAyqhG7PMvrapGxilsSyYDMPWQelop7weJFlOF+EEbMEtV9Yc0CcPcZVhbAD13V1+xehniqa22/PKib1k9UIFrUn2UcA0MsLS9OsBIBqgzpbNPE9bC6mA==
+ b=SMJ/QAU8G8m7PLFRKelt67kYUcXLBQBwrd4fDK0W340juDsGN8woipquKHjRFd8k6F8jakc2eccWkKnHYHVsTRX2663QVmvKx91x9c6j/GVj/KpBOlLEmBSrxyiC1kckrE9zJ3rXkaca50Xddz2G1ZthE/5z7V5QMX/MlJRUXF1cUSITnhgVWgHYCj46HKUg8nT7k/Avjrcnh93trLJVe6Smo1Z0DJMOFib84OtgSeipG2qL0CiCGiu9ws0AnTNctqd1N1a2G25PVwW81/6/t7wwiKyve2KJsP2DIAoj6zJdHk9IVKkRUtuGIXS+2ehY89DRQZYor6y8JatdAneI2Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=RNIGeKG9vbyG+FDcfCJovBhIFRJNQZJHau2duoVGlH4=;
- b=nvuUiZWMh5dgcGTNLmvGkaLlfmR88J+P6lTWn1NuhojuWMNVeewgC8BsonRct4XjcYAjGlE0MvAvV0IUwWOBYDlFdOtQ6VC6lkh8lwOk0hc1gmtfQBi7iwvSJeXBeAXB0WZ06wewEDwqG0dB00OwxzFynlDOZjHYI/eye6btKRWPNtQQvvzs60efkqpgKyUZFUJJ2qJgRu/QiKrhdbjJipyBU9++Z0MPAR4Jt4NF6h14arhG43tEFKw9qVCCYpLNndM1xETAuz9Y1DOYpm1EUT5fRiTrj/jHrU5Ia2SPW7CinBH7yZlYWKUm0/RI/7AGd+rBrYE+YG1vfHzXuibbRg==
+ bh=2vCIfbrd0FAHsAZfZmLM12TTKbgUfSSpxpEZwSFDZK8=;
+ b=O2VtU0gAt4xy6lkMq/640Wbn6HnRrmpVt5GThddiHtmgJenNDUqTUd6nC2/oZ7/skVSa4RF/2Yn1/AljSrS3cLhHwLGQublemzPgSZvv8Jw0j0t/uATnk0LAttH+c9Z+agfE33h6Fed6u+nLpF+XxZbsC1YVRToKXktHMdDwO7AEH/XtM2sEHo2BlXQCknkjyehHMTLuNEQjuw/yCA4yJ1K6B5ZQR2a4QHl5SpvMD5aHzYnybxQIs1LPpXqaDEmdHIGF9GEf1RHDF9GNrQIDfsO2c6ljeO16vumrNiOTc1+96uC4DLOMcureaTlTXLG0+6kIn1SfyD0V4uNUixRjIQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RNIGeKG9vbyG+FDcfCJovBhIFRJNQZJHau2duoVGlH4=;
- b=m+ye4GakgfpJUIktzmPpm+5+/pHNvMGho+PSBrAA2JCWKeXU6ggEhGx1NrrPvtLFtl70cDYEK7peAv3I0pVAEBCZOG4MhEgAxlPi9ijmgT5jBRTSSWCRh3PkxYfwcbDCQ7B7nlCTHYIqFURs2rIV37Swwr5GGMm1PZ/MjL5CHJU=
+ bh=2vCIfbrd0FAHsAZfZmLM12TTKbgUfSSpxpEZwSFDZK8=;
+ b=mJpQbfSZgnA5tONv8Ja42/JGi5yTEYjUjNsGYHDLJCXw1z+82OuGA7Hqg24ByGdxUn7tS5EbE0c9ajlZBREVMUpM9quamkjYIuHtY0qmhQJczbMgxEImTAtdATxFr3gKslx6utgn3ofKOrUWqJ6S15FrEk59mnxuXVtW3DdTjAQ=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by BL0PR10MB2929.namprd10.prod.outlook.com (2603:10b6:208:7a::23) with
+ by MN2PR10MB4366.namprd10.prod.outlook.com (2603:10b6:208:1dd::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
- 2021 07:26:38 +0000
+ 2021 07:34:20 +0000
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::49a5:5188:b83d:b6c9%8]) with mapi id 15.20.4500.018; Thu, 16 Sep 2021
- 07:26:38 +0000
-Subject: Re: [PATCH v2 1/8] btrfs-progs: Add btrfs_is_empty_uuid
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210914090558.79411-1-nborisov@suse.com>
- <20210914090558.79411-2-nborisov@suse.com>
+ 07:34:20 +0000
 From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <15a241b0-e545-7603-f287-811216ca2eef@oracle.com>
-Date:   Thu, 16 Sep 2021 15:26:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <20210914090558.79411-2-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR03CA0157.apcprd03.prod.outlook.com
- (2603:1096:4:c9::12) To MN2PR10MB4128.namprd10.prod.outlook.com
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Anand Jain <anand.jain@oracle.com>,
+        Alexander Tsvetkov <alexander.tsvetkov@oracle.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH stable-5.4.y stable-5.10.y] btrfs: fix upper limit for max_inline for page size 64K
+Date:   Thu, 16 Sep 2021 15:34:01 +0800
+Message-Id: <305e717a1ce9bda18b1867c6fb079f91d6e54c98.1631776544.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR03CA0122.apcprd03.prod.outlook.com
+ (2603:1096:4:91::26) To MN2PR10MB4128.namprd10.prod.outlook.com
  (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Received: from [192.168.66.145] (203.116.164.13) by SG2PR03CA0157.apcprd03.prod.outlook.com (2603:1096:4:c9::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.9 via Frontend Transport; Thu, 16 Sep 2021 07:26:37 +0000
+Received: from localhost.localdomain (203.116.164.13) by SG2PR03CA0122.apcprd03.prod.outlook.com (2603:1096:4:91::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.6 via Frontend Transport; Thu, 16 Sep 2021 07:34:18 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 42af8e26-46c0-467c-ed2c-08d978e3525a
-X-MS-TrafficTypeDiagnostic: BL0PR10MB2929:
-X-Microsoft-Antispam-PRVS: <BL0PR10MB2929FBB82067DA660B087103E5DC9@BL0PR10MB2929.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Office365-Filtering-Correlation-Id: 36abe5a5-58ea-4126-fe75-08d978e465aa
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4366:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4366B61A6A5B9299761E598DE5DC9@MN2PR10MB4366.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PmtEUt832Kx22lsl0F3jYn2DPm6pOHZDyEXgLWlXlIWadTotJGvaniAlodKj8g3YQP7ovKJLK4Wu7BeqSNxwQQwp4XcsNRlPuTWiQ9vgyRpLxRgWwsILp3kmIgVpvq7uZpiV8x9kzizu2EPs/YYtCaTd+wRWF4vB1UJu3ESiLguyIo7dU7y22VFB3vXHY64xrVikC0hiwx6vno5dGhUgc1hRVfdVOarF9w2k5FhgC3t9KGXKuLgRM0kJVG6W5d8V14C4KvaoMQ5pVCGSeWW3VME2Ppmo8fj8SEOndI4SS8OwUTbAFmzWYaSV0eIU6RKhUvGRKW1B1EeKY/Q5e+SC/OIrsc24u7Pdg/NY0gWLEua+Rp+3CJwS+JHHfMJN85EKgjduEvjykgk83vTO69uuAYoHNPHLsalrEbx6f6k6Lh1mDf904Df3/Z0P+Zq+bKGthYvmgsLVi605g/gAMDU6uxMe1/akrPWPU0lM1WwTWWdg/HTNY3P97drxTtgFFbtOGJcoooQ8h2EGGTCXAjUC2+1WoMByrYHlfCqr6Z4fW0tQea1pXzC7zsomvjLMYm+TvKl4EZC5PcQqzNogRRdaOnCZ+rv5oCLXxP98wrKvS3uM94hafZItlBUyyquxoJNmIb0heJ/pRdFxg9HA4UWBymj5DFXDhN+qKoULHOu+Eiu+niIidQZtrEnG6B62od5rZ/StpA7niymV2Zpc7ZRd7mO/BouCczh/obtIjqEojPk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(346002)(366004)(39860400002)(2616005)(26005)(8936002)(956004)(86362001)(5660300002)(6666004)(8676002)(66476007)(66556008)(186003)(38100700002)(66946007)(44832011)(2906002)(31696002)(6486002)(478600001)(53546011)(31686004)(316002)(83380400001)(16576012)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: EqkMiI574d3PCJJByeOdvyDnpy1UKEIpQ/56srG4mvvYiQpkY8KrawEUQpdLxGxt9V59Pv2O8bpAtq/J86cX10PewVCK7Hv7gGuggSEnqqlwzlxoiHDvvHHuaW/dDfjJqNhZZNWlk0Gq2mUvjv+d0jtN9tjMEpMWRsn3S7SQgBZIHVMkFmLJUT/TMJyKIoFWm/A3kAplBo6eqqwKPaCuVR9PfAi6dJhwkhlEDxJYO4fK4HDSXqH1J8301aGMFrFaVbPfwO2UoTE90/Qw1SEZGdQ6Gr4owhxXnsWESAFhNCEc/b6teETl5Xmg3dp33C1RiApLOvyW/O1Jx6rqICHHlSN4I18YoV1OuMHMeGwN556tzR3HtaKQmx9CcYzI/JNLLNyFpWjnfRpUjlo1HsGQ1nmYorZ92DYFcNBwRtYOry4RfXEckwQYlhhyxiQuLvKxQhw4gukeDuPsKBAh02bkLbWHVOpU58VzkEaeoHvaatwRwMPZ41R4WVlZSBDhcBVz0NjASLYM1UX2MZO5OB/6Cxyx3tsgonGfCMEai6odS1AibH9P3M6L1aRBDJSz4SywMNeW0ToH8jeNePZEGwbkbGfgMch9q9VZGgV4Y34m2GM/ia33CRiAozz8YEKN1Rc3EAoQea4fKIEwBPyrvGzZF3Smnl6Hju1JQWTfIK0ZJzTEiEl2EI7Q4oPt86jOvZ7ZDa8F5EzqaOvX0A5Uf3DiWA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(956004)(2616005)(38350700002)(38100700002)(6486002)(8676002)(2906002)(52116002)(4326008)(54906003)(44832011)(316002)(36756003)(8936002)(186003)(66556008)(66946007)(66476007)(26005)(6512007)(83380400001)(508600001)(6666004)(5660300002)(86362001)(6506007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ckFrWnNuRHNiVThKZmhsWnRWUUJzRWt4YXY1NCswWmowK083b281bVNZOUFY?=
- =?utf-8?B?VnN4YWFKYkZ4SExWNFVnd0RJWS9iMmhiNG5jUDFFTXlTUWpBTk9Bd2hWaGlL?=
- =?utf-8?B?SWVjQ0J1bURoaE9EVE1oOHVCMnhDWVVPWms1UFViYVFFeHZTMFpOVXdVZU1B?=
- =?utf-8?B?eGhvdnRFKzhvOW9INCtqcXBxYy9wVjlZMlEvMkJIR1FsUmxydFE5TXdKTFp2?=
- =?utf-8?B?TUlCajdNbG1CZVlYRTd3L1M0WEFrTHpZaWZibTJ2WEYxWGVYK1dBSlBzT1d4?=
- =?utf-8?B?UWRNMzhDdVA4a0ZGV1JOVWJ6cXlRMjdvMWRkc2VGd3V5aUh0a2pFV0sxVWls?=
- =?utf-8?B?b0wyRHBmNXhaSFdOS0U1SEtOUkprNU1hS09sWCtJZ1VzR2NqVHF0VE1kcUlV?=
- =?utf-8?B?QlJwMHcrNGgxQ2FFcWxac1VVMjJWRVNwRGlONHpocDNlMDQxcm13NkVhckV2?=
- =?utf-8?B?NjZ3aDVKTTBiQVNjWFROTWpxOUZOcVgyZlVLOFFCZEFybWhnS2ZHcS9oUDBB?=
- =?utf-8?B?NWExQ29pak5qWWtFSm9qbDk1czA3RWplZzNUNHJCalZFMG4xaGNtdmpTWVZ3?=
- =?utf-8?B?TlozMUxpRk9qbk0wN1BZVFAycTVla0ovL2xKbCtyOVF3S1RZNFU5dzQ4M3hX?=
- =?utf-8?B?ZnZ4enJOYmo5aEkxZTBtQ05qcVpvaFl6VnJsMmRJV2UvNlA3RlBpTUhZdUFO?=
- =?utf-8?B?OEhNc3NFWithUzJmNFovS2s1Ry9SYWN2WnhaTERiZlJyejI4YUEzcXF6Q1ZV?=
- =?utf-8?B?b2Q3NE4vdy8zWktOWXdwb2hmYXlxVTN2WEpTWXovUDB3NXE0OU5tWllrT0o0?=
- =?utf-8?B?akU5RkYraGRMUWVvZzFWbVRRbHpWMGNEUVJsWm5qVmVMek5oWkVrWEFwemF6?=
- =?utf-8?B?R29RYStpZkJiajFFR0hRRDduNjBkZlgvUTE2V3oxZ1BsY1F4MHlFTGc4SWph?=
- =?utf-8?B?Y2h3dUJLYzhtUVR1Ujk3WUZCV1YzVHJjb0pUNmRpYWc0MTJkOTB1YWN1dEo3?=
- =?utf-8?B?UTZWckJzTjhHSXZ4QTZKeVNOSktXMGFhcTFnbjdqT2h0ZndpNFd6d1BrUGNF?=
- =?utf-8?B?LzR3eUlsQnRpS3kwM1BPL1laTTA5dzhYbm90VjFoV0Mvc3RMdnhjOE1sZHp0?=
- =?utf-8?B?WXIxLzNKMHBhYXpweHhWVm5ZOWRRSHlHNzFNM2RGQ0hWeXBZWFE5MWxpWDk0?=
- =?utf-8?B?dkxSSUxWS3BwdmtsK3hzMms3VlBGRjFpYzJwK0V5ZVhpbk1JRzZZTDBLdGZl?=
- =?utf-8?B?T29mVU16WG9SZjIxZG5id0p3N28yeWRjb25nQjJVUzdYbi8zcGpqcEFKcDJo?=
- =?utf-8?B?WHBCVnM0NUZ6MGg3ZDlQVWFDVEd0OUcranppd29KbzlpNW91TEZBTGNkYWVz?=
- =?utf-8?B?cFFBTTk5Q25iV3NVSHRSTGZYTGVuREN0bDhBZ3ZGNG5uQW5QU0xiUWdwQkFj?=
- =?utf-8?B?U2tndFlxM09tazJ3SmhNUFphNStSYThlNk5nTkxETERCcTYvVHJhbzBrOVFl?=
- =?utf-8?B?cGNQL0d2VjFEb2FQazRpYzA5YVRUMzRGTXoxaStqcXgvYUpBMkRJV3RPbXZS?=
- =?utf-8?B?WVBibkJaaGY5WjV3cTJ6TmZoUnhTNFcyR1g4Slp3RG43bVNXYUpTZG93T0lX?=
- =?utf-8?B?UmJoVWZ6aTlYVEJCNGFPeFFmTnlNSE4rQW9PZzdvNlNOZXQrbUVoeGRKKytZ?=
- =?utf-8?B?L2RXS1N3VXV2Z1M5THZnTHRINW1mRjhKRUkzVTAwN204aDFUNG1xaTNURlFS?=
- =?utf-8?Q?Up9Cy+ZjKKZLhe8mMJ9a+E+tVfTWV/NurRwwC47?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tbM+I3FdOF1OQgUn1DWwDTluFyyDY02jWJXeweyfprmIgtZm6PLmzKZFpAVE?=
+ =?us-ascii?Q?yia3qd3dcMgTqv8wAfcBNgFuxklKgkj+0gb57pDl4x1RDM71RD3KG0JdcghK?=
+ =?us-ascii?Q?nPZ8bnjZ+zFfdXoC7MdcmDbA9P+kpNSjbCTRZbipywjai8/8YLVCS60kuoD6?=
+ =?us-ascii?Q?scxujBIdMPcdQVR7j3Hg6ZIIaskelsN/YHa/Jd518k590dd+P3l+wf5A1JTs?=
+ =?us-ascii?Q?3zj6cS9QxYiY0NvPa7XPM3JbsCTf9HF6cVDKGbLgtuJUKE5ig27nosGOOrh3?=
+ =?us-ascii?Q?z1CF+rmKRapW3ihQSr5AvD8w3eVKsKk7L5c2FD53gOR3PxsDVD4ZLAcvsMrs?=
+ =?us-ascii?Q?/iGpIsH96NrnJSFdsKkD+QA1zcFQ+BgCoVy5EJDjNlnd0FMa8VaITmByQldN?=
+ =?us-ascii?Q?ux/9Ir9erMM0+lo9UOvdECmi3GLDJQODpwbdUIvoXtVC3UsMO0+5fADgADcJ?=
+ =?us-ascii?Q?EEYlCBdIvFnrEuI38cJJsKTWBWq0uZzJIBc2sqIHavWpN6ymgjMEUsH/9UKX?=
+ =?us-ascii?Q?QMzt+Lp8Fq58o+h88amWjbQqM9PqO8kEw+rb+wyvG2Iu2fbN9e3Pnl7/rLD3?=
+ =?us-ascii?Q?bwoKL6IAOgy5VA0QneBBRZJDl6N3kT1TtC9ZmWLT/AFsXXAOGjV/AeCHEQ+M?=
+ =?us-ascii?Q?Og6Q+akjdhrDtwOLcsb0zmyVHArpDJKsPWWuddPIXORvqGlwHHVtLqHj6Q31?=
+ =?us-ascii?Q?fwJbCwsONe+9aqzd5vNndW9GTW0ldqq2l94gWRvUIneOWEW0YiwCSf3O/jfG?=
+ =?us-ascii?Q?1/xY47UprzWoGuGCkHapHZKGpMu3sa8hUMCH23FZRR5iImFKX0FZcxk5SKEX?=
+ =?us-ascii?Q?MTISYsflFVAKl1y0yCNt6oKMcB/WfrzcoCGFj9qBYSrbageU8wKytVrwV71q?=
+ =?us-ascii?Q?xpGwgRYQvALR1ATDG+qzTP5CEnv+0Fqog8DYXVF499Q9bqCOhvGVjKit+e6V?=
+ =?us-ascii?Q?J401YzlAcPau/Vv1xyOrqs7ev2LdFYs9PwZUAoRF0EZnj9jMfqFjtvUfJ+GG?=
+ =?us-ascii?Q?gxXap9nHJTZl/lESDVHfqqNT/dty1ismFAVl3PssFVoEDv6v5brDfLPCDdXr?=
+ =?us-ascii?Q?5iAKJY4slLeB0zwe5CcgXqn1bPU8qPpi6MvaE25LG4jochpuKkMc2ZV6A+5c?=
+ =?us-ascii?Q?pkTj/nasW3bl4fcclmT0yFm4B0NtmNKdTRF+b3gKoZaCi5f7S1WNMdTspIhy?=
+ =?us-ascii?Q?tDC4tBfFntfjF3gQAXNkbkG8Rsi+TpeUUKUX5pWX2Hn/7saPx4yn6RlPDV98?=
+ =?us-ascii?Q?UtT4QelPZ5bEAdcooXtuY+MQi93PVKF8DVjuvf0LnOaFP1nMmYfsKkinKfMC?=
+ =?us-ascii?Q?VYL7HGP1drZw5cd5rquxkhcQ?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 42af8e26-46c0-467c-ed2c-08d978e3525a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36abe5a5-58ea-4126-fe75-08d978e465aa
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 07:26:38.7441
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 07:34:20.6821
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: N+o9zj7e6JD5YhFkl5CT1WoGBadzC1NQQSMedW+qw0mOzD0sKj1yBRSH5DriA40X45+QIO7PDwncmUZw8Pl3bQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB2929
+X-MS-Exchange-CrossTenant-UserPrincipalName: lCBwcHHHXWTKRgolJNxHOzcF8kHa4YDK3u2xG50BFRMjedHFV8OTyqKyHgVy5sBA0di0B6xyXwDfsW8vG+Y29g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4366
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10108 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 spamscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109160046
-X-Proofpoint-GUID: IN4cIKlu1BO6fMwlrBitQPRtFz2ejJhd
-X-Proofpoint-ORIG-GUID: IN4cIKlu1BO6fMwlrBitQPRtFz2ejJhd
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ mlxlogscore=999 suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
+ definitions=main-2109160047
+X-Proofpoint-ORIG-GUID: A8IUwZ4CxdxqZsGoSoUFSbC1bGJL98-a
+X-Proofpoint-GUID: A8IUwZ4CxdxqZsGoSoUFSbC1bGJL98-a
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 14/09/2021 17:05, Nikolay Borisov wrote:
-> This utility function is needed by the RO->RW snapshot detection code.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->   kernel-shared/ctree.h     |  2 ++
->   kernel-shared/uuid-tree.c | 11 +++++++++++
->   2 files changed, 13 insertions(+)
-> 
-> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-> index 3cca60323e3d..f53436a7f38b 100644
-> --- a/kernel-shared/ctree.h
-> +++ b/kernel-shared/ctree.h
-> @@ -2860,6 +2860,8 @@ int btrfs_lookup_uuid_received_subvol_item(int fd, const u8 *uuid,
->   int btrfs_uuid_tree_add(struct btrfs_trans_handle *trans, u8 *uuid, u8 type,
->   			u64 subvol_id_cpu);
->   
-> +int btrfs_is_empty_uuid(u8 *uuid);
-> +
->   static inline int is_fstree(u64 rootid)
->   {
->   	if (rootid == BTRFS_FS_TREE_OBJECTID ||
-> diff --git a/kernel-shared/uuid-tree.c b/kernel-shared/uuid-tree.c
-> index 21115a4d2d09..51a7b5d9ff5d 100644
-> --- a/kernel-shared/uuid-tree.c
-> +++ b/kernel-shared/uuid-tree.c
-> @@ -109,3 +109,14 @@ int btrfs_lookup_uuid_received_subvol_item(int fd, const u8 *uuid,
->   					  BTRFS_UUID_KEY_RECEIVED_SUBVOL,
->   					  subvol_id);
->   }
-> +
-> +int btrfs_is_empty_uuid(u8 *uuid)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < BTRFS_UUID_SIZE; i++) {
-> +		if (uuid[i])
-> +			return 0;
-> +	}
-> +	return 1;
-> +}
-> 
+Commit 6f93e834fa7c5faa0372e46828b4b2a966ac61d7 upstream.
 
-   You could use uuid_is_null(). No?
+The mount option max_inline ranges from 0 to the sectorsize (which is
+now equal to page size). But we parse the mount options too early and
+before the actual sectorsize is read from the superblock. So the upper
+limit of max_inline is unaware of the actual sectorsize and is limited
+by the temporary sectorsize 4096, even on a system where the default
+sectorsize is 64K.
 
+Fix this by reading the superblock sectorsize before the mount option
+parse.
+
+Reported-by: Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
+CC: stable@vger.kernel.org # 5.4+
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/disk-io.c | 45 +++++++++++++++++++++++----------------------
+ 1 file changed, 23 insertions(+), 22 deletions(-)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index dacd67dca43f..946ae198b344 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2894,6 +2894,29 @@ int open_ctree(struct super_block *sb,
+ 	 */
+ 	fs_info->compress_type = BTRFS_COMPRESS_ZLIB;
+ 
++	/*
++	 * Flag our filesystem as having big metadata blocks if they are bigger
++	 * than the page size
++	 */
++	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
++		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
++			btrfs_info(fs_info,
++				"flagging fs with big metadata feature");
++		features |= BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
++	}
++
++	/* Set up fs_info before parsing mount options */
++	nodesize = btrfs_super_nodesize(disk_super);
++	sectorsize = btrfs_super_sectorsize(disk_super);
++	stripesize = sectorsize;
++	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
++	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
++
++	/* Cache block sizes */
++	fs_info->nodesize = nodesize;
++	fs_info->sectorsize = sectorsize;
++	fs_info->stripesize = stripesize;
++
+ 	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
+ 	if (ret) {
+ 		err = ret;
+@@ -2920,28 +2943,6 @@ int open_ctree(struct super_block *sb,
+ 	if (features & BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA)
+ 		btrfs_info(fs_info, "has skinny extents");
+ 
+-	/*
+-	 * flag our filesystem as having big metadata blocks if
+-	 * they are bigger than the page size
+-	 */
+-	if (btrfs_super_nodesize(disk_super) > PAGE_SIZE) {
+-		if (!(features & BTRFS_FEATURE_INCOMPAT_BIG_METADATA))
+-			btrfs_info(fs_info,
+-				"flagging fs with big metadata feature");
+-		features |= BTRFS_FEATURE_INCOMPAT_BIG_METADATA;
+-	}
+-
+-	nodesize = btrfs_super_nodesize(disk_super);
+-	sectorsize = btrfs_super_sectorsize(disk_super);
+-	stripesize = sectorsize;
+-	fs_info->dirty_metadata_batch = nodesize * (1 + ilog2(nr_cpu_ids));
+-	fs_info->delalloc_batch = sectorsize * 512 * (1 + ilog2(nr_cpu_ids));
+-
+-	/* Cache block sizes */
+-	fs_info->nodesize = nodesize;
+-	fs_info->sectorsize = sectorsize;
+-	fs_info->stripesize = stripesize;
+-
+ 	/*
+ 	 * mixed block groups end up with duplicate but slightly offset
+ 	 * extent buffers for the same range.  It leads to corruptions
+-- 
+2.31.1
 
