@@ -2,79 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0340940F6CA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 13:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BB340F6CC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 13:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241898AbhIQLko (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Sep 2021 07:40:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47988 "EHLO
+        id S241905AbhIQLlD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Sep 2021 07:41:03 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48078 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233452AbhIQLko (ORCPT
+        with ESMTP id S233452AbhIQLlD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:40:44 -0400
+        Fri, 17 Sep 2021 07:41:03 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9F04422412;
-        Fri, 17 Sep 2021 11:39:21 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5640D22412;
+        Fri, 17 Sep 2021 11:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631878761;
+        t=1631878780;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=D9rOqj49iQc+2znGhedPbmSyAxUB1GTT37J9JxG95bY=;
-        b=Z2uxnxDTACdcnTnjL5McFRi9YlM2Zd+gVNl6KvoHI5x86UWz9+9BuCuKy2kiUtHd9Qs9Wc
-        ZGuyjwNEOP3XjKVif+XERk/TQuWZVE78LLs+dsVBVtHlhoGjTgWJ6GeKlSNbqgTO9FC7gw
-        OroAnlqBfgumAlhM6FbgIIWtDpLbal8=
+        bh=q5L9sCXcBGekSpBU3LtR+k1FtWqhK+L5ARWqF7dvTAg=;
+        b=kgBLOfcyXop1Hv6YrCgJk74PBnGp9yR7KRXQsm56JiuO7wYmPgo7K5RhRMjUwRSCj9ZD8p
+        +Q92nuDFoWtj6a42IR12XM4wCSVkQJMR4gAMAv/4vrJrj9VCm3OAyiFlG0g7rAV+AKutra
+        uwgc70a1/279dO63jjIe1rD7ELGbYbU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631878761;
+        s=susede2_ed25519; t=1631878780;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=D9rOqj49iQc+2znGhedPbmSyAxUB1GTT37J9JxG95bY=;
-        b=vjiTRm+qODttl1OS4od9gZRcVNsTO5UQe2M2Owbs30hj59b9jsB0wBZkbHqytGfzM1BvN+
-        zLXUvzDdVuYr7FAg==
+        bh=q5L9sCXcBGekSpBU3LtR+k1FtWqhK+L5ARWqF7dvTAg=;
+        b=2g3yiUjO16PrreZZ4kFsx0Ed3xkHpKIwhsjX68WHdXCgDQr/PeWdcMXXuvE3BHAILqieFp
+        ML9a8oeoyZYYmMBg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 98099A3B90;
-        Fri, 17 Sep 2021 11:39:21 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 4EEADA3B93;
+        Fri, 17 Sep 2021 11:39:40 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 10699DA781; Fri, 17 Sep 2021 13:39:12 +0200 (CEST)
-Date:   Fri, 17 Sep 2021 13:39:11 +0200
+        id C021BDA781; Fri, 17 Sep 2021 13:39:30 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 13:39:30 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] btrfs: rename struct btrfs_io_bio to
- btrfs_logical_bio
-Message-ID: <20210917113911.GQ9286@twin.jikos.cz>
+Subject: Re: [PATCH v3 0/3]  btrfs: btrfs_bio and btrfs_io_bio rename
+Message-ID: <20210917113930.GR9286@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20210915071718.59418-1-wqu@suse.com>
- <20210915071718.59418-4-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210915071718.59418-4-wqu@suse.com>
+In-Reply-To: <20210915071718.59418-1-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 03:17:18PM +0800, Qu Wenruo wrote:
-> Previously we have "struct btrfs_bio", which records IO context for
-> mirrored IO and RAID56, and "strcut btrfs_io_bio", which records extra
-> btrfs specific info for logical bytenr bio.
+On Wed, Sep 15, 2021 at 03:17:15PM +0800, Qu Wenruo wrote:
+> The branch can be fetched from github, and is the preferred way to grab
+> the code, as this patchset changed quite a lot of code.
+> https://github.com/adam900710/linux/tree/chunk_refactor
 > 
-> With "strcut btrfs_bio" renamed to "struct btrfs_io_context", we are
-> safe to rename "strcut btrfs_io_bio" to "strcut btrfs_logical_bio" which
-> is a more suitable name now.
+> There are two structure, btrfs_io_bio and btrfs_bio, which have very
+> similar names but completely different meanings.
 > 
-> Although the name, "btrfs_logical_bio", is a little long and name
-> "btrfs_bio" can be much shorter, "btrfs_bio" conflicts with previous
-> "btrfs_bio" structure and can cause a lot of problems for backports.
+> Btrfs_io_bio mostly works at logical bytenr layer (its
+> bio->bi_iter.bi_sector points to btrfs logical bytenr), and just
+> contains extra info like csum and mirror_num.
 > 
-> Thus here we choose the name "btrfs_logical_bio", which also emphasis
-> those bios all work at logical bytenr.
+> And btrfs_io_bio is in fact the most utilized bio, as all data/metadata
+> IO is using btrfs_io_bio.
+> 
+> While btrfs_bio is completely a helper structure for mirrored IO
+> submission (utilized by SINGLE/DUP/RAID1/RAID10), and contains RAID56
+> maps for RAID56 (it doesn't utilize this structure for IO submission
+> tracking).
+> 
+> Such naming is completely anti-human.
+> 
+> So this patchset will do the following renaming:
+> 
+> - btrfs_bio -> btrfs_io_context
+>   Since it's not really used by all bios (only mirrored profiles utilize
+>   it), and it contains extra info for RAID56, it's not proper to name it
+>   with _bio suffix.
+> 
+>   Later we can integrate btrfs_io_context pointer into the new
+>   btrfs_bio.
+> 
+> - btrfs_io_bio -> btrfs_logical_bio
+>   It is intentional not to reuse "btrfs_bio", which could cause
+>   confusion for later backport.
+> 
+> Changelog:
+> v2:
+> - Rename btrfs_bio to btrfs_io_context (bioc)
+> - Rename btrfs_io_bio to btrfs_bio
+>   Both suggested by Nikolay
+> 
+> v3:
+> - Fixes whiespace problems
+>   Caused by "dwi" vim commands
+> 
+> - Update several modified comments
+> 
+> - Rename btrfs_io_bio to btrfs_logical_bio
+>   To avoid backport confusion.
+> 
+> Qu Wenruo (3):
+>   btrfs: rename btrfs_bio to btrfs_io_context
+>   btrfs: remove btrfs_bio_alloc() helper
+>   btrfs: rename struct btrfs_io_bio to btrfs_logical_bio
 
-After reading through the whole patch I agree with the naming, though
-yeah it's a bit long, but we've been using this wordy naming. For
-identifiers it's fine to use lbio and it's now clear from the context
-that it's about the btrfs-specific features.
+Added to misc-next, thanks.
