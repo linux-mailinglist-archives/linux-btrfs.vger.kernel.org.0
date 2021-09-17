@@ -2,83 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5817F40F6AC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 13:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1005C40F6B5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 13:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241825AbhIQLZx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Sep 2021 07:25:53 -0400
-Received: from mout.gmx.net ([212.227.17.22]:43969 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229800AbhIQLZs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:25:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1631877862;
-        bh=eIzoQYDW+5EvgXNAp+dwEZBb5nq+3m3Sgt082nCHZEo=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=aQ4moRRrvNbchu7Tp+y0G70myXTMjuDTGPKQ/BPpo1elFeW5EeuyxIrQ+2cpRK39R
-         k7tytX7PIUynANFczycXgqk80VWN2E2WcTz84D/ppe/twF4jjjCsi+Gs3OiY+enX3Y
-         G/Vh44ee6vQipcD05VPFWOoc17ST1ynfyfKZjjlQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N8XU1-1mwHa82f1V-014SrV; Fri, 17
- Sep 2021 13:24:22 +0200
-Message-ID: <c0d3f033-5b53-4026-d38d-e7e9284c1f80@gmx.com>
-Date:   Fri, 17 Sep 2021 19:24:18 +0800
-MIME-Version: 1.0
+        id S1343865AbhIQL3H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Sep 2021 07:29:07 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:29327 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241761AbhIQL3F (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Sep 2021 07:29:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1631878061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z4Mglc2X44hubvnQbAyyzx6YiachkSudWWKfbbXPV78=;
+        b=h3w9EDZEg+EQQ9fTJagUmr05NZILslgB/KpecnjNvavrkXr8mmOnFt06Fs8a8MF1FSeYYi
+        gkCoMPlJHQtglyP+MJe8wukBgPZMvu48pTfW2HGd7ayH+vGL39mM3uc98lka4IPmPSD8yZ
+        rrdzXmoMJeIqq8CadVnzNqpKbfQSGrg=
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur04lp2053.outbound.protection.outlook.com [104.47.14.53]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-26-Z6nA591qO6Coh5gHdPfXAA-1; Fri, 17 Sep 2021 13:27:40 +0200
+X-MC-Unique: Z6nA591qO6Coh5gHdPfXAA-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YcWG+g4T4yCgZp7znLhrdAEINrcWPckPsx3GpmeKhs0+S/Fd+X3MuqW2PNGl859oD6PDfQ5JjjI2Hl0A61B7roiYS9yDlxTnJvOOGsf0pk2G6HLz+ZJh5eTUCAkMWyaPKP5qgnTVKAbmvx8J+BMzMrLb9c8clEZMpUxMvj2QL8Nj4TW3V3MX8CpUHe3SDXDBGZ9Mv/cIrobBSCi9m+bX+tPjo1to4aCaLq45oJhKQfSNviFSfeaL/v6jUGaZXvQ6sgYogyNJ2lhmA9G1suYUklht0QlHv9uowY8iV9Ibe5APECix2iL/bI0uTRUIXUXATfQJo06DBtnuiHzg8VJEFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=UP70Z5cxMJyFWeE30eyiF3ZqlFSQzDX7DXDUGrHgEdE=;
+ b=P4sUzby5Nu6HEBJ4sixOy+D6zhEVjJWfYLut1NsNa7HoIg8tHTLP8uRjyVtbePPNCeUhsXN+2s7tnxLoruN2epVYZMr3BoD1vYF9cFqlXYvHqk+Rwow8dV2PRXx1PGHt7UkwZFPmjE/Ajr3TDoD2s10bi0qICWmcEXixVYSAvzZQRzQseoBgU7plqysUnk4GkJGr5/mG1RrI5FW5HhKfmbbZ6UafXQNzTkVGjd0eRuam66Ilk4BsINNbyy8TYFsMXWC6cAVMJIU4ngyX+2sXqjHM9Wk2FRFb3mHyQrDsw1RgF/zQbS7evANRG45C/6F+JlO+u+qMx+PG9b9jyz1EoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: gmx.com; dkim=none (message not signed)
+ header.d=none;gmx.com; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AS8PR04MB8371.eurprd04.prod.outlook.com (2603:10a6:20b:3b2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.17; Fri, 17 Sep
+ 2021 11:27:39 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::78e1:ab2a:f283:d097]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::78e1:ab2a:f283:d097%5]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
+ 11:27:39 +0000
+Message-ID: <5767f47f-fd6d-1c50-e6b4-90c8bd0d8fdd@suse.com>
+Date:   Fri, 17 Sep 2021 19:27:30 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.0
 Subject: Re: [PATCH v3 1/3] btrfs: rename btrfs_bio to btrfs_io_context
 Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
         linux-btrfs@vger.kernel.org
 References: <20210915071718.59418-1-wqu@suse.com>
  <20210915071718.59418-2-wqu@suse.com> <20210917111923.GN9286@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20210917111923.GN9286@twin.jikos.cz>
+ <c0d3f033-5b53-4026-d38d-e7e9284c1f80@gmx.com>
+From:   Qu Wenruo <wqu@suse.com>
+In-Reply-To: <c0d3f033-5b53-4026-d38d-e7e9284c1f80@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:5KHcKwOS/phjWM/Xq35ryIRf9YYWxm0Efxe1lzZDMaKZku5e80z
- OuiCWkoIaQM+RhEfI72OgXqmrOpP1CinFSZ5rYRUAIIl94TPHBcuSntttpngwXlbf0J83ny
- SW/4k47sxnfvZJ9tFVnnCoaFWpOd8yOgGNlhp+WAt2F5DcAgNjv1r7v83Hae8SoIyeKPQeu
- bNFgmnnE8Vob851Lqnc+g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:csJp/Qzss8A=:aSStyXBtqpkqV8PdoeMqYo
- LLTswmimM4IKocXv5/M5Yp1uKAtcPMhctjgoBOXFaVLxHlKUtPbFcFxlIfTQ1AIGbqVzxgLaC
- uyLGlfQrYVRRaz18gk/eLJqM2RTfnBMN6qPOlQ9dgWKAKe3uZJftCak2OxBQKyw5P5z0Bundk
- YnAcbiIp7Amemj1EQxbHFO5OxdOapvZwvzfED78sdM/gEzfybr46+NO4x1WAv65XOTDZ54Z7A
- LpAxkyYev1rU/FKNa/xU1uwe7WkI+Z89hjJFivKiRDCystM+52Ps4WsVTibtUKxnlSujbVx+u
- HZRFzgrBDg0+6xkKb0XJq7YrTDHn/ZAfQqvFi2mWf5/TkLHfQSxF86gySTZ4WjWoglj/sWFxV
- AC4RouYKIetwTkqfd9YpRt1Ch03HQfrZOerri8nSLzE2JEQPcJ7K5HlIrneklviaBxGYPRAnk
- BlDEdS6CnCTYkyFEM4M0+B/53Drh33sPXqEkWTB88UL4CucDlAL44mslu4Y7aHrIErQ595eOg
- 6vYsF9/DEt4AR7zJTTysYyDEyGx0M5rjuF3+TA6oqcIlApDSuADusQZOofUG7OoNHjmhl0pL2
- wH5katYgGQFKAVk8/v+k5BCZJ8XdaAO6yrEGWs1PyACyYCnxx9scZP2a6Wj+3EghmmFkChk5w
- CCPiz1Yg3u/yZ84ffc5JoTEXQVCjf4fxNWxaOWIIWS0y1piDJ6/ULIHhjbFIxfc34nuCE/RNK
- QcMRCK86Z4dpxqQED7pARpO7LrrIWH/8G97OdCbpKYbyuTdW+uwV7QX0hWqtWEpfYPHtvxGR1
- aV+GzxZyQLKPkTJP5NkQ/gOqVvVOkAj+jSUR3rfGtJpu9EkM/Es7NEMDnW8Az+xn+SF2bT9aO
- oUyHcgEVAKsi/XzkN2wZC95y+P7HxbG5Z97k2WDg7PYtCe8zFcBhNVwcCqqS0uR1ZIFD/13ii
- 9WicXmy5tDb+1VrP0H0/av9AcO96xBUajl4dbpidRiQJHkHQnlK4ppbSQpcUwUAHgzAe3HliA
- sMURLn5bs2oXP9iNuTN6LRM75EBBSE5SqQKJxpyVykRoNYmGDmmXa9rSWNXg/OctmjHrlfjjW
- cHj5bOx3YJ5EBo=
+X-ClientProxiedBy: SJ0PR05CA0059.namprd05.prod.outlook.com
+ (2603:10b6:a03:33f::34) To AM7PR04MB6821.eurprd04.prod.outlook.com
+ (2603:10a6:20b:105::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR05CA0059.namprd05.prod.outlook.com (2603:10b6:a03:33f::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.6 via Frontend Transport; Fri, 17 Sep 2021 11:27:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1d43855e-d2df-4111-9fed-08d979ce2835
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8371:
+X-Microsoft-Antispam-PRVS: <AS8PR04MB83716E4F62CF4555A1C8F08AD6DD9@AS8PR04MB8371.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XvNDyG1q1Vf2izDhh/j3380vt13AILNpKSeoEZEa/WY95m6aTs58x1ebDRFj2zFDOCsH6Sb04Ey68ab5HQVG6KXd9XtKXAF4bftVLl+ESeHqJh03Xt+3NbK9YYqGc+S5oHvL2IasI+kmkxWXBFt6/v6/AAZm5ztRwZvjnsZJZm4YFIXgUfPPRQfiZjVIcLMbdHKSDbNF3496LHozLhkAYUkgAMJJVYlurw/GPbpz9/aGAkoOiflLcU3Q7d0CpddMVgguNZJ2lL7c2nIlA4351osCFCMxFLTqco5zaYaP7LHuzBkhHbhwOpGdyexFsc90ucVza737EjkCdtvKMR/o9BRWwrCTM3aM1E6LdXLerb1DsF5mre1GlfDeLaxF+TSf1KYTuXbF5WlMAdkI7eiunZ3GlthFG8SSyKGKnYnNzejyzUAXJud6AEpJHahkDQR2C2iriTdgXRg+3XvPiCrvnkj2r2eA/vJd1q8p9O4ic/gEzKIOrjGRSIBVFGcBwLi+cud6IuYCXpBNFmJjjWOebpX8OF2zn9kzDJ2EEVI3Jn5tnxf7+dYLQjlAPL+E7Ex9icbLQWJNu6D9tgQe+Gd/u3eAsCSVaQPNmBWQkkhBigfEyhelZ9K5ZXLKfVeT90O3Sg5i8LVGkbUjMNbZgSwtD1rXwLT2AhCXCd7A8Fe+Cg9FYK7Pqvh/qGrKseLw0OH66jg3N7uoqmYL1X32hqe7OmeCR/RCmOEVyzlVbXA3Sn9KgMB9oSqrfnHwVhrsDMnPAdhAqgBLWZjP8iDmlF3PpA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(366004)(136003)(39860400002)(66556008)(6666004)(66946007)(53546011)(186003)(26005)(316002)(31696002)(6486002)(5660300002)(66476007)(36756003)(38100700002)(31686004)(956004)(2616005)(6706004)(4744005)(8676002)(8936002)(478600001)(2906002)(16576012)(86362001)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NyQZG7F3cvRZZeVaLyVMLtirwiFGepT7iWM6zDCo5tATl7C04reannD7bvWA?=
+ =?us-ascii?Q?aXHaLVQ1gfsKLO8f7Twv+MDmzMNNMFEvWyoPPyr6fTxETExR+/CcASdVjAuO?=
+ =?us-ascii?Q?cvzosBsL8nbQEv2s2qVSqCWMrOjfwcEt67tDOqiLQFPINLx2QJ3rPmwWt1UP?=
+ =?us-ascii?Q?nkoHg9P1eYMLkwgz4y8eKr6CdzxYOjDC/Vc2Vl4H6L/wRmY9IAGY1LvIp7sU?=
+ =?us-ascii?Q?sr9pkOQ5UJMGrOIeLH4F1AQPEYiZwsose6Bi8wdGWfG0zUD3Y4ikw0o5RLso?=
+ =?us-ascii?Q?LRlgybHBehEb8FkTIzY1AsQ7gLHOJxxsQuakxndbb408WO356GMHlRgGBI7R?=
+ =?us-ascii?Q?zR0KBbfyC5l+5ppuY7JiTTE7dw0Duj5o9DBwXw9FcHe/ZVS4mHu3EKCpOs/R?=
+ =?us-ascii?Q?jNCudXx0BCePcijzY1cAy0212paXEqaHtLOcwK75Z8UC55rk+rQ+1XO5JTMo?=
+ =?us-ascii?Q?i+qPe/U54lqoQUl0K+5FjqVxkzKAbZEEbT51dYNJnR4GrUjV6W16smE6rTaS?=
+ =?us-ascii?Q?ddGLguL0t0kunig/TSXG4tYdDc17WHtcWWPt1pDLM9yzqC10OWM5f0IA6Iji?=
+ =?us-ascii?Q?VruYlzP/p/3bTxiiS+wh3TzKL9XUSYbwYWA4j2RsKQ40/8VkJhKKmUrNnf7S?=
+ =?us-ascii?Q?8wlMKZtvHMB/LcsOP2OoCLl5BmhM+Cw7gIa6JZ+9NDNTKdWUZElpyU2LK9iR?=
+ =?us-ascii?Q?bWROdEjlwyisMOT9H0hNwyxIDCX8FODbfRTUSY+XNdBjlQ9HfGGBLR0eMbGo?=
+ =?us-ascii?Q?S5axWPFfsMyGZIPrF5IwRVYaiINdANjC4PZYpOXJ14kgCSFhh75z+y1yg/7/?=
+ =?us-ascii?Q?yGnvJGHxiMbQB0qLDPreNLnkD3wW6aEjd5qgk0J108nlzMj7dSCHYn9twhBb?=
+ =?us-ascii?Q?CM7ai1rERUl822zc1hXaDDmhPRlcdI6/ZyZUWWmh/nq4wAWFP3xoeVoIEbo6?=
+ =?us-ascii?Q?yzAGk8/pFT8YYb8OWUOQV1dSudvt0BKXtG6wBdjMUd/G9r6j8C5xnlIewhWO?=
+ =?us-ascii?Q?D4lOWVXShUXFqUzF5RoCdgvkLiGEJ0M+OZ6RSykRFAjEqB0IKKqYc1LXGtBx?=
+ =?us-ascii?Q?SXw3vMlNof+ACkJP63ErRB+NrSwIb1/fLTRam+Y4v12e9aI8KxO1kXCjPHDE?=
+ =?us-ascii?Q?Iybots2np0au+OVG/aDgfELI3KTbDctVO6QoDl21No/nWFA7CL37KOKYKZGy?=
+ =?us-ascii?Q?+0PPmTdJN24dH/mDgwv7uQ3W7zUeEnwyvkENBiUnC/5hF3nFMx+mZuGDMlsZ?=
+ =?us-ascii?Q?pdmMLhFjDgfoW7i/6kE9E101eHQtRzYgE2cnNBeonJrbvWoZMZk6eaXuMjeW?=
+ =?us-ascii?Q?RIMzJHopdbTrXIZ6vSGmhBVm?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d43855e-d2df-4111-9fed-08d979ce2835
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2021 11:27:39.6782
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ACcMDWD89Cn+fcL2kpRwROh3/lXpWvWCdM/YOwvZB7HUnEjRJc6jSR64GeQvcq3X
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8371
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/9/17 19:19, David Sterba wrote:
-> On Wed, Sep 15, 2021 at 03:17:16PM +0800, Qu Wenruo wrote:
->> The structure btrfs_bio is used by two different sites:
+On 2021/9/17 19:24, Qu Wenruo wrote:
+>=20
+>=20
+> On 2021/9/17 19:19, David Sterba wrote:
+>> On Wed, Sep 15, 2021 at 03:17:16PM +0800, Qu Wenruo wrote:
+>>> The structure btrfs_bio is used by two different sites:
+>>>
+>>> - bio->bi_private for mirror based profiles
+>>> =C2=A0=C2=A0 For those profiles (SINGLE/DUP/RAID1*/RAID10), this struct=
+ures=20
+>>> records
 >>
->> - bio->bi_private for mirror based profiles
->>    For those profiles (SINGLE/DUP/RAID1*/RAID10), this structures recor=
-ds
->
-> Why is SINGLE here?
->
-For single we use the same routine as RAID1/DUP/etc, it's
-submit_stripe_bio() doing the remapping.
+>> Why is SINGLE here?
+>>
+> For single we use the same routine as RAID1/DUP/etc, it's
+> submit_stripe_bio() doing the remapping.
+>=20
+> Thus there is really only two types, non-RAID56 and RAID56.
 
-Thus there is really only two types, non-RAID56 and RAID56.
+And there is no really "SINGLE" profile in btrfs.
+
+As even for SINGLE profile, we may need to submit two bios to two=20
+different devices (one is the current device, the other is the=20
+dev-replace target).
 
 Thanks,
 Qu
+
+>=20
+> Thanks,
+> Qu
+>=20
+
