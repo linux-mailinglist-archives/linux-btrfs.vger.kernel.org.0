@@ -2,83 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7575640F689
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 13:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEEED40F68A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 13:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243602AbhIQLKg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Sep 2021 07:10:36 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44272 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243008AbhIQLKg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:10:36 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4AE6622361;
-        Fri, 17 Sep 2021 11:09:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631876953;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZGjbs4+7hQuu8jfSTpamvHRT+dOcf3B5k/+YYKUHHBw=;
-        b=mSfCMbaqU0pqFvAxnKmR2FlHMXbi7XKWNQECMRkX2Dj2fqwK7yqs1lHi1yQKovF34MfsOq
-        /cV/69PSpXIYrUvVvpi+qR4YhOhsIRZeItQGSlnaSJFqwbFF/guBhDBGDKNqlGE8OWm8tX
-        9/HukBIdK1eD485ojJ0dkiai1CQAmgk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631876953;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZGjbs4+7hQuu8jfSTpamvHRT+dOcf3B5k/+YYKUHHBw=;
-        b=zblXz4EgMw8gzQy2l1BH9xXsfsL8qqwbkHDew7bHYdcTvFdSYyhpL+L6CQSicBL2hBI/wV
-        PTfCnb6atk9Lp7Dw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 443ECA3B93;
-        Fri, 17 Sep 2021 11:09:13 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9B274DA781; Fri, 17 Sep 2021 13:09:03 +0200 (CEST)
-Date:   Fri, 17 Sep 2021 13:09:03 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Eli V <eliventer@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: strangely large space_info value in dmesg
-Message-ID: <20210917110903.GM9286@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Eli V <eliventer@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <CAJtFHUSy4zgyhf-4d9T+KdJp9w=UgzC2A0V=VtmaeEpcGgm1-Q@mail.gmail.com>
- <ca8e4d97-633c-2d1b-80b9-85a4f82229f1@gmx.com>
+        id S243008AbhIQLL2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Sep 2021 07:11:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242876AbhIQLL2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Sep 2021 07:11:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 098D6611F2
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Sep 2021 11:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631877006;
+        bh=VXK94W36acpDvBRY+pxm2wu8islc1pxTculDxJYm+ws=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=sgcjone08OKp4KEJ8oLJtSufc4Rx0Qv1kyTtwDJcrGt5x6ghYz12Zw329OD/udNor
+         Tsb/Qt8XlrwZo9/MkIj91MIs+cUVYYhUZbfkRXO67rGoSc5UALTVitiCbj3sPJvO6G
+         EWR93J2vAzkY5KFO3nTxbPi6HSGTxtzzsZLp1QVtfqGBQ5xzoKs03AbmxbUwZq/jKE
+         CA8cwH4qyseI15eOwrZBdJgq7n1qrioA41lfCND8/mWAmYAotfIEFgFuBh+cziahNo
+         chWj+ph185Bd0WBFN0QM9ZLqSBBdSQo49PxVaf7/dnmtSvFMLYz/2uiJwcsymNE1BK
+         tH8xUrgzsx1nQ==
+Received: by mail-qt1-f174.google.com with SMTP id c19so8360037qte.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Sep 2021 04:10:05 -0700 (PDT)
+X-Gm-Message-State: AOAM533JA0bszMO10sjqlsIyuOffNV67w4vyNHfF5xFCfB4d2I6bwgnT
+        ralDcVunSVoPN5PiFGnXqBhWTetJRRVzCs4Go04=
+X-Google-Smtp-Source: ABdhPJw/ji0oXVqdxehuf0ML2Cwos2+k38j+23Rni58iO27UAGblbMV1Zz69V3h10TGFMDuzHGJUcLxRxYLMBL/vhRc=
+X-Received: by 2002:ac8:4912:: with SMTP id e18mr9936774qtq.124.1631877005251;
+ Fri, 17 Sep 2021 04:10:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca8e4d97-633c-2d1b-80b9-85a4f82229f1@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <cover.1631787796.git.fdmanana@suse.com> <03c99e78af748d21af7ff0bb6e915230cf0e3310.1631787796.git.fdmanana@suse.com>
+ <20210917105158.GL9286@twin.jikos.cz>
+In-Reply-To: <20210917105158.GL9286@twin.jikos.cz>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Fri, 17 Sep 2021 12:09:29 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H75r83Ou=-k0zMtOmb80Zjh-KNQcFBLcc99S2aYSWRyag@mail.gmail.com>
+Message-ID: <CAL3q7H75r83Ou=-k0zMtOmb80Zjh-KNQcFBLcc99S2aYSWRyag@mail.gmail.com>
+Subject: Re: [PATCH 1/5] btrfs: remove root argument from btrfs_log_inode()
+ and its callees
+To:     David Sterba <dsterba@suse.cz>,
+        Filipe Manana <fdmanana@kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 08:38:52PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2021/9/16 20:32, Eli V wrote:
-> > I just upgraded one of my btrfs systems from 4.19 kernel to 5.10.46
-> > dmesg is outputing the below messages, I assume because of the
-> > enospc_debug mount option I've had in fstab for quite some time now.
-> > Didn't check all of the numbers, but the first line free value does
-> > seem erroneous, unless that's some sort of theoretical maximum being
-> > displayed. This is a fairly large filesystem at 382TB (btrfs usage
-> > below,) but that's a lot more free then total space:
+On Fri, Sep 17, 2021 at 11:52 AM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Thu, Sep 16, 2021 at 11:32:10AM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
 > >
-> > Thu Sep 16 06:17:55 2021] BTRFS info (device sdb): space_info 4 has
-> > 18446743694945091584 free, is not full
-> 
-> This is space info dump, normally meaning you're hitting ENOSPC.
-> 
-> The free value has underflow, we should output it in s64 other than u64.
-> 
-> The free space should be -378764460032.
+> > The root argument passed to btrfs_log_inode() is unncessary, as it is
+> > always the root of the inode we are going to log. This root also gets
+> > unnecessarily propagated to several functions called by btrfs_log_inode(),
+> > and all of them take the inode as an argument as well. So just remove
+> > the root argument from these functions and have them get the root from
+> > the inode where needed.
+> >
+> > This patch is part of a patchset comprised of the following 5 patches:
+> >
+> >   btrfs: remove root argument from btrfs_log_inode() and its callees
+> >   btrfs: remove redundant log root assignment from log_dir_items()
+> >   btrfs: factor out the copying loop of dir items from log_dir_items()
+> >   btrfs: insert items in batches when logging a directory when possible
+> >   btrfs: keep track of the last logged keys when logging a directory
+>
+> This is a nice description, in all the patches, though I think you could
+> make it less tedious for yourself to just reference the patch with
+> results or a significant change. Up to you.
 
-It's still a bit weird to see a negative number but as you found out
-it's due to overcommit so it's possible.
+It's just copy paste, it doesn't add any significant work for me.
+Btw, I see that patch 2/5 is missing in misc-next, was that intentional?
