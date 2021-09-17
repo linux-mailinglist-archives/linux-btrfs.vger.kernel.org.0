@@ -2,175 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081B240FDA3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 18:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69C640FDBD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 18:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243602AbhIQQNl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Sep 2021 12:13:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243366AbhIQQNj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Sep 2021 12:13:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3277611C4;
-        Fri, 17 Sep 2021 16:12:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631895137;
-        bh=uTmfg0vv6vwj4FrYE4j5mba4CVZJQ7Gc8JrPKcVhY6w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dZGw6F7XEdLNKWtHFnkGjC3Ph1hUrkzryX/AlGu21AjxOK7y6XRDuw4EtGarkW718
-         PW4QaNJbqocm43BnVSv5y3w17CVyQCBMwyi3nDSVlWyFwkcjFOcBKOzEfwOL0mVxLO
-         6fGIXqxp9lWaBjtHdQSRmuwqlVRa/gkt3fdRDUe27RRvSIjm1EVE84RWMbm0QvLj45
-         sWe0pF/CtzkDe4ATWLyVZpldl9RyD9IQuJcx4uHZKq4RTzeRpdUrvHzo+DhU5t7RpF
-         d32CbQJB0zEYyimHbuA45lgUzp3aX8m9ciQJFKhTEaMWEdRE1LeiudX80IjWAOS4Ky
-         1tP2YpEe0zD3w==
-Date:   Fri, 17 Sep 2021 09:12:17 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: Shameless plug for the FS Track at LPC next week!
-Message-ID: <20210917161217.GB10224@magnolia>
-References: <20210916013916.GD34899@magnolia>
- <20210917083043.GA6547@quack2.suse.cz>
- <20210917083608.GB6547@quack2.suse.cz>
- <20210917093838.GC6547@quack2.suse.cz>
- <CAOQ4uxg3FYuQ3hrhG5H87Uzd-2gYXbFfUkeTPY7ESsDdjGB5EQ@mail.gmail.com>
+        id S236848AbhIQQTD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Sep 2021 12:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232726AbhIQQS7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Sep 2021 12:18:59 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD83C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Sep 2021 09:17:36 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id d21so16018623wra.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 Sep 2021 09:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=9Nfe4APPTX1QoUtj1tGRylB1tOcERZkK1WH6qYVp1vQ=;
+        b=c3sHFKJyhS+TRRzvoilOHMPgTQ04oVsW16v4nLaJfNNBRzKDJXA89BPXkeecE8yafc
+         clmcYkzXPW8ftIfA7/1EQfrHvTCWQEQV15j2oyTV+UnxXNIbihGprt8N63jzQ3gi49oI
+         PVbL6+mzIIn8wtWkRG7VhvJMhi9RQ0Kj0vJpY3ec7ask6b/1rhX3/c8Fl2aUm134uAJn
+         43LpDlYjrlRuXi/crZiP/Jz8LzMF+bCrhtDWpodOqxKMLEkNzlbvAvs21IulhVwkTVMB
+         Cvqg1m5Xpa2lWaT/1DWvhDMpLyy5FsuaR/e6Ic3qLBOr71X44m4AVdNQjQAC54ugRFvi
+         I82w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=9Nfe4APPTX1QoUtj1tGRylB1tOcERZkK1WH6qYVp1vQ=;
+        b=dLppYJUvEDka5V+OSJ3rRhm3KYbyI8ZH6ZTQt+wvtpWqFVSPCp/Ug4RwfnJtVdoC+8
+         kMqkT715bWOhyApMkOrVhpvD6Y6iqNHooZht3l6ibeuAt2iIxGnWrHF4sdtYmqQpRm3i
+         i6YaaWDz1whhVa0xlDRWTw2ZyTsa25U2GdEa2dekhOHQ+YB/O/Iuo+jViKdRIkckAur7
+         GpM0neygUaMI1Sv8iE6Uf1WXOUj9yExLwXosjM2qM/ddtvJuV1P6v/kBvx06hU+fUFQl
+         xEAbd3gty53cdIS5m6eVnoFK2GkxDmpN0KXSebQAkKu1DBEcccB4uThL+XtsNVg6TvjD
+         Ks4w==
+X-Gm-Message-State: AOAM5311t1jvxPmLgO97xX+nLXZ6GeLs8AijqeiX6HIdlAIZmPNZwstC
+        jHKk0GOM1dT+RyZMvO1xhf6bZsRkB40=
+X-Google-Smtp-Source: ABdhPJw/GBHSk2aRMz5vV3HjviHbEcUwSto0doghzjvbYAXdGG/J8yYOOUEWE2aeEfmM3HWrCzKQGQ==
+X-Received: by 2002:adf:e806:: with SMTP id o6mr12662500wrm.239.1631895455493;
+        Fri, 17 Sep 2021 09:17:35 -0700 (PDT)
+Received: from [10.13.40.210] ([195.228.146.246])
+        by smtp.googlemail.com with ESMTPSA id g143sm11253276wme.16.2021.09.17.09.17.34
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Sep 2021 09:17:34 -0700 (PDT)
+To:     linux-btrfs@vger.kernel.org
+From:   mailcimbi <mailcimbi@gmail.com>
+Subject: Unable to mount btrfs subvol with a new kernel
+Message-ID: <9c56dfca-2551-22a8-e6eb-86f0614bc5a8@gmail.com>
+Date:   Fri, 17 Sep 2021 18:17:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxg3FYuQ3hrhG5H87Uzd-2gYXbFfUkeTPY7ESsDdjGB5EQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 01:23:08PM +0300, Amir Goldstein wrote:
-> On Fri, Sep 17, 2021 at 12:38 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Fri 17-09-21 10:36:08, Jan Kara wrote:
-> > > Let me also post Amir's thoughts on this from a private thread:
-> >
-> > And now I'm actually replying to Amir :-p
-> >
-> > > On Fri 17-09-21 10:30:43, Jan Kara wrote:
-> > > > We did a small update to the schedule:
-> > > >
-> > > > > Christian Brauner will run the second session, discussing what idmapped
-> > > > > filesystem mounts are for and the current status of supporting more
-> > > > > filesystems.
-> > > >
-> > > > We have extended this session as we'd like to discuss and get some feedback
-> > > > from users about project quotas and project ids:
-> > > >
-> > > > Project quotas were originally mostly a collaborative feature and later got
-> > > > used by some container runtimes to implement limitation of used space on a
-> > > > filesystem shared by multiple containers. As a result current semantics of
-> > > > project quotas are somewhat surprising and handling of project ids is not
-> > > > consistent among filesystems. The main two contending points are:
-> > > >
-> > > > 1) Currently the inode owner can set project id of the inode to any
-> > > > arbitrary number if he is in init_user_ns. It cannot change project id at
-> > > > all in other user namespaces.
-> > > >
-> > > > 2) Should project IDs be mapped in user namespaces or not? User namespace
-> > > > code does implement the mapping, VFS quota code maps project ids when using
-> > > > them. However e.g. XFS does not map project IDs in its calls setting them
-> > > > in the inode. Among other things this results in some funny errors if you
-> > > > set project ID to (unsigned)-1.
-> > > >
-> > > > In the session we'd like to get feedback how project quotas / ids get used
-> > > > / could be used so that we can define the common semantics and make the
-> > > > code consistently follow these rules.
-> > >
-> > > I think that legacy projid semantics might not be a perfect fit for
-> > > container isolation requirements. I added project quota support to docker
-> > > at the time because it was handy and it did the job of limiting and
-> > > querying disk usage of containers with an overlayfs storage driver.
-> > >
-> > > With btrfs storage driver, subvolumes are used to create that isolation.
-> > > The TREE_ID proposal [1] got me thinking that it is not so hard to
-> > > implement "tree id" as an extention or in addition to project id.
-> > >
-> > > The semantics of "tree id" would be:
-> > > 1. tree id is a quota entity accounting inodes and blocks
-> > > 2. tree id can be changed only on an empty directory
-> > > 3. tree id can be set to TID only if quota inode usage of TID is 0
-> > > 4. tree id is always inherited from parent
-> > > 5. No rename() or link() across tree id (clone should be possible)
-> > >
-> > > AFAIK btrfs subvol meets all the requirements of "tree id".
-> > >
-> > > Implementing tree id in ext4/xfs could be done by adding a new field to
-> > > inode on-disk format and a new quota entity to quota on-disk format and
-> > > quotatools.
-> > >
-> > > An alternative simpler way is to repurpose project id and project quota:
-> > > * Add filesystem feature projid-is-treeid
-> > > * The feature can be enabled on fresh mkfs or after fsck verifies "tree id"
-> > >    rules are followed for all usage of projid
-> > > * Once the feature is enabled, filesystem enforces the new semantics
-> > >   about setting projid and projid_inherit
+Dear List,
 
-I'd probably just repurpose the project quota mechanism, which means
-that the xfs treeid is really just project quotas with somewhat
-different behavior rules that are tailored to modern adversarial usage
-models. ;)
+I have two btrfs subvol in my fileset. I can mount it with lubuntu 18.04 
+but unable to mount with a newer version. Also unable to mount it when I 
+upgrade to the latest 18.04. By the way upgrading to 20.04 (using the 
+older kernel after upgrading to the latest 18.04) and starting it with 
+an older kernel it is working.
 
-IIRC someone asked for some sort of change like this on the xfs list
-some years back.  If memory serves, they wanted to prevent non-admin
-userspace from changing project ids, even in the regular user ns?  It
-never got as far as a formal proposal though.
+I can reproduce it. Starting with lubuntu 21.04 live cd: unable to 
+mount. Starting with lubuntu 18.04.2 live cd: I can mount it.
 
-I could definitely see a use case for letting admin processes in a
-container change project ids among only the projids that are idmapped
-into the namespace.
+Here are the results:
+lubuntu 18.04
+root@lubuntu:~# uname -a
+Linux lubuntu 4.18.0-15-generic #16~18.04.1-Ubuntu SMP Thu Feb 7 
+14:06:04 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+mounted btrfs with live cd
+root@lubuntu:~# mount -t btrfs -o rw,subvol=@ /dev/sda3 /mnt
+/dev/sda3        28G   14G   12G  55% /mnt
+root@lubuntu:~# mount -t btrfs -o rw,subvol=@home /dev/sda3 /mnt/home
+/dev/sda3        28G   14G   12G  55% /mnt/home
+root@lubuntu:~# btrfs version
+btrfs-progs v4.15.1
 
-> > >
-> > > This might be a good option if there is little intersection between
-> > > systems that need to use the old project semantics and systems
-> > > that would rather have the tree id semantics.
-> >
-> > Yes, I actually think that having both tree-id and project-id on a
-> > filesystem would be too confusing. And I'm not aware of realistic usecases.
-> > I've heard only of people wanting current semantics (although these we more
-> > of the kind: "sometime in the past people used the feature like this") and
-> > the people complaining current semantics is not useful for them. This was
-> > discussed e.g. in ext4 list [2].
-> >
-> > > I think that with the "tree id" semantics, the user_ns/idmapped
-> > > questions become easier to answer.
-> > > Allocating tree id ranges per userns to avoid exhausting the tree id
-> > > namespace is a very similar problem to allocating uids per userns.
-> >
-> > It still depends how exactly tree ids get used - if you want to use them to
-> > limit space usage of a container, you still have to forbid changing of tree
-> > ids inside the container, don't you?
-> >
-> 
-> Yes.
-> This is where my view of userns becomes hazy (so pulling Christain into
-> the discussion), but in general I think that this use case would be similar
-> to the concept of single uid container - the range of allowed tree ids that
-> is allocated for the container in that case is a single tree id.
-> 
-> I understand that the next question would be about nesting subtree quotas
-> and I don't have a good answer to that question.
-> 
-> Are btrfs subvolume nested w.r.t. capacity limit? I don't think that they are.
 
-One thing that someone on #btrfs pointed out to me -- unlike ext4 and
-xfs project quotas where the statvfs output reflects the project quota
-limits, btrfs qgroups don't do that.  Software that tries to trim its
-preallocations when "space" gets low (e.g. journald) then fails to react
-and /var/log can fill up.
+lubuntu 20.04
+root@lubuntu:~# uname -a
+Linux lubuntu 5.4.0-42-generic #46-Ubuntu SMP Fri Jul 10 00:24:02 UTC 
+2020 x86_64 x86_64 x86_64 GNU/Linux
+root@lubuntu:~# mount -t btrfs -o rw,subvol=@ /dev/sda3 /mnt
+mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda3, 
+missing codepage or helper program, or other error.
+root@lubuntu:~# btrfs version
+btrfs-progs v5.10.1
 
-Granted, it's btrfs quotas which they say aren't production ready still
-and I have no idea, so ... <shrug>
+ From the log it seems there is/are corrupt leaf(s)
+[ 3231.406914] BTRFS critical (device sda3): corrupt leaf: 
+block=1045233664 slot=17 extent bytenr=20209664 len=8192 invalid 
+generation, have 895434752 expect (0, 3790778]
+[ 3231.406922] BTRFS error (device sda3): block=1045233664 read time 
+tree block corruption detected
+[ 3231.406971] BTRFS error (device sda3): failed to read block groups: -5
+[ 3231.409566] BTRFS error (device sda3): open_ctree failed
 
---D
 
-> 
-> Thanks,
-> Amir.
+Do you have an idea how to solve it. When I try to check the subvols 
+with btrfs check all seems to be fine in 18.04.
+
+Thank you in advance.
+Miklos
