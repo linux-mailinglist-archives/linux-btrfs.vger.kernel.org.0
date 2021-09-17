@@ -2,80 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390BC40F648
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 12:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7575640F689
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 13:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241770AbhIQKxd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Sep 2021 06:53:33 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53410 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241640AbhIQKxb (ORCPT
+        id S243602AbhIQLKg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Sep 2021 07:10:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44272 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243008AbhIQLKg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Sep 2021 06:53:31 -0400
+        Fri, 17 Sep 2021 07:10:36 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 726991FE6D;
-        Fri, 17 Sep 2021 10:52:08 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4AE6622361;
+        Fri, 17 Sep 2021 11:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631875928;
+        t=1631876953;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZZisgputP4C/8Tu2NQDW9HtV+dYA5mpixdKAfYYMdzY=;
-        b=Y+4HjXZtWbXT0gY2a/YTPDkMpCAeKFI5P+OIEQ9XpeLG+e0Ce+dMyoQTceD+arWTPfyJhk
-        u/wTSnoFbcxnUss4zc34aKiu7UDmzpLDpnPlHdY8pTVq4bGpJd/sltK9mdNL0E2/Rv+6gF
-        RvHtb2CmDKCMNXb7aSc5O2bEmLadz/s=
+        bh=ZGjbs4+7hQuu8jfSTpamvHRT+dOcf3B5k/+YYKUHHBw=;
+        b=mSfCMbaqU0pqFvAxnKmR2FlHMXbi7XKWNQECMRkX2Dj2fqwK7yqs1lHi1yQKovF34MfsOq
+        /cV/69PSpXIYrUvVvpi+qR4YhOhsIRZeItQGSlnaSJFqwbFF/guBhDBGDKNqlGE8OWm8tX
+        9/HukBIdK1eD485ojJ0dkiai1CQAmgk=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631875928;
+        s=susede2_ed25519; t=1631876953;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZZisgputP4C/8Tu2NQDW9HtV+dYA5mpixdKAfYYMdzY=;
-        b=CnXM3BqYYGw53qaX2sF9DcjgLglxYgJ1z5Aulut1qXaR1medBRjDI13mR6kMyxhShCKhU/
-        gXGqsTM3MEbr/+Cg==
+        bh=ZGjbs4+7hQuu8jfSTpamvHRT+dOcf3B5k/+YYKUHHBw=;
+        b=zblXz4EgMw8gzQy2l1BH9xXsfsL8qqwbkHDew7bHYdcTvFdSYyhpL+L6CQSicBL2hBI/wV
+        PTfCnb6atk9Lp7Dw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 6C682A3B8F;
-        Fri, 17 Sep 2021 10:52:08 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 443ECA3B93;
+        Fri, 17 Sep 2021 11:09:13 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D787FDA781; Fri, 17 Sep 2021 12:51:58 +0200 (CEST)
-Date:   Fri, 17 Sep 2021 12:51:58 +0200
+        id 9B274DA781; Fri, 17 Sep 2021 13:09:03 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 13:09:03 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/5] btrfs: remove root argument from btrfs_log_inode()
- and its callees
-Message-ID: <20210917105158.GL9286@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Eli V <eliventer@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: strangely large space_info value in dmesg
+Message-ID: <20210917110903.GM9286@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <cover.1631787796.git.fdmanana@suse.com>
- <03c99e78af748d21af7ff0bb6e915230cf0e3310.1631787796.git.fdmanana@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Eli V <eliventer@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <CAJtFHUSy4zgyhf-4d9T+KdJp9w=UgzC2A0V=VtmaeEpcGgm1-Q@mail.gmail.com>
+ <ca8e4d97-633c-2d1b-80b9-85a4f82229f1@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <03c99e78af748d21af7ff0bb6e915230cf0e3310.1631787796.git.fdmanana@suse.com>
+In-Reply-To: <ca8e4d97-633c-2d1b-80b9-85a4f82229f1@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 11:32:10AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Thu, Sep 16, 2021 at 08:38:52PM +0800, Qu Wenruo wrote:
 > 
-> The root argument passed to btrfs_log_inode() is unncessary, as it is
-> always the root of the inode we are going to log. This root also gets
-> unnecessarily propagated to several functions called by btrfs_log_inode(),
-> and all of them take the inode as an argument as well. So just remove
-> the root argument from these functions and have them get the root from
-> the inode where needed.
 > 
-> This patch is part of a patchset comprised of the following 5 patches:
+> On 2021/9/16 20:32, Eli V wrote:
+> > I just upgraded one of my btrfs systems from 4.19 kernel to 5.10.46
+> > dmesg is outputing the below messages, I assume because of the
+> > enospc_debug mount option I've had in fstab for quite some time now.
+> > Didn't check all of the numbers, but the first line free value does
+> > seem erroneous, unless that's some sort of theoretical maximum being
+> > displayed. This is a fairly large filesystem at 382TB (btrfs usage
+> > below,) but that's a lot more free then total space:
+> >
+> > Thu Sep 16 06:17:55 2021] BTRFS info (device sdb): space_info 4 has
+> > 18446743694945091584 free, is not full
 > 
->   btrfs: remove root argument from btrfs_log_inode() and its callees
->   btrfs: remove redundant log root assignment from log_dir_items()
->   btrfs: factor out the copying loop of dir items from log_dir_items()
->   btrfs: insert items in batches when logging a directory when possible
->   btrfs: keep track of the last logged keys when logging a directory
+> This is space info dump, normally meaning you're hitting ENOSPC.
+> 
+> The free value has underflow, we should output it in s64 other than u64.
+> 
+> The free space should be -378764460032.
 
-This is a nice description, in all the patches, though I think you could
-make it less tedious for yourself to just reference the patch with
-results or a significant change. Up to you.
+It's still a bit weird to see a negative number but as you found out
+it's due to overcommit so it's possible.
