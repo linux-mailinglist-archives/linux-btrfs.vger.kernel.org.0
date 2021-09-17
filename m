@@ -2,117 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E6140FA38
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 16:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB1340FB52
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 17:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242877AbhIQOev (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Sep 2021 10:34:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33250 "EHLO
+        id S245649AbhIQPIe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Sep 2021 11:08:34 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43288 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241700AbhIQOeu (ORCPT
+        with ESMTP id S239218AbhIQPId (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Sep 2021 10:34:50 -0400
+        Fri, 17 Sep 2021 11:08:33 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E11CD1FEE5;
-        Fri, 17 Sep 2021 14:33:27 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id D92DD1FF1D;
+        Fri, 17 Sep 2021 15:07:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1631889207;
+        t=1631891229;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=oNUQio2yPty8dFJFKsPeu+qD+0ok7A4ofdSZ4VKbuSo=;
-        b=jRLyeU0/ZAUTmoT8vYHF4tlwARVNHC8uI/6ichhaZqhRJ5hbFVAuKFhvcn/KtCDxtKUp9d
-        NgvqWwZ/jP/7LW2evskimBml248lael3mS3v1m05InpVJF3XeSERha+RC+WcWoL+xvFmE4
-        CWdn67Ht4CMpDiKeSQktlTj6hn26u+g=
+        bh=z7HpYYc1qjs9iBTQ4saZP0AMgdlg/BGZq7jbZSAlSTo=;
+        b=F0kObblDzQXlQRKbWG1E0axHat5lgX1CNz9cGBavBhcE2sztQUfsJI9V3lwbQgvEoVj8pR
+        OTiixmideWJTxzX0kh/x4cvx7e0il3IZDCgyhhXFe8wjVRe86f1szjkPmpqI0U2Gs6BLOw
+        OqFWjuOu1L43M8Vei4HznMgkLhrslkw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1631889207;
+        s=susede2_ed25519; t=1631891229;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=oNUQio2yPty8dFJFKsPeu+qD+0ok7A4ofdSZ4VKbuSo=;
-        b=OM0HbcmLSy45I+3JmBXK55jQlh+ixcu4CgKXwFiQQFfkDALOFEb9e+SBueISF2Z4scSEc2
-        M6aOcE6ZZ/zAozCA==
+        bh=z7HpYYc1qjs9iBTQ4saZP0AMgdlg/BGZq7jbZSAlSTo=;
+        b=WVWCMV4FjPp8ORrUtExu/MqYzONwgZhiQILGExq724ACiHo9U3WRStR7gWzljUIuBW3Z4W
+        TzRLdjIYsatTsjCQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D9B70A3B93;
-        Fri, 17 Sep 2021 14:33:27 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id D285CA3BA2;
+        Fri, 17 Sep 2021 15:07:09 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3630DDA781; Fri, 17 Sep 2021 16:33:17 +0200 (CEST)
-Date:   Fri, 17 Sep 2021 16:33:17 +0200
+        id AB799DA781; Fri, 17 Sep 2021 17:06:59 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 17:06:58 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 2/7] btrfs: do not take the uuid_mutex in
- btrfs_rm_device
-Message-ID: <20210917143317.GU9286@twin.jikos.cz>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 0/7]
+Message-ID: <20210917150658.GV9286@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
 References: <cover.1627419595.git.josef@toxicpanda.com>
- <4f7529acd33594df9b0b06f7011d8cd4d195fc29.1627419595.git.josef@toxicpanda.com>
- <20210902125820.GR3379@twin.jikos.cz>
- <bfd5a7be-da05-62de-997e-2e513c606915@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bfd5a7be-da05-62de-997e-2e513c606915@toxicpanda.com>
+In-Reply-To: <cover.1627419595.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 10:10:04AM -0400, Josef Bacik wrote:
-> > This is a bit hand wavy but the critical part of the correctness proof,
-> > and it's not explaining it enough IMO. The important piece happens in
-> > device_list_add, the fs_devices lookup and EBUSY, but all that is now
-> > excluded completely by the uuid_mutex from running in parallel with any
-> > part of rm_device.
-> > 
-> > This means that the state of the device is seen complete by each (scan,
-> > rm device). Without the uuid mutex the scaning can find the signature,
-> > then try to lookup the device in the list, while in parallel the rm
-> > device changes the signature or manipulates the list. But not everything
-> > is covered by the device list mutex so there are combinations of both
-> > tasks with some in-progress state.  Also count in the RCU protection.
-> > 
-> >  From high level it is what you say about ordering scan/scratch, but
-> > otherwise I'm not convinced that the change is not subtly breaking
-> > something.
-> > 
+On Tue, Jul 27, 2021 at 05:01:12PM -0400, Josef Bacik wrote:
+> v1->v2:
+> - Rework the first patch as it was wrong because we need it for seed devices.
+> - Fix another lockdep splat I uncovered while testing against seed devices to
+>   make sure I hadn't broken anything.
 > 
-> Yeah this is far from ideal, we really need to rework our entire device 
-> liftetime handling and locking, however this isn't going to break 
-> anything.  We are worried about rm and scan racing with each other, 
-> before this change we'll zero the device out under the UUID mutex so 
-> when scan does run it'll make sure that it can go through the whole 
-> device scan thing without rm messing with us.
+> --- Original email ---
 > 
-> We aren't worried if the scratch happens first, because the result is we 
-> don't think this is a btrfs device and we bail out.
+> Hello,
 > 
-> The only case we are concerned with is we scratch _after_ scan is able 
-> to read the superblock and gets a seemingly valid super block, so lets 
-> consider this case.
+> The commit 87579e9b7d8d ("loop: use worker per cgroup instead of kworker")
+> enabled the use of workqueues for loopback devices, which brought with it
+> lockdep annotations for the workqueues for loopback devices.  This uncovered a
+> cascade of lockdep warnings because of how we mess with the block_device while
+> under the sb writers lock while doing the device removal.
 > 
-> Scan will call device_list_add() with the device we're removing.  We'll 
-> call find_fsid_with_metadata_uuid() and get our fs_devices for this 
-> UUID.  At this point we lock the fs_devices->device_list_mutex.  This is 
-> what protects us in this case, but we have two cases here.
+> The first patch seems innocuous but we have a lockdep_assert_held(&uuid_mutex)
+> in one of the helpers, which is why I have it first.  The code should never be
+> called which is why it is removed, but I'm removing it specifically to remove
+> confusion about the role of the uuid_mutex here.
 > 
-> 1. We aren't to the device removal part of the RM.  We found our device, 
-> and device name matches our path, we go down and we set total_devices to 
-> our super number of devices, which doesn't affect anything because we 
-> haven't done the remove yet.
+> The next 4 patches are to resolve the lockdep messages as they occur.  There are
+> several issues and I address them one at a time until we're no longer getting
+> lockdep warnings.
 > 
-> 2. We are past the device removal part, which is protected by the 
-> device_list_mutex.  Scan doesn't find the device, it goes down and does the
+> The final patch doesn't necessarily have to go in right away, it's just a
+> cleanup as I noticed we have a lot of duplicated code between the v1 and v2
+> device removal handling.  Thanks,
 > 
-> if (fs_devices->opened)
-> 	return -EBUSY;
+> Josef
 > 
-> check and we bail out.
-> 
-> Nothing about this situation is ideal, but the lockdep splat is real, 
-> and the fix is safe, tho admittedly a bit scary looking.  Thanks,
+> Josef Bacik (7):
+>   btrfs: do not call close_fs_devices in btrfs_rm_device
+>   btrfs: do not take the uuid_mutex in btrfs_rm_device
+>   btrfs: do not read super look for a device path
+>   btrfs: update the bdev time directly when closing
+>   btrfs: delay blkdev_put until after the device remove
+>   btrfs: unify common code for the v1 and v2 versions of device remove
+>   btrfs: do not take the device_list_mutex in clone_fs_devices
 
-Thanks, reading the code a few more times I tend to agree, I've added
-this another explanation to the changelog.
+I've merged what looked ok and did not have comments. Remaining patches
+are 1, 3 and 7. Please have a look and resend, thanks.
