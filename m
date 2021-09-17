@@ -2,75 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEED40F68A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 13:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE60D40F6A3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 Sep 2021 13:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243008AbhIQLL2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 Sep 2021 07:11:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242876AbhIQLL2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 Sep 2021 07:11:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 098D6611F2
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Sep 2021 11:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631877006;
-        bh=VXK94W36acpDvBRY+pxm2wu8islc1pxTculDxJYm+ws=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=sgcjone08OKp4KEJ8oLJtSufc4Rx0Qv1kyTtwDJcrGt5x6ghYz12Zw329OD/udNor
-         Tsb/Qt8XlrwZo9/MkIj91MIs+cUVYYhUZbfkRXO67rGoSc5UALTVitiCbj3sPJvO6G
-         EWR93J2vAzkY5KFO3nTxbPi6HSGTxtzzsZLp1QVtfqGBQ5xzoKs03AbmxbUwZq/jKE
-         CA8cwH4qyseI15eOwrZBdJgq7n1qrioA41lfCND8/mWAmYAotfIEFgFuBh+cziahNo
-         chWj+ph185Bd0WBFN0QM9ZLqSBBdSQo49PxVaf7/dnmtSvFMLYz/2uiJwcsymNE1BK
-         tH8xUrgzsx1nQ==
-Received: by mail-qt1-f174.google.com with SMTP id c19so8360037qte.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 Sep 2021 04:10:05 -0700 (PDT)
-X-Gm-Message-State: AOAM533JA0bszMO10sjqlsIyuOffNV67w4vyNHfF5xFCfB4d2I6bwgnT
-        ralDcVunSVoPN5PiFGnXqBhWTetJRRVzCs4Go04=
-X-Google-Smtp-Source: ABdhPJw/ji0oXVqdxehuf0ML2Cwos2+k38j+23Rni58iO27UAGblbMV1Zz69V3h10TGFMDuzHGJUcLxRxYLMBL/vhRc=
-X-Received: by 2002:ac8:4912:: with SMTP id e18mr9936774qtq.124.1631877005251;
- Fri, 17 Sep 2021 04:10:05 -0700 (PDT)
+        id S235128AbhIQLVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 Sep 2021 07:21:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60238 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234338AbhIQLUz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 Sep 2021 07:20:55 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DE43D1FE19;
+        Fri, 17 Sep 2021 11:19:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631877572;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/zt51UR6VT+qdVlyH0TXv0llRFeoN+2sZFDDuho/kw8=;
+        b=GB/XhSpEfEle/0Guh2zUfxYFtZRWGbksUaqkHpdf74rR9J5/E6mP9QSk6WHPhofWVDiAas
+        SiuxmBT+lMOB3ejP+Xz3l8WYx+0rZqJEy7j/sm8qL6Hu5LL3rnAD0acg9F9CogDXBQzGgY
+        fEcSHoqyQkwEry7Ao3LXa2GidKysVJg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631877572;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/zt51UR6VT+qdVlyH0TXv0llRFeoN+2sZFDDuho/kw8=;
+        b=yKMmN4EoaZwb7jDgDGHgw3fuoMwJpZxLJBIj0QaTUSMJy/BEfw7VRO4AacQG3BKNWjWdGL
+        yI5VcBU/tYhtoVDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id D33D0A3BB9;
+        Fri, 17 Sep 2021 11:19:32 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 4A382DA781; Fri, 17 Sep 2021 13:19:23 +0200 (CEST)
+Date:   Fri, 17 Sep 2021 13:19:23 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] btrfs: rename btrfs_bio to btrfs_io_context
+Message-ID: <20210917111923.GN9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20210915071718.59418-1-wqu@suse.com>
+ <20210915071718.59418-2-wqu@suse.com>
 MIME-Version: 1.0
-References: <cover.1631787796.git.fdmanana@suse.com> <03c99e78af748d21af7ff0bb6e915230cf0e3310.1631787796.git.fdmanana@suse.com>
- <20210917105158.GL9286@twin.jikos.cz>
-In-Reply-To: <20210917105158.GL9286@twin.jikos.cz>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 17 Sep 2021 12:09:29 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H75r83Ou=-k0zMtOmb80Zjh-KNQcFBLcc99S2aYSWRyag@mail.gmail.com>
-Message-ID: <CAL3q7H75r83Ou=-k0zMtOmb80Zjh-KNQcFBLcc99S2aYSWRyag@mail.gmail.com>
-Subject: Re: [PATCH 1/5] btrfs: remove root argument from btrfs_log_inode()
- and its callees
-To:     David Sterba <dsterba@suse.cz>,
-        Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210915071718.59418-2-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 17, 2021 at 11:52 AM David Sterba <dsterba@suse.cz> wrote:
->
-> On Thu, Sep 16, 2021 at 11:32:10AM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > The root argument passed to btrfs_log_inode() is unncessary, as it is
-> > always the root of the inode we are going to log. This root also gets
-> > unnecessarily propagated to several functions called by btrfs_log_inode(),
-> > and all of them take the inode as an argument as well. So just remove
-> > the root argument from these functions and have them get the root from
-> > the inode where needed.
-> >
-> > This patch is part of a patchset comprised of the following 5 patches:
-> >
-> >   btrfs: remove root argument from btrfs_log_inode() and its callees
-> >   btrfs: remove redundant log root assignment from log_dir_items()
-> >   btrfs: factor out the copying loop of dir items from log_dir_items()
-> >   btrfs: insert items in batches when logging a directory when possible
-> >   btrfs: keep track of the last logged keys when logging a directory
->
-> This is a nice description, in all the patches, though I think you could
-> make it less tedious for yourself to just reference the patch with
-> results or a significant change. Up to you.
+On Wed, Sep 15, 2021 at 03:17:16PM +0800, Qu Wenruo wrote:
+> The structure btrfs_bio is used by two different sites:
+> 
+> - bio->bi_private for mirror based profiles
+>   For those profiles (SINGLE/DUP/RAID1*/RAID10), this structures records
 
-It's just copy paste, it doesn't add any significant work for me.
-Btw, I see that patch 2/5 is missing in misc-next, was that intentional?
+Why is SINGLE here?
