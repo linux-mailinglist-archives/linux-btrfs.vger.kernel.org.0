@@ -2,90 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEDC410756
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Sep 2021 17:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2E24108BD
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Sep 2021 23:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239846AbhIRPWl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 Sep 2021 11:22:41 -0400
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:49598 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231204AbhIRPWh (ORCPT
+        id S239204AbhIRVkX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 18 Sep 2021 17:40:23 -0400
+Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:21578 "EHLO
+        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234140AbhIRVkX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 Sep 2021 11:22:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1631978473;
-        bh=QvDphOJkD3SeOmzYBk6p6YyJAVO5fjRMOXMjB3iWIC4=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=QSEaVC+MyxtDxSFWf9/db0YwieJISemIZaCjNMNngo9x9xmh/bJwWU7MaQKRDuuGm
-         b0pTPjiFh7at5JYPZy2l1gcqD5Jfe3UMjeqWPwox0xGfwUKER3t5NI6SxRtV8cuofK
-         jtr5gVYGm1xJRuc3DkmuGfO5TX6ooEmAPxzJ1wws=
+        Sat, 18 Sep 2021 17:40:23 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id AFC271280A32;
-        Sat, 18 Sep 2021 08:21:13 -0700 (PDT)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id MDCnn48E2bYZ; Sat, 18 Sep 2021 08:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1631978473;
-        bh=QvDphOJkD3SeOmzYBk6p6YyJAVO5fjRMOXMjB3iWIC4=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=QSEaVC+MyxtDxSFWf9/db0YwieJISemIZaCjNMNngo9x9xmh/bJwWU7MaQKRDuuGm
-         b0pTPjiFh7at5JYPZy2l1gcqD5Jfe3UMjeqWPwox0xGfwUKER3t5NI6SxRtV8cuofK
-         jtr5gVYGm1xJRuc3DkmuGfO5TX6ooEmAPxzJ1wws=
-Received: from jarvis.lan (c-67-166-170-96.hsd1.va.comcast.net [67.166.170.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id DE92F12809EF;
-        Sat, 18 Sep 2021 08:21:12 -0700 (PDT)
-Message-ID: <fb7857e252b9b4577f9a677de28168c571244711.camel@HansenPartnership.com>
-Subject: Re: [External] : Shameless plug for the FS Track at LPC next week!
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>
-Cc:     Chandan Babu R <chandan.babu@oracle.com>,
-        xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Date:   Sat, 18 Sep 2021 11:21:11 -0400
-In-Reply-To: <20210917235007.GC10224@magnolia>
-References: <20210916013916.GD34899@magnolia>
-         <87ilz0afjt.fsf@debian-BULLSEYE-live-builder-AMD64>
-         <20210917221124.GS2361455@dread.disaster.area>
-         <20210917235007.GC10224@magnolia>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id A2A663F6D0
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Sep 2021 23:38:55 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -0.5
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.5 tagged_above=-999 required=6.31
+        tests=[BAYES_05=-0.5] autolearn=ham autolearn_force=no
+Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id uNBTjAqxjVWN for <linux-btrfs@vger.kernel.org>;
+        Sat, 18 Sep 2021 23:38:54 +0200 (CEST)
+Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id C37113F623
+        for <linux-btrfs@vger.kernel.org>; Sat, 18 Sep 2021 23:38:54 +0200 (CEST)
+Received: from [192.168.0.126] (port=42732)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1mRi2w-000GXH-24
+        for linux-btrfs@vger.kernel.org; Sat, 18 Sep 2021 23:38:54 +0200
+Date:   Sat, 18 Sep 2021 23:38:54 +0200 (GMT+02:00)
+From:   Forza <forza@tnonline.net>
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <9809e10.87861547.17bfad90f99@tnonline.net>
+Subject: Select DUP metadata by default on single devices.
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+X-Mailer: R2Mail2
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 2021-09-17 at 16:50 -0700, Darrick J. Wong wrote:
-> FWIW I'll try to commandeer one of the LPC hack rooms late Tuesday
-> evening (say around 0200 UTC) if people are interested in XFS office
-> hours?
+Hello everyone,
 
-The BBB Hack rooms of LPC will be available to all conference
-participants at any hour.  However, we contracted with a third party
-for the live streaming, so that will only happen within conference
-hours.  We still have the streaming to Youtube infrastructure we used
-last year, if you really want the hackroom streamed, but a member of
-the LPC programme committee will need to be on hand to look after it
-for you.  Part of our contract this year was a live stream to china
-(great firewall blocks youtube) but our old stream infrastructure can't
-reach that end point.
+I'd like to revisit the topic I opened on Github(*) a year ago, where I suggested that DUP metadata profile ought to be the default choice when doing mkfs.btrfs on single devices. 
 
-We can also make available BoF rooms that are open to all comers (the
-hack rooms are only open to registered conference attendees) since I
-know people who can't attend for timezone reasons won't want to stump
-up the attendee fee.  Please email contact@linuxplumbersconf.org to
-arrange a room if you want to do this.  Note that all rooms can be
-recorded and the BBB recording made available to anyone (it's in BBB
-format though, so can't be uploaded to youtube).
+Today we have much better write endurance on flash based media so the added writes should not matter in the grand scheme of things. Another factor is disk encryption where mkfs.btrfs cannot differentiate a plain SSD from a luks/dm-crypt device. Encryption effectively removes the possibility for the SSD to dedupe the metadata blocks. 
 
-Regards,
+Ultimately, I think it is better to favour defaults that gives most users better fault tolerance, rather than using SINGLE mode for everyone because of the chance that some have deduplicating hardware (which would potentially negate the benefit of DUP metadata). 
 
-James
+One remark against DUP has been that both metadata copies would end up in the same erase block. However, I think that full erase block failures are in minority of the possible failure modes, at least from what I've seen on the mailing list and at #btrfs. It is more common to have single block errors, and for those we are protected with DUP metadata. 
 
+Zygo made a very good in-depth explanation about several different failure modes in the Github issue. 
 
+I would like voice my wish to change the defaults to DUP metadata on all single devices and I hope that the developers now can find consensus to make this change. 
+
+* https://github.com/kdave/btrfs-progs/issues/319
+
+Thanks. 
+
+~ Forza 
