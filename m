@@ -2,265 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0874104E1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Sep 2021 09:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417B841055E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Sep 2021 11:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241075AbhIRHpi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 Sep 2021 03:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234566AbhIRHpi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 Sep 2021 03:45:38 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96BCC061574;
-        Sat, 18 Sep 2021 00:44:14 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id a194-20020a1c98cb000000b0030b41ac389fso3630964wme.2;
-        Sat, 18 Sep 2021 00:44:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zUX6sgftPvsY8sozGaamnkjHLdKO3bR2I+eKzl5NogU=;
-        b=a/OIlEh1Txd3ZHcOE1BZTHaZfm1IPccirIkh/TuYdXJCc+CCpz2i+MS8a4pgOvuVt7
-         UD4SL1T71J0L0MACqTA79QTL8bZw9Gta+Zh5shptBD5ajwRqr//HzIUQqqfYBgRCulrn
-         pwYDnRGcrd+tfv+hL3GeKOIlC4YGAF867PtCzPKPDWlMnm2qvQcNQpgym12qaSEfEMbi
-         2q7R4iG8tvz7VAHJrUvgPNVcpAMc87dHByy6Gbw9jOe12jvgvQjlmSt/CyncBp7X1Wj7
-         33xnw7x2kdbcTloecwwniKgESzxBlggE/z5SzOGps46cfVyZm+jlk9u08FxUFKpqU/Ud
-         0wQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zUX6sgftPvsY8sozGaamnkjHLdKO3bR2I+eKzl5NogU=;
-        b=hvemC5JHM4cESR3AG6G+5AjyZCVF/pvbcaq0/h+xntKV7kaRsCk1Gy58XvuatulHqL
-         c1oaeUdHHZKY/KblW7OhQlsy5Kyv0vj6iWjAzWMqfWyo7aYhKpokQgQQxwX3pDYg/0uy
-         0BakBXaGrc0TPz30f4oCYewoz8FiZoYxTOdZRwWkyYzEhd5//oRnTkSOUxWpCEPJ+zhw
-         H8h84NjTaXDCgg3tzEE2sovI0QK7W4KsVOjwlcPkZveoY14RcjhwsD+C7ctsTimfaI2q
-         /OGNaNkoBpqG53EFB/4uHWWylfOlfoHplkgIqtxjdWobxlAd1vt15gprgk4QkyuJ68uD
-         hVNw==
-X-Gm-Message-State: AOAM533xXYAjfO+CNl2SfXyh2nuh1oyQ+cgHpEZkT1IeBQX0k0wj9FCa
-        34+F9QIgrwfUBjhtn2NMf3nYtVHFNPMRIk7AFU0=
-X-Google-Smtp-Source: ABdhPJyKwaJ3CeMDMjQ1fryHk/OOoR1Ic42jUYNnrCsjp94TcwpskrR2iCBifeqvTLWwAUiSpKOpGLgOwPxic0JltIM=
-X-Received: by 2002:a1c:403:: with SMTP id 3mr14298578wme.161.1631951053112;
- Sat, 18 Sep 2021 00:44:13 -0700 (PDT)
+        id S238124AbhIRJUh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 Sep 2021 05:20:37 -0400
+Received: from mout.gmx.net ([212.227.17.22]:54491 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236271AbhIRJUd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 18 Sep 2021 05:20:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1631956743;
+        bh=trJoVO9liv/FmpWlRFV6LUTFYwA3bRUMw5+IUoeFYpI=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=fVM8rzsLPj5v5OOT+8XavhnMzreebW5xtblv2R++Jg4YkkFYYC2S+cY0afkZSTVph
+         dsfiH2Rj4C97xllnnjSVRp3i0ti2R3JEjHOA7G7CWPxK6oPzEcFCicwwj7+4kWqwJ0
+         EYmxsIHq6F3AE+93BAzuxCDad/DY/kNTsBQkv85U=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N33Ib-1msd8l3N2j-013LXc; Sat, 18
+ Sep 2021 11:19:03 +0200
+Message-ID: <2806d9c9-c63d-db55-0ab7-cdb385d7154f@gmx.com>
+Date:   Sat, 18 Sep 2021 17:19:00 +0800
 MIME-Version: 1.0
-References: <20210916013916.GD34899@magnolia> <20210917083043.GA6547@quack2.suse.cz>
- <20210917083608.GB6547@quack2.suse.cz> <20210917093838.GC6547@quack2.suse.cz>
- <CAOQ4uxg3FYuQ3hrhG5H87Uzd-2gYXbFfUkeTPY7ESsDdjGB5EQ@mail.gmail.com>
- <20210917161217.GB10224@magnolia> <20210917231522.GT2361455@dread.disaster.area>
-In-Reply-To: <20210917231522.GT2361455@dread.disaster.area>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 18 Sep 2021 10:44:02 +0300
-Message-ID: <CAOQ4uxjGLJNA9p-zDS8F1cnGdxiCXYLO4My=qBMHjOF2B55vrQ@mail.gmail.com>
-Subject: Re: Alternative project ids and quotas semantics (Was: Shameless plug
- for the FS Track at LPC next week!)
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: Unable to mount btrfs subvol with a new kernel
+Content-Language: en-US
+To:     mailcimbi <mailcimbi@gmail.com>, linux-btrfs@vger.kernel.org
+References: <9c56dfca-2551-22a8-e6eb-86f0614bc5a8@gmail.com>
+ <baf97f70-9592-1a8f-972b-e77c4ef01a8c@gmx.com>
+ <23c6a975-cb16-0fc0-03e4-3be45348ca1c@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <23c6a975-cb16-0fc0-03e4-3be45348ca1c@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:EUDIo5iBRJVzsP/1gF52Jgpw409bO/3ENwIJmBGKk7hfmB+6mn6
+ VB+thHtjWCDMXmdV05vVU1yYyP5xvgOlLheh8Ttwr5bGWSlpQrSQAGLmrItTCkmHN2Dyi61
+ ZRwqIycznkpdb0X6wT0QqbrY17qpTAsIqltSN3zLHnD3TGdjqe5beBerlDXRgmN25qWmKpD
+ aHAsEt2pjndWx3USW6S+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/7cgce8jv4s=:lw8oeCFx8M52ToFPQdY3Or
+ L8vWx/yD26+phUYasNUaFIJyIbMoqZivFy48VUcfyMvxc/ktyTjkO2YAo1TX7voiXJV0G5dk3
+ 3AifW+PXD+Fr54ZDCnVw4QBh0GXpR/4ufkVPvhDBhmuYtWDig8StfsvPpJAlLurzdAKvPF8pe
+ +A5a6SR1QdqFDyiIfuSUzxKQmZoKUc7hwa3yu05ze1WMBEX3D5BzgNUax6twCnJJaBKLO2cnB
+ rMkOe4jDZhHy7xX6AAK3QuKYdd9F8Dtl6Zc3dEprvvQFow/hbmygBu9k9Dg69u360/tBFWU29
+ KDVzWuALtPWX6z/5FKI7cl+XzBb8HQIfY5grriHywI3lqabPWhFP5sUREZ6cCPfb/AgVWvVui
+ KVjd1/7cKEeXZlGVU2Y5RySKK/iAeMWZVdd9zdXuPPgINmeOM2H76OLBjWx44njk5+s5tsxel
+ agpIrNpazzF5E5JZSymq3IrlZ7q9y126umSjRVmqK+p9BxaWraEAqp8WxwyzT2kYK8HKlrUgu
+ c5Mtw0sIlvvZbp19dl4RyIi9WqPBTndHRPjqH2+icNWnaOnwXMNRJ7GeI936yeleebqQGE9UO
+ Yt/qH6DRO5WMjaHikC3QVyUhW8ohU03ga5VtRI/O05o9Sx92SNHM2CHFBgiLe2mB7+XQhTA0J
+ 2Ke/nJzmw2iAau5WMTTl6cMbBPCGfOxH/Ef/57vKUll9LdPfCT/aCgEUmtolw+uoJgseh591R
+ Ds397LgOCtCLUdFfeJmRcNIJD67rRWx1U+CcKNgD3xUpTW3rw2xbOGbCI3fG75LT+9+fm/K7m
+ CpKX8sFZ5kSOvJPV6zOgCLF1g0JF1OQXIszKeCwSIqHKZFRxrItBT+Ixuf6WllexrLWvDUtK8
+ MVnswAc2dCwW6SCC04XCEyw9ThZg+QyE8qPp4LPxB/6SFIsOdObADWG9Rp6U+9HEfLSlnJLie
+ iwBQeLhJqn97lImc6VvrYLz06NLC4/ji5mke77fxv1bBM58vljTj/4ADDC44fQTddti66C1VI
+ +A2VYmKcIZd6la+ScVwOTinmpDzB7FRjUpgR/Dltdnpfx0XL4kA+fOh+OO3C5VvNQLxq6UJra
+ YKij5XIp7NXC+8=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 2:15 AM Dave Chinner <david@fromorbit.com> wrote:
+
+
+On 2021/9/18 17:16, mailcimbi wrote:
+> Hi Qu,
 >
-> On Fri, Sep 17, 2021 at 09:12:17AM -0700, Darrick J. Wong wrote:
-> > On Fri, Sep 17, 2021 at 01:23:08PM +0300, Amir Goldstein wrote:
-> > > On Fri, Sep 17, 2021 at 12:38 PM Jan Kara <jack@suse.cz> wrote:
-> > > >
-> > > > On Fri 17-09-21 10:36:08, Jan Kara wrote:
-> > > > > Let me also post Amir's thoughts on this from a private thread:
-> > > >
-> > > > And now I'm actually replying to Amir :-p
-> > > >
-> > > > > On Fri 17-09-21 10:30:43, Jan Kara wrote:
-> > > > > > We did a small update to the schedule:
-> > > > > >
-> > > > > > > Christian Brauner will run the second session, discussing what idmapped
-> > > > > > > filesystem mounts are for and the current status of supporting more
-> > > > > > > filesystems.
-> > > > > >
-> > > > > > We have extended this session as we'd like to discuss and get some feedback
-> > > > > > from users about project quotas and project ids:
-> > > > > >
-> > > > > > Project quotas were originally mostly a collaborative feature and later got
-> > > > > > used by some container runtimes to implement limitation of used space on a
-> > > > > > filesystem shared by multiple containers. As a result current semantics of
-> > > > > > project quotas are somewhat surprising and handling of project ids is not
-> > > > > > consistent among filesystems. The main two contending points are:
-> > > > > >
-> > > > > > 1) Currently the inode owner can set project id of the inode to any
-> > > > > > arbitrary number if he is in init_user_ns. It cannot change project id at
-> > > > > > all in other user namespaces.
-> > > > > >
-> > > > > > 2) Should project IDs be mapped in user namespaces or not? User namespace
-> > > > > > code does implement the mapping, VFS quota code maps project ids when using
-> > > > > > them. However e.g. XFS does not map project IDs in its calls setting them
-> > > > > > in the inode. Among other things this results in some funny errors if you
-> > > > > > set project ID to (unsigned)-1.
-> > > > > >
-> > > > > > In the session we'd like to get feedback how project quotas / ids get used
-> > > > > > / could be used so that we can define the common semantics and make the
-> > > > > > code consistently follow these rules.
-> > > > >
-> > > > > I think that legacy projid semantics might not be a perfect fit for
-> > > > > container isolation requirements. I added project quota support to docker
-> > > > > at the time because it was handy and it did the job of limiting and
-> > > > > querying disk usage of containers with an overlayfs storage driver.
-> > > > >
-> > > > > With btrfs storage driver, subvolumes are used to create that isolation.
-> > > > > The TREE_ID proposal [1] got me thinking that it is not so hard to
-> > > > > implement "tree id" as an extention or in addition to project id.
-> > > > >
-> > > > > The semantics of "tree id" would be:
-> > > > > 1. tree id is a quota entity accounting inodes and blocks
-> > > > > 2. tree id can be changed only on an empty directory
->
-> Hmmm. So once it's created, it can't be changed without first
-> deleting all the data in the tree?
+> Thank you for your answer. Check and repair with a new btrfs solved the
+> problem. I was able to use my subvols with new kernel.
 
-That is correct.
-Similar to fscrypt_ioctl_set_policy().
-
->
-> > > > > 3. tree id can be set to TID only if quota inode usage of TID is 0
->
-> What does this mean? Defining behaviour.semantics in terms of it's
-> implementation is ambiguous and open for interpretation.
->
-
-You are right. Let me give it a shot:
-
-For the current use of project quotas in containers as a way to
-limit disk usage of container instance, container managers
-assign a project id with project quota to some directory that is
-going to be used as the root of a bind mount point inside the
-container (e.g. /home).
-
-With xfs, that means that a user inside the container gets the df
-report on the bind mount based on xfs_qm_statvfs() which provides
-the project quota usage, which is intended to reflect the container's
-disk usage on the xfs filesystem that is shared among containers.
-
-In practice, the container's disk usage may be contaminated by
-usage of other unrelated subtrees or solo files that have been
-assigned the same project id on purpose or by mistake.
-
-The current permission model for changing project id does
-not always align with how container users should be allowed
-to manipulate their own reported disk usage and affect the
-disk usage reported or allowed to other containers.
-
-The proposed alternative semantics for project ids and quotas
-will allow container managers better control over the disk usage
-observed by container users when project quotas are used, by making
-sure that project id represents a single fully connected subtree in
-the context of a single filesystem.
-
-> I *think* the intent here is that tree ids are unique and can only
-> be applied to a single tree, but...
->
-
-You are correct. That is what it means.
-Subtree members on a *single filesystem* are all descendants
-of a single root.
-The subtree root is a directory and it is the only member of the subtree
-whose (sb) parent is not a member of the subtree.
-
-> And, of course, what happens if we have multiple filesystems? tree
-> IDs are no longer globally unique across the system, right?
->
-
-No requirement for tree id to be unique across the system.
-<st_dev, tree_id> should be unique across the system.
-
-> > > > > 4. tree id is always inherited from parent
->
-> What happens as we traverse mount points within a tree? If the quota
-> applies to directory trees, then there are going to be directory
-> tree constructs that don't obviously follow this behaviour. e.g.
-> bind mounts from one directory tree to another, both having
-> different tree IDs.
-
-We want nothing to do with that.
-Quotas and disk usage have always been a filesystem property.
-I see no reason to extend them beyond a single filesystem boundary.
-
-Just because Niel chose to use the term "tree" to represent those
-entities, does not mean that they are related to mount trees.
-If the term is confusing then we can use a different term.
-I personally prefer the term "subtree" to represent those entities.
-
-Mind you, the STATX_TREE_ID proposal and the project id proposal
-that I derived from it are based on current btrfs subvol semantics.
-
-One difference between xfs/ext4 subtree quota and btrfs subvol
-is that subvol is also an isolated inode number namespace.
-Another difference is that currently, btrfs subvol has a unique
-st_dev, but Neil has proposed some designs to change that.
-
-In the long term, userspace tools could gain option
--xx --one-file-system-subtree (or something) and learn
-how to stay within subtree boundaries.
-
->
-> Which then makes me question: are inodes and inode flags the right
-> place to track and propagate these tree IDs? Isn't the tree ID as
-> defined here a property of the path structure rather than a property
-> of the inode?  Should we actually be looking at a new directory tree
-> ID tracking behaviour at, say, the vfs-mount+dentry level rather
-> than the inode level?
->
-
-That was not my intention with this proposal.
-
-> > > > > 5. No rename() or link() across tree id (clone should be possible)
->
-> The current directory tree quotas disallow this because of
-> implementation difficulties (e.g. avoiding recursive chproj inside
-> the kernel as part of rename()) and so would punt the operations too
-> difficult to do in the kernel back to userspace. They are not
-> intended to implement container boundaries in any way, shape or
-> form. Container boundaries need to use a proper access control
-> mechanism, not rely on side effects of difficult-to-implement low
-> level accounting mechanisms to provide access restriction.
->
-> Indeed, why do we want to place restrictions on moving things across
-> trees if the filesystem can actually do so correctly? Hence I think
-> this is somewhat inappropriately be commingling container access
-> restrictions with usage accounting....
->
-> I'm certain there will be filesytsems that do disallow rename and
-> link to punt the problem back up to userspace, but that's an
-> implementation detail to ensure accounting for the data movement to
-> a different tree is correct and not a behavioural or access
-> restriction...
->
-
-I did not list the no-cross rename()/link() requirement because
-of past project id behavior or because of filesystem implementation
-challenges.
-
-I listed it because of the single-fully-connected-subtree requirement.
-rename()/link() across subtree boundaries would cause multiple roots
-of the same subtree id.
-
-Sorry, Dave, for not writing a mathematical definition of a
-singly-connected-subtree-whatever, but by now,
-I hope you all understand very well what this beast is.
-It is really not that complicated (?).
-
-The reason I started the discussion with implementation rules
-is *because* they are so simple to understand, so I figured
-everybody could understand what the result is, but I realize
-that my initial proposal was missing the wider context.
-
-Is anything not clear now?
+Just a final recommendation, use kernel newer than v5.11 would prevent a
+lot of possible corruption in the first place, as in that kernel version
+we introduced write time tree block sanity check, which would reject any
+corruption (at the cost of transaction abort).
 
 Thanks,
-Amir.
+Qu
+>
+> Thanks
+> Miklos
+>
+> On 2021. 09. 18. 0:18, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/9/18 00:17, mailcimbi wrote:
+>>> Dear List,
+>>>
+>>> I have two btrfs subvol in my fileset. I can mount it with lubuntu 18.=
+04
+>>> but unable to mount with a newer version. Also unable to mount it when=
+ I
+>>> upgrade to the latest 18.04. By the way upgrading to 20.04 (using the
+>>> older kernel after upgrading to the latest 18.04) and starting it with
+>>> an older kernel it is working.
+>>>
+>>> I can reproduce it. Starting with lubuntu 21.04 live cd: unable to
+>>> mount. Starting with lubuntu 18.04.2 live cd: I can mount it.
+>>>
+>>> Here are the results:
+>>> lubuntu 18.04
+>>> root@lubuntu:~# uname -a
+>>> Linux lubuntu 4.18.0-15-generic #16~18.04.1-Ubuntu SMP Thu Feb 7
+>>> 14:06:04 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+>>> mounted btrfs with live cd
+>>> root@lubuntu:~# mount -t btrfs -o rw,subvol=3D@ /dev/sda3 /mnt
+>>> /dev/sda3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 28G=C2=A0=C2=A0 14=
+G=C2=A0=C2=A0 12G=C2=A0 55% /mnt
+>>> root@lubuntu:~# mount -t btrfs -o rw,subvol=3D@home /dev/sda3 /mnt/hom=
+e
+>>> /dev/sda3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 28G=C2=A0=C2=A0 14=
+G=C2=A0=C2=A0 12G=C2=A0 55% /mnt/home
+>>> root@lubuntu:~# btrfs version
+>>> btrfs-progs v4.15.1
+>>>
+>>>
+>>> lubuntu 20.04
+>>> root@lubuntu:~# uname -a
+>>> Linux lubuntu 5.4.0-42-generic #46-Ubuntu SMP Fri Jul 10 00:24:02 UTC
+>>> 2020 x86_64 x86_64 x86_64 GNU/Linux
+>>> root@lubuntu:~# mount -t btrfs -o rw,subvol=3D@ /dev/sda3 /mnt
+>>> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda3,
+>>> missing codepage or helper program, or other error.
+>>> root@lubuntu:~# btrfs version
+>>> btrfs-progs v5.10.1
+>>>
+>>> =C2=A0From the log it seems there is/are corrupt leaf(s)
+>>> [ 3231.406914] BTRFS critical (device sda3): corrupt leaf:
+>>> block=3D1045233664 slot=3D17 extent bytenr=3D20209664 len=3D8192 inval=
+id
+>>> generation, have 895434752 expect (0, 3790778]
+>>
+>> Bad extent item generation, sometimes can be caused by older btrfs-chec=
+k.
+>>
+>> Please compile a newer btrfs-progs, and run "btrfs check" to make sure
+>> that's the only problem.
+>>
+>> If that's the only problem (some problems like missing csum or missing
+>> holes can be ignored pretty safely), then you can use btrfs check
+>> --repair to repair it.
+>>
+>> But please keep in mind, latest btrfs-progs is needed to do the repair.
+>>
+>> Thanks,
+>> Qu
+>>
+>>> [ 3231.406922] BTRFS error (device sda3): block=3D1045233664 read time
+>>> tree block corruption detected
+>>> [ 3231.406971] BTRFS error (device sda3): failed to read block
+>>> groups: -5
+>>> [ 3231.409566] BTRFS error (device sda3): open_ctree failed
+>>>
+>>>
+>>> Do you have an idea how to solve it. When I try to check the subvols
+>>> with btrfs check all seems to be fine in 18.04.
+>>>
+>>> Thank you in advance.
+>>> Miklos
+>
