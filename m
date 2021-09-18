@@ -2,101 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FEA410659
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Sep 2021 14:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEDC410756
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 Sep 2021 17:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhIRMUI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 Sep 2021 08:20:08 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:40077 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230333AbhIRMUH (ORCPT
+        id S239846AbhIRPWl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 Sep 2021 11:22:41 -0400
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:49598 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231204AbhIRPWh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 Sep 2021 08:20:07 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id C6E112B01213;
-        Sat, 18 Sep 2021 08:18:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sat, 18 Sep 2021 08:18:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=iRLBf3WrhDpNS0i+Si62yDtyDBy
-        h99mHvR4p/74M3xg=; b=VpuqDuutQFpm/RHjyVK0AXW6/twFocaOcHyeuP+E7UB
-        VHU6+YgIf3tzg+MBpPdckISizlCli8y4/nr/9oPP8tejVIzRVotXWp75wFPsq1p9
-        v289ci2W0PHC68H+EgK0wtMPdwRo8YpmSYYkTTSDlEKjq4AgWhz12PYwAUBfYGyo
-        T+10VVARDEYCmgl4J/P56wKoKzcs1gHXSkz9d0unelvwFvkwv/2h9JIzlSlbt1C3
-        /QCx7bWq1whTBF7wSfGGUAlxfB5MRCg23D4+uqXjVgXo7+l/IV1U9t9Zy+0gSfEY
-        OPIp/BWu5+vpTzEOFHkoLXpOW/+CfQJj5fwdF3oMqng==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=iRLBf3
-        WrhDpNS0i+Si62yDtyDByh99mHvR4p/74M3xg=; b=AYVkLLXwaSJZlmVp7PUv3Y
-        BI2bpX+2Ej2TqPIOoAwJtvlx6mcHAthXzw0/4qqdSKK1qZpBEUhMu1jFLYsxz4f1
-        haIqgBvdFWQRVieREtq3sQg0qHRp1axw5OJrTFTbueGtasE/SU4hh0gln998klX/
-        7XzrXVifvSrOYanobndvpezxSUgjpWMdyIX1ekIH3oSlUkodXfzjephdUaSl2m5e
-        bjWhFG29zRVFZxDWUZ6v9od1IZwT3yDkR8v6wsEDPDYloQUj1uBDTsgfaYAmrDUp
-        +E8BtTG1WTPKEL+c8OuGfhQaPHaGhgpywQBrYn7PdeKJLJkGe9IDELtTerLn3uoQ
-        ==
-X-ME-Sender: <xms:ItlFYbU_tER0FYmqDuctQuNzOTYIiypkHZkUZC3F2Zck9XoFFrMV6A>
-    <xme:ItlFYTnazSqpeHopBzWdxf_fsEeo2S2sfZa6wXUi4B5wq22ccJlUmzZZrzq6bKa1f
-    QrkMB32X4wGtw>
-X-ME-Received: <xmr:ItlFYXZ4ob0dT8VWbtyWGiGDTpJXj3N78Z88Tj3sUWxEt_nBVtpUVJLevs6viz0EguAis5i6o2C2yBvlDO_6TNqmox5k3U5p>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudehkedggeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:ItlFYWW6pXXgO1fZxT5MqhQNKHsuidpFW3mkmPdOn7EpB9CEX2VhnQ>
-    <xmx:ItlFYVnfZqRVgeuQPdzfTF70aYEo0oVxxxtVgO1fna-uzJFv_Jn7Mw>
-    <xmx:ItlFYTeraQGdj-woZq3mPXFFiZtxhv1GPATnJPaBcDwbTD1h5qSlJw>
-    <xmx:ItlFYef5l7Bw3ibCxsZK3PA57o0cCqMrF3_2GzkYfh9IS9i65M4qo5hzafk>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 18 Sep 2021 08:18:41 -0400 (EDT)
-Date:   Sat, 18 Sep 2021 14:18:40 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org,
-        Alexander Tsvetkov <alexander.tsvetkov@oracle.com>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH stable-5.4.y stable-5.10.y] btrfs: fix upper limit for
- max_inline for page size 64K
-Message-ID: <YUXZIHWG97Pae1HG@kroah.com>
-References: <305e717a1ce9bda18b1867c6fb079f91d6e54c98.1631776544.git.anand.jain@oracle.com>
+        Sat, 18 Sep 2021 11:22:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1631978473;
+        bh=QvDphOJkD3SeOmzYBk6p6YyJAVO5fjRMOXMjB3iWIC4=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=QSEaVC+MyxtDxSFWf9/db0YwieJISemIZaCjNMNngo9x9xmh/bJwWU7MaQKRDuuGm
+         b0pTPjiFh7at5JYPZy2l1gcqD5Jfe3UMjeqWPwox0xGfwUKER3t5NI6SxRtV8cuofK
+         jtr5gVYGm1xJRuc3DkmuGfO5TX6ooEmAPxzJ1wws=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id AFC271280A32;
+        Sat, 18 Sep 2021 08:21:13 -0700 (PDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id MDCnn48E2bYZ; Sat, 18 Sep 2021 08:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1631978473;
+        bh=QvDphOJkD3SeOmzYBk6p6YyJAVO5fjRMOXMjB3iWIC4=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=QSEaVC+MyxtDxSFWf9/db0YwieJISemIZaCjNMNngo9x9xmh/bJwWU7MaQKRDuuGm
+         b0pTPjiFh7at5JYPZy2l1gcqD5Jfe3UMjeqWPwox0xGfwUKER3t5NI6SxRtV8cuofK
+         jtr5gVYGm1xJRuc3DkmuGfO5TX6ooEmAPxzJ1wws=
+Received: from jarvis.lan (c-67-166-170-96.hsd1.va.comcast.net [67.166.170.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id DE92F12809EF;
+        Sat, 18 Sep 2021 08:21:12 -0700 (PDT)
+Message-ID: <fb7857e252b9b4577f9a677de28168c571244711.camel@HansenPartnership.com>
+Subject: Re: [External] : Shameless plug for the FS Track at LPC next week!
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <david@fromorbit.com>
+Cc:     Chandan Babu R <chandan.babu@oracle.com>,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Date:   Sat, 18 Sep 2021 11:21:11 -0400
+In-Reply-To: <20210917235007.GC10224@magnolia>
+References: <20210916013916.GD34899@magnolia>
+         <87ilz0afjt.fsf@debian-BULLSEYE-live-builder-AMD64>
+         <20210917221124.GS2361455@dread.disaster.area>
+         <20210917235007.GC10224@magnolia>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <305e717a1ce9bda18b1867c6fb079f91d6e54c98.1631776544.git.anand.jain@oracle.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 03:34:01PM +0800, Anand Jain wrote:
-> Commit 6f93e834fa7c5faa0372e46828b4b2a966ac61d7 upstream.
-> 
-> The mount option max_inline ranges from 0 to the sectorsize (which is
-> now equal to page size). But we parse the mount options too early and
-> before the actual sectorsize is read from the superblock. So the upper
-> limit of max_inline is unaware of the actual sectorsize and is limited
-> by the temporary sectorsize 4096, even on a system where the default
-> sectorsize is 64K.
-> 
-> Fix this by reading the superblock sectorsize before the mount option
-> parse.
-> 
-> Reported-by: Alexander Tsvetkov <alexander.tsvetkov@oracle.com>
-> CC: stable@vger.kernel.org # 5.4+
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  fs/btrfs/disk-io.c | 45 +++++++++++++++++++++++----------------------
->  1 file changed, 23 insertions(+), 22 deletions(-)
+On Fri, 2021-09-17 at 16:50 -0700, Darrick J. Wong wrote:
+> FWIW I'll try to commandeer one of the LPC hack rooms late Tuesday
+> evening (say around 0200 UTC) if people are interested in XFS office
+> hours?
 
-Now queued up, thanks.
+The BBB Hack rooms of LPC will be available to all conference
+participants at any hour.  However, we contracted with a third party
+for the live streaming, so that will only happen within conference
+hours.  We still have the streaming to Youtube infrastructure we used
+last year, if you really want the hackroom streamed, but a member of
+the LPC programme committee will need to be on hand to look after it
+for you.  Part of our contract this year was a live stream to china
+(great firewall blocks youtube) but our old stream infrastructure can't
+reach that end point.
 
-greg k-h
+We can also make available BoF rooms that are open to all comers (the
+hack rooms are only open to registered conference attendees) since I
+know people who can't attend for timezone reasons won't want to stump
+up the attendee fee.  Please email contact@linuxplumbersconf.org to
+arrange a room if you want to do this.  Note that all rooms can be
+recorded and the BBB recording made available to anyone (it's in BBB
+format though, so can't be uploaded to youtube).
+
+Regards,
+
+James
+
+
