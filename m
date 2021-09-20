@@ -2,111 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E624741144F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Sep 2021 14:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC83B4114B4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Sep 2021 14:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237785AbhITMZL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 Sep 2021 08:25:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35640 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235535AbhITMZI (ORCPT
+        id S233853AbhITMnF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Sep 2021 08:43:05 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:43830 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhITMnF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 Sep 2021 08:25:08 -0400
+        Mon, 20 Sep 2021 08:43:05 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id BCC552004D;
-        Mon, 20 Sep 2021 12:23:40 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id CD44822016;
+        Mon, 20 Sep 2021 12:41:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632140620;
+        t=1632141697;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sXWkRqBboPbO/UPLpLCLl4FslBngd6lDuTmtuITVNhc=;
-        b=IDjf3n9N0i54K4VuXkwCxXs9O176ll8xCTR9Yh8zB5BadO1KvNfcBswNUo+YQp0gc7W6Kk
-        FMmfBN/T2BpSyqINcAFIL2Q2y4RkKvDKtmTQAi8kJ74IXb9uJsiR/zAPqt1sZrUd+qHuN4
-        Au5bJ6GJao0KWYcjyj4GDxvA7iVBqBw=
+        bh=XeTryxi670R4S03g5DCliOop7MQqSb1fgS1wng2K/Y0=;
+        b=RGJ0rH+4iRhSQcSHiyRZPWeePEZ4upv9/AtdNGgq8eio2fBcK1ck5gZCxVfnCGwz6UIWJ/
+        Lqrah9599QhTxbDzianLmLjygcQbGTBpKWXGYICuj8/PzN2R0UYDg4xzTDdPsViMxep9Mz
+        bH+6ayGuV0Zqhxzf25QlqylTHb8idkA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632140620;
+        s=susede2_ed25519; t=1632141697;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sXWkRqBboPbO/UPLpLCLl4FslBngd6lDuTmtuITVNhc=;
-        b=OvP7kDPfieX7VBdfjQHzJfR5Y9Gu5xWD5RsKV5zYDBqaKqfEEEUkVQZW9YLg+GY4qwbpwE
-        AB5mxTakKJMIT/AQ==
+        bh=XeTryxi670R4S03g5DCliOop7MQqSb1fgS1wng2K/Y0=;
+        b=n4Smxc05dPT5vkfiSactjGlqArEB3x2oz/Negh52rTTW8d7tdlbZAkK/KzdLetVKDfp3Ah
+        PNZadMeWKvIrYXCw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id B40CBA3BA2;
-        Mon, 20 Sep 2021 12:23:40 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id C430EA3B9A;
+        Mon, 20 Sep 2021 12:41:37 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6B58EDA7FB; Mon, 20 Sep 2021 14:23:29 +0200 (CEST)
-Date:   Mon, 20 Sep 2021 14:23:29 +0200
+        id 87CFBDA7FB; Mon, 20 Sep 2021 14:41:26 +0200 (CEST)
+Date:   Mon, 20 Sep 2021 14:41:26 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v3 3/3] btrfs: rename struct btrfs_io_bio to
- btrfs_logical_bio
-Message-ID: <20210920122329.GJ9286@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, dsterba@suse.cz,
         Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
         David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH v3 2/3] btrfs: remove btrfs_bio_alloc() helper
+Message-ID: <20210920124126.GK9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
 References: <20210915071718.59418-1-wqu@suse.com>
- <20210915071718.59418-4-wqu@suse.com>
- <b49cb262-0239-78eb-8144-523caed28bef@suse.com>
+ <20210915071718.59418-3-wqu@suse.com>
+ <a4380e7b-b728-fd85-b6c1-175a53f6a1ce@suse.com>
+ <20210917124341.GS9286@twin.jikos.cz>
+ <6d4ee72e-1f3c-0d06-7ce4-6e17d296c390@suse.com>
+ <ce7b5672-9aa4-607f-f21a-594f1f9d3262@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b49cb262-0239-78eb-8144-523caed28bef@suse.com>
+In-Reply-To: <ce7b5672-9aa4-607f-f21a-594f1f9d3262@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 10:04:10AM +0300, Nikolay Borisov wrote:
+On Mon, Sep 20, 2021 at 06:33:14PM +0800, Qu Wenruo wrote:
 > 
 > 
-> On 15.09.21 г. 10:17, Qu Wenruo wrote:
-> > Previously we have "struct btrfs_bio", which records IO context for
-> > mirrored IO and RAID56, and "strcut btrfs_io_bio", which records extra
-> > btrfs specific info for logical bytenr bio.
-> > 
-> > With "strcut btrfs_bio" renamed to "struct btrfs_io_context", we are
-> > safe to rename "strcut btrfs_io_bio" to "strcut btrfs_logical_bio" which
-> > is a more suitable name now.
-> > 
-> > Although the name, "btrfs_logical_bio", is a little long and name
-> > "btrfs_bio" can be much shorter, "btrfs_bio" conflicts with previous
-> > "btrfs_bio" structure and can cause a lot of problems for backports.
-> > 
-> > Thus here we choose the name "btrfs_logical_bio", which also emphasis
-> > those bios all work at logical bytenr.
-> > 
-> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> On 2021/9/17 20:49, Nikolay Borisov wrote:
+> >
+> >
+> > On 17.09.21 г. 15:43, David Sterba wrote:
+> >> So should we add another helper that takes the exact number and drop the
+> >> parameter everwhere is 0 so it's just btrfs_io_bio_alloc() with the
+> >> fallback?
+> >
+> > But by adding another helper we just introduce more indirection.
+> >
+> > Actually I'd argue that if 0 is a sane default then BIO_MAX_VECS cannot
+> > be any worse because:
+> >
+> > a) It's a number which is as good as 0
+> > b) It's even named. So this is technically better than a plain 0
+> >
 > 
-> So thinking a bit more about the renaming we are trading "awkwardness"
-> for future generations so that we make backporting easier or rather more
-> fool proof.
+> Any final call on this?
 > 
-> What if we backport a patch that does BUILD_BUG_ON predicated on the
-> size of the btrfs_io_bio. That way if a patch backports cleanly and
-> automatically but in fact git got confused by btrfs_bio vs btrfs_io_bio
-> then a build failure would ensue due to mismatched sizes and that would
-> be a clear indication something has gone wrong so whoever is doing the
-> backport can go and correct the backport? David what do you think about
-> this?
+> I hope this could be an example for future optional parameters.
+> 
+> We have some existing codes using two different inline functions, and
+> both of them call a internal but exported function with "__" prefix.
+> 
+> We also have call sites passing all needed parameters just like Nikolay
+> suggested.
 
-So you want to call the structure btrfs_bio and add build protections?  I'm not
-sure how exactly you want to do the sizeof check, one way would be to add a
-stub structure and compare sizeof against that, because a hardcoded value won't
-work due to padding, or we'd have to have a 32bit assertion version.
-
-I'd like to see the code, but otherwise I think it's reasonable, the shorter
-name would be better. I don't expect many backports regarding the bio
-related code, it could be referenced in the diff context but that we can
-handle fine. I'm a bit cautious because I've seen patches to other
-subystems that did changes like swapping parameters or repurposing
-structures like here we do and Linus did not like that at all. It's
-trade off if we'll suffer a naming we don't like or would cause a bug
-because we'd forget about the change.
+I'm fine with explicitly using BIO_MAX_VECS instead of 0. I'll update it
+in the patch, no need to resend.
