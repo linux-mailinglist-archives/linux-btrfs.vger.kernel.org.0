@@ -2,122 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6CF410ECD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Sep 2021 05:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 907D6410FCC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Sep 2021 09:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhITDdp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Sep 2021 23:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhITDdo (ORCPT
+        id S233955AbhITHFj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 Sep 2021 03:05:39 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38714 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233580AbhITHFi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Sep 2021 23:33:44 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60778C061574
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Sep 2021 20:32:18 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id 194so13065517qkj.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Sep 2021 20:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=74zEZJGe4DkF7oRt3mAdwqvsdFUcWIVcHs8OHL7Hcew=;
-        b=ULxDvp1ws7iC6+olrIKy1ccs5wBhD9PMlIiBetXC5TnV5w2L36OLGgRwHkJzKpWk+q
-         6GRVAUcjoKj3NsYmuNRsJhGSnkgyOUcWUxbo1p2KJ1Wrf6Zal5tEf2GPjNRcJxg8GD3j
-         11ggRFVG/zPhPcWTHmYVIHLX2k8HibO4vde2mAlmWR5zJA41w+7PtdKkzsqC7VJRE5oe
-         lfST5AL5PxxOaKnZlWeuif86WSJJ2RVU6d35DTpitxbOca8XLaaRUVo+KX7iUI3arPv7
-         lAG9Vl67PEkVpeSjM7McdxxHKa51fg0AJ30GnsWXp0xOmNPP8+TIIvQKqzkReP9b+Wv4
-         hriw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=74zEZJGe4DkF7oRt3mAdwqvsdFUcWIVcHs8OHL7Hcew=;
-        b=FQXPArwaH7p9nZ3Bsb0kRnehteroAnkSvS+RoXqNXUUPjN2sxJ8rwj/EOcwx/4UuYF
-         FAoJiQcRi3hC/Tktk4yLCVXbkhEpDN5pmS8939aT5BBu681cMbqQ/jJBnm/LPCbUxf0G
-         zu8NiJq3spsVLdNYIhronNSuwguZXLcQLaEpCD2BhXzn3sM+osIk7uDxh8YiA3m9YA2o
-         2BI30j93gLCDuBntHgb9xTClRZEC0XQFfQO0DrygnxYo5VnHW5OGNZ1/Br3IKnqpjHJK
-         oNe8HCgI6syoKFzU1D+cX2qkQfHFl0A2+fn7ejtycd3BkkF2jowF3KyxXSgLrjh9cX2J
-         Xh/w==
-X-Gm-Message-State: AOAM530ZUAz5qw92paAoaNgxujhjbpWZqMIQkQ8gViIQ/rqtZcMxnG/Q
-        OxPikHArJFK82vEQRC6J43v+uePJamYtqukPdRZtfgm1V7LnRA==
-X-Google-Smtp-Source: ABdhPJwwu6LPlaNwSpX/VESTQ7jAj+iXrADC9ONwG7Xrpusd7uI4JCw4Qx4YA9hYuCq4dvrKoF33E36A2aKiXO1cR/c=
-X-Received: by 2002:a25:ad1f:: with SMTP id y31mr27113202ybi.437.1632108737437;
- Sun, 19 Sep 2021 20:32:17 -0700 (PDT)
+        Mon, 20 Sep 2021 03:05:38 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 551B21FE45;
+        Mon, 20 Sep 2021 07:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632121451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q6Us9H8XaDvtrqQ3M4LyTyI/JB8uimOo5eIeQEpFmwg=;
+        b=XbHlkIYLAcuyl8VnQIFA2WvEWMY2Uw3l8cbe+KoG5raohG4xC78Kwtbq39eVKj0hu8Cje+
+        1+6NV5BOFxn+prtUViUTfIxFgbOUDcTqbv01tAGjOSwiFbFJaXr9gVhwIm/fZaYMGCwuOK
+        VcJJZW/qnxzZAh8ytF6YPPYMOsM/oDM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1F83A13ACA;
+        Mon, 20 Sep 2021 07:04:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XDdUA2sySGEucAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 20 Sep 2021 07:04:11 +0000
+Subject: Re: [PATCH v3 3/3] btrfs: rename struct btrfs_io_bio to
+ btrfs_logical_bio
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210915071718.59418-1-wqu@suse.com>
+ <20210915071718.59418-4-wqu@suse.com>
+Cc:     David Sterba <dsterba@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <b49cb262-0239-78eb-8144-523caed28bef@suse.com>
+Date:   Mon, 20 Sep 2021 10:04:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <9809e10.87861547.17bfad90f99@tnonline.net> <52c5e29d-0ac3-e962-c915-b313d28c05d1@gmx.com>
-In-Reply-To: <52c5e29d-0ac3-e962-c915-b313d28c05d1@gmx.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Sun, 19 Sep 2021 21:32:01 -0600
-Message-ID: <CAJCQCtQQieOB4H5j-0mreGhzb0xJj2HtMOAJ=m2gTb79-eMR8w@mail.gmail.com>
-Subject: Re: Select DUP metadata by default on single devices.
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Forza <forza@tnonline.net>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210915071718.59418-4-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 5:58 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2021/9/19 05:38, Forza wrote:
-> > Hello everyone,
-> >
-> > I'd like to revisit the topic I opened on Github(*) a year ago, where I=
- suggested that DUP metadata profile ought to be the default choice when do=
-ing mkfs.btrfs on single devices.
-> >
-> > Today we have much better write endurance on flash based media so the a=
-dded writes should not matter in the grand scheme of things. Another factor=
- is disk encryption where mkfs.btrfs cannot differentiate a plain SSD from =
-a luks/dm-crypt device. Encryption effectively removes the possibility for =
-the SSD to dedupe the metadata blocks.
-> >
-> > Ultimately, I think it is better to favour defaults that gives most use=
-rs better fault tolerance, rather than using SINGLE mode for everyone becau=
-se of the chance that some have deduplicating hardware (which would potenti=
-ally negate the benefit of DUP metadata).
-> >
-> > One remark against DUP has been that both metadata copies would end up =
-in the same erase block. However, I think that full erase block failures ar=
-e in minority of the possible failure modes, at least from what I've seen o=
-n the mailing list and at #btrfs. It is more common to have single block er=
-rors, and for those we are protected with DUP metadata.
-> >
-> > Zygo made a very good in-depth explanation about several different fail=
-ure modes in the Github issue.
-> >
-> > I would like voice my wish to change the defaults to DUP metadata on al=
-l single devices and I hope that the developers now can find consensus to m=
-ake this change.
->
-> I'm totally into the idea of DUP as default meta.
->
-> The idea that *some* SSD does dedupe internally shouldn't be a reason to
-> prevent us from using DUP at all.
->
-> The internal mechanism should not affect how we use the disks,
-> especially we didn't even have a solid statistics on the percentage of
-> SSDs doing that.
-
-Also, if DUP is default, and both copies are corrupted, that will be
-evidence of a double whammy against that SSD make/model: it's
-corrupting data, and it's deduping. The dedup is in this case,
-effectively, replicating corruption.
 
 
-> And such exception is already causing damage in the wild, thus I see no
-> real benefit from SINGLE metadata on SSD.
+On 15.09.21 г. 10:17, Qu Wenruo wrote:
+> Previously we have "struct btrfs_bio", which records IO context for
+> mirrored IO and RAID56, and "strcut btrfs_io_bio", which records extra
+> btrfs specific info for logical bytenr bio.
+> 
+> With "strcut btrfs_bio" renamed to "struct btrfs_io_context", we are
+> safe to rename "strcut btrfs_io_bio" to "strcut btrfs_logical_bio" which
+> is a more suitable name now.
+> 
+> Although the name, "btrfs_logical_bio", is a little long and name
+> "btrfs_bio" can be much shorter, "btrfs_bio" conflicts with previous
+> "btrfs_bio" structure and can cause a lot of problems for backports.
+> 
+> Thus here we choose the name "btrfs_logical_bio", which also emphasis
+> those bios all work at logical bytenr.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-It'd be nice to quantify the write amplification of btrfs cow
-(wandering trees) in the general case. The metadata is a teeny portion
-of writes, but still useful to quantify how big of a hit it is to
-double the metadata writes. It seems to be the only downside.
 
+So thinking a bit more about the renaming we are trading "awkwardness"
+for future generations so that we make backporting easier or rather more
+fool proof.
 
---=20
-Chris Murphy
+What if we backport a patch that does BUILD_BUG_ON predicated on the
+size of the btrfs_io_bio. That way if a patch backports cleanly and
+automatically but in fact git got confused by btrfs_bio vs btrfs_io_bio
+then a build failure would ensue due to mismatched sizes and that would
+be a clear indication something has gone wrong so whoever is doing the
+backport can go and correct the backport? David what do you think about
+this?
