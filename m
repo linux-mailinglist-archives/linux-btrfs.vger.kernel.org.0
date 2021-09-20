@@ -2,73 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCD3410DFB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Sep 2021 02:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6CF410ECD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 Sep 2021 05:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229575AbhITAMG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 19 Sep 2021 20:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
+        id S229745AbhITDdp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 19 Sep 2021 23:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhITAMF (ORCPT
+        with ESMTP id S229517AbhITDdo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 19 Sep 2021 20:12:05 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA349C061760
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Sep 2021 17:10:39 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id w11so351304plz.13
-        for <linux-btrfs@vger.kernel.org>; Sun, 19 Sep 2021 17:10:39 -0700 (PDT)
+        Sun, 19 Sep 2021 23:33:44 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60778C061574
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Sep 2021 20:32:18 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id 194so13065517qkj.11
+        for <linux-btrfs@vger.kernel.org>; Sun, 19 Sep 2021 20:32:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=EmTuuBkgfu7PIcF+07HUiBDImoAebJFY6j2NyWamoP0=;
-        b=buSllOw0K2eKiv4B8E/+WiLU22fYFX8Z7pIhDd2XjqjYmudTx2w9oP45QsSEz16btQ
-         YzMngXfy5iO4G4e4iGTG1v91yplCA4S2mhwrd9Monkafyj6Wa7rhb/p+kukokAyLzn37
-         cBpxzWqXNkt3uJCISMNPrNNifuDRn4bck64YnQPFpJtpCrxw3p7vQmYDPGXH+FN9NkRs
-         GDhMDhQanG+tm9/SdvraIjEAOb5EbCYEBoo4EPD9QcLKGfAA5iaYG1vA5JOhgpm+BQUh
-         XoZGrrVaQFzXToFEpj7riLfi5Hja61hrt3bsQyuW2iegtAk/P3OTIvoZhxq8iZBfjy2H
-         zj+w==
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=74zEZJGe4DkF7oRt3mAdwqvsdFUcWIVcHs8OHL7Hcew=;
+        b=ULxDvp1ws7iC6+olrIKy1ccs5wBhD9PMlIiBetXC5TnV5w2L36OLGgRwHkJzKpWk+q
+         6GRVAUcjoKj3NsYmuNRsJhGSnkgyOUcWUxbo1p2KJ1Wrf6Zal5tEf2GPjNRcJxg8GD3j
+         11ggRFVG/zPhPcWTHmYVIHLX2k8HibO4vde2mAlmWR5zJA41w+7PtdKkzsqC7VJRE5oe
+         lfST5AL5PxxOaKnZlWeuif86WSJJ2RVU6d35DTpitxbOca8XLaaRUVo+KX7iUI3arPv7
+         lAG9Vl67PEkVpeSjM7McdxxHKa51fg0AJ30GnsWXp0xOmNPP8+TIIvQKqzkReP9b+Wv4
+         hriw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=EmTuuBkgfu7PIcF+07HUiBDImoAebJFY6j2NyWamoP0=;
-        b=cPSJc/qg9GONusC48i1Te0hxq3lRHcwDwVGKdHqV73dNXE8AnanKpA1Aaoyp4OZTcq
-         epN0Q0XroPd+NV7FLZSJXV163AnC5mIsN+WjimoWQ4ViaVrKLeQlEx36pgYlNrC4pQcY
-         L4FedRUwBGkAeDFl+48H1Wjxffvq2ORkvRvJIaVPEYuK/dNag6+xTtQobf+VLEkTOsHI
-         eIpxfpAzQXL/nbi1lrvpZZtmxAyFaARGGietRGD/t9f/Cvlt9WFS5TwLS2uDDVBIFaf4
-         /B5D1+F8jnc8P+TQXRpFViGZK3Om+iLFklcYnVNjRXyBbVsUwggKFw6M+DlzuHidVqhD
-         iqqw==
-X-Gm-Message-State: AOAM530jXSLDSB2JVtDRIdyWVS+LfPOHEeUI5YjT9FjkvDNqepOstDFT
-        JVFtNChHVlJ9KJ8+e3CJ5Zt69+feUgGVBt1iWEQ=
-X-Google-Smtp-Source: ABdhPJzg3lJmdciQsUfDNRY83cvSy2NKeWQNlYCH6iDhArBDVPjJn+zCBm6ypYInrcInwAplsviVdRsm9kvx2BZqMVM=
-X-Received: by 2002:a17:90a:f411:: with SMTP id ch17mr25993483pjb.182.1632096639244;
- Sun, 19 Sep 2021 17:10:39 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=74zEZJGe4DkF7oRt3mAdwqvsdFUcWIVcHs8OHL7Hcew=;
+        b=FQXPArwaH7p9nZ3Bsb0kRnehteroAnkSvS+RoXqNXUUPjN2sxJ8rwj/EOcwx/4UuYF
+         FAoJiQcRi3hC/Tktk4yLCVXbkhEpDN5pmS8939aT5BBu681cMbqQ/jJBnm/LPCbUxf0G
+         zu8NiJq3spsVLdNYIhronNSuwguZXLcQLaEpCD2BhXzn3sM+osIk7uDxh8YiA3m9YA2o
+         2BI30j93gLCDuBntHgb9xTClRZEC0XQFfQO0DrygnxYo5VnHW5OGNZ1/Br3IKnqpjHJK
+         oNe8HCgI6syoKFzU1D+cX2qkQfHFl0A2+fn7ejtycd3BkkF2jowF3KyxXSgLrjh9cX2J
+         Xh/w==
+X-Gm-Message-State: AOAM530ZUAz5qw92paAoaNgxujhjbpWZqMIQkQ8gViIQ/rqtZcMxnG/Q
+        OxPikHArJFK82vEQRC6J43v+uePJamYtqukPdRZtfgm1V7LnRA==
+X-Google-Smtp-Source: ABdhPJwwu6LPlaNwSpX/VESTQ7jAj+iXrADC9ONwG7Xrpusd7uI4JCw4Qx4YA9hYuCq4dvrKoF33E36A2aKiXO1cR/c=
+X-Received: by 2002:a25:ad1f:: with SMTP id y31mr27113202ybi.437.1632108737437;
+ Sun, 19 Sep 2021 20:32:17 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:e20d:0:0:0:0 with HTTP; Sun, 19 Sep 2021 17:10:38
- -0700 (PDT)
-Reply-To: johnsonk100@gmail.com
-From:   Raphael John Diko <mohamedalabbar10@gmail.com>
-Date:   Sun, 19 Sep 2021 17:10:38 -0700
-Message-ID: <CAOB23ShUZVXMZ=Q5nQNhv3vN8p_6XrJ__YFSw79_9rSO59Bj-A@mail.gmail.com>
-Subject: CONFIRM IF YOU DID RECEIVE MY MAIL
-To:     undisclosed-recipients:;
+References: <9809e10.87861547.17bfad90f99@tnonline.net> <52c5e29d-0ac3-e962-c915-b313d28c05d1@gmx.com>
+In-Reply-To: <52c5e29d-0ac3-e962-c915-b313d28c05d1@gmx.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sun, 19 Sep 2021 21:32:01 -0600
+Message-ID: <CAJCQCtQQieOB4H5j-0mreGhzb0xJj2HtMOAJ=m2gTb79-eMR8w@mail.gmail.com>
+Subject: Re: Select DUP metadata by default on single devices.
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Forza <forza@tnonline.net>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello Dear
+On Sat, Sep 18, 2021 at 5:58 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2021/9/19 05:38, Forza wrote:
+> > Hello everyone,
+> >
+> > I'd like to revisit the topic I opened on Github(*) a year ago, where I=
+ suggested that DUP metadata profile ought to be the default choice when do=
+ing mkfs.btrfs on single devices.
+> >
+> > Today we have much better write endurance on flash based media so the a=
+dded writes should not matter in the grand scheme of things. Another factor=
+ is disk encryption where mkfs.btrfs cannot differentiate a plain SSD from =
+a luks/dm-crypt device. Encryption effectively removes the possibility for =
+the SSD to dedupe the metadata blocks.
+> >
+> > Ultimately, I think it is better to favour defaults that gives most use=
+rs better fault tolerance, rather than using SINGLE mode for everyone becau=
+se of the chance that some have deduplicating hardware (which would potenti=
+ally negate the benefit of DUP metadata).
+> >
+> > One remark against DUP has been that both metadata copies would end up =
+in the same erase block. However, I think that full erase block failures ar=
+e in minority of the possible failure modes, at least from what I've seen o=
+n the mailing list and at #btrfs. It is more common to have single block er=
+rors, and for those we are protected with DUP metadata.
+> >
+> > Zygo made a very good in-depth explanation about several different fail=
+ure modes in the Github issue.
+> >
+> > I would like voice my wish to change the defaults to DUP metadata on al=
+l single devices and I hope that the developers now can find consensus to m=
+ake this change.
+>
+> I'm totally into the idea of DUP as default meta.
+>
+> The idea that *some* SSD does dedupe internally shouldn't be a reason to
+> prevent us from using DUP at all.
+>
+> The internal mechanism should not affect how we use the disks,
+> especially we didn't even have a solid statistics on the percentage of
+> SSDs doing that.
 
-I am Raphael.K.John Diko,
+Also, if DUP is default, and both copies are corrupted, that will be
+evidence of a double whammy against that SSD make/model: it's
+corrupting data, and it's deduping. The dedup is in this case,
+effectively, replicating corruption.
 
-I want to confirm from you if you are able to handle a transaction
-project valued at $7.5 million dollars only, that  will benefit both
-of us.
 
-Let me know your willingness.
+> And such exception is already causing damage in the wild, thus I see no
+> real benefit from SINGLE metadata on SSD.
 
-You should get back to me on this email address:  alexptt56@gmail.com
+It'd be nice to quantify the write amplification of btrfs cow
+(wandering trees) in the general case. The metadata is a teeny portion
+of writes, but still useful to quantify how big of a hit it is to
+double the metadata writes. It seems to be the only downside.
 
-Thanks
 
-Raphael.K.John Diko
+--=20
+Chris Murphy
