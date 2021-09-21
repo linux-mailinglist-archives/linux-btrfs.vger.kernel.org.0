@@ -2,75 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195F2413A65
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Sep 2021 20:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D08413B0C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Sep 2021 21:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbhIUS52 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Sep 2021 14:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233798AbhIUS51 (ORCPT
+        id S232631AbhIUT6P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Sep 2021 15:58:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57328 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232052AbhIUT6O (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:57:27 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B80C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 11:55:58 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id d207so1114319qkg.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 11:55:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=hSTUcEZvrMf1EBtr66pZqqxwcpjqQczxwIpt7Vlxjow=;
-        b=4sKv8SlVFHOJC0tCZe6FlJ8jZm3rPhKdoBrHNQe3mZC/da91V7qjZq5VRUAEFCX+RS
-         8auRwOgz2Nf+0GZiDhg9gGTr2A9+Hrnq39ZT2ysuFojz5WDyKKxu65LQIS00kf+0PO/j
-         YfCCphGPAH9i5Jji8PX9mZ0XbVVFj1gMBuo3IJJzeo4lP5VWH++YgXjFAFL9IPD5t0x/
-         tJlPyxfoUOgRnzjzFCLNpAQPZg2SrKC2RnY3znRLJToPi99pcs0f7a7xMnyizUE2DgLa
-         6qWh2NhwHJEAgYisn65q4zSZ9oqdo+YZ2/dd6rLgeA9u4Tu7SF1VqAsmRkyOun+glShk
-         Qpkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=hSTUcEZvrMf1EBtr66pZqqxwcpjqQczxwIpt7Vlxjow=;
-        b=gtK8sHyFOssZlye07iAW+iNu/zAHLMfaqTll/RrBIUeZNaSWW0DhNYCWm0Y4j2jEz9
-         EFBRP5CRve6LVGrTLWXkf5gs42XZgC+shNehYAHJH5Gp8v0rmMRSLN6EduI79eV30zik
-         /E9EWtCwqi0fjOHmnkHXriMT9IkXj3CGznenYjc9738czxY4Aztmei8hx1G1JX1mflUG
-         94HIAMednIEYZifdYT+rMtnp7q1JVfhTYgPhS2rcrdnZBntVmZU0j9aorvu4qszUWqLX
-         KMOs3xd34pmrLELKycauRNm2lDI9XsQG1z3HqLwGo9DzP9fa82N+xPfXPzmqbShEaZZ+
-         JY1A==
-X-Gm-Message-State: AOAM533vp3uUFySXtz/gq93ul+x74YvVz9tP8rsMUHWj1emRLZyfu7Lp
-        uAYlWjJtYPq2Qk8jK9zDMjYMU2hTWy7Drt8EM+FToQ==
-X-Google-Smtp-Source: ABdhPJzkj/MN5mQW03TNrtL85q/mq1MUub3sehyWWor5o1ND+Px044yCygQCLesM6mVhR+SXVa8ehi5vgACND4iqB6Y=
-X-Received: by 2002:a25:d801:: with SMTP id p1mr27332021ybg.391.1632250558016;
- Tue, 21 Sep 2021 11:55:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJCQCtQsqsDwzUegUgYAo2PccUP9q=DKKA7kUNtRcbttW-nQrw@mail.gmail.com>
- <20210921181705.GP9286@twin.jikos.cz>
-In-Reply-To: <20210921181705.GP9286@twin.jikos.cz>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 21 Sep 2021 12:55:42 -0600
-Message-ID: <CAJCQCtTCYFWRDicKc1t7ACzB=Khr0Km64Ps5EPuZ50TSPLj=LQ@mail.gmail.com>
-Subject: Re: aarch64: Unsupported V0 extent filesystem detected.
-To:     David Sterba <dsterba@suse.cz>,
-        Chris Murphy <lists@colorremedies.com>,
+        Tue, 21 Sep 2021 15:58:14 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id C1DAE1FF16;
+        Tue, 21 Sep 2021 19:56:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632254204;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vr+Gja9TrhFG3u1W6iKBhRN4fCBxyUv5ixDzutqPJB0=;
+        b=YTeiqhd88Fm7he4k5yhyiAlNAxFNEHM6zKtVBwUUCTAgyLnAIB21+GulIAL/ZbQ8sCgZH0
+        KrareYRVpwvBbNNSiIRQlNNNSKvB3SosvZs1kHPMadmXKm5/vDElC34EfHdK3r/D4leIzL
+        Qo4fPkjs66mWasUxrTdrs33qUOPvfQE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632254204;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vr+Gja9TrhFG3u1W6iKBhRN4fCBxyUv5ixDzutqPJB0=;
+        b=KOy+Bt5gGl10YUHNYsq2VO8lk355Qv1ncqlReVkRkjBoIjNehtXdIHc48zLM56h6lFmQ6N
+        6aKoQpzXcBse6rBg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id BAC4EA3B96;
+        Tue, 21 Sep 2021 19:56:44 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7F0E0DA72B; Tue, 21 Sep 2021 21:56:32 +0200 (CEST)
+Date:   Tue, 21 Sep 2021 21:56:32 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: 5.15.0-rc1 armv7hl Workqueue: btrfs-delalloc btrfs_work_helper
+ PC is at mmiocpy LR is at ZSTD_compressStream
+Message-ID: <20210921195632.GR9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <CAJCQCtT+OuemovPO7GZk8Y8=qtOObr0XTDp8jh4OHD6y84AFxw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJCQCtT+OuemovPO7GZk8Y8=qtOObr0XTDp8jh4OHD6y84AFxw@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 12:17 PM David Sterba <dsterba@suse.cz> wrote:
->
-> On Tue, Sep 21, 2021 at 11:40:17AM -0600, Chris Murphy wrote:
-> > Downstream bug report with a 5.13.12 kernel.
-> > https://bugzilla.redhat.com/show_bug.cgi?id=2000482
->
-> The report says it's a fresh filesystem so it's not like that it's an
-> ancient filesystem. As it's on ARM64 machine first hint would be some
-> endinanness issue but we've been testing on that architecture for a long
-> time so it can't be a new issue.
+On Mon, Sep 20, 2021 at 06:13:07PM -0600, Chris Murphy wrote:
+> https://kojipkgs.fedoraproject.org//work/tasks/8820/75928820/oz-armhfp.log
 
-I'll ask for more history in the bug.
+> 00:09:50,679 EMERG kernel:[<c08bd768>] (mmiocpy) from [<c089c314>]
+> (ZSTD_compressStream+0x184/0x294)
 
--- 
-Chris Murphy
+The last function to fail is inside ZSTD implementation in kernel.
+If btrfs passes wrong data to zstd we'd see that also on non-arm builds,
+so guessing by mmiocpy as a copy-something function it could be some
+sort of alignment problem that works on x86_64 but throws an exception
+on arm as it's stricter about alignment.
