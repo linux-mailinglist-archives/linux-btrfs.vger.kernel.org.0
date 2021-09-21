@@ -2,77 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1611A41313C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Sep 2021 12:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6D041321B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Sep 2021 13:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhIUKIV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Sep 2021 06:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231450AbhIUKIJ (ORCPT
+        id S232267AbhIULDI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Sep 2021 07:03:08 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58746 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232381AbhIULDD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Sep 2021 06:08:09 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4614C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 03:06:39 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id bk29so52357193qkb.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 03:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=WeosI4bsNB+ziUPwMtuooYUswr2aPS9qI01+kb9jQYw=;
-        b=Su+I5+2wVP0E7FSRwn3NTNaNksXb5fqZY/iuonK0MNgz8cDdSsYk+Yry0kXoOOTuqk
-         fSGnNHt07r37mJIFZ7IRq/2CZt3YQlGDTPlrG8ioLtTbGckzAKUrtt0hkyISKdK8HRh0
-         PxKa0oqxlGlTuC1DTYP3/BLgGH9HlUxc3r3Tss+Bf+qRGa+rLeUq+TmoHOSluDXZ5FJj
-         zbyf8e/waacYfX2pRZHiYuvmC8V0+6Z1wAsFDO8ggv1G7+efNf7voo5TUpQCqduAQ+P4
-         1NDiBSPH5On77nVTGeq0yAAD1BLBD+fGHwe8NIgstED/DyBYV+0HkZr3psRVmIsCmeth
-         4ixQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=WeosI4bsNB+ziUPwMtuooYUswr2aPS9qI01+kb9jQYw=;
-        b=cgN0I/2i5KORMNztlLafWsgm7pjXC4SKIgQAINYEXGDLPzuJJrNtw/aSLNqgh0EQEN
-         r/Up9FWKK3DviXpPKIkJFpTOW/MFo7U6ME49lq8a+PkSyojvkDxb7jArLp/BgaURYCHC
-         H/bJhHtopj78qu8z/i/ckB3u7fD3GFAkuB+9MVI4oGp/iFzRxG4MMgw2wP/70qyA81K9
-         trdtGce7Rl3urCtq+92uxq+VwwhPG6ckpSw6v3DNWhcV3jy5ydVjsOwXdA/CfvYRyKQA
-         ubA/3w2D6iXVCKcF/qXngjtFFjJbhR0C4Yt98OsNhXYHTAEAYgYG0RE3Fmdn0DXNGuj5
-         MJYA==
-X-Gm-Message-State: AOAM532+dAtAH6jxM8Hrd4Ob9vQX9UePUdEiBZ6p5tciokOgqpUwzmKu
-        q4WnherpwVAMY1bG7zmmp5hwJVgL6E5IBIuDTHs=
-X-Google-Smtp-Source: ABdhPJzGobUiwWxoK9WJm2l3pVwIwPrIIREalpzUtc+x/YNv0aiTPXQB478G9zJN5zNrhhqLnrJnPA8gfI2GxvMMXiY=
-X-Received: by 2002:a25:5e45:: with SMTP id s66mr4216979ybb.202.1632218798181;
- Tue, 21 Sep 2021 03:06:38 -0700 (PDT)
+        Tue, 21 Sep 2021 07:03:03 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 387452006B;
+        Tue, 21 Sep 2021 11:01:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632222094; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x9Xo7ps42dzlg3A/8e+gYCdMM0KcwW4LsYnnUblxV/s=;
+        b=nFNZASVQmsn0AzBj7PA1kRjOb5KlIX59tbdMl2LsNnQSny2WaOdLeeAChT4s3jePl6nkJ4
+        RouZ+0Sc3XvNyzhM7DLcdY1dghOOqM/I8N8jVhNCr2Q06kC5GkMiufjvk++wbWrBOmNayG
+        Kglwz7wHeQRCCeD8ypsFA/jzrTJ35aU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0580413BC6;
+        Tue, 21 Sep 2021 11:01:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eaxZOo27SWEVbwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 21 Sep 2021 11:01:33 +0000
+Subject: Re: [PATCH v6 3/3] btrfs: consolidate device_list_mutex in
+ prepare_sprout to its parent
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+        dsterba@suse.com
+References: <cover.1632179897.git.anand.jain@oracle.com>
+ <ec3ecca596bf5d9de5e152942a277ab48915f0cf.1632179897.git.anand.jain@oracle.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <840713c4-48ef-b4e6-91e3-f92158448b7c@suse.com>
+Date:   Tue, 21 Sep 2021 14:01:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a05:7110:5696:b0:f6:c71f:1775 with HTTP; Tue, 21 Sep 2021
- 03:06:37 -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   Aisha Gaddafi <mrssofiarees@gmail.com>
-Date:   Tue, 21 Sep 2021 03:06:37 -0700
-Message-ID: <CAJHahdOkepSHjAotpRXZ8jdGW1nZYz6TvOobkHdmVOwWK==TLA@mail.gmail.com>
-Subject: Liebster Freund,.?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ec3ecca596bf5d9de5e152942a277ab48915f0cf.1632179897.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Liebster Freund,
 
-Im Namen Gottes, des gn=C3=A4digsten, barmherzigsten.
 
-Friede sei mit dir und Barmherzigkeit sei mit dir und Segen sei mit dir.
-Ich habe die Summe von 27,5 Millionen USD f=C3=BCr Investitionen, ich
-interessiere mich f=C3=BCr Sie f=C3=BCr die Unterst=C3=BCtzung von
-Investitionsprojekten in Ihrem Land. Mein Name ist Aisha Gaddafi und
-lebe derzeit im Oman, ich bin eine Witwe und alleinerziehende Mutter
-mit drei Kindern, die einzige leibliche Tochter des verstorbenen
-libyschen Pr=C3=A4sidenten (dem verstorbenen Oberst Muammar Gaddafi) und
-stehe derzeit unter politischem Asylschutz der omanischen Regierung.
+On 21.09.21 г. 7:33, Anand Jain wrote:
+> btrfs_prepare_sprout() splices seed devices into its own struct fs_devices,
+> so that its parent function btrfs_init_new_device() can add the new sprout
+> device to fs_info->fs_devices.
+> 
+> Both btrfs_prepare_sprout() and btrfs_init_new_device() needs
+> device_list_mutex. But they are holding it sequentially, thus creates a
+> small window to an opportunity to race. Close this opportunity and hold
+> device_list_mutex common to both btrfs_init_new_device() and
+> btrfs_prepare_sprout().
+> 
+> This patch splits btrfs_prepare_sprout() into btrfs_alloc_sprout() and
+> btrfs_splice_sprout(). This split is essential because device_list_mutex
+> shouldn't be held for btrfs_alloc_sprout() but must be held for
+> btrfs_splice_sprout(). So now a common device_list_mutex can be used
+> between btrfs_init_new_device() and btrfs_splice_sprout().
+> 
+> This patch also moves the lockdep_assert_held(&uuid_mutex) from the
+> starting of the function to just above the line where we need this lock.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v6:
+>  Remove RFC.
+>  Split btrfs_prepare_sprout so that the allocation part can be outside
+>  of the device_list_mutex in the parent function btrfs_init_new_device().
+> 
+>  fs/btrfs/volumes.c | 46 +++++++++++++++++++++++++++++++---------------
+>  1 file changed, 31 insertions(+), 15 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index e4079e25db70..b21eac32ec98 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -2376,19 +2376,13 @@ struct btrfs_device *btrfs_find_device_by_devspec(
+>  	return btrfs_find_device_by_path(fs_info, device_path);
+>  }
+>  
+> -/*
+> - * does all the dirty work required for changing file system's UUID.
+> - */
+> -static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
+> +static int btrfs_alloc_sprout(struct btrfs_fs_info *fs_info,
+> +			      struct btrfs_fs_devices **seed_devices_ret)
 
-Bitte antworten Sie dringend f=C3=BCr weitere Details.
+Nope, make the function return a struct btrfs_fs_devices *.
 
-Vielen Dank
-Mit freundlichen Gr=C3=BC=C3=9Fen Aisha
+>  {
+>  	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+>  	struct btrfs_fs_devices *old_devices;
+>  	struct btrfs_fs_devices *seed_devices;
+> -	struct btrfs_super_block *disk_super = fs_info->super_copy;
+> -	struct btrfs_device *device;
+> -	u64 super_flags;
+>  
+> -	lockdep_assert_held(&uuid_mutex);
+>  	if (!fs_devices->seeding)
+>  		return -EINVAL;
+>  
+> @@ -2412,6 +2406,7 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
+>  		return PTR_ERR(old_devices);
+>  	}
+>  
+> +	lockdep_assert_held(&uuid_mutex);
+>  	list_add(&old_devices->fs_list, &fs_uuids);
+>  
+>  	memcpy(seed_devices, fs_devices, sizeof(*seed_devices));
+> @@ -2419,7 +2414,23 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
+>  	INIT_LIST_HEAD(&seed_devices->devices);
+>  	INIT_LIST_HEAD(&seed_devices->alloc_list);
+>  
+> -	mutex_lock(&fs_devices->device_list_mutex);
+> +	*seed_devices_ret = seed_devices;
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Splice seed devices into the sprout fs_devices.
+> + * Generate a new fsid for the sprouted readwrite btrfs.
+> + */
+> +static void btrfs_splice_sprout(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_fs_devices *seed_devices)
+> +{
+
+This function is missing a lockdep_assert_held annotation and it depends
+on the device_list_mutex being held.
+
+However looking at the resulting code it doesn't look good, because
+btrfs_splice_sporut suggests you simply add the seed device to a bunch
+of places, yet looking at the function's body it's evident it actually
+finishes some parts of the initialization, changes the uuid of the
+fs_devices. I'm not convinced it really makes the code better or at the
+very least the 'splice_sprout' needs to be changed, because splicing is
+a minot part of what this function really does.
+
+
+<snip>
+
