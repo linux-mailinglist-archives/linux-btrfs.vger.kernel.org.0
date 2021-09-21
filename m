@@ -2,129 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E60C413A57
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Sep 2021 20:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195F2413A65
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Sep 2021 20:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbhIUSxH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Sep 2021 14:53:07 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50646 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbhIUSxG (ORCPT
+        id S233770AbhIUS52 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Sep 2021 14:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233798AbhIUS51 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Sep 2021 14:53:06 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id ED39622148;
-        Tue, 21 Sep 2021 18:51:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632250296;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4JDM4MAT7/fjgS+DMd3f4gB8yKKeMGUkqLSseciFGHg=;
-        b=sNAary97/TlUZ2wsPHIQGPqKfwYU7PPvEToFMhNx+fjoXb5RZC4JT0VSAoK954kE7OsPTL
-        VGaONT5BKCytfAN3bRBef0wN6VcK/8PTexYtxxedWO34/CwkkrpCAay6c+v6DqH073eUHE
-        dNTkdRByD2IRWb7yZ//iPBVTNWKxCys=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632250296;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4JDM4MAT7/fjgS+DMd3f4gB8yKKeMGUkqLSseciFGHg=;
-        b=MaxvpmE9dSF7I4Iescz4hXEopZ1k2qSVaZwE0IC58i/V+edMkBy8MXhj82OZY9UawRvwzR
-        Xdx2WkTZeVoRX0Dg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E6AA7A3B88;
-        Tue, 21 Sep 2021 18:51:36 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EAE3FDA72B; Tue, 21 Sep 2021 20:51:24 +0200 (CEST)
-Date:   Tue, 21 Sep 2021 20:51:24 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/8] Implement progs support for removing received
- uuid on RW vols
-Message-ID: <20210921185124.GQ9286@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210914090558.79411-1-nborisov@suse.com>
+        Tue, 21 Sep 2021 14:57:27 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B80C061574
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 11:55:58 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id d207so1114319qkg.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 11:55:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=hSTUcEZvrMf1EBtr66pZqqxwcpjqQczxwIpt7Vlxjow=;
+        b=4sKv8SlVFHOJC0tCZe6FlJ8jZm3rPhKdoBrHNQe3mZC/da91V7qjZq5VRUAEFCX+RS
+         8auRwOgz2Nf+0GZiDhg9gGTr2A9+Hrnq39ZT2ysuFojz5WDyKKxu65LQIS00kf+0PO/j
+         YfCCphGPAH9i5Jji8PX9mZ0XbVVFj1gMBuo3IJJzeo4lP5VWH++YgXjFAFL9IPD5t0x/
+         tJlPyxfoUOgRnzjzFCLNpAQPZg2SrKC2RnY3znRLJToPi99pcs0f7a7xMnyizUE2DgLa
+         6qWh2NhwHJEAgYisn65q4zSZ9oqdo+YZ2/dd6rLgeA9u4Tu7SF1VqAsmRkyOun+glShk
+         Qpkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=hSTUcEZvrMf1EBtr66pZqqxwcpjqQczxwIpt7Vlxjow=;
+        b=gtK8sHyFOssZlye07iAW+iNu/zAHLMfaqTll/RrBIUeZNaSWW0DhNYCWm0Y4j2jEz9
+         EFBRP5CRve6LVGrTLWXkf5gs42XZgC+shNehYAHJH5Gp8v0rmMRSLN6EduI79eV30zik
+         /E9EWtCwqi0fjOHmnkHXriMT9IkXj3CGznenYjc9738czxY4Aztmei8hx1G1JX1mflUG
+         94HIAMednIEYZifdYT+rMtnp7q1JVfhTYgPhS2rcrdnZBntVmZU0j9aorvu4qszUWqLX
+         KMOs3xd34pmrLELKycauRNm2lDI9XsQG1z3HqLwGo9DzP9fa82N+xPfXPzmqbShEaZZ+
+         JY1A==
+X-Gm-Message-State: AOAM533vp3uUFySXtz/gq93ul+x74YvVz9tP8rsMUHWj1emRLZyfu7Lp
+        uAYlWjJtYPq2Qk8jK9zDMjYMU2hTWy7Drt8EM+FToQ==
+X-Google-Smtp-Source: ABdhPJzkj/MN5mQW03TNrtL85q/mq1MUub3sehyWWor5o1ND+Px044yCygQCLesM6mVhR+SXVa8ehi5vgACND4iqB6Y=
+X-Received: by 2002:a25:d801:: with SMTP id p1mr27332021ybg.391.1632250558016;
+ Tue, 21 Sep 2021 11:55:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210914090558.79411-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <CAJCQCtQsqsDwzUegUgYAo2PccUP9q=DKKA7kUNtRcbttW-nQrw@mail.gmail.com>
+ <20210921181705.GP9286@twin.jikos.cz>
+In-Reply-To: <20210921181705.GP9286@twin.jikos.cz>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 21 Sep 2021 12:55:42 -0600
+Message-ID: <CAJCQCtTCYFWRDicKc1t7ACzB=Khr0Km64Ps5EPuZ50TSPLj=LQ@mail.gmail.com>
+Subject: Re: aarch64: Unsupported V0 extent filesystem detected.
+To:     David Sterba <dsterba@suse.cz>,
+        Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:05:50PM +0300, Nikolay Borisov wrote:
-> Here's V2 which takes into account Qu's suggestions, namely:
-> 
-> - Add a helper which contains the common code to clear receive-related data
-> - Now there is a single patch which impements the check/clear for both orig and
-> lowmem modes
-> - Added Reviewed-by from Qu.
-> 
-> 
-> Nikolay Borisov (8):
->   btrfs-progs: Add btrfs_is_empty_uuid
->   btrfs-progs: Remove root argument from btrfs_fixup_low_keys
->   btrfs-progs: Remove fs_info argument from leaf_data_end
->   btrfs-progs: Remove root argument from btrfs_truncate_item
->   btrfs-progs: Add btrfs_uuid_tree_remove
->   btrfs-progs: Implement helper to remove received information of RW
->     subvol
->   btrfs-progs: check: Implement removing received data for RW subvols
->   btrfs-progs: tests: Add test for received information removal
+On Tue, Sep 21, 2021 at 12:17 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Tue, Sep 21, 2021 at 11:40:17AM -0600, Chris Murphy wrote:
+> > Downstream bug report with a 5.13.12 kernel.
+> > https://bugzilla.redhat.com/show_bug.cgi?id=2000482
+>
+> The report says it's a fresh filesystem so it's not like that it's an
+> ancient filesystem. As it's on ARM64 machine first hint would be some
+> endinanness issue but we've been testing on that architecture for a long
+> time so it can't be a new issue.
 
-Patches 2-5 added to devel as they're preparatory and otherwise OK as
-independent cleanups.
+I'll ask for more history in the bug.
 
-Regarding the rw and received_uuid, it's choosing between these options:
-
-1) ro->rw resets received_uuid unconditionally
-
-Pros:
-- safe as it does not lead to unexpected results after incremental send
-
-Cons:
-- unconditional, so it's too easy to break the incremental send usecase,
-  which is the main usecase, if that' for backups breaking the
-  continuity is IMNSHO serious usability problem -- and main reason why
-  I'm personally looking for other options
-
-Issuing a warning when the ro status is changed by btrfs-progs is only
-partially fixing that as the raw ioctl or it's wrapper in libbtrfsutil
-will happily destroy the received_uuid. There's no log or other
-information that would make it possible to restore it.
-
-Note that received_uuid can be set to any value using the
-BTRFS_IOC_SET_RECEIVED_SUBVOL ioctl, as long as the subvolume is
-writable.
-
-2) don't allow ro->rw if received_uuid is set, it must be cleared first
-
-As mentioned above, the received_uuid can be changed or reset (setting
-all zeros), but there's still the condition that the subvolume must be
-writable.
-
-After 'receive' the subvolume is snapshotted, updated from stream, set
-received_uuid and set rw->ro.
-
-Reusing the SET_RECEIVED_SUBVOL can't be used as-is, the subvol would
-have to be rw first. Which is a chicken-egg problem.
-
-The safe steps would be:
-
-- (after receive, subvolume is RO)
-- set it to RW
-- clear received_uuid
-- either keep it RW or set RO again
-
-This would be the single "clear received_uuid manually" and it would be
-up to the user to knowingly destroy the continuity of the incremental
-send.
-
-The fix here is that the above steps would have to be atomic from user
-perspective, inside SET_RECEIVED_SUBVOL, eg. based on flag. And we'd
-have to add a btrfs-progs command somewhere.
+-- 
+Chris Murphy
