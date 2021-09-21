@@ -2,78 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589C4413B0D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Sep 2021 21:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69953413C07
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 Sep 2021 23:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbhIUT6s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Sep 2021 15:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
+        id S235279AbhIUVKn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 Sep 2021 17:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhIUT6s (ORCPT
+        with ESMTP id S235262AbhIUVKi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Sep 2021 15:58:48 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE32C061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 12:57:19 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id 138so1099536qko.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 12:57:19 -0700 (PDT)
+        Tue, 21 Sep 2021 17:10:38 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A609AC061575
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 14:09:09 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id h132so253853vke.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 21 Sep 2021 14:09:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hpZL2lp2U+RN0qHlc4wAb6SNXALs5Esp+zmoBgSVbF8=;
-        b=y1zfwlxIXoEBkd+XElQAF0gzjm4JQCneQ0E0qg9mlYmIXl/mO+6AWF4YJ3zyh9YY9v
-         m+mawvcw2o998I9ODXX3iXZghyzsYO9c7M5oK7o6BqZ6+/sS6cXFuD8xOXSoRkKzwH5R
-         IEK+DVOzBjdit9Y2tlHOPAD33FfClgS6zHZc0oJpQgTQ4YK/5rlNZAbmZnRUPh0XtkOa
-         gmVa/eytvKERr91VOI2py7t4/G1QiJgTGSnR6TbIBkHSrWQI7B9J0sAUuN84mZly0EJO
-         TGo2iwL4FFTe4TzFTLYI4K/gbB34/LgbOIpCNAzvz9R+11H+nlB1WduV4MVmbJPkQBna
-         TRPA==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=wqUymmlZK0RgAE5CNZSbvX4paVPCkKqFiuUevSJecyQ=;
+        b=me2sqNUK2DQ30LSeUDwqogyq/cYXhLQojGFBxvt/OGsYHQvwA09Kfib+eBYNo5Hhra
+         YXO3DX/VWZHXlU2NhxN+ycw4FEtRrLz3vrXdVJ1V3tpxar4pamPD4nnrLsx4i+jXaTmN
+         zjfyFkQPDo9ToRqdIBtP8IZJDHxB/F9/lJkE2n8MXB5dTj2ockDxZNKMkmR5llfwM6gk
+         483cJqSsW1x3QJdRG9FyCQFLZpFLydhH9z+h58mCjNldvHUFVPmKoBIhPAx3b8cdpNBo
+         BaSN4+Gx+hl9f/8IRHNEmRxCfXZHdFV6JELLQTOwkmobvL8kIUPQh+UlG47qVo3OE75b
+         pNQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hpZL2lp2U+RN0qHlc4wAb6SNXALs5Esp+zmoBgSVbF8=;
-        b=HbhFE/Dn2igPQa/h/RqeONSVQmEwmZ4ljDpu5jOiYY5GML7NH39d765I7A7rdyR0B7
-         s0zJW/DGxTzTk7j4yUSZXLqjnNIvg73bkTKtuWdsc4nyHqpYZXwJvKtho/pJ7tzDEl0p
-         31fG/ftdptFZ10sspFAHgqZjleHiQ4IwPm6plcOB0HuqEUUXdRpql1Oh5Yvbxe6b1JWm
-         sYJp9ReJNyqj7nQzOVoCgRcrYiD89JfLEjdNclF17vIUadFtDG1jLeOFqHqS2Bfu72ci
-         /HXdHKJ8U2uAsetdVr6ByhQx7Z6LdaopbQSZ98fVMaNNoeqSnAESBYxszaeznLueU5AL
-         0h1g==
-X-Gm-Message-State: AOAM532d+SMjeYHUWoyATu1v5JzBcIAE/u1p/4fn0CNcLehidnFpl54o
-        4zrg9q13J5qB3swDA9y3DKcqqCXbpn5fPf6/Oiywkw==
-X-Google-Smtp-Source: ABdhPJyJ//mNF/mG1NLD4AD+Ft64p61iIQ++RIMTrfY6YaR1bKcm/qq+EYxkZEASq38Nyjn5kW3+RSFHwDLwQPP1Kgo=
-X-Received: by 2002:a25:f806:: with SMTP id u6mr37373456ybd.341.1632254238374;
- Tue, 21 Sep 2021 12:57:18 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=wqUymmlZK0RgAE5CNZSbvX4paVPCkKqFiuUevSJecyQ=;
+        b=YHyvG7r01M7PjCIwDhGf0Ed3YuBLrsJl1OX1l6IaKrhOrExWHVmUJxLNNbbuQ1OEGx
+         ldVGi01wbjEn0HAu3w0qnBZDutX3pEuy9dpGGrwRgxx2l78NMDWcSr1XPhxT8riEqfq8
+         nrYR/my5MPmVLtHJJu0ziiOSH4XrBgnuoZe1jxhQVJG2kna8KIQ5LIH4Un9+/wTo53Fq
+         ZF41reuqSbug3OrCqob6KhaPedxIH8mKqOi4t5XRBEWNywnCXIWCyrKHMz8wuK77rflJ
+         HujxhT4orDwpRevYbIEAtG/R+05iAuTy2GNis2ZzJztniYwZtpgQEyJ+Twbyw6ix9SQh
+         CXCw==
+X-Gm-Message-State: AOAM530n8Kw5ht1yGMBaJJQdv/LvvunikNekemdGBGUpcjZaV5DMO7aI
+        Bl4CU3DgMTpep169/7d6fYnTMp7sXM2Yz8HKgFU=
+X-Google-Smtp-Source: ABdhPJxKzxI/s0VW6muv19dNPFcFA+ES1Yd5AIHXDlW5qfUsvy6pXtkJDRhyOAmJc8f8kKvpRAArRkDAC1fvnrcrZEI=
+X-Received: by 2002:a1f:9f10:: with SMTP id i16mr13529626vke.0.1632258548702;
+ Tue, 21 Sep 2021 14:09:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJCQCtRbktnZ5NxRTZL9UKvTr1TaFtkCbeCS2pVnf2SPg8O3-w@mail.gmail.com>
-In-Reply-To: <CAJCQCtRbktnZ5NxRTZL9UKvTr1TaFtkCbeCS2pVnf2SPg8O3-w@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 21 Sep 2021 13:57:02 -0600
-Message-ID: <CAJCQCtTtkNoVKSPdEfwByrpCP7iKoocNcrd0vT64Z-OjuQdgaw@mail.gmail.com>
-Subject: Re: bug: btrfs device stats not showing raid1 errors
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Received: by 2002:a9f:3f49:0:0:0:0:0 with HTTP; Tue, 21 Sep 2021 14:09:08
+ -0700 (PDT)
+Reply-To: kylieelizabethwatson2021@gmail.com
+From:   "Sgt,Kylie Elizabeth watson" <arnettdavid2030@gmail.com>
+Date:   Wed, 22 Sep 2021 01:39:08 +0430
+Message-ID: <CAJxF_EbixEsiBu3o8DA0Wf=rDiA94GKncp5Z14crEKGvB8tuWg@mail.gmail.com>
+Subject: I need an urgent help from you
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 10:37 AM Chris Murphy <lists@colorremedies.com> wrote:
->
-> https://bugzilla.redhat.com/show_bug.cgi?id=2005987
-
-The downstream bug has been updated. The problem does seem to be with
-the drive itself failing reads.
-
-[2634355.708201] sd 2:0:0:0: [sda] tag#0 FAILED Result:
-hostbyte=DID_OK driverbyte=DRIVER_SENSE cmd_age=30s
-[2634355.708209] sd 2:0:0:0: [sda] tag#0 Sense Key : Illegal Request [current]
-[2634355.708214] sd 2:0:0:0: [sda] tag#0 Add. Sense: Unaligned write command
-
-I think it's fair to say, readahead or no, it's a read io error that
-Btrfs probably ought to track even though there's also some pretty
-obvious hardware issues occurring with the drive too.
-
-
 -- 
-Chris Murphy
+Hello.
+
+My name is Sergeant,Kylie Elizabeth Watson I have a business proposal
+can I trust you? If Yes,I await your reply soon in my private email
+address below (kylieelizabethwatson2021@gmail.com)
+
+
+Best Regards
+Sergeant,Kylie Elizabeth Watson
