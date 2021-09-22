@@ -2,95 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94F5413EF7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Sep 2021 03:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9B94142EB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 Sep 2021 09:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhIVB2Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 Sep 2021 21:28:25 -0400
-Received: from mout.gmx.net ([212.227.15.18]:33867 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230469AbhIVB2Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 Sep 2021 21:28:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-        s=badeba3b8450; t=1632274014;
-        bh=3f9TEqQv8iu/VsQvy7CAxk/WGe7PBMOgIf8aa/QZHuA=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=L4hhjfEx74aZaojQ7zx1gAkUlV1AC43MKC81yd6z4tl0ypOqdeyNoHTRp+E8UssTk
-         TyH9c+68zdoXccc2IEI6uxVVPXBkUaLsqQBjbNhUAb2zpksv4BiUaocIAFlRBwXogU
-         CuqZ3EiEjBM0+lBQrBNzeVwgWL0oFeS/FQJ7qdNc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MsYqv-1mhuwY0csV-00tyqy; Wed, 22
- Sep 2021 03:26:53 +0200
-Message-ID: <e4fcca2f-6515-83ac-e4ba-39e2f0cdf423@gmx.com>
-Date:   Wed, 22 Sep 2021 09:26:50 +0800
+        id S233349AbhIVHzS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Sep 2021 03:55:18 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:54798 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233283AbhIVHzS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 Sep 2021 03:55:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1632297228; x=1663833228;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=uvZ5+SZIHqdtVNd1PE02pnVtk4kGejQWMAR8WV+W0TI=;
+  b=ipzsuQOklKezjbhVrCPD80D4vDRtW3KPrfw5p7ciKTqtmqRcnJdKtDPL
+   g30bzzCvov/bpRUJofr7uXvvZt6tmQJ/jduFVz4PXeDoLf0mH0LKEx2MB
+   RCbtwz74Ph87/ni54kn4FYv6uX5QtJ3h2j1xVfbrGJVvGyoVlsTYu0bUn
+   EsOt0zESHeVGpGp3X2ySV3I686KQH650cudu9gWKlSlX95yt3xFkd3bkm
+   EWWFHhsvjpl3R20vqhxZGeIXDd/jHputHCNQiynvLrZDcyrqiZ26qYZBU
+   /Dweg9Ii2+ZXDtJjeRmiUZZkmDeAVBDVjqXvyA3LmsTnRM3UU5qZ0HELN
+   g==;
+X-IronPort-AV: E=Sophos;i="5.85,313,1624291200"; 
+   d="scan'208";a="284429248"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Sep 2021 15:53:48 +0800
+IronPort-SDR: i53ArRLM8/1efb7DSQy13lIiDqiwOudqTmPdErrNS86hb1UsZHZTgqjicsOU+7WYEdMcauB3pZ
+ dS+5xeluAsAC9YgG2UJ+BE/4S0zuQquXTTV+2as2ymc8ZiwHw1kJZJ73Cq+OIMNBhEcCNXb5zN
+ DYdEoo3TcIVDaG+DZ9lCAmUceA8rb63GLHw+1uPhSzx2Zt4c1jIaYzzAJqkbBhj0+0gesdVL/X
+ Rcdc/kONSliydqdOM/i6LrCGpwSRbcTrnmoahYTLA3pG6VzsdHsR6HQvKwIpIu4CeTGKNian1w
+ NBTi/IKXvPg0ZST5HtwBzJb4
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2021 00:30:01 -0700
+IronPort-SDR: Av5PI8w0YXC1i/Vayw0kiHJY5cA2ScM5fPWxTBetxcHt/3DWlTYyuOqPASa/zktYEdRWpE3MG/
+ 76kSOzrk9Y9Aaa9yYwSMUG4hpfvXz+v39Zpxt0eSb/Gr+9zBPSLewkNpgAtLRAAfhuaJVWuOEm
+ IzjWj9FsEJcPs0cTgZ+wGPqSgyuts68oI5UgS31I0EhNW49qGRtsM5lLq7RXsjS6cIV38ChVEp
+ g8iTB33M4vQmZ3w/Z8PkAhKicmWNN2vfypoqvFqCfEwR4nKP+m2iKQNPb+GYmN4KOotnY5tfIH
+ Npk=
+WDCIronportException: Internal
+Received: from wdmnc1780.ad.shared (HELO naota-xeon.wdc.com) ([10.225.52.67])
+  by uls-op-cesaip02.wdc.com with ESMTP; 22 Sep 2021 00:53:48 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH 0/2] btrfs-progs: fixes for mkfs.btrfs on file with emulated zones
+Date:   Wed, 22 Sep 2021 16:53:41 +0900
+Message-Id: <20210922075343.1160788-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: Btrfs progs release 5.14.1
-Content-Language: en-US
-To:     "Garry T. Williams" <gtwilliams@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210920162224.27927-1-dsterba@suse.com> <4680483.31r3eYUQgx@tfr>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <4680483.31r3eYUQgx@tfr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:n12R3UAHAI4UTVzOU+/gMEJwQe+Y9xaT341KnrIHH6EjZXiG8Kj
- cqfbMaRq9hg6OzBCpYP5HzlIoFzO41CGas9DgDYY0Iedzdhtjku+mptoPrNJYHPRty0x6Ms
- YYSRIJ9zuUEw34FHTSb3JugcPfv37PET58BZujSLPU0fsXnbO1quK7k5RmT8nGkihKqerF/
- JVhIqAMyzIWao2a9SOKww==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:m+pnq+Gnzns=:P4LW8vMpZRa4HxShz2Nvn1
- cyJxhhgM1GMzVKAh9EM5nA91M8gvTVGyYyaYUXmE8bweDMHSnexKsHLGsUYWyNe2OScE8IkMA
- OYjjfFXDza0fnJKlOr9jU+NVlY/QT8YkJ9k6jPZiiTvUHlxnUclxhpR/VQ/525zY2sLSFPoUB
- i5dMg2xIX6+NuvJFUBE+L3uoyysfIizjX8bDeZBJFrpoLWyycv7bHtE3XShUPUHQNcQoE5BmW
- pM8QeHlEXJwigQolJbPJ7EhwHkqRbM/ap/KNUH3S4nwsUZ8VJjfGXKoZk51xbdkfZcxJCBQHo
- abaUxAU/50k3MNK+Y7ZF+pV7uteYtsMMprM67iYqlX0J2tDO9RETMG+xQwo/pNBCaQRmZD5OP
- kJSEsLVZW7XDW4sKO6nqhR085NpsuqKK8VzeVI/Dt+jIq+sIT+8VrfaH0+DF+jGVEuBRFWRTV
- 9phaOHy7gmNigdJUmVR9Dmh17aq4co9nC9EVnrKqhSrufH0hkSjFrk7cQNHFznX4P5UVomrSz
- twYO2W+QvODOPHUgY7f8gm+eep21iaChn0pT8HfPaHrZ5wo9nsr8YbTots/Q8XTH3ERCDmaOY
- GlBm2I6X79BG3nPzc/87jmrCNkOBsyjNEbSr3/p1dPNh9wiaUH1T1WxelLMy02DFchINbS2Xd
- pv/f08ifja9/vqg+OEuB0WC42RRJMgbpXU48mU1rKNZ//CirEQNUJxy4/OUU0Uq63jRK4T6tF
- RZUvKBjtHoJs1Bb0SseLq6e2pZAecI/BLxvdJMpeT9w88nK5l2Q4TV7GSeuKRQP1/JG1RF2hP
- PxKAyXr2SjMabZuB1to6Izzw94puORdy0ZLtxAla9bYAp/fNMobBHGctgOhAcAtZCLIG+JklF
- WSFcPdudkttRji7roPLKJa9wVWhyNQ///s4EObPkVu72aQgnPxzo+Ekw3dFIY5iI0fVEqcuFa
- 8Nu4s/xE4elcI8FBJhL7YqXFxsmqgtr/6BpYRmHyhYClU3thlOKWSWd8gxTv/VwdcEQQibjvb
- uoc8mTKrai6UpiWSePGWXQlf+H5ZAvhf93XTvrz40CmYvKTUsbklyAuaCtq7012c/M+BFu/kv
- HUT7rVduGCHUuA=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The following two errors occur when mkfs.btrfs is called on a regular file
+with emulated zones. These patches address the errors.
 
+ERROR: zoned: failed to read size of /home/naota/tmp/btrfs.img: Inappropriate ioctl for device
 
-On 2021/9/22 09:10, Garry T. Williams wrote:
-> On Monday, September 20, 2021 12:22:24 PM EDT David Sterba wrote:
->> Hi,
->>
->> btrfs-progs version 5.14.1 have been released. This is a bugfix release=
-.
->
-> FYI,
->
->      =3D=3D=3D START TEST /home/garry/src/btrfs-progs/tests/fsck-tests/0=
-13-extent-tree-rebuild
->      $TEST_DEV not given, using /home/garry/src/btrfs-progs/tests/test.i=
-mg as fallback
->      =3D=3D=3D=3D=3D=3D RUN CHECK root_helper /home/garry/src/btrfs-prog=
-s/mkfs.btrfs -f /home/garry/src/btrfs-progs/tests/test.img
->      ERROR: /home/garry/src/btrfs-progs/tests/test.img is mounted
+ERROR: zoned: failed to reset device '/home/naota/tmp/btrfs.img' zones: Inappropriate ioctl for device
 
-This means your previous run has hit some errors and the test image is
-not unmounted.
+Naohiro Aota (2):
+  btrfs-progs: use btrfs_device_size() instead of
+    device_get_partition_size_fd()
+  btrfs-progs: do not zone reset on emulated zoned mode
 
-Thanks,
-Qu
+ common/device-utils.c | 27 +++++++++++++++------------
+ kernel-shared/zoned.c | 15 ++++++++++-----
+ kernel-shared/zoned.h |  1 +
+ 3 files changed, 26 insertions(+), 17 deletions(-)
 
->      btrfs-progs v5.13.1
->      See http://btrfs.wiki.kernel.org for more information.
->
->      failed: root_helper /home/garry/src/btrfs-progs/mkfs.btrfs -f /home=
-/garry/src/btrfs-progs/tests/test.img
->      test failed for case 013-extent-tree-rebuild
->
+-- 
+2.33.0
+
