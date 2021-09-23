@@ -2,69 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9BD415A60
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 10:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D35C415A68
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 10:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240074AbhIWIyo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Sep 2021 04:54:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54508 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240013AbhIWIyn (ORCPT
+        id S240019AbhIWI6Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Sep 2021 04:58:25 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:32772 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239137AbhIWI6Z (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Sep 2021 04:54:43 -0400
+        Thu, 23 Sep 2021 04:58:25 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C9FDF2233F;
-        Thu, 23 Sep 2021 08:53:11 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 63A961FD74
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Sep 2021 08:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632387191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oPte1GIJbemRIHV1PY1ApbwjSvUBye7q5gPh5sQDcl0=;
-        b=S/XW+b7H/w8etsbECIoW++VJXHKctGzbzBsxn4e/Tby3ggY8L1ZPD5fNdJBGI2ZKG76sAu
-        8uYp3QC2AMi7oLLbxsnK5aYvNva5I3I0H0nTocrJXYkWgoC255JIf/s7NZ+8/3Zj2DBQPR
-        KvFbosa+8mdw24/G5yFK6gZ/zTtbkFI=
+        t=1632387413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=EWK+yFFQ+b7UdE66HOme9E1uQq0imyxe6x+yOuh12ps=;
+        b=DxipVSL2PccgUAHkygSJ2ox7JGiD96H7CrpqExYy6KCm9mXjUj2d3kOSsHltH9PUsgHJyd
+        XA7sYGWhehBgc4qknHmp6VPYXPAmVrL+km3+Atlxpe8yRXI2hmeI4aFnza+1gOZTravFEY
+        lR6cwX+hT4JR6BLpdnBD2b3xHQ97ccc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 975D113DCA;
-        Thu, 23 Sep 2021 08:53:11 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E8DB13DCA
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Sep 2021 08:56:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8Ru+IXdATGGAKgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 23 Sep 2021 08:53:11 +0000
-Subject: Re: [PATCH 2/2] btrfs: remove btrfs_raid_bio::fs_info member
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20210923060009.53821-1-wqu@suse.com>
- <20210923060009.53821-2-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <bd85e5e2-4118-34ce-c080-ae0b04bd6fea@suse.com>
-Date:   Thu, 23 Sep 2021 11:53:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id hi8zF1RBTGG4LAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Sep 2021 08:56:52 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: check: fix indent --clear-ino-cache option
+Date:   Thu, 23 Sep 2021 16:56:49 +0800
+Message-Id: <20210923085649.109622-1-wqu@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20210923060009.53821-2-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Help string for "--clear-ino-cache" option is not following the indent
+of other help strings:
 
+      repair options:
+           --init-csum-tree            create a new CRC tree
+           --init-extent-tree          create a new extent tree
+           --clear-space-cache v1|v2   clear space cache for v1 or v2
+           --clear-ino-cache 	    clear ino cache leftover items
 
-On 23.09.21 г. 9:00, Qu Wenruo wrote:
-> We can grab fs_info reliably from btrfs_raid_bio::bioc, as the bioc is
-> always passed into alloc_rbio(), and only get released when the raid bio
-> is released.
-> 
-> This patch will remove btrfs_raid_bio::fs_info member, and cleanup all
-> the @fs_info parameters for alloc_rbio() callers.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+The problem is caused by the usage of tab instead of space as indent.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Fix it by using space instead.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ check/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/check/main.c b/check/main.c
+index 661c996a2cb1..182105691775 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -10354,7 +10354,7 @@ static const char * const cmd_check_usage[] = {
+ 	"       --init-csum-tree            create a new CRC tree",
+ 	"       --init-extent-tree          create a new extent tree",
+ 	"       --clear-space-cache v1|v2   clear space cache for v1 or v2",
+-	"       --clear-ino-cache 	    clear ino cache leftover items",
++	"       --clear-ino-cache           clear ino cache leftover items",
+ 	"  check and reporting options:",
+ 	"       --check-data-csum           verify checksums of data blocks",
+ 	"       -Q|--qgroup-report          print a report on qgroup consistency",
+-- 
+2.33.0
+
