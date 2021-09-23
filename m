@@ -2,82 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19B741678D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 23:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED284167A2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 23:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243349AbhIWVi1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Sep 2021 17:38:27 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:33694 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243232AbhIWVi0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:38:26 -0400
-Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8C6041FDA8;
-        Thu, 23 Sep 2021 21:36:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632433013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=YfiVNDupuJkAqDYA2q22AZZjU99YDJbsaYRL3NKp75A=;
-        b=GV7BD1WbtmjrItUKvVdZnKVflzhkd2EFQf4XdVCcZS7BRxH4jW2jthl6x2gzDM5ysfFinV
-        Ozip+JHyv6lNw3qrLptCKoPxKic9bF9PjiaKFnFrdu2KR5gAw6R+/r/2oMTD8azh2rRDQq
-        CPHoMs/AgcRpdTzFGSwLfQ0J6+Gb3TI=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay1.suse.de (Postfix) with ESMTP id 83C6D25D3C;
-        Thu, 23 Sep 2021 21:36:53 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 187CBDA7A3; Thu, 23 Sep 2021 23:36:39 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.15-rc3
-Date:   Thu, 23 Sep 2021 23:36:38 +0200
-Message-Id: <cover.1632432123.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S243383AbhIWVoS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Sep 2021 17:44:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243322AbhIWVoR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 Sep 2021 17:44:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 869B261214;
+        Thu, 23 Sep 2021 21:42:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632433365;
+        bh=RjjaToJXcNrptpcnNIYMT9jIJMpxE8u8iL6ymHPju0Q=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Js5hkx3UyfkZyVT93MR6ohhqQJsz93w+3AWXpyIJDdk23ZxVCFMEMxCAUyS9r0V1c
+         4L9NmMOAkJVHminaNDkuOIMtBypBaFajNK4Pv8TNCqw9vBKLGd5U0vy+Hd6Dw2hphZ
+         F3GgS2tRjPH9S8gt5dQhYxjrPV+HTcT+dHuaaiqFZCCqRHMw4ASmQj+pb9+J984SuN
+         CYDgtF5WH9AsAnG3O0MJwNr1YcNA+MKmjV6blrjDErhYYg8EFc14W6matfVvn2cAL9
+         OjcVkq6S7sMjuMmiIqdFuDxFO6QZm5vGlZOKm3IXN06DgXmOT5GOML0zl73DsmGX2+
+         6PhTi5rZgc4Og==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8023C60952;
+        Thu, 23 Sep 2021 21:42:45 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 5.15-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1632432123.git.dsterba@suse.com>
+References: <cover.1632432123.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1632432123.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc2-tag
+X-PR-Tracked-Commit-Id: 0619b7901473c380abc05d45cf9c70bee0707db3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f9e36107ec70445fbdc2562ba5b60c0a7ed57c20
+Message-Id: <163243336551.317.17177075008294838993.pr-tracker-bot@kernel.org>
+Date:   Thu, 23 Sep 2021 21:42:45 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+The pull request you sent on Thu, 23 Sep 2021 23:36:38 +0200:
 
-a few fixes, please pull. Thanks.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc2-tag
 
-- regression, fix leak of transaction handle after verity rollback
-  failure
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f9e36107ec70445fbdc2562ba5b60c0a7ed57c20
 
-- properly reset device last error between mounts
+Thank you!
 
-- improve one error handling case when checksumming bios
-
-- fixup confusing displayed size of space info free space
-
-----------------------------------------------------------------
-The following changes since commit f79645df806565a03abb2847a1d20e6930b25e7e:
-
-  btrfs: zoned: fix double counting of split ordered extent (2021-09-07 14:30:41 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc2-tag
-
-for you to fetch changes up to 0619b7901473c380abc05d45cf9c70bee0707db3:
-
-  btrfs: prevent __btrfs_dump_space_info() to underflow its free space (2021-09-17 19:29:54 +0200)
-
-----------------------------------------------------------------
-Filipe Manana (2):
-      btrfs: fix transaction handle leak after verity rollback failure
-      btrfs: fix mount failure due to past and transient device flush error
-
-Qu Wenruo (2):
-      btrfs: replace BUG_ON() in btrfs_csum_one_bio() with proper error handling
-      btrfs: prevent __btrfs_dump_space_info() to underflow its free space
-
- fs/btrfs/file-item.c  | 13 ++++++++++++-
- fs/btrfs/space-info.c |  5 +++--
- fs/btrfs/verity.c     |  6 ++++--
- fs/btrfs/volumes.c    | 13 +++++++++++++
- 4 files changed, 32 insertions(+), 5 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
