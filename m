@@ -2,56 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD4B41587B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 08:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C434415935
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 09:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239450AbhIWGxt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Sep 2021 02:53:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55590 "EHLO
+        id S239638AbhIWHmt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Sep 2021 03:42:49 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41770 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239334AbhIWGxs (ORCPT
+        with ESMTP id S231672AbhIWHmt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:53:48 -0400
+        Thu, 23 Sep 2021 03:42:49 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 122B8220FF;
-        Thu, 23 Sep 2021 06:52:17 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3E9C922258;
+        Thu, 23 Sep 2021 07:41:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632379937; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1632382877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=e25/NDMdJkqctpfIRvdUgG6Jji3n9dFstOzlSakQ/CI=;
-        b=hv9rO8HGX49ITXK3wBYbpfok8MxLJMjZAQ21xuQHtmzIjoA+r32oyEZko+MID8iIrYQbOh
-        7XHnThq8aQ+cmAQ7VFQXjLLy/VHkLUXMNmxsL1e631JI6bEo57/QEYxP0NCWDM7qgqDJpW
-        bYjjA2N9snzPNnHqOFhy9rUyy7xV6C0=
+        bh=8Va0RfLjYPfM29YuV/5nEmvugb+zXgyXJReuOuBESdY=;
+        b=X6lWz153f0e7Om/5lY7O6YmTclpBYNo7SdGOMvwC9FUi8cWk/4FcsD8Ts6w9A49UmFu1NK
+        IDK1U+yoRIWGPJI/LISDYJb2B873g3C8OLwhw7XzJXWAqbut9dcPmyxrae3ijWCNcCefys
+        CXiI/MBXYRCg3EEPOSPnIxfXZgtkfAs=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D379F13DBB;
-        Thu, 23 Sep 2021 06:52:16 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D10613DC6;
+        Thu, 23 Sep 2021 07:41:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mGj1MCAkTGHeaQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 23 Sep 2021 06:52:16 +0000
-Subject: Re: [PATCH v6 3/3] btrfs: consolidate device_list_mutex in
- prepare_sprout to its parent
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <cover.1632179897.git.anand.jain@oracle.com>
- <ec3ecca596bf5d9de5e152942a277ab48915f0cf.1632179897.git.anand.jain@oracle.com>
- <840713c4-48ef-b4e6-91e3-f92158448b7c@suse.com>
- <0ee297d9-84f7-7450-48c4-2703b14ef697@oracle.com>
+        id w914O5wvTGFqAwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 23 Sep 2021 07:41:16 +0000
+Subject: Re: [PATCH] clear_bit BTRFS_DEV_STATE_MISSING if the device->bdev is
+ not NULL During mount.
+To:     Li Zhang <zhanglikernel@gmail.com>, linux-btrfs@vger.kernel.org
+References: <1632330390-29793-1-git-send-email-zhanglikernel@gmail.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <45f5dfee-3cb5-8645-a0b4-3f0dcb14dce5@suse.com>
-Date:   Thu, 23 Sep 2021 09:52:16 +0300
+Message-ID: <5679da1e-2422-69c5-b4f8-326802363f7c@suse.com>
+Date:   Thu, 23 Sep 2021 10:41:16 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <0ee297d9-84f7-7450-48c4-2703b14ef697@oracle.com>
+In-Reply-To: <1632330390-29793-1-git-send-email-zhanglikernel@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -61,65 +57,83 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 22.09.21 г. 14:41, Anand Jain wrote:
-
-<snip>
-
->>> @@ -2419,7 +2414,23 @@ static int btrfs_prepare_sprout(struct
->>> btrfs_fs_info *fs_info)
->>>       INIT_LIST_HEAD(&seed_devices->devices);
->>>       INIT_LIST_HEAD(&seed_devices->alloc_list);
->>>   -    mutex_lock(&fs_devices->device_list_mutex);
->>> +    *seed_devices_ret = seed_devices;
->>> +
->>> +    return 0;
->>> +}
->>> +
->>> +/*
->>> + * Splice seed devices into the sprout fs_devices.
->>> + * Generate a new fsid for the sprouted readwrite btrfs.
->>> + */
->>> +static void btrfs_splice_sprout(struct btrfs_fs_info *fs_info,
->>> +                struct btrfs_fs_devices *seed_devices)
->>> +{
->>
->> This function is missing a lockdep_assert_held annotation and it depends
->> on the device_list_mutex being held.
+On 22.09.21 г. 20:06, Li Zhang wrote:
+> reference to:
+> https://github.com/kdave/btrfs-progs/issues/389
+> If a device offline somehow, but after a moment, it is back
+> online, btrfs filesystem only mark the device is missing, but
+> don't mark it right.
 > 
->  You mean
->     lockdep_assert_held(&device_list_mutex);
->  and not
->     lockdep_assert_held(&uuid_mutex);
->  right?
-
-I meant that the new function - btrfs_splice_sprout doesn't have any
-lockdep annotation, and based on the old code it depends on
-device_list_mutex being locked. This is based on the following hunk in
-btrfs_init_new_device:
-
-+	mutex_lock(&fs_devices->device_list_mutex);
-+	if (seeding_dev) {
-+		btrfs_splice_sprout(fs_info, seed_devices);
-
-The way I understand this is btrfs_splice_sprout indeed requires
-device_list_mutex being locked, no?
-
+> However, Although filesystem mark device presented, in my
+> case the /dev/loop2 is come back, the generation of this
+> /dev/loop2 super block  is not right.Because the device's
+> data is not up-to-date.  So the info of status of scrubs
+> would list as following.:
 > 
->> However looking at the resulting code it doesn't look good, because
->> btrfs_splice_sporut suggests you simply add the seed device to a bunch
->> of places, yet looking at the function's body it's evident it actually
->> finishes some parts of the initialization, changes the uuid of the
->> fs_devices. I'm not convinced it really makes the code better or at the
->> very least the 'splice_sprout' needs to be changed, because splicing is
->> a minot part of what this function really does.
+> $ losetup /dev/loop1 test1
+> $ losetup /dev/loop2 test2
+> $ losetup -d /dev/loop2
+> $ mount -o degraded /dev/loop1 /mnt/1
+> $ touch /mnt/1/file1.txt
+> $ umount /mnt/1
+> $ losetup /dev/loop2 test2
+> $ mount /dev/loop1 /mnt/1
+> $ btrfs scrub start /mnt/1
+> scrub started on /mnt/1, fsid 88a3295f-c052-4208-9b1f-7b2c5074c20a (pid=2477)
+> $ WARNING: errors detected during scrubbing, corrected
 > 
-> The purpose of the split of btrfs_prepare_sprout() was to use a common
-> device_list_mutex. So I tend to avoid any other changes, but I think I
-> will do it now based on the comments.
+
+THis seems it can be turned into an fstests rather easily, care to send
+a patch for it as well ?
+
+> $btrfs scrub status /mnt/1
+> UUID:             88a3295f-c052-4208-9b1f-7b2c5074c20a
+> Scrub started:    Thu Sep 23 00:34:55 2021
+> Status:           finished
+> Duration:         0:00:01
+> Total to scrub:   272.00KiB
+> Rate:             272.00KiB/s
+> Error summary:    super=2 verify=5
+>   Corrected:      5
+>   Uncorrectable:  0
+>   Unverified:     0
 > 
-> Thanks, Anand
->>
->>
->> <snip>
->>
+> And if we umount and mount again everything would be all right.
+> 
+> In my opinion, we could improve this scrub in the following
+> way, i personally vote the second method
+> 
+> 1) Sync all data immediately during mounting, but it waste IO
+> resource.
+> 
+> 2) In scrub, we should give detailed information of every device
+> instead of a single filesystem, since scrub is launching a number
+> of thread to scanning each device instead scan whole filesystem.
+> Futher more we should give user hint about how to fix it, in my
+> case, user should umount filesystem and mount it again. But if
+> data is corrupt, the repair program might be called,  in case of
+> further damage, user should replace a device and reconstruct
+> ata using raid1, raid6 and so on.
+> 
+> Signed-off-by: Li Zhang <zhanglikernel@gmail.com>
+> ---
+>  fs/btrfs/volumes.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 464485a..99fdbaa 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7198,6 +7198,11 @@ static int read_one_dev(struct extent_buffer *leaf,
+>  			set_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
+>  		}
+>  
+> +		if (device->bdev && test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state) && device->fs_devices->missing_devices > 0) {
+> +			device->fs_devices->missing_devices--;
+> +			clear_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
+> +		}
+> +
+>  		/* Move the device to its own fs_devices */
+>  		if (device->fs_devices != fs_devices) {
+>  			ASSERT(test_bit(BTRFS_DEV_STATE_MISSING,
 > 
