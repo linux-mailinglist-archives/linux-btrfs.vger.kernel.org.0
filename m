@@ -2,148 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A816415E9B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 14:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F077B41611B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 16:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241012AbhIWMn4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Sep 2021 08:43:56 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:8127 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240995AbhIWMn4 (ORCPT
+        id S241501AbhIWOgf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Sep 2021 10:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240652AbhIWOgf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Sep 2021 08:43:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1632400943; x=1663936943;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=JtfAxFEJOn+1RF26g8q9VJJzCjCvyAhOBh8q3n+KqWc=;
-  b=AIc85OS+PgnRAJrkJJbgf7A3fJUteEvSHLR4NkzyLAZdHI0mPgcQGXAz
-   OqhyHa7vsj2BKhwV20r77hwbUk4VEHB4l8H39tcbzKea6+Q/FDTrhZFpf
-   HqvTtbJBspHWKtMGv5hfirq4iVBhP5GFPd8x2Ay/TpSPijWo00bSI6LYB
-   qgQFB9XVo2XBtal3JmdBYjmvvqiL5Esgj9LqAZVs5/W7bjWpiZFgQa/tx
-   vcyjuxoFwujtE4Rg47AAZg4vwubNRw+8iSmMb/Tb9ByFCuStegmIaICDD
-   IQES6d2EI+D/qxH6dXAjF3KwPAEgTB1f4i1tvFk6Fv1Zzq5Oyyy8FBCCT
-   g==;
-X-IronPort-AV: E=Sophos;i="5.85,316,1624291200"; 
-   d="scan'208";a="185547013"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Sep 2021 20:42:23 +0800
-IronPort-SDR: fKNq0EYx0Elg08odOfoTJKDs7qSLP8Q7MI+MNduJCkeIokdzJxJt/4qQThVPivhJCJFnR8cyFZ
- /ZVwynh3ptAx/dIQe2bCcSd4ksru9UHSJB7mZOTXS9ZqgooKAoOg4aE+CeiXcpG6cdsKGsbaUJ
- uaocD/99CWD05AxtFxaB9kw68KXjjdh7LpxZe/0SS/nMkES/gYeOd9J3P1lOUETOJol6LjEeAQ
- 0kd2Hki3RCVoV2Uc7i8r5bjjJyZCUS5g007jZC4pIQCretzv/AxRlA4FuD+g0Wn4UvU+OfSRCz
- /Oxb5RbXPOZourpgJp1QuKFL
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 05:18:35 -0700
-IronPort-SDR: 1v10TTMslMN7xgjK9jS08zJEU5JkprValPjkg5kTQzJof35xYZsDO799H/Sk+2SscE0jY1NhHp
- 0amBgbFIVC75wNFyp1A6JFJ/TnXb806RQBYA9QlALImW0zUW173IQ1iSAQq4lfiyQm48S5QqSC
- ffkQlwb/di/69Xu9/ox55i5/mLmzdA0+ZQR9pbEO5OzQyZrIxX0DzaQ12CiFSLA3+YxLL7U3bH
- DP3hhF29mLZb5zzBKCKPliqzCoXN9fCyQL9drFGthdqXeMCxmwZze/VG3/2mOOHf56uMt9uvYu
- TkQ=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 23 Sep 2021 05:42:23 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH] btrfs-progs: remove max_zone_append_size logic
-Date:   Thu, 23 Sep 2021 21:42:21 +0900
-Message-Id: <20210923124221.14530-1-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 23 Sep 2021 10:36:35 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D4EC061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Sep 2021 07:35:03 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id m3so27733578lfu.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 23 Sep 2021 07:35:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=X+DS4kD/yIa42vShpTD6YdFRyYdvzTgg+IaLOgYY+do=;
+        b=SZJ0x081Xh+mRTzqbziTY3OeBbPo++bPsCJl3sJuITntaU1iQA8FJHVujJJGZpt8WC
+         Zp7fQhRp6K0ej3lMtIdbgxP4CUTqYN2WR94NNbPDC0ZwNVJ0lVVZPDlVikYG6v6xQHrH
+         oh1YOoJKLN1yf16FHTFZ7N/1Y3NmpJjuMKy2y+tPVKr35V3wWS/4++FctAcCRxbBGEbJ
+         xH6qtH+OoolQSSpLLMIq12pbL9OHXa7S9dVD7Seo7I/sqW2vBpXT4ZdDv8284HTuBL3l
+         +Y2d6gI2wvhQkbLKaPWhVMHYZmbUntCK/MCKVLeDk/zLGVAaB5GH355Ur0uWuVNnzb/C
+         6uJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=X+DS4kD/yIa42vShpTD6YdFRyYdvzTgg+IaLOgYY+do=;
+        b=QWy/wjQDhCNoQni7eVY2Wt1wevd+tGf7NysR7I51mHZjuAITS4bwCQg7hEZhWvpCLt
+         xZrmpYSVVN1I9BYt9L0B4m2lUJwO+9ZPnzsw4+VwZEMpoyhmUSIip8Tl3NIBHHwIrEWp
+         huMxx3zmkk/9JgmgruT45u1KJCVxt0SNhc0xxt7OUdvPHonvGBNzJyopmF9S5HNW4eLU
+         lLQ4ZmjIlP6G7sprUYUjtKkk0i1B+sNc2MMWTI8+SKFTv/jfJVkjnOwIaDf0FMGB03gp
+         gyojuzbBL1C2yd0D8LNQj61eqLquv1a7JDkfi8x/Qp3NKZNC8GVSLhsoFFbKvpFozGIU
+         7beA==
+X-Gm-Message-State: AOAM530e/rVTR5D/CcxGysfo8XjLJb/F7Dpfa5+WkxapYoyrpIBh8C0p
+        u2BY52iFDVD4m4n1G8ZaZwHA1DUZ2veyaao2ifJw4C/peDzfflsf
+X-Google-Smtp-Source: ABdhPJxXhZnl0kw4F2NBEqcvOTI/9U6+i4n8pfHKLLQoWH5KTpiqJDzSCgdVBJVXel+1vmP+ROL1msYX+ZO+s46t9x0=
+X-Received: by 2002:a05:6512:234d:: with SMTP id p13mr4320826lfu.324.1632407698772;
+ Thu, 23 Sep 2021 07:34:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1632330390-29793-1-git-send-email-zhanglikernel@gmail.com>
+ <5679da1e-2422-69c5-b4f8-326802363f7c@suse.com> <CAAa-AGmnKSDm=9my5+qi3OqOaB7BZqmGrGjoctm60Cfs6-9agg@mail.gmail.com>
+ <d05d52fe-db30-5eb2-f42d-33d7852ba3bb@suse.com>
+In-Reply-To: <d05d52fe-db30-5eb2-f42d-33d7852ba3bb@suse.com>
+From:   li zhang <zhanglikernel@gmail.com>
+Date:   Thu, 23 Sep 2021 22:34:47 +0800
+Message-ID: <CAAa-AGnvkDcbcW+DOrVKAxzk2KgWtRx4-yrBNPTfheayg+afew@mail.gmail.com>
+Subject: Re: [PATCH] clear_bit BTRFS_DEV_STATE_MISSING if the device->bdev is
+ not NULL During mount.
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-max_zone_append_size is unused and can as well be removed just like we did
-on the kernel side.
+Got it.
 
-Keep one sanity check though, so we're not adding devices to a zoned FS
-that aren't supporting zone append.
-
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- kernel-shared/ctree.h |  3 ---
- kernel-shared/zoned.c | 10 +---------
- kernel-shared/zoned.h |  1 -
- 3 files changed, 1 insertion(+), 13 deletions(-)
-
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index e79b1e4ced60..8d8521b9d021 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -1238,9 +1238,6 @@ struct btrfs_fs_info {
- 		u64 zone_size;
- 		u64 zoned;
- 	};
--
--	/* Max size to emit ZONE_APPEND write command */
--	u64 max_zone_append_size;
- };
- 
- static inline bool btrfs_is_zoned(const struct btrfs_fs_info *fs_info)
-diff --git a/kernel-shared/zoned.c b/kernel-shared/zoned.c
-index c245e59249af..2475e7b097ce 100644
---- a/kernel-shared/zoned.c
-+++ b/kernel-shared/zoned.c
-@@ -303,13 +303,12 @@ static int report_zones(int fd, const char *file,
- 
- 	/* Allocate the zone information array */
- 	zinfo->zone_size = zone_bytes;
--	zinfo->max_zone_append_size = max_zone_append_size(file);
- 	zinfo->nr_zones = device_size / zone_bytes;
- 	if (device_size & (zone_bytes - 1))
- 		zinfo->nr_zones++;
- 
- 	if (zoned_model(file) != ZONED_NONE &&
--	    zinfo->max_zone_append_size == 0) {
-+	    max_zone_append_size(file) == 0) {
- 		error(
- 		"zoned: device %s does not support ZONE_APPEND command", file);
- 		exit(1);
-@@ -1106,7 +1105,6 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
- 	u64 zoned_devices = 0;
- 	u64 nr_devices = 0;
- 	u64 zone_size = 0;
--	u64 max_zone_append_size = 0;
- 	const bool incompat_zoned = btrfs_fs_incompat(fs_info, ZONED);
- 	int ret = 0;
- 
-@@ -1141,11 +1139,6 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
- 				ret = -EINVAL;
- 				goto out;
- 			}
--			if (!max_zone_append_size ||
--			    (zone_info->max_zone_append_size &&
--			     zone_info->max_zone_append_size < max_zone_append_size))
--				max_zone_append_size =
--					zone_info->max_zone_append_size;
- 		}
- 		nr_devices++;
- 	}
-@@ -1191,7 +1184,6 @@ int btrfs_check_zoned_mode(struct btrfs_fs_info *fs_info)
- 	}
- 
- 	fs_info->zone_size = zone_size;
--	fs_info->max_zone_append_size = max_zone_append_size;
- 	fs_info->fs_devices->chunk_alloc_policy = BTRFS_CHUNK_ALLOC_ZONED;
- 
- out:
-diff --git a/kernel-shared/zoned.h b/kernel-shared/zoned.h
-index 99f8e9a2faac..1e4956475db9 100644
---- a/kernel-shared/zoned.h
-+++ b/kernel-shared/zoned.h
-@@ -51,7 +51,6 @@ enum btrfs_zoned_model {
- struct btrfs_zoned_device_info {
- 	enum btrfs_zoned_model	model;
- 	u64			zone_size;
--	u64		        max_zone_append_size;
- 	u32			nr_zones;
- 	struct blk_zone		*zones;
- };
--- 
-2.32.0
-
+Nikolay Borisov <nborisov@suse.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8823=E6=
+=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=886:53=E5=86=99=E9=81=93=EF=BC=9A
+>
+>
+>
+> On 23.09.21 =D0=B3. 13:10, li zhang wrote:
+> > Sure, I would love to do it.
+> >
+> > To avoid ambiguity, Should I and write a test
+> > case to detect whether clear the BTRFS_DEV_STATE_MISSING
+> > if filesystem found a device, but it was marked to
+> > BTRFS_DEV_STATE_MISSING.
+>
+> Yes, basically the idea is for the test case to fail without your patch
+> and pass with your patch. That way we'll ensure this won't regress in
+> the future.
