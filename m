@@ -2,81 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F077B41611B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 16:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E90941620F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 17:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241501AbhIWOgf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Sep 2021 10:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240652AbhIWOgf (ORCPT
+        id S242016AbhIWPau (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 Sep 2021 11:30:50 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:12159 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233085AbhIWPau (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Sep 2021 10:36:35 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D4EC061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Sep 2021 07:35:03 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id m3so27733578lfu.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 23 Sep 2021 07:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=X+DS4kD/yIa42vShpTD6YdFRyYdvzTgg+IaLOgYY+do=;
-        b=SZJ0x081Xh+mRTzqbziTY3OeBbPo++bPsCJl3sJuITntaU1iQA8FJHVujJJGZpt8WC
-         Zp7fQhRp6K0ej3lMtIdbgxP4CUTqYN2WR94NNbPDC0ZwNVJ0lVVZPDlVikYG6v6xQHrH
-         oh1YOoJKLN1yf16FHTFZ7N/1Y3NmpJjuMKy2y+tPVKr35V3wWS/4++FctAcCRxbBGEbJ
-         xH6qtH+OoolQSSpLLMIq12pbL9OHXa7S9dVD7Seo7I/sqW2vBpXT4ZdDv8284HTuBL3l
-         +Y2d6gI2wvhQkbLKaPWhVMHYZmbUntCK/MCKVLeDk/zLGVAaB5GH355Ur0uWuVNnzb/C
-         6uJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=X+DS4kD/yIa42vShpTD6YdFRyYdvzTgg+IaLOgYY+do=;
-        b=QWy/wjQDhCNoQni7eVY2Wt1wevd+tGf7NysR7I51mHZjuAITS4bwCQg7hEZhWvpCLt
-         xZrmpYSVVN1I9BYt9L0B4m2lUJwO+9ZPnzsw4+VwZEMpoyhmUSIip8Tl3NIBHHwIrEWp
-         huMxx3zmkk/9JgmgruT45u1KJCVxt0SNhc0xxt7OUdvPHonvGBNzJyopmF9S5HNW4eLU
-         lLQ4ZmjIlP6G7sprUYUjtKkk0i1B+sNc2MMWTI8+SKFTv/jfJVkjnOwIaDf0FMGB03gp
-         gyojuzbBL1C2yd0D8LNQj61eqLquv1a7JDkfi8x/Qp3NKZNC8GVSLhsoFFbKvpFozGIU
-         7beA==
-X-Gm-Message-State: AOAM530e/rVTR5D/CcxGysfo8XjLJb/F7Dpfa5+WkxapYoyrpIBh8C0p
-        u2BY52iFDVD4m4n1G8ZaZwHA1DUZ2veyaao2ifJw4C/peDzfflsf
-X-Google-Smtp-Source: ABdhPJxXhZnl0kw4F2NBEqcvOTI/9U6+i4n8pfHKLLQoWH5KTpiqJDzSCgdVBJVXel+1vmP+ROL1msYX+ZO+s46t9x0=
-X-Received: by 2002:a05:6512:234d:: with SMTP id p13mr4320826lfu.324.1632407698772;
- Thu, 23 Sep 2021 07:34:58 -0700 (PDT)
+        Thu, 23 Sep 2021 11:30:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1632410959; x=1663946959;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=h6jTBGBjErUjGjwFeB+xCIbPanLK6jeqayGda2fhjZM=;
+  b=L3DXw7QWRuVuJIBmU+Q9BLuydkUJGeRGpbglmebH3ai7XkLrCIkN5CmK
+   /wy5OJbbgfsumtW1HGcwXcGOfFJEEoutsZyOZQNOXixgeUSc1TLxGsGGI
+   FXHOKgISUOa33676aBYECBBmeJ1jCtKUuBdX8c1cBhoxfrL7Xtgkya5vg
+   cJOMPq4d3n5+05QKobW0IHDK9gCXZ4PtXFbHhE1e/6ZLNxVycbyzr2d35
+   E1RsGM5watUbFz8QmGaPoDQqYzC3GN6qmX29JP3ekNCyvpO9k22hMNzzP
+   7qtzvIbR0UDZsQn13omvWI0u8ShHhiGWx822kcTORtmNzkwJNTmQsVCZ8
+   w==;
+X-IronPort-AV: E=Sophos;i="5.85,316,1624291200"; 
+   d="scan'208";a="181281422"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Sep 2021 23:29:19 +0800
+IronPort-SDR: cg8QUWh7SBwk5Xq1JapBsxq+UD1FkPLsItxN8Zkpy5DG7J0XRqQ9zKl3iY8FL6JBS4YIxahOlC
+ d/FJmRkecHcAKnFnbxv3NWJRVTl6dEM+RIQCdkPvwQuwIxHwkPjIEVmsxvLEvbiRPVBLpv7ChH
+ hOnIMCFdk52O20VaXi1iajucUKvFIR3wKiXIIEqikes2PHXL314IBO90tn2n741rgMk0SXansU
+ gjqU719VYL1KFrzFVIQZM9txg8pVBV8bXsNDTGZ4Yz6ENb+pdcU8XBnsRetToR0O48P+/FT1SD
+ XAMhgWHt8+1HxPgVTe6vjPIo
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2021 08:05:29 -0700
+IronPort-SDR: ekbJ6W30LmHQ9nQTnCHKlu7WbO/WxXy+LpBhb/I9T8kl+E+IDFNRbBa6HkimBRnz4CCKWXGPO/
+ q1iC7BQ3t3NbCGEAf9nKM6fHDptROYaZ8mfmbghu/VXhT7Lamr28h06ZyAk+Rs+2+7W7iW94g8
+ pbXXVwp8HXY6FUybAPDOxTRkw087sba+ae8zYLRoHrK7jB4hKV1x9xSkNDBd6n35UoUAlqu8SD
+ uzRRP2IHaa2KV7QqhrdwVoo85/unEswb3nMKh8VVzIf0NaNQKHLYuHpXpz9vp7cPUkTdJoMpRE
+ 5eM=
+WDCIronportException: Internal
+Received: from drry1z2.ad.shared (HELO naota-xeon.wdc.com) ([10.225.53.120])
+  by uls-op-cesaip02.wdc.com with ESMTP; 23 Sep 2021 08:29:17 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Subject: [PATCH] btrfs-progs: properly format btrfs_header in btrfs_create_root()
+Date:   Fri, 24 Sep 2021 00:29:11 +0900
+Message-Id: <20210923152911.359451-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <1632330390-29793-1-git-send-email-zhanglikernel@gmail.com>
- <5679da1e-2422-69c5-b4f8-326802363f7c@suse.com> <CAAa-AGmnKSDm=9my5+qi3OqOaB7BZqmGrGjoctm60Cfs6-9agg@mail.gmail.com>
- <d05d52fe-db30-5eb2-f42d-33d7852ba3bb@suse.com>
-In-Reply-To: <d05d52fe-db30-5eb2-f42d-33d7852ba3bb@suse.com>
-From:   li zhang <zhanglikernel@gmail.com>
-Date:   Thu, 23 Sep 2021 22:34:47 +0800
-Message-ID: <CAAa-AGnvkDcbcW+DOrVKAxzk2KgWtRx4-yrBNPTfheayg+afew@mail.gmail.com>
-Subject: Re: [PATCH] clear_bit BTRFS_DEV_STATE_MISSING if the device->bdev is
- not NULL During mount.
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Got it.
+Enabling quota on zoned btrfs hits the following ASSERT().
 
-Nikolay Borisov <nborisov@suse.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8823=E6=
-=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=886:53=E5=86=99=E9=81=93=EF=BC=9A
->
->
->
-> On 23.09.21 =D0=B3. 13:10, li zhang wrote:
-> > Sure, I would love to do it.
-> >
-> > To avoid ambiguity, Should I and write a test
-> > case to detect whether clear the BTRFS_DEV_STATE_MISSING
-> > if filesystem found a device, but it was marked to
-> > BTRFS_DEV_STATE_MISSING.
->
-> Yes, basically the idea is for the test case to fail without your patch
-> and pass with your patch. That way we'll ensure this won't regress in
-> the future.
+    $ mkfs.btrfs -f -d single -m single -R quota /dev/nullb0
+    btrfs-progs v5.11
+    See http://btrfs.wiki.kernel.org for more information.
+
+    Zoned: /dev/nullb0: host-managed device detected, setting zoned feature
+    Resetting device zones /dev/nullb0 (1600 zones) ...
+    bad tree block 25395200, bytenr mismatch, want=25395200, have=0
+    kernel-shared/disk-io.c:549: write_tree_block: BUG_ON `1` triggered, value 1
+    ./mkfs.btrfs(+0x26aaa)[0x564d1a7ccaaa]
+    ./mkfs.btrfs(write_tree_block+0xb8)[0x564d1a7cee29]
+    ./mkfs.btrfs(__commit_transaction+0x91)[0x564d1a7e3740]
+    ./mkfs.btrfs(btrfs_commit_transaction+0x135)[0x564d1a7e39aa]
+    ./mkfs.btrfs(main+0x1fe9)[0x564d1a7b442a]
+    /lib64/libc.so.6(__libc_start_main+0xcd)[0x7f36377d37fd]
+    ./mkfs.btrfs(_start+0x2a)[0x564d1a7b1fda]
+    zsh: IOT instruction  sudo ./mkfs.btrfs -f -d single -m single -R quota /dev/nullb0
+
+The issue occur because btrfs_create_root() is not formatting the root node
+properly. This is fine on regular btrfs, because it's fortunately reusing
+an once freed buffer. As the previous tree node allocation kindly formatted
+the header, it will see the proper bytenr and pass the checks.
+
+However, we never reuse an once freed buffer on zoned btrfs. As a result,
+we have zero-filled bytenr, FSID, and chunk-tree UUID, hitting the ASSERTs
+in check_tree_block().
+
+Reported-by: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+---
+ kernel-shared/ctree.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/kernel-shared/ctree.c b/kernel-shared/ctree.c
+index 6e9358cbac55..21e5414965e7 100644
+--- a/kernel-shared/ctree.c
++++ b/kernel-shared/ctree.c
+@@ -237,11 +237,16 @@ int btrfs_create_root(struct btrfs_trans_handle *trans,
+ 	}
+ 	new_root->node = node;
+ 
++	memset_extent_buffer(node, 0, 0, sizeof(struct btrfs_header));
++	btrfs_set_header_bytenr(node, node->start);
+ 	btrfs_set_header_generation(node, trans->transid);
+ 	btrfs_set_header_backref_rev(node, BTRFS_MIXED_BACKREF_REV);
+-	btrfs_clear_header_flag(node,
+-			BTRFS_HEADER_FLAG_RELOC | BTRFS_HEADER_FLAG_WRITTEN);
+ 	btrfs_set_header_owner(node, objectid);
++	write_extent_buffer(node, fs_info->fs_devices->metadata_uuid,
++			    btrfs_header_fsid(), BTRFS_FSID_SIZE);
++	write_extent_buffer(node, fs_info->chunk_tree_uuid,
++			    btrfs_header_chunk_tree_uuid(node),
++			    BTRFS_UUID_SIZE);
+ 	btrfs_set_header_nritems(node, 0);
+ 	btrfs_set_header_level(node, 0);
+ 	ret = btrfs_inc_ref(trans, new_root, node, 0);
+-- 
+2.33.0
+
