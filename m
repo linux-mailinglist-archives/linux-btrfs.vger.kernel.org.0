@@ -2,111 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64176415560
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 04:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCD041556A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 04:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238892AbhIWCKX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 Sep 2021 22:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48686 "EHLO
+        id S238894AbhIWC0f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 Sep 2021 22:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238897AbhIWCKW (ORCPT
+        with ESMTP id S238859AbhIWC0e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 Sep 2021 22:10:22 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C65AC06175F
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Sep 2021 19:08:52 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id q125so2249343qkd.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 22 Sep 2021 19:08:52 -0700 (PDT)
+        Wed, 22 Sep 2021 22:26:34 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848A4C061574;
+        Wed, 22 Sep 2021 19:25:03 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id nn5-20020a17090b38c500b0019af1c4b31fso3785887pjb.3;
+        Wed, 22 Sep 2021 19:25:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=p6enpCf2lE+kPdc1mKSMrl4L9fKO0cA4agDbPcM7Mu8=;
-        b=fLvWwjMnciOHBtsd6T3xGRCEX9irkbmXT7gg+cBAHkKa0V4wl1EY8Y9QBGjDF8bshc
-         xVA0RAvKvxmcXUjSCq6mPZxDTtSxG73St6QXAf/5TEI54WPLx/KqIYq2FX5EaTnMJrPb
-         cv4ZW3dfD28FTiyLaXlqrjkFMMUyc7NQR0aXE=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iWbjnVW9quu+0NtNnTMMNkLY8fmdpVFvrVoHkkaQvEQ=;
+        b=LirCHkh4/Ld68Fp4nkh0EaFnDsus30j10wVz/x/a/R7s3nMTUn+l5Bp92FgFPAHWKa
+         Ag12W/iAQ2ZI8/qxhF3/rU8E/gGK05tNWMNOo0ezOfy9ABKB9fgr8OZ2IgvU+RShYpJf
+         Pu8Cpg+CBhL16jvUUuaRx95akl+I791Rw14u58h7jgOTfvETi0roOq8noEW9bAE39CaN
+         SaAeRj1edoeRGOaC0UU35fOzoO81vFZ861HPsi7tbHLbkaFSpCLxlbXDm8CkDD4CAKen
+         t7dtWnhae6fgOLVbIbGd1dyfI4oh4D0j4iUSF5B+iFU0soi/M+gNPTeAZETQEWgtDmkm
+         t1KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=p6enpCf2lE+kPdc1mKSMrl4L9fKO0cA4agDbPcM7Mu8=;
-        b=wx4zjOd/UZmAwd58puFTJijOr6cUVB898BCwtSWgtapHVt8nBKpYAuqch1DK5quEeA
-         XDpn7vLP0J1G0iyvotzz8KeXYgeWpCb2D4Z7dElUCnxoBR/ji3t++T3RlRruWri5SnCA
-         6cVenNER6zqAMQ3dgNv32S31yI1ZMD5ftyW35fYJfjOGZm4t4wL01ZDyKQipMEf3GetY
-         dahn7dyBiVFWXnzULgBem+46YaJvvr5LEOzkRRpv9BfW0/IqavMJAFR4PWff0wbTilJt
-         EfufHkwY7TypKT6gufXPD3QlZ5S8avRR4o2oWrdBU56x2jpa6BECPGU/VphW+DEaXNPK
-         YGgg==
-X-Gm-Message-State: AOAM531wGbcElPSp33TobIJlrCQWFARPPxBVHssKBU+Otos3MJWwkFMq
-        HLOPt6Hiq0q6R8SjGgkx7dO/Gij2Cx+1MA==
-X-Google-Smtp-Source: ABdhPJz69MO1fx36cuLvC0p6Od1SqfnpAPwPAnogFLswiitf44fVnWF1kHzAc7+SI1mOQzknHEVoQg==
-X-Received: by 2002:a05:620a:88d:: with SMTP id b13mr2567019qka.145.1632362931460;
-        Wed, 22 Sep 2021 19:08:51 -0700 (PDT)
-Received: from bill-the-cat (2603-6081-7b01-cbda-a58e-d475-4878-38e2.res6.spectrum.com. [2603:6081:7b01:cbda:a58e:d475:4878:38e2])
-        by smtp.gmail.com with ESMTPSA id o21sm2692411qtt.12.2021.09.22.19.08.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 Sep 2021 19:08:50 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 22:08:49 -0400
-From:   Tom Rini <trini@konsulko.com>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
-        Marek Behun <marek.behun@nic.cz>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 04/11] btrfs: Suppress the message about missing
- filesystem
-Message-ID: <20210923020849.GS31748@bill-the-cat>
-References: <20210819034033.1617201-1-sjg@chromium.org>
- <20210818214022.4.I3eb71025472bbb050bcf9a0a192dde1b6c07fa7f@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iWbjnVW9quu+0NtNnTMMNkLY8fmdpVFvrVoHkkaQvEQ=;
+        b=utuiQWqBGvIHI4UX+y6etoI/i6zE3c2Fe83gtGdaQah8+RaAPvlUNiNYE2U+TascMY
+         rxBGy6warF3IkhslEc3IxI7bA4XnZauDmdC+LsV7phiPuktcMvLMwXqhUhRKLt1++JKY
+         ZRbQU1rxpFMTxehwImh3r2c1xF1NgNAKS5XxwYYX3g6P+Axul5ccicXGyEp3j4BBoLj0
+         WAenPt1eixVNwlGDPgs52iL3aLEj4WMWfmYMKGuTuX3nyYENSV2saxLZWgrxYK/YeRZA
+         qgogYu7NUHMwW/lneI+psHAIs4XVi+nfo1ZLyhlr9mi09FE8c5XqbZRvWg10+/3foYbu
+         CsQA==
+X-Gm-Message-State: AOAM533BdLCP4npLNXltLyCu5APtVBA2Ax35mszEc19w4o8m3Yh3s2F+
+        i8n1vfCkdLDNiUwUDXw0pEUMc3KklciEPdueYw==
+X-Google-Smtp-Source: ABdhPJzcCdvq8q9XQb1O4aR4bIpvJEJGxXrhO6ualjK9V7a2GMhPqSOLanZOyZ3qJdbHQ3QYHTDQ9ncHIm5YCSlIY08=
+X-Received: by 2002:a17:90b:3447:: with SMTP id lj7mr2517568pjb.112.1632363901814;
+ Wed, 22 Sep 2021 19:25:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6eUvXotnMb6+obQB"
-Content-Disposition: inline
-In-Reply-To: <20210818214022.4.I3eb71025472bbb050bcf9a0a192dde1b6c07fa7f@changeid>
-X-Clacks-Overhead: GNU Terry Pratchett
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CACkBjsYjkubyQBvBy7aaQStk_i1UuCu7oPNYXhZhvhWvBCM3ag@mail.gmail.com>
+ <145029f0-5bc5-73fd-14ee-75b5829a3334@gmx.com>
+In-Reply-To: <145029f0-5bc5-73fd-14ee-75b5829a3334@gmx.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Thu, 23 Sep 2021 10:24:51 +0800
+Message-ID: <CACkBjsauCShYkOdNU2snmJyLNSmdMvK7C0HbtMfKhoEXuUOSJg@mail.gmail.com>
+Subject: Re: kernel BUG in __clear_extent_bit
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     clm@fb.com, dsterba@suse.com, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Qu Wenruo <quwenruo.btrfs@gmx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=97=
+=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=881:33=E5=86=99=E9=81=93=EF=BC=9A
+>
+>
+>
+> On 2021/9/15 =E4=B8=8A=E5=8D=8810:20, Hao Sun wrote:
+> > Hello,
+> >
+> > When using Healer to fuzz the latest Linux kernel, the following crash
+> > was triggered.
+> >
+> > HEAD commit: 6880fa6c5660 Linux 5.15-rc1
+> > git tree: upstream
+> > console output:
+> > https://drive.google.com/file/d/1-9wwV6-OmBcJvHGCbMbP5_uCVvrUdTp3/view?=
+usp=3Dsharing
+> > kernel config: https://drive.google.com/file/d/1rUzyMbe5vcs6khA3tL9EHTL=
+JvsUdWcgB/view?usp=3Dsharing
+> > C reproducer: https://drive.google.com/file/d/1eXePTqMQ5ZA0TWtgpTX50Ez4=
+q9ZKm_HE/view?usp=3Dsharing
+> > Syzlang reproducer:
+> > https://drive.google.com/file/d/11s13louoKZ7Uz0mdywM2jmE9B1JEIt8U/view?=
+usp=3Dsharing
+> >
+> > If you fix this issue, please add the following tag to the commit:
+> > Reported-by: Hao Sun <sunhao.th@gmail.com>
+> >
+> > loop1: detected capacity change from 0 to 32768
+> > BTRFS info (device loop1): disk space caching is enabled
+> > BTRFS info (device loop1): has skinny extents
+> > BTRFS info (device loop1): enabling ssd optimizations
+> > FAULT_INJECTION: forcing a failure.
+> > name failslab, interval 1, probability 0, space 0, times 0
+> > CPU: 1 PID: 25852 Comm: syz-executor Not tainted 5.15.0-rc1 #16
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> > rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > Call Trace:
+> >   __dump_stack lib/dump_stack.c:88 [inline]
+> >   dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
+> >   fail_dump lib/fault-inject.c:52 [inline]
+> >   should_fail+0x13c/0x160 lib/fault-inject.c:146
+> >   should_failslab+0x5/0x10 mm/slab_common.c:1328
+> >   slab_pre_alloc_hook.constprop.99+0x4e/0xc0 mm/slab.h:494
+> >   slab_alloc_node mm/slub.c:3120 [inline]
+> >   slab_alloc mm/slub.c:3214 [inline]
+> >   kmem_cache_alloc+0x44/0x280 mm/slub.c:3219
+> >   alloc_extent_state+0x1e/0x1c0 fs/btrfs/extent_io.c:340
+>
+> This is the one of the core systems btrfs uses, and we really don't want
+> that to fail.
+>
+> Thus in fact it does some preallocation to prevent failure.
+>
+> But for error injection case, we can still hit BUG_ON() which is used to
+> catch ENOMEM.
+>
 
---6eUvXotnMb6+obQB
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On Wed, Aug 18, 2021 at 09:40:26PM -0600, Simon Glass wrote:
+Fuzzer triggered following crashes repeatedly when the `fault
+injection` was enabled.
 
-> This message comes up a lot when scanning filesystems. It suggests to the
-> user that there is some sort of error, but in fact there is no reason to
-> expect that a particular partition has a btrfs filesystem. Other
-> filesystems don't print this error.
->=20
-> Turn it into a debug message.
->=20
-> Signed-off-by: Simon Glass <sjg@chromium.org>
-> Reviewed-by: Marek Beh=FAn <marek.behun@nic.cz>
-> Reviewed-by: Qu Wenruo <wqu@suse.com>
+HEAD commit: 92477dd1faa6 Merge tag 's390-5.15-ebpf-jit-fixes'
+git tree: upstream
+kernel config: https://drive.google.com/file/d/1KgvcM8i_3hQiOL3fUh3JFpYNQM4=
+itvV4/view?usp=3Dsharing
+[1] kernel BUG in btrfs_free_tree_block (fs/btrfs/extent-tree.c:3297):
+https://paste.ubuntu.com/p/ZtzVKWbcGm/
+[2] kernel BUG in clear_state_bit (fs/btrfs/extent_io.c:658!):
+https://paste.ubuntu.com/p/hps2wXPG2b/
+[3] kernel BUG in set_extent_bit (fs/btrfs/extent_io.c:1021):
+https://paste.ubuntu.com/p/dcptjYYxgd/
+[4] kernel BUG in set_state_bits (fs/btrfs/extent_io.c:939):
+https://paste.ubuntu.com/p/NV9qtKB4KZ/
 
-Applied to u-boot/next, thanks!
+All the above crashes were triggered directly by the `BUG_ON()` macro
+in the corresponding location.
+Most `BUG_ON()` was hit due to `ENOMEM` when fault injected.
+Would it be better for btrfs to handle the `ENOMEM` error, e.g.,
+gracefully return, rather than panic the kernel?
 
---=20
-Tom
-
---6eUvXotnMb6+obQB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmFL4bEACgkQFHw5/5Y0
-tyxuzQv9GX6gc1jC3//Fn9ZrymfbNDbXe/dT0VwrMYI9ynnI5UmcC+oZTED3jLqZ
-lMoZ3fqgTU0rUbzdlu61TQv3sfmknL0YHVECuTj2rW18rB/e9SxkM/Oiyh/9kcHn
-+iIzNvvR2GmyFtkroLaSknfSlUEyL6I4GB9CXdXvyhg6f8DgAETYnVa6gzzlRT2R
-19h/IrbnLpGAVGDPvOLrQrAALDurQ9ETUoQqAhMuFv4lPJjKkGpeLnYYMvv7EiVp
-2C6YsKbH4sFPJJOTLduq4s0nxIBr+VwgjVBkFU+VlLM5m9RH9tJY3ReR3m7JZO0M
-VRVe6T2b2B/CSpP2a0jfqQviFTQuNIiBEqKne7U9ucIq95KlvuuGdMdCh3tv1Ic6
-ZMOX/uzPaLtvRj7FZSN2y1uonm091/L5RQae0iBwBvvpWkhtbR4UKXZzM7TJPXjW
-MWLtM/YzxZCn3WepDdzpTKBz+zeVLmvNVGZLL8SN4sSvLgQWbP2tmbO4yKOWqgqy
-YDaUFkSi
-=D7AE
------END PGP SIGNATURE-----
-
---6eUvXotnMb6+obQB--
+Regards
+Hao
