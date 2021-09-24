@@ -2,188 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA247416F6F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Sep 2021 11:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15337416FC3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Sep 2021 11:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245319AbhIXJti (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Sep 2021 05:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245228AbhIXJti (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Sep 2021 05:49:38 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A7BC061574
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Sep 2021 02:48:05 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i4so38034148lfv.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Sep 2021 02:48:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hpm0mT0+eenLMItsYZfXSu/l4UmBXS03x9KQI6Ul27g=;
-        b=BEalfSb1iIqErEIrjAg1T6eY8k3eyRM63rGcLbNv2DhYp76Gv0QQLyKqBuaWLeZaPL
-         KN4dSNEdNe1c94j+iI4vSrUK0jJ9z+F+IFR3eutT7+5NCi8b6pPES719d1tW+dXq+sVo
-         lA6NXaNP8hXhi1Bm23CoMFqEhyQdLoSDL01CRia3QadZJOvAtFaP9cpZn0fRk5ZMjGFv
-         jsMnmvwwx2SSAaVocLh0eSAsOw03s6QbRtyoS9o3EuBAmWILUOeoLXDUZp+mIJAtl9I2
-         D7/rm0O8X9xLmnPRsQDRzigVLWPKR2LZlrmNh8fUvMTbn1CLe2gdQuy/eYPZeniQrnPX
-         qtug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hpm0mT0+eenLMItsYZfXSu/l4UmBXS03x9KQI6Ul27g=;
-        b=U6mjSxkyNpJuDoz9+Su4psfqhjOvuxe1EcFKVSedfyWlgBYMThsPel3P0ODLDfoIro
-         gIgrR/ES8dYHP1TVkKwJNkoOZXEdEdZFFEWckKdTKrAU4TGnlvuXME57UsQE75FyFYsW
-         uNJ2qA/ypaMU14IxA34nhW+S48vw9ZK5UgQIWKcKWm4Mf4V1kRpUEzpx5S7FeZocn3wj
-         1JkuJ4PTJUsx+OKEiB6uMRG9UKLVqCK0Wn5k6TiAWfcrNZO+wcoaPVLytaWswX3ex3i1
-         AANjxsvBfVroKQhQV/0g+I5zYo2wvzJXNbCr+PGvxPB41XcYQhT6RL+94q2xdjs4VInJ
-         b4IA==
-X-Gm-Message-State: AOAM530ZaYr3Ijh/Ka9rktA7IUXo2ebOZEhQD8mZJYkmqPLbDN0Ah9nz
-        +EulWzd4QB+pnrzkWtDveT+OSDNkaXnU5+Gj6pY=
-X-Google-Smtp-Source: ABdhPJxwc2rjbZ8B5A+Rw0Pe+le5scaTbg1f0lhleQZZHFwRbq5I/OPIeLq8xnLEVEWeFQiQqBfhW0fVTfL3Ks1a32o=
-X-Received: by 2002:ac2:5493:: with SMTP id t19mr8425913lfk.282.1632476883360;
- Fri, 24 Sep 2021 02:48:03 -0700 (PDT)
+        id S245366AbhIXJ7c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Sep 2021 05:59:32 -0400
+Received: from mout.gmx.net ([212.227.15.19]:42747 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245299AbhIXJ7b (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 24 Sep 2021 05:59:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632477476;
+        bh=2qSgyZjd4IzApmInJIWBf35Nr2dCmIzofz+989Di634=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=jioPgUDThPTfiBwKDoMFyE7i3QPCDQ1Pv7FXsd9Z4TBcz7zvc3VQitRJn6qxjHwG3
+         mxTc/C7tNvmA2Gz9061RTUcw/vXocQDhfuw/W4MTmQBW4uYNyqsWGyAGhkW8luz99R
+         2Awe0f8FU0639LF2iWGB3wcpqNjdt3TUqpRYoMxU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N6bk4-1mvgbd3NFO-0181OS; Fri, 24
+ Sep 2021 11:57:56 +0200
+Message-ID: <bcb6a3ca-f349-2547-a9ec-4ae69e3aec26@gmx.com>
+Date:   Fri, 24 Sep 2021 17:57:52 +0800
 MIME-Version: 1.0
-References: <CAGqt0zz9YrxXPCCGVFjcMoVk5T4MekPBNMaPapxZimcFmsb4Ww@mail.gmail.com>
- <e45e799c-b41a-d8c7-e8d8-598d81602369@gmx.com> <CAGqt0zyEx1pyStPVTSnvsZGYKAGEv9yUunv-82Mj6ZED3WNKRA@mail.gmail.com>
- <CAGqt0zy6a8+awo6ifUn4x+WxN=c6e8PnuMW5kYRodxOQ6vwU-A@mail.gmail.com>
- <72d66f13-6380-7fcd-3475-8152caa965c4@gmx.com> <CAGqt0zz+=nUYbNwLSPYwzYcNLgyxsWT22p+jwwFpAOcyAHAWgA@mail.gmail.com>
- <e83029f0-8583-91b9-47c8-a99d4b00a6ae@gmx.com> <CAGqt0zykaioT1LJAtOM8Zc4eJBXxTEy2ugBrLpgZ=BzCJzixXQ@mail.gmail.com>
- <CAGqt0zwchNdLKz4_qHrdbuxx7RWY9YbdiZ4KBYJcrwWa3sxBZw@mail.gmail.com>
- <529263b6-4ff9-1bf6-8566-ed1ec648a539@suse.com> <CAGqt0zxrm=A8v7Mm6CDNUv77Sxsgt_kp4uJpCbpbCGXrnUmBqA@mail.gmail.com>
- <8af945a3-db88-d1b8-bba3-3f6180f91fcf@suse.com> <CAL3q7H7Ty-0HOy5xQU_JMuzYZoNbihL9-gdk+vwk64+GowEmCQ@mail.gmail.com>
- <8a781d5e-bdee-b44c-f237-292804b822ab@gmx.com>
-In-Reply-To: <8a781d5e-bdee-b44c-f237-292804b822ab@gmx.com>
-From:   Yuxuan Shui <yshuiv7@gmail.com>
-Date:   Fri, 24 Sep 2021 10:47:51 +0100
-Message-ID: <CAGqt0zx+eC0B1Pr-GXOkwn7icc0OWBduWbcmYRg3K8Uw1DXC5Q@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
 Subject: Re: btrfs receive fails with "failed to clone extents"
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Content-Language: en-US
+To:     Yuxuan Shui <yshuiv7@gmail.com>
 Cc:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <CAGqt0zz9YrxXPCCGVFjcMoVk5T4MekPBNMaPapxZimcFmsb4Ww@mail.gmail.com>
+ <e45e799c-b41a-d8c7-e8d8-598d81602369@gmx.com>
+ <CAGqt0zyEx1pyStPVTSnvsZGYKAGEv9yUunv-82Mj6ZED3WNKRA@mail.gmail.com>
+ <CAGqt0zy6a8+awo6ifUn4x+WxN=c6e8PnuMW5kYRodxOQ6vwU-A@mail.gmail.com>
+ <72d66f13-6380-7fcd-3475-8152caa965c4@gmx.com>
+ <CAGqt0zz+=nUYbNwLSPYwzYcNLgyxsWT22p+jwwFpAOcyAHAWgA@mail.gmail.com>
+ <e83029f0-8583-91b9-47c8-a99d4b00a6ae@gmx.com>
+ <CAGqt0zykaioT1LJAtOM8Zc4eJBXxTEy2ugBrLpgZ=BzCJzixXQ@mail.gmail.com>
+ <CAGqt0zwchNdLKz4_qHrdbuxx7RWY9YbdiZ4KBYJcrwWa3sxBZw@mail.gmail.com>
+ <529263b6-4ff9-1bf6-8566-ed1ec648a539@suse.com>
+ <CAGqt0zxrm=A8v7Mm6CDNUv77Sxsgt_kp4uJpCbpbCGXrnUmBqA@mail.gmail.com>
+ <8af945a3-db88-d1b8-bba3-3f6180f91fcf@suse.com>
+ <CAL3q7H7Ty-0HOy5xQU_JMuzYZoNbihL9-gdk+vwk64+GowEmCQ@mail.gmail.com>
+ <8a781d5e-bdee-b44c-f237-292804b822ab@gmx.com>
+ <CAGqt0zx+eC0B1Pr-GXOkwn7icc0OWBduWbcmYRg3K8Uw1DXC5Q@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CAGqt0zx+eC0B1Pr-GXOkwn7icc0OWBduWbcmYRg3K8Uw1DXC5Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vMLXoFYXrvZ8yjVwBHZWnzS3aC0Vv8mAm79k0+MtU0m/Bfqpszb
+ 0449FWuMMLh8Qed15rzEB53VaFpK43bSJOEF5rnB+JSqV86wLv320qWYnsf+KVCQ7v2E4jc
+ kbFhTZrv2ES3Ncd2cGA78FQleV0USBL8HTJe0yhDx/y7KdelAgGoDOUbaQ/ooZtB51hSair
+ ExtjBd00BIptWQZwFaYGQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:B+1PRyHXgfM=:z3EeyB3xnFm5vFlfPvGvIg
+ M9xVDS62BHW5SQiTgZgB0aUw6hm3xbbO220I4eGxZsx5Pg0bycNGhV5qH6bSKEZ5iqDzUSiZH
+ ZzwHUOJ1EoODAS7q1W0/omZTw6jnlH3IayE9mJRs/RlQIO+8axE7zH1r5HGwIE1RxdZN08rPc
+ JFGxxc5+a83daUJIEUVrAV2oBjJC2f8WHHzha6HsBxhoTp6sT+0O5wjLxnhDgqgPfZvlDTAja
+ Z7CDkBL8mv39Rwer4MatzFkaJlUCWmLQ3To86L4vPUorWmDOmXfnz71IRhXTtshnlvMWTWe0d
+ En/HX9DqOK6ywRJjtOc0bz2gigBJFIJXUW7/r6VBOHw8Pzz2Qc4pzZF10Apx0HWVD7Z9zkJVA
+ NWfTVo/8MiNUluzJqfC1MsRVMnzkBeJyQIaA/DpLxQSUt2UAWdQTx3BLIKCpq31iMTG6qe+2K
+ rJ3L9qhom4ik0dKB3c5Z5hi7SWv5kmyNe9hQyI1F8bvmbqJF8ytUNnoWSIEE38kLv9hxxEkdz
+ vbhrARIxfdm9VtQQIA94CR+YBhGNQcKaNDHhsPlbpRNQoX8hHg1N7bHf2B0eODg1KuYnOp18s
+ HC3YBAZdtgzxydyo2q3NC5etmJ249MCBolP9yT9h+4kFConVsp3vriyjgL4o/8fuo3eVSMTdS
+ Vv19IwfM2oDH9l9x6abhNxwGXh0LFCBp5ARFmPh1VH1JLEQanlvv4F0/CUmtYEsk98ZdPZwIa
+ eBvdS8yXilUgbIQU0U0YRi33PTyliL9YV9NqTbTsDOV/k9prOBGkvk/mDw1+uKhXbtdL9IG3M
+ 7Q36n7cj7YT3TYQ19iPjEoo2fogBuBHy2y2nAUmfXayBp+2Ga66vSILTy9FIBXtFj5oHlOWv2
+ v5NPBzzdtSGzTYkWOUMw/QuUSk6qEglGnH0Fy+NciQbLgfmg5+JHERYuIiwdFeAs1OmXjShre
+ ewhLkqlyXgocq89SPA9uzWhOLFRUWypOpdJkldub6wp9Pn86sOLNgKoLR6qySRJQVwTpZzAqS
+ T2MHIaZB9Xq10LPY7ZOmciCqpeLxz+bq+ixiC5iGiKGQjkQNMXAu7RPW8x143ZOrP3gOSgF2p
+ gfALDxTn8Ksy5k=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
 
-On Thu, Sep 23, 2021 at 12:16 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2021/9/23 18:46, Filipe Manana wrote:
-> > On Thu, Sep 23, 2021 at 11:20 AM Qu Wenruo <wqu@suse.com> wrote:
-> >>
-> >>
-> >>
-> >> On 2021/9/23 18:08, Yuxuan Shui wrote:
-> >>> Hi,
-> >>>
-> >>> On Thu, Sep 23, 2021 at 10:45 AM Qu Wenruo <wqu@suse.com> wrote:
-> >>>>
-> >>>> Mind to provide the full send stream dump?
-> >>>>
-> >>>> This indeed looks like a bug now.
-> >>>
-> >>> Sorry, this might have data I am not allowed to share, and I don't
-> >>> think I will be able to vet all the files in the stream.
-> >>>
-> >>> But if you can let me know what I can do to help debugging, I could try that.
-> >>
-> >> That's totally understandable.
-> >>
-> >> Surprisingly, I can't even find a proper way to get the nodatasum flag
-> >> per-file.
-> >> Thus I guess things may go complex by using "btrfs ins dump-tree"
-> >>
-> >> For the receive failure case, mind to provide the following info?
-> >>
-> >> - The inode number of the clone source
-> >>     You can use 'stat' command to get the inode number:
-> >>     $ stat /mnt/btrfs/file  | grep Inode
-> >>     Device: 29h/41d      Inode: 257         Links: 1
-> >>
-> >> - The tree dump of the clone source
-> >>     $ btrfs ins dump-tree -t <subvolid> <device> | \
-> >>       grep "(<INODE> INODE_ITEM 0) item" -A 5
-> >>          item 4 key (257 INODE_ITEM 0) itemoff 15883 itemsize 160
-> >>                  generation 7 transid 7 size 0 nbytes 0
-> >>                  block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
-> >>                  sequence 3 flags 0x0(none)
-> >>                  atime 1632391968.333333415 (2021-09-23 18:12:48)
-> >>                  ctime 1632391968.333333415 (2021-09-23 18:12:48)
-> >>
-> >>      <subvolid> is the subvolume id of the clone source.
-> >>
-> >> - The tree dump of the clone dest directory
-> >>     The inode number can be get using the same 'stat' command.
-> >>     Then pass it to the same "btrfs ins dump-tree" command, with
-> >>     <subvolid> <device> and <INODE> modified.
-> >>
-> >> Then we can be sure what's causing the NODATASUM flag mismatch.
-> >
-> > Catching up on the whole thread, that is indeed a possible cause of failure.
-> >
-> > Someone can do something like:
-> >
-> > 1) mount fs without -o nodatacow and without -o nodatasum
-> > 2) receive snapshot A
-> > 3) umount fs
-> > 4) mount fs with -o nodatacow or -o nodatasum
-> > 5) start receiving an incremental stream that has A as parent and
-> > snapshot B as the send snapshot
-> > 6) files created in B end up with the NODATASUM flag set
-> > 7) the send stream has a clone operation to clone from some file in A
-> > to a file in B - this fails, as the file in A does not have the
-> > nodatasum bit but the file in B has it
->
-> Exactly.
->
-> We can craft a test case for it (but without a fix for a while).
 
-As a quick fix, is it possible to convert existing files that are not
-nodatasum to nodatasum?
+On 2021/9/24 17:47, Yuxuan Shui wrote:
+> Hello,
+>
+> On Thu, Sep 23, 2021 at 12:16 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
+e:
+>>
+>>
+[...]
+>>
+>> Exactly.
+>>
+>> We can craft a test case for it (but without a fix for a while).
+>
+> As a quick fix, is it possible to convert existing files that are not
+> nodatasum to nodatasum?
+
+Well, this is embarrassing now, I don't even know a way to show/set
+per-file NODATASUM flag.
+
+So I'm afraid it's not possible yet.
 
 >
-> >
-> > I'm thinking that for cases like this, we could use a flag for send to
-> > tell it to not generate clone operations and do regular write commands
-> > instead.
+>>
+>>>
+>>> I'm thinking that for cases like this, we could use a flag for send to
+>>> tell it to not generate clone operations and do regular write commands
+>>> instead.
+>>
+>> My biggest concern here is, we should properly include the inode flags
+>> in the send stream, and provide an interface to change btrfs specific
+>> flags (currently only NODATASUM) at the receive side.
+>>
+>> With that we can set the proper inode flags before writing/cloning, no
+>> matter the mount option.
+>>
+>> But this is a big project, involving changing send stream format,
+>> introducing new ioctl interface.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>>>
+>>>> Thanks,
+>>>> Qu
+>>>>
+>>>
+>>>
 >
-> My biggest concern here is, we should properly include the inode flags
-> in the send stream, and provide an interface to change btrfs specific
-> flags (currently only NODATASUM) at the receive side.
+> I have a dumb question. As an outsider, it seems to me that cloning
+> from a file with datasum to a file with nodatasum can have a well
+> defined semantic? i.e. say I clone from A (datasum) to B (nodatasum),
+> then reading from B should skip checksum verification, and modifying B
+> would write data without checksum, and leaving A with checksum.
+
+Clone means it will share the on-disk data, without doing real write.
+
+Then the problem is, one inode says the data should has data checksum,
+the other says the same data should has no data checksum.
+
+This inconsistent status is prevent us from cloning in the first place.
+
 >
-> With that we can set the proper inode flags before writing/cloning, no
-> matter the mount option.
+> Is this not practical to implement due to btrfs' internal structure?
+
+I discussed with Filipe, we're more or less fine to fix it in
+btrfs-progs (receive side) by fallback back to buffered write (read the
+data from the inode, write it back to the destination).
+
+By this, we can workaround the problem as a quick (and maybe final) fix.
+
+Thanks,
+Qu
+
 >
-> But this is a big project, involving changing send stream format,
-> introducing new ioctl interface.
+> Thanks!
 >
-> Thanks,
-> Qu
->
-> >
-> >>
-> >> Thanks,
-> >> Qu
-> >>
-> >
-> >
-
-I have a dumb question. As an outsider, it seems to me that cloning
-from a file with datasum to a file with nodatasum can have a well
-defined semantic? i.e. say I clone from A (datasum) to B (nodatasum),
-then reading from B should skip checksum verification, and modifying B
-would write data without checksum, and leaving A with checksum.
-
-Is this not practical to implement due to btrfs' internal structure?
-
-Thanks!
-
--- 
-
-Regards
-Yuxuan Shui
