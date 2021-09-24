@@ -2,85 +2,225 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933E941777E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Sep 2021 17:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF64F417998
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Sep 2021 19:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347089AbhIXP3h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Sep 2021 11:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233132AbhIXP3g (ORCPT
+        id S1344383AbhIXRTp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Sep 2021 13:19:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58955 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344639AbhIXRTn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Sep 2021 11:29:36 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6560C061571
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Sep 2021 08:28:03 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id me1so7203602pjb.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 24 Sep 2021 08:28:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=BEs/rey3NNAmiYdhxSKzxUpzWdKJvgC808/uilaEpfA=;
-        b=R/65Uxi5V/4JmZJ1fd4EAN+UeKQ+oPkFCUbmuhCULEz33LsILRFn5ScheMOvpCizQR
-         Tv9ZebbWr8Z+7A+tJRVZpBsjo3dOi5Y+sONu+VchxN35ItAHAZm7h5tHKdbqx8Xyj1sG
-         Vover6XARw3ekLuozHSgJcSMPX5eLMgnhkg2/W27IqdWsbcvfcPMLnz6av2vZsMA1/SW
-         tnBQ2ftdRxlDlUjTjOnadYdKFuhS0GY4EYf31WkvOdMy22P4MY0AN87JPPAnDu7lkq49
-         yw8xXaxrbhcj0kN2+7szl2JDkVI78/POsDWv0npS6c3YIQO4SNK0BuODcdyzEyuK328d
-         TBdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=BEs/rey3NNAmiYdhxSKzxUpzWdKJvgC808/uilaEpfA=;
-        b=Hsu+yT2Dtme2R9o/lpVzu2TBucKAM6diK4k/renp5Giw84xPzqR81frQ6QOEOgEN1U
-         0/1lMEXsE/iJLS5GAMOHm1HOUoFMCPzsbm3KA/My809x31kjY4llxioY2PjTz+e7KBYJ
-         ClC/cl+G3309Lrvw20hTfEYOYKlRW4/O9DGwY0THS08ImgKqI5iEq5+hCZxmkCAmXu4l
-         m35FuaQHRObEjl9dRHSbwk0sW1JWctLjTqTPLCk72tz7aiAoHcMsANI/9RszH9N2nRFh
-         t6FMyxgx7JRrkUep2xdPQ1jZGvQl9IY5nrFYk+7hjAngRGj44akd24adOzJEQLNTCjVO
-         WzmA==
-X-Gm-Message-State: AOAM532z1r69JvnV0xq6V8aOG0SH7kIH5wphZsxxgigosUfTuXUyoiJv
-        2XnEqAHmb1uV6BXmQsLar6Q7AET/hdCSS5DV7kg=
-X-Google-Smtp-Source: ABdhPJwOm5AH8jxDJjjgzivhF3x80eG47oC4BR2y7NDikov58Ld2fxsFYEOgTOQyVL3IYT/FtpqnfqgnCpuX48z5Z2k=
-X-Received: by 2002:a17:90a:304:: with SMTP id 4mr2929301pje.124.1632497283205;
- Fri, 24 Sep 2021 08:28:03 -0700 (PDT)
+        Fri, 24 Sep 2021 13:19:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632503889;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=eQGrOpfP233mFmIfFg/o+cJ+c+v9gOkxJH/IeGmKkL0=;
+        b=HEk5ozOJBbmSwdKPtFE9h7rlnwXj6vdONxfi038CQajJQX+2ewwpQoYjuiHcf20YDgSqD5
+        THijPNHOnfoqOcEbb2QPqYwCZPUAFTUcKjwU1tJmRp+HYmqdTCXD/sgGdSIBh9FxvZ+9cH
+        RNpjd3E1+Dn9vf88rWX1rhdFJTjWIrY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-POZdDApVPBmG1-VdzFXypg-1; Fri, 24 Sep 2021 13:18:05 -0400
+X-MC-Unique: POZdDApVPBmG1-VdzFXypg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED37B8015C7;
+        Fri, 24 Sep 2021 17:17:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B39FD19D9B;
+        Fri, 24 Sep 2021 17:17:53 +0000 (UTC)
+Subject: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+From:   David Howells <dhowells@redhat.com>
+To:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
+        Bob Liu <bob.liu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Seth Jennings <sjenning@linux.vnet.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
+        Dan Magenheimer <dan.magenheimer@oracle.com>,
+        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        linux-btrfs@vger.kernel.org, dhowells@redhat.com,
+        dhowells@redhat.com, darrick.wong@oracle.com,
+        viro@zeniv.linux.org.uk, jlayton@kernel.org,
+        torvalds@linux-foundation.org, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 24 Sep 2021 18:17:52 +0100
+Message-ID: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Received: by 2002:a17:522:b750:b0:2a8:6cf2:f250 with HTTP; Fri, 24 Sep 2021
- 08:28:02 -0700 (PDT)
-Reply-To: mgaddafi034@gmail.com
-From:   Aisha Gaddafi <kaborzongo889@gmail.com>
-Date:   Fri, 24 Sep 2021 08:28:02 -0700
-Message-ID: <CAJ0QpRFd6+QpwXSHe0LkMV=JWMMJPH-eTLkVGm-0XP=BmXpooQ@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh,
 
-Hello Dear
+Hi Willy, Trond, Christoph,
 
-I came across your e-mail contact prior a private search while in need
-of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+Here's v3 of a change to make reads and writes from the swapfile use async
+DIO, adding a new ->swap_rw() address_space method, rather than readpage()
+or direct_IO(), as requested by Willy.  This allows NFS to bypass the write
+checks that prevent swapfiles from working, plus a bunch of other checks
+that may or may not be necessary.
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+Whilst trying to make this work, I found that NFS's support for swapfiles
+seems to have been non-functional since Aug 2019 (I think), so the first
+patch fixes that.  Question is: do we actually *want* to keep this
+functionality, given that it seems that no one's tested it with an upstream
+kernel in the last couple of years?
 
-I am willing to negotiate investment/business profit sharing ratio
-with you base on the future investment earning profits.
+There are additional patches to get rid of noop_direct_IO and replace it
+with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use the
+new ->swap_rw method and thence remove the direct BIO submission paths from
+swap.
 
-If you are willing to handle this project on my behalf kindly reply
-urgent to enable me provide you more information about the investment
+I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure if
+that's necessary, but it seems accounting related.
 
-Your Urgent Reply Will Be Appreciated with this emailaddress
-(mgaddafi034@gmail.com)
+The synchronous DIO I/O code on NFS, raw blockdev, ext4 swapfile and xfs
+swapfile all seem to work fine.  Btrfs refuses to swapon because the file
+might be CoW'd.  I've tried doing "chattr +C", but that didn't help.
 
-Best Regards
-Mrs Aisha Al-Qaddafi
+The async DIO paths fail spectacularly (from I/O errors to ATA failure
+messages on the test disk using a normal swapspace); NFS just hangs.
+
+My patches can be found here also:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=swap-dio
+
+I tested this using the procedure and program outlined in the NFS patch.
+
+I also encountered occasional instances of the following warning with NFS, so
+I'm wondering if there's a scheduling problem somewhere:
+
+BUG: workqueue lockup - pool cpus=0-3 flags=0x5 nice=0 stuck for 34s!
+Showing busy workqueues and worker pools:
+workqueue events: flags=0x0
+  pwq 6: cpus=3 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+    in-flight: 1565:fill_page_cache_func
+workqueue events_highpri: flags=0x10
+  pwq 3: cpus=1 node=0 flags=0x1 nice=-20 active=1/256 refcnt=2
+    in-flight: 1547:fill_page_cache_func
+  pwq 1: cpus=0 node=0 flags=0x0 nice=-20 active=1/256 refcnt=2
+    in-flight: 1811:fill_page_cache_func
+workqueue events_unbound: flags=0x2
+  pwq 8: cpus=0-3 flags=0x5 nice=0 active=3/512 refcnt=5
+    pending: fsnotify_connector_destroy_workfn, fsnotify_mark_destroy_workfn, cleanup_offline_cgwbs_workfn
+workqueue events_power_efficient: flags=0x82
+  pwq 8: cpus=0-3 flags=0x5 nice=0 active=4/256 refcnt=6
+    pending: neigh_periodic_work, neigh_periodic_work, check_lifetime, do_cache_clean
+workqueue writeback: flags=0x4a
+  pwq 8: cpus=0-3 flags=0x5 nice=0 active=1/256 refcnt=4
+    in-flight: 433(RESCUER):wb_workfn
+workqueue rpciod: flags=0xa
+  pwq 8: cpus=0-3 flags=0x5 nice=0 active=38/256 refcnt=40
+    in-flight: 7:rpc_async_schedule, 1609:rpc_async_schedule, 1610:rpc_async_schedule, 912:rpc_async_schedule, 1613:rpc_async_schedule, 1631:rpc_async_schedule, 34:rpc_async_schedule, 44:rpc_async_schedule
+    pending: rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule, rpc_async_schedule
+workqueue ext4-rsv-conversion: flags=0x2000a
+pool 1: cpus=0 node=0 flags=0x0 nice=-20 hung=59s workers=2 idle: 6
+pool 3: cpus=1 node=0 flags=0x1 nice=-20 hung=43s workers=2 manager: 20
+pool 6: cpus=3 node=0 flags=0x0 nice=0 hung=0s workers=3 idle: 498 29
+pool 8: cpus=0-3 flags=0x5 nice=0 hung=34s workers=9 manager: 1623
+pool 9: cpus=0-3 flags=0x5 nice=-20 hung=0s workers=2 manager: 5224 idle: 859
+
+Note that this is due to DIO writes to NFS only, as far as I can tell, and
+that no reads had happened yet.
+
+Changes:
+========
+ver #3:
+   - Introduced a new ->swap_rw() method.
+   - Added feature support flags to the address_space_operations struct and
+     got rid of the checks for ->direct_() and noop_direct_IO() and
+     similar.
+   - Implemented swap_rw for nfs, adjusting the direct I/O code paths.
+   - Implemented swap_rw for blockdev, btrfs, ext4 and xfs.
+   - Got rid of the return value on swap_readpage() as it's never checked.
+
+ver #2:
+   - Remove the callback param to __swap_writepage() as it's invariant.
+   - Allocate the kiocb on the stack in sync mode.
+   - Do an async DIO write if WB_SYNC_ALL isn't set.
+   - Try to remove the BIO submission paths.
+
+David
+
+Link: https://lore.kernel.org/r/162876946134.3068428.15475611190876694695.stgit@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/162879971699.3306668.8977537647318498651.stgit@warthog.procyon.org.uk/ # v2
+---
+David Howells (9):
+      mm: Remove the callback func argument from __swap_writepage()
+      mm: Add 'supports' field to the address_space_operations to list features
+      mm: Make swap_readpage() void
+      Introduce IOCB_SWAP kiocb flag to trigger REQ_SWAP
+      mm: Make swap_readpage() for SWP_FS_OPS use ->swap_rw() not ->readpage()
+      mm: Make __swap_writepage() do async DIO if asked for it
+      nfs: Fix write to swapfile failure due to generic_write_checks()
+      block, btrfs, ext4, xfs: Implement swap_rw
+      mm: Remove swap BIO paths and only use DIO paths
+
+
+ Documentation/filesystems/vfs.rst |   8 +
+ block/fops.c                      |   2 +
+ drivers/block/loop.c              |   6 +-
+ fs/9p/vfs_addr.c                  |   1 +
+ fs/affs/file.c                    |   1 +
+ fs/btrfs/inode.c                  |  14 +-
+ fs/ceph/addr.c                    |  13 +-
+ fs/cifs/file.c                    |  21 +-
+ fs/direct-io.c                    |   2 +
+ fs/erofs/data.c                   |   2 +-
+ fs/exfat/inode.c                  |   1 +
+ fs/ext2/inode.c                   |   4 +-
+ fs/ext4/inode.c                   |  17 +-
+ fs/f2fs/data.c                    |   1 +
+ fs/fat/inode.c                    |   1 +
+ fs/fcntl.c                        |   2 +-
+ fs/fuse/dax.c                     |   2 +-
+ fs/fuse/file.c                    |   1 +
+ fs/gfs2/aops.c                    |   2 +-
+ fs/hfs/inode.c                    |   1 +
+ fs/hfsplus/inode.c                |   1 +
+ fs/jfs/inode.c                    |   1 +
+ fs/libfs.c                        |  12 -
+ fs/nfs/direct.c                   |  28 +--
+ fs/nfs/file.c                     |  15 +-
+ fs/nilfs2/inode.c                 |   1 +
+ fs/ntfs3/inode.c                  |   1 +
+ fs/ocfs2/aops.c                   |   1 +
+ fs/open.c                         |   3 +-
+ fs/orangefs/inode.c               |   1 +
+ fs/overlayfs/file.c               |   2 +-
+ fs/overlayfs/inode.c              |   3 +-
+ fs/reiserfs/inode.c               |   1 +
+ fs/udf/file.c                     |   1 +
+ fs/udf/inode.c                    |   1 +
+ fs/xfs/xfs_aops.c                 |  13 +-
+ fs/zonefs/super.c                 |   2 +-
+ include/linux/bio.h               |   2 +
+ include/linux/fs.h                |   7 +-
+ include/linux/nfs_fs.h            |   2 +-
+ include/linux/swap.h              |   2 +-
+ mm/page_io.c                      | 356 +++++++++++++++---------------
+ mm/swapfile.c                     |   4 +-
+ 43 files changed, 275 insertions(+), 287 deletions(-)
+
+
