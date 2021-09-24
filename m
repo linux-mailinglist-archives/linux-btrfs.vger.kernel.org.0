@@ -2,224 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661F24179C5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Sep 2021 19:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51094417B01
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Sep 2021 20:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347882AbhIXRV5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 Sep 2021 13:21:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24156 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347850AbhIXRU5 (ORCPT
+        id S1348117AbhIXS1q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Sep 2021 14:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346239AbhIXS1p (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 Sep 2021 13:20:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632503964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x7BpkThd4W7Otj77d326ZQ439zIBR66OsnpLRS8EUC4=;
-        b=T1l07n8bWH7pYgykqlnFUvKGGYhO7Wiw4/7ewh4fVQ3Y0I8wzAafhgt+mPu8659E5mrj9b
-        kkXuXKQDWhk4iekFf1MTD5xdXOGaDkihxkjB79TCSmg3ERQRZnhlHlLo39lmeM7T6ofzMl
-        83vUVS1dvPAKW5G6vIyp10BEC5Yxzn8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-FXe5ABoKNvWZ-0xXSP1U8g-1; Fri, 24 Sep 2021 13:19:21 -0400
-X-MC-Unique: FXe5ABoKNvWZ-0xXSP1U8g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F5DC802B9F;
-        Fri, 24 Sep 2021 17:19:18 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D7B3D5F707;
-        Fri, 24 Sep 2021 17:19:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v3 8/9] block, btrfs, ext4, xfs: Implement swap_rw
-From:   David Howells <dhowells@redhat.com>
-To:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com
-Cc:     Jens Axboe <axboe@kernel.dk>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, dhowells@redhat.com, dhowells@redhat.com,
-        darrick.wong@oracle.com, viro@zeniv.linux.org.uk,
-        jlayton@kernel.org, torvalds@linux-foundation.org,
-        linux-nfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 24 Sep 2021 18:19:11 +0100
-Message-ID: <163250395192.2330363.9101664122191208351.stgit@warthog.procyon.org.uk>
-In-Reply-To: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 24 Sep 2021 14:27:45 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE321C061613
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Sep 2021 11:26:11 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id y28so43417529lfb.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 Sep 2021 11:26:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=1s34Yqgb4ItEzSJ7Owz/ybF6gtvrc1C9hGd3WAquWp0=;
+        b=BGwHbdU/eqPQjpdOrhpUm9O0kcR+8xJygPrDbfTww30htHLZKuDWkb0JouMzyI7+gd
+         XBL+JIfe6Sa+gM1x8uy6Fu0ANIuTsewyJes93fbcmEdotSO+YJngnyEr2uwYM/73RzAm
+         cdavK21D+q345og/fFkhQRTDqkuyBrlBQHbOe5jXDwLi5Eh0ual4+yQEAAUCC+bk8XiJ
+         bzkd6GFto4ZpL4fsgn1BSk7ry6kDIlUMucDEbJfwnmE47Ilg5fJxIeS4fVshxeHtEFlm
+         8cpI1nWjLhF/xjdL5mIEyRZg1YFx6+adWV6WhxJS1cNuQ1ZK9DzF/xmMRTjQTM62Cg12
+         7CPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=1s34Yqgb4ItEzSJ7Owz/ybF6gtvrc1C9hGd3WAquWp0=;
+        b=l9CgLb3fKBjl3Be87d+EkLZ6yZYV+nUo3pWFjs3NwlCJP2IXHStKPtO89uyVyeCICy
+         i7cVFSBpP+CD6KoRFz2Vi5i3337w3yB/6qAYrW+4B18WI5Ba+rsheaHF92JUisE9odoL
+         7FrJBkw3Jf6qqcHkMlcYcP6Y4VH4GnFOonaHNHrtI6T5vaUWm4gc8pIU6S7rN8EpbHz/
+         OSBRop/P2WY1wEUxEisLNs0cyJot8BaKfMpHMSXXfPYp/chIUi/ZKhvM7d8Jw3vFYjAV
+         x90oEpwSNS1Mzzu0yS3bcDi0AKXq/jZ9c/g/rtPKB4N3xJIzEdjst+LQ3K0VgTZfRgfd
+         S5Dg==
+X-Gm-Message-State: AOAM533IBwtQ6DJfLw4Zin5X8i3SHRtEN2NpUlIKfAu1YDCbLkyL4rR8
+        MTDkA5HnHIUnlH/IFoDB4SQLeAtJLTwcHkV6AzraMMZ7fZU=
+X-Google-Smtp-Source: ABdhPJzw5I8/XDqLBM77CdKSAJX1RWwswvYHcvVjsqhtPowK0TE422uVFs7nfa7K9hSAAV7f2RscnMMud5fBisOWau4=
+X-Received: by 2002:ac2:4ecc:: with SMTP id p12mr10747479lfr.375.1632507969907;
+ Fri, 24 Sep 2021 11:26:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+From:   Sven Oehme <oehmes@gmail.com>
+Date:   Fri, 24 Sep 2021 12:25:59 -0600
+Message-ID: <CALssuR00NvTHJJuoOFhw=4+fHARtBN2PLqTr4W06PT5VMagh_A@mail.gmail.com>
+Subject: Host managed SMR drive issue
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Implement swap_rw for block devices, btrfs, ext4 and xfs.  This allows the
-the page swapping code to use direct-IO rather than direct bio submission,
-whilst skipping the checks going via read/write_iter would entail.
+Hi,
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: Christoph Hellwig <hch@lst.de>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Chris Mason <clm@fb.com>
-cc: Josef Bacik <josef@toxicpanda.com>
-cc: David Sterba <dsterba@suse.com>
-cc: "Theodore Ts'o" <tytso@mit.edu>
-cc: Andreas Dilger <adilger.kernel@dilger.ca>
-cc: Darrick J. Wong <djwong@kernel.org>
-cc: linux-block@vger.kernel.org
-cc: linux-btrfs@vger.kernel.org
-cc: linux-ext4@vger.kernel.org
-cc: linux-xfs@vger.kernel.org
-cc: linux-fsdevel@vger.kernel.org
-cc: linux-mm@kvack.org
----
+i am running into issues with Host Managed SMR drive testing. when i
+try to copy or move a file to the btrfs filesystem it just hangs. i
+tried multiple 5.12,5.13 as well as 5.14 all the way to 5.14.6 but the
+issue still persists.
 
- block/fops.c      |    1 +
- fs/btrfs/inode.c  |   12 +++++-------
- fs/ext4/inode.c   |    9 +++++++++
- fs/xfs/xfs_aops.c |    9 +++++++++
- 4 files changed, 24 insertions(+), 7 deletions(-)
+here is the setup :
 
-diff --git a/block/fops.c b/block/fops.c
-index 84c64d814d0d..7ba37dfafae2 100644
---- a/block/fops.c
-+++ b/block/fops.c
-@@ -382,6 +382,7 @@ const struct address_space_operations def_blk_aops = {
- 	.write_end	= blkdev_write_end,
- 	.writepages	= blkdev_writepages,
- 	.direct_IO	= blkdev_direct_IO,
-+	.swap_rw	= blkdev_direct_IO,
- 	.migratepage	= buffer_migrate_page_norefs,
- 	.is_dirty_writeback = buffer_check_dirty_writeback,
- 	.supports	= AS_SUPPORTS_DIRECT_IO,
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index b479c97e42fc..9ffcefecb3bb 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -10852,15 +10852,10 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 	sis->highest_bit = bsi.nr_pages - 1;
- 	return bsi.nr_extents;
- }
--#else
--static void btrfs_swap_deactivate(struct file *file)
--{
--}
- 
--static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
--			       sector_t *span)
-+static ssize_t btrfs_swap_rw(struct kiocb *iocb, struct iov_iter *iter)
- {
--	return -EOPNOTSUPP;
-+	return iomap_dio_rw(iocb, iter, &btrfs_dio_iomap_ops, NULL, 0);
- }
- #endif
- 
-@@ -10944,8 +10939,11 @@ static const struct address_space_operations btrfs_aops = {
- #endif
- 	.set_page_dirty	= btrfs_set_page_dirty,
- 	.error_remove_page = generic_error_remove_page,
-+#ifdef CONFIG_SWAP
- 	.swap_activate	= btrfs_swap_activate,
- 	.swap_deactivate = btrfs_swap_deactivate,
-+	.swap_rw	= btrfs_swap_rw,
-+#endif
- 	.supports	= AS_SUPPORTS_DIRECT_IO,
- };
- 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 08d3541d8daa..3c14724d58a8 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3651,6 +3651,11 @@ static int ext4_iomap_swap_activate(struct swap_info_struct *sis,
- 				       &ext4_iomap_report_ops);
- }
- 
-+static ssize_t ext4_swap_rw(struct kiocb *iocb, struct iov_iter *iter)
-+{
-+	return iomap_dio_rw(iocb, iter, &ext4_iomap_ops, NULL, 0);
-+}
-+
- static const struct address_space_operations ext4_aops = {
- 	.readpage		= ext4_readpage,
- 	.readahead		= ext4_readahead,
-@@ -3666,6 +3671,7 @@ static const struct address_space_operations ext4_aops = {
- 	.is_partially_uptodate  = block_is_partially_uptodate,
- 	.error_remove_page	= generic_error_remove_page,
- 	.swap_activate		= ext4_iomap_swap_activate,
-+	.swap_rw		= ext4_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-@@ -3683,6 +3689,7 @@ static const struct address_space_operations ext4_journalled_aops = {
- 	.is_partially_uptodate  = block_is_partially_uptodate,
- 	.error_remove_page	= generic_error_remove_page,
- 	.swap_activate		= ext4_iomap_swap_activate,
-+	.swap_rw		= ext4_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-@@ -3701,6 +3708,7 @@ static const struct address_space_operations ext4_da_aops = {
- 	.is_partially_uptodate  = block_is_partially_uptodate,
- 	.error_remove_page	= generic_error_remove_page,
- 	.swap_activate		= ext4_iomap_swap_activate,
-+	.swap_rw		= ext4_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-@@ -3710,6 +3718,7 @@ static const struct address_space_operations ext4_dax_aops = {
- 	.bmap			= ext4_bmap,
- 	.invalidatepage		= noop_invalidatepage,
- 	.swap_activate		= ext4_iomap_swap_activate,
-+	.swap_rw		= ext4_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
-index 2a4570516591..23ade2cc8241 100644
---- a/fs/xfs/xfs_aops.c
-+++ b/fs/xfs/xfs_aops.c
-@@ -540,6 +540,13 @@ xfs_iomap_swapfile_activate(
- 			&xfs_read_iomap_ops);
- }
- 
-+static ssize_t xfs_swap_rw(struct kiocb *iocb, struct iov_iter *iter)
-+{
-+	if (iocb->ki_flags & IOCB_WRITE)
-+		return iomap_dio_rw(iocb, iter, &xfs_direct_write_iomap_ops, NULL, 0);
-+	return iomap_dio_rw(iocb, iter, &xfs_read_iomap_ops, NULL, 0);
-+}
-+
- const struct address_space_operations xfs_address_space_operations = {
- 	.readpage		= xfs_vm_readpage,
- 	.readahead		= xfs_vm_readahead,
-@@ -552,6 +559,7 @@ const struct address_space_operations xfs_address_space_operations = {
- 	.is_partially_uptodate  = iomap_is_partially_uptodate,
- 	.error_remove_page	= generic_error_remove_page,
- 	.swap_activate		= xfs_iomap_swapfile_activate,
-+	.swap_rw		= xfs_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
- 
-@@ -560,5 +568,6 @@ const struct address_space_operations xfs_dax_aops = {
- 	.set_page_dirty		= __set_page_dirty_no_writeback,
- 	.invalidatepage		= noop_invalidatepage,
- 	.swap_activate		= xfs_iomap_swapfile_activate,
-+	.swap_rw		= xfs_swap_rw,
- 	.supports		= AS_SUPPORTS_DIRECT_IO,
- };
+I am using btrfs-progs-v5.14.1
+device is a  Host Managed WDC  20TB SMR drive with firmware level C421
+its connected via a HBA 9400-8i Tri-Mode Storage Adapter , latest 20.0 FW
+I am using the /dev/sd device direct  , no lvm or device mapper or
+anything else in between
 
+after a few seconds, sometimes minutes data rate to the drive drops to
+0 and 1 or 2 cores on my system show 100% IO wait time, but no longer
+make any progress
 
+the process in question has the following stack :
+
+[ 2168.589160] task:mv              state:D stack:    0 pid: 3814
+ppid:  3679 flags:0x00004000
+[ 2168.589162] Call Trace:
+[ 2168.589163]  __schedule+0x2fa/0x910
+[ 2168.589166]  schedule+0x4f/0xc0
+[ 2168.589168]  schedule_timeout+0x8a/0x140
+[ 2168.589171]  ? __bpf_trace_tick_stop+0x10/0x10
+[ 2168.589173]  io_schedule_timeout+0x51/0x80
+[ 2168.589176]  balance_dirty_pages+0x2fa/0xe30
+[ 2168.589179]  ? __mod_lruvec_state+0x3a/0x50
+[ 2168.589182]  balance_dirty_pages_ratelimited+0x2f9/0x3c0
+[ 2168.589185]  btrfs_buffered_write+0x58e/0x7e0 [btrfs]
+[ 2168.589226]  btrfs_file_write_iter+0x138/0x3e0 [btrfs]
+[ 2168.589260]  ? ext4_file_read_iter+0x5b/0x180
+[ 2168.589262]  new_sync_write+0x114/0x1a0
+[ 2168.589265]  vfs_write+0x1c5/0x260
+[ 2168.589267]  ksys_write+0x67/0xe0
+[ 2168.589270]  __x64_sys_write+0x1a/0x20
+[ 2168.589272]  do_syscall_64+0x40/0xb0
+[ 2168.589275]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[ 2168.589277] RIP: 0033:0x7ffff7e91c27
+[ 2168.589278] RSP: 002b:00007fffffffdc48 EFLAGS: 00000246 ORIG_RAX:
+0000000000000001
+[ 2168.589280] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007ffff7e91c27
+[ 2168.589281] RDX: 0000000000020000 RSI: 00007ffff79bd000 RDI: 0000000000000004
+[ 2168.589282] RBP: 00007ffff79bd000 R08: 0000000000000000 R09: 0000000000000000
+[ 2168.589283] R10: 0000000000000022 R11: 0000000000000246 R12: 0000000000000004
+[ 2168.589284] R13: 0000000000000004 R14: 00007ffff79bd000 R15: 0000000000020000
+
+and shows up under runnable tasks :
+
+[ 2168.593562] runnable tasks:
+[ 2168.593562]  S            task   PID         tree-key  switches
+prio     wait-time             sum-exec        sum-sleep
+[ 2168.593563] -------------------------------------------------------------------------------------------------------------
+[ 2168.593565]  S        cpuhp/13    92     88923.802487        19
+120         0.000000         0.292061         0.000000 2 0 /
+[ 2168.593571]  S  idle_inject/13    93       -11.997255         3
+49         0.000000         0.005480         0.000000 2 0 /
+[ 2168.593577]  S    migration/13    94       814.287531       551
+0         0.000000      1015.550514         0.000000 2 0 /
+[ 2168.593582]  S    ksoftirqd/13    95     88762.317130        44
+120         0.000000         1.940252         0.000000 2 0 /
+[ 2168.593588]  I    kworker/13:0    96        -9.031157         5
+120         0.000000         0.017423         0.000000 2 0 /
+[ 2168.593593]  I   kworker/13:0H    97      3570.961886         5
+100         0.000000         0.034345         0.000000 2 0 /
+[ 2168.593603]  I    kworker/13:1   400    101650.731913       578
+120         0.000000        10.110898         0.000000 2 0 /
+[ 2168.593611]  I   kworker/13:1H  1015    101649.600698        65
+100         0.000000         1.443300         0.000000 2 0 /
+[ 2168.593618]  S           loop3  1994     99133.655903        70
+100         0.000000         1.137468         0.000000 2 0 /
+[ 2168.593625]  S           snapd  3161        15.296181       166
+120         0.000000        90.296991         0.000000 2 0
+/system.slice/snapd.service
+[ 2168.593631]  S           snapd  3198        10.047573        49
+120         0.000000         5.646247         0.000000 2 0
+/system.slice/snapd.service
+[ 2168.593639]  S            java  2446       970.743682       301
+120         0.000000       101.648659         0.000000 2 0
+/system.slice/stor_tomcat.service
+[ 2168.593645]  S C1 CompilerThre  2573      1033.157689      3636
+120         0.000000       615.256247         0.000000 2 0
+/system.slice/stor_tomcat.service
+[ 2168.593654]  D              mv  3814      2263.816953    186734
+120         0.000000     30087.917319         0.000000 2 0 /user.slice
+
+any idea what is going on and how to fix this ?
+
+thx.
