@@ -2,59 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED284167A2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 Sep 2021 23:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B3F416B30
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 Sep 2021 07:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243383AbhIWVoS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 Sep 2021 17:44:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243322AbhIWVoR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 Sep 2021 17:44:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 869B261214;
-        Thu, 23 Sep 2021 21:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632433365;
-        bh=RjjaToJXcNrptpcnNIYMT9jIJMpxE8u8iL6ymHPju0Q=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Js5hkx3UyfkZyVT93MR6ohhqQJsz93w+3AWXpyIJDdk23ZxVCFMEMxCAUyS9r0V1c
-         4L9NmMOAkJVHminaNDkuOIMtBypBaFajNK4Pv8TNCqw9vBKLGd5U0vy+Hd6Dw2hphZ
-         F3GgS2tRjPH9S8gt5dQhYxjrPV+HTcT+dHuaaiqFZCCqRHMw4ASmQj+pb9+J984SuN
-         CYDgtF5WH9AsAnG3O0MJwNr1YcNA+MKmjV6blrjDErhYYg8EFc14W6matfVvn2cAL9
-         OjcVkq6S7sMjuMmiIqdFuDxFO6QZm5vGlZOKm3IXN06DgXmOT5GOML0zl73DsmGX2+
-         6PhTi5rZgc4Og==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8023C60952;
-        Thu, 23 Sep 2021 21:42:45 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 5.15-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1632432123.git.dsterba@suse.com>
-References: <cover.1632432123.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1632432123.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc2-tag
-X-PR-Tracked-Commit-Id: 0619b7901473c380abc05d45cf9c70bee0707db3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f9e36107ec70445fbdc2562ba5b60c0a7ed57c20
-Message-Id: <163243336551.317.17177075008294838993.pr-tracker-bot@kernel.org>
-Date:   Thu, 23 Sep 2021 21:42:45 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S244115AbhIXFcp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 24 Sep 2021 01:32:45 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53630 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242549AbhIXFcp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 24 Sep 2021 01:32:45 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DBA8B1FDCB;
+        Fri, 24 Sep 2021 05:31:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632461471; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=d0fVNhjvA8KDVH0zHOMJYCCIjYPCVAG5p+NUMVq8JLw=;
+        b=mJp78Q1/QYlzujpQoSjrBPkuOXJXdK9fsSrZ9MI+ZtVR2T8Ay3OZVHaIP9kFjmAdEhX40L
+        ziah6+tzmYHF3tf/lF5/BZMnnU1fCXU+wJLhnyoz12b+2t4xcpZaZMemaBccQ22Gzw+yV9
+        EWtqxPPrrdEr6UZ+F2Mr27aEx4wg20Y=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D78E13A09;
+        Fri, 24 Sep 2021 05:31:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id LEq2Mp5iTWH4RAAAMHmgww
+        (envelope-from <wqu@suse.com>); Fri, 24 Sep 2021 05:31:10 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH v2 1/2] btrfs: make sure btrfs_io_context::fs_info is always initialized
+Date:   Fri, 24 Sep 2021 13:30:52 +0800
+Message-Id: <20210924053053.16100-1-wqu@suse.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Thu, 23 Sep 2021 23:36:38 +0200:
+Currently btrfs_io_context::fs_info is only initialized in
+btrfs_map_bio(), but there are call sites like btrfs_map_sblock()
+which calls __btrfs_map_block() directly, leaving bioc::fs_info
+uninitialized (NULL).
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc2-tag
+Currently this is fine, but later cleanup will rely on bioc::fs_info to
+grab fs_info, and this can be a hidden problem for such usage.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f9e36107ec70445fbdc2562ba5b60c0a7ed57c20
+This patch will remove such hidden uninitialized member by always
+assigning bioc::fs_info at alloc_btrfs_io_context().
 
-Thank you!
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Fix the wrong function name in the commit message
+---
+ fs/btrfs/volumes.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index d7cc24ed9620..89c802f8b35b 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5807,7 +5807,8 @@ static void sort_parity_stripes(struct btrfs_io_context *bioc, int num_stripes)
+ 	}
+ }
+ 
+-static struct btrfs_io_context *alloc_btrfs_io_context(int total_stripes,
++static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_info,
++						       int total_stripes,
+ 						       int real_stripes)
+ {
+ 	struct btrfs_io_context *bioc = kzalloc(
+@@ -5827,6 +5828,7 @@ static struct btrfs_io_context *alloc_btrfs_io_context(int total_stripes,
+ 	atomic_set(&bioc->error, 0);
+ 	refcount_set(&bioc->refs, 1);
+ 
++	bioc->fs_info = fs_info;
+ 	bioc->tgtdev_map = (int *)(bioc->stripes + total_stripes);
+ 	bioc->raid_map = (u64 *)(bioc->tgtdev_map + real_stripes);
+ 
+@@ -5941,7 +5943,7 @@ static int __btrfs_map_block_for_discard(struct btrfs_fs_info *fs_info,
+ 					&stripe_index);
+ 	}
+ 
+-	bioc = alloc_btrfs_io_context(num_stripes, 0);
++	bioc = alloc_btrfs_io_context(fs_info, num_stripes, 0);
+ 	if (!bioc) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -6463,7 +6465,8 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+ 		tgtdev_indexes = num_stripes;
+ 	}
+ 
+-	bioc = alloc_btrfs_io_context(num_alloc_stripes, tgtdev_indexes);
++	bioc = alloc_btrfs_io_context(fs_info, num_alloc_stripes,
++				      tgtdev_indexes);
+ 	if (!bioc) {
+ 		ret = -ENOMEM;
+ 		goto out;
+@@ -6699,7 +6702,6 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 	bioc->orig_bio = first_bio;
+ 	bioc->private = first_bio->bi_private;
+ 	bioc->end_io = first_bio->bi_end_io;
+-	bioc->fs_info = fs_info;
+ 	atomic_set(&bioc->stripes_pending, bioc->num_stripes);
+ 
+ 	if ((bioc->map_type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.33.0
+
