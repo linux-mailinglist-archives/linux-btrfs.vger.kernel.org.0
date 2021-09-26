@@ -2,178 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F0C418B8B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 00:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3FD418D05
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 01:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhIZWiq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 26 Sep 2021 18:38:46 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:48333 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230331AbhIZWip (ORCPT
+        id S232035AbhIZXPC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 26 Sep 2021 19:15:02 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:53435 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230507AbhIZXPC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 26 Sep 2021 18:38:45 -0400
-Received: from dread.disaster.area (pa49-195-238-16.pa.nsw.optusnet.com.au [49.195.238.16])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 4810C82C75F;
-        Mon, 27 Sep 2021 08:37:00 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mUclW-00H5s5-TN; Mon, 27 Sep 2021 08:36:58 +1000
-Date:   Mon, 27 Sep 2021 08:36:58 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Howells <dhowells@redhat.com>, hch@lst.de,
-        trond.myklebust@primarydata.com, Theodore Ts'o <tytso@mit.edu>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
-        Bob Liu <bob.liu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Seth Jennings <sjenning@linux.vnet.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
-        Dan Magenheimer <dan.magenheimer@oracle.com>,
-        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
-Message-ID: <20210926223658.GE1756565@dread.disaster.area>
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
- <20210925234243.GA1756565@dread.disaster.area>
- <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
+        Sun, 26 Sep 2021 19:15:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1632698005; x=1664234005;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=7WaRSB5N6SoiJ6Yfu3NMHtZFgT5ckxKWpwAFggq60fo=;
+  b=jdKT1mu0lZjsvK18ynM6mT5b8wsHBZEgx387jlxYaNX4wQMzM/aZ6h6l
+   /ElOCtwlVU4bij3ggTnhorFpxu7rWNOWecUM1D1DXtkunmj2hNWsa1kbr
+   nVwJz/8cwSH7yv2IYMCTinQNRlu2Qe8wkwO9f+cacbf5ud3CI2jjGyao7
+   idJuQqC0+jN4rYF0SMlh2//nr6OQ2ldn4Q3f/IDYJZErtck9VEgooagj3
+   zBMDzRNWH2xCY7Jj3rySVdjd5SfL0CVykGb4B0YpUFQXIn+7+dpD6npHI
+   R/WzNko3lGGJhGmclRHd52R84W3VHUwc+rDvX0Lrmub/gnMvaqNsvNMEB
+   g==;
+X-IronPort-AV: E=Sophos;i="5.85,325,1624291200"; 
+   d="scan'208";a="292650084"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 27 Sep 2021 07:13:25 +0800
+IronPort-SDR: Y7rwjlqEKQKfLn50N1uXtzBfapBC7DrT6u88jj0uo9mM3ONMETPxxNQZSbaiwqTUVy1+Qfxq3A
+ 0P5s9dKffij/CodGkAhmrIMYluLXh59LX7J5BVHSPH04IDdtGvLQPrH8DLDnlFajOiojHwGo5q
+ 8jcS11t0qXv6r2TNqVxmlDG4BldbhOyUTDiQVO1Ylzzn1keZgEADbnNo2kgNvrpyBLt5F+1sZG
+ R4LuVv0/Ron52TL7npaLoZ9LnB4cUHkUhjZmmXwormWPjEFlhv6dHm/LBl1lUlEwPX5Kw8suCF
+ TtOf+bM1XVkiy+WfzOmRUT22
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2021 15:47:59 -0700
+IronPort-SDR: 0zjNJGmsNoQkyS5QXi1+9ZGUifWvnx5TaDDBOMxxFuptq428LDWZLQNeRKIs6gOJHvS0Sa4Slh
+ L7jG7PPo7g1vOeXTPHkgvX6+GL9qRPDirl4O4MaiAqn9QAnhHvZShIkgQadjvlizFN3DCz4bSq
+ 4WFCtWU/6Db4//jLPMVpBzCrT4t+yzDpnAtNv0ZzfvEO4MNgGX7KT+LL3dGllx6dd1aXAFOHYG
+ CLsFApYdtpAqegWBmTAqE8wQlegsxeZDfjMxGDF75SPNAUJkITYhhiWs3UQKrc9gAH5KrGhD85
+ Ljw=
+WDCIronportException: Internal
+Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
+  by uls-op-cesaip01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2021 16:13:25 -0700
+Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4HHhQX6Tc3z1SHvx
+        for <linux-btrfs@vger.kernel.org>; Sun, 26 Sep 2021 16:13:24 -0700 (PDT)
+Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)"
+        header.d=opensource.wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        opensource.wdc.com; h=content-transfer-encoding:content-type
+        :in-reply-to:organization:from:references:to:content-language
+        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
+        1632698004; x=1635290005; bh=7WaRSB5N6SoiJ6Yfu3NMHtZFgT5ckxKWpwA
+        Fggq60fo=; b=pv07haGZhg3PJAumyvXPA+iKkn1E0yVCBH0Wqm6RRWkaZ9uQgzx
+        jHbSqL473HRT6mUXi8fuWn1xeSUHMmrMc7/ZmCzBGUShd0WYTV8HTmq6qmoOLVcO
+        hPOT46R0XhZFDJQKbWQElzJsk5nNC9JAz1n4xnJDK5C63ufIs+7Y/NmCQQeaKnBp
+        iaHvmz/v4vB+dBdo38T3HAqWvzb7UJQadScTnPNYYMWF4uqJGfdxpXS9hdtTk4Pq
+        dA0wa2NmDGqg42szvrChyCuPYz3fNUmX4z0QO/lyRBjI3z3T2YrVuFOhNmBqFwtM
+        uodnCa41bQhl1KrumSoK+TS5x5SEFlT+niQ==
+X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
+Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
+        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id j8lsgkXqQQrB for <linux-btrfs@vger.kernel.org>;
+        Sun, 26 Sep 2021 16:13:24 -0700 (PDT)
+Received: from [10.89.85.1] (c02drav6md6t.dhcp.fujisawa.hgst.com [10.89.85.1])
+        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4HHhQW5fLRz1RvTg;
+        Sun, 26 Sep 2021 16:13:23 -0700 (PDT)
+Message-ID: <b57cace4-fc85-2a5f-e88b-d056b12a2a0b@opensource.wdc.com>
+Date:   Mon, 27 Sep 2021 08:13:22 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YU/ks7Sfw5Wj0K1p@casper.infradead.org>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=DzKKRZjfViQTE5W6EVc0VA==:117 a=DzKKRZjfViQTE5W6EVc0VA==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=7-415B0cAAAA:8
-        a=bMojAixK84Ma9oYoJFgA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.1
+Subject: Re: seagate hm-smr issue
+Content-Language: en-US
+To:     Jingyun He <jingyun.ho@gmail.com>, linux-btrfs@vger.kernel.org,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+References: <CAHQ7scUiLtcTqZOMMY5kbWUBOhGRwKo6J6wYPT5WY+C=cD49nQ@mail.gmail.com>
+From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Organization: Western Digital
+In-Reply-To: <CAHQ7scUiLtcTqZOMMY5kbWUBOhGRwKo6J6wYPT5WY+C=cD49nQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Sep 26, 2021 at 04:10:43AM +0100, Matthew Wilcox wrote:
-> On Sun, Sep 26, 2021 at 09:42:43AM +1000, Dave Chinner wrote:
-> > Ok, so if the filesystem is doing block mapping in the IO path now,
-> > why does the swap file still need to map the file into a private
-> > block mapping now?  i.e all the work that iomap_swapfile_activate()
-> > does for filesystems like XFS and ext4 - it's this completely
-> > redundant now that we are doing block mapping during swap file IO
-> > via iomap_dio_rw()?
+On 2021/09/26 22:57, Jingyun He wrote:
+> Hello,
+> Btrfs works very well on WD/HGST disks, we got some Seagate HM-SMR
+> disks recently,  model number is ST14000NM0428,
+> mkfs.btrfs works fine, and I can mount it, and push data into disk.
+> once we used up the capacity, and umount it. then we are unable to
+> re-mount it again.
+> The mount process will never end, the process just hangs there.
 > 
-> Hi Dave,
+> Anybody can help me with this?
+
++Naohiro and Johannes
+
+This is not a hang. Mount will just take a looooong time due to an inefficiency
+in how block groups are checked: a single zone report zone command is issued per
+block group, so with a disk almost full, that takes a long time (75000+zones
+checked one by one). Naohiro is working on a fix for this.
+
 > 
-> Thanks for bringing up all these points.  I think they all deserve to go
-> into the documentation as "things to consider" for people implementing
-> ->swap_rw for their filesystem.
+> Thanks.
 > 
-> Something I don't think David perhaps made sufficiently clear is that
-> regular DIO from userspace gets handled by ->read_iter and ->write_iter.
-> This ->swap_rw op is used exclusive for, as the name suggests, swap DIO.
-> So filesystems don't have to handle swap DIO and regular DIO the same
-> way, and can split the allocation work between ->swap_activate and the
-> iomap callback as they see fit (as long as they can guarantee the lack
-> of deadlocks under memory pressure).
 
-I understand this completely.
 
-The point is that the implementation of ->swap_rw is to call
-iomap_dio_rw() with the same ops as the normal DIO read/write path
-uses. IOWs, apart from the IOCB_SWAP flag, there is no practical
-difference between the "swap DIO" and "normal DIO" I/O paths.
-
-> There are several advantages to using the DIO infrastructure for
-> swap:
-> 
->  - unify block & net swap paths
->  - allow filesystems to _see_ swap IOs instead of being bypassed
->  - get rid of the swap extent rbtree
->  - allow writing compound pages to swap files instead of splitting
->    them
->  - allow ->readpage to be synchronous for better error reporting
->  - remove page_file_mapping() and page_file_offset()
-> 
-> I suspect there are several problems with this patchset, but I'm not
-> likely to have a chance to read it closely for a few days.  If you
-> have time to give the XFS parts a good look, that would be fantastic.
-
-That's what I've already done, and all the questions I've raised are
-from asking a simple question: what happens if a transaction is
-required to complete the iomap_dio_rw() swap write operation?
-
-I mean, this is similar to the problems with IOCB_NOWAIT - we're
-supposed to return -EAGAIN if we might block during IO submission,
-and one of those situations we have to consider is "do we need to
-run a transaction". If we get it wrong (and we do!), then the worst
-thing that happens is that there is a long latency for IO
-submission. It's a minor performance issue, not the end of the
-world.
-
-The difference with IOCB_SWAP is that "don't do transactions during
-iomap_dio_rw()" is a _hard requirement_ on both IO submission and
-completion. That means, from now and forever, we will have to
-guarantee a path through iomap_dio_rw() that will never run
-transactions on an IO. That requirement needs to be enforced in
-every block mapping callback into each filesystem, as this is
-something the iomap infrastructure cannot enforce. Hence we'll have
-to plumb IOCB_SWAP into a new IOMAP_SWAP iterator flag to pass to
-the ->iomap_begin() DIO methods to ensure they do the right thing.
-
-And then the question becomes: what happens if the filesystem cannot
-do the right thing? Can the swap code handle an error? e.g. the
-first thing that xfs_direct_write_iomap_begin() and
-xfs_read_iomap_begin() do is check if the filesystem is shut down
-and returns -EIO in that case. IOWs, we've now got normal filesystem
-"reject all IO" corruption protection mechanisms in play. Using
-iomap_dio_rw() as it stands means that _all swapfile IO will fail_
-if the filesystem shuts down.
-
-Right now the swap file IO can keep going blissfully unaware of the
-filesystem failure status. The open swapfile will prevent the
-filesystem from being unmounted. Hence to unmount the shutdown
-filesystem to correct the problem, first the swap file has to be
-turned off, which means we have a fail-safe behaviour. Using the
-iomap_dio_rw() path means that swapfile IO _can and will fail_.
-
-AFAICT, swap IO errors are pretty much thrown away by the mm code;
-the swap_writepage() return value is ignored or placed on the swap
-cache address space and ignored. And it looks like the new read path
-just sets PageError() and leaves it to callers to detect and deal
-with a swapin failure because swap_readpage() is now void...
-
-So it seems like there's a whole new set of failure cases using the
-DIO path introduces into the swap IO path that haven't been
-considered here. I can't see why we wouldn't be able to solve them,
-but these considerations lead me to think that use of the DIO is
-based on an incorrect assumption - DIO is not a "simple low level
-IO" interface.
-
-Hence I suspect that we'd be much better off with a new
-iomap_swap_rw() implementation that just does what swap needs
-without any of the complexity of the DIO API. Internally iomap can
-share what it needs to share with the DIO path, but at this point
-I'm not sure we should be overloading the iomap_dio_rw() path with
-the semantics required by swap.
-
-e.g. we limit iomap_swap_rw() to only accept written or unwritten
-block mappings within file size on inodes with clean metadata (i.e.
-pure overwrite to guarantee no modification transactions), and then
-the fs provided ->iomap_begin callback can ignore shutdown state,
-elide inode level locking, do read-only mappings, etc without adding
-extra overhead to the existing DIO code path...
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Damien Le Moal
+Western Digital Research
