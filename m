@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3829418FD3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 09:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BA3418FD4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 09:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbhI0HYS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S233249AbhI0HYS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 27 Sep 2021 03:24:18 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56824 "EHLO
+Received: from smtp-out2.suse.de ([195.135.220.29]:56830 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbhI0HYK (ORCPT
+        with ESMTP id S233233AbhI0HYL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:24:10 -0400
+        Mon, 27 Sep 2021 03:24:11 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1FE60200A2
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:32 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2A0D9200A3
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632727352; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1632727353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=utp8bdI8bMnOjuy6aIn2BUbkUBSZXGq2twUnbkb3XP8=;
-        b=SrIKgu5A6s1lfr00c28laBupca+gWyilQ3cU2aeBKJnz4KEGgt5rGZ0ELwQFsmvDmhgs2b
-        qiKIyhr7eUvt3yKsxJhh8qpCsiwvi4yV+yYAYnNul+AqFV/C/MVonpSVdTkx0xuv0vU6ig
-        UyykVmEixFY8cKouiZpvdP1QMiiqujQ=
+        bh=0DLVdQGDBxYXRRiPRPikkDwWyLF8p9/OBCVDsPmlOi8=;
+        b=TxDDsiZ/1Uowrm5cPGZSRD69TsBlw2tUxDkUss/xwII+VmNSehD3zHOGJRzrMYPd/imZ4P
+        bTOkN8i5mIUiDO9znprZVbgThDTtWjDm2W4vjCAX0RC4OjskkmepMSdbyGWm0WAQd8lgY5
+        qDCgu1LRMqGsdVJMAQ9nhYnvkeBM71Q=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77E0013A1E
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:31 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FDD113A1E
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id qIolETdxUWEVLAAAMHmgww
+        id kOgKEzhxUWEVLAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:31 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:32 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 05/26] btrfs: make add_ra_bio_pages() to be subpage compatible
-Date:   Mon, 27 Sep 2021 15:21:47 +0800
-Message-Id: <20210927072208.21634-6-wqu@suse.com>
+Subject: [PATCH v3 06/26] btrfs: introduce compressed_bio::pending_sectors to trace compressed bio more elegantly
+Date:   Mon, 27 Sep 2021 15:21:48 +0800
+Message-Id: <20210927072208.21634-7-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927072208.21634-1-wqu@suse.com>
 References: <20210927072208.21634-1-wqu@suse.com>
@@ -52,257 +52,259 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-If we remove the subpage limitation in add_ra_bio_pages(), then read a
-compressed extent which has part of its range in next page, like the
-following inode layout:
+For btrfs_submit_compressed_read() and btrfs_submit_compressed_write(),
+we have a pretty weird dance around compressed_bio::pending_bios:
 
-	0	32K	64K	96K	128K
-	|<--------------|-------------->|
+  btrfs_submit_compressed_read/write()
+  {
+	cb = kmalloc()
+	refcount_set(&cb->pending_bios, 0);
+	bio = btrfs_alloc_bio();
 
-Btrfs will trigger ASSERT() in endio function:
+	/* NOTE here, we haven't yet submitted any bio */
+	refcount_set(&cb->pending_bios, 1);
 
- assertion failed: atomic_read(&subpage->readers) >= nbits
- ------------[ cut here ]------------
- kernel BUG at fs/btrfs/ctree.h:3431!
- Internal error: Oops - BUG: 0 [#1] SMP
- Workqueue: btrfs-endio btrfs_work_helper [btrfs]
- Call trace:
-  assertfail.constprop.0+0x28/0x2c [btrfs]
-  btrfs_subpage_end_reader+0x148/0x14c [btrfs]
-  end_page_read+0x8c/0x100 [btrfs]
-  end_bio_extent_readpage+0x320/0x6b0 [btrfs]
-  bio_endio+0x15c/0x1dc
-  end_workqueue_fn+0x44/0x64 [btrfs]
-  btrfs_work_helper+0x74/0x250 [btrfs]
-  process_one_work+0x1d4/0x47c
-  worker_thread+0x180/0x400
-  kthread+0x11c/0x120
-  ret_from_fork+0x10/0x30
- ---[ end trace c8b7b552d3bb408c ]---
+	for (pg_index = 0; pg_index < cb->nr_pages; pg_index++) {
+		if (submit) {
+			/* Here we submit bio, but we always have one
+			 * extra pending_bios */
+			refcount_inc(&cb->pending_bios);
+			ret = btrfs_map_bio();
+		}
+	}
 
-[CAUSE]
-When we read the page range [0, 64K), we find it's a compressed extent,
-and we will try to add extra pages in add_ra_bio_pages() to avoid
-reading the same compressed extent.
+	/* Submit the last bio */
+	ret = btrfs_map_bio();
+  }
 
-But when we add such page into the read bio, it doesn't follow the
-behavior of btrfs_do_readpage() to properly set subpage::readers.
+There are two reasons why we do this:
 
-This means, for page [64K, 128K), its subpage::readers is still 0.
+- compressed_bio::pending_bios is a refcount
+  Thus if it's reduced to 0, it can not be increased again.
 
-And when endio is executed on both pages, since page [64K, 128K) has 0
-subpage::readers, it triggers above ASSERT()
+- To ensure the compressed_bio is not freed by some submitted bios
+  If the submitted bio is finished before the next bio submitted,
+  we can free the compressed_bio completely.
 
-[FIX]
-Function add_ra_bio_pages() is far from subpage compatible, it always
-assume PAGE_SIZE == sectorsize, thus when it skip to next range it
-always just skip PAGE_SIZE.
+But the above code is sometimes confusing, and we can do it better by
+just introduce a new member, compressed_bio::pending_sectors.
 
-Make it subpage compatible by:
+Now we use compressed_bio::pending_sectors to indicate whether we have any
+pending sectors under IO or not yet submitted.
 
-- Skip to next page properly when needed
-  If we find there is already a page cache, we need to skip to next
-  page.
-  For that case, we shouldn't just skip PAGE_SIZE bytes, but use
-  @pg_index to calculate the next bytenr and continue.
+If pending_sectors == 0, we're definitely the last bio of compressed_bio,
+and is OK to release the compressed bio.
 
-- Only add the page range covered by current extent map
-  We need to calculate which range is covered by current extent map and
-  only add that part into the read bio.
+Now the workflow looks like this:
 
-- Update subpage::readers before submitting the bio
+  btrfs_submit_compressed_read/write()
+  {
+	cb = kmalloc()
+	atomic_set(&cb->pending_bios, 0);
+	refcount_set(&cb->pending_sectors,
+		     compressed_len >> sectorsize_bits);
+	bio = btrfs_alloc_bio();
 
-- Use proper cursor other than confusing @last_offset
+	for (pg_index = 0; pg_index < cb->nr_pages; pg_index++) {
+		if (submit) {
+			refcount_inc(&cb->pending_bios);
+			ret = btrfs_map_bio();
+		}
+	}
 
-- Calculate the missed threshold based on sector size
-  It's no longer using missed pages, as for 64K page size, we have at
-  most 3 pages to skip. (If aligned only 2 pages)
+	/* Submit the last bio */
+	refcount_inc(&cb->pending_bios);
+	ret = btrfs_map_bio();
+  }
 
-- Add ASSERT() to make sure our bytenr is always aligned
-
-- Add comment for the function
-  Add an especial note for subpage case, as the function won't really
-  work well for subpage cases.
+For now we still need pending_bios for later error handling, but will
+remove pending_bios eventually after properly handling the errors.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 89 +++++++++++++++++++++++++++---------------
- fs/btrfs/extent_io.c   |  1 +
- 2 files changed, 59 insertions(+), 31 deletions(-)
+ fs/btrfs/compression.c | 78 ++++++++++++++++++++++++------------------
+ fs/btrfs/compression.h |  5 ++-
+ 2 files changed, 49 insertions(+), 34 deletions(-)
 
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index b50927740d27..7a5d56eaceb7 100644
+index 7a5d56eaceb7..a8f23f5f77c9 100644
 --- a/fs/btrfs/compression.c
 +++ b/fs/btrfs/compression.c
-@@ -541,13 +541,24 @@ static u64 bio_end_offset(struct bio *bio)
- 	return page_offset(last->bv_page) + last->bv_len + last->bv_offset;
+@@ -192,6 +192,39 @@ static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
+ 	return 0;
  }
  
 +/*
-+ * Add extra pages in the same compressed file extent so that we don't
-+ * need to re-read the same extent again and again.
++ * Reduce bio and io accounting for a compressed_bio with its coresponding bio.
 + *
-+ * NOTE: this won't work well for subpage, as for subpage read, we lock the
-+ * full page then submit bio for each compressed/regular extents.
-+ *
-+ * This means, if we have several sectors in the same page points to the same
-+ * on-disk compressed data, we will re-read the same extent many times and
-+ * this function can only help for the next page.
++ * Return true if there is no pending bio nor io.
++ * Return false otherwise.
 + */
- static noinline int add_ra_bio_pages(struct inode *inode,
- 				     u64 compressed_end,
- 				     struct compressed_bio *cb)
- {
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	unsigned long end_index;
--	unsigned long pg_index;
--	u64 last_offset;
-+	u64 cur = bio_end_offset(cb->orig_bio);
- 	u64 isize = i_size_read(inode);
- 	int ret;
- 	struct page *page;
-@@ -555,10 +566,8 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 	struct address_space *mapping = inode->i_mapping;
- 	struct extent_map_tree *em_tree;
- 	struct extent_io_tree *tree;
--	u64 end;
--	int misses = 0;
-+	int sectors_missed = 0;
- 
--	last_offset = bio_end_offset(cb->orig_bio);
- 	em_tree = &BTRFS_I(inode)->extent_tree;
- 	tree = &BTRFS_I(inode)->io_tree;
- 
-@@ -577,18 +586,29 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 
- 	end_index = (i_size_read(inode) - 1) >> PAGE_SHIFT;
- 
--	while (last_offset < compressed_end) {
--		pg_index = last_offset >> PAGE_SHIFT;
-+	while (cur < compressed_end) {
-+		u64 page_end;
-+		u64 pg_index = cur >> PAGE_SHIFT;
-+		u32 add_size;
- 
- 		if (pg_index > end_index)
- 			break;
- 
- 		page = xa_load(&mapping->i_pages, pg_index);
- 		if (page && !xa_is_value(page)) {
--			misses++;
--			if (misses > 4)
-+			sectors_missed += (PAGE_SIZE - offset_in_page(cur)) >>
-+					  fs_info->sectorsize_bits;
++static bool dec_and_test_compressed_bio(struct compressed_bio *cb,
++					struct bio *bio)
++{
++	struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
++	unsigned int bi_size = 0;
++	bool last_io = false;
++	struct bio_vec *bvec;
++	struct bvec_iter_all iter_all;
 +
-+			/* Beyond threshold, no need to continue */
-+			if (sectors_missed > 4)
- 				break;
--			goto next;
++	/*
++	 * At endio time, bi_iter.bi_size doesn't represent the real bio size.
++	 * Thus here we have to iterate through all segments to grab correct
++	 * bio size.
++	 */
++	bio_for_each_segment_all(bvec, bio, iter_all)
++		bi_size += bvec->bv_len;
 +
-+			/*
-+			 * Jump to next page start as we already have page for
-+			 * current offset.
-+			 */
-+			cur = (pg_index << PAGE_SHIFT) + PAGE_SIZE;
-+			continue;
- 		}
++	if (bio->bi_status)
++		cb->errors = 1;
++
++	ASSERT(bi_size && bi_size <= cb->compressed_len);
++	last_io = refcount_sub_and_test(bi_size >> fs_info->sectorsize_bits,
++					&cb->pending_sectors);
++	atomic_dec(&cb->pending_bios);
++	return last_io;
++}
++
+ /* when we finish reading compressed pages from the disk, we
+  * decompress them and then run the bio end_io routines on the
+  * decompressed pages (in the inode address space).
+@@ -211,13 +244,7 @@ static void end_compressed_bio_read(struct bio *bio)
+ 	unsigned int mirror = btrfs_bio(bio)->mirror_num;
+ 	int ret = 0;
  
- 		page = __page_cache_alloc(mapping_gfp_constraint(mapping,
-@@ -598,14 +618,11 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 
- 		if (add_to_page_cache_lru(page, mapping, pg_index, GFP_NOFS)) {
- 			put_page(page);
--			goto next;
-+			/* There is already a page, skip to page end */
-+			cur = (pg_index << PAGE_SHIFT) + PAGE_SIZE;
-+			continue;
- 		}
- 
--		/*
--		 * at this point, we have a locked page in the page cache
--		 * for these bytes in the file.  But, we have to make
--		 * sure they map to this compressed extent on disk.
--		 */
- 		ret = set_page_extent_mapped(page);
- 		if (ret < 0) {
- 			unlock_page(page);
-@@ -613,18 +630,22 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 			break;
- 		}
- 
--		end = last_offset + PAGE_SIZE - 1;
--		lock_extent(tree, last_offset, end);
-+		page_end = (pg_index << PAGE_SHIFT) + PAGE_SIZE - 1;
-+		lock_extent(tree, cur, page_end);
- 		read_lock(&em_tree->lock);
--		em = lookup_extent_mapping(em_tree, last_offset,
--					   PAGE_SIZE);
-+		em = lookup_extent_mapping(em_tree, cur, page_end + 1 - cur);
- 		read_unlock(&em_tree->lock);
- 
--		if (!em || last_offset < em->start ||
--		    (last_offset + PAGE_SIZE > extent_map_end(em)) ||
-+		/*
-+		 * At this point, we have a locked page in the page cache
-+		 * for these bytes in the file.  But, we have to make
-+		 * sure they map to this compressed extent on disk.
-+		 */
-+		if (!em || cur < em->start ||
-+		    (cur + fs_info->sectorsize > extent_map_end(em)) ||
- 		    (em->block_start >> 9) != cb->orig_bio->bi_iter.bi_sector) {
- 			free_extent_map(em);
--			unlock_extent(tree, last_offset, end);
-+			unlock_extent(tree, cur, page_end);
- 			unlock_page(page);
- 			put_page(page);
- 			break;
-@@ -642,19 +663,25 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 			}
- 		}
- 
-+		add_size = min(em->start + em->len, page_end + 1) - cur;
- 		ret = bio_add_page(cb->orig_bio, page,
--				   PAGE_SIZE, 0);
+-	if (bio->bi_status)
+-		cb->errors = 1;
 -
--		if (ret == PAGE_SIZE) {
--			put_page(page);
--		} else {
--			unlock_extent(tree, last_offset, end);
-+				   add_size, offset_in_page(cur));
-+		if (ret != add_size) {
-+			unlock_extent(tree, cur, page_end);
- 			unlock_page(page);
- 			put_page(page);
- 			break;
- 		}
--next:
--		last_offset += PAGE_SIZE;
-+		/*
-+		 * If it's subpage, we also need to increase its
-+		 * subpage::readers numbre, as at endio we will
-+		 * decrease subpage::readers and to unlock the page.
-+		 */
-+		if (fs_info->sectorsize < PAGE_SIZE)
-+			btrfs_subpage_start_reader(fs_info, page,
-+				cur, add_size);
-+		put_page(page);
-+		cur += add_size;
+-	/* if there are more bios still pending for this compressed
+-	 * extent, just exit
+-	 */
+-	if (!refcount_dec_and_test(&cb->pending_bios))
++	if (!dec_and_test_compressed_bio(cb, bio))
+ 		goto out;
+ 
+ 	/*
+@@ -335,13 +362,7 @@ static void end_compressed_bio_write(struct bio *bio)
+ 	struct page *page;
+ 	unsigned int index;
+ 
+-	if (bio->bi_status)
+-		cb->errors = 1;
+-
+-	/* if there are more bios still pending for this compressed
+-	 * extent, just exit
+-	 */
+-	if (!refcount_dec_and_test(&cb->pending_bios))
++	if (!dec_and_test_compressed_bio(cb, bio))
+ 		goto out;
+ 
+ 	/* ok, we're the last bio for this extent, step one is to
+@@ -407,7 +428,9 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
+ 	if (!cb)
+ 		return BLK_STS_RESOURCE;
+-	refcount_set(&cb->pending_bios, 0);
++	atomic_set(&cb->pending_bios, 0);
++	refcount_set(&cb->pending_sectors,
++		     compressed_len >> fs_info->sectorsize_bits);
+ 	cb->errors = 0;
+ 	cb->inode = &inode->vfs_inode;
+ 	cb->start = start;
+@@ -441,7 +464,6 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 		bio->bi_opf |= REQ_CGROUP_PUNT;
+ 		kthread_associate_blkcg(blkcg_css);
  	}
- 	return 0;
- }
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index ba258b8329c9..781f6ea3c92d 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3590,6 +3590,7 @@ int btrfs_do_readpage(struct page *page, struct extent_map **em_cached,
- 		bool force_bio_submit = false;
- 		u64 disk_bytenr;
+-	refcount_set(&cb->pending_bios, 1);
  
-+		ASSERT(IS_ALIGNED(cur, fs_info->sectorsize));
- 		if (cur >= last_byte) {
- 			struct extent_state *cached = NULL;
+ 	/* create and submit bios for the compressed pages */
+ 	bytes_left = compressed_len;
+@@ -469,13 +491,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
  
+ 		page->mapping = NULL;
+ 		if (submit || len < PAGE_SIZE) {
+-			/*
+-			 * inc the count before we submit the bio so
+-			 * we know the end IO handler won't happen before
+-			 * we inc the count.  Otherwise, the cb might get
+-			 * freed before we're done setting it up
+-			 */
+-			refcount_inc(&cb->pending_bios);
++			atomic_inc(&cb->pending_bios);
+ 			ret = btrfs_bio_wq_end_io(fs_info, bio,
+ 						  BTRFS_WQ_ENDIO_DATA);
+ 			BUG_ON(ret); /* -ENOMEM */
+@@ -514,6 +530,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 		cond_resched();
+ 	}
+ 
++	atomic_inc(&cb->pending_bios);
+ 	ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
+ 	BUG_ON(ret); /* -ENOMEM */
+ 
+@@ -735,7 +752,9 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	if (!cb)
+ 		goto out;
+ 
+-	refcount_set(&cb->pending_bios, 0);
++	atomic_set(&cb->pending_bios, 0);
++	refcount_set(&cb->pending_sectors,
++		     compressed_len >> fs_info->sectorsize_bits);
+ 	cb->errors = 0;
+ 	cb->inode = inode;
+ 	cb->mirror_num = mirror_num;
+@@ -780,7 +799,6 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	comp_bio->bi_opf = REQ_OP_READ;
+ 	comp_bio->bi_private = cb;
+ 	comp_bio->bi_end_io = end_compressed_bio_read;
+-	refcount_set(&cb->pending_bios, 1);
+ 
+ 	for (pg_index = 0; pg_index < nr_pages; pg_index++) {
+ 		u32 pg_len = PAGE_SIZE;
+@@ -809,18 +827,11 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 		if (submit || bio_add_page(comp_bio, page, pg_len, 0) < pg_len) {
+ 			unsigned int nr_sectors;
+ 
++			atomic_inc(&cb->pending_bios);
+ 			ret = btrfs_bio_wq_end_io(fs_info, comp_bio,
+ 						  BTRFS_WQ_ENDIO_DATA);
+ 			BUG_ON(ret); /* -ENOMEM */
+ 
+-			/*
+-			 * inc the count before we submit the bio so
+-			 * we know the end IO handler won't happen before
+-			 * we inc the count.  Otherwise, the cb might get
+-			 * freed before we're done setting it up
+-			 */
+-			refcount_inc(&cb->pending_bios);
+-
+ 			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
+ 			BUG_ON(ret); /* -ENOMEM */
+ 
+@@ -845,6 +856,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 		cur_disk_byte += pg_len;
+ 	}
+ 
++	atomic_inc(&cb->pending_bios);
+ 	ret = btrfs_bio_wq_end_io(fs_info, comp_bio, BTRFS_WQ_ENDIO_DATA);
+ 	BUG_ON(ret); /* -ENOMEM */
+ 
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index 399be0b435bf..61955581e34f 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -29,7 +29,10 @@ struct btrfs_inode;
+ 
+ struct compressed_bio {
+ 	/* number of bios pending for this compressed extent */
+-	refcount_t pending_bios;
++	atomic_t pending_bios;
++
++	/* Number of sectors with unfinished IO (unsubmitted or unfinished) */
++	refcount_t pending_sectors;
+ 
+ 	/* Number of compressed pages in the array */
+ 	unsigned int nr_pages;
 -- 
 2.33.0
 
