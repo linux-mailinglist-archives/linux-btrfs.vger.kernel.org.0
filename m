@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A38418FD0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 09:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DB0418FD1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 09:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhI0HYP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Sep 2021 03:24:15 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56812 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbhI0HYH (ORCPT
+        id S233230AbhI0HYQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Sep 2021 03:24:16 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44966 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233205AbhI0HYI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:24:07 -0400
+        Mon, 27 Sep 2021 03:24:08 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0CB7E20090
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:29 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 10BFD220C3
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632727349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1632727350; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TX/fmlKtoAcVRGx6klxNr1bFg2WTHQBsa7MDpT3lZLU=;
-        b=ikDoA7HCrgY3/wKZMKTVKFX6EG7Gijnp1y/7SlHqfmgu5+8gcEnS4LiNewYFLAA765Lbrx
-        TeufEy8izb37laPDp/wPfAUE9NNU+48D/FpOEd6UqgclBDrmKrxZaEqMFjRF9hm74fQMoP
-        bNZpckuFmLFEKyazRtKLmzkaDLvltp4=
+        bh=DesgMaRyn1FL6S66XszhVS/WQmsD5fm/RuNh79CgLW0=;
+        b=Ap1mZU0eCZ6j+BV3yrIEFB0afAips0KMqwRPSPPmSXec0MZNo8j9GtcqHUhgKEtu0lx3ur
+        ilTH4CWUb2StxH/pu+X13VkReyT7GEd3e8z7L1fnKnNUoFqx1MW+D+eCBy1dh/RIiD7JaB
+        txMv6PLqzJsMgR2WH6836FQC+r1mCQs=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65F3813A1E
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:28 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B2BC13A1E
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id QI/JDDRxUWEVLAAAMHmgww
+        id 0CYPDjVxUWEVLAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:28 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:29 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 02/26] btrfs: remove unnecessary parameter @delalloc_start for writepage_delalloc()
-Date:   Mon, 27 Sep 2021 15:21:44 +0800
-Message-Id: <20210927072208.21634-3-wqu@suse.com>
+Subject: [PATCH v3 03/26] btrfs: use async_chunk::async_cow to replace the confusing pending pointer
+Date:   Mon, 27 Sep 2021 15:21:45 +0800
+Message-Id: <20210927072208.21634-4-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927072208.21634-1-wqu@suse.com>
 References: <20210927072208.21634-1-wqu@suse.com>
@@ -52,67 +52,85 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In function __extent_writepage() we always pass page start to
-@delalloc_start for writepage_delalloc().
+For structure async_chunk, we use a very strange member layout to grab
+structure async_cow who owns this async_chunk.
 
-Thus we don't really need @delalloc_start parameter as we can extract it
-from @page.
+At initialization, it goes like this:
 
-So this patch will remove @delalloc_start parameter and make
-__extent_writepage() to declare @page_start and @page_end as const.
+		async_chunk[i].pending = &ctx->num_chunks;
+
+Then at async_cow_free() we do a super weird freeing:
+
+	/*
+	 * Since the pointer to 'pending' is at the beginning of the array of
+	 * async_chunk's, freeing it ensures the whole array has been freed.
+	 */
+	if (atomic_dec_and_test(async_chunk->pending))
+		kvfree(async_chunk->pending);
+
+This is absolutely an abuse of kvfree().
+
+Replace async_chunk::pending with async_chunk::async_cow, so that we can
+grab the async_cow structure directly, without this strange dancing.
+
+And with this change, there is no requirement for any specific member
+location.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ fs/btrfs/inode.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c56973f7daae..ba258b8329c9 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3768,10 +3768,11 @@ static void update_nr_written(struct writeback_control *wbc,
-  */
- static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 		struct page *page, struct writeback_control *wbc,
--		u64 delalloc_start, unsigned long *nr_written)
-+		unsigned long *nr_written)
- {
--	u64 page_end = delalloc_start + PAGE_SIZE - 1;
-+	u64 page_end = page_offset(page) + PAGE_SIZE - 1;
- 	bool found;
-+	u64 delalloc_start = page_offset(page);
- 	u64 delalloc_to_write = 0;
- 	u64 delalloc_end = 0;
- 	int ret;
-@@ -4049,8 +4050,8 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 			      struct extent_page_data *epd)
- {
- 	struct inode *inode = page->mapping->host;
--	u64 start = page_offset(page);
--	u64 page_end = start + PAGE_SIZE - 1;
-+	const u64 page_start = page_offset(page);
-+	const u64 page_end = page_start + PAGE_SIZE - 1;
- 	int ret;
- 	int nr = 0;
- 	size_t pg_offset;
-@@ -4085,7 +4086,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 	}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a643be30c18a..3aa820d64b94 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -455,11 +455,10 @@ struct async_chunk {
+ 	struct list_head extents;
+ 	struct cgroup_subsys_state *blkcg_css;
+ 	struct btrfs_work work;
+-	atomic_t *pending;
++	struct async_cow *async_cow;
+ };
  
- 	if (!epd->extent_locked) {
--		ret = writepage_delalloc(BTRFS_I(inode), page, wbc, start,
-+		ret = writepage_delalloc(BTRFS_I(inode), page, wbc,
- 					 &nr_written);
- 		if (ret == 1)
- 			return 0;
-@@ -4136,7 +4137,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 	 * capable of that.
- 	 */
- 	if (PageError(page))
--		end_extent_writepage(page, ret, start, page_end);
-+		end_extent_writepage(page, ret, page_start, page_end);
- 	unlock_page(page);
- 	ASSERT(ret <= 0);
- 	return ret;
+ struct async_cow {
+-	/* Number of chunks in flight; must be first in the structure */
+ 	atomic_t num_chunks;
+ 	struct async_chunk chunks[];
+ };
+@@ -1324,18 +1323,17 @@ static noinline void async_cow_submit(struct btrfs_work *work)
+ static noinline void async_cow_free(struct btrfs_work *work)
+ {
+ 	struct async_chunk *async_chunk;
++	struct async_cow *async_cow;
+ 
+ 	async_chunk = container_of(work, struct async_chunk, work);
+ 	if (async_chunk->inode)
+ 		btrfs_add_delayed_iput(async_chunk->inode);
+ 	if (async_chunk->blkcg_css)
+ 		css_put(async_chunk->blkcg_css);
+-	/*
+-	 * Since the pointer to 'pending' is at the beginning of the array of
+-	 * async_chunk's, freeing it ensures the whole array has been freed.
+-	 */
+-	if (atomic_dec_and_test(async_chunk->pending))
+-		kvfree(async_chunk->pending);
++
++	async_cow = async_chunk->async_cow;
++	if (atomic_dec_and_test(&async_cow->num_chunks))
++		kvfree(async_cow);
+ }
+ 
+ static int cow_file_range_async(struct btrfs_inode *inode,
+@@ -1396,7 +1394,7 @@ static int cow_file_range_async(struct btrfs_inode *inode,
+ 		 * lightweight reference for the callback lifetime
+ 		 */
+ 		ihold(&inode->vfs_inode);
+-		async_chunk[i].pending = &ctx->num_chunks;
++		async_chunk[i].async_cow = ctx;
+ 		async_chunk[i].inode = &inode->vfs_inode;
+ 		async_chunk[i].start = start;
+ 		async_chunk[i].end = cur_end;
 -- 
 2.33.0
 
