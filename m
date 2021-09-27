@@ -2,225 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F331419D3B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 19:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF3C419D8B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 19:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236322AbhI0Rqt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Sep 2021 13:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
+        id S236572AbhI0RyE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Sep 2021 13:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237147AbhI0Rqm (ORCPT
+        with ESMTP id S236232AbhI0Rx7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 13:46:42 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9200C01C1E7
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 10:28:47 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id i25so81151760lfg.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 10:28:47 -0700 (PDT)
+        Mon, 27 Sep 2021 13:53:59 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADEEC061714
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 10:52:21 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id a13so11679693qvo.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 10:52:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A56Y8vubx9E1fRx9kLH+bsFwvljncjk2qjWoH4Y1nwA=;
-        b=krDQoTzuAlAWzAWY3HkKmvwOKklOM8g3qw//5CuQm+H7z7XZKHdwTV46KgvUHhj4u3
-         KmbpCwEPneD5bWQsaJLZihwUM2aHLQNoYcDupfzp51DLnLil9plYQe4rLqcUwWK/9/Dl
-         MubpaiHkQ3B3XmtVdZ7ejPpH9zbmLFZzzF53PIRDMviUBSTJ6jTlVAG596QLgCb17EJj
-         QOUgMestT/fUCzQlr1l1BvmtYmRNkffDPDw+m+X4LX5imMC33GBsMa9dMvjxkDCdYe6F
-         hO7VMGA7bKrkF8liMP6CrcgSbaSiumpSljtfhosnL583iZOzm8jXqe3bOyFb+z9oZZgO
-         2ecA==
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=xDstKhbwOzNVWD585CPPnkFrTwI/GqAGZnWJfclHzoQ=;
+        b=yQjugjR12wp+fPTM3b5hyZD0qjIFpUGc9oB1nfevhKm01lRrM2nUzUcFznSzfDWOI2
+         x8i+iaZkSAewFfKMPUfIeMQR9YV3LKOTcXUWxdN7AmAvvxDrBdDqhpf0hPMr2lJKAGOM
+         i4OGbrIHpyagJv4nGwR0B4dxSjzFicKVKK3Qx9ozkpHr82AD2i1rljeGYkfITg78V99W
+         AwPHqS2y/8sq+8klgY09HsP99Y2+6yZX+Jp12hMJyH8R5Y1Ov9W/RmiafIRu5h6mqz8C
+         nnVbHzIluKW7vT99MdenLpIMs6eSmZ6tTnsGGZ6gNMMZChDF/gB+gu9pK0VfYGf3WpsZ
+         XtdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A56Y8vubx9E1fRx9kLH+bsFwvljncjk2qjWoH4Y1nwA=;
-        b=JDbXrjdYcdefkKyAQ3M8X5BU/BC8qKhIB+akjnq6dqA+hNjTVDS/Ve5xVTP29i7Ing
-         DMNRva7MW0Po4RCOJi/f7cnAjpAUd8vjdOh5+MxDGNtwt6FAgBlEXOJ0t7jpq6V6omZ5
-         vZ4Nz/wgKGiLsHB3peVjRQcih5Em7/ebrgEtSLsqxqVw8ztxNUlq+GnCNmCMOlQAXsHt
-         jIX5UdSKdMSKNZ1+09HmTPo+t1yb1g7/qjzDHOPtpLKQHn8W8Tfrx6iIOxlKsPXv2eP5
-         bCcQsCSbNIMevoT68y4Bn3r4b1utrJY69t0dazp6gdruCDInYjCms1OcfP2vLZ2xeLFo
-         pnMQ==
-X-Gm-Message-State: AOAM533aMNCeENFWwNR+i0z9RZ9nkwE4YH/5jcYk9nzNCFzXCmmG7vta
-        ro+ZlK0NKHw70O5NUADwiQ6G8KQLaJivWV8l1dA=
-X-Google-Smtp-Source: ABdhPJxVhuVusJZP8LsukV7reh/vODzhXpIsOfyQdb9wARy7RXf33/d1VzKNY3teo5QnyfYZ70eL+wsN2GH+p6g48OI=
-X-Received: by 2002:a2e:94c4:: with SMTP id r4mr994464ljh.407.1632763723694;
- Mon, 27 Sep 2021 10:28:43 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xDstKhbwOzNVWD585CPPnkFrTwI/GqAGZnWJfclHzoQ=;
+        b=xYR2fC4dsmo7fG0KbJy7zde63ZakToLOluqAufD6RTenuyZ1ZSsci3bYJP2/w2Q2yr
+         wbMOoNshuU0KlryjeyVSl5hhkSirp1Vt0oyFPxWwLSAV4u6VIhJiWnDD4LvxPKueFRw3
+         +KqvTICcEzip/bcsDeVF9kY4Y2uA+jnEpnb4L7RBYA2tPX5YfhCswDpzWZpRxpSr34ih
+         wIelaPMEBtI0/sScPAn16SlxNSnMR97nb0umPj4KmKhFsnB0X7XCkv+rt39O+pdXUKM3
+         YY2ZiV+qq9eEUtL4LXTkIULnxuT5cKcfV2N/MiGQnSbfB97Nxi8vLxUrtTqLLbsnoV/w
+         eooQ==
+X-Gm-Message-State: AOAM531QC0Vg+s2f4e0k7ODcDJiOkpKAPIC2MoXOpyHKV7Lvet2+xzwb
+        9Dt4p8oF9r1tYo3Q9SYL3yg4Rg==
+X-Google-Smtp-Source: ABdhPJyPdYBHIqx5fFNmwaDyEVFNjNb+CcRwS+PHVQtHYNkK3v5+NjV1Q2IfPxgIlGvmi5NgGpiRjA==
+X-Received: by 2002:a0c:ed31:: with SMTP id u17mr1294273qvq.40.1632765140151;
+        Mon, 27 Sep 2021 10:52:20 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c0a8:11c1::1159? ([2620:10d:c091:480::1:ba44])
+        by smtp.gmail.com with ESMTPSA id o15sm13043367qkk.129.2021.09.27.10.52.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 10:52:19 -0700 (PDT)
+Subject: Re: [PATCH 2/3] btrfs: add a btrfs_has_fs_error helper
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1621523846.git.josef@toxicpanda.com>
+ <a4bc9de04778cf6aa038f5164d01cf467de32ed5.1621523846.git.josef@toxicpanda.com>
+ <20210525153414.GA7604@twin.jikos.cz>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <58051805-d45d-bcae-9178-f7f4f3995a30@toxicpanda.com>
+Date:   Mon, 27 Sep 2021 13:52:18 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <CALssuR00NvTHJJuoOFhw=4+fHARtBN2PLqTr4W06PT5VMagh_A@mail.gmail.com>
- <6db88069-e263-ae85-4f69-adb9ec69ee76@opensource.wdc.com>
-In-Reply-To: <6db88069-e263-ae85-4f69-adb9ec69ee76@opensource.wdc.com>
-From:   Sven Oehme <oehmes@gmail.com>
-Date:   Mon, 27 Sep 2021 11:28:32 -0600
-Message-ID: <CALssuR2gAEoxhDK=z0ryx30GAWiXcZ70pbUEq5mAxd-5pmsyRw@mail.gmail.com>
-Subject: Re: Host managed SMR drive issue
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210525153414.GA7604@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On 5/25/21 11:34 AM, David Sterba wrote:
+> On Thu, May 20, 2021 at 11:21:32AM -0400, Josef Bacik wrote:
+>> We have a few flags that are inconsistently used to describe the fs in
+>> different states of failure.  As of
+>>
+>> 	btrfs: always abort the transaction if we abort a trans handle
+>>
+>> we will always set BTRFS_FS_STATE_ERROR if we abort, so we don't have to
+>> check both ABORTED and ERROR to see if things have gone wrong.  Add a
+>> helper to check BTRFS_FS_STATE_HELPER and then convert all checkers of
+>> FS_STATE_ERROR to use the helper.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>   fs/btrfs/ctree.h       |  5 +++++
+>>   fs/btrfs/disk-io.c     |  8 +++-----
+>>   fs/btrfs/extent_io.c   |  2 +-
+>>   fs/btrfs/file.c        |  2 +-
+>>   fs/btrfs/inode.c       |  6 +++---
+>>   fs/btrfs/scrub.c       |  2 +-
+>>   fs/btrfs/super.c       |  2 +-
+>>   fs/btrfs/transaction.c | 11 +++++------
+>>   fs/btrfs/tree-log.c    |  2 +-
+>>   9 files changed, 21 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+>> index 938d8ebf4cf3..3c22c3308667 100644
+>> --- a/fs/btrfs/ctree.h
+>> +++ b/fs/btrfs/ctree.h
+>> @@ -3531,6 +3531,11 @@ do {								\
+>>   			  (errno), fmt, ##args);		\
+>>   } while (0)
+>>   
+>> +static inline bool btrfs_has_fs_error(struct btrfs_fs_info *fs_info)
+>> +{
+>> +	return test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state);
+> 
+> This could also get the unlikely() annotattion, similar to what
+> TRANS_ABORTED does. Which means this inline would have to be a macro eg.
+> FS_ERROR or similar.
+> 
+> 
 
-I also have an  Adaptec HBA 1100-4i at FW level 4.11 (latest) , which
-according to https://ask.adaptec.com/app/answers/detail/a_id/17472 is
-supported but see the exact same hangs after a few minutes ...
+Yup I'll do that.
 
-what i see in dmesg is :
+>> @@ -4372,8 +4371,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+>>   			btrfs_err(fs_info, "commit super ret %d", ret);
+>>   	}
+>>   
+>> -	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state) ||
+>> -	    test_bit(BTRFS_FS_STATE_TRANS_ABORTED, &fs_info->fs_state))
+>> +	if (btrfs_has_fs_error(fs_info))
+>>   		btrfs_error_commit_super(fs_info);
+> 
+> This is not equivalent change, previously it also checks for
+> STATE_TRANS_ABORTED, this was added in af7227338135 ("Btrfs: clean up
+> resources during umount after trans is aborted") . So it should be kept
+> in place or there may be a bigger problem when the filesystem and
+> transaction error bits get out of sync, I haven't checked.
+> 
 
-[Mon Sep 27 11:20:03 2021] INFO: task kworker/u102:6:190092 blocked
-for more than 120 seconds.
-[Mon Sep 27 11:20:03 2021]       Not tainted 5.14-test #1
-[Mon Sep 27 11:20:03 2021] "echo 0 >
-/proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[Mon Sep 27 11:20:03 2021] task:kworker/u102:6  state:D stack:    0
-pid:190092 ppid:     2 flags:0x00004000
-[Mon Sep 27 11:20:03 2021] Workqueue: btrfs-worker-high
-btrfs_work_helper [btrfs]
-[Mon Sep 27 11:20:03 2021] Call Trace:
-[Mon Sep 27 11:20:03 2021]  __schedule+0x2fa/0x910
-[Mon Sep 27 11:20:03 2021]  schedule+0x4f/0xc0
-[Mon Sep 27 11:20:03 2021]  io_schedule+0x46/0x70
-[Mon Sep 27 11:20:03 2021]  blk_mq_get_tag+0x11b/0x270
-[Mon Sep 27 11:20:03 2021]  ? wait_woken+0x80/0x80
-[Mon Sep 27 11:20:03 2021]  __blk_mq_alloc_request+0xec/0x120
-[Mon Sep 27 11:20:03 2021]  blk_mq_submit_bio+0x12f/0x580
-[Mon Sep 27 11:20:03 2021]  submit_bio_noacct+0x42a/0x4f0
-[Mon Sep 27 11:20:03 2021]  submit_bio+0x4f/0x1b0
-[Mon Sep 27 11:20:03 2021]  btrfs_map_bio+0x1a3/0x4c0 [btrfs]
-[Mon Sep 27 11:20:03 2021]  run_one_async_done+0x3b/0x70 [btrfs]
-[Mon Sep 27 11:20:03 2021]  btrfs_work_helper+0x132/0x2e0 [btrfs]
-[Mon Sep 27 11:20:03 2021]  process_one_work+0x220/0x3c0
-[Mon Sep 27 11:20:03 2021]  worker_thread+0x53/0x420
-[Mon Sep 27 11:20:03 2021]  kthread+0x12f/0x150
-[Mon Sep 27 11:20:03 2021]  ? process_one_work+0x3c0/0x3c0
-[Mon Sep 27 11:20:03 2021]  ? __kthread_bind_mask+0x70/0x70
-[Mon Sep 27 11:20:03 2021]  ret_from_fork+0x22/0x30
+We had this because sometimes an empty transaction would be aborted and we 
+wouldn't set FS_STATE_ERROR.  With the patch
 
-i will also downgrade the LSI adapter to FW 19, but i think this is
-unrelated to the FW as i can see this with 2 completely different
-HBA's and 2 completely different drives.
+   btrfs: always abort the transaction if we abort a trans handle
 
-Sven
+we no longer have the case where we have TRANS_ABORTED but not FS_STATE_ERROR 
+set.  Now TRANS_ABORTED simply keeps us from printing multiple transaction abort 
+messages, while FS_STATE_ERROR tells us there's been a problem.  Thanks,
 
-Sven
-
-
-On Sun, Sep 26, 2021 at 5:19 PM Damien Le Moal
-<damien.lemoal@opensource.wdc.com> wrote:
->
-> On 2021/09/25 3:25, Sven Oehme wrote:
-> > Hi,
-> >
-> > i am running into issues with Host Managed SMR drive testing. when i
-> > try to copy or move a file to the btrfs filesystem it just hangs. i
-> > tried multiple 5.12,5.13 as well as 5.14 all the way to 5.14.6 but the
-> > issue still persists.
-> >
-> > here is the setup :
-> >
-> > I am using btrfs-progs-v5.14.1
-> > device is a  Host Managed WDC  20TB SMR drive with firmware level C421
-> > its connected via a HBA 9400-8i Tri-Mode Storage Adapter , latest 20.0 FW
->
-> Beware of the Broadcom FW rev 20. We found problems with it: very slow zone
-> command scheduling leading to command timeout is some cases. FW 19 does not seem
-> to have this issue. But that is likely not the cause of the problem here.
->
-> Is there anything of interest in dmesg ? Any IO errors ?
->
-> Naohiro, Johannes,
->
-> Any idea ?
->
->
->
-> > I am using the /dev/sd device direct  , no lvm or device mapper or
-> > anything else in between
-> >
-> > after a few seconds, sometimes minutes data rate to the drive drops to
-> > 0 and 1 or 2 cores on my system show 100% IO wait time, but no longer
-> > make any progress
-> >
-> > the process in question has the following stack :
-> >
-> > [ 2168.589160] task:mv              state:D stack:    0 pid: 3814
-> > ppid:  3679 flags:0x00004000
-> > [ 2168.589162] Call Trace:
-> > [ 2168.589163]  __schedule+0x2fa/0x910
-> > [ 2168.589166]  schedule+0x4f/0xc0
-> > [ 2168.589168]  schedule_timeout+0x8a/0x140
-> > [ 2168.589171]  ? __bpf_trace_tick_stop+0x10/0x10
-> > [ 2168.589173]  io_schedule_timeout+0x51/0x80
-> > [ 2168.589176]  balance_dirty_pages+0x2fa/0xe30
-> > [ 2168.589179]  ? __mod_lruvec_state+0x3a/0x50
-> > [ 2168.589182]  balance_dirty_pages_ratelimited+0x2f9/0x3c0
-> > [ 2168.589185]  btrfs_buffered_write+0x58e/0x7e0 [btrfs]
-> > [ 2168.589226]  btrfs_file_write_iter+0x138/0x3e0 [btrfs]
-> > [ 2168.589260]  ? ext4_file_read_iter+0x5b/0x180
-> > [ 2168.589262]  new_sync_write+0x114/0x1a0
-> > [ 2168.589265]  vfs_write+0x1c5/0x260
-> > [ 2168.589267]  ksys_write+0x67/0xe0
-> > [ 2168.589270]  __x64_sys_write+0x1a/0x20
-> > [ 2168.589272]  do_syscall_64+0x40/0xb0
-> > [ 2168.589275]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > [ 2168.589277] RIP: 0033:0x7ffff7e91c27
-> > [ 2168.589278] RSP: 002b:00007fffffffdc48 EFLAGS: 00000246 ORIG_RAX:
-> > 0000000000000001
-> > [ 2168.589280] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007ffff7e91c27
-> > [ 2168.589281] RDX: 0000000000020000 RSI: 00007ffff79bd000 RDI: 0000000000000004
-> > [ 2168.589282] RBP: 00007ffff79bd000 R08: 0000000000000000 R09: 0000000000000000
-> > [ 2168.589283] R10: 0000000000000022 R11: 0000000000000246 R12: 0000000000000004
-> > [ 2168.589284] R13: 0000000000000004 R14: 00007ffff79bd000 R15: 0000000000020000
-> >
-> > and shows up under runnable tasks :
-> >
-> > [ 2168.593562] runnable tasks:
-> > [ 2168.593562]  S            task   PID         tree-key  switches
-> > prio     wait-time             sum-exec        sum-sleep
-> > [ 2168.593563] -------------------------------------------------------------------------------------------------------------
-> > [ 2168.593565]  S        cpuhp/13    92     88923.802487        19
-> > 120         0.000000         0.292061         0.000000 2 0 /
-> > [ 2168.593571]  S  idle_inject/13    93       -11.997255         3
-> > 49         0.000000         0.005480         0.000000 2 0 /
-> > [ 2168.593577]  S    migration/13    94       814.287531       551
-> > 0         0.000000      1015.550514         0.000000 2 0 /
-> > [ 2168.593582]  S    ksoftirqd/13    95     88762.317130        44
-> > 120         0.000000         1.940252         0.000000 2 0 /
-> > [ 2168.593588]  I    kworker/13:0    96        -9.031157         5
-> > 120         0.000000         0.017423         0.000000 2 0 /
-> > [ 2168.593593]  I   kworker/13:0H    97      3570.961886         5
-> > 100         0.000000         0.034345         0.000000 2 0 /
-> > [ 2168.593603]  I    kworker/13:1   400    101650.731913       578
-> > 120         0.000000        10.110898         0.000000 2 0 /
-> > [ 2168.593611]  I   kworker/13:1H  1015    101649.600698        65
-> > 100         0.000000         1.443300         0.000000 2 0 /
-> > [ 2168.593618]  S           loop3  1994     99133.655903        70
-> > 100         0.000000         1.137468         0.000000 2 0 /
-> > [ 2168.593625]  S           snapd  3161        15.296181       166
-> > 120         0.000000        90.296991         0.000000 2 0
-> > /system.slice/snapd.service
-> > [ 2168.593631]  S           snapd  3198        10.047573        49
-> > 120         0.000000         5.646247         0.000000 2 0
-> > /system.slice/snapd.service
-> > [ 2168.593639]  S            java  2446       970.743682       301
-> > 120         0.000000       101.648659         0.000000 2 0
-> > /system.slice/stor_tomcat.service
-> > [ 2168.593645]  S C1 CompilerThre  2573      1033.157689      3636
-> > 120         0.000000       615.256247         0.000000 2 0
-> > /system.slice/stor_tomcat.service
-> > [ 2168.593654]  D              mv  3814      2263.816953    186734
-> > 120         0.000000     30087.917319         0.000000 2 0 /user.slice
-> >
-> > any idea what is going on and how to fix this ?
->
->
->
-> >
-> > thx.
-> >
->
->
-> --
-> Damien Le Moal
-> Western Digital Research
+Josef
