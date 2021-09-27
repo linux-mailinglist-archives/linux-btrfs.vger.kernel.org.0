@@ -2,96 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4324F419DCF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 20:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B84419E7C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 20:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235909AbhI0SHR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Sep 2021 14:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235694AbhI0SHJ (ORCPT
+        id S236353AbhI0SnS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Sep 2021 14:43:18 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40910 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236290AbhI0SnR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 14:07:09 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48EDC061740
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 11:05:30 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id m7so20940946qke.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 11:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=KeItr4l2pcJk3E61qcbEVPtp48CLKSQAvi6b14/8UF4=;
-        b=s4hSyvyf6XNOL9/p8QcnDITEyUQ0bizBInmgaNJr92pWg3G7j3SCSTv5zZFbuJrBaB
-         2gWVoUvET8cmM2goeVuuRFefjK0YqGnnIuI5w6fBW5FTm12SIfQaQGfEIDLdtcFKiWX8
-         snS5Eh/xEj2x0jSdKGeUL6Y73VSEjlUd/62lLOLXwKEE8+4wDBpvpkvxgYxO/6xBfz/4
-         UTS7sJxMwMGUMPXZ/SHk99vGVc1N/PlZHI1QHZBYAecPuHiFdSgxSmCp9a9RPUx25tBp
-         Ii7HXwXQRVFs6S3i2xm+RJF0MdNIYoVZmqeCaoDuxjgNbDmt84Voe4aNnVaZiGzdWByE
-         26Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KeItr4l2pcJk3E61qcbEVPtp48CLKSQAvi6b14/8UF4=;
-        b=zeV1Fo04MFxLZFiYDosO692gYSCIC2QrsL+SxHrFTEGW1xdd4HeKItzwW33Xgn7AHs
-         fiCYazWromKo8OgyKKS30bmlWvBMwb/0nwb0bs5JfAgIt7khUdVhSadCR6Ht5eSuLRXB
-         HNv0cM1DCy9EU5+PCuvZ6LAvor8afBqjR939sHLcf/QLjK2p2RaLbI2EVUoa5Pn5/PEW
-         beKlnF9wOZ2iY0NO5ffNFhMLZxkl5IRttewbPp2c5uesUYey+aF8WCT1vG/OZTbjJNbT
-         bdIbR8bwgYCRPOBFt1pVGN6FrH2qf3G1nZ0kptk8K5FleWpE70eTYcJJRgEwopi9hiWP
-         C3XA==
-X-Gm-Message-State: AOAM531uxEIFkBQ3LlbgNza8HZESxjR4gmJeUf56W0j04VBoC0C5tgR2
-        khCwUxDVW39ZMO9wBDqhHIk5u7YtYuiq+g==
-X-Google-Smtp-Source: ABdhPJzLAmrhsBUo6vs8CJxPG/8Xsg6+eg4HE7Zt8KeHf9ArPaoQ9FzIDtupELkLKgoME040TuXQpg==
-X-Received: by 2002:a37:746:: with SMTP id 67mr1268416qkh.465.1632765929788;
-        Mon, 27 Sep 2021 11:05:29 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l28sm12827279qkl.127.2021.09.27.11.05.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Sep 2021 11:05:29 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 5/5] btrfs: fix abort logic in btrfs_replace_file_extents
-Date:   Mon, 27 Sep 2021 14:05:14 -0400
-Message-Id: <6d8adc363ee08747d4e5ee2f521b1e0e155516a1.1632765815.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1632765815.git.josef@toxicpanda.com>
-References: <cover.1632765815.git.josef@toxicpanda.com>
+        Mon, 27 Sep 2021 14:43:17 -0400
+Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3006F2222D;
+        Mon, 27 Sep 2021 18:41:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1632768098;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3BIK87Z1TSHRjJuqDlLTykiL9siE8UJtUszwhyeaFgI=;
+        b=vk7Eu4NZzaeWWCiqfEE/ieG50xszc4HXtyYAwsVLHXZBAtRMJyoSzMO+SmeeefXKCuxkAf
+        x7vjaISivMT5MAn05mTafm6ZvnhGKSnMJRegrast6pYjR5/s42V/lgHqiraxfa2opXVfQl
+        kIG9Ive6G6ddGojAuum5vr2Z9sKdJ5g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1632768098;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3BIK87Z1TSHRjJuqDlLTykiL9siE8UJtUszwhyeaFgI=;
+        b=qPoFOBnsCRchmDPrHXPRVLb1BuQ3z/sg+LgXBPh+69eYDWVzQ4/eGEImzKax3wlvanDlqe
+        TyD3LVDlBhr/5xDA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay1.suse.de (Postfix) with ESMTP id F04DC25D3E;
+        Mon, 27 Sep 2021 18:41:37 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 15519DA799; Mon, 27 Sep 2021 20:41:21 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 20:41:21 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 3/5] btrfs-progs: introduce btrfs_pread wrapper for pread
+Message-ID: <20210927184121.GD9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+References: <20210927041554.325884-1-naohiro.aota@wdc.com>
+ <20210927041554.325884-4-naohiro.aota@wdc.com>
+ <PH0PR04MB7416B3EFBE477A4309A81A329BA79@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR04MB7416B3EFBE477A4309A81A329BA79@PH0PR04MB7416.namprd04.prod.outlook.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Error injection testing uncovered a case where we'd end up with a
-corrupt file system with a missing extent in the middle of a file.  This
-occurs because the if statement to decide if we should abort is wrong.
-The only way we would abort in this case is if we got a ret !=
--EOPNOTSUPP and we called from the file clone code.  However the
-prealloc code uses this path too.  Instead we need to abort if there is
-an error, and the only error we _don't_ abort on is -EOPNOTSUPP and only
-if we came from the clone file code.
+On Mon, Sep 27, 2021 at 10:23:17AM +0000, Johannes Thumshirn wrote:
+> I'd squash that one into the previous patch, but that's preference I guess.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/file.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index fdceab28587e..f9a1498cf030 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2710,8 +2710,9 @@ int btrfs_replace_file_extents(struct btrfs_inode *inode,
- 			 * returned by __btrfs_drop_extents() without having
- 			 * changed anything in the file.
- 			 */
--			if (extent_info && !extent_info->is_new_extent &&
--			    ret && ret != -EOPNOTSUPP)
-+			if (ret &&
-+			    (ret != -EOPNOTSUPP ||
-+			     (extent_info && extent_info->is_new_extent)))
- 				btrfs_abort_transaction(trans, ret);
- 			break;
- 		}
--- 
-2.26.3
-
+Yeah, 2 patches are preferred.
