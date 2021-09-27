@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB667418FE3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 09:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC0F418FE4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 09:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233303AbhI0HYa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Sep 2021 03:24:30 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56892 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233287AbhI0HY0 (ORCPT
+        id S233305AbhI0HYb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Sep 2021 03:24:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45002 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233293AbhI0HY1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:24:26 -0400
+        Mon, 27 Sep 2021 03:24:27 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7F5BC20092
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:48 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 87BD8220C0
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632727368; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1632727369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wake+Pyj6y4y29m8ILGHv8i1LLK5CHl7PnrUKu7+FMU=;
-        b=nCTL8Q9agGxbQKO0IJ8UiMhLj2l9pLcfz3NbSGmrvmTltn+igVaf63TdqDmr3Hoz96jrPV
-        OLI9cAQ5NvtHfl+3h6BEH/GFnovnpegSgwrbof7gvfDCD+pl4niXscyAcxYp/aZYz3SYES
-        FYEKg7yGaJf0JoLXq/ZaeAo1F8G0A6E=
+        bh=wXUrbBs8vVAfjOkff5jwV/Un6BYocL5pQo2CkNzkeo8=;
+        b=FusvUfj/gVtHSme0dVkN1x9bkRb+5Hxh/nqj1idJ8X3/9i8j5yZ8yv1vLzYEDThQU8JXyv
+        917UICARq/Yg4HrQBq5FvuDFawzy5QCDy3gpiQASCWwMruhwzVF9us2edqDVVipg9TIwrV
+        VDTiRnqwQhxCSdHrtcl59BprTdOwRyU=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D799513A1E
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:47 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD62B13A1E
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id +EiCKEdxUWEVLAAAMHmgww
+        id OPf2KUhxUWEVLAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:47 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:48 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 21/26] btrfs: extract uncompressed async extent submission code into a new helper
-Date:   Mon, 27 Sep 2021 15:22:03 +0800
-Message-Id: <20210927072208.21634-22-wqu@suse.com>
+Subject: [PATCH v3 22/26] btrfs: rework lzo_compress_pages() to make it subpage compatible
+Date:   Mon, 27 Sep 2021 15:22:04 +0800
+Message-Id: <20210927072208.21634-23-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927072208.21634-1-wqu@suse.com>
 References: <20210927072208.21634-1-wqu@suse.com>
@@ -52,138 +52,374 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Introduce a new helper, submit_uncompressed_range(), for async cow cases
-where we fallback to cow.
+There are several problems in lzo_compress_pages() preventing it from
+being subpage compatible:
 
-There are some new modification introduced to the helper:
+- No page offset is calculated when reading from inode pages
+  For subpage case, we could have @start which is not aligned to
+  PAGE_SIZE.
 
-- Proper locked_page detection
-  It's possible that the async_extent range doesn't cover the locked
-  page.
-  In that case we shouldn't unlock the locked page.
+  Thus the destination where we read data from must take offset in page
+  into consideration.
 
-  In the new helper, we will ensure that we only unlock the locked page
-  when:
+- The padding for segment header is bound to PAGE_SIZE
+  This means, for subpage case we can skip several corners where on x86
+  machines we need to add padding zeros.
 
-  * The locked page covers part of the async_extent range
-  * The locked page is not unlocked by cow_file_range() nor
-    extent_write_locked_range()
+The rework will:
 
-  This also means extra comments are added focusing on the page locking.
+- Update the comment to replace "page" with "sector"
 
-- Add extra comment on some rare parameter used.
-  We use @unlock_page = 0 for cow_file_range(), where only two call
-  sites doing the same thing, including the new helper.
+- Introduce a new helper, copy_compressed_data_to_page(), to do the copy
+  So that we don't need to bother page switches for both input and
+  output.
 
-  It's definitely worthy some comments.
+  Now in lzo_compress_pages() we only care about page switching for
+  input, while in copy_compressed_data_to_page() we only care the page
+  switching for output.
+
+- Only one main cursor
+  For lzo_compress_pages() we use @cur_in as main curor.
+  It will be the file offset we are currently at.
+
+  All other helper variables will be only declared inside the loop.
+
+  For copy_compressed_data_to_page() it's similar, we will have
+  @cur_out at the main cursor, which records how many bytes are in the
+  output.
+
+- Get rid of kmap()/kunmap()
+  Instead of using __GFP_HIGHMEM and needs to do kmap()/kunmap(), just
+  get rid of that GFP flag, so we can use page_address() and never
+  bother the kmap()/kunmap() thing.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/inode.c | 76 +++++++++++++++++++++++++++++++++---------------
- 1 file changed, 52 insertions(+), 24 deletions(-)
+ fs/btrfs/lzo.c | 270 ++++++++++++++++++++++++-------------------------
+ 1 file changed, 134 insertions(+), 136 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6a13169adf44..977a6b582c10 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -839,6 +839,43 @@ static void free_async_extent_pages(struct async_extent *async_extent)
- 	async_extent->pages = NULL;
+diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+index c25dfd1a8a54..47003cec4046 100644
+--- a/fs/btrfs/lzo.c
++++ b/fs/btrfs/lzo.c
+@@ -32,19 +32,19 @@
+  *     payload.
+  *     One regular LZO compressed extent can have one or more segments.
+  *     For inlined LZO compressed extent, only one segment is allowed.
+- *     One segment represents at most one page of uncompressed data.
++ *     One segment represents at most one sector of uncompressed data.
+  *
+  * 2.1 Segment header
+  *     Fixed size. LZO_LEN (4) bytes long, LE32.
+  *     Records the total size of the segment (not including the header).
+- *     Segment header never crosses page boundary, thus it's possible to
+- *     have at most 3 padding zeros at the end of the page.
++ *     Segment header never crosses sector boundary, thus it's possible to
++ *     have at most 3 padding zeros at the end of the sector.
+  *
+  * 2.2 Data Payload
+- *     Variable size. Size up limit should be lzo1x_worst_compress(PAGE_SIZE)
+- *     which is 4419 for a 4KiB page.
++ *     Variable size. Size up limit should be lzo1x_worst_compress(sectorsize)
++ *     which is 4419 for a 4KiB sectorsize.
+  *
+- * Example:
++ * Example with 4K sectorsize:
+  * Page 1:
+  *          0     0x2   0x4   0x6   0x8   0xa   0xc   0xe     0x10
+  * 0x0000   |  Header   | SegHdr 01 | Data payload 01 ...     |
+@@ -112,163 +112,161 @@ static inline size_t read_compress_length(const char *buf)
+ 	return le32_to_cpu(dlen);
  }
  
-+static int submit_uncompressed_range(struct btrfs_inode *inode,
-+				     struct async_extent *async_extent,
-+				     struct page *locked_page)
++/*
++ * Will do:
++ *
++ * - Write a segment header into the destination
++ * - Copy the compressed buffer into the destination
++ * - Make sure we have enough space in the last sector to fit a segment header
++ *   If not, we will pad at most (LZO_LEN (4)) - 1 bytes of zeros.
++ *
++ * Will allocate new pages when needed.
++ */
++static int copy_compressed_data_to_page(char *compressed_data,
++					size_t compressed_size,
++					struct page **out_pages,
++					u32 *cur_out,
++					const u32 sectorsize)
 +{
-+	u64 start = async_extent->start;
-+	u64 end = async_extent->start + async_extent->ram_size - 1;
-+	unsigned long nr_written = 0;
-+	int page_started = 0;
-+	int ret;
++	u32 sector_bytes_left;
++	u32 orig_out;
++	struct page *cur_page;
 +
 +	/*
-+	 * Call cow_file_range() to run the delalloc range directly,
-+	 * since we won't go to nocow or async path again.
-+	 *
-+	 * Also we call cow_file_range() with @unlock_page == 0, so that we
-+	 * can directly submit them without interruption.
++	 * We never allow a segment header crossing sector boundary, previous
++	 * run should ensure we have enough space left inside the sector.
 +	 */
-+	ret = cow_file_range(inode, locked_page, start, end, &page_started,
-+			     &nr_written, 0);
-+	/* Inline extent inserted, page get unlocked and everything is done */
-+	if (ret > 0) {
-+		ret = 0;
-+		goto out;
-+	}
-+	if (ret < 0) {
-+		if (locked_page)
-+			unlock_page(locked_page);
-+		goto out;
++	ASSERT((*cur_out / sectorsize) ==
++	       (*cur_out + LZO_LEN - 1) / sectorsize);
++
++	cur_page = out_pages[*cur_out / PAGE_SIZE];
++	/* Allocate a new page */
++	if (!cur_page) {
++		cur_page = alloc_page(GFP_NOFS);
++		if (!cur_page)
++			return -ENOMEM;
++		out_pages[*cur_out / PAGE_SIZE] = cur_page;
 +	}
 +
-+	ret = extent_write_locked_range(&inode->vfs_inode, start, end);
-+	/* All pages will be unlocked, including @locked_page */
-+out:
-+	kfree(async_extent);
-+	return ret;
++	write_compress_length(page_address(cur_page) + offset_in_page(*cur_out),
++			      compressed_size);
++	*cur_out += LZO_LEN;
++
++	orig_out = *cur_out;
++
++	/* Copy compressed data */
++	while (*cur_out - orig_out < compressed_size) {
++		u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
++				     orig_out + compressed_size - *cur_out);
++
++		cur_page = out_pages[*cur_out / PAGE_SIZE];
++		/* Allocate a new page */
++		if (!cur_page) {
++			cur_page = alloc_page(GFP_NOFS);
++			if (!cur_page)
++				return -ENOMEM;
++			out_pages[*cur_out / PAGE_SIZE] = cur_page;
++		}
++
++		memcpy(page_address(cur_page) + offset_in_page(*cur_out),
++		       compressed_data + *cur_out - orig_out, copy_len);
++
++		*cur_out += copy_len;
++	}
++
++	/*
++	 * Check if we can fit the next segment header into the remaining space
++	 * of the sector.
++	 */
++	sector_bytes_left = round_up(*cur_out, sectorsize) - *cur_out;
++	if (sector_bytes_left >= LZO_LEN || sector_bytes_left == 0)
++		return 0;
++
++	/* The remaining size is not enough, pad it with zeros */
++	memset(page_address(cur_page) + offset_in_page(*cur_out), 0,
++	       sector_bytes_left);
++	*cur_out += sector_bytes_left;
++	return 0;
 +}
 +
- static int submit_one_async_extent(struct btrfs_inode *inode,
- 				   struct async_chunk *async_chunk,
- 				   struct async_extent *async_extent,
-@@ -848,38 +885,29 @@ static int submit_one_async_extent(struct btrfs_inode *inode,
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_key ins;
-+	struct page *locked_page = NULL;
- 	struct extent_map *em;
+ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 		u64 start, struct page **pages, unsigned long *out_pages,
+ 		unsigned long *total_in, unsigned long *total_out)
+ {
+ 	struct workspace *workspace = list_entry(ws, struct workspace, list);
++	const u32 sectorsize = btrfs_sb(mapping->host->i_sb)->sectorsize;
++	struct page *page_in = NULL;
  	int ret = 0;
- 	u64 start = async_extent->start;
- 	u64 end = async_extent->start + async_extent->ram_size - 1;
+-	char *data_in;
+-	char *cpage_out, *sizes_ptr;
+-	int nr_pages = 0;
+-	struct page *in_page = NULL;
+-	struct page *out_page = NULL;
+-	unsigned long bytes_left;
+-	unsigned long len = *total_out;
+-	unsigned long nr_dest_pages = *out_pages;
+-	const unsigned long max_out = nr_dest_pages * PAGE_SIZE;
+-	size_t in_len;
+-	size_t out_len;
+-	char *buf;
+-	unsigned long tot_in = 0;
+-	unsigned long tot_out = 0;
+-	unsigned long pg_bytes_left;
+-	unsigned long out_offset;
+-	unsigned long bytes;
++	u64 cur_in = start;	/* Points to the file offset of input data */
++	u32 cur_out = 0;	/* Points to the current output byte */
++	u32 len = *total_out;
  
-+	/*
-+	 * If async_chunk->locked_page is in the async_extent range, we
-+	 * need to handle it.
-+	 */
-+	if (async_chunk->locked_page) {
-+		u64 locked_page_start = page_offset(async_chunk->locked_page);
-+		u64 locked_page_end = locked_page_start + PAGE_SIZE - 1;
-+
-+		if (!(start >= locked_page_end || end <= locked_page_start))
-+			locked_page = async_chunk->locked_page;
-+	}
- 	lock_extent(io_tree, start, end);
+ 	*out_pages = 0;
+ 	*total_out = 0;
+ 	*total_in = 0;
  
- 	/* We have fall back to uncompressed write */
--	if (!async_extent->pages) {
--		int page_started = 0;
--		unsigned long nr_written = 0;
+-	in_page = find_get_page(mapping, start >> PAGE_SHIFT);
+-	data_in = page_address(in_page);
 -
--		/*
--		 * Call cow_file_range() to run the delalloc range directly,
--		 * since we won't go to nocow or async path again.
--		 */
--		ret = cow_file_range(inode, async_chunk->locked_page,
--				     start, end, &page_started, &nr_written, 0);
--		/*
--		 * If @page_started, cow_file_range() inserted an
--		 * inline extent and took care of all the unlocking
--		 * and IO for us.  Otherwise, we need to submit
--		 * all those pages down to the drive.
--		 */
--		if (!page_started && !ret)
--			extent_write_locked_range(&inode->vfs_inode, start,
--						  end);
--		else if (ret && async_chunk->locked_page)
--			unlock_page(async_chunk->locked_page);
--		kfree(async_extent);
--		return ret;
+ 	/*
+-	 * store the size of all chunks of compressed data in
+-	 * the first 4 bytes
++	 * Skip the header for now, we will later come back and write the total
++	 * compressed size
+ 	 */
+-	out_page = alloc_page(GFP_NOFS);
+-	if (out_page == NULL) {
+-		ret = -ENOMEM;
+-		goto out;
 -	}
-+	if (!async_extent->pages)
-+		return submit_uncompressed_range(inode, async_extent,
-+						 locked_page);
+-	cpage_out = page_address(out_page);
+-	out_offset = LZO_LEN;
+-	tot_out = LZO_LEN;
+-	pages[0] = out_page;
+-	nr_pages = 1;
+-	pg_bytes_left = PAGE_SIZE - LZO_LEN;
+-
+-	/* compress at most one page of data each time */
+-	in_len = min(len, PAGE_SIZE);
+-	while (tot_in < len) {
+-		ret = lzo1x_1_compress(data_in, in_len, workspace->cbuf,
+-				       &out_len, workspace->mem);
+-		if (ret != LZO_E_OK) {
+-			pr_debug("BTRFS: lzo in loop returned %d\n",
+-			       ret);
++	cur_out += LZO_LEN;
++	while (cur_in < start + len) {
++		u32 sector_off = (cur_in - start) % sectorsize;
++		u32 in_len;
++		size_t out_len;
++
++		/* Get the input page first */
++		if (!page_in) {
++			page_in = find_get_page(mapping, cur_in >> PAGE_SHIFT);
++			ASSERT(page_in);
++		}
++
++		/* Compress at most one sector of data each time */
++		in_len = min_t(u32, start + len - cur_in,
++			       sectorsize - sector_off);
++		ASSERT(in_len);
++		ret = lzo1x_1_compress(page_address(page_in) +
++				       offset_in_page(cur_in), in_len,
++				       workspace->cbuf, &out_len,
++				       workspace->mem);
++		if (ret < 0) {
++			pr_debug("BTRFS: lzo in loop returned %d\n", ret);
+ 			ret = -EIO;
+ 			goto out;
+ 		}
  
- 	ret = btrfs_reserve_extent(root, async_extent->ram_size,
- 				   async_extent->compressed_size,
+-		/* store the size of this chunk of compressed data */
+-		write_compress_length(cpage_out + out_offset, out_len);
+-		tot_out += LZO_LEN;
+-		out_offset += LZO_LEN;
+-		pg_bytes_left -= LZO_LEN;
+-
+-		tot_in += in_len;
+-		tot_out += out_len;
+-
+-		/* copy bytes from the working buffer into the pages */
+-		buf = workspace->cbuf;
+-		while (out_len) {
+-			bytes = min_t(unsigned long, pg_bytes_left, out_len);
+-
+-			memcpy(cpage_out + out_offset, buf, bytes);
+-
+-			out_len -= bytes;
+-			pg_bytes_left -= bytes;
+-			buf += bytes;
+-			out_offset += bytes;
+-
+-			/*
+-			 * we need another page for writing out.
+-			 *
+-			 * Note if there's less than 4 bytes left, we just
+-			 * skip to a new page.
+-			 */
+-			if ((out_len == 0 && pg_bytes_left < LZO_LEN) ||
+-			    pg_bytes_left == 0) {
+-				if (pg_bytes_left) {
+-					memset(cpage_out + out_offset, 0,
+-					       pg_bytes_left);
+-					tot_out += pg_bytes_left;
+-				}
+-
+-				/* we're done, don't allocate new page */
+-				if (out_len == 0 && tot_in >= len)
+-					break;
+-
+-				if (nr_pages == nr_dest_pages) {
+-					out_page = NULL;
+-					ret = -E2BIG;
+-					goto out;
+-				}
+-
+-				out_page = alloc_page(GFP_NOFS);
+-				if (out_page == NULL) {
+-					ret = -ENOMEM;
+-					goto out;
+-				}
+-				cpage_out = page_address(out_page);
+-				pages[nr_pages++] = out_page;
+-
+-				pg_bytes_left = PAGE_SIZE;
+-				out_offset = 0;
+-			}
+-		}
++		ret = copy_compressed_data_to_page(workspace->cbuf, out_len,
++						   pages, &cur_out, sectorsize);
++		if (ret < 0)
++			goto out;
++
++		cur_in += in_len;
+ 
+-		/* we're making it bigger, give up */
+-		if (tot_in > 8192 && tot_in < tot_out) {
++		/*
++		 * Check if we're making it bigger after two sectors.
++		 * And if we're making it bigger, give up.
++		 */
++		if (cur_in - start > sectorsize * 2 &&
++		    cur_in - start < cur_out) {
+ 			ret = -E2BIG;
+ 			goto out;
+ 		}
+ 
+-		/* we're all done */
+-		if (tot_in >= len)
+-			break;
+-
+-		if (tot_out > max_out)
+-			break;
+-
+-		bytes_left = len - tot_in;
+-		put_page(in_page);
+-
+-		start += PAGE_SIZE;
+-		in_page = find_get_page(mapping, start >> PAGE_SHIFT);
+-		data_in = page_address(in_page);
+-		in_len = min(bytes_left, PAGE_SIZE);
+-	}
+-
+-	if (tot_out >= tot_in) {
+-		ret = -E2BIG;
+-		goto out;
++		/* Check if we have reached page boundary */
++		if (IS_ALIGNED(cur_in, PAGE_SIZE)) {
++			put_page(page_in);
++			page_in = NULL;
++		}
+ 	}
+ 
+-	/* store the size of all chunks of compressed data */
+-	sizes_ptr = page_address(pages[0]);
+-	write_compress_length(sizes_ptr, tot_out);
++	/* Store the size of all chunks of compressed data */
++	write_compress_length(page_address(pages[0]), cur_out);
+ 
+ 	ret = 0;
+-	*total_out = tot_out;
+-	*total_in = tot_in;
++	*total_out = cur_out;
++	*total_in = cur_in - start;
+ out:
+-	*out_pages = nr_pages;
+-
+-	if (in_page)
+-		put_page(in_page);
+-
++	*out_pages = DIV_ROUND_UP(cur_out, PAGE_SIZE);
+ 	return ret;
+ }
+ 
 -- 
 2.33.0
 
