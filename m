@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BA3418FD4
+	by mail.lfdr.de (Postfix) with ESMTP id BBDDF418FD6
 	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 09:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbhI0HYS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Sep 2021 03:24:18 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56830 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233233AbhI0HYL (ORCPT
+        id S233255AbhI0HYU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Sep 2021 03:24:20 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44972 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233236AbhI0HYM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:24:11 -0400
+        Mon, 27 Sep 2021 03:24:12 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2A0D9200A3
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:33 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 30501220C0
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632727353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1632727354; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0DLVdQGDBxYXRRiPRPikkDwWyLF8p9/OBCVDsPmlOi8=;
-        b=TxDDsiZ/1Uowrm5cPGZSRD69TsBlw2tUxDkUss/xwII+VmNSehD3zHOGJRzrMYPd/imZ4P
-        bTOkN8i5mIUiDO9znprZVbgThDTtWjDm2W4vjCAX0RC4OjskkmepMSdbyGWm0WAQd8lgY5
-        qDCgu1LRMqGsdVJMAQ9nhYnvkeBM71Q=
+        bh=/u8avVqRqKvd2FLFYDiLuvQRAnXSIGXVw4KxMpRBlwY=;
+        b=Y7+vibffwTyVM85MDVstNiCOxut6A4oZU7NFv0NVKqFyZ0VZoTjXEjqKdkMMhZyXxt55HK
+        9wlr0/fWQBaQL+Ib52gEJOihdgqDfyCHX5/k/HaV6VI3riGedYQ+w52twM/8AzI3PGq/TB
+        eOJcFC9zB6qBgGpr5dm98njJWDHpqVA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FDD113A1E
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:32 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89C8013A1E
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:33 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id kOgKEzhxUWEVLAAAMHmgww
+        id ILcsFTlxUWEVLAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:32 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:33 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 06/26] btrfs: introduce compressed_bio::pending_sectors to trace compressed bio more elegantly
-Date:   Mon, 27 Sep 2021 15:21:48 +0800
-Message-Id: <20210927072208.21634-7-wqu@suse.com>
+Subject: [PATCH v3 07/26] btrfs: add subpage checked bitmap to make PageChecked flag to be subpage compatible
+Date:   Mon, 27 Sep 2021 15:21:49 +0800
+Message-Id: <20210927072208.21634-8-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927072208.21634-1-wqu@suse.com>
 References: <20210927072208.21634-1-wqu@suse.com>
@@ -52,259 +52,368 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For btrfs_submit_compressed_read() and btrfs_submit_compressed_write(),
-we have a pretty weird dance around compressed_bio::pending_bios:
+Although in btrfs we have very limited usage of PageChecked flag, it's
+still some page flag not yet subpage compatible.
 
-  btrfs_submit_compressed_read/write()
-  {
-	cb = kmalloc()
-	refcount_set(&cb->pending_bios, 0);
-	bio = btrfs_alloc_bio();
+Fix it by introducing btrfs_subpage::checked_offset to do the convert.
 
-	/* NOTE here, we haven't yet submitted any bio */
-	refcount_set(&cb->pending_bios, 1);
+For most call sites, especially for free-space cache, COW fixup and
+btrfs_invalidatepage(), they all work in full page mode anyway.
 
-	for (pg_index = 0; pg_index < cb->nr_pages; pg_index++) {
-		if (submit) {
-			/* Here we submit bio, but we always have one
-			 * extra pending_bios */
-			refcount_inc(&cb->pending_bios);
-			ret = btrfs_map_bio();
-		}
-	}
+For other call sites, they work as subpage compatible mode.
 
-	/* Submit the last bio */
-	ret = btrfs_map_bio();
-  }
+Some call sites need extra modification:
 
-There are two reasons why we do this:
+- btrfs_drop_pages()
+  Needs extra parameter to get the real range we need to clear checked
+  flag.
 
-- compressed_bio::pending_bios is a refcount
-  Thus if it's reduced to 0, it can not be increased again.
+  Also since btrfs_drop_pages() will accept pages beyond the dirtied
+  range, update btrfs_subpage_clamp_range() to handle such case
+  by setting @len to 0 if the page is beyond target range.
 
-- To ensure the compressed_bio is not freed by some submitted bios
-  If the submitted bio is finished before the next bio submitted,
-  we can free the compressed_bio completely.
+- btrfs_invalidatepage()
+  We need to call subpage helper before calling __btrfs_releasepage(),
+  or it will trigger ASSERT() as page->private will be cleared.
 
-But the above code is sometimes confusing, and we can do it better by
-just introduce a new member, compressed_bio::pending_sectors.
-
-Now we use compressed_bio::pending_sectors to indicate whether we have any
-pending sectors under IO or not yet submitted.
-
-If pending_sectors == 0, we're definitely the last bio of compressed_bio,
-and is OK to release the compressed bio.
-
-Now the workflow looks like this:
-
-  btrfs_submit_compressed_read/write()
-  {
-	cb = kmalloc()
-	atomic_set(&cb->pending_bios, 0);
-	refcount_set(&cb->pending_sectors,
-		     compressed_len >> sectorsize_bits);
-	bio = btrfs_alloc_bio();
-
-	for (pg_index = 0; pg_index < cb->nr_pages; pg_index++) {
-		if (submit) {
-			refcount_inc(&cb->pending_bios);
-			ret = btrfs_map_bio();
-		}
-	}
-
-	/* Submit the last bio */
-	refcount_inc(&cb->pending_bios);
-	ret = btrfs_map_bio();
-  }
-
-For now we still need pending_bios for later error handling, but will
-remove pending_bios eventually after properly handling the errors.
+- btrfs_verify_data_csum()
+  In theory we don't need the io_bio->csum check anymore, but it's
+  won't hurt.
+  Just change the comment.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 78 ++++++++++++++++++++++++------------------
- fs/btrfs/compression.h |  5 ++-
- 2 files changed, 49 insertions(+), 34 deletions(-)
+ fs/btrfs/compression.c      | 11 +++++++--
+ fs/btrfs/file.c             | 20 ++++++++++++----
+ fs/btrfs/free-space-cache.c |  6 ++++-
+ fs/btrfs/inode.c            | 30 +++++++++++------------
+ fs/btrfs/reflink.c          |  2 +-
+ fs/btrfs/subpage.c          | 48 +++++++++++++++++++++++++++++++++++--
+ fs/btrfs/subpage.h          |  2 ++
+ 7 files changed, 92 insertions(+), 27 deletions(-)
 
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 7a5d56eaceb7..a8f23f5f77c9 100644
+index a8f23f5f77c9..1a23f2933caf 100644
 --- a/fs/btrfs/compression.c
 +++ b/fs/btrfs/compression.c
-@@ -192,6 +192,39 @@ static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
- 	return 0;
- }
+@@ -29,6 +29,7 @@
+ #include "extent_io.h"
+ #include "extent_map.h"
+ #include "zoned.h"
++#include "subpage.h"
  
-+/*
-+ * Reduce bio and io accounting for a compressed_bio with its coresponding bio.
-+ *
-+ * Return true if there is no pending bio nor io.
-+ * Return false otherwise.
-+ */
-+static bool dec_and_test_compressed_bio(struct compressed_bio *cb,
-+					struct bio *bio)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
-+	unsigned int bi_size = 0;
-+	bool last_io = false;
-+	struct bio_vec *bvec;
-+	struct bvec_iter_all iter_all;
-+
-+	/*
-+	 * At endio time, bi_iter.bi_size doesn't represent the real bio size.
-+	 * Thus here we have to iterate through all segments to grab correct
-+	 * bio size.
-+	 */
-+	bio_for_each_segment_all(bvec, bio, iter_all)
-+		bi_size += bvec->bv_len;
-+
-+	if (bio->bi_status)
-+		cb->errors = 1;
-+
-+	ASSERT(bi_size && bi_size <= cb->compressed_len);
-+	last_io = refcount_sub_and_test(bi_size >> fs_info->sectorsize_bits,
-+					&cb->pending_sectors);
-+	atomic_dec(&cb->pending_bios);
-+	return last_io;
-+}
-+
- /* when we finish reading compressed pages from the disk, we
-  * decompress them and then run the bio end_io routines on the
-  * decompressed pages (in the inode address space).
-@@ -211,13 +244,7 @@ static void end_compressed_bio_read(struct bio *bio)
- 	unsigned int mirror = btrfs_bio(bio)->mirror_num;
- 	int ret = 0;
+ static const char* const btrfs_compress_types[] = { "", "zlib", "lzo", "zstd" };
  
--	if (bio->bi_status)
--		cb->errors = 1;
--
--	/* if there are more bios still pending for this compressed
--	 * extent, just exit
--	 */
--	if (!refcount_dec_and_test(&cb->pending_bios))
-+	if (!dec_and_test_compressed_bio(cb, bio))
- 		goto out;
+@@ -296,8 +297,14 @@ static void end_compressed_bio_read(struct bio *bio)
+ 		 * checked so the end_io handlers know about it
+ 		 */
+ 		ASSERT(!bio_flagged(bio, BIO_CLONED));
+-		bio_for_each_segment_all(bvec, cb->orig_bio, iter_all)
+-			SetPageChecked(bvec->bv_page);
++		bio_for_each_segment_all(bvec, cb->orig_bio, iter_all) {
++			u64 bvec_start = page_offset(bvec->bv_page) +
++					 bvec->bv_offset;
++
++			btrfs_page_set_checked(btrfs_sb(cb->inode->i_sb),
++					bvec->bv_page, bvec_start,
++					bvec->bv_len);
++		}
+ 
+ 		bio_endio(cb->orig_bio);
+ 	}
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 7ff577005d0f..03986354a0cc 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -437,9 +437,16 @@ static noinline int btrfs_copy_from_user(loff_t pos, size_t write_bytes,
+ /*
+  * unlocks pages after btrfs_file_write is done with them
+  */
+-static void btrfs_drop_pages(struct page **pages, size_t num_pages)
++static void btrfs_drop_pages(struct btrfs_fs_info *fs_info,
++			     struct page **pages, size_t num_pages,
++			     u64 pos, u64 copied)
+ {
+ 	size_t i;
++	u64 block_start = round_down(pos, fs_info->sectorsize);
++	u64 block_len = round_up(pos + copied, fs_info->sectorsize) -
++			block_start;
++
++	ASSERT(block_len <= U32_MAX);
+ 	for (i = 0; i < num_pages; i++) {
+ 		/* page checked is some magic around finding pages that
+ 		 * have been modified without going through btrfs_set_page_dirty
+@@ -447,7 +454,8 @@ static void btrfs_drop_pages(struct page **pages, size_t num_pages)
+ 		 * accessed as prepare_pages should have marked them accessed
+ 		 * in prepare_pages via find_or_create_page()
+ 		 */
+-		ClearPageChecked(pages[i]);
++		btrfs_page_clamp_clear_checked(fs_info, pages[i], block_start,
++					       block_len);
+ 		unlock_page(pages[i]);
+ 		put_page(pages[i]);
+ 	}
+@@ -504,7 +512,8 @@ int btrfs_dirty_pages(struct btrfs_inode *inode, struct page **pages,
+ 		struct page *p = pages[i];
+ 
+ 		btrfs_page_clamp_set_uptodate(fs_info, p, start_pos, num_bytes);
+-		ClearPageChecked(p);
++		btrfs_page_clamp_clear_checked(fs_info, p, start_pos,
++					       num_bytes);
+ 		btrfs_page_clamp_set_dirty(fs_info, p, start_pos, num_bytes);
+ 	}
+ 
+@@ -1845,7 +1854,8 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 
+ 		btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
+ 		if (ret) {
+-			btrfs_drop_pages(pages, num_pages);
++			btrfs_drop_pages(fs_info, pages, num_pages, pos,
++					 copied);
+ 			break;
+ 		}
+ 
+@@ -1853,7 +1863,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 		if (only_release_metadata)
+ 			btrfs_check_nocow_unlock(BTRFS_I(inode));
+ 
+-		btrfs_drop_pages(pages, num_pages);
++		btrfs_drop_pages(fs_info, pages, num_pages, pos, copied);
+ 
+ 		cond_resched();
+ 
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 0d26819b1cf6..f3fee88c8ee0 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -22,6 +22,7 @@
+ #include "delalloc-space.h"
+ #include "block-group.h"
+ #include "discard.h"
++#include "subpage.h"
+ 
+ #define BITS_PER_BITMAP		(PAGE_SIZE * 8UL)
+ #define MAX_CACHE_BYTES_PER_GIG	SZ_64K
+@@ -411,7 +412,10 @@ static void io_ctl_drop_pages(struct btrfs_io_ctl *io_ctl)
+ 
+ 	for (i = 0; i < io_ctl->num_pages; i++) {
+ 		if (io_ctl->pages[i]) {
+-			ClearPageChecked(io_ctl->pages[i]);
++			btrfs_page_clear_checked(io_ctl->fs_info,
++					io_ctl->pages[i],
++					page_offset(io_ctl->pages[i]),
++					PAGE_SIZE);
+ 			unlock_page(io_ctl->pages[i]);
+ 			put_page(io_ctl->pages[i]);
+ 		}
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index c559726dca3f..c68ca5002434 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2764,7 +2764,8 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 		clear_page_dirty_for_io(page);
+ 		SetPageError(page);
+ 	}
+-	ClearPageChecked(page);
++	btrfs_page_clear_checked(inode->root->fs_info, page,
++				 page_start, PAGE_SIZE);
+ 	unlock_page(page);
+ 	put_page(page);
+ 	kfree(fixup);
+@@ -2819,7 +2820,7 @@ int btrfs_writepage_cow_fixup(struct page *page)
+ 	 * page->mapping outside of the page lock.
+ 	 */
+ 	ihold(inode);
+-	SetPageChecked(page);
++	btrfs_page_set_checked(fs_info, page, page_offset(page), PAGE_SIZE);
+ 	get_page(page);
+ 	btrfs_init_work(&fixup->work, btrfs_writepage_fixup_worker, NULL, NULL);
+ 	fixup->page = page;
+@@ -3269,27 +3270,23 @@ unsigned int btrfs_verify_data_csum(struct btrfs_bio *bbio,
+ 				    u64 start, u64 end)
+ {
+ 	struct inode *inode = page->mapping->host;
++	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+ 	const u32 sectorsize = root->fs_info->sectorsize;
+ 	u32 pg_off;
+ 	unsigned int result = 0;
+ 
+-	if (PageChecked(page)) {
+-		ClearPageChecked(page);
++	if (btrfs_page_test_checked(fs_info, page, start, end + 1 - start)) {
++		btrfs_page_clear_checked(fs_info, page, start, end + 1 - start);
+ 		return 0;
+ 	}
  
  	/*
-@@ -335,13 +362,7 @@ static void end_compressed_bio_write(struct bio *bio)
- 	struct page *page;
- 	unsigned int index;
- 
--	if (bio->bi_status)
--		cb->errors = 1;
--
--	/* if there are more bios still pending for this compressed
--	 * extent, just exit
--	 */
--	if (!refcount_dec_and_test(&cb->pending_bios))
-+	if (!dec_and_test_compressed_bio(cb, bio))
- 		goto out;
- 
- 	/* ok, we're the last bio for this extent, step one is to
-@@ -407,7 +428,9 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 	cb = kmalloc(compressed_bio_size(fs_info, compressed_len), GFP_NOFS);
- 	if (!cb)
- 		return BLK_STS_RESOURCE;
--	refcount_set(&cb->pending_bios, 0);
-+	atomic_set(&cb->pending_bios, 0);
-+	refcount_set(&cb->pending_sectors,
-+		     compressed_len >> fs_info->sectorsize_bits);
- 	cb->errors = 0;
- 	cb->inode = &inode->vfs_inode;
- 	cb->start = start;
-@@ -441,7 +464,6 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 		bio->bi_opf |= REQ_CGROUP_PUNT;
- 		kthread_associate_blkcg(blkcg_css);
+-	 * For subpage case, above PageChecked is not safe as it's not subpage
+-	 * compatible.
+-	 * But for now only cow fixup and compressed read utilize PageChecked
+-	 * flag, while in this context we can easily use bbio->csum to
+-	 * determine if we really need to do csum verification.
+-	 *
+-	 * So for now, just exit if bbio->csum is NULL, as it means it's
+-	 * compressed read, and its compressed data csum has already been
+-	 * verified.
++	 * This only happens for NODATASUM or compressed read.
++	 * Normally this should be covered by above check for compressed read
++	 * or the next check for NODATASUM.
++	 * Just do a quicker exit here.
+ 	 */
+ 	if (bbio->csum == NULL)
+ 		return 0;
+@@ -5110,7 +5107,8 @@ int btrfs_truncate_block(struct btrfs_inode *inode, loff_t from, loff_t len,
+ 				     len);
+ 		flush_dcache_page(page);
  	}
--	refcount_set(&cb->pending_bios, 1);
+-	ClearPageChecked(page);
++	btrfs_page_clear_checked(fs_info, page, block_start,
++				 block_end + 1 - block_start);
+ 	btrfs_page_set_dirty(fs_info, page, block_start, block_end + 1 - block_start);
+ 	unlock_extent_cached(io_tree, block_start, block_end, &cached_state);
  
- 	/* create and submit bios for the compressed pages */
- 	bytes_left = compressed_len;
-@@ -469,13 +491,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+@@ -8701,9 +8699,9 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
+ 	 * did something wrong.
+ 	 */
+ 	ASSERT(!PageOrdered(page));
++	btrfs_page_clear_checked(fs_info, page, page_offset(page), PAGE_SIZE);
+ 	if (!inode_evicting)
+ 		__btrfs_releasepage(page, GFP_NOFS);
+-	ClearPageChecked(page);
+ 	clear_page_extent_mapped(page);
+ }
  
- 		page->mapping = NULL;
- 		if (submit || len < PAGE_SIZE) {
--			/*
--			 * inc the count before we submit the bio so
--			 * we know the end IO handler won't happen before
--			 * we inc the count.  Otherwise, the cb might get
--			 * freed before we're done setting it up
--			 */
--			refcount_inc(&cb->pending_bios);
-+			atomic_inc(&cb->pending_bios);
- 			ret = btrfs_bio_wq_end_io(fs_info, bio,
- 						  BTRFS_WQ_ENDIO_DATA);
- 			BUG_ON(ret); /* -ENOMEM */
-@@ -514,6 +530,7 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
- 		cond_resched();
+@@ -8847,7 +8845,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 		memzero_page(page, zero_start, PAGE_SIZE - zero_start);
+ 		flush_dcache_page(page);
  	}
+-	ClearPageChecked(page);
++	btrfs_page_clear_checked(fs_info, page, page_start, PAGE_SIZE);
+ 	btrfs_page_set_dirty(fs_info, page, page_start, end + 1 - page_start);
+ 	btrfs_page_set_uptodate(fs_info, page, page_start, end + 1 - page_start);
  
-+	atomic_inc(&cb->pending_bios);
- 	ret = btrfs_bio_wq_end_io(fs_info, bio, BTRFS_WQ_ENDIO_DATA);
- 	BUG_ON(ret); /* -ENOMEM */
- 
-@@ -735,7 +752,9 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 	if (!cb)
- 		goto out;
- 
--	refcount_set(&cb->pending_bios, 0);
-+	atomic_set(&cb->pending_bios, 0);
-+	refcount_set(&cb->pending_sectors,
-+		     compressed_len >> fs_info->sectorsize_bits);
- 	cb->errors = 0;
- 	cb->inode = inode;
- 	cb->mirror_num = mirror_num;
-@@ -780,7 +799,6 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 	comp_bio->bi_opf = REQ_OP_READ;
- 	comp_bio->bi_private = cb;
- 	comp_bio->bi_end_io = end_compressed_bio_read;
--	refcount_set(&cb->pending_bios, 1);
- 
- 	for (pg_index = 0; pg_index < nr_pages; pg_index++) {
- 		u32 pg_len = PAGE_SIZE;
-@@ -809,18 +827,11 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 		if (submit || bio_add_page(comp_bio, page, pg_len, 0) < pg_len) {
- 			unsigned int nr_sectors;
- 
-+			atomic_inc(&cb->pending_bios);
- 			ret = btrfs_bio_wq_end_io(fs_info, comp_bio,
- 						  BTRFS_WQ_ENDIO_DATA);
- 			BUG_ON(ret); /* -ENOMEM */
- 
--			/*
--			 * inc the count before we submit the bio so
--			 * we know the end IO handler won't happen before
--			 * we inc the count.  Otherwise, the cb might get
--			 * freed before we're done setting it up
--			 */
--			refcount_inc(&cb->pending_bios);
--
- 			ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
- 			BUG_ON(ret); /* -ENOMEM */
- 
-@@ -845,6 +856,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 		cur_disk_byte += pg_len;
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index c71e49782e86..e0f93b357548 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -138,7 +138,7 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
  	}
  
-+	atomic_inc(&cb->pending_bios);
- 	ret = btrfs_bio_wq_end_io(fs_info, comp_bio, BTRFS_WQ_ENDIO_DATA);
- 	BUG_ON(ret); /* -ENOMEM */
+ 	btrfs_page_set_uptodate(fs_info, page, file_offset, block_size);
+-	ClearPageChecked(page);
++	btrfs_page_clear_checked(fs_info, page, file_offset, block_size);
+ 	btrfs_page_set_dirty(fs_info, page, file_offset, block_size);
+ out_unlock:
+ 	if (page) {
+diff --git a/fs/btrfs/subpage.c b/fs/btrfs/subpage.c
+index 51f873a680ea..2bea6766d84e 100644
+--- a/fs/btrfs/subpage.c
++++ b/fs/btrfs/subpage.c
+@@ -88,6 +88,9 @@ void btrfs_init_subpage_info(struct btrfs_subpage_info *subpage_info, u32 sector
+ 	subpage_info->ordered_offset = cur;
+ 	cur += nr_bits;
  
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 399be0b435bf..61955581e34f 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -29,7 +29,10 @@ struct btrfs_inode;
- 
- struct compressed_bio {
- 	/* number of bios pending for this compressed extent */
--	refcount_t pending_bios;
-+	atomic_t pending_bios;
++	subpage_info->checked_offset = cur;
++	cur += nr_bits;
 +
-+	/* Number of sectors with unfinished IO (unsubmitted or unfinished) */
-+	refcount_t pending_sectors;
+ 	subpage_info->total_nr_bits = cur;
+ }
  
- 	/* Number of compressed pages in the array */
- 	unsigned int nr_pages;
+@@ -255,8 +258,16 @@ static void btrfs_subpage_clamp_range(struct page *page, u64 *start, u32 *len)
+ 	u32 orig_len = *len;
+ 
+ 	*start = max_t(u64, page_offset(page), orig_start);
+-	*len = min_t(u64, page_offset(page) + PAGE_SIZE,
+-		     orig_start + orig_len) - *start;
++	/*
++	 * For certain call sites like btrfs_drop_pages(), we may have pages
++	 * beyond the target range. In that case, just set @len to 0, subpage
++	 * helpers can handle @len == 0 without any problem.
++	 */
++	if (page_offset(page) >= orig_start + orig_len)
++		*len = 0;
++	else
++		*len = min_t(u64, page_offset(page) + PAGE_SIZE,
++			     orig_start + orig_len) - *start;
+ }
+ 
+ void btrfs_subpage_start_writer(const struct btrfs_fs_info *fs_info,
+@@ -532,6 +543,36 @@ void btrfs_subpage_clear_ordered(const struct btrfs_fs_info *fs_info,
+ 		ClearPageOrdered(page);
+ 	spin_unlock_irqrestore(&subpage->lock, flags);
+ }
++
++void btrfs_subpage_set_checked(const struct btrfs_fs_info *fs_info,
++		struct page *page, u64 start, u32 len)
++{
++	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
++	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
++							checked, start, len);
++	unsigned long flags;
++
++	spin_lock_irqsave(&subpage->lock, flags);
++	bitmap_set(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	if (subpage_test_bitmap_all_set(fs_info, subpage, checked))
++		SetPageChecked(page);
++	spin_unlock_irqrestore(&subpage->lock, flags);
++}
++
++void btrfs_subpage_clear_checked(const struct btrfs_fs_info *fs_info,
++		struct page *page, u64 start, u32 len)
++{
++	struct btrfs_subpage *subpage = (struct btrfs_subpage *)page->private;
++	unsigned int start_bit = subpage_calc_start_bit(fs_info, page,
++							checked, start, len);
++	unsigned long flags;
++
++	spin_lock_irqsave(&subpage->lock, flags);
++	bitmap_clear(subpage->bitmaps, start_bit, len >> fs_info->sectorsize_bits);
++	ClearPageChecked(page);
++	spin_unlock_irqrestore(&subpage->lock, flags);
++}
++
+ /*
+  * Unlike set/clear which is dependent on each page status, for test all bits
+  * are tested in the same way.
+@@ -557,6 +598,7 @@ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(error);
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(dirty);
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(writeback);
+ IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(ordered);
++IMPLEMENT_BTRFS_SUBPAGE_TEST_OP(checked);
+ 
+ /*
+  * Note that, in selftests (extent-io-tests), we can have empty fs_info passed
+@@ -627,6 +669,8 @@ IMPLEMENT_BTRFS_PAGE_OPS(writeback, set_page_writeback, end_page_writeback,
+ 			 PageWriteback);
+ IMPLEMENT_BTRFS_PAGE_OPS(ordered, SetPageOrdered, ClearPageOrdered,
+ 			 PageOrdered);
++IMPLEMENT_BTRFS_PAGE_OPS(checked, SetPageChecked, ClearPageChecked,
++			 PageChecked);
+ 
+ /*
+  * Make sure not only the page dirty bit is cleared, but also subpage dirty bit
+diff --git a/fs/btrfs/subpage.h b/fs/btrfs/subpage.h
+index ac4dd64ed257..46224f959c34 100644
+--- a/fs/btrfs/subpage.h
++++ b/fs/btrfs/subpage.h
+@@ -36,6 +36,7 @@ struct btrfs_subpage_info {
+ 	unsigned int dirty_offset;
+ 	unsigned int writeback_offset;
+ 	unsigned int ordered_offset;
++	unsigned int checked_offset;
+ };
+ 
+ /*
+@@ -142,6 +143,7 @@ DECLARE_BTRFS_SUBPAGE_OPS(error);
+ DECLARE_BTRFS_SUBPAGE_OPS(dirty);
+ DECLARE_BTRFS_SUBPAGE_OPS(writeback);
+ DECLARE_BTRFS_SUBPAGE_OPS(ordered);
++DECLARE_BTRFS_SUBPAGE_OPS(checked);
+ 
+ bool btrfs_subpage_clear_and_test_dirty(const struct btrfs_fs_info *fs_info,
+ 		struct page *page, u64 start, u32 len);
 -- 
 2.33.0
 
