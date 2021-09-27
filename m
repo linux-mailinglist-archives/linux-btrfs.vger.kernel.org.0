@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491B041A32C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Sep 2021 00:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E1141A32F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Sep 2021 00:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237693AbhI0Wip (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Sep 2021 18:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
+        id S237710AbhI0Wk1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Sep 2021 18:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237501AbhI0Wio (ORCPT
+        with ESMTP id S237501AbhI0Wk0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 18:38:44 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EC3C061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 15:37:05 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id x27so84181469lfu.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 15:37:05 -0700 (PDT)
+        Mon, 27 Sep 2021 18:40:26 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA8CC061575
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 15:38:48 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id e15so84256369lfr.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 15:38:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fsEm5vknfQT+EpFnQ+VZFv7DC9MbXD5+U0S5Xl8uWbk=;
-        b=MYAy8ii6pLIubIQR31+KaAUE2xLjX6NsEAGHHXGxkjVBFIL/R1bcW+KLQ6t6uWUrg4
-         dvT6BI9QBNSpZ8LWg+Jc4KRAYDOo2ZCN0tGU0AWIDiTAOeoaJbHvxweEpkscpFlkCBbl
-         DECv+nfKcRbK+B/1Uvg4VeyyeYqM6rutpIgRIiHjIYYDTkGeqbJB9+FQJtSFHqjJBOvB
-         p55s4hl+CK4ZQ743KeZVlIRyKaS07vtGO4aJEHOmYsc+wcY5QGFw15EibeqpLcLoizJZ
-         0O+puOl7w8GMZtSB7JSpBrlbl0gnfAL/UiwJnwOzduufH8Q6sR1lmF39LM896aaGVKDE
-         q+0Q==
+        bh=D/UCvgGh0L665/YdPqDVh/jSroUezdh9pFYo35TpaGM=;
+        b=PL229W1SKgEuAyqH9i3Xy5rDWCsfd3AXen7ExRwaYQPnRL6jkW5OkASpGToJic32gf
+         LjG2gNwIwqZsvlmq5wvsJiUKoftPuzZGi0aA/zNpMGkARgyCtcyKfT8T+v1vMYeaTyme
+         /BuHpAS2nFB7h1cbi91nctgSD9jIA+Vw/DGXRt8jHBqcilovC28XI/cXO8IjQfPaiLWu
+         22MdrbBZViArBAhYMvmxTkMgMhTgGm+mqT4y1UGnvi0KAtVtj0rYbRuTLrJlr90ES923
+         QU5k9aonqApX7U8ZPSw/22OmmUY9KiPP3q1bNqnBK0HF2mGfBUAj7krq7NrJFwgq5bTt
+         qdCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fsEm5vknfQT+EpFnQ+VZFv7DC9MbXD5+U0S5Xl8uWbk=;
-        b=VDEkaa+MP20MGioikYFENF2z7Hzg9qGM5rQGNfubMgu+93r+U3R/vXk5y/vn67CJeE
-         1ka0M5zr3aQD6r3AIUi000ec0cOI9fD616POeqC9zuw0/2xN4q/30uT4Txjg+FVSXLg0
-         ctA1okTa6shbQhWmpj/y0UxfmBzpQC1/x8rDowRxk87iFdFsKUVCXzmhbfUowgsXvZ5S
-         nE8GNH1u3RsW0Txtrni7tf2WCLVbrl6aHMtAa4YA0IdKFAnAKOyBA/EflYd/veb0N5FK
-         V3W2xeYyEk4YUGrxjSBMANA1HhBFFlT/T4ZNf3v6vcDxathIXmi4J0d/8lOf8NL1RABN
-         cT8Q==
-X-Gm-Message-State: AOAM532UpwjIOrji8NH9BtB61KPoKDY+wBUHqCZFF0kPWuC501PEMkLc
-        wFR4cP+eF0pbvqeWDM4D/fdebc2BECkCdwqP2B/Ek1cbx+mzqg==
-X-Google-Smtp-Source: ABdhPJxTVTODnbl9arLgPcWHRD8NGrR7pIPtokL5S2puNUbyPdRGtpbHZLaVy2Of4IEi31EKNuuwSo6Zq6MLWu1robk=
-X-Received: by 2002:a19:740a:: with SMTP id v10mr2082525lfe.566.1632782224043;
- Mon, 27 Sep 2021 15:37:04 -0700 (PDT)
+        bh=D/UCvgGh0L665/YdPqDVh/jSroUezdh9pFYo35TpaGM=;
+        b=RyZU2A02nGQfHWMZOYAuiVgwEikHl/nv1r5wAGyetfCpFbZaP/j+x2HDXvjvjkmba/
+         uM7KLYHEPIHNL/FxuC0s00u1lnHgUAK1K+vdn5HjUTc6CuqW/GO2jhgsIybCAlAaqRZd
+         KfI9VL1OWlIsMlWorDmFWKWI4L/H9lnUVheTC0iTqu7+dK3LA/6+59U6KWfRE7iO3mwz
+         Rh1ud8HtawlE2/5eRXYKVpGN8EOlc42upguYDCQ6d5Yd4hBc4RTKNkQh/XuHLiizIvRN
+         V3XUbFPspMpYxvJpbE9xBMr6LeLHlkt6z/9Ae7fpmIQoGHtqJZW1X0v4FbvL+EeVY5yc
+         CQLQ==
+X-Gm-Message-State: AOAM533LlLkKkUrL0FHahThZvZxQbcaABfTbfwUCVen4KDNVuNmSumL3
+        sDCDRltzeYIiCN+SMa9kzv4IbU0l06TWX+iEP7M=
+X-Google-Smtp-Source: ABdhPJwi6S1ox9Yzpn9A4Lj/IPH5+e4/qZikboqQn74S3T3gDsz1ODHtA02+JMZoKNUQSYAzXCwgVbbHgUVqbxRPOII=
+X-Received: by 2002:a2e:94c4:: with SMTP id r4mr2336352ljh.407.1632782326184;
+ Mon, 27 Sep 2021 15:38:46 -0700 (PDT)
 MIME-Version: 1.0
 References: <CALssuR00NvTHJJuoOFhw=4+fHARtBN2PLqTr4W06PT5VMagh_A@mail.gmail.com>
  <6db88069-e263-ae85-4f69-adb9ec69ee76@opensource.wdc.com> <CALssuR2gAEoxhDK=z0ryx30GAWiXcZ70pbUEq5mAxd-5pmsyRw@mail.gmail.com>
 In-Reply-To: <CALssuR2gAEoxhDK=z0ryx30GAWiXcZ70pbUEq5mAxd-5pmsyRw@mail.gmail.com>
 From:   Sven Oehme <oehmes@gmail.com>
-Date:   Mon, 27 Sep 2021 16:36:53 -0600
-Message-ID: <CALssuR2-k5RE_PZhygRtKk9DR5NnwjNzqdb6yr2UAGouSPsbnQ@mail.gmail.com>
+Date:   Mon, 27 Sep 2021 16:38:35 -0600
+Message-ID: <CALssuR2K8Dtr+bGSYVOQXcWomMx0VnLwUiB1ah44ngrJ5trnSw@mail.gmail.com>
 Subject: Re: Host managed SMR drive issue
 To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
 Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <Naohiro.Aota@wdc.com>,
@@ -101,6 +101,7 @@ btrfs_cleanup_transaction.isra.0+0x560/0x560 [btrfs]
 if you tell me what information to collect, I am happy to do so,.
 
 Sven
+
 
 On Mon, Sep 27, 2021 at 11:28 AM Sven Oehme <oehmes@gmail.com> wrote:
 >
