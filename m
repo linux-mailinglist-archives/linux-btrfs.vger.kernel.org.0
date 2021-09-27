@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF5B418FCF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 09:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A38418FD0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 09:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbhI0HYO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Sep 2021 03:24:14 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56806 "EHLO
+        id S233225AbhI0HYP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Sep 2021 03:24:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56812 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233210AbhI0HYG (ORCPT
+        with ESMTP id S233227AbhI0HYH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 03:24:06 -0400
+        Mon, 27 Sep 2021 03:24:07 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 06818200A0
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:28 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0CB7E20090
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632727348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1632727349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3ncKf17UxJzZVDOoZtGqFB6jwID1kTkvQ4r52vd0ids=;
-        b=GUD4zBWVS04HCrfHqeD0hlnoLTWfHN1EGh6DziLIcpMr6f5HUKox453JGnFan7Y1gY9G0I
-        LaKiLCwuuF4Dp6JuMRuoLK6UdKNmqP3fyFvVUfFWg8lKqlslFKO0lXYeUQX1HKp4jOltkQ
-        cvqxFn+teHKznbkGwzt9aPum7PipqUk=
+        bh=TX/fmlKtoAcVRGx6klxNr1bFg2WTHQBsa7MDpT3lZLU=;
+        b=ikDoA7HCrgY3/wKZMKTVKFX6EG7Gijnp1y/7SlHqfmgu5+8gcEnS4LiNewYFLAA765Lbrx
+        TeufEy8izb37laPDp/wPfAUE9NNU+48D/FpOEd6UqgclBDrmKrxZaEqMFjRF9hm74fQMoP
+        bNZpckuFmLFEKyazRtKLmzkaDLvltp4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 60A5213A1E
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:27 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65F3813A1E
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id sBZqCzNxUWEVLAAAMHmgww
+        id QI/JDDRxUWEVLAAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:27 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 07:22:28 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 01/26] btrfs: remove unused parameter @nr_pages in add_ra_bio_pages()
-Date:   Mon, 27 Sep 2021 15:21:43 +0800
-Message-Id: <20210927072208.21634-2-wqu@suse.com>
+Subject: [PATCH v3 02/26] btrfs: remove unnecessary parameter @delalloc_start for writepage_delalloc()
+Date:   Mon, 27 Sep 2021 15:21:44 +0800
+Message-Id: <20210927072208.21634-3-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210927072208.21634-1-wqu@suse.com>
 References: <20210927072208.21634-1-wqu@suse.com>
@@ -52,34 +52,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Variable @nr_pages only get increased but never used.
-Remove it.
+In function __extent_writepage() we always pass page start to
+@delalloc_start for writepage_delalloc().
+
+Thus we don't really need @delalloc_start parameter as we can extract it
+from @page.
+
+So this patch will remove @delalloc_start parameter and make
+__extent_writepage() to declare @page_start and @page_end as const.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c | 2 --
- 1 file changed, 2 deletions(-)
+ fs/btrfs/extent_io.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 2a86a2a1494b..b50927740d27 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -551,7 +551,6 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 	u64 isize = i_size_read(inode);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index c56973f7daae..ba258b8329c9 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3768,10 +3768,11 @@ static void update_nr_written(struct writeback_control *wbc,
+  */
+ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+ 		struct page *page, struct writeback_control *wbc,
+-		u64 delalloc_start, unsigned long *nr_written)
++		unsigned long *nr_written)
+ {
+-	u64 page_end = delalloc_start + PAGE_SIZE - 1;
++	u64 page_end = page_offset(page) + PAGE_SIZE - 1;
+ 	bool found;
++	u64 delalloc_start = page_offset(page);
+ 	u64 delalloc_to_write = 0;
+ 	u64 delalloc_end = 0;
  	int ret;
- 	struct page *page;
--	unsigned long nr_pages = 0;
- 	struct extent_map *em;
- 	struct address_space *mapping = inode->i_mapping;
- 	struct extent_map_tree *em_tree;
-@@ -647,7 +646,6 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 				   PAGE_SIZE, 0);
+@@ -4049,8 +4050,8 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
+ 			      struct extent_page_data *epd)
+ {
+ 	struct inode *inode = page->mapping->host;
+-	u64 start = page_offset(page);
+-	u64 page_end = start + PAGE_SIZE - 1;
++	const u64 page_start = page_offset(page);
++	const u64 page_end = page_start + PAGE_SIZE - 1;
+ 	int ret;
+ 	int nr = 0;
+ 	size_t pg_offset;
+@@ -4085,7 +4086,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
+ 	}
  
- 		if (ret == PAGE_SIZE) {
--			nr_pages++;
- 			put_page(page);
- 		} else {
- 			unlock_extent(tree, last_offset, end);
+ 	if (!epd->extent_locked) {
+-		ret = writepage_delalloc(BTRFS_I(inode), page, wbc, start,
++		ret = writepage_delalloc(BTRFS_I(inode), page, wbc,
+ 					 &nr_written);
+ 		if (ret == 1)
+ 			return 0;
+@@ -4136,7 +4137,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
+ 	 * capable of that.
+ 	 */
+ 	if (PageError(page))
+-		end_extent_writepage(page, ret, start, page_end);
++		end_extent_writepage(page, ret, page_start, page_end);
+ 	unlock_page(page);
+ 	ASSERT(ret <= 0);
+ 	return ret;
 -- 
 2.33.0
 
