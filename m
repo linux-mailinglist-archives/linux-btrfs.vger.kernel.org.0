@@ -2,466 +2,225 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487384198D5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 18:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F331419D3B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 19:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235387AbhI0Q0w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Sep 2021 12:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
+        id S236322AbhI0Rqt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Sep 2021 13:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235338AbhI0Q0w (ORCPT
+        with ESMTP id S237147AbhI0Rqm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 12:26:52 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DD4C061575
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 09:25:14 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id dk4so2303508qvb.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 09:25:14 -0700 (PDT)
+        Mon, 27 Sep 2021 13:46:42 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9200C01C1E7
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 10:28:47 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id i25so81151760lfg.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 Sep 2021 10:28:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=03FGEwxZU65A6fxWZehublOkE5w7EZjKJqB9+Bl+aNo=;
-        b=HrXF54LlnBLk8Eq+X5K6QL36SNAUZ7P48qEJnqV2tGzAjWdKXx903cRTGSQHqoI/3J
-         0nMJ5MXx0WvUTB7D7J6BPuwA76UnDwDsAIhmW/IiBEr3J/vU33lbqLnUmAQYygqrhviG
-         KOZ0PazKK/8Vn5uyQI/hKiEMuyhfBET0i6+d+VD/qXxeA9LwCMIoE+DZSSyGgJXm5bgH
-         mR4ueVyxb2vDgAiiffRa9wXeYkT8tgDwkTggZLuLh2fb0t5KhphIs4x/IyZYDpN3QAhL
-         Ui6mVm1nkjAoE0sKjsu8WoqeCebOHduB9RIFIXlUD3JetT2eMql/f0irrnYGJ2wsWVpH
-         6mZQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A56Y8vubx9E1fRx9kLH+bsFwvljncjk2qjWoH4Y1nwA=;
+        b=krDQoTzuAlAWzAWY3HkKmvwOKklOM8g3qw//5CuQm+H7z7XZKHdwTV46KgvUHhj4u3
+         KmbpCwEPneD5bWQsaJLZihwUM2aHLQNoYcDupfzp51DLnLil9plYQe4rLqcUwWK/9/Dl
+         MubpaiHkQ3B3XmtVdZ7ejPpH9zbmLFZzzF53PIRDMviUBSTJ6jTlVAG596QLgCb17EJj
+         QOUgMestT/fUCzQlr1l1BvmtYmRNkffDPDw+m+X4LX5imMC33GBsMa9dMvjxkDCdYe6F
+         hO7VMGA7bKrkF8liMP6CrcgSbaSiumpSljtfhosnL583iZOzm8jXqe3bOyFb+z9oZZgO
+         2ecA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=03FGEwxZU65A6fxWZehublOkE5w7EZjKJqB9+Bl+aNo=;
-        b=muHtB0/0meRqfT/uhZAXXpdxR+Q5KI8Iht8bKdJBekpl7RGkhRRrpobLEw599jx0kw
-         rnfJA01D8fRX1Fn/Wg5xE9cfVWh+QvbpmJn3WwvF05bZhJ2ulxn7yLhGmI83346CZ3Ad
-         wQO4bBrjoj1846oUw14e5x0kA+ie9NDR86swh1akMNf+CtMvfncyHIz7DRSPtAWCA6NC
-         mu6S/mCxW+eTd1Kq9xHfOITZpfReJtDt7VDSc6+5lRWilEwJTD63zVmwEphuwGmrusKc
-         47Pkt0JRovBln62I6p7NCBrI1uM3g6woHViwYH3bKsbGql7PVfq4viYSIhJz5XvO0wul
-         ueTg==
-X-Gm-Message-State: AOAM533lg4/aeJSJkxQAEu7hZjg7y5JyChNl/H3/eCT5enXwgcEhObvW
-        1tIqppBDA4TNdb4IX8a+IvFBzXRjxKLQJQM5U2w=
-X-Google-Smtp-Source: ABdhPJzM511Rw6qKK8jr0QVnkuL+uIKJPAf5DSghv1naf1CGCt3m5viDhgP/ulCTl7o+VjHNbRQszVW9LanyAPOHynk=
-X-Received: by 2002:a05:6214:1430:: with SMTP id o16mr560155qvx.66.1632759913182;
- Mon, 27 Sep 2021 09:25:13 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A56Y8vubx9E1fRx9kLH+bsFwvljncjk2qjWoH4Y1nwA=;
+        b=JDbXrjdYcdefkKyAQ3M8X5BU/BC8qKhIB+akjnq6dqA+hNjTVDS/Ve5xVTP29i7Ing
+         DMNRva7MW0Po4RCOJi/f7cnAjpAUd8vjdOh5+MxDGNtwt6FAgBlEXOJ0t7jpq6V6omZ5
+         vZ4Nz/wgKGiLsHB3peVjRQcih5Em7/ebrgEtSLsqxqVw8ztxNUlq+GnCNmCMOlQAXsHt
+         jIX5UdSKdMSKNZ1+09HmTPo+t1yb1g7/qjzDHOPtpLKQHn8W8Tfrx6iIOxlKsPXv2eP5
+         bCcQsCSbNIMevoT68y4Bn3r4b1utrJY69t0dazp6gdruCDInYjCms1OcfP2vLZ2xeLFo
+         pnMQ==
+X-Gm-Message-State: AOAM533aMNCeENFWwNR+i0z9RZ9nkwE4YH/5jcYk9nzNCFzXCmmG7vta
+        ro+ZlK0NKHw70O5NUADwiQ6G8KQLaJivWV8l1dA=
+X-Google-Smtp-Source: ABdhPJxVhuVusJZP8LsukV7reh/vODzhXpIsOfyQdb9wARy7RXf33/d1VzKNY3teo5QnyfYZ70eL+wsN2GH+p6g48OI=
+X-Received: by 2002:a2e:94c4:: with SMTP id r4mr994464ljh.407.1632763723694;
+ Mon, 27 Sep 2021 10:28:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <449df997c354fb9d074bf5f7d32bffc082386c4f.1632750544.git.josef@toxicpanda.com>
-In-Reply-To: <449df997c354fb9d074bf5f7d32bffc082386c4f.1632750544.git.josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 27 Sep 2021 17:24:37 +0100
-Message-ID: <CAL3q7H5R=DRLFNCAb6SineQybZ9Js8B4jt-CDDyQ9DDQf0_neQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: index free space entries on size
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+References: <CALssuR00NvTHJJuoOFhw=4+fHARtBN2PLqTr4W06PT5VMagh_A@mail.gmail.com>
+ <6db88069-e263-ae85-4f69-adb9ec69ee76@opensource.wdc.com>
+In-Reply-To: <6db88069-e263-ae85-4f69-adb9ec69ee76@opensource.wdc.com>
+From:   Sven Oehme <oehmes@gmail.com>
+Date:   Mon, 27 Sep 2021 11:28:32 -0600
+Message-ID: <CALssuR2gAEoxhDK=z0ryx30GAWiXcZ70pbUEq5mAxd-5pmsyRw@mail.gmail.com>
+Subject: Re: Host managed SMR drive issue
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 2:58 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> Currently we index free space on offset only, because usually we have a
-> hint from the allocator that we want to honor for locality reasons.
-> However if we fail to use this hint we have to go back to a brute force
-> search through the free space entries to find a large enough extent.
->
-> With sufficiently fragmented free space this becomes quite expensive, as
-> we have to linearly search all of the free space entries to find if we
-> have a part that's long enough.
->
-> To fix this add a cached rb tree to index based on free space entry
-> bytes.  This will allow us to quickly look up the largest chunk in the
-> free space tree for this block group, and stop searching once we've
-> found an entry that is too small to satisfy our allocation.  We simply
-> choose to use this tree if we're searching from the beginning of the
-> block group, as we know we do not care about locality at that point.
->
-> I wrote an allocator test that creates a 10TiB ram backed null block
-> device and then fallocates random files until the file system is full.
-> I think go through and delete all of the odd files.  Then I spawn 8
-> threads that fallocate 64mib files (1/2 our extent size cap) until the
-> file system is full again.  I use bcc's funclatency to measure the
-> latency of find_free_extent.  The baseline results are
->
->      nsecs               : count     distribution
->          0 -> 1          : 0        |                                    =
-    |
->          2 -> 3          : 0        |                                    =
-    |
->          4 -> 7          : 0        |                                    =
-    |
->          8 -> 15         : 0        |                                    =
-    |
->         16 -> 31         : 0        |                                    =
-    |
->         32 -> 63         : 0        |                                    =
-    |
->         64 -> 127        : 0        |                                    =
-    |
->        128 -> 255        : 0        |                                    =
-    |
->        256 -> 511        : 10356    |****                                =
-    |
->        512 -> 1023       : 58242    |*************************           =
-    |
->       1024 -> 2047       : 74418    |********************************    =
-    |
->       2048 -> 4095       : 90393    |************************************=
-****|
->       4096 -> 8191       : 79119    |*********************************** =
-    |
->       8192 -> 16383      : 35614    |***************                     =
-    |
->      16384 -> 32767      : 13418    |*****                               =
-    |
->      32768 -> 65535      : 12811    |*****                               =
-    |
->      65536 -> 131071     : 17090    |*******                             =
-    |
->     131072 -> 262143     : 26465    |***********                         =
-    |
->     262144 -> 524287     : 40179    |*****************                   =
-    |
->     524288 -> 1048575    : 55469    |************************            =
-    |
->    1048576 -> 2097151    : 48807    |*********************               =
-    |
->    2097152 -> 4194303    : 26744    |***********                         =
-    |
->    4194304 -> 8388607    : 35351    |***************                     =
-    |
->    8388608 -> 16777215   : 13918    |******                              =
-    |
->   16777216 -> 33554431   : 21       |                                    =
-    |
->
-> avg =3D 908079 nsecs, total: 580889071441 nsecs, count: 639690
->
-> And the patch results are
->
->      nsecs               : count     distribution
->          0 -> 1          : 0        |                                    =
-    |
->          2 -> 3          : 0        |                                    =
-    |
->          4 -> 7          : 0        |                                    =
-    |
->          8 -> 15         : 0        |                                    =
-    |
->         16 -> 31         : 0        |                                    =
-    |
->         32 -> 63         : 0        |                                    =
-    |
->         64 -> 127        : 0        |                                    =
-    |
->        128 -> 255        : 0        |                                    =
-    |
->        256 -> 511        : 6883     |**                                  =
-    |
->        512 -> 1023       : 54346    |*********************               =
-    |
->       1024 -> 2047       : 79170    |********************************    =
-    |
->       2048 -> 4095       : 98890    |************************************=
-****|
->       4096 -> 8191       : 81911    |*********************************   =
-    |
->       8192 -> 16383      : 27075    |**********                          =
-    |
->      16384 -> 32767      : 14668    |*****                               =
-    |
->      32768 -> 65535      : 13251    |*****                               =
-    |
->      65536 -> 131071     : 15340    |******                              =
-    |
->     131072 -> 262143     : 26715    |**********                          =
-    |
->     262144 -> 524287     : 43274    |*****************                   =
-    |
->     524288 -> 1048575    : 53870    |*********************               =
-    |
->    1048576 -> 2097151    : 55368    |**********************              =
-    |
->    2097152 -> 4194303    : 41036    |****************                    =
-    |
->    4194304 -> 8388607    : 24927    |**********                          =
-    |
->    8388608 -> 16777215   : 33       |                                    =
-    |
->   16777216 -> 33554431   : 9        |                                    =
-    |
->
-> avg =3D 623599 nsecs, total: 397259314759 nsecs, count: 637042
->
-> There's a little variation in the amount of calls done because of timing
-> of the threads with metadata requirements, but the avg, total, and
-> count's are relatively consistent between runs (usually within 2-5% of
-> each other).  As you can see here we have around a 30% decrease in
-> average latency with a 30% decrease in overall time spent in
-> find_free_extent.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/free-space-cache.c | 79 +++++++++++++++++++++++++++++++------
->  fs/btrfs/free-space-cache.h |  2 +
->  2 files changed, 69 insertions(+), 12 deletions(-)
->
-> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> index 0d26819b1cf6..d6eaf51ee597 100644
-> --- a/fs/btrfs/free-space-cache.c
-> +++ b/fs/btrfs/free-space-cache.c
-> @@ -1576,6 +1576,38 @@ static int tree_insert_offset(struct rb_root *root=
-, u64 offset,
->         return 0;
->  }
->
-> +static u64 free_space_info_bytes(struct btrfs_free_space *info)
-> +{
-> +       if (info->bitmap && info->max_extent_size)
-> +               return info->max_extent_size;
-> +       return info->bytes;
-> +}
-> +
-> +static void tree_insert_bytes(struct btrfs_free_space_ctl *ctl,
-> +                             struct btrfs_free_space *info)
-> +{
-> +       struct rb_root_cached *root =3D &ctl->free_space_bytes;
-> +       struct rb_node **p =3D &root->rb_root.rb_node;
-> +       struct rb_node *parent_node =3D NULL;
-> +       struct btrfs_free_space *tmp;
-> +       bool leftmost =3D true;
-> +
-> +       while (*p) {
-> +               parent_node =3D *p;
-> +               tmp =3D rb_entry(parent_node, struct btrfs_free_space,
-> +                              bytes_index);
-> +               if (free_space_info_bytes(info) < free_space_info_bytes(t=
-mp)) {
-> +                       p =3D &(*p)->rb_right;
-> +                       leftmost =3D false;
-> +               } else {
-> +                       p =3D &(*p)->rb_left;
-> +               }
-> +       }
-> +
-> +       rb_link_node(&info->bytes_index, parent_node, p);
-> +       rb_insert_color_cached(&info->bytes_index, root, leftmost);
-> +}
-> +
->  /*
->   * searches the tree for the given offset.
->   *
-> @@ -1704,6 +1736,7 @@ __unlink_free_space(struct btrfs_free_space_ctl *ct=
-l,
->                     struct btrfs_free_space *info)
->  {
->         rb_erase(&info->offset_index, &ctl->free_space_offset);
-> +       rb_erase_cached(&info->bytes_index, &ctl->free_space_bytes);
->         ctl->free_extents--;
->
->         if (!info->bitmap && !btrfs_free_space_trimmed(info)) {
-> @@ -1730,6 +1763,8 @@ static int link_free_space(struct btrfs_free_space_=
-ctl *ctl,
->         if (ret)
->                 return ret;
->
-> +       tree_insert_bytes(ctl, info);
-> +
->         if (!info->bitmap && !btrfs_free_space_trimmed(info)) {
->                 ctl->discardable_extents[BTRFS_STAT_CURR]++;
->                 ctl->discardable_bytes[BTRFS_STAT_CURR] +=3D info->bytes;
-> @@ -1876,7 +1911,7 @@ static inline u64 get_max_extent_size(struct btrfs_=
-free_space *entry)
->  /* Cache the size of the max extent in bytes */
->  static struct btrfs_free_space *
->  find_free_space(struct btrfs_free_space_ctl *ctl, u64 *offset, u64 *byte=
-s,
-> -               unsigned long align, u64 *max_extent_size)
-> +               unsigned long align, u64 *max_extent_size, bool use_bytes=
-_index)
->  {
->         struct btrfs_free_space *entry;
->         struct rb_node *node;
-> @@ -1887,15 +1922,28 @@ find_free_space(struct btrfs_free_space_ctl *ctl,=
- u64 *offset, u64 *bytes,
->         if (!ctl->free_space_offset.rb_node)
->                 goto out;
->
-> -       entry =3D tree_search_offset(ctl, offset_to_bitmap(ctl, *offset),=
- 0, 1);
-> -       if (!entry)
-> -               goto out;
-> +       if (use_bytes_index) {
-> +               node =3D rb_first_cached(&ctl->free_space_bytes);
-> +       } else {
-> +               entry =3D tree_search_offset(ctl, offset_to_bitmap(ctl, *=
-offset),
-> +                                          0, 1);
-> +               if (!entry)
-> +                       goto out;
-> +               node =3D &entry->offset_index;
-> +       }
->
-> -       for (node =3D &entry->offset_index; node; node =3D rb_next(node))=
- {
-> -               entry =3D rb_entry(node, struct btrfs_free_space, offset_=
-index);
-> +       for (; node; node =3D rb_next(node)) {
-> +               if (use_bytes_index)
-> +                       entry =3D rb_entry(node, struct btrfs_free_space,
-> +                                        bytes_index);
-> +               else
-> +                       entry =3D rb_entry(node, struct btrfs_free_space,
-> +                                        offset_index);
->                 if (entry->bytes < *bytes) {
->                         *max_extent_size =3D max(get_max_extent_size(entr=
-y),
->                                                *max_extent_size);
-> +                       if (use_bytes_index)
-> +                               break;
->                         continue;
->                 }
->
-> @@ -1913,8 +1961,9 @@ find_free_space(struct btrfs_free_space_ctl *ctl, u=
-64 *offset, u64 *bytes,
->                 }
->
->                 if (entry->bytes < *bytes + align_off) {
-> -                       *max_extent_size =3D max(get_max_extent_size(entr=
-y),
-> -                                              *max_extent_size);
-> +                       *max_extent_size =3D
-> +                               max(get_max_extent_size(entry),
-> +                                   *max_extent_size);
+Hi,
 
-Took me a bit to confirm, but this is only changing indentation and style.
+I also have an  Adaptec HBA 1100-4i at FW level 4.11 (latest) , which
+according to https://ask.adaptec.com/app/answers/detail/a_id/17472 is
+supported but see the exact same hangs after a few minutes ...
 
->                         continue;
->                 }
->
-> @@ -1927,9 +1976,8 @@ find_free_space(struct btrfs_free_space_ctl *ctl, u=
-64 *offset, u64 *bytes,
->                                 *bytes =3D size;
->                                 return entry;
->                         } else {
-> -                               *max_extent_size =3D
-> -                                       max(get_max_extent_size(entry),
-> -                                           *max_extent_size);
-> +                               *max_extent_size =3D max(get_max_extent_s=
-ize(entry),
-> +                                                      *max_extent_size);
+what i see in dmesg is :
 
-Same here.
-Personally I wouldn't touch these two hunks unless changing the actual code=
-.
-It's also inverting the style for both hunks, one leaving the max()
-call in the next line and the other moving it to the assignment line,
-making things consistently inconsistent :)
+[Mon Sep 27 11:20:03 2021] INFO: task kworker/u102:6:190092 blocked
+for more than 120 seconds.
+[Mon Sep 27 11:20:03 2021]       Not tainted 5.14-test #1
+[Mon Sep 27 11:20:03 2021] "echo 0 >
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[Mon Sep 27 11:20:03 2021] task:kworker/u102:6  state:D stack:    0
+pid:190092 ppid:     2 flags:0x00004000
+[Mon Sep 27 11:20:03 2021] Workqueue: btrfs-worker-high
+btrfs_work_helper [btrfs]
+[Mon Sep 27 11:20:03 2021] Call Trace:
+[Mon Sep 27 11:20:03 2021]  __schedule+0x2fa/0x910
+[Mon Sep 27 11:20:03 2021]  schedule+0x4f/0xc0
+[Mon Sep 27 11:20:03 2021]  io_schedule+0x46/0x70
+[Mon Sep 27 11:20:03 2021]  blk_mq_get_tag+0x11b/0x270
+[Mon Sep 27 11:20:03 2021]  ? wait_woken+0x80/0x80
+[Mon Sep 27 11:20:03 2021]  __blk_mq_alloc_request+0xec/0x120
+[Mon Sep 27 11:20:03 2021]  blk_mq_submit_bio+0x12f/0x580
+[Mon Sep 27 11:20:03 2021]  submit_bio_noacct+0x42a/0x4f0
+[Mon Sep 27 11:20:03 2021]  submit_bio+0x4f/0x1b0
+[Mon Sep 27 11:20:03 2021]  btrfs_map_bio+0x1a3/0x4c0 [btrfs]
+[Mon Sep 27 11:20:03 2021]  run_one_async_done+0x3b/0x70 [btrfs]
+[Mon Sep 27 11:20:03 2021]  btrfs_work_helper+0x132/0x2e0 [btrfs]
+[Mon Sep 27 11:20:03 2021]  process_one_work+0x220/0x3c0
+[Mon Sep 27 11:20:03 2021]  worker_thread+0x53/0x420
+[Mon Sep 27 11:20:03 2021]  kthread+0x12f/0x150
+[Mon Sep 27 11:20:03 2021]  ? process_one_work+0x3c0/0x3c0
+[Mon Sep 27 11:20:03 2021]  ? __kthread_bind_mask+0x70/0x70
+[Mon Sep 27 11:20:03 2021]  ret_from_fork+0x22/0x30
 
-As for the remainder, the interesting and useful part, it looks just fine.
+i will also downgrade the LSI adapter to FW 19, but i think this is
+unrelated to the FW as i can see this with 2 completely different
+HBA's and 2 completely different drives.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Sven
 
-Thanks.
+Sven
 
->                         }
->                         continue;
->                 }
-> @@ -2482,6 +2530,7 @@ int __btrfs_add_free_space(struct btrfs_fs_info *fs=
-_info,
->         info->bytes =3D bytes;
->         info->trim_state =3D trim_state;
->         RB_CLEAR_NODE(&info->offset_index);
-> +       RB_CLEAR_NODE(&info->bytes_index);
+
+On Sun, Sep 26, 2021 at 5:19 PM Damien Le Moal
+<damien.lemoal@opensource.wdc.com> wrote:
 >
->         spin_lock(&ctl->tree_lock);
+> On 2021/09/25 3:25, Sven Oehme wrote:
+> > Hi,
+> >
+> > i am running into issues with Host Managed SMR drive testing. when i
+> > try to copy or move a file to the btrfs filesystem it just hangs. i
+> > tried multiple 5.12,5.13 as well as 5.14 all the way to 5.14.6 but the
+> > issue still persists.
+> >
+> > here is the setup :
+> >
+> > I am using btrfs-progs-v5.14.1
+> > device is a  Host Managed WDC  20TB SMR drive with firmware level C421
+> > its connected via a HBA 9400-8i Tri-Mode Storage Adapter , latest 20.0 FW
 >
-> @@ -2795,6 +2844,7 @@ void btrfs_init_free_space_ctl(struct btrfs_block_g=
-roup *block_group,
->         ctl->start =3D block_group->start;
->         ctl->private =3D block_group;
->         ctl->op =3D &free_space_op;
-> +       ctl->free_space_bytes =3D RB_ROOT_CACHED;
->         INIT_LIST_HEAD(&ctl->trimming_ranges);
->         mutex_init(&ctl->cache_writeout_mutex);
+> Beware of the Broadcom FW rev 20. We found problems with it: very slow zone
+> command scheduling leading to command timeout is some cases. FW 19 does not seem
+> to have this issue. But that is likely not the cause of the problem here.
 >
-> @@ -2860,6 +2910,7 @@ static void __btrfs_return_cluster_to_free_space(
->                 }
->                 tree_insert_offset(&ctl->free_space_offset,
->                                    entry->offset, &entry->offset_index, b=
-itmap);
-> +               tree_insert_bytes(ctl, entry);
->         }
->         cluster->root =3D RB_ROOT;
->         spin_unlock(&cluster->lock);
-> @@ -2961,12 +3012,14 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block=
-_group *block_group,
->         u64 align_gap =3D 0;
->         u64 align_gap_len =3D 0;
->         enum btrfs_trim_state align_gap_trim_state =3D BTRFS_TRIM_STATE_U=
-NTRIMMED;
-> +       bool use_bytes_index =3D (offset =3D=3D block_group->start);
+> Is there anything of interest in dmesg ? Any IO errors ?
 >
->         ASSERT(!btrfs_is_zoned(block_group->fs_info));
+> Naohiro, Johannes,
 >
->         spin_lock(&ctl->tree_lock);
->         entry =3D find_free_space(ctl, &offset, &bytes_search,
-> -                               block_group->full_stripe_len, max_extent_=
-size);
-> +                               block_group->full_stripe_len, max_extent_=
-size,
-> +                               use_bytes_index);
->         if (!entry)
->                 goto out;
+> Any idea ?
 >
-> @@ -3250,6 +3303,7 @@ static int btrfs_bitmap_cluster(struct btrfs_block_=
-group *block_group,
 >
->         cluster->window_start =3D start * ctl->unit + entry->offset;
->         rb_erase(&entry->offset_index, &ctl->free_space_offset);
-> +       rb_erase_cached(&entry->bytes_index, &ctl->free_space_bytes);
->         ret =3D tree_insert_offset(&cluster->root, entry->offset,
->                                  &entry->offset_index, 1);
->         ASSERT(!ret); /* -EEXIST; Logic error */
-> @@ -3340,6 +3394,7 @@ setup_cluster_no_bitmap(struct btrfs_block_group *b=
-lock_group,
->                         continue;
 >
->                 rb_erase(&entry->offset_index, &ctl->free_space_offset);
-> +               rb_erase_cached(&entry->bytes_index, &ctl->free_space_byt=
-es);
->                 ret =3D tree_insert_offset(&cluster->root, entry->offset,
->                                          &entry->offset_index, 0);
->                 total_size +=3D entry->bytes;
-> diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
-> index 1f23088d43f9..dd982d204d2d 100644
-> --- a/fs/btrfs/free-space-cache.h
-> +++ b/fs/btrfs/free-space-cache.h
-> @@ -22,6 +22,7 @@ enum btrfs_trim_state {
+> > I am using the /dev/sd device direct  , no lvm or device mapper or
+> > anything else in between
+> >
+> > after a few seconds, sometimes minutes data rate to the drive drops to
+> > 0 and 1 or 2 cores on my system show 100% IO wait time, but no longer
+> > make any progress
+> >
+> > the process in question has the following stack :
+> >
+> > [ 2168.589160] task:mv              state:D stack:    0 pid: 3814
+> > ppid:  3679 flags:0x00004000
+> > [ 2168.589162] Call Trace:
+> > [ 2168.589163]  __schedule+0x2fa/0x910
+> > [ 2168.589166]  schedule+0x4f/0xc0
+> > [ 2168.589168]  schedule_timeout+0x8a/0x140
+> > [ 2168.589171]  ? __bpf_trace_tick_stop+0x10/0x10
+> > [ 2168.589173]  io_schedule_timeout+0x51/0x80
+> > [ 2168.589176]  balance_dirty_pages+0x2fa/0xe30
+> > [ 2168.589179]  ? __mod_lruvec_state+0x3a/0x50
+> > [ 2168.589182]  balance_dirty_pages_ratelimited+0x2f9/0x3c0
+> > [ 2168.589185]  btrfs_buffered_write+0x58e/0x7e0 [btrfs]
+> > [ 2168.589226]  btrfs_file_write_iter+0x138/0x3e0 [btrfs]
+> > [ 2168.589260]  ? ext4_file_read_iter+0x5b/0x180
+> > [ 2168.589262]  new_sync_write+0x114/0x1a0
+> > [ 2168.589265]  vfs_write+0x1c5/0x260
+> > [ 2168.589267]  ksys_write+0x67/0xe0
+> > [ 2168.589270]  __x64_sys_write+0x1a/0x20
+> > [ 2168.589272]  do_syscall_64+0x40/0xb0
+> > [ 2168.589275]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [ 2168.589277] RIP: 0033:0x7ffff7e91c27
+> > [ 2168.589278] RSP: 002b:00007fffffffdc48 EFLAGS: 00000246 ORIG_RAX:
+> > 0000000000000001
+> > [ 2168.589280] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007ffff7e91c27
+> > [ 2168.589281] RDX: 0000000000020000 RSI: 00007ffff79bd000 RDI: 0000000000000004
+> > [ 2168.589282] RBP: 00007ffff79bd000 R08: 0000000000000000 R09: 0000000000000000
+> > [ 2168.589283] R10: 0000000000000022 R11: 0000000000000246 R12: 0000000000000004
+> > [ 2168.589284] R13: 0000000000000004 R14: 00007ffff79bd000 R15: 0000000000020000
+> >
+> > and shows up under runnable tasks :
+> >
+> > [ 2168.593562] runnable tasks:
+> > [ 2168.593562]  S            task   PID         tree-key  switches
+> > prio     wait-time             sum-exec        sum-sleep
+> > [ 2168.593563] -------------------------------------------------------------------------------------------------------------
+> > [ 2168.593565]  S        cpuhp/13    92     88923.802487        19
+> > 120         0.000000         0.292061         0.000000 2 0 /
+> > [ 2168.593571]  S  idle_inject/13    93       -11.997255         3
+> > 49         0.000000         0.005480         0.000000 2 0 /
+> > [ 2168.593577]  S    migration/13    94       814.287531       551
+> > 0         0.000000      1015.550514         0.000000 2 0 /
+> > [ 2168.593582]  S    ksoftirqd/13    95     88762.317130        44
+> > 120         0.000000         1.940252         0.000000 2 0 /
+> > [ 2168.593588]  I    kworker/13:0    96        -9.031157         5
+> > 120         0.000000         0.017423         0.000000 2 0 /
+> > [ 2168.593593]  I   kworker/13:0H    97      3570.961886         5
+> > 100         0.000000         0.034345         0.000000 2 0 /
+> > [ 2168.593603]  I    kworker/13:1   400    101650.731913       578
+> > 120         0.000000        10.110898         0.000000 2 0 /
+> > [ 2168.593611]  I   kworker/13:1H  1015    101649.600698        65
+> > 100         0.000000         1.443300         0.000000 2 0 /
+> > [ 2168.593618]  S           loop3  1994     99133.655903        70
+> > 100         0.000000         1.137468         0.000000 2 0 /
+> > [ 2168.593625]  S           snapd  3161        15.296181       166
+> > 120         0.000000        90.296991         0.000000 2 0
+> > /system.slice/snapd.service
+> > [ 2168.593631]  S           snapd  3198        10.047573        49
+> > 120         0.000000         5.646247         0.000000 2 0
+> > /system.slice/snapd.service
+> > [ 2168.593639]  S            java  2446       970.743682       301
+> > 120         0.000000       101.648659         0.000000 2 0
+> > /system.slice/stor_tomcat.service
+> > [ 2168.593645]  S C1 CompilerThre  2573      1033.157689      3636
+> > 120         0.000000       615.256247         0.000000 2 0
+> > /system.slice/stor_tomcat.service
+> > [ 2168.593654]  D              mv  3814      2263.816953    186734
+> > 120         0.000000     30087.917319         0.000000 2 0 /user.slice
+> >
+> > any idea what is going on and how to fix this ?
 >
->  struct btrfs_free_space {
->         struct rb_node offset_index;
-> +       struct rb_node bytes_index;
->         u64 offset;
->         u64 bytes;
->         u64 max_extent_size;
-> @@ -45,6 +46,7 @@ static inline bool btrfs_free_space_trimming_bitmap(
->  struct btrfs_free_space_ctl {
->         spinlock_t tree_lock;
->         struct rb_root free_space_offset;
-> +       struct rb_root_cached free_space_bytes;
->         u64 free_space;
->         int extents_thresh;
->         int free_extents;
+>
+>
+> >
+> > thx.
+> >
+>
+>
 > --
-> 2.29.2
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+> Damien Le Moal
+> Western Digital Research
