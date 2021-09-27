@@ -2,130 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7338419FC2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 22:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6322B41A187
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 Sep 2021 23:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbhI0UJJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 Sep 2021 16:09:09 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:39998 "EHLO
+        id S237464AbhI0Vxf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 Sep 2021 17:53:35 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50442 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236733AbhI0UJG (ORCPT
+        with ESMTP id S237446AbhI0Vxe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 Sep 2021 16:09:06 -0400
+        Mon, 27 Sep 2021 17:53:34 -0400
 Received: from relay1.suse.de (relay1.suse.de [149.44.160.133])
-        by smtp-out2.suse.de (Postfix) with ESMTP id AE35B1FF7C;
-        Mon, 27 Sep 2021 20:07:25 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 18CA71FF82;
+        Mon, 27 Sep 2021 21:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632773245;
+        t=1632779515;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kxAIhH1YVtxRZIYXNVbyWMpsZD18tjPURBL8yhlODKY=;
-        b=rqCL/ZfaKLBBJ11Lvyjkmko7G0IT9x86WIcCx9OduTjm1NgsLZkg1W4/Fe1cCG/Qk9Yn8S
-        4UptkV/P2rPm+amFEtaKPN0FQNf0vfitqRtoMdyT/aUQpEjjB27ybGR9tRkeTK0IWi6EvT
-        6Aqpa+pvsMRplJz18xNNO1ZRkBSH1D8=
+        bh=8kMrr3VhHnzebrdvz6T5P7jc2wgoTNA8hGpza+cBBq0=;
+        b=o+3zuvtqjjVIVyimj30btafOZkOjDV8bkE/HSJSo/BQq1kwmNa8DglKW7fIOKq3Kwb7yYP
+        DEK3XBs768jm0r2FXM2A6hdcbthMW42jWcXuw/jgd92mOuXm3d/hWU9+D3JlJAvtl4mhxF
+        xedOjAOpadSsFIaMxqemfwYUw/LsAw4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632773245;
+        s=susede2_ed25519; t=1632779515;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kxAIhH1YVtxRZIYXNVbyWMpsZD18tjPURBL8yhlODKY=;
-        b=QEbbg8qe4mXGT8/Upe6yCLvS822wAxZpuHOGT5K9AL53fjW4hFZgMNlgvVQ4RqvbLrzxR0
-        6bmSu51+HcRz6eCA==
+        bh=8kMrr3VhHnzebrdvz6T5P7jc2wgoTNA8hGpza+cBBq0=;
+        b=Qo+jW0OhZ1A3pKGpIyYpcSLFCrqt0aYloRhBq+Bfh2Qiwvqgogxyj6kADvUQx7Nnt8dZdJ
+        Me4zVZr/b6VBbrCg==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay1.suse.de (Postfix) with ESMTP id 389D425D42;
-        Mon, 27 Sep 2021 20:07:24 +0000 (UTC)
+        by relay1.suse.de (Postfix) with ESMTP id B739325D3E;
+        Mon, 27 Sep 2021 21:51:54 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 862D3DA799; Mon, 27 Sep 2021 22:07:08 +0200 (CEST)
-Date:   Mon, 27 Sep 2021 22:07:08 +0200
+        id 51601DA7A9; Mon, 27 Sep 2021 23:51:39 +0200 (CEST)
+Date:   Mon, 27 Sep 2021 23:51:39 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     David Howells <dhowells@redhat.com>
-Cc:     willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
-        Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
-        Bob Liu <bob.liu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Seth Jennings <sjenning@linux.vnet.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
-        Dan Magenheimer <dan.magenheimer@oracle.com>,
-        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
-Message-ID: <20210927200708.GI9286@twin.jikos.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 0/5] btrfs-progs: use direct-IO for zoned device
+Message-ID: <20210927215139.GJ9286@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, David Howells <dhowells@redhat.com>,
-        willy@infradead.org, hch@lst.de, trond.myklebust@primarydata.com,
-        Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
-        ceph-devel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>, linux-mm@kvack.org,
-        Bob Liu <bob.liu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Seth Jennings <sjenning@linux.vnet.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, Minchan Kim <minchan@kernel.org>,
-        Steve French <sfrench@samba.org>, NeilBrown <neilb@suse.de>,
-        Dan Magenheimer <dan.magenheimer@oracle.com>,
-        linux-nfs@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        linux-btrfs@vger.kernel.org, viro@zeniv.linux.org.uk,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
-References: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+References: <20210927041554.325884-1-naohiro.aota@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+In-Reply-To: <20210927041554.325884-1-naohiro.aota@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 06:17:52PM +0100, David Howells wrote:
+On Mon, Sep 27, 2021 at 01:15:49PM +0900, Naohiro Aota wrote:
+> As discussed in the Zoned Storage page [1],  the kernel page cache does not
+> guarantee that cached dirty pages will be flushed to a block device in
+> sequential sector order. Thus, we must use O_DIRECT for writing to a zoned
+> device to ensure the write ordering.
 > 
-> Hi Willy, Trond, Christoph,
+> [1] https://zonedstorage.io/linux/overview/#zbd-support-restrictions
 > 
-> Here's v3 of a change to make reads and writes from the swapfile use async
-> DIO, adding a new ->swap_rw() address_space method, rather than readpage()
-> or direct_IO(), as requested by Willy.  This allows NFS to bypass the write
-> checks that prevent swapfiles from working, plus a bunch of other checks
-> that may or may not be necessary.
+> As a writng buffer is embedded in some other struct (e.g., "char data[]" in
+> struct extent_buffer), it is difficult to allocate the struct so that the
+> writng buffer is aligned.
 > 
-> Whilst trying to make this work, I found that NFS's support for swapfiles
-> seems to have been non-functional since Aug 2019 (I think), so the first
-> patch fixes that.  Question is: do we actually *want* to keep this
-> functionality, given that it seems that no one's tested it with an upstream
-> kernel in the last couple of years?
+> This series introduces btrfs_{pread,pwrite} to wrap around pread/pwrite,
+> which allocates an aligned bounce buffer, copy the buffer contents, and
+> proceeds the IO. And, it now opens a zoned device with O_DIRECT.
 > 
-> There are additional patches to get rid of noop_direct_IO and replace it
-> with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use the
-> new ->swap_rw method and thence remove the direct BIO submission paths from
-> swap.
+> Since the allocation and copying are costly, it is better to do them only
+> when necessary. But, it is cumbersome to call fcntl(F_GETFL) to determine
+> the file is opened with O_DIRECT or not every time doing an IO.
 > 
-> I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure if
-> that's necessary, but it seems accounting related.
+> As zoned device forces to use zoned btrfs, I decided to use the zoned flag
+> to determine if it is direct-IO or not. This can cause a false-positive (to
+> use the bounce buffer when a file is *not* opened with O_DIRECT) in case of
+> emulated zoned mode on a non-zoned device or a regular file. Considering
+> the emulated zoned mode is mostly for debugging or testing, I believe this
+> is acceptable.
 > 
-> The synchronous DIO I/O code on NFS, raw blockdev, ext4 swapfile and xfs
-> swapfile all seem to work fine.  Btrfs refuses to swapon because the file
-> might be CoW'd.  I've tried doing "chattr +C", but that didn't help.
+> Patch 1 is a preparation not to set an emulated zone_size value when not
+> needed.
+> 
+> Patches 2 and 3 wraps pread/pwrite with newly introduced function
+> btrfs_pread/btrfs_pwrite.
+> 
+> Patches 4 deals with the zoned flag while reading the initial trees.
+> 
+> Patch 5 finally opens a zoned device with O_DIRECT.
+> 
+> Naohiro Aota (5):
+>   btrfs-progs: mkfs: do not set zone size on non-zoned mode
+>   btrfs-progs: introduce btrfs_pwrite wrapper for pwrite
+>   btrfs-progs: introduce btrfs_pread wrapper for pread
+>   btrfs-progs: temporally set zoned flag for initial tree reading
+>   btrfs-progs: use direct-IO for zoned device
 
-There was probably some step missing. The file must not have holes, so
-either do 'dd' to the right size or use fallocate (which is recommended
-in manual page btrfs(5) SWAPFILE SUPPORT). There are some fstests
-exercising swapfile (grep -l _format_swapfile tests/generic/*) so you
-could try that without having to set up the swapfile manually.
+I was doing some btrfs-convert changes and found that it crashed, rough
+bisection points to this series. With the last patch applied, convert
+fails with the following ASAN error:
+
+...
+Create initial btrfs filesystem
+Create ext2 image file
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==18432==ERROR: AddressSanitizer: SEGV on unknown address (pc 0x000000496627 bp 0x7ffe5299e4d0 sp 0x7ffe5299e4b0 T0)
+==18432==The signal is caused by a READ memory access.
+==18432==Hint: this fault was caused by a dereference of a high value address (see register values below).  Dissassemble the provided pc to learn which register was used.
+    #0 0x496627 in write_extent_to_disk kernel-shared/extent_io.c:815
+    #1 0x470080 in write_and_map_eb kernel-shared/disk-io.c:525
+    #2 0x411af9 in migrate_one_reserved_range convert/main.c:402
+    #3 0x411fa5 in migrate_reserved_ranges convert/main.c:459
+    #4 0x414088 in create_image convert/main.c:878
+    #5 0x416d70 in do_convert convert/main.c:1269
+    #6 0x41a294 in main convert/main.c:1993
+    #7 0x7f7ef7c2753f in __libc_start_call_main (/lib64/libc.so.6+0x2d53f)
+    #8 0x7f7ef7c275eb in __libc_start_main_alias_1 (/lib64/libc.so.6+0x2d5eb)
+    #9 0x40ed04 in _start (.../btrfs-progs/btrfs-convert+0x40ed04)
+
+kernel-shared/extent_io.c:815:
+
+ 811 int write_extent_to_disk(struct extent_buffer *eb)
+ 812 {
+ 813         int ret;
+ 814         ret = btrfs_pwrite(eb->fd, eb->data, eb->len, eb->dev_bytenr,
+ 815                            eb->fs_info->zoned);
+ 816         if (ret < 0)
+ 817                 goto out;
+ 818         if (ret != eb->len) {
+ 819                 ret = -EIO;
+ 820                 goto out;
+ 821         }
+ 822         ret = 0;
+ 823 out:
+ 824         return ret;
+ 825 }
