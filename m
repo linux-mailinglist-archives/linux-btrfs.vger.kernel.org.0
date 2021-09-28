@@ -2,190 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481F041AF21
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Sep 2021 14:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC2441B279
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Sep 2021 16:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240555AbhI1MjP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Sep 2021 08:39:15 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54910 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240488AbhI1MjP (ORCPT
+        id S241434AbhI1PBf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Sep 2021 11:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241265AbhI1PBf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:39:15 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 67CF220213;
-        Tue, 28 Sep 2021 12:37:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632832652; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/2Y1khj2rbBB6FR0MyshfdnpoQEpNPcfGag2w1vcBEU=;
-        b=DUpl9mgNG7P0N9YGP1aGOTTIQveRV6kfoZj0mWCvou+dTqSHSE9asgp8qu5OAtNTLrS7aZ
-        qPpC7Pdy8c4OWevdoWQxZu1bJ/DVUIm2Lj/D540puvpFIHCXteertRPFJY+NZykgYUFzGg
-        2+PvIGiGJaXCmD40UobVPXJfSlvp7x0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 399EA13A82;
-        Tue, 28 Sep 2021 12:37:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yHStC4wMU2GLCwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 28 Sep 2021 12:37:32 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 2/2] btrfs-progs: Ignore path devices during scan - static build support
-Date:   Tue, 28 Sep 2021 15:37:30 +0300
-Message-Id: <20210928123730.393551-2-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210928123730.393551-1-nborisov@suse.com>
-References: <20210928123730.393551-1-nborisov@suse.com>
+        Tue, 28 Sep 2021 11:01:35 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F479C06161C
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Sep 2021 07:59:55 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id y28so93230246lfb.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Sep 2021 07:59:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9fInY95no8O0JEStBsdbpcymzt287B66Fcqaxhkug+c=;
+        b=FfNByYfUegGHsII+I3f5TVFbSZkKQ34sMp4OH9feQ01FDoaO1JVJtg1jZ8hbAyyE3h
+         +o/QtI4Gycrr4pn0Wb6Q9HuBgnVKu37zPHCYNw6PKfpAmVP4trKhCICqVexk61OjymcM
+         ajE+rrWyYiEaYRePBmCieqMzw5ekh1Vxny2gQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9fInY95no8O0JEStBsdbpcymzt287B66Fcqaxhkug+c=;
+        b=xzgdLLD/FbkhNr43oC0x7Q9wBlIOSAUsG7wKOYO4VVJQxedOWIPOPHJhEl2gsjro50
+         Pupj632PCIeFoKQU4V63h1s1XQ4Q3X47jHEIVi0q3gawBBh8kAsPY5CoxDtO6+fPj6fK
+         4qpluGEoDSOwVzNuzFDiHflw4MvtYxfnICB58V7H+juaX7TwH/7IXN7er7INfbIshMyj
+         RwMaQmaF3gelWRo+KJIZEd25CUh21gwPb2ZQrxZ7JBIdzX4nR7WA8Rnxb+uWjoUe98Mg
+         pjvT128Zb+z7FieetfWPiyaarlztsEsvYGiweTkvlIsFfYdavv312HrQOy9Vw4i7uGBP
+         l/ig==
+X-Gm-Message-State: AOAM533XLC6j1a404vikCFxZoGK2hI7On+kZOGo0kx99I7jd2gcJMJqW
+        PTsR3Mb7s3jGYK/r4snPM1zvJO7ncF0dK3px
+X-Google-Smtp-Source: ABdhPJzhdOCeTJScf1uPrtcu+xAp88+ae82nfDTQUhES0EsyxkqtbCnp54aNNZYpGRHc/xzB+aQuQg==
+X-Received: by 2002:a2e:8011:: with SMTP id j17mr397854ljg.145.1632841189241;
+        Tue, 28 Sep 2021 07:59:49 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id v28sm1945338lfi.22.2021.09.28.07.59.48
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Sep 2021 07:59:48 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id x27so94123383lfu.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Sep 2021 07:59:48 -0700 (PDT)
+X-Received: by 2002:a2e:3309:: with SMTP id d9mr387530ljc.249.1632841188299;
+ Tue, 28 Sep 2021 07:59:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YVK0jzJ/lt97xowQ@sol.localdomain>
+In-Reply-To: <YVK0jzJ/lt97xowQ@sol.localdomain>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 28 Sep 2021 07:59:32 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wibMN-Bixbu8zttUoV1ixoVRNk+jyAPEmsVdBe1GFoB5Q@mail.gmail.com>
+Message-ID: <CAHk-=wibMN-Bixbu8zttUoV1ixoVRNk+jyAPEmsVdBe1GFoB5Q@mail.gmail.com>
+Subject: Re: [GIT PULL] fsverity fix for 5.15-rc4
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Boris Burkov <boris@bur.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since libudev doesn't provide a static version of the library for static
-build btrfs-progs will have to provide manual fallback. THis change does
-exactly this by parsing the udev database files hosted /run/udev/data/.
-Under that directory every block device should have a file with the
-following name: bMAJ:MIN. So implement the bare minimum code necessary
-to parse this file and search for the presence of DM_MULTIPATH_DEVICE_PATH
-udev attribute. This could likely be racy since access to the udev
-database is done outside of libudev but that's the best that can be
-done when implementing this manually.
+On Mon, Sep 27, 2021 at 11:22 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> Fix an integer overflow when computing the Merkle tree layout of
+> extremely large files, exposed by btrfs adding support for fs-verity.
 
-To reduce duplication of code also factor out the specifics of
-is_path_device to __is_path_device which will contain the appropriate
-implementation according to the build mode (i.e relying on libudev in
-case of normal build or manual fall back code in case of static build)
-or simply utilize the old logic (in case of a normal build and libudev
-missing).
+I wonder if 'i_size' should be u64. I'm not convinced people think
+about 'loff_t' being signed - but while that's required for negative
+lseek() offsets, I'm not sure it makes tons of sense for an inode
+size.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- common/device-scan.c | 66 ++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 57 insertions(+), 9 deletions(-)
+Same goes for f_pos, for that matter.
 
-diff --git a/common/device-scan.c b/common/device-scan.c
-index 2ed0e34d3664..9779dd1aedf3 100644
---- a/common/device-scan.c
-+++ b/common/device-scan.c
-@@ -29,6 +29,7 @@
- #include <dirent.h>
- #include <blkid/blkid.h>
- #include <uuid/uuid.h>
-+#include <sys/sysmacros.h>
- #ifdef HAVE_LIBUDEV
- #include <sys/stat.h>
- #include <libudev.h>
-@@ -372,23 +373,56 @@ void free_seen_fsid(struct seen_fsid *seen_fsid_hash[])
- 	}
- }
- 
--#ifdef HAVE_LIBUDEV
--static bool is_path_device(char *device_path)
-+#ifdef STATIC_BUILD
-+static bool __is_path_device(dev_t dev)
-+{
-+	FILE *file;
-+	char *line = NULL;
-+	size_t len = 0;
-+	ssize_t nread;
-+	bool ret = false;
-+	int ret2;
-+	struct stat dev_stat;
-+	char path[100];
-+
-+	ret2 = snprintf(path, 100, "/run/udev/data/b%u:%u", major(dev_stat.st_rdev),
-+			minor(dev_stat.st_rdev));
-+
-+	if (ret2 >= 100 || ret2 < 0)
-+		return false;
-+
-+	file = fopen(path, "r");
-+	if (file == NULL)
-+		return false;
-+
-+	while ((nread = getline(&line, &len, file)) != -1) {
-+		if (strstr(line, "DM_MULTIPATH_DEVICE_PATH=1")) {
-+			ret = true;
-+			printf("found dm multipath line: %s\n", line);
-+			break;
-+		}
-+	}
-+
-+	if (line)
-+		free(line);
-+
-+	fclose(file);
-+
-+	return ret;
-+}
-+#elif defined(HAVE_LIBUDEV)
-+static bool __is_path_device(dev_t device)
- {
- 	struct udev *udev = NULL;
- 	struct udev_device *dev = NULL;
--	struct stat dev_stat;
- 	const char *val;
- 	bool ret = false;
- 
--	if (stat(device_path, &dev_stat) < 0)
--		return false;
--
- 	udev = udev_new();
- 	if (!udev)
- 		goto out;
- 
--	dev = udev_device_new_from_devnum(udev, 'b', dev_stat.st_rdev);
-+	dev = udev_device_new_from_devnum(udev, 'b', device);
- 	if (!dev)
- 		goto out;
- 
-@@ -401,8 +435,24 @@ static bool is_path_device(char *device_path)
- 
- 	return ret;
- }
-+#else
-+static bool __is_path_device(dev_t device)
-+{
-+	return false;
-+}
- #endif
- 
-+static bool is_path_device(char *device_path)
-+{
-+	struct stat dev_stat;
-+
-+	if (stat(device_path, &dev_stat) < 0)
-+		return false;
-+
-+	return __is_path_device(dev_stat.st_rdev);
-+
-+}
-+
- int btrfs_scan_devices(int verbose)
- {
- 	int fd = -1;
-@@ -433,10 +483,8 @@ int btrfs_scan_devices(int verbose)
- 		/* if we are here its definitely a btrfs disk*/
- 		strncpy_null(path, blkid_dev_devname(dev));
- 
--#ifdef HAVE_LIBUDEV
- 		if (is_path_device(path))
- 			continue;
--#endif
- 
- 		fd = open(path, O_RDONLY);
- 		if (fd < 0) {
--- 
-2.17.1
+But who knows what games people have played with magic numbers (ie
+"-1") internally, or where they _want_ signed compares. So it's
+certainly not some obvious trivial fix.
 
+Pulled.
+
+            Linus
