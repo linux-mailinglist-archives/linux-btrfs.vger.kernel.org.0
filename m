@@ -2,83 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61FA41B4CA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Sep 2021 19:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBCC41B6B6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Sep 2021 20:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241981AbhI1RPb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Sep 2021 13:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241980AbhI1RPa (ORCPT
+        id S242170AbhI1Syw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Sep 2021 14:54:52 -0400
+Received: from mta-p8.oit.umn.edu ([134.84.196.208]:49200 "EHLO
+        mta-p8.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230109AbhI1Syw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Sep 2021 13:15:30 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FB9C061749
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Sep 2021 10:13:51 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id b82so32419676ybg.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 Sep 2021 10:13:51 -0700 (PDT)
+        Tue, 28 Sep 2021 14:54:52 -0400
+X-Greylist: delayed 490 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Sep 2021 14:54:52 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p8.oit.umn.edu (Postfix) with ESMTP id 4HJpMx52Sxz9vlRv
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Sep 2021 18:45:01 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p8.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p8.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 63eMMwArNT4M for <linux-btrfs@vger.kernel.org>;
+        Tue, 28 Sep 2021 13:45:01 -0500 (CDT)
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p8.oit.umn.edu (Postfix) with ESMTPS id 4HJpMx3Dwbz9vlRg
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Sep 2021 13:45:01 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p8.oit.umn.edu 4HJpMx3Dwbz9vlRg
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p8.oit.umn.edu 4HJpMx3Dwbz9vlRg
+Received: by mail-qt1-f200.google.com with SMTP id 100-20020aed30ed000000b002a6b3dc6465so95612249qtf.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 Sep 2021 11:45:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=q4Qyi+eRiaCCIu+BvCkMUyAVesxLH0pvX4PbDdWz/mOUAUwaJe9eNn7uLOJt8RijZG
-         fQybmIzMl8IQ0mC8P1z5YEDkr/e2QpaL+XyZ760mwJCmDgKeWM6wbgs7fnhaMw5xmWtR
-         aMYrG5/ctody7UaI4/L1zB7H7MY9iMDxIu6EE8yLh1oFqgUgA5EPEhjsHNoo9qGZbfSS
-         zH2XqbFYF5cV+NX4N1lejH18vgsqCiuEZ50xAojd+yVvbBePWvfXIwqAcKO/NDW8yToI
-         nJ3Xx/hl+Rk2z558vW3ceMOFLXr3x8RHCuNHfiAgEMqXvkJvOt9CHfhqTAC6oPTNEowt
-         T+JA==
+        d=d.umn.edu; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=K/MVmXrNRxudS00qy3MpILzmC0YWAswl6S2Ayxm9mTc=;
+        b=V59RsRhYIEIJLwr4DlkulX7FQCR8O477LDVpuNmYssTvphCN4vCCIpXGOrhBuDv+wg
+         Q97P7WIPA87Dk4RH3pPRRghOfhYoVitj0NVkohEKWgyyeHaBLN8BmkmbsCNRgf7/LDiE
+         x0fX/nTKlZqltcFeULrX8Q+5kCGvv78CL8guF4oMCY4DUip3q2ko0f0uv0cUcK8kFN8j
+         S2iiSz4WFfCYMy9jzic8yIaQ+vsXMlpthPkPCl4o0xAdy4tjDc3gp4RRxxGswgbvjR2M
+         SzTb4QdVcCSR+3E656fm79W6hr73s1XHpRe6+Bo+q8VwjImgw4t4lJeYgrpdTNJ3u5Ej
+         pySA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=ra6xANgKQN65dWWI9DOoLPAURogS+vFp1n9aOEjlhaFTBhVB9PPn0tDqCGEmip7T84
-         zVEAGcqYIcGMx5EWShe8Ml60JeIS4p8OPqtfpu7eGe7cflTUIn+2d5M/2JWK3M3LL7Fx
-         Z6hIkbLryIT2dE+mMW3GpKpQ7UCS1Tl+GKuNJGZWz7aRPY3BmNPbChzcSgmEC7DLnstT
-         vDueHhyWOQV5g+18F7Vu8PL6BlD195zADUCD/wVV6GvGc0HFd2YdDUOdR/IbQZjoEODa
-         PvLSVYSK+1lbMVPy+WL+HoH4OOIKVG1k1erSke1J2pgfh9kuSqpPnfDoSXd2lQpCz7jR
-         Xg+Q==
-X-Gm-Message-State: AOAM5315s7xTe1sD1N1zUobPjx6/1PY0CRfE4SHv83/YeNIqIC2TZUPn
-        Cna+MwtDGwBFJIZOJ0Q5kC/Sdc+TReyK19uxpGQ=
-X-Google-Smtp-Source: ABdhPJxy6phcpWxijpqq7+W/w/vtpCyGL3tb6FjpbmClVTvL1eC1NhchM/7UBbEJIqOt3ZGZIE5uaCTUcDTyIxdZNz8=
-X-Received: by 2002:a25:9004:: with SMTP id s4mr8049800ybl.545.1632849230367;
- Tue, 28 Sep 2021 10:13:50 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=K/MVmXrNRxudS00qy3MpILzmC0YWAswl6S2Ayxm9mTc=;
+        b=vAG1qaOEIsJSWFTUvXX0WVFvmMFaNj+cAUo/QmZpAAhyWtg8ryVDV4z4IdENgtj18I
+         rRD8+qSA1xBT9XCdsxBXT3X04qmM4roF1DV50KS6ikaF7CCkHinCJ12B71g45mophRv1
+         fCkLqeYTPO4v46i63omudskRupYipUiPIM653pLQoubbxL4GkUrzVaTF0MrYKa1FiUbJ
+         ITeTQQTSy+w9HIFmcdNlWQwiRAZlZAvMO/qGW44WERCWuFRjK2MS599Pd0k6xuUY5OM9
+         XCHxtj2X+Ent+VZ3ZtkhYKFbPIFRCb0HK0DZtK4ByGjjHHxPg0I1MV+ytCyExeHJJtuG
+         9L7w==
+X-Gm-Message-State: AOAM533Htqw4GdGr4uuJN+U02yylJU5aCmq5Vw9fz6ikCTaSJtSm1qT6
+        Zbren4Tvx2CnpUV/pM08hHPgGdJZGhRljYpclNdgNfxJxWIB77JaWseSbWJNUKVYZdh60Zjw1nu
+        O6h6QJCz7TtAA7gUP9WwcWvbssFYTma6l9bXK2+CE8PE=
+X-Received: by 2002:ac8:1386:: with SMTP id h6mr7608731qtj.36.1632854700737;
+        Tue, 28 Sep 2021 11:45:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwfJGZJUZWpaUEm2EzxPsQ8Xz9RE8xMF50U8i0OKXM8d1EMh5ugxlYjZeKMl0SRa06KsTJpERQQmom41Mn4Qc=
+X-Received: by 2002:ac8:1386:: with SMTP id h6mr7608710qtj.36.1632854700488;
+ Tue, 28 Sep 2021 11:45:00 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:7110:21cc:b0:f5:2c21:17c9 with HTTP; Tue, 28 Sep 2021
- 10:13:50 -0700 (PDT)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <whitemrshannah@gmail.com>
-Date:   Tue, 28 Sep 2021 10:13:50 -0700
-Message-ID: <CAPOLZiyNj2aj0BRnf1pZmoOCDoGDAECSOU20NDSGXLXXM7Fbsg@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
+From:   Matt Zagrabelny <mzagrabe@d.umn.edu>
+Date:   Tue, 28 Sep 2021 13:44:47 -0500
+Message-ID: <CAOLfK3VL5P7uAPAqvaRHv5gcoT5hdVqkSR5Nz+hTcb=FRmj9ZQ@mail.gmail.com>
+Subject: unable to mount disk?
+To:     linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Friend,
+Greetings btrfs folks,
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+I am attempting to mount a filesystem on a (likely) failing disk:
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+$ mount /var/local/media
+mount: /var/local/media: wrong fs type, bad option, bad superblock on
+/dev/sdb, missing codepage or helper program, or other error.
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
+excerpt from dmesg:
 
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
+[  352.642893] BTRFS info (device sdb): disk space caching is enabled
+[  352.642897] BTRFS info (device sdb): has skinny extents
+[  352.645562] BTRFS error (device sdb): devid 2 uuid
+bf09cc8f-44d6-412e-bc42-214ff122584a is missing
+[  352.645570] BTRFS error (device sdb): failed to read the system array: -2
+[  352.646770] BTRFS error (device sdb): open_ctree failed
 
-Your Urgent Reply Will Be Appreciated
+Is there anything I can do to attempt to recover this hardware issue?
 
-Best Regards
-Mrs Aisha Al-Qaddafi
+Thanks,
+
+-m
