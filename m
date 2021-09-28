@@ -2,517 +2,376 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0325241A96B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Sep 2021 09:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C38C41A9E7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Sep 2021 09:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239054AbhI1HL5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Sep 2021 03:11:57 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:33657 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233681AbhI1HLq (ORCPT
+        id S239340AbhI1HkG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Sep 2021 03:40:06 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:20856 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239254AbhI1HkG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Sep 2021 03:11:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1632813005; x=1664349005;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=FMl43khR4W0jmonDUjOuKStT95G/0Cv1ln6VsshPzJQ=;
-  b=ftYzpoPlPT4k/rGSSm4MILdzYLYhYaXtDwZ0sNMJ8o85tF+/LSMJkWRL
-   EvpfMkPjSDad66drJuaLpcdaKipp63fTs0lXsy1/C2Z78AmyBscSt2WiX
-   xbGfcXQU6A97UXgubWvX7cRe13wHGJZZPeifaV2s5XRG9w18hLIQ70PO1
-   i9PIGT+xaIqX35cYQ78mjfJttLv2bpJiWrp5EZ52H/p4UewJQzBJ1oUm0
-   JQyTUrx9fsJCL/rmTamQ3a1Tqe3U7GbM1hxGHrxax3OAoqv6fqoFxUG4b
-   SL1CB4HnEqLS4IhsSA9BkOeb6c/gLSdAuvHoOQGNzrJnpvS/RbDgD3yXx
-   g==;
-X-IronPort-AV: E=Sophos;i="5.85,328,1624291200"; 
-   d="scan'208";a="185945020"
-Received: from mail-dm6nam12lp2169.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.169])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Sep 2021 15:10:02 +0800
+        Tue, 28 Sep 2021 03:40:06 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18S6wMnV003183;
+        Tue, 28 Sep 2021 07:38:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=HJQkzgI8W2ebojc/uut2eFS4dLH5yM7s3WOPyxK0gxE=;
+ b=q3MXaBiZSHZsAcqDx88hDTfv81xohSpyXcf558+5xB+dVA9Lh3RgdP2CBB8sXwmZYkmX
+ uL6poBsv714UbhgWjUM/E5lyOXuG5Xd1K89co/Eu/LqqwJP3meKabGfVymtTMWfVpiVc
+ z7Nc04O/v+X2Or9hDjTZM6qcAIOeyK50H5YbNaHBhBRrVAzv5auN8aP6iXnnYXjGYvAY
+ sbR2kY2ZZcooOjhSNe2y7vMbp7nWjMm8rKDAMp0aR4IwLtZ+GTOHql0RHj/0KmpVxC6h
+ tWLOMbO4beo0tm07qiZpmwtyA0C9h5+r1e/l6Wrd/P6lXAf+IOPP3sF9+HhY3cn3UdcY GA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bbejef10v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Sep 2021 07:38:24 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18S7aO9o080606;
+        Tue, 28 Sep 2021 07:38:22 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+        by userp3020.oracle.com with ESMTP id 3badhs9g48-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Sep 2021 07:38:22 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eB++rHxGGf+ADXJ7i9qcqoCxkxWC3HB2DjYAP48LwGaly+CJE6KpVa7NZTjs2CZUwZ0HIcZXyoaS076O9IkFR7g6F7GQlSi4wo/B0JuzwkLjGEHWdN+9rEICqmOSPX9SGmhxNTwY7tMtLTcnceyWidY5knYTUDWVdO9RIukwE3bktOTkiKaNY2Dc99J4vkJZYNZQVLzzGEfPZN2qguMZTy1KW8bmUV++3kAvGOJQrQSe3BbcO8OPdkW/aoR9F6Favyk/bkSR9JmLJ123WmW6coplSdfzRUJw9icqmdZhi3vo2TY0Nms8PUMH+DG6OQx+iW2dPG0FK12TieOZwiu/zQ==
+ b=Fah0fImtTpTvJxwRp8ERxwFKj7c98tIV/dHnYgX84Td+NZpm3EBas6GJOfkORmF6dGooTJly4n4gChvGjnpuuUrRkK6hXcLyEo12xSZdvtB1XcvP3rAjJt6kt1q2F5OyiDOVSsMPT3KNs3+K4EKqypLC3rnAoW6w7Pocy5LUZyXna77eGYgU0/ryKKi6b3+xhEHYNOWnffrLErpvE8OUsDNmh5ccNRqn837HM94Q//9hNmHJqYDd1ggDuC86ofoBOWHn6bE57b8FvXv/5poJf7AebRyvwWUqUEjAraccOp6ojeaUl96BAlKiWFjpnP7z8lVxwxp0sDMI8l0qa1AUqQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=sZaH4+vHRlzUtegYRkC+jumCuNQ/3Tyvq8bm7atYpRc=;
- b=EAtSBBVzENOgupfi17SafUMf96BdObIJoUoYRU2d0sgPfk/GXRnq6rYLnJfYNsecSPzMDmuqZFQiQv9eOYegnj4a2EvBTxCkg9JcxsuVrpScEeFlsJPr+nouVFP89/60Tz9ZDEZVjmca+o5T0iBb15X6hD8oEYITsdm0aSSNar/t8ssNDGGr4w+bpmm5bDBgmROCIt0gWn+n4fMugXdBSFPt712XgtIJ3jQNLz3bYDxVNlXFzxqj1ntJTKrUdIaZ0tfkfi3SJDLtZQCf6bv+QVcooWGScmnnMM++rxfGjty0ZKJEveQhcsbP9lpEG10HryvbR1oiATFvbD/wieRQIg==
+ bh=HJQkzgI8W2ebojc/uut2eFS4dLH5yM7s3WOPyxK0gxE=;
+ b=QGsklI2BCEPBkzHh1XPK8VK559HDgieNfAZQ/oOFjS3RsJ+pq2fMBVnWTEbMrGTVZ0vMb99/TMBm1Qagvx9XzWTK8jJDpaj0GtMFTLnPSyf67qHkZxmjLTnARuN1s9h0E+4bJstkWNmHEnii9uuOGsB251QiuybWAZGwH0lObJ7ShPhjkKeT8mMQUA6lyG1tfe9W/DHqTIdT/ScKT/qWao8zNtDHDT2fP7IaHkmrPrfqigpJLB14f4lSUuGYFxH/+VK3WXVSHNVgVVkvLzMJec79QlWcafyWZ2C8Dsq83kyjqPOA/ai3Sfxn8jwVdXYMrq0UVXFh9OkqvN+WkcC+yw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sZaH4+vHRlzUtegYRkC+jumCuNQ/3Tyvq8bm7atYpRc=;
- b=s3GD7x2jBUyY3o81YOIpuWt1zH0T33l0mbKZrC0yO/uIGJtjkEpQnCP9D3t2rEP77q6Hk5UReaKXJOeoWErErSXoTMrcsXR/gsw4ESotZzzhoEk0WqMbgfMogOAqUH4CE9n0xiYUhc0eMKVId5DPxM05GUOBme34abhjnbx2OEc=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by SJ0PR04MB8358.namprd04.prod.outlook.com (2603:10b6:a03:3d3::13) with
+ bh=HJQkzgI8W2ebojc/uut2eFS4dLH5yM7s3WOPyxK0gxE=;
+ b=j5IeZMjFw5IGWoQTkCxrHtSSS446mfugH3mwEMbB3zN7wYb/36kXvzm+L00wKYyKELaVG/ghEx+RY7qBpYIFukvdsvdaEgMQj15b2xT9CHdxsGWEmKPK4IijwjYH5TN6E1AWooB+8GBq1004iyNM2WlqIPY+irZk2LepLzSWt8k=
+Authentication-Results: fb.com; dkim=none (message not signed)
+ header.d=none;fb.com; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13; Tue, 28 Sep
- 2021 07:10:03 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::19a7:91bd:cb0c:e555]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::19a7:91bd:cb0c:e555%7]) with mapi id 15.20.4544.021; Tue, 28 Sep 2021
- 07:10:03 +0000
-From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     Sven Oehme <oehmes@gmail.com>
-CC:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Subject: Re: Host managed SMR drive issue
-Thread-Topic: Host managed SMR drive issue
-Thread-Index: AQHXsXGwRZ8Fj0FRlU2SoMhzGhNwNKu29x+AgAEwLQCAAFaggIAAAtkAgAACKICAAAF5AIAABGmAgAAD/gCAAACgAIAAAMyAgAB+mQA=
-Date:   Tue, 28 Sep 2021 07:10:03 +0000
-Message-ID: <20210928071002.jzm7e6ndm2qh6x4o@naota-xeon>
-References: <6db88069-e263-ae85-4f69-adb9ec69ee76@opensource.wdc.com>
- <CALssuR2gAEoxhDK=z0ryx30GAWiXcZ70pbUEq5mAxd-5pmsyRw@mail.gmail.com>
- <CALssuR2K8Dtr+bGSYVOQXcWomMx0VnLwUiB1ah44ngrJ5trnSw@mail.gmail.com>
- <a9764186-90ab-6ff3-7953-07f39d69ea5f@opensource.wdc.com>
- <CALssuR3A4Um8raXi1W7O74PbgbcNmummasfZrY=sPj5t6f+eWg@mail.gmail.com>
- <b010054f-ba99-6cf9-8318-267e3b4cff90@opensource.wdc.com>
- <CALssuR1sqLDkyf4iyFhJv108BePHSoMPD=r+pDfeb=mcPWNaVA@mail.gmail.com>
- <7038f4b9-a321-ef7d-1762-c0c77d666d55@opensource.wdc.com>
- <CALssuR1Fpz=wXsCY6N+6ApU-1_tBzjj_==+3s2NOws9fPReYDw@mail.gmail.com>
- <CALssuR0D9r5_rXWsL1Qt4ouFdUQdrYY_VL2KMaNJ442bqHREsQ@mail.gmail.com>
-In-Reply-To: <CALssuR0D9r5_rXWsL1Qt4ouFdUQdrYY_VL2KMaNJ442bqHREsQ@mail.gmail.com>
-Accept-Language: ja-JP, en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Tue, 28 Sep
+ 2021 07:38:20 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4544.021; Tue, 28 Sep 2021
+ 07:38:18 +0000
+Subject: Re: [PATCH v3 3/5] btrfs: add a BTRFS_FS_ERROR helper
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1632765815.git.josef@toxicpanda.com>
+ <4790be90bba87904294617bec93c5dfe586bbd58.1632765815.git.josef@toxicpanda.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <71976bb8-748c-d82f-1fb5-df30493ced6f@oracle.com>
+Date:   Tue, 28 Sep 2021 15:38:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <4790be90bba87904294617bec93c5dfe586bbd58.1632765815.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ecbe43fe-a7e2-45fa-c6d9-08d9824efe34
-x-ms-traffictypediagnostic: SJ0PR04MB8358:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR04MB83580849B4FC2FF278D30DAE8CA89@SJ0PR04MB8358.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KHN2ybf9UaEm1ywaqlsfAgWFv7jQ/5ACJDrdVBva6KUkVT6/vhlHGvzxaxDN5aXL9zH6Egp+RIFqQery9KPqmMyV0Mfa2KVpgS9nPabL5hUtU0ACN41N94nUjRbo7reNaNIeaR2eu2CwXf36KtNCvGLJyFfj2R4YR9ZJE0AV2q9/MnLcA1TiNB1idL/Ti4F5BdnNx1mkewrR21scEZioN03M0sh+4IgQSI6eAFMNeGxhRfvRNNRlDasUVXR8Kl7LI53Eon+YQR7Xryz95YnoG9PnYfxAUgjFVRF3PbmKDtZcK3/wmO56tzwVBTUrSXsPeu3Le2/z3FquFjp/YDcSxc5lEf+C453UOFVQ0ky+bb5FI8KDtItwnN6F15QxSOi54fZkH+mrtonzLnLkrvuiw4ii5rwH9q7ndBuyAyx9u2pH2Qx/LRfzjFeYnbJTebctoT/u1/64STH6yB1clI+5cd5Bga/gPvjITzIjzS6A0TqHJRbzvdQmN3XJQBrLOa3GWL/FhVDOhAcXK4nXLaaFsp1uOG/Gw7bFanDj3UxC8jtkmY7b2Qo++cQE5scfq3pNlSHjuJ900v0438C7c9KUidPApUbcBmSAEEFPfNaMUwN7W3+d2JAgt58SMxuituyUWZ2ftzAM2E4eerC32MlpqluIVq1xc/LTsOxKHyHXLrO/y+N2c1xTVV9/nZ2oZLfxuNPGMfsWgQxPbz7i3j7Et9NvR6TM+q6RGAyEnvKtfwgjKS6h/7lN4a8Z5phODxaZg/A6DN4mu+GxK5sgzPypT01aujplvxrfkUucD5GQEB4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(4326008)(8936002)(8676002)(6916009)(86362001)(38100700002)(83380400001)(186003)(122000001)(64756008)(38070700005)(71200400001)(66946007)(91956017)(76116006)(66446008)(66476007)(66556008)(53546011)(6506007)(30864003)(33716001)(54906003)(6486002)(1076003)(2906002)(966005)(6512007)(9686003)(316002)(508600001)(26005)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cOtBw6g7Ti0huUUchCHccEF33iNoK/DAugzKjWp3UvsIjNNIL3l+Z8xHCNVs?=
- =?us-ascii?Q?WWENIUDnCSB52uU+7mhB0z5XiQf0tVCMtj5yjZd6fSb0ug//VAsoEh+Mqx8N?=
- =?us-ascii?Q?MJJFgAA1matC5380xWpNnMyJBPzX6ko06lge8sIQJJOSsRkPVDzJ7B+Hh5Ho?=
- =?us-ascii?Q?YcBbCSk8iEJHP/qAXqBzYcelnvLo8qi9RXqEBegDA8KsNzpQGGhZVW7NNh2F?=
- =?us-ascii?Q?hTKikyDy+wRMY0ERHDlPHcTwlgWKjeTlyKNNpKbOmkAPuupxFO1sBK7OiS5+?=
- =?us-ascii?Q?tev7gmn8aHAJF8nuGLgqwIX7b9FrCKOPgAhvSr43WrMrbqqlI5Cxw/QoEvLL?=
- =?us-ascii?Q?D09C8cmgIC8FSq56c3NCuqO0SS+KeWZKotkrDj53iSqiJce4NhAtbKHyI1pA?=
- =?us-ascii?Q?9zg2zrUQjpFMt/ujviMb9p+Th/ZZXwymxeFB6ID06JQLuyZg65gOVVMobRqU?=
- =?us-ascii?Q?qKATTqjcMGzUmEVQLZxzUAbjjjv4QlKUPK9rDN7Ds0sjGN0SOA/jm4q+OQYH?=
- =?us-ascii?Q?vv9R4E/S5qkK1eLCXrEJc2ZxBSziaz10FE/DzobjFs/rV20hiDIbiP50qMSp?=
- =?us-ascii?Q?e9HQMngbu6eLs1eJQKIU02C9oTQY3FC+abXruhy309N0nTl3vfe4fr7cQCrC?=
- =?us-ascii?Q?htTUmaPcYGguIw5oYMpim+WCHPvdSYzcFDLGSpPVwF4YV+6ZvtnIpYgXxxLc?=
- =?us-ascii?Q?tUZCVJCyV9reWfCuNZBz0859IsMy47BFUPWR4yaYH6aFPkonV0k5huhs4HnM?=
- =?us-ascii?Q?faU8l7cL4dtxt7e76/Y5lLpnRBNbWGIw2HqucDjGO5dG/w2EbPFfBM2cV7wa?=
- =?us-ascii?Q?gAXjIK3OML25C5Xc+sd4EpaQTPkrWMUxG1ZCcCBKUzvZ3GWIrqUCBAHXlKyU?=
- =?us-ascii?Q?awhNdsEGdlfG4iabG11bdxE0eGQDG1c0BpXQAH7BI/e2XZpHMZurMjJPZQmV?=
- =?us-ascii?Q?5rrGTw2W48jeVaPBEyb3IsUiwNvX3VxH0bdm8PMk/5I2WIECF2xi6b7eSGFI?=
- =?us-ascii?Q?byCZ7AqqY1vZpuAgxNVnfBsYTC3r6WBovW+GHMMMWk4drNZSrDESRd1lc6pb?=
- =?us-ascii?Q?rOyQtYg/8lOs7BkvDj1a2hnqDCT7Vv9lwW8dW4x3sy3NFdZuN1weB3FqOwgm?=
- =?us-ascii?Q?G+EZ/HsrUiBZcHmJZkM7xIvSFtL166wx3spFU3gVAuYQpQnFiJkOPfkzaab2?=
- =?us-ascii?Q?Z0h/Im/3pxQE8IBrd/jCDu59DG8ugLS4bIicTJ/5Vj39B5afSsQ+NPFhAejl?=
- =?us-ascii?Q?eaXH4/krAz/lj8R5mTicodTdn48Eq/ipddRX3KWtezxdGL4lOFpG1EJyfaoo?=
- =?us-ascii?Q?plHet25ylfajgJUYWQZ5csLExVdoeChtuxnxvLyWbkBpcw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <ABE5295B41369F41B3FADE926DB8A558@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0021.apcprd02.prod.outlook.com
+ (2603:1096:3:17::33) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
+Received: from [192.168.10.100] (39.109.140.76) by SG2PR02CA0021.apcprd02.prod.outlook.com (2603:1096:3:17::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Tue, 28 Sep 2021 07:38:16 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 79680bac-87e7-45e7-c017-08d98252f05a
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4128:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4128426C529D7114AD2846E8E5A89@MN2PR10MB4128.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3gOZ24+d/7s0E6nq2QL7E5DY/GCcx3zo1Af42RsZqo64ed2AdEFBrDdPQtuHkwql0TTsMoR6GvN7m5bFTHp6cyl4pw+wzUvVBbFPLzrTvCMpVuFmh3WwXDkZ4oT7Qlo9BsozQQ4VpiZg9oSF7Dpv1IbbCh9FnAc/uHp2bxzzPqyOVa8HdZIyE3d2ye8SEHJOwFS800WX2TlJ9StApBUzp8h01PNZDaSeI//XusLb0odxHH8CDfghnLUbEcWoeihpj0Uw5nAY5o1e9qpf5Hm+Zcfllo/ypSms1MseeIchjahfZuvw32Nu9Qx9jWlLEqYR7ndSoQdLXPLL29T/vmoN71uTgcYxV6GgQHO4Q1LW2FX88Hbgt1Zpi8urgydmN72TbYj+6UpXdHuHSl5njFU3YEG4mvbCYZsbEVvE6b6rbUrNFF8uvTlBp2GXc0T3F5noneWX29jbXm2MjDL+nG1L6sWZ/yrXfLn6pWQgx9+EnTp4TfHbhNyBefG+lFGKM2ToI0c8ZmY36qKtXuYYXJ8q5YhVUKH17/vWhb4cLwivEWL1W9En0SUQz4gVxO4ju3QNHgXejKsyLqcCf+O6l+oTLbu5jH9LOOWqsJpvh+qCaVa0mmAnZByc18VCV3emSH3uI9WwLoxFkm0m/ADYGR8t34I9vSBRXkv6KMhzwtru/du/US27QlA/THg+B34013VSbfxCf113MZlpALhaXztrA2e+ForTkQ3237F6qGgZFNQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8676002)(31696002)(186003)(2906002)(86362001)(6486002)(6666004)(38100700002)(8936002)(53546011)(26005)(2616005)(36756003)(956004)(31686004)(508600001)(5660300002)(66556008)(66476007)(66946007)(44832011)(16576012)(83380400001)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TXF3SXhmT0V6SjQydjcySzNzRSs4M0YxSDFVWDJ0Nk5Sb3l3akhTVVgzbzJ2?=
+ =?utf-8?B?YnZEd0FrQSttZE1CMXFkVDRMSCtBRXoreDJQcWNaN3N0aGF5WFNiYjFsWWVw?=
+ =?utf-8?B?OW9ka0ZtSHVZTkdqOHZLc3FHdHVwd0FjNk5MSlRvbnVqTDgzMW5VOVNnWUZw?=
+ =?utf-8?B?UVBCU3U5dWRkRW9RVFNldWdxTGg3WWtFMkZmaS9YTnNQVjdnNkhWZTZSQmY1?=
+ =?utf-8?B?U3ZBOGhpam5nZVh6NHZXVk43OGQ2Rk5KMEN3NnQ4azhWSmpHUno0VldTVHBl?=
+ =?utf-8?B?NU9oMzJBbXBuTmpVOGZXMGFnZkprM2txNlM0eXFXeUJtTlNtQnlwNFA1Z3B1?=
+ =?utf-8?B?T2xTc203c0RjRlVEWVFoZHpQbFV5TDJ4UVZRRDM1YUYycE5mUEZxcUpDM1RX?=
+ =?utf-8?B?RTdMRkhZZmpORXFraE9lN0hZWXh1K2J5eEVDOU5FYlUrUE5sRDdvUm5oNkZV?=
+ =?utf-8?B?OFBtbitXc1RjWjN2OVpnc3I5NXdtSW9IRGkwdHRVQ1NkY1BQd0lncmRYRnhT?=
+ =?utf-8?B?b293NTh2QVIyWExrNlVSTzlUQXNVQVNrSWV5NnRBKzYxUVBCNU5hRTZlUG1o?=
+ =?utf-8?B?ODdqcUhtSjE1VjlHTkR5U0Y4WFpKTXFMaFJndS9ac3I0T1cyYVdPcHkrQzBj?=
+ =?utf-8?B?U2FnTUNhdkpFek15dFR0c3hWOGIzQ3JsVjRTaWZQeUpNY0tpTCt5QnJLQ0Qy?=
+ =?utf-8?B?SkQrRzQ3aEx6akJJcTJDRHdJT2VPd0s0Y2p1TlB5ZDBTdEFoQ2YrVVhRUnJ6?=
+ =?utf-8?B?YUZHOFRnU2pUbnI0cFRTMjZXN3ZtUXZ6S080VXdnZ2NTUDRvUTJsRE5lOVFq?=
+ =?utf-8?B?MnNnaUhTOHAzcWU4S3ErZFpBT0J3by9CMVBpYXVGQU94UDRqQTlxd0RHcktF?=
+ =?utf-8?B?Z0hlR3dja0FEOUMzTDFZYzNsLzh2cTBqOGNXMHhQQm53MTZ3Y290RlpWSmE3?=
+ =?utf-8?B?VWtNd1BLU2gyNnoybytpMDdtMXczV2RDMmlRb2E3K3JkVzd1VUtMYjI4eFdZ?=
+ =?utf-8?B?ZjNEYXpYejdEN1dnaDloZjJFUzgyeXN2anFqZml2elNVa21ObERvMWFGWFgz?=
+ =?utf-8?B?UElCMElIT1JLWWo3aWxHMHByMWtzQ2ZNOXNnVWltK1BWY2gvKzFXbm8wa0hr?=
+ =?utf-8?B?WE5zVjAxZktEMjk1MUpPZllGQllyMnVkZGVYeWkzZXY4K25YamdETWJzV2M4?=
+ =?utf-8?B?S3g1L2lOKzR6Vzh3eXJkK3NRejhHeitkTWk4YWVPV1VDQzdSRVQ5U29wcDlO?=
+ =?utf-8?B?WTJ6K0tJSVlmM3h0K05kSmtiWXRxSUoxMkVIbHVyWlRkR1N5L0VFd0NPcDg5?=
+ =?utf-8?B?eGgvL0RUMGU3NVpFdTZPTGtZSGFXYnE1RmlOMWNKZ2ZHYU9lU1E4T1VZeUh0?=
+ =?utf-8?B?L2xyYkllWWZYcVFvTFh5WGFWeVVBelJXWjNMQmxxWmo5bXpNR2ZPbHJQNXQx?=
+ =?utf-8?B?YWJsRGMvQld2THNjTGdCV0xvY3NES1JpaDFLY2o1cXZRNnhrQ1ZoYmFRbjI0?=
+ =?utf-8?B?WDFYdzFSdFB2N2t3NTJtcVNlYkFMNzRFMkZPRFdrMGY0ZEsyVzJ1aU9iQ0x5?=
+ =?utf-8?B?UmhBR1VMSEY3bHNwZ1czdWxGczhPUlU5MVdlTk9EZ3VidXlFeHY5VXVVVjBl?=
+ =?utf-8?B?bmQrbWhpYWZwenZDNGJOZGR4MXpUTURMYUJ2Ukx5QnJCYUJtWlAreFJwRFp5?=
+ =?utf-8?B?YlQwZmVKS1I5b2R3aWhveFVsOEZObTN1V2dpeDhzOTV3UnJMR29OS1V4TGhH?=
+ =?utf-8?Q?A2Q4WtEYmY+eV6c548JZoHuP6JpUjgggr8UBwqs?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79680bac-87e7-45e7-c017-08d98252f05a
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecbe43fe-a7e2-45fa-c6d9-08d9824efe34
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2021 07:10:03.1536
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 07:38:18.2448
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ulWXZFSHdH2Oiy+YFZj1YSWhueSf/oPodK9kBoYdHYp5eexxOvOYK2jJ3jAg1X+41iYbqLH9xnY832labJRTOw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB8358
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /OFMO+z+3HMdK7yzPj/N4Zgbw8mLwmMc8sjndAL1cxb9wEpTM1Iq7jNnPWEMWeiSieUwu3KwpZAEzfGkJz0cRw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4128
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10120 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
+ malwarescore=0 spamscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2109280043
+X-Proofpoint-GUID: 0WE6RjsqF9HrNeHzo12hYfMhKLHgIBl0
+X-Proofpoint-ORIG-GUID: 0WE6RjsqF9HrNeHzo12hYfMhKLHgIBl0
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 05:36:55PM -0600, Sven Oehme wrote:
-> I should add that the copy process starts and runs for a while, but
-> then stalls. The last 2 times I started over from scratch it stalls at
-> around 200 GB, so ~ 1-2 files into the copy process.
+On 28/09/2021 02:05, Josef Bacik wrote:
+> We have a few flags that are inconsistently used to describe the fs in
+> different states of failure.  As of
+> 
+> 	btrfs: always abort the transaction if we abort a trans handle
+> 
 
-Thank you for the detailed info. I'm also working on to reproduce the
-issue.
+> we will always set BTRFS_FS_STATE_ERROR if we abort, so we don't have to
+> check both ABORTED and ERROR to see if things have gone wrong.
 
-BTW, how is the memory usage at the hung time? Can I have "free -m"
-output?
+>  Add a
+> helper to check BTRFS_FS_STATE_HELPER and then convert all checkers of
+         Nit:                ERROR  ^^^
 
-> Sven
->=20
-> On Mon, Sep 27, 2021 at 5:34 PM Sven Oehme <oehmes@gmail.com> wrote:
-> >
-> > the workload is as simple as one can imagine :
-> >
-> > scp -rp /space/01/ /space/20/
-> > where space/01 is a ext4 filesystem with several >100gb files in it,
-> > /space/20 is the btrfs destination
-> >
-> > its single threaded , nothing special
-> >
-> > Sven
-> >
-> > On Mon, Sep 27, 2021 at 5:31 PM Damien Le Moal
-> > <damien.lemoal@opensource.wdc.com> wrote:
-> > >
-> > > On 2021/09/28 8:17, Sven Oehme wrote:
-> > > > yes i do :
-> > > >
-> > > > root@01:~# cat  /sys/kernel/debug/block/sdr/hctx0/queued
-> > > > 3760
-> > >
-> > > Can you give more information on the workload ? How can we recreate t=
-his ?
-> > >
-> > > >
-> > > > On Mon, Sep 27, 2021 at 5:01 PM Damien Le Moal
-> > > > <damien.lemoal@opensource.wdc.com> wrote:
-> > > >>
-> > > >> On 2021/09/28 7:56, Sven Oehme wrote:
-> > > >>> Hi,
-> > > >>>
-> > > >>> i tried above  :
-> > > >>>
-> > > >>> root@01:~# cat  /sys/kernel/debug/block/sdr/hctx0/dispatched
-> > > >>>        0        89
-> > > >>>        1        1462
-> > > >>>        2        1
-> > > >>>        4        574
-> > > >>>        8        0
-> > > >>>       16        0
-> > > >>>       32+       0
-> > > >>> root@01:~# cat  /sys/kernel/debug/block/sdr/hctx0/dispatch
-> > > >>> root@01:~# cat  /sys/kernel/debug/block/sdr/hctx0/dispatched
-> > > >>>        0        89
-> > > >>>        1        1462
-> > > >>>        2        1
-> > > >>>        4        574
-> > > >>>        8        0
-> > > >>>       16        0
-> > > >>>       32+       0
-> > > >>> root@01:~# cat  /sys/kernel/debug/block/sdr/hctx0/dispatch_busy
-> > > >>> 0
-> > > >>
-> > > >> Do you have the queued count too ? If there is a difference with d=
-ispatch, it
-> > > >> would mean that some IOs are stuck in the stack.
-> > > >>
-> > > >>>
-> > > >>> echo 1 > /sys/kernel/debug/block/sdr/hctx0/run
-> > > >>>
-> > > >>> doesn't make any progress, still no i/o to the drive
-> > > >>>
-> > > >>> Sven
-> > > >>>
-> > > >>>
-> > > >>> On Mon, Sep 27, 2021 at 4:48 PM Damien Le Moal
-> > > >>> <damien.lemoal@opensource.wdc.com> wrote:
-> > > >>>>
-> > > >>>> On 2021/09/28 7:38, Sven Oehme wrote:
-> > > >>>>> i tried to repeat the test with FW19, same result :
-> > > >>>>
-> > > >>>> The problem is likely not rooted with the HBA fw version.
-> > > >>>> How do you create the problem ? Is it an fio script you are runn=
-ing ?
-> > > >>>>
-> > > >>>>>
-> > > >>>>> [Mon Sep 27 15:41:22 2021] INFO: task btrfs-transacti:4206 bloc=
-ked for
-> > > >>>>> more than 604 seconds.
-> > > >>>>> [Mon Sep 27 15:41:22 2021]       Not tainted 5.14-test #1
-> > > >>>>> [Mon Sep 27 15:41:22 2021] "echo 0 >
-> > > >>>>> /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > > >>>>> [Mon Sep 27 15:41:22 2021] task:btrfs-transacti state:D stack: =
-   0
-> > > >>>>> pid: 4206 ppid:     2 flags:0x00004000
-> > > >>>>> [Mon Sep 27 15:41:22 2021] Call Trace:
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  __schedule+0x2fa/0x910
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  schedule+0x4f/0xc0
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  io_schedule+0x46/0x70
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  blk_mq_get_tag+0x11b/0x270
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  ? wait_woken+0x80/0x80
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  __blk_mq_alloc_request+0xec/0x120
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  blk_mq_submit_bio+0x12f/0x580
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  submit_bio_noacct+0x42a/0x4f0
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  submit_bio+0x4f/0x1b0
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  btrfs_map_bio+0x1a3/0x4c0 [btrfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  btrfs_submit_metadata_bio+0x10f/0x1=
-70 [btrfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  submit_one_bio+0x67/0x80 [btrfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  btree_write_cache_pages+0x6e8/0x770=
- [btrfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  btree_writepages+0x5f/0x70 [btrfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  do_writepages+0x38/0xc0
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  __filemap_fdatawrite_range+0xcc/0x1=
-10
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  filemap_fdatawrite_range+0x13/0x20
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  btrfs_write_marked_extents+0x66/0x1=
-40 [btrfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  btrfs_write_and_wait_transaction+0x=
-49/0xd0 [btrfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  btrfs_commit_transaction+0x6b0/0xaa=
-0 [btrfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  ? start_transaction+0xcf/0x5a0 [btr=
-fs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  transaction_kthread+0x138/0x1b0 [bt=
-rfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  kthread+0x12f/0x150
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  ?
-> > > >>>>> btrfs_cleanup_transaction.isra.0+0x560/0x560 [btrfs]
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  ? __kthread_bind_mask+0x70/0x70
-> > > >>>>> [Mon Sep 27 15:41:22 2021]  ret_from_fork+0x22/0x30
-> > > >>>>>
-> > > >>>>> if you tell me what information to collect, I am happy to do so=
-,.
-> > > >>>>
-> > > >>>> The stack seems to point to a "hang" in the block layer so btrfs=
- side waits forever.
-> > > >>>>
-> > > >>>> When you get the hang, can you check the queued and dispatch cou=
-nters in
-> > > >>>> /sys/kernel/debug/block/<your disk>/hctx0 ?
-> > > >>>>
-> > > >>>> Once you have the numbers, try:
-> > > >>>>
-> > > >>>> echo 1 > /sys/kernel/debug/block/<your disk>/hctx0/run
-> > > >>>>
-> > > >>>> to see if the drive gets unstuck.
-> > > >>>>
-> > > >>>>>
-> > > >>>>> Sven
-> > > >>>>>
-> > > >>>>>
-> > > >>>>> On Mon, Sep 27, 2021 at 11:28 AM Sven Oehme <oehmes@gmail.com> =
-wrote:
-> > > >>>>>>
-> > > >>>>>> Hi,
-> > > >>>>>>
-> > > >>>>>> I also have an  Adaptec HBA 1100-4i at FW level 4.11 (latest) =
-, which
-> > > >>>>>> according to https://ask.adaptec.com/app/answers/detail/a_id/1=
-7472 is
-> > > >>>>>> supported but see the exact same hangs after a few minutes ...
-> > > >>>>>>
-> > > >>>>>> what i see in dmesg is :
-> > > >>>>>>
-> > > >>>>>> [Mon Sep 27 11:20:03 2021] INFO: task kworker/u102:6:190092 bl=
-ocked
-> > > >>>>>> for more than 120 seconds.
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]       Not tainted 5.14-test #1
-> > > >>>>>> [Mon Sep 27 11:20:03 2021] "echo 0 >
-> > > >>>>>> /proc/sys/kernel/hung_task_timeout_secs" disables this message=
-.
-> > > >>>>>> [Mon Sep 27 11:20:03 2021] task:kworker/u102:6  state:D stack:=
-    0
-> > > >>>>>> pid:190092 ppid:     2 flags:0x00004000
-> > > >>>>>> [Mon Sep 27 11:20:03 2021] Workqueue: btrfs-worker-high
-> > > >>>>>> btrfs_work_helper [btrfs]
-> > > >>>>>> [Mon Sep 27 11:20:03 2021] Call Trace:
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  __schedule+0x2fa/0x910
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  schedule+0x4f/0xc0
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  io_schedule+0x46/0x70
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  blk_mq_get_tag+0x11b/0x270
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  ? wait_woken+0x80/0x80
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  __blk_mq_alloc_request+0xec/0x120
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  blk_mq_submit_bio+0x12f/0x580
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  submit_bio_noacct+0x42a/0x4f0
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  submit_bio+0x4f/0x1b0
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  btrfs_map_bio+0x1a3/0x4c0 [btrfs]
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  run_one_async_done+0x3b/0x70 [btrf=
-s]
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  btrfs_work_helper+0x132/0x2e0 [btr=
-fs]
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  process_one_work+0x220/0x3c0
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  worker_thread+0x53/0x420
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  kthread+0x12f/0x150
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  ? process_one_work+0x3c0/0x3c0
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  ? __kthread_bind_mask+0x70/0x70
-> > > >>>>>> [Mon Sep 27 11:20:03 2021]  ret_from_fork+0x22/0x30
-> > > >>>>>>
-> > > >>>>>> i will also downgrade the LSI adapter to FW 19, but i think th=
-is is
-> > > >>>>>> unrelated to the FW as i can see this with 2 completely differ=
-ent
-> > > >>>>>> HBA's and 2 completely different drives.
-> > > >>>>>>
-> > > >>>>>> Sven
-> > > >>>>>>
-> > > >>>>>> Sven
-> > > >>>>>>
-> > > >>>>>>
-> > > >>>>>> On Sun, Sep 26, 2021 at 5:19 PM Damien Le Moal
-> > > >>>>>> <damien.lemoal@opensource.wdc.com> wrote:
-> > > >>>>>>>
-> > > >>>>>>> On 2021/09/25 3:25, Sven Oehme wrote:
-> > > >>>>>>>> Hi,
-> > > >>>>>>>>
-> > > >>>>>>>> i am running into issues with Host Managed SMR drive testing=
-. when i
-> > > >>>>>>>> try to copy or move a file to the btrfs filesystem it just h=
-angs. i
-> > > >>>>>>>> tried multiple 5.12,5.13 as well as 5.14 all the way to 5.14=
-.6 but the
-> > > >>>>>>>> issue still persists.
-> > > >>>>>>>>
-> > > >>>>>>>> here is the setup :
-> > > >>>>>>>>
-> > > >>>>>>>> I am using btrfs-progs-v5.14.1
-> > > >>>>>>>> device is a  Host Managed WDC  20TB SMR drive with firmware =
-level C421
-> > > >>>>>>>> its connected via a HBA 9400-8i Tri-Mode Storage Adapter , l=
-atest 20.0 FW
-> > > >>>>>>>
-> > > >>>>>>> Beware of the Broadcom FW rev 20. We found problems with it: =
-very slow zone
-> > > >>>>>>> command scheduling leading to command timeout is some cases. =
-FW 19 does not seem
-> > > >>>>>>> to have this issue. But that is likely not the cause of the p=
-roblem here.
-> > > >>>>>>>
-> > > >>>>>>> Is there anything of interest in dmesg ? Any IO errors ?
-> > > >>>>>>>
-> > > >>>>>>> Naohiro, Johannes,
-> > > >>>>>>>
-> > > >>>>>>> Any idea ?
-> > > >>>>>>>
-> > > >>>>>>>
-> > > >>>>>>>
-> > > >>>>>>>> I am using the /dev/sd device direct  , no lvm or device map=
-per or
-> > > >>>>>>>> anything else in between
-> > > >>>>>>>>
-> > > >>>>>>>> after a few seconds, sometimes minutes data rate to the driv=
-e drops to
-> > > >>>>>>>> 0 and 1 or 2 cores on my system show 100% IO wait time, but =
-no longer
-> > > >>>>>>>> make any progress
-> > > >>>>>>>>
-> > > >>>>>>>> the process in question has the following stack :
-> > > >>>>>>>>
-> > > >>>>>>>> [ 2168.589160] task:mv              state:D stack:    0 pid:=
- 3814
-> > > >>>>>>>> ppid:  3679 flags:0x00004000
-> > > >>>>>>>> [ 2168.589162] Call Trace:
-> > > >>>>>>>> [ 2168.589163]  __schedule+0x2fa/0x910
-> > > >>>>>>>> [ 2168.589166]  schedule+0x4f/0xc0
-> > > >>>>>>>> [ 2168.589168]  schedule_timeout+0x8a/0x140
-> > > >>>>>>>> [ 2168.589171]  ? __bpf_trace_tick_stop+0x10/0x10
-> > > >>>>>>>> [ 2168.589173]  io_schedule_timeout+0x51/0x80
-> > > >>>>>>>> [ 2168.589176]  balance_dirty_pages+0x2fa/0xe30
-> > > >>>>>>>> [ 2168.589179]  ? __mod_lruvec_state+0x3a/0x50
-> > > >>>>>>>> [ 2168.589182]  balance_dirty_pages_ratelimited+0x2f9/0x3c0
-> > > >>>>>>>> [ 2168.589185]  btrfs_buffered_write+0x58e/0x7e0 [btrfs]
-> > > >>>>>>>> [ 2168.589226]  btrfs_file_write_iter+0x138/0x3e0 [btrfs]
-> > > >>>>>>>> [ 2168.589260]  ? ext4_file_read_iter+0x5b/0x180
-> > > >>>>>>>> [ 2168.589262]  new_sync_write+0x114/0x1a0
-> > > >>>>>>>> [ 2168.589265]  vfs_write+0x1c5/0x260
-> > > >>>>>>>> [ 2168.589267]  ksys_write+0x67/0xe0
-> > > >>>>>>>> [ 2168.589270]  __x64_sys_write+0x1a/0x20
-> > > >>>>>>>> [ 2168.589272]  do_syscall_64+0x40/0xb0
-> > > >>>>>>>> [ 2168.589275]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > > >>>>>>>> [ 2168.589277] RIP: 0033:0x7ffff7e91c27
-> > > >>>>>>>> [ 2168.589278] RSP: 002b:00007fffffffdc48 EFLAGS: 00000246 O=
-RIG_RAX:
-> > > >>>>>>>> 0000000000000001
-> > > >>>>>>>> [ 2168.589280] RAX: ffffffffffffffda RBX: 0000000000020000 R=
-CX: 00007ffff7e91c27
-> > > >>>>>>>> [ 2168.589281] RDX: 0000000000020000 RSI: 00007ffff79bd000 R=
-DI: 0000000000000004
-> > > >>>>>>>> [ 2168.589282] RBP: 00007ffff79bd000 R08: 0000000000000000 R=
-09: 0000000000000000
-> > > >>>>>>>> [ 2168.589283] R10: 0000000000000022 R11: 0000000000000246 R=
-12: 0000000000000004
-> > > >>>>>>>> [ 2168.589284] R13: 0000000000000004 R14: 00007ffff79bd000 R=
-15: 0000000000020000
-> > > >>>>>>>>
-> > > >>>>>>>> and shows up under runnable tasks :
-> > > >>>>>>>>
-> > > >>>>>>>> [ 2168.593562] runnable tasks:
-> > > >>>>>>>> [ 2168.593562]  S            task   PID         tree-key  sw=
-itches
-> > > >>>>>>>> prio     wait-time             sum-exec        sum-sleep
-> > > >>>>>>>> [ 2168.593563] ---------------------------------------------=
-----------------------------------------------------------------
-> > > >>>>>>>> [ 2168.593565]  S        cpuhp/13    92     88923.802487    =
-    19
-> > > >>>>>>>> 120         0.000000         0.292061         0.000000 2 0 /
-> > > >>>>>>>> [ 2168.593571]  S  idle_inject/13    93       -11.997255    =
-     3
-> > > >>>>>>>> 49         0.000000         0.005480         0.000000 2 0 /
-> > > >>>>>>>> [ 2168.593577]  S    migration/13    94       814.287531    =
-   551
-> > > >>>>>>>> 0         0.000000      1015.550514         0.000000 2 0 /
-> > > >>>>>>>> [ 2168.593582]  S    ksoftirqd/13    95     88762.317130    =
-    44
-> > > >>>>>>>> 120         0.000000         1.940252         0.000000 2 0 /
-> > > >>>>>>>> [ 2168.593588]  I    kworker/13:0    96        -9.031157    =
-     5
-> > > >>>>>>>> 120         0.000000         0.017423         0.000000 2 0 /
-> > > >>>>>>>> [ 2168.593593]  I   kworker/13:0H    97      3570.961886    =
-     5
-> > > >>>>>>>> 100         0.000000         0.034345         0.000000 2 0 /
-> > > >>>>>>>> [ 2168.593603]  I    kworker/13:1   400    101650.731913    =
-   578
-> > > >>>>>>>> 120         0.000000        10.110898         0.000000 2 0 /
-> > > >>>>>>>> [ 2168.593611]  I   kworker/13:1H  1015    101649.600698    =
-    65
-> > > >>>>>>>> 100         0.000000         1.443300         0.000000 2 0 /
-> > > >>>>>>>> [ 2168.593618]  S           loop3  1994     99133.655903    =
-    70
-> > > >>>>>>>> 100         0.000000         1.137468         0.000000 2 0 /
-> > > >>>>>>>> [ 2168.593625]  S           snapd  3161        15.296181    =
-   166
-> > > >>>>>>>> 120         0.000000        90.296991         0.000000 2 0
-> > > >>>>>>>> /system.slice/snapd.service
-> > > >>>>>>>> [ 2168.593631]  S           snapd  3198        10.047573    =
-    49
-> > > >>>>>>>> 120         0.000000         5.646247         0.000000 2 0
-> > > >>>>>>>> /system.slice/snapd.service
-> > > >>>>>>>> [ 2168.593639]  S            java  2446       970.743682    =
-   301
-> > > >>>>>>>> 120         0.000000       101.648659         0.000000 2 0
-> > > >>>>>>>> /system.slice/stor_tomcat.service
-> > > >>>>>>>> [ 2168.593645]  S C1 CompilerThre  2573      1033.157689    =
-  3636
-> > > >>>>>>>> 120         0.000000       615.256247         0.000000 2 0
-> > > >>>>>>>> /system.slice/stor_tomcat.service
-> > > >>>>>>>> [ 2168.593654]  D              mv  3814      2263.816953    =
-186734
-> > > >>>>>>>> 120         0.000000     30087.917319         0.000000 2 0 /=
-user.slice
-> > > >>>>>>>>
-> > > >>>>>>>> any idea what is going on and how to fix this ?
-> > > >>>>>>>
-> > > >>>>>>>
-> > > >>>>>>>
-> > > >>>>>>>>
-> > > >>>>>>>> thx.
-> > > >>>>>>>>
-> > > >>>>>>>
-> > > >>>>>>>
-> > > >>>>>>> --
-> > > >>>>>>> Damien Le Moal
-> > > >>>>>>> Western Digital Research
-> > > >>>>
-> > > >>>>
-> > > >>>> --
-> > > >>>> Damien Le Moal
-> > > >>>> Western Digital Research
-> > > >>
-> > > >>
-> > > >> --
-> > > >> Damien Le Moal
-> > > >> Western Digital Research
-> > >
-> > >
-> > > --
-> > > Damien Le Moal
-> > > Western Digital Research=
+> FS_STATE_ERROR to use the helper.
+
+
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+LGTM. So additionally, this patch will add compiler optimize unlikely()
+at most of the places which are good IMO.
+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+
+Thanks, Anand
+
+> ---
+>   fs/btrfs/ctree.h       |  3 +++
+>   fs/btrfs/disk-io.c     |  8 +++-----
+>   fs/btrfs/extent_io.c   |  2 +-
+>   fs/btrfs/file.c        |  2 +-
+>   fs/btrfs/inode.c       |  6 +++---
+>   fs/btrfs/scrub.c       |  2 +-
+>   fs/btrfs/super.c       |  2 +-
+>   fs/btrfs/transaction.c | 11 +++++------
+>   fs/btrfs/tree-log.c    |  2 +-
+>   9 files changed, 19 insertions(+), 19 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 522ded06fd85..53f15decb523 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -3576,6 +3576,9 @@ do {								\
+>   			  (errno), fmt, ##args);		\
+>   } while (0)
+>   
+> +#define BTRFS_FS_ERROR(fs_info)	(unlikely(test_bit(BTRFS_FS_STATE_ERROR, \
+> +						   &(fs_info)->fs_state)))
+> +
+>   __printf(5, 6)
+>   __cold
+>   void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function,
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 37637539c5ab..1ae30b29f2b5 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1954,8 +1954,7 @@ static int transaction_kthread(void *arg)
+>   		wake_up_process(fs_info->cleaner_kthread);
+>   		mutex_unlock(&fs_info->transaction_kthread_mutex);
+>   
+> -		if (unlikely(test_bit(BTRFS_FS_STATE_ERROR,
+> -				      &fs_info->fs_state)))
+> +		if (BTRFS_FS_ERROR(fs_info))
+>   			btrfs_cleanup_transaction(fs_info);
+>   		if (!kthread_should_stop() &&
+>   				(!btrfs_transaction_blocked(fs_info) ||
+> @@ -4232,7 +4231,7 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
+>   		drop_ref = true;
+>   	spin_unlock(&fs_info->fs_roots_radix_lock);
+>   
+> -	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+> +	if (BTRFS_FS_ERROR(fs_info)) {
+>   		ASSERT(root->log_root == NULL);
+>   		if (root->reloc_root) {
+>   			btrfs_put_root(root->reloc_root);
+> @@ -4383,8 +4382,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+>   			btrfs_err(fs_info, "commit super ret %d", ret);
+>   	}
+>   
+> -	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state) ||
+> -	    test_bit(BTRFS_FS_STATE_TRANS_ABORTED, &fs_info->fs_state))
+> +	if (BTRFS_FS_ERROR(fs_info))
+>   		btrfs_error_commit_super(fs_info);
+>   
+>   	kthread_stop(fs_info->transaction_kthread);
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index c56973f7daae..f6f004d673a0 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -4876,7 +4876,7 @@ int btree_write_cache_pages(struct address_space *mapping,
+>   	 *   extent io tree. Thus we don't want to submit such wild eb
+>   	 *   if the fs already has error.
+>   	 */
+> -	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+> +	if (!BTRFS_FS_ERROR(fs_info)) {
+>   		ret = flush_write_bio(&epd);
+>   	} else {
+>   		ret = -EROFS;
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 7ff577005d0f..fdceab28587e 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -2013,7 +2013,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+>   	 * have opened a file as writable, we have to stop this write operation
+>   	 * to ensure consistency.
+>   	 */
+> -	if (test_bit(BTRFS_FS_STATE_ERROR, &inode->root->fs_info->fs_state))
+> +	if (BTRFS_FS_ERROR(inode->root->fs_info))
+>   		return -EROFS;
+>   
+>   	if (!(iocb->ki_flags & IOCB_DIRECT) &&
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 03a843b9659b..26d155e72152 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -4368,7 +4368,7 @@ static void btrfs_prune_dentries(struct btrfs_root *root)
+>   	struct inode *inode;
+>   	u64 objectid = 0;
+>   
+> -	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
+> +	if (!BTRFS_FS_ERROR(fs_info))
+>   		WARN_ON(btrfs_root_refs(&root->root_item) != 0);
+>   
+>   	spin_lock(&root->inode_lock);
+> @@ -9981,7 +9981,7 @@ int btrfs_start_delalloc_snapshot(struct btrfs_root *root, bool in_reclaim_conte
+>   	};
+>   	struct btrfs_fs_info *fs_info = root->fs_info;
+>   
+> -	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
+> +	if (BTRFS_FS_ERROR(fs_info))
+>   		return -EROFS;
+>   
+>   	return start_delalloc_inodes(root, &wbc, true, in_reclaim_context);
+> @@ -10000,7 +10000,7 @@ int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, long nr,
+>   	struct list_head splice;
+>   	int ret;
+>   
+> -	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
+> +	if (BTRFS_FS_ERROR(fs_info))
+>   		return -EROFS;
+>   
+>   	INIT_LIST_HEAD(&splice);
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index bd3cd7427391..b1c26a90243b 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -3955,7 +3955,7 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
+>   	int	ret;
+>   	struct btrfs_fs_info *fs_info = sctx->fs_info;
+>   
+> -	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
+> +	if (BTRFS_FS_ERROR(fs_info))
+>   		return -EROFS;
+>   
+>   	/* Seed devices of a new filesystem has their own generation. */
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 7f91d62c2225..a1c54a2c787c 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -2006,7 +2006,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+>   		if (ret)
+>   			goto restore;
+>   	} else {
+> -		if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+> +		if (BTRFS_FS_ERROR(fs_info)) {
+>   			btrfs_err(fs_info,
+>   				"Remounting read-write after error is not allowed");
+>   			ret = -EINVAL;
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 14b9fdc8aaa9..1c3a1189c0bd 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -283,7 +283,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
+>   	spin_lock(&fs_info->trans_lock);
+>   loop:
+>   	/* The file system has been taken offline. No new transactions. */
+> -	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+> +	if (BTRFS_FS_ERROR(fs_info)) {
+>   		spin_unlock(&fs_info->trans_lock);
+>   		return -EROFS;
+>   	}
+> @@ -331,7 +331,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
+>   		 */
+>   		kfree(cur_trans);
+>   		goto loop;
+> -	} else if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+> +	} else if (BTRFS_FS_ERROR(fs_info)) {
+>   		spin_unlock(&fs_info->trans_lock);
+>   		kfree(cur_trans);
+>   		return -EROFS;
+> @@ -579,7 +579,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+>   	bool do_chunk_alloc = false;
+>   	int ret;
+>   
+> -	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
+> +	if (BTRFS_FS_ERROR(fs_info))
+>   		return ERR_PTR(-EROFS);
+>   
+>   	if (current->journal_info) {
+> @@ -991,8 +991,7 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
+>   	if (throttle)
+>   		btrfs_run_delayed_iputs(info);
+>   
+> -	if (TRANS_ABORTED(trans) ||
+> -	    test_bit(BTRFS_FS_STATE_ERROR, &info->fs_state)) {
+> +	if (TRANS_ABORTED(trans) || BTRFS_FS_ERROR(info)) {
+>   		wake_up_process(info->transaction_kthread);
+>   		if (TRANS_ABORTED(trans))
+>   			err = trans->aborted;
+> @@ -2155,7 +2154,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+>   		 * abort to prevent writing a new superblock that reflects a
+>   		 * corrupt state (pointing to trees with unwritten nodes/leafs).
+>   		 */
+> -		if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED, &fs_info->fs_state)) {
+> +		if (BTRFS_FS_ERROR(fs_info)) {
+>   			ret = -EROFS;
+>   			goto cleanup_transaction;
+>   		}
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 720723611875..9e5937685896 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -3335,7 +3335,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+>   	 * writing the super here would result in transid mismatches.  If there
+>   	 * is an error here just bail.
+>   	 */
+> -	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+> +	if (BTRFS_FS_ERROR(fs_info)) {
+>   		ret = -EIO;
+>   		btrfs_set_log_full_commit(trans);
+>   		btrfs_abort_transaction(trans, ret);
+> 
+
