@@ -2,215 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9124641AF22
+	by mail.lfdr.de (Postfix) with ESMTP id 481F041AF21
 	for <lists+linux-btrfs@lfdr.de>; Tue, 28 Sep 2021 14:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240565AbhI1MjQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Sep 2021 08:39:16 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54904 "EHLO
+        id S240555AbhI1MjP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Sep 2021 08:39:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:54910 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240526AbhI1MjP (ORCPT
+        with ESMTP id S240488AbhI1MjP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Tue, 28 Sep 2021 08:39:15 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2B2292020D;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 67CF220213;
         Tue, 28 Sep 2021 12:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1632832652; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=and9OUsHOkZzh9uebY2xZ3KhJqUc0TtsR1SA265fTh0=;
-        b=krogiX13cuq5uaaj3o92rFwEH+ga1CwsQhnOJL+CEKbDEsy7RRDb4xUxxMi5E3wnDAmSMU
-        V6noQsY+zbhzdKdkn4ZiGBY1fT7w0SGIUD6fqunV4jLFhTEoYK3ouH3788bDOqSMwJRhlD
-        F6+Q2IrQNNzAud4PoEqiSpjpKwSrTkg=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/2Y1khj2rbBB6FR0MyshfdnpoQEpNPcfGag2w1vcBEU=;
+        b=DUpl9mgNG7P0N9YGP1aGOTTIQveRV6kfoZj0mWCvou+dTqSHSE9asgp8qu5OAtNTLrS7aZ
+        qPpC7Pdy8c4OWevdoWQxZu1bJ/DVUIm2Lj/D540puvpFIHCXteertRPFJY+NZykgYUFzGg
+        2+PvIGiGJaXCmD40UobVPXJfSlvp7x0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F044C13A82;
-        Tue, 28 Sep 2021 12:37:31 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 399EA13A82;
+        Tue, 28 Sep 2021 12:37:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9KUSOIsMU2GLCwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 28 Sep 2021 12:37:31 +0000
+        id yHStC4wMU2GLCwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 28 Sep 2021 12:37:32 +0000
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 1/2] btrfs-progs: Ignore path device during device scan
-Date:   Tue, 28 Sep 2021 15:37:29 +0300
-Message-Id: <20210928123730.393551-1-nborisov@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: Ignore path devices during scan - static build support
+Date:   Tue, 28 Sep 2021 15:37:30 +0300
+Message-Id: <20210928123730.393551-2-nborisov@suse.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210928123730.393551-1-nborisov@suse.com>
+References: <20210928123730.393551-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently btrfs-progs will happily enumerate any device which has a
-btrfs filesystem on it. For the majority of use cases that's fine and
-there haven't been any problems with that. However, there was a recent
-report that in multipath scenario when running "btrfs fi show" after a
-path flap instead of the multipath device being show the path device is
-shown. So a multipath filesystem might look like:
+Since libudev doesn't provide a static version of the library for static
+build btrfs-progs will have to provide manual fallback. THis change does
+exactly this by parsing the udev database files hosted /run/udev/data/.
+Under that directory every block device should have a file with the
+following name: bMAJ:MIN. So implement the bare minimum code necessary
+to parse this file and search for the presence of DM_MULTIPATH_DEVICE_PATH
+udev attribute. This could likely be racy since access to the udev
+database is done outside of libudev but that's the best that can be
+done when implementing this manually.
 
-Label: none  uuid: d3c1261f-18be-4015-9fef-6b35759dfdba
-	Total devices 1 FS bytes used 192.00KiB
-	devid    1 size 10.00GiB used 536.00MiB path /dev/mapper/3600140501cc1f49e5364f0093869c763
-
-/dev/mapper/xxx can actually be backed by an arbitrary number of path,
-which in turn are presented to the system as ordinary scsi devices i.e
-/dev/sdd. If a path flaps and a user re-runs 'btrfs fi show' the output
-would look like:
-
-Label: none  uuid: d3c1261f-18be-4015-9fef-6b35759dfdba
-	Total devices 1 FS bytes used 192.00KiB
-	devid    1 size 10.00GiB used 536.00MiB path /dev/sdd
-
-Turns out the output of this command is consumed by libraries and the
-presence of a path device rather than the actual multipath one can cause
-issues.
-
-Fix this by relying on the fact that path devices are tagged with the
-DM_MULTIPATH_DEVICE_PATH attribute by the respective udev scripts. In
-order to access it an optional dependency on libudev is added, if the
-library can't be found then device enumeration will continue working
-as it was before the commit. Since libudev doesn't have static library
-for now support for this behavior in case of static builds is going to
-be disabled. Fallback code for static builds will come in a future
-commit.
+To reduce duplication of code also factor out the specifics of
+is_path_device to __is_path_device which will contain the appropriate
+implementation according to the build mode (i.e relying on libudev in
+case of normal build or manual fall back code in case of static build)
+or simply utilize the old logic (in case of a normal build and libudev
+missing).
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- Makefile             |  2 +-
- Makefile.inc.in      |  2 +-
- common/device-scan.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
- configure.ac         |  9 +++++++++
- 4 files changed, 55 insertions(+), 2 deletions(-)
+ common/device-scan.c | 66 ++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 57 insertions(+), 9 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 93fe4c2b3e08..e96f66a36b46 100644
---- a/Makefile
-+++ b/Makefile
-@@ -129,7 +129,7 @@ LIBS = $(LIBS_BASE) $(LIBS_CRYPTO)
- LIBBTRFS_LIBS = $(LIBS_BASE) $(LIBS_CRYPTO)
- 
- # Static compilation flags
--STATIC_CFLAGS = $(CFLAGS) -ffunction-sections -fdata-sections
-+STATIC_CFLAGS = $(CFLAGS) -ffunction-sections -fdata-sections -DSTATIC_BUILD
- STATIC_LDFLAGS = -static -Wl,--gc-sections
- STATIC_LIBS = $(STATIC_LIBS_BASE)
- 
-diff --git a/Makefile.inc.in b/Makefile.inc.in
-index 9f49337147b8..c995aef97219 100644
---- a/Makefile.inc.in
-+++ b/Makefile.inc.in
-@@ -27,7 +27,7 @@ CRYPTO_CFLAGS = @GCRYPT_CFLAGS@ @SODIUM_CFLAGS@ @KCAPI_CFLAGS@
- SUBST_CFLAGS = @CFLAGS@
- SUBST_LDFLAGS = @LDFLAGS@
- 
--LIBS_BASE = @UUID_LIBS@ @BLKID_LIBS@ -L. -pthread
-+LIBS_BASE = @UUID_LIBS@ @BLKID_LIBS@ @LIBUDEV_LIBS@ -L. -pthread
- LIBS_COMP = @ZLIB_LIBS@ @LZO2_LIBS@ @ZSTD_LIBS@
- LIBS_PYTHON = @PYTHON_LIBS@
- LIBS_CRYPTO = @GCRYPT_LIBS@ @SODIUM_LIBS@ @KCAPI_LIBS@
 diff --git a/common/device-scan.c b/common/device-scan.c
-index b5bfe844104b..2ed0e34d3664 100644
+index 2ed0e34d3664..9779dd1aedf3 100644
 --- a/common/device-scan.c
 +++ b/common/device-scan.c
-@@ -14,6 +14,10 @@
-  * Boston, MA 021110-1307, USA.
-  */
- 
-+#ifdef STATIC_BUILD
-+#undef HAVE_LIBUDEV
-+#endif
-+
- #include "kerncompat.h"
- #include <sys/ioctl.h>
- #include <stdlib.h>
-@@ -25,6 +29,10 @@
+@@ -29,6 +29,7 @@
  #include <dirent.h>
  #include <blkid/blkid.h>
  #include <uuid/uuid.h>
-+#ifdef HAVE_LIBUDEV
-+#include <sys/stat.h>
-+#include <libudev.h>
-+#endif
- #include "kernel-lib/overflow.h"
- #include "common/path-utils.h"
- #include "common/device-scan.h"
-@@ -364,6 +372,37 @@ void free_seen_fsid(struct seen_fsid *seen_fsid_hash[])
++#include <sys/sysmacros.h>
+ #ifdef HAVE_LIBUDEV
+ #include <sys/stat.h>
+ #include <libudev.h>
+@@ -372,23 +373,56 @@ void free_seen_fsid(struct seen_fsid *seen_fsid_hash[])
  	}
  }
  
-+#ifdef HAVE_LIBUDEV
+-#ifdef HAVE_LIBUDEV
+-static bool is_path_device(char *device_path)
++#ifdef STATIC_BUILD
++static bool __is_path_device(dev_t dev)
++{
++	FILE *file;
++	char *line = NULL;
++	size_t len = 0;
++	ssize_t nread;
++	bool ret = false;
++	int ret2;
++	struct stat dev_stat;
++	char path[100];
++
++	ret2 = snprintf(path, 100, "/run/udev/data/b%u:%u", major(dev_stat.st_rdev),
++			minor(dev_stat.st_rdev));
++
++	if (ret2 >= 100 || ret2 < 0)
++		return false;
++
++	file = fopen(path, "r");
++	if (file == NULL)
++		return false;
++
++	while ((nread = getline(&line, &len, file)) != -1) {
++		if (strstr(line, "DM_MULTIPATH_DEVICE_PATH=1")) {
++			ret = true;
++			printf("found dm multipath line: %s\n", line);
++			break;
++		}
++	}
++
++	if (line)
++		free(line);
++
++	fclose(file);
++
++	return ret;
++}
++#elif defined(HAVE_LIBUDEV)
++static bool __is_path_device(dev_t device)
+ {
+ 	struct udev *udev = NULL;
+ 	struct udev_device *dev = NULL;
+-	struct stat dev_stat;
+ 	const char *val;
+ 	bool ret = false;
+ 
+-	if (stat(device_path, &dev_stat) < 0)
+-		return false;
+-
+ 	udev = udev_new();
+ 	if (!udev)
+ 		goto out;
+ 
+-	dev = udev_device_new_from_devnum(udev, 'b', dev_stat.st_rdev);
++	dev = udev_device_new_from_devnum(udev, 'b', device);
+ 	if (!dev)
+ 		goto out;
+ 
+@@ -401,8 +435,24 @@ static bool is_path_device(char *device_path)
+ 
+ 	return ret;
+ }
++#else
++static bool __is_path_device(dev_t device)
++{
++	return false;
++}
+ #endif
+ 
 +static bool is_path_device(char *device_path)
 +{
-+	struct udev *udev = NULL;
-+	struct udev_device *dev = NULL;
 +	struct stat dev_stat;
-+	const char *val;
-+	bool ret = false;
 +
 +	if (stat(device_path, &dev_stat) < 0)
 +		return false;
 +
-+	udev = udev_new();
-+	if (!udev)
-+		goto out;
++	return __is_path_device(dev_stat.st_rdev);
 +
-+	dev = udev_device_new_from_devnum(udev, 'b', dev_stat.st_rdev);
-+	if (!dev)
-+		goto out;
-+
-+	val = udev_device_get_property_value(dev, "DM_MULTIPATH_DEVICE_PATH");
-+	if (val && atoi(val) > 0)
-+		ret = true;
-+out:
-+	udev_device_unref(dev);
-+	udev_unref(udev);
-+
-+	return ret;
 +}
-+#endif
 +
  int btrfs_scan_devices(int verbose)
  {
  	int fd = -1;
-@@ -394,6 +433,11 @@ int btrfs_scan_devices(int verbose)
+@@ -433,10 +483,8 @@ int btrfs_scan_devices(int verbose)
  		/* if we are here its definitely a btrfs disk*/
  		strncpy_null(path, blkid_dev_devname(dev));
  
-+#ifdef HAVE_LIBUDEV
-+		if (is_path_device(path))
-+			continue;
-+#endif
-+
+-#ifdef HAVE_LIBUDEV
+ 		if (is_path_device(path))
+ 			continue;
+-#endif
+ 
  		fd = open(path, O_RDONLY);
  		if (fd < 0) {
- 			error("cannot open %s: %m", path);
-diff --git a/configure.ac b/configure.ac
-index 038c2688421c..d0ceb0d70d16 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -304,6 +304,15 @@ PKG_STATIC(UUID_LIBS_STATIC, [uuid])
- PKG_CHECK_MODULES(ZLIB, [zlib])
- PKG_STATIC(ZLIB_LIBS_STATIC, [zlib])
- 
-+PKG_CHECK_EXISTS([libudev], [pkg_config_libudev=yes], [pkg_config_libudev=no])
-+if test "x$pkg_config_libudev" = xyes; then
-+	PKG_CHECK_MODULES([LIBUDEV], [libudev])
-+	AC_DEFINE([HAVE_LIBUDEV], [1], [Define to 1 if libudev is available])
-+else
-+	AC_MSG_CHECKING([for LIBUDEV])
-+	AC_MSG_RESULT([no])
-+fi
-+
- AC_ARG_ENABLE([zstd],
- 	AS_HELP_STRING([--disable-zstd], [build without zstd support]),
- 	[], [enable_zstd=yes]
 -- 
 2.17.1
 
