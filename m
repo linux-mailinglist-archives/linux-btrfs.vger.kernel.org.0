@@ -2,114 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C645E41BFD0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 09:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C0441C09F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 10:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244618AbhI2HZd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 29 Sep 2021 03:25:33 -0400
-Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:23676 "EHLO
-        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244582AbhI2HZd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Sep 2021 03:25:33 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 42F413F471;
-        Wed, 29 Sep 2021 09:23:51 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -1.899
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.899 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, URIBL_BLOCKED=0.001]
-        autolearn=ham autolearn_force=no
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zfiMAWNkVi4X; Wed, 29 Sep 2021 09:23:50 +0200 (CEST)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id E6C9E3F2B8;
-        Wed, 29 Sep 2021 09:23:49 +0200 (CEST)
-Received: from [8.14.199.9] (port=51432 helo=[100.103.151.41])
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <forza@tnonline.net>)
-        id 1mVTwT-0000Lx-9g; Wed, 29 Sep 2021 09:23:49 +0200
-Date:   Wed, 29 Sep 2021 09:23:48 +0200 (GMT+02:00)
-From:   Forza <forza@tnonline.net>
-To:     brandonh@wolfram.com, linux-btrfs@vger.kernel.org
-Message-ID: <ce9f317.4dc05cb0.17c3070258f@tnonline.net>
-In-Reply-To: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
-References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
-Subject: Re: btrfs metadata has reserved 1T of extra space and balances
- don't reclaim it
+        id S244863AbhI2IYw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Sep 2021 04:24:52 -0400
+Received: from mout.gmx.net ([212.227.15.18]:32893 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244791AbhI2IYm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 29 Sep 2021 04:24:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632903776;
+        bh=+HlUAq1L8UkRWuoM3hPyCqzNNNWp7LZKnpV1eetQ280=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=a3qiBMG9if8/A/fNAGEleRr5zyLspOHqbgGSf3mCGcssedlv3UTx2DZ6DEbNfK0kj
+         6dLOZKiRprPUn+JDUTFbs/gqUd/kS6RQkyzPjvcQR9fMkalKBo9aMIXdnbEsmEfSCf
+         l1/MNwZvwwRFUppQ4OeukT1B/aw1x/JK7clEPws8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M9FnZ-1mQqIx02bP-006L4s; Wed, 29
+ Sep 2021 10:22:56 +0200
+Message-ID: <a02d8f67-55fd-17f5-03ee-a8b7f1608352@gmx.com>
+Date:   Wed, 29 Sep 2021 16:22:53 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-X-Mailer: R2Mail2
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: btrfs metadata has reserved 1T of extra space and balances don't
+ reclaim it
+Content-Language: en-US
+To:     brandonh@wolfram.com, linux-btrfs@vger.kernel.org
+References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:RRXiZ+mrrDjWDKXMdlYQiN9BvKMgFTCRnMEwkNXs6jarhz2XGGa
+ kV+KKNvRGVuqLESLgwQyzkhH1itqcwT4OtU4gibNsaq6PsLqhornqMt3vNycGcbMMswirpd
+ I8IRfrMMrsvVsGQUzvLxaCh6wN9kxE06eBTZ39OPbH6k10h7Jv+52QrZNTQRwJ501HvK5AA
+ Ozr19NDz/0zdS9+BuNSaw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NeOL6qiT2rg=:vkCqnVrQMQ0XAmVDGUjINQ
+ jk+WKyLzov7Zqk/5LEl01TksLgQbrIAHLjadFto3f73C/7DY9DZmKb75OJOII2AJFLg+kRrQc
+ 7erjzg9EpQFtu2IGzznAqVB+vpoWlrMKpmHVfiTtDqUXPtAJa7vBdQJyc6eRV37vNDc84qXCi
+ 2NRZCXSsMTKjUIa0QF2OsBSmfPOicJ31OvCEUlpK57HBo+nraUx+u1hdfsG1rhe+6bFW8nlyX
+ LKegmuyJJiTFaoMmBoSWLGNQdCSn+1rq0F0i51MZKt20isjDBJrxUqULlHaQ3ANXX64KeBPgL
+ UaB4BK6p7ZJLxdIMGKe0dS0qArEhWp5fY6eW31RCTZFOTafAwsN9L4t635SZmZJMmCeKPo/E9
+ 6IH/Ru+Hb2inBIeSbR7bbMGZVXqKcPUg0INJ0bf9yIET6CW2d9zVyeaJ5PwczFDQvtP6tIrky
+ o1nKPFcc3h4CoXXVREeiQ4TC5tFDA9OF90TVAycnjU2i2+PeA6roWum5JeSJlfiISBYS8m6zM
+ 0pysvGsHb9GmI44zC9asz46l3AxxhF0nXsageUlK0L7Xs59zoPQ4gbq3gd+/KIKIhGP8qwxwF
+ W3uBC1TgApLK9xJPfQHrj9YAKuMeTn45AyFsmOZc6KWEWyHSb/w3isbSvYMTDfcAmrvV2Cr8R
+ dVTDtr+uQAeopDTggtRVZo0u+5jUeTm6kmCY29DusbGLtUI4klWBp8x8pJF2rsCnR7WAmjmfm
+ tUmXHzQ3cLUZeVM95Lx76Djsz/UxEdlP2zn5mjQBpSSXn/fpmKBatMormwTvsFFXCfSuOffOR
+ s/6S0P8cspRtFZeiXvgTvQovr/ZdsZXxRDEAugTZYelsl98GH2MLhvaMHvTB8EUfpKL3VrOIw
+ LshDme+CLyLP9zBuvwQdc0P1A/PB4gihZakMsqQDPa/zVMcFFHtgZh8Q4XJREhLo7ELOwWuMd
+ ekYLMGMO7ajJzXyr95LvYsoudh6fbts4oz5uN4TdPAi9yTbfcmghdGGidopTdQhaf9UV4o+Qd
+ lrDlT4H7yaQfSlY2GWGlCrqcWv3T28hr94dZKD770LJVqbrBe0Zx0+RNzkM7ON6rju6qDXR4V
+ sjUOncYA7AjG4Y=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
----- From: Brandon Heisner <brandonh@wolfram.com> -- Sent: 2021-09-29 - 04:23 ----
-
-> I have a server running CentOS 7 on 4.9.5-1.el7.elrepo.x86_64 #1 SMP Fri Jan 20 11:34:13 EST 2017 x86_64 x86_64 x86_64 GNU/Linux.  It is version locked to that kernel.  The metadata has reserved a full 1T of disk space, while only using ~38G.  I've tried to balance the metadata to reclaim that so it can be used for data, but it doesn't work and gives no errors.  It just says it balanced the chunks but the size doesn't change.  The metadata total is still growing as well, as it used to be 1.04 and now it is 1.08 with only about 10G more of metadata used.  I've tried doing balances up to 70 or 80 musage I think, and the total metadata does not decrease.  I've done so many attempts at balancing, I've probably tried to move 300 chunks or more.  None have resulted in any change to the metadata total like they do on other servers running btrfs.  I first started with very low musage, like 10 and then increased it by 10 to try to see if that would balance any chunks out, but with no success.
-> 
-> # /sbin/btrfs balance start -musage=60 -mlimit=30 /opt/zimbra
+On 2021/9/29 10:23, Brandon Heisner wrote:
+> I have a server running CentOS 7 on 4.9.5-1.el7.elrepo.x86_64 #1 SMP Fri=
+ Jan 20 11:34:13 EST 2017 x86_64 x86_64 x86_64 GNU/Linux.  It is version l=
+ocked to that kernel.  The metadata has reserved a full 1T of disk space, =
+while only using ~38G.  I've tried to balance the metadata to reclaim that=
+ so it can be used for data, but it doesn't work and gives no errors.  It =
+just says it balanced the chunks but the size doesn't change.  The metadat=
+a total is still growing as well, as it used to be 1.04 and now it is 1.08=
+ with only about 10G more of metadata used.  I've tried doing balances up =
+to 70 or 80 musage I think, and the total metadata does not decrease.  I'v=
+e done so many attempts at balancing, I've probably tried to move 300 chun=
+ks or more.  None have resulted in any change to the metadata total like t=
+hey do on other servers running btrfs.  I first started with very low musa=
+ge, like 10 and then increased it by 10 to try to see if that would balanc=
+e any chunks out, but with no success.
+>
+> # /sbin/btrfs balance start -musage=3D60 -mlimit=3D30 /opt/zimbra
 > Done, had to relocate 30 out of 2127 chunks
-> 
-> I can do that command over and over again, or increase the mlimit, and it doesn't change the metadata total ever.
-> 
-> 
+
+One question is, did -musage=3D0 resulted any change?
+
+If there are empty metadata block groups, btrfs should be able to
+reclaim without any extra commands.
+
+And is there any dmesg during above -musage=3D0 output?
+
+Thanks,
+Qu
+
+>
+> I can do that command over and over again, or increase the mlimit, and i=
+t doesn't change the metadata total ever.
+>
+>
 > # btrfs fi show /opt/zimbra/
 > Label: 'Data'  uuid: ece150db-5817-4704-9e84-80f7d8a3b1da
->         Total devices 4 FS bytes used 1.48TiB
->         devid    1 size 1.46TiB used 1.38TiB path /dev/sde
->         devid    2 size 1.46TiB used 1.38TiB path /dev/sdf
->         devid    3 size 1.46TiB used 1.38TiB path /dev/sdg
->         devid    4 size 1.46TiB used 1.38TiB path /dev/sdh
-> 
+>          Total devices 4 FS bytes used 1.48TiB
+>          devid    1 size 1.46TiB used 1.38TiB path /dev/sde
+>          devid    2 size 1.46TiB used 1.38TiB path /dev/sdf
+>          devid    3 size 1.46TiB used 1.38TiB path /dev/sdg
+>          devid    4 size 1.46TiB used 1.38TiB path /dev/sdh
+>
 > # btrfs fi df /opt/zimbra/
-> Data, RAID10: total=1.69TiB, used=1.45TiB
-> System, RAID10: total=64.00MiB, used=640.00KiB
-> Metadata, RAID10: total=1.08TiB, used=37.69GiB
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-> 
-> 
+> Data, RAID10: total=3D1.69TiB, used=3D1.45TiB
+> System, RAID10: total=3D64.00MiB, used=3D640.00KiB
+> Metadata, RAID10: total=3D1.08TiB, used=3D37.69GiB
+> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
+>
+>
 > # btrfs fi us /opt/zimbra/ -T
 > Overall:
->     Device size:                   5.82TiB
->     Device allocated:              5.54TiB
->     Device unallocated:          291.54GiB
->     Device missing:                  0.00B
->     Used:                          2.96TiB
->     Free (estimated):            396.36GiB      (min: 396.36GiB)
->     Data ratio:                       2.00
->     Metadata ratio:                   2.00
->     Global reserve:              512.00MiB      (used: 0.00B)
-> 
->             Data      Metadata  System
+>      Device size:                   5.82TiB
+>      Device allocated:              5.54TiB
+>      Device unallocated:          291.54GiB
+>      Device missing:                  0.00B
+>      Used:                          2.96TiB
+>      Free (estimated):            396.36GiB      (min: 396.36GiB)
+>      Data ratio:                       2.00
+>      Metadata ratio:                   2.00
+>      Global reserve:              512.00MiB      (used: 0.00B)
+>
+>              Data      Metadata  System
 > Id Path     RAID10    RAID10    RAID10    Unallocated
 > -- -------- --------- --------- --------- -----------
->  1 /dev/sde 432.75GiB 276.00GiB  16.00MiB   781.65GiB
->  2 /dev/sdf 432.75GiB 276.00GiB  16.00MiB   781.65GiB
->  3 /dev/sdg 432.75GiB 276.00GiB  16.00MiB   781.65GiB
->  4 /dev/sdh 432.75GiB 276.00GiB  16.00MiB   781.65GiB
+>   1 /dev/sde 432.75GiB 276.00GiB  16.00MiB   781.65GiB
+>   2 /dev/sdf 432.75GiB 276.00GiB  16.00MiB   781.65GiB
+>   3 /dev/sdg 432.75GiB 276.00GiB  16.00MiB   781.65GiB
+>   4 /dev/sdh 432.75GiB 276.00GiB  16.00MiB   781.65GiB
 > -- -------- --------- --------- --------- -----------
->    Total      1.69TiB   1.08TiB  64.00MiB     3.05TiB
->    Used       1.45TiB  37.69GiB 640.00KiB
-> 
-> 
-> 
-> 
-> 
-> 
-> -- 
-> Brandon Heisner
-> System Administrator
-> Wolfram Research
-
-
-What are you mount options? Do you by any chance use metadata_ratio mount option?
-
-https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs(5)#MOUNT_OPTIONS
-
+>     Total      1.69TiB   1.08TiB  64.00MiB     3.05TiB
+>     Used       1.45TiB  37.69GiB 640.00KiB
+>
+>
+>
+>
+>
+>
