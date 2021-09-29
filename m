@@ -2,128 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF03E41CB21
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 19:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B4C41CB2A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 19:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344805AbhI2Rij (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Sep 2021 13:38:39 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:48764 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhI2Rij (ORCPT
+        id S1344974AbhI2Rqa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Sep 2021 13:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344502AbhI2Rq2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Sep 2021 13:38:39 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id B172FB9AE4D; Wed, 29 Sep 2021 13:33:13 -0400 (EDT)
-Date:   Wed, 29 Sep 2021 13:31:36 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Brandon Heisner <brandonh@wolfram.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: btrfs metadata has reserved 1T of extra space and balances don't
- reclaim it
-Message-ID: <20210929173055.GO29026@hungrycats.org>
-References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
+        Wed, 29 Sep 2021 13:46:28 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564C3C06161C
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Sep 2021 10:44:47 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id e16-20020a4ad250000000b002b5e1f1bc78so997931oos.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Sep 2021 10:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=71QdEmlwBmyzW2/4qEGlb6RuQKZwUgr5VIqT5E3Y77g=;
+        b=fb6A4/q/xim+CT3RmzXn4VxyOi+063F3UEOsGzHx13wzgyiHi+99qS/6V17/hXvfyd
+         g7gNB3bj1N/CO9Porh3uUj6IyqYLFSv3vsWZn9mpNzJX4Du4wgKHRAnlsSXdISDgfllB
+         LsS5CssHqSs9XTOi4IZCGRuETU8pnbPeNvhISbVa4nFm+6SZERfWz262lH6sQzcpTFUU
+         kIeTE2Hea950xe932Kad2T3yPvZJM0Y6VwvLHy5557gnh0e4dLQiyMnZ6o53XmFfTIvN
+         paLI8Ovk8DGmnssJrc7PauSdXsyaE/Gp/7kQMGtVdU5u5B+Rf3nsC+aIZxbB3kI01UVB
+         baNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=71QdEmlwBmyzW2/4qEGlb6RuQKZwUgr5VIqT5E3Y77g=;
+        b=6ueV2DpwoDO8UvDxd9PqsiZOta4G5xfLy07ZjqjXBsQJy1bWi+2dZtXCCPUX40Gnxc
+         a/UUJ4TJghUzdQFScD2Lv5J/2EFhCkSNwYSJwOc8yzgDWksK3jWA18pBQHsdRzqF2bpP
+         dsVmFNmCV2G8UFVPZ76ZHth7thALzHPXutQh0smbzjTFtpdjwOvPzXAGDYC9a33daMnE
+         qxtdv1FriI7cqizoJTGugWhoj8H8uHkxIErabD+i/SYBJUpC0/KFjsE0OeJ6/bsmP5hy
+         1KXpPsvADPU+dkCZSCkYWkHYKyp2D7G89WHtzhIKFbbTvY/G+ITluYCYxyL0H6SGduLf
+         Zvxw==
+X-Gm-Message-State: AOAM531mDlkXE3mrG+IEdRsg2VYXiCcjhrSzVWoZrGyGrTVeGCdnNLrK
+        tQR6jrKIPonW50oFqkD+fTtUfhiYXHbrqvr2h+U=
+X-Google-Smtp-Source: ABdhPJzBPjSX9GQLKqVF9G4jDydh4lwHHfGnBHO8CTim+gXzt+eFKhdHKzVIX4Vq5Wul2K0wJc4z7Eon40njVcH0LAY=
+X-Received: by 2002:a4a:d108:: with SMTP id k8mr968990oor.47.1632937486690;
+ Wed, 29 Sep 2021 10:44:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a05:6838:c8c3:0:0:0:0 with HTTP; Wed, 29 Sep 2021 10:44:46
+ -0700 (PDT)
+Reply-To: mr.jeannasri@gmail.com
+From:   jean nasri <hksqkjg1@gmail.com>
+Date:   Wed, 29 Sep 2021 17:44:46 +0000
+Message-ID: <CAGKQ94JeA_2puhPF4pHCNyV7e3cDgyb7LROX110Utp4VD1G57Q@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 09:23:01PM -0500, Brandon Heisner wrote:
-> I have a server running CentOS 7 on 4.9.5-1.el7.elrepo.x86_64 #1 SMP
-> Fri Jan 20 11:34:13 EST 2017 x86_64 x86_64 x86_64 GNU/Linux.  It is
-
-That is a really old kernel.  I recall there were some anomalous
-metadata allocation behaviors with kernels of that age, e.g. running
-scrub and balance at the same time would allocate a lot of metadata
-because scrub would lock a metadata block group immediately after
-it had been allocated, forcing another metadata block group to be
-allocated immediately.  The symptom of that bug is very similar to
-yours--without warning, hundreds of GB of metadata block groups are
-allocated, all empty, during a scrub or balance operation.
-
-Unfortunately I don't have a better solution than "upgrade to a newer
-kernel", as that particular bug was solved years ago (along with
-hundreds of others).
-
-> version locked to that kernel.  The metadata has reserved a full
-> 1T of disk space, while only using ~38G.  I've tried to balance the
-> metadata to reclaim that so it can be used for data, but it doesn't
-> work and gives no errors.  It just says it balanced the chunks but the
-> size doesn't change.  The metadata total is still growing as well,
-> as it used to be 1.04 and now it is 1.08 with only about 10G more
-> of metadata used.  I've tried doing balances up to 70 or 80 musage I
-> think, and the total metadata does not decrease.  I've done so many
-> attempts at balancing, I've probably tried to move 300 chunks or more.
-> None have resulted in any change to the metadata total like they do
-> on other servers running btrfs.  I first started with very low musage,
-> like 10 and then increased it by 10 to try to see if that would balance
-> any chunks out, but with no success.
-
-Have you tried rebooting?  The block groups may be stuck in a locked
-state in memory or pinned by pending discard requests, in which case
-balance won't touch them.  For that matter, try turning off discard
-(it's usually better to run fstrim once a day anyway, and not use
-the discard mount option).
-
-> # /sbin/btrfs balance start -musage=60 -mlimit=30 /opt/zimbra
-> Done, had to relocate 30 out of 2127 chunks
-> 
-> I can do that command over and over again, or increase the mlimit,
-> and it doesn't change the metadata total ever.
-
-I would use just -m here (no filters, only metadata).  If it gets the
-allocation under control, run 'btrfs balance cancel'; if it doesn't,
-let it run all the way to the end.  Each balance starts from the last
-block group, so you are effectively restarting balance to process the
-same 30 block groups over and over here.
-
-> # btrfs fi show /opt/zimbra/
-> Label: 'Data'  uuid: ece150db-5817-4704-9e84-80f7d8a3b1da
->         Total devices 4 FS bytes used 1.48TiB
->         devid    1 size 1.46TiB used 1.38TiB path /dev/sde
->         devid    2 size 1.46TiB used 1.38TiB path /dev/sdf
->         devid    3 size 1.46TiB used 1.38TiB path /dev/sdg
->         devid    4 size 1.46TiB used 1.38TiB path /dev/sdh
-> 
-> # btrfs fi df /opt/zimbra/
-> Data, RAID10: total=1.69TiB, used=1.45TiB
-> System, RAID10: total=64.00MiB, used=640.00KiB
-> Metadata, RAID10: total=1.08TiB, used=37.69GiB
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-> 
-> 
-> # btrfs fi us /opt/zimbra/ -T
-> Overall:
->     Device size:                   5.82TiB
->     Device allocated:              5.54TiB
->     Device unallocated:          291.54GiB
->     Device missing:                  0.00B
->     Used:                          2.96TiB
->     Free (estimated):            396.36GiB      (min: 396.36GiB)
->     Data ratio:                       2.00
->     Metadata ratio:                   2.00
->     Global reserve:              512.00MiB      (used: 0.00B)
-> 
->             Data      Metadata  System
-> Id Path     RAID10    RAID10    RAID10    Unallocated
-> -- -------- --------- --------- --------- -----------
->  1 /dev/sde 432.75GiB 276.00GiB  16.00MiB   781.65GiB
->  2 /dev/sdf 432.75GiB 276.00GiB  16.00MiB   781.65GiB
->  3 /dev/sdg 432.75GiB 276.00GiB  16.00MiB   781.65GiB
->  4 /dev/sdh 432.75GiB 276.00GiB  16.00MiB   781.65GiB
-> -- -------- --------- --------- --------- -----------
->    Total      1.69TiB   1.08TiB  64.00MiB     3.05TiB
->    Used       1.45TiB  37.69GiB 640.00KiB
-> 
-> 
-> 
-> 
-> 
-> 
-> -- 
-> Brandon Heisner
-> System Administrator
-> Wolfram Research
+Hello,
+Do you have an account to receive donation funds? Please reply for
+further explanation.
+Nasri.
