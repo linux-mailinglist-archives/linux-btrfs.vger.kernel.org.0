@@ -2,161 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC3A41BBE4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 02:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BD841BBF1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 02:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243400AbhI2Aqq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 Sep 2021 20:46:46 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41482 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243396AbhI2Aqp (ORCPT
+        id S243535AbhI2A6I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 Sep 2021 20:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243530AbhI2A6H (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 Sep 2021 20:46:45 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C3C2F1FDAD;
-        Wed, 29 Sep 2021 00:45:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632876304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=8GiJTcCWiJ7fVQPubzu3LTO3SDn3OOa0wRSBJ8T9Bcw=;
-        b=stEv3HoI4LHX5MV0U3sIpN+KNkHh2WLcswkZnbsUWryMlzqdguWj535B/iO6Qlbw8jplJP
-        D7WUZ1MZwLm1wlKwfdaEKQNfz5Z8UY7PQeQzP/snXn0mFKfUX34EKv/OL53jQrQRhnJ69E
-        L5EYN67YjwoALTLdXFP6ekVWvtoo4Zw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E02C213EB4;
-        Wed, 29 Sep 2021 00:45:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id R7PfKQ+3U2FKVQAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 29 Sep 2021 00:45:03 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] fstests: btrfs/248: test if btrfs receive can handle clone command on inodes with different NODATASUM flags
-Date:   Wed, 29 Sep 2021 08:44:46 +0800
-Message-Id: <20210929004446.12654-1-wqu@suse.com>
-X-Mailer: git-send-email 2.33.0
+        Tue, 28 Sep 2021 20:58:07 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCD9C06161C;
+        Tue, 28 Sep 2021 17:56:27 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id f133so1562905yba.11;
+        Tue, 28 Sep 2021 17:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JnBQzRHZjX1jX9ZbaPy19bZuVBx4MFAmGk8JgFG5HPw=;
+        b=VJ4hiovrOYc7P9u3DdHn+eFVOFUOVStsOQJQwKvE9R6kVwt5k1RF4RfVAZg+cz4vzp
+         5NMev1uO3W2x4W59M8BF99xExe6FrqZZUzjbSgFfSkTeEXpy5QWtgvU3O0nFWKeg/kqz
+         G25wXrMLeI2NLEkf/osfe223+XWHLwHyuP+EWYRzbQTrno5UvL/2RvReCNdpmffp2Btr
+         vNdHgm0VhpikRifXuWjOTgRfgHFMjDyu3qWsomrp2veRMSPRb4/QdDbwC/RCTY5dmjlZ
+         W7ozAnuZpGssPxXb9fGxacbySUmLgEMceCSOf1RLm8C/Ou0SNy9p1zAaQeyr+zCefU2s
+         PY/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JnBQzRHZjX1jX9ZbaPy19bZuVBx4MFAmGk8JgFG5HPw=;
+        b=rIGzI1JsS9KeSzoBWocbZLnbaKawYleChV/FgEEU8suW6GJglAx3Yy7FCL2xH9Wtf0
+         AciwCb4pV/aMdmxWZKgcm/x2wenIOIgyfFGQUC4aSPq23JDXQ2DIErU0lYxA030ESOrP
+         5LEzgQeEzbsgzCXoIky49CqzQ9lj3LI2H6S/Njcaas0yTYrWlp+0t4GrjGa+ZSo5WnvH
+         1Qf+DjlBdso5jp2r6qNmKxMXp9iy5X0YXNCqbVK/dvhQ4sSXYX5aFbQlEMSER3lyWHTu
+         9nRJ+pLAbH0Tiwjwp0TeTdyYRB7eGEx7iY5DZIFYv4+43DdhjlwyWUyNcWxAUUnKZ6dN
+         TiUQ==
+X-Gm-Message-State: AOAM530JB0JU6pTdxy80gkcL2Ax7Ye5cNPMXxyp0UZxaG1Y0CSiH2QMC
+        G3+u7v0fceuiEwQqVv4EBs6SuX76b2tRTLsfVncPZoSIv88=
+X-Google-Smtp-Source: ABdhPJzTkzx02hXT1Mb5vSin3ht3uGdDzRgjkWEWzVfn06Zb2X6N/A1DGvNDAFEGOt6rjvODfDLEbQDjRQd9Tiv6lZo=
+X-Received: by 2002:a25:2255:: with SMTP id i82mr9736362ybi.203.1632876986478;
+ Tue, 28 Sep 2021 17:56:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <e19ebd67-949d-e43c-4090-ab1ceadcdfab@gmail.com>
+In-Reply-To: <e19ebd67-949d-e43c-4090-ab1ceadcdfab@gmail.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Tue, 28 Sep 2021 20:55:50 -0400
+Message-ID: <CAEg-Je95-T6AGodk7tyUnN8sw+sdVbHd18w1AnY-6hdBJ+5wtw@mail.gmail.com>
+Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
+To:     B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        terrelln@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The planned fix is titled "btrfs-progs: receive: fallback to buffered
-copy if clone failed".
+On Tue, Sep 28, 2021 at 8:24 PM Tom Seewald <tseewald@gmail.com> wrote:
+>
+> Hi,
+>
+> Has this been abandoned or will there be future attempts at syncing the
+> in-kernel zstd with the upstream project?
+>
 
-The test case itself will create two send streams, and the 2nd stream is
-an incremental stream with a clone command in it.
+With the kind of crap that Nick has been getting from everyone, I'd be
+surprised if he takes it up again anytime soon. As a bystander, I've been
+incredibly disappointed with how this has "progressed" (read: stalled)
+even though Nick is the developer and maintainer of zstd code.
 
-Using different mount options we are able to create a situation where
-clone source and destination have different NODATASUM flags, which is
-prohibited inside btrfs.
 
-The planned fix will make btrfs receive to fall back to buffered write
-to copy the data from the source file.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/248     | 74 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/248.out |  2 ++
- 2 files changed, 76 insertions(+)
- create mode 100755 tests/btrfs/248
- create mode 100644 tests/btrfs/248.out
 
-diff --git a/tests/btrfs/248 b/tests/btrfs/248
-new file mode 100755
-index 00000000..964d3e85
---- /dev/null
-+++ b/tests/btrfs/248
-@@ -0,0 +1,74 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 248
-+#
-+# Make sure btrfs receive can still handle clone stream even if the source
-+# and destination has different NODATASUM flags
-+#
-+. ./common/preamble
-+_begin_fstest quick send
-+
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	rm -r -f $tmp.*
-+}
-+
-+# Import common functions.
-+# . ./common/filter
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_require_scratch
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount -o datasum
-+
-+# Create the initial subvolume with a file
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/parent >> $seqres.full
-+$XFS_IO_PROG -f -c "pwrite 0 1m" $SCRATCH_MNT/parent/source \
-+	> /dev/null
-+sync
-+$BTRFS_UTIL_PROG prop set $SCRATCH_MNT/parent ro true
-+$BTRFS_UTIL_PROG send -q $SCRATCH_MNT/parent -f $tmp.parent_stream
-+_scratch_unmount
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount -o datasum
-+
-+# Then create a new subvolume with cloned file from above send stream
-+$BTRFS_UTIL_PROG receive -q -f $tmp.parent_stream $SCRATCH_MNT
-+$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/parent $SCRATCH_MNT/dest \
-+	>> $seqres.full
-+$XFS_IO_PROG -f -c "reflink $SCRATCH_MNT/parent/source 4k 0 128K" \
-+	$SCRATCH_MNT/dest/new > /dev/null
-+$BTRFS_UTIL_PROG prop set $SCRATCH_MNT/dest ro true
-+$BTRFS_UTIL_PROG send -q $SCRATCH_MNT/dest -p $SCRATCH_MNT/parent \
-+	-f $tmp.clone_stream
-+
-+_scratch_unmount
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount -o datasum
-+
-+# Now try to receive both streams
-+$BTRFS_UTIL_PROG receive -q -f $tmp.parent_stream $SCRATCH_MNT/
-+
-+# Remount to NODATASUM, so that the 2nd stream will get all its inodes to have
-+# NODATASUM flags due to mount option
-+_scratch_remount nodatasum
-+
-+# Patched receive may warn about the clone failure, so here we redirect all
-+# output
-+$BTRFS_UTIL_PROG receive -q -f $tmp.clone_stream $SCRATCH_MNT/ \
-+	>> $seqres.full 2>&1
-+
-+# We check the destination file's csum to verify if the clone is done properly
-+_md5_checksum $SCRATCH_MNT/dest/new
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/248.out b/tests/btrfs/248.out
-new file mode 100644
-index 00000000..b49cfad7
---- /dev/null
-+++ b/tests/btrfs/248.out
-@@ -0,0 +1,2 @@
-+QA output created by 248
-+d48858312a922db7eb86377f638dbc9f
--- 
-2.33.0
-
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
