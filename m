@@ -2,187 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084E041CC15
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 20:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAA141CC2F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 20:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346190AbhI2Ssj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Sep 2021 14:48:39 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50176 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235814AbhI2Ssf (ORCPT
+        id S1344969AbhI2S5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Sep 2021 14:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346355AbhI2S5n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:48:35 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4AE88225B0;
-        Wed, 29 Sep 2021 18:46:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1632941213;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XNuzFLcg8aGYpeH9YKpCncjapVshBYHjI1WY8fy/3h4=;
-        b=YDTIUUiqxjzxMnARlyeDxsbq5+1fQYU82Q35+ok5bVVn6ik2X1jut4rw4etPp9EbuiH6wB
-        OIN7tGrRxED5k+tIZEkXtUzIUrEEy6FMyEsLfN/qFuskyJcS4ORYmX1MCDlAsRslcL7fw5
-        TXx8/ltZnyB9Z5LsVhd/SJ8gdv+hI/s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1632941213;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XNuzFLcg8aGYpeH9YKpCncjapVshBYHjI1WY8fy/3h4=;
-        b=q/KK/+v8XGuu4Rjkro213LVex75A97NGGI/Si0rB9xgK+CmfFftcSZAUIFowSQaWDx4B+h
-        JIIg38v4dEpZ62Bg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 4517FA3B83;
-        Wed, 29 Sep 2021 18:46:53 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C5487DA7A9; Wed, 29 Sep 2021 20:46:36 +0200 (CEST)
-Date:   Wed, 29 Sep 2021 20:46:36 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs-progs: Ignore path devices during scan -
- static build support
-Message-ID: <20210929184636.GR9286@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210928123730.393551-1-nborisov@suse.com>
- <20210928123730.393551-2-nborisov@suse.com>
+        Wed, 29 Sep 2021 14:57:43 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C61C06161C
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Sep 2021 11:56:01 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id a11so3969812ilk.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 29 Sep 2021 11:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1pEmqTf7EKmapl9eN4fcWggm3q5JruPJsBXpfcX1WPU=;
+        b=ZMPvq/wYXINeMGNJrXXJnTpMHj+jRx4hWaeql/oQZY/zwwEdJ+D5YIBBr4xBuIvFsW
+         8GP3qtf1O/2xqqaz7rmfSkMd7SpMHAER8+OAPaJoWfGRoJ3GfJJijnvTItMbxmJ6mkte
+         Tey6cVCpL5R/dk/fnmH5z9GgSifo8yzGAP+rMw/bpTQlnsR+EBqXEbBBMb/uxm+cAM8U
+         4cn3OCCEU+eQN78aYB9ck6hsNjUus5DbSuMpiaTOYcZKzMVf8mXe2KOa6ftA1wQxQSXb
+         LFoMQtWgJVNfGYodBwaPzY+hBjOMtymc7OZGnu5eDveOLpRX/VsysQw350NkRVoJXCJi
+         6qBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1pEmqTf7EKmapl9eN4fcWggm3q5JruPJsBXpfcX1WPU=;
+        b=Qdd8OBQHX7XM6RIb7OdkKagI20Pg7Jk6Xch/8LC02OnoAJk3MSb4GcdlVDkKq/0aN+
+         Z0Od95n0kUt0xH7rKv94I+sKnWCsOxV67rQmXPXlVJqTh5ggKQrYX3fov1OCSicvq4X/
+         SfxxvZFYAyMYL2G7sZxK+K86ZDSIMCeAPgXlknuzVNxCas6fI3CqhObnKka4KV2JOegv
+         wEMTpkTcEKhULwAm2X/dwT8lxYAhC+A9mqKkJiwCo1guFozgv65qkOEU4YAfh0V9IPWX
+         gidGC8HCz2cJRN9uoCIp8ZRiU7z3m9T6hZEYtPG/I5gm9j4EKKbdfQdEKghYtAomoxwy
+         lBvw==
+X-Gm-Message-State: AOAM5331CgyxlXkpnMUklYf9CWzuvwJ0lhnrX9K7CUMu4Z6uKA6a5+AV
+        fm8wG1jiSJMghEqQ7bZZja0zrJCAsoh/hN6AWvD0xE8Megl/kg==
+X-Google-Smtp-Source: ABdhPJyFnPDWmXxHWRzY/u3U7+z/Vl6u7/SIz+58HKs/Q2MWPss4L53ObpPwSMtomwmQ8Duoz0wh1zzF1KzhAGEIbOU=
+X-Received: by 2002:a05:6e02:12e6:: with SMTP id l6mr917587iln.293.1632941761015;
+ Wed, 29 Sep 2021 11:56:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928123730.393551-2-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
+ <CAK-xaQYo1vRi10ZY09q2=7oCTPy1s_i8-rZV_vyc0AMX1JOQLQ@mail.gmail.com> <7df424c.4dc05cb1.17c326d0fd3@tnonline.net>
+In-Reply-To: <7df424c.4dc05cb1.17c326d0fd3@tnonline.net>
+From:   Andrea Gelmini <andrea.gelmini@gmail.com>
+Date:   Wed, 29 Sep 2021 20:55:49 +0200
+Message-ID: <CAK-xaQazopi0eshOUgeMt-3mQifOzghUTPH28gBtPWf6XAacQA@mail.gmail.com>
+Subject: Re: btrfs metadata has reserved 1T of extra space and balances don't
+ reclaim it
+To:     Forza <forza@tnonline.net>
+Cc:     brandonh@wolfram.com, Linux BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 03:37:30PM +0300, Nikolay Borisov wrote:
-> @@ -372,23 +373,56 @@ void free_seen_fsid(struct seen_fsid *seen_fsid_hash[])
->  	}
->  }
->  
-> -#ifdef HAVE_LIBUDEV
-> -static bool is_path_device(char *device_path)
-> +#ifdef STATIC_BUILD
-> +static bool __is_path_device(dev_t dev)
-> +{
-> +	FILE *file;
-> +	char *line = NULL;
-> +	size_t len = 0;
-> +	ssize_t nread;
-> +	bool ret = false;
-> +	int ret2;
-> +	struct stat dev_stat;
-> +	char path[100];
+Il giorno mer 29 set 2021 alle ore 18:39 Forza <forza@tnonline.net> ha scritto:
 
-	char path[PATH_MAX];
+> Maybe autodefrag mount option might be helpful?
+It was enabled since beginning.
 
-No arbitrary constants please. For paths always use a full buffer size,
-though in this case it's not strictly necessary.
+> Your problem sounds like partially filled extents and not metadata related. Typical scenarios where that happens is with some databases and vm images. A file could allocate much more space than actuall data due to this. Use 'compsize' to determine this.
 
-> +
-> +	ret2 = snprintf(path, 100, "/run/udev/data/b%u:%u", major(dev_stat.st_rdev),
-> +			minor(dev_stat.st_rdev));
-> +
-> +	if (ret2 >= 100 || ret2 < 0)
+I confirm is one big file with random writes. I agree about extents.
+But I'm quite confident the same approach can fix the original question.
 
-So >= 100 never happens and with PATH_MAX you can drop the part of the
-condition as well.
-
-> +		return false;
-> +
-> +	file = fopen(path, "r");
-> +	if (file == NULL)
-> +		return false;
-> +
-> +	while ((nread = getline(&line, &len, file)) != -1) {
-> +		if (strstr(line, "DM_MULTIPATH_DEVICE_PATH=1")) {
-
-So this is peeking into udev internal files but I like that you do
-strstr, that sounds future proof enough for a fallback.
-
-> +			ret = true;
-> +			printf("found dm multipath line: %s\n", line);
-
-Is this a debugging print? We have the pr_verbose helper that takes a
-level of verbosity so for debugging you can do pr_verbose(3, "...").
-This hasnt' been used much but messages used for developing a feature
-and making sure it works as expected can be turned into high verbose
-level messages for free and one day it becomes useful.
-
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (line)
-> +		free(line);
-> +
-> +	fclose(file);
-> +
-> +	return ret;
-> +}
-> +#elif defined(HAVE_LIBUDEV)
-> +static bool __is_path_device(dev_t device)
-
-Please avoid functions with __, also s/path/multipath/ would be much
-more clear.
-
->  {
->  	struct udev *udev = NULL;
->  	struct udev_device *dev = NULL;
-> -	struct stat dev_stat;
->  	const char *val;
->  	bool ret = false;
->  
-> -	if (stat(device_path, &dev_stat) < 0)
-> -		return false;
-> -
->  	udev = udev_new();
->  	if (!udev)
->  		goto out;
->  
-> -	dev = udev_device_new_from_devnum(udev, 'b', dev_stat.st_rdev);
-> +	dev = udev_device_new_from_devnum(udev, 'b', device);
->  	if (!dev)
->  		goto out;
->  
-> @@ -401,8 +435,24 @@ static bool is_path_device(char *device_path)
->  
->  	return ret;
->  }
-> +#else
-> +static bool __is_path_device(dev_t device)
-> +{
-> +	return false;
-> +}
->  #endif
->  
-> +static bool is_path_device(char *device_path)
-> +{
-> +	struct stat dev_stat;
-> +
-> +	if (stat(device_path, &dev_stat) < 0)
-> +		return false;
-> +
-> +	return __is_path_device(dev_stat.st_rdev);
-> +
-> +}
-> +
->  int btrfs_scan_devices(int verbose)
->  {
->  	int fd = -1;
-> @@ -433,10 +483,8 @@ int btrfs_scan_devices(int verbose)
->  		/* if we are here its definitely a btrfs disk*/
->  		strncpy_null(path, blkid_dev_devname(dev));
->  
-> -#ifdef HAVE_LIBUDEV
->  		if (is_path_device(path))
->  			continue;
-> -#endif
->  
->  		fd = open(path, O_RDONLY);
->  		if (fd < 0) {
-> -- 
-> 2.17.1
+Ciao,
+Gelma
