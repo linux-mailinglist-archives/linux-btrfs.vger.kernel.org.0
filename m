@@ -2,93 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDD141C8A8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 17:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F1941CA75
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 18:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345384AbhI2Pq7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Sep 2021 11:46:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24536 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245486AbhI2Pqu (ORCPT
+        id S1346187AbhI2Qlc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 29 Sep 2021 12:41:32 -0400
+Received: from pio-pvt-msa3.bahnhof.se ([79.136.2.42]:58514 "EHLO
+        pio-pvt-msa3.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345956AbhI2Ql1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:46:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632930309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YD/JzDwhuk7rGKkEzFS8gH/oiqrA2eu324rL5fdp0h4=;
-        b=Yh9vnUQxH/0E1nkVbyKZ4H6UNtYPpeTrAeh/tqxbriKls5EuB/m7Oi7cX484RyfFH/D2Mm
-        bzcQnGRCOwnVDoq9OxXzAz881yff+JKuDogEf7P6JQ7zTLrYHF5ygnZTC4K8ovoAe/x6g4
-        5Bs+4ljkBizxWYY+0YsJbdUgYf7Dm6M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-RydRWjxQMwK58uTqWu6Ekw-1; Wed, 29 Sep 2021 11:45:08 -0400
-X-MC-Unique: RydRWjxQMwK58uTqWu6Ekw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00CAB1006AA3;
-        Wed, 29 Sep 2021 15:45:06 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 51DD86A900;
-        Wed, 29 Sep 2021 15:45:03 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210927200708.GI9286@twin.jikos.cz>
-References: <20210927200708.GI9286@twin.jikos.cz> <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
-To:     dsterba@suse.cz
-Cc:     dhowells@redhat.com
-Cc:     willy@infradead.org, Chris Mason <clm@fb.com>,
-        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        Ilya Dryomov <idryomov@gmail.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
+        Wed, 29 Sep 2021 12:41:27 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTP id 84E083F439;
+        Wed, 29 Sep 2021 18:39:44 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, URIBL_BLOCKED=0.001]
+        autolearn=ham autolearn_force=no
+Received: from pio-pvt-msa3.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa3.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id d2rqtarOBGFa; Wed, 29 Sep 2021 18:39:43 +0200 (CEST)
+Received: by pio-pvt-msa3.bahnhof.se (Postfix) with ESMTPA id 800B93F435;
+        Wed, 29 Sep 2021 18:39:42 +0200 (CEST)
+Received: from [192.168.0.126] (port=38112)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1mVccP-000H4y-U4; Wed, 29 Sep 2021 18:39:41 +0200
+Date:   Wed, 29 Sep 2021 18:39:40 +0200 (GMT+02:00)
+From:   Forza <forza@tnonline.net>
+To:     Andrea Gelmini <andrea.gelmini@gmail.com>, brandonh@wolfram.com
+Cc:     Linux BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <7df424c.4dc05cb1.17c326d0fd3@tnonline.net>
+In-Reply-To: <CAK-xaQYo1vRi10ZY09q2=7oCTPy1s_i8-rZV_vyc0AMX1JOQLQ@mail.gmail.com>
+References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com> <CAK-xaQYo1vRi10ZY09q2=7oCTPy1s_i8-rZV_vyc0AMX1JOQLQ@mail.gmail.com>
+Subject: Re: btrfs metadata has reserved 1T of extra space and balances
+ don't reclaim it
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4005661.1632930302.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 29 Sep 2021 16:45:02 +0100
-Message-ID: <4005662.1632930302@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+X-Mailer: R2Mail2
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-David Sterba <dsterba@suse.cz> wrote:
 
-> > There are additional patches to get rid of noop_direct_IO and replace =
-it
-> > with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use=
- the
-> > new ->swap_rw method and thence remove the direct BIO submission paths=
- from
-> > swap.
-> > =
 
-> > I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure =
-if
-> > that's necessary, but it seems accounting related.
->
-> There was probably some step missing. The file must not have holes, so
-> either do 'dd' to the right size or use fallocate (which is recommended
-> in manual page btrfs(5) SWAPFILE SUPPORT). There are some fstests
-> exercising swapfile (grep -l _format_swapfile tests/generic/*) so you
-> could try that without having to set up the swapfile manually.
+---- From: Andrea Gelmini <andrea.gelmini@gmail.com> -- Sent: 2021-09-29 - 17:18 ----
 
-Yeah.  As advised elsewhere, I removed the file and recreated it, doing th=
-e
-chattr before extending the file.  At that point swapon worked.  It didn't
-work though, and various userspace programs started dying.  I'm guessing m=
-y
-btrfs_swap_rw() is wrong somehow.
+> Il giorno mer 29 set 2021 alle ore 04:41 Brandon Heisner
+> <brandonh@wolfram.com> ha scritto:
+>>
+>> I have a server running CentOS 7 on 4.9.5-1.el7.elrepo.x86_64 #1 SMP Fri Jan 20 11:34:13 EST 2017 x86_64 x86_64 x86_64 GNU/Linux.  It is version locked to that kernel.  The metadata has reserved a full 1T of disk space, while only using ~38G.  I've tried to balance the metadata to reclaim that so it can be used for data, but it doesn't work and gives no errors.  It just says it balanced the chunks but the size doesn't change.  The metadata total is still growing as well, as it used to be 1.04 and now it is 1.08 with only about 10G more of metadata used.  I've tried doing balances up to 70 or 80 musage I think, and
+> 
+> Similar situation here.
+> A 18TB single disk with one big snapraid parity file, and a lot of
+> metadata allocated.
+> I solved with:
+> btrfs filesystem defrag -v -r -clzo  . (useless the compression, in my case)
+> 
+> So, just after a little bit from start  I saw already space reclaming.
+> 
+> In the end I fallback to exfat to avoid to keep re-reading/re-writing
+> all data just to avoid "metadata waste".
+> 
+> Ciao,
+> Gelma
 
-David
+Maybe autodefrag mount option might be helpful?
+
+Your problem sounds like partially filled extents and not metadata related. Typical scenarios where that happens is with some databases and vm images. A file could allocate much more space than actuall data due to this. Use 'compsize' to determine this. 
 
