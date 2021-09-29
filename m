@@ -2,142 +2,255 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C0441C09F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 10:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE8D41C169
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 11:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244863AbhI2IYw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Sep 2021 04:24:52 -0400
-Received: from mout.gmx.net ([212.227.15.18]:32893 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244791AbhI2IYm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Sep 2021 04:24:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1632903776;
-        bh=+HlUAq1L8UkRWuoM3hPyCqzNNNWp7LZKnpV1eetQ280=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=a3qiBMG9if8/A/fNAGEleRr5zyLspOHqbgGSf3mCGcssedlv3UTx2DZ6DEbNfK0kj
-         6dLOZKiRprPUn+JDUTFbs/gqUd/kS6RQkyzPjvcQR9fMkalKBo9aMIXdnbEsmEfSCf
-         l1/MNwZvwwRFUppQ4OeukT1B/aw1x/JK7clEPws8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M9FnZ-1mQqIx02bP-006L4s; Wed, 29
- Sep 2021 10:22:56 +0200
-Message-ID: <a02d8f67-55fd-17f5-03ee-a8b7f1608352@gmx.com>
-Date:   Wed, 29 Sep 2021 16:22:53 +0800
+        id S244981AbhI2JQi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Sep 2021 05:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239961AbhI2JQh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 29 Sep 2021 05:16:37 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00179C06161C;
+        Wed, 29 Sep 2021 02:14:56 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id jo30so1068401qvb.3;
+        Wed, 29 Sep 2021 02:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=odrMg3ck/RyeVZR+UT0yECpW7rFz9JCiUePwgBb6Kd0=;
+        b=c8St61AoJvmaJywwgLy6moLY4bBu0bNrt16jZktuRxVHq3rX4wGcHrEsdIYLPpPPeF
+         xNSsh4PUtaTnmBrbRGmI1OG34b1tLqdwNRqlaiokYRPTOh+aw0W/0E5RJkEyed7s5fhE
+         eqfavFYxacccUbNpJgl+KM+bY+sjY+PH8iXAH/Z9uR2WDWJotwthWVUwuD6SnOVkdqPi
+         Sal+GlvT/oMvonebcjQN9q/uya45LwLZiFg1l2jgW848QI2ZaYC8P4laGEXX5Mt8S5Py
+         rs+NKWr3IXtXIrBZv6zBGDwqCeRpcXdNOVIsg2Hz6o9o7pdEsNYGm55mpJuaWSBm/6W8
+         lhsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=odrMg3ck/RyeVZR+UT0yECpW7rFz9JCiUePwgBb6Kd0=;
+        b=slCzBzJnsIl6kOfZh1NMmXrTcSXfRuH/9n+JRnFqdLtINwKkKu1mjE/la2yePy99XU
+         ZOwWTcucPmYIvM+V8sz1TeZqVsf7DEqsNEwXdH+t7g8CwfCqthUsXgFUP/+V5hgtowdm
+         aWOnujLa/q5vZ1CmCcNUDikoZmkGydWpIepInL7CJ630jnzZWRfFrJGur5jhu/BP1tOS
+         Po1tHAOJpk9psWEhskMoqQsvHgmCBw4i9FqBmnB3HPNMo4HalS8yVEl5/rJOvGEiHTdV
+         Z7KcTr+VLQLg77TcMCHlToPMf/hV+0x6WwpwNzp+ouqqI+tpKjAHBY/uFO9noxRWDKSj
+         pgIg==
+X-Gm-Message-State: AOAM530nt5dxYRYSac8bNnPJvae9aUhZnezc0V+f0tTOYf9BxfB6ciDF
+        vi59GU6BS1E1cMn++STJmkNy+p1veYG/yB5oeUZ7ZPvaMJk=
+X-Google-Smtp-Source: ABdhPJw+oFMLf7ih5nQnReo0dJ+XgS/W70PWzyIWIJW11H6Io+S8mTcbSFV676QIePTjm2eMHmBX0BTh36zwF+w8PAg=
+X-Received: by 2002:a05:6214:1430:: with SMTP id o16mr9962383qvx.66.1632906896153;
+ Wed, 29 Sep 2021 02:14:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: btrfs metadata has reserved 1T of extra space and balances don't
- reclaim it
-Content-Language: en-US
-To:     brandonh@wolfram.com, linux-btrfs@vger.kernel.org
-References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20210929004446.12654-1-wqu@suse.com>
+In-Reply-To: <20210929004446.12654-1-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 29 Sep 2021 10:14:19 +0100
+Message-ID: <CAL3q7H7=smEFy8UM9uRK202rCwnX6wUWN=TRAzPjethAKdJOew@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs/248: test if btrfs receive can handle
+ clone command on inodes with different NODATASUM flags
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RRXiZ+mrrDjWDKXMdlYQiN9BvKMgFTCRnMEwkNXs6jarhz2XGGa
- kV+KKNvRGVuqLESLgwQyzkhH1itqcwT4OtU4gibNsaq6PsLqhornqMt3vNycGcbMMswirpd
- I8IRfrMMrsvVsGQUzvLxaCh6wN9kxE06eBTZ39OPbH6k10h7Jv+52QrZNTQRwJ501HvK5AA
- Ozr19NDz/0zdS9+BuNSaw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NeOL6qiT2rg=:vkCqnVrQMQ0XAmVDGUjINQ
- jk+WKyLzov7Zqk/5LEl01TksLgQbrIAHLjadFto3f73C/7DY9DZmKb75OJOII2AJFLg+kRrQc
- 7erjzg9EpQFtu2IGzznAqVB+vpoWlrMKpmHVfiTtDqUXPtAJa7vBdQJyc6eRV37vNDc84qXCi
- 2NRZCXSsMTKjUIa0QF2OsBSmfPOicJ31OvCEUlpK57HBo+nraUx+u1hdfsG1rhe+6bFW8nlyX
- LKegmuyJJiTFaoMmBoSWLGNQdCSn+1rq0F0i51MZKt20isjDBJrxUqULlHaQ3ANXX64KeBPgL
- UaB4BK6p7ZJLxdIMGKe0dS0qArEhWp5fY6eW31RCTZFOTafAwsN9L4t635SZmZJMmCeKPo/E9
- 6IH/Ru+Hb2inBIeSbR7bbMGZVXqKcPUg0INJ0bf9yIET6CW2d9zVyeaJ5PwczFDQvtP6tIrky
- o1nKPFcc3h4CoXXVREeiQ4TC5tFDA9OF90TVAycnjU2i2+PeA6roWum5JeSJlfiISBYS8m6zM
- 0pysvGsHb9GmI44zC9asz46l3AxxhF0nXsageUlK0L7Xs59zoPQ4gbq3gd+/KIKIhGP8qwxwF
- W3uBC1TgApLK9xJPfQHrj9YAKuMeTn45AyFsmOZc6KWEWyHSb/w3isbSvYMTDfcAmrvV2Cr8R
- dVTDtr+uQAeopDTggtRVZo0u+5jUeTm6kmCY29DusbGLtUI4klWBp8x8pJF2rsCnR7WAmjmfm
- tUmXHzQ3cLUZeVM95Lx76Djsz/UxEdlP2zn5mjQBpSSXn/fpmKBatMormwTvsFFXCfSuOffOR
- s/6S0P8cspRtFZeiXvgTvQovr/ZdsZXxRDEAugTZYelsl98GH2MLhvaMHvTB8EUfpKL3VrOIw
- LshDme+CLyLP9zBuvwQdc0P1A/PB4gihZakMsqQDPa/zVMcFFHtgZh8Q4XJREhLo7ELOwWuMd
- ekYLMGMO7ajJzXyr95LvYsoudh6fbts4oz5uN4TdPAi9yTbfcmghdGGidopTdQhaf9UV4o+Qd
- lrDlT4H7yaQfSlY2GWGlCrqcWv3T28hr94dZKD770LJVqbrBe0Zx0+RNzkM7ON6rju6qDXR4V
- sjUOncYA7AjG4Y=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Sep 29, 2021 at 1:45 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> The planned fix is titled "btrfs-progs: receive: fallback to buffered
+> copy if clone failed".
+>
+> The test case itself will create two send streams, and the 2nd stream is
+> an incremental stream with a clone command in it.
+>
+> Using different mount options we are able to create a situation where
+> clone source and destination have different NODATASUM flags, which is
+> prohibited inside btrfs.
+>
+> The planned fix will make btrfs receive to fall back to buffered write
+> to copy the data from the source file.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/248     | 74 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/248.out |  2 ++
+>  2 files changed, 76 insertions(+)
+>  create mode 100755 tests/btrfs/248
+>  create mode 100644 tests/btrfs/248.out
+>
+> diff --git a/tests/btrfs/248 b/tests/btrfs/248
+> new file mode 100755
+> index 00000000..964d3e85
+> --- /dev/null
+> +++ b/tests/btrfs/248
+> @@ -0,0 +1,74 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
+> +#
+> +# FS QA Test 248
+> +#
+> +# Make sure btrfs receive can still handle clone stream even if the sour=
+ce
+
+s/clone stream/clone operations/
+
+> +# and destination has different NODATASUM flags
+
+s/has/have/
+
+> +#
+> +. ./common/preamble
+> +_begin_fstest quick send
+> +
+> +# Override the default cleanup function.
+> +_cleanup()
+> +{
+> +       cd /
+> +       rm -r -f $tmp.*
+> +}
+> +
+> +# Import common functions.
+> +# . ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_require_scratch
+> +
+> +_scratch_mkfs >> $seqres.full 2>&1
+> +_scratch_mount -o datasum
+> +
+> +# Create the initial subvolume with a file
+> +$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/parent >> $seqres.full
+> +$XFS_IO_PROG -f -c "pwrite 0 1m" $SCRATCH_MNT/parent/source \
+> +       > /dev/null
+> +sync
+
+There's no need to call sync.
+
+> +$BTRFS_UTIL_PROG prop set $SCRATCH_MNT/parent ro true
+> +$BTRFS_UTIL_PROG send -q $SCRATCH_MNT/parent -f $tmp.parent_stream
+> +_scratch_unmount
+> +_scratch_mkfs >> $seqres.full 2>&1
+> +_scratch_mount -o datasum
+> +
+> +# Then create a new subvolume with cloned file from above send stream
+> +$BTRFS_UTIL_PROG receive -q -f $tmp.parent_stream $SCRATCH_MNT
+> +$BTRFS_UTIL_PROG subvolume snapshot $SCRATCH_MNT/parent $SCRATCH_MNT/des=
+t \
+> +       >> $seqres.full
+> +$XFS_IO_PROG -f -c "reflink $SCRATCH_MNT/parent/source 4k 0 128K" \
+
+This will fail on a 64K sector size, so always use offsets and lengths
+that are multiples of 64K, so that the test can run on all possible
+sector sizes.
+
+> +       $SCRATCH_MNT/dest/new > /dev/null
+> +$BTRFS_UTIL_PROG prop set $SCRATCH_MNT/dest ro true
+> +$BTRFS_UTIL_PROG send -q $SCRATCH_MNT/dest -p $SCRATCH_MNT/parent \
+> +       -f $tmp.clone_stream
+
+Man, this is so much more complicated than necessary.
+Switching from RW to RO, having to create and mount another filesystem
+to create the incremental stream, etc.
+
+Why didn't you follow the simple steps that most of the other tests follow?
+
+Example:
+
+1) mkfs
+2) mount with -o datacow or -o datasum
+3) create file $SCRATCH_MNT/foo with some data
+4) create a RO snapshot of the default subvolume as  $SCRATCH_MNT/snap1
+5) clone  $SCRATCH_MNT/foo  into  $SCRATCH_MNT/bar for example
+6) create another RO snapshot of the default subvolume as  $SCRATCH_MNT/sna=
+p2
+7) do a full send of $SCRATCH_MNT/snap1 and save the stream into a file
+8) do an incremental send of $SCRATCH_MNT/snap2 using
+$SCRATCH_MNT/snap1 as the parent and save the stream into another file
+
+See, no need to mkfs and mount between creating the streams, and
+neither the need to switch subvolumes or snapshots from RW to RO.
 
 
-On 2021/9/29 10:23, Brandon Heisner wrote:
-> I have a server running CentOS 7 on 4.9.5-1.el7.elrepo.x86_64 #1 SMP Fri=
- Jan 20 11:34:13 EST 2017 x86_64 x86_64 x86_64 GNU/Linux.  It is version l=
-ocked to that kernel.  The metadata has reserved a full 1T of disk space, =
-while only using ~38G.  I've tried to balance the metadata to reclaim that=
- so it can be used for data, but it doesn't work and gives no errors.  It =
-just says it balanced the chunks but the size doesn't change.  The metadat=
-a total is still growing as well, as it used to be 1.04 and now it is 1.08=
- with only about 10G more of metadata used.  I've tried doing balances up =
-to 70 or 80 musage I think, and the total metadata does not decrease.  I'v=
-e done so many attempts at balancing, I've probably tried to move 300 chun=
-ks or more.  None have resulted in any change to the metadata total like t=
-hey do on other servers running btrfs.  I first started with very low musa=
-ge, like 10 and then increased it by 10 to try to see if that would balanc=
-e any chunks out, but with no success.
->
-> # /sbin/btrfs balance start -musage=3D60 -mlimit=3D30 /opt/zimbra
-> Done, had to relocate 30 out of 2127 chunks
+> +
+> +_scratch_unmount
+> +_scratch_mkfs >> $seqres.full 2>&1
+> +_scratch_mount -o datasum
+> +
+> +# Now try to receive both streams
+> +$BTRFS_UTIL_PROG receive -q -f $tmp.parent_stream $SCRATCH_MNT/
+> +
+> +# Remount to NODATASUM, so that the 2nd stream will get all its inodes t=
+o have
+> +# NODATASUM flags due to mount option
+> +_scratch_remount nodatasum
+> +
+> +# Patched receive may warn about the clone failure, so here we redirect =
+all
+> +# output
+> +$BTRFS_UTIL_PROG receive -q -f $tmp.clone_stream $SCRATCH_MNT/ \
+> +       >> $seqres.full 2>&1
+> +
+> +# We check the destination file's csum to verify if the clone is done pr=
+operly
+> +_md5_checksum $SCRATCH_MNT/dest/new
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/248.out b/tests/btrfs/248.out
+> new file mode 100644
+> index 00000000..b49cfad7
+> --- /dev/null
+> +++ b/tests/btrfs/248.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 248
+> +d48858312a922db7eb86377f638dbc9f
 
-One question is, did -musage=3D0 resulted any change?
+This is neither very friendly to debug nor easy to validate.
 
-If there are empty metadata block groups, btrfs should be able to
-reclaim without any extra commands.
+I suggest either:
 
-And is there any dmesg during above -musage=3D0 output?
+1) Print the checksum on the original filesystem too, so that we can compar=
+e:
 
-Thanks,
-Qu
+echo "checksum in the source fs: $(_md5_checksum $SCRATCH_MNT/...)"
+(...)
+# Should match the checksum in the source fs.
+echo "checksum in the destination fs: $(_md5_checksum $SCRATCH_MNT/...)"
 
+2) Or just dump the file with 'od -A d -t x1' or hexdump.
+
+As for having the test in fstests or btrfs-progs, I won't mind either optio=
+n.
+
+As Dave Chinner once mentioned in some threads in a distant past,
+fstests is not exclusive for testing kernel only changes - it's a
+testing framework for filesystems, which includes kernel and tools.
+I would prefer if we could have all tests inside the same test suite,
+but we already have things spread between fstests and btrfs-progs, and
+just noticed that btrfs-progs has now at least 1 test case to cover a
+kernel-only fix (misc-tests/041-subvolume-delete-during-send/test.sh).
+
+Thanks.
+
+> --
+> 2.33.0
 >
-> I can do that command over and over again, or increase the mlimit, and i=
-t doesn't change the metadata total ever.
->
->
-> # btrfs fi show /opt/zimbra/
-> Label: 'Data'  uuid: ece150db-5817-4704-9e84-80f7d8a3b1da
->          Total devices 4 FS bytes used 1.48TiB
->          devid    1 size 1.46TiB used 1.38TiB path /dev/sde
->          devid    2 size 1.46TiB used 1.38TiB path /dev/sdf
->          devid    3 size 1.46TiB used 1.38TiB path /dev/sdg
->          devid    4 size 1.46TiB used 1.38TiB path /dev/sdh
->
-> # btrfs fi df /opt/zimbra/
-> Data, RAID10: total=3D1.69TiB, used=3D1.45TiB
-> System, RAID10: total=3D64.00MiB, used=3D640.00KiB
-> Metadata, RAID10: total=3D1.08TiB, used=3D37.69GiB
-> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
->
->
-> # btrfs fi us /opt/zimbra/ -T
-> Overall:
->      Device size:                   5.82TiB
->      Device allocated:              5.54TiB
->      Device unallocated:          291.54GiB
->      Device missing:                  0.00B
->      Used:                          2.96TiB
->      Free (estimated):            396.36GiB      (min: 396.36GiB)
->      Data ratio:                       2.00
->      Metadata ratio:                   2.00
->      Global reserve:              512.00MiB      (used: 0.00B)
->
->              Data      Metadata  System
-> Id Path     RAID10    RAID10    RAID10    Unallocated
-> -- -------- --------- --------- --------- -----------
->   1 /dev/sde 432.75GiB 276.00GiB  16.00MiB   781.65GiB
->   2 /dev/sdf 432.75GiB 276.00GiB  16.00MiB   781.65GiB
->   3 /dev/sdg 432.75GiB 276.00GiB  16.00MiB   781.65GiB
->   4 /dev/sdh 432.75GiB 276.00GiB  16.00MiB   781.65GiB
-> -- -------- --------- --------- --------- -----------
->     Total      1.69TiB   1.08TiB  64.00MiB     3.05TiB
->     Used       1.45TiB  37.69GiB 640.00KiB
->
->
->
->
->
->
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
