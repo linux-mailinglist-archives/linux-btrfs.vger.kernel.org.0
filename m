@@ -2,145 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E64241C883
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 17:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDD141C8A8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 17:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345191AbhI2PfT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Sep 2021 11:35:19 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47616 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345157AbhI2PfT (ORCPT
+        id S1345384AbhI2Pq7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Sep 2021 11:46:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24536 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245486AbhI2Pqu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:35:19 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 68BB02252C;
-        Wed, 29 Sep 2021 15:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1632929617; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        Wed, 29 Sep 2021 11:46:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1632930309;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=caa5C5/7AyKB3AU176T45LY1eRdTzY8OPpQlmgqmJyM=;
-        b=gBOMQbrirRWCJA2zOVgGGeLJoRPhlP2lyYHuXVUdB5kLWSQwZeUT7iI41aQXtk5RHgGPnE
-        UhFMt0U0ZBvtP/6xQHcVnCSIhMTTrEXk5DJYYfMg+dslSVApv0VXlnU3UIBY4j/a15FRHt
-        ffLSg54hS8+rxKzjMJXHGt329btiv2k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        bh=YD/JzDwhuk7rGKkEzFS8gH/oiqrA2eu324rL5fdp0h4=;
+        b=Yh9vnUQxH/0E1nkVbyKZ4H6UNtYPpeTrAeh/tqxbriKls5EuB/m7Oi7cX484RyfFH/D2Mm
+        bzcQnGRCOwnVDoq9OxXzAz881yff+JKuDogEf7P6JQ7zTLrYHF5ygnZTC4K8ovoAe/x6g4
+        5Bs+4ljkBizxWYY+0YsJbdUgYf7Dm6M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-RydRWjxQMwK58uTqWu6Ekw-1; Wed, 29 Sep 2021 11:45:08 -0400
+X-MC-Unique: RydRWjxQMwK58uTqWu6Ekw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 39D2114055;
-        Wed, 29 Sep 2021 15:33:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id O5amC1GHVGHDGQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Wed, 29 Sep 2021 15:33:37 +0000
-Subject: Re: [PATCH] btrfs: index free space entries on size
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <449df997c354fb9d074bf5f7d32bffc082386c4f.1632750544.git.josef@toxicpanda.com>
- <ca935b82-0d4b-8bef-e1c2-4b541dcbf3d4@suse.com>
- <a3d86848-ffad-4037-8cb9-33023f3bc15d@toxicpanda.com>
- <8778ed3a-5f59-418b-94e6-7e37b73c04a5@suse.com>
- <b5799bb1-48c0-963e-569d-10a815f07062@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <2624598f-0fc4-7648-086e-5f582ec07dbb@suse.com>
-Date:   Wed, 29 Sep 2021 18:33:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00CAB1006AA3;
+        Wed, 29 Sep 2021 15:45:06 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 51DD86A900;
+        Wed, 29 Sep 2021 15:45:03 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210927200708.GI9286@twin.jikos.cz>
+References: <20210927200708.GI9286@twin.jikos.cz> <163250387273.2330363.13240781819520072222.stgit@warthog.procyon.org.uk>
+To:     dsterba@suse.cz
+Cc:     dhowells@redhat.com
+Cc:     willy@infradead.org, Chris Mason <clm@fb.com>,
+        linux-block@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Ilya Dryomov <idryomov@gmail.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH v3 0/9] mm: Use DIO for swap and fix NFS swapfiles
 MIME-Version: 1.0
-In-Reply-To: <b5799bb1-48c0-963e-569d-10a815f07062@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4005661.1632930302.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 29 Sep 2021 16:45:02 +0100
+Message-ID: <4005662.1632930302@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+David Sterba <dsterba@suse.cz> wrote:
 
+> > There are additional patches to get rid of noop_direct_IO and replace =
+it
+> > with a feature bitmask, to make btrfs, ext4, xfs and raw blockdevs use=
+ the
+> > new ->swap_rw method and thence remove the direct BIO submission paths=
+ from
+> > swap.
+> > =
 
-On 29.09.21 г. 18:22, Josef Bacik wrote:
-> On 9/29/21 11:16 AM, Nikolay Borisov wrote:
->>
->>
->> On 29.09.21 г. 18:12, Josef Bacik wrote:
->>> On 9/29/21 7:43 AM, Nikolay Borisov wrote:
->>>>
->>>>
->>>> On 27.09.21 г. 16:56, Josef Bacik wrote:
->>>>
->>>> <snip>
->>>>
->>>>> ---
->>>>>    fs/btrfs/free-space-cache.c | 79
->>>>> +++++++++++++++++++++++++++++++------
->>>>>    fs/btrfs/free-space-cache.h |  2 +
->>>>>    2 files changed, 69 insertions(+), 12 deletions(-)
->>>>>
->>>>> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
->>>>> index 0d26819b1cf6..d6eaf51ee597 100644
->>>>> --- a/fs/btrfs/free-space-cache.c
->>>>> +++ b/fs/btrfs/free-space-cache.c
->>>>> @@ -1576,6 +1576,38 @@ static int tree_insert_offset(struct rb_root
->>>>> *root, u64 offset,
->>>>>        return 0;
->>>>>    }
->>>>>    +static u64 free_space_info_bytes(struct btrfs_free_space *info)
->>>>> +{
->>>>> +    if (info->bitmap && info->max_extent_size)
->>>>> +        return info->max_extent_size;
->>>>> +    return info->bytes;
->>>>> +}
->>
->>>>> +
->> <snip>
->>
->>>> 1. First you get the largest free space (in case we are using
->>>> use_bytes_index). So say we want 5k and the largest index is 5m we are
->>>> going to return 5m by doing rb_first_cached.
->>>>
->>>> 2. The for() loop then likely terminates on the first iteration because
->>>> the largest extent is already too large. However I think this function
->>>> should be refactored, because the "indexed by size" case really
->>>> works in
->>>> O(1) complexity. You take the largest available space via
->>>> rb_first_cached, then perform all the alignments checks in the body of
->>>> the loop and return the chunk if it satisfies them or execute the newly
->>>> added break.
->>>>
->>>> This insight is really lost within the surrounding code, majority of
->>>> which exists for the "indexed by offset" case.
->>>>
->>>
->>> Actually the bulk of this loop deals with alignment and bitmap entry
->>> handling. In the normal case we are very likely to just get an extent
->>> that's more than large enough and we can carry on, however if the
->>> "largest" extent is a bitmap extent then we need to do the bitmap search
->>> lower down.  And then there are also the alignment checks.  We may need
->>> to walk a few entries in the space indexed tree before we get one that
->>> actually works, even if it's rare.
->>>
->>> But I agree it's slightly subtle, I'll add a comment here and one for
->>> the insert function to indicate how the tree works.  Thanks,
->>
->> Can't the body of the loop be factored out in a separate function that's
->> called in the loop and also able to be called from outside the loop -
->> for the fast case when we get the largest extent?
->>
-> 
-> Sure, but we still *might* have to loop through the bytes index, so it
-> would be something like
-> 
-> if (use_bytes_index) {
->     if (special_helper_succeeds(ctl, entry, align, offset, bytes))
->         return entry;
-> }
-> 
-> for (; node; node = rb_next(node));
+> > I kept the IOCB_SWAP flag, using it to enable REQ_SWAP.  I'm not sure =
+if
+> > that's necessary, but it seems accounting related.
+>
+> There was probably some step missing. The file must not have holes, so
+> either do 'dd' to the right size or use fallocate (which is recommended
+> in manual page btrfs(5) SWAPFILE SUPPORT). There are some fstests
+> exercising swapfile (grep -l _format_swapfile tests/generic/*) so you
+> could try that without having to set up the swapfile manually.
 
-That's what I had in mind, this is much more explicit w.r.t to
-use_byte_index's code path which should be the fast path.
+Yeah.  As advised elsewhere, I removed the file and recreated it, doing th=
+e
+chattr before extending the file.  At that point swapon worked.  It didn't
+work though, and various userspace programs started dying.  I'm guessing m=
+y
+btrfs_swap_rw() is wrong somehow.
 
-<snip>
+David
+
