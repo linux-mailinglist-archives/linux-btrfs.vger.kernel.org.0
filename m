@@ -2,73 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAA141CC2F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 20:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7153741CD14
+	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 22:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344969AbhI2S5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Sep 2021 14:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346355AbhI2S5n (ORCPT
+        id S1346138AbhI2UED (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Sep 2021 16:04:03 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:57382 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345826AbhI2UEC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:57:43 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C61C06161C
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Sep 2021 11:56:01 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id a11so3969812ilk.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 29 Sep 2021 11:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1pEmqTf7EKmapl9eN4fcWggm3q5JruPJsBXpfcX1WPU=;
-        b=ZMPvq/wYXINeMGNJrXXJnTpMHj+jRx4hWaeql/oQZY/zwwEdJ+D5YIBBr4xBuIvFsW
-         8GP3qtf1O/2xqqaz7rmfSkMd7SpMHAER8+OAPaJoWfGRoJ3GfJJijnvTItMbxmJ6mkte
-         Tey6cVCpL5R/dk/fnmH5z9GgSifo8yzGAP+rMw/bpTQlnsR+EBqXEbBBMb/uxm+cAM8U
-         4cn3OCCEU+eQN78aYB9ck6hsNjUus5DbSuMpiaTOYcZKzMVf8mXe2KOa6ftA1wQxQSXb
-         LFoMQtWgJVNfGYodBwaPzY+hBjOMtymc7OZGnu5eDveOLpRX/VsysQw350NkRVoJXCJi
-         6qBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1pEmqTf7EKmapl9eN4fcWggm3q5JruPJsBXpfcX1WPU=;
-        b=Qdd8OBQHX7XM6RIb7OdkKagI20Pg7Jk6Xch/8LC02OnoAJk3MSb4GcdlVDkKq/0aN+
-         Z0Od95n0kUt0xH7rKv94I+sKnWCsOxV67rQmXPXlVJqTh5ggKQrYX3fov1OCSicvq4X/
-         SfxxvZFYAyMYL2G7sZxK+K86ZDSIMCeAPgXlknuzVNxCas6fI3CqhObnKka4KV2JOegv
-         wEMTpkTcEKhULwAm2X/dwT8lxYAhC+A9mqKkJiwCo1guFozgv65qkOEU4YAfh0V9IPWX
-         gidGC8HCz2cJRN9uoCIp8ZRiU7z3m9T6hZEYtPG/I5gm9j4EKKbdfQdEKghYtAomoxwy
-         lBvw==
-X-Gm-Message-State: AOAM5331CgyxlXkpnMUklYf9CWzuvwJ0lhnrX9K7CUMu4Z6uKA6a5+AV
-        fm8wG1jiSJMghEqQ7bZZja0zrJCAsoh/hN6AWvD0xE8Megl/kg==
-X-Google-Smtp-Source: ABdhPJyFnPDWmXxHWRzY/u3U7+z/Vl6u7/SIz+58HKs/Q2MWPss4L53ObpPwSMtomwmQ8Duoz0wh1zzF1KzhAGEIbOU=
-X-Received: by 2002:a05:6e02:12e6:: with SMTP id l6mr917587iln.293.1632941761015;
- Wed, 29 Sep 2021 11:56:01 -0700 (PDT)
+        Wed, 29 Sep 2021 16:04:02 -0400
+Received: from spock.localnet (unknown [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id F3EB4C12FBA;
+        Wed, 29 Sep 2021 22:02:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1632945733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Uhwnfm7FGdJ2X1fzJ7L3xdSLvxeTNMz3KuUDMpv1jQU=;
+        b=E/ny+w0/vb+GGx8ZVCrQ5o9IX/Zq0JeUBcwE4Dd9ttFJ3ZJf58rnl+TIQmqMAvY3yJCNgE
+        aVGKCUez5zUjTGq1tdRa21HDvalbO4CKi8+XDELHOwtqcU6NhQc2YAAfpG5itEGFQOX4+P
+        r+I7Xv+k4ZPCiQOGvbUSKrNjlHKTFLQ=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     "B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com" 
+        <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>,
+        Nick Terrell <terrelln@fb.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
+Date:   Wed, 29 Sep 2021 22:02:11 +0200
+Message-ID: <2877513.20NpC2ByLZ@natalenko.name>
+In-Reply-To: <4A374EA5-F4CC-4C41-A810-90D09CB7A5FB@fb.com>
+References: <e19ebd67-949d-e43c-4090-ab1ceadcdfab@gmail.com> <4A374EA5-F4CC-4C41-A810-90D09CB7A5FB@fb.com>
 MIME-Version: 1.0
-References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
- <CAK-xaQYo1vRi10ZY09q2=7oCTPy1s_i8-rZV_vyc0AMX1JOQLQ@mail.gmail.com> <7df424c.4dc05cb1.17c326d0fd3@tnonline.net>
-In-Reply-To: <7df424c.4dc05cb1.17c326d0fd3@tnonline.net>
-From:   Andrea Gelmini <andrea.gelmini@gmail.com>
-Date:   Wed, 29 Sep 2021 20:55:49 +0200
-Message-ID: <CAK-xaQazopi0eshOUgeMt-3mQifOzghUTPH28gBtPWf6XAacQA@mail.gmail.com>
-Subject: Re: btrfs metadata has reserved 1T of extra space and balances don't
- reclaim it
-To:     Forza <forza@tnonline.net>
-Cc:     brandonh@wolfram.com, Linux BTRFS <linux-btrfs@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Il giorno mer 29 set 2021 alle ore 18:39 Forza <forza@tnonline.net> ha scritto:
+Hello.
 
-> Maybe autodefrag mount option might be helpful?
-It was enabled since beginning.
+On st=C5=99eda 29. z=C3=A1=C5=99=C3=AD 2021 3:30:26 CEST Nick Terrell wrote:
+> Sorry for the lack of action, but this has not been abandoned. I=E2=80=99=
+ve just
+> been
+> preparing a rebased patch-set last week, so expect to see some action
+> soon. Since we=E2=80=99re not in a merge window, I=E2=80=99m unsure if it=
+ is best to send
+> out the updated patches now, or wait until the merge window is open, but
+> I=E2=80=99m about to pose that question to the LKML.
+>=20
+> This work has been on my back burner, because I=E2=80=99ve been busy with=
+ work on
+> Zstd and other projects, and have had a hard time justifying to myself
+> spending
+> too much time on this, since progress has been so slow.
 
-> Your problem sounds like partially filled extents and not metadata related. Typical scenarios where that happens is with some databases and vm images. A file could allocate much more space than actuall data due to this. Use 'compsize' to determine this.
+Mind Cc'ing me on your new submission again please? I'm still running your =
+old=20
+one with 5.14 and 5.15, and it works flawlessly for me.
 
-I confirm is one big file with random writes. I agree about extents.
-But I'm quite confident the same approach can fix the original question.
+Thanks.
 
-Ciao,
-Gelma
+=2D-=20
+Oleksandr Natalenko (post-factum)
+
+
