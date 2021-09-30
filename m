@@ -2,354 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D4B41D67F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Sep 2021 11:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBA841D6DE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Sep 2021 11:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349447AbhI3Jl1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Sep 2021 05:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349419AbhI3Jl1 (ORCPT
+        id S1349617AbhI3J5k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Sep 2021 05:57:40 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:39941 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238316AbhI3J5j (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:41:27 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA9EC06176A
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 02:39:44 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id 138so5124395qko.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 02:39:44 -0700 (PDT)
+        Thu, 30 Sep 2021 05:57:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1632995756; x=1664531756;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=vgMX431kESF1Xs4sXi3qYmn5Eo+1adcnLaQmbL6Fu9s=;
+  b=e05Yjva3prE+BwDoWxw+PvHBo2Uu98RWHxgHXZKiQ70LLGery//65Id9
+   DzxLWpugAXzCvuPTY4aJKkejzq1DAQvnoK84UEVFLC6plr0EBeKzC5Gy1
+   9ma3hkM1H6oGc0yFJoyPE4lwX1CzOwcJXHGkCQJ3iQBus68pL4VPJA6FA
+   oxsaSOwzkH/pd8tw0yLbEsGsl76wYSvQbgsgwZbOEa1WQVMUdW9pbCyq7
+   rdLbF0Lm9+hObnImcThMXuruBG30KDCYcDZLscU5JzhYqoriGfUitXUE6
+   4mlvLVAfgXeQQwMIP8F8o44lZxl9HW6MRMclfjBha24R6q/7woSNZ6zs+
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.85,335,1624291200"; 
+   d="scan'208";a="186202175"
+Received: from mail-dm6nam12lp2173.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.173])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Sep 2021 17:55:55 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kfDaeI4ZE0C4abNfdp49UhsZKELD62KrMWUI4Rzl5lQzF9rcoHqnnu0qXYz1ok+tcVZ7Lgpz0b7AhlMxfKuFxWS1xZyS77DMPchuHJIdab/FAGlfPBvRB6XzEjf3eN/7rX5u5VydBsLcdshRRevtsDViMAJq8InM6ePxktH0V4w32cEpmyMYhR31wCvvhEJO6qxKiD5Sy3r9xreokHqCrvMXuTHpGPsEwAMM08qMLGb4/YYHXplEehhF+ga9i9aN2E26t4BjO1BPb1PKIlC7AEo6MGgfhzNXDVjhKXqsN2UWcgAo/TJ5Q6eUNgaVtHlKhzZ7YjYpromyQpOSkcJSnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=7rzXZesHuaf89WWKG83/m43aoVbVbq77UQ1Nq4ap8JQ=;
+ b=SfXvlNgx5iXRQ7VB8JBap4NrWHcqOm3g5bWdvgNxFprnpKAGNuic+SpJhQtD2b08L6BfCJ8xwrjQswmIaid8KOufdfkrKBYy+QDle5gyw2dihGLpcuR0moREsZwwWj9xWbnZjs3Qqy2e7Fel5pHcflW+TI/rN2oOrebCNGfh707d7Y+WT1BSmbcIEtyYNMISmeM8UnMffKBNC6Xk5XNB+pemeixu+5L/9zS0kttNYTy3JgPmbylVodIXrHaluvhyhnVpGzWQbuk8CTSHsfwpekXSA5im12hsLqP3uh5+27De69tRd/9ulR8Ps9yWupBK8OBlgOPedlN+iJ8LjELufg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=QycBD8J0jgk6syCksj4K/fUIlo6K68y675QsQ1SwEi4=;
-        b=NFVc+qiDnC9N0LS0Mlr/hGIk4VoZmyOKxgWshq95z+cxDx9AtrdIxCKP52K8S8Fn/H
-         yJ7WE+eYkQf5tpitHOa0OMhBO+U/krb6ICN7vvDFwA1/ypH8XMfC//EAYaYpn8G3sWw7
-         d7nbco5NlbGmKcoPgFOvem9RvxfhM0BdONzM+ev89ThnPgTaOMnZD1xNJUVYmFfGfUZx
-         z4r77iv9o0mNZUMtjiifHP0YdkN+B2lym4X2V2/W4WgS0XDEnQ77gePNY0iKrZilCKQ6
-         0V3Js7zllMmUd/9JSyVv/cgCyJseYs1VxPZmgVHzjiAFgUi9u7/tEXeXqcTb19ufpm8G
-         Qxjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=QycBD8J0jgk6syCksj4K/fUIlo6K68y675QsQ1SwEi4=;
-        b=Lv+zaZWxDDFSKAbT3XGJUjdaUhtrkM/RmGPxScvpAt+5cvLl9h4LAuXVGFUkrsbF7N
-         Q+Yf/nNCcOesuFCJ6pi5ZODtBghUdyqxGEWk0g1HcPyAJi2Kwya0mId8Q/J9kK2RleOH
-         lLjkmSAnSCUc+fbxsFDS82im2/+NPq6sZzjPKOPrJsO/2mDvrCoG0GcfcasXqiSqXbsC
-         VwJk3+M6TdtRzj32UUH8MTM9SC5ZtgrUjzXDOb0VSpLyPIeUkC6dGGhvXPU0y5mo0W70
-         RCnGjL51E4nIOLcnfQ9No1gZCVgTrilGoNPf68lwMa+kLGR2T3GulEnE7ryLFVz3jLc7
-         PxlA==
-X-Gm-Message-State: AOAM531k8/fJDjIpl2s6kfo9zbLMxGCSvLX5YGz1GSPQqSZqLftwcx90
-        rbFWIiW0GB6VMLd4ZFr1WykWQzFpI9Zy0pnnrmkvOiRMM60=
-X-Google-Smtp-Source: ABdhPJz4J89QHS+z6Vcj3PGEE8bGJl5mQ2tGAmn7425q3gfdYKn6j9ZLbVjRZABByvRfkgrzcdIOXiEoXK+ITd3zx2g=
-X-Received: by 2002:a37:b647:: with SMTP id g68mr3854732qkf.39.1632994784038;
- Thu, 30 Sep 2021 02:39:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210930000042.10147-1-wqu@suse.com> <20210930000042.10147-2-wqu@suse.com>
-In-Reply-To: <20210930000042.10147-2-wqu@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 30 Sep 2021 10:39:07 +0100
-Message-ID: <CAL3q7H6Z5saHXDUN-BHgw32_-HjB4EZ4ts0Ta=mkLXAmsopggQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] btrfs-progs: receive: fallback to buffered copy if
- clone failed
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7rzXZesHuaf89WWKG83/m43aoVbVbq77UQ1Nq4ap8JQ=;
+ b=g/jSI3oT6raJTE3iyasHWDAQehoNJFJ2wqzq3fJRvMT6LklWsABqXT0gK1ZUsw1YQLeTftOMErkIaJ91+05JDZS50/V5yga6XowvK6qdLjSbfEEf0ZaL4+NaKj2EUSsJ+Di5g27Mt5ixISa00RcFiqSgTHFg4pEJRMYVy29mzI0=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7240.namprd04.prod.outlook.com (2603:10b6:510:17::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Thu, 30 Sep
+ 2021 09:55:55 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::5d0d:3d52:2041:885a]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::5d0d:3d52:2041:885a%4]) with mapi id 15.20.4566.015; Thu, 30 Sep 2021
+ 09:55:55 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Sven Oehme <oehmes@gmail.com>, Naohiro Aota <Naohiro.Aota@wdc.com>
+CC:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Host managed SMR drive issue
+Thread-Topic: Host managed SMR drive issue
+Thread-Index: AQHXsXGwJGr/oBwu5kOQfX1ME0hbsA==
+Date:   Thu, 30 Sep 2021 09:55:55 +0000
+Message-ID: <PH0PR04MB74162F06A2AD5D8379F2682C9BAA9@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <6db88069-e263-ae85-4f69-adb9ec69ee76@opensource.wdc.com>
+ <CALssuR2gAEoxhDK=z0ryx30GAWiXcZ70pbUEq5mAxd-5pmsyRw@mail.gmail.com>
+ <CALssuR2K8Dtr+bGSYVOQXcWomMx0VnLwUiB1ah44ngrJ5trnSw@mail.gmail.com>
+ <a9764186-90ab-6ff3-7953-07f39d69ea5f@opensource.wdc.com>
+ <CALssuR3A4Um8raXi1W7O74PbgbcNmummasfZrY=sPj5t6f+eWg@mail.gmail.com>
+ <b010054f-ba99-6cf9-8318-267e3b4cff90@opensource.wdc.com>
+ <CALssuR1sqLDkyf4iyFhJv108BePHSoMPD=r+pDfeb=mcPWNaVA@mail.gmail.com>
+ <7038f4b9-a321-ef7d-1762-c0c77d666d55@opensource.wdc.com>
+ <CALssuR1Fpz=wXsCY6N+6ApU-1_tBzjj_==+3s2NOws9fPReYDw@mail.gmail.com>
+ <CALssuR0D9r5_rXWsL1Qt4ouFdUQdrYY_VL2KMaNJ442bqHREsQ@mail.gmail.com>
+ <20210928071002.jzm7e6ndm2qh6x4o@naota-xeon>
+ <CALssuR3SQPev0f2GYo0s-w3pk-jP-GGPZiX2vx9597NQBW8gUQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5688aca7-3587-40f9-ee4d-08d983f87ef1
+x-ms-traffictypediagnostic: PH0PR04MB7240:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR04MB724021B65B1B46139F9204D19BAA9@PH0PR04MB7240.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jPc+/zOaFzyfTLnf3O3rgt9GaGikTC7q5Kq6zF41hq5IQCdxXBI63bP5t3ZeLBnwECFNjdUvI5d1nT5rvehRDRflMw641+m2tiBmdfHfzdUbPMNRhyiNNa8QMea2yL5nub0tqxHXDLSI8zTFdX/XFusSj0C6eaPsDot5yJpZhISAp9K5NFYnjAP2ume5oDHKhOUCZ3I4x6vI4euV409prt++9NhUa5q05Gvww5M7sFfeyhVGdZQwybatJ28cY1APeTcaPOYoBrm3m8fwSgwD6laTBY5TWdIXK5FnCl0JmVGUmghEORNE4nuQ56OzhgUki69CbIrhYyP87gO7fBii17qREc8m9OAwf1q0Yl1287juHXzl5QABWBWvajHToYrQGZ6W/kLhq6l9U4w1Bp097eB2tXCzPa0P85XmbtVOY4PxcbULJVIgU/yrcQCVP+7vybyJ5hXuOi0ns8fcxEPlwR4MqCsPOup+HTH5bBSeD33xEHDtWmFQKU9qrO98k1Lf8lPzRwqyyWDcT9XaRt+cJuLPsC0zZHjeO9VAez6dhg/OGOltlaw+l9NH5i/DndMuPbBcWulLL75fhNAldb3391dAUXboB7LhR6imy8+rlr4bnDjnss3178SVcY+Rj6zAapn94ZrSfKmP4+BvDVvDSz6rK4k8NEFR+2ThIzbZ6flkxcvonolDZjTDSdWNsZGnhVbVtAj+CxHJNIBt+L07Ow==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(55016002)(9686003)(110136005)(122000001)(71200400001)(38100700002)(2906002)(8676002)(83380400001)(8936002)(7696005)(54906003)(316002)(53546011)(6506007)(186003)(86362001)(508600001)(33656002)(4326008)(5660300002)(6636002)(38070700005)(66446008)(76116006)(91956017)(64756008)(66556008)(66476007)(66946007)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?XxkOkigLGz0vR+J/61G06nuLpWj69nQcAsB95qWi9UnIXcxw4WDcrVHcj4MA?=
+ =?us-ascii?Q?Fc5Ne/QfOfrA9qb3HQB9H7uRUbY251BfD8Os6iLNb07/ZukgeEujtp9Mpkm5?=
+ =?us-ascii?Q?SPNvtCf9oN0oa8tWoWvvh9mhPV+ziN61V/1CtVwEh1/Cg9dO+dJhIwViQy9W?=
+ =?us-ascii?Q?jKTV6twP40tzP7C7zdQzGlxnmvMWsazxeKdGauyeDi7SxrGohUYdlxlHWxu0?=
+ =?us-ascii?Q?jbThlHSzxBw+RJvfhgTa9ePKxz5GbyifS1QaIdd+XbMxW4DK+I303DTxsL0L?=
+ =?us-ascii?Q?V3jG9wBZJFRwH+ZTmtI6URXSnQMz7iFSU/FAxVhC5E76XGekWx5/3D2mROjv?=
+ =?us-ascii?Q?WAs2VV8D8eOnlcotbd+SFg3KLLmbeVoX7pi5Vm1maHxArOlcPRZP5Wnj9IL8?=
+ =?us-ascii?Q?1VAwpa+avvLXs5rRbOQKO+KC8BibYDzotDgaa2/WTRgz0SuDxnbRMet9/hXH?=
+ =?us-ascii?Q?PJap23CsEUKMq4/B456Ve89RP6NJxu2ZQi/D72mHXzsIDKMSY5pGgs1Fs3EE?=
+ =?us-ascii?Q?iEHhUYblbAUo4ViHYmSPwfcAArycnBx5PcNbTgdEepXNBii7FXcTKeL+12Hp?=
+ =?us-ascii?Q?bjebcxfwNkfpsrRYixSyz1y5jVRUoM1smFXmvUhHvpu/BeQI2v6A3UWQKC+t?=
+ =?us-ascii?Q?87v92cOGFHidk9bCumatdHf64cptWHdGQZ0hc7vgKWzHVlyGtQyfd8JucRoa?=
+ =?us-ascii?Q?znVNDoDuuOGc06adSHPoE3XWH53SZ3yFnOTA4qNJjwfTbXWCSFsm00wY2bqZ?=
+ =?us-ascii?Q?oP4Z43Ua6fzLaB4VJmM5ZlI8sODiwEeYWH3vc00kuJ5gBet9bDD49R9M2ARH?=
+ =?us-ascii?Q?si1NiFue3L2B/w8dj8O1Y5SXuSGLF1Gu401XugI0BVjcNpl2hfcJvMGuKoBV?=
+ =?us-ascii?Q?ureQFK9C041QHTmLUwU8k3VmdSkjIUVhqdG7ZialMd9DBeb0w2zFa+xppWcu?=
+ =?us-ascii?Q?U0syGM6ICYgSUHxElTMEWsEDmJFJUoF47US7Q28YHG3Ttj1IIAMMy+kWNQSq?=
+ =?us-ascii?Q?EPIgNpN8Os6wVc3GLOx+MuLhobdEI9frxH/udlVTG08bU4LeDRkeINQL9PAw?=
+ =?us-ascii?Q?6DzRwf82J9hlgMOqJGZsrSZB3ik05F+Of/8BukxA9ps5CkRq6UtBNOdJkLxD?=
+ =?us-ascii?Q?mgdZnV7DD6Nc7J9hFT+Rue0OdM0VRY6rMy6XE1iPM3EM2FF3z88AJEfXsNTU?=
+ =?us-ascii?Q?9CMmkOP/QGA/so0FTju7NaG9lJZcBvm+Ob/VeAnT2Lvk+Nq9y+FhW08GapuB?=
+ =?us-ascii?Q?gd9l+HsA0bBZFhUbIT37+a1G8F4IJI+tBhpZ6i0FM5KXSTklBSMSxG8kDMKq?=
+ =?us-ascii?Q?RtSWyftz8WuyTGAWtXYnkL6Eg03EO6NaCkS4vauAQWxQt4vUOXPpmA/Hwc+m?=
+ =?us-ascii?Q?JBIxwYhNjqOOsrExxTKlR+iJn8/IP7LTJ9gaulFFv52JcEFuRw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5688aca7-3587-40f9-ee4d-08d983f87ef1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2021 09:55:55.3054
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: I+/JeOjjQktsGEOL0bFlzMoMVV3CCBgu9OF7aS5HzFWot7Uoap+nnSo9IbrZznDq5j8wTkZ/tSOAPK1ZUY/AJNML+hG8XLMFaT9zbmjRK0k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7240
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 1:06 AM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG]
-> There are two every basic send streams:
-
-every -> very
-
-> (a/m/ctime and uuid omitted)
->
->   Stream 1: (Parent subvolume)
->   subvol   ./parent_subv           transid=3D8
->   chown    ./parent_subv/          gid=3D0 uid=3D0
->   chmod    ./parent_subv/          mode=3D755
->   utimes   ./parent_subv/
->   mkfile   ./parent_subv/o257-7-0
->   rename   ./parent_subv/o257-7-0  dest=3D./parent_subv/source
->   utimes   ./parent_subv/
->   write    ./parent_subv/source    offset=3D0 len=3D16384
->   chown    ./parent_subv/source    gid=3D0 uid=3D0
->   chmod    ./parent_subv/source    mode=3D600
->   utimes   ./parent_subv/source
->
->   Stream 2: (snapshot and clone)
->   snapshot ./dest_subv             transid=3D14 parent_transid=3D10
->   utimes   ./dest_subv/
->   mkfile   ./dest_subv/o258-14-0
->   rename   ./dest_subv/o258-14-0   dest=3D./dest_subv/reflink
->   utimes   ./dest_subv/
->   clone    ./dest_subv/reflink     offset=3D0 len=3D16384 from=3D./dest_s=
-ubv/source clone_offset=3D0
->   chown    ./dest_subv/reflink     gid=3D0 uid=3D0
->   chmod    ./dest_subv/reflink     mode=3D600
->   utimes   ./dest_subv/reflink
->
-> But if we receive the first stream with default mount, then remount to
-> nodatasum, and try to receive the second stream, it will fail:
->
->  # mount /mnt/btrfs
->  # btrfs receive -f ~/parent_stream /mnt/btrfs/
->  At subvol parent_subv
->  # mount -o remount,nodatasum /mnt/btrfs
->  # btrfs receive -f ~/clone_stream /mnt/btrfs/
->  At snapshot dest_subv
->  ERROR: failed to clone extents to reflink: Invalid argument
->  # echo $?
->  1
->
-> [CAUSE]
-> Btrfs doesn't allow clone source and destination has different NODATASUM
-
-... and destination files have different ...
-
-> flags.
-> This is to prevent a data extent to be owned by both NODATASUM inode and
-> regular DATASUM inode.
->
-> For above receive operations, the clone destination is inheriting the
-> NODATASUM flag from mount option, while the clone source has no
-> NODATASUM flag, thus preventing us from doing the clone.
->
-> [FIX]
-> Btrfs send/receive doesn't require the underlying inode has the same
-> flags (thus we can send from compressed extent and receive on a
-> non-compressed filesystem).
->
-> So here we add a new command line option, '--clone-fallback', to allow
-> btrfs-receive to fall back to buffered write to copy data from the
-> source file.
->
-> Since such behavior can result much less clone operations, which may not
-> be what the end users really want, and can hide bugs in send stream.
-> Thus this behavior must be explicitly specified by the new option.
->
-> And we will output a warning message each time such fallback is
-> triggered if the user wants extra debug output.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  Documentation/btrfs-receive.asciidoc | 13 ++++++
->  cmds/receive.c                       | 60 ++++++++++++++++++++++++++--
->  2 files changed, 70 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/btrfs-receive.asciidoc b/Documentation/btrfs-r=
-eceive.asciidoc
-> index e4c4d2c0bf3d..3b88643abe5f 100644
-> --- a/Documentation/btrfs-receive.asciidoc
-> +++ b/Documentation/btrfs-receive.asciidoc
-> @@ -65,6 +65,19 @@ dump the stream metadata, one line per operation
->  +
->  Does not require the 'path' parameter. The filesystem remains unchanged.
->
-> +--clone-fallback::
-> +allow failed clone operation to fallback to buffer copy from source file=
-.
-
-operation -> operations
-
-buffer -> buffered
-
-For this type o documentation, I don't think it's relevant to mention
-it's doing buffered IO.
-
-Something like:
-
-when clone operations fail, attempt to directly copy the data instead
-
-> ++
-> +Clone operations have various requirement which can be affected by thing=
-s like
-> +mount options (source file has no NODATASUM flag while current fs is mou=
-nted
-> +with NODATASUM), sectorsizes (the stream is from 4K sectorsize fs while =
-the fs
-> +is in 64K page size).
-
-As this is documentation and not code, it should be "sector size", not
-sectorsize.
-It should also use "filesystem" instead of "fs", to be more clear for
-users and consistent with the rest of the man page.
-
-This also misses mentioning the nodatacow case.
-
-Maybe something like:
-
-"When the source and destination filesystems have a different sector
-size or when only one of them
-was mounted with either the 'nodatacow' or the 'nodatasum' mount
-option, clone operations can fail."
-
-It's not complete either, as nodatacow (and therefore nodatasum) might
-have been set through chattr and not through mount options, but I
-think many users will be able to infer that due to the previous
-mention of 'nodatacow'.
-
-> ++
-> +This option allows users to let receive to handle such failed clone with
-> +buffered copy from the source, at the cost of less clone operations and =
-even
-> +some unexposed send bugs. Thus this behavior must be explicitly specifie=
-d by
-> +the user.
-
-"and even some unexposed send bugs" - This is confusing and scary, if
-I were a user, most likely I would not use a tool mentioning something
-like that in its documentation, except for testing.
-
-We don't know if we currently have any bugs that result in the kernel
-issuing invalid clone operations, so that should not be mentioned as
-it makes no sense.
-
-
-Maybe something like:
-
-"This option makes the receive process attempt to manually copy data
-from the source to the destination file when a
-clone operation fails due to the cases mentioned before. When this
-happens, extents will end up not being shared between the files."
-
-> +
->  -q|--quiet::
->  (deprecated) alias for global '-q' option
->
-> diff --git a/cmds/receive.c b/cmds/receive.c
-> index 48c774cea587..60691b9b61ae 100644
-> --- a/cmds/receive.c
-> +++ b/cmds/receive.c
-> @@ -76,6 +76,8 @@ struct btrfs_receive
->         struct subvol_uuid_search sus;
->
->         int honor_end_cmd;
-> +
-> +       bool clone_fallback;
->  };
->
->  static int finish_subvol(struct btrfs_receive *rctx)
-> @@ -705,6 +707,44 @@ out:
->         return ret;
->  }
->
-> +static int buffered_copy(int src_fd, int dst_fd, u64 src_offset, u64 len=
-,
-> +                        u64 dest_offset)
-> +{
-> +       unsigned char buf[SZ_32K];
-> +       u64 copied =3D 0;
-> +       int ret =3D 0;
-> +
-> +       while (copied < len) {
-> +               u32 copy_len =3D min_t(u32, ARRAY_SIZE(buf), len - copied=
-);
-> +               u32 written =3D 0;
-> +               ssize_t read_size;
-> +
-> +               read_size =3D pread(src_fd, buf, copy_len, src_offset + c=
-opied);
-> +               if (read < 0) {
-> +                       ret =3D -errno;
-> +                       error("failed to read source file: %m");
-> +                       return ret;
-> +               }
-> +
-> +               /* Write the buffer to dest file */
-> +               while (written < read_size) {
-> +                       ssize_t write_size;
-> +
-> +                       write_size =3D pwrite(dst_fd, buf + written,
-> +                                       read_size - written,
-> +                                       dest_offset + copied + written);
-> +                       if (write_size < 0) {
-> +                               ret =3D -errno;
-> +                               error("failed to write source file: %m");
-> +                               return ret;
-> +                       }
-> +                       written +=3D write_size;
-> +               }
-> +               copied +=3D read_size;
-> +       }
-> +       return ret;
-> +}
-> +
->  static int process_clone(const char *path, u64 offset, u64 len,
->                          const u8 *clone_uuid, u64 clone_ctransid,
->                          const char *clone_path, u64 clone_offset,
-> @@ -788,8 +828,17 @@ static int process_clone(const char *path, u64 offse=
-t, u64 len,
->         ret =3D ioctl(rctx->write_fd, BTRFS_IOC_CLONE_RANGE, &clone_args)=
-;
->         if (ret < 0) {
->                 ret =3D -errno;
-> -               error("failed to clone extents to %s: %m", path);
-> -               goto out;
-> +               if (ret !=3D -EINVAL || !rctx->clone_fallback) {
-> +                       error("failed to clone extents to %s: %m", path);
-> +                       goto out;
-> +               }
-> +
-> +               if (bconf.verbose >=3D 2)
-> +                       warning(
-> +               "failed to clone extents to %s, fallback to buffered writ=
-e",
-> +                               path);
-> +               ret =3D buffered_copy(clone_fd, rctx->write_fd, clone_off=
-set,
-> +                                   len, offset);
->         }
->
->  out:
-> @@ -1238,11 +1287,13 @@ static int cmd_receive(const struct cmd_struct *c=
-md, int argc, char **argv)
->         optind =3D 0;
->         while (1) {
->                 int c;
-> -               enum { GETOPT_VAL_DUMP =3D 257 };
-> +               enum { GETOPT_VAL_DUMP =3D 257, GETOPT_VAL_CLONE_FALLBACK=
- };
->                 static const struct option long_opts[] =3D {
->                         { "max-errors", required_argument, NULL, 'E' },
->                         { "chroot", no_argument, NULL, 'C' },
->                         { "dump", no_argument, NULL, GETOPT_VAL_DUMP },
-> +                       { "clone-fallback", no_argument, NULL,
-> +                               GETOPT_VAL_CLONE_FALLBACK},
-
-The option is not listed and summarized at "cmd_receive_usage" (--help outp=
-ut).
-It should be.
-
-Code wise, it looks good, thanks.
-
->                         { "quiet", no_argument, NULL, 'q' },
->                         { NULL, 0, NULL, 0 }
->                 };
-> @@ -1286,6 +1337,9 @@ static int cmd_receive(const struct cmd_struct *cmd=
-, int argc, char **argv)
->                 case GETOPT_VAL_DUMP:
->                         dump =3D 1;
->                         break;
-> +               case GETOPT_VAL_CLONE_FALLBACK:
-> +                       rctx.clone_fallback =3D true;
-> +                       break;
->                 default:
->                         usage_unknown_option(cmd, argv);
->                 }
-> --
-> 2.33.0
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+On 28/09/2021 13:49, Sven Oehme wrote:=0A=
+> the host should have plenty of memory, it still hangs right now and=0A=
+> here is what free reports :=0A=
+> =0A=
+> root@01:~$ free -m=0A=
+>               total        used        free      shared  buff/cache   ava=
+ilable=0A=
+> Mem:         257790       12557       30211       76367      215021      =
+166105=0A=
+> Swap:         40959         452       40507=0A=
+=0A=
+OK Naohiro has managed to reproduce your problem and while we where=0A=
+dinning we found that a) the scheduler tags are exhausted, b) the SCSI=0A=
+Zone Append emulation has (two) invalid entries in it's write pointer=0A=
+offset cache and c) we have seen blocked instances of ata_id.=0A=
+=0A=
+Maybe (just maybe) ata_id is doing an ioctl on the drive which goes =0A=
+down the route:=0A=
+sd_open()=0A=
+`-> sd_revalidate_disk()=0A=
+    `-> sd_zbc_revalidate_disk()=0A=
+        `-> sd_zbc_revalidate_zones()=0A=
+            `-> blk_revalidate_disk_zones()=0A=
+                `-> sd_zbc_revalidate_zones_cb()=0A=
+=0A=
+and IO is ongoing or doing completions. Both are accessing=0A=
+struct scsi_disk::zones_wp_offset, but sd_zbc_revalidate_zones_cb()=0A=
+is doing so without holding the struct scsi_disk::zones_wp_offset_lock.=0A=
+=0A=
+This will then corrupt the zones_wp_offset array.=0A=
+=0A=
+Can you try if the following patch makes any difference for you?=0A=
+=0A=
+diff --git a/drivers/scsi/sd_zbc.c b/drivers/scsi/sd_zbc.c=0A=
+index ed06798983f8..e04f55dde70b 100644=0A=
+--- a/drivers/scsi/sd_zbc.c=0A=
++++ b/drivers/scsi/sd_zbc.c=0A=
+@@ -694,8 +694,11 @@ void sd_zbc_release_disk(struct scsi_disk *sdkp)=0A=
+ static void sd_zbc_revalidate_zones_cb(struct gendisk *disk)=0A=
+ {=0A=
+        struct scsi_disk *sdkp =3D scsi_disk(disk);=0A=
++       unsigned long flags;=0A=
+ =0A=
++       spin_lock_irqsave(&sdkp->zones_wp_offset_lock, flags);=0A=
+        swap(sdkp->zones_wp_offset, sdkp->rev_wp_offset);=0A=
++       spin_unlock_irqrestore(&sdkp->zones_wp_offset_lock, flags);=0A=
+ }=0A=
+ =0A=
+ int sd_zbc_revalidate_zones(struct scsi_disk *sdkp)=0A=
