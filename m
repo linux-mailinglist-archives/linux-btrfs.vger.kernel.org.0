@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A24C41D914
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Sep 2021 13:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801B941D915
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Sep 2021 13:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350608AbhI3Lu6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Sep 2021 07:50:58 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54754 "EHLO
+        id S1350611AbhI3Lu7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Sep 2021 07:50:59 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:54772 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350606AbhI3Lu6 (ORCPT
+        with ESMTP id S1350609AbhI3Lu7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Sep 2021 07:50:58 -0400
+        Thu, 30 Sep 2021 07:50:59 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1577420018
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 11:49:15 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1EAF420022
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 11:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633002555; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1633002556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8RS4Br1m7XPMpVOrnwiC3H0hwuvS9thyPfvBHm+fNOI=;
-        b=DdnuiDGc9RzZfai7WGYghRaFKe5xWYZZZHHGIZlgRcn2Wumx/ul2wRaAvXSwaSxe5mqeOk
-        ojARPRrYS6vgOFJRr3sb5WDoZBj0XEQ1o8NBJbDC5i11CGscmHt75xXpJ7JFo56W1KArbs
-        LJJEgLSOiSslYyeTNb0jEBQYKxN6iNM=
+        bh=aE3+IC2D4U4Qiz9u5G80PakKGMLVjnC587WrtROR4W0=;
+        b=Oxjzr51NyVqN0ftw3j47+ZIqdZpPU/1Dc9LNMvdeRH1uDCIdl7VzN9hRM1r0w5vjyhnTwJ
+        oz2aYRm8XuQKla2rsa9cG0Un1yE7Lt/BTVBflamFo4/R3Ygm+ixk+emoU0UwRGhpcyejI8
+        z1bKecNEOCeGiWfamya/jHrU36AluOc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 696C113B05
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 11:49:14 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 739E513B05
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 11:49:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8HzqDDqkVWELJQAAMHmgww
+        id YBQXEDukVWELJQAAMHmgww
         (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 11:49:14 +0000
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 11:49:15 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 1/2] btrfs-progs: receive: fallback to buffered copy if clone failed
-Date:   Thu, 30 Sep 2021 19:48:54 +0800
-Message-Id: <20210930114855.39225-2-wqu@suse.com>
+Subject: [PATCH v2 2/2] btrfs-progs: misc-tests: add test case for receive --clone-fallback
+Date:   Thu, 30 Sep 2021 19:48:55 +0800
+Message-Id: <20210930114855.39225-3-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210930114855.39225-1-wqu@suse.com>
 References: <20210930114855.39225-1-wqu@suse.com>
@@ -52,214 +52,114 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There are two very basic send streams:
-(a/m/ctime and uuid omitted)
+The new test case will create two send streams:
 
-  Stream 1: (Parent subvolume)
-  subvol   ./parent_subv           transid=8
-  chown    ./parent_subv/          gid=0 uid=0
-  chmod    ./parent_subv/          mode=755
-  utimes   ./parent_subv/
-  mkfile   ./parent_subv/o257-7-0
-  rename   ./parent_subv/o257-7-0  dest=./parent_subv/source
-  utimes   ./parent_subv/
-  write    ./parent_subv/source    offset=0 len=16384
-  chown    ./parent_subv/source    gid=0 uid=0
-  chmod    ./parent_subv/source    mode=600
-  utimes   ./parent_subv/source
+- parent_stream
+  A full send stream.
+  Contains one file, as clone source.
 
-  Stream 2: (snapshot and clone)
-  snapshot ./dest_subv             transid=14 parent_transid=10
-  utimes   ./dest_subv/
-  mkfile   ./dest_subv/o258-14-0
-  rename   ./dest_subv/o258-14-0   dest=./dest_subv/reflink
-  utimes   ./dest_subv/
-  clone    ./dest_subv/reflink     offset=0 len=16384 from=./dest_subv/source clone_offset=0
-  chown    ./dest_subv/reflink     gid=0 uid=0
-  chmod    ./dest_subv/reflink     mode=600
-  utimes   ./dest_subv/reflink
+- clone_stream
+  An incremental send stream.
+  Contains one clone operation.
 
-But if we receive the first stream with default mount, then remount to
-nodatasum, and try to receive the second stream, it will fail:
+Then we will receive the parent_stream with default mount options, while
+try to receive the clone_stream with nodatasum mount option.
 
- # mount /mnt/btrfs
- # btrfs receive -f ~/parent_stream /mnt/btrfs/
- At subvol parent_subv
- # mount -o remount,nodatasum /mnt/btrfs
- # btrfs receive -f ~/clone_stream /mnt/btrfs/
- At snapshot dest_subv
- ERROR: failed to clone extents to reflink: Invalid argument
- # echo $?
- 1
+This should result clone failure due to nodatasum flag mismatch.
 
-[CAUSE]
-Btrfs doesn't allow clone source and destination files have different
-NODATASUM flags.
-This is to prevent a data extent to be owned by both NODATASUM inode and
-regular DATASUM inode.
-
-For above receive operations, the clone destination is inheriting the
-NODATASUM flag from mount option, while the clone source has no
-NODATASUM flag, thus preventing us from doing the clone.
-
-[FIX]
-Btrfs send/receive doesn't require the underlying inode has the same
-flags (thus we can send from compressed extent and receive on a
-non-compressed filesystem).
-
-So here we add a new command line option, '--clone-fallback', to allow
-btrfs-receive to fall back to buffered write to copy data from the
-source file.
-
-Since such behavior can result much less clone operations, which may not
-be what the end users really want, and can hide bugs in send stream.
-Thus this behavior must be explicitly specified by the new option.
-
-And we will output a warning message each time such fallback is
-triggered if the user wants extra debug output.
+Then check if the receive can continue with --clone-fallback option.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- Documentation/btrfs-receive.asciidoc | 12 ++++++
- cmds/receive.c                       | 62 ++++++++++++++++++++++++++--
- 2 files changed, 71 insertions(+), 3 deletions(-)
+ tests/common                                  |  9 +++
+ .../049-receive-clone-fallback/test.sh        | 58 +++++++++++++++++++
+ 2 files changed, 67 insertions(+)
+ create mode 100755 tests/misc-tests/049-receive-clone-fallback/test.sh
 
-diff --git a/Documentation/btrfs-receive.asciidoc b/Documentation/btrfs-receive.asciidoc
-index e4c4d2c0bf3d..9c934a399a9c 100644
---- a/Documentation/btrfs-receive.asciidoc
-+++ b/Documentation/btrfs-receive.asciidoc
-@@ -65,6 +65,18 @@ dump the stream metadata, one line per operation
- +
- Does not require the 'path' parameter. The filesystem remains unchanged.
- 
-+--clone-fallback::
-+when clone opeartions fail, attempt to directly copy the data instead.
-++
-+When the source and destination filesystems have different sector sizes, or
-+when source and destination files have differnt 'nodatacow' and/or 'nodatasum'
-+flags (can be set per-file or through mount options), clone operations can fail.
-++
-+This option makes the receive process attempt to manually copy data from the
-+source to the destination file when a clone operation fails (caused by above
-+reasons). When this happens, extents will end up not being shared
-+between the files, thus will take up more space.
-+
- -q|--quiet::
- (deprecated) alias for global '-q' option
- 
-diff --git a/cmds/receive.c b/cmds/receive.c
-index 48c774cea587..31746d571016 100644
---- a/cmds/receive.c
-+++ b/cmds/receive.c
-@@ -76,6 +76,8 @@ struct btrfs_receive
- 	struct subvol_uuid_search sus;
- 
- 	int honor_end_cmd;
-+
-+	bool clone_fallback;
- };
- 
- static int finish_subvol(struct btrfs_receive *rctx)
-@@ -705,6 +707,44 @@ out:
- 	return ret;
+diff --git a/tests/common b/tests/common
+index 253071025db2..0423af4231a8 100644
+--- a/tests/common
++++ b/tests/common
+@@ -633,6 +633,15 @@ run_check_mount_test_dev()
+ 	run_check $SUDO_HELPER mount -t btrfs $loop_opt "$@" "$TEST_DEV" "$TEST_MNT"
  }
  
-+static int buffered_copy(int src_fd, int dst_fd, u64 src_offset, u64 len,
-+			 u64 dest_offset)
++run_check_remount_test_dev()
 +{
-+	unsigned char buf[SZ_32K];
-+	u64 copied = 0;
-+	int ret = 0;
++	setup_root_helper
 +
-+	while (copied < len) {
-+		u32 copy_len = min_t(u32, ARRAY_SIZE(buf), len - copied);
-+		u32 written = 0;
-+		ssize_t read_size;
++	local opts="$1"
 +
-+		read_size = pread(src_fd, buf, copy_len, src_offset + copied);
-+		if (read < 0) {
-+			ret = -errno;
-+			error("failed to read source file: %m");
-+			return ret;
-+		}
-+
-+		/* Write the buffer to dest file */
-+		while (written < read_size) {
-+			ssize_t write_size;
-+
-+			write_size = pwrite(dst_fd, buf + written,
-+					read_size - written,
-+					dest_offset + copied + written);
-+			if (write_size < 0) {
-+				ret = -errno;
-+				error("failed to write source file: %m");
-+				return ret;
-+			}
-+			written += write_size;
-+		}
-+		copied += read_size;
-+	}
-+	return ret;
++	run_check $SUDO_HELPER mount -o "remount,$opts" "$TEST_MNT"
 +}
 +
- static int process_clone(const char *path, u64 offset, u64 len,
- 			 const u8 *clone_uuid, u64 clone_ctransid,
- 			 const char *clone_path, u64 clone_offset,
-@@ -788,8 +828,17 @@ static int process_clone(const char *path, u64 offset, u64 len,
- 	ret = ioctl(rctx->write_fd, BTRFS_IOC_CLONE_RANGE, &clone_args);
- 	if (ret < 0) {
- 		ret = -errno;
--		error("failed to clone extents to %s: %m", path);
--		goto out;
-+		if (ret != -EINVAL || !rctx->clone_fallback) {
-+			error("failed to clone extents to %s: %m", path);
-+			goto out;
-+		}
+ # $1-$n: optional paths to unmount, otherwise fallback to TEST_DEV
+ run_check_umount_test_dev()
+ {
+diff --git a/tests/misc-tests/049-receive-clone-fallback/test.sh b/tests/misc-tests/049-receive-clone-fallback/test.sh
+new file mode 100755
+index 000000000000..18136a9e63ee
+--- /dev/null
++++ b/tests/misc-tests/049-receive-clone-fallback/test.sh
+@@ -0,0 +1,58 @@
++#!/bin/bash
++# Verify that btrfs receive can fallback to buffered copy when clone
++# failed
 +
-+		if (bconf.verbose >= 2)
-+			warning(
-+		"failed to clone extents to %s, fallback to buffered write",
-+				path);
-+		ret = buffered_copy(clone_fd, rctx->write_fd, clone_offset,
-+				    len, offset);
- 	}
- 
- out:
-@@ -1197,6 +1246,8 @@ static const char * const cmd_receive_usage[] = {
- 	"                 this file system is mounted.",
- 	"--dump           dump stream metadata, one line per operation,",
- 	"                 does not require the MOUNT parameter",
-+	"--clone-fallback when clone operations fail, attempt to directly copy"
-+	"                 the data instead"
- 	"-v               deprecated, alias for global -v option",
- 	HELPINFO_INSERT_GLOBALS,
- 	HELPINFO_INSERT_VERBOSE,
-@@ -1238,11 +1289,13 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
- 	optind = 0;
- 	while (1) {
- 		int c;
--		enum { GETOPT_VAL_DUMP = 257 };
-+		enum { GETOPT_VAL_DUMP = 257, GETOPT_VAL_CLONE_FALLBACK };
- 		static const struct option long_opts[] = {
- 			{ "max-errors", required_argument, NULL, 'E' },
- 			{ "chroot", no_argument, NULL, 'C' },
- 			{ "dump", no_argument, NULL, GETOPT_VAL_DUMP },
-+			{ "clone-fallback", no_argument, NULL,
-+				GETOPT_VAL_CLONE_FALLBACK},
- 			{ "quiet", no_argument, NULL, 'q' },
- 			{ NULL, 0, NULL, 0 }
- 		};
-@@ -1286,6 +1339,9 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
- 		case GETOPT_VAL_DUMP:
- 			dump = 1;
- 			break;
-+		case GETOPT_VAL_CLONE_FALLBACK:
-+			rctx.clone_fallback = true;
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
++source "$TEST_TOP/common"
++
++check_prereq mkfs.btrfs
++check_prereq btrfs
++setup_root_helper
++prepare_test_dev
++
++tmp=$(mktemp -d --tmpdir btrfs-progs-send-stream.XXXXXX)
++
++# Create two sends stream, one as the parent and the other as an incremental
++# stream with one clone operation.
++run_check_mkfs_test_dev
++run_check_mount_test_dev -o datacow,datasum
++run_check $SUDO_HELPER "$TOP/btrfs" subvolume create "$TEST_MNT/subv"
++run_check $SUDO_HELPER dd if=/dev/zero bs=1M count=1 of="$TEST_MNT/subv/file1" 
++run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r "$TEST_MNT/subv" \
++	"$TEST_MNT/snap1"
++run_check $SUDO_HELPER cp --reflink=always "$TEST_MNT/subv/file1" \
++	"$TEST_MNT/subv/file2"
++run_check $SUDO_HELPER "$TOP/btrfs" subvolume snapshot -r "$TEST_MNT/subv" \
++	"$TEST_MNT/snap2"
++
++run_check $SUDO_HELPER "$TOP/btrfs" send -f "$tmp/parent_stream" \
++	"$TEST_MNT/snap1"
++run_check $SUDO_HELPER "$TOP/btrfs" send -f "$tmp/clone_stream" \
++	-p "$TEST_MNT/snap1" "$TEST_MNT/snap2"
++
++run_check_umount_test_dev
++run_check_mkfs_test_dev
++
++# Receive the first stream with the same mount option
++run_check_mount_test_dev -o datacow -o datasum
++
++# Receiving the full stream should not fail
++run_check $SUDO_HELPER "$TOP/btrfs" receive -f "$tmp/parent_stream" "$TEST_MNT"
++
++# Remount the fs with nodatasum mount option, so that the new file received
++# through the incremental stream will end up with the nodatasum flag set.
++run_check_remount_test_dev nodatasum
++
++# Receiving incremental send stream without --clone-fallback should fail.
++# As the clone source and destination have different NODATASUM flags
++run_mustfail "receiving clone with different NODATASUM should fail" \
++	$SUDO_HELPER "$TOP/btrfs" receive -f "$tmp/clone_stream" "$TEST_MNT"
++
++# Firstly we need to cleanup the partially received subvolume
++run_check $SUDO_HELPER "$TOP/btrfs" subvolume delete "$TEST_MNT/snap2"
++
++# With --clone-fallback specified, the receive should finish without problem
++run_check $SUDO_HELPER "$TOP/btrfs" receive --clone-fallback \
++	-f "$tmp/clone_stream" "$TEST_MNT"
++run_check_umount_test_dev
++
++rm -rf -- "$tmp"
 -- 
 2.33.0
 
