@@ -2,75 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7153741CD14
-	for <lists+linux-btrfs@lfdr.de>; Wed, 29 Sep 2021 22:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A01741D05D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Sep 2021 02:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346138AbhI2UED (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 29 Sep 2021 16:04:03 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:57382 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345826AbhI2UEC (ORCPT
+        id S1347499AbhI3ACp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 29 Sep 2021 20:02:45 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55204 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346417AbhI3ACn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 29 Sep 2021 16:04:02 -0400
-Received: from spock.localnet (unknown [151.237.229.131])
+        Wed, 29 Sep 2021 20:02:43 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id F3EB4C12FBA;
-        Wed, 29 Sep 2021 22:02:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1632945733;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uhwnfm7FGdJ2X1fzJ7L3xdSLvxeTNMz3KuUDMpv1jQU=;
-        b=E/ny+w0/vb+GGx8ZVCrQ5o9IX/Zq0JeUBcwE4Dd9ttFJ3ZJf58rnl+TIQmqMAvY3yJCNgE
-        aVGKCUez5zUjTGq1tdRa21HDvalbO4CKi8+XDELHOwtqcU6NhQc2YAAfpG5itEGFQOX4+P
-        r+I7Xv+k4ZPCiQOGvbUSKrNjlHKTFLQ=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     "B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com" 
-        <B093B859-53CC-4818-8CC3-A317F4872AD6@fb.com>,
-        Nick Terrell <terrelln@fb.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL][PATCH v11 0/4] Update to zstd-1.4.10
-Date:   Wed, 29 Sep 2021 22:02:11 +0200
-Message-ID: <2877513.20NpC2ByLZ@natalenko.name>
-In-Reply-To: <4A374EA5-F4CC-4C41-A810-90D09CB7A5FB@fb.com>
-References: <e19ebd67-949d-e43c-4090-ab1ceadcdfab@gmail.com> <4A374EA5-F4CC-4C41-A810-90D09CB7A5FB@fb.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2BD69203A1
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 00:01:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1632960061; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=5KTNGDzKxJ6bmHWrBKKuvxXWvIc9vwqHBnu3b1unv1g=;
+        b=ZaY1jk3QRGzeK7kL/U4w08KiOLA/9xt8nFsujgpFFTb1gXVJFicg2Zkq4zqbL17caBB0SU
+        FIhJkPlno/MipXBAiBqIvGBZJk1g8rniDRvCDM7K/YdI9WG2uRFM0iHXnf32+4lToldmNn
+        xghAuXIve37DATJ8LVguu+mS6LTxlFU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B8E9140AF
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 00:01:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GIo0DDz+VGESaQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 00:01:00 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs-progs: receive: introduce new --clone-fallback option
+Date:   Thu, 30 Sep 2021 08:00:40 +0800
+Message-Id: <20210930000042.10147-1-wqu@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello.
+When parent stream and incremental stream are received with different
+nodatasum mount options, any clone opeartion in the incremental stream
+will be rejected by kernel.
 
-On st=C5=99eda 29. z=C3=A1=C5=99=C3=AD 2021 3:30:26 CEST Nick Terrell wrote:
-> Sorry for the lack of action, but this has not been abandoned. I=E2=80=99=
-ve just
-> been
-> preparing a rebased patch-set last week, so expect to see some action
-> soon. Since we=E2=80=99re not in a merge window, I=E2=80=99m unsure if it=
- is best to send
-> out the updated patches now, or wait until the merge window is open, but
-> I=E2=80=99m about to pose that question to the LKML.
->=20
-> This work has been on my back burner, because I=E2=80=99ve been busy with=
- work on
-> Zstd and other projects, and have had a hard time justifying to myself
-> spending
-> too much time on this, since progress has been so slow.
+There are more situations to cause clone failure, like receiving a stream
+on a fs with different sectorsize.
 
-Mind Cc'ing me on your new submission again please? I'm still running your =
-old=20
-one with 5.14 and 5.15, and it works flawlessly for me.
+Thus this patchset will introduce a new option, --clone-fallback, for
+btrfs receive to fall back to buffered write when clone failed.
 
-Thanks.
+This fall back behavior will only happen if the new option is explicitly
+specified, as such behavior can hide some send bugs, and under most sane
+cases users don't need such option.
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
+Also add a test case for the new option.
 
+Changelog:
+RFC->v1:
+- Introduce a new option for the fallback behavior
+  To avoid hide send bugs.
+
+- Hide the warning message behind -v option
+  Since we have a special option for it thus users are aware of what
+  they are doing, there is no need to output such warning by default.
+
+- Add a new test case for it
+
+Qu Wenruo (2):
+  btrfs-progs: receive: fallback to buffered copy if clone failed
+  btrfs-progs: misc-tests: add test case for receive --clone-fallback
+
+ Documentation/btrfs-receive.asciidoc          | 13 ++++
+ cmds/receive.c                                | 60 ++++++++++++++++++-
+ .../049-receive-clone-fallback/test.sh        | 60 +++++++++++++++++++
+ 3 files changed, 130 insertions(+), 3 deletions(-)
+ create mode 100755 tests/misc-tests/049-receive-clone-fallback/test.sh
+
+-- 
+2.33.0
 
