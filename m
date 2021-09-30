@@ -2,446 +2,349 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4EF41D603
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Sep 2021 11:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D4B41D67F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Sep 2021 11:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349239AbhI3JKU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Sep 2021 05:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
+        id S1349447AbhI3Jl1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Sep 2021 05:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349020AbhI3JKU (ORCPT
+        with ESMTP id S1349419AbhI3Jl1 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Sep 2021 05:10:20 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82FCC06176A
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 02:08:37 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id 72so5093678qkk.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 02:08:37 -0700 (PDT)
+        Thu, 30 Sep 2021 05:41:27 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA9EC06176A
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 02:39:44 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 138so5124395qko.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 02:39:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=DTny9//T78IJvJmqJBBWfkotpT6IKMADUZ9a+c5NWsg=;
-        b=aZFAc2TGU+wm1VcrIZTffZck6dgpKH339KF82ANwY+A8AmMGVheFWure5D+NoPic0t
-         zugGWMq1Nj4dgD6TG1gnTv9ZIS0et4Xsqy8D8kaEOnprgpU5eO5ndWgwzW+C0Jgx2mqH
-         svHwQY1rBDhTBCPl0QbCnkMwo999aIBDy6MWDFv6TDtydCIkQmgau8TFIdu2w8sS8/+7
-         5N0HfzdwWQixlhAZZn91nDcG3aPRTc5ebKUMnfuh1OJ35/F2AyDsHc50qdj2J34ctngf
-         jf4b5XTO4D5V83nCXNOUCdHv3zyiTJiV6b96xoeQplNX2UCAi+iC4nr49aU/jwDdlaJ/
-         BFdw==
+        bh=QycBD8J0jgk6syCksj4K/fUIlo6K68y675QsQ1SwEi4=;
+        b=NFVc+qiDnC9N0LS0Mlr/hGIk4VoZmyOKxgWshq95z+cxDx9AtrdIxCKP52K8S8Fn/H
+         yJ7WE+eYkQf5tpitHOa0OMhBO+U/krb6ICN7vvDFwA1/ypH8XMfC//EAYaYpn8G3sWw7
+         d7nbco5NlbGmKcoPgFOvem9RvxfhM0BdONzM+ev89ThnPgTaOMnZD1xNJUVYmFfGfUZx
+         z4r77iv9o0mNZUMtjiifHP0YdkN+B2lym4X2V2/W4WgS0XDEnQ77gePNY0iKrZilCKQ6
+         0V3Js7zllMmUd/9JSyVv/cgCyJseYs1VxPZmgVHzjiAFgUi9u7/tEXeXqcTb19ufpm8G
+         Qxjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=DTny9//T78IJvJmqJBBWfkotpT6IKMADUZ9a+c5NWsg=;
-        b=hu5fXA/NEFyLVsp3/zOm605EN28vW6NkQOZTEXK2BHD7c09QM0n14wqqdrz/SzAx1v
-         mx0aEUNRVTL3u4Q1O7kjBtHqbOKW8wSyhy4sY/ct+s7md/rTOay7olR6Z+1oVQkUoZAt
-         6LFGt4i7XnAcvkNKRH8u2Ks4FyBvYJw1hrSLLcDdjrAKwE+m0YQ1QJw/v79sMav4kx/5
-         5iG7QYg0+i9wjwzxxm3kXw6rVcon6I806C5XhfaEbekL8uPZOUUmBWqlVVySu22Df2Ip
-         T3wIdyhDHe9H+FV1bmvtMfZguAYbb+oOec2FAZJ9PjODJRKTNdFY7hfKlz3PrkraoRfX
-         Aejg==
-X-Gm-Message-State: AOAM533Ktio+TtcCXxrCgDt2VuwkMxjVDVj1HX8ZaCnILspMVopT53oV
-        L9soYB2zxvqJLBuGvZWuQEXNpGBUfx0wffoDvm8dBa30
-X-Google-Smtp-Source: ABdhPJx8r1E6Pwv6WFwPTJZ9yOp+u0eCjVqW3puAb+1X02ynxLUYch098NFpNhAsrEOEESNV7qGNf/IT4uvleG8ulOY=
-X-Received: by 2002:a37:651:: with SMTP id 78mr3756108qkg.516.1632992916752;
- Thu, 30 Sep 2021 02:08:36 -0700 (PDT)
+        bh=QycBD8J0jgk6syCksj4K/fUIlo6K68y675QsQ1SwEi4=;
+        b=Lv+zaZWxDDFSKAbT3XGJUjdaUhtrkM/RmGPxScvpAt+5cvLl9h4LAuXVGFUkrsbF7N
+         Q+Yf/nNCcOesuFCJ6pi5ZODtBghUdyqxGEWk0g1HcPyAJi2Kwya0mId8Q/J9kK2RleOH
+         lLjkmSAnSCUc+fbxsFDS82im2/+NPq6sZzjPKOPrJsO/2mDvrCoG0GcfcasXqiSqXbsC
+         VwJk3+M6TdtRzj32UUH8MTM9SC5ZtgrUjzXDOb0VSpLyPIeUkC6dGGhvXPU0y5mo0W70
+         RCnGjL51E4nIOLcnfQ9No1gZCVgTrilGoNPf68lwMa+kLGR2T3GulEnE7ryLFVz3jLc7
+         PxlA==
+X-Gm-Message-State: AOAM531k8/fJDjIpl2s6kfo9zbLMxGCSvLX5YGz1GSPQqSZqLftwcx90
+        rbFWIiW0GB6VMLd4ZFr1WykWQzFpI9Zy0pnnrmkvOiRMM60=
+X-Google-Smtp-Source: ABdhPJz4J89QHS+z6Vcj3PGEE8bGJl5mQ2tGAmn7425q3gfdYKn6j9ZLbVjRZABByvRfkgrzcdIOXiEoXK+ITd3zx2g=
+X-Received: by 2002:a37:b647:: with SMTP id g68mr3854732qkf.39.1632994784038;
+ Thu, 30 Sep 2021 02:39:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <a012c6719317617e9ea00f7df05f5be56029bcbb.1632928572.git.josef@toxicpanda.com>
-In-Reply-To: <a012c6719317617e9ea00f7df05f5be56029bcbb.1632928572.git.josef@toxicpanda.com>
+References: <20210930000042.10147-1-wqu@suse.com> <20210930000042.10147-2-wqu@suse.com>
+In-Reply-To: <20210930000042.10147-2-wqu@suse.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 30 Sep 2021 10:08:00 +0100
-Message-ID: <CAL3q7H72MYxX9Eob8ykWn5YJwzV2rC6newu_0ThreiSq3A3fZw@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: index free space entries on size
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Date:   Thu, 30 Sep 2021 10:39:07 +0100
+Message-ID: <CAL3q7H6Z5saHXDUN-BHgw32_-HjB4EZ4ts0Ta=mkLXAmsopggQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] btrfs-progs: receive: fallback to buffered copy if
+ clone failed
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 5:58 PM Josef Bacik <josef@toxicpanda.com> wrote:
+On Thu, Sep 30, 2021 at 1:06 AM Qu Wenruo <wqu@suse.com> wrote:
 >
-> Currently we index free space on offset only, because usually we have a
-> hint from the allocator that we want to honor for locality reasons.
-> However if we fail to use this hint we have to go back to a brute force
-> search through the free space entries to find a large enough extent.
->
-> With sufficiently fragmented free space this becomes quite expensive, as
-> we have to linearly search all of the free space entries to find if we
-> have a part that's long enough.
->
-> To fix this add a cached rb tree to index based on free space entry
-> bytes.  This will allow us to quickly look up the largest chunk in the
-> free space tree for this block group, and stop searching once we've
-> found an entry that is too small to satisfy our allocation.  We simply
-> choose to use this tree if we're searching from the beginning of the
-> block group, as we know we do not care about locality at that point.
->
-> I wrote an allocator test that creates a 10TiB ram backed null block
-> device and then fallocates random files until the file system is full.
-> I think go through and delete all of the odd files.  Then I spawn 8
-> threads that fallocate 64mib files (1/2 our extent size cap) until the
-> file system is full again.  I use bcc's funclatency to measure the
-> latency of find_free_extent.  The baseline results are
->
->      nsecs               : count     distribution
->          0 -> 1          : 0        |                                    =
-    |
->          2 -> 3          : 0        |                                    =
-    |
->          4 -> 7          : 0        |                                    =
-    |
->          8 -> 15         : 0        |                                    =
-    |
->         16 -> 31         : 0        |                                    =
-    |
->         32 -> 63         : 0        |                                    =
-    |
->         64 -> 127        : 0        |                                    =
-    |
->        128 -> 255        : 0        |                                    =
-    |
->        256 -> 511        : 10356    |****                                =
-    |
->        512 -> 1023       : 58242    |*************************           =
-    |
->       1024 -> 2047       : 74418    |********************************    =
-    |
->       2048 -> 4095       : 90393    |************************************=
-****|
->       4096 -> 8191       : 79119    |*********************************** =
-    |
->       8192 -> 16383      : 35614    |***************                     =
-    |
->      16384 -> 32767      : 13418    |*****                               =
-    |
->      32768 -> 65535      : 12811    |*****                               =
-    |
->      65536 -> 131071     : 17090    |*******                             =
-    |
->     131072 -> 262143     : 26465    |***********                         =
-    |
->     262144 -> 524287     : 40179    |*****************                   =
-    |
->     524288 -> 1048575    : 55469    |************************            =
-    |
->    1048576 -> 2097151    : 48807    |*********************               =
-    |
->    2097152 -> 4194303    : 26744    |***********                         =
-    |
->    4194304 -> 8388607    : 35351    |***************                     =
-    |
->    8388608 -> 16777215   : 13918    |******                              =
-    |
->   16777216 -> 33554431   : 21       |                                    =
-    |
->
-> avg =3D 908079 nsecs, total: 580889071441 nsecs, count: 639690
->
-> And the patch results are
->
->      nsecs               : count     distribution
->          0 -> 1          : 0        |                                    =
-    |
->          2 -> 3          : 0        |                                    =
-    |
->          4 -> 7          : 0        |                                    =
-    |
->          8 -> 15         : 0        |                                    =
-    |
->         16 -> 31         : 0        |                                    =
-    |
->         32 -> 63         : 0        |                                    =
-    |
->         64 -> 127        : 0        |                                    =
-    |
->        128 -> 255        : 0        |                                    =
-    |
->        256 -> 511        : 6883     |**                                  =
-    |
->        512 -> 1023       : 54346    |*********************               =
-    |
->       1024 -> 2047       : 79170    |********************************    =
-    |
->       2048 -> 4095       : 98890    |************************************=
-****|
->       4096 -> 8191       : 81911    |*********************************   =
-    |
->       8192 -> 16383      : 27075    |**********                          =
-    |
->      16384 -> 32767      : 14668    |*****                               =
-    |
->      32768 -> 65535      : 13251    |*****                               =
-    |
->      65536 -> 131071     : 15340    |******                              =
-    |
->     131072 -> 262143     : 26715    |**********                          =
-    |
->     262144 -> 524287     : 43274    |*****************                   =
-    |
->     524288 -> 1048575    : 53870    |*********************               =
-    |
->    1048576 -> 2097151    : 55368    |**********************              =
-    |
->    2097152 -> 4194303    : 41036    |****************                    =
-    |
->    4194304 -> 8388607    : 24927    |**********                          =
-    |
->    8388608 -> 16777215   : 33       |                                    =
-    |
->   16777216 -> 33554431   : 9        |                                    =
-    |
->
-> avg =3D 623599 nsecs, total: 397259314759 nsecs, count: 637042
->
-> There's a little variation in the amount of calls done because of timing
-> of the threads with metadata requirements, but the avg, total, and
-> count's are relatively consistent between runs (usually within 2-5% of
-> each other).  As you can see here we have around a 30% decrease in
-> average latency with a 30% decrease in overall time spent in
-> find_free_extent.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> [BUG]
+> There are two every basic send streams:
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+every -> very
 
-Looks great, thanks.
+> (a/m/ctime and uuid omitted)
+>
+>   Stream 1: (Parent subvolume)
+>   subvol   ./parent_subv           transid=3D8
+>   chown    ./parent_subv/          gid=3D0 uid=3D0
+>   chmod    ./parent_subv/          mode=3D755
+>   utimes   ./parent_subv/
+>   mkfile   ./parent_subv/o257-7-0
+>   rename   ./parent_subv/o257-7-0  dest=3D./parent_subv/source
+>   utimes   ./parent_subv/
+>   write    ./parent_subv/source    offset=3D0 len=3D16384
+>   chown    ./parent_subv/source    gid=3D0 uid=3D0
+>   chmod    ./parent_subv/source    mode=3D600
+>   utimes   ./parent_subv/source
+>
+>   Stream 2: (snapshot and clone)
+>   snapshot ./dest_subv             transid=3D14 parent_transid=3D10
+>   utimes   ./dest_subv/
+>   mkfile   ./dest_subv/o258-14-0
+>   rename   ./dest_subv/o258-14-0   dest=3D./dest_subv/reflink
+>   utimes   ./dest_subv/
+>   clone    ./dest_subv/reflink     offset=3D0 len=3D16384 from=3D./dest_s=
+ubv/source clone_offset=3D0
+>   chown    ./dest_subv/reflink     gid=3D0 uid=3D0
+>   chmod    ./dest_subv/reflink     mode=3D600
+>   utimes   ./dest_subv/reflink
+>
+> But if we receive the first stream with default mount, then remount to
+> nodatasum, and try to receive the second stream, it will fail:
+>
+>  # mount /mnt/btrfs
+>  # btrfs receive -f ~/parent_stream /mnt/btrfs/
+>  At subvol parent_subv
+>  # mount -o remount,nodatasum /mnt/btrfs
+>  # btrfs receive -f ~/clone_stream /mnt/btrfs/
+>  At snapshot dest_subv
+>  ERROR: failed to clone extents to reflink: Invalid argument
+>  # echo $?
+>  1
+>
+> [CAUSE]
+> Btrfs doesn't allow clone source and destination has different NODATASUM
 
+... and destination files have different ...
+
+> flags.
+> This is to prevent a data extent to be owned by both NODATASUM inode and
+> regular DATASUM inode.
+>
+> For above receive operations, the clone destination is inheriting the
+> NODATASUM flag from mount option, while the clone source has no
+> NODATASUM flag, thus preventing us from doing the clone.
+>
+> [FIX]
+> Btrfs send/receive doesn't require the underlying inode has the same
+> flags (thus we can send from compressed extent and receive on a
+> non-compressed filesystem).
+>
+> So here we add a new command line option, '--clone-fallback', to allow
+> btrfs-receive to fall back to buffered write to copy data from the
+> source file.
+>
+> Since such behavior can result much less clone operations, which may not
+> be what the end users really want, and can hide bugs in send stream.
+> Thus this behavior must be explicitly specified by the new option.
+>
+> And we will output a warning message each time such fallback is
+> triggered if the user wants extra debug output.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
-> v1->v2:
-> - removed the extraneous format change I made.
-> - added comments to some of the more subtle parts of the patch.
+>  Documentation/btrfs-receive.asciidoc | 13 ++++++
+>  cmds/receive.c                       | 60 ++++++++++++++++++++++++++--
+>  2 files changed, 70 insertions(+), 3 deletions(-)
 >
->  fs/btrfs/free-space-cache.c | 84 +++++++++++++++++++++++++++++++++----
->  fs/btrfs/free-space-cache.h |  2 +
->  2 files changed, 79 insertions(+), 7 deletions(-)
+> diff --git a/Documentation/btrfs-receive.asciidoc b/Documentation/btrfs-r=
+eceive.asciidoc
+> index e4c4d2c0bf3d..3b88643abe5f 100644
+> --- a/Documentation/btrfs-receive.asciidoc
+> +++ b/Documentation/btrfs-receive.asciidoc
+> @@ -65,6 +65,19 @@ dump the stream metadata, one line per operation
+>  +
+>  Does not require the 'path' parameter. The filesystem remains unchanged.
 >
-> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> index 0d26819b1cf6..abc050295fff 100644
-> --- a/fs/btrfs/free-space-cache.c
-> +++ b/fs/btrfs/free-space-cache.c
-> @@ -1576,6 +1576,44 @@ static int tree_insert_offset(struct rb_root *root=
-, u64 offset,
->         return 0;
+> +--clone-fallback::
+> +allow failed clone operation to fallback to buffer copy from source file=
+.
+
+operation -> operations
+
+buffer -> buffered
+
+For this type o documentation, I don't think it's relevant to mention
+it's doing buffered IO.
+
+Something like:
+
+when clone operations fail, attempt to directly copy the data instead
+
+> ++
+> +Clone operations have various requirement which can be affected by thing=
+s like
+> +mount options (source file has no NODATASUM flag while current fs is mou=
+nted
+> +with NODATASUM), sectorsizes (the stream is from 4K sectorsize fs while =
+the fs
+> +is in 64K page size).
+
+As this is documentation and not code, it should be "sector size", not
+sectorsize.
+It should also use "filesystem" instead of "fs", to be more clear for
+users and consistent with the rest of the man page.
+
+This also misses mentioning the nodatacow case.
+
+Maybe something like:
+
+"When the source and destination filesystems have a different sector
+size or when only one of them
+was mounted with either the 'nodatacow' or the 'nodatasum' mount
+option, clone operations can fail."
+
+It's not complete either, as nodatacow (and therefore nodatasum) might
+have been set through chattr and not through mount options, but I
+think many users will be able to infer that due to the previous
+mention of 'nodatacow'.
+
+> ++
+> +This option allows users to let receive to handle such failed clone with
+> +buffered copy from the source, at the cost of less clone operations and =
+even
+> +some unexposed send bugs. Thus this behavior must be explicitly specifie=
+d by
+> +the user.
+
+"and even some unexposed send bugs" - This is confusing and scary, if
+I were a user, most likely I would not use a tool mentioning something
+like that in its documentation, except for testing.
+
+We don't know if we currently have any bugs that result in the kernel
+issuing invalid clone operations, so that should not be mentioned as
+it makes no sense.
+
+
+Maybe something like:
+
+"This option makes the receive process attempt to manually copy data
+from the source to the destination file when a
+clone operation fails due to the cases mentioned before. When this
+happens, extents will end up not being shared between the files."
+
+> +
+>  -q|--quiet::
+>  (deprecated) alias for global '-q' option
+>
+> diff --git a/cmds/receive.c b/cmds/receive.c
+> index 48c774cea587..60691b9b61ae 100644
+> --- a/cmds/receive.c
+> +++ b/cmds/receive.c
+> @@ -76,6 +76,8 @@ struct btrfs_receive
+>         struct subvol_uuid_search sus;
+>
+>         int honor_end_cmd;
+> +
+> +       bool clone_fallback;
+>  };
+>
+>  static int finish_subvol(struct btrfs_receive *rctx)
+> @@ -705,6 +707,44 @@ out:
+>         return ret;
 >  }
 >
-> +static u64 free_space_info_bytes(struct btrfs_free_space *info)
+> +static int buffered_copy(int src_fd, int dst_fd, u64 src_offset, u64 len=
+,
+> +                        u64 dest_offset)
 > +{
-> +       if (info->bitmap && info->max_extent_size)
-> +               return info->max_extent_size;
-> +       return info->bytes;
-> +}
+> +       unsigned char buf[SZ_32K];
+> +       u64 copied =3D 0;
+> +       int ret =3D 0;
 > +
-> +/*
-> + * This is indexed in reverse of what we generally do for rb-tree's, the=
- largest
-> + * chunks are left most and the smallest are rightmost.  This is so that=
- we can
-> + * take advantage of the cached property of the cached rb-tree and simpl=
-y get
-> + * the largest free space chunk right away.
-> + */
-> +static void tree_insert_bytes(struct btrfs_free_space_ctl *ctl,
-> +                             struct btrfs_free_space *info)
-> +{
-> +       struct rb_root_cached *root =3D &ctl->free_space_bytes;
-> +       struct rb_node **p =3D &root->rb_root.rb_node;
-> +       struct rb_node *parent_node =3D NULL;
-> +       struct btrfs_free_space *tmp;
-> +       bool leftmost =3D true;
+> +       while (copied < len) {
+> +               u32 copy_len =3D min_t(u32, ARRAY_SIZE(buf), len - copied=
+);
+> +               u32 written =3D 0;
+> +               ssize_t read_size;
 > +
-> +       while (*p) {
-> +               parent_node =3D *p;
-> +               tmp =3D rb_entry(parent_node, struct btrfs_free_space,
-> +                              bytes_index);
-> +               if (free_space_info_bytes(info) < free_space_info_bytes(t=
-mp)) {
-> +                       p =3D &(*p)->rb_right;
-> +                       leftmost =3D false;
-> +               } else {
-> +                       p =3D &(*p)->rb_left;
+> +               read_size =3D pread(src_fd, buf, copy_len, src_offset + c=
+opied);
+> +               if (read < 0) {
+> +                       ret =3D -errno;
+> +                       error("failed to read source file: %m");
+> +                       return ret;
 > +               }
-> +       }
 > +
-> +       rb_link_node(&info->bytes_index, parent_node, p);
-> +       rb_insert_color_cached(&info->bytes_index, root, leftmost);
+> +               /* Write the buffer to dest file */
+> +               while (written < read_size) {
+> +                       ssize_t write_size;
+> +
+> +                       write_size =3D pwrite(dst_fd, buf + written,
+> +                                       read_size - written,
+> +                                       dest_offset + copied + written);
+> +                       if (write_size < 0) {
+> +                               ret =3D -errno;
+> +                               error("failed to write source file: %m");
+> +                               return ret;
+> +                       }
+> +                       written +=3D write_size;
+> +               }
+> +               copied +=3D read_size;
+> +       }
+> +       return ret;
 > +}
 > +
->  /*
->   * searches the tree for the given offset.
->   *
-> @@ -1704,6 +1742,7 @@ __unlink_free_space(struct btrfs_free_space_ctl *ct=
-l,
->                     struct btrfs_free_space *info)
->  {
->         rb_erase(&info->offset_index, &ctl->free_space_offset);
-> +       rb_erase_cached(&info->bytes_index, &ctl->free_space_bytes);
->         ctl->free_extents--;
->
->         if (!info->bitmap && !btrfs_free_space_trimmed(info)) {
-> @@ -1730,6 +1769,8 @@ static int link_free_space(struct btrfs_free_space_=
-ctl *ctl,
->         if (ret)
->                 return ret;
->
-> +       tree_insert_bytes(ctl, info);
-> +
->         if (!info->bitmap && !btrfs_free_space_trimmed(info)) {
->                 ctl->discardable_extents[BTRFS_STAT_CURR]++;
->                 ctl->discardable_bytes[BTRFS_STAT_CURR] +=3D info->bytes;
-> @@ -1876,7 +1917,7 @@ static inline u64 get_max_extent_size(struct btrfs_=
-free_space *entry)
->  /* Cache the size of the max extent in bytes */
->  static struct btrfs_free_space *
->  find_free_space(struct btrfs_free_space_ctl *ctl, u64 *offset, u64 *byte=
-s,
-> -               unsigned long align, u64 *max_extent_size)
-> +               unsigned long align, u64 *max_extent_size, bool use_bytes=
-_index)
->  {
->         struct btrfs_free_space *entry;
->         struct rb_node *node;
-> @@ -1887,15 +1928,37 @@ find_free_space(struct btrfs_free_space_ctl *ctl,=
- u64 *offset, u64 *bytes,
->         if (!ctl->free_space_offset.rb_node)
->                 goto out;
->
-> -       entry =3D tree_search_offset(ctl, offset_to_bitmap(ctl, *offset),=
- 0, 1);
-> -       if (!entry)
+>  static int process_clone(const char *path, u64 offset, u64 len,
+>                          const u8 *clone_uuid, u64 clone_ctransid,
+>                          const char *clone_path, u64 clone_offset,
+> @@ -788,8 +828,17 @@ static int process_clone(const char *path, u64 offse=
+t, u64 len,
+>         ret =3D ioctl(rctx->write_fd, BTRFS_IOC_CLONE_RANGE, &clone_args)=
+;
+>         if (ret < 0) {
+>                 ret =3D -errno;
+> -               error("failed to clone extents to %s: %m", path);
 > -               goto out;
-> +       if (use_bytes_index) {
-> +               node =3D rb_first_cached(&ctl->free_space_bytes);
-> +       } else {
-> +               entry =3D tree_search_offset(ctl, offset_to_bitmap(ctl, *=
-offset),
-> +                                          0, 1);
-> +               if (!entry)
+> +               if (ret !=3D -EINVAL || !rctx->clone_fallback) {
+> +                       error("failed to clone extents to %s: %m", path);
 > +                       goto out;
-> +               node =3D &entry->offset_index;
-> +       }
->
-> -       for (node =3D &entry->offset_index; node; node =3D rb_next(node))=
- {
-> -               entry =3D rb_entry(node, struct btrfs_free_space, offset_=
-index);
-> +       for (; node; node =3D rb_next(node)) {
-> +               if (use_bytes_index)
-> +                       entry =3D rb_entry(node, struct btrfs_free_space,
-> +                                        bytes_index);
-> +               else
-> +                       entry =3D rb_entry(node, struct btrfs_free_space,
-> +                                        offset_index);
+> +               }
 > +
-> +               /*
-> +                * If we are using the bytes index then all subsequent en=
-tries
-> +                * in this tree are going to be < bytes, so simply set th=
-e max
-> +                * extent size and exit the loop.
-> +                *
-> +                * If we're using the offset index then we need to keep g=
-oing
-> +                * through the rest of the tree.
-> +                */
->                 if (entry->bytes < *bytes) {
->                         *max_extent_size =3D max(get_max_extent_size(entr=
-y),
->                                                *max_extent_size);
-> +                       if (use_bytes_index)
-> +                               break;
->                         continue;
->                 }
->
-> @@ -2482,6 +2545,7 @@ int __btrfs_add_free_space(struct btrfs_fs_info *fs=
-_info,
->         info->bytes =3D bytes;
->         info->trim_state =3D trim_state;
->         RB_CLEAR_NODE(&info->offset_index);
-> +       RB_CLEAR_NODE(&info->bytes_index);
->
->         spin_lock(&ctl->tree_lock);
->
-> @@ -2795,6 +2859,7 @@ void btrfs_init_free_space_ctl(struct btrfs_block_g=
-roup *block_group,
->         ctl->start =3D block_group->start;
->         ctl->private =3D block_group;
->         ctl->op =3D &free_space_op;
-> +       ctl->free_space_bytes =3D RB_ROOT_CACHED;
->         INIT_LIST_HEAD(&ctl->trimming_ranges);
->         mutex_init(&ctl->cache_writeout_mutex);
->
-> @@ -2860,6 +2925,7 @@ static void __btrfs_return_cluster_to_free_space(
->                 }
->                 tree_insert_offset(&ctl->free_space_offset,
->                                    entry->offset, &entry->offset_index, b=
-itmap);
-> +               tree_insert_bytes(ctl, entry);
+> +               if (bconf.verbose >=3D 2)
+> +                       warning(
+> +               "failed to clone extents to %s, fallback to buffered writ=
+e",
+> +                               path);
+> +               ret =3D buffered_copy(clone_fd, rctx->write_fd, clone_off=
+set,
+> +                                   len, offset);
 >         }
->         cluster->root =3D RB_ROOT;
->         spin_unlock(&cluster->lock);
-> @@ -2961,12 +3027,14 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block=
-_group *block_group,
->         u64 align_gap =3D 0;
->         u64 align_gap_len =3D 0;
->         enum btrfs_trim_state align_gap_trim_state =3D BTRFS_TRIM_STATE_U=
-NTRIMMED;
-> +       bool use_bytes_index =3D (offset =3D=3D block_group->start);
 >
->         ASSERT(!btrfs_is_zoned(block_group->fs_info));
->
->         spin_lock(&ctl->tree_lock);
->         entry =3D find_free_space(ctl, &offset, &bytes_search,
-> -                               block_group->full_stripe_len, max_extent_=
-size);
-> +                               block_group->full_stripe_len, max_extent_=
-size,
-> +                               use_bytes_index);
->         if (!entry)
->                 goto out;
->
-> @@ -3250,6 +3318,7 @@ static int btrfs_bitmap_cluster(struct btrfs_block_=
-group *block_group,
->
->         cluster->window_start =3D start * ctl->unit + entry->offset;
->         rb_erase(&entry->offset_index, &ctl->free_space_offset);
-> +       rb_erase_cached(&entry->bytes_index, &ctl->free_space_bytes);
->         ret =3D tree_insert_offset(&cluster->root, entry->offset,
->                                  &entry->offset_index, 1);
->         ASSERT(!ret); /* -EEXIST; Logic error */
-> @@ -3340,6 +3409,7 @@ setup_cluster_no_bitmap(struct btrfs_block_group *b=
-lock_group,
->                         continue;
->
->                 rb_erase(&entry->offset_index, &ctl->free_space_offset);
-> +               rb_erase_cached(&entry->bytes_index, &ctl->free_space_byt=
-es);
->                 ret =3D tree_insert_offset(&cluster->root, entry->offset,
->                                          &entry->offset_index, 0);
->                 total_size +=3D entry->bytes;
-> diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
-> index 1f23088d43f9..dd982d204d2d 100644
-> --- a/fs/btrfs/free-space-cache.h
-> +++ b/fs/btrfs/free-space-cache.h
-> @@ -22,6 +22,7 @@ enum btrfs_trim_state {
->
->  struct btrfs_free_space {
->         struct rb_node offset_index;
-> +       struct rb_node bytes_index;
->         u64 offset;
->         u64 bytes;
->         u64 max_extent_size;
-> @@ -45,6 +46,7 @@ static inline bool btrfs_free_space_trimming_bitmap(
->  struct btrfs_free_space_ctl {
->         spinlock_t tree_lock;
->         struct rb_root free_space_offset;
-> +       struct rb_root_cached free_space_bytes;
->         u64 free_space;
->         int extents_thresh;
->         int free_extents;
+>  out:
+> @@ -1238,11 +1287,13 @@ static int cmd_receive(const struct cmd_struct *c=
+md, int argc, char **argv)
+>         optind =3D 0;
+>         while (1) {
+>                 int c;
+> -               enum { GETOPT_VAL_DUMP =3D 257 };
+> +               enum { GETOPT_VAL_DUMP =3D 257, GETOPT_VAL_CLONE_FALLBACK=
+ };
+>                 static const struct option long_opts[] =3D {
+>                         { "max-errors", required_argument, NULL, 'E' },
+>                         { "chroot", no_argument, NULL, 'C' },
+>                         { "dump", no_argument, NULL, GETOPT_VAL_DUMP },
+> +                       { "clone-fallback", no_argument, NULL,
+> +                               GETOPT_VAL_CLONE_FALLBACK},
+
+The option is not listed and summarized at "cmd_receive_usage" (--help outp=
+ut).
+It should be.
+
+Code wise, it looks good, thanks.
+
+>                         { "quiet", no_argument, NULL, 'q' },
+>                         { NULL, 0, NULL, 0 }
+>                 };
+> @@ -1286,6 +1337,9 @@ static int cmd_receive(const struct cmd_struct *cmd=
+, int argc, char **argv)
+>                 case GETOPT_VAL_DUMP:
+>                         dump =3D 1;
+>                         break;
+> +               case GETOPT_VAL_CLONE_FALLBACK:
+> +                       rctx.clone_fallback =3D true;
+> +                       break;
+>                 default:
+>                         usage_unknown_option(cmd, argv);
+>                 }
 > --
-> 2.29.2
+> 2.33.0
 >
 
 
