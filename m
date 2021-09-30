@@ -2,348 +2,350 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9686141DB1C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Sep 2021 15:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7D541DB4E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 Sep 2021 15:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348818AbhI3Ndg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 Sep 2021 09:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350215AbhI3Nde (ORCPT
+        id S1351741AbhI3NoK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 Sep 2021 09:44:10 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:39068 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351736AbhI3NoI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 Sep 2021 09:33:34 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C05C06176C
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 06:31:52 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id x9so5697038qtv.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 30 Sep 2021 06:31:51 -0700 (PDT)
+        Thu, 30 Sep 2021 09:44:08 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18UDc6H7011309;
+        Thu, 30 Sep 2021 13:42:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=V5fzHfLdfrJTQRLqH5qT4XtIv5b9I0sMvuESllOihvM=;
+ b=rDKR+wAw2ChNtV7Vn38IrGsOxUieNYhdv9KMHt4tREbSnvtzjWyLPzrNn6/XG9T/Zjiw
+ wdKZSfocjPu8OQBP4rAG5nxZE8+XL2CnCEj4rlKrS+Z2SQRJlIwkupM98F+QSTOKLpcR
+ LwaS1+tKc2ywuUxxg85UxAQNLUkINhgmfNWOUaruJR6EK6w50n3oO45raoBhuLfj515Y
+ gGPm8l0bhtWFBzA/TAgz4YB5bdn3UyV0gCWAesF4ElJCQqOVlaG5cxud6Q4ze2IySsCW
+ o/ckXd9GDlM5LBtzNpHGMDMyELd1LrX1WHiaNixJnjtD8DwFYcdujLIJ+AG6fgFKAFxP vg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bdb2dhatb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Sep 2021 13:42:20 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18UDeEIA130541;
+        Thu, 30 Sep 2021 13:42:19 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
+        by userp3020.oracle.com with ESMTP id 3bc3cfwf6q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Sep 2021 13:42:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MVJPCrFGeVTvLPfb4TpA1Oj2s/x29uYmRonuWwGH/vYLiyOMVkwi0A3RSM1go5Kw+gu1EKXOVPrVor4Je1y5qR9yDFl4M0cXc6JlKb7+BHXPAL2ZRNMfwzZDrd4LZgRvqdRzf7NAk2HaU9omZYx0QZYnIwi0oPe4E7+hawMxg6gnQnPQrLvY44wPNi6mU2fF+EWeDetesgy/5b57BB/tD+qeKmYfJLT/YITE+SVD2fnF0h4A7Bsk0Dm6+eF24HeX+sGl+tSSd6BWhpTMERxG38XUDiRrd1Sj8kqaZuOXS7KhFvFPKOFr+xd4kFyz4JGwOq4SYcBI+nGh5JLpwkpLMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=V5fzHfLdfrJTQRLqH5qT4XtIv5b9I0sMvuESllOihvM=;
+ b=RyipLE3eSybbR8egIZcGsIC7U6FfQJaQ+APtjdYHz4TwVdmxwh+0y7o1d5eTu0XU5ARR5a7OX2MR3SqoTYJMDm0YgLgeAa71vhFa21P5PDneL8D8jTLNoeEzSJwsukCekzuwUHkuHkj6D804HGcM/LqU++rz3LqVN3dAwwaIfxVbSle1CymyLrxdPeZ4yHyU3dbPLtYHkWJVYvlGjhWmCxYvY0Z4I3Se5sPCD33QJscDEv6wWMwF8jI2R+FM1oIiencsLoRk/QtOw8sPzJabaRCnjXh5ZVaSam2PRVijYgoQS95k3XVHKdnXJaaxXLzOWKG/uN+rMNp3CkoVNFL5RA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=/tZkRsNPreeOcfYwsHzXyc4sF7FLgsvEUvOXlg5Oqi0=;
-        b=keU58Xo6pemjPSH3N2sOEhLeNEbsJdH91Cng79zjKBG8GJw0nO44712sBaorl2CBVG
-         RsQp4kCcSTk+sPerB5vQqJsYukXKkv+mS/ECrkqNKgH3WqLTs+RISL/VA87LE5+rpWuW
-         VPiL8vF8REz+wRCN5BOdgifZNeX14pyh8CB/p0KW5PNdAIJf9578TUexfCIGeZM2vgp5
-         yUEaW3mnnwIl8Ge0lqiStxDvz1TahPwPVQrsM5p2bjRAUndQ9Irmv42qUyM4j8K0XEg/
-         WiC2nJRhcMsOj+1AZnwCmVEO7pl4qsu6QF9VLJaxs4EGxibradk/xRUEm96NvqiaXgKY
-         veXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=/tZkRsNPreeOcfYwsHzXyc4sF7FLgsvEUvOXlg5Oqi0=;
-        b=75VGDTC3PJpe4bllr2WSO2inOYs04nNGlhKay3gLSy9BqhpdpuzHFHI7tkA78ayOcy
-         SzH+cVOrbThI49mS4H0hjsTfMgALGbyAzL3boHNlmD7QSTa/UAOlE836bRF+AbNPngzy
-         5ZaWcTnyx/PTIdqIKgeTCbXwp6yEDwG6159FsnIveVwJPSbTTfPzWco6uTwKDCcVfJoU
-         /YBrfz5toRm81gFr5E9xM9aX7ZfgsDVkZDzY/2dz4+OIy8ws0VUxnQ44geiNNcMp5Gzn
-         7YjH1sybAE/jsgrciE20hfrrCWF0SmHTeJox/CBfMapgp89wZa0h1bj8VPBfLvz/K/3i
-         JNvg==
-X-Gm-Message-State: AOAM531Llq3nwBIPbJMeVXehIbFF/pJWkPKUPK0XyVH6QQ2ZWR/jitv+
-        yolOJgGRmar3DHGbXbWX29QJtc+XHZ1GN01Qo8s=
-X-Google-Smtp-Source: ABdhPJwWYx/ljDu82x6oXfm07ipjar0qmP4BeVpyU+Xd82/P7raSxp+sNUif7TEc7zc7+/G1xG51KUocemtoQYZUTws=
-X-Received: by 2002:ac8:4f0b:: with SMTP id b11mr6613615qte.124.1633008711071;
- Thu, 30 Sep 2021 06:31:51 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V5fzHfLdfrJTQRLqH5qT4XtIv5b9I0sMvuESllOihvM=;
+ b=snCFVVVchIpyBLwDU9XLgmfALQ0YZthe/TGradAi1g81bvSgxg9S8088aXS1O2LDVWC1ahee67+e3mqB4YgrQCfPQxe7E15FpG0vDVlEn2W7BInVcxdkoASsSEugX6w/caLiJuiA9sh53oWED4n53GPE1XVUFq3dm9aUth0/s8w=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BL0PR10MB2898.namprd10.prod.outlook.com (2603:10b6:208:75::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Thu, 30 Sep
+ 2021 13:42:17 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4544.022; Thu, 30 Sep 2021
+ 13:42:16 +0000
+Subject: Re: [PATCH v7] btrfs: consolidate device_list_mutex in prepare_sprout
+ to its parent
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     nborisov@suse.com
+References: <6585e7d938e6600189c1bc7b61a7c76badef18dd.1633003671.git.anand.jain@oracle.com>
+Message-ID: <e5e89f86-7927-27b6-55ee-58ba31817529@oracle.com>
+Date:   Thu, 30 Sep 2021 21:42:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <6585e7d938e6600189c1bc7b61a7c76badef18dd.1633003671.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR06CA0217.apcprd06.prod.outlook.com
+ (2603:1096:4:68::25) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-References: <20210930114855.39225-1-wqu@suse.com> <20210930114855.39225-2-wqu@suse.com>
- <933152a1-e37e-192c-734b-77f5f1735c8b@cobb.uk.net>
-In-Reply-To: <933152a1-e37e-192c-734b-77f5f1735c8b@cobb.uk.net>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 30 Sep 2021 14:31:14 +0100
-Message-ID: <CAL3q7H4n-PO0CPTruzpxbFP2EDfsrtNZMjDLsYCyifOUyULwEg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] btrfs-progs: receive: fallback to buffered copy if
- clone failed
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from [192.168.10.100] (39.109.140.76) by SG2PR06CA0217.apcprd06.prod.outlook.com (2603:1096:4:68::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14 via Frontend Transport; Thu, 30 Sep 2021 13:42:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5ae26a40-d3a6-44e2-5d4f-08d984181dd3
+X-MS-TrafficTypeDiagnostic: BL0PR10MB2898:
+X-Microsoft-Antispam-PRVS: <BL0PR10MB28985AD20C1E6DDD4D444684E5AA9@BL0PR10MB2898.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7+Ps3ANrRVrb1TdoOtkruelzyLi6mJCXx5tkJHHmIPWbpsi/v5ndZXy+7MsjhNnLvxsZYzn2m//C5wBOPyKvSUA/qU9A0W4harDu+Krg8pOBfCA4vl0FBYQpLo+1qAs2u/BmzH/vQ4peosvaUhSMJd3S69WJdGs108XDT3lkonNvOI9FPx3NAPxUthdyabJsbqGAfU8YBEcS0M9VFZL1EKLvXADsO+OTNkLwxv/aZBZd9FB7n7EoSXWZ4Lfz3MLPP1h6sU6txUVWMePdrB+BlfWT7W+LLJWe3WW4b9L0o2Mk8lRxj90iE21zux6PRQdMgSxnndQELxiG0he4ltky+l8DtrPiKN/uO11qykrRMKfwFHw1Oa33Cl63BwSUFXgXMFoPH8Lg46CKSJ6TdFs5/gREg/n82qm5dPR77HChXG/ucjx66bew5hi0Qyzqm8vUy8eWNkWAoU+TrLKfeK8eAuXe6/oNWTwmh+eaxiiOM5DbD4wooXOSRzGOH060hRI0OQlI/eO5szFDfVeipKwIiwriJWrgZXW2kErFnCAdeL+8kN9KxJQdcfZyVoXvUBC/yL8BdLP6aC6eJVzNeHoLEZQuyaW0jFnexKqNsPnL6+AySX1lwgKlYiyV/ZM1O3bi7xIdWp5LGnDQayGdfBFNB5GHapKBe1Lg2xyXbBDPts3JskIZ2DvVD4T8RRi4OsTgUheNwe9QRnestv5M5niMh42Df0gcjZbMzC2Yfewf9Cw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(16576012)(2616005)(956004)(38100700002)(31696002)(83380400001)(44832011)(36756003)(6666004)(26005)(53546011)(4326008)(508600001)(316002)(186003)(2906002)(86362001)(66946007)(66476007)(6486002)(66556008)(6916009)(31686004)(8936002)(5660300002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L202bFBaYkgwbDFuWlZiRjJNemZ1OEMwOG1MNW5LVUx6em94Ykw1cWFRUXJL?=
+ =?utf-8?B?MnRiSElkYUlrNTJKY0R4a3FPd2NPVHB0OUVralhQTkpFSjE4OE1qdDk1N0ti?=
+ =?utf-8?B?allTZGxPY2Z0R3lYbkxSbjltMHpCMmwyMkQyS3Y1TUtSVUF3RWI4Qkt3WUQ3?=
+ =?utf-8?B?aVl6SHNNTkdyOTJ4T1NNSmlKNGdrb2ZBOHhFcExmS3lUUm4wOXhWTVByVHZC?=
+ =?utf-8?B?L3IyMm9VajI3SnR2aVFvZ1hXTTBEcEF6NWhXdXRSSU52WFdheXRNeE9JK2RW?=
+ =?utf-8?B?MzZBQklwV29rTmIwTVV2aTRpSzFDcTdkZko0cHFpcWE1WFB2YUdsTzdReElN?=
+ =?utf-8?B?VHFBNWZza2lPYzdTa1NZM3U0dmRhMGZlM0pyWGlCaGVQMWlSN0pySUw4NUNv?=
+ =?utf-8?B?MU5uNlhJRzl4R3ZBYzRVOS9hcXMwYUxoVWU4ZG9RSENLd3AzM3ZzQ2tjY0tW?=
+ =?utf-8?B?UGZiQmczaHIyWUVWM0wzK0p4TG5LMlhuWWtGZG5iQ2FpOGhxVUtQL0hnSDRr?=
+ =?utf-8?B?K3llN0hEeEx1V0FIMWEwRkhud1VUVzhBMWRIdU8zUUZ3MmY0eVFYTjdrNXMz?=
+ =?utf-8?B?RkhLRTBWcU9oY0RqYk5xMmV4emE2T3FCV05OaHRyS2pONXp1b2lDSm1BNU5R?=
+ =?utf-8?B?S3VtdDN2eEgwa0RTc1NrMmxBQzMzc1lQSm9GSTRHUU5XaWRNNUNCeHJoWGhQ?=
+ =?utf-8?B?T2ZYK3RrQ25BWnJOc0ZwVlMybXdSRzFvaElyTnZVSDNNbCtFdkcrZndFbnd2?=
+ =?utf-8?B?VSszZ1hLeVRKc3JRMSt1RW9xWkJRWUU3cmxTOHY1RzFOcmd2SmJBMWIrUWNx?=
+ =?utf-8?B?M1Q0NEJLOWxYempxaEdkZVdQOEFOUk82ZCtxZFlLYzFWTGRWcjZ0VnpJUmta?=
+ =?utf-8?B?NGgybkExRy9Sem13M0hvU3gxeDZsNFVTVDUxeENJdm9Od0xQTjFGdkRnRElG?=
+ =?utf-8?B?WUZRcHpKT2sraERHOHEvazY0UHRIaFdzRzc3ZVl2eDNkWXJsa0htMEtFd0pY?=
+ =?utf-8?B?ckpYczNBZ0grc0wxcFZPQitVeGZCYU8zaWZqeDdkQ1hOS0NsaHhXSGJtaGhE?=
+ =?utf-8?B?UjRaajNkLytsRHRvMTVhdmt3bGMwTGZGU3RMMDNKWFJLTG1Db0thWi9OUWZQ?=
+ =?utf-8?B?MmtBeUI5Y21vaUZMaHluWThZM3RaLzUvNVpOeHB6anhaa05QZXBLckFRYURv?=
+ =?utf-8?B?ejRlN3dWbGRkRWwrK3VsVUQzZHo2cWZWS093bHorSGc5SHgybVl1L0ZxZ3py?=
+ =?utf-8?B?S1Yxb2dzR0lPb0wyZGk4WXdWbDlrc2tseTExem90aEtQUWNNYUwzT1VnK1Nu?=
+ =?utf-8?B?RzU0S2hVcUFtVDdoNEJ1ZTJpU1FtTnhKdVM2M2RPUVdOVUwxMXV0WUdFY0pm?=
+ =?utf-8?B?QjVzbFVQV2dUQ2JwZXRzQ055Q3VJU2FETittYlhiQytsSGJRYXh6dEQzMFcw?=
+ =?utf-8?B?OGdkVDJacVhGRGNWNER2d0VZMHZBZStDSmMwYnpSVkQzejRwU1FRcGNlUERj?=
+ =?utf-8?B?S1FsTXMyVEhYckRKRFFEVUZ5aFBaNWY2UFNXd2dGd1cybEptQXRYRHU1aFV6?=
+ =?utf-8?B?cGQ3cmtuS1ZZVVNZWExNRzkrTUplaklUdnZVcSs3eStmenJITldnaHMrR295?=
+ =?utf-8?B?c1VxYzVPQWdVM2gzUlFiZkVqcUdtV09mNkdNOXhueHVuSkFnSkhZcmRvVGZn?=
+ =?utf-8?B?U1dVWlFEdnVDbHU4S1RWN0hZbDR1YkI2VmJubnpDU0FsbWxUVnN5R05ielBi?=
+ =?utf-8?Q?eIKO69eN7braDeZ3moHRjNHPS6roiJfQE9Ps5ur?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ae26a40-d3a6-44e2-5d4f-08d984181dd3
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 13:42:16.8608
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wP9CX2/7K5cIPXD0nbKQFJpO1Ef1RfVBPnd3ctwULLSf/r9YMx+osiN2w2MtxeTLiN9ivdjNF3h9qQMAAQwKrQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB2898
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10122 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2109300086
+X-Proofpoint-GUID: N6sEfycdUiNDfhxjNAMkbOJA2VvPbzwT
+X-Proofpoint-ORIG-GUID: N6sEfycdUiNDfhxjNAMkbOJA2VvPbzwT
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 2:20 PM Graham Cobb <g.btrfs@cobb.uk.net> wrote:
->
-> On 30/09/2021 12:48, Qu Wenruo wrote:
-> > [BUG]
-> > There are two very basic send streams:
-> > (a/m/ctime and uuid omitted)
-> >
-> >   Stream 1: (Parent subvolume)
-> >   subvol   ./parent_subv           transid=3D8
-> >   chown    ./parent_subv/          gid=3D0 uid=3D0
-> >   chmod    ./parent_subv/          mode=3D755
-> >   utimes   ./parent_subv/
-> >   mkfile   ./parent_subv/o257-7-0
-> >   rename   ./parent_subv/o257-7-0  dest=3D./parent_subv/source
-> >   utimes   ./parent_subv/
-> >   write    ./parent_subv/source    offset=3D0 len=3D16384
-> >   chown    ./parent_subv/source    gid=3D0 uid=3D0
-> >   chmod    ./parent_subv/source    mode=3D600
-> >   utimes   ./parent_subv/source
-> >
-> >   Stream 2: (snapshot and clone)
-> >   snapshot ./dest_subv             transid=3D14 parent_transid=3D10
-> >   utimes   ./dest_subv/
-> >   mkfile   ./dest_subv/o258-14-0
-> >   rename   ./dest_subv/o258-14-0   dest=3D./dest_subv/reflink
-> >   utimes   ./dest_subv/
-> >   clone    ./dest_subv/reflink     offset=3D0 len=3D16384 from=3D./dest=
-_subv/source clone_offset=3D0
-> >   chown    ./dest_subv/reflink     gid=3D0 uid=3D0
-> >   chmod    ./dest_subv/reflink     mode=3D600
-> >   utimes   ./dest_subv/reflink
-> >
-> > But if we receive the first stream with default mount, then remount to
-> > nodatasum, and try to receive the second stream, it will fail:
-> >
-> >  # mount /mnt/btrfs
-> >  # btrfs receive -f ~/parent_stream /mnt/btrfs/
-> >  At subvol parent_subv
-> >  # mount -o remount,nodatasum /mnt/btrfs
-> >  # btrfs receive -f ~/clone_stream /mnt/btrfs/
-> >  At snapshot dest_subv
-> >  ERROR: failed to clone extents to reflink: Invalid argument
-> >  # echo $?
-> >  1
-> >
-> > [CAUSE]
-> > Btrfs doesn't allow clone source and destination files have different
-> > NODATASUM flags.
-> > This is to prevent a data extent to be owned by both NODATASUM inode an=
-d
-> > regular DATASUM inode.
-> >
-> > For above receive operations, the clone destination is inheriting the
-> > NODATASUM flag from mount option, while the clone source has no
-> > NODATASUM flag, thus preventing us from doing the clone.
-> >
-> > [FIX]
-> > Btrfs send/receive doesn't require the underlying inode has the same
-> > flags (thus we can send from compressed extent and receive on a
-> > non-compressed filesystem).
-> >
-> > So here we add a new command line option, '--clone-fallback', to allow
-> > btrfs-receive to fall back to buffered write to copy data from the
-> > source file.
-> >
-> > Since such behavior can result much less clone operations, which may no=
-t
-> > be what the end users really want, and can hide bugs in send stream.
-> > Thus this behavior must be explicitly specified by the new option.
-> >
-> > And we will output a warning message each time such fallback is
-> > triggered if the user wants extra debug output.
-> >
-> > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > ---
-> >  Documentation/btrfs-receive.asciidoc | 12 ++++++
-> >  cmds/receive.c                       | 62 ++++++++++++++++++++++++++--
-> >  2 files changed, 71 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/Documentation/btrfs-receive.asciidoc b/Documentation/btrfs=
--receive.asciidoc
-> > index e4c4d2c0bf3d..9c934a399a9c 100644
-> > --- a/Documentation/btrfs-receive.asciidoc
-> > +++ b/Documentation/btrfs-receive.asciidoc
-> > @@ -65,6 +65,18 @@ dump the stream metadata, one line per operation
-> >  +
-> >  Does not require the 'path' parameter. The filesystem remains unchange=
-d.
-> >
-> > +--clone-fallback::
-> > +when clone opeartions fail, attempt to directly copy the data instead.
-> > ++
-> > +When the source and destination filesystems have different sector size=
-s, or
-> > +when source and destination files have differnt 'nodatacow' and/or 'no=
-datasum'
->
-> typo: "different"
->
-> > +flags (can be set per-file or through mount options), clone operations=
- can fail.
-> > ++
-> > +This option makes the receive process attempt to manually copy data fr=
-om the
-> > +source to the destination file when a clone operation fails (caused by=
- above
-> > +reasons). When this happens, extents will end up not being shared
-> > +between the files, thus will take up more space.
->
-> Send/receive and the storage savings available by storing snapshots are
-> important btrfs features for many sysadmins. I think the documentation
-> needs to be a bit clearer.
->
-> 1) It says that the fallback happens when the clone operation fails
-> "caused by above reasons". Is that right? Is it **only** those cases
-> that can cause EINVAL error? In the earlier email discussion there was
-> mention of different compression settings - would that cause a problem?
-> What about new features like the VerifyFS stuff being worked on (I have
-> no idea - just choosing a work-in-progress item as an example). If these
-> are the only two cases, I think there needs to be a code comment in the
-> kernel code that returns this error that if any other cases are
-> introduced the documentation for --clone-fallback needs to be updated.
->
-> 2) In any case, "caused by above reasons" sounds a bit unnatural to me
-> (native English speaker). I would suggest replacing "(caused by above
-> reasons)" with "in this way".
->
-> 3) And maybe add another sentence: "A warning message will be displayed
-> when this happens, if the --verbose option is in effect".
->
-> > +
-> >  -q|--quiet::
-> >  (deprecated) alias for global '-q' option
-> >
-> > diff --git a/cmds/receive.c b/cmds/receive.c
-> > index 48c774cea587..31746d571016 100644
-> > --- a/cmds/receive.c
-> > +++ b/cmds/receive.c
-> > @@ -76,6 +76,8 @@ struct btrfs_receive
-> >       struct subvol_uuid_search sus;
-> >
-> >       int honor_end_cmd;
-> > +
-> > +     bool clone_fallback;
-> >  };
-> >
-> >  static int finish_subvol(struct btrfs_receive *rctx)
-> > @@ -705,6 +707,44 @@ out:
-> >       return ret;
-> >  }
-> >
-> > +static int buffered_copy(int src_fd, int dst_fd, u64 src_offset, u64 l=
-en,
-> > +                      u64 dest_offset)
-> > +{
-> > +     unsigned char buf[SZ_32K];
-> > +     u64 copied =3D 0;
-> > +     int ret =3D 0;
-> > +
-> > +     while (copied < len) {
-> > +             u32 copy_len =3D min_t(u32, ARRAY_SIZE(buf), len - copied=
-);
-> > +             u32 written =3D 0;
-> > +             ssize_t read_size;
-> > +
-> > +             read_size =3D pread(src_fd, buf, copy_len, src_offset + c=
-opied);
-> > +             if (read < 0) {
-> > +                     ret =3D -errno;
-> > +                     error("failed to read source file: %m");
-> > +                     return ret;
-> > +             }
-> > +
-> > +             /* Write the buffer to dest file */
-> > +             while (written < read_size) {
-> > +                     ssize_t write_size;
-> > +
-> > +                     write_size =3D pwrite(dst_fd, buf + written,
-> > +                                     read_size - written,
-> > +                                     dest_offset + copied + written);
-> > +                     if (write_size < 0) {
-> > +                             ret =3D -errno;
-> > +                             error("failed to write source file: %m");
-> > +                             return ret;
-> > +                     }
-> > +                     written +=3D write_size;
-> > +             }
-> > +             copied +=3D read_size;
-> > +     }
-> > +     return ret;
-> > +}
-> > +
-> >  static int process_clone(const char *path, u64 offset, u64 len,
-> >                        const u8 *clone_uuid, u64 clone_ctransid,
-> >                        const char *clone_path, u64 clone_offset,
-> > @@ -788,8 +828,17 @@ static int process_clone(const char *path, u64 off=
-set, u64 len,
-> >       ret =3D ioctl(rctx->write_fd, BTRFS_IOC_CLONE_RANGE, &clone_args)=
-;
-> >       if (ret < 0) {
-> >               ret =3D -errno;
-> > -             error("failed to clone extents to %s: %m", path);
-> > -             goto out;
-> > +             if (ret !=3D -EINVAL || !rctx->clone_fallback) {
-> > +                     error("failed to clone extents to %s: %m", path);
-> > +                     goto out;
-> > +             }
-> > +
-> > +             if (bconf.verbose >=3D 2)
-> > +                     warning(
-> > +             "failed to clone extents to %s, fallback to buffered writ=
-e",
->
-> I think this message needs to tell the user how many bytes which they
-> expected to be cloned are now being duplicated. Something like "failed
-> to clone NNNNNN bytes to FILE, fallback to copying data".
-
-That is a good idea.
-Perhaps even keep track of a sum to report once receive completes, so
-that the user knows how many bytes in total were not
-shared/deduplicated (we can easily have tens, hundreds of thousands or
-more clone operations).
-
-Adding the full path of the source file, instead of only the
-destination file, could also be nice to have, as it can be used
-afterwards for running simple deduplication tools.
-
->
-> Graham
->
-> > +                             path);
-> > +             ret =3D buffered_copy(clone_fd, rctx->write_fd, clone_off=
-set,
-> > +                                 len, offset);
-> >       }
-> >
-> >  out:
-> > @@ -1197,6 +1246,8 @@ static const char * const cmd_receive_usage[] =3D=
- {
-> >       "                 this file system is mounted.",
-> >       "--dump           dump stream metadata, one line per operation,",
-> >       "                 does not require the MOUNT parameter",
-> > +     "--clone-fallback when clone operations fail, attempt to directly=
- copy"
-> > +     "                 the data instead"
-> >       "-v               deprecated, alias for global -v option",
-> >       HELPINFO_INSERT_GLOBALS,
-> >       HELPINFO_INSERT_VERBOSE,
-> > @@ -1238,11 +1289,13 @@ static int cmd_receive(const struct cmd_struct =
-*cmd, int argc, char **argv)
-> >       optind =3D 0;
-> >       while (1) {
-> >               int c;
-> > -             enum { GETOPT_VAL_DUMP =3D 257 };
-> > +             enum { GETOPT_VAL_DUMP =3D 257, GETOPT_VAL_CLONE_FALLBACK=
- };
-> >               static const struct option long_opts[] =3D {
-> >                       { "max-errors", required_argument, NULL, 'E' },
-> >                       { "chroot", no_argument, NULL, 'C' },
-> >                       { "dump", no_argument, NULL, GETOPT_VAL_DUMP },
-> > +                     { "clone-fallback", no_argument, NULL,
-> > +                             GETOPT_VAL_CLONE_FALLBACK},
-> >                       { "quiet", no_argument, NULL, 'q' },
-> >                       { NULL, 0, NULL, 0 }
-> >               };
-> > @@ -1286,6 +1339,9 @@ static int cmd_receive(const struct cmd_struct *c=
-md, int argc, char **argv)
-> >               case GETOPT_VAL_DUMP:
-> >                       dump =3D 1;
-> >                       break;
-> > +             case GETOPT_VAL_CLONE_FALLBACK:
-> > +                     rctx.clone_fallback =3D true;
-> > +                     break;
-> >               default:
-> >                       usage_unknown_option(cmd, argv);
-> >               }
-> >
->
 
 
---=20
-Filipe David Manana,
+On 30/09/2021 20:16, Anand Jain wrote:
+> btrfs_prepare_sprout() splices seed devices into its own struct fs_devices,
+> so that its parent function btrfs_init_new_device() can add the new sprout
+> device to fs_info->fs_devices.
+> 
+> Both btrfs_prepare_sprout() and btrfs_init_new_device() needs
+> device_list_mutex. But they are holding it sequentially, thus creates a
+> small window to an opportunity to race. Close this opportunity and hold
+> device_list_mutex common to both btrfs_init_new_device() and
+> btrfs_prepare_sprout().
+> 
+> This patch splits btrfs_prepare_sprout() into btrfs_alloc_sprout() and
+> btrfs_splice_sprout(). This split is essential because device_list_mutex
+> shouldn't be held for btrfs_alloc_sprout() but must be held for
+> btrfs_splice_sprout(). So now a common device_list_mutex can be used
+> between btrfs_init_new_device() and btrfs_splice_sprout().
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+
+s/btrfs_alloc_sprout/btrfs_init_sprout/g
+s/btrfs_splice_sprout/btrfs_setup_sprout/g
+
+The changelog did not follow the new function names. My bad.
+
+Before I update these and send another reroll, I will wait for the 
+comments, if any.
+
+Thanks, Anand
+
+> This patch also moves the lockdep_assert_held(&uuid_mutex) from the
+> starting of the function to just above the line where we need this lock.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v7:
+>   . Not part of the patchset "btrfs: cleanup prepare_sprout" anymore as
+>   1/3 is merged and 2/3 is dropped.
+>   . Rename btrfs_alloc_sprout() to btrfs_init_sprout() as it does more
+>   than just alloc and change return to btrfs_device *.
+>   . Rename btrfs_splice_sprout() to btrfs_setup_sprout() as it does more
+>   than just the splice.
+>   . Add lockdep_assert_held(&uuid_mutex) and
+>   lockdep_assert_held(&fs_devices->device_list_mutex) in btrfs_setup_sprout().
+> 
+> v6:
+>   Remove RFC.
+>   Split btrfs_prepare_sprout so that the allocation part can be outside
+>   of the device_list_mutex in the parent function btrfs_init_new_device().
+> 
+>   fs/btrfs/volumes.c | 73 +++++++++++++++++++++++++++++++++-------------
+>   1 file changed, 53 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 8e2b76b5fd14..10227b13a1a6 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -2378,21 +2378,14 @@ struct btrfs_device *btrfs_find_device_by_devspec(
+>   	return btrfs_find_device_by_path(fs_info, device_path);
+>   }
+>   
+> -/*
+> - * does all the dirty work required for changing file system's UUID.
+> - */
+> -static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
+> +static struct btrfs_fs_devices *btrfs_init_sprout(struct btrfs_fs_info *fs_info)
+>   {
+>   	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+>   	struct btrfs_fs_devices *old_devices;
+>   	struct btrfs_fs_devices *seed_devices;
+> -	struct btrfs_super_block *disk_super = fs_info->super_copy;
+> -	struct btrfs_device *device;
+> -	u64 super_flags;
+>   
+> -	lockdep_assert_held(&uuid_mutex);
+>   	if (!fs_devices->seeding)
+> -		return -EINVAL;
+> +		return ERR_PTR(-EINVAL);
+>   
+>   	/*
+>   	 * Private copy of the seed devices, anchored at
+> @@ -2400,7 +2393,7 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
+>   	 */
+>   	seed_devices = alloc_fs_devices(NULL, NULL);
+>   	if (IS_ERR(seed_devices))
+> -		return PTR_ERR(seed_devices);
+> +		return seed_devices;
+>   
+>   	/*
+>   	 * It's necessary to retain a copy of the original seed fs_devices in
+> @@ -2411,9 +2404,10 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
+>   	old_devices = clone_fs_devices(fs_devices);
+>   	if (IS_ERR(old_devices)) {
+>   		kfree(seed_devices);
+> -		return PTR_ERR(old_devices);
+> +		return old_devices;
+>   	}
+>   
+> +	lockdep_assert_held(&uuid_mutex);
+>   	list_add(&old_devices->fs_list, &fs_uuids);
+>   
+>   	memcpy(seed_devices, fs_devices, sizeof(*seed_devices));
+> @@ -2422,7 +2416,41 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
+>   	INIT_LIST_HEAD(&seed_devices->alloc_list);
+>   	mutex_init(&seed_devices->device_list_mutex);
+>   
+> -	mutex_lock(&fs_devices->device_list_mutex);
+> +	return seed_devices;
+> +}
+> +
+> +/*
+> + * Splice seed devices into the sprout fs_devices.
+> + * Generate a new fsid for the sprouted readwrite btrfs.
+> + */
+> +static void btrfs_setup_sprout(struct btrfs_fs_info *fs_info,
+> +			       struct btrfs_fs_devices *seed_devices)
+> +{
+> +	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+> +	struct btrfs_super_block *disk_super = fs_info->super_copy;
+> +	struct btrfs_device *device;
+> +	u64 super_flags;
+> +
+> +	/*
+> +	 * We are updating the fsid, the thread leading to device_list_add()
+> +	 * could race, so uuid_mutex is needed.
+> +	 */
+> +	lockdep_assert_held(&uuid_mutex);
+> +
+> +	/*
+> +	 * Below threads though they parse dev_list they are fine without
+> +	 * device_list_mutex:
+> +	 *   All device ops and balance - as we are in btrfs_exclop_start.
+> +	 *   Various dev_list read parser - are using rcu.
+> +	 *   btrfs_ioctl_fitrim() - is using rcu.
+> +	 *
+> +	 * For-read threads as below are using device_list_mutex:
+> +	 *   Readonly scrub btrfs_scrub_dev()
+> +	 *   Readonly scrub btrfs_scrub_progress()
+> +	 *   btrfs_get_dev_stats()
+> +	 */
+> +	lockdep_assert_held(&fs_devices->device_list_mutex);
+> +
+>   	list_splice_init_rcu(&fs_devices->devices, &seed_devices->devices,
+>   			      synchronize_rcu);
+>   	list_for_each_entry(device, &seed_devices->devices, dev_list)
+> @@ -2438,13 +2466,10 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
+>   	generate_random_uuid(fs_devices->fsid);
+>   	memcpy(fs_devices->metadata_uuid, fs_devices->fsid, BTRFS_FSID_SIZE);
+>   	memcpy(disk_super->fsid, fs_devices->fsid, BTRFS_FSID_SIZE);
+> -	mutex_unlock(&fs_devices->device_list_mutex);
+>   
+>   	super_flags = btrfs_super_flags(disk_super) &
+>   		      ~BTRFS_SUPER_FLAG_SEEDING;
+>   	btrfs_set_super_flags(disk_super, super_flags);
+> -
+> -	return 0;
+>   }
+>   
+>   /*
+> @@ -2532,6 +2557,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>   	struct super_block *sb = fs_info->sb;
+>   	struct rcu_string *name;
+>   	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+> +	struct btrfs_fs_devices *seed_devices;
+>   	u64 orig_super_total_bytes;
+>   	u64 orig_super_num_devices;
+>   	int ret = 0;
+> @@ -2615,18 +2641,25 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>   
+>   	if (seeding_dev) {
+>   		btrfs_clear_sb_rdonly(sb);
+> -		ret = btrfs_prepare_sprout(fs_info);
+> -		if (ret) {
+> -			btrfs_abort_transaction(trans, ret);
+> +
+> +		/* GFP_KERNEL alloc should not be under device_list_mutex */
+> +		seed_devices = btrfs_init_sprout(fs_info);
+> +		if (IS_ERR(seed_devices)) {
+> +			btrfs_abort_transaction(trans, (int)PTR_ERR(seed_devices));
+>   			goto error_trans;
+>   		}
+> +	}
+> +
+> +	mutex_lock(&fs_devices->device_list_mutex);
+> +	if (seeding_dev) {
+> +		btrfs_setup_sprout(fs_info, seed_devices);
+> +
+>   		btrfs_assign_next_active_device(fs_info->fs_devices->latest_dev,
+>   						device);
+>   	}
+>   
+>   	device->fs_devices = fs_devices;
+>   
+> -	mutex_lock(&fs_devices->device_list_mutex);
+>   	mutex_lock(&fs_info->chunk_mutex);
+>   	list_add_rcu(&device->dev_list, &fs_devices->devices);
+>   	list_add(&device->dev_alloc_list, &fs_devices->alloc_list);
+> @@ -2688,7 +2721,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>   
+>   		/*
+>   		 * fs_devices now represents the newly sprouted filesystem and
+> -		 * its fsid has been changed by btrfs_prepare_sprout
+> +		 * its fsid has been changed by btrfs_sprout_splice().
+>   		 */
+>   		btrfs_sysfs_update_sprout_fsid(fs_devices);
+>   	}
+> 
