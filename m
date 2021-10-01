@@ -2,214 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB7041EDDC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Oct 2021 14:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1117741EE48
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Oct 2021 15:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhJAMyX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Oct 2021 08:54:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59988 "EHLO mail.kernel.org"
+        id S231424AbhJANQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Oct 2021 09:16:10 -0400
+Received: from mout.gmx.net ([212.227.15.15]:47465 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231458AbhJAMyW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 1 Oct 2021 08:54:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 768BC61A8B
-        for <linux-btrfs@vger.kernel.org>; Fri,  1 Oct 2021 12:52:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633092758;
-        bh=KC808EPYIl0l3YYcE9/WlhH3gOCi/NN2UdBvjwZCMm4=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=hcYMwBpcazOty35PrJ1flOzDqGZDFpvx1rmymsWjyTdF9FIZjvoHiGXTZA1a0G5Jl
-         jV8Gz1nuZl2LPiKcNiFetNe9om9dSOJUgZ5YgTumaEr8QJ7rXgZHT1eSeJ/Gpx7XOs
-         BFNzcYrKXClVaCmWgnlfuAQO34Y0HJCJv3rG+/yukx1VdxH1TvaF7dGfUVtmSZy4Rg
-         t2bMl9hfwOaJl8GUwgLSmk77/L5+J24+/dfPxKgIuOfQ2/GcN7krF6p4F4+fBqd0lH
-         VHECi9GetowT0ZyneO8BvADYWx7ytn89OmoLIEqjbO80cJtVqu263Mge3m54STi/1b
-         z1AdaKjrvD4Jg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] btrfs: unify lookup return value when dir entry is missing
-Date:   Fri,  1 Oct 2021 13:52:33 +0100
-Message-Id: <017d760f34d1f85e8a8d0c8b6be6489b42c28998.1633082623.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1633082623.git.fdmanana@suse.com>
-References: <cover.1633082623.git.fdmanana@suse.com>
+        id S231411AbhJANQJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 1 Oct 2021 09:16:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633094061;
+        bh=Zv9FgBV1N/7SZuZAPxt9Fb3H9JdIlDW41on7IC23Ryo=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=lwFyDwNq0lHft4d3v2UBMTZ6W2WYMxWbSM/EL9TmJNvPwq9lNF4YukHmADT50Jq2X
+         yOEr2rUqMrawpo3q6Ozw4Eb+iG6jo2ftykN+tDR39kOD68k2kjN6Rjy7QaY9Q4NpLD
+         sfvE1ZfgNPTOTmJEH0jZOXXKVXTNIlCymMZqxtZo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M5fIW-1mTYXu1uws-0079j9; Fri, 01
+ Oct 2021 15:14:21 +0200
+Message-ID: <f3d480f1-36ef-229e-d3f2-469305250144@gmx.com>
+Date:   Fri, 1 Oct 2021 21:14:17 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 1/4] btrfs: deal with errors when checking if a dir entry
+ exists during log replay
+Content-Language: en-US
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1633082623.git.fdmanana@suse.com>
+ <2c11d304684692a7f41d34c149099580f1bce9e8.1633082623.git.fdmanana@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <2c11d304684692a7f41d34c149099580f1bce9e8.1633082623.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XlBRmbSsGcKJYARGf4sjZCp3o290yLWi3AGwQhwoyNQ8FgTyROo
+ XMSX7c4c5UWk1OedOiThDqNrFnWDbCHDsG4QCbI0Qi+BGhAQ9vd+zNkmiK/tJG7uQxxufCP
+ jzN0UnXrv+8BO7Mhl5GV47uQ13pxbi0noMqDDh/lgFX31gqrRpV2AKl7E3v4/LrYou0JN60
+ wYkL/P9H/ppTDwXk1W54Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7LT86bjI4mQ=:ZAbLByaAuP/Svh5cAkmPXT
+ cCh5grst6rkBlGo6us+l0MGMmQi0Xe0/619jKHRE/1Cn+lshvtykPuS5lRvo3GBQrawJps/Ca
+ n9XUDraBlhs2Ik2V9BYJLDIt7I1+UgZtaqT8e4bT3MpJ0Q0cXipByVRi2EpTDq75a8BM+XXlj
+ vF4OfQVZKbkU/fZnsYqnKrt15x+1h/D2d87uHx6oCQynfE5AKsI5ssWd4sOHXUcPJZ274BQs8
+ AfgOW1Ug+/KTHwBuADfW/e2H/kOY3uLXxWVAUltnfOlGuOg5PIwSgCXJK6LXMifZSL8iyXAal
+ NwkDybKw2Skdgb1c7+hy0THhEwG084A1AVjP4rSS0ydkaAl/U7F3YkIa1gMVP6dvx6O97Soux
+ 2f4kq+BvW96B1IESCbDirshb0MW7eShL3E7YDyDtToD9Sa4jHx+GRY4CchgRjGEniJAO0ddtL
+ 5sECjL0tU0QhuiUB6UgF/Ghc7O4YP7c+qXMfHlkN90qJ0S7WVMvr+AjdkfZaMtcy08/vK1IJ2
+ ib2R4UNvPufpHyr/dunASDFjxfvbxmwRqm9WaijbvNCzu4tViGQzRICIA95ygP6LwTjW5P25K
+ HiUIOcoJc3AMBNuccOYwB+rfVaADzQDLPwHoH7qfNgr1vBnSbsRTsFXx2EVYXYGAN19hdXjrq
+ ynkuyUPemPhfAWkLy+TdL/FMvrOaKFs/HYk46bQowpSh7Rl+abCaFF7G6UWJCON+RkcWCAZEN
+ Og27iWJh6fdvSBKCWKoqcmwV2OFfguY8zeni3+Pcp8q/M5KAIcHCubeU4TSsTCkWzkjAf//5B
+ mvoESqljGG/qbkfqkiZzRo12hTTwBLLlZ4ZA+SNQoLMuL/U0xWfhvNDbGIlPnp4gRQCZ6+dSu
+ ffUric167HfJjMBEeTK/WsZ3yohUAmQb9+7e10ioETo/gFH+PJfeJbOJ3SNSrtr6VTTHSRC8J
+ QuTjPVZwqEvyrSnKxpLpYmtZ5MhCvQZRMR5CcW3zwjdMcRPaewQsXPjspRqgzO+aPiYoiNWJp
+ ZwE/V1SuUbkT1BQi6nqh8AUtWz5mOA96UUpW3rnkYo96aV3TTPFvOH0V8gxz0hgHhvvLASprO
+ 70USTQhAlMWnnA=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
 
-btrfs_lookup_dir_index_item() and btrfs_lookup_dir_item() lookup for dir
-entries and both are used during log replay or when updating a log tree
-during an unlink.
 
-However when the dir item does not exists, btrfs_lookup_dir_item() returns
-NULL while btrfs_lookup_dir_index_item() returns PTR_ERR(-ENOENT), and if
-the dir item exists but there is no matching entry for a given name or
-index, both return NULL. This makes the call sites during log replay to
-be more verbose than necessary and it makes it easy to miss this slight
-difference. Since we don't need to distinguish between those two cases,
-make btrfs_lookup_dir_index_item() always return NULL when there is no
-matching directory entry - either because there isn't any dir entry or
-because there is one but it does not match the given name and index.
+On 2021/10/1 20:52, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> Currently inode_in_dir() ignores errors returned from
+> btrfs_lookup_dir_index_item() and from btrfs_lookup_dir_item(), treating
+> any errors as if the directory entry does not exists in the fs/subvolume
+> tree, which is obviously not correct, as we can get errors such as -EIO
+> when reading extent buffers while searching the fs/subvolume's tree.
+>
+> Fix that by making inode_in_dir() return the errors and making its only
+> caller, add_inode_ref(), deal with returned errors as well.
+>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/tree-log.c | 47 ++++++++++++++++++++++++++++-----------------
+>   1 file changed, 29 insertions(+), 18 deletions(-)
+>
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index b765ca7536fe..79d7cca704fb 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -967,9 +967,11 @@ static noinline int drop_one_dir_item(struct btrfs_=
+trans_handle *trans,
+>   }
+>
+>   /*
+> - * helper function to see if a given name and sequence number found
+> - * in an inode back reference are already in a directory and correctly
+> - * point to this inode
+> + * Helper function to see if a given name and sequence number found in =
+an inode
+> + * back reference are already in a directory and correctly point to thi=
+s inode.
+> + *
+> + * Returns: < 0 on error, 0 if the directory entry does not exists and =
+1 if it
+> + * exists.
+>    */
+>   static noinline int inode_in_dir(struct btrfs_root *root,
+>   				 struct btrfs_path *path,
+> @@ -978,29 +980,35 @@ static noinline int inode_in_dir(struct btrfs_root=
+ *root,
+>   {
+>   	struct btrfs_dir_item *di;
+>   	struct btrfs_key location;
+> -	int match =3D 0;
+> +	int ret =3D 0;
+>
+>   	di =3D btrfs_lookup_dir_index_item(NULL, root, path, dirid,
+>   					 index, name, name_len, 0);
 
-Also rename the argument 'objectid' of btrfs_lookup_dir_index_item() to
-'index' since it is supposed to match an index number, and the name
-'objectid' is not very good because it can easily be confused with an
-inode number (like the inode number a dir entry points to).
+I did a quick search for "btrfs_lookup_dir_", and find most if not all
+callers are handling the NULL case just like ENOENT.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.h    |  2 +-
- fs/btrfs/dir-item.c | 48 ++++++++++++++++++++++++++++++++++-----------
- fs/btrfs/tree-log.c | 14 ++++---------
- 3 files changed, 42 insertions(+), 22 deletions(-)
+Can we make btrfs_lookup_match_dir() to return -ENOENT when the target
+is not found?
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 400ce90efbb0..ad674f092b4e 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3075,7 +3075,7 @@ struct btrfs_dir_item *
- btrfs_lookup_dir_index_item(struct btrfs_trans_handle *trans,
- 			    struct btrfs_root *root,
- 			    struct btrfs_path *path, u64 dir,
--			    u64 objectid, const char *name, int name_len,
-+			    u64 index, const char *name, int name_len,
- 			    int mod);
- struct btrfs_dir_item *
- btrfs_search_dir_index_item(struct btrfs_root *root,
-diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
-index f1274d5c3805..7721ce0c0604 100644
---- a/fs/btrfs/dir-item.c
-+++ b/fs/btrfs/dir-item.c
-@@ -190,9 +190,20 @@ static struct btrfs_dir_item *btrfs_lookup_match_dir(
- }
- 
- /*
-- * lookup a directory item based on name.  'dir' is the objectid
-- * we're searching in, and 'mod' tells us if you plan on deleting the
-- * item (use mod < 0) or changing the options (use mod > 0)
-+ * Lookup for a directory item by name.
-+ *
-+ * @trans:	The transaction handle to use. Can be NULL if @mod is 0.
-+ * @root:	The root of the target tree.
-+ * @path:	Path to use for the search.
-+ * @dir:	The inode number (objectid) of the directory.
-+ * @name:	The name associated to the directory entry we are looking for.
-+ * @name_len:	The length of the name.
-+ * @mod:	Used to indicate if the tree search is meant for a read only
-+ *		lookup, for a modification lookup or for a deletion lookup, so
-+ *		its value should be 0, 1 or -1, respectively.
-+ *
-+ * Returns: NULL if the dir item does not exists, an error pointer if an error
-+ * happened, or a pointer to a dir item if a dir item exists for the given name.
-  */
- struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
- 					     struct btrfs_root *root,
-@@ -273,27 +284,42 @@ int btrfs_check_dir_item_collision(struct btrfs_root *root, u64 dir,
- }
- 
- /*
-- * lookup a directory item based on index.  'dir' is the objectid
-- * we're searching in, and 'mod' tells us if you plan on deleting the
-- * item (use mod < 0) or changing the options (use mod > 0)
-+ * Lookup for a directory index item by name and index number.
-  *
-- * The name is used to make sure the index really points to the name you were
-- * looking for.
-+ * @trans:	The transaction handle to use. Can be NULL if @mod is 0.
-+ * @root:	The root of the target tree.
-+ * @path:	Path to use for the search.
-+ * @dir:	The inode number (objectid) of the directory.
-+ * @index:	The index number.
-+ * @name:	The name associated to the directory entry we are looking for.
-+ * @name_len:	The length of the name.
-+ * @mod:	Used to indicate if the tree search is meant for a read only
-+ *		lookup, for a modification lookup or for a deletion lookup, so
-+ *		its value should be 0, 1 or -1, respectively.
-+ *
-+ * Returns: NULL if the dir index item does not exists, an error pointer if an
-+ * error happened, or a pointer to a dir item if the dir index item exists and
-+ * matches the criteria (name and index number).
-  */
- struct btrfs_dir_item *
- btrfs_lookup_dir_index_item(struct btrfs_trans_handle *trans,
- 			    struct btrfs_root *root,
- 			    struct btrfs_path *path, u64 dir,
--			    u64 objectid, const char *name, int name_len,
-+			    u64 index, const char *name, int name_len,
- 			    int mod)
- {
-+	struct btrfs_dir_item *di;
- 	struct btrfs_key key;
- 
- 	key.objectid = dir;
- 	key.type = BTRFS_DIR_INDEX_KEY;
--	key.offset = objectid;
-+	key.offset = index;
- 
--	return btrfs_lookup_match_dir(trans, root, path, &key, name, name_len, mod);
-+	di = btrfs_lookup_match_dir(trans, root, path, &key, name, name_len, mod);
-+	if (di == ERR_PTR(-ENOENT))
-+		return NULL;
-+
-+	return di;
- }
- 
- struct btrfs_dir_item *
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 0091ec39f57c..68d92835dd0f 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -985,8 +985,7 @@ static noinline int inode_in_dir(struct btrfs_root *root,
- 	di = btrfs_lookup_dir_index_item(NULL, root, path, dirid,
- 					 index, name, name_len, 0);
- 	if (IS_ERR(di)) {
--		if (PTR_ERR(di) != -ENOENT)
--			ret = PTR_ERR(di);
-+		ret = PTR_ERR(di);
- 		goto out;
- 	} else if (di) {
- 		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
-@@ -1219,8 +1218,7 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
- 	di = btrfs_lookup_dir_index_item(trans, root, path, btrfs_ino(dir),
- 					 ref_index, name, namelen, 0);
- 	if (IS_ERR(di)) {
--		if (PTR_ERR(di) != -ENOENT)
--			return PTR_ERR(di);
-+		return PTR_ERR(di);
- 	} else if (di) {
- 		ret = drop_one_dir_item(trans, root, path, dir, di);
- 		if (ret)
-@@ -2022,9 +2020,6 @@ static noinline int replay_one_name(struct btrfs_trans_handle *trans,
- 		goto out;
- 	}
- 
--	if (dst_di == ERR_PTR(-ENOENT))
--		dst_di = NULL;
--
- 	if (IS_ERR(dst_di)) {
- 		ret = PTR_ERR(dst_di);
- 		goto out;
-@@ -2332,7 +2327,7 @@ static noinline int check_item_in_log(struct btrfs_trans_handle *trans,
- 						     dir_key->offset,
- 						     name, name_len, 0);
- 		}
--		if (!log_di || log_di == ERR_PTR(-ENOENT)) {
-+		if (!log_di) {
- 			btrfs_dir_item_key_to_cpu(eb, di, &location);
- 			btrfs_release_path(path);
- 			btrfs_release_path(log_path);
-@@ -3591,8 +3586,7 @@ int btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
- 	if (err == -ENOSPC) {
- 		btrfs_set_log_full_commit(trans);
- 		err = 0;
--	} else if (err < 0 && err != -ENOENT) {
--		/* ENOENT can be returned if the entry hasn't been fsynced yet */
-+	} else if (err < 0) {
- 		btrfs_abort_transaction(trans, err);
- 	}
- 
--- 
-2.33.0
+Return NULL while we still have another PTR_ERR(-ENOENT) to indicate not
+found is really asking for problems.
 
+Thanks,
+Qu
+> -	if (di && !IS_ERR(di)) {
+> +	if (IS_ERR(di)) {
+> +		if (PTR_ERR(di) !=3D -ENOENT)
+> +			ret =3D PTR_ERR(di);
+> +		goto out;
+> +	} else if (di) {
+>   		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
+>   		if (location.objectid !=3D objectid)
+>   			goto out;
+> -	} else
+> +	} else {
+>   		goto out;
+> -	btrfs_release_path(path);
+> +	}
+>
+> +	btrfs_release_path(path);
+>   	di =3D btrfs_lookup_dir_item(NULL, root, path, dirid, name, name_len,=
+ 0);
+> -	if (di && !IS_ERR(di)) {
+> -		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
+> -		if (location.objectid !=3D objectid)
+> -			goto out;
+> -	} else
+> +	if (IS_ERR(di)) {
+> +		ret =3D PTR_ERR(di);
+>   		goto out;
+> -	match =3D 1;
+> +	} else if (di) {
+> +		btrfs_dir_item_key_to_cpu(path->nodes[0], di, &location);
+> +		if (location.objectid =3D=3D objectid)
+> +			ret =3D 1;
+> +	}
+>   out:
+>   	btrfs_release_path(path);
+> -	return match;
+> +	return ret;
+>   }
+>
+>   /*
+> @@ -1545,10 +1553,12 @@ static noinline int add_inode_ref(struct btrfs_t=
+rans_handle *trans,
+>   		if (ret)
+>   			goto out;
+>
+> -		/* if we already have a perfect match, we're done */
+> -		if (!inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
+> -					btrfs_ino(BTRFS_I(inode)), ref_index,
+> -					name, namelen)) {
+> +		ret =3D inode_in_dir(root, path, btrfs_ino(BTRFS_I(dir)),
+> +				   btrfs_ino(BTRFS_I(inode)), ref_index,
+> +				   name, namelen);
+> +		if (ret < 0) {
+> +			goto out;
+> +		} else if (ret =3D=3D 0) {
+>   			/*
+>   			 * look for a conflicting back reference in the
+>   			 * metadata. if we find one we have to unlink that name
+> @@ -1608,6 +1618,7 @@ static noinline int add_inode_ref(struct btrfs_tra=
+ns_handle *trans,
+>   			if (ret)
+>   				goto out;
+>   		}
+> +		/* Else, ret =3D=3D 1, we already have a perfect match, we're done. *=
+/
+>
+>   		ref_ptr =3D (unsigned long)(ref_ptr + ref_struct_size) + namelen;
+>   		kfree(name);
+>
