@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F185441F144
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Oct 2021 17:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBD941F143
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Oct 2021 17:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhJAPbR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Oct 2021 11:31:17 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59134 "EHLO
+        id S1355049AbhJAPbP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Oct 2021 11:31:15 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59142 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355026AbhJAPbF (ORCPT
+        with ESMTP id S1355044AbhJAPbF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Fri, 1 Oct 2021 11:31:05 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0166022626;
-        Fri,  1 Oct 2021 15:29:17 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 21A6422657;
+        Fri,  1 Oct 2021 15:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633102157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1633102159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hAVUt/bzGxxw0gCH1uSZsKAfbjlEf2IncfGEjbjqjO0=;
-        b=Miad5ZCBJ4rDOSFc6cPvdsMHAYUI/s8pkHyD4as0g/XDxNidlVMSKVLonrHtkiXA6IHdAU
-        pY93wVnx0tGu3qO1BY2JbKqogXcaVBVHKpdZY3DAOE6APK0zq7K8h/BDDGgYjZU5YN+LBo
-        JnEjn49FYEm8dtZOsh0GkbIOtlIqC/I=
+        bh=3t9lC0QceZjSZIa5CGJ5xMk+R0MPPG8i/Zhw7qevX6M=;
+        b=lp5juBvnsDA6uCOP/3uqhTC0KBgTyZU5aNL3QkPxlxU1oRsRBewf4L9vKeWVMQVqN9QE9D
+        /IIXKmVbNXUhrDbCLNQivBt8EGoqTPqYqyhvOXinXlPd1ZapSV95N8REKU5C3BV1D79/No
+        iUutkGyCG8D/BNWyO7EpZFx+2zl2TeA=
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id EED06A3B91;
-        Fri,  1 Oct 2021 15:29:16 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 1AC2FA3B8C;
+        Fri,  1 Oct 2021 15:29:19 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 80994DA7F3; Fri,  1 Oct 2021 17:28:59 +0200 (CEST)
+        id 9EF67DA7F3; Fri,  1 Oct 2021 17:29:01 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/5] btrfs-progs: dump-tree: print complete root_item
-Date:   Fri,  1 Oct 2021 17:28:59 +0200
-Message-Id: <8943d4f62ac4093d6b4178cf073f986a85fe7ab2.1633101904.git.dsterba@suse.com>
+Subject: [PATCH 3/5] btrfs-progs: props: add force parameter to set
+Date:   Fri,  1 Oct 2021 17:29:01 +0200
+Message-Id: <e4d1d9fda9e4c70ba251f4ac869f3f24453a9ced.1633101904.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <cover.1633101904.git.dsterba@suse.com>
 References: <cover.1633101904.git.dsterba@suse.com>
@@ -43,131 +43,180 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The output of root_item in the 'inspect dump-tree' command lacks some
-items and some of them are printed conditionally. As the dump utility
-is for debugging, it's better to print all the items, with names
-matching the structure members and order.
-
-Some values will inevitably be all zeros like uuids or various
-timestamps, but that's a minor issue and affecting only a few trees.
-
-Example:
-
-  item 0 key (EXTENT_TREE ROOT_ITEM 0) itemoff 15844 itemsize 439
-	  generation 5 root_dirid 0 bytenr 30523392 byte_limit 0 bytes_used 16384
-	  last_snapshot 0 flags 0x0(none) refs 1
-	  drop_progress key (0 UNKNOWN.0 0) drop_level 0
-	  level 0 generation_v2 5
-	  uuid 00000000-0000-0000-0000-000000000000
-	  parent_uuid 00000000-0000-0000-0000-000000000000
-	  received_uuid 00000000-0000-0000-0000-000000000000
-	  ctransid 0 otransid 0 stransid 0 rtransid 0
-	  ctime 0.0 (1970-01-01 01:00:00)
-	  otime 0.0 (1970-01-01 01:00:00)
-	  stime 0.0 (1970-01-01 01:00:00)
-	  rtime 0.0 (1970-01-01 01:00:00)
-
-  item 3 key (FS_TREE ROOT_ITEM 0) itemoff 14949 itemsize 439
-	  generation 4 root_dirid 256 bytenr 30408704 byte_limit 0 bytes_used 16384
-	  last_snapshot 0 flags 0x0(none) refs 1
-	  drop_progress key (0 UNKNOWN.0 0) drop_level 0
-	  level 0 generation_v2 4
-	  uuid ec4669b6-6d21-46ab-857e-d60cafde45b3
-	  parent_uuid 00000000-0000-0000-0000-000000000000
-	  received_uuid 00000000-0000-0000-0000-000000000000
-	  ctransid 0 otransid 0 stransid 0 rtransid 0
-	  ctime 1633021823.0 (2021-09-30 19:10:23)
-	  otime 1633021823.0 (2021-09-30 19:10:23)
-	  stime 0.0 (1970-01-01 01:00:00)
-	  rtime 0.0 (1970-01-01 01:00:00)
+Add option support to force the value change. This allows to do safety
+checks by default and warn user that something might break. Using the
+force will override that and changing the property should do change
+itself and additionally any other changes that could break some
+usecases.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- kernel-shared/print-tree.c | 53 ++++++++++++++++----------------------
- 1 file changed, 22 insertions(+), 31 deletions(-)
+ cmds/property.c | 42 ++++++++++++++++++++++++++++--------------
+ cmds/props.h    |  3 ++-
+ 2 files changed, 30 insertions(+), 15 deletions(-)
 
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index e5d4b453fc07..5668fd7873db 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -591,55 +591,46 @@ static void print_root_item(struct extent_buffer *leaf, int slot)
- 	read_extent_buffer(leaf, &root_item, (unsigned long)ri, len);
- 	root_flags_to_str(btrfs_root_flags(&root_item), flags_str);
+diff --git a/cmds/property.c b/cmds/property.c
+index 0971aee06a3f..647c3f07afb5 100644
+--- a/cmds/property.c
++++ b/cmds/property.c
+@@ -43,7 +43,8 @@
+ static int prop_read_only(enum prop_object_type type,
+ 			  const char *object,
+ 			  const char *name,
+-			  const char *value)
++			  const char *value,
++			  bool force)
+ {
+ 	enum btrfs_util_error err;
+ 	bool read_only;
+@@ -79,7 +80,8 @@ static int prop_read_only(enum prop_object_type type,
+ static int prop_label(enum prop_object_type type,
+ 		      const char *object,
+ 		      const char *name,
+-		      const char *value)
++		      const char *value,
++		      bool force)
+ {
+ 	int ret;
  
--	printf("\t\tgeneration %llu root_dirid %llu bytenr %llu level %hhu refs %u\n",
-+	printf("\t\tgeneration %llu root_dirid %llu bytenr %llu byte_limit %llu bytes_used %llu\n",
- 		(unsigned long long)btrfs_root_generation(&root_item),
- 		(unsigned long long)btrfs_root_dirid(&root_item),
- 		(unsigned long long)btrfs_root_bytenr(&root_item),
--		btrfs_root_level(&root_item),
--		btrfs_root_refs(&root_item));
--	printf("\t\tlastsnap %llu byte_limit %llu bytes_used %llu flags 0x%llx(%s)\n",
--		(unsigned long long)btrfs_root_last_snapshot(&root_item),
- 		(unsigned long long)btrfs_root_limit(&root_item),
--		(unsigned long long)btrfs_root_used(&root_item),
-+		(unsigned long long)btrfs_root_used(&root_item));
-+	printf("\t\tlast_snapshot %llu flags 0x%llx(%s) refs %u\n",
-+		(unsigned long long)btrfs_root_last_snapshot(&root_item),
- 		(unsigned long long)btrfs_root_flags(&root_item),
--		flags_str);
-+		flags_str,
-+		btrfs_root_refs(&root_item));
-+	btrfs_disk_key_to_cpu(&drop_key, &root_item.drop_progress);
-+	printf("\t\tdrop_progress ");
-+	btrfs_print_key(&root_item.drop_progress);
-+	printf(" drop_level %hhu\n", root_item.drop_level);
-+
-+	printf("\t\tlevel %hhu generation_v2 %llu\n",
-+		btrfs_root_level(&root_item), root_item.generation_v2);
+@@ -99,7 +101,8 @@ static int prop_label(enum prop_object_type type,
+ static int prop_compression(enum prop_object_type type,
+ 			    const char *object,
+ 			    const char *name,
+-			    const char *value)
++			    const char *value,
++			    bool force)
+ {
+ 	int ret;
+ 	ssize_t sret;
+@@ -347,7 +350,7 @@ static int dump_prop(const struct prop_handler *prop,
  
- 	if (root_item.generation == root_item.generation_v2) {
- 		uuid_unparse(root_item.uuid, uuid_str);
- 		printf("\t\tuuid %s\n", uuid_str);
--		if (!empty_uuid(root_item.parent_uuid)) {
--			uuid_unparse(root_item.parent_uuid, uuid_str);
--			printf("\t\tparent_uuid %s\n", uuid_str);
--		}
--		if (!empty_uuid(root_item.received_uuid)) {
--			uuid_unparse(root_item.received_uuid, uuid_str);
--			printf("\t\treceived_uuid %s\n", uuid_str);
--		}
--		if (root_item.ctransid) {
--			printf("\t\tctransid %llu otransid %llu stransid %llu rtransid %llu\n",
-+		uuid_unparse(root_item.parent_uuid, uuid_str);
-+		printf("\t\tparent_uuid %s\n", uuid_str);
-+		uuid_unparse(root_item.received_uuid, uuid_str);
-+		printf("\t\treceived_uuid %s\n", uuid_str);
-+		printf("\t\tctransid %llu otransid %llu stransid %llu rtransid %llu\n",
- 				btrfs_root_ctransid(&root_item),
- 				btrfs_root_otransid(&root_item),
- 				btrfs_root_stransid(&root_item),
- 				btrfs_root_rtransid(&root_item));
--		}
--		if (btrfs_timespec_sec(leaf, btrfs_root_ctime(ri)))
--			print_timespec(leaf, btrfs_root_ctime(ri),
-+		print_timespec(leaf, btrfs_root_ctime(ri),
- 					"\t\tctime ", "\n");
--		if (btrfs_timespec_sec(leaf, btrfs_root_otime(ri)))
--			print_timespec(leaf, btrfs_root_otime(ri),
-+		print_timespec(leaf, btrfs_root_otime(ri),
- 					"\t\totime ", "\n");
--		if (btrfs_timespec_sec(leaf, btrfs_root_stime(ri)))
--			print_timespec(leaf, btrfs_root_stime(ri),
-+		print_timespec(leaf, btrfs_root_stime(ri),
- 					"\t\tstime ", "\n");
--		if (btrfs_timespec_sec(leaf, btrfs_root_rtime(ri)))
--			print_timespec(leaf, btrfs_root_rtime(ri),
-+		print_timespec(leaf, btrfs_root_rtime(ri),
- 					"\t\trtime ", "\n");
+ 	if ((types & type) && (prop->types & type)) {
+ 		if (!name_and_help)
+-			ret = prop->handler(type, object, prop->name, NULL);
++			ret = prop->handler(type, object, prop->name, NULL, false);
+ 		else
+ 			printf("%-20s%s\n", prop->name, prop->desc);
  	}
--
--	btrfs_disk_key_to_cpu(&drop_key, &root_item.drop_progress);
--	printf("\t\tdrop ");
--	btrfs_print_key(&root_item.drop_progress);
--	printf(" level %hhu\n", root_item.drop_level);
+@@ -379,7 +382,7 @@ static int dump_props(int types, const char *object, int name_and_help)
  }
  
- static void print_free_space_header(struct extent_buffer *leaf, int slot)
+ static int setget_prop(int types, const char *object,
+-		       const char *name, const char *value)
++		       const char *name, const char *value, bool force)
+ {
+ 	int ret;
+ 	const struct prop_handler *prop = NULL;
+@@ -407,7 +410,7 @@ static int setget_prop(int types, const char *object,
+ 		return 1;
+ 	}
+ 
+-	ret = prop->handler(types, object, name, value);
++	ret = prop->handler(types, object, name, value, force);
+ 
+ 	if (ret < 0)
+ 		ret = 1;
+@@ -420,19 +423,26 @@ static int setget_prop(int types, const char *object,
+ 
+ static int parse_args(const struct cmd_struct *cmd, int argc, char **argv,
+ 		       int *types, char **object,
+-		       char **name, char **value, int min_nonopt_args)
++		       char **name, char **value, int min_nonopt_args,
++		       bool *force)
+ {
+ 	int ret;
+ 	char *type_str = NULL;
+ 	int max_nonopt_args = 1;
+ 
++	*force = false;
++
+ 	optind = 1;
+ 	while (1) {
+-		int c = getopt(argc, argv, "t:");
++		int c = getopt(argc, argv, "ft:");
+ 		if (c < 0)
+ 			break;
+ 
+ 		switch (c) {
++		case 'f':
++			/* TODO: do not accept for get/list */
++			*force = true;
++			break;
+ 		case 't':
+ 			type_str = optarg;
+ 			break;
+@@ -516,12 +526,13 @@ static int cmd_property_get(const struct cmd_struct *cmd,
+ 	char *object = NULL;
+ 	char *name = NULL;
+ 	int types = 0;
++	bool force;
+ 
+-	if (parse_args(cmd, argc, argv, &types, &object, &name, NULL, 1))
++	if (parse_args(cmd, argc, argv, &types, &object, &name, NULL, 1, &force))
+ 		return 1;
+ 
+ 	if (name)
+-		ret = setget_prop(types, object, name, NULL);
++		ret = setget_prop(types, object, name, NULL, force);
+ 	else
+ 		ret = dump_props(types, object, 0);
+ 
+@@ -530,13 +541,14 @@ static int cmd_property_get(const struct cmd_struct *cmd,
+ static DEFINE_SIMPLE_COMMAND(property_get, "get");
+ 
+ static const char * const cmd_property_set_usage[] = {
+-	"btrfs property set [-t <type>] <object> <name> <value>",
++	"btrfs property set [-f] [-t <type>] <object> <name> <value>",
+ 	"Set a property on a btrfs object",
+ 	"Set a property on a btrfs object where object is a path to file or",
+ 	"directory and can also represent the filesystem or device based on the type",
+ 	"",
+ 	"-t <TYPE>       list properties for the given object type (inode, subvol,",
+ 	"                filesystem, device)",
++	"-f              force the change, could potentially break something\n",
+ 	NULL
+ };
+ 
+@@ -548,11 +560,12 @@ static int cmd_property_set(const struct cmd_struct *cmd,
+ 	char *name = NULL;
+ 	char *value = NULL;
+ 	int types = 0;
++	bool force = false;
+ 
+-	if (parse_args(cmd, argc, argv, &types, &object, &name, &value, 3))
++	if (parse_args(cmd, argc, argv, &types, &object, &name, &value, 3, &force))
+ 		return 1;
+ 
+-	ret = setget_prop(types, object, name, value);
++	ret = setget_prop(types, object, name, value, force);
+ 
+ 	return ret;
+ }
+@@ -576,8 +589,9 @@ static int cmd_property_list(const struct cmd_struct *cmd,
+ 	int ret;
+ 	char *object = NULL;
+ 	int types = 0;
++	bool force;
+ 
+-	if (parse_args(cmd, argc, argv, &types, &object, NULL, NULL, 1))
++	if (parse_args(cmd, argc, argv, &types, &object, NULL, NULL, 1, &force))
+ 		return 1;
+ 
+ 	ret = dump_props(types, object, 1);
+diff --git a/cmds/props.h b/cmds/props.h
+index a43cb2537f37..0f786b1866ee 100644
+--- a/cmds/props.h
++++ b/cmds/props.h
+@@ -28,7 +28,8 @@ enum prop_object_type {
+ typedef int (*prop_handler_t)(enum prop_object_type type,
+ 			      const char *object,
+ 			      const char *name,
+-			      const char *value);
++			      const char *value,
++			      bool force);
+ 
+ struct prop_handler {
+ 	const char *name;
 -- 
 2.33.0
 
