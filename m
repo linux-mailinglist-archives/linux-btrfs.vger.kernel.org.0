@@ -2,82 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C256A4201ED
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Oct 2021 16:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE0C42036C
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Oct 2021 20:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhJCOPM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 3 Oct 2021 10:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbhJCOPM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 3 Oct 2021 10:15:12 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1711DC0613EC
-        for <linux-btrfs@vger.kernel.org>; Sun,  3 Oct 2021 07:13:25 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id i13so15622033ilm.4
-        for <linux-btrfs@vger.kernel.org>; Sun, 03 Oct 2021 07:13:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=CzLLeOt2D85wYPflsbZMOSwizKARCM6P3C9aq2kTvCAL8FK1dZZaA9VZZmaIp3f33B
-         tnm7G3V2dSSl++TwJMleTYdX1B+nHs6V3T2kRG0mYWyJJeYz7qX7jy1hYLK3DbH2R2nw
-         s23bV9DFCP/frjDIfPkf4Pfma5XFXzhSsBnviadqVs/m7wSBu53yNlrmkKp7f2YVi/It
-         ZHuETojNIvNB4gxIqmtIeSHsXJSazkAFHv9YhnP92mjANq4rgL7D8Z3b8FlRGGi0rzws
-         FkUIMeczEpa/qhSZ6d5qXGP8gHqGq1whjWB6bpLGdUx8q6RDPUBcAAR5slseYAxd0IQv
-         TL2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
-        b=izna2iRHXaY8iRN5UXkyzGUjSGrWEExphijtpgyobpOKpjRD7LxpdWea1EFggKv41B
-         g0gAy1qQln39hOXLxIsiAJXAbq/keQI7pIAL8XqbndM3GHWe2d2UNPhGpuakACK1OBSV
-         Z4tHPUPmDWbZ3xONe9hrTYfqTF/DDw8UWqFMoHuzNODTr/GBctm7iERURK2fMT9ArW6F
-         XWbYYqSMKtPpyfbSj4PBA6nLDNXaf4qVtyQ7EZD2/Yrnv6OyDy6Z0GcO3w8faiYaMAaQ
-         s9QXi9jfBKtRSaug8165f0XpjM1U+FEcEHhyvnDcm/EpTkkFfmsSvWw10mj4gT0vAtym
-         Jl1Q==
-X-Gm-Message-State: AOAM5333y9XFKoNAsgffyW7usTAa4IXlcL90Z2Enod7pnzJOhRkmPKvt
-        pVLyV0Mti0OvrH6zFlJhMQB8sY6k+b+cYst2Uq8=
-X-Google-Smtp-Source: ABdhPJwb1HesNpW12IaqapBMFTaGWumjzJ93O2SJa+U30ZV3tpE5aeCcsKdEmofeOcmkqiLqiA+h+PWUQjkjjE/OhS8=
-X-Received: by 2002:a05:6e02:1a89:: with SMTP id k9mr6219250ilv.77.1633270404496;
- Sun, 03 Oct 2021 07:13:24 -0700 (PDT)
+        id S231590AbhJCSXg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 3 Oct 2021 14:23:36 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:40322 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231559AbhJCSXg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 3 Oct 2021 14:23:36 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 4181CBA3FB6; Sun,  3 Oct 2021 14:21:48 -0400 (EDT)
+Date:   Sun, 3 Oct 2021 14:21:48 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Forza <forza@tnonline.net>
+Cc:     brandonh@wolfram.com, linux-btrfs@vger.kernel.org
+Subject: Re: btrfs metadata has reserved 1T of extra space and balances don't
+ reclaim it
+Message-ID: <20211003182148.GP29026@hungrycats.org>
+References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
+ <ce9f317.4dc05cb0.17c3070258f@tnonline.net>
+ <2117366261.1733598.1632926066120.JavaMail.zimbra@wolfram.com>
+ <cda76e1b-b98a-4b13-19b1-2cf6ea8b4cf4@tnonline.net>
 MIME-Version: 1.0
-Received: by 2002:a05:6e02:1a0f:0:0:0:0 with HTTP; Sun, 3 Oct 2021 07:13:24
- -0700 (PDT)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <mrsaishagaddafi488@gmail.com>
-Date:   Sun, 3 Oct 2021 07:13:24 -0700
-Message-ID: <CAOXivUpd8ZMrXQnFbTbrBMJzPT8pHpftGpqTH6627mngwH4Nig@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cda76e1b-b98a-4b13-19b1-2cf6ea8b4cf4@tnonline.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Friend,
+On Sun, Oct 03, 2021 at 01:26:24PM +0200, Forza wrote:
+> 
+> 
+> On 2021-09-29 16:34, Brandon Heisner wrote:
+> > No I do not use that option.  Also, because of btrfs not mounting individual subvolume options, I have the compression and nodatacow set with filesystem attributes on the directories that are btrfs subvolumes.
+> > 
+> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra           btrfs   subvol=zimbra,defaults,discard,compress=lzo 0 0
+> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /var/log              btrfs   subvol=root-var-log,defaults,discard,compress=lzo 0 0
+> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/db        btrfs   subvol=db,defaults,discard,nodatacow 0 0
+> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/index     btrfs   subvol=index,defaults,discard,compress=lzo 0 0
+> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/store     btrfs   subvol=store,defaults,discard,compress=lzo 0 0
+> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/log       btrfs   subvol=log,defaults,discard,compress=lzo 0 0
+> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/snapshots btrfs   subvol=snapshots,defaults,discard,compress=lzo 0 0
+> > 
+> > 
+> 
+> It might be worth looking into discard=async (*) or setting up regular
+> fstrim instead of doing the discard mount option.
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
+Brandon's kernel (4.9.5 from 2017) is three years too old to have working
+discard=async.
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+Upgrading the kernel would most likely fix the problems even without
+changing mount options.
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits.
-
-If you are willing to handle this project on my behalf kindly reply
-urgently to enable me to provide you more information about the
-investment funds.
-
-Your Urgent Reply Will Be Appreciated
-
-Best Regards
-Mrs Aisha Al-Qaddafi
+> * async discard:
+> "mount -o discard=async" to enable it freed extents are not discarded
+> immediatelly, but grouped together and trimmed later, with IO rate limiting
+> * https://lore.kernel.org/lkml/cover.1580142284.git.dsterba@suse.com/
