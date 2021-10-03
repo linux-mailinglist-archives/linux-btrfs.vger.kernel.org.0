@@ -2,70 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F084200A7
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Oct 2021 10:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB3A42014E
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Oct 2021 13:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhJCIIx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 3 Oct 2021 04:08:53 -0400
-Received: from ssh248.corpemail.net ([210.51.61.248]:50126 "EHLO
-        ssh248.corpemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbhJCIIw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 3 Oct 2021 04:08:52 -0400
-Received: from ([60.208.111.195])
-        by ssh248.corpemail.net ((LNX1044)) with ASMTP (SSL) id XKK00156;
-        Sun, 03 Oct 2021 16:06:56 +0800
-Received: from localhost.localdomain (10.200.104.119) by
- jtjnmail201605.home.langchao.com (10.100.2.5) with Microsoft SMTP Server id
- 15.1.2308.14; Sun, 3 Oct 2021 16:06:58 +0800
-From:   Kai Song <songkai01@inspur.com>
-To:     <clm@fb.com>, <josef@toxicpanda.com>, <dsterba@suse.com>
-CC:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Kai Song <songkai01@inspur.com>
-Subject: [PATCH] btrfs: zoned: Use kmemdup() to replace kmalloc + memcpy
-Date:   Sun, 3 Oct 2021 16:06:56 +0800
-Message-ID: <20211003080656.217151-1-songkai01@inspur.com>
-X-Mailer: git-send-email 2.27.0
+        id S230142AbhJCL2S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 3 Oct 2021 07:28:18 -0400
+Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:26914 "EHLO
+        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230095AbhJCL2S (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 3 Oct 2021 07:28:18 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id AC5A93F3E5;
+        Sun,  3 Oct 2021 13:26:28 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -1.901
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.901 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, NICE_REPLY_A=-0.001]
+        autolearn=ham autolearn_force=no
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id iYzO1VkVkhob; Sun,  3 Oct 2021 13:26:27 +0200 (CEST)
+Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 71ABC3F3E7;
+        Sun,  3 Oct 2021 13:26:27 +0200 (CEST)
+Received: from [192.168.0.10] (port=52809)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1mWzdS-000Esv-HT; Sun, 03 Oct 2021 13:26:26 +0200
+From:   Forza <forza@tnonline.net>
+Subject: Re: btrfs metadata has reserved 1T of extra space and balances don't
+ reclaim it
+To:     brandonh@wolfram.com
+Cc:     linux-btrfs@vger.kernel.org
+References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
+ <ce9f317.4dc05cb0.17c3070258f@tnonline.net>
+ <2117366261.1733598.1632926066120.JavaMail.zimbra@wolfram.com>
+Message-ID: <cda76e1b-b98a-4b13-19b1-2cf6ea8b4cf4@tnonline.net>
+Date:   Sun, 3 Oct 2021 13:26:24 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.200.104.119]
-tUid:   20211003160656a3af2400dbd184062f23e01267357a2a
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+In-Reply-To: <2117366261.1733598.1632926066120.JavaMail.zimbra@wolfram.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-fix memdup.cocci warning:
-fs/btrfs/zoned.c:1198:23-30: WARNING opportunity for kmemdup
 
-Signed-off-by: Kai Song <songkai01@inspur.com>
----
- fs/btrfs/zoned.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 1433ee220c94..cfa25f5ede0d 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1195,14 +1195,12 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
- 
- 	map = em->map_lookup;
- 
--	cache->physical_map = kmalloc(map_lookup_size(map->num_stripes), GFP_NOFS);
-+	cache->physical_map = kmemdup(map, map_lookup_size(map->num_stripes), GFP_NOFS);
- 	if (!cache->physical_map) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
- 
--	memcpy(cache->physical_map, map, map_lookup_size(map->num_stripes));
--
- 	alloc_offsets = kcalloc(map->num_stripes, sizeof(*alloc_offsets), GFP_NOFS);
- 	if (!alloc_offsets) {
- 		ret = -ENOMEM;
--- 
-2.27.0
+On 2021-09-29 16:34, Brandon Heisner wrote:
+> No I do not use that option.  Also, because of btrfs not mounting individual subvolume options, I have the compression and nodatacow set with filesystem attributes on the directories that are btrfs subvolumes.
+> 
+> UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra           btrfs   subvol=zimbra,defaults,discard,compress=lzo 0 0
+> UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /var/log              btrfs   subvol=root-var-log,defaults,discard,compress=lzo 0 0
+> UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/db        btrfs   subvol=db,defaults,discard,nodatacow 0 0
+> UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/index     btrfs   subvol=index,defaults,discard,compress=lzo 0 0
+> UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/store     btrfs   subvol=store,defaults,discard,compress=lzo 0 0
+> UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/log       btrfs   subvol=log,defaults,discard,compress=lzo 0 0
+> UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/snapshots btrfs   subvol=snapshots,defaults,discard,compress=lzo 0 0
+> 
+> 
 
+It might be worth looking into discard=async (*) or setting up regular 
+fstrim instead of doing the discard mount option.
+
+* async discard:
+"mount -o discard=async" to enable it freed extents are not discarded 
+immediatelly, but grouped together and trimmed later, with IO rate limiting
+* https://lore.kernel.org/lkml/cover.1580142284.git.dsterba@suse.com/
