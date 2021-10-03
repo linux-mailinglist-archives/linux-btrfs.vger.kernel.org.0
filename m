@@ -2,83 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3CA41FB85
-	for <lists+linux-btrfs@lfdr.de>; Sat,  2 Oct 2021 14:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDD141FF34
+	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Oct 2021 04:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233010AbhJBMGL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 2 Oct 2021 08:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233001AbhJBMGL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 2 Oct 2021 08:06:11 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5DFC0613EC
-        for <linux-btrfs@vger.kernel.org>; Sat,  2 Oct 2021 05:04:25 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id h20so13296149ilj.13
-        for <linux-btrfs@vger.kernel.org>; Sat, 02 Oct 2021 05:04:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=nsZbpm1YBoHMpWTnzHLuE/zYZ0yg4jBiKD5Q7oCTPBE=;
-        b=g1nkHJ2C1U9iaJbo/dNO1dGDLtY73N5sW2xEGc0LQ5UrffNT06YrcV2zzpkARzHsh9
-         0jWNuCMu6OOjTfQpD7isWueanZ0rR0aAI4yRnCXPsAkn0LA4O0RbuL0mo3y5tFAXStZB
-         7RnG7ingAJTYWCs2smaduJRisVQxZrS+/zvEtluSqg3b/5Ur+Dd4deqkG/KO+Kr58qOC
-         Tve8jWP7bj3gBT9Hwljz8nTByt8p1/c/NrYVZ8XmrbAybAoGefxnkH5atVh/+i5stZP0
-         Egi0ddFJaRMz9I6RyD60H9pCDN4xcXQnRb9Va6mxNduBnJTKyTh+arrzOlS/lJ76QwBI
-         mR0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=nsZbpm1YBoHMpWTnzHLuE/zYZ0yg4jBiKD5Q7oCTPBE=;
-        b=6t1D/NPa9KLUiclKcn3wvO6kTrib2WWb28yM3kWa2XI0xJt8sYMeOGh4B747Rr3Gw5
-         EA9YIiBHPg+6KRZxapnFcPPdiD783MCPuqYVtMr5sG/gN8mI9NFiOQLO5c+x3xeZeKpC
-         Gz1uvuk7mZASxKLdUTE/AtXVqIJFTkn8oLkmmcKOVZ7pxiCrmCU7HB6CJwGdoe6J6wfB
-         /hm/krBBFf1uGH2egALykvfJqJHdutaZ61G9Yj+g+DPL2kVGuk7qTvPhfQpNdFgh3cpG
-         VNzZqHkAeD4RF7ExtomKOvwQBlJI9XMp9rpvq5AMjh6JWKSmEO8wQsBTFY+pCMcLTKac
-         qLsQ==
-X-Gm-Message-State: AOAM532smkzhDOqSQllW8kGEzhXk7Om2Be2xkZV7pGKSVSKGp83TvGne
-        4ZFrkVjNtHpWDnaU3qJBx4GJkzeplBm3IdOTbMM=
-X-Google-Smtp-Source: ABdhPJxreYdJpf4R8h3YUS2wiMFtXutaKmS2J29IBP9O04HdiBTvCMXAr8LuhqUjbeUuLHYFa/HBjUNtvw26amfzNos=
-X-Received: by 2002:a05:6e02:1524:: with SMTP id i4mr2338681ilu.252.1633176264863;
- Sat, 02 Oct 2021 05:04:24 -0700 (PDT)
+        id S229548AbhJCCYn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 2 Oct 2021 22:24:43 -0400
+Received: from mout.gmx.net ([212.227.15.15]:50495 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229559AbhJCCYn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 2 Oct 2021 22:24:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633227774;
+        bh=R1wdH3OfGsbi1zf+iDNUWeB42TbwPjwBry6A0LjKIVk=;
+        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
+        b=hZiPI9zV/CLRQPt1olvvuEpNIQhBeS8eeR0Fz1sWHLgrcHxwDCmHp1U9mhpF9H67R
+         bAne0GuLPUIwwq/DjwuI1p+fih1Ot2fr5XeZPziRusoQD4wdsw17QgpNLqxBgEiOeD
+         qH43oPIQXU2fBBeS6sLtBN/fwCRjs+umASQLkbFs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MI5UD-1mceIU45Lj-00FAQ4; Sun, 03
+ Oct 2021 04:22:54 +0200
+Message-ID: <7df50802-a70a-d468-0b6f-de08edceab33@gmx.com>
+Date:   Sun, 3 Oct 2021 10:22:50 +0800
 MIME-Version: 1.0
-Received: by 2002:a4f:f90d:0:0:0:0:0 with HTTP; Sat, 2 Oct 2021 05:04:24 -0700 (PDT)
-Reply-To: unitednnation0@gmail.com
-From:   "U.n" <wadebaye33@gmail.com>
-Date:   Sat, 2 Oct 2021 00:04:24 -1200
-Message-ID: <CACE0T5U3t85OVPH3TJr9Ffj6ubjmkcQbhnpgo5YVQWHoPWK4xg@mail.gmail.com>
-Subject: Attention
-To:     unitednnation0@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Content-Language: en-US
+To:     dmzlaamx@gmail.com, linux-btrfs@vger.kernel.org
+References: <001201d7b77f$74fa76a0$5eef63e0$@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Filesystem Degradation and transid Verification Failure
+In-Reply-To: <001201d7b77f$74fa76a0$5eef63e0$@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:byUXo+EFJKzodDBhlvk7cNOQ06NpW2jYtANrtqWL6uHGHWx9EDC
+ kpPDU5PVyGDSuEfwkVm7Va0aSmTOpjJJKo69khzQLrKSVW9EcCsyMhi90TvdnW0ybjWDjD6
+ /dQwo5fQpOAhb8wgKehHm8NxRMV1ORuAEPQG+OS3HRR5eV0l+xxTMbZNuVK8gzktS/2yLzY
+ xnLG6U1xA4FBFUq2SIEgQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7RXrIEip7s0=:ehYuNnNkGoMDI/8gKypm0q
+ 1Huauex5v1eppuB7NiEy8TBypxT8XqFUrfp/ICO0csR9dehKqsDz0xf9WLVwsnkyedJlNfJQ6
+ Id7ZPNK6pacF4TG+9aAuE1F96mC4Hq4frMXyGzpcySGdSm7FiPiYf2AzYRBLHV3JSLtQgAFBP
+ Hyz7eEskta3hxBYdFM0ixllLwjs/v+fzER1LH2S++0bIn42Gy0wI1w6ygk0ENIXSc8wk7nil3
+ 8fMQaKMaUYfNcWjW6PU3aec9pTbzcgOGM8afQ9mfL6MfPcauy1kK1kWrtUnftyEXQuewTLmVE
+ SBCsxkD5VluWWXKb5RaemMMMH05BrLp85fy4n6LwHi4qYdz749beMWDc3kfXGFsIAL4BjZzqN
+ E8NQKJXB9kIYL8hExnCAmjhMk2BedBD5Ps03V3ysBOHVlgQJzpanPZ6jAYj2W9Qmi+d1qe1SL
+ TzW+2/d2snOk3U/955UkAIMC5u23J/7T3S6X4zfrg3fIgw0r+v9F7u3mUUaFrWZC8mP8tqskf
+ VS3JnTcdSPW5j4Bj/IbfWyGcs4DqaJawSIllSWT2aEIzXjdqoaJu41Nw1LUxvtlBfiQBKzz78
+ A5tlQWoeX6b7IByi+1ncmO147BEGUsXk+FSGsEFGKtxihVKL4aKr7GmMvIsGZTFUhQDDwxWry
+ fZ65r41YlRtjvC7gEN0JFhpJIkodZFT83ne+19pskb8/if8QEbyYDj+HzxedJCidwFOrrp+99
+ jlXJ6S4QIvhtxp/UFpYZRayGL8FxGd7tc9cUA7Y8ea+MoEtyknrsJj7iVQ/1MJfj3kZ3FO5xn
+ t0H+MPBQ89LqNva7+bUenC4IxtMs+BBHCFpa/dhE4ECGKnv+byvvrypedg2CXhaXQR2aqeHkZ
+ /Bv/pXSr1UZemUSbwPsdpL1gFMkzxnqQNV5FEXsEx4d0scjqb+8s7ecXYMdeKjtjE5CyAcBiW
+ UIfS6vkeWWukngZs8Rx4aCUbzdYwol3JVSSVls+Q80RAl3vOzpYgc24nWYXT7IMn9fUjeH4Vx
+ 2/Bg3vAaiyBbhcoeTl5NDsyVYCwQ/YImv/UGbOgovPyIz6yMZyBdmXXIwlUYQwYsBbKKOTyjV
+ T2dAz72gyAn0GA=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=20
 
 
-Attention Sir/Madam
-This is the United Nation (UN). We the United Nations (UN) Globally
-has approved (US$2.500,000)( two Million Five hundred thousand
-dollars) compensation as part of our responsibilities for humanitarian
-Aid for fighting against CoronaVirus and you are among the lucky ones.
+On 2021/10/2 19:20, dmzlaamx@gmail.com wrote:
+> Hello,
+> I must preface this by saying I have never used a mailing list before so
+> please forgive any lack of understanding of the protocols and standards.
+>
+> I have been having a lot of trouble attempting to recover the filesystem=
+ on
+> a single 6TB disk. The drive can be mounted, but certain folders return
+> =E2=80=9CInput/output error=E2=80=9D when attempting to access them.
 
+The error is caused by transid, and according to the expected transid,
+it's a missing write.
 
-This compensation is for the most affected countries, communities and
-families across the global. Your funds were deposited with Bank in USA
-to transfer your funds to you via Internet Banking. You have to send
-your full details as state below:with this email Address
-  ( unitednnation0@gmail.com )
-Your full names:
-Address:
-Telephone:
-Occupation:
+This seems to happen either you have mounted with "nobarrier" mount
+option, or the device has non-reliable firmware handling FLUSH/FUA command=
+s.
 
+In above cases, a power loss can lead to such problem.
 
+Mind to share the hardware model and firmware version?
+We're trying to collect such known bad HDDs.
 
-Yours Sincerely
-Mr. Ant=C3=B3nio Guterres
-United Nations (UN).
+> I have attempted btrfs check, recover, restore, and rescue, and have man=
+aged
+> to recover some of the data =E2=80=93 although the folders which present=
+ed issues
+> have not been recovered.
+> Btrfs restore returns transid errors even with alternate roots.
+>
+> I want to run btrfs check --repair, =C2=A0but before that I want to chec=
+k if
+> there=E2=80=99s anything else I should do before resorting to that.
+>
+> Supplementary info
+> 	uname:		Linux eros-station 5.12.9-arch1-1 #1 SMP PREEMPT
+> Thu, 03 Jun 2021 11:36:13 +0000 x86_64 GNU/Linux
+> 	Btrfs version:	btrfs-progs v5.14.1
+>
+> The results from the two other btrfs commands are attached, including th=
+e
+> first few hundred lines from dmesg.
+>
+> Should I attempt repairing the filesystem, or are there other options I
+> should try first?
+
+No much thing can be done if you have already tried btrfs-restore and
+got nothing you want.
+
+If you still plan to use that HDD, then we recommend to disable write cach=
+e:
+https://btrfs.wiki.kernel.org/index.php/FAQ#I_see_a_warning_in_dmesg_about=
+_barriers_being_disabled_when_mounting_my_filesystem._What_does_that_mean.=
+3F
+
+Thanks,
+Qu
+
+> Thank you
+>
