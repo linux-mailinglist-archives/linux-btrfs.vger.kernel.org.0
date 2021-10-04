@@ -2,63 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE0C42036C
-	for <lists+linux-btrfs@lfdr.de>; Sun,  3 Oct 2021 20:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B30420590
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Oct 2021 07:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231590AbhJCSXg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 3 Oct 2021 14:23:36 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:40322 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231559AbhJCSXg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 3 Oct 2021 14:23:36 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 4181CBA3FB6; Sun,  3 Oct 2021 14:21:48 -0400 (EDT)
-Date:   Sun, 3 Oct 2021 14:21:48 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Forza <forza@tnonline.net>
-Cc:     brandonh@wolfram.com, linux-btrfs@vger.kernel.org
-Subject: Re: btrfs metadata has reserved 1T of extra space and balances don't
- reclaim it
-Message-ID: <20211003182148.GP29026@hungrycats.org>
-References: <70668781.1658599.1632882181840.JavaMail.zimbra@wolfram.com>
- <ce9f317.4dc05cb0.17c3070258f@tnonline.net>
- <2117366261.1733598.1632926066120.JavaMail.zimbra@wolfram.com>
- <cda76e1b-b98a-4b13-19b1-2cf6ea8b4cf4@tnonline.net>
+        id S232545AbhJDFY6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Oct 2021 01:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232529AbhJDFY5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Oct 2021 01:24:57 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5D3C061788
+        for <linux-btrfs@vger.kernel.org>; Sun,  3 Oct 2021 22:23:09 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id w2so442576uau.10
+        for <linux-btrfs@vger.kernel.org>; Sun, 03 Oct 2021 22:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=ifmbnRVePpINkQY1V1Qh4IrZJpniPJH7HtTlSpQGGG4=;
+        b=FRwnOkJOkV5mUk2WdCMhTmqTXSUnnCsrR9PPBRdeClkHClHprapaVGeDBGbI0HyARG
+         OjQw4BC3oJb40i14SHx+o1Cu67LiesYlvWeYErVUIEeEAK6VxAujkREZMTeDsaPySpHt
+         r+BoWOLq6lq2GkxDJZc+CQhzTO4nZLVmDWnCDZbQNueoF/ndfWkprY8L7RBzKFVAsvqG
+         DOwoFOyxhvJjx6Bt9gCrjcZcIxwAmOrX9nAP7XyVNgJmYDX4xdQD/YLEjtz7BqBUPf3q
+         gFd73J4eZsNIkRdhrOSfUNmI6ZsSomHlOEcCuzUaHDkvVDy0DBi3Y9+aw8Pxr5afU4Jp
+         ARoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=ifmbnRVePpINkQY1V1Qh4IrZJpniPJH7HtTlSpQGGG4=;
+        b=FFKNZ6OkHZ0vyZQQF18Biz5qzIAzWVGTFbmBU+vvzrBAqyt38SebMMIbNcvqh2PEMa
+         Q9g5r4Ekf9bJgu3rqc4GL4qxbFngcERuQEnrlvjYXnILB60ygLjLSGQrdSk+uwOmRQ2m
+         RlPmp/PkiwoBTxjAuveTzyAlYKXrvJ04zpP0eHkEkJVb20B1o8FPnNl8/Ti/9tu2ZIFu
+         GL6zVEUN84b8BSEWaeFdFgVXsfaiLJcA7fu3ClOgnb6TSdPpbDZ39/uIUbH4V5GOv4FT
+         5UqYSOAedKz5MfLvsIUhApY8kqgwoQIR2Yko5AOHj0qud4s9xY3igRTfFCa0wb6vFGse
+         xo2w==
+X-Gm-Message-State: AOAM531kglFZEMBdzsb/pKtPnC1gSIWLcU4/7A6Fn4BxeDW6oGinLKog
+        +MrE+sN6ou7XPEwoW/SHropGcFixv0oGNZiN9B0=
+X-Google-Smtp-Source: ABdhPJwZ2lmQYQULQ7LbydosN3Gm2zJz8pfBQz99cgqkI3eVsGCMoX17EgYQY9g9UO6qZ+jklJV6h80SlhyJ0GkWW4Q=
+X-Received: by 2002:ab0:29da:: with SMTP id i26mr4019770uaq.129.1633324987545;
+ Sun, 03 Oct 2021 22:23:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cda76e1b-b98a-4b13-19b1-2cf6ea8b4cf4@tnonline.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a9f:2376:0:0:0:0:0 with HTTP; Sun, 3 Oct 2021 22:23:06 -0700 (PDT)
+Reply-To: sroomf70@gmail.com
+From:   "Prof. Dr. Diane" <mes64543@gmail.com>
+Date:   Sun, 3 Oct 2021 22:23:07 -0700
+Message-ID: <CAF4hjb9553=ZoKhfMyMqHY30kFShrtFhUkUHnc1qJbRMR+t_zQ@mail.gmail.com>
+Subject: Good Day,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 01:26:24PM +0200, Forza wrote:
-> 
-> 
-> On 2021-09-29 16:34, Brandon Heisner wrote:
-> > No I do not use that option.  Also, because of btrfs not mounting individual subvolume options, I have the compression and nodatacow set with filesystem attributes on the directories that are btrfs subvolumes.
-> > 
-> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra           btrfs   subvol=zimbra,defaults,discard,compress=lzo 0 0
-> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /var/log              btrfs   subvol=root-var-log,defaults,discard,compress=lzo 0 0
-> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/db        btrfs   subvol=db,defaults,discard,nodatacow 0 0
-> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/index     btrfs   subvol=index,defaults,discard,compress=lzo 0 0
-> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/store     btrfs   subvol=store,defaults,discard,compress=lzo 0 0
-> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/log       btrfs   subvol=log,defaults,discard,compress=lzo 0 0
-> > UUID=ece150db-5817-4704-9e84-80f7d8a3b1da /opt/zimbra/snapshots btrfs   subvol=snapshots,defaults,discard,compress=lzo 0 0
-> > 
-> > 
-> 
-> It might be worth looking into discard=async (*) or setting up regular
-> fstrim instead of doing the discard mount option.
+-- 
+Hello,
+From Prof. Dr Diane,  please a huge amount of payment was made into
+your account. as soon as your respond is noted the payment
+confirmation slip will immediately send to you.  please do not
+hesitate to reply as soon as you receive this message. awaiting your
+urgent reply please.
 
-Brandon's kernel (4.9.5 from 2017) is three years too old to have working
-discard=async.
-
-Upgrading the kernel would most likely fix the problems even without
-changing mount options.
-
-> * async discard:
-> "mount -o discard=async" to enable it freed extents are not discarded
-> immediatelly, but grouped together and trimmed later, with IO rate limiting
-> * https://lore.kernel.org/lkml/cover.1580142284.git.dsterba@suse.com/
+Best regards
+Prof. Dr Diane
