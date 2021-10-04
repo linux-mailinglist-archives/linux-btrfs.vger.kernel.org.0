@@ -2,110 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409DC421838
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Oct 2021 22:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6FA421882
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Oct 2021 22:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235858AbhJDUNF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Oct 2021 16:13:05 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:54670 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhJDUNE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Oct 2021 16:13:04 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 6F39A1FE0A;
-        Mon,  4 Oct 2021 20:11:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633378274;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fr2KpR/otx9TGXBDAPSfKL+1WXeoyN8TF2nAfNqRm3k=;
-        b=DrzrwGjhoI1PGYxNs1OJwpGfMUyeAYJ01TUaoPW5CYzBZ+0RoKDFeWnB0ORKWfk23Ue7ra
-        3wc+dBA1SK1+WVucKik4mvUdL9fTLBVqg0nzK2y2IPWRggRHd82X/UDLcPyWtfbMD+Ywv8
-        6JwPPhF0BSvobCX4ciH1tqdSLUKGr+0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633378274;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fr2KpR/otx9TGXBDAPSfKL+1WXeoyN8TF2nAfNqRm3k=;
-        b=Vq2ny2JXzKYs8ZNLNR1BtxMkLo0/HjjalbWYvlAfhq95B+Oq8bFJJVBWHF8lAlXs+o7qYh
-        ppoJgyz5glXyqSBw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 6CCA8A3B83;
-        Mon,  4 Oct 2021 20:11:14 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 18091DA7F3; Mon,  4 Oct 2021 22:10:55 +0200 (CEST)
-Date:   Mon, 4 Oct 2021 22:10:55 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 12/26] btrfs: make btrfs_submit_compressed_read() to
- determine stripe boundary at bio allocation time
-Message-ID: <20211004201054.GD9286@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210927072208.21634-1-wqu@suse.com>
- <20210927072208.21634-13-wqu@suse.com>
+        id S236588AbhJDUjz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Oct 2021 16:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234781AbhJDUjy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Oct 2021 16:39:54 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC07DC061749
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 Oct 2021 13:38:04 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id i84so40603911ybc.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 04 Oct 2021 13:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kpOiIjR+9VvVk6bfroZvLR8cok37OjVi4cg7HJMLR2M=;
+        b=E+4Pa2krdIcxnwjn2r4XhkSy+sOLxpV+Wsf0b5kp+kTDWC4l86me8ZJc3nXpPadAVh
+         /ef7qvCUxLySu5u3mHPgfnjtRlXqiTkKcZiwooRs8aZGpqee1CDTUgklG+Upkdpo1Krh
+         x+FeIfUfK+rWCc/hVLEsRkllBXaFFGsy+XFyehwDW9Wl3LZJtKcR/P8NLFCv5CgzX4jx
+         2loizVvykJ4R0TgY3qnCVR3b5brkCvZQ+hZI3jJeA0UHAynY9169dcPxia7zLrCgxvUD
+         jjpC1t9Og4OWcZCrtVWVTnyCu59uTpc9zzLvijfbWLiflncjJeYG+GCGEZgx4ZtKCjaH
+         eoJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kpOiIjR+9VvVk6bfroZvLR8cok37OjVi4cg7HJMLR2M=;
+        b=CkAk/+76C006VPGTb4hLi98CGNrkg49rbzY/u7/VV7QXSV1XNuK6GgYD7OOTsQDsxT
+         Yev0M3anq9Twzn/mVydq+18pbzTDeSIv5Hnpzf/yMfLSMo9dy6Y8R/pX/j4ecG9TM0pj
+         dPZekR24VxHAS0OM1NJykONZSRDlcrvDEmbyMofKaPiHOG7g3hjS7ZoZS3slJgmQWpYf
+         Myd9kUtYc3zpcw9693XxpmrU7uQkmIMJ2ndJxrye22nfnDekGpoJyC2br9RXnKRLSNWX
+         f1Vyghac8F88v7KVMEjdVePSXm6i2Z3D3LtLAL9NEeuhadFKGrz1lloLkjaRSo2Tn7k2
+         +Y7g==
+X-Gm-Message-State: AOAM531dEnJjeegzWch0aSxOCnbktzGkjJj3c+6focJddMAEheMVvfRd
+        rt/NYlg+UAiTzILP2/snzta/ZPNFIHYnKMa53dKqrQpTFvt1XQ==
+X-Google-Smtp-Source: ABdhPJxj8rM80iF0DowA3q9h79wmK6Fr2bcIuCFLKuLXkU1Dbina10pm4KeUZdlnqoQl3NAL3+Qv4JZ5kX+LYb7BmJA=
+X-Received: by 2002:a25:8690:: with SMTP id z16mr17262563ybk.493.1633379884206;
+ Mon, 04 Oct 2021 13:38:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927072208.21634-13-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <CA+H1V9wsz2y21qxaYAkNa2PuBUCnM4yFVpoSC5rGav-1LHdwHA@mail.gmail.com>
+ <20211004095146.GU9286@twin.jikos.cz> <CA+H1V9yopc2okgT=5XeCwvHF8oXPVhnojaf_rZOeuiThZEfqWQ@mail.gmail.com>
+In-Reply-To: <CA+H1V9yopc2okgT=5XeCwvHF8oXPVhnojaf_rZOeuiThZEfqWQ@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 4 Oct 2021 16:37:48 -0400
+Message-ID: <CAJCQCtRCr+xHBSGZEV+KTY+S+79ZhJ1rWZUByecTUdjOJiLQTA@mail.gmail.com>
+Subject: Re: Changing the checksum algorithm on an existing BTRFS filesystem
+To:     Matthew Warren <matthewwarren101010@gmail.com>
+Cc:     David Sterba <dsterba@suse.cz>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 03:21:54PM +0800, Qu Wenruo wrote:
-> Currently btrfs_submit_compressed_read() will check
-> btrfs_bio_fits_in_stripe() each time a new page is going to be added.
-> 
-> Even compressed extent is small, we don't really need to do that for
-> every page.
-> 
-> This patch will align the behavior to extent_io.c, by determining the
-> stripe boundary when allocating a bio.
-> 
-> Unlike extent_io.c, in compressed.c we don't need to bother things like
-> different bio flags, thus no need to re-use bio_ctrl.
-> 
-> Here we just manually introduce new local variable, next_stripe_start,
-> and teach alloc_compressed_bio() to calculate the stripe boundary.
-> 
-> Then each time we add some page range into the bio, we check if we
-> reached the boundary.
-> And if reached, submit it.
-> 
-> Also, since we have @cur_disk_byte to determine whether we're the last
-> bio, we don't need a explicit last_bio: tag for error handling any more.
-> 
-> And we can use @cur_disk_byte to track which range has been added to
-> bio, we can also use @cur_disk_byte to calculate the wait condition, no
-> need for @pending_bios.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/compression.c | 164 +++++++++++++++++++++++------------------
->  1 file changed, 93 insertions(+), 71 deletions(-)
-> 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 1b62677cd0f3..319d39fd1afa 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -439,11 +439,18 @@ static blk_status_t submit_compressed_bio(struct btrfs_fs_info *fs_info,
->  
->  /*
->   * To allocate a compressed_bio, which will be used to read/write on-disk data.
-> + *
-> + * @next_stripe_start:	Disk bytenr of next stripe start
+On Mon, Oct 4, 2021 at 12:02 PM Matthew Warren
+<matthewwarren101010@gmail.com> wrote:
+>
+> I don't know how btrfs is layed out internally, but is checksum tree
+> separate from file (meta)data or is it part of the (meta)data? If it's
+> separate it should be possible to build a second csum tree and then
+> replace the old one once it's done, right?
 
-Please send an incremental followup to also document all the remaining
-parameters. We're not strict about the kdoc warnings but if the code
-gets touched it's better to complete it.
+Yes, but the other trees still use the old checksum algo. The simplest
+way to do this and ensure it's atomic and thus crash safe is offline
+conversion. And of course offline conversion doesn't really scale.
 
->   */
->  static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u64 disk_bytenr,
-> -					unsigned int opf, bio_end_io_t endio_func)
-> +					unsigned int opf, bio_end_io_t endio_func,
-> +					u64 *next_stripe_start)
+-- 
+Chris Murphy
