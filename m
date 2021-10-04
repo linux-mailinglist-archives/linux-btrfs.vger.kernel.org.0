@@ -2,70 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3685420A61
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Oct 2021 13:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D57420A8F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Oct 2021 14:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233030AbhJDLxV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Oct 2021 07:53:21 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58064 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhJDLxU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Oct 2021 07:53:20 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 731CD201ED;
-        Mon,  4 Oct 2021 11:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633348290;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=slPbpBqa93SsGSCMOhDQtfscxG5NdChTxcwUXZYbqTU=;
-        b=xwjJgSpGv375/UWbWLOIKrpSZ/XrQrcWwJ8PVOLSyTPYdqbcsDwYRdxgnbiKTMyRYMdIEC
-        VsOqLrnV8iroMNxtQj3fScjxL7BXYUBrMdkDU7UWAL75CG++BBGDIzGqeK5N3cLjcYJXjj
-        GPaVu3ugsXPkgidtjGL6yq1JNNWLJ+U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633348290;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=slPbpBqa93SsGSCMOhDQtfscxG5NdChTxcwUXZYbqTU=;
-        b=RuSo0qsJJ6KI9zkcSz6VmBkFR4bWqc07RfKEOupJaKXWoYNu0MdVZR8VudDRvTr1TukjeG
-        9dfK3MlLmph++fDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 4DE94A3B81;
-        Mon,  4 Oct 2021 11:51:30 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1D748DA7F3; Mon,  4 Oct 2021 13:51:11 +0200 (CEST)
-Date:   Mon, 4 Oct 2021 13:51:11 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Hamza Mahfooz <someguy@effective-light.com>
-Cc:     linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use kmem cache to allocate struct
- btrfs_qgroup_extent_record
-Message-ID: <20211004115110.GW9286@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Hamza Mahfooz <someguy@effective-light.com>,
-        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211004105533.1605-1-someguy@effective-light.com>
+        id S233029AbhJDMGI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Oct 2021 08:06:08 -0400
+Received: from eu-shark2.inbox.eu ([195.216.236.82]:42986 "EHLO
+        eu-shark2.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233001AbhJDMGH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 4 Oct 2021 08:06:07 -0400
+Received: from eu-shark2.inbox.eu (localhost [127.0.0.1])
+        by eu-shark2-out.inbox.eu (Postfix) with ESMTP id CF1CA1E006F2;
+        Mon,  4 Oct 2021 15:04:17 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1633349057; bh=LUBjn25IerK9OBp/qE7H97M10Ha7H7kRRBu8q/O/4CY=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to;
+        b=AxLY4NFmYM+O4erFHBRDHfVzp/VP9L7VFs7NV4fO2qvAzDOGYL+MFKwyYNwzYyi73
+         KLpRbjXgWoVFePWgVoYXxiBfAAWFpWW2fU7dgaxSBm8LWtO7KIQTFBwAzGVTZr8Igw
+         a0zgTaA2lsffC1mkenTkhUDWxj9/1U8ndaZ3o4vI=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id C649D1E006F0;
+        Mon,  4 Oct 2021 15:04:17 +0300 (EEST)
+Received: from eu-shark2.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark2.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id uXQzXSu47MAx; Mon,  4 Oct 2021 15:04:17 +0300 (EEST)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark2-in.inbox.eu (Postfix) with ESMTP id 4699C1E006ED;
+        Mon,  4 Oct 2021 15:04:17 +0300 (EEST)
+Received: from nas (unknown [117.62.175.41])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 049091BE0ACA;
+        Mon,  4 Oct 2021 15:04:13 +0300 (EEST)
+References: <CAJCQCtT+OuemovPO7GZk8Y8=qtOObr0XTDp8jh4OHD6y84AFxw@mail.gmail.com>
+ <20210921195632.GR9286@twin.jikos.cz>
+User-agent: mu4e 1.7.0; emacs 27.2
+From:   Su Yue <l@damenly.su>
+To:     dsterba@suse.cz
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: 5.15.0-rc1 armv7hl Workqueue: btrfs-delalloc btrfs_work_helper
+ PC is at mmiocpy LR is at ZSTD_compressStream
+Date:   Mon, 04 Oct 2021 19:57:25 +0800
+In-reply-to: <20210921195632.GR9286@twin.jikos.cz>
+Message-ID: <v92d3sjs.fsf@damenly.su>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004105533.1605-1-someguy@effective-light.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: 6NpmlYxOGzysiV+lRWetewt38GpVL57oiJmmsm5Un2eDUSOFf08TVhKpnGtzU3i5og==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 06:55:32AM -0400, Hamza Mahfooz wrote:
-> Commit 3368d001ba5d ("btrfs: qgroup: Record possible quota-related extent
-> for qgroup.") suggests that,
 
-The commit is from 2015 and besides the TODO notice there's nothing that
-explains why it should be kmem cache and not plain kmalloc/kfree.
+On Tue 21 Sep 2021 at 21:56, David Sterba <dsterba@suse.cz> wrote:
 
-So, why you'd like to do the change?
+> On Mon, Sep 20, 2021 at 06:13:07PM -0600, Chris Murphy wrote:
+>> https://kojipkgs.fedoraproject.org//work/tasks/8820/75928820/oz-armhfp.log
+>
+>> 00:09:50,679 EMERG kernel:[<c08bd768>] (mmiocpy) from 
+>> [<c089c314>]
+>> (ZSTD_compressStream+0x184/0x294)
+>
+> The last function to fail is inside ZSTD implementation in 
+> kernel.
+> If btrfs passes wrong data to zstd we'd see that also on non-arm 
+> builds,
+> so guessing by mmiocpy as a copy-something function it could be 
+> some
+> sort of alignment problem that works on x86_64 but throws an 
+> exception
+> on arm as it's stricter about alignment.
+
+It's about 32bits platforms. There is another report about x86 
+cpu.
+And it's reproduciable by running btrfs/004 (lzo and zstd)in x86 
+VM.
+In my arm64, all things are fine.
+And the bisection result is the highmem related patchset
+'[PATCH 0/6] Remove highmem allocations, kmap/kunmap'.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214565
+
+--
+Su
