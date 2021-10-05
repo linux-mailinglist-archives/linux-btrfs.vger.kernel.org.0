@@ -2,338 +2,295 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6348421DEE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 07:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A8C421E8B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 08:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbhJEF3i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Oct 2021 01:29:38 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:21112 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230403AbhJEF3h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 Oct 2021 01:29:37 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1954UZFd004511;
-        Tue, 5 Oct 2021 05:27:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=HNc+gyg0GdB+6wROI1EEdD5lFmWpg4yOwwI2jzrBTvQ=;
- b=uAzs1zYwS5UGhY8M3d+jVeiMw0ofgploRldLwuhFTXUhxNcRXkNqI2BCMxelc4ibFB2T
- QM0pf/G0scCIr3T0b6Dg4iSb8mMcTedpmKwKqfL0wQsGbPmjW/e9hUvRC8GQzhnb1fDN
- qLk/UxAusF4npIyt7mCKaOAzP4E1g2Kz0AYaydz0Ok57nV58mKU4wNtu3hK3a8dctT2Q
- uI9FGWKq0KZfIp6zrufxXaXQvxjmYqUJ4EpGUmhCQEhA5/7l0TAhnRMYiifCTSjRipHG
- KqeSGCRhjfG7Pl2b1alo+XuObuNGbWj+H34cuXoVMxAkRUGdhPUq/VdXtTFP9K6Oi80c rA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bg43dvdsu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Oct 2021 05:27:44 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1955Ed1t007266;
-        Tue, 5 Oct 2021 05:27:43 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2041.outbound.protection.outlook.com [104.47.51.41])
-        by userp3020.oracle.com with ESMTP id 3bf16sfhhq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Oct 2021 05:27:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bKUFXrfh/dwkHI+WrBDwoKym80bsCqBptEYuKCzVfbfM682rw5+Gy3/cuy65yAvmvYsG1UCDWRZD2SODVKhLTNLUorlFwMq1sxYf27DsKLBxQKTmg9wWgMRL+OEBU2CCRq6OXA+qcFLq61ui9kZjfGOJEe9K8PgbhtqbtXjFFJ7wRp6NASsVoAfwL2DhNMYqxCWOU2kXzkPwp2k0sjr9URNayTtWirz+UwQ9f/EmwdeB3l9/wjLKrkIYo2juxdHEPIZ8e7o7m/YGxVdWUwPRZKPqNX9aQ21XL2kWF3XcfvhIXeM5Y+vOVDSOl3TlYaRRT3/Jmgjb9/79iTQHBPkbEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HNc+gyg0GdB+6wROI1EEdD5lFmWpg4yOwwI2jzrBTvQ=;
- b=X/sJeHke1o6RHz2fAMgyaYSV+EPnnK5T/qUBLLKpiTICPBjFnx7Y+6ms7uIy1aURMPI0EhrrM3IlwXfmWunBsVat2qzgGXBK+uf5ZWfukxSCTStgNQjf+Oq5/zUw4vAY3j90YzgnhUbWXrDtG7/mhwPrAMfP6AWL+9Gw+0RYBQR2w7RQ5coaG/poFXVsSFWLbYMbxKYToYJO1gbCxif5uyYxch9svUh0UyvzFhyPTBfcFqUps4Rt/XPeSnN+xynSOb1GiJWAz/Mw+N2q5PoJ5zLoXl3JyHatMYu+CSReHeh65qX+3YxP9EV/v6MPg98Qxynp/bQo+f9X9CqmXH7a0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HNc+gyg0GdB+6wROI1EEdD5lFmWpg4yOwwI2jzrBTvQ=;
- b=la8fP2/RAY0urqzy5NyFnEWd5i52yRyE7jQ5IzpM/iy0EMxPG3K0BSAcPa8F/gLEX+02cGkm2oac8HNANFOGasraoAqH3YSSqxnvydcV21OMXVU86HO9xnczeGSzOmxSoaqylUgkzHZyf5Io2FJDxj8fw8sv9z5jwcaddHkMzes=
-Authentication-Results: fb.com; dkim=none (message not signed)
- header.d=none;fb.com; dmarc=none action=none header.from=oracle.com;
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4093.namprd10.prod.outlook.com (2603:10b6:208:114::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.22; Tue, 5 Oct
- 2021 05:27:41 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::49a5:5188:b83d:b6c9%8]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
- 05:27:41 +0000
-Subject: Re: [PATCH v3 5/6] btrfs: add a btrfs_get_dev_args_from_path helper
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1633367810.git.josef@toxicpanda.com>
- <5070938448ea0730e642d4dcaad3c1ca95d95394.1633367810.git.josef@toxicpanda.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <f4056e10-6a12-26ee-1fe0-face9eeb870b@oracle.com>
-Date:   Tue, 5 Oct 2021 13:27:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <5070938448ea0730e642d4dcaad3c1ca95d95394.1633367810.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0010.apcprd02.prod.outlook.com
- (2603:1096:3:17::22) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
+        id S231965AbhJEGCP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Oct 2021 02:02:15 -0400
+Received: from mout.gmx.net ([212.227.17.21]:48307 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231688AbhJEGCO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 Oct 2021 02:02:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633413620;
+        bh=nLXLc6m/dLeCd3/oJaSP1Wbe0chOJ95+QnkbY6cUIOE=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=T4X5JO+ftc95JEZZ3TpH2k1bTW32ETbANaP1GFVJEd+tF2VcSIAKvXKSMmb6lTLqY
+         7q0OMdlXggEmZEsa+Jalc+0puAQQrq8WpP34tFWMd7xog3LyYNTQ4EXTY82DJTUlnj
+         Vb11IbCYfTVBHbwMTdXklV4BsihavOGoHDvwLTXs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiJZO-1n2ryf0kzO-00fUK3; Tue, 05
+ Oct 2021 08:00:19 +0200
+Message-ID: <4be6e096-b617-41a1-e535-296b6949b765@gmx.com>
+Date:   Tue, 5 Oct 2021 14:00:15 +0800
 MIME-Version: 1.0
-Received: from [192.168.10.100] (39.109.140.76) by SG2PR02CA0010.apcprd02.prod.outlook.com (2603:1096:3:17::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.22 via Frontend Transport; Tue, 5 Oct 2021 05:27:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 710ab8a7-9727-4861-2d0f-08d987c0da15
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4093:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4093848B0B0284E1DF895E24E5AF9@MN2PR10MB4093.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tAC5hbpfc+gy6zjUCB+6O83FW8weLX8OEOUum+ZLx1DaOuzikZAYRtyUGr6ubnMX91jhzVwIA3gYR0IP0gSP1m0HmuwCWTPrzXREHn7/Bg4Y3kZVoruediYVy6v23OZ7Aqt70k883Kym5pHcooyHKrEbNu+HzJQ2GoT9Jc1dyAAqOW0kHIo7tlrPjr88pXX8kEYT29/oV2FhNQp/C5H1JmNhqa3dOSpF4NaPR5mcj513WyTXHy9KR50xyR1enT/gCcuxs5kvThp+3kgPysG06oyAcMOsKG/xInzQviRiHkcZ7zvmzdh+Q0w6rs7L5yTqWfgpTY2EVe5/5fikwvQjy5bk58TSHUg60cU3ge9s5faoM+1lnKDZQhVYJs8LinnLzYMfDLlOE5G7izV/4kvJSR4uoFa3DcPg/V55X8D/K84A7rndBKCmcLBYLdVec/xic7qwY6c3KLfqyE1Z3E+wfDTXKlxiPigsXXTn7Ny8/EM2ZnzqwKDqyHAzYaepFkI/OHLEEl/zCiHpkLGtPX+RwDQadXFu28eq27qwjlC5tGLda6u1BXoDEfJ6G4qAF+gqAfSGL/ND9iCcc6zIYOobikuDwtQ24WzoDlbA0ddFE9ISYDK3NGvVSP6olPCJDot9LZklQghc+XZe6422KTQVLlniN8m2+aktquHiUzZ3CM1C6AbEqmq+uaTdYseRicfwqhz7vM4G4F1N1pMZeVyXtswNTAr4fEILjwRIP1VaY553Yk8icl7yEyBDatFxs3cv
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(316002)(38100700002)(6666004)(31686004)(16576012)(36756003)(83380400001)(2906002)(6486002)(186003)(2616005)(956004)(8936002)(8676002)(86362001)(44832011)(53546011)(31696002)(66476007)(26005)(66556008)(66946007)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bXR6VkV2a1RHUHdnQWRBdXlsQXFrbC9mYUdVajZOTWlKUm5GSnZiQkZoN2N6?=
- =?utf-8?B?ajVsSGY3Tk11MHQ5YkYrVkUvUFNPLzVhdVN5THVGdFdQY2FSREJDYWRsS1Ex?=
- =?utf-8?B?M0NSRUVISzVMU0kyT2tweTR5K2Ewc2k5SHppMGxvOE9ZTm9tVGgwRVRCL1pw?=
- =?utf-8?B?cXlxeHk5NXlhUGFmSUxkaDFEMjQvT3A0SWFGakRNa09TR1BoMWNNMldhek9N?=
- =?utf-8?B?R2pqRjFSNmpnUCtCRkpmWlltTW5qUEhBc2ZKNERIQ2JzSjhOZ1FFT2FRbHJD?=
- =?utf-8?B?WDFDejFtTHBSSFBKbzhYL1RRUUNza0FWRmxKUWZMOHpkakRBckZ5cHk1MWsw?=
- =?utf-8?B?K1JLTGZoek1nQ2F2Q2taUHZaeFBUSHN6UTRPSzhxZzdyZGxtci9PMWxwRDZX?=
- =?utf-8?B?d2tYVEdncHYyQytzN2VhVDlTc1J5OUJWNm5YRUVNc1cxYkhCenZnelZ1bnE2?=
- =?utf-8?B?NW9aVzZtZWJ2V2k2L1UxUXNNYmwrRlkzenBzNnBja2hMOHd5WU5BbmxUUlJC?=
- =?utf-8?B?NUJWZzZvRTB5YXd6NU9zbW1DRy9QVzBTZVhtZVVIV3o2ZjBWSFRLcTRIVWhz?=
- =?utf-8?B?TVVDKzNtamlOZlcvNG1jMnhZbmxXcnU2R25mUXpRM2NzZFI2elN3WTJhYWpo?=
- =?utf-8?B?ajhoMksvU3ZmYXljdUpiRG1oRUpkWDhqOWhXQUhlVVJvTHY4WnRvaU1xZU5B?=
- =?utf-8?B?QkQ5UWYwM0U2aEo1enhEWmIvczJjRlNHeFdFRVFYN09id2ZSTFVJUFV2enR1?=
- =?utf-8?B?T01ZOFNTQmZnUGJyWkJYTVRLZFFKbU1RN0RUVVlqTkY3bVdzT2k3Um5mN2VU?=
- =?utf-8?B?YkVWbS8raFA1OWpKRzZ2SitDR1kxVmNhWmtPeGlRU0REZTVTUmxVNVN6Y09E?=
- =?utf-8?B?dG51ZktkSmNGc0RHOE1PNUkxelNLTFU5VDVPMjF4RnZLNmVOWlMyVEZWV0Zs?=
- =?utf-8?B?enNzcG1keWhSWUtkSVpyT3lVNm1DdytlZE9nL3ZkeHdoMTFNc25zRFNjR3p6?=
- =?utf-8?B?Vms1SkRINXVrcEoyekk1VWc2ZGpzUUtURHVEdGUvdkswWVc2MUtFVFE3a1dI?=
- =?utf-8?B?WndFUmM2emxKakZod0JYeGN2SENQRmc4NlpzRHltZUR3bmtucHA1SC9qeXkr?=
- =?utf-8?B?YkI4RlFqaVV5L2tmbmdRVmRoeVJyemJQL0xHY3F2Mm1qcVFqeFJCSXZSMTFH?=
- =?utf-8?B?MFVsYkphaFR1UUsvWVFYbngwcDRmNVBlbFpVTFUycHArclArck9uUGtnQnFl?=
- =?utf-8?B?czJRK0liaEQ3V2UwWFM3ZXAxejJ5QzU4aG0yRWhwQkU4Q2ZuZjJ0ZGtodm9U?=
- =?utf-8?B?akxCMHFjaFJCbGdZUVpiR1p1WGhTODdWM3lHZUdjNG9aQUUwT1NTTm1nVzEz?=
- =?utf-8?B?NDVQTFdCek1MeDRxRmRscGpSZDVZL3ZsL2xzejJJcDcyVGRWcFVCN0JrNWh5?=
- =?utf-8?B?VzhBK09mUWZrZDlocUlsM3Q2clBJZ21UdW9Yc3RjelFlMjd3WXY4WjMvRE8w?=
- =?utf-8?B?Zm1SbkV3bXdIR1NQTWowQXE4bDMvRjVzWm82N0VuZVhlOHRUdDZQM2NJS09Y?=
- =?utf-8?B?aUFNZmViUXpzRTE4YTlTa055T1ZKYnZPcGdobjlhUk1PZFVZSUNIYzZRRlE4?=
- =?utf-8?B?dFRnSlBrZS8vZWlUWkhZT0l0UnJVRHRHT1IwVG5tNjlBNkpHTjZyUEJ3c29z?=
- =?utf-8?B?Q21xREFYZ3lVR1RQS24wNnFBQkIvOXZRNXQ2QTY0TTlDc0E1Z1hVR04zejhr?=
- =?utf-8?Q?yQaGJdHKfa/p9txR+GQJgEkKLgwGDZ9hqcKrLIg?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 710ab8a7-9727-4861-2d0f-08d987c0da15
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 05:27:41.6168
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B7mS25rLwWC3vlIp7mzItOJEwymfgOmmai5Qjg0XCLGBHH/l9e8Yxxv49OZFCRg6EssHGnT1OX83cyG6mjWAUA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4093
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10127 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110050029
-X-Proofpoint-GUID: YSm6CouAPmyzvsVoqzTEqunnKG6HxQxj
-X-Proofpoint-ORIG-GUID: YSm6CouAPmyzvsVoqzTEqunnKG6HxQxj
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Content-Language: en-US
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     Matthew Warren <matthewwarren101010@gmail.com>, dsterba@suse.cz,
+        linux-btrfs@vger.kernel.org
+References: <CA+H1V9wsz2y21qxaYAkNa2PuBUCnM4yFVpoSC5rGav-1LHdwHA@mail.gmail.com>
+ <20211004095146.GU9286@twin.jikos.cz>
+ <CA+H1V9yopc2okgT=5XeCwvHF8oXPVhnojaf_rZOeuiThZEfqWQ@mail.gmail.com>
+ <d2e7dd3d-5cbf-287f-893c-bed3e6219d0a@gmx.com>
+ <20211005032621.GQ29026@hungrycats.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Changing the checksum algorithm on an existing BTRFS filesystem
+In-Reply-To: <20211005032621.GQ29026@hungrycats.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:baLig3i2UKrg3dRGUNRfysjA8ckiI4AHvD3xy87K1tJjoE8mhHj
+ 8mBYVoYaBHasWWsQDQtXy3B6efPyfJokqqm84+1jlmp01tCclz9r0eMlYt8oVuyARVClGdf
+ jM5YP0um4nH/OQ+ZVCaHiA4V4hWXZVY08HIW8M4FCICvFk8c3M2MeVYvi0eItZ6DQoz+rYn
+ QVINY5dy8mg6oUbcLdNUQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:enms4VQH/r4=:c9X59Ow5Pkg9I/qnmTSYH0
+ QowYVxofkAc8Jk26xlwUe2boG9cbbpDdlvQl4YbrQhlZAQWXP0nmkuadJeErl1SMSzb7PA0hl
+ slUJbRZzEE27jZ5eKKPHkzn0VxZoUMo+ZPdp66aDDWRRtkYsyYa4WXO0PJAQiqlJSnbE/s9iW
+ GDOJ85EuDTYv4+XnNHTjwS6KeCZ1P9cCUcUTTPfYP3pa/HzcKtDzyg3CuZKbeZGMc+djnXHxk
+ 63cOpm+F5jHpb6Op3w7ZNokXuT6yHESv4y2izdrcGMixOyUvyH+FF1OS/hqKyY/E87txiaXyb
+ EV5usSrqQerAPeA3zF5oYURHRnUaeSNfjyItubFrQm6e/tN6HqpUnh6ellNkoep88QtbsvokK
+ b/SUEuleMYldiHd1/fzFEpylBOSVG2M0dexQoesIwZc7heXPzrNMkGK6xLgZMzJ8uap5ag3sy
+ Jj0UE66UbWn8B9m5E8QYAarq00+xLqbfaO5KOWTT5IEQo95EzJE44fmQ0wBjR15H+e2qB+BR+
+ rbjspIxhPdan046OyQs3nT1j9l0dOTZoNSNEjpJ/v77RclUa5BatSCxKYLUACmauj/0Cy4REi
+ UEsdLGu5DAmX7qocagTmYxKZkgpFGM0BaH0upWQ1oeTeFIrqeIFhKo6a+/Y+fy+llUu6ckzvl
+ R6Urj7QlpRFJME4bwVwLhG577HbQ5VlBEtvbU64c2E/aZ/f1R0jqzMsRLfa8KXBdgJS5rsyvf
+ oYDn7TSBUxRDd+d8c9xsP/v8mUPENA+sYUEfC0PA+sO42ylxenTj/fKzgkSiX6O0ZmTehVQpW
+ o/KeuZptykKJQK775yE+XFo5D440+DasV0tsKgCYqmt39bBGXGkoa96R5la/163xurcGL2uWU
+ i5a6wJJ6Y8Xi/SV9G9TIS6lyVP5R+5km1+AgZwhxCje22S/gBBonGPFvaU//Jy0t/Or24T7oH
+ ArWthtrl7wsiqXynLXmOC/W79RwbnNo/Ztu5Tc72RfaS29pF+s0yFfvkzJ8uqlCHvF7UqZU3o
+ 2DYo2VWBHxfLlwLk9qgWjQ37IEwESOam5XdKzOUixv+lz3KVzr+IR+GFlyudBfAD4oyqUULS2
+ eozMbeKwO4j8yc=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 05/10/2021 01:19, Josef Bacik wrote:
-> We are going to want to populate our device lookup args outside of any
-> locks and then do the actual device lookup later, so add a helper to do
-> this work and make btrfs_find_device_by_devspec() use this helper for
-> now.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->   fs/btrfs/volumes.c | 99 ++++++++++++++++++++++++++++++----------------
->   fs/btrfs/volumes.h |  4 ++
->   2 files changed, 69 insertions(+), 34 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 191360e44a20..e490414e8987 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -2324,45 +2324,80 @@ void btrfs_destroy_dev_replace_tgtdev(struct btrfs_device *tgtdev)
->   	btrfs_free_device(tgtdev);
->   }
->   
-> -static struct btrfs_device *btrfs_find_device_by_path(
-> -		struct btrfs_fs_info *fs_info, const char *device_path)
-> +/**
-> + * btrfs_get_dev_args_from_path - populate args from device at path
-> + *
-> + * @fs_info: the filesystem
-> + * @args: the args to populate
-> + * @path: the path to the device
-> + * Return: 0 for success, -errno for failure
-> + *
-> + * This will read the super block of the device at @path and populate @args with
-> + * the devid, fsid, and uuid.  This is meant to be used for ioctl's that need to
-> + * lookup a device to operate on, but need to do it before we take any locks.
-> + * This properly handles the special case of "missing" that a user may pass in,
-> + * and does some basic sanity checks.  The caller must make sure that @path is
-> + * properly NULL terminated before calling in, and must call
-> + * btrfs_put_dev_args_from_path() in order to free up the temporary fsid and
-> + * uuid buffers.
-> + */
-> +int btrfs_get_dev_args_from_path(struct btrfs_fs_info *fs_info,
-> +				 struct btrfs_dev_lookup_args *args,
-> +				 const char *path)
->   {
-> -	BTRFS_DEV_LOOKUP_ARGS(args);
-> -	int ret = 0;
->   	struct btrfs_super_block *disk_super;
->   	struct block_device *bdev;
-> -	struct btrfs_device *device;
-> +	int ret;
->   
-> -	ret = btrfs_get_bdev_and_sb(device_path, FMODE_READ,
-> -				    fs_info->bdev_holder, 0, &bdev, &disk_super);
-> -	if (ret)
-> -		return ERR_PTR(ret);
-> +	if (!path || !path[0])
-> +		return -EINVAL;
-> +	if (!strcmp(path, "missing")) {
-> +		args->missing = true;
-> +		return 0;
-> +	}
-> +
-> +	args->uuid = kzalloc(BTRFS_UUID_SIZE, GFP_KERNEL);
-> +	args->fsid = kzalloc(BTRFS_FSID_SIZE, GFP_KERNEL);
-> +	if (!args->uuid || !args->fsid) {
-> +		btrfs_put_dev_args_from_path(args);
-> +		return -ENOMEM;
-> +	}
->   
-> -	args.devid = btrfs_stack_device_id(&disk_super->dev_item);
-> -	args.uuid = disk_super->dev_item.uuid;
-> +	ret = btrfs_get_bdev_and_sb(path, FMODE_READ, fs_info->bdev_holder, 0,
-> +				    &bdev, &disk_super);
-> +	if (ret)
-> +		return ret;
-> +	args->devid = btrfs_stack_device_id(&disk_super->dev_item);
-> +	memcpy(args->uuid, disk_super->dev_item.uuid, BTRFS_UUID_SIZE);
->   	if (btrfs_fs_incompat(fs_info, METADATA_UUID))
-> -		args.fsid = disk_super->metadata_uuid;
-> +		memcpy(args->fsid, disk_super->metadata_uuid, BTRFS_FSID_SIZE);
->   	else
-> -		args.fsid = disk_super->fsid;
-> -
-> -	device = btrfs_find_device(fs_info->fs_devices, &args);
-> -
-> +		memcpy(args->fsid, disk_super->fsid, BTRFS_FSID_SIZE);
->   	btrfs_release_disk_super(disk_super);
-> -	if (!device)
-> -		device = ERR_PTR(-ENOENT);
->   	blkdev_put(bdev, FMODE_READ);
-> -	return device;
-> +	return 0;
->   }
->   
->   /*
-> - * Lookup a device given by device id, or the path if the id is 0.
-> + * Only use this jointly with btrfs_get_dev_args_from_path() because we will
-> + * allocate our ->uuid and ->fsid pointers, everybody else uses local variables
-> + * that don't need to be freed.
->    */
-> +void btrfs_put_dev_args_from_path(struct btrfs_dev_lookup_args *args)
-> +{
-> +	kfree(args->uuid);
-> +	kfree(args->fsid);
-> +	args->uuid = NULL;
-> +	args->fsid = NULL;
-> +}
-> +
->   struct btrfs_device *btrfs_find_device_by_devspec(
->   		struct btrfs_fs_info *fs_info, u64 devid,
->   		const char *device_path)
->   {
->   	BTRFS_DEV_LOOKUP_ARGS(args);
->   	struct btrfs_device *device;
-> +	int ret;
->   
->   	if (devid) {
->   		args.devid = devid;
-> @@ -2372,18 +2407,14 @@ struct btrfs_device *btrfs_find_device_by_devspec(
->   		return device;
->   	}
->   
-> -	if (!device_path || !device_path[0])
-> -		return ERR_PTR(-EINVAL);
-> -
-> -	if (strcmp(device_path, "missing") == 0) {
-> -		args.missing = true;
-> -		device = btrfs_find_device(fs_info->fs_devices, &args);
-> -		if (!device)
-> -			return ERR_PTR(-ENOENT);
-> -		return device;
-> -	}
-> -
-> -	return btrfs_find_device_by_path(fs_info, device_path);
-> +	ret = btrfs_get_dev_args_from_path(fs_info, &args, device_path);
-> +	if (ret)
-> +		return ERR_PTR(ret);
-> +	device = btrfs_find_device(fs_info->fs_devices, &args);
-> +	btrfs_put_dev_args_from_path(&args);
-> +	if (!device)
-> +		return ERR_PTR(-ENOENT);
-> +	return device;
->   }
->   
->   /*
 
 
+On 2021/10/5 11:26, Zygo Blaxell wrote:
+> On Tue, Oct 05, 2021 at 06:54:27AM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/10/5 00:01, Matthew Warren wrote:
+>>> I don't know how btrfs is layed out internally, but is checksum tree
+>>> separate from file (meta)data or is it part of the (meta)data? If it's
+>>> separate it should be possible to build a second csum tree and then
+>>> replace the old one once it's done, right?
+>>
+>> There are several problems, even for off-line covert.
+>
+> I worked out something of a plan to do an online conversion, but there
+> are some unfortunate issues with the btrfs on-disk design that make onli=
+ne
+> conversion harder than it has to be.  It would be easier to do an online
+> conversion to a new on-disk format that supports multiple csum types,
+> than to convert from one of the existing csum types to another.
+>
+>> 1) Metadata checksum
+>>     Unlike data checksum, metadata checksum is inlined into the metadat=
+a
+>>     header.
+>>     Thus there is no way to make the csum co-exist for metadata, and we
+>>     need to re-write (CoW) all metadata of the fs to convert them to th=
+e
+>>     new algo.
+>
+> Metadata is the easy case.  In the metadata pages the csum is a
+> fixed-width field.  There is also a transid/generation field on each pag=
+e.
+> So if you know that the csum was changed from crc32c to xxhash on transi=
+d
+> 123456 (and you'd know this because the online conversion would store
+> this in an item at the beginning of the conversion process), then any
+> time you read a page with a transid below 123456 you check crc32c, and a=
+ny
+> time you read a page with transid above 123456 you check xxhash, and any
+> time you write a page you use xxhash.
 
-> @@ -7049,7 +7080,7 @@ static int read_one_chunk(struct btrfs_key *key, struct extent_buffer *leaf,
->   	for (i = 0; i < num_stripes; i++) {
->   		map->stripes[i].physical =
->   			btrfs_stripe_offset_nr(leaf, chunk, i);
-> -		args.devid = btrfs_stripe_devid_nr(leaf, chunk, i);
-> +		devid = args.devid = btrfs_stripe_devid_nr(leaf, chunk, i);
->   		read_extent_buffer(leaf, uuid, (unsigned long)
->   				   btrfs_stripe_dev_uuid_nr(chunk, i),
->   				   BTRFS_UUID_SIZE);
-> @@ -7181,7 +7212,7 @@ static int read_one_dev(struct extent_buffer *leaf,
->   	u8 fs_uuid[BTRFS_FSID_SIZE];
->   	u8 dev_uuid[BTRFS_UUID_SIZE];
->   
-> -	args.devid = btrfs_device_id(leaf, dev_item);
-> +	devid = args.devid = btrfs_device_id(leaf, dev_item);
->   	read_extent_buffer(leaf, dev_uuid, btrfs_device_uuid(dev_item),
->   			   BTRFS_UUID_SIZE);
->   	read_extent_buffer(leaf, fs_uuid, btrfs_device_fsid(dev_item),
+This means we need a way to record such info on-disk. (source checksum
+algo, dest checksum algo, transid of the initial convert)
 
+Thus a format change is needed (which is not really a big deal compared
+to other things involved).
 
-  This fix is part of the patch 4/6.
+>  Once conversion is set up, run a
+> metadata balance, and all the metadata pages are converted to use the ne=
+w
+> csum algorithm.  A few other places (chunk headers and superblocks) need
+> to be handled separately.  Allow only one conversion at a time to keep
+> things simple;
 
-  Otherwise looks good.
+Well, single conversion is already going to be painful...
 
-Thanks, Anand
+> otherwise, we'd need to maintain a list of transids and
+> csum algorithms to figure out which to use, or we'd have to brute-force
+> all possible algorithms until we figure out which one a metadata page
+> is using.  When all the metadata block groups have been balanced, the
+> conversion is done, and future csum checks use only the new algorithm.
 
+Yes, that's it, we need something like a metadata balance to do that.
 
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index fa9a56c37d45..3fe5ac683f98 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -518,9 +518,13 @@ void btrfs_assign_next_active_device(struct btrfs_device *device,
->   struct btrfs_device *btrfs_find_device_by_devspec(struct btrfs_fs_info *fs_info,
->   						  u64 devid,
->   						  const char *devpath);
-> +int btrfs_get_dev_args_from_path(struct btrfs_fs_info *fs_info,
-> +				 struct btrfs_dev_lookup_args *args,
-> +				 const char *path);
->   struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
->   					const u64 *devid,
->   					const u8 *uuid);
-> +void btrfs_put_dev_args_from_path(struct btrfs_dev_lookup_args *args);
->   void btrfs_free_device(struct btrfs_device *device);
->   int btrfs_rm_device(struct btrfs_fs_info *fs_info,
->   		    const char *device_path, u64 devid,
-> 
+But I doubt if we should do it in kernel space.
+>
+> An offline conversion tool can read, verify, compute, and write the new
+> csum algorithm in place,
 
+For in-place convert, it still needs some way to record the source/dest
+algo.
+
+It will work just like uuid changing tool, and would be my preferred way
+to do it.
+
+> as there is a fixed-length 32 bytes struct in
+> each metadata page for csum.  It would need to do some kind of data
+> journalling to be crash-safe, but that's not difficult to arrange
+
+Either we go CoW full, or we don't care and go with try-and-error way.
+The only thing we need to know is the source and dest algo, just two
+tries should be enough.
+
+> (and in practice it can be YOLOed with no journal most of the time,
+> using dup or raid1 metadata to fix any blocks mangled by a crash).
+>
+>> 2) Superblock flags/csum_type
+>>     Currently we have only one csum_type, which is shared by both data
+>>     and metadata.
+>>
+>>     We need extra csum_type to indicate the destination csum algo.
+>>     We will also need to sync this bit to kernel, no matter if the kern=
+el
+>>     really uses that.
+>
+> In the data csum tree it's a bit awkward.  Although there are 136 bits
+> of (objectid, key, offset) for each csum item, for historical reasons
+> the objectid and key fields are constant, leaving no room to identify
+> the csum type in the item key (and we don't want to use any item data
+> bytes for this as it will make the items larger).  We could create a
+> new csum tree with a different root, or use the objectid in the key to
+> identify the csum algorithm, but this requires completely new multi-tree
+> code to read and modify multiple csum trees during conversion.
+
+Yes, that's the problem.
+
+>  It would
+> have to ensure there are no overlapping csums in two trees (or distant
+> locations in a single tree, which is just as bad) at the same time.
+> Every read would require potentially two tree lookups--all at places
+> where there have historically been bugs in the csum tree implementation.
+> This double-lookup and double-update (and quadruple-kernel-bug-fixing)
+> would have to continue until the last item in the old csum tree is
+> deleted.
+>
+> Ideally a future csum tree (csum_tree_v2?) would have keys of (objectid =
+=3D
+> bytenr of data block, type =3D CSUM_ITEM_KEY, offset =3D csum algorithm)=
+.
+
+This indeed sounds pretty interesting.
+
+> Then the existing csum tree code can be used more or less unmodified,
+> except for the detail that each csum item might contain csums from
+> any one of the csum algorithms.  This is a simpler modification to the
+> csum tree code, since it uses only one tree, adjacent block csums are
+> adjacent in the tree key order, and lookup performance doesn't change.
+> The gotcha is that doing this requires a less-simple modification to the
+> fsync log tree code, which is apparently leveraging the existing csum it=
+em
+> key format to share a lot of code between fsync log tree and csum tree.
+> Also a single extent might have csums of different sizes, which will
+> complicate code that deals with e.g. printing csum values.
+>
+> The advantage of csum_tree_v2 is that once the tree is converted to
+> a multi-csum tree format, it's much easier/faster to convert it again
+> (e.g. maybe you decide sha256 is too slow for you and you want to go
+> back to xxhash or blake2b), and you can mkfs new filesystems using
+> csum_tree_v2 from the beginning for online conversion later.
+
+That's why I'd prefer the offline convert.
+
+We only need to update the new csum tree, without bothering all the
+runtime csum lookup things.
+
+And just need to rename the objectid after finishing the csum tree
+update, and finally drop the old csum tree.
+
+>
+> Any change in the tree organization probably means we have to solve the
+> multi-tree problem above anyway, since whatever new tree format we choos=
+e
+> to support multiple csums, the existing csum tree isn't laid out in the
+> same format.  There might be a way out of this if we borrow an idea from
+> space_cache=3Dv2, and convert the csum tree to csum_tree_v2 format durin=
+g
+> mount, without changing the csum algorithm at the same time.  This would
+> be relatively fast (compared to reading all the data blocks) but it
+> would eliminate the need to update multiple trees online (conversion
+> would simply copy the csums to a new tree and delete the old one, while
+> nothing is allowed to write to the filesystem).  After the csum tree
+> is converted to csum_tree_v2, the kernel would be able to complete the
+> conversion online.
+>
+> Regardless of how multiple csum algorithms are supported, a data balance
+> would be sufficient to recompute all of the data csums by brute-force
+> reading (checking old csum) and writing (computing new csum) the data.
+> This is very wasteful as it rewrites many (but not all) of the metadata
+> trees again, as well as all of the data blocks, but it would work and
+> could be used until a proper conversion tool exists.
+>
+> It might be possible to do something like scrub, but only reading the
+> data blocks and writing the csum trees.  Except not really scrub--I don'=
+t
+> think any of the existing scrub code can be used this way.  Maybe a
+> variation of defrag that only rewrites csums?  It might be easier to
+> build this component from scratch--none of the existing building blocks
+> in the kernel really fits.
+>
+> Offline conversion of the existing csum tree from one csum algorithm
+> to another is non-trivial, since the csum data is packed into pages
+> dynamically.  Changing from any csum algorithm to one with a different
+> length will require not only rewriting the content of the csum tree page=
+s,
+> but also allocating a new tree structures to store them.
+
+For offline convert, we need to do regular tree CoWs to create a new
+csum tree.
+And rely on CoW to protect against powerloss/signal.
+
+The good thing is, we can easily grab where we were, thus no need for
+extra format to record the process.
+
+>
+> Offline conversion to csum_tree_v2 is easy since it changes only the
+> arragement of bits in the btrfs key structure, not the size of anything.
+> It can be done in place the same way metadata can be converted in place.
+If we go offline, it then means we don't need on-line convert, thus no
+need for csum_tree_v2 for convert purpose.
+
+Thanks,
+Qu
+
+>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> Matthew Warren
+>>>
+>>> On Mon, Oct 4, 2021 at 4:52 AM David Sterba <dsterba@suse.cz> wrote:
+>>>>
+>>>> On Mon, Oct 04, 2021 at 12:26:16AM -0500, Matthew Warren wrote:
+>>>>> Is there currently any way to change the checksum used by btrfs
+>>>>> without recreating the filesystem and copying data to the new fs?
+>>>>
+>>>> I have a WIP patch but it's buggy. It works on small filesystems but
+>>>> when I tried it on TB-sized images it blew up somewhere. Also the WIP=
+ is
+>>>> not too smart, it deletes the whole checksum tree and rebuilds if fro=
+m
+>>>> the on-disk data, so it lacks the verification against the existing
+>>>> csums. I intend to debug it some day but it's a nice to have feature,
+>>>> I'm aware that people have been asking for it but at this point it wo=
+uld
+>>>> be to dangerous to provide even the prototype.
