@@ -2,295 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A8C421E8B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 08:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0D3421EB5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 08:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhJEGCP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Oct 2021 02:02:15 -0400
-Received: from mout.gmx.net ([212.227.17.21]:48307 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231688AbhJEGCO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:02:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1633413620;
-        bh=nLXLc6m/dLeCd3/oJaSP1Wbe0chOJ95+QnkbY6cUIOE=;
-        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
-        b=T4X5JO+ftc95JEZZ3TpH2k1bTW32ETbANaP1GFVJEd+tF2VcSIAKvXKSMmb6lTLqY
-         7q0OMdlXggEmZEsa+Jalc+0puAQQrq8WpP34tFWMd7xog3LyYNTQ4EXTY82DJTUlnj
-         Vb11IbCYfTVBHbwMTdXklV4BsihavOGoHDvwLTXs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MiJZO-1n2ryf0kzO-00fUK3; Tue, 05
- Oct 2021 08:00:19 +0200
-Message-ID: <4be6e096-b617-41a1-e535-296b6949b765@gmx.com>
-Date:   Tue, 5 Oct 2021 14:00:15 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
+        id S231559AbhJEGNL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Oct 2021 02:13:11 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:58656 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232429AbhJEGNK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Oct 2021 02:13:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1633414280; x=1664950280;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=3z1xVT4AjVI9UjoH2jW1Cf7/LDGMjWC/IXUeEKjzBOM=;
+  b=RLD2jyw8eDvF8u/9YqmdqDX6XuFuL5KFO1CaxJmtYYaC7xW6lxM7X04U
+   zMAUVbxyb6xsO78ptMzOAEUeeTDg75SzQFniSCMSs7aOAw1sbs9afs49m
+   mXTv5xpB+wEb48CgVpSofQ5693SgpeahLDWRSLyMq7AffyfnIwDR8E2qs
+   E0UXxhCMZgxzQjwl77ZMTGf2MtC6h6VLTUU5Eh/HWsvZqzH8lMUy46OEQ
+   vd7einCGC7MpvTFeZ13n7bM2ePjsuSuWQkcLSlN0uwFXiJdyu7+jaSSHU
+   oNJWcEUTRvxEKk0SROuamCafUFqbo5Be+SZnqK9njz7Md+3or7HNPMBdp
+   w==;
+X-IronPort-AV: E=Sophos;i="5.85,347,1624291200"; 
+   d="scan'208";a="180914179"
+Received: from mail-co1nam11lp2177.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.177])
+  by ob1.hgst.iphmx.com with ESMTP; 05 Oct 2021 14:11:19 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Lf/1BYz2mYyVGIvf3virktPgTKKfnrxZQH+Ccymmg9KeDl89dQAHglTEfqMghaROsXv1onu3QvGdp9PxJYDlsysHQ3gO+xoFdqx9jODlZpXYmZV4NWmT04rpXWiOr3v7E8ROfg/gqiokAGYJrsxFQ0tRRdUlAXStPNMwJjH/suExjQXh8dJDJ1LHiuvK+EPL5pQQjJX6in8c1Mq1jIQqQnYyZKstRp0wVnkh1RT88fNktF0DENNqr9zTFHVsIIALt+m3j+ZfOxJ77eT4ov1ncZWRRc7krJiCjX6fmxPK3/wtsHXgAYioq8dPUGiP3USxf96/mbUi8B268BlLCepWPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3z1xVT4AjVI9UjoH2jW1Cf7/LDGMjWC/IXUeEKjzBOM=;
+ b=BFdxXHrpD3dwbquCPNi9OUjWpBZ0n0YoZ8gdg3vmSli8r4v6fyZIPI4KhcsfmtIHwJrb9lEEXPNLJYatvP3LPYaU6/+E9YtpRVwmjGMXa1gtHL+EiyPnjKS7YfYUWl/IlFPMfmZNUf52RwqkQCGdt9YeNexSHmhyT3NPMfaFjrt9FKOcBHUkrD85dz+o05XoE/c/vbvQQ0uz3FQ0BBp8uEpkfqYCGJMOe3Wfvrpf8W/UQOF3y9PbIquNFKTYRd9729UCKb4+NOPVPlh0SH1AMSIDaNbX9gky88WO4+UQMnnnT4iaCw5Fpj/eRNR7RjQGXnZSqurzyocpCc8f8zMIVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3z1xVT4AjVI9UjoH2jW1Cf7/LDGMjWC/IXUeEKjzBOM=;
+ b=P5XBnH1uT+iGrbS1kCVi7Kt9EBx9KL0xmX0jwUTMzciMMQa9IceuNKa13NiQO/Uci7nAMXuSlo5ZKZhti+J6IYXZorRIOEqsiUjG9iyU8p7eEXaCPBqgX/oHxmm5GL2temiQ5DFYt99inJBAZMAAQUR1MUu3lTowiz1zaex58cU=
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
+ by SJ0PR04MB7775.namprd04.prod.outlook.com (2603:10b6:a03:3ac::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15; Tue, 5 Oct
+ 2021 06:11:18 +0000
+Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::19a7:91bd:cb0c:e555]) by SJ0PR04MB7776.namprd04.prod.outlook.com
+ ([fe80::19a7:91bd:cb0c:e555%8]) with mapi id 15.20.4566.022; Tue, 5 Oct 2021
+ 06:11:18 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 0/5] btrfs-progs: use direct-IO for zoned device
+Thread-Topic: [PATCH 0/5] btrfs-progs: use direct-IO for zoned device
+Thread-Index: AQHXs1ZmcoYKRsLonk+Yign1+z8S5Ku4bQaAgAHehwCAAIWOgIAJJ9WA
+Date:   Tue, 5 Oct 2021 06:11:18 +0000
+Message-ID: <20211005061117.evmfdzr6z3g5zzdx@naota-xeon>
+References: <20210927041554.325884-1-naohiro.aota@wdc.com>
+ <20210927215139.GJ9286@twin.jikos.cz>
+ <20210929022422.mynjvx4angtb3vfi@naota-xeon>
+ <20210929102223.GM9286@twin.jikos.cz>
+In-Reply-To: <20210929102223.GM9286@twin.jikos.cz>
+Accept-Language: ja-JP, en-US
 Content-Language: en-US
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     Matthew Warren <matthewwarren101010@gmail.com>, dsterba@suse.cz,
-        linux-btrfs@vger.kernel.org
-References: <CA+H1V9wsz2y21qxaYAkNa2PuBUCnM4yFVpoSC5rGav-1LHdwHA@mail.gmail.com>
- <20211004095146.GU9286@twin.jikos.cz>
- <CA+H1V9yopc2okgT=5XeCwvHF8oXPVhnojaf_rZOeuiThZEfqWQ@mail.gmail.com>
- <d2e7dd3d-5cbf-287f-893c-bed3e6219d0a@gmx.com>
- <20211005032621.GQ29026@hungrycats.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: Changing the checksum algorithm on an existing BTRFS filesystem
-In-Reply-To: <20211005032621.GQ29026@hungrycats.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bc389333-eed8-4297-b5d0-08d987c6f259
+x-ms-traffictypediagnostic: SJ0PR04MB7775:
+x-microsoft-antispam-prvs: <SJ0PR04MB7775435C1E9604C15BCDA3398CAF9@SJ0PR04MB7775.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vTsz5EV8QFuJWhoEF/1//GqyUKGX+o9r/n2oxrrniePvVuQoxV40AJi13WjctzFZ7zTBaU1JcrxRYY7hxYQdjWvxsOwXkiQK/KI5H/EVx9Ie1YPDs83P8QJjK2f/5PhpMP//48LCwcrouFh3gcwIjqnPZwiL7pZ0CdCM6/JO8R0IVvBvQHa7sj+NqYPipZBJ4xCbTRraeA9uwVNk0ywvl6crJtnLuhoYGoB0oIWvca+T02cVedTi+RBFOy4yWp0cnceSIHquJXAqK2reznhpTaE1Fg2Y0PPHf+eqAlVmREEbm3wSodhNSZXNl7D4UlI14AcqYwPl+19s9jnWJdpoLFnA4wi87zOAYX13NF+V4rm/lGr5XKxJt/Y7IpJmkF8PjEcz7mr5MJh/XazQraVzVoTPP2Hkry4Exk5qXmAbbopW+3Ys3uT42zfwKx2LXqvMe6KgGSMoplETfnHFNury6mSxGyTPgbaa+zM33bivXmgJtHMl6tuidcZk7aJBwnC6x+YEup9dABnKreLS8kuARNFUz5z6dyj9LxXXNJj+AC8GMsO5m2CxQ4pzIrAznQfuQO+WXWQtsAF4bfiD/p2GGeb/JNnC276mhLtpqnMJ0KT7naNTulWoryHXRwA5OdBtrDTjtWuxqRh2R8XxjU/bJRSZsLTFWsAbDn7EGz5uzcLB2TrMAi9VPkqTtNDCBHmZ7CdnGqflJRAiQzu6ImiOfQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(186003)(83380400001)(2906002)(110136005)(6506007)(26005)(86362001)(38070700005)(316002)(38100700002)(6486002)(9686003)(66476007)(64756008)(66446008)(5660300002)(66556008)(508600001)(1076003)(91956017)(76116006)(8676002)(122000001)(71200400001)(66946007)(8936002)(33716001)(6512007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?syVaOOqwCGzjhFmFu9fEMlNvFRyoKEgbeCZA99dFprM83ECiztmHcsiDrpB1?=
+ =?us-ascii?Q?8eLq18O+TDoiJWdoYjpTW6qDblHCVQ7VRe9QULdbK+Ag0w5RFONlCHUjFTZ8?=
+ =?us-ascii?Q?AgvS4riZlRgKW1kBmTJEBdF6zi5eYjBDWiHqVEQ1nbLa62If+ILNQd+g+4a+?=
+ =?us-ascii?Q?sgofkNoHUL2Gilethl3KKk0B8UOc2/MYg8wq9RA6axbftYzi82UVlslK6St5?=
+ =?us-ascii?Q?bIS9xniIJGzkosWUUalEP4BX/5UqN2r7xKnJRw5fopQKlZmNJHSINkJjj+Yz?=
+ =?us-ascii?Q?cLqjHI6a/Ac0eGQgqLVxXRNjASpVBS+DGZH26e/LsDNQLFJW82obM2X1X+zB?=
+ =?us-ascii?Q?xlWTPiHd15XT4NzUq9jIHpC+N34Z77LRTn2XjVH/2VpLZuKaHAN+gau+QKRu?=
+ =?us-ascii?Q?O/7qkyChzLQWulua803DlcWWyFLzgVOC+splF2+H2pfCqOhw8BUfepgUTJ0h?=
+ =?us-ascii?Q?3YWtqD3+5hN+bAbk9Tqx4VmNJdXgTQ9dStNj9k31pG1+7t9wjlubkwOCeudt?=
+ =?us-ascii?Q?+eFTKlUSWaLgP0BNZLV67wFumqYgwiYugNVMus1jwxRTKlZptdAJDoYmi+00?=
+ =?us-ascii?Q?JPDsLaQYfxXZUaDjgLb3kXrMOww8IXbz6ixdPgJae3pOmAON3t5BVrpCRMm/?=
+ =?us-ascii?Q?hhXaL+N+hGJ9NZKwUHpAL3RNvYm11Xurjd0dlVwQ+avkag5wFTRp/VOa70o1?=
+ =?us-ascii?Q?xFbll+yeTU4khnuqU1zIa2U3Hc0esGFlB53p7FYFjgAPeh7SFXMvH/d0WuNa?=
+ =?us-ascii?Q?6JXrGVq3IwD4Eb0gZCCsGuNBnwBbzKedrXBmt4NiEPtnm4OYjuoGs3f4c8PA?=
+ =?us-ascii?Q?0uuh4np0hVl+bZGErG9xBwrlb8us7rrIQI+ZkGcuREvBbNvWehLhba79EqoI?=
+ =?us-ascii?Q?9LJBQ+zkMgmhVxU5ZIh+s+JbdUACUsakl1TVh3DZS7Af/fEaIp85YC4qjtaO?=
+ =?us-ascii?Q?qlre7t/mq+5fNs0Y/NcO/yr9RbyHyRahUcoA8PVmfiTcgBShrkwbgkIbvhhY?=
+ =?us-ascii?Q?fy1aPPhcg6IvNmB2N24Lt+VrnWmakOym6IbKJcHGCnH6m0INKDy+RqvOdnB9?=
+ =?us-ascii?Q?ve9QRzQatLhoPrFaKD/rdB5dr8lhCHgL9lwEj/WHZ8Hzqi8O5zqgh7KRB0VS?=
+ =?us-ascii?Q?xOSlmcpTFizHMf/DF8cdy5C02U1KG/IIMX8wpOXD6o0r5naV5bzW125tmzyW?=
+ =?us-ascii?Q?PKrLqXvr+WixXfVZHwCJocdGuzbqqFYNcEeXb/oLK2HA1s3/HCCxZtZPVhsi?=
+ =?us-ascii?Q?4yeTQ/IcE/VU9nPD4Vb3o6V/f+0Fe2vdvAi2RH+nUIYxVg3R1ZuKE5G3N98l?=
+ =?us-ascii?Q?9ltQ5kk0dgAyIM3UGQv6tmhujyI0C02h0kvr3+zut/NW8Q=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5569F1B6440E2E41B8ADB630D05BC357@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:baLig3i2UKrg3dRGUNRfysjA8ckiI4AHvD3xy87K1tJjoE8mhHj
- 8mBYVoYaBHasWWsQDQtXy3B6efPyfJokqqm84+1jlmp01tCclz9r0eMlYt8oVuyARVClGdf
- jM5YP0um4nH/OQ+ZVCaHiA4V4hWXZVY08HIW8M4FCICvFk8c3M2MeVYvi0eItZ6DQoz+rYn
- QVINY5dy8mg6oUbcLdNUQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:enms4VQH/r4=:c9X59Ow5Pkg9I/qnmTSYH0
- QowYVxofkAc8Jk26xlwUe2boG9cbbpDdlvQl4YbrQhlZAQWXP0nmkuadJeErl1SMSzb7PA0hl
- slUJbRZzEE27jZ5eKKPHkzn0VxZoUMo+ZPdp66aDDWRRtkYsyYa4WXO0PJAQiqlJSnbE/s9iW
- GDOJ85EuDTYv4+XnNHTjwS6KeCZ1P9cCUcUTTPfYP3pa/HzcKtDzyg3CuZKbeZGMc+djnXHxk
- 63cOpm+F5jHpb6Op3w7ZNokXuT6yHESv4y2izdrcGMixOyUvyH+FF1OS/hqKyY/E87txiaXyb
- EV5usSrqQerAPeA3zF5oYURHRnUaeSNfjyItubFrQm6e/tN6HqpUnh6ellNkoep88QtbsvokK
- b/SUEuleMYldiHd1/fzFEpylBOSVG2M0dexQoesIwZc7heXPzrNMkGK6xLgZMzJ8uap5ag3sy
- Jj0UE66UbWn8B9m5E8QYAarq00+xLqbfaO5KOWTT5IEQo95EzJE44fmQ0wBjR15H+e2qB+BR+
- rbjspIxhPdan046OyQs3nT1j9l0dOTZoNSNEjpJ/v77RclUa5BatSCxKYLUACmauj/0Cy4REi
- UEsdLGu5DAmX7qocagTmYxKZkgpFGM0BaH0upWQ1oeTeFIrqeIFhKo6a+/Y+fy+llUu6ckzvl
- R6Urj7QlpRFJME4bwVwLhG577HbQ5VlBEtvbU64c2E/aZ/f1R0jqzMsRLfa8KXBdgJS5rsyvf
- oYDn7TSBUxRDd+d8c9xsP/v8mUPENA+sYUEfC0PA+sO42ylxenTj/fKzgkSiX6O0ZmTehVQpW
- o/KeuZptykKJQK775yE+XFo5D440+DasV0tsKgCYqmt39bBGXGkoa96R5la/163xurcGL2uWU
- i5a6wJJ6Y8Xi/SV9G9TIS6lyVP5R+5km1+AgZwhxCje22S/gBBonGPFvaU//Jy0t/Or24T7oH
- ArWthtrl7wsiqXynLXmOC/W79RwbnNo/Ztu5Tc72RfaS29pF+s0yFfvkzJ8uqlCHvF7UqZU3o
- 2DYo2VWBHxfLlwLk9qgWjQ37IEwESOam5XdKzOUixv+lz3KVzr+IR+GFlyudBfAD4oyqUULS2
- eozMbeKwO4j8yc=
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc389333-eed8-4297-b5d0-08d987c6f259
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2021 06:11:18.7481
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: g1jmhXTySoZQvuxiP7q5f0zFzfD64Yqzk66b9kdo1DyQglGXP5JW/O6afCIKw6ojZnV8gi1MlAYQEcSarVDwUw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7775
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Sep 29, 2021 at 12:22:23PM +0200, David Sterba wrote:
+> On Wed, Sep 29, 2021 at 02:24:22AM +0000, Naohiro Aota wrote:
+> > On Mon, Sep 27, 2021 at 11:51:39PM +0200, David Sterba wrote:
+> > > On Mon, Sep 27, 2021 at 01:15:49PM +0900, Naohiro Aota wrote:
+> > > I was doing some btrfs-convert changes and found that it crashed, rou=
+gh
+> > > bisection points to this series. With the last patch applied, convert
+> > > fails with the following ASAN error:
+> >=20
+> > It looks like eb->fs_info =3D=3D NULL at this point. In case of
+> > btrfs-convert, we can assume it is non-zoned because we do not support
+> > the converting on a zoned device (we can't create ext*, reiserfs on a
+> > zoned device anyway).
+>=20
+> That would mean that extN/reiserfs was created on a zoned device. One
+> can still do a image copy to a zoned device and then convert. Even if
+> this is possible in theory I'd rather not allow that right now because
+> there are probably more changes required to do full support.
+>=20
+> I've just noticed that ZONED bit is mistakenly among the feature flag
+> bits allowed in convert. Added in 242c8328bcd55175 "btrfs-progs: zoned:
+> add new ZONED feature flag":
+>=20
+> BTRFS_CONVERT_ALLOWED_FEATURES must not contain
+> BTRFS_FEATURE_INCOMPAT_ZONED.
 
-
-On 2021/10/5 11:26, Zygo Blaxell wrote:
-> On Tue, Oct 05, 2021 at 06:54:27AM +0800, Qu Wenruo wrote:
->>
->>
->> On 2021/10/5 00:01, Matthew Warren wrote:
->>> I don't know how btrfs is layed out internally, but is checksum tree
->>> separate from file (meta)data or is it part of the (meta)data? If it's
->>> separate it should be possible to build a second csum tree and then
->>> replace the old one once it's done, right?
->>
->> There are several problems, even for off-line covert.
->
-> I worked out something of a plan to do an online conversion, but there
-> are some unfortunate issues with the btrfs on-disk design that make onli=
-ne
-> conversion harder than it has to be.  It would be easier to do an online
-> conversion to a new on-disk format that supports multiple csum types,
-> than to convert from one of the existing csum types to another.
->
->> 1) Metadata checksum
->>     Unlike data checksum, metadata checksum is inlined into the metadat=
-a
->>     header.
->>     Thus there is no way to make the csum co-exist for metadata, and we
->>     need to re-write (CoW) all metadata of the fs to convert them to th=
-e
->>     new algo.
->
-> Metadata is the easy case.  In the metadata pages the csum is a
-> fixed-width field.  There is also a transid/generation field on each pag=
-e.
-> So if you know that the csum was changed from crc32c to xxhash on transi=
-d
-> 123456 (and you'd know this because the online conversion would store
-> this in an item at the beginning of the conversion process), then any
-> time you read a page with a transid below 123456 you check crc32c, and a=
-ny
-> time you read a page with transid above 123456 you check xxhash, and any
-> time you write a page you use xxhash.
-
-This means we need a way to record such info on-disk. (source checksum
-algo, dest checksum algo, transid of the initial convert)
-
-Thus a format change is needed (which is not really a big deal compared
-to other things involved).
-
->  Once conversion is set up, run a
-> metadata balance, and all the metadata pages are converted to use the ne=
-w
-> csum algorithm.  A few other places (chunk headers and superblocks) need
-> to be handled separately.  Allow only one conversion at a time to keep
-> things simple;
-
-Well, single conversion is already going to be painful...
-
-> otherwise, we'd need to maintain a list of transids and
-> csum algorithms to figure out which to use, or we'd have to brute-force
-> all possible algorithms until we figure out which one a metadata page
-> is using.  When all the metadata block groups have been balanced, the
-> conversion is done, and future csum checks use only the new algorithm.
-
-Yes, that's it, we need something like a metadata balance to do that.
-
-But I doubt if we should do it in kernel space.
->
-> An offline conversion tool can read, verify, compute, and write the new
-> csum algorithm in place,
-
-For in-place convert, it still needs some way to record the source/dest
-algo.
-
-It will work just like uuid changing tool, and would be my preferred way
-to do it.
-
-> as there is a fixed-length 32 bytes struct in
-> each metadata page for csum.  It would need to do some kind of data
-> journalling to be crash-safe, but that's not difficult to arrange
-
-Either we go CoW full, or we don't care and go with try-and-error way.
-The only thing we need to know is the source and dest algo, just two
-tries should be enough.
-
-> (and in practice it can be YOLOed with no journal most of the time,
-> using dup or raid1 metadata to fix any blocks mangled by a crash).
->
->> 2) Superblock flags/csum_type
->>     Currently we have only one csum_type, which is shared by both data
->>     and metadata.
->>
->>     We need extra csum_type to indicate the destination csum algo.
->>     We will also need to sync this bit to kernel, no matter if the kern=
-el
->>     really uses that.
->
-> In the data csum tree it's a bit awkward.  Although there are 136 bits
-> of (objectid, key, offset) for each csum item, for historical reasons
-> the objectid and key fields are constant, leaving no room to identify
-> the csum type in the item key (and we don't want to use any item data
-> bytes for this as it will make the items larger).  We could create a
-> new csum tree with a different root, or use the objectid in the key to
-> identify the csum algorithm, but this requires completely new multi-tree
-> code to read and modify multiple csum trees during conversion.
-
-Yes, that's the problem.
-
->  It would
-> have to ensure there are no overlapping csums in two trees (or distant
-> locations in a single tree, which is just as bad) at the same time.
-> Every read would require potentially two tree lookups--all at places
-> where there have historically been bugs in the csum tree implementation.
-> This double-lookup and double-update (and quadruple-kernel-bug-fixing)
-> would have to continue until the last item in the old csum tree is
-> deleted.
->
-> Ideally a future csum tree (csum_tree_v2?) would have keys of (objectid =
-=3D
-> bytenr of data block, type =3D CSUM_ITEM_KEY, offset =3D csum algorithm)=
-.
-
-This indeed sounds pretty interesting.
-
-> Then the existing csum tree code can be used more or less unmodified,
-> except for the detail that each csum item might contain csums from
-> any one of the csum algorithms.  This is a simpler modification to the
-> csum tree code, since it uses only one tree, adjacent block csums are
-> adjacent in the tree key order, and lookup performance doesn't change.
-> The gotcha is that doing this requires a less-simple modification to the
-> fsync log tree code, which is apparently leveraging the existing csum it=
-em
-> key format to share a lot of code between fsync log tree and csum tree.
-> Also a single extent might have csums of different sizes, which will
-> complicate code that deals with e.g. printing csum values.
->
-> The advantage of csum_tree_v2 is that once the tree is converted to
-> a multi-csum tree format, it's much easier/faster to convert it again
-> (e.g. maybe you decide sha256 is too slow for you and you want to go
-> back to xxhash or blake2b), and you can mkfs new filesystems using
-> csum_tree_v2 from the beginning for online conversion later.
-
-That's why I'd prefer the offline convert.
-
-We only need to update the new csum tree, without bothering all the
-runtime csum lookup things.
-
-And just need to rename the objectid after finishing the csum tree
-update, and finally drop the old csum tree.
-
->
-> Any change in the tree organization probably means we have to solve the
-> multi-tree problem above anyway, since whatever new tree format we choos=
-e
-> to support multiple csums, the existing csum tree isn't laid out in the
-> same format.  There might be a way out of this if we borrow an idea from
-> space_cache=3Dv2, and convert the csum tree to csum_tree_v2 format durin=
-g
-> mount, without changing the csum algorithm at the same time.  This would
-> be relatively fast (compared to reading all the data blocks) but it
-> would eliminate the need to update multiple trees online (conversion
-> would simply copy the csums to a new tree and delete the old one, while
-> nothing is allowed to write to the filesystem).  After the csum tree
-> is converted to csum_tree_v2, the kernel would be able to complete the
-> conversion online.
->
-> Regardless of how multiple csum algorithms are supported, a data balance
-> would be sufficient to recompute all of the data csums by brute-force
-> reading (checking old csum) and writing (computing new csum) the data.
-> This is very wasteful as it rewrites many (but not all) of the metadata
-> trees again, as well as all of the data blocks, but it would work and
-> could be used until a proper conversion tool exists.
->
-> It might be possible to do something like scrub, but only reading the
-> data blocks and writing the csum trees.  Except not really scrub--I don'=
-t
-> think any of the existing scrub code can be used this way.  Maybe a
-> variation of defrag that only rewrites csums?  It might be easier to
-> build this component from scratch--none of the existing building blocks
-> in the kernel really fits.
->
-> Offline conversion of the existing csum tree from one csum algorithm
-> to another is non-trivial, since the csum data is packed into pages
-> dynamically.  Changing from any csum algorithm to one with a different
-> length will require not only rewriting the content of the csum tree page=
-s,
-> but also allocating a new tree structures to store them.
-
-For offline convert, we need to do regular tree CoWs to create a new
-csum tree.
-And rely on CoW to protect against powerloss/signal.
-
-The good thing is, we can easily grab where we were, thus no need for
-extra format to record the process.
-
->
-> Offline conversion to csum_tree_v2 is easy since it changes only the
-> arragement of bits in the btrfs key structure, not the size of anything.
-> It can be done in place the same way metadata can be converted in place.
-If we go offline, it then means we don't need on-line convert, thus no
-need for csum_tree_v2 for convert purpose.
-
-Thanks,
-Qu
-
->
->> Thanks,
->> Qu
->>
->>>
->>> Matthew Warren
->>>
->>> On Mon, Oct 4, 2021 at 4:52 AM David Sterba <dsterba@suse.cz> wrote:
->>>>
->>>> On Mon, Oct 04, 2021 at 12:26:16AM -0500, Matthew Warren wrote:
->>>>> Is there currently any way to change the checksum used by btrfs
->>>>> without recreating the filesystem and copying data to the new fs?
->>>>
->>>> I have a WIP patch but it's buggy. It works on small filesystems but
->>>> when I tried it on TB-sized images it blew up somewhere. Also the WIP=
- is
->>>> not too smart, it deletes the whole checksum tree and rebuilds if fro=
-m
->>>> the on-disk data, so it lacks the verification against the existing
->>>> csums. I intend to debug it some day but it's a nice to have feature,
->>>> I'm aware that people have been asking for it but at this point it wo=
-uld
->>>> be to dangerous to provide even the prototype.
+Oops, I thought I did not list BTRFS_FEATURE_INCOMPAT_ZONED in the
+ALLOWED_FEATURES list. I'll fix it in the new series.
