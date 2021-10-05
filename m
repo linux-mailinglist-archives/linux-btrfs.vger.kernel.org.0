@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4644423160
+	by mail.lfdr.de (Postfix) with ESMTP id EDD07423161
 	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 22:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbhJEUOl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Oct 2021 16:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
+        id S235840AbhJEUOm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Oct 2021 16:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbhJEUOk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Oct 2021 16:14:40 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5DDC061749
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Oct 2021 13:12:49 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id a13so297909qtw.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Oct 2021 13:12:49 -0700 (PDT)
+        with ESMTP id S230027AbhJEUOl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Oct 2021 16:14:41 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C41AC061749
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Oct 2021 13:12:50 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id l7so293548qkk.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Oct 2021 13:12:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xQ0CZG1M5HZeVmkhs186o9JHl5WBClLZ/K0CTLYAY50=;
-        b=1bW4iKD4jpaVOhxLMHv0lwRm6m7K0MULw8tK0OnYuOYB8WrDOIS6jsy1Cwy34pY/ax
-         W38WlLnLLRwKPKr24EwIEBA6JsuFEP0hmInCz4EeUpdjCzzdQAM6is6wG33ph6xsl4e4
-         kc6handlzyuGblPS5xVyQ0zXomPYnVefompb0a/9Vzaq3hu0h/5QJWdkMw3ntBJ2wOnO
-         BMr2+YIyR52ZDsily9Dci7WCdbzszPpWijQIPe3BZhhdMCgyDDoIpnN4f9TvnP2wNNre
-         wEksAlpfGvYX4wYk5HvvSpk106SC7gndYUMqWrThviWuWVPFg7An5oBcyo8u4CbECNa7
-         f/Ww==
+        bh=EujUb2zdQxZ1DX7m7qZ5lK5plbrk+V7MM+/HKaZss6k=;
+        b=TYtc3khhbUgbbPEFK7PBrJrC9MQGUsuCNWgylAoTNzDmxHbhDXCs9vD4mzLJEU5g9r
+         2Tzu3TdWNUWCsALuZh2ol6T/RITe1JkZ3BF3T1tGtYRZO8wJPdA0q5EkOOFnujhxuCak
+         cmLi7QVBBEI84b9ORKqDHguFuXEZeWqMmWZXTsBlvkbEj9FyVtnzMPUyFH02UpyyxfxZ
+         bamGsVzy5kvD5kmqRwOGG1cAtxrHlbc6SmhdgS1qf0bHDgNPqUBQmVXATkyA/t3IOIgZ
+         okDh4DVnlno60oC3gQlMVVEoADi11H92Y7RLgRJH01DbGg5sbsJTQYZxiqARER2wkjFt
+         /U1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xQ0CZG1M5HZeVmkhs186o9JHl5WBClLZ/K0CTLYAY50=;
-        b=uReSyS45U28a5iLXFDGl60dJjX1ZyAPR4WO9E1V3+lS/SVqsxHBpISw+dnzCk7Vum8
-         MlACeXCZU1T+mGpeiDXFaKEcMJ8TuqyQU1QH0VWCROdxENWHSeoGDGf/x+b1kaECRpHi
-         TbMgZbG8yACusaCoI8qlPUAz1xc+sH69wWWmnQCBBwYPePobVR4Y6JgaYAfqo5FRee0Q
-         Iu481gR8e0CVKj7B0CyapFYSXWcEgNYqE/rckuCjIEP7Jrf+efLD3ChOc9SzzR9dJs/E
-         yHooFbEVUdqD2frza0SKPe9N2T3o4ecZIB2KVa+K3ghCm+YLQ96eKwk7iAxShG2ZNGrN
-         A0jQ==
-X-Gm-Message-State: AOAM5334Why+LVUnedHbkbOKNzBvb+u2m0KtNKoxIRUpVKxq8EarUhea
-        9EFST4/PSa9uFfQDcIUDgLPCoUcbp106vw==
-X-Google-Smtp-Source: ABdhPJwEiewrewLOKwtWIhMGszcN6bWwlYcpONAUZr8nC/jZG8RPRT7hwK5s8UntfXkii6knOJRArg==
-X-Received: by 2002:ac8:5617:: with SMTP id 23mr22204861qtr.257.1633464768014;
-        Tue, 05 Oct 2021 13:12:48 -0700 (PDT)
+        bh=EujUb2zdQxZ1DX7m7qZ5lK5plbrk+V7MM+/HKaZss6k=;
+        b=T2kuhjJPJXiwr0C3X9ZFKJFS8UIZ57ZERaX8Kthaxif5hVtukAczsJHPx33jBjjO1i
+         W3+75g8HnWe3zBrv1+4TWPP9dk8VQIHqs07OXRkDUvI6UsUFmmj7qVqxIsbC4KI0/WcR
+         D4sxRt81eXblIJx/wU9AfbcBJ7BxWDlYRsAlh+2VMI/GVslkCSRz9hx4/BrqzCDqkKD7
+         09dbssqQkgDHQxUWxINlPMmSTpDBUOyrR8on6xLCctrnE7AYmw2WVX79K4qLGYS1hW7V
+         3O3Dtq6dlNfvIZ40jk4AqGs14mxnXDqxDJbGuY+5b8rh0PxOxxkAp08WdKd+P3IW2gn7
+         mRuw==
+X-Gm-Message-State: AOAM533crl4fd7LamzO8ZNCm8sgOsCpKeYuWqHWsP/TbALHtFM6dEc+n
+        nBadsHzT9sT1H26hQet/qV6wPd+yYKIKfA==
+X-Google-Smtp-Source: ABdhPJweL+TkK7VZ9q/sQWP6fFQwaOE5Kc9cSWzlr7bMYSX+x9X2JYaHwsgUBVNTXlkM9eGq2iqstw==
+X-Received: by 2002:a37:610b:: with SMTP id v11mr3000520qkb.293.1633464769462;
+        Tue, 05 Oct 2021 13:12:49 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d82sm10077340qke.55.2021.10.05.13.12.47
+        by smtp.gmail.com with ESMTPSA id v19sm1473512qtk.31.2021.10.05.13.12.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 13:12:47 -0700 (PDT)
+        Tue, 05 Oct 2021 13:12:49 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Cc:     Anand Jain <anand.jain@oracle.com>
-Subject: [PATCH v4 1/6] btrfs: use num_device to check for the last surviving seed device
-Date:   Tue,  5 Oct 2021 16:12:39 -0400
-Message-Id: <57941caac7f14f631da079aaa150f305877c4e2f.1633464631.git.josef@toxicpanda.com>
+Subject: [PATCH v4 2/6] btrfs: add comments for device counts in struct btrfs_fs_devices
+Date:   Tue,  5 Oct 2021 16:12:40 -0400
+Message-Id: <de61153ec9b67271f45f63a718bac0703bc171a3.1633464631.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1633464631.git.josef@toxicpanda.com>
 References: <cover.1633464631.git.josef@toxicpanda.com>
@@ -64,35 +64,51 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Anand Jain <anand.jain@oracle.com>
 
-For both sprout and seed fsids,
- btrfs_fs_devices::num_devices provides device count including missing
- btrfs_fs_devices::open_devices provides device count excluding missing
-
-We create a dummy struct btrfs_device for the missing device, so
-num_devices != open_devices when there is a missing device.
-
-In btrfs_rm_devices() we wrongly check for %cur_devices->open_devices
-before freeing the seed fs_devices. Instead we should check for
-%cur_devices->num_devices.
+A bug was was checking a wrong device count before we delete the struct
+btrfs_fs_devices in btrfs_rm_device(). To avoid future confusion and
+easy reference add a comment about the various device counts that we have
+in the struct btrfs_fs_devices.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/volumes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/volumes.h | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 6031e2f4c6bc..0941f61d8071 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2211,7 +2211,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
- 	synchronize_rcu();
- 	btrfs_free_device(device);
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 83075d6855db..c7ac43d8a7e8 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -236,11 +236,30 @@ struct btrfs_fs_devices {
+ 	bool fsid_change;
+ 	struct list_head fs_list;
  
--	if (cur_devices->open_devices == 0) {
-+	if (cur_devices->num_devices == 0) {
- 		list_del_init(&cur_devices->seed_list);
- 		close_fs_devices(cur_devices);
- 		free_fs_devices(cur_devices);
++	/*
++	 * Number of devices under this fsid including missing and
++	 * replace-target device and excludes seed devices.
++	 */
+ 	u64 num_devices;
++
++	/*
++	 * The number of devices that successfully opened, including
++	 * replace-target, excludes seed devices.
++	 */
+ 	u64 open_devices;
++
++	/* The number of devices that are under the chunk allocation list. */
+ 	u64 rw_devices;
++
++	/* Count of missing devices under this fsid excluding seed device. */
+ 	u64 missing_devices;
+ 	u64 total_rw_bytes;
++
++	/*
++	 * Count of devices from btrfs_super_block::num_devices for this fsid,
++	 * which includes the seed device, excludes the transient replace-target
++	 * device.
++	 */
+ 	u64 total_devices;
+ 
+ 	/* Highest generation number of seen devices */
 -- 
 2.26.3
 
