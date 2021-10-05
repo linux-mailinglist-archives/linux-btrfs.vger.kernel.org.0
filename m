@@ -2,122 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF7342315F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 22:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4644423160
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 22:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhJEUOj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Oct 2021 16:14:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
+        id S235546AbhJEUOl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Oct 2021 16:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbhJEUOi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Oct 2021 16:14:38 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA695C061749
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Oct 2021 13:12:47 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id l13so342279qtv.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Oct 2021 13:12:47 -0700 (PDT)
+        with ESMTP id S230027AbhJEUOk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Oct 2021 16:14:40 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5DDC061749
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Oct 2021 13:12:49 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id a13so297909qtw.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Oct 2021 13:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fi8dig7fuqso43xXmBVxI/dcm3mKfW9BZ+nSQd1VyAg=;
-        b=oQpg2ba4NhISvM2lBMl6odT5Ot6BuW7/ovdjqW/BmtFIDWeMMgBMXxJyBPNSWIeSoX
-         a493e97keioexzroMoYR5UFY5Kjtm97lOkYEiz0lOv+y1qdir+rEuTEHc8ReAhoOoJOa
-         HHYOwzx4YEkiIbu84UBbO2P2XiYASxklHkCiD5rto56fqglg5AVoM2Gc22UYFvWFCk3U
-         VzctQIlY/QkcorDS3cFgBDF3gmcime0/elD9W6QHLOs0R0vVTK4t2FzkGIgkMP8KxBi3
-         gMmh5ULiSgxo1SEfsizXXG2zwFVrsUKhE/vJXt5c7jywm3zccpujPD2hOzmbl6kQAP13
-         KHAA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=xQ0CZG1M5HZeVmkhs186o9JHl5WBClLZ/K0CTLYAY50=;
+        b=1bW4iKD4jpaVOhxLMHv0lwRm6m7K0MULw8tK0OnYuOYB8WrDOIS6jsy1Cwy34pY/ax
+         W38WlLnLLRwKPKr24EwIEBA6JsuFEP0hmInCz4EeUpdjCzzdQAM6is6wG33ph6xsl4e4
+         kc6handlzyuGblPS5xVyQ0zXomPYnVefompb0a/9Vzaq3hu0h/5QJWdkMw3ntBJ2wOnO
+         BMr2+YIyR52ZDsily9Dci7WCdbzszPpWijQIPe3BZhhdMCgyDDoIpnN4f9TvnP2wNNre
+         wEksAlpfGvYX4wYk5HvvSpk106SC7gndYUMqWrThviWuWVPFg7An5oBcyo8u4CbECNa7
+         f/Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fi8dig7fuqso43xXmBVxI/dcm3mKfW9BZ+nSQd1VyAg=;
-        b=nTAwZn2Dk2Sxu+sI135548XjCVj7s88DtWJI1yXbcxs1V+5ravJnCk1H7Qai4bhIQR
-         GSznR8kEKV+kNj1otMHLv9QvFv0gMUPuCWcuqJWRQY9598HUzdyQBQzDYemTHHz6Z5uW
-         I9ieLCrCRZS7DEacgML89DTv2kfWTtNDPouxev9ntSCah0hNCOVtft0X44bVEkLCZwZV
-         YZR6KCNXo+L5B5gl0gNigOS3PE0F9Mdj0EbA6kTfEirAvTz6j/tzFomnxycUthlFlhNL
-         J6bc6IG7QoJsEL88TRI740DtXmDa3PH0lZWBvTG4gPgS9u8V/W7w9SvFNg8Ly6rhbup5
-         2Ewg==
-X-Gm-Message-State: AOAM533aI6U52H/fOMcuMKV4NjPpOy5xU4wqfSCeOY3VvnLk1eD5F+7g
-        FlAVXoLLdp2Ox/sjWZF5sGj89AL0Iiwi3w==
-X-Google-Smtp-Source: ABdhPJyYmtjfg4hvbIWuHrwkgrZ3tFAM69RAAohFT8pn2PC599ZcUohmrMA8X+bDEbH7+qj6/QmXPA==
-X-Received: by 2002:ac8:718e:: with SMTP id w14mr22508895qto.316.1633464766634;
-        Tue, 05 Oct 2021 13:12:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xQ0CZG1M5HZeVmkhs186o9JHl5WBClLZ/K0CTLYAY50=;
+        b=uReSyS45U28a5iLXFDGl60dJjX1ZyAPR4WO9E1V3+lS/SVqsxHBpISw+dnzCk7Vum8
+         MlACeXCZU1T+mGpeiDXFaKEcMJ8TuqyQU1QH0VWCROdxENWHSeoGDGf/x+b1kaECRpHi
+         TbMgZbG8yACusaCoI8qlPUAz1xc+sH69wWWmnQCBBwYPePobVR4Y6JgaYAfqo5FRee0Q
+         Iu481gR8e0CVKj7B0CyapFYSXWcEgNYqE/rckuCjIEP7Jrf+efLD3ChOc9SzzR9dJs/E
+         yHooFbEVUdqD2frza0SKPe9N2T3o4ecZIB2KVa+K3ghCm+YLQ96eKwk7iAxShG2ZNGrN
+         A0jQ==
+X-Gm-Message-State: AOAM5334Why+LVUnedHbkbOKNzBvb+u2m0KtNKoxIRUpVKxq8EarUhea
+        9EFST4/PSa9uFfQDcIUDgLPCoUcbp106vw==
+X-Google-Smtp-Source: ABdhPJwEiewrewLOKwtWIhMGszcN6bWwlYcpONAUZr8nC/jZG8RPRT7hwK5s8UntfXkii6knOJRArg==
+X-Received: by 2002:ac8:5617:: with SMTP id 23mr22204861qtr.257.1633464768014;
+        Tue, 05 Oct 2021 13:12:48 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id o66sm9524412qka.86.2021.10.05.13.12.45
+        by smtp.gmail.com with ESMTPSA id d82sm10077340qke.55.2021.10.05.13.12.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 13:12:46 -0700 (PDT)
+        Tue, 05 Oct 2021 13:12:47 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 0/6] Fix lockdep issues around device removal
-Date:   Tue,  5 Oct 2021 16:12:38 -0400
-Message-Id: <cover.1633464631.git.josef@toxicpanda.com>
+Cc:     Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH v4 1/6] btrfs: use num_device to check for the last surviving seed device
+Date:   Tue,  5 Oct 2021 16:12:39 -0400
+Message-Id: <57941caac7f14f631da079aaa150f305877c4e2f.1633464631.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
+In-Reply-To: <cover.1633464631.git.josef@toxicpanda.com>
+References: <cover.1633464631.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-v3->v4:
-- I had a fixup for assinging devid that I mis-merged into the wrong patch,
-  fixed this up by putting it in the correct patch.
+From: Anand Jain <anand.jain@oracle.com>
 
-v2->v3:
-- Dropped the patches that kdave already merged.
-- Added some prep patches that Anand had that I need for my fixes.
-- Reworked device lookup to take an args struct since we were getting a
-  complicated mixture of function arguments.
-- Reworked device removal to generate this args struct so we can pass it into
-  device_remove in order to find the correct device to remove.
+For both sprout and seed fsids,
+ btrfs_fs_devices::num_devices provides device count including missing
+ btrfs_fs_devices::open_devices provides device count excluding missing
 
-v1->v2:
-- Rework the first patch as it was wrong because we need it for seed devices.
-- Fix another lockdep splat I uncovered while testing against seed devices to
-  make sure I hadn't broken anything.
+We create a dummy struct btrfs_device for the missing device, so
+num_devices != open_devices when there is a missing device.
 
---- Original email ---
+In btrfs_rm_devices() we wrongly check for %cur_devices->open_devices
+before freeing the seed fs_devices. Instead we should check for
+%cur_devices->num_devices.
 
-Hello,
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/volumes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The commit 87579e9b7d8d ("loop: use worker per cgroup instead of kworker")
-enabled the use of workqueues for loopback devices, which brought with it
-lockdep annotations for the workqueues for loopback devices.  This uncovered a
-cascade of lockdep warnings because of how we mess with the block_device while
-under the sb writers lock while doing the device removal.
-
-The first patch seems innocuous but we have a lockdep_assert_held(&uuid_mutex)
-in one of the helpers, which is why I have it first.  The code should never be
-called which is why it is removed, but I'm removing it specifically to remove
-confusion about the role of the uuid_mutex here.
-
-The next 4 patches are to resolve the lockdep messages as they occur.  There are
-several issues and I address them one at a time until we're no longer getting
-lockdep warnings.
-
-The final patch doesn't necessarily have to go in right away, it's just a
-cleanup as I noticed we have a lot of duplicated code between the v1 and v2
-device removal handling.  Thanks,
-
-Josef
-
-Anand Jain (2):
-  btrfs: use num_device to check for the last surviving seed device
-  btrfs: add comments for device counts in struct btrfs_fs_devices
-
-Josef Bacik (4):
-  btrfs: do not call close_fs_devices in btrfs_rm_device
-  btrfs: handle device lookup with btrfs_dev_lookup_args
-  btrfs: add a btrfs_get_dev_args_from_path helper
-  btrfs: use btrfs_get_dev_args_from_path in dev removal ioctls
-
- fs/btrfs/dev-replace.c |  18 ++--
- fs/btrfs/ioctl.c       |  80 ++++++++-------
- fs/btrfs/scrub.c       |   6 +-
- fs/btrfs/volumes.c     | 215 +++++++++++++++++++++++++++--------------
- fs/btrfs/volumes.h     |  40 +++++++-
- 5 files changed, 238 insertions(+), 121 deletions(-)
-
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 6031e2f4c6bc..0941f61d8071 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2211,7 +2211,7 @@ int btrfs_rm_device(struct btrfs_fs_info *fs_info, const char *device_path,
+ 	synchronize_rcu();
+ 	btrfs_free_device(device);
+ 
+-	if (cur_devices->open_devices == 0) {
++	if (cur_devices->num_devices == 0) {
+ 		list_del_init(&cur_devices->seed_list);
+ 		close_fs_devices(cur_devices);
+ 		free_fs_devices(cur_devices);
 -- 
 2.26.3
 
