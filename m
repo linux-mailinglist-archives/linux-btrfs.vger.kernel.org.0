@@ -2,134 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011C4421ED5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 08:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB713422262
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 11:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhJEG0u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Oct 2021 02:26:50 -0400
-Received: from mout.gmx.net ([212.227.17.21]:37287 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231597AbhJEG0t (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 Oct 2021 02:26:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1633415097;
-        bh=ynhLphjoi8sPoFnY5ipySJYNqYdw4DaEREzXi2dE3Oo=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=FV0ya7DruYbXkJw1gx6sukLrZPygL0XPfOlLs33EyAliGCRBedG56bwYcoGHzj9SA
-         Cjj5p9SDLKJxqXluw1PcNoS/NoDOAyjKeEDyZZgAPveggxTlPBhOhyDroVp2tY1W8G
-         J0mMPjig1p5/g10f0r2JTQSxKr+7kV5jaufBEb2I=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M4s0t-1mXuT12iMJ-00235i; Tue, 05
- Oct 2021 08:24:57 +0200
-Message-ID: <93270dd7-df09-793c-9ee5-9a756ad30196@gmx.com>
-Date:   Tue, 5 Oct 2021 14:24:53 +0800
+        id S233602AbhJEJgE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Oct 2021 05:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233455AbhJEJgE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Oct 2021 05:36:04 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A363AC061749
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Oct 2021 02:34:13 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9ca4:a53a:9ffa:e003])
+        by albert.telenet-ops.be with bizsmtp
+        id 29a72600U119333069a7g2; Tue, 05 Oct 2021 11:34:11 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mXgpr-0028mJ-EX; Tue, 05 Oct 2021 11:34:07 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mXgpq-005CuT-SL; Tue, 05 Oct 2021 11:34:06 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        noreply@ellerman.id.au
+Subject: [PATCH -next] btrfs: lzo: Mask instead of divide to fix 32-bit build
+Date:   Tue,  5 Oct 2021 11:34:06 +0200
+Message-Id: <20211005093406.1241222-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v3 12/26] btrfs: make btrfs_submit_compressed_read() to
- determine stripe boundary at bio allocation time
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20210927072208.21634-1-wqu@suse.com>
- <20210927072208.21634-13-wqu@suse.com> <20211004201054.GD9286@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20211004201054.GD9286@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:i4DSFAwPWw9p5anHuZY5dx26GhylMX/jEN75JWEXxuElpLMBBNH
- cADF/me8VJy8S6awRvy/T8d6wsyWf+jVg0kVr0Yd2W9GgGEZZHclsYWKy7oeFIBPlZx7Uas
- ITSOnrBic6XmoVitlnrjIcldjsqMyGU9i7cLhVI7SASOGxz91oYLLgbdOXowkJ+0Rsmp7Pa
- xg6HFH15OEP6SCQx8CS1Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bbl5ARqe7WI=:ZwWgdIbuImgt/kHB8hgevO
- hq7eUKzRV1BqcgbJLm4+Yy5/ic7SZeYObzvj3eH2qxFtpl+0N1j2huXXEib2XeaqoR29wPO9i
- WmPbDUBIKGE38l4splQMp73f+GrPEAvSaw3bsp3b4r/B/GWkGCr4jqYCyYTC+AGrxGgtYzNn8
- 0+0jxIaIh6Q6xnRGDq6ScHt7VWKhs68XekRvOlhSvnCTtixDXUx7yFc7lZOHjFeKunL6MOOz9
- VHG4/kbPOqP07CKRTlXjRUs8qBbWfOCGwgWxXqAKB/RRlbCvZ+5x4ppTUulgijViyujSFClsA
- i2NFOKYYYnQ4Z/GBbSDoBMP6AyRbjvWlzRkk8tQR7Vdr06uc0K7xmXeGfSDqfWwq0rOWyU0c/
- u9sn/DrBnmWEy8R2CTu5otBlngGvTmCslLhEveVFD2jvzUZMR2hwrKW4m/R9lV2b9UW36Kdh2
- naop+YcjFbJC94N5sHNxWZ9rSNMNqYrXNnT5CYda8dMez0Sqpqu2c3Q4V9E6PyST8GYCqBIv1
- bst8WhJQvPH47ttQUFri6eZk97t41F7w+qZo6H/IASFqHDozQb+9joL3LeeCQPFE87BH6lDYm
- zyHGhgBOUpZLDKw8C26Zo8+SbaF+cNFvLFBA7oMY4pctl8J3fvNpleSB8BKcJ71koG46Avote
- nilHzeeVYTr6FAUNgHRgKH48hJgVk6dRtL4QixkeHWIP5tTWpzKIQzThYOuC4ZetGhYrUCcIK
- TxYXjwIZ36ObUi1IXsx9Gjt97JrQrqZp15rV56aK5gzgU9uFUuw8/b2V3GeR4DQIt7LFx4KdG
- eHTH7avtbYjZtmLxaq9xyVGWQcPL+GPcESIRv8MQldq48dmWlnx154UucLnXcGFt1xL9G5hQC
- UeDR2/WdYILH1aHp0NW0SVJozJeT09QguZcQJXYBsXLk73YdDZoGZ1M4iRRPmwz5R/FPRUanA
- 1+Np1WgdEGramOff9MTmGb1WzVyUx/9XGmrvMFpXoM+CBz45Mcq1SOLiBmZ3qw7pZjfV7is2T
- iwuPsJUhznK+ScYiU4vmzjqaOYOaarB9u5xGUS8RQnw2AG5qO7qmvecfPwCmCzcqPuIf4lSt6
- VbvypMBrrzcue8=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 32-bit builds (e.g. m68k):
 
+    ERROR: modpost: "__umoddi3" [fs/btrfs/btrfs.ko] undefined!
 
-On 2021/10/5 04:10, David Sterba wrote:
-> On Mon, Sep 27, 2021 at 03:21:54PM +0800, Qu Wenruo wrote:
->> Currently btrfs_submit_compressed_read() will check
->> btrfs_bio_fits_in_stripe() each time a new page is going to be added.
->>
->> Even compressed extent is small, we don't really need to do that for
->> every page.
->>
->> This patch will align the behavior to extent_io.c, by determining the
->> stripe boundary when allocating a bio.
->>
->> Unlike extent_io.c, in compressed.c we don't need to bother things like
->> different bio flags, thus no need to re-use bio_ctrl.
->>
->> Here we just manually introduce new local variable, next_stripe_start,
->> and teach alloc_compressed_bio() to calculate the stripe boundary.
->>
->> Then each time we add some page range into the bio, we check if we
->> reached the boundary.
->> And if reached, submit it.
->>
->> Also, since we have @cur_disk_byte to determine whether we're the last
->> bio, we don't need a explicit last_bio: tag for error handling any more=
-.
->>
->> And we can use @cur_disk_byte to track which range has been added to
->> bio, we can also use @cur_disk_byte to calculate the wait condition, no
->> need for @pending_bios.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   fs/btrfs/compression.c | 164 +++++++++++++++++++++++-----------------=
--
->>   1 file changed, 93 insertions(+), 71 deletions(-)
->>
->> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
->> index 1b62677cd0f3..319d39fd1afa 100644
->> --- a/fs/btrfs/compression.c
->> +++ b/fs/btrfs/compression.c
->> @@ -439,11 +439,18 @@ static blk_status_t submit_compressed_bio(struct =
-btrfs_fs_info *fs_info,
->>
->>   /*
->>    * To allocate a compressed_bio, which will be used to read/write on-=
-disk data.
->> + *
->> + * @next_stripe_start:	Disk bytenr of next stripe start
->
-> Please send an incremental followup to also document all the remaining
-> parameters. We're not strict about the kdoc warnings but if the code
-> gets touched it's better to complete it.
+"cur_in - start" is 64-bit, while sectorsize is u32.
 
-Sent, can be found here:
+As sectorsize is always a power of two, the 64-by-32 modulo operation
+can be replaced by a much cheaper bitwise AND with "sectorsize - 1".
 
-https://lore.kernel.org/linux-btrfs/20211005062144.68489-1-wqu@suse.com/ra=
-w
+Fixes: 0078783c7089fc83 ("btrfs: rework lzo_compress_pages() to make it subpage compatible")
+Reported-by: noreply@ellerman.id.au
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Compile-tested only.
+---
+ fs/btrfs/lzo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Qu
+diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+index 47003cec4046f13e..d08f9eba49dab3cd 100644
+--- a/fs/btrfs/lzo.c
++++ b/fs/btrfs/lzo.c
+@@ -211,7 +211,7 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
+ 	 */
+ 	cur_out += LZO_LEN;
+ 	while (cur_in < start + len) {
+-		u32 sector_off = (cur_in - start) % sectorsize;
++		u32 sector_off = (cur_in - start) & (sectorsize - 1);
+ 		u32 in_len;
+ 		size_t out_len;
+ 
+-- 
+2.25.1
 
->
->>    */
->>   static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u6=
-4 disk_bytenr,
->> -					unsigned int opf, bio_end_io_t endio_func)
->> +					unsigned int opf, bio_end_io_t endio_func,
->> +					u64 *next_stripe_start)
