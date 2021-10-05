@@ -2,56 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51511423220
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 22:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C1E423221
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Oct 2021 22:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235884AbhJEUhY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Oct 2021 16:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46982 "EHLO
+        id S236110AbhJEUh0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Oct 2021 16:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhJEUhY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Oct 2021 16:37:24 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EA1C061749
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Oct 2021 13:35:33 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id cv2so499670qvb.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Oct 2021 13:35:33 -0700 (PDT)
+        with ESMTP id S230352AbhJEUhZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Oct 2021 16:37:25 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1341C061749
+        for <linux-btrfs@vger.kernel.org>; Tue,  5 Oct 2021 13:35:34 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id q125so250899qkd.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 05 Oct 2021 13:35:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=K5OxH4loe6E1uMkD96Oorus91E8BUjazMLp9ZdRPIUs=;
-        b=hcDN3wBJLUwYQ284Ai+RRcYLZls0igll8mjeChlv7VwwGkshDn/9H3aapVzNjFUcj2
-         BM8NQdBAvMbp//y+Y28hS6gvRQ+eTN3NNNNIuN6QO3q77zsUY08e0gxPsoc5sl/TC18N
-         qrp77Ic54V4POa0hGk8nmB5lieWGEqWBZhpnevqtQ28pKpJYgUuy0cxSV47dsONl7pLJ
-         VBzK+jUHijy+okt1KHJ8jeQCLUotJrfQWvDT72Liu9k50JMz/YgqyW4iFsYMoY9+qhEe
-         jN0+bLf2CymmI0S4ySbO9yZxFja4FemDXMJ9r/JtqeXLuvI8kELEa2bQVaFaDayD39PN
-         uX4A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AHZt3EPuSy/iy2NVdNAyF4jU9ZFPmTXvjmTacJy9MHg=;
+        b=lmeVPaRsYMlcktEAdO9uGvK4ztohB6DcOjFXKpn4hmnThnyfsiUjadcNxsnBSUAbY5
+         KU5Qvr8YhBclRxsnEIRNGHOALkVMS+HjvEmJmWcPD0EwdP91PhqfM5f+M/SFXCm9CkOg
+         ubtJA5Rl1LrE7Zax/MyiZpNKoALdRpw2ZxkW4EuuIKLTKlQamkLW8YkI2fszegHoFHuA
+         1sA6ruVv9eoPZ1oEg3Dekta2HXKhgPcObmG5k0cKXEl4pcmcDwWKzWjiVIHALjBYuknw
+         TCLpdfkvPE81DW5yMll87epGKDYf6a6Kgyz9yt0Lsgr34RtarAfGeU890a/CMXunVlUJ
+         tlRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K5OxH4loe6E1uMkD96Oorus91E8BUjazMLp9ZdRPIUs=;
-        b=zN2d6mh2MLLJCce17YzPVTCRFlWm796sa93kER6OqkuL+M5gf1uMAezxvgeM+iRTlo
-         8e8KziIyAHQDX15YgnGVknwMtJhbiab78dB2i/nKhQy7iHEnmL3vgMX5u+4ggqaYMZ1l
-         3APwRVTVJn6Y7XX5Gzn1nmbHbb7wZUKyWckAY5927+JJiedXf5Ui3ac2s1Amgd8fTvpi
-         5iSINoJ5831qxtNM7uc+Gm9ieR0tGDUyWzU6WFWil55bV5XBAUdfG3YnSIJ2SPiwFN8h
-         jxGQQRqP3Q3B6lo3ZkhyvCE/jkvw2jiWbDhra8MRfb4aydrMHoN+wNmldX6dM/WszbxI
-         31AA==
-X-Gm-Message-State: AOAM531rw8CzSDKeu2iJgGXm6YsCn3owD0QcbgRGcMopqO6gWI970xiJ
-        5arG0grBFSzoy9udS17J+NY4abvmL0mXhg==
-X-Google-Smtp-Source: ABdhPJweSl1S3DgOxdExhKm3ad5t8KMLMyOzgVbT2Fw9go7HU81YfOnTeNmRECWp3J3wsNiBqyZ8EA==
-X-Received: by 2002:a05:6214:1046:: with SMTP id l6mr12387815qvr.13.1633466132270;
-        Tue, 05 Oct 2021 13:35:32 -0700 (PDT)
+        bh=AHZt3EPuSy/iy2NVdNAyF4jU9ZFPmTXvjmTacJy9MHg=;
+        b=0pEugLz3r9A0uIvw1rA253AH16QqtszBtgUx0umQoyr+xev3XqQ0tVkiPERn49zvne
+         ceFZVkmiizKx8du/Wq5f0/lqFe66YZCFVzLliKhjOmFhi+EZ9kfZXzAbnljHbGD6GmdG
+         IILCyypP3X7kmP5B0t+RU6aipsuu2Jf6GJihiBniV2a8WjnDdTsWAZCFjUv2b8UZ4Q+G
+         H7HhEWSlI/0AVJsXgLaYOvQFLwo8aH6sBTEiGCFl59IzUWQmg7y51j+ZnMbmyy+23+Cz
+         Gqeu1dZBfSWK8IzCjKlWXQ35cauWemfmki2ep+CtBqw9jPH2PcPqXGul11OrqJPJezi0
+         7b2g==
+X-Gm-Message-State: AOAM532JjjmQMUEDK7h3EEbhgKr+sJRwadfSsj2EMYnT6Z3IlPuIOQyg
+        cNdw6AQFHndIgOlmvo5oWgsw/E5W25fTaw==
+X-Google-Smtp-Source: ABdhPJxWEc/Oy6moQANbxNGGiRcNjeq3bFQayNhsJ5XlNiiDPkforKh3dqEVvmY6WiC3UAgnxRHr2A==
+X-Received: by 2002:a37:45c4:: with SMTP id s187mr16701592qka.125.1633466133858;
+        Tue, 05 Oct 2021 13:35:33 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z186sm10126835qke.59.2021.10.05.13.35.31
+        by smtp.gmail.com with ESMTPSA id b14sm12097194qtk.64.2021.10.05.13.35.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Oct 2021 13:35:31 -0700 (PDT)
+        Tue, 05 Oct 2021 13:35:33 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 2/5] btrfs: change error handling for btrfs_delete_*_in_log
-Date:   Tue,  5 Oct 2021 16:35:24 -0400
-Message-Id: <e26773a5be8c7e52b6379343514c0b7eb46deb0e.1633465964.git.josef@toxicpanda.com>
+Cc:     Anand Jain <anand.jain@oracle.com>
+Subject: [PATCH v4 3/5] btrfs: add a BTRFS_FS_ERROR helper
+Date:   Tue,  5 Oct 2021 16:35:25 -0400
+Message-Id: <6a296199cacaf7ec138e8e25d6cbf79644434bbf.1633465964.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1633465964.git.josef@toxicpanda.com>
 References: <cover.1633465964.git.josef@toxicpanda.com>
@@ -61,167 +62,223 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently we will abort the transaction if we get a random error (like
--EIO) while trying to remove the directory entries from the root log
-during rename.
+We have a few flags that are inconsistently used to describe the fs in
+different states of failure.  As of
 
-However since these are simply log tree related errors, we can mark the
-trans as needing a full commit.  Then if the error was truly
-catastrophic we'll hit it during the normal commit and abort as
-appropriate.
+	btrfs: always abort the transaction if we abort a trans handle
 
+we will always set BTRFS_FS_STATE_ERROR if we abort, so we don't have to
+check both ABORTED and ERROR to see if things have gone wrong.  Add a
+helper to check BTRFS_FS_STATE_ERROR and then convert all checkers of
+FS_STATE_ERROR to use the helper.
+
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c    | 16 +++-------------
- fs/btrfs/tree-log.c | 41 ++++++++++++++---------------------------
- fs/btrfs/tree-log.h | 16 ++++++++--------
- 3 files changed, 25 insertions(+), 48 deletions(-)
+ fs/btrfs/ctree.h       |  3 +++
+ fs/btrfs/disk-io.c     |  8 +++-----
+ fs/btrfs/extent_io.c   |  2 +-
+ fs/btrfs/file.c        |  2 +-
+ fs/btrfs/inode.c       |  6 +++---
+ fs/btrfs/scrub.c       |  2 +-
+ fs/btrfs/super.c       |  2 +-
+ fs/btrfs/transaction.c | 11 +++++------
+ fs/btrfs/tree-log.c    |  2 +-
+ 9 files changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 11ba673d195e..df716d1bd2f1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4116,19 +4116,9 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
- 		goto err;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 9c730e718d20..3d234469c132 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3607,6 +3607,9 @@ do {								\
+ 			  (errno), fmt, ##args);		\
+ } while (0)
+ 
++#define BTRFS_FS_ERROR(fs_info)	(unlikely(test_bit(BTRFS_FS_STATE_ERROR, \
++						   &(fs_info)->fs_state)))
++
+ __printf(5, 6)
+ __cold
+ void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 37637539c5ab..1ae30b29f2b5 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1954,8 +1954,7 @@ static int transaction_kthread(void *arg)
+ 		wake_up_process(fs_info->cleaner_kthread);
+ 		mutex_unlock(&fs_info->transaction_kthread_mutex);
+ 
+-		if (unlikely(test_bit(BTRFS_FS_STATE_ERROR,
+-				      &fs_info->fs_state)))
++		if (BTRFS_FS_ERROR(fs_info))
+ 			btrfs_cleanup_transaction(fs_info);
+ 		if (!kthread_should_stop() &&
+ 				(!btrfs_transaction_blocked(fs_info) ||
+@@ -4232,7 +4231,7 @@ void btrfs_drop_and_free_fs_root(struct btrfs_fs_info *fs_info,
+ 		drop_ref = true;
+ 	spin_unlock(&fs_info->fs_roots_radix_lock);
+ 
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
++	if (BTRFS_FS_ERROR(fs_info)) {
+ 		ASSERT(root->log_root == NULL);
+ 		if (root->reloc_root) {
+ 			btrfs_put_root(root->reloc_root);
+@@ -4383,8 +4382,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 			btrfs_err(fs_info, "commit super ret %d", ret);
  	}
  
--	ret = btrfs_del_inode_ref_in_log(trans, root, name, name_len, inode,
--			dir_ino);
--	if (ret != 0 && ret != -ENOENT) {
--		btrfs_abort_transaction(trans, ret);
--		goto err;
--	}
--
--	ret = btrfs_del_dir_entries_in_log(trans, root, name, name_len, dir,
--			index);
--	if (ret == -ENOENT)
--		ret = 0;
--	else if (ret)
--		btrfs_abort_transaction(trans, ret);
-+	btrfs_del_inode_ref_in_log(trans, root, name, name_len, inode,
-+				   dir_ino);
-+	btrfs_del_dir_entries_in_log(trans, root, name, name_len, dir, index);
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state) ||
+-	    test_bit(BTRFS_FS_STATE_TRANS_ABORTED, &fs_info->fs_state))
++	if (BTRFS_FS_ERROR(fs_info))
+ 		btrfs_error_commit_super(fs_info);
  
- 	/*
- 	 * If we have a pending delayed iput we could end up with the final iput
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 7a7fe0d74c35..a99aa57b8886 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3500,10 +3500,10 @@ static bool inode_logged(struct btrfs_trans_handle *trans,
-  * This optimizations allows us to avoid relogging the entire inode
-  * or the entire directory.
-  */
--int btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
--				 struct btrfs_root *root,
--				 const char *name, int name_len,
--				 struct btrfs_inode *dir, u64 index)
-+void btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
-+				  struct btrfs_root *root,
-+				  const char *name, int name_len,
-+				  struct btrfs_inode *dir, u64 index)
- {
- 	struct btrfs_root *log;
- 	struct btrfs_dir_item *di;
-@@ -3513,11 +3513,11 @@ int btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
- 	u64 dir_ino = btrfs_ino(dir);
+ 	kthread_stop(fs_info->transaction_kthread);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index d022654af420..b10dc75eef1c 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4908,7 +4908,7 @@ int btree_write_cache_pages(struct address_space *mapping,
+ 	 *   extent io tree. Thus we don't want to submit such wild eb
+ 	 *   if the fs already has error.
+ 	 */
+-	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
++	if (!BTRFS_FS_ERROR(fs_info)) {
+ 		ret = flush_write_bio(&epd);
+ 	} else {
+ 		ret = -EROFS;
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 98f6e5c8d62c..62673ad5f0ba 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2019,7 +2019,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+ 	 * have opened a file as writable, we have to stop this write operation
+ 	 * to ensure consistency.
+ 	 */
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &inode->root->fs_info->fs_state))
++	if (BTRFS_FS_ERROR(inode->root->fs_info))
+ 		return -EROFS;
  
- 	if (!inode_logged(trans, dir))
--		return 0;
-+		return;
+ 	if (!(iocb->ki_flags & IOCB_DIRECT) &&
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index df716d1bd2f1..034488f6b1a0 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4376,7 +4376,7 @@ static void btrfs_prune_dentries(struct btrfs_root *root)
+ 	struct inode *inode;
+ 	u64 objectid = 0;
  
- 	ret = join_running_log_trans(root);
- 	if (ret)
--		return 0;
-+		return;
+-	if (!test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
++	if (!BTRFS_FS_ERROR(fs_info))
+ 		WARN_ON(btrfs_root_refs(&root->root_item) != 0);
  
- 	mutex_lock(&dir->log_mutex);
+ 	spin_lock(&root->inode_lock);
+@@ -9994,7 +9994,7 @@ int btrfs_start_delalloc_snapshot(struct btrfs_root *root, bool in_reclaim_conte
+ 	};
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
  
-@@ -3565,49 +3565,36 @@ int btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
- 	btrfs_free_path(path);
- out_unlock:
- 	mutex_unlock(&dir->log_mutex);
--	if (err == -ENOSPC) {
-+	if (err < 0 && err != -ENOENT)
- 		btrfs_set_log_full_commit(trans);
--		err = 0;
--	} else if (err < 0 && err != -ENOENT) {
--		/* ENOENT can be returned if the entry hasn't been fsynced yet */
--		btrfs_abort_transaction(trans, err);
--	}
--
- 	btrfs_end_log_trans(root);
--
--	return err;
- }
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
++	if (BTRFS_FS_ERROR(fs_info))
+ 		return -EROFS;
  
- /* see comments for btrfs_del_dir_entries_in_log */
--int btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
--			       struct btrfs_root *root,
--			       const char *name, int name_len,
--			       struct btrfs_inode *inode, u64 dirid)
-+void btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
-+				struct btrfs_root *root,
-+				const char *name, int name_len,
-+				struct btrfs_inode *inode, u64 dirid)
- {
- 	struct btrfs_root *log;
- 	u64 index;
+ 	return start_delalloc_inodes(root, &wbc, true, in_reclaim_context);
+@@ -10013,7 +10013,7 @@ int btrfs_start_delalloc_roots(struct btrfs_fs_info *fs_info, long nr,
+ 	struct list_head splice;
  	int ret;
  
- 	if (!inode_logged(trans, inode))
--		return 0;
-+		return;
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
++	if (BTRFS_FS_ERROR(fs_info))
+ 		return -EROFS;
  
- 	ret = join_running_log_trans(root);
- 	if (ret)
--		return 0;
-+		return;
- 	log = root->log_root;
- 	mutex_lock(&inode->log_mutex);
+ 	INIT_LIST_HEAD(&splice);
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index bd3cd7427391..b1c26a90243b 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -3955,7 +3955,7 @@ static noinline_for_stack int scrub_supers(struct scrub_ctx *sctx,
+ 	int	ret;
+ 	struct btrfs_fs_info *fs_info = sctx->fs_info;
  
- 	ret = btrfs_del_inode_ref(trans, log, name, name_len, btrfs_ino(inode),
- 				  dirid, &index);
- 	mutex_unlock(&inode->log_mutex);
--	if (ret == -ENOSPC) {
-+	if (ret < 0 && ret != -ENOENT)
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
++	if (BTRFS_FS_ERROR(fs_info))
+ 		return -EROFS;
+ 
+ 	/* Seed devices of a new filesystem has their own generation. */
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 7f91d62c2225..a1c54a2c787c 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2006,7 +2006,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+ 		if (ret)
+ 			goto restore;
+ 	} else {
+-		if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
++		if (BTRFS_FS_ERROR(fs_info)) {
+ 			btrfs_err(fs_info,
+ 				"Remounting read-write after error is not allowed");
+ 			ret = -EINVAL;
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 14b9fdc8aaa9..1c3a1189c0bd 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -283,7 +283,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
+ 	spin_lock(&fs_info->trans_lock);
+ loop:
+ 	/* The file system has been taken offline. No new transactions. */
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
++	if (BTRFS_FS_ERROR(fs_info)) {
+ 		spin_unlock(&fs_info->trans_lock);
+ 		return -EROFS;
+ 	}
+@@ -331,7 +331,7 @@ static noinline int join_transaction(struct btrfs_fs_info *fs_info,
+ 		 */
+ 		kfree(cur_trans);
+ 		goto loop;
+-	} else if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
++	} else if (BTRFS_FS_ERROR(fs_info)) {
+ 		spin_unlock(&fs_info->trans_lock);
+ 		kfree(cur_trans);
+ 		return -EROFS;
+@@ -579,7 +579,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 	bool do_chunk_alloc = false;
+ 	int ret;
+ 
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state))
++	if (BTRFS_FS_ERROR(fs_info))
+ 		return ERR_PTR(-EROFS);
+ 
+ 	if (current->journal_info) {
+@@ -991,8 +991,7 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
+ 	if (throttle)
+ 		btrfs_run_delayed_iputs(info);
+ 
+-	if (TRANS_ABORTED(trans) ||
+-	    test_bit(BTRFS_FS_STATE_ERROR, &info->fs_state)) {
++	if (TRANS_ABORTED(trans) || BTRFS_FS_ERROR(info)) {
+ 		wake_up_process(info->transaction_kthread);
+ 		if (TRANS_ABORTED(trans))
+ 			err = trans->aborted;
+@@ -2155,7 +2154,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 		 * abort to prevent writing a new superblock that reflects a
+ 		 * corrupt state (pointing to trees with unwritten nodes/leafs).
+ 		 */
+-		if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED, &fs_info->fs_state)) {
++		if (BTRFS_FS_ERROR(fs_info)) {
+ 			ret = -EROFS;
+ 			goto cleanup_transaction;
+ 		}
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index a99aa57b8886..994ea456e904 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3335,7 +3335,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 	 * writing the super here would result in transid mismatches.  If there
+ 	 * is an error here just bail.
+ 	 */
+-	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
++	if (BTRFS_FS_ERROR(fs_info)) {
+ 		ret = -EIO;
  		btrfs_set_log_full_commit(trans);
--		ret = 0;
--	} else if (ret < 0 && ret != -ENOENT)
--		btrfs_abort_transaction(trans, ret);
- 	btrfs_end_log_trans(root);
--
--	return ret;
- }
- 
- /*
-diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
-index 3ce6bdb76009..f6811c3df38a 100644
---- a/fs/btrfs/tree-log.h
-+++ b/fs/btrfs/tree-log.h
-@@ -70,14 +70,14 @@ int btrfs_recover_log_trees(struct btrfs_root *tree_root);
- int btrfs_log_dentry_safe(struct btrfs_trans_handle *trans,
- 			  struct dentry *dentry,
- 			  struct btrfs_log_ctx *ctx);
--int btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
--				 struct btrfs_root *root,
--				 const char *name, int name_len,
--				 struct btrfs_inode *dir, u64 index);
--int btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
--			       struct btrfs_root *root,
--			       const char *name, int name_len,
--			       struct btrfs_inode *inode, u64 dirid);
-+void btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
-+				  struct btrfs_root *root,
-+				  const char *name, int name_len,
-+				  struct btrfs_inode *dir, u64 index);
-+void btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
-+				struct btrfs_root *root,
-+				const char *name, int name_len,
-+				struct btrfs_inode *inode, u64 dirid);
- void btrfs_end_log_trans(struct btrfs_root *root);
- void btrfs_pin_log_trans(struct btrfs_root *root);
- void btrfs_record_unlink_dir(struct btrfs_trans_handle *trans,
+ 		btrfs_abort_transaction(trans, ret);
 -- 
 2.26.3
 
