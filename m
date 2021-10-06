@@ -2,108 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD7E42401A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Oct 2021 16:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC60424039
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Oct 2021 16:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhJFObO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Oct 2021 10:31:14 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57562 "EHLO
+        id S239019AbhJFOjf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Oct 2021 10:39:35 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59312 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhJFObN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Oct 2021 10:31:13 -0400
+        with ESMTP id S231403AbhJFOje (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Oct 2021 10:39:34 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8D37E20381;
-        Wed,  6 Oct 2021 14:29:20 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 3777420381;
+        Wed,  6 Oct 2021 14:37:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633530560;
+        t=1633531061;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=X4NcZtN/japw57FtVOZFEPKsaHiASqaOx9oWwH5FIUM=;
-        b=iTjcVehbMZ8tgmEQcrtUIFg2G0gHm1j52J6hM2eoSddkfKpk+hv/3cDAbPDdWQE6Qii6Xv
-        +eDMde7HMbK4lk6KcSb6MospA37bWc+sKVukaoMdso7unrSl6N9HU04auxXlTTmKlrvNAt
-        y4uiKXcEnXbr5JYkoqUmYxfpowzH5yY=
+        bh=P80PkowqiXUSYPUDr9Yfj7kjuKGMxRTAJzmZ6EwOjRc=;
+        b=meE5cPIAXPsFv73/R2sgH/35nqTcqOCCJvsL7xCkSU30eecmeOu9rDkmr2Q9kUpYuLbKog
+        ygooSiDjYN8Nro0ac7Chzn6/IrEvuFwSq0Pv1gR7DMcuU1V8CZiCPJyB2zYIOCy7e5GZ/S
+        EqVQRFq3q+pw83XxwVboLAwRRPVGup0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633530560;
+        s=susede2_ed25519; t=1633531061;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=X4NcZtN/japw57FtVOZFEPKsaHiASqaOx9oWwH5FIUM=;
-        b=nc7oJ1V7QQC9opuzLuyMcM0auKK+EzbFQypAZLLfaoFmu+lmNcUsuyyjTNmvIhc4sxneVW
-        xxn8SaCvO8ZGX+DQ==
+        bh=P80PkowqiXUSYPUDr9Yfj7kjuKGMxRTAJzmZ6EwOjRc=;
+        b=efCX6RVQc+Dv33CcDH69KGx4RgONsj3WFrkstoinDhPg9simSp8fJrbO8LecJ6MF4SyySA
+        x4BLoUpwamqNBBAQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5A37EA3B8B;
-        Wed,  6 Oct 2021 14:29:20 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id B392FA3BCF;
+        Wed,  6 Oct 2021 14:37:36 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EA09DDA7F3; Wed,  6 Oct 2021 16:28:59 +0200 (CEST)
-Date:   Wed, 6 Oct 2021 16:28:59 +0200
+        id D2922DA781; Wed,  6 Oct 2021 16:37:20 +0200 (CEST)
+Date:   Wed, 6 Oct 2021 16:37:20 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v2 0/7] btrfs-progs: use direct-IO for zoned device
-Message-ID: <20211006142859.GS9286@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs-progs: remove data extents from the free space tree
+Message-ID: <20211006143720.GT9286@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <20211005062305.549871-1-naohiro.aota@wdc.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <0394a30e2d64f3a418c7f502a967b9add5632577.1633458057.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005062305.549871-1-naohiro.aota@wdc.com>
+In-Reply-To: <0394a30e2d64f3a418c7f502a967b9add5632577.1633458057.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 03:22:58PM +0900, Naohiro Aota wrote:
-> As discussed in the Zoned Storage page [1],  the kernel page cache does not
-> guarantee that cached dirty pages will be flushed to a block device in
-> sequential sector order. Thus, we must use O_DIRECT for writing to a zoned
-> device to ensure the write ordering.
+On Tue, Oct 05, 2021 at 02:21:08PM -0400, Josef Bacik wrote:
+> Dave reported a failure of mkfs-test 009 with the free space tree
+> enabled by default.  This is because 009 pre-populates the file system
+> with a given directory, and for some reason our data allocation path
+> isn't the same as in the kernel.  Fix this by making sure when we
+> allocate a data extent we remove the space from the free space tree, and
+> with this our mkfs tests now pass.
 > 
-> [1] https://zonedstorage.io/linux/overview/#zbd-support-restrictions
-> 
-> As a writng buffer is embedded in some other struct (e.g., "char data[]" in
-> struct extent_buffer), it is difficult to allocate the struct so that the
-> writng buffer is aligned.
-> 
-> This series introduces btrfs_{pread,pwrite} to wrap around pread/pwrite,
-> which allocates an aligned bounce buffer, copy the buffer contents, and
-> proceeds the IO. And, it now opens a zoned device with O_DIRECT.
-> 
-> Since the allocation and copying are costly, it is better to do them only
-> when necessary. But, it is cumbersome to call fcntl(F_GETFL) to determine
-> the file is opened with O_DIRECT or not every time doing an IO.
-> 
-> As zoned device forces to use zoned btrfs, I decided to use the zoned flag
-> to determine if it is direct-IO or not. This can cause a false-positive (to
-> use the bounce buffer when a file is *not* opened with O_DIRECT) in case of
-> emulated zoned mode on a non-zoned device or a regular file. Considering
-> the emulated zoned mode is mostly for debugging or testing, I believe this
-> is acceptable.
-> 
-> * Changes
-> v2
->   - Rebased on the latest "devel" branch
->   - Add patch to fix segfault in several cases
->   - drop ZONED flag from BTRFS_CONVERT_ALLOWED_FEATURES
-> 
-> Patches 1 to 3 are preparation to fix some issues in the current code.
-> 
-> Patches 4 and 5 wraps pread/pwrite with newly introduced function
-> btrfs_pread/btrfs_pwrite.
-> 
-> Patch 6 deals with the zoned flag while reading the initial trees.
-> 
-> Patch 7 finally opens a zoned device with O_DIRECT.
-> 
-> Naohiro Aota (7):
->   btrfs-progs: mkfs: do not set zone size on non-zoned mode
->   btrfs-progs: set eb->fs_info properly
->   btrfs-progs: drop ZONED flag from BTRFS_CONVERT_ALLOWED_FEATURES
->   btrfs-progs: introduce btrfs_pwrite wrapper for pwrite
->   btrfs-progs: introduce btrfs_pread wrapper for pread
->   btrfs-progs: temporally set zoned flag for initial tree reading
->   btrfs-progs: use direct-io for zoned device
+> Issue: #410
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Added to devel with some minor fixups, thanks.
+Added to devel, thanks.
