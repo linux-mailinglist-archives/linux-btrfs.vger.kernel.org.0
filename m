@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E124243D7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Oct 2021 19:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 423584243DE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  6 Oct 2021 19:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbhJFRTv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 6 Oct 2021 13:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
+        id S231617AbhJFRVd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 6 Oct 2021 13:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbhJFRTu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Oct 2021 13:19:50 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D516C061746
-        for <linux-btrfs@vger.kernel.org>; Wed,  6 Oct 2021 10:17:58 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id z40so1864241qko.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 06 Oct 2021 10:17:58 -0700 (PDT)
+        with ESMTP id S229564AbhJFRVc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 6 Oct 2021 13:21:32 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DBBC061746
+        for <linux-btrfs@vger.kernel.org>; Wed,  6 Oct 2021 10:19:40 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id t2so3366143qtx.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 06 Oct 2021 10:19:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=0hKiuiSjH8iYaXvdFeIHYwbnZprBduhul0eoRZjB5k8=;
-        b=bs8gN6mGtI+3MlawjwjAYxkFoADtXuX8beedLSC3NlJ00g3khgwhmMUz4oM+K2wuU+
-         WNZfFORiJr6MPb2TFgNDSiANJMvijgErxcrINIG8Gtc/4pjKGyvRtMf9LyBSEDd3GdKA
-         ih4qALqZsxxsJHyPRBfQpMhefQIymQorI7nlIclremMKF0Ujb7Kk+X6bdBANG2hsBLS5
-         2lYf1PJbwd9pC19HqxUUMFw8GU/YDA8l5YjXrXb0Ep2KsLTzFr7cCc3dpB5ZNyfDCgnN
-         b0eWyXKFnO4yvbAyQilmzEakNhGnNINl/eNj44KyWFyImy/K9rpu72j8LnTm9ZXhfKTp
-         Z0TA==
+        bh=IcpklievQYdkfFzQyvtxn/HPZ0S30Esl8TzrDc84Mqo=;
+        b=LQssQ1vRY0VopDgQIlP24KaAfpcf9NnZVn2dfk+9V7FTU1EQnk06uIl6y7KBNlpiix
+         MGF5xTZsk9nSZuNmbfZCmJT7aF4NLtD6dUTXCbNXEIkt8xiwPskp/zEIdNITaAoL77lE
+         D4XZ1b72EvK5QBu3PW6z1JsBkBV175A3PuZaf0p261K9VSNFsyBvJ/ZkSOQXFHXP7ACz
+         rd2xY7VaZhxxGJcXfzEOZN9yuzr+HXFKRqLs8aj2PX+SITcte+QZ4Z1S6O44NNetGZgZ
+         vRrDXBmYf79yjHj44VD5J1qnCc28HNFA7FKzleEfJXMGGuye4YOl19MJRUSEoO3ts1qH
+         Pn1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=0hKiuiSjH8iYaXvdFeIHYwbnZprBduhul0eoRZjB5k8=;
-        b=THSHcoKB0XLGtTNchq4kyhE5Z09/r08Io2JOsgJgFCkKLH2StVltwG4yJw+xvzkiB0
-         sNOeTSbJhm2pSqNSAVRWeuapextWz9OFIBZX86xtZsxOG/9XHxsH4Ba3x2aDf3A2vanu
-         ljz9Mr8fmiSNzSSor8Qvja6U+Qi10/RqeOd3qPA4JGi/LaMS/Z5Z/gUB2O/AixNlHmgl
-         bbK8CXbtX5PXoGI8riczekQ/JWTalLu4UxAdHpJDRlMA2raTJmd9Jf1LVegDEwVUtF9l
-         I9ATX9n3FqoTzQkztsS1wVa9/zZqTmacJIp1NoJzDyReGTsbClfCTa0hIjTjzGIiWkHW
-         NiKA==
-X-Gm-Message-State: AOAM531d+Sl1lnffZ2PF4XOhuLoUgjGcS44t0dz10JwcLVA2JPAy1emV
-        1KspoPAuijgG2cehMxA5K0DaCUhAEm/bgM78BiBDIh8moNc=
-X-Google-Smtp-Source: ABdhPJwBliCt/wZZBZGPQjsubbziJSArYzeyKB/1MER2dkvxsh7UAbF1zzIHTyt+Jkys/25GuUm6JW47zhVoE0yRoQY=
-X-Received: by 2002:a37:8287:: with SMTP id e129mr21248339qkd.415.1633540677402;
- Wed, 06 Oct 2021 10:17:57 -0700 (PDT)
+        bh=IcpklievQYdkfFzQyvtxn/HPZ0S30Esl8TzrDc84Mqo=;
+        b=VtnduPNUgq6WygldVHUk1CVVjwYUPisPSQC7x1WZn6RwkygFBmuHXWbL9tm2eGI2dd
+         f0byDE8n+/WeoYvlQgq9RyFPR285Bs8LIacEVlIFXaK4aHoo8lOeJEqPu+fbQ2RaolNS
+         7y7vZH/9XJCyxhJV+jxaqhtYz40O2OUd0TV8tPJ/e9Ia7Lf54gAUeUqphjCwrNMuateG
+         4HyajeYI8qEOE+LB2Jkmh0sC7EKCBseikp8KnubwoZ5/d6yNW50yKu1H0KFvlfsZF6FF
+         WG/DUJbNHnyD+hSkOgOZX/nEMfuXgw/h+UPQgDQQqceKLx9VkYWAZP/QKfNqEblJTz6W
+         MDEQ==
+X-Gm-Message-State: AOAM532aedw6lJ8wrERAaqb1BqaRfRp+QIGZxRKfDlYFpq+JMRe1NVcC
+        VXZnHsejvzL14xZVLvUseLyqEM4xcWSso+PDH1M=
+X-Google-Smtp-Source: ABdhPJzZIIw9CL8ApQ1deWW5cGJe8F9CfeVSFa/TB3Y7y7Hs0PePFwSJditIvvphhEgMkpjwRf/ZMjBF4PbWwXu8HR0=
+X-Received: by 2002:a05:622a:180c:: with SMTP id t12mr28286079qtc.304.1633540779561;
+ Wed, 06 Oct 2021 10:19:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1633465964.git.josef@toxicpanda.com> <e26773a5be8c7e52b6379343514c0b7eb46deb0e.1633465964.git.josef@toxicpanda.com>
-In-Reply-To: <e26773a5be8c7e52b6379343514c0b7eb46deb0e.1633465964.git.josef@toxicpanda.com>
+References: <cover.1633465964.git.josef@toxicpanda.com> <105b3762cf4f8dfe4a2d97b17f2632a82612a1ee.1633465964.git.josef@toxicpanda.com>
+In-Reply-To: <105b3762cf4f8dfe4a2d97b17f2632a82612a1ee.1633465964.git.josef@toxicpanda.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 6 Oct 2021 18:17:21 +0100
-Message-ID: <CAL3q7H5k_rPczMOL1FzowgvkgbCXLnAWD8biC19jgQ5xv6Dzog@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] btrfs: change error handling for btrfs_delete_*_in_log
+Date:   Wed, 6 Oct 2021 18:19:03 +0100
+Message-ID: <CAL3q7H5oM4C9rER+OP7_3fSnrzYXyg+oMXnCrdRa2+XThxB9+A@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] btrfs: do not infinite loop in data reclaim if we aborted
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
@@ -61,183 +61,142 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On Tue, Oct 5, 2021 at 9:37 PM Josef Bacik <josef@toxicpanda.com> wrote:
 >
-> Currently we will abort the transaction if we get a random error (like
-> -EIO) while trying to remove the directory entries from the root log
-> during rename.
+> Error injection stressing uncovered a busy loop in our data reclaim
+> loop.  There are two cases here, one where we loop creating block groups
+> until space_info->full is set, or in the main loop we will skip erroring
+> out any tickets if space_info->full =3D=3D 0.  Unfortunately if we aborte=
+d
+> the transaction then we will never allocate chunks or reclaim any space
+> and thus never get ->full, and you'll see stack traces like this
 >
-> However since these are simply log tree related errors, we can mark the
-> trans as needing a full commit.  Then if the error was truly
-> catastrophic we'll hit it during the normal commit and abort as
-> appropriate.
+> watchdog: BUG: soft lockup - CPU#0 stuck for 26s! [kworker/u4:4:139]
+> CPU: 0 PID: 139 Comm: kworker/u4:4 Tainted: G        W         5.13.0-rc1=
++ #328
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04=
+/01/2014
+> Workqueue: events_unbound btrfs_async_reclaim_data_space
+> RIP: 0010:btrfs_join_transaction+0x12/0x20
+> RSP: 0018:ffffb2b780b77de0 EFLAGS: 00000246
+> RAX: ffffb2b781863d58 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 0000000000000801 RSI: ffff987952b57400 RDI: ffff987940aa3000
+> RBP: ffff987954d55000 R08: 0000000000000001 R09: ffff98795539e8f0
+> R10: 000000000000000f R11: 000000000000000f R12: ffffffffffffffff
+> R13: ffff987952b574c8 R14: ffff987952b57400 R15: 0000000000000008
+> FS:  0000000000000000(0000) GS:ffff9879bbc00000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f0703da4000 CR3: 0000000113398004 CR4: 0000000000370ef0
+> Call Trace:
+>  flush_space+0x4a8/0x660
+>  btrfs_async_reclaim_data_space+0x55/0x130
+>  process_one_work+0x1e9/0x380
+>  worker_thread+0x53/0x3e0
+>  ? process_one_work+0x380/0x380
+>  kthread+0x118/0x140
+>  ? __kthread_bind_mask+0x60/0x60
+>  ret_from_fork+0x1f/0x30
+>
+> Fix this by checking to see if we have a btrfs fs error in either of the
+> reclaim loops, and if so fail the tickets and bail.  In addition to
+> this, fix maybe_fail_all_tickets() to not try to grant tickets if we've
+> aborted, simply fail everything.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Now it looks good, thanks.
+It's exactly the same as v1, which I had already reviewed, but the
+reviewed tag is missing.
+Thanks.
 
 > ---
->  fs/btrfs/inode.c    | 16 +++-------------
->  fs/btrfs/tree-log.c | 41 ++++++++++++++---------------------------
->  fs/btrfs/tree-log.h | 16 ++++++++--------
->  3 files changed, 25 insertions(+), 48 deletions(-)
+>  fs/btrfs/space-info.c | 27 +++++++++++++++++++++++----
+>  1 file changed, 23 insertions(+), 4 deletions(-)
 >
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 11ba673d195e..df716d1bd2f1 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -4116,19 +4116,9 @@ static int __btrfs_unlink_inode(struct btrfs_trans=
-_handle *trans,
->                 goto err;
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index aa5be0b24987..d018bc1203f7 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -885,6 +885,7 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_in=
+fo *fs_info,
+>  {
+>         struct reserve_ticket *ticket;
+>         u64 tickets_id =3D space_info->tickets_id;
+> +       const bool aborted =3D BTRFS_FS_ERROR(fs_info);
+>
+>         trace_btrfs_fail_all_tickets(fs_info, space_info);
+>
+> @@ -898,16 +899,19 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_=
+info *fs_info,
+>                 ticket =3D list_first_entry(&space_info->tickets,
+>                                           struct reserve_ticket, list);
+>
+> -               if (ticket->steal &&
+> +               if (!aborted && ticket->steal &&
+>                     steal_from_global_rsv(fs_info, space_info, ticket))
+>                         return true;
+>
+> -               if (btrfs_test_opt(fs_info, ENOSPC_DEBUG))
+> +               if (!aborted && btrfs_test_opt(fs_info, ENOSPC_DEBUG))
+>                         btrfs_info(fs_info, "failing ticket with %llu byt=
+es",
+>                                    ticket->bytes);
+>
+>                 remove_ticket(space_info, ticket);
+> -               ticket->error =3D -ENOSPC;
+> +               if (aborted)
+> +                       ticket->error =3D -EIO;
+> +               else
+> +                       ticket->error =3D -ENOSPC;
+>                 wake_up(&ticket->wait);
+>
+>                 /*
+> @@ -916,7 +920,8 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_in=
+fo *fs_info,
+>                  * here to see if we can make progress with the next tick=
+et in
+>                  * the list.
+>                  */
+> -               btrfs_try_granting_tickets(fs_info, space_info);
+> +               if (!aborted)
+> +                       btrfs_try_granting_tickets(fs_info, space_info);
 >         }
->
-> -       ret =3D btrfs_del_inode_ref_in_log(trans, root, name, name_len, i=
-node,
-> -                       dir_ino);
-> -       if (ret !=3D 0 && ret !=3D -ENOENT) {
-> -               btrfs_abort_transaction(trans, ret);
-> -               goto err;
-> -       }
-> -
-> -       ret =3D btrfs_del_dir_entries_in_log(trans, root, name, name_len,=
- dir,
-> -                       index);
-> -       if (ret =3D=3D -ENOENT)
-> -               ret =3D 0;
-> -       else if (ret)
-> -               btrfs_abort_transaction(trans, ret);
-> +       btrfs_del_inode_ref_in_log(trans, root, name, name_len, inode,
-> +                                  dir_ino);
-> +       btrfs_del_dir_entries_in_log(trans, root, name, name_len, dir, in=
-dex);
->
->         /*
->          * If we have a pending delayed iput we could end up with the fin=
-al iput
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 7a7fe0d74c35..a99aa57b8886 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -3500,10 +3500,10 @@ static bool inode_logged(struct btrfs_trans_handl=
-e *trans,
->   * This optimizations allows us to avoid relogging the entire inode
->   * or the entire directory.
->   */
-> -int btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
-> -                                struct btrfs_root *root,
-> -                                const char *name, int name_len,
-> -                                struct btrfs_inode *dir, u64 index)
-> +void btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
-> +                                 struct btrfs_root *root,
-> +                                 const char *name, int name_len,
-> +                                 struct btrfs_inode *dir, u64 index)
->  {
->         struct btrfs_root *log;
->         struct btrfs_dir_item *di;
-> @@ -3513,11 +3513,11 @@ int btrfs_del_dir_entries_in_log(struct btrfs_tra=
-ns_handle *trans,
->         u64 dir_ino =3D btrfs_ino(dir);
->
->         if (!inode_logged(trans, dir))
-> -               return 0;
-> +               return;
->
->         ret =3D join_running_log_trans(root);
->         if (ret)
-> -               return 0;
-> +               return;
->
->         mutex_lock(&dir->log_mutex);
->
-> @@ -3565,49 +3565,36 @@ int btrfs_del_dir_entries_in_log(struct btrfs_tra=
-ns_handle *trans,
->         btrfs_free_path(path);
->  out_unlock:
->         mutex_unlock(&dir->log_mutex);
-> -       if (err =3D=3D -ENOSPC) {
-> +       if (err < 0 && err !=3D -ENOENT)
->                 btrfs_set_log_full_commit(trans);
-> -               err =3D 0;
-> -       } else if (err < 0 && err !=3D -ENOENT) {
-> -               /* ENOENT can be returned if the entry hasn't been fsynce=
-d yet */
-> -               btrfs_abort_transaction(trans, err);
-> -       }
-> -
->         btrfs_end_log_trans(root);
-> -
-> -       return err;
+>         return (tickets_id !=3D space_info->tickets_id);
+>  }
+> @@ -1172,6 +1177,10 @@ static void btrfs_async_reclaim_data_space(struct =
+work_struct *work)
+>                         spin_unlock(&space_info->lock);
+>                         return;
+>                 }
+> +
+> +               /* Something happened, fail everything and bail. */
+> +               if (BTRFS_FS_ERROR(fs_info))
+> +                       goto aborted_fs;
+>                 last_tickets_id =3D space_info->tickets_id;
+>                 spin_unlock(&space_info->lock);
+>         }
+> @@ -1202,9 +1211,19 @@ static void btrfs_async_reclaim_data_space(struct =
+work_struct *work)
+>                         } else {
+>                                 flush_state =3D 0;
+>                         }
+> +
+> +                       /* Something happened, fail everything and bail. =
+*/
+> +                       if (BTRFS_FS_ERROR(fs_info))
+> +                               goto aborted_fs;
+> +
+>                 }
+>                 spin_unlock(&space_info->lock);
+>         }
+> +       return;
+> +aborted_fs:
+> +       maybe_fail_all_tickets(fs_info, space_info);
+> +       space_info->flush =3D 0;
+> +       spin_unlock(&space_info->lock);
 >  }
 >
->  /* see comments for btrfs_del_dir_entries_in_log */
-> -int btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
-> -                              struct btrfs_root *root,
-> -                              const char *name, int name_len,
-> -                              struct btrfs_inode *inode, u64 dirid)
-> +void btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
-> +                               struct btrfs_root *root,
-> +                               const char *name, int name_len,
-> +                               struct btrfs_inode *inode, u64 dirid)
->  {
->         struct btrfs_root *log;
->         u64 index;
->         int ret;
->
->         if (!inode_logged(trans, inode))
-> -               return 0;
-> +               return;
->
->         ret =3D join_running_log_trans(root);
->         if (ret)
-> -               return 0;
-> +               return;
->         log =3D root->log_root;
->         mutex_lock(&inode->log_mutex);
->
->         ret =3D btrfs_del_inode_ref(trans, log, name, name_len, btrfs_ino=
-(inode),
->                                   dirid, &index);
->         mutex_unlock(&inode->log_mutex);
-> -       if (ret =3D=3D -ENOSPC) {
-> +       if (ret < 0 && ret !=3D -ENOENT)
->                 btrfs_set_log_full_commit(trans);
-> -               ret =3D 0;
-> -       } else if (ret < 0 && ret !=3D -ENOENT)
-> -               btrfs_abort_transaction(trans, ret);
->         btrfs_end_log_trans(root);
-> -
-> -       return ret;
->  }
->
->  /*
-> diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
-> index 3ce6bdb76009..f6811c3df38a 100644
-> --- a/fs/btrfs/tree-log.h
-> +++ b/fs/btrfs/tree-log.h
-> @@ -70,14 +70,14 @@ int btrfs_recover_log_trees(struct btrfs_root *tree_r=
-oot);
->  int btrfs_log_dentry_safe(struct btrfs_trans_handle *trans,
->                           struct dentry *dentry,
->                           struct btrfs_log_ctx *ctx);
-> -int btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
-> -                                struct btrfs_root *root,
-> -                                const char *name, int name_len,
-> -                                struct btrfs_inode *dir, u64 index);
-> -int btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
-> -                              struct btrfs_root *root,
-> -                              const char *name, int name_len,
-> -                              struct btrfs_inode *inode, u64 dirid);
-> +void btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
-> +                                 struct btrfs_root *root,
-> +                                 const char *name, int name_len,
-> +                                 struct btrfs_inode *dir, u64 index);
-> +void btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
-> +                               struct btrfs_root *root,
-> +                               const char *name, int name_len,
-> +                               struct btrfs_inode *inode, u64 dirid);
->  void btrfs_end_log_trans(struct btrfs_root *root);
->  void btrfs_pin_log_trans(struct btrfs_root *root);
->  void btrfs_record_unlink_dir(struct btrfs_trans_handle *trans,
+>  void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info)
 > --
 > 2.26.3
 >
