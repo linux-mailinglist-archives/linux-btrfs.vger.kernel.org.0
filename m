@@ -2,99 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B904A4251A6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Oct 2021 13:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2A94251A9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Oct 2021 13:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhJGLGE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Oct 2021 07:06:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232732AbhJGLGB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:06:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33A9F61042
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Oct 2021 11:04:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633604647;
-        bh=4udXX5Ics/pzmbLcwxaOpz0sDJtP4YHhtTT8P/mrIE0=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=EI6+723gIN1ixqW+wCIdZngiAKnr5drgjfMlzdgD1mq3AA5HrULytFxt6nV0mokCH
-         4E2r187MUfGfZlXbckzG2EY3xczv0cbr5rccL5p1gCDdV2GmWXWxZli+BYZC5BwHsD
-         wMxM8soBc6DHiKNlhJGfx9Ej31ToTteXXWJowsnX4O644uJBmFIHVeEMl0r2gWw8z+
-         admBmr3ylSxBMMeVG/WkoWJvp8CQL7qZ74Tr4iRhTMeTFDRa5VSUR2vwxL8/KkprcC
-         ZYds5ffxwNOGne9LQTW3cvt/6ym4jdvaKE6EKzVte5gMtU5OCa9/lPW8JJjvspKJTR
-         pVR5/GSYhidcg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: update comments for chunk allocation -ENOSPC cases
-Date:   Thu,  7 Oct 2021 12:04:00 +0100
-Message-Id: <0bb66b8bc9bf4c48d8ce0009dfd9c251a1fbd429.1633604360.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1633604360.git.fdmanana@suse.com>
-References: <cover.1633604360.git.fdmanana@suse.com>
+        id S240740AbhJGLGW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Oct 2021 07:06:22 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60968 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232729AbhJGLGU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Oct 2021 07:06:20 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B33E0200AB;
+        Thu,  7 Oct 2021 11:04:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633604666;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=crTA1ok5yHBVlIgMxkj0lTE8NoOc30MPW7Om4Hg6OmU=;
+        b=M1F6JHAWOGZylYImUKqixtZ9m0Lf+zgaN9jgY3zW+Z+HRiRPvD0QiTVqMPwunvdqgJuE2N
+        T108bgyieLWo58CiygpD4cNyusvPibcWL+n1+TCFBl1S0AtpUelkdpdZctV2SnXkIsJqhq
+        l2b1NQTKm50dWXKLBOA7HWdU6iK7zjI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633604666;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=crTA1ok5yHBVlIgMxkj0lTE8NoOc30MPW7Om4Hg6OmU=;
+        b=z/FS1bKSYtOq13FEE+QUvzT8hrqqSsqyTYMGHjyyIbhALL1Ov/lmt3B1TUhQQKZrmSd1CZ
+        RZYXin/P+Y2OY6Ag==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id AC83EA3B8E;
+        Thu,  7 Oct 2021 11:04:26 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id EB2EADA7F3; Thu,  7 Oct 2021 13:04:05 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 13:04:05 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC 0/3] btrfs: refactor how we handle btrfs_io_context
+ and slightly reduce memory usage for both btrfs_bio and btrfs_io_context
+Message-ID: <20211007110405.GZ9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20210922082706.55650-1-wqu@suse.com>
+ <20211006193826.GX9286@twin.jikos.cz>
+ <945ebdbf-658e-5a36-87d8-9367e2f9a005@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <945ebdbf-658e-5a36-87d8-9367e2f9a005@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Oct 07, 2021 at 10:24:27AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2021/10/7 03:38, David Sterba wrote:
+> > On Wed, Sep 22, 2021 at 04:27:03PM +0800, Qu Wenruo wrote:
+> >> Currently btrfs_io_context is utilized as both bio->bi_private for
+> >> mirrored stripes, and stripes mapping for RAID56.
+> >>
+> >> This makes some members like btrfs_io_context::private to be there.
+> >>
+> >> But in fact, since almost all bios in btrfs have btrfs_bio structure
+> >> appended, we don't really need to reuse bio::bi_private for mirrored
+> >> profiles.
+> >>
+> >> So this patchset will:
+> >>
+> >> - Introduce btrfs_bio::bioc member
+> >>    So that btrfs_io_context don't need to hold @private.
+> >>    This modification is still a net increase for memory usage, just
+> >>    a trade-off between btrfs_io_context and btrfs_bio.
+> >>
+> >> - Replace btrfs_bio::device with btrfs_bio::stripe_num
+> >>    This reclaim the memory usage increase for btrfs_bio.
+> >>
+> >>    But unfortunately, due to the short life time of btrfs_io_context,
+> >>    we don't have as good device status accounting as the old code.
+> >>
+> >>    Now for csum error, we can no longer distinguish source and target
+> >>    device of dev-replace.
+> >>
+> >>    This is the biggest blockage, and that's why it's RFC.
+> >>
+> >> The result of the patchset is:
+> >>
+> >> btrfs_bio:		size: 240 -> 240
+> >> btrfs_io_context:	size: 88 -> 80
+> >>
+> >> Although to really reduce btrfs_bio, the main target should be
+> >> csum_inline.
+> >>
+> >> Qu Wenruo (3):
+> >>    btrfs: add btrfs_bio::bioc pointer for further modification
+> >>    btrfs: remove redundant parameters for submit_stripe_bio()
+> >>    btrfs: replace btrfs_bio::device member with stripe_num
+> >
+> > Can you please refresh the patchset on top current misc-next?
+> >
+> 
+> Please discard the patchset for now.
+> 
+> Unfortunately I have found one critical member abuses making such
+> refactor unfeasible (at least for now).
+> 
+> - btrfs_bio::logical abuse
+>    Direct IO uses btrfs_bio::logical as file_offset, while no other
+>    call sites really utilize btrfs_bio::logical at all.
+> 
+>    This means, we can't simply rely on btrfs_map_bio() to verify if
+>    btrfs_bio::logical is correctly initialized.
+> 
+>    This is a big alert, if we can't do ASSERT() to verify if one member
+>    is properly initialized, then it's just going to happen.
+> 
+>    This also means, for direct IO, we can't use @mirror_num with @logical
+>    to grab the device with IO failure.
+> 
+> So for now, although it may save 8 bytes, unless we solve the DIO mess,
+> we can't continue.
 
-Update the comments at btrfs_chunk_alloc() and do_chunk_alloc() that
-describe which cases can lead to a failure to allocate metadata and system
-space despite having previously reserved space. This adds one more reason
-that I previously forgot to mention.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/block-group.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index c4ffb267a9b3..5a250173afac 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -3409,7 +3409,7 @@ static int do_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags)
- 	/*
- 	 * Normally we are not expected to fail with -ENOSPC here, since we have
- 	 * previously reserved space in the system space_info and allocated one
--	 * new system chunk if necessary. However there are two exceptions:
-+	 * new system chunk if necessary. However there are three exceptions:
- 	 *
- 	 * 1) We may have enough free space in the system space_info but all the
- 	 *    existing system block groups have a profile which can not be used
-@@ -3435,7 +3435,14 @@ static int do_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags)
- 	 *    with enough free space got turned into RO mode by a running scrub,
- 	 *    and in this case we have to allocate a new one and retry. We only
- 	 *    need do this allocate and retry once, since we have a transaction
--	 *    handle and scrub uses the commit root to search for block groups.
-+	 *    handle and scrub uses the commit root to search for block groups;
-+	 *
-+	 * 3) We had one system block group with enough free space when we called
-+	 *    check_system_chunk(), but after that, right before we tried to
-+	 *    allocate the last extent buffer we needed, a discard operation came
-+	 *    in and it temporarily removed the last free space entry from the
-+	 *    block group (discard removes a free space entry, discards it, and
-+	 *    then adds back the entry to the block group cache).
- 	 */
- 	if (ret == -ENOSPC) {
- 		const u64 sys_flags = btrfs_system_alloc_profile(trans->fs_info);
-@@ -3519,7 +3526,15 @@ static int do_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags)
-  *    properly, either intentionally or as a bug. One example where this is
-  *    done intentionally is fsync, as it does not reserve any transaction units
-  *    and ends up allocating a variable number of metadata extents for log
-- *    tree extent buffers.
-+ *    tree extent buffers;
-+ *
-+ * 4) The task has reserved enough transaction units / metadata space, but right
-+ *    before it tries to allocate the last extent buffer it needs, a discard
-+ *    operation comes in and, temporarily, removes the last free space entry from
-+ *    the only metadata block group that had free space (discard starts by
-+ *    removing a free space entry from a block group, then does the discard
-+ *    operation and, once it's done, it adds back the free space entry to the
-+ *    block group).
-  *
-  * We also need this 2 phases setup when adding a device to a filesystem with
-  * a seed device - we must create new metadata and system chunks without adding
--- 
-2.33.0
-
+Ok, thanks.
