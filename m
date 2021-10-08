@@ -2,35 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C394142653C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Oct 2021 09:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A0E42653D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Oct 2021 09:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhJHHcE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Oct 2021 03:32:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57642 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbhJHHcE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Oct 2021 03:32:04 -0400
+        id S232031AbhJHHcH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Oct 2021 03:32:07 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33536 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhJHHcG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Oct 2021 03:32:06 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id C9ABD223DF
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Oct 2021 07:30:08 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 98C761FD35
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Oct 2021 07:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633678208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1633678210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sCh92DmzNYJgdr8XRw2794/LK6us98SMauaOYVlSdME=;
-        b=Ki7Qjb0OarUxF+Hg1woCm5j0agM3+xs9fbn6BMVsoBNjz0CAD5NrrWsbDyRLN1c1fAS7pz
-        78xmTsoX3jWZXS4UYol+d/KOvdIdHwDUGnjmnA0Rgv4pg1bCIe82uPLBj9kHK0UtedHQ3q
-        OBBvtgpNiQK/3WFsxhXfI3zg9vObBG4=
+        bh=csMnVMB9IF7Y5EKikjsmVmTOTIi3M0tSiw0hSlbWdKQ=;
+        b=bqzoYWp/NrIQekuBICm+DD25wY3UxS550OUkcrw3zLI9Cvh9IXP20o1xBQDI111Gpc/KGd
+        qmAFLBRNs/IltowO0a9hgbv6vRZsV8icYzZg3BRuIYxQ9+ZXZjAgFQyRqGWLjlOSGWJvWc
+        bRypC4oTlJeeM77MAsYxVUq36eb+qQs=
 Received: from adam-pc.lan (wqu.tcp.ovpn2.nue.suse.de [10.163.34.62])
-        by relay2.suse.de (Postfix) with ESMTP id C38BFA3B85
-        for <linux-btrfs@vger.kernel.org>; Fri,  8 Oct 2021 07:30:07 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 9686DA3B85
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Oct 2021 07:30:09 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: rename btrfs_dio_private::logical_offset to file_offset
-Date:   Fri,  8 Oct 2021 15:29:59 +0800
-Message-Id: <20211008073000.62391-2-wqu@suse.com>
+Subject: [PATCH 2/2] btrfs: remove btrfs_bio::logical member
+Date:   Fri,  8 Oct 2021 15:30:00 +0800
+Message-Id: <20211008073000.62391-3-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211008073000.62391-1-wqu@suse.com>
 References: <20211008073000.62391-1-wqu@suse.com>
@@ -40,86 +40,116 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The naming of "logical_offset" can be confused with logical bytenr of
-the dio range.
+The member btrfs_bio::logical is only initialized by two call sites:
 
-In fact it's file offset, and the naming "file_offset" is already widely
-used in all other sites.
+- btrfs_repair_one_sector()
+  No corresponding site to utilize it.
 
-Just do the rename to avoid confusion.
+- btrfs_submit_direct()
+  The corresponding site to utilize it is btrfs_check_read_dio_bio().
+
+However for btrfs_check_read_dio_bio(), we can grab the file_offset from
+btrfs_dio_private::file_offset directly.
+
+Thus it turns out we don't really that btrfs_bio::logical member at all.
+
+For btrfs_bio, the logical bytenr can be fetched from its
+bio->bi_iter.bi_sector directly.
+
+So let's just remove the member to save 8 bytes for structure btrfs_bio.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/btrfs_inode.h |  7 ++++++-
- fs/btrfs/inode.c       | 12 ++++++------
- 2 files changed, 12 insertions(+), 7 deletions(-)
+ fs/btrfs/extent_io.c |  1 -
+ fs/btrfs/inode.c     | 17 ++++++++---------
+ fs/btrfs/volumes.h   |  1 -
+ 3 files changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 602b426c286d..ab2a4a52e0bb 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -356,7 +356,12 @@ static inline bool btrfs_inode_in_log(struct btrfs_inode *inode, u64 generation)
- 
- struct btrfs_dio_private {
- 	struct inode *inode;
--	u64 logical_offset;
-+
-+	/*
-+	 * Since DIO can use anonymous page, we cannot use page_offset() to
-+	 * grab the file offset, thus need a dedicated member for file offset.
-+	 */
-+	u64 file_offset;
- 	u64 disk_bytenr;
- 	/* Used for bio::bi_size */
- 	u32 bytes;
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index f5faa6bedbd4..d65f7d6b7df1 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8055,13 +8055,13 @@ static void btrfs_dio_private_put(struct btrfs_dio_private *dip)
- 
- 	if (btrfs_op(dip->dio_bio) == BTRFS_MAP_WRITE) {
- 		__endio_write_update_ordered(BTRFS_I(dip->inode),
--					     dip->logical_offset,
-+					     dip->file_offset,
- 					     dip->bytes,
- 					     !dip->dio_bio->bi_status);
- 	} else {
- 		unlock_extent(&BTRFS_I(dip->inode)->io_tree,
--			      dip->logical_offset,
--			      dip->logical_offset + dip->bytes - 1);
-+			      dip->file_offset,
-+			      dip->file_offset + dip->bytes - 1);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index b10dc75eef1c..4e03a6d3aa32 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2673,7 +2673,6 @@ int btrfs_repair_one_sector(struct inode *inode,
  	}
  
- 	bio_endio(dip->dio_bio);
-@@ -8176,7 +8176,7 @@ static void btrfs_end_dio_bio(struct bio *bio)
+ 	bio_add_page(repair_bio, page, failrec->len, pgoff);
+-	repair_bbio->logical = failrec->start;
+ 	repair_bbio->iter = repair_bio->bi_iter;
+ 
+ 	btrfs_debug(btrfs_sb(inode->i_sb),
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index d65f7d6b7df1..b9c70a073a24 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8089,10 +8089,11 @@ static blk_status_t submit_dio_repair_bio(struct inode *inode, struct bio *bio,
+ 	return ret;
+ }
+ 
+-static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
++static blk_status_t btrfs_check_read_dio_bio(struct btrfs_dio_private *dip,
+ 					     struct btrfs_bio *bbio,
+ 					     const bool uptodate)
+ {
++	struct inode *inode = dip->inode;
+ 	struct btrfs_fs_info *fs_info = BTRFS_I(inode)->root->fs_info;
+ 	const u32 sectorsize = fs_info->sectorsize;
+ 	struct extent_io_tree *failure_tree = &BTRFS_I(inode)->io_failure_tree;
+@@ -8100,7 +8101,8 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 	const bool csum = !(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM);
+ 	struct bio_vec bvec;
+ 	struct bvec_iter iter;
+-	u64 start = bbio->logical;
++	const u64 orig_file_offset = dip->file_offset;
++	u64 start = orig_file_offset;
+ 	u32 bio_offset = 0;
+ 	blk_status_t err = BLK_STS_OK;
+ 
+@@ -8122,10 +8124,10 @@ static blk_status_t btrfs_check_read_dio_bio(struct inode *inode,
+ 			} else {
+ 				int ret;
+ 
+-				ASSERT((start - bbio->logical) < UINT_MAX);
++				ASSERT((start - orig_file_offset) < UINT_MAX);
+ 				ret = btrfs_repair_one_sector(inode,
+ 						&bbio->bio,
+-						start - bbio->logical,
++						start - orig_file_offset,
+ 						bvec.bv_page, pgoff,
+ 						start, bbio->mirror_num,
+ 						submit_dio_repair_bio);
+@@ -8168,10 +8170,8 @@ static void btrfs_end_dio_bio(struct bio *bio)
+ 			   bio->bi_opf, bio->bi_iter.bi_sector,
+ 			   bio->bi_iter.bi_size, err);
+ 
+-	if (bio_op(bio) == REQ_OP_READ) {
+-		err = btrfs_check_read_dio_bio(dip->inode,
+-					       btrfs_bio(bio), !err);
+-	}
++	if (bio_op(bio) == REQ_OP_READ)
++		err = btrfs_check_read_dio_bio(dip, btrfs_bio(bio), !err);
+ 
  	if (err)
  		dip->dio_bio->bi_status = err;
+@@ -8337,7 +8337,6 @@ static blk_qc_t btrfs_submit_direct(const struct iomap_iter *iter,
+ 		bio = btrfs_bio_clone_partial(dio_bio, clone_offset, clone_len);
+ 		bio->bi_private = dip;
+ 		bio->bi_end_io = btrfs_end_dio_bio;
+-		btrfs_bio(bio)->logical = file_offset;
  
--	btrfs_record_physical_zoned(dip->inode, dip->logical_offset, bio);
-+	btrfs_record_physical_zoned(dip->inode, dip->file_offset, bio);
+ 		if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
+ 			status = extract_ordered_extent(BTRFS_I(inode), bio,
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 83075d6855db..49322a43593a 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -313,7 +313,6 @@ struct btrfs_bio {
  
- 	bio_put(bio);
- 	btrfs_dio_private_put(dip);
-@@ -8218,7 +8218,7 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 	} else {
- 		u64 csum_offset;
- 
--		csum_offset = file_offset - dip->logical_offset;
-+		csum_offset = file_offset - dip->file_offset;
- 		csum_offset >>= fs_info->sectorsize_bits;
- 		csum_offset *= fs_info->csum_size;
- 		btrfs_bio(bio)->csum = dip->csums + csum_offset;
-@@ -8256,7 +8256,7 @@ static struct btrfs_dio_private *btrfs_create_dio_private(struct bio *dio_bio,
- 		return NULL;
- 
- 	dip->inode = inode;
--	dip->logical_offset = file_offset;
-+	dip->file_offset = file_offset;
- 	dip->bytes = dio_bio->bi_iter.bi_size;
- 	dip->disk_bytenr = dio_bio->bi_iter.bi_sector << 9;
- 	dip->dio_bio = dio_bio;
+ 	/* @device is for stripe IO submission. */
+ 	struct btrfs_device *device;
+-	u64 logical;
+ 	u8 *csum;
+ 	u8 csum_inline[BTRFS_BIO_INLINE_CSUM_SIZE];
+ 	struct bvec_iter iter;
 -- 
 2.33.0
 
