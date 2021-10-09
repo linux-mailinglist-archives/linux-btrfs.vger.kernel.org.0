@@ -2,178 +2,222 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9468427A8D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Oct 2021 15:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF85427AC2
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Oct 2021 16:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233288AbhJIN1B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Oct 2021 09:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45086 "EHLO
+        id S233657AbhJIOQg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 Oct 2021 10:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233191AbhJIN1A (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Oct 2021 09:27:00 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A585DC061570
-        for <linux-btrfs@vger.kernel.org>; Sat,  9 Oct 2021 06:25:03 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id v25so38524106wra.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 09 Oct 2021 06:25:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LVwFdM2nkYmmavt6IrifTiRutB+DLErLmzMqXMOZR+I=;
-        b=kLNAzpkPGor4nTP8R7jD2EHIYyzeq7Rv6/JJ6oOntEUEMC0RAcdN14DVA8gPURbKnD
-         rKou8M+/niruJ1Nh35pxiwEX2iA0Gx1zit6qN9AqKP1OHK0MsR4ttXbwM8pJLFVeQ+Mc
-         wx9KLzqy6o3BiMkwSz9K3AYpb3F9/oMc3wT0EErUvWB+c5nS7WQxxYjLOl0kGXC3X6BB
-         1XKkyyzZvmOMnAndUs9HIrI0Oi5swifkIW3LX4MsLy7vub728vs8pVDkbKEytnOi6BaK
-         R7vdatTYo1uaFGpUsNayRnPQDyWmGw8IvgN2rfE/1L2H/F/7fA6lYV1vdkgsPwkPGTRB
-         rj4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LVwFdM2nkYmmavt6IrifTiRutB+DLErLmzMqXMOZR+I=;
-        b=SOGhUAey/rTny5H7FyxvSYTjnBYtGfc9W8Rj2VjCqfT+t4ZgGZ8KFzpM5lg/rYLPqr
-         gi+/bMLMahfeAWATWBrQhaxiTt/iJGjf80GUo+gDdcqEl/TkBJe1iMUP+ghHU6J84Oou
-         9BROXDYI76NIzQfIrhyxGeMVlIMIOlSMoEKX8IzwtDRPoDqypG0+4SRYVTcRYIyiVxMD
-         L0CwtA3kWAnvVHxiN6mkYN5xPeo0DVkamqFoJoJrsxMFCduDBrhWioC0JSlMMxJeq00j
-         lkYo3ztPhnv7CyTZCzZO12n2+BZABv1MbURHrIh4j7rOunO15Kt2qnZPYF5/5VxVMYHF
-         XR8g==
-X-Gm-Message-State: AOAM5323b/plAqf8HSDTsawkNhlQy3ashcuNr4Y6p8fkgiMKPdbhNpM5
-        x+UtKvdiMT69phORfuyZkVquxTWnUZd3NWhTObwZl51uOfY=
-X-Google-Smtp-Source: ABdhPJzEtvk+qqJetyb3pWzZpx/2EtAyjIlQZX9RNjvJ/KVnSTC3SkHyQDrFlNLzNWeKuo+KOThBwzG9ddsXVoDt0kA=
-X-Received: by 2002:a05:600c:3b26:: with SMTP id m38mr9548923wms.176.1633785901911;
- Sat, 09 Oct 2021 06:25:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <CADNS_H6MvByBaYQ7h94DMVQUU9ZjANN8bz90km_6DZykBh6mxw@mail.gmail.com>
- <08f71656-b775-3fe0-62f7-f04c44501858@gmx.com>
-In-Reply-To: <08f71656-b775-3fe0-62f7-f04c44501858@gmx.com>
-From:   FireFish5000 <firefish5000@gmail.com>
-Date:   Sat, 9 Oct 2021 08:24:51 -0500
-Message-ID: <CADNS_H46D-Hrc90JRRpHS9JdUwvGr41mXsPOFSNb_e2C9h=6zA@mail.gmail.com>
+        with ESMTP id S233327AbhJIOQf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Oct 2021 10:16:35 -0400
+X-Greylist: delayed 1856 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 09 Oct 2021 07:14:38 PDT
+Received: from savella.carfax.org.uk (2001-ba8-1f1-f0e6-0-0-0-2.autov6rev.bitfolk.space [IPv6:2001:ba8:1f1:f0e6::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6969C061570
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 Oct 2021 07:14:38 -0700 (PDT)
+Received: from hrm by savella.carfax.org.uk with local (Exim 4.92)
+        (envelope-from <hrm@savella.carfax.org.uk>)
+        id 1mZCc4-0000wb-1z; Sat, 09 Oct 2021 14:42:08 +0100
+Date:   Sat, 9 Oct 2021 14:42:07 +0100
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     FireFish5000 <firefish5000@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
 Subject: Re: Bug / Suspected regression. Multiple block group profiles
  detected on newly created raid1.
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: multipart/mixed; boundary="00000000000052ae5105cdeb6c18"
+Message-ID: <20211009134207.GE1127@savella.carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        FireFish5000 <firefish5000@gmail.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <CADNS_H6MvByBaYQ7h94DMVQUU9ZjANN8bz90km_6DZykBh6mxw@mail.gmail.com>
+ <08f71656-b775-3fe0-62f7-f04c44501858@gmx.com>
+ <CADNS_H46D-Hrc90JRRpHS9JdUwvGr41mXsPOFSNb_e2C9h=6zA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADNS_H46D-Hrc90JRRpHS9JdUwvGr41mXsPOFSNb_e2C9h=6zA@mail.gmail.com>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---00000000000052ae5105cdeb6c18
-Content-Type: text/plain; charset="UTF-8"
-
-Same warning in v5.14.2. Output is mostly the same except that it
-informs me it'd running a full device TRIM during mkfs.
-
->  If you want to use the fs, just do a btrfs balance with "start
--musage=0" should remove that SINGLE metadata chunk.
-
-Earlier I ran
-`btrfs balance start -mconvert=raid1,soft /mnt/tmp`
-which seemed to have done the trick. Any notable difference between
-the results of the two commands?
-
-Sincerely,
-A Fish on Fire
-
-
-On Sat, Oct 9, 2021 at 7:19 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2021/10/9 19:44, FireFish5000 wrote:
-> > After creating a new btrfs raid1 and was surprised to be greeted with
-> > the warning
-> >
-> > WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
-> > WARNING:   Metadata: single, raid1
-> >
-> > I asked on the IRC, and darkling directed me to the mailing list
-> > suspecting this was a regression.
-> > I am on 5.14.8-gentoo-dist with btrfs-progs v5.14.1
-> >
-> > I have attached a script to reproduce this with temporary images/loop devices,
-> > Along with the full output I received when running the script.
-> >
-> > A shortened version of the commands that I ran on my *real drives* and
-> > the relevant output is also provided below for convenience. P at the
-> > end of the device path was inserted incase sleepy joe copies it
-> > thinking its the reproduction script:
-> >
-> > # mkfs.btrfs --force -R free-space-tree -L BtrfsRaid1Test -d raid1 -m
->
-> This seems to be a recent bug in btrfs-progs which doesn't remove the
-> temporary chunk.
->
-> You can try the latest v5.14.2 to see if it's solved.
->
-> If you want to use the fs, just do a btrfs balance with "start
+On Sat, Oct 09, 2021 at 08:24:51AM -0500, FireFish5000 wrote:
+> Same warning in v5.14.2. Output is mostly the same except that it
+> informs me it'd running a full device TRIM during mkfs.
+> 
+> >  If you want to use the fs, just do a btrfs balance with "start
 > -musage=0" should remove that SINGLE metadata chunk.
->
-> Thanks,
-> Qu
-> > raid1 /dev/sdaP /dev/sdbP; mount /dev/sda /mnt/tmp; btrfs filesystem
-> > df /mnt/tmp
-> > btrfs-progs v5.14.1
-> > ....truncated....
-> > ....truncated....
-> > Data, RAID1: total=1.00GiB, used=0.00B
-> > System, RAID1: total=8.00MiB, used=16.00KiB
-> > Metadata, RAID1: total=1.00GiB, used=176.00KiB
-> > Metadata, single: total=8.00MiB, used=0.00B
-> > GlobalReserve, single: total=3.25MiB, used=0.00B
-> > WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
-> > WARNING:   Metadata: single, raid1
+> 
+> Earlier I ran
+> `btrfs balance start -mconvert=raid1,soft /mnt/tmp`
+> which seemed to have done the trick. Any notable difference between
+> the results of the two commands?
+
+   Qu's takes all the empty metadata chunks and removes them. Mine
+(from IRC) takes all the non-RAID-1 chunks and converts them to
+RAID-1, whether they're empty or not.
+
+   In this case, all the non-RAID-1 chunks are empty, so they have the
+same practical result. If some of the single chunks had metadata in
+them, then the convert= version would be the right thing to do.
+
+   Hugo.
+
+> Sincerely,
+> A Fish on Fire
+> 
+> 
+> On Sat, Oct 9, 2021 at 7:19 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 > >
+> >
+> >
+> > On 2021/10/9 19:44, FireFish5000 wrote:
+> > > After creating a new btrfs raid1 and was surprised to be greeted with
+> > > the warning
+> > >
+> > > WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
+> > > WARNING:   Metadata: single, raid1
+> > >
+> > > I asked on the IRC, and darkling directed me to the mailing list
+> > > suspecting this was a regression.
+> > > I am on 5.14.8-gentoo-dist with btrfs-progs v5.14.1
+> > >
+> > > I have attached a script to reproduce this with temporary images/loop devices,
+> > > Along with the full output I received when running the script.
+> > >
+> > > A shortened version of the commands that I ran on my *real drives* and
+> > > the relevant output is also provided below for convenience. P at the
+> > > end of the device path was inserted incase sleepy joe copies it
+> > > thinking its the reproduction script:
+> > >
+> > > # mkfs.btrfs --force -R free-space-tree -L BtrfsRaid1Test -d raid1 -m
+> >
+> > This seems to be a recent bug in btrfs-progs which doesn't remove the
+> > temporary chunk.
+> >
+> > You can try the latest v5.14.2 to see if it's solved.
+> >
+> > If you want to use the fs, just do a btrfs balance with "start
+> > -musage=0" should remove that SINGLE metadata chunk.
+> >
+> > Thanks,
+> > Qu
+> > > raid1 /dev/sdaP /dev/sdbP; mount /dev/sda /mnt/tmp; btrfs filesystem
+> > > df /mnt/tmp
+> > > btrfs-progs v5.14.1
+> > > ....truncated....
+> > > ....truncated....
+> > > Data, RAID1: total=1.00GiB, used=0.00B
+> > > System, RAID1: total=8.00MiB, used=16.00KiB
+> > > Metadata, RAID1: total=1.00GiB, used=176.00KiB
+> > > Metadata, single: total=8.00MiB, used=0.00B
+> > > GlobalReserve, single: total=3.25MiB, used=0.00B
+> > > WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
+> > > WARNING:   Metadata: single, raid1
+> > >
 
---00000000000052ae5105cdeb6c18
-Content-Type: text/plain; charset="US-ASCII"; name="output-v5.14.2.txt"
-Content-Disposition: attachment; filename="output-v5.14.2.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kujtchqd0>
-X-Attachment-Id: f_kujtchqd0
+> 
+> ##########
+> # Get System Info
+> uname -r
+> + uname -r
+> 5.14.8-gentoo-dist
+> btrfs version
+> + btrfs version
+> btrfs-progs v5.14.2 
+> 
+> ##########
+> # Create blank images
+> fallocate -l 2G /tmp/tmpImgA
+> + fallocate -l 2G /tmp/tmpImgA
+> fallocate -l 2G /tmp/tmpImgB
+> + fallocate -l 2G /tmp/tmpImgB
+> 
+> ##########
+> # Prepare loopback devices
+> modprobe loop
+> + modprobe loop
+> LOOP_A="$(losetup --show -fP /tmp/tmpImgA)"
+> ++ losetup --show -fP /tmp/tmpImgA
+> + LOOP_A=/dev/loop0
+> LOOP_B="$(losetup --show -fP /tmp/tmpImgB)"
+> ++ losetup --show -fP /tmp/tmpImgB
+> + LOOP_B=/dev/loop1
+> 
+> ##########
+> # Create raid1
+> mkfs.btrfs --force -R free-space-tree -L TmpRaid1 -d raid1 -m raid1 "$LOOP_A" "$LOOP_B"
+> + mkfs.btrfs --force -R free-space-tree -L TmpRaid1 -d raid1 -m raid1 /dev/loop0 /dev/loop1
+> btrfs-progs v5.14.2 
+> See http://btrfs.wiki.kernel.org for more information.
+> 
+> Performing full device TRIM /dev/loop0 (2.00GiB) ...
+> Performing full device TRIM /dev/loop1 (2.00GiB) ...
+> Label:              TmpRaid1
+> UUID:               eae631be-d48f-484b-af09-8d65a291bbf1
+> Node size:          16384
+> Sector size:        4096
+> Filesystem size:    4.00GiB
+> Block group profiles:
+>   Data:             RAID1           204.75MiB
+>   Metadata:         RAID1           264.00MiB
+>   System:           RAID1             8.00MiB
+> SSD detected:       yes
+> Zoned device:       no
+> Incompat features:  extref, skinny-metadata
+> Runtime features:   free-space-tree
+> Checksum:           crc32c
+> Number of devices:  2
+> Devices:
+>    ID        SIZE  PATH
+>     1     2.00GiB  /dev/loop0
+>     2     2.00GiB  /dev/loop1
+> 
+> 
+> ##########
+> # Mount temp raid1
+> mkdir /tmp/tmpRaid1
+> + mkdir /tmp/tmpRaid1
+> mount "$LOOP_A" /tmp/tmpRaid1
+> + mount /dev/loop0 /tmp/tmpRaid1
+> 
+> ##########
+> # Run btrfs df
+> btrfs filesystem df /tmp/tmpRaid1
+> + btrfs filesystem df /tmp/tmpRaid1
+> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
+> WARNING:   Metadata: single, raid1
+> Data, RAID1: total=204.75MiB, used=0.00B
+> System, RAID1: total=8.00MiB, used=16.00KiB
+> Metadata, RAID1: total=256.00MiB, used=128.00KiB
+> Metadata, single: total=8.00MiB, used=0.00B
+> GlobalReserve, single: total=3.25MiB, used=0.00B
+> 
+> ##########
+> # cleanup
+> umount /tmp/tmpRaid1
+> + umount /tmp/tmpRaid1
+> 
+> losetup --detach "$LOOP_A"
+> + losetup --detach /dev/loop0
+> losetup --detach "$LOOP_B"
+> + losetup --detach /dev/loop1
+> 
+> sync
+> + sync
+> rmdir /tmp/tmpRaid1/
+> + rmdir /tmp/tmpRaid1/
+> rm /tmp/tmpImgA
+> + rm /tmp/tmpImgA
+> rm /tmp/tmpImgB
+> + rm /tmp/tmpImgB
 
-CiMjIyMjIyMjIyMKIyBHZXQgU3lzdGVtIEluZm8KdW5hbWUgLXIKKyB1bmFtZSAtcgo1LjE0Ljgt
-Z2VudG9vLWRpc3QKYnRyZnMgdmVyc2lvbgorIGJ0cmZzIHZlcnNpb24KYnRyZnMtcHJvZ3MgdjUu
-MTQuMiAKCiMjIyMjIyMjIyMKIyBDcmVhdGUgYmxhbmsgaW1hZ2VzCmZhbGxvY2F0ZSAtbCAyRyAv
-dG1wL3RtcEltZ0EKKyBmYWxsb2NhdGUgLWwgMkcgL3RtcC90bXBJbWdBCmZhbGxvY2F0ZSAtbCAy
-RyAvdG1wL3RtcEltZ0IKKyBmYWxsb2NhdGUgLWwgMkcgL3RtcC90bXBJbWdCCgojIyMjIyMjIyMj
-CiMgUHJlcGFyZSBsb29wYmFjayBkZXZpY2VzCm1vZHByb2JlIGxvb3AKKyBtb2Rwcm9iZSBsb29w
-CkxPT1BfQT0iJChsb3NldHVwIC0tc2hvdyAtZlAgL3RtcC90bXBJbWdBKSIKKysgbG9zZXR1cCAt
-LXNob3cgLWZQIC90bXAvdG1wSW1nQQorIExPT1BfQT0vZGV2L2xvb3AwCkxPT1BfQj0iJChsb3Nl
-dHVwIC0tc2hvdyAtZlAgL3RtcC90bXBJbWdCKSIKKysgbG9zZXR1cCAtLXNob3cgLWZQIC90bXAv
-dG1wSW1nQgorIExPT1BfQj0vZGV2L2xvb3AxCgojIyMjIyMjIyMjCiMgQ3JlYXRlIHJhaWQxCm1r
-ZnMuYnRyZnMgLS1mb3JjZSAtUiBmcmVlLXNwYWNlLXRyZWUgLUwgVG1wUmFpZDEgLWQgcmFpZDEg
-LW0gcmFpZDEgIiRMT09QX0EiICIkTE9PUF9CIgorIG1rZnMuYnRyZnMgLS1mb3JjZSAtUiBmcmVl
-LXNwYWNlLXRyZWUgLUwgVG1wUmFpZDEgLWQgcmFpZDEgLW0gcmFpZDEgL2Rldi9sb29wMCAvZGV2
-L2xvb3AxCmJ0cmZzLXByb2dzIHY1LjE0LjIgClNlZSBodHRwOi8vYnRyZnMud2lraS5rZXJuZWwu
-b3JnIGZvciBtb3JlIGluZm9ybWF0aW9uLgoKUGVyZm9ybWluZyBmdWxsIGRldmljZSBUUklNIC9k
-ZXYvbG9vcDAgKDIuMDBHaUIpIC4uLgpQZXJmb3JtaW5nIGZ1bGwgZGV2aWNlIFRSSU0gL2Rldi9s
-b29wMSAoMi4wMEdpQikgLi4uCkxhYmVsOiAgICAgICAgICAgICAgVG1wUmFpZDEKVVVJRDogICAg
-ICAgICAgICAgICBlYWU2MzFiZS1kNDhmLTQ4NGItYWYwOS04ZDY1YTI5MWJiZjEKTm9kZSBzaXpl
-OiAgICAgICAgICAxNjM4NApTZWN0b3Igc2l6ZTogICAgICAgIDQwOTYKRmlsZXN5c3RlbSBzaXpl
-OiAgICA0LjAwR2lCCkJsb2NrIGdyb3VwIHByb2ZpbGVzOgogIERhdGE6ICAgICAgICAgICAgIFJB
-SUQxICAgICAgICAgICAyMDQuNzVNaUIKICBNZXRhZGF0YTogICAgICAgICBSQUlEMSAgICAgICAg
-ICAgMjY0LjAwTWlCCiAgU3lzdGVtOiAgICAgICAgICAgUkFJRDEgICAgICAgICAgICAgOC4wME1p
-QgpTU0QgZGV0ZWN0ZWQ6ICAgICAgIHllcwpab25lZCBkZXZpY2U6ICAgICAgIG5vCkluY29tcGF0
-IGZlYXR1cmVzOiAgZXh0cmVmLCBza2lubnktbWV0YWRhdGEKUnVudGltZSBmZWF0dXJlczogICBm
-cmVlLXNwYWNlLXRyZWUKQ2hlY2tzdW06ICAgICAgICAgICBjcmMzMmMKTnVtYmVyIG9mIGRldmlj
-ZXM6ICAyCkRldmljZXM6CiAgIElEICAgICAgICBTSVpFICBQQVRICiAgICAxICAgICAyLjAwR2lC
-ICAvZGV2L2xvb3AwCiAgICAyICAgICAyLjAwR2lCICAvZGV2L2xvb3AxCgoKIyMjIyMjIyMjIwoj
-IE1vdW50IHRlbXAgcmFpZDEKbWtkaXIgL3RtcC90bXBSYWlkMQorIG1rZGlyIC90bXAvdG1wUmFp
-ZDEKbW91bnQgIiRMT09QX0EiIC90bXAvdG1wUmFpZDEKKyBtb3VudCAvZGV2L2xvb3AwIC90bXAv
-dG1wUmFpZDEKCiMjIyMjIyMjIyMKIyBSdW4gYnRyZnMgZGYKYnRyZnMgZmlsZXN5c3RlbSBkZiAv
-dG1wL3RtcFJhaWQxCisgYnRyZnMgZmlsZXN5c3RlbSBkZiAvdG1wL3RtcFJhaWQxCldBUk5JTkc6
-IE11bHRpcGxlIGJsb2NrIGdyb3VwIHByb2ZpbGVzIGRldGVjdGVkLCBzZWUgJ21hbiBidHJmcyg1
-KScuCldBUk5JTkc6ICAgTWV0YWRhdGE6IHNpbmdsZSwgcmFpZDEKRGF0YSwgUkFJRDE6IHRvdGFs
-PTIwNC43NU1pQiwgdXNlZD0wLjAwQgpTeXN0ZW0sIFJBSUQxOiB0b3RhbD04LjAwTWlCLCB1c2Vk
-PTE2LjAwS2lCCk1ldGFkYXRhLCBSQUlEMTogdG90YWw9MjU2LjAwTWlCLCB1c2VkPTEyOC4wMEtp
-QgpNZXRhZGF0YSwgc2luZ2xlOiB0b3RhbD04LjAwTWlCLCB1c2VkPTAuMDBCCkdsb2JhbFJlc2Vy
-dmUsIHNpbmdsZTogdG90YWw9My4yNU1pQiwgdXNlZD0wLjAwQgoKIyMjIyMjIyMjIwojIGNsZWFu
-dXAKdW1vdW50IC90bXAvdG1wUmFpZDEKKyB1bW91bnQgL3RtcC90bXBSYWlkMQoKbG9zZXR1cCAt
-LWRldGFjaCAiJExPT1BfQSIKKyBsb3NldHVwIC0tZGV0YWNoIC9kZXYvbG9vcDAKbG9zZXR1cCAt
-LWRldGFjaCAiJExPT1BfQiIKKyBsb3NldHVwIC0tZGV0YWNoIC9kZXYvbG9vcDEKCnN5bmMKKyBz
-eW5jCnJtZGlyIC90bXAvdG1wUmFpZDEvCisgcm1kaXIgL3RtcC90bXBSYWlkMS8Kcm0gL3RtcC90
-bXBJbWdBCisgcm0gL3RtcC90bXBJbWdBCnJtIC90bXAvdG1wSW1nQgorIHJtIC90bXAvdG1wSW1n
-Qgo=
---00000000000052ae5105cdeb6c18--
+
+-- 
+Hugo Mills             | Great films about cricket: Crease
+hugo@... carfax.org.uk |
+http://carfax.org.uk/  |
+PGP: E2AB1DE4          |
