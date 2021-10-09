@@ -2,161 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C770427991
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Oct 2021 13:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAD3427A0B
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Oct 2021 14:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhJILqS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Oct 2021 07:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbhJILqS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Oct 2021 07:46:18 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46BDDC061570
-        for <linux-btrfs@vger.kernel.org>; Sat,  9 Oct 2021 04:44:21 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id e12so37949251wra.4
-        for <linux-btrfs@vger.kernel.org>; Sat, 09 Oct 2021 04:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=u7begFOS2Vsifx/924OujAg6NcZP1dQCAXJ65/jDny0=;
-        b=Kf6q/a2dPdZ+Lf4L3lix0bEFztUKzO4XIjvAFskyEg9f8gd4t0tWolokFBkZ4Fjsd6
-         EaQWTI23ptxeY5kOmy26/WOBx9oWjLehdWZOdP2Dy3VhpRsg1STFNfppo9k8h8d+ojjy
-         8HsWDF4C2CxaUO6pu5e2TIRd1E/K+NirQ+PKELIjVvphVtzmU3bfs6Tu9oScv2dHG4b7
-         ieeT/7EZz7OgcClu16yRVbSn/6thxSYbyo5ZG8mOCKd6mTZ96O/agb29moV63OgVyHOS
-         krwptmpK9lwdNgwhDotCToePMcyIVQDGz3bJPn3DohoUq4oal9UVo8LcyRr6rhuBNAFm
-         9oWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=u7begFOS2Vsifx/924OujAg6NcZP1dQCAXJ65/jDny0=;
-        b=bIYKkaCH0Asvt3EOCHO5l4LqzryMvB6roTKSisDlOPLBPwRHt9Zk4ZBguVfV0CTK+9
-         4yBAuygORUtcTzdnx9K82dnvK4U+00mWc6lE2mutm3/hnnZuD06+qUCakCKFhD6WuuW8
-         fYXVyEiCGPbxHdIUWGQRf1I8lDH8Zhu1qrcHmuRiO4z5FDiJWiGIGt7tNxf7QjzixMKH
-         r11YjxCq8a7lAFHX3My6x/cGmDWjCKxXA6N9Ns1JSEuC47iL+ESy8eTFaLWWomNCbcF2
-         mBkmECfdkhm6+15z9cjKhJL5Dz9MatYfsmO+mbWK1vbpygaFSMOLVySSzdUok0EaI5Xq
-         N29g==
-X-Gm-Message-State: AOAM532I6dLc2/v7/r/JCAat8Xgd1CkMRl56P+U37cjyZm8+NyblB3hW
-        iEVNkzay/Ex+Zh3IlPWbV3sAVSwE0yeCRtVV0L0aoNEF/QU=
-X-Google-Smtp-Source: ABdhPJzvKY6r1hVAjhJN2YTCDdS7LU/QeZuZEvP1AKOEscCi5XjPSp0UelbdBTNEIgK6UYD288e8D2q7roN6464l0so=
-X-Received: by 2002:a5d:64af:: with SMTP id m15mr10500380wrp.117.1633779859500;
- Sat, 09 Oct 2021 04:44:19 -0700 (PDT)
+        id S232926AbhJIMVd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 Oct 2021 08:21:33 -0400
+Received: from mout.gmx.net ([212.227.17.20]:39617 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230163AbhJIMVc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 9 Oct 2021 08:21:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633781973;
+        bh=01ujE0HnCb8pcB+UEd6+t+H+qVKHz5togOZwQzyfdU4=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=IfGXvhbj8N679RsFqrBV1NL+HuWTTjUQwkxYY7OZnZKtalBurNsCuNVPr4hRWF9n8
+         YEyHtHCVMa4dqGHjx6u5EnCAX2Z1b7LNl+oHF5x1zifZyKICGp+OwRUBreKnK0JZ+0
+         V1btmn9T6p38IpuhapRqbdYjpQ28/UTXQWdxAaPM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFbRm-1mYgIM3wA2-00HAle; Sat, 09
+ Oct 2021 14:19:33 +0200
+Message-ID: <08f71656-b775-3fe0-62f7-f04c44501858@gmx.com>
+Date:   Sat, 9 Oct 2021 20:19:30 +0800
 MIME-Version: 1.0
-From:   FireFish5000 <firefish5000@gmail.com>
-Date:   Sat, 9 Oct 2021 06:44:07 -0500
-Message-ID: <CADNS_H6MvByBaYQ7h94DMVQUU9ZjANN8bz90km_6DZykBh6mxw@mail.gmail.com>
-Subject: Bug / Suspected regression. Multiple block group profiles detected on
- newly created raid1.
-To:     linux-btrfs@vger.kernel.org
-Content-Type: multipart/mixed; boundary="0000000000002ad9cc05cdea04cd"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: Bug / Suspected regression. Multiple block group profiles
+ detected on newly created raid1.
+Content-Language: en-US
+To:     FireFish5000 <firefish5000@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CADNS_H6MvByBaYQ7h94DMVQUU9ZjANN8bz90km_6DZykBh6mxw@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <CADNS_H6MvByBaYQ7h94DMVQUU9ZjANN8bz90km_6DZykBh6mxw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VUaVOytGDRLdFOufGu94Jih4TtKYLoFINi78BfZEMrKfgTcdTqm
+ dUUwnSsLXSXpKIuDJy959nm743eAvM94JV368rxhCxjiwsm8wFFlT2ZNUrSutGqVepTGzz7
+ yaKLwIiDi2hYBfN7hbr9aHdamCw+3vGxzwpSuSomonuvs4RljEPlt+uw6JXbGHaPIDw2KLH
+ WMY/zdi/UwQPqsOAH/HvQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bjfBo11aQ6o=:M4OeeIIkSeCat9T94ftPeJ
+ iQ14PqQc0pQgjrWG51kx/0nYt8Tj0mcLiLigeGiGgDuZ9BZZ4kGUrVXZcVx/6qb5d2yH0SAAc
+ NV+BCqzRxT/emc0lNrH9xT8xtUOJ73Uyo9ke+iitheQoumvI7pr8jlwKNi//jv/LfA7/sepHH
+ aeYxY7wG8+DGR3BQePeEavVTsF2eocuZAmNVUxfXr9rtlTr/9NO/X4Iw5zjvnbNphxMfZ26Ur
+ 9cF0oKAi4IJ012gwc1QoFDQsLeh92/z1maMno6H8Gqi3q/ujmO7lLGp2xLSl+4/8XyugGk+e1
+ dRF2aD0sHSb/CH/IvX2u3bvvOyrFpc0kLIhArpjEU0wpypAktpnIM0LQ/nQnlDl9qI/coAIJg
+ P+XqZk1UqjX4RxspMZ8LexxrtEz4W2ooScHi9bXtGRPtUpIGG8Uvkq8v9S6hGxbpRi+RTiw+N
+ qtybEW7vRC0qLYe06IkqW0VCgOjSggudksBD8/IwA1NCycVdAOTUtO2+bS9DuIuYxDXvX5D2J
+ bIrwOhNJo++UFI+XHi+BF26P6cH9FbEg5+sN6301szFS1Vu97CrJZAc3ZAwAwGt/oXivyXW3D
+ Zl72uf71Shsv7bzMajuTmB+gkaQ20v/RqN01H1TFUm+rxn8QDD5ZCMGfWaUBbTrx+ZUgkBwmH
+ i5y9TS/GDZ7Lz85n4I/2kOgiObgUo0HdKSNjsQgt6+smmNMcP1OcqkPcIPXQCO0+7yVDpUKrZ
+ WqL5P36clwQ9rfeBYJVzGX/+ND8ecAV6onfiZ+1fxWACr6VPvgBk4bzRM/ICg+ebYd4C6+MON
+ MXhQAiKYGnu9IfymR89PzQUVpxIz+kElk6iqSqS4iHEZu5BLdh/zWussZZfFqOc/g3zV55PVw
+ R4OXYBKElnVXnQOUXWVrqZTBQNS6tYueoFfJxroSNfgReSH6HgvxzONcC7JpZoolVpJsgu6m/
+ HrrWi4Zomu1EEJvpcygQuuoqDe3h9rtZq8eWd6Uy1ArWoZHUTm925j/9uMszdUUVVhec/HgVe
+ SeAhNGI0BvB/tbrxmqb7lQPYmW3g17W5NpRB5zfoeibn+NFgPMXXq3+XtxuYjUh3CpOGHJ/nW
+ KwRM/YjoPo94lM=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---0000000000002ad9cc05cdea04cd
-Content-Type: text/plain; charset="UTF-8"
 
-After creating a new btrfs raid1 and was surprised to be greeted with
-the warning
 
-WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
-WARNING:   Metadata: single, raid1
+On 2021/10/9 19:44, FireFish5000 wrote:
+> After creating a new btrfs raid1 and was surprised to be greeted with
+> the warning
+>
+> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
+> WARNING:   Metadata: single, raid1
+>
+> I asked on the IRC, and darkling directed me to the mailing list
+> suspecting this was a regression.
+> I am on 5.14.8-gentoo-dist with btrfs-progs v5.14.1
+>
+> I have attached a script to reproduce this with temporary images/loop de=
+vices,
+> Along with the full output I received when running the script.
+>
+> A shortened version of the commands that I ran on my *real drives* and
+> the relevant output is also provided below for convenience. P at the
+> end of the device path was inserted incase sleepy joe copies it
+> thinking its the reproduction script:
+>
+> # mkfs.btrfs --force -R free-space-tree -L BtrfsRaid1Test -d raid1 -m
 
-I asked on the IRC, and darkling directed me to the mailing list
-suspecting this was a regression.
-I am on 5.14.8-gentoo-dist with btrfs-progs v5.14.1
+This seems to be a recent bug in btrfs-progs which doesn't remove the
+temporary chunk.
 
-I have attached a script to reproduce this with temporary images/loop devices,
-Along with the full output I received when running the script.
+You can try the latest v5.14.2 to see if it's solved.
 
-A shortened version of the commands that I ran on my *real drives* and
-the relevant output is also provided below for convenience. P at the
-end of the device path was inserted incase sleepy joe copies it
-thinking its the reproduction script:
+If you want to use the fs, just do a btrfs balance with "start
+-musage=3D0" should remove that SINGLE metadata chunk.
 
-# mkfs.btrfs --force -R free-space-tree -L BtrfsRaid1Test -d raid1 -m
-raid1 /dev/sdaP /dev/sdbP; mount /dev/sda /mnt/tmp; btrfs filesystem
-df /mnt/tmp
-btrfs-progs v5.14.1
-....truncated....
-....truncated....
-Data, RAID1: total=1.00GiB, used=0.00B
-System, RAID1: total=8.00MiB, used=16.00KiB
-Metadata, RAID1: total=1.00GiB, used=176.00KiB
-Metadata, single: total=8.00MiB, used=0.00B
-GlobalReserve, single: total=3.25MiB, used=0.00B
-WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
-WARNING:   Metadata: single, raid1
-
---0000000000002ad9cc05cdea04cd
-Content-Type: text/plain; charset="US-ASCII"; name="btrfsRaid1Test.sh - output.txt"
-Content-Disposition: attachment; filename="btrfsRaid1Test.sh - output.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kujp9dh21>
-X-Attachment-Id: f_kujp9dh21
-
-IyBHZXQgU3lzdGVtIEluZm8NCnVuYW1lIC1yDQorIHVuYW1lIC1yDQo1LjE0LjgtZ2VudG9vLWRp
-c3QNCmJ0cmZzIHZlcnNpb24NCisgYnRyZnMgdmVyc2lvbg0KYnRyZnMtcHJvZ3MgdjUuMTQuMSAN
-Cg0KIyMjIyMjIyMjIw0KIyBDcmVhdGUgYmxhbmsgaW1hZ2VzDQpmYWxsb2NhdGUgLWwgMkcgL3Rt
-cC90bXBJbWdBDQorIGZhbGxvY2F0ZSAtbCAyRyAvdG1wL3RtcEltZ0ENCmZhbGxvY2F0ZSAtbCAy
-RyAvdG1wL3RtcEltZ0INCisgZmFsbG9jYXRlIC1sIDJHIC90bXAvdG1wSW1nQg0KDQojIyMjIyMj
-IyMjDQojIFByZXBhcmUgbG9vcGJhY2sgZGV2aWNlcw0KbW9kcHJvYmUgbG9vcA0KKyBtb2Rwcm9i
-ZSBsb29wDQpMT09QX0E9IiQobG9zZXR1cCAtLXNob3cgLWZQIC90bXAvdG1wSW1nQSkiDQorKyBs
-b3NldHVwIC0tc2hvdyAtZlAgL3RtcC90bXBJbWdBDQorIExPT1BfQT0vZGV2L2xvb3AwDQpMT09Q
-X0I9IiQobG9zZXR1cCAtLXNob3cgLWZQIC90bXAvdG1wSW1nQikiDQorKyBsb3NldHVwIC0tc2hv
-dyAtZlAgL3RtcC90bXBJbWdCDQorIExPT1BfQj0vZGV2L2xvb3AxDQoNCiMjIyMjIyMjIyMNCiMg
-Q3JlYXRlIHJhaWQxDQpta2ZzLmJ0cmZzIC0tZm9yY2UgLVIgZnJlZS1zcGFjZS10cmVlIC1MIFRt
-cFJhaWQxIC1kIHJhaWQxIC1tIHJhaWQxICIkTE9PUF9BIiAiJExPT1BfQiINCisgbWtmcy5idHJm
-cyAtLWZvcmNlIC1SIGZyZWUtc3BhY2UtdHJlZSAtTCBUbXBSYWlkMSAtZCByYWlkMSAtbSByYWlk
-MSAvZGV2L2xvb3AwIC9kZXYvbG9vcDENCmJ0cmZzLXByb2dzIHY1LjE0LjEgDQpTZWUgaHR0cDov
-L2J0cmZzLndpa2kua2VybmVsLm9yZyBmb3IgbW9yZSBpbmZvcm1hdGlvbi4NCg0KTGFiZWw6ICAg
-ICAgICAgICAgICBUbXBSYWlkMQ0KVVVJRDogICAgICAgICAgICAgICA5NmY2YTgyYy1lODBmLTQ1
-NjAtOTA0NS0wMjI5ZTYzZjVkNjYNCk5vZGUgc2l6ZTogICAgICAgICAgMTYzODQNClNlY3RvciBz
-aXplOiAgICAgICAgNDA5Ng0KRmlsZXN5c3RlbSBzaXplOiAgICA0LjAwR2lCDQpCbG9jayBncm91
-cCBwcm9maWxlczoNCiAgRGF0YTogICAgICAgICAgICAgUkFJRDEgICAgICAgICAgIDIwNC43NU1p
-Qg0KICBNZXRhZGF0YTogICAgICAgICBSQUlEMSAgICAgICAgICAgMjY0LjAwTWlCDQogIFN5c3Rl
-bTogICAgICAgICAgIFJBSUQxICAgICAgICAgICAgIDguMDBNaUINClNTRCBkZXRlY3RlZDogICAg
-ICAgeWVzDQpab25lZCBkZXZpY2U6ICAgICAgIG5vDQpJbmNvbXBhdCBmZWF0dXJlczogIGV4dHJl
-Ziwgc2tpbm55LW1ldGFkYXRhDQpSdW50aW1lIGZlYXR1cmVzOiAgIGZyZWUtc3BhY2UtdHJlZQ0K
-Q2hlY2tzdW06ICAgICAgICAgICBjcmMzMmMNCk51bWJlciBvZiBkZXZpY2VzOiAgMg0KRGV2aWNl
-czoNCiAgIElEICAgICAgICBTSVpFICBQQVRIDQogICAgMSAgICAgMi4wMEdpQiAgL2Rldi9sb29w
-MA0KICAgIDIgICAgIDIuMDBHaUIgIC9kZXYvbG9vcDENCg0KDQojIyMjIyMjIyMjDQojIE1vdW50
-IHRlbXAgcmFpZDENCm1rZGlyIC90bXAvdG1wUmFpZDENCisgbWtkaXIgL3RtcC90bXBSYWlkMQ0K
-bW91bnQgIiRMT09QX0EiIC90bXAvdG1wUmFpZDENCisgbW91bnQgL2Rldi9sb29wMCAvdG1wL3Rt
-cFJhaWQxDQoNCiMjIyMjIyMjIyMNCiMgUnVuIGJ0cmZzIGRmDQpidHJmcyBmaWxlc3lzdGVtIGRm
-IC90bXAvdG1wUmFpZDENCisgYnRyZnMgZmlsZXN5c3RlbSBkZiAvdG1wL3RtcFJhaWQxDQpEYXRh
-LCBSQUlEMTogdG90YWw9MjA0Ljc1TWlCLCB1c2VkPTAuMDBCDQpTeXN0ZW0sIFJBSUQxOiB0b3Rh
-bD04LjAwTWlCLCB1c2VkPTE2LjAwS2lCDQpNZXRhZGF0YSwgUkFJRDE6IHRvdGFsPTI1Ni4wME1p
-QiwgdXNlZD0xMjguMDBLaUINCk1ldGFkYXRhLCBzaW5nbGU6IHRvdGFsPTguMDBNaUIsIHVzZWQ9
-MC4wMEINCkdsb2JhbFJlc2VydmUsIHNpbmdsZTogdG90YWw9My4yNU1pQiwgdXNlZD0wLjAwQg0K
-V0FSTklORzogTXVsdGlwbGUgYmxvY2sgZ3JvdXAgcHJvZmlsZXMgZGV0ZWN0ZWQsIHNlZSAnbWFu
-IGJ0cmZzKDUpJy4NCldBUk5JTkc6ICAgTWV0YWRhdGE6IHNpbmdsZSwgcmFpZDENCg0KIyMjIyMj
-IyMjIw0KIyBjbGVhbnVwDQp1bW91bnQgL3RtcC90bXBSYWlkMQ0KKyB1bW91bnQgL3RtcC90bXBS
-YWlkMQ0KDQpsb3NldHVwIC0tZGV0YWNoICIkTE9PUF9BIg0KKyBsb3NldHVwIC0tZGV0YWNoIC9k
-ZXYvbG9vcDANCmxvc2V0dXAgLS1kZXRhY2ggIiRMT09QX0IiDQorIGxvc2V0dXAgLS1kZXRhY2gg
-L2Rldi9sb29wMQ0KDQpzeW5jDQorIHN5bmMNCnJtZGlyIC90bXAvdG1wUmFpZDEvDQorIHJtZGly
-IC90bXAvdG1wUmFpZDEvDQpybSAvdG1wL3RtcEltZ0ENCisgcm0gL3RtcC90bXBJbWdBDQpybSAv
-dG1wL3RtcEltZ0INCisgcm0gL3RtcC90bXBJbWdC
---0000000000002ad9cc05cdea04cd
-Content-Type: application/x-sh; name="btrfsRaid1Test.sh"
-Content-Disposition: attachment; filename="btrfsRaid1Test.sh"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kujp7ins0>
-X-Attachment-Id: f_kujp7ins0
-
-IyEvYmluL2Jhc2gNCiMgRXhhbXBsZSBvdXRwdXQgLSBodHRwczovL3Bhc3RlYmluLmNvbS9FOWk1
-NTdGNg0KDQojIyMjIyMjIyMjDQojIGV4aXQgb24gZXJyb3INCnNldCAtZSAteCAtdg0KDQojIyMj
-IyMjIyMjDQojIEdldCBTeXN0ZW0gSW5mbw0KdW5hbWUgLXINCmJ0cmZzIHZlcnNpb24NCg0KIyMj
-IyMjIyMjIw0KIyBDcmVhdGUgYmxhbmsgaW1hZ2VzDQpmYWxsb2NhdGUgLWwgMkcgL3RtcC90bXBJ
-bWdBDQpmYWxsb2NhdGUgLWwgMkcgL3RtcC90bXBJbWdCDQoNCiMjIyMjIyMjIyMNCiMgUHJlcGFy
-ZSBsb29wYmFjayBkZXZpY2VzDQptb2Rwcm9iZSBsb29wDQpMT09QX0E9IiQobG9zZXR1cCAtLXNo
-b3cgLWZQIC90bXAvdG1wSW1nQSkiDQpMT09QX0I9IiQobG9zZXR1cCAtLXNob3cgLWZQIC90bXAv
-dG1wSW1nQikiDQoNCiMjIyMjIyMjIyMNCiMgQ3JlYXRlIHJhaWQxDQpta2ZzLmJ0cmZzIC0tZm9y
-Y2UgLVIgZnJlZS1zcGFjZS10cmVlIC1MIFRtcFJhaWQxIC1kIHJhaWQxIC1tIHJhaWQxICIkTE9P
-UF9BIiAiJExPT1BfQiINCg0KIyMjIyMjIyMjIw0KIyBNb3VudCB0ZW1wIHJhaWQxDQpta2RpciAv
-dG1wL3RtcFJhaWQxDQptb3VudCAiJExPT1BfQSIgL3RtcC90bXBSYWlkMQ0KDQojIyMjIyMjIyMj
-DQojIFJ1biBidHJmcyBkZg0KYnRyZnMgZmlsZXN5c3RlbSBkZiAvdG1wL3RtcFJhaWQxDQoNCiMj
-IyMjIyMjIyMNCiMgY2xlYW51cA0KdW1vdW50IC90bXAvdG1wUmFpZDENCg0KbG9zZXR1cCAtLWRl
-dGFjaCAiJExPT1BfQSINCmxvc2V0dXAgLS1kZXRhY2ggIiRMT09QX0IiDQoNCnN5bmMNCnJtZGly
-IC90bXAvdG1wUmFpZDEvDQpybSAvdG1wL3RtcEltZ0ENCnJtIC90bXAvdG1wSW1nQg==
---0000000000002ad9cc05cdea04cd--
+Thanks,
+Qu
+> raid1 /dev/sdaP /dev/sdbP; mount /dev/sda /mnt/tmp; btrfs filesystem
+> df /mnt/tmp
+> btrfs-progs v5.14.1
+> ....truncated....
+> ....truncated....
+> Data, RAID1: total=3D1.00GiB, used=3D0.00B
+> System, RAID1: total=3D8.00MiB, used=3D16.00KiB
+> Metadata, RAID1: total=3D1.00GiB, used=3D176.00KiB
+> Metadata, single: total=3D8.00MiB, used=3D0.00B
+> GlobalReserve, single: total=3D3.25MiB, used=3D0.00B
+> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
+> WARNING:   Metadata: single, raid1
+>
