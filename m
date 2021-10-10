@@ -2,128 +2,149 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB4C428030
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Oct 2021 11:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9445942818A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Oct 2021 15:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhJJJXw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 Oct 2021 05:23:52 -0400
-Received: from mout.gmx.net ([212.227.17.21]:60109 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhJJJXv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Oct 2021 05:23:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1633857712;
-        bh=Bl/vCBm8jZ1FVSyNaON5bDlIrC3OfPDh5y1xLuqOQRU=;
-        h=X-UI-Sender-Class:Date:Subject:From:To:References:In-Reply-To;
-        b=EEvHA8YvXV3pppgK8Hc276CynwLuZtOGwlZMYunq2UqPfzR1QPW5IwRwJl9PIfWC0
-         2alXvpzzI2ha2niVJ9RhzaSCrEGpyZCx+PC6E93W3HwUrmGcouATKymtZ0uHsuzMMn
-         JDY6JDYwXNYas4U9zN1V9QNyKpvcgPFIKiuI17i8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MJE27-1mJuFQ1xxT-00Kgfk; Sun, 10
- Oct 2021 11:21:52 +0200
-Message-ID: <fe7552d5-b9a9-fb61-dd6f-7058537549f8@gmx.com>
-Date:   Sun, 10 Oct 2021 17:21:48 +0800
+        id S232788AbhJJNeW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Oct 2021 09:34:22 -0400
+Received: from out20-99.mail.aliyun.com ([115.124.20.99]:35241 "EHLO
+        out20-99.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232786AbhJJNeV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 Oct 2021 09:34:21 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08859921|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.278371-0.00175368-0.719876;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.LWl7PFo_1633872740;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.LWl7PFo_1633872740)
+          by smtp.aliyun-inc.com(10.147.40.200);
+          Sun, 10 Oct 2021 21:32:21 +0800
+Date:   Sun, 10 Oct 2021 21:32:20 +0800
+From:   Eryu Guan <guan@eryu.me>
+To:     Ma Xinjian <xinjianx.ma@intel.com>
+Cc:     fstests@vger.kernel.org, Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] btrfs/049: remove the test
+Message-ID: <YWLrZHPZ1VIn5qIH@desktop>
+References: <20210927072019.46609-1-xinjianx.ma@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: Bug / Suspected regression. Multiple block group profiles
- detected on newly created raid1.
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     FireFish5000 <firefish5000@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CADNS_H6MvByBaYQ7h94DMVQUU9ZjANN8bz90km_6DZykBh6mxw@mail.gmail.com>
- <08f71656-b775-3fe0-62f7-f04c44501858@gmx.com>
-In-Reply-To: <08f71656-b775-3fe0-62f7-f04c44501858@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Av8UT90UHZyXWejcvQyWINFOkaiEhD8otY24L09w6+jwQoj4pge
- wwQgfPyOgO3S7X6nPu4sfc74yet4G4+WxRlAgriZWMrTEF9c3IRHS4/zJPk70U8SvKVeSY1
- G2elU0mJE1vza7vxdcq9Oq0xWcrvM45+Oet1v5/5pkKKx5efQJWp62W72MR6ikmH/SAFxxH
- q/TspvOoUur2qMKAYzMGA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WXegw+2iTXw=:HybzIU6ePU81NUehkyuq/D
- Am2I95VxratKIg3C+FyHUPerdtVZVj2SiE3t1MVb3lgto5aP29TEcrG/6tT6MRCeWqQN6AYAX
- Cb12Sh6JuOVBiiGutCs0VtND+j4bsfEuBfxys/BIUqu8/5ytaXqtf5H8sXrSBmcFhAUUmRkZi
- y2fmmXG6Lln0K1yJettgHYw3huTVZ8hEitszXKyVhHE/4penU3QqCUo5c1eIFxTB3AyG8+ys1
- LofeL9hRsOKmER9+/XMi0ZYxaorDYXN/8HBJzi/goB1fCuzJ4q25RpjMeUwCnNPWfQfDtGLSD
- 1ZsptCiWxofBx6SKTmcyhvklEnWt9p4KgZxSaFRx1PAbZzE6a4CNmbrs6++H+d41g6L96M4Rh
- JPX8CqVmbT0VR6wHvPA24JChuiYF8DA11oAUCrowimeTYSakkY/ozgrSbeicTgs91iDxqXoGk
- Oo1MMrccdNeQ02sJ1n3f77vqT0yj493sz4ZgQ7eCh+4OIp6EzEED7ylIsQqCkNoW/6Xg0ybuQ
- bXx4OKtyqh0fXXXqeYwCfNjLdvJscR4KoBeUF5HnPzI3YwrVx3sEXU9isAEqhLfThqky2opTS
- k7zqr/0SK6vmzQAZc+OawQsON917RwsBsF5j1YO1yFCdroVDe3H+7JnkSit6aHhMIp5/YoqMa
- 7ULIRMfSlbsNM7g5208IP5LexKeRsNO5o9zg7rZAaUBEvDLphMUZNhvz9QEB4xAmAC4VzmnRc
- pcPVJwCeflHVPYeY6/VWj5r2brh6Hi0aOf6OaZgGce4ADJiWQdsT+rWaRdNOXOrA4dMPr5+5Q
- +KlVbak00drnx549kYledE3bJDia7uBDD/AXmTOyBKIJdvgKIgL2J6QkhrtxlDGJCPIfRSXO6
- Zrjat62OacJFbw9165DH5uo4pNZcUgVXvk3/JNwgiczVH0IpgoL+h8ebJiwSXzyq/KHeqAUh2
- HfzA9UDkb/sM+a43BjTZGF4IJeOWbCXDiajM24wvk3WuaN3/dYyJ9YSHr9vWMd2uLxiQuCBet
- HKPiitkJgI5RPRlRYlduq1xSnLEX/G/6tJgUOzTNZgR6+fEWder7NrK7QwmDAAh5ol28saXdi
- RcXkNSFH9YAHMU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927072019.46609-1-xinjianx.ma@intel.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[cc'ed btrfs list]
 
+On Mon, Sep 27, 2021 at 03:20:18PM +0800, Ma Xinjian wrote:
+> inode_cache is deprecated and will never appear in mount
+> options; remove it entirely
 
-On 2021/10/9 20:19, Qu Wenruo wrote:
->
->
-> On 2021/10/9 19:44, FireFish5000 wrote:
->> After creating a new btrfs raid1 and was surprised to be greeted with
->> the warning
->>
->> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
->> WARNING:=C2=A0=C2=A0 Metadata: single, raid1
->>
->> I asked on the IRC, and darkling directed me to the mailing list
->> suspecting this was a regression.
->> I am on 5.14.8-gentoo-dist with btrfs-progs v5.14.1
->>
->> I have attached a script to reproduce this with temporary images/loop
->> devices,
->> Along with the full output I received when running the script.
->>
->> A shortened version of the commands that I ran on my *real drives* and
->> the relevant output is also provided below for convenience. P at the
->> end of the device path was inserted incase sleepy joe copies it
->> thinking its the reproduction script:
->>
->> # mkfs.btrfs --force -R free-space-tree -L BtrfsRaid1Test -d raid1 -m
->
-> This seems to be a recent bug in btrfs-progs which doesn't remove the
-> temporary chunk.
->
-> You can try the latest v5.14.2 to see if it's solved.
->
-> If you want to use the fs, just do a btrfs balance with "start
-> -musage=3D0" should remove that SINGLE metadata chunk.
+Please also cc btrfs list in future patches for btrfs-specific tests.
 
-OK, I also confirmed the bug locally.
-
-My initial suspect is the recent rework on free-space-tree creation, but
-simple "-R free-space-cache -m raid1" won't create it.
-
-Surprisingly it needs both metadata and data to be another profile to
-trigger it.
-
-With it reproduced, it should be pretty soon for me to find the root cause=
-.
+And I'd like an ack from btrfs folks.
 
 Thanks,
-Qu
->
-> Thanks,
-> Qu
->> raid1 /dev/sdaP /dev/sdbP; mount /dev/sda /mnt/tmp; btrfs filesystem
->> df /mnt/tmp
->> btrfs-progs v5.14.1
->> ....truncated....
->> ....truncated....
->> Data, RAID1: total=3D1.00GiB, used=3D0.00B
->> System, RAID1: total=3D8.00MiB, used=3D16.00KiB
->> Metadata, RAID1: total=3D1.00GiB, used=3D176.00KiB
->> Metadata, single: total=3D8.00MiB, used=3D0.00B
->> GlobalReserve, single: total=3D3.25MiB, used=3D0.00B
->> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
->> WARNING:=C2=A0=C2=A0 Metadata: single, raid1
->>
+Eryu
+
+> 
+> Link: https://www.spinics.net/lists/linux-btrfs/msg107910.html
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Ma Xinjian <xinjianx.ma@intel.com>
+> ---
+>  tests/btrfs/049 | 85 -------------------------------------------------
+>  1 file changed, 85 deletions(-)
+>  delete mode 100755 tests/btrfs/049
+> 
+> diff --git a/tests/btrfs/049 b/tests/btrfs/049
+> deleted file mode 100755
+> index 87c205ca..00000000
+> --- a/tests/btrfs/049
+> +++ /dev/null
+> @@ -1,85 +0,0 @@
+> -#! /bin/bash
+> -# SPDX-License-Identifier: GPL-2.0
+> -# Copyright (c) 2014 Fujitsu.  All Rights Reserved.
+> -#
+> -# FS QA Test No. btrfs/049
+> -#
+> -# Regression test for btrfs inode caching vs tree log which was
+> -# addressed by the following kernel patch.
+> -#
+> -# Btrfs: fix inode caching vs tree log
+> -#
+> -. ./common/preamble
+> -_begin_fstest auto quick
+> -
+> -# Override the default cleanup function.
+> -_cleanup()
+> -{
+> -	_cleanup_flakey
+> -	rm -rf $tmp
+> -}
+> -
+> -# Import common functions.
+> -. ./common/filter
+> -. ./common/dmflakey
+> -
+> -# real QA test starts here
+> -_supported_fs btrfs
+> -_require_scratch
+> -_require_dm_target flakey
+> -# Zoned btrfs does not support inode cache
+> -_require_non_zoned_device "$SCRATCH_DEV"
+> -
+> -_scratch_mkfs >> $seqres.full 2>&1
+> -
+> -SAVE_MOUNT_OPTIONS="$MOUNT_OPTIONS"
+> -MOUNT_OPTIONS="$MOUNT_OPTIONS -o inode_cache,commit=100"
+> -
+> -# create a basic flakey device that will never error out
+> -_init_flakey
+> -_mount_flakey
+> -
+> -_get_inode_id()
+> -{
+> -	local inode_id
+> -	inode_id=`stat $1 | grep Inode: | $AWK_PROG '{print $4}'`
+> -	echo $inode_id
+> -}
+> -
+> -$XFS_IO_PROG -f -c "pwrite 0 10M" -c "fsync" \
+> -	$SCRATCH_MNT/data >& /dev/null
+> -
+> -inode_id=`_get_inode_id "$SCRATCH_MNT/data"`
+> -rm -f $SCRATCH_MNT/data
+> -
+> -for i in `seq 1 5`;
+> -do
+> -	mkdir $SCRATCH_MNT/dir_$i
+> -	new_inode_id=`_get_inode_id $SCRATCH_MNT/dir_$i`
+> -	if [ $new_inode_id -eq $inode_id ]
+> -	then
+> -		$XFS_IO_PROG -f -c "pwrite 0 1M" -c "fsync" \
+> -			$SCRATCH_MNT/dir_$i/data1 >& /dev/null
+> -		_load_flakey_table 1
+> -		_unmount_flakey
+> -		need_umount=1
+> -		break
+> -	fi
+> -	sleep 1
+> -done
+> -
+> -# restore previous mount options
+> -export MOUNT_OPTIONS="$SAVE_MOUNT_OPTIONS"
+> -
+> -# ok mount so that any recovery that needs to happen is done
+> -if [ $new_inode_id -eq $inode_id ];then
+> -	_load_flakey_table $FLAKEY_ALLOW_WRITES
+> -	_mount_flakey
+> -	_unmount_flakey
+> -fi
+> -
+> -# make sure we got a valid fs after replay
+> -_check_scratch_fs $FLAKEY_DEV
+> -
+> -status=0
+> -exit
+> -- 
+> 2.20.1
