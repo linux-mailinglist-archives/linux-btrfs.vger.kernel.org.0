@@ -2,143 +2,212 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E4A429385
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 17:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F34429421
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 18:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237949AbhJKPiE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Oct 2021 11:38:04 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:59789 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238867AbhJKPiC (ORCPT
+        id S230317AbhJKQHg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Oct 2021 12:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230152AbhJKQHg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:38:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1633966562; x=1665502562;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=7tt8NPn/2k8+v+HeC3bytBckMBo4vEH2HaxY0ymO35w=;
-  b=qk/JGqDpOwstn9iutcu86wuayN8+IZT/WcPczjcFKylpT8DuUm+s8Hqi
-   5V8dUbW2mjRIMOO8E0dPnbAggMKjjlG1Z/il1ajJY1h2lx12pJ5HrbAdG
-   MbLlcpUHbJXkyKNrWMxLJSl/RA1Hh5vvaJNYiilBpXEQaQtgMEhIs/hTt
-   FpRWivrZ5svKeFgGJSkqKOPtqMuNO1OhBcSfs9A8lj0+euPY0JhpXg6Bf
-   WpE5CeaSl/7BPvQj3oJlMWtxlwTmBmmoHhe+YQ0gaIy2enzgWhyA+VUHf
-   e4CH8JCfaN04VswNAEmK8CH+9TQKNjupbbOoca+WhonnvDZfyZtuqFSK4
-   w==;
-X-IronPort-AV: E=Sophos;i="5.85,364,1624291200"; 
-   d="scan'208";a="187278192"
-Received: from mail-co1nam11lp2175.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.175])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Oct 2021 23:36:01 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a97+14UyChE6bmj7KW+yFocfXRFoRHMx9vJWwcqrYjEdi0NZF2WWnWRGcvtgzdb6KNoEt8QqFAWkYNrAFf/2NIAYfcqLO65+AMH2LKeGk6AoSTxUNZFPbUxfhmtezrUy57xEA2mdrBn0j++L1ens7sBa6ZSvR5uWu/bN+hyQAO/V1Khad32E99tXmxCvzqwICDFyOu51azh971XgPZemFlbmrhIOJbLJzMpCtIsg5xjw+8FrdeCRo2YamnPxcBO5TkYg1+ezKKg5a6qCHTG9Z/fFfHH/pxs/CvDT3MJYRhqY08SqFlzLBns/IG4RnKS4ZHR1aTaMYJHp+i+IqDVehQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wxj3nA9HrUkjbbgwqXx0TwMOEc0pWofO9MIgR7O9XD4=;
- b=LL1Sd5BawxQUisrEpeg086IzK1ymk+FEmLdLxe17fKSZGjqG9Sf9LcaZQIU9Wam3Jt4RduhiUHkbgjxzBATDgO4CLjaA6ntmn3OOfpgz4apqH1UwipHcuylKDH6vblhEVke74Tu/uRvOFJXHjfjFHXCzoasvfK6ich2Z/rtUTxX2Kim7qWb0HVFESAM2QY/VsLumC0PZ/09zROuucbTHrunaFzoOOLyP+R4heENIykx0RRMJ0DxO+fbYL/9ROGQAhNG+srXMWZKy2DxN13ulg+GCxciBUl/SqpJRUw49DrMC2xMyLfv/wbX9LpacDw9mrxnWY7MS3ZP3xmUCoaKEeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Mon, 11 Oct 2021 12:07:36 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5EFC061745
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 09:05:35 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id bk7so7807647qkb.13
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 09:05:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wxj3nA9HrUkjbbgwqXx0TwMOEc0pWofO9MIgR7O9XD4=;
- b=OBJyuvgwDv42z9mYMzjZEVy9usMA1iBzTDcKOMWSvGD80PhhqE65RZ9kIFe/iX17j2E5CBLC/P9w9I3NNkxSxOzfeROIwG9eW/trhT565PmW1ckbUxyCKiZ8F/5yWcMxeR3bwR669d6F5NhonS257o/5OOHSAEHeDNFcxs2G5AA=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7461.namprd04.prod.outlook.com (2603:10b6:510:15::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Mon, 11 Oct
- 2021 15:36:00 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::79d3:3357:9922:a195]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::79d3:3357:9922:a195%6]) with mapi id 15.20.4587.026; Mon, 11 Oct 2021
- 15:36:00 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: zoned: use greedy gc for auto reclaim
-Thread-Topic: [PATCH] btrfs: zoned: use greedy gc for auto reclaim
-Thread-Index: AQHXvpDLVweW8IiL1UizTovKwpWSyA==
-Date:   Mon, 11 Oct 2021 15:36:00 +0000
-Message-ID: <PH0PR04MB7416699B54AC4252F1C5B8559BB59@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <d09710513b6f8ad50973d894129b1dd441f2ab83.1633950641.git.johannes.thumshirn@wdc.com>
- <20211011145215.GN9286@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e58c4a8f-f5f3-4177-ac37-08d98cccd3f5
-x-ms-traffictypediagnostic: PH0PR04MB7461:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR04MB74611854864C6ACF5964F6F09BB59@PH0PR04MB7461.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mZzcSQh68bEmrFOuBdDKhaqN0ycsCWsjBCLNlV9l9lgLnfPei9zX38WZ8s5KcQDZn6kaGgtP4LBxJUbNNmT+e6XYp8AgbchArwPEgPVWo0vn+Wc0srIxUQlP8V92HRMPg7aZidiYfto21cCqZbr4UDlg+6VBnr8LRV6dH7ii8t3Lse6Py6QsGnLSfeQGbRNy3GaeWOKq6Tk8VSNZzKTKC87TimM5ZQUAyTG89gEPd+BFt6my+6jcBaa+LHKpR5/bl4x/PPRf7PgE5WiiTEaKuXqowsWPuEQ0ks7le9NqqOIw8Kv57IZ1K4UX9sQ5R/28yPpd/E41fP1Kfxxm44bMZAViL45QQd6fkGIak1C86iyx1757KvJqKHcu1T0GF00ZLAqKhPt6H21nMvhUZ/qvE5TFlsfuB6zOCkOPk4Q/4AwsQN5jo1uQXnvz75ycONYoO3oXG1Wzd8avdJvil5wuENrkW+N3Y4npvAKssVLB82DMtdQ1uciiQJfyQW4bqqGzEU80donrw/WjXiu5PotFpO3tCMGO15I1YtAst87LCHkABm6OUSNmFJexcFd+JTYqSpzPkxlicOVruAFDO16eCry11o9tEIrSxpebafteDxtG+JKotL/oHFS8X2emXPo64fLoWQPjO22EIPQaCIN173vMH8J0Je1yr4hjQKVHQU2mGgBpMcd9AEPmhAkC1Gw98/xSJSQ7WKbVD6+uBPXLSw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52536014)(2906002)(6916009)(53546011)(6506007)(7696005)(186003)(83380400001)(38100700002)(66556008)(54906003)(66446008)(9686003)(4744005)(64756008)(122000001)(86362001)(8676002)(38070700005)(66476007)(316002)(5660300002)(4326008)(508600001)(91956017)(33656002)(66946007)(76116006)(71200400001)(8936002)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?7wtxmwnmXmbNA4RBUOWvxkL4sVOkPp44Dum6wuw8o5FFAk4vcxzbaAZGxTTY?=
- =?us-ascii?Q?GoeNNCH/ySCPEsTCVzaqSJuW/I73znvhAVtmb4X+zBlA6AYt4rmAMA3RqfXY?=
- =?us-ascii?Q?A90nFPF9rwohG/uaRzP4ZtTAptJmiYQ0ioH0JFTTLnRyDf1b4ItQlySN7nLn?=
- =?us-ascii?Q?rbKb5EDh/EDqpA0LywgW6FdMkQJRPFMTED6/d5kECz7/T4sQsZBY5FEY5kDi?=
- =?us-ascii?Q?8vpnvQwMK1xdzp8gps3RdQIMYgith63pSjnyM9HSaB7o3VJGqs5cMzIbTPV6?=
- =?us-ascii?Q?vC2D37McyCsZZhR+/91irGHpOsWQp53KKDiQit0hWgyF2GM+H6FR92s2Xali?=
- =?us-ascii?Q?oAmrMUiqNLyAA/GtAc9AnvYwJ1I9pECWJvsDMZA+l/5jjVnOAxcEBHmGsmac?=
- =?us-ascii?Q?I2ovSxlmtqIyoWpojuU2bat24gVaEnyU0MtihbCLfQyl0cet8BEZWyUXdlp1?=
- =?us-ascii?Q?JMCWt+r0ogxLB/eBrNx/5/zob0TdAqXa7bfIhT2kW6n/dlnlLIMHY7PQYNva?=
- =?us-ascii?Q?49N40XXFu5r3zOh/9IkIMgNIIZ6ImYbLIvcRnu11CzVpFLtdrvP88AKx9yXH?=
- =?us-ascii?Q?HkDFbo2jkJOCX99L64rb1B6aOlncPNOL77ti5dOq5FMAu1la9aZxuGPqoOCV?=
- =?us-ascii?Q?Or9RNjRpCvIo1d4Uydqj9Xrpgb2algEIU8hT+2d8fZfH7Amtka9F3wGqK4Pf?=
- =?us-ascii?Q?x0q9tmUDVsFo3BqXDD0NwgU8sox/fWB9ilR7gEiLtxBuAb0kBZ+s4iepEA1G?=
- =?us-ascii?Q?yptWvf2nPOma1+iYjfTw0GSopKdtHRK+o4v1jXwgjArvWO/MbilVOWJHOzpt?=
- =?us-ascii?Q?boCIauGhkAE+V9VnBFBGEQE+3xqLKsM7KCgVuOzjyRxi9vSfCPFrXKJa1ZK0?=
- =?us-ascii?Q?kAbnX8VxnzqHnsBuA9h+wfNi18Et8KnHRjwABMHvvwUwD72z4NXoDtqiFd2X?=
- =?us-ascii?Q?Z8WGKSZGvB1TSCvIIsi6lLN4WNUwJlh1xxtbpyg0/L06jJ8PQvNZmHOzusyw?=
- =?us-ascii?Q?LLy7IMip0ETb1mVkH09hgXYQs6wrK6wLEo6SC8Q0xHrRRs1v7KDpIWUS+Ipw?=
- =?us-ascii?Q?pJROoDAmEJNlq4pd18wmOHzyrOa2u6Azpqlz7IvjNkA56xOa9u0n1JOtdDkX?=
- =?us-ascii?Q?80DEplwUE/+II3Nchc6Kylx+4iKlULEJYEE4xLrQbH92tPNevHdtTGzPdRwh?=
- =?us-ascii?Q?Oa0VeXG/9mwhEkAD1jYnWnEzkk7Ldrr4WQCfZDStcqLnBILsDvMWHgD6RNhx?=
- =?us-ascii?Q?3UQ4z1SOOwurcthIHuli2BrLhc3YFAREKiJMBRSrWL4yol8G2+0AqviG4VUj?=
- =?us-ascii?Q?nIZ12L2wauhim7TbqDnzAqGLiLg/eucMmVPFmojBJ4wAQzara6IXgU8odyp4?=
- =?us-ascii?Q?/RUPsmFDsgOSAZt5v7bHd0FVkpeRgPQlnhMxza1vZdlhftxi+w=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MjTmp48Me0RZopILkyRwr/8BsJyD1yeu9zONOdM173s=;
+        b=AbjBBREKUJuqWLTBrKSOJXrPTmrSzW+pNyGsAaJ3bdvS3nlFUgEBSGjIlfgzXQxZRi
+         xizCDxOQ1MgTkSb+2FyiGtRxQYwvbx5LEt0vORxzh4MOLuqdq5C6WXOXMP36iRQ4y1nv
+         1Qtnc3JyQs9UszWqVE/EhIBOhmSvTl18fcku6GQFoOSO52fgS2SLHMr4WI6XS7Iej7cg
+         BXoxy+ng+xSMMuCyWPfw7uCsHsb3itMxxjwFxlreJrmDto01VkhLHo0Sl0nBRueOJ7k2
+         7bufTiMwXivtsugpZu8XC0B9IPa2rBBYgmYKv/J/gQ0/GcB5Cnye6mlOtTeJ3n9BK6fF
+         2dfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MjTmp48Me0RZopILkyRwr/8BsJyD1yeu9zONOdM173s=;
+        b=lg8rI2KSq4m5nWswW5ku27R4V63zH5Mgq5h4FkDgIXtZ5huoLCmKIhKXnEJZxJvVI9
+         Eiue5iS07FO9raPUJgztm1wLu0f/MXms1qacRz7tfsqSvedfU8H5L18LOKOz4zdinTIG
+         7avTfUC5uKfgFzPYGt/k5me9WwznwMqcBhAWbTr4kPuk2Z8uNR7Wfgr1H2avqjIpl6Rj
+         1ecMyvy7RzMuFbbM1ZNRUu8HMyJj+l3HlEC/tYJ+vf2DKxwe++Cah8212wFP8AE/Ju8S
+         JVyvQkKOQRi3xYToCautkMGBBOij3eBDzIcXunzutNBUPMABCZBvI1cjFkBWolBbni40
+         CQVw==
+X-Gm-Message-State: AOAM532e9BTBXGivfeS22rvZYWGiD0CVnk16AQqDF4VEWf0d610Ochoo
+        GYtvKNZL1kAFLMbcXCq+Fg5yU05mjVmNcg==
+X-Google-Smtp-Source: ABdhPJzMZjhBby9bbYrKzHAwyLkkmFudw2s0nmE2caWxLS2b9kngR5ZZsz14QDZ/zi7TlvTEMt/a+Q==
+X-Received: by 2002:a37:54a:: with SMTP id 71mr4024696qkf.230.1633968334704;
+        Mon, 11 Oct 2021 09:05:34 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id 16sm4480357qka.80.2021.10.11.09.05.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 09:05:33 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 12:05:32 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] btrfs: fix deadlock between chunk allocation and
+ chunk btree modifications
+Message-ID: <YWRgzE9YZYTmlhlM@localhost.localdomain>
+References: <cover.1633705660.git.fdmanana@suse.com>
+ <dc480ee9a7be60b4d33b5c5df58ee51aa0b9e331.1633705660.git.fdmanana@suse.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e58c4a8f-f5f3-4177-ac37-08d98cccd3f5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Oct 2021 15:36:00.5770
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +NBAzWObIkQUYbAWjbAdX7wMQUlg+FahCG1hsYp3Oofk+u8GCffg/e8MadVYt14kZIYFPCzOgRW3Un/QKqGtlzZXSherBuqobGTVvnkUHR0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7461
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dc480ee9a7be60b4d33b5c5df58ee51aa0b9e331.1633705660.git.fdmanana@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/10/2021 16:52, David Sterba wrote:=0A=
->> +static int reclaim_bgs_cmp(void *unused, const struct list_head *a,=0A=
->> +			   const struct list_head *b)=0A=
->> +{=0A=
->> +	const struct btrfs_block_group *bg1, *bg2;=0A=
->> +=0A=
->> +	bg1 =3D list_entry(a, struct btrfs_block_group, bg_list);=0A=
->> +	bg2 =3D list_entry(b, struct btrfs_block_group, bg_list);=0A=
->> +=0A=
->> +	return bg1->used - bg2->used;=0A=
-> =0A=
-> It returns int but compares two u64, this should be either a if chaing=0A=
-> comparing all the possibilities or properly cast to s64.=0A=
-> =0A=
-=0A=
-Looking at the documentation of list_sort() this can also be used=0A=
-as a boolean, I'll do that then.=0A=
+On Fri, Oct 08, 2021 at 04:10:34PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When a task is doing some modification to the chunk btree and it is not in
+> the context of a chunk allocation or a chunk removal, it can deadlock with
+> another task that is currently allocating a new data or metadata chunk.
+> 
+> These contextes are the following:
+> 
+> * When relocating a system chunk, when we need to COW the extent buffers
+>   that belong to the chunk btree;
+> 
+> * When adding a new device (ioctl), where we need to add a new device item
+>   to the chunk btree;
+> 
+> * When removing a device (ioctl), where we need to remove a device item
+>   from the chunk btree;
+> 
+> * When resizing a device (ioctl), where we need to update a device item in
+>   the chunk btree and may need to relocate a system chunk that lies beyond
+>   the new device size when shrinking a device.
+> 
+> The problem happens due to a sequence of steps like the following:
+> 
+> 1) Task A starts a data or metadata chunk allocation and it locks the
+>    chunk mutex;
+> 
+> 2) Task B is relocating a system chunk, and when it needs to COW an extent
+>    buffer of the chunk btree, it has locked both that extent buffer as
+>    well as its parent extent buffer;
+> 
+> 3) Since there is not enough available system space, either because none
+>    of the existing system block groups have enough free space or because
+>    the only one with enough free space is in RO mode due to the relocation,
+>    task B triggers a new system chunk allocation. It blocks when trying to
+>    acquire the chunk mutex, currently held by task A;
+> 
+> 4) Task A enters btrfs_chunk_alloc_add_chunk_item(), in order to insert
+>    the new chunk item into the chunk btree and update the existing device
+>    items there. But in order to do that, it has to lock the extent buffer
+>    that task B locked at step 2, or its parent extent buffer, but task B
+>    is waiting on the chunk mutex, which is currently locked by task A,
+>    therefore resulting in a deadlock.
+> 
+> One example report when the deadlock happens with system chunk relocation:
+> 
+>   INFO: task kworker/u9:5:546 blocked for more than 143 seconds.
+>         Not tainted 5.15.0-rc3+ #1
+>   "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>   task:kworker/u9:5    state:D stack:25936 pid:  546 ppid:     2 flags:0x00004000
+>   Workqueue: events_unbound btrfs_async_reclaim_metadata_space
+>   Call Trace:
+>    context_switch kernel/sched/core.c:4940 [inline]
+>    __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
+>    schedule+0xd3/0x270 kernel/sched/core.c:6366
+>    rwsem_down_read_slowpath+0x4ee/0x9d0 kernel/locking/rwsem.c:993
+>    __down_read_common kernel/locking/rwsem.c:1214 [inline]
+>    __down_read kernel/locking/rwsem.c:1223 [inline]
+>    down_read_nested+0xe6/0x440 kernel/locking/rwsem.c:1590
+>    __btrfs_tree_read_lock+0x31/0x350 fs/btrfs/locking.c:47
+>    btrfs_tree_read_lock fs/btrfs/locking.c:54 [inline]
+>    btrfs_read_lock_root_node+0x8a/0x320 fs/btrfs/locking.c:191
+>    btrfs_search_slot_get_root fs/btrfs/ctree.c:1623 [inline]
+>    btrfs_search_slot+0x13b4/0x2140 fs/btrfs/ctree.c:1728
+>    btrfs_update_device+0x11f/0x500 fs/btrfs/volumes.c:2794
+>    btrfs_chunk_alloc_add_chunk_item+0x34d/0xea0 fs/btrfs/volumes.c:5504
+>    do_chunk_alloc fs/btrfs/block-group.c:3408 [inline]
+>    btrfs_chunk_alloc+0x84d/0xf50 fs/btrfs/block-group.c:3653
+>    flush_space+0x54e/0xd80 fs/btrfs/space-info.c:670
+>    btrfs_async_reclaim_metadata_space+0x396/0xa90 fs/btrfs/space-info.c:953
+>    process_one_work+0x9df/0x16d0 kernel/workqueue.c:2297
+>    worker_thread+0x90/0xed0 kernel/workqueue.c:2444
+>    kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+>   INFO: task syz-executor:9107 blocked for more than 143 seconds.
+>         Not tainted 5.15.0-rc3+ #1
+>   "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>   task:syz-executor    state:D stack:23200 pid: 9107 ppid:  7792 flags:0x00004004
+>   Call Trace:
+>    context_switch kernel/sched/core.c:4940 [inline]
+>    __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
+>    schedule+0xd3/0x270 kernel/sched/core.c:6366
+>    schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
+>    __mutex_lock_common kernel/locking/mutex.c:669 [inline]
+>    __mutex_lock+0xc96/0x1680 kernel/locking/mutex.c:729
+>    btrfs_chunk_alloc+0x31a/0xf50 fs/btrfs/block-group.c:3631
+>    find_free_extent_update_loop fs/btrfs/extent-tree.c:3986 [inline]
+>    find_free_extent+0x25cb/0x3a30 fs/btrfs/extent-tree.c:4335
+>    btrfs_reserve_extent+0x1f1/0x500 fs/btrfs/extent-tree.c:4415
+>    btrfs_alloc_tree_block+0x203/0x1120 fs/btrfs/extent-tree.c:4813
+>    __btrfs_cow_block+0x412/0x1620 fs/btrfs/ctree.c:415
+>    btrfs_cow_block+0x2f6/0x8c0 fs/btrfs/ctree.c:570
+>    btrfs_search_slot+0x1094/0x2140 fs/btrfs/ctree.c:1768
+>    relocate_tree_block fs/btrfs/relocation.c:2694 [inline]
+>    relocate_tree_blocks+0xf73/0x1770 fs/btrfs/relocation.c:2757
+>    relocate_block_group+0x47e/0xc70 fs/btrfs/relocation.c:3673
+>    btrfs_relocate_block_group+0x48a/0xc60 fs/btrfs/relocation.c:4070
+>    btrfs_relocate_chunk+0x96/0x280 fs/btrfs/volumes.c:3181
+>    __btrfs_balance fs/btrfs/volumes.c:3911 [inline]
+>    btrfs_balance+0x1f03/0x3cd0 fs/btrfs/volumes.c:4301
+>    btrfs_ioctl_balance+0x61e/0x800 fs/btrfs/ioctl.c:4137
+>    btrfs_ioctl+0x39ea/0x7b70 fs/btrfs/ioctl.c:4949
+>    vfs_ioctl fs/ioctl.c:51 [inline]
+>    __do_sys_ioctl fs/ioctl.c:874 [inline]
+>    __se_sys_ioctl fs/ioctl.c:860 [inline]
+>    __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>    do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> So fix this by making sure that whenever we try to modify the chunk btree
+> and we are neither in a chunk allocation context nor in a chunk remove
+> context, we reserve system space before modifying the chunk btree.
+> 
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> Link: https://lore.kernel.org/linux-btrfs/CACkBjsax51i4mu6C0C3vJqQN3NR_iVuucoeG3U1HXjrgzn5FFQ@mail.gmail.com/
+> Fixes: 79bd37120b1495 ("btrfs: rework chunk allocation to avoid exhaustion of the system chunk array")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+A few things, because I'm having a hard time wrapping my head around this stuff
+
+1) We're no longer allowing SYSTEM chunk allocations via btrfs_chunk_alloc(),
+   instead it's only via the reserve_chunk_space().  That is triggered at the
+   beginning of btrfs_search_slot() when we go to modify the chunk root.
+2) We do this because we would normally trigger it when we do the
+   btrfs_use_block_rsv() when we go to modify the chunk tree, and at that point
+   we're holding chunk root locks and thus run into the describe deadlock.
+
+So what you're wanting to do is to force us to do the enospc chunk allocation
+dance prior to searching down the chunk root.  This makes sense.  However it's
+hard for me to wrap my head around the new rules for this stuff, and now we have
+a global "check to see if we need to reserve space for the chunk root" at the
+beginning of search slot.
+
+Doing at the btrfs_use_block_rsv() part isn't awesome either.  What if instead
+we just added a btrfs_reserve_chunk_space() everywhere we do a
+btrfs_search_slot() on the chunk_root as there are not many of them.
+
+Then we use BTRFS_RESERVE_FLUSH_LIMIT instead of NO_FLUSH, or hell we add a
+RESERVE_FLUSH_CHUNK that only does the chunk allocation stage.  Then we can use
+the same path for all chunk allocation.
+
+This way everybody still uses the same paths and we don't have a completely
+separate path for system chunk modifications.  Thanks,
+
+Josef
