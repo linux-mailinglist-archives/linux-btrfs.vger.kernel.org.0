@@ -2,106 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32C64287B2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 09:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03B4428989
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 11:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234503AbhJKHen (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Oct 2021 03:34:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54714 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234481AbhJKHem (ORCPT
+        id S235434AbhJKJVQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Oct 2021 05:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235418AbhJKJVO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:34:42 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4E63622034;
-        Mon, 11 Oct 2021 07:32:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633937562; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h7YVC7ZUjE+rqTJ8wP0zTOgmAurZ5Z7ls5Hwt5/ohus=;
-        b=f6fV0GcxqQPfppUQkZhg2uqP7qf8anNSShT6RA0pd8YnPiBO7N40F6lwDq6VNptvLi6vtl
-        7jqb/tjkVa9OrOzE6WPPDtasIzZVGvtbctX5+apvk7GtLv79/ozJrQT59C9U8Gd6bdo9HD
-        NuG59/pK3716Fju2s3Q8hMW/Dmcj7xI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2813213BF1;
-        Mon, 11 Oct 2021 07:32:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id CokiB5roY2H8XQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 11 Oct 2021 07:32:42 +0000
-Subject: Re: [PATCH] btrfs-progs: parse-utils: allow single number qgroup id
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20211011070937.32419-1-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <408b0936-8793-a89b-6fa1-b852e10ddcfb@suse.com>
-Date:   Mon, 11 Oct 2021 10:32:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 11 Oct 2021 05:21:14 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB163C061570
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 02:19:14 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id r17so3482736uaf.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 02:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=oBA25Y5F7gXTenvXb94cs8HTBt80kwBCaViWb1ewVf8=;
+        b=HDYT24H+tGN8LPUpfkRgvy6KJeUBol9BwHr6cTb6lrCcclxsJIT4z1lhSO5NJ+0V+A
+         Cc77E6Wfirmsk6ZoUluyoXGD/B/2VVWyBaEteSCvuFIjX/V2DbDymJgFZDmxp7Ark9im
+         yPZJVtZuIjEPnfqDk+Cjcp5+DcQydr2FS49LKk7WuRJAAcnMkaMqxbkziCFCULDBnXtX
+         nHTOygWwrwWVEeAnUw5Gx6om7H0+cATntT3W52peTpka9WdHOIFG6L9jcHyuHAbUTpsl
+         uACEQuq+IDxVaCoptF64bniSZRssjprh2DJWkBKfxwq2c38XfopsrMxVtnMTpT/JdzpP
+         C4Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=oBA25Y5F7gXTenvXb94cs8HTBt80kwBCaViWb1ewVf8=;
+        b=E4SkhZ7LkZ3WKFptpXx/sUrg9eKNErp4qBgqLecRdFkcOfEKrBTDaPJGEsKvlGfdue
+         SXjmbtxKK5lpNJNHrki+RSNHPWz2WZ7GoVsKK0gRpqh5RnrJGzW8XQdmP45jHrGaLtyU
+         wxk5tFFFL7oxfzHtasv939kWLWesXe7nNIHEWFOv17q345JIh4zPpGB0Il15CjHEckvw
+         UE7EL03z2tfp/6w1zqHZF0/+1bMZIe/GpGAFNS0GRCIbtPijH6zku6sX924U6ewT3bfg
+         Q240MDMFoQyR1WOmK2q0t/rlzIElOMFYpO3DmFuG9RwQj1rt1DwpYuag8TPFJc84BYgE
+         IK/A==
+X-Gm-Message-State: AOAM533GZV4++Py+N9hb7uAmuhnk/+rj56xnLM8hI1adupuMif07GfYW
+        NmA4EN5BkVVJOFw0kpHPCvfp0FHWB6T7gK400qs=
+X-Google-Smtp-Source: ABdhPJzjlI5TII1iG8fTb6Q2PDSJHO0diSHxA2n/GYE1vPzVjNrckpmejP4U9c+PZCbQEwe5U+pSm3ELeTHCcbgfOFo=
+X-Received: by 2002:a05:6130:3a0:: with SMTP id az32mr13708451uab.137.1633943953978;
+ Mon, 11 Oct 2021 02:19:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211011070937.32419-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a59:d666:0:b0:234:99bc:1ab1 with HTTP; Mon, 11 Oct 2021
+ 02:19:13 -0700 (PDT)
+Reply-To: michellegoodman035@gmail.com
+From:   Michelle Goodman <michellegoodman323@gmail.com>
+Date:   Mon, 11 Oct 2021 10:19:13 +0100
+Message-ID: <CAEJQfwkAJviNWwB2vbvjCAqRZTwV4qcgWDBTR+b_v4Ec5DWc2g@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 11.10.21 г. 10:09, Qu Wenruo wrote:
-> [BUG]
-> Since btrfs-progs v5.14, fstests/btrfs/099 always fail with the
-> following output in 099.full:
-> 
->   ...
->   # /usr/bin/btrfs quota enable /mnt/scratch
->   # /usr/bin/btrfs qgroup limit 134217728 5 /mnt/scratch
->   ERROR: invalid qgroupid or subvolume path: 5
->   failed: '/usr/bin/btrfs qgroup limit 134217728 5 /mnt/scratch'
-> 
-> [CAUSE]
-> Since commit cb5a542871f9 ("btrfs-progs: factor out plain qgroupid
-> parsing"), btrfs qgroup parser no longer accepts single number qgroup id
-> like "5" used in that test case.
-> 
-> That commit is not a plain refactor without functional change, but
-> removed a simple feature.
-> 
-> [FIX]
-> Add back the handling for single number qgroupid.
-> 
-> Fixes: cb5a542871f9 ("btrfs-progs: factor out plain qgroupid parsing")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Tested-by: Nikolay Borisov <nborisov@suse.com>
-
-> ---
->  common/parse-utils.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/common/parse-utils.c b/common/parse-utils.c
-> index ad57b74a7b64..863ca9f25fd8 100644
-> --- a/common/parse-utils.c
-> +++ b/common/parse-utils.c
-> @@ -290,6 +290,12 @@ int parse_qgroupid(const char *str, u64 *qgroupid)
->  	level = strtoull(str, &end, 10);
->  	if (str == end)
->  		return -EINVAL;
-> +	/* We accept single qgroupid like "5", to indicate "0/5"*/
-> +	if (end[0] == '\0') {
-> +		*qgroupid = level;
-> +		return 0;
-> +	}
-> +	/* Otherwise qgroupid must go like "1/256" */
->  	if (end[0] != '/')
->  		return -EINVAL;
->  	str = end + 1;
-> 
+QWhvaiwgaGV6a8O9IGRlbg0KICAgICBNxa/FvnUgdGkgcHJvc8OtbSB2xJvFmWl0PyBtdXPDrW0g
+dGkgbsSbY28gxZnDrWN0DQpwcm9zw61tLCDFmWVrbmkgbWkgdG8gb2thbcW+aXTEmw0Kb2Rwb3bE
+m3p0ZSwgYWJ5Y2ggbW9obCB2eXN2xJt0bGl0IHbDrWNlDQpkw61rDQpNaWNoZWxsZQ0K
