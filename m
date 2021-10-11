@@ -2,36 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DE74289E0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 11:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368CA4289E1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 11:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235601AbhJKJpG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Oct 2021 05:45:06 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51604 "EHLO
+        id S235605AbhJKJpI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Oct 2021 05:45:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51750 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbhJKJpF (ORCPT
+        with ESMTP id S235573AbhJKJpH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:45:05 -0400
+        Mon, 11 Oct 2021 05:45:07 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3B556220EE
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 09:43:05 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2558E22077;
+        Mon, 11 Oct 2021 09:43:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633945385; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1633945387; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oR89M/HqteMcGxoGBohR4w7EHBcFt7BgKqnzbXloCR4=;
-        b=QX2ebswVk1nnvhbeMFuibB1SuIHuyns1bmrUkJs0yXvoXrhUpogsC2PZB/B0La0Vlg2zTY
-        UTgtLr1MgqJe2hHgTPCu1P8FYZ8ZK99DYRQz6RECS8S2e3V3oZImue/HPttdcR7cBGKarX
-        a85T1E5UVKbm4wTupbbuTyHceYp7n1I=
+        bh=2urgIGCLsdxqT2bjEpMEwxdaCS/hpRcMi72EEVjHWNo=;
+        b=TJ3awHmHzUtUxBCfgEFjs6/Yp+3N5/SKsPeDB3r5K+n/9c0LQECtkumDBxQp0L9b8hxb6b
+        xbQI60J+jFK0Dwln7uCuPEv2aV2Em4siekUA1a7n/eAx6uohDoc19t2pNaUcyWzN3h47uM
+        89ngSZWJLYxBFf6PKLefc7XBCCiRXFk=
 Received: from adam-pc.lan (unknown [10.163.34.62])
-        by relay2.suse.de (Postfix) with ESMTP id 55471A3C2B
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 09:43:04 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id EA4EFA3C41;
+        Mon, 11 Oct 2021 09:43:05 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs-progs: rename @data parameter to @profile in extent allocation path
-Date:   Mon, 11 Oct 2021 17:42:58 +0800
-Message-Id: <20211011094300.97504-2-wqu@suse.com>
+Cc:     FireFish5000 <firefish5000@gmail.com>
+Subject: [PATCH 2/3] btrfs-progs: mkfs: recow all tree blocks properly
+Date:   Mon, 11 Oct 2021 17:42:59 +0800
+Message-Id: <20211011094300.97504-3-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011094300.97504-1-wqu@suse.com>
 References: <20211011094300.97504-1-wqu@suse.com>
@@ -41,144 +42,168 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In function btrfs_reserve_extent(), we call find_free_extent() passing
-"u64 profile" into "int data".
+[BUG]
+Since btrfs-progs v5.14, mkfs.btrfs no longer cleans up the temporary
+SINGLE metadata chunks if "-R free-space-tree" is specified:
 
-This is definitely a width reduction, but when looking further into the
-code, it's more serious than that, in fact the "int data" parameter is
-not really to indicate whether it's data extent, but really a block
-group profile (with block group type).
+ $ mkfs.btrfs  -f -R free-space-tree -m dup -d dup /dev/test/test
+ $ btrfs ins dump-tree -t chunk /dev/test/test | grep "type METADATA"
+		length 8388608 owner 2 stripe_len 65536 type METADATA
+		length 268435456 owner 2 stripe_len 65536 type METADATA|DUP
 
-This is not only width reduction, but also confusing.
+[CAUSE]
+Since commit 4b6cf2a3eb78 ("btrfs-progs: mkfs: generate free space tree
+at make_btrfs() time"), free space tree is created when the temporary
+btrfs image is created.
 
-Thankfully so for we don't have any BLOCK_GROUP bits beyond 32 bits, so
-the width reduction is not causing a big problem.
+This behavior itself has no problem at all.
 
-This patch will rename the "int data" parameter to a more proper one,
-"u64 profile" in all involved call paths.
+The problem happens when "-m DUP -d DUP" (or other profiles) is
+specified.
 
+This makes btrfs to create extra chunks, enlarging free space tree so
+that it can be as high as level 1.
+
+During mkfs, we rely on recow_roots() to re-CoW all tree blocks to the
+newly allocated chunks.
+
+But __recow_root() can only handle tree root at level 0, as it forces
+root node to be CoWed, not bothering the children leaves/nodes.
+
+This makes part of the free space cache tree still live on the old
+temporary chunks, leaving later cleanup_temp_chunks() unable to delete
+temporary SINGLE chunks.
+
+[FIX]
+Rework __recow_root() to do a proper CoW of the whole tree.
+
+But above rework is not enough, as if a free space tree block is
+allocated during current transaction, but before new chunks added.
+Then the reworked __recow_root() can't CoW it, as btrfs_search_slot()
+won't CoW a tree block allocated in current transaction.
+
+So this patch will also commit current transaction before calling
+recow_roots(), to force us to re-cow all tree blocks.
+
+This shouldn't be a problem, as at the time of calling, we should have
+less than a dozen tree blocks, thus there won't be a performance impact.
+
+Reported-by: FireFish5000 <firefish5000@gmail.com>
+Fixes: 4b6cf2a3eb78 ("btrfs-progs: mkfs: generate free space tree at make_btrfs() time")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- kernel-shared/extent-tree.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ mkfs/main.c | 87 ++++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 76 insertions(+), 11 deletions(-)
 
-diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
-index 0d62a14ea723..436948624843 100644
---- a/kernel-shared/extent-tree.c
-+++ b/kernel-shared/extent-tree.c
-@@ -54,7 +54,7 @@ static int __free_extent(struct btrfs_trans_handle *trans,
- 			 u64 owner_offset, int refs_to_drop);
- static struct btrfs_block_group *
- btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group
--		       *hint, u64 search_start, int data, int owner);
-+		       *hint, u64 search_start, u64 profile, int owner);
+diff --git a/mkfs/main.c b/mkfs/main.c
+index 4d50bd25c440..f8a1becce9bf 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -209,21 +209,59 @@ err:
+ }
  
- static int remove_sb_from_cache(struct btrfs_root *root,
- 				struct btrfs_block_group *cache)
-@@ -264,7 +264,7 @@ static int block_group_bits(struct btrfs_block_group *cache, u64 bits)
- 
- static int noinline find_search_start(struct btrfs_root *root,
- 			      struct btrfs_block_group **cache_ret,
--			      u64 *start_ret, int num, int data)
-+			      u64 *start_ret, int num, u64 profile)
+ static int __recow_root(struct btrfs_trans_handle *trans,
+-			 struct btrfs_root *root)
++			struct btrfs_root *root)
  {
+-	struct extent_buffer *tmp;
++	struct btrfs_path path;
++	struct btrfs_key key;
  	int ret;
- 	struct btrfs_block_group *cache = *cache_ret;
-@@ -282,7 +282,7 @@ again:
+ 
+-	if (trans->transid != btrfs_root_generation(&root->root_item)) {
+-		extent_buffer_get(root->node);
+-		ret = __btrfs_cow_block(trans, root, root->node,
+-					NULL, 0, &tmp, 0, 0);
+-		if (ret)
+-			return ret;
+-		free_extent_buffer(tmp);
+-	}
++	btrfs_init_path(&path);
++	key.objectid = 0;
++	key.type = 0;
++	key.offset = 0;
+ 
+-	return 0;
++	/* Get a path to the most-left leaves */
++	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
++	if (ret < 0)
++		return ret;
++
++	while (true) {
++		struct btrfs_key found_key;
++
++		/*
++		 * Our parent nodes must be no newer than the leaf, thus
++		 * if the leaf is as new as the trans, no need to re-cow.
++		 */
++		if (btrfs_header_generation(path.nodes[0]) == trans->transid)
++			goto next;
++
++		/*
++		 * Grab the key of current tree block and do a CoW search to
++		 * the current tree block.
++		 */
++		btrfs_item_key_to_cpu(path.nodes[0], &key, 0);
++		btrfs_release_path(&path);
++
++		/* This will ensure this leaf and all its parent get CoWed */
++		ret = btrfs_search_slot(trans, root, &key, &path, 0, 1);
++		if (ret < 0)
++			goto out;
++		ret = 0;
++		btrfs_item_key_to_cpu(path.nodes[0], &found_key, 0);
++		ASSERT(btrfs_comp_cpu_keys(&key, &found_key) == 0);
++
++next:
++		ret = btrfs_next_sibling_tree_block(trans->fs_info, &path);
++		if (ret < 0)
++			goto out;
++		if (ret > 0) {
++			ret = 0;
++			goto out;
++		}
++	}
++out:
++	btrfs_release_path(&path);
++	return ret;
+ }
+ 
+ static int recow_roots(struct btrfs_trans_handle *trans,
+@@ -1472,6 +1510,33 @@ raid_groups:
  		goto out;
- 
- 	last = max(search_start, cache->start);
--	if (cache->ro || !block_group_bits(cache, data))
-+	if (cache->ro || !block_group_bits(cache, profile))
- 		goto new_group;
- 
- 	if (btrfs_is_zoned(root->fs_info)) {
-@@ -339,7 +339,7 @@ wrapped:
- 
- static struct btrfs_block_group *
- btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group
--		       *hint, u64 search_start, int data, int owner)
-+		       *hint, u64 search_start, u64 profile, int owner)
- {
- 	struct btrfs_block_group *cache;
- 	struct btrfs_block_group *found_group = NULL;
-@@ -357,7 +357,7 @@ btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group
- 	if (search_start) {
- 		struct btrfs_block_group *shint;
- 		shint = btrfs_lookup_block_group(info, search_start);
--		if (shint && !shint->ro && block_group_bits(shint, data)) {
-+		if (shint && !shint->ro && block_group_bits(shint, profile)) {
- 			used = shint->used;
- 			if (used + shint->pinned <
- 			    div_factor(shint->length, factor)) {
-@@ -365,7 +365,7 @@ btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group
- 			}
- 		}
- 	}
--	if (hint && !hint->ro && block_group_bits(hint, data)) {
-+	if (hint && !hint->ro && block_group_bits(hint, profile)) {
- 		used = hint->used;
- 		if (used + hint->pinned <
- 		    div_factor(hint->length, factor)) {
-@@ -390,7 +390,7 @@ again:
- 		last = cache->start + cache->length;
- 		used = cache->used;
- 
--		if (!cache->ro && block_group_bits(cache, data)) {
-+		if (!cache->ro && block_group_bits(cache, profile)) {
- 			if (full_search)
- 				free_check = cache->length;
- 			else
-@@ -2177,7 +2177,7 @@ static int noinline find_free_extent(struct btrfs_trans_handle *trans,
- 				     u64 search_start, u64 search_end,
- 				     u64 hint_byte, struct btrfs_key *ins,
- 				     u64 exclude_start, u64 exclude_nr,
--				     int data)
-+				     u64 profile)
- {
- 	int ret;
- 	u64 orig_search_start = search_start;
-@@ -2198,11 +2198,11 @@ static int noinline find_free_extent(struct btrfs_trans_handle *trans,
- 		if (!block_group)
- 			hint_byte = search_start;
- 		block_group = btrfs_find_block_group(root, block_group,
--						     hint_byte, data, 1);
-+						     hint_byte, profile, 1);
- 	} else {
- 		block_group = btrfs_find_block_group(root,
- 						     trans->block_group,
--						     search_start, data, 1);
-+						     search_start, profile, 1);
  	}
  
- 	total_needed += empty_size;
-@@ -2217,7 +2217,7 @@ check_failed:
- 						       orig_search_start);
- 	}
- 	ret = find_search_start(root, &block_group, &search_start,
--				total_needed, data);
-+				total_needed, profile);
- 	if (ret)
- 		goto new_group;
- 
-@@ -2255,7 +2255,7 @@ check_failed:
- 		goto new_group;
- 	}
- 
--	if (!(data & BTRFS_BLOCK_GROUP_DATA)) {
-+	if (!(profile & BTRFS_BLOCK_GROUP_DATA)) {
- 		if (check_crossing_stripes(info, ins->objectid, num_bytes)) {
- 			struct btrfs_block_group *bg_cache;
- 			u64 bg_offset;
-@@ -2295,7 +2295,7 @@ new_group:
- 	}
- 	cond_resched();
- 	block_group = btrfs_find_block_group(root, block_group,
--					     search_start, data, 0);
-+					     search_start, profile, 0);
- 	goto check_failed;
- 
- error:
++	/*
++	 * Commit current trans so we can cow all existing tree blocks
++	 * to newly created raid groups.
++	 * As currently we use btrfs_search_slot() to CoW tree blocks in
++	 * recow_roots(), if a tree block is already modified in current trans,
++	 * it won't be re-CoWed, thus it will stay in temporary chunks.
++	 */
++	ret = btrfs_commit_transaction(trans, root);
++	if (ret) {
++		errno = -ret;
++		error("unable to commit transaction before recowing trees: %m");
++		goto out;
++	}
++	trans = btrfs_start_transaction(root, 1);
++	if (IS_ERR(trans)) {
++		errno = -PTR_ERR(trans);
++		error("failed to start transaction: %m");
++		goto error;
++	}
++	/* CoW all tree blocks to newly created chunks */
++	ret = recow_roots(trans, root);
++	if (ret) {
++		errno = -ret;
++		error("unable to CoW tree blocks to new profiles: %m");
++		goto out;
++	}
++
+ 	ret = create_data_reloc_tree(trans);
+ 	if (ret) {
+ 		error("unable to create data reloc tree: %d", ret);
 -- 
 2.33.0
 
