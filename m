@@ -2,159 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADAA428BCB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 13:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CE1428BCC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 13:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbhJKLNt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Oct 2021 07:13:49 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:22214 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235970AbhJKLNs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:13:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1633950708; x=1665486708;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WCnPgiVOxTh+lEAJksccg/9MiOsUPs5pa4vQkV0YOHE=;
-  b=mX8m4Vt90jCmMZ8RRLLsb7ADg+Lx2Z4WN6t3opP7SJFIsjpr69+uf6Rz
-   7DG5vxxYWLBCt0Gck9zSNcFAGH0ZkZRu8fz7kBT+mWZoQGZ6yyxwxyxW0
-   9KYQc0s0cu8aR17H0E+gV7h13KW1iG0bfv6xwmpCafFnhcTs1EbySxIsj
-   zHOzAlv09ED8VA26QsWfn78Sw3iNRZ/EFftMxGOK1o1qjgVrPdMPmSc7K
-   AkjO9aZa5HmVN2C85TIq0PILBrsHC5A1fGv0d89nSUh020RPSZOuIReIG
-   AUbc4oSSSxRr7e7Zd9qmhlhY9DKmZ9SUC5hNSwcNSlUcVOodNSD1WdWZh
-   A==;
-X-IronPort-AV: E=Sophos;i="5.85,364,1624291200"; 
-   d="scan'208";a="294205260"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Oct 2021 19:11:48 +0800
-IronPort-SDR: +4BpNDhDFho0C2eiOsavGyql3O45nqyLc/H3ZlNywacXcGCvQK9NbiUKz8pljAcTWD45lpCryR
- g92ZgCuLtk1wOGBzWHiAWZ/EEdZI2mj5D8gE2OoxzUuzcKZtLDEdsBdMnA51JNKzkcsMSrVEK8
- wJYlxXSq9GVK4E7j0WWdRRjVAzxGZVtf9kyw/JQjFt2hge2Bp2rY1W2s5p4iEJynCmr8IdnIUO
- Akx61BVxtg18f2xEFxLsmVeTS5mJlWK+FjSVUeCxWaDxQqxm7xoIAyD03G4HozMPXKKk6nmLwY
- 8tKMn/8r364LSIxJhc56VMe6
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 03:47:37 -0700
-IronPort-SDR: riF2uDVJud8gC6lYsyaZtSzcr4YEsFfR/h9K2FBnVZHAeJKo6jZfCpwwz5H2/fes30gLRGY555
- SidylgHSSSOzqyMudxrYnbdhPijqiHflNVzTIOkmFKWPNhVNNx9B5CtN5bGuCxZWIh0yVMPmoZ
- nIJudlNvdiVfQqReEjYOslj+WBbuMbHU/te+J323jNZxfEsL4l5Y2KtEO7x3/d8ESv7kxt+qVC
- 5zi/0sRl9Tqy1BwFzZPPiRtaRXze5xmJpah8FEyTtGALGCADr4dCe01dEv2oZ6VWB/hHPpakdH
- 19g=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip02.wdc.com with ESMTP; 11 Oct 2021 04:11:48 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: zoned: use greedy gc for auto reclaim
-Date:   Mon, 11 Oct 2021 20:11:32 +0900
-Message-Id: <d09710513b6f8ad50973d894129b1dd441f2ab83.1633950641.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.32.0
+        id S236128AbhJKLOV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Oct 2021 07:14:21 -0400
+Received: from mout.gmx.net ([212.227.15.15]:46429 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235970AbhJKLOV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Oct 2021 07:14:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633950738;
+        bh=tHqvvleBuVM7bL09TRNImFEEuXUOqsBFE66S2MoN4Vo=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=GUQXuPb9XOqPJiiW0di2C6dVGmG5MOEqUzAVQ7hRHs6TWkpbrFE8H4MUBx6+9M032
+         E50ZqTpbA3t2NFmKBaOZNJpeIIZX0eXZsof4vhUtIGDE91NGPq/HNL7oV52pTdloug
+         o73yWVZnYhCXI33kbaKQTngLEaD/khDIAYPxB/SM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0oFz-1mvFYt0ZYD-00wn3c; Mon, 11
+ Oct 2021 13:12:18 +0200
+Message-ID: <c0b7ac80-686a-5511-52f2-f784f370d47d@gmx.com>
+Date:   Mon, 11 Oct 2021 19:12:15 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 3/3] btrfs-progs: mfks-tests: make sure mkfs.btrfs cleans
+ up temporary chunks
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20211011094300.97504-1-wqu@suse.com>
+ <20211011094300.97504-4-wqu@suse.com> <20211011104013.GF9286@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20211011104013.GF9286@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:s11EOUdFN8w3aKG4m9wani91k3/j3WRhayJnlW9K37U4R0Y0Dxn
+ uT2X2W6hizU8GxEaKssOU+0bwj8kW4Vl1fP2uH35DBI6bzqezn62dIMwDHon/HG/9HSV151
+ QYC4RsLwJyTcttbflgWvO9lmSQK7HNmgJlcqKPiqQ4OK5X+4ovIlihdyItdGdHNTpitmP4D
+ WZ7/i2FBZTCPWagkSHjcw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:g6V0z4NtDLY=:PiieBo/vhrNBf9a5F0Tnxl
+ /4ijXPGgNU0z4WabBYomcaxtZU+smRtcHeh10uK42mEBaZyrXOkTdNSCQ/7m9nfqyBueodcYT
+ Zju3PmvlAYsOv+uetdgGmCCfrbTZUHQTPR9KPbS52Tp6WWQimm9S18J41WPwk/nUlFy/Gak2y
+ /cVghFgsWFHDmE/RqJBmN1mh2PVWGWnS6zMm1/9oblSx7p17g47PrixBKcxLHu2RsbO9nswLe
+ LCUN/PA61up5jMvBXSIyhI5yGDKs1I9+dbIgs6v2IMxI+wSixt3t+hY2cyBkglo4j0ok/64Vh
+ bIdB/vuP0MgvhdYeFAVrqdVJ0gZKBq0ccrNhVpJbeDTlkxRR83M91NFHPOyX3dxbwRFnPofmX
+ dFRbfXQrcdQjesFQLJ8ggD6x/tGr6CkSMgWQrDoleZPM8UZiVT1fiE2CeLmsbQtC1vZucxMjj
+ wPTmcIyBVvEcC4x1xjTfsr6Z/TROVnQLr1RGPSbpAer2DvX8Vn1r4yoojAD1YxukqdL/dIkQ1
+ RGKZPyTrYn2shbSRV3BUWe2jj2H+7py3Xs9XPMT2pX4vjHzLTZIBh/7rFec2Fb6WGKFWRcpUq
+ /CLyPXxL0sAI9p4zqAqCUmSrLKhqew+NMd7a1yimAzfzW+Znej0Ie0ZXl5e5KOFiet9kZ3Svk
+ CuwC6459UIF1m9OxQybpP6rhU545q30nFYaliGvfwEOxJSWyTfTRbwLDJrxtLneSMsGw7ePIE
+ AacVfU1Xr9e5KawMSRIJolrQaPXrizrwxzkemHtWfw68QOZnZWoB2jhyfAkkw2T/ZtI3GrHUz
+ r/x+OjTJGqjrI8bWTtrkpNxxakmPpiWnkWRzbb7bL0faCvswzVHkgEvWQiykQVXR9DaFfLzvb
+ dWWuyV7nXwsE8AyKmMiIUBnokF6nlcNFW2NI3BEu8f5ds/NxNKYXSDvK2eOagNFHqSePaKFjE
+ +N+cj3Qvwz4Oc8kUuFSJ6A90MnoOlDrpGgRE/EyT0LrjUw3bp3vEnA3swqKDQNkqk/yiL/thC
+ eT4D/0W51Ea3uP8XCl26ilUySy/PDHuOUfRjgKaxt9SROpVwQ5zXdew1iPaTq21DUwZpalxlW
+ cKAm0+p0Am6uQ4=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently auto reclaim of unusable zones reclaims the block-groups in the
-order they have been added to the reclaim list.
 
-Change this to a greedy algorithm by sorting the list so we have the
-block-groups with the least amount of valid bytes reclaimed first.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On 2021/10/11 18:40, David Sterba wrote:
+> On Mon, Oct 11, 2021 at 05:43:00PM +0800, Qu Wenruo wrote:
+>> Since current "btrfs filesystem df" command will warn if there are
+>> multiple profiles of the same type, it's a good way to detect left-over
+>> temporary chunks.
+>>
+>> This patch will enhance the existing mkfs-tests/001-basic-profiles test
+>> case to also check for the warning messages, to make sure mkfs.btrfs ha=
+s
+>> properly cleaned up all temporary chunks.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   tests/mkfs-tests/001-basic-profiles/test.sh | 10 ++++++++--
+>>   1 file changed, 8 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tests/mkfs-tests/001-basic-profiles/test.sh b/tests/mkfs-t=
+ests/001-basic-profiles/test.sh
+>> index b3ba50d71ddc..e44f9344bc6f 100755
+>> --- a/tests/mkfs-tests/001-basic-profiles/test.sh
+>> +++ b/tests/mkfs-tests/001-basic-profiles/test.sh
+>> @@ -11,11 +11,17 @@ setup_root_helper
+>>
+>>   test_get_info()
+>>   {
+>> +	tmp_out=3D$(mktemp --tmpdir btrfs-progs-mkfs-tests-get-info.XXXXXX)
+>>   	run_check $SUDO_HELPER "$TOP/btrfs" inspect-internal dump-super "$de=
+v1"
+>>   	run_check $SUDO_HELPER "$TOP/btrfs" check "$dev1"
+>>   	run_check $SUDO_HELPER mount "$dev1" "$TEST_MNT"
+>> -	run_check "$TOP/btrfs" filesystem df "$TEST_MNT"
+>> -	run_check $SUDO_HELPER "$TOP/btrfs" filesystem usage "$TEST_MNT"
+>> +	run_check_stdout "$TOP/btrfs" filesystem df "$TEST_MNT" > "$tmp_out"
+>> +	if grep -q "Multiple block group profiles detected" "$tmp_out"; then
+>> +		rm -- "$tmp_out"
+>> +		_fail "temporary chunks are not properly cleaned up"
+>> +	fi
+>> +	rm -- "$tmp_out"
+>> +	run_check$SUDO_HELPER "$TOP/btrfs" filesystem usage "$TEST_MNT"
+>>   	run_check $SUDO_HELPER "$TOP/btrfs" device usage "$TEST_MNT"
+>>   	run_check $SUDO_HELPER umount "$TEST_MNT"
+>
+> This still fails in case mkfs/001-basic-tests with '-d raid0 -m raid0'
+>
+> =3D=3D=3D=3D=3D=3D RUN CHECK root_helper mount /dev/loop0 .../btrfs-prog=
+s/tests/mnt
+> =3D=3D=3D=3D=3D=3D RUN CHECK .../btrfs-progs/btrfs filesystem df .../btr=
+fs-progs/tests/mnt
+> WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
+> WARNING:   Metadata: single, raid0
+> WARNING:   System: single, raid0
+> Data, raid0: total=3D204.75MiB, used=3D0.00B
+> System, raid0: total=3D8.00MiB, used=3D0.00B
+> System, single: total=3D32.00MiB, used=3D16.00KiB
+> Metadata, raid0: total=3D204.75MiB, used=3D128.00KiB
+> Metadata, single: total=3D208.00MiB, used=3D0.00B
+> GlobalReserve, unknown: total=3D3.25MiB, used=3D0.00B
+> temporary chunks are not properly cleaned up
+> test failed for case 001-basic-profiles
+>
+It passes here (as I'm using sudo make test-mkfs, the missing space is
+not causing problem).
 
----
-Changes since RFC:
-- Updated the patch description
-- Don't sort the list under the spin_lock (David)
----
- fs/btrfs/block-group.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+BTW, my branch is based on v5.14.2 directly, thus I guess there may be
+some extra bugs introduced in devel.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 46fdef7bbe20..930c07cdad81 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1,5 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#include <linux/list_sort.h>
-+
- #include "misc.h"
- #include "ctree.h"
- #include "block-group.h"
-@@ -1486,6 +1488,21 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
- 	spin_unlock(&fs_info->unused_bgs_lock);
- }
- 
-+/*
-+ * We want block groups with a low number of used bytes to be in the beginning
-+ * of the list, so they will get reclaimed first.
-+ */
-+static int reclaim_bgs_cmp(void *unused, const struct list_head *a,
-+			   const struct list_head *b)
-+{
-+	const struct btrfs_block_group *bg1, *bg2;
-+
-+	bg1 = list_entry(a, struct btrfs_block_group, bg_list);
-+	bg2 = list_entry(b, struct btrfs_block_group, bg_list);
-+
-+	return bg1->used - bg2->used;
-+}
-+
- void btrfs_reclaim_bgs_work(struct work_struct *work)
- {
- 	struct btrfs_fs_info *fs_info =
-@@ -1493,6 +1510,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 	struct btrfs_block_group *bg;
- 	struct btrfs_space_info *space_info;
- 	LIST_HEAD(again_list);
-+	LIST_HEAD(reclaim_list);
- 
- 	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
- 		return;
-@@ -1510,17 +1528,20 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 	}
- 
- 	spin_lock(&fs_info->unused_bgs_lock);
--	while (!list_empty(&fs_info->reclaim_bgs)) {
-+	list_splice_init(&fs_info->reclaim_bgs, &reclaim_list);
-+	spin_unlock(&fs_info->unused_bgs_lock);
-+
-+	list_sort(NULL, &reclaim_list, reclaim_bgs_cmp);
-+	while (!list_empty(&reclaim_list)) {
- 		u64 zone_unusable;
- 		int ret = 0;
- 
--		bg = list_first_entry(&fs_info->reclaim_bgs,
-+		bg = list_first_entry(&reclaim_list,
- 				      struct btrfs_block_group,
- 				      bg_list);
- 		list_del_init(&bg->bg_list);
- 
- 		space_info = bg->space_info;
--		spin_unlock(&fs_info->unused_bgs_lock);
- 
- 		/* Don't race with allocators so take the groups_sem */
- 		down_write(&space_info->groups_sem);
-@@ -1568,12 +1589,12 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 				  bg->start);
- 
- next:
--		spin_lock(&fs_info->unused_bgs_lock);
- 		if (ret == -EAGAIN && list_empty(&bg->bg_list))
- 			list_add_tail(&bg->bg_list, &again_list);
- 		else
- 			btrfs_put_block_group(bg);
- 	}
-+	spin_lock(&fs_info->unused_bgs_lock);
- 	list_splice_tail(&again_list, &fs_info->reclaim_bgs);
- 	spin_unlock(&fs_info->unused_bgs_lock);
- 	mutex_unlock(&fs_info->reclaim_bgs_lock);
--- 
-2.32.0
+Mind to test my branch directly?
+https://github.com/adam900710/btrfs-progs/tree/mkfs_profile_regression
 
+Let me re-check when rebased to devel branch.
+
+Thanks,
+Qu
