@@ -2,79 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963DA4292D8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 17:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0308429300
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 17:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbhJKPLX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Oct 2021 11:11:23 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59688 "EHLO
+        id S233372AbhJKPTx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Oct 2021 11:19:53 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35282 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231839AbhJKPLX (ORCPT
+        with ESMTP id S233321AbhJKPTx (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:11:23 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 40835220D0;
-        Mon, 11 Oct 2021 15:09:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633964962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Mon, 11 Oct 2021 11:19:53 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8222E220EF;
+        Mon, 11 Oct 2021 15:17:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633965472;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=iri9vStT0/9xWwHBgFho4CeekFs6FnrqJexXkzD7F+8=;
-        b=vBrxrJQ+bPUuq92igoA6GnnL8Te+VAVOODc6svRrCZSZ/ELlCrFXrdICiw0Rl6woPGnT0w
-        FiCQTQV66U1Z7IWu+mP84L1oLq7yNMZb9etAZnPBde3H2wfuL3iS/922oA6O0pnyLU+GQU
-        gz3j9rsDMc+5aikfuwAR5Vp+/HK8huA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A23213C72;
-        Mon, 11 Oct 2021 15:09:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XJ9+A6JTZGF4SAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 11 Oct 2021 15:09:22 +0000
-Subject: Re: [PATCH 5/5] btrfs: make real_root optional
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <20211011101019.1409855-1-nborisov@suse.com>
- <20211011101019.1409855-6-nborisov@suse.com>
- <20211011150552.GQ9286@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <98b77681-d165-25d6-1bd5-91b79466a89a@suse.com>
-Date:   Mon, 11 Oct 2021 18:09:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=XftdzVQe+wzE/OUo7fNIf+i4gecXJWBm2E4s+9NiRNs=;
+        b=GNB0gydhAI7lTvRKxaeDpCUO2Ll/foF1L4qs8iAOadphw1lZJAqT14H2i16oO8FncN+kEC
+        MvTxqrA+upmAwLuILd1ZFkta7c6uZicEt8YH4tBYLRWsXSIvhDma4LTvBKGtamC1QTs2J0
+        r905xXDiq/cu7my8InNaT0M50s+lw1A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633965472;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XftdzVQe+wzE/OUo7fNIf+i4gecXJWBm2E4s+9NiRNs=;
+        b=dBFrlCsbWTF2S3rHdiHFgbK759BCz0rFqoHMHcer+rrw8psOJ8iHYbpuYG1UUHt1Ih7+WJ
+        27DHqodXYWDUQ1AA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 7B5C5A3B87;
+        Mon, 11 Oct 2021 15:17:52 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 527EDDA781; Mon, 11 Oct 2021 17:17:29 +0200 (CEST)
+Date:   Mon, 11 Oct 2021 17:17:28 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Li Zhang <zhanglikernel@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: clear BTRFS_DEV_STATE_MISSING bit in
+ btrfs_close_one_device
+Message-ID: <20211011151728.GS9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Li Zhang <zhanglikernel@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <1633367733-14671-1-git-send-email-zhanglikernel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211011150552.GQ9286@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1633367733-14671-1-git-send-email-zhanglikernel@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 11.10.21 г. 18:05, David Sterba wrote:
-> On Mon, Oct 11, 2021 at 01:10:19PM +0300, Nikolay Borisov wrote:
->> @@ -273,9 +266,10 @@ static inline void btrfs_init_generic_ref(struct btrfs_ref *generic_ref,
->>  static inline void btrfs_init_tree_ref(struct btrfs_ref *generic_ref,
->>  				int level, u64 root, u64 mod_root, bool skip_qgroup)
->>  {
->> +#ifdef CONFIG_BTRFS_FS_REF_VERIFY
->>  	/* If @real_root not set, use @root as fallback */
->> -	if (!generic_ref->real_root)
->> -		generic_ref->real_root = root;
->> +	generic_ref->real_root = mod_root ? mod_root : root;
+On Tue, Oct 05, 2021 at 01:15:33AM +0800, Li Zhang wrote:
+> bug: https://github.com/kdave/btrfs-progs/issues/389
 > 
-> 	generic_ref->real_root = mod_root ?: root;
-> 
-> Ie. the short form where the true branch only repeats the condition.
+> The previous patch does not fix the bug right:
+> https://lore.kernel.org/linux-btrfs/1632330390-29793-1-git-send-email-zhanglikernel@gmail.com
+> So I write a new one
 
-Ah, this is a GNU extension which I had to go an read up on explicitly,
-but will keep it in mind :)
-
-> 
+This looks correct, dropping the bit when we decrease the missing device
+counter. I've added the patch to for-next for now, thanks.
