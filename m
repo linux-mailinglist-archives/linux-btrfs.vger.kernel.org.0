@@ -2,76 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EA442977A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 21:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11D34297C2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 21:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbhJKTUd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Oct 2021 15:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233634AbhJKTUc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Oct 2021 15:20:32 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A21C061570
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 12:18:31 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id n8so75302903lfk.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 12:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=akSYF39zgtk0a5MnXnEYsYFXQGdJumKzdd6cC0TD2zg=;
-        b=A4QzBMlCMcBx5BCw4khuK2ji3v2yerT3KTw/4+qVIbsvo5B70UhvreUPdj9K7tHbQ/
-         GM/9M705H033Sm1LVwWfUojU92ep1ICGRa+zBv6ei6WkxxlMd67VsAXa4B2wym1X8LD0
-         zK/HaC9as2SgjDwA6dvyPAsfMg3nelTosFWyo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=akSYF39zgtk0a5MnXnEYsYFXQGdJumKzdd6cC0TD2zg=;
-        b=TJPxHONwvrexiR/zqlUuZrkHPiD4BLZRIeNHd7Qkc0SIEdrX0ESQxsLUy92fGkt4Jb
-         VUh+7bVVcz78ffdQXdnLrt81GIopezgMHMYk1UnBBvREzEOCG+tRdA+lb1Annm+gaIEc
-         21F99VE/5Wq4KZhyxG4b/0hZuKbT1s2uvSFvryPDKuBtI9tGaMrBSPjUKNImKWXYMfSP
-         m4F66jihzFYzhZ/B+Ba8nA755IVwI/y9yBchryxBSlj9f5O8o/QYdW5G8ze275YfOhNB
-         dNqzQ10b5m8TICMZd2H0V+esGQyJOzMu4uQiw2kDDGZ2V1Y5hYhMUc/Zofn4SBIwZ9iN
-         h1MQ==
-X-Gm-Message-State: AOAM533sRWC/W+0XckVdTD+sM/nqTFy/UbplHpZu/3Lpi0+pjNCtE+D/
-        Yh1oO9k8ct6mEEHEMFipK+0t42RzrnNyRnGP
-X-Google-Smtp-Source: ABdhPJwQtUF2gj5+uPH+uwKuK+vyHxztH9s5Vz7TvqgwTZWAxz9s09QFFMjlw4DpbS5+2053xqI/kg==
-X-Received: by 2002:a05:6512:13a0:: with SMTP id p32mr29839848lfa.492.1633979909548;
-        Mon, 11 Oct 2021 12:18:29 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id r22sm810999lfm.78.2021.10.11.12.18.29
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 12:18:29 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id c16so22822447lfb.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 12:18:29 -0700 (PDT)
-X-Received: by 2002:a05:6512:2248:: with SMTP id i8mr6899360lfu.655.1633979908936;
- Mon, 11 Oct 2021 12:18:28 -0700 (PDT)
+        id S234694AbhJKTtq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Oct 2021 15:49:46 -0400
+Received: from smtp-17.italiaonline.it ([213.209.10.17]:58546 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234763AbhJKTtn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Oct 2021 15:49:43 -0400
+X-Greylist: delayed 490 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Oct 2021 15:49:42 EDT
+Received: from venice.bhome ([78.12.10.152])
+        by smtp-17.iol.local with ESMTPA
+        id a18ymPJH7UpwUa18ym5PzP; Mon, 11 Oct 2021 21:39:28 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1633981168; bh=XKrNDCcfWHcskFhb51nQHAOyHIjU4BbDk0Rk8Cvm0N0=;
+        h=From;
+        b=GUAL7/eUcrfM13Tos4EC+l7uJR8yxaVpcuDqRxXLIVIdQ3DARSeqG9KbnuBs7QFYJ
+         VSF6IsANfjFPC4rXWL0+6Tzp6AwftTNVM9nWnhhWpe/kXT+hb0/DzateevwXM3D567
+         uGtQ6fbgPZcuBP7HQfg25SXOlOAZSauaGW6WIR34JJppYtLE7Qkd9OdWJGqiCLW8JS
+         nKtCyrkzTClU/JqueDCNk903InnwLzxQnlHHmgGGBmChSxEo8ig6d6iEK9jtQ2Z0/+
+         11zRJIWVN+SdQJ0ShHrQTKKEspEfhybYDTEZknHfvACT3u45H0HHZ7+Owmcyujlpt3
+         JybNYtzt5PvhQ==
+X-CNFS-Analysis: v=2.4 cv=MJylJOVl c=1 sm=1 tr=0 ts=616492f0 cx=a_exe
+ a=EzK6Ev+Ndi4VoAiPDBu8Fw==:117 a=EzK6Ev+Ndi4VoAiPDBu8Fw==:17
+ a=IkcTkHD0fZMA:10 a=NEAV23lmAAAA:8 a=IqkRf1E5yG1U-Rt8lNMA:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH v2 00/10] btrfs-progs: mkfs fixes and prep work for extent
+ tree v2
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <cover.1629749291.git.josef@toxicpanda.com>
+ <20210825135839.GK3379@twin.jikos.cz>
+ <03ae7a36-dbc9-bfad-6ec7-45e929f862a7@libero.it>
+ <20211011184716.GT9286@suse.cz>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+Message-ID: <a4c31628-0022-334f-e3fa-a546bfd7b08e@inwind.it>
+Date:   Mon, 11 Oct 2021 21:39:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <cover.1633976241.git.dsterba@suse.com>
-In-Reply-To: <cover.1633976241.git.dsterba@suse.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 11 Oct 2021 12:18:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whyP7conp58OoJA5wjWdMf8BBek3vw0C3n9HBOw8BHZuw@mail.gmail.com>
-Message-ID: <CAHk-=whyP7conp58OoJA5wjWdMf8BBek3vw0C3n9HBOw8BHZuw@mail.gmail.com>
-Subject: Re: [GIT PULL] Btrfs fixes for 5.15-rc6
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211011184716.GT9286@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfJVd0MOJayOSJnMRrQNLrmooekQPeGCzdL8FE/GP73eiF6CxKBmXbvW5Pvl0X+YQy+1mSOWGRIysEbiuqPiJM6j2j716Wzrx7IyEt1HngBTOfxZfMepE
+ lxllf8NYWi/Om7cAox+ZCIt233QSkl4kahRQG4DqSxivB8Y7sure4ZitnCKBinMT5OsNAhVlj7XNevQntO/SyNPEs0eHiCmw7mVw7Xb6B3xblfGmM/2kiDvx
+ cuGybNdXZrJUs16Nq1c2uBru7G5I45kxyc+RiHlTAKk=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 11:40 AM David Sterba <dsterba@suse.com> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc5-tag
+On 10/11/21 8:47 PM, David Sterba wrote:
+> On Mon, Oct 11, 2021 at 08:35:53PM +0200, Goffredo Baroncelli wrote:
+>> On 8/25/21 3:58 PM, David Sterba wrote:
+>>> On Mon, Aug 23, 2021 at 04:14:45PM -0400, Josef Bacik wrote:
+>> [...]
+>>> Even with the "if (EXTENT_TREE_V2)" in place it becomes the
+>>> implementation and given that I haven't read the whole design doc for
+>>> that I'm worried that once I find time for that and would suggest some
+>>> changes the reply would be "no I did it this way, it's implemented,
+>>> would require too many changes".
+>>
+>> Just for curiosity, is there anywhere a design doc for extent tree v2 ?
+> 
+> https://github.com/btrfs/btrfs-todo/issues/25 but it's more like an
+> ongoing discussion than a polished design doc, that's about to be a
+> result of that some day.
+> 
+Thanks, very interesting reading...
 
-I see the 'for-5.15-rc5' _branch_, but there is no tag there.
-
-Did you forget to push that out?
-
-              Linus
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
