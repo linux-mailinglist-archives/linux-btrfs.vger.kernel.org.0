@@ -2,315 +2,296 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C774296D2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 20:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECE94296F3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 20:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231697AbhJKS1f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Oct 2021 14:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        id S232165AbhJKSdg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Oct 2021 14:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbhJKS1f (ORCPT
+        with ESMTP id S231497AbhJKSde (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:27:35 -0400
-X-Greylist: delayed 111 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Oct 2021 11:25:34 PDT
-Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:1::99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DD80FC061570
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 11:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bluematt.me
-        ; s=1633975263; h=To:In-Reply-To:Cc:References:Subject:From:From:Reply-To;
-        bh=h6NFunAGJA0uXojsGbpyDFsJqGomDZeSo5tAVXPhhX8=; b=MTRX0+giQqDyei5QCCXA5LMWFM
-        WMIP3zvbT7Uj0pnoziCycMpK1L3YqpfbQ7M3ZLdZW4ONMJ8GbLSnuumezB7GZ+zZ44bdxKhta5x6p
-        iymHQssiE7ZOGLJvcqD7JT57+pDFGrxsHG6B2EDpYhSZ6D8yVilI9WCvSsUfblrc9y9y/p4Gh5GYC
-        qbg1OVbjyfNjoYq0boNUTLioJRLY3zLkUX0Xlokh3AmIfM6eBKiGE4D6glEZSp7X7foFMWqhcagLi
-        0ajED6lfBU1VHr+q9cCXPCCKoNEBsIZxQCq+SHcV9xMscvL0Oc/acBVhrSg4dge+mSSrXBBuUAIK+
-        KV4WIJ4A==;
-Received: by mail.as397444.net with esmtpsa TLS1.3 id 1mZzxZ-0001KV-Hb
-        (envelope-from <blnxfsl@bluematt.me>) ; Mon, 11 Oct 2021 18:23:37 +0000
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Matt Corallo <blnxfsl@bluematt.me>
-Mime-Version: 1.0 (1.0)
-Subject: Re: All Three Superblocks Damaged After Kernel Panic
-Date:   Mon, 11 Oct 2021 11:23:34 -0700
-Message-Id: <4B3507F4-5BD7-431A-85C6-6F6BA437F9EE@bluematt.me>
-References: <fa22-61644680-fb-24052640@191566126>
-Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <fa22-61644680-fb-24052640@191566126>
-To:     Kyle James Chapman <kyle.chapman@stud.uni-heidelberg.de>
-X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/bluematt.me
-X-DKIM-Note: For more info, see https://as397444.net/dkim/
+        Mon, 11 Oct 2021 14:33:34 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50B5C061570
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 11:31:33 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id w8so8074141qts.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 11:31:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=JMHq9yWN/UISn16V5QpU4xSQQoaCl5DC6dhmi4xUB2w=;
+        b=sN+YWD03TJrPuhYpv/tU6a2Lt8O653Cu8iPsORx+4VJWHW+3S9r6xC4RxqN3t2QGG6
+         gY034iryL+OTfGRZR6lWiw51E7X+HZlIobuXnV6sx3n8rS1jQ6Dyn7pwHN3yhpQY9Pef
+         ZV1I+QUx8m2Uc4LDF3WJv+jpsFL4DXWgQtWJ6nzGSYWmolv1io2Id0B7HvX5N6oZRXfU
+         Qe5A66Uk2UI+aizFotBPddJS9UHHS320V13MXibuSKJI44wyK14jo9MgKXDQXHgtIzum
+         j5zwWJi61GH1n6Rth8ojFbJEKhngsnBgPePBIQDlcu3BwfhNbiz61OAFoMqGw3OtZ0HH
+         XTtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=JMHq9yWN/UISn16V5QpU4xSQQoaCl5DC6dhmi4xUB2w=;
+        b=VXy0DWHs8e3GobFvDlTNb4qXXNC0geKPqXmQFxpOnAyjv4VXQ68vyS7RkvuiTPp+cF
+         +mUsfXIyrnIVzaIYKBS94NmyUiHwiXA+D4M6LQpzBxEPhNr32riQneItM72k1AwH9TQw
+         TPt2e67wcKlOv3LtY7RmWx1uwXGp9XlfYXc/LeK+pOlupXl8UusSA8QZhyEkPQvFU71L
+         pSECiKAC5gErULpTzlcxiuzOYHfuTron4jj7zizalydCZlNnXA9+ppUXh4m/DfFx8r0z
+         o6jlys2I6nfU76B+mwTtbmypnCmJEy4czc5W0jIxKwAkZISOIhCLizUUvV9PV4tJRQ4v
+         OxJA==
+X-Gm-Message-State: AOAM533BZAbEid0u0emqaE8BAuCMOMHW8Oni2AGR+UPzeG9lu/R6PD5u
+        LnkNT2aehW94qGkbh2EOmFu5oQ==
+X-Google-Smtp-Source: ABdhPJzltxvyET2EmzVI8j8gspglvvsjDm/uulji56fc51YG17+W2jmdDTPi/p9mK5V7cKjeryAXuQ==
+X-Received: by 2002:ac8:3b5a:: with SMTP id r26mr16559931qtf.171.1633977092721;
+        Mon, 11 Oct 2021 11:31:32 -0700 (PDT)
+Received: from [192.168.1.211] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id c13sm46427qtw.49.2021.10.11.11.31.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 11:31:32 -0700 (PDT)
+Message-ID: <54e19a68-bd46-b4f3-28ae-eec4f9aa0969@toxicpanda.com>
+Date:   Mon, 11 Oct 2021 14:31:30 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 1/2] btrfs: fix deadlock between chunk allocation and
+ chunk btree modifications
+Content-Language: en-US
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <cover.1633705660.git.fdmanana@suse.com>
+ <dc480ee9a7be60b4d33b5c5df58ee51aa0b9e331.1633705660.git.fdmanana@suse.com>
+ <YWRgzE9YZYTmlhlM@localhost.localdomain>
+ <CAL3q7H5EvvrhAea-RCOVayXS9auvtvtiAA7Dg4kARDTnvR1CBw@mail.gmail.com>
+ <fd9b37b9-6a4f-08f9-54af-f14864030aab@toxicpanda.com>
+ <CAL3q7H762Mp1EzaqQ0Cq3aVhm31Sai1sa2MFd+z2pn1bJZOJkg@mail.gmail.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+In-Reply-To: <CAL3q7H762Mp1EzaqQ0Cq3aVhm31Sai1sa2MFd+z2pn1bJZOJkg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-List subscribers,
+On 10/11/21 2:22 PM, Filipe Manana wrote:
+> On Mon, Oct 11, 2021 at 6:42 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>>
+>> On 10/11/21 1:31 PM, Filipe Manana wrote:
+>>> On Mon, Oct 11, 2021 at 5:05 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>>>>
+>>>> On Fri, Oct 08, 2021 at 04:10:34PM +0100, fdmanana@kernel.org wrote:
+>>>>> From: Filipe Manana <fdmanana@suse.com>
+>>>>>
+>>>>> When a task is doing some modification to the chunk btree and it is not in
+>>>>> the context of a chunk allocation or a chunk removal, it can deadlock with
+>>>>> another task that is currently allocating a new data or metadata chunk.
+>>>>>
+>>>>> These contextes are the following:
+>>>>>
+>>>>> * When relocating a system chunk, when we need to COW the extent buffers
+>>>>>     that belong to the chunk btree;
+>>>>>
+>>>>> * When adding a new device (ioctl), where we need to add a new device item
+>>>>>     to the chunk btree;
+>>>>>
+>>>>> * When removing a device (ioctl), where we need to remove a device item
+>>>>>     from the chunk btree;
+>>>>>
+>>>>> * When resizing a device (ioctl), where we need to update a device item in
+>>>>>     the chunk btree and may need to relocate a system chunk that lies beyond
+>>>>>     the new device size when shrinking a device.
+>>>>>
+>>>>> The problem happens due to a sequence of steps like the following:
+>>>>>
+>>>>> 1) Task A starts a data or metadata chunk allocation and it locks the
+>>>>>      chunk mutex;
+>>>>>
+>>>>> 2) Task B is relocating a system chunk, and when it needs to COW an extent
+>>>>>      buffer of the chunk btree, it has locked both that extent buffer as
+>>>>>      well as its parent extent buffer;
+>>>>>
+>>>>> 3) Since there is not enough available system space, either because none
+>>>>>      of the existing system block groups have enough free space or because
+>>>>>      the only one with enough free space is in RO mode due to the relocation,
+>>>>>      task B triggers a new system chunk allocation. It blocks when trying to
+>>>>>      acquire the chunk mutex, currently held by task A;
+>>>>>
+>>>>> 4) Task A enters btrfs_chunk_alloc_add_chunk_item(), in order to insert
+>>>>>      the new chunk item into the chunk btree and update the existing device
+>>>>>      items there. But in order to do that, it has to lock the extent buffer
+>>>>>      that task B locked at step 2, or its parent extent buffer, but task B
+>>>>>      is waiting on the chunk mutex, which is currently locked by task A,
+>>>>>      therefore resulting in a deadlock.
+>>>>>
+>>>>> One example report when the deadlock happens with system chunk relocation:
+>>>>>
+>>>>>     INFO: task kworker/u9:5:546 blocked for more than 143 seconds.
+>>>>>           Not tainted 5.15.0-rc3+ #1
+>>>>>     "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>>>>>     task:kworker/u9:5    state:D stack:25936 pid:  546 ppid:     2 flags:0x00004000
+>>>>>     Workqueue: events_unbound btrfs_async_reclaim_metadata_space
+>>>>>     Call Trace:
+>>>>>      context_switch kernel/sched/core.c:4940 [inline]
+>>>>>      __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
+>>>>>      schedule+0xd3/0x270 kernel/sched/core.c:6366
+>>>>>      rwsem_down_read_slowpath+0x4ee/0x9d0 kernel/locking/rwsem.c:993
+>>>>>      __down_read_common kernel/locking/rwsem.c:1214 [inline]
+>>>>>      __down_read kernel/locking/rwsem.c:1223 [inline]
+>>>>>      down_read_nested+0xe6/0x440 kernel/locking/rwsem.c:1590
+>>>>>      __btrfs_tree_read_lock+0x31/0x350 fs/btrfs/locking.c:47
+>>>>>      btrfs_tree_read_lock fs/btrfs/locking.c:54 [inline]
+>>>>>      btrfs_read_lock_root_node+0x8a/0x320 fs/btrfs/locking.c:191
+>>>>>      btrfs_search_slot_get_root fs/btrfs/ctree.c:1623 [inline]
+>>>>>      btrfs_search_slot+0x13b4/0x2140 fs/btrfs/ctree.c:1728
+>>>>>      btrfs_update_device+0x11f/0x500 fs/btrfs/volumes.c:2794
+>>>>>      btrfs_chunk_alloc_add_chunk_item+0x34d/0xea0 fs/btrfs/volumes.c:5504
+>>>>>      do_chunk_alloc fs/btrfs/block-group.c:3408 [inline]
+>>>>>      btrfs_chunk_alloc+0x84d/0xf50 fs/btrfs/block-group.c:3653
+>>>>>      flush_space+0x54e/0xd80 fs/btrfs/space-info.c:670
+>>>>>      btrfs_async_reclaim_metadata_space+0x396/0xa90 fs/btrfs/space-info.c:953
+>>>>>      process_one_work+0x9df/0x16d0 kernel/workqueue.c:2297
+>>>>>      worker_thread+0x90/0xed0 kernel/workqueue.c:2444
+>>>>>      kthread+0x3e5/0x4d0 kernel/kthread.c:319
+>>>>>      ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+>>>>>     INFO: task syz-executor:9107 blocked for more than 143 seconds.
+>>>>>           Not tainted 5.15.0-rc3+ #1
+>>>>>     "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>>>>>     task:syz-executor    state:D stack:23200 pid: 9107 ppid:  7792 flags:0x00004004
+>>>>>     Call Trace:
+>>>>>      context_switch kernel/sched/core.c:4940 [inline]
+>>>>>      __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
+>>>>>      schedule+0xd3/0x270 kernel/sched/core.c:6366
+>>>>>      schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
+>>>>>      __mutex_lock_common kernel/locking/mutex.c:669 [inline]
+>>>>>      __mutex_lock+0xc96/0x1680 kernel/locking/mutex.c:729
+>>>>>      btrfs_chunk_alloc+0x31a/0xf50 fs/btrfs/block-group.c:3631
+>>>>>      find_free_extent_update_loop fs/btrfs/extent-tree.c:3986 [inline]
+>>>>>      find_free_extent+0x25cb/0x3a30 fs/btrfs/extent-tree.c:4335
+>>>>>      btrfs_reserve_extent+0x1f1/0x500 fs/btrfs/extent-tree.c:4415
+>>>>>      btrfs_alloc_tree_block+0x203/0x1120 fs/btrfs/extent-tree.c:4813
+>>>>>      __btrfs_cow_block+0x412/0x1620 fs/btrfs/ctree.c:415
+>>>>>      btrfs_cow_block+0x2f6/0x8c0 fs/btrfs/ctree.c:570
+>>>>>      btrfs_search_slot+0x1094/0x2140 fs/btrfs/ctree.c:1768
+>>>>>      relocate_tree_block fs/btrfs/relocation.c:2694 [inline]
+>>>>>      relocate_tree_blocks+0xf73/0x1770 fs/btrfs/relocation.c:2757
+>>>>>      relocate_block_group+0x47e/0xc70 fs/btrfs/relocation.c:3673
+>>>>>      btrfs_relocate_block_group+0x48a/0xc60 fs/btrfs/relocation.c:4070
+>>>>>      btrfs_relocate_chunk+0x96/0x280 fs/btrfs/volumes.c:3181
+>>>>>      __btrfs_balance fs/btrfs/volumes.c:3911 [inline]
+>>>>>      btrfs_balance+0x1f03/0x3cd0 fs/btrfs/volumes.c:4301
+>>>>>      btrfs_ioctl_balance+0x61e/0x800 fs/btrfs/ioctl.c:4137
+>>>>>      btrfs_ioctl+0x39ea/0x7b70 fs/btrfs/ioctl.c:4949
+>>>>>      vfs_ioctl fs/ioctl.c:51 [inline]
+>>>>>      __do_sys_ioctl fs/ioctl.c:874 [inline]
+>>>>>      __se_sys_ioctl fs/ioctl.c:860 [inline]
+>>>>>      __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+>>>>>      do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>>>>      do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>>>>>      entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>>>>
+>>>>> So fix this by making sure that whenever we try to modify the chunk btree
+>>>>> and we are neither in a chunk allocation context nor in a chunk remove
+>>>>> context, we reserve system space before modifying the chunk btree.
+>>>>>
+>>>>> Reported-by: Hao Sun <sunhao.th@gmail.com>
+>>>>> Link: https://lore.kernel.org/linux-btrfs/CACkBjsax51i4mu6C0C3vJqQN3NR_iVuucoeG3U1HXjrgzn5FFQ@mail.gmail.com/
+>>>>> Fixes: 79bd37120b1495 ("btrfs: rework chunk allocation to avoid exhaustion of the system chunk array")
+>>>>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>>>>
+>>>> A few things, because I'm having a hard time wrapping my head around this stuff
+>>>>
+>>>> 1) We're no longer allowing SYSTEM chunk allocations via btrfs_chunk_alloc(),
+>>>>      instead it's only via the reserve_chunk_space().  That is triggered at the
+>>>>      beginning of btrfs_search_slot() when we go to modify the chunk root.
+>>>> 2) We do this because we would normally trigger it when we do the
+>>>>      btrfs_use_block_rsv() when we go to modify the chunk tree, and at that point
+>>>>      we're holding chunk root locks and thus run into the describe deadlock.
+>>>>
+>>>> So what you're wanting to do is to force us to do the enospc chunk allocation
+>>>> dance prior to searching down the chunk root.  This makes sense.  However it's
+>>>> hard for me to wrap my head around the new rules for this stuff, and now we have
+>>>> a global "check to see if we need to reserve space for the chunk root" at the
+>>>> beginning of search slot.
+>>>>
+>>>> Doing at the btrfs_use_block_rsv() part isn't awesome either.  What if instead
+>>>> we just added a btrfs_reserve_chunk_space() everywhere we do a
+>>>> btrfs_search_slot() on the chunk_root as there are not many of them.
+>>>
+>>> That was my initial idea, but I didn't find it better because it's
+>>> easy to forget to make the reservation.
+>>> I didn't like having to repeat it in several places either.
+>>>
+>>> If it makes things cleaner, I can change it back, no problem.
+>>>
+>>
+>> I'd rather keep space reservation stuff separate so it's clear what
+>> we're doing, instead of hiding it in btrfs_search_slot() where we have
+>> to remember that we use it for chunk allocation there.
+> 
+> Ok, that can be done. I still don't like it that much, but I don't
+> hate it either.
+> 
 
-Kyle=E2=80=99s email, below, may not have made it to your inbox. VGER=E2=80=99=
-s SMTP RFC violation here should have resulted in your mail server refusing t=
-o accept this.
+Yeah it's not awesome, but I want to have clear delineation of the work 
+all the functions are doing, so there's not a "surprise, this search 
+also triggered a chunk allocation because of these X things were true."
 
-Kyle,
+>>
+>>>>
+>>>> Then we use BTRFS_RESERVE_FLUSH_LIMIT instead of NO_FLUSH, or hell we add a
+>>>> RESERVE_FLUSH_CHUNK that only does the chunk allocation stage.  Then we can use
+>>>> the same path for all chunk allocation.
+>>>>
+>>>> This way everybody still uses the same paths and we don't have a completely
+>>>> separate path for system chunk modifications.  Thanks,
+>>>
+>>> I don't get it. What do we gain by using FLUSH_LIMIT?
+>>> We allocated the new system chunk (if needed) and then marked the
+>>> space as reserved in the chunk reserve.
+>>> The chunk reserve is only used to track reserved space until the chunk
+>>> bree updates are done (either during chunk allocation/removal or for
+>>> the other paths that update the chunk btree).
+>>> So I don't see any advantage of using it instead of NO_FLUSH - we are
+>>> not supposed to trigger chunk allocation at that point, as we just did
+>>> it ourselves (and neither run delayed inodes).
+>>> I.e. the btrfs_block_rsv_add(() is never supposed to fail if
+>>> btrfs_create_chunk() succeeded.
+>>>
+>>
+>> Because I want to keep chunk allocation clearly in the realm of the
+>> ENOSPC handling, so we are consistent as possible.
+>>
+>> What I want is instead of burying some
+>>
+>> if (we dont have enough chunk space)
+>>          do_system_chunk_allocation()
+>>
+>> in our chunk allocation paths, we instead make sure that everywhere
+>> we're doing chunk allocation we do a
+>>
+>> ret = btrfs_block_rsv_add(chunk_root, chunk_block_rsv, num_bytes,
+>>                            FLUSH_WHATEVER);
+>> do our operation
+>> btrfs_block_rsv_release();
+>>
+>> and then when we do btrfs_reserve_metadata_bytes() in the
+>> btrfs_block_rsv_add() and we need to allocate a new chunk, it happens
+>> there, where all the other chunk allocation things happen.
+>>
+>> What we gain is consistency, allocating a system chunk happens via the
+>> same path that every other chunk allocation occurs, and it uses the same
+>> mechanisms that every other metadata allocation uses.  Thanks,
+> 
+> Ok, I see what you mean, and it should be possible after the changes
+> you have been doing to the space reservation code in the last couple
+> years or so.
+> But that is a separate change from the bug fix, it doesn't eliminate
+> the need to pre reserve space before doing the chunk btree updates for
+> those cases identified in the change log.
+> I'll do it, but obviously as a separate change.
+> 
 
-Please note that your email client, your upstream mail server, and vger.kern=
-el.org are all miscofigured, resulting in your email violating the SMTP RFCs=
- upon delivery. Because individual lines are not broken and longer than 1000=
- characters, many folks likely didn=E2=80=99t receive your email (eg default=
- exim configurations will refuse your mail). You should reach out to the adm=
-inistrators for sogo01.urz.uni-heidelberg.de and relay.uni-heidelberg.de and=
- have them fix their configuration, as well as fix your local MUA.
+Yup that's reasonable, thanks,
 
-Matt
+Josef
 
-> On Oct 11, 2021, at 11:09, Kyle James Chapman <kyle.chapman@stud.uni-heide=
-lberg.de> wrote:
->=20
-> =EF=BB=BFHello,
->=20
-> I lost access to my home BTRFS filesystem on a 4TB SATA drive without part=
-itioning today.
->=20
-> I am a graduate student of translation studies at a foreign university. Pr=
-ogramming is not my specialty but have ran Linux for over a decade because I=
- support open source endeavors. I say this for background on my technical ca=
-pabilities, I am also a radio amateur extra-class in the United States. I ha=
-ve some technical competence and run Arch Linux for general duty.
->=20
-> The system boots and reads the kernel into memory from an optical ROM driv=
-e, reads keyfiles from a USB stick, decrypts the home and swap partitions on=
- different devices, asks for a password for the root partition, and finishes=
- booting. I was rebooting my system from userspace and observed a kernel pan=
-ic after finishing some work repartitioning a small USB stick using gparted.=
- After rebooting, my home BTRFS system was not mountable. Some information s=
-eems present in some of the superblocks, but I do not understand everything.=
- I was careful in my use of the disk tool, and it was clear that only the US=
-B stick was being accessed, because of the simple work I was doing, resizing=
- a partition on the obvious drive. I would like to recover the data. I finis=
-hed writing my master's thesis and have already submitted it, so no real wor=
-k was lost, but I would like to understand why this is happening and how the=
- data can be recovered. A memory fault seems plausible, but the fact that I w=
-as accessing the partitions (through gparted) seems to indicate other possib=
-ilities. Please do not get sidetracked into thinking I wrote data on the dri=
-ve through carelessness. I have made many many uses of disk tools throughout=
- my life and the simple nature of the operations which did not involve the f=
-ilesystem in question are completely understandable and I remember them clea=
-rly.
->=20
-> Please advise.
->=20
-> Relevant /dev/fstab entry which has worked for several months until I comm=
-ented it out today:
->=20
-> #/dev/mapper/home    /home        btrfs        rw,compress,autodefrag,inod=
-e_cache    0   1
->=20
-> cat /proc/version:
->=20
-> Linux version 5.15.0-rc3-1-git-00319-g7b66f4393ad4 (linux-git@archlinux) (=
-gcc (GCC) 11.1.0, GNU ld (GNU Binutils) 2.36.1) #1 SMP PREEMPT Sun, 03 Oct 2=
-021 17:24:26 +0000
->=20
->=20
-> sudo  smartctl -a /dev/sdd excerpt:=20
->=20
-> =3D=3D=3D START OF INFORMATION SECTION =3D=3D=3D
-> Model Family:     Seagate Barracuda 2.5 5400
-> Device Model:     ST4000LM024-2AN17V
-> Serial Number:    WCK03H8Y
-> LU WWN Device Id: 5 000c50 09e55827b
-> Firmware Version: 0001
-> User Capacity:    4,000,787,030,016 bytes [4.00 TB]
-> Sector Sizes:     512 bytes logical, 4096 bytes physical
-> Rotation Rate:    5526 rpm
-> Form Factor:      2.5 inches
-> Device is:        In smartctl database [for details use: -P show]
-> ATA Version is:   ACS-3 T13/2161-D revision 5
-> SATA Version is:  SATA 3.1, 6.0 Gb/s (current: 6.0 Gb/s)
-> Local Time is:    Mon Oct 11 16:07:49 2021 CEST
-> SMART support is: Available - device has SMART capability.
-> SMART support is: Enabled
->=20
-> =3D=3D=3D START OF READ SMART DATA SECTION =3D=3D=3D
-> SMART overall-health self-assessment test result: PASSED
->=20
-> btrfs --version:
->=20
-> btrfs-progs v5.14.1=20
->=20
->=20
-> sudo btrfs inspect-internal dump-super -s 0 /dev/mapper/home :=20
->=20
-> superblock: bytenr=3D65536, device=3D/dev/mapper/home
-> ---------------------------------------------------------
-> csum_type        0 (crc32c)
-> csum_size        4
-> csum            0xc59083ff [DON'T MATCH]
-> bytenr            65536
-> flags            0x1
->            ( WRITTEN )
-> magic            _BHRfS_M [match]
-> fsid            bd5872ad-8fee-4d90-b048-b81120ce3254
-> metadata_uuid        bd5872ad-8fee-4d90-b048-b81120ce3254
-> label           =20
-> generation        161054
-> root            4028020703232
-> sys_array_size        129
-> chunk_root_generation    154912
-> root_level        1
-> chunk_root        22020096
-> chunk_root_level    1
-> log_root        0
-> log_root_transid    0
-> log_root_level        0
-> total_bytes        4000787030016
-> bytes_used        3969357348864
-> sectorsize        4096
-> nodesize        16384
-> leafsize (deprecated)    16384
-> stripesize        4096
-> root_dir        6
-> num_devices        1
-> compat_flags        0x0
-> compat_ro_flags        0x0
-> incompat_flags        0x161
->            ( MIXED_BACKREF |
->              BIG_METADATA |
->              EXTENDED_IREF |
->              SKINNY_METADATA )
-> cache_generation    161054
-> uuid_tree_generation    161054
-> dev_item.uuid        47593c4d-689d-4e1e-a310-dc7b8ab26c51
-> dev_item.fsid        bd5872ad-8fee-4d90-b048-b81120ce3254 [match]
-> dev_item.type        0
-> dev_item.total_bytes    4000787030016
-> dev_item.bytes_used    3997564731392
-> dev_item.io_align    4096
-> dev_item.io_width    4096
-> dev_item.sector_size    4096
-> dev_item.devid        1
-> dev_item.dev_group    0
-> dev_item.seek_speed    0
-> dev_item.bandwidth    0
-> dev_item.generation    0
->=20
-> sudo btrfs inspect-internal dump-super -s 1 /dev/mapper/home :
->=20
-> superblock: bytenr=3D67108864, device=3D/dev/mapper/home
-> ---------------------------------------------------------
-> csum_type        0 (crc32c)
-> csum_size        4
-> csum            0x65f1ab31 [DON'T MATCH]
-> bytenr            14039944498490823899
-> flags            0xcdc898509422934d
->            ( WRITTEN |
->              unknown flag: 0xcdc898509422934c )
-> magic            _BHRfS_M [match]
-> fsid            4468b2e4-d249-639c-dc54-792caf170cc9
-> metadata_uuid        4468b2e4-d249-639c-dc54-792caf170cc9
-> label           =20
-> generation        161054
-> root            4028020703232
-> sys_array_size        129
-> chunk_root_generation    154912
-> root_level        1
-> chunk_root        22020096
-> chunk_root_level    1
-> log_root        11922660382425005768
-> log_root_transid    14582268926853107316
-> log_root_level        0
-> total_bytes        10532150587539085458
-> bytes_used        8124524553913841719
-> sectorsize        4096
-> nodesize        16384
-> leafsize (deprecated)    16384
-> stripesize        4096
-> root_dir        6
-> num_devices        1
-> compat_flags        0x0
-> compat_ro_flags        0x0
-> incompat_flags        0x161
->            ( MIXED_BACKREF |
->              BIG_METADATA |
->              EXTENDED_IREF |
->              SKINNY_METADATA )
-> cache_generation    161054
-> uuid_tree_generation    161054
-> dev_item.uuid        47593c4d-689d-4e1e-a310-dc7b8ab26c51
-> dev_item.fsid        bd5872ad-8fee-4d90-b048-b81120ce3254 [DON'T MATCH]
-> dev_item.type        0
-> dev_item.total_bytes    4000787030016
-> dev_item.bytes_used    3997564731392
-> dev_item.io_align    4096
-> dev_item.io_width    4096
-> dev_item.sector_size    4096
-> dev_item.devid        1
-> dev_item.dev_group    0
-> dev_item.seek_speed    0
-> dev_item.bandwidth    0
-> dev_item.generation    0
->=20
-> sudo btrfs inspect-internal dump-super -s 2 /dev/mapper/home:
->=20
-> superblock: bytenr=3D274877906944, device=3D/dev/mapper/home
-> ---------------------------------------------------------
-> csum_type        62267 (INVALID)
-> csum_size        32
-> csum            0x9876fd00000000000000000000000000000000000000000000000000=
-00000000 [UNKNOWN CSUM TYPE OR SIZE]
-> bytenr            274877906944
-> flags            0x1
->            ( WRITTEN )
-> magic            _BHRfS_M [match]
-> fsid            bd5872ad-8fee-4d90-b048-b81120ce3254
-> metadata_uuid        07eb556b-df56-afbd-12c1-32f496c9ae5e
-> label            ...^k...cA..[....ws.......!...&+..@...U.^..Fi.....^s....%=
-.....G.....\..z.0..8N......l
-> generation        161054
-> root            4028020703232
-> sys_array_size        1346087890
-> chunk_root_generation    14973196025592430218
-> root_level        113
-> chunk_root        22020096
-> chunk_root_level    54
-> log_root        0
-> log_root_transid    0
-> log_root_level        77
-> total_bytes        4000787030016
-> bytes_used        3969357348864
-> sectorsize        544999736
-> nodesize        1626255393
-> leafsize (deprecated)    365786189
-> stripesize        1625894637
-> root_dir        4621774357935484814
-> num_devices        6281988177397337675
-> compat_flags        0x9c8dbbf37bf3e638
-> compat_ro_flags        0xe392e94b904707de
->            ( FREE_SPACE_TREE_VALID |
->              unknown flag: 0xe392e94b904707dc )
-> incompat_flags        0xe7c3113fe08815af
->            ( MIXED_BACKREF |
->              DEFAULT_SUBVOL |
->              MIXED_GROUPS |
->              COMPRESS_LZO |
->              BIG_METADATA |
->              RAID56 |
->              SKINNY_METADATA |
->              METADATA_UUID |
->              ZONED |
->              unknown flag: 0xe7c3113fe0880000 )
-> cache_generation    2740636164699663627
-> uuid_tree_generation    143387309824099247
-> dev_item.uuid        8ca1383a-3aaf-986e-30f3-1081cc4423b9
-> dev_item.fsid        d3b80203-160e-b664-1fa0-0121596e5fbf [DON'T MATCH]
-> dev_item.type        2243501307224589742
-> dev_item.total_bytes    17886909296177165879
-> dev_item.bytes_used    843442598421986990
-> dev_item.io_align    3037217492
-> dev_item.io_width    3952451380
-> dev_item.sector_size    2707671125
-> dev_item.devid        4105250638360812501
-> dev_item.dev_group    3766056873
-> dev_item.seek_speed    182
-> dev_item.bandwidth    229
-> dev_item.generation    9452573969509059034
->=20
->=20
