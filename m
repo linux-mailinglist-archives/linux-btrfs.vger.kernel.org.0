@@ -2,105 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BDA428E86
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 15:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE32042907E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 16:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234354AbhJKNtH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Oct 2021 09:49:07 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53244 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234234AbhJKNtG (ORCPT
+        id S239453AbhJKOJp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Oct 2021 10:09:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:48864 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238614AbhJKOHm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:49:06 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 717DE1FEAC;
-        Mon, 11 Oct 2021 13:47:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633960025; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Mon, 11 Oct 2021 10:07:42 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 4C51422095;
+        Mon, 11 Oct 2021 14:05:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633961141;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8pKjUHL3mpciGcNQdaeJn8clKZ+d0c55JCELdb/rrNU=;
-        b=QiMPvacOdlQkxNVIW9ZtfHX7KpZvptEaeylLSFzitiwdwlaao7yaWXfSJ5ITjid3IqWM/8
-        MFSD/i5EYgBOysW42ZhFmMDzCJRR8SBCQQxqlEhMC0T4CkJrYCpSTKoNsGzGoPIx6chLr8
-        VvP1UJKwEsV4XMM3GrAC8ugyfrblwo0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 490C913C5E;
-        Mon, 11 Oct 2021 13:47:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id pdU3D1lAZGHzIAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 11 Oct 2021 13:47:05 +0000
-Subject: Re: No space left even there is a lot of space
-To:     Michal Strnad <michal.strnad@ibt.cas.cz>,
+        bh=WvlLUOJ73GL9GdTuw6Gd9XKUwbSGm9DROY5AkJkRFKI=;
+        b=i4utq5ztkWYL+Rcpcz/CrxQBnA0HIA+I6UziEvKda2rpJohxENE2ykiWnRo6HvsCAgiSfC
+        gIl8tPLHnWGnfPnZ10mZx9L/dJR5XXcr8xIJ2tLl06UpQeu/cKpAyxNCJWO6hJoBKQcTQa
+        Ns7+FIyg7xKNVRwQJ5Z9xHLgUvCICCA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633961141;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WvlLUOJ73GL9GdTuw6Gd9XKUwbSGm9DROY5AkJkRFKI=;
+        b=OLcl6D77jBQBKyAvRYREKl8ire1IDkTpIctJGnV0hDibAZJEcLKcipWWN+en1Fw6tvVWc3
+        k7o19FMu2gVq8ZBQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 44E1BA3C69;
+        Mon, 11 Oct 2021 14:05:41 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3F129DA781; Mon, 11 Oct 2021 16:05:18 +0200 (CEST)
+Date:   Mon, 11 Oct 2021 16:05:18 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] btrfs-progs: mkfs: make sure we can clean up all
+ temporary chunks
+Message-ID: <20211011140517.GI9286@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <8d31b2f5-5474-6e12-fd9b-56aa378069f4@ibt.cas.cz>
- <4b21c3a5-f8f2-fd25-0f9a-b22cfdf27fe6@suse.com>
- <7a7d2b07-b8d7-bd6f-f652-1a0646db478a@ibt.cas.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <baf73902-e13a-bd3b-76be-88a3078bca4f@suse.com>
-Date:   Mon, 11 Oct 2021 16:47:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+References: <20211011120650.179017-1-wqu@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <7a7d2b07-b8d7-bd6f-f652-1a0646db478a@ibt.cas.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211011120650.179017-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 11.10.21 г. 16:44, Michal Strnad wrote:
-> Hi Nikolay,
+On Mon, Oct 11, 2021 at 08:06:47PM +0800, Qu Wenruo wrote:
+> There is a bug report that with certain mkfs options, mkfs.btrfs may
+> fail to cleanup some temporary chunks, leading to "btrfs filesystem df"
+> warning about multiple profiles:
 > 
-> On 10/11/21 2:34 PM, Nikolay Borisov wrote:
->>
->>
->> On 11.10.21 г. 15:30, Michal Strnad wrote:
->>> Hello,
->>>
->>> I have problem on production server with Btrfs. I got call trace in
->>> dmesg with "No space left" message which led to the filesystem being
->>> switched to read-only, but both df (system df and btrfs df) say I've got
->>> lots of space.
->>>
->>
->> <snip>
->>
->>>
->>>
->>> [root@kappa ~]# uname -a
->>> Linux kappa.ibt.biocev.org 3.10.0-1160.42.2.el7.x86_64 #1 SMP Tue Sep 7
->>> 14:49:57 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
->>
->>
->> This is a vendor kernel and it is likely missing multiple fixes to our
->> ENOSPC machinery. Best advice is to update to some upstream kernel.
->>
+>   WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
+>   WARNING:   Metadata: single, raid1 
 > 
-> Do you recommend a specific kernel version?
+> The easiest way to reproduce is "mkfs.btrfs -f -R free-space-tree -m dup
+> -d dup".
+> 
+> It turns out that, the old _recow_root() can not handle tree levels > 0,
+> while with newer free space tree creation timing, the free space tree
+> can reach level 1 or higher.
+> 
+> To fix the problem, Patch 2 will do the proper full tree re-CoW, with
+> extra transaction commitment to make sure all free space tree get
+> re-CoWed.
 
-Latest stable, if this is considered too bleeding edge, at least latest
-LTS - 5.10 based one.
-
-> 
-> I will probably have to compile kernel from source on my CentOS 7, or
-> can I use ELrepo (that would be an easier method for me)?
-
-I'm not familiar with what elrepo provides so can't say.
-
-> 
-> Thank you
-> 
-> Regards,
-> Michal Strnad
-> 
+The extra commit breaks assumptions of test misc/038 that looks up the
+backup roots in particular slot(s). I already had to fix it once due to
+the additional commit with free space tree. Now it broke again, the test
+is too fragle, I'm not sure we want to keep doing the whack-a-mole.
