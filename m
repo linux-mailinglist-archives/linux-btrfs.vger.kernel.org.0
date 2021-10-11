@@ -2,98 +2,183 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7ADB428C93
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 14:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D698428C94
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Oct 2021 14:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236415AbhJKMI5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Oct 2021 08:08:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52146 "EHLO
+        id S236419AbhJKMI7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Oct 2021 08:08:59 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52182 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236368AbhJKMI5 (ORCPT
+        with ESMTP id S236420AbhJKMI6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:08:57 -0400
+        Mon, 11 Oct 2021 08:08:58 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8529521C95
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 12:06:56 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 134BE21C95
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 12:06:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633954016; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=ygVRHdJB43HHOnOIyjbjpV9yDTzo+si+3yU2VdzxbXY=;
-        b=R7jELgYBf5WAbtOBEbgeQsXuwqaODnGL8OqLpQRtZ5EENQkgHv3tRAPxGdFa6Fg1VR9sLi
-        hGmY+8PtjHb1l7/Da8a+Vy1F+9VxmRvfxjPMtUXi9S6wrnaBhwtDCRTe4D7GdQTgHp7x5X
-        V3u7maVFwmowzyZjspczyhHz54HeEc0=
+        t=1633954018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mhLaKSLoBZni/hGkx4jdrs+hVw+5Q0TkItdGwb4OpjQ=;
+        b=AuxxrnMtCRrhOqfxV73vrL8SOdthJ4W1skHd89W09Sa+alBz4eLVdKNNHnHCSzF/rQHdK6
+        hwDVjcNrFp123uzjRfEVy9KSrlucQ0hwmibk1Gp574/dfVk+erPtR1Zv1eB1tgUBi8SMws
+        EytT2FF0WGWpRKfxAp7NHLmn0VaOeAk=
 Received: from adam-pc.lan (wqu.tcp.ovpn2.nue.suse.de [10.163.34.62])
-        by relay2.suse.de (Postfix) with ESMTP id 9288CA3B83
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 12:06:55 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 1D608A3B89
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 12:06:56 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 0/3] btrfs-progs: mkfs: make sure we can clean up all temporary chunks
-Date:   Mon, 11 Oct 2021 20:06:47 +0800
-Message-Id: <20211011120650.179017-1-wqu@suse.com>
+Subject: [PATCH v2 1/3] btrfs-progs: rename @data parameter to @profile in extent allocation path
+Date:   Mon, 11 Oct 2021 20:06:48 +0800
+Message-Id: <20211011120650.179017-2-wqu@suse.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211011120650.179017-1-wqu@suse.com>
+References: <20211011120650.179017-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a bug report that with certain mkfs options, mkfs.btrfs may
-fail to cleanup some temporary chunks, leading to "btrfs filesystem df"
-warning about multiple profiles:
+In function btrfs_reserve_extent(), we call find_free_extent() passing
+"u64 profile" into "int data".
 
-  WARNING: Multiple block group profiles detected, see 'man btrfs(5)'.
-  WARNING:   Metadata: single, raid1 
+This is definitely a width reduction, but when looking further into the
+code, it's more serious than that, in fact the "int data" parameter is
+not really to indicate whether it's data extent, but really a block
+group profile (with block group type).
 
-The easiest way to reproduce is "mkfs.btrfs -f -R free-space-tree -m dup
--d dup".
+This is not only width reduction, but also confusing.
 
-It turns out that, the old _recow_root() can not handle tree levels > 0,
-while with newer free space tree creation timing, the free space tree
-can reach level 1 or higher.
+Thankfully so for we don't have any BLOCK_GROUP bits beyond 32 bits, so
+the width reduction is not causing a big problem.
 
-To fix the problem, Patch 2 will do the proper full tree re-CoW, with
-extra transaction commitment to make sure all free space tree get
-re-CoWed.
+This patch will rename the "int data" parameter to a more proper one,
+"u64 profile" in all involved call paths.
 
-The 3rd patch will do the extra verification during mkfs-tests.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ kernel-shared/extent-tree.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
-The first patch is just to fix a confusing parameter which also caused
-u64 -> int width reduction and can be problematic in the future.
-
-Changelog:
-v2:
-- Remove a duplicated recow_roots() call in create_raid_groups()
-  This call makes no difference as we will later commit transaction
-  and manually call recow_roots() again.
-  Remove such duplicated call to save some time.
-
-- Replace the btrfs_next_sibling_tree_block() with btrfs_next_leaf()
-  Since we're always handling leaves, there is no need for
-  btrfs_next_sibling_tree_block()
-
-- Work around a kernel bug which may cause false alerts
-  For single device RAID0, btrfs kernel is not respecting it, and will
-  allocate new chunks using SINGLE instead.
-  This can be very noisy and cause false alerts, and not always
-  reproducible, depending on how fast kernel creates new chunks.
-
-  Work around it by mounting the RO before calling "btrfs fi df".
-
-  The kernel bug needs to be investigated and fixed.
-
-
-Qu Wenruo (3):
-  btrfs-progs: rename @data parameter to @profile in extent allocation
-    path
-  btrfs-progs: mkfs: recow all tree blocks properly
-  btrfs-progs: mfks-tests: make sure mkfs.btrfs cleans up temporary
-    chunks
-
- kernel-shared/extent-tree.c                 | 26 +++---
- mkfs/main.c                                 | 90 ++++++++++++++++++---
- tests/mkfs-tests/001-basic-profiles/test.sh | 16 +++-
- 3 files changed, 104 insertions(+), 28 deletions(-)
-
+diff --git a/kernel-shared/extent-tree.c b/kernel-shared/extent-tree.c
+index 9c6d17a52a24..8e0614e033fa 100644
+--- a/kernel-shared/extent-tree.c
++++ b/kernel-shared/extent-tree.c
+@@ -54,7 +54,7 @@ static int __free_extent(struct btrfs_trans_handle *trans,
+ 			 u64 owner_offset, int refs_to_drop);
+ static struct btrfs_block_group *
+ btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group
+-		       *hint, u64 search_start, int data, int owner);
++		       *hint, u64 search_start, u64 profile, int owner);
+ 
+ static int remove_sb_from_cache(struct btrfs_root *root,
+ 				struct btrfs_block_group *cache)
+@@ -264,7 +264,7 @@ static int block_group_bits(struct btrfs_block_group *cache, u64 bits)
+ 
+ static int noinline find_search_start(struct btrfs_root *root,
+ 			      struct btrfs_block_group **cache_ret,
+-			      u64 *start_ret, int num, int data)
++			      u64 *start_ret, int num, u64 profile)
+ {
+ 	int ret;
+ 	struct btrfs_block_group *cache = *cache_ret;
+@@ -282,7 +282,7 @@ again:
+ 		goto out;
+ 
+ 	last = max(search_start, cache->start);
+-	if (cache->ro || !block_group_bits(cache, data))
++	if (cache->ro || !block_group_bits(cache, profile))
+ 		goto new_group;
+ 
+ 	if (btrfs_is_zoned(root->fs_info)) {
+@@ -339,7 +339,7 @@ wrapped:
+ 
+ static struct btrfs_block_group *
+ btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group
+-		       *hint, u64 search_start, int data, int owner)
++		       *hint, u64 search_start, u64 profile, int owner)
+ {
+ 	struct btrfs_block_group *cache;
+ 	struct btrfs_block_group *found_group = NULL;
+@@ -357,7 +357,7 @@ btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group
+ 	if (search_start) {
+ 		struct btrfs_block_group *shint;
+ 		shint = btrfs_lookup_block_group(info, search_start);
+-		if (shint && !shint->ro && block_group_bits(shint, data)) {
++		if (shint && !shint->ro && block_group_bits(shint, profile)) {
+ 			used = shint->used;
+ 			if (used + shint->pinned <
+ 			    div_factor(shint->length, factor)) {
+@@ -365,7 +365,7 @@ btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group
+ 			}
+ 		}
+ 	}
+-	if (hint && !hint->ro && block_group_bits(hint, data)) {
++	if (hint && !hint->ro && block_group_bits(hint, profile)) {
+ 		used = hint->used;
+ 		if (used + hint->pinned <
+ 		    div_factor(hint->length, factor)) {
+@@ -390,7 +390,7 @@ again:
+ 		last = cache->start + cache->length;
+ 		used = cache->used;
+ 
+-		if (!cache->ro && block_group_bits(cache, data)) {
++		if (!cache->ro && block_group_bits(cache, profile)) {
+ 			if (full_search)
+ 				free_check = cache->length;
+ 			else
+@@ -2177,7 +2177,7 @@ static int noinline find_free_extent(struct btrfs_trans_handle *trans,
+ 				     u64 search_start, u64 search_end,
+ 				     u64 hint_byte, struct btrfs_key *ins,
+ 				     u64 exclude_start, u64 exclude_nr,
+-				     int data)
++				     u64 profile)
+ {
+ 	int ret;
+ 	u64 orig_search_start = search_start;
+@@ -2198,11 +2198,11 @@ static int noinline find_free_extent(struct btrfs_trans_handle *trans,
+ 		if (!block_group)
+ 			hint_byte = search_start;
+ 		block_group = btrfs_find_block_group(root, block_group,
+-						     hint_byte, data, 1);
++						     hint_byte, profile, 1);
+ 	} else {
+ 		block_group = btrfs_find_block_group(root,
+ 						     trans->block_group,
+-						     search_start, data, 1);
++						     search_start, profile, 1);
+ 	}
+ 
+ 	total_needed += empty_size;
+@@ -2217,7 +2217,7 @@ check_failed:
+ 						       orig_search_start);
+ 	}
+ 	ret = find_search_start(root, &block_group, &search_start,
+-				total_needed, data);
++				total_needed, profile);
+ 	if (ret)
+ 		goto new_group;
+ 
+@@ -2255,7 +2255,7 @@ check_failed:
+ 		goto new_group;
+ 	}
+ 
+-	if (!(data & BTRFS_BLOCK_GROUP_DATA)) {
++	if (!(profile & BTRFS_BLOCK_GROUP_DATA)) {
+ 		if (check_crossing_stripes(info, ins->objectid, num_bytes)) {
+ 			struct btrfs_block_group *bg_cache;
+ 			u64 bg_offset;
+@@ -2295,7 +2295,7 @@ new_group:
+ 	}
+ 	cond_resched();
+ 	block_group = btrfs_find_block_group(root, block_group,
+-					     search_start, data, 0);
++					     search_start, profile, 0);
+ 	goto check_failed;
+ 
+ error:
 -- 
 2.33.0
 
