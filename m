@@ -2,162 +2,193 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F1A42A4B6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 14:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B98D42A501
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 14:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236367AbhJLMlO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Oct 2021 08:41:14 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:37251 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236671AbhJLMjx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:39:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1634042271; x=1665578271;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2+Ky5Zj3mT/2LEXE3jbD6zENYWokmd8KxxUmVPcUd/A=;
-  b=b7DRXT9GPnmVuxHcTa6+o1/S1ZmR/uLBWkfSVpa8mQ+D6VkvOiXEAArQ
-   MgQFP3+oDCLoJFhy9J/PfEiVVPC05BiGg25jTWx3NfSorj3SDJ9FMc4Xn
-   bEjaWkxOOp69KVyWfKi2xTksCHzZN1TO6Z10Z49+jscrsIz5uXb7bg007
-   HKz+X4Vc256xf/Tzzef8HDAkJg4aDJ7RzJCj6Gr2U3q9QlfG3qDG4qoAM
-   +c2LAcNAObRV5XxPfzNaUw23WNWEj6ebUHFDNtmkMJz08XmdtSDIXG6L/
-   KUTWzWxvj5iBbSX2Qoh0k36kdA5RJT8noe/kf5UhZqUfY0quBbmn9jVA5
-   g==;
-X-IronPort-AV: E=Sophos;i="5.85,367,1624291200"; 
-   d="scan'208";a="181624109"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Oct 2021 20:37:50 +0800
-IronPort-SDR: ReDFShGEwZ+sE+BuYQ6lDpYZ3ZJ7uiDQMBlAc+EPFNMUOIUvKDH5q0g350PoKtDhFgQXMs51BR
- 1o4P2FBrJHsA5BCVyypBd6wg+/8EGeGJFM/t0/yYVPbCDB6hCsXNvI5VYgCmQQMj0LAKUPfug8
- GXecyB9ZtmJQ1AVuEHcGORfUl9+tJawMNq3a+JrrsrHsYgti5+2KuZ99lSVvTWABxQe3tXmfUO
- iOs9xcD+QlVXmHOdJpKU6LvP5Sx+m5goE2ZdvBKj00DQDRijpkP0H1rE7GjVvDFX5CgZviRN27
- CM/28kitvrKCurS/gbnlCpyW
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 05:13:38 -0700
-IronPort-SDR: /3kEPxrOZhtpDXghxK32RkikHqhxS/HLAQfJPQptx58UYG2A+8fRGBJndOcksSgBH/xL7mImNO
- /4H/npyId2ACma226LBOt4VUvWXpn7dQscBXb27fghnI0oPPGh4nekbAMHUoOIcpVlG1G1OhjJ
- EZ1tUsyCyr6mYQU+TGYABF79p2e+SIZq96VoGusmvgpC8pmL8qLW4qbgeX4K5BcYVjWHMXli4X
- t19odgBA4BxOm0UiOljS9wksXywTN3cCF6WT7X1QdW3KS73y9flErkTzRDUOiSodrYS8hpXW+l
- RnI=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
-  by uls-op-cesaip01.wdc.com with ESMTP; 12 Oct 2021 05:37:50 -0700
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: zoned: use greedy gc for auto reclaim
-Date:   Tue, 12 Oct 2021 21:37:45 +0900
-Message-Id: <75b42490e41e7c7bf49c07c76fb93764a726c621.1634035992.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.32.0
+        id S236636AbhJLNBs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Oct 2021 09:01:48 -0400
+Received: from mout.gmx.net ([212.227.15.19]:56069 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236644AbhJLNBs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Oct 2021 09:01:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634043584;
+        bh=rP/0mCTXimGhqNWB790DoIN8q91sy/KFE+LyZ42QCfk=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=M+IpxHrernWPudmCuti9+0+ADbz5/1sGDsaQfH+6Or0R8ucAX/jsGU1ry7ncDjaKC
+         6CddUJOFOfbgc4dCbVi0EtQj3LDblMdtTGlyO/PiKcDDoAGLhMdvMYaVW+yMjh922Y
+         EsSmRjUdAk9cezHf7O5vIfk+ShHu4nb29IsDxi08=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MxUs7-1myA102Vcv-00xsSc; Tue, 12
+ Oct 2021 14:59:44 +0200
+Content-Type: multipart/mixed; boundary="------------ZviG02GsNzpNz59h4BdH8RHA"
+Message-ID: <3a913681-58ee-6fe0-c414-3e33deafdf1e@gmx.com>
+Date:   Tue, 12 Oct 2021 20:59:40 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: All Three Superblocks Damaged After Kernel Panic
+Content-Language: en-US
+To:     K Chapman <mailbox@kchapman.de>, linux-btrfs@vger.kernel.org
+References: <fa22-61644680-fb-24052640@191566126>
+ <91bf1af1-494b-ee3a-01c9-07a4ad836eb7@gmx.com>
+ <5d8526c2-425d-fef6-833f-2164c0bf754a@kchapman.de>
+ <cc88df9b-734f-be4a-dbe2-cbd14b321fef@gmx.com>
+ <8553dafa-14c5-b09f-d10f-83d995d062e0@kchapman.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <8553dafa-14c5-b09f-d10f-83d995d062e0@kchapman.de>
+X-Provags-ID: V03:K1:3re8wMRKNfcMSOoilg5Hnxs/N3T8+3MaGVUoidEiYs7pNVTxvDM
+ 5U2IULVcHsmV8wVgBcJVh4kcE+N33TQan0ZDMbAiIrvr+D8iRUuiNGpmJehSdClCpjTLldP
+ +onDeYorI7nhtKtC7u63z5QYSE/AZoOyeZ8H+xDOvqxgx6IH8qlq54ygq6VqIDAVFnIu67u
+ 8jO54VAx4qFh805Lu1F6w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eg6vzrgKxg0=:FRRTMmBXyX7cBN6rr8JqVE
+ PM3mDm1B5dEDdCzC2VIfdmwai/kRvXk9dMBQZ3HUD5ViBMOviRH5p+CGMZr6uRXhRuCYSO8tk
+ 3Kf5L2IIw95MqFYG9gNqgaoK7DS6c6h+qqhySJoj4CCqcWPJhsXOn+bokDk9nYxKX39WA6/ml
+ 4ZIKl/25PKE9xha3G3AQTEHyyr7UKF9PPo4SNiyph0hPknGKb9yXJA/EFXBylp0YUrKgQJbif
+ VSi6LZZbuyWkJgy/BsqQM8dF3OEdljbZ5R3jR6Mz8bEQ3oCx6eFCx3KPZSsuiEav/59jC7OoL
+ Nhv9VNwC12ZANfMRrrKIlFfJDPqNaZoMrBOgc+L5OA/WKOtQaC0GswLLTLFMD8VBjw3tXqNNj
+ 3xX9QQ6+BkqtJ878WDOkdEok1HS6/I1hQHs+Vx8S2LkvLkep6rqdisdg9aKqbbCeXpltxxvcb
+ jJo7PFvQJFliw8jnjd1L/aIX+iL+Mt7SsyPgavF3+4J9Yuwy9ILyrTArdbx3AD3vBNuy7c3aT
+ KaV8ti3sIpi4lQest3k1smjuvnreqgaw0TvDE2I00d+ITw2hJFcV41+nsdjxo6puemjLOdOiB
+ CwhF+wWTCmTKwU+rV/txYhvA+lT35QgzypFtUCrfsQwHj6+cs2Hd+pXC881rQHZTuUYxHBQs2
+ j2q6UfFGrDTVMzN3Nr1cgvGCr/U4TJbe+nc8TLjqpiapfkPSD1KRKut14rztwYNNs1wL75e7t
+ OkkvAVctxQaiLAEVldkKSTcJFB286gs/xuznxZNcejXXfglCeCCHwyOL49WHGvzwAWtmjcdak
+ BSPGiJ2cSvpAR4+6RpUxZupPJ8CMIkOfHIp1UqhCmD6cvrjoeTOqPUi4qPH9H3XiIHw0SXKfa
+ 35KzhjcV0totqI3iKw3LMkkp+JrSu+1/T16JSRE+/IP8EUJWqDtNsJZCcxXTv0WVGilq7uIhD
+ JyVC28ySobaUrsdn2MRbeesQHK96ETSgY+JbVlYX15PjVCQGhEDfas7uj0mW7KaSwEHBWPn2a
+ fQdOsyeVqyzn2KbZ8Fq6JVAuO2in+E/GtefmIa3VDFO7GsraIRj3X+cilGeXMJ3UgwJVAbZIe
+ 64oG50n2yVlTL4=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently auto reclaim of unusable zones reclaims the block-groups in the
-order they have been added to the reclaim list.
+This is a multi-part message in MIME format.
+--------------ZviG02GsNzpNz59h4BdH8RHA
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Change this to a greedy algorithm by sorting the list so we have the
-block-groups with the least amount of valid bytes reclaimed first.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
----
-Changes since v1:
--  Changed list_sort() comparator to 'boolean' style
+On 2021/10/12 18:35, K Chapman wrote:
+> Qu,
+>
+> RE: If you don't have the tool to do it by your own, please send the 4K
+> super block (dd if=3D/dev/mapper/home bs=3D1 skip=3D65536 count=3D4096
+> of=3D/tmp/sb.dump) to me so I could do that for you.
+>
+> See attached.
 
-Changes since RFC:
-- Updated the patch description
-- Don't sort the list under the spin_lock (David)
----
- fs/btrfs/block-group.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+Re-csumed super block is attached.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 46fdef7bbe20..e9092eba71fe 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1,5 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#include <linux/list_sort.h>
-+
- #include "misc.h"
- #include "ctree.h"
- #include "block-group.h"
-@@ -1486,6 +1488,21 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
- 	spin_unlock(&fs_info->unused_bgs_lock);
- }
- 
-+/*
-+ * We want block groups with a low number of used bytes to be in the beginning
-+ * of the list, so they will get reclaimed first.
-+ */
-+static int reclaim_bgs_cmp(void *unused, const struct list_head *a,
-+			   const struct list_head *b)
-+{
-+	const struct btrfs_block_group *bg1, *bg2;
-+
-+	bg1 = list_entry(a, struct btrfs_block_group, bg_list);
-+	bg2 = list_entry(b, struct btrfs_block_group, bg_list);
-+
-+	return bg1->used > bg2->used;
-+}
-+
- void btrfs_reclaim_bgs_work(struct work_struct *work)
- {
- 	struct btrfs_fs_info *fs_info =
-@@ -1493,6 +1510,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 	struct btrfs_block_group *bg;
- 	struct btrfs_space_info *space_info;
- 	LIST_HEAD(again_list);
-+	LIST_HEAD(reclaim_list);
- 
- 	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
- 		return;
-@@ -1510,17 +1528,20 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 	}
- 
- 	spin_lock(&fs_info->unused_bgs_lock);
--	while (!list_empty(&fs_info->reclaim_bgs)) {
-+	list_splice_init(&fs_info->reclaim_bgs, &reclaim_list);
-+	spin_unlock(&fs_info->unused_bgs_lock);
-+
-+	list_sort(NULL, &reclaim_list, reclaim_bgs_cmp);
-+	while (!list_empty(&reclaim_list)) {
- 		u64 zone_unusable;
- 		int ret = 0;
- 
--		bg = list_first_entry(&fs_info->reclaim_bgs,
-+		bg = list_first_entry(&reclaim_list,
- 				      struct btrfs_block_group,
- 				      bg_list);
- 		list_del_init(&bg->bg_list);
- 
- 		space_info = bg->space_info;
--		spin_unlock(&fs_info->unused_bgs_lock);
- 
- 		/* Don't race with allocators so take the groups_sem */
- 		down_write(&space_info->groups_sem);
-@@ -1568,12 +1589,12 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 				  bg->start);
- 
- next:
--		spin_lock(&fs_info->unused_bgs_lock);
- 		if (ret == -EAGAIN && list_empty(&bg->bg_list))
- 			list_add_tail(&bg->bg_list, &again_list);
- 		else
- 			btrfs_put_block_group(bg);
- 	}
-+	spin_lock(&fs_info->unused_bgs_lock);
- 	list_splice_tail(&again_list, &fs_info->reclaim_bgs);
- 	spin_unlock(&fs_info->unused_bgs_lock);
- 	mutex_unlock(&fs_info->reclaim_bgs_lock);
--- 
-2.32.0
+It passes my local test using btrfs-ins-dump-super.
+Thus the csum should be correct.
+
+Wish you good luck salvaging your data.
+
+I would try mount with "-o ro,rescue=3Dall" first, if no luck then
+btrfs-restore --dry-run to see what can be salvaged.
+
+But I doubt how many can be salvaged, consider how corrupted the backup
+super blocks are.
+
+Thanks,
+Qu
+
+>
+> RE: Power loss and data writes.
+>
+> I believe the possibility is present but remote. I have not had a panic
+> on x86 in many years during general work, this is more of an indication
+> of some sort of problem than simply removing power at a bad time. It
+> seems more likely, that for whatever reason, the kernel wrote spurious
+> data to certain sectors, it will be interesting to see.
+>
+> Thank you!
+>
+> Kyle C.
+
+--------------ZviG02GsNzpNz59h4BdH8RHA
+Content-Type: application/octet-stream; name="sb.dump"
+Content-Disposition: attachment; filename="sb.dump"
+Content-Transfer-Encoding: base64
+
+yt72HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC9WHKtj+5NkLBIuBEgzjJUAAABAAAA
+AAABAAAAAAAAAF9CSFJmU19NHnUCAAAAAAAAQL7YqQMAAAAAUAEAAAAAAAAAAAAAAAAAAAAA
+AAAAAABgfYGjAwAAAIAiMJwDAAAGAAAAAAAAAAEAAAAAAAAAABAAAABAAAAAQAAAABAAAIEA
+AAAgXQIAAAAAAAAAAAAAAAAAAAAAAAAAAABhAQAAAAAAAAAAAQEAAQAAAAAAAAAAYH2BowMA
+AAAAbcGiAwAAABAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR1k8
+TWidTh6jENx7irJsUb1Ycq2P7k2QsEi4ESDOMlQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAHnUCAAAAAAAedQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAABAAAAAAAA5AAAUAEAAAAAAACAAAAAAAACAAAAAAAAAAAAAQAAAAAAIgAAAAAAAAAAAAEA
+AAABAAAQAAACAAEAAQAAAAAAAAAAAFABAAAAAEdZPE1onU4eoxDce4qybFEBAAAAAAAAAAAA
+0AEAAAAAR1k8TWidTh6jENx7irJsUQAAAAHzGjiyKJvHvUumx985AaJSAAAAAQAAEAAAAgAB
+AAEAAAAAAAAAAABQAQAAAABHWTxNaJ1OHqMQ3HuKsmxRAQAAAAAAAAAAANABAAAAAEdZPE1o
+nU4eoxDce4qybFEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICe
+2KkDAAAddQIAAAAAAAAAUAEAAAAAIF0CAAAAAAAAgJjYqQMAAB11AgAAAAAAAMCx2KkDAAAe
+dQIAAAAAAADA6sGpAwAAGXUCAAAAAAAAQLTYqQMAAB51AgAAAAAAAGB9gaMDAAAAgCIwnAMA
+AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQIDAQMAAAAAAAAA
+AAAAAEC+2KkDAAAedQIAAAAAAAAAUAEAAAAAIF0CAAAAAAAAwLfYqQMAAB51AgAAAAAAAEDM
+2KkDAAAedQIAAAAAAADA6sGpAwAAGXUCAAAAAAAAgLjYqQMAAB51AgAAAAAAAGB9gaMDAAAA
+gCIwnAMAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQIDAQMA
+AAAAAAAAAAAAAAA+y6kDAAAbdQIAAAAAAAAAUAEAAAAAIF0CAAAAAAAAwDnLqQMAABt1AgAA
+AAAAAEBIy6kDAAAbdQIAAAAAAADA6sGpAwAAGXUCAAAAAAAAwDrLqQMAABt1AgAAAAAAAGB9
+gaMDAAAAEKkznAMAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB
+AQIDAQMAAAAAAAAAAAAAAABn2KkDAAAcdQIAAAAAAAAAUAEAAAAAIF0CAAAAAAAAQLXUqQMA
+ABx1AgAAAAAAAAAq0KkDAAAcdQIAAAAAAADA6sGpAwAAGXUCAAAAAAAAwLTVqQMAABx1AgAA
+AAAAAGB9gaMDAAAAQCIwnAMAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAABAQIDAQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+--------------ZviG02GsNzpNz59h4BdH8RHA--
 
