@@ -2,142 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B1142A3B1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 13:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FE342A494
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 14:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236282AbhJLL6Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Oct 2021 07:58:16 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48834 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbhJLL6Q (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Oct 2021 07:58:16 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E6B8C2207C;
-        Tue, 12 Oct 2021 11:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634039773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TENzTWVJsjMW9ZpO8ra7Upz0sSJQHnT3YroIewM3hqk=;
-        b=c4HDN2KcbQnauerklwOrUjw7+caLlOJwuyoon8w7d0SmSUlTarYgDn4Vjy2rT+aiJQYu3h
-        kWtFuGr5fwazTTjjes/Im7m8KwLyEWMiXUCsoXJKLPmqA6xRHHxAKpKmM0HTmm9uMbyqlw
-        RNHk4+afJe5WoiDjNLtvoLz/5n4zpqo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B5B0E13B2A;
-        Tue, 12 Oct 2021 11:56:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id k+TtKd13ZWFpNAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 12 Oct 2021 11:56:13 +0000
-Subject: Re: [PATCH] btrfs-progs: print-tree: fix chunk/block group flags
- output
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211012021719.18496-1-wqu@suse.com>
- <b331b0a3-8119-d66e-c49e-742262ad4a9f@suse.com>
- <504c9584-e760-54a4-7ae4-1c4f26ec5323@suse.com>
- <32c39029-8434-e3f9-0d72-740fe6f44bff@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <a643cdea-5130-c44e-ce4f-dc8fa23e7481@suse.com>
-Date:   Tue, 12 Oct 2021 14:56:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236323AbhJLMhi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Oct 2021 08:37:38 -0400
+Received: from kchapman.de ([185.230.160.25]:34414 "EHLO kchapman.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232900AbhJLMhh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:37:37 -0400
+Received: from [10.68.21.78] (unknown [141.70.80.5])
+        by kchapman.de (Postfix) with ESMTPSA id 0E0DF60056;
+        Tue, 12 Oct 2021 14:35:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kchapman.de;
+        s=20180107; t=1634042135;
+        bh=GQf56ZT8poThOk5MGDXz1Mlugu0JPmwpwt3qffV05GQ=;
+        h=Date:Subject:To:References:From:In-Reply-To;
+        b=QeS/p77Fn3fHvGf+GEc8F5tSbtkBC5Prbii/AQw9TewnEbjaZliYOIodpWmVM4uHP
+         9uSdF0Nsqu0PAwiy6yvHTAVLf47n7VbPftMAXhKylrhkvTZTk8s4DVctkW1ZavX8FZ
+         fqUOl5Jrqh14CnnxOKWHKsAKE3si+Y4+Fw5wbkqepdngw3RQFxwfK4EMqab9eQWi0B
+         dTXSR9pDCOLHyPAKG7OMrwcwh5b0PSMekzKB8RQLfV+IxvAyZ/JIN2NWDgtAzG3JNg
+         KLyT+Rq5dWrdxhzr9C5Pwp9ZUOjbtctdssThriTCVlVHLQ7KrbaaXX52v1PAp3qUhW
+         aGtNfZO0g9Rwg==
+Content-Type: multipart/mixed; boundary="------------SppwQR5moo0ouYokb54OYUhF"
+Message-ID: <8553dafa-14c5-b09f-d10f-83d995d062e0@kchapman.de>
+Date:   Tue, 12 Oct 2021 12:35:36 +0200
 MIME-Version: 1.0
-In-Reply-To: <32c39029-8434-e3f9-0d72-740fe6f44bff@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: All Three Superblocks Damaged After Kernel Panic
+Content-Language: en-DK
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <fa22-61644680-fb-24052640@191566126>
+ <91bf1af1-494b-ee3a-01c9-07a4ad836eb7@gmx.com>
+ <5d8526c2-425d-fef6-833f-2164c0bf754a@kchapman.de>
+ <cc88df9b-734f-be4a-dbe2-cbd14b321fef@gmx.com>
+From:   K Chapman <mailbox@kchapman.de>
+In-Reply-To: <cc88df9b-734f-be4a-dbe2-cbd14b321fef@gmx.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------SppwQR5moo0ouYokb54OYUhF
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Qu,
 
-On 12.10.21 г. 14:42, Qu Wenruo wrote:
-> 
-> 
-> On 2021/10/12 18:38, Nikolay Borisov wrote:
->>
->>
->> On 12.10.21 г. 13:35, Nikolay Borisov wrote:
->>> <snip>
->>>
->>>>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>>   kernel-shared/print-tree.c | 47
->>>> +++++++++++++++++++++++---------------
->>>>   1 file changed, 29 insertions(+), 18 deletions(-)
->>>>
->>>> diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
->>>> index 67b654e6d2d5..39655590272e 100644
->>>> --- a/kernel-shared/print-tree.c
->>>> +++ b/kernel-shared/print-tree.c
->>>> @@ -159,40 +159,51 @@ static void print_inode_ref_item(struct
->>>> extent_buffer *eb, u32 size,
->>>>       }
->>>>   }
->>>>
->>>> -/* Caller should ensure sizeof(*ret)>=21 "DATA|METADATA|RAID10" */
->>>> +/* The minimal length for the string buffer of block group/chunk
->>>> flags */
->>>> +#define BG_FLAG_STRING_LEN    64
->>>> +
->>>>   static void bg_flags_to_str(u64 flags, char *ret)
->>>>   {
->>>>       int empty = 1;
->>>> +    char profile[BG_FLAG_STRING_LEN] = {};
->>>>       const char *name;
->>>>
->>>> +    ret[0] = '\0';
->>>>       if (flags & BTRFS_BLOCK_GROUP_DATA) {
->>>>           empty = 0;
->>>> -        strcpy(ret, "DATA");
->>>> +        strncpy(ret, "DATA", BG_FLAG_STRING_LEN);
->>>
->>> I find using strncpy rather odd, it guarantees it will copy num
->>> characters, and if source is smaller than dest, it will overwrite the
->>> rest with 0. So what happens is you are copying 4 chars here, and
->>> writing 60 zeros. Frankly I think it's better to use >>
->>> snprintf(ret, BG_FLAG_STRING_LEN, "DATA");
-> 
-> Well, you just told me a new fact, strncpy() would set the the rest bytes.
-> 
-> I thought it would just add the terminal '\0' if it's not reaching the
-> size limit.
-> 
-> But you're right, strncpy() would reset the padding bytes to zero.
+RE: If you don't have the tool to do it by your own, please send the 4K 
+super block (dd if=/dev/mapper/home bs=1 skip=65536 count=4096 
+of=/tmp/sb.dump) to me so I could do that for you.
 
-The thing is strncpy doesn't really set final NULL by definition. I.e if
-source is larger than N, then dest won't be null terminated.
+See attached.
 
-<snip>
+RE: Power loss and data writes.
 
-> 
->>>
->>>> +            profile[i] = toupper(profile[i]);
->>>> +    }
->>>> +    if (profile[0]) {
->>
->> Actually profile[0] here is guaranteed to be nonul - it's either
->> UNKNOWN... or whatever btrfs_bg_type_to_raid_name returned. So you can
->> simply use the strncat functions without needing the if.
-> 
-> You forgot SINGLE type.
-> 
-> In that case, profile[0] can be "\0".
+I believe the possibility is present but remote. I have not had a panic 
+on x86 in many years during general work, this is more of an indication 
+of some sort of problem than simply removing power at a bad time. It 
+seems more likely, that for whatever reason, the kernel wrote spurious 
+data to certain sectors, it will be interesting to see.
 
-How does that happen? If btrfs_bg_type_to_raid_name return NULL then
-prfile contains UNKNWON. OTOH if the 'else' is executed then either
-profile contains "single" or whatever btrfs_bg_type_to_raid_name
-returned. So profile can never be NULL. What am I missing?
+Thank you!
 
-<snip>
+Kyle C.
+
+--------------SppwQR5moo0ouYokb54OYUhF
+Content-Type: application/octet-stream; name="sb.dump"
+Content-Disposition: attachment; filename="sb.dump"
+Content-Transfer-Encoding: base64
+
+xZCD/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC9WHKtj+5NkLBIuBEgzjJUAAABAAAA
+AAABAAAAAAAAAF9CSFJmU19NHnUCAAAAAAAAQL7YqQMAAAAAUAEAAAAAAAAAAAAAAAAAAAAA
+AAAAAABgfYGjAwAAAIAiMJwDAAAGAAAAAAAAAAEAAAAAAAAAABAAAABAAAAAQAAAABAAAIEA
+AAAgXQIAAAAAAAAAAAAAAAAAAAAAAAAAAABhAQAAAAAAAAAAAQEAAQAAAAAAAAAAYH2BowMA
+AAAAbcGiAwAAABAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR1k8
+TWidTh6jENx7irJsUb1Ycq2P7k2QsEi4ESDOMlQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAHnUCAAAAAAAedQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAABAAAAAAAA5AAAUAEAAAAAAACAAAAAAAACAAAAAAAAAAAAAQAAAAAAIgAAAAAAAAAAAAEA
+AAABAAAQAAACAAEAAQAAAAAAAAAAAFABAAAAAEdZPE1onU4eoxDce4qybFEBAAAAAAAAAAAA
+0AEAAAAAR1k8TWidTh6jENx7irJsUQAAAAHzGjiyKJvHvUumx985AaJSAAAAAQAAEAAAAgAB
+AAEAAAAAAAAAAABQAQAAAABHWTxNaJ1OHqMQ3HuKsmxRAQAAAAAAAAAAANABAAAAAEdZPE1o
+nU4eoxDce4qybFEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICe
+2KkDAAAddQIAAAAAAAAAUAEAAAAAIF0CAAAAAAAAgJjYqQMAAB11AgAAAAAAAMCx2KkDAAAe
+dQIAAAAAAADA6sGpAwAAGXUCAAAAAAAAQLTYqQMAAB51AgAAAAAAAGB9gaMDAAAAgCIwnAMA
+AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQIDAQMAAAAAAAAA
+AAAAAEC+2KkDAAAedQIAAAAAAAAAUAEAAAAAIF0CAAAAAAAAwLfYqQMAAB51AgAAAAAAAEDM
+2KkDAAAedQIAAAAAAADA6sGpAwAAGXUCAAAAAAAAgLjYqQMAAB51AgAAAAAAAGB9gaMDAAAA
+gCIwnAMAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQIDAQMA
+AAAAAAAAAAAAAAA+y6kDAAAbdQIAAAAAAAAAUAEAAAAAIF0CAAAAAAAAwDnLqQMAABt1AgAA
+AAAAAEBIy6kDAAAbdQIAAAAAAADA6sGpAwAAGXUCAAAAAAAAwDrLqQMAABt1AgAAAAAAAGB9
+gaMDAAAAEKkznAMAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB
+AQIDAQMAAAAAAAAAAAAAAABn2KkDAAAcdQIAAAAAAAAAUAEAAAAAIF0CAAAAAAAAQLXUqQMA
+ABx1AgAAAAAAAAAq0KkDAAAcdQIAAAAAAADA6sGpAwAAGXUCAAAAAAAAwLTVqQMAABx1AgAA
+AAAAAGB9gaMDAAAAQCIwnAMAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAABAQIDAQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+--------------SppwQR5moo0ouYokb54OYUhF--
+
