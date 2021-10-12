@@ -2,75 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD69429DC7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 08:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1CA429DD7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 08:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbhJLGfV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Oct 2021 02:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbhJLGfU (ORCPT
+        id S233332AbhJLGjg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Oct 2021 02:39:36 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:32768 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233325AbhJLGje (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:35:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B6CC061570
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Oct 2021 23:33:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=L7Xns7v9ExXsL446nqC4LsLBm2J7QKFmCNR4J05xIh4=; b=TFbfosPoD0S+3QwCznPj7X6gQx
-        TGtYT/ZaDLJAtRyAtgU7idE1Bi9hS8edlF7ghmOwTeOCdFsWj0kp6CZQYIdg5C2GkTK/kNEmwWnrP
-        v5bcsKrJAAHQJAfD72lzkKnV9UPkvi5kBkxP8J22UfwNw71Ibm+mbjSPWK7rXoVVbo/W0maNt/c8z
-        J2nPvy/WsrSc0ZdZQH9lmDJSMjVdS9Y1dwRJu0CJz3GYcw3BVM2cyBClh7vibxQAw5xrhmgrHBEX5
-        N+nlLZFd6iXR1aFld/4pYPUoayGn91ddCrxcb6M1YszwxrvTOon5Nu4RrEJO54Ytfo1rocpyQ0qwH
-        Bt1m3U1A==;
-Received: from [2001:4bb8:199:73c5:f5ed:58c2:719f:d965] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1maBKN-006GgN-TT; Tue, 12 Oct 2021 06:32:11 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     josef@toxicpanda.com, dsterba@suse.com
+        Tue, 12 Oct 2021 02:39:34 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 67C061FF2A;
+        Tue, 12 Oct 2021 06:37:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634020650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qsMh/u2zjNnEFD52oF9t3BVjGYiQzocu62+WJG7p1X0=;
+        b=QomDbEMiKHfvuxZ3leW1qP1B3U8ge7Mc4QeK4FEE7lhoq87bu/Kh+vv9FPp4Pib/f57RHi
+        aAGN/2Yh8awhNH58T1FqwVJUsNz3bfkeq3XDgrrDdZG10GWsZ5T4OYjvQ5Yr9uS5llssYQ
+        moxoUNAYch6dUhJVXhhZzLnsoLQOrVE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29F1313A6F;
+        Tue, 12 Oct 2021 06:37:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JUSwByotZWEaGAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 12 Oct 2021 06:37:30 +0000
+Subject: Re: [PATCH] btrfs: use bvec_kmap_local in btrfs_csum_one_bio
+To:     Christoph Hellwig <hch@lst.de>, josef@toxicpanda.com,
+        dsterba@suse.com
 Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: use bvec_kmap_local in btrfs_csum_one_bio
-Date:   Tue, 12 Oct 2021 08:31:53 +0200
-Message-Id: <20211012063153.380185-1-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
+References: <20211012063153.380185-1-hch@lst.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <95fffdaa-baa5-f543-1b65-7aa8144598c7@suse.com>
+Date:   Tue, 12 Oct 2021 09:37:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211012063153.380185-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Using local kmaps slightly reduces the chances to stray writes, and
-the bvec interface cleans up the code a little bit.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/btrfs/file-item.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 0b9401a5afd33..b9a80fa37d54d 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -709,12 +709,12 @@ blk_status_t btrfs_csum_one_bio(struct btrfs_inode *inode, struct bio *bio,
- 				index = 0;
- 			}
- 
--			data = kmap_atomic(bvec.bv_page);
--			crypto_shash_digest(shash, data + bvec.bv_offset
--					    + (i * fs_info->sectorsize),
-+			data = bvec_kmap_local(&bvec);
-+			crypto_shash_digest(shash,
-+					    data + (i * fs_info->sectorsize),
- 					    fs_info->sectorsize,
- 					    sums->sums + index);
--			kunmap_atomic(data);
-+			kunmap_local(data);
- 			index += fs_info->csum_size;
- 			offset += fs_info->sectorsize;
- 			this_sum_bytes += fs_info->sectorsize;
--- 
-2.30.2
+On 12.10.21 г. 9:31, Christoph Hellwig wrote:
+> Using local kmaps slightly reduces the chances to stray writes, and
+> the bvec interface cleans up the code a little bit.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
