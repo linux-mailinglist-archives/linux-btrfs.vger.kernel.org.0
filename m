@@ -2,159 +2,179 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8901C429DF4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 08:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E81429E4A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 09:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233350AbhJLGtc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Oct 2021 02:49:32 -0400
-Received: from mout.gmx.net ([212.227.17.20]:52011 "EHLO mout.gmx.net"
+        id S233378AbhJLHJJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Oct 2021 03:09:09 -0400
+Received: from mout.gmx.net ([212.227.15.15]:53913 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233174AbhJLGta (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:49:30 -0400
+        id S232499AbhJLHJI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Oct 2021 03:09:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634021247;
-        bh=KzzFPNV/eNfgC0Uu+cypHotXTFCG0Pg+reTLGzzovsc=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=T7snZMc+tIsm4krNRlRifU4fX8cdp7P6cfnGSMt3wSO3CG/+tri+mxDcO8bVsNfJb
-         zdSBekRGLP9qsJTn1XVCxdDdSRW++gbaqdNZ7yD2y4dhSoQExUiSzM4AhEuTCTKOOl
-         KIMwGWifb2E416+a5i7vbreHLyiOoVy7vrJWSi7s=
+        s=badeba3b8450; t=1634022425;
+        bh=8Gr83iPktynhmp7CKIXzknprrhd8S1Tkc7Fsq6lmoOE=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=I+q57zioRjiEZgR4H2bIqhG5YokQ6DttBUOnmF3LRVGDL5XVPtSnLsmmO8Uh3ZTFt
+         qmw/igcsBIi9nyHCDXye0v6p6ZZYanBMxdtIV4mxr6aL51C9eUEI+1XS9wqhNLTQ0s
+         QUMQFRXTcaHedjC4gHNLNhQ9rqxu986BmttHSnCc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFsUp-1mX7x31On9-00HP0d; Tue, 12
- Oct 2021 08:47:26 +0200
-Message-ID: <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
-Date:   Tue, 12 Oct 2021 14:47:23 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MrQIv-1n4FVX2qzn-00oVIi; Tue, 12
+ Oct 2021 09:07:05 +0200
+Message-ID: <81faed76-e644-3d71-2021-3bee0a93913a@gmx.com>
+Date:   Tue, 12 Oct 2021 15:07:02 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.1
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
+Subject: Re: [PATCH v2 0/3] btrfs-progs: mkfs: make sure we can clean up all
+ temporary chunks
 Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Qu Wenruo <wqu@suse.com>
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com>
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20211011120650.179017-1-wqu@suse.com>
+ <c97120d6-d599-5882-57ef-6f7534660dda@suse.com>
+ <057ae017-d79f-183b-719e-7d8c11cb6600@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com>
+In-Reply-To: <057ae017-d79f-183b-719e-7d8c11cb6600@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Z/qrIGxZ8dsC72oO4sWCFuO2snf33YXPcnJUi2JjFIMAmCYtEzN
- ddBbtQXIaKQ65pf4g2BtXjy8RKWeAZNSFhwwUH4nIBs9o2bTh479IIn7FqNxXjWoBHXI06d
- P1JKuZVZ5gIQDDmqnww35gMiuZlyBBQ4Zja8qnvv1XBHPyGJRri7hIZ5dFEh/NG6w/0hzI7
- SFHGf0r0bbAEJpeZXuvGQ==
+X-Provags-ID: V03:K1:jKMeNgLJ6uuRt0DguE6Qbb8kNHPE/Yt1k7YG4HClKahC4OvFXCW
+ LwlhbfH59lbLnS38lDzz1vIYI0FxoYEs37Fv36ikO3GU2SPw2ykp5FMKm0cSC1KqkT12Cdg
+ aXIuIpGnzCA0WE7iaNuPdUv/KZIR381JGJL7V3zZKR87zDqAVE9qwMmuWuQ/lm1go5ie+li
+ vH0p8ijaTLhSMMVI93ZGQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vnWTLa3Rf8k=:2tr3Y9TCQ9oTSWRHR8UGC3
- v/2/rnEIMl3tNJJc+i/pMOQYPsDTz12DR3M9iGK0JgXbEI56fJbGDGl61gw+KqqhdErZ14zTX
- GDTpe1NOqCv2JgpvY84w6aXPt5a4Y4Mj2279VeK9Riv/mfzV/HRfBF2jUFAjqBqQ83o/BmjdK
- 0vJ1m63eDMCvCte3wnoRRfbys5kDffa511hsEozD4bE4DhJ0ILPmZwNFC7yMAlk7G4aGOANbp
- yVZh+UXU6sMBjR9d0wTFJaTYRInA6NagDDN7aMCX717lm9Bo7tJfSu7A2kD5mhHG5J5OnN+J3
- I58gQg5XcIlBlL6CaV+VP+8FSmFshPZ/IeVwR4hP/ogjLNsR67EKFzH3UH0z6iyHPROpXqW9s
- hOHSoK0efrjXBvlZLm8GiHXbVHkEaPEhBsF6wwYMIw7/sVbf9PL4ZXnJgYbJy6fqOKfdRQfL7
- 6R51qlvUthtXxqkufOzOUvA5863WKIWYc3rRqNOz/BNke4LpAkO+dY98CboP5QR+8x4dL6gVv
- jP/4xJ+kFAwFsvP2F0KVUEaLycUndU6FK9q0zPD6z3jkKHxEnTPYKlkfiv513HM4W+YNoc+D+
- pFPR1qB8utkgsk2xsBJJ+p35Aki4NEfLYY7ecRP/DmF/9e9XPCOHbroZL+rIgXToi+ZxXyYtZ
- TBT9AtYCg35pQYx2OhJb/JKxRJ6P3b+mHD+uJWOXfZz3iAItg4AdIvb2WZpf3Zk7lo7nf6ajj
- Yi3TrUqZut9gU40+BX6I5wkE2eQwucs60hVelgV8muGyhB2ZIXU9qojWndv4yPEXMsMKib+VA
- NJeuzpL4lTvOmsdSkyx+CkwGwvdOqyL1oFys4rWprXokSI9Q6N3rWrYmFx3FOvALVnyN/VbGA
- lvh39R2qw6D0PUXHQZb4XPAhzGuqIeWRkWOG2ZzWyp1sbjaG+p1EA1TBpjXoPJe5kCw7LXCws
- 1d6aO4AV00+1kvfVvjHk71s8HB1h7NX33nZtrOwyJJqltS91Vc5teb46qO3ljDZWU1eV7wqS/
- 2wdxeM8VpXgWvXccAHjWf8oo10nlXnYDWUR5te65GUG/VMG1pV+gQ2s5SgIk2lgTnik03ga3/
- EHWINctLUmKO5c=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CZhgv8QnG4E=:rbY3Yfo0Hm0ABimI9FpyHI
+ VKI0hLCbCyO1KRJIqBBpFNurvV9GpuZYWAt7Jjh6ONw3/FONOb/w/tzx9WdNAnMYJSz2O/4ug
+ lAvuzBPLtBpRffkGL3bfCHolyG9E5euXHD3AAVfrWD77bcEGUuTigC+yMwFXbvUKjLn/3COY6
+ HrOqoGbW2ZYYrZvKV5SnBIkiwwdNY/wYPwhLRQkBwx6H3snoBjMsnG8sTtNdXu9Qe5McJaXkn
+ ZjH6C5Up17bgXDAVR8h2I6y0CFFg9nYSV1jDiCXDTMKYujrOG65TSO+AMEGFX/Jca3QqlRxqT
+ lNqML2SrwshC/HoFWINu+Sva07U5AWcN5PfUP2HUFut11KWPsefn4tI2uwEj+9qs6q+RVh+u5
+ dcTucyfznUDcuLjendFAPA93Z+5IaWLhDgnWUx5qrssXlZ/CuI9KP6nUbJwH1r2GK5T75FDnd
+ HZy7R2AJnV1qlDCyUaQ2kwQ7pZUxMqBmtLJ2W5OHLpPVl88I3OvOZu2WbGNmKlOEQmUz7n5Nk
+ Ni9MVWOLzSI0saQBpU9T6TldM0hOPoaFEF9JNGu64bIS+i27m1oYiV8z1utGTau55spWg/8Td
+ wDoOROGFiWCHA3aB/xgO1JV6nIc6xDpzSJS2tIXbTuJh045t2IP/0NS7MAI/TT1KUdHYjfOtZ
+ EwX0bmynnTb7cdAJbsWlhxN+AIUZVGOuQXodjAe4eJeldv9L3uLiMdiIHvmDLzaeFq5uyJ613
+ KmqaYa6ure80G6oe7QHnI0tr9ax9551V4R2TOX0z33BxeZHrcbRtYx6pVbRnF3CUGCnyJhhIM
+ Nf+95vk7jbqbHjRNpdkU+A2yFdqG6a1PeYZ3pgtV177lguczA43TADSN36YlhWCveqCowDVj5
+ JtqcccJkmF1jTwmDWwFHZE80f+bHRo5Yvy7gw4oESe4xyRqKotxuxT+r6Vin59bG0oWJoTQON
+ Y+r0Dua/l+5dvcqpsenyKBxFn/x/tKIfZr3GyOxC/RTjWd/GG3T5BCLm3lIF5NWPMlbmlp9Ml
+ NDney7wfvXBIYtid7oRK6HPd2GxWxjMw7ai3n0fwywQrjrfeRWVhPgmXeKUJxppH32R6eB/UY
+ wijT55IMFaJBkE=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/10/12 13:25, Nikolay Borisov wrote:
+On 2021/10/11 20:14, Qu Wenruo wrote:
 >
 >
-> On 12.10.21 =D0=B3. 3:59, Chris Murphy wrote:
->> Linux version 5.14.9-300.fc35.aarch64 Fedora-Cloud-Base-35-20211004.n.0=
-.aarch64
->> [ 2164.477113] Unable to handle kernel paging request at virtual
->> address fffffffffffffdd0
->> [ 2164.483166] Mem abort info:
->> [ 2164.485300]   ESR =3D 0x96000004
->> [ 2164.487824]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->> [ 2164.493361]   SET =3D 0, FnV =3D 0
->> [ 2164.496336]   EA =3D 0, S1PTW =3D 0
->> [ 2164.498762]   FSC =3D 0x04: level 0 translation fault
->> [ 2164.503031] Data abort info:
->> [ 2164.509584]   ISV =3D 0, ISS =3D 0x00000004
->> [ 2164.516918]   CM =3D 0, WnR =3D 0
->> [ 2164.523438] swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000158=
-751000
->> [ 2164.533628] [fffffffffffffdd0] pgd=3D0000000000000000, p4d=3D0000000=
-000000000
->> [ 2164.543741] Internal error: Oops: 96000004 [#1] SMP
->> [ 2164.551652] Modules linked in: virtio_gpu virtio_dma_buf
->> drm_kms_helper cec fb_sys_fops syscopyarea sysfillrect sysimgblt
->> joydev virtio_net virtio_balloon net_failover failover vfat fat drm
->> fuse zram ip_tables crct10dif_ce ghash_ce virtio_blk qemu_fw_cfg
->> virtio_mmio aes_neon_bs
->> [ 2164.583368] CPU: 2 PID: 8910 Comm: kworker/u8:3 Not tainted
->> 5.14.9-300.fc35.aarch64 #1
->> [ 2164.593732] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/0=
-6/2015
->> [ 2164.603204] Workqueue: btrfs-delalloc btrfs_work_helper
->> [ 2164.611402] pstate: 80400005 (Nzcv daif +PAN -UAO -TCO BTYPE=3D--)
->> [ 2164.620165] pc : submit_compressed_extents+0x38/0x3d0
->
-> Qu isn't this the subpage bug you narrowed down a couple of days ago ?
+> On 2021/10/11 20:10, Nikolay Borisov wrote:
+>>
+>>
+>> On 11.10.21 =D0=B3. 15:06, Qu Wenruo wrote:
+>>> There is a bug report that with certain mkfs options, mkfs.btrfs may
+>>> fail to cleanup some temporary chunks, leading to "btrfs filesystem df=
+"
+>>> warning about multiple profiles:
+>>>
+>>> =C2=A0=C2=A0 WARNING: Multiple block group profiles detected, see 'man=
+ btrfs(5)'.
+>>> =C2=A0=C2=A0 WARNING:=C2=A0=C2=A0 Metadata: single, raid1
+>>>
+>>> The easiest way to reproduce is "mkfs.btrfs -f -R free-space-tree -m d=
+up
+>>> -d dup".
+>>>
+>>> It turns out that, the old _recow_root() can not handle tree levels > =
+0,
+>>> while with newer free space tree creation timing, the free space tree
+>>> can reach level 1 or higher.
+>>>
+>>> To fix the problem, Patch 2 will do the proper full tree re-CoW, with
+>>> extra transaction commitment to make sure all free space tree get
+>>> re-CoWed.
+>>>
+>>> The 3rd patch will do the extra verification during mkfs-tests.
+>>>
+>>> The first patch is just to fix a confusing parameter which also caused
+>>> u64 -> int width reduction and can be problematic in the future.
+>>>
+>>> Changelog:
+>>> v2:
+>>> - Remove a duplicated recow_roots() call in create_raid_groups()
+>>> =C2=A0=C2=A0 This call makes no difference as we will later commit tra=
+nsaction
+>>> =C2=A0=C2=A0 and manually call recow_roots() again.
+>>> =C2=A0=C2=A0 Remove such duplicated call to save some time.
+>>>
+>>> - Replace the btrfs_next_sibling_tree_block() with btrfs_next_leaf()
+>>> =C2=A0=C2=A0 Since we're always handling leaves, there is no need for
+>>> =C2=A0=C2=A0 btrfs_next_sibling_tree_block()
+>>>
+>>> - Work around a kernel bug which may cause false alerts
+>>> =C2=A0=C2=A0 For single device RAID0, btrfs kernel is not respecting i=
+t, and will
+>>> =C2=A0=C2=A0 allocate new chunks using SINGLE instead.
+>>> =C2=A0=C2=A0 This can be very noisy and cause false alerts, and not al=
+ways
+>>> =C2=A0=C2=A0 reproducible, depending on how fast kernel creates new ch=
+unks.
+>>>
+>>> =C2=A0=C2=A0 Work around it by mounting the RO before calling "btrfs f=
+i df".
+>>>
+>>> =C2=A0=C2=A0 The kernel bug needs to be investigated and fixed.
+>> It's better to see the kernel bug fixed rather than papering over it.
 
-Not exactly.
+The truth is, this is more like a kernel behavior change.
 
-The bug I pinned down is inside my refactored code of LZO code, not the
-generic part, and my refactored code is not yet merged.
+Before commit b2f78e88052b ("btrfs: allow degenerate raid0/raid10"),
+kernel can only create RAID0 chunks with at least two devices.
 
-Chris, mind to share the code context of the stack?
+Thus older kernel (when tested under my host, it's still v5.14) will
+create SINGLE chunk as it has no other choice.
 
-A quick glance into the code shows it could be some use-after-free bug,
-that btrfs_debug() is referring some member of a freed async_extent
-structure.
+So false alert.
 
 Thanks,
 Qu
 
 >
->> [ 2164.628056] lr : async_cow_submit+0x50/0xd0
->> [ 2164.635258] sp : ffff800010bfbc20
->> [ 2164.642585] x29: ffff800010bfbc30 x28: 0000000000000000 x27: ffffdf2=
-b47b11000
->> [ 2164.652135] x26: fffffffffffffdd0 x25: dead000000000100 x24: ffff000=
-14152d608
->> [ 2164.661614] x23: 0000000000000000 x22: 0000000000000000 x21: ffff000=
-0c6106980
->> [ 2164.670886] x20: ffff0000c55e2000 x19: 0000000000000001 x18: ffff000=
-0d3f00bd4
->> [ 2164.680050] x17: ffff00016f467ff8 x16: 0000000000000006 x15: 72a308c=
-cefd184e0
->> [ 2164.689179] x14: 5378ed9c2ad24340 x13: 0000000000000020 x12: ffff000=
-1fefa68c0
->> [ 2164.698178] x11: ffffdf2b47b2b500 x10: 0000000000000000 x9 : ffffdf2=
-b462f2b70
->> [ 2164.707265] x8 : ffff20d6b742d000 x7 : ffff800010bfbbe0 x6 : ffffdf2=
-b4805ad40
->> [ 2164.716368] x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff000=
-0c61069a0
->> [ 2164.725454] x2 : 0000000000000000 x1 : ffff00014152d630 x0 : ffff000=
-14152d630
->> [ 2164.734445] Call trace:
->> [ 2164.739675]  submit_compressed_extents+0x38/0x3d0
->> [ 2164.746728]  async_cow_submit+0x50/0xd0
->> [ 2164.752980]  run_ordered_work+0xc8/0x280
->> [ 2164.759248]  btrfs_work_helper+0x98/0x250
->> [ 2164.765449]  process_one_work+0x1f0/0x4ac
->> [ 2164.771558]  worker_thread+0x188/0x504
->> [ 2164.777395]  kthread+0x110/0x114
->> [ 2164.782791]  ret_from_fork+0x10/0x18
->> [ 2164.788343] Code: a9056bf9 f8428437 f9401400 d108c2fa (f9400356)
->> [ 2164.795833] ---[ end trace e44350b86ce16830 ]---
->>
->>
->> Downstream bug report has been proposed as a btrfs release blocking bug=
+> That's for sure.
+>
+> Just get overloaded by so many small bugs in one day.
+>
+> Will investigate and fix the bug soon.
+>
+> For the test case itself, mounting with RO in fact makes sense, we just
+> want to the initial chunk layout created by mkfs.
+>
+> If later we choose to compare the total chunk size against the reported
+> values, such RO mount is a hard requirement to avoid chunk preallocation=
 .
->> https://bugzilla.redhat.com/show_bug.cgi?id=3D2011928
+>
+> Thanks,
+> Qu
 >>
+>>>
+>>>
+>>> Qu Wenruo (3):
+>>> =C2=A0=C2=A0 btrfs-progs: rename @data parameter to @profile in extent=
+ allocation
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 path
+>>> =C2=A0=C2=A0 btrfs-progs: mkfs: recow all tree blocks properly
+>>> =C2=A0=C2=A0 btrfs-progs: mfks-tests: make sure mkfs.btrfs cleans up t=
+emporary
+>>> =C2=A0=C2=A0=C2=A0=C2=A0 chunks
+>>>
+>>> =C2=A0 kernel-shared/extent-tree.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 26 +++---
+>>> =C2=A0 mkfs/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 90=
+ ++++++++++++++++++---
+>>> =C2=A0 tests/mkfs-tests/001-basic-profiles/test.sh | 16 +++-
+>>> =C2=A0 3 files changed, 104 insertions(+), 28 deletions(-)
+>>>
