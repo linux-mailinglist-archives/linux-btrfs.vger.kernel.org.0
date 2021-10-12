@@ -2,176 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E18E42A44B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 14:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F1A42A4B6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 14:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236323AbhJLM0I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Oct 2021 08:26:08 -0400
-Received: from mout.gmx.net ([212.227.15.15]:43193 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236281AbhJLM0H (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Oct 2021 08:26:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634041444;
-        bh=nBxlBvI5zdf08QbYAMSi1NXHsDJFb5VaQUYb0PYfl9s=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=VXh/7rmQvn/dDtNDv3EeIm/cO7SPKpWuR83Qwy9SLsriOHULhhaELVz0ibi9g5ZRx
-         wDNBZC1blbiZBcBCE0LL7PXYSSxU1eAGk6MfZPSGP6xoBxQkxu8JXZp7B9yh4GbC0v
-         jzUwXBvLRJyonhwvYbQuRNkmH31xUo68LOJIQsP4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Msq6M-1mu85r18NU-00t9bo; Tue, 12
- Oct 2021 14:24:03 +0200
-Message-ID: <0fbd2076-2b6c-4531-01ea-84db37abf621@gmx.com>
-Date:   Tue, 12 Oct 2021 20:24:00 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH] btrfs-progs: print-tree: fix chunk/block group flags
- output
-Content-Language: en-US
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        id S236367AbhJLMlO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Oct 2021 08:41:14 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:37251 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236671AbhJLMjx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Oct 2021 08:39:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1634042271; x=1665578271;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2+Ky5Zj3mT/2LEXE3jbD6zENYWokmd8KxxUmVPcUd/A=;
+  b=b7DRXT9GPnmVuxHcTa6+o1/S1ZmR/uLBWkfSVpa8mQ+D6VkvOiXEAArQ
+   MgQFP3+oDCLoJFhy9J/PfEiVVPC05BiGg25jTWx3NfSorj3SDJ9FMc4Xn
+   bEjaWkxOOp69KVyWfKi2xTksCHzZN1TO6Z10Z49+jscrsIz5uXb7bg007
+   HKz+X4Vc256xf/Tzzef8HDAkJg4aDJ7RzJCj6Gr2U3q9QlfG3qDG4qoAM
+   +c2LAcNAObRV5XxPfzNaUw23WNWEj6ebUHFDNtmkMJz08XmdtSDIXG6L/
+   KUTWzWxvj5iBbSX2Qoh0k36kdA5RJT8noe/kf5UhZqUfY0quBbmn9jVA5
+   g==;
+X-IronPort-AV: E=Sophos;i="5.85,367,1624291200"; 
+   d="scan'208";a="181624109"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Oct 2021 20:37:50 +0800
+IronPort-SDR: ReDFShGEwZ+sE+BuYQ6lDpYZ3ZJ7uiDQMBlAc+EPFNMUOIUvKDH5q0g350PoKtDhFgQXMs51BR
+ 1o4P2FBrJHsA5BCVyypBd6wg+/8EGeGJFM/t0/yYVPbCDB6hCsXNvI5VYgCmQQMj0LAKUPfug8
+ GXecyB9ZtmJQ1AVuEHcGORfUl9+tJawMNq3a+JrrsrHsYgti5+2KuZ99lSVvTWABxQe3tXmfUO
+ iOs9xcD+QlVXmHOdJpKU6LvP5Sx+m5goE2ZdvBKj00DQDRijpkP0H1rE7GjVvDFX5CgZviRN27
+ CM/28kitvrKCurS/gbnlCpyW
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 05:13:38 -0700
+IronPort-SDR: /3kEPxrOZhtpDXghxK32RkikHqhxS/HLAQfJPQptx58UYG2A+8fRGBJndOcksSgBH/xL7mImNO
+ /4H/npyId2ACma226LBOt4VUvWXpn7dQscBXb27fghnI0oPPGh4nekbAMHUoOIcpVlG1G1OhjJ
+ EZ1tUsyCyr6mYQU+TGYABF79p2e+SIZq96VoGusmvgpC8pmL8qLW4qbgeX4K5BcYVjWHMXli4X
+ t19odgBA4BxOm0UiOljS9wksXywTN3cCF6WT7X1QdW3KS73y9flErkTzRDUOiSodrYS8hpXW+l
+ RnI=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 12 Oct 2021 05:37:50 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
         linux-btrfs@vger.kernel.org
-References: <20211012021719.18496-1-wqu@suse.com>
- <b331b0a3-8119-d66e-c49e-742262ad4a9f@suse.com>
- <504c9584-e760-54a4-7ae4-1c4f26ec5323@suse.com>
- <32c39029-8434-e3f9-0d72-740fe6f44bff@gmx.com>
- <a643cdea-5130-c44e-ce4f-dc8fa23e7481@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <a643cdea-5130-c44e-ce4f-dc8fa23e7481@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DXGHGHhdIneVAJnts1kiDNtEn59lKI8HQ3rHfVF8TgHSj9G7qKN
- GcVdPfpxk6QPQiDHR2Yj0IwSF1caQ2iYlBZlr4bHouNljqc2DGXj69MVXzj46uustWdV3KO
- pPcJKFSji1n7wZmoLNtfaSZ0Zspn1PMx35EKhWG0oXnGXxQuvTV5b6T6qJoK1pRXzXP2+hu
- lF+AlGMwYaC82NTupYSMg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/bUiiutR1Uo=:5LiltytojkjVF/Fqa0V4zO
- RV6CrHYPBfQYJSOSULqeHkh5yZHl9NnXRR0Dc1VUmgRvSxcZ88uGg4cfKka1/o1sZmERneqTR
- 1V2EPRqwL9dtBmokb0alOPiNLl+CcD81MguO6r93x/rti/dn8wXzXwFlmMM0R1TeJy9g1h3la
- pmuzq7ZD3IlgCwgh7UJKeYnXM8F2aGNXzSiQimQWN1fyI4IR98jUY36Ysdol6W06qQxfQlKg+
- sFJoyIurxq3myBizfUh4rvPekDmX1gcH6UWm1wjxNNvOiRAGWgfxS6W712AGqCWXmE+IndSgw
- cXaFUI8arrUxjHMFdwVqqgsb1YEHI9LQuPAqbGmgjynKMRVvbuVxaNC/e9O6k+4XH0Us36pKo
- iUfEsjkn8lWssxGSpJwiq8NqhmDssrvnlZfqiQVQPC/0jHdg1XLPpHGUCQGuoOluJoRcwbv9n
- 54MY5HNETS0WcRH8Yj+e8AxwxLwmBU3q7duNOwlhbWjlgVphBRQfKpxPHNrRRl0N4EFuW+Rwv
- OD/J0CXnl+9111JCoxZocTZMjR2eUvLXRNwrRIvaua91cQFpit7H4xh28QyXWFd2NmBum9Vx4
- 3TaOJkjbzEXbziiar8WukLMOF5PzdYI2I8yuSecnABVeC6ruj0mIymi0RqjlGDZrWG2E7jbOu
- vWdi1zSAxHtmqQSZLtK7nvxOzOVzTN5/vbysbBr/a+/AIkxL66Cm501LH9Dyro3dQLDi5pNS7
- zeBSFYgZnJwQA/pEkbBSMkcSPZptgtI5yraD3OK1pzFXSLkNC40LpHiz4DIYKM0tcR1oQgqem
- W2OdOi1IBGTIWVGDBfDH0v+vTcMfyTwGxASSjQe4nOGh2KmUBtPuYLyTZXIinfg6J/i8rUE74
- aCG0Qh2c244x204CTWoum558wV+WliY0GF7LKodX/wnbtL0na0NGbngy1vIZIc1R6oO65ezBG
- 5UBURy8UWt0iTz3pDO9E9dnhZ35DRAErfo6pZ8QNvFvBHESKD392g3n883NliGqasJEeJLTdp
- 0smYNpML2WCApYeLIMWEYnx0X37iWrczYSg95847o3T133UzjPjhuREsgET7tf2HFvNvT4rBP
- V6CCGpnK56D3G4=
+Subject: [PATCH v2] btrfs: zoned: use greedy gc for auto reclaim
+Date:   Tue, 12 Oct 2021 21:37:45 +0900
+Message-Id: <75b42490e41e7c7bf49c07c76fb93764a726c621.1634035992.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Currently auto reclaim of unusable zones reclaims the block-groups in the
+order they have been added to the reclaim list.
 
+Change this to a greedy algorithm by sorting the list so we have the
+block-groups with the least amount of valid bytes reclaimed first.
 
-On 2021/10/12 19:56, Nikolay Borisov wrote:
->
->
-> On 12.10.21 =D0=B3. 14:42, Qu Wenruo wrote:
->>
->>
->> On 2021/10/12 18:38, Nikolay Borisov wrote:
->>>
->>>
->>> On 12.10.21 =D0=B3. 13:35, Nikolay Borisov wrote:
->>>> <snip>
->>>>
->>>>>
->>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>>> ---
->>>>>  =C2=A0 kernel-shared/print-tree.c | 47
->>>>> +++++++++++++++++++++++---------------
->>>>>  =C2=A0 1 file changed, 29 insertions(+), 18 deletions(-)
->>>>>
->>>>> diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
->>>>> index 67b654e6d2d5..39655590272e 100644
->>>>> --- a/kernel-shared/print-tree.c
->>>>> +++ b/kernel-shared/print-tree.c
->>>>> @@ -159,40 +159,51 @@ static void print_inode_ref_item(struct
->>>>> extent_buffer *eb, u32 size,
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>>>  =C2=A0 }
->>>>>
->>>>> -/* Caller should ensure sizeof(*ret)>=3D21 "DATA|METADATA|RAID10" *=
-/
->>>>> +/* The minimal length for the string buffer of block group/chunk
->>>>> flags */
->>>>> +#define BG_FLAG_STRING_LEN=C2=A0=C2=A0=C2=A0 64
->>>>> +
->>>>>  =C2=A0 static void bg_flags_to_str(u64 flags, char *ret)
->>>>>  =C2=A0 {
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int empty =3D 1;
->>>>> +=C2=A0=C2=A0=C2=A0 char profile[BG_FLAG_STRING_LEN] =3D {};
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *name;
->>>>>
->>>>> +=C2=A0=C2=A0=C2=A0 ret[0] =3D '\0';
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (flags & BTRFS_BLOCK_GROUP_DATA) =
-{
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 empty =3D 0;
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 strcpy(ret, "DATA");
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 strncpy(ret, "DATA", BG_=
-FLAG_STRING_LEN);
->>>>
->>>> I find using strncpy rather odd, it guarantees it will copy num
->>>> characters, and if source is smaller than dest, it will overwrite the
->>>> rest with 0. So what happens is you are copying 4 chars here, and
->>>> writing 60 zeros. Frankly I think it's better to use >>
->>>> snprintf(ret, BG_FLAG_STRING_LEN, "DATA");
->>
->> Well, you just told me a new fact, strncpy() would set the the rest byt=
-es.
->>
->> I thought it would just add the terminal '\0' if it's not reaching the
->> size limit.
->>
->> But you're right, strncpy() would reset the padding bytes to zero.
->
-> The thing is strncpy doesn't really set final NULL by definition. I.e if
-> source is larger than N, then dest won't be null terminated.
->
-> <snip>
->
->>
->>>>
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-profile[i] =3D toupper(profile[i]);
->>>>> +=C2=A0=C2=A0=C2=A0 }
->>>>> +=C2=A0=C2=A0=C2=A0 if (profile[0]) {
->>>
->>> Actually profile[0] here is guaranteed to be nonul - it's either
->>> UNKNOWN... or whatever btrfs_bg_type_to_raid_name returned. So you can
->>> simply use the strncat functions without needing the if.
->>
->> You forgot SINGLE type.
->>
->> In that case, profile[0] can be "\0".
->
-> How does that happen? If btrfs_bg_type_to_raid_name return NULL then
-> prfile contains UNKNWON. OTOH if the 'else' is executed then either
-> profile contains "single" or whatever btrfs_bg_type_to_raid_name
-> returned. So profile can never be NULL. What am I missing?
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-There is a special handling for SINGLE:
+---
+Changes since v1:
+-  Changed list_sort() comparator to 'boolean' style
 
-+               /*
-+                * Special handing for SINGLE profile, we don't output
-"SINGLE"
-+                * for SINGLE profile, since there is no such bit for it.
-+                * Thus here we only fill @profile if it's not single.
-+                */
-+               if (strncmp(name, "single", strlen("single")) !=3D 0)
-+                       strncpy(profile, name, BG_FLAG_STRING_LEN);
+Changes since RFC:
+- Updated the patch description
+- Don't sort the list under the spin_lock (David)
+---
+ fs/btrfs/block-group.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
-See, if we hit SINGLE profile, we won't populate @profile array.
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 46fdef7bbe20..e9092eba71fe 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1,5 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
++#include <linux/list_sort.h>
++
+ #include "misc.h"
+ #include "ctree.h"
+ #include "block-group.h"
+@@ -1486,6 +1488,21 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
+ 	spin_unlock(&fs_info->unused_bgs_lock);
+ }
+ 
++/*
++ * We want block groups with a low number of used bytes to be in the beginning
++ * of the list, so they will get reclaimed first.
++ */
++static int reclaim_bgs_cmp(void *unused, const struct list_head *a,
++			   const struct list_head *b)
++{
++	const struct btrfs_block_group *bg1, *bg2;
++
++	bg1 = list_entry(a, struct btrfs_block_group, bg_list);
++	bg2 = list_entry(b, struct btrfs_block_group, bg_list);
++
++	return bg1->used > bg2->used;
++}
++
+ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ {
+ 	struct btrfs_fs_info *fs_info =
+@@ -1493,6 +1510,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 	struct btrfs_block_group *bg;
+ 	struct btrfs_space_info *space_info;
+ 	LIST_HEAD(again_list);
++	LIST_HEAD(reclaim_list);
+ 
+ 	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
+ 		return;
+@@ -1510,17 +1528,20 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 	}
+ 
+ 	spin_lock(&fs_info->unused_bgs_lock);
+-	while (!list_empty(&fs_info->reclaim_bgs)) {
++	list_splice_init(&fs_info->reclaim_bgs, &reclaim_list);
++	spin_unlock(&fs_info->unused_bgs_lock);
++
++	list_sort(NULL, &reclaim_list, reclaim_bgs_cmp);
++	while (!list_empty(&reclaim_list)) {
+ 		u64 zone_unusable;
+ 		int ret = 0;
+ 
+-		bg = list_first_entry(&fs_info->reclaim_bgs,
++		bg = list_first_entry(&reclaim_list,
+ 				      struct btrfs_block_group,
+ 				      bg_list);
+ 		list_del_init(&bg->bg_list);
+ 
+ 		space_info = bg->space_info;
+-		spin_unlock(&fs_info->unused_bgs_lock);
+ 
+ 		/* Don't race with allocators so take the groups_sem */
+ 		down_write(&space_info->groups_sem);
+@@ -1568,12 +1589,12 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 				  bg->start);
+ 
+ next:
+-		spin_lock(&fs_info->unused_bgs_lock);
+ 		if (ret == -EAGAIN && list_empty(&bg->bg_list))
+ 			list_add_tail(&bg->bg_list, &again_list);
+ 		else
+ 			btrfs_put_block_group(bg);
+ 	}
++	spin_lock(&fs_info->unused_bgs_lock);
+ 	list_splice_tail(&again_list, &fs_info->reclaim_bgs);
+ 	spin_unlock(&fs_info->unused_bgs_lock);
+ 	mutex_unlock(&fs_info->reclaim_bgs_lock);
+-- 
+2.32.0
 
-Thanks,
-Qu
-
->
-> <snip>
->
