@@ -2,340 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934E142AF0E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Oct 2021 23:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118C142B0A1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 01:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233953AbhJLVgS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Oct 2021 17:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233650AbhJLVgQ (ORCPT
+        id S233176AbhJLX4E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Oct 2021 19:56:04 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:33712 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232243AbhJLX4D (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Oct 2021 17:36:16 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CDDC061570
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Oct 2021 14:34:13 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id b12so764489qtq.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Oct 2021 14:34:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sGiuACK8KWLdhdlX3Z2jN7eBq9UuxbG+sX5ehdvGNKM=;
-        b=HhJiou0EzASWZFPieRopjP4XFFZS9djKD7H1FJIYprH2mew1b2cUS1ajLgRnLgVigU
-         o6L5oDChQUwGQ5ncD+NSAp2VIdlyaxF+plIpcNObeG9x4Wz1qWlgSioXfJcGJlP1pFjz
-         Z4NzK93ltnNd+Meu0t+ikulFdCQbOYaXjYygWUGrnfxgsh7gik8b29eYCd2Vs6IFyl7o
-         doAAjx7m0mS/uV+6nj5PiVcAk+E8WOTBMOxKgaTtIwDrqMiE7wYKsRhhEOJMdGa5uDFt
-         aFqS3yLdu4s7s2g8mVGIhV+VDfFI8c0JZlf+3Rt7ugLYVh07t5LFTVDgZfirsHg1Q5v4
-         g8Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sGiuACK8KWLdhdlX3Z2jN7eBq9UuxbG+sX5ehdvGNKM=;
-        b=dKRQS+KlwsH4r/I/ifFuhLRV/A7rlwouoNMTU/IK/W4NJpJ3keUROLdxO95l0UVwWU
-         Exxukv4eue8VCK486Bd+KQ+eM5rUl8Gw6wSXRiRCISboyUt3M5GrkQyI3nb0B7qys5IA
-         h1ctpoxHkKPB56W/r78F4+2F7fAMCmooghZUiqpjg6QuyJzxC/rQZkMzZrghcmjJL5sl
-         PdRNWbI18q1rmXOJFwyovqbUzEyGqFNDPo8OUJ3pGv+fsnlhY/t73OiJLYZmtA1dpKlk
-         jvEfb0UQnmpx2v1spyaGZwwyA40BMljMPnXp6z0Kq05jImeEiqHTStFAw2QhSerNHqt9
-         12ng==
-X-Gm-Message-State: AOAM532R7lL+s1+LL5V6b6RV2PzGzz6oWObHn3Lq4KdBDxqn8PrNwyjT
-        NKrfWEjWr8P6Yhk8/gr6SwxTGn8A+rTxuQ==
-X-Google-Smtp-Source: ABdhPJxVxMeqne/p2166Y8h1Ephde/SvZlcg1w8eGAQdfd3ERpEl4tYiVrd9bkF4m3D74skdprFSBw==
-X-Received: by 2002:a05:622a:18a8:: with SMTP id v40mr11140054qtc.263.1634074452445;
-        Tue, 12 Oct 2021 14:34:12 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id y20sm5494450qtj.94.2021.10.12.14.34.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 14:34:11 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 17:34:10 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] btrfs: fix deadlock between chunk allocation and
- chunk btree modifications
-Message-ID: <YWX/UqOqHtfbubei@localhost.localdomain>
-References: <cover.1633705660.git.fdmanana@suse.com>
- <dc480ee9a7be60b4d33b5c5df58ee51aa0b9e331.1633705660.git.fdmanana@suse.com>
- <YWRgzE9YZYTmlhlM@localhost.localdomain>
- <CAL3q7H5EvvrhAea-RCOVayXS9auvtvtiAA7Dg4kARDTnvR1CBw@mail.gmail.com>
- <fd9b37b9-6a4f-08f9-54af-f14864030aab@toxicpanda.com>
- <CAL3q7H762Mp1EzaqQ0Cq3aVhm31Sai1sa2MFd+z2pn1bJZOJkg@mail.gmail.com>
- <54e19a68-bd46-b4f3-28ae-eec4f9aa0969@toxicpanda.com>
- <CAL3q7H5=BfMCC4Qmv5C4e4EViQhBgsuHgMt3RahuSOxcD0Hqxw@mail.gmail.com>
+        Tue, 12 Oct 2021 19:56:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1634082840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0KYkFL5NVpPC6v1t+L3w8pQQZ5CqTsPwSzLwqVtCcX0=;
+        b=WrxkVu0cspt5UJO7ZXuB9F/WTu30AzhiJuyq4ydUtEVrqLUoChecFZ7eMJ7zxPXDQoX6L3
+        JBwvy1K+VVCDOP2i0/XJfUfJX6yk1BSNHg9Wz/M5BCh6sOIgy1UGdFaNNZHgkXdHcg4JuY
+        UDZN1soNhOuinpQDl3LUoMAfeKveZWQ=
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2055.outbound.protection.outlook.com [104.47.12.55]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-4-ZB2RIeYTO02GRTJabyR54A-1;
+ Wed, 13 Oct 2021 01:53:59 +0200
+X-MC-Unique: ZB2RIeYTO02GRTJabyR54A-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L4IsNVf/l3CIuJ5fyZYWOcMLfN10XagAqTfajjCfqrFVSXQ6MaD554nsz6c5uULsBeYO28G8H3S+lQVSuVU46NGFQwZPPAC2FWSxKDV9qfqsHeSi/KZKZRsSIqpUR796Nei2yg6BcBE+ABqOx4KF27fZR4Cxze/ARWmSTkcTjAE7pCTQaf9aKJpxyGmC49s5Q5xFLxOrrnhW8OVsgyYHbmCyzZHvRNQyeEHpUuD2i19RMHxErG2Nzso1nRFNM3b7bWnSsvqtDks3qMR0B9GKMw00bxabgTWBahHR4dwaO41Xs6OPV5bZUeBwPXKGd9u5LYpMpLmo1JhKmcsdCgQxUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7CPTSE/hwo42Hq0ybATU64Izh5mkwUxsY5PLlvdOIkE=;
+ b=bUhwWc7vFun6tEuBNzWlc36lVH34UMoJRoMa1wHmJdWG1ytqeafTachrWygykaHIAH2vW0snnI55LJiaAnkh5g83bzQ+VzEakskBU4rd/SsL1RHo6EzinPdQZK9Dunc7lRfVn1n85S7y9JJjQbW+XpOQUSnZ4VieaERipP/DCwmrsMnqxPCoOy5FAwjnEqLU+1rsssE5o4VeM8p2vuSH5ChAz8eWiH4lyCdE3CT6v7oMh02ljH4BRldlAzxdZewpoiKSM9Sh6roBgoR+tjCoi7T9BwCjgnIAcgKGxFoierndlOJOnAPK+k1/ATNERZccdlEYttuj2kp76aDZ4cw69w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AS8PR04MB8310.eurprd04.prod.outlook.com (2603:10a6:20b:3b2::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Tue, 12 Oct
+ 2021 23:53:56 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::2d84:325b:5918:7a19]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::2d84:325b:5918:7a19%5]) with mapi id 15.20.4587.026; Tue, 12 Oct 2021
+ 23:53:56 +0000
+Message-ID: <7aad61f4-1b47-eef7-82c3-52ed3ff5dc48@suse.com>
+Date:   Wed, 13 Oct 2021 07:53:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH] btrfs-progs: print-tree: fix chunk/block group flags
+ output
+Content-Language: en-US
+To:     Nikolay Borisov <nborisov@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <20211012021719.18496-1-wqu@suse.com>
+ <b331b0a3-8119-d66e-c49e-742262ad4a9f@suse.com>
+ <504c9584-e760-54a4-7ae4-1c4f26ec5323@suse.com>
+ <32c39029-8434-e3f9-0d72-740fe6f44bff@gmx.com>
+ <a643cdea-5130-c44e-ce4f-dc8fa23e7481@suse.com>
+ <0fbd2076-2b6c-4531-01ea-84db37abf621@gmx.com>
+ <1dea2507-5dfb-75ca-7bcb-f1114f5929b6@suse.com>
+From:   Qu Wenruo <wqu@suse.com>
+In-Reply-To: <1dea2507-5dfb-75ca-7bcb-f1114f5929b6@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: SJ0PR05CA0204.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::29) To AM7PR04MB6821.eurprd04.prod.outlook.com
+ (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H5=BfMCC4Qmv5C4e4EViQhBgsuHgMt3RahuSOxcD0Hqxw@mail.gmail.com>
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR05CA0204.namprd05.prod.outlook.com (2603:10b6:a03:330::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.5 via Frontend Transport; Tue, 12 Oct 2021 23:53:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d563a714-53e3-43ae-7fed-08d98ddb8da8
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8310:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AS8PR04MB831071297380C1BC057711D9D6B69@AS8PR04MB8310.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oeGRVM3zosoDyC+dvyhri2YwmV2gCk6uSpSXoDkjhyqlEBdMUCLYIZA6+bBkCKSfwm7N68PYWxeMsvibJCQk8CZtJfh1Y2yl77g8fCVtADPcPRzTkYPVwlyGiUxiGdwFvZOCI2bXrbwr72M9aHLVYdNNh/msKebvwN0lCuerp1HODCMXHwtztvrSwov/+DG5fTdY/6meCXDVsFqZGxNoRH2It+RTsjCeMcRpD8JDhXw8uvs99BOKgHJw1lE4n2ZPVOzWvTVBQH7BILjjAZ4p9ikzBxGZOkl0pnc6YVYrtZFgkT2tSd/Te2ZmPR8PVGmxllUHmKEFOuppp6V7swAyPnUEJxeMz2/G9Y60ZbncRANW8uZfySt0afo/c6S59YQG+iA/p4CeUYF2aiYmiRUN4H+h3fdw7bDqYsxJrh7VAH2NYncc/Bseb+aroapbkN0kSG9c2xSwgdhi0lIIff2oGm9kdvs24fAxLv/YcixxojwqphmkyLwv88MrOcXxpkMZomw+YXL3labmNSTc9onY7IYp5jG0Tdy8sPpehrz0aFb9qKTzveT9C72NZ8IMfYnGO+gE4Y1qfVY1WXubDa0ijTGM79q/VxmH0kf1isJrYZy2B7W4L/INRldwdaWVclrKDv+Q2+a1lwBFC80HrH51x9aG+RPPl92uQ8XZRc4yzCbQVvOfp/NUF/VHAOWdX5fiZNuGT5t2buHgc9RbTAD5lcfjwNY8nG7fD+dIieWaBf/01pdvQMm+ove1PxyoYzxN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(31696002)(956004)(86362001)(26005)(6666004)(110136005)(5660300002)(16576012)(6706004)(316002)(186003)(38100700002)(2906002)(31686004)(66946007)(508600001)(66556008)(53546011)(66476007)(8676002)(6486002)(2616005)(8936002)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LGOig5cu2LleZwMDIniAL5WchonJB8l6duNZJJ8ZzYRwIColJKQGsEwgxe7E?=
+ =?us-ascii?Q?zfG8YB7n4qi4xoucD1PwP2NJJoU6IKQGwyk3T5QxahY707Hh3KPsIPAjoi12?=
+ =?us-ascii?Q?MGDuW4TQ60BvXM+QOSN0WAoizxIV7VL7UTx2/FC8wtmCUZKlHfJMCugCbTgG?=
+ =?us-ascii?Q?QZ3wT0lHt3wy5mLVqWjIOIwR+gcdXniH24oekWAQADC//kO9M0fpdq7F3Tq7?=
+ =?us-ascii?Q?8zaPrsCeD/Tm0vS8VL9xG3le1mz5wJauWsvWDuiKBoa4/WsmGlJh+cpwyKHp?=
+ =?us-ascii?Q?eaoEJn0ESLLg90Z181M4Q+DvFY2OUKU7Ua/6MNmhmdvX0GYhaHBIvwsegOhp?=
+ =?us-ascii?Q?XLl45akBDFQsi5vCkiSVxrSQTDYDWop37DemYWb4NTCt5uN/lQkB3fbDlj1e?=
+ =?us-ascii?Q?/k4rxTXmHA0VEyirTfm80kN5DEjlmoDkWD0H5sWvYMilLwgbsDUfpCB2je+z?=
+ =?us-ascii?Q?dgE8OaWiWGHgAV3SmgVH7g+nBdPvmfe8IrGZeU5yjyAs2/am3dtt+qMP0iFL?=
+ =?us-ascii?Q?inWO2PTI9WiNniXWHmGSF2Y187l5Qa/e+VG4AjOglFoD9nuzupTMNInkc+Si?=
+ =?us-ascii?Q?KFSrsL1e5bUC/Wf5xdfPDxt+NwmTB2rj8ll13PvLhHaKv/sxlZ3gXY37wajV?=
+ =?us-ascii?Q?ZGrcNvMeMtH9X9xuDyTxVLpG6leRB/Yi0gROKfvs8BPIVRskBYES5IYhFs/i?=
+ =?us-ascii?Q?3odL0qwj2NujR2EqyKElrHEExnW72Dde2g6wD3TjaGX8nJHE6RvJ+KufhSWo?=
+ =?us-ascii?Q?1zmd5oOiyMLwORQC/dz6tabV4xG2r+vTDEKvh5aBP6cUh3LXKjKahHnESKQ7?=
+ =?us-ascii?Q?wjCyPUczhMaqXfZv1zqLMhP9o/srA1v5amemlNOjEiBhqo2zPxB0xululOYo?=
+ =?us-ascii?Q?JRtFsSZBVBIkMVEEJ2MlRImVOpi3ogRquMAjuLYVMFd9x1FA7J8EWwNrFi8V?=
+ =?us-ascii?Q?3pDFFAsBz6udVxeOndPhnm9Xadw4e/gFbOtTx7CSres3fjj05yi703IVytTI?=
+ =?us-ascii?Q?NTIo3CV9Y8NYZIRoxBYze8SBuR1oEwEfsa9bgBfckIizH7tsYKSegdBA0mI4?=
+ =?us-ascii?Q?ZKW12PbMSs7KqddS51MPcW9C/ormZbkQrihOiVGafIwT/LjtOlGjt75YjvNW?=
+ =?us-ascii?Q?oPASHoa/ofBYqFN945JOcqZbZeabjPtzwI8TktzXvq5br1p1RuaBDLT2le0F?=
+ =?us-ascii?Q?oHhxIYcWAcMOWl7xs278kbHCC1O0AntC0hFgOep4qe+ZLlBj9qxgTG2lpcZt?=
+ =?us-ascii?Q?SC0Auf4tLQO7CiVrtTbPMeB966xI0fa/UABAgyRqXDBlUMZ4uTTeNVtH0Z/J?=
+ =?us-ascii?Q?7/Foivk0B8crgc5ShTI4P+16?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d563a714-53e3-43ae-7fed-08d98ddb8da8
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2021 23:53:56.6965
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O5EHhnhllX6knSaxWRk6MwcqpI0PHoZffVaZiJUXJUrnxfPmMTRId9+JyVC6/2fD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8310
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 08:09:43PM +0100, Filipe Manana wrote:
-> On Mon, Oct 11, 2021 at 7:31 PM Josef Bacik <josef@toxicpanda.com> wrote:
-> >
-> > On 10/11/21 2:22 PM, Filipe Manana wrote:
-> > > On Mon, Oct 11, 2021 at 6:42 PM Josef Bacik <josef@toxicpanda.com> wrote:
-> > >>
-> > >> On 10/11/21 1:31 PM, Filipe Manana wrote:
-> > >>> On Mon, Oct 11, 2021 at 5:05 PM Josef Bacik <josef@toxicpanda.com> wrote:
-> > >>>>
-> > >>>> On Fri, Oct 08, 2021 at 04:10:34PM +0100, fdmanana@kernel.org wrote:
-> > >>>>> From: Filipe Manana <fdmanana@suse.com>
-> > >>>>>
-> > >>>>> When a task is doing some modification to the chunk btree and it is not in
-> > >>>>> the context of a chunk allocation or a chunk removal, it can deadlock with
-> > >>>>> another task that is currently allocating a new data or metadata chunk.
-> > >>>>>
-> > >>>>> These contextes are the following:
-> > >>>>>
-> > >>>>> * When relocating a system chunk, when we need to COW the extent buffers
-> > >>>>>     that belong to the chunk btree;
-> > >>>>>
-> > >>>>> * When adding a new device (ioctl), where we need to add a new device item
-> > >>>>>     to the chunk btree;
-> > >>>>>
-> > >>>>> * When removing a device (ioctl), where we need to remove a device item
-> > >>>>>     from the chunk btree;
-> > >>>>>
-> > >>>>> * When resizing a device (ioctl), where we need to update a device item in
-> > >>>>>     the chunk btree and may need to relocate a system chunk that lies beyond
-> > >>>>>     the new device size when shrinking a device.
-> > >>>>>
-> > >>>>> The problem happens due to a sequence of steps like the following:
-> > >>>>>
-> > >>>>> 1) Task A starts a data or metadata chunk allocation and it locks the
-> > >>>>>      chunk mutex;
-> > >>>>>
-> > >>>>> 2) Task B is relocating a system chunk, and when it needs to COW an extent
-> > >>>>>      buffer of the chunk btree, it has locked both that extent buffer as
-> > >>>>>      well as its parent extent buffer;
-> > >>>>>
-> > >>>>> 3) Since there is not enough available system space, either because none
-> > >>>>>      of the existing system block groups have enough free space or because
-> > >>>>>      the only one with enough free space is in RO mode due to the relocation,
-> > >>>>>      task B triggers a new system chunk allocation. It blocks when trying to
-> > >>>>>      acquire the chunk mutex, currently held by task A;
-> > >>>>>
-> > >>>>> 4) Task A enters btrfs_chunk_alloc_add_chunk_item(), in order to insert
-> > >>>>>      the new chunk item into the chunk btree and update the existing device
-> > >>>>>      items there. But in order to do that, it has to lock the extent buffer
-> > >>>>>      that task B locked at step 2, or its parent extent buffer, but task B
-> > >>>>>      is waiting on the chunk mutex, which is currently locked by task A,
-> > >>>>>      therefore resulting in a deadlock.
-> > >>>>>
-> > >>>>> One example report when the deadlock happens with system chunk relocation:
-> > >>>>>
-> > >>>>>     INFO: task kworker/u9:5:546 blocked for more than 143 seconds.
-> > >>>>>           Not tainted 5.15.0-rc3+ #1
-> > >>>>>     "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > >>>>>     task:kworker/u9:5    state:D stack:25936 pid:  546 ppid:     2 flags:0x00004000
-> > >>>>>     Workqueue: events_unbound btrfs_async_reclaim_metadata_space
-> > >>>>>     Call Trace:
-> > >>>>>      context_switch kernel/sched/core.c:4940 [inline]
-> > >>>>>      __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
-> > >>>>>      schedule+0xd3/0x270 kernel/sched/core.c:6366
-> > >>>>>      rwsem_down_read_slowpath+0x4ee/0x9d0 kernel/locking/rwsem.c:993
-> > >>>>>      __down_read_common kernel/locking/rwsem.c:1214 [inline]
-> > >>>>>      __down_read kernel/locking/rwsem.c:1223 [inline]
-> > >>>>>      down_read_nested+0xe6/0x440 kernel/locking/rwsem.c:1590
-> > >>>>>      __btrfs_tree_read_lock+0x31/0x350 fs/btrfs/locking.c:47
-> > >>>>>      btrfs_tree_read_lock fs/btrfs/locking.c:54 [inline]
-> > >>>>>      btrfs_read_lock_root_node+0x8a/0x320 fs/btrfs/locking.c:191
-> > >>>>>      btrfs_search_slot_get_root fs/btrfs/ctree.c:1623 [inline]
-> > >>>>>      btrfs_search_slot+0x13b4/0x2140 fs/btrfs/ctree.c:1728
-> > >>>>>      btrfs_update_device+0x11f/0x500 fs/btrfs/volumes.c:2794
-> > >>>>>      btrfs_chunk_alloc_add_chunk_item+0x34d/0xea0 fs/btrfs/volumes.c:5504
-> > >>>>>      do_chunk_alloc fs/btrfs/block-group.c:3408 [inline]
-> > >>>>>      btrfs_chunk_alloc+0x84d/0xf50 fs/btrfs/block-group.c:3653
-> > >>>>>      flush_space+0x54e/0xd80 fs/btrfs/space-info.c:670
-> > >>>>>      btrfs_async_reclaim_metadata_space+0x396/0xa90 fs/btrfs/space-info.c:953
-> > >>>>>      process_one_work+0x9df/0x16d0 kernel/workqueue.c:2297
-> > >>>>>      worker_thread+0x90/0xed0 kernel/workqueue.c:2444
-> > >>>>>      kthread+0x3e5/0x4d0 kernel/kthread.c:319
-> > >>>>>      ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> > >>>>>     INFO: task syz-executor:9107 blocked for more than 143 seconds.
-> > >>>>>           Not tainted 5.15.0-rc3+ #1
-> > >>>>>     "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > >>>>>     task:syz-executor    state:D stack:23200 pid: 9107 ppid:  7792 flags:0x00004004
-> > >>>>>     Call Trace:
-> > >>>>>      context_switch kernel/sched/core.c:4940 [inline]
-> > >>>>>      __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
-> > >>>>>      schedule+0xd3/0x270 kernel/sched/core.c:6366
-> > >>>>>      schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
-> > >>>>>      __mutex_lock_common kernel/locking/mutex.c:669 [inline]
-> > >>>>>      __mutex_lock+0xc96/0x1680 kernel/locking/mutex.c:729
-> > >>>>>      btrfs_chunk_alloc+0x31a/0xf50 fs/btrfs/block-group.c:3631
-> > >>>>>      find_free_extent_update_loop fs/btrfs/extent-tree.c:3986 [inline]
-> > >>>>>      find_free_extent+0x25cb/0x3a30 fs/btrfs/extent-tree.c:4335
-> > >>>>>      btrfs_reserve_extent+0x1f1/0x500 fs/btrfs/extent-tree.c:4415
-> > >>>>>      btrfs_alloc_tree_block+0x203/0x1120 fs/btrfs/extent-tree.c:4813
-> > >>>>>      __btrfs_cow_block+0x412/0x1620 fs/btrfs/ctree.c:415
-> > >>>>>      btrfs_cow_block+0x2f6/0x8c0 fs/btrfs/ctree.c:570
-> > >>>>>      btrfs_search_slot+0x1094/0x2140 fs/btrfs/ctree.c:1768
-> > >>>>>      relocate_tree_block fs/btrfs/relocation.c:2694 [inline]
-> > >>>>>      relocate_tree_blocks+0xf73/0x1770 fs/btrfs/relocation.c:2757
-> > >>>>>      relocate_block_group+0x47e/0xc70 fs/btrfs/relocation.c:3673
-> > >>>>>      btrfs_relocate_block_group+0x48a/0xc60 fs/btrfs/relocation.c:4070
-> > >>>>>      btrfs_relocate_chunk+0x96/0x280 fs/btrfs/volumes.c:3181
-> > >>>>>      __btrfs_balance fs/btrfs/volumes.c:3911 [inline]
-> > >>>>>      btrfs_balance+0x1f03/0x3cd0 fs/btrfs/volumes.c:4301
-> > >>>>>      btrfs_ioctl_balance+0x61e/0x800 fs/btrfs/ioctl.c:4137
-> > >>>>>      btrfs_ioctl+0x39ea/0x7b70 fs/btrfs/ioctl.c:4949
-> > >>>>>      vfs_ioctl fs/ioctl.c:51 [inline]
-> > >>>>>      __do_sys_ioctl fs/ioctl.c:874 [inline]
-> > >>>>>      __se_sys_ioctl fs/ioctl.c:860 [inline]
-> > >>>>>      __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
-> > >>>>>      do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >>>>>      do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> > >>>>>      entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > >>>>>
-> > >>>>> So fix this by making sure that whenever we try to modify the chunk btree
-> > >>>>> and we are neither in a chunk allocation context nor in a chunk remove
-> > >>>>> context, we reserve system space before modifying the chunk btree.
-> > >>>>>
-> > >>>>> Reported-by: Hao Sun <sunhao.th@gmail.com>
-> > >>>>> Link: https://lore.kernel.org/linux-btrfs/CACkBjsax51i4mu6C0C3vJqQN3NR_iVuucoeG3U1HXjrgzn5FFQ@mail.gmail.com/
-> > >>>>> Fixes: 79bd37120b1495 ("btrfs: rework chunk allocation to avoid exhaustion of the system chunk array")
-> > >>>>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > >>>>
-> > >>>> A few things, because I'm having a hard time wrapping my head around this stuff
-> > >>>>
-> > >>>> 1) We're no longer allowing SYSTEM chunk allocations via btrfs_chunk_alloc(),
-> > >>>>      instead it's only via the reserve_chunk_space().  That is triggered at the
-> > >>>>      beginning of btrfs_search_slot() when we go to modify the chunk root.
-> > >>>> 2) We do this because we would normally trigger it when we do the
-> > >>>>      btrfs_use_block_rsv() when we go to modify the chunk tree, and at that point
-> > >>>>      we're holding chunk root locks and thus run into the describe deadlock.
-> > >>>>
-> > >>>> So what you're wanting to do is to force us to do the enospc chunk allocation
-> > >>>> dance prior to searching down the chunk root.  This makes sense.  However it's
-> > >>>> hard for me to wrap my head around the new rules for this stuff, and now we have
-> > >>>> a global "check to see if we need to reserve space for the chunk root" at the
-> > >>>> beginning of search slot.
-> > >>>>
-> > >>>> Doing at the btrfs_use_block_rsv() part isn't awesome either.  What if instead
-> > >>>> we just added a btrfs_reserve_chunk_space() everywhere we do a
-> > >>>> btrfs_search_slot() on the chunk_root as there are not many of them.
-> > >>>
-> > >>> That was my initial idea, but I didn't find it better because it's
-> > >>> easy to forget to make the reservation.
-> > >>> I didn't like having to repeat it in several places either.
-> > >>>
-> > >>> If it makes things cleaner, I can change it back, no problem.
-> > >>>
-> > >>
-> > >> I'd rather keep space reservation stuff separate so it's clear what
-> > >> we're doing, instead of hiding it in btrfs_search_slot() where we have
-> > >> to remember that we use it for chunk allocation there.
-> > >
-> > > Ok, that can be done. I still don't like it that much, but I don't
-> > > hate it either.
-> > >
-> >
-> > Yeah it's not awesome, but I want to have clear delineation of the work
-> > all the functions are doing, so there's not a "surprise, this search
-> > also triggered a chunk allocation because of these X things were true."
-> >
-> > >>
-> > >>>>
-> > >>>> Then we use BTRFS_RESERVE_FLUSH_LIMIT instead of NO_FLUSH, or hell we add a
-> > >>>> RESERVE_FLUSH_CHUNK that only does the chunk allocation stage.  Then we can use
-> > >>>> the same path for all chunk allocation.
-> > >>>>
-> > >>>> This way everybody still uses the same paths and we don't have a completely
-> > >>>> separate path for system chunk modifications.  Thanks,
-> > >>>
-> > >>> I don't get it. What do we gain by using FLUSH_LIMIT?
-> > >>> We allocated the new system chunk (if needed) and then marked the
-> > >>> space as reserved in the chunk reserve.
-> > >>> The chunk reserve is only used to track reserved space until the chunk
-> > >>> bree updates are done (either during chunk allocation/removal or for
-> > >>> the other paths that update the chunk btree).
-> > >>> So I don't see any advantage of using it instead of NO_FLUSH - we are
-> > >>> not supposed to trigger chunk allocation at that point, as we just did
-> > >>> it ourselves (and neither run delayed inodes).
-> > >>> I.e. the btrfs_block_rsv_add(() is never supposed to fail if
-> > >>> btrfs_create_chunk() succeeded.
-> > >>>
-> > >>
-> > >> Because I want to keep chunk allocation clearly in the realm of the
-> > >> ENOSPC handling, so we are consistent as possible.
-> > >>
-> > >> What I want is instead of burying some
-> > >>
-> > >> if (we dont have enough chunk space)
-> > >>          do_system_chunk_allocation()
-> > >>
-> > >> in our chunk allocation paths, we instead make sure that everywhere
-> > >> we're doing chunk allocation we do a
-> > >>
-> > >> ret = btrfs_block_rsv_add(chunk_root, chunk_block_rsv, num_bytes,
-> > >>                            FLUSH_WHATEVER);
-> > >> do our operation
-> > >> btrfs_block_rsv_release();
-> > >>
-> > >> and then when we do btrfs_reserve_metadata_bytes() in the
-> > >> btrfs_block_rsv_add() and we need to allocate a new chunk, it happens
-> > >> there, where all the other chunk allocation things happen.
-> > >>
-> > >> What we gain is consistency, allocating a system chunk happens via the
-> > >> same path that every other chunk allocation occurs, and it uses the same
-> > >> mechanisms that every other metadata allocation uses.  Thanks,
-> > >
-> > > Ok, I see what you mean, and it should be possible after the changes
-> > > you have been doing to the space reservation code in the last couple
-> > > years or so.
-> > > But that is a separate change from the bug fix, it doesn't eliminate
-> > > the need to pre reserve space before doing the chunk btree updates for
-> > > those cases identified in the change log.
-> > > I'll do it, but obviously as a separate change.
-> > >
-> >
-> > Yup that's reasonable, thanks,
-> 
-> So I just realized that would not work for two reasons.
-> We still have to manually create the system chunk ourselves when
-> reserving system space.
-> 
-> In order to use only something like:
-> 
-> ret = btrfs_block_rsv_add(chunk_root, chunk_block_rsv, num_bytes,
->                             BTRFS_RESERVE_FLUSH_LIMIT);
-> 
-> We would have to do it before locking the chunk mutex, otherwise we
-> would obviously deadlock when that triggers system chunk allocation
-> through the async reclaim job.
-> 
-> But by doing it before locking the chunk mutex, then if we have a
-> bunch of tasks concurrently allocating data or metadata blocks groups
-> we can end up over-reserving and eventually exhaust the system chunk
-> array in the superblock, leading to a transaction abort - it brings
-> back the problem that I tried to solve with:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eafa4fd0ad06074da8be4e28ff93b4dca9ffa407
-> 
-> from an internal report for powerpc (64K node size) using stress-ng,
-> which I eventually had to revert later and fix differently with commit
-> 79bd37120b149532af5b21953643ed74af69654f.
-> 
-> Putting this problem of the system chunk array aside, by having the
-> system chunk allocation triggered by btrfs_block_rsv_add(chunk
-> reserve, RESERVE_FLUSH_LIMIT), wouldn't we still deadlock even if we
-> do it before locking the chunk mutex?
-> I.e. the async reclaim job is allocating a data block group, enters
-> chunk allocation, that tries to reserve system chunk space but there's
-> not enough free system space so it creates a ticket to eventually
-> allocate a system chunk - the reclaim job ends up waiting on a ticket
-> it created itself during the data chunk allocation - a deadlock
-> basically.
-> 
 
-Ugh yeah you're right.  Let's just go with your solution, we can revisit this
-when I'm less drunk.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+On 2021/10/12 21:59, Nikolay Borisov wrote:
+>=20
+>=20
+> On 12.10.21 =D0=B3. 15:24, Qu Wenruo wrote:
+>>
+>>
+>> On 2021/10/12 19:56, Nikolay Borisov wrote:
+>>>
+>>>
+>>> On 12.10.21 =D0=B3. 14:42, Qu Wenruo wrote:
+>>>>
+>=20
+> <snip>
+>=20
+>>
+>> There is a special handling for SINGLE:
+>>
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 * Special handing for SINGLE profile, we don't output
+>> "SINGLE"
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 * for SINGLE profile, since there is no such bit for =
+it.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 * Thus here we only fill @profile if it's not single.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 if (strncmp(name, "single", strlen("single")) !=3D 0)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 strncpy(pro=
+file, name, BG_FLAG_STRING_LEN);
+>>
+>> See, if we hit SINGLE profile, we won't populate @profile array.
+>=20
+> Fair enough, I had misread the !=3D 0 check ... However, I'm wondering,
+> since this is only used during output, why don't we, for the sake of
+> consistency, output SINGLE, despite not having an exclusive bit for it?
+> The point of the human readable output is to be useful for users, so
+> instead of me having to know an implementation detail that SINGLE is not
+> represented by any bit, it will be much more useful if I see that
+> something is single profile, no ?
+
+On the other hand, this breaks the consistency of flags output.
+
+We only output flags we have on-disk.
+
+Showing another flag which doesn't have on-disk bit can also be=20
+confusing, and break the existing output format.
 
 Thanks,
+Qu
+>=20
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> <snip>
+>>>
+>>
+>=20
 
-Josef
