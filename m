@@ -2,154 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F5342BEBF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 13:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8349242BFA0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 14:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhJMLP4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 07:15:56 -0400
-Received: from mout.gmx.net ([212.227.17.20]:37519 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhJMLPz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 07:15:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634123318;
-        bh=DvCFP7mGlO1RR++LFi/30Dh5LlgcAdLHxDufTPhSYGY=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=k22y/QpYcjQsmDrUImobjEtvx4vGbeHo8uBpLicRBvfmuDVPvbbHQRbxUOmwpERkP
-         yGC10bSpckapggSPL87UaSKL3UERrW4htiCsIv2UnRs2g3hFs9NIiOgYU/AqosgR+U
-         sSETtLecKsUKJx6Yk0wYouhAtFnECUt4Q7fpqtfw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N5VD8-1mpKgB36b4-016zQw; Wed, 13
- Oct 2021 13:08:38 +0200
-Message-ID: <21e6d12b-66e7-f62a-ed5a-85545b67240e@gmx.com>
-Date:   Wed, 13 Oct 2021 19:08:32 +0800
+        id S229535AbhJMMRJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 08:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232486AbhJMMRE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Oct 2021 08:17:04 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4379CC061570
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 05:15:01 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id q189so5928492ybq.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 05:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9FxYapxrqjMFKwHwlPS/lX3DPmz/Qy5/IdwcwUymD6M=;
+        b=PpXURSmireTu4pNtBViPJa/cqxyzXvWpjIOnJtg4XkeRB9n/We0uguIlpiPioxy17r
+         Dn0ZWZ36WiliJHN0edjZxFTg5W5Wj1DsuMG4bwtEe81FihsCHZ2pTTAMeI7d4RvKkvQi
+         ccsqlMslObfz9D6LY2nljtVEQRr5Usfv13UgilKotuNPri9kiND0s5ufVu+X7ydk7W1F
+         Xh2fwJyy94ntCxrMSJsr4GZsvLF2mhbJ+dJifoJ1wxXbSBz5RiEQ+7e8Kfdq47jQxl8J
+         F98QmI0bYeA/RiTs5eYiuNW6DtCcoaBsXdCZKa9L8gp5Oe3KMQ6OntQr9t9CJSgrMW++
+         Jdxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9FxYapxrqjMFKwHwlPS/lX3DPmz/Qy5/IdwcwUymD6M=;
+        b=yTldFivZqWw7iKhtd//eCrmG2NwYfYb4WkkChDtxFHC8vrddd/c9/FBw1UYpRlhAME
+         uCCgJ/smMRxFTV6OGo8hkloOm/Y/GReZ5ROXdmHFSBRUFUHCbRariuBi1/BXCRlYXnvx
+         9FcE7p8cXnpEwFwFDSKodDIO6rDRlywsbCLm2XzyaUwwkuajkWmzi3rbsyHy2kd/zriq
+         BhqOe2fJ1jYkoCdBYOCcRzAQLl9tIECmKhCz7kMX1YL1kgCQ7ww0/Z7Ru/IoRENXgSUm
+         ZBWAjU3QVF70Bcwu4Z5WAAj6nqZltXfDxz4vUt4P04NCamkshJqC7hhlnZ9W0kvql9rW
+         foDg==
+X-Gm-Message-State: AOAM530Bkkdm7zB9XB9eTAWH3K8OZiioK/R8m4YN2DRelsFIXojBBufG
+        NyRM2Txlg9kq++VV6KFokuTj7q/i3//xMpjjLNmwiA==
+X-Google-Smtp-Source: ABdhPJwq6HTKwbNk3YHVBUXT+cyTJtoJzf6GPvE5L+x7/BFFpPKjvVrwMPyFsjVkLoCHNnDQ5Z5A68zUHJgRbJbMh+Q=
+X-Received: by 2002:a25:db49:: with SMTP id g70mr32109686ybf.341.1634127300230;
+ Wed, 13 Oct 2021 05:15:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH] btrfs: replace snprintf in show functions with sysfs_emit
-Content-Language: en-US
-To:     =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        Anand Jain <anand.jain@oracle.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1634095717-4480-1-git-send-email-wangqing@vivo.com>
- <6f03e790-6f21-703f-c761-a034575f465e@oracle.com>
- <20211013103642.GC9286@twin.jikos.cz>
- <ADsAzABEEmLRWHzgUOl4Sqr5.9.1634122164687.Hmail.wangqing@vivo.com>
- <SL2PR06MB3082B71AFE2C42CABDD5E6D6BDB79@SL2PR06MB3082.apcprd06.prod.outlook.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <SL2PR06MB3082B71AFE2C42CABDD5E6D6BDB79@SL2PR06MB3082.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hDBsCcL+tLSbf4UqfyT1cTsKG08lOZUe2f2oQRUUmbKisvlZogE
- agZbhl+iyHmcrpeWwDSibUdipSOjxNrXDhnXxoE5jpgPQvTiK2fo28Wk4omNr80/TNmNcVM
- ThvPyI5NpiSJ5Dbi7iFEuMNAQBA4/TICaSvoqD3Wm4NwShSH9FWioEaNvFGtKx+DHJpyDNc
- kb201wMm0wiMzVBijVpFA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BX04yarxIoY=:TOl6rFpfFWbJe5PVyqFlQ9
- ZGcdMvLSHCNWArfHRzEbUnMqNmdoHQQPEkVfNKYbLND4PZaonZiZirI8QnG2awohvf0CTNAyL
- TRIOoisgPXWNzsbpHckjwVhFFGZQmAEqQA3+kjwaHYwTgm4oP4AGjvJq4vtVQyq5ALwvXkLr0
- 5zFrPqXNpe6enNMv8ihewzkUs9aFG65BXUBYKst2TMFydfIl3zmrClcs/HjcvMa10jkMYn8Ld
- gzG+BLmVR919MVPB51MJZJQcqag6qgJbVYCBeLUFK8PnzEwvZNyxrdSc0cbjOYPnZ3KCAZWYo
- WVqErfo7mAZ8AckWu1PL2kiG3llvy0fDUpPyytWy+VxQnyMV7n1z95JXDi52zhPs4Ayw6h6J8
- i82M/x2paeaqYZktgNbNLALiDQ9wvKRIR3RDwIieeBstJd8bZY5DnrU+H6ywuaxWa7uw+jJXx
- +22agwzVJYgAA2Z16dEqUcg4+Qh1cIz+gsOeznyFSPbRqakt81HvcfRI1JlTLlePNuvPrH5gd
- 9o/skSGGbxMssosuZrBSo4LCRSK8T/Y/xyu91dTsnOjPgJ9G+B2gcerK+YJlQFHmqENI5B0Jz
- hlnOYMdSYZcPN0xlgRE3x0JTkC1HHvFCHFP4EUfjuRnTwYMV5ZiqSx/aDQyKYTR026LtXCPup
- OiKXgoCwPIF187zklivJnOulPfB9Y3SAvKrHXWrFhMjyIm3hwxjNyoOi+3HSBhpyBLk4UN+cp
- owQeTNGE8CDhn1Myct23vzIegYyt4RVW53GEtAvdsmHS85Sn1k0PV6MgYgLfXJct3RxAYY0cw
- ANwEliza1SkA0Mgw9KDDNyFkWFAYUoGlPxWvGDW0A4sFMvprI+z3yEaP5IVCImjTR2qm+6ZVG
- 0TWWAp9wfUy5e/3Nmwnx5zEPCCAlDDRLE7L5cImK3qhlewq80q2kJOk4g4vQ8CF0x+fmuz4ob
- SVv41JoGNJJc1Mcc79oO55wvV2XSJr0XqaQ2xTHB49efAj02pBbxtdrqbzY0DkVMLD/d/b05e
- /C5CEtojIliQjC4ZxEJZEWt3otS0RhJAQ+yT4/LISRXFGP7MDqeV3GXMyjppVCeIf2qOwqHah
- TfTPRTsfjaNQpc=
+References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
+ <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com> <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
+ <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com> <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com>
+In-Reply-To: <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 13 Oct 2021 08:14:44 -0400
+Message-ID: <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
+Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+OK so something like this:
 
+/usr/src/kernels/5.14.9-300.fc35.aarch64/scripts/faddr2line
+/boot/vmlinuz-5.14.9-300.fc35.aarch64 submit_compressed_extents+0x38
+async_cow_submit+0x50 run_ordered_work+0xc8 btrfs_work_helper+0x98
+process_one_work+0x1f0 worker_thread+0x188 kthread+0x110
+ret_from_fork+0x10
 
-On 2021/10/13 19:01, =E7=8E=8B=E6=93=8E wrote:
->
->>> On Wed, Oct 13, 2021 at 03:51:33PM +0800, Anand Jain wrote:
->>>> On 13/10/2021 11:28, Qing Wang wrote:
->>>>> coccicheck complains about the use of snprintf() in sysfs show funct=
-ions.
->>>>
->>>> It looks like the reason is snprintf() unaware of the PAGE_SIZE
->>>> max_limit of the buf.
->>>>
->>>>> Fix the following coccicheck warning:
->>>>> fs/btrfs/sysfs.c:335:8-16: WARNING: use scnprintf or sprintf.
->>
->> IIRC sprintf() is less safe than snprintf().
->> Is the check really correct to mention sprintf()?
->
-> device_attr_show.cocci metions show() must not use snprintf()
-> when formatting the value to be returned to user space.
-> If you can guarantee that an overflow will never happen you
-> can use sprintf() otherwise you must use scnprintf().
-
-I totally understand snprintf() has its problem for not returning the
-real written size, thus not safe.
-
-But sprintf() is worse, it doesn't even prevent overflow from the beginnin=
-g.
-
-In fact, for case that could overflow, snprintf() would only overflow if
-we have extra bytes to output and doesn't check if the offset is beyond
-PAGE_SIZE at snprintf() call.
-
-But for sprintf(), it would cause overflow immediately.
-
-Thus mentioning sprintf() is more problematic.
-Only scnprintf() is safe.
-
-
-But sure, sysfs_emit() and sysfs_emit_at() would be a better solution.
-
-Thanks,
-Qu
-
->
-> My understanding is this is not only to solve the possible
-> overflow issue, snprintf() returns the length of the string, not
-> the length actually written. We can directly use sysfs_emit() here.
->
-> Thanks,
->
-> Qing
->
->>>>
->>>> Hm. We use snprintf() at quite a lot more places in sysfs.c and, I do=
-n't
->>>> see them getting this fix. Why?
->>>
->>> I guess the patch is only addressing the warning for snprintf, reading
->>> the sources would show how many more conversions could have been done =
-of
->>> scnprintf calls.
->>>
->>>>> Use sysfs_emit instead of scnprintf or sprintf makes more sense.
->>>>
->>>> Below commit has added it. Nice.
->>>>
->>>> commit 2efc459d06f1630001e3984854848a5647086232
->>>> Date:=C2=A0=C2=A0 Wed Sep 16 13:40:38 2020 -0700
->>>>
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sysfs: Add sysfs_emit and sysfs=
-_emit_at to format sysfs out
->>>
->>> The conversion to the standard helper is good, but should be done
->>> in the entire file.
->>>
->>
->> Yeah, the same idea, all sysfs interface should convert to the new
->> interface, not only the snprintf().
->>
->> Thanks,
->> Qu
+Chris Murphy
