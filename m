@@ -2,87 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E703742C9E6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 21:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A699D42CA5D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 21:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhJMTYL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 15:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhJMTYH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 15:24:07 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3715CC061570
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 12:22:04 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id q189so9045143ybq.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 12:22:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0xp8kcBkg2qp8R9hnOoMR7Unc1KGFymAlRVUbAzzCCU=;
-        b=IGjck9dVm2L2YJGxl7VikLWuw92j3HgAgS+UX58rB1yOXljYoMaZ4z2Yyc+Jh30i+Q
-         rfdqe50n9bDvA2fxojqnh44dFEWZd+RNG43BfFWfiY40VUGwEoHIPRr/oD5XZhnQdRs4
-         WeLOdVqjAk515zZ6FaZfLrQO+q3FhcKavHX59rycbYEFY8K+E4O/sYieD3kjPOxkXnDQ
-         NLPhJHycva6TP4yreqIN9esFgANfsR5/oIwR8uCpCTGe1XQC02zpEHQQYLgjlRMM7xbe
-         GCqW5uU1gXpl6xzB14HIK1OlwYs9t7rd2wUNNQn9/MK8yp5QFnCJJjBeN7Z+KoWophkH
-         WeGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0xp8kcBkg2qp8R9hnOoMR7Unc1KGFymAlRVUbAzzCCU=;
-        b=OxyFXVwPdko/RVNctWBYPJTexQqwm1ZAQy1hyl0/Omey82tBIVQolsixZtS1ajv4pS
-         g9qh8WySHrYIToiN921NS9VRUwdIr3OBZqDYiwupEZXp1+g5AvvvNtYRYW5Y1PlUBuKc
-         1yq6QNgH2cC1V4SRm1MSfIc7dixC5A8DiU+7WpPpSTbnqWBMGS2EaVwTLPZhnQjCD1mv
-         aAXPwLMxAfa2BZyWLCErruK0BGlROmx62UqTeLBJwipXZtuuygRlV15Dm+0aa/C/r97l
-         QNSmzykPlfzHvESeOVmg4GWzGqc+SxG9w0TP8WVEkiujBufIJco1wAnj+Ki2PzcU8qNl
-         pccg==
-X-Gm-Message-State: AOAM532fFCIveabhy3kuvuJJJIgDWNCHMk5Aophgs6zbpbS7UpekHE8S
-        TXZDYvAzgpE/EiTcwaPmrTLsOYYQkeg0QtyB6H39UQ==
-X-Google-Smtp-Source: ABdhPJzssdOMHM3FXmgH83+S6nAjzo0lsk/SF799VZEu/OzefWxr0gROQCNKz9DO1fEdG9h0s8HHlptr53r1JOpV3dg=
-X-Received: by 2002:a25:bd08:: with SMTP id f8mr1366069ybk.89.1634152923379;
- Wed, 13 Oct 2021 12:22:03 -0700 (PDT)
+        id S239100AbhJMTrL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 15:47:11 -0400
+Received: from p3plsmtp17-02-2.prod.phx3.secureserver.net ([173.201.193.164]:59546
+        "EHLO p3plwbeout17-02.prod.phx3.secureserver.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239119AbhJMTrH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Oct 2021 15:47:07 -0400
+X-Greylist: delayed 469 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Oct 2021 15:47:07 EDT
+Received: from mailex.mailcore.me ([94.136.40.144])
+        by :WBEOUT: with ESMTP
+        id ak3omy0eyeqB0ak3pma0Pg; Wed, 13 Oct 2021 12:37:09 -0700
+X-CMAE-Analysis: v=2.4 cv=IoLbzJzg c=1 sm=1 tr=0 ts=61673565
+ a=wXHyRMViKMYRd//SnbHIqA==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
+ a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=8gfv0ekSlNoA:10 a=FXvPX3liAAAA:8
+ a=Tqnnkb1RH65CB2acoZsA:9 a=QEXdDO2ut3YA:10 a=SM4aVyO6fsoA:10
+ a=UxLD5KG5Eu0A:10 a=OunuuIp3J4_2X_e7vt2U:22 a=fDQtvUcBV1mJc6yKnRhE:22
+ a=UObqyxdv-6Yh2QiB9mM_:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk  
+X-SID:  ak3omy0eyeqB0
+Received: from 82-69-79-175.dsl.in-addr.zen.co.uk ([82.69.79.175] helo=[192.168.178.33])
+        by smtp01.mailcore.me with esmtpa (Exim 4.94.2)
+        (envelope-from <phillip@squashfs.org.uk>)
+        id 1mak3n-0001YR-Im; Wed, 13 Oct 2021 20:37:07 +0100
+Subject: Re: [PATCH 22/29] squashfs: use bdev_nr_sectors instead of open
+ coding it
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
+        Song Liu <song@kernel.org>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>, Jan Kara <jack@suse.com>,
+        linux-block@vger.kernel.org, dm-devel@redhat.com,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
+References: <20211013051042.1065752-1-hch@lst.de>
+ <20211013051042.1065752-23-hch@lst.de>
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+Message-ID: <cbd3585f-87c6-ab31-2911-4d3550287e22@squashfs.org.uk>
+Date:   Wed, 13 Oct 2021 20:37:03 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com> <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
- <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com>
- <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com> <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
- <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com> <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
- <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com> <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
- <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com> <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
-In-Reply-To: <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 13 Oct 2021 15:21:47 -0400
-Message-ID: <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211013051042.1065752-23-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Mailcore-Auth: 439999529
+X-Mailcore-Domain: 1394945
+X-123-reg-Authenticated:  phillip@squashfs.org.uk  
+X-Originating-IP: 82.69.79.175
+X-CMAE-Envelope: MS4xfH+fINk1bK2uYrlsKzVgiQUDNUof/ZszUIQhfNg9gspQoupRHWcpmWfLdbLmzZ8YNmW5p8B1qpBR0koVdMBgEyElqVpbNhDemdF2RKoQBuA2lGHQ6Jgq
+ Ec+BaTSC1YYU+BehID1flfTiiEeIAxD3HsSHZ3R4+3qs0uffjZZZgvwfydcNVYHownXVRSay3EGlG7e0h/Ft78VqDvxSmJy8qx71DBqiXKgAJ3UxROq7q8Tu
+ i7hRJwxpb10fQ/Lk6LOfZQ==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From the downstream bug:
+On 13/10/2021 06:10, Christoph Hellwig wrote:
+> Use the proper helper to read the block device size.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-[root@openqa-a64-worker03 adamwill][PROD]#
-/usr/src/kernels/5.14.9-300.fc35.aarch64/scripts/faddr2line
-/usr/lib/debug/lib/modules/5.14.9-300.fc35.aarch64/vmlinux
-submit_compressed_extents+0x38
-submit_compressed_extents+0x38/0x3d0:
-submit_compressed_extents at
-/usr/src/debug/kernel-5.14.9/linux-5.14.9-300.fc35.aarch64/fs/btrfs/inode.c:845
-[root@openqa-a64-worker03 adamwill][PROD]#
-
-https://bugzilla.redhat.com/show_bug.cgi?id=2011928#c26
-
-Also curious: this problem is only happening in openstack
-environments, as if the host environment matters. Does that make
-sense?
-
-
---
-Chris Murphy
+Acked-by: Phillip Lougher <phillip@squashfs.org.uk>
