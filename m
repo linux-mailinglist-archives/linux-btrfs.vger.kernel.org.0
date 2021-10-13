@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54B942B688
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 08:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D8842B69A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 08:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237827AbhJMGO5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 02:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47132 "EHLO
+        id S229750AbhJMGQX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 02:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhJMGO5 (ORCPT
+        with ESMTP id S231883AbhJMGQW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:14:57 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A27CC061749
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Oct 2021 23:12:54 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id g14so1547923pfm.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Oct 2021 23:12:54 -0700 (PDT)
+        Wed, 13 Oct 2021 02:16:22 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD69C061762
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Oct 2021 23:14:15 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id r2so1292067pgl.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Oct 2021 23:14:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=1H1JJFKjz05y5oj0p755Wd9Nps08CHOHEplJ5Y1g+2w=;
-        b=FnlM9CdvccmU4HmqmwsZQ6mwcBwOhpuSMmvAcPJz12hGrzMLx0wE72HESKXT/FSdf4
-         7+542Lua7V4TbazDGNap5DO9Pfw7c/uG+qyBy3qJkapOn+6ER85tMNMzt8DzCatnHQL8
-         8qEBnbzhJGY53T8EWVA6JlX/GqGluU0pFlO7o=
+        bh=ohUOQyC8vv5S9fFmDSqrC2HGxb4XvUeywx+2/I7KWZo=;
+        b=frRmuaPa3nXR7lxMr1CNNPYB3c6MDWaV+IHcoR+XuNXpKLmcDJudjmJiNd/vJuYFPn
+         yeOjEGluCsqDt4qWvY1oHVWaypcD/6hEY+cvzA7LDBwWjS32G63Wnxe8e0GGmx9dGa0p
+         xQzhoygleJQrWshzo5X8hdFcW2UVxu2kZRAXo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1H1JJFKjz05y5oj0p755Wd9Nps08CHOHEplJ5Y1g+2w=;
-        b=EQFXEi8LAkxSM5D2eSKNJvJVBRZHdobJqDjDjUlimPrpWpzVv2qJWpi30CVmcG7NCS
-         yxzoeqsH8V2FCFjQHaCEuUQBv4aWlV7WOf+pdtd/YLuAQRZubxkF4koU6kMOnxGDm0NC
-         T1KY4TV1e4up4tkf5yDiiIxaP5+48p/oqSDzL/sroNMlqPbBLAxSkeieAVTOoofscVx6
-         NFXIvU0MFvdgc7Ye1GnsJrEfNhk4vVmTyQkyHV5/h35Sg+B9yFugTTLX6FHgPoWSag7D
-         Ootvu/2DADxmeZOO755IN6tXYiplEWGarBAb+MEGfewRxmc8a0ItT2hqBKVomNOil8tZ
-         WbRg==
-X-Gm-Message-State: AOAM530P21oktMCQQTjc9E3Ydp+AZw7nJkePPbRJHTDjDxF0pj4n0B6S
-        JbTGorsat3Bg84DQE8nJUJd0FA==
-X-Google-Smtp-Source: ABdhPJyo2VCUKF6kjMdrI9PCDmpBjFpUCoF94Pv9htxPPsmjtX3akcms7YpvLn8ozHxuI/GsrlutsQ==
-X-Received: by 2002:aa7:91c2:0:b0:44c:a5a4:43d4 with SMTP id z2-20020aa791c2000000b0044ca5a443d4mr35433093pfa.20.1634105573663;
-        Tue, 12 Oct 2021 23:12:53 -0700 (PDT)
+        bh=ohUOQyC8vv5S9fFmDSqrC2HGxb4XvUeywx+2/I7KWZo=;
+        b=Esk10eqPPtz0a5eQreLEh6QJvF4Rpt4x8Vmo/wfGBKN/D4SW+KrSMae5mf28nd6LVB
+         0omzd9Za+1wZzwvp9y4HPs+xR/jCqgnJLxQ172T+2CMvSJr6CPxpOgLRCjO4IjX4NhWu
+         YaiTr8OkpNt5PjK7iizbJAZHvoVY9sYl9skH4CazV3TQLVWsgXINr0cYLXTzUC0Evr/2
+         dyz0xVvYpL9UnxgG/tDHD/krQPSkoDrdNfYF7DmtqSih5nDWvNPFDgyiu7ZQBWaGwG7C
+         cqVPI7QefuouOP2O2MsfWgWlYDGn56SsgU2BKwAaZsao3PtpgA3PhYkZyBiOOPgvqiGF
+         U7GQ==
+X-Gm-Message-State: AOAM530XWdVDzdXlK1KK3v4kHzTM+VuP5nCV0tsVtTxYLyhZ47AKNsT/
+        MuiV6guKmsHE8zgAsYjXrPxDZg==
+X-Google-Smtp-Source: ABdhPJwNMNbppcyyaPyGGktYQSHeAypT2bIkLVBhhieDA7TSPn60W6m8F7nQfgJZ/E5a6hMyK4Ynow==
+X-Received: by 2002:a63:e00b:: with SMTP id e11mr26380948pgh.190.1634105655240;
+        Tue, 12 Oct 2021 23:14:15 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z124sm12774767pfb.108.2021.10.12.23.12.53
+        by smtp.gmail.com with ESMTPSA id t8sm10813622pgk.66.2021.10.12.23.14.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Oct 2021 23:12:53 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 23:12:52 -0700
+        Tue, 12 Oct 2021 23:14:15 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 23:14:14 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
@@ -69,27 +69,22 @@ Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
         linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
         linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
         reiserfs-devel@vger.kernel.org
-Subject: Re: [PATCH 04/29] md: use bdev_nr_sectors instead of open coding it
-Message-ID: <202110122311.B43459E21@keescook>
+Subject: Re: [PATCH 09/29] fs: simplify init_page_buffers
+Message-ID: <202110122314.664187AA@keescook>
 References: <20211013051042.1065752-1-hch@lst.de>
- <20211013051042.1065752-5-hch@lst.de>
+ <20211013051042.1065752-10-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013051042.1065752-5-hch@lst.de>
+In-Reply-To: <20211013051042.1065752-10-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 07:10:17AM +0200, Christoph Hellwig wrote:
-> Use the proper helper to read the block device size.
+On Wed, Oct 13, 2021 at 07:10:22AM +0200, Christoph Hellwig wrote:
+> No need to convert from bdev to inode and back.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-I think it might make sense, as you suggest earlier, to add a "bytes"
-helper. This is the first user in the series needing:
-
-	bdev_nr_sectors(...bdev) << SECTOR_SHIFT
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
 
