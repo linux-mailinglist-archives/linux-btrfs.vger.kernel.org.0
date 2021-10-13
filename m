@@ -2,86 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A6242BD3F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 12:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9391542BD52
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 12:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhJMKlt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 06:41:49 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60804 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhJMKlk (ORCPT
+        id S229653AbhJMKoP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 06:44:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33604 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhJMKoO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 06:41:40 -0400
+        Wed, 13 Oct 2021 06:44:14 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id DDD182233F;
-        Wed, 13 Oct 2021 10:39:35 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id F3C7D201DC;
+        Wed, 13 Oct 2021 10:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634121575;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        t=1634121729; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fMfmUnnDiiRwUPC72IhH/LGZs1UnwQrGiJea/NvMqbY=;
-        b=rbxbextxEZXqNZ8os3PycUyRXczLgzg3KXPGwCGcZN/DJGBC3+84uCmnwPVZaR//hd79ha
-        Nn21kbyPXDO4AK2U8V+x3oGoyjPKE7us3FvH7AnXBijfU/6sEJIN7d4qr9SDcqF+evuM1y
-        gQqyUT0ar+CsoTumIyLLn/zbv9v38Do=
+        bh=Z4HqZyTEwS9Rcr4e8FrndT8Yotl846xcwxeeXUm/Rbw=;
+        b=hfTvKDs9tMBALqogMul26UufXr/UDrQs6fQ2xFqJlV4HsPz2oyF/rJyg+bH01us42OgEr/
+        gQBKJJBLlltruRPrBFfyACC1OK0Ft4NyUMSfl4pAJ3vBBVqgnncaUQShaZ1/INd0ZXBrCL
+        clnKG5sWnOV98zZG/GDtQEKojpj+iI4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634121575;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1634121729;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fMfmUnnDiiRwUPC72IhH/LGZs1UnwQrGiJea/NvMqbY=;
-        b=isD1+BpctGGzJoGKi7OOXSXZHsF6ZGsUxyVntD1t46rxYPy+C5WNcELOghgcPySIB75KRR
-        fwGt0mAdwZ/mYoBA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D6658A3B81;
-        Wed, 13 Oct 2021 10:39:35 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AD597DA7A3; Wed, 13 Oct 2021 12:39:11 +0200 (CEST)
-Date:   Wed, 13 Oct 2021 12:39:11 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: print-tree: fix chunk/block group flags
- output
-Message-ID: <20211013103911.GD9286@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <20211012021719.18496-1-wqu@suse.com>
- <b331b0a3-8119-d66e-c49e-742262ad4a9f@suse.com>
- <504c9584-e760-54a4-7ae4-1c4f26ec5323@suse.com>
- <32c39029-8434-e3f9-0d72-740fe6f44bff@gmx.com>
- <a643cdea-5130-c44e-ce4f-dc8fa23e7481@suse.com>
- <0fbd2076-2b6c-4531-01ea-84db37abf621@gmx.com>
- <1dea2507-5dfb-75ca-7bcb-f1114f5929b6@suse.com>
- <7aad61f4-1b47-eef7-82c3-52ed3ff5dc48@suse.com>
+        bh=Z4HqZyTEwS9Rcr4e8FrndT8Yotl846xcwxeeXUm/Rbw=;
+        b=viBbxLVUsu9I5SCs9Ro+b7QEHFxldjR3jplEXmW7M5M5jUxvO7kpggYe/iz58HOLGzWfYy
+        3YAfJdO+WIda7fAA==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 1EA1AA3B85;
+        Wed, 13 Oct 2021 10:42:08 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id EAB6D1E11B6; Wed, 13 Oct 2021 12:42:07 +0200 (CEST)
+Date:   Wed, 13 Oct 2021 12:42:07 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+        linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+        reiserfs-devel@vger.kernel.org
+Subject: Re: [PATCH 09/29] fs: simplify init_page_buffers
+Message-ID: <20211013104207.GD19200@quack2.suse.cz>
+References: <20211013051042.1065752-1-hch@lst.de>
+ <20211013051042.1065752-10-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7aad61f4-1b47-eef7-82c3-52ed3ff5dc48@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20211013051042.1065752-10-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 07:53:48AM +0800, Qu Wenruo wrote:
-> >> See, if we hit SINGLE profile, we won't populate @profile array.
-> > 
-> > Fair enough, I had misread the != 0 check ... However, I'm wondering,
-> > since this is only used during output, why don't we, for the sake of
-> > consistency, output SINGLE, despite not having an exclusive bit for it?
-> > The point of the human readable output is to be useful for users, so
-> > instead of me having to know an implementation detail that SINGLE is not
-> > represented by any bit, it will be much more useful if I see that
-> > something is single profile, no ?
+On Wed 13-10-21 07:10:22, Christoph Hellwig wrote:
+> No need to convert from bdev to inode and back.
 > 
-> On the other hand, this breaks the consistency of flags output.
-> 
-> We only output flags we have on-disk.
-> 
-> Showing another flag which doesn't have on-disk bit can also be 
-> confusing, and break the existing output format.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Agreed, the dump utility should print only what is on-disk.
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
