@@ -2,287 +2,284 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE1842C45A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 17:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EFE42C26A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 16:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbhJMPEX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 11:04:23 -0400
-Received: from 13.mo584.mail-out.ovh.net ([178.33.251.8]:47241 "EHLO
-        13.mo584.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhJMPET (ORCPT
+        id S235596AbhJMOME (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 10:12:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:40188 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230298AbhJMOMD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 11:04:19 -0400
-X-Greylist: delayed 4200 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Oct 2021 11:04:19 EDT
-Received: from player750.ha.ovh.net (unknown [10.110.171.131])
-        by mo584.mail-out.ovh.net (Postfix) with ESMTP id A71D42331E
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 12:35:39 +0000 (UTC)
-Received: from RCM-web8.webmail.mail.ovh.net (89-64-40-92.dynamic.chello.pl [89.64.40.92])
-        (Authenticated sender: mailing@dmilz.net)
-        by player750.ha.ovh.net (Postfix) with ESMTPSA id 7BB7323193298
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 12:35:39 +0000 (UTC)
+        Wed, 13 Oct 2021 10:12:03 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 846CB223D2;
+        Wed, 13 Oct 2021 14:09:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634134199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BQX8K/jJMrRnI6labpeh5OIHftb5yFfdXE/2MvsEn4I=;
+        b=vWGeWNeLJBCkPq9WG9SYvH+Q6vzMT2uRXpv70TlQ42Sg6LgqdA+gtkS4VmeZbN1s1OudKL
+        8sQ+8fSxo/++lZ90R01cItxKewrmULHehnXEBkuqRhgO022YKET8B3I93IBxYLjtmXWv80
+        8R8B3CHj7+oX2IFKBTxgQMWEttmyD7o=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 51A5813CEC;
+        Wed, 13 Oct 2021 14:09:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gOd+EbfoZmFoRwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Wed, 13 Oct 2021 14:09:59 +0000
+Subject: Re: [PATCH v3 1/2] btrfs: fix deadlock between chunk allocation and
+ chunk btree modifications
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1634115580.git.fdmanana@suse.com>
+ <0747812264412ce1a8474ff2ec223010a6dce3a0.1634115580.git.fdmanana@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <f281ca42-cd64-7978-b4c0-17756dd7689c@suse.com>
+Date:   Wed, 13 Oct 2021 17:09:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Date:   Wed, 13 Oct 2021 14:35:39 +0200
-From:   mailing@dmilz.net
-To:     linux-btrfs@vger.kernel.org
-Subject: Filesystem Read Only due to errno=-28 during metadata allocation
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <f2ed8b05b03db6a4fec4cba7ed17222a@dmilz.net>
-X-Sender: mailing@dmilz.net
-X-Originating-IP: 89.64.40.92
-X-Webmail-UserID: mailing@dmilz.net
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 15175723371644713589
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddutddgheefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpeggfffhvffufgfkgihitgfgsehtjehjtddtredvnecuhfhrohhmpehmrghilhhinhhgsegumhhilhiirdhnvghtnecuggftrfgrthhtvghrnhepvdetlefhkeelueekudffvdfhgfeiffegvdefjeetieffhedtfffhgfeivedugeeknecukfhppedtrddtrddtrddtpdekledrieegrdegtddrledvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeehtddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehmrghilhhinhhgsegumhhilhiirdhnvghtpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+In-Reply-To: <0747812264412ce1a8474ff2ec223010a6dce3a0.1634115580.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-I faced issue with btrfs FS /var forced to RO due to errno=-28 (no space 
-left).
-
-The server was restarted to bring back FS in RW.
-
-Before reboot:
-$ btrfs fi usage /var -m
-Overall:
-     Device size:         2560.00MiB
-     Device allocated:         2559.00MiB
-     Device unallocated:            1.00MiB
-     Device missing:            0.00MiB
-     Used:         1116.00MiB
-     Free (estimated):          451.25MiB (min: 451.25MiB)
-     Data ratio:               1.00
-     Metadata ratio:               2.00
-     Global reserve:           13.00MiB (used: 0.00MiB)
-
-Data,single: Size:1559.25MiB, Used:1108.00MiB
-    /dev/mapper/rootvg-varvol 1559.25MiB
-
-Metadata,DUP: Size:467.88MiB, Used:3.94MiB
-    /dev/mapper/rootvg-varvol  935.75MiB
-
-System,DUP: Size:32.00MiB, Used:0.06MiB
-    /dev/mapper/rootvg-varvol   64.00MiB
-
-Unallocated:
-    /dev/mapper/rootvg-varvol    1.00MiB
-
-The FS went RO on Sunday, with this trace:
-2021-10-10T00:13:12.790042+02:00 SERVERNAME kernel: BTRFS: Transaction 
-aborted (error -28)
-2021-10-10T00:13:12.790053+02:00 SERVERNAME kernel: ------------[ cut 
-here ]------------
-2021-10-10T00:13:12.790055+02:00 SERVERNAME kernel: WARNING: CPU: 8 PID: 
-8532 at ../fs/btrfs/extent-tree.c:2353 
-btrfs_run_delayed_refs+0x2b4/0x2c0 [btrfs]
-2021-10-10T00:13:12.790057+02:00 SERVERNAME kernel: Modules linked in: 
-lin_tape(OEX) pfo(OEX) nfsv3 nfs_acl nfs lockd grace sunrpc fscache 
-rpadlpar_io(X) rpaphp(X) tcp_diag udp_diag raw_diag inet_diag unix_diag 
-af_packet_diag netlink_diag binfmt_misc af_packet xfs libcrc32c st ch 
-ibmveth(X) vmx_crypto gf128mul crct10dif_vpmsum uio_pdrv_genirq uio 
-rtc_generic btrfs xor zstd_decompress zstd_compress xxhash raid6_pq 
-dm_service_time sd_mod ibmvfc(X) scsi_transport_fc crc32c_vpmsum 
-dm_mirror dm_region_hash dm_log sg dm_multipath dm_mod scsi_dh_rdac 
-scsi_dh_emc scsi_dh_alua scsi_mod autofs4
-2021-10-10T00:13:12.790059+02:00 SERVERNAME kernel: Supported: Yes, 
-External
-2021-10-10T00:13:12.790053+02:00 SERVERNAME kernel: ------------[ cut 
-here ]------------
-2021-10-10T00:13:12.790055+02:00 SERVERNAME kernel: WARNING: CPU: 8 PID: 
-8532 at ../fs/btrfs/extent-tree.c:2353 
-btrfs_run_delayed_refs+0x2b4/0x2c0 [btrfs]
-2021-10-10T00:13:12.790057+02:00 SERVERNAME kernel: Modules linked in: 
-lin_tape(OEX) pfo(OEX) nfsv3 nfs_acl nfs lockd grace sunrpc fscache 
-rpadlpar_io(X) rpaphp(X) tcp_diag udp_diag raw_diag inet_diag unix_diag 
-af_packet_diag netlink_diag binfmt_misc af_packet xfs libcrc32c st ch 
-ibmveth(X) vmx_crypto gf128mul crct10dif_vpmsum uio_pdrv_genirq uio 
-rtc_generic btrfs xor zstd_decompress zstd_compress xxhash raid6_pq 
-dm_service_time sd_mod ibmvfc(X) scsi_transport_fc crc32c_vpmsum 
-dm_mirror dm_region_hash dm_log sg dm_multipath dm_mod scsi_dh_rdac 
-scsi_dh_emc scsi_dh_alua scsi_mod autofs4
-2021-10-10T00:13:12.790059+02:00 SERVERNAME kernel: Supported: Yes, 
-External
-2021-10-10T00:13:12.790060+02:00 SERVERNAME kernel: CPU: 8 PID: 8532 
-Comm: vpdupdate Tainted: G W OE 4.12.14-122.83-default #1 SLE12-SP5
-2021-10-10T00:13:12.790076+02:00 SERVERNAME kernel: task: 
-c0000068d70c1600 task.stack: c000002aba1a0000
-2021-10-10T00:13:12.790078+02:00 SERVERNAME kernel: NIP: 
-d000000035876474 LR: d000000035876470 CTR: 0000000000000000
-2021-10-10T00:13:12.790080+02:00 SERVERNAME kernel: REGS: 
-c000002aba1a3870 TRAP: 0700 Tainted: G W OE (4.12.14-122.83-default)
-2021-10-10T00:13:12.790081+02:00 SERVERNAME kernel: MSR: 
-800000010282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE,TM[E]>
-2021-10-10T00:13:12.790083+02:00 SERVERNAME kernel: CR: 24444422 XER: 
-20040000
-2021-10-10T00:13:12.790085+02:00 SERVERNAME kernel: CFAR: 
-c0000000009c817c SOFTE: 1
-2021-10-10T00:13:12.790086+02:00 SERVERNAME kernel: GPR00: 
-d000000035876470 c000002aba1a3af0 d000000035993288 0000000000000026
-2021-10-10T00:13:12.790088+02:00 SERVERNAME kernel: GPR04: 
-c00000e6bf30ade8 c00000e6bf322a00 0000000000000007 c0000000013ed474
-2021-10-10T00:13:12.790090+02:00 SERVERNAME kernel: GPR08: 
-0000000000000000 c000000000dc16fc 000000e6be550000 000000000000134f
-2021-10-10T00:13:12.790091+02:00 SERVERNAME kernel: GPR12: 
-0000000000004000 c00000000f6c9400 00000000007fffff 0000000000000014
-2021-10-10T00:13:12.790093+02:00 SERVERNAME kernel: GPR16: 
-00000100231aa080 0000010022868988 aaaaaaaaaaaaaaab c000000024ebf778
-2021-10-10T00:13:12.790095+02:00 SERVERNAME kernel: GPR20: 
-0000000000000000 0000000000000000 0000000000000000 c00000e5a1f6eb30
-2021-10-10T00:13:12.790097+02:00 SERVERNAME kernel: GPR24: 
-c00000e5a1f6eb20 00000000000016ba c00000e5a1f6e9c0 c00000e6828cc000
-2021-10-10T00:13:12.790098+02:00 SERVERNAME kernel: GPR28: 
-c0000014b1bc02d0 0000000000000000 c00000e6828cc000 ffffffffffffffe4
-2021-10-10T00:13:12.790100+02:00 SERVERNAME kernel: NIP 
-[d000000035876474] btrfs_run_delayed_refs+0x2b4/0x2c0 [btrfs]
-2021-10-10T00:13:12.790101+02:00 SERVERNAME kernel: LR 
-[d000000035876470] btrfs_run_delayed_refs+0x2b0/0x2c0 [btrfs]
-2021-10-10T00:13:12.790103+02:00 SERVERNAME kernel: Call Trace:
-2021-10-10T00:13:12.790104+02:00 SERVERNAME kernel: [c000002aba1a3af0] 
-[d000000035876470] btrfs_run_delayed_refs+0x2b0/0x2c0 [btrfs] 
-(unreliable)
-2021-10-10T00:13:12.790106+02:00 SERVERNAME kernel: [c000002aba1a3bb0] 
-[d000000035891554] btrfs_commit_transaction+0x74/0xc10 [btrfs]
-2021-10-10T00:13:12.790108+02:00 SERVERNAME kernel: [c000002aba1a3c80] 
-[d0000000358b3328] btrfs_sync_file+0x3a8/0x510 [btrfs]
-2021-10-10T00:13:12.790110+02:00 SERVERNAME kernel: [c000002aba1a3d80] 
-[c000000000408720] vfs_fsync_range+0x70/0x120
-2021-10-10T00:13:12.790111+02:00 SERVERNAME kernel: [c000002aba1a3dd0] 
-[c00000000040886c] do_fsync+0x5c/0xb0
-2021-10-10T00:13:12.790113+02:00 SERVERNAME kernel: [c000002aba1a3e10] 
-[c000000000408cfc] SyS_fdatasync+0x2c/0x40
-2021-10-10T00:13:12.790115+02:00 SERVERNAME kernel: [c000002aba1a3e30] 
-[c00000000000b308] system_call+0x3c/0x130
-2021-10-10T00:13:12.790116+02:00 SERVERNAME kernel: Instruction dump:
-2021-10-10T00:13:12.790118+02:00 SERVERNAME kernel: e87c0060 3c820000 
-e8848b48 38a0fffb 4bfe6905 60000000 4bffffb4 3c620000
-2021-10-10T00:13:12.790120+02:00 SERVERNAME kernel: e8638b38 7fe4fb78 
-480e3f55 e8410018 <0fe00000> 4bffff98 60000000 3c4c0012
-2021-10-10T00:13:12.790122+02:00 SERVERNAME kernel: ---[ end trace 
-c9aa23777165dfdc ]---
-2021-10-10T00:13:12.790124+02:00 SERVERNAME kernel: BTRFS: error (device 
-dm-22) in btrfs_run_delayed_refs:2353: errno=-28 No space left
-2021-10-10T00:13:12.790125+02:00 SERVERNAME kernel: btrfs_printk: 12 
-callbacks suppressed
-2021-10-10T00:13:12.790127+02:00 SERVERNAME kernel: BTRFS info (device 
-dm-22): forced readonly
-2021-10-10T00:13:12.790060+02:00 SERVERNAME kernel: CPU: 8 PID: 8532 
-Comm: vpdupdate Tainted: G W OE 4.12.14-122.83-default #1 SLE12-SP5
-2021-10-10T00:13:12.790076+02:00 SERVERNAME kernel: task: 
-c0000068d70c1600 task.stack: c000002aba1a0000
-2021-10-10T00:13:12.790078+02:00 SERVERNAME kernel: NIP: 
-d000000035876474 LR: d000000035876470 CTR: 0000000000000000
-2021-10-10T00:13:12.790080+02:00 SERVERNAME kernel: REGS: 
-c000002aba1a3870 TRAP: 0700 Tainted: G W OE (4.12.14-122.83-default)
-2021-10-10T00:13:12.790081+02:00 SERVERNAME kernel: MSR: 
-800000010282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE,TM[E]>
-2021-10-10T00:13:12.790083+02:00 SERVERNAME kernel: CR: 24444422 XER: 
-20040000
-2021-10-10T00:13:12.790085+02:00 SERVERNAME kernel: CFAR: 
-c0000000009c817c SOFTE: 1
-2021-10-10T00:13:12.790086+02:00 SERVERNAME kernel: GPR00: 
-d000000035876470 c000002aba1a3af0 d000000035993288 0000000000000026
-2021-10-10T00:13:12.790088+02:00 SERVERNAME kernel: GPR04: 
-c00000e6bf30ade8 c00000e6bf322a00 0000000000000007 c0000000013ed474
-2021-10-10T00:13:12.790090+02:00 SERVERNAME kernel: GPR08: 
-0000000000000000 c000000000dc16fc 000000e6be550000 000000000000134f
-2021-10-10T00:13:12.790091+02:00 SERVERNAME kernel: GPR12: 
-0000000000004000 c00000000f6c9400 00000000007fffff 0000000000000014
-2021-10-10T00:13:12.790093+02:00 SERVERNAME kernel: GPR16: 
-00000100231aa080 0000010022868988 aaaaaaaaaaaaaaab c000000024ebf778
-2021-10-10T00:13:12.790095+02:00 SERVERNAME kernel: GPR20: 
-0000000000000000 0000000000000000 0000000000000000 c00000e5a1f6eb30
-2021-10-10T00:13:12.790097+02:00 SERVERNAME kernel: GPR24: 
-c00000e5a1f6eb20 00000000000016ba c00000e5a1f6e9c0 c00000e6828cc000
-2021-10-10T00:13:12.790098+02:00 SERVERNAME kernel: GPR28: 
-c0000014b1bc02d0 0000000000000000 c00000e6828cc000 ffffffffffffffe4
-2021-10-10T00:13:12.790100+02:00 SERVERNAME kernel: NIP 
-[d000000035876474] btrfs_run_delayed_refs+0x2b4/0x2c0 [btrfs]
-2021-10-10T00:13:12.790101+02:00 SERVERNAME kernel: LR 
-[d000000035876470] btrfs_run_delayed_refs+0x2b0/0x2c0 [btrfs]
-2021-10-10T00:13:12.790103+02:00 SERVERNAME kernel: Call Trace:
-2021-10-10T00:13:12.790104+02:00 SERVERNAME kernel: [c000002aba1a3af0] 
-[d000000035876470] btrfs_run_delayed_refs+0x2b0/0x2c0 [btrfs] 
-(unreliable)
-2021-10-10T00:13:12.790106+02:00 SERVERNAME kernel: [c000002aba1a3bb0] 
-[d000000035891554] btrfs_commit_transaction+0x74/0xc10 [btrfs]
-2021-10-10T00:13:12.790108+02:00 SERVERNAME kernel: [c000002aba1a3c80] 
-[d0000000358b3328] btrfs_sync_file+0x3a8/0x510 [btrfs]
-2021-10-10T00:13:12.790110+02:00 SERVERNAME kernel: [c000002aba1a3d80] 
-[c000000000408720] vfs_fsync_range+0x70/0x120
-2021-10-10T00:13:12.790111+02:00 SERVERNAME kernel: [c000002aba1a3dd0] 
-[c00000000040886c] do_fsync+0x5c/0xb0
-2021-10-10T00:13:12.790113+02:00 SERVERNAME kernel: [c000002aba1a3e10] 
-[c000000000408cfc] SyS_fdatasync+0x2c/0x40
-2021-10-10T00:13:12.790115+02:00 SERVERNAME kernel: [c000002aba1a3e30] 
-[c00000000000b308] system_call+0x3c/0x130
-2021-10-10T00:13:12.790116+02:00 SERVERNAME kernel: Instruction dump:
-2021-10-10T00:13:12.790118+02:00 SERVERNAME kernel: e87c0060 3c820000 
-e8848b48 38a0fffb 4bfe6905 60000000 4bffffb4 3c620000
-2021-10-10T00:13:12.790120+02:00 SERVERNAME kernel: e8638b38 7fe4fb78 
-480e3f55 e8410018 <0fe00000> 4bffff98 60000000 3c4c0012
-2021-10-10T00:13:12.790122+02:00 SERVERNAME kernel: ---[ end trace 
-c9aa23777165dfdc ]---
-2021-10-10T00:13:12.790124+02:00 SERVERNAME kernel: BTRFS: error (device 
-dm-22) in btrfs_run_delayed_refs:2353: errno=-28 No space left
-2021-10-10T00:13:12.790125+02:00 SERVERNAME kernel: btrfs_printk: 12 
-callbacks suppressed
-2021-10-10T00:13:12.790127+02:00 SERVERNAME kernel: BTRFS info (device 
-dm-22): forced readonly
-
-$ btrfs --version
-btrfs-progs v4.5.3+20160729
-
-$ btrfs fi show /var
-Label: none  uuid: f96f4980-4682-4d2d-8d7a-3c0e2c1c6680
-         Total devices 1 FS bytes used 1.06GiB
-         devid    1 size 2.50GiB used 2.50GiB path 
-/dev/mapper/rootvg-varvol
-
-uname -a
-Linux SERVERNAME 4.12.14-122.83-default #1 SMP Tue Aug 3 08:37:22 UTC 
-2021 (c86c48c) ppc64le ppc64le ppc64le GNU/Linux
-
-On the previous Friday after weekly balance:
-btrfs fi usage /var
-Overall:
-     Device size:                   2.50GiB
-     Device allocated:              1.73GiB
-     Device unallocated:          792.75MiB
-     Device missing:                  0.00B
-     Used:                          1.09GiB
-     Free (estimated):              1.11GiB      (min: 739.62MiB)
-     Data ratio:                       1.00
-     Metadata ratio:                   2.00
-     Global reserve:               13.00MiB      (used: 0.00B)
-
-Data,single: Size:1.41GiB, Used:1.08GiB
-    /dev/mapper/rootvg-varvol       1.41GiB
-
-Metadata,DUP: Size:128.00MiB, Used:3.94MiB
-    /dev/mapper/rootvg-varvol     256.00MiB
-
-System,DUP: Size:32.00MiB, Used:64.00KiB
-    /dev/mapper/rootvg-varvol      64.00MiB
-
-Unallocated:
-    /dev/mapper/rootvg-varvol     792.75MiB
 
 
-I don't have extract of btrfs fi usage /var command during the weekend, 
-but a script is extracting the Space allocated ("Size") and Used in Data 
-and Metadata. I observed twice during the weekend space allocated to 
-metadata is suddenly growing while the metadata used remains the same. 
-The first time I had enough "Device unallocated" and no problem was 
-observed, the second (on Sunday after midnight), it leads to FS RO (no 
-space left).
+On 13.10.21 г. 12:12, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
 
-Is there any situation that can lead to metadata allocation but without 
-actual usage of metadata?
+<snip>
+
+> 
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> Link: https://lore.kernel.org/linux-btrfs/CACkBjsax51i4mu6C0C3vJqQN3NR_iVuucoeG3U1HXjrgzn5FFQ@mail.gmail.com/
+> Fixes: 79bd37120b1495 ("btrfs: rework chunk allocation to avoid exhaustion of the system chunk array")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/block-group.c | 145 +++++++++++++++++++++++++----------------
+>  fs/btrfs/block-group.h |   2 +
+>  fs/btrfs/relocation.c  |   4 ++
+>  fs/btrfs/volumes.c     |  15 ++++-
+>  4 files changed, 110 insertions(+), 56 deletions(-)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 46fdef7bbe20..e790ea0798c7 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -3403,25 +3403,6 @@ static int do_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags)
+>  		goto out;
+>  	}
+>  
+> -	/*
+> -	 * If this is a system chunk allocation then stop right here and do not
+> -	 * add the chunk item to the chunk btree. This is to prevent a deadlock
+> -	 * because this system chunk allocation can be triggered while COWing
+> -	 * some extent buffer of the chunk btree and while holding a lock on a
+> -	 * parent extent buffer, in which case attempting to insert the chunk
+> -	 * item (or update the device item) would result in a deadlock on that
+> -	 * parent extent buffer. In this case defer the chunk btree updates to
+> -	 * the second phase of chunk allocation and keep our reservation until
+> -	 * the second phase completes.
+> -	 *
+> -	 * This is a rare case and can only be triggered by the very few cases
+> -	 * we have where we need to touch the chunk btree outside chunk allocation
+> -	 * and chunk removal. These cases are basically adding a device, removing
+> -	 * a device or resizing a device.
+> -	 */
+> -	if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
+> -		return 0;
+> -
+>  	ret = btrfs_chunk_alloc_add_chunk_item(trans, bg);
+>  	/*
+>  	 * Normally we are not expected to fail with -ENOSPC here, since we have
+> @@ -3554,14 +3535,14 @@ static int do_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags)
+>   * This has happened before and commit eafa4fd0ad0607 ("btrfs: fix exhaustion of
+>   * the system chunk array due to concurrent allocations") provides more details.
+>   *
+> - * For allocation of system chunks, we defer the updates and insertions into the
+> - * chunk btree to phase 2. This is to prevent deadlocks on extent buffers because
+> - * if the chunk allocation is triggered while COWing an extent buffer of the
+> - * chunk btree, we are holding a lock on the parent of that extent buffer and
+> - * doing the chunk btree updates and insertions can require locking that parent.
+> - * This is for the very few and rare cases where we update the chunk btree that
+> - * are not chunk allocation or chunk removal: adding a device, removing a device
+> - * or resizing a device.
+> + * Allocation of system chunks does not happen through this function. A task that
+> + * needs to update the chunk btree (the only btree that uses system chunks), must
+> + * preallocate chunk space by calling either check_system_chunk() or
+> + * btrfs_reserve_chunk_metadata() - the former is used when allocating a data or
+> + * metadata chunk or when removing a chunk, while the later is used before doing
+> + * a modification to the chunk btree - use cases for the later are adding,
+> + * removing and resizing a device as well as relocation of a system chunk.
+> + * See the comment below for more details.
+>   *
+>   * The reservation of system space, done through check_system_chunk(), as well
+>   * as all the updates and insertions into the chunk btree must be done while
+> @@ -3598,11 +3579,27 @@ int btrfs_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags,
+>  	if (trans->allocating_chunk)
+>  		return -ENOSPC;
+>  	/*
+> -	 * If we are removing a chunk, don't re-enter or we would deadlock.
+> -	 * System space reservation and system chunk allocation is done by the
+> -	 * chunk remove operation (btrfs_remove_chunk()).
+> +	 * Allocation of system chunks can not happen through this path, as we
+> +	 * could end up in a deadlock if we are allocating a data or metadata
+> +	 * chunk and there is another task modifying the chunk btree.
+> +	 *
+> +	 * This is because while we are holding the chunk mutex, we will attempt
+> +	 * to add the new chunk item to the chunk btree or update an existing
+> +	 * device item in the chunk btree, while the other task that is modifying
+> +	 * the chunk btree is attempting to COW an extent buffer while holding a
+> +	 * lock on it and on its parent - if the COW operation triggers a system
+> +	 * chunk allocation, then we can deadlock because we are holding the
+> +	 * chunk mutex and we may need to access that extent buffer or its parent
+> +	 * in order to add the chunk item or update a device item.
+> +	 *
+> +	 * Tasks that want to modify the chunk tree should reserve system space
+> +	 * before updating the chunk btree, by calling either
+> +	 * btrfs_reserve_chunk_metadata() or check_system_chunk().
+> +	 * It's possible that after a task reserves the space, it still ends up
+> +	 * here - this happens in the cases described above at do_chunk_alloc().
+> +	 * The task will have to either retry or fail.
+>  	 */
+> -	if (trans->removing_chunk)
+> +	if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
+>  		return -ENOSPC;
+>  
+>  	space_info = btrfs_find_space_info(fs_info, flags);
+> @@ -3701,17 +3698,14 @@ static u64 get_profile_num_devs(struct btrfs_fs_info *fs_info, u64 type)
+>  	return num_dev;
+>  }
+>  
+> -/*
+> - * Reserve space in the system space for allocating or removing a chunk
+> - */
+> -void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+> +static void reserve_chunk_space(struct btrfs_trans_handle *trans,
+> +				u64 bytes,
+> +				u64 type)
+>  {
+>  	struct btrfs_fs_info *fs_info = trans->fs_info;
+>  	struct btrfs_space_info *info;
+>  	u64 left;
+> -	u64 thresh;
+>  	int ret = 0;
+> -	u64 num_devs;
+>  
+>  	/*
+>  	 * Needed because we can end up allocating a system chunk and for an
+> @@ -3724,19 +3718,13 @@ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+>  	left = info->total_bytes - btrfs_space_info_used(info, true);
+>  	spin_unlock(&info->lock);
+>  
+> -	num_devs = get_profile_num_devs(fs_info, type);
+> -
+> -	/* num_devs device items to update and 1 chunk item to add or remove */
+> -	thresh = btrfs_calc_metadata_size(fs_info, num_devs) +
+> -		btrfs_calc_insert_metadata_size(fs_info, 1);
+> -
+> -	if (left < thresh && btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
+> +	if (left < bytes && btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
+>  		btrfs_info(fs_info, "left=%llu, need=%llu, flags=%llu",
+> -			   left, thresh, type);
+> +			   left, bytes, type);
+>  		btrfs_dump_space_info(fs_info, info, 0, 0);
+>  	}
+
+This can be simplified to if (btrfs_test_opt(fs_info, ENOSPC_DEBUG)) 
+and nested inside the next if (left < bytes). I checked 
+and even with the extra nesting the code doesn't break the 76 char limit. 
+
+>  
+> -	if (left < thresh) {
+> +	if (left < bytes) {
+>  		u64 flags = btrfs_system_alloc_profile(fs_info);
+>  		struct btrfs_block_group *bg;
+>  
+> @@ -3745,21 +3733,20 @@ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+>  		 * needing it, as we might not need to COW all nodes/leafs from
+>  		 * the paths we visit in the chunk tree (they were already COWed
+>  		 * or created in the current transaction for example).
+> -		 *
+> -		 * Also, if our caller is allocating a system chunk, do not
+> -		 * attempt to insert the chunk item in the chunk btree, as we
+> -		 * could deadlock on an extent buffer since our caller may be
+> -		 * COWing an extent buffer from the chunk btree.
+>  		 */
+>  		bg = btrfs_create_chunk(trans, flags);
+>  		if (IS_ERR(bg)) {
+>  			ret = PTR_ERR(bg);
+> -		} else if (!(type & BTRFS_BLOCK_GROUP_SYSTEM)) {
+> +		} else {
+
+This can be turned into a simple if (!IS_ERR(bg)) {}
 
 
+>  			/*
+>  			 * If we fail to add the chunk item here, we end up
+>  			 * trying again at phase 2 of chunk allocation, at
+>  			 * btrfs_create_pending_block_groups(). So ignore
+> -			 * any error here.
+> +			 * any error here. An ENOSPC here could happen, due to
+> +			 * the cases described at do_chunk_alloc() - the system
+> +			 * block group we just created was just turned into RO
+> +			 * mode by a scrub for example, or a running discard
+> +			 * temporarily removed its free space entries, etc.
+>  			 */
+>  			btrfs_chunk_alloc_add_chunk_item(trans, bg);
+>  		}
+> @@ -3768,12 +3755,60 @@ void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+>  	if (!ret) {
+>  		ret = btrfs_block_rsv_add(fs_info->chunk_root,
+>  					  &fs_info->chunk_block_rsv,
+> -					  thresh, BTRFS_RESERVE_NO_FLUSH);
+> +					  bytes, BTRFS_RESERVE_NO_FLUSH);
+>  		if (!ret)
+> -			trans->chunk_bytes_reserved += thresh;
+> +			trans->chunk_bytes_reserved += bytes;
+>  	}
+
+The single btrfs_block_rsv_add call and the addition of bytes to chunk_bytes_reserved 
+can be collapsed into the above branch. The end result looks like: https://pastebin.com/F09TjVWp
+
+This is results in slightly shorter and more linear code => easy to read. 
+
+
+>  }
+>  
+> +/*
+> + * Reserve space in the system space for allocating or removing a chunk.
+> + * The caller must be holding fs_info->chunk_mutex.
+
+Better to use lockdep_assert_held. 
+
+> + */
+> +void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
+> +{
+> +	struct btrfs_fs_info *fs_info = trans->fs_info;
+> +	const u64 num_devs = get_profile_num_devs(fs_info, type);
+> +	u64 bytes;
+> +
+> +	/* num_devs device items to update and 1 chunk item to add or remove. */
+> +	bytes = btrfs_calc_metadata_size(fs_info, num_devs) +
+> +		btrfs_calc_insert_metadata_size(fs_info, 1);
+> +
+> +	reserve_chunk_space(trans, bytes, type);
+> +}
+> +
+
+<snip>
