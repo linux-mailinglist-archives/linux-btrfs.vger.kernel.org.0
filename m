@@ -2,95 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE9F42C69D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 18:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1EF42C778
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 19:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234044AbhJMQpU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 12:45:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55105 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232840AbhJMQpT (ORCPT
+        id S230527AbhJMRW1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 13:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230404AbhJMRWZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 12:45:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634143395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DvE9A+LL2XADoLsMv/QT6HGglilUC7cXAXtJNsfa8lA=;
-        b=IIypTiFYhWCZbUSA7VEpUQlZe+SKXR1aCyCxIeoqcvY99VskuswRyMMy2b0K556uJIiCjv
-        Ox6qgb6HttmrXI9seTaJDYkZUlW9UeyOf+kL7QD/bz8MJ74DIoTbmWfaHbeNmatD8nYYnh
-        K+JHChfxdua7U/XCkmmnTUNapGNrs3s=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-221-xhcS-IT8P0-Wt3rvDy2Mww-1; Wed, 13 Oct 2021 12:43:14 -0400
-X-MC-Unique: xhcS-IT8P0-Wt3rvDy2Mww-1
-Received: by mail-qt1-f197.google.com with SMTP id 12-20020aed208c000000b002a78b33ad97so2458422qtb.23
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 09:43:14 -0700 (PDT)
+        Wed, 13 Oct 2021 13:22:25 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32433C061570
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 10:20:22 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id lk8-20020a17090b33c800b001a0a284fcc2so4954195pjb.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 10:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=22NH0xsWoI2an3AuExsbM21Zf6lOFtjEGxxQ33oX8Nc=;
+        b=jcA3VJL173DwGp9DG13hEbd0O64LIheqV9amzdTagYI5qaS2BN0HGE0KX0EOplTkTw
+         kWP2KE4NFZpqHy5Sx+d4+ZydX8aTYH1zfdu4xznUe9PBiqDwbObbDLKDzFY+2t40dtrZ
+         Z4hcl04HcxyYvThsDAcbVnQwbE09nY4gxvlBmy9JvqAQXNXiEtPa3MkzxXbJvQ6rcnNZ
+         U3TYYPPxsKSMLsfxzZK/qyafB1/dHDQyRdDsbrhO5kISIYYV5GTFKk2qp7nzNfyQUjGM
+         zfngHCYy0G/ImpI2bWp1l9nvQ+VYbdJpNDesmSic50IShr0gL70r2GpReGUzqTIWTQ1F
+         lXGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DvE9A+LL2XADoLsMv/QT6HGglilUC7cXAXtJNsfa8lA=;
-        b=KNabHyB/dbSqUxs0e3ef9wVeiB/h5SxZkeS4YzWnlpddWqAqa/pppP1mBTZ+BNcK2k
-         ag44WZlYwMwESwpXw1vfq5PasbGgADp2Yok0oQK2Xi/ZSXsBicPF6HldegOdx6mUyNZI
-         sSRLxE+b8hypwqp0Vep9CbywrU3Q9IXRneDX9GlyDhhMl1OUfhK686no9zzHyCq5TaQ/
-         r7NghIatTxJ6s9ez6hav9ApBkUJ26Etdehy1JQy1VUH8yTnR1ere4JN/jrxkorF+QoFR
-         raN+IpjVlJdvGC1BrGeyff4dpmCBbh+bWu6NldhDUE08LeMVZguByaWYIZmpDb0iRVmm
-         fTDQ==
-X-Gm-Message-State: AOAM5319hP7D75IKuQZudyUCDiyhNLGessDcsLssLM2+VsSsKte7/B19
-        RBrJF+mq96zXPWmhFoedtQLp2+j0/l0mKfv0qHta0GfQvqEOM+saTbWISIT6mFBJlkMeEux9Q0K
-        P3o75QUua+e4VmW0x3Rt7Tw==
-X-Received: by 2002:ac8:7d02:: with SMTP id g2mr450213qtb.66.1634143393833;
-        Wed, 13 Oct 2021 09:43:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy4uQGBl82DdkygPL4oygkwPDtljuRYBV8+ESqW4tKnOahM7pZ+SYljUTQ3BKpa4FdVi33PjA==
-X-Received: by 2002:ac8:7d02:: with SMTP id g2mr450159qtb.66.1634143393507;
-        Wed, 13 Oct 2021 09:43:13 -0700 (PDT)
-Received: from localhost ([45.130.83.141])
-        by smtp.gmail.com with ESMTPSA id q14sm77870qtl.73.2021.10.13.09.43.13
+        bh=22NH0xsWoI2an3AuExsbM21Zf6lOFtjEGxxQ33oX8Nc=;
+        b=tJIXJbqlzMXAi0fRTmYzGq1b/7Dm3Yt6TtnSPvhz8c2f3ego/Lhg9ve4rldtrALzQK
+         mGwqWBp25/gSHqmw/8+LBKIDGE8sNFaaY9CV0FwUbTXa6tPHibXpaQ9yBHEnQkF7rhS/
+         Co0TuUBDIcv8SX8l4Z78StxqrMjW/8E1X37FxA7PAOnOP9SWSY5DtT0csa1EwDKAP04K
+         5fw6hOeUfoRHJpKPMqOx2cpo70B90CgPvcTt2mLRtxW6BQiffjWdNu/9DxRj10tfFhc3
+         djfrJh7J+dYmpppRq3u4Bc0DWKKk85ltg2IXUirFGp7eznkyWgxemPwZA7kkCc5scB+e
+         IryA==
+X-Gm-Message-State: AOAM530JEkvLXSJB+NZ5MVeR9icbI/M7/o6tPWA7pAChn+uFhjTElKws
+        2SPirIgqYWr9ov9wkNYTuWfLMQ==
+X-Google-Smtp-Source: ABdhPJw4quGMFTF4LLqBHW24M6OsRjqyDwVDjpGtI1ocWP1KgUPK01O+ixjjEnMjdSck+SAqEozwBQ==
+X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr575012pjl.19.1634145621539;
+        Wed, 13 Oct 2021 10:20:21 -0700 (PDT)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:b911])
+        by smtp.gmail.com with ESMTPSA id k6sm143577pfg.18.2021.10.13.10.20.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Oct 2021 09:43:13 -0700 (PDT)
-Date:   Wed, 13 Oct 2021 12:43:12 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
-        David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Kees Cook <keescook@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
-        linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
-        reiserfs-devel@vger.kernel.org
-Subject: Re: [PATCH 03/29] dm: use bdev_nr_sectors instead of open coding it
-Message-ID: <YWcMoCZxfpUzKZQ+@redhat.com>
-References: <20211013051042.1065752-1-hch@lst.de>
- <20211013051042.1065752-4-hch@lst.de>
+        Wed, 13 Oct 2021 10:20:21 -0700 (PDT)
+Date:   Wed, 13 Oct 2021 10:20:18 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [RFC PATCH] btrfs: fix deadlock when defragging transparent huge
+ pages
+Message-ID: <YWcVUpqe1i+Zibgd@relinquished.localdomain>
+References: <f2e6ca5a69c2ed72fba3f4797b37d325cb18c137.1634083989.git.osandov@fb.com>
+ <20211013114106.74EC.409509F4@e16-tech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211013051042.1065752-4-hch@lst.de>
+In-Reply-To: <20211013114106.74EC.409509F4@e16-tech.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 13 2021 at  1:10P -0400,
-Christoph Hellwig <hch@lst.de> wrote:
-
-> Use the proper helper to read the block device size.
+On Wed, Oct 13, 2021 at 11:41:06AM +0800, Wang Yugui wrote:
+> Hi,
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> I failed to use this reproducer to reproduce this problem.
+> 
+> kernel: 5.15.0-0.rc5
+> kernel config: CONFIG_TRANSPARENT_HUGEPAGE_MADVISE=y
+> mount option: rw,relatime,ssd,space_cache=v2,subvolid=5,subvol=/
+> btrfs souce: 5.15.0-0.rc5, misc-next
 
-Acked-by: Mike Snitzer <snitzer@redhat.com>
-
+You also need CONFIG_READ_ONLY_THP_FOR_FS=y.
