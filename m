@@ -2,144 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931A742B709
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 08:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF51842B71A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 08:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhJMG0v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 02:26:51 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:34188 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhJMG0v (ORCPT
+        id S237997AbhJMG3s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 02:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237978AbhJMG3r (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 02:26:51 -0400
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 0A2576C00769;
-        Wed, 13 Oct 2021 09:24:47 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1634106287; bh=KOPTzT+6EVNXf4DXw5oHk/VplwwK3wittt/UGoOYI0I=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to;
-        b=RpBrydWBDQP/gsxsfWbA3/o10JdyhzKeOSQbEzj3hnf5jtTcu1P2jfpmg9xDsplTc
-         S0bRpPrwrXXeGyv9OPy2hGMciv3eMl5AKV6lhgBGVO2ZSS7RvE8YwVoOCfxpHqQ/C1
-         vM93xQm5o0BsBJ7/B3oj4G0f7dcgAeYTHVp4vHdw=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id EEAB26C00757;
-        Wed, 13 Oct 2021 09:24:46 +0300 (EEST)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id Oroj3j-wT19U; Wed, 13 Oct 2021 09:24:46 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id A9B736C0050D;
-        Wed, 13 Oct 2021 09:24:46 +0300 (EEST)
-Received: from nas (unknown [49.65.91.9])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id CF5801BE2D03;
-        Wed, 13 Oct 2021 09:24:44 +0300 (EEST)
-References: <5f0f20b2b0ad9c608357f5f3db27c8e5a9714f80.1634104229.git.anand.jain@oracle.com>
-User-agent: mu4e 1.7.0; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-Subject: Re: [PATCH] btrfs: reduce btrfs_update_block_group alloc argument
- to bool
-Date:   Wed, 13 Oct 2021 14:24:07 +0800
-In-reply-to: <5f0f20b2b0ad9c608357f5f3db27c8e5a9714f80.1634104229.git.anand.jain@oracle.com>
-Message-ID: <fst5igrd.fsf@damenly.su>
+        Wed, 13 Oct 2021 02:29:47 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759A4C061762
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Oct 2021 23:27:44 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id om14so1380900pjb.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Oct 2021 23:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C7+rA9/qIKI+jEKdGT8jq286cyAFBOUDDboMnfms+Z8=;
+        b=AlEYQ5u0lf8LlpP+7qsCcuJhK1pgOk4qAHuS3VO4jhvcYvvdHIhevJhnSmtjCxYajF
+         GvRWvFMVajscl3jlCv3bKH7RKiMCJHNfpDbORo8xCSB0MCLratUhvvPInP4hPM2sN7/u
+         axF+0KLgxbxN6eO5bdOoxf3QMqBfSL0vk4cKc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C7+rA9/qIKI+jEKdGT8jq286cyAFBOUDDboMnfms+Z8=;
+        b=1s7lAZNIQ15f6xshknFARe3TsjiQkgd9rxkBmrHwETCQLAITzlxe1RRWCuBkemN0CD
+         x+MaVfFn2Nae4pUSW+Lb0BpDQTWVOYqc+n0UaPHflZjdtTkD/mc5ljXwMcs3UiyhbbCJ
+         8MNSBMpEvrnvqIbW4S/5WMqx/0tJQSTf3uzI1JNY29dEkSRK0CMEHtw7cIeazDsxq2/p
+         gDRxbB36nj+TSgsdxvlCggPL9hgWaOXKwMxKp0J/KySjuXrkim1UNtXgBkX24UCcKuAp
+         aFISQJZjBDmEM2K7xdVEQ77m57ATOJumzZDwAcRoBkaOIz7qXYOz8BEX6JwCHmNPRM9u
+         jzbw==
+X-Gm-Message-State: AOAM530c4jKQ7OwimUSLl5/Kvk67fQooHW5ms7un49PwzIWq3bKAt3Wp
+        p7ywQZ7dBU3X1kH0TP9tfg6tCg==
+X-Google-Smtp-Source: ABdhPJz8mp+/J7KQDpbHq7K2lAJxf17Ai5GLPqj67ERcH9Uej4DEhzNclBgAGGyGj3QY5e4RheoMRg==
+X-Received: by 2002:a17:90b:88d:: with SMTP id bj13mr4255866pjb.211.1634106463887;
+        Tue, 12 Oct 2021 23:27:43 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x15sm7730841pgo.48.2021.10.12.23.27.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 23:27:43 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 23:27:42 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+        linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+        reiserfs-devel@vger.kernel.org
+Subject: Re: [PATCH 24/29] block: add a sb_bdev_nr_blocks helper
+Message-ID: <202110122319.3029AE5AA@keescook>
+References: <20211013051042.1065752-1-hch@lst.de>
+ <20211013051042.1065752-25-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: +d1m5/RSaUCpygHhXxmqCAcxrytLVO7k/+Gmsm5Un2eDUSOAd1YLVQ6+nHJ/UQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013051042.1065752-25-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 07:10:37AM +0200, Christoph Hellwig wrote:
+> Add a helper to return the size of sb->s_bdev in sb->s_blocksize_bits
+> based unites.  Note that SECTOR_SHIFT has to be open coded due to
+> include dependency issues for now, but I have a plan to sort that out
+> eventually.
 
-On Wed 13 Oct 2021 at 14:05, Anand Jain <anand.jain@oracle.com> 
-wrote:
+Wouldn't that just need a quick lift into a new header file to be
+included by genhd.h, blkev.h, and:
 
-> btrfs_update_block_group() accounts for the number of bytes 
-> allocated or
-> freed. Argument %alloc specifies whether the call is for alloc 
-> or free.
-> Convert the argument %alloc type from int to bool.
->
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->
-Reviewed-by: Su Yue <l@damenly.su>
+drivers/mtd/ssfdc.c:#define SECTOR_SHIFT                9
+fs/hfsplus/hfsplus_raw.h:#define HFSPLUS_SECTOR_SHIFT         9
 
---
-Su
+I think that's worth doing at some point in this series since genhd.h
+already has existing open-coded "9"s. And, really, a *lot* of other
+places too:
+
+$ git grep -E '(<<|>>) 9' | grep -E '\b(block|blk|sector|bdev)\b' | wc -l
+240
+
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  fs/btrfs/block-group.c | 2 +-
->  fs/btrfs/block-group.h | 2 +-
->  fs/btrfs/extent-tree.c | 6 +++---
->  3 files changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 46fdef7bbe20..7dba9028c80c 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -3160,7 +3160,7 @@ int btrfs_write_dirty_block_groups(struct 
-> btrfs_trans_handle *trans)
+>  include/linux/genhd.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+> index 082a3e5fd8fa1..6eaef8fa78bcd 100644
+> --- a/include/linux/genhd.h
+> +++ b/include/linux/genhd.h
+> @@ -245,6 +245,12 @@ static inline sector_t get_capacity(struct gendisk *disk)
+>  	return bdev_nr_sectors(disk->part0);
 >  }
->
->  int btrfs_update_block_group(struct btrfs_trans_handle *trans,
-> -			     u64 bytenr, u64 num_bytes, int alloc)
-> +			     u64 bytenr, u64 num_bytes, bool alloc)
->  {
->  	struct btrfs_fs_info *info = trans->fs_info;
->  	struct btrfs_block_group *cache = NULL;
-> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-> index f751b802b173..07f977d3816c 100644
-> --- a/fs/btrfs/block-group.h
-> +++ b/fs/btrfs/block-group.h
-> @@ -284,7 +284,7 @@ int btrfs_start_dirty_block_groups(struct 
-> btrfs_trans_handle *trans);
->  int btrfs_write_dirty_block_groups(struct btrfs_trans_handle 
->  *trans);
->  int btrfs_setup_space_cache(struct btrfs_trans_handle *trans);
->  int btrfs_update_block_group(struct btrfs_trans_handle *trans,
-> -			     u64 bytenr, u64 num_bytes, int alloc);
-> +			     u64 bytenr, u64 num_bytes, bool alloc);
->  int btrfs_add_reserved_bytes(struct btrfs_block_group *cache,
->  			     u64 ram_bytes, u64 num_bytes, int delalloc);
->  void btrfs_free_reserved_bytes(struct btrfs_block_group *cache,
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index ec5de19f0acd..6e7c03261d78 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -3195,7 +3195,7 @@ static int __btrfs_free_extent(struct 
-> btrfs_trans_handle *trans,
->  			goto out;
->  		}
->
-> -		ret = btrfs_update_block_group(trans, bytenr, num_bytes, 
-> 0);
-> +		ret = btrfs_update_block_group(trans, bytenr, num_bytes, 
-> false);
->  		if (ret) {
->  			btrfs_abort_transaction(trans, ret);
->  			goto out;
-> @@ -4629,7 +4629,7 @@ static int 
-> alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
->  	if (ret)
->  		return ret;
->
-> -	ret = btrfs_update_block_group(trans, ins->objectid, 
-> ins->offset, 1);
-> +	ret = btrfs_update_block_group(trans, ins->objectid, 
-> ins->offset, true);
->  	if (ret) { /* -ENOENT, logic error */
->  		btrfs_err(fs_info, "update block group failed for %llu 
->  %llu",
->  			ins->objectid, ins->offset);
-> @@ -4718,7 +4718,7 @@ static int 
-> alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
->  		return ret;
->
->  	ret = btrfs_update_block_group(trans, extent_key.objectid,
-> -				       fs_info->nodesize, 1);
-> +				       fs_info->nodesize, true);
->  	if (ret) { /* -ENOENT, logic error */
->  		btrfs_err(fs_info, "update block group failed for %llu 
->  %llu",
->  			extent_key.objectid, extent_key.offset);
+>  
+> +static inline u64 sb_bdev_nr_blocks(struct super_block *sb)
+> +{
+> +	return bdev_nr_sectors(sb->s_bdev) >>
+> +		(sb->s_blocksize_bits - 9 /* SECTOR_SHIFT */);
+> +}
+> +
+>  int bdev_disk_changed(struct gendisk *disk, bool invalidate);
+>  void blk_drop_partitions(struct gendisk *disk);
+>  
+> -- 
+> 2.30.2
+> 
+
+-- 
+Kees Cook
