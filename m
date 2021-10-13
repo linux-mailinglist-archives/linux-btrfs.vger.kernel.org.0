@@ -2,121 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385D842C897
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 20:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E703742C9E6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Oct 2021 21:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238435AbhJMSZn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 14:25:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48840 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhJMSZm (ORCPT
+        id S231445AbhJMTYL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 15:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231308AbhJMTYH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 14:25:42 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D629F219C9;
-        Wed, 13 Oct 2021 18:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634149417;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O/wSdTt69YgbX7/SPPCl9GIxcIguT+/qhdi5nzYNWxg=;
-        b=EwsJBAK68T/hmNP8ql96AC7OWTbqZg+ryug2fL2pt2xeUWmd7JbAqmMPkY4SYK84yZDUUJ
-        K3/KDPmbOSYrz5BAWijk89MSpCKvtKOplUJaS9ByEqab+2V3XT6oZjjdEoFASdiZpfaYl8
-        kFBKycOUJf+zCDczbRkrcWk5Rj/odPk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634149417;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O/wSdTt69YgbX7/SPPCl9GIxcIguT+/qhdi5nzYNWxg=;
-        b=ARqj+3F+zBDSNC7T8U76oM1ytSK6AKZG+y0KQUkOPhDoc+C4PzFTdvlLCI3opdLORiRzaf
-        h/TeEZMBrBgA+3CQ==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id CE6B2A3B84;
-        Wed, 13 Oct 2021 18:23:37 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 98AA5DA7A3; Wed, 13 Oct 2021 20:23:13 +0200 (CEST)
-Date:   Wed, 13 Oct 2021 20:23:13 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v4 4/6] btrfs: handle device lookup with
- btrfs_dev_lookup_args
-Message-ID: <20211013182313.GJ9286@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1633464631.git.josef@toxicpanda.com>
- <dfcc04056a9895dedad6786a4d0944fffb3d82be.1633464631.git.josef@toxicpanda.com>
- <cbc1df4a-d7bf-3c34-4c5c-c093512c08bf@suse.com>
+        Wed, 13 Oct 2021 15:24:07 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3715CC061570
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 12:22:04 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id q189so9045143ybq.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Oct 2021 12:22:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0xp8kcBkg2qp8R9hnOoMR7Unc1KGFymAlRVUbAzzCCU=;
+        b=IGjck9dVm2L2YJGxl7VikLWuw92j3HgAgS+UX58rB1yOXljYoMaZ4z2Yyc+Jh30i+Q
+         rfdqe50n9bDvA2fxojqnh44dFEWZd+RNG43BfFWfiY40VUGwEoHIPRr/oD5XZhnQdRs4
+         WeLOdVqjAk515zZ6FaZfLrQO+q3FhcKavHX59rycbYEFY8K+E4O/sYieD3kjPOxkXnDQ
+         NLPhJHycva6TP4yreqIN9esFgANfsR5/oIwR8uCpCTGe1XQC02zpEHQQYLgjlRMM7xbe
+         GCqW5uU1gXpl6xzB14HIK1OlwYs9t7rd2wUNNQn9/MK8yp5QFnCJJjBeN7Z+KoWophkH
+         WeGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0xp8kcBkg2qp8R9hnOoMR7Unc1KGFymAlRVUbAzzCCU=;
+        b=OxyFXVwPdko/RVNctWBYPJTexQqwm1ZAQy1hyl0/Omey82tBIVQolsixZtS1ajv4pS
+         g9qh8WySHrYIToiN921NS9VRUwdIr3OBZqDYiwupEZXp1+g5AvvvNtYRYW5Y1PlUBuKc
+         1yq6QNgH2cC1V4SRm1MSfIc7dixC5A8DiU+7WpPpSTbnqWBMGS2EaVwTLPZhnQjCD1mv
+         aAXPwLMxAfa2BZyWLCErruK0BGlROmx62UqTeLBJwipXZtuuygRlV15Dm+0aa/C/r97l
+         QNSmzykPlfzHvESeOVmg4GWzGqc+SxG9w0TP8WVEkiujBufIJco1wAnj+Ki2PzcU8qNl
+         pccg==
+X-Gm-Message-State: AOAM532fFCIveabhy3kuvuJJJIgDWNCHMk5Aophgs6zbpbS7UpekHE8S
+        TXZDYvAzgpE/EiTcwaPmrTLsOYYQkeg0QtyB6H39UQ==
+X-Google-Smtp-Source: ABdhPJzssdOMHM3FXmgH83+S6nAjzo0lsk/SF799VZEu/OzefWxr0gROQCNKz9DO1fEdG9h0s8HHlptr53r1JOpV3dg=
+X-Received: by 2002:a25:bd08:: with SMTP id f8mr1366069ybk.89.1634152923379;
+ Wed, 13 Oct 2021 12:22:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cbc1df4a-d7bf-3c34-4c5c-c093512c08bf@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
+ <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com> <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
+ <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com>
+ <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com> <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
+ <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com> <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
+ <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com> <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
+ <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com> <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
+In-Reply-To: <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 13 Oct 2021 15:21:47 -0400
+Message-ID: <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
+Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 10:34:41AM +0300, Nikolay Borisov wrote:
-> >  int btrfs_init_dev_replace(struct btrfs_fs_info *fs_info)
-> >  {
-> > +	BTRFS_DEV_LOOKUP_ARGS(args);
-> 
-> nit: This line can be:
-> 
-> struct btrfs_dev_lookup_args args = {.devid = BTRFS_DEV_REPLACE_DEVID};
-> 
-> as it doesn't go over the 76 char limit, the only reason I'm suggesting
+From the downstream bug:
 
-The limit is 80-85.
+[root@openqa-a64-worker03 adamwill][PROD]#
+/usr/src/kernels/5.14.9-300.fc35.aarch64/scripts/faddr2line
+/usr/lib/debug/lib/modules/5.14.9-300.fc35.aarch64/vmlinux
+submit_compressed_extents+0x38
+submit_compressed_extents+0x38/0x3d0:
+submit_compressed_extents at
+/usr/src/debug/kernel-5.14.9/linux-5.14.9-300.fc35.aarch64/fs/btrfs/inode.c:845
+[root@openqa-a64-worker03 adamwill][PROD]#
 
-> it is for consistency sake, since in
-> btrfs_scrub_progress/btrfs_scrub_dev the latter style is preferred.
+https://bugzilla.redhat.com/show_bug.cgi?id=2011928#c26
 
-Agreed, after seeing the rest of the patchset, if the members (most
-often devid) can be set right away like from the parameters, the
-explicit initialization should be used, so I've switched it to what
-you've suggested.
+Also curious: this problem is only happening in openstack
+environments, as if the host environment matters. Does that make
+sense?
 
-> > +static inline bool dev_args_match_fs_devices(struct btrfs_dev_lookup_args *args,
 
-Btw static inline that's not in a header does not make much sense, so
-it's plain static. Also for read-only parameters it's a good habit to
-declare them const, also changed.
-
-> > +					     struct btrfs_fs_devices *fs_devices)
-> > +{
-> > +	if (args->fsid == NULL)
-> > +		return true;
-> > +	if (!memcmp(fs_devices->metadata_uuid, args->fsid, BTRFS_FSID_SIZE))
-> > +		return true;
-> > +	return false;
-> 
-> Make last 3 lines into:
-> 
-> return !memcmp(fs_devices->metadata_uuid, args->fsid, BTRFS_FSID_SIZE)
-
-I really don't like the short form where memcmp (or strcmp for that
-matter) is done like !memcmp as it reads "if the don't compare as
-equeal" and requires the mental switch to if memcmp() == 0 "they're
-equal", so I've been switching that to the == 0 form whenever I see it.
-
-In this function, if ther's a chain of if/if/return, it reads better if
-all the branches are either implicit or explicit, so mixing both styles
-is slightly less preferred.
-
-> > @@ -517,7 +530,7 @@ int btrfs_num_copies(struct btrfs_fs_info *fs_info, u64 logical, u64 len);
-> >  int btrfs_grow_device(struct btrfs_trans_handle *trans,
-> >  		      struct btrfs_device *device, u64 new_size);
-> >  struct btrfs_device *btrfs_find_device(struct btrfs_fs_devices *fs_devices,
-> > -				       u64 devid, u8 *uuid, u8 *fsid);
-> > +				       struct btrfs_dev_lookup_args *args);
-> 
-> Let's annotate this pointer with const to be more explicit about this
-> being really an input-only struct.
-
-Agreed, const added.
+--
+Chris Murphy
