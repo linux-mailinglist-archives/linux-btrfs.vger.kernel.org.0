@@ -2,101 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68C542E220
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 21:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A74A42E225
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 21:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233640AbhJNTpV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Oct 2021 15:45:21 -0400
-Received: from mtaextp1.scidom.de ([146.107.3.202]:59922 "EHLO
+        id S233637AbhJNTrK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Oct 2021 15:47:10 -0400
+Received: from mtaextp1.scidom.de ([146.107.3.202]:60178 "EHLO
         mtaextp1.scidom.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbhJNTpT (ORCPT
+        with ESMTP id S229926AbhJNTrJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Oct 2021 15:45:19 -0400
+        Thu, 14 Oct 2021 15:47:09 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mtaextp1.scidom.de (Postfix) with ESMTP id 2334C1805180A
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:42:56 +0200 (CEST)
+        by mtaextp1.scidom.de (Postfix) with ESMTP id 4278D1805180A
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:44:48 +0200 (CEST)
 Received: from mtaextp1.scidom.de ([127.0.0.1])
         by localhost (mtaextp1.scidom.de [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 9U_hMtjcSekr for <linux-btrfs@vger.kernel.org>;
-        Thu, 14 Oct 2021 21:42:56 +0200 (CEST)
+        with ESMTP id x82iOxN7vb03 for <linux-btrfs@vger.kernel.org>;
+        Thu, 14 Oct 2021 21:44:48 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by mtaextp1.scidom.de (Postfix) with ESMTP id E491F18051804
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:42:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mtaextp1.scidom.de E491F18051804
+        by mtaextp1.scidom.de (Postfix) with ESMTP id 127AC1805180D
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:44:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mtaextp1.scidom.de 127AC1805180D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=helmholtz-muenchen.de; s=C0F30F38-B250-11EB-A191-7CCD3589A052;
-        t=1634240575; bh=9Z9Apww1DZVA8K65RTmJYIgouWTU9qXUel6jxhAoEAk=;
+        t=1634240688; bh=8SVV4HzQRNo8S6W7P+APRQatqz8vBgPZlONEpJcwk0Y=;
         h=Date:From:To:Message-ID:MIME-Version;
-        b=FzvqVmxZ2zDexBW1mqKoP95MGRrtbuHdmc0LFqPP52HCkOwwjtd5VE4j4lruHXogR
-         AFJnCNP1r6FIg7quyFIeBDpGsyAaDjWsKMqrVVFlPlgnAceVLlnWQMPr7KKigljbrl
-         R22w3vbGcyTcdTWRUfz1ErqvHmT3kph9ysxkZY5Tf9gz55e5mcSJKPXSWPcPWW5gom
-         K/FyJTsxsyoG40OH18iknL21s9i/xmuVtKYPUD47vduCqe4s8CmJZhFLnNTG4/0U2b
-         Vo9evaTmXAVzB0UC2d5aYQoAQRdFJXUoGf5VW73+gdmbkGp38RaI9FLQ6uBX+Gz+CS
-         fhkq4PU6dDQtw==
+        b=GjzvH66MGxnLslKThCiL6qxrfREHMj4n3nuylc1xEfc7+mi2lhS5BdlxO1SCjWsTb
+         NOpBWtbay2cUym8gsJsw3KtGuxqEkbFocOctKuTgPQuQqsNvUBtjJQNwXSb6FCkQBJ
+         33Wd9uZaIJmH/aiNpsTefQuhyx1j8T7Yx7GcDHCqVXejzofVjQHldUyJ3/R6HmyZRj
+         iRaft3lonL3PIqmcM+4UWu8bCGx64vy/I4t06yFmV4WYlrp5QsXoafjUsZht/A6FYY
+         /CN15GVeUXLiTwdZXpo74zwn+G4COLtJq+I4CC5YbtxTuZ7VtH6F8XKVeuVM2mYS0F
+         +YoTZJN8mDF5g==
 X-Amavis-Modified: Mail body modified (using disclaimer) - mtaextp1.scidom.de
 X-Virus-Scanned: amavisd-new at mtaextp1.scidom.de
 Received: from mtaextp1.scidom.de ([127.0.0.1])
         by localhost (mtaextp1.scidom.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Ha5SKEKIXTzA for <linux-btrfs@vger.kernel.org>;
-        Thu, 14 Oct 2021 21:42:55 +0200 (CEST)
+        with ESMTP id v2VV4a2o7xQd for <linux-btrfs@vger.kernel.org>;
+        Thu, 14 Oct 2021 21:44:47 +0200 (CEST)
 Received: from mtaintp1.scidom.de (mtaintp1.scidom.de [146.107.8.197])
-        by mtaextp1.scidom.de (Postfix) with ESMTPS id B21CF18051B3F
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:42:55 +0200 (CEST)
+        by mtaextp1.scidom.de (Postfix) with ESMTPS id D74C91805180A
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:44:47 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by mtaintp1.scidom.de (Postfix) with ESMTP id 12491823B31E
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:43:11 +0200 (CEST)
+        by mtaintp1.scidom.de (Postfix) with ESMTP id 37328823B4AD
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:45:03 +0200 (CEST)
 Received: from mtaintp1.scidom.de ([127.0.0.1])
         by localhost (mtaintp1.scidom.de [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id pUy-KdBprOuf for <linux-btrfs@vger.kernel.org>;
-        Thu, 14 Oct 2021 21:43:11 +0200 (CEST)
+        with ESMTP id LFnAFg9F0QEI for <linux-btrfs@vger.kernel.org>;
+        Thu, 14 Oct 2021 21:45:03 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by mtaintp1.scidom.de (Postfix) with ESMTP id E084B823B31B
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:43:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mtaintp1.scidom.de E084B823B31B
+        by mtaintp1.scidom.de (Postfix) with ESMTP id 0F408823B4AC
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:45:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mtaintp1.scidom.de 0F408823B4AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=helmholtz-muenchen.de; s=C0F30F38-B250-11EB-A191-7CCD3589A052;
-        t=1634240590; bh=9Z9Apww1DZVA8K65RTmJYIgouWTU9qXUel6jxhAoEAk=;
+        t=1634240703; bh=8SVV4HzQRNo8S6W7P+APRQatqz8vBgPZlONEpJcwk0Y=;
         h=Date:From:To:Message-ID:MIME-Version;
-        b=oGelDYwq8e0CzrHrebzt5WkgX+S5selFlSzz3XMUjt/toEWvidNvGamaxC8wi8cVU
-         PtOSA1SYmiJbKmGfXv+neMEspGusF/bAJS1ZKGjTusvAX0qs2tYiAgdoLpoDOBGf3Z
-         iG7jddkLl3EjCzmpAA/BYbycXeAqj8FZqzZOVI0jM9tiSxdXYrs4nectlhKmhZ6G9b
-         IpS67k0Wj4ze5WepQVuzDqYZVgnE/Df8Eu+HWv+y+kbzoruYLC7i5o/V25/p32m9TG
-         DRdTc/s9bvNb4WsMoH623LXVuZ1lJMzuERj/YnDaV6IF4qVmtEplHRfJX38qtnZ/Gk
-         yyaP4pAJsqTWg==
+        b=dBttX7kz32hXPlntrUY3pgy/NeyP1Nnt+sgmX14qyTDl5B8PRk1NeEEdOZXSWIILZ
+         UQfoiIK5ExNxDUKl4XA283qIF2Om1pU1uR121mxE0CxDQ1SRjWIhl7jzszfDXPlBpJ
+         JYDvhy6IBnMuZ60ssbJah34hy49+HR0iuc/sYiKeJuUo5vEWfGGFsAF9aJTEQXOmPy
+         Ogw50fgOqu5hxIZ29H/bUU9vlhwd7wgL5EoFu+GptO3wX49k2XosNh+AxLBbLbhnXS
+         LIDD/rVGi/UN7T98KU7jgtKgWhab1ZhnDlym7A3XDOagKcHE0k6mMnbXR5vFUF/M5v
+         hN8BZQkgIhjJA==
 X-Amavis-Modified: Mail body modified (using disclaimer) - mtaintp1.scidom.de
 X-Virus-Scanned: amavisd-new at mtaintp1.scidom.de
 Received: from mtaintp1.scidom.de ([127.0.0.1])
         by localhost (mtaintp1.scidom.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id SENvju5IHKf0 for <linux-btrfs@vger.kernel.org>;
-        Thu, 14 Oct 2021 21:43:10 +0200 (CEST)
+        with ESMTP id hM1OwBhptgrT for <linux-btrfs@vger.kernel.org>;
+        Thu, 14 Oct 2021 21:45:02 +0200 (CEST)
 Received: from mbxp1.scidom.de (mbxp1.scidom.de [146.107.8.207])
-        by mtaintp1.scidom.de (Postfix) with ESMTP id C2561823B4AC
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:43:10 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 21:43:10 +0200 (CEST)
+        by mtaintp1.scidom.de (Postfix) with ESMTP id E4CF4823B31B
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 21:45:02 +0200 (CEST)
+Date:   Thu, 14 Oct 2021 21:45:02 +0200 (CEST)
 From:   "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
 To:     Btrfs ML <linux-btrfs@vger.kernel.org>
-Message-ID: <646607072.59364188.1634240590439.JavaMail.zimbra@helmholtz-muenchen.de>
-In-Reply-To: <20211014134032.GB3478@savella.carfax.org.uk>
-References: <1920407503.58357312.1634216278641.JavaMail.zimbra@helmholtz-muenchen.de> <20211014134032.GB3478@savella.carfax.org.uk>
+Message-ID: <1225415707.59364315.1634240702817.JavaMail.zimbra@helmholtz-muenchen.de>
+In-Reply-To: <79a27c00-5475-12e0-8227-7eb9aa3b080e@suse.com>
+References: <1920407503.58357312.1634216278641.JavaMail.zimbra@helmholtz-muenchen.de> <79a27c00-5475-12e0-8227-7eb9aa3b080e@suse.com>
 Subject: Re: some principal understanding problems (balance and free space)
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; 
-        boundary="----=_Part_59364190_1979860484.1634240590752"
+        boundary="----=_Part_59364317_1101846086.1634240702874"
 X-Originating-IP: [146.107.127.138]
 X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - GC94 (Win)/8.8.15_GA_4007)
 Thread-Topic: some principal understanding problems (balance and free space)
-Thread-Index: y8KoOhlixFUJQyTTFzliYk53ggY84A==
+Thread-Index: 7xvdh2j8T+JkYR94dlfkdBsoC/Y3Rg==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-------=_Part_59364190_1979860484.1634240590752
-Date: Thu, 14 Oct 2021 21:43:10 +0200 (CEST)
+------=_Part_59364317_1101846086.1634240702874
+Date: Thu, 14 Oct 2021 21:45:02 +0200 (CEST)
 From: "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
 To: Btrfs ML <linux-btrfs@vger.kernel.org>
-Message-ID: <646607072.59364188.1634240590439.JavaMail.zimbra@helmholtz-muenchen.de>
-In-Reply-To: <20211014134032.GB3478@savella.carfax.org.uk>
-References: <1920407503.58357312.1634216278641.JavaMail.zimbra@helmholtz-muenchen.de> <20211014134032.GB3478@savella.carfax.org.uk>
+Message-ID: <1225415707.59364315.1634240702817.JavaMail.zimbra@helmholtz-muenchen.de>
+In-Reply-To: <79a27c00-5475-12e0-8227-7eb9aa3b080e@suse.com>
+References: <1920407503.58357312.1634216278641.JavaMail.zimbra@helmholtz-muenchen.de> <79a27c00-5475-12e0-8227-7eb9aa3b080e@suse.com>
 Subject: Re: some principal understanding problems (balance and free space)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -104,18 +104,17 @@ Content-Transfer-Encoding: 7bit
 X-Originating-IP: [146.107.127.138]
 X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - GC94 (Win)/8.8.15_GA_4007)
 Thread-Topic: some principal understanding problems (balance and free space)
-Thread-Index: y8KoOhlixFUJQyTTFzliYk53ggY84A==
+Thread-Index: 7xvdh2j8T+JkYR94dlfkdBsoC/Y3Rg==
 
+----- On Oct 14, 2021, at 3:25 PM, Nikolay Borisov nborisov@suse.com wrote:
 
------ On Oct 14, 2021, at 3:40 PM, Hugo Mills hugo@carfax.org.uk wrote:
->   Hugo.
+ 
+> Does that answer your question?
 
+It does. Thanks a lot.
 
-Thanks, great explaination.
-
-Bernd 
-
-------=_Part_59364190_1979860484.1634240590752
+Bernd
+------=_Part_59364317_1101846086.1634240702874
 Content-Type: application/pkcs7-signature; name=smime.p7s; smime-type=signed-data
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -152,12 +151,12 @@ ADGCApswggKXAgEBMIGeMIGNMQswCQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2Vy
 ZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdE
 Rk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBAgwiB2ugwC/324RS
 2zMwDQYJYIZIAWUDBAIBBQCggc4wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMjExMDE0MTk0MzEwWjAtBgkqhkiG9w0BCTQxIDAeMA0GCWCGSAFlAwQCAQUAoQ0GCSqG
-SIb3DQEBCwUAMC8GCSqGSIb3DQEJBDEiBCAk4afQtxIzneECTmZ+9ccy4D9gKPIIEKhyO9Ept8+d
-/jA0BgkqhkiG9w0BCQ8xJzAlMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAHBgUrDgMCBzAN
-BgkqhkiG9w0BAQsFAASCAQCo766j/4+xqdzIQQ4aONa/t+b+EIPcaCbSxAvMoHRIRBE3Qc0x7EnO
-o3zn4tsbqTOzmWbsbcNrglVbccYdDt5j7tWebMVr15M0f5/E6rY3Yafk0Z6egE/E3bLlqdTICDik
-I+wlDjbI+d95853W3qtDIaAex1YeltIViI8DvK9fWuSxsmJ+Mo88in3JDn5z/Vh0J0QkAiC2Dtdc
-6I2nCLlh8mU2OyS+qRuknvk86oAcRvAakMrjN7hy7XxkNh95D8eA131cqJtxQ3ZOWDdpEqV9W90n
-XSu8tNzpton3DFDHVBEygeCiN4ICCVnkA41SBBoaWrgzgqjkoHQMFgfYnd1iAAAAAAAA
-------=_Part_59364190_1979860484.1634240590752--
+CQUxDxcNMjExMDE0MTk0NTAyWjAtBgkqhkiG9w0BCTQxIDAeMA0GCWCGSAFlAwQCAQUAoQ0GCSqG
+SIb3DQEBCwUAMC8GCSqGSIb3DQEJBDEiBCDXIkp9mF0NXIWjRt/lHgL8spUa5C+PLnnOxxyqcxkR
+9TA0BgkqhkiG9w0BCQ8xJzAlMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAHBgUrDgMCBzAN
+BgkqhkiG9w0BAQsFAASCAQAKsmwQ+s2E2/xxTl7sIXKxNTbi+0pSpt/0RIqH9BrLbJ3hqQv8zUCb
+FlGtfv3ltsG2i7O/JcXyxZUfV2jZwNhXF575UGLKQ2Ju0JZTDib+l6d8o3crhV5W2EAVjQmjonlI
+/vSwi/oLP2ZupaSfH44/b20NwSoqHVCVaztPKZZS9ajXPDelmyZyZDLLeZwa2Rrmbek6QQGfMfZj
+eii8a9Sw4QeI+v3uIteRZVqvWG6P1CZFoS3mruUgH/d8AZ/tkznjJVcXyiSHj/3iCBMyGEcsBPxb
+oc9fdpled/Egiu9GJzaEoXB5XM9Vk9Gc8ZMhpuehUMBBPMt2b87bX32BzzqiAAAAAAAA
+------=_Part_59364317_1101846086.1634240702874--
