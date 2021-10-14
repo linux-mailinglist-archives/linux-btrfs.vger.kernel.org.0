@@ -2,111 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D6D42DF2F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 18:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E4242DFF2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 19:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233183AbhJNQeb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Oct 2021 12:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
+        id S231895AbhJNRNJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Oct 2021 13:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232343AbhJNQea (ORCPT
+        with ESMTP id S230032AbhJNRNJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Oct 2021 12:34:30 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE329C061753
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 09:32:24 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id y10so5961928qkp.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 09:32:24 -0700 (PDT)
+        Thu, 14 Oct 2021 13:13:09 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D280C061570
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 10:11:04 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id a16so4147939qvm.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 10:11:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fZ1p7YeF4ME+UAazH4qetlLx+6NO+qO58pmkbIx9AYc=;
-        b=y2s56uTjy+aCSy+xrtLT6dO3qLQIMEbdIJc+rT+C/EJskCfAAS2Pyp2F+m53PEGAth
-         ZbE+veyvZ4QrR+U5MFZ+OPvrqU/WOG3YMzouQFkQVR4XavnboDH+kosWvlB298AcMM74
-         zU5lP67QkhJKxqCYe3R8pNxD/H+jEIm/iLyDapaPnepAVOGw8JYEicr3vEgL0SrqitPN
-         oKPvZqSwSIbW1SKBIQOqqu/bkCxEPcobobV5jCozR6li3aJxko3Mo5/bF5QxS28XN/BQ
-         G8okOMGd3xEgZ6z+tcFHecwEhQYBoxgKICOigvazuZ55Mgq+BLIv1fbRDgfpLfLtB9pd
-         ktCg==
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y5nO8dsm4p8bHfLt9CZyMnAJeAOiQhqybMWtP5eMOXY=;
+        b=VnyG4c3Bfx9lFX3Kl2bffSTn5TjXfkzKukrNOQSUn1V0h4f7nM228izzs6Rx2Yy7tE
+         lL+ghYLHwv4iPcauxoyP/ut6YSKgaCCYUjUVUOHquCJb445RvQrgZoGsqriC/QXI1KTF
+         2LQU7/tQ9zF0VcAdjNlax3P4NQPK7UGFTcULPOKp9fk3OEcxP3/9EP/7eJViFdfvdXmZ
+         brE+knKNvb/Mz6dMw2xbTtcGQakOdyPdWB9e+AT6Rx1YaqrOsCasidETZS+BY4IJn8P4
+         NwtYzoirOKPz7ItALynnJ0uyCktwHoShFM1HEOlwsJkBa8i4U0I5z6GXlq5E1WcYqsaw
+         UtQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fZ1p7YeF4ME+UAazH4qetlLx+6NO+qO58pmkbIx9AYc=;
-        b=Pvkdwl3GnE2aAH1d/+GcsPHJ7IzXCPTPmhvL0AKPUG6Vxq0tjL8c0cOUR/pjx7TSyp
-         YZMxVOj2T4Zz6IeDeB5XIRwy86jo8u7qV8OdctWr02me3whuPz7GEAEHXAVa4MZU0D6e
-         Cyr1bZ0MD4KFOIgeskI/H0TVgD5NTZceinzDVh/pwGoIT7FrPsI3iOulSbk6j0wgoRJV
-         OPzt54oy6epCS0faFkGhGqIwYYVBD1/JaRa4tZ/K31Kg8nni/LHHLKzghnNcJiYUOTAv
-         OZKtUD+/lqT3qTzQzawntG2edLNBciJr3t5cdS177+nu+EUq32Xw4l7DhrEjLr9v0ZHr
-         QjrA==
-X-Gm-Message-State: AOAM532KWFoGxsw6/Ol4hfkPmFQDnHVklovaXOxWETvDg6CWYMReIXKG
-        hWXdcDKbJOlvPf5dXGb33d1c4Q==
-X-Google-Smtp-Source: ABdhPJxBzvBdJD3UKJMIPSGjIDYzOQ5Cc+E1xJO3VBAIYM9tYowf8YgW5Zlog5jlQRzLgLPGPUT8kA==
-X-Received: by 2002:a37:a3d1:: with SMTP id m200mr5754781qke.61.1634229143981;
-        Thu, 14 Oct 2021 09:32:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y5nO8dsm4p8bHfLt9CZyMnAJeAOiQhqybMWtP5eMOXY=;
+        b=k8NrmsuftJeOWHo/g2g0gDoXHBy+NE6qOJYlO+2tLK/vopB371qcm1MImr8oLtZ3w/
+         MakpH99Uut2DXbMmx/HdDXSuVi5tcHrTP0y9C6Ey/7yp21vbRXNhsIygQBZZIZZXmKPk
+         q2o9CAKuAYdrdIKUd0ecYWD9jL5Am87RkuDIDfR7+PPXDf7QSq7p7g4plMIq6IQIpaBT
+         /BWF0fGigndnAIAW49iec3J8rCZOQQKUMz40+D6luPRYJhWGQjwI1ttkXBK+iW9NHMgI
+         CvpqHFTeZedXb0z7I2MfSFcWetBvivlwfLwcRjCQBDZ2kMsc0PknczR7fl0EC7G2B8S1
+         ixJQ==
+X-Gm-Message-State: AOAM531JnD5/SMEM0NesbccgEVEJVO+Kjddw+Pqs/AzZSeCcZuElRdl6
+        SB85FXbl4q/fR67ngUefFMSoTg==
+X-Google-Smtp-Source: ABdhPJxDI7cybnbGenSWKmh9B7qwqID7QzvtLUATx8TbGGm5cf2IAl0xMFjTaZTlnWSoRk6SYuE8qw==
+X-Received: by 2002:a05:6214:1349:: with SMTP id b9mr6485239qvw.47.1634231463087;
+        Thu, 14 Oct 2021 10:11:03 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v22sm1451917qkf.79.2021.10.14.09.32.23
+        by smtp.gmail.com with ESMTPSA id b14sm1761533qtk.64.2021.10.14.10.11.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Oct 2021 09:32:23 -0700 (PDT)
-Date:   Thu, 14 Oct 2021 12:32:22 -0400
+        Thu, 14 Oct 2021 10:11:02 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: update device path inode time instead of bd_inode
-Message-ID: <YWhblpJgxJ81nA5i@localhost.localdomain>
-References: <00b8cf32502e30403b9849a73e62f4ad5175fded.1634224611.git.josef@toxicpanda.com>
- <20211014153347.GA30555@lst.de>
- <YWhRr123vMRtiHF4@localhost.localdomain>
- <20211014155341.GA32052@lst.de>
- <YWhUCilH3TjmQC+X@localhost.localdomain>
- <20211014160520.GA445@lst.de>
+To:     hch@lst.de, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 0/2] Update device mod time fixes
+Date:   Thu, 14 Oct 2021 13:10:59 -0400
+Message-Id: <cover.1634231213.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014160520.GA445@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 06:05:20PM +0200, Christoph Hellwig wrote:
-> On Thu, Oct 14, 2021 at 12:00:10PM -0400, Josef Bacik wrote:
-> > 1 fs/btrfs/volumes.c  update_dev_time      1900 generic_update_time(d_inode(path.dentry), &now, S_MTIME | S_CTIME);
-> 
-> This is the onde we're talking about.
-> 
-> > 4 fs/inode.c          inode_update_time    1789 return generic_update_time(inode, time, flags);
-> 
-> This is update_time().
-> 
-> And all others are ->update_time instances.
-> 
-> > > Looking at this a bit more I think the right fix is to simply revert the
-> > > offending commit.  The lockdep complains was due to changes issues in the
-> > > loop driver and has been fixed in the loop driver in the meantime.
-> > > 
-> > 
-> > Where were they fixed?  And it doesn't fix the fact that we're calling open on a
-> > device, so any change at all to the loop device is going to end us back up in
-> > this spot because we end up with the ->lo_mutex in our dependency chain.  I want
-> > to avoid this by not calling open, and that means looking up the inode and doing
-> > operations without needing to go through the full file open path.
-> 
-> This all looks like the open_mutex (formerly bd_mutex) vs lo_mutex inside
-> and outside chains, and they were fixed.
-> 
+Hello,
 
-They weren't, I just ran with the original fix reverted and I got the same
-splat.  We need to not call into the blockdevice open call at all, and even if
-they were fixed we'd just get screwed at some point in the future.  The less I
-have to worry about things outside of fs/btrfs the better.
+Christoph noticed that my original fix to stop calling filp_open() when we
+remove devices was wrong because ->bd_inode isn't the inode we need to be
+update, it needs to be the inode that is associated with the path to the device
+node.
 
-> > The best thing for btrfs here is to export the update_time() helper and call
-> > that to avoid all the baggage that comes from opening the block device.  Thanks,
-> 
-> update_time is a bit too low-level for an export as it requires a fair
-> effort to call it the right way.
+In order to do this I need to do a kern_path() to lookup the path to that inode,
+and then I need to update the time for that inode.  generic_update_time() isn't
+appropriate here as it should be used by ->update_time() if at all.  Instead
+export a inode_update_time() helper to do the correct thing, and use that.
 
-It's about the same complexity as touch_atime(), and clearly I still need it to
-fix the lockdep splat.  Thanks,
+This allows us to update the time properly for libblkid, and makes sure we still
+have the lockdep fix that was the motivation of the original fix.  Thanks,
 
-Josef
+
+Josef Bacik (2):
+  fs: export an inode_update_time helper
+  btrfs: update device path inode time instead of bd_inode
+
+ fs/btrfs/volumes.c | 21 +++++++++++++--------
+ fs/inode.c         |  7 ++++---
+ include/linux/fs.h |  2 ++
+ 3 files changed, 19 insertions(+), 11 deletions(-)
+
+-- 
+2.26.3
+
