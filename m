@@ -2,54 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D299B42D825
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 13:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CC042D8C1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 14:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbhJNL1B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Oct 2021 07:27:01 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57858 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbhJNL1A (ORCPT
+        id S230413AbhJNMF6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Oct 2021 08:05:58 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58796 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhJNMF6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Oct 2021 07:27:00 -0400
+        Thu, 14 Oct 2021 08:05:58 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 976D31F782;
-        Thu, 14 Oct 2021 11:24:54 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 880A821A73;
+        Thu, 14 Oct 2021 12:03:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634210694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1634213032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yD42rsW9vO2hSIs/anehSGLFt1dMusiYlfJ68OJJzuc=;
-        b=sDiF3gHPONcMUwdImjyb/QGFdDgcD0O+U5HoZCvhELo7igLb16IiNugF+NDOh625bO9BOv
-        kFThk8LCAzap66ZSmSenmgBZqOQHXi6vA6VC2zYCb/Ep5t0uhEjIuD4xkhDbTrAIjuBs9e
-        PO2JLQQrbtgALjVJyCeFSeUk/nID/QI=
+        bh=+YGJuSqWqu59dVsZM1qiITmFVB7M/5Ic0w3O/Npa1J8=;
+        b=t7JfgZx9AcyViYDnaFyHmmIK5wV1csQJIKNELDQoQJEGJ1rii59CiyGH7Dskm5KjnEO8Wb
+        Z7/7Y4B4R4/1OKKthOp4pJ5IiDfWU5GXEi2Twvel/iz3A18E7rTDZvn0W+hte0LMkKDZgd
+        DqgUdLftR4mb7hNIefltIODpIFdUQRI=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5C05313D82;
-        Thu, 14 Oct 2021 11:24:54 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4393713D8D;
+        Thu, 14 Oct 2021 12:03:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id +1LwE4YTaGF1HAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 14 Oct 2021 11:24:54 +0000
-Subject: Re: [PATCH] btrfs: stop storing the block device name in
- btrfsic_dev_state
-To:     Christoph Hellwig <hch@lst.de>, josef@toxicpanda.com,
-        dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org
-References: <20211014090550.1231755-1-hch@lst.de>
+        id 8bgDDqgcaGGsMQAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 14 Oct 2021 12:03:52 +0000
+Subject: Re: [PATCH v11 02/14] fs: export variant of generic_write_checks
+ without iov_iter
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <cover.1630514529.git.osandov@fb.com>
+ <119d77ad1d63aac1c02e88d750e7e35721c67c97.1630514529.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <13bb9f16-df1b-6c43-a95a-11cc435f95b6@suse.com>
-Date:   Thu, 14 Oct 2021 14:24:53 +0300
+Message-ID: <e5941260-9dd1-ce5d-1610-6e2fcceb0495@suse.com>
+Date:   Thu, 14 Oct 2021 15:03:51 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211014090550.1231755-1-hch@lst.de>
+In-Reply-To: <119d77ad1d63aac1c02e88d750e7e35721c67c97.1630514529.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -59,11 +60,15 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 14.10.21 г. 12:05, Christoph Hellwig wrote:
-> Just use the %pg format specifier in all the debug printks previously
-> using it.  Note that both bdevname and the %pg specifier never print
-> a pathname, so the kbasename call wasn't needed to start with.
+On 1.09.21 г. 20:00, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Encoded I/O in Btrfs needs to check a write with a given logical size
+> without an iov_iter that matches that size (because the iov_iter we have
+> is for the compressed data). So, factor out the parts of
+> generic_write_check() that don't need an iov_iter into a new
+> generic_write_checks_count() function and export that.
+> 
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 
-Reviwed-by: Nikolay Borisov <nborisov@use.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
