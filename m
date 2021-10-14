@@ -2,244 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A9B42D9B5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 15:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7852842DA09
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 15:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhJNNHq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Oct 2021 09:07:46 -0400
-Received: from mtaextp1.scidom.de ([146.107.3.202]:33362 "EHLO
-        mtaextp1.scidom.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhJNNHq (ORCPT
+        id S231477AbhJNNR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Oct 2021 09:17:26 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:44350 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230119AbhJNNRZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Oct 2021 09:07:46 -0400
-X-Greylist: delayed 460 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Oct 2021 09:07:45 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mtaextp1.scidom.de (Postfix) with ESMTP id 85ADC1805240B
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 14:57:44 +0200 (CEST)
-Received: from mtaextp1.scidom.de ([127.0.0.1])
-        by localhost (mtaextp1.scidom.de [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Ttl95MLiptQF for <linux-btrfs@vger.kernel.org>;
-        Thu, 14 Oct 2021 14:57:44 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mtaextp1.scidom.de (Postfix) with ESMTP id 577E81805240C
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 14:57:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mtaextp1.scidom.de 577E81805240C
+        Thu, 14 Oct 2021 09:17:25 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EC6dQK025078;
+        Thu, 14 Oct 2021 13:14:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=WA9dPYQG8XodQsN6AxhCZzi1FymMbZ+cF5Pbu5cQGxE=;
+ b=aQwVrcWkif5jb2ZiD3rT6+Je6xlLFjuBbn0K/wAffBPS+Yv/wlXEEv6IFjTnLCh5/qIj
+ 5AZJmH7y07UtY3kTz+Q1Mu3COvh4cqZsVCRXpPv/sHE/q6EFFHIiTI/4iyBJYu1X8vi+
+ xwNw6oyH3gq6mwraB/ynZ3MJ03vkNxjUEjnm8iokMRzULxcfSM2pfBiz5R2cB1DnQVbE
+ 6QXxrbgI9t5IK3iQnyiM817xzoyd7lw5beI6grwnOaHY9j0vdkbO5VDY/iY5J50OD5aT
+ Z0tif8LaGlqDjUbmTKuikbG64MlQqRBGAICcsTH4z3sTK9bbHthdVPBLHHsyYMIWyPTk Cg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bpevaa8bp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Oct 2021 13:14:30 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19EDDMgd192592;
+        Thu, 14 Oct 2021 13:14:05 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2044.outbound.protection.outlook.com [104.47.51.44])
+        by userp3030.oracle.com with ESMTP id 3bkyvcn9ek-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Oct 2021 13:14:05 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JnlqtkyF7GCogUHXOUQLPG7EbSF4eSllvOmYpMRVyxvXi6cNiNnncphuAMr7Q7GkIC9nBo6vTw7SEVxoBcz0Quddw8N5bzMPSDRfxfjxVbmkV7UP6/GdGwvw5MwqYkeBeUooc3ZxWrFo/5u0GwhULtisVeH+ctVYd4gLoKOpNeJplGhir4ybnHkvFOJbl6lB4LM5rS0MCuPntfv4VXO7kOSvRB4idzdkoo+Yif/Q9M8JAzl6I+YxmCK3tp2CNeLwe0ZNMTH5WsbsckiqRLAvrmPHirvWjJXr+0yPCgIJE3xtGMh63pQdRqXAiOm588/cBxhGZfW1Qk2jqmiuZnZHbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WA9dPYQG8XodQsN6AxhCZzi1FymMbZ+cF5Pbu5cQGxE=;
+ b=mTuyv3a2At9PnISQpTOdDat5D1eKr/XxDzT2OXCfZYrDINZoAhsLq39YH1BZgC53utlNySsgRcMdPJh313ePI1dK2LTZhEx/GHI1MB/32bpJ7zJoRq+sL1kDHnShVqIAaM5H4aABK0TWQDajl5TdKCWs3xq5P7Pe8PUKja8pUg+2PrK/jMpYteaQjVNTXbOvWCZVOgyM8uHc9vjE0OeSWlQ2QxRmczgFFV9o3fPYCFbQp2aVhX5iJcfzJbNlUq+QsunUd5zjq1z98qpZ/c8s5KssZ7Xs6nj764h6PltYcT1T4JLqYYjFGcLmEW/Tv3rADJgaFQaKZ3szksECycXVQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=helmholtz-muenchen.de; s=C0F30F38-B250-11EB-A191-7CCD3589A052;
-        t=1634216264; bh=l4R5wBn2+QRidd8fxoHyGTavVNl4t3Mux6QzOmATQLM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=GWRGz9lYMRFmu+LU/Intc6JAEaojmNPPwb5TulIKBgM3IajH6xPGX/kdJATYaFuTa
-         vskFU4Farp8Uabz2dNmJvrx02b42LfHvBzqbqer8JvoNvzcYtwEh6sE5xkNESCyPb9
-         CX8/1qSD/HgNwRF37EyLjbVkbRgEAj5fhl6Ji1pMow9NrmRdoDUQS9iEXZmGMiAm2C
-         Agy4brI10WBjyeiI4HP/8MeHfLK5RKjNnvx/0WwE31sIZIrnqLZyqQ+ayTm0XeFJp3
-         llVrz7OqbJn5npm3fqQYpE3Cgfjhw2l6/cFXL4uUEvtnjt2n73WvQ5AwtVZTzv1br9
-         Ug2/4iHT8M+Nw==
-X-Amavis-Modified: Mail body modified (using disclaimer) - mtaextp1.scidom.de
-X-Virus-Scanned: amavisd-new at mtaextp1.scidom.de
-Received: from mtaextp1.scidom.de ([127.0.0.1])
-        by localhost (mtaextp1.scidom.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id DNjNFxdZiSsR for <linux-btrfs@vger.kernel.org>;
-        Thu, 14 Oct 2021 14:57:44 +0200 (CEST)
-Received: from mtaintp1.scidom.de (mtaintp1.scidom.de [146.107.8.197])
-        by mtaextp1.scidom.de (Postfix) with ESMTPS id 314BA1805240B
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 14:57:44 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mtaintp1.scidom.de (Postfix) with ESMTP id 4B338823B4AD
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 14:57:59 +0200 (CEST)
-Received: from mtaintp1.scidom.de ([127.0.0.1])
-        by localhost (mtaintp1.scidom.de [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id uUfHkAyLKyMa for <linux-btrfs@vger.kernel.org>;
-        Thu, 14 Oct 2021 14:57:59 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mtaintp1.scidom.de (Postfix) with ESMTP id 2450D823B31E
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 14:57:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mtaintp1.scidom.de 2450D823B31E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=helmholtz-muenchen.de; s=C0F30F38-B250-11EB-A191-7CCD3589A052;
-        t=1634216279; bh=l4R5wBn2+QRidd8fxoHyGTavVNl4t3Mux6QzOmATQLM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=AvG9IFYkwOQw+PuR1Bwtzok1HwEO8sM0mDXsEMnKXDRBNEJgp8S1940IEoyjwC9Tk
-         +T0+isQaixKQHApv75Db/FKPRJoZaAPwxoH6XFwBZR7sTBnmEpbbqFNmNnOfHc4hu3
-         CCVcZpcTafpuIV5fSjOr7hgzG+rnlOvj6u4ak77dqidb35tk07Rg2q10YKgq09DstG
-         dZdOfHh0q9F82dKkLXhX4vrmT4CUy3hoYxp6OW09ve64g2vs9Ldqw9/KYXuw6iiNc1
-         L/u4puDe2O7kzFmVkDxSiTP9E4OxRABPRnScQjN2Cztqb621ilokw/OQOKy3B4RRxu
-         wbpzUOxA2qdaA==
-X-Amavis-Modified: Mail body modified (using disclaimer) - mtaintp1.scidom.de
-X-Virus-Scanned: amavisd-new at mtaintp1.scidom.de
-Received: from mtaintp1.scidom.de ([127.0.0.1])
-        by localhost (mtaintp1.scidom.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ThcLH2Q4sTdD for <linux-btrfs@vger.kernel.org>;
-        Thu, 14 Oct 2021 14:57:59 +0200 (CEST)
-Received: from mbxp1.scidom.de (mbxp1.scidom.de [146.107.8.207])
-        by mtaintp1.scidom.de (Postfix) with ESMTP id EF512823B31B
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Oct 2021 14:57:58 +0200 (CEST)
-Date:   Thu, 14 Oct 2021 14:57:58 +0200 (CEST)
-From:   "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
-To:     Btrfs ML <linux-btrfs@vger.kernel.org>
-Message-ID: <1920407503.58357312.1634216278641.JavaMail.zimbra@helmholtz-muenchen.de>
-Subject: some principal understanding problems (balance and free space)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WA9dPYQG8XodQsN6AxhCZzi1FymMbZ+cF5Pbu5cQGxE=;
+ b=XF2DrYmhBtGjCdgULmLifr+75bQfEMthquYtUPhUProRAV2rMJyObHOhb91HwOIii30paAQFs9Q2PJJohwmpHaL4xJf1pkClCXLX+jPIOTvpqp4srEGcdpxx7nCvmYgSjTh+XaYNmh0IlyCP/b7M6Bp8ke7ILAOTpmwabvt6RCI=
+Authentication-Results: tuxera.com; dkim=none (message not signed)
+ header.d=none;tuxera.com; dmarc=none action=none header.from=oracle.com;
+Received: from SA2PR10MB4665.namprd10.prod.outlook.com (2603:10b6:806:fb::17)
+ by SA1PR10MB5688.namprd10.prod.outlook.com (2603:10b6:806:23e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.26; Thu, 14 Oct
+ 2021 13:14:02 +0000
+Received: from SA2PR10MB4665.namprd10.prod.outlook.com
+ ([fe80::c12a:cfad:520a:2c94]) by SA2PR10MB4665.namprd10.prod.outlook.com
+ ([fe80::c12a:cfad:520a:2c94%4]) with mapi id 15.20.4608.016; Thu, 14 Oct 2021
+ 13:14:02 +0000
+Message-ID: <a5eb3c18-deb2-6539-cc24-57e6d5d3500c@oracle.com>
+Date:   Thu, 14 Oct 2021 08:13:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: don't use ->bd_inode to access the block device size
+Content-Language: en-US
+To:     Anton Altaparmakov <anton@tuxera.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "jfs-discussion@lists.sourceforge.net" 
+        <jfs-discussion@lists.sourceforge.net>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>
+References: <20211013051042.1065752-1-hch@lst.de>
+ <20211014062844.GA25448@lst.de>
+ <3AB8052D-DD45-478B-85F2-BFBEC1C7E9DF@tuxera.com>
+From:   Dave Kleikamp <dave.kleikamp@oracle.com>
+In-Reply-To: <3AB8052D-DD45-478B-85F2-BFBEC1C7E9DF@tuxera.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR13CA0167.namprd13.prod.outlook.com
+ (2603:10b6:806:28::22) To SA2PR10MB4665.namprd10.prod.outlook.com
+ (2603:10b6:806:fb::17)
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; 
-        boundary="----=_Part_58357319_161395518.1634216278934"
-X-Originating-IP: [146.107.127.138]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - GC94 (Win)/8.8.15_GA_4007)
-Thread-Index: KeDEvkLNDUSRqyo3v38eGXmkc8uegA==
-Thread-Topic: some principal understanding problems (balance and free space)
+Received: from [192.168.0.162] (68.201.65.98) by SA9PR13CA0167.namprd13.prod.outlook.com (2603:10b6:806:28::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.7 via Frontend Transport; Thu, 14 Oct 2021 13:14:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 71fb5c9d-b222-48ba-b368-08d98f147da6
+X-MS-TrafficTypeDiagnostic: SA1PR10MB5688:
+X-Microsoft-Antispam-PRVS: <SA1PR10MB5688342140D3C752F038279687B89@SA1PR10MB5688.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NK+IKLBQp6vqxPTSlW15ksUPoCy+AqnchQfrbUUHcxFWSSnhiQuvUhF9Ek40EFSSnPXfZNJ9lBrXcdCvSF9IJVpxR+Tg/6rMvcGVOnizIWhEdgS660Rn2T0adFEsYnmQOEGYg5y9kVrV/gUxmU0eJQ5WqVS9WpmeLt2kL/JX6SR2m57vZawGpi3z81G/SGrOWQfmvr1rft6Q/MvtOwNGF3SWFgao3mb/eGXo0xnCjSnfjl+ogVqUjVPYjjs/AlSIDr52wuLS4R6LPYsJX/QgBt8Ut1jg7SOebr/7u9pHtnYnmXRxPnUoKYvc6dfnsgQt5cF4LaZjIcJFVtz4TeXiCTuNLCnOSMqVC8k/3BMoOq16n2GN0eFvbCz6IW0HBGDsYdstyB46bgUqDcmanF/lwwVMNw8y+NhE1J/NpfpRp0jKoCLGa5pDVhfh+oUAEc9aS0zST+HC7ez/VnuuFNCp3dA8ty7voHZXlsYhuaFW4dSvtTw1WwVAGGxhNTI0RaURJARd3LLPRPVDJc30EW4IPfF+v4r9EKCw5aAzrvKasH+gPjsUxCmknKQv7JpCRseE3toUi2eW4ZOzYLzuQfqD/U/dK6KSwD+X86/Us7yT8rOqzboG8OVIzmnuvP3Jw6JfFFRamW3+4SDI1/ldLofTKsEtaiUbFoQRnWreYPROVrH1d2mVUvvJp+P5FQ8sSLSZcHhbi3SuskD453vNl1zjyoDshouh4e3UN5OyQHG8fMg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR10MB4665.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(31696002)(66946007)(2906002)(44832011)(38100700002)(36756003)(8936002)(2616005)(16576012)(66556008)(316002)(8676002)(31686004)(66476007)(6486002)(53546011)(26005)(110136005)(7406005)(956004)(7416002)(54906003)(508600001)(83380400001)(86362001)(4326008)(186003)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eHB3UytueVNDU2pEOUpOZzUwdlA4cWxwcDBUeXhWVUdpbG9uU3V2Q3lGZG5y?=
+ =?utf-8?B?ZW12b3d1alhsNmN6VzFhM2pmQkVYRUlMR3RLaUtzb1dxOUFsN0h3WFI2UVN6?=
+ =?utf-8?B?bFg0TDYxVWcrajUvMTBsVHQwbm1DZUtJVUJ3cVN5UlRlQ2x4VnEzNll1c1Vq?=
+ =?utf-8?B?TW01ZjlOMDNEV0l3OVVMeW5PMUdpbVJIZmQxWDlhKzBWbUNKL2JaYmlBSkZ3?=
+ =?utf-8?B?L2k0U1JTVllVV2NFeVFzdCttQUM4Ym1YQ2xkSkNtdzhkTDlzUXlsWW1kaVF4?=
+ =?utf-8?B?Z25RZzZGY0hvZzlXUVJCVXRzb1VTeXl1dG9QSUNrZlZ4V3pmbStzeU5aYjZE?=
+ =?utf-8?B?REpSWlY3S01RTDBWendYeFpDZ0VrZjI2RVpaVEpVL2NIc3l4SWRuK2RaM0tW?=
+ =?utf-8?B?L3VkZmtMYU5HWGEzdTZoL2xNampMamN6ZXpndVlZWjY3b3E0NytKcHV5Tm91?=
+ =?utf-8?B?WEM1ZldZVmUyOEpYYlJGYmRoTU5jVXRlT0poMGhBRGlXQUNGdnlYR3R6Kyt6?=
+ =?utf-8?B?VUJmVmxObURYY2pJVURhVXZMYnBLcjk5SCtFS3BSVG13VlI4VUlYaUNPaXda?=
+ =?utf-8?B?WVo2czc0Y0JQU3hSeXZYbW1xbEphK2NBRlkvMWNaSG02WEVhTGtQRCtGcDZ0?=
+ =?utf-8?B?S3ZISXhUYTZlanVZMVBHTWs4RVRtMS9VRVAvUUdTZC9STkg3WTI2NlZYRnZh?=
+ =?utf-8?B?SzBBbzRWcndwZWpnMXFFSjIybXpISi9mSFpMQ3prWjYxUVRCeG5DVU9QN2Qx?=
+ =?utf-8?B?SjZyOWRYKzltbGtUY2xXMHRIZVVvMzRwVUJ0V0U2ZE9XenJoUGphMnB6akRQ?=
+ =?utf-8?B?aCtLN2RnUWZzV2MxbUZYaFk3T3pyMWFjSzRzMFR6U1ZSWGxrck02RDd4VG9G?=
+ =?utf-8?B?TktPUXhVUmFTemdUVmJlNnMzTFljSTYxMXBNTW9zMmc5dVpTMFJTR0haTW9D?=
+ =?utf-8?B?aFJmSkFzZlJhZklCWU1qdmtzdTFwZUVwQTQ2YmlZczV4eU1vMDhLcXdkRlRW?=
+ =?utf-8?B?WnpqRldzbHNQSTg5T205dXVxVEZicmNWRGY4VTJ4M2hTZm5tOFZxMWpLK0tE?=
+ =?utf-8?B?NDI2cEFFVTBSNG44aU5WRzZhdWZ0ZlArS0N3L2lQT01TVXIramxxbk9BbkRR?=
+ =?utf-8?B?QnZOMHNrT1VaUU1sUFJVWjlXRmtjRmhZUzVHSzdnamJCSjV5b1JsQ0pTMkxZ?=
+ =?utf-8?B?L0FYdWxJT05aSk1SUU1aTFA0S3pRRXc1enB4ZGhwanYrOFhGU3VtMlVkUFU0?=
+ =?utf-8?B?UTZvQkxkZ2E2VWc3YWxpYS9qL0F3S01LMGxnZkpDY0FXYmoyV3pHWDQxYklQ?=
+ =?utf-8?B?QU1EMnUzUUJCc3VZbUlaNlFrZFE1T25mbS9GekZqNi81UUljWHZxZW5WeFJB?=
+ =?utf-8?B?blFvTnF6SEhQeXVuMDJ6UzVJTWVwbHBjWjZTWEJObHM1RmtxdEg4ZE5lQlFY?=
+ =?utf-8?B?anpXeXc0aDZMWGQyOUY4N3IyOGhTajRpUnRmUFowQUhUcmJjR09TQlhPM2lo?=
+ =?utf-8?B?cTV2S2k0VVlHR3h1bnNrZGt2NlNOVENqTmpDUzN3OFZDbzdNQ2FmYnNyMG5i?=
+ =?utf-8?B?cE5RNWRKTTExRzFEd2l2eEpQejd3WEFYV2V3dlQ2VGFvRnNGQlBVMHNZNC9v?=
+ =?utf-8?B?V0RDNE1HMG9OTnN4bThtczl5bjdjem9qZ0ZTQjkraDZ4TGI3L2F3VTZRa2dS?=
+ =?utf-8?B?RDhFUGRRZzRtajh4Ym1oTkI2bDhhY2dpd1NUYkZWWEtTTDZOdkhnRE9PMmEx?=
+ =?utf-8?Q?22/GtERn8Mf4BnNp7ZMFeukVUnUEU19tr0epMH2?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71fb5c9d-b222-48ba-b368-08d98f147da6
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR10MB4665.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2021 13:14:02.1712
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: P4fCypcrOiThjKXd6eqxZb0D8UU3SgSoXcDolEIvujVdSPGKwWawoMnAFw3wSA/HIK17YCu4ramTXDulO6PyvzmEUGVVG6taJaW62keaMuI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB5688
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10136 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 mlxscore=0 spamscore=0 mlxlogscore=749
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110140086
+X-Proofpoint-GUID: 3huuDcPgtSW-CnB93BegYQxH706ljSJC
+X-Proofpoint-ORIG-GUID: 3huuDcPgtSW-CnB93BegYQxH706ljSJC
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-------=_Part_58357319_161395518.1634216278934
-Date: Thu, 14 Oct 2021 14:57:58 +0200 (CEST)
-From: "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
-To: Btrfs ML <linux-btrfs@vger.kernel.org>
-Message-ID: <1920407503.58357312.1634216278641.JavaMail.zimbra@helmholtz-muenchen.de>
-Subject: some principal understanding problems (balance and free space)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [146.107.127.138]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - GC94 (Win)/8.8.15_GA_4007)
-Thread-Index: KeDEvkLNDUSRqyo3v38eGXmkc8uegA==
-Thread-Topic: some principal understanding problems (balance and free space)
+On 10/14/21 4:32AM, Anton Altaparmakov wrote:
+> Hi Christoph,
+> 
+>> On 14 Oct 2021, at 07:28, Christoph Hellwig <hch@lst.de> wrote:
+>>
+>> On Wed, Oct 13, 2021 at 07:10:13AM +0200, Christoph Hellwig wrote:
+>>> I wondered about adding a helper for looking at the size in byte units
+>>> to avoid the SECTOR_SHIFT shifts in various places.  But given that
+>>> I could not come up with a good name and block devices fundamentally
+>>> work in sector size granularity I decided against that.
+>>
+>> So it seems like the biggest review feedback is that we should have
+>> such a helper.  I think the bdev_size name is the worst as size does
+>> not imply a particular unit.  bdev_nr_bytes is a little better but I'm
+>> not too happy.  Any other suggestions or strong opinions?
+> 
+> bdev_byte_size() would seem to address your concerns?
+> 
+> bdev_nr_bytes() would work though - it is analogous to bdev_nr_sectors() after all.
+> 
+> No strong opinion here but I do agree with you that bdev_size() is a bad choice for sure.  It is bound to cause bugs down the line when people forget what unit it is in.
 
-Hi,
+I don't really mind bdev_size since it's analogous to i_size, but 
+bdev_nr_bytes seems good to me.
 
-OMG. Why is BTRFS in some cases so complicated? I just expect that a FS doe=
-s its job, nothing else.
-I read the wiki and Merlin's Blog, but the more i read the more i get confu=
-sed.
-Please help me, i'd like to use BTRFS, especially because of the snapshot f=
-eature which i'm missing in the most others FS.
-And i like to understand what i do.
+Shaggy
 
-Let's take this:
-
-root@pc65472:~# btrfs fi df /
-Data, single: total=3D361.00GiB, used=3D343.29GiB
-System, single: total=3D32.00MiB, used=3D80.00KiB
-Metadata, single: total=3D9.00GiB, used=3D7.10GiB
-root@pc65472:~#
-root@pc65472:~# btrfs fi show /
-Label: none  uuid: 3a623645-a5e1-438e-b0f3-f02520f1a2eb
-        Total devices 1 FS bytes used 350.39GiB
-        devid    1 size 420.00GiB used 372.03GiB path /dev/mapper/vg1-lv_ro=
-ot
-
-What does "Data, single: total=3D361.00GiB, used=3D343.29GiB" mean ?
-Having 343GB pure data occupying 361GB ?
-From what i've read before my understanding was that 361GB are reversed for=
- data allocation ("data will be stored there").
-And 343GB are really used for data, so 18Gb pure data can still be saved. I=
-s that correct ?
-What if i save now 18GB, so the total and used value are equal ? Does BTRFS=
- claim new space so that the total value is growing ?
-
-Or are the 18GB lost and unusable ?
-
-I read that if Metadata is occupying more than 75% of the total value you n=
-eed to react.
-I did some "btrfs balance start / -dusage=3D5", increasing the value of dus=
-age in steps of 5.
-I expected that i get more total space or less used space for Metadata. But=
- it didn't.
-What happened is that the total value for Data shrinked a bit, from 363GB t=
-o 361GB.
-
-I did then some "btrfs balance start / -musage=3D5" increasing in steps of =
-5. I expected that "used" for Metadata decreased, but it didn't.
-Finally the value "total" for Metadata decreased (from 9GB to 8GB), which i=
-sn't completely contrary to what i've expected:
-
-root@pc65472:~# btrfs fi df /
-Data, single: total=3D361.00GiB, used=3D343.46GiB
-System, single: total=3D32.00MiB, used=3D80.00KiB
-Metadata, single: total=3D8.00GiB, used=3D7.10GiB
-GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
-
-That would mean that after my "btrfs balance ... musage=3D " there is now l=
-ess space for Metadata than before. Why to balance then ?
-
-OS is Ubuntu 16.04, kernel is 4.4.0-66-generic.
-
-What is with the most recent kernels ? Is there an automatic "btrfs balance=
-" or do i still have to check my BTRFS regulary ?
-
-Thanks for helping me to sort that out.
-
-Bernd
-
-
---=20
-
-Bernd Lentes=20
-System Administrator=20
-Institute for Metabolism and Cell Death (MCD)=20
-Building 25 - office 122=20
-HelmholtzZentrum M=C3=BCnchen=20
-bernd.lentes@helmholtz-muenchen.de=20
-phone: +49 89 3187 1241=20
-phone: +49 89 3187 3827=20
-fax: +49 89 3187 2294=20
-http://www.helmholtz-muenchen.de/mcd=20
-
-
-Public key:=20
-
-30 82 01 0a 02 82 01 01 00 b3 72 3e ce 2c 0a 6f 58 49 2c 92 23 c7 b9 c1 ff =
-6c 3a 53 be f7 9e e9 24 b7 49 fa 3c e8 de 28 85 2c d3 ed f7 70 03 3f 4d 82 =
-fc cc 96 4f 18 27 1f df 25 b3 13 00 db 4b 1d ec 7f 1b cf f9 cd e8 5b 1f 11 =
-b3 a7 48 f8 c8 37 ed 41 ff 18 9f d7 83 51 a9 bd 86 c2 32 b3 d6 2d 77 ff 32 =
-83 92 67 9e ae ae 9c 99 ce 42 27 6f bf d8 c2 a1 54 fd 2b 6b 12 65 0e 8a 79 =
-56 be 53 89 70 51 02 6a eb 76 b8 92 25 2d 88 aa 57 08 42 ef 57 fb fe 00 71 =
-8e 90 ef b2 e3 22 f3 34 4f 7b f1 c4 b1 7c 2f 1d 6f bd c8 a6 a1 1f 25 f3 e4 =
-4b 6a 23 d3 d2 fa 27 ae 97 80 a3 f0 5a c4 50 4a 45 e3 45 4d 82 9f 8b 87 90 =
-d0 f9 92 2d a7 d2 67 53 e6 ae 1e 72 3e e9 e0 c9 d3 1c 23 e0 75 78 4a 45 60 =
-94 f8 e3 03 0b 09 85 08 d0 6c f3 ff ce fa 50 25 d9 da 81 7b 2a dc 9e 28 8b =
-83 04 b4 0a 9f 37 b8 ac 58 f1 38 43 0e 72 af 02 03 01 00 01
-------=_Part_58357319_161395518.1634216278934
-Content-Type: application/pkcs7-signature; name=smime.p7s; smime-type=signed-data
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCAMIIF
-yDCCBLCgAwIBAgIMIgdroMAv99uEUtszMA0GCSqGSIb3DQEBCwUAMIGNMQswCQYDVQQGEwJERTFF
-MEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdz
-bmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEdsb2Jh
-bCBJc3N1aW5nIENBMB4XDTE5MTIwNDE3MzQwOVoXDTIyMTIwMzE3MzQwOVowVzELMAkGA1UEBhMC
-REUxIzAhBgNVBAoMGkhlbG1ob2x0eiBaZW50cnVtIE11ZW5jaGVuMQwwCgYDVQQLDANJREcxFTAT
-BgNVBAMMDEJlcm5kIExlbnRlczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALNyPs4s
-Cm9YSSySI8e5wf9sOlO+957pJLdJ+jzo3iiFLNPt93ADP02C/MyWTxgnH98lsxMA20sd7H8bz/nN
-6FsfEbOnSPjIN+1B/xif14NRqb2GwjKz1i13/zKDkmeerq6cmc5CJ2+/2MKhVP0raxJlDop5Vr5T
-iXBRAmrrdriSJS2IqlcIQu9X+/4AcY6Q77LjIvM0T3vxxLF8Lx1vvcimoR8l8+RLaiPT0vonrpeA
-o/BaxFBKReNFTYKfi4eQ0PmSLafSZ1Pmrh5yPungydMcI+B1eEpFYJT44wMLCYUI0Gzz/876UCXZ
-2oF7KtyeKIuDBLQKnze4rFjxOEMOcq8CAwEAAaOCAlswggJXMD4GA1UdIAQ3MDUwDwYNKwYBBAGB
-rSGCLAEBBDAQBg4rBgEEAYGtIYIsAQEEBDAQBg4rBgEEAYGtIYIsAgEEBDAJBgNVHRMEAjAAMA4G
-A1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwHQYDVR0OBBYEFIbj
-udERXYhU7DMaI17GPlWqLTQVMB8GA1UdIwQYMBaAFGs6mIv58lOJ2uCtsjIeCR/oqjt0MC0GA1Ud
-EQQmMCSBImJlcm5kLmxlbnRlc0BoZWxtaG9sdHotbXVlbmNoZW4uZGUwgY0GA1UdHwSBhTCBgjA/
-oD2gO4Y5aHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4tY2EtZ2xvYmFsLWcyL3B1Yi9jcmwvY2Fj
-cmwuY3JsMD+gPaA7hjlodHRwOi8vY2RwMi5wY2EuZGZuLmRlL2Rmbi1jYS1nbG9iYWwtZzIvcHVi
-L2NybC9jYWNybC5jcmwwgdsGCCsGAQUFBwEBBIHOMIHLMDMGCCsGAQUFBzABhidodHRwOi8vb2Nz
-cC5wY2EuZGZuLmRlL09DU1AtU2VydmVyL09DU1AwSQYIKwYBBQUHMAKGPWh0dHA6Ly9jZHAxLnBj
-YS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSQYIKwYBBQUH
-MAKGPWh0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2Nh
-Y2VydC5jcnQwDQYJKoZIhvcNAQELBQADggEBAG9FaTFBh6Yp8cNfWoaMF6GhZRFiARkPSNlvI8BJ
-y+tS5W9urRKluF0mtgseNk1Eff3AD1bqicMIzThTuScwq1WhY5ZCGlD/qYLf+FY3VnPTjk6ZVruE
-KuoA4bKJaVrXGkfBmw+oSMh6rfw6pwnchLXP7l40hDQ5tQ2/8BcpZYcykC4ziIga3hqe7vN4vhF6
-gYKN6lET83QXYoh0IGCfFw3fIdTJk1IStMqe0Cd7eXpfwKQfjtzK8M5Qccj46923WGIwo0zSRiJR
-R1J97qDZZxBsGJfj3tC5X/FkWhn3fDiPZYeTlvmFrzSyLSw/FBR/D2o/bUz+eaeVmenc32vxYmEA
-ADGCApswggKXAgEBMIGeMIGNMQswCQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2Vy
-ZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdE
-Rk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBAgwiB2ugwC/324RS
-2zMwDQYJYIZIAWUDBAIBBQCggc4wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMjExMDE0MTI1NzU4WjAtBgkqhkiG9w0BCTQxIDAeMA0GCWCGSAFlAwQCAQUAoQ0GCSqG
-SIb3DQEBCwUAMC8GCSqGSIb3DQEJBDEiBCDwHVk0I10cQ5rvoixgheatJdkI3Dm1nuaD0ahkvchz
-dDA0BgkqhkiG9w0BCQ8xJzAlMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAHBgUrDgMCBzAN
-BgkqhkiG9w0BAQsFAASCAQBuJMr5htWWoibJGdzPrbc0s1y6rVAG1AS5XyzrFG2R/D695fljGBjA
-xjNZS5W6JYAld9sLsQSeNcS1LZbCyR9Qy255M7yefguDZetWBgfLQ4oZLhsFwdfCGlJTuPKsGNvh
-ud8vHvUdMCrMOUuHuKrUgX0ZHdzvxNrWJcftKMgGQONRpDZXFbc2FxxqRD+wfhrsDGC1HdpBKDnt
-d3aqG7s8gU9T56nBgPKhoWLnhR5CXm5IN33LVHFaidsEJvefH2SOXuw0P1oLIMhKPbKjnVGTu7ex
-y5YahOMZ8RDK9apLzw7mWpV/UNZZ0JE+5vCbfsqpd2ubUaQog9WGYCf1sMWhAAAAAAAA
-------=_Part_58357319_161395518.1634216278934--
+> Best regards,
+> 
+> 	Anton
+> 
