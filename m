@@ -2,158 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E0042CE81
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 00:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8153C42CF6C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 02:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhJMWjy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 18:39:54 -0400
-Received: from mail-mw2nam12on2061.outbound.protection.outlook.com ([40.107.244.61]:56609
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229930AbhJMWjx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 18:39:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kLSPD2PGO6dHxVVAdg4tretcqqxncAjX+4iOvKHjzmVaw1OwBZnxR5y6oAwipYytTa/NBkP1do7WKVtS7W4W86Ao0ORMtS40Ql5HDWcuoDYkXKrIKmQkosy3sfLHDsLIR3aosN2m2PQ43GPsK71p2UaWdsbbkV9Hvsc//AxVZwiwXuk/Utk/vC45luELoh6wYVaQoZxBSp2L2bCE0J/L8qNvkNwQL5iFPmffkT70OEPeiuTuhynIKjhBvPcc4tkQFt/4nXEwV/uqKyfyli9/4Qw2f+gmVLnEgMja+Pbq77a7GeLAt6GiZNZehTnLh1FShPBHGy5XdJPA8DGZD1QDKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D5f6otzX/eXRYOTbYA6Fp/mgkxDWLzJRA9MtgNvJ2fk=;
- b=mjoMsIFYDxYKZEKAZSLI/UQLuciHsS1kIGfkMdvB8fUzFnJNYGkK3hGbIvOjVIp0eMpXOdMSrF9Dk8LqFuWntABAe7TGknw0zejBKq3miCiSALkoBGzoRWyoq0NTr7RMYH4fJ9UKf9lZH5/PADBz5+4k1Q7dDfXi1cNT904C2PYyxKXplnH7PnqOqh/YSCtigc/5gsdLWnPvfP+atMuOntKRJn0NaMjyym+rmPMLo9mdzLTSfyvbfEuWMtyRQxgDL/f+1bidZdRfUDEs2Wo3lQFPpRZzYQmbIJJ4uFNzaoDUdS/zjhqWUNPYggybdEw/nYkvJp6vzpV4qFUjjnSgeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D5f6otzX/eXRYOTbYA6Fp/mgkxDWLzJRA9MtgNvJ2fk=;
- b=jnyvIjRMceCOQVoy0C+7er67MVrOBt7AazIqO4shXdhL4L8mWkpvY0Dvup/tvlpjVRxn3ZxnwABgr63UBtczKjWSXHP3JjnXFIw6uVflje1EXvNb8GVKicg2g/dE3eacI9TvHfak1efX5UiaF7BuVFkXEz91Ehxq3wgouVlIwpk5s/Yv4RvHAPVqP+BE5O1TGw2c21c8IMNzPIrgHaDNzCO/5mLH3xf9dcybUvmLEn9NbML26wbo0PDbDCsEpOSFwnhD8LtnrgFhU4g9lzcPENPvF5t03ITMsUEtKE+9zwdM1itkSvAM1/PIjwAtgrcmZLgr8rqb0ziAGkKpVZY26w==
-Received: from MW2PR12MB4667.namprd12.prod.outlook.com (2603:10b6:302:12::28)
- by MWHPR12MB1472.namprd12.prod.outlook.com (2603:10b6:301:11::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25; Wed, 13 Oct
- 2021 22:37:48 +0000
-Received: from MW2PR12MB4667.namprd12.prod.outlook.com
- ([fe80::3db1:105d:2524:524]) by MW2PR12MB4667.namprd12.prod.outlook.com
- ([fe80::3db1:105d:2524:524%7]) with mapi id 15.20.4587.026; Wed, 13 Oct 2021
- 22:37:48 +0000
-From:   Chaitanya Kulkarni <chaitanyak@nvidia.com>
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-CC:     Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
-        Song Liu <song@kernel.org>, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Kees Cook <keescook@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Jan Kara <jack@suse.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>
-Subject: Re: [PATCH 07/29] target/iblock: use bdev_nr_sectors instead of open
- coding it
-Thread-Topic: [PATCH 07/29] target/iblock: use bdev_nr_sectors instead of open
- coding it
-Thread-Index: AQHXv/I6LcfbFcbjFUqHgkcEjSj9CqvRhf+A
-Date:   Wed, 13 Oct 2021 22:37:47 +0000
-Message-ID: <a225b3d3-372a-9804-374f-936f8d91c553@nvidia.com>
-References: <20211013051042.1065752-1-hch@lst.de>
- <20211013051042.1065752-8-hch@lst.de>
-In-Reply-To: <20211013051042.1065752-8-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-authentication-results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 21ffbdf9-fb98-4423-6d0d-08d98e9a153a
-x-ms-traffictypediagnostic: MWHPR12MB1472:
-x-microsoft-antispam-prvs: <MWHPR12MB147240C774D40B8FFC4DE6E7A3B79@MWHPR12MB1472.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Icrd9OfNs5Hs98wp8bFy7qPhkKD5AIpjplpXzp63TS+9oPYHQTOR5rmOt3SMOaP2oqL1gY4dTfpWH47NFclI7/3oh0X9JN98YprIIFcWahrjXnxCv/EJKCx3/STHOggPas8H/u1RVFjzMqfllZRhp44883R0NO2we8RVBv2yeURglijpN86mRR++W3YOC7KGBDYmV0pSkHDg7NiDO0nk9LKdex2EivuC/svGrtCVZQajmChve3TGE3lE+76DSwvMAgh1FbpaUjkc0zY7u+t0qpiLPHrEVj/mp6tP8ah1ZzKMQumCYTFmRk6ZP0A6O/ektnt76lqb2ywzeZ30bTLPgU/O0FTTpS2/FcrlBJox4A5m+1Jmbe69wjzn6BIon5Iur5yeQTJSJ8hnRsv+UheYjByB5jgFe0LnwVBivcgghBXU29UlXEQ8V0LXekzf1SDzhhYkSNXi1WJmU5UH8X7pxF526gTOjcqU0qsKHEmSDZXYQyOtFMiS9KxLFpiixkzV4bPHfj3jHPN2VUJ3OM48QUZFhH+VJuCXIRWyulcL4jyRnBvEXYrs2wDAPWl6lTaeW4V/DzgIQ6cDKUMafBNxhN5117evRJLlVaOOP+izc8uNFFE7kK1Q5yXfpDvgVODHVARCObztWOpAN8V21TYDAIiYHy0sTHhOVv3Zs8WIowFjjKq0nqiKBX/qDk8kv+OFFa/aMjqwxKmkL2lmfl9B4Ca8d1xDD2IIHyYElkpq3RFYkPiOeaSJ2uJNrSZly4zrXwtHtMnq0jf997DtFCr0xA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB4667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(66476007)(558084003)(66946007)(2906002)(186003)(66556008)(66446008)(64756008)(31696002)(508600001)(91956017)(316002)(7406005)(8936002)(31686004)(36756003)(8676002)(53546011)(6506007)(5660300002)(6486002)(71200400001)(122000001)(2616005)(38100700002)(54906003)(4326008)(83380400001)(110136005)(76116006)(86362001)(38070700005)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VUxxZVF4RXdkd2oybnAyTUo2UEFLcDY4QWxHUllYVEY3WFpQNWVSVC81anBy?=
- =?utf-8?B?b3l2c28xb2kweWJRV0JLK0tEV3BZUHBneDZuOFNsSndvVXV0bkt3VDlpU1hZ?=
- =?utf-8?B?UGdjUVo0L3U5OEJZeFlKTXl6eHJ6V0ppSys0b1FQd0hIZXphUzdNcHZkQ1dl?=
- =?utf-8?B?enJ2NlhMdHlVYXZZbU1KVWVvb09ad0FtanBtM1QzVEJ5TFNXVXNPRVUvcG5u?=
- =?utf-8?B?WmwvL25mOTJFbElHOE1EOWMrLy9jbklvdkVZWmIveTRVVGRUQzJITjQ2Vk5B?=
- =?utf-8?B?UjhCZHdWYmtWeWJrM2lnRk9oaW84T0YraVJpZjdPKzU0QXhvZzVTd1hTL3NU?=
- =?utf-8?B?azZUSWRUTVNOK1dqNHFRL21ndGNacklSZmpZZVgxNThTcHV1SlZxc2JPb01F?=
- =?utf-8?B?Tllua2s1Q1dDQ09XT0lLSUpmSFZDT05CSndYQ1QyMlpFdEdSZk5ETUUzOGNy?=
- =?utf-8?B?b3ZPMWg3RGVKVHFnRmo1dUdURUc4ZkRFNFRTS1F5V0pQSVJkWDRHTTJBVis2?=
- =?utf-8?B?b08yOXFON2lBVUl0R2hxVkJHazdkWUVkRjRrZjVJbG5CbDFCMnd2SmxubUFO?=
- =?utf-8?B?SktjNldsa016cVFhOEVnM3VzZENwamZRWlIwVlU1djkwUnhMMlQ2THJUK3Vn?=
- =?utf-8?B?UDR5NlJvZnRZMGt5bW51K3lYOTdHZDlQSnpnQ0kxelFNdzFjK1g5Um1XQWxZ?=
- =?utf-8?B?aW5JcEkraTBDMVc5SFlhY3BnY1RhY2JIclpXb2dETTRVd0hCZW02cTRnY28y?=
- =?utf-8?B?NkQvZVd1MWpJbVpMRmM5YjZhZEF1YTlpRGkwaXRYVkhHc1R6MjEwZTJ6SDZW?=
- =?utf-8?B?MlltUzdhYmlMcitUTElrd3dKSTJKRWFGUGxuQXB3cHBqZjdtT1Rwekpwc3ND?=
- =?utf-8?B?TDk0dWhMYk9KczA1Nk14QWN1enRrNTdKMkIwOCtHaThITWFLQzV6c2QzdE8w?=
- =?utf-8?B?VU5FZnkzVkFWWkJKUTIwQ0xlWFZhSHIrSHZFWHR0Z0srT0k0RU56Qk51RXQw?=
- =?utf-8?B?TjZLbWRGTUw3OUQ3ZEJxK1dRVVhBVDJoTU40dWtGTFFGL0NCWlIyRVprMzZN?=
- =?utf-8?B?QnVsY2p2NUdsRGNtS2c0d0VFd2FSWUdPcmJjcllHUS9pdi9IN080MHVBdkdx?=
- =?utf-8?B?QnBuanB3dHRtcjZDRzU3R0lNbkVGQ1dzZFNBam96NzRJQlNKcDJnYk9YNVd3?=
- =?utf-8?B?WlFLNXpva1g0TEJZR1R1Wmw1YWtIOTlsWU03VGhxM1A4d0JjQVdvL3JEYm41?=
- =?utf-8?B?dGNydEVUdzBRZ0oxdEczMWxMVnhoWHpLdDBRMExqMW1BRGFtRURpc0VJVFRh?=
- =?utf-8?B?OVhZTDFUK2VvaUlVOGM1bWNhNnpMdHc2N3p2QzRXZTRCMUMyTGNoQ2pDakZi?=
- =?utf-8?B?ZnVlaVhkV0dvQW5HWDl4Uy9MTWdGeUxVbWFvbkdzWFd6RkRDNTRCc2wrMEgv?=
- =?utf-8?B?SFNDbUxleFdVTi9RVndPRitsU3VRNE10UXlKVjFCcGtwTTJXelRKRFVVT3Bw?=
- =?utf-8?B?bE5hbTRoczA0aUdESVMra2p0VzVXK3ppNDFxZVNjdllaaDlpVTlZWEp6VlRV?=
- =?utf-8?B?cy9YQnVSdERhdE1ZdzZKZ2F3OHdpcU11b2xxeDhsMUE0SmE3VitKUFViK2FK?=
- =?utf-8?B?Qk11bDVBZHNtYXk5WFBjL3VPNXV1ZjFORmJkeXZCNEtXdW9oNkhEMFBuWTdY?=
- =?utf-8?B?VldCb2ozNUNQN0QxdGp4TkpSTTUyRDdyZ09WWlNBd1VjRUtLbkRCSnk3ZkZU?=
- =?utf-8?B?TmlmVzYxMXY1a1hsVFpUUXpnVkRiYURLVzZLWG4vRjZQcEJCTGNvcGQxanlr?=
- =?utf-8?B?UlN5Uk9LTWlZa2N4OHgwcUxZdnl2QWM4WWtualJwMTJmUTdjNTVnaGxtUDdT?=
- =?utf-8?Q?TOHaF0OuoojI7?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <52B56D3B6B73B04C99CA63695B49537C@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S229910AbhJNALJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 20:11:09 -0400
+Received: from mout.gmx.net ([212.227.17.20]:56557 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229745AbhJNALJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Oct 2021 20:11:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634170142;
+        bh=rALBxNkROwXzfWgDrR6aI8k6xPOybWE2WjPqk3Ne0jY=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=aDM/01/xylXcFvOry0E0W5pRcbBU+S2QZyHMv5XIf404S96axmcYFQ+FA7FOlbael
+         Mt4CVMaPrmzGW4JOp550QQlypRVK29/wrgYhYIkG2w8O9GIfVENzSTavywgHvn7Re9
+         W7GxgTcPt4qyhies9UGhC1jXX150R84+fyTVIhF8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MplXp-1n6WUS3mXN-00qBkz; Thu, 14
+ Oct 2021 02:09:02 +0200
+Message-ID: <456cad21-30a2-7c7c-0f17-a76361305f42@gmx.com>
+Date:   Thu, 14 Oct 2021 08:08:59 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB4667.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21ffbdf9-fb98-4423-6d0d-08d98e9a153a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Oct 2021 22:37:47.9775
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HjHZD36FpHFZOFCZzuaq38WAfBzdw16/159r/+6euWE1VYKL96xgq+W/8JgWDJsnyL90WuH4E42kPagGQF2UQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1472
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v3 20/26] btrfs: make extent_write_locked_range() to be
+ subpage compatible
+Content-Language: en-US
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org
+References: <20210927072208.21634-1-wqu@suse.com>
+ <20210927072208.21634-21-wqu@suse.com>
+ <YWbyPmlCPtvOvMOZ@localhost.localdomain>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <YWbyPmlCPtvOvMOZ@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mz/0MWl+EkXo+NXUkKmrn7Pfrc11CfXEaeY2OAtHwR6wz4uk61h
+ 1eAuGzC20HTHlT5NdRvvAk69kbCcpN9bF+k5HEprTNBKealk3WVnENM2ucEmEliWCXOKdIB
+ +80MtHx1M+TXKhSKsWWkV66YItYYbs0dmZXv9aoc38j/xZEFg/saXRgInqUgRbtYkPPbaaN
+ n6XhlHyM8ZRXZKIQf9vDA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:W4hjMGAcyCY=:hkU+vmnfKJskYKajHDjHYH
+ FFw5OCBqDHFPMI4QW0+uy6BRZqV5Sbieolhxvvkz3ScRC0ksNyhdITjEY/W8mbSQieBBXgyvC
+ 35veP/1/PdRZVPt454a9ZOsui6myvqGibuQh+VDEXpieyqrtcVyT6vXUOT/Pvq98iNjW4JFzs
+ Uo2y58TBebItCCq9a4b15fSA5+ltGRUKqi2x0IBmXvS+pvPSvRm4rxghmEQhMg1QDxz/SorsU
+ fMoeCbzuS+kfrdsQc5pMHq9v/pHK35QIfpF2kujqBHEdyXKc9WlzgNd+TsYCHS5+j8i0/kiy7
+ RfeXabGE7TiEYsUi2GbiNRZMRdvjTAOwFrOla2IzDBMQ+aumgPrbKDFxxPrMKImBaJnOsdVng
+ gwtw9NPS4YuBq70tvlpaBTE+enTqRqPAn5iq7QnTfpzC1ZCvseTQKMtpjZIb83Hf0/Rz7mqZy
+ 8YK5YD8L/CU7MPwwuHc0osOkhd4fX6tXQLJcF0GjpKknOlJ2d0G6BJoi26FVJOfrNsdgCsQxY
+ 8k/yXv4PnwsOAHLkWizNFoN1uTQlVQZ8FRI5RVNeNU7WgXQNxgSXUcxqqdHhSbaGhQwuJHzmw
+ Varc9/oBFkx4zKdKBWyDxsApsL7WatLS1M9W/nGFj5zjF5qScRWe+lt9S8VkgRYLna550oSvb
+ j0GdRFm1XRcshfm5+br7FfUzx8t1tTqdTF1fiawGZAsOyPuf8JJTl6RZo3xxCQkbsSITKfvts
+ ZVCWaccaB4Evzmmpd2i9eiZU7mD9kQym9vDt2trkBVHcfpps+4siw7VsihYz+x7StP0T0XZz2
+ kOFL9fPp/SdR4n/1dmGyKQLs9NDU5oNYQdp7lVoui5fekzOC7cqEFmJOiCQxC4xMkQ6LF2Ao1
+ 1yGONdrYZ4BPYCDFPZCKmGT76glRoMEvBOPTaIG8fcorC/8WEQ3GCTPVas2ks9JGxdY9h/vNm
+ VimvafzKCsubeO/37JKRzu1l3BzQPYO/ufht4SMR9sRZHbbRLC5cjLBVn6qoKIvrcKFuVebgX
+ eKEdFC7h/f7hmu5yTyJS4vd2tqj4D8BQ1io7cNIZcPu+UYUVtcPg0niuoZ7Xn6tum2ug4Kau/
+ 47zQeJrVutuUs8=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMTAvMTIvMjAyMSAxMDoxMCBQTSwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6DQo+IFVzZSB0
-aGUgcHJvcGVyIGhlbHBlciB0byByZWFkIHRoZSBibG9jayBkZXZpY2Ugc2l6ZS4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IENocmlzdG9waCBIZWxsd2lnIDxoY2hAbHN0LmRlPg0KPiAtLS0NCg0KQm9k
-bydzIGNvbW1lbnQgaXMgZ29vZCBmb3IgdGhlIGNvZGUgcmVsaWFiaWxpdHkuDQoNCkVpdGhlciB3
-YXksIGxvb2tzIGdvb2QuDQoNClJldmlld2VkLWJ5OiBDaGFpdGFueWEgS3Vsa2FybmkgPGtjaEBu
-dmlkaWEuY29tPg0KDQoNCg==
+
+
+On 2021/10/13 22:50, Josef Bacik wrote:
+> On Mon, Sep 27, 2021 at 03:22:02PM +0800, Qu Wenruo wrote:
+>> There are two sites are not subpage compatible yet for
+>> extent_write_locked_range():
+>>
+>> - How @nr_pages are calculated
+>>    For subpage we can have the following range with 64K page size:
+>>
+>>    0   32K  64K   96K 128K
+>>    |   |////|/////|   |
+>>
+>>    In that case, although 96K - 32K =3D=3D 64K, thus it looks like one =
+page
+>>    is enough, but the range spans across two pages, not one.
+>>
+>>    Fix it by doing proper round_up() and round_down() to calculate
+>>    @nr_pages.
+>>
+>>    Also add some extra ASSERT()s to ensure the range passed in is alrea=
+dy
+>>    aligned.
+>>
+>> - How the page end is calculated
+>>    Currently we just use cur + PAGE_SIZE - 1 to calculate the page end.
+>>
+>>    Which can't handle above range layout, and will trigger ASSERT() in
+>>    btrfs_writepage_endio_finish_ordered(), as the range is no longer
+>>    covered by the page range.
+>>
+>>    Fix it by take page end into consideration.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/extent_io.c | 17 +++++++++++++----
+>>   1 file changed, 13 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 825917f1b623..f05d8896d1ad 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -5087,15 +5087,14 @@ int extent_write_locked_range(struct inode *ino=
+de, u64 start, u64 end)
+>>   	struct address_space *mapping =3D inode->i_mapping;
+>>   	struct page *page;
+>>   	u64 cur =3D start;
+>> -	unsigned long nr_pages =3D (end - start + PAGE_SIZE) >>
+>> -		PAGE_SHIFT;
+>> +	unsigned long nr_pages;
+>> +	const u32 sectorsize =3D btrfs_sb(inode->i_sb)->sectorsize;
+>>   	struct extent_page_data epd =3D {
+>>   		.bio_ctrl =3D { 0 },
+>>   		.extent_locked =3D 1,
+>>   		.sync_io =3D 1,
+>>   	};
+>>   	struct writeback_control wbc_writepages =3D {
+>> -		.nr_to_write	=3D nr_pages * 2,
+>>   		.sync_mode	=3D WB_SYNC_ALL,
+>>   		.range_start	=3D start,
+>>   		.range_end	=3D end + 1,
+>> @@ -5104,14 +5103,24 @@ int extent_write_locked_range(struct inode *ino=
+de, u64 start, u64 end)
+>>   		.no_cgroup_owner =3D 1,
+>>   	};
+>>
+>> +	ASSERT(IS_ALIGNED(start, sectorsize) &&
+>> +	       IS_ALIGNED(end + 1, sectorsize));
+>> +	nr_pages =3D (round_up(end, PAGE_SIZE) - round_down(start, PAGE_SIZE)=
+) >>
+>> +		   PAGE_SHIFT;
+>> +	wbc_writepages.nr_to_write =3D nr_pages * 2;
+>> +
+>>   	wbc_attach_fdatawrite_inode(&wbc_writepages, inode);
+>>   	while (cur <=3D end) {
+>> +		u64 cur_end =3D min(round_down(cur, PAGE_SIZE) + PAGE_SIZE - 1,
+>> +				  end);
+>> +
+>>   		page =3D find_get_page(mapping, cur >> PAGE_SHIFT);
+>>   		/*
+>>   		 * All pages in the range are locked since
+>>   		 * btrfs_run_delalloc_range(), thus there is no way to clear
+>>   		 * the page dirty flag.
+>>   		 */
+>> +		ASSERT(PageLocked(page));
+>
+> We're tripping this ASSERT() with compression turned on, sorry I didn't =
+notice
+> this but we've been panicing consistently since this was merged, so I've=
+ lost a
+> weeks worth of xfstests runs.  You can easily reproduce running
+>
+> ./check generic/029
+>
+> with
+>
+> MOUNT_OPTIONS=3D"-o compress"
+
+Confirmed, but this also means, some pages are no longer locked for
+compression.
+
+This doesn't sound correct to me, will do more investigation to find out
+why.
+
+Thanks,
+Qu
+>
+> Thanks,
+>
+> Josef
+>
