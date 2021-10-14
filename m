@@ -2,120 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F4042D681
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 11:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA41342D63F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 11:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhJNJzR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 14 Oct 2021 05:55:17 -0400
-Received: from mgw-01.mpynet.fi ([82.197.21.90]:60924 "EHLO mgw-01.mpynet.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhJNJzQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Oct 2021 05:55:16 -0400
-X-Greylist: delayed 1139 seconds by postgrey-1.27 at vger.kernel.org; Thu, 14 Oct 2021 05:55:13 EDT
-Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
-        by mgw-01.mpynet.fi (8.16.0.43/8.16.0.43) with SMTP id 19E9Pj42091529;
-        Thu, 14 Oct 2021 12:32:59 +0300
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-01.mpynet.fi with ESMTP id 3bphjf80v4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 14 Oct 2021 12:32:59 +0300
-Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
- tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Thu, 14 Oct 2021 12:32:59 +0300
-Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
- tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
- 15.00.1497.023; Thu, 14 Oct 2021 12:32:59 +0300
-From:   Anton Altaparmakov <anton@tuxera.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
-        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
-        Kees Cook <keescook@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Jan Kara <jack@suse.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>
-Subject: Re: don't use ->bd_inode to access the block device size
-Thread-Topic: don't use ->bd_inode to access the block device size
-Thread-Index: AQHXv/D8RnQWsWSgAkyxOdAYku+41KvR10wAgAAzeIA=
-Date:   Thu, 14 Oct 2021 09:32:58 +0000
-Message-ID: <3AB8052D-DD45-478B-85F2-BFBEC1C7E9DF@tuxera.com>
-References: <20211013051042.1065752-1-hch@lst.de>
- <20211014062844.GA25448@lst.de>
-In-Reply-To: <20211014062844.GA25448@lst.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [109.154.241.177]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <F1129580E148624C920474BEC9F515C5@ex13.tuxera.com>
-Content-Transfer-Encoding: 8BIT
+        id S229912AbhJNJlM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Oct 2021 05:41:12 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:26573 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhJNJlM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 Oct 2021 05:41:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1634204346; x=1665740346;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AUoVQVV8Z5qlRVvylGh1Inkrd6TQEoOnJxLtEr8sHoE=;
+  b=QNteZGYp1EQLUXP9gt6cifWa+R3vpI5u0gzjCPvGWf3ngoqGV8epnBmb
+   G8AmroYY+0Xy8+/OWTpTGNvSGSX3e40rGiq/kSvYZtgFz8zuD3y5FQL00
+   YIs2yHyNuwZ7G9+//GMowjMSy5aZReOx8L6dVD6DZ2+p5+xSNrxYxg8bc
+   kzbyeM6HiNP/stlOS/XUUrRRHzdcIte9IOF6zucNrgeSm5FXCrkMOirMM
+   uuDWPv0B2LnLRjzlA7QqaoFDRJEHJyvZnQtPmN9K4MJRMCbo5cdA9n9QS
+   UUavO8J9L+VcZdm60eQJwoxD+s2LZBq98RI1zeULZqMX1zVvvHfLDmCej
+   A==;
+X-IronPort-AV: E=Sophos;i="5.85,372,1624291200"; 
+   d="scan'208";a="187601076"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Oct 2021 17:39:06 +0800
+IronPort-SDR: MHqyI12pqYNmHDdbWKf92FcKkuhGlnetDEIv/tijrjuHoa8uzTfRhQLkAA5fzKRxlkmOLgEwas
+ bEB6oQjYorA6DXZhbF/GfQIHnKAp+AstVoAwCUiOLSVLgsTDJnzWrgPoRo8NfcPkvOtSm4LQil
+ Pu5wdPgGlK13H1PZGmf433k9rRMDv5mal7c8j2Dua5h/anKZnktyAhbII3IRl9hwgzYCOtkqvP
+ XYnxtUiEXmVNGny5g2R9d62QDgDTxwvf3SLshFxmPA1qbFxZ2XHDz8Tg4rLoa3Er4l9oFMk2Xn
+ cnYAqnviHv4mNe4eNBn1WlW7
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 02:13:19 -0700
+IronPort-SDR: 0TwPFP2KplIFgVccF6hbCyPPfMZdwRQ0yArR5wJLkG9RgQKdTB0RBOcHn9LqjU4AYzwnZi0vOV
+ 52yG3VRhfcjWcoJbOJD3uVYHa6UizNlhcj3+THh2krMogtZkMU5/da3/dq6Sl3PI0dWzRf0uYd
+ l2ciZ8gmjbBwACLwX8uEJ/mnsrafmPA9TyKF5q1F/vKPf7GhSehYiHBTuFGZKO0L0RAcDtc0kG
+ VainogDqp5BnSB9enU7psrCCLEhhOOUFjQcpY0LZBJOXo6cTsJVZ4zNX4Y7LRrEAngBCP63rdb
+ PiA=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip01.wdc.com with ESMTP; 14 Oct 2021 02:39:07 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH v3] btrfs: zoned: btrfs: zoned: use greedy gc for auto reclaim
+Date:   Thu, 14 Oct 2021 18:39:02 +0900
+Message-Id: <667291b2902cad926bbff8d5e9124166796cba32.1634204285.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Proofpoint-ORIG-GUID: itBrsNbhZ2FR6MA_DlXhPV1L0UjW3zcs
-X-Proofpoint-GUID: itBrsNbhZ2FR6MA_DlXhPV1L0UjW3zcs
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
- definitions=2021-10-14_02:2021-10-14,2021-10-14 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 spamscore=0 mlxlogscore=453 bulkscore=0
- malwarescore=0 phishscore=0 mlxscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110140057
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Christoph,
+Currently auto reclaim of unusable zones reclaims the block-groups in the
+order they have been added to the reclaim list.
 
-> On 14 Oct 2021, at 07:28, Christoph Hellwig <hch@lst.de> wrote:
-> 
-> On Wed, Oct 13, 2021 at 07:10:13AM +0200, Christoph Hellwig wrote:
->> I wondered about adding a helper for looking at the size in byte units
->> to avoid the SECTOR_SHIFT shifts in various places.  But given that
->> I could not come up with a good name and block devices fundamentally
->> work in sector size granularity I decided against that.
-> 
-> So it seems like the biggest review feedback is that we should have
-> such a helper.  I think the bdev_size name is the worst as size does
-> not imply a particular unit.  bdev_nr_bytes is a little better but I'm
-> not too happy.  Any other suggestions or strong opinions?
+Change this to a greedy algorithm by sorting the list so we have the
+block-groups with the least amount of valid bytes reclaimed first.
 
-bdev_byte_size() would seem to address your concerns?
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-bdev_nr_bytes() would work though - it is analogous to bdev_nr_sectors() after all.
+---
+Changes since v2:
+- Go back to the RFC state, as we must not access ->bg_list
+  without taking the lock. (Nikolay)
 
-No strong opinion here but I do agree with you that bdev_size() is a bad choice for sure.  It is bound to cause bugs down the line when people forget what unit it is in.
+Changes since v1:
+-  Changed list_sort() comparator to 'boolean' style
 
-Best regards,
+Changes since RFC:
+- Updated the patch description
+- Don't sort the list under the spin_lock (David)
+---
+ fs/btrfs/block-group.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-	Anton
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 7dba9028c80c..77e6224866c1 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1,5 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
++#include <linux/list_sort.h>
++
+ #include "misc.h"
+ #include "ctree.h"
+ #include "block-group.h"
+@@ -1486,6 +1488,21 @@ void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
+ 	spin_unlock(&fs_info->unused_bgs_lock);
+ }
+ 
++/*
++ * We want block groups with a low number of used bytes to be in the beginning
++ * of the list, so they will get reclaimed first.
++ */
++static int reclaim_bgs_cmp(void *unused, const struct list_head *a,
++			   const struct list_head *b)
++{
++	const struct btrfs_block_group *bg1, *bg2;
++
++	bg1 = list_entry(a, struct btrfs_block_group, bg_list);
++	bg2 = list_entry(b, struct btrfs_block_group, bg_list);
++
++	return bg1->used - bg2->used;
++}
++
+ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ {
+ 	struct btrfs_fs_info *fs_info =
+@@ -1510,6 +1527,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+ 	}
+ 
+ 	spin_lock(&fs_info->unused_bgs_lock);
++	list_sort(NULL, &fs_info->reclaim_bgs, reclaim_bgs_cmp);
+ 	while (!list_empty(&fs_info->reclaim_bgs)) {
+ 		u64 zone_unusable;
+ 		int ret = 0;
 -- 
-Anton Altaparmakov <anton at tuxera.com> (replace at with @)
-Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
-Linux NTFS maintainer
+2.32.0
 
