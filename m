@@ -2,56 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A987142D00E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 03:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DA942D0A0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Oct 2021 04:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhJNBvv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Oct 2021 21:51:51 -0400
-Received: from out20-26.mail.aliyun.com ([115.124.20.26]:58936 "EHLO
-        out20-26.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhJNBvu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Oct 2021 21:51:50 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.15405|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_news_journal|0.00470651-0.00011001-0.995183;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.LZ1ni-S_1634176184;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.LZ1ni-S_1634176184)
-          by smtp.aliyun-inc.com(10.147.41.199);
-          Thu, 14 Oct 2021 09:49:45 +0800
-Date:   Thu, 14 Oct 2021 09:49:48 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Omar Sandoval <osandov@osandov.com>
-Subject: Re: [RFC PATCH] btrfs: fix deadlock when defragging transparent huge pages
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-In-Reply-To: <YWcVUpqe1i+Zibgd@relinquished.localdomain>
-References: <20211013114106.74EC.409509F4@e16-tech.com> <YWcVUpqe1i+Zibgd@relinquished.localdomain>
-Message-Id: <20211014094947.F197.409509F4@e16-tech.com>
+        id S229879AbhJNCqr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Oct 2021 22:46:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229496AbhJNCqr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Oct 2021 22:46:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94F2A610E7;
+        Thu, 14 Oct 2021 02:44:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634179482;
+        bh=It2mkzx6TjfzrxKa1z+glKX99V3LF5sLjb+XStt8Wuw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mzz6lXM/GRSQKnipiuaTPceCHZUCG+Zwebj9V2e3D3u8BDYOSVlhmPweg8g6YiI8d
+         r+FzG9sPVr+Hk4H2lOIBtjdINIDEutvPeEs53/z+5bq+4EPnsRZGELeTPAvwoMl5bY
+         D5WR/vTtqwKDBMa4OMVf2PvJL0TBX8SE4EyM+00T66l6gCQbaCkFBvjZHr4BqEXJ5u
+         yuO9zeVQIl48uQmyOc9Be0MLM+3GoQiZYDItlKL+q86y0ZlJKAGDhfO7K6kMaufy3f
+         D7Hd7Q0saLd9aej/pORbgOIvPmwFjh+idyJi5NYgYOFIwSmTP7R1qlYbeAyhEajjn0
+         kkbqUUfNjdm3A==
+Date:   Wed, 13 Oct 2021 19:44:38 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+        linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+        reiserfs-devel@vger.kernel.org
+Subject: Re: [PATCH 11/29] btrfs: use bdev_nr_sectors instead of open coding
+ it
+Message-ID: <20211014024438.GG1594461@dhcp-10-100-145-180.wdc.com>
+References: <20211013051042.1065752-1-hch@lst.de>
+ <20211013051042.1065752-12-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211013051042.1065752-12-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Wed, Oct 13, 2021 at 07:10:24AM +0200, Christoph Hellwig wrote:
+> Use the proper helper to read the block device size.
 
-> On Wed, Oct 13, 2021 at 11:41:06AM +0800, Wang Yugui wrote:
-> > Hi,
-> > 
-> > I failed to use this reproducer to reproduce this problem.
-> > 
-> > kernel: 5.15.0-0.rc5
-> > kernel config: CONFIG_TRANSPARENT_HUGEPAGE_MADVISE=y
-> > mount option: rw,relatime,ssd,space_cache=v2,subvolid=5,subvol=/
-> > btrfs souce: 5.15.0-0.rc5, misc-next
-> 
-> You also need CONFIG_READ_ONLY_THP_FOR_FS=y.
-
-Thanks a lot.
-
-This reproducer works well with CONFIG_READ_ONLY_THP_FOR_FS=y.
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/10/14
-
-
+Just IMO, this patch looks like it wants a new bdev_nr_bytes() helper
+instead of using the double shifting sectors back to bytes.
