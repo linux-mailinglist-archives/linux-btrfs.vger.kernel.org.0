@@ -2,165 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3A742EFDB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Oct 2021 13:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6C642EFE9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Oct 2021 13:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbhJOLnb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Oct 2021 07:43:31 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:8583 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235463AbhJOLn2 (ORCPT
+        id S238527AbhJOLrz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Oct 2021 07:47:55 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50018 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235360AbhJOLry (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Oct 2021 07:43:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1634298082; x=1665834082;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=JAGa4lVIP0AMn272ly21outPyMP/sCEMJ9zq8ciGKxY=;
-  b=iqvKclLfktUC2qeRCSa9ar0KWL3dAGwGJoqvwImI97iz3DTA+XcTK5K0
-   2RtOGmUq4IXIMIVXhE2r1ju7p+jd/w7ML4va5p4TuA/faLaAGt16DMXOY
-   NrAdYKd0KNgt+BJqywSiuL358Ju+fiXgjYUW+Ph7t740s5Y4kcID389as
-   VodZ76VNoFQw7M2Yn/wWgJNyBYzor7AW3EWyWCdNKHgUQL4lXLSToaag8
-   em6vyOo2LrRQHQ468xrqTdcg8tm7OZhwiErYbCOH/zkW1vr3hrDCCwp56
-   nxGkQTCHo54Xt2FQjDYn8H5efmkso6N2XQzkGLdgW4zS1YQ9+8knMazVs
-   A==;
-X-IronPort-AV: E=Sophos;i="5.85,375,1624291200"; 
-   d="scan'208";a="181975020"
-Received: from mail-mw2nam10lp2100.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.100])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Oct 2021 19:41:21 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PhrQc6cY/u8Ws0v3kI/5/YFnS9xZLpZp2vz1gqgioqlkE300/muLcW+p6K0OGjXT2glCkdyOeu2F3YN2SavjsvYL7wYZ0IvsB0q0ovWV3xynVXqzzKWhHqEE1d5c0yjtyN45+JZMij3j7mZjWw6L4oDo9TjvVHLcDTN2jxW6ba0Zh91hdtS/TNwvJvamtxPdzbWaqwCg/RblmeIieFAtk75udRLjukS9AMX8V3H9j3ojF8rPO9EpLFI+Lb56CPOzQXf1bqK/BV18V4aWfITTR7kvGcAxVKXtF/bUvp597gCN9SjwKBU3yfvA1sUlFd2+sYFZe6ecEgVxyFkxUtE9mQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RKyPC+sitSUoTdvlvxqizwFRvd7mSbw5eoD/Noj4M20=;
- b=LoZ6jXZjNtAsy5wjQCvCblj+JmCyD+FZirStdAy5YRnoKIiu5m+OdwGAQVwSsn6Y6Svk4bmwaYowGie1g+686bziTZtJVjbWfOBha3xpZ0qda5fSnxMbT5uMEhxRccDL4Y8jdyRJD+6gH9EGu90jVwNojHahVWMaAmMF2Tk6Be2Jbl46Kb1Kwa3NTuY8rBalh64IZrjI3mBWoN89jSa+1v96BDGGngs0M1dlS90iO+0oxxbOcFpRxlAJj53bu3h9Dx/Whyw9bidlzkyTVJ7tN0syhzW6NsqMVCthBfsT1FIxsvU5vnX4ae/aNnmV3q3U5vrKpihsIHFu21QXwJZMqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RKyPC+sitSUoTdvlvxqizwFRvd7mSbw5eoD/Noj4M20=;
- b=YjE+dAnYIYgqKSZRNu3csuFzYops8ebJQs1wyObUkhzms0OrgfMPeVpVugV2HmAS3vBRxD8ILqCxOr4M+fW8YQJyMGYgNDfVmMSgOjfBfWwhvaW3n1lSJ82WsT99tC8NrI94oSIO0y8lMRMPXZqEepHKFIGFRBBCF3axeMmJLws=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7496.namprd04.prod.outlook.com (2603:10b6:510:56::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Fri, 15 Oct
- 2021 11:41:20 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::79d3:3357:9922:a195]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::79d3:3357:9922:a195%6]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
- 11:41:20 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        Wan Jiabing <wanjiabing@vivo.com>
-CC:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kael_w@yeah.net" <kael_w@yeah.net>
-Subject: Re: [PATCH] btrfs: Simplify conditional in assert
-Thread-Topic: [PATCH] btrfs: Simplify conditional in assert
-Thread-Index: AQHXwbCaz3obs/f52kqrDQCLyWuaHw==
-Date:   Fri, 15 Oct 2021 11:41:20 +0000
-Message-ID: <PH0PR04MB7416FC5DCB8276A9E33DDAE09BB99@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <20211015103639.21838-1-wanjiabing@vivo.com>
- <20211015105154.GC30611@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b07b5a6b-c0c1-496d-b03a-08d98fd0b52c
-x-ms-traffictypediagnostic: PH0PR04MB7496:
-x-microsoft-antispam-prvs: <PH0PR04MB7496975A6470EAE19EC86E7E9BB99@PH0PR04MB7496.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oKFd23df/smAQdgyxUtHftogPd7McuXcK/KqkfNAZZIIQunFPr38j02reEipV78KQMfpA/b9GRIoVcyFe5tLLIMw2gY8UsUgQuh5mKFuTE5nrGl6GOtdlliJ92wvQtCKKFAf6RHxvAFIbt7s393N0LzsUSYkiwlwgkNg2SbWmKQbc6kXhUzolEuYzZpTQs8RZ9KwicnbuD32TeaJYm91IMij6tVBEqacHvMUj4IF811HFuUyfKX1Ey7bGa/2NuxrxO7fgAaA43n3QdNKaSCiZOwLwwk+29vqdxT478t917lWIRcRYHT75S0xdJQT4jDA7X84h8SSbX8hpc9KN65XC0pQxq8FM5RqMqB90/s1uVNKcLlmMhZsoKk8EUXMz41rTaDrBq+AItz3nyAYytBIqrJn9pb3JKD6SsKQeuKJaf4CokU9Csb7cSdOO5LFcKP6IksPadbOq17wfH91OU7590feAC2DsYYGoFascePZhALixioPIicL4n/TI3gtuuNWe0TgarQLPtIkcjlra6SP0UFSDLfedaaRquLbahEbEhF6v9ev7/CXSOpS1MAlRT4hJKVjQL+hq+YxAGLaLXn1m/nT/MYQqNMyJYqxsOZD4sAIF1DtWtH4HZYH8UALg5lfgtBg+U7PG0ltGD0d4C1zEtUYlz92q1I2LTPvc3Yp4/uk6EKMBvxxsykwn+xRUtfWySyKBE6mvam6ysZTPzHOrw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(91956017)(64756008)(66946007)(5660300002)(2906002)(66556008)(66476007)(52536014)(66446008)(76116006)(55016002)(26005)(186003)(83380400001)(8676002)(71200400001)(86362001)(9686003)(8936002)(38070700005)(82960400001)(6506007)(110136005)(508600001)(4326008)(316002)(53546011)(38100700002)(33656002)(7696005)(122000001)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bZj54DAKseVfAmONG2aucywfeYBr5rq9IIXG3wCJhUWU/NwXFxOx03vHtu5d?=
- =?us-ascii?Q?sEzF9xqR/62/tMk8/7v8ldRBfNHBOKslLnN1doWxdi/r/nC8/TdB1wWfjN81?=
- =?us-ascii?Q?udJKFhXS5H+/FLGvQsoLs6OCTfz6S3DfWhNItDXVW9f8+X2ztHarEWZaQNKF?=
- =?us-ascii?Q?q/59PL7LrgTKYPZEBjUVlNC6/nhjhBDyHK56Go+bckvdct9hnRS9a2tB8zgJ?=
- =?us-ascii?Q?jvI30IhVZ6z88z1NYBfQFouj+kGm32Pxz073jprgGOyeHaIaXKQjxYVK2av7?=
- =?us-ascii?Q?EY5D9HMDQFtyEGIj4iu2ubJtTQlCgxu2OJcYMiAcJkAanDBZHSWoZUMw+El6?=
- =?us-ascii?Q?8kVuWopjG176Ay2/upvJvibTt8V5gQQRTVHsCKq3Caby+UWwDhRwGq3m+4NV?=
- =?us-ascii?Q?SGk7oAtZuBuDArQKaI7sdb4VS32eFrUjlE7PKiLb75nHK3OcezODiULPOszr?=
- =?us-ascii?Q?3QeRdWt8uNLz0X+XmjV/zUR8h6Jn3qOpTPGQxNcn2U8ajvxLD2cRqLFjSN2r?=
- =?us-ascii?Q?0Fc3DdbHV4qn5wZ+GgTF3tTfOG+w+8xfaVm+Lp63k/tmWqHn+dCDfXnpbT2y?=
- =?us-ascii?Q?dANv6kgamthLe13Ks11LYOoC8qwb6jbQ0e1DukGMs5ah3l1j2AV+EoMSFQus?=
- =?us-ascii?Q?LTCHJN1AcxPRhU4Yb6QbsPgxNdfqAzopKXjSbmypukoasV+hgQirhXoLuNha?=
- =?us-ascii?Q?W9ViuAtdi95CHAT/wTccdJuzjZW0q0GVdiQGwKWGuhUkqEWpXVH29vLupb1C?=
- =?us-ascii?Q?X1CXHWMpORP57GbWM+Ggs1Yar9oU++MQroV/N8Fkxb6TyWP7ruZJlBLRxDmH?=
- =?us-ascii?Q?X7Yvdc9aMM0bGcAFJuLILTXimBEG4QMEz/tBZGE7HCkuwQ+u6nCtY/aCp91w?=
- =?us-ascii?Q?KOoAURf7jS3yr2u5zLsjp9Xg9E/2wdeoI3dl4zzdaFmdRzqo9U42e4Bxgl2G?=
- =?us-ascii?Q?QrZ/mg+zbDYih40PV7jfbrmSc5YW81WPdH+Qrdu5KG8ZjnS9wkCJ6QK/1wow?=
- =?us-ascii?Q?ZoN11RsMd5dY6BhcBpbleKUsP0iE2s+lqWaLZuhNYOgu2y8VFvNFGoGLqFuJ?=
- =?us-ascii?Q?keke1732PfWvlkzn8xT/oBIA6SW5hJwSc/44jbkiM7AFi3t4sJXvR005446p?=
- =?us-ascii?Q?7oLvIRtV6jeHWHlLoPWEkWQL9PArs86VcwL5OirZGdSAgcihxTZEfnnB2wZQ?=
- =?us-ascii?Q?bxDyWdWGEqsq01jxq+yxe+6Mnun3bCVgjG7R4W7RsovTrO8FE2qeaNnDVk2D?=
- =?us-ascii?Q?t7IhOe/YMG1RUI8hgWADN2ENGw59b7odQz/5JE5mAEdOWRvoIkpPQ6swvjCx?=
- =?us-ascii?Q?ccobxAr3nCwEJ3tXSSSCWooe?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 15 Oct 2021 07:47:54 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 5026A1FD57;
+        Fri, 15 Oct 2021 11:45:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634298347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fBp8w7xMCDpu9yJTLtMWaL+eb2DX5zEZEsPx6eVJxTs=;
+        b=f8TaSGmexkahjz7nAQws0t8ab/cwV+TXVfJn+rFPp7cDlV7qokh6+Uh44a7PNol8gcQa3G
+        7Ggl6v0Ps/lpHmi3nOrfi6Md4cMPcR1CqU1JbhU8a0G19PQu5Tc6aoKFIcPyEyKG2EF6BL
+        FcumO7Hakhe0Ovg2B9APqfr1pdIl1ko=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0986D13C1B;
+        Fri, 15 Oct 2021 11:45:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id RPFnO+ppaWFqegAAMHmgww
+        (envelope-from <nborisov@suse.com>); Fri, 15 Oct 2021 11:45:46 +0000
+Subject: Re: [PATCH v11 08/14] btrfs: add BTRFS_IOC_ENCODED_READ
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <cover.1630514529.git.osandov@fb.com>
+ <c8c9bc3a546359bda7420d92d3d61d1023c1cb96.1630514529.git.osandov@fb.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <4a64bf3a-b691-1986-80c8-21ddf9e446a0@suse.com>
+Date:   Fri, 15 Oct 2021 14:45:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b07b5a6b-c0c1-496d-b03a-08d98fd0b52c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2021 11:41:20.3487
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NclNwMlVgGa+vLz81Ry8K8+UecPTn4qO39cM0jP3tQFrqjOCzSC+9TxclWfc0pZKEZ906cCPrTZso882iKx3V9iNXZ6t9gdNm7aHut/nFIk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7496
+In-Reply-To: <c8c9bc3a546359bda7420d92d3d61d1023c1cb96.1630514529.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 15/10/2021 12:52, David Sterba wrote:=0A=
-> Adding Johannes to CC,=0A=
-> =0A=
-> On Fri, Oct 15, 2021 at 06:36:39AM -0400, Wan Jiabing wrote:=0A=
->> Fix following coccicheck warning:=0A=
->> ./fs/btrfs/inode.c:2015:16-18: WARNING !A || A && B is equivalent to !A =
-|| B=0A=
->>=0A=
->> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>=0A=
->> ---=0A=
->>  fs/btrfs/inode.c | 3 +--=0A=
->>  1 file changed, 1 insertion(+), 2 deletions(-)=0A=
->>=0A=
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c=0A=
->> index e9154b436c47..da4aeef73b0d 100644=0A=
->> --- a/fs/btrfs/inode.c=0A=
->> +++ b/fs/btrfs/inode.c=0A=
->> @@ -2011,8 +2011,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *i=
-node, struct page *locked_page=0A=
->>  		 * to use run_delalloc_nocow() here, like for  regular=0A=
->>  		 * preallocated inodes.=0A=
->>  		 */=0A=
->> -		ASSERT(!zoned ||=0A=
->> -		       (zoned && btrfs_is_data_reloc_root(inode->root)));=0A=
->> +		ASSERT(!zoned || btrfs_is_data_reloc_root(inode->root));=0A=
-> =0A=
-> The short form is equivalent, but I'm not sure it's also on the same=0A=
-> level of readability. Repeating the 'zoned' condition check makes it=0A=
-> obvious on first sight, which is what I'd prefer.=0A=
-> =0A=
-> Johannes if you'd like the new version I'll change it but otherwise I'm=
-=0A=
-> fine with what we have now.=0A=
-=0A=
-I'm fine either way, no strong preferences from my side.=0A=
-=0A=
+
+
+On 1.09.21 г. 20:01, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> There are 4 main cases:
+> 
+> 1. Inline extents: we copy the data straight out of the extent buffer.
+> 2. Hole/preallocated extents: we fill in zeroes.
+> 3. Regular, uncompressed extents: we read the sectors we need directly
+>    from disk.
+> 4. Regular, compressed extents: we read the entire compressed extent
+>    from disk and indicate what subset of the decompressed extent is in
+>    the file.
+> 
+> This initial implementation simplifies a few things that can be improved
+> in the future:
+> 
+> - We hold the inode lock during the operation.
+> - Cases 1, 3, and 4 allocate temporary memory to read into before
+>   copying out to userspace.
+> - We don't do read repair, because it turns out that read repair is
+>   currently broken for compressed data.
+> 
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>  fs/btrfs/ctree.h |   4 +
+>  fs/btrfs/inode.c | 489 +++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/ioctl.c | 111 +++++++++++
+>  3 files changed, 604 insertions(+)
+> 
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index b95ec5fb68d5..cbd7e07c1c34 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -3223,6 +3223,10 @@ int btrfs_writepage_cow_fixup(struct page *page);
+>  void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
+>  					  struct page *page, u64 start,
+>  					  u64 end, bool uptodate);
+> +struct btrfs_ioctl_encoded_io_args;
+> +ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter,
+> +			   struct btrfs_ioctl_encoded_io_args *encoded);
+> +
+>  extern const struct dentry_operations btrfs_dentry_operations;
+>  extern const struct iomap_ops btrfs_dio_iomap_ops;
+>  extern const struct iomap_dio_ops btrfs_dio_ops;
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index a87a34f56234..1940f22179ba 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -10500,6 +10500,495 @@ void btrfs_set_range_writeback(struct btrfs_inode *inode, u64 start, u64 end)
+>  	}
+>  }
+>  
+
+<snip>
+
+> +
+> +static blk_status_t btrfs_encoded_read_check_bio(struct btrfs_io_bio *io_bio)
+
+nit: The gist of this function is to check the csum so how about
+renaming it to btrfs_encoded_read_verify_csum
+
+<snip>
+
+> +
+> +static void btrfs_encoded_read_endio(struct bio *bio)
+> +{
+> +	struct btrfs_encoded_read_private *priv = bio->bi_private;
+> +	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
+> +	blk_status_t status;
+> +
+> +	status = btrfs_encoded_read_check_bio(io_bio);
+> +	if (status) {
+> +		/*
+> +		 * The memory barrier implied by the atomic_dec_return() here
+> +		 * pairs with the memory barrier implied by the
+> +		 * atomic_dec_return() or io_wait_event() in
+
+nit: I think atomic_dec_return in read_regular_fill_pages is
+inconsequential, what we want to ensure is that when the caller of
+io_wait_event is woken up by this thread it will observe the
+priv->status, which it will, because the atomic-dec_return in this
+function has paired with the general barrier interpolated by wait_event.
+
+So for brevity just leave the text to say "by io_wait_event".
+
+> +		 * btrfs_encoded_read_regular_fill_pages() to ensure that this
+> +		 * write is observed before the load of status in
+> +		 * btrfs_encoded_read_regular_fill_pages().
+> +		 */
+> +		WRITE_ONCE(priv->status, status);
+> +	}
+> +	if (!atomic_dec_return(&priv->pending))
+> +		wake_up(&priv->wait);
+> +	btrfs_io_bio_free_csum(io_bio);
+> +	bio_put(bio);
+> +}
+
+<snip>
+
+> @@ -4824,6 +4841,94 @@ static int _btrfs_ioctl_send(struct file *file, void __user *argp, bool compat)
+>  	return ret;
+>  }
+>  
+
+<snip>
+
+> +	memset((char *)&args + copy_end_kernel, 0,
+> +	       sizeof(args) - copy_end_kernel);
+
+nit: This memset can be eliminated ( in source) by marking args = {};
+and just leaving copy from user above.
+
+> +
+> +	ret = import_iovec(READ, args.iov, args.iovcnt, ARRAY_SIZE(iovstack),
+> +			   &iov, &iter);
+> +	if (ret < 0)
+> +		goto out_acct;
+> +
+> +	if (iov_iter_count(&iter) == 0) {
+> +		ret = 0;
+> +		goto out_iov;
+> +	}
+> +	pos = args.offset;
+> +	ret = rw_verify_area(READ, file, &pos, args.len);
+> +	if (ret < 0)
+> +		goto out_iov;
+> +
+> +	init_sync_kiocb(&kiocb, file);
+> +	ret = kiocb_set_rw_flags(&kiocb, 0);
+
+This call is a noop due to:
+	if (!flags)
+		return 0;
+
+in kiocb_set_rw_flags.
+
+
+<snip>
