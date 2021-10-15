@@ -2,131 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB0742F5AE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Oct 2021 16:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F69042F644
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Oct 2021 16:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240352AbhJOOk2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 15 Oct 2021 10:40:28 -0400
-Received: from mgw-01.mpynet.fi ([82.197.21.90]:38610 "EHLO mgw-01.mpynet.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233109AbhJOOk1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:40:27 -0400
-Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
-        by mgw-01.mpynet.fi (8.16.0.43/8.16.0.43) with SMTP id 19FEWINI065735;
-        Fri, 15 Oct 2021 17:37:43 +0300
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-01.mpynet.fi with ESMTP id 3bqa6fr1nj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 15 Oct 2021 17:37:42 +0300
-Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
- tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Fri, 15 Oct 2021 17:37:42 +0300
-Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
- tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
- 15.00.1497.023; Fri, 15 Oct 2021 17:37:42 +0300
-From:   Anton Altaparmakov <anton@tuxera.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
-        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
-        Kees Cook <keescook@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Jan Kara <jack@suse.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>,
-        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
-        "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>
-Subject: Re: [PATCH 02/30] block: add a bdev_nr_bytes helper
-Thread-Topic: [PATCH 02/30] block: add a bdev_nr_bytes helper
-Thread-Index: AQHXwchZP9onky8YCUWD+iMtrLLvTavT7o+A
-Date:   Fri, 15 Oct 2021 14:37:41 +0000
-Message-ID: <7C4AC4BD-B62D-41B3-AAF7-46125D1A1146@tuxera.com>
-References: <20211015132643.1621913-1-hch@lst.de>
- <20211015132643.1621913-3-hch@lst.de>
-In-Reply-To: <20211015132643.1621913-3-hch@lst.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [109.154.241.177]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <CA141EBD26CA2142955225C1A7459553@ex13.tuxera.com>
-Content-Transfer-Encoding: 8BIT
+        id S236907AbhJOOy6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Oct 2021 10:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230471AbhJOOy5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 15 Oct 2021 10:54:57 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A45DC061570
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 07:52:51 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id s136so5588239pgs.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 07:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=KzpWrXZNvDmEz2eZbSasSqj1+9Uxu2H3QMUpmMIjAfs=;
+        b=QaPqt+DqY8r3V1OqtVoc1hXtt4IfUDQSQzyaP23Tn/2aoqt3GislZGzXYyF9yk5zAw
+         +QrrwPF5fqGVxRS6c5tmSDXgBcIoBmNbvE42ucg+rn3Y6gEwZi1Disr+8+9zAc/4QFh5
+         Bvl03C6lFClz04QkTOZNOtBF6GKIoTAsAGRQBvPpm8ydMazfHwFr7Fo9Mharx98AmNly
+         AFlAvsosDK4zF7tue5kU6TsmZlJVHkMIBODBAa191M7TfbTAMAMlFEUaAB2RSQ8AP4kh
+         iFUycuvVUmjCF+DHlMYYKj+wMHnGOChvJ0aH5cg6j+HaMxs4vqKE8NOi6zoLskFsxdVA
+         7QAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=KzpWrXZNvDmEz2eZbSasSqj1+9Uxu2H3QMUpmMIjAfs=;
+        b=mG9T3QGOghYTeht5EW49p6XP1Gb63KGIGLPoaw8irIPauni52cgwUPmB+dyOjKfZQF
+         vSf8hqDosJK1nMykdyDBWFk0URAUfv5X/AX7/k5OSMfGDpq9qjnuRdBoqqjgokjDjASK
+         Qu0ZVTF10jwI/sIJ5BvGPlqY97ZKKVezFMXV045gYZmYPGSSjKNW3JflKOXGBzTPsVPp
+         UbX/LQKA9WL3YfufBadq9pHmfr2UkNn2OIxjcg/X0l02MU5O8neJvI1lPOIw3CitDnu1
+         ftrHUiQwTmkC6zyORI1MbXkFdiLuDQzfWiNUs8j2s3Qd4zgLBV1tRFSYwgIEegWSj9Ib
+         NM2A==
+X-Gm-Message-State: AOAM533TkYzQC7JvA7TT2UFSk3N4VoTQzNWYjl/2Uko1UkO/M4tQqlJ3
+        MYoVj72InG9JG24g60awACSkXsUfQ+qqELFw34c=
+X-Google-Smtp-Source: ABdhPJy9Y/mwQOaq1gO6Qk0ZISouAi4xn0JoZGfQ8Lfc8dt//rUmka9MJqDibSixhVJ9MWdkv6y+4nsHLSCRXYduc0c=
+X-Received: by 2002:a63:6d0d:: with SMTP id i13mr9480961pgc.25.1634309570773;
+ Fri, 15 Oct 2021 07:52:50 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-ORIG-GUID: H-3YelUF38QeF4AeejuL002U0EzCkK0i
-X-Proofpoint-GUID: H-3YelUF38QeF4AeejuL002U0EzCkK0i
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
- definitions=2021-10-15_04:2021-10-14,2021-10-15 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 phishscore=0 mlxlogscore=984
- bulkscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110150089
+Received: by 2002:a05:6a10:fe09:0:0:0:0 with HTTP; Fri, 15 Oct 2021 07:52:50
+ -0700 (PDT)
+Reply-To: donaldcurtis3000@gmail.com
+From:   Donald Curtis <bigladjamal2@gmail.com>
+Date:   Fri, 15 Oct 2021 15:52:50 +0100
+Message-ID: <CAMxyq03v_1CFPSWsX4_e1JWWVrnFSpiSFDa7-WjJB+q+uDigaw@mail.gmail.com>
+Subject: hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Christoph,
-
-> On 15 Oct 2021, at 14:26, Christoph Hellwig <hch@lst.de> wrote:
-> 
-> Add a helpe to query the size of a block device in bytes.  This
-> will be used to remove open coded access to ->bd_inode.
-
-Matthew already pointed out the return type for bdev_nr_bytes() but also your commit message has a typo: "Add a helpe" -> "Add a helper".
-
-Best regards,
-
-	Anton
-
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
-> include/linux/genhd.h | 7 ++++++-
-> 1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-> index 082a3e5fd8fa1..f67db3c5a04b3 100644
-> --- a/include/linux/genhd.h
-> +++ b/include/linux/genhd.h
-> @@ -235,9 +235,14 @@ static inline sector_t get_start_sect(struct block_device *bdev)
-> 	return bdev->bd_start_sect;
-> }
-> 
-> +static inline sector_t bdev_nr_bytes(struct block_device *bdev)
-> +{
-> +	return i_size_read(bdev->bd_inode);
-> +}
-> +
-> static inline sector_t bdev_nr_sectors(struct block_device *bdev)
-> {
-> -	return i_size_read(bdev->bd_inode) >> 9;
-> +	return bdev_nr_bytes(bdev) >> SECTOR_SHIFT;
-> }
-> 
-> static inline sector_t get_capacity(struct gendisk *disk)
-> -- 
-> 2.30.2
-> 
-
+SEksDQpHb29kIGRheS4NCktpbmRseSBjb25maXJtIHRvIG1lIGlmIHRoaXMgaXMgeW91ciBjb3Jy
+ZWN0IGVtYWlsIEFkZHJlc3MgYW5kIGdldA0KYmFjayB0byBtZSBmb3Igb3VyIGludGVyZXN0Lg0K
+U2luY2VyZWx5LA0KRG9uYWxkDQoNCg0K7JWI64WV7ZWY7IS47JqULA0K7JWI64WV7ZWY7IS47JqU
+Lg0K7J206rKD7J20IOq3gO2VmOydmCDsnbTrqZTsnbwg7KO87IaM6rCAIOygle2Zle2VnOyngCDt
+mZXsnbjtlZjqs6Ag7Jqw66as7J2YIOq0gOyLrOydhCDsnITtlbQg7KCA7JeQ6rKMIO2ajOyLoO2V
+tCDso7zsi63si5zsmKQuDQrqsJDsgqztlanri4jri6QsDQrrj4TrhJDrk5wNCg==
