@@ -2,109 +2,153 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAE342F50B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Oct 2021 16:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A73F42F59B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Oct 2021 16:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbhJOOUU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Oct 2021 10:20:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49310 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhJOOUR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:20:17 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 206702196F;
-        Fri, 15 Oct 2021 14:18:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634307490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tI8Bp6Gb/OCOSV+2k3ZUrOO25GsM3zsjJbs5q5J/2fc=;
-        b=bfFP4QsV1R5A5dOBcF1Yz9ojZTyodj+PUOUbtpxBuF59tUdLrmxm0et+IoKhD3DYuA7i+I
-        ydtHQPCzB8FB4ihk9tuK5AUv0mR9YJwrm17RqB2SEjQqKgBl2tuUiBrfZwUb22MyFhWdsi
-        3owlv0HTLnaQbGNuQkemA8eUFLzaYgE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A622013C29;
-        Fri, 15 Oct 2021 14:18:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 5dkOJqGNaWHMRwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Fri, 15 Oct 2021 14:18:09 +0000
-Subject: Re: [PATCH] btrfs: Simplify conditional in assert
-To:     dsterba@suse.cz, Wan Jiabing <wanjiabing@vivo.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net,
-        johannes.thumshirn@wdc.com
-References: <20211015103639.21838-1-wanjiabing@vivo.com>
- <20211015105154.GC30611@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <62b235b7-a99d-4244-89cf-e6649fbd3dd4@suse.com>
-Date:   Fri, 15 Oct 2021 17:18:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211015105154.GC30611@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
+        id S240510AbhJOOjE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 15 Oct 2021 10:39:04 -0400
+Received: from mgw-01.mpynet.fi ([82.197.21.90]:38372 "EHLO mgw-01.mpynet.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237521AbhJOOjD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 15 Oct 2021 10:39:03 -0400
+Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
+        by mgw-01.mpynet.fi (8.16.0.43/8.16.0.43) with SMTP id 19FEWINE065735;
+        Fri, 15 Oct 2021 17:35:41 +0300
+Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
+        by mgw-01.mpynet.fi with ESMTP id 3bqa6fr1mk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 15 Oct 2021 17:35:41 +0300
+Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
+ tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 15 Oct 2021 17:35:40 +0300
+Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
+ tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
+ 15.00.1497.023; Fri, 15 Oct 2021 17:35:40 +0300
+From:   Anton Altaparmakov <anton@tuxera.com>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "jfs-discussion@lists.sourceforge.net" 
+        <jfs-discussion@lists.sourceforge.net>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-nilfs@vger.kernel.org" <linux-nilfs@vger.kernel.org>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>
+Subject: Re: [PATCH 28/30] ntfs: use sb_bdev_nr_blocks
+Thread-Topic: [PATCH 28/30] ntfs: use sb_bdev_nr_blocks
+Thread-Index: AQHXwch+sOYTA5n1EU2k5d07nGAE/6vT7f2A
+Date:   Fri, 15 Oct 2021 14:35:40 +0000
+Message-ID: <7644804B-2081-4A1E-A40D-9A5C7BF72E2E@tuxera.com>
+References: <20211015132643.1621913-1-hch@lst.de>
+ <20211015132643.1621913-29-hch@lst.de>
+In-Reply-To: <20211015132643.1621913-29-hch@lst.de>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [109.154.241.177]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3668CC17B52D274985AE4DAF6C11620E@ex13.tuxera.com>
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: 4ZKrI-UQqOuYdNTfa7YqNKQX-GuzVYXg
+X-Proofpoint-GUID: 4ZKrI-UQqOuYdNTfa7YqNKQX-GuzVYXg
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-10-15_04:2021-10-14,2021-10-15 signatures=0
+X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110150089
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Christoph,
 
+Looks good, thank you.
 
-On 15.10.21 г. 13:51, David Sterba wrote:
-> Adding Johannes to CC,
+Best regards,
+
+	Anton
+
+> On 15 Oct 2021, at 14:26, Christoph Hellwig <hch@lst.de> wrote:
 > 
-> On Fri, Oct 15, 2021 at 06:36:39AM -0400, Wan Jiabing wrote:
->> Fix following coccicheck warning:
->> ./fs/btrfs/inode.c:2015:16-18: WARNING !A || A && B is equivalent to !A || B
->>
->> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
->> ---
->>  fs/btrfs/inode.c | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->> index e9154b436c47..da4aeef73b0d 100644
->> --- a/fs/btrfs/inode.c
->> +++ b/fs/btrfs/inode.c
->> @@ -2011,8 +2011,7 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct page *locked_page
->>  		 * to use run_delalloc_nocow() here, like for  regular
->>  		 * preallocated inodes.
->>  		 */
->> -		ASSERT(!zoned ||
->> -		       (zoned && btrfs_is_data_reloc_root(inode->root)));
->> +		ASSERT(!zoned || btrfs_is_data_reloc_root(inode->root));
+> Use the sb_bdev_nr_blocks helper instead of open coding it and clean up
+> ntfs_fill_super a bit by moving an assignment a little earlier that has
+> no negative side effects.
 > 
-> The short form is equivalent, but I'm not sure it's also on the same
-> level of readability. Repeating the 'zoned' condition check makes it
-> obvious on first sight, which is what I'd prefer.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+
+Acked-by: Anton Altaparmakov <anton@tuxera.com>
+
+> ---
+> fs/ntfs/super.c | 8 +++-----
+> 1 file changed, 3 insertions(+), 5 deletions(-)
 > 
-> Johannes if you'd like the new version I'll change it but otherwise I'm
-> fine with what we have now.
-
-Just my 2 cents:
-
-The less code we have the better, i.e !zoned is obvious when it's true
-i.e when zoned is false. So the way I read teh assert with the short
-form is "we are not zoned OR we are (this is implicit) and this is the
-data reloc root". Obviously this is personal preference as you deem it's
-better  better to have the !zoned || zoned.
-
-
+> diff --git a/fs/ntfs/super.c b/fs/ntfs/super.c
+> index 0d7e948cb29c9..5ae8de09b271b 100644
+> --- a/fs/ntfs/super.c
+> +++ b/fs/ntfs/super.c
+> @@ -2772,13 +2772,12 @@ static int ntfs_fill_super(struct super_block *sb, void *opt, const int silent)
+> 	ntfs_debug("Set device block size to %i bytes (block size bits %i).",
+> 			blocksize, sb->s_blocksize_bits);
+> 	/* Determine the size of the device in units of block_size bytes. */
+> -	if (!i_size_read(sb->s_bdev->bd_inode)) {
+> +	vol->nr_blocks = sb_bdev_nr_blocks(sb);
+> +	if (!vol->nr_blocks) {
+> 		if (!silent)
+> 			ntfs_error(sb, "Unable to determine device size.");
+> 		goto err_out_now;
+> 	}
+> -	vol->nr_blocks = i_size_read(sb->s_bdev->bd_inode) >>
+> -			sb->s_blocksize_bits;
+> 	/* Read the boot sector and return unlocked buffer head to it. */
+> 	if (!(bh = read_ntfs_boot_sector(sb, silent))) {
+> 		if (!silent)
+> @@ -2816,8 +2815,7 @@ static int ntfs_fill_super(struct super_block *sb, void *opt, const int silent)
+> 			goto err_out_now;
+> 		}
+> 		BUG_ON(blocksize != sb->s_blocksize);
+> -		vol->nr_blocks = i_size_read(sb->s_bdev->bd_inode) >>
+> -				sb->s_blocksize_bits;
+> +		vol->nr_blocks = sb_bdev_nr_blocks(sb);
+> 		ntfs_debug("Changed device block size to %i bytes (block size "
+> 				"bits %i) to match volume sector size.",
+> 				blocksize, sb->s_blocksize_bits);
+> -- 
+> 2.30.2
 > 
->>  		ret = run_delalloc_nocow(inode, locked_page, start, end,
->>  					 page_started, nr_written);
->>  	} else if (!inode_can_compress(inode) ||
->> -- 
->> 2.20.1
-> 
+
+
+
+-- 
+Anton Altaparmakov <anton at tuxera.com> (replace at with @)
+Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
+Linux NTFS maintainer
+
