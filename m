@@ -2,66 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F69042F644
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Oct 2021 16:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0955C42F72B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Oct 2021 17:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236907AbhJOOy6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Oct 2021 10:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
+        id S241039AbhJOPr7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Oct 2021 11:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhJOOy5 (ORCPT
+        with ESMTP id S241027AbhJOPr6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Oct 2021 10:54:57 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A45DC061570
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 07:52:51 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id s136so5588239pgs.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 07:52:51 -0700 (PDT)
+        Fri, 15 Oct 2021 11:47:58 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFD6C061762
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 08:45:52 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id n11so6650753plf.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 08:45:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=KzpWrXZNvDmEz2eZbSasSqj1+9Uxu2H3QMUpmMIjAfs=;
-        b=QaPqt+DqY8r3V1OqtVoc1hXtt4IfUDQSQzyaP23Tn/2aoqt3GislZGzXYyF9yk5zAw
-         +QrrwPF5fqGVxRS6c5tmSDXgBcIoBmNbvE42ucg+rn3Y6gEwZi1Disr+8+9zAc/4QFh5
-         Bvl03C6lFClz04QkTOZNOtBF6GKIoTAsAGRQBvPpm8ydMazfHwFr7Fo9Mharx98AmNly
-         AFlAvsosDK4zF7tue5kU6TsmZlJVHkMIBODBAa191M7TfbTAMAMlFEUaAB2RSQ8AP4kh
-         iFUycuvVUmjCF+DHlMYYKj+wMHnGOChvJ0aH5cg6j+HaMxs4vqKE8NOi6zoLskFsxdVA
-         7QAA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XFM5WavD2dlHj0k2cmbjEUH7DswNvraUTvaUeecsFLI=;
+        b=kI3cmovLUq4/7b3XdGijH4QV2pLukclN+qtvDChdq76oCBSEjB/PxJ/LWqXaiWG3Ff
+         e4ufh94HB0JHTcED5LMZgB7kXmiVxJYf75rZOCTtrAggeGm0/wa2OqJYCFCBhzazIF7l
+         udxg7lVjqVFbJpk0sBDk4exc+CKZoXIIyRuqU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=KzpWrXZNvDmEz2eZbSasSqj1+9Uxu2H3QMUpmMIjAfs=;
-        b=mG9T3QGOghYTeht5EW49p6XP1Gb63KGIGLPoaw8irIPauni52cgwUPmB+dyOjKfZQF
-         vSf8hqDosJK1nMykdyDBWFk0URAUfv5X/AX7/k5OSMfGDpq9qjnuRdBoqqjgokjDjASK
-         Qu0ZVTF10jwI/sIJ5BvGPlqY97ZKKVezFMXV045gYZmYPGSSjKNW3JflKOXGBzTPsVPp
-         UbX/LQKA9WL3YfufBadq9pHmfr2UkNn2OIxjcg/X0l02MU5O8neJvI1lPOIw3CitDnu1
-         ftrHUiQwTmkC6zyORI1MbXkFdiLuDQzfWiNUs8j2s3Qd4zgLBV1tRFSYwgIEegWSj9Ib
-         NM2A==
-X-Gm-Message-State: AOAM533TkYzQC7JvA7TT2UFSk3N4VoTQzNWYjl/2Uko1UkO/M4tQqlJ3
-        MYoVj72InG9JG24g60awACSkXsUfQ+qqELFw34c=
-X-Google-Smtp-Source: ABdhPJy9Y/mwQOaq1gO6Qk0ZISouAi4xn0JoZGfQ8Lfc8dt//rUmka9MJqDibSixhVJ9MWdkv6y+4nsHLSCRXYduc0c=
-X-Received: by 2002:a63:6d0d:: with SMTP id i13mr9480961pgc.25.1634309570773;
- Fri, 15 Oct 2021 07:52:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XFM5WavD2dlHj0k2cmbjEUH7DswNvraUTvaUeecsFLI=;
+        b=ah5yY0V+IYode5q4Gi+oB+OZZilVIKrR93MykK21oNFDSLGxeT4Bu73gAoFCWNtD/V
+         UCQ29Ix6OWuA0Krm2XLMuEpQeqqlDvysbFXy8uEETG/nQ0Ib4/6y7R4PHMddNek7aQw7
+         na3Ll2FxBun8EB6srcuKK1a712pXIa+toqXgpU/+5ZPVxbnm+rNA59ewm4FiYe8iuZoi
+         iVN0TmzuD4UryADrx02E5wm2fQaBIJBGxhQJ55+t1JfnZ1ZrxX9nojvyU8Wr73pahciD
+         UlEPh9zGit+lvR5oSeux2xIuqw2Nlm1jEZAWR+czW+MeWy1JuHDZF8r0M4FIsyfl14aP
+         epIA==
+X-Gm-Message-State: AOAM530C0WpdnT04xO3Hn+kbpcVP6dAie2RLfr/RkhGt6W0NJey+KWES
+        vMD9QpMUwCAelraKgFKQpVKyfQ==
+X-Google-Smtp-Source: ABdhPJwzQs+V6r1hPLOTwtZOgiRq0ZYBjWTuzen8H9dNT74QaE01sJDiES/7Q1kbrrYk+yq2JOau2g==
+X-Received: by 2002:a17:90a:86:: with SMTP id a6mr28243106pja.190.1634312751709;
+        Fri, 15 Oct 2021 08:45:51 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g17sm5328859pfu.22.2021.10.15.08.45.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 08:45:51 -0700 (PDT)
+Date:   Fri, 15 Oct 2021 08:45:50 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Coly Li <colyli@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
+Subject: Re: [PATCH 01/30] block: move the SECTOR_SIZE related definitions to
+ blk_types.h
+Message-ID: <202110150845.29BA04E647@keescook>
+References: <20211015132643.1621913-1-hch@lst.de>
+ <20211015132643.1621913-2-hch@lst.de>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:fe09:0:0:0:0 with HTTP; Fri, 15 Oct 2021 07:52:50
- -0700 (PDT)
-Reply-To: donaldcurtis3000@gmail.com
-From:   Donald Curtis <bigladjamal2@gmail.com>
-Date:   Fri, 15 Oct 2021 15:52:50 +0100
-Message-ID: <CAMxyq03v_1CFPSWsX4_e1JWWVrnFSpiSFDa7-WjJB+q+uDigaw@mail.gmail.com>
-Subject: hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211015132643.1621913-2-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-SEksDQpHb29kIGRheS4NCktpbmRseSBjb25maXJtIHRvIG1lIGlmIHRoaXMgaXMgeW91ciBjb3Jy
-ZWN0IGVtYWlsIEFkZHJlc3MgYW5kIGdldA0KYmFjayB0byBtZSBmb3Igb3VyIGludGVyZXN0Lg0K
-U2luY2VyZWx5LA0KRG9uYWxkDQoNCg0K7JWI64WV7ZWY7IS47JqULA0K7JWI64WV7ZWY7IS47JqU
-Lg0K7J206rKD7J20IOq3gO2VmOydmCDsnbTrqZTsnbwg7KO87IaM6rCAIOygle2Zle2VnOyngCDt
-mZXsnbjtlZjqs6Ag7Jqw66as7J2YIOq0gOyLrOydhCDsnITtlbQg7KCA7JeQ6rKMIO2ajOyLoO2V
-tCDso7zsi63si5zsmKQuDQrqsJDsgqztlanri4jri6QsDQrrj4TrhJDrk5wNCg==
+On Fri, Oct 15, 2021 at 03:26:14PM +0200, Christoph Hellwig wrote:
+> Ensure these are always available for inlines in the various block layer
+> headers.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Awesome, yes. Thanks!
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
