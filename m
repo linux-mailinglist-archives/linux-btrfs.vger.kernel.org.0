@@ -2,208 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B63442FF63
-	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Oct 2021 02:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF4442FFA8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Oct 2021 03:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239250AbhJPARH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Oct 2021 20:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbhJPARE (ORCPT
+        id S239553AbhJPBnQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Oct 2021 21:43:16 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33308 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232812AbhJPBnQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Oct 2021 20:17:04 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B01AC061570
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 17:14:57 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id i15so21384352uap.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 17:14:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=u3jJCQw+zAjxYaqKw+c3CgPaunhwH0sdbdJ3dnNswi4=;
-        b=JHH+YwW+GKADT/U0NPNHTYbN22caXBowAKH1eXGy1NhUonJjvh6ZhnsW7Zw4VgofB0
-         fx3SGW309bzITacln4q3IVR7X8aFd9JXoRA0huMiL3kGo20bhLce66Y3i+g58JrLd74V
-         WpPRhz3V3QMypSVq8606vqnx5/bEKmXDrEAq0hU0QZSEt0lqaIjYIWzxBZT4aPZZrlN0
-         eQHNJeFE6/cHtbpj6adjjbV2AhyOfed+nY71m8k/Y5XTEeQzNjI+jCDY1EkyQ/T+Q4rT
-         Gz+1N9xV/8G7a8OOMRGBJQryik35T4YnnlMD/AD/5njz+hZYlAcosbl3o8pdOnnmBDdP
-         V9gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=u3jJCQw+zAjxYaqKw+c3CgPaunhwH0sdbdJ3dnNswi4=;
-        b=NdQrB+NAk4ZCRJ9nSRKz+GSoigU/el3DYS1HlEzMU54dSXWGlAbjKXiWvwpT6A0Ity
-         4IbxeKBOMKrvYbfSnS5HuBV/MJsk3nz2wnt+DqjbHTCiEtLip8fYFz/QvoYbU2FC7Cuf
-         k7+WxaVChezDXTDb2xLqjKqtz5Q5C/0QrFN389kVjfSONDW4iqLGAEnbpYhiS+aeMr6S
-         zEIefkDcZ3crSxcbs7AVU+OJxyFQb2kHH310VjwgvVjIvI74UY4ozSbzKAnSH2VLV2ki
-         bqX1tOKAGCUkLH2rkzFrXKsnxLdGX54uD8dfi3L3ci8fYqLAqeY0uVbpqODbtGaTTDpF
-         KcVw==
-X-Gm-Message-State: AOAM530f+vcTglevVgsGyVYoN4ByVQ3r+FRbs1JaXNu7rgRwnij65vYR
-        AyI0xJ65FRuk59y0Ntv5J3hx2woibSnV9MkxPL3v9diFe9g=
-X-Google-Smtp-Source: ABdhPJxK22dtL1wGFrzDLU1MyNo5aWBGgmPnde4ZeKIpPwjB8WBkU3wAQC/LSQ7VxoWXLaiU7s2i+ZpWd8bEZuwy7tA=
-X-Received: by 2002:a67:d310:: with SMTP id a16mr17884043vsj.53.1634343296539;
- Fri, 15 Oct 2021 17:14:56 -0700 (PDT)
+        Fri, 15 Oct 2021 21:43:16 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 11C861FD4C;
+        Sat, 16 Oct 2021 01:41:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634348468; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=B7dMh03E9TPW/Qa4s2yiShLfdxbV+3z8lA7kdGy9r/s=;
+        b=tVooBDNxKkoljBEaEBqw2bxyEqV2BXZgjFI9qcLUI46pr4HJaXUO0qxpJcCzdjyKje5xFX
+        kmKFK1XaHbZEooja9Mokz/pDgt4BcihBTGQdZDdQRkzJdy+3VINiQre/PpqAokt8imkwp7
+        p1y617AOEgCcYTE6sOkz1hrxH6+Km7g=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 304931345A;
+        Sat, 16 Oct 2021 01:41:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id GeMLO7ItamGRNQAAMHmgww
+        (envelope-from <wqu@suse.com>); Sat, 16 Oct 2021 01:41:06 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     grub-devel@gnu.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] fs/btrfs: Make extent item iteration to handle gaps
+Date:   Sat, 16 Oct 2021 09:40:49 +0800
+Message-Id: <20211016014049.201556-1-wqu@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-From:   James Harvey <jmsharvey771@gmail.com>
-Date:   Sat, 16 Oct 2021 01:14:45 +0100
-Message-ID: <CAHB2pq_Dhp7X0zRQhzbtMxKP8rC=Z8DvAaB33EF56jZHg0=+rA@mail.gmail.com>
-Subject: csum failed, bad tree, block, IO failures. Is my drive dead or has my
- BTRFS broke itself?
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-My server consists of a single 16TB external drive (I have backups,
-and I was planning to make a proper server at some point) and I used
-BTRFS for the drive's filesystem. Recently, the file system would go
-into read only and put a load of errors into the system logs. Running
-a BTRFS scrub returned no errors, a readonly BTRFS check returned no
-errors, and a SMART check showed no issues/bad sectors. Has BTRFS
-broke itself or is this a drive issue:
+[BUG]
+Grub btrfs implementation can't handle two very basic btrfs file
+layouts:
 
-Here are the errors:
+1. Mixed inline/regualr extents
+   # mkfs.btrfs -f test.img
+   # mount test.img /mnt/btrfs
+   # xfs_io -f -c "pwrite 0 1k" -c "sync" -c "falloc 0 4k" \
+	       -c "pwrite 4k 4k" /mnt/btrfs/file
+   # umount /mnt/btrfs
+   # ./grub-fstest ./grub-fstest --debug=btrfs ~/test.img hex "/file"
 
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105460736 csum 0x75ab540e expected csum
-0xaeb99694 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105464832 csum 0xe83b4c2a expected csum
-0xb9a65172 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105468928 csum 0x4769b37a expected csum
-0x3598cf9e mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105473024 csum 0x7c39a990 expected csum
-0x9c523a6c mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105477120 csum 0xfedc09f1 expected csum
-0x68386e9a mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105481216 csum 0xf9f25835 expected csum
-0x96d2dea3 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105485312 csum 0x37643155 expected csum
-0x6139f8a1 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105489408 csum 0x13893c06 expected csum
-0xb28c00a8 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105493504 csum 0x2a89fcff expected csum
-0x4c5758ed mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 9, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 97395 off 14105497600 csum 0x7484b77c expected csum
-0x0a9f3138 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
-/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 10, gen 0
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343812173824 have 9856732008096476660
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343806013440 have 757116834938933
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343812173824 have 9856732008096476660
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9622003011584, 9622003015680)
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343806013440 have 757116834938933
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343812173824 have 9856732008096476660
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343812173824 have 9856732008096476660
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9622003015680, 9622003019776)
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343947784192 have 17536680014548819927
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343812173824 have 9856732008096476660
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343947784192 have 17536680014548819927
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9644356001792, 9644356005888)
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
-tree block start, want 9343812173824 have 9856732008096476660
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9622003019776, 9622003023872)
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9644356005888, 9644356009984)
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9622003023872, 9622003027968)
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9633973551104, 9633973555200)
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9644356009984, 9644356014080)
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9622003027968, 9622003032064)
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-hole found for disk bytenr range [9633973555200, 9633973559296)
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
-failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
-csum 0xc096fec5 mirror 1
-Oct 14 21:50:41 James-Server kernel: BTRFS: error (device sdb1) in
-btrfs_finish_ordered_io:3064: errno=-5 IO failure
-Oct 14 21:50:41 James-Server kernel: BTRFS info (device sdb1): forced readonly
+   Such mixed inline/regular extents case is not recommended layout,
+   but all existing tools and kernel can handle it without problem
 
-uname -a: Linux James-Server 5.14.11-arch1-1 #1 SMP PREEMPT Sun, 10
-Oct 2021 00:48:26 +0000 x86_64 GNU/Linux
+2. NO_HOLES feature
+   # mkfs.btrfs -f test.img -O no_holes
+   # mount test.img /mnt/btrfs
+   # xfs_io -f -c "pwrite 0 4k" -c "pwrite 8k 4k" /mnt/btrfs/file
+   # umount /mnt/btrfs
+   # ./grub-fstest ./grub-fstest --debug=btrfs ~/test.img hex "/file"
 
-btrfs --version: btrfs-progs v5.14.2
+   NO_HOLES feature is going to be the default mkfs feature in the incoming
+   v5.15 release, and kernel has support for it since v4.0.
 
-btrfs fi show:
+[CAUSE]
+The way GRUB btrfs code iterates through file extents relies on no gap
+between extents.
 
-Label: 'Seagate 16TB 1'  uuid: e183a876-95e0-4d15-a641-69f4a8e8e7e7
-       Total devices 1 FS bytes used 9.61TiB
-       devid    1 size 14.55TiB used 9.62TiB path /dev/sdb1
+If any gap is hit, then grub btrfs will error out, without any proper
+reason to help debug the bug.
 
-btrfs fi df:
+This is a bad assumption, since a long long time ago btrfs has a new
+feature called NO_HOLES to allow btrfs to skip the padding hole extent
+to reduce metadata usage.
 
-Data, single: total=9.60TiB, used=9.60TiB
-System, DUP: total=8.00MiB, used=1.09MiB
-Metadata, DUP: total=11.00GiB, used=10.74GiB
-GlobalReserve, single: total=512.00MiB, used=0.00B
+The NO_HOLES feature is already stable since kernel v4.0 and is going to
+be the default mkfs feature in the incoming v5.15 btrfs-progs release.
 
-Mount options: rw,noatime,compress=zstd:3,space_cache=v2,autodefrag,subvolid=5,subvol=/
+[FIX]
+When there is a extent gap, instead of error out, just try next item.
+
+This is still not ideal, as kernel/progs/U-boot all do the iteration
+item by item, not relying on the file offset continuity.
+
+But it will be way more time consuming to correct the whole behavior
+than starting from scratch to build a proper designed btrfs module for GRUB.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ grub-core/fs/btrfs.c | 33 ++++++++++++++++++++++++++++++---
+ 1 file changed, 30 insertions(+), 3 deletions(-)
+
+diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
+index 63203034dfc6..4fbcbec7524a 100644
+--- a/grub-core/fs/btrfs.c
++++ b/grub-core/fs/btrfs.c
+@@ -1443,6 +1443,7 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
+       grub_size_t csize;
+       grub_err_t err;
+       grub_off_t extoff;
++      struct grub_btrfs_leaf_descriptor desc;
+       if (!data->extent || data->extstart > pos || data->extino != ino
+ 	  || data->exttree != tree || data->extend <= pos)
+ 	{
+@@ -1455,7 +1456,7 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
+ 	  key_in.type = GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM;
+ 	  key_in.offset = grub_cpu_to_le64 (pos);
+ 	  err = lower_bound (data, &key_in, &key_out, tree,
+-			     &elemaddr, &elemsize, NULL, 0);
++			     &elemaddr, &elemsize, &desc, 0);
+ 	  if (err)
+ 	    return -1;
+ 	  if (key_out.object_id != ino
+@@ -1494,10 +1495,36 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
+ 			PRIxGRUB_UINT64_T "\n",
+ 			grub_le_to_cpu64 (key_out.offset),
+ 			grub_le_to_cpu64 (data->extent->size));
++	  /*
++	   * The way of extent item iteration is pretty bad, it completely
++	   * requires all extents are contiguous, which is not ensured.
++	   *
++	   * Features like NO_HOLE and mixed inline/regular extents can cause
++	   * gaps between file extent items.
++	   *
++	   * The correct way is to follow kernel/U-boot to iterate item by
++	   * item, without any assumption on the file offset continuity.
++	   *
++	   * Here we just manually skip to next item and re-do the verification.
++	   *
++	   * TODO: Rework the whole extent item iteration code, if not the
++	   * whole btrfs implementation.
++	   */
+ 	  if (data->extend <= pos)
+ 	    {
+-	      grub_error (GRUB_ERR_BAD_FS, "extent not found");
+-	      return -1;
++	      err = next(data, &desc, &elemaddr, &elemsize, &key_out);
++	      if (err < 0)
++		return -1;
++	      /* No next item for the inode, we hit the end */
++	      if (err == 0 || key_out.object_id != ino ||
++		  key_out.type != GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM)
++		      return pos - pos0;
++
++	      csize = grub_le_to_cpu64(key_out.offset) - pos;
++	      buf += csize;
++	      pos += csize;
++	      len -= csize;
++	      continue;
+ 	    }
+ 	}
+       csize = data->extend - pos;
+-- 
+2.33.0
+
