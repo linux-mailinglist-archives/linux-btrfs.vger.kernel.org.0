@@ -2,125 +2,208 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFFE42FD35
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Oct 2021 23:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B63442FF63
+	for <lists+linux-btrfs@lfdr.de>; Sat, 16 Oct 2021 02:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243007AbhJOVDh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Oct 2021 17:03:37 -0400
-Received: from st43p00im-ztfb10063301.me.com ([17.58.63.179]:46219 "EHLO
-        st43p00im-ztfb10063301.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235480AbhJOVDg (ORCPT
+        id S239250AbhJPARH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Oct 2021 20:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231881AbhJPARE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Oct 2021 17:03:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1634331689;
-        bh=HziOGzUJ99EWCjD3NNGmxXHGTJpAMF4PkWMFfPZ8CxM=;
-        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-        b=u1qlu0teLbNWSqU0D1BH4w/6AyT3H1KwgGZBQbt5pU1DmFXP0fM4RSCjGlP+dpv6q
-         hpl5X6DFWheb5TXIRUeJrLWrEKeixE7/hjQ2TPiJ074oBrr5zv3YRN47a1rysH4HCM
-         +K3fN3HztH2XSjkw3aZ19FAI8p+I4gAXf4JRzYfIZ9YQTunv1r4sye0iOMAc4jojmN
-         yJr77hcBl3tbpHlo3sMibMf/GM+7U4QCirADritnGIlXUQiaoeMaMVxtH1Mq3c8k3B
-         dfBrBCk2R7cazVMtdrsDSR+6HV9uIOyKMATWP2tCMdXfUzBmo7ZSy93lQIPqsUVG5g
-         4ZgKTOonj38mQ==
-Received: from smtpclient.apple (unknown [152.249.37.238])
-        by st43p00im-ztfb10063301.me.com (Postfix) with ESMTPSA id 013BAA40692;
-        Fri, 15 Oct 2021 21:01:27 +0000 (UTC)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: need help in a broken 2TB BTRFS partition
-From:   Christian Wimmer <telefonchris@icloud.com>
-In-Reply-To: <bd42525b-5eb7-a01d-b908-938cfd61de8c@gmx.com>
-Date:   Fri, 15 Oct 2021 18:01:24 -0300
-Cc:     Qu WenRuo <wqu@suse.com>, Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <12FE29EC-3C8F-4C33-8EF3-BD084781C459@icloud.com>
-References: <20191206034406.40167-1-wqu@suse.com>
- <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
- <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
- <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
- <9FB359ED-EAD4-41DD-B846-1422F2DC4242@icloud.com>
- <256D0504-6AEE-4A0E-9C62-CDF975FDE32D@icloud.com>
- <e04d1937-d70c-c891-4eea-c6fb70a45ab5@gmx.com>
- <8B00108E-4450-4448-8663-E5A5C0343E26@icloud.com>
- <bd42525b-5eb7-a01d-b908-938cfd61de8c@gmx.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
- definitions=2021-10-15_07:2021-10-14,2021-10-15 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2110150127
+        Fri, 15 Oct 2021 20:17:04 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B01AC061570
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 17:14:57 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id i15so21384352uap.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 15 Oct 2021 17:14:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=u3jJCQw+zAjxYaqKw+c3CgPaunhwH0sdbdJ3dnNswi4=;
+        b=JHH+YwW+GKADT/U0NPNHTYbN22caXBowAKH1eXGy1NhUonJjvh6ZhnsW7Zw4VgofB0
+         fx3SGW309bzITacln4q3IVR7X8aFd9JXoRA0huMiL3kGo20bhLce66Y3i+g58JrLd74V
+         WpPRhz3V3QMypSVq8606vqnx5/bEKmXDrEAq0hU0QZSEt0lqaIjYIWzxBZT4aPZZrlN0
+         eQHNJeFE6/cHtbpj6adjjbV2AhyOfed+nY71m8k/Y5XTEeQzNjI+jCDY1EkyQ/T+Q4rT
+         Gz+1N9xV/8G7a8OOMRGBJQryik35T4YnnlMD/AD/5njz+hZYlAcosbl3o8pdOnnmBDdP
+         V9gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=u3jJCQw+zAjxYaqKw+c3CgPaunhwH0sdbdJ3dnNswi4=;
+        b=NdQrB+NAk4ZCRJ9nSRKz+GSoigU/el3DYS1HlEzMU54dSXWGlAbjKXiWvwpT6A0Ity
+         4IbxeKBOMKrvYbfSnS5HuBV/MJsk3nz2wnt+DqjbHTCiEtLip8fYFz/QvoYbU2FC7Cuf
+         k7+WxaVChezDXTDb2xLqjKqtz5Q5C/0QrFN389kVjfSONDW4iqLGAEnbpYhiS+aeMr6S
+         zEIefkDcZ3crSxcbs7AVU+OJxyFQb2kHH310VjwgvVjIvI74UY4ozSbzKAnSH2VLV2ki
+         bqX1tOKAGCUkLH2rkzFrXKsnxLdGX54uD8dfi3L3ci8fYqLAqeY0uVbpqODbtGaTTDpF
+         KcVw==
+X-Gm-Message-State: AOAM530f+vcTglevVgsGyVYoN4ByVQ3r+FRbs1JaXNu7rgRwnij65vYR
+        AyI0xJ65FRuk59y0Ntv5J3hx2woibSnV9MkxPL3v9diFe9g=
+X-Google-Smtp-Source: ABdhPJxK22dtL1wGFrzDLU1MyNo5aWBGgmPnde4ZeKIpPwjB8WBkU3wAQC/LSQ7VxoWXLaiU7s2i+ZpWd8bEZuwy7tA=
+X-Received: by 2002:a67:d310:: with SMTP id a16mr17884043vsj.53.1634343296539;
+ Fri, 15 Oct 2021 17:14:56 -0700 (PDT)
+MIME-Version: 1.0
+From:   James Harvey <jmsharvey771@gmail.com>
+Date:   Sat, 16 Oct 2021 01:14:45 +0100
+Message-ID: <CAHB2pq_Dhp7X0zRQhzbtMxKP8rC=Z8DvAaB33EF56jZHg0=+rA@mail.gmail.com>
+Subject: csum failed, bad tree, block, IO failures. Is my drive dead or has my
+ BTRFS broke itself?
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
+My server consists of a single 16TB external drive (I have backups,
+and I was planning to make a proper server at some point) and I used
+BTRFS for the drive's filesystem. Recently, the file system would go
+into read only and put a load of errors into the system logs. Running
+a BTRFS scrub returned no errors, a readonly BTRFS check returned no
+errors, and a SMART check showed no issues/bad sectors. Has BTRFS
+broke itself or is this a drive issue:
 
-I hope I find you well.
+Here are the errors:
 
-Almost two years that my system runs without any failure.
-Since this is very boring I tried make my life somehow harder and tested =
-again the snapshot feature of my Parallels Desktop installation =
-yesterday:-)
-When I erased the old snapshots I could feel (and actually hear) already =
-that the system is writing too much to the partitions.
-What I want to say is that it took too long (for any reason) to erase =
-the old snapshots and to shut the system down.
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105460736 csum 0x75ab540e expected csum
+0xaeb99694 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105464832 csum 0xe83b4c2a expected csum
+0xb9a65172 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105468928 csum 0x4769b37a expected csum
+0x3598cf9e mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105473024 csum 0x7c39a990 expected csum
+0x9c523a6c mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105477120 csum 0xfedc09f1 expected csum
+0x68386e9a mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105481216 csum 0xf9f25835 expected csum
+0x96d2dea3 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105485312 csum 0x37643155 expected csum
+0x6139f8a1 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105489408 csum 0x13893c06 expected csum
+0xb28c00a8 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105493504 csum 0x2a89fcff expected csum
+0x4c5758ed mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 9, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 97395 off 14105497600 csum 0x7484b77c expected csum
+0x0a9f3138 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 10, gen 0
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343812173824 have 9856732008096476660
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343806013440 have 757116834938933
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343812173824 have 9856732008096476660
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9622003011584, 9622003015680)
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343806013440 have 757116834938933
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343812173824 have 9856732008096476660
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343812173824 have 9856732008096476660
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9622003015680, 9622003019776)
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343947784192 have 17536680014548819927
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343812173824 have 9856732008096476660
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343947784192 have 17536680014548819927
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9644356001792, 9644356005888)
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+tree block start, want 9343812173824 have 9856732008096476660
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9622003019776, 9622003023872)
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9644356005888, 9644356009984)
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9622003023872, 9622003027968)
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9633973551104, 9633973555200)
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9644356009984, 9644356014080)
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9622003027968, 9622003032064)
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+hole found for disk bytenr range [9633973555200, 9633973559296)
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+csum 0xc096fec5 mirror 1
+Oct 14 21:50:41 James-Server kernel: BTRFS: error (device sdb1) in
+btrfs_finish_ordered_io:3064: errno=-5 IO failure
+Oct 14 21:50:41 James-Server kernel: BTRFS info (device sdb1): forced readonly
 
-Well, after booting I saw that one of the discs is not coming back and I =
-got the following error message:
+uname -a: Linux James-Server 5.14.11-arch1-1 #1 SMP PREEMPT Sun, 10
+Oct 2021 00:48:26 +0000 x86_64 GNU/Linux
 
-Suse_Tumbleweed:/home/proc # btrfs check /dev/sdd1
-Opening filesystem to check...
-parent transid verify failed on 324239360 wanted 208553 found 184371
-parent transid verify failed on 324239360 wanted 208553 found 184371
-parent transid verify failed on 324239360 wanted 208553 found 184371
-Ignoring transid failure
-leaf parent key incorrect 324239360
-ERROR: failed to read block groups: Operation not permitted
-ERROR: cannot open file system
+btrfs --version: btrfs-progs v5.14.2
 
+btrfs fi show:
 
-Could you help me to debug and repair this please?
+Label: 'Seagate 16TB 1'  uuid: e183a876-95e0-4d15-a641-69f4a8e8e7e7
+       Total devices 1 FS bytes used 9.61TiB
+       devid    1 size 14.55TiB used 9.62TiB path /dev/sdb1
 
-I already run the command btrfs restore /dev/sdd1 . and could restore =
-90% of the data but not the important last 10%.
+btrfs fi df:
 
-My system is:
+Data, single: total=9.60TiB, used=9.60TiB
+System, DUP: total=8.00MiB, used=1.09MiB
+Metadata, DUP: total=11.00GiB, used=10.74GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
 
-Suse Tumbleweed inside Parallels Desktop on a Mac Mini
-
-Mac Min: Big Sur
-Parallels Desktop: 17.1.0
-Suse: Linux Suse_Tumbleweed 5.13.2-1-default #1 SMP Thu Jul 15 03:36:02 =
-UTC 2021 (89416ca) x86_64 x86_64 x86_64 GNU/Linux
-
-Suse_Tumbleweed:~ # btrfs --version
-btrfs-progs v5.13=20
-
-The disk /dev/sdd1 is one of several 2TB partitions that reside on a NAS =
-attached to the Mac Mini like=20
-
-Disk /dev/sde: 2 TiB, 2197949513728 bytes, 4292870144 sectors
-Disk model: Linux_raid5_2tb_
-Units: sectors of 1 * 512 =3D 512 bytes
-Sector size (logical/physical): 512 bytes / 4096 bytes
-I/O size (minimum/optimal): 4096 bytes / 4096 bytes
-Disklabel type: gpt
-Disk identifier: 942781EC-8969-408B-BE8D-67F6A8AD6355
-
-Device     Start        End    Sectors Size Type
-/dev/sde1   2048 4292868095 4292866048   2T Linux filesystem
-
-
-What would be the next steps to repair this disk?
-
-Thank you all in advance for your help,
-
-Chris
-
+Mount options: rw,noatime,compress=zstd:3,space_cache=v2,autodefrag,subvolid=5,subvol=/
