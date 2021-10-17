@@ -2,287 +2,443 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3FB4305A1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Oct 2021 01:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EAD4305B0
+	for <lists+linux-btrfs@lfdr.de>; Sun, 17 Oct 2021 02:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241172AbhJPX33 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 16 Oct 2021 19:29:29 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:27758 "EHLO
+        id S241228AbhJQADY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 16 Oct 2021 20:03:24 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:50685 "EHLO
         de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241099AbhJPX33 (ORCPT
+        by vger.kernel.org with ESMTP id S235752AbhJQADX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 16 Oct 2021 19:29:29 -0400
+        Sat, 16 Oct 2021 20:03:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1634426839;
+        t=1634428873;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fO0XSDdZeqGXmsyPRjEBHIYvzhCcsAzP1cC0BqzpJR0=;
-        b=fJ1wMnfQ6cG+kuXeVEeDWwMHnjHQhvCvE7VC+C/rVpbVWce5Ecm65h8g7ZBuqSVzWsIyg6
-        uF4+ISKXLSsJhqgrZ2UMPlEx7E5daima8ikLb6GU4sIkS6jTEhZ9AnrPa0o2SJrQwngm4h
-        CyMn7JZ8Iy2nTdrk9jQAakNY+klQiV0=
+        bh=Ic336xzH12bD9GoiylU1k5BqMrZYNe1TLZvmb+gnhxk=;
+        b=MUeUVAsqcTiAYdW/PN6uDwlSkdIJnu9FY4j9TPJewzIi8RkS0EoCmGvndiWAtiElbywu1G
+        EzUMn/SLdlzu4nxaWcN4/3f7kKBfvGUYObHJ4vfRsEBHktVsrhHGc0Jwm3hzoJc6Nm1UM0
+        EF2+4SQslvWjlHyusrT3/wjcy3dYMFg=
 Received: from EUR05-DB8-obe.outbound.protection.outlook.com
  (mail-db8eur05lp2111.outbound.protection.outlook.com [104.47.17.111])
  (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-8-D6c9kqvzNtO3XG65XdFhxg-1; Sun, 17 Oct 2021 01:27:17 +0200
-X-MC-Unique: D6c9kqvzNtO3XG65XdFhxg-1
+ de-mta-23-X5ssvncCMp-LWhDGcQ6jEQ-1; Sun, 17 Oct 2021 02:01:10 +0200
+X-MC-Unique: X5ssvncCMp-LWhDGcQ6jEQ-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I3ce5gXn59D8i/Kv9JeDlDG6F4yOjS4fvERAdy7++jhY+WIQCgS/8zTX3n9FbRMWQSsUymJe1ulTi3k081kSXYiitgoz8DuNbzuVw6aEfWyUF39xs7SZhYUbg88Tll8D9X8FYGNVrxlSkKWRdIBqsSzI87X+LTlwAnQioNTy2T58QToKjrEEbUx/yFI35Id94eh9hcysNGjvw+mdpDNT5UHTGDjwKUS3xSR6JbOYiwWWRpxkoxA47L7/lGPSOeSd4d1TCCwQR+nMupNEKjELIgJyuKQ5W1exeondY4XNg78CYsFQ3XXJma/lSOw9d3kt0CwIKWo2KGHwBcukGtJX2Q==
+ b=FcPuHNsgnUH51cRq0QaOOBUjqaPMqxzvlpp3NWvm2JcPb78IVCO8YJVWCC5UhuaKX11floZ7l8mAzZIMvX4Ty5FTx7ax1OkeAizXh/T/BjgVWq9Y+EYKXBNwOdc4DcjePalg6rmNzZM15WMhGGhs8bJETk+qVS/KWpCF0dJMALUkEi8O9B/vNJRv7UY11fBmG1mQ9DLBXS1KEJnDtnC9OTDnyAl0+fsHCl6W+b0H7dDOuI6JDdW3ZXl/sQHDDPgETjmwen8bMT4529fqLb7kRXZJYkDgUCWP5PyE+JQAZHudUj9gYDzkSYFqy3SIy3+kORIm383HIk5ejqaD7Xia4Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fD+Xob1htFuHoUD4oysgzCL0vi7zNEmMmvNDj5MrIUU=;
- b=QYgmyRwOAIN2CuTQfqLS8FHCWh4T09IOfyKp1hySx1UEzCI1pMDqg2DIgmocECz80zjvt9afPB0gKTM6PX4lWAvCxnq/twtz7WcwJAxGNtYvOe/y7/YYKO1Wa/OdTIkftHqvUL96OI6MeZZOS/1MxPz8/OhQRKUQ49ivbDv0PEwIApxV2NF7Lbz/MeVTTb+MHCzKXccRZ4DRiGV6WgCK4irTTFEDRdkvghl2J00mPcY/4AxGogv78vKUFlYQ7iKCr4veD3eizmZVadSiEBbgchRQTfQ3D1TOfxAmVgxoyV/BQo4j0Mzpo+5Og9mYZPDDsc80srT8f0kPUvbBbNSvuQ==
+ bh=Ic336xzH12bD9GoiylU1k5BqMrZYNe1TLZvmb+gnhxk=;
+ b=OjeX8TCjdAbbYgIDggdoUwLWd0lOoLhuAfAFc3xn09Y08qulz8sDYxcWVGxnc8M0YV0+JpddKelMUXatjyYczV5MBY4uvQp2mbc7xeblITyZrVhekRiBzIYNe7iil2/jFqrCGF2PR601d5rfYCFcp7Bj7TkJb8PXBRU9ZagTr21ozIO0iup4mB/WniL2dDq9UHQFSeXo8lHWRAwdsJ8XXjihxBX7qGoDJ+alxsQEUmng5EHTdMBUzCB7kknp1Jm0/bzLOOFmuongruExwthxD8mTx1IwIhUFX9l06EnZ89VOqMKN+tsCp8APY2YjLzP0Mza5HrCOq5yK19Ho8Jq/eA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
-Authentication-Results: icloud.com; dkim=none (message not signed)
- header.d=none;icloud.com; dmarc=none action=none header.from=suse.com;
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
 Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AM5PR0401MB2562.eurprd04.prod.outlook.com (2603:10a6:203:3a::23) with
+ by AM6PR04MB4679.eurprd04.prod.outlook.com (2603:10a6:20b:15::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15; Sat, 16 Oct
- 2021 23:27:16 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Sun, 17 Oct
+ 2021 00:01:08 +0000
 Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
  ([fe80::2d84:325b:5918:7a19]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::2d84:325b:5918:7a19%5]) with mapi id 15.20.4608.018; Sat, 16 Oct 2021
- 23:27:16 +0000
-Message-ID: <7bd9c183-91b9-c646-5e22-8bc9d138f15f@suse.com>
-Date:   Sun, 17 Oct 2021 07:27:06 +0800
+ ([fe80::2d84:325b:5918:7a19%5]) with mapi id 15.20.4608.018; Sun, 17 Oct 2021
+ 00:01:08 +0000
+Message-ID: <32b91541-1b30-eb26-36d0-7a642172b547@suse.com>
+Date:   Sun, 17 Oct 2021 08:00:59 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.1.1
-Subject: Re: need help in a broken 2TB BTRFS partition
+Subject: Re: csum failed, bad tree, block, IO failures. Is my drive dead or
+ has my BTRFS broke itself?
 Content-Language: en-US
-To:     Christian Wimmer <telefonchris@icloud.com>,
+To:     James Harvey <jmsharvey771@gmail.com>,
         Qu Wenruo <quwenruo.btrfs@gmx.com>
-CC:     Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20191206034406.40167-1-wqu@suse.com>
- <2a220d44-fb44-66cf-9414-f1d0792a5d4f@oracle.com>
- <762365A0-8BDF-454B-ABA9-AB2F0C958106@icloud.com>
- <94a6d1b2-ae32-5564-22ee-6982e952b100@suse.com>
- <4C0C9689-3ECF-4DF7-9F7E-734B6484AA63@icloud.com>
- <f7fe057d-adc1-ace5-03b3-0f0e608d68a3@gmx.com>
- <9FB359ED-EAD4-41DD-B846-1422F2DC4242@icloud.com>
- <256D0504-6AEE-4A0E-9C62-CDF975FDE32D@icloud.com>
- <e04d1937-d70c-c891-4eea-c6fb70a45ab5@gmx.com>
- <8B00108E-4450-4448-8663-E5A5C0343E26@icloud.com>
- <bd42525b-5eb7-a01d-b908-938cfd61de8c@gmx.com>
- <12FE29EC-3C8F-4C33-8EF3-BD084781C459@icloud.com>
- <4d075e71-be3c-cc41-bbf4-51d255e25b2b@gmx.com>
- <B57D8AFF-FE6E-4CC2-B6C1-066F3A8CEDF0@icloud.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <CAHB2pq_Dhp7X0zRQhzbtMxKP8rC=Z8DvAaB33EF56jZHg0=+rA@mail.gmail.com>
+ <637a43e5-4d6f-f69a-74e4-ae240880aa1b@gmx.com>
+ <CAHB2pq_6Wb7H3zxvV33gm7j4nknAvPieNtFU_xFRWr4TZE=6cA@mail.gmail.com>
+ <95cd0638-b070-6e92-0de7-bfe74e039684@gmx.com>
+ <CAHB2pq_hmje4zEjf33KHiQe7TpGAsW+0mczgjZkVnkRnVW7z=g@mail.gmail.com>
 From:   Qu Wenruo <wqu@suse.com>
-In-Reply-To: <B57D8AFF-FE6E-4CC2-B6C1-066F3A8CEDF0@icloud.com>
+In-Reply-To: <CAHB2pq_hmje4zEjf33KHiQe7TpGAsW+0mczgjZkVnkRnVW7z=g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: SJ0PR03CA0163.namprd03.prod.outlook.com
- (2603:10b6:a03:338::18) To AM7PR04MB6821.eurprd04.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0065.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c4::10) To AM7PR04MB6821.eurprd04.prod.outlook.com
  (2603:10a6:20b:105::22)
 MIME-Version: 1.0
-Received: from [0.0.0.0] (149.28.201.231) by SJ0PR03CA0163.namprd03.prod.outlook.com (2603:10b6:a03:338::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Sat, 16 Oct 2021 23:27:14 +0000
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR13CA0065.namprd13.prod.outlook.com (2603:10b6:a03:2c4::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.11 via Frontend Transport; Sun, 17 Oct 2021 00:01:06 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a0d8328e-16e4-49b2-315b-08d990fc7da3
-X-MS-TrafficTypeDiagnostic: AM5PR0401MB2562:
-X-Microsoft-Antispam-PRVS: <AM5PR0401MB256250CB631018615341677DD6BA9@AM5PR0401MB2562.eurprd04.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 69ba32dc-3fd3-4387-789a-08d9910138e2
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4679:
+X-Microsoft-Antispam-PRVS: <AM6PR04MB46798188A1D8DE7DAD2B4DE5D6BB9@AM6PR04MB4679.eurprd04.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tTMa2eZYe1GT0FjERqa5HA1npw/eFyilUdk7IDgZd6cqmp0t5noEctIUYe/bnFtmlyREQ5OvjfwyBSj/oIZ6mT3SHOy0zr2YGq96bV2+K+idvoDnYIBZZYikAkvx24Kg4LRdt6R3XWii6/L/4Gs8DFvWas+Q9nZr+LKMBX1NJifs7uLDrXjcuLjwL2bWfamTXIhA7QgRIITVEeNLPM8tfsasTGtsUo00oxfgfoAGGQqlqYvccnZWAiFXeRmneTGvNhkGQEJFZUcN/D97n5bwFxJtez1JTYm8DjWPCAcSYG41nnVE3DPQ006JVp+nl5Qalq1zzVFkBYd41cJcyBFP3Nb5emapIRUWPczTqeW9FMFmaeuTxx6VxFKl4S6BvJuutsjF4tMXNihJ1NxfW801JnHHRkvH4LzzB78lszOpZJbvEzgLBMwfBNyrIWC0kGE9FzPRQC9WWMvltveZECHQ8cs0m2C3ixK6bJ0R2gbbDE+tIACvN814cwBr7bj/MezFj14kND81i8bK6cZCImUYKxn2HvzUzv6zZVYtwPydnlZ7rPJvGY6NoMd02DtN9z3gFn4fCUSYxYH/A6xUHE02LCJ0L4TLTG3trwriNgQ3fL42jPgMfgeF+Qr0sXcYfgjaFdltJ8TnlUM61z8izp5OiUH8BXHkQCrnEEfJCDtaXiVkSPvg0xLdQuKSyoottIp8RI3YI1JqZ9HoCzgR4EMS0A6vNMHKdMa4BuA11Ow7uIozp+i7kP7P9P4CCDjmHsJeWqkEfSXfrJ8374jrYAej8zMrJMyHNs1Jhb/IBBs+tgM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(956004)(8936002)(26005)(186003)(5660300002)(53546011)(110136005)(6666004)(38100700002)(54906003)(2616005)(4326008)(66476007)(6486002)(66556008)(16576012)(66946007)(2906002)(83380400001)(316002)(36756003)(6706004)(86362001)(31696002)(8676002)(31686004)(518174003)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: bp8h43O4o/pjqD34orrVZLcQlz2Tqhh94EohUfWVo2EfrThXOFigIilnRMOqt1wI9cHc3WHMEmLBfr5s10yhzY7LWEbw7/RU9gtBbD0MWsPMtqBI+2fa23exd23FnL8+VVCveq6jfvs8hPXMDUu7inY/67nA2/w5nrSH/9uvM9bJLgqmLAhYrVBrLJA7eqKdHgOssZEQCPOyXceQwyLk0Swapde55AyFRIKq1xfAUL5evA4fOmhC5NvODlFQe+HA80Hl8SWQhveLfB6Nf5tz4oJkz5QTQI49DJJsqjjMY2/wMIxEI9h4Ydb6NgCx7x5Xty9S6pXX7MYyW3/kXDOauk2emxJ5ECodkUNbnafDlN8V4xNH86i3yyadRn28yoL7hTaJd45Q89DoWBVd+LeAkQzCEfm+YQiFIKahtqd7W27M7Ms/hw3c6x5C9SmjB4Wvt7bLUpNx3kqe0ZQZTH62QOGppILDEroJubDnxsQAtHPvUUaEl++Jdj96rufVJ/R5H/dTgPlyfEfL/9ZC5mgZUJugUP7+q5GfQAH0M0G8P22At7wmL58mAYTstadEPhKT48W5IXTZApH3bHK06S6hDgiqlEV8L8ZoeWievSCT2ABdJJxkkfh/uDn7LLoyx4nlTfO6W0yyDwy6JZgnz35Hl6FhTtx7W7rNZ2D//R0iQUahgjvDZmlbOSZdBLbau6+AZSO1NP2rTmTvnqW0dr+oxAulGGpAf0xieQJF2Se4hXIT87QfRtYWqo8I/UpXQ2oFKwTCnTzExS6xqlJ5qNC3qywr4WPr6VS8s+dgPhrONbM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(26005)(6486002)(86362001)(16576012)(31696002)(110136005)(5660300002)(66946007)(66476007)(66556008)(956004)(2616005)(53546011)(2906002)(30864003)(6666004)(38100700002)(316002)(83380400001)(36756003)(8676002)(31686004)(4326008)(8936002)(6706004)(186003)(518174003)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sBgPQwDKSVcExACdtutBDJ8UlliRusNJ/DzkXcGxWwfwqLRQR0akjbUgUp1Q?=
- =?us-ascii?Q?IlOlcnRtFv3yGk0L/0Vzfz10x6lsH8kkArtqjzKc+39uNF+j3ndUkR21Hyec?=
- =?us-ascii?Q?UhBYdnMjNctdEQRO38hzjHuimJl+0e8gKGQvUJnzOP6JEQLllngYCZYDMuvu?=
- =?us-ascii?Q?Q+f7+wsYOeH4i8Xb7I7RNQXrMJvxo0k2a5a74/d8vqc51e1meXSLM2bJat1W?=
- =?us-ascii?Q?Y7oHSFGC2Nx0NktOPgVnmVNdp5iidaL7bQtdpZnCaE6Iegnkbd0Pq4zuTElk?=
- =?us-ascii?Q?3KwjPB6o76ctiwax8V+goxJiAmfkMtQRHJmp/0hLK6Efk/ObxpN8Eo/6d8YP?=
- =?us-ascii?Q?ZLzTE87qbqF9FpG/B3qQKacgYpl8R4LdZgrf/uLwF77xcZ6iOC/aSY75kewk?=
- =?us-ascii?Q?ILiDpDXkEnERgUTn52I6SQ24oEbImgBu4CvjZaPtlohxLRoimWTq1fUh3Jvh?=
- =?us-ascii?Q?0DOzgq2O9Gl2qQzK8tDMUOH4nzLpZZbN6aMn/cxEG/w9BEa6x+cSHhWosiSr?=
- =?us-ascii?Q?g/vQqiXFyE2ldyqVTDr1LgX+g3xVnnWDjef8stQZaY62R9pUGtGi52CTDkUh?=
- =?us-ascii?Q?QLORWWjCiDZKzRzL3clIYI0MXFnB75P4QwkM6krruXOi9VHsmAGT1cpf44CX?=
- =?us-ascii?Q?DYA2QkAbI1a3+TiQOiJvx1jK35OMVooUtJsvvdZDv7fJCwA/aV6EQr8li0bs?=
- =?us-ascii?Q?qEoBBxHu3EecyKmy5gLpKTLLQF9D42O9Ge9AKQtte0wbmmpLtD5s29D4Zp9e?=
- =?us-ascii?Q?4vMRZ+GUgm0OEJh+Ax/9PzijNB78y4LitoFICWkFvgdMaoZPcE2bqnrbHP6A?=
- =?us-ascii?Q?hqVptiMBSSJEtIDix8IbPiGHfiVZu+7ntIH3hv0y7dzw6a52RjN0Dm0W1FX2?=
- =?us-ascii?Q?WSNPQL3Y7zq0ytQY86Nd6iQexFGNpNYHK/gSGu2zZIS6/xfS3MX3yxHYzWWv?=
- =?us-ascii?Q?gfUiwI0cTZGo9gjVm4Jz3Q0dWqCLmBLuLeTbJuW/CmEnrqoa1NN4EGLvOmZm?=
- =?us-ascii?Q?vqIPGuDowA5i+k884guKc2q2GK9GQlvstzDf/h+SB0xFzgi6oqQmnslLal6s?=
- =?us-ascii?Q?d+xSkfPTG9WHm9FyX7qWdnhk4QoRu0zQy0ks8mWtHM28409xJ1rNv/Cs8pCK?=
- =?us-ascii?Q?Ky5fX5Ln1VJxusJVqkYZayw9N6uaVGatXnOOm5QueAGTiXlsRumC70+eZ7DA?=
- =?us-ascii?Q?mxS9GJ6mL5xMczmKAY5ceBSGMmNOOpr1b/bFL6Eqy1MJ1i7HaqukgOLdhrDg?=
- =?us-ascii?Q?4k/vgOHfOPS9Sg1H59VI78fZdiR3rlD/7ugYHgrjeq/R4HjMWvxqUBA6xh9p?=
- =?us-ascii?Q?QVrKmHnafvPJfjgEr4Gi8YR4?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHIweUJ2ZVZKcFpEM3ltdFhlUlptYWFQTSswYjAzbmhiUWpUNGk2anloaFl2?=
+ =?utf-8?B?ZTNzZUx6UWxCNE9lZ0x0Q0grWXdaT2pqK1FuNjZDc2VPYkNZZENGbjVJWG5o?=
+ =?utf-8?B?RlJyeHhrSnd3VkxIb1pxazFqMHAwUGtjaUY5aDdqd1N0a1M4NFNoWW5FR2dZ?=
+ =?utf-8?B?Q25iMHlIY1pmSWdJUTlLdktNeldUcDJMTTJOYW0xNmt0UHpnWEZlakp4Nnd0?=
+ =?utf-8?B?bmw4b2Fzc3F5bnZnWUpNR3c4bEh1TFBMcFMweUdlWS8vQ3NXOHhnaThna29k?=
+ =?utf-8?B?MGpxZkdSQUFUM1RtbnRBQzBSbzQ3eDBsSGZJTFFvZXpISWtGS3RmQjl4cXht?=
+ =?utf-8?B?VXhhcVNSUUpUWURkU1laL2pVaVBIdW4xQjBTYTVJRThpYWcxaHZKVUphNkZv?=
+ =?utf-8?B?VUNHUktTcjMvS3Y2eHJDRndwUjViT0NkaDlva0xJeGJEOTRIeUp2cnMxZ3Jr?=
+ =?utf-8?B?SGpWcVpWb1NrYWJFUjZ5STdZUXdFZElDRVpJSnhoNlFWcWdSSlZvcWd1Vmx2?=
+ =?utf-8?B?bGh2N1RqT1h1SW8zYU9DZ3ZBOElPVW5VSWozMWorZ1hvaXBhemRGV1RGRTVi?=
+ =?utf-8?B?SnVCLzFnQ0h4TnJWUjZLQ0I5NHNMR2JoOEZlZGJPRUxMS2N6ZmhKNW56NTQ4?=
+ =?utf-8?B?V2lqYVRiUmhIbXdzdVB4MUJhMkJQSXlWME1RbW9KWlFvNTNUZ1JOODl4N1RV?=
+ =?utf-8?B?bmdidVhyNVpzbXEvZEV4anhYMmk3WmgvUjBYL3NQd09DMkVXaG0wQXRJSCtJ?=
+ =?utf-8?B?ZmhZbjBkZUM3b3BEVDRrd1dTTWJJL090WjFLUjhwV29hZWQ3WW1tWi9DenRv?=
+ =?utf-8?B?QTFqdy95SnpsTjhIbHdtTmVEbGEwcm5mZkZ3aDZGNXFVa2JmMnplZmJrQnRL?=
+ =?utf-8?B?Z0lqWTRna2YweDZlOG02L0dpbTZYendpTlhGVnhKV0wzNHd2Y2czcC9HamI5?=
+ =?utf-8?B?VDlPbTVCYmtLNUNKdWlybmovSXAwM3hGVWFWTTFQM1FFdDNVYmVWRVJUdTB5?=
+ =?utf-8?B?WHEvcy9UWnkyVXZMZ3E3Nzg3UTNhdEx6cmxFcjJrU2QrRUhUK2JoaWo5MHgz?=
+ =?utf-8?B?K0xVYVpvSHpqbWdpNysvRW1rVlV3NTBPbXY3c1BZSjY4bjBjK1E0STE0QUFM?=
+ =?utf-8?B?ZVlwdSsraUZ3akkwb2xWa2FXSmpMTXlEZjFpYnpJQ1lRc29IUTJCNno4blVD?=
+ =?utf-8?B?aDFFSHk1NU5FYzFHWTdMZGZuMi9oSy9heEgxVW9JUUMxMHA0aDNOSXNkM2Na?=
+ =?utf-8?B?Z2pUaW5UVFQxYWNTTHRsNWRqd3F0UGdYQVZJeWlXd2d2QjFrYmZYNGFQUnU1?=
+ =?utf-8?B?WVdHcGV5ZXV6bEFVd1RWOE90ci9nVFk3cEtxbURLV0pSU2dIN3M5dmJUSHUv?=
+ =?utf-8?B?a0UySy9ISmc1NnB6UWFoaE9nUEIwSThuclNVRlA4ODcxdkwxVHNod0RwUjZQ?=
+ =?utf-8?B?UDcwa0d4bjNGenYwZmZ0VGk5M2JEUVR3RGtYMUZYb1Qvc2hIRWR0dlJoSW1L?=
+ =?utf-8?B?Rm9oZGhRYUR5dUxjRDlsSm90dGt6aXpKMGVjdDJGL2NlbXIrZnNsb3pqTlE2?=
+ =?utf-8?B?U3kwNUNwRTB3U2JWQlBwQ05UeHh6WkFHQU8xcVJLU0h2dzFZYVlXV1p6OUlx?=
+ =?utf-8?B?dDVickhKVENxUTdudm9kOENLRVdwR1ZpUXhDem1TcjFDN3ordGQrZHpld0N1?=
+ =?utf-8?B?SWV4bFJDV2pvQllvUmRmSVFkMkV2NTl1OWlidkY4SDVFcSs0SnpWT2dFZ1FD?=
+ =?utf-8?Q?cgIAugalesWfpFNAW8RxecaCkeKqmcqJySo914N?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0d8328e-16e4-49b2-315b-08d990fc7da3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69ba32dc-3fd3-4387-789a-08d9910138e2
 X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Oct 2021 23:27:16.5174
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2021 00:01:08.5693
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ujQA9ttgienT/CijFXn6HEk9nothSmTMhuHdvMYqdJ053T6e6YV5x3yHQTXq3Xqu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0401MB2562
+X-MS-Exchange-CrossTenant-UserPrincipalName: sui7onsmc9TDX1v1tBHlhUn9gKLoeztF/q3piWlDbk5lfft5+DbBOS7E44nylmPv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4679
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/10/17 01:35, Christian Wimmer wrote:
-> BTW, due to some unsuccessful boot attempts this disc /dev/sdd1 does not =
-work any more with =E2=80=9C-o ro,rescue=3Dall=E2=80=9D
-> so I decided to try some nasty commands like the following:
+On 2021/10/17 04:45, James Harvey wrote:
+> Check hasn't done yet, but it's spit out about 1700 messages (tmux
+> won't let me scroll up futher) that all look like this:
 
-Well, any attempt to do any write into that fs would only further=20
-degrade the fs.
+Yeah, this means quite a lot of metadata are filled with garbage.
 
->=20
->=20
-> Suse_Tumbleweed:/home/proc # btrfs rescue chunk-recover /dev/sdd1
-> Scanning: 4914069504 in dev0cmds/rescue-chunk-recover.c:130: process_exte=
-nt_buffer: BUG_ON `exist->nmirrors >=3D BTRFS_MAX_MIRRORS` triggered, value=
- 1
-> btrfs(+0x1a121)[0x55830a51d121]
-> btrfs(+0x508dc)[0x55830a5538dc]
-> /lib64/libc.so.6(+0x8db37)[0x7fa8984cbb37]
-> /lib64/libc.so.6(+0x112640)[0x7fa898550640]
-> Aborted (core dumped)
->=20
-> Unfortunately the program crashes. Is this expected?
-
-No, but it doesn't matter anymore.
-
-The problem would not be chunk tree related afaik.
-
->=20
-> What else can I try if the mount command reports:
->=20
-> Suse_Tumbleweed:/home/proc # mount -o ro,rescue=3Dall /dev/sdd1 /home/pro=
-mise2/disk3
-> mount: /home/promise2/disk3: wrong fs type, bad option, bad superblock on=
- /dev/sdd1, missing codepage or helper program, or other error.
-
-Dmesg would provide the reason why it fails to mount.
+I'm not sure why, but it doesn't like to be caused by btrfs itself.
 
 Thanks,
 Qu
-
->=20
->=20
->=20
->=20
->=20
->> On 16. Oct 2021, at 07:08, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> 
+> mirror 1 bytenr 2276825735168 csum 0xeae339f3 expected csum 0x7e048d4d
+> mirror 1 bytenr 2276825739264 csum 0x2b229954 expected csum 0xdfdce631
+> mirror 1 bytenr 2276825743360 csum 0x87c424fa expected csum 0xa3e161c2
+> mirror 1 bytenr 2276825747456 csum 0xbf09d2c3 expected csum 0x18f64523
+> mirror 1 bytenr 2276825751552 csum 0x5de49de9 expected csum 0x19dd16c6
+> mirror 1 bytenr 2276825755648 csum 0xece642aa expected csum 0x0238d7ce
+> mirror 1 bytenr 2276825759744 csum 0x2af150fb expected csum 0x52bd6dff
+> mirror 1 bytenr 2276825763840 csum 0x5c41b1e1 expected csum 0xbd8dfb35
+> mirror 1 bytenr 2276825767936 csum 0x9646f3ac expected csum 0xcbe7c6f7
+> mirror 1 bytenr 2276825772032 csum 0xf02eb278 expected csum 0x6cb180e8
+> mirror 1 bytenr 2276825776128 csum 0x9c9b21d5 expected csum 0xa1100bd8
+> mirror 1 bytenr 2276825780224 csum 0xcbcf3d94 expected csum 0x56462400
+> mirror 1 bytenr 2276825784320 csum 0x9c3537f7 expected csum 0x5751fc32
+> mirror 1 bytenr 2276825788416 csum 0xf9ee3396 expected csum 0x48bb945b
+> mirror 1 bytenr 2276825792512 csum 0x1acc32ba expected csum 0x8fed41c9
+> mirror 1 bytenr 2276825796608 csum 0xce357c65 expected csum 0xdfe6c125
+> mirror 1 bytenr 2276825800704 csum 0x03e7eff2 expected csum 0xa7015ff2
+> mirror 1 bytenr 2276825804800 csum 0x316f9ca5 expected csum 0x1fe2fa08
+> mirror 1 bytenr 2276825808896 csum 0xddb636da expected csum 0xf147e370
+> mirror 1 bytenr 2276825812992 csum 0x68d0356d expected csum 0xe234b227
+> mirror 1 bytenr 2276825817088 csum 0x3902cfcf expected csum 0x18bbfe05
+> mirror 1 bytenr 2276825821184 csum 0xc39fae3b expected csum 0x16e45df5
+> mirror 1 bytenr 2276825825280 csum 0x1f31351f expected csum 0xa6284e93
+> mirror 1 bytenr 2276825829376 csum 0x0fa43e43 expected csum 0xd3fdd516
+> mirror 1 bytenr 2276825833472 csum 0x130ceb54 expected csum 0x3338d67b
+> mirror 1 bytenr 2276825837568 csum 0x1d712e6a expected csum 0x916da565
+> mirror 1 bytenr 2276825841664 csum 0x503b960f expected csum 0x4934ecf8
+> mirror 1 bytenr 2276825845760 csum 0x71501ac1 expected csum 0x90137f36
+> mirror 1 bytenr 2276825849856 csum 0xcccac321 expected csum 0xb5162487
+> mirror 1 bytenr 2276825853952 csum 0xd7d8cc3d expected csum 0x8e61d7f8
+> mirror 1 bytenr 2276825858048 csum 0xb58bd180 expected csum 0x2ed55820
+> mirror 1 bytenr 2276825862144 csum 0x5f5ff26e expected csum 0x489fa94a
+> mirror 1 bytenr 2276825866240 csum 0x8b4dc0d2 expected csum 0xa3bbe335
+> mirror 1 bytenr 2276825870336 csum 0x6889cff4 expected csum 0x43b681da
+> mirror 1 bytenr 2276825874432 csum 0xe335f493 expected csum 0x6f8d0018
+> mirror 1 bytenr 2276825878528 csum 0xc44048d2 expected csum 0x732df5c7
+> mirror 1 bytenr 2276825882624 csum 0x51465985 expected csum 0xbcb8b8b8
+> checksum verify failed on 1066590306304 wanted 0x79b7d8af found 0x46e46ce6
+> mirror 1 bytenr 2276825886720 csum 0xb6c0b96d expected csum 0x74b86fd5
+> mirror 1 bytenr 2276825890816 csum 0x53d4b5ee expected csum 0x94580af1
+> mirror 1 bytenr 2276825894912 csum 0xef4599bd expected csum 0xf078822c
+> mirror 1 bytenr 2276825899008 csum 0xc6c6b488 expected csum 0xebc26a0c
+> mirror 1 bytenr 2276825903104 csum 0x8351262a expected csum 0x06f96be7
+> mirror 1 bytenr 2276825907200 csum 0x35bef480 expected csum 0x735cb781
+> mirror 1 bytenr 2276825911296 csum 0x94c66e86 expected csum 0xb45de73e
+> mirror 1 bytenr 2276825915392 csum 0x95fb29ec expected csum 0xbd7fd008
+> mirror 1 bytenr 2276825919488 csum 0x71f1c174 expected csum 0xcedea227
+> mirror 1 bytenr 2276825923584 csum 0xe77b701c expected csum 0x6c583887
+> mirror 1 bytenr 2276825927680 csum 0xc9e6f2a1 expected csum 0xd1f13d97
+> mirror 1 bytenr 2276825931776 csum 0x979b4438 expected csum 0xc6b3fbca
+> mirror 1 bytenr 2276825935872 csum 0xd997d355 expected csum 0xd14a6bcc
+> mirror 1 bytenr 2276825939968 csum 0x391f8495 expected csum 0xf6983d9a
+> mirror 1 bytenr 2276825944064 csum 0x20840579 expected csum 0xee72bbbb
+> mirror 1 bytenr 2276825948160 csum 0x40149e97 expected csum 0xd94f93c8
+> mirror 1 bytenr 2276825952256 csum 0x1f1715e5 expected csum 0x37e610d6
+> mirror 1 bytenr 2276825956352 csum 0x36ebd950 expected csum 0x9910580c
+> mirror 1 bytenr 2276825960448 csum 0xa686f08b expected csum 0x7cc3bf8d
+> mirror 1 bytenr 2276825964544 csum 0xf5445297 expected csum 0x81f00992
+> mirror 1 bytenr 2276825968640 csum 0x3f1e035d expected csum 0x1c76c7eb
+> mirror 1 bytenr 2276825972736 csum 0x4fd040a9 expected csum 0x5830589b
+> mirror 1 bytenr 2276825976832 csum 0x753ce78b expected csum 0x7da10b0e
+> mirror 1 bytenr 2276825980928 csum 0x3e9e5cbb expected csum 0x19ab752a
+> mirror 1 bytenr 2276825985024 csum 0xde2721a4 expected csum 0x10e2d47c
+> mirror 1 bytenr 2276825989120 csum 0x26278f8a expected csum 0xd7bf627d
+> mirror 1 bytenr 2276825993216 csum 0xbaee17bd expected csum 0x4197c662
+> mirror 1 bytenr 2276825997312 csum 0x38cae044 expected csum 0xb7cfb4d8
+> mirror 1 bytenr 2276826001408 csum 0x7877b868 expected csum 0xc8f7443b
+> mirror 1 bytenr 2276826005504 csum 0xba7ac34b expected csum 0xfaa4a32d
+> mirror 1 bytenr 2276826009600 csum 0x152865f5 expected csum 0xa79878d1
+> mirror 1 bytenr 2276826013696 csum 0xccaed754 expected csum 0x4bf5c189
+> mirror 1 bytenr 2276826017792 csum 0x5205c2bc expected csum 0xd679bbad
+> mirror 1 bytenr 2276826021888 csum 0xa5e8a13a expected csum 0xa1d40c2c
+> mirror 1 bytenr 2276826025984 csum 0x0b9d1cff expected csum 0x0c746d0a
+> mirror 1 bytenr 2276826030080 csum 0x324af2e0 expected csum 0x53004126
+> mirror 1 bytenr 2276826034176 csum 0x0a739ceb expected csum 0xcec66738
+> mirror 1 bytenr 2276826038272 csum 0xd6d05cf9 expected csum 0xd59832a1
+> checksum verify failed on 1066590322688 wanted 0x3e47a93a found 0x18856eae
+> 
+> On Sat, 16 Oct 2021 at 04:30, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 >>
 >>
 >>
->> On 2021/10/16 05:01, Christian Wimmer wrote:
->>> Hi Qu,
->>>
->>> I hope I find you well.
->>>
->>> Almost two years that my system runs without any failure.
->>> Since this is very boring I tried make my life somehow harder and teste=
-d again the snapshot feature of my Parallels Desktop installation yesterday=
-:-)
->>> When I erased the old snapshots I could feel (and actually hear) alread=
-y that the system is writing too much to the partitions.
->>> What I want to say is that it took too long (for any reason) to erase t=
-he old snapshots and to shut the system down.
+>> On 2021/10/16 11:18, James Harvey wrote:
+>>> I have attached the full journalctl from the boot where this first
+>>> happened. Note that this happened again after a scrub and a reboot
+>>> during a different write operation. I'm currently doing a backup (not
+>>> overwriting any of my other backups), so I will do a memory test to
+>>> see if I have bad RAM. I don't have ECC memory so I can't easily
+>>> check.
 >>
->> The slow down seems to be caused by qgroup.
+>> With the full dmesg, it's much clear how corrupted the fs is:
 >>
->> We already have an idea how to solve the problem and have some patches
->> for that.
+>>   > kernel: BTRFS warning (device sdb1): csum failed root 5 ino 97395 off
+>> 12255248384 csum 0xd6230a4c expected csum 0x723d189a mirror 1
 >>
->> Although it would add a new sysfs interface and may need user space
->> tools support.
+>> Previous error are mostly data corruption.
 >>
->>>
->>> Well, after booting I saw that one of the discs is not coming back and =
-I got the following error message:
->>>
->>> Suse_Tumbleweed:/home/proc # btrfs check /dev/sdd1
->>> Opening filesystem to check...
->>> parent transid verify failed on 324239360 wanted 208553 found 184371
->>> parent transid verify failed on 324239360 wanted 208553 found 184371
->>> parent transid verify failed on 324239360 wanted 208553 found 184371
+>> So far still no idea how corrupted/what's going wrong.
 >>
->> This is the typical transid mismatch, caused by missing writes.
+>> But the next ones give us quite some clue:
 >>
->> Normally if it's a physical machine, the first thing we suspect would be
->> the disk.
+>>   > BTRFS error (device sdb1): bad tree block start, want 9344471629824
+>> have 5162927840984877996
 >>
->> But since you're using an VM in MacOS, it has a whole storage stack to
->> go through.
+>> The bytenr we got if completely garbage.
 >>
->> And any of the stack is not handling flush/fua correctly, then it can
->> definitely go wrong like this.
+>> This means, some (in fact quite some) metadata blocks are completely
+>> overwritten with garbage or whatever.
 >>
+>> Considering the context, it looks like csum tree got some big corruption.
 >>
->>> Ignoring transid failure
->>> leaf parent key incorrect 324239360
->>> ERROR: failed to read block groups: Operation not permitted
->>> ERROR: cannot open file system
->>>
->>>
->>> Could you help me to debug and repair this please?
+>> And it's not a common symptom of memory bitflip, but really corrupted
+>> data on-disk.
 >>
->> Repair is not really possible.
+>> And btrfs-check should detect such problem, if not, you can try "btrfs
+>> check --check-data-csum" which should throw tons of corruption.
 >>
->>>
->>> I already run the command btrfs restore /dev/sdd1 . and could restore 9=
-0% of the data but not the important last 10%.
->>
->> Using newer kernel like v5.14, you can using "-o ro,rescue=3Dall" mount
->> option, which would act mostly like btrfs-restore, and you may have a
->> chance to recover the lost 10%.
->>
->>>
->>> My system is:
->>>
->>> Suse Tumbleweed inside Parallels Desktop on a Mac Mini
->>>
->>> Mac Min: Big Sur
->>> Parallels Desktop: 17.1.0
->>> Suse: Linux Suse_Tumbleweed 5.13.2-1-default #1 SMP Thu Jul 15 03:36:02=
- UTC 2021 (89416ca) x86_64 x86_64 x86_64 GNU/Linux
->>>
->>> Suse_Tumbleweed:~ # btrfs --version
->>> btrfs-progs v5.13
->>>
->>> The disk /dev/sdd1 is one of several 2TB partitions that reside on a NA=
-S attached to the Mac Mini like
->>
->> /dev/sdd1 is directly mapped into the VM or something else?
->>
->> Or a file in remote filesystem (like NFS) then mapped into the VM?
+>> I have no idea how could this happen, maybe disk corruption, or maybe
+>> some other problems.
 >>
 >> Thanks,
 >> Qu
 >>
 >>>
->>> Disk /dev/sde: 2 TiB, 2197949513728 bytes, 4292870144 sectors
->>> Disk model: Linux_raid5_2tb_
->>> Units: sectors of 1 * 512 =3D 512 bytes
->>> Sector size (logical/physical): 512 bytes / 4096 bytes
->>> I/O size (minimum/optimal): 4096 bytes / 4096 bytes
->>> Disklabel type: gpt
->>> Disk identifier: 942781EC-8969-408B-BE8D-67F6A8AD6355
->>>
->>> Device     Start        End    Sectors Size Type
->>> /dev/sde1   2048 4292868095 4292866048   2T Linux filesystem
->>>
->>>
->>> What would be the next steps to repair this disk?
->>>
->>> Thank you all in advance for your help,
->>>
->>> Chris
->>>
->=20
+>>> On Sat, 16 Oct 2021 at 02:52, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2021/10/16 08:14, James Harvey wrote:
+>>>>> My server consists of a single 16TB external drive (I have backups,
+>>>>> and I was planning to make a proper server at some point) and I used
+>>>>> BTRFS for the drive's filesystem. Recently, the file system would go
+>>>>> into read only and put a load of errors into the system logs. Running
+>>>>> a BTRFS scrub returned no errors, a readonly BTRFS check returned no
+>>>>> errors, and a SMART check showed no issues/bad sectors.
+>>>>
+>>>> This is very strange, as normally if there is really on-disk corruption,
+>>>> especially in metadata, btrfs check should detect it.
+>>>>
+>>>>> Has BTRFS
+>>>>> broke itself or is this a drive issue:
+>>>>>
+>>>>> Here are the errors:
+>>>>
+>>>> Could you please provide the full dmesg?
+>>>>
+>>>> We want the context to see get a whole picture of the problem, not only
+>>>> just error messages from btrfs.
+>>>>
+>>>> If the problem only happens at write time, maybe you want to do a memory
+>>>> test to verify it's not some bitflip in your memory in the mean time.
+>>>>
+>>>> Thanks,
+>>>> Qu
+>>>>>
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105460736 csum 0x75ab540e expected csum
+>>>>> 0xaeb99694 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105464832 csum 0xe83b4c2a expected csum
+>>>>> 0xb9a65172 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105468928 csum 0x4769b37a expected csum
+>>>>> 0x3598cf9e mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105473024 csum 0x7c39a990 expected csum
+>>>>> 0x9c523a6c mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105477120 csum 0xfedc09f1 expected csum
+>>>>> 0x68386e9a mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105481216 csum 0xf9f25835 expected csum
+>>>>> 0x96d2dea3 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 6, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105485312 csum 0x37643155 expected csum
+>>>>> 0x6139f8a1 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 7, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105489408 csum 0x13893c06 expected csum
+>>>>> 0xb28c00a8 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 8, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105493504 csum 0x2a89fcff expected csum
+>>>>> 0x4c5758ed mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 9, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 97395 off 14105497600 csum 0x7484b77c expected csum
+>>>>> 0x0a9f3138 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bdev
+>>>>> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 10, gen 0
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343812173824 have 9856732008096476660
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343806013440 have 757116834938933
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343812173824 have 9856732008096476660
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9622003011584, 9622003015680)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343806013440 have 757116834938933
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343812173824 have 9856732008096476660
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343812173824 have 9856732008096476660
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9622003015680, 9622003019776)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343947784192 have 17536680014548819927
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343812173824 have 9856732008096476660
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343947784192 have 17536680014548819927
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9644356001792, 9644356005888)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS error (device sdb1): bad
+>>>>> tree block start, want 9343812173824 have 9856732008096476660
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9622003019776, 9622003023872)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9644356005888, 9644356009984)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9622003023872, 9622003027968)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9633973551104, 9633973555200)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9644356009984, 9644356014080)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9622003027968, 9622003032064)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> hole found for disk bytenr range [9633973555200, 9633973559296)
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:37 James-Server kernel: BTRFS warning (device sdb1): csum
+>>>>> failed root 5 ino 173568 off 3875945435136 csum 0x23ed6941 expected
+>>>>> csum 0xc096fec5 mirror 1
+>>>>> Oct 14 21:50:41 James-Server kernel: BTRFS: error (device sdb1) in
+>>>>> btrfs_finish_ordered_io:3064: errno=-5 IO failure
+>>>>> Oct 14 21:50:41 James-Server kernel: BTRFS info (device sdb1): forced readonly
+>>>>>
+>>>>> uname -a: Linux James-Server 5.14.11-arch1-1 #1 SMP PREEMPT Sun, 10
+>>>>> Oct 2021 00:48:26 +0000 x86_64 GNU/Linux
+>>>>>
+>>>>> btrfs --version: btrfs-progs v5.14.2
+>>>>>
+>>>>> btrfs fi show:
+>>>>>
+>>>>> Label: 'Seagate 16TB 1'  uuid: e183a876-95e0-4d15-a641-69f4a8e8e7e7
+>>>>>           Total devices 1 FS bytes used 9.61TiB
+>>>>>           devid    1 size 14.55TiB used 9.62TiB path /dev/sdb1
+>>>>>
+>>>>> btrfs fi df:
+>>>>>
+>>>>> Data, single: total=9.60TiB, used=9.60TiB
+>>>>> System, DUP: total=8.00MiB, used=1.09MiB
+>>>>> Metadata, DUP: total=11.00GiB, used=10.74GiB
+>>>>> GlobalReserve, single: total=512.00MiB, used=0.00B
+>>>>>
+>>>>> Mount options: rw,noatime,compress=zstd:3,space_cache=v2,autodefrag,subvolid=5,subvol=/
+>>>>>
+> 
 
