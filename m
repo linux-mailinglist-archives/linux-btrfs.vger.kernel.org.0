@@ -2,97 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9C7432029
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 16:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B52B43225E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 17:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhJROv4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 10:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231736AbhJROvz (ORCPT
+        id S233560AbhJRPO2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 11:14:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60798 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233674AbhJRPOI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 10:51:55 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700FCC06161C
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 07:49:44 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id q189so3524498ybq.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 07:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zyyPwR+pIsltN/H9fMrF/aavJhTvUWVFS1oJkuPfGsk=;
-        b=NXaqgbs+lb9g39Hwj6BTWTiNqMymSEHMcDmcOeIxaHGPZFDmxmLqELf6q3Znsl78by
-         NZCvmJUHUyIfTLhKTchM4iVAWPSkR/4R+F/QOIhJnSmg+EdBKIeKZG+D1K1INl1Dyrd/
-         m5wkBCecXwiPOY2dVZo0vzF2AeklQYk7MF2cxqfWKUZJLAOJ7GTSltEZjVbdu3Y8/Hs4
-         G22UKrutWUSw9/bdmYbCpNA/7sOzQX4cA0xmzPTdXpVKXzNws1ujKWm6Z7nod0g5K8Wu
-         +019rH5CeneiD11jhq/fCKZkRfLiqaqPfjMPD6sGmipp8fAphdVbzFrDQfGgtGOQEPgz
-         H+tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zyyPwR+pIsltN/H9fMrF/aavJhTvUWVFS1oJkuPfGsk=;
-        b=Lv+2bkGUW9g4lMQf0EpeohmsHAhInDivo0+I3HNqrBp0K9j6pNQT3oNEt73QF6haaS
-         G6zid6r7MFLhV7ZbF3cYqBKFQNuQeXt4CD9+7sV21B9QfwBPpXIfqTaL5bAd6kJYp7Ln
-         nggHLz1dVTYa+7Uu9hmyUiafEFp5iG8bfhyhxgaeGjF1dPFuYWpAzKbWGDLiB1TqeMzW
-         4cU6bkCg4Kdsam/EoatcWCKobIfqW3mXki4uXHuDjCOL4+Z5Gjx1+TeQJBQy8jJLpVlO
-         t8C3tPO/CQ/lT8B3UFfyEyVWBruQ0G6uHST9SGJe+4ILygJuorIrMnvcJWmklrmyX/Be
-         KWZQ==
-X-Gm-Message-State: AOAM531B6HmVkAYQM/yReLcACX0Bp27QewSa5oO2C/fNHNF9KdwRBynC
-        ArLnjv78TBzwD9TtaAzgk/kqv3P5tvmUtDzWx0DYZA==
-X-Google-Smtp-Source: ABdhPJxlXLL60yEXWyr16HnUVmbi2HCbUJf5Pj6zJbOaHNvTRvlG8r5erWwTi8FcFrY/q8PBqXd25PO4ord3RsFIgAM=
-X-Received: by 2002:a25:db91:: with SMTP id g139mr28899870ybf.391.1634568583554;
- Mon, 18 Oct 2021 07:49:43 -0700 (PDT)
+        Mon, 18 Oct 2021 11:14:08 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D285921976;
+        Mon, 18 Oct 2021 15:11:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634569915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VwyDdigqEdyFnQWv95tqpblmK7gEFiPJmdvE8htyh14=;
+        b=JYOQyvktmAUYexlAjd7Ilv46uxJ6tTzL5UUjS2p3e/wPRUiGrBP60Q7QrxevMCPn//6tio
+        j3PRlGuUAWjDeuUVI4IPnr2D1nQe7Ux6Xvhk8imAgC4hajr+v3ai6cE6CSGsbJrdSJOJUG
+        ECwYzqpARNCjUECeiw3LT+H4Axf8p3o=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8843C13CC9;
+        Mon, 18 Oct 2021 15:11:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QkOrHruObWEfFgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 18 Oct 2021 15:11:55 +0000
+Subject: Re: [PATCH v11 10/14] btrfs: add send stream v2 definitions
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <cover.1630514529.git.osandov@fb.com>
+ <ed4dc1c414a6662831e7443335065cb37dddad91.1630514529.git.osandov@fb.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <f94e2e0d-0cf9-1c9d-0dfb-b21438fe852d@suse.com>
+Date:   Mon, 18 Oct 2021 18:11:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com> <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
- <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com>
- <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com> <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
- <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com> <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
- <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com> <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
- <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com> <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
- <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
- <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
- <bl3mimya.fsf@damenly.su> <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
-In-Reply-To: <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 18 Oct 2021 10:49:27 -0400
-Message-ID: <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Su Yue <l@damenly.su>, Chris Murphy <lists@colorremedies.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ed4dc1c414a6662831e7443335065cb37dddad91.1630514529.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 9:28 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2021/10/18 19:32, Su Yue wrote:
-> >
-> > On Sun 17 Oct 2021 at 21:57, Chris Murphy <lists@colorremedies.com> wrote:
-> >
-> >> Any update on this problem and whether+what more info is needed?
-> >>
-> > It's interesting the OOPS only happens in openstack environment.
->
-> Or the toolchain?
 
-In the earliest known instance so far, from April 2021, it was this kernel:
 
-Apr 13 20:47:35 fedora kernel: Linux version 5.11.12-300.fc34.aarch64
-(mockbuild@buildvm-a64-10.iad2.fedoraproject.org) (gcc (GCC) 11.0.1
-20210324 (Red Hat 11.0.1-0), GNU ld version 2.35.1-41.fc34) #1 SMP Wed
-Apr 7 16:12:21 UTC 2021
+On 1.09.21 г. 20:01, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> This adds the definitions of the new commands for send stream version 2
+> and their respective attributes: fallocate, FS_IOC_SETFLAGS (a.k.a.
+> chattr), and encoded writes. It also documents two changes to the send
+> stream format in v2: the receiver shouldn't assume a maximum command
+> size, and the DATA attribute is encoded differently to allow for writes
+> larger than 64k. These will be implemented in subsequent changes, and
+> then the ioctl will accept the new flags.
+> 
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>  fs/btrfs/send.c            |  2 +-
+>  fs/btrfs/send.h            | 30 +++++++++++++++++++++++++++++-
+>  include/uapi/linux/btrfs.h | 13 +++++++++++++
+>  3 files changed, 43 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index afdcbe7844e0..2ec07943f173 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -7287,7 +7287,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+>  
+>  	sctx->clone_roots_cnt = arg->clone_sources_count;
+>  
+> -	sctx->send_max_size = BTRFS_SEND_BUF_SIZE;
+> +	sctx->send_max_size = BTRFS_SEND_BUF_SIZE_V1;
+>  	sctx->send_buf = kvmalloc(sctx->send_max_size, GFP_KERNEL);
+>  	if (!sctx->send_buf) {
+>  		ret = -ENOMEM;
+> diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
+> index de91488b7cd0..9f4f7b96b1eb 100644
+> --- a/fs/btrfs/send.h
+> +++ b/fs/btrfs/send.h
+> @@ -12,7 +12,11 @@
+>  #define BTRFS_SEND_STREAM_MAGIC "btrfs-stream"
+>  #define BTRFS_SEND_STREAM_VERSION 1
+>  
+> -#define BTRFS_SEND_BUF_SIZE SZ_64K
+> +/*
+> + * In send stream v1, no command is larger than 64k. In send stream v2, no limit
+> + * should be assumed.
+> + */
+> +#define BTRFS_SEND_BUF_SIZE_V1 SZ_64K
+>  
+>  enum btrfs_tlv_type {
+>  	BTRFS_TLV_U8,
+> @@ -76,6 +80,13 @@ enum btrfs_send_cmd {
+>  
+>  	BTRFS_SEND_C_END,
+>  	BTRFS_SEND_C_UPDATE_EXTENT,
+> +
+> +	/* The following commands were added in send stream v2. */
+> +
+> +	BTRFS_SEND_C_FALLOCATE,
+> +	BTRFS_SEND_C_SETFLAGS,
+> +	BTRFS_SEND_C_ENCODED_WRITE,
+> +
+>  	__BTRFS_SEND_C_MAX,
+>  };
+>  #define BTRFS_SEND_C_MAX (__BTRFS_SEND_C_MAX - 1)
+> @@ -106,6 +117,11 @@ enum {
+>  	BTRFS_SEND_A_PATH_LINK,
+>  
+>  	BTRFS_SEND_A_FILE_OFFSET,
+> +	/*
+> +	 * In send stream v2, this attribute is special: it must be the last
+> +	 * attribute in a command, its header contains only the type, and its
+> +	 * length is implicitly the remaining length of the command.
+> +	 */
+>  	BTRFS_SEND_A_DATA,
 
-> > Is it possiable to provide the kernel core dump?
+Now that I think more about this, it would be best if this logic is
+actually codified in the code. I.e first set of SEND_A_DATA would set
+some bool/flag in the sctx and subsequent calls would be able to
+ASSERT/WARN ?
 
-I'll look into it.
 
--- 
-Chris Murphy
