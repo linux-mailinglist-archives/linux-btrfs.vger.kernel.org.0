@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E58443184F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 13:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9410B431990
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 14:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhJRMBV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 08:01:21 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38858 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhJRMBV (ORCPT
+        id S231548AbhJRMqh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 08:46:37 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59022 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhJRMqg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 08:01:21 -0400
+        Mon, 18 Oct 2021 08:46:36 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 21ECF21A83;
-        Mon, 18 Oct 2021 11:59:09 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1AF201FD7A;
+        Mon, 18 Oct 2021 12:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634558349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1634561064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=14NHL/AFPNU4EGYifUy+LKT20DzlDXKjPDE0omkCDuM=;
-        b=K5jxscXMp7Y8RYkmw4VGmk2TRZzq43CDDj2BpfIpj0vLyRKNcI8dhVmmX0m9AgSVgcDWva
-        mVEZ5uEE3mABREDRzWa5+CNNrL8kyLSlt+1F9I4ZnAvzSi4cKz/KptfimVOOg/DuMtKD7u
-        LGuRCo/FMgnflDeqdxVZ/v8EVV412GA=
+        bh=O6PrWi/knub5lZJm9+0SpBdxmfEmYLgb3m1jGWsWAI0=;
+        b=rBOkWbweBMczi1g9wxtO3J7Q0bcd2lrytPe9mBG39tLQSMkcxPqYlrNAMJ7mo/MDgua/Tw
+        0QlHE21ZTY+hnHGZhHBSCRTWI6VwOuD29odgjiJn/N7HkZw4pI8ZV37737R9Sw+65Qzbno
+        T1XJ/TXi9EIU6DN0VehMIQBsfvKewAA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CDFD813DF5;
-        Mon, 18 Oct 2021 11:59:08 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C854913D41;
+        Mon, 18 Oct 2021 12:44:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZtP2LoxhbWFmLAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 18 Oct 2021 11:59:08 +0000
-Subject: Re: [PATCH v11 13/14] btrfs: send: send compressed extents with
- encoded writes
+        id eQZkLidsbWH7RAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 18 Oct 2021 12:44:23 +0000
+Subject: Re: [PATCH v11 14/14] btrfs: send: enable support for stream v2 and
+ compressed writes
 To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
         linux-api@vger.kernel.org
 References: <cover.1630514529.git.osandov@fb.com>
- <366f92a7ec5a69dc92290dc2cf6e8603f566495c.1630514529.git.osandov@fb.com>
+ <61a4a5b6bf694c7441b2ba04b724d012997fa3f7.1630514529.git.osandov@fb.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <58a04b59-a2fb-bd26-606e-6ddf8bd31552@suse.com>
-Date:   Mon, 18 Oct 2021 14:59:08 +0300
+Message-ID: <878b7f1f-a160-0b88-2048-37c64413ca3d@suse.com>
+Date:   Mon, 18 Oct 2021 15:44:23 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <366f92a7ec5a69dc92290dc2cf6e8603f566495c.1630514529.git.osandov@fb.com>
+In-Reply-To: <61a4a5b6bf694c7441b2ba04b724d012997fa3f7.1630514529.git.osandov@fb.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -63,145 +63,79 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 1.09.21 г. 20:01, Omar Sandoval wrote:
 > From: Omar Sandoval <osandov@fb.com>
 > 
-> Now that all of the pieces are in place, we can use the ENCODED_WRITE
-> command to send compressed extents when appropriate.
+> Now that the new support is implemented, allow the ioctl to accept the
+> flags and update the version in sysfs.
+
+This seems like an appropriate place to bring up the discussion about
+versioned streams. SO instead of adding a BTRFS_SEND_FLAG_STREAM_V2
+flag, which implies that for the next version we have to add
+BTRFS_SEND_FLAG_STREAM_V3 etc. Why not generalize the flag to
+BTRFS_SEND_FLAG_STREAM_VERSIONED and carve an u32 from one of the
+reserved fields so that in the future we simply increment the version field?
+
+
 > 
 > Signed-off-by: Omar Sandoval <osandov@fb.com>
-
-Overall looks sane but consider some of the nits below.
-
-
-<snip>
-
-> +static int send_encoded_extent(struct send_ctx *sctx, struct btrfs_path *path,
-> +			       u64 offset, u64 len)
-> +{
-> +	struct btrfs_root *root = sctx->send_root;
-> +	struct btrfs_fs_info *fs_info = root->fs_info;
-> +	struct inode *inode;
-> +	struct fs_path *p;
-> +	struct extent_buffer *leaf = path->nodes[0];
-> +	struct btrfs_key key;
-> +	struct btrfs_file_extent_item *ei;
-> +	u64 block_start;
-> +	u64 block_len;
-> +	u32 data_offset;
-> +	struct btrfs_cmd_header *hdr;
-> +	u32 crc;
-> +	int ret;
-> +
-> +	inode = btrfs_iget(fs_info->sb, sctx->cur_ino, root);
-> +	if (IS_ERR(inode))
-> +		return PTR_ERR(inode);
-> +
-> +	p = fs_path_alloc();
-> +	if (!p) {
-> +		ret = -ENOMEM;
+> ---
+>  fs/btrfs/send.c            | 10 +++++++++-
+>  fs/btrfs/send.h            |  2 +-
+>  include/uapi/linux/btrfs.h |  4 +++-
+>  3 files changed, 13 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 0ba8dc3a9f56..90ca915fed78 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -671,7 +671,10 @@ static int send_header(struct send_ctx *sctx)
+>  	struct btrfs_stream_header hdr;
+>  
+>  	strcpy(hdr.magic, BTRFS_SEND_STREAM_MAGIC);
+> -	hdr.version = cpu_to_le32(BTRFS_SEND_STREAM_VERSION);
+> +	if (sctx->flags & BTRFS_SEND_FLAG_STREAM_V2)
+> +		hdr.version = cpu_to_le32(2);
+> +	else
+> +		hdr.version = cpu_to_le32(1);
+>  
+>  	return write_buf(sctx->send_filp, &hdr, sizeof(hdr),
+>  					&sctx->send_off);
+> @@ -7466,6 +7469,11 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+>  		ret = -EINVAL;
+>  		goto out;
+>  	}
+> +	if ((arg->flags & BTRFS_SEND_FLAG_COMPRESSED) &&
+> +	    !(arg->flags & BTRFS_SEND_FLAG_STREAM_V2)) {
+> +		ret = -EINVAL;
 > +		goto out;
 > +	}
-> +
-> +	ret = begin_cmd(sctx, BTRFS_SEND_C_ENCODED_WRITE);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, p);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-> +	ei = btrfs_item_ptr(leaf, path->slots[0],
-> +			    struct btrfs_file_extent_item);
-> +	block_start = btrfs_file_extent_disk_bytenr(leaf, ei);
-
-block_start is somewhat ambiguous here, this is just the disk bytenr of
-the extent.
-
-> +	block_len = btrfs_file_extent_disk_num_bytes(leaf, ei);
-
-Why is this called block_len when it's just the size in bytes on-disk?
-
-> +
-> +	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, p);
-> +	TLV_PUT_U64(sctx, BTRFS_SEND_A_FILE_OFFSET, offset);
-> +	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_FILE_LEN,
-> +		    min(key.offset + btrfs_file_extent_num_bytes(leaf, ei) - offset,
-> +			len));
-> +	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_LEN,
-> +		    btrfs_file_extent_ram_bytes(leaf, ei));
-> +	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_OFFSET,
-> +		    offset - key.offset + btrfs_file_extent_offset(leaf, ei));
-> +	ret = btrfs_encoded_io_compression_from_extent(
-> +				btrfs_file_extent_compression(leaf, ei));
-> +	if (ret < 0)
-> +		goto out;
-> +	TLV_PUT_U32(sctx, BTRFS_SEND_A_COMPRESSION, ret);
-> +	TLV_PUT_U32(sctx, BTRFS_SEND_A_ENCRYPTION, 0);
-> +
-> +	ret = put_data_header(sctx, block_len);
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	data_offset = ALIGN(sctx->send_size, PAGE_SIZE);
-
-nit: The whole data_offset warrants a comment here, since send_buf is
-now mapped from send_buf_pages, so all the TLV you've put before are
-actually stored in the beginning of send_buf_pages, so by doing the
-above you ensure the data write begins on a clean page boundary ...
-
-> +	if (data_offset > sctx->send_max_size ||
-> +	    sctx->send_max_size - data_offset < block_len) {
-> +		ret = -EOVERFLOW;
-> +		goto out;
-> +	}
-> +
-> +	ret = btrfs_encoded_read_regular_fill_pages(inode, block_start,
-> +						    block_len,
-> +						    sctx->send_buf_pages +
-> +						    (data_offset >> PAGE_SHIFT));
-> +	if (ret)
-> +		goto out;
-> +
-> +	hdr = (struct btrfs_cmd_header *)sctx->send_buf;
-> +	hdr->len = cpu_to_le32(sctx->send_size + block_len - sizeof(*hdr));
-> +	hdr->crc = 0;
-> +	crc = btrfs_crc32c(0, sctx->send_buf, sctx->send_size);
-> +	crc = btrfs_crc32c(crc, sctx->send_buf + data_offset, block_len);
-
-... and because of that you can't simply use send_cmd ;(
-
-> +	hdr->crc = cpu_to_le32(crc);
-> +
-> +	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
-> +			&sctx->send_off);
-> +	if (!ret) {
-> +		ret = write_buf(sctx->send_filp, sctx->send_buf + data_offset,
-> +				block_len, &sctx->send_off);
-> +	}
-> +	sctx->total_send_size += sctx->send_size + block_len;
-> +	sctx->cmd_send_size[le16_to_cpu(hdr->cmd)] +=
-> +		sctx->send_size + block_len;
-> +	sctx->send_size = 0;
-> +
-> +tlv_put_failure:
-> +out:
-> +	fs_path_free(p);
-> +	iput(inode);
-> +	return ret;
-> +}
-> +
-> +static int send_extent_data(struct send_ctx *sctx, struct btrfs_path *path,
-> +			    const u64 offset, const u64 len)
-
-nit: Instead of sending around a btrfs_path struct around and
-"polluting" callees to deal with the oddities of our btree interface i.e
-btrfs_item_ptr et al. Why not refactor the code so that when we know we
-are about to send an extent data simply initialize some struct
-extent_info with all the necessary data items: extent type, compression
-type, based on the extent type properly initialize a size attribute etc
-and pass that. Right now you have send_extent_data fiddling with
-path->nodes[0], then based on that you either call
-send_encoded_inline_extent or send_encoded_extent, instead pass
-extent_info to send_extent_data/clone_range and be done with it.
-
-
-<snip>
+>  
+>  	sctx = kzalloc(sizeof(struct send_ctx), GFP_KERNEL);
+>  	if (!sctx) {
+> diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
+> index 9f4f7b96b1eb..9c83e14a43b2 100644
+> --- a/fs/btrfs/send.h
+> +++ b/fs/btrfs/send.h
+> @@ -10,7 +10,7 @@
+>  #include "ctree.h"
+>  
+>  #define BTRFS_SEND_STREAM_MAGIC "btrfs-stream"
+> -#define BTRFS_SEND_STREAM_VERSION 1
+> +#define BTRFS_SEND_STREAM_VERSION 2
+>  
+>  /*
+>   * In send stream v1, no command is larger than 64k. In send stream v2, no limit
+> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+> index 4f875f355e83..5c13e407982f 100644
+> --- a/include/uapi/linux/btrfs.h
+> +++ b/include/uapi/linux/btrfs.h
+> @@ -787,7 +787,9 @@ struct btrfs_ioctl_received_subvol_args {
+>  #define BTRFS_SEND_FLAG_MASK \
+>  	(BTRFS_SEND_FLAG_NO_FILE_DATA | \
+>  	 BTRFS_SEND_FLAG_OMIT_STREAM_HEADER | \
+> -	 BTRFS_SEND_FLAG_OMIT_END_CMD)
+> +	 BTRFS_SEND_FLAG_OMIT_END_CMD | \
+> +	 BTRFS_SEND_FLAG_STREAM_V2 | \
+> +	 BTRFS_SEND_FLAG_COMPRESSED)
+>  
+>  struct btrfs_ioctl_send_args {
+>  	__s64 send_fd;			/* in */
+> 
