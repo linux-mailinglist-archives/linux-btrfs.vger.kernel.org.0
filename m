@@ -2,129 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2C6431B6A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 15:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E137C431F0A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 16:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231839AbhJRNdF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 09:33:05 -0400
-Received: from mout.gmx.net ([212.227.15.15]:49627 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232756AbhJRNbI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 09:31:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634563733;
-        bh=/TBF35NMSw+mZkcX+dtiswlZ9KmAqnUHfaxwwHR0jRc=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=B+GGpc2FypB9ZY5rfCBL8OV5FzydwwMFG7oaUfvOnsLA2iVfK50g2r65JnU6XCnOS
-         kYLeGKxGHLIp5XBTgFxjurDbJaHJr/b3cXV3njLeSAdDhSfIfQpEv8fFP5hS8r0z4j
-         WnOplTS0lVrN9U2fXJgm2gS9bmKLeYL39auABxus=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N2V4P-1miH2x1dp1-013ta6; Mon, 18
- Oct 2021 15:28:53 +0200
-Message-ID: <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
-Date:   Mon, 18 Oct 2021 21:28:47 +0800
+        id S233186AbhJROMO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 10:12:14 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:44828 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232454AbhJROMG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 18 Oct 2021 10:12:06 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 473C1BCB1EA; Mon, 18 Oct 2021 10:09:45 -0400 (EDT)
+Date:   Mon, 18 Oct 2021 10:09:45 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     mailing@dmilz.net
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Filesystem Read Only due to errno=-28 during metadata allocation
+Message-ID: <20211018140936.GA1208@hungrycats.org>
+References: <f2ed8b05b03db6a4fec4cba7ed17222a@dmilz.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
-Content-Language: en-US
-To:     Su Yue <l@damenly.su>, Chris Murphy <lists@colorremedies.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com>
- <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
- <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com>
- <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com>
- <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
- <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com>
- <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
- <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com>
- <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
- <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com>
- <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
- <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
- <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
- <bl3mimya.fsf@damenly.su>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <bl3mimya.fsf@damenly.su>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Ek3vVdUch2BbhiGJvNk9kIrgU7m9G70TySN7rz0nwDq3C1mDlHt
- xYqLI7OIAmzw7jA2G8MLX2bWrSFNVcWN0GLT/aeujeSO3rItSAPhC7+lehjjdzvI2l5d+pf
- PB8lKz3q5pwkBlgA2r5MltTL/akqWTCR4duUoYXgqMt5qQuaOn1QCIUt1GqExILYoBiP6x9
- 4Wj7sZGyg0E7Oj71C+HRA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gds1uabSGQg=:MqNhkxwf+yUvP3Lgnhk1if
- soqRJMiOjk8SOGvR7Fhs1uZ1+meYu8gqqU3hUZdOwTt9MIlUW4QcQng+zu8Pq6lwctjeOAfYA
- iWN8CWrfEBowYYJLzArpOq4QKzq1cv6C9vSqGa1pQey0g/aCEFC3P/iOnTSEZZp/ADRqVVHE7
- y18cX6PFFVYWGKLdFfvWFYd6L45MqIaoL4tdWiVlkJWvrTxKy750Q61uEjZaJXD+aRc1rWTkn
- vIUopfF5eYLSws041tjov+7COIYGqDXSsBizo+kaa9tGGK3yqB0OEfqYWktOjaazQWfDcvHl2
- UNk/q7g/YaaVVgwI6ICExXOreXT3+rTPV+abDqhDB8Pso9vEIagFcBmLWUEKXAulkrUxqB0gR
- 6JSmBGoQEAasNj3kl43O1KRgH6vO/TYyhZDQpniBVqqEk03q5EqCS4Je7Ke+9s7a2BlYLTUU3
- m61/fbjlqAwFPO2xEpFm1OslA0DMlEGGRejTkEvQa9eooxF9xrhSO+m7Sis7NulNdBfFeuk4N
- mhRTJLeyTKMpt4vs67tQetB1CNUpwqj4L8bJrn1/VmvzNvDFkLdEUtsgrz3PPZ21tjfIYVYg9
- XW12O+ZaY0BVLFMrnr3eeEPlmv1HdfOKyBIfCcdu7x4Kvvru7/dCQiLf6Q5HfX+4KtzzQeFXx
- O57OkE/y73Ba4rzXJcEJnQdWwvIwryBPmZVorWJtwJvle9l5F/8g45AanBWn29iR2pIy8ck4P
- sg0STYmzwVRot1y6sHxhQHkJ466JBmJJTGKvCSqUbkq0bdJU8l1TNBHhgr7uDjrnNNw0s8X+w
- FNbOsWwS80ZbdZHMs92VGkCxpczMcEwrZ61KsAuhiaSiYbv0rsGsXuxSdqv/0D7kbYSar1NRQ
- NLjgGTMJ4xH7v5ZSNpOPvgkJ7fVEo9sEWnDbhpLZM782f6CnXnHaBLW5mhzWXoLxH3pteJHo+
- gdbE3+I8V+wRtpvzpxkt7fLaMg+KheQDadWGMSH8X4W5UCOMD0G5ugiXaw95VUmBZbYdXiEKg
- s92sUdkp9yrmJzNFjXpzQDIkmRDjw3nRl25xcSi4gTxknBJdXY4/+pybciwKytpPvzCkJ66hI
- RBIH9tjHTCs+ws=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f2ed8b05b03db6a4fec4cba7ed17222a@dmilz.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 02:35:39PM +0200, mailing@dmilz.net wrote:
+> Hello,
+> 
+> I faced issue with btrfs FS /var forced to RO due to errno=-28 (no space
+> left).
+> 
+> The server was restarted to bring back FS in RW.
+> 
+> Before reboot:
+> $ btrfs fi usage /var -m
+> Overall:
+>     Device size:         2560.00MiB
+>     Device allocated:         2559.00MiB
+>     Device unallocated:            1.00MiB
+>     Device missing:            0.00MiB
+>     Used:         1116.00MiB
+>     Free (estimated):          451.25MiB (min: 451.25MiB)
+>     Data ratio:               1.00
+>     Metadata ratio:               2.00
+>     Global reserve:           13.00MiB (used: 0.00MiB)
+> 
+> Data,single: Size:1559.25MiB, Used:1108.00MiB
+>    /dev/mapper/rootvg-varvol 1559.25MiB
+> 
+> Metadata,DUP: Size:467.88MiB, Used:3.94MiB
+>    /dev/mapper/rootvg-varvol  935.75MiB
+> 
+> System,DUP: Size:32.00MiB, Used:0.06MiB
+>    /dev/mapper/rootvg-varvol   64.00MiB
+> 
+> Unallocated:
+>    /dev/mapper/rootvg-varvol    1.00MiB
 
+This is a tiny filesystem, below the minimum practical size for separate
+data and metadata block groups, but above the size for mixed block
+groups to be the mkfs default.  It might be better to format it with
+the mixed-bg option.
 
-On 2021/10/18 19:32, Su Yue wrote:
->
-> On Sun 17 Oct 2021 at 21:57, Chris Murphy <lists@colorremedies.com> wrot=
-e:
->
->> Any update on this problem and whether+what more info is needed?
->>
-> It's interesting the OOPS only happens in openstack environment.
+> The FS went RO on Sunday, with this trace:
+> 2021-10-10T00:13:12.790042+02:00 SERVERNAME kernel: BTRFS: Transaction
+> aborted (error -28)
+[...]
+> 2021-10-10T00:13:12.790124+02:00 SERVERNAME kernel: BTRFS: error (device
+> dm-22) in btrfs_run_delayed_refs:2353: errno=-28 No space left
+> 2021-10-10T00:13:12.790125+02:00 SERVERNAME kernel: btrfs_printk: 12
+> callbacks suppressed
+> 2021-10-10T00:13:12.790127+02:00 SERVERNAME kernel: BTRFS info (device
+> dm-22): forced readonly
+> 
+> $ btrfs --version
+> btrfs-progs v4.5.3+20160729
+> 
+> $ btrfs fi show /var
+> Label: none  uuid: f96f4980-4682-4d2d-8d7a-3c0e2c1c6680
+>         Total devices 1 FS bytes used 1.06GiB
+>         devid    1 size 2.50GiB used 2.50GiB path /dev/mapper/rootvg-varvol
+> 
+> uname -a
+> Linux SERVERNAME 4.12.14-122.83-default #1 SMP Tue Aug 3 08:37:22 UTC 2021
+> (c86c48c) ppc64le ppc64le ppc64le GNU/Linux
 
-Or the toolchain?
+This kernel is 4 years old.  It may have additional practical problems in
+the implementation beyond the design-level issues I've described here.
 
-I also tried my misc-next build using GCC on my RPI4, fstests with
-compression never crashes the kernel.
+> On the previous Friday after weekly balance:
+> btrfs fi usage /var
+> Overall:
+>     Device size:                   2.50GiB
+>     Device allocated:              1.73GiB
+>     Device unallocated:          792.75MiB
+>     Device missing:                  0.00B
+>     Used:                          1.09GiB
+>     Free (estimated):              1.11GiB      (min: 739.62MiB)
+>     Data ratio:                       1.00
+>     Metadata ratio:                   2.00
+>     Global reserve:               13.00MiB      (used: 0.00B)
+> 
+> Data,single: Size:1.41GiB, Used:1.08GiB
+>    /dev/mapper/rootvg-varvol       1.41GiB
+> 
+> Metadata,DUP: Size:128.00MiB, Used:3.94MiB
+>    /dev/mapper/rootvg-varvol     256.00MiB
+> 
+> System,DUP: Size:32.00MiB, Used:64.00KiB
+>    /dev/mapper/rootvg-varvol      64.00MiB
+> 
+> Unallocated:
+>    /dev/mapper/rootvg-varvol     792.75MiB
+> 
+> 
+> I don't have extract of btrfs fi usage /var command during the weekend, but
+> a script is extracting the Space allocated ("Size") and Used in Data and
+> Metadata. I observed twice during the weekend space allocated to metadata is
+> suddenly growing while the metadata used remains the same. The first time I
+> had enough "Device unallocated" and no problem was observed, the second (on
+> Sunday after midnight), it leads to FS RO (no space left).
+> 
+> Is there any situation that can lead to metadata allocation but without
+> actual usage of metadata?
 
-Thanks,
-Qu
+Some btrfs maintenance operations lock block groups to prevent concurrent
+modification, such as balance, scrub, and discard.  When this occurs,
+any free space that has been allocated in the metadata block groups
+is temporarily unavailable, and if there's no free space in any other
+block group, then btrfs will need to allocate another metadata block
+group to continue.  (The same happens with data block groups but the
+impact is smaller due to the much larger data sizes.)  The worst case
+for metadata on a normal filesystem is:
 
-> Is it possiable to provide the kernel core dump?
->
-> --
-> Su
->> Thanks,
->> Chris Murphy
->>
->> On Wed, Oct 13, 2021 at 3:21 PM Chris Murphy <lists@colorremedies.com>
->> wrote:
->>>
->>> From the downstream bug:
->>>
->>> [root@openqa-a64-worker03 adamwill][PROD]#
->>> /usr/src/kernels/5.14.9-300.fc35.aarch64/scripts/faddr2line
->>> /usr/lib/debug/lib/modules/5.14.9-300.fc35.aarch64/vmlinux
->>> submit_compressed_extents+0x38
->>> submit_compressed_extents+0x38/0x3d0:
->>> submit_compressed_extents at
->>> /usr/src/debug/kernel-5.14.9/linux-5.14.9-300.fc35.aarch64/fs/btrfs/in=
-ode.c:845
->>>
->>> [root@openqa-a64-worker03 adamwill][PROD]#
->>>
->>> https://bugzilla.redhat.com/show_bug.cgi?id=3D2011928#c26
->>>
->>> Also curious: this problem is only happening in openstack
->>> environments, as if the host environment matters. Does that make
->>> sense?
->>>
->>>
->>> --
->>> Chris Murphy
+	raid_profile_redundancy (2 for dup metadata) * (
+		chunk_size (usually 1GB) * (
+			number_of_disks (for scrub) +
+			1 (for discard) +
+			1 (for balance)
+		) + global_reserve (up to 512MB)
+	)
+
+i.e. on a single-disk filesystem with dup metadata, there should be at
+least 7GB allocated or available for metadata (3.5GB dup metadata takes
+7GB of raw space, you can have either the 3.5GB allocated-but-free
+metadata or 7GB unallocated, or any combination totalling at least 7GB).
+
+Obviously, keeping 7GB reserved for metadata doesn't work on a device
+that is only 2.5GB to start with.  Even if you elect not to use discard
+or scrub, you'd still need 2.5GB for dup metadata.
+
+btrfs has two ways to deal with this: mixed block groups (mixed-bg mkfs
+option), which puts all the space into a single pool with no distinction
+between data and metadata, and reducing block group chunk size for
+non-mixed-bg filesystems.
+
+On a filesystem this size, the block groups use 128MB chunks instead
+of 1GB.  Global reserve is also reduced (it is computed based on device
+size and capped at 512MB).  In this case, the worst case metadata free
+space requirement is 128MB chunk size * (1 disk + 2) + global_reserve
+which works out to 397MB of free metadata space or 794MB of unallocated
+space with dup metadata.
+
+You have 467MB allocated to metadata and most of it is free space, which
+is theoretically enough, but if you count space in terms of block groups,
+it's exactly full--if the first 3 block groups are locked, the 4th block
+group is the last one where space might be allocated, and it's an odd
+size so it might not be large enough.
+
+Mixed block groups (mixed-bg mkfs option) put all the space is in a
+single pot that can be allocated to metadata or data blocks as needed.
+This is the default for filesystems below 1GB, but it's a good idea to
+use mixed-bg for larger filesystems as well because the metadata block
+group locking cost is so high relative to the filesystem size.
+
+While it's possible to use non-mixed block groups on a filesystem that
+has only a few GB, it's not possible to use a significant number of
+btrfs features, including scrub, balance, RAID disk replacement, online
+conversion to other RAID profiles, device shrink, or discard, due to
+the requirement to have an extra unlocked block group with available
+free space during these operations.
