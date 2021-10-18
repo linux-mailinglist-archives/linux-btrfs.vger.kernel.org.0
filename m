@@ -2,269 +2,221 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D578E432937
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 23:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C8F432A94
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 01:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhJRVow (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 17:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
+        id S229767AbhJSABs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 20:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbhJRVot (ORCPT
+        with ESMTP id S229529AbhJSABs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 17:44:49 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05E5C06161C
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 14:42:36 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id g5so12230449plg.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 14:42:36 -0700 (PDT)
+        Mon, 18 Oct 2021 20:01:48 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBDFC061745
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 16:59:36 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso630511pjb.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 16:59:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ucZC5BCGNyxrQBEot0+HU8GWXQblK/3JqLzP8t4XKMs=;
-        b=K03Dz0r/i4QYoiLUTtVhfsK9BHHphGMbxAICxyfFD97bNWh4QwGEOactJhcSeZKOa2
-         mLiLNe1UG3Weh77JXmEHgcpIl3kVHMmmnGYmbqUA+d90cUa3C1hqhqp9Wa5sOCYsBsGw
-         GL8R3GyuKbonfBPDaqOauSnKAAc1Pbo59LfKyanvICViW7nCGBIUUBxhSluRz7fvCdfp
-         Qo+cxtzvIaQW6ZYOImP0xTh3VosEmiowACZm4R4/2gX+CwqRpyPIn6+Gf8hVY5l3RgPX
-         YcL9Ry0Wcc+2I2EslMV8p7byEcCfQHpcd8OJSmrlJS1U/z4J+21I+eV2iJGj7WvyqPfT
-         AGrg==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=kCfAcXfSZmpdUMRIm8W78nTUzYpVwemnoTIkzIHJLTw=;
+        b=afv5+t1zsEFSFJaVXkuxWHZfTBrZws2SKHe2ubGWMJuIRTWHRqVC8n7wYF5E5OR406
+         MF3a06zw6cl/lVR6r8UvxTahXYIEgRmWFRBnO5cFabB4EOJJiGlGp5nE0y3dC0VQNJTe
+         1fDujMHy7fGExMaC/CZmyFuH4Ki1n3QcNWZCWNJjlL7YKKBCWljvlvd8TMeWFHYsRDzz
+         yNPLFtAU3KY7rtvu0zfX0KkVEvKoWmbjOl1BqqnEMxMi4tJRENMq/GIQ132Ys+gQdrFx
+         Whg8UjfVz/RyuPrdO4e5+CuVEfg8rwylPKMmkuE2JYVfaYxmHWV3RBhkI8qym+c0FEoY
+         0VRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ucZC5BCGNyxrQBEot0+HU8GWXQblK/3JqLzP8t4XKMs=;
-        b=3eygWTgQEadRLWHmcu8XruZXveJ00alpk9W2cb6PiuPzfPhI73MOT2ba9oMiOe70Yw
-         /MwF85EL1yoppzs1oMiJGI8ooj1aIhvxxAREr6MBYEEj9UBnB3YCagh1M4h1GPgLU1Rr
-         NBitYSanAXX5/E0iQGBNCkaq6bFno6BwcGl7Kwi7ZQILTYEolNt5tZ6TOkw/8BuLVprv
-         opsTwa+KVoBz8Ic0Feo5qj4Vk+LU6gIBGUPj5/F7xodXjjmlVP5vqctBFxUGjHAPaVl0
-         sEz56Y4jpU96xaEzZKo3S3E37uxgmF5Z08hSlspYEZ7w24b0gUacE1XMNBeAOqC312cy
-         yPBQ==
-X-Gm-Message-State: AOAM533s3srUEccG4dR42kxuJPBmTlnTHNZeXgOkPLg4u4IyB3P//L8b
-        mUkI+726+duG6Lm0TlOnVgjOnw==
-X-Google-Smtp-Source: ABdhPJwN/Ci1gfYE6T31lK4ORssre4o8LzQde4mpZs6xUlZUI8xRyzor3nfQI2YE7Fci9PFJ611F0Q==
-X-Received: by 2002:a17:902:ba8e:b0:13e:c690:5acb with SMTP id k14-20020a170902ba8e00b0013ec6905acbmr29561196pls.63.1634593356116;
-        Mon, 18 Oct 2021 14:42:36 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=kCfAcXfSZmpdUMRIm8W78nTUzYpVwemnoTIkzIHJLTw=;
+        b=gEiY3WNtVrSPqpAKD/pim2S8rhTxPtfq/m3R+r/z4HsZ5pbZpCAwLkP2nZw4v6CGFw
+         2EOCt26pBHuLLt0ombKOd+AnsrUll8K1A8oLJpAnsTz8MsKPU2D5+pl45l4MfmGM+28e
+         fnnkCckY0MvImIt4BiHtfP5N/nLzw3iaOAxZQd/K2CBel29pdWOxGw3EEsmxm5jXUCnL
+         wLkQP7Sx2CFzxEX14rIc98s9/Q91DsuYADI1fwlnlPuZ2cP7Hd0KiPZLUlD63152kpHu
+         Olc2X2zkhHk1zZBNSLy97FCKPe1u9zttVLprNYILmKmv44+b8LQrGyas1vGLOT8gGPaw
+         2+gg==
+X-Gm-Message-State: AOAM533y0A/nStRhdwiNUwQHFX1Rgq1hscQrwkl4rMMG2REgsO3M42Ps
+        xlVTRStac8BPoVBjF7XHFtVjSA==
+X-Google-Smtp-Source: ABdhPJxFosX6UkBjViRm7sGWSkIGK6R8YUkeTfu16VF1r/YTy+B4YxrNfxmO/k7TOWbyiqyoaBM6dw==
+X-Received: by 2002:a17:903:2003:b0:13f:9c2d:93ac with SMTP id s3-20020a170903200300b0013f9c2d93acmr18830060pla.42.1634601576007;
+        Mon, 18 Oct 2021 16:59:36 -0700 (PDT)
 Received: from relinquished.localdomain ([2620:10d:c090:400::5:b911])
-        by smtp.gmail.com with ESMTPSA id l19sm13583979pff.131.2021.10.18.14.42.35
+        by smtp.gmail.com with ESMTPSA id x10sm14601846pfn.172.2021.10.18.16.59.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 14:42:35 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 14:42:34 -0700
+        Mon, 18 Oct 2021 16:59:35 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 16:59:33 -0700
 From:   Omar Sandoval <osandov@osandov.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, nborisov@suse.com
-Subject: Re: [PATCH RFC] btrfs-progs: send protocol v2 stub, UTIMES2, OTIME
-Message-ID: <YW3qStSa9LiaankG@relinquished.localdomain>
-References: <20211018144109.18442-1-dsterba@suse.com>
- <20211018144717.20275-1-dsterba@suse.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH v11 08/14] btrfs: add BTRFS_IOC_ENCODED_READ
+Message-ID: <YW4KZd4gGKVen4p4@relinquished.localdomain>
+References: <cover.1630514529.git.osandov@fb.com>
+ <c8c9bc3a546359bda7420d92d3d61d1023c1cb96.1630514529.git.osandov@fb.com>
+ <4a64bf3a-b691-1986-80c8-21ddf9e446a0@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211018144717.20275-1-dsterba@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4a64bf3a-b691-1986-80c8-21ddf9e446a0@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 04:47:17PM +0200, David Sterba wrote:
-> This is counterpart for the protocol version update.
+On Fri, Oct 15, 2021 at 02:45:46PM +0300, Nikolay Borisov wrote:
 > 
-> - version 2 protocol
-> - new protocol command UTIMES2, same as utimes with additional otime
->   data
-> - send: add command line options to specify version, compare against
->   current running kernel supported version
-> - receive: parse UTIMES2
-> - receive: parse OTIME
 > 
-> TODO:
+> On 1.09.21 г. 20:01, Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
+> > 
+> > There are 4 main cases:
+> > 
+> > 1. Inline extents: we copy the data straight out of the extent buffer.
+> > 2. Hole/preallocated extents: we fill in zeroes.
+> > 3. Regular, uncompressed extents: we read the sectors we need directly
+> >    from disk.
+> > 4. Regular, compressed extents: we read the entire compressed extent
+> >    from disk and indicate what subset of the decompressed extent is in
+> >    the file.
+> > 
+> > This initial implementation simplifies a few things that can be improved
+> > in the future:
+> > 
+> > - We hold the inode lock during the operation.
+> > - Cases 1, 3, and 4 allocate temporary memory to read into before
+> >   copying out to userspace.
+> > - We don't do read repair, because it turns out that read repair is
+> >   currently broken for compressed data.
+> > 
+> > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> > ---
+> >  fs/btrfs/ctree.h |   4 +
+> >  fs/btrfs/inode.c | 489 +++++++++++++++++++++++++++++++++++++++++++++++
+> >  fs/btrfs/ioctl.c | 111 +++++++++++
+> >  3 files changed, 604 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > index b95ec5fb68d5..cbd7e07c1c34 100644
+> > --- a/fs/btrfs/ctree.h
+> > +++ b/fs/btrfs/ctree.h
+> > @@ -3223,6 +3223,10 @@ int btrfs_writepage_cow_fixup(struct page *page);
+> >  void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
+> >  					  struct page *page, u64 start,
+> >  					  u64 end, bool uptodate);
+> > +struct btrfs_ioctl_encoded_io_args;
+> > +ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter,
+> > +			   struct btrfs_ioctl_encoded_io_args *encoded);
+> > +
+> >  extern const struct dentry_operations btrfs_dentry_operations;
+> >  extern const struct iomap_ops btrfs_dio_iomap_ops;
+> >  extern const struct iomap_dio_ops btrfs_dio_ops;
+> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> > index a87a34f56234..1940f22179ba 100644
+> > --- a/fs/btrfs/inode.c
+> > +++ b/fs/btrfs/inode.c
+> > @@ -10500,6 +10500,495 @@ void btrfs_set_range_writeback(struct btrfs_inode *inode, u64 start, u64 end)
+> >  	}
+> >  }
+> >  
 > 
-> - libbtrfs compatibility is missing, ie. this will break anything that
->   uses send stream (snapper), this needs library version update and
->   maybe some ifdefs in the headers
+> <snip>
 > 
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> ---
->  cmds/receive-dump.c  | 31 ++++++++++++++++-
->  cmds/receive.c       | 79 ++++++++++++++++++++++++++++++++++++++++++++
->  cmds/send.c          | 66 ++++++++++++++++++++++++++++++++++--
->  common/send-stream.c | 14 ++++++++
->  common/send-stream.h |  5 +++
->  ioctl.h              | 12 +++++--
->  kernel-shared/send.h | 11 +++++-
->  7 files changed, 212 insertions(+), 6 deletions(-)
+> > +
+> > +static blk_status_t btrfs_encoded_read_check_bio(struct btrfs_io_bio *io_bio)
 > 
-> diff --git a/cmds/receive.c b/cmds/receive.c
-> index 4d123a1f8782..dfb37a502598 100644
-> --- a/cmds/receive.c
-> +++ b/cmds/receive.c
-> @@ -967,6 +967,83 @@ static int process_utimes(const char *path, struct timespec *at,
->  	return ret;
->  }
->  
-> +static int process_utimes2(const char *path, struct timespec *at,
-> +			  struct timespec *mt, struct timespec *ct,
-> +			  struct timespec *ot, void *user)
-> +{
-> +	int ret = 0;
-> +	struct btrfs_receive *rctx = user;
-> +	char full_path[PATH_MAX];
-> +	struct timespec tv[2];
-> +
-> +	ret = path_cat_out(full_path, rctx->full_subvol_path, path);
-> +	if (ret < 0) {
-> +		error("utimes2: path invalid: %s", path);
-> +		goto out;
-> +	}
-> +
-> +	if (bconf.verbose >= 3)
-> +		fprintf(stderr, "utimes2 %s\n", path);
-> +
-> +	tv[0] = *at;
-> +	tv[1] = *mt;
-> +	ret = utimensat(AT_FDCWD, full_path, tv, AT_SYMLINK_NOFOLLOW);
-> +	if (ret < 0) {
-> +		ret = -errno;
-> +		error("utimes2 %s failed: %m", path);
-> +		goto out;
-> +	}
-> +
-> +out:
-> +	return ret;
-> +}
-> +
-> +/* TODO: Copied from receive-dump.c */
-> +static int sprintf_timespec(struct timespec *ts, char *dest, int max_size)
-> +{
-> +	struct tm tm;
-> +	int ret;
-> +
-> +	if (!localtime_r(&ts->tv_sec, &tm)) {
-> +		error("failed to convert time %lld.%.9ld to local time",
-> +		      (long long)ts->tv_sec, ts->tv_nsec);
-> +		return -EINVAL;
-> +	}
-> +	ret = strftime(dest, max_size, "%FT%T%z", &tm);
-> +	if (ret == 0) {
-> +		error(
-> +		"time %lld.%ld is too long to convert into readable string",
-> +		      (long long)ts->tv_sec, ts->tv_nsec);
-> +		return -EINVAL;
-> +	}
-> +	return 0;
-> +}
-> +
-> +
-> +static int process_otime(const char *path, struct timespec *ot, void *user)
-> +{
-> +	int ret;
-> +	struct btrfs_receive *rctx = user;
-> +	char full_path[PATH_MAX];
-> +
-> +	ret = path_cat_out(full_path, rctx->full_subvol_path, path);
-> +	if (ret < 0) {
-> +		error("otime: path invalid: %s", path);
-> +		goto out;
-> +	}
-> +
-> +	if (bconf.verbose >= 3) {
-> +		char ot_str[128];
-> +
-> +		if (sprintf_timespec(ot, ot_str, sizeof(ot_str) - 1) < 0)
-> +			goto out;
-> +		fprintf(stderr, "otime %s\n", ot_str);
-> +	}
-> +
-> +out:
-> +	return 0;
-> +}
+> nit: The gist of this function is to check the csum so how about
+> renaming it to btrfs_encoded_read_verify_csum
 
-Are you planning to do anything with otime (e.g., storing it in an
-xattr) in the future?
+Good point, will do.
 
->  static int do_receive(struct btrfs_receive *rctx, const char *tomnt,
-> diff --git a/cmds/send.c b/cmds/send.c
-> index 1810233137aa..f529f0b0a6a0 100644
-> --- a/cmds/send.c
-> +++ b/cmds/send.c
-> @@ -57,6 +57,8 @@ struct btrfs_send {
->  	u64 clone_sources_count;
->  
->  	char *root_path;
-> +	u32 proto;
-> +	u32 proto_supported;
->  };
->  
->  static int get_root_id(struct btrfs_send *sctx, const char *path, u64 *root_id)
-> @@ -257,6 +259,13 @@ static int do_send(struct btrfs_send *send, u64 parent_root_id,
->  	memset(&io_send, 0, sizeof(io_send));
->  	io_send.send_fd = pipefd[1];
->  	send->send_fd = pipefd[0];
-> +	io_send.flags = flags;
-> +
-> +	if (send->proto_supported > 1) {
-> +		/* Versioned stream supported, requesting default or specific number */
-> +		io_send.version = send->proto;
-> +		io_send.flags |= BTRFS_SEND_FLAG_VERSION;
-> +	}
->  
->  	if (!ret)
->  		ret = pthread_create(&t_read, NULL, read_sent_data, send);
-> @@ -267,7 +276,6 @@ static int do_send(struct btrfs_send *send, u64 parent_root_id,
->  		goto out;
->  	}
->  
-> -	io_send.flags = flags;
->  	io_send.clone_sources = (__u64*)send->clone_sources;
->  	io_send.clone_sources_count = send->clone_sources_count;
->  	io_send.parent_root = parent_root_id;
-> @@ -275,6 +283,7 @@ static int do_send(struct btrfs_send *send, u64 parent_root_id,
->  		io_send.flags |= BTRFS_SEND_FLAG_OMIT_STREAM_HEADER;
->  	if (!is_last_subvol)
->  		io_send.flags |= BTRFS_SEND_FLAG_OMIT_END_CMD;
-> +
->  	ret = ioctl(subvol_fd, BTRFS_IOC_SEND, &io_send);
->  	if (ret < 0) {
->  		ret = -errno;
-> @@ -419,6 +428,33 @@ static void free_send_info(struct btrfs_send *sctx)
->  	sctx->root_path = NULL;
->  }
->  
-> +static u32 get_sysfs_proto_supported(void)
-> +{
-> +	int fd;
-> +	int ret;
-> +	char buf[32] = {};
-> +	char *end = NULL;
-> +	u64 version;
-> +
-> +	fd = sysfs_open_file("features/send_stream_version");
-> +	if (fd < 0) {
-> +		/* No file is either no version support or old kernel with just v1 */
-> +		return 1;
-> +	}
-> +	ret = sysfs_read_file(fd, buf, sizeof(buf));
-> +	close(fd);
-> +	if (ret <= 0)
-> +		return 1;
-> +	version = strtoull(buf, &end, 10);
-> +	if (version == ULLONG_MAX && errno == ERANGE)
-> +		return 1;
-> +	if (version > U32_MAX) {
-> +		warning("sysfs/send_stream_version too big: %llu", version);
-> +		version = 1;
-> +	}
-> +	return version;
-> +}
-> +
->  static const char * const cmd_send_usage[] = {
->  	"btrfs send [-ve] [-p <parent>] [-c <clone-src>] [-f <outfile>] <subvol> [<subvol>...]",
->  	"Send the subvolume(s) to stdout.",
-> @@ -447,6 +483,7 @@ static const char * const cmd_send_usage[] = {
->  	"                 does not contain any file data and thus cannot be used",
->  	"                 to transfer changes. This mode is faster and useful to",
->  	"                 show the differences in metadata.",
-> +	"--proto N        request maximum protocol version N (default: highest supported by running kernel)",
+> > +
+> > +static void btrfs_encoded_read_endio(struct bio *bio)
+> > +{
+> > +	struct btrfs_encoded_read_private *priv = bio->bi_private;
+> > +	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
+> > +	blk_status_t status;
+> > +
+> > +	status = btrfs_encoded_read_check_bio(io_bio);
+> > +	if (status) {
+> > +		/*
+> > +		 * The memory barrier implied by the atomic_dec_return() here
+> > +		 * pairs with the memory barrier implied by the
+> > +		 * atomic_dec_return() or io_wait_event() in
+> 
+> nit: I think atomic_dec_return in read_regular_fill_pages is
+> inconsequential, what we want to ensure is that when the caller of
+> io_wait_event is woken up by this thread it will observe the
+> priv->status, which it will, because the atomic-dec_return in this
+> function has paired with the general barrier interpolated by wait_event.
+> 
+> So for brevity just leave the text to say "by io_wait_event".
 
-Can we default to version 1 and provide a way to opt in to the latest
-version? I'm concerned with a kernel upgrade suddenly creating a send
-stream that the receiving side can't handle. Making this opt-in rather
-than opt-out seems safer.
+Considering that there is a code path in
+btrfs_encoded_read_regular_fill_pages() where atomic_dec_return() is
+called but io_wait_event() isn't, I think it's important to mention
+both. (This path should be fairly rare, since it can only happen if all
+of the bios are completed before the submitting thread checks the
+pending counter. But, it's a possible code path, and I wouldn't want
+someone reading the comment to be confused and think that we're missing
+a barrier in that case.)
+
+> > +		 * btrfs_encoded_read_regular_fill_pages() to ensure that this
+> > +		 * write is observed before the load of status in
+> > +		 * btrfs_encoded_read_regular_fill_pages().
+> > +		 */
+> > +		WRITE_ONCE(priv->status, status);
+> > +	}
+> > +	if (!atomic_dec_return(&priv->pending))
+> > +		wake_up(&priv->wait);
+> > +	btrfs_io_bio_free_csum(io_bio);
+> > +	bio_put(bio);
+> > +}
+> 
+> <snip>
+> 
+> > @@ -4824,6 +4841,94 @@ static int _btrfs_ioctl_send(struct file *file, void __user *argp, bool compat)
+> >  	return ret;
+> >  }
+> >  
+> 
+> <snip>
+> 
+> > +	memset((char *)&args + copy_end_kernel, 0,
+> > +	       sizeof(args) - copy_end_kernel);
+> 
+> nit: This memset can be eliminated ( in source) by marking args = {};
+> and just leaving copy from user above.
+
+args = {} results in slightly worse generated code, but that doesn't
+really matter here, so I'll change it.
+
+> > +
+> > +	ret = import_iovec(READ, args.iov, args.iovcnt, ARRAY_SIZE(iovstack),
+> > +			   &iov, &iter);
+> > +	if (ret < 0)
+> > +		goto out_acct;
+> > +
+> > +	if (iov_iter_count(&iter) == 0) {
+> > +		ret = 0;
+> > +		goto out_iov;
+> > +	}
+> > +	pos = args.offset;
+> > +	ret = rw_verify_area(READ, file, &pos, args.len);
+> > +	if (ret < 0)
+> > +		goto out_iov;
+> > +
+> > +	init_sync_kiocb(&kiocb, file);
+> > +	ret = kiocb_set_rw_flags(&kiocb, 0);
+> 
+> This call is a noop due to:
+> 	if (!flags)
+> 		return 0;
+> 
+> in kiocb_set_rw_flags.
+
+Good catch, I'll remove that call.
