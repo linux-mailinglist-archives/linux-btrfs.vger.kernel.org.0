@@ -2,83 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97488430C8D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 00:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D989430DBB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 03:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344746AbhJQWRJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 17 Oct 2021 18:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
+        id S243149AbhJRCAF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 17 Oct 2021 22:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344720AbhJQWRJ (ORCPT
+        with ESMTP id S235368AbhJRCAD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 17 Oct 2021 18:17:09 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279A2C06161C
-        for <linux-btrfs@vger.kernel.org>; Sun, 17 Oct 2021 15:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=dirtcellar.net; s=ds202012; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Reply-To:Sender:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=BzmQql/QV0n+QoTwHNWIcJ+wZmnEC+OPJhvy7PL7mDU=; b=3YqBT0pkGlIIN3m+io0bt08E3t
-        EFNYKpw3lfNUJLzb9Gkxp2Qe1gh4YTsIzQkjjtkgn1YAKt2WYyvg42hyQLKFbIRt++wWEe3li8Sd0
-        wIGJ/bV/YfOJP53QLJSzKmq63QZj5XyHoNdOCvSBqw/JxjBeyxNrYbmcWNmNC6nMw+VLFyLZBuVkX
-        ijxKF11foPKD5J8wkzKMmnHqZsFz/eOel03FLkXlJxJPiuyywMneeq0zwoezDIqEvuX2vVXFWoEDm
-        ZkyIdfKXoHmPplFomgBuBCeRZiVxHwRC6HWwxub9nsWKn/xw4JXOCcLsfr0MVxEBC8YqjdFC0eibi
-        h+b0wOOg==;
-Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:20575 helo=[10.0.0.10])
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <waxhead@dirtcellar.net>)
-        id 1mcEQh-0005PL-Rd; Mon, 18 Oct 2021 00:14:55 +0200
-Reply-To: waxhead@dirtcellar.net
-Subject: Re: Ubuntu 21.10, raid1c3, and grub
-To:     Neal Gompa <ngompa13@gmail.com>, Jim Davis <jim.epost@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CA+r1ZhgCPB0JYyfC=pRK3mP0_xXGfTW9YpYV0RtYZ_pDMdYCOg@mail.gmail.com>
- <CAEg-Je8Ao8VdZsajsuNheysqM=zjwZ+d9MowhEygfV63f6Qy9w@mail.gmail.com>
-From:   waxhead <waxhead@dirtcellar.net>
-Message-ID: <5dd76af5-60a6-99bf-0d3e-94f162a898cf@dirtcellar.net>
-Date:   Mon, 18 Oct 2021 00:14:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 SeaMonkey/2.53.9.1
+        Sun, 17 Oct 2021 22:00:03 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E2BC06161C
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Oct 2021 18:57:52 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id u32so1487834ybd.9
+        for <linux-btrfs@vger.kernel.org>; Sun, 17 Oct 2021 18:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=flixKfvlsofL+vnRr68i2/HaFWpVxj1h+60FOp6NOfg=;
+        b=wUG2EbrFACk2z9g0T4VCufik16lP3GcW2bnCNz4pErYyxaGW7nGzdFjBSscqfg9ugR
+         J0DEVfez/nwg3EPDy5u2fonqyDC6CzxWK16oniGaI/09EfPK9tkw8YzmBNi3utQm2jUN
+         6ncLC89Zi2SRUi7z0ki2pK2Ps320WhRjdxhrpVDWrIXFCl7nymo6LtjQQbosqmjElWyE
+         gKnARzv2946eECFo/gB9R4Tcll0esI0vXQkw6Lyi+TVDZ3aFAzIxZ2Wb9/O2WcRocVa6
+         lqz8ozJ+NFs7Vk4ENlABEb2hqF0YmrG0dJyB14WoNSQnu7HdElFsSfRLfFn6peI1im6G
+         wxpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=flixKfvlsofL+vnRr68i2/HaFWpVxj1h+60FOp6NOfg=;
+        b=lLqfqVS4QEfjErTBqSWv85+pZkvh1D+oY9Zc7JUyhxdP7MGJEwkWlZ3/mCYYl0wuJB
+         FwYKfWJ/BjIzMofwEmqIo+O4cN4atyaHPyJghX+fKJNbGfoFrJcaL7JxyzRldscGZdcV
+         ATl42xrmh+97pKogjwNv52baDXg/sRrVf+2gmHuyMbOE8vnKnHpHBJs+KNX5IUh0TZXl
+         qSV+efOnFrSPHY2qt9zzqNdvqxPjCHak09bbUBBttnGD93em+ky5Iz1mHAbbx3Tir/Sq
+         noVer4E6H62ffEaesMhjXt+q12gn8f17RwCGzKudfZQKnjDdJwbTUVPDrLijS56g6DNq
+         EbVw==
+X-Gm-Message-State: AOAM5333sQId56WoC190ZC/SJdHVB8bQjfSjmwjfQhD0OkHtNYtJ+9PE
+        A+op3s1k4ygSsfftel1hzOI0Uvu4d6plRW+nrzyaTg==
+X-Google-Smtp-Source: ABdhPJzTm2ro1bA+FGmusVqM9X2H20cuvHPrRIRw5PVfKLgtr8Nq0z0ihEZpA4vfc/KnRXvEHYjNwFTDqmT20w6tjKw=
+X-Received: by 2002:a25:db49:: with SMTP id g70mr24807023ybf.341.1634522272170;
+ Sun, 17 Oct 2021 18:57:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEg-Je8Ao8VdZsajsuNheysqM=zjwZ+d9MowhEygfV63f6Qy9w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
+ <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com> <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
+ <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com>
+ <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com> <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
+ <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com> <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
+ <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com> <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
+ <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com> <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
+ <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
+In-Reply-To: <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sun, 17 Oct 2021 21:57:36 -0400
+Message-ID: <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
+Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Neal Gompa wrote:
-> On Sun, Oct 17, 2021 at 6:37 AM Jim Davis <jim.epost@gmail.com> wrote:
->>
->> I've been trying some experiments with raid1c3 on a qemu virtual
->> machine running Ubuntu 21.10.  Choosing btrfs initially as the root
->> file system during installation works just fine.
->>
->> Adding a new virtual disk to btrfs root file system and running btrfs
->> balance with -mconvert=raid1 and -dconvert=raid1 works too -- the vm
->> reboots with no problems.
->>
->> Adding another new virtual disk to btrfs root file system and running
->> btrfs balance again, with -mconvert=raid1c3 and -dconvert=raid1c3 and
->> then rebooting doesn't work: the vm drops into grub rescue with a
->> cryptic
->>
->> error: unsupported RAID flags 202
->>
->> message.  Any ideas?
->>
-> 
-> Support for the raid1cX modes was added to GRUB in GRUB 2.06. The
-> Debian family (including Ubuntu) has not upgraded yet, nor have they
-> backported the support to their custom release of GRUB 2.04 yet. I
-> would suggest filing a bug with Ubuntu to backport the following
-> commit: https://git.savannah.gnu.org/cgit/grub.git/commit/grub-core/fs/btrfs.c?id=495781f5ed1b48bf27f16c53940d6700c181c74c
-> 
-This would be useful information to have on the STATUS page for 
-RAID1c3/RAID1c4 as well. I am on Debian and had to discover this the 
-hard way when I believed that Grub 2.04 *had* this backported , which it 
-of course has not...
+Any update on this problem and whether+what more info is needed?
+
+Thanks,
+Chris Murphy
+
+On Wed, Oct 13, 2021 at 3:21 PM Chris Murphy <lists@colorremedies.com> wrote:
+>
+> From the downstream bug:
+>
+> [root@openqa-a64-worker03 adamwill][PROD]#
+> /usr/src/kernels/5.14.9-300.fc35.aarch64/scripts/faddr2line
+> /usr/lib/debug/lib/modules/5.14.9-300.fc35.aarch64/vmlinux
+> submit_compressed_extents+0x38
+> submit_compressed_extents+0x38/0x3d0:
+> submit_compressed_extents at
+> /usr/src/debug/kernel-5.14.9/linux-5.14.9-300.fc35.aarch64/fs/btrfs/inode.c:845
+> [root@openqa-a64-worker03 adamwill][PROD]#
+>
+> https://bugzilla.redhat.com/show_bug.cgi?id=2011928#c26
+>
+> Also curious: this problem is only happening in openstack
+> environments, as if the host environment matters. Does that make
+> sense?
+>
+>
+> --
+> Chris Murphy
+
+
+
+-- 
+Chris Murphy
