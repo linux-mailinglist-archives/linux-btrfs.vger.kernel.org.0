@@ -2,449 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7163F431805
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 13:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9F8431787
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 13:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbhJRLvL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 07:51:11 -0400
-Received: from 7.mo575.mail-out.ovh.net ([46.105.63.230]:35259 "EHLO
-        7.mo575.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhJRLvH (ORCPT
+        id S231293AbhJRLjG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 07:39:06 -0400
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:58426 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229644AbhJRLjF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 07:51:07 -0400
-X-Greylist: delayed 2126 seconds by postgrey-1.27 at vger.kernel.org; Mon, 18 Oct 2021 07:51:06 EDT
-Received: from player698.ha.ovh.net (unknown [10.110.115.246])
-        by mo575.mail-out.ovh.net (Postfix) with ESMTP id 3138022C21
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 11:13:28 +0000 (UTC)
-Received: from RCM-web4.webmail.mail.ovh.net (89-64-40-92.dynamic.chello.pl [89.64.40.92])
-        (Authenticated sender: mailing@dmilz.net)
-        by player698.ha.ovh.net (Postfix) with ESMTPSA id 070D7234BCBBF
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 11:13:28 +0000 (UTC)
+        Mon, 18 Oct 2021 07:39:05 -0400
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 8C1C96C006B5;
+        Mon, 18 Oct 2021 14:36:53 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1634557013; bh=JfdzXZKXfkwbmcztWdVVHAV/miQkeB7kDeVXkUa6mPs=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to;
+        b=TxB8qH4PUMHvfU6AuqvXZWJi5zYWJ6S9fvHM8QYlvbtLQBHSjxzH6KXCkilQSKXjj
+         UGgEFoe9CB3hOQKT0tTPOb5PtFOuKfhnqEaBIghQ2Rylmk/wr9OZ+eZa7Qxf7NrCcM
+         D4Ub3Y/CzhFkimnwjDuPfEeCVrr10ozb5TngkfH4=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 7D9B96C0064C;
+        Mon, 18 Oct 2021 14:36:53 +0300 (EEST)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id nofNrepfqVDD; Mon, 18 Oct 2021 14:36:53 +0300 (EEST)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 431526C005AB;
+        Mon, 18 Oct 2021 14:36:53 +0300 (EEST)
+Received: from nas (unknown [121.237.225.130])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 64FC41BE00C8;
+        Mon, 18 Oct 2021 14:36:51 +0300 (EEST)
+References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
+ <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com>
+ <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
+ <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com>
+ <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com>
+ <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
+ <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com>
+ <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
+ <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com>
+ <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
+ <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com>
+ <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
+ <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
+ <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
+User-agent: mu4e 1.7.0; emacs 27.2
+From:   Su Yue <l@damenly.su>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
+Date:   Mon, 18 Oct 2021 19:32:08 +0800
+In-reply-to: <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
+Message-ID: <bl3mimya.fsf@damenly.su>
 MIME-Version: 1.0
-Date:   Mon, 18 Oct 2021 13:13:27 +0200
-From:   mailing@dmilz.net
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: Filesystem Read Only due to errno=-28 during metadata allocation
-In-Reply-To: <f2ed8b05b03db6a4fec4cba7ed17222a@dmilz.net>
-References: <f2ed8b05b03db6a4fec4cba7ed17222a@dmilz.net>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <cf9398e622007944806e237c105b1e2f@dmilz.net>
-X-Sender: mailing@dmilz.net
-X-Originating-IP: 89.64.40.92
-X-Webmail-UserID: mailing@dmilz.net
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 6257751685147261557
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddvtddgfeehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpeggfffhvffujghffgfkgihitgfgsehtjehjtddtredvnecuhfhrohhmpehmrghilhhinhhgsegumhhilhiirdhnvghtnecuggftrfgrthhtvghrnhepueekveetkeelgefgjeekheekteeugefgvedtgfehudfggeelkeeuuddugfeugfelnecukfhppedtrddtrddtrddtpdekledrieegrdegtddrledvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrieelkedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehmrghilhhinhhgsegumhhilhiirdhnvghtpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: 6N1mkZY9ZDPk1R69MAjTdngr1kpEXe/k5eW51wNbnn7kMC2EYip5XRGxnW10RX+5ujkX
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 13.10.2021 14:35, mailing@dmilz.net wrote:
-> Hello,
-> 
-> I faced issue with btrfs FS /var forced to RO due to errno=-28 (no 
-> space left).
-> 
-> The server was restarted to bring back FS in RW.
-> 
-> Before reboot:
-> $ btrfs fi usage /var -m
-> Overall:
->     Device size:         2560.00MiB
->     Device allocated:         2559.00MiB
->     Device unallocated:            1.00MiB
->     Device missing:            0.00MiB
->     Used:         1116.00MiB
->     Free (estimated):          451.25MiB (min: 451.25MiB)
->     Data ratio:               1.00
->     Metadata ratio:               2.00
->     Global reserve:           13.00MiB (used: 0.00MiB)
-> 
-> Data,single: Size:1559.25MiB, Used:1108.00MiB
->    /dev/mapper/rootvg-varvol 1559.25MiB
-> 
-> Metadata,DUP: Size:467.88MiB, Used:3.94MiB
->    /dev/mapper/rootvg-varvol  935.75MiB
-> 
-> System,DUP: Size:32.00MiB, Used:0.06MiB
->    /dev/mapper/rootvg-varvol   64.00MiB
-> 
-> Unallocated:
->    /dev/mapper/rootvg-varvol    1.00MiB
-> 
-> The FS went RO on Sunday, with this trace:
-> 2021-10-10T00:13:12.790042+02:00 SERVERNAME kernel: BTRFS: Transaction
-> aborted (error -28)
-> 2021-10-10T00:13:12.790053+02:00 SERVERNAME kernel: ------------[ cut
-> here ]------------
-> 2021-10-10T00:13:12.790055+02:00 SERVERNAME kernel: WARNING: CPU: 8
-> PID: 8532 at ../fs/btrfs/extent-tree.c:2353
-> btrfs_run_delayed_refs+0x2b4/0x2c0 [btrfs]
-> 2021-10-10T00:13:12.790057+02:00 SERVERNAME kernel: Modules linked in:
-> lin_tape(OEX) pfo(OEX) nfsv3 nfs_acl nfs lockd grace sunrpc fscache
-> rpadlpar_io(X) rpaphp(X) tcp_diag udp_diag raw_diag inet_diag
-> unix_diag af_packet_diag netlink_diag binfmt_misc af_packet xfs
-> libcrc32c st ch ibmveth(X) vmx_crypto gf128mul crct10dif_vpmsum
-> uio_pdrv_genirq uio rtc_generic btrfs xor zstd_decompress
-> zstd_compress xxhash raid6_pq dm_service_time sd_mod ibmvfc(X)
-> scsi_transport_fc crc32c_vpmsum dm_mirror dm_region_hash dm_log sg
-> dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua scsi_mod
-> autofs4
-> 2021-10-10T00:13:12.790059+02:00 SERVERNAME kernel: Supported: Yes, 
-> External
-> 2021-10-10T00:13:12.790053+02:00 SERVERNAME kernel: ------------[ cut
-> here ]------------
-> 2021-10-10T00:13:12.790055+02:00 SERVERNAME kernel: WARNING: CPU: 8
-> PID: 8532 at ../fs/btrfs/extent-tree.c:2353
-> btrfs_run_delayed_refs+0x2b4/0x2c0 [btrfs]
-> 2021-10-10T00:13:12.790057+02:00 SERVERNAME kernel: Modules linked in:
-> lin_tape(OEX) pfo(OEX) nfsv3 nfs_acl nfs lockd grace sunrpc fscache
-> rpadlpar_io(X) rpaphp(X) tcp_diag udp_diag raw_diag inet_diag
-> unix_diag af_packet_diag netlink_diag binfmt_misc af_packet xfs
-> libcrc32c st ch ibmveth(X) vmx_crypto gf128mul crct10dif_vpmsum
-> uio_pdrv_genirq uio rtc_generic btrfs xor zstd_decompress
-> zstd_compress xxhash raid6_pq dm_service_time sd_mod ibmvfc(X)
-> scsi_transport_fc crc32c_vpmsum dm_mirror dm_region_hash dm_log sg
-> dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua scsi_mod
-> autofs4
-> 2021-10-10T00:13:12.790059+02:00 SERVERNAME kernel: Supported: Yes, 
-> External
-> 2021-10-10T00:13:12.790060+02:00 SERVERNAME kernel: CPU: 8 PID: 8532
-> Comm: vpdupdate Tainted: G W OE 4.12.14-122.83-default #1 SLE12-SP5
-> 2021-10-10T00:13:12.790076+02:00 SERVERNAME kernel: task:
-> c0000068d70c1600 task.stack: c000002aba1a0000
-> 2021-10-10T00:13:12.790078+02:00 SERVERNAME kernel: NIP:
-> d000000035876474 LR: d000000035876470 CTR: 0000000000000000
-> 2021-10-10T00:13:12.790080+02:00 SERVERNAME kernel: REGS:
-> c000002aba1a3870 TRAP: 0700 Tainted: G W OE (4.12.14-122.83-default)
-> 2021-10-10T00:13:12.790081+02:00 SERVERNAME kernel: MSR:
-> 800000010282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE,TM[E]>
-> 2021-10-10T00:13:12.790083+02:00 SERVERNAME kernel: CR: 24444422 XER: 
-> 20040000
-> 2021-10-10T00:13:12.790085+02:00 SERVERNAME kernel: CFAR:
-> c0000000009c817c SOFTE: 1
-> 2021-10-10T00:13:12.790086+02:00 SERVERNAME kernel: GPR00:
-> d000000035876470 c000002aba1a3af0 d000000035993288 0000000000000026
-> 2021-10-10T00:13:12.790088+02:00 SERVERNAME kernel: GPR04:
-> c00000e6bf30ade8 c00000e6bf322a00 0000000000000007 c0000000013ed474
-> 2021-10-10T00:13:12.790090+02:00 SERVERNAME kernel: GPR08:
-> 0000000000000000 c000000000dc16fc 000000e6be550000 000000000000134f
-> 2021-10-10T00:13:12.790091+02:00 SERVERNAME kernel: GPR12:
-> 0000000000004000 c00000000f6c9400 00000000007fffff 0000000000000014
-> 2021-10-10T00:13:12.790093+02:00 SERVERNAME kernel: GPR16:
-> 00000100231aa080 0000010022868988 aaaaaaaaaaaaaaab c000000024ebf778
-> 2021-10-10T00:13:12.790095+02:00 SERVERNAME kernel: GPR20:
-> 0000000000000000 0000000000000000 0000000000000000 c00000e5a1f6eb30
-> 2021-10-10T00:13:12.790097+02:00 SERVERNAME kernel: GPR24:
-> c00000e5a1f6eb20 00000000000016ba c00000e5a1f6e9c0 c00000e6828cc000
-> 2021-10-10T00:13:12.790098+02:00 SERVERNAME kernel: GPR28:
-> c0000014b1bc02d0 0000000000000000 c00000e6828cc000 ffffffffffffffe4
-> 2021-10-10T00:13:12.790100+02:00 SERVERNAME kernel: NIP
-> [d000000035876474] btrfs_run_delayed_refs+0x2b4/0x2c0 [btrfs]
-> 2021-10-10T00:13:12.790101+02:00 SERVERNAME kernel: LR
-> [d000000035876470] btrfs_run_delayed_refs+0x2b0/0x2c0 [btrfs]
-> 2021-10-10T00:13:12.790103+02:00 SERVERNAME kernel: Call Trace:
-> 2021-10-10T00:13:12.790104+02:00 SERVERNAME kernel: [c000002aba1a3af0]
-> [d000000035876470] btrfs_run_delayed_refs+0x2b0/0x2c0 [btrfs]
-> (unreliable)
-> 2021-10-10T00:13:12.790106+02:00 SERVERNAME kernel: [c000002aba1a3bb0]
-> [d000000035891554] btrfs_commit_transaction+0x74/0xc10 [btrfs]
-> 2021-10-10T00:13:12.790108+02:00 SERVERNAME kernel: [c000002aba1a3c80]
-> [d0000000358b3328] btrfs_sync_file+0x3a8/0x510 [btrfs]
-> 2021-10-10T00:13:12.790110+02:00 SERVERNAME kernel: [c000002aba1a3d80]
-> [c000000000408720] vfs_fsync_range+0x70/0x120
-> 2021-10-10T00:13:12.790111+02:00 SERVERNAME kernel: [c000002aba1a3dd0]
-> [c00000000040886c] do_fsync+0x5c/0xb0
-> 2021-10-10T00:13:12.790113+02:00 SERVERNAME kernel: [c000002aba1a3e10]
-> [c000000000408cfc] SyS_fdatasync+0x2c/0x40
-> 2021-10-10T00:13:12.790115+02:00 SERVERNAME kernel: [c000002aba1a3e30]
-> [c00000000000b308] system_call+0x3c/0x130
-> 2021-10-10T00:13:12.790116+02:00 SERVERNAME kernel: Instruction dump:
-> 2021-10-10T00:13:12.790118+02:00 SERVERNAME kernel: e87c0060 3c820000
-> e8848b48 38a0fffb 4bfe6905 60000000 4bffffb4 3c620000
-> 2021-10-10T00:13:12.790120+02:00 SERVERNAME kernel: e8638b38 7fe4fb78
-> 480e3f55 e8410018 <0fe00000> 4bffff98 60000000 3c4c0012
-> 2021-10-10T00:13:12.790122+02:00 SERVERNAME kernel: ---[ end trace
-> c9aa23777165dfdc ]---
-> 2021-10-10T00:13:12.790124+02:00 SERVERNAME kernel: BTRFS: error
-> (device dm-22) in btrfs_run_delayed_refs:2353: errno=-28 No space left
-> 2021-10-10T00:13:12.790125+02:00 SERVERNAME kernel: btrfs_printk: 12
-> callbacks suppressed
-> 2021-10-10T00:13:12.790127+02:00 SERVERNAME kernel: BTRFS info (device
-> dm-22): forced readonly
-> 2021-10-10T00:13:12.790060+02:00 SERVERNAME kernel: CPU: 8 PID: 8532
-> Comm: vpdupdate Tainted: G W OE 4.12.14-122.83-default #1 SLE12-SP5
-> 2021-10-10T00:13:12.790076+02:00 SERVERNAME kernel: task:
-> c0000068d70c1600 task.stack: c000002aba1a0000
-> 2021-10-10T00:13:12.790078+02:00 SERVERNAME kernel: NIP:
-> d000000035876474 LR: d000000035876470 CTR: 0000000000000000
-> 2021-10-10T00:13:12.790080+02:00 SERVERNAME kernel: REGS:
-> c000002aba1a3870 TRAP: 0700 Tainted: G W OE (4.12.14-122.83-default)
-> 2021-10-10T00:13:12.790081+02:00 SERVERNAME kernel: MSR:
-> 800000010282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE,TM[E]>
-> 2021-10-10T00:13:12.790083+02:00 SERVERNAME kernel: CR: 24444422 XER: 
-> 20040000
-> 2021-10-10T00:13:12.790085+02:00 SERVERNAME kernel: CFAR:
-> c0000000009c817c SOFTE: 1
-> 2021-10-10T00:13:12.790086+02:00 SERVERNAME kernel: GPR00:
-> d000000035876470 c000002aba1a3af0 d000000035993288 0000000000000026
-> 2021-10-10T00:13:12.790088+02:00 SERVERNAME kernel: GPR04:
-> c00000e6bf30ade8 c00000e6bf322a00 0000000000000007 c0000000013ed474
-> 2021-10-10T00:13:12.790090+02:00 SERVERNAME kernel: GPR08:
-> 0000000000000000 c000000000dc16fc 000000e6be550000 000000000000134f
-> 2021-10-10T00:13:12.790091+02:00 SERVERNAME kernel: GPR12:
-> 0000000000004000 c00000000f6c9400 00000000007fffff 0000000000000014
-> 2021-10-10T00:13:12.790093+02:00 SERVERNAME kernel: GPR16:
-> 00000100231aa080 0000010022868988 aaaaaaaaaaaaaaab c000000024ebf778
-> 2021-10-10T00:13:12.790095+02:00 SERVERNAME kernel: GPR20:
-> 0000000000000000 0000000000000000 0000000000000000 c00000e5a1f6eb30
-> 2021-10-10T00:13:12.790097+02:00 SERVERNAME kernel: GPR24:
-> c00000e5a1f6eb20 00000000000016ba c00000e5a1f6e9c0 c00000e6828cc000
-> 2021-10-10T00:13:12.790098+02:00 SERVERNAME kernel: GPR28:
-> c0000014b1bc02d0 0000000000000000 c00000e6828cc000 ffffffffffffffe4
-> 2021-10-10T00:13:12.790100+02:00 SERVERNAME kernel: NIP
-> [d000000035876474] btrfs_run_delayed_refs+0x2b4/0x2c0 [btrfs]
-> 2021-10-10T00:13:12.790101+02:00 SERVERNAME kernel: LR
-> [d000000035876470] btrfs_run_delayed_refs+0x2b0/0x2c0 [btrfs]
-> 2021-10-10T00:13:12.790103+02:00 SERVERNAME kernel: Call Trace:
-> 2021-10-10T00:13:12.790104+02:00 SERVERNAME kernel: [c000002aba1a3af0]
-> [d000000035876470] btrfs_run_delayed_refs+0x2b0/0x2c0 [btrfs]
-> (unreliable)
-> 2021-10-10T00:13:12.790106+02:00 SERVERNAME kernel: [c000002aba1a3bb0]
-> [d000000035891554] btrfs_commit_transaction+0x74/0xc10 [btrfs]
-> 2021-10-10T00:13:12.790108+02:00 SERVERNAME kernel: [c000002aba1a3c80]
-> [d0000000358b3328] btrfs_sync_file+0x3a8/0x510 [btrfs]
-> 2021-10-10T00:13:12.790110+02:00 SERVERNAME kernel: [c000002aba1a3d80]
-> [c000000000408720] vfs_fsync_range+0x70/0x120
-> 2021-10-10T00:13:12.790111+02:00 SERVERNAME kernel: [c000002aba1a3dd0]
-> [c00000000040886c] do_fsync+0x5c/0xb0
-> 2021-10-10T00:13:12.790113+02:00 SERVERNAME kernel: [c000002aba1a3e10]
-> [c000000000408cfc] SyS_fdatasync+0x2c/0x40
-> 2021-10-10T00:13:12.790115+02:00 SERVERNAME kernel: [c000002aba1a3e30]
-> [c00000000000b308] system_call+0x3c/0x130
-> 2021-10-10T00:13:12.790116+02:00 SERVERNAME kernel: Instruction dump:
-> 2021-10-10T00:13:12.790118+02:00 SERVERNAME kernel: e87c0060 3c820000
-> e8848b48 38a0fffb 4bfe6905 60000000 4bffffb4 3c620000
-> 2021-10-10T00:13:12.790120+02:00 SERVERNAME kernel: e8638b38 7fe4fb78
-> 480e3f55 e8410018 <0fe00000> 4bffff98 60000000 3c4c0012
-> 2021-10-10T00:13:12.790122+02:00 SERVERNAME kernel: ---[ end trace
-> c9aa23777165dfdc ]---
-> 2021-10-10T00:13:12.790124+02:00 SERVERNAME kernel: BTRFS: error
-> (device dm-22) in btrfs_run_delayed_refs:2353: errno=-28 No space left
-> 2021-10-10T00:13:12.790125+02:00 SERVERNAME kernel: btrfs_printk: 12
-> callbacks suppressed
-> 2021-10-10T00:13:12.790127+02:00 SERVERNAME kernel: BTRFS info (device
-> dm-22): forced readonly
-> 
-> $ btrfs --version
-> btrfs-progs v4.5.3+20160729
-> 
-> $ btrfs fi show /var
-> Label: none  uuid: f96f4980-4682-4d2d-8d7a-3c0e2c1c6680
->         Total devices 1 FS bytes used 1.06GiB
->         devid    1 size 2.50GiB used 2.50GiB path 
-> /dev/mapper/rootvg-varvol
-> 
-> uname -a
-> Linux SERVERNAME 4.12.14-122.83-default #1 SMP Tue Aug 3 08:37:22 UTC
-> 2021 (c86c48c) ppc64le ppc64le ppc64le GNU/Linux
-> 
-> On the previous Friday after weekly balance:
-> btrfs fi usage /var
-> Overall:
->     Device size:                   2.50GiB
->     Device allocated:              1.73GiB
->     Device unallocated:          792.75MiB
->     Device missing:                  0.00B
->     Used:                          1.09GiB
->     Free (estimated):              1.11GiB      (min: 739.62MiB)
->     Data ratio:                       1.00
->     Metadata ratio:                   2.00
->     Global reserve:               13.00MiB      (used: 0.00B)
-> 
-> Data,single: Size:1.41GiB, Used:1.08GiB
->    /dev/mapper/rootvg-varvol       1.41GiB
-> 
-> Metadata,DUP: Size:128.00MiB, Used:3.94MiB
->    /dev/mapper/rootvg-varvol     256.00MiB
-> 
-> System,DUP: Size:32.00MiB, Used:64.00KiB
->    /dev/mapper/rootvg-varvol      64.00MiB
-> 
-> Unallocated:
->    /dev/mapper/rootvg-varvol     792.75MiB
-> 
-> 
-> I don't have extract of btrfs fi usage /var command during the
-> weekend, but a script is extracting the Space allocated ("Size") and
-> Used in Data and Metadata. I observed twice during the weekend space
-> allocated to metadata is suddenly growing while the metadata used
-> remains the same. The first time I had enough "Device unallocated" and
-> no problem was observed, the second (on Sunday after midnight), it
-> leads to FS RO (no space left).
-> 
-> Is there any situation that can lead to metadata allocation but
-> without actual usage of metadata?
 
-Same behavior this weekend (but no RO due to enough Device unallocated), 
-something is allocating space to metadata but is not using it:
+On Sun 17 Oct 2021 at 21:57, Chris Murphy 
+<lists@colorremedies.com> wrote:
 
-### Sat Oct 16 23:59:57 CEST 2021
-Overall:
-     Device size:                        5120.00MiB
-     Device allocated:                   2647.25MiB
-     Device unallocated:                 2472.75MiB
-     Device missing:                        0.00MiB
-     Used:                               1097.75MiB
-     Free (estimated):                   2942.38MiB      (min: 
-1706.00MiB)
-     Data ratio:                               1.00
-     Metadata ratio:                           2.00
-     Global reserve:                       13.00MiB      (used: 0.00MiB)
+> Any update on this problem and whether+what more info is needed?
+>
+It's interesting the OOPS only happens in openstack environment.
+Is it possiable to provide the kernel core dump?
 
-Data,single: Size:1559.25MiB, Used:1089.62MiB
-    /dev/mapper/rootvg-varvol    1559.25MiB
-
-Metadata,DUP: Size:512.00MiB, Used:4.00MiB
-    /dev/mapper/rootvg-varvol    1024.00MiB
-
-System,DUP: Size:32.00MiB, Used:0.06MiB
-    /dev/mapper/rootvg-varvol      64.00MiB
-
-Unallocated:
-    /dev/mapper/rootvg-varvol    2472.75MiB
-
-
-
-### Sun Oct 17 00:00:32 CEST 2021
-Overall:
-     Device size:                        5120.00MiB
-     Device allocated:                   2903.25MiB
-     Device unallocated:                 2216.75MiB
-     Device missing:                        0.00MiB
-     Used:                               1097.44MiB
-     Free (estimated):                   2686.69MiB      (min: 
-1578.31MiB)
-     Data ratio:                               1.00
-     Metadata ratio:                           2.00
-     Global reserve:                       13.00MiB      (used: 0.00MiB)
-
-Data,single: Size:1559.25MiB, Used:1089.31MiB
-    /dev/mapper/rootvg-varvol    1559.25MiB
-
-Metadata,DUP: Size:640.00MiB, Used:4.00MiB
-    /dev/mapper/rootvg-varvol    1280.00MiB
-
-System,DUP: Size:32.00MiB, Used:0.06MiB
-    /dev/mapper/rootvg-varvol      64.00MiB
-
-Unallocated:
-    /dev/mapper/rootvg-varvol    2216.75MiB
-
-
-### Sun Oct 17 00:05:27 CEST 2021
-Overall:
-     Device size:                        5120.00MiB
-     Device allocated:                   2903.25MiB
-     Device unallocated:                 2216.75MiB
-     Device missing:                        0.00MiB
-     Used:                               1099.69MiB
-     Free (estimated):                   2684.44MiB      (min: 
-1576.06MiB)
-     Data ratio:                               1.00
-     Metadata ratio:                           2.00
-     Global reserve:                       13.00MiB      (used: 0.00MiB)
-
-Data,single: Size:1559.25MiB, Used:1091.56MiB
-    /dev/mapper/rootvg-varvol    1559.25MiB
-
-Metadata,DUP: Size:640.00MiB, Used:4.00MiB
-    /dev/mapper/rootvg-varvol    1280.00MiB
-
-System,DUP: Size:32.00MiB, Used:0.06MiB
-    /dev/mapper/rootvg-varvol      64.00MiB
-
-Unallocated:
-    /dev/mapper/rootvg-varvol    2216.75MiB
-
-
-### Sun Oct 17 00:05:32 CEST 2021
-Overall:
-     Device size:                        5120.00MiB
-     Device allocated:                   3159.25MiB
-     Device unallocated:                 1960.75MiB
-     Device missing:                        0.00MiB
-     Used:                               1100.25MiB
-     Free (estimated):                   2427.88MiB      (min: 
-1447.50MiB)
-     Data ratio:                               1.00
-     Metadata ratio:                           2.00
-     Global reserve:                       13.00MiB      (used: 0.00MiB)
-
-Data,single: Size:1559.25MiB, Used:1092.12MiB
-    /dev/mapper/rootvg-varvol    1559.25MiB
-
-Metadata,DUP: Size:768.00MiB, Used:4.00MiB
-    /dev/mapper/rootvg-varvol    1536.00MiB
-
-System,DUP: Size:32.00MiB, Used:0.06MiB
-    /dev/mapper/rootvg-varvol      64.00MiB
-
-Unallocated:
-    /dev/mapper/rootvg-varvol    1960.75MiB
-
-### Sun Oct 17 00:12:53 CEST 2021
-Overall:
-     Device size:                        5120.00MiB
-     Device allocated:                   3159.25MiB
-     Device unallocated:                 1960.75MiB
-     Device missing:                        0.00MiB
-     Used:                               1100.62MiB
-     Free (estimated):                   2427.50MiB      (min: 
-1447.12MiB)
-     Data ratio:                               1.00
-     Metadata ratio:                           2.00
-     Global reserve:                       13.00MiB      (used: 0.00MiB)
-
-Data,single: Size:1559.25MiB, Used:1092.50MiB
-    /dev/mapper/rootvg-varvol    1559.25MiB
-
-Metadata,DUP: Size:768.00MiB, Used:4.00MiB
-    /dev/mapper/rootvg-varvol    1536.00MiB
-
-System,DUP: Size:32.00MiB, Used:0.06MiB
-    /dev/mapper/rootvg-varvol      64.00MiB
-
-Unallocated:
-    /dev/mapper/rootvg-varvol    1960.75MiB
-### Sun Oct 17 00:12:58 CEST 2021
-Overall:
-     Device size:                        5120.00MiB
-     Device allocated:                   2903.25MiB
-     Device unallocated:                 2216.75MiB
-     Device missing:                        0.00MiB
-     Used:                               1100.69MiB
-     Free (estimated):                   2683.44MiB      (min: 
-1575.06MiB)
-     Data ratio:                               1.00
-     Metadata ratio:                           2.00
-     Global reserve:                       13.00MiB      (used: 0.12MiB)
-
-Data,single: Size:1559.25MiB, Used:1092.56MiB
-    /dev/mapper/rootvg-varvol    1559.25MiB
-
-Metadata,DUP: Size:640.00MiB, Used:4.00MiB
-    /dev/mapper/rootvg-varvol    1280.00MiB
-
-System,DUP: Size:32.00MiB, Used:0.06MiB
-    /dev/mapper/rootvg-varvol      64.00MiB
-
-Unallocated:
-    /dev/mapper/rootvg-varvol    2216.75MiB
-
-
-
+--
+Su
+> Thanks,
+> Chris Murphy
+>
+> On Wed, Oct 13, 2021 at 3:21 PM Chris Murphy 
+> <lists@colorremedies.com> wrote:
+>>
+>> From the downstream bug:
+>>
+>> [root@openqa-a64-worker03 adamwill][PROD]#
+>> /usr/src/kernels/5.14.9-300.fc35.aarch64/scripts/faddr2line
+>> /usr/lib/debug/lib/modules/5.14.9-300.fc35.aarch64/vmlinux
+>> submit_compressed_extents+0x38
+>> submit_compressed_extents+0x38/0x3d0:
+>> submit_compressed_extents at
+>> /usr/src/debug/kernel-5.14.9/linux-5.14.9-300.fc35.aarch64/fs/btrfs/inode.c:845
+>> [root@openqa-a64-worker03 adamwill][PROD]#
+>>
+>> https://bugzilla.redhat.com/show_bug.cgi?id=2011928#c26
+>>
+>> Also curious: this problem is only happening in openstack
+>> environments, as if the host environment matters. Does that 
+>> make
+>> sense?
+>>
+>>
+>> --
+>> Chris Murphy
