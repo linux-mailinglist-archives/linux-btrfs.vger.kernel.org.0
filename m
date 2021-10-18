@@ -2,74 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA754323E8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 18:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CDA43247E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 19:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232986AbhJRQgM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 12:36:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41788 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231896AbhJRQgM (ORCPT
+        id S233951AbhJRRSY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 13:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232587AbhJRRSW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 12:36:12 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D7B1621961;
-        Mon, 18 Oct 2021 16:33:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634574839;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CRj3BV9VL0MbfDbu/rfLLLdeuVxcpq+qB3z1KZN/VmI=;
-        b=w0rJeg92DrdShl0fywJ3hNicEcHmAy47ILx1FFGPDL1iGYVqjzTN4p1grdZos6E38sF3ME
-        llqRI8ihSCw/gruqEmY+2G4hiTi9m0oqIH2a0pLaVPIfuei20X3BYh6+Lt2/t4AatZ2stI
-        yfGV3+zd8GbnanTnkw9GnKB8KJ7BJdo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634574839;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CRj3BV9VL0MbfDbu/rfLLLdeuVxcpq+qB3z1KZN/VmI=;
-        b=3JtNzLManpwtw6hYxstRAnZllfEYnZeNciZpX4Hm+n1Lyaw4Zitx1rlx11/1zEtA2ykNyP
-        1XQzmkGXODRPTfBA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id D1AF8A3B83;
-        Mon, 18 Oct 2021 16:33:59 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D2800DA7A3; Mon, 18 Oct 2021 18:33:32 +0200 (CEST)
-Date:   Mon, 18 Oct 2021 18:33:32 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] btrfs: fix a deadlock between chunk allocation
- and chunk tree modifications
-Message-ID: <20211018163332.GP30611@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <cover.1633604360.git.fdmanana@suse.com>
- <cover.1634115580.git.fdmanana@suse.com>
+        Mon, 18 Oct 2021 13:18:22 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D9AC061745
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 10:16:11 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id e144so17178569iof.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 10:16:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TVetvWb4+B/byEt0HFTw7Li/1VctyD/QgsPHbsid4H8=;
+        b=rkRLnHg1S4u8HX11jOSUsmgOu279172YT/qIHLznH/jwI1IdjUhSA0m6I5uyrdNBJQ
+         GZpTrNqHq3BbgsfYzCH0RiwOG+GG3HdSbaxtt1+taUjeE/o2nf0qjkZ23LPZL14mgyVx
+         r5QceDW/MeG8za7F5qhNzSKPR2x7wRt1a8B5T995CSTZ1u9OS6Ch+FzWEBtUbHpcq9AQ
+         KUlG6PBJnMhvawvbI3ONNOa5vJZRKzg+iSpti1pyNyehN+8MHnCAxM/sIrViilbzyvRG
+         Q5nXCXvu4cEFPGfCltmsbNSsOl86kwWVB1XaqYHb9cyqB+54s92TMxyv7jKS0YWyf0KL
+         kSjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TVetvWb4+B/byEt0HFTw7Li/1VctyD/QgsPHbsid4H8=;
+        b=uynw4oucQRUDxymvz7EF4Pd5/M4dSbwm1d1OplFNVNN7cDmaEV+yrY3vH4OJZK2nvR
+         Gi5ubLYODMGZFvPrjfyCXamM/wr8zLcge/HybsLfBGKHHuFIveobi+IvIP/cKsgVm4Ed
+         nkKtPn66/XlUqokZP9wFVbtZzDh5lHi+hzXS3nPkRmU4s/f4EZcCIHXx91d3Rrlvo4jD
+         m0f3m1zeYXUrUoRzUaAQ3mbsZvNa/2ylShVq5AuUwa+H33tXd3nZDHdm7JtMB92UPfnV
+         azw5mi1SP3SnSYq3Bizr2p9Z68TAAU87aRV0uElfQgcSBwcau47EQmtvIsoqf9kLN0kI
+         B1TQ==
+X-Gm-Message-State: AOAM5302Xnyjw5Z3Oz1SHtzSZRY5uX3/U/eLR4wm7IV3793wNBX8PMkS
+        DEVhqAQQDYsbsm6eivwKnkAobQ==
+X-Google-Smtp-Source: ABdhPJz+RKspHd19wACUssDbTNQ6NJRkN4g7OdL6jX2ni5qwlHyFbIbt1tgTl8EVs5WghyoBxus9iA==
+X-Received: by 2002:a02:ac8a:: with SMTP id x10mr745552jan.43.1634577370548;
+        Mon, 18 Oct 2021 10:16:10 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id u12sm7081225ioc.33.2021.10.18.10.16.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Oct 2021 10:16:09 -0700 (PDT)
+Subject: Re: don't use ->bd_inode to access the block device size v3
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
+        Song Liu <song@kernel.org>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
+References: <20211018101130.1838532-1-hch@lst.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4a8c3a39-9cd3-5b2f-6d0f-a16e689755e6@kernel.dk>
+Date:   Mon, 18 Oct 2021 11:16:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1634115580.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20211018101130.1838532-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 10:12:48AM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On 10/18/21 4:11 AM, Christoph Hellwig wrote:
+> Hi Jens,
 > 
-> This fixes a deadlock between a task allocating a metadata or data chunk
-> and a task that is modifying the chunk btree and it's not in a chunk
-> allocation or removal context. The first patch is the fix, the second one
-> just updates a couple comments and it's independent of the fix.
-> 
-> v2: Updated stale comment after the fix (patch 1/2).
-> 
-> v3: Moved the logic to reserve chunk space out of btrfs_search_slot() into
->     every path that modifies the chunk btree (which are the cases listed in
->     the change log of patch 1/2) and updated two more comments in patch 1/2.
+> various drivers currently poke directy at the block device inode, which
+> is a bit of a mess.  This series cleans up the places that read the
+> block device size to use the proper helpers.  I have separate patches
+> for many of the other bd_inode uses, but this series is already big
+> enough as-is,
 
-Added to misc-next, thanks.
+This looks good to me. Followup question, as it's related - I've got a
+hacky patch that caches the inode size in the bdev:
+
+https://git.kernel.dk/cgit/linux-block/commit/?h=perf-wip&id=c754951eb7193258c35a574bd1ccccb7c4946ee4
+
+so we don't have to dip into the inode itself for the fast path. While
+it's obviously not something being proposed for inclusion right now, is
+there a world in which we can make something like that work?
+
+-- 
+Jens Axboe
+
