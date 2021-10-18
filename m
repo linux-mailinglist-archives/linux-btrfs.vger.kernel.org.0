@@ -2,201 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526C64326FA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 20:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B9B432907
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 23:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhJRTAT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 15:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
+        id S229554AbhJRV3M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 17:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhJRTAS (ORCPT
+        with ESMTP id S229524AbhJRV3L (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 15:00:18 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33852C061745
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 11:58:07 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id i76so13319125pfe.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 11:58:07 -0700 (PDT)
+        Mon, 18 Oct 2021 17:29:11 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D1DC06161C
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 14:26:59 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id y7so15762360pfg.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 14:26:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XJpEWR9LdteKJ68LKGtld7IiMgguzW8FmAPi7xScjTE=;
-        b=xyCleYXmJ7DWiTzzNyRVH0LfTyA2Lwwr86nudTgBV7LqFIih28aQ/A+xMDu9wGxiZJ
-         etYHH5vusdEHCn3CmujBsBpYGisp43GlEKRlWZpFEZeGRCKDbifDE2OY/MBbtNdpN5ky
-         8sJBwsCEbiOUry1way1OSWrGZxN55ZwcQW9s2jD8XoyuDdmYxg/Z3s/x139VKhmOmk8O
-         9JPnvcY6YLSS7CFod18/zmmqf0Obh4DdZgjmZc+YnM8k9g+qrNAGu9494TkUgK9/Roiu
-         q0Ttc33ZqQovbxum11nu0yEehxcPCjjZE0O/0rSOIXnznvpCynMQE6O9Y6JwBeXw/oCh
-         suHQ==
+         :content-disposition:in-reply-to;
+        bh=bEVDBjsttDSy6PZTOPkCDS58Kx/Vm0Mh8v/Ct94axtw=;
+        b=ZHn+mrHwxpTK8GKUZUEtH7U+4A6KPC0+JbZ81ekD+ophxzx9GqVGYrAF0xt1F8KNu7
+         WrXS0rp0JTUgcukAQsI7Hrl/7hWt1J1CNZ7/Lghn9A+XCi8iwTwvGYeUdpHAPJutZfgB
+         9eX4igOv+kRfkBejiOieN/eww57NRFCkX/y7ms0Cu/xQ67TuBWr0LyDXDKtdXK+QJwGm
+         LunkRzt0now5/dzm0FsU6HqRC0ZS1iE8s8HZIMlAuzQ0KX8aKjmWrVoc0g/sGdGNz22w
+         fq+wSQYx/ALjFD5NcMlZ61weU1hdyaEbFqJDSV6lMwdwSiHSLiXH08G0mW/Kxa+gfMw/
+         I3iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XJpEWR9LdteKJ68LKGtld7IiMgguzW8FmAPi7xScjTE=;
-        b=EO8sD3l24e5DHa3kO7UlpIwj76gyed8SpAIOtOhaFiEJV9trlg4GfnE2ch1yia8lz5
-         NN3WDtJrDwDcTJmXbPyeUw3xkVXR/3NMlBgGr7H44yGxUB8nQusW/0cgB0awozAvker7
-         IvNtDTRbi4y1X/inWb/0uEoWAp+EnjMf8Dq1bMAM3BccpTFv8XpO3lpJig/dtdmXfhUW
-         1E9jD34QtKlIREcU8UWL4blj7Gw6Cq5/53HB4G4v3DKI/nZBbHxXxrwMzXfmo97HDOoL
-         1ml54coIVZJKNuOiE2aD1yNV+xHpgG/9ioMmwLLSIVz/djjSXBV5hwDxR8/+BhQq7Tzs
-         HJig==
-X-Gm-Message-State: AOAM5323p335ud2c8gU6pyemXKmohZT4+8nepPxN1VeSXH3d0qIRxAcC
-        5XbrBAzlNkNoYJRWXrVEHAPmSSdcVD7Gfw==
-X-Google-Smtp-Source: ABdhPJz+NIzvfQFRbVRY5oHKTtKd4bzz6stXXvGcyal03Xi8KLTTMyThoLxXbpxRzalcsDYH6reIGg==
-X-Received: by 2002:a63:3c13:: with SMTP id j19mr7929172pga.13.1634583486557;
-        Mon, 18 Oct 2021 11:58:06 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=bEVDBjsttDSy6PZTOPkCDS58Kx/Vm0Mh8v/Ct94axtw=;
+        b=g/2dWWpSXyFI4Hok/4w8/J0xJcHhCGNc7iF6ZbatXLgt/UaWASctX+36ummBCMcBS6
+         B0TBFiW3C9LRyD/PT5VP+J31WsnWH7S4LYoZ2mGuyP5CMZGbqDD4eKbX3WxwhdJ5x2PY
+         ev7W9s96ixsYkl/szh6fHiEKy4t1B0dVXCpIPs2K0wOrEhIVcPrtyGL4upeEjA6vpdy9
+         KsxTVkoOBE0P2qSS/im+uygRrN9IfzYYL/KwBkX9GiehxbvwjtQjgNedAKjxppQsgWo7
+         E24BRt4xAwdPbS4EA9vw2D+GNfL0aWaiLCGj/0M9gbHANOQf4MFQFa9Lo6hPJwJMYcM5
+         sTeg==
+X-Gm-Message-State: AOAM531hnTEQLI2gWJ6N93dW9iqW5khKtaHhJ0vNajrZNGbXrvXvZ+Ch
+        8pe00O2iqDtTMyJVJ4/FMtsZm2etwHscKA==
+X-Google-Smtp-Source: ABdhPJx+4vB+lEzpD3a4KnVgV2gZJr2epCvoNS3jaqHGD4YFviU4onO+oJz3Ae4xoaHTvVT3eKuIYw==
+X-Received: by 2002:a63:df06:: with SMTP id u6mr25788824pgg.148.1634592418866;
+        Mon, 18 Oct 2021 14:26:58 -0700 (PDT)
 Received: from relinquished.localdomain ([2620:10d:c090:400::5:b911])
-        by smtp.gmail.com with ESMTPSA id t38sm10212995pfg.102.2021.10.18.11.58.05
+        by smtp.gmail.com with ESMTPSA id 184sm14238061pfw.49.2021.10.18.14.26.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 11:58:05 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 11:58:04 -0700
+        Mon, 18 Oct 2021 14:26:58 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 14:26:56 -0700
 From:   Omar Sandoval <osandov@osandov.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH v11 10/14] btrfs: add send stream v2 definitions
-Message-ID: <YW3DvJBzV1exIF6Q@relinquished.localdomain>
-References: <cover.1630514529.git.osandov@fb.com>
- <ed4dc1c414a6662831e7443335065cb37dddad91.1630514529.git.osandov@fb.com>
- <f94e2e0d-0cf9-1c9d-0dfb-b21438fe852d@suse.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, nborisov@suse.com
+Subject: Re: [PATCH RFC] btrfs: send: v2 protocol and example OTIME changes
+Message-ID: <YW3moPgbBMQhN7XY@relinquished.localdomain>
+References: <20211018144109.18442-1-dsterba@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f94e2e0d-0cf9-1c9d-0dfb-b21438fe852d@suse.com>
+In-Reply-To: <20211018144109.18442-1-dsterba@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 06:11:54PM +0300, Nikolay Borisov wrote:
+On Mon, Oct 18, 2021 at 04:41:09PM +0200, David Sterba wrote:
+> This is send protocol update to version 2 with example new commands.
 > 
+> We have many pending protocol update requests but still don't have the
+> basic protocol rev in place, the first thing that must happen is to do
+> the actual versioning support. In order to have something to test,
+> there's an extended and a new command, that should be otherwise harmless
+> and nobody should depend on it. This should be enough to validate the
+> non-protocol changes and backward compatibility before we do the big
+> protocol update.
 > 
-> On 1.09.21 г. 20:01, Omar Sandoval wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> > 
-> > This adds the definitions of the new commands for send stream version 2
-> > and their respective attributes: fallocate, FS_IOC_SETFLAGS (a.k.a.
-> > chattr), and encoded writes. It also documents two changes to the send
-> > stream format in v2: the receiver shouldn't assume a maximum command
-> > size, and the DATA attribute is encoded differently to allow for writes
-> > larger than 64k. These will be implemented in subsequent changes, and
-> > then the ioctl will accept the new flags.
-> > 
-> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > ---
-> >  fs/btrfs/send.c            |  2 +-
-> >  fs/btrfs/send.h            | 30 +++++++++++++++++++++++++++++-
-> >  include/uapi/linux/btrfs.h | 13 +++++++++++++
-> >  3 files changed, 43 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> > index afdcbe7844e0..2ec07943f173 100644
-> > --- a/fs/btrfs/send.c
-> > +++ b/fs/btrfs/send.c
-> > @@ -7287,7 +7287,7 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
-> >  
-> >  	sctx->clone_roots_cnt = arg->clone_sources_count;
-> >  
-> > -	sctx->send_max_size = BTRFS_SEND_BUF_SIZE;
-> > +	sctx->send_max_size = BTRFS_SEND_BUF_SIZE_V1;
-> >  	sctx->send_buf = kvmalloc(sctx->send_max_size, GFP_KERNEL);
-> >  	if (!sctx->send_buf) {
-> >  		ret = -ENOMEM;
-> > diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
-> > index de91488b7cd0..9f4f7b96b1eb 100644
-> > --- a/fs/btrfs/send.h
-> > +++ b/fs/btrfs/send.h
-> > @@ -12,7 +12,11 @@
-> >  #define BTRFS_SEND_STREAM_MAGIC "btrfs-stream"
-> >  #define BTRFS_SEND_STREAM_VERSION 1
-> >  
-> > -#define BTRFS_SEND_BUF_SIZE SZ_64K
-> > +/*
-> > + * In send stream v1, no command is larger than 64k. In send stream v2, no limit
-> > + * should be assumed.
-> > + */
-> > +#define BTRFS_SEND_BUF_SIZE_V1 SZ_64K
-> >  
-> >  enum btrfs_tlv_type {
-> >  	BTRFS_TLV_U8,
-> > @@ -76,6 +80,13 @@ enum btrfs_send_cmd {
-> >  
-> >  	BTRFS_SEND_C_END,
-> >  	BTRFS_SEND_C_UPDATE_EXTENT,
-> > +
-> > +	/* The following commands were added in send stream v2. */
-> > +
-> > +	BTRFS_SEND_C_FALLOCATE,
-> > +	BTRFS_SEND_C_SETFLAGS,
-> > +	BTRFS_SEND_C_ENCODED_WRITE,
-> > +
-> >  	__BTRFS_SEND_C_MAX,
-> >  };
-> >  #define BTRFS_SEND_C_MAX (__BTRFS_SEND_C_MAX - 1)
-> > @@ -106,6 +117,11 @@ enum {
-> >  	BTRFS_SEND_A_PATH_LINK,
-> >  
-> >  	BTRFS_SEND_A_FILE_OFFSET,
-> > +	/*
-> > +	 * In send stream v2, this attribute is special: it must be the last
-> > +	 * attribute in a command, its header contains only the type, and its
-> > +	 * length is implicitly the remaining length of the command.
-> > +	 */
-> >  	BTRFS_SEND_A_DATA,
+> The protocol version is u32 and is a new member in the send ioctl
+> struct. Validity of the version field is backed by a new flag bit. Old
+> kernels would fail when a higher version is requested. Version protocol
+> 0 will pick the highest supported version, BTRFS_SEND_STREAM_VERSION,
+> that's also exported in sysfs.
 > 
-> Now that I think more about this, it would be best if this logic is
-> actually codified in the code. I.e first set of SEND_A_DATA would set
-> some bool/flag in the sctx and subsequent calls would be able to
-> ASSERT/WARN ?
+> Protocol changes:
+> 
+> - new command BTRFS_SEND_C_UTIMES2
+> - appends OTIME after the output of BTRFS_SEND_C_UTIMES
+> - this is an example how to extend an existing command based on protocol
+>   version
+> 
+> - new command BTRFS_SEND_C_OTIME
+> - path BTRFS_SEND_A_PATH
+> - timespec attribute BTRFS_SEND_A_OTIME
+> - it's a separate command so it does not bloat any UTIMES2 commands,
+>   and is emitted only after inode creation (file, dir, special files).
+> 
+> The patch should be a template for further protocol extensions
+> 
+> RFC:
+> 
+> - set __BTRFS_SEND_C_MAX_V1 to the last command of the version or one
+>   beyond?
+> - drop UTIMES2 before release?
+> - naming?
 
-I suppose I could do something like this, is that what you had in mind?
+If I'm understanding correctly, the main difference between this send
+stream v2 and mine is the BTRFS_SEND_FLAG_VERSION flag and
+btrfs_ioctl_send_args::version rather than my BTRFS_SEND_FLAG_STREAM_V2?
+That's definitely a better way to do it.
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 90ca915fed78..46443d80b431 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -81,6 +81,7 @@ struct send_ctx {
- 	char *send_buf;
- 	u32 send_size;
- 	u32 send_max_size;
-+	bool put_data;
- 	struct page **send_buf_pages;
- 	u64 total_send_size;
- 	u64 cmd_send_size[BTRFS_SEND_C_MAX + 1];
-@@ -575,6 +576,9 @@ static int tlv_put(struct send_ctx *sctx, u16 attr, const void *data, int len)
- 	int total_len = sizeof(*hdr) + len;
- 	int left = sctx->send_max_size - sctx->send_size;
- 
-+	if (WARN_ON(sctx->put_data))
-+		return -EINVAL;
-+
- 	if (unlikely(left < total_len))
- 		return -EOVERFLOW;
- 
-@@ -718,6 +722,7 @@ static int send_cmd(struct send_ctx *sctx)
- 	sctx->total_send_size += sctx->send_size;
- 	sctx->cmd_send_size[get_unaligned_le16(&hdr->cmd)] += sctx->send_size;
- 	sctx->send_size = 0;
-+	sctx->put_data = false;
- 
- 	return ret;
- }
-@@ -4913,6 +4918,9 @@ static inline u64 max_send_read_size(const struct send_ctx *sctx)
- 
- static int put_data_header(struct send_ctx *sctx, u32 len)
- {
-+	if (WARN_ON(sctx->put_data))
-+		return -EINVAL;
-+	sctx->put_data = true;
- 	if (sctx->flags & BTRFS_SEND_FLAG_STREAM_V2) {
- 		/*
- 		 * In v2, the data attribute header doesn't include a length; it
-@@ -5368,6 +5376,7 @@ static int send_encoded_extent(struct send_ctx *sctx, struct btrfs_path *path,
- 	sctx->cmd_send_size[le16_to_cpu(hdr->cmd)] +=
- 		sctx->send_size + block_len;
- 	sctx->send_size = 0;
-+	sctx->put_data = false;
- 
- tlv_put_failure:
- out:
+What's your plan for merging this? Did you want to do this as a "trial
+run" before merging the compressed send/receive stuff as protocol v3, or
+did you want me to integrate these changes?
