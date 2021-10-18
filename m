@@ -2,135 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8704315A5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 12:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5529443163F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 12:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232367AbhJRKQi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 06:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
+        id S229985AbhJRKjd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 06:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhJRKPQ (ORCPT
+        with ESMTP id S229494AbhJRKjd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 06:15:16 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72887C061765;
-        Mon, 18 Oct 2021 03:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=sSdphJbx9SQw+wN4za3/OjMw3p4iKMeSjeY0No/E5ck=; b=bo+nrVZXl6TTYRQlQ0bto+MepF
-        SigFpnQpZERr9BHx9SPKM5M3oF1djjIgorehkbOAGiSEoKAClU9hAJOhLvQopHL+7ngHbjCp0GYh5
-        HxtbySe0C4GiywWjnxtAHb3ZnvMCNabnqmvTxDGUWVlieN6Rb0q+S5b77qYYfN1Bx6ax5iCz6AGrH
-        9ON2Uwy2yvzZ25ow0GUORw9zUlxRz69RVpLcvbrHTrQMiaF4iHAu1HNZdwtKFs1xQfJ1CQGhdbHTu
-        v3N4NlM4aG9KmvpSER+/Mp3Yql6EAXAHbXbfbCK+GXf7UFAgNzR4TOZtkJ5cVyxvD1MufFJzB6JqD
-        6aD8LsrA==;
-Received: from [2001:4bb8:199:73c5:c70:4a89:bc61:2] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mcPdV-00Ev58-I3; Mon, 18 Oct 2021 10:12:53 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Coly Li <colyli@suse.de>, Mike Snitzer <snitzer@redhat.com>,
-        Song Liu <song@kernel.org>, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Kees Cook <keescook@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH 30/30] udf: use sb_bdev_nr_blocks
-Date:   Mon, 18 Oct 2021 12:11:30 +0200
-Message-Id: <20211018101130.1838532-31-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211018101130.1838532-1-hch@lst.de>
-References: <20211018101130.1838532-1-hch@lst.de>
+        Mon, 18 Oct 2021 06:39:33 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C298C06161C
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 03:37:22 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id i22so2908999ual.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 03:37:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=YO3L3te2RV0o8gR7qbf3cjIdIue2PVwJaV67BX6PmwI=;
+        b=MzZvDeXHhRkNgQmwxv+L9DOVB4+dwjHUHmzVVludVyaMNIgKWWjUf2H5+a0DKpXUmi
+         hzd6GltvaV9xzdy6Prda4/3eTfpVuOw5Fl+EHRLQNP1tKnpTf9fVs3ll2w0m9VbCw186
+         Db0IcQvnSVBr0U0aImQLuFIxtNbEIKv5A46QTeAzKz5lapsNTJXGTj2ZdD37Cpv2vMLU
+         7dl3BjmiAXKZH7RFiciEt8R1sjOxM0iRDqoOlOW5xK5RQskE72WOnOK1pwZTJ7zsc3B8
+         cWFUVI5M5ZdLb0MjmH6dDIEYSppC81h19vRjhXLk1PDnQa/902AEHIVdI56kc/M44u5l
+         N1pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=YO3L3te2RV0o8gR7qbf3cjIdIue2PVwJaV67BX6PmwI=;
+        b=pDBYY9dU3HvzbNyQzy12QAKZpcSzRF6zixAG9TMoyzXdMl5VN/4VtmkOwvhheGiEcA
+         oefnusJwTEAqE8AM5bzsFGbUjTh3j7Qx61723Q11PmTUzDM3dfBHFjxWVTPQ6S8fb+l6
+         Q0mIC8s4f4JVmmQUMFml/oZNrdFaiZ88yMCiTZjy83cfWvWTA38XswOwtp4A1BWC79aM
+         v1k0DP0u+u26trrcuhOeCmdOPZLJ8dWtm8iG1Cr4fvyN0tDLAxjdsx4sHW1nxdgrfzBh
+         ctoMKdHww2NwfLylW4Kr2VGdfMKjj+pEZBCLPUsHmIgQMQq4yoS7R5U9tzIWDFrJNUa6
+         Oj8w==
+X-Gm-Message-State: AOAM532ZyHjbThIh7xaCY6GTHJZjXbrhUG7Khw4wI0jWUskTy0UhvJwT
+        Q0OIe4eU4j1YJCSRjzpJI1FuYfk/mkC8EJEQ6JY=
+X-Google-Smtp-Source: ABdhPJwDITHvv8frR/jufONSRRJNDNhejjMnpdSW6ZINlFurxH1dxuIZsz0x5ObPE44fmB/+6AJoZtvZTEYk28Q17Cc=
+X-Received: by 2002:ab0:6c4b:: with SMTP id q11mr26287355uas.128.1634553441475;
+ Mon, 18 Oct 2021 03:37:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <CAHB2pq_Dhp7X0zRQhzbtMxKP8rC=Z8DvAaB33EF56jZHg0=+rA@mail.gmail.com>
+ <637a43e5-4d6f-f69a-74e4-ae240880aa1b@gmx.com> <CAHB2pq_6Wb7H3zxvV33gm7j4nknAvPieNtFU_xFRWr4TZE=6cA@mail.gmail.com>
+ <95cd0638-b070-6e92-0de7-bfe74e039684@gmx.com> <CAHB2pq_hmje4zEjf33KHiQe7TpGAsW+0mczgjZkVnkRnVW7z=g@mail.gmail.com>
+ <32b91541-1b30-eb26-36d0-7a642172b547@suse.com> <20211018100846.GF30611@twin.jikos.cz>
+In-Reply-To: <20211018100846.GF30611@twin.jikos.cz>
+From:   James Harvey <jmsharvey771@gmail.com>
+Date:   Mon, 18 Oct 2021 11:37:10 +0100
+Message-ID: <CAHB2pq-7ADos4BVbATboA3CAM0DK2Gm9_26qpAAF+pdCFYWaJg@mail.gmail.com>
+Subject: Re: csum failed, bad tree, block, IO failures. Is my drive dead or
+ has my BTRFS broke itself?
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        James Harvey <jmsharvey771@gmail.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Use the sb_bdev_nr_blocks helper instead of open coding it.
+(Resending because I accidentally sent as HTML and forgot to mention something)
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/udf/lowlevel.c | 5 ++---
- fs/udf/super.c    | 9 +++------
- 2 files changed, 5 insertions(+), 9 deletions(-)
+The checksum errors can also be detected at runtime during reads, I
+was trying to get a directory from the server and it failed because of
+checksum errors (luckily I have that directory backed up). It may only
+affect one top-level directory, since the remaining backups I'm doing
+haven't stopped for any other directories. I also saw a USB reset in
+my logs, which may indicate a bad cable/connection/drive. Here's a bit
+of my logs from that:
 
-diff --git a/fs/udf/lowlevel.c b/fs/udf/lowlevel.c
-index f1094cdcd6cde..46d6971721975 100644
---- a/fs/udf/lowlevel.c
-+++ b/fs/udf/lowlevel.c
-@@ -47,8 +47,7 @@ unsigned int udf_get_last_session(struct super_block *sb)
- 
- unsigned long udf_get_last_block(struct super_block *sb)
- {
--	struct block_device *bdev = sb->s_bdev;
--	struct cdrom_device_info *cdi = disk_to_cdi(bdev->bd_disk);
-+	struct cdrom_device_info *cdi = disk_to_cdi(sb->s_bdev->bd_disk);
- 	unsigned long lblock = 0;
- 
- 	/*
-@@ -56,7 +55,7 @@ unsigned long udf_get_last_block(struct super_block *sb)
- 	 * Try using the device size...
- 	 */
- 	if (!cdi || cdrom_get_last_written(cdi, &lblock) || lblock == 0)
--		lblock = i_size_read(bdev->bd_inode) >> sb->s_blocksize_bits;
-+		lblock = sb_bdev_nr_blocks(sb);
- 
- 	if (lblock)
- 		return lblock - 1;
-diff --git a/fs/udf/super.c b/fs/udf/super.c
-index b2d7c57d06881..34247fba6df91 100644
---- a/fs/udf/super.c
-+++ b/fs/udf/super.c
-@@ -1175,8 +1175,7 @@ static int udf_load_vat(struct super_block *sb, int p_index, int type1_index)
- 	struct udf_inode_info *vati;
- 	uint32_t pos;
- 	struct virtualAllocationTable20 *vat20;
--	sector_t blocks = i_size_read(sb->s_bdev->bd_inode) >>
--			  sb->s_blocksize_bits;
-+	sector_t blocks = sb_bdev_nr_blocks(sb);
- 
- 	udf_find_vat_block(sb, p_index, type1_index, sbi->s_last_block);
- 	if (!sbi->s_vat_inode &&
-@@ -1838,8 +1837,7 @@ static int udf_check_anchor_block(struct super_block *sb, sector_t block,
- 	int ret;
- 
- 	if (UDF_QUERY_FLAG(sb, UDF_FLAG_VARCONV) &&
--	    udf_fixed_to_variable(block) >=
--	    i_size_read(sb->s_bdev->bd_inode) >> sb->s_blocksize_bits)
-+	    udf_fixed_to_variable(block) >= sb_bdev_nr_blocks(sb))
- 		return -EAGAIN;
- 
- 	bh = udf_read_tagged(sb, block, block, &ident);
-@@ -1901,8 +1899,7 @@ static int udf_scan_anchors(struct super_block *sb, sector_t *lastblock,
- 		last[last_count++] = *lastblock - 152;
- 
- 	for (i = 0; i < last_count; i++) {
--		if (last[i] >= i_size_read(sb->s_bdev->bd_inode) >>
--				sb->s_blocksize_bits)
-+		if (last[i] >= sb_bdev_nr_blocks(sb))
- 			continue;
- 		ret = udf_check_anchor_block(sb, last[i], fileset);
- 		if (ret != -EAGAIN) {
--- 
-2.30.2
+(loads of SFTP IO errors and btrfs errors above, same errors that I've
+sent before)
+Oct 18 00:22:06 James-Server kernel: sd 2:0:0:0: [sdb] tag#26
+uas_eh_abort_handler 0 uas-tag 1 inflight: IN
+Oct 18 00:22:06 James-Server kernel: sd 2:0:0:0: [sdb] tag#26 CDB:
+Read(16) 88 00 00 00 00 04 7e c9 a9 80 00 00 00 20 00 00
+Oct 18 00:22:06 James-Server kernel: scsi host2:
+uas_eh_device_reset_handler start
+Oct 18 00:22:06 James-Server kernel: usb 2-6: reset high-speed USB
+device number 3 using xhci_hcd
+Oct 18 00:22:07 James-Server kernel: scsi host2:
+uas_eh_device_reset_handler success
+Oct 18 00:22:07 James-Server kernel: btrfs_print_data_csum_error: 1586
+callbacks suppressed
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 937984 csum 0x40832952 expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: btrfs_dev_stat_print_on_error:
+1631 callbacks suppressed
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13530, gen 0
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 942080 csum 0x901404f8 expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13531, gen 0
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 946176 csum 0x0286f198 expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13532, gen 0
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 950272 csum 0x1ef344b7 expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13533, gen 0
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 954368 csum 0x8cfb460b expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13534, gen 0
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 958464 csum 0xb18f6951 expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13535, gen 0
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 962560 csum 0x99cdfa88 expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13536, gen 0
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 966656 csum 0x906c81a9 expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13537, gen 0
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 970752 csum 0xe6d4dd60 expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13538, gen 0
+Oct 18 00:22:07 James-Server kernel: BTRFS warning (device sdb1): csum
+failed root 5 ino 103336 off 974848 csum 0x1395994a expected csum
+0x00000000 mirror 1
+Oct 18 00:22:07 James-Server kernel: BTRFS error (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 13539, gen 0
 
+On Mon, 18 Oct 2021 at 11:09, David Sterba <dsterba@suse.cz> wrote:
+>
+> On Sun, Oct 17, 2021 at 08:00:59AM +0800, Qu Wenruo wrote:
+> > On 2021/10/17 04:45, James Harvey wrote:
+> > > Check hasn't done yet, but it's spit out about 1700 messages (tmux
+> > > won't let me scroll up futher) that all look like this:
+> >
+> > Yeah, this means quite a lot of metadata are filled with garbage.
+> >
+> > I'm not sure why, but it doesn't like to be caused by btrfs itself.
+>
+> Agreed, this amount of garbage would be detected by other means
+> (mismatching csums while the system is still in use or by
+> pre-write/post-read tree checker). It's not bitflips, there are too many
+> changes eg. in the bogus block offsets.
+>
+> Analyzing the actual data left on disk for some known pattern could at
+> least give some hint what it was, eg. strings, file headers or raw
+> pointers. Besides that a manual system check could prevent that in the
+> future, so check cables, possible overheating, up to date
+> kernel/firmware (in case it would be cause by other subsystems).
