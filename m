@@ -2,63 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4F54322C3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 17:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1B54322EC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 17:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbhJRPZb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 11:25:31 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46826 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbhJRPZa (ORCPT
+        id S232105AbhJRPeo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 11:34:44 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34598 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231946AbhJRPen (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 11:25:30 -0400
+        Mon, 18 Oct 2021 11:34:43 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CFB2F1FD7F;
-        Mon, 18 Oct 2021 15:23:18 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 46FBA21965;
+        Mon, 18 Oct 2021 15:32:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634570598;
+        t=1634571151;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5mra1+ylpn6yG5GNNxYWaExv1MCsXh1LBhmgvJ99UNA=;
-        b=nUF7K8FeK1WIQMeF85DYcLAMBprWECylpL/FkPtw+tPJak1QWrXL8N+UuKRFMreyzmW9YF
-        jPIcMUfnmcGXmL2LO/Z1GiD8CI0dWr1URn1VsUoB0gXOpF4en/GElxRECyc+3Sk5JIXVN2
-        xEtGiNgaisIKDFbckfMuKYdxj7M1yJ0=
+        bh=Q8hQ6CPL8pXgC9tXRMUu23q7XMdXHi6WK1gJr48lq2U=;
+        b=yrmeo1kMI9Ja4yN3BeJPw92aTCwOcTmIyPKRwuxYlS7WeIqw+Qdr211Yxs/En4ZBiQTiwh
+        zjNHw2FsBsb8AMeHCFwEbAlrg9zLVFUYU9m/a8jSg28yoH9b8y12kxl1TplyLxozDUAZqv
+        959ppq1BFGFJP+qmXzWuX+BlDmvKYds=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634570598;
+        s=susede2_ed25519; t=1634571151;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5mra1+ylpn6yG5GNNxYWaExv1MCsXh1LBhmgvJ99UNA=;
-        b=yh7iM7eU1put6Sa8MiK/ZodhvBKAL+LEh/s0YLloYpPZFCpD5TmidXznu0SsWtv8MRPPx+
-        Q2VSmDILs4mKy9Dg==
+        bh=Q8hQ6CPL8pXgC9tXRMUu23q7XMdXHi6WK1gJr48lq2U=;
+        b=JH+tstGXvDwuqi/WJYcOQpbsYAErtIRMb5XbnimYQYbsymNPYSjJW0QADoOTWKkRxW0Oku
+        XDo3gMoKW6CvXlCA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id B20ABA3B8A;
-        Mon, 18 Oct 2021 15:23:18 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 3FD67A3B85;
+        Mon, 18 Oct 2021 15:32:31 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BF067DA7A3; Mon, 18 Oct 2021 17:22:51 +0200 (CEST)
-Date:   Mon, 18 Oct 2021 17:22:51 +0200
+        id 3F76DDA7A3; Mon, 18 Oct 2021 17:32:04 +0200 (CEST)
+Date:   Mon, 18 Oct 2021 17:32:04 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v4 0/6] Fix lockdep issues around device removal
-Message-ID: <20211018152251.GJ30611@twin.jikos.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: stop storing the block device name in
+ btrfsic_dev_state
+Message-ID: <20211018153204.GK30611@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1633464631.git.josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org
+References: <20211014090550.1231755-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1633464631.git.josef@toxicpanda.com>
+In-Reply-To: <20211014090550.1231755-1-hch@lst.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 04:12:38PM -0400, Josef Bacik wrote:
-> v3->v4:
-> - I had a fixup for assinging devid that I mis-merged into the wrong patch,
->   fixed this up by putting it in the correct patch.
+On Thu, Oct 14, 2021 at 11:05:50AM +0200, Christoph Hellwig wrote:
+> Just use the %pg format specifier in all the debug printks previously
+> using it.  Note that both bdevname and the %pg specifier never print
+> a pathname, so the kbasename call wasn't needed to start with.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Added to misc-next, thanks.
+Added to misc-next, thanks. I've adjusted the message strings that got
+updated, namely indentation.
