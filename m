@@ -2,108 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AF4432618
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 20:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB0C432630
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Oct 2021 20:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbhJRSLs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 14:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43732 "EHLO
+        id S232099AbhJRSS7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 14:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbhJRSLp (ORCPT
+        with ESMTP id S230404AbhJRSS6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 14:11:45 -0400
+        Mon, 18 Oct 2021 14:18:58 -0400
 Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C735DC061765
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 11:09:33 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id lk8-20020a17090b33c800b001a0a284fcc2so38805pjb.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 11:09:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84713C06161C
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 11:16:47 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so40125pjc.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 11:16:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3QChYolV4P82u7ycKYONtu2TNnksSBgKfxFLCvKMno8=;
-        b=3ATB7jLZgYDbiy8dG1QLj4my/tGYkmugndMQ8KdNeJOn6kqJLMy7GesiAfXx0EH0Dg
-         Il5KVHGqqZF7kp0FVWrZyulBfxCzXySP2pPqy1J7U2eGOp7UjTCgYwswMbo2MGgXvyx8
-         x7+XMXomUE4/s87KOTRAX11Bg+AzcUJilUdSwHMxncrJXVi3BDVOMMFTdnRTShIHKwSu
-         cKL91G4Urs0TXkL6BIjeSFRSZcaU/0k20nTo6AO1/3FstvDQ1Y0cT4c+jlCuf8PAPjXt
-         cBrqulLJ65p3Z+nfTb/nTv47hJM7cluH1QPfZyR+oB9SpySgwJEQj2YPWexqSDWgaBJZ
-         RPiQ==
+        bh=3eZXAINomO0TsR73UjlRKieVti/XvPo3IuFO3ZnaeEc=;
+        b=kIRGqx1B8SY7vResN8umkp2/EQMjfW2CYO327hmznNZTyNt9LX2AhABnKi18Tt0P40
+         dc4OhUxi2XbBecfp2gY4BTGsYCcCh6dUziZ2iezl+qwq1cs1bpvSvxuUwowo25gPW8QJ
+         2jCJ2+TGzyACwW+xmE0/QGApZdbFMzmpCprds98KOptZw6wlZHK44uCmoYdssLqEwNRT
+         +Fgioc3Jw3dmgpaDB5Jo5c/gBEFStDDPIDQNmEF0TmP66UJTdefe+jw+3CCtYTj/55ws
+         jCupBM5GGLx6uiko3Ff6Gu19XSt4h72UK94M075M14yVb9CuTVY9VTcyE7p71sYJw2fK
+         F2pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=3QChYolV4P82u7ycKYONtu2TNnksSBgKfxFLCvKMno8=;
-        b=1pw3i75h5tfJvrBNFBlUSGgJTSxQTWmmyCw5MRq+6Z7jvBzDjUAhNqQXMx+IVntf+7
-         k5i03zUN9CBrI+OqQyYD4BH+YoEqFNeIT9yQHJLBXcyUp7HvuP/vAG4r4vNwQWFsE1oJ
-         5OABVnOwhVL7fgL8qt3es8YMbjzSbaIKxY90t2yg7VINxFt4g5GE3Gc2n9K40Q9H4Pgu
-         PdmdnOXVTPsXQEdGeuO8mMNan9mYuHrItE34RtRDAjxLCiIuq+favjUXw25/sUJaBKuF
-         ZtjbYpNOgJga0vLT9lgDXx6HOt04RVgRSk3Be32PDBpSLXD7VAQIG0P5RehzS9sWjfxw
-         mIZA==
-X-Gm-Message-State: AOAM530VVtIivWTk/Zn1Vz1yiJqXPDqXDKArn/UuKpXWpVW/TJ7N/2vx
-        8xCGo7FyXUNjA2TUoUCly6oOlQ==
-X-Google-Smtp-Source: ABdhPJy2aPtL/OFI2t0D9ZcLpHWDAPj5ie5SX0rQq+cpWtiioqKsH0gMLs1yXRC+dIScYJ2xAzJeIA==
-X-Received: by 2002:a17:902:dac4:b0:13e:fcb8:eaf1 with SMTP id q4-20020a170902dac400b0013efcb8eaf1mr28868003plx.50.1634580573109;
-        Mon, 18 Oct 2021 11:09:33 -0700 (PDT)
+        bh=3eZXAINomO0TsR73UjlRKieVti/XvPo3IuFO3ZnaeEc=;
+        b=XOJM/BEU1ClxdgUY9CDcKVmfxjYgpeOEeu8y8GAsRoLPpt5+/XeeEf0funhWdbfz9C
+         KbCpPG7+o2wdo+OFIyYgn3nCGWxWSf6KKDky76SPKPtcnTupQA45H93l0Di8PzbVWT6S
+         xTvzxVpcw9LwfVAo9pzp0QsWNv7SW1A01DmcJSenX2YEi1iNwMXhYCfCB1VruyiUpTWn
+         Ekpm9ILa23OXTcQLMPKuQLx0YI67AYAjCrresqH2h3k0cgMyV9LcLtg3T8Q1EDUXsCQd
+         SVIfeiXIQHd69pL7vT7JlOxm6VFT++TEyuoNHH9E7n5dWP64B5b8Nz0eFZSL3P0Ryiiu
+         mDGw==
+X-Gm-Message-State: AOAM532/8GTkgRgy9QbJq7vvLwUhSk/b9AwVMWBmGba7Bfq9XipuroS9
+        dPwSN0Om+c4qMw59V/RrpBRXFajNu/pddA==
+X-Google-Smtp-Source: ABdhPJzfkadXB5iv6H41tn7ZDy0gnByTGRiXdag5cOUtnMV4Nf/THZt0KsceWO5BWBA6/qKx4i5a1g==
+X-Received: by 2002:a17:90a:5515:: with SMTP id b21mr486832pji.239.1634581006894;
+        Mon, 18 Oct 2021 11:16:46 -0700 (PDT)
 Received: from relinquished.localdomain ([2620:10d:c090:400::5:b911])
-        by smtp.gmail.com with ESMTPSA id r19sm11231898pfh.14.2021.10.18.11.09.31
+        by smtp.gmail.com with ESMTPSA id x7sm133221pjg.5.2021.10.18.11.16.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 11:09:32 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 11:09:30 -0700
+        Mon, 18 Oct 2021 11:16:46 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 11:16:44 -0700
 From:   Omar Sandoval <osandov@osandov.com>
 To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH v11 03/14] btrfs: don't advance offset for compressed
- bios in btrfs_csum_one_bio()
-Message-ID: <YW24Wno9lyvBC+9J@relinquished.localdomain>
+Subject: Re: [PATCH v11 07/14] btrfs: add definitions + documentation for
+ encoded I/O ioctls
+Message-ID: <YW26DKksOcmZLOsb@relinquished.localdomain>
 References: <cover.1630514529.git.osandov@fb.com>
- <40d0097d3b5e1ba14e6b6d090ba6d0e5c046985f.1630514529.git.osandov@fb.com>
- <3fa3456d-3d53-6025-e305-8ab8080c9ba5@suse.com>
+ <5d861feadc7b8e029e6006489179f62bc7594d4e.1630514529.git.osandov@fb.com>
+ <62133e1e-bb29-7764-c5db-51d5bb0a1e63@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3fa3456d-3d53-6025-e305-8ab8080c9ba5@suse.com>
+In-Reply-To: <62133e1e-bb29-7764-c5db-51d5bb0a1e63@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 03:05:54PM +0300, Nikolay Borisov wrote:
+On Fri, Oct 15, 2021 at 12:42:37PM +0300, Nikolay Borisov wrote:
 > 
 > 
-> On 1.09.21 г. 20:00, Omar Sandoval wrote:
+> On 1.09.21 г. 20:01, Omar Sandoval wrote:
 > > From: Omar Sandoval <osandov@fb.com>
 > > 
-> > btrfs_csum_one_bio() loops over each filesystem block in the bio while
-> > keeping a cursor of its current logical position in the file in order to
-> > look up the ordered extent to add the checksums to. However, this
-> > doesn't make much sense for compressed extents, as a sector on disk does
-> > not correspond to a sector of decompressed file data. It happens to work
-> > because 1) the compressed bio always covers one ordered extent and 2)
-> > the size of the bio is always less than the size of the ordered extent.
-> > However, the second point will not always be true for encoded writes.
+> > In order to allow sending and receiving compressed data without
+> > decompressing it, we need an interface to write pre-compressed data
+> > directly to the filesystem and the matching interface to read compressed
+> > data without decompressing it. This adds the definitions for ioctls to
+> > do that and detailed explanations of how to use them.
 > > 
-> > Let's add a boolean parameter to btrfs_csum_one_bio() to indicate that
-> > it can assume that the bio only covers one ordered extent. Since we're
-> > already changing the signature, let's get rid of the contig parameter
-> > and make it implied by the offset parameter, similar to the change we
-> > recently made to btrfs_lookup_bio_sums(). Additionally, let's rename
-> > nr_sectors to blockcount to make it clear that it's the number of
-> > filesystem blocks, not the number of 512-byte sectors.
-> > 
-> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 > > Signed-off-by: Omar Sandoval <osandov@fb.com>
 > 
-> Code-wise this looks, though I don't know why we are guaranteed that a
-> compressed extent will only cover a single OE.
-
-See submit_compressed_extents(): we always add an ordered extent that
-covers the whole range that we're submitting, and then
-btrfs_submit_compressed_write() creates one or more bios that are
-subsets of that range.
-
-> But I trust you so:
+> One minor nit below but otherwise LGTM:
+> 
 > Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> 
+> <snip>
+> 
+> > +struct btrfs_ioctl_encoded_io_args {
+> > +	/* Input parameters for both reads and writes. */
+> > +
+> > +	/*
+> > +	 * iovecs containing encoded data.
+> > +	 *
+> > +	 * For reads, if the size of the encoded data is larger than the sum of
+> > +	 * iov[n].iov_len for 0 <= n < iovcnt, then the ioctl fails with
+> > +	 * ENOBUFS.
+> > +	 *
+> > +	 * For writes, the size of the encoded data is the sum of iov[n].iov_len
+> > +	 * for 0 <= n < iovcnt. This must be less than 128 KiB (this limit may
+> > +	 * increase in the future). This must also be less than or equal to
+> > +	 * unencoded_len.
+> > +	 */
+> > +	const struct iovec __user *iov;
+> > +	/* Number of iovecs. */
+> > +	unsigned long iovcnt;
+> > +	/*
+> > +	 * Offset in file.
+> > +	 *
+> > +	 * For writes, must be aligned to the sector size of the filesystem.
+> > +	 */
+> > +	__s64 offset;
+> > +	/* Currently must be zero. */
+> > +	__u64 flags;
+> > +
+> 
+> nit: A comment stating that the output params begin here could be added.
 
-Thanks!
+There is a comment in this spot:
+
+	/*   
+	 * For reads, the following members are filled in with the metadata for
+	 * the encoded data.
+	 * For writes, the following members must be set to the metadata for the
+	 * encoded data.
+	 */
+
+I'll clarify it to:
+
+        /*
+	 * For reads, the following members are output parameters that will
+	 * contain the returned metadata for the encoded data.
+         * For writes, the following members must be set to the metadata for the
+         * encoded data.
+         */
