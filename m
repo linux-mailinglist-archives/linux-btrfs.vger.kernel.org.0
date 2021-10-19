@@ -2,127 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29060432B5A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 03:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC63D432B82
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 03:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbhJSBHM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 21:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbhJSBHL (ORCPT
+        id S229733AbhJSBj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 21:39:57 -0400
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:47724 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhJSBj4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 21:07:11 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD74C061745
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 18:04:59 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id r134so18445754iod.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 18:04:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W5z0exFABNpBPX1hRqcH8nqG0V53/7e/1qraB3crDBc=;
-        b=vB+wFpSQtfAUhwdXcfynbmYwp0hdBEQZvbX6X9F6PNzCrR7jlF3UU0FKlXz+m74FXo
-         fYCfnp+UOHId9lQV8O9fyEh4YEI0b538At136V3n0vh4OZ/YzMev/Q7gmlb/eOGGE5cU
-         0c1i9lZ2acvXLmYa878iz+lCi3R78xqn0ZDpYtIVtZNxoFJsKdSEsj9/YVhugl90Ar3H
-         SoUxghi0wJ6VSD6JvL3P+s/JM6f3Wm0mmMYFgaEag1ojhi+wlEeYXumrYWwARkL2eroz
-         Ue9QqS/6wvsrqGxlajrxCGxhjXwobZTI+icumh8oCIQgK1Jfr75Nwh+NZuFxcTfoqOvP
-         WcvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W5z0exFABNpBPX1hRqcH8nqG0V53/7e/1qraB3crDBc=;
-        b=dtZIAwthrtJhxS3P0kM4FgwDyi/cX/Xj6rLjM/RRmNkcW2d8hOxYB6odpg5wPiBEKC
-         UcLeHRyz7mGrcCcWXWVtEU7bQtH4XYoUGUiBQxF166r5jeB5oPUPcqOEWIT2Hq1zlXc8
-         oBQLYX9ZtznSpsqwWYim1imt5DZYSeuTDIGjI1pl71YN1+qLnOt+ZJXGCQBU4PqJIvVv
-         oElEczkjRWYDqPNaqgYiXyiE3rV0+3WPSrvfr4MFPxihKi8SruIz1aiLrFPG4CpPPA1d
-         DsUQOa2V1PqvnWjhH0peWNTLT3EadpdL8h0OuX9AOHXQJt+Gt9Ie+C7kz52lKfFvGPm+
-         VXXw==
-X-Gm-Message-State: AOAM533VjStlMgCbOySTAy6IR2k/xuf1jYXAO+mwhlNaYUDWWnZg67yp
-        lUlQmqFPaX3UZKjUsdPIY1Zk4w==
-X-Google-Smtp-Source: ABdhPJxThXMAcCMjPpDBYOBzNUVp6z4TAqcvNSoJJDW60phmikuRtzHD4NR4koFPUymcotmxVpLHsA==
-X-Received: by 2002:a6b:102:: with SMTP id 2mr16592131iob.185.1634605499259;
-        Mon, 18 Oct 2021 18:04:59 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id g13sm116963ilf.60.2021.10.18.18.04.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Oct 2021 18:04:58 -0700 (PDT)
-Subject: Re: don't use ->bd_inode to access the block device size v3
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Coly Li <colyli@suse.de>,
-        Mike Snitzer <snitzer@redhat.com>, Song Liu <song@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Kees Cook <keescook@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, drbd-dev@lists.linbit.com,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, reiserfs-devel@vger.kernel.org
-References: <20211018101130.1838532-1-hch@lst.de>
- <4a8c3a39-9cd3-5b2f-6d0f-a16e689755e6@kernel.dk>
- <20211018171843.GA3338@lst.de>
- <2f5dcf79-8419-45ff-c27c-68d43242ccfe@kernel.dk>
- <20211018174901.GA3990@lst.de>
- <e0784f3e-46c8-c90c-870b-60cc2ed7a2da@kernel.dk>
- <20211019010416.vgecxu6wnvwi7fii@kari-VirtualBox>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <81f9ad59-4c15-b265-1274-62c987ad879b@kernel.dk>
-Date:   Mon, 18 Oct 2021 19:04:57 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 18 Oct 2021 21:39:56 -0400
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 2750E6C0077B;
+        Tue, 19 Oct 2021 04:37:43 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1634607463; bh=1YZb09L3EXbrBz/UPtG+6W3Rl8mpCYaJeQrzFrGQHX8=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to;
+        b=KHmT0CCTf2dWsN0tKbZopCLTJKN7bJh1xd7UWFKoF+gUnqOrJpKSW3E5PyQtihHX0
+         MIiU7JlG8dmitJqpljj2lbFEjMSeqTG3hJj1l4xemEZv4u61SYKArO6Ow1JFteFX28
+         bLbz0vIB5Bf/HvbVW8xtOZfLg0oHbbbqE18tSUnw=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 18A6F6C00777;
+        Tue, 19 Oct 2021 04:37:43 +0300 (EEST)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id sn2HK_kCX6Pd; Tue, 19 Oct 2021 04:37:43 +0300 (EEST)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id D28426C00774;
+        Tue, 19 Oct 2021 04:37:42 +0300 (EEST)
+Received: from nas (unknown [121.237.225.130])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id C49141BE01C4;
+        Tue, 19 Oct 2021 04:37:40 +0300 (EEST)
+References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
+ <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com>
+ <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
+ <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com>
+ <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com>
+ <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
+ <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com>
+ <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
+ <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com>
+ <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
+ <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com>
+ <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
+ <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
+ <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
+ <bl3mimya.fsf@damenly.su> <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
+ <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
+ <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
+User-agent: mu4e 1.7.0; emacs 27.2
+From:   Su Yue <l@damenly.su>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
+Date:   Tue, 19 Oct 2021 09:24:05 +0800
+In-reply-to: <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
+Message-ID: <7de9iylb.fsf@damenly.su>
 MIME-Version: 1.0
-In-Reply-To: <20211019010416.vgecxu6wnvwi7fii@kari-VirtualBox>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: 6N1mkZY9ZDPk1R69IQ/TBAA3rihBX+zh/fvJoxAq4meDUSOFfEkTUhOwg250SGK5vT8X
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/18/21 7:04 PM, Kari Argillander wrote:
-> On Mon, Oct 18, 2021 at 11:53:08AM -0600, Jens Axboe wrote:
-> 
-> snip..
-> 
->> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
->> index 7b0326661a1e..a967b3fb3c71 100644
->> --- a/include/linux/genhd.h
->> +++ b/include/linux/genhd.h
->> @@ -236,14 +236,14 @@ static inline sector_t get_start_sect(struct block_device *bdev)
->>  	return bdev->bd_start_sect;
->>  }
->>  
->> -static inline loff_t bdev_nr_bytes(struct block_device *bdev)
->> +static inline sector_t bdev_nr_sectors(struct block_device *bdev)
->>  {
->> -	return i_size_read(bdev->bd_inode);
->> +	return bdev->bd_nr_sectors;
->>  }
->>  
->> -static inline sector_t bdev_nr_sectors(struct block_device *bdev)
->> +static inline loff_t bdev_nr_bytes(struct block_device *bdev)
->>  {
->> -	return bdev_nr_bytes(bdev) >> SECTOR_SHIFT;
->> +	return bdev_nr_setors(bdev) << SECTOR_SHIFT;
-> 
-> setors -> sectors
 
-Yep, did catch that prior.
+On Mon 18 Oct 2021 at 14:24, Chris Murphy 
+<lists@colorremedies.com> wrote:
 
--- 
-Jens Axboe
+> I've got kdump.service setup and ready, but I'm not sure about 
+> two things:
+>
+> 1.
+> $ git clone https://github.com/kdave/btrfs-devel
+> Cloning into 'btrfs-devel'...
+> fatal: error reading section header 'shallow-info'
+>
+> 2.
+> How to capture the kernel core dump, if I need to do anything to
+> trigger it other than reproducing the reported problem or if 
+> I'll need
+> to do sysrq+c or other.
+>
+No need to do other things, you can test if kdump works by
+triggering a panic using sysrq.
+Since it's just a kernel panic, rebuilding kernel rpm to reproduce 
+is
+enough.
 
+Note: parameter crashkernel can be adjusted if there was no vmcore
+produced.
+
+--
+Su
+
+> If it's faster, I can also get any developer access to the VM...
