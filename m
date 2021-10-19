@@ -2,236 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7030433700
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 15:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5ED433741
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 15:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235856AbhJSN2w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Oct 2021 09:28:52 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:35996 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235743AbhJSN2w (ORCPT
+        id S230487AbhJSNo3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Oct 2021 09:44:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231460AbhJSNo2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:28:52 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 96BD6BCDA72; Tue, 19 Oct 2021 09:26:31 -0400 (EDT)
-Date:   Tue, 19 Oct 2021 09:26:31 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     mailing@dmilz.net
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Filesystem Read Only due to errno=-28 during metadata allocation
-Message-ID: <20211019132631.GB1208@hungrycats.org>
-References: <f2ed8b05b03db6a4fec4cba7ed17222a@dmilz.net>
- <20211018140936.GA1208@hungrycats.org>
- <aefefca716de925195a0190a8d583a1d@dmilz.net>
+        Tue, 19 Oct 2021 09:44:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634650935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5+3kGgE0lTZGMIPayeWz4h9i84UBZjNZfTbObIc8GHY=;
+        b=YQfHCzdUvw19URdjFZl87SOH2dno3v8UMVBvfRTPlHv4p6tywyQFSNTBDwzWnSibkwrR5a
+        hGwoOo13Jisz2zHE624GmTqpOmy8cR01pQqKfOswKR3nj4O5PCJZH+eEmFbEhWU/w5KNVf
+        ySuwzJ0+DF7TGuwCQT+HdMRMDrTU7Lw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-339-9parn03HN2axklQyFOfcfw-1; Tue, 19 Oct 2021 09:42:12 -0400
+X-MC-Unique: 9parn03HN2axklQyFOfcfw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 432968735C3;
+        Tue, 19 Oct 2021 13:42:10 +0000 (UTC)
+Received: from max.com (unknown [10.40.193.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B7C4310016FC;
+        Tue, 19 Oct 2021 13:42:06 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Paul Mackerras <paulus@ozlabs.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs@vger.kernel.org,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+Date:   Tue, 19 Oct 2021 15:41:47 +0200
+Message-Id: <20211019134204.3382645-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aefefca716de925195a0190a8d583a1d@dmilz.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 12:57:39PM +0200, mailing@dmilz.net wrote:
-> On 18.10.2021 16:09, Zygo Blaxell wrote:
-> > On Wed, Oct 13, 2021 at 02:35:39PM +0200, mailing@dmilz.net wrote:
-> > > Hello,
-> > > 
-> > > I faced issue with btrfs FS /var forced to RO due to errno=-28 (no
-> > > space
-> > > left).
+Hi Linus and all,
 
-> > Obviously, keeping 7GB reserved for metadata doesn't work on a device
-> > that is only 2.5GB to start with.  Even if you elect not to use discard
-> > or scrub, you'd still need 2.5GB for dup metadata.
-> > 
-> 
-> Since this incident, the FS has been extended to 5GB.
-> 
-> But in our case the chunk size for metadata is 128MB, so:
-> 2 [dup metadata] * ( 128 * ( 1 [disk] + 1 [discard] + 1 [balance] ) + 512
-> [Global Reserve] ) = 1792 MB ?
+here's another update of this patch queue on top of v5.15-rc5.  Changes:
 
-The global reserve is normally much less than 512 MB on smaller disks.
-It is only 13MB on the 5GB disks.
+ * Rebase on top of v5.15-rc5.
 
-> > While it's possible to use non-mixed block groups on a filesystem that
-> > has only a few GB, it's not possible to use a significant number of
-> > btrfs features, including scrub, balance, RAID disk replacement, online
-> > conversion to other RAID profiles, device shrink, or discard, due to
-> > the requirement to have an extra unlocked block group with available
-> > free space during these operations.
-> 
-> Last weekend I had the same behavior, the size allocated to metadata went
-> from 128MB to up to 768MB, so up to 6 * 12* MB metadata but the metdata
-> usage didn't grow:
-> 
-> ### Sat Oct 16 23:59:57 CEST 2021
-> Overall:
->     Device size:                        5120.00MiB
->     Device allocated:                   2647.25MiB
->     Device unallocated:                 2472.75MiB
->     Device missing:                        0.00MiB
->     Used:                               1097.75MiB
->     Free (estimated):                   2942.38MiB      (min: 1706.00MiB)
->     Data ratio:                               1.00
->     Metadata ratio:                           2.00
->     Global reserve:                       13.00MiB      (used: 0.00MiB)
-> 
-> Data,single: Size:1559.25MiB, Used:1089.62MiB
->    /dev/mapper/rootvg-varvol    1559.25MiB
-> 
-> Metadata,DUP: Size:512.00MiB, Used:4.00MiB
->    /dev/mapper/rootvg-varvol    1024.00MiB
-> 
-> System,DUP: Size:32.00MiB, Used:0.06MiB
->    /dev/mapper/rootvg-varvol      64.00MiB
-> 
-> Unallocated:
->    /dev/mapper/rootvg-varvol    2472.75MiB
-> 
-> 
-> 
-> ### Sun Oct 17 00:00:32 CEST 2021
-> Overall:
->     Device size:                        5120.00MiB
->     Device allocated:                   2903.25MiB
->     Device unallocated:                 2216.75MiB
->     Device missing:                        0.00MiB
->     Used:                               1097.44MiB
->     Free (estimated):                   2686.69MiB      (min: 1578.31MiB)
->     Data ratio:                               1.00
->     Metadata ratio:                           2.00
->     Global reserve:                       13.00MiB      (used: 0.00MiB)
-> 
-> Data,single: Size:1559.25MiB, Used:1089.31MiB
->    /dev/mapper/rootvg-varvol    1559.25MiB
-> 
-> Metadata,DUP: Size:640.00MiB, Used:4.00MiB
->    /dev/mapper/rootvg-varvol    1280.00MiB
-> 
-> System,DUP: Size:32.00MiB, Used:0.06MiB
->    /dev/mapper/rootvg-varvol      64.00MiB
-> 
-> Unallocated:
->    /dev/mapper/rootvg-varvol    2216.75MiB
-> 
-> 
-> ### Sun Oct 17 00:05:27 CEST 2021
-> Overall:
->     Device size:                        5120.00MiB
->     Device allocated:                   2903.25MiB
->     Device unallocated:                 2216.75MiB
->     Device missing:                        0.00MiB
->     Used:                               1099.69MiB
->     Free (estimated):                   2684.44MiB      (min: 1576.06MiB)
->     Data ratio:                               1.00
->     Metadata ratio:                           2.00
->     Global reserve:                       13.00MiB      (used: 0.00MiB)
-> 
-> Data,single: Size:1559.25MiB, Used:1091.56MiB
->    /dev/mapper/rootvg-varvol    1559.25MiB
-> 
-> Metadata,DUP: Size:640.00MiB, Used:4.00MiB
->    /dev/mapper/rootvg-varvol    1280.00MiB
-> 
-> System,DUP: Size:32.00MiB, Used:0.06MiB
->    /dev/mapper/rootvg-varvol      64.00MiB
-> 
-> Unallocated:
->    /dev/mapper/rootvg-varvol    2216.75MiB
-> 
-> 
-> ### Sun Oct 17 00:05:32 CEST 2021
-> Overall:
->     Device size:                        5120.00MiB
->     Device allocated:                   3159.25MiB
->     Device unallocated:                 1960.75MiB
->     Device missing:                        0.00MiB
->     Used:                               1100.25MiB
->     Free (estimated):                   2427.88MiB      (min: 1447.50MiB)
->     Data ratio:                               1.00
->     Metadata ratio:                           2.00
->     Global reserve:                       13.00MiB      (used: 0.00MiB)
-> 
-> Data,single: Size:1559.25MiB, Used:1092.12MiB
->    /dev/mapper/rootvg-varvol    1559.25MiB
-> 
-> Metadata,DUP: Size:768.00MiB, Used:4.00MiB
->    /dev/mapper/rootvg-varvol    1536.00MiB
-> 
-> System,DUP: Size:32.00MiB, Used:0.06MiB
->    /dev/mapper/rootvg-varvol      64.00MiB
-> 
-> Unallocated:
->    /dev/mapper/rootvg-varvol    1960.75MiB
-> 
-> ### Sun Oct 17 00:12:53 CEST 2021
-> Overall:
->     Device size:                        5120.00MiB
->     Device allocated:                   3159.25MiB
->     Device unallocated:                 1960.75MiB
->     Device missing:                        0.00MiB
->     Used:                               1100.62MiB
->     Free (estimated):                   2427.50MiB      (min: 1447.12MiB)
->     Data ratio:                               1.00
->     Metadata ratio:                           2.00
->     Global reserve:                       13.00MiB      (used: 0.00MiB)
-> 
-> Data,single: Size:1559.25MiB, Used:1092.50MiB
->    /dev/mapper/rootvg-varvol    1559.25MiB
-> 
-> Metadata,DUP: Size:768.00MiB, Used:4.00MiB
->    /dev/mapper/rootvg-varvol    1536.00MiB
-> 
-> System,DUP: Size:32.00MiB, Used:0.06MiB
->    /dev/mapper/rootvg-varvol      64.00MiB
-> 
-> Unallocated:
->    /dev/mapper/rootvg-varvol    1960.75MiB
-> ### Sun Oct 17 00:12:58 CEST 2021
-> Overall:
->     Device size:                        5120.00MiB
->     Device allocated:                   2903.25MiB
->     Device unallocated:                 2216.75MiB
->     Device missing:                        0.00MiB
->     Used:                               1100.69MiB
->     Free (estimated):                   2683.44MiB      (min: 1575.06MiB)
->     Data ratio:                               1.00
->     Metadata ratio:                           2.00
->     Global reserve:                       13.00MiB      (used: 0.12MiB)
-> 
-> Data,single: Size:1559.25MiB, Used:1092.56MiB
->    /dev/mapper/rootvg-varvol    1559.25MiB
-> 
-> Metadata,DUP: Size:640.00MiB, Used:4.00MiB
->    /dev/mapper/rootvg-varvol    1280.00MiB
-> 
-> System,DUP: Size:32.00MiB, Used:0.06MiB
->    /dev/mapper/rootvg-varvol      64.00MiB
-> 
-> Unallocated:
->    /dev/mapper/rootvg-varvol    2216.75MiB
-> 
-> So if I understand properly it might be due to chunk being needed for
-> balance/discard or scrub.
-> Is there 3rd party tools which are also able to lock metadata block group as
-> well? It seems to happens at the same time, when backup is running
-> (spectrum), and/or HANA backup and/or ReaR backup as well.
+ * Bump iocb->ki_pos in gfs2_file_buffered_write to make sure
+   partial writes go to the correct file offset.
 
-If the 3rd party tools are triggering any of the btrfs maintenance
-functions then they'll lock block groups; otherwise, normal filesystem
-operations don't generally hold locks at the block group level.
+ * Some comment and commit message improvements.
 
-There might be some additional issues with the 4.12 kernel that cause
-it to allocate more than the minimum metadata.  I recall there were
-some problems with old kernels where multiple threads allocating at
-the same time will all grab their own chunks, but I'm not sure which
-kernel those were fixed in.  There are also changes to the allocator's
-behavior with the 'ssd' and 'nossd' mount options in 4.14 which might
-cause these effects.
 
-Some temporary overallocation is normal.  It's likely it would have
-worked even without the overallocation, the overallocation has a pretty
-large impact on these tiny filesystems.  This seems a bit higher than
-the amount I've come to expect from modern btrfs.
+I've pushed this here:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git/log/?h=for-next.mmap-fault
+  28ea41433945ed1d442d2a131d1bcbfa24646c6f
+
+
+From my point of view, the following questions remain:
+
+ * I hope these patches will be merged for v5.16, but what process
+   should I follow for that?  The patch queue contains mm and iomap
+   changes, so a pull request from the gfs2 tree would be unusual.
+
+ * Will Catalin Marinas's work for supporting arm64 sub-page faults
+   be queued behind these patches?  We have an overlap in
+   fault_in_[pages_]readable fault_in_[pages_]writeable, so one of
+   the two patch queues will need some adjustments.
+
+
+Thanks,
+Andreas
+
+
+Andreas Gruenbacher (16):
+  iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
+  powerpc/kvm: Fix kvm_use_magic_page
+  gup: Turn fault_in_pages_{readable,writeable} into
+    fault_in_{readable,writeable}
+  iov_iter: Turn iov_iter_fault_in_readable into
+    fault_in_iov_iter_readable
+  iov_iter: Introduce fault_in_iov_iter_writeable
+  gfs2: Add wrapper for iomap_file_buffered_write
+  gfs2: Clean up function may_grant
+  gfs2: Move the inode glock locking to gfs2_file_buffered_write
+  gfs2: Eliminate ip->i_gh
+  gfs2: Fix mmap + page fault deadlocks for buffered I/O
+  iomap: Fix iomap_dio_rw return value for user copies
+  iomap: Support partial direct I/O on user copy failures
+  iomap: Add done_before argument to iomap_dio_rw
+  gup: Introduce FOLL_NOFAULT flag to disable page faults
+  iov_iter: Introduce nofault flag to disable page faults
+  gfs2: Fix mmap + page fault deadlocks for direct I/O
+
+Bob Peterson (1):
+  gfs2: Introduce flag for glock holder auto-demotion
+
+ arch/powerpc/kernel/kvm.c           |   3 +-
+ arch/powerpc/kernel/signal_32.c     |   4 +-
+ arch/powerpc/kernel/signal_64.c     |   2 +-
+ arch/x86/kernel/fpu/signal.c        |   7 +-
+ drivers/gpu/drm/armada/armada_gem.c |   7 +-
+ fs/btrfs/file.c                     |   7 +-
+ fs/btrfs/ioctl.c                    |   5 +-
+ fs/erofs/data.c                     |   2 +-
+ fs/ext4/file.c                      |   5 +-
+ fs/f2fs/file.c                      |   2 +-
+ fs/fuse/file.c                      |   2 +-
+ fs/gfs2/bmap.c                      |  60 +----
+ fs/gfs2/file.c                      | 256 +++++++++++++++++++--
+ fs/gfs2/glock.c                     | 331 +++++++++++++++++++++-------
+ fs/gfs2/glock.h                     |  20 ++
+ fs/gfs2/incore.h                    |   4 +-
+ fs/iomap/buffered-io.c              |   2 +-
+ fs/iomap/direct-io.c                |  21 +-
+ fs/ntfs/file.c                      |   2 +-
+ fs/ntfs3/file.c                     |   2 +-
+ fs/xfs/xfs_file.c                   |   6 +-
+ fs/zonefs/super.c                   |   4 +-
+ include/linux/iomap.h               |  11 +-
+ include/linux/mm.h                  |   3 +-
+ include/linux/pagemap.h             |  58 +----
+ include/linux/uio.h                 |   4 +-
+ lib/iov_iter.c                      | 103 +++++++--
+ mm/filemap.c                        |   4 +-
+ mm/gup.c                            | 139 +++++++++++-
+ 29 files changed, 790 insertions(+), 286 deletions(-)
+
+-- 
+2.26.3
+
