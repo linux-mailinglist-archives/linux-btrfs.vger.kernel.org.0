@@ -2,194 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628B6433A8B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 17:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF59D433ADB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 17:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbhJSPf0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Oct 2021 11:35:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51418 "EHLO
+        id S232051AbhJSPmt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Oct 2021 11:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233737AbhJSPfS (ORCPT
+        with ESMTP id S231947AbhJSPms (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Oct 2021 11:35:18 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDEC7C061746
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 08:33:02 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id x123so300141qke.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 08:33:02 -0700 (PDT)
+        Tue, 19 Oct 2021 11:42:48 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC9BC06161C
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 08:40:35 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id o11so6911126ljg.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 08:40:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=/ezdIifNTpwDDole8t/Kkigo3n7qeGlfyyQf8+0av2k=;
-        b=HLrpBE4jgwCZnfmwPa3IBOhVRUZI7VefUNH5jtM6RVCW4N8i55uhU1fPF3W6GOVMFf
-         /XiXlnnMLgyUeQTojsXirNC15dwgrePCd+b95Qczmt1bgLYjbJKyIWNjDWcX2jypsRz7
-         Q2aCAZzYzwETZcDvWIwOWv2eCEwoJ02SCnlGKivzzo5ix0PzhSCqi2n+omj3XbXpE1r9
-         MUnsjxIwLaXUoBu3dOG9CUb0kEWmFwPjkj19AL8k9OscWtoWK3acF1By1NWEo8zTxzI3
-         QZarZTqiGMXtvxeLyut3y3AiuGtnFkbIVZXPjXUDNS9aKV5pIMrkQ8AobeonImmDckDS
-         pcAg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M5qLpGOaG+oQiwUY6IZoloZawU2xGFjPWL0KZDD5Sqk=;
+        b=Wmr7RZGDwVuUUI0LgeG+526Yzd808WwmB0Gv3Ef8vlN4fSo+FWdGkt2ewAZlHCizf2
+         AOj6nKdkBK/50v2SslKwFKgXMONLSaQQZm/2hQbpblrN5k/KDVfxEf5XH7GllHiFtRBq
+         4jqVHC4XfB57XB9V0yinVHJ5h8DIkkpImv8f0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:content-transfer-encoding;
-        bh=/ezdIifNTpwDDole8t/Kkigo3n7qeGlfyyQf8+0av2k=;
-        b=rFZI573b/yga7lKGZdc6kDMuW+9l5fCAwZRTyADMkrZk0t7lMSzaijLfBQoYtZpJdC
-         xFgrGc/FytyfDwRvlS+Nt6R3Lng05LydjERHVBbTvaJHVp6pYtaL6LPJHR97AdyfmQWY
-         6Y1D4W7NqCgqA4sNLnFB0MiLdncHRMnC7YI+WN4AghPxpD1ijwU4U3/mdtu1FArzdxGI
-         xF7sMh6BXd0CeH1P6gtqK4EQRgaXnK72SvPsCKTDpPow0uPyA2mUTtxJLeMhzGM7ctap
-         NOhNaF5GivdkneHJic2bUMxJkUi/f1+RvPxpKAyMeVjVXxfQS0ZFuMOXnw4zo/G80I1y
-         Kiqg==
-X-Gm-Message-State: AOAM532DQv1grMe2fFmX+5toPrFHW/d6wCTT06S5oVIQ62hdRTlCP903
-        smu+K1OetxAha5z5cNVwJgo9tM6+RPW1Jzflsuw=
-X-Google-Smtp-Source: ABdhPJzyoGJK0mmYs5kSwxAiJpdADoARvUqiN9A7y1ylJokM4OKmiuoyCy4J6R9H2OdlXfXW0cCxsnKDUrwjsnr4Gdg=
-X-Received: by 2002:a37:2c86:: with SMTP id s128mr514590qkh.516.1634657582040;
- Tue, 19 Oct 2021 08:33:02 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M5qLpGOaG+oQiwUY6IZoloZawU2xGFjPWL0KZDD5Sqk=;
+        b=FTrd1zRWpM1SOQfhkWwRRA90YUBofSYf3ERyBIjsiTg4QK4xkNRN6ti/eTDztcBeyj
+         lyDgV97izc1rZzHD6lGUriPEi+j8yJv3VyiFkkRhQXCwbjEiiqCKq9XMrjrDRPS0ORoX
+         Ezp1feTYqQyJEw4G2944XKbKM6rchrdYUQLwY2/WUk94G1a4CBc7JX7sI4XgUsYQMSbZ
+         LI/CtUPOwcq/7LyWlV1wFJd2ULFZhYz0P+1gzCx37O8HM2E5Mq4vk2kaTNdwOXQU89Aq
+         PyraQJTUl19mORD5QAig+0u0K8BJr2HX34QaFs1OQBtkC5Ep/JtS16OLCK5REFg1UroU
+         3n4w==
+X-Gm-Message-State: AOAM533aMsjmaLGyuNJHod4qlZ9d1BznRQszXsmIUwJ4m7+oaZdQI8eX
+        NINEJshwGv0z/xKVp8EY+7+bs/N5PRMbu/GT
+X-Google-Smtp-Source: ABdhPJz1LxE4EJTiatZuksf2HG4BzAnq/gKXJEhHRTZe5y+4JsgpaKCVCHDwjaAcbg4kAAKMUZUKYg==
+X-Received: by 2002:a05:651c:204d:: with SMTP id t13mr7374360ljo.267.1634658031720;
+        Tue, 19 Oct 2021 08:40:31 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id x34sm1770316lfa.170.2021.10.19.08.40.29
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Oct 2021 08:40:29 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id x192so8334291lff.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 08:40:29 -0700 (PDT)
+X-Received: by 2002:a05:6512:398a:: with SMTP id j10mr6559053lfu.402.1634658028835;
+ Tue, 19 Oct 2021 08:40:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211018173803.18353-1-dsterba@suse.com> <YW3nBs4cr99TcyRL@localhost.localdomain>
- <20211019145412.GT30611@twin.jikos.cz>
-In-Reply-To: <20211019145412.GT30611@twin.jikos.cz>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 19 Oct 2021 16:32:25 +0100
-Message-ID: <CAL3q7H4_BVH=CHJADV4k7QGeRYcZDi9wcMKNvPm7O5znHByVxA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: add stub argument to transaction API
-To:     David Sterba <dsterba@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+References: <20211019134204.3382645-1-agruenba@redhat.com>
+In-Reply-To: <20211019134204.3382645-1-agruenba@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 19 Oct 2021 05:40:13 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+Message-ID: <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
         linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 3:57 PM David Sterba <dsterba@suse.cz> wrote:
+On Tue, Oct 19, 2021 at 3:42 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
 >
-> On Mon, Oct 18, 2021 at 05:28:38PM -0400, Josef Bacik wrote:
-> > On Mon, Oct 18, 2021 at 07:38:03PM +0200, David Sterba wrote:
-> > > Why the stub/context argument is needed: the NOFS protection is per c=
-all
-> > > site, so it must be set and reset in the caller thread, so any
-> > > allocations between btrfs_start_transaction and btrfs_end_transaction
-> > > are safe. We can't store it in the transaction handle, because it's n=
-ot
-> > > passed everywhere, eg. to various helpers in btrfs and potentially in
-> > > other subsystems.
-> >
-> > So the plan is to instead pass the tctx around everywhere to carry the =
-flags?  I
-> > thought the whole point of memalloc_nofs_save() is that we don't have t=
-o pass
-> > gfp_t's around everywhere, it just knows what we're supposed to be doin=
-g?
+> From my point of view, the following questions remain:
 >
-> Nothing needs to be passed around, it will be hidden inside the
-> transaction start/end, the only thing the caller needs to do is to
-> define the variable and pass it to to transaction start call. The NOFS
-> section will then apply to any calls until the transaction end call.
->
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1232,6 +1232,7 @@ int btrfs_commit_inode_delayed_inode(struct btrfs_i=
-node *inode)
->         struct btrfs_path *path;
->         struct btrfs_block_rsv *block_rsv;
->         int ret;
-> +       DEFINE_TCTX(tctx);
->
->         if (!delayed_node)
->                 return 0;
-> @@ -1244,7 +1245,7 @@ int btrfs_commit_inode_delayed_inode(struct btrfs_i=
-node *inode)
->         }
->         mutex_unlock(&delayed_node->mutex);
->
-> -       trans =3D btrfs_join_transaction(delayed_node->root, NULL);
-> +       trans =3D btrfs_join_transaction(delayed_node->root, tctx);
->         if (IS_ERR(trans)) {
->                 ret =3D PTR_ERR(trans);
->                 goto out;
-> @@ -1271,7 +1272,7 @@ int btrfs_commit_inode_delayed_inode(struct btrfs_i=
-node *inode)
->         btrfs_free_path(path);
->         trans->block_rsv =3D block_rsv;
->  trans_out:
-> -       btrfs_end_transaction(trans, NULL);
-> +       btrfs_end_transaction(trans, tctx);
->         btrfs_btree_balance_dirty(fs_info);
->  out:
->         btrfs_release_delayed_node(delayed_node);
-> ---
->
-> This is what needs to be done per caller.
->
->
-> > So
-> > the trans should be able to hold the flags since we only care about sta=
-rting it
-> > and restoring it, correct?  Or am I wrong and we do actually need to pa=
-ss this
-> > thing around?  In which case can't we still just save it in the trans h=
-andle,
-> > and pass the u32 around where appropriate?  Thanks,
->
-> I had to dig in my memory why we can't store it in the transaction
-> handle, because this is naturally less intrusive. But it does not work.
->
-> There are two things:
->
-> 1) In a function that starts/joins a transaction, the NOFS scope is from
->    that call until the transaction end. This is caller-specific.
->    Like in the example above, any allocation with GFP_KERNEL happening
->    will be safe and not recurse back to btrfs.
->
-> 2) Transaction handle is not caller-specific and is allocated when the
->    transaction starts (ie. a new kmem_cache_alloc call is done). Any
->    caller of transaction start will only increase the reference count.
+>  * I hope these patches will be merged for v5.16, but what process
+>    should I follow for that?  The patch queue contains mm and iomap
+>    changes, so a pull request from the gfs2 tree would be unusual.
 
-I'm having trouble understanding this.
+Oh, I'd much rather get these as one pull request from the author and
+from the person that actually ended up testing this.
 
-The transaction handle, struct btrfs_trans_handle, is caller specific
-and once allocated we make current->journal_info point to it.
+It might be "unusual", but it's certainly not unheard of, and trying
+to push different parts of the series through different maintainers
+would just cause lots of extra churn.
 
-Any task calling start/join/attach transaction, always allocates one,
-which gets freed once it calls end_transacton() or
-commit_transaction() and then current->journal_info is set to NULL.
+Yes, normally I'd expect filesystem changes to have a diffstat that
+clearly shows that "yes, it's all local to this filesystem", and when
+I see anything else it raises red flags.
 
-I'm not seeing why can't the flags returned by memalloc_*_save() be
-stored in the transaction handle itself.
-Care to elaborate?
+But it raises red flags not because it would be wrong to have changes
+to other parts, but simply because when cross-subsystem development
+happens, it needs to be discussed and cleared with people. And you've
+done that.
 
-Not that I care much if this goes into the upcoming merge window or
-the next one, but since this is an internal API, that does not affect
-users or features, why the urgency to have this merged before there
-are any real uses of it?
+So I'd take this as one pull request from you. You've been doing the
+work, you get the questionable glory of being in charge of it all.
+You'll get the blame too ;)
 
-Thanks.
+>  * Will Catalin Marinas's work for supporting arm64 sub-page faults
+>    be queued behind these patches?  We have an overlap in
+>    fault_in_[pages_]readable fault_in_[pages_]writeable, so one of
+>    the two patch queues will need some adjustments.
 
->
-> So, on each refcount_inc, we'd need to store the nofs_flags, on each
-> refcount_dec to restore it.
->
-> It is possible that the NOFS context is also needed outside of the
-> start/end region, but it depends and has to be done case by case. For
-> the transcation start/end we're sure the NOFS must be set.
->
-> The NOFS scope should be also more fine-grained to where we know we
-> really need it, so it's not "GFP_NOFS everywhere" just implemented by
-> other means.
->
-> There is (and will be more) code adding assertions and additional checks
-> to verify the invariants. For anybody who's interested I can share the
-> WIP branches, but I haven't worked on it since 5.6.
->
-> Getting the API parameter extension would help to shorten the
-> start-again time, it's possible I'm missing something and it can be done
-> in an easier way but I don't see it right now.
+I think that on the whole they should be developed separately, I don't
+think it's going to be a particularly difficult conflict.
 
+That whole discussion does mean that I suspect that we'll have to
+change fault_in_iov_iter_writeable() to do the "every 16 bytes" or
+whatever thing, and make it use an actual atomic "add zero" or
+whatever rather than walk the page tables. But that's a conceptually
+separate discussion from this one, I wouldn't actually want to mix up
+the two issues too much.
 
+Sure, they touch the same code, so there is _that_ overlap, but one is
+about "the hardware rules are a-changing" and the other is about
+filesystem use of - and expansion of - the things we do. Let's keep
+them separate until ready, and then fix up the fallout at that point
+(either as a merge resolution, or even partly after-the-fact).
 
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+                     Linus
