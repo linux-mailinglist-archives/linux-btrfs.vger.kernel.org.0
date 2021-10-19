@@ -2,230 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB95B432B1A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 02:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC234432B28
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 02:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhJSANp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 20:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbhJSANp (ORCPT
+        id S229769AbhJSAYp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 20:24:45 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:30196 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229529AbhJSAYp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 20:13:45 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601C9C06161C
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 17:11:33 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id k26so16072150pfi.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 17:11:33 -0700 (PDT)
+        Mon, 18 Oct 2021 20:24:45 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19INEnmI004583;
+        Tue, 19 Oct 2021 00:22:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=+/y7x8Ybw5l5XsjmZa1KhX/ZUCuGYcNATG7u3uXFr0c=;
+ b=HpbIu2MRLTSBiStzx8CDI1rIXBBTwTpV0Et9B9ySFKXaAE4EVxMrm2sUyCWqWS3afDju
+ E/2m1wkcF+ARPPaLzYWxipP7W9bfVUgJHmqptC7W0Qv9fcJ/x2lqTbo+OL/wkVGYQInV
+ 0PAyCD/5nl/eDkj7I72oO3/wD4zcwoHy13lvkAt9NnDOSEoBX0Ve0hJWBup78A5XE3e4
+ ny2FtKxrRgGZxnKv41APWXO4wrkqJxGyjOUGHEGLSe23nrqC0MTC7C//6SwFMfElz3qt
+ DO731UqvFhPtK4hcq4tHqStPuB/+aef70ev5cDJOJG588gRwT2z3pA4+Cni5MfHy9Eqv 4A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3brnnnfe7m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Oct 2021 00:22:30 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19J0FUNs102171;
+        Tue, 19 Oct 2021 00:22:29 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
+        by userp3020.oracle.com with ESMTP id 3br8grex26-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Oct 2021 00:22:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T1vX34D0UscIFgWMPQmEyW+z7ZiQh5jNEo3C3jz1pc3xZmRNM0goh5ZDOICfCvDVO3zN0II4AKSIH7/oY4zV5S/o4B1fv7lb+l500XTbNZI8xfK626fvF5rRwYgY4BVUHJxTgvKAzuzjwlZJtVL+JrlpBSFVGt4doItEZ7XBNW9mlNtfmM1pDgBIgUYTvwfB6SS/+PLS8j8X+BaQezulBCqNPwW96TWpec1X5CPBAWXwFAGsIHU+Xv35fkzvSa+yby1dLEZFVC065+s2Pu7cswhnJPhPzFwEzybNqQqHQts4QvLpJIXIaVAIzbYJyi3x+dtXGOBwhuilAf5hnPshMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+/y7x8Ybw5l5XsjmZa1KhX/ZUCuGYcNATG7u3uXFr0c=;
+ b=giwv29HPMwtTtV7IgUYnYzDPe3V21Uz1stmA6H5vIKhAalvp9kTvFIk5jFiATKYDRNyNKwJHGhQ8C99vfEaNU4AY/0vST0ja6leXfw6NFVQkx3meclTPeGodXiKEByi3AVg07BApqlw+PN+n4ZqY1oQkedHmi3DG+lJBkzvvqyxHhDbRNXFhD6bsEmgPPn3xnShUcNS0f1/7CYAgjCCextDJq1+fXQb4VzdZp4rPv66zAMpnUR/qL2vohez6fs0bCKSCG+0KqNTfgtEJh0HgmZSecLJqyZPpVyt0W6nDd+qbr5NsE9qsO5+KJgvKWWx59IATrMaffV5Vt8DJqUJ7Pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ARK4CV1QCHDnqAC2jNbm2HtT+N4X81UOF1A1BxlVJKw=;
-        b=maB/z56EOiViRmDaFOcRjKQXpDVo9UjXlEHFwOKHKijCm06zqz3YUtJKdTr1Xekdtt
-         aBBjwhHhYYzsbMyq4bhA4QuLOe1aTzjtf9Av5Pe0bRVNZlQp49rfrHbtoHxnIzCk4VaV
-         jpCKQnS0Gm3ypaZDAGgryz5JUO5mJASzSEUaZW2zBdXaOu9GxGHmSSGpYjqoxpm2woaO
-         MFEdY2mQt7RmFBeRQl58MzabrIKrt8sE1LCF5DJN4sJoHmn8zoxs0nIo57uVLYnDKKng
-         RbbLFLzuSC0za6Buhj9BNbGP82sDHcLL/FubB2H3fqOfbwcR9E0CAZB0IIrKhKb3oodb
-         0Mpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ARK4CV1QCHDnqAC2jNbm2HtT+N4X81UOF1A1BxlVJKw=;
-        b=GjKrgPUm7mNJmfeqBXCEvCdz0WeQwcCCW+ZogaCWM4QEnW0xWYuNwJFKvf1pcvMxyA
-         5JKuJit9AT02XUqildzNIWDsFveHxvgHucsD/8qYUumJ9W31Mbs41D0JobQpIsUwZNGD
-         LkjtFhTL09Ul8hIx24Z1YUDo/3Dl7fRwadh1BxZJakc5oB3F0mOq2euox6gN37OMwUVG
-         x0tyaLcCoDbC7A47KESlKrXXwzQI5VuMJ8FM6T62W9tASu+D3koJ0nSr6rScFSDWS5Aw
-         OH5W1OteRP4S2KPjbI5bF3foROeibTlkatModQ7WqMjeKJ9sGAl/GOfkTo9Z2W+f5Njs
-         ORsQ==
-X-Gm-Message-State: AOAM532DU/kMp2f7OIX0RyJC7AfZB9IBaLXG4k4pQK5h+gaWDwd4b/m4
-        HANB1/GqFC6K6V8sKNJ86ghXrQ==
-X-Google-Smtp-Source: ABdhPJwkq+JbuAPjxkqH5uajHT8uTqmxVG6G07sGmUpGKjrYBt7MEogonkifl446sTBWnU+MPHfaMQ==
-X-Received: by 2002:a63:7119:: with SMTP id m25mr14678645pgc.253.1634602292615;
-        Mon, 18 Oct 2021 17:11:32 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:b911])
-        by smtp.gmail.com with ESMTPSA id x17sm14004418pfa.209.2021.10.18.17.11.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 17:11:32 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 17:11:30 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH v11 13/14] btrfs: send: send compressed extents with
- encoded writes
-Message-ID: <YW4NMkw0K4uMrckI@relinquished.localdomain>
-References: <cover.1630514529.git.osandov@fb.com>
- <366f92a7ec5a69dc92290dc2cf6e8603f566495c.1630514529.git.osandov@fb.com>
- <58a04b59-a2fb-bd26-606e-6ddf8bd31552@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+/y7x8Ybw5l5XsjmZa1KhX/ZUCuGYcNATG7u3uXFr0c=;
+ b=qz6clV4snJ5hxCX0tHMxhYfgvjsEmCbJYIeZ3tQMLAAVJyXCwoPAXMZVeYPWRi/WQpLJbgZmmnCRIKC6kLpcuYkC2p/YzkfYGLly7zUjMx18hqfBsy3zMe55DPj8XRng4v7IpAn89c08e5glJSPqEIxIDmA21L1k6XryIP24d14=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB3920.namprd10.prod.outlook.com (2603:10b6:208:1bc::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Tue, 19 Oct
+ 2021 00:22:27 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4608.018; Tue, 19 Oct 2021
+ 00:22:27 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org, dsterba@suse.com
+Subject: [PATCH 0/2] provide fsid in sysfs devinfo
+Date:   Tue, 19 Oct 2021 08:22:08 +0800
+Message-Id: <cover.1634598572.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <58a04b59-a2fb-bd26-606e-6ddf8bd31552@suse.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR02CA0046.apcprd02.prod.outlook.com
+ (2603:1096:4:196::15) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
+MIME-Version: 1.0
+Received: from localhost.localdomain (39.109.140.76) by SI2PR02CA0046.apcprd02.prod.outlook.com (2603:1096:4:196::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend Transport; Tue, 19 Oct 2021 00:22:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e256637f-b9b0-4a95-7aca-08d992968786
+X-MS-TrafficTypeDiagnostic: MN2PR10MB3920:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB39205D80908CF4E4AFF8C9A3E5BD9@MN2PR10MB3920.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +tndmrwFHnXNO+tktcL9/RIkh1zQVcl7GhSbQ0x/AhAD+g31227litkJTIRt2B5OXvnCnCFRZdfwa3YOM/kzAFMSUFLyXByPlh9pZFYqAaQSvOZdKtt8/x2LeKo39Q1gUQPIuX7F6kmTKeGLDajsEF9AoQJsj+klBK8F4+TYIR6wcsSlvJSXj2DU7LEiJnU3hrqGR8cU3nGPmcfPtFMp2bDnnr1lsqatOIHFRmg5Xdd3PA7dnImCq4SfbKKcimPnYO8K+OfnkinVEukKKZwGU57pGJtYKM1UNN1jSaDQIfJwGLLUEnWaQWujO0eHcLSzGD6Qir/UKNPxp46cfsqKVcSiSPi10lAhTt5e6pt5xW9+w72+JReXbGg7+BmCN9aWcmhz2q6I/0DPIfUDD5+iDfFwVl5IuJJsgByYoRYokMOc3Prl7a4lOooZ2r62M1/2vtuXqDsCLoJuUepBrXSNU7J/oL8PlXpyJuntErBNS+BNss3Z4CvjEjJlap4faIhAd/pFR7j4Hv2X/a/DuPaIkhyEUWxGPshgJoEWClIPWNAFTEN5FBIhFiGJVfuBTFoMu8+/mP7UrNyEpn6FeqSwIs6N3Zne4ItphqS/olVnaTPqle7toCf9xf/74/n8phbiOBUneq7t+LyFbpJT/sbd5pcEnWi/H/Eh9LWJed0BhI8gl8pPLi6kgwapPuDBSKxHX6ho8HnOJPZUU2SWO9Mblg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(66946007)(26005)(508600001)(86362001)(66556008)(52116002)(6486002)(6506007)(186003)(8676002)(66476007)(83380400001)(36756003)(2906002)(6666004)(316002)(6512007)(38350700002)(2616005)(38100700002)(5660300002)(44832011)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QxeMVyE1kqnhLth686LGsgADUpSQqbTGBESNmMnoOTM4vG+O36MV+rs82ZsQ?=
+ =?us-ascii?Q?hO/5jED51BWiew1BkMNVF6NnGAwp+zz0V3mEXZRH2xT9EKYzx84Hij6bTKgY?=
+ =?us-ascii?Q?uOw5/Q/0YEoXD3AL0BwKiNmAZOUxhWNpWCV/uSJs0vZs9twVw4evCVcmxrYp?=
+ =?us-ascii?Q?W9ohbSUaQJQbudyIuwujMxkkrPCVqOxKr+NnlYL6XTQePLbfab1bu9ee9tmy?=
+ =?us-ascii?Q?gJjeJ5LZMu1Kf8K+mGIAMfxhlEi+4O0PzhhhZxnUfzzruEdcaMHuLw9dTQKA?=
+ =?us-ascii?Q?Qks2+fAFbIRr+aX8FJWzEu3Rj9m+NvabbjFvxprsHtAdv4YXkrE99RaxevA8?=
+ =?us-ascii?Q?nfnEMG52lV222pTODrpBEo0JqJiSoZb8ZSwcYGaTNFYvoSX/krd2kCS/2mhL?=
+ =?us-ascii?Q?PPY/wfMEEozGJ9Hf++T1CwMCX1lTBteOjLs+/ctSfjvusr+uPip1GJTrS1DT?=
+ =?us-ascii?Q?Ik6rTkEpKruiQeRjZa1PZ+Rhw+BxsELb9TmcedHf1AaLzuBUltJtwUX7WSX2?=
+ =?us-ascii?Q?3n+loUjGXUhTYa8xREul2cii6OoTeJ5mYUJRqUQAAFEy1ePXWBRmiqg2JDOk?=
+ =?us-ascii?Q?TkMYAnle5TJ+td3DczQXofKUr/bHPr3QPQincyljMEJWNQO/3Zml9rRz/2vO?=
+ =?us-ascii?Q?DpBKrVZxpnKkzyg7Zkgsj/j1TELdLL4Ja5w8yU8OS3G3y58LrCbGEXyZziOz?=
+ =?us-ascii?Q?Pj8ClEboHS7+RbIv4k/RWrGhB8EzBVgj41fGMEQ0YSs64/VS4/PWbfi3e67Y?=
+ =?us-ascii?Q?1dmps6BM/AktoyRPcW/P1MrIRL+KYig/m0sqf9hPnIIOdKjRCNV9jceET2ZM?=
+ =?us-ascii?Q?1JeBEXuh22KfYOk8ZFqcZodY5zMZfmhX40UYQvbFsSMX9J2AkQ1KYzBOt+Pm?=
+ =?us-ascii?Q?ACU0jIzhYiXvZ4vSegal7DyfVptGUq6MKm8NJrP9FdGEvQCwbTbXMGbZQWnC?=
+ =?us-ascii?Q?xLmonsa6Srnd8l/XAz2nzmGSHj+jTaefdvJfcRhzI6ZADoRbVVg6d5pUoDjf?=
+ =?us-ascii?Q?E1S3Vsmf+HTGbnsLYmT1t5HUNFqXJMZYXoxvtQteamKgymJRp2U/gKSeC9JB?=
+ =?us-ascii?Q?WHXlSUHQ+umEwEPQ8eNoFY0gs7XGYn0WneC8REaO4DVnzwWeU2eRKE3LyYQt?=
+ =?us-ascii?Q?dYWPp5zZVaTUaBXlQGA83BRHKlGfnmlUeUKFeVUC/4ewbLAPK6C2szaNraEg?=
+ =?us-ascii?Q?c/t77xxeWL7EjpQ6LxzMnmmZEt8NVMnwkNuGVsa702DydtkOU/jEfu5ptBjd?=
+ =?us-ascii?Q?oFgGCOBzLufDLIohZxduR0UJsoXjfS3IjDGDXd6po7as1osPDsyrissJ02WC?=
+ =?us-ascii?Q?B1kiC6Acwc/9AOuUIczf5Vtg?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e256637f-b9b0-4a95-7aca-08d992968786
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2021 00:22:26.9866
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cMxLhXlf9WJ+2egRdOHOtdAFvURA6SWN7HtLWw7GA7CY21L9UlZumXWsj4p6l/2CKneLkW1irZ6GbWKCEyY2KA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3920
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10141 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=777 mlxscore=0 adultscore=0
+ spamscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110190000
+X-Proofpoint-ORIG-GUID: rhWvGcV02LCqRr-gpomHui_Zu7axs-_N
+X-Proofpoint-GUID: rhWvGcV02LCqRr-gpomHui_Zu7axs-_N
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 18, 2021 at 02:59:08PM +0300, Nikolay Borisov wrote:
-> 
-> 
-> On 1.09.21 г. 20:01, Omar Sandoval wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> > 
-> > Now that all of the pieces are in place, we can use the ENCODED_WRITE
-> > command to send compressed extents when appropriate.
-> > 
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> 
-> Overall looks sane but consider some of the nits below.
-> 
-> 
-> <snip>
-> 
-> > +static int send_encoded_extent(struct send_ctx *sctx, struct btrfs_path *path,
-> > +			       u64 offset, u64 len)
-> > +{
-> > +	struct btrfs_root *root = sctx->send_root;
-> > +	struct btrfs_fs_info *fs_info = root->fs_info;
-> > +	struct inode *inode;
-> > +	struct fs_path *p;
-> > +	struct extent_buffer *leaf = path->nodes[0];
-> > +	struct btrfs_key key;
-> > +	struct btrfs_file_extent_item *ei;
-> > +	u64 block_start;
-> > +	u64 block_len;
-> > +	u32 data_offset;
-> > +	struct btrfs_cmd_header *hdr;
-> > +	u32 crc;
-> > +	int ret;
-> > +
-> > +	inode = btrfs_iget(fs_info->sb, sctx->cur_ino, root);
-> > +	if (IS_ERR(inode))
-> > +		return PTR_ERR(inode);
-> > +
-> > +	p = fs_path_alloc();
-> > +	if (!p) {
-> > +		ret = -ENOMEM;
-> > +		goto out;
-> > +	}
-> > +
-> > +	ret = begin_cmd(sctx, BTRFS_SEND_C_ENCODED_WRITE);
-> > +	if (ret < 0)
-> > +		goto out;
-> > +
-> > +	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, p);
-> > +	if (ret < 0)
-> > +		goto out;
-> > +
-> > +	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-> > +	ei = btrfs_item_ptr(leaf, path->slots[0],
-> > +			    struct btrfs_file_extent_item);
-> > +	block_start = btrfs_file_extent_disk_bytenr(leaf, ei);
-> 
-> block_start is somewhat ambiguous here, this is just the disk bytenr of
-> the extent.
-> 
-> > +	block_len = btrfs_file_extent_disk_num_bytes(leaf, ei);
-> 
-> Why is this called block_len when it's just the size in bytes on-disk?
+btrfs-progs tries to read the fsid from the super-block for a missing
+device and, it fails. It needs to find out if the device is a seed
+device. It does it by comparing the device's fsid with the fsid of the
+mounted filesystem. To help this scenario introduce a new sysfs file to
+read the fsid from the kernel.
+     /sys/fs/btrfs/<fsid>/devinfo/<devid>/fsid
 
-I copied this naming from extent_map since btrfs_encoded_read() was the
-reference for this code, but I'll change the naming here.
+Patch 1 is a cleanup converts scnprtin()f and snprintf() to sysfs_emit()
+Patch 2 introduces the new sysfs interface as above
 
-> > +
-> > +	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, p);
-> > +	TLV_PUT_U64(sctx, BTRFS_SEND_A_FILE_OFFSET, offset);
-> > +	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_FILE_LEN,
-> > +		    min(key.offset + btrfs_file_extent_num_bytes(leaf, ei) - offset,
-> > +			len));
-> > +	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_LEN,
-> > +		    btrfs_file_extent_ram_bytes(leaf, ei));
-> > +	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_OFFSET,
-> > +		    offset - key.offset + btrfs_file_extent_offset(leaf, ei));
-> > +	ret = btrfs_encoded_io_compression_from_extent(
-> > +				btrfs_file_extent_compression(leaf, ei));
-> > +	if (ret < 0)
-> > +		goto out;
-> > +	TLV_PUT_U32(sctx, BTRFS_SEND_A_COMPRESSION, ret);
-> > +	TLV_PUT_U32(sctx, BTRFS_SEND_A_ENCRYPTION, 0);
-> > +
-> > +	ret = put_data_header(sctx, block_len);
-> > +	if (ret < 0)
-> > +		goto out;
-> > +
-> > +	data_offset = ALIGN(sctx->send_size, PAGE_SIZE);
-> 
-> nit: The whole data_offset warrants a comment here, since send_buf is
-> now mapped from send_buf_pages, so all the TLV you've put before are
-> actually stored in the beginning of send_buf_pages, so by doing the
-> above you ensure the data write begins on a clean page boundary ...
+The other implementation choice is to add another parameter to the
+struct btrfs_ioctl_dev_info_args and use BTRFS_IOC_DEV_INFO ioctl. But
+then backward kernel compatibility with the newer btrfs-progs is more
+complicated. If needed, we can add that too.
 
-Yup, I'll add a comment.
+Related btrfs-progs patches:
+  btrfs-progs: prepare helper device_is_seed
+  btrfs-progs: read fsid from the sysfs in device_is_seed
 
-> > +	if (data_offset > sctx->send_max_size ||
-> > +	    sctx->send_max_size - data_offset < block_len) {
-> > +		ret = -EOVERFLOW;
-> > +		goto out;
-> > +	}
-> > +
-> > +	ret = btrfs_encoded_read_regular_fill_pages(inode, block_start,
-> > +						    block_len,
-> > +						    sctx->send_buf_pages +
-> > +						    (data_offset >> PAGE_SHIFT));
-> > +	if (ret)
-> > +		goto out;
-> > +
-> > +	hdr = (struct btrfs_cmd_header *)sctx->send_buf;
-> > +	hdr->len = cpu_to_le32(sctx->send_size + block_len - sizeof(*hdr));
-> > +	hdr->crc = 0;
-> > +	crc = btrfs_crc32c(0, sctx->send_buf, sctx->send_size);
-> > +	crc = btrfs_crc32c(crc, sctx->send_buf + data_offset, block_len);
-> 
-> ... and because of that you can't simply use send_cmd ;(
-> 
-> > +	hdr->crc = cpu_to_le32(crc);
-> > +
-> > +	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
-> > +			&sctx->send_off);
-> > +	if (!ret) {
-> > +		ret = write_buf(sctx->send_filp, sctx->send_buf + data_offset,
-> > +				block_len, &sctx->send_off);
-> > +	}
-> > +	sctx->total_send_size += sctx->send_size + block_len;
-> > +	sctx->cmd_send_size[le16_to_cpu(hdr->cmd)] +=
-> > +		sctx->send_size + block_len;
-> > +	sctx->send_size = 0;
-> > +
-> > +tlv_put_failure:
-> > +out:
-> > +	fs_path_free(p);
-> > +	iput(inode);
-> > +	return ret;
-> > +}
-> > +
-> > +static int send_extent_data(struct send_ctx *sctx, struct btrfs_path *path,
-> > +			    const u64 offset, const u64 len)
-> 
-> nit: Instead of sending around a btrfs_path struct around and
-> "polluting" callees to deal with the oddities of our btree interface i.e
-> btrfs_item_ptr et al. Why not refactor the code so that when we know we
-> are about to send an extent data simply initialize some struct
-> extent_info with all the necessary data items: extent type, compression
-> type, based on the extent type properly initialize a size attribute etc
-> and pass that. Right now you have send_extent_data fiddling with
-> path->nodes[0], then based on that you either call
-> send_encoded_inline_extent or send_encoded_extent, instead pass
-> extent_info to send_extent_data/clone_range and be done with it.
+Anand Jain (2):
+  btrfs: sysfs convert scnprintf and snprintf to use sysfs_emit
+  btrfs: sysfs add devinfo/fsid to retrieve fsid from the device
 
-I don't like this for a few reasons:
+ fs/btrfs/sysfs.c | 113 +++++++++++++++++++++++++----------------------
+ 1 file changed, 60 insertions(+), 53 deletions(-)
 
-* An extra "struct extent_info" layer of abstraction would just be extra
-  cognitive overhead. I hate having to trace back where the fields in
-  some struct came from when it's information that's readily available
-  in more well-known data structures.
-* send_encoded_inline_extent() (called by send_extent_data()) needs the
-  btrfs_path in order to get the inline data anyways.
-* clone_range() also already deals with btrfs_paths, so it's not new.
+-- 
+2.31.1
+
