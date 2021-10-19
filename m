@@ -2,231 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04814337A1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 15:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCA74337D8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 15:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236002AbhJSNtS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Oct 2021 09:49:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28037 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230248AbhJSNtR (ORCPT
+        id S235690AbhJSN5X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Oct 2021 09:57:23 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44268 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231231AbhJSN5S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Oct 2021 09:49:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634651224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 19 Oct 2021 09:57:18 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A63E321A99;
+        Tue, 19 Oct 2021 13:55:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634651702;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=MGsX/Ml84CMC+OjHlH5RDMfLJcW/FIl8Qk/LyCJCDBE=;
-        b=JZMc2GERIgWyh0DAiGvHG9ttaJ1dRVkGpWpMYleArThGH6MphYUajGG3GHrMyqFdSPSgaf
-        XPCERzN4FzXTV049yqj2PEQlrm74NF6/wgErqvCYNRKXrQehd63ibYionUKHXPJ54clrGW
-        cmYEsJSMV0zmeOqF70KN++A5y9SECU0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-86WeWPCuMNSZLCuVHcUO8Q-1; Tue, 19 Oct 2021 09:46:11 -0400
-X-MC-Unique: 86WeWPCuMNSZLCuVHcUO8Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF6C91006AA5;
-        Tue, 19 Oct 2021 13:46:09 +0000 (UTC)
-Received: from max.com (unknown [10.40.193.143])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3A35A102AE42;
-        Tue, 19 Oct 2021 13:45:59 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v8 17/17] gfs2: Fix mmap + page fault deadlocks for direct I/O
-Date:   Tue, 19 Oct 2021 15:42:04 +0200
-Message-Id: <20211019134204.3382645-18-agruenba@redhat.com>
-In-Reply-To: <20211019134204.3382645-1-agruenba@redhat.com>
-References: <20211019134204.3382645-1-agruenba@redhat.com>
+        bh=lCAmwd04vR+8ISMPrZZs/6BPlrRsuF68LDbyHwEPntQ=;
+        b=tLZsnCbfP/PE33Cg8Lb4wiLOBxR8QveId9HdyLQwr2cih36yShITfbjTETbGmX7qoPSLnV
+        KpgAA8+dbLeP0XdSU+qtQz6RQ6J5EBZxRaplNcIZug7sxD7fof1K7Oihxwjp0TkV6E8qRu
+        UqkFmpgJ7dUVgd+qqNHE1kGVvaHvryE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634651702;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lCAmwd04vR+8ISMPrZZs/6BPlrRsuF68LDbyHwEPntQ=;
+        b=eVe2N40rhMpqpW06F4v/0V4nL0bZy0/F/3sDzYIThe2zCSwt2+BtKDOwwYusSYK+iBuJ9x
+        /SDiTxQlN3QaJABg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 0D869A3B85;
+        Tue, 19 Oct 2021 13:55:02 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8F6DBDA7A3; Tue, 19 Oct 2021 15:54:34 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 15:54:34 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-block@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        ntfs3@lists.linux.dev
+Subject: Re: [PATCH 4/7] btrfs: use sync_blockdev
+Message-ID: <20211019135434.GS30611@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-block@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        ntfs3@lists.linux.dev
+References: <20211019062530.2174626-1-hch@lst.de>
+ <20211019062530.2174626-5-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019062530.2174626-5-hch@lst.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Also disable page faults during direct I/O requests and implement a
-similar kind of retry logic as in the buffered I/O case.
+On Tue, Oct 19, 2021 at 08:25:27AM +0200, Christoph Hellwig wrote:
+> Use sync_blockdev instead of opencoding it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-The retry logic in the direct I/O case differs from the buffered I/O
-case in the following way: direct I/O doesn't provide the kinds of
-consistency guarantees between concurrent reads and writes that buffered
-I/O provides, so once we lose the inode glock while faulting in user
-pages, we always resume the operation.  We never need to return a
-partial read or write.
-
-This locking problem was originally reported by Jan Kara.  Linus came up
-with the idea of disabling page faults.  Many thanks to Al Viro and
-Matthew Wilcox for their feedback.
-
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- fs/gfs2/file.c | 101 +++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 89 insertions(+), 12 deletions(-)
-
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index ae06defcf369..a8e440b4d21c 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -811,22 +811,65 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
- {
- 	struct file *file = iocb->ki_filp;
- 	struct gfs2_inode *ip = GFS2_I(file->f_mapping->host);
--	size_t count = iov_iter_count(to);
-+	size_t prev_count = 0, window_size = 0;
-+	size_t written = 0;
- 	ssize_t ret;
- 
--	if (!count)
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we indicate
-+	 * that the inode glock may be dropped, fault in the pages manually,
-+	 * and retry.
-+	 *
-+	 * Unlike generic_file_read_iter, for reads, iomap_dio_rw can trigger
-+	 * physical as well as manual page faults, and we need to disable both
-+	 * kinds.
-+	 *
-+	 * For direct I/O, gfs2 takes the inode glock in deferred mode.  This
-+	 * locking mode is compatible with other deferred holders, so multiple
-+	 * processes and nodes can do direct I/O to a file at the same time.
-+	 * There's no guarantee that reads or writes will be atomic.  Any
-+	 * coordination among readers and writers needs to happen externally.
-+	 */
-+
-+	if (!iov_iter_count(to))
- 		return 0; /* skip atime */
- 
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
- 	if (ret)
- 		goto out_uninit;
-+retry_under_glock:
-+	pagefault_disable();
-+	to->nofault = true;
-+	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, written);
-+	to->nofault = false;
-+	pagefault_enable();
-+	if (ret > 0)
-+		written = ret;
- 
--	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0, 0);
--	gfs2_glock_dq(gh);
-+	if (unlikely(iov_iter_count(to) && (ret > 0 || ret == -EFAULT)) &&
-+	    should_fault_in_pages(to, &prev_count, &window_size)) {
-+		size_t leftover;
-+
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_writeable(to, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return written;
- }
- 
- static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
-@@ -835,10 +878,20 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file->f_mapping->host;
- 	struct gfs2_inode *ip = GFS2_I(inode);
--	size_t len = iov_iter_count(from);
--	loff_t offset = iocb->ki_pos;
-+	size_t prev_count = 0, window_size = 0;
-+	size_t read = 0;
- 	ssize_t ret;
- 
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we indicate
-+	 * that the inode glock may be dropped, fault in the pages manually,
-+	 * and retry.
-+	 *
-+	 * For writes, iomap_dio_rw only triggers manual page faults, so we
-+	 * don't need to disable physical ones.
-+	 */
-+
- 	/*
- 	 * Deferred lock, even if its a write, since we do no allocation on
- 	 * this path. All we need to change is the atime, and this lock mode
-@@ -848,22 +901,46 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	 * VFS does.
- 	 */
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
- 	if (ret)
- 		goto out_uninit;
--
-+retry_under_glock:
- 	/* Silently fall back to buffered I/O when writing beyond EOF */
--	if (offset + len > i_size_read(&ip->i_inode))
-+	if (iocb->ki_pos + iov_iter_count(from) > i_size_read(&ip->i_inode))
- 		goto out;
- 
--	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL, 0, 0);
-+	from->nofault = true;
-+	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, read);
-+	from->nofault = false;
-+
- 	if (ret == -ENOTBLK)
- 		ret = 0;
-+	if (ret > 0)
-+		read = ret;
-+
-+	if (unlikely(iov_iter_count(from) && (ret > 0 || ret == -EFAULT)) &&
-+	    should_fault_in_pages(from, &prev_count, &window_size)) {
-+		size_t leftover;
-+
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_readable(from, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
- out:
--	gfs2_glock_dq(gh);
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return read;
- }
- 
- static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
--- 
-2.26.3
-
+Acked-by: David Sterba <dsterba@suse.com>
