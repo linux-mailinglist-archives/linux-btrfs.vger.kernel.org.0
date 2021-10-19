@@ -2,358 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2AA433F4A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 21:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D92B433F83
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 21:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235002AbhJSTd1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Oct 2021 15:33:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48198 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234971AbhJSTd0 (ORCPT
+        id S234876AbhJST7y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Oct 2021 15:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234693AbhJST7x (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:33:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1634671872;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IpjZLH210UbCFdcb6g5P1douHB4oJMtMFw+YH3KvSt4=;
-        b=OeX+6zTiPKSAvFEhysI07HZnc2gl6Q0wfEZUZLNgn1eKTIQOLksylVFKaKXLkZ/qfBJOQm
-        1d0ZPYeHdeIcMPHHk7m0d8pTsC23a6ZeZx02Oj5xnWQPwBfBxjRIiGGvbvfNObOYZch5j4
-        qCYML7U0sB8AuLFypTiPhgoCTUBlqt0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-vJYntJrfNUWVBDISARGJqA-1; Tue, 19 Oct 2021 15:31:11 -0400
-X-MC-Unique: vJYntJrfNUWVBDISARGJqA-1
-Received: by mail-wm1-f70.google.com with SMTP id s10-20020a1cf20a000000b0030d66991388so1230732wmc.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 12:31:11 -0700 (PDT)
+        Tue, 19 Oct 2021 15:59:53 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA71FC06161C
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 12:57:40 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id i1so1059820qtr.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 12:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a0II1bUro4gNNa3YzgW8MeE6OhFEXtkRLZOV1dG8mrc=;
+        b=uR4nHSshkFEHaXMuJqBUS3W+dbyXyxq5C+p4A1kNaSBwHsKhovZqCbWPg1D9ym7w8f
+         MKBnidy4OYvNGJ+sUcrMbT+dh/gsPnItBJe8agvg4M8DGf7CRd/I8er29ddeGL2WrUYv
+         iLZYNSzFmQ0+j+QKImy0c+/oxsFLlpoP8HJECopC1CK99pyxpAd6scJj1i311TPwDLv9
+         kb2NyFA+Uvu8tYLoa8qFXNbCBrzntZWcvDziEB+dNIL5AhWQ8SjV8phfsZhk6SWEoHYN
+         5c3J4eLW5jKaHYPWfQp516LjCvkFKN+bMfEf9MUBu78HoMBEKwxGjusuZtFscLjNt+0Z
+         jigQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IpjZLH210UbCFdcb6g5P1douHB4oJMtMFw+YH3KvSt4=;
-        b=0ioqgz46V/AmBD8C5XAS3NayaSFTr8DTEpe+O5guQET5n9zQxeUlaJmWK+a5hX4A7e
-         J5KQu5rSXIzUx0fzLl/2Nc0Ie++yBYUyOs0e9bUbFz71JFw6T/ekkrcsw59i25V15BnS
-         IDPFGtyw5qWsL43ErHkEG4fu3twUFHQHFCj8BNBi/gh94LznrfZusF/cJ0tVWXkgtk1b
-         ZoFBRs5To6D/9a4PJGqhdRC0E5p/4pHRjcr9zdNNkgZFJg85BGdScUg5PC9CxNdCkkvc
-         jdB+ZGIcqxkeqKuGSBullD27pZjcxiigYs5a12FuUM2QWn8IOfWu0bTpkHpEpq3m+apW
-         flnw==
-X-Gm-Message-State: AOAM530R+JZIQTGQIGgvkqoG3ANhXANLEURJjxBLEOIYCp5OoTLOgPnD
-        BfPPtURbgXa5N9gUKcxfmdtFh3bhm1lWAXWYhrbBq2C8VWCDrn+0dbhOStrmL5vO8voBTZ/LBSf
-        XWhFX3rs1nLKbnIivjs5JCfIOHDlqInMb0xNgmEw=
-X-Received: by 2002:a1c:7911:: with SMTP id l17mr8482643wme.138.1634671869904;
-        Tue, 19 Oct 2021 12:31:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzZAOG18urGZA+dsEvtuWH/BFDx551A36q+SqZcTXXqsnpiEjKeK89BTSSuXKXAYh63aDfv00Wkyf1ru1HmrHE=
-X-Received: by 2002:a1c:7911:: with SMTP id l17mr8482616wme.138.1634671869594;
- Tue, 19 Oct 2021 12:31:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a0II1bUro4gNNa3YzgW8MeE6OhFEXtkRLZOV1dG8mrc=;
+        b=wtCMoJ2P96nZRXMIdIGFttwh2QBv29zNMoIy2U/uut/01TGA34RqqfcMfX1drN1FWb
+         U4itapmvGEUWrP3pkDmt54SJSAvBNSYDRC2Ys7R0tBj8OiHYLyaJLAeDBk3hdIj1bQyP
+         Y9hHR7/KDf5SZxexdyJg2AUNP524nks+5hcTcdqZ2neWFI5eImVDxOnRbtJRjQH74Bn4
+         oEhZpSVWcnugCSSEEreDCeSu3TQNeDcEyUzYljkHax2kbpJiDI1pirr5yCyz0y7m17yY
+         3poNL0o1cW7of91MSZe4j/Wtmp7CEYsIOF4if7E0JKyKIU3GfIleBy6abGrTcJ48x5fi
+         CkNg==
+X-Gm-Message-State: AOAM5338/dcNHs/ETu61xx5/XxN8k2iS91eO2EH52rXTy3lkLILXL8pL
+        6l89RW4s7M7cIvKAs/iem1kydQ==
+X-Google-Smtp-Source: ABdhPJy3ejdQih8I9GGZcre/Z/Jxuu2HVXcg3mSXjL8utoyKy1d8vEq2pbT3nhy3sG4bx+wJkOhWgg==
+X-Received: by 2002:ac8:4117:: with SMTP id q23mr2222403qtl.390.1634673459808;
+        Tue, 19 Oct 2021 12:57:39 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id o14sm8241708qtv.91.2021.10.19.12.57.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Oct 2021 12:57:39 -0700 (PDT)
+Date:   Tue, 19 Oct 2021 15:57:38 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add stub argument to transaction API
+Message-ID: <YW8jMqfc6sZ7y7Bj@localhost.localdomain>
+References: <20211018173803.18353-1-dsterba@suse.com>
+ <YW3nBs4cr99TcyRL@localhost.localdomain>
+ <20211019145412.GT30611@twin.jikos.cz>
 MIME-Version: 1.0
-References: <20211019134204.3382645-1-agruenba@redhat.com> <20211019134204.3382645-15-agruenba@redhat.com>
- <20211019155105.GA24248@magnolia>
-In-Reply-To: <20211019155105.GA24248@magnolia>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Tue, 19 Oct 2021 21:30:58 +0200
-Message-ID: <CAHc6FU5KGJKxO=OPbiQS915K7nb-kjwxcdABacMcJ6UAtbybVQ@mail.gmail.com>
-Subject: Re: [PATCH v8 14/17] iomap: Add done_before argument to iomap_dio_rw
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, ocfs2-devel@oss.oracle.com,
-        kvm-ppc@vger.kernel.org, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211019145412.GT30611@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 5:51 PM Darrick J. Wong <djwong@kernel.org> wrote:
-> On Tue, Oct 19, 2021 at 03:42:01PM +0200, Andreas Gruenbacher wrote:
-> > Add a done_before argument to iomap_dio_rw that indicates how much of
-> > the request has already been transferred.  When the request succeeds, we
-> > report that done_before additional bytes were tranferred.  This is
-> > useful for finishing a request asynchronously when part of the request
-> > has already been completed synchronously.
-> >
-> > We'll use that to allow iomap_dio_rw to be used with page faults
-> > disabled: when a page fault occurs while submitting a request, we
-> > synchronously complete the part of the request that has already been
-> > submitted.  The caller can then take care of the page fault and call
-> > iomap_dio_rw again for the rest of the request, passing in the number of
-> > bytes already tranferred.
-> >
-> > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > ---
-> >  fs/btrfs/file.c       |  5 +++--
-> >  fs/erofs/data.c       |  2 +-
-> >  fs/ext4/file.c        |  5 +++--
-> >  fs/gfs2/file.c        |  4 ++--
-> >  fs/iomap/direct-io.c  | 11 ++++++++---
-> >  fs/xfs/xfs_file.c     |  6 +++---
-> >  fs/zonefs/super.c     |  4 ++--
-> >  include/linux/iomap.h |  4 ++--
-> >  8 files changed, 24 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > index f37211d3bb69..9d41b28c67ba 100644
-> > --- a/fs/btrfs/file.c
-> > +++ b/fs/btrfs/file.c
-> > @@ -1957,7 +1957,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
-> >       }
-> >
-> >       dio = __iomap_dio_rw(iocb, from, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
-> > -                          0);
-> > +                          0, 0);
-> >
-> >       btrfs_inode_unlock(inode, ilock_flags);
-> >
-> > @@ -3658,7 +3658,8 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
-> >               return 0;
-> >
-> >       btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
-> > -     ret = iomap_dio_rw(iocb, to, &btrfs_dio_iomap_ops, &btrfs_dio_ops, 0);
-> > +     ret = iomap_dio_rw(iocb, to, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
-> > +                        0, 0);
-> >       btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
-> >       return ret;
-> >  }
-> > diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-> > index 9db829715652..16a41d0db55a 100644
-> > --- a/fs/erofs/data.c
-> > +++ b/fs/erofs/data.c
-> > @@ -287,7 +287,7 @@ static ssize_t erofs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> >
-> >               if (!err)
-> >                       return iomap_dio_rw(iocb, to, &erofs_iomap_ops,
-> > -                                         NULL, 0);
-> > +                                         NULL, 0, 0);
-> >               if (err < 0)
-> >                       return err;
-> >       }
-> > diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> > index ac0e11bbb445..b25c1f8f7c4f 100644
-> > --- a/fs/ext4/file.c
-> > +++ b/fs/ext4/file.c
-> > @@ -74,7 +74,7 @@ static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> >               return generic_file_read_iter(iocb, to);
-> >       }
-> >
-> > -     ret = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL, 0);
-> > +     ret = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL, 0, 0);
-> >       inode_unlock_shared(inode);
-> >
-> >       file_accessed(iocb->ki_filp);
-> > @@ -566,7 +566,8 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> >       if (ilock_shared)
-> >               iomap_ops = &ext4_iomap_overwrite_ops;
-> >       ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
-> > -                        (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0);
-> > +                        (unaligned_io || extend) ? IOMAP_DIO_FORCE_WAIT : 0,
-> > +                        0);
-> >       if (ret == -ENOTBLK)
-> >               ret = 0;
-> >
-> > diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-> > index b07b9c2d0446..ae06defcf369 100644
-> > --- a/fs/gfs2/file.c
-> > +++ b/fs/gfs2/file.c
-> > @@ -822,7 +822,7 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
-> >       if (ret)
-> >               goto out_uninit;
-> >
-> > -     ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0);
-> > +     ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0, 0);
-> >       gfs2_glock_dq(gh);
-> >  out_uninit:
-> >       gfs2_holder_uninit(gh);
-> > @@ -856,7 +856,7 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
-> >       if (offset + len > i_size_read(&ip->i_inode))
-> >               goto out;
-> >
-> > -     ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL, 0);
-> > +     ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL, 0, 0);
-> >       if (ret == -ENOTBLK)
-> >               ret = 0;
-> >  out:
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index a434fb7887b2..fdf68339bc8b 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -31,6 +31,7 @@ struct iomap_dio {
-> >       atomic_t                ref;
-> >       unsigned                flags;
-> >       int                     error;
-> > +     size_t                  done_before;
->
-> I have basically the same comment as last time[1]:
->
-> "So, now that I actually understand the reason why the count of
-> previously transferred bytes has to be passed into the iomap_dio, I
-> would like this field to have a comment so that stupid maintainers like
-> me don't forget the subtleties again:
->
->         /*
->          * For asynchronous IO, we have one chance to call the iocb
->          * completion method with the results of the directio operation.
->          * If this operation is a resubmission after a previous partial
->          * completion (e.g. page fault), we need to know about that
->          * progress so that we can report both the results of the prior
->          * completion and the result of the resubmission to the iocb
->          * submitter.
->          */
->         size_t                  done_before;
->
-> With that added, I think I can live with this enough to:
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+On Tue, Oct 19, 2021 at 04:54:12PM +0200, David Sterba wrote:
+> On Mon, Oct 18, 2021 at 05:28:38PM -0400, Josef Bacik wrote:
+> > On Mon, Oct 18, 2021 at 07:38:03PM +0200, David Sterba wrote:
+> > > Why the stub/context argument is needed: the NOFS protection is per call
+> > > site, so it must be set and reset in the caller thread, so any
+> > > allocations between btrfs_start_transaction and btrfs_end_transaction
+> > > are safe. We can't store it in the transaction handle, because it's not
+> > > passed everywhere, eg. to various helpers in btrfs and potentially in
+> > > other subsystems.
+> > 
+> > So the plan is to instead pass the tctx around everywhere to carry the flags?  I
+> > thought the whole point of memalloc_nofs_save() is that we don't have to pass
+> > gfp_t's around everywhere, it just knows what we're supposed to be doing?
+> 
+> Nothing needs to be passed around, it will be hidden inside the
+> transaction start/end, the only thing the caller needs to do is to
+> define the variable and pass it to to transaction start call. The NOFS
+> section will then apply to any calls until the transaction end call.
+> 
+> --- a/fs/btrfs/delayed-inode.c
+> +++ b/fs/btrfs/delayed-inode.c
+> @@ -1232,6 +1232,7 @@ int btrfs_commit_inode_delayed_inode(struct btrfs_inode *inode)
+>         struct btrfs_path *path;
+>         struct btrfs_block_rsv *block_rsv;
+>         int ret;
+> +       DEFINE_TCTX(tctx);
+>  
+>         if (!delayed_node)
+>                 return 0;
+> @@ -1244,7 +1245,7 @@ int btrfs_commit_inode_delayed_inode(struct btrfs_inode *inode)
+>         }
+>         mutex_unlock(&delayed_node->mutex);
+>  
+> -       trans = btrfs_join_transaction(delayed_node->root, NULL);
+> +       trans = btrfs_join_transaction(delayed_node->root, tctx);
+>         if (IS_ERR(trans)) {
+>                 ret = PTR_ERR(trans);
+>                 goto out;
+> @@ -1271,7 +1272,7 @@ int btrfs_commit_inode_delayed_inode(struct btrfs_inode *inode)
+>         btrfs_free_path(path);
+>         trans->block_rsv = block_rsv;
+>  trans_out:
+> -       btrfs_end_transaction(trans, NULL);
+> +       btrfs_end_transaction(trans, tctx);
+>         btrfs_btree_balance_dirty(fs_info);
+>  out:
+>         btrfs_release_delayed_node(delayed_node);
+> ---
+> 
+> This is what needs to be done per caller.
+> 
 
-Indeed, sorry for missing that. How about the below change instead
-though; I think that better sums up what's going on?
+Ooooh so we don't want to enforce NOFS for ALL trans handles, just some of them?
 
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -454,6 +454,14 @@ static loff_t iomap_dio_iter(const struct iomap_iter *iter,
-  * may be pure data writes. In that case, we still need to do a full data sync
-  * completion.
-  *
-+ * When page faults are disabled, __iomap_dio_rw has already prepared some data
-+ * to be transferred, @iter references a non-resident page, and @dio_flags
-+ * includes IOMAP_DIO_PARTIAL, __iomap_dio_rw will return a partial result.  In
-+ * that case, the page or pages can be faulted in and the request resumed with
-+ * @done_before set to the number of bytes previously transferred.  The request
-+ * will then complete with the correct total number of bytes transferred; this
-+ * is essential for completing partial requests asynchronously.
-+ *
-  * Returns -ENOTBLK In case of a page invalidation invalidation failure for
-  * writes.  The callers needs to fall back to buffered I/O in this case.
-  */
+If that's the case can't we just do
+
+trans = btrfs_join_transaction_nofs()/btrfs_start_transaction_nofs()
+
+and then handle it internally?
+
+> 
+> > So
+> > the trans should be able to hold the flags since we only care about starting it
+> > and restoring it, correct?  Or am I wrong and we do actually need to pass this
+> > thing around?  In which case can't we still just save it in the trans handle,
+> > and pass the u32 around where appropriate?  Thanks,
+> 
+> I had to dig in my memory why we can't store it in the transaction
+> handle, because this is naturally less intrusive. But it does not work.
+> 
+> There are two things:
+> 
+> 1) In a function that starts/joins a transaction, the NOFS scope is from
+>    that call until the transaction end. This is caller-specific.
+>    Like in the example above, any allocation with GFP_KERNEL happening
+>    will be safe and not recurse back to btrfs.
+> 
+> 2) Transaction handle is not caller-specific and is allocated when the
+>    transaction starts (ie. a new kmem_cache_alloc call is done). Any
+>    caller of transaction start will only increase the reference count.
+> 
+
+Right but we only really need to do the release when we free the trans handle,
+so in fact we can just leave it for the end of btrfs_end_transaction() when we
+free the trans handle and still be good.
 
 Thanks,
-Andreas
 
->
-> --D
->
-> [1] https://lore.kernel.org/linux-fsdevel/20210903185351.GD9892@magnolia/
->
-> >       bool                    wait_for_completion;
-> >
-> >       union {
-> > @@ -124,6 +125,9 @@ ssize_t iomap_dio_complete(struct iomap_dio *dio)
-> >       if (ret > 0 && (dio->flags & IOMAP_DIO_NEED_SYNC))
-> >               ret = generic_write_sync(iocb, ret);
-> >
-> > +     if (ret > 0)
-> > +             ret += dio->done_before;
-> > +
-> >       kfree(dio);
-> >
-> >       return ret;
-> > @@ -456,7 +460,7 @@ static loff_t iomap_dio_iter(const struct iomap_iter *iter,
-> >  struct iomap_dio *
-> >  __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >               const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> > -             unsigned int dio_flags)
-> > +             unsigned int dio_flags, size_t done_before)
-> >  {
-> >       struct address_space *mapping = iocb->ki_filp->f_mapping;
-> >       struct inode *inode = file_inode(iocb->ki_filp);
-> > @@ -486,6 +490,7 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >       dio->dops = dops;
-> >       dio->error = 0;
-> >       dio->flags = 0;
-> > +     dio->done_before = done_before;
-> >
-> >       dio->submit.iter = iter;
-> >       dio->submit.waiter = current;
-> > @@ -652,11 +657,11 @@ EXPORT_SYMBOL_GPL(__iomap_dio_rw);
-> >  ssize_t
-> >  iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >               const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> > -             unsigned int dio_flags)
-> > +             unsigned int dio_flags, size_t done_before)
-> >  {
-> >       struct iomap_dio *dio;
-> >
-> > -     dio = __iomap_dio_rw(iocb, iter, ops, dops, dio_flags);
-> > +     dio = __iomap_dio_rw(iocb, iter, ops, dops, dio_flags, done_before);
-> >       if (IS_ERR_OR_NULL(dio))
-> >               return PTR_ERR_OR_ZERO(dio);
-> >       return iomap_dio_complete(dio);
-> > diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> > index 7aa943edfc02..240eb932c014 100644
-> > --- a/fs/xfs/xfs_file.c
-> > +++ b/fs/xfs/xfs_file.c
-> > @@ -259,7 +259,7 @@ xfs_file_dio_read(
-> >       ret = xfs_ilock_iocb(iocb, XFS_IOLOCK_SHARED);
-> >       if (ret)
-> >               return ret;
-> > -     ret = iomap_dio_rw(iocb, to, &xfs_read_iomap_ops, NULL, 0);
-> > +     ret = iomap_dio_rw(iocb, to, &xfs_read_iomap_ops, NULL, 0, 0);
-> >       xfs_iunlock(ip, XFS_IOLOCK_SHARED);
-> >
-> >       return ret;
-> > @@ -569,7 +569,7 @@ xfs_file_dio_write_aligned(
-> >       }
-> >       trace_xfs_file_direct_write(iocb, from);
-> >       ret = iomap_dio_rw(iocb, from, &xfs_direct_write_iomap_ops,
-> > -                        &xfs_dio_write_ops, 0);
-> > +                        &xfs_dio_write_ops, 0, 0);
-> >  out_unlock:
-> >       if (iolock)
-> >               xfs_iunlock(ip, iolock);
-> > @@ -647,7 +647,7 @@ xfs_file_dio_write_unaligned(
-> >
-> >       trace_xfs_file_direct_write(iocb, from);
-> >       ret = iomap_dio_rw(iocb, from, &xfs_direct_write_iomap_ops,
-> > -                        &xfs_dio_write_ops, flags);
-> > +                        &xfs_dio_write_ops, flags, 0);
-> >
-> >       /*
-> >        * Retry unaligned I/O with exclusive blocking semantics if the DIO
-> > diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
-> > index ddc346a9df9b..6122c38ab44d 100644
-> > --- a/fs/zonefs/super.c
-> > +++ b/fs/zonefs/super.c
-> > @@ -852,7 +852,7 @@ static ssize_t zonefs_file_dio_write(struct kiocb *iocb, struct iov_iter *from)
-> >               ret = zonefs_file_dio_append(iocb, from);
-> >       else
-> >               ret = iomap_dio_rw(iocb, from, &zonefs_iomap_ops,
-> > -                                &zonefs_write_dio_ops, 0);
-> > +                                &zonefs_write_dio_ops, 0, 0);
-> >       if (zi->i_ztype == ZONEFS_ZTYPE_SEQ &&
-> >           (ret > 0 || ret == -EIOCBQUEUED)) {
-> >               if (ret > 0)
-> > @@ -987,7 +987,7 @@ static ssize_t zonefs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> >               }
-> >               file_accessed(iocb->ki_filp);
-> >               ret = iomap_dio_rw(iocb, to, &zonefs_iomap_ops,
-> > -                                &zonefs_read_dio_ops, 0);
-> > +                                &zonefs_read_dio_ops, 0, 0);
-> >       } else {
-> >               ret = generic_file_read_iter(iocb, to);
-> >               if (ret == -EIO)
-> > diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> > index 2a213b0d1e1f..829f2325ecba 100644
-> > --- a/include/linux/iomap.h
-> > +++ b/include/linux/iomap.h
-> > @@ -339,10 +339,10 @@ struct iomap_dio_ops {
-> >
-> >  ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >               const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> > -             unsigned int dio_flags);
-> > +             unsigned int dio_flags, size_t done_before);
-> >  struct iomap_dio *__iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
-> >               const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
-> > -             unsigned int dio_flags);
-> > +             unsigned int dio_flags, size_t done_before);
-> >  ssize_t iomap_dio_complete(struct iomap_dio *dio);
-> >  int iomap_dio_iopoll(struct kiocb *kiocb, bool spin);
-> >
-> > --
-> > 2.26.3
-> >
->
-
+Josef
