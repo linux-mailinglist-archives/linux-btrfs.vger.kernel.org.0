@@ -2,221 +2,230 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C8F432A94
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 01:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB95B432B1A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 02:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbhJSABs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Oct 2021 20:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
+        id S233239AbhJSANp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Oct 2021 20:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhJSABs (ORCPT
+        with ESMTP id S229817AbhJSANp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Oct 2021 20:01:48 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBDFC061745
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 16:59:36 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso630511pjb.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 16:59:36 -0700 (PDT)
+        Mon, 18 Oct 2021 20:13:45 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601C9C06161C
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 17:11:33 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id k26so16072150pfi.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Oct 2021 17:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=kCfAcXfSZmpdUMRIm8W78nTUzYpVwemnoTIkzIHJLTw=;
-        b=afv5+t1zsEFSFJaVXkuxWHZfTBrZws2SKHe2ubGWMJuIRTWHRqVC8n7wYF5E5OR406
-         MF3a06zw6cl/lVR6r8UvxTahXYIEgRmWFRBnO5cFabB4EOJJiGlGp5nE0y3dC0VQNJTe
-         1fDujMHy7fGExMaC/CZmyFuH4Ki1n3QcNWZCWNJjlL7YKKBCWljvlvd8TMeWFHYsRDzz
-         yNPLFtAU3KY7rtvu0zfX0KkVEvKoWmbjOl1BqqnEMxMi4tJRENMq/GIQ132Ys+gQdrFx
-         Whg8UjfVz/RyuPrdO4e5+CuVEfg8rwylPKMmkuE2JYVfaYxmHWV3RBhkI8qym+c0FEoY
-         0VRQ==
+        bh=ARK4CV1QCHDnqAC2jNbm2HtT+N4X81UOF1A1BxlVJKw=;
+        b=maB/z56EOiViRmDaFOcRjKQXpDVo9UjXlEHFwOKHKijCm06zqz3YUtJKdTr1Xekdtt
+         aBBjwhHhYYzsbMyq4bhA4QuLOe1aTzjtf9Av5Pe0bRVNZlQp49rfrHbtoHxnIzCk4VaV
+         jpCKQnS0Gm3ypaZDAGgryz5JUO5mJASzSEUaZW2zBdXaOu9GxGHmSSGpYjqoxpm2woaO
+         MFEdY2mQt7RmFBeRQl58MzabrIKrt8sE1LCF5DJN4sJoHmn8zoxs0nIo57uVLYnDKKng
+         RbbLFLzuSC0za6Buhj9BNbGP82sDHcLL/FubB2H3fqOfbwcR9E0CAZB0IIrKhKb3oodb
+         0Mpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=kCfAcXfSZmpdUMRIm8W78nTUzYpVwemnoTIkzIHJLTw=;
-        b=gEiY3WNtVrSPqpAKD/pim2S8rhTxPtfq/m3R+r/z4HsZ5pbZpCAwLkP2nZw4v6CGFw
-         2EOCt26pBHuLLt0ombKOd+AnsrUll8K1A8oLJpAnsTz8MsKPU2D5+pl45l4MfmGM+28e
-         fnnkCckY0MvImIt4BiHtfP5N/nLzw3iaOAxZQd/K2CBel29pdWOxGw3EEsmxm5jXUCnL
-         wLkQP7Sx2CFzxEX14rIc98s9/Q91DsuYADI1fwlnlPuZ2cP7Hd0KiPZLUlD63152kpHu
-         Olc2X2zkhHk1zZBNSLy97FCKPe1u9zttVLprNYILmKmv44+b8LQrGyas1vGLOT8gGPaw
-         2+gg==
-X-Gm-Message-State: AOAM533y0A/nStRhdwiNUwQHFX1Rgq1hscQrwkl4rMMG2REgsO3M42Ps
-        xlVTRStac8BPoVBjF7XHFtVjSA==
-X-Google-Smtp-Source: ABdhPJxFosX6UkBjViRm7sGWSkIGK6R8YUkeTfu16VF1r/YTy+B4YxrNfxmO/k7TOWbyiqyoaBM6dw==
-X-Received: by 2002:a17:903:2003:b0:13f:9c2d:93ac with SMTP id s3-20020a170903200300b0013f9c2d93acmr18830060pla.42.1634601576007;
-        Mon, 18 Oct 2021 16:59:36 -0700 (PDT)
+        bh=ARK4CV1QCHDnqAC2jNbm2HtT+N4X81UOF1A1BxlVJKw=;
+        b=GjKrgPUm7mNJmfeqBXCEvCdz0WeQwcCCW+ZogaCWM4QEnW0xWYuNwJFKvf1pcvMxyA
+         5JKuJit9AT02XUqildzNIWDsFveHxvgHucsD/8qYUumJ9W31Mbs41D0JobQpIsUwZNGD
+         LkjtFhTL09Ul8hIx24Z1YUDo/3Dl7fRwadh1BxZJakc5oB3F0mOq2euox6gN37OMwUVG
+         x0tyaLcCoDbC7A47KESlKrXXwzQI5VuMJ8FM6T62W9tASu+D3koJ0nSr6rScFSDWS5Aw
+         OH5W1OteRP4S2KPjbI5bF3foROeibTlkatModQ7WqMjeKJ9sGAl/GOfkTo9Z2W+f5Njs
+         ORsQ==
+X-Gm-Message-State: AOAM532DU/kMp2f7OIX0RyJC7AfZB9IBaLXG4k4pQK5h+gaWDwd4b/m4
+        HANB1/GqFC6K6V8sKNJ86ghXrQ==
+X-Google-Smtp-Source: ABdhPJwkq+JbuAPjxkqH5uajHT8uTqmxVG6G07sGmUpGKjrYBt7MEogonkifl446sTBWnU+MPHfaMQ==
+X-Received: by 2002:a63:7119:: with SMTP id m25mr14678645pgc.253.1634602292615;
+        Mon, 18 Oct 2021 17:11:32 -0700 (PDT)
 Received: from relinquished.localdomain ([2620:10d:c090:400::5:b911])
-        by smtp.gmail.com with ESMTPSA id x10sm14601846pfn.172.2021.10.18.16.59.34
+        by smtp.gmail.com with ESMTPSA id x17sm14004418pfa.209.2021.10.18.17.11.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Oct 2021 16:59:35 -0700 (PDT)
-Date:   Mon, 18 Oct 2021 16:59:33 -0700
+        Mon, 18 Oct 2021 17:11:32 -0700 (PDT)
+Date:   Mon, 18 Oct 2021 17:11:30 -0700
 From:   Omar Sandoval <osandov@osandov.com>
 To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
         linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH v11 08/14] btrfs: add BTRFS_IOC_ENCODED_READ
-Message-ID: <YW4KZd4gGKVen4p4@relinquished.localdomain>
+Subject: Re: [PATCH v11 13/14] btrfs: send: send compressed extents with
+ encoded writes
+Message-ID: <YW4NMkw0K4uMrckI@relinquished.localdomain>
 References: <cover.1630514529.git.osandov@fb.com>
- <c8c9bc3a546359bda7420d92d3d61d1023c1cb96.1630514529.git.osandov@fb.com>
- <4a64bf3a-b691-1986-80c8-21ddf9e446a0@suse.com>
+ <366f92a7ec5a69dc92290dc2cf6e8603f566495c.1630514529.git.osandov@fb.com>
+ <58a04b59-a2fb-bd26-606e-6ddf8bd31552@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4a64bf3a-b691-1986-80c8-21ddf9e446a0@suse.com>
+In-Reply-To: <58a04b59-a2fb-bd26-606e-6ddf8bd31552@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 02:45:46PM +0300, Nikolay Borisov wrote:
+On Mon, Oct 18, 2021 at 02:59:08PM +0300, Nikolay Borisov wrote:
 > 
 > 
 > On 1.09.21 г. 20:01, Omar Sandoval wrote:
 > > From: Omar Sandoval <osandov@fb.com>
 > > 
-> > There are 4 main cases:
-> > 
-> > 1. Inline extents: we copy the data straight out of the extent buffer.
-> > 2. Hole/preallocated extents: we fill in zeroes.
-> > 3. Regular, uncompressed extents: we read the sectors we need directly
-> >    from disk.
-> > 4. Regular, compressed extents: we read the entire compressed extent
-> >    from disk and indicate what subset of the decompressed extent is in
-> >    the file.
-> > 
-> > This initial implementation simplifies a few things that can be improved
-> > in the future:
-> > 
-> > - We hold the inode lock during the operation.
-> > - Cases 1, 3, and 4 allocate temporary memory to read into before
-> >   copying out to userspace.
-> > - We don't do read repair, because it turns out that read repair is
-> >   currently broken for compressed data.
+> > Now that all of the pieces are in place, we can use the ENCODED_WRITE
+> > command to send compressed extents when appropriate.
 > > 
 > > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > ---
-> >  fs/btrfs/ctree.h |   4 +
-> >  fs/btrfs/inode.c | 489 +++++++++++++++++++++++++++++++++++++++++++++++
-> >  fs/btrfs/ioctl.c | 111 +++++++++++
-> >  3 files changed, 604 insertions(+)
-> > 
-> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> > index b95ec5fb68d5..cbd7e07c1c34 100644
-> > --- a/fs/btrfs/ctree.h
-> > +++ b/fs/btrfs/ctree.h
-> > @@ -3223,6 +3223,10 @@ int btrfs_writepage_cow_fixup(struct page *page);
-> >  void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
-> >  					  struct page *page, u64 start,
-> >  					  u64 end, bool uptodate);
-> > +struct btrfs_ioctl_encoded_io_args;
-> > +ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter,
-> > +			   struct btrfs_ioctl_encoded_io_args *encoded);
-> > +
-> >  extern const struct dentry_operations btrfs_dentry_operations;
-> >  extern const struct iomap_ops btrfs_dio_iomap_ops;
-> >  extern const struct iomap_dio_ops btrfs_dio_ops;
-> > diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> > index a87a34f56234..1940f22179ba 100644
-> > --- a/fs/btrfs/inode.c
-> > +++ b/fs/btrfs/inode.c
-> > @@ -10500,6 +10500,495 @@ void btrfs_set_range_writeback(struct btrfs_inode *inode, u64 start, u64 end)
-> >  	}
-> >  }
-> >  
+> 
+> Overall looks sane but consider some of the nits below.
+> 
 > 
 > <snip>
 > 
-> > +
-> > +static blk_status_t btrfs_encoded_read_check_bio(struct btrfs_io_bio *io_bio)
-> 
-> nit: The gist of this function is to check the csum so how about
-> renaming it to btrfs_encoded_read_verify_csum
-
-Good point, will do.
-
-> > +
-> > +static void btrfs_encoded_read_endio(struct bio *bio)
+> > +static int send_encoded_extent(struct send_ctx *sctx, struct btrfs_path *path,
+> > +			       u64 offset, u64 len)
 > > +{
-> > +	struct btrfs_encoded_read_private *priv = bio->bi_private;
-> > +	struct btrfs_io_bio *io_bio = btrfs_io_bio(bio);
-> > +	blk_status_t status;
+> > +	struct btrfs_root *root = sctx->send_root;
+> > +	struct btrfs_fs_info *fs_info = root->fs_info;
+> > +	struct inode *inode;
+> > +	struct fs_path *p;
+> > +	struct extent_buffer *leaf = path->nodes[0];
+> > +	struct btrfs_key key;
+> > +	struct btrfs_file_extent_item *ei;
+> > +	u64 block_start;
+> > +	u64 block_len;
+> > +	u32 data_offset;
+> > +	struct btrfs_cmd_header *hdr;
+> > +	u32 crc;
+> > +	int ret;
 > > +
-> > +	status = btrfs_encoded_read_check_bio(io_bio);
-> > +	if (status) {
-> > +		/*
-> > +		 * The memory barrier implied by the atomic_dec_return() here
-> > +		 * pairs with the memory barrier implied by the
-> > +		 * atomic_dec_return() or io_wait_event() in
-> 
-> nit: I think atomic_dec_return in read_regular_fill_pages is
-> inconsequential, what we want to ensure is that when the caller of
-> io_wait_event is woken up by this thread it will observe the
-> priv->status, which it will, because the atomic-dec_return in this
-> function has paired with the general barrier interpolated by wait_event.
-> 
-> So for brevity just leave the text to say "by io_wait_event".
-
-Considering that there is a code path in
-btrfs_encoded_read_regular_fill_pages() where atomic_dec_return() is
-called but io_wait_event() isn't, I think it's important to mention
-both. (This path should be fairly rare, since it can only happen if all
-of the bios are completed before the submitting thread checks the
-pending counter. But, it's a possible code path, and I wouldn't want
-someone reading the comment to be confused and think that we're missing
-a barrier in that case.)
-
-> > +		 * btrfs_encoded_read_regular_fill_pages() to ensure that this
-> > +		 * write is observed before the load of status in
-> > +		 * btrfs_encoded_read_regular_fill_pages().
-> > +		 */
-> > +		WRITE_ONCE(priv->status, status);
+> > +	inode = btrfs_iget(fs_info->sb, sctx->cur_ino, root);
+> > +	if (IS_ERR(inode))
+> > +		return PTR_ERR(inode);
+> > +
+> > +	p = fs_path_alloc();
+> > +	if (!p) {
+> > +		ret = -ENOMEM;
+> > +		goto out;
 > > +	}
-> > +	if (!atomic_dec_return(&priv->pending))
-> > +		wake_up(&priv->wait);
-> > +	btrfs_io_bio_free_csum(io_bio);
-> > +	bio_put(bio);
+> > +
+> > +	ret = begin_cmd(sctx, BTRFS_SEND_C_ENCODED_WRITE);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, p);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
+> > +	ei = btrfs_item_ptr(leaf, path->slots[0],
+> > +			    struct btrfs_file_extent_item);
+> > +	block_start = btrfs_file_extent_disk_bytenr(leaf, ei);
+> 
+> block_start is somewhat ambiguous here, this is just the disk bytenr of
+> the extent.
+> 
+> > +	block_len = btrfs_file_extent_disk_num_bytes(leaf, ei);
+> 
+> Why is this called block_len when it's just the size in bytes on-disk?
+
+I copied this naming from extent_map since btrfs_encoded_read() was the
+reference for this code, but I'll change the naming here.
+
+> > +
+> > +	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, p);
+> > +	TLV_PUT_U64(sctx, BTRFS_SEND_A_FILE_OFFSET, offset);
+> > +	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_FILE_LEN,
+> > +		    min(key.offset + btrfs_file_extent_num_bytes(leaf, ei) - offset,
+> > +			len));
+> > +	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_LEN,
+> > +		    btrfs_file_extent_ram_bytes(leaf, ei));
+> > +	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_OFFSET,
+> > +		    offset - key.offset + btrfs_file_extent_offset(leaf, ei));
+> > +	ret = btrfs_encoded_io_compression_from_extent(
+> > +				btrfs_file_extent_compression(leaf, ei));
+> > +	if (ret < 0)
+> > +		goto out;
+> > +	TLV_PUT_U32(sctx, BTRFS_SEND_A_COMPRESSION, ret);
+> > +	TLV_PUT_U32(sctx, BTRFS_SEND_A_ENCRYPTION, 0);
+> > +
+> > +	ret = put_data_header(sctx, block_len);
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	data_offset = ALIGN(sctx->send_size, PAGE_SIZE);
+> 
+> nit: The whole data_offset warrants a comment here, since send_buf is
+> now mapped from send_buf_pages, so all the TLV you've put before are
+> actually stored in the beginning of send_buf_pages, so by doing the
+> above you ensure the data write begins on a clean page boundary ...
+
+Yup, I'll add a comment.
+
+> > +	if (data_offset > sctx->send_max_size ||
+> > +	    sctx->send_max_size - data_offset < block_len) {
+> > +		ret = -EOVERFLOW;
+> > +		goto out;
+> > +	}
+> > +
+> > +	ret = btrfs_encoded_read_regular_fill_pages(inode, block_start,
+> > +						    block_len,
+> > +						    sctx->send_buf_pages +
+> > +						    (data_offset >> PAGE_SHIFT));
+> > +	if (ret)
+> > +		goto out;
+> > +
+> > +	hdr = (struct btrfs_cmd_header *)sctx->send_buf;
+> > +	hdr->len = cpu_to_le32(sctx->send_size + block_len - sizeof(*hdr));
+> > +	hdr->crc = 0;
+> > +	crc = btrfs_crc32c(0, sctx->send_buf, sctx->send_size);
+> > +	crc = btrfs_crc32c(crc, sctx->send_buf + data_offset, block_len);
+> 
+> ... and because of that you can't simply use send_cmd ;(
+> 
+> > +	hdr->crc = cpu_to_le32(crc);
+> > +
+> > +	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
+> > +			&sctx->send_off);
+> > +	if (!ret) {
+> > +		ret = write_buf(sctx->send_filp, sctx->send_buf + data_offset,
+> > +				block_len, &sctx->send_off);
+> > +	}
+> > +	sctx->total_send_size += sctx->send_size + block_len;
+> > +	sctx->cmd_send_size[le16_to_cpu(hdr->cmd)] +=
+> > +		sctx->send_size + block_len;
+> > +	sctx->send_size = 0;
+> > +
+> > +tlv_put_failure:
+> > +out:
+> > +	fs_path_free(p);
+> > +	iput(inode);
+> > +	return ret;
 > > +}
-> 
-> <snip>
-> 
-> > @@ -4824,6 +4841,94 @@ static int _btrfs_ioctl_send(struct file *file, void __user *argp, bool compat)
-> >  	return ret;
-> >  }
-> >  
-> 
-> <snip>
-> 
-> > +	memset((char *)&args + copy_end_kernel, 0,
-> > +	       sizeof(args) - copy_end_kernel);
-> 
-> nit: This memset can be eliminated ( in source) by marking args = {};
-> and just leaving copy from user above.
-
-args = {} results in slightly worse generated code, but that doesn't
-really matter here, so I'll change it.
-
 > > +
-> > +	ret = import_iovec(READ, args.iov, args.iovcnt, ARRAY_SIZE(iovstack),
-> > +			   &iov, &iter);
-> > +	if (ret < 0)
-> > +		goto out_acct;
-> > +
-> > +	if (iov_iter_count(&iter) == 0) {
-> > +		ret = 0;
-> > +		goto out_iov;
-> > +	}
-> > +	pos = args.offset;
-> > +	ret = rw_verify_area(READ, file, &pos, args.len);
-> > +	if (ret < 0)
-> > +		goto out_iov;
-> > +
-> > +	init_sync_kiocb(&kiocb, file);
-> > +	ret = kiocb_set_rw_flags(&kiocb, 0);
+> > +static int send_extent_data(struct send_ctx *sctx, struct btrfs_path *path,
+> > +			    const u64 offset, const u64 len)
 > 
-> This call is a noop due to:
-> 	if (!flags)
-> 		return 0;
-> 
-> in kiocb_set_rw_flags.
+> nit: Instead of sending around a btrfs_path struct around and
+> "polluting" callees to deal with the oddities of our btree interface i.e
+> btrfs_item_ptr et al. Why not refactor the code so that when we know we
+> are about to send an extent data simply initialize some struct
+> extent_info with all the necessary data items: extent type, compression
+> type, based on the extent type properly initialize a size attribute etc
+> and pass that. Right now you have send_extent_data fiddling with
+> path->nodes[0], then based on that you either call
+> send_encoded_inline_extent or send_encoded_extent, instead pass
+> extent_info to send_extent_data/clone_range and be done with it.
 
-Good catch, I'll remove that call.
+I don't like this for a few reasons:
+
+* An extra "struct extent_info" layer of abstraction would just be extra
+  cognitive overhead. I hate having to trace back where the fields in
+  some struct came from when it's information that's readily available
+  in more well-known data structures.
+* send_encoded_inline_extent() (called by send_extent_data()) needs the
+  btrfs_path in order to get the inline data anyways.
+* clone_range() also already deals with btrfs_paths, so it's not new.
