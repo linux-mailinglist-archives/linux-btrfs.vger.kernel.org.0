@@ -2,375 +2,260 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665DF4334B1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 13:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45104334CC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 13:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhJSLcA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Oct 2021 07:32:00 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:42982 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhJSLb7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Oct 2021 07:31:59 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0C8D11FCB4
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 11:29:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634642986; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uSO57RqobzLFZRllSnULyxAag8ppWw89QGqbJwpBEYw=;
-        b=bPilrbgkqRKjaeHTdAKPnlVdgM4CM/bfzxbHfMOjG9QnU8C3KpnSVW8aMLGPVd8C4MfZBl
-        f6wad/JXX1mBLOT3+26UaJpHi2mwnMCRk/77Qz5CZT/6J5kS9B7iJokzh6CpHD8tpiWt13
-        bicS6HZYLI0QWPo26754yGR72ky6whA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6541A13E5F
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 11:29:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id aHKwCymsbmGmcAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 11:29:45 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: move btrfs_super_block to uapi/linux/btrfs_tree.h
-Date:   Tue, 19 Oct 2021 19:29:25 +0800
-Message-Id: <20211019112925.71920-3-wqu@suse.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211019112925.71920-1-wqu@suse.com>
-References: <20211019112925.71920-1-wqu@suse.com>
+        id S235353AbhJSLjX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Oct 2021 07:39:23 -0400
+Received: from mout.gmx.net ([212.227.17.21]:47679 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhJSLjX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Oct 2021 07:39:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634643429;
+        bh=R5jYebjfK2dObs1yde9UIErOrZPW8OqHaA9kE6Andvk=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=gHTxfjaOyM/grGhqXoyNK/jM+Wh6YwPHwQyHF7rR+zyIetjGSvLoxTEe163hYF94h
+         C5/YEMZY5ib6oUuGM+qQm+Ujo84Sm4MKEEEycjU9yjNxcv69cGxKbApoYht+7xZNp2
+         ihQsvBaqkf1+SWxA3CxtNf37FLUd/137+SK7RNpc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MCKFu-1mTPl80p1O-009ObZ; Tue, 19
+ Oct 2021 13:37:08 +0200
+Message-ID: <28511d75-f76b-f587-3474-554e8bf2aa22@gmx.com>
+Date:   Tue, 19 Oct 2021 19:37:05 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Content-Language: en-US
+To:     Emil Heimpel <broetchenrackete@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <ed4a7a10-d5a4-4b62-8e67-0b971487a74a@gmail.com>
+ <47f76535-12c3-996e-3306-0bf0f4eed57e@gmx.com>
+ <297b21db-4a67-469d-9ae1-54b1043dac31@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Errors after successful disk replace
+In-Reply-To: <297b21db-4a67-469d-9ae1-54b1043dac31@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XMj5s4Qy4zgNZr3vnAXDq6rG2HeN+PpavqkuX+4G5U3vulIFYr9
+ g44WfPAWuUwYZdpe68IuuLjL0HqlTxlf1d1rWa/w3Dm0SgNQVJYnHe3zOc6ZrpOkJvRdpOs
+ MOA9J4Kz9viuMqmduHi6EAWKIVCac7LXgura82JzE9OpeOSfzyTJPZXxSUDizDxl4/Fp0I2
+ mcTUNUeY9IBGgLttGf7qQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kL037ABxopo=:50kXwW2wuhVzH2o7mz+j0R
+ retKWfcyNicApzICU1iJU7TZmREnOCi/oMBGQKemE7O9urzSdkqjgeuYSGmN6uycRTDqWyiez
+ mU78cWEXRSmBJWcjGokUYmEmJhJsFqX9nhbjaybYdjWcj7HmDrWz7Pnuv7Lh17atZf7pPjuKT
+ O7vh7jqabFTLG8hxwB0o0+HPLipdg3yAaf0uNVfAQVZsmcDUdRT0jegdGkwO7DWjIXCn1ti7P
+ ZdWFkMHEliAaDU+/Pm+5cRX5JwK+9MBj4M6ujmnsqAVW6bIK/KfsMQi5oUha03Z5H95Ri2u3n
+ k5ZbLpRxiC4pyBOj002NflNtIA9Vezyojal2F+/W1Nsn3afK+qYySWgKbzdAHoNmNYa0A3Vbk
+ QhXrplbHhKZPCu6KbkYdo7q7lZdZKJztDElh0ZVGc43SoDol7GJn1g97T280+RdmI9eqHUl3Q
+ ARgQJsuIH4DZKUqjLOGMjZLrghggDGPMs4OYQw3PFIrcWa4fOIfjtDu3j7k5gyXNv/k652kti
+ Cr6NprfUMTBzfzFmfh9btp75bV6rPAZVkZP9bF7gCsrURLeLaUf4uTtKoFV+JtylKRJEpynwo
+ DPzLJMLbeqmmSizJdiuohyi25M6fkI23I6ILr5RBwPajm5LKxoXcjVWueFd+V1xL1h86RQU6I
+ 5VOej28UXbyiGik+JQayXcSwr7sr+XN5WgHdyJ10sgXE8YqMCkJWzNWL+KLGwEsCDrcH6suuy
+ Cx8/6GFCKjp7FBX8diq2EODMK0P1F9f+sGN/sMSqnVCQ9ZoRm60Vfo/cXnBKLc9IotQAV67N3
+ 6xomCjE+NfM59a+cHPWtmY69E6zqOkZ7y+NUy0Wk2fmhHmOjGUhS6900BqyFS/LxxOLV492Hl
+ eY9AcPShEcbVGQ/OJjNXF3BIqYPO7u9NLH18iproISzzw6NG5LanIxjeeIz+3wb91E9ArPuTC
+ tXBSUEX0wu3fGbnjNZtwq1K5H3zUzjzZoTV6ueLXtBF8jUhe0hr2/FDDAcJCg9N75tMNUFqbr
+ TdPoFzCrS2ZbU8Suw/qlce1kW19It+OPGb4M3Etw3OEC12GgNIEwJ22yBrHleAIft4QWYZVZa
+ xMErfKoLX+570Y=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Due to the fact that btrfs_tree.h contains all the info for
-BTRFS_IOC_TREE_SEARCH, it's almost the perfect location of btrfs on-disk
-schema.
 
-So let's move struct btrfs_super_block to uapi/linux/btrfs_tree.h,
-further reducing the size of ctree.h.
 
-Also move btrfs_dev_item and btrfs_root_backup to btrfs_tree.h, as they
-are included in btrfs_super_block.
+On 2021/10/19 18:49, Emil Heimpel wrote:
+>
+> Oct 19, 2021 07:35:54 Qu Wenruo <quwenruo.btrfs@gmx.com>:
+>
+>>
+>>
+>> On 2021/10/19 11:54, Emil Heimpel wrote:
+>>> Hi all,
+>>>
+>>> One of my drives of a raid 5 btrfs array failed (was dead completely) =
+so I installed an identical replacement drive. The dead drive was devid 1 =
+and the new drive /dev/sde. I used the following to replace the missing dr=
+ive:
+>>>
+>>> sudo btrfs replace start -B 1 /dev/sde1 /mnt/btrfsrepair/
+>>>
+>>> and it completed successfully without any reported errors (took around=
+ 2 weeks though...).
+>>>
+>>> I then tried to see my array with filesystem show, but it hung (or too=
+k longer than I wanted to wait), so I did a reboot.
+>>
+>> Any dmesg of that time?
+>>
+>
+> Nothing after the replace finished:
+>
+> 1634463961.245751 BlueQ kernel: BTRFS error (device sdb1): failed to reb=
+uild valid logical 17663044222976 for dev (efault)
+> 1634463961.255819 BlueQ kernel: BTRFS error (device sdb1): failed to reb=
+uild valid logical 17663045795840 for dev (efault)
+> 1634463961.275815 BlueQ kernel: BTRFS error (device sdb1): failed to reb=
+uild valid logical 17663046582272 for dev (efault)
+> 1634463961.275922 BlueQ kernel: BTRFS error (device sdb1): failed to reb=
+uild valid logical 17663047368704 for dev (efault)
+> 1634463961.339074 BlueQ kernel: BTRFS error (device sdb1): failed to reb=
+uild valid logical 17663048155136 for dev (efault)
+> 1634463961.339248 BlueQ kernel: BTRFS error (device sdb1): failed to reb=
+uild valid logical 17663048941568 for dev (efault)
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ctree.h                | 139 --------------------------------
- include/uapi/linux/btrfs_tree.h | 135 +++++++++++++++++++++++++++++++
- 2 files changed, 135 insertions(+), 139 deletions(-)
+*failed*...
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index e05098ac0337..843b3fdf132e 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -171,145 +171,6 @@ struct btrfs_header {
- 	u8 level;
- } __attribute__ ((__packed__));
- 
--/*
-- * this is a very generous portion of the super block, giving us
-- * room to translate 14 chunks with 3 stripes each.
-- */
--#define BTRFS_SYSTEM_CHUNK_ARRAY_SIZE 2048
--
--/*
-- * just in case we somehow lose the roots and are not able to mount,
-- * we store an array of the roots from previous transactions
-- * in the super.
-- */
--#define BTRFS_NUM_BACKUP_ROOTS 4
--struct btrfs_root_backup {
--	__le64 tree_root;
--	__le64 tree_root_gen;
--
--	__le64 chunk_root;
--	__le64 chunk_root_gen;
--
--	__le64 extent_root;
--	__le64 extent_root_gen;
--
--	__le64 fs_root;
--	__le64 fs_root_gen;
--
--	__le64 dev_root;
--	__le64 dev_root_gen;
--
--	__le64 csum_root;
--	__le64 csum_root_gen;
--
--	__le64 total_bytes;
--	__le64 bytes_used;
--	__le64 num_devices;
--	/* future */
--	__le64 unused_64[4];
--
--	u8 tree_root_level;
--	u8 chunk_root_level;
--	u8 extent_root_level;
--	u8 fs_root_level;
--	u8 dev_root_level;
--	u8 csum_root_level;
--	/* future and to align */
--	u8 unused_8[10];
--} __attribute__ ((__packed__));
--
--/*
-- * the super block basically lists the main trees of the FS
-- * it currently lacks any block count etc etc
-- */
--struct btrfs_super_block {
--	/* the first 4 fields must match struct btrfs_header */
--	u8 csum[BTRFS_CSUM_SIZE];
--	/* FS specific UUID, visible to user */
--	u8 fsid[BTRFS_FSID_SIZE];
--	__le64 bytenr; /* this block number */
--	__le64 flags;
--
--	/* allowed to be different from the btrfs_header from here own down */
--	__le64 magic;
--	__le64 generation;
--	__le64 root;
--	__le64 chunk_root;
--	__le64 log_root;
--
--	/* this will help find the new super based on the log root */
--	__le64 log_root_transid;
--	__le64 total_bytes;
--	__le64 bytes_used;
--	__le64 root_dir_objectid;
--	__le64 num_devices;
--	__le32 sectorsize;
--	__le32 nodesize;
--	__le32 __unused_leafsize;
--	__le32 stripesize;
--	__le32 sys_chunk_array_size;
--	__le64 chunk_root_generation;
--	__le64 compat_flags;
--	__le64 compat_ro_flags;
--	__le64 incompat_flags;
--	__le16 csum_type;
--	u8 root_level;
--	u8 chunk_root_level;
--	u8 log_root_level;
--	struct btrfs_dev_item dev_item;
--
--	char label[BTRFS_LABEL_SIZE];
--
--	__le64 cache_generation;
--	__le64 uuid_tree_generation;
--
--	/* the UUID written into btree blocks */
--	u8 metadata_uuid[BTRFS_FSID_SIZE];
--
--	/* future expansion */
--	__le64 reserved[28];
--	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
--	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
--
--	/* Padded to 4096 bytes */
--	u8 padding[565];
--} __attribute__ ((__packed__));
--
--/*
-- * Compat flags that we support.  If any incompat flags are set other than the
-- * ones specified below then we will fail to mount
-- */
--#define BTRFS_FEATURE_COMPAT_SUPP		0ULL
--#define BTRFS_FEATURE_COMPAT_SAFE_SET		0ULL
--#define BTRFS_FEATURE_COMPAT_SAFE_CLEAR		0ULL
--
--#define BTRFS_FEATURE_COMPAT_RO_SUPP			\
--	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
--	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID | \
--	 BTRFS_FEATURE_COMPAT_RO_VERITY)
--
--#define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
--#define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
--
--#define BTRFS_FEATURE_INCOMPAT_SUPP			\
--	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
--	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
--	 BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS |		\
--	 BTRFS_FEATURE_INCOMPAT_BIG_METADATA |		\
--	 BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO |		\
--	 BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD |		\
--	 BTRFS_FEATURE_INCOMPAT_RAID56 |		\
--	 BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |		\
--	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
--	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
--	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
--	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
--	 BTRFS_FEATURE_INCOMPAT_ZONED)
--
--#define BTRFS_FEATURE_INCOMPAT_SAFE_SET			\
--	(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF)
--#define BTRFS_FEATURE_INCOMPAT_SAFE_CLEAR		0ULL
--
- /*
-  * A leaf is full of items. offset and size tell us where to find
-  * the item in the leaf (relative to the start of the data area)
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index e1c4c732aaba..4770d12d4888 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -483,6 +483,53 @@ struct btrfs_free_space_header {
- 	__le64 num_bitmaps;
- } __attribute__ ((__packed__));
- 
-+/*
-+ * This is a very generous portion of the super block, giving us
-+ * room to translate 14 chunks with 3 stripes each.
-+ */
-+#define BTRFS_SYSTEM_CHUNK_ARRAY_SIZE 2048
-+
-+/*
-+ * Just in case we somehow lose the roots and are not able to mount,
-+ * we store an array of the roots from previous transactions
-+ * in the super.
-+ */
-+#define BTRFS_NUM_BACKUP_ROOTS 4
-+struct btrfs_root_backup {
-+	__le64 tree_root;
-+	__le64 tree_root_gen;
-+
-+	__le64 chunk_root;
-+	__le64 chunk_root_gen;
-+
-+	__le64 extent_root;
-+	__le64 extent_root_gen;
-+
-+	__le64 fs_root;
-+	__le64 fs_root_gen;
-+
-+	__le64 dev_root;
-+	__le64 dev_root_gen;
-+
-+	__le64 csum_root;
-+	__le64 csum_root_gen;
-+
-+	__le64 total_bytes;
-+	__le64 bytes_used;
-+	__le64 num_devices;
-+	/* future */
-+	__le64 unused_64[4];
-+
-+	u8 tree_root_level;
-+	u8 chunk_root_level;
-+	u8 extent_root_level;
-+	u8 fs_root_level;
-+	u8 dev_root_level;
-+	u8 csum_root_level;
-+	/* future and to align */
-+	u8 unused_8[10];
-+} __attribute__ ((__packed__));
-+
- #define BTRFS_HEADER_FLAG_WRITTEN	(1ULL << 0)
- #define BTRFS_HEADER_FLAG_RELOC		(1ULL << 1)
- 
-@@ -496,6 +543,94 @@ struct btrfs_free_space_header {
- #define BTRFS_SUPER_FLAG_CHANGING_FSID	(1ULL << 35)
- #define BTRFS_SUPER_FLAG_CHANGING_FSID_V2 (1ULL << 36)
- 
-+/*
-+ * Compat flags that we support.  If any incompat flags are set other than the
-+ * ones specified below then we will fail to mount
-+ */
-+#define BTRFS_FEATURE_COMPAT_SUPP		0ULL
-+#define BTRFS_FEATURE_COMPAT_SAFE_SET		0ULL
-+#define BTRFS_FEATURE_COMPAT_SAFE_CLEAR		0ULL
-+
-+#define BTRFS_FEATURE_COMPAT_RO_SUPP			\
-+	(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |	\
-+	 BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID | \
-+	 BTRFS_FEATURE_COMPAT_RO_VERITY)
-+
-+#define BTRFS_FEATURE_COMPAT_RO_SAFE_SET	0ULL
-+#define BTRFS_FEATURE_COMPAT_RO_SAFE_CLEAR	0ULL
-+
-+#define BTRFS_FEATURE_INCOMPAT_SUPP			\
-+	(BTRFS_FEATURE_INCOMPAT_MIXED_BACKREF |		\
-+	 BTRFS_FEATURE_INCOMPAT_DEFAULT_SUBVOL |	\
-+	 BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS |		\
-+	 BTRFS_FEATURE_INCOMPAT_BIG_METADATA |		\
-+	 BTRFS_FEATURE_INCOMPAT_COMPRESS_LZO |		\
-+	 BTRFS_FEATURE_INCOMPAT_COMPRESS_ZSTD |		\
-+	 BTRFS_FEATURE_INCOMPAT_RAID56 |		\
-+	 BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |		\
-+	 BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |	\
-+	 BTRFS_FEATURE_INCOMPAT_NO_HOLES	|	\
-+	 BTRFS_FEATURE_INCOMPAT_METADATA_UUID	|	\
-+	 BTRFS_FEATURE_INCOMPAT_RAID1C34	|	\
-+	 BTRFS_FEATURE_INCOMPAT_ZONED)
-+
-+#define BTRFS_FEATURE_INCOMPAT_SAFE_SET			\
-+	(BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF)
-+#define BTRFS_FEATURE_INCOMPAT_SAFE_CLEAR		0ULL
-+
-+/* The super block basically lists the main trees of the FS */
-+struct btrfs_super_block {
-+	u8 csum[BTRFS_CSUM_SIZE];
-+	/* FS specific UUID, visible to user */
-+	u8 fsid[BTRFS_FSID_SIZE];
-+
-+	/* Physical bytenr of this super block */
-+	__le64 bytenr;
-+
-+	/* Valid bits are (BTRFS_SUPER_FLAG_* | BTRFS_HEADER_FLAG_WRITTEN) */
-+	__le64 flags;
-+	__le64 magic;
-+	__le64 generation;
-+	/* All bytenr used in root and *_root are logical bytenr */
-+	__le64 root;
-+	__le64 chunk_root;
-+	__le64 log_root;
-+	__le64 log_root_transid;
-+	__le64 total_bytes;
-+	__le64 bytes_used;
-+	__le64 root_dir_objectid;
-+	__le64 num_devices;
-+	__le32 sectorsize;
-+	__le32 nodesize;
-+	__le32 __unused_leafsize;
-+	__le32 stripesize;
-+	__le32 sys_chunk_array_size;
-+	__le64 chunk_root_generation;
-+	__le64 compat_flags;
-+	__le64 compat_ro_flags;
-+	__le64 incompat_flags;
-+	__le16 csum_type;
-+	u8 root_level;
-+	u8 chunk_root_level;
-+	u8 log_root_level;
-+	struct btrfs_dev_item dev_item;
-+
-+	char label[BTRFS_LABEL_SIZE];
-+
-+	__le64 cache_generation;
-+	__le64 uuid_tree_generation;
-+
-+	/* The UUID written into btree blocks */
-+	u8 metadata_uuid[BTRFS_FSID_SIZE];
-+
-+	/* Future expansion */
-+	__le64 reserved[28];
-+	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
-+	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
-+
-+	/* Padded to 4096 bytes */
-+	u8 padding[565];
-+} __attribute__ ((__packed__));
- 
- /*
-  * items in the extent btree are used to record the objectid of the
--- 
-2.33.0
+> 1634475910.611261 BlueQ kernel: sd 9:0:2:0: attempting task abort!scmd(0=
+x0000000046fead3f), outstanding for 7120 ms & timeout 7000 ms
+> 1634475910.615126 BlueQ kernel: sd 9:0:2:0: [sdd] tag#840 CDB: ATA comma=
+nd pass through(16) 85 08 2e 00 00 00 01 00 00 00 00 00 00 00 ec 00
+> 1634475910.615429 BlueQ kernel: scsi target9:0:2: handle(0x000b), sas_ad=
+dress(0x4433221105000000), phy(5)
+> 1634475910.615691 BlueQ kernel: scsi target9:0:2: enclosure logical id(0=
+x590b11c022f3fb00), slot(6)
 
+And ATA commands failure.
+
+I don't believe the replace finished without problem, and the involved
+device is /dev/sdd.
+
+> 1634475910.787911 BlueQ kernel: sd 9:0:2:0: task abort: SUCCESS scmd(0x0=
+000000046fead3f)
+> 1634475910.807083 BlueQ kernel: sd 9:0:2:0: Power-on or device reset occ=
+urred
+> 1634475949.877998 BlueQ kernel: sd 9:0:2:0: Power-on or device reset occ=
+urred
+> 1634525944.213931 BlueQ kernel: perf: interrupt took too long (3138 > 31=
+37), lowering kernel.perf_event_max_sample_rate to 63600
+> 1634533791.168760 BlueQ kernel: BTRFS error (device sdb1): failed to reb=
+uild valid logical 22996545634304 for dev (efault)
+> 1634552685.203559 BlueQ kernel: BTRFS error (device sdb1): failed to reb=
+uild valid logical 23816815706112 for dev (efault)
+
+You won't want to see this message at all.
+
+This means, you're running RAID56, as btrfs has write-hole problem,
+which will degrade the robust of RAID56 byte by byte for each unclean
+shutdown.
+
+I guess the write hole problem has already make the repair failed for
+the replace.
+
+Thus after a successful mount, scrub and manually file checking is
+almost a must.
+
+> 1634558977.979621 BlueQ kernel: BTRFS info (device sdb1): dev_replace fr=
+om <missing disk> (devid 1) to /dev/sde1 finished
+> 1634560793.132731 BlueQ kernel: zram0: detected capacity change from 326=
+10864 to 0
+> 1634560793.169379 BlueQ kernel: zram: Removed device: zram0
+> 1634560883.549481 BlueQ kernel: watchdog: watchdog0: watchdog did not st=
+op!
+> 1634560883.556038 BlueQ systemd-shutdown[1]: Syncing filesystems and blo=
+ck devices.
+> 1634560883.572840 BlueQ systemd-shutdown[1]: Sending SIGTERM to remainin=
+g processes...
+>
+>
+>
+>
+>>>
+>>> It showed up after a reboot as followed:
+>>>
+>>> Label: 'BlueButter'=C2=A0 uuid: 7e3378e6-da46-4a60-b9b8-1bcc306986e3
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 6 FS bytes u=
+sed 20.96TiB
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 0 =
+size 7.28TiB used 5.46TiB path /dev/sde1
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 2 =
+size 7.28TiB used 5.46TiB path /dev/sdb1
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 3 =
+size 2.73TiB used 2.73TiB path /dev/sdg1
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 4 =
+size 2.73TiB used 2.73TiB path /dev/sdd1
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 5 =
+size 7.28TiB used 4.81TiB path /dev/sdf1
+>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 6 =
+size 7.28TiB used 5.33TiB path /dev/sdc1
+>>>
+>>> I then tried to mount it, but it failed, so I run a readonly check and=
+ it reported the following problem:
+>>
+>> And dmesg for the failed mount?
+>>
+>
+> Oops, I must have missed that it failed because of missing devid 1 too..=
+.
+>
+> 1634562944.145383 BlueQ kernel: BTRFS info (device sde1): flagging fs wi=
+th big metadata feature
+> 1634562944.145529 BlueQ kernel: BTRFS info (device sde1): force zstd com=
+pression, level 2
+> 1634562944.145650 BlueQ kernel: BTRFS info (device sde1): using free spa=
+ce tree
+> 1634562944.145697 BlueQ kernel: BTRFS info (device sde1): has skinny ext=
+ents
+> 1634562944.148709 BlueQ kernel: BTRFS error (device sde1): devid 1 uuid =
+51645efd-bf95-458d-b5ae-b31623533abb is missing
+> 1634562944.148764 BlueQ kernel: BTRFS error (device sde1): failed to rea=
+d chunk tree: -2
+> 1634562944.185369 BlueQ kernel: BTRFS error (device sde1): open_ctree fa=
+iled
+
+This doesn't sound correct.
+
+If a device is properly replaced, it should have the same devid number.
+
+I guess you have tried to add a new device before, and then tried to
+replace the missing device, right?
+
+
+Anyway, have you tried to mount it degraded and then remove the missing
+device?
+
+Since you're using RAID56, I guess degrade mount should work.
+
+Thanks,
+Qu
+
+>
+>> Thanks,
+>> Qu
+>>>
+>>> [...]
+>>> [2/7] checking extents
+>>> ERROR: super total bytes 38007432437760 smaller than real device(s) si=
+ze 46008994590720
+>>> ERROR: mounting this fs may fail for newer kernels
+>>> ERROR: this can be fixed by 'btrfs rescue fix-device-size'
+>>> [3/7] checking free space tree
+>>> [...]
+>>>
+>>> So I followed that advice but got the following error:
+>>>
+>>> sudo btrfs rescue fix-device-size /dev/sde1
+>>> ERROR: devid 1 is missing or not writeable
+>>> ERROR: fixing device size needs all device(s) to be present and writea=
+ble
+>>>
+>>> So it seems something went wrong or didn't complete fully.
+>>> What can I do to fix this problem?
+>>>
+>>> uname -a
+>>> Linux BlueQ 5.14.12-arch1-1 #1 SMP PREEMPT Wed, 13 Oct 2021 16:58:16 +=
+0000 x86_64 GNU/Linux
+>>>
+>>> btrfs --version
+>>> btrfs-progs v5.14.2
+>>>
+>>> Regards,
+>>> Emil
+>>>
+>>> P.S.: Yes, I know, raid5 isn't stable but it works good enough for me =
+;)
+>>> Metadata is raid1 btw...
+>>>
+>
