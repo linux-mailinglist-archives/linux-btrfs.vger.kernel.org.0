@@ -2,155 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D92B433F83
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 21:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96238433FC5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Oct 2021 22:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234876AbhJST7y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Oct 2021 15:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234693AbhJST7x (ORCPT
+        id S234145AbhJSU2R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Oct 2021 16:28:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57548 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230147AbhJSU2Q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Oct 2021 15:59:53 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA71FC06161C
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 12:57:40 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id i1so1059820qtr.6
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Oct 2021 12:57:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a0II1bUro4gNNa3YzgW8MeE6OhFEXtkRLZOV1dG8mrc=;
-        b=uR4nHSshkFEHaXMuJqBUS3W+dbyXyxq5C+p4A1kNaSBwHsKhovZqCbWPg1D9ym7w8f
-         MKBnidy4OYvNGJ+sUcrMbT+dh/gsPnItBJe8agvg4M8DGf7CRd/I8er29ddeGL2WrUYv
-         iLZYNSzFmQ0+j+QKImy0c+/oxsFLlpoP8HJECopC1CK99pyxpAd6scJj1i311TPwDLv9
-         kb2NyFA+Uvu8tYLoa8qFXNbCBrzntZWcvDziEB+dNIL5AhWQ8SjV8phfsZhk6SWEoHYN
-         5c3J4eLW5jKaHYPWfQp516LjCvkFKN+bMfEf9MUBu78HoMBEKwxGjusuZtFscLjNt+0Z
-         jigQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a0II1bUro4gNNa3YzgW8MeE6OhFEXtkRLZOV1dG8mrc=;
-        b=wtCMoJ2P96nZRXMIdIGFttwh2QBv29zNMoIy2U/uut/01TGA34RqqfcMfX1drN1FWb
-         U4itapmvGEUWrP3pkDmt54SJSAvBNSYDRC2Ys7R0tBj8OiHYLyaJLAeDBk3hdIj1bQyP
-         Y9hHR7/KDf5SZxexdyJg2AUNP524nks+5hcTcdqZ2neWFI5eImVDxOnRbtJRjQH74Bn4
-         oEhZpSVWcnugCSSEEreDCeSu3TQNeDcEyUzYljkHax2kbpJiDI1pirr5yCyz0y7m17yY
-         3poNL0o1cW7of91MSZe4j/Wtmp7CEYsIOF4if7E0JKyKIU3GfIleBy6abGrTcJ48x5fi
-         CkNg==
-X-Gm-Message-State: AOAM5338/dcNHs/ETu61xx5/XxN8k2iS91eO2EH52rXTy3lkLILXL8pL
-        6l89RW4s7M7cIvKAs/iem1kydQ==
-X-Google-Smtp-Source: ABdhPJy3ejdQih8I9GGZcre/Z/Jxuu2HVXcg3mSXjL8utoyKy1d8vEq2pbT3nhy3sG4bx+wJkOhWgg==
-X-Received: by 2002:ac8:4117:: with SMTP id q23mr2222403qtl.390.1634673459808;
-        Tue, 19 Oct 2021 12:57:39 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id o14sm8241708qtv.91.2021.10.19.12.57.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 12:57:39 -0700 (PDT)
-Date:   Tue, 19 Oct 2021 15:57:38 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: add stub argument to transaction API
-Message-ID: <YW8jMqfc6sZ7y7Bj@localhost.localdomain>
-References: <20211018173803.18353-1-dsterba@suse.com>
- <YW3nBs4cr99TcyRL@localhost.localdomain>
- <20211019145412.GT30611@twin.jikos.cz>
+        Tue, 19 Oct 2021 16:28:16 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5BE9A1FD36;
+        Tue, 19 Oct 2021 20:26:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634675162;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8jm1uzpOk4xbYBrUo77YUecNFxAyMHM8ikZpo4BE/jU=;
+        b=QdxZYqmbMWlSJdQCyOHCHIBpWQy7MJuGBnpdfAy3nzC8Vbm4FMFCtcSwZJ7BKbFjW48nFY
+        mjbX4OgBfZjwV3nJhBNaRHo9JZi8f+MQZesBIzolzHn93qnv4jKo6sUhvP3QDq43nH0EIW
+        j4pWip/pDbYjmsw179Ftc4RTQzbv4oo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634675162;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8jm1uzpOk4xbYBrUo77YUecNFxAyMHM8ikZpo4BE/jU=;
+        b=KNPxpYipCtNIogw6F77tJK0gZmCli+2qMzy9FGBuX9rzDnGXJoLvBvHfk9GLtp64dnATKC
+        E4Pkham4aUn8qrAw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 5022DA3B81;
+        Tue, 19 Oct 2021 20:26:02 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9EF6CDA7A3; Tue, 19 Oct 2021 22:25:34 +0200 (CEST)
+Date:   Tue, 19 Oct 2021 22:25:34 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        nborisov@suse.com
+Subject: Re: [PATCH RFC] btrfs: send: v2 protocol and example OTIME changes
+Message-ID: <20211019202534.GW30611@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        nborisov@suse.com
+References: <20211018144109.18442-1-dsterba@suse.com>
+ <YW8Ck9pk6JGvq8V1@relinquished.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211019145412.GT30611@twin.jikos.cz>
+In-Reply-To: <YW8Ck9pk6JGvq8V1@relinquished.localdomain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 04:54:12PM +0200, David Sterba wrote:
-> On Mon, Oct 18, 2021 at 05:28:38PM -0400, Josef Bacik wrote:
-> > On Mon, Oct 18, 2021 at 07:38:03PM +0200, David Sterba wrote:
-> > > Why the stub/context argument is needed: the NOFS protection is per call
-> > > site, so it must be set and reset in the caller thread, so any
-> > > allocations between btrfs_start_transaction and btrfs_end_transaction
-> > > are safe. We can't store it in the transaction handle, because it's not
-> > > passed everywhere, eg. to various helpers in btrfs and potentially in
-> > > other subsystems.
-> > 
-> > So the plan is to instead pass the tctx around everywhere to carry the flags?  I
-> > thought the whole point of memalloc_nofs_save() is that we don't have to pass
-> > gfp_t's around everywhere, it just knows what we're supposed to be doing?
-> 
-> Nothing needs to be passed around, it will be hidden inside the
-> transaction start/end, the only thing the caller needs to do is to
-> define the variable and pass it to to transaction start call. The NOFS
-> section will then apply to any calls until the transaction end call.
-> 
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1232,6 +1232,7 @@ int btrfs_commit_inode_delayed_inode(struct btrfs_inode *inode)
->         struct btrfs_path *path;
->         struct btrfs_block_rsv *block_rsv;
->         int ret;
-> +       DEFINE_TCTX(tctx);
->  
->         if (!delayed_node)
->                 return 0;
-> @@ -1244,7 +1245,7 @@ int btrfs_commit_inode_delayed_inode(struct btrfs_inode *inode)
->         }
->         mutex_unlock(&delayed_node->mutex);
->  
-> -       trans = btrfs_join_transaction(delayed_node->root, NULL);
-> +       trans = btrfs_join_transaction(delayed_node->root, tctx);
->         if (IS_ERR(trans)) {
->                 ret = PTR_ERR(trans);
->                 goto out;
-> @@ -1271,7 +1272,7 @@ int btrfs_commit_inode_delayed_inode(struct btrfs_inode *inode)
->         btrfs_free_path(path);
->         trans->block_rsv = block_rsv;
->  trans_out:
-> -       btrfs_end_transaction(trans, NULL);
-> +       btrfs_end_transaction(trans, tctx);
->         btrfs_btree_balance_dirty(fs_info);
->  out:
->         btrfs_release_delayed_node(delayed_node);
-> ---
-> 
-> This is what needs to be done per caller.
-> 
+On Tue, Oct 19, 2021 at 10:38:27AM -0700, Omar Sandoval wrote:
+> On Mon, Oct 18, 2021 at 04:41:09PM +0200, David Sterba wrote:
 
-Ooooh so we don't want to enforce NOFS for ALL trans handles, just some of them?
+> Why do we need new commands for otime? I think it would make the most
+> sense to include the BTRFS_SEND_A_OTIME attribute with an existing
+> command: either the BTRFS_SEND_C_MK{DIR,FILE,NOD,FIFO,SOCK} command, or
+> the first BTRFS_SEND_C_UTIME command after creation. We might as well
+> take advantage of the TLV protocol, which allows us to add or remove
+> attributes for commands as needed.
 
-If that's the case can't we just do
+Yes there are more ways to extend the protocol, the patch demonstrated
+two, and partially it was for me to refresh how the bits are put
+together.
 
-trans = btrfs_join_transaction_nofs()/btrfs_start_transaction_nofs()
+As long as the changes are hidden behind the version, we can insert the
+attributes to existing commands, like the MKFILE group, that's a nice
+trick.
 
-and then handle it internally?
+On the receiving side the raw protocol is translated to the callbacks.
+I've decoupled the libbtrfs implementation from the internal one, so
+we're now free to do any changes to the callback prototypes without
+worries to break snapper. Which means either mapping new attributes to
+parameters (where we can sensibly detect "n/a") or add new callbacks
+with more parameters.
 
-> 
-> > So
-> > the trans should be able to hold the flags since we only care about starting it
-> > and restoring it, correct?  Or am I wrong and we do actually need to pass this
-> > thing around?  In which case can't we still just save it in the trans handle,
-> > and pass the u32 around where appropriate?  Thanks,
-> 
-> I had to dig in my memory why we can't store it in the transaction
-> handle, because this is naturally less intrusive. But it does not work.
-> 
-> There are two things:
-> 
-> 1) In a function that starts/joins a transaction, the NOFS scope is from
->    that call until the transaction end. This is caller-specific.
->    Like in the example above, any allocation with GFP_KERNEL happening
->    will be safe and not recurse back to btrfs.
-> 
-> 2) Transaction handle is not caller-specific and is allocated when the
->    transaction starts (ie. a new kmem_cache_alloc call is done). Any
->    caller of transaction start will only increase the reference count.
-> 
-
-Right but we only really need to do the release when we free the trans handle,
-so in fact we can just leave it for the end of btrfs_end_transaction() when we
-free the trans handle and still be good.
-
-Thanks,
-
-Josef
+I've found out that eg. the mkfile sends the inode number but it's never
+parsed in receive. So for one I'd like to audit such things and write a
+machine readable spec of the protocol.
