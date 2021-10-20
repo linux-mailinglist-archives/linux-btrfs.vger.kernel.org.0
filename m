@@ -2,63 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1FA434B37
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Oct 2021 14:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8EB434BF4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Oct 2021 15:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhJTMfF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Oct 2021 08:35:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230168AbhJTMfF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Oct 2021 08:35:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C7A60F57;
-        Wed, 20 Oct 2021 12:32:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1634733170;
-        bh=dFn+jTdLLyp2tS25P2DzRAmAECFjBC+RanyBlBG5KVY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ym7WPF0PcD+sIJ2/NlMH8sthMlViUab7AZYeota5uQ9f/JJN6hDxWvkua3nTaELL3
-         eTcdYDpQPpnPO2Uiw7h06NwnXuOu0wJEkeYgPhNLPUAZZ5eaVNF71CsoQBUdE2FPBQ
-         pzZbZ2gnQx535QAMD5i94WPVLryiMzfM6+PMVcYA=
-Date:   Wed, 20 Oct 2021 14:32:48 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, Josef Bacik <jbacik@fb.com>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH stable-4.14.y] btrfs: always wait on ordered extents at
- fsync time
-Message-ID: <YXAMcAnZ13E/Lmmq@kroah.com>
-References: <4fb0d755f4265d71b2a0d314232e53b22067fb0b.1634624427.git.anand.jain@oracle.com>
+        id S229771AbhJTNWf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Oct 2021 09:22:35 -0400
+Received: from out20-38.mail.aliyun.com ([115.124.20.38]:51940 "EHLO
+        out20-38.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229570AbhJTNWe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Oct 2021 09:22:34 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.265949|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_social|0.146138-0.00236127-0.851501;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.Lf-zQZ._1634736018;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Lf-zQZ._1634736018)
+          by smtp.aliyun-inc.com(10.147.41.121);
+          Wed, 20 Oct 2021 21:20:18 +0800
+Date:   Wed, 20 Oct 2021 21:20:22 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: xfstest/generic/650 trigger btrfs deadlock
+In-Reply-To: <20211007182319.AF0A.409509F4@e16-tech.com>
+References: <20211007112032.A50B.409509F4@e16-tech.com> <20211007182319.AF0A.409509F4@e16-tech.com>
+Message-Id: <20211020212022.E90E.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4fb0d755f4265d71b2a0d314232e53b22067fb0b.1634624427.git.anand.jain@oracle.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 19, 2021 at 06:38:20PM +0800, Anand Jain wrote:
-> From: Josef Bacik <jbacik@fb.com>
-> 
-> Commit b5e6c3e170b77025b5f6174258c7ad71eed2d4de upstream.
-> 
-> There's a priority inversion that exists currently with btrfs fsync.  In
-> some cases we will collect outstanding ordered extents onto a list and
-> only wait on them at the very last second.  However this "very last
-> second" falls inside of a transaction handle, so if we are in a lower
-> priority cgroup we can end up holding the transaction open for longer
-> than needed, so if a high priority cgroup is also trying to fsync()
-> it'll see latency.
-> 
-> Signed-off-by: Josef Bacik <jbacik@fb.com>
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
->  fs/btrfs/file.c | 56 ++++---------------------------------------------
->  1 file changed, 4 insertions(+), 52 deletions(-)
+Hi,
 
-Now applied, thanks.
+> > xfstest/generic/650 trigger btrfs deadlock.
+> > 
+> > Linux kernel: 5.15.0-rc4
+> > 	https://kojipkgs.fedoraproject.org/packages/kernel/5.15.0/0.rc4.33.eln112/
+> > 
+> > Reproduce frequency: about 50%
+> > 
+> > This is the first time that we tested xfstest/generic/650, and it is the
+> > first time that we tested kernel 5.15.x too. so it maybe a known problem
+> > of btrfs.
+> > 
+> > When the deadlock happen, /mnt/test is fully used.
+> > /dev/sdb1               btrfs   14G   14G     0 100% /mnt/test
+> 
+> When /mnt/test is NOT fully used (although nearly full ),
+> this deadlock seems to NOT happen.
+> 
+> #df -h
+> Filesystem      Size  Used Avail Use% Mounted on
+> /dev/sdb1               btrfs   14G   14G   72K 100% /mnt/test
 
-greg k-h
+This dead happened when Avail >40% too. (linux 5.15 rc6)
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/10/20
+
+
