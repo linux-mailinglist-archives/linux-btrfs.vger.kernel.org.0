@@ -2,133 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DC9434C9F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Oct 2021 15:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE08434CBD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Oct 2021 15:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhJTNvz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Oct 2021 09:51:55 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56266 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJTNvz (ORCPT
+        id S230190AbhJTNz1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Oct 2021 09:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230160AbhJTNz0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Oct 2021 09:51:55 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 26C9021A7F;
-        Wed, 20 Oct 2021 13:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634737779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sqmM3h9Cy18Yxo/nPKgmZ3B35y5sxcNst1sW2y1M94A=;
-        b=B/OUnEYPKCBPOx/u8qVHxnivSa3DPKeZ0bGeAZ0k/QASEu60oRXpLkYYL5huyQfN7+k4fq
-        h+jgivUaginT9PTBbNOYyR5vpfYh7sizyaUm8eDNQOTLsoTCqDMh9bl6VLasmi8iI+Qo2Z
-        bi5GlaHF3SDu00oQGmzZzAp9pEU6624=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CF2E013B55;
-        Wed, 20 Oct 2021 13:49:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id eG4BMHIecGFUCAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Wed, 20 Oct 2021 13:49:38 +0000
-Subject: Re: [PATCH v11 01/10] btrfs-progs: receive: support v2 send stream
- larger tlv_len
-To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-References: <cover.1630514529.git.osandov@fb.com>
- <8729477d23b83c368a76c4f39b5f73a483a3ad14.1630515568.git.osandov@fb.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <d628363e-295d-8e84-d6f2-85501ada24ed@suse.com>
-Date:   Wed, 20 Oct 2021 16:49:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Wed, 20 Oct 2021 09:55:26 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1098EC061746
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Oct 2021 06:53:12 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id b12so3058945qtq.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Oct 2021 06:53:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4jG8wrbAIAwwRwuzGQslnM39v46b3HnxiqwMR7t/ONg=;
+        b=XsKRXK3iq+Zix2mUvOMI39mFr5FlW98+q8eUfgI92njnLqhybIB1b5TgV+1zP+QgPN
+         B4ct9758VvgBblihLZBnRHUa8JQjuwVW3yHS4eeIcJMt5hvUp0XYWhAHiyZXsvQFR1ZF
+         nBw8SVoyUXyIF8sdLgsxJXiWK51C4ENUpe1oOWDj83uCAp8MY4DxiUKmYs6XFClwaEre
+         wNBuu1rF5CULlwrq6vZS4lE8/do7qjLlzax4NmwjOpTefiTofHxcG2mU3X/evkuCSDJF
+         MfCaBphlSy+pCZVTo3ItXdNYQh4OYR0nC1Gc4BdzubU/qXVlqRj4v4bmNOPsu/cM62cg
+         YO+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4jG8wrbAIAwwRwuzGQslnM39v46b3HnxiqwMR7t/ONg=;
+        b=6FUJfcpeXiCG+z9L6KqFXksk9wkCwMCg2BUQmHnBVZcQox0dmAqHgWqA8eB8/Rxfpn
+         OVvD0L1hMeNzlEhjvphqcXqa5X7t9s7fxQgZ9iHUIegPeAKaxKBcUepqe3uCosv89WKE
+         w6c4qFm7oCvVmmpt9UdDebLieX3mBJITBGAUyfsg1WUXy1VetHdNyToHirEmnAneQMhQ
+         cREuOz4zhIXRXILDG47G7KbrJccT+C0dqerVYUoys9NhC7O28vqrFF1QuGDUzv5RE6sP
+         4FRbmWB8rkTLe4KbMhYBZNOmN+hpbxPTPFRJ6E3a+sEvy5DXckkX02bHtd6nz401Wefw
+         qT6Q==
+X-Gm-Message-State: AOAM530rl1irPrWrqOr91tR9RHV0AAQZ9LNaqCAoA6Z6ez/Pt5epPkQB
+        qfEIe8tir0eI5QZZBPJqLHWHrEBJ0VZ5rw==
+X-Google-Smtp-Source: ABdhPJwjgHb7uUtCGMmJXkif4DUX/B4n9YR/4qICN5BmbTIcT0kEE1DxgyoUDkIn/W9FexMm7bULvQ==
+X-Received: by 2002:a05:622a:1116:: with SMTP id e22mr81168qty.78.1634737991113;
+        Wed, 20 Oct 2021 06:53:11 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id h66sm1010390qkc.5.2021.10.20.06.53.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Oct 2021 06:53:10 -0700 (PDT)
+Date:   Wed, 20 Oct 2021 09:53:09 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs/249: test btrfs filesystem usage command on
+ missing seed device
+Message-ID: <YXAfRcmJ9oYj/kpe@localhost.localdomain>
+References: <cover.1634713680.git.anand.jain@oracle.com>
+ <599618f8698efc64ef8e25e0cf1d97541927d8ac.1634713680.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <8729477d23b83c368a76c4f39b5f73a483a3ad14.1630515568.git.osandov@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <599618f8698efc64ef8e25e0cf1d97541927d8ac.1634713680.git.anand.jain@oracle.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Oct 20, 2021 at 03:16:44PM +0800, Anand Jain wrote:
+> If there is a missing seed device in a sprout, the btrfs filesystem usage
+> command fails, which is fixed by the following patches:
+> 
+>   btrfs: sysfs add devinfo/fsid to retrieve fsid from the device
+>   btrfs-progs: read fsid from the sysfs in device_is_seed
+> 
+> Test if it works now after these patches in the kernel and in the
+> btrfs-progs respectively.
+> 
+> Suggested-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+
+Shouldn't this use
 
 
-On 1.09.21 г. 20:01, Omar Sandoval wrote:
-> From: Boris Burkov <borisb@fb.com>
-> 
-> An encoded extent can be up to 128K in length, which exceeds the largest
-> value expressible by the current send stream format's 16 bit tlv_len
-> field. Since encoded writes cannot be split into multiple writes by
-> btrfs send, the send stream format must change to accommodate encoded
-> writes.
-> 
-> Supporting this changed format requires retooling how we store the
-> commands we have processed. Since we can no longer use btrfs_tlv_header
-> to describe every attribute, we define a new struct btrfs_send_attribute
-> which has a 32 bit length field, and use that to store the attribute
-> information needed for receive processing. This is transparent to users
-> of the various TLV_GET macros.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
+as well?  I wish there was a way to detect that btrfs-progs had support for
+reading it but I suppose this is a good enough gate.  Maybe add a
+
+
 > ---
->  common/send-stream.c | 34 +++++++++++++++++++++++++---------
->  1 file changed, 25 insertions(+), 9 deletions(-)
+>  tests/btrfs/249     | 67 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/249.out |  2 ++
+>  2 files changed, 69 insertions(+)
+>  create mode 100755 tests/btrfs/249
+>  create mode 100644 tests/btrfs/249.out
 > 
-> diff --git a/common/send-stream.c b/common/send-stream.c
-> index a0c52f79..cd5aa311 100644
-> --- a/common/send-stream.c
-> +++ b/common/send-stream.c
-> @@ -24,13 +24,23 @@
->  #include "crypto/crc32c.h"
->  #include "common/utils.h"
->  
-> +struct btrfs_send_attribute {
-> +	u16 tlv_type;
-> +	/*
-> +	 * Note: in btrfs_tlv_header, this is __le16, but we need 32 bits for
-> +	 * attributes with file data as of version 2 of the send stream format
-> +	 */
-> +	u32 tlv_len;
-> +	char *data;
-> +};
+> diff --git a/tests/btrfs/249 b/tests/btrfs/249
+> new file mode 100755
+> index 000000000000..f8f2f07052c6
+> --- /dev/null
+> +++ b/tests/btrfs/249
+> @@ -0,0 +1,67 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2021 Anand Jain.  All Rights Reserved.
+> +# Copyright (c) 2021 Oracle.  All Rights Reserved.
+> +#
+> +# FS QA Test 249
+> +#
+> +# Validate if the command 'btrfs filesystem usage' works with missing seed
+> +# device
+> +# Steps:
+> +#  Create a degraded raid1 seed device
+> +#  Create a sprout filesystem (an rw device on top of a seed device)
+> +#  Dump 'btrfs filesystem usage', check it didn't fail
+> +#
+> +# Tests btrfs-progs bug fixed by the kernel patch and a btrfs-prog patch
+> +#   btrfs: sysfs add devinfo/fsid to retrieve fsid from the device
+> +#   btrfs-progs: read fsid from the sysfs in device_is_seed
 > +
->  struct btrfs_send_stream {
->  	char read_buf[BTRFS_SEND_BUF_SIZE];
->  	int fd;
->  
->  	int cmd;
->  	struct btrfs_cmd_header *cmd_hdr;
-> -	struct btrfs_tlv_header *cmd_attrs[BTRFS_SEND_A_MAX + 1];
-> +	struct btrfs_send_attribute cmd_attrs[BTRFS_SEND_A_MAX + 1];
+> +. ./common/preamble
+> +_begin_fstest auto quick seed volume
+> +
+> +# Import common functions.
+> +# . ./common/filter
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_require_scratch_dev_pool 3
+> +_require_command "$WIPEFS_PROG" wipefs
+> +_require_btrfs_forget_or_module_loadable
 
-This is subtle and it took me a couple of minutes to get it at first.
-Currently cmds_attrs holds an array of pointers into the command buffer,
-with every pointer being the beginning of the tlv_header, whilst with
-your change cmd_attr now holds actual btrfs_send_attribute structures
-(52 bytes vs sizeof(uintptr_t)  bytes before). So this increases the
-overall size of btrfs_send_stream because with  your version of the code
-you parse the type/length fields and store them directly in the send
-attribute structure at command parse time rather than just referring to
-the raw command buffer during read_cmd and referring to them during
-attribute parsing.
+Need
 
-This might seem superficial but this kind of change should really be
-mentioned explicitly in the changelog to better prepare reviewers what
-to expect.
+_require_btrfs_sysfs_fsid
 
+here I think.
 
-OTOH the code LGTM and actually now it seems less tricky than before so:
+> +
+> +_scratch_dev_pool_get 2
+> +# use the scratch devices as seed devices
+> +seed_dev1=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{ print $1 }')
+> +seed_dev2=$(echo $SCRATCH_DEV_POOL | $AWK_PROG '{ print $2 }')
+> +
+> +# use the spare device as a sprout device
+> +_spare_dev_get
+> +sprout_dev=$SPARE_DEV
+> +
+> +# create raid1 seed filesystem
+> +_scratch_pool_mkfs "-draid1 -mraid1" >> $seqres.full 2>&1
+> +$BTRFS_TUNE_PROG -S 1 $seed_dev1
+> +$WIPEFS_PROG -a $seed_dev1 >> $seqres.full 2>&1
+> +_btrfs_forget_or_module_reload
+> +_mount -o degraded $seed_dev2 $SCRATCH_MNT >> $seqres.full 2>&1
+> +
+> +# create a sprout device
+> +$BTRFS_UTIL_PROG device add -f $SPARE_DEV $SCRATCH_MNT >> $seqres.full 2>&1
+> +
+> +# dump filesystem usage if it fails error goes to the bad.out file
+> +$BTRFS_UTIL_PROG filesystem usage $SCRATCH_MNT >> $seqres.full
+> +# also check for the error code
+> +ret=$?
+> +if [ $ret != 0 ]; then
+> +	_fail "FAILED: btrfs filesystem usage, ret $ret"
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Can you add "check your btrfs-progs version" here or something?  In case I'm an
+idiot and forget to update btrfs-progs on the overnight xfstests boxes?  Thanks,
 
-
-David if you deem it necessary adjust the commit message appropriately.
-
-
+Josef
