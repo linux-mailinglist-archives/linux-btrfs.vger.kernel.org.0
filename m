@@ -2,64 +2,20 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939B1435460
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Oct 2021 22:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD05435609
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 00:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbhJTUNz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Oct 2021 16:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231629AbhJTUNy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Oct 2021 16:13:54 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8C6C061749
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Oct 2021 13:11:39 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id t9so308307lfd.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Oct 2021 13:11:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2mjyTuiMt0G/NI9j2uGhr176LQ8tHUDaZsPCBpnXywo=;
-        b=JNYtSv2gblmlTKXiqtL4y6TtoOuGzc68cZHueN9cP+lj++0rs+VLST38HhlFDoPg2f
-         q/iXqIc7waXQwRes5r5w9NeAF++++Ur7bf/OJfMU2qanF+BgkZ215gZA/vba1jIbqtrg
-         YKY42GAegLHMretczDWyIsPvSaAr/LVgePt/0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2mjyTuiMt0G/NI9j2uGhr176LQ8tHUDaZsPCBpnXywo=;
-        b=or9Y0SRm4hxDK5YR6ANl6uQ8XOcnogMRMhewrASTIflsvrBYcvOsWwLDrAm2Th+V0o
-         k/H8Zr/kG/DKoH1TEWjG1Lhf1d+QDgd9Wy9kZcSm2imKqUcZ90eQYpNVuXm0JbZtiSTR
-         X+p+71VUxi19pkZBtd2/YiQBg/5/EEIyZZvYqGQfWY1G41wJfuX7r4yIp+OzYx4VmIkY
-         6+CCC2V8MMD0XcykTH7Ay+66z53vgdVqJZs7KnGSdDU4rZJRewzT+tVLKBb6ieiKnSWi
-         wWREW/wzLuTMfImnPIqLxKoK+rC1YmvJBTukRdmJidWKaMXHuXAkWMKn6HAZ3BSSFcKS
-         hWWA==
-X-Gm-Message-State: AOAM533+ZwEdytVWZKkaVFDRXhmHBFslWsRwTigFLpiLFpALtrt/IXGx
-        Mr/bhZkWzn0u3j9toKnl8X36m0ZzJpKu1Xke
-X-Google-Smtp-Source: ABdhPJxT824/tISXoHHZRTsug/GMxuyvXIzGJAdXKLTw6JL/kRvsD3GcTOvM9+TbsP/X2VCvxqHsCw==
-X-Received: by 2002:a05:6512:4dd:: with SMTP id w29mr1348676lfq.588.1634760697606;
-        Wed, 20 Oct 2021 13:11:37 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id i13sm270660lfb.45.2021.10.20.13.11.35
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Oct 2021 13:11:36 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id 204so35427ljf.9
-        for <linux-btrfs@vger.kernel.org>; Wed, 20 Oct 2021 13:11:35 -0700 (PDT)
-X-Received: by 2002:a2e:9945:: with SMTP id r5mr1210626ljj.249.1634760695569;
- Wed, 20 Oct 2021 13:11:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
- <YXBFqD9WVuU8awIv@arm.com>
-In-Reply-To: <YXBFqD9WVuU8awIv@arm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 20 Oct 2021 10:11:19 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
-Message-ID: <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
-Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-To:     Catalin Marinas <catalin.marinas@arm.com>
+        id S231162AbhJTWqg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Oct 2021 18:46:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229771AbhJTWqf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Oct 2021 18:46:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CBE26115B;
+        Wed, 20 Oct 2021 22:44:18 +0000 (UTC)
+Date:   Wed, 20 Oct 2021 23:44:15 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
         Paul Mackerras <paulus@ozlabs.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -71,24 +27,57 @@ Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
         linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+Message-ID: <YXCbv5gdfEEtAYo8@arm.com>
+References: <20211019134204.3382645-1-agruenba@redhat.com>
+ <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com>
+ <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 20, 2021 at 6:37 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> The atomic "add zero" trick isn't that simple for MTE since the arm64
-> atomic or exclusive instructions run with kernel privileges and
-> therefore with the kernel tag checking mode.
+On Wed, Oct 20, 2021 at 10:11:19AM -1000, Linus Torvalds wrote:
+> On Wed, Oct 20, 2021 at 6:37 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > The atomic "add zero" trick isn't that simple for MTE since the arm64
+> > atomic or exclusive instructions run with kernel privileges and
+> > therefore with the kernel tag checking mode.
+> 
+> Are there any instructions that are useful for "probe_user_write()"
+> kind of thing?
 
-Are there any instructions that are useful for "probe_user_write()"
-kind of thing? We could always just add that as an arch function, with
-a fallback to using the futex "add zero" if the architecture doesn't
-need anything special.
+If it's on a user address, the only single-instruction that works with
+MTE is STTR (as in put_user()) but that's destructive. Other "add zero"
+constructs require some potentially expensive system register accesses
+just to set the tag checking mode of the current task.
 
-Although at least for MTE, I think the solution was to do a regular
-read, and that checks the tag, and then we could use the gup machinery
-for the writability checks.
+A probe_user_write() on the kernel linear address involves reading the
+tag from memory and comparing it with the tag in the user pointer. In
+addition, it needs to take into account the current task's tag checking
+mode and the vma vm_flags. We should have most of the information in the
+gup code.
 
-                Linus
+> Although at least for MTE, I think the solution was to do a regular
+> read, and that checks the tag, and then we could use the gup machinery
+> for the writability checks.
+
+Yes, for MTE this should work. For CHERI I think an "add zero" would
+do the trick (it should have atomics that work on capabilities
+directly). However, with MTE doing both get_user() every 16 bytes and
+gup can get pretty expensive. The problematic code is
+fault_in_safe_writable() in this series.
+
+I can give this 16-byte probing in gup a try (on top of -next) but IMHO
+we unnecessarily overload the fault_in_*() logic with something the
+kernel cannot fix up. The only reason we do it is so that we get an
+error code and bail out of a loop but the uaccess routines could be
+extended to report the fault type instead. It looks like we pretty much
+duplicate the uaccess in the fault_in_*() functions (four accesses per
+cache line).
+
+-- 
+Catalin
