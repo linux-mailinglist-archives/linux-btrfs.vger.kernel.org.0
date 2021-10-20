@@ -2,104 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FC84342BC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Oct 2021 03:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C245434283
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Oct 2021 02:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbhJTBM1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Oct 2021 21:12:27 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:43230 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhJTBM0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Oct 2021 21:12:26 -0400
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id 122BD6C007F0;
-        Wed, 20 Oct 2021 04:10:12 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1634692212; bh=tDh42Yu82z1BtKImxfA0ZJprj6XGNUNgtvu/86I/Ht4=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to;
-        b=GX0WJlA54aqFfKTC1pvznsoDli3bOsZIuePzNlVikuGR6CqWeWooj/utbRRQLvk0D
-         p3M8Y1AQIn2mmSTz0azCm1V/lCIkkXvTRua9hE/dEnR3QLLbDmERTs8YmBVMyI4vMu
-         4Zmp1RqEaBZCPs8dPTx8OTWBgCDoMDpgzRi60F5M=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 00BE06C007EA;
-        Wed, 20 Oct 2021 04:10:12 +0300 (EEST)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id j9_o5FQVtuqj; Wed, 20 Oct 2021 04:10:11 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id C58F36C007DC;
-        Wed, 20 Oct 2021 04:10:11 +0300 (EEST)
-Received: from nas (unknown [121.237.227.114])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id CE1471BE01C4;
-        Wed, 20 Oct 2021 04:10:09 +0300 (EEST)
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com>
- <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
- <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com>
- <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com>
- <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
- <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com>
- <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
- <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com>
- <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
- <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com>
- <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
- <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
- <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
- <bl3mimya.fsf@damenly.su> <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
- <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
- <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
- <7de9iylb.fsf@damenly.su>
- <CAJCQCtSUDSvMvbk1RmfTzBQ=UiZHrDeG6PE+LQK5pi_ZMCSp6A@mail.gmail.com>
-User-agent: mu4e 1.7.0; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
-Date:   Wed, 20 Oct 2021 07:42:00 +0800
-In-reply-to: <CAJCQCtSUDSvMvbk1RmfTzBQ=UiZHrDeG6PE+LQK5pi_ZMCSp6A@mail.gmail.com>
-Message-ID: <35owijrm.fsf@damenly.su>
+        id S229637AbhJTAVv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Oct 2021 20:21:51 -0400
+Received: from mout.gmx.net ([212.227.15.18]:48851 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229602AbhJTAVu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Oct 2021 20:21:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1634689174;
+        bh=wWLRpWPF9UlQA/ZPBUSC4U38iw18699to4GBrKOOroE=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=a2K5VVFiXJZ1R+OjfKMV4jokoaQmwOgWDYARt+QF5/6JmmyoYsR60MAwG96fWNXuX
+         r6RdC6+3+iDGdy2zsu29C1Xr1hjIJL2VyXQoQA5O/HHh/XPdDJfz60ofV2bZRNhXC6
+         oxs2vEkrzBIglfQZwDldjDiis0mi2WCwaI2ed4i4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M7K3i-1me7Nx46Cy-007ljb; Wed, 20
+ Oct 2021 02:19:34 +0200
+Message-ID: <8e567e7b-e6ef-603e-c376-afd68bfa152c@gmx.com>
+Date:   Wed, 20 Oct 2021 08:19:30 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Virus-Scanned: OK
-X-ESPOL: +dBm1NUOBkfEh1+jQmXcBgEprShOQuzk//vYoxBcgBmOPC+CfkkPWBO2mWpqPg+1zUEX
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH 2/2] btrfs: move btrfs_super_block to
+ uapi/linux/btrfs_tree.h
+Content-Language: en-US
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20211019112925.71920-1-wqu@suse.com>
+ <20211019112925.71920-3-wqu@suse.com> <20211019161033.GV30611@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <20211019161033.GV30611@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:az9APJsBRdCCRScIxEDFrzkoIeIGOKtEhLnDKauEXwmwz0s5oQb
+ 7qttg91ZOrmqQm2N7vWM4iZbr7rD1ucig8UaNnWD5tgIoWwfb9rdTAtd5qJfpjIGl8YTXs1
+ ZVOBVZunNuGWjphkkJqKM/x01lZrGMPotp38y9H97t7BQLeI56rElRFim2+Bh+ttC0ABiK9
+ esiV6TXi97M+aUheDvmnA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:U44qm5CnFns=:PF1wCS2LT9o9Tls+dZKgEX
+ zKsC5kmiM4/J29CJGIzLeoPu/1LdUr1tCmDx5eTtBSmPs1Uz1F+39uQlW8ZVoUehs/P8iPdZg
+ dw6vhnYklLmUGiIOTM3YxrtZIj8yYvz+PUXiAUBNwDEdz0tRh1kR9OIYVOf6B9uqLXqHcnk6h
+ VHGCOdEDlMLf1gI/eRZ+Xe53Z/rfnDIdQTUzzGFnU7OXuZRfY92jVYR3judJwC9kB5eDfhqX/
+ MhpJgkG4elMf9hLyTwFpioSuDs3Ho+Xns5ZOcRqOoPUFH6tjDDb64uuy62yruPokdHXfMpLyE
+ P0rd7yTWmsMzOw1rnE3E+HjJzMOkU0QkqT5irEszwQatvGW5RYw8Trp8gtVtMWEG5H/0Pf3wT
+ awjMWVwXS33WSTj3Zemg97/rXSZe0Fs9HwsqXp2Fa84p4eZCBzuAaYorAR/D1KAWZKtTVTo3N
+ /u0Z0uwL48rWuIqY3ORBcHgnNCqNN6E0vCFH7R1A7torngiwZT7mIjFrUU5Em97U0a6POcyhR
+ ov4gx6QzU0pM5dtq26VWCcUvpGQv6SLN3S5zaxnhJh8lYQEGbvVMT6iPYzlRNJpSWIy5YuPzw
+ LBu+5vh/8AKvQxWlIm3L969sGXa5O3XNGYxh7T7dgtA6tp+x0Jokfu03NzKNGbe2GHqiIa3FD
+ wxiHiUvfBCAuE3wLoGm5nilf3EQg34dOKWZC0k00616irY+AEcGrLsq+alq0aI5u3ZTyPxEqS
+ ujDYSGHFmpvg0BwS4aVhfwN/GnuAIZtqzQfUlcKYs7oX9pb2oWuizbfPo43P3Jwq2D+fcdVwu
+ 4aJABHx5UjiIvDE+cOKh6+G59QfhS+A1VMcq8ufbUxzGk2NVaECgcEVkZQeCrf2VmgrB8UYdf
+ yyYF8Gsh0/2T0YC0tdyhCYy+HHytaMNP9WH/7lEn5BkeXFMPsHhpyJk1FBO7xn5xeokW1hOLo
+ Py8caEkqPuwBDAX/zLAbXac5kOBb8P2lsVoAhjx6T5Kj2HeWv12bHXh9eOJjRwjuTVWimJuOK
+ +TPWfgDylULPpW9uzinLMTQOC7M/g9XsQ0r2xueM8Za6zjJlCPEJrR1sfHWOOf7mM9shSG1b1
+ R8XV399rYdEcOk=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-On Tue 19 Oct 2021 at 14:26, Chris Murphy 
-<lists@colorremedies.com> wrote:
 
-> Still working on the kernel core dump and should have something 
-> soon
-> (I blew up the VM and had to start over); should I run the 
-> 'crash'
-> command on it afterward? Or upload the dump file to e.g. google 
-> drive?
+On 2021/10/20 00:10, David Sterba wrote:
+> On Tue, Oct 19, 2021 at 07:29:25PM +0800, Qu Wenruo wrote:
+>> Due to the fact that btrfs_tree.h contains all the info for
+>> BTRFS_IOC_TREE_SEARCH, it's almost the perfect location of btrfs on-dis=
+k
+>> schema.
+>>
+>> So let's move struct btrfs_super_block to uapi/linux/btrfs_tree.h,
+>> further reducing the size of ctree.h.
 >
-Dump file and vmlinu[zx] kernel file are needed.
-
-> Also, I came across this ext4 issue happening on aarch64 
-> (openstack
-> too), but I have no idea if it's related. And if so, whether it 
-> means
-> there's a common problem outside of btrfs?
-> https://github.com/coreos/fedora-coreos-tracker/issues/965
+> The definitions of tree items are in the public header due to the search
+> tree ioctl, but why do you want to make superblock public? Ie. what user
+> space tool is going to use it?
 >
-Already noticed the thing. Let's wait for the vmcore.
 
-Any idea, Qu?
+Well, for super block I'd say any user space tool can directly see it.
 
---
-Su
-> I mentioned this bug report up thread:
-> https://bugzilla.redhat.com/show_bug.cgi?id=1949334
-> but to summarize: it has the same btrfs call trace we've been 
-> looking
-> at in this email thread, but it's NOT on openstack, but actual
-> hardware (amberwing).
+My main objective here is to move all on-disk format to uapi.
+
+And I don't have better idea than reusing the existing btrfs_tree.h.
+
+Thanks,
+Qu
