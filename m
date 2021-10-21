@@ -2,108 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1224368AB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 19:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D634368F6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 19:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232036AbhJURHP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 13:07:15 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56896 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbhJURG5 (ORCPT
+        id S232055AbhJURZJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 13:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhJURZI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Oct 2021 13:06:57 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 83FB9218E1;
-        Thu, 21 Oct 2021 17:04:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634835879;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FqZ2I1Q2x0ZjTVlXen/w7ZZmOE1EnI0menU+2aGycbw=;
-        b=BiRW6ZL/9YpLtZRdk4skHUkNio6KkBOWo/R6YKpm1xWBkkHsO7BWLHwYVHlDyIhu3noqbT
-        KOkBASEfbeKJdmum6G87x0+A8Vf5/h9Dj3a4Uv/P7gaHMZb+NRCMNy0vuHNhupiFZWag+n
-        yEhWs3IWgrAHjYiBtPnDUivpao8EPy8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634835879;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FqZ2I1Q2x0ZjTVlXen/w7ZZmOE1EnI0menU+2aGycbw=;
-        b=1nNIoM5VVxuW6bJycXWtdt6y9VKEdEb31dbwgB/PkaEuwaEHHmjeEHEtvplKFKnv5wJ0AP
-        w2XIz0Xv/eiaUcDw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 7C443A3B81;
-        Thu, 21 Oct 2021 17:04:39 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7BBC2DA7A3; Thu, 21 Oct 2021 19:04:10 +0200 (CEST)
-Date:   Thu, 21 Oct 2021 19:04:10 +0200
-From:   David Sterba <dsterba@suse.cz>
+        Thu, 21 Oct 2021 13:25:08 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1E8C0613B9
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 10:22:52 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id m26so1252467pff.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 10:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=MhWFkmNsOz2GMbhHvZUNdPT4szxTuauUc0ijZpacxzc=;
+        b=fCsYEA4piiULbPmLXWp5cJrVtnZQodydlKfpxWfDIzfEtfT4N9in0Ks8XTAtXXBhWI
+         BANGToNP1t8i0AEMtPOg7vOgbSQRBpY2IB2FYgWHIIustTpOd0BURTD7mxgAMl6ehqHD
+         oWdgDzvAcsJUBKy0RsSn3QMuEjgx29o2WHgfzIhByej+zBq2o1gWGC5z84AvVIDkd5S0
+         BCNYmG2kP9Nji2/DzS64IhSRrzFuQkXBe+9B+rdek2ZKx+xRBQ+Nt/ki7mDK48OP1Pox
+         drLgzNWthZyKU8LALIvOWEInr0F6JthKgPCESdGPyxfa1fU7Wh8ep60HcjkkmTUkks3w
+         UeTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=MhWFkmNsOz2GMbhHvZUNdPT4szxTuauUc0ijZpacxzc=;
+        b=6gWBozntEywjboRgy7+ZPyZRJKe2kBGjVa6do9jL83Mcs0yEJFBeqtbukXsoVxG+un
+         VhI5MZqDW+bIJuY3RkBNAc36TTHOotPrk47bQ9vpoW5o981IG/XXLwIAaY5nReZUmn39
+         7fhgAgQhSUr9/xXLtU3TDy0pcCF+omcMcavonM27TmNY3ahUv5gupdUfZopAufRBRR7l
+         GAKgZzRf22e0W3RGRCzLOZ0ZYfnf+mqL9yTAG39RYPtiyp5rFgar8TmTiX93Ss29IZJZ
+         D2rXRQGINYJL5prr//Dok5/fSgSMFTK2ez99ExMw65PaAC89e0GiUuptYuvDAOTBEsBA
+         Oysw==
+X-Gm-Message-State: AOAM533dZw+e0kF8GITgiRsHanO5tBzQbqsWKODShvD/IO1pbZXWXLcq
+        X/8jNoK8Oc75+OW0rODnQEDc0dVXj3Q=
+X-Google-Smtp-Source: ABdhPJzrOWiqDDdaXawJ6nDrTp7jGLnYL0wDUClbjIN+Nj4NLniGPLqV0UqbfBCfMHAVw3+TcMRo9A==
+X-Received: by 2002:a05:6a00:9a2:b0:44c:b979:afe3 with SMTP id u34-20020a056a0009a200b0044cb979afe3mr6836039pfg.61.1634836972009;
+        Thu, 21 Oct 2021 10:22:52 -0700 (PDT)
+Received: from relinquished.localdomain ([2601:602:8b80:8e0::381])
+        by smtp.gmail.com with ESMTPSA id e20sm7443916pfv.27.2021.10.21.10.22.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Oct 2021 10:22:51 -0700 (PDT)
+Date:   Thu, 21 Oct 2021 10:22:50 -0700
+From:   Omar Sandoval <osandov@osandov.com>
 To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Remove spurious unlock/lock of unused_bgs_lock
-Message-ID: <20211021170410.GI20319@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211014070311.1595609-1-nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH v11 06/10] btrfs-progs: receive: encoded_write fallback
+ to explicit decode and write
+Message-ID: <YXGh6g4RGvlvj/29@relinquished.localdomain>
+References: <cover.1630514529.git.osandov@fb.com>
+ <06689de6a56f046d5e41525fa12c7af92db478e5.1630515568.git.osandov@fb.com>
+ <8ac98c8e-901e-0fc1-2281-27d282486a49@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211014070311.1595609-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8ac98c8e-901e-0fc1-2281-27d282486a49@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:03:11AM +0300, Nikolay Borisov wrote:
-> Since both unused block groups and reclaim bgs lists are protected by
-> unused_bgs_lock then free them in the same critical section without
-> doing an extra unlock/lock pair.
+On Thu, Oct 21, 2021 at 04:55:19PM +0300, Nikolay Borisov wrote:
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  fs/btrfs/block-group.c | 2 --
->  1 file changed, 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index e790ea0798c7..308b8e92c70e 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -3873,9 +3873,7 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
->  		list_del_init(&block_group->bg_list);
->  		btrfs_put_block_group(block_group);
->  	}
-> -	spin_unlock(&info->unused_bgs_lock);
->  
-> -	spin_lock(&info->unused_bgs_lock);
+> On 1.09.21 г. 20:01, Omar Sandoval wrote:
+> > From: Boris Burkov <boris@bur.io>
+> > 
+> > +static int decompress_lzo(const char *encoded_data, u64 encoded_len,
+> > +			  char *unencoded_data, u64 unencoded_len,
+> > +			  unsigned int page_size)
+> > +{
+> > +	uint32_t total_len;
+> > +	size_t in_pos, out_pos;
+> > +
+> > +	if (encoded_len < 4) {
+> > +		error("lzo header is truncated");
+> > +		return -EIO;
+> > +	}
+> > +	memcpy(&total_len, encoded_data, 4);
+> > +	total_len = le32toh(total_len);
+> > +	if (total_len > encoded_len) {
+> > +		error("lzo header is invalid");
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	in_pos = 4;
+> > +	out_pos = 0;
+> > +	while (in_pos < total_len && out_pos < unencoded_len) {
+> > +		size_t page_remaining;
+> > +		uint32_t src_len;
+> > +		lzo_uint dst_len;
+> > +		int ret;
+> > +
+> > +		page_remaining = -in_pos % page_size;
+> 
+> Why the -in_pos?
 
-That looks correct, I'm not sure about one thing. The calls to
-btrfs_put_block_group can be potentaily taking some time if the last
-reference is dropped and we need to call btrfs_discard_cancel_work and
-several kfree()s. Indirectly there's eg. cancel_delayed_work_sync and
-btrfs_discard_schedule_work, so calling all that under unused_bgs_lock
-seems quite heavy.
+in_pos is our position in the encoded data. This calculates how many
+bytes are remaining in the page that in_pos current points to.
 
-OTOH, this is in btrfs_free_block_groups so it's called at the end of
-mount so we don't care about performance. There could be a problem with
-a lot of queued work and doing that in one locking section can cause
-warnings or other stalls.
+> > +		if (page_remaining < 4) {
+> > +			if (total_len - in_pos <= page_remaining)
+> > +				break;
+> > +			in_pos += page_remaining;
+> > +		}
+> > +
+> > +		if (total_len - in_pos < 4) {
+> > +			error("lzo segment header is truncated");
+> > +			return -EIO;
+> > +		}
+> > +
+> > +		memcpy(&src_len, encoded_data + in_pos, 4);
+> > +		src_len = le32toh(src_len);
+> > +		in_pos += 4;
+> > +		if (src_len > total_len - in_pos) {
+> > +			error("lzo segment header is invalid");
+> > +			return -EIO;
+> > +		}
+> > +
+> > +		dst_len = page_size;
+> > +		ret = lzo1x_decompress_safe((void *)(encoded_data + in_pos),
+> > +					    src_len,
+> > +					    (void *)(unencoded_data + out_pos),
+> > +					    &dst_len, NULL);
+> > +		if (ret != LZO_E_OK) {
+> > +			error("lzo1x_decompress_safe failed: %d", ret);
+> > +			return -EIO;
+> > +		}
+> > +
+> > +		in_pos += src_len;
+> > +		out_pos += dst_len;
+> > +	}
+> > +	return 0;
+> > +}
+> > +
+> > +static int decompress_and_write(struct btrfs_receive *rctx,
+> > +				const char *encoded_data, u64 offset,
+> > +				u64 encoded_len, u64 unencoded_file_len,
+> > +				u64 unencoded_len, u64 unencoded_offset,
+> > +				u32 compression)
+> > +{
+> > +	int ret = 0;
+> > +	size_t pos;
+> > +	ssize_t w;
+> > +	char *unencoded_data;
+> > +	int page_shift;
+> > +
+> > +	unencoded_data = calloc(unencoded_len, 1);
+> > +	if (!unencoded_data) {
+> > +		error("allocating space for unencoded data failed: %m");
+> > +		return -errno;
+> > +	}
+> > +
+> > +	switch (compression) {
+> > +	case BTRFS_ENCODED_IO_COMPRESSION_ZLIB:
+> > +		ret = decompress_zlib(rctx, encoded_data, encoded_len,
+> > +				      unencoded_data, unencoded_len);
+> > +		if (ret)
+> > +			goto out;
+> > +		break;
+> > +	case BTRFS_ENCODED_IO_COMPRESSION_ZSTD:
+> > +		ret = decompress_zstd(rctx, encoded_data, encoded_len,
+> > +				      unencoded_data, unencoded_len);
+> > +		if (ret)
+> > +			goto out;
+> > +		break;
+> > +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_4K:
+> > +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_8K:
+> > +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_16K:
+> > +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_32K:
+> > +	case BTRFS_ENCODED_IO_COMPRESSION_LZO_64K:
+> > +		page_shift = compression - BTRFS_ENCODED_IO_COMPRESSION_LZO_4K + 12;
+> 
+> Doesn't this calculation assume page size is 4k, what about arches with
+> larger page size (ppc/aarch64), shouldn't that '12' be adjusted?
 
-That the lock is unlocked and locked at least inserts one opportunity to
-schedule. Alternatively to be totally scheduler friendly, the loops
-could follow pattern
+This is unrelated to the machine page size. It is translating the
+BTRFS_ENCODED_IO_COMPRESSION_LZO_* value to the page size used for
+compressing the data:
 
+compression | - LZO_4K | + 12 | 1 <<
+=====================================
+LZO_4K = 3  | 0        | 12   | 4096
+LZO_8K = 4  | 1        | 13   | 8192
+LZO_16K = 5 | 2        | 14   | 16384
+LZO_32K = 6 | 3        | 15   | 32768
+LZO_64K = 7 | 4        | 16   | 65536
 
-	spin_lock(lock);
-	while (!list_empty()) {
-		entry = list_first();
-
-		list_del_init(entry);
-		btrfs_put_block_group(entry->bg);
-		cond_resched_lock(lock);
-	}
-	spin_unlock(lock);
-
-So with the cond_resched_lock inside the whole lock scope can be done as
-you suggest.
+I'll fix the other comments, thanks.
