@@ -2,437 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7133C436E50
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 01:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32071436E8C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 01:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhJUX3U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 19:29:20 -0400
-Received: from mout.gmx.net ([212.227.17.22]:58125 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhJUX3T (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Oct 2021 19:29:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1634858818;
-        bh=KrKaItywiHnUyKHDJshjfWwITaAvfrseoy6pbVE1NWg=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=J2+MqPSH6cgKf+3YJ/R/g1qwqsT1w/a2ZTUkgu8wuOoJM2TiJMradunXLRzaln/hv
-         GLINrvceSOzHy/KDmUSRuTlo6A3Vd4iBdO68nOrpgRa3dcoaIlinywFuDh3YYgH83R
-         tlmwBq983J8UsN0HOVUpwXFuwyxwe9Yt6mV9vKu4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4hzj-1mncub0Buh-011n07; Fri, 22
- Oct 2021 01:26:58 +0200
-Message-ID: <b288f28c-45f4-394a-e8a3-a18b06458e7e@gmx.com>
-Date:   Fri, 22 Oct 2021 07:26:54 +0800
+        id S231598AbhJUXzn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 19:55:43 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:60264 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229512AbhJUXzm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 Oct 2021 19:55:42 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19LNipri022862;
+        Thu, 21 Oct 2021 23:53:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=oOmEkEsaWyg4vkE7IkGsMJX0SQgXzNJayfniom6bGIU=;
+ b=VBGtowWur1vVdjRYXY7ioWmrXR4eOEKAwZZ5YQ1h3VcZBCfZpgUFEGxuOwyAsFPNZmXb
+ wetTW7Cm8KQZPoH+Zi9XF5rHc4enH8izNhV6bMTY3JtiSWwCyLJOBd5gS8IyuJRjSm0e
+ C0sk2AtZ6KQRWGt8ZOUf8oer92EU0DnieKFY3oZvF0egrud3yHP26WGUUHzJQBxxQT2x
+ X9drvOKTZP4i4j1WecEIUau76hvUxd+4iyKuF20ziuN1llGgWNro93PLPrKnrdB0vphf
+ h/kRJ1hyPOuxTT/WNSlddtSCx0tN6NWyuCfOmXLux1MstjkNH4HNi+BxVdNNq/rPTM0H FQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3btkwj91s9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 23:53:21 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19LNovRk101701;
+        Thu, 21 Oct 2021 23:53:20 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
+        by aserp3030.oracle.com with ESMTP id 3bqmsk1h64-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 23:53:20 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qy811SviJpW8nGKse9qPQYVWtYgyCKrWCGcZibqmp+K2KtIAXC4JpRGshHtaAkdXFix1cqmp4BnfAa5omwFr04iKrPIYsCUW+VdzzzTaHHK4b6jRaNcr57fLjoR2RMtPO7q/Epw+aGMHQX2ued9t7kVJcsBCoaLjp+f1IKe5uSWrzX9+DolfI2rm5lH3dRt5RsZsh7UsQMn1kd3Ie0o2Su2h4EmMMmdxd/VU7HGH066i+d3HSZqd4PUviNYHybgBTZP+zXJZL6YRQaTaisNaqg6JIDMfA++KleQH7GDpFki9zNBvcZJ1VIoM0UOSBOgVKagQpHHiPjJKNkMj6h27YA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oOmEkEsaWyg4vkE7IkGsMJX0SQgXzNJayfniom6bGIU=;
+ b=SCwHEfHhRQ3tMibtI0UkEI1U2HIDWrQzu9O3ryAsAsS5dQp/neD1nVnvd6nh3/w4ncQJ2QOub/TqFrkoexumoNli725E0WBMVzrvtdnuA974Nczf1qBKreeq4rtT2ng33q/I8luL0F4Cw5+JjXuWDbsN2nsgHcaDAcZGN6kTwEv5fZ6JP8H1uT0LGQXt+TuPzuKvjCETNRxl7Yv1zWbuBlADBeX4TwdM6C3a97pL20ECupyR5SzizrLNgxq4eyqJiWwyptX0ikNQoaXCCNkVftwkjxUzP72SrWba+6qSd3ueS5uZxCQak5IxXI4th+coJNbQvKyH4YUFNle04Nmu+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oOmEkEsaWyg4vkE7IkGsMJX0SQgXzNJayfniom6bGIU=;
+ b=XCejwm/OjFrLomDnL/IRfjJefgXoECQ69eIIyYNB2rGFl2Vnx+ywR/MXA1FP/xs49bRP1kN7bBYoRa/iytiOfHxwrNaUDpt7e47TA01g5OxPN+SwJtDKce30w8lFTZrzq5UqWeXy766RqS6Op5MAr3uHdGoUA8i7nt+1Akd4STY=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB4366.namprd10.prod.outlook.com (2603:10b6:208:1dd::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Thu, 21 Oct
+ 2021 23:53:18 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
+ 23:53:18 +0000
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     wqu@suse.com
+Subject: [PATCH] btrfs: fix comment about sector sizes supported in 64K systems
+Date:   Fri, 22 Oct 2021 07:53:05 +0800
+Message-Id: <59371eece911ff3e73517fc9e3fbafa843f9bcc3.1634860167.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYBP286CA0038.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:404:10a::26) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 1/7] btrfs: use btrfs_item_size_nr/btrfs_item_offset_nr
- everywhere
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1634842475.git.josef@toxicpanda.com>
- <b64b018e55c848bcc78b2f8bd8f6db01d0c93685.1634842475.git.josef@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <b64b018e55c848bcc78b2f8bd8f6db01d0c93685.1634842475.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7v6HYmmAKS3499VFKY2T1hPwOuzgZ0ndft4X6NA8L16I7TVtR/c
- XgEHnNaasIuZ0BwboUK6G8RpB33IDTKwfOfsoOCAr4mx+J1PZPCE1cXqw7S4kSoJeP72cFr
- 9IRm5q6p9XmRKkPNdwih/4xkI9d+FTp/RU37t0QLoNtiFEozMo0qKbut1+QEzmUwwhPgNe5
- ACJAWaZd6Bp0baF8HE1Sw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HNrKLo45MwE=:BcdMnaaDK/TQpuGmt2s55z
- SojmD/ELDLOjbG0BdGfyQ0/e51+CngpbFke9IZXogab060zjYB1rJLnpKBzkRNRuWi+1UKWdF
- aoW4Y9lXhgLuF+QxOed8Gl5rEqOmi/ieJSxeEn4yT3a2WxROZ4tjQfFvS13tA2sTVIEp0aHfR
- EC6EtdhQhmaRDSYbdc9hPttSodj7VgqI+/by+ma/UwpJ32eLG3GVsJRdra7HyMcZWBhZa65wr
- ZXv1x/Jkp8wi94d7xmkhFPrEvMU+wuzMub6w0tyCOHL7ASfeKceIsiE++yMhsY5oU3bvUUqG3
- RTMPm/PmuqqGEfl/KYwYXHrZZvoJCucVAjXsGPcpRMJavsDmwvh5Sw9+pvk5wrwzdskpJbwY/
- FSFTQrtUFdO8Q0qyUh6YsOnU2IHqIdk5KScuiDTGPovLEZaQxpxTpGacxlTBFNz/2Uj/hIwGG
- rJ3yOWa3Yk2CTyZsObvi7sgQt661n3VM6IJ7Zina9LPv90GuYADD7n790bO6i7BopgHwrJiji
- tA7dkS6ZHHPN9U3H79uNyyzREHCwIBTSm4WkUdoTl7i5jOHYCA2Yhh/ZhPgPWEfJbOoPwb626
- NnOu4tkyysXrBE2+plwBuJ2wgj3qNy2hruvbx/Ki+YGbV2okyn2Tn3RJ09FL5r7NAOs9xdz1M
- Y/HOtep6AENjmix+3i+Lpf6DCxKL9t6M+2U9YBBxMwMBQ1MbpUb85BhxMwWYNKuOhY1NPz89Q
- C+4T6m85zT0g4nvAzRXEnQ/k+D8rMap6hQWIrtvgFooXvjg0aeN8pvq9jQKSe3cC5qaCoaItZ
- TqWOrccGLpFfX9dzCV1rGnXZNSY3CtBT8xkr4TaDj+/mjXcLqJrqOGGixUK+mGsEkp1JHhTIN
- kgvX2uw2VQux9q29DcbSZeWZPyEvoDRAuOVe+lgmFtWMSfAEw0KXEy8j7k6+/fqe+blXzawhr
- cvpH0/1cYCnEpFpVOA7AVg98u2aqQ59FqeBhX8TloEXa13LAZ1AXBr0q/POGZ61Qm+vcu+YiC
- uxXE+00fjT63bWDBMIlaqDrBf/tmYSp5RMFTsZtpnNQr8lYIj8yLStBlTlwYYq5bt4/syVcM/
- ocNkKxv1xwjkSM=
+Received: from dev.sg.oracle.com (2405:ba00:8004:1018::1cb2) by TYBP286CA0038.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:10a::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 23:53:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 62f45ef1-da6e-4fdd-8b99-08d994edf48d
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4366:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4366F359B3038E9E425C8C89E5BF9@MN2PR10MB4366.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 87PZWSU2ENrc+4GcFb6UDbxJQNWjwJOWdG7JRqvlq14EMkrB18a1v9Ds1iAz8SarIoSoo1OLr4bOxPpWjYCMuNTDxkOsLpJXRKlYjsScp0aJ79MmovTHRkcg+0CfJ26Uwr+bDYB7R7Y+96etH/4V5HdPyp3sBW5fiuwrK2DdsZkp6pKELuifYnSqZ2uWbzSH8Nzy/ShrpO+g/NqTAUqLgtSMwnVu/MzXZjWK4UJFOye79KV8IeCF3h4ruYrtblk9NGowwGu52OrmA3X2fPdRrSpwJNcM1nlAG/4Yv7SUwhscarMNsJDirBmSQ2Is8WfyOnDWzcpzvBMucvVzLl9wknbgtVHsF2ZNxpDx1Yf4FjIaNZw7YnIuOH2ZEFvCG9T8PY03iwbQbansgmoXam+NgUgg68PGGsXeveJZ5t6gAG69HiAuz5uoYvqfUMEnLrq0cibd2b6mTDE+oAnR19sdJsenFw+DFr1rbk/qp9MFTQxy2+/jot9Q3WzdWIn3SrxM0NcIegnWRLgT9dj6GP8n2gkZ6UTuWRQEkQuMIdglz/rlBpl/y3TeufDSP4j+NU+cVE9ekgzTXAtmAi9RcqWX3Q2XQVV/7QEpI6mUvjsAj/zTXU8D8mDqLo82JSYqoLz3ctgBF+hklt3325vn/Snakg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4744005)(83380400001)(186003)(2616005)(6486002)(7696005)(52116002)(86362001)(6916009)(44832011)(66946007)(316002)(66556008)(8936002)(8676002)(38100700002)(508600001)(66476007)(4326008)(36756003)(5660300002)(6666004)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?33Ql1wD1na6rF795jZc2YFmUPkXDzZhrB1WfMMEFur/DKq/0MqQDO1xguAkO?=
+ =?us-ascii?Q?6HgAd91G4UR/52wqpXZ42KYFw8Tj3XempqJIhHGy5NCfalULwSxrYRqca4P7?=
+ =?us-ascii?Q?xFGTNRK2tVm2cqqP+KXQag97++3dgZWvX5tPWOBkz5NxZAk9vX3wdwquionD?=
+ =?us-ascii?Q?4rjPY9khWrncV+4spQhvjr91r9+v3i9GUOlNFxIbnec4fDdOn30b6LbYO2w1?=
+ =?us-ascii?Q?5bWOGI2JwtTJZi+HafsVrKOx77OJ+nLodavFVZRlXBmci9Ae/LvJ3tGkwx3k?=
+ =?us-ascii?Q?GklX1NAG/bnISa4gaG1dv/vovjMsEYEOZ0pf+hoWpQbhGqW0sc/uzA/nagaF?=
+ =?us-ascii?Q?kydUSAMU/I/N3gE8OiV42PwhKeDtnPPSBgOoZyuyqkeQMhzvYHKxD5amsSq3?=
+ =?us-ascii?Q?Nd6Ai0CraO4SsweIe/j/flQfBM5c8uZEZmgnLGd74imIk0koCCmHW4ieGRdQ?=
+ =?us-ascii?Q?uF587gYez1FbqEDcIVz8L/hw123yyzgGWgovuhbonHumggJEANIqRBPrcuvG?=
+ =?us-ascii?Q?dO0WAsUeI+pnHPuRw7qQczbsrpnGJEaeV+TBhpVSJ53y4+9iLV1jEhHrXtrm?=
+ =?us-ascii?Q?ulmOl3dvu0yiP0RIpOJX/V0hI/Gyu/miHLDLKv+RooDCeZhNS99nuMEV28Is?=
+ =?us-ascii?Q?rWehnnWG0KyDPHiS2g9GTkA+Yg3V4vKO9PTV9gmgyule3iYKFHDwCmxu3iy9?=
+ =?us-ascii?Q?TWx6N6GRkwMk9pVSBzoIZxaT9IVsleQH29p2//prFFDvOV+XWAqPQo0CuQ9T?=
+ =?us-ascii?Q?pdMWzMWjSBP5XTQFcXDUzliFs0VlwCMJXiiWOGUksxBziiV3of+Gn9olaZN6?=
+ =?us-ascii?Q?9FGqlCBZoWW4SZTokBCbVm5WROOHYtrt/bXQstN65NKm5P2eraxNhpRkMjYl?=
+ =?us-ascii?Q?pHe5CTgghrl6it8zDtWIJqp+5SeQOw0TgeLw/3gCGm5U2B18lOaIkP6+3/dV?=
+ =?us-ascii?Q?v5kejPyOv9KnvczxxYU+XgrMklkTexuM4Aut0N3x42U8UBbB5NVRyFUHQ4XK?=
+ =?us-ascii?Q?iyFA8WWSpi1s+ihgQOJxlLuvBF3t50Ro+kWlHeWXiEhDRlveBBdfI+P/odvC?=
+ =?us-ascii?Q?ITqKd+vBpquEkzEprhCPl9k0BfLh2vVxdAUAuTUSySosBWohR1Z9+GFQEbN3?=
+ =?us-ascii?Q?WpfogxaBe0kySEbbQuIQ5XHV3kEvj3sDa5sVRSW3ztQIWp4opAg3V8uni5KY?=
+ =?us-ascii?Q?v8n2WKRGehCC0Mv52D2uUhq7mcVYFuup5aDmElsO1zfWW79BG/yN9AagJGZX?=
+ =?us-ascii?Q?/LtUJzoIlM4u5/CN5q4FlmXD1HAVfVFBJ+IWqi8qyHgHXHgIxRiQ1nU6Navv?=
+ =?us-ascii?Q?FzMAK3jVchZDRNbgTFNhN7XeIdDf3n1p7Qgh2itwsHJgc2Qa7aGogHqr0zqy?=
+ =?us-ascii?Q?eWOljyypvTaOqD/JGr1XlksJorusFgqW8ZZ6WE5pmsBp6NEp/2Rjwf8ErpiK?=
+ =?us-ascii?Q?IdWHLv+2aEG/ON/ZfBTsOSY+/vDH5QP2l7ZBpNqhEKCMF7Ge34U6Yg=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62f45ef1-da6e-4fdd-8b99-08d994edf48d
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 23:53:18.4585
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: anand.jain@oracle.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4366
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10144 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110210119
+X-Proofpoint-ORIG-GUID: f-78dd3ng5YQx8_rWGZd4IYJje34EFTv
+X-Proofpoint-GUID: f-78dd3ng5YQx8_rWGZd4IYJje34EFTv
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Commit 95ea0486b20e ("btrfs: allow read-write for 4K sectorsize on 64K
+page size systems") added write support for 4K sectorsize on a 64K
+systems. Fix the now stale comments.
 
+No functional change.
 
-On 2021/10/22 02:58, Josef Bacik wrote:
-> We have this pattern in a lot of places
->
-> item =3D btrfs_item_nr(slot);
-> btrfs_item_size(leaf, item);
->
-> when we could simply use
->
-> btrfs_item_size(leaf, slot);
->
-> Fix all callers of btrfs_item_size() and btrfs_item_offset() to use the
-> _nr variation of the helpers.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/disk-io.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 0e44f89b8664..2697b8ede289 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2592,8 +2592,7 @@ static int validate_super(struct btrfs_fs_info *fs_info,
+ 
+ 	/*
+ 	 * For 4K page size, we only support 4K sector size.
+-	 * For 64K page size, we support read-write for 64K sector size, and
+-	 * read-only for 4K sector size.
++	 * For 64K page size, we support 64K and 4K sector sizes.
+ 	 */
+ 	if ((PAGE_SIZE == SZ_4K && sectorsize != PAGE_SIZE) ||
+ 	    (PAGE_SIZE == SZ_64K && (sectorsize != SZ_4K &&
+-- 
+2.31.1
 
-Yeah, for such simple structure (only key + offset + size), there is
-really no need to use item potiner.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-> ---
->   fs/btrfs/backref.c                   |  4 +---
->   fs/btrfs/ctree.c                     | 22 +++++++---------------
->   fs/btrfs/dir-item.c                  |  6 ++----
->   fs/btrfs/inode-item.c                |  4 +---
->   fs/btrfs/print-tree.c                |  4 +---
->   fs/btrfs/send.c                      |  8 ++------
->   fs/btrfs/tests/extent-buffer-tests.c | 17 +++++------------
->   fs/btrfs/xattr.c                     |  4 +---
->   8 files changed, 20 insertions(+), 49 deletions(-)
->
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index f735b8798ba1..8066b524916c 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -2058,7 +2058,6 @@ static int iterate_inode_refs(u64 inum, struct btr=
-fs_root *fs_root,
->   	u64 parent =3D 0;
->   	int found =3D 0;
->   	struct extent_buffer *eb;
-> -	struct btrfs_item *item;
->   	struct btrfs_inode_ref *iref;
->   	struct btrfs_key found_key;
->
-> @@ -2084,10 +2083,9 @@ static int iterate_inode_refs(u64 inum, struct bt=
-rfs_root *fs_root,
->   		}
->   		btrfs_release_path(path);
->
-> -		item =3D btrfs_item_nr(slot);
->   		iref =3D btrfs_item_ptr(eb, slot, struct btrfs_inode_ref);
->
-> -		for (cur =3D 0; cur < btrfs_item_size(eb, item); cur +=3D len) {
-> +		for (cur =3D 0; cur < btrfs_item_size_nr(eb, slot); cur +=3D len) {
->   			name_len =3D btrfs_inode_ref_name_len(eb, iref);
->   			/* path must be released before calling iterate()! */
->   			btrfs_debug(fs_root->fs_info,
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 74c8e18f3720..ec8b1266fd92 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -2614,19 +2614,15 @@ static noinline int split_node(struct btrfs_tran=
-s_handle *trans,
->    */
->   static int leaf_space_used(struct extent_buffer *l, int start, int nr)
->   {
-> -	struct btrfs_item *start_item;
-> -	struct btrfs_item *end_item;
->   	int data_len;
->   	int nritems =3D btrfs_header_nritems(l);
->   	int end =3D min(nritems, start + nr) - 1;
->
->   	if (!nr)
->   		return 0;
-> -	start_item =3D btrfs_item_nr(start);
-> -	end_item =3D btrfs_item_nr(end);
-> -	data_len =3D btrfs_item_offset(l, start_item) +
-> -		   btrfs_item_size(l, start_item);
-> -	data_len =3D data_len - btrfs_item_offset(l, end_item);
-> +	data_len =3D btrfs_item_offset_nr(l, start) +
-> +		   btrfs_item_size_nr(l, start);
-> +	data_len =3D data_len - btrfs_item_offset_nr(l, end);
->   	data_len +=3D sizeof(struct btrfs_item) * nr;
->   	WARN_ON(data_len < 0);
->   	return data_len;
-> @@ -2690,8 +2686,6 @@ static noinline int __push_leaf_right(struct btrfs=
-_path *path,
->   	slot =3D path->slots[1];
->   	i =3D left_nritems - 1;
->   	while (i >=3D nr) {
-> -		item =3D btrfs_item_nr(i);
-> -
->   		if (!empty && push_items > 0) {
->   			if (path->slots[0] > i)
->   				break;
-> @@ -2706,7 +2700,7 @@ static noinline int __push_leaf_right(struct btrfs=
-_path *path,
->   		if (path->slots[0] =3D=3D i)
->   			push_space +=3D data_size;
->
-> -		this_item_size =3D btrfs_item_size(left, item);
-> +		this_item_size =3D btrfs_item_size_nr(left, i);
->   		if (this_item_size + sizeof(*item) + push_space > free_space)
->   			break;
->
-> @@ -2917,8 +2911,6 @@ static noinline int __push_leaf_left(struct btrfs_=
-path *path, int data_size,
->   		nr =3D min(right_nritems - 1, max_slot);
->
->   	for (i =3D 0; i < nr; i++) {
-> -		item =3D btrfs_item_nr(i);
-> -
->   		if (!empty && push_items > 0) {
->   			if (path->slots[0] < i)
->   				break;
-> @@ -2933,7 +2925,7 @@ static noinline int __push_leaf_left(struct btrfs_=
-path *path, int data_size,
->   		if (path->slots[0] =3D=3D i)
->   			push_space +=3D data_size;
->
-> -		this_item_size =3D btrfs_item_size(right, item);
-> +		this_item_size =3D btrfs_item_size_nr(right, i);
->   		if (this_item_size + sizeof(*item) + push_space > free_space)
->   			break;
->
-> @@ -3500,8 +3492,8 @@ static noinline int split_item(struct btrfs_path *=
-path,
->   	BUG_ON(btrfs_leaf_free_space(leaf) < sizeof(struct btrfs_item));
->
->   	item =3D btrfs_item_nr(path->slots[0]);
-> -	orig_offset =3D btrfs_item_offset(leaf, item);
-> -	item_size =3D btrfs_item_size(leaf, item);
-> +	orig_offset =3D btrfs_item_offset_nr(leaf, path->slots[0]);
-> +	item_size =3D btrfs_item_size_nr(leaf, path->slots[0]);
->
->   	buf =3D kmalloc(item_size, GFP_NOFS);
->   	if (!buf)
-> diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
-> index 7721ce0c0604..7f46c42a26fa 100644
-> --- a/fs/btrfs/dir-item.c
-> +++ b/fs/btrfs/dir-item.c
-> @@ -27,7 +27,6 @@ static struct btrfs_dir_item *insert_with_overflow(str=
-uct btrfs_trans_handle
->   	struct btrfs_fs_info *fs_info =3D root->fs_info;
->   	int ret;
->   	char *ptr;
-> -	struct btrfs_item *item;
->   	struct extent_buffer *leaf;
->
->   	ret =3D btrfs_insert_empty_item(trans, root, path, cpu_key, data_size=
-);
-> @@ -41,10 +40,9 @@ static struct btrfs_dir_item *insert_with_overflow(st=
-ruct btrfs_trans_handle
->   		return ERR_PTR(ret);
->   	WARN_ON(ret > 0);
->   	leaf =3D path->nodes[0];
-> -	item =3D btrfs_item_nr(path->slots[0]);
->   	ptr =3D btrfs_item_ptr(leaf, path->slots[0], char);
-> -	BUG_ON(data_size > btrfs_item_size(leaf, item));
-> -	ptr +=3D btrfs_item_size(leaf, item) - data_size;
-> +	ASSERT(data_size <=3D btrfs_item_size_nr(leaf, path->slots[0]));
-> +	ptr +=3D btrfs_item_size_nr(leaf, path->slots[0]) - data_size;
->   	return (struct btrfs_dir_item *)ptr;
->   }
->
-> diff --git a/fs/btrfs/inode-item.c b/fs/btrfs/inode-item.c
-> index 37f36ffdaf6b..65111c484d15 100644
-> --- a/fs/btrfs/inode-item.c
-> +++ b/fs/btrfs/inode-item.c
-> @@ -256,7 +256,6 @@ static int btrfs_insert_inode_extref(struct btrfs_tr=
-ans_handle *trans,
->   	struct btrfs_path *path;
->   	struct btrfs_key key;
->   	struct extent_buffer *leaf;
-> -	struct btrfs_item *item;
->
->   	key.objectid =3D inode_objectid;
->   	key.type =3D BTRFS_INODE_EXTREF_KEY;
-> @@ -282,9 +281,8 @@ static int btrfs_insert_inode_extref(struct btrfs_tr=
-ans_handle *trans,
->   		goto out;
->
->   	leaf =3D path->nodes[0];
-> -	item =3D btrfs_item_nr(path->slots[0]);
->   	ptr =3D (unsigned long)btrfs_item_ptr(leaf, path->slots[0], char);
-> -	ptr +=3D btrfs_item_size(leaf, item) - ins_len;
-> +	ptr +=3D btrfs_item_size_nr(leaf, path->slots[0]) - ins_len;
->   	extref =3D (struct btrfs_inode_extref *)ptr;
->
->   	btrfs_set_inode_extref_name_len(path->nodes[0], extref, name_len);
-> diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-> index aae1027bd76a..52370af39afe 100644
-> --- a/fs/btrfs/print-tree.c
-> +++ b/fs/btrfs/print-tree.c
-> @@ -200,7 +200,6 @@ void btrfs_print_leaf(struct extent_buffer *l)
->   	struct btrfs_fs_info *fs_info;
->   	int i;
->   	u32 type, nr;
-> -	struct btrfs_item *item;
->   	struct btrfs_root_item *ri;
->   	struct btrfs_dir_item *di;
->   	struct btrfs_inode_item *ii;
-> @@ -224,12 +223,11 @@ void btrfs_print_leaf(struct extent_buffer *l)
->   		   btrfs_leaf_free_space(l), btrfs_header_owner(l));
->   	print_eb_refs_lock(l);
->   	for (i =3D 0 ; i < nr ; i++) {
-> -		item =3D btrfs_item_nr(i);
->   		btrfs_item_key_to_cpu(l, &key, i);
->   		type =3D key.type;
->   		pr_info("\titem %d key (%llu %u %llu) itemoff %d itemsize %d\n",
->   			i, key.objectid, type, key.offset,
-> -			btrfs_item_offset(l, item), btrfs_item_size(l, item));
-> +			btrfs_item_offset_nr(l, i), btrfs_item_size_nr(l, i));
->   		switch (type) {
->   		case BTRFS_INODE_ITEM_KEY:
->   			ii =3D btrfs_item_ptr(l, i, struct btrfs_inode_item);
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index afdcbe7844e0..e15f18dec9a6 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -886,7 +886,6 @@ static int iterate_inode_ref(struct btrfs_root *root=
-, struct btrfs_path *path,
->   			     iterate_inode_ref_t iterate, void *ctx)
->   {
->   	struct extent_buffer *eb =3D path->nodes[0];
-> -	struct btrfs_item *item;
->   	struct btrfs_inode_ref *iref;
->   	struct btrfs_inode_extref *extref;
->   	struct btrfs_path *tmp_path;
-> @@ -918,8 +917,7 @@ static int iterate_inode_ref(struct btrfs_root *root=
-, struct btrfs_path *path,
->   	if (found_key->type =3D=3D BTRFS_INODE_REF_KEY) {
->   		ptr =3D (unsigned long)btrfs_item_ptr(eb, slot,
->   						    struct btrfs_inode_ref);
-> -		item =3D btrfs_item_nr(slot);
-> -		total =3D btrfs_item_size(eb, item);
-> +		total =3D btrfs_item_size_nr(eb, slot);
->   		elem_size =3D sizeof(*iref);
->   	} else {
->   		ptr =3D btrfs_item_ptr_offset(eb, slot);
-> @@ -1006,7 +1004,6 @@ static int iterate_dir_item(struct btrfs_root *roo=
-t, struct btrfs_path *path,
->   {
->   	int ret =3D 0;
->   	struct extent_buffer *eb;
-> -	struct btrfs_item *item;
->   	struct btrfs_dir_item *di;
->   	struct btrfs_key di_key;
->   	char *buf =3D NULL;
-> @@ -1035,11 +1032,10 @@ static int iterate_dir_item(struct btrfs_root *r=
-oot, struct btrfs_path *path,
->
->   	eb =3D path->nodes[0];
->   	slot =3D path->slots[0];
-> -	item =3D btrfs_item_nr(slot);
->   	di =3D btrfs_item_ptr(eb, slot, struct btrfs_dir_item);
->   	cur =3D 0;
->   	len =3D 0;
-> -	total =3D btrfs_item_size(eb, item);
-> +	total =3D btrfs_item_size_nr(eb, slot);
->
->   	num =3D 0;
->   	while (cur < total) {
-> diff --git a/fs/btrfs/tests/extent-buffer-tests.c b/fs/btrfs/tests/exten=
-t-buffer-tests.c
-> index 2a95f7224e18..bbef99175564 100644
-> --- a/fs/btrfs/tests/extent-buffer-tests.c
-> +++ b/fs/btrfs/tests/extent-buffer-tests.c
-> @@ -15,7 +15,6 @@ static int test_btrfs_split_item(u32 sectorsize, u32 n=
-odesize)
->   	struct btrfs_path *path =3D NULL;
->   	struct btrfs_root *root =3D NULL;
->   	struct extent_buffer *eb;
-> -	struct btrfs_item *item;
->   	char *value =3D "mary had a little lamb";
->   	char *split1 =3D "mary had a little";
->   	char *split2 =3D " lamb";
-> @@ -61,7 +60,6 @@ static int test_btrfs_split_item(u32 sectorsize, u32 n=
-odesize)
->   	key.offset =3D 0;
->
->   	btrfs_setup_item_for_insert(root, path, &key, value_len);
-> -	item =3D btrfs_item_nr(0);
->   	write_extent_buffer(eb, value, btrfs_item_ptr_offset(eb, 0),
->   			    value_len);
->
-> @@ -90,8 +88,7 @@ static int test_btrfs_split_item(u32 sectorsize, u32 n=
-odesize)
->   		goto out;
->   	}
->
-> -	item =3D btrfs_item_nr(0);
-> -	if (btrfs_item_size(eb, item) !=3D strlen(split1)) {
-> +	if (btrfs_item_size_nr(eb, 0) !=3D strlen(split1)) {
->   		test_err("invalid len in the first split");
->   		ret =3D -EINVAL;
->   		goto out;
-> @@ -115,8 +112,7 @@ static int test_btrfs_split_item(u32 sectorsize, u32=
- nodesize)
->   		goto out;
->   	}
->
-> -	item =3D btrfs_item_nr(1);
-> -	if (btrfs_item_size(eb, item) !=3D strlen(split2)) {
-> +	if (btrfs_item_size_nr(eb, 1) !=3D strlen(split2)) {
->   		test_err("invalid len in the second split");
->   		ret =3D -EINVAL;
->   		goto out;
-> @@ -147,8 +143,7 @@ static int test_btrfs_split_item(u32 sectorsize, u32=
- nodesize)
->   		goto out;
->   	}
->
-> -	item =3D btrfs_item_nr(0);
-> -	if (btrfs_item_size(eb, item) !=3D strlen(split3)) {
-> +	if (btrfs_item_size_nr(eb, 0) !=3D strlen(split3)) {
->   		test_err("invalid len in the first split");
->   		ret =3D -EINVAL;
->   		goto out;
-> @@ -171,8 +166,7 @@ static int test_btrfs_split_item(u32 sectorsize, u32=
- nodesize)
->   		goto out;
->   	}
->
-> -	item =3D btrfs_item_nr(1);
-> -	if (btrfs_item_size(eb, item) !=3D strlen(split4)) {
-> +	if (btrfs_item_size_nr(eb, 1) !=3D strlen(split4)) {
->   		test_err("invalid len in the second split");
->   		ret =3D -EINVAL;
->   		goto out;
-> @@ -195,8 +189,7 @@ static int test_btrfs_split_item(u32 sectorsize, u32=
- nodesize)
->   		goto out;
->   	}
->
-> -	item =3D btrfs_item_nr(2);
-> -	if (btrfs_item_size(eb, item) !=3D strlen(split2)) {
-> +	if (btrfs_item_size_nr(eb, 2) !=3D strlen(split2)) {
->   		test_err("invalid len in the second split");
->   		ret =3D -EINVAL;
->   		goto out;
-> diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-> index 2837b4c8424d..0f04bb7f3ce4 100644
-> --- a/fs/btrfs/xattr.c
-> +++ b/fs/btrfs/xattr.c
-> @@ -170,7 +170,6 @@ int btrfs_setxattr(struct btrfs_trans_handle *trans,=
- struct inode *inode,
->   		const u16 old_data_len =3D btrfs_dir_data_len(leaf, di);
->   		const u32 item_size =3D btrfs_item_size_nr(leaf, slot);
->   		const u32 data_size =3D sizeof(*di) + name_len + size;
-> -		struct btrfs_item *item;
->   		unsigned long data_ptr;
->   		char *ptr;
->
-> @@ -196,9 +195,8 @@ int btrfs_setxattr(struct btrfs_trans_handle *trans,=
- struct inode *inode,
->   			btrfs_extend_item(path, data_size);
->   		}
->
-> -		item =3D btrfs_item_nr(slot);
->   		ptr =3D btrfs_item_ptr(leaf, slot, char);
-> -		ptr +=3D btrfs_item_size(leaf, item) - data_size;
-> +		ptr +=3D btrfs_item_size_nr(leaf, slot) - data_size;
->   		di =3D (struct btrfs_dir_item *)ptr;
->   		btrfs_set_dir_data_len(leaf, di, size);
->   		data_ptr =3D ((unsigned long)(di + 1)) + name_len;
->
