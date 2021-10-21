@@ -2,89 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4811F436115
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 14:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A52A436159
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 14:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhJUMLR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 08:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
+        id S231767AbhJUMV0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 08:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhJUMLQ (ORCPT
+        with ESMTP id S231772AbhJUMVN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:11:16 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7FFC06161C
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 05:09:01 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id i1so219476qtr.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 05:09:01 -0700 (PDT)
+        Thu, 21 Oct 2021 08:21:13 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA7AC061749
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 05:18:57 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id z69so601751iof.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 05:18:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iYV5+S8GCypJCRo6lOTdOe6JJJCQaxonClrCPF8H2/Q=;
-        b=UhgncykvM1hpVN4KIroq4VOEyVdk0wfsckEFX6ENNP9vyn1rp3H9mPoWu4rLi6jDXz
-         ki29jckkchK3UPfH8udfLwni2sMghcEni6owPrAVsdHmTVabBoqxYZ7if6v1K1RIQ+vU
-         +ND6pLL7FltoEWbqmw3HiRR2xfotg9fhhX2STvUI+onRPphIn6OqSgyJpKCSGREkNOQr
-         4NEakbR3MGFxOfWXn1Xx+NhjEcUuI9nCyu7wCo7kWcFd/voYjS1fDrl6a29UTAtBPhVJ
-         fHqcKdaz18r/Iq+QL6Xho+uM2VYFcXS3A7wNnokC0FIGZOJsP14oAnuNcMZFF4qr+44q
-         IfBw==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=G2Jq8ABcZaKAiy06d3oRm5z7XXaT0OFvg3EWPt/6AmM=;
+        b=ffKmYx2fMIYl+OvJQQopnpiCeJRTG9P9KFv8M/82NWd2iRdr6FH2GSUfX4dihVwp/4
+         j3BBt8gtfGRwriH7QaI70cXqaYxp9ZB8IdW+AAJ3XWxbhn/W/4z89PrBZ3/2rnhl+5p4
+         slIUeI/d0se+fbKVCqySusiscs7YTggdFIx/lIQo0jD9OBm3/E6HIs73TdR5+EDc4Ahn
+         Mx3oX/4Jht8hJFRtk5Rk/ZtBUnWHcvUlGjzuHFD2c3qgVHCXo5sQXMFhDt//I4s8bxor
+         0lHgZbVQWxyw1uqR2LKA3z5mNeOQjztcOBRK2nMHBotT/Ptq5yh5oJc65RUVpYj9vAKX
+         E+1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iYV5+S8GCypJCRo6lOTdOe6JJJCQaxonClrCPF8H2/Q=;
-        b=t7ooI6oyV90m796UAnCcaPfcuQTw0uG6GZfIwD01DpflFlpHrv+NdX3sUo0EfHKAQS
-         ph8oqO98m0egwyYgDTQhLHrElqXCL9y0WW8+EmpwCQ5397uIbp8QdQ9V9BaJWRvtEuwV
-         4sRWAinnhtVrn+JsOQtzo0g41mA2YQIxthRsfX2ZcG+OBrkOEE5dZruCU7VBsNDjAgWA
-         RdrKarI7UT94u68xms9gI58YoA03pL/o6rXv79906DYTwTxvr+TDUknL1FVEVnGhJVAH
-         cD78gajOHZpmP9EW5y9NNg+lC/gUSfwC9euJvKbxRRqWG/Q5pDt8mBH66sorhRZ28uZK
-         7RVQ==
-X-Gm-Message-State: AOAM530HoUZKVeyAyXRirAPSogjYiUKKv3WtSG/2s1JuPfNn30BodO3k
-        acJssdxqv5coq2k0N4yp604y3w==
-X-Google-Smtp-Source: ABdhPJyahtqPBjOHKt389eM3l/vZ9IemcnDiHBav9dpA4UNTyMsl6DGAfomTHPGVOuj84MPSolcmIg==
-X-Received: by 2002:ac8:5f4f:: with SMTP id y15mr5291976qta.326.1634818140161;
-        Thu, 21 Oct 2021 05:09:00 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id g12sm2546977qtb.3.2021.10.21.05.08.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 05:08:59 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 08:08:58 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs: make sizeof(struct btrfs_super_block) to match
- BTRFS_SUPER_INFO_SIZE
-Message-ID: <YXFYWmMghbR0gMrC@localhost.localdomain>
-References: <20211020234447.5578-1-wqu@suse.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=G2Jq8ABcZaKAiy06d3oRm5z7XXaT0OFvg3EWPt/6AmM=;
+        b=MYstaGheWa6CkIX8BL0FvI6Pk/vu9Xc/K9iWzubS23+PzntlCzrjDh0HqssoQ5ce2u
+         kPfrw6V70ivB1kwbl6EhKZB92U7vmgDJDJRMB3dls7EYP3V447cJLcDcWX91o/FFTqPv
+         neP/sWIEQ9lL2qITcP8rEX4jXiiTJG3JmQSt4v97/eoNy+y0OrvaAhHZfYmnyS0pZqY7
+         AXQfOLt25HBHs/38cYM80IVSm+cPFOjk6K2+vvIjA58JJAanw3mcpp8tSNUkF6wYtxVL
+         RowunhxNV4J073EFC9Zktc2ApdDuWaHY2z2N0SJ2m68m0eUwD++RpIn3JD8kGLW9NEsf
+         9ZcA==
+X-Gm-Message-State: AOAM533jS8H2oMIsY/AtHLXouZmaS/Wcml2lLMbKgmB3qXDsOm/aOGHu
+        3vlKvMuHI8D24j3wiT+oD4cP/bUJOHSA2s1hCRs=
+X-Google-Smtp-Source: ABdhPJy/O5GAp34/8OGCgwxgN16t4zAtUhD1QqHkZqC4kznm6N81zl7Wcf3jBmF+fUfqmk/Z+gQhgoaiTdlocMxWQvk=
+X-Received: by 2002:a05:6602:2e81:: with SMTP id m1mr3773434iow.23.1634818737372;
+ Thu, 21 Oct 2021 05:18:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211020234447.5578-1-wqu@suse.com>
+Received: by 2002:a05:6638:1924:0:0:0:0 with HTTP; Thu, 21 Oct 2021 05:18:57
+ -0700 (PDT)
+Reply-To: ooisangkuang63@gmail.com
+From:   Mr Ooi Sang Kuang <mrsshirleyperezfosgate7@gmail.com>
+Date:   Thu, 21 Oct 2021 05:18:57 -0700
+Message-ID: <CA+ynneC82om4XGpeSLLyaZ9uiZCuHkofPAtHcga0--5BW77aFA@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 07:44:47AM +0800, Qu Wenruo wrote:
-> It's a common practice to avoid use sizeof(struct btrfs_super_block)
-> (3531), but to use BTRFS_SUPER_INFO_SIZE (4096).
-> 
-> The problem is that, sizeof(struct btrfs_super_block) doesn't match
-> BTRFS_SUPER_INFO_SIZE from the very beginning.
-> 
-> Furthermore, for all call sites except selftest, we always allocate
-> BTRFS_SUPER_INFO_SIZE space for btrfs super block, there isn't any real
-> reason to use the smaller value, and it doesn't really save any space.
-> 
-> So let's get rid of such confusing behavior, and unify those two values.
-> 
-> This modification also adds a new static_assert() to verify the size,
-> and moves the BTRFS_SUPER_INFO_* macros to the definition of
-> btrfs_super_block for the static_assert().
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+-- 
+Hello,
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+I want to discuss an important project issue with you.
+Please, let me know if this email is valid. Reply me at ooisangkuang63@gmail.com
 
-Thanks,
-
-Josef
+Thank you,
+Mr Ooi Sang Kuang
