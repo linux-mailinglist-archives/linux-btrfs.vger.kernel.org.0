@@ -2,208 +2,163 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE95435D6A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 10:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD2E435DC4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 11:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbhJUI6T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 04:58:19 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:30616 "EHLO
+        id S231334AbhJUJTs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 05:19:48 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:35254 "EHLO
         mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230269AbhJUI6S (ORCPT
+        by vger.kernel.org with ESMTP id S230440AbhJUJTn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Oct 2021 04:58:18 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L7Tq3a016734;
-        Thu, 21 Oct 2021 08:55:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : from : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=kXjsGEoGCHvniNmdMjF2NGq8Kn/OBlgksSahQqIyqMM=;
- b=o4gFlVRPC8f1qGkQd/3tp0PPg0veu60J0+VWLWDkq8S3CJL0IZiH+mqGODwQ4DpsqenB
- al3tES+9qCrVZ5boDIpwBsEtIX+jjIIUUzfji67p2aw5Z80BOvs2qdQ4CEZDBUhSM50R
- DslNhvE+korCFCd4LLFv7SUcqP0avdfarSABGkmqyhXTrrTL7H1ynPngjmaABt+EZKNi
- 8LbI3/6fCgbT76ouU0lzpfkUT/oz8KbwCaFRlW/ZjWVo0n44eM6Qw1ZADRpE9v9nZMm7
- 0mmWcSZgbrddGmOqcJwLpu+4xWobnltv9mR4sU5EXLeccnf6i6/1rwmitGHcbcCK25KA gg== 
+        Thu, 21 Oct 2021 05:19:43 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L93ekc013134;
+        Thu, 21 Oct 2021 09:17:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=VCx+o4cEtpdyXBQQAtUbdF5IX6hl4POQ+/uhnUlxctw=;
+ b=e8KVFCn12A9odC+8q3tEV/byvP2Q0OZoNGvf2BoQMC/IkJKWnkNarvKMn3f5zH1Noypo
+ Td+9ofsZZkzb5AzgH1UEOH8s9U85afPsqXcHZiHcoS/le5f6PD90X1UyOhZq2hJAXjZ7
+ chyj/UO1HWiAcQOpPb1ZIah+oNrpUlzvhEoJe4jUDFVIcZZXki2uqpILtGkk2XImPfUB
+ Vs3QPKyyBLSdFB8Vly16s0KpAVgonVcfLQARagV0cNlcmHdbreKBz7A1lffmi0CqL86V
+ ztw+iQE++/jvQKMM87pStnomOHdFL8nJFzU3DA1MesjEKuJ7UXVb7zvSd9UlmHZcPSWo Sw== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3btkwj52ce-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3btkx9wkw2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Oct 2021 08:55:56 +0000
+        Thu, 21 Oct 2021 09:17:26 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19L8ou3T124799;
-        Thu, 21 Oct 2021 08:55:53 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104])
-        by aserp3030.oracle.com with ESMTP id 3bqmshsfqj-1
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19L9AsAi010104;
+        Thu, 21 Oct 2021 09:17:25 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2044.outbound.protection.outlook.com [104.47.56.44])
+        by aserp3030.oracle.com with ESMTP id 3bqmsht9qe-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 21 Oct 2021 08:55:53 +0000
+        Thu, 21 Oct 2021 09:17:25 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WtWmpJ/YBGxXJJN9xlbif3KgW40sbDbVonh25vi/fBRFSWwc6/rRF5iN8MeuyAsG6t5BH5469GgLNUI9zs6aICaDTfA/AuDK71zKAow5513LZk2d95BGKfGhcdTSf+ddSDi0Cp7d9s8e77VTyv7qwSnen4Kt/pVfWCcRV3WMn+kdHhIL/4pRrzQuP1bhxvF8zMiQONk3jrmnRQh5vqYSyuoobA6S1zxbeu49w1hqLGUj/ERmQXI3JdspCoH2NaEMKk9B82OJflDxfqz9BAtkR4dv08TCqoOJMERFJd2Gg/afYdzfC99ft+1GUnhirm+I51jX8wd6tGS92TvG3btezg==
+ b=Vc3DFkNtxxNt2/aPAat7Q9MBpgUCz7F/qgtHyDIUCtEL7FUyqxPt9Uo69pdZxmWSv9fmTGUuPIDjaaaTVk1TN+ddf0lxFku2TA+BctTc7HKQNcMbdAarNAYgdMK8VIyDsfczQtXhyxbVWWxH+r55OnrPXcbg+Awywo1xT0RhjjC+SQyb2GDntH5Hn1wixaeomc/MvtLeg9HzUMh+dmMb7eozVWUp9WIIbLSK9wYffiPCusOWLFx+6bIdPMC25ChtxV5HMFHSx84jKY8PFcZUpTYg8708sRttVEJZM0n73P/b5uMn9rlby0K4hnuUKv5k4QNHOiBTm2KhfRqvZDHBNw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kXjsGEoGCHvniNmdMjF2NGq8Kn/OBlgksSahQqIyqMM=;
- b=DKdcm7RjPFn9WiXvh3hk8sBW2N4Oh6NWDT0pKRe5H7c9D3i/qyzdWocHcfIZC9eNRZbhp43vfJJiiYuvIoGCs0kdVrMTnKuKo3aInk+gv0Dcm6lptu59fr3oj4aE+uhoT7vAb1RxAKDNSiYcK/qNiZuvOY/UYFZrIBEpFqnGn2zwD+k6gXb6LQeDegI0Eqh5xjnvdFLDjUsJDGZQTqAMOM6olmqKKSOBtL4YZ/IKgptAJwCQduEadFYum1lo1WYIuWP/6HD0GNGSvZhcKk4c4ZiHNuykxxnK4vI97vTuYkYTwiV5m0TOHm7+YM4Uaq3flP8r0p2mj/pmLIyKdX8HOA==
+ bh=VCx+o4cEtpdyXBQQAtUbdF5IX6hl4POQ+/uhnUlxctw=;
+ b=AvT6VriwLYBY4vFHB6N/GMIjOfg/QGPbrIFlePCg/0U06hhbKAAe5SAWkFpCxPg0ePSlPBd6b7iQcCAbVlYu28mNoN9EFqfxNK6cZ7dZsQuib/Dlat1+SNv8FF0wNyaMyvJHa/NKXhlW8NjKEI+tYM9USK6MnWJidG1s8IlT/lEVb9Jp8anoz0KR1NzXiAHex085U4nNdYKoXT/RSoi4QpAWwpUCxoFE67tbYJccdwm32FoODJ9PXQ7KQHbKeWqZVHI4TcrkvPxwBNQfvnov1Fl5Jlvu5BomRpdPaSI6p4/Q0THrpQf2wQ/KOVAf5UxOI1YfH1/3VCdPjggycn6bhA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kXjsGEoGCHvniNmdMjF2NGq8Kn/OBlgksSahQqIyqMM=;
- b=OngF1RTWFWMvFZtJctaKrVJUpHyiPqICx82GNM1t+Q426Q4UA5ITm7zQ7cEDL24M8lguszr/P6LGZVRwmKARNl3w1HKOajIFddu3/KdMI+Waj3Rr1OkvO1QuM0So1crh9+dUqytBJk7Voh+/fnpwC2au++UYSN9OjhKkm7/knP0=
-Authentication-Results: suse.cz; dkim=none (message not signed)
- header.d=none;suse.cz; dmarc=none action=none header.from=oracle.com;
+ bh=VCx+o4cEtpdyXBQQAtUbdF5IX6hl4POQ+/uhnUlxctw=;
+ b=aGABcoi8cbu4GONfgmmFz6Pv2nYHGrg6JbAXAu8/6SRwsEOhQmIsSFQXNvQ25BB3hwiokvzMcVfyBB/MyowyMoJzRbIDEZh4wdtT5xRVIbKyWX5AGFcPgcQH4v9+pdBkkBsmkz4WFbeQuHEJtyChbAb1QqGVco4vUAHjtzwq8ik=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4239.namprd10.prod.outlook.com (2603:10b6:208:1d5::23) with
+ by MN2PR10MB4287.namprd10.prod.outlook.com (2603:10b6:208:1da::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16; Thu, 21 Oct
- 2021 08:55:52 +0000
+ 2021 09:17:23 +0000
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4608.018; Thu, 21 Oct 2021
- 08:55:52 +0000
-Message-ID: <616b83ff-8320-185e-1c8b-a8a0ebe77e8f@oracle.com>
-Date:   Thu, 21 Oct 2021 16:55:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 2/2] btrfs: sysfs add devinfo/fsid to retrieve fsid from
- the device
-Content-Language: en-US
+ 09:17:23 +0000
 From:   Anand Jain <anand.jain@oracle.com>
-To:     dsterba@suse.cz
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
-References: <cover.1634598572.git.anand.jain@oracle.com>
- <7df68f272490c55349b44a33dd7ac19ccf87560f.1634598572.git.anand.jain@oracle.com>
- <20211020185929.GC30611@twin.jikos.cz>
- <12503a1b-a28f-cc26-f07d-0914d6952207@oracle.com>
-In-Reply-To: <12503a1b-a28f-cc26-f07d-0914d6952207@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com
+Subject: [PATCH v2 0/3] fstests: btrfs validate sysfs fsid and usage
+Date:   Thu, 21 Oct 2021 17:17:03 +0800
+Message-Id: <cover.1634807378.git.anand.jain@oracle.com>
+X-Mailer: git-send-email 2.31.1
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR03CA0136.apcprd03.prod.outlook.com (2603:1096:4:c8::9)
- To MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+Content-Type: text/plain
+X-ClientProxiedBy: SI2P153CA0015.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::21) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Received: from [192.168.10.100] (39.109.140.76) by SG2PR03CA0136.apcprd03.prod.outlook.com (2603:1096:4:c8::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.13 via Frontend Transport; Thu, 21 Oct 2021 08:55:50 +0000
+Received: from localhost.localdomain (39.109.140.76) by SI2P153CA0015.APCP153.PROD.OUTLOOK.COM (2603:1096:4:140::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.8 via Frontend Transport; Thu, 21 Oct 2021 09:17:21 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b17edd5d-661e-492b-f56f-08d99470954b
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4239:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4239C6848173701F575478C2E5BF9@MN2PR10MB4239.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 1868097c-34b1-400c-f6cf-08d99473974b
+X-MS-TrafficTypeDiagnostic: MN2PR10MB4287:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB4287AEDEEAE7A777EE09F407E5BF9@MN2PR10MB4287.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GRu/9BXGa4Jn/snsdF50Q3yMZZZxjv0FFE7BHxLEcz4mX1HIErfsiBgZrBJwTHkPPcSsAGGapH/kAYMzruL2T/QYNdddjcOcS1W5CiBOj/pp4xtmzNOb9+6gSIYRENpwd4r4EQHF60pcecsc829rCB4zQj8luEJC68cFyrrAwl8cJYctapSWorA3yYKVlQHyfI+7d+4oW0cGgF6dvhKVAunwxLcDnM/IEwbrAVxMBqU4S9yZApxg5o4p2h67w/YQ2XsiFqV/vaG6km/bgl7h+xlWlSa5RFqDbdvyPkU36QHM2sImFP5fgvD9YPGSBwnqZvhRxm9pSoletC7QaOEALdrJD/8bkKcDV56HWgMw2j7kmhQDhVdoZYZ07JgtdcnjP7H674UkzM24cksrCPgv+YQ1OnWkSkLHHJ81k0tQa+jGyXdmI5ySvk5+RjsV767I5RCJKrxcAlxNAL1sKX7sVgIv/GYfaeuLgsMZawdbsr7EY1FRt+Q+kcVGd7Tzp1h+bjKBdn22ykeNR5+QGFkmck1YB6YaK2Th3cLtPv0c/Gb9iAxCuxJs1N/6ysOnqeaypdsR3wwIc3y45y+UXvlncMSuRYgaiVxLWIr9nnsiH7xTXOdGfXDTXIKNDmE0PtqNPeyayZEFj7buHtaAXVrO+bVVqd0CmiJnzRHOm9G1SfnZq2QpN7IYKGw1aRTaa6LE3xJgtiI0g7R4I2EZhFrFa878b/90+uj0OFev444b5wk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(508600001)(66556008)(6916009)(83380400001)(66476007)(53546011)(66946007)(4326008)(6486002)(956004)(2906002)(6666004)(26005)(16576012)(5660300002)(8936002)(186003)(44832011)(31686004)(36756003)(2616005)(86362001)(8676002)(316002)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: xFodMVKdP8RbGugTAgodG3XYBAcB5y2ApLwdErjdGF8Wcb3NENq79mNBr9UG3E1BpjNHm7tXXdBCbrR0u9oxYzDppx0gIqdyBiOqB8eBjsLTwUJIgQQJyD2fgwLnp3Qo+m4B3j66M2XVaW0s9gCesgnmFOPSYKLYGslGGZSm7AJUyXxSbQF6+DtvZHDIrSsetBYdC7cG+fCSXeFYxU4aZAudy+iLCtzmY0Bn99bsoENaUIRopV8NE0U4F4h4YIVkkkIzdd+AOe6sHQfpRvwEnmrJIGVgnpW6X7QKFOcFr2LnffuJNS4SrB248GY0nJF0ChShgRZNVxTivDyiH8Ica2gABDnTSgVYwUR8gE14LAjHW6rjIOfo7lBNzB0wuPULpAKevLizGmXP2OO1LRYGKe7bWGUuO2rr4tmFfCD9qJbTGd8151VmLs69Bnqv01pq2HdOU+R+mZGrOjvzihyh1fhZZB0b686cyoIyEOCC+aHPbB91XA3TUnc50E2iXr0foqdZgawflTewhNkQ++b/fW2KQ8yVLludqahn+kA5UYq5/zAGlfbPXcuS7zvqM1bWOo/KywaCAWqJ5/BVP5Wr8y0jFaNPkqBKr03EZoqWB0ZEA3ytSs4LP/YBJsQur7vtA8e5iuf5936AUToaopzqisyFMdBzCp/1q79TnjeaB44xPhDEJxXU4gE21zEXWoMO/Uaqq7A37Vla6Ahy5DLXAw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52116002)(66946007)(508600001)(66476007)(38350700002)(186003)(36756003)(83380400001)(66556008)(15650500001)(5660300002)(8676002)(86362001)(6506007)(2906002)(4326008)(8936002)(6666004)(6512007)(316002)(2616005)(38100700002)(44832011)(26005)(6486002)(6916009)(4744005)(956004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S3RHMGp4c1g3cnFqNkZOMjI3VkFoMUJMdnYwVGJaUnRRSTR2WjJTczhkTlVt?=
- =?utf-8?B?NEdXSG85NVlqTjN2OVovN1k3N2pwYnl5WElHZ0hldS9rTE51YjlESitNeklh?=
- =?utf-8?B?cVZ5MDBESlRxQ3FPZC9OUVVhdzJudW85NGJtM2hpRllJT05TQVNWN3VMNjVh?=
- =?utf-8?B?dkZtNG1ZZ05sUk9zN1B3dm1INE1qVnIrVm9mYlBDcWFLOE80V01FSFhUVlMz?=
- =?utf-8?B?MFhjOW84bUhqc1p4VmpTZU8zTGxkRU9RVkh6R1ZSMzdGb1FYV0lBUVQxazkr?=
- =?utf-8?B?c2twU0JoZmZHL1F3Nm9EQllnM2t2UisxMEF0MVFTTFI0cVdvUWVVVktnMWZ5?=
- =?utf-8?B?MUxMeGwwemdrMy9XRGMvVlNjSTk4dW5Ld29KWmZsUEZOWkp6NHF4Ty9QNTg2?=
- =?utf-8?B?eWlpbm1MbFVSNDZWVU5GVzdEVVJHWTNJVVVqYWlENm5LaE9WQUhLVjVoWUpU?=
- =?utf-8?B?cGpFL09aZHJxQzBGN1V1ZXgxdmFOSDlZM1RCdGdZY0pEYk10RkJsaitZSTYw?=
- =?utf-8?B?c3hvQ3prMkVNWElUdFZVSm1EdW9tRGpTQWlyRFdpUUp0Rkg4SytiRDZOMUVH?=
- =?utf-8?B?WHhZZFd2aTMxNEdBaFlVcGdKbFpPVkNMQ2pNQnFpL0NyUXp5MTZWLzlhUjZa?=
- =?utf-8?B?OW5vbGlIcGdHTkROUWdpWHRHMUNLN2VOM3YvWlFIdTRlNlFiRy8zclhLUFkw?=
- =?utf-8?B?NHF3ZEtVWG1GTjlidlhLSkkxM3dDcExVVjlzTGhYMEg5UFV1dmh3TzlrOTB2?=
- =?utf-8?B?cUhwNU1oSGZ4cVZHNVpFaGtRTVF3UFNZbHpQdkNMR0hYL0taR2F2dVFmWFNv?=
- =?utf-8?B?OGpYQWdBZjkwSTA5ZE9BMHErRFE4NXpRWUNPWUpDZVp4KzhPS1FCY1ZnRy84?=
- =?utf-8?B?TXE2OUEzcDRNWVkxT21rajVTYU1zVHFoQjhveFVDeGlIdXpqTHJPNE1CNkhO?=
- =?utf-8?B?bWtSK2VrMFhWOHdBUUVqUG4yakJIcWZEZHpqbnJRVDRKWGpsZTlMUUlZdTJr?=
- =?utf-8?B?d3VMZGNLK2c0RlAydnVsVUZjdnB3U2JlRnpXMVBrT2RSK3A5TVVNdFJwL2JN?=
- =?utf-8?B?L0FQZk1LbWFNZ2tCcDFRdkpZMUdrNGRBNEduTXJjSHNvc0lBTVFMa3NqL2lG?=
- =?utf-8?B?aTNWRUVNeXd1R2dRaXRnMEhaTTQ3RUpzOWFpcjg2b1grdDZIN3BGUm5JMy9v?=
- =?utf-8?B?UkEyMUFGSlArYkduT2R4U28ycGZieWxsUGViTGM2MVNmSWZlU2RuMElKMjNh?=
- =?utf-8?B?MnZLcExiaU1lbkhubGR2eEViY2xWYkZFRHFxNWRmcTBOZllyVVdDU0FMd0Z0?=
- =?utf-8?B?S0czY0tyMEM2Vm5FOWM4ampXcEhLbUxNb1MweTRxNjZCZ0lOR3F0eUlQeU5s?=
- =?utf-8?B?Z0wrVWNWK0NzbE1RU0pxWmp3cjc2M1dFV211V0hGbjhNSTUzY1dxUDdYRmhJ?=
- =?utf-8?B?VlN0TVlNNHFiRlUvUm5LS1J5TFJ0OFRuRkVUdGpvcUM3U3FrVWsrNmkrdHRE?=
- =?utf-8?B?Mm5rbFlVNUN1cHZ3L2h3dGpSNnpvQkdmRnB5bnlSa0Uyc2RGb3V4ZElLajZz?=
- =?utf-8?B?WEJubTJwaTlIMHd3V0tDd3pDZC9GQ0NPV2JOOUYrdVNPcDg0NzN0bXdMOEsr?=
- =?utf-8?B?S25ISnh5UmNvQ1RVWUdzSzJsM0ZpZm5MTUhsc1JwRFdRZGZLczVDOXdER3ZF?=
- =?utf-8?B?TzlVQ0Y3MGF0eHMzMm8rTnR1TDBPZjE5MThpYkZvaEV4STl0eldpUUpPTGRm?=
- =?utf-8?B?MnQ0dldZd0ZQMlIwSWRQVGd2NzBvNUZQVHpUbk1wZ2p2Tzg0ZnNENGJqbC9B?=
- =?utf-8?B?OFBCVjN1bCtZWUQrdnpnSVJUT0dyaDlHKzR6Yis1VFdvTGVyR0FWdjlKeFZ4?=
- =?utf-8?B?TVllMFVEY3ZGTExaRVBpZzd0eDVPQUxqQndMNUFuUDVGV0NNaFpLUGZBK3N2?=
- =?utf-8?Q?baptljqrISk=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ooi3kcNbFpWXwAJW1kut4zAATKAccrOYKj2+DvV5ZYgmmKFCRi+Nx9CT4c8i?=
+ =?us-ascii?Q?He1Rsi9uSgXNAdHXByJuYFN+Llh24o2oFls8eiTPGPdbNKEfs0tmIh9IhjMx?=
+ =?us-ascii?Q?i49zoRlkaYIWFrXxpSxSl4Gxh7LLa+ijmsrGiAq4PmIFJDxrC+8r0TIyAOsY?=
+ =?us-ascii?Q?c7ZhVtLFBi16kOFLQvjAoiBY3VlQVsP6QHknSFKV7Zexsp88sW4SRkBrXRym?=
+ =?us-ascii?Q?mdllqQzN2lgC3ZPniSgMDsx8oYMNZohwJPH8VS3tVJhiozGLTPmSUcECOkUe?=
+ =?us-ascii?Q?18hHkHKDhj+/AdDpYT8vTIp8jApoXU2G0h4isYZqB6JCsIt5VD9iEg28F/42?=
+ =?us-ascii?Q?YwIG/1oZP1GjNC1bx3gz5qFDXy8PtVnFXyeDHQn00trgovcPUKF01auSbmX+?=
+ =?us-ascii?Q?iIHl2+aSCBj+FT+vS3sB2Ii214nZ2MUtQTr+W9VDLKSfwMXWfCWaJ4/F94sC?=
+ =?us-ascii?Q?K/emagoDJ/I4UVW0NUGMYbP/ucNNYHzVxRpO8YHQsm8JQrnHJtBb1rn5amo+?=
+ =?us-ascii?Q?GKHooxltR4nV0k7az2R+r381Q2fQH1eksTOPhTWxazqKMGIgbysAQ4GlZ5XW?=
+ =?us-ascii?Q?58D6vaAPtzvBeLxuGpC1DvSZ+BiDkU15a9RePi9NdHWfZOw5nh/Ea9TUvn4J?=
+ =?us-ascii?Q?H8fq9lovhkHO4P+8WWtmfDTU0NgG0y8QoA6m/49G8XwtjiSushXl7xpI106K?=
+ =?us-ascii?Q?SsoIOKpIKxG5xKe094yH3H8m2ijbXBBkwA7xjT/OUoapyZixjdhe/c2BX0RS?=
+ =?us-ascii?Q?aXJy0qbmZHTRU1DRS3ciXeDyWCwE1bV7GqCJYSuCvnXrUR9ICdvbqGY5zcf9?=
+ =?us-ascii?Q?ejzV9uMBfcVEm3KkBIhIp534cwwaImP7kkFTJaoj97iG0Xm6NlIzXkOcnr2R?=
+ =?us-ascii?Q?o6S7yjMrGGeJAegfk4KE3gkerdQDqzY4Rmna6xtRN5Hu+y3s8cI0ixNzMGaV?=
+ =?us-ascii?Q?3XfOrwQHETL1eOWe0eFbTRjnB3kCn5+ckgICoEcyvoJHnOXWE86bUrVsfq4j?=
+ =?us-ascii?Q?ZVJjT6ec3EgxiVQhtU2qvfyXGwz8N50cqvDKS6cMS7JOL4SvrIlUWoZk8oQ4?=
+ =?us-ascii?Q?4vPJ0oT9KjiNZNQocbMKoYsUESDR97VrGg8OpL9y95i/bF/fYNpokldM/rJd?=
+ =?us-ascii?Q?FPG3tOssiIEtiq7pD/xqhpzxwh9mRieSVQesFjsq5qjpVSaQ8rk/yXoA2jcM?=
+ =?us-ascii?Q?sCacysXITsth3Esce2BN+U85MNbivHjv6dt9tj/tE9OZC4110yDBxinr6mFF?=
+ =?us-ascii?Q?GLP8ZTPUglqjXtU+eYc75BChflBQHyDaBWqxpZ/sZTWwv6t5URl0OqNFl9OE?=
+ =?us-ascii?Q?5EhoNUjpalExyTXKgNa8mukY/xgnxP4ZGnn1it/6UKwa1KaIIHcvLlwmAQgt?=
+ =?us-ascii?Q?E39+jLii23bQ/on7O3DnBW6NUvphH1vG9PCTXu1B1z/7IGNQEMMAP/KLmwQP?=
+ =?us-ascii?Q?k76FQ6rh+PR75svFGzs4clUiMgxSSH0/?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b17edd5d-661e-492b-f56f-08d99470954b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1868097c-34b1-400c-f6cf-08d99473974b
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 08:55:51.9970
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 09:17:23.3887
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
 X-MS-Exchange-CrossTenant-UserPrincipalName: anand.jain@oracle.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4239
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4287
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10143 signatures=668683
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 mlxlogscore=673 bulkscore=0 suspectscore=0 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110210043
-X-Proofpoint-ORIG-GUID: rjDnKrTW_PmI-kLL_g1aWRUQe4FQOn6r
-X-Proofpoint-GUID: rjDnKrTW_PmI-kLL_g1aWRUQe4FQOn6r
+ definitions=main-2110210046
+X-Proofpoint-ORIG-GUID: qG8-s5geI4QgR5mYbcfGHyJDeRsfG9u_
+X-Proofpoint-GUID: qG8-s5geI4QgR5mYbcfGHyJDeRsfG9u_
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+v2:
+Add more debug log to the _fail per Josef's comment in patch 3.
+Add Josef RB to all patches.
 
+---- original cover letter ----
+Patch 1 adds a helper to check if the kernel is latest enough to provide
+the fsid from the sysfs.
+Patch 2 validates the sysfs fsid against the fsid from the sb
+Patch 3 is a test case to make sure if the btrfs filesystem usage is
+successful on a sprout filesystem with a seed device missing.
 
-On 21/10/2021 12:03, Anand Jain wrote:
-> On 21/10/2021 02:59, David Sterba wrote:
->> On Tue, Oct 19, 2021 at 08:22:10AM +0800, Anand Jain wrote:
->>> In the case of the seed device, the fsid can be different from the 
->>> mounted
->>> sprout fsid.  The userland has to read the device superblock to know the
->>> fsid but, that idea fails if the device is missing. So add a sysfs
->>> interface devinfo/<devid>/fsid to show the fsid of the device.
->>>
->>> For example:
->>>   $ cd /sys/fs/btrfs/b10b02a5-f9de-4276-b9e8-2bfd09a578a8
->>>
->>>   $ cat devinfo/1/fsid
->>>   c44d771f-639d-4df3-99ec-5bc7ad2af93b
->>>   $ cat  devinfo/3/fsid
->>>   b10b02a5-f9de-4276-b9e8-2bfd09a578a8
->>
->> How do you create such setup? I can't reproduce it.
->>
->> The simplest seeding:
->>
->>    mkfs.btrfs /dev/sdx
->>    btrfstune -S 1 /dev/sdx
->>    mount /dev/sdx mnt
->>    ... the device has the same FSID as is the sysfs directory name
->>
->> With a new device and removed the seeding one:
->>
->>    btrfs device add /dev/sdy mnt
-> 
-> At this step, we generate a new fsid for the writeable FS. Let's call
-> it sprout-fsid. (If you check the sys-fs fsid, you will have two fsid
-> here).
-> 
-> Also, at this step,
-> the
->      fs_info->fs_devices->fsid
-> changes from seed-fsid to the sprout-fsid.
-> So, we should make the <mnt> also a writeable without the need to call
-> 'remount,rw' explicitly IMO. What do you think?
-> 
+Anand Jain (3):
+  common/btrfs: add _require_btrfs_sysfs_fsid helper
+  btrfs/248: validate sysfs fsid
+  btrfs/249: test btrfs filesystem usage command on missing seed device
 
-More importantly, the fs_info->super_copy is of sprout device.
-So there isn't any reason that we should maintain the new
-sprout fs as readonly after the device add.
+ common/btrfs        | 14 ++++++++++
+ tests/btrfs/248     | 66 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/248.out |  2 ++
+ tests/btrfs/249     | 67 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/249.out |  2 ++
+ 5 files changed, 151 insertions(+)
+ create mode 100755 tests/btrfs/248
+ create mode 100644 tests/btrfs/248.out
+ create mode 100755 tests/btrfs/249
+ create mode 100644 tests/btrfs/249.out
 
-
->>    mount -o remount,rw mnt
->>    btrfs device delete /dev/sdx mnt
->>    ... both devices have the same fsid as well 
-> 
-> 
-> Thanks, Anand
-> 
-> 
-> 
-> 
+-- 
+2.31.1
