@@ -2,258 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666BD43585C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 03:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633724359B5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 06:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhJUBnC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Oct 2021 21:43:02 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40630 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhJUBm6 (ORCPT
+        id S229595AbhJUEGR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 00:06:17 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:47548 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229499AbhJUEGR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Oct 2021 21:42:58 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 433E01FD53
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 01:40:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634780442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uytcuDf2jgKbf35Jk/4YwocSd5tFooo7j4sskr+WIJQ=;
-        b=lND2tHiKVBJ1JQ/7OrsK+ZbSz9ljvh5rr2zV+jwoKOuAtKiIYpETowveB2Q1ILMR7TKYVz
-        scP4qfK7h9NdzTEdqLvXk6wZRRP6v0ONXcWniGxfipf/6Hq+abd9S+1re2sAxxxFD6ofZK
-        kFzFJXV/R7a/a8w7CWd42BZboZ+Otn0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FC6F13F8A
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 01:40:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MDvZFRnFcGFYIQAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 01:40:41 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs-progs: cache csum_size and csum_type in btrfs_fs_info
-Date:   Thu, 21 Oct 2021 09:40:20 +0800
-Message-Id: <20211021014020.482242-4-wqu@suse.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211021014020.482242-1-wqu@suse.com>
-References: <20211021014020.482242-1-wqu@suse.com>
+        Thu, 21 Oct 2021 00:06:17 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19L3pf2Z025822;
+        Thu, 21 Oct 2021 04:03:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : cc : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=ZZqyUUosUIUi9v0arpGFaayDjjFYOKJIbWjlsGvSDa4=;
+ b=iZScvMQkynf7Nplfl8T6hm/w/qCOxYsOq5lzj/pISKmeAdsaNTQm44mNcPpJDOQykps5
+ 11IBM8jOQeKDv4WzEkpgYfGoPh0ObmG5scPRzJ5HunZrMj+qADhlCDywqBtOYFPvLaGB
+ HO0M7mHF3k1r4w8IG3X1eSNMYQnZQxHGn/VQ3j+0hx0e70jQDKrwLSxxu3MWHZW9x0ES
+ XT1BypXeEKAjiXdXJlmZDnds215rEdcoTGMUadKiTLXmHUOHf3IoOKL0NMQItmKXVKFB
+ ISDhMC/fxSRoLf+DVJdFNKkbRBl3EsvQcT/bnNF3p2t1+jRAWhWVhyLyOxos4qzjQNu6 og== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3btrfm2ave-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 04:03:57 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19L41c0E043449;
+        Thu, 21 Oct 2021 04:03:56 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by userp3030.oracle.com with ESMTP id 3bqkv14vg8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Oct 2021 04:03:56 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mHkKVVyHOB2vnIbwyRqygAH59P5hOmKtIGqhjGvrXj3gt7QZsQ9E853KkGHDLPdIh4mVCRxRS9YRsu4lsNdgLR+4fOS1gBUTc/3XfVl84pg9kvpFAWKR/bbKSruFplcj3Sn70KenueyxYZ0Bpel+iq5kvAijihml03o4ptgZGHWOmT1pMkQ0D49I51NiRiTa/ugKbBD8SB4c0pM4a7lcuBO1+93zLQpDyeT4i5yT+Ru6EmzRbqVvuhAcng427Rz4lU23YP3y0MvOZr6gLzHAZuaGTJqBtNC7JqZWfia7h7kWRa7m92MvkGs8z7voOwLGVtAfWa2bq7syfHQKd9Rlwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZZqyUUosUIUi9v0arpGFaayDjjFYOKJIbWjlsGvSDa4=;
+ b=OsB45mgejkg7AqnqiWFaIX/SDfRMNxfMXr6emz8n7iCaHTZKoDjPms4f5wrFGIvfTJBcWCv8snpMoFEo4vGI8rcMzqngDN/OO69eoVX6BpA14LZpi96pPeT63Sxryp10PPr258uUMshdAEwYXrsdP0lV9yf8v2B125Ncy3pgeWj/8vT1trNRBDLlkOpGZBXLpGSsevTj0QiMyhgoaBnGyAvZ4d+5YWwHv2ujHzOJyfLvq7s4FJzFfFj5LUzH6IucZzpJJNG39ozuuq6TT0Xgq/0LE+VzrrEjQyitecPM+KuWfC6ftBd6w/55q8Y+KNb78wUQwVQuvfMWJTBCu9l32w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZZqyUUosUIUi9v0arpGFaayDjjFYOKJIbWjlsGvSDa4=;
+ b=YPzSsT1VoeSjmOUDirxJy49yurf7qLMxafEhRThHj58nsTPWVXsjNfSvLRrFoYjj+x6jZhj7O71JL4JrrPpjb2uDrKFTYhQU6vpwFR6MWduvggmS4XOTtPGKe71zIuW6NtFqYchK09bUd6VenLsckTC7WeApObofA1CHk9++9TM=
+Authentication-Results: suse.cz; dkim=none (message not signed)
+ header.d=none;suse.cz; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by MN2PR10MB3903.namprd10.prod.outlook.com (2603:10b6:208:181::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.18; Thu, 21 Oct
+ 2021 04:03:54 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4608.018; Thu, 21 Oct 2021
+ 04:03:53 +0000
+Message-ID: <12503a1b-a28f-cc26-f07d-0914d6952207@oracle.com>
+Date:   Thu, 21 Oct 2021 12:03:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 2/2] btrfs: sysfs add devinfo/fsid to retrieve fsid from
+ the device
+Content-Language: en-US
+To:     dsterba@suse.cz
+References: <cover.1634598572.git.anand.jain@oracle.com>
+ <7df68f272490c55349b44a33dd7ac19ccf87560f.1634598572.git.anand.jain@oracle.com>
+ <20211020185929.GC30611@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
+In-Reply-To: <20211020185929.GC30611@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR02CA0045.apcprd02.prod.outlook.com
+ (2603:1096:4:196::21) To MN2PR10MB4128.namprd10.prod.outlook.com
+ (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from [192.168.10.100] (39.109.140.76) by SI2PR02CA0045.apcprd02.prod.outlook.com (2603:1096:4:196::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.16 via Frontend Transport; Thu, 21 Oct 2021 04:03:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fecd0c7b-4cba-4df4-c881-08d99447cc16
+X-MS-TrafficTypeDiagnostic: MN2PR10MB3903:
+X-Microsoft-Antispam-PRVS: <MN2PR10MB39034CE81B765AE01861BFDCE5BF9@MN2PR10MB3903.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iwBuB6Us824qpYuSWZJEY085A/O9+XFoHATwRw+OEU08mo8FDoQNIekAt7jG4IuI9RLDJL77EQDhVn7GjqiF6YgaunRtwbTznTUo0pCETe+FPZ2rktFYUP0GpUGVlsUyBuUnNt4l3UUugPBtbB66XN3MO3jgj2cCH1LHhyBQt8tWM18KqUxCxueZ6UDrSifkDEfkXXJVypS5zW5d1ua94zrZU0NEIKZk9Ej/R8oGmgXDy3QS3Yr1vi5O8YbZar/Pf+tAyPCPOeY1u9TDuobnkGn+Zuu+uznpxYzhtRvEOqSzt4CYVs/P811YiO5t7OAUfURrvnt92AshiGpPe08pCOO7HtaiHaiC27DnEZJcFSitMbADOgInDGDlF41DaP01Id5BVm9NKKWimUCRgSfu1VR264P0ppiZ/9xfaDzyDzBGhcqmj88tf+aHwxQw411p1DS1E1RZcDaHFaaBoL5eGuNPqloXIrthRAVHNTkdGmFrpgjC1AMf6GHNhhrl8rgSacEKqdqafadTzOc1/eKEiwBkO7I/YegfFrISyKW4Nu34Z4/4wqsJgUkBMSfkjQH53QUYcjh2c05g0jmSbLlCmppEnGRYON6zBpzaOiE2tGjFnPhfyg3EF4EQy6xCqrcReVMGDtCeRFpm507QKUNaCMQRjpsnCfwC5OC+NgxN/2HfOKGrKnoRAMGtirfzbGmw/Wiwj5UfCm8LY0gDeHr6uySeDSAUapQHkuxCEWI3z7c=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(2906002)(16576012)(66476007)(6486002)(956004)(2616005)(4326008)(6916009)(86362001)(31696002)(66556008)(8936002)(8676002)(31686004)(44832011)(6666004)(36756003)(186003)(66946007)(38100700002)(83380400001)(26005)(316002)(508600001)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ditITzRXUzJtRSszWVhPbHB6N1cvQlIzbmhEd1MyTk5vZVFJbDZCcVhxbm9s?=
+ =?utf-8?B?ZUM1ZC93TWhrWlBtdUZMU2hUUmZ4Mm9LWmhBTWxDMjhhbGF3bHFGcEZ1Yldj?=
+ =?utf-8?B?TWQvYWVtSURtVW9JMEZ6RTc4U2x3a1VHemVMbHd2UlFreG4zaGhUWWZsWnpo?=
+ =?utf-8?B?T1ZZbEduTHg4bVRsWHMrV2o1Z0V5V2VvVlJxamhYSHdQMmljd0FnMXdHS2Rl?=
+ =?utf-8?B?WmlUVjE0QVFSUktSZkFVNzVycWMydWJQQWNlOVlXTUw2dE4yMm9jRmxNN0Q1?=
+ =?utf-8?B?Vi85MXFBS3h1VUJZVEJPREIrc1hvVEJHUUsvZDYwbWg2NW9PMXNXV2srNkpl?=
+ =?utf-8?B?U0VvNHhEbE8zSlltTldUNnJ6MmRYbWdIUmZYYXhIbFNZYXQ1eEFtMmZleTVS?=
+ =?utf-8?B?TmU5d1p3VnllL3B5Y3NDMFlJNG4ybHl2WmZnRWNvYXZ0c2RTWTFLMGpjWVUx?=
+ =?utf-8?B?cmpYWEtjR2NaVThUeEpDLzgzR2gzVXp6akl2Wk1GNTF4ZVBFalBrNVpReFBj?=
+ =?utf-8?B?VjlQbmZDREdpbU9vNWxyOUwxSmtIV2lCTHpPM0NaK25URERqditvSi9idVVT?=
+ =?utf-8?B?WU91eXVhMGhVeFBmbkFvd0Z2OWFNRjIrRDZoYUppcXdvaVFFQUx3QWNIT1Vi?=
+ =?utf-8?B?SCtHNDNkemlUNTJ3bkJLTTNuYkNxdlBlUXR4ZFdhaURwWmhnSlVLSTdHekI3?=
+ =?utf-8?B?aXppOGJHeFJ4RDJOa0wrbWN1bW1ZUEdXaXNJYmJtSCtUb09kWTVNdDJNakRO?=
+ =?utf-8?B?VlpTWUhzWmdEZ3hEaDM4YkhtMlF0MnZCUHRCQURQSG8yRHp5WEM4eWliZFNp?=
+ =?utf-8?B?R3ZYRlBCRkU3czBDYmdKd3FNdWN4RnQyMFByV2xaNDhvSFpJSjNDNHhsZGZx?=
+ =?utf-8?B?RGlONC8wd3pXb0V1SFZLVG01VlkwdXAyNkRtaS8wNk9yWUdTRjFsV3VkUWJ2?=
+ =?utf-8?B?aVVaUmlENzZubVFxSFVkdG9maHR0Ujd3UUNDUy9PaU9XQjdsbWFzcVVKSTJ1?=
+ =?utf-8?B?SlJ0ZlEwdnB0Z21yMGh2WmZNdDNLUXlSZnBtdnZoU1NQWVd4dTlIWFpSNjV0?=
+ =?utf-8?B?cU5RRXVUa0NudXBFQWFYR1J2TlZ4b2xKcEhlbHVSL01oY20yWmVpNG5jQ2ZP?=
+ =?utf-8?B?bW1FK3pxL21GLzZsWmtSZVhudGplbGdwMURuVytiTWI3N3loV3IweHpEL2Jh?=
+ =?utf-8?B?Y0FoYnNSWGhxZ2tYRUQyb24wVnl2RHlVK3NTSFhMVTFlQllxYm1CbEJrUlZM?=
+ =?utf-8?B?Sk1KL3E2U3crdEJlcVoyeUZRWnVrN2NMQlZHZDZ5YzEvQUg1Q3g4TjU5RVRB?=
+ =?utf-8?B?VFJrZkk1dTh3eWZvL3prMmtVbEVsSkpBeFBOdFJTamJZcWg4U0VCUUVMWE43?=
+ =?utf-8?B?TzJKV3VxTldROTEvYm83TFIzREJMVGpITFF1enVoZk95S1VIa0FRdXMxb1BS?=
+ =?utf-8?B?aXMyS0VnUlM3d3BpekVUdWNic3kveHpkUGlhSmhKV3A5L1QrNERzRjhMb2tY?=
+ =?utf-8?B?VnlFb3pPTjVNOUN1bk5vVDdnQXhWSlVIc012NE9oOTV6MHBpZU1ic3Q5L1Bl?=
+ =?utf-8?B?WGczZ01ZSGZYdkVuWWtwajl6b1dtYXRaNWpMRUpWTXZIZ0JFbWJOUFJwSmhI?=
+ =?utf-8?B?cnRmUlNJTlpPSUF1L2pMUnZrZVB4Mzl4VjZwVW9lajczRGZmeiswTmV5RXNm?=
+ =?utf-8?B?bWJTejBERkVDVDh2T0Z1ci82alhZejZKMm1jeXhsTHdyUDZNeHFJK0twbzdS?=
+ =?utf-8?Q?Caqfobl+GqtmatUvHskwcENj8sLUnxSFWGO1HVw?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fecd0c7b-4cba-4df4-c881-08d99447cc16
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 04:03:53.8633
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: anand.jain@oracle.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3903
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10143 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ malwarescore=0 bulkscore=0 phishscore=0 adultscore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110210016
+X-Proofpoint-GUID: ClY6QLc0DtKey9mPRWRjp0q8xyVErHNM
+X-Proofpoint-ORIG-GUID: ClY6QLc0DtKey9mPRWRjp0q8xyVErHNM
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just like kernel commit 22b6331d9617 ("btrfs: store precalculated
-csum_size in fs_info"), we can cache csum_size and csum_type in
-btrfs_fs_info.
+On 21/10/2021 02:59, David Sterba wrote:
+> On Tue, Oct 19, 2021 at 08:22:10AM +0800, Anand Jain wrote:
+>> In the case of the seed device, the fsid can be different from the mounted
+>> sprout fsid.  The userland has to read the device superblock to know the
+>> fsid but, that idea fails if the device is missing. So add a sysfs
+>> interface devinfo/<devid>/fsid to show the fsid of the device.
+>>
+>> For example:
+>>   $ cd /sys/fs/btrfs/b10b02a5-f9de-4276-b9e8-2bfd09a578a8
+>>
+>>   $ cat devinfo/1/fsid
+>>   c44d771f-639d-4df3-99ec-5bc7ad2af93b
+>>   $ cat  devinfo/3/fsid
+>>   b10b02a5-f9de-4276-b9e8-2bfd09a578a8
+> 
+> How do you create such setup? I can't reproduce it.
+> 
+> The simplest seeding:
+> 
+>    mkfs.btrfs /dev/sdx
+>    btrfstune -S 1 /dev/sdx
+>    mount /dev/sdx mnt
+>    ... the device has the same FSID as is the sysfs directory name
+> 
+> With a new device and removed the seeding one:
+> 
+>    btrfs device add /dev/sdy mnt
 
-Furthermore, there is already a 32 bits hole in btrfs_fs_info, and we
-can fit csum_type and csum_size into the hole without increase the size
-of btrfs_fs_info.
+At this step, we generate a new fsid for the writeable FS. Let's call
+it sprout-fsid. (If you check the sys-fs fsid, you will have two fsid
+here).
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- btrfs-corrupt-block.c       |  6 +++---
- check/main.c                |  6 +++---
- check/mode-common.c         |  2 +-
- cmds/rescue-chunk-recover.c |  4 ++--
- kernel-shared/ctree.h       |  2 ++
- kernel-shared/disk-io.c     |  6 ++++--
- kernel-shared/file-item.c   | 15 +++++----------
- kernel-shared/print-tree.c  |  4 ++--
- 8 files changed, 22 insertions(+), 23 deletions(-)
+Also, at this step,
+the
+     fs_info->fs_devices->fsid
+changes from seed-fsid to the sprout-fsid.
+So, we should make the <mnt> also a writeable without the need to call
+'remount,rw' explicitly IMO. What do you think?
 
-diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
-index c1624ee1e6bf..d00ed98e8ffe 100644
---- a/btrfs-corrupt-block.c
-+++ b/btrfs-corrupt-block.c
-@@ -158,9 +158,9 @@ static void corrupt_keys(struct btrfs_trans_handle *trans,
- 	}
- 	btrfs_mark_buffer_dirty(eb);
- 	if (!trans) {
--		u16 csum_size =
--			btrfs_super_csum_size(fs_info->super_copy);
--		u16 csum_type = btrfs_super_csum_type(fs_info->super_copy);
-+		u16 csum_size = fs_info->csum_size;
-+		u16 csum_type = fs_info->csum_type;
-+
- 		csum_tree_block_size(eb, csum_size, 0, csum_type);
- 		write_extent_to_disk(eb);
- 	}
-diff --git a/check/main.c b/check/main.c
-index 38b2cfdf5b0b..935e604ac1c6 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -5762,8 +5762,8 @@ static int check_extent_csums(struct btrfs_root *root, u64 bytenr,
- 			struct extent_buffer *eb)
- {
- 	u64 offset = 0;
--	u16 csum_size = btrfs_super_csum_size(gfs_info->super_copy);
--	u16 csum_type = btrfs_super_csum_type(gfs_info->super_copy);
-+	u16 csum_size = gfs_info->csum_size;
-+	u16 csum_type = gfs_info->csum_type;
- 	u8 *data;
- 	unsigned long csum_offset;
- 	u8 result[BTRFS_CSUM_SIZE];
-@@ -5981,7 +5981,7 @@ static int check_csums(struct btrfs_root *root)
- 	struct btrfs_key key;
- 	u64 last_data_end = 0;
- 	u64 offset = 0, num_bytes = 0;
--	u16 csum_size = btrfs_super_csum_size(gfs_info->super_copy);
-+	u16 csum_size = gfs_info->csum_size;
- 	int errors = 0;
- 	int ret;
- 	u64 data_len;
-diff --git a/check/mode-common.c b/check/mode-common.c
-index 0059672c6402..d28e79af64ef 100644
---- a/check/mode-common.c
-+++ b/check/mode-common.c
-@@ -294,7 +294,7 @@ int count_csum_range(u64 start, u64 len, u64 *found)
- 	size_t size;
- 	*found = 0;
- 	u64 csum_end;
--	u16 csum_size = btrfs_super_csum_size(gfs_info->super_copy);
-+	u16 csum_size = gfs_info->csum_size;
- 
- 	btrfs_init_path(&path);
- 
-diff --git a/cmds/rescue-chunk-recover.c b/cmds/rescue-chunk-recover.c
-index 35c6f66548fd..15971873aca7 100644
---- a/cmds/rescue-chunk-recover.c
-+++ b/cmds/rescue-chunk-recover.c
-@@ -1820,7 +1820,7 @@ static int next_csum(struct btrfs_root *root,
- 	struct btrfs_root *csum_root = root->fs_info->csum_root;
- 	struct btrfs_csum_item *csum_item;
- 	u32 blocksize = root->fs_info->sectorsize;
--	u16 csum_size = btrfs_super_csum_size(root->fs_info->super_copy);
-+	u16 csum_size = root->fs_info->csum_size;
- 	int csums_in_item = btrfs_item_size_nr(*leaf, *slot) / csum_size;
- 
- 	if (*csum_offset >= csums_in_item) {
-@@ -1904,7 +1904,7 @@ out:
- static u64 item_end_offset(struct btrfs_root *root, struct btrfs_key *key,
- 			   struct extent_buffer *leaf, int slot) {
- 	u32 blocksize = root->fs_info->sectorsize;
--	u16 csum_size = btrfs_super_csum_size(root->fs_info->super_copy);
-+	u16 csum_size = root->fs_info->csum_size;
- 
- 	u64 offset = btrfs_item_size_nr(leaf, slot);
- 	offset /= csum_size;
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 6451690ce4fa..2ebaae2e9321 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -1231,6 +1231,8 @@ struct btrfs_fs_info {
- 	u32 nodesize;
- 	u32 sectorsize;
- 	u32 stripesize;
-+	u16 csum_type;
-+	u16 csum_size;
- 
- 	/*
- 	 * Zone size > 0 when in ZONED mode, otherwise it's used for a check
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index 30f16f4da126..e79f8b5a7c48 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -209,8 +209,8 @@ int verify_tree_block_csum_silent(struct extent_buffer *buf, u16 csum_size,
- int csum_tree_block(struct btrfs_fs_info *fs_info,
- 		    struct extent_buffer *buf, int verify)
- {
--	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
--	u16 csum_type = btrfs_super_csum_type(fs_info->super_copy);
-+	u16 csum_size = fs_info->csum_size;
-+	u16 csum_type = fs_info->csum_type;
- 
- 	if (verify && fs_info->suppress_check_block_errors)
- 		return verify_tree_block_csum_silent(buf, csum_size, csum_type);
-@@ -1297,6 +1297,8 @@ static struct btrfs_fs_info *__open_ctree_fd(int fp, struct open_ctree_flags *oc
- 	fs_info->sectorsize = btrfs_super_sectorsize(disk_super);
- 	fs_info->nodesize = btrfs_super_nodesize(disk_super);
- 	fs_info->stripesize = btrfs_super_stripesize(disk_super);
-+	fs_info->csum_type = btrfs_super_csum_type(disk_super);
-+	fs_info->csum_size = btrfs_super_csum_size(disk_super);
- 
- 	ret = btrfs_check_fs_compatibility(fs_info->super_copy, flags);
- 	if (ret)
-diff --git a/kernel-shared/file-item.c b/kernel-shared/file-item.c
-index c910e27e5a5d..ecb8e5cd29e1 100644
---- a/kernel-shared/file-item.c
-+++ b/kernel-shared/file-item.c
-@@ -142,8 +142,7 @@ btrfs_lookup_csum(struct btrfs_trans_handle *trans,
- 	struct btrfs_csum_item *item;
- 	struct extent_buffer *leaf;
- 	u64 csum_offset = 0;
--	u16 csum_size =
--		btrfs_super_csum_size(root->fs_info->super_copy);
-+	u16 csum_size = root->fs_info->csum_size;
- 	int csums_in_item;
- 
- 	file_key.objectid = BTRFS_EXTENT_CSUM_OBJECTID;
-@@ -199,11 +198,8 @@ int btrfs_csum_file_block(struct btrfs_trans_handle *trans,
- 	u32 sectorsize = root->fs_info->sectorsize;
- 	u32 nritems;
- 	u32 ins_size;
--	u16 csum_size =
--		btrfs_super_csum_size(root->fs_info->super_copy);
--
--	u16 csum_type =
--		btrfs_super_csum_type(root->fs_info->super_copy);
-+	u16 csum_size = root->fs_info->csum_size;
-+	u16 csum_type = root->fs_info->csum_type;
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -341,8 +337,7 @@ static noinline int truncate_one_csum(struct btrfs_root *root,
- 				      u64 bytenr, u64 len)
- {
- 	struct extent_buffer *leaf;
--	u16 csum_size =
--		btrfs_super_csum_size(root->fs_info->super_copy);
-+	u16 csum_size = root->fs_info->csum_size;
- 	u64 csum_end;
- 	u64 end_byte = bytenr + len;
- 	u32 blocksize = root->fs_info->sectorsize;
-@@ -399,7 +394,7 @@ int btrfs_del_csums(struct btrfs_trans_handle *trans, u64 bytenr, u64 len)
- 	u64 csum_end;
- 	struct extent_buffer *leaf;
- 	int ret;
--	u16 csum_size = btrfs_super_csum_size(trans->fs_info->super_copy);
-+	u16 csum_size = trans->fs_info->csum_size;
- 	int blocksize = trans->fs_info->sectorsize;
- 	struct btrfs_root *csum_root = trans->fs_info->csum_root;
- 
-diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-index 39655590272e..4de51175d62f 100644
---- a/kernel-shared/print-tree.c
-+++ b/kernel-shared/print-tree.c
-@@ -1156,7 +1156,7 @@ static void print_extent_csum(struct extent_buffer *eb,
- 		printf("\t\trange start %llu\n", (unsigned long long)offset);
- 		return;
- 	}
--	csum_size = btrfs_super_csum_size(fs_info->super_copy);
-+	csum_size = fs_info->csum_size;
- 	size = (item_size / csum_size) * fs_info->sectorsize;
- 	printf("\t\trange start %llu end %llu length %u\n",
- 			(unsigned long long)offset,
-@@ -1246,7 +1246,7 @@ static void print_header_info(struct extent_buffer *eb, unsigned int mode)
- 		char *tmp = csum_str;
- 		u8 *csum = (u8 *)(eb->data + offsetof(struct btrfs_header, csum));
- 
--		csum_size = btrfs_super_csum_size(fs_info->super_copy);
-+		csum_size = fs_info->csum_size;
- 		strcpy(csum_str, " csum 0x");
- 		tmp = csum_str + strlen(csum_str);
- 		for (i = 0; i < csum_size; i++) {
--- 
-2.33.0
+>    mount -o remount,rw mnt
+>    btrfs device delete /dev/sdx mnt
+>    ... both devices have the same fsid as well 
+
+
+Thanks, Anand
+
+
+
 
