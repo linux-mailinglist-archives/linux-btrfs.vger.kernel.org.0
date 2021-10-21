@@ -2,71 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E7B43664F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 17:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B4A43664E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 17:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhJUPd7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 11:33:59 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:51568 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231939AbhJUPd5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
+        id S231933AbhJUPd5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 21 Oct 2021 11:33:57 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19LFIDjf010260;
-        Thu, 21 Oct 2021 15:31:39 GMT
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:48770 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231890AbhJUPd4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 Oct 2021 11:33:56 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19LFINMu017556;
+        Thu, 21 Oct 2021 15:31:40 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2021-07-09; bh=FJ+fDI5Auq6DwO4Mcy9MCx8aqG2mc15LBQwoOq94jJs=;
- b=QFGX3ihkNzupie2AnZYVC1I8QuBw+BPMYZmL0TgEooOhgEhX0k8EGrGhqXPkomvb5pgT
- TkePUoes7u6W1+CgsuGksdIe9y8slwPF08QBZt28WiaRDFrK8Y3uuc4yfhrnBH9h+uXB
- GRE1VxxwYWJ7jjm9C76LfPMDWuVCMBrHKsmCe0/oYnkm276a0Sq+hAHTqoQsxuPk4tW1
- Z0mlDZifHfGLL36RRsYMb22VN95DPRVbkOYP+imVS6oBQyS+wVC8hxyYqSvp5RSyCxHa
- J1wVP4FLGV8hbkjC92jYEhjr8myjpvsQObzoEATLkhXaUkOtS6e+6HyHmHVUXB+gJ2qI DA== 
+ s=corp-2021-07-09; bh=Gae+rI8HUTTp/lqmLa2BOmuOVmmJ0t4H/+XwN4fNsho=;
+ b=wCqnZYu8sSfxQepYwWZewPzip7/BLe2qgkLo6zU1WO60QlgU6Yby+s0FJkqWIFIOJ7x7
+ PEz/qWw0fOF1VTfPYnXev6yqpxJBI8EMxcbkuUzcIqR/WDhKUboKqWtcnxqltJpC/I4o
+ MgSnXKN5SguXUdGs1V0/kozulpnyCcEHuB8JJe0RIDI5GYOuki2NzchhSSyyzPwR40fC
+ zPteaJP/1ZzpkZDCn985fo4vLbuJrL4TFhQcupLjCJuTU0TBoqf7KyvrB+jehGz8hu3p
+ W2oEDxPziftPAi98aDAvguUdoxBKPg1uQ5Zt6m7yZm+IP2K/cdsC+FnLEQejpt/E2FQQ lA== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3btqypnycg-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3btkwj6y7h-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 21 Oct 2021 15:31:39 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19LFVEWd076337;
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19LFVEWe076337;
         Thu, 21 Oct 2021 15:31:38 GMT
 Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-        by aserp3020.oracle.com with ESMTP id 3bqpj90t19-1
+        by aserp3020.oracle.com with ESMTP id 3bqpj90t19-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Thu, 21 Oct 2021 15:31:38 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B05PIJFKAWxao9bpkmTJAI2wbrXlgE56mpkq5XBPLLrI+NkQhHikdkFU2FqBQBM4FnKuE4qPeEXG0s0gyaTFEth2vt39c/BSmnF0M+HPhWas1T8WJOg9ETvVdLobivXayiHd2V3GLS3Rr/F0x7BYtDR5Gl2XkNxyGaF1XFcoqjCZJKqdPdu5GAS6QcWTaXs1af+E2c+IYkq0I045q3VB1vySrGl5p0HuxEASuSF6bSrJPR2366WoEPK5h+Oieujztn9xww7U1staxnh4UxDOKkLSEOUhaEUQhCa09gTc2SRjNxyEsElGssp4S62I2fuAVZo0D9Vi4rl7YdWYO4rv6A==
+ b=Tcitq2ZJISTzEpNXH48Ho0CpKrudxYocT0P41/ry7xwnC5crBNlffGZ22BV/rKO4N6LFjl3TWGPuod1cpkIFmb1o6XjrugYWri4FzTzXfHWLVZ+T0/F1tfzECHHB+W/M5hK6odho8zXpixVCQRMrXI04whE9VofzJvfzSCAaaC/ovZvBnUhmQq7dWefjdoNcz4G6ptgTo5ROEIMElalA8Ejc8bdj8D4Eqkp6tlC/ZmB8UN2o5vJ2Vqs3dQvRjECz1PWQpNdWsVr6lMmUddNBvOvEii4W+fByb1TFdUXenDFDzNOCz+J1CX7Cr0Ql4gAkzq6lDICNBtpnKnvS3uhFKg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FJ+fDI5Auq6DwO4Mcy9MCx8aqG2mc15LBQwoOq94jJs=;
- b=gte1uIEJC3Ox66zTPyjM2dn3I0TKtyDeiVY75zkxEPM/yUkxmwlu/eEqMp2JIMVRcHnj6cAwlx8aZb0hULciyXciR5YDO1F2v3iuIT/HbeIPv7szhJ9CccpRfxiBeTSd8sdoGMbU2yqWs9KjwItNWxUSbxfafXURxx9darYg8LKkZRqrCkb4ueQHhIXeTW0DTgE/M5Cv1D7PsXEdNRiEKuNurgoDjMgfL/zqyeJYSfIaAFFJBHexqeYKgqpatoLqlldlTcN+95YREGhZ5WIMigO6N4r+/FIAJBn16eSoPUMsSoiM8FtHNZbD6aTKVIn7lzeCLQdSI6cGlI33BVpPLw==
+ bh=Gae+rI8HUTTp/lqmLa2BOmuOVmmJ0t4H/+XwN4fNsho=;
+ b=D3JasWlmWI/rO8fCDaRz6LbYm8QViDhObYNrTzAX8zf7eIoxGDUNtRvcpnrZK4ADMET6uQGCeyEG4jieEYOldgT9V9ARLaAUojEtWfLTejUw5OBd/5Et6b4vqfkc2e9FRinJ3DdHas5pc/XD94xboN+MtyXzVffMBdl1fLcm3p33wiTs56sMpGm9oHcyXmoRy1YWRFbGY14Q23DUOKxGiJv1hqy2jIP8rF/H6jUN8qv1DDLPRxPRJPmeXZUIqIHuUkNd2Usv/ka2OWP204+Spyvb0GN7tSPUuKRQXm9l9n9lJecnQN/nqJrduEcMN8Kjw9chDpM91AQjRLsF77MpWw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FJ+fDI5Auq6DwO4Mcy9MCx8aqG2mc15LBQwoOq94jJs=;
- b=ZT+QXSZUv+vu3iL+/MkbfiahG3Z0nxn4ro3lNIOsudHmSqSCF5nJpPAvZasT4QOkb/cdhuBvxjbPWThGz+PKUzYrslO0TbuJuN4ffnbDJAbMrKk4mFRjoFsIHKirleQhhTZ18OSO6byUnbE+ucOLxdQ6jfROc+gwX5dnWWvykec=
+ bh=Gae+rI8HUTTp/lqmLa2BOmuOVmmJ0t4H/+XwN4fNsho=;
+ b=Dyb8z3LKnQTqdKZlAjzhDgVcP6a8MuDwQlGKSHqsYAGEcJlUX2PBDKRSE0d6zwZbZf3ARDQupeNQsNFdsdu7c+k/corpwksVD1Th4O82IykDFwtF3cL+lkMYOVJpONvi2dnGooV2su0vAJiKFkKLih90vGrU7ornsYxaSIOQtmA=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
  by MN2PR10MB3839.namprd10.prod.outlook.com (2603:10b6:208:186::27) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16; Thu, 21 Oct
- 2021 15:31:36 +0000
+ 2021 15:31:37 +0000
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4628.018; Thu, 21 Oct 2021
- 15:31:36 +0000
+ 15:31:37 +0000
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH v2 1/2] btrfs: sysfs convert scnprintf and snprintf to use sysfs_emit
-Date:   Thu, 21 Oct 2021 23:31:16 +0800
-Message-Id: <8ff89162573399dec6ce5431243e4b45ec2fc4f0.1634829757.git.anand.jain@oracle.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH v2 2/2] btrfs: sysfs add devinfo/fsid to retrieve fsid from the device
+Date:   Thu, 21 Oct 2021 23:31:17 +0800
+Message-Id: <33e179f8b9341c88754df639b77dafaa1ffec0d1.1634829757.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1634829757.git.anand.jain@oracle.com>
 References: <cover.1634829757.git.anand.jain@oracle.com>
@@ -76,46 +76,46 @@ X-ClientProxiedBy: SI2PR01CA0051.apcprd01.prod.exchangelabs.com
  (2603:1096:4:193::6) To MN2PR10MB4128.namprd10.prod.outlook.com
  (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Received: from localhost.localdomain (39.109.140.76) by SI2PR01CA0051.apcprd01.prod.exchangelabs.com (2603:1096:4:193::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Thu, 21 Oct 2021 15:31:34 +0000
+Received: from localhost.localdomain (39.109.140.76) by SI2PR01CA0051.apcprd01.prod.exchangelabs.com (2603:1096:4:193::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Thu, 21 Oct 2021 15:31:36 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 502fefc3-026c-4bf0-2699-08d994a7ddb1
+X-MS-Office365-Filtering-Correlation-Id: 0c1a79d4-0317-4588-0bdc-08d994a7df44
 X-MS-TrafficTypeDiagnostic: MN2PR10MB3839:
-X-Microsoft-Antispam-PRVS: <MN2PR10MB383982DCA2E499DD07F0C0F9E5BF9@MN2PR10MB3839.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:101;
+X-Microsoft-Antispam-PRVS: <MN2PR10MB383947E9852655CD16A059F3E5BF9@MN2PR10MB3839.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IXSzmHd4eTPHa4qpUZ9RTfkbeEtIrHE+5WQ3416Z3do6I5WFwefUQCijDrNGOFRaQ//G1lqhkk9Xx/zOZr1CLMs0QSiNM+fkJ2FUymO2ivFoGCQPrxeCLNL6239iI5FuUFNqRiImcI6aHMhmllT/+Ddyk9/amsMZRVSa8MIT+OZXdj0Xz+HGYvVMO0iAJqlZEQDzDU0cVJMpVsPHIz7AmVGj02OqAd1wHvQ2gYZb5sYroGfRJUzWZZfzr5l38QEiywfSojnxeKh1AMe+hoQj5G5JSeVcE2bED6j5V3BE86VFGPlHNUePBwyYUXpBRPHSOppT9gtEJKIrfwe9wUhqHRDH9bnWzHYsJsUkPA5fqgvQ8VF+NRr6qTKJo/Qu+RBHAL6srRzdwsank+gN23zGfq1Kp7VINPVieWh+Rh31nJxRYd35eQoXMrPngd+UvoBSd8tHQXaSDxdosA02wOldmpSBLwzYTYAFQR4tXy8JyvMYa3GmBviMAymAN/wkiyf38uTMV970pXKZpmxwcJqvbpOnl9SqV1K11eqs+/zSIp23OkAMf8kJGakaiMxW8cnISjj7lxq5afSN68dhQj5/BXGpSwqlepxnAv8+KD0qHZKvW5zqfORqPtP1FTwOKjcQtuYH5ozV0tCBf20uivbmnYo2NbSyt/xQgw3X9RRZw8jCYSyV74wNCjiX4yBdtU1UG6fEdZxyTYO46rHbatDm7iscwqEHJLSnUwzm2QarVZc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52116002)(86362001)(30864003)(83380400001)(186003)(4326008)(316002)(6506007)(36756003)(6512007)(5660300002)(38350700002)(2906002)(6666004)(26005)(66556008)(66476007)(66946007)(8676002)(6486002)(2616005)(8936002)(956004)(38100700002)(6916009)(508600001)(44832011)(309714004);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: w4JA0izQT7Fleruzew075XYHAAgslf9kw7w/Xsb5r4pAgUMO0w+jwg5sKDII826fWnD+T/K9PwxQ5FR6htMZokBImKDoFMmelD53nehTHo5gpGXTVXr5dK5KG2qhTPoQJuqcSO6zPQqG4uO3QVIw9Ia6pSHTSDvXjaFPWQeT0WTj9dfmYYojlxFHibBWHYYXC6i2K3+053DybgQs9yKtxoix44ZqjAZ3U4tjV462Evxb0vkcsp1ZPTXt94e1/JtzhYYQlvYd16EDVe4OMGhn9qGv3fGn+0FXcbVGfDupuiKnhnm2YVF6N8BKbNg9fG7UNvpJBUPWWrVSYrKoYozyhqvbeXWAN00+5HH6azJM6RhwI32/AaD1nNy8BYZ2Z+kPiOKh1jfYnvAg+5S4TOMPkza6J4FaAFshH9lRe4lREVOw0hBzIDtgdkby7ckSw230CYjksIcrH6lsHkYV5biQv1i8GdTxdpiuXxlmYv2NkbW/pISWR6v+KLwLrnGNaXy2yIpeKfe++9sD/gglHhQE3gPhytm+Sb9iA/1AP3ugRV+I+S4asJ8tIbqC7uMJ+WV0A++hiypyNrcIgV4tfIroiOZGtOnIHIUI2FaqX7Lah2lhiOufvtPQgF7+UwPP2F5oCJ+jCWHGO+y3hY8eC/JAJG4oO/KQaTcHtLl/2QWvL6/zxmV6bKQHVrKgnb+7Y1O2JyF+dwrWzJW2p+xK7p8ASQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52116002)(86362001)(83380400001)(186003)(4326008)(316002)(6506007)(36756003)(6512007)(5660300002)(38350700002)(2906002)(6666004)(26005)(66556008)(66476007)(66946007)(8676002)(6486002)(2616005)(8936002)(956004)(38100700002)(6916009)(508600001)(44832011);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+6skZVm//Yl6/jtM2crq+qs7salc51JW23oh1kKx8exALeYBPQwWSJVMJbPJ?=
- =?us-ascii?Q?ZBu90qTno3w/h2X8V+t9yuYx/M3nLvHoW+ORHTAR72pGFFuiFqV8Wjms/IQp?=
- =?us-ascii?Q?OrjKLTgohh3kg30b5grudM0piFWOX9S2dYCHrbKAnm1xYwCiiv61kyYz/iYq?=
- =?us-ascii?Q?kj5HilvO4/gUba8cpVp+/Mqdvtjsx/bvYgV74MjqK88CzRzCajIoX6J5XVaN?=
- =?us-ascii?Q?+LwnE9I7J4fPnWw3tFE7UziDVtx+e1ZwcZz0gD6VPRW1B112od+RqsewRb2K?=
- =?us-ascii?Q?4tXbsSAemjuF5CuiBDUb4Bhujtu65TZPfAp1U4wrq1Uxtp7/+RYYpFKlCAf4?=
- =?us-ascii?Q?ruYcgmrqLwY5eWiUtUrZlZpcZw1mWRRZlw/sq6HCB5pplTLCMn5dmS69YnDv?=
- =?us-ascii?Q?JNg8apIg6/pYh5zN96QjMqs29Yw6bAxlpJRTVcOzTrggeNdlLB6vyvhKL5AL?=
- =?us-ascii?Q?sIrkdACSDt6tcDB7PrNuHSytCTwmdpKXnQZFCczA5/hBygZBgki2hgjLSLyD?=
- =?us-ascii?Q?4ssYvynMCdCiJ6A13fiGgnRiAdC5j6ICI5hZsY3O0g92nT8Jun/CiwwEhA9i?=
- =?us-ascii?Q?bj3UkgnrFLgz5G6FjMa8Kwa2pdj4Y2EoG2VU44AgEZXsUI0Py65gMo8x7lbr?=
- =?us-ascii?Q?7DsoRqqj3+QawTb8zkzaif/RClULdAhqBO8HGOVh6g4Xr4BwMMLahOUT7hT+?=
- =?us-ascii?Q?giB+HJPjfRsB9fxoaWKl74StwsLPEw0mcSZwDdvIT7LQI5RpCmIkLRyHJ8BG?=
- =?us-ascii?Q?apAZ85BCbQ9toocjNycduVuQgjktqLOQh5rHjzoXtcvy5lph26nsP1VhRLqS?=
- =?us-ascii?Q?tOg9IE4U1xH4PPh4TcsNdTNk5g4Gd1eYotkJ1wi3wltfOXbgLfDvCaZZKAuA?=
- =?us-ascii?Q?u+o4p1yWmT+WDZMPvmFq5OeDmv3F8l9rx9xKyg4i6bWUdS2Huqpw/IAYvbRq?=
- =?us-ascii?Q?tkhfDHcc9DiRYC+Ebra3V1bNIVKIqRMuKq5UnBqED2Z5Owqt24Xj2L7BS7yK?=
- =?us-ascii?Q?wVLjbPiZ/dx6W/JEkwi2My+9r6hkLFSHeUvsjcfmhTucf9IB8gzzazyqxwNW?=
- =?us-ascii?Q?VcS5ly4BxbNrJkoaGl8hv2lV7UtBPFSfqviBcRjnfeVxKDpEkWv8SvIRnwvn?=
- =?us-ascii?Q?5AdYh3q2ir3e9jqIeCahN9EgfsbqH52cCIX7+H8SsP7KtyHmo/5b8LrtJgqB?=
- =?us-ascii?Q?TmXstEo3BoY4S0dQUg/BG2JRItMUtoG+HqeWfDgN0wW9/PLjFAoZSvK1Xw3O?=
- =?us-ascii?Q?aZW7OmoiCyzXsUuIj3uFQSa5277MhaDrdX7U2wpMXp2fumVMY5482xvwZab4?=
- =?us-ascii?Q?xJ8pd61cb4CRelPE14nfGANi?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?V++pvuzfijiX0fHjX2GHeZD/hreUC1lveN1jEHc3JU+q4wz86glpngmnY8p/?=
+ =?us-ascii?Q?t7NAyrdC7pwEjZ5+Di7N5RVQggFH3sVi9N7LBj+4j7HPowEQdnR80pCcaWWD?=
+ =?us-ascii?Q?Snak+xyWqXygEWeG8Sw42GwkJaLjm5ctxMxPeF7f4Yt4/G1zymwjx/CVZs72?=
+ =?us-ascii?Q?XiNbdsaVFhyqr8ZZ3MkTJG05yrcplUkhblfUg0xSjDZLYBgQ18t5X1/HLO6Z?=
+ =?us-ascii?Q?O2UkqQR4nB4pn3ibidGSLWN5LZQSoMQX0QV5Pfz9giqxAicor9L686xWCKbo?=
+ =?us-ascii?Q?JOPjutvY1vpObj5xvbAmzUqp0OM815M3IW73GSLAHs1G69RcKPygyzqi5P9F?=
+ =?us-ascii?Q?d76HGdihKdE/HK36GSYU5BwHJi897/ybbIS4H8/HxXJbVsuSPGtFBWeBDmev?=
+ =?us-ascii?Q?oU7+DY6LUlW5MYf57fVKsoBoMZBuMtXnP11L29W5VrWdmlnuRfdJhrEzCu9j?=
+ =?us-ascii?Q?3jnem7ZoTYijEIgDF2ZY9nP8CGuumVptssXBdOO7uqDSnp8MWgkZd8rfHsNB?=
+ =?us-ascii?Q?Rpf8DtxT7uwT16mAuE5O8dnrs4P/rm9m8G4pkMPwq4Cd/MGqJ4z2XEJlWHqQ?=
+ =?us-ascii?Q?5/8+kW8eKKBmII4ixnw+xH/HE/dzLXOMZ99SeKZGAufgKTPdidmYrFkUnh7i?=
+ =?us-ascii?Q?GxF6cxeJ26ZVUtW4bjF/IgAR8gDahJaQPAAy2PcS5+FltAZbuYID9Wnr/13/?=
+ =?us-ascii?Q?i0DPn0w0gyvBScI6bRB0afYCnPVHab7hTmNiKg9HszTpVmSfx+0R7CgWOSmV?=
+ =?us-ascii?Q?mJv3qikUwMlwe1o1lACG/gl0eCSne9Sa6HCnkrgmiJ3oI0Py0FVv9DCYvog3?=
+ =?us-ascii?Q?bTQ9Ul1QFjYZDRjCPhEyLdmlz4n5T7Dq3YiDp/YgjYjGGinFmK456hPaUL2o?=
+ =?us-ascii?Q?0+1aK4mgTa6xz8P68hCWFxgs2cZR7YnkEosPzunA8qaQbanmFTAsLJL/6SIl?=
+ =?us-ascii?Q?3/Cp/Ic4i7ELBFFHx1drej+FkUhz+XhKziWwLgV5h8AN0LkiRNOwIah517Tu?=
+ =?us-ascii?Q?9+BuU3bRo0DDfEETt//8BT4eYb0AYm+VMS9figRwIc8BOkHEEdW6299P0CXs?=
+ =?us-ascii?Q?toEZT3RtRU6XUmNgWiH6AK3DxbE+nHBGQ1ZVxlh88qw8XjqldDYNcu3NVVS2?=
+ =?us-ascii?Q?AUfPDRtL8p7xZy1vhFPMSOBkMjZ7ijoGUg0bTGjaEOagVgu5qcQf+8t5JNqQ?=
+ =?us-ascii?Q?Vnyu8ycs91tZacdmjBnEAMJdQRVrZELPAGHbj3mksMseKM+NkknsYqe2FQll?=
+ =?us-ascii?Q?fmsg533Ozl3hxz2+4jgePcAknBdWsp4pE13rQO/Duk0C8vGur+H/sl03F8ou?=
+ =?us-ascii?Q?EfAKlyRwzX3ongbQ04CUIQgM?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 502fefc3-026c-4bf0-2699-08d994a7ddb1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c1a79d4-0317-4588-0bdc-08d994a7df44
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 15:31:36.2482
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2021 15:31:37.6799
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
@@ -127,359 +127,60 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamsc
  malwarescore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
  definitions=main-2110210080
-X-Proofpoint-ORIG-GUID: umccUyIcifjHi78xXq5lgASpDQKXhIqP
-X-Proofpoint-GUID: umccUyIcifjHi78xXq5lgASpDQKXhIqP
+X-Proofpoint-ORIG-GUID: cv1P0zxdsYSmMCysVa1pYLScFsVtq0Rl
+X-Proofpoint-GUID: cv1P0zxdsYSmMCysVa1pYLScFsVtq0Rl
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-commit 2efc459d06f1 (sysfs: Add sysfs_emit and sysfs_emit_at to format
-sysfs out) merged in 5.10 introduced two new functions sysfs_emit() and
-sysfs_emit_at() which are aware of the PAGE_SIZE max_limit of the buf.
+In the case of the seed device, the fsid can be different from the mounted
+sprout fsid.  The userland has to read the device superblock to know the
+fsid but, that idea fails if the device is missing. So add a sysfs
+interface devinfo/<devid>/fsid to show the fsid of the device.
 
-Use the above two new functions instead of scnprintf() and snprintf()
-in various sysfs show().
+For example:
+ $ cd /sys/fs/btrfs/b10b02a5-f9de-4276-b9e8-2bfd09a578a8
+
+ $ cat devinfo/1/fsid
+ c44d771f-639d-4df3-99ec-5bc7ad2af93b
+ $ cat  devinfo/3/fsid
+ b10b02a5-f9de-4276-b9e8-2bfd09a578a8
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reported-by: kernel test robot <oliver.sang@intel.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/sysfs.c | 95 +++++++++++++++++++++++-------------------------
- 1 file changed, 46 insertions(+), 49 deletions(-)
+ fs/btrfs/sysfs.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 25a6f587852b..28ff7fce1ac5 100644
+index 28ff7fce1ac5..591d49deb552 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -177,7 +177,7 @@ static ssize_t btrfs_feature_attr_show(struct kobject *kobj,
- 	} else
- 		val = can_modify_feature(fa);
- 
--	return scnprintf(buf, PAGE_SIZE, "%d\n", val);
-+	return sysfs_emit(buf, "%d\n", val);
- }
- 
- static ssize_t btrfs_feature_attr_store(struct kobject *kobj,
-@@ -330,7 +330,7 @@ static const struct attribute_group btrfs_feature_attr_group = {
- static ssize_t rmdir_subvol_show(struct kobject *kobj,
- 				 struct kobj_attribute *ka, char *buf)
- {
--	return scnprintf(buf, PAGE_SIZE, "0\n");
-+	return sysfs_emit(buf, "0\n");
- }
- BTRFS_ATTR(static_feature, rmdir_subvol, rmdir_subvol_show);
- 
-@@ -345,12 +345,12 @@ static ssize_t supported_checksums_show(struct kobject *kobj,
- 		 * This "trick" only works as long as 'enum btrfs_csum_type' has
- 		 * no holes in it
- 		 */
--		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
--				(i == 0 ? "" : " "), btrfs_super_csum_name(i));
-+		ret += sysfs_emit_at(buf, ret, "%s%s", (i == 0 ? "" : " "),
-+				     btrfs_super_csum_name(i));
- 
- 	}
- 
--	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
-+	ret += sysfs_emit_at(buf, ret, "\n");
- 	return ret;
- }
- BTRFS_ATTR(static_feature, supported_checksums, supported_checksums_show);
-@@ -358,7 +358,7 @@ BTRFS_ATTR(static_feature, supported_checksums, supported_checksums_show);
- static ssize_t send_stream_version_show(struct kobject *kobj,
- 					struct kobj_attribute *ka, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%d\n", BTRFS_SEND_STREAM_VERSION);
-+	return sysfs_emit(buf, "%d\n", BTRFS_SEND_STREAM_VERSION);
- }
- BTRFS_ATTR(static_feature, send_stream_version, send_stream_version_show);
- 
-@@ -378,9 +378,9 @@ static ssize_t supported_rescue_options_show(struct kobject *kobj,
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(rescue_opts); i++)
--		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
--				 (i ? " " : ""), rescue_opts[i]);
--	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "\n");
-+		ret += sysfs_emit_at(buf, ret, "%s%s", (i ? " " : ""),
-+				     rescue_opts[i]);
-+	ret += sysfs_emit_at(buf, ret, "\n");
- 	return ret;
- }
- BTRFS_ATTR(static_feature, supported_rescue_options,
-@@ -394,10 +394,10 @@ static ssize_t supported_sectorsizes_show(struct kobject *kobj,
- 
- 	/* 4K sector size is also supported with 64K page size */
- 	if (PAGE_SIZE == SZ_64K)
--		ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%u ", SZ_4K);
-+		ret += sysfs_emit_at(buf, ret, "%u ", SZ_4K);
- 
- 	/* Only sectorsize == PAGE_SIZE is now supported */
--	ret += scnprintf(buf + ret, PAGE_SIZE - ret, "%lu\n", PAGE_SIZE);
-+	ret += sysfs_emit_at(buf, ret, "%lu\n", PAGE_SIZE);
- 
- 	return ret;
- }
-@@ -437,7 +437,7 @@ static ssize_t btrfs_discardable_bytes_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%lld\n",
-+	return sysfs_emit(buf, "%lld\n",
- 			atomic64_read(&fs_info->discard_ctl.discardable_bytes));
- }
- BTRFS_ATTR(discard, discardable_bytes, btrfs_discardable_bytes_show);
-@@ -448,7 +448,7 @@ static ssize_t btrfs_discardable_extents_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%d\n",
-+	return sysfs_emit(buf, "%d\n",
- 			atomic_read(&fs_info->discard_ctl.discardable_extents));
- }
- BTRFS_ATTR(discard, discardable_extents, btrfs_discardable_extents_show);
-@@ -459,8 +459,8 @@ static ssize_t btrfs_discard_bitmap_bytes_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%llu\n",
--			fs_info->discard_ctl.discard_bitmap_bytes);
-+	return sysfs_emit(buf, "%llu\n",
-+			  fs_info->discard_ctl.discard_bitmap_bytes);
- }
- BTRFS_ATTR(discard, discard_bitmap_bytes, btrfs_discard_bitmap_bytes_show);
- 
-@@ -470,7 +470,7 @@ static ssize_t btrfs_discard_bytes_saved_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%lld\n",
-+	return sysfs_emit(buf, "%lld\n",
- 		atomic64_read(&fs_info->discard_ctl.discard_bytes_saved));
- }
- BTRFS_ATTR(discard, discard_bytes_saved, btrfs_discard_bytes_saved_show);
-@@ -481,8 +481,8 @@ static ssize_t btrfs_discard_extent_bytes_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%llu\n",
--			fs_info->discard_ctl.discard_extent_bytes);
-+	return sysfs_emit(buf, "%llu\n",
-+			  fs_info->discard_ctl.discard_extent_bytes);
- }
- BTRFS_ATTR(discard, discard_extent_bytes, btrfs_discard_extent_bytes_show);
- 
-@@ -492,8 +492,8 @@ static ssize_t btrfs_discard_iops_limit_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%u\n",
--			READ_ONCE(fs_info->discard_ctl.iops_limit));
-+	return sysfs_emit(buf, "%u\n",
-+			  READ_ONCE(fs_info->discard_ctl.iops_limit));
- }
- 
- static ssize_t btrfs_discard_iops_limit_store(struct kobject *kobj,
-@@ -523,8 +523,8 @@ static ssize_t btrfs_discard_kbps_limit_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%u\n",
--			READ_ONCE(fs_info->discard_ctl.kbps_limit));
-+	return sysfs_emit(buf, "%u\n",
-+			  READ_ONCE(fs_info->discard_ctl.kbps_limit));
- }
- 
- static ssize_t btrfs_discard_kbps_limit_store(struct kobject *kobj,
-@@ -553,8 +553,8 @@ static ssize_t btrfs_discard_max_discard_size_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = discard_to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%llu\n",
--			READ_ONCE(fs_info->discard_ctl.max_discard_size));
-+	return sysfs_emit(buf, "%llu\n",
-+			  READ_ONCE(fs_info->discard_ctl.max_discard_size));
- }
- 
- static ssize_t btrfs_discard_max_discard_size_store(struct kobject *kobj,
-@@ -627,7 +627,7 @@ static ssize_t btrfs_show_u64(u64 *value_ptr, spinlock_t *lock, char *buf)
- 	val = *value_ptr;
- 	if (lock)
- 		spin_unlock(lock);
--	return scnprintf(buf, PAGE_SIZE, "%llu\n", val);
-+	return sysfs_emit(buf, "%llu\n", val);
- }
- 
- static ssize_t global_rsv_size_show(struct kobject *kobj,
-@@ -673,7 +673,7 @@ static ssize_t raid_bytes_show(struct kobject *kobj,
- 			val += block_group->used;
- 	}
- 	up_read(&sinfo->groups_sem);
--	return scnprintf(buf, PAGE_SIZE, "%llu\n", val);
-+	return sysfs_emit(buf, "%llu\n", val);
- }
- 
- /*
-@@ -771,7 +771,7 @@ static ssize_t btrfs_label_show(struct kobject *kobj,
- 	ssize_t ret;
- 
- 	spin_lock(&fs_info->super_lock);
--	ret = scnprintf(buf, PAGE_SIZE, label[0] ? "%s\n" : "%s", label);
-+	ret = sysfs_emit(buf, label[0] ? "%s\n" : "%s", label);
- 	spin_unlock(&fs_info->super_lock);
- 
- 	return ret;
-@@ -819,7 +819,7 @@ static ssize_t btrfs_nodesize_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%u\n", fs_info->super_copy->nodesize);
-+	return sysfs_emit(buf, "%u\n", fs_info->super_copy->nodesize);
- }
- 
- BTRFS_ATTR(, nodesize, btrfs_nodesize_show);
-@@ -829,8 +829,7 @@ static ssize_t btrfs_sectorsize_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%u\n",
--			 fs_info->super_copy->sectorsize);
-+	return sysfs_emit(buf, "%u\n", fs_info->super_copy->sectorsize);
- }
- 
- BTRFS_ATTR(, sectorsize, btrfs_sectorsize_show);
-@@ -840,7 +839,7 @@ static ssize_t btrfs_clone_alignment_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%u\n", fs_info->super_copy->sectorsize);
-+	return sysfs_emit(buf, "%u\n", fs_info->super_copy->sectorsize);
- }
- 
- BTRFS_ATTR(, clone_alignment, btrfs_clone_alignment_show);
-@@ -852,7 +851,7 @@ static ssize_t quota_override_show(struct kobject *kobj,
- 	int quota_override;
- 
- 	quota_override = test_bit(BTRFS_FS_QUOTA_OVERRIDE, &fs_info->flags);
--	return scnprintf(buf, PAGE_SIZE, "%d\n", quota_override);
-+	return sysfs_emit(buf, "%d\n", quota_override);
- }
- 
- static ssize_t quota_override_store(struct kobject *kobj,
-@@ -890,8 +889,7 @@ static ssize_t btrfs_metadata_uuid_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%pU\n",
--			fs_info->fs_devices->metadata_uuid);
-+	return sysfs_emit(buf, "%pU\n", fs_info->fs_devices->metadata_uuid);
- }
- 
- BTRFS_ATTR(, metadata_uuid, btrfs_metadata_uuid_show);
-@@ -902,9 +900,9 @@ static ssize_t btrfs_checksum_show(struct kobject *kobj,
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
- 	u16 csum_type = btrfs_super_csum_type(fs_info->super_copy);
- 
--	return scnprintf(buf, PAGE_SIZE, "%s (%s)\n",
--			btrfs_super_csum_name(csum_type),
--			crypto_shash_driver_name(fs_info->csum_shash));
-+	return sysfs_emit(buf, "%s (%s)\n",
-+			  btrfs_super_csum_name(csum_type),
-+			  crypto_shash_driver_name(fs_info->csum_shash));
- }
- 
- BTRFS_ATTR(, checksum, btrfs_checksum_show);
-@@ -941,7 +939,7 @@ static ssize_t btrfs_exclusive_operation_show(struct kobject *kobj,
- 			str = "UNKNOWN\n";
- 			break;
- 	}
--	return scnprintf(buf, PAGE_SIZE, "%s", str);
-+	return sysfs_emit(buf, "%s", str);
- }
- BTRFS_ATTR(, exclusive_operation, btrfs_exclusive_operation_show);
- 
-@@ -950,7 +948,7 @@ static ssize_t btrfs_generation_show(struct kobject *kobj,
- {
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%llu\n", fs_info->generation);
-+	return sysfs_emit(buf, "%llu\n", fs_info->generation);
- }
- BTRFS_ATTR(, generation, btrfs_generation_show);
- 
-@@ -1028,8 +1026,8 @@ static ssize_t btrfs_bg_reclaim_threshold_show(struct kobject *kobj,
- 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
- 	ssize_t ret;
- 
--	ret = scnprintf(buf, PAGE_SIZE, "%d\n",
--			READ_ONCE(fs_info->bg_reclaim_threshold));
-+	ret = sysfs_emit(buf, "%d\n",
-+			 READ_ONCE(fs_info->bg_reclaim_threshold));
- 
- 	return ret;
- }
-@@ -1471,7 +1469,7 @@ static ssize_t btrfs_devinfo_in_fs_metadata_show(struct kobject *kobj,
- 
- 	val = !!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
- 
--	return scnprintf(buf, PAGE_SIZE, "%d\n", val);
-+	return sysfs_emit(buf, "%d\n", val);
- }
- BTRFS_ATTR(devid, in_fs_metadata, btrfs_devinfo_in_fs_metadata_show);
- 
-@@ -1484,7 +1482,7 @@ static ssize_t btrfs_devinfo_missing_show(struct kobject *kobj,
- 
- 	val = !!test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
- 
--	return scnprintf(buf, PAGE_SIZE, "%d\n", val);
-+	return sysfs_emit(buf, "%d\n", val);
- }
- BTRFS_ATTR(devid, missing, btrfs_devinfo_missing_show);
- 
-@@ -1498,7 +1496,7 @@ static ssize_t btrfs_devinfo_replace_target_show(struct kobject *kobj,
- 
- 	val = !!test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
- 
--	return scnprintf(buf, PAGE_SIZE, "%d\n", val);
-+	return sysfs_emit(buf, "%d\n", val);
- }
- BTRFS_ATTR(devid, replace_target, btrfs_devinfo_replace_target_show);
- 
-@@ -1509,8 +1507,7 @@ static ssize_t btrfs_devinfo_scrub_speed_max_show(struct kobject *kobj,
- 	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
- 						   devid_kobj);
- 
--	return scnprintf(buf, PAGE_SIZE, "%llu\n",
--			 READ_ONCE(device->scrub_speed_max));
-+	return sysfs_emit(buf, "%llu\n", READ_ONCE(device->scrub_speed_max));
- }
- 
- static ssize_t btrfs_devinfo_scrub_speed_max_store(struct kobject *kobj,
-@@ -1538,7 +1535,7 @@ static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
- 
- 	val = !!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
- 
--	return scnprintf(buf, PAGE_SIZE, "%d\n", val);
-+	return sysfs_emit(buf, "%d\n", val);
+@@ -1539,6 +1539,16 @@ static ssize_t btrfs_devinfo_writeable_show(struct kobject *kobj,
  }
  BTRFS_ATTR(devid, writeable, btrfs_devinfo_writeable_show);
  
-@@ -1549,14 +1546,14 @@ static ssize_t btrfs_devinfo_error_stats_show(struct kobject *kobj,
- 						   devid_kobj);
- 
- 	if (!device->dev_stats_valid)
--		return scnprintf(buf, PAGE_SIZE, "invalid\n");
-+		return sysfs_emit(buf, "invalid\n");
- 
- 	/*
- 	 * Print all at once so we get a snapshot of all values from the same
- 	 * time. Keep them in sync and in order of definition of
- 	 * btrfs_dev_stat_values.
- 	 */
--	return scnprintf(buf, PAGE_SIZE,
-+	return sysfs_emit(buf,
- 		"write_errs %d\n"
- 		"read_errs %d\n"
- 		"flush_errs %d\n"
++static ssize_t btrfs_devinfo_fsid_show(struct kobject *kobj,
++				       struct kobj_attribute *a, char *buf)
++{
++	struct btrfs_device *device = container_of(kobj, struct btrfs_device,
++						   devid_kobj);
++
++	return sysfs_emit(buf, "%pU\n", device->fs_devices->fsid);
++}
++BTRFS_ATTR(devid, fsid, btrfs_devinfo_fsid_show);
++
+ static ssize_t btrfs_devinfo_error_stats_show(struct kobject *kobj,
+ 		struct kobj_attribute *a, char *buf)
+ {
+@@ -1579,6 +1589,7 @@ static struct attribute *devid_attrs[] = {
+ 	BTRFS_ATTR_PTR(devid, replace_target),
+ 	BTRFS_ATTR_PTR(devid, scrub_speed_max),
+ 	BTRFS_ATTR_PTR(devid, writeable),
++	BTRFS_ATTR_PTR(devid, fsid),
+ 	NULL
+ };
+ ATTRIBUTE_GROUPS(devid);
 -- 
 2.31.1
 
