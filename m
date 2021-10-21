@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA11C4356F1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 02:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E773435725
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 02:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhJUAXe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Oct 2021 20:23:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42372 "EHLO mail.kernel.org"
+        id S231727AbhJUAYx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Oct 2021 20:24:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231562AbhJUAX3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Oct 2021 20:23:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 058C5611CC;
-        Thu, 21 Oct 2021 00:21:13 +0000 (UTC)
+        id S231766AbhJUAYY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Oct 2021 20:24:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D09DB60FDA;
+        Thu, 21 Oct 2021 00:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634775674;
-        bh=1+gT+wK2HUBi0AgOa9/wH4hnhEi7qtzWgTY47WYCUDY=;
+        s=k20201202; t=1634775729;
+        bh=fNmt9+w9sLUPiMrPyM8l5YXm5yp9EOO/GH8LFP6Z9Jo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ooGQD93CW2qVaYpePYx4Yot+63HQOBG22ty1tC4wYVeLAX/Uzudh1uU1teyc4/bYP
-         6oxFm9VxKJm8RKKiGBcx8qqzkaKq31gkcYU8QRplTIXhejio2Xo3qXcQRwEI72S85t
-         GR4VWGcSHNbR9PXqozIOxmyLmDCXsMLSiPvhTUasahrM/E6AY+uozIHeIQSlRdrwcy
-         X9naFJ1ervvZ5wnczGAgHZaAc0n7IBOtAuXDEbgziJFqQdNgg/Fh+4+ug0sklx25ni
-         +3JnOs9SFG43DNmx98NhDTjQMuWiIFhClWuRMfpD0KFtUEYuQAV1sLb7+QT3okgu+y
-         tVqJfFtIXU11w==
+        b=XI3cVFuFEY3MKCT6HMhsGm4RTFJzZ9+aDONK1iZFUp3nwxNxqpbVI0NyKpkGF4+TE
+         MF+f5JCal5H7aYaAFg9wI7/TBsX4z0VD+OcWHBHBijDW2BjSDRedulbMjtz3RFGfc/
+         Lm1KvpLVSZFOWqeVIk1NtM55O9gylR2+Si406nqgVfy8RIH+CzGM758v8+KIECD8I1
+         UsU2yNTDzYQCqMaydifa2r5LpLQKnIwbZGArWFDHzypJE8/SipG2RhlfDr0qgqHulh
+         U3Pera3fvdvjlLjpntOtgtpUYzO7QwlWu8KZ/EOvJ55Y+x118erjGzUmGrJqmgErO4
+         y7MvI3Lr82awg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 11/26] btrfs: deal with errors when checking if a dir entry exists during log replay
-Date:   Wed, 20 Oct 2021 20:20:08 -0400
-Message-Id: <20211021002023.1128949-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 03/14] btrfs: deal with errors when checking if a dir entry exists during log replay
+Date:   Wed, 20 Oct 2021 20:21:44 -0400
+Message-Id: <20211021002155.1129292-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211021002023.1128949-1-sashal@kernel.org>
-References: <20211021002023.1128949-1-sashal@kernel.org>
+In-Reply-To: <20211021002155.1129292-1-sashal@kernel.org>
+References: <20211021002155.1129292-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -64,10 +64,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 29 insertions(+), 18 deletions(-)
 
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 7037e5855d2a..529c1c638b7a 100644
+index 7bf3936aceda..f7b9a0f06f05 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -939,9 +939,11 @@ static noinline int drop_one_dir_item(struct btrfs_trans_handle *trans,
+@@ -894,9 +894,11 @@ static noinline int drop_one_dir_item(struct btrfs_trans_handle *trans,
  }
  
  /*
@@ -82,7 +82,7 @@ index 7037e5855d2a..529c1c638b7a 100644
   */
  static noinline int inode_in_dir(struct btrfs_root *root,
  				 struct btrfs_path *path,
-@@ -950,29 +952,35 @@ static noinline int inode_in_dir(struct btrfs_root *root,
+@@ -905,29 +907,35 @@ static noinline int inode_in_dir(struct btrfs_root *root,
  {
  	struct btrfs_dir_item *di;
  	struct btrfs_key location;
@@ -129,7 +129,7 @@ index 7037e5855d2a..529c1c638b7a 100644
  }
  
  /*
-@@ -1517,10 +1525,12 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+@@ -1472,10 +1480,12 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
  		if (ret)
  			goto out;
  
@@ -146,9 +146,9 @@ index 7037e5855d2a..529c1c638b7a 100644
  			/*
  			 * look for a conflicting back reference in the
  			 * metadata. if we find one we have to unlink that name
-@@ -1580,6 +1590,7 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
- 			if (ret)
- 				goto out;
+@@ -1533,6 +1543,7 @@ static noinline int add_inode_ref(struct btrfs_trans_handle *trans,
+ 
+ 			btrfs_update_inode(trans, root, inode);
  		}
 +		/* Else, ret == 1, we already have a perfect match, we're done. */
  
