@@ -2,84 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE8B436509
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 17:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B3D436632
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 17:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhJUPIk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 11:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbhJUPIi (ORCPT
+        id S232248AbhJUP15 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 11:27:57 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50944 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232123AbhJUP1h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:08:38 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA97DC0613B9
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 08:06:21 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id r184so889516ybc.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 08:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zn7Gawkh/Nm8y4i/NqLNFMva5eF87QCz8fZNBQpCA/8=;
-        b=UgZmD4fdI+QjmUshHL41NE1xwGYEPFD9/3gmQtVHTheigRIZyTpyVLsAOo70Mc4gh+
-         nqokIQ8d45+ig+SyVCHAkz9XVuxHfJh6kKliVw2KEjV22V0WivJl9941mjxPfRYuvK3D
-         dfDdVlcSi+rNVX2QTRGAEEh8My/SYdOBY7N+MKElpfcx4JAFhuP0xULfQxsIaarZKkq/
-         7lxfcoDXBR26hT8+KDKbJp8yGj5iAZcQZfOgklDn1gqZCaJqFbter36s3vQs4qsixv7h
-         WfpOXaiqFZ1GbumQ14R9uJecdy4OnAv/Gu5kfsAKat7hNj2K4tamsyDdCX2Ph79D/RbW
-         ej7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zn7Gawkh/Nm8y4i/NqLNFMva5eF87QCz8fZNBQpCA/8=;
-        b=UFErjrRV8+PRdsSuO4mpkeN7nKI0fFUQlz2QbEiM8s0Wc8NFqQkILIJewz/JAZk3jC
-         FZN3v2UAGiNiV/GuezvsVZ07/XJUVSNEYPhBdXxPaExk4Z3umqbSX4/I4iYeXC8+TbPx
-         bh+Y+1ca5TgU0sf6FvzJppkOwJhuT+QcCDOWJdyA98e7npNPxciDQ8/X0N/A+qWupczK
-         J1Ru/KlvK5TpPNc4AVnT+Jo0zlOR33ldcM0XbYyhCIdQvxi1OZzJINI/rrsAO5tOuDaW
-         zXL5hO4KoU28VLyIZ48N6iTlyKnAZwoFRXjqfA0bGM+KVAuqwQk66Of1B9LJ9O/pybal
-         emJg==
-X-Gm-Message-State: AOAM533L3A1X389gER+a4Q33ON740ghqW/1+S9Jf6ld0nYzZCpy/+nO+
-        jFgY41rwOvwjozkzTfvQ3/B0zL45uppL1ie/O4L8SZsgMdV0WI44
-X-Google-Smtp-Source: ABdhPJzbe+cgqDelghLuRkPw5tqq7WdzgOCW8K5hV9h+tw8VWPp/QleykUsfSQaIQCobaZa2jf8zl1fBZaRHCMl8l00=
-X-Received: by 2002:a05:6902:1029:: with SMTP id x9mr7106449ybt.493.1634828781124;
- Thu, 21 Oct 2021 08:06:21 -0700 (PDT)
+        Thu, 21 Oct 2021 11:27:37 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C48A72198C;
+        Thu, 21 Oct 2021 15:25:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634829919;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kKIH+gH7NdjKqlzvhaW5rl06RBoj/DN0/vysVoGWrH8=;
+        b=o7Onh5ywkplHGJQQNCoouqRZY4tOpfof1uZ0P7Ok0is4skG1eAXO/V+a/4gKCdM0Xr/Qjd
+        YPec07cu1ZbvaF+EVgDuO+r7ZsNWrTSKTSAl1E91m6KMc2BmEHmeypkuFA+8QjV1km3AG9
+        DVr99y7XQVoh2o1Hr7jjySngKyJbq9U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634829919;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kKIH+gH7NdjKqlzvhaW5rl06RBoj/DN0/vysVoGWrH8=;
+        b=jOW6ffDqUgZqfXHsCqVetUa6/l9PMxKwfmT2RpdMuONpWeyhART7r7hb6IGRxg0M9FY9Pp
+        iaqfakI8EwNTVdBQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id BE3DDA3B84;
+        Thu, 21 Oct 2021 15:25:19 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 15FCADA7A3; Thu, 21 Oct 2021 17:24:50 +0200 (CEST)
+Date:   Thu, 21 Oct 2021 17:24:50 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: make sizeof(struct btrfs_super_block) to match
+ BTRFS_SUPER_INFO_SIZE
+Message-ID: <20211021152450.GA20319@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20211020234447.5578-1-wqu@suse.com>
 MIME-Version: 1.0
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
- <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
- <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
- <bl3mimya.fsf@damenly.su> <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
- <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
- <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
- <7de9iylb.fsf@damenly.su> <CAJCQCtSUDSvMvbk1RmfTzBQ=UiZHrDeG6PE+LQK5pi_ZMCSp6A@mail.gmail.com>
- <35owijrm.fsf@damenly.su> <CAJCQCtR3upV0tEgdNOThMdQRE+fGH60vcbTeKagzXsw1wx9wMQ@mail.gmail.com>
- <y26ngqqg.fsf@damenly.su> <CAJCQCtScczmps7+NfNEObqOnsU64QHhjRRy0Fmj7W8z=ZJNK0g@mail.gmail.com>
- <CAJCQCtQuuzrzLDDZZ0jExeZ6RbDXH3wF7WFq02W77REMn4YJNA@mail.gmail.com>
- <2e18d933-a56e-198d-20c8-ab3038d3f390@suse.com> <CAJCQCtQ+23cQCZQrwPO7Yq1G48yEoUT2CbLH9GdytP6zYXux3g@mail.gmail.com>
- <3c1ead76-e321-a3c1-755c-288ddd5fbeeb@suse.com>
-In-Reply-To: <3c1ead76-e321-a3c1-755c-288ddd5fbeeb@suse.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 21 Oct 2021 11:06:05 -0400
-Message-ID: <CAJCQCtSr8aSkt+LA_UYD6Cxnqx4uA4g+s5xKs8b75QVStWHojQ@mail.gmail.com>
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Chris Murphy <lists@colorremedies.com>, Su Yue <l@damenly.su>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211020234447.5578-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 11:01 AM Nikolay Borisov <nborisov@suse.com> wrote:
->
-> Just to be clear, when you initiate a crash with sysrq+c does it capture
-> a crashdump? That's the basic test that needs to pass in order to ensure
-> kdump works as expected.
+On Thu, Oct 21, 2021 at 07:44:47AM +0800, Qu Wenruo wrote:
+> It's a common practice to avoid use sizeof(struct btrfs_super_block)
+> (3531), but to use BTRFS_SUPER_INFO_SIZE (4096).
+> 
+> The problem is that, sizeof(struct btrfs_super_block) doesn't match
+> BTRFS_SUPER_INFO_SIZE from the very beginning.
+> 
+> Furthermore, for all call sites except selftest, we always allocate
+> BTRFS_SUPER_INFO_SIZE space for btrfs super block, there isn't any real
+> reason to use the smaller value, and it doesn't really save any space.
+> 
+> So let's get rid of such confusing behavior, and unify those two values.
+> 
+> This modification also adds a new static_assert() to verify the size,
+> and moves the BTRFS_SUPER_INFO_* macros to the definition of
+> btrfs_super_block for the static_assert().
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Yes it does.
-
-
--- 
-Chris Murphy
+Added to misc-next, thanks.
