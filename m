@@ -2,85 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEED436659
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 17:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F052F436723
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 18:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhJUPfH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 11:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231773AbhJUPfG (ORCPT
+        id S230441AbhJUQC5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 12:02:57 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38184 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231503AbhJUQC4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:35:06 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BC7C061764
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 08:32:49 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id i84so145998ybc.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 08:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VKUiSFOCxpq+d21wU9hNdykl9qv+HTo70X4AiaB9Cm4=;
-        b=c+IFD3NQgpqTlx+Ofhr70ARjNZZTujvF3+RhzQNkJILuzieFb9E9nEKnV1xX5ySXnS
-         kUTY6jFNcQ3QevrMGFrAGAICVmI9tww76s/GjKLdh3UTSpJvhGr8Tcs0aOW3GsST5bG1
-         edmFhTocVfa0b64ask3EVJl2v8cSSML+aX7081JIpNUy8yqL0FC7sfKEAiP866tdD6fk
-         /vULwxyLRsTJwn8lNIu0h+EugJwo+/jKQmrSUy3C2p0qVtK/EinR9fjRGsbUkA7YBIl2
-         JnL6XqmqiKacE8uh+OiQ+rVtML9dLJTrLnvECU1FgLkdVp74jJDHgFua9U/2DvCO9rLu
-         OeUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VKUiSFOCxpq+d21wU9hNdykl9qv+HTo70X4AiaB9Cm4=;
-        b=eZJvtYYabF8f/faTp2shDCYnEa9iB1OCLWXL/ytFsIyqbwCFGGRDm0pa8fNeFSC413
-         W7d0HI+pkHCXgUvrQDK6iVv6jmI8BwCqny3uLSuVEstPCd8JF7b6uRKFvvzfTBhlSMHd
-         HtKToGuDTOg8h1Y6kRxAdRpfQkeDZDcJhr35J2vAnTFd/CRS9oYCuygyrSnXev4b0oAZ
-         +Cw+iW2LZYl3JC54lH9of1YEdIPaDR/HbMni6i7exjrcVBBzlukXNrS3JHQwIbs/6Qv3
-         i+hb1v959Idifyaq2Smy5/yVVh2PBKs8zyloTd2LeqmHICgcICDj1n0XlT04B+z14U9w
-         zLXg==
-X-Gm-Message-State: AOAM5333P0LwQQUWcmzHxg/Uj6JdWaj0ZhgT1hAi64o+MLL8XjgIU9x5
-        RQu/NBXjqX2ehLGz2qUUZ62syUMg51UufKjSBbniMw==
-X-Google-Smtp-Source: ABdhPJxvR7plc0BIjZ/uVuIvENxB0KIPkSZoRCXlbe6ftE62xK8mGKdRC/BpvpPQloGOkKMbmwwkCva3qZPkM+gxXpU=
-X-Received: by 2002:a25:780e:: with SMTP id t14mr6742249ybc.470.1634830369161;
- Thu, 21 Oct 2021 08:32:49 -0700 (PDT)
+        Thu, 21 Oct 2021 12:02:56 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 79A831FD50;
+        Thu, 21 Oct 2021 16:00:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634832039;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xHbg6Z30Ra3Z8vETufzmFuvJcm8WRO2yyRB9zoS0GYk=;
+        b=wWaMquk8faiVCD3WDgqL5Su047Q0cPaMUdiunNrVG6a18TD9pVvMVQayLIT91bUKQ7rIHq
+        m2u70OedMj9l/uBJO81ypUYZePL5LIIXDhGjPSX08G0J4FNJv3ESqE7zRMrS9YRgXD9T6Y
+        nia22Xx7I9FIgapkhi/8/9tbp86jdLQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634832039;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xHbg6Z30Ra3Z8vETufzmFuvJcm8WRO2yyRB9zoS0GYk=;
+        b=t/SC0sjC7/4Uh8qCM4cpNZ5iWRwv20IKssrj+btuljpzT1mGl4Q4q7C5yclE65NLj1PtVd
+        O9HSP7EZs9NP+WBA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 71F20A3B92;
+        Thu, 21 Oct 2021 16:00:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C47C3DA7A3; Thu, 21 Oct 2021 18:00:09 +0200 (CEST)
+Date:   Thu, 21 Oct 2021 18:00:08 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com
+Subject: Re: [PATCH 1/2] btrfs: sysfs convert scnprintf and snprintf to use
+ sysfs_emit
+Message-ID: <20211021160008.GC20319@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com
+References: <cover.1634598572.git.anand.jain@oracle.com>
+ <f748bd08259e2b770a5d9f2355c58c33d8566d16.1634598572.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
- <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
- <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
- <bl3mimya.fsf@damenly.su> <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
- <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
- <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
- <7de9iylb.fsf@damenly.su> <CAJCQCtSUDSvMvbk1RmfTzBQ=UiZHrDeG6PE+LQK5pi_ZMCSp6A@mail.gmail.com>
- <35owijrm.fsf@damenly.su> <CAJCQCtR3upV0tEgdNOThMdQRE+fGH60vcbTeKagzXsw1wx9wMQ@mail.gmail.com>
- <y26ngqqg.fsf@damenly.su> <CAJCQCtScczmps7+NfNEObqOnsU64QHhjRRy0Fmj7W8z=ZJNK0g@mail.gmail.com>
- <CAJCQCtQuuzrzLDDZZ0jExeZ6RbDXH3wF7WFq02W77REMn4YJNA@mail.gmail.com>
- <2e18d933-a56e-198d-20c8-ab3038d3f390@suse.com> <CAJCQCtQ+23cQCZQrwPO7Yq1G48yEoUT2CbLH9GdytP6zYXux3g@mail.gmail.com>
- <3c1ead76-e321-a3c1-755c-288ddd5fbeeb@suse.com> <CAJCQCtSr8aSkt+LA_UYD6Cxnqx4uA4g+s5xKs8b75QVStWHojQ@mail.gmail.com>
-In-Reply-To: <CAJCQCtSr8aSkt+LA_UYD6Cxnqx4uA4g+s5xKs8b75QVStWHojQ@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 21 Oct 2021 11:32:33 -0400
-Message-ID: <CAJCQCtTJ13FT=t-pFkYUew7Nxv+nCK0=hnURn3KPBAu6acgqcQ@mail.gmail.com>
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, Su Yue <l@damenly.su>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f748bd08259e2b770a5d9f2355c58c33d8566d16.1634598572.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a significant hand in either sshd or dnf when doing package
-installs that precedes the splat. The splat doesn't always happen but
-the hang does seem to be reproducible. I have a sysrq+t during this
-hang here:
+On Tue, Oct 19, 2021 at 08:22:09AM +0800, Anand Jain wrote:
+> @@ -1264,8 +1262,7 @@ char *btrfs_printable_features(enum btrfs_feature_set set, u64 flags)
+>  			continue;
+>  
+>  		name = btrfs_feature_attrs[set][i].kobj_attr.attr.name;
+> -		len += scnprintf(str + len, bufsize - len, "%s%s",
+> -				len ? "," : "", name);
+> +		len += sysfs_emit_at(str, len, "%s%s", len ? "," : "", name);
 
-https://drive.google.com/file/d/14qsIb3HNlSx91kPq1Uvo_IHnivQ3S3NO/view?usp=sharing
+This is a different pattern the 'bufsize' is 4096 which matches
+PAGE_SIZE but it's not the same thing as the show/set callbacks.
 
-Maybe there's a hint why we're hung up as a prelude to the splat even
-though I haven't gotten the warning yet...
+>  	}
+>  
+>  	return str;
+> @@ -1304,8 +1301,8 @@ static void init_feature_attrs(void)
+>  			if (fa->kobj_attr.attr.name)
+>  				continue;
+>  
+> -			snprintf(name, BTRFS_FEATURE_NAME_MAX, "%s:%u",
+> -				 btrfs_feature_set_names[set], i);
+> +			sysfs_emit(name, "%s:%u", btrfs_feature_set_names[set],
+> +				   i);
 
---
-Chris Murphy
+And this one too, what's worse is that BTRFS_FEATURE_NAME_MAX is 13 but
+sysfs_emit assumes PAGE_SIZE.
+
+The rest is OK, so I'd drop the two changes.
