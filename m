@@ -2,84 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD4D436871
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 18:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1224368AB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 19:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhJUQ5s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 12:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbhJUQ5s (ORCPT
+        id S232036AbhJURHP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 13:07:15 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56896 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232187AbhJURG5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Oct 2021 12:57:48 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0190C0613B9
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 09:55:30 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 75so873464pga.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 09:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/0PkGRxE57fE8CHs0pwZUdcJSyRd9ETomPZTtV+seTw=;
-        b=qbOpSV8YLQ2hsNy8S1ArdCeiLHPpC50b8qR/qEO12flHAZn2iLPArvu+zCRswhtWuX
-         pEMCfdq3iKpj/4WTDNplt/jLNAuu2XpJf+QPD9XBllfI96ShBjr4fMbHAauuDFmHHivS
-         tWvppTNQiZhSbTyej25bQsZxzLpIODbeUaC5UlaJ8PXjXK3s0W+6p4dNhJ9Cp2zSzkH/
-         plR82Fu37jaiA3FNZgGgV3XJMoDRuNwdOACWFgSaxbytC+feLZk1YchcNoioryWhUfhn
-         cRvNxn4o+fvXIFiMTcziOYxXsqKa+dwynJCYx/jOpGkunElaU+oCMtjs1g1IbV1AdArR
-         wO2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/0PkGRxE57fE8CHs0pwZUdcJSyRd9ETomPZTtV+seTw=;
-        b=7yvyfR7SdRtbsPw/ArkR3Q8O5ve4zj90A8K6Zm2a4NMB7ODPbQrbcCF8x54zRmYGjH
-         S2fZLgFiZkxUf4UuUKnmqsOiUhKwj3FoneTUCiz1IMzzKwX2CpZtsyedA6lipF9oa3Px
-         TFjfoKK2QbcUPe97A9i1ikiSSMalEubYO2li5bE+ky/lYBOi18xiZuXcWstiX2arrQC+
-         A5spZtVSFYKxCM6gK4Fq58XTIOGCiGZkVT4OXgfbaYMG8N476ki1AuzXe7AYVJPl3T2P
-         0LnKH7B4nnTlH8KDgKXbc8vxm+5uRCUJyJefuJLLIJKErSZPZO8rz0mEH+M4ZU4E6uie
-         RWxg==
-X-Gm-Message-State: AOAM531HY4r2nab1xTcui83bc6usHTXOlRcIQAPytsZufbcVaKLmb+JQ
-        vbHX6BJhrcF3eM2K0DUADylbzm40fhvRtA==
-X-Google-Smtp-Source: ABdhPJzod7frT3cuGjI+bW5s69km4LVGBiqwd/jc2drYS/DAJNjY6K9ZkAEwHAarCMPU+xJO6vZ8pw==
-X-Received: by 2002:a63:7506:: with SMTP id q6mr5286358pgc.349.1634835330198;
-        Thu, 21 Oct 2021 09:55:30 -0700 (PDT)
-Received: from relinquished.localdomain ([2601:602:8b80:8e0::381])
-        by smtp.gmail.com with ESMTPSA id i20sm6271291pgn.83.2021.10.21.09.55.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Oct 2021 09:55:29 -0700 (PDT)
-Date:   Thu, 21 Oct 2021 09:55:28 -0700
-From:   Omar Sandoval <osandov@osandov.com>
+        Thu, 21 Oct 2021 13:06:57 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 83FB9218E1;
+        Thu, 21 Oct 2021 17:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634835879;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FqZ2I1Q2x0ZjTVlXen/w7ZZmOE1EnI0menU+2aGycbw=;
+        b=BiRW6ZL/9YpLtZRdk4skHUkNio6KkBOWo/R6YKpm1xWBkkHsO7BWLHwYVHlDyIhu3noqbT
+        KOkBASEfbeKJdmum6G87x0+A8Vf5/h9Dj3a4Uv/P7gaHMZb+NRCMNy0vuHNhupiFZWag+n
+        yEhWs3IWgrAHjYiBtPnDUivpao8EPy8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634835879;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FqZ2I1Q2x0ZjTVlXen/w7ZZmOE1EnI0menU+2aGycbw=;
+        b=1nNIoM5VVxuW6bJycXWtdt6y9VKEdEb31dbwgB/PkaEuwaEHHmjeEHEtvplKFKnv5wJ0AP
+        w2XIz0Xv/eiaUcDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 7C443A3B81;
+        Thu, 21 Oct 2021 17:04:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 7BBC2DA7A3; Thu, 21 Oct 2021 19:04:10 +0200 (CEST)
+Date:   Thu, 21 Oct 2021 19:04:10 +0200
+From:   David Sterba <dsterba@suse.cz>
 To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH v11 04/14] btrfs: add ram_bytes and offset to
- btrfs_ordered_extent
-Message-ID: <YXGbgBcd4KTUw1Jn@relinquished.localdomain>
-References: <cover.1630514529.git.osandov@fb.com>
- <9169c58574fa559e6633cca7e60fe32cd161003a.1630514529.git.osandov@fb.com>
- <66c2c57b-5f67-f05f-5660-b60b649b2f4d@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Remove spurious unlock/lock of unused_bgs_lock
+Message-ID: <20211021170410.GI20319@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20211014070311.1595609-1-nborisov@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <66c2c57b-5f67-f05f-5660-b60b649b2f4d@suse.com>
+In-Reply-To: <20211014070311.1595609-1-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 03:44:52PM +0300, Nikolay Borisov wrote:
+On Thu, Oct 14, 2021 at 10:03:11AM +0300, Nikolay Borisov wrote:
+> Since both unused block groups and reclaim bgs lists are protected by
+> unused_bgs_lock then free them in the same critical section without
+> doing an extra unlock/lock pair.
 > 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/block-group.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> On 1.09.21 г. 20:00, Omar Sandoval wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> > 
-> > Currently, we only create ordered extents when ram_bytes == num_bytes
-> > and offset == 0. However, RWF_ENCODED writes may create extents which
-> 
-> Change RWF_ENCODED to simply encoded as we no longer rely on RWF flags,
-> same thing for the changelog in the next patch.
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index e790ea0798c7..308b8e92c70e 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -3873,9 +3873,7 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
+>  		list_del_init(&block_group->bg_list);
+>  		btrfs_put_block_group(block_group);
+>  	}
+> -	spin_unlock(&info->unused_bgs_lock);
+>  
+> -	spin_lock(&info->unused_bgs_lock);
 
-Oops, I checked the diff for stray references to RWF_ENCODED but I
-forgot to check the commit messages. Thanks, I'll fix it.
+That looks correct, I'm not sure about one thing. The calls to
+btrfs_put_block_group can be potentaily taking some time if the last
+reference is dropped and we need to call btrfs_discard_cancel_work and
+several kfree()s. Indirectly there's eg. cancel_delayed_work_sync and
+btrfs_discard_schedule_work, so calling all that under unused_bgs_lock
+seems quite heavy.
+
+OTOH, this is in btrfs_free_block_groups so it's called at the end of
+mount so we don't care about performance. There could be a problem with
+a lot of queued work and doing that in one locking section can cause
+warnings or other stalls.
+
+That the lock is unlocked and locked at least inserts one opportunity to
+schedule. Alternatively to be totally scheduler friendly, the loops
+could follow pattern
+
+
+	spin_lock(lock);
+	while (!list_empty()) {
+		entry = list_first();
+
+		list_del_init(entry);
+		btrfs_put_block_group(entry->bg);
+		cond_resched_lock(lock);
+	}
+	spin_unlock(lock);
+
+So with the cond_resched_lock inside the whole lock scope can be done as
+you suggest.
