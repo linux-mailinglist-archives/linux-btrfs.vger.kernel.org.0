@@ -2,97 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAED4361F6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 14:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31F5436207
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Oct 2021 14:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhJUMn2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 08:43:28 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44226 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhJUMn1 (ORCPT
+        id S230374AbhJUMrM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 08:47:12 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58724 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230323AbhJUMrK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:43:27 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 62CCD1FD4F;
-        Thu, 21 Oct 2021 12:41:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1634820071;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 21 Oct 2021 08:47:10 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2AD45219C3;
+        Thu, 21 Oct 2021 12:44:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634820293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PVYeZ+c2gdjrJiIz0NtvGA6E9TqTtAFc9eY3N9J/G80=;
-        b=vUddQbWL2pUv2pv42qHgu62cRqESSKnEZPhQrUz6ZPJ4yvy7Gz9+hmTzIqkY/diT6mS/yo
-        bAQjwD+Ttq71aKC23riWPbUNYooJorFtbkJlPKyAcrVCmcJuu/LElVofN0HRY/3QM55LqN
-        Jv1RzjgjuM77bgnjIYcCtLM3uJZT/Ng=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1634820071;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PVYeZ+c2gdjrJiIz0NtvGA6E9TqTtAFc9eY3N9J/G80=;
-        b=2ZY7OI+BLBUx8V+/9/Ymn7yr6o7/fhApnz34K3f1zpSJdZfsFZho52Slm5QbQLsMbiclFV
-        JT+6bXAJRFxBMCCA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 5C5B4A3B83;
-        Thu, 21 Oct 2021 12:41:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C15ACDA7A3; Thu, 21 Oct 2021 14:40:42 +0200 (CEST)
-Date:   Thu, 21 Oct 2021 14:40:42 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/3] btrfs-progs: unify sizeof(struct btrfs_super_block)
- and BTRFS_SUPER_INFO_SIZE
-Message-ID: <20211021124042.GA6400@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211021014020.482242-1-wqu@suse.com>
- <20211021014020.482242-2-wqu@suse.com>
+        bh=vH7DlBidxV3txgKTgmSehqSbMuv8Lc1tQ+bOSpNUDDs=;
+        b=aOAakLYasZIlJD1zLJxCgNE4is1Wk189EsV9qZ5VuQ4/nA1WjAVZsA8lLJ9DY10MOaICu3
+        5/DENTAaAg1oMP1dzLbrzN5OOJBa49Eo0AV/oVzRKnlVynMyfdRsoXlOYvINKju+19Sf/a
+        6Mglm62zGKFscZjSF9ndN2zbMOEP5Ow=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D21AD13AA1;
+        Thu, 21 Oct 2021 12:44:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KqjEMMRgcWEjDQAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 21 Oct 2021 12:44:52 +0000
+Subject: Re: [PATCH v11 04/14] btrfs: add ram_bytes and offset to
+ btrfs_ordered_extent
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <cover.1630514529.git.osandov@fb.com>
+ <9169c58574fa559e6633cca7e60fe32cd161003a.1630514529.git.osandov@fb.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <66c2c57b-5f67-f05f-5660-b60b649b2f4d@suse.com>
+Date:   Thu, 21 Oct 2021 15:44:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211021014020.482242-2-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <9169c58574fa559e6633cca7e60fe32cd161003a.1630514529.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 09:40:18AM +0800, Qu Wenruo wrote:
-> Just like kernel change, pad struct btrfs_super_block to 4096 bytes.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  kernel-shared/ctree.h   | 7 +++++++
->  kernel-shared/disk-io.h | 3 ---
->  2 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-> index 563ea50b3587..6451690ce4fa 100644
-> --- a/kernel-shared/ctree.h
-> +++ b/kernel-shared/ctree.h
-> @@ -406,6 +406,9 @@ struct btrfs_root_backup {
->  	u8 unused_8[10];
->  } __attribute__ ((__packed__));
->  
-> +#define BTRFS_SUPER_INFO_OFFSET SZ_64K
-> +#define BTRFS_SUPER_INFO_SIZE 4096
-> +
->  /*
->   * the super block basically lists the main trees of the FS
->   * it currently lacks any block count etc etc
-> @@ -456,8 +459,12 @@ struct btrfs_super_block {
->  	__le64 reserved[28];
->  	u8 sys_chunk_array[BTRFS_SYSTEM_CHUNK_ARRAY_SIZE];
->  	struct btrfs_root_backup super_roots[BTRFS_NUM_BACKUP_ROOTS];
-> +	/* Padded to 4096 bytes */
-> +	u8 padding[565];
->  } __attribute__ ((__packed__));
->  
-> +static_assert(sizeof(struct btrfs_super_block) == BTRFS_SUPER_INFO_SIZE);
 
-Using static_assert breaks build on musl (you can verify that by running
-ci/ci-build-musl if you have docker installed and set up).
 
-There already is macro BUILD_ASSERT used in ioctl.h, eventually we can
-copy the static_assert from kernel or use _Static_assert directly.
+On 1.09.21 г. 20:00, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> Currently, we only create ordered extents when ram_bytes == num_bytes
+> and offset == 0. However, RWF_ENCODED writes may create extents which
+
+Change RWF_ENCODED to simply encoded as we no longer rely on RWF flags,
+same thing for the changelog in the next patch.
+
+<snip>
