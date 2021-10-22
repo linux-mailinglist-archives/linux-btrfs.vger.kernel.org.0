@@ -2,108 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5D2437008
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 04:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BD1437012
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 04:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbhJVCdZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Oct 2021 22:33:25 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:44667 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232447AbhJVCdZ (ORCPT
+        id S232402AbhJVCjN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Oct 2021 22:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231687AbhJVCjM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Oct 2021 22:33:25 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0UtCTdiN_1634869863;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UtCTdiN_1634869863)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 22 Oct 2021 10:31:05 +0800
-Date:   Fri, 22 Oct 2021 10:31:03 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Phillip Lougher <phillip@squashfs.org.uk>
-Cc:     Phillip Susi <phill@thesusis.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
-        linux-bcache@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: Re: Readahead for compressed data
-Message-ID: <YXIiZ4CAfSP6FucF@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Phillip Lougher <phillip@squashfs.org.uk>,
-        Phillip Susi <phill@thesusis.net>,
-        Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, linux-erofs@lists.ozlabs.org,
-        linux-btrfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, linux-bcache@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-References: <YXHK5HrQpJu9oy8w@casper.infradead.org>
- <87tuh9n9w2.fsf@vps.thesusis.net>
- <ea03d018-b9ef-9eed-c382-e1a3db7e4e5f@squashfs.org.uk>
+        Thu, 21 Oct 2021 22:39:12 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBADEC061764
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 19:36:55 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id q189so3752677ybq.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Oct 2021 19:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2REIdThSJrAHDmGtchLL3ZaqwHZLkAh9v/9hwm+7SeQ=;
+        b=EQFaCLiXp+YaRLiJT6+bvTW6O+xDS6mVoWpd2BWVT3QoVNF9v9CblZ2FZ2mlzmD5nJ
+         hU+SMYJnox8UtE701k5cPd8Y3hR9ktjTk6ZdIhn7EuzsLPDvGS+906CgYpvgO/riyd3+
+         q98SIw0rGWXoqckrFus7ma53EYcf9658nG6EeJPlm3kFOizsT3Athbn2xd+gczH/4YSY
+         cMpn58vJtiqkXe225aDjwiud3k4roQ7aqJsgpAw4wPkAm7seXrHRaD5ydtHZ4gqFR2bJ
+         F8thw2T/5lk3l8W9jTJy2r8dr8wYpBDCoW3XTXfHYvGXZuDVYwnFViUVOG/CaPBTG1dy
+         CbAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2REIdThSJrAHDmGtchLL3ZaqwHZLkAh9v/9hwm+7SeQ=;
+        b=K/zEACXqiHC8izKOyYwdVXUUVN1n8MbQMXdUO/eU1gG0nllklFS86pJ5gPVp/AisDD
+         zROje7eadN0ADMSZ3bCS6IxxlLL53s2V4fm2vR1/GcJMahkqkeymPZn22GCIRjYv1bHl
+         yB5FrLRLJ7b6yXWKdr+w0pN0L86zw/ZcPBxNg4+en488j5WFFngn+wk3YrZCJ9i10iVD
+         iCNbadWdJElfquAtgwfUH2Qu4gaqxhO97m54VZONY9isoVKJ+T6rpk+OcmuAM6OSiJre
+         2Ozy2TtOdvvs7IX6wFU8rxgUISqK0YGmHWFpu6NXxrGT4HWBCsNJGztqrAdXiBpPPpUJ
+         3G5A==
+X-Gm-Message-State: AOAM533M9xTZqyk8JDOWWPbimALVewaXx548lsdGApWAgl/gFzR40tD8
+        DXYa73h/gZ5qtwnM0aVPkuIvkb1zFy97qfK8zHwK1w==
+X-Google-Smtp-Source: ABdhPJwIftgOFrMpyzF+ue5VjErz0sXvbXac5mqXliZKjyjLacrmAA1N4RG4dsHKsK2slhWdFBihEaw0KCBNJknuaX8=
+X-Received: by 2002:a25:d3c8:: with SMTP id e191mr10707674ybf.455.1634870214978;
+ Thu, 21 Oct 2021 19:36:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ea03d018-b9ef-9eed-c382-e1a3db7e4e5f@squashfs.org.uk>
+References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
+ <da57d024-e125-bcea-7ac3-4e596e5341a2@suse.com> <debf9d63-0068-84db-dcd4-1d923742f989@gmx.com>
+ <CAJCQCtSsLSwtNTrUKq_4Rs0tauT45iSA1+AkGWnS9Nmkb=0oWg@mail.gmail.com>
+ <9b153cca-2d9a-e217-a83f-1a8e663fc587@suse.com> <CAJCQCtTAHmvwmypAgnLVr-wmuJpOxnmXzpxy-UdHcHO8L+5THw@mail.gmail.com>
+ <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com> <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
+ <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com> <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
+ <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com> <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
+ <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
+ <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
+ <bl3mimya.fsf@damenly.su> <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
+ <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
+ <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
+ <7de9iylb.fsf@damenly.su> <CAJCQCtSUDSvMvbk1RmfTzBQ=UiZHrDeG6PE+LQK5pi_ZMCSp6A@mail.gmail.com>
+ <35owijrm.fsf@damenly.su>
+In-Reply-To: <35owijrm.fsf@damenly.su>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 21 Oct 2021 22:36:38 -0400
+Message-ID: <CAJCQCtS-QhnZm2X_k77BZPDP_gybn-Ao_qPOJhXLabgPHUvKng@mail.gmail.com>
+Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
+To:     Su Yue <l@damenly.su>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 03:09:03AM +0100, Phillip Lougher wrote:
-> On 22/10/2021 02:04, Phillip Susi wrote:
-> > 
-> > Matthew Wilcox <willy@infradead.org> writes:
-> > 
-> > > As far as I can tell, the following filesystems support compressed data:
-> > > 
-> > > bcachefs, btrfs, erofs, ntfs, squashfs, zisofs
-> > > 
-> > > I'd like to make it easier and more efficient for filesystems to
-> > > implement compressed data.  There are a lot of approaches in use today,
-> > > but none of them seem quite right to me.  I'm going to lay out a few
-> > > design considerations next and then propose a solution.  Feel free to
-> > > tell me I've got the constraints wrong, or suggest alternative solutions.
-> > > 
-> > > When we call ->readahead from the VFS, the VFS has decided which pages
-> > > are going to be the most useful to bring in, but it doesn't know how
-> > > pages are bundled together into blocks.  As I've learned from talking to
-> > > Gao Xiang, sometimes the filesystem doesn't know either, so this isn't
-> > > something we can teach the VFS.
-> > > 
-> > > We (David) added readahead_expand() recently to let the filesystem
-> > > opportunistically add pages to the page cache "around" the area requested
-> > > by the VFS.  That reduces the number of times the filesystem has to
-> > > decompress the same block.  But it can fail (due to memory allocation
-> > > failures or pages already being present in the cache).  So filesystems
-> > > still have to implement some kind of fallback.
-> > 
-> > Wouldn't it be better to keep the *compressed* data in the cache and
-> > decompress it multiple times if needed rather than decompress it once
-> > and cache the decompressed data?  You would use more CPU time
-> > decompressing multiple times
-> 
-> There is a fairly obvious problem here.   A malicious attacker could
-> "trick" the filesystem into endlessly decompressing the same blocks,
-> which because the compressed data is cached, could cause it to use
-> all CPU, and cause a DOS attack.  Caching the uncompressed data prevents
-> these decompression attacks from occurring so easily.
+OK I have a vmcore file:
+https://dustymabe.fedorapeople.org/bz2011928-vmcore/
 
-Yes, that is another good point. But with artifact memory pressure,
-there is no difference to cache compressed data or decompressed data,
-otherwise these pages will be unreclaimable, reclaim any of cached
-decompressed data will also need decompress the whole pcluster.
+lib/modules/5.14.10-300.fc35.aarch64/vmlinuz
+https://drive.google.com/file/d/1xXM8XGRi_Wzyupbm4MSNteF0rwUzO4GE/view?usp=sharing
 
-The same to zram or zswap or what else software compression solution,
-what we can do is to limit the CPU utilization if any such requirement.
-But that is quite hard for lz4 since in-memory lz4 decompression speed
-is usually fast than the backend storage.
 
-By the way, as far as I know there were some experimental hardware
-accelerator integrated to storage devices. So they don't need to expand
-decompress pages as well. And do inplace I/O only for such devices.
-
-Thanks,
-Gao Xiang
-
-> 
-> Phillip
-> 
-> 
+--
+Chris Murphy
