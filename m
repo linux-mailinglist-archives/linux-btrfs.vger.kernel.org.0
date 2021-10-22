@@ -2,87 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A21437A47
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 17:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6829D437B06
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 18:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbhJVPuC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Oct 2021 11:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S233621AbhJVQit (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Oct 2021 12:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhJVPuB (ORCPT
+        with ESMTP id S233286AbhJVQis (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:50:01 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2463C061764;
-        Fri, 22 Oct 2021 08:47:43 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id v200so7877749ybe.11;
-        Fri, 22 Oct 2021 08:47:43 -0700 (PDT)
+        Fri, 22 Oct 2021 12:38:48 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6212FC061764
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 09:36:30 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id b133-20020a1c808b000000b0032ca4d18aebso232864wmd.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 09:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4B2Sxn3pFr9dpJPSsVYpQ/bawvHk1JsUzzFwizQ4V+s=;
-        b=MJm3TpdoyG0BKXSujIxivO2nZ4IKsfj9V+ipL6QkO0UB6Tn2fiyWbV9g2P0efYyd5s
-         s9cIRFCFfvIvjc2wYOanl1hjVZI77332X1jUrlhj9alEb06jlgE7u04lnrheMSSlMGTp
-         il+mGMd/p0Zl6MP6U9nU9X+Y0NL/ejlIr0kYSsDbIuVBSIvf0bVC9MC0Myu0KGFbpxOm
-         t+8sX+KFOsMaTPzxR6ip2811LrMhFfljJ4Cxh1duXwS9pGW6P941WAqk92ON33i29TY5
-         QYIu2w3S3aQ0MWwAiCBNeJifOSzevDD7LRn8KGRfPMzsq+eiA+loae5PzFnrF10+oQfz
-         b/Og==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=RbU2zIaT/pppMmrpfdMqJ1C/9TMMeqhfXMgWUvrbCTQ=;
+        b=EZXrFHRSdtqHc4pRBkWwWYkFK01nOWrnR2LZJK4bVwql/VY+DX97UHyJXZ5GYzqTKi
+         4z7lPqBb8xDU5aOeeTMXn5BNClh75Ow1bAuD8VBuUE9UW5C94FS+m+qvfN1QOZ/oQxai
+         lGdoOEQjS03PvYBYu5RmXWff4tQ9MepYf9KMd7+JrGbE61cmfWfO496VZhgUugOQG8wV
+         9iTAWjHVKE3qEGhJzNWTiJpgsnDyDtcOXnKzqrj3b15GyK7onjpxjU1yY/kj/8OiSvsM
+         eGRrUoAedjce95CEIwq1gXmaN6W9paWb3V5QQ38MAMvpCwxJLpkxLBwFg6bQHKH6iEhj
+         fP5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4B2Sxn3pFr9dpJPSsVYpQ/bawvHk1JsUzzFwizQ4V+s=;
-        b=vZgr5BKfUygFT7VnuE++qD/DP0kcUyQFVJ4b77RYsT7MgPcBDPNysaNdXfCRS0deOn
-         RiTQay5okxQWcUATY+k3dsAZRXlzO1phueBuUhopO5XLfMg72xuq0rT5IbLebHdMVuAw
-         r2FamLsJyVuTGlcZNHgFvqaw/pBYtL1yqOeuv9ZiM0zPFb496Vv0LEI0XiBW2RqagcPK
-         9+cJ+bk8Vqc+PlPHF6Lm0M6eEfO50wcjn1ir7D06RWhutbxAm8Y3NIsTA3VmvPq9l6Rh
-         aYBEyj+sXzVp+S2zb7o7c/aFfK9c//ZxVXNA/SbHHsprcTyeeuWecgcxbKjCik3ijDq3
-         jdBg==
-X-Gm-Message-State: AOAM530PTqBiLQZ+XNjH3i27FBXlVLFNOVzV91EaOmexSDz1uKvb2HFO
-        0LN1Cv49+dTXhM/kKyX3vl7ZWhpnCOdTwk/egW3wJXygtuo=
-X-Google-Smtp-Source: ABdhPJww604WUYgiZANjXsreAgGpm5171zY5N0M3eiv8Q2XBoJ7jOf8znittxWM2VFPs1eOKP9y5kNblrG1mDh8/ZSk=
-X-Received: by 2002:a25:ac21:: with SMTP id w33mr495733ybi.43.1634917662783;
- Fri, 22 Oct 2021 08:47:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=RbU2zIaT/pppMmrpfdMqJ1C/9TMMeqhfXMgWUvrbCTQ=;
+        b=GXS7dAxKDpRD+S2hPIqayyQaBgCYB5cQ+dRow/01zEPZEsBQCtIFnPysvSHZEhrhjq
+         kkPURFXii9GgUPrur8H3NEpwiV9OMv7kvIgwryqwukkeE6cb6v63XZa35fteVg17EvWi
+         VkQ1fSAbBYlteF7+/pXZ3RdXvnIc0CPvzHf6zWV1JAB3zBNBj5yT4JXcmxFkvT0i2yOs
+         EUtNlIPxAQJLvWnCR9KD77M+efsGqf+jo9j8Wq77qMTkW/4eJxk253aEMfR7aGZzsbV7
+         fPht5fCmrwGkLsekBYFXD9S8S4hCXo3GU1TFCil3SPnayzx2+FCeOF58fSGQZwGj4v2b
+         0Rig==
+X-Gm-Message-State: AOAM530+BnYCDB+qVMJT8rXvc/t+LOmK6jM7sd0W8DOIzInEfcOm+zMZ
+        hIO431TjcraJ8KQ/D2riy2E=
+X-Google-Smtp-Source: ABdhPJwx8ZDu0BkRxyJvDuLyhP9U8YLhnIIwPz5pqxeLocj8c5wLsB5bv7bPhlUpwGKydiS2X8vVfw==
+X-Received: by 2002:a05:600c:2156:: with SMTP id v22mr833740wml.116.1634920589051;
+        Fri, 22 Oct 2021 09:36:29 -0700 (PDT)
+Received: from arch.localnet ([213.194.148.250])
+        by smtp.gmail.com with ESMTPSA id g33sm7528124wmp.45.2021.10.22.09.36.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Oct 2021 09:36:28 -0700 (PDT)
+From:   Diego Calleja <diegocg@gmail.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: btrfs.wiki.k.org and git-based update workflow
+Date:   Fri, 22 Oct 2021 18:36:33 +0200
+Message-ID: <12904812.uLZWGnKmhe@arch>
+In-Reply-To: <20211022141200.GK20319@twin.jikos.cz>
+References: <20211022141200.GK20319@twin.jikos.cz>
 MIME-Version: 1.0
-References: <YXGyq+buM79A1S0L@relinquished.localdomain>
-In-Reply-To: <YXGyq+buM79A1S0L@relinquished.localdomain>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Fri, 22 Oct 2021 11:47:07 -0400
-Message-ID: <CAEg-Je-r9uxAsFm427nGS+1pPJU-7Dw9NikUvZVLFvzg9PfC4Q@mail.gmail.com>
-Subject: Re: Btrfs Fscrypt Design Document
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 21, 2021 at 2:35 PM Omar Sandoval <osandov@osandov.com> wrote:
->
-> Hello,
->
-> I've been working on adding fscrypt support to Btrfs. Btrfs has some
-> features (namely, reflinks and snapshots) that don't work well with the
-> existing fscrypt encryption policies. I've been discussing and
-> prototyping how to support these Btrfs features with fscrypt, so I
-> figured it was high time I write it down and loop in the fscrypt
-> developers as well.
->
-> Here is the Google Doc:
-> https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQ=
-W3XuII/edit?usp=3Dsharing
->
-> Please feel free to comment there or via email.
->
+El viernes, 22 de octubre de 2021 16:12:00 (CEST) David Sterba escribi=F3:
+> Current status is quite unpleasant, the number of active editors is 1
+> (me), with other occasional contributions. I somehow feel that the wiki
+> concept as community editing does not work, specifically for our wiki,
+> or maybe in general, anymore.
 
-This looks great! I'm looking over it and leaving comments in the doc.
+I would like to mention that I have tried to edit the wiki a couple of times
+along the years, and somehow I was not able to get an account,  log in, or
+recover my account (if I ever created one). Perhaps it's just me and others
+can use it just fine.
+
+In any case, it's worth noticing that the ext4 and xfs wikis are in worse=20
+shape, but with the improvements to the kernel doc infrastructure,
+at least ext4 maintains some great documentation there instead of at the
+wiki (eg https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
+
+It is also worth noting that while the kernel wikis are not very active, lo=
+ts=20
+of semi-official content are generated in other places (eg the arch wiki).
+
+Diego
 
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
