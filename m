@@ -2,97 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6007B4371A5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 08:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBA14371D4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 08:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhJVGVZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Oct 2021 02:21:25 -0400
-Received: from eu-shark1.inbox.eu ([195.216.236.81]:36496 "EHLO
-        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhJVGVV (ORCPT
+        id S230428AbhJVGh4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Oct 2021 02:37:56 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44434 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhJVGh4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:21:21 -0400
-Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
-        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id E94336C008CC;
-        Fri, 22 Oct 2021 09:19:03 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
-        t=1634883543; bh=/3rXM3v9XnidTCNlzKBLjCRxMaTDbzI+t/wuZES1fxI=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to;
-        b=fjpmIlTlUg2CV/Slmz/BdhVgaGI26wmDzF0WtwOs0jNyZLbDyXYyg1MUe7qFbLNLS
-         uGQMcBK9bfcjYi0mqIWAhHDppuJ4JaIu7cUxWuQLi1Fn/r2qH1VcxVvDGgUbgIslCB
-         agQIqj8kTv9MFbVktaoVk6+Ub9VfOiC7BgmXmXZg=
-Received: from localhost (localhost [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id D39BE6C008CE;
-        Fri, 22 Oct 2021 09:19:03 +0300 (EEST)
-Received: from eu-shark1.inbox.eu ([127.0.0.1])
-        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
-        with ESMTP id JX3zkYaoj1NE; Fri, 22 Oct 2021 09:19:03 +0300 (EEST)
-Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
-        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 280B86C008CC;
-        Fri, 22 Oct 2021 09:19:03 +0300 (EEST)
-Received: from nas (unknown [117.62.172.224])
-        (Authenticated sender: l@damenly.su)
-        by mail.inbox.eu (Postfix) with ESMTPA id 62CDF1BE01CB;
-        Fri, 22 Oct 2021 09:19:01 +0300 (EEST)
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <e18c983f-b197-4fc5-8030-cc4273eda881@suse.com>
- <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
- <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com>
- <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
- <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com>
- <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
- <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
- <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
- <bl3mimya.fsf@damenly.su> <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
- <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
- <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
- <7de9iylb.fsf@damenly.su>
- <CAJCQCtSUDSvMvbk1RmfTzBQ=UiZHrDeG6PE+LQK5pi_ZMCSp6A@mail.gmail.com>
- <35owijrm.fsf@damenly.su>
- <CAJCQCtS-QhnZm2X_k77BZPDP_gybn-Ao_qPOJhXLabgPHUvKng@mail.gmail.com>
- <9b2cd532-3abc-13db-0c51-c604b8c1d227@suse.com>
-User-agent: mu4e 1.7.0; emacs 27.2
-From:   Su Yue <l@damenly.su>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
-Date:   Fri, 22 Oct 2021 14:17:22 +0800
-In-reply-to: <9b2cd532-3abc-13db-0c51-c604b8c1d227@suse.com>
-Message-ID: <lf2lh99s.fsf@damenly.su>
+        Fri, 22 Oct 2021 02:37:56 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1FD871FD59;
+        Fri, 22 Oct 2021 06:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1634884538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aU+GGUZR+JbcOgvKpGdMDYJHC4yv0Y07Dxz9R6inlGk=;
+        b=tiUe1Qbm0QmYXsnY+Snk0m0N8HGHNf5bIAmMrI35wfggei9LDLwkIN2/A5vqVkeZjT2oNp
+        Y20oc2VjBOSa2XdzWVFaNYEZ8QqXyRsKaqXU1W60gcjVjnIsfYgjSSSmYR30A18t4hxwk3
+        UAMnByeuPg3gDhBadw4q8Ipp1QKu3Bw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD1C913A17;
+        Fri, 22 Oct 2021 06:35:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9VpzL7lbcmHZDAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Fri, 22 Oct 2021 06:35:37 +0000
+Subject: Re: [PATCH v11 09/10] btrfs-progs: send: stream v2 ioctl flags
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <cover.1630514529.git.osandov@fb.com>
+ <9228a836d43b1d721fbdbd662e1c8558cb27be67.1630515568.git.osandov@fb.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <b5f0cc44-6900-8cb8-a21e-4289102dbe23@suse.com>
+Date:   Fri, 22 Oct 2021 09:35:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: OK
-X-ESPOL: 6N1mkZYsbjOljF6gQXPdBAIxs1k6UZ6b55TE3V0G3GeDUSOFf08TVhKpnGt0U366uiM=
+In-Reply-To: <9228a836d43b1d721fbdbd662e1c8558cb27be67.1630515568.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-On Fri 22 Oct 2021 at 09:02, Nikolay Borisov <nborisov@suse.com>=20
-wrote:
 
-> On 22.10.21 =D0=B3. 5:36, Chris Murphy wrote:
->> OK I have a vmcore file:
->> https://dustymabe.fedorapeople.org/bz2011928-vmcore/
->>
->> lib/modules/5.14.10-300.fc35.aarch64/vmlinuz
->> https://drive.google.com/file/d/1xXM8XGRi_Wzyupbm4MSNteF0rwUzO4GE/view?u=
-sp=3Dsharing
->
-> In order to open the dump we require the vmlinux as well as the=20
-> debug
-> vmlinuz and also btrfs.ko.debug file as well.
->
-kernel-debuginfo-5.14.10-300.fc35.aarch64.rpm is on
-https://koji.fedoraproject.org/koji/buildinfo?buildID=3D1843224
+On 1.09.21 г. 20:01, Omar Sandoval wrote:
+> From: Boris Burkov <boris@bur.io>
+> 
+> To make the btrfs send ioctl use the stream v2 format requires passing
+> BTRFS_SEND_FLAG_STREAM_V2 in flags. Further, to cause the ioctl to emit
+> encoded_write commands for encoded extents, we must set that flag as
+> well as BTRFS_SEND_FLAG_COMPRESSED. Finally, we bump up the version in
+> send.h as well, since we are now fully compatible with v2.
+> 
+> Add two command line arguments to btrfs send: --stream-version and
+> --compressed-data. --stream-version requires an argument which it parses
+> as an integer and sets STREAM_V2 if the argument is 2. --compressed-data
+> does not require an argument and automatically implies STREAM_V2 as well
+> (COMPRESSED alone causes the ioctl to error out).
+> 
+> Some examples to illustrate edge cases:
+> 
+> // v1, old format and no encoded_writes
+> btrfs send subvol
+> btrfs send --stream-version 1 subvol
+> 
+> // v2 and compressed, we will see encoded_writes
+> btrfs send --compressed-data subvol
+> btrfs send --compressed-data --stream-version 2 subvol
+> 
+> // v2 only, new format but no encoded_writes
+> btrfs send --stream-version 2 subvol
+> 
+> // error: compressed needs version >= 2
+> btrfs send --compressed-data --stream-version 1 subvol
+> 
+> // error: invalid version (not 1 or 2)
+> btrfs send --stream-version 3 subvol
+> btrfs send --compressed-data --stream-version 0 subvol
+> btrfs send --compressed-data --stream-version 10 subvol
 
---
-Su
->>
->>
->> --
->> Chris Murphy
->>
+
+Why would we want to predicate the compressed writes usage on anything
+other than the stream version?
+
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>  Documentation/btrfs-send.asciidoc | 16 ++++++++-
+>  cmds/send.c                       | 54 ++++++++++++++++++++++++++++++-
+>  ioctl.h                           | 17 +++++++++-
+>  libbtrfsutil/btrfs.h              | 17 +++++++++-
+>  send.h                            |  2 +-
+>  5 files changed, 101 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/btrfs-send.asciidoc b/Documentation/btrfs-send.asciidoc
+> index c4a05672..202bcd97 100644
+> --- a/Documentation/btrfs-send.asciidoc
+> +++ b/Documentation/btrfs-send.asciidoc
+> @@ -55,7 +55,21 @@ send in 'NO_FILE_DATA' mode
+>  The output stream does not contain any file
+>  data and thus cannot be used to transfer changes. This mode is faster and
+>  is useful to show the differences in metadata.
+> --q|--quiet::::
+> +
+> +--stream-version <1|2>::
+> +Use the given send stream version. The default is 1. Version 2 encodes file
+> +data slightly more efficiently; it is also required for sending compressed data
+> +directly (see '--compressed-data'). Version 2 requires at least btrfs-progs
+> +5.12 on both the sender and receiver and at least Linux 5.12 on the sender.
+> +
+
+The version of progs needs to be adjusted but I assume this will be done
+by David when this patchset is merged as we don't have a target ATM.
+
+> +--compressed-data::
+> +Send data that is compressed on the filesystem directly without decompressing
+> +it. If the receiver supports encoded I/O (see `encoded_io`(7)), it can also
+> +write it directly without decompressing it. Otherwise, the receiver will fall
+> +back to decompressing it and writing it normally. This implies
+> +'--stream-version 2'.
+> +
+> +-q|--quiet::
+>  (deprecated) alias for global '-q' option
+>  -v|--verbose::
+>  (deprecated) alias for global '-v' option
+> diff --git a/cmds/send.c b/cmds/send.c
+> index 3bfc69f5..80eb2510 100644
+> --- a/cmds/send.c
+> +++ b/cmds/send.c
+> @@ -452,6 +452,21 @@ static const char * const cmd_send_usage[] = {
+>  	"                 does not contain any file data and thus cannot be used",
+>  	"                 to transfer changes. This mode is faster and useful to",
+>  	"                 show the differences in metadata.",
+> +	"--stream-version <1|2>",
+> +	"                 Use the given send stream version. The default is",
+> +	"                 1. Version 2 encodes file data slightly more",
+> +	"                 efficiently; it is also required for sending",
+> +	"                 compressed data directly (see --compressed-data).",
+> +	"                 Version 2 requires at least btrfs-progs 5.12 on both",
+> +	"                 the sender and receiver and at least Linux 5.12 on the",
+> +	"                 sender.",
+
+Ditto
+
+<snip>
