@@ -2,66 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10644373A3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 10:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C1F4373C6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 10:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbhJVI25 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Oct 2021 04:28:57 -0400
-Received: from out20-97.mail.aliyun.com ([115.124.20.97]:54612 "EHLO
-        out20-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231984AbhJVI24 (ORCPT
+        id S232154AbhJVInv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Oct 2021 04:43:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:37232 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhJVInu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Oct 2021 04:28:56 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2796879|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00464205-0.000276317-0.995082;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Lg.IdEP_1634891197;
-Received: from T640.e16-tech.com(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Lg.IdEP_1634891197)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Fri, 22 Oct 2021 16:26:37 +0800
-From:   wangyugui <wangyugui@e16-tech.com>
-To:     linux-btrfs@vger.kernel.org, l@damenly.su
-Cc:     wangyugui <wangyugui@e16-tech.com>
-Subject: [PATCH] btrfs: fix CHECK_INTEGRITY warning when !QUEUE_FLAG_WC
-Date:   Fri, 22 Oct 2021 16:26:37 +0800
-Message-Id: <20211022082637.50880-1-wangyugui@e16-tech.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211022130742.7119.409509F4@e16-tech.com>
-References: <20211022130742.7119.409509F4@e16-tech.com>
+        Fri, 22 Oct 2021 04:43:50 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2E471212C8;
+        Fri, 22 Oct 2021 08:41:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1634892092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jUTA5Jw5vXR7hfBklBPTGzgJVoiY+oGxN0ZIH2ohiuU=;
+        b=hUeet1mvoGA5h/fTMMNRWlNcPBNVd/vMlJXCdqzUYqCN21jWa8ML3xIM6eneby/KN3MBMv
+        r+gStONFMg8gxkY48tjc6Z0Ol2/9ATChBGk3rx5XV2JzpG+CBKffrwj1CzkukmX+P54MoI
+        tG9+6ycKKO6eEOPoQ97jRJBptPjACDA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1634892092;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jUTA5Jw5vXR7hfBklBPTGzgJVoiY+oGxN0ZIH2ohiuU=;
+        b=93TfJ6AlqJHa9yXjCPyODn6CTm5FhUSb9kiJtGJhmueazloUFAr8rZS/ygrMCciVWT+AeN
+        XIUcYzyPA9K4XXCg==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 0A738A3B81;
+        Fri, 22 Oct 2021 08:41:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id B2BB51E11B6; Fri, 22 Oct 2021 10:41:27 +0200 (CEST)
+Date:   Fri, 22 Oct 2021 10:41:27 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Phillip Susi <phill@thesusis.net>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+        linux-bcache@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Subject: Re: Readahead for compressed data
+Message-ID: <20211022084127.GA1026@quack2.suse.cz>
+References: <YXHK5HrQpJu9oy8w@casper.infradead.org>
+ <87tuh9n9w2.fsf@vps.thesusis.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tuh9n9w2.fsf@vps.thesusis.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-xfstest/btrfs/220 tigger a check-integrity warning when
-1) CONFIG_BTRFS_FS_CHECK_INTEGRITY=y
-2) xfstest/btrfs/220 run on a disk with WCE=1
+On Thu 21-10-21 21:04:45, Phillip Susi wrote:
+> 
+> Matthew Wilcox <willy@infradead.org> writes:
+> 
+> > As far as I can tell, the following filesystems support compressed data:
+> >
+> > bcachefs, btrfs, erofs, ntfs, squashfs, zisofs
+> >
+> > I'd like to make it easier and more efficient for filesystems to
+> > implement compressed data.  There are a lot of approaches in use today,
+> > but none of them seem quite right to me.  I'm going to lay out a few
+> > design considerations next and then propose a solution.  Feel free to
+> > tell me I've got the constraints wrong, or suggest alternative solutions.
+> >
+> > When we call ->readahead from the VFS, the VFS has decided which pages
+> > are going to be the most useful to bring in, but it doesn't know how
+> > pages are bundled together into blocks.  As I've learned from talking to
+> > Gao Xiang, sometimes the filesystem doesn't know either, so this isn't
+> > something we can teach the VFS.
+> >
+> > We (David) added readahead_expand() recently to let the filesystem
+> > opportunistically add pages to the page cache "around" the area requested
+> > by the VFS.  That reduces the number of times the filesystem has to
+> > decompress the same block.  But it can fail (due to memory allocation
+> > failures or pages already being present in the cache).  So filesystems
+> > still have to implement some kind of fallback.
+> 
+> Wouldn't it be better to keep the *compressed* data in the cache and
+> decompress it multiple times if needed rather than decompress it once
+> and cache the decompressed data?  You would use more CPU time
+> decompressing multiple times, but be able to cache more data and avoid
+> more disk IO, which is generally far slower than the CPU can decompress
+> the data.
 
-In write_dev_flush(), submit_bio(REQ_SYNC | REQ_PREFLUSH) can be skipped when
-!QUEUE_FLAG_WC. but btrfsic_submit_bio() != submit_bio() when CONFIG_BTRFS_FS_CHECK_INTEGRITY
+Well, one of the problems with keeping compressed data is that for mmap(2)
+you have to have pages decompressed so that CPU can access them. So keeping
+compressed data in the page cache would add a bunch of complexity. That
+being said keeping compressed data cached somewhere else than in the page
+cache may certainly me worth it and then just filling page cache on demand
+from this data...
 
-Signed-off-by: wangyugui <wangyugui@e16-tech.com>
----
- fs/btrfs/disk-io.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 355ea88..7b17357 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3971,8 +3971,14 @@ static void write_dev_flush(struct btrfs_device *device)
- 	struct request_queue *q = bdev_get_queue(device->bdev);
- 	struct bio *bio = device->flush_bio;
- 
-+	#ifndef CONFIG_BTRFS_FS_CHECK_INTEGRITY
-+	/*
-+	* submit_bio(REQ_SYNC | REQ_PREFLUSH) can be skipped when !QUEUE_FLAG_WC.
-+	* but btrfsic_submit_bio() != submit_bio() when CONFIG_BTRFS_FS_CHECK_INTEGRITY
-+	*/
- 	if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
- 		return;
-+	#endif
- 
- 	bio_reset(bio);
- 	bio->bi_end_io = btrfs_end_empty_barrier;
+								Honza
 -- 
-2.32.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
