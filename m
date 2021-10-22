@@ -2,91 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CA8437EF6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 21:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CADD437F2E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 22:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbhJVUB5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Oct 2021 16:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233412AbhJVUB4 (ORCPT
+        id S233799AbhJVURl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Oct 2021 16:17:41 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57122 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232089AbhJVURl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Oct 2021 16:01:56 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42ABEC061766
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 12:59:38 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id t184so4260773pgd.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 12:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qY1BZeI5POuERI11qKEcs4RSdS1A5Jda8Gfc5VjH1Y0=;
-        b=qpnzO/vOO9FDQsF0rbKAz4gUb+I26z9Eh5PbFSktLG+1C6QvPyH5xynwCcYlkba3HA
-         7M4RRul94L/OOcvErFKXkfv8qnIxFA3pcZimWIxCszRruzJuKvKXw9z5ypuS/E3Y3leC
-         dG8UVqwcH1+1b3KYIG7AL7i62JJK3bIsrhJhpgItredmt7s8+Dkymg4b9PxHZGOim+1w
-         iyhLHZc1CuzWSgcT7nneVnJ0NVA8trACgzJtyAp6WB5P9/D0gaoctc4YR4lBeqjXOI3U
-         bfdR+0lw++Sa8mr9kxe0u9reWYS01FHSq++rKVCcoAl/jFslj2Zh/yptndHjjAO5O/iY
-         m/YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qY1BZeI5POuERI11qKEcs4RSdS1A5Jda8Gfc5VjH1Y0=;
-        b=fX7K0v2Cw1hjjXTaUdnLDmb3PFfjVOPcxgVA8s/LNFtVN7qh0pxHj88kRri2WAR1sd
-         zTU3Tr9mtPNYdm2KIKWKzfCsrQHKsWXa8Xcgo1WY1KUA4fDqowC49X6Z40XbwmyjGKVz
-         frtU0PHzt49Jpa3Hj5InQd0OwnB1AuVngdQGb67osEEaBnl2Hj/pkOcbf8ARMv41VGzS
-         oklVkGIKOaLNvH30vcCT3pocwK4sDGPuDxJZQkYHt56YTuij7Vzolx0MJzGtQawEgG+p
-         MBOWNOLGY284tv306iV4RdgIa3KUfb91sF+hVP4RgYoG1/jqUrzlk3WI7LUkJPCnI5GV
-         qexw==
-X-Gm-Message-State: AOAM532zNqn9n1L5ldgabLUoy2sQHLZMgGQ4e/rtRRJDuh02N1J198U7
-        I/F8ljJdLY+83pXPXs4gN0j/KQ==
-X-Google-Smtp-Source: ABdhPJxohfdq1ij7Jk/RUNVnEnV1sKrOFH1BZvfRPO1ObZuBiSKjWA3l+yrLksPps6yehFRyTfR2DA==
-X-Received: by 2002:a63:9557:: with SMTP id t23mr1348700pgn.428.1634932777612;
-        Fri, 22 Oct 2021 12:59:37 -0700 (PDT)
-Received: from relinquished.localdomain ([2620:10d:c090:400::5:7904])
-        by smtp.gmail.com with ESMTPSA id k3sm13601158pjg.43.2021.10.22.12.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 12:59:37 -0700 (PDT)
-Date:   Fri, 22 Oct 2021 12:59:35 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Vadim Akimov <lvd.mhm@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, kernel-team@fb.com
-Subject: Re: Btrfs Fscrypt Design Document
-Message-ID: <YXMYJ9nOd/88T8gc@relinquished.localdomain>
-References: <YXGyq+buM79A1S0L@relinquished.localdomain>
- <CAMnT83tLqZU-bdsOJX9L==c82EvmQ2QTiOYCLch=kasscU+MiA@mail.gmail.com>
+        Fri, 22 Oct 2021 16:17:41 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2B0D81FD61;
+        Fri, 22 Oct 2021 20:15:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1634933722; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=rq8HbjLBNcuj5Y+rDUERbP3x4jBlExy8N6+dOyBNy1c=;
+        b=CA3h9owT3mQp9SOGGhHRLQhCSAHXVfAY9ssoIJbhrn1Cwe/RW3JfWTx8rh7cjhu0Hq+ILg
+        Zm8kNxnL564YCa1OJ6Ry+jyU9ZUMvmVKVTfj2Kct/UMvZKbDMgPZphATV2JXVMrsFQU7E0
+        D4yQtWbAs7Xq2oCV2yLC+dA3NBnImZ0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1634933722;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=rq8HbjLBNcuj5Y+rDUERbP3x4jBlExy8N6+dOyBNy1c=;
+        b=T0WM7bLdUtZpqVV97hTsJl8/fRxniNCJMQNUm8+0bzeeaFRXxeacYVDftdr7XyXiQOg4zX
+        0Ox4MwUpSNDwA4BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3A0D11348D;
+        Fri, 22 Oct 2021 20:15:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0LO/I9gbc2HUdgAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>); Fri, 22 Oct 2021 20:15:20 +0000
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: [RFC PATCH 0/5] Shared memory for shared extents
+Date:   Fri, 22 Oct 2021 15:15:00 -0500
+Message-Id: <cover.1634933121.git.rgoldwyn@suse.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMnT83tLqZU-bdsOJX9L==c82EvmQ2QTiOYCLch=kasscU+MiA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 10:14:11PM +0300, Vadim Akimov wrote:
-> Hi!
-> 
-> On Thu, 21 Oct 2021 at 21:34, Omar Sandoval <osandov@osandov.com> wrote:
-> 
-> > Here is the Google Doc:
-> >
-> > https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQW3XuII/edit?usp=sharing
-> >
-> 
-> As I've understood, you are inclined to have single key and only change IV
-> for each extent. This might be dangerous as per this answer (and comments
-> below):  https://crypto.stackexchange.com/a/70630/71448
+From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Correct me if I'm wrong, but I don't think this is a practical concern
-in the fscrypt threat model. The birthday bound for AES is 256 EiB
-(2^(128 / 2) blocks * 16 bytes per block). The theoretical maximum size
-of a Btrfs filesystem is 16 EiB (since we use 64-bit byte addresses).
-fscrypt protects against a "single point-in-time permanent offline
-compromise". This means that the attacker only has what was on disk at
-the time that they stole your disk. In this case, they won't have enough
-data for a birthday attack. I'm curious where that post got the
-"multiple petabytes" number.
+This is an attempt to reduce the memory footprint by using a shared
+page(s) for shared extent(s) in the filesystem. I am hoping to start a
+discussion to iron out the details for implementation.
+
+Abstract
+If mutiple files share an extent, reads from each of the files would
+read individual page copies in the inode pagecache mapping, leading to
+waste of memory. Instead add the read pages of the filesystem to
+underlying device's bd_inode as opposed to file's inode mapping. The
+cost is that file offset to device offset conversion happens early in
+the read cycle.
+
+Motivation:
+ - Reduce memory usage for shared extents
+ - Ease DAX implementation for shared extents
+ - Reduce Container memory utilization
+
+Implementation
+In the read path, pages are read and added to the block_device's
+inode's mapping as opposed to the inode's mapping. This is limited
+to reads, while write's (and read before writes) still go through
+inode's i_mapping. The path does check the inode's i_mapping before
+falling back to block device's i_mapping to read pages which may be
+dirty. The cost of the operation is file_to_device_offset() translation
+on reads. The translation should return a valid value only in case
+the file is CoW.
+
+This also means that page->mapping may not point to file's mapping.
+
+Questions:
+1. Are there security implications for performing this for read-only
+pages? An alternate idea is to add a "struct fspage", which would be
+pointed by file's mapping and would point to the block device's page.
+Multiple files with shared extents have their own independent fspage
+pointing to the same page mapped to block device's mapping.
+Any security parameters, if required, would be in this structure. The
+advantage of this approach is it would be more flexible with respect to
+CoW when the page is dirtied after reads. With the current approach, a
+read for write is an independent operation so we can end up with two
+copies of the same page. This implementation got complicated too quickly.
+
+2. Should pages be dropped after writebacks (and clone_range) to avoid
+duplicate copies?
+
+Limitations:
+1. The filesystem have exactly one underlying device.
+2. Page size should be equal to filesystem block size
+
+Goldwyn Rodrigues (5):
+  mm: Use file parameter to determine bdi
+  mm: Switch mapping to device mapping
+  btrfs: Add sharedext mount option
+  btrfs: Set s_bdev for btrfs super block
+  btrfs: function to convert file offset to device offset
+
+ fs/btrfs/ctree.h   |  1 +
+ fs/btrfs/file.c    | 42 ++++++++++++++++++++++++++++++++++++++++--
+ fs/btrfs/super.c   |  7 +++++++
+ include/linux/fs.h |  7 ++++++-
+ mm/filemap.c       | 34 ++++++++++++++++++++++++++--------
+ mm/readahead.c     |  3 +++
+ 6 files changed, 83 insertions(+), 11 deletions(-)
+
+-- 
+2.33.1
+
