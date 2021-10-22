@@ -2,110 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A6043797F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 17:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E176A437A3A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 17:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233253AbhJVPEp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Oct 2021 11:04:45 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45946 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbhJVPEn (ORCPT
+        id S233412AbhJVPpK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Oct 2021 11:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231453AbhJVPpJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Oct 2021 11:04:43 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BDBEE1FD3D;
-        Fri, 22 Oct 2021 15:02:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634914944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pBAA1ivbQm2C1nd9b9ushXsYAaZMPsu4t183RUWC3dc=;
-        b=UA4eCDeITLZO/atW7vfB2RMSksMfqEwLEIDrxrZ93tZvLygSpoJWXGQYSIGV1OVndWxiF5
-        fxdo86lJPlR/P8/Pe1BN8sC86YxGWdyUROqiohyuomZ26N/tVmjjXr90yMvuf890PDNW5p
-        yoej9QO9ekpD4GxRERI3Qjr6MeQdwP4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9608B13CDA;
-        Fri, 22 Oct 2021 15:02:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id /zAQIoDScmHrDAAAMHmgww
-        (envelope-from <nborisov@suse.com>); Fri, 22 Oct 2021 15:02:24 +0000
-Subject: Re: [PATCH] btrfs: Remove spurious unlock/lock of unused_bgs_lock
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <20211014070311.1595609-1-nborisov@suse.com>
- <20211021170410.GI20319@twin.jikos.cz>
- <1802ecc2-b8d4-0982-6488-f777005b7fc7@suse.com>
- <20211022141424.GL20319@twin.jikos.cz>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <60c9d669-29cd-3f2f-0eee-cfb977ad0a90@suse.com>
-Date:   Fri, 22 Oct 2021 18:02:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 22 Oct 2021 11:45:09 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B54C061764
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 08:42:51 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id b9so7915690ybc.5
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 08:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=b0LfccLNyHx7KhunxY9/5x/ug/RRFZF2rC8gmoKeVLk=;
+        b=KeOgVPlX3jLM3QZ4QlpE47lLiyzavn+uCMz9fNaNyJPv4AdftZKpiW09TP9twphg9z
+         bbCFhMekumUdhdySXUZ/2x6N4uJJh5Ocf2zawmPQcscaZhBE+kehx4kq+h9JtkQY7LeL
+         450F3+sl2Ce1n/U9LgLINaDYeB2CK2XflhXJVeo32CHZknPm+M+znz0WCNh2aGU8UBjA
+         u7aNM/7mV6y6D/9gGbCfgKH8X6SqnxU7M+jbldgHqiqCO/lc85eGgd6j9irMwbPrsvLp
+         ZEXiIRcg+2sSqhFeDIlLWNg4K1CtoGMWAotVa29XuoO8o385MMxCbi0iwn/6ZoaNbIkx
+         zzyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=b0LfccLNyHx7KhunxY9/5x/ug/RRFZF2rC8gmoKeVLk=;
+        b=ivnkxiXJ8qRfvGATQwxoH/DQK+z5gc7gNQWtiztiGpbjtq5YAMi4FBvbRBHObrW1yC
+         aoOpiJ+blv3BjnWRRgtjGUtCgDOQK0B120LoU5R4LeqNRM31MGh+XNFltogXZ2PzSxu/
+         S6BAygaIGB0XMlT1xHpt/4DMboL8V8PH549ofCcigs9tb6EaasAk++74AOWx/HSBxcTi
+         BOROjsT0zLxw4sH8epwuTfJP1nApkPX6VdG66ziGxXOUbyapOACgWwsyH0qli8RZOMMX
+         YV+LFPNe3jrtM70gnIxcfeXqKv2OJ60yUcKDZlQY+UYA8fiNtaXSc98SEnsZqQLM6LZ3
+         ETyQ==
+X-Gm-Message-State: AOAM532YMzmPngwWlIVbNBAsoDBFVGU3OaFQAJ3UGKB5JceO3/QfNpku
+        YmhrAI02jfs5sx8psh3KFfw+9Q0EYF//0WHRKXs=
+X-Google-Smtp-Source: ABdhPJzfH2jnCxXT1luhsZTgyXe8gTyY8hViB6q6i0vO0yiK/lODDaptSlZIGtzOVuJF3Z7U2bCH4537hOlXCzhalfc=
+X-Received: by 2002:a25:68c9:: with SMTP id d192mr496707ybc.476.1634917370221;
+ Fri, 22 Oct 2021 08:42:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211022141424.GL20319@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211022141200.GK20319@twin.jikos.cz>
+In-Reply-To: <20211022141200.GK20319@twin.jikos.cz>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Fri, 22 Oct 2021 11:42:14 -0400
+Message-ID: <CAEg-Je_j=3JgTon1NpNF2PzzWHMracyOWAYHv4CBGoq420f2oQ@mail.gmail.com>
+Subject: Re: btrfs.wiki.k.org and git-based update workflow
+To:     David Sterba <dsterba@suse.cz>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Oct 22, 2021 at 10:14 AM David Sterba <dsterba@suse.cz> wrote:
+>
+> Hi,
+>
+> I'd like to change the way wiki contents is going to be updated, and
+> would like to get some feedback eventually.
+>
+> Current status is quite unpleasant, the number of active editors is 1
+> (me), with other occasional contributions. I somehow feel that the wiki
+> concept as community editing does not work, specifically for our wiki,
+> or maybe in general, anymore.
+>
+> I don't intend to remove the wiki, it's been linked from various places
+> and people are probably used to looking up the info there. What I'd like
+> to change is how the updates appear there.
+>
+> I think the first hurdle is the separate registration. There's 1 new
+> account request per two weeks, but no actual edits following.
+>
+> In addition to direct wiki edits, I'd like to provide a git based
+> workflow, on github. A separate repository would be clean but IMHO
+> harder to discover, so the idea is to reuse btrfs-progs for that purpose.
+>
+> Selected pages from wiki will be "locked", with a disclaimer that they
+> need to be edited via git. Then in btrfs-progs/Documentation will be the
+> raw mediawiki source file. Edit this and send a pull request. I'll do
+> the sync to wiki periodically.
+>
+> The manual pages are now synced like that, so this would allow us to
+> also use the asciidoc format as source.
+>
+> For me personally using a local editor for writing documentation is much
+> more comfortable than the browser textarea. If this would motivate
+> someone else to contribute too, it's worth it.
+>
+> (Other option researched: readthedocs.com, git-based but it has a
+> different structure than wiki and is on another site.)
+>
+
+It'd probably be good if we could eventually convert it to
+Sphinx-based documentation like the rest of the Linux kernel
+documentation. We could use readthedocs or reuse btrfs.kernel.org for
+this.
 
 
-On 22.10.21 г. 17:14, David Sterba wrote:
-> On Fri, Oct 22, 2021 at 09:12:11AM +0300, Nikolay Borisov wrote:
->> On 21.10.21 г. 20:04, David Sterba wrote:
->>> On Thu, Oct 14, 2021 at 10:03:11AM +0300, Nikolay Borisov wrote:
->>>> Since both unused block groups and reclaim bgs lists are protected by
->>>> unused_bgs_lock then free them in the same critical section without
->>>> doing an extra unlock/lock pair.
->>>>
->>>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->>>> ---
->>>>  fs/btrfs/block-group.c | 2 --
->>>>  1 file changed, 2 deletions(-)
->>>>
->>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->>>> index e790ea0798c7..308b8e92c70e 100644
->>>> --- a/fs/btrfs/block-group.c
->>>> +++ b/fs/btrfs/block-group.c
->>>> @@ -3873,9 +3873,7 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
->>>>  		list_del_init(&block_group->bg_list);
->>>>  		btrfs_put_block_group(block_group);
->>>>  	}
->>>> -	spin_unlock(&info->unused_bgs_lock);
->>>>  
->>>> -	spin_lock(&info->unused_bgs_lock);
->>>
->>> That looks correct, I'm not sure about one thing. The calls to
->>> btrfs_put_block_group can be potentaily taking some time if the last
->>> reference is dropped and we need to call btrfs_discard_cancel_work and
->>> several kfree()s. Indirectly there's eg. cancel_delayed_work_sync and
->>> btrfs_discard_schedule_work, so calling all that under unused_bgs_lock
->>> seems quite heavy.
->>
->> btrfs_free_block_groups is called from 2 contexts only:
->>
->> 1. If we error out during mount
->> 2. One of the last things we do during unmount, when all worker threads
->> are stopped.
->>
->> IMO doing the cond_resched_lock would be a premature optimisation and
->> I'd aim for simplicity.
-> 
-> I'm not optimizing anything but rather preventing problems, cond_resched
-> is lightweight and one of the things that's nice to the rest of the
-> system.
-> 
 
-But my patch doesn't change that, even without the patch the problem you
-are hinting at (which I think is moot) can still occur because we the
-final put is still done under the lock. So at the very least it should
-be a different patch.
+
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
