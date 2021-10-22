@@ -2,179 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 453CD437965
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 16:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A6043797F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 17:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbhJVO40 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Oct 2021 10:56:26 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45546 "EHLO
+        id S233253AbhJVPEp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Oct 2021 11:04:45 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45946 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbhJVO4Z (ORCPT
+        with ESMTP id S233143AbhJVPEn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Oct 2021 10:56:25 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 4629E1FD3D;
-        Fri, 22 Oct 2021 14:54:07 +0000 (UTC)
+        Fri, 22 Oct 2021 11:04:43 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BDBEE1FD3D;
+        Fri, 22 Oct 2021 15:02:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1634914447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=z6cfbHy+IqENGMXQBXINpDPwt1EoBPVFc9W8p+udLZU=;
-        b=sVSSgZyEx73qLX7B2kyiGgpfZbQXPTJ6pp0tiuCJCPU6mqW3UrOaIyfIxvP+WnhuUIVRxV
-        yhhOx+KxFZqCTV03qk0NndEVm2UEx6XnDRX6uJASfOyOJIftgaHiyZtKsz+4RkFcQSNAkW
-        qARKoPwuS4YSVJch0QHSobp8vG156Cg=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 3FACDA3B87;
-        Fri, 22 Oct 2021 14:54:07 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 05F79DA7A9; Fri, 22 Oct 2021 16:53:37 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     osandov@osandov.com, nborisov@suse.com,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH v2] btrfs: send: prepare for v2 protocol
-Date:   Fri, 22 Oct 2021 16:53:36 +0200
-Message-Id: <20211022145336.29711-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.33.0
+        t=1634914944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pBAA1ivbQm2C1nd9b9ushXsYAaZMPsu4t183RUWC3dc=;
+        b=UA4eCDeITLZO/atW7vfB2RMSksMfqEwLEIDrxrZ93tZvLygSpoJWXGQYSIGV1OVndWxiF5
+        fxdo86lJPlR/P8/Pe1BN8sC86YxGWdyUROqiohyuomZ26N/tVmjjXr90yMvuf890PDNW5p
+        yoej9QO9ekpD4GxRERI3Qjr6MeQdwP4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9608B13CDA;
+        Fri, 22 Oct 2021 15:02:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /zAQIoDScmHrDAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Fri, 22 Oct 2021 15:02:24 +0000
+Subject: Re: [PATCH] btrfs: Remove spurious unlock/lock of unused_bgs_lock
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20211014070311.1595609-1-nborisov@suse.com>
+ <20211021170410.GI20319@twin.jikos.cz>
+ <1802ecc2-b8d4-0982-6488-f777005b7fc7@suse.com>
+ <20211022141424.GL20319@twin.jikos.cz>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <60c9d669-29cd-3f2f-0eee-cfb977ad0a90@suse.com>
+Date:   Fri, 22 Oct 2021 18:02:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211022141424.GL20319@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is the infrastructure part only, without any new updates, thus safe
-to be applied now and all other changes built on top of it, unless there
-are further comments.
 
----
 
-This is preparatory work for send protocol update to version 2 and
-higher.
+On 22.10.21 г. 17:14, David Sterba wrote:
+> On Fri, Oct 22, 2021 at 09:12:11AM +0300, Nikolay Borisov wrote:
+>> On 21.10.21 г. 20:04, David Sterba wrote:
+>>> On Thu, Oct 14, 2021 at 10:03:11AM +0300, Nikolay Borisov wrote:
+>>>> Since both unused block groups and reclaim bgs lists are protected by
+>>>> unused_bgs_lock then free them in the same critical section without
+>>>> doing an extra unlock/lock pair.
+>>>>
+>>>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>>>> ---
+>>>>  fs/btrfs/block-group.c | 2 --
+>>>>  1 file changed, 2 deletions(-)
+>>>>
+>>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>>>> index e790ea0798c7..308b8e92c70e 100644
+>>>> --- a/fs/btrfs/block-group.c
+>>>> +++ b/fs/btrfs/block-group.c
+>>>> @@ -3873,9 +3873,7 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
+>>>>  		list_del_init(&block_group->bg_list);
+>>>>  		btrfs_put_block_group(block_group);
+>>>>  	}
+>>>> -	spin_unlock(&info->unused_bgs_lock);
+>>>>  
+>>>> -	spin_lock(&info->unused_bgs_lock);
+>>>
+>>> That looks correct, I'm not sure about one thing. The calls to
+>>> btrfs_put_block_group can be potentaily taking some time if the last
+>>> reference is dropped and we need to call btrfs_discard_cancel_work and
+>>> several kfree()s. Indirectly there's eg. cancel_delayed_work_sync and
+>>> btrfs_discard_schedule_work, so calling all that under unused_bgs_lock
+>>> seems quite heavy.
+>>
+>> btrfs_free_block_groups is called from 2 contexts only:
+>>
+>> 1. If we error out during mount
+>> 2. One of the last things we do during unmount, when all worker threads
+>> are stopped.
+>>
+>> IMO doing the cond_resched_lock would be a premature optimisation and
+>> I'd aim for simplicity.
+> 
+> I'm not optimizing anything but rather preventing problems, cond_resched
+> is lightweight and one of the things that's nice to the rest of the
+> system.
+> 
 
-We have many pending protocol update requests but still don't have the
-basic protocol rev in place, the first thing that must happen is to do
-the actual versioning support.
-
-The protocol version is u32 and is a new member in the send ioctl
-struct. Validity of the version field is backed by a new flag bit. Old
-kernels would fail when a higher version is requested. Version protocol
-0 will pick the highest supported version, BTRFS_SEND_STREAM_VERSION,
-that's also exported in sysfs.
-
-The version is still unchanged and will be increased once we have new
-incompatible commands or stream updates.
-
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/send.c            | 22 ++++++++++++++++++++++
- fs/btrfs/send.h            |  7 +++++++
- include/uapi/linux/btrfs.h | 12 ++++++++++--
- 3 files changed, 39 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index afdcbe7844e0..28a26980245d 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -84,6 +84,8 @@ struct send_ctx {
- 	u64 total_send_size;
- 	u64 cmd_send_size[BTRFS_SEND_C_MAX + 1];
- 	u64 flags;	/* 'flags' member of btrfs_ioctl_send_args is u64 */
-+	/* Protocol version compatibility requested */
-+	u32 proto;
- 
- 	struct btrfs_root *send_root;
- 	struct btrfs_root *parent_root;
-@@ -312,6 +314,15 @@ static void inconsistent_snapshot_error(struct send_ctx *sctx,
- 		   sctx->parent_root->root_key.objectid : 0));
- }
- 
-+static bool proto_cmd_ok(const struct send_ctx *sctx, int cmd)
-+{
-+	switch (sctx->proto) {
-+	case 1:	 return cmd < __BTRFS_SEND_C_MAX_V1;
-+	case 2:	 return cmd < __BTRFS_SEND_C_MAX_V2;
-+	default: return false;
-+	}
-+}
-+
- static int is_waiting_for_move(struct send_ctx *sctx, u64 ino);
- 
- static struct waiting_dir_move *
-@@ -7269,6 +7280,17 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
- 
- 	sctx->flags = arg->flags;
- 
-+	if (arg->flags & BTRFS_SEND_FLAG_VERSION) {
-+		if (arg->version > BTRFS_SEND_STREAM_VERSION) {
-+			ret = -EPROTO;
-+			goto out;
-+		}
-+		/* Zero means "use the highest version" */
-+		sctx->proto = arg->version ?: BTRFS_SEND_STREAM_VERSION;
-+	} else {
-+		sctx->proto = 1;
-+	}
-+
- 	sctx->send_filp = fget(arg->send_fd);
- 	if (!sctx->send_filp) {
- 		ret = -EBADF;
-diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
-index de91488b7cd0..23bcefc84e49 100644
---- a/fs/btrfs/send.h
-+++ b/fs/btrfs/send.h
-@@ -48,6 +48,7 @@ struct btrfs_tlv_header {
- enum btrfs_send_cmd {
- 	BTRFS_SEND_C_UNSPEC,
- 
-+	/* Version 1 */
- 	BTRFS_SEND_C_SUBVOL,
- 	BTRFS_SEND_C_SNAPSHOT,
- 
-@@ -76,6 +77,12 @@ enum btrfs_send_cmd {
- 
- 	BTRFS_SEND_C_END,
- 	BTRFS_SEND_C_UPDATE_EXTENT,
-+	__BTRFS_SEND_C_MAX_V1,
-+
-+	/* Version 2 */
-+	__BTRFS_SEND_C_MAX_V2,
-+
-+	/* End */
- 	__BTRFS_SEND_C_MAX,
- };
- #define BTRFS_SEND_C_MAX (__BTRFS_SEND_C_MAX - 1)
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index d7d3cfead056..c1a665d87f61 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -771,10 +771,16 @@ struct btrfs_ioctl_received_subvol_args {
-  */
- #define BTRFS_SEND_FLAG_OMIT_END_CMD		0x4
- 
-+/*
-+ * Read the protocol version in the structure
-+ */
-+#define BTRFS_SEND_FLAG_VERSION			0x8
-+
- #define BTRFS_SEND_FLAG_MASK \
- 	(BTRFS_SEND_FLAG_NO_FILE_DATA | \
- 	 BTRFS_SEND_FLAG_OMIT_STREAM_HEADER | \
--	 BTRFS_SEND_FLAG_OMIT_END_CMD)
-+	 BTRFS_SEND_FLAG_OMIT_END_CMD | \
-+	 BTRFS_SEND_FLAG_VERSION)
- 
- struct btrfs_ioctl_send_args {
- 	__s64 send_fd;			/* in */
-@@ -782,7 +788,9 @@ struct btrfs_ioctl_send_args {
- 	__u64 __user *clone_sources;	/* in */
- 	__u64 parent_root;		/* in */
- 	__u64 flags;			/* in */
--	__u64 reserved[4];		/* in */
-+	__u32 version;			/* in */
-+	__u32 reserved32;
-+	__u64 reserved[3];		/* in */
- };
- 
- /*
--- 
-2.33.0
-
+But my patch doesn't change that, even without the patch the problem you
+are hinting at (which I think is moot) can still occur because we the
+final put is still done under the lock. So at the very least it should
+be a different patch.
