@@ -2,86 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6829D437B06
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 18:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A9F437BC0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 19:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbhJVQit (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Oct 2021 12:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
+        id S233615AbhJVRUs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Oct 2021 13:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233286AbhJVQis (ORCPT
+        with ESMTP id S233563AbhJVRUs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Oct 2021 12:38:48 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6212FC061764
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 09:36:30 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id b133-20020a1c808b000000b0032ca4d18aebso232864wmd.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 09:36:30 -0700 (PDT)
+        Fri, 22 Oct 2021 13:20:48 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67275C061764
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 10:18:30 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id r184so8496392ybc.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Oct 2021 10:18:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=RbU2zIaT/pppMmrpfdMqJ1C/9TMMeqhfXMgWUvrbCTQ=;
-        b=EZXrFHRSdtqHc4pRBkWwWYkFK01nOWrnR2LZJK4bVwql/VY+DX97UHyJXZ5GYzqTKi
-         4z7lPqBb8xDU5aOeeTMXn5BNClh75Ow1bAuD8VBuUE9UW5C94FS+m+qvfN1QOZ/oQxai
-         lGdoOEQjS03PvYBYu5RmXWff4tQ9MepYf9KMd7+JrGbE61cmfWfO496VZhgUugOQG8wV
-         9iTAWjHVKE3qEGhJzNWTiJpgsnDyDtcOXnKzqrj3b15GyK7onjpxjU1yY/kj/8OiSvsM
-         eGRrUoAedjce95CEIwq1gXmaN6W9paWb3V5QQ38MAMvpCwxJLpkxLBwFg6bQHKH6iEhj
-         fP5g==
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rAXB6AO/GRdtUgRfmfyh2ADeiBB2+eCt3CGpSoLu7zI=;
+        b=G+0hXVbkPI/eg9vLJe2V9DraCG+h4GtRDYWzvMe4yxf2nUufAB1kTYAan/dNXHblbd
+         n3yslO5PwRKFVftGs0hdyb52I/lfrVGsuVZc8Og4L3t1N2r8s7trE7IcIh1j3qcerIQV
+         nkP1GFFaotrY9OvwpIsx9gIvhZhKEdzTFV7PGJ5tPu0Cs9DOpT49iYH52Yppu55Sa1kg
+         DY51t9Nw1Y8QepOh1r/aCqRHbZ3MwdacnIGDYRZgO9VwH7MvTCNRw50wsYVgnNChO8UL
+         o2YpMMg6NZdguC/wagW9e5vBELK3m0oTSNQZEi/zIvMZE35GgNjKaQkpt9RrXtOobTj+
+         8TgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RbU2zIaT/pppMmrpfdMqJ1C/9TMMeqhfXMgWUvrbCTQ=;
-        b=GXS7dAxKDpRD+S2hPIqayyQaBgCYB5cQ+dRow/01zEPZEsBQCtIFnPysvSHZEhrhjq
-         kkPURFXii9GgUPrur8H3NEpwiV9OMv7kvIgwryqwukkeE6cb6v63XZa35fteVg17EvWi
-         VkQ1fSAbBYlteF7+/pXZ3RdXvnIc0CPvzHf6zWV1JAB3zBNBj5yT4JXcmxFkvT0i2yOs
-         EUtNlIPxAQJLvWnCR9KD77M+efsGqf+jo9j8Wq77qMTkW/4eJxk253aEMfR7aGZzsbV7
-         fPht5fCmrwGkLsekBYFXD9S8S4hCXo3GU1TFCil3SPnayzx2+FCeOF58fSGQZwGj4v2b
-         0Rig==
-X-Gm-Message-State: AOAM530+BnYCDB+qVMJT8rXvc/t+LOmK6jM7sd0W8DOIzInEfcOm+zMZ
-        hIO431TjcraJ8KQ/D2riy2E=
-X-Google-Smtp-Source: ABdhPJwx8ZDu0BkRxyJvDuLyhP9U8YLhnIIwPz5pqxeLocj8c5wLsB5bv7bPhlUpwGKydiS2X8vVfw==
-X-Received: by 2002:a05:600c:2156:: with SMTP id v22mr833740wml.116.1634920589051;
-        Fri, 22 Oct 2021 09:36:29 -0700 (PDT)
-Received: from arch.localnet ([213.194.148.250])
-        by smtp.gmail.com with ESMTPSA id g33sm7528124wmp.45.2021.10.22.09.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Oct 2021 09:36:28 -0700 (PDT)
-From:   Diego Calleja <diegocg@gmail.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: btrfs.wiki.k.org and git-based update workflow
-Date:   Fri, 22 Oct 2021 18:36:33 +0200
-Message-ID: <12904812.uLZWGnKmhe@arch>
-In-Reply-To: <20211022141200.GK20319@twin.jikos.cz>
-References: <20211022141200.GK20319@twin.jikos.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rAXB6AO/GRdtUgRfmfyh2ADeiBB2+eCt3CGpSoLu7zI=;
+        b=WHYD7pUO2C+7uwwT/o4hBfxQqieVEgI5OcB34mXoYgdJjKDWkLRtewVZoRDcnPYi60
+         1A7qVhGXSPP8tal8cnszKCdnwg4MnE1gPNNb3VnqgJ6ys7yKdnVIIuU88iHf/+DzoA7T
+         mL4wuIom26zgFkGHgQ4S4L2ClineMQlImbPkEMBhtwPoITLpNXhqpl8zKcT1aZqRXgS7
+         wPYt16V/jE+O2K2pbLh2kro45gFwA+akcECFAdbkC7P488u1i8D7pv34Ne6GoMX7slwG
+         0ZkD4qIdPsiKmvB3GRXahWNvnnEPF+bCQC3+zLpEb/HbE57MGB3LDToK7VgYLhBqdUQj
+         bkoA==
+X-Gm-Message-State: AOAM530+7+FiAanO0tvF5gfNRerAfxQzqqreCwRjEI1rl/Olr4WM6Piy
+        VoP3K/GclrKmOJghEWYi46JmlznlgVc7zHtPx44N1g==
+X-Google-Smtp-Source: ABdhPJyIHpgYkpBIleq3K+Fb96KOSGDUmUxJQkIiAXPopf4+cWol/ImYO+2B/gqbICIAQ/GM3Oqms0It4+2On5RE1ZE=
+X-Received: by 2002:a25:4d83:: with SMTP id a125mr1065444ybb.277.1634923109586;
+ Fri, 22 Oct 2021 10:18:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
+ <CAJCQCtSAWqeX_3kapDLr8AzNiGxyrNE7cO_tr3dM-syOKDsDgw@mail.gmail.com>
+ <b1fccb42-da8a-c676-5f0b-1d80319e38ca@suse.com> <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
+ <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com> <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
+ <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
+ <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
+ <bl3mimya.fsf@damenly.su> <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
+ <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
+ <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
+ <7de9iylb.fsf@damenly.su> <CAJCQCtSUDSvMvbk1RmfTzBQ=UiZHrDeG6PE+LQK5pi_ZMCSp6A@mail.gmail.com>
+ <35owijrm.fsf@damenly.su> <CAJCQCtS-QhnZm2X_k77BZPDP_gybn-Ao_qPOJhXLabgPHUvKng@mail.gmail.com>
+ <ff911f0c-9ea5-43b1-4b8d-e8c392f0718e@suse.com> <9e746c1c-85e5-c766-26fa-a4d83f1bfd34@suse.com>
+In-Reply-To: <9e746c1c-85e5-c766-26fa-a4d83f1bfd34@suse.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Fri, 22 Oct 2021 13:18:13 -0400
+Message-ID: <CAJCQCtTHPAHMAaBg54Cs9CRKBLD9hRdA2HwOCBjsqZCwWBkyvg@mail.gmail.com>
+Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Chris Murphy <lists@colorremedies.com>, Su Yue <l@damenly.su>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-El viernes, 22 de octubre de 2021 16:12:00 (CEST) David Sterba escribi=F3:
-> Current status is quite unpleasant, the number of active editors is 1
-> (me), with other occasional contributions. I somehow feel that the wiki
-> concept as community editing does not work, specifically for our wiki,
-> or maybe in general, anymore.
+On Fri, Oct 22, 2021 at 7:43 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+> I also looked at the assembly generated in async_cow_submit to see if
+> anything funny happens while the async_chunk->inode check is performed -
+> everything looks fine. Also given that the extents list is empty and the
+> inode is NULL I'd assume that the "write" side is also correct i.e the
+> code in async_cow_start. This pretty much excludes a codegen problem.
+>
+> Chris can you add the following line in submit_compressed_extents right
+> before the BTRFS_I() function is called:
+>
+>  WARN_ON(!async_chunk->inode);
+>
+> And re-run the workload again?
 
-I would like to mention that I have tried to edit the wiki a couple of times
-along the years, and somehow I was not able to get an account,  log in, or
-recover my account (if I ever created one). Perhaps it's just me and others
-can use it just fine.
+I'll look into how we can do this. I build kernels per
+https://kernelnewbies.org/KernelBuild but maybe it's better to do it
+within Fedora infrastructure to keep things more the same and
+reproducible? I'm not really sure, so I've asked in the bug
+https://bugzilla.redhat.com/show_bug.cgi?id=2011928#c41 - if you have
+two cents to add let me know in this thread or that one.
 
-In any case, it's worth noticing that the ext4 and xfs wikis are in worse=20
-shape, but with the improvements to the kernel doc infrastructure,
-at least ext4 maintains some great documentation there instead of at the
-wiki (eg https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
+Any other configs to change while we're building a new kernel?
+CONFIG_BTRFS_ASSERT=y ?
 
-It is also worth noting that while the kernel wikis are not very active, lo=
-ts=20
-of semi-official content are generated in other places (eg the arch wiki).
+inode.c
+849:static noinline void submit_compressed_extents(struct async_chunk
+*async_chunk)
+850-{
+851-    struct btrfs_inode *inode = BTRFS_I(async_chunk->inode);
 
-Diego
+becomes
+
+849:static noinline void submit_compressed_extents(struct async_chunk
+*async_chunk)
+850-{
+851-    WARN_ON(!async_chunk->inode);
+852-    struct btrfs_inode *inode = BTRFS_I(async_chunk->inode);
+
+?
+(I'm looking at 5.15-rc6)
 
 
+
+-- 
+Chris Murphy
