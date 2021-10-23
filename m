@@ -2,122 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF36438150
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Oct 2021 03:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F1643819B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Oct 2021 05:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhJWBqt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Oct 2021 21:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhJWBqt (ORCPT
+        id S229640AbhJWEBI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Oct 2021 00:01:08 -0400
+Received: from out20-61.mail.aliyun.com ([115.124.20.61]:54764 "EHLO
+        out20-61.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhJWEBH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Oct 2021 21:46:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3656C061764;
-        Fri, 22 Oct 2021 18:44:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LXEayIy7A2I2HmjBcTEteE8UWBJjbYkuRFN80Z5gstQ=; b=DgpSdptv1rHV7FelV2b1FOpMJZ
-        Fsb+vv/zpiX+nUi8+nu0bQVi10uSxwaxkPIfjs2hwrisz6mcgPwKPfseCavrp8w6cBC5NaFsAwwuT
-        hy1p/4AzLZ2ECHANcg3z6BfaCURIdSOmi2IlAMech9uctbYTpW5iTppN5GieiVD1xKHAQzdas3D70
-        ShbVQLzD/VE28Eodnim8QhTiHRwvluBjBnbI/QKOa1FcNNmZHLmZlOI9l7spXHLcIbwbfWOWWV7Fv
-        pwWnX0Y9eEOuORyJKI6ETqRXpS9ANLTm0IbM7NaxrX2vY5NBdIfUE0UI3PbOXCMD+svReyB/mgcQl
-        jYxNv8og==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1me64L-00EJz0-KV; Sat, 23 Oct 2021 01:43:43 +0000
-Date:   Sat, 23 Oct 2021 02:43:33 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [RFC PATCH 0/5] Shared memory for shared extents
-Message-ID: <YXNoxZqKPkxZvr3E@casper.infradead.org>
-References: <cover.1634933121.git.rgoldwyn@suse.com>
+        Sat, 23 Oct 2021 00:01:07 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436528|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.040249-0.00133173-0.958419;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.LgPiB7X_1634961526;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.LgPiB7X_1634961526)
+          by smtp.aliyun-inc.com(10.147.42.241);
+          Sat, 23 Oct 2021 11:58:46 +0800
+Date:   Sat, 23 Oct 2021 11:58:52 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Subject: Re: [PATCH] btrfs: fix deadlock due to page faults during direct IO reads and writes
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+In-Reply-To: <CAL3q7H5t6mL8G8-8QuUBOZDR-oniSosPHZCNo81dFQTcZXigQw@mail.gmail.com>
+References: <20211022201232.7830.409509F4@e16-tech.com> <CAL3q7H5t6mL8G8-8QuUBOZDR-oniSosPHZCNo81dFQTcZXigQw@mail.gmail.com>
+Message-Id: <20211023115852.2517.409509F4@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1634933121.git.rgoldwyn@suse.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 03:15:00PM -0500, Goldwyn Rodrigues wrote:
-> This is an attempt to reduce the memory footprint by using a shared
-> page(s) for shared extent(s) in the filesystem. I am hoping to start a
-> discussion to iron out the details for implementation.
+hi,
 
-When you say "Shared extents", you mean reflinks, which are COW, right?
-A lot of what you say here confuses me because you talk about dirty
-shared pages, and that doesn't make any sense.  A write fault or
-call to write() should be intercepted by the filesystem in order to
-break the COW.  There's no such thing as a shared page which is dirty,
-or has been written back.
+With this new patch, xfstest/generic/475 and xfstest/generic/650 works well.
 
-You might (or might not!) choose to copy the pages from the shared
-extent to the inode when breaking the COW.  But you can't continue
-to share them!
+Thanks a lot.
 
-> Abstract
-> If mutiple files share an extent, reads from each of the files would
-> read individual page copies in the inode pagecache mapping, leading to
-> waste of memory. Instead add the read pages of the filesystem to
-> underlying device's bd_inode as opposed to file's inode mapping. The
-> cost is that file offset to device offset conversion happens early in
-> the read cycle.
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/10/23
+
+> On Fri, Oct 22, 2021 at 1:12 PM Wang Yugui <wangyugui@e16-tech.com> wrote:
+> >
+> > Hi,
+> >
+> > > On Fri, Oct 22, 2021 at 6:59 AM Wang Yugui <wangyugui@e16-tech.com> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > I noticed a infinite loop of fstests/generic/475 when I apply this patch
+> > > > and "[PATCH v9 00/17] gfs2: Fix mmap + page fault deadlocks"
+> > >
+> > > You mean v8? I can't find v9 anywhere.
+> >
+> > Yes. It is v8.
+> >
+> >
+> > > >
+> > > > reproduce frequency: about 50%.
+> > >
+> > > with v8, on top of current misc-next, I couldn't trigger any issues
+> > > after running g/475 for 50+ times.
+> > >
+> > > >
+> > > > Call Trace 1:
+> > > > Oct 22 06:13:06 T7610 kernel: task:fsstress        state:R  running task     stack:    0 pid:2652125 ppid:     1 flags:0x00004006
+> > > > Oct 22 06:13:06 T7610 kernel: Call Trace:
+> > > > Oct 22 06:13:06 T7610 kernel: ? iomap_dio_rw+0xa/0x30
+> > > > Oct 22 06:13:06 T7610 kernel: ? btrfs_file_read_iter+0x157/0x1c0 [btrfs]
+> > > > Oct 22 06:13:06 T7610 kernel: ? new_sync_read+0x118/0x1a0
+> > > > Oct 22 06:13:06 T7610 kernel: ? vfs_read+0xf1/0x190
+> > > > Oct 22 06:13:06 T7610 kernel: ? ksys_read+0x59/0xd0
+> > > > Oct 22 06:13:06 T7610 kernel: ? do_syscall_64+0x37/0x80
+> > > > Oct 22 06:13:06 T7610 kernel: ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > >
+> > > >
+> > > > Call Trace 2:
+> > > > Oct 22 07:45:37 T7610 kernel: task:fsstress        state:R  running task     stack:    0 pid: 9584 ppid:     1 flags:0x00004006
+> > > > Oct 22 07:45:37 T7610 kernel: Call Trace:
+> > > > Oct 22 07:45:37 T7610 kernel: ? iomap_dio_complete+0x9e/0x140
+> > > > Oct 22 07:45:37 T7610 kernel: ? btrfs_file_read_iter+0x124/0x1c0 [btrfs]
+> > > > Oct 22 07:45:37 T7610 kernel: ? new_sync_read+0x118/0x1a0
+> > > > Oct 22 07:45:37 T7610 kernel: ? vfs_read+0xf1/0x190
+> > > > Oct 22 07:45:37 T7610 kernel: ? ksys_read+0x59/0xd0
+> > > > Oct 22 07:45:37 T7610 kernel: ? do_syscall_64+0x37/0x80
+> > > > Oct 22 07:45:37 T7610 kernel: ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > >
+> > >
+> > > Are those the complete traces?
+> > > It looks like too little, and inexact (the prefix ?).
+> >
+> > Yes. these are complete traces.  I do not know the reason of 'the prefix ?'
+> >
+> > I run fstests/generic/475 2 times again.
+> > - failed to reproduce on SSD/SAS
+> > - sucessed to reproduce on SSD/NVMe
+> >
+> > Then I gathered 'sysrq -t' for 3 times.
+> >
+> > [  909.099550] task:fsstress        state:R  running task     stack:    0 pid: 9269 ppid:     1 flags:0x00004006
+> > [  909.100594] Call Trace:
+> > [  909.101633]  ? __clear_user+0x40/0x70
+> > [  909.102675]  ? lock_release+0x1c6/0x270
+> > [  909.103717]  ? alloc_extent_state+0xc1/0x190 [btrfs]
+> > [  909.104822]  ? fixup_exception+0x41/0x60
+> > [  909.105881]  ? rcu_read_lock_held_common+0xe/0x40
+> > [  909.106924]  ? rcu_read_lock_sched_held+0x23/0x80
+> > [  909.107947]  ? rcu_read_lock_sched_held+0x23/0x80
+> > [  909.108966]  ? slab_post_alloc_hook+0x50/0x340
+> > [  909.109993]  ? trace_hardirqs_on+0x1a/0xd0
+> > [  909.111039]  ? lock_extent_bits+0x64/0x90 [btrfs]
+> > [  909.112202]  ? __clear_extent_bit+0x37a/0x530 [btrfs]
+> > [  909.113366]  ? filemap_write_and_wait_range+0x87/0xd0
+> > [  909.114455]  ? clear_extent_bit+0x15/0x20 [btrfs]
+> > [  909.115628]  ? __iomap_dio_rw+0x284/0x830
+> > [  909.116741]  ? find_vma+0x32/0xb0
+> > [  909.117868]  ? __get_user_pages+0xba/0x740
+> > [  909.118971]  ? iomap_dio_rw+0xa/0x30
+> > [  909.120069]  ? btrfs_file_read_iter+0x157/0x1c0 [btrfs]
+> > [  909.121219]  ? new_sync_read+0x11b/0x1b0
+> > [  909.122301]  ? vfs_read+0xf7/0x190
+> > [  909.123373]  ? ksys_read+0x5f/0xe0
+> > [  909.124451]  ? do_syscall_64+0x37/0x80
+> > [  909.125556]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> > [ 1066.293028] task:fsstress        state:R  running task     stack:    0 pid: 9269 ppid:     1 flags:0x00004006
+> > [ 1066.294069] Call Trace:
+> > [ 1066.295111]  ? btrfs_file_read_iter+0x157/0x1c0 [btrfs]
+> > [ 1066.296213]  ? new_sync_read+0x11b/0x1b0
+> > [ 1066.297268]  ? vfs_read+0xf7/0x190
+> > [ 1066.298314]  ? ksys_read+0x5f/0xe0
+> > [ 1066.299359]  ? do_syscall_64+0x37/0x80
+> > [ 1066.300394]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> >
+> > [ 1201.027178] task:fsstress        state:R  running task     stack:    0 pid: 9269 ppid:     1 flags:0x00004006
+> > [ 1201.028233] Call Trace:
+> > [ 1201.029298]  ? iomap_dio_rw+0xa/0x30
+> > [ 1201.030352]  ? btrfs_file_read_iter+0x157/0x1c0 [btrfs]
+> > [ 1201.031465]  ? new_sync_read+0x11b/0x1b0
+> > [ 1201.032534]  ? vfs_read+0xf7/0x190
+> > [ 1201.033592]  ? ksys_read+0x5f/0xe0
+> > [ 1201.034633]  ? do_syscall_64+0x37/0x80
+> > [ 1201.035661]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >
+> > By the way, I enable ' -O no-holes -R free-space-tree' for mkfs.btrfs by
+> > default.
 > 
-> Motivation:
->  - Reduce memory usage for shared extents
->  - Ease DAX implementation for shared extents
->  - Reduce Container memory utilization
+> Those mkfs options/fs features should be irrelevant.
 > 
-> Implementation
-> In the read path, pages are read and added to the block_device's
-> inode's mapping as opposed to the inode's mapping. This is limited
-> to reads, while write's (and read before writes) still go through
-> inode's i_mapping. The path does check the inode's i_mapping before
-> falling back to block device's i_mapping to read pages which may be
-> dirty. The cost of the operation is file_to_device_offset() translation
-> on reads. The translation should return a valid value only in case
-> the file is CoW.
+> Can you try with the attached patch applied on top of those patches?
 > 
-> This also means that page->mapping may not point to file's mapping.
+> Thanks.
 > 
-> Questions:
-> 1. Are there security implications for performing this for read-only
-> pages? An alternate idea is to add a "struct fspage", which would be
-> pointed by file's mapping and would point to the block device's page.
-> Multiple files with shared extents have their own independent fspage
-> pointing to the same page mapped to block device's mapping.
-> Any security parameters, if required, would be in this structure. The
-> advantage of this approach is it would be more flexible with respect to
-> CoW when the page is dirtied after reads. With the current approach, a
-> read for write is an independent operation so we can end up with two
-> copies of the same page. This implementation got complicated too quickly.
-> 
-> 2. Should pages be dropped after writebacks (and clone_range) to avoid
-> duplicate copies?
-> 
-> Limitations:
-> 1. The filesystem have exactly one underlying device.
-> 2. Page size should be equal to filesystem block size
-> 
-> Goldwyn Rodrigues (5):
->   mm: Use file parameter to determine bdi
->   mm: Switch mapping to device mapping
->   btrfs: Add sharedext mount option
->   btrfs: Set s_bdev for btrfs super block
->   btrfs: function to convert file offset to device offset
-> 
->  fs/btrfs/ctree.h   |  1 +
->  fs/btrfs/file.c    | 42 ++++++++++++++++++++++++++++++++++++++++--
->  fs/btrfs/super.c   |  7 +++++++
->  include/linux/fs.h |  7 ++++++-
->  mm/filemap.c       | 34 ++++++++++++++++++++++++++--------
->  mm/readahead.c     |  3 +++
->  6 files changed, 83 insertions(+), 11 deletions(-)
-> 
-> -- 
-> 2.33.1
-> 
+> >
+> >
+> > > >
+> > > > We noticed some  error in dmesg before this infinite loop.
+> > > > [15590.720909] BTRFS: error (device dm-0) in __btrfs_free_extent:3069: errno=-5 IO failure
+> > > > [15590.723014] BTRFS info (device dm-0): forced readonly
+> > > > [15590.725115] BTRFS: error (device dm-0) in btrfs_run_delayed_refs:2150: errno=-5 IO failure
+> > >
+> > > Yes, that's expected, the test intentionally triggers simulated IO
+> > > failures, which can happen anywhere, not just when running delayed
+> > > references.
+> >
+> > Best Regards
+> > Wang Yugui (wangyugui@e16-tech.com)
+> > 2021/10/22
+> >
+> >
+
+
