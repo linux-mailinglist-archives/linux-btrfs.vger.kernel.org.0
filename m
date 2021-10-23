@@ -2,142 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30ED3437F39
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Oct 2021 22:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7FC438147
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Oct 2021 03:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbhJVUSD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Oct 2021 16:18:03 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57146 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233918AbhJVUR6 (ORCPT
+        id S229968AbhJWBjq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Oct 2021 21:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhJWBjq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Oct 2021 16:17:58 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A9DFF1FD63;
-        Fri, 22 Oct 2021 20:15:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1634933739; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MpD9AU6mFSzq/UrIZ82eenxsvTEJbrN/1mPlrY2rh/o=;
-        b=wrtAC4psBbwmYIMYvx1KS+FlcizjWTjwKYKVbTJvzeqf7XYWynoKzAIMiuVtNK7rmFc/cU
-        PZzP570F3JHE31T5Vu5W7OCzLnbN55RekCnVZ5ErXfsg84luommP4BFUyMj6t1b7J7/SDK
-        blATlEsId/0Tq+9apJkjmySutYFJHQ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1634933739;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MpD9AU6mFSzq/UrIZ82eenxsvTEJbrN/1mPlrY2rh/o=;
-        b=M9qe3dwXjS2cOYG+Lgk4sNlJ28rvx5KOAYOYqUsUpBfZaqDvNyTBwlk2EVSRhz3YOxc4Zn
-        IRMuCEZP3X3Cw+CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4FF7E1348D;
-        Fri, 22 Oct 2021 20:15:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JLWzCesbc2ECdwAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>); Fri, 22 Oct 2021 20:15:39 +0000
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [RFC PATCH 5/5] btrfs: function to convert file offset to device offset
-Date:   Fri, 22 Oct 2021 15:15:05 -0500
-Message-Id: <2be14d6e2e1e888f2a0f1f272c1fd6cc0b681e97.1634933122.git.rgoldwyn@suse.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1634933121.git.rgoldwyn@suse.com>
+        Fri, 22 Oct 2021 21:39:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0624C061764;
+        Fri, 22 Oct 2021 18:37:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=N8vjDyk1bwArRt+U/J/1L+rb0qPO+QdxEyVFcfOb5ZM=; b=C89e0Ni4RhWnYqoxny+ZQjzdNq
+        qWRwIQr7JAL4AnkHgb7FRxpDInRcMv0vztF7Sp15xSjd1kxN5OSGCtYZ9cz7T2N4SJksQ5mjTbk+J
+        Vh5Knm+Za+LU+BQC1LTjd1kBcNHfNYGj6W4usqh9fyaxITzU3qFEDkyYR75Ti2NqiCRYHGvXiua0D
+        Ggp6t9vEUw6/S1FL8NO2hFVjS3GhooQ0ZIfz/4QPU9bYLNcBfLkKW7T9quy9f0DpEc7P0TRK9uI71
+        Fr+DHKAO91B5BMjlSalrIBIwJuvBXMcmF19y4msn0vObrshpr+JXuN5EhYfPSPc0zDoS8SdLmeJ7x
+        NbDZCBzA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1me5x8-00EJcr-CZ; Sat, 23 Oct 2021 01:36:29 +0000
+Date:   Sat, 23 Oct 2021 02:36:06 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [RFC PATCH 2/5] mm: Switch mapping to device mapping
+Message-ID: <YXNnBvPYAOfvQ/YH@casper.infradead.org>
 References: <cover.1634933121.git.rgoldwyn@suse.com>
+ <98a26b87716dd6eec5214ee0dc2eac10eb47439d.1634933121.git.rgoldwyn@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98a26b87716dd6eec5214ee0dc2eac10eb47439d.1634933121.git.rgoldwyn@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On Fri, Oct 22, 2021 at 03:15:02PM -0500, Goldwyn Rodrigues wrote:
+> Get the device offset and last_index from the filesystem and read it
+> from the device directly. If the device page(s) have been read before,
+> it can be picked up directly for reads. If not the page is read from the
+> device. The page would be added to device's mapping instead of the file.
 
-btrfs_file_to_device_offset() converts a file offset to device offset.
-It also calculates the last_index which represents the last page in the
-range which is within the extent.
+I really don't like this way of doing it.
 
-btrfs_file_to_device_offset() is only passed conditionally based on if
-BTRFS_SHAREDEXT is set in the mount flag.
+Why doesn't the filesystem choose where it's going to cache the data and
+call filemap_readpage on that inode, instead of having the generic code
+call back into the filesystem to decide where to cache the data?
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- fs/btrfs/file.c | 42 ++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 40 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index e171d822a05e..f0b97d020575 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3643,18 +3643,56 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
- 	return ret;
- }
- 
-+static pgoff_t btrfs_file_offset_to_device(struct file *filp, loff_t pos,
-+		size_t len, pgoff_t *last_index)
-+{
-+	struct extent_map *em;
-+	struct btrfs_inode *inode = BTRFS_I(file_inode(filp));
-+	u64 device_offset;
-+	u64 device_len;
-+
-+	if (inode->flags & BTRFS_INODE_NODATACOW)
-+		return 0;
-+
-+	em = btrfs_get_extent(inode, NULL, 0, pos, len);
-+
-+	device_offset = em->block_start;
-+	if (device_offset == EXTENT_MAP_HOLE) {
-+		free_extent_map(em);
-+		return 0;
-+	}
-+
-+	/* Delalloc should be in file's pagecache */
-+	BUG_ON(device_offset == EXTENT_MAP_DELALLOC);
-+
-+	device_offset = (device_offset + (pos - em->start)) >> PAGE_SHIFT;
-+	device_len = (em->len - (pos - em->start)) >> PAGE_SHIFT;
-+	*last_index = device_offset + device_len;
-+
-+	free_extent_map(em);
-+
-+	return device_offset;
-+}
-+
- static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
- 	ssize_t ret = 0;
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+	struct btrfs_fs_info *fs_info;
-+	file_offset_to_device_t file_offset_to_device = NULL;
- 
- 	if (iocb->ki_flags & IOCB_DIRECT) {
- 		ret = btrfs_direct_read(iocb, to);
- 		if (ret < 0 || !iov_iter_count(to) ||
--		    iocb->ki_pos >= i_size_read(file_inode(iocb->ki_filp)))
-+		    iocb->ki_pos >= i_size_read(inode))
- 			return ret;
- 	}
- 
--	return filemap_read(iocb, to, ret, NULL);
-+	fs_info = btrfs_sb(inode->i_sb);
-+	if (btrfs_test_opt(fs_info, SHAREDEXT))
-+		file_offset_to_device = btrfs_file_offset_to_device;
-+
-+	return filemap_read(iocb, to, ret, file_offset_to_device);
- }
- 
- const struct file_operations btrfs_file_operations = {
--- 
-2.33.1
-
+You know that it's a shared extent before you call into filemap_read(),
+so you know it shouldn't be cached in the local inode.
