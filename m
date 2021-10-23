@@ -2,92 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C7C438417
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Oct 2021 17:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1583D438457
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Oct 2021 18:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhJWPpN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 23 Oct 2021 11:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhJWPpM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 23 Oct 2021 11:45:12 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5CBC061243
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Oct 2021 08:42:52 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s19so3590023wra.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 23 Oct 2021 08:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=F26I+cBcpyIkdxRfcHLvmvj+TTSmfbBclURHJNpWXCA=;
-        b=AYtLHgTG+6uRU7+ihCnpuOHko6pqohXhhQkkijOFNs1K9R3uZtGzQ5Q1/HW70ikQOH
-         to4qY+MneU8Wp5m/9lAfflx+y719nabfpikWCEUlEWf4TV2mCVtwTqCiU9WBe0/PueVA
-         Ai5uemlRsLruanwKtfzO+GeDcAbGf94MhP9fVYsSthGmJThkp9aXQloZUCc7KpPJDIe5
-         ZDHZUIMzc7AFUI4sZuF8c0yufIwBcSuY8XEdvjlaOTWtthy6nwfYJOAMZizkpVyMjWcI
-         yYcYAJzSYs4KyL2X7l5KUECXBatU7ZxHLxcDM7wHj0/uSurwobyzbl1doBaHD0t2U4Ok
-         8KFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=F26I+cBcpyIkdxRfcHLvmvj+TTSmfbBclURHJNpWXCA=;
-        b=dK6j5+oPvGDuljsZ2JXyYxym4uOgnPZQhj409aYM//XlsMJKdygmvCKPozEeHMK9r0
-         W7v1kr5URc+ulNiHfNp2LBKf0GJY0BI7P7bNK46G24gmiK2g8vIdca2lwo6i46Ads24P
-         5NSIjMMSjERwosguaEGsIplvu+XimgeiVVTANBWS/BnxP4rYmAyQXtnP2r6P9gsd/2mD
-         PI4iU9NFyHiuBBoe5pFqmLQp45LxLmRI2gkPVGGWME+dz8nl+eBggDS65NUHM/Wnk7gk
-         wYc/yczr9jbjIPFH9o31HfWmsixJu6GyrJehuXrQtf0+3nGw9h6VZSVeyDIbZY12K18y
-         VXIg==
-X-Gm-Message-State: AOAM5318G+0T1X8CtlDrnijmckCJn2bbjngANYmz2TCpVBN/Wr5V80N0
-        5Thcl5VezSzqlcJCZx/QfLONypALmPjLoTj2zGw=
-X-Google-Smtp-Source: ABdhPJxbHWCQaA22XVwQFJLeK97z9oroWNyFUNBz/3teSSfazwM0svrL6URXAe5PADGpGE0jjZn5M2av0IBmVyuOXKg=
-X-Received: by 2002:adf:a411:: with SMTP id d17mr3075552wra.232.1635003770995;
- Sat, 23 Oct 2021 08:42:50 -0700 (PDT)
+        id S230453AbhJWQnL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Oct 2021 12:43:11 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:38668 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229901AbhJWQnL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 23 Oct 2021 12:43:11 -0400
+Received: from venice.bhome ([78.14.151.87])
+        by smtp-34.iol.local with ESMTPA
+        id eK4fmTmHf7YJJeK4fmYgCS; Sat, 23 Oct 2021 18:40:50 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1635007250; bh=F0+m0kRlp2e9O1zoN8wKbv20lTfJXtr5mmK3w+ybe6U=;
+        h=From;
+        b=HCnACcsRn1kwtHjhtjfGOSkxiV/JEpO0iLfznCIh201R6hPtdMY+wQ2q+COQmnAA2
+         oc81zgV8cNaaVaHB6SxEyaH2CosYgbOvTDJNXBlAPQg/7Q3C9rJ7Gl1dhQoSRme+cF
+         g+RjQmpOAUA4hgoABMQ5xBQo0lKSpg+39WSBsOXTHERd41bAjNjFeKoLPLV7h0NGfO
+         EbWyBNuV6c5kaK0eftk/nSdRF5wjEnTHHO5CKmrJ037tANJ2xMYq6+lpTLVo9KHjEJ
+         PB1HNZzO2HNUPUW4Roaf1Oe44R+QgBU4d/vWp/clLTdPqyLTS8W3+8s6ldBTRuLBro
+         40LPUm0d1nJkg==
+X-CNFS-Analysis: v=2.4 cv=dvYet3s4 c=1 sm=1 tr=0 ts=61743b12 cx=a_exe
+ a=s8rBCFaCIOijKbcNVo+3rw==:117 a=s8rBCFaCIOijKbcNVo+3rw==:17
+ a=IkcTkHD0fZMA:10 a=A695XayFOBEGylKwg94A:9 a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Subject: [PATCH] btrfs-progs: remove path_cat[3]_out() double declaration
+Message-ID: <3f86146a-d69c-e8c4-d3b4-d9c91d199d81@libero.it>
+Date:   Sat, 23 Oct 2021 18:40:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: by 2002:a1c:a916:0:0:0:0:0 with HTTP; Sat, 23 Oct 2021 08:42:50
- -0700 (PDT)
-Reply-To: martinafrancis01@gmail.com
-From:   martinafran42 <martinafran42@gmail.com>
-Date:   Sat, 23 Oct 2021 08:42:50 -0700
-Message-ID: <CAC1Op46rzf-95OpiL4YE=Lzvu2F7NstX11WdGagxm5dfjjFJ3w@mail.gmail.com>
-Subject: =?UTF-8?Q?Dobry_dzie=C5=84_moja_droga?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfDtgeRY7G3+78SW0qYDt0weyBVRNIX8Z520ukWR746sul2HUNEO5iQy1cIO0JOcYzCvaxM3+d2NWIpaNap0ZAWU/zm/WLYZ1OElBs1FLBXEP2SGkV6PV
+ JweRVOjmjgstfyPffUO4CUwyL1jXHZJ4DRzmGCF5v3LJ1YI9VBd5dQ4ZOHBmQm7DSf2LLNR3fupnoA==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=20
-Dobry dzie=C5=84 moja droga
-Jak si=C4=99 masz i twoja rodzina.
-Jestem pani Martina Francis, chora wdowa pisz=C4=85ca ze szpitalnego =C5=82=
-=C3=B3=C5=BCka
-bez dziecka. Kontaktuj=C4=99 si=C4=99 z Pa=C5=84stwem, aby=C5=9Bcie dowiedz=
-ieli si=C4=99 o moim
-pragnieniu przekazania sumy (2 700 000,00 USD MILION=C3=93W USD), kt=C3=B3r=
-=C4=85
-odziedziczy=C5=82am po moim zmar=C5=82ym m=C4=99=C5=BCu na cele charytatywn=
-e, obecnie
-fundusz jest nadal w banku. Niedawno m=C3=B3j lekarz powiedzia=C5=82 mi, =
-=C5=BCe mam
-powa=C5=BCn=C4=85 chorob=C4=99 nowotworow=C4=85 i moje =C5=BCycie nie jest =
-ju=C5=BC gwarantowane,
-dlatego podejmuj=C4=99 t=C4=99 decyzj=C4=99..
+Remove the double declaration of path_cat_out()/path_cat3_out()
 
-Chc=C4=99, aby=C5=9Bcie skorzystali z tego funduszu dla ludzi ubogich,
-maltretowanych dzieci, mniej uprzywilejowanych, ko=C5=9Bcio=C5=82=C3=B3w, s=
-ieroci=C5=84c=C3=B3w
-i cierpi=C4=85cych wd=C3=B3w w spo=C5=82ecze=C5=84stwie.
+The functions
+   - path_cat_out()
+   - path_cat3_out()
+are declared two times in the following header files:
+   - common/path-utils.h
+   - common/send-utils.h
 
-Prosz=C4=99, wr=C3=B3=C4=87 do mnie natychmiast po przeczytaniu tej wiadomo=
-=C5=9Bci, aby
-uzyska=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3w dotycz=C4=85cych tej age=
-ndy humanitarnej.
+Remove the double declaration from send-utils.h and add the path-utils.h include file
+where needed.
 
-Niech B=C3=B3g ci=C4=99 b=C5=82ogos=C5=82awi, kiedy czekam na twoj=C4=85 od=
-powied=C5=BA.
+Signed-off-by: Goffredo Baroncelli <kreijack@inwind.it>
 
-Twoja siostra.
-Pani Martina Francis.
+
+--
+
+diff --git a/cmds/receive-dump.c b/cmds/receive-dump.c
+index 058e8918..e8862165 100644
+--- a/cmds/receive-dump.c
++++ b/cmds/receive-dump.c
+@@ -34,6 +34,7 @@
+  #include <asm/types.h>
+  #include <uuid/uuid.h>
+  #include "common/utils.h"
++#include "common/path-utils.h"
+  #include "cmds/commands.h"
+  #include "common/send-utils.h"
+  #include "common/send-stream.h"
+diff --git a/common/send-utils.h b/common/send-utils.h
+index dd67b3fe..74cc6fc4 100644
+--- a/common/send-utils.h
++++ b/common/send-utils.h
+@@ -104,9 +104,6 @@ void subvol_uuid_search_add(struct subvol_uuid_search *s,
+  
+  int btrfs_subvolid_resolve(int fd, char *path, size_t path_len, u64 subvol_id);
+  
+-int path_cat_out(char *out, const char *p1, const char *p2);
+-int path_cat3_out(char *out, const char *p1, const char *p2, const char *p3);
+-
+  #ifdef __cplusplus
+  }
+  #endif
+diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+index 471d49da..f35544d6 100644
+--- a/mkfs/rootdir.c
++++ b/mkfs/rootdir.c
+@@ -33,6 +33,7 @@
+  #include "common/messages.h"
+  #include "kernel-shared/transaction.h"
+  #include "common/utils.h"
++#include "common/path-utils.h"
+  #include "mkfs/rootdir.h"
+  #include "mkfs/common.h"
+  #include "common/send-utils.h"
+
+
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
