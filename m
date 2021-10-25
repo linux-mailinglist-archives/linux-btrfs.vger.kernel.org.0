@@ -2,84 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1805A439AB6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 17:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26231439B15
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 18:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232766AbhJYPrf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Oct 2021 11:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbhJYPra (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Oct 2021 11:47:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03B9C061745;
-        Mon, 25 Oct 2021 08:45:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/4DvD0e1FZPOTxEhYNHi1otDSuS1bS0YBpl8+6thuZA=; b=EWLAZEeDAHe7eHhWv76S28SF5B
-        +zNXkIx+VgqQndT7hBAgmBomvweuitB5mHtJMgAAkts72ISvoadRquNMKlJPiJ/507DGVSfPcjqgc
-        uwVp0bqYUOUO/OOrYdze4fr7jLBVqTjMiKFQWReiM1xWe7z97SGWHSKPL6NIMaFgAbgZZzLP04SUe
-        7qmjyZxR/Y37FjY3h/9+ohKowcIXdc+f1zdb433Iv9ZHpB8xa0uT1g4wsM7BPbUYuzPfKf8YRgAeR
-        /FLvIqxWBr/SCSQ8mgp7BZ1I9N+JsEl0XPSbzgJ5PBNj2BuFmc5M3e0KmdyWtPnZ9/KI3HS1m+8Ez
-        A/OHawDQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mf28B-00GELE-CE; Mon, 25 Oct 2021 15:43:41 +0000
-Date:   Mon, 25 Oct 2021 16:43:23 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH 0/5] Shared memory for shared extents
-Message-ID: <YXbQm6TxaWcLnpal@casper.infradead.org>
-References: <cover.1634933121.git.rgoldwyn@suse.com>
- <YXNoxZqKPkxZvr3E@casper.infradead.org>
- <20211025145301.hk627p2qcotxegrd@fiona>
+        id S233420AbhJYQEM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Oct 2021 12:04:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35160 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230177AbhJYQEM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Oct 2021 12:04:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA87B60C49
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 16:01:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635177709;
+        bh=eqBxktAxhfT7HlhM/em7hGodRvkIdQAWkcioOv0+lAs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VkEQOqvLoHHz8s7+5GmlZyN1snQezzhI9Ne6RQXRqP8Y6/auaZ0cCdrR7x21fvH/L
+         UmQ6NmknO3Yyvu3pFbHOCpoKshIOHlJzNZlst83YBAAAX5cO0p2o94/SZCryaTpMpx
+         pPZbVjnfpVuJ/YqD/+oa9fSZ/spNMatpJCnBlcP/EceVLOwtz55HrEU5bvqqOIw1M3
+         bISQt+Vgoi5FxeQScRYK4BNVgjql50rvt4DN3jDI9XNxQfPoOVFXaELjE9jof7Zvnq
+         Y2pvNy117uEMt5BnJwxh5GrwpYVFKgo+J5RNmKFbta7ddq0x3M2hb+IRDiq7c6dcNw
+         htARX0LVReuRg==
+Received: by mail-qk1-f181.google.com with SMTP id d205so12263403qke.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 09:01:49 -0700 (PDT)
+X-Gm-Message-State: AOAM5338xpY+p5wi3uZcsoZqJjSrcUI3YElTLwszBj8tIYwstSgE+hq3
+        8yVB1hW8FQC3bJe+/ZtxrM8dHAXAVH8qZStuQos=
+X-Google-Smtp-Source: ABdhPJxgsbVbs3vzmusSLOWcl9RqxG/l8wro8KjVZY9YDbZHE+JfEP34Yo3OT8uxPZOuTKKemAzMopkhJ3M2//8gCxA=
+X-Received: by 2002:a37:8287:: with SMTP id e129mr14491556qkd.415.1635177709021;
+ Mon, 25 Oct 2021 09:01:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025145301.hk627p2qcotxegrd@fiona>
+References: <cover.1635155473.git.fdmanana@suse.com> <9c22f976b9bc0a5725d80f2a365316c1ea3706ed.1635155473.git.fdmanana@suse.com>
+ <YXbO/lfI2RvMNz+W@localhost.localdomain>
+In-Reply-To: <YXbO/lfI2RvMNz+W@localhost.localdomain>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Mon, 25 Oct 2021 17:01:12 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H43awVpO8_xXo_g9U+P2dJo_5Baj4MHq6JaKps7NceEAw@mail.gmail.com>
+Message-ID: <CAL3q7H43awVpO8_xXo_g9U+P2dJo_5Baj4MHq6JaKps7NceEAw@mail.gmail.com>
+Subject: Re: [PATCH 5/6] btrfs: only copy dir index keys when logging a directory
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 09:53:01AM -0500, Goldwyn Rodrigues wrote:
-> On  2:43 23/10, Matthew Wilcox wrote:
-> > On Fri, Oct 22, 2021 at 03:15:00PM -0500, Goldwyn Rodrigues wrote:
-> > > This is an attempt to reduce the memory footprint by using a shared
-> > > page(s) for shared extent(s) in the filesystem. I am hoping to start a
-> > > discussion to iron out the details for implementation.
-> > 
-> > When you say "Shared extents", you mean reflinks, which are COW, right?
-> 
-> Yes, shared extents are extents which are shared on disk by two or more
-> files. Yes, same as reflinks. Just to explain with an example:
-> 
-> If two files, f1 and f2 have shared extent(s), and both files are read. Each
-> file's mapping->i_pages will hold a copy of the contents of the shared
-> extent on disk. So, f1->mapping will have one copy and f2->mapping will
-> have another copy.
-> 
-> For reads (and only reads), if we use underlying device's mapping, we
-> can save on duplicate copy of the pages.
+On Mon, Oct 25, 2021 at 4:36 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> On Mon, Oct 25, 2021 at 10:56:25AM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Currently, when logging a directory, we copy both dir items and dir index
+> > items from the fs/subvolume tree to the log tree. Both items have exactly
+> > the same data (same struct btrfs_dir_item), the difference lies in the key
+> > values, where a dir index key contains the index number of a directory
+> > entry while the dir item key does not, as it's used for doing fast lookups
+> > of an entry by name, while the former is used for sorting entries when
+> > listing a directory.
+> >
+> > We can exploit that and log only the dir index items, since they contain
+> > all the information needed to correctly add, replace and delete directory
+> > entries when replaying a log tree. Logging only the dir index items is
+> > also backward and forward compatible: an unpatched kernel (without this
+> > change) can correctly replay a log tree generated by a patched kernel
+> > (with this patch), and a patched kernel can correctly replay a log tree
+> > generated by an unpatched kernel.
+> >
+>
+> This took me a very long time to grok, so it deserves more explanation.
+>
+> The problem I had was how this worked in general, and I was missing the fact
+> that we're only calling drop_dir_item() if we find the name in the root,
+> otherwise we either goto insert if we're DIR_INDEX or bail if we're DIR_ITEM.
+>
+> So whichever we find first in the log, we call drop_dir_item() only if there's a
+> conflict.  Then the heavy work is done once we find the DIR_INDEX item.
+>
+> Which means that the only work we do if we find DIR_ITEM is drop_dir_item(),
+> which we do in the case if we find DIR_INDEX and the item is there.
+>
+> This is why we don't actually need the DIR_ITEM to properly replay the log for
+> older kernels, because DIR_INDEX does the same work, and actually does the heavy
+> lifting of adding the BACKREF's and such.
+>
+> This took probably 30-45 minutes for me to work out, and I'm only 90% sure I
+> have it right, so an explanation as to why it's ok for older kernels would be
+> very helpful.  Thanks,
 
-Yes; I'm familiar with the problem.  Dave Chinner and I had a great
-discussion about it at LCA a couple of years ago.
+Is the following fine for you?
 
-The implementation I've had in mind for a while is that the filesystem
-either creates a separate inode for a shared extent, or (as you've
-done here) uses the bdev's inode.  We can discuss the pros/cons of
-that separately.
+The backward compatibility is ensured because:
 
-To avoid the double-lookup problem, I was intending to generalise DAX
-entries into PFN entries.  That way, if the read() (or mmap read fault)
-misses in the inode's cache, we can look up the shared extent cache,
-and then cache the physical address of the memory in the inode.
+1) For inserting a new dentry: a dentry is only inserted when we find a
+   new dir index key - we can only insert if we know the dir index offset,
+   which is encoded in the dir index key's offset;
 
-That makes reclaim/eviction of the page in the shared extent more
-expensive because you have to iterate all the inodes which share the
-extent and remove the PFN entries before the page can be reused.
+2) For deleting dentries: during log replay, before adding or replacing
+   dentries, we first replay dentry deletions. Whenever we find a dir item
+   key or a dir index key in the subvolume/fs tree that is not logged in
+   a range for which the log tree is authoritative, we do the unlink of
+   the dentry, which removes both the existing dir item key and the dir
+   index key. Therefore logging just dir index keys is enough to ensure
+   dentry deletions are correctly replayed;
 
-Perhaps we should have a Zoom meeting about this before producing duelling
-patch series?  I can host if you're interested.
+3) For dentry replacements: they work when we log only dir index keys
+   and this is due to a combination of 1) and 2). If we replace a
+   dentry with name "foobar" to point from inode A to inode B, then we
+   know the dir index key for the new dentry is different from the old
+   one, as it has an index number (key offset) larger than the old one.
+   This results in replaying a deletion, through replay_dir_deletes(),
+   that causes the old dentry to be removed, both the dir item key and
+   the dir index key, as mentioned at 2). Then when processing the new
+   dir index key, we add the new dentry, adding both a new dir item key
+   and a new index key pointing to inode B, as stated in 1).
+
+>
+> Josef
