@@ -2,119 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA86439BF3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 18:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57177439C2D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 18:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234093AbhJYQqC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Oct 2021 12:46:02 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53514 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234009AbhJYQqB (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Oct 2021 12:46:01 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 0F2721FD47;
-        Mon, 25 Oct 2021 16:43:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1635180218; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pnjRbMNi7vASM5fyE3GxhiHxXT0BDlx8St1eRazeD8o=;
-        b=HQ/ELBkMVwvPezRkxJ8hbLCJOYAddZ5V1E1x9qRby8f7SbIYJ0jiT+k0ZQknrQtaAXzUMf
-        wAhDsYwN2ZKwBeBnd4lZaIuAyUJHjZiftolODAZsSU5iK7s8bHeH5jjmDwSIxP+f1wL83I
-        9/eUPkl7TlQ8AhCafRyKyWpl3C1Ryf4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1635180218;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pnjRbMNi7vASM5fyE3GxhiHxXT0BDlx8St1eRazeD8o=;
-        b=SYw+soUAHbqGDrhswsXCUgWCKRbkK8lqzeUTeppUfL+aZZijfzd6hK3mOlWaG4YriR8YYn
-        EHqKfKLFcLfyobBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9CA7213C0B;
-        Mon, 25 Oct 2021 16:43:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bSWHHLnedmFyQAAAMHmgww
-        (envelope-from <rgoldwyn@suse.de>); Mon, 25 Oct 2021 16:43:37 +0000
-Date:   Mon, 25 Oct 2021 11:43:35 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH 0/5] Shared memory for shared extents
-Message-ID: <20211025164335.t7he6miollf6un2j@fiona>
-References: <cover.1634933121.git.rgoldwyn@suse.com>
- <YXNoxZqKPkxZvr3E@casper.infradead.org>
- <20211025145301.hk627p2qcotxegrd@fiona>
- <YXbQm6TxaWcLnpal@casper.infradead.org>
+        id S234135AbhJYRAj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Oct 2021 13:00:39 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:57296 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234115AbhJYRAi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Oct 2021 13:00:38 -0400
+Received: from [192.168.1.27] ([78.14.151.87])
+        by smtp-34.iol.local with ESMTPA
+        id f3IcmguD47YJJf3Icmhf9B; Mon, 25 Oct 2021 18:58:14 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1635181094; bh=MiE3hGHiISp2uf92VzwNEeROYEpDq1E/JLZWr+X1HIc=;
+        h=From;
+        b=qdxPP+WQnrfB1ppgOTfHYekyaxW44ivQFVOxPvvaL2pKdfi/BRXczK3ykivn2wF7R
+         PCvs1MkdnhR7njDlb31t6tXglIKJT0EM+v3jxsrFx4/d2Tmk5+NDP2JFcTKXMTB7NA
+         38xT+oQwQCc64SGtg0ianc7VSx7jbST7rzKrH2m78eQtghsw27gFRSfPeblLiPGVA5
+         KKE76Tr2b3rwWif0ZA3j4OsMdd7Dy9U8hyU8/zCqMqPrCurl/JHN3+nRkwpJD3S9a+
+         H4lTu7c6VpH1ykA2lPQSTlGPXZDZ+3333FcKtVcBE0NeGfWrwCtx+M+o/ylu9ysd3P
+         Eunyjy2MDGLQw==
+X-CNFS-Analysis: v=2.4 cv=dvYet3s4 c=1 sm=1 tr=0 ts=6176e226 cx=a_exe
+ a=s8rBCFaCIOijKbcNVo+3rw==:117 a=s8rBCFaCIOijKbcNVo+3rw==:17
+ a=IkcTkHD0fZMA:10 a=vG6p_kJgoRvhpRL86bQA:9 a=QEXdDO2ut3YA:10
+Message-ID: <3bdd7604-e4a5-ddcf-67a1-b10c93619340@libero.it>
+Date:   Mon, 25 Oct 2021 18:58:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXbQm6TxaWcLnpal@casper.infradead.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Reply-To: kreijack@inwind.it
+Subject: Re: [PATCH] btrfs-progs: remove path_cat[3]_out() double declaration
+Content-Language: en-US
+To:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <3f86146a-d69c-e8c4-d3b4-d9c91d199d81@libero.it>
+ <20211025151305.GQ20319@twin.jikos.cz>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+In-Reply-To: <20211025151305.GQ20319@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfMbdCiS7amqKuQQuRzX8eYyMFXU5AVJIRrSSnR5hLiDQED2ZIPETgYxJtMtC+5Q/kf0cJPYb0/uhlvMZEYsZYukR+EvkDgheU/7nBqoh17yIZJ1arVS2
+ cRNHSYJ98aQKd4QrVn6X6CYMBBEyv/fxorG+QNe3X3oxb1WAZ7K/Pb7m81reGdfFD6/5Sqw3nLkQ7oVssw7Lh7whKGr7EyqsmBIY6sK1nAeV2KiMOz3+sS58
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 16:43 25/10, Matthew Wilcox wrote:
-> On Mon, Oct 25, 2021 at 09:53:01AM -0500, Goldwyn Rodrigues wrote:
-> > On  2:43 23/10, Matthew Wilcox wrote:
-> > > On Fri, Oct 22, 2021 at 03:15:00PM -0500, Goldwyn Rodrigues wrote:
-> > > > This is an attempt to reduce the memory footprint by using a shared
-> > > > page(s) for shared extent(s) in the filesystem. I am hoping to start a
-> > > > discussion to iron out the details for implementation.
-> > > 
-> > > When you say "Shared extents", you mean reflinks, which are COW, right?
-> > 
-> > Yes, shared extents are extents which are shared on disk by two or more
-> > files. Yes, same as reflinks. Just to explain with an example:
-> > 
-> > If two files, f1 and f2 have shared extent(s), and both files are read. Each
-> > file's mapping->i_pages will hold a copy of the contents of the shared
-> > extent on disk. So, f1->mapping will have one copy and f2->mapping will
-> > have another copy.
-> > 
-> > For reads (and only reads), if we use underlying device's mapping, we
-> > can save on duplicate copy of the pages.
-> 
-> Yes; I'm familiar with the problem.  Dave Chinner and I had a great
-> discussion about it at LCA a couple of years ago.
-> 
-> The implementation I've had in mind for a while is that the filesystem
-> either creates a separate inode for a shared extent, or (as you've
-> done here) uses the bdev's inode.  We can discuss the pros/cons of
-> that separately.
-> 
-> To avoid the double-lookup problem, I was intending to generalise DAX
-> entries into PFN entries.  That way, if the read() (or mmap read fault)
-> misses in the inode's cache, we can look up the shared extent cache,
-> and then cache the physical address of the memory in the inode.
 
-I am not sure I understand. Could you provide an example? Would this be
-specific to DAX? What about standard block devices?
-
+On 10/25/21 17:13, David Sterba wrote:
+> On Sat, Oct 23, 2021 at 06:40:49PM +0200, Goffredo Baroncelli wrote:
+>> Remove the double declaration of path_cat_out()/path_cat3_out()
+>>
+>> The functions
+>>     - path_cat_out()
+>>     - path_cat3_out()
+>> are declared two times in the following header files:
+>>     - common/path-utils.h
+>>     - common/send-utils.h
+>>
+>> Remove the double declaration from send-utils.h and add the path-utils.h include file
+>> where needed.
 > 
-> That makes reclaim/eviction of the page in the shared extent more
-> expensive because you have to iterate all the inodes which share the
-> extent and remove the PFN entries before the page can be reused.
-
-Not sure of this, but won't it complicate things if there are different
-shared extents in different files? Say shared extent SE1 belongs to f1
-and f2, where as SE2 belongs to f2 and f3?
-
+> Thanks, but the prototypes have been removed a few weeks ago, in
+> "btrfs-progs: remove unused prototypes from send-utils.h". You've
+> probably developed this on top of master branch.
 > 
-> Perhaps we should have a Zoom meeting about this before producing duelling
-> patch series?  I can host if you're interested.
-
-Yes, I think that would be nice. I am in the central US Timezone.
-If possible, I would like to add David Disseldorp who is based in
-Germany.
+Correct, I didn't check in devel...
 
 -- 
-Goldwyn
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
