@@ -2,405 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9164392EA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 11:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A78439307
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 11:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbhJYJqB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Oct 2021 05:46:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232999AbhJYJpc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:45:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6FE660FDC;
-        Mon, 25 Oct 2021 09:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635154990;
-        bh=fe1gUZeDlHAu1te6ux5D3FQo7FGC14ajpAEjMnWBOoA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ew/E9xanVuJulfBkNN4IKRQkRDQOOvF2/WWtMS9K8TGGp7NAEQ89NjXXBTbr4Q/Ng
-         EWhT8x522+vBVj+sZrLtIxBrOZAfNI9kScLZEQwpIJF451qVHh6ISpc51sFr2gZZA5
-         cvHe2lFkE1hdgle6Re6rFlbe3mBnEEXAIZJ/i6QkR1lgHZE6/v/idp2AddjkYZhddP
-         6zD1JIeqcLBYQET0VrJQHx75ezC+4r4HNSGFuo7kqowBic0A0BUirN0Pk5hWTRFdl/
-         mi/hxyjmn4LgLtZZF9zhARhFQw0A5xkmE2G3yt5CNBRURVVtod+kCYiTI5G8vjT7f4
-         BpexJiWPtSSUg==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Cc:     wangyugui@e16-tech.com, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] btrfs: fix deadlock due to page faults during direct IO reads and writes
-Date:   Mon, 25 Oct 2021 10:42:59 +0100
-Message-Id: <de657e3fdce0a0b84d150f7e01aa815fcae4e365.1635154399.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <e6366328b37847ce815502beaeaf2cce7a9af874.1631096590.git.fdmanana@suse.com>
-References: <e6366328b37847ce815502beaeaf2cce7a9af874.1631096590.git.fdmanana@suse.com>
+        id S232681AbhJYJwd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Oct 2021 05:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229976AbhJYJwa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Oct 2021 05:52:30 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC75C061745
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 02:50:08 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id n2so9749241qta.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 02:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=AFLakMkJoDqZ7tI1BfF5FNXzDxAqZSynfTKiqKnzLGA=;
+        b=KtkZTK9XESKIRZgmIAREyQbqd5xFvnhscf/9y2GHx3pM4UL04nqWDoPLHicp0Ec2Ds
+         YNA89CjVGRNhoMflNLYTYjNp0lNMmAbxiQv0uGR4uep1n0wyEPw1KxEbubpqAbAjpVMt
+         /irGiom/0/EpsL6/SpaGIoDfk8PkvCb0PCA0kXTeutK8jyrHGVUtpyF6PPu8EzLeixAv
+         2voPGkLSd6sRHhOTD9cIeLdeVju9fLvezaGLKE96wIhWyAn/yt+mLGEYWSXWGlko+MSv
+         txt/94TwMC4OnQL2+2qtWSYgbM5z0V2TERW3lxqFGkfdUUKTF/SU6sPsRAgn63DZfgh8
+         6pQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=AFLakMkJoDqZ7tI1BfF5FNXzDxAqZSynfTKiqKnzLGA=;
+        b=OUfT7PycZ/0SnSmxsk2XMQMe4F/CoiMKwPP2SH4fnTvx5MOdhIZ4O9w5tgulE4Otf5
+         E5jRP3x0qshTM7umvfeaIbHkW5mbZ6X8V8A5tImMkM38wfqN+AxJ3eLNWnmrLd7Kjlqz
+         6vn4iiu1LvEvUExgFmHIHZiDvQE+L6AYM5L7B6+IMC3u0mrmAfn8a5RAfpbQMry0mFpU
+         oMubW/GCgTxCVxBcdf1eIAVns4XirBEoWdRdrjiNiBvgqW/q9ngCVa47bF1O6ENInKat
+         i+/NL4hMM6L/6IGpSDSowyh4YJyVYdyXf46X4SRQXsNmWj416G4+ZxK/A6pMdIEio4L3
+         GCng==
+X-Gm-Message-State: AOAM531VSi/q3x1pstrRr036IKeYkk7HuyJi6moUQeSsLwh0fxFfaZa6
+        Q+b13IvCTTz2szKlcPkih6kHztCscUHRfvq9YCiHhe1s
+X-Google-Smtp-Source: ABdhPJzQSKckgcPybppzHLwASnAs+Fs5awVD4aaOe8T5Y0bmJNzbww01bxg3Q67j/BQNCfVZH26FcfgWYGm+9FXnLZg=
+X-Received: by 2002:ac8:5895:: with SMTP id t21mr16469450qta.329.1635155408144;
+ Mon, 25 Oct 2021 02:50:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211024033237.23662-1-wangyugui@e16-tech.com>
+In-Reply-To: <20211024033237.23662-1-wangyugui@e16-tech.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 25 Oct 2021 10:49:32 +0100
+Message-ID: <CAL3q7H6kNG+x=khgKvphNM5xMX4sC9re2YM3ZNPx78FDGyhAAQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix a check-integrity warning on write caching
+ disabled disk
+To:     wangyugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Sun, Oct 24, 2021 at 4:40 AM wangyugui <wangyugui@e16-tech.com> wrote:
+>
+> xfstest/btrfs/220 tigger a check-integrity warning
+>   btrfs: attempt to write superblock which references block which is not =
+flushed
+>     out of disk's write cache (block flush_gen=3D1, dev->flush_gen=3D0)!
+>   WARNING: at fs/btrfs/check-integrity.c:2196
+>     btrfsic_process_written_superblock+0x22a/0x2a0 [btrfs]
 
-If we do a direct IO read or write when the buffer given by the user is
-memory mapped to the file range we are going to do IO, we end up ending
-in a deadlock. This is triggered by the new test case generic/647 from
-fstests.
+For stack traces it's best to paste the full version, not just the
+first line or two, and
+for readability you can skip the reformatting to make it fit within 75
+character wide columns.
+This is on the borderline of subjectivity / personal preference, so
+take it only as a note for
+future submissions.
 
-For a direct IO read we get a trace like this:
+Also a blank line before and after the stack trace helps with readability.
 
-[  967.872718] INFO: task mmap-rw-fault:12176 blocked for more than 120 seconds.
-[  967.874161]       Not tainted 5.14.0-rc7-btrfs-next-95 #1
-[  967.874909] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  967.875983] task:mmap-rw-fault   state:D stack:    0 pid:12176 ppid: 11884 flags:0x00000000
-[  967.875992] Call Trace:
-[  967.875999]  __schedule+0x3ca/0xe10
-[  967.876015]  schedule+0x43/0xe0
-[  967.876020]  wait_extent_bit.constprop.0+0x1eb/0x260 [btrfs]
-[  967.876109]  ? do_wait_intr_irq+0xb0/0xb0
-[  967.876118]  lock_extent_bits+0x37/0x90 [btrfs]
-[  967.876150]  btrfs_lock_and_flush_ordered_range+0xa9/0x120 [btrfs]
-[  967.876184]  ? extent_readahead+0xa7/0x530 [btrfs]
-[  967.876214]  extent_readahead+0x32d/0x530 [btrfs]
-[  967.876253]  ? lru_cache_add+0x104/0x220
-[  967.876255]  ? kvm_sched_clock_read+0x14/0x40
-[  967.876258]  ? sched_clock_cpu+0xd/0x110
-[  967.876263]  ? lock_release+0x155/0x4a0
-[  967.876271]  read_pages+0x86/0x270
-[  967.876274]  ? lru_cache_add+0x125/0x220
-[  967.876281]  page_cache_ra_unbounded+0x1a3/0x220
-[  967.876291]  filemap_fault+0x626/0xa20
-[  967.876303]  __do_fault+0x36/0xf0
-[  967.876308]  __handle_mm_fault+0x83f/0x15f0
-[  967.876322]  handle_mm_fault+0x9e/0x260
-[  967.876327]  __get_user_pages+0x204/0x620
-[  967.876332]  ? get_user_pages_unlocked+0x69/0x340
-[  967.876340]  get_user_pages_unlocked+0xd3/0x340
-[  967.876349]  internal_get_user_pages_fast+0xbca/0xdc0
-[  967.876366]  iov_iter_get_pages+0x8d/0x3a0
-[  967.876374]  bio_iov_iter_get_pages+0x82/0x4a0
-[  967.876379]  ? lock_release+0x155/0x4a0
-[  967.876387]  iomap_dio_bio_actor+0x232/0x410
-[  967.876396]  iomap_apply+0x12a/0x4a0
-[  967.876398]  ? iomap_dio_rw+0x30/0x30
-[  967.876414]  __iomap_dio_rw+0x29f/0x5e0
-[  967.876415]  ? iomap_dio_rw+0x30/0x30
-[  967.876420]  ? lock_acquired+0xf3/0x420
-[  967.876429]  iomap_dio_rw+0xa/0x30
-[  967.876431]  btrfs_file_read_iter+0x10b/0x140 [btrfs]
-[  967.876460]  new_sync_read+0x118/0x1a0
-[  967.876472]  vfs_read+0x128/0x1b0
-[  967.876477]  __x64_sys_pread64+0x90/0xc0
-[  967.876483]  do_syscall_64+0x3b/0xc0
-[  967.876487]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  967.876490] RIP: 0033:0x7fb6f2c038d6
-[  967.876493] RSP: 002b:00007fffddf586b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000011
-[  967.876496] RAX: ffffffffffffffda RBX: 0000000000001000 RCX: 00007fb6f2c038d6
-[  967.876498] RDX: 0000000000001000 RSI: 00007fb6f2c17000 RDI: 0000000000000003
-[  967.876499] RBP: 0000000000001000 R08: 0000000000000003 R09: 0000000000000000
-[  967.876501] R10: 0000000000001000 R11: 0000000000000246 R12: 0000000000000003
-[  967.876502] R13: 0000000000000000 R14: 00007fb6f2c17000 R15: 0000000000000000
+> when
+> 1) CONFIG_BTRFS_FS_CHECK_INTEGRITY=3Dy
+> 2) on a disk with WCE=3D0
+>
+> When a disk has write caching disabled, we skip submission of a bio
+> with flush and sync requests before writing the superblock, since
+> it's not needed. However when the integrity checker is enabled,
+> this results in reports that there are metadata blocks referred
+> by a superblock that were not properly flushed. So don't skip the
+> bio submission only when the integrity checker is enabled
+> for the sake of simplicity, since this is a debug tool and
+> not meant for use in non-debug builds.
+>
+> Signed-off-by: wangyugui <wangyugui@e16-tech.com>
 
-This happens because at btrfs_dio_iomap_begin() we lock the extent range
-and return with it locked - we only unlock in the endio callback, at
-end_bio_extent_readpage() -> endio_readpage_release_extent(). Then after
-iomap called the btrfs_dio_iomap_begin() callback, it triggers the page
-faults that resulting in reading the pages, through the readahead callback
-btrfs_readahead(), and through there we end to attempt to lock again the
-same extent range (or a subrange of what we locked before), resulting in
-the deadlock.
+Looks good, thanks for doing it.
 
-For a direct IO write, the scenario is a bit different, and it results in
-trace like this:
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-[ 1132.442520] run fstests generic/647 at 2021-08-31 18:53:35
-[ 1330.349355] INFO: task mmap-rw-fault:184017 blocked for more than 120 seconds.
-[ 1330.350540]       Not tainted 5.14.0-rc7-btrfs-next-95 #1
-[ 1330.351158] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 1330.351900] task:mmap-rw-fault   state:D stack:    0 pid:184017 ppid:183725 flags:0x00000000
-[ 1330.351906] Call Trace:
-[ 1330.351913]  __schedule+0x3ca/0xe10
-[ 1330.351930]  schedule+0x43/0xe0
-[ 1330.351935]  btrfs_start_ordered_extent+0x108/0x1c0 [btrfs]
-[ 1330.352020]  ? do_wait_intr_irq+0xb0/0xb0
-[ 1330.352028]  btrfs_lock_and_flush_ordered_range+0x8c/0x120 [btrfs]
-[ 1330.352064]  ? extent_readahead+0xa7/0x530 [btrfs]
-[ 1330.352094]  extent_readahead+0x32d/0x530 [btrfs]
-[ 1330.352133]  ? lru_cache_add+0x104/0x220
-[ 1330.352135]  ? kvm_sched_clock_read+0x14/0x40
-[ 1330.352138]  ? sched_clock_cpu+0xd/0x110
-[ 1330.352143]  ? lock_release+0x155/0x4a0
-[ 1330.352151]  read_pages+0x86/0x270
-[ 1330.352155]  ? lru_cache_add+0x125/0x220
-[ 1330.352162]  page_cache_ra_unbounded+0x1a3/0x220
-[ 1330.352172]  filemap_fault+0x626/0xa20
-[ 1330.352176]  ? filemap_map_pages+0x18b/0x660
-[ 1330.352184]  __do_fault+0x36/0xf0
-[ 1330.352189]  __handle_mm_fault+0x1253/0x15f0
-[ 1330.352203]  handle_mm_fault+0x9e/0x260
-[ 1330.352208]  __get_user_pages+0x204/0x620
-[ 1330.352212]  ? get_user_pages_unlocked+0x69/0x340
-[ 1330.352220]  get_user_pages_unlocked+0xd3/0x340
-[ 1330.352229]  internal_get_user_pages_fast+0xbca/0xdc0
-[ 1330.352246]  iov_iter_get_pages+0x8d/0x3a0
-[ 1330.352254]  bio_iov_iter_get_pages+0x82/0x4a0
-[ 1330.352259]  ? lock_release+0x155/0x4a0
-[ 1330.352266]  iomap_dio_bio_actor+0x232/0x410
-[ 1330.352275]  iomap_apply+0x12a/0x4a0
-[ 1330.352278]  ? iomap_dio_rw+0x30/0x30
-[ 1330.352292]  __iomap_dio_rw+0x29f/0x5e0
-[ 1330.352294]  ? iomap_dio_rw+0x30/0x30
-[ 1330.352306]  btrfs_file_write_iter+0x238/0x480 [btrfs]
-[ 1330.352339]  new_sync_write+0x11f/0x1b0
-[ 1330.352344]  ? NF_HOOK_LIST.constprop.0.cold+0x31/0x3e
-[ 1330.352354]  vfs_write+0x292/0x3c0
-[ 1330.352359]  __x64_sys_pwrite64+0x90/0xc0
-[ 1330.352365]  do_syscall_64+0x3b/0xc0
-[ 1330.352369]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[ 1330.352372] RIP: 0033:0x7f4b0a580986
-[ 1330.352379] RSP: 002b:00007ffd34d75418 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-[ 1330.352382] RAX: ffffffffffffffda RBX: 0000000000001000 RCX: 00007f4b0a580986
-[ 1330.352383] RDX: 0000000000001000 RSI: 00007f4b0a3a4000 RDI: 0000000000000003
-[ 1330.352385] RBP: 00007f4b0a3a4000 R08: 0000000000000003 R09: 0000000000000000
-[ 1330.352386] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-[ 1330.352387] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
-Unlike for reads, at btrfs_dio_iomap_begin() we return with the extent
-range unlocked, but later when the page faults are triggered and we try
-to read the extents, we end up btrfs_lock_and_flush_ordered_range() where
-we find the ordered extent for our write, created by the iomap callback
-btrfs_dio_iomap_begin(), and we wait for it to complete, which makes us
-deadlock since we can't complete the ordered extent without reading the
-pages (the iomap code only submits the bio after the pages are faulted
-in).
 
-Fix this by setting the nofault attribute of the given iov_iter and retry
-the direct IO read/write if we get an -EFAULT error returned from iomap.
-For reads, also disable page faults completely, this is because when we
-read from a hole or a prealloc extent, we can still trigger page faults
-due to the call to iov_iter_zero() done by iomap - at the momemnt, it is
-oblivious to the value of the ->nofault attribute of an iov_iter.
-We also need to keep track of the number of bytes written or read, and
-pass it to iomap_dio_rw(), as well as use the new flag IOMAP_DIO_PARTIAL.
+> ---
+> Changes since v1:
+> - update the changlog/code comment. (Filipe Manana)
+> - var(struct request_queue *q) is only needed when
+>    !CONFIG_BTRFS_FS_CHECK_INTEGRITY
+> ---
+>  fs/btrfs/disk-io.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 355ea88d5c5f..4ef06d0555b0 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3968,11 +3968,23 @@ static void btrfs_end_empty_barrier(struct bio *b=
+io)
+>   */
+>  static void write_dev_flush(struct btrfs_device *device)
+>  {
+> -       struct request_queue *q =3D bdev_get_queue(device->bdev);
+>         struct bio *bio =3D device->flush_bio;
+>
+> +       #ifndef CONFIG_BTRFS_FS_CHECK_INTEGRITY
+> +       /*
+> +       * When a disk has write caching disabled, we skip submission of a=
+ bio
+> +       * with flush and sync requests before writing the superblock, sin=
+ce
+> +       * it's not needed. However when the integrity checker is enabled,
+> +       * this results in reports that there are metadata blocks referred
+> +       * by a superblock that were not properly flushed. So don't skip t=
+he
+> +       * bio submission only when the integrity checker is enabled
+> +       * for the sake of simplicity, since this is a debug tool and
+> +       * not meant for use in non-debug builds.
+> +       */
+> +       struct request_queue *q =3D bdev_get_queue(device->bdev);
+>         if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
+>                 return;
+> +       #endif
+>
+>         bio_reset(bio);
+>         bio->bi_end_io =3D btrfs_end_empty_barrier;
+> --
+> 2.32.0
+>
 
-This depends on the iov_iter and iomap changes done by a recent patchset
-from Andreas Gruenbacher, which is not yet merged to Linus' tree at the
-moment of this writing. The cover letter has the following subject:
 
-   "[PATCH v8 00/19] gfs2: Fix mmap + page fault deadlocks"
+--=20
+Filipe David Manana,
 
-The thread can be found at:
-
-https://lore.kernel.org/linux-fsdevel/20211019134204.3382645-1-agruenba@redhat.com/
-
-Fixing these issues could be done without the iov_iter and iomap changes
-introduced in that patchset, however it would be much more complex due to
-the need of reordering some operations for writes and having to be able
-to pass some state through nested and deep call chains, which would be
-particularly cumbersome for reads - for example make the readahead and
-the endio handlers for page reads be aware we are in a direct IO read
-context and know which inode and extent range we locked before.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
-
-V2: Updated read path to fallback to buffered IO in case it's taking a long
-    time to make any progress, fixing an issue reported by Wang Yugui.
-    Rebased on the v8 patchset on which it depends on and on current misc-next.
-
- fs/btrfs/file.c | 137 ++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 121 insertions(+), 16 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 581662d16b72..58c94205d325 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1912,16 +1912,17 @@ static ssize_t check_direct_IO(struct btrfs_fs_info *fs_info,
- 
- static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- {
-+	const bool is_sync_write = (iocb->ki_flags & IOCB_DSYNC);
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file_inode(file);
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	loff_t pos;
- 	ssize_t written = 0;
- 	ssize_t written_buffered;
-+	size_t prev_left = 0;
- 	loff_t endbyte;
- 	ssize_t err;
- 	unsigned int ilock_flags = 0;
--	struct iomap_dio *dio = NULL;
- 
- 	if (iocb->ki_flags & IOCB_NOWAIT)
- 		ilock_flags |= BTRFS_ILOCK_TRY;
-@@ -1964,23 +1965,79 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 		goto buffered;
- 	}
- 
--	dio = __iomap_dio_rw(iocb, from, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
--			     0, 0);
-+	/*
-+	 * We remove IOCB_DSYNC so that we don't deadlock when iomap_dio_rw()
-+	 * calls generic_write_sync() (through iomap_dio_complete()), because
-+	 * that results in calling fsync (btrfs_sync_file()) which will try to
-+	 * lock the inode in exclusive/write mode.
-+	 */
-+	if (is_sync_write)
-+		iocb->ki_flags &= ~IOCB_DSYNC;
- 
--	btrfs_inode_unlock(inode, ilock_flags);
-+	/*
-+	 * The iov_iter can be mapped to the same file range we are writing to.
-+	 * If that's the case, then we will deadlock in the iomap code, because
-+	 * it first calls our callback btrfs_dio_iomap_begin(), which will create
-+	 * an ordered extent, and after that it will fault in the pages that the
-+	 * iov_iter refers to. During the fault in we end up in the readahead
-+	 * pages code (starting at btrfs_readahead()), which will lock the range,
-+	 * find that ordered extent and then wait for it to complete (at
-+	 * btrfs_lock_and_flush_ordered_range()), resulting in a deadlock since
-+	 * obviously the ordered extent can never complete as we didn't submit
-+	 * yet the respective bio(s). This always happens when the buffer is
-+	 * memory mapped to the same file range, since the iomap DIO code always
-+	 * invalidates pages in the target file range (after starting and waiting
-+	 * for any writeback).
-+	 *
-+	 * So here we disable page faults in the iov_iter and then retry if we
-+	 * got -EFAULT, faulting in the pages before the retry.
-+	 */
-+again:
-+	from->nofault = true;
-+	err = iomap_dio_rw(iocb, from, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
-+			   IOMAP_DIO_PARTIAL, written);
-+	from->nofault = false;
- 
--	if (IS_ERR_OR_NULL(dio)) {
--		err = PTR_ERR_OR_ZERO(dio);
--		if (err < 0 && err != -ENOTBLK)
--			goto out;
--	} else {
--		written = iomap_dio_complete(dio);
-+	if (err > 0)
-+		written = err;
-+
-+	if (iov_iter_count(from) > 0 && (err == -EFAULT || err > 0)) {
-+		const size_t left = iov_iter_count(from);
-+		/*
-+		 * We have more data left to write. Try to fault in as many as
-+		 * possible of the remainder pages and retry. We do this without
-+		 * releasing and locking again the inode, to prevent races with
-+		 * truncate.
-+		 *
-+		 * Also, in case the iov refers to pages in the file range of the
-+		 * file we want to write to (due to a mmap), we could enter an
-+		 * infinite loop if we retry after faulting the pages in, since
-+		 * iomap will invalidate any pages in the range early on, before
-+		 * it tries to fault in the pages of the iov. So we keep track of
-+		 * how much was left of iov in the previous EFAULT and fallback
-+		 * to buffered IO in case we haven't made any progress.
-+		 */
-+		if (left == prev_left) {
-+			err = -ENOTBLK;
-+		} else {
-+			fault_in_iov_iter_readable(from, left);
-+			prev_left = left;
-+			goto again;
-+		}
- 	}
- 
--	if (written < 0 || !iov_iter_count(from)) {
--		err = written;
-+	btrfs_inode_unlock(inode, ilock_flags);
-+
-+	/*
-+	 * Add back IOCB_DSYNC. Our caller, btrfs_file_write_iter(), will do
-+	 * the fsync (call generic_write_sync()).
-+	 */
-+	if (is_sync_write)
-+		iocb->ki_flags |= IOCB_DSYNC;
-+
-+	/* If 'err' is -ENOTBLK then it means we must fallback to buffered IO. */
-+	if ((err < 0 && err != -ENOTBLK) || !iov_iter_count(from))
- 		goto out;
--	}
- 
- buffered:
- 	pos = iocb->ki_pos;
-@@ -2005,7 +2062,7 @@ static ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 	invalidate_mapping_pages(file->f_mapping, pos >> PAGE_SHIFT,
- 				 endbyte >> PAGE_SHIFT);
- out:
--	return written ? written : err;
-+	return err < 0 ? err : written;
- }
- 
- static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
-@@ -3659,6 +3716,8 @@ static int check_direct_read(struct btrfs_fs_info *fs_info,
- static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	struct inode *inode = file_inode(iocb->ki_filp);
-+	size_t prev_left = 0;
-+	ssize_t read = 0;
- 	ssize_t ret;
- 
- 	if (fsverity_active(inode))
-@@ -3668,10 +3727,56 @@ static ssize_t btrfs_direct_read(struct kiocb *iocb, struct iov_iter *to)
- 		return 0;
- 
- 	btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
-+again:
-+	/*
-+	 * This is similar to what we do for direct IO writes, see the comment
-+	 * at btrfs_direct_write(), but we also disable page faults in addition
-+	 * to disabling them only at the iov_iter level. This is because when
-+	 * reading from a hole or prealloc extent, iomap calls iov_iter_zero(),
-+	 * which can still trigger page fault ins despite having set ->nofault
-+	 * to true of our 'to' iov_iter.
-+	 *
-+	 * The difference to direct IO writes is that we deadlock when trying
-+	 * to lock the extent range in the inode's tree during he page reads
-+	 * triggered by the fault in (while for writes it is due to waiting for
-+	 * our own ordered extent). This is because for direct IO reads,
-+	 * btrfs_dio_iomap_begin() returns with the extent range locked, which
-+	 * is only unlocked in the endio callback (end_bio_extent_readpage()).
-+	 */
-+	pagefault_disable();
-+	to->nofault = true;
- 	ret = iomap_dio_rw(iocb, to, &btrfs_dio_iomap_ops, &btrfs_dio_ops,
--			   0, 0);
-+			   IOMAP_DIO_PARTIAL, read);
-+	to->nofault = false;
-+	pagefault_enable();
-+
-+	if (ret > 0)
-+		read = ret;
-+
-+	if (iov_iter_count(to) > 0 && (ret == -EFAULT || ret > 0)) {
-+		const size_t left = iov_iter_count(to);
-+
-+		if (left == prev_left) {
-+			/*
-+			 * We didn't make any progress since the last attempt,
-+			 * fallback to a buffered read for the remainder of the
-+			 * range. This is just to avoid any possibility of looping
-+			 * for too long.
-+			 */
-+			ret = read;
-+		} else {
-+			/*
-+			 * We made some progress since the last retry or this is
-+			 * the first time we are retrying. Fault in as many pages
-+			 * as possible and retry.
-+			 */
-+			fault_in_iov_iter_writeable(to, left);
-+			prev_left = left;
-+			goto again;
-+		}
-+	}
- 	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
--	return ret;
-+	return ret < 0 ? ret : read;
- }
- 
- static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
--- 
-2.33.0
-
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
