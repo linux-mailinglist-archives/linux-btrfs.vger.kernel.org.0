@@ -2,173 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477AF439938
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 16:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB60B439955
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 16:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233608AbhJYOwa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Oct 2021 10:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233555AbhJYOwK (ORCPT
+        id S233520AbhJYOzb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Oct 2021 10:55:31 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43440 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233002AbhJYOz0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:52:10 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D75BC061225
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 07:49:15 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id m63so26600003ybf.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 07:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ryveRrKG3gwhcz8mUEUXJ5db2eGGhWkfhtbmXfaNKE8=;
-        b=WMMNxZCSMACr6kDYz4hxY813mMjMFpCSPXj21mZf+BGmkQWAWGHTFgAgv9xHdeQssi
-         RbKEP/n8Ufvgt5g33NraHScMG7OExczp1YGpOf3G4faVjxIwzqa3jH1qm44NBIwSuEUK
-         eFbYHL7Rr0mfWBhDePlv+yhqlkUweryKuvD03NJC9Y1zbEsF1+PQUJt5tH0IF9GneSQX
-         /GCuX9uC7Ge1lXuxsIojqgfActd2azuOiAv/AGNibzb2+owKUikqyMtLYpGU4BEIeY1U
-         XBhNYSWm7omV04lQGulP/GiRUCDeNFbs0+9sdPX0+kTUJZe5mMNCXqzpdMopXpj0Asup
-         oC7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ryveRrKG3gwhcz8mUEUXJ5db2eGGhWkfhtbmXfaNKE8=;
-        b=BFHAExHF07j3GL5iASMYlaG40bmg0OjlQitUgwsNNjrk80mo4+bf80fB+h78yDw3y7
-         9venYQ0t3xcMvcIh3+qrBmwrU+fOJCXAZGRk4OigG09JGiT6igVMZRi8BXvkYBx0uFGt
-         Kpq5ZiLN+tdYbIFF5kD9/ya447yPnt6r+B+pGn8fUYHkENN6mq/mBNWd9iWlu7RPIfef
-         qOzx4RWc+aSQZiEmEA/ETLluNeUbtWjxuuR4y5NA8bq8qBmVHnRiEF4ji7fuvAfxPgcx
-         oS5eTeH1eDctTmL83gxx8jE/BTBgZWSEzqUD1ccSa32arIbytHcXgSVjlP6YyYoCXeb8
-         f5lQ==
-X-Gm-Message-State: AOAM533AZgMcxgrZobGFQmTZ8sR2naKfPtcoQQ2JKNO9fS3XzEQnm2eH
-        KrhPG99JLLS52F3Qv7jpsvF90lYJgsUj1oQUPfkNjmdXzoA0fUuLIpk=
-X-Google-Smtp-Source: ABdhPJzgmC6Uebl0DAWRM9XKEYXO3nyY7TJWWJdh6D+EsfvLyS42SWdRFVX3rroNAazn8qPyoIC5gIFVB47PZBIiqc8=
-X-Received: by 2002:a25:2e52:: with SMTP id b18mr9640805ybn.391.1635173354606;
- Mon, 25 Oct 2021 07:49:14 -0700 (PDT)
+        Mon, 25 Oct 2021 10:55:26 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 817CE1FD3A;
+        Mon, 25 Oct 2021 14:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1635173583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=14vlRFy8Pd1BNKQMHmPc+yvqhuG2k+CTVxOYOeA1kn0=;
+        b=ACSuhGqQE5/IQmBwsizElcT0XULvOSPiT0QyHXewabgGef+94XmF/Y4tGw6A1tuaHSDlWD
+        dMOSs7xBrno7BfZxl+4JZIS2ZoSaMgnp0Xd9umRWwqQ83sbI2Dwfok1M4l63lml+c19Z98
+        eXGuUb4B+Y/t5NAhl9TSrpy6DYGXSwA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1635173583;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=14vlRFy8Pd1BNKQMHmPc+yvqhuG2k+CTVxOYOeA1kn0=;
+        b=fL0mH+Lo8ohf+9tRmo3Aq68EdLMyP+e7nNEUe9/RCXySreKRR8vL/9fzkkZZLd11VDlDxi
+        pJX0LNjRr23vtxCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 278F313C0B;
+        Mon, 25 Oct 2021 14:53:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xjWwAM/EdmG/CQAAMHmgww
+        (envelope-from <rgoldwyn@suse.de>); Mon, 25 Oct 2021 14:53:03 +0000
+Date:   Mon, 25 Oct 2021 09:53:01 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [RFC PATCH 0/5] Shared memory for shared extents
+Message-ID: <20211025145301.hk627p2qcotxegrd@fiona>
+References: <cover.1634933121.git.rgoldwyn@suse.com>
+ <YXNoxZqKPkxZvr3E@casper.infradead.org>
 MIME-Version: 1.0
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <CAJCQCtSRxFuU4bTTa5_q6fAPuwf3pwrnUXM1CKgc+r69WSE9tQ@mail.gmail.com>
- <eae44940-48cb-5199-c46f-7db4ec953edf@suse.com> <CAJCQCtR+YQ2Xypz3KyHgD=TvQ8KcUsCf08YnhvLrVtgb-h9aMw@mail.gmail.com>
- <CAJCQCtQHugvMaeRc1A0EJnG4LDaLM5V=JzTO5FSU9eKQA8wxfA@mail.gmail.com>
- <CAJCQCtT12qUxYqJAf8q3t9cvbovoJdSG9kaBpvULQnwLw=rnMg@mail.gmail.com>
- <bl3mimya.fsf@damenly.su> <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
- <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
- <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
- <7de9iylb.fsf@damenly.su> <CAJCQCtSUDSvMvbk1RmfTzBQ=UiZHrDeG6PE+LQK5pi_ZMCSp6A@mail.gmail.com>
- <35owijrm.fsf@damenly.su> <CAJCQCtS-QhnZm2X_k77BZPDP_gybn-Ao_qPOJhXLabgPHUvKng@mail.gmail.com>
- <ff911f0c-9ea5-43b1-4b8d-e8c392f0718e@suse.com> <9e746c1c-85e5-c766-26fa-a4d83f1bfd34@suse.com>
- <CAJCQCtTHPAHMAaBg54Cs9CRKBLD9hRdA2HwOCBjsqZCwWBkyvg@mail.gmail.com> <91185758-fdaf-f8da-01eb-a9932734fc09@suse.com>
-In-Reply-To: <91185758-fdaf-f8da-01eb-a9932734fc09@suse.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 25 Oct 2021 10:48:58 -0400
-Message-ID: <CAJCQCtTEm5UKR+pr3q-5xw34Tmy2suuU4p9f5H43eQkkw5AiKw@mail.gmail.com>
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Chris Murphy <lists@colorremedies.com>, Su Yue <l@damenly.su>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXNoxZqKPkxZvr3E@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-https://bugzilla.redhat.com/show_bug.cgi?id=2011928
+On  2:43 23/10, Matthew Wilcox wrote:
+> On Fri, Oct 22, 2021 at 03:15:00PM -0500, Goldwyn Rodrigues wrote:
+> > This is an attempt to reduce the memory footprint by using a shared
+> > page(s) for shared extent(s) in the filesystem. I am hoping to start a
+> > discussion to iron out the details for implementation.
+> 
+> When you say "Shared extents", you mean reflinks, which are COW, right?
 
-Comment 45 (attachment) is a dmesg sysrq+t during the hang with a
-5.14.14 kernel with the WARN_ON added but no OOPS or call trace
-occurred
+Yes, shared extents are extents which are shared on disk by two or more
+files. Yes, same as reflinks. Just to explain with an example:
 
-Comment 46 (attachment) is a dmesg with a 5.14.10 kernel with the
-WARN_ON added, with OOPS and call trace; excerpt of this pasted below
+If two files, f1 and f2 have shared extent(s), and both files are read. Each
+file's mapping->i_pages will hold a copy of the contents of the shared
+extent on disk. So, f1->mapping will have one copy and f2->mapping will
+have another copy.
 
+For reads (and only reads), if we use underlying device's mapping, we
+can save on duplicate copy of the pages.
 
-[  992.788137] ------------[ cut here ]------------
-[  992.793018] WARNING: CPU: 0 PID: 1509 at fs/btrfs/inode.c:844
-submit_compressed_extents+0x3d4/0x3e0
-[  992.802276] Modules linked in: rfkill virtio_gpu virtio_dma_buf
-drm_kms_helper joydev cec fb_sys_fops virtio_net syscopyarea
-net_failover sysfillrect sysimgblt virtio_balloon failover vfat fat
-drm fuse zram ip_tables crct10dif_ce ghash_ce virtio_blk qemu_fw_cfg
-virtio_mmio aes_neon_bs
-[  992.828320] CPU: 0 PID: 1509 Comm: kworker/u8:12 Not tainted
-5.14.10-300.fc35.dusty.aarch64 #1
-[  992.837159] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
-[  992.844076] Workqueue: btrfs-delalloc btrfs_work_helper
-[  992.849339] pstate: 20400005 (nzCv daif +PAN -UAO -TCO BTYPE=--)
-[  992.855262] pc : submit_compressed_extents+0x3d4/0x3e0
-[  992.860357] lr : async_cow_submit+0x50/0xd0
-[  992.864444] sp : ffff800012023c20
-[  992.867667] x29: ffff800012023c30 x28: 0000000000000000 x27: ffffdd47ca411000
-[  992.874799] x26: ffff000128f2c548 x25: dead000000000100 x24: ffff000128f2c508
-[  992.881862] x23: 0000000000000000 x22: 0000000000000001 x21: ffff00018f9d5e80
-[  992.888931] x20: ffff0000c0672000 x19: 0000000000000001 x18: ffff0000c4c00bd4
-[  992.896105] x17: ffff00012d53aff8 x16: 0000000000000006 x15: 7a1cde357ab19b01
-[  992.903348] x14: 5eac0029a606c741 x13: 0000000000000020 x12: ffff0001fefa78c0
-[  992.910639] x11: ffffdd47ca42b500 x10: 0000000000000000 x9 : ffffdd47c8c01c50
-[  992.917872] x8 : ffff22ba34aec000 x7 : ffff800012023be0 x6 : ffffdd47ca95ad40
-[  992.925086] x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff00018f9d5ea0
-[  992.932221] x2 : 0000000000000000 x1 : ffff000128f2c508 x0 : ffff000128f2c508
-[  992.939392] Call trace:
-[  992.941854]  submit_compressed_extents+0x3d4/0x3e0
-[  992.946737]  async_cow_submit+0x50/0xd0
-[  992.950574]  run_ordered_work+0xc8/0x280
-[  992.954560]  btrfs_work_helper+0x98/0x250
-[  992.958594]  process_one_work+0x1f0/0x4ac
-[  992.962619]  worker_thread+0x188/0x504
-[  992.966390]  kthread+0x110/0x114
-[  992.969681]  ret_from_fork+0x10/0x18
-[  992.973313] ---[ end trace 11b751608cbdcfac ]---
-[  992.978203] Unable to handle kernel paging request at virtual
-address fffffffffffffdd0
-[  992.986011] Mem abort info:
-[  992.993975]   ESR = 0x96000004
-[  992.996786]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  993.001795]   SET = 0, FnV = 0
-[  993.004646]   EA = 0, S1PTW = 0
-[  993.007455]   FSC = 0x04: level 0 translation fault
-[  993.012081] Data abort info:
-[  993.014712]   ISV = 0, ISS = 0x00000004
-[  993.021058]   CM = 0, WnR = 0
-[  993.026357] swapper pgtable: 4k pages, 48-bit VAs, pgdp=000000009c051000
-[  993.035411] [fffffffffffffdd0] pgd=0000000000000000, p4d=0000000000000000
-[  993.044400] Internal error: Oops: 96000004 [#1] SMP
-[  993.051651] Modules linked in: rfkill virtio_gpu virtio_dma_buf
-drm_kms_helper joydev cec fb_sys_fops virtio_net syscopyarea
-net_failover sysfillrect sysimgblt virtio_balloon failover vfat fat
-drm fuse zram ip_tables crct10dif_ce ghash_ce virtio_blk qemu_fw_cfg
-virtio_mmio aes_neon_bs
-[  993.083344] CPU: 0 PID: 1509 Comm: kworker/u8:12 Tainted: G
-W         5.14.10-300.fc35.dusty.aarch64 #1
-[  993.095545] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
-[  993.104796] Workqueue: btrfs-delalloc btrfs_work_helper
-[  993.112752] pstate: 20400005 (nzCv daif +PAN -UAO -TCO BTYPE=--)
-[  993.121096] pc : submit_compressed_extents+0x44/0x3e0
-[  993.128333] lr : async_cow_submit+0x50/0xd0
-[  993.134773] sp : ffff800012023c20
-[  993.140397] x29: ffff800012023c30 x28: 0000000000000000 x27: ffffdd47ca411000
-[  993.149489] x26: fffffffffffffdd0 x25: dead000000000100 x24: ffff000128f2c508
-[  993.158723] x23: 0000000000000000 x22: 0000000000000001 x21: ffff00018f9d5e80
-[  993.167904] x20: fffffffffffffe18 x19: 0000000000000001 x18: ffff0000c4c00bd4
-[  993.177039] x17: ffff00012d53aff8 x16: 0000000000000006 x15: 7a1cde357ab19b01
-[  993.186386] x14: 5eac0029a606c741 x13: 0000000000000020 x12: ffff0001fefa78c0
-[  993.195490] x11: ffffdd47ca42b500 x10: 0000000000000000 x9 : ffffdd47c8c01c50
-[  993.204603] x8 : ffff22ba34aec000 x7 : ffff800012023be0 x6 : ffffdd47ca95ad40
-[  993.213749] x5 : 0000000000000000 x4 : 0000000000000000 x3 : ffff00018f9d5ea0
-[  993.222960] x2 : 0000000000000000 x1 : ffff000128f2c530 x0 : ffff000128f2c530
-[  993.232079] Call trace:
-[  993.236821]  submit_compressed_extents+0x44/0x3e0
-[  993.243682]  async_cow_submit+0x50/0xd0
-[  993.249829]  run_ordered_work+0xc8/0x280
-[  993.255974]  btrfs_work_helper+0x98/0x250
-[  993.262187]  process_one_work+0x1f0/0x4ac
-[  993.268381]  worker_thread+0x188/0x504
-[  993.274252]  kthread+0x110/0x114
-[  993.279894]  ret_from_fork+0x10/0x18
-[  993.285819] Code: d108c2fa 9100a301 f9401700 d107a2f4 (f9400356)
-[  993.294256] ---[ end trace 11b751608cbdcfad ]---
+> A lot of what you say here confuses me because you talk about dirty
+> shared pages, and that doesn't make any sense.  A write fault or
+> call to write() should be intercepted by the filesystem in order to
+> break the COW.  There's no such thing as a shared page which is dirty,
+> or has been written back.
 
 
-I don't see any new information here though.
+I am _not_ talking of writes at all here. However, just to clarify the
+air: For a CoW environment,  if a write happens, it becomes the
+filesystems responsibility to write it to a new device location. These
+pages should still end up in inode's i_mapping, as it is done currently.
+This also includes pages which are read before modifying/writing.
+The filesystem will writeback these pages to a new device location.
+My question in the end was if we should release these  pages
+or perhaps move them to device's mapping once they are no
+longer dirty - for subsequence reads.
 
+> 
+> You might (or might not!) choose to copy the pages from the shared
+> extent to the inode when breaking the COW.  But you can't continue
+> to share them!
 
---
-Chris Murphy
+Since a write goes through inode's i_mapping, it will go to a new device
+location and will break the share. There is no change in this
+phenomenon. What I am changing is only the "pure" reads from CoW
+filesystems. IOW, there is an order to look pagecache for reads - 
+1. inode->i_mapping->i_pages
+2. inode->sb->s_bdev->bd_inode->i_mapping->i_pages (after file offset to
+device).
+
+This way reads from dirty pages will go through inode->i_mapping.
+
+> 
+> > Abstract
+> > If mutiple files share an extent, reads from each of the files would
+> > read individual page copies in the inode pagecache mapping, leading to
+> > waste of memory. Instead add the read pages of the filesystem to
+> > underlying device's bd_inode as opposed to file's inode mapping. The
+> > cost is that file offset to device offset conversion happens early in
+> > the read cycle.
+> > 
+> > Motivation:
+> >  - Reduce memory usage for shared extents
+> >  - Ease DAX implementation for shared extents
+> >  - Reduce Container memory utilization
+> > 
+> > Implementation
+> > In the read path, pages are read and added to the block_device's
+> > inode's mapping as opposed to the inode's mapping. This is limited
+> > to reads, while write's (and read before writes) still go through
+> > inode's i_mapping. The path does check the inode's i_mapping before
+> > falling back to block device's i_mapping to read pages which may be
+> > dirty. The cost of the operation is file_to_device_offset() translation
+> > on reads. The translation should return a valid value only in case
+> > the file is CoW.
+> > 
+> > This also means that page->mapping may not point to file's mapping.
+> > 
+> > Questions:
+> > 1. Are there security implications for performing this for read-only
+> > pages? An alternate idea is to add a "struct fspage", which would be
+> > pointed by file's mapping and would point to the block device's page.
+> > Multiple files with shared extents have their own independent fspage
+> > pointing to the same page mapped to block device's mapping.
+> > Any security parameters, if required, would be in this structure. The
+> > advantage of this approach is it would be more flexible with respect to
+> > CoW when the page is dirtied after reads. With the current approach, a
+> > read for write is an independent operation so we can end up with two
+> > copies of the same page. This implementation got complicated too quickly.
+> > 
+> > 2. Should pages be dropped after writebacks (and clone_range) to avoid
+> > duplicate copies?
+> > 
+> > Limitations:
+> > 1. The filesystem have exactly one underlying device.
+> > 2. Page size should be equal to filesystem block size
+> > 
+> > Goldwyn Rodrigues (5):
+> >   mm: Use file parameter to determine bdi
+> >   mm: Switch mapping to device mapping
+> >   btrfs: Add sharedext mount option
+> >   btrfs: Set s_bdev for btrfs super block
+> >   btrfs: function to convert file offset to device offset
+> > 
+> >  fs/btrfs/ctree.h   |  1 +
+> >  fs/btrfs/file.c    | 42 ++++++++++++++++++++++++++++++++++++++++--
+> >  fs/btrfs/super.c   |  7 +++++++
+> >  include/linux/fs.h |  7 ++++++-
+> >  mm/filemap.c       | 34 ++++++++++++++++++++++++++--------
+> >  mm/readahead.c     |  3 +++
+> >  6 files changed, 83 insertions(+), 11 deletions(-)
+> > 
+> > -- 
+> > 2.33.1
+> > 
+
+-- 
+Goldwyn
