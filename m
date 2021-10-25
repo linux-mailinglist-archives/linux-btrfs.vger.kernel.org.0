@@ -2,109 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68FC439ECC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 20:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB95439EE8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 21:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbhJYTBk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Oct 2021 15:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbhJYTBk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Oct 2021 15:01:40 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D06C061745
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 11:59:17 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id x123so12774755qke.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 11:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Hu3uujpr3W5lLT7No0aWZYTFDYd6IAZq3BJq27n4A8=;
-        b=FsOZY5PHpMnPhIJyVYGo0OzR3KOEehcpcDtxIi2y/9wDdxLMEfrn0/LffgtnEcenKY
-         rAxAe+D9szlV5rd3/WZdc8zo2zg0FGtMcFE0WRE4Ao78mMsp1GhRcsThstI+yk4cX7CK
-         cxmFCYNXYNBaXCg0fhtaHxt59yzoMqcGuplSfXGGWQ8m520icNdpm6+W0PkK+/sQiPSX
-         ZXbil9O08pinAYscJlOHKdWi1Ed8m8xpSqMx0kPHSgWIoM2t4DXb/pCivCsxL0gcE0wC
-         KSwjTvX8ckUiVd/WV3WOB32XKF4yybyrTjFX1lwvVGuX6LoJLXuhN0jJKYeKuvvPMD3t
-         uf6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Hu3uujpr3W5lLT7No0aWZYTFDYd6IAZq3BJq27n4A8=;
-        b=fKa3uxRMrh+POzyVfiFjDkgnj2ciZWY6K8uKFjNZ6wE/lSf1dOq3ugUqlY1+TkDEKE
-         i0krnVmUBQFIj845pbOPGF3DPD/AO54iKDM5xompbyNelFbC+EU7L8VpYvwoBG/KjHZ7
-         pBBKx73d0/nf3tFM6Z6JOnm/fz7O/ppwHHT2SleBELIjo7p3eLeKgagUB/tIvFjgTPtU
-         SFYeWuzvrrJJmmTwtAbr6XLA0Uu2IzL46Cm/EgkMV2ymS5qCNuu7orjlW3t5ZqdpkvlH
-         xY64D/BFfNphB5JMKCE4QWH+N3zfPH7D2gdY3Y6mxqfWSca168hFqnFRC/n1HJxLI3cq
-         cX7g==
-X-Gm-Message-State: AOAM5300LK2DOZMdR80JzrTtlH/Fne/q3ERzkKrjw+F1baBTkPFaRRX1
-        mVGWIr94QrLjnH7CIc7IFeCHgQ==
-X-Google-Smtp-Source: ABdhPJxSQTNhHeP3QBNgdwujJcM1lICTq4k87gDFQ4eNJndR5Hk6vrscYrfIlws+rMj7FgD05xk2Qg==
-X-Received: by 2002:a05:620a:269a:: with SMTP id c26mr15614311qkp.388.1635188356978;
-        Mon, 25 Oct 2021 11:59:16 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id x22sm10542853qkp.103.2021.10.25.11.59.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 11:59:16 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:59:15 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH v2 0/6] btrfs: speedup directory logging/fsync by copying
- index keys only
-Message-ID: <YXb+g31uylK782xS@localhost.localdomain>
-References: <cover.1635155473.git.fdmanana@suse.com>
- <cover.1635178668.git.fdmanana@suse.com>
+        id S233632AbhJYTE4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Oct 2021 15:04:56 -0400
+Received: from vps.thesusis.net ([34.202.238.73]:54428 "EHLO vps.thesusis.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233588AbhJYTEz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Oct 2021 15:04:55 -0400
+Received: by vps.thesusis.net (Postfix, from userid 1000)
+        id 0C83861FD2; Mon, 25 Oct 2021 15:02:27 -0400 (EDT)
+References: <YXHK5HrQpJu9oy8w@casper.infradead.org>
+ <87tuh9n9w2.fsf@vps.thesusis.net> <20211022084127.GA1026@quack2.suse.cz>
+User-agent: mu4e 1.7.0; emacs 27.1
+From:   Phillip Susi <phill@thesusis.net>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev,
+        linux-bcache@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Subject: Re: Readahead for compressed data
+Date:   Mon, 25 Oct 2021 14:59:45 -0400
+In-reply-to: <20211022084127.GA1026@quack2.suse.cz>
+Message-ID: <87fssprkql.fsf@vps.thesusis.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1635178668.git.fdmanana@suse.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 05:31:48PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> This patchset reworks directory logging to make it copy only the dir index
-> keys, instead of copying both dir index keys and dir item keys, as both have
-> the same type of information. This reduces the amount of logged metadata by
-> about half, and therefore we do about half of the cpu bound work, half of
-> the IO and use less log tree space (except for very small directories).
-> 
-> This will allow other optimizations to build on top, some of which are only
-> possible after this change, while others become easier and less cumbersome
-> to implement after this change. Performance tests are in the changelog of
-> patch 5/6. Patch 6/6 only removes code that deals with dir item keys when
-> replaying directory deletions and it could have been squashed into patch
-> 5/6, but since that one is already large and works without 6/6, I opted
-> to make it separate to make it easier to review.
-> 
-> Also, after this change we are still able to correctly replay a log tree
-> generated by an old kernel, and an old kernel is also able to correctly
-> replay a log tree generated by a kernel that has this patchset applied.
-> 
-> I'm sending this close to the 5.16 merge window, but my intention is to
-> have it only for the next merge window (5.17).
-> 
-> V2: Updated changelog of patch 5/6 to make it more clear why backward
->     and forward compatibility are guaranteed.
-> 
-> Filipe Manana (6):
->   btrfs: remove root argument from drop_one_dir_item()
->   btrfs: remove root argument from btrfs_unlink_inode()
->   btrfs: remove root argument from add_link()
->   btrfs: remove root argument from check_item_in_log()
->   btrfs: only copy dir index keys when logging a directory
->   btrfs: remove no longer needed logic for replaying directory deletes
-> 
 
-You can add
+Jan Kara <jack@suse.cz> writes:
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Well, one of the problems with keeping compressed data is that for mmap(2)
+> you have to have pages decompressed so that CPU can access them. So keeping
+> compressed data in the page cache would add a bunch of complexity. That
+> being said keeping compressed data cached somewhere else than in the page
+> cache may certainly me worth it and then just filling page cache on demand
+> from this data...
 
-to the series, thanks,
+True... Did that multi generational LRU cache ever get merged?  I was
+thinking you could use that to make sure that the kernel prefers to
+reclaim the decompressed pages in favor of keeping the compressed ones
+around.
 
-Josef
