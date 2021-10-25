@@ -2,422 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F57643920E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 11:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0C0439299
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 11:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232402AbhJYJLG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Oct 2021 05:11:06 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50372 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232440AbhJYJLF (ORCPT
+        id S232619AbhJYJmK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Oct 2021 05:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230297AbhJYJmK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Oct 2021 05:11:05 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id F3D2B1FCA3
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 09:08:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635152923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rGzgcRwbrZzyx1LJ3DM1G6/s3WRuKBvXXs1ejkmHpAE=;
-        b=TMlAXoUK4qMK5LsfshxGk9+JmrJ0TI/Bxnx5fnjnay+nHYgaqAhOC2TaW1U2QMXvvzwo80
-        hS8FJlU1Co7nlwlmWObdhbpw6OHgbNlPY0mFuBi6VLBULHGLGObjRzBluvGMVwIoKa7qmq
-        QK+gxKsRk6GU/9e69p3/XwjH/1w35Co=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 517D613AAB
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 09:08:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8BAgBxp0dmHDPwAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 09:08:42 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: move btrfs_printk() related macros to messages.h
-Date:   Mon, 25 Oct 2021 17:08:21 +0800
-Message-Id: <20211025090821.65646-4-wqu@suse.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211025090821.65646-1-wqu@suse.com>
-References: <20211025090821.65646-1-wqu@suse.com>
+        Mon, 25 Oct 2021 05:42:10 -0400
+Received: from zaphod.cobb.me.uk (zaphod.cobb.me.uk [IPv6:2001:41c8:51:983::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4168C061745
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 02:39:47 -0700 (PDT)
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 512449B6F5; Mon, 25 Oct 2021 10:39:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1635154784;
+        bh=ttnAvLHLhj6CMCzsdMlpSfHIrA3nYpveBF8uy5oxzWI=;
+        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
+        b=oBuHtHHL1D3MjzAI031Ov44r2gRURQpWiXz3sr5U6c2hOrOc9Qn62vsWQLOqDp3IP
+         3IbhOxOjEp/S5YKK+b7a1AeQKK88CqsjTNo/zChWqtnnAu1tBpo1pswOoHERV/tZpf
+         Qwz4UZ4YK3tV8EAGiT4GWYU6d5XII3ax69jExDZm9ic+irJ48bcLUQGWYYd3INk0Gm
+         fRyS2J89b5bHyeUHUYSUUhu6f6owLY5dGC2FknJdZArcTvKWqVK0MXb+Dzbq8OPrsQ
+         6FqqIgVblIb701dndyD6DAXm2f4w/ns1WXc0Z1WeblBfJc+Xh/MJEO+rSeyZXynLRq
+         Ug0N4iNAaXOOQ==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-7.7 required=12.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 5A2FB9B6F5;
+        Mon, 25 Oct 2021 10:34:43 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1635154483;
+        bh=ttnAvLHLhj6CMCzsdMlpSfHIrA3nYpveBF8uy5oxzWI=;
+        h=From:To:Cc:References:Subject:Date:In-Reply-To:From;
+        b=YNfKGVnBrE1OKIgdbiAnmXimrx0wqVJs74F5ZmJhJGCXZGfDs7/sxREPMXWLu2bjJ
+         Ao3m6GQE63qJR8RLK66LgyGo4k51TbBJtkbmyS6v+LANJbtPxhq1Ji5zin8PsA/jnu
+         C1KeWwvvLNG+E27Mz6d9VDQOvtEjc2r0ZBKdF9YEP0nLwlqO65uvEFBhvvr3sU7HsA
+         zqf2nspneHarReudsXrxVbq9hTn96e1f+5HfqawtdFEXX3gIr2ediY4hDkQ+JKEKMW
+         VzsA4vQo83fXUgCFoieAutalYfPlIkrqTWg9XgLn3vvm2+QaDOLENj8OYjCnTqDoMU
+         3PPR9FXJinRZg==
+Received: from [192.168.0.202] (ryzen.home.cobb.me.uk [192.168.0.202])
+        by black.home.cobb.me.uk (Postfix) with ESMTP id 259382B3D61;
+        Mon, 25 Oct 2021 10:34:43 +0100 (BST)
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     osandov@osandov.com
+References: <20211022145336.29711-1-dsterba@suse.com>
+ <4f3f2444-66fd-5fa3-e078-b223a9bab5e3@suse.com>
+Subject: Re: [PATCH v2] btrfs: send: prepare for v2 protocol
+Message-ID: <86e14649-5d1a-4218-667d-fedb7dccac95@cobb.uk.net>
+Date:   Mon, 25 Oct 2021 10:34:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <4f3f2444-66fd-5fa3-e078-b223a9bab5e3@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This would further reduce the size of ctree.h.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ctree.h    | 163 +-----------------------------------------
- fs/btrfs/messages.h | 170 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 171 insertions(+), 162 deletions(-)
- create mode 100644 fs/btrfs/messages.h
+On 25/10/2021 07:48, Nikolay Borisov wrote:
+> 
+> 
+> On 22.10.21 г. 17:53, David Sterba wrote:
+>> This is the infrastructure part only, without any new updates, thus safe
+>> to be applied now and all other changes built on top of it, unless there
+>> are further comments.
+>>
+>> ---
+>>
+>> This is preparatory work for send protocol update to version 2 and
+>> higher.
+>>
+>> We have many pending protocol update requests but still don't have the
+>> basic protocol rev in place, the first thing that must happen is to do
+>> the actual versioning support.
+>>
+>> The protocol version is u32 and is a new member in the send ioctl
+>> struct. Validity of the version field is backed by a new flag bit. Old
+>> kernels would fail when a higher version is requested. Version protocol
+>> 0 will pick the highest supported version, BTRFS_SEND_STREAM_VERSION,
+>> that's also exported in sysfs.
+>>
+>> The version is still unchanged and will be increased once we have new
+>> incompatible commands or stream updates.
+>>
+>> Signed-off-by: David Sterba <dsterba@suse.com>
+> 
+> 
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index c3ec2eadfe20..5e52eb26c5b2 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -29,6 +29,7 @@
- #include <linux/iomap.h>
- #include "ondisk_format.h"
- #include "accessors.h"
-+#include "messages.h"
- #include "extent-io-tree.h"
- #include "extent_io.h"
- #include "extent_map.h"
-@@ -2175,168 +2176,6 @@ int btrfs_sync_fs(struct super_block *sb, int wait);
- char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
- 					  u64 subvol_objectid);
- 
--static inline __printf(2, 3) __cold
--void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
--{
--}
--
--#ifdef CONFIG_PRINTK
--__printf(2, 3)
--__cold
--void btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
--#else
--#define btrfs_printk(fs_info, fmt, args...) \
--	btrfs_no_printk(fs_info, fmt, ##args)
--#endif
--
--#define btrfs_emerg(fs_info, fmt, args...) \
--	btrfs_printk(fs_info, KERN_EMERG fmt, ##args)
--#define btrfs_alert(fs_info, fmt, args...) \
--	btrfs_printk(fs_info, KERN_ALERT fmt, ##args)
--#define btrfs_crit(fs_info, fmt, args...) \
--	btrfs_printk(fs_info, KERN_CRIT fmt, ##args)
--#define btrfs_err(fs_info, fmt, args...) \
--	btrfs_printk(fs_info, KERN_ERR fmt, ##args)
--#define btrfs_warn(fs_info, fmt, args...) \
--	btrfs_printk(fs_info, KERN_WARNING fmt, ##args)
--#define btrfs_notice(fs_info, fmt, args...) \
--	btrfs_printk(fs_info, KERN_NOTICE fmt, ##args)
--#define btrfs_info(fs_info, fmt, args...) \
--	btrfs_printk(fs_info, KERN_INFO fmt, ##args)
--
--/*
-- * Wrappers that use printk_in_rcu
-- */
--#define btrfs_emerg_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_in_rcu(fs_info, KERN_EMERG fmt, ##args)
--#define btrfs_alert_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_in_rcu(fs_info, KERN_ALERT fmt, ##args)
--#define btrfs_crit_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_in_rcu(fs_info, KERN_CRIT fmt, ##args)
--#define btrfs_err_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_in_rcu(fs_info, KERN_ERR fmt, ##args)
--#define btrfs_warn_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_in_rcu(fs_info, KERN_WARNING fmt, ##args)
--#define btrfs_notice_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_in_rcu(fs_info, KERN_NOTICE fmt, ##args)
--#define btrfs_info_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_in_rcu(fs_info, KERN_INFO fmt, ##args)
--
--/*
-- * Wrappers that use a ratelimited printk_in_rcu
-- */
--#define btrfs_emerg_rl_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_rl_in_rcu(fs_info, KERN_EMERG fmt, ##args)
--#define btrfs_alert_rl_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_rl_in_rcu(fs_info, KERN_ALERT fmt, ##args)
--#define btrfs_crit_rl_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_rl_in_rcu(fs_info, KERN_CRIT fmt, ##args)
--#define btrfs_err_rl_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_rl_in_rcu(fs_info, KERN_ERR fmt, ##args)
--#define btrfs_warn_rl_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_rl_in_rcu(fs_info, KERN_WARNING fmt, ##args)
--#define btrfs_notice_rl_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_rl_in_rcu(fs_info, KERN_NOTICE fmt, ##args)
--#define btrfs_info_rl_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_rl_in_rcu(fs_info, KERN_INFO fmt, ##args)
--
--/*
-- * Wrappers that use a ratelimited printk
-- */
--#define btrfs_emerg_rl(fs_info, fmt, args...) \
--	btrfs_printk_ratelimited(fs_info, KERN_EMERG fmt, ##args)
--#define btrfs_alert_rl(fs_info, fmt, args...) \
--	btrfs_printk_ratelimited(fs_info, KERN_ALERT fmt, ##args)
--#define btrfs_crit_rl(fs_info, fmt, args...) \
--	btrfs_printk_ratelimited(fs_info, KERN_CRIT fmt, ##args)
--#define btrfs_err_rl(fs_info, fmt, args...) \
--	btrfs_printk_ratelimited(fs_info, KERN_ERR fmt, ##args)
--#define btrfs_warn_rl(fs_info, fmt, args...) \
--	btrfs_printk_ratelimited(fs_info, KERN_WARNING fmt, ##args)
--#define btrfs_notice_rl(fs_info, fmt, args...) \
--	btrfs_printk_ratelimited(fs_info, KERN_NOTICE fmt, ##args)
--#define btrfs_info_rl(fs_info, fmt, args...) \
--	btrfs_printk_ratelimited(fs_info, KERN_INFO fmt, ##args)
--
--#if defined(CONFIG_DYNAMIC_DEBUG)
--#define btrfs_debug(fs_info, fmt, args...)				\
--	_dynamic_func_call_no_desc(fmt, btrfs_printk,			\
--				   fs_info, KERN_DEBUG fmt, ##args)
--#define btrfs_debug_in_rcu(fs_info, fmt, args...)			\
--	_dynamic_func_call_no_desc(fmt, btrfs_printk_in_rcu,		\
--				   fs_info, KERN_DEBUG fmt, ##args)
--#define btrfs_debug_rl_in_rcu(fs_info, fmt, args...)			\
--	_dynamic_func_call_no_desc(fmt, btrfs_printk_rl_in_rcu,		\
--				   fs_info, KERN_DEBUG fmt, ##args)
--#define btrfs_debug_rl(fs_info, fmt, args...)				\
--	_dynamic_func_call_no_desc(fmt, btrfs_printk_ratelimited,	\
--				   fs_info, KERN_DEBUG fmt, ##args)
--#elif defined(DEBUG)
--#define btrfs_debug(fs_info, fmt, args...) \
--	btrfs_printk(fs_info, KERN_DEBUG fmt, ##args)
--#define btrfs_debug_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
--#define btrfs_debug_rl_in_rcu(fs_info, fmt, args...) \
--	btrfs_printk_rl_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
--#define btrfs_debug_rl(fs_info, fmt, args...) \
--	btrfs_printk_ratelimited(fs_info, KERN_DEBUG fmt, ##args)
--#else
--#define btrfs_debug(fs_info, fmt, args...) \
--	btrfs_no_printk(fs_info, KERN_DEBUG fmt, ##args)
--#define btrfs_debug_in_rcu(fs_info, fmt, args...) \
--	btrfs_no_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
--#define btrfs_debug_rl_in_rcu(fs_info, fmt, args...) \
--	btrfs_no_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
--#define btrfs_debug_rl(fs_info, fmt, args...) \
--	btrfs_no_printk(fs_info, KERN_DEBUG fmt, ##args)
--#endif
--
--#define btrfs_printk_in_rcu(fs_info, fmt, args...)	\
--do {							\
--	rcu_read_lock();				\
--	btrfs_printk(fs_info, fmt, ##args);		\
--	rcu_read_unlock();				\
--} while (0)
--
--#define btrfs_no_printk_in_rcu(fs_info, fmt, args...)	\
--do {							\
--	rcu_read_lock();				\
--	btrfs_no_printk(fs_info, fmt, ##args);		\
--	rcu_read_unlock();				\
--} while (0)
--
--#define btrfs_printk_ratelimited(fs_info, fmt, args...)		\
--do {								\
--	static DEFINE_RATELIMIT_STATE(_rs,			\
--		DEFAULT_RATELIMIT_INTERVAL,			\
--		DEFAULT_RATELIMIT_BURST);       		\
--	if (__ratelimit(&_rs))					\
--		btrfs_printk(fs_info, fmt, ##args);		\
--} while (0)
--
--#define btrfs_printk_rl_in_rcu(fs_info, fmt, args...)		\
--do {								\
--	rcu_read_lock();					\
--	btrfs_printk_ratelimited(fs_info, fmt, ##args);		\
--	rcu_read_unlock();					\
--} while (0)
--
--#ifdef CONFIG_BTRFS_ASSERT
--__cold __noreturn
--static inline void assertfail(const char *expr, const char *file, int line)
--{
--	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
--	BUG();
--}
--
--#define ASSERT(expr)						\
--	(likely(expr) ? (void)0 : assertfail(#expr, __FILE__, __LINE__))
--
--#else
--static inline void assertfail(const char *expr, const char* file, int line) { }
--#define ASSERT(expr)	(void)(expr)
--#endif
--
- #if BITS_PER_LONG == 32
- #define BTRFS_32BIT_MAX_FILE_SIZE (((u64)ULONG_MAX + 1) << PAGE_SHIFT)
- /*
-diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
-new file mode 100644
-index 000000000000..1b347f5ef6a1
---- /dev/null
-+++ b/fs/btrfs/messages.h
-@@ -0,0 +1,170 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef BTRFS_MESSAGES_H
-+#define BTRFS_MESSAGES_H
-+
-+#include <linux/printk.h>
-+
-+static inline __printf(2, 3) __cold
-+void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
-+{
-+}
-+
-+#ifdef CONFIG_PRINTK
-+__printf(2, 3)
-+__cold
-+void btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
-+#else
-+#define btrfs_printk(fs_info, fmt, args...) \
-+	btrfs_no_printk(fs_info, fmt, ##args)
-+#endif
-+
-+#define btrfs_emerg(fs_info, fmt, args...) \
-+	btrfs_printk(fs_info, KERN_EMERG fmt, ##args)
-+#define btrfs_alert(fs_info, fmt, args...) \
-+	btrfs_printk(fs_info, KERN_ALERT fmt, ##args)
-+#define btrfs_crit(fs_info, fmt, args...) \
-+	btrfs_printk(fs_info, KERN_CRIT fmt, ##args)
-+#define btrfs_err(fs_info, fmt, args...) \
-+	btrfs_printk(fs_info, KERN_ERR fmt, ##args)
-+#define btrfs_warn(fs_info, fmt, args...) \
-+	btrfs_printk(fs_info, KERN_WARNING fmt, ##args)
-+#define btrfs_notice(fs_info, fmt, args...) \
-+	btrfs_printk(fs_info, KERN_NOTICE fmt, ##args)
-+#define btrfs_info(fs_info, fmt, args...) \
-+	btrfs_printk(fs_info, KERN_INFO fmt, ##args)
-+
-+/*
-+ * Wrappers that use printk_in_rcu
-+ */
-+#define btrfs_emerg_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_in_rcu(fs_info, KERN_EMERG fmt, ##args)
-+#define btrfs_alert_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_in_rcu(fs_info, KERN_ALERT fmt, ##args)
-+#define btrfs_crit_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_in_rcu(fs_info, KERN_CRIT fmt, ##args)
-+#define btrfs_err_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_in_rcu(fs_info, KERN_ERR fmt, ##args)
-+#define btrfs_warn_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_in_rcu(fs_info, KERN_WARNING fmt, ##args)
-+#define btrfs_notice_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_in_rcu(fs_info, KERN_NOTICE fmt, ##args)
-+#define btrfs_info_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_in_rcu(fs_info, KERN_INFO fmt, ##args)
-+
-+/*
-+ * Wrappers that use a ratelimited printk_in_rcu
-+ */
-+#define btrfs_emerg_rl_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_rl_in_rcu(fs_info, KERN_EMERG fmt, ##args)
-+#define btrfs_alert_rl_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_rl_in_rcu(fs_info, KERN_ALERT fmt, ##args)
-+#define btrfs_crit_rl_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_rl_in_rcu(fs_info, KERN_CRIT fmt, ##args)
-+#define btrfs_err_rl_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_rl_in_rcu(fs_info, KERN_ERR fmt, ##args)
-+#define btrfs_warn_rl_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_rl_in_rcu(fs_info, KERN_WARNING fmt, ##args)
-+#define btrfs_notice_rl_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_rl_in_rcu(fs_info, KERN_NOTICE fmt, ##args)
-+#define btrfs_info_rl_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_rl_in_rcu(fs_info, KERN_INFO fmt, ##args)
-+
-+/*
-+ * Wrappers that use a ratelimited printk
-+ */
-+#define btrfs_emerg_rl(fs_info, fmt, args...) \
-+	btrfs_printk_ratelimited(fs_info, KERN_EMERG fmt, ##args)
-+#define btrfs_alert_rl(fs_info, fmt, args...) \
-+	btrfs_printk_ratelimited(fs_info, KERN_ALERT fmt, ##args)
-+#define btrfs_crit_rl(fs_info, fmt, args...) \
-+	btrfs_printk_ratelimited(fs_info, KERN_CRIT fmt, ##args)
-+#define btrfs_err_rl(fs_info, fmt, args...) \
-+	btrfs_printk_ratelimited(fs_info, KERN_ERR fmt, ##args)
-+#define btrfs_warn_rl(fs_info, fmt, args...) \
-+	btrfs_printk_ratelimited(fs_info, KERN_WARNING fmt, ##args)
-+#define btrfs_notice_rl(fs_info, fmt, args...) \
-+	btrfs_printk_ratelimited(fs_info, KERN_NOTICE fmt, ##args)
-+#define btrfs_info_rl(fs_info, fmt, args...) \
-+	btrfs_printk_ratelimited(fs_info, KERN_INFO fmt, ##args)
-+
-+#if defined(CONFIG_DYNAMIC_DEBUG)
-+#define btrfs_debug(fs_info, fmt, args...)				\
-+	_dynamic_func_call_no_desc(fmt, btrfs_printk,			\
-+				   fs_info, KERN_DEBUG fmt, ##args)
-+#define btrfs_debug_in_rcu(fs_info, fmt, args...)			\
-+	_dynamic_func_call_no_desc(fmt, btrfs_printk_in_rcu,		\
-+				   fs_info, KERN_DEBUG fmt, ##args)
-+#define btrfs_debug_rl_in_rcu(fs_info, fmt, args...)			\
-+	_dynamic_func_call_no_desc(fmt, btrfs_printk_rl_in_rcu,		\
-+				   fs_info, KERN_DEBUG fmt, ##args)
-+#define btrfs_debug_rl(fs_info, fmt, args...)				\
-+	_dynamic_func_call_no_desc(fmt, btrfs_printk_ratelimited,	\
-+				   fs_info, KERN_DEBUG fmt, ##args)
-+#elif defined(DEBUG)
-+#define btrfs_debug(fs_info, fmt, args...) \
-+	btrfs_printk(fs_info, KERN_DEBUG fmt, ##args)
-+#define btrfs_debug_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
-+#define btrfs_debug_rl_in_rcu(fs_info, fmt, args...) \
-+	btrfs_printk_rl_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
-+#define btrfs_debug_rl(fs_info, fmt, args...) \
-+	btrfs_printk_ratelimited(fs_info, KERN_DEBUG fmt, ##args)
-+#else
-+#define btrfs_debug(fs_info, fmt, args...) \
-+	btrfs_no_printk(fs_info, KERN_DEBUG fmt, ##args)
-+#define btrfs_debug_in_rcu(fs_info, fmt, args...) \
-+	btrfs_no_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
-+#define btrfs_debug_rl_in_rcu(fs_info, fmt, args...) \
-+	btrfs_no_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
-+#define btrfs_debug_rl(fs_info, fmt, args...) \
-+	btrfs_no_printk(fs_info, KERN_DEBUG fmt, ##args)
-+#endif
-+
-+#define btrfs_printk_in_rcu(fs_info, fmt, args...)	\
-+do {							\
-+	rcu_read_lock();				\
-+	btrfs_printk(fs_info, fmt, ##args);		\
-+	rcu_read_unlock();				\
-+} while (0)
-+
-+#define btrfs_no_printk_in_rcu(fs_info, fmt, args...)	\
-+do {							\
-+	rcu_read_lock();				\
-+	btrfs_no_printk(fs_info, fmt, ##args);		\
-+	rcu_read_unlock();				\
-+} while (0)
-+
-+#define btrfs_printk_ratelimited(fs_info, fmt, args...)		\
-+do {								\
-+	static DEFINE_RATELIMIT_STATE(_rs,			\
-+		DEFAULT_RATELIMIT_INTERVAL,			\
-+		DEFAULT_RATELIMIT_BURST);       		\
-+	if (__ratelimit(&_rs))					\
-+		btrfs_printk(fs_info, fmt, ##args);		\
-+} while (0)
-+
-+#define btrfs_printk_rl_in_rcu(fs_info, fmt, args...)		\
-+do {								\
-+	rcu_read_lock();					\
-+	btrfs_printk_ratelimited(fs_info, fmt, ##args);		\
-+	rcu_read_unlock();					\
-+} while (0)
-+
-+#ifdef CONFIG_BTRFS_ASSERT
-+__cold __noreturn
-+static inline void assertfail(const char *expr, const char *file, int line)
-+{
-+	pr_err("assertion failed: %s, in %s:%d\n", expr, file, line);
-+	BUG();
-+}
-+
-+#define ASSERT(expr)						\
-+	(likely(expr) ? (void)0 : assertfail(#expr, __FILE__, __LINE__))
-+
-+#else
-+static inline void assertfail(const char *expr, const char* file, int line) { }
-+#define ASSERT(expr)	(void)(expr)
-+#endif
-+
-+#endif
--- 
-2.33.1
+I have a question about how this will work from the point of view of the
+sysadmin.
 
+I have a number of different systems between which I need send and
+receive working. Some are stable machines - many using distro stable
+kernels. Some are new machines (most running debian testing but
+occasionally with a newer kernel for some other reason). Some are
+managed by other people and I don't control the kernel or progs versions
+or am even told when they change.
+
+I need to be able to generate a send stream on any system and receive it
+on any other system. However, I don't want to be limited to just the
+very oldest version of the protocol: for some tasks I am willing to take
+into account the target system capabilities when generating a send
+stream for that task.
+
+So, I think what I need is:
+
+1) A mechanism to query a receiving system to find out what protocol
+range it supports for receive (taking into account *both* kernel and
+btrfs-receive capabilities). And when I say "protocol version" I mean
+feature level - the reported "version" must define not just encodings
+but also what capabilities it can handle.
+
+2) A mechanism to select what protocol version (in the sense above)
+btrfs-send should use in the stream (again, kernel and user space).
+
+3) **Preferably** filesystem features on the sending side which require
+protocol features outside the selected range would be emulated using
+features in the earlier protocols. If that cannot be done,
+**definitely** abort the send and report an error. If the send completes
+without error the stream must be within the specified protocol range and
+work on a receiver which claims to support that range.
+
+That way, I can check which version the receiver supports (maybe in a
+script in real time or maybe as a config option I change when necessary)
+and generate a send stream which it can use. And if I can't do that, I
+get a clear error. I would also be able to request tools like btrbk to
+use this information when taking snapshot backups.
+
+I am not sure I can do that with the mechanisms being proposed here. Am
+I missing something?
+
+Graham
