@@ -2,101 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8434A439825
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 16:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F5D43985D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Oct 2021 16:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbhJYOL4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Oct 2021 10:11:56 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40598 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233199AbhJYOLs (ORCPT
+        id S232250AbhJYOVj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Oct 2021 10:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231246AbhJYOVi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Oct 2021 10:11:48 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id EC1B71FD40;
-        Mon, 25 Oct 2021 14:09:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635170965;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cKXaKvAGA7tQqZMva7lq9bNiBcDbYKs5HH6G4uyOqtc=;
-        b=IRnI0HP6EfLfyi+qAZTmR0qZT47zauhhB6EyV7B4ZmCdGigZMjtxJe5+cFE8D4xpFQVgxB
-        oCzYv8CJjNHw3H3ES1++K70K3VVzHAC1v7NjZVG9kvYusaUjARBSqrHbG6eDZB0hm9j6LD
-        Jt6lbWQO/vifQGgXcmKWHSHPpML+sXA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635170965;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cKXaKvAGA7tQqZMva7lq9bNiBcDbYKs5HH6G4uyOqtc=;
-        b=TD+GLnjRNLtEk5fANL9Yr99xH1nZms4MWmP4X7bqCQzxeCFHJPjuXLZxVVQOZkwPNyyyKC
-        vH85Hm1LeHYRkaDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E44E1A3B89;
-        Mon, 25 Oct 2021 14:09:25 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DA0C4DA7A9; Mon, 25 Oct 2021 16:08:54 +0200 (CEST)
-Date:   Mon, 25 Oct 2021 16:08:54 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Diego Calleja <diegocg@gmail.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: btrfs.wiki.k.org and git-based update workflow
-Message-ID: <20211025140854.GP20319@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Diego Calleja <diegocg@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211022141200.GK20319@twin.jikos.cz>
- <12904812.uLZWGnKmhe@arch>
+        Mon, 25 Oct 2021 10:21:38 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78412C061745
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 07:19:16 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id r15so11808809qkp.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Oct 2021 07:19:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ov4ytTu3ViO0h//k96bDn3are9Zf22IzPDYJFTChlls=;
+        b=BZGTga5KC/A2ZaUAkkVRQUhHYkB9w2DvINSaGOyDSWtJNWkXmC21wsN1/7A/gt8o/z
+         V6B3Odcs7LZD6v2X08bd1evAtQfma25hyXuBV86Qd4FrY+ueuaq0JYQA52ybUAAdfpf3
+         nxZk/6cudWqf6tAiFMaXp5ob7SM++XhYoMchHLyOuqD2QokCs2UuIT9FB6yvaCkL1vZN
+         Zz8umzVrBvXHNxcc3V5AihqHDxI/178jGoO7JFUrB8IxldURDWTK9sWhuKlvAug5qPjM
+         SB2z6R72dWLrYAg60aQv3+gTuHZ+t/NTFxR64TGQ2KmF9DDAUBCAyvTRB6UuW220Okky
+         Gl/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ov4ytTu3ViO0h//k96bDn3are9Zf22IzPDYJFTChlls=;
+        b=zJzOem9PfUYGCu7fNIAveTuvlTLDOjr9nyqPvunKRlVu7yf5OLXNvOok856a1FKZ26
+         jmUhRZNNQj12NH+wADPIczQBdkW0fnYjjuseVgaBdEgfvp0Zxl8oiEpP8NkWZh6vb6ZJ
+         z1dUYgo4mSAqjV2+vJOtjBZXxERsqnmUqpc2eba9ZxGIQmg4h2u1Ic77STV1th8SQ5jB
+         N0CK635zJ/0RKPvX4fbW2BoKOrOgYG+jjo8/gfQzLi1l8zbRWpi8FMBRBqlfyLF3/Jnp
+         LZEUH7u+bk7SmPub5b40qkGh+GoSw4dlw+wMqGJwQDIVMCgzW60bry/tzPEBD0x/jerb
+         83Jw==
+X-Gm-Message-State: AOAM5324qe1pREQUkqUfmoncvpUticelUWJ/wLulwZGfBVziAiYwEmxT
+        kgwrmDyF0Tl7NAaE5UwkcN7uowxPmu4OlA==
+X-Google-Smtp-Source: ABdhPJzkLENoCIx5pSqAz8TjgYSKNyC7hVnAxHdYDfVwbEekfIgEkYEF46inzgkfwOXjZx7YUOPr0Q==
+X-Received: by 2002:a37:d53:: with SMTP id 80mr13501203qkn.490.1635171555416;
+        Mon, 25 Oct 2021 07:19:15 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id a23sm2098287qkn.73.2021.10.25.07.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 07:19:14 -0700 (PDT)
+Date:   Mon, 25 Oct 2021 10:19:13 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs: ctree.he refactor
+Message-ID: <YXa84dxA/q/0SsTu@localhost.localdomain>
+References: <20211025090821.65646-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <12904812.uLZWGnKmhe@arch>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20211025090821.65646-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 22, 2021 at 06:36:33PM +0200, Diego Calleja wrote:
-> El viernes, 22 de octubre de 2021 16:12:00 (CEST) David Sterba escribió:
-> > Current status is quite unpleasant, the number of active editors is 1
-> > (me), with other occasional contributions. I somehow feel that the wiki
-> > concept as community editing does not work, specifically for our wiki,
-> > or maybe in general, anymore.
+On Mon, Oct 25, 2021 at 05:08:18PM +0800, Qu Wenruo wrote:
+> Btrfs is abusing ctree.h for almost everything which doesn't have a
+> better location to put its definitions.
 > 
-> I would like to mention that I have tried to edit the wiki a couple of times
-> along the years, and somehow I was not able to get an account,  log in, or
-> recover my account (if I ever created one). Perhaps it's just me and others
-> can use it just fine.
+> This makes ctree.h super congested for both kernel and btrfs-progs.
+> 
+> Here is just several cleanups inspired by my WIP btrfs-fuse project.
+> 
+> Currently my read-only (and still WIP) btrfs-fuse only has a ctree.h
+> with less than 100 lines.
+> The read-only project is definitely going to be much smaller than
+> kernel, but there are several tricks I used to make ctree.h slim:
+> 
+> - Put ondisk-format into ondisk_format.h
+> - Put BTRFS_SET_GET_* macros into accessors.h
+> - Put message output functions into messages.h
+> 
+> So we will only really high level structure definitions in ctree.h
+> 
+> Unfortunately for kernel, we still have tons of function
+> definitions, which don't have proper headers for them.
+> 
+> But this is still a good direction to go.
+> 
+> Of course, any advice on the names of these new headers will be very
+> helpful.
+> 
 
-There were problems with the accounts, some people did not receive the
-confirmation email. Otherwise there's some odd behaviour after login and
-editing pages it suddenly drops to some local account (shown as address
-10.220.*) and page is not updated. Such things get annoying.
+I hate it all because now I have to rebase my item changes onto this.
 
-> In any case, it's worth noticing that the ext4 and xfs wikis are in worse 
-> shape, but with the improvements to the kernel doc infrastructure,
-> at least ext4 maintains some great documentation there instead of at the
-> wiki (eg https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-I think docs in kernel tree are not suitable for user documentation, so
-it's probably fine for some internal design docs or on-disk structure
-description, but otherwise I'd rather have something not connected to
-the kernel git tree, if not only because of the different release
-schedule and update path.
+Thanks,
 
-> It is also worth noting that while the kernel wikis are not very active, lots 
-> of semi-official content are generated in other places (eg the arch wiki).
-
-I'm aware of that and see it as a problem. One part is the 'official'
-and reliability level of the information. I've seen to much copy&paste
-from similar sources just repeating old and invalid advice, or
-mentioning bugs that have been fixed or some bad usecase suggestions
-that could do damage.
-
-The other part is that there _are_ active editors and people able to
-publish good docs, but how to lure them to edit the main community
-wiki? :)
+Josef
