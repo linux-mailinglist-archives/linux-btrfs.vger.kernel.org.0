@@ -2,67 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBFA43B9F1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 20:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB9843BA92
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 21:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235258AbhJZSwu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Oct 2021 14:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
+        id S236962AbhJZTU6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Oct 2021 15:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235844AbhJZSwt (ORCPT
+        with ESMTP id S234841AbhJZTU5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:52:49 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB310C061745
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 11:50:24 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id o26so506684ljj.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 11:50:24 -0700 (PDT)
+        Tue, 26 Oct 2021 15:20:57 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B014C061570
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 12:18:33 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id p16so1049596lfa.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 12:18:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=r5Cx2RnmHPH+SxoKka0sJEz3NkssP3YCqbiSsqzadkQ=;
-        b=XWmvXqx6E/lnwqgDlacsJYsSx9OK8zrlmcuZe075Kg2Q7afYrlM28LUphtMnNWBBss
-         19rtrgtkK+y60H9M3H213OTzx4KlKQs5vTnOVoJ7FFgOi4799TI0MlAwQR64ujeGGpUF
-         Ec975XRObLADp1do89z7xhEJGw/WNDenswDZ0=
+        bh=VZmINpwcYY7kcvI7sKLaSgNG7WCxmd5BZ4iNpf7lS1s=;
+        b=OsqaCKMuKFeRuWXmhZzecH1PFurN3y1S2AB1+cEKAaxcheLMIwVa1+mU9xaI+48tSD
+         hDW/GsZ40FpWHVKK/6DfQVSTBtioB3fbYc70ILsRQJsX9ufj7I2BdNObVy9O6WfiMW1v
+         DiUsn9LYY/9cPMqSPRQHNfkJU6lnB2qdNQ6Us=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=r5Cx2RnmHPH+SxoKka0sJEz3NkssP3YCqbiSsqzadkQ=;
-        b=S7nnmfcYLoRr4wMC/SVwAfGHjQGcDXxC0n6WQ2tHJnmi7KT9Q1WMWZuWg4MF71AvZZ
-         sal0PevFURLaWU/5CzKrQ6lUJ/9vbfMbl8g6pDr0dPwbLNMA83qFu6jaZAJvkR3CvTQo
-         DOePlWLaqyvVLs3wzeltSJ5Om1/Dzs5mDEfgMu49m3vu0keWd4SCSMEyqVHiM72ECAD3
-         tExvTDyIDu490Y97leuORbzU09+Ytn/8bYXrF/4tIZQ7bji7LLYCWtdbsek4jfNyAP7h
-         K7W5xf2nbPevaom37S3BMzX/XwikpScqXqX8gtgD9zDIZansQqg5bQO8ruY+RGirJcd9
-         8eHw==
-X-Gm-Message-State: AOAM530eS7JOpwaJT6agY5++a537NfoMdACE86fkKLPtOaxO+hqiyjLf
-        2R8FI+38ro6cyjIUmGxO5fmk3k6AuDglDPdE
-X-Google-Smtp-Source: ABdhPJzxqucaJcqE42ZOkkX3bj4x3nl08IT5hdxHvH1FQeU7mT7UEv/IkZEMO70ce89BRs3cJyswcA==
-X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr27737605ljp.307.1635274222491;
-        Tue, 26 Oct 2021 11:50:22 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id r3sm2013812lfc.169.2021.10.26.11.50.21
+        bh=VZmINpwcYY7kcvI7sKLaSgNG7WCxmd5BZ4iNpf7lS1s=;
+        b=q8Wsw2HdtRXSzslzcGkdBCAYO5vE+o7s6E3BdjSjW2Ie1ML2iRvi46ETm5vt2baGzI
+         N3pjVQ4JQg7JcC1LfpNTGMbN0XeUnPYuHqoaScDXSTpUnR/ocfaHoyXd6fc2EnuRXH53
+         IGgwe9oT3wWDA5e6+Tq2QR1AfWlXhes/9+50scc8bWT+Elm/L8rmeV8zDqp3z+zdMu0i
+         h477boBIz0pYr4L9h0LtVoIWSgLrrz9nO9fFzkGDqmY7Q2XWEpWtxuvwNRxnQKoLLoXT
+         /UEh2DGvhFdxEfoP3GZVgNbrPPBfnbdULxGFn5aiGvF84thujM7vk+ZCcWaVOryPUs85
+         /o1A==
+X-Gm-Message-State: AOAM530PBa7C7BvGZ12fKrEM4fLWqTlVt0VuQS3RDdeEZwCgRGDnN6c5
+        W1qWSw7BguyTsZ44irJSR1EFdXpRit5dvdCL
+X-Google-Smtp-Source: ABdhPJzeGZ46l+SVX4vONAPYxyNr8YLRLazj57j9yRC3pl2qdJKUhMJH0jysKu7kBS4e3CuRnWZDhQ==
+X-Received: by 2002:ac2:44ab:: with SMTP id c11mr16861976lfm.267.1635275911104;
+        Tue, 26 Oct 2021 12:18:31 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id k39sm1259171lfv.284.2021.10.26.12.18.30
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Oct 2021 11:50:21 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id w23so459575lje.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 11:50:21 -0700 (PDT)
-X-Received: by 2002:a2e:9e13:: with SMTP id e19mr4519488ljk.494.1635274221013;
- Tue, 26 Oct 2021 11:50:21 -0700 (PDT)
+        Tue, 26 Oct 2021 12:18:31 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id w23so586291lje.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 12:18:30 -0700 (PDT)
+X-Received: by 2002:a2e:bc24:: with SMTP id b36mr28005819ljf.95.1635275910507;
+ Tue, 26 Oct 2021 12:18:30 -0700 (PDT)
 MIME-Version: 1.0
 References: <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
  <YXBFqD9WVuU8awIv@arm.com> <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
  <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
  <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
- <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com> <YXhH0sBSyTyz5Eh2@arm.com>
-In-Reply-To: <YXhH0sBSyTyz5Eh2@arm.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
+ <YXhH0sBSyTyz5Eh2@arm.com> <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 26 Oct 2021 11:50:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
-Message-ID: <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+Date:   Tue, 26 Oct 2021 12:18:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjm9XwkeqWRy4+OvmdmDojghNSYbu81PxYMoPDJKS_j3A@mail.gmail.com>
+Message-ID: <CAHk-=wjm9XwkeqWRy4+OvmdmDojghNSYbu81PxYMoPDJKS_j3A@mail.gmail.com>
 Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-To:     Catalin Marinas <catalin.marinas@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
         Paul Mackerras <paulus@ozlabs.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
@@ -79,49 +84,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:24 AM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
+On Tue, Oct 26, 2021 at 11:50 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> While more intrusive, I'd rather change copy_page_from_iter_atomic()
-> etc. to take a pointer where to write back an error code.
+> Because for _most_ cases of "copy_to/from_user()" and friends by far,
+> the only thing we look for is "zero for success".
 
-I absolutely hate this model.
+Gaah. Looking around, I almost immediately found some really odd
+exceptions to this.
 
-The thing is, going down that rat-hole, you'll find that you'll need
-to add it to *all* the "copy_to/from_user()" cases, which isn't
-acceptable. So then you start doing some duplicate versions with
-different calling conventions, just because of things like this.
+Like parse_write_buffer_into_params() in amdgpu_dm_debugfs.c, which does
 
-So no, I really don't want a "pass down a reference to an extra error
-code" kind of horror.
+        r = copy_from_user(wr_buf_ptr, buf, wr_buf_size);
 
-That said, the fact that these sub-page faults are always
-non-recoverable might be a hint to a solution to the problem: maybe we
-could extend the existing return code with actual negative error
-numbers.
+                /* r is bytes not be copied */
+        if (r >= wr_buf_size) {
+                DRM_DEBUG_DRIVER("user data not be read\n");
+                return -EINVAL;
+        }
 
-Because for _most_ cases of "copy_to/from_user()" and friends by far,
-the only thing we look for is "zero for success".
+and allows a partial copy to justy silently succeed, because all the
+callers have pre-cleared the wr_buf_ptr buffer.
 
-We could extend the "number of bytes _not_ copied" semantics to say
-"negative means fatal", and because there are fairly few places that
-actually look at non-zero values, we could have a coccinelle script
-that actually marks those places.
+I have no idea why the code does that - it seems to imply that user
+space could give an invalid 'size' parameter and mean to write only
+the part that didn't succeed.
 
-End result: no change in calling conventions, no change to most users,
-and the (relatively few) cases where we look at the "what about
-partial results", we just add a
+Adding AMD GPU driver people just to point out that this code not only
+has odd whitespace, but that the pattern for "couldn't copy from user
+space" should basically always be
 
-         .. existing code ..
-         ret = copy_from_user(..);
-+        if (ret < 0)
-+                break;  // or whatever "fatal error" situation
-         .. existing  code ..
+        if (copy_from_user(wr_buf_ptr, buf, wr_buf_size))
+                return -EFAULT;
 
-kind of thing that just stops the re-try.
+because if user-space passes in a partially invalid buffer, you
+generally really shouldn't say "ok, I got part of it and will use that
+part"
 
-(The coccinelle script couldn't actually do that, but it could add
-some comment marker or something so that it's easy to find and then
-manually fix up the places it finds).
+There _are_ exceptions. We've had situations where user-space only
+passes in the pointer to the buffer, but not the size. Bad interface,
+but it historically happens for the 'mount()' system call 'data'
+pointer. So then we'll copy "up to a page size".
 
-             Linus
+Anyway, there are clearly some crazy users, and converting them all to
+also check for negative error returns might be more painful than I
+thought it would be.
+
+                 Linus
