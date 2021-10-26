@@ -2,73 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EC243B3B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 16:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECD243B4F0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 16:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236401AbhJZOPY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Oct 2021 10:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235453AbhJZOPU (ORCPT
+        id S235520AbhJZO7A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Oct 2021 10:59:00 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47072 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231178AbhJZO67 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Oct 2021 10:15:20 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C6FC061745
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 07:12:56 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id t7so14254539pgl.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 07:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CaqPxK5urZzaDZZ06axYOLFB5bDlAqXPfvGwb4Tn9Y4=;
-        b=EG5fkpsEoLmwfFNoNrhzimJfW5ofdsTwQtcC81LkWHBPqulkALyD2JOQCUpWgOK2O6
-         5tznx46Pghkq0/K+lxVw01mihroe8lH0XeqDxBQW4I2eyeBaEA+T40ampjZVOcLG8pMl
-         HIwDJpWnXH/Nl89Z382S5HJhp4NSv1uGhhkELnIrUSTmRM/aNX3ERLvSVk9bvWXBZv/U
-         HtoO9TEwLb+bA8GGI2ju5YW17w0JYdZlL8Mcm71sCuOppagEI/lI5iHsk4vXMdBpeyQP
-         jP0eyPJJj0sSpyh1/yR7AclR02bTQ4xQzk/4V8cJxoBPRaaqAydhrYAbOwo7/bkPOxvV
-         pHDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CaqPxK5urZzaDZZ06axYOLFB5bDlAqXPfvGwb4Tn9Y4=;
-        b=NgsCRxDWIBWeMttc3MGh7wfXT/l1EtZjGt7MO+pjxDLxZwULRLoqg2eMP+z5DMGXxo
-         cB0cuB1yu4qPLQE9T712dGpa/+SrgkpvjhJ6DGMkHxGx//vLSLeJo3KsLdYg9yNK977X
-         zt7M5z1leSfKFUiJKimzanHJtpjQpZ+p5Puhn0JXzG0iQTGLZl9nm77r1HXfejXU3Cc5
-         ljxo+67evj5iWpXnx9rJ+sJnWqS1zd4XEqVYOw6CGiVYB5t3kKbCHy5BxJJjGFxzr7rO
-         j5eZ/Vo2zFE7uFDJyDvWMK13KVizuYk30SG/OW7c3kFZHsYacsCwPrDTDnUyb9+K8ghf
-         4d2A==
-X-Gm-Message-State: AOAM532TEqiP0kfh6NbyI7abxs8vICH5jlf+u+ZqOYozcIHAgC+0ShRT
-        uADa/uO0Khtg0zvThNbFLmGQS11CGHK8QWp8Pjg0H0xy6vk=
-X-Google-Smtp-Source: ABdhPJzHtBaaaow34Kr6vGdWoYQor2PWvamtZ7pZkPCx7wnv+PLBCXKgqpH0UvnfmVYqWbxRwCmUcw1ni0e0dw7hVz8=
-X-Received: by 2002:a65:4d4b:: with SMTP id j11mr19080212pgt.27.1635257576213;
- Tue, 26 Oct 2021 07:12:56 -0700 (PDT)
+        Tue, 26 Oct 2021 10:58:59 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id CDEC921940;
+        Tue, 26 Oct 2021 14:56:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635260194;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iLlATv0+IgKHTxqgZRY9J99BYRRxI/4+lGy7EuUNXE8=;
+        b=DACfyd4qTAfe2+WittN7dKsl/Y8Ss0Eu4WeNV4YtAo7MAOlHGong6aLu77+6RVxCYl3gOh
+        bd2crrscW5nmjXWhDdLHkPHjGrt7KkBhDzpt9JxHfyuZFVIYB6hISjKabSuxYUr+1I7JOa
+        rK4AQDU8fVqQ8jRft8HJq6AKa0I7fbM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635260194;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iLlATv0+IgKHTxqgZRY9J99BYRRxI/4+lGy7EuUNXE8=;
+        b=QPwuPGM8L7r8cUi6KcQp5frmsIUS5J2/g/y+zbuZ95l1YtkRZTakytamF2THZPr6vH7k7M
+        V8GuyftEQ4iKJBDQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id BD9EAA3B83;
+        Tue, 26 Oct 2021 14:56:34 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 4149DDA7A9; Tue, 26 Oct 2021 16:56:03 +0200 (CEST)
+Date:   Tue, 26 Oct 2021 16:56:03 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-btrfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@fb.com
+Subject: Re: Btrfs Fscrypt Design Document
+Message-ID: <20211026145603.GU20319@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        Eric Biggers <ebiggers@kernel.org>, linux-btrfs@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@fb.com
+References: <YXGyq+buM79A1S0L@relinquished.localdomain>
+ <YXcKX3iNmqlGsdzv@gmail.com>
+ <YXez9Yq9ygfjKhoz@relinquished.localdomain>
 MIME-Version: 1.0
-References: <em969af203-04e6-4eff-a115-1129ae853867@frystation>
- <em33e101b0-d634-48b5-8a32-45e295f48f16@rx2.rx-server.de> <c2941415-e32f-b31d-0bc2-911ede3717b7@gmx.com>
- <69109d24-efa7-b9d1-e1df-c79b3989e7bf@rx2.rx-server.de> <em0473d04b-06b0-43aa-91d6-1b0298103701@rx2.rx-server.de>
- <146cff2c-3081-7d03-04c8-4cc2b4ef6ff1@suse.com> <884d76d1-5836-9a91-a39b-41c37441e020@rx2.rx-server.de>
- <em6e5eb690-6dcd-482d-b4f2-1b940b6cb770@rx2.rx-server.de> <3ce1dd17-b574-abe3-d6cc-eb16f00117cc@rx2.rx-server.de>
- <em2512c4e9-1e5e-4aa0-b9fc-fb68891e615d@rx2.rx-server.de>
-In-Reply-To: <em2512c4e9-1e5e-4aa0-b9fc-fb68891e615d@rx2.rx-server.de>
-From:   Patrik Lundquist <patrik.lundquist@gmail.com>
-Date:   Tue, 26 Oct 2021 16:12:45 +0200
-Message-ID: <CAA7pwKOrgt6syr5C3X1+bC14QXZEJ+8HTMZruBBPBT574zNkkQ@mail.gmail.com>
-Subject: Re: filesystem corrupt - error -117
-To:     Mia <9speysdx24@kr33.de>
-Cc:     Linux Btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YXez9Yq9ygfjKhoz@relinquished.localdomain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 26 Oct 2021 at 09:15, Mia <9speysdx24@kr33.de> wrote:
->
-> Problem with updating is that this is currently still Debian 10 and a
-> production environment and I don't know when it is possible to upgrade
-> because of dependencies.
+On Tue, Oct 26, 2021 at 12:53:25AM -0700, Omar Sandoval wrote:
+> On Mon, Oct 25, 2021 at 12:49:51PM -0700, Eric Biggers wrote:
+> > On Thu, Oct 21, 2021 at 11:34:19AM -0700, Omar Sandoval wrote:
+> > Now, I personally think that authenticating file contents only wouldn't give
+> > much benefit, and whole-filesystem authentication would be needed to get a real
+> > benefit.  But "why aren't you using an authenticated mode" is a *very* common
+> > question, so you need an answer to that -- or ideally, just support it if it
+> > isn't much work.
+> 
+> We already store a checksum per block; I don't see any reason that it
+> couldn't be a MAC. Johannes Thumshirn had a proof of concept for storing
+> an HMAC for all blocks:
+> https://lore.kernel.org/linux-btrfs/20191015121405.19066-1-jthumshirn@suse.de/#b
+> Plumbing it through for authenticated encryption would be a little
+> harder, but probably not by much.
 
-Maybe you can install the buster-backports kernel which currently is 5.10.70?
-
-https://backports.debian.org/Instructions/
+I've been working on the HMAC as checksums and still want to finish as
+time permits, so if you have any potential changes beyond "hmac is just
+another checksum", please let me know.
