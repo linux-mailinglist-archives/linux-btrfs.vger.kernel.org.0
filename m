@@ -2,93 +2,178 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E0543AF50
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 11:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8364643AF5C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 11:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234969AbhJZJqM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Oct 2021 05:46:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234436AbhJZJqM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Oct 2021 05:46:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8813E6108B
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 09:43:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635241428;
-        bh=mVjnUx7/86c4I7duPSeF/OPh7YP5IumHjBn7KubrRL8=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=rKEAKBj3ackuYfL13mXxySqU5rRdlu1GvpnyYIlNSkgyZwhBYB5coKiA51rbJYPot
-         ISeg04QcEXHQame+CFGCJjxcIdX3ZSM2jw9DbxZ8x2GTDqBT7lfQttaNCQXw1Hqf+l
-         8gWu6BhCcIhEfg8Wuuwci6RexmRbwJQayLsu7OuvAh+RxSthSvDEE0YcFSnU6J05IJ
-         hk6an2eGoIsTiJvEPrzMynw0CdGcDxU1bI1ezdE09oU9zucDleVbM2U06nCuNPoyb2
-         VtrKiAwvicLELK1V4072Prw3wYOtDRcjvCQJDkwGb2qGveX29w6ksTwURC7iQFua67
-         I86uRJqw9DbVA==
-Received: by mail-qt1-f172.google.com with SMTP id z24so12895016qtv.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 02:43:48 -0700 (PDT)
-X-Gm-Message-State: AOAM533YZ+HAoaf1U3Aw2srmQFGp2TfxtUIrWEA4QYGIe403263trrPo
-        BY+nGgF8304UhfC1UfgvY8jk/4Lphlk/oXx1d7I=
-X-Google-Smtp-Source: ABdhPJy3B8TAuAhOzvAW1Pq0zKBiKiYkkCc4+TeAO8iZ2cUoKQ8M7+dM5JO/0TTCXzvE6XRUZOI2Hyn97Rs8NM8SygM=
-X-Received: by 2002:a05:622a:1807:: with SMTP id t7mr23765103qtc.140.1635241427691;
- Tue, 26 Oct 2021 02:43:47 -0700 (PDT)
+        id S233498AbhJZJr2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Oct 2021 05:47:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35238 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235089AbhJZJrM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:47:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635241487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xaM9TTYxS+zHZ2czT8usDFfzNg+0Vbk9+uFHYAEJF0k=;
+        b=Ra8V2KMmXNyd9mftpWomaME+CPKyMH0vOkiYNM+dF1/MJpcu047QqL4ihdhmn0HFwGxi2y
+        PNA+MharYLS7WYfj8eGC8kISmwIil0jCxgHp2nyXYimFv48sFqxtExtMNG3ZwmfCFr1Jwe
+        ubtoIYM9eERmZkizNhlATtAZnUZs41k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-153-saoAI_GvNBugHIjyLU4dsQ-1; Tue, 26 Oct 2021 05:44:42 -0400
+X-MC-Unique: saoAI_GvNBugHIjyLU4dsQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0955887950D;
+        Tue, 26 Oct 2021 09:44:40 +0000 (UTC)
+Received: from max.com (unknown [10.40.193.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D9B8419C79;
+        Tue, 26 Oct 2021 09:44:31 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+Date:   Tue, 26 Oct 2021 11:44:30 +0200
+Message-Id: <20211026094430.3669156-1-agruenba@redhat.com>
+In-Reply-To: <YXeOVZqer+GFBkXO@mit.edu>
+References: <YXeOVZqer+GFBkXO@mit.edu> <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com> <YXBFqD9WVuU8awIv@arm.com> <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com> <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com> <YXL9tRher7QVmq6N@arm.com> <CAHc6FU6JC4ZOwA8t854WbNdmuiNL9DPq0FPga8guATaoCtvsaw@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1635155473.git.fdmanana@suse.com> <cover.1635178668.git.fdmanana@suse.com>
- <20211025195520.GT20319@twin.jikos.cz>
-In-Reply-To: <20211025195520.GT20319@twin.jikos.cz>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Tue, 26 Oct 2021 10:43:11 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H54A=Bw_us_ah_1veZ9jZ5JEUqE7=r00x+hE7zpQZ9NBg@mail.gmail.com>
-Message-ID: <CAL3q7H54A=Bw_us_ah_1veZ9jZ5JEUqE7=r00x+hE7zpQZ9NBg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] btrfs: speedup directory logging/fsync by copying
- index keys only
-To:     David Sterba <dsterba@suse.cz>,
-        Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 8:55 PM David Sterba <dsterba@suse.cz> wrote:
->
-> On Mon, Oct 25, 2021 at 05:31:48PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > This patchset reworks directory logging to make it copy only the dir index
-> > keys, instead of copying both dir index keys and dir item keys, as both have
-> > the same type of information. This reduces the amount of logged metadata by
-> > about half, and therefore we do about half of the cpu bound work, half of
-> > the IO and use less log tree space (except for very small directories).
-> >
-> > This will allow other optimizations to build on top, some of which are only
-> > possible after this change, while others become easier and less cumbersome
-> > to implement after this change. Performance tests are in the changelog of
-> > patch 5/6. Patch 6/6 only removes code that deals with dir item keys when
-> > replaying directory deletions and it could have been squashed into patch
-> > 5/6, but since that one is already large and works without 6/6, I opted
-> > to make it separate to make it easier to review.
-> >
-> > Also, after this change we are still able to correctly replay a log tree
-> > generated by an old kernel, and an old kernel is also able to correctly
-> > replay a log tree generated by a kernel that has this patchset applied.
-> >
-> > I'm sending this close to the 5.16 merge window, but my intention is to
-> > have it only for the next merge window (5.17).
-> >
-> > V2: Updated changelog of patch 5/6 to make it more clear why backward
-> >     and forward compatibility are guaranteed.
-> >
-> > Filipe Manana (6):
-> >   btrfs: remove root argument from drop_one_dir_item()
-> >   btrfs: remove root argument from btrfs_unlink_inode()
-> >   btrfs: remove root argument from add_link()
-> >   btrfs: remove root argument from check_item_in_log()
->
-> If you want, I can add the first 4 patches to misc-next still queued for
-> 5.16 pull next week, it's fairly trivial and you won't have to refresh
-> the patches. For preparatory patches like this it's free pass even
-> before merge window.
+Ted,
 
-I'm fine with either way.
-Thanks.
+here's an updated version of Dave Hansen's original commit, but note
+that generic/208 won't run on ext4 with data journaling enabled:
+
+  $ MOUNT_OPTIONS='-o data=journal' TEST_DIR=/mnt/test TEST_DEV=/dev/vdb ./tests/generic/208
+  QA output created by 208
+  208 not run: ext4 data journaling doesn't support O_DIRECT
+
+Thanks,
+Andreas
+
+--
+
+Based on commit 998ef75ddb57 ("fs: do not prefault sys_write() user
+buffer pages") by Dave Hansen <dave.hansen@linux.intel.com>, but:
+
+* Fix generic_perform_write as well as iomap_write_iter.
+
+* copy_page_from_iter_atomic() doesn't trigger page faults, so there's no need
+  to disable page faults around it [see commit 9e8c2af96e0d ("callers of
+  iov_copy_from_user_atomic() don't need pagecache_disable()")].
+
+* If fault_in_iov_iter_readable() fails to fault in the entire buffer,
+  we still want to read everything up to the fault position.  This depends on
+  commit a6294593e8a1 ("iov_iter: Turn iov_iter_fault_in_readable into
+  fault_in_iov_iter_readable").
+
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+---
+ fs/iomap/buffered-io.c | 20 +++++++-------------
+ mm/filemap.c           | 20 +++++++-------------
+ 2 files changed, 14 insertions(+), 26 deletions(-)
+
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 1753c26c8e76..d8809cd9ab31 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -744,17 +744,6 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+ 		if (bytes > length)
+ 			bytes = length;
+ 
+-		/*
+-		 * Bring in the user page that we'll copy from _first_.
+-		 * Otherwise there's a nasty deadlock on copying from the
+-		 * same page as we're writing to, without it being marked
+-		 * up-to-date.
+-		 */
+-		if (unlikely(fault_in_iov_iter_readable(i, bytes))) {
+-			status = -EFAULT;
+-			break;
+-		}
+-
+ 		status = iomap_write_begin(iter, pos, bytes, &page);
+ 		if (unlikely(status))
+ 			break;
+@@ -777,9 +766,14 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+ 			 * halfway through, might be a race with munmap,
+ 			 * might be severe memory pressure.
+ 			 */
+-			if (copied)
++			if (copied) {
+ 				bytes = copied;
+-			goto again;
++				goto again;
++			}
++			if (fault_in_iov_iter_readable(i, bytes) != bytes)
++				goto again;
++			status = -EFAULT;
++			break;
+ 		}
+ 		pos += status;
+ 		written += status;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 4dd5edcd39fd..467cdb7d086d 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -3751,17 +3751,6 @@ ssize_t generic_perform_write(struct file *file,
+ 						iov_iter_count(i));
+ 
+ again:
+-		/*
+-		 * Bring in the user page that we will copy from _first_.
+-		 * Otherwise there's a nasty deadlock on copying from the
+-		 * same page as we're writing to, without it being marked
+-		 * up-to-date.
+-		 */
+-		if (unlikely(fault_in_iov_iter_readable(i, bytes))) {
+-			status = -EFAULT;
+-			break;
+-		}
+-
+ 		if (fatal_signal_pending(current)) {
+ 			status = -EINTR;
+ 			break;
+@@ -3794,9 +3783,14 @@ ssize_t generic_perform_write(struct file *file,
+ 			 * halfway through, might be a race with munmap,
+ 			 * might be severe memory pressure.
+ 			 */
+-			if (copied)
++			if (copied) {
+ 				bytes = copied;
+-			goto again;
++				goto again;
++			}
++			if (fault_in_iov_iter_readable(i, bytes) != bytes)
++				goto again;
++			status = -EFAULT;
++			break;
+ 		}
+ 		pos += status;
+ 		written += status;
+-- 
+2.26.3
+
