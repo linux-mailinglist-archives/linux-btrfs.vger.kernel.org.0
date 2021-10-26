@@ -2,236 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0219443A6C9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 00:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7BA843AB98
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 07:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234252AbhJYWru (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Oct 2021 18:47:50 -0400
-Received: from mout.gmx.net ([212.227.15.15]:59873 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232470AbhJYWrt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Oct 2021 18:47:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635201923;
-        bh=EVMy2Jitm3CXjMFIDnJQWqMWPKcnDqItRs/PPUzZqHo=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=AO3wvls82A3ezNrY5002SuolAPGc2FRREUZN6wWVwCplsXY9jSTxkrYPieLBXIaAa
-         PuH4++BQLkQ6P2SwrnlBLUsjFura46zRo3+GfpryG0+j/FDcaupJbu/Giy/4xmSD9P
-         7EWhRpCRGiPOjx+/a2UL6clRKVez9J6ZoE5E+wOY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mt79P-1mysQd0dD7-00tVAC; Tue, 26
- Oct 2021 00:45:23 +0200
-Message-ID: <3ce1dd17-b574-abe3-d6cc-eb16f00117cc@gmx.com>
-Date:   Tue, 26 Oct 2021 06:45:18 +0800
+        id S234877AbhJZFQM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Oct 2021 01:16:12 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54457 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234445AbhJZFQK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 Oct 2021 01:16:10 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 19Q5Crw3021006
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Oct 2021 01:12:54 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C967515C3F84; Tue, 26 Oct 2021 01:12:53 -0400 (EDT)
+Date:   Tue, 26 Oct 2021 01:12:53 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+Message-ID: <YXeOVZqer+GFBkXO@mit.edu>
+References: <20211019134204.3382645-1-agruenba@redhat.com>
+ <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com>
+ <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+ <YXCbv5gdfEEtAYo8@arm.com>
+ <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com>
+ <CAHc6FU6JC4ZOwA8t854WbNdmuiNL9DPq0FPga8guATaoCtvsaw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: filesystem corrupt - error -117
-Content-Language: en-US
-To:     Mia <9speysdx24@kr33.de>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <em969af203-04e6-4eff-a115-1129ae853867@frystation>
- <em33e101b0-d634-48b5-8a32-45e295f48f16@rx2.rx-server.de>
- <c2941415-e32f-b31d-0bc2-911ede3717b7@gmx.com>
- <69109d24-efa7-b9d1-e1df-c79b3989e7bf@rx2.rx-server.de>
- <em0473d04b-06b0-43aa-91d6-1b0298103701@rx2.rx-server.de>
- <146cff2c-3081-7d03-04c8-4cc2b4ef6ff1@suse.com>
- <884d76d1-5836-9a91-a39b-41c37441e020@rx2.rx-server.de>
- <em6e5eb690-6dcd-482d-b4f2-1b940b6cb770@rx2.rx-server.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <em6e5eb690-6dcd-482d-b4f2-1b940b6cb770@rx2.rx-server.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3Gdjus2evDtF85UrEI3RkNupGA2emPvsRUj8f675+nKcA+zrca5
- iBNK+EOilx1ULRVEFmMZ/DdNmEcZnXIWS8yAREGogPCZDmzlVyh+uUPTERIrO+uCkCLBc8/
- jM5w4iDOo6/VZS2olv+/MlyGGQf8JjIlSf/4rlT8bKfH2pWZEIxAqjwH/OGR29GWpXreub9
- xvXDbBK1kdssiydMM58xQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UZggNzLurfM=:x0Rkashb4A7ViJfXgb9OXV
- q3lyaWtvFXKDUuk91Gf0ZiS1wy+p5caABwmtrbHPq54QCvbm5CG6aXFzZ1xs/VMnw9YEabvMX
- c9W58Hksbpt9GkRhUtm7V74DiuxU9lSiHMBO3NvFyulQMPfO3qxhWXFZ8Iwq2jYuaHNMsbKrs
- jN69uNjjcukUvt9NDG3ZVDi6XK5jZ2ox/7P2UXlqS1eKjylOM1J7RRpqc3XimdjwtNrcyW8Pg
- j7c15ktbWL+r7dghXC8qEM6kd8egBGvnCrNrDtP5+bYpQSuZj+5XeikNOAYRil/zYJHeeJ+QK
- aTgWHM0Q/xfEAIVdAFqf5Asj3i+pi24fhBMjZkWJSLRtbwPMxAP3EUcCpx724MvrjJ2NN0EyM
- 3UjjnaKEDL7hsu0iCdi/TWSGd47vHFc2YINEgUTo2g6YbyOXi+1lgtTe5lQO3J1FhgMGc9DcW
- mXS2sw3hAp8JDIJpPbvDdchqxIb2Ns2fcp4OEDBKTsUaqZY/6JvldUIOSSjqyb724SXf4r07a
- VlYnph4jqQ0v2k1dZI1tvvY8ulGBwPe8oqEtGaSsx4Fn+/oauiys4ZgvtxRwyE4dUO16uapdo
- GIxnfGnnpS+uzCQib/XrNFFdCF6UQC9AgIJbix2HGp6YIfsZ6a8LtkTz0e1ZJDKa/HCUMdp0U
- yvG5LVAXWO8fYKiRyZKSz5Ex3w9FOZ/QnIqUbkIck5px/OupnQbSiVkTqA3M6Q8Ewt00rJq4v
- Xcjei4Gm8XWifRz+uiVh2iNEm97qfJrJtS2VMJCJh9jqmYnOmHPwmaIVO8U4upaLuP+WOvepD
- 6+7SCRPuKQtzws4Mkui/r3E+t+HEcJLvihqPIhsTh1qCwwZz4plO1htfm2h4hPCvcUah55VUw
- FWEHagzbzbrvYaKbHTqVfi8BReY1dWrdssgj5WWqcamQE9cMvFrYPNpyKAKEhj6ebqb4NS4k2
- VQNDxI0BP8LhjnyhBmy5gMit7fics2ShfN+in8py97p130TVEREkj+ASMKiI0yqAUopERJx75
- 124GtyOEVsywTe1M2JVLH+ZbCqc5P0SyiFfmN1LlltQDgTJgGJTEs72fMIU5x6JQg0d687CiO
- eXUu0zRZo3BDB8=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHc6FU6JC4ZOwA8t854WbNdmuiNL9DPq0FPga8guATaoCtvsaw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, Oct 25, 2021 at 08:24:26PM +0200, Andreas Gruenbacher wrote:
+> > For generic_perform_write() Dave Hansen attempted to move the fault-in
+> > after the uaccess in commit 998ef75ddb57 ("fs: do not prefault
+> > sys_write() user buffer pages"). This was reverted as it was exposing an
+> > ext4 bug. I don't [know] whether it was fixed but re-applying Dave's commit
+> > avoids the performance drop.
+> 
+> Interesting. The revert of commit 998ef75ddb57 is in commit
+> 00a3d660cbac. Maybe Dave and Ted can tell us more about what went
+> wrong in ext4 and whether it's still an issue.
 
+The context for the revert can be found here[1].
 
-On 2021/10/26 01:09, Mia wrote:
-> Hi Qu,
->
-> sorry for the late reply. I tried the btrfs check again with arch live c=
-d:
->
-> root@archiso ~ # uname -a
-> Linux archiso 5.11.16-arch1-1 #1 SMP PREEMPT Wed, 21 Apr 2021 17:22:13
-> +0000 x86_64 GNU/Linux
-> root@archiso ~ # btrfs --version
-> btrfs-progs v5.14.2
->
-> https://gist.github.com/lynara/12dcfff870260b6bc35b9d1137921fc4
+[1] https://lore.kernel.org/lkml/20151005152236.GA8140@thunk.org/
 
-OK, so the metadata problem is really there, but it shouldn't affect
-your fs right now, unless you want to mount it with 64K page size.
+And "what went wrong in ext4" was fixed here[2].
 
-And for the new error (inline file extent too large), it may cause
-problems, but under most cases, kernel can handle it without problem.
->
-> I'm still getting many errors.
-> Sorry I currently don't know what caused this. I suspect it might be
-> Seafile since I'm now having a currupted library there.
->
-> Should I use --repair?
+[2] https://lore.kernel.org/lkml/20151005152236.GA8140@thunk.org/
 
-No, --repair won't help in this case.
+which landed upstream as commit b90197b65518 ("ext4: use private
+version of page_zero_new_buffers() for data=journal mode").
 
-In fact, your fs is fine, no on-disk metadata problem yet.
+So it looks like the original issue which triggered the revert in 2015
+should be addressed, and we can easily test it by using generic/208
+with data=journal mode.
 
-For your case, I can only recommend to use newer kernel to have better
-sanity check.
-Meanwhile I would also recommend to run a memtest to ensure it's not
-some memory problem causing the bug.
+There also seems to be a related discussion about whether we should
+unrevert 998ef75ddb57 here[3].  Hmm. there is a mention on that thread
+in [3], "Side note: search for "iov_iter_fault_in_writeable()" on lkml
+for a gfs2 patch-series that is buggy, exactly because it does *not*
+use the atomic user space accesses, and just tries to do the fault-in
+to hide the real bug."  I assume that's related to the discussion on
+this thread?
 
-Thanks,
-Qu
+[3] https://lore.kernel.org/all/3221175.1624375240@warthog.procyon.org.uk/T/#u
 
->
-> Regards
-> Mia
->
-> ------ Originalnachricht ------
-> Von: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
-> An: "Qu Wenruo" <wqu@suse.com>; "Mia" <9speysdx24@kr33.de>;
-> linux-btrfs@vger.kernel.org
-> Gesendet: 25.10.2021 13:18:54
-> Betreff: Re: filesystem corrupt - error -117
->
->>
->>
->> On 2021/10/25 19:14, Qu Wenruo wrote:
->>>
->>>
->>> On 2021/10/25 19:13, Mia wrote:
->>>> Hi Qu,
->>>>
->>>> thanks for your response.
->>>> Here the output of btrfs check:
->>>> https://gist.github.com/lynara/1c613f7ec9448600f643a59d22c1efb2
->>>
->>> Unfortunately it's not full, and it's using an old btrfs-progs which c=
-an
->>> cause false alert.
->>
->> My bad, gist is folding the output.
->>
->> It shows no corruption for the extent tree, thus I guess the transactio=
-n
->> abort has prevented COW from being broken.
->>
->>>
->>> Please use latest btrfs-progs v5.14.2 to re-check.
->>
->> In that case, a newer btrfs-progs is only going to remove the false
->> alerts.
->>
->> Any clue on the workload causing the abort?
->>
->> For now, I can only recommend to use newer kernel (v5.10+ I guess?) to
->> see if you can reproduce the problem.
->>
->> Thanks,
->> Qu
->>
->>>
->>> Thanks,
->>> Qu
->>>>
->>>> Thanks,
->>>> Mia
->>>>
->>>> ------ Originalnachricht ------
->>>> Von: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
->>>> An: "Mia" <9speysdx24@kr33.de>; linux-btrfs@vger.kernel.org
->>>> Gesendet: 25.10.2021 12:55:46
->>>> Betreff: Re: filesystem corrupt - error -117
->>>>
->>>>>
->>>>>
->>>>> On 2021/10/25 18:53, Qu Wenruo wrote:
->>>>>>
->>>>>>
->>>>>> On 2021/10/25 16:46, Mia wrote:
->>>>>>> Hello,
->>>>>>> I need support since my root filesystem just went readonly :(
->>>>>>>
->>>>>>> [641955.981560] BTRFS error (device sda3): tree block 342685007872
->>>>>>> owner
->>>>>>> 7 already locked by pid=3D8099, extent tree corruption detected
->>>>>>
->>>>>> This line explains itself.
->>>>>>
->>>>>> Your extent tree is no corrupted, thus it allocated a new tree bloc=
-k
->>>>>
->>>>> I missed the "w" for the word "now"...
->>>>>
->>>>>> which is in fact already hold by other tree.
->>>>>>
->>>>>> This means your metadata is no longer protected properly by COW.
->>>>>>
->>>>>> "btrfs check" is highly recommended to expose the root cause.
->>>>>>
->>>>>>>
->>>>>>> root@rx1 ~ # btrfs fi show
->>>>>>> Label: none=C2=A0 uuid: 21306973-6bf3-4877-9543-633d472dcb46
->>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes used 189.12GiB
->>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 size 319.00GiB =
-used 199.08GiB path /dev/sda3
->>>>>>>
->>>>>>> root@rx1 ~ # btrfs fi df /
->>>>>>> Data, single: total=3D194.89GiB, used=3D187.46GiB
->>>>>>> System, single: total=3D32.00MiB, used=3D48.00KiB
->>>>>>> Metadata, single: total=3D4.16GiB, used=3D1.65GiB
->>>>>>> GlobalReserve, single: total=3D380.45MiB, used=3D0.00B
->>>>>>>
->>>>>>> root@rx1 ~ # btrfs --version
->>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 :=
-(
->>>>>>> btrfs-progs v4.20.1
->>>>>>>
->>>>>>>
->>>>>>> root@rx1 ~ # uname -a
->>>>>>> Linux rx1 4.19.0-17-amd64 #1 SMP Debian 4.19.194-3 (2021-07-18)
->>>>>>> x86_64
->>>>>>> GNU/Linux
->>>>>>
->>>>>> This is a little old for btrfs, but I don't think that's the cause.
->>>>>>
->>>>>> Thanks,
->>>>>> Qu
->>>>>>
->>>>>>>
->>>>>>> Hope someone can help.
->>>>>>> Regrads
->>>>>>> Mia
->>>>>>>
->>>>
->>>
->
+						- Ted
