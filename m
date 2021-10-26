@@ -2,164 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A1343AD91
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 09:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E0543AF50
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 11:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhJZHzv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Oct 2021 03:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbhJZHzu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Oct 2021 03:55:50 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C601C061745
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 00:53:27 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id e65so13339575pgc.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 00:53:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gite0SGGIQ7qm710ogoNzYimbvpwi6b1/lYzpJUFn9I=;
-        b=QXPYIzIbGweO/lzaH2mxDmvHVA2AlwwEe9LZAl6Sfxx/kP96zNrFOkMK7O38JrNl90
-         +rf92ia6TtF1UxTVKmBw+ax7S947WxCopjqCu+WHqhca9gGFDEDUi4G85+7bbTHf2mqX
-         FG2BKVI1cFMCb0zaSMkxLWPFVgOej4DpqSy6B9PVds0+4xsjrjVyKn5XacxhB+8Lv3Mg
-         h9NZl24NIFqU3GrUGQjKaMXGkct2o9gva34vBQtOtI5d47ZmkedfpeE3tToUHjhiaAJj
-         vvOtzYzow4TAiihfv7Q1qNxp8VvE9c61ojgNoIMMZPbnKAUiTqRz+b45v8J9gEXQpHI7
-         KOZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gite0SGGIQ7qm710ogoNzYimbvpwi6b1/lYzpJUFn9I=;
-        b=gN5xfq7Jq/txhW+juYCZ/D4MWd+LyQz8oXPEda9G0SsGCaRcrPOXRpjSV2JGA3JNyY
-         ViL896rDgj1DF/w+SJrkTnQcyItqFSRg+l++SEdPwoyrpmj9Y5npVwJu79M0kvvWC4IP
-         z5w/XpkQiPL9VzviUAjOxc6p93by9kkwSRoL37LGYi6XeCXiP9qcB/mlhQQHzyonKZ2Y
-         mGD0B2t/70e4O8GugXrnppR70VUti88pB8hHqmNHZjYHJxXtMDvkZO82doe8E9qU3dgI
-         b8fEUreIKkwkh36YrC8U7XyFHTnp9SF/drJ85VrJC7uUwlWDKLMCgauZWGo5DJck3qdO
-         oMuQ==
-X-Gm-Message-State: AOAM531eWuoLbT5mLVDKjPrCMEr5pTxD2tScISePyMr/BNLBuxYbm3S3
-        Qno1CWMS8f2aKh2S5nsWsnowUA==
-X-Google-Smtp-Source: ABdhPJw8oJUD9xbwHkBYPTCC0f8p6bBgMQGIv0ZU9Kog7XsFemIRVNppFzkSisRC6Rm0ZLUIYEbyTA==
-X-Received: by 2002:a05:6a00:ac1:b0:44c:4dc6:b897 with SMTP id c1-20020a056a000ac100b0044c4dc6b897mr24615248pfl.25.1635234806524;
-        Tue, 26 Oct 2021 00:53:26 -0700 (PDT)
-Received: from relinquished.localdomain ([2601:602:8b80:8e0::381])
-        by smtp.gmail.com with ESMTPSA id v14sm10201203pff.199.2021.10.26.00.53.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 00:53:26 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 00:53:25 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-btrfs@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@fb.com
-Subject: Re: Btrfs Fscrypt Design Document
-Message-ID: <YXez9Yq9ygfjKhoz@relinquished.localdomain>
-References: <YXGyq+buM79A1S0L@relinquished.localdomain>
- <YXcKX3iNmqlGsdzv@gmail.com>
+        id S234969AbhJZJqM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Oct 2021 05:46:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234436AbhJZJqM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 26 Oct 2021 05:46:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8813E6108B
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 09:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635241428;
+        bh=mVjnUx7/86c4I7duPSeF/OPh7YP5IumHjBn7KubrRL8=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=rKEAKBj3ackuYfL13mXxySqU5rRdlu1GvpnyYIlNSkgyZwhBYB5coKiA51rbJYPot
+         ISeg04QcEXHQame+CFGCJjxcIdX3ZSM2jw9DbxZ8x2GTDqBT7lfQttaNCQXw1Hqf+l
+         8gWu6BhCcIhEfg8Wuuwci6RexmRbwJQayLsu7OuvAh+RxSthSvDEE0YcFSnU6J05IJ
+         hk6an2eGoIsTiJvEPrzMynw0CdGcDxU1bI1ezdE09oU9zucDleVbM2U06nCuNPoyb2
+         VtrKiAwvicLELK1V4072Prw3wYOtDRcjvCQJDkwGb2qGveX29w6ksTwURC7iQFua67
+         I86uRJqw9DbVA==
+Received: by mail-qt1-f172.google.com with SMTP id z24so12895016qtv.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 02:43:48 -0700 (PDT)
+X-Gm-Message-State: AOAM533YZ+HAoaf1U3Aw2srmQFGp2TfxtUIrWEA4QYGIe403263trrPo
+        BY+nGgF8304UhfC1UfgvY8jk/4Lphlk/oXx1d7I=
+X-Google-Smtp-Source: ABdhPJy3B8TAuAhOzvAW1Pq0zKBiKiYkkCc4+TeAO8iZ2cUoKQ8M7+dM5JO/0TTCXzvE6XRUZOI2Hyn97Rs8NM8SygM=
+X-Received: by 2002:a05:622a:1807:: with SMTP id t7mr23765103qtc.140.1635241427691;
+ Tue, 26 Oct 2021 02:43:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YXcKX3iNmqlGsdzv@gmail.com>
+References: <cover.1635155473.git.fdmanana@suse.com> <cover.1635178668.git.fdmanana@suse.com>
+ <20211025195520.GT20319@twin.jikos.cz>
+In-Reply-To: <20211025195520.GT20319@twin.jikos.cz>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Tue, 26 Oct 2021 10:43:11 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H54A=Bw_us_ah_1veZ9jZ5JEUqE7=r00x+hE7zpQZ9NBg@mail.gmail.com>
+Message-ID: <CAL3q7H54A=Bw_us_ah_1veZ9jZ5JEUqE7=r00x+hE7zpQZ9NBg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] btrfs: speedup directory logging/fsync by copying
+ index keys only
+To:     David Sterba <dsterba@suse.cz>,
+        Filipe Manana <fdmanana@kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 12:49:51PM -0700, Eric Biggers wrote:
-> On Thu, Oct 21, 2021 at 11:34:19AM -0700, Omar Sandoval wrote:
-> > Hello,
-> > 
-> > I've been working on adding fscrypt support to Btrfs. Btrfs has some
-> > features (namely, reflinks and snapshots) that don't work well with the
-> > existing fscrypt encryption policies. I've been discussing and
-> > prototyping how to support these Btrfs features with fscrypt, so I
-> > figured it was high time I write it down and loop in the fscrypt
-> > developers as well.
-> > 
-> > Here is the Google Doc:
-> > https://docs.google.com/document/d/1iNnrqyZqJ2I5nfWKt7cd1T9xwU0iHhjhk9ALQW3XuII/edit?usp=sharing
-> > 
-> > Please feel free to comment there or via email.
-> > 
-> 
-> Just some preliminary comments:
-> 
-> Given that you need reflinking to remain supported, for file contents encryption
-> I think it's the right choice to store the IVs explicitly rather than have them
-> determined by the offset within the file.
-> 
-> How many derived encryption keys to use is somewhat orthogonal to that.  As I
-> mentioned in my other mail, you could still have one key per extent rather than
-> one per encryption policy as you're proposing.  I'm *guessing* it wouldn't be
-> practical, and I don't consider it to be required (just preferable), but the
-> document doesn't discuss this possibility at all.
+On Mon, Oct 25, 2021 at 8:55 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> On Mon, Oct 25, 2021 at 05:31:48PM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > This patchset reworks directory logging to make it copy only the dir index
+> > keys, instead of copying both dir index keys and dir item keys, as both have
+> > the same type of information. This reduces the amount of logged metadata by
+> > about half, and therefore we do about half of the cpu bound work, half of
+> > the IO and use less log tree space (except for very small directories).
+> >
+> > This will allow other optimizations to build on top, some of which are only
+> > possible after this change, while others become easier and less cumbersome
+> > to implement after this change. Performance tests are in the changelog of
+> > patch 5/6. Patch 6/6 only removes code that deals with dir item keys when
+> > replaying directory deletions and it could have been squashed into patch
+> > 5/6, but since that one is already large and works without 6/6, I opted
+> > to make it separate to make it easier to review.
+> >
+> > Also, after this change we are still able to correctly replay a log tree
+> > generated by an old kernel, and an old kernel is also able to correctly
+> > replay a log tree generated by a kernel that has this patchset applied.
+> >
+> > I'm sending this close to the 5.16 merge window, but my intention is to
+> > have it only for the next merge window (5.17).
+> >
+> > V2: Updated changelog of patch 5/6 to make it more clear why backward
+> >     and forward compatibility are guaranteed.
+> >
+> > Filipe Manana (6):
+> >   btrfs: remove root argument from drop_one_dir_item()
+> >   btrfs: remove root argument from btrfs_unlink_inode()
+> >   btrfs: remove root argument from add_link()
+> >   btrfs: remove root argument from check_item_in_log()
+>
+> If you want, I can add the first 4 patches to misc-next still queued for
+> 5.16 pull next week, it's fairly trivial and you won't have to refresh
+> the patches. For preparatory patches like this it's free pass even
+> before merge window.
 
-I overlooked this option because my gut instinct was that the memory
-usage would be prohibitive. It looks like one AES-256-XTS prepared key
-is about 1k in memory (960 bytes for the encryption and decryption key
-schedules for each key, plus a bit more for the crypto API structures).
-I thought it'd be too expensive to store this naively for each cached
-extent.
-
-However, across various machines I checked, the number of cached inodes
-and the number of cached extents is in the same order magnitude (and in
-fact, almost equal in many cases). So per-extent keys aren't out of the
-question. We can store a 16-byte nonce in the extent, use that to derive
-the per-extent key from the master key, and use the offset in the extent
-as the IV. I'll think about it some more and make sure I'm not missing
-anything.
-
-> Storing just the "starting IV" for each extent also makes sense, assuming that
-> you only want to support an unauthenticated mode such as AES-XTS.  However,
-> given that btrfs is a copy-on-write filesystem and thus can support per-block
-> metadata, a natural question is why not support an authenticated mode such as
-> AES-GCM, with a nonce and authentication tag stored per block?  Have you thought
-> about this?
-> 
-> Now, I personally think that authenticating file contents only wouldn't give
-> much benefit, and whole-filesystem authentication would be needed to get a real
-> benefit.  But "why aren't you using an authenticated mode" is a *very* common
-> question, so you need an answer to that -- or ideally, just support it if it
-> isn't much work.
-
-We already store a checksum per block; I don't see any reason that it
-couldn't be a MAC. Johannes Thumshirn had a proof of concept for storing
-an HMAC for all blocks:
-https://lore.kernel.org/linux-btrfs/20191015121405.19066-1-jthumshirn@suse.de/#b
-Plumbing it through for authenticated encryption would be a little
-harder, but probably not by much.
-
-> What is your proposal for how filenames encryption would work when the
-> EXPLICIT_IV flag is used?  That doesn't appear to be mentioned.
-
-Since there's no such thing as "reflinking" filenames, I think filename
-encryption can be unchanged, i.e., per-directory encryption keys. (This
-would probably be the case with per-extent keys for data, as well.)
-
-> Finally, the proposal to allow encrypting the changed data of snapshots is a
-> larger departure from the fscrypt model.  I'm still trying to wrap my head
-> around how that could work.  Could you provide any more details about that?
-> E.g. what metadata would actually be stored on-disk, and how would it be used?
-> When would things be done in terms of filesystem operations?  E.g. let's say I
-> open a file for writing -- would the encryption key be set up right away, or
-> would it not happen until I actually write data?
-
-On disk, we still only need to store the usual fscrypt context. It will
-always be present for the top-level of the snapshot. It may or may not
-be present for any files or directories under that.
-
-In memory, we'd store whether the subvolume is encrypted. This would be
-set when enabling encryption and when caching the subvolume. Since every
-inode has a reference to the subvolume it is in, and inodes can't move
-between subvolumes, all we need is a check like:
-
-if (IS_ENCRYPTED(inode->subvolume) && !IS_ENCRYPTED(inode))
-	set_up_encryption(inode);
-
-I'm leaning towards doing that either at the time that userspace writes
-the data, or at the time that we're flushing the data to disk, whichever
-ends up being more convenient for Btrfs. I'd rather not do it at open
-time.
-
-Thanks for the very helpful reply!
+I'm fine with either way.
+Thanks.
