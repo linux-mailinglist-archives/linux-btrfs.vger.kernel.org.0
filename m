@@ -2,331 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838ED43B9E4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 20:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBFA43B9F1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 26 Oct 2021 20:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238409AbhJZSrq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 26 Oct 2021 14:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58734 "EHLO
+        id S235258AbhJZSwu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 26 Oct 2021 14:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238408AbhJZSrn (ORCPT
+        with ESMTP id S235844AbhJZSwt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 26 Oct 2021 14:47:43 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1602EC061243
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 11:45:19 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id b12so167593qtq.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 11:45:19 -0700 (PDT)
+        Tue, 26 Oct 2021 14:52:49 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB310C061745
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 11:50:24 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id o26so506684ljj.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 11:50:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yH2ifAVoyrdweyi+7/b8BzlgPC5Xyy8MY24JCLB3IlA=;
-        b=yMwFxqjIx2irSLyejKmDZUYJEsQAvbZNR5rLwuhruFuGl6ghvwWqdbo+h97WA1m3Vd
-         gZvq5q/IIT42c7DKOm0G52LcpuzwWTiBar86XIuJVoI4tUSmpMrMK13a5xzyt18Iywpc
-         2AM1hiYbhKj9Z1VUinBUme+1Xjz7MpxXs/sJfq5oB8kY8l4RQf+3MN3FHzDwLWTn/FWw
-         QkxEOpATLVB+t0NrchGvkRW0Utz9fBOHySiHmqnFC8S4JNb+QJ9rrRWfGasIgTWSCg56
-         hcghQrd5Cqrz9I8c9zcHO/hTHcVTPBGgwuLBQvCB7V035eirmNVnGtKz+MyTfK4Q6LoT
-         9OlQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=r5Cx2RnmHPH+SxoKka0sJEz3NkssP3YCqbiSsqzadkQ=;
+        b=XWmvXqx6E/lnwqgDlacsJYsSx9OK8zrlmcuZe075Kg2Q7afYrlM28LUphtMnNWBBss
+         19rtrgtkK+y60H9M3H213OTzx4KlKQs5vTnOVoJ7FFgOi4799TI0MlAwQR64ujeGGpUF
+         Ec975XRObLADp1do89z7xhEJGw/WNDenswDZ0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yH2ifAVoyrdweyi+7/b8BzlgPC5Xyy8MY24JCLB3IlA=;
-        b=roMbL/ISE2XFKl+adCcBD/YgBpaWHB4v0RqpZzhIdgBn8k+62ErAJ6mo0E7CGtGSW1
-         uZ2+M9PjHCcMpuk4ElKAKYW5AS+wWxEcIr1UAy+DzPFUdh0Il+TlcqupsTnzN3HC58iO
-         D8x8plRUvwqAQBGRBqUqZzZ+QkOV46okU6TaREDuRocRU0C+9d3MJEGtRE6dKCMI8hzN
-         Cemyniylcdq4RGw5kdc26Ft3Wx4JqI03zxWZU9ZFYa0pWOWUGG4wV7hGWqZPXolF6xCQ
-         55cCQRD7L9t4xqqWBbsKeIJsWlhk52x9yh2OO2VBb30ZqdUvEY6kATKd1UBYv7LsrV5U
-         sdSw==
-X-Gm-Message-State: AOAM5326MI+5Bi6o2I5/xOqZaeq0HQrhkXSws2dG9mEb/FCneIQQT0UQ
-        ARFwX1q12i8X6EUVv3dGQNhlwA==
-X-Google-Smtp-Source: ABdhPJxfMl6Z93nRVzCj0bbUv8nY+I0ltyyCcjKoeDN7+JxZDilLrPypl9BrpoVtGls4JMPXCg0XUQ==
-X-Received: by 2002:ac8:57c3:: with SMTP id w3mr26417735qta.132.1635273917777;
-        Tue, 26 Oct 2021 11:45:17 -0700 (PDT)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id r16sm10628953qtt.22.2021.10.26.11.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Oct 2021 11:45:17 -0700 (PDT)
-Date:   Tue, 26 Oct 2021 14:45:16 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Stefan Roesch <shr@fb.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: Add new test for setting the stripe size.
-Message-ID: <YXhMvEt2ay1VK8dL@localhost.localdomain>
-References: <20211026180123.843069-1-shr@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r5Cx2RnmHPH+SxoKka0sJEz3NkssP3YCqbiSsqzadkQ=;
+        b=S7nnmfcYLoRr4wMC/SVwAfGHjQGcDXxC0n6WQ2tHJnmi7KT9Q1WMWZuWg4MF71AvZZ
+         sal0PevFURLaWU/5CzKrQ6lUJ/9vbfMbl8g6pDr0dPwbLNMA83qFu6jaZAJvkR3CvTQo
+         DOePlWLaqyvVLs3wzeltSJ5Om1/Dzs5mDEfgMu49m3vu0keWd4SCSMEyqVHiM72ECAD3
+         tExvTDyIDu490Y97leuORbzU09+Ytn/8bYXrF/4tIZQ7bji7LLYCWtdbsek4jfNyAP7h
+         K7W5xf2nbPevaom37S3BMzX/XwikpScqXqX8gtgD9zDIZansQqg5bQO8ruY+RGirJcd9
+         8eHw==
+X-Gm-Message-State: AOAM530eS7JOpwaJT6agY5++a537NfoMdACE86fkKLPtOaxO+hqiyjLf
+        2R8FI+38ro6cyjIUmGxO5fmk3k6AuDglDPdE
+X-Google-Smtp-Source: ABdhPJzxqucaJcqE42ZOkkX3bj4x3nl08IT5hdxHvH1FQeU7mT7UEv/IkZEMO70ce89BRs3cJyswcA==
+X-Received: by 2002:a2e:a5c8:: with SMTP id n8mr27737605ljp.307.1635274222491;
+        Tue, 26 Oct 2021 11:50:22 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id r3sm2013812lfc.169.2021.10.26.11.50.21
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Oct 2021 11:50:21 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id w23so459575lje.7
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 11:50:21 -0700 (PDT)
+X-Received: by 2002:a2e:9e13:: with SMTP id e19mr4519488ljk.494.1635274221013;
+ Tue, 26 Oct 2021 11:50:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211026180123.843069-1-shr@fb.com>
+References: <20211019134204.3382645-1-agruenba@redhat.com> <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com> <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+ <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com> <YXhH0sBSyTyz5Eh2@arm.com>
+In-Reply-To: <YXhH0sBSyTyz5Eh2@arm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 26 Oct 2021 11:50:04 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+Message-ID: <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 11:01:23AM -0700, Stefan Roesch wrote:
-> Summary:
-> 
-> Add new testcase for testing the new btrfs sysfs knob to change the
-> stripe size. The new knob uses /sys/fs/btrfs/<UUID>/allocation/<block
-> type>/stripe_size.
-> 
-> The test case implements three different cases:
-> - Test allocation with the default stripe size
-> - Test allocation after increasing the stripe size
-> - Test allocation when the free space is smaller than the stripe size.
-> 
-> Note: this test needs to force the allocation of space. It uses the
-> /sys/fs/btrfs/<UUID>/allocation/<block type>/force_chunk_alloc knob.
-> 
-> Testing:
-> The test has been run with volumes of different sizes.
-> 
-> Signed-off-by: Stefan Roesch <shr@fb.com>
-> ---
->  tests/btrfs/248     | 317 ++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/248.out |  11 ++
->  2 files changed, 328 insertions(+)
->  create mode 100755 tests/btrfs/248
->  create mode 100644 tests/btrfs/248.out
-> 
-> diff --git a/tests/btrfs/248 b/tests/btrfs/248
-> new file mode 100755
-> index 00000000..2b6a6bc2
-> --- /dev/null
-> +++ b/tests/btrfs/248
-> @@ -0,0 +1,317 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 Facebook.  All Rights Reserved.
-> +#
-> +# FS QA Test 250
-> +#
-> +# Test the new /sys/fs/btrfs/<uuid>/allocation/<block-type>/stripe_size
-> +# setting. This setting allows the admin to change the stripe size
-> +# setting for the next allocation.
-> +#
-> +# Test 1:
-> +#   Allocate storage for all three block types (data, metadata and system)
-> +#   with the default stripe size.
-> +#
-> +# Test 2:
-> +#   Set a new stripe size to double the default size and allocate space
-> +#   for all new block types with the new stripe size.
-> +#
-> +# Test 3:
-> +#   Pick an allocation size that is used in a loop and make sure the last
-> +#   allocation cannot be partially fullfilled.
-> +#
-> +# Note: Variable naming uses the following convention: if a variable name
-> +#       ends in "_B" then its a byte value, if it ends in "_MB" then the
-> +#       value is in megabytes.
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto
-> +
-> +test_file="${TEST_DIR}/${seq}"
-> +seq=`basename $0`
-> +seqres="${RESULT_DIR}/${seq}"
-> +
-> +# Override the default cleanup function.
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f "$test_file"
-> +}
-> +
-> +# Parse a size string which is in the format "XX.XXMib".
-> +#
-> +# Parameters:
-> +#   - (IN)    Block group type (Data, Metadata, System)
-> +#   - (INOUT) Variable to store block group size in MB
-> +#
-> +_parse_size_string() {
-> +	local SIZE=$(echo "$1" | awk 'match($0, /([0-9.]+)/) { print substr($0, RSTART, RLENGTH) }')
-> +        eval $2="${SIZE%.*}"
-> +}
-> +
-> +# Determine the size of the device in MB.
-> +#
-> +# Parameters:
-> +#   - (INOUT) Variable to store device size in MB
-> +#
-> +_device_size() {
-> +	$BTRFS_UTIL_PROG fi show ${SCRATCH_MNT} --mbytes | grep devid >> $seqres.full
-> +	local SIZE=$($BTRFS_UTIL_PROG fi show ${SCRATCH_MNT} --mbytes | grep devid)
-> +	_parse_size_string $(echo "${SIZE}" | awk '{print $4}') SIZE_ALLOC
-> +	eval $1=${SIZE_ALLOC%.*}
-> +}
-> +
-> +# Determine the free space of a block group in MB.
-> +#
-> +# Parameters:
-> +#   - (INOUT) Variable to store free space in MB
-> +#
-> +_free_space() {
-> +	local SIZE=$($BTRFS_UTIL_PROG fi show ${SCRATCH_MNT} --mbytes | grep devid)
-> +	_parse_size_string $(echo "${SIZE}" | awk '{print $4}') SIZE_ALLOC
-> +	_parse_size_string $(echo "${SIZE}" | awk '{print $6}') SIZE_USED
-> +	eval $1=$(expr ${SIZE_ALLOC} - ${SIZE_USED})
-> +}
-> +
-> +# Determine how much space in MB has been allocated to a block group.
-> +#
-> +# Parameters:
-> +#   - (IN)    Block group type (Data, Metadata, System)
-> +#   - (INOUT) Variable to store block group size in MB
-> +#
-> +_alloc_size() {
-> +	local SIZE_STRING=$($BTRFS_UTIL_PROG filesystem df ${SCRATCH_MNT} -m | grep  "$1" | awk '{print $3}')
-> +	_parse_size_string ${SIZE_STRING} BLOCK_GROUP_SIZE
-> +        eval $2="${BLOCK_GROUP_SIZE}"
-> +}
-> +
-> +. ./common/filter
-> +_supported_fs btrfs
-> +_require_test
-> +_require_scratch
-> +_require_btrfs_fs_sysfs
-> +
-> +# Delete log file if it exists.
-> +rm -f "${seqres}.full"
-> +
-> +# Make filesystem.
-> +_scratch_mkfs >> $seqres.full 2>&1
-> +_scratch_mount >> $seqres.full 2>&1
-> +
-> +# Get UUID of device.
-> +UUID="$(findmnt -n -o UUID ${SCRATCH_MNT})"
-> +echo "UUID = ${UUID}" >> ${seqres}.full
-> +
-> +# Check if there is sufficient sysfs support.
-> +if [[ ! -e /sys/fs/btrfs/${UUID}/allocation/metadata/stripe_size ]]; then
-> +	_notrun "The filesystem has no support to set the BTRFS stripe size."
-> +fi
+On Tue, Oct 26, 2021 at 11:24 AM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> While more intrusive, I'd rather change copy_page_from_iter_atomic()
+> etc. to take a pointer where to write back an error code.
 
-Two things, first you're doing a lot of /sys/fs/btrfs/${UUID}/whatever.  We have
-a _get_fs_sysfs_attr() helper that does the right thing for device based things
-like xfs or ext4.  It would be good to go ahead and add a 
+I absolutely hate this model.
 
-_get_btrfs_sysfs_attr()
-_set_btrfs_sysfs_attr()
+The thing is, going down that rat-hole, you'll find that you'll need
+to add it to *all* the "copy_to/from_user()" cases, which isn't
+acceptable. So then you start doing some duplicate versions with
+different calling conventions, just because of things like this.
 
-and use a similar calling convetion, so for example
+So no, I really don't want a "pass down a reference to an extra error
+code" kind of horror.
 
-FIRST_DATA_STRIPE_SIZE=$(_get_btrfs_sysfs_attr $SCRATCH_MNT allocation/data/stripe_size)
+That said, the fact that these sub-page faults are always
+non-recoverable might be a hint to a solution to the problem: maybe we
+could extend the existing return code with actual negative error
+numbers.
 
-so you can put a 
+Because for _most_ cases of "copy_to/from_user()" and friends by far,
+the only thing we look for is "zero for success".
 
-_fail "sysfs attr $whatever doesn't exist" in the helper.
+We could extend the "number of bytes _not_ copied" semantics to say
+"negative means fatal", and because there are fairly few places that
+actually look at non-zero values, we could have a coccinelle script
+that actually marks those places.
 
-Secondly if you are going to have a _notrun you should probably have a helper
-for that as well, so something along the lines of
+End result: no change in calling conventions, no change to most users,
+and the (relatively few) cases where we look at the "what about
+partial results", we just add a
 
-_require_btrfs_sysfs_attr allocation/metadata/stripe_size
+         .. existing code ..
+         ret = copy_from_user(..);
++        if (ret < 0)
++                break;  // or whatever "fatal error" situation
+         .. existing  code ..
 
-that will check the TEST_MNT UUID to make sure the thing exists.
+kind of thing that just stops the re-try.
 
-> +
-> +if [[ ! -e /sys/fs/btrfs/${UUID}/allocation/metadata/force_chunk_alloc ]]; then
-> +	_notrun "The filesystem has no support to force BTRFS allocation."
-> +fi
-> +
-> +# Get free space.
-> +_free_space  FREE_SPACE_MB
-> +_device_size DEVICE_SIZE_MB
-> +
-> +echo "free space = ${FREE_SPACE_MB}" >> ${seqres}.full
-> +
-> +# Get stripe sizes.
-> +echo "Capture default stripe sizes."
-> +FIRST_DATA_STRIPE_SIZE_B=$(cat /sys/fs/btrfs/${UUID}/allocation/data/stripe_size)
-> +FIRST_METADATA_STRIPE_SIZE_B=$(cat /sys/fs/btrfs/${UUID}/allocation/metadata/stripe_size)
-> +FIRST_SYSTEM_STRIPE_SIZE_B=$(cat /sys/fs/btrfs/${UUID}/allocation/system/stripe_size)
-> +
-> +echo "Data stripe size    = ${FIRST_DATA_STRIPE_SIZE_B}"     >> ${seqres}.full
-> +echo "Metaata stripe size = ${FIRST_METADATA_STRIPE_SIZE_B}" >> ${seqres}.full
-> +echo "System stripe size  = ${FIRST_SYSTEM_STRIPE_SIZE_B}"   >> ${seqres}.full
-> +
-> +INIT_ALLOC_SIZE_MB=$(expr \( ${FIRST_DATA_STRIPE_SIZE_B} + ${METADATA_STRIP_SIZE} + ${FIRST_SYSTEM_STRIPE_SIZE_B} \) / 1024 / 1024)
-> +echo "Allocation size for initial allocation = $INIT_ALLOC_SIZE_MB" >> $seqres.full
-> +
-> +# Check if there is enough free space.
-> +echo "Check free space."
-> +if [[ ${FREE_SPACE_MB} -lt 10000 ]]; then
-> +	_notrun "The filesystem has less than 10GB free space."
-> +fi
+(The coccinelle script couldn't actually do that, but it could add
+some comment marker or something so that it's easy to find and then
+manually fix up the places it finds).
 
-Use _require_scratch_size instead.
-
-> +
-> +if [[ $(expr ${INIT_ALLOC_SIZE_MB} \* 4) -gt ${FREE_SPACE_MB} ]]; then
-> +	_notrun "The filesystem default stripe size > available free space."
-> +fi
-> +
-
-Instead of doing all of this complicated math and such, require a minimum sized
-file system.  Then use _scratch_mkfs_sized() to create a specific sized file
-system so it'll do the thing you want.  Then you can do allocations and stuff
-and simply output it as part of your golden output.  That'll drastically cut
-down on the complexity of this test.
-
-<snip>
-
-> +echo "Verify second allocation."
-> +SECOND_DATA_STRIPE_SIZE_MB=$(expr ${SECOND_DATA_STRIPE_SIZE_B} / 1024 / 1024)
-> +SECOND_METADATA_STRIPE_SIZE_MB=$(expr ${SECOND_METADATA_STRIPE_SIZE_B} / 1024 / 1024)
-> +SECOND_SYSTEM_STRIPE_SIZE_MB=$(expr ${SECOND_SYSTEM_STRIPE_SIZE_B} / 1024 / 1024)
-> +
-> +if [[ ${SECOND_DATA_STRIPE_SIZE_B} -ne ${SECOND_DATA_STRIPE_SIZE_READ_B} ]]; then
-> +	_fail "Value written to /sys/fs/btrfs/<uuid>/allocation/data/stripe_size and read value are different."
-> +fi
-> +
-
-Just put 
-
-"Value written to allocation/data/stripe_size and read value are different"
-
-no need for teh full path.
-
-> +if [[ ${SECOND_METADATA_STRIPE_SIZE_B} -ne ${SECOND_METADATA_STRIPE_SIZE_READ_B} ]]; then
-> +	_fail "Value written to /sys/fs/btrfs/<uuid>/allocation/metadata/stripe_size and read value are different."
-> +fi
-> +
-> +if [[ ${SECOND_SYSTEM_STRIPE_SIZE_B} -ne ${SECOND_SYSTEM_STRIPE_SIZE_READ_B} ]]; then
-> +	_fail "Value written to /sys/fs/btrfs/<uuid>/allocation/system/stripe_size and read value are different."
-> +fi
-> +
-> +
-> +if [[ $(expr ${SECOND_DATA_STRIPE_SIZE_MB} + ${FIRST_DATA_SIZE_MB}) -ne ${SECOND_DATA_SIZE_MB} ]]; then
-> +	_fail "Data allocation after stripe size change not correct."
-> +fi
-> +
-> +if [[ $(expr ${SECOND_METADATA_STRIPE_SIZE_MB} + ${FIRST_METADATA_SIZE_MB}) -ne ${SECOND_METADATA_SIZE_MB} ]]; then
-> +	_fail "Metadata allocation after stripe size change not correct."
-> +fi
-> +
-> +if [[ $(expr ${SECOND_SYSTEM_STRIPE_SIZE_MB} + ${FIRST_SYSTEM_SIZE_MB}) -ne ${SECOND_SYSTEM_SIZE_MB} ]]; then
-> +	_fail "System allocation after stripe size change not correct."
-> +fi
-> +
-> +#
-> +# Verification of third allocation.
-> +#
-> +echo "Verify third allocation."
-> +if [[ ${FREE_SPACE_MB} -gt ${THIRD_DATA_STRIPE_SIZE_MB} ]]; then
-> +	_fail "Free space after allocating over memlimit is too high."
-> +fi
-> +
-> +# The + 1 is required as 1MB is always kept as free space.
-> +if [[ $(expr ${THIRD_DATA_STRIPE_SIZE_MB} + ${THIRD_DATA_SIZE_MB} + 1) -le $(expr ${FOURTH_DATA_SIZE_MB}) ]]; then
-> +	_fail "Allocation until out of memory: last memory allocation size is not correct."
-> +fi
-> +
-> +
-> +# Report success.
-> +echo "Silence is golden"
-
-Don't need this bit since you have golden output.  Thanks,
-
-Josef
+             Linus
