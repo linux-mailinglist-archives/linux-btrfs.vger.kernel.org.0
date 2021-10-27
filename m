@@ -2,278 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A187743C368
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 08:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8789943C38C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 09:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240200AbhJ0HBz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Oct 2021 03:01:55 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45210 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231686AbhJ0HBz (ORCPT
+        id S240345AbhJ0HLj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Oct 2021 03:11:39 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:51453 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240330AbhJ0HLh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Oct 2021 03:01:55 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19QNDiil022807;
-        Tue, 26 Oct 2021 23:59:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=xJccF6vJa6eGsTIFPRGkPbsToZjwQ7KpmY/3BOJPEks=;
- b=ohTOKbTux7jQ6LY/ujvH4gWVC+HaV17V9Ax7IZEISnHDbSudrZh4MueBCGQWYUEUyIQ3
- m638j+e7DwKd8804xXIkFNGc4+h3l5az3765IptDArHHCdIWPWqtw1zMmuJuiZfcUFrC
- zIY+ZpDajVF4ojRti5OJjWACGdo4nfS/QnI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3bxkkcdxae-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 Oct 2021 23:59:29 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 26 Oct 2021 23:58:59 -0700
+        Wed, 27 Oct 2021 03:11:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1635318553; x=1666854553;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=nzFDlCKg/T08k7IaT4UQaRpK9QbbqNMEGKnUECUrzzA=;
+  b=JQAjC1R4H6pSdzNW4rgN8Tyt9ahG70JhiJjskW1XhVJ6QH0BdUBvUQVW
+   4V847Fp8ckWrmi8gAdXe5aAkF8cJ+av9+JQIpbMvDsA01xi6IA4dTqMD/
+   ckv+JL5aV5WcAqzCiqHV5LcYmXKMclKlY56OcxW5TSZBGv3NYC5DONE3+
+   0w5Na8t6Jp3LsTYxfEcpHHfsFi+32o5CXGY78iiwW1dQWUvMQ8/jWJJxN
+   FvTUA2Tm+I+iXHB+zexYZFUx0hgfn2MZXzok1h8V9guORKXhHa9lTPGpo
+   lvZ8qWx91Fyg3/+iC5/zuH5bt0hmiL4miYpn9pfBCyX5moE4p5mOVnC8g
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,186,1631548800"; 
+   d="scan'208";a="295687627"
+Received: from mail-mw2nam08lp2177.outbound.protection.outlook.com (HELO NAM04-MW2-obe.outbound.protection.outlook.com) ([104.47.73.177])
+  by ob1.hgst.iphmx.com with ESMTP; 27 Oct 2021 15:09:12 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O9ONGfJBp/+YHDS9OXmbMTSipwB8xoU0KuizC6By8L3EM6m2wdWsBBj5RtUmJ71KT32Wi0Nlx8NhwxiboFW83NqFROoQcNAHcg/ACKG470mJHEXmpDr+s/NiB306Qp3Zbi8vLXBxWBpFPZVcGGjll5kM72NTjAjyEAh2S5JP7mBEUyVcQNlDdEdI4yuf+RmopS+0lUoPFPDmleTejoNvb1ZcSaPmTEt175C/YciPcYKKJSgOEdtk7pr+4cG0PGUcJ0QfdDQ821L7MgbYh/DycdyST8houbVgmh6+eLckRBs0WyabymoohCl3TaaeExQeUbFBhYWJhRhEllxXaBV3jg==
+ b=Yo+AWuEYk9Xrvtz8UO72dXRGVqjzOI5JQrppLZvjjER5+Gg8Fyc4ygC3XA3IAZKwj1OX4f2RDYMFqDjinROK6RiqF7Y4SG2MoChfoHZh/9BFtmLUoYru020EdvLrDeNy2Tw+su3pPtR5VM3pT0XuEk+fomUj2Cn/+ER04u7zclPHdum0/ksQ189c1bcY9hTsMIybtgTuOogY17AvOYswg0/Jx/7omOBHHsxA8dHOpZjfWd96Gkl5qOxP4wF4oEt249qNRSAkYZH0K7McXD46D8Deaq6srBo9cU7vnCP3UZCs0bGlfY6RJc6D14aYiiRwQOyBxouhBg2B2c0SBgZCuw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xJccF6vJa6eGsTIFPRGkPbsToZjwQ7KpmY/3BOJPEks=;
- b=Vxn80+LZMbmoQPQis3yVuaqlb4KFfiEQ4rg6MkWQTHRAMq5xvfeacr5oRYsvRIOGMVaAXPcrYaZdAUPg/EtjkyDzb8Xvordj+iNt0W0qgFMbQ3gNWr6CK1TE+/vpM40SPhm7p4CSHAHrNmZtIl5cayIi/mDQZ1kp+Mz/IwYmIiv9Sp2opA/AJdxvmGL9SUnAOSmrlZvGH2V7REL33xzv5KRcc0pygIPRA+De2pBf1xCorMEqQHPAhcWbWOwBc5BQf1ZVY2qofDA2Co2tPN16GoxFwLgWGzBxtNGH0+5ZD02Iui7O12ZshCkNMPEX+SKX+xCHO01fjhqnBhwENzuC0Q==
+ bh=UJzqWpD+rVsWXdUvc7DLpmmKdi1BxR0CvQjO1qGv8qo=;
+ b=B/DflDZCCKelJN4p2ZSPScGChYS/UKH4EV2nFh345S9kX2zaIBVnWyGWiJPZ9+6xGJaU1Z6Bv0Jh/MKbA+lIauloHo+WwfE3NxmCdKtm/DpILApiHqVi0rc3+Nlxm6YeBHayBQv8v6+MUf7336Zu9xOIR+CV1Z63t6qVjAJeoPZn86/vHM653+z6Ye75X4U8OVPkmyrvtqsqNXC7Ba+q1OuyogRKxSLOU5EWPtoyG0JlJxDPW5OILOadQEdQlvvUbOWl2zkmkYU141ojUC4P3tkWueIMsVr5NiStQmvAYVD0o8sHv1Z919OJNm0p1IGfWHJUI2jguSm/a0cVdXFCvQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: opensource.wdc.com; dkim=none (message not signed)
- header.d=none;opensource.wdc.com; dmarc=none action=none header.from=fb.com;
-Received: from MW4PR15MB4410.namprd15.prod.outlook.com (2603:10b6:303:bf::10)
- by MW4PR15MB4428.namprd15.prod.outlook.com (2603:10b6:303:105::16) with
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UJzqWpD+rVsWXdUvc7DLpmmKdi1BxR0CvQjO1qGv8qo=;
+ b=qP8o9icpmMy1x5siR33jbveXtPNC+uWtTLxJ7PxCIel283sycQgueER76cb69nMHH1tabUr60zaxcsj3HkgzkBhyXDaguMwl9paqaqBNHmoLxpSg6PZp914tU0FKRsDXrO6WV3Ic1pqRFrpbGbIU1oeG5l4n8P9hcVMGcemhXdI=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7221.namprd04.prod.outlook.com (2603:10b6:510:17::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Wed, 27 Oct
- 2021 06:58:58 +0000
-Received: from MW4PR15MB4410.namprd15.prod.outlook.com
- ([fe80::d182:98ae:c999:2a51]) by MW4PR15MB4410.namprd15.prod.outlook.com
- ([fe80::d182:98ae:c999:2a51%6]) with mapi id 15.20.4649.014; Wed, 27 Oct 2021
- 06:58:58 +0000
-Message-ID: <285f0f7f-a2df-7f23-2ba3-8ad3c12293ad@fb.com>
-Date:   Tue, 26 Oct 2021 23:58:51 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH] btrfs: sysfs: set / query btrfs stripe size
-Content-Language: en-US
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Wed, 27 Oct
+ 2021 07:09:11 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::79d3:3357:9922:a195]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::79d3:3357:9922:a195%7]) with mapi id 15.20.4649.015; Wed, 27 Oct 2021
+ 07:09:11 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Stefan Roesch <shr@fb.com>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         "kernel-team@fb.com" <kernel-team@fb.com>
 CC:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Subject: Re: [PATCH] btrfs: sysfs: set / query btrfs stripe size
+Thread-Topic: [PATCH] btrfs: sysfs: set / query btrfs stripe size
+Thread-Index: AQHXyordsU5W6HCCtE+CLExpPEpQgg==
+Date:   Wed, 27 Oct 2021 07:09:11 +0000
+Message-ID: <PH0PR04MB74165DE04219D13232F3D9CE9B859@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <20211026165915.553834-1-shr@fb.com>
  <PH0PR04MB74165B2A0D395AD9A45310C79B859@PH0PR04MB7416.namprd04.prod.outlook.com>
  <9a0a442c-8409-3401-da85-9032259a7bc5@opensource.wdc.com>
-From:   Stefan Roesch <shr@fb.com>
-In-Reply-To: <9a0a442c-8409-3401-da85-9032259a7bc5@opensource.wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR05CA0051.namprd05.prod.outlook.com
- (2603:10b6:208:236::20) To MW4PR15MB4410.namprd15.prod.outlook.com
- (2603:10b6:303:bf::10)
+ <285f0f7f-a2df-7f23-2ba3-8ad3c12293ad@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: fb.com; dkim=none (message not signed)
+ header.d=none;fb.com; dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 82d73532-4101-47e6-5436-08d99918ad4b
+x-ms-traffictypediagnostic: PH0PR04MB7221:
+x-microsoft-antispam-prvs: <PH0PR04MB72210D611510363F09BEEDA39B859@PH0PR04MB7221.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 82pTgor5wEXyIZbUW1FlJWBGnwJNq0iLOwuSCI3hf8Z4WCM4DmV4dq7WwPev0945UL9r1UU4QJ1Cwx0IHYwAYH8V/VVUXbAK8D92nlhltvUlnbdtkE7iAJiUdTRqw0Nc8Qmm9y1myw0GkHTjtiPy8GgAjXsQH+LoYkPJBhggaGdojyaYOlA5iYEfiCd5BO6YThjvb8VxrRUjIUqpaMDnfp+FQ+a7L4IG4r93taqZUzpicWYnLb4/7318IP+aGTdVu5tV6oSxy0wsoUMAV8kj4nUKww/qBlZXgouhZjUbscKA63BBDilwzJvZ0JbL45COpnI5lNu0mxw0jKEEZgPqWRmFKxFAh8ZCvadtHbG9naewTVbjUqfqJjKvxFB1iYEko+E4UIraxHWtfB4dwcdfML2UCt5O1m0ubXDnOS71hz0CSbw48pw7e6GrqIsaq21g+uwL2S3TMV90gACRoIjcJUAhIl6c2ANthSU3kLjmNKR6/PCboZlQ2RQrQS0aXjPW+Q3wLm7KFPRAttCd7RzH2YCd87mSAsHfVvsrGRNY2xK2kbYgb7AKeyoKkF+WeiytNQ3lG7GF4V8P248niaoIFH46fn7Vt0Ys+GYncCc7Kv9JQOaNs46JgqJhhiMfzq0V6EfKBe7/3HrrvcOu0RRXRfJqD51EtgrtjQCMYYq1Rx2xkTWKEsmO50HghbSzlVm98streAxpp8RxXu595Sal3A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(110136005)(508600001)(53546011)(66446008)(38070700005)(6506007)(8936002)(86362001)(7696005)(316002)(9686003)(5660300002)(82960400001)(4326008)(2906002)(52536014)(26005)(91956017)(33656002)(71200400001)(55016002)(8676002)(76116006)(122000001)(66946007)(66556008)(38100700002)(66476007)(64756008)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tc1WeyjbYGHenYifw90Ktzafci3UXKvygW448PYEWulsxqPQW9VMp3vM5DR9?=
+ =?us-ascii?Q?Lov5Fih1xXgfV5Ta4phiZFD1ptJI52jUWnJFSC2kGp1SHIDp4v2r3D9UvYA0?=
+ =?us-ascii?Q?dmYX6R9+PVRCBOLEPLoxG3Dxj8IamlGmazL4HdtCC7LB9IFaGiUYMuy9OXtG?=
+ =?us-ascii?Q?grhNYZ37glzxmUw6rrwhpITYj9PM2faZvsjboAAUdr9pdMXBqlPN+KWtKyUw?=
+ =?us-ascii?Q?nhfkzKonhlvGxXjSqz75zpJ0pEbzckV3sD/sN+E+CgeP4v8cqYn/ZHaHoT/H?=
+ =?us-ascii?Q?YO9yqQm0qdQzxMi5BseLFoLOiNp/IP2BavQcEml9IVOtgae37AROGIV2wo/R?=
+ =?us-ascii?Q?/6BR7DPd9ajBLi1ZpMdBC61pYvzf6LSE493AdRdAx3HOKV0iHQPgQUqLd5uk?=
+ =?us-ascii?Q?v1GFe1Bnqd1nPyR54/rvKFAFPpLoC1bV+e2m2RWLevkig79som8xHuPAq7v2?=
+ =?us-ascii?Q?YQLo2+Upo8vBay4Ymq7zNmtcuE88CfL8j3rLOqr1Kq5gLFthX6wQyskrWLsN?=
+ =?us-ascii?Q?hXZa1heBh3NWH9LKiggEgaw9vtYcvH7QT79ilFO2iH5WQMN5gEfvM0R/W0yJ?=
+ =?us-ascii?Q?apVCm6cfHucpNQjll5CE0YMLQ4GhWt3QqnJu3r7LZEfluFwiOXIR+Xknb33k?=
+ =?us-ascii?Q?KpSEgnzjKsCX0QyHJJKGkgygQHhyVNTujQl9igQN8qxUTh4Y+ulshw6n9HRq?=
+ =?us-ascii?Q?7tNq0qbpEIh6dhVBLi0Ld/+5xU7fMx/MukL/XTjSLmnVixJifIy6kkVjf2lt?=
+ =?us-ascii?Q?sSM1CjibvvnGxlTFhsYqrtzz+1szzuGW0qTaFMBYGfrFNINT0wj4fJEe2CwP?=
+ =?us-ascii?Q?IWiVFkSQ6KZxAD+47AW/SYXhge/7rIyT1bCZ/TmE9MkhNKjGIgix+BJXJ2Cj?=
+ =?us-ascii?Q?d15GThdKF9WYjeieo+vM+lczNnVw60nVoHzWTx0tKUCxOT8tVJ4NYfqOHu7s?=
+ =?us-ascii?Q?yPvWnKdbexn9bATr85JY945tOirZK7IPCxH/bV5tRKNvAhFQrZeZgy3q4v/C?=
+ =?us-ascii?Q?a+5sizusPyqgKdRpRSk/rxGXzjM7BhPZRIqE79cGjJkL2OBrzDBwi0DUeFzc?=
+ =?us-ascii?Q?UmgmfWty+L08EmnNQeMBezdJtS37TvAbNlX6CXoS/14sIL0T0CFzPIjebCMk?=
+ =?us-ascii?Q?Q69Vg2YQVu8jrJiyby4kbq0KjeOq4pwd2lznHX043zY5urTBqJ5xLD1uRyj4?=
+ =?us-ascii?Q?3YcB9wJXZfr5vn9Eg16Z4lXgwB0e3aKzrXl5o53mD2i17iAIAphCZ9QAc1RQ?=
+ =?us-ascii?Q?0vEr9LYdap1I36puDTWX4iygzMtcmH0tG01imQ2Pe8qyAeiYUT/4wd8l8moz?=
+ =?us-ascii?Q?wLXDhRcmMHzaEfy3b8HF/DZ03/duvjc0eleBkR4oHIz2+QIJesxhF0wCLgKj?=
+ =?us-ascii?Q?gLh1+ilv5VPm+/ZaCzrS0km1lZ14DTTkGrvqHG8ZL1KFdZndJfFzDY9eR2Tu?=
+ =?us-ascii?Q?C8hawz0Xq70L0YLCvI17s83A/keY6Bsv51Mf71cPBznypLqiViJ3v0Gyhi56?=
+ =?us-ascii?Q?mZK1cH6ZL5yOyh0LDpH4SlMXKDNMH3A3QwtwX2Wu9L/QjNTETL/Z7WfrumYJ?=
+ =?us-ascii?Q?6O7oea7BoTirn4fgdWA8WVaXqkSt0CdA6BsCYRRrBf02rM4JkKOyFPaC27rh?=
+ =?us-ascii?Q?8257/S3VMdqz8GDRjUg77or5ARUp2o1ChzZ8ez41ouUzBYWO6s/3ofw++yxb?=
+ =?us-ascii?Q?MXAsEXMvWRzoHgXFe0TMBcjZJTE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: from [IPV6:2620:10d:c0a8:11c9::149c] (2620:10d:c091:480::1:2e6c) by MN2PR05CA0051.namprd05.prod.outlook.com (2603:10b6:208:236::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.11 via Frontend Transport; Wed, 27 Oct 2021 06:58:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0e129dc6-e522-4f5d-91eb-08d999173fc8
-X-MS-TrafficTypeDiagnostic: MW4PR15MB4428:
-X-Microsoft-Antispam-PRVS: <MW4PR15MB442854994A39D7C1AFAA2029D8859@MW4PR15MB4428.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Yb+j9ea0VvPP3oWl1/gsra/5PRzRXX4Pz3wR2v6Mdcwp8BarBM7y2iL3T6KpEOWdcZHfLy38EKGttVw7w3GTNIYeD+nuhhyrF8cGhlk0l2zFFp4GqB7fg5jR1OmaHvYpnS7Wf9FSHZxoywtRPpF0CRhG0qMoodr8O4wYMPWY9bt8FSs+6WsfqJCLL4KSw3tfv30/fD2UUeYs8L2OsYlPlHRMFHpPqvpkifSKR/VHmg8Qh/UtrYhRTzq61Yt3WVFFH58EvKT+EgseLNdGsLQoEmaTcyd/qI5gMKEvRD/Gl6b5C7R97NNrPbZ/6P9c+Bv9oG0OMaIz9BvOaqjQCryifUSdht/qNlwr4rTTIEp+wRT8pNzkcrUtO+cwSx/F+fxOAcqJMqASyVGiicd2U2YeaUIu2eu6AGEZLK0shwguuparmYz2Jf8izwo258rZhTkT/fo/p+LUc4LEM5/n3NwFo9/0tlu5nwFGVti7L7RBBQBY8VHuHQJmOFoW4flS69TD2A8gS66dX362pT8RVJwCcU+//P34Ysf4zJCAHeUjSuLZOevFMcZxH8thmSsNpCeunrEpFEuEOs2x0J3c4bU8O17kMr4Cz4bBZFSxXd8i4M0MaoehwsrbWzmaUIJjQbfbA0hsQ9kgKDNlXx012irh1icuOFcEj89RGLrSOg63offJ0QXVg2OvvX4e2OQ7MC6svAPxr4Y/6EFIxZYciUh/sS8en988C9PRWH0964gf5gs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4410.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(66476007)(66946007)(31686004)(86362001)(508600001)(2616005)(186003)(110136005)(66556008)(4326008)(6636002)(2906002)(38100700002)(36756003)(316002)(6666004)(5660300002)(31696002)(83380400001)(8676002)(53546011)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QjdJUnlWOEVXVjY4RlQyRWduMWxxM1lOYjVtbkxrOXhXZUZkSElwY3NMaE1K?=
- =?utf-8?B?dDZBaDZEdldxVmZxVmJsWGkrUmNaRExrRlZ1b1F4RkpzYkY2WGxjNDE0YmRK?=
- =?utf-8?B?Ujk4TVkyZnJkL0NSSTdOMjdYbWVKZCtRdVhHRHlJVjVkZlRrbmxBS0dJNU02?=
- =?utf-8?B?d0p0TUdPbHRITGRJK2wzRkdXUUczL3VTOEJUaFRJbHVkRDluVE9uRXUxcWk0?=
- =?utf-8?B?WVVMWnlqS1VScm1qd01OaEV3dVpwSW0xOWFuZnB4THNiaHV3L0dLY2N1Lzd6?=
- =?utf-8?B?QnBMNmhJcU9iTS9iZHNZZythcEt4UG5IbitTbVJMOS8rUHh1ZTRLMEdFUmZL?=
- =?utf-8?B?M1VvWlc0ckhKMitsajV2bC8rY2F2U3JBMkhXdENGL01DR2p3WGR3bTQrZkg3?=
- =?utf-8?B?OVdSVGhtWDM0U3VKeHVWNDBYU3BwY0FVbmQwaWxCemhBZlRBOXVGVlpvK2pD?=
- =?utf-8?B?MEs5VVlpMGtsTjlBTjBILzNFTEU2RVg0S0pleW1Nb3B0Z3FhQWwrNnM2L2FU?=
- =?utf-8?B?MHBhYXFxNFczZXl6dEdOSm9BMjhFU0JUYWEwamlVaUtYaGNURjVpYm5nOGdM?=
- =?utf-8?B?L3htZmEzN2pIM1F6ZUVYdkkxcy9HVkRrZWhWK2o1WHZpLzR0WE4vMjNHNEE3?=
- =?utf-8?B?ZUpySXBRQU15ZXBoL2IxZnIwY1VScWwxcTdFeWJhTFhCQ2E0Vi8vak1jN0NV?=
- =?utf-8?B?bXN4L2F3MTQyTlZWdzFJcnZNays1WWtBVEIvdytEcVlHaE9iZTltWm5jTG1I?=
- =?utf-8?B?dnZReFFwQU9kWFV0clNDZTBVa3oyLzFUWlN3enJtL1JLcVNKMmJzZERSOU5Y?=
- =?utf-8?B?bU9jWG9qWVk0ZS9KeWZyc0RmN2JGWThwcFhPUkRkQ3B4amtwdWtvWFR6a1pv?=
- =?utf-8?B?VkM3ZUFsK0hGMy9lc3htbXF4K3dObWZ1OUhIV0RTaGQ4dGZVaUY0ck4wUWsx?=
- =?utf-8?B?N3FrRXZYeXRjTFA5RXRpTXhkRlk4NURPdGNRUC95ZTVpeG42Q2ptNzV1NkFv?=
- =?utf-8?B?UkFUMGFoSXVZWU4wVEJCWklwdFRXR05lWFExdFhweFh1emdVVkNuanE5YktI?=
- =?utf-8?B?V3JjOW9NakZnaE9idS9LWXltSWxlZE53UUJmcVVvdEtWRmV6c1Iwd3BGTlhH?=
- =?utf-8?B?Nm9UN0R6dUw3d3hhbFZuZU5DcllXeUo3V2k4K1B3R2p5RFVGYjBIY3lpeW1r?=
- =?utf-8?B?WVFqL0ZhM2Z0RDA0aHZNTVFPZmhtOS9iS3Fxb3NCTnkrT2FsbDhVSFVTazRJ?=
- =?utf-8?B?VEp3U3FiU29mdEN1aHQ2VGRHMEhtTGZtZ2NjWHg0YXdjenJ5QTBsWDhjemRS?=
- =?utf-8?B?MFFZV2dGbythNjNVaDU5aWxEckxiYnc0dUdndmZDSWZ3TG5KWjBFTENtNFlV?=
- =?utf-8?B?OG16aUlhVG02N0E0dFk3eDhpK2Z2dUd5TTBFQnMwRi9NOWhabHVDQjAzSEhD?=
- =?utf-8?B?blZ0enluRE0xbUFHcW10K2M1Y2xGSWR0V3ZLUHBMRkEzYnpVWWhkV1FkOGtQ?=
- =?utf-8?B?SnQrYVNNR1Y4UG90MzA0MzVXeUVPOWVYeHB6cDlVSjJjREdUTFQvSjNzMm1n?=
- =?utf-8?B?RUhkOFNQQmNCbnpsN2ZvSEg5RkJKNkRiZGh2N0JpY1h0V1Z3ektLKzVXTVdF?=
- =?utf-8?B?TVBENkFXNm1aWm9tUVpEQkNIcHVBbWNCNnYvVFNzSnZHa0JhM211QjRZNkpR?=
- =?utf-8?B?VWVCUXhwVDFTc1pnYWp1U2I1b0RWMEtnazdzV0RGdXhVMEVFRmxoWWkzaGFk?=
- =?utf-8?B?c0tzN283YzNEMzJjaytKc0tCRFBjNkxjd05uMmxJRWcvZ1poK3QwYXZJZGlJ?=
- =?utf-8?B?NXBBV1dTcUlDSXJtTTZHUEZFenVKUVdseURTU0ZmMTdHanpJUHhBU1VvV0Y0?=
- =?utf-8?B?cUdpL2cwU0xlajNwUno2WE50K2NEZW82TXNTWEYwZ2dQSGNqOFQwc1NBOWM0?=
- =?utf-8?B?Z3RXSC93VnkwRFVqMWVsUVhLb0xEY2UwS2xOU1FocTF1RXRoa0NNQjNMYUQz?=
- =?utf-8?B?TG9BeERkQTltNW82cHBJSm54bGdUOWZLc1hSbTFmUUNoMVowSlNRallnc2tz?=
- =?utf-8?B?elpieDNxQU1hUkRrZVRhOGdkUFIyZm9NNCtla2NWWVpaMHdtMHprWC9FeFdq?=
- =?utf-8?Q?0Jn24f3ORsU4g15S6XuT50I82?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e129dc6-e522-4f5d-91eb-08d999173fc8
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4410.namprd15.prod.outlook.com
+X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 06:58:58.4984
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82d73532-4101-47e6-5436-08d99918ad4b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Oct 2021 07:09:11.3832
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mcY/m5Rod/7RRrtM9elE4+poJQ5aQ3t/JKkA1e1j+dbr+R5lNkhCk+JqGe7WXtpD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4428
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: FIEEjb9k3xS2uwDK3_EEkmiH-piGvt0Z
-X-Proofpoint-GUID: FIEEjb9k3xS2uwDK3_EEkmiH-piGvt0Z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-27_02,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0 clxscore=1011
- phishscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2110270041
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WoVBY6QULvE5QC1cwJdvQCgWmD3sp2AbZpzLf8f2crwuiFi80rHSEfiIcM/bnirqJ8DnzGS6sgXewuAM2uYRaU/BcnU/MksbkAaoDAAVj/A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7221
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 10/26/21 11:51 PM, Damien Le Moal wrote:
-> On 2021/10/27 15:28, Johannes Thumshirn wrote:
->> On 26/10/2021 18:59, Stefan Roesch wrote:
->>
->> [...]
->>
->>> +/*
->>> + * Compute stripe size depending on block type.
->>> + */
->>> +static u64 compute_stripe_size(struct btrfs_fs_info *info, u64 flags)
->>> +{
->>> +	if (flags & BTRFS_BLOCK_GROUP_DATA) {
->>> +		return SZ_1G;
->>> +	} else if (flags & BTRFS_BLOCK_GROUP_METADATA) {
->>> +		/* For larger filesystems, use larger metadata chunks */
->>> +		return info->fs_devices->total_rw_bytes > 50ULL * SZ_1G
->>> +			? 5ULL * SZ_1G
->>> +			: SZ_256M;
->>> +	} else if (flags & BTRFS_BLOCK_GROUP_SYSTEM) {
->>> +		return SZ_32M;
->>> +	}
->>> +
->>> +	BUG();
->>> +}
->>> +
->>> +/*
->>> + * Compute chunk size depending on block type and stripe size.
->>> + */
->>> +static u64 compute_chunk_size(u64 flags, u64 max_stripe_size)
->>> +{
->>> +	if (flags & BTRFS_BLOCK_GROUP_DATA)
->>> +		return BTRFS_MAX_DATA_CHUNK_SIZE;
->>> +	else if (flags & BTRFS_BLOCK_GROUP_METADATA)
->>> +		return max_stripe_size;
->>> +	else if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
->>> +		return 2 * max_stripe_size;
->>> +
->>> +	BUG();
->>> +}
->>> +
->>> +/*
->>> + * Update maximum stripe size and chunk size.
->>> + *
->>> + */
->>> +void btrfs_update_space_info_max_alloc_sizes(struct btrfs_space_info *space_info,
->>> +					     u64 flags, u64 max_stripe_size)
->>> +{
->>> +	spin_lock(&space_info->lock);
->>> +	space_info->max_stripe_size = max_stripe_size;
->>> +	space_info->max_chunk_size = compute_chunk_size(flags,
->>> +						space_info->max_stripe_size);
->>> +	spin_unlock(&space_info->lock);
->>> +}
->>> +
->>>  static int create_space_info(struct btrfs_fs_info *info, u64 flags)
->>>  {
->>>  
->>> @@ -203,6 +251,10 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
->>>  	INIT_LIST_HEAD(&space_info->priority_tickets);
->>>  	space_info->clamp = 1;
->>>  
->>> +	space_info->max_stripe_size = compute_stripe_size(info, flags);
->>> +	space_info->max_chunk_size = compute_chunk_size(flags,
->>> +						space_info->max_stripe_size);
->>> +
->>>  	ret = btrfs_sysfs_add_space_info_type(info, space_info);
->>>  	if (ret)
->>>  		return ret;
->>
->> [...]
->>
->>   
->>> +/*
->>> + * Return space info stripe size.
->>> + */
->>> +static ssize_t btrfs_stripe_size_show(struct kobject *kobj,
->>> +				      struct kobj_attribute *a, char *buf)
->>> +{
->>> +	struct btrfs_space_info *sinfo = to_space_info(kobj);
->>> +
->>> +	return btrfs_show_u64(&sinfo->max_stripe_size, &sinfo->lock, buf);
->>> +}
->>
->>
->> This will return the wrong values for a fs on a zoned device.
->> What you could do is:
->>
->> static ssize_t btrfs_stripe_size_show(struct kobject *kobj,
->> 				struct kobj_attribute *a, char *buf)
->>
->> {
->> 	struct btrfs_space_info *sinfo = to_space_info(kobj);
->> 	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
->> 	u64 max_stripe_size;
->>
->> 	spin_lock(&sinfo->lock);
->> 	if (btrfs_is_zoned(fs_info))
->> 		max_stripe_size = fs_info->zone_size;
->> 	else
->> 		max_stripe_size = sinfo->max_stripe_size;
->> 	spin_unlock(&sinfo->lock);
-> 
-> This will not work once we have stripped zoned volume though, won't it ?
-> Why is not max_stripe_size set to zone size for a simple zoned btrfs volume ?
-> 
-
-My intention was to not support zoned volumes with this patch. However I missed 
-the correct check in the function btrfs_stripe_size_show. The intent was to return
--EINVAL for zoned volumes. 
-
-Any thoughts?
-
->>
->> 	return btrfs_show_u64(&max_stripe_size, NULL, buf);
->> }
->>
->> [...]
->>
->>> +	if (fs_info->fs_devices->chunk_alloc_policy == BTRFS_CHUNK_ALLOC_ZONED)
->>> +		return -EINVAL;
->>
->> Nit: As we can't mix zoned and non-zoned devices 'if (btrfs_is_zoned(fs_info))'
->> should do the trick here as well and is way more readable. 
->>
->>
-> 
-> 
+On 27/10/2021 08:59, Stefan Roesch wrote:=0A=
+[...]=0A=
+>>> static ssize_t btrfs_stripe_size_show(struct kobject *kobj,=0A=
+>>> 				struct kobj_attribute *a, char *buf)=0A=
+>>>=0A=
+>>> {=0A=
+>>> 	struct btrfs_space_info *sinfo =3D to_space_info(kobj);=0A=
+>>> 	struct btrfs_fs_info *fs_info =3D to_fs_info(get_btrfs_kobj(kobj));=0A=
+>>> 	u64 max_stripe_size;=0A=
+>>>=0A=
+>>> 	spin_lock(&sinfo->lock);=0A=
+>>> 	if (btrfs_is_zoned(fs_info))=0A=
+>>> 		max_stripe_size =3D fs_info->zone_size;=0A=
+>>> 	else=0A=
+>>> 		max_stripe_size =3D sinfo->max_stripe_size;=0A=
+>>> 	spin_unlock(&sinfo->lock);=0A=
+>>=0A=
+>> This will not work once we have stripped zoned volume though, won't it ?=
+=0A=
+>> Why is not max_stripe_size set to zone size for a simple zoned btrfs vol=
+ume ?=0A=
+>>=0A=
+> =0A=
+> My intention was to not support zoned volumes with this patch. However I =
+missed =0A=
+> the correct check in the function btrfs_stripe_size_show. The intent was =
+to return=0A=
+> -EINVAL for zoned volumes. =0A=
+> =0A=
+> Any thoughts?=0A=
+=0A=
+Hi Stefan,=0A=
+=0A=
+struct btrfs_fs_info *fs_info =3D to_fs_info(get_btrfs_kobj(kobj));=0A=
+=0A=
+if (btrfs_is_zoned(fs_info))=0A=
+	return -EINVAL;=0A=
+=0A=
+But why not just set the correct values for a zoned dev and show them?=0A=
+You can still not allow setting new values.=0A=
