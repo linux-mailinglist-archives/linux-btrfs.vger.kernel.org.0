@@ -2,87 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959A743D2A8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 22:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A0843D3AA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 23:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239039AbhJ0URW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Oct 2021 16:17:22 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:58894 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238966AbhJ0URV (ORCPT
+        id S244249AbhJ0VRk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Oct 2021 17:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244244AbhJ0VRg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Oct 2021 16:17:21 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RK0WV2018900
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 13:14:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=d2X+khynLZ2x8yejypp51eZ+hdQO1jPIRHyk45xIQ6o=;
- b=faY3hOESny0b08vKEo3WG34s35bheSr7NQdEOSpd3K9AqxhfB2g69cLxRVp8eiOC3Wf0
- KAukQQ6a1oeTyXe8wh/u7N8BclX16/87NljA7VIINV4SQ6CfBlZxwBEUA+i1TWAie14w
- O177Ph40gre4B29ONp3n83BCRm7jzB2wDzQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3by64s5msr-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 13:14:55 -0700
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Wed, 27 Oct 2021 13:14:54 -0700
-Received: by devvm225.atn0.facebook.com (Postfix, from userid 425415)
-        id 295275A487CD; Wed, 27 Oct 2021 13:14:44 -0700 (PDT)
-From:   Stefan Roesch <shr@fb.com>
-To:     <linux-btrfs@vger.kernel.org>, <kernel-team@fb.com>
-CC:     <shr@fb.com>
-Subject: [PATCH v2 4/4] btrfs: increase metadata alloc size to 5GB for volumes > 50GB
-Date:   Wed, 27 Oct 2021 13:14:41 -0700
-Message-ID: <20211027201441.3813178-5-shr@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211027201441.3813178-1-shr@fb.com>
-References: <20211027201441.3813178-1-shr@fb.com>
+        Wed, 27 Oct 2021 17:17:36 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3223C061767
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 14:15:09 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id i26so5076613ljg.7
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 14:15:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hiXmABk2yLJcTBwV/OV64LUSAMHnd37fHZz79FC6JvU=;
+        b=ZWNMOoSkuRaQ/lv8qizXhk55H0ec5K7RYuCkQOMY0yln4tyxGOGFp3Gs+/CZY7p6bT
+         3CZlT/Neco4TP12/d9wLKcFuseqO24iEpPL6jwtGtY8MUiJAI9mKP12Z7SKjitGg++uj
+         lH3CUAw1rGdqhKUixiRRtsMf0iuWhbOzVZTJw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hiXmABk2yLJcTBwV/OV64LUSAMHnd37fHZz79FC6JvU=;
+        b=NXnitOMZn5p8SATc1HORIhqjS21o8R1DioBRwMixaPvvlPBr1hGnVjWzi9nC/WKoE9
+         ngyJEtyy0Kn1Xm2iYmm+SC1roV/cfqd0MagfTOaxT58YHS2/17McdKBTmNShpzQI0IhL
+         EyBT47vkChFfPKxofkXsNch9PEBcFdotseJ68JAoraeSDpcxQRbnKBl7W78c2hP3vgEc
+         OkwNUvvmIPRGSxpJL2pluq8yr0n9gSs/wauus3gXZxVVkpzYIbP7ZKGxBYI+PtXViJSf
+         2km1/2C86M3nKD4JQTDY7yLwYOfGCU0rziGx5JWcnbDsXGmv3MckHS3ErBvVr2veWNzu
+         Beww==
+X-Gm-Message-State: AOAM531Zix2ksLZ6YErmt4Dqzzcb+hxPBe1ZzARz0HBakxS8J1JQGnNp
+        Xgxa0V6lJYxHnLOwZe+r+TkYoEwxw2ucw+Gi
+X-Google-Smtp-Source: ABdhPJw/E+snwh/SOWpZkQoWSRG3v/oQoXa1Y3pQs/WgqF2g0AXe1SU1FyyNTDGgQnz49xuRjHBjCA==
+X-Received: by 2002:a2e:a90b:: with SMTP id j11mr331916ljq.282.1635369307470;
+        Wed, 27 Oct 2021 14:15:07 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id q10sm104947lfu.68.2021.10.27.14.15.04
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Oct 2021 14:15:05 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id f3so790969lfu.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 14:15:04 -0700 (PDT)
+X-Received: by 2002:a19:f619:: with SMTP id x25mr90493lfe.141.1635369304547;
+ Wed, 27 Oct 2021 14:15:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-FB-Source: Intern
-X-Proofpoint-ORIG-GUID: kxfoHO7i_5PCbTiNaqogHcLK5uXbThxG
-X-Proofpoint-GUID: kxfoHO7i_5PCbTiNaqogHcLK5uXbThxG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-27_06,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- impostorscore=0 phishscore=0 mlxlogscore=976 mlxscore=0 lowpriorityscore=0
- malwarescore=0 spamscore=0 suspectscore=0 clxscore=1015 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2110270115
-X-FB-Internal: deliver
+References: <CAHk-=wh0_3y5s7-G74U0Pcjm7Y_yHB608NYrQSvgogVNBxsWSQ@mail.gmail.com>
+ <YXBFqD9WVuU8awIv@arm.com> <CAHk-=wgv=KPZBJGnx_O5-7hhST8CL9BN4wJwtVuycjhv_1MmvQ@mail.gmail.com>
+ <YXCbv5gdfEEtAYo8@arm.com> <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
+ <YXL9tRher7QVmq6N@arm.com> <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
+ <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
+ <YXhH0sBSyTyz5Eh2@arm.com> <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
+ <YXmkvfL9B+4mQAIo@arm.com>
+In-Reply-To: <YXmkvfL9B+4mQAIo@arm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 27 Oct 2021 14:14:48 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
+Message-ID: <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
+Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This increases the metadata default allocation size from 1GB to 5GB for
-volumes with a size greater than 50GB.
+On Wed, Oct 27, 2021 at 12:13 PM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> As an alternative, you mentioned earlier that a per-thread fault status
+> was not feasible on x86 due to races. Was this only for the hw poison
+> case? I think the uaccess is slightly different.
 
-Signed-off-by: Stefan Roesch <shr@fb.com>
----
- fs/btrfs/space-info.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It's not x86-specific, it's very generic.
 
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 570acfebeae4..1314b0924512 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -195,7 +195,7 @@ static u64 compute_stripe_size_regular(struct btrfs_f=
-s_info *info, u64 flags)
-=20
- 	/* Handle BTRFS_BLOCK_GROUP_METADATA */
- 	if (info->fs_devices->total_rw_bytes > 50ULL * SZ_1G)
--		return SZ_1G;
-+		return 5ULL * SZ_1G;
-=20
- 	return SZ_256M;
- }
---=20
-2.30.2
+If we set some flag in the per-thread status, we'll need to be careful
+about not overwriting it if we then have a subsequent NMI that _also_
+takes a (completely unrelated) page fault - before we then read the
+per-thread flag.
 
+Think 'perf' and fetching backtraces etc.
+
+Note that the NMI page fault can easily also be a pointer coloring
+fault on arm64, for exactly the same reason that whatever original
+copy_from_user() code was. So this is not a "oh, pointer coloring
+faults are different". They have the same re-entrancy issue.
+
+And both the "pagefault_disable" and "fault happens in interrupt
+context" cases are also the exact same 'faulthandler_disabled()'
+thing. So even at fault time they look very similar.
+
+So we'd have to have some way to separate out only the one we care about.
+
+               Linus
