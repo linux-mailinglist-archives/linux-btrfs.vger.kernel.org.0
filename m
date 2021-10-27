@@ -2,257 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2833543C7D0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 12:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4655F43CA11
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 14:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236074AbhJ0Knh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Oct 2021 06:43:37 -0400
-Received: from mout.gmx.net ([212.227.15.15]:42773 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232122AbhJ0Kng (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Oct 2021 06:43:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635331264;
-        bh=Z232Wi9QCd6jYJOyTKxWTI8RYxvZJ7RUA71kpNqb37o=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=WXiHtMt5ArfbKn4dvsjlD1V1rRAcHIRBpURB38ksmTeWl8iqcbdks7xjyesx6LDp1
-         +DthWQBR6JuY3dva+AzaG1RoWNi8oXh6wWQa1mJ/Ob8DoyYA8eC3bcEosnm4LeSRJ2
-         w3q5Vp9V38A63VNyRzErtsi7CQzwtfbkI8hYuup4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MEV3I-1mQoH40O7e-00G3aB; Wed, 27
- Oct 2021 12:41:04 +0200
-Message-ID: <f229e88f-5483-9f2d-00eb-9da45f9bca4e@gmx.com>
-Date:   Wed, 27 Oct 2021 18:41:00 +0800
+        id S234396AbhJ0Mva (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Oct 2021 08:51:30 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48794 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232034AbhJ0Mva (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:51:30 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 330191FD3C
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 12:49:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635338944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=vCDYHj63so6zBooCvu/G3SphI6Nt987OjTNxAV5xfnE=;
+        b=hLVW8M/QaG4+XVNmV0F0P7G2c43nWEuchL0KyRLj5PaOsvdE4Xz2hKPwAba5rQ0QlIkuFZ
+        +YqbaPgtj2Hoe336W+Aq2PG9Xu+iZ9iR8MvMplEBoiiBqECw3a5P2aYn/Ty6zxytYWsViP
+        Dss3W9fg7LyWmsnJo+uT8tMHkZUn+Rw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 82A8213D55
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 12:49:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8HDZEr9KeWGLEwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 12:49:03 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: printf format fixes for 32bit x86
+Date:   Wed, 27 Oct 2021 20:48:46 +0800
+Message-Id: <20211027124846.100854-1-wqu@suse.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 2/2] btrfs: use ilog2() to replace if () branches for
- btrfs_bg_flags_to_raid_index()
-Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211027052859.44507-1-wqu@suse.com>
- <20211027052859.44507-3-wqu@suse.com>
- <514d1330-6af8-4d48-fef6-f2732d7f186d@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <514d1330-6af8-4d48-fef6-f2732d7f186d@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:F/yDVpOmZSp0ZFV10Z3EgkvO+lF2ADAF9yuNyTgI+TBJZVtI33W
- NX3LhUwd0bWq6BShX/1xubeI0lHHYGNN2LDjb9DEJora6cyEiuTDgw+jZzZPc8TglwvN6Nk
- gie7Mp9QOI4swDE+I4AayfAri6hzWtJZ0CrRNu4uyk5Iguc02oPGWbRi54pRBxVvElc9jMR
- VYX48cPmnfPKFYo13tR1A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:X3CSwMyKVNE=:/QXF3cw5cOF1c3fVmueuV9
- qcmhY3ZzOVG/4YzwxXx/1b92OW52kCYAscCEFK5tSjAJZh0HznJuZieKDvcbPPFBQmXQWJuj7
- CLHaKUjbHezJW9GLXVysIJBKK6X2TFVjKKC9foNCM2I/0qBkHg+90A22k6DvpaYqUqKeJ5OUT
- ToWBfa5Q2UinHaQpz3fDOcdHVZ6qwBBQ+BFjfxhs8AWlf4UoTwT+nqHFwZrfwoFvGwgR2k8cf
- poM29q0CNs7HYy5PpTeJlUrEXxSRgKR+cIof3yOrA3LRTOskrRSCTqKfhN5tF6CQqWgZpQXjq
- e8RbyOtYPcjVytcdfWGNYxzMxNnH5b+i8X/XIePZTPUqlbm3K5ygDBvW3TxGWa3YAyqzlaWxe
- Vm9+eZr+YYqVOQnyHyq0yuDDYnh+Am8lyFH3ET+FOqZj8kc0NOtY0qlaE0nn9FUD7f6VhoYzG
- tjgh+fdFjKCyxCKFyvOBSJ5poFg7EnFI/dqPgWxFUBNAG7FJ660J8XGRm/zNHrLQldI2qrcz6
- usmaTAY7SPunxH+hgG6/v70NkXfBSc8xunzZaTjd+OYNilFEalueP4gVX0wbPXsoKwfKGgmyG
- T96Q24MSI50YUF3g4Che/HBGoekrnKIlPTceIZWJIBd2RsV/u3Ax59BqTP0xEp2Faqe5bZLn+
- N+D27clUsmk1Tu0bWZMfwxD++SAz4yF05L7zvhRHVquSUftfep958xCJs2kQVn7O7nVFZiWub
- eaHQtOCG5dgv3un98ZvlnyLC15BJ5UFjUwNO1lcWxHVsZ4ns2p9bQrF+AeWH4Qnu4tqhjUX/2
- mcmAgZzR848c3wUzpxXxTjPcrmVFFWAFrLE7NxDEAMMvH7/o0+3InzYvHeJJJ6Wn9p58fb6lr
- ih8xNzhDxwTSIqyZlMVgIMTSKOW2vkgTXSDHQEGAcUmfYKBQrGAHsPJXaHETuEqp/qTb/sn6g
- oF0Xa8CNDcI9UN1PTQbJN1P/ZJLfPV2nOx5DZKZEFohtbrgr4hTIDXjRucfGuWGiOWWkmUsal
- ey1+oN1kCdI0fBC+3v3WeYWltDhtjIInv8YvdMYM9jsZrMNCJbI4PguoHwdkp/zZSLt4tN8Ef
- wTmQqmsTJsn1p0=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+When compiling btrfs-progs on 32bit x86 using GCC 11.1.0, there are
+several warnings:
 
+  In file included from ./common/utils.h:30,
+                   from check/main.c:36:
+  check/main.c: In function 'run_next_block':
+  ./common/messages.h:42:31: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'u32' {aka 'unsigned int'} [-Wformat=]
+     42 |                 __btrfs_error((fmt), ##__VA_ARGS__);                    \
+        |                               ^~~~~
+  check/main.c:6496:33: note: in expansion of macro 'error'
+   6496 |                                 error(
+        |                                 ^~~~~
 
-On 2021/10/27 17:23, Anand Jain wrote:
-> On 27/10/2021 13:28, Qu Wenruo wrote:
->> In function btrfs_bg_flags_to_raid_index(), we use quite some if () to
->> convert the BTRFS_BLOCK_GROUP_* bits to a index number.
->>
->> But the truth is, there is really no such need for so many branches at
->> all.
->> Since all BTRFS_BLOCK_GROUP_* flags are just one single bit set inside
->> BTRFS_BLOCK_GROUP_PROFILES_MASK, we can easily use ilog2() to calculate
->> their values.
->>
->> Only one fixed offset is needed to make the index sequential (the
->> lowest profile bit starts at ilog2(1 << 3) while we have 0 reserved for
->> SINGLE).
->>
->> Even with that calculation involved (one if(), one ilog2(), one minus),
->> it should still be way faster than the if () branches, and now it is
->> definitely small enough to be inlined.
->>
->
->  =C2=A0Why not just use reverse static index similar to
->
-> const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] =3D {
-> <snip>
-> }
+  In file included from ./common/utils.h:30,
+                   from kernel-shared/volumes.c:32:
+  kernel-shared/volumes.c: In function 'btrfs_check_chunk_valid':
+  ./common/messages.h:42:31: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'u32' {aka 'unsigned int'} [-Wformat=]
+     42 |                 __btrfs_error((fmt), ##__VA_ARGS__);                    \
+        |                               ^~~~~
+  kernel-shared/volumes.c:2052:17: note: in expansion of macro 'error'
+   2052 |                 error("invalid chunk item size, have %u expect [%zu, %lu)",
+        |                 ^~~~~
 
-Sorry, I didn't get the point.
+  image/main.c: In function 'search_for_chunk_blocks':
+  ./common/messages.h:42:31: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+     42 |                 __btrfs_error((fmt), ##__VA_ARGS__);                    \
+        |                               ^~~~~
+  image/main.c:2122:33: note: in expansion of macro 'error'
+   2122 |                                 error(
+        |                                 ^~~~~
 
-Mind to share more details?
+There are two types of problems:
 
-Thanks,
-Qu
+- __BTRFS_LEAF_DATA_SIZE()
+  This macro has no type definition, making it behaves differently on
+  different arches.
 
->
-> Thanks, Anand
->
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> =C2=A0 fs/btrfs/space-info.h |=C2=A0 2 ++
->> =C2=A0 fs/btrfs/volumes.c=C2=A0=C2=A0=C2=A0 | 26 ----------------------=
-----
->> =C2=A0 fs/btrfs/volumes.h=C2=A0=C2=A0=C2=A0 | 42 ++++++++++++++++++++++=
-++++++++++----------
->> =C2=A0 3 files changed, 34 insertions(+), 36 deletions(-)
->>
->> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
->> index cb5056472e79..5a0686ab9679 100644
->> --- a/fs/btrfs/space-info.h
->> +++ b/fs/btrfs/space-info.h
->> @@ -3,6 +3,8 @@
->> =C2=A0 #ifndef BTRFS_SPACE_INFO_H
->> =C2=A0 #define BTRFS_SPACE_INFO_H
->> +#include "volumes.h"
->> +
->> =C2=A0 struct btrfs_space_info {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spinlock_t lock;
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index a8ea3f88c4db..94a3dfe709e8 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -154,32 +154,6 @@ const struct btrfs_raid_attr
->> btrfs_raid_array[BTRFS_NR_RAID_TYPES] =3D {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 },
->> =C2=A0 };
->> -/*
->> - * Convert block group flags (BTRFS_BLOCK_GROUP_*) to
->> btrfs_raid_types, which
->> - * can be used as index to access btrfs_raid_array[].
->> - */
->> -enum btrfs_raid_types __attribute_const__
->> btrfs_bg_flags_to_raid_index(u64 flags)
->> -{
->> -=C2=A0=C2=A0=C2=A0 if (flags & BTRFS_BLOCK_GROUP_RAID10)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID10;
->> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID1)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID1;
->> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID1C3)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID1C3;
->> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID1C4)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID1C4;
->> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_DUP)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_DUP;
->> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID0)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID0;
->> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID5)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID5;
->> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID6)
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID6;
->> -
->> -=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_SINGLE; /* BTRFS_BLOCK_GROUP_SING=
-LE */
->> -}
->> -
->> =C2=A0 const char *btrfs_bg_type_to_raid_name(u64 flags)
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const int index =3D btrfs_bg_flags_to_ra=
-id_index(flags);
->> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
->> index e0c374a7c30b..7038c6cee39a 100644
->> --- a/fs/btrfs/volumes.h
->> +++ b/fs/btrfs/volumes.h
->> @@ -17,19 +17,42 @@ extern struct mutex uuid_mutex;
->> =C2=A0 #define BTRFS_STRIPE_LEN=C2=A0=C2=A0=C2=A0 SZ_64K
->> +/*
->> + * Here we use ilog2(BTRFS_BLOCK_GROUP_*) to convert the profile bits =
-to
->> + * an index.
->> + * We reserve 0 for BTRFS_RAID_SINGLE, while the lowest profile,
->> ilog2(RAID0),
->> + * is 3, thus we need this shift to make all index numbers sequential.
->> + */
->> +#define BTRFS_RAID_SHIFT=C2=A0=C2=A0=C2=A0 (ilog2(BTRFS_BLOCK_GROUP_RA=
-ID0) - 1)
->> +
->> =C2=A0 enum btrfs_raid_types {
->> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID10,
->> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1,
->> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_DUP,
->> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID0,
->> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_SINGLE,
->> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID5,
->> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID6,
->> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C3,
->> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C4,
->> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_SINGLE=C2=A0 =3D 0,
->> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID0=C2=A0=C2=A0 =3D ilog2(BTRFS_BLOCK_=
-GROUP_RAID0 >>
->> BTRFS_RAID_SHIFT),
->> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1=C2=A0=C2=A0 =3D ilog2(BTRFS_BLOCK_=
-GROUP_RAID1 >>
->> BTRFS_RAID_SHIFT),
->> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_DUP=C2=A0=C2=A0=C2=A0=C2=A0 =3D ilog2(BT=
-RFS_BLOCK_GROUP_DUP >>
->> BTRFS_RAID_SHIFT),
->> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID10=C2=A0 =3D ilog2(BTRFS_BLOCK_GROUP=
-_RAID10 >>
->> BTRFS_RAID_SHIFT),
->> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID5=C2=A0=C2=A0 =3D ilog2(BTRFS_BLOCK_=
-GROUP_RAID5 >>
->> BTRFS_RAID_SHIFT),
->> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID6=C2=A0=C2=A0 =3D ilog2(BTRFS_BLOCK_=
-GROUP_RAID6 >>
->> BTRFS_RAID_SHIFT),
->> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C3 =3D ilog2(BTRFS_BLOCK_GROUP_RAID=
-1C3 >>
->> BTRFS_RAID_SHIFT),
->> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C4 =3D ilog2(BTRFS_BLOCK_GROUP_RAID=
-1C4 >>
->> BTRFS_RAID_SHIFT),
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_NR_RAID_TYPES
->> =C2=A0 };
->
->
->> +/*
->> + * Convert block group flags (BTRFS_BLOCK_GROUP_*) to
->> btrfs_raid_types, which
->> + * can be used as index to access btrfs_raid_array[].
->> + */
->> +static inline enum btrfs_raid_types __attribute_const__
->> +btrfs_bg_flags_to_raid_index(u64 flags)
->> +{
->> +=C2=A0=C2=A0=C2=A0 u64 profile =3D flags & BTRFS_BLOCK_GROUP_PROFILE_M=
-ASK;
->> +
->> +=C2=A0=C2=A0=C2=A0 if (!profile)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_SINGLE;
->> +
->> +=C2=A0=C2=A0=C2=A0 return ilog2(profile >> BTRFS_RAID_SHIFT);
->> +}
->> +
->> =C2=A0 struct btrfs_io_geometry {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* remaining bytes before crossing a str=
-ipe */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 len;
->> @@ -646,7 +669,6 @@ void btrfs_scratch_superblocks(struct
->> btrfs_fs_info *fs_info,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct block_device *b=
-dev,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *device_pat=
-h);
->> -enum btrfs_raid_types __attribute_const__
->> btrfs_bg_flags_to_raid_index(u64 flags);
->> =C2=A0 int btrfs_bg_type_to_factor(u64 flags);
->> =C2=A0 const char *btrfs_bg_type_to_raid_name(u64 flags);
->> =C2=A0 int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
->>
->
+  Fix this by following kernel to use inline function to make its return
+  value fixed to u32.
+
+- size_t related output
+  For x86_64 %lu is OK but not for x86.
+
+  Fix this by using %zu.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ check/main.c            | 2 +-
+ image/main.c            | 2 +-
+ kernel-shared/ctree.h   | 6 +++++-
+ kernel-shared/volumes.c | 2 +-
+ 4 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/check/main.c b/check/main.c
+index 38b2cfdf5b0b..235a9bab2f52 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -6494,7 +6494,7 @@ static int run_next_block(struct btrfs_root *root,
+ 			if (btrfs_item_size_nr(buf, i) < inline_offset) {
+ 				ret = -EUCLEAN;
+ 				error(
+-		"invalid file extent item size, have %u expect (%lu, %lu]",
++		"invalid file extent item size, have %u expect (%lu, %u]",
+ 					btrfs_item_size_nr(buf, i),
+ 					inline_offset,
+ 					BTRFS_LEAF_DATA_SIZE(gfs_info));
+diff --git a/image/main.c b/image/main.c
+index b40e0e5550f8..dbce17e74dbd 100644
+--- a/image/main.c
++++ b/image/main.c
+@@ -2120,7 +2120,7 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
+ 					       current_cluster);
+ 			if (ret < 0) {
+ 				error(
+-			"failed to search tree blocks in item bytenr %llu size %lu",
++			"failed to search tree blocks in item bytenr %llu size %zu",
+ 					item_bytenr, size);
+ 				goto out;
+ 			}
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 563ea50b3587..8d866e60c1b8 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -354,7 +354,11 @@ struct btrfs_header {
+ 	u8 level;
+ } __attribute__ ((__packed__));
+ 
+-#define __BTRFS_LEAF_DATA_SIZE(bs) ((bs) - sizeof(struct btrfs_header))
++static inline u32 __BTRFS_LEAF_DATA_SIZE(u32 nodesize)
++{
++	return nodesize - sizeof(struct btrfs_header);
++}
++
+ #define BTRFS_LEAF_DATA_SIZE(fs_info) \
+ 				(__BTRFS_LEAF_DATA_SIZE(fs_info->nodesize))
+ 
+diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
+index 6c1e6f1018a3..7d6fe8fd34a7 100644
+--- a/kernel-shared/volumes.c
++++ b/kernel-shared/volumes.c
+@@ -2094,7 +2094,7 @@ int btrfs_check_chunk_valid(struct btrfs_fs_info *fs_info,
+ 	 */
+ 	if (slot >= 0 &&
+ 	    btrfs_item_size_nr(leaf, slot) < sizeof(struct btrfs_chunk)) {
+-		error("invalid chunk item size, have %u expect [%zu, %lu)",
++		error("invalid chunk item size, have %u expect [%zu, %u)",
+ 			btrfs_item_size_nr(leaf, slot),
+ 			sizeof(struct btrfs_chunk),
+ 			BTRFS_LEAF_DATA_SIZE(fs_info));
+-- 
+2.33.1
+
