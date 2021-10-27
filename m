@@ -2,194 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D528943C239
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 07:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE3443C2FF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 08:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239551AbhJ0Fbs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Oct 2021 01:31:48 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58660 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239547AbhJ0Fbp (ORCPT
+        id S239875AbhJ0GaJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Oct 2021 02:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhJ0GaI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Oct 2021 01:31:45 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 97C2321963
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 05:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635312559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QOWk0EX5ItbagtlFQJhI09mCtLf9Qjuvl0mRGNaNZVA=;
-        b=EVfMX6+2NShI+2CLllnVUaDKhRBvkUUGyaU2VAi5UY28KN6Kk2mQfWVLuCNQ96yfEDdf4K
-        qvwqgcCdx+PTWRV4/iTBHKgYKaGOHDp9Tg6JiG2/gMPkMzCnUNOn3PjVi9Q9oOyU1xSChI
-        0W4aihLknIoyJwbSwrHKZBXACjKbO0U=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E263713D13
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 05:29:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8LoCKq7jeGH3RgAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 05:29:18 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: use ilog2() to replace if () branches for btrfs_bg_flags_to_raid_index()
-Date:   Wed, 27 Oct 2021 13:28:59 +0800
-Message-Id: <20211027052859.44507-3-wqu@suse.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211027052859.44507-1-wqu@suse.com>
-References: <20211027052859.44507-1-wqu@suse.com>
+        Wed, 27 Oct 2021 02:30:08 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956B4C061570
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 23:27:43 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so2189473ote.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 26 Oct 2021 23:27:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=VshUeeDSetU21+5KOh1TQAi9UpwH/OaoqJFGVrdYCmA=;
+        b=OOfZH/X23Z06bkdYBJ9cDt2NVdcqy2X9rhwFVnDprBd+j2Hbcom8DUugO8vZOa7Uxg
+         +qDZDjEa9l61rri/Uq/VDZ6LppAtWFyL4Ml08lRs4r+s9+mrmJExifTPDd5lN7ovAmcs
+         XQYvtCf3S4UWNDqzazKAmYpKnK61+I4LkvHwE0VPfZOndV919BVaAJl/4h1t9ugWtHFg
+         X2GH/Fhy2vbZPBaHn0qZ1k/cGPRYRcbtLkHnn1E6AEKGNEdjOqbOgEqiLvZSQ7OPRmIP
+         epC9ur3FdXJkVTJ18T33r7GlG5HtWJXVS3t+10GqG1y58HXdnd7J3ArOg0PLgY3XDvPL
+         hPJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=VshUeeDSetU21+5KOh1TQAi9UpwH/OaoqJFGVrdYCmA=;
+        b=ysH7IYw6E/Z3YjCwFZ+mV5GpkDr0uqXCwJBmuhf1GACzRPCwEkCnI47VSBaiDRKfMR
+         0/fhxldnE3khF/obQt3m2PKjAbSZwHuPLFNA1xKFpS5my6oS4hgpAoNqyAsfrE/JQ1Ng
+         Z8D/eQrqe2rBEAbIojYNQ3bXZejTVz8M8hXxL/5xVqzJCiqcdCm9ABxow6UJaiIVwoQO
+         fwOfLoPXHRYIHTkfvFiBrJ8WstAJttKh0xaVlasL9JdCPL+liQ4GrNOjRhkBDv0wbTRo
+         alzqBOo3eGlXT5hBJUb3G9u8y8LGH41STrjRfsY8VSW4od1gF0H4qEEW8eN0N2ktBDCc
+         2V0A==
+X-Gm-Message-State: AOAM532qY4axUSChN5wG2jTqXYzrLWx4bEwzA7b9hCQJpDnjIhlWaWeB
+        MUOoHAU0o3odo8Slrt7ha+X13iwnHk+7g0EbjQ==
+X-Google-Smtp-Source: ABdhPJwNc6HIl6dva2rexA3jeJPSBBvT8cTqzxfXy9aojfs5Vrwqz/VZq5tlGG9E+siGblK/TR69T+Wzghliv7SiZ5Y=
+X-Received: by 2002:a9d:6092:: with SMTP id m18mr22940056otj.384.1635316062943;
+ Tue, 26 Oct 2021 23:27:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Reply-To: mrmohammedmashab@gmail.com
+Sender: mohamearbaoui@gmail.com
+Received: by 2002:a4a:e1c5:0:0:0:0:0 with HTTP; Tue, 26 Oct 2021 23:27:42
+ -0700 (PDT)
+From:   Mr Mohammed Mashab <mrmohammedmasha@gmail.com>
+Date:   Tue, 26 Oct 2021 23:27:42 -0700
+X-Google-Sender-Auth: 1jn7QVJ_8PKoCeFilL9G1s8zZ-8
+Message-ID: <CAGqXaywQw6L7e5U87VZKG1-aGw6GbUn7W3d+YhyRrERC=rQ2Hw@mail.gmail.com>
+Subject: From: Mr.Mohammed,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In function btrfs_bg_flags_to_raid_index(), we use quite some if () to
-convert the BTRFS_BLOCK_GROUP_* bits to a index number.
+Good Day,
 
-But the truth is, there is really no such need for so many branches at
-all.
-Since all BTRFS_BLOCK_GROUP_* flags are just one single bit set inside
-BTRFS_BLOCK_GROUP_PROFILES_MASK, we can easily use ilog2() to calculate
-their values.
+I am Mr. Mohammed Mashab, account Manager with an investment bank here
+in Burkina Faso. There is a draft account opened in my firm by a
+long-time client of our bank. I have the opportunity of transferring
+the left over fund (15.8 Million Us Dollars) Fiftheen Million Eight
+Hundred Thousand United States of American Dollars.
 
-Only one fixed offset is needed to make the index sequential (the
-lowest profile bit starts at ilog2(1 << 3) while we have 0 reserved for
-SINGLE).
+I want to invest this funds and introduce you to our bank for this
+deal and this will be executed under a legitimate arrangement that
+will protect us from any breach of the law. We will share the fund 40%
+for you,50% for me while 10% is for establishing of foundation for the
+poor children in your country. If you are really interested in my
+proposal further details of the fund transfer will be forwarded to
+you.
 
-Even with that calculation involved (one if(), one ilog2(), one minus),
-it should still be way faster than the if () branches, and now it is
-definitely small enough to be inlined.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/space-info.h |  2 ++
- fs/btrfs/volumes.c    | 26 --------------------------
- fs/btrfs/volumes.h    | 42 ++++++++++++++++++++++++++++++++----------
- 3 files changed, 34 insertions(+), 36 deletions(-)
-
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index cb5056472e79..5a0686ab9679 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -3,6 +3,8 @@
- #ifndef BTRFS_SPACE_INFO_H
- #define BTRFS_SPACE_INFO_H
- 
-+#include "volumes.h"
-+
- struct btrfs_space_info {
- 	spinlock_t lock;
- 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a8ea3f88c4db..94a3dfe709e8 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -154,32 +154,6 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
- 	},
- };
- 
--/*
-- * Convert block group flags (BTRFS_BLOCK_GROUP_*) to btrfs_raid_types, which
-- * can be used as index to access btrfs_raid_array[].
-- */
--enum btrfs_raid_types __attribute_const__ btrfs_bg_flags_to_raid_index(u64 flags)
--{
--	if (flags & BTRFS_BLOCK_GROUP_RAID10)
--		return BTRFS_RAID_RAID10;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID1)
--		return BTRFS_RAID_RAID1;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID1C3)
--		return BTRFS_RAID_RAID1C3;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID1C4)
--		return BTRFS_RAID_RAID1C4;
--	else if (flags & BTRFS_BLOCK_GROUP_DUP)
--		return BTRFS_RAID_DUP;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID0)
--		return BTRFS_RAID_RAID0;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID5)
--		return BTRFS_RAID_RAID5;
--	else if (flags & BTRFS_BLOCK_GROUP_RAID6)
--		return BTRFS_RAID_RAID6;
--
--	return BTRFS_RAID_SINGLE; /* BTRFS_BLOCK_GROUP_SINGLE */
--}
--
- const char *btrfs_bg_type_to_raid_name(u64 flags)
- {
- 	const int index = btrfs_bg_flags_to_raid_index(flags);
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index e0c374a7c30b..7038c6cee39a 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -17,19 +17,42 @@ extern struct mutex uuid_mutex;
- 
- #define BTRFS_STRIPE_LEN	SZ_64K
- 
-+/*
-+ * Here we use ilog2(BTRFS_BLOCK_GROUP_*) to convert the profile bits to
-+ * an index.
-+ * We reserve 0 for BTRFS_RAID_SINGLE, while the lowest profile, ilog2(RAID0),
-+ * is 3, thus we need this shift to make all index numbers sequential.
-+ */
-+#define BTRFS_RAID_SHIFT	(ilog2(BTRFS_BLOCK_GROUP_RAID0) - 1)
-+
- enum btrfs_raid_types {
--	BTRFS_RAID_RAID10,
--	BTRFS_RAID_RAID1,
--	BTRFS_RAID_DUP,
--	BTRFS_RAID_RAID0,
--	BTRFS_RAID_SINGLE,
--	BTRFS_RAID_RAID5,
--	BTRFS_RAID_RAID6,
--	BTRFS_RAID_RAID1C3,
--	BTRFS_RAID_RAID1C4,
-+	BTRFS_RAID_SINGLE  = 0,
-+	BTRFS_RAID_RAID0   = ilog2(BTRFS_BLOCK_GROUP_RAID0 >> BTRFS_RAID_SHIFT),
-+	BTRFS_RAID_RAID1   = ilog2(BTRFS_BLOCK_GROUP_RAID1 >> BTRFS_RAID_SHIFT),
-+	BTRFS_RAID_DUP     = ilog2(BTRFS_BLOCK_GROUP_DUP >> BTRFS_RAID_SHIFT),
-+	BTRFS_RAID_RAID10  = ilog2(BTRFS_BLOCK_GROUP_RAID10 >> BTRFS_RAID_SHIFT),
-+	BTRFS_RAID_RAID5   = ilog2(BTRFS_BLOCK_GROUP_RAID5 >> BTRFS_RAID_SHIFT),
-+	BTRFS_RAID_RAID6   = ilog2(BTRFS_BLOCK_GROUP_RAID6 >> BTRFS_RAID_SHIFT),
-+	BTRFS_RAID_RAID1C3 = ilog2(BTRFS_BLOCK_GROUP_RAID1C3 >> BTRFS_RAID_SHIFT),
-+	BTRFS_RAID_RAID1C4 = ilog2(BTRFS_BLOCK_GROUP_RAID1C4 >> BTRFS_RAID_SHIFT),
- 	BTRFS_NR_RAID_TYPES
- };
- 
-+/*
-+ * Convert block group flags (BTRFS_BLOCK_GROUP_*) to btrfs_raid_types, which
-+ * can be used as index to access btrfs_raid_array[].
-+ */
-+static inline enum btrfs_raid_types __attribute_const__
-+btrfs_bg_flags_to_raid_index(u64 flags)
-+{
-+	u64 profile = flags & BTRFS_BLOCK_GROUP_PROFILE_MASK;
-+
-+	if (!profile)
-+		return BTRFS_RAID_SINGLE;
-+
-+	return ilog2(profile >> BTRFS_RAID_SHIFT);
-+}
-+
- struct btrfs_io_geometry {
- 	/* remaining bytes before crossing a stripe */
- 	u64 len;
-@@ -646,7 +669,6 @@ void btrfs_scratch_superblocks(struct btrfs_fs_info *fs_info,
- 			       struct block_device *bdev,
- 			       const char *device_path);
- 
--enum btrfs_raid_types __attribute_const__ btrfs_bg_flags_to_raid_index(u64 flags);
- int btrfs_bg_type_to_factor(u64 flags);
- const char *btrfs_bg_type_to_raid_name(u64 flags);
- int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
--- 
-2.33.1
-
+Yours Sincerely,
+Mr. Mohammed Mashab.
