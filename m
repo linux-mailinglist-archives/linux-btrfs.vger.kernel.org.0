@@ -2,157 +2,374 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFCC43CFB9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 19:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213F043CFDF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 27 Oct 2021 19:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243289AbhJ0Rc6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Oct 2021 13:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42496 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243283AbhJ0Rcx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:32:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1DC360E78
-        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 17:30:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635355828;
-        bh=OiXabQGhlaa7taqtlYPJihtgHrd3mTLQZz8jjFbD/WQ=;
-        h=From:To:Subject:Date:From;
-        b=La1QlWmHSdWucvAcuz0GmAnYl5Q9+c9wvqv0adjeVkx+jWQzA6IRbx/vnU4b7joT5
-         /hJZhhro9rI5Kkorx34YBluTxdTS8E4VPMOB5o1n4R1VlSctnJ78VIVEZLucrXcyQz
-         CsB9krxPreVqHdQ/psiWgOOwiOIKT4e/Rzi/R4wa2dZsL/6v+vRm2bApAJkbvVrytV
-         ZSXj2zEz1JI0k0eJWPTd0VR93V67xYZJM5jQE+52dCb7c7Rxv2JvkdxNP25kHRzaOp
-         hZUs7Z69vRS3Kg3b3XN9bakc91gdvz408jWRc+ZaiOnfe8geZQoVv5um5ZJboBZec9
-         GRbEgcAAZ1usA==
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix deadlock between quota enable and other quota operations
-Date:   Wed, 27 Oct 2021 18:30:25 +0100
-Message-Id: <3df4731012ac6dc17f9f3a33c519735fbe89fc84.1635355240.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.25.1
+        id S243343AbhJ0RkO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Oct 2021 13:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243328AbhJ0RkK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 27 Oct 2021 13:40:10 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58902C061570;
+        Wed, 27 Oct 2021 10:37:44 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id c28so3174521qtv.11;
+        Wed, 27 Oct 2021 10:37:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=0KoDGr2+ohHSXq4QxhOa4AtoKwvxQvMhb942Jyge3Y0=;
+        b=dkoxswjcwZHetlQwos9sLfYwhqvwk7xoQpTfgGykRcYpP1vLW35CJ31tMhUsss+va2
+         2jRzC9V122aSdXNXGLkZnGI2NUQPBQcK7ZjjkBwzbXmrn9V/VfuLwUn7fEuc6y2yFpLl
+         JpeAwVbUXQNjIDsIlN8uslT9GClrrRlM/aXab5z21v+Jl6F+XIwTbo7CFpz9gsAjR38/
+         vepG4PfnMctJpyWYkY84Hb6tEZ+r1BYm+Eps+So8w+NJsOPXD6SWIJt+IaplgpWjwoqL
+         ll45bpWzpfdIymkmLfQM2Oeo8eySsRfQcknx2tZJafBd4TPrnIjjgr4DbuSXVyzmzZ8M
+         7tyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=0KoDGr2+ohHSXq4QxhOa4AtoKwvxQvMhb942Jyge3Y0=;
+        b=Ju8cGhiQ60KWCvMnbLBwOzDo32UzTlCY9qnlggi/3PWPS0yaZ+Cd80cnNewXTEB2jq
+         lGq0O7e54sTzW9NYtvXqeQDbpyyDfzJhlp9duNuxRdqpe/Of0oCilVTokEnjJeFSTcR2
+         87qL2nlSaCbhZtdr1PFiEhr+HMyVUsEoox4Olobfmd7BRzU/xwPefvjixK2whTGg5VAs
+         LLv4PKCFxGBDjC7czZH2We+9jh9QeQ6Pycyh7AQi2AOMsc5Q/++K3qVcuopzCF1Oyr9a
+         eygjZCaha8Dlyg0GIyGD4McxF4J3CNzV22c8Q0DkFEm2/mOyAMHq7OY+ijOgqOqVuN5K
+         nGAA==
+X-Gm-Message-State: AOAM532G7SoRUbqTVot/lziXLgXEaWb1ccn2rAXXzSwfOE3zsfuIJPcR
+        e9i+II4yZmqnfMOsxOcLDnVAO8k+55+h5WcTKto=
+X-Google-Smtp-Source: ABdhPJwC/ObU+WPm4GBIGp3inMzYLW4BV+cGmxpoNd9l3oLOBJaSDtUPd7i3MCHvRhXJPVnFGcdrTiXIVuiXsYvyaNs=
+X-Received: by 2002:ac8:5895:: with SMTP id t21mr33340748qta.329.1635356263409;
+ Wed, 27 Oct 2021 10:37:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CACkBjsZQF19bQ1C6=yetF3BvL10OSORpFUcWXTP6HErshDB4dQ@mail.gmail.com>
+In-Reply-To: <CACkBjsZQF19bQ1C6=yetF3BvL10OSORpFUcWXTP6HErshDB4dQ@mail.gmail.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 27 Oct 2021 18:37:07 +0100
+Message-ID: <CAL3q7H4RaWfHwwbWhbQJ1zwxN3TRJR7Z=HbWRxn1AkFg3yTheQ@mail.gmail.com>
+Subject: Re: INFO: task hung in btrfs_commit_transaction
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Oct 27, 2021 at 2:08 PM Hao Sun <sunhao.th@gmail.com> wrote:
+>
+> Hello,
+>
+> When using Healer to fuzz the latest Linux kernel, the following crash
+> was triggered.
+>
+> HEAD commit: 519d81956ee2 Linux 5.15-rc6
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/13Kdx_4doleLLGr-de_j4t0GE_NxPawq4/view?us=
+p=3Dsharing
+> kernel config: https://drive.google.com/file/d/12PUnxIM1EPBgW4ZJmI7WJBRaY=
+1lA83an/view?usp=3Dsharing
+>
+> Sorry, I don't have a reproducer for this crash, hope the symbolized
+> report can help.
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+>
+> INFO: task syz-executor:25604 blocked for more than 143 seconds.
+> Not tainted 5.15.0-rc6 #4
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor state:D stack:24800 pid:25604 ppid: 24873 flags:0x00004=
+004
+> Call Trace:
+> context_switch kernel/sched/core.c:4940 [inline]
+> __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
+> schedule+0xd3/0x270 kernel/sched/core.c:6366
+> btrfs_commit_transaction+0x994/0x2e90 fs/btrfs/transaction.c:2201
+> btrfs_quota_enable+0x95c/0x1790 fs/btrfs/qgroup.c:1120
+> btrfs_ioctl_quota_ctl fs/btrfs/ioctl.c:4229 [inline]
+> btrfs_ioctl+0x637e/0x7b70 fs/btrfs/ioctl.c:5010
+> vfs_ioctl fs/ioctl.c:51 [inline]
+> __do_sys_ioctl fs/ioctl.c:874 [inline]
+> __se_sys_ioctl fs/ioctl.c:860 [inline]
+> __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f86920b2c4d
+> RSP: 002b:00007f868f61ac58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007f86921d90a0 RCX: 00007f86920b2c4d
+> RDX: 0000000020005e40 RSI: 00000000c0109428 RDI: 0000000000000008
+> RBP: 00007f869212bd80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f86921d90a0
+> R13: 00007fff6d233e4f R14: 00007fff6d233ff0 R15: 00007f868f61adc0
+> INFO: task syz-executor:25628 blocked for more than 143 seconds.
+> Not tainted 5.15.0-rc6 #4
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor state:D stack:29080 pid:25628 ppid: 24873 flags:0x00004=
+004
+> Call Trace:
+> context_switch kernel/sched/core.c:4940 [inline]
+> __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
+> schedule+0xd3/0x270 kernel/sched/core.c:6366
+> schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
+> __mutex_lock_common kernel/locking/mutex.c:669 [inline]
+> __mutex_lock+0xc96/0x1680 kernel/locking/mutex.c:729
+> btrfs_remove_qgroup+0xb7/0x7d0 fs/btrfs/qgroup.c:1548
+> btrfs_ioctl_qgroup_create fs/btrfs/ioctl.c:4333 [inline]
+> btrfs_ioctl+0x683c/0x7b70 fs/btrfs/ioctl.c:5014
 
-When enabling quotas, we attempt to commit a transaction while holding the
-mutex fs_info->qgroup_ioctl_lock. This can result on a deadlock with other
-quota operations such as:
+It's a deadlock between quota enable and removing a qgroup in this case.
+Can happen between quota enable and adding qgroups or adding/deleting
+qgroup relations as well.
 
-- qgroup creation and deletion, ioctl BTRFS_IOC_QGROUP_CREATE;
+Fix sent:
 
-- adding and removing qgroup relations, ioctl BTRFS_IOC_QGROUP_ASSIGN.
+https://lore.kernel.org/linux-btrfs/3df4731012ac6dc17f9f3a33c519735fbe89fc8=
+4.1635355240.git.fdmanana@suse.com/
 
-This is because these operations join a transaction and after that they
-attempt to lock the mutex fs_info->qgroup_ioctl_lock. Acquiring that mutex
-after joining or starting a transaction is a pattern followed everywhere
-in qgroups, so the quota enablement operation is the one at fault here,
-and should not commit a transaction while holding that mutex.
+Thanks.
 
-Fix this by making the transaction commit while not holding the mutex.
-We are safe from two concurrent tasks trying to enable quotas because
-we are serialized by the rw semaphore fs_info->subvol_sem at
-btrfs_ioctl_quota_ctl(), which is the only call site for enabling
-quotas.
+> vfs_ioctl fs/ioctl.c:51 [inline]
+> __do_sys_ioctl fs/ioctl.c:874 [inline]
+> __se_sys_ioctl fs/ioctl.c:860 [inline]
+> __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f86920b2c4d
+> RSP: 002b:00007f868f5f9c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007f86921d9158 RCX: 00007f86920b2c4d
+> RDX: 0000000020005e80 RSI: 000000004010942a RDI: 0000000000000007
+> RBP: 00007f869212bd80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f86921d9158
+> R13: 00007fff6d233e4f R14: 00007fff6d233ff0 R15: 00007f868f5f9dc0
+> INFO: task syz-executor:25629 blocked for more than 143 seconds.
+> Not tainted 5.15.0-rc6 #4
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor state:D stack:23744 pid:25629 ppid: 24873 flags:0x00000=
+004
+> Call Trace:
+> context_switch kernel/sched/core.c:4940 [inline]
+> __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
+> schedule+0xd3/0x270 kernel/sched/core.c:6366
+> wait_current_trans+0x308/0x430 fs/btrfs/transaction.c:534
+> start_transaction+0xae2/0x1730 fs/btrfs/transaction.c:681
+> btrfs_dirty_inode+0xf4/0x250 fs/btrfs/inode.c:6254
+> btrfs_update_time+0x33b/0x3d0 fs/btrfs/inode.c:6296
+> update_time+0x6d/0xc0 fs/inode.c:1788
+> touch_atime+0x3c4/0x5b0 fs/inode.c:1860
+> file_accessed include/linux/fs.h:2504 [inline]
+> filemap_read+0xc3e/0xe40 mm/filemap.c:2700
+> btrfs_file_read_iter+0x1c6/0x590 fs/btrfs/file.c:3678
+> __kernel_read+0x599/0xb40 fs/read_write.c:443
+> integrity_kernel_read+0x7b/0xb0 security/integrity/iint.c:199
+> ima_calc_file_hash_tfm+0x2aa/0x3b0 security/integrity/ima/ima_crypto.c:48=
+4
+> ima_calc_file_shash security/integrity/ima/ima_crypto.c:515 [inline]
+> ima_calc_file_hash+0x19d/0x4b0 security/integrity/ima/ima_crypto.c:572
+> ima_collect_measurement+0x4ca/0x570 security/integrity/ima/ima_api.c:254
+> process_measurement+0xd18/0x1920 security/integrity/ima/ima_main.c:337
+> ima_file_check+0xb1/0x100 security/integrity/ima/ima_main.c:516
+> do_open fs/namei.c:3430 [inline]
+> path_openat+0x1797/0x2710 fs/namei.c:3561
+> do_filp_open+0x1c1/0x290 fs/namei.c:3588
+> do_sys_openat2+0x61b/0x9a0 fs/open.c:1200
+> do_sys_open+0xc3/0x140 fs/open.c:1216
+> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f86920b2c4d
+> RSP: 002b:00007f868f5d8c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+> RAX: ffffffffffffffda RBX: 00007f86921d9210 RCX: 00007f86920b2c4d
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020005ec0
+> RBP: 00007f869212bd80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f86921d9210
+> R13: 00007fff6d233e4f R14: 00007fff6d233ff0 R15: 00007f868f5d8dc0
+> INFO: lockdep is turned off.
+> NMI backtrace for cpu 2
+> CPU: 2 PID: 39 Comm: khungtaskd Not tainted 5.15.0-rc6 #4
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> 1.13.0-1ubuntu1.1 04/01/2014
+> Call Trace:
+> __dump_stack lib/dump_stack.c:88 [inline]
+> dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+> nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
+> nmi_trigger_cpumask_backtrace+0x1e1/0x220 lib/nmi_backtrace.c:62
+> trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+> check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+> watchdog+0xcc8/0x1010 kernel/hung_task.c:295
+> kthread+0x3e5/0x4d0 kernel/kthread.c:319
+> ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> Sending NMI from CPU 2 to CPUs 0-1,3:
+> NMI backtrace for cpu 3
+> CPU: 3 PID: 28996 Comm: syz-executor Not tainted 5.15.0-rc6 #4
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> 1.13.0-1ubuntu1.1 04/01/2014
+> RIP: 0010:choose_new_asid arch/x86/mm/tlb.c:219 [inline]
+> RIP: 0010:switch_mm_irqs_off+0x76f/0xd10 arch/x86/mm/tlb.c:617
+> Code: 31 f6 e8 74 2f ff ff 65 ff 0d 7d 9e cd 7e 0f 85 90 fe ff ff e8
+> e1 f3 cb ff e9 86 fe ff ff 65 48 c7 05 a1 bf ce 7e 01 00 00 00 <31> d2
+> b8 28 00 00 00 45 31 f6 bb 20 00 00 00 66 89 14 24 45 31 c9
+> RSP: 0018:ffffc9000f1a7b48 EFLAGS: 00000046
+> RAX: dffffc0000000000 RBX: ffff888030eb3770 RCX: ffffffff81344c11
+> RDX: 1ffff11020016084 RSI: 0000000000000008 RDI: ffff8881000b0420
+> RBP: ffff8881000b0000 R08: 0000000000000001 R09: ffffed1020016085
+> R10: ffff8881000b0427 R11: ffffed1020016084 R12: 0000000000110fd6
+> R13: ffff888030eb3100 R14: 0000000000000003 R15: ffff888030eb3770
+> FS: 00007f617700a700(0000) GS:ffff888135d00000(0000) knlGS:00000000000000=
+00
+> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fe4dd966080 CR3: 000000002215b000 CR4: 0000000000350ee0
+> Call Trace:
+> use_temporary_mm arch/x86/kernel/alternative.c:741 [inline]
+> __text_poke+0x449/0x8c0 arch/x86/kernel/alternative.c:838
+> text_poke_bp_batch+0x3d7/0x560 arch/x86/kernel/alternative.c:1178
+> text_poke_flush arch/x86/kernel/alternative.c:1268 [inline]
+> text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1275
+> arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:14=
+6
+> jump_label_update+0x32d/0x440 kernel/jump_label.c:830
+> static_key_slow_inc_cpuslocked+0x1b2/0x250 kernel/jump_label.c:144
+> static_key_slow_inc+0x16/0x20 kernel/jump_label.c:159
+> kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1099 [inline]
+> kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:4613 [i=
+nline]
+> kvm_dev_ioctl+0x16db/0x1aa0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:466=
+8
+> vfs_ioctl fs/ioctl.c:51 [inline]
+> __do_sys_ioctl fs/ioctl.c:874 [inline]
+> __se_sys_ioctl fs/ioctl.c:860 [inline]
+> __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f6179ac2c4d
+> Code: Unable to access opcode bytes at RIP 0x7f6179ac2c23.
+> RSP: 002b:00007f6177009c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 00007f6179be9158 RCX: 00007f6179ac2c4d
+> RDX: 0000000000000000 RSI: 000000000000ae01 RDI: 0000000000000038
+> RBP: 00007f6179b3bd80 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f6179be9158
+> R13: 00007ffe77d38d9f R14: 00007ffe77d38f40 R15: 00007f6177009dc0
+> NMI backtrace for cpu 1
+> CPU: 1 PID: 3023 Comm: systemd-journal Not tainted 5.15.0-rc6 #4
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> 1.13.0-1ubuntu1.1 04/01/2014
+> RIP: 0010:deref_stack_reg+0x2/0x70 arch/x86/kernel/unwind_orc.c:351
+> Code: e9 7b ff ff ff 48 89 14 24 e8 da 9a 8a 00 48 8b 14 24 e9 48 ff
+> ff ff 48 89 0c 24 e8 c8 9a 8a 00 48 8b 0c 24 eb 9d 66 90 41 54 <55> 48
+> 89 f5 53 48 89 d3 ba 08 00 00 00 48 83 ec 08 e8 c8 fe ff ff
+> RSP: 0018:ffffc900017ef8f0 EFLAGS: 00000246
+> RAX: ffffc900017efa48 RBX: 1ffff920002fdf28 RCX: 0000000000000001
+> RDX: ffffc900017efa90 RSI: ffffc900017efa40 RDI: ffffc900017efa48
+> RBP: 0000000000000001 R08: ffffffff8de80f68 R09: ffffffff8de80f68
+> R10: ffffc900017efaa7 R11: 0000000000086088 R12: ffffc900017efa90
+> R13: ffffc900017efa7d R14: ffffc900017efa48 R15: ffffc900017efa7c
+> FS: 00007fe4e1aea8c0(0000) GS:ffff888135c00000(0000) knlGS:00000000000000=
+00
+> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fe4dd96f090 CR3: 0000000018e9b000 CR4: 0000000000350ee0
+> Call Trace:
+> unwind_next_frame+0xb02/0x1770 arch/x86/kernel/unwind_orc.c:534
+> __unwind_start+0x524/0x810 arch/x86/kernel/unwind_orc.c:699
+> unwind_start arch/x86/include/asm/unwind.h:60 [inline]
+> arch_stack_walk+0x5c/0xe0 arch/x86/kernel/stacktrace.c:24
+> stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:121
+> kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+> kasan_set_track mm/kasan/common.c:46 [inline]
+> set_alloc_info mm/kasan/common.c:434 [inline]
+> __kasan_slab_alloc+0x83/0xb0 mm/kasan/common.c:467
+> kasan_slab_alloc include/linux/kasan.h:254 [inline]
+> slab_post_alloc_hook+0x4d/0x4b0 mm/slab.h:519
+> slab_alloc_node mm/slub.c:3206 [inline]
+> slab_alloc mm/slub.c:3214 [inline]
+> kmem_cache_alloc+0x150/0x340 mm/slub.c:3219
+> prepare_creds+0x3f/0x7b0 kernel/cred.c:262
+> access_override_creds fs/open.c:351 [inline]
+> do_faccessat+0x3f4/0x850 fs/open.c:415
+> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7fe4e0da69c7
+> Code: 83 c4 08 48 3d 01 f0 ff ff 73 01 c3 48 8b 0d c8 d4 2b 00 f7 d8
+> 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 b8 15 00 00 00 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 8b 0d a1 d4 2b 00 f7 d8 64 89 01 48
+> RSP: 002b:00007ffe9f3f4f98 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
+> RAX: ffffffffffffffda RBX: 00007ffe9f3f7fc0 RCX: 00007fe4e0da69c7
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000055dea031a9a3
+> RBP: 00007ffe9f3f50e0 R08: 000055dea03103e5 R09: 0000000000000018
+> R10: 0000000000000069 R11: 0000000000000246 R12: 0000000000000000
+> R13: 0000000000000000 R14: 000055dea06578a0 R15: 00007ffe9f3f55d0
+> NMI backtrace for cpu 0
+> CPU: 0 PID: 28993 Comm: syz-executor Not tainted 5.15.0-rc6 #4
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> 1.13.0-1ubuntu1.1 04/01/2014
+> RIP: 0010:__sanitizer_cov_trace_const_cmp4+0x4/0x20 kernel/kcov.c:284
+> Code: 84 00 00 00 00 00 48 8b 0c 24 0f b7 d6 0f b7 f7 bf 03 00 00 00
+> e9 ec fe ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 90 48 8b 0c 24 <89> f2
+> 89 fe bf 05 00 00 00 e9 ce fe ff ff 66 66 2e 0f 1f 84 00 00
+> RSP: 0018:ffffc9000322fa18 EFLAGS: 00000246
+> RAX: 0000000000000000 RBX: 0000000000000002 RCX: ffffffff83a8fb9c
+> RDX: ffffc90011d50000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: ffff888105d6be00 R08: ffffffff83a8fb86 R09: 0000000000000010
+> R10: 0000000000000001 R11: fffffbfff2078908 R12: 0000000000000010
+> R13: 00000000000000b0 R14: dffffc0000000000 R15: 0000000000000000
+> FS: 00007f617702b700(0000) GS:ffff888063e00000(0000) knlGS:00000000000000=
+00
+> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000007 CR3: 000000002215b000 CR4: 0000000000350ef0
+> Call Trace:
+> tomoyo_domain_quota_is_ok+0x30c/0x540 security/tomoyo/util.c:1093
+> tomoyo_supervisor+0x290/0xe30 security/tomoyo/common.c:2089
+> tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+> tomoyo_path_permission security/tomoyo/file.c:587 [inline]
+> tomoyo_path_permission+0x270/0x3a0 security/tomoyo/file.c:573
+> tomoyo_path_perm+0x2fc/0x420 security/tomoyo/file.c:838
+> security_path_truncate+0xcf/0x140 security/security.c:1199
+> do_sys_ftruncate+0x392/0x740 fs/open.c:190
+> do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x2000004a
+> Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 00 00 00 00 00 00 00 00 00 00 00 a8 4a 2a e9 2c 21 1c 42 0f 05 <bf> 03
+> 00 00 00 c4 a3 7b f0 c5 5c 41 e2 e9 2e 36 3e 46 0f 1a 70 00
+> RSP: 002b:00007f617702abb8 EFLAGS: 00000a06 ORIG_RAX: 000000000000004d
+> RAX: ffffffffffffffda RBX: 0000000000000009 RCX: 000000002000004a
+> RDX: 0000000000000001 RSI: 0000000000000003 RDI: 0000000000000003
+> RBP: 00000000000000c2 R08: 0000000000000005 R09: 0000000000000006
+> R10: 0000000000000007 R11: 0000000000000a06 R12: 000000000000000b
+> R13: 000000000000000c R14: 000000000000000d R15: 00007f617702adc0
+> ----------------
+> Code disassembly (best guess):
+> 0: 31 f6 xor %esi,%esi
+> 2: e8 74 2f ff ff callq 0xffff2f7b
+> 7: 65 ff 0d 7d 9e cd 7e decl %gs:0x7ecd9e7d(%rip) # 0x7ecd9e8b
+> e: 0f 85 90 fe ff ff jne 0xfffffea4
+> 14: e8 e1 f3 cb ff callq 0xffcbf3fa
+> 19: e9 86 fe ff ff jmpq 0xfffffea4
+> 1e: 65 48 c7 05 a1 bf ce movq $0x1,%gs:0x7ecebfa1(%rip) # 0x7ecebfcb
+> 25: 7e 01 00 00 00
+> * 2a: 31 d2 xor %edx,%edx <-- trapping instruction
+> 2c: b8 28 00 00 00 mov $0x28,%eax
+> 31: 45 31 f6 xor %r14d,%r14d
+> 34: bb 20 00 00 00 mov $0x20,%ebx
+> 39: 66 89 14 24 mov %dx,(%rsp)
+> 3d: 45 31 c9 xor %r9d,%r9d
 
-When this deadlock happens, it produces a trace like the following:
 
-  INFO: task syz-executor:25604 blocked for more than 143 seconds.
-  Not tainted 5.15.0-rc6 #4
-  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-  task:syz-executor state:D stack:24800 pid:25604 ppid: 24873 flags:0x00004004
-  Call Trace:
-  context_switch kernel/sched/core.c:4940 [inline]
-  __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
-  schedule+0xd3/0x270 kernel/sched/core.c:6366
-  btrfs_commit_transaction+0x994/0x2e90 fs/btrfs/transaction.c:2201
-  btrfs_quota_enable+0x95c/0x1790 fs/btrfs/qgroup.c:1120
-  btrfs_ioctl_quota_ctl fs/btrfs/ioctl.c:4229 [inline]
-  btrfs_ioctl+0x637e/0x7b70 fs/btrfs/ioctl.c:5010
-  vfs_ioctl fs/ioctl.c:51 [inline]
-  __do_sys_ioctl fs/ioctl.c:874 [inline]
-  __se_sys_ioctl fs/ioctl.c:860 [inline]
-  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
-  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-  RIP: 0033:0x7f86920b2c4d
-  RSP: 002b:00007f868f61ac58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-  RAX: ffffffffffffffda RBX: 00007f86921d90a0 RCX: 00007f86920b2c4d
-  RDX: 0000000020005e40 RSI: 00000000c0109428 RDI: 0000000000000008
-  RBP: 00007f869212bd80 R08: 0000000000000000 R09: 0000000000000000
-  R10: 0000000000000000 R11: 0000000000000246 R12: 00007f86921d90a0
-  R13: 00007fff6d233e4f R14: 00007fff6d233ff0 R15: 00007f868f61adc0
-  INFO: task syz-executor:25628 blocked for more than 143 seconds.
-  Not tainted 5.15.0-rc6 #4
-  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-  task:syz-executor state:D stack:29080 pid:25628 ppid: 24873 flags:0x00004004
-  Call Trace:
-  context_switch kernel/sched/core.c:4940 [inline]
-  __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
-  schedule+0xd3/0x270 kernel/sched/core.c:6366
-  schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
-  __mutex_lock_common kernel/locking/mutex.c:669 [inline]
-  __mutex_lock+0xc96/0x1680 kernel/locking/mutex.c:729
-  btrfs_remove_qgroup+0xb7/0x7d0 fs/btrfs/qgroup.c:1548
-  btrfs_ioctl_qgroup_create fs/btrfs/ioctl.c:4333 [inline]
-  btrfs_ioctl+0x683c/0x7b70 fs/btrfs/ioctl.c:5014
-  vfs_ioctl fs/ioctl.c:51 [inline]
-  __do_sys_ioctl fs/ioctl.c:874 [inline]
-  __se_sys_ioctl fs/ioctl.c:860 [inline]
-  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
-  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CACkBjsZQF19bQ1C6=yetF3BvL10OSORpFUcWXTP6HErshDB4dQ@mail.gmail.com/
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/qgroup.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+--=20
+Filipe David Manana,
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index db680f5be745..7f6a05e670f5 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -940,6 +940,14 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
- 	int ret = 0;
- 	int slot;
- 
-+	/*
-+	 * We need to have subvol_sem write locked, to prevent races between
-+	 * concurrent tasks trying to enable quotas, because we will unlock
-+	 * and relock qgroup_ioctl_lock before setting fs_info->quota_root
-+	 * and before setting BTRFS_FS_QUOTA_ENABLED.
-+	 */
-+	lockdep_assert_held_write(&fs_info->subvol_sem);
-+
- 	mutex_lock(&fs_info->qgroup_ioctl_lock);
- 	if (fs_info->quota_root)
- 		goto out;
-@@ -1117,8 +1125,19 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info)
- 		goto out_free_path;
- 	}
- 
-+	mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+	/*
-+	 * Commit the transaction while not holding qgroup_ioctl_lock, to avoid
-+	 * a deadlock with tasks concurrently doing other qgroup operations, such
-+	 * adding/removing qgroups or adding/deleting qgroup relations for example,
-+	 * because all qgroup operations first start or join a transaction and then
-+	 * lock the qgroup_ioctl_lock mutex.
-+	 * We are safe from a concurrent task trying to enable quotas, by calling
-+	 * this function, since we are serialized by fs_info->subvol_sem.
-+	 */
- 	ret = btrfs_commit_transaction(trans);
- 	trans = NULL;
-+	mutex_lock(&fs_info->qgroup_ioctl_lock);
- 	if (ret)
- 		goto out_free_path;
- 
--- 
-2.33.0
-
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
