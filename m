@@ -2,72 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4992043D873
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 03:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CF143D96C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 04:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhJ1BRR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 27 Oct 2021 21:17:17 -0400
-Received: from out20-111.mail.aliyun.com ([115.124.20.111]:42010 "EHLO
-        out20-111.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhJ1BRR (ORCPT
+        id S229691AbhJ1CoR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 27 Oct 2021 22:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhJ1CoR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 27 Oct 2021 21:17:17 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2384282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00531875-6.77561e-06-0.994675;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.Lj3vUld_1635383689;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.Lj3vUld_1635383689)
-          by smtp.aliyun-inc.com(10.147.40.26);
-          Thu, 28 Oct 2021 09:14:49 +0800
-Date:   Thu, 28 Oct 2021 09:14:53 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Stefan Roesch <shr@fb.com>
-Subject: Re: [PATCH v2 4/4] btrfs: increase metadata alloc size to 5GB for volumes > 50GB
-Cc:     <linux-btrfs@vger.kernel.org>, <kernel-team@fb.com>
-In-Reply-To: <20211027201441.3813178-5-shr@fb.com>
-References: <20211027201441.3813178-1-shr@fb.com> <20211027201441.3813178-5-shr@fb.com>
-Message-Id: <20211028091453.E622.409509F4@e16-tech.com>
+        Wed, 27 Oct 2021 22:44:17 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FB0C061570
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 19:41:51 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id r4so18030650edi.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 27 Oct 2021 19:41:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=pLTRwznxx7b9J/w2hnaqXw9tw3/HBXbYU6ZuUMua6U4=;
+        b=g7tD1/fYXEnz+DZVutdo7ynUiRGYX6QnlvNxBwCWDDNZfHcegb82cRcyfzl78Cfu0d
+         YsCzpMhd+kKToFt4uN3rOgF3X9i9IUx4XStRqowS01pejLPoQ6Y+C9JPO46cW9BeWDeA
+         AmO/7ByWNBZfPBUuziFH3w504DtQFopxn71DBP9LkSUV/Mw9GNEuUtrg3xaoSrwWGUxZ
+         4FzpRcdQGc48QHCiY4+QlKo1T26KiMNkQPU3mmcuoBW67/Xgt6z5zKhPZ2exagpGVo0x
+         mVGNfGzNHMEOP2VF0tI0SY0rxA5fhRw8+fhf7atsLQ12X0qX3vPBUs/hgammaU3V2Nrp
+         1f7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=pLTRwznxx7b9J/w2hnaqXw9tw3/HBXbYU6ZuUMua6U4=;
+        b=ZUmz8Onoe8HD823pFRY+NS8rnfpsAiSZTZ0qDKXxILm2yPrj6PY4LJpqM4oVL/W/DX
+         Wr6LAYqE/15Nt4/q/1SnYt1fBzGO5tQJqJ0BwFLOiHUaSdjxN2/CIUqVhBAEM+HbbBV7
+         hYmHwjHT40YbjIm1cMNIm2KTTce9dHOMHVq4Ok0Fv+3vnYbC7kxDuKEli3cfR3Hq5SBP
+         7Y4xIGam+s5Iu2/sU6LPUJL12E6eJuvg5WZ7HnlS8NwwPx5dTJcfTh+DP9y4mBKFznZt
+         UFWwdEqt0AZeXw9HFBoSZsFweQaGzKuAkCNIJ/1OfM/TYm0AN56YVXN9lFG2FfijEoM/
+         1riQ==
+X-Gm-Message-State: AOAM532Vr89aQK5z8oVoV0FHCfSnA6XnC1LOIWJ87gXxYaniK3uzcHJW
+        ga0qV0h5VGiIMlKalzF4Ubxpzh9H0CYVWsAm6uU=
+X-Google-Smtp-Source: ABdhPJyu4nAAG9JFxInRvpU2gGuCXYgEc3aWVr7YS+W4YBtBb+uNIKWMo51ko3w0ezQbXVv/wPYgNkJeFKK+LISQSAI=
+X-Received: by 2002:a17:906:2757:: with SMTP id a23mr1830218ejd.230.1635388909649;
+ Wed, 27 Oct 2021 19:41:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
+Received: by 2002:a17:906:dc93:0:0:0:0 with HTTP; Wed, 27 Oct 2021 19:41:49
+ -0700 (PDT)
+Reply-To: billchantal01@gmail.com
+From:   bill chantal <freshestbongle@gmail.com>
+Date:   Thu, 28 Oct 2021 04:41:49 +0200
+Message-ID: <CAEfDn0Ncb7woh=n19Yb9fTXLc5ywFdht1yE-87YBLBiNn0MbDg@mail.gmail.com>
+Subject: You have been compensated
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+-- 
+You have been compensated with the sum of $ 5.8  million dollars in the
+United Nations, the payment will be issued on the ATM visa card and will be
+sent from the Santander bank.
 
-> This increases the metadata default allocation size from 1GB to 5GB for
-> volumes with a size greater than 50GB.
-
-If we change the metadata allocation size from 1GB to 5GB, then we have
-less frequency that the unused metadata space is under 32M.
-
-Could we begin to alloc metadata space with the size 1G after unused
-metadata space is under 32M?  Is this a better way?
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/10/28
+   we need your address,whatsapp  number and your passport
+ this is my private email address    [billchantal01@gmail.com ]
 
 
-> 
-> Signed-off-by: Stefan Roesch <shr@fb.com>
-> ---
->  fs/btrfs/space-info.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 570acfebeae4..1314b0924512 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -195,7 +195,7 @@ static u64 compute_stripe_size_regular(struct btrfs_fs_info *info, u64 flags)
->  
->  	/* Handle BTRFS_BLOCK_GROUP_METADATA */
->  	if (info->fs_devices->total_rw_bytes > 50ULL * SZ_1G)
-> -		return SZ_1G;
-> +		return 5ULL * SZ_1G;
->  
->  	return SZ_256M;
->  }
-> -- 
-> 2.30.2
+Thanks
 
-
+Bill Chantal
