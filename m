@@ -2,330 +2,256 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B5D43DBB2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 09:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2546043DC39
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 09:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbhJ1HMz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Oct 2021 03:12:55 -0400
-Received: from mout.gmx.net ([212.227.17.22]:48437 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229671AbhJ1HMz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:12:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635405015;
-        bh=Aeofu8hFB0LgNNZ+WzDqTsPgvNFTLAFOV2sxqd1mbIo=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=Fut+9upLNCg50I4xdrT1gm9E3oF5gHJF1CefesMbdbKUOWF0gEOXoRP0pMWSNeLos
-         0KoXJYea4+rNdWOqs9IpPSw0mMMoVv/hjKB/YOkEM9+vCpP196cns6C++rTn54QMyY
-         tBichwlrkfZG4wG9WNEsj9yD05M82Ntd+PZoVM78=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjS54-1n3nzQ3N1e-00kyeX; Thu, 28
- Oct 2021 09:10:15 +0200
-Message-ID: <10908a2e-30bb-1960-60fd-c225191be7c3@gmx.com>
-Date:   Thu, 28 Oct 2021 15:10:11 +0800
-MIME-Version: 1.0
+        id S230058AbhJ1Hiv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Oct 2021 03:38:51 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:33635 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230097AbhJ1Hiu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 28 Oct 2021 03:38:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1635406582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=54llsslzTMpi28+8rNOpOA1tomS438AJro76Mp0JkmU=;
+        b=NlkvtipDD3qc1ynFRRC+/S1ppQZO7V2r2WLbHjSMpYYtdhng6l+AQQjNaoCF2yyX0Jghu6
+        o+EL7YJRkikIemmYyjWLHVjmweTaRZAsjaHIo+2G+d+p+pheR5hoKHcaO4dpba6Q5TBL7X
+        lWty9GBLWXPcr11LN2LWTrG80tGbcgo=
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur01lp2054.outbound.protection.outlook.com [104.47.1.54]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-34-huVKKkLWPgu-K4n5AlMgsA-1; Thu, 28 Oct 2021 09:36:21 +0200
+X-MC-Unique: huVKKkLWPgu-K4n5AlMgsA-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fJQkZv4zZJKXuS/LOVD7SgA1STTEE4kFyTEvI4M/5FOolqQJAeIJU9TXmXfU4K862SLaORYlhAdPmhMYIIiz/+LKL0IRnODk5GXpcvvbsPy+tu2kinKA3R6IUSPgukTcYhvZ+Zj6tJBYEJu6WZqJleUPKKBeutCEYYFEdYK6tk708QnmH11yC+XgkF1LvXRac47OrJ2uguLRwtUxOC9MrqW9l1/umQXDmbuxcRwUT5HWGCW+quZAcD3RFXYvUSNeo1ZVv2lwPVhoTa+eCe4XnfnP5U9bAWFYEygjDfUcnJVyUyBfK8yuYe+Hlq7w8OYODTGdCXetF1EW+rX4TX0n8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=54llsslzTMpi28+8rNOpOA1tomS438AJro76Mp0JkmU=;
+ b=UsYFHVH3R7NyZDXq9OripdxbmYwlJrHySaAqFZ3p13YQVQvV/Lm8IJuMeUfwm4zY83isu5pNc9w7y/MRk/6XJrfiBXkZcI+RecS6jQ5c/vTiuiYm5U6Ev7jdN7ga19yN9is+Y1L3VmE8oorNAq+4b2z6hnE7amFcK37gl66Vtlp1hp6GwhHAjQ0YFxRtzpUIAJr0XsI9uZfkr+s1JzJxtrBL4s/wwXMTEszRQnommCgUnkci+m+j+MON2WGx1gWMYMeOsCxzlfsgeHiS6ANMJtZuSVqKA7S/evpeMo8MXDj/ikvf31w2+eFJPZlxdyWXWUWVGcWAiyeQWN6hjvgzYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
+ by AM6PR04MB5288.eurprd04.prod.outlook.com (2603:10a6:20b:5::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Thu, 28 Oct
+ 2021 07:36:20 +0000
+Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::2d84:325b:5918:7a19]) by AM7PR04MB6821.eurprd04.prod.outlook.com
+ ([fe80::2d84:325b:5918:7a19%6]) with mapi id 15.20.4628.020; Thu, 28 Oct 2021
+ 07:36:20 +0000
+Message-ID: <3845c0be-6ed8-171e-67c2-92a6f80a60cd@suse.com>
+Date:   Thu, 28 Oct 2021 15:36:10 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.0
+Subject: Re: [PATCH] fs/btrfs: Make extent item iteration to handle gaps
 Content-Language: en-US
-To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211027052859.44507-1-wqu@suse.com>
- <20211027052859.44507-3-wqu@suse.com>
- <514d1330-6af8-4d48-fef6-f2732d7f186d@oracle.com>
- <f229e88f-5483-9f2d-00eb-9da45f9bca4e@gmx.com>
- <91627cd8-279b-30a1-7e10-adb43f5a2027@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH v2 2/2] btrfs: use ilog2() to replace if () branches for
- btrfs_bg_flags_to_raid_index()
-In-Reply-To: <91627cd8-279b-30a1-7e10-adb43f5a2027@oracle.com>
+From:   Qu Wenruo <wqu@suse.com>
+To:     grub-devel@gnu.org
+Cc:     linux-btrfs@vger.kernel.org
+References: <20211016014049.201556-1-wqu@suse.com>
+In-Reply-To: <20211016014049.201556-1-wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZIsSjZNUWhGfHB1B2Nj2G8az7KcyMBQ4nLxQ05vN7PSSWkFFabL
- v8hjMvl2RdZrFcRKmJIYKKLJ9U79LZMZYq7QvmA3umcYA0hujFa3SIGdbc+F4DqYJc+gOQ+
- 1ZfgQTt45WQcnlgqfcT/WyCMg81EwRpNxkk2WBvYD7E18O5mE8buwCoB4A0c6a1BgG4tZOZ
- v/1PGxcN+6hRdfUeXZVHw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:xGvbpfe/ogE=:khiXmLRCPfH6KJaNXi8mTH
- ppwBQWsvmeucabD1/9Lo1YYGK+adrFZGOTqzs5DIos1gpDjit/hh6Yl/EX5pLJpTIuUwo576z
- uKgOyJkjlEMWVkiRNN7/kR4oWu+QP/INQSmj3RXmEAS8e5KIvALEUwrGRoTPMzPDY09UrXDS9
- g92X5ul1hrAwY0u29PH6Dbk7avRZdca+voLLWGiRW4Ec5Elo4LJY56OPCE7UjjeR9PyREnPuC
- nW0v4bNT+goHwH+y/6lKNp3Lf4dMWau1hGCHDdTMwkxuOKNsoPyQLMDMxft4jHi33WKPHNW7r
- 0spCyvOsjR7h/Zrsofob5HMOhi+cqCfeYn6I/XcXGttr30JM59Eo3ZuzV+qV4eGLM9l7Km3ZM
- ctN72pICTTjveimxShaInLzFn3oLyM3UGhBAsX/j99zHHRW4b02FC/vr1KMKA9uiWv4B2nFWu
- JXOI5jCe+ng5eESYEgD8PdE/aExm9y0rtK7iLsXdZnkuAHmbf9kc3lTFexQ5wJYu38bNZp+Om
- BYB4ptMXnZC35R32IZ6X+yo/6eFmReZnklG3SwSxlzlid9T9X7u7XcPZtgXH7+VEBIyS/KrdN
- k3IIzMlqmJpf44sek6UZDCPo5ZJyZvlHGVC9hUKb4y6WwPHieEjlk/P34RVQ6dSkZyanvmFKL
- NZsIsYP0yjEGJ3234SCpBr28MPY5MbazJrrI3MzG5cPg4JlEQnRLElRi59R9TXEdP3sIU8vnI
- RQiDy1GZ3xBoQhMzq49Sb+YFCJoUzUCyYN2eywSOvJNTVmyJQwqqgcoGIvP55+Gt8K7i5CSrC
- 0GaQeVxAZXm2jqCbsTSp0c7UMaBjYynEbrR/Mac1S9/pD9f+2CKg+yFQRvkLLyXXIV9TDa6+h
- NlRr8sIMNCAgOEZgmGX7j5kDzWlpQz8yzx/nj5SBJ5Ed33FVWF3DEu1gugE7mVpf/E9KkrBxr
- HB19g9AVpMxpAaAY9bomPOmE7xAo29IE1l1dVwthygUCIE9AU9ht/a01lYgKtQWs0wN7nHh0D
- oKOAYK1coJnhk7ih9KAu/+/Dx6be8kwypWlkt1hSpZ7z9TlqNSk+B1aBgJZSkHzxnAVn4nHMB
- D32ysfuBYfoxJE=
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0336.namprd03.prod.outlook.com
+ (2603:10b6:a03:39c::11) To AM7PR04MB6821.eurprd04.prod.outlook.com
+ (2603:10a6:20b:105::22)
+MIME-Version: 1.0
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR03CA0336.namprd03.prod.outlook.com (2603:10b6:a03:39c::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Thu, 28 Oct 2021 07:36:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b5716fa0-5eeb-4987-3e2a-08d999e5a248
+X-MS-TrafficTypeDiagnostic: AM6PR04MB5288:
+X-Microsoft-Antispam-PRVS: <AM6PR04MB5288B92F644EE23B805B9C18D6869@AM6PR04MB5288.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BVpGpu5cZMuEKJPpz6Yh314kPbncFEBQml4F7x936WTnUaQjWRGeWa3X24fJhQZ/e40QlLlNmKoxIEdCWtU8DukIVHANqr36E9RDtYg7aoOKTrtVVhsLx4B7wjc5szI/EJvT6xxA/UF7y/Slp2AW1ntIN7MGA/DCtVfAb0S8dcEBM2mSSjOKxp7d7+ZuA50liwIR3vkFPZICTxP3A0tTffKYDyzsMvi4hRyfdzisP/4TxmOHFjWGAgArghSHZiOOrgNPHjdx2JZqoZwcpAii8MqsRFQUMitK4RfMJxiFX1b/hkd3SJVJpxSIftwM2eQ0tRz0Xlhafwz0Op+0SksuTLxvMBJU+VpRsi3+/SJW89lA4ayPmSoKF410/t3tYdBkbQew3z5Mz7v0rBrKqjq1tkJTsjd0UB9oqIWujQnFzt3fn/5jCv1Wr5wqAypsGURO1zv52O/Fewr6FCV3+dLvxN68nrSYemjECxv1uBTWxr9E6oOTBwVHXc+RUXLgqBtnTpAmNeB1OsXa0HxZRBJj3dNdUJKAxESWERwqNzOjqyc0Gj7Yv7Gm5PsAkvp9jAMHDVTgkw/vzlY2Qw5Xrh6sva3BxofyXqLU4o4iND1sSihruLUnig+ywgS+MqtOgGDNO+VpGTqBfgrszuK4yRwfBoIlnXJK8cnqmp5UGj/wwKd+3sENWN2Nwp7yhlXojbSYqmMawzEtarH1IIYFEv+1KK5xvcmcA73koBXbxNaIY06HPigaZ41OpzNuyxwkiyx+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(956004)(6706004)(2616005)(508600001)(186003)(2906002)(8676002)(38100700002)(6666004)(5660300002)(6916009)(26005)(86362001)(66476007)(66556008)(36756003)(316002)(16576012)(31686004)(4326008)(53546011)(66946007)(6486002)(31696002)(83380400001)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bHBWKzFzRnZYOFMrZ0tUTVZId3ZwQVpNdUp3eVBEekdLYnRkRURLaytta3Q1?=
+ =?utf-8?B?TzliZEZndTY2eWJ2ckt5QmNTUTc5dHdWb1NhVU9sS0xNdkZyT2lySTFtM0Jp?=
+ =?utf-8?B?WjNOenZudmNQZGtJMkxUMFByUmY0K1AzejRLOGU1bXdBbExQMFJwL2RLSGVC?=
+ =?utf-8?B?R0Qrc25BVzN5dHJBZUZmd1p6RmlPTm96QjZxcHdOQVVIZjIvNW5ubWZBdU5U?=
+ =?utf-8?B?ckZvMzZ2eUdGN1N0VnNZS1lBRW5KK3U2MEt3R0pOVmUrS08xaURFTWZpVWo0?=
+ =?utf-8?B?OUxZMTU3NnI5QldMVVBUSzdyZm4zVms5QzZ4TVhCbXZ1Uk8xaXJCTS9TTnQ0?=
+ =?utf-8?B?L1RHNnQzUGlGbGJsVUZUOWphdjBFN0FqR1ZkdEtFWEVqc0J4dFZBR1hCck9u?=
+ =?utf-8?B?K0psa21ia1JDOXpaVElsWFRYUE9SbEVBREJpeTBTRmVVZVVOb1hMQmFKQTlE?=
+ =?utf-8?B?Zi9SUEN5RmdtdlRJbTFJWEhVMzFOb01RUGJST016UTdNNUM4dHlhVHF6bE5Q?=
+ =?utf-8?B?dlQ5S2dKTTZGTnNCOUxGdVJ1T1VwKzNOZnlOVncyMUl1RzJJTDhEZzI2Rkw2?=
+ =?utf-8?B?NXRaS0ZGVlg5MDZjYmo1dTZhSXlOUG5zWlphcXF5a1NpWW5idWh0M09GOFd3?=
+ =?utf-8?B?NGRsYmxpTjdRaTNGUlR3azFpMFJUUXo4dUt4RGlpNlNmL1dYalpqeWNMZGdY?=
+ =?utf-8?B?RUdwUE4wRGx6OWltN3pCRWw1WUt1K29QRDR4L3VpQUUyekFIVHZDdUlMV0Mx?=
+ =?utf-8?B?RDVva0J4c2xkZ0RvaUJIN3FwRlhERTVQSlBvcS9KbjdPa3RKM1VBZHFnWFl1?=
+ =?utf-8?B?UXBPSkJ4WjFsM1RhWWVjdXQ5VitRNWNTUVpzWlJFUDllaTgrcGlGV2JuaHRV?=
+ =?utf-8?B?dlhjRlhLWEV0U3pjRVZkb3VKUU1pakcxRU0wd2t5UHpwMTBFeFlyblhKV3My?=
+ =?utf-8?B?cEJZeUlCQ2kzV1M5dlQ3UjRPYmM5SXU4TUVJd28yWVcxK3gxVTduOFB3VUlH?=
+ =?utf-8?B?aDB6Q3MrQjJBS2ZRejl0U1lNYVNNVXlEaWlLRmdnM3RqUGJRV3owdGsvTGhU?=
+ =?utf-8?B?Zmpkb0NyOUtIdnNWWHBacEViMVF0akhjTzROd2Q3Q1EzTHhtNU1sV0pwU2tS?=
+ =?utf-8?B?NFZTc2E4QjV4Y0xXV2pLeW1pWmpQbmFBcE1hdzVQSGt3UmJ1WVB0a1BJdXFm?=
+ =?utf-8?B?Q2Z4ZXQydGdYNFdNZHdNR0JSblVJczFtSzJiMFZzQTBRZGhFc1RjOXZkVDE1?=
+ =?utf-8?B?RnhRNG5VbWYrMDNIQVlXVENkRFY5TE1FWkdRN2V6bUdRY0dNSXRuTXlLL1Qv?=
+ =?utf-8?B?dGVKVUc1dXZ6UVdiUDRkRndRU1RpY21MeCtxVWk3alJjMHQxeVVBb0NTUEhP?=
+ =?utf-8?B?OEg1VTE3Q2pnY2dzK3Y4LzNFLzdETGNwR2FYSFlldWd2aGJLcU9hK000bk9L?=
+ =?utf-8?B?clZRdE8zN3VYTFFLSDdVTkdrMWlaVVluNG5zbGsyZXZSVS9LUFRHVWZMWG9H?=
+ =?utf-8?B?M0NMTjRLcTlrNmd0LzE2NmFlKzcyN241ekEzUVp2TXZQYUcxTjlQdUpWM09K?=
+ =?utf-8?B?Nzh5QkpxcTc3UGNvQzUvWkNMNFdxVm92WHJUK3VxOW9OQUdUYk52YWQ5Tmkr?=
+ =?utf-8?B?RWdSSTFuWVp2aEJzRTI3bXFMNUtCTXhiaUlYN0JEcDhsK0gyVDBlSkdNamNK?=
+ =?utf-8?B?cXhBeUZCOUJYdjc0TlZITlhNUVNWSGg1OUIzOG9GNzdxTE9rd0JiK3VJV1Vw?=
+ =?utf-8?B?R0ZmRGtBWFdoK1FTbEE1b0ROQmxySEp2SVFTNFFBa0FUYzZ2ODViLzdpdWlI?=
+ =?utf-8?B?TmVSNkd3NU9NdkkvMVFIZjF6YlkxTHRaM2RpdUZ5MzJqSHVZbEtjM3owWmph?=
+ =?utf-8?B?ZSt4RWZvL0d0dDRHaU9RSEUvZkVoazNqNTNUQm1XM0w0QUNTaDY4eHl5YkEy?=
+ =?utf-8?B?bjNCUlZDSERpMzRxM0szK0RMRkdUeHI3MnFjRlR0WUdhY00rMllrL1ZDa1dW?=
+ =?utf-8?B?clAyM3puZlFvVWJaTGoyT1ExTDJsZENJem9vMGFuMGJmT01oU0I5ZlR5eDZa?=
+ =?utf-8?B?QVZ0Q1k4Rm1CejZ3VzFkSjlXYWl6Q2RxUGtCS3k4NGNSOStoKy9ZK3lVbVly?=
+ =?utf-8?Q?RP4Q=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5716fa0-5eeb-4987-3e2a-08d999e5a248
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2021 07:36:20.0880
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y5j9zc80v4BX2oxAPXraPe/MDkho6rW+IUXyN8OGMHC2eh0JHagHRQAoW6LTp9f3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5288
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Gentle ping?
 
+Without this patch, the new mkfs.btrfs NO_HOLES feature would break any 
+kernel/initramfs with hole in it.
 
-On 2021/10/28 09:04, Anand Jain wrote:
->
->
-> On 27/10/2021 18:41, Qu Wenruo wrote:
->>
->>
->> On 2021/10/27 17:23, Anand Jain wrote:
->>> On 27/10/2021 13:28, Qu Wenruo wrote:
->>>> In function btrfs_bg_flags_to_raid_index(), we use quite some if () t=
-o
->>>> convert the BTRFS_BLOCK_GROUP_* bits to a index number.
->>>>
->>>> But the truth is, there is really no such need for so many branches a=
-t
->>>> all.
->>>> Since all BTRFS_BLOCK_GROUP_* flags are just one single bit set insid=
-e
->>>> BTRFS_BLOCK_GROUP_PROFILES_MASK, we can easily use ilog2() to calcula=
-te
->>>> their values.
->>>>
->>>> Only one fixed offset is needed to make the index sequential (the
->>>> lowest profile bit starts at ilog2(1 << 3) while we have 0 reserved f=
-or
->>>> SINGLE).
->>>>
->>>> Even with that calculation involved (one if(), one ilog2(), one minus=
-),
->>>> it should still be way faster than the if () branches, and now it is
->>>> definitely small enough to be inlined.
->>>>
->>>
->>> =C2=A0=C2=A0Why not just use reverse static index similar to
->>>
->>> const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] =3D=
- {
->>> <snip>
->>> }
->>
->> Sorry, I didn't get the point.
->>
->> Mind to share more details?
->>
->
-> Something like
->
-> /* Must match with the order of BTRFS_BLOCK_GROUP_XYZ */
-> +enum btrfs_raid_types {
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID0,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_RAID_DUP,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID10,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID5,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID6,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C3,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C4,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_RAID_SINGLE,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_NR_RAID_TYPES
-
-OK I got your point.
-
-But the point here is, I don't want to enum btrfs_raid_types to hide the
-value and rely on us to make it in proper order.
-
-Thus that's why my version have all the ilog2() values.
-
-And in that case, it's just a difference between the shift value and
-where we put RAID_SINGLE.
-
-> +};
->
-> btrfs_bg_flags_to_raid_index(u64 flags)
-> {
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->  =C2=A0=C2=A0=C2=A0=C2=A0flags =3D flags & BTRFS_BLOCK_GROUP_PROFILE_MAS=
-K;
->
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D ilog2(flags);
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D 0)
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 return=C2=A0 BTRFS_RAID_SINGLE;
-
-In fact, ilog2(0) behavior is undefined, and should be avoided.
-
-In this case, we still need to check if (flags =3D=3D 0), and just change
-the shift value.
+And considering the modification is already small, I believe this patch 
+is definitely worthy as a bug fix.
 
 Thanks,
 Qu
 
->
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret - 3;
-> }
->
-> Should work. No?
->
-> Thanks, Anand
->
->> Thanks,
->> Qu
->>
->>>
->>> Thanks, Anand
->>>
->>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>> ---
->>>> =C2=A0 fs/btrfs/space-info.h |=C2=A0 2 ++
->>>> =C2=A0 fs/btrfs/volumes.c=C2=A0=C2=A0=C2=A0 | 26 --------------------=
-------
->>>> =C2=A0 fs/btrfs/volumes.h=C2=A0=C2=A0=C2=A0 | 42 ++++++++++++++++++++=
-++++++++++++----------
->>>> =C2=A0 3 files changed, 34 insertions(+), 36 deletions(-)
->>>>
->>>> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
->>>> index cb5056472e79..5a0686ab9679 100644
->>>> --- a/fs/btrfs/space-info.h
->>>> +++ b/fs/btrfs/space-info.h
->>>> @@ -3,6 +3,8 @@
->>>> =C2=A0 #ifndef BTRFS_SPACE_INFO_H
->>>> =C2=A0 #define BTRFS_SPACE_INFO_H
->>>> +#include "volumes.h"
->>>> +
->>>> =C2=A0 struct btrfs_space_info {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spinlock_t lock;
->>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>> index a8ea3f88c4db..94a3dfe709e8 100644
->>>> --- a/fs/btrfs/volumes.c
->>>> +++ b/fs/btrfs/volumes.c
->>>> @@ -154,32 +154,6 @@ const struct btrfs_raid_attr
->>>> btrfs_raid_array[BTRFS_NR_RAID_TYPES] =3D {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 },
->>>> =C2=A0 };
->>>> -/*
->>>> - * Convert block group flags (BTRFS_BLOCK_GROUP_*) to
->>>> btrfs_raid_types, which
->>>> - * can be used as index to access btrfs_raid_array[].
->>>> - */
->>>> -enum btrfs_raid_types __attribute_const__
->>>> btrfs_bg_flags_to_raid_index(u64 flags)
->>>> -{
->>>> -=C2=A0=C2=A0=C2=A0 if (flags & BTRFS_BLOCK_GROUP_RAID10)
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID10;
->>>> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID1)
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID1;
->>>> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID1C3)
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID1C3=
-;
->>>> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID1C4)
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID1C4=
-;
->>>> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_DUP)
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_DUP;
->>>> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID0)
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID0;
->>>> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID5)
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID5;
->>>> -=C2=A0=C2=A0=C2=A0 else if (flags & BTRFS_BLOCK_GROUP_RAID6)
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_RAID6;
->>>> -
->>>> -=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_SINGLE; /* BTRFS_BLOCK_GROUP_SI=
-NGLE */
->>>> -}
->>>> -
->>>> =C2=A0 const char *btrfs_bg_type_to_raid_name(u64 flags)
->>>> =C2=A0 {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const int index =3D btrfs_bg_flags_to_=
-raid_index(flags);
->>>> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
->>>> index e0c374a7c30b..7038c6cee39a 100644
->>>> --- a/fs/btrfs/volumes.h
->>>> +++ b/fs/btrfs/volumes.h
->>>> @@ -17,19 +17,42 @@ extern struct mutex uuid_mutex;
->>>> =C2=A0 #define BTRFS_STRIPE_LEN=C2=A0=C2=A0=C2=A0 SZ_64K
->>>> +/*
->>>> + * Here we use ilog2(BTRFS_BLOCK_GROUP_*) to convert the profile
->>>> bits to
->>>> + * an index.
->>>> + * We reserve 0 for BTRFS_RAID_SINGLE, while the lowest profile,
->>>> ilog2(RAID0),
->>>> + * is 3, thus we need this shift to make all index numbers sequentia=
-l.
->>>> + */
->>>> +#define BTRFS_RAID_SHIFT=C2=A0=C2=A0=C2=A0 (ilog2(BTRFS_BLOCK_GROUP_=
-RAID0) - 1)
->>>> +
->>>> =C2=A0 enum btrfs_raid_types {
->>>> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID10,
->>>> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1,
->>>> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_DUP,
->>>> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID0,
->>>> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_SINGLE,
->>>> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID5,
->>>> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID6,
->>>> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C3,
->>>> -=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C4,
->>>> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_SINGLE=C2=A0 =3D 0,
->>>> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID0=C2=A0=C2=A0 =3D ilog2(BTRFS_BLOC=
-K_GROUP_RAID0 >>
->>>> BTRFS_RAID_SHIFT),
->>>> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1=C2=A0=C2=A0 =3D ilog2(BTRFS_BLOC=
-K_GROUP_RAID1 >>
->>>> BTRFS_RAID_SHIFT),
->>>> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_DUP=C2=A0=C2=A0=C2=A0=C2=A0 =3D ilog2(=
-BTRFS_BLOCK_GROUP_DUP >>
->>>> BTRFS_RAID_SHIFT),
->>>> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID10=C2=A0 =3D ilog2(BTRFS_BLOCK_GRO=
-UP_RAID10 >>
->>>> BTRFS_RAID_SHIFT),
->>>> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID5=C2=A0=C2=A0 =3D ilog2(BTRFS_BLOC=
-K_GROUP_RAID5 >>
->>>> BTRFS_RAID_SHIFT),
->>>> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID6=C2=A0=C2=A0 =3D ilog2(BTRFS_BLOC=
-K_GROUP_RAID6 >>
->>>> BTRFS_RAID_SHIFT),
->>>> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C3 =3D ilog2(BTRFS_BLOCK_GROUP_RA=
-ID1C3 >>
->>>> BTRFS_RAID_SHIFT),
->>>> +=C2=A0=C2=A0=C2=A0 BTRFS_RAID_RAID1C4 =3D ilog2(BTRFS_BLOCK_GROUP_RA=
-ID1C4 >>
->>>> BTRFS_RAID_SHIFT),
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_NR_RAID_TYPES
->>>> =C2=A0 };
->>>
->>>
->>>> +/*
->>>> + * Convert block group flags (BTRFS_BLOCK_GROUP_*) to
->>>> btrfs_raid_types, which
->>>> + * can be used as index to access btrfs_raid_array[].
->>>> + */
->>>> +static inline enum btrfs_raid_types __attribute_const__
->>>> +btrfs_bg_flags_to_raid_index(u64 flags)
->>>> +{
->>>> +=C2=A0=C2=A0=C2=A0 u64 profile =3D flags & BTRFS_BLOCK_GROUP_PROFILE=
-_MASK;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 if (!profile)
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return BTRFS_RAID_SINGLE;
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0 return ilog2(profile >> BTRFS_RAID_SHIFT);
->>>> +}
->>>> +
->>>> =C2=A0 struct btrfs_io_geometry {
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* remaining bytes before crossing a s=
-tripe */
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 len;
->>>> @@ -646,7 +669,6 @@ void btrfs_scratch_superblocks(struct
->>>> btrfs_fs_info *fs_info,
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct block_device *b=
-dev,
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *device_pat=
-h);
->>>> -enum btrfs_raid_types __attribute_const__
->>>> btrfs_bg_flags_to_raid_index(u64 flags);
->>>> =C2=A0 int btrfs_bg_type_to_factor(u64 flags);
->>>> =C2=A0 const char *btrfs_bg_type_to_raid_name(u64 flags);
->>>> =C2=A0 int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
->>>>
->>>
+On 2021/10/16 09:40, Qu Wenruo wrote:
+> [BUG]
+> Grub btrfs implementation can't handle two very basic btrfs file
+> layouts:
+> 
+> 1. Mixed inline/regualr extents
+>     # mkfs.btrfs -f test.img
+>     # mount test.img /mnt/btrfs
+>     # xfs_io -f -c "pwrite 0 1k" -c "sync" -c "falloc 0 4k" \
+> 	       -c "pwrite 4k 4k" /mnt/btrfs/file
+>     # umount /mnt/btrfs
+>     # ./grub-fstest ./grub-fstest --debug=btrfs ~/test.img hex "/file"
+> 
+>     Such mixed inline/regular extents case is not recommended layout,
+>     but all existing tools and kernel can handle it without problem
+> 
+> 2. NO_HOLES feature
+>     # mkfs.btrfs -f test.img -O no_holes
+>     # mount test.img /mnt/btrfs
+>     # xfs_io -f -c "pwrite 0 4k" -c "pwrite 8k 4k" /mnt/btrfs/file
+>     # umount /mnt/btrfs
+>     # ./grub-fstest ./grub-fstest --debug=btrfs ~/test.img hex "/file"
+> 
+>     NO_HOLES feature is going to be the default mkfs feature in the incoming
+>     v5.15 release, and kernel has support for it since v4.0.
+> 
+> [CAUSE]
+> The way GRUB btrfs code iterates through file extents relies on no gap
+> between extents.
+> 
+> If any gap is hit, then grub btrfs will error out, without any proper
+> reason to help debug the bug.
+> 
+> This is a bad assumption, since a long long time ago btrfs has a new
+> feature called NO_HOLES to allow btrfs to skip the padding hole extent
+> to reduce metadata usage.
+> 
+> The NO_HOLES feature is already stable since kernel v4.0 and is going to
+> be the default mkfs feature in the incoming v5.15 btrfs-progs release.
+> 
+> [FIX]
+> When there is a extent gap, instead of error out, just try next item.
+> 
+> This is still not ideal, as kernel/progs/U-boot all do the iteration
+> item by item, not relying on the file offset continuity.
+> 
+> But it will be way more time consuming to correct the whole behavior
+> than starting from scratch to build a proper designed btrfs module for GRUB.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   grub-core/fs/btrfs.c | 33 ++++++++++++++++++++++++++++++---
+>   1 file changed, 30 insertions(+), 3 deletions(-)
+> 
+> diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
+> index 63203034dfc6..4fbcbec7524a 100644
+> --- a/grub-core/fs/btrfs.c
+> +++ b/grub-core/fs/btrfs.c
+> @@ -1443,6 +1443,7 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
+>         grub_size_t csize;
+>         grub_err_t err;
+>         grub_off_t extoff;
+> +      struct grub_btrfs_leaf_descriptor desc;
+>         if (!data->extent || data->extstart > pos || data->extino != ino
+>   	  || data->exttree != tree || data->extend <= pos)
+>   	{
+> @@ -1455,7 +1456,7 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
+>   	  key_in.type = GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM;
+>   	  key_in.offset = grub_cpu_to_le64 (pos);
+>   	  err = lower_bound (data, &key_in, &key_out, tree,
+> -			     &elemaddr, &elemsize, NULL, 0);
+> +			     &elemaddr, &elemsize, &desc, 0);
+>   	  if (err)
+>   	    return -1;
+>   	  if (key_out.object_id != ino
+> @@ -1494,10 +1495,36 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
+>   			PRIxGRUB_UINT64_T "\n",
+>   			grub_le_to_cpu64 (key_out.offset),
+>   			grub_le_to_cpu64 (data->extent->size));
+> +	  /*
+> +	   * The way of extent item iteration is pretty bad, it completely
+> +	   * requires all extents are contiguous, which is not ensured.
+> +	   *
+> +	   * Features like NO_HOLE and mixed inline/regular extents can cause
+> +	   * gaps between file extent items.
+> +	   *
+> +	   * The correct way is to follow kernel/U-boot to iterate item by
+> +	   * item, without any assumption on the file offset continuity.
+> +	   *
+> +	   * Here we just manually skip to next item and re-do the verification.
+> +	   *
+> +	   * TODO: Rework the whole extent item iteration code, if not the
+> +	   * whole btrfs implementation.
+> +	   */
+>   	  if (data->extend <= pos)
+>   	    {
+> -	      grub_error (GRUB_ERR_BAD_FS, "extent not found");
+> -	      return -1;
+> +	      err = next(data, &desc, &elemaddr, &elemsize, &key_out);
+> +	      if (err < 0)
+> +		return -1;
+> +	      /* No next item for the inode, we hit the end */
+> +	      if (err == 0 || key_out.object_id != ino ||
+> +		  key_out.type != GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM)
+> +		      return pos - pos0;
+> +
+> +	      csize = grub_le_to_cpu64(key_out.offset) - pos;
+> +	      buf += csize;
+> +	      pos += csize;
+> +	      len -= csize;
+> +	      continue;
+>   	    }
+>   	}
+>         csize = data->extend - pos;
+> 
+
