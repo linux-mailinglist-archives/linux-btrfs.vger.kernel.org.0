@@ -2,256 +2,277 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2546043DC39
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 09:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EBF43DC8F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 09:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhJ1Hiv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Oct 2021 03:38:51 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:33635 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230097AbhJ1Hiu (ORCPT
+        id S229843AbhJ1H7s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Oct 2021 03:59:48 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:62538 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229640AbhJ1H7r (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Oct 2021 03:38:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1635406582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=54llsslzTMpi28+8rNOpOA1tomS438AJro76Mp0JkmU=;
-        b=NlkvtipDD3qc1ynFRRC+/S1ppQZO7V2r2WLbHjSMpYYtdhng6l+AQQjNaoCF2yyX0Jghu6
-        o+EL7YJRkikIemmYyjWLHVjmweTaRZAsjaHIo+2G+d+p+pheR5hoKHcaO4dpba6Q5TBL7X
-        lWty9GBLWXPcr11LN2LWTrG80tGbcgo=
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01lp2054.outbound.protection.outlook.com [104.47.1.54]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-34-huVKKkLWPgu-K4n5AlMgsA-1; Thu, 28 Oct 2021 09:36:21 +0200
-X-MC-Unique: huVKKkLWPgu-K4n5AlMgsA-1
+        Thu, 28 Oct 2021 03:59:47 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19S7Rhmh023429;
+        Thu, 28 Oct 2021 07:57:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=DjABg5hfNGOgNRPUSEaxAbT9mwuMTDDDyzhjMMtbJqw=;
+ b=aZtXZHkJ2SMZ/Jfe81To1rOYnGI7S69nwHd+x4WiYckA7EC1tGq6Hew3OOFEUeG2hHgQ
+ deDUlJ0zGY1SoPkwU8QgfBYFomxyRnfadD/N5zghwqNoPosDlj3PoD3GQAJHU5gt2QTU
+ mx3gsdRaa2aktZEcXXgntonUTXhq6ej7M4x1ifTuaMwzNYaMB5Pe/iDo3MadahHF9IyT
+ YhVEiaKyXK+BNl7zFB5JZKIFiK02i5CqP5CriUn0PZs6SH6GUbxDmEcSsGW4xrc18UZv
+ aPi85C23hm8hSef+VPa53GO5EePoh/+UAC04zOYTgXsJBIigXdQzzX6umdQ07itICpoN VA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3byhqr92b4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Oct 2021 07:57:15 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19S7q3Lc019652;
+        Thu, 28 Oct 2021 07:57:14 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
+        by userp3030.oracle.com with ESMTP id 3bx4h3p8ns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Oct 2021 07:57:14 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fJQkZv4zZJKXuS/LOVD7SgA1STTEE4kFyTEvI4M/5FOolqQJAeIJU9TXmXfU4K862SLaORYlhAdPmhMYIIiz/+LKL0IRnODk5GXpcvvbsPy+tu2kinKA3R6IUSPgukTcYhvZ+Zj6tJBYEJu6WZqJleUPKKBeutCEYYFEdYK6tk708QnmH11yC+XgkF1LvXRac47OrJ2uguLRwtUxOC9MrqW9l1/umQXDmbuxcRwUT5HWGCW+quZAcD3RFXYvUSNeo1ZVv2lwPVhoTa+eCe4XnfnP5U9bAWFYEygjDfUcnJVyUyBfK8yuYe+Hlq7w8OYODTGdCXetF1EW+rX4TX0n8A==
+ b=gH+hINZWomnDptQ4NE6oVzGmrKVFV29Zv1FFqdYY50v88UEGvRjmlt95YK3N4yglkNMKYnwkk+17k5/kEgFxeaBhulbyBJpvRDgx7O66NkOTZPXYamBC3LRouRwCDW4BRm97qbjIB2pKYgma9aZ7AtBggr7GYomN2KhyePHxJydjZ7QanDIx54Bc/yEAtLb4b22gJDyWXvnWpSOazMzfOsP/Qq3XmL+T1JuHAyTMTy/UhZwdcx8relJEuR9ptCjgAunuIWg6AwvzVfUBMp618o8Vd+4mvjNkIpCL7jwyb0XZnL8QAGhU7wxMa940F2wMjVTJtExYcgci7y5xGhiBNQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=54llsslzTMpi28+8rNOpOA1tomS438AJro76Mp0JkmU=;
- b=UsYFHVH3R7NyZDXq9OripdxbmYwlJrHySaAqFZ3p13YQVQvV/Lm8IJuMeUfwm4zY83isu5pNc9w7y/MRk/6XJrfiBXkZcI+RecS6jQ5c/vTiuiYm5U6Ev7jdN7ga19yN9is+Y1L3VmE8oorNAq+4b2z6hnE7amFcK37gl66Vtlp1hp6GwhHAjQ0YFxRtzpUIAJr0XsI9uZfkr+s1JzJxtrBL4s/wwXMTEszRQnommCgUnkci+m+j+MON2WGx1gWMYMeOsCxzlfsgeHiS6ANMJtZuSVqKA7S/evpeMo8MXDj/ikvf31w2+eFJPZlxdyWXWUWVGcWAiyeQWN6hjvgzYw==
+ bh=DjABg5hfNGOgNRPUSEaxAbT9mwuMTDDDyzhjMMtbJqw=;
+ b=Mmr1LalOqHBimjoq8Ea0QD2Q2ij7duCdapIJUKABDLcq6NWP/L4qpM6wEP2pdeTsjlhDVVKwawfdroyUXCq54tysdGux7b+gahcTuIteBnB4nYXY0VGlQC7zzxaHYmMa2eKGqMIsmbOJ90udmcmBVPc2VcROymBMambiSGL/Ek/Ttjbu0udlHGq2QoqPh3PTKltRoezpC9xKk8KJgEBLA/kn/rF2cntcpCxTMQD/yOxrV/jjp3qUbNawJvQ8eFD0+YQVZm4wzwl7JoenaqACM2E9YtDEJfj4hjl8zUUNavVPrKhdaYmCijIKjCxNox7IWgdjD009grmdz4/Ecvs3iw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AM6PR04MB5288.eurprd04.prod.outlook.com (2603:10a6:20b:5::15) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DjABg5hfNGOgNRPUSEaxAbT9mwuMTDDDyzhjMMtbJqw=;
+ b=I6F3/HtdkfXNsJZ0zLKXNzosom3IlYnIoOZlZ3z30PszDVLI9M1HHNi0kDMeltfdkSCTDBs7d/YgJ+q6yzRaajgWMWPpS7xma/IcnlLF2UgMcBUNGD2qk3wxqyAsPsr3J5624TprA5FChG+6p2cjTfJrK9Fl3JT60DUKMtKzNmY=
+Authentication-Results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
+ by BL0PR10MB2930.namprd10.prod.outlook.com (2603:10b6:208:7b::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Thu, 28 Oct
- 2021 07:36:20 +0000
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::2d84:325b:5918:7a19]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::2d84:325b:5918:7a19%6]) with mapi id 15.20.4628.020; Thu, 28 Oct 2021
- 07:36:20 +0000
-Message-ID: <3845c0be-6ed8-171e-67c2-92a6f80a60cd@suse.com>
-Date:   Thu, 28 Oct 2021 15:36:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH] fs/btrfs: Make extent item iteration to handle gaps
+ 2021 07:57:12 +0000
+Received: from MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9]) by MN2PR10MB4128.namprd10.prod.outlook.com
+ ([fe80::49a5:5188:b83d:b6c9%7]) with mapi id 15.20.4628.020; Thu, 28 Oct 2021
+ 07:57:12 +0000
+Message-ID: <7231b62b-7b84-d061-f3bb-fea0fbf891d9@oracle.com>
+Date:   Thu, 28 Oct 2021 15:57:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH] btrfs: Don't set balance as a running exclusive op in
+ case of skip_balance
 Content-Language: en-US
-From:   Qu Wenruo <wqu@suse.com>
-To:     grub-devel@gnu.org
-Cc:     linux-btrfs@vger.kernel.org
-References: <20211016014049.201556-1-wqu@suse.com>
-In-Reply-To: <20211016014049.201556-1-wqu@suse.com>
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20211027135334.19880-1-nborisov@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20211027135334.19880-1-nborisov@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0336.namprd03.prod.outlook.com
- (2603:10b6:a03:39c::11) To AM7PR04MB6821.eurprd04.prod.outlook.com
- (2603:10a6:20b:105::22)
+X-ClientProxiedBy: SGXP274CA0011.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::23)
+ To MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Received: from [0.0.0.0] (149.28.201.231) by SJ0PR03CA0336.namprd03.prod.outlook.com (2603:10b6:a03:39c::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.15 via Frontend Transport; Thu, 28 Oct 2021 07:36:18 +0000
+Received: from [192.168.10.100] (39.109.140.76) by SGXP274CA0011.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.22 via Frontend Transport; Thu, 28 Oct 2021 07:57:10 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b5716fa0-5eeb-4987-3e2a-08d999e5a248
-X-MS-TrafficTypeDiagnostic: AM6PR04MB5288:
-X-Microsoft-Antispam-PRVS: <AM6PR04MB5288B92F644EE23B805B9C18D6869@AM6PR04MB5288.eurprd04.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: c8a938f1-1131-4e35-efcf-08d999e88c8c
+X-MS-TrafficTypeDiagnostic: BL0PR10MB2930:
+X-Microsoft-Antispam-PRVS: <BL0PR10MB293071EF7E1DB3AAE9B9A3B3E5869@BL0PR10MB2930.namprd10.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BVpGpu5cZMuEKJPpz6Yh314kPbncFEBQml4F7x936WTnUaQjWRGeWa3X24fJhQZ/e40QlLlNmKoxIEdCWtU8DukIVHANqr36E9RDtYg7aoOKTrtVVhsLx4B7wjc5szI/EJvT6xxA/UF7y/Slp2AW1ntIN7MGA/DCtVfAb0S8dcEBM2mSSjOKxp7d7+ZuA50liwIR3vkFPZICTxP3A0tTffKYDyzsMvi4hRyfdzisP/4TxmOHFjWGAgArghSHZiOOrgNPHjdx2JZqoZwcpAii8MqsRFQUMitK4RfMJxiFX1b/hkd3SJVJpxSIftwM2eQ0tRz0Xlhafwz0Op+0SksuTLxvMBJU+VpRsi3+/SJW89lA4ayPmSoKF410/t3tYdBkbQew3z5Mz7v0rBrKqjq1tkJTsjd0UB9oqIWujQnFzt3fn/5jCv1Wr5wqAypsGURO1zv52O/Fewr6FCV3+dLvxN68nrSYemjECxv1uBTWxr9E6oOTBwVHXc+RUXLgqBtnTpAmNeB1OsXa0HxZRBJj3dNdUJKAxESWERwqNzOjqyc0Gj7Yv7Gm5PsAkvp9jAMHDVTgkw/vzlY2Qw5Xrh6sva3BxofyXqLU4o4iND1sSihruLUnig+ywgS+MqtOgGDNO+VpGTqBfgrszuK4yRwfBoIlnXJK8cnqmp5UGj/wwKd+3sENWN2Nwp7yhlXojbSYqmMawzEtarH1IIYFEv+1KK5xvcmcA73koBXbxNaIY06HPigaZ41OpzNuyxwkiyx+
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(956004)(6706004)(2616005)(508600001)(186003)(2906002)(8676002)(38100700002)(6666004)(5660300002)(6916009)(26005)(86362001)(66476007)(66556008)(36756003)(316002)(16576012)(31686004)(4326008)(53546011)(66946007)(6486002)(31696002)(83380400001)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: M+hCh0+kuhpIVFRHFTpDdyiUG/BIzzeACRCUtvrMQffrGNqKbZ3+QPGM+6DwEAn3hIxwb01VmMBJiLCPr9dcF5VGb8bKuTlXS9v2gnCfFc9iQ2AfbmF7fOb6etJlnrhHxMONgP8aTB2XLDlqZK5ezs/400/BQ3Ktc00WNuBK9QzVaNL4rkCYBcpDy6ZAC4tQHRb4JnP9Y3mQJykxK29jcKvRb5+TiTEf8HkUNNSd9EPaSytXBF3M07SCiaTkAbLlGuNooZG0EcCjSmVh2zGnchLQ6XAan3rjDblO8UNDzdVTVvluzFAQ8L/gprf6cOpLjZBBVT5UIrYU9D6Rtml8edfUSrPMYh+QhrT5zM/pkpotYEgaGvR/unrXxSIeUbGynC57ihm8dfyIrXsLvBlIWUWvQA4KxqanUSM18SegmVmR2tYaQvFtnvuf8P4FtC9YczNxbiAydBL0BmjVvymck0OEeeMTX8SEnD0fJYbNDil5XmiEE4Teqg3Fy+WjA4oyCBfKeXZakMwk6mH5uSD9yr2xiWOziJZwH2MyGpqklwk6T7jRXNTZEx2TDXGpcYCKIp+lqYtVdt8s1JAmLPLK7WuMgrol9t3XEGuaiWXfmAQZBArasvArWOMTWjB8rDFXWKm6qGDGvb53r0GJCOZ08nnDZhfh0b0d9HilLUwZ2QhYRifRMiK7I9DD4SasRr86WkhazZNXAAcIi0hf06dXPbiXhzJ0yNoN3SJ/N1nVyW8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(44832011)(86362001)(36756003)(16576012)(186003)(31696002)(83380400001)(2906002)(38100700002)(8936002)(316002)(6486002)(956004)(66946007)(26005)(53546011)(6666004)(8676002)(66556008)(2616005)(31686004)(66476007)(5660300002)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bHBWKzFzRnZYOFMrZ0tUTVZId3ZwQVpNdUp3eVBEekdLYnRkRURLaytta3Q1?=
- =?utf-8?B?TzliZEZndTY2eWJ2ckt5QmNTUTc5dHdWb1NhVU9sS0xNdkZyT2lySTFtM0Jp?=
- =?utf-8?B?WjNOenZudmNQZGtJMkxUMFByUmY0K1AzejRLOGU1bXdBbExQMFJwL2RLSGVC?=
- =?utf-8?B?R0Qrc25BVzN5dHJBZUZmd1p6RmlPTm96QjZxcHdOQVVIZjIvNW5ubWZBdU5U?=
- =?utf-8?B?ckZvMzZ2eUdGN1N0VnNZS1lBRW5KK3U2MEt3R0pOVmUrS08xaURFTWZpVWo0?=
- =?utf-8?B?OUxZMTU3NnI5QldMVVBUSzdyZm4zVms5QzZ4TVhCbXZ1Uk8xaXJCTS9TTnQ0?=
- =?utf-8?B?L1RHNnQzUGlGbGJsVUZUOWphdjBFN0FqR1ZkdEtFWEVqc0J4dFZBR1hCck9u?=
- =?utf-8?B?K0psa21ia1JDOXpaVElsWFRYUE9SbEVBREJpeTBTRmVVZVVOb1hMQmFKQTlE?=
- =?utf-8?B?Zi9SUEN5RmdtdlRJbTFJWEhVMzFOb01RUGJST016UTdNNUM4dHlhVHF6bE5Q?=
- =?utf-8?B?dlQ5S2dKTTZGTnNCOUxGdVJ1T1VwKzNOZnlOVncyMUl1RzJJTDhEZzI2Rkw2?=
- =?utf-8?B?NXRaS0ZGVlg5MDZjYmo1dTZhSXlOUG5zWlphcXF5a1NpWW5idWh0M09GOFd3?=
- =?utf-8?B?NGRsYmxpTjdRaTNGUlR3azFpMFJUUXo4dUt4RGlpNlNmL1dYalpqeWNMZGdY?=
- =?utf-8?B?RUdwUE4wRGx6OWltN3pCRWw1WUt1K29QRDR4L3VpQUUyekFIVHZDdUlMV0Mx?=
- =?utf-8?B?RDVva0J4c2xkZ0RvaUJIN3FwRlhERTVQSlBvcS9KbjdPa3RKM1VBZHFnWFl1?=
- =?utf-8?B?UXBPSkJ4WjFsM1RhWWVjdXQ5VitRNWNTUVpzWlJFUDllaTgrcGlGV2JuaHRV?=
- =?utf-8?B?dlhjRlhLWEV0U3pjRVZkb3VKUU1pakcxRU0wd2t5UHpwMTBFeFlyblhKV3My?=
- =?utf-8?B?cEJZeUlCQ2kzV1M5dlQ3UjRPYmM5SXU4TUVJd28yWVcxK3gxVTduOFB3VUlH?=
- =?utf-8?B?aDB6Q3MrQjJBS2ZRejl0U1lNYVNNVXlEaWlLRmdnM3RqUGJRV3owdGsvTGhU?=
- =?utf-8?B?Zmpkb0NyOUtIdnNWWHBacEViMVF0akhjTzROd2Q3Q1EzTHhtNU1sV0pwU2tS?=
- =?utf-8?B?NFZTc2E4QjV4Y0xXV2pLeW1pWmpQbmFBcE1hdzVQSGt3UmJ1WVB0a1BJdXFm?=
- =?utf-8?B?Q2Z4ZXQydGdYNFdNZHdNR0JSblVJczFtSzJiMFZzQTBRZGhFc1RjOXZkVDE1?=
- =?utf-8?B?RnhRNG5VbWYrMDNIQVlXVENkRFY5TE1FWkdRN2V6bUdRY0dNSXRuTXlLL1Qv?=
- =?utf-8?B?dGVKVUc1dXZ6UVdiUDRkRndRU1RpY21MeCtxVWk3alJjMHQxeVVBb0NTUEhP?=
- =?utf-8?B?OEg1VTE3Q2pnY2dzK3Y4LzNFLzdETGNwR2FYSFlldWd2aGJLcU9hK000bk9L?=
- =?utf-8?B?clZRdE8zN3VYTFFLSDdVTkdrMWlaVVluNG5zbGsyZXZSVS9LUFRHVWZMWG9H?=
- =?utf-8?B?M0NMTjRLcTlrNmd0LzE2NmFlKzcyN241ekEzUVp2TXZQYUcxTjlQdUpWM09K?=
- =?utf-8?B?Nzh5QkpxcTc3UGNvQzUvWkNMNFdxVm92WHJUK3VxOW9OQUdUYk52YWQ5Tmkr?=
- =?utf-8?B?RWdSSTFuWVp2aEJzRTI3bXFMNUtCTXhiaUlYN0JEcDhsK0gyVDBlSkdNamNK?=
- =?utf-8?B?cXhBeUZCOUJYdjc0TlZITlhNUVNWSGg1OUIzOG9GNzdxTE9rd0JiK3VJV1Vw?=
- =?utf-8?B?R0ZmRGtBWFdoK1FTbEE1b0ROQmxySEp2SVFTNFFBa0FUYzZ2ODViLzdpdWlI?=
- =?utf-8?B?TmVSNkd3NU9NdkkvMVFIZjF6YlkxTHRaM2RpdUZ5MzJqSHVZbEtjM3owWmph?=
- =?utf-8?B?ZSt4RWZvL0d0dDRHaU9RSEUvZkVoazNqNTNUQm1XM0w0QUNTaDY4eHl5YkEy?=
- =?utf-8?B?bjNCUlZDSERpMzRxM0szK0RMRkdUeHI3MnFjRlR0WUdhY00rMllrL1ZDa1dW?=
- =?utf-8?B?clAyM3puZlFvVWJaTGoyT1ExTDJsZENJem9vMGFuMGJmT01oU0I5ZlR5eDZa?=
- =?utf-8?B?QVZ0Q1k4Rm1CejZ3VzFkSjlXYWl6Q2RxUGtCS3k4NGNSOStoKy9ZK3lVbVly?=
- =?utf-8?Q?RP4Q=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5716fa0-5eeb-4987-3e2a-08d999e5a248
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MVdpUzlpZnlpQVM3OHRIZkFERk1IajZOdDVZTFU3QmI3cUFXRFlYUlJ5bWtY?=
+ =?utf-8?B?d0dQMmdyU3JTV2w4Mk1KVjBXYXAwVEZqakxJOGV5MTlSYytrK0EwK0ZJcjNz?=
+ =?utf-8?B?MTJlTit3UUFNam5qNVdESUZwQXJGM2drcWYvMkdDOFJvQ1FTZVB5TkNqV1ps?=
+ =?utf-8?B?MzdiZmd3Vm1oV2ZBaUZHZGtmNXRwYzFsSytuUWsySEdwVlc2M0dKYm5XS0R2?=
+ =?utf-8?B?R0lJU1gvZ0lxQTRwOWJMUDdaWEs0Q3hseGVkSFZ6WHNmMWdDeCsrazZ3Ny90?=
+ =?utf-8?B?UUhUZFJJS0Z1SEZ5SjU4bDNJMnc5dGV3eWhSa2RESytHQVc3ZUUySXdOMjE0?=
+ =?utf-8?B?TnAwbVVCYVBwR29IUlBCSUVnZnRuQ0VJcXlvYU9Zc1FJdDNZVUp4RHdmSE1j?=
+ =?utf-8?B?WUx2cWVTUDZtS0NzSWpzL2h1OUhuV1JzeU5Fa2duYmV4UzBtQVdKNWwxZlVy?=
+ =?utf-8?B?cUhBMVd2eWRJN1VvOTRpMjV5aWxucUhUc0g5aEpGQVVHZTV5aXJVblZQV3M1?=
+ =?utf-8?B?WHZucXB4OWVMNTViRXBNejFwRmVVeUF3eVpVenRicGxsSVh4T21BVXUwSjlY?=
+ =?utf-8?B?b0hRWnJNcmZNVHZGL3JobjAxRG96OXZhSHozczgrbUIwUENhZmdwbkZyQm1w?=
+ =?utf-8?B?aDJvOVY4bGZmZGhlcHVVMXYyRXpkMjhjVksvbnJZeGs4Z3RGNzhYa2RobW1M?=
+ =?utf-8?B?SUw2Nmdkb0ovanN0VktkaVJlMk4xUFJLMWd4SXdseUpwWVNERUpDNlFHR1ZP?=
+ =?utf-8?B?YmZZOWJ5U25RMlFkRXhJck1wWWRTNktUdE1rSVhNOTR3aEZsbjZHR09WdUJy?=
+ =?utf-8?B?L2pmZE8xRjUzMEJab3h4dm51MExvU2JldC95cUlDVGJIa0NGeDM2VHB2c29X?=
+ =?utf-8?B?bVlzMVpyVjJOTlNkKzFOR1U2QThyWUNhaE91MVFPUEpBejVDa0tVd3RyUGhx?=
+ =?utf-8?B?TXFPYzdURlFoeDVxeFM3WFp5NmJhKzF6WjlpNHY3VEJjeTRZMHQ1T2NOY0xX?=
+ =?utf-8?B?K3kvQUppMXA5YndEZSswcWFTcjI4aGZKVVdHSGpMaXE0dk1UUzJpV2ZRUDF3?=
+ =?utf-8?B?UUQ3blE0UG5GMzJWQ1p1eE9pZEVwTndpenJtVXpYbm5MckRYM1o3RW5QSExR?=
+ =?utf-8?B?aHg0Q09CbStQRmwybnpsWlN0cXkyS2xOMTNTeHFaMUlyS2tHMkw4bXA5QW9C?=
+ =?utf-8?B?YW03RkpLYkc2NVBreFpYSnFjbEswYzNkRmZzNjV3Yk9tQ1VhbnFXdTVORVJR?=
+ =?utf-8?B?OHB1cWU2UHFLR25kMEI0ZiswUlZQU1dXMzFMd0dySGE4TkxRRW9kRUdNbVVB?=
+ =?utf-8?B?c2g0SnFacW41QVA1OTR5TWNYc3BZYjBFVDcyTmkyRHhVYkU0cjVMSEVQcVFt?=
+ =?utf-8?B?OHk2U09DbUFJTE10enBvSnk3SjRRMnQzeU5hWnJ3MVlkbEp2K2svbDJIZGx5?=
+ =?utf-8?B?T3ltN0pCTVpWQnRYakxMc3FyNFc3NnQ3dnZlb2svYkxqZFNkNG9Nd2dMWVZI?=
+ =?utf-8?B?c1QxaTV1Q0Z1dnlrSks3SDlGNlI3czRlUlF4aG9YalVMZkhzQ0NTOVo5OHJu?=
+ =?utf-8?B?aFlsWTN4WVpOWW9yMVZSajlXOGhLVGpoZkIzdktPTGdCcW5OeW85MVo1YjNv?=
+ =?utf-8?B?WnVSdzBDcVJwQTcyekVrNG54NEhSRWZFa05mM3hTQlZkV3BGWDNBcG9Kc3lI?=
+ =?utf-8?B?ZEVLdXNiM29RTU9mOXdHVXhYUkZuQ3MrSDhNd1VYKzgwMlJ1OEZVeDY0L1pO?=
+ =?utf-8?B?TW41dTU0OTVpbldKQVNPLzVRTG5OVFIweTVEQ0lUTDdjbDVmYTdDZXFFRUJy?=
+ =?utf-8?B?RVRHeHFuUURIYWF3TTVBSWYwdk8va2gxRlMxNEhwa08xdEdiT0hpZHVMc1A4?=
+ =?utf-8?B?UWdxMlJuekZUdXRmNFRQQlhtNzE1YzV2RXJNZmcrNjNLbFpkbUZaSG5ZUWdS?=
+ =?utf-8?B?aFR0S3hkK29Ncm92SnM5aTFzQk0vcWZJa1ptYWliYlVpT3Fja0xtM0JwWlIy?=
+ =?utf-8?B?cS9kT1Eyb3BDSWh0NGxYSjdoYWk0ZEFNM0pKdjR0aTROdTNCQloyN2ZPVEs5?=
+ =?utf-8?B?VmltOVJSamZ4a1RraDhES0tjRE90N21NUXJJZlNuRVFYb0lGaDF4TXA2Z1FJ?=
+ =?utf-8?B?dlJrUjhzSlp0Z3NYWnJiWU5MVElXNi9hTWlZbFh5cWFyR29TazRrK2ZxcWdi?=
+ =?utf-8?Q?GuLFgfKIeEMXyARmtEYvwII=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8a938f1-1131-4e35-efcf-08d999e88c8c
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2021 07:36:20.0880
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2021 07:57:12.2340
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y5j9zc80v4BX2oxAPXraPe/MDkho6rW+IUXyN8OGMHC2eh0JHagHRQAoW6LTp9f3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5288
+X-MS-Exchange-CrossTenant-UserPrincipalName: zZ4Bvnu8wNxd8wOnoyAaY+htT6ki04gHZ9lJJvVCu4rDb5LwMsYXakLyYBJ+C5cYb2esLi117YxGMJeyM8pyuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB2930
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10150 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110280040
+X-Proofpoint-GUID: RRv1YU8hwrpQviYOLX-rbhCmYvAknDQh
+X-Proofpoint-ORIG-GUID: RRv1YU8hwrpQviYOLX-rbhCmYvAknDQh
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Gentle ping?
+On 27/10/2021 21:53, Nikolay Borisov wrote:
+> Currently balance is set as a running exclusive op in
+> btrfs_recover_balance in case of remount and a paused balance. That's a
+> bit eager because btrfs_recover_balance executes always and is not
+> affected by the 'skip_balance' mount option. This can lead to cases in
+> which a user has mounted the filesystem with 'skip_balance' due to
+> running out of space yet is unable to add a device to rectify the ENOSPC
+> because balance is set as a running exclusive op.
+> 
+> Fix this by setting balance in btrfs_resume_balance_async which takes
+> into consideration whether 'skip_balance' has been added or not.
+> 
 
-Without this patch, the new mkfs.btrfs NO_HOLES feature would break any 
-kernel/initramfs with hole in it.
+Hmm, no. I roughly remember it was purposefully to avoid replacing
+intervened with the half-completed/paused balance. As below.
+Not sure if it is ok now?
 
-And considering the modification is already small, I believe this patch 
-is definitely worthy as a bug fix.
+Before patch: Can't replace with a paused balance.
 
-Thanks,
-Qu
+------------
+$ btrfs bal start --full-balance /btrfs
+balance paused by user
 
-On 2021/10/16 09:40, Qu Wenruo wrote:
-> [BUG]
-> Grub btrfs implementation can't handle two very basic btrfs file
-> layouts:
-> 
-> 1. Mixed inline/regualr extents
->     # mkfs.btrfs -f test.img
->     # mount test.img /mnt/btrfs
->     # xfs_io -f -c "pwrite 0 1k" -c "sync" -c "falloc 0 4k" \
-> 	       -c "pwrite 4k 4k" /mnt/btrfs/file
->     # umount /mnt/btrfs
->     # ./grub-fstest ./grub-fstest --debug=btrfs ~/test.img hex "/file"
-> 
->     Such mixed inline/regular extents case is not recommended layout,
->     but all existing tools and kernel can handle it without problem
-> 
-> 2. NO_HOLES feature
->     # mkfs.btrfs -f test.img -O no_holes
->     # mount test.img /mnt/btrfs
->     # xfs_io -f -c "pwrite 0 4k" -c "pwrite 8k 4k" /mnt/btrfs/file
->     # umount /mnt/btrfs
->     # ./grub-fstest ./grub-fstest --debug=btrfs ~/test.img hex "/file"
-> 
->     NO_HOLES feature is going to be the default mkfs feature in the incoming
->     v5.15 release, and kernel has support for it since v4.0.
-> 
-> [CAUSE]
-> The way GRUB btrfs code iterates through file extents relies on no gap
-> between extents.
-> 
-> If any gap is hit, then grub btrfs will error out, without any proper
-> reason to help debug the bug.
-> 
-> This is a bad assumption, since a long long time ago btrfs has a new
-> feature called NO_HOLES to allow btrfs to skip the padding hole extent
-> to reduce metadata usage.
-> 
-> The NO_HOLES feature is already stable since kernel v4.0 and is going to
-> be the default mkfs feature in the incoming v5.15 btrfs-progs release.
-> 
-> [FIX]
-> When there is a extent gap, instead of error out, just try next item.
-> 
-> This is still not ideal, as kernel/progs/U-boot all do the iteration
-> item by item, not relying on the file offset continuity.
-> 
-> But it will be way more time consuming to correct the whole behavior
-> than starting from scratch to build a proper designed btrfs module for GRUB.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+$ btrfs rep start /dev/vg/scratch1 /dev/vg/scratch0 /btrfs
+ERROR: unable to start device replace, another exclusive operation 
+'balance' in progress
+
+$ mount -o remount,ro /dev/vg/scratch1 /btrfs
+$ mount -o remount,rw,skip_balance /dev/vg/scratch1 /btrfs
+
+$ btrfs rep start /dev/vg/scratch1 /dev/vg/scratch0 /btrfs
+ERROR: unable to start device replace, another exclusive operation 
+'balance' in progress
+
+$ umount /btrfs
+$ mount -o skip_balance /dev/vg/scratch1 /btrfs
+
+$ btrfs rep start /dev/vg/scratch1 /dev/vg/scratch0 /btrfs
+ERROR: unable to start device replace, another exclusive operation 
+'balance' in progress
+------------
+
+
+After patch: Replace is successful even if there is a paused balance.
+
+------------
+$ mount -o skip_balance /dev/vg/scratch1 /btrfs
+
+[ 1367.567379] BTRFS info (device dm-1): balance: resume skipped
+
+$ btrfs rep start /dev/vg/scratch1 /dev/vg/scratch0 /btrfs   <----
+
+[ 1391.318192] BTRFS info (device dm-1): dev_replace from 
+/dev/mapper/vg-scratch1 (devid 1) to /dev/mapper/vg-scratch0 started
+[ 1408.243475] BTRFS info (device dm-1): dev_replace from 
+/dev/mapper/vg-scratch1 (devid 1) to /dev/mapper/vg-scratch0 finished
+
+
+$ btrfs bal resume /btrfs
+Done, had to relocate 5 out of 12 chunks
+------------
+
+Thanks, Anand
+
+
+> Fixes:
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 > ---
->   grub-core/fs/btrfs.c | 33 ++++++++++++++++++++++++++++++---
->   1 file changed, 30 insertions(+), 3 deletions(-)
 > 
-> diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
-> index 63203034dfc6..4fbcbec7524a 100644
-> --- a/grub-core/fs/btrfs.c
-> +++ b/grub-core/fs/btrfs.c
-> @@ -1443,6 +1443,7 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
->         grub_size_t csize;
->         grub_err_t err;
->         grub_off_t extoff;
-> +      struct grub_btrfs_leaf_descriptor desc;
->         if (!data->extent || data->extstart > pos || data->extino != ino
->   	  || data->exttree != tree || data->extend <= pos)
->   	{
-> @@ -1455,7 +1456,7 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
->   	  key_in.type = GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM;
->   	  key_in.offset = grub_cpu_to_le64 (pos);
->   	  err = lower_bound (data, &key_in, &key_out, tree,
-> -			     &elemaddr, &elemsize, NULL, 0);
-> +			     &elemaddr, &elemsize, &desc, 0);
->   	  if (err)
->   	    return -1;
->   	  if (key_out.object_id != ino
-> @@ -1494,10 +1495,36 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
->   			PRIxGRUB_UINT64_T "\n",
->   			grub_le_to_cpu64 (key_out.offset),
->   			grub_le_to_cpu64 (data->extent->size));
-> +	  /*
-> +	   * The way of extent item iteration is pretty bad, it completely
-> +	   * requires all extents are contiguous, which is not ensured.
-> +	   *
-> +	   * Features like NO_HOLE and mixed inline/regular extents can cause
-> +	   * gaps between file extent items.
-> +	   *
-> +	   * The correct way is to follow kernel/U-boot to iterate item by
-> +	   * item, without any assumption on the file offset continuity.
-> +	   *
-> +	   * Here we just manually skip to next item and re-do the verification.
-> +	   *
-> +	   * TODO: Rework the whole extent item iteration code, if not the
-> +	   * whole btrfs implementation.
-> +	   */
->   	  if (data->extend <= pos)
->   	    {
-> -	      grub_error (GRUB_ERR_BAD_FS, "extent not found");
-> -	      return -1;
-> +	      err = next(data, &desc, &elemaddr, &elemsize, &key_out);
-> +	      if (err < 0)
-> +		return -1;
-> +	      /* No next item for the inode, we hit the end */
-> +	      if (err == 0 || key_out.object_id != ino ||
-> +		  key_out.type != GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM)
-> +		      return pos - pos0;
-> +
-> +	      csize = grub_le_to_cpu64(key_out.offset) - pos;
-> +	      buf += csize;
-> +	      pos += csize;
-> +	      len -= csize;
-> +	      continue;
->   	    }
+> I'm inclined to put a Fixes: ed0fb78fb6aa ("Btrfs: bring back balance pause/resume logic")
+> tag since this is the commit that moved the exclusive op tracking of
+> resume_balance_async to btrfs_recover_balance. However that's far too back in the
+> past and given the commit message of that commit I wonder if doing this
+> re-arrangement in older kernels is correct. David what's your take on this,
+> perhahps just a stable tag would be sufficient?
+> 
+> 
+>   fs/btrfs/volumes.c | 28 ++++++++++++++--------------
+>   1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 546bf1146b2d..bff52fa1b255 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -4432,6 +4432,20 @@ int btrfs_resume_balance_async(struct btrfs_fs_info *fs_info)
+>   		return 0;
 >   	}
->         csize = data->extend - pos;
+>   
+> +	/*
+> +	 * This should never happen, as the paused balance state is recovered
+> +	 * during mount without any chance of other exclusive ops to collide.
+> +	 *
+> +	 * This gives the exclusive op status to balance and keeps in paused
+> +	 * state until user intervention (cancel or umount). If the ownership
+> +	 * cannot be assigned, show a message but do not fail. The balance
+> +	 * is in a paused state and must have fs_info::balance_ctl properly
+> +	 * set up.
+> +	 */
+> +	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE))
+> +		btrfs_warn(fs_info,
+> +	"balance: cannot set exclusive op status, resume manually");
+> +
+>   	/*
+>   	 * A ro->rw remount sequence should continue with the paused balance
+>   	 * regardless of who pauses it, system or the user as of now, so set
+> @@ -4490,20 +4504,6 @@ int btrfs_recover_balance(struct btrfs_fs_info *fs_info)
+>   	btrfs_balance_sys(leaf, item, &disk_bargs);
+>   	btrfs_disk_balance_args_to_cpu(&bctl->sys, &disk_bargs);
+>   
+> -	/*
+> -	 * This should never happen, as the paused balance state is recovered
+> -	 * during mount without any chance of other exclusive ops to collide.
+> -	 *
+> -	 * This gives the exclusive op status to balance and keeps in paused
+> -	 * state until user intervention (cancel or umount). If the ownership
+> -	 * cannot be assigned, show a message but do not fail. The balance
+> -	 * is in a paused state and must have fs_info::balance_ctl properly
+> -	 * set up.
+> -	 */
+> -	if (!btrfs_exclop_start(fs_info, BTRFS_EXCLOP_BALANCE))
+> -		btrfs_warn(fs_info,
+> -	"balance: cannot set exclusive op status, resume manually");
+> -
+>   	btrfs_release_path(path);
+>   
+>   	mutex_lock(&fs_info->balance_mutex);
 > 
 
