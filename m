@@ -2,128 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACF743DACB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 07:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D6E43DB9A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 08:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhJ1FjA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Oct 2021 01:39:00 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42260 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhJ1Fi7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Oct 2021 01:38:59 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6D49321965;
-        Thu, 28 Oct 2021 05:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635399392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AFvkeVJF8zJkAPbqaRlXUR14BMdykkpODDOM2etgnQ0=;
-        b=WunUPghBKO3IuNhP+QYNE3TXSLRkccAavDs46TWPiLySHuwv1dmfPFFkHCCzTf5WZJZzIr
-        b30e+8NPLWI58XsKB4BUCzjwe7942dtsPALXEuzzS6eOhEsSrv2bs9Ewqavf19zdi6xkyQ
-        cM1F9v8XEmuwTcIR+gmpCmiJLiDAgcA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CA2313EC9;
-        Thu, 28 Oct 2021 05:36:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id MGiDBOA2emH2cQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 28 Oct 2021 05:36:32 +0000
-Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Su Yue <l@damenly.su>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
- <e75cf666-0b3a-9819-c6ac-a34835734bfb@gmx.com>
- <CAJCQCtT1+ocw-kQAKkX3wKjd4A1S1JV=wJre+UK5KY-weS33rQ@mail.gmail.com>
- <CAJCQCtTqqHFVH5YMOnRSesNs9spMb4QEPDa5wEH=gMDJ_u+yUA@mail.gmail.com>
- <7de9iylb.fsf@damenly.su>
- <CAJCQCtSUDSvMvbk1RmfTzBQ=UiZHrDeG6PE+LQK5pi_ZMCSp6A@mail.gmail.com>
- <35owijrm.fsf@damenly.su>
- <CAJCQCtS-QhnZm2X_k77BZPDP_gybn-Ao_qPOJhXLabgPHUvKng@mail.gmail.com>
- <ff911f0c-9ea5-43b1-4b8d-e8c392f0718e@suse.com>
- <9e746c1c-85e5-c766-26fa-a4d83f1bfd34@suse.com>
- <CAJCQCtTHPAHMAaBg54Cs9CRKBLD9hRdA2HwOCBjsqZCwWBkyvg@mail.gmail.com>
- <91185758-fdaf-f8da-01eb-a9932734fc09@suse.com>
- <CAJCQCtTEm5UKR+pr3q-5xw34Tmy2suuU4p9f5H43eQkkw5AiKw@mail.gmail.com>
- <CAJCQCtTBg0BkccvsiRA+KgGL6ObwCqPPx8bb=QZhcaC=tXUsBA@mail.gmail.com>
- <CAJCQCtQ0_iAyC8Tc8OZyf2JGGnboXm8zk9itZaOLAoK=w1qdrg@mail.gmail.com>
- <b03fb30f-3d4b-413c-0227-6655ffeba75d@suse.com>
- <CAJCQCtQT22cdBPZ+d03m8c_sCtdVaM_Oz705T37v2XPx26SWFg@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <420a1889-6a35-c7d2-b4f7-735a922fe469@suse.com>
-Date:   Thu, 28 Oct 2021 08:36:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229775AbhJ1HBV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Oct 2021 03:01:21 -0400
+Received: from mout.gmx.net ([212.227.17.20]:36845 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhJ1HBU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 28 Oct 2021 03:01:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1635404331;
+        bh=Brq78Mkb4gMb5TGWVuBoemDTWk5hVfPPHx4sAQuGNtI=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=UOeIdecpaZ7NAMprkdjCCtcXFhhbafxDB2aot3qQi+yqVQufjmTyvEB/iSeGIXoY7
+         /3Uow1ROQWfYat3ePQfETwdZs72EFFJrHGq04o7A5lKkJqITaQjDuUfTPZJr97LqOd
+         sF7xQhRddj65hd6UqivY6wPgl3iCzcJOw3RPeOcQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNsw4-1mHjMI15su-00OEio; Thu, 28
+ Oct 2021 08:58:50 +0200
+Message-ID: <984ea4d2-c943-cdc9-232d-2f11b3d256c7@gmx.com>
+Date:   Thu, 28 Oct 2021 14:58:47 +0800
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtQT22cdBPZ+d03m8c_sCtdVaM_Oz705T37v2XPx26SWFg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] btrfs: fix deadlock between quota enable and other quota
+ operations
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <3df4731012ac6dc17f9f3a33c519735fbe89fc84.1635355240.git.fdmanana@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <3df4731012ac6dc17f9f3a33c519735fbe89fc84.1635355240.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WW0xQO8GJFQ20MMw3emMDbMhlLhpQDIwLn/EuPNgVGzJ8EalOzS
+ YSaSouqFeLLDu/Qh0bUxVVaX90FYqzCXgUUCDqfJRP2/r+1ZXg6zMgkIPu7EBVxorQxABRD
+ eWdOWTQZQGdzBh7ZeT6DBWoaMjs8qv5PLkaouB13WSqvWK++6CiDOqke0HBVVnFGwtauNVX
+ Fh8ZEBFn22lRvNSoLF8Bw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:m0AN+O5boyM=:0nj/Gqb9RckdokgZU3B0Dm
+ cA2zXef7YkgIvR1isRLKd/sCDP1UT2+GKLiDc9ScZcKhjLdvozjP5/zlOZM87gulVAv5RkVjL
+ vhUAgLwRAcf/57XpWV+IifrD5CUpeutYHjq6iipj637gyhHEFIyPqSa+Y87gF2mEUZcREfJla
+ lTnSJ6zDvfwN4dVzAOfPrud4KHfIH99YLea7/ahWhbOYBQ5+yQMs2XqqHjgh3cdBRLxA3eNwk
+ 3rIeD90JErtdK40Xh67tV+4QZDsM7vDf5sLzw5M7dYm9rhxNfWVgqNUfVTUXQrQP40Kb+BdQO
+ NL+Frv2zKkkvjq3r7ibbJz95emWkZq2e9+EilBUPJTELriCL8W0UHtd61JDbjEXiel0GqBzDH
+ fTKBiVXE5rkUJ0q9dv8Nty6vakwdPDOLDBzaRGridQ6VFF+DbVHcWviYCo7RCQ1EvQqBpnHOz
+ SkUTQvxDKDAU34mEYhs3l4TrmQkUvKGxcnnDzo+EzyhawlNjZ0vtRbO6COgoMEC8lYOW8aMxB
+ SfVQ5xDNhntRL2ZtlkyT6C19qdONDLrRBRn4AcPB/lHl55IeNn2CzVxY2+dgOHNHg8aGyuD+H
+ qX6u6dU9+yxOHBf97heoX//n5KcbJRa7iyfRsW6d2S+GIhMbhpYZCMPkhqaJasRUG7BNNny8w
+ O9yndSX+/2blKCJFSJ8ulqdz5d+/sf3/6/VbokbsohpnPGGgqAFq9/6gojaY9rwF/giySUEpZ
+ D1E60Nt52Cg4nsHP9NWUhI5QrbFGQtaMC1k2zSv6TcT2GdPFzMJk4LmT4UUH/7cTXoq1UWKhI
+ ViEo5AtnrpncOyOcuUBYZ+7F69D05/mxP2kBu81Y4ppG7ATbCspukDl8rlpnLpRV9zzTFOGiY
+ ZhPC71mg66CcrQRU2+AfF+WnO/z4VIwkrew7wE185yD02ANEbvciEPBikGOmGIQ9/jQXQ8Iop
+ LqAayQR5s8KgX7M9kWpreQZCVsj5vJqM11hJ9BQdz7qiHSSzzHeS6Wc6Ar92/WumJ9OlhoqzY
+ BgckHTJQRUp3DkrBrXLPuZRivetC/5+IoGgDJ6XnwKDuvGGkRQXt6YbjIM90a8bUKlzDHqtQv
+ v+b8vSWyNPHhDQ=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 27.10.21 г. 21:22, Chris Murphy wrote:
-> On Tue, Oct 26, 2021 at 3:14 AM Nikolay Borisov <nborisov@suse.com> wrote:
-> 
->> I think I identified a race that could cause the crash, can you apply the
->> following diff and re-run the tests and leave them for a couple of days.
->> Preferably apply it on 5.4.10 so that there is the highest chance to reproduce:
->>
->> diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
->> index 309516e6a968..a3d788dcbd34 100644
->> --- a/fs/btrfs/async-thread.c
->> +++ b/fs/btrfs/async-thread.c
->> @@ -234,6 +234,11 @@ static void run_ordered_work(struct __btrfs_workqueue *wq,
->>                                   ordered_list);
->>                 if (!test_bit(WORK_DONE_BIT, &work->flags))
->>                         break;
->> +               /*
->> +                * Orders all subsequent loads after WORK_DONE_BIT, paired with
->> +                * the smp_mb__before_atomic in btrfs_work_helper
->> +                */
->> +               smp_rmb();
->>
->>                 /*
->>                  * we are going to call the ordered done function, but
->> @@ -317,6 +322,12 @@ static void btrfs_work_helper(struct work_struct *normal_work)
->>         thresh_exec_hook(wq);
->>         work->func(work);
->>         if (need_order) {
->> +               /*
->> +                * Ensures all вритес done in ->func are ordered before
->> +                * setting the WORK_DONE_BIT making them visible to ordered
->> +                * func
->> +                */
->> +               smp_mb__before_atomic();
->>                 set_bit(WORK_DONE_BIT, &work->flags);
->>                 run_ordered_work(wq, work);
->>         } else {
->>
-> 
-> So far this appears to be working well - thanks!
-> https://bugzilla.redhat.com/show_bug.cgi?id=2011928#c54
+On 2021/10/28 01:30, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>
+> When enabling quotas, we attempt to commit a transaction while holding t=
+he
+> mutex fs_info->qgroup_ioctl_lock. This can result on a deadlock with oth=
+er
+> quota operations such as:
+>
+> - qgroup creation and deletion, ioctl BTRFS_IOC_QGROUP_CREATE;
+>
+> - adding and removing qgroup relations, ioctl BTRFS_IOC_QGROUP_ASSIGN.
+>
+> This is because these operations join a transaction and after that they
+> attempt to lock the mutex fs_info->qgroup_ioctl_lock. Acquiring that mut=
+ex
+> after joining or starting a transaction is a pattern followed everywhere
+> in qgroups, so the quota enablement operation is the one at fault here,
+> and should not commit a transaction while holding that mutex.
+>
+> Fix this by making the transaction commit while not holding the mutex.
+> We are safe from two concurrent tasks trying to enable quotas because
+> we are serialized by the rw semaphore fs_info->subvol_sem at
+> btrfs_ioctl_quota_ctl(), which is the only call site for enabling
+> quotas.
+>
+> When this deadlock happens, it produces a trace like the following:
+>
+>    INFO: task syz-executor:25604 blocked for more than 143 seconds.
+>    Not tainted 5.15.0-rc6 #4
+>    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this mess=
+age.
+>    task:syz-executor state:D stack:24800 pid:25604 ppid: 24873 flags:0x0=
+0004004
+>    Call Trace:
+>    context_switch kernel/sched/core.c:4940 [inline]
+>    __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
+>    schedule+0xd3/0x270 kernel/sched/core.c:6366
+>    btrfs_commit_transaction+0x994/0x2e90 fs/btrfs/transaction.c:2201
+>    btrfs_quota_enable+0x95c/0x1790 fs/btrfs/qgroup.c:1120
+>    btrfs_ioctl_quota_ctl fs/btrfs/ioctl.c:4229 [inline]
+>    btrfs_ioctl+0x637e/0x7b70 fs/btrfs/ioctl.c:5010
+>    vfs_ioctl fs/ioctl.c:51 [inline]
+>    __do_sys_ioctl fs/ioctl.c:874 [inline]
+>    __se_sys_ioctl fs/ioctl.c:860 [inline]
+>    __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>    do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+>    RIP: 0033:0x7f86920b2c4d
+>    RSP: 002b:00007f868f61ac58 EFLAGS: 00000246 ORIG_RAX: 000000000000001=
+0
+>    RAX: ffffffffffffffda RBX: 00007f86921d90a0 RCX: 00007f86920b2c4d
+>    RDX: 0000000020005e40 RSI: 00000000c0109428 RDI: 0000000000000008
+>    RBP: 00007f869212bd80 R08: 0000000000000000 R09: 0000000000000000
+>    R10: 0000000000000000 R11: 0000000000000246 R12: 00007f86921d90a0
+>    R13: 00007fff6d233e4f R14: 00007fff6d233ff0 R15: 00007f868f61adc0
+>    INFO: task syz-executor:25628 blocked for more than 143 seconds.
+>    Not tainted 5.15.0-rc6 #4
+>    "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this mess=
+age.
+>    task:syz-executor state:D stack:29080 pid:25628 ppid: 24873 flags:0x0=
+0004004
+>    Call Trace:
+>    context_switch kernel/sched/core.c:4940 [inline]
+>    __schedule+0xcd9/0x2530 kernel/sched/core.c:6287
+>    schedule+0xd3/0x270 kernel/sched/core.c:6366
+>    schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:6425
+>    __mutex_lock_common kernel/locking/mutex.c:669 [inline]
+>    __mutex_lock+0xc96/0x1680 kernel/locking/mutex.c:729
+>    btrfs_remove_qgroup+0xb7/0x7d0 fs/btrfs/qgroup.c:1548
+>    btrfs_ioctl_qgroup_create fs/btrfs/ioctl.c:4333 [inline]
+>    btrfs_ioctl+0x683c/0x7b70 fs/btrfs/ioctl.c:5014
+>    vfs_ioctl fs/ioctl.c:51 [inline]
+>    __do_sys_ioctl fs/ioctl.c:874 [inline]
+>    __se_sys_ioctl fs/ioctl.c:860 [inline]
+>    __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>    do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> Link: https://lore.kernel.org/linux-btrfs/CACkBjsZQF19bQ1C6=3DyetF3BvL10=
+OSORpFUcWXTP6HErshDB4dQ@mail.gmail.com/
 
-Great, but due to the nature of the bug I'd rather wait at least until
-the beginning of next week before sending an official patch so that this
-can be tested more. In your comment you state 3/3 kernel debug info
-installs and 6/6 libreoffice installs, how do those numbers compare
-without the fix?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-> 
-> 
-> --
-> Chris Murphy
-> 
+Thanks,
+Qu
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>   fs/btrfs/qgroup.c | 19 +++++++++++++++++++
+>   1 file changed, 19 insertions(+)
+>
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index db680f5be745..7f6a05e670f5 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -940,6 +940,14 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_inf=
+o)
+>   	int ret =3D 0;
+>   	int slot;
+>
+> +	/*
+> +	 * We need to have subvol_sem write locked, to prevent races between
+> +	 * concurrent tasks trying to enable quotas, because we will unlock
+> +	 * and relock qgroup_ioctl_lock before setting fs_info->quota_root
+> +	 * and before setting BTRFS_FS_QUOTA_ENABLED.
+> +	 */
+> +	lockdep_assert_held_write(&fs_info->subvol_sem);
+> +
+>   	mutex_lock(&fs_info->qgroup_ioctl_lock);
+>   	if (fs_info->quota_root)
+>   		goto out;
+> @@ -1117,8 +1125,19 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_i=
+nfo)
+>   		goto out_free_path;
+>   	}
+>
+> +	mutex_unlock(&fs_info->qgroup_ioctl_lock);
+> +	/*
+> +	 * Commit the transaction while not holding qgroup_ioctl_lock, to avoi=
+d
+> +	 * a deadlock with tasks concurrently doing other qgroup operations, s=
+uch
+> +	 * adding/removing qgroups or adding/deleting qgroup relations for exa=
+mple,
+> +	 * because all qgroup operations first start or join a transaction and=
+ then
+> +	 * lock the qgroup_ioctl_lock mutex.
+> +	 * We are safe from a concurrent task trying to enable quotas, by call=
+ing
+> +	 * this function, since we are serialized by fs_info->subvol_sem.
+> +	 */
+>   	ret =3D btrfs_commit_transaction(trans);
+>   	trans =3D NULL;
+> +	mutex_lock(&fs_info->qgroup_ioctl_lock);
+>   	if (ret)
+>   		goto out_free_path;
+>
+>
