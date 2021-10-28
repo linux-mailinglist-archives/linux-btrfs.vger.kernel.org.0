@@ -2,90 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F9A43DF4B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 12:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B41043E274
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 15:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhJ1Kyk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Oct 2021 06:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        id S230264AbhJ1NqV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Oct 2021 09:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbhJ1Kyj (ORCPT
+        with ESMTP id S229887AbhJ1NqU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Oct 2021 06:54:39 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46233C061225
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 03:52:12 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 188so9951754ljj.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 03:52:12 -0700 (PDT)
+        Thu, 28 Oct 2021 09:46:20 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AEB2C061570
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 06:43:53 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id bj31so5803860qkb.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 06:43:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=vprh3gRT3Cegcj0K7Fy7tqOfLGKK384XjLMkCZvF/BY=;
-        b=MqgQiMnth4O6zLvpsYbAhVLW1BorpgoCleWwfkY0/i+i6OSDuXRZO1jIKzpTTrmehO
-         XtsLWdXiTcL+XCe4naFtf2tTUJnbwwmDpuUkpvRhLd+LEnuxY7nNr11hmTRUVX1WOHsO
-         bN0u1arCg4gm9LHdXRMZFcXOD22U5gDGuBOuhPo6qvWbt6nA2j/p/5IZ88XFHrEsiSW3
-         12hentYJMlWeUfa2lUQkLm+5/fvMSizrI7wGoF2taOa3dgGUV5HKZWb0yAAH7nAXVevJ
-         tDC/xbHNLzSn310XeD3Gkoobjl6MPBQzT5DSLzerNBdTKOdmyp3xvfvOyo80qVUTZIED
-         gaRg==
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JHrMrl2VQ76bFXeXmWT8b/Vk5mWVoY6LgxhCCp3MS5I=;
+        b=YTyy+3+utmStJoQ5PFL+pV+Ib8ff/61nD/BFgc7ug47w4kVb8yHogYDTqZ55uuM87m
+         8VxT2V0WF8f0cEU6AkxdqClSLh8dQZw61YpCjPGKddyA+yc8ndyD6dDPqLr4iSP4QlV4
+         JesLnn04tdkuI/SQ1WcXFlE4/8yHNDXA8PBHXIrblqKRbfbMlod1Fcon8CI1GAIkLZ6c
+         +4OZMjxHX5sKRusmaPcLRa1Vld+JUGZoaVpZYrzwtOf4XWFv0yxgsF6ge1cPLxIxVl5K
+         U0ghuSnx4TJEDlFsbvxgmmz9Kf7SbnGCrxJXXEul68FGU28DtYFtuvjX1sClGRlsfNHl
+         n10w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=vprh3gRT3Cegcj0K7Fy7tqOfLGKK384XjLMkCZvF/BY=;
-        b=ouMitRyzzCSk/07EYXw5XAiPeJx+YQ6IRZh2OD5vab7T67YbW6fgecEpiELOjbhAT9
-         I14ASfbCikX0+ko9yF23s8FfeWVZQIdmfL955+fQQNOP0SCEcg7xnehS5dX6TzHBd62D
-         X5nteY5faCBhZePa2nF4ZehlytF1SYbZ0r26BRoh/27a0cGBuuSXqJaAfo9XzjHKf2D8
-         xWBj60TD9ihM2ZCqqMN5yB3lqzA57ZpP/+tJniqVV+zrbA34846iFnSxmyQS8wk1LlbY
-         qLEcNzBcOoIfNZ2yDbmUPLO3ra2pJwwWOb9hw386dhFwo1nCUcX8z8A6hsruow59KySg
-         11gg==
-X-Gm-Message-State: AOAM533RT69WtRfM0z8kk90ZFJ0h/bGtW6mksUCvau5SZCQtWi4onQtK
-        GBc9cdHOhvvVV3WCP8hDbkLVV+EOBAh21BbYOxg=
-X-Google-Smtp-Source: ABdhPJw39EF9dJlXS9lAFrZ3adXxB8DVzXcygVzA3uRLiZxWlggxaB9ElCxkEB0P82xisoA6G442GD5iqMe2hCgLIt8=
-X-Received: by 2002:a2e:9a83:: with SMTP id p3mr3750290lji.145.1635418330269;
- Thu, 28 Oct 2021 03:52:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JHrMrl2VQ76bFXeXmWT8b/Vk5mWVoY6LgxhCCp3MS5I=;
+        b=xI/HK9utR0fWlElFfiyRrYPBIIovbZS1fJoNiinqXnbMMbV99x5UcVA5zPbbhDm7Yl
+         VXFisNe0dtYisjGdbBHNcqj2GwlO/GW14GK+70mpB3mHU9AFqnpyNnpt5oRPO/s0T/8c
+         Ji8oG+uus5dcvsfI4BNtoJULRM/NCrSIS4cj52Xig+OOqsQPwWTPr0WU9/kry3vc8cIa
+         EiU8a8y0nRiCD2zmQgSRz1lbDp7nhw5Ruze0aJ7p7AM3oqZ28XsbSEdNaMB0NabvXni8
+         VY6i1uUgtf+jcqSI2taS0gb5Wj8y7Hx1eQr1L3RFZLFjk5t7Ke+C3mOFk2YD3bLzyZ4A
+         6PyQ==
+X-Gm-Message-State: AOAM5327kAY2XIf4pn9Y1hWkcRPQReoBVBef97LNeygc+zic7Gq/hv/c
+        aeMmj8NEQfS2tGRPcXsLJ8tXZA==
+X-Google-Smtp-Source: ABdhPJyojvuWiBC6obrmSLZ02Y9PXUi4vaK5a/892fE8CcFZlA/VtB+Iv5IMCcAs1j7VQ0Ca//abow==
+X-Received: by 2002:a37:2d87:: with SMTP id t129mr3616461qkh.88.1635428632240;
+        Thu, 28 Oct 2021 06:43:52 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id l3sm2006265qkj.18.2021.10.28.06.43.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 06:43:51 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 09:43:51 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Stefan Roesch <shr@fb.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 0/4] btrfs: sysfs: set / query btrfs stripe size
+Message-ID: <YXqpFxiAVrC92io6@localhost.localdomain>
+References: <20211027201441.3813178-1-shr@fb.com>
 MIME-Version: 1.0
-Received: by 2002:ab3:6f89:0:0:0:0:0 with HTTP; Thu, 28 Oct 2021 03:52:09
- -0700 (PDT)
-Reply-To: aabdulwalialhashmi@gmail.com
-From:   Abdulwali Alhashmi <husamalsayed.hs@gmail.com>
-Date:   Thu, 28 Oct 2021 03:52:09 -0700
-Message-ID: <CAF6yYCeS=rm8=_71-kMjVo4oaVK57w9X52R_yv1HDrBe7vh-sA@mail.gmail.com>
-Subject: PLEASE GET BACK TO ME IF I CAN I TRUST YOU
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211027201441.3813178-1-shr@fb.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-Greetings,
+On Wed, Oct 27, 2021 at 01:14:37PM -0700, Stefan Roesch wrote:
+> Motivation:
+> The btrfs allocator is currently not ideal for all workloads. It tends
+> to suffer from overallocating data block groups and underallocating
+> metadata block groups. This results in filesystems becoming read-only
+> even though there is plenty of "free" space.
+> 
+> This is naturally confusing and distressing to users.
+> 
+> Patches:
+> 1) Store the stripe and chunk size in the btrfs_space_info structure
+> 2) Add a sysfs entry to expose the above information
+> 3) Add a sysfs entry to force a space allocation
+> 4) Increase the default size of the metadata chunk allocation to 5GB
+>    for volumes greater than 50GB.
+> 
+> Testing:
+>   A new test is being added to the xfstest suite. For reference the
+>   corresponding patch has the title:
+>     [PATCH] btrfs: Test chunk allocation with different sizes
+> 
+>   In addition also manual testing has been performed.
+>     - Run xfstests with the changes and the new test. It does not
+>       show new diffs.
+>     - Test with storage devices 10G, 20G, 30G, 50G, 60G
+>       - Default allocation
+>       - Increase of chunk size
+>       - If the stripe size is > the free space, it allocates
+>         free space - 1MB. The 1MB is left as free space.
+>       - If the device has a storage size > 50G, it uses a 5GB
+>         chunk size for new allocations.
+> 
+> Stefan Roesch (4):
+>   btrfs: store stripe size and chunk size in space-info struct.
+>   btrfs: expose stripe and chunk size in sysfs.
+>   btrfs: add force_chunk_alloc sysfs entry to force allocation
+>   btrfs: increase metadata alloc size to 5GB for volumes > 50GB
+>
 
-Firstly, I apologize for encroaching into your privacy in this manner
-as it may seem unethical though it is a matter of great importance.
+Sorry, I had this thought previously but it got lost when I started doing the
+actual code review.
 
-I am Abdulwali Alhashmi, I work with Cayman National Bank (Cayman Islands).
+We have conflated stripe size and chunk size here, and unfortunately "stripe
+size" means different things to different people.  What you are actually trying
+to do here is to allow us to allocate a larger logical chunk size.
 
-I am contacting you because my status would not permit me to do this
-alone as it is concerning our customer and an investment placed under
-our bank's management over 5 years ago.
+In terms of how this works out in the code you are changing the correct thing,
+generally the stripe_size is what dictates the actual block group chunk size we
+end up with at the end.
 
-I have a proposal I would love to discuss with you which will be very
-beneficial to both of us. It's regarding my late client who has a huge
-deposit with my bank.
+But this is sort of confusing when it comes to the interface, because people are
+going to think it means something different.
 
-He is from your country and shares the same last name with you.
+Instead we should name the sysfs file chunk_size, and then keep the code you
+have the way it is, just with the new name.  That way it's clear to the user
+that they're changing how large of a chunk we're allocating at any given time.
 
-I want to seek your consent to present you as the next of kin to my
-late client who died and left a huge deposit with my bank.
+Make that change, and I have a few other code comments, and then that should be
+good.  Thanks,
 
-I would respectfully request that you keep the contents of this mail
-confidential and respect the integrity of the information you come by
-as a result of this mail.
-
-Please kindly get back to me for more details if I can TRUST YOU.{
-aabdulwalialhashmi@gmail.com }
-
-Regards
-Abdulwali Alhashmi
-Treasury and Deposit Management,
-Cayman National Bank Cayman Islands
+Josef 
