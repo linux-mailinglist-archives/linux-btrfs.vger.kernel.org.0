@@ -2,190 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA5743E280
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 15:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87F743E3B0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 16:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhJ1NvO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Oct 2021 09:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
+        id S231229AbhJ1OaI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Oct 2021 10:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhJ1NvM (ORCPT
+        with ESMTP id S230258AbhJ1OaH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Oct 2021 09:51:12 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A717BC061570
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 06:48:45 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id x123so5797061qke.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 06:48:45 -0700 (PDT)
+        Thu, 28 Oct 2021 10:30:07 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919ECC061570
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 07:27:40 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id bk35so5941357qkb.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 07:27:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=mhs3+xHyHcdySvVV9+x8lHddL/djMhYu+n/ISTVf83g=;
-        b=FSVLIJ6gMlmD+euuobzgzvQF4D5qUYM2zFKYzWF1yac1BEPIuSnNIoxQRUukR8Ls9C
-         E4lvI331xtRr34CWLFhpSI8CqeJgfl9FsRdeT7z/vkbGk54j4sjF2wwPyTk8oe266yXl
-         mSDpwlS4Ci3nM2Z9t1hBFlhFtIzwwpCz07OgGTmZTTwXFCAmPY1jZvW/wq1bz1MMvuUq
-         sNVJKb2ihmya910CN8vQ4+YamvfpdwLM8sqBOJDIsHhIM0YkQ83wvKT10hm+l+MsQ8+L
-         WSbTHacSZz8fyXncF6gpCmsj4IBsDD0BYE1bUOyodRb/KJE4lDueg29gYw6HzTPMmivj
-         p7MQ==
+        bh=9RBzZuKdjLywiMyzHtwnRq0mwH6IjIkhMDGZQuBCxQs=;
+        b=ksz9Dp5olxm0Tliimd++5eamaCpGjOjKZCc+fRatZE5m1KBzrTquL3feGlUpOTQR85
+         LjWznZwbWZCm0W+YRJ5YDIO+F+uYzFusmgF3ujyudWURyES6U3T+cfSAj1Un7wuqLsOp
+         SOb+LwJ7AjkRvldO50W0dURMNkCNiGnUpByFPePE01/7pi6BTM5ia6+I4P2qkDoS5Fvb
+         M9jx1eIMQ+Btewj0xYNky2hjBPUt2VXjHVebj8tB0reba+5z6pCXLv8NqFmKdHM9u3Z6
+         gIYVrTDcPeiEsvykvU50WFbCjFBavvN0W52ILMlQwnz3NFxrIEdXDfeFPAC95HxbQVUv
+         +PXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mhs3+xHyHcdySvVV9+x8lHddL/djMhYu+n/ISTVf83g=;
-        b=TuYk2YTYJxaa1dM3FskSaEMS1AnaL6kdt0xdIFdUgancdaR3hVIJSm+ygbLt8vFyNu
-         fbJVolpT+rhJku9a0hryM6rPTXROyV7a6OuTe58IpGM9NI0SE10vHBmEtoYr6zJeYxsu
-         81uX+zQcIo04KSp9LGawMjS7tLYtZh1C76M+87BQuDrwuA2R1smpoE8gxATpMYjT++IJ
-         kdHBtRDkTledkv+dtECXz2zbfJkAvfbmwGY2hu2ttrtu8px+0qFEOO9gfR8RLjPfEw0A
-         YgTUHa0kp4cz5D6nzBP1ysGeHjyYrQIu4WTItsOE7O/BwwtwtP/xAp4WLt84g0l6X3AQ
-         r1Rw==
-X-Gm-Message-State: AOAM531DmIMk7QIMTRYbjlwVvIRnz4H4X8b3Kgd/HaBtUhs/v50X8z+w
-        V5lt58faigmI7EU8HO4+r82gLeNbjMaxyw==
-X-Google-Smtp-Source: ABdhPJx3R5Ml9ruLIB2PGi0CFW+qObPlrcocj0v59p4HJ6R9+IDMkkeowSl5SRykObusz3VsoLnxdA==
-X-Received: by 2002:a37:b385:: with SMTP id c127mr3661669qkf.206.1635428924605;
-        Thu, 28 Oct 2021 06:48:44 -0700 (PDT)
+        bh=9RBzZuKdjLywiMyzHtwnRq0mwH6IjIkhMDGZQuBCxQs=;
+        b=gHdA60bw04P+iIa5vQNMixis7Xtv0HIT3gtNrrW25MSW+aa114bWj5/nNPstztmbHe
+         M4ebKAWD3NQWp3fw74ayWgkgcLRlKIADjmDq4dT/0MMxuDdUdALmjx6zgHWrAUoUXXJF
+         asIcDMLjI/6HeVDGCJRmXqHg0WloApNMbka/xXfElt6yWgk7uLSTDGrj1O2dYfML2hRs
+         NdD1ugMx7YGP+tdPDl7oZy4xPawrUo0sUpXexUYLVT+1zYGdvmiQBK6sTKoVaXHfNGRo
+         l45hE+U2H3cB0kTXaMUM53hESaf1oInnR8pCASMCk1GO3VS94Uw8g01gasET1Jjxa+p8
+         pXAQ==
+X-Gm-Message-State: AOAM533pNaj+VReWVcaZDWmxUOlvK7LJwN1ZZX8HktewYa5dHAfTYGrq
+        gKxASm+xNmhU7J5/ys3OfjvAyPu+c0Q0Wg==
+X-Google-Smtp-Source: ABdhPJzwwl74gKMNHtgA8LRtY5fmDda7hZSk9Le7iIPD0VIWAuOBGLgDP2qJgyqYiRlHoV0lm0aRkw==
+X-Received: by 2002:a37:f902:: with SMTP id l2mr3709368qkj.511.1635431259597;
+        Thu, 28 Oct 2021 07:27:39 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id b2sm1929241qtg.88.2021.10.28.06.48.44
+        by smtp.gmail.com with ESMTPSA id t11sm1983694qkm.92.2021.10.28.07.27.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Oct 2021 06:48:44 -0700 (PDT)
-Date:   Thu, 28 Oct 2021 09:48:43 -0400
+        Thu, 28 Oct 2021 07:27:39 -0700 (PDT)
+Date:   Thu, 28 Oct 2021 10:27:38 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Stefan Roesch <shr@fb.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 1/4] btrfs: store stripe size and chunk size in
- space-info struct.
-Message-ID: <YXqqO7Le8sSWpOEG@localhost.localdomain>
+Subject: Re: [PATCH v2 0/4] btrfs: sysfs: set / query btrfs stripe size
+Message-ID: <YXqzWv7t77ZpKIig@localhost.localdomain>
 References: <20211027201441.3813178-1-shr@fb.com>
- <20211027201441.3813178-2-shr@fb.com>
+ <YXqpFxiAVrC92io6@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027201441.3813178-2-shr@fb.com>
+In-Reply-To: <YXqpFxiAVrC92io6@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 01:14:38PM -0700, Stefan Roesch wrote:
-> The stripe size and chunk size are stored in the btrfs_space_info
-> structure. They are initialized at the start and are then used.
+On Thu, Oct 28, 2021 at 09:43:51AM -0400, Josef Bacik wrote:
+> On Wed, Oct 27, 2021 at 01:14:37PM -0700, Stefan Roesch wrote:
+> > Motivation:
+> > The btrfs allocator is currently not ideal for all workloads. It tends
+> > to suffer from overallocating data block groups and underallocating
+> > metadata block groups. This results in filesystems becoming read-only
+> > even though there is plenty of "free" space.
+> > 
+> > This is naturally confusing and distressing to users.
+> > 
+> > Patches:
+> > 1) Store the stripe and chunk size in the btrfs_space_info structure
+> > 2) Add a sysfs entry to expose the above information
+> > 3) Add a sysfs entry to force a space allocation
+> > 4) Increase the default size of the metadata chunk allocation to 5GB
+> >    for volumes greater than 50GB.
+> > 
+> > Testing:
+> >   A new test is being added to the xfstest suite. For reference the
+> >   corresponding patch has the title:
+> >     [PATCH] btrfs: Test chunk allocation with different sizes
+> > 
+> >   In addition also manual testing has been performed.
+> >     - Run xfstests with the changes and the new test. It does not
+> >       show new diffs.
+> >     - Test with storage devices 10G, 20G, 30G, 50G, 60G
+> >       - Default allocation
+> >       - Increase of chunk size
+> >       - If the stripe size is > the free space, it allocates
+> >         free space - 1MB. The 1MB is left as free space.
+> >       - If the device has a storage size > 50G, it uses a 5GB
+> >         chunk size for new allocations.
+> > 
+> > Stefan Roesch (4):
+> >   btrfs: store stripe size and chunk size in space-info struct.
+> >   btrfs: expose stripe and chunk size in sysfs.
+> >   btrfs: add force_chunk_alloc sysfs entry to force allocation
+> >   btrfs: increase metadata alloc size to 5GB for volumes > 50GB
+> >
 > 
-> Two api's are added to get the current value and one to update
-> the value.
+> Sorry, I had this thought previously but it got lost when I started doing the
+> actual code review.
 > 
-> These api's will be used to be able to expose the stripe_size
-> as a sysfs setting.
+> We have conflated stripe size and chunk size here, and unfortunately "stripe
+> size" means different things to different people.  What you are actually trying
+> to do here is to allow us to allocate a larger logical chunk size.
 > 
-> Signed-off-by: Stefan Roesch <shr@fb.com>
-> ---
->  fs/btrfs/space-info.c | 72 +++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/space-info.h |  4 +++
->  fs/btrfs/volumes.c    | 28 ++++++-----------
->  3 files changed, 85 insertions(+), 19 deletions(-)
+> In terms of how this works out in the code you are changing the correct thing,
+> generally the stripe_size is what dictates the actual block group chunk size we
+> end up with at the end.
 > 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 48d77f360a24..570acfebeae4 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -181,6 +181,74 @@ void btrfs_clear_space_info_full(struct btrfs_fs_info *info)
->  		found->full = 0;
->  }
->  
-> +/*
-> + * Compute stripe size depending on block type for regular volumes.
-> + */
-> +static u64 compute_stripe_size_regular(struct btrfs_fs_info *info, u64 flags)
-> +{
-> +	ASSERT(flags & BTRFS_BLOCK_GROUP_TYPE_MASK);
-> +
-> +	if (flags & BTRFS_BLOCK_GROUP_DATA)
-> +		return SZ_1G;
-> +	else if (flags & BTRFS_BLOCK_GROUP_SYSTEM)
-> +		return SZ_32M;
-> +
-> +	/* Handle BTRFS_BLOCK_GROUP_METADATA */
-> +	if (info->fs_devices->total_rw_bytes > 50ULL * SZ_1G)
-> +		return SZ_1G;
-> +
-> +	return SZ_256M;
-> +}
-> +
-> +/*
-> + * Compute stripe size for zoned volumes.
-> + */
-> +static u64 compute_stripe_size_zoned(struct btrfs_fs_info *info)
-> +{
-> +	return info->zone_size;
-> +}
-> +
-> +/*
-> + * Compute stripe size depending on volume type.
-> + */
-> +static u64 compute_stripe_size(struct btrfs_fs_info *info, u64 flags)
-> +{
-> +	if (btrfs_is_zoned(info))
-> +		return compute_stripe_size_zoned(info);
-> +
-> +	return compute_stripe_size_regular(info, flags);
-> +}
-> +
-> +/*
-> + * Compute chunk size depending on block type and stripe size.
-> + */
-> +static u64 compute_chunk_size(u64 flags, u64 max_stripe_size)
-> +{
-> +	ASSERT(flags & BTRFS_BLOCK_GROUP_TYPE_MASK);
-> +
-> +	if (flags & BTRFS_BLOCK_GROUP_DATA)
-> +		return BTRFS_MAX_DATA_CHUNK_SIZE;
-> +	else if (flags & BTRFS_BLOCK_GROUP_METADATA)
-> +		return max_stripe_size;
-> +
-> +	/* Handle BTRFS_BLOCK_GROUP_SYSTEM */
-> +	return 2 * max_stripe_size;
-> +}
-> +
-> +/*
-> + * Update maximum stripe size and chunk size.
-> + *
-> + */
-> +void btrfs_update_space_info_max_alloc_sizes(struct btrfs_space_info *space_info,
-> +					     u64 flags, u64 max_stripe_size)
-> +{
-> +	spin_lock(&space_info->lock);
-> +	space_info->max_stripe_size = max_stripe_size;
-> +	space_info->max_chunk_size = compute_chunk_size(flags,
-> +						space_info->max_stripe_size);
-> +	spin_unlock(&space_info->lock);
-> +}
-> +
->  static int create_space_info(struct btrfs_fs_info *info, u64 flags)
->  {
->  
-> @@ -203,6 +271,10 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
->  	INIT_LIST_HEAD(&space_info->priority_tickets);
->  	space_info->clamp = 1;
->  
-> +	space_info->max_stripe_size = compute_stripe_size(info, flags);
-> +	space_info->max_chunk_size = compute_chunk_size(flags,
-> +						space_info->max_stripe_size);
-> +
->  	ret = btrfs_sysfs_add_space_info_type(info, space_info);
->  	if (ret)
->  		return ret;
-> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-> index cb5056472e79..5ee3e381de38 100644
-> --- a/fs/btrfs/space-info.h
-> +++ b/fs/btrfs/space-info.h
-> @@ -23,6 +23,8 @@ struct btrfs_space_info {
->  	u64 max_extent_size;	/* This will hold the maximum extent size of
->  				   the space info if we had an ENOSPC in the
->  				   allocator. */
-> +	u64 max_chunk_size; /* maximum chunk size in bytes */
-> +	u64 max_stripe_size; /* maximum stripe size in bytes */
+> But this is sort of confusing when it comes to the interface, because people are
+> going to think it means something different.
+> 
+> Instead we should name the sysfs file chunk_size, and then keep the code you
+> have the way it is, just with the new name.  That way it's clear to the user
+> that they're changing how large of a chunk we're allocating at any given time.
+> 
+> Make that change, and I have a few other code comments, and then that should be
+> good.  Thanks,
+> 
 
-max_chunk_size isn't user set-able, and can be calculated from the
-max_stripe_size.  You may change the names based on my previous emails, but
-whatever it ends up being you only need one of these stored, the other can be
-inferred.  Thanks,
+In fact I talked about this with Johannes just now.  We sort of conflate the two
+things, max_chunk_size and max_stripe_size, to get the answer we want.  But
+these aren't well named and don't really behave in a way you'd expect.
+
+Currently, we set max_stripe_size to make sure we clamp down on any dev extents
+we find.  So if the whole disk is free we clearly don't want to allocate the
+whole thing, so we clamp it down to max_stripe_size.  This, in effect, ends up
+being our actual chunk_size.  We have this max_chunk_size thing but it doesn't
+really do anything in practice because our stripe_size is already clamped down
+so it'll be <= max_chunk_size.
+
+All this is to say we should simply set max_stripe_size = max_chunk_size, but
+call max_chunk_size default_chunk_size, because that's really what it is.  So
+you should
+
+1) Change the sysfs file to be chunk_size or something similar.
+2) Don't expose stripe_size via sysfs, it's just a function of chunk_size.
+3) Set stripe_size == chunk_size.
+4) Get rid of the max_chunk_size logic, it's unneeded.
+
+I think that's the proper way to deal with everything, if there are any corners
+I'm missing then feel free to point them out, but I'm pretty sure 1-3 are
+correct.  Thanks,
 
 Josef
