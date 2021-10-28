@@ -2,171 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EDE43DDF5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 11:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F9A43DF4B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 28 Oct 2021 12:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhJ1Jrn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 28 Oct 2021 05:47:43 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44682 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhJ1Jrn (ORCPT
+        id S230080AbhJ1Kyk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 28 Oct 2021 06:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230093AbhJ1Kyj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 28 Oct 2021 05:47:43 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 92A831FD4B;
-        Thu, 28 Oct 2021 09:45:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635414315; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=n/W+mAlYoix2Tcf2NsJvF3qDUw67xJQJ9y4WIncSZP4=;
-        b=cPVUTdAP35JcbAfubsDE5r2qQ6+WdRSlu1B94gA9kLAnzrH5b+sIsq90iGQnuyhDqkqCSe
-        9sKEus/RyfvJkEvLvHLhS8bmBfqfQzEHKOnPFPsZvXKfgvIccnOONqHmau8kzuYgxngBE7
-        w9QWdQQFEf7VvrBuu/X3n2y87YyHJy0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE7F613D1E;
-        Thu, 28 Oct 2021 09:45:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SJeKIipxemEBawAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 28 Oct 2021 09:45:14 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     grub-devel@gnu.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] fs/btrfs: Make extent item iteration to handle gaps
-Date:   Thu, 28 Oct 2021 17:44:57 +0800
-Message-Id: <20211028094457.161711-1-wqu@suse.com>
-X-Mailer: git-send-email 2.33.1
+        Thu, 28 Oct 2021 06:54:39 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46233C061225
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 03:52:12 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id 188so9951754ljj.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 28 Oct 2021 03:52:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=vprh3gRT3Cegcj0K7Fy7tqOfLGKK384XjLMkCZvF/BY=;
+        b=MqgQiMnth4O6zLvpsYbAhVLW1BorpgoCleWwfkY0/i+i6OSDuXRZO1jIKzpTTrmehO
+         XtsLWdXiTcL+XCe4naFtf2tTUJnbwwmDpuUkpvRhLd+LEnuxY7nNr11hmTRUVX1WOHsO
+         bN0u1arCg4gm9LHdXRMZFcXOD22U5gDGuBOuhPo6qvWbt6nA2j/p/5IZ88XFHrEsiSW3
+         12hentYJMlWeUfa2lUQkLm+5/fvMSizrI7wGoF2taOa3dgGUV5HKZWb0yAAH7nAXVevJ
+         tDC/xbHNLzSn310XeD3Gkoobjl6MPBQzT5DSLzerNBdTKOdmyp3xvfvOyo80qVUTZIED
+         gaRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=vprh3gRT3Cegcj0K7Fy7tqOfLGKK384XjLMkCZvF/BY=;
+        b=ouMitRyzzCSk/07EYXw5XAiPeJx+YQ6IRZh2OD5vab7T67YbW6fgecEpiELOjbhAT9
+         I14ASfbCikX0+ko9yF23s8FfeWVZQIdmfL955+fQQNOP0SCEcg7xnehS5dX6TzHBd62D
+         X5nteY5faCBhZePa2nF4ZehlytF1SYbZ0r26BRoh/27a0cGBuuSXqJaAfo9XzjHKf2D8
+         xWBj60TD9ihM2ZCqqMN5yB3lqzA57ZpP/+tJniqVV+zrbA34846iFnSxmyQS8wk1LlbY
+         qLEcNzBcOoIfNZ2yDbmUPLO3ra2pJwwWOb9hw386dhFwo1nCUcX8z8A6hsruow59KySg
+         11gg==
+X-Gm-Message-State: AOAM533RT69WtRfM0z8kk90ZFJ0h/bGtW6mksUCvau5SZCQtWi4onQtK
+        GBc9cdHOhvvVV3WCP8hDbkLVV+EOBAh21BbYOxg=
+X-Google-Smtp-Source: ABdhPJw39EF9dJlXS9lAFrZ3adXxB8DVzXcygVzA3uRLiZxWlggxaB9ElCxkEB0P82xisoA6G442GD5iqMe2hCgLIt8=
+X-Received: by 2002:a2e:9a83:: with SMTP id p3mr3750290lji.145.1635418330269;
+ Thu, 28 Oct 2021 03:52:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab3:6f89:0:0:0:0:0 with HTTP; Thu, 28 Oct 2021 03:52:09
+ -0700 (PDT)
+Reply-To: aabdulwalialhashmi@gmail.com
+From:   Abdulwali Alhashmi <husamalsayed.hs@gmail.com>
+Date:   Thu, 28 Oct 2021 03:52:09 -0700
+Message-ID: <CAF6yYCeS=rm8=_71-kMjVo4oaVK57w9X52R_yv1HDrBe7vh-sA@mail.gmail.com>
+Subject: PLEASE GET BACK TO ME IF I CAN I TRUST YOU
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Grub btrfs implementation can't handle two very basic btrfs file
-layouts:
-
-1. Mixed inline/regualr extents
-   # mkfs.btrfs -f test.img
-   # mount test.img /mnt/btrfs
-   # xfs_io -f -c "pwrite 0 1k" -c "sync" -c "falloc 0 4k" \
-	       -c "pwrite 4k 4k" /mnt/btrfs/file
-   # umount /mnt/btrfs
-   # ./grub-fstest ./grub-fstest --debug=btrfs ~/test.img hex "/file"
-
-   Such mixed inline/regular extents case is not recommended layout,
-   but all existing tools and kernel can handle it without problem
-
-2. NO_HOLES feature
-   # mkfs.btrfs -f test.img -O no_holes
-   # mount test.img /mnt/btrfs
-   # xfs_io -f -c "pwrite 0 4k" -c "pwrite 8k 4k" /mnt/btrfs/file
-   # umount /mnt/btrfs
-   # ./grub-fstest ./grub-fstest --debug=btrfs ~/test.img hex "/file"
-
-   NO_HOLES feature is going to be the default mkfs feature in the incoming
-   v5.15 release, and kernel has support for it since v4.0.
-
-[CAUSE]
-The way GRUB btrfs code iterates through file extents relies on no gap
-between extents.
-
-If any gap is hit, then grub btrfs will error out, without any proper
-reason to help debug the bug.
-
-This is a bad assumption, since a long long time ago btrfs has a new
-feature called NO_HOLES to allow btrfs to skip the padding hole extent
-to reduce metadata usage.
-
-The NO_HOLES feature is already stable since kernel v4.0 and is going to
-be the default mkfs feature in the incoming v5.15 btrfs-progs release.
-
-[FIX]
-When there is a extent gap, instead of error out, just try next item.
-
-This is still not ideal, as kernel/progs/U-boot all do the iteration
-item by item, not relying on the file offset continuity.
-
-But it will be way more time consuming to correct the whole behavior
-than starting from scratch to build a proper designed btrfs module for GRUB.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Fix a possible underflow when the read range ends inside the gap
----
- grub-core/fs/btrfs.c | 35 ++++++++++++++++++++++++++++++++---
- 1 file changed, 32 insertions(+), 3 deletions(-)
-
-diff --git a/grub-core/fs/btrfs.c b/grub-core/fs/btrfs.c
-index 63203034dfc6..8c47bd1e1832 100644
---- a/grub-core/fs/btrfs.c
-+++ b/grub-core/fs/btrfs.c
-@@ -1443,6 +1443,7 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
-       grub_size_t csize;
-       grub_err_t err;
-       grub_off_t extoff;
-+      struct grub_btrfs_leaf_descriptor desc;
-       if (!data->extent || data->extstart > pos || data->extino != ino
- 	  || data->exttree != tree || data->extend <= pos)
- 	{
-@@ -1455,7 +1456,7 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
- 	  key_in.type = GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM;
- 	  key_in.offset = grub_cpu_to_le64 (pos);
- 	  err = lower_bound (data, &key_in, &key_out, tree,
--			     &elemaddr, &elemsize, NULL, 0);
-+			     &elemaddr, &elemsize, &desc, 0);
- 	  if (err)
- 	    return -1;
- 	  if (key_out.object_id != ino
-@@ -1494,10 +1495,38 @@ grub_btrfs_extent_read (struct grub_btrfs_data *data,
- 			PRIxGRUB_UINT64_T "\n",
- 			grub_le_to_cpu64 (key_out.offset),
- 			grub_le_to_cpu64 (data->extent->size));
-+	  /*
-+	   * The way of extent item iteration is pretty bad, it completely
-+	   * requires all extents are contiguous, which is not ensured.
-+	   *
-+	   * Features like NO_HOLE and mixed inline/regular extents can cause
-+	   * gaps between file extent items.
-+	   *
-+	   * The correct way is to follow kernel/U-boot to iterate item by
-+	   * item, without any assumption on the file offset continuity.
-+	   *
-+	   * Here we just manually skip to next item and re-do the verification.
-+	   *
-+	   * TODO: Rework the whole extent item iteration code, if not the
-+	   * whole btrfs implementation.
-+	   */
- 	  if (data->extend <= pos)
- 	    {
--	      grub_error (GRUB_ERR_BAD_FS, "extent not found");
--	      return -1;
-+	      err = next(data, &desc, &elemaddr, &elemsize, &key_out);
-+	      if (err < 0)
-+		return -1;
-+	      /* No next item for the inode, we hit the end */
-+	      if (err == 0 || key_out.object_id != ino ||
-+		  key_out.type != GRUB_BTRFS_ITEM_TYPE_EXTENT_ITEM)
-+		      return pos - pos0;
-+
-+	      csize = grub_le_to_cpu64(key_out.offset) - pos;
-+	      if (csize > len)
-+		      csize = len;
-+	      buf += csize;
-+	      pos += csize;
-+	      len -= csize;
-+	      continue;
- 	    }
- 	}
-       csize = data->extend - pos;
 -- 
-2.33.1
+Greetings,
 
+Firstly, I apologize for encroaching into your privacy in this manner
+as it may seem unethical though it is a matter of great importance.
+
+I am Abdulwali Alhashmi, I work with Cayman National Bank (Cayman Islands).
+
+I am contacting you because my status would not permit me to do this
+alone as it is concerning our customer and an investment placed under
+our bank's management over 5 years ago.
+
+I have a proposal I would love to discuss with you which will be very
+beneficial to both of us. It's regarding my late client who has a huge
+deposit with my bank.
+
+He is from your country and shares the same last name with you.
+
+I want to seek your consent to present you as the next of kin to my
+late client who died and left a huge deposit with my bank.
+
+I would respectfully request that you keep the contents of this mail
+confidential and respect the integrity of the information you come by
+as a result of this mail.
+
+Please kindly get back to me for more details if I can TRUST YOU.{
+aabdulwalialhashmi@gmail.com }
+
+Regards
+Abdulwali Alhashmi
+Treasury and Deposit Management,
+Cayman National Bank Cayman Islands
