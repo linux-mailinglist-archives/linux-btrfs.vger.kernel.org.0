@@ -2,87 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952B543FE26
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 16:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594CA43FE60
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 16:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhJ2OOL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Oct 2021 10:14:11 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36014 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231986AbhJ2OOC (ORCPT
+        id S230296AbhJ2OYZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Oct 2021 10:24:25 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56294 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231328AbhJ2OYZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:14:02 -0400
+        Fri, 29 Oct 2021 10:24:25 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A63D9218B5;
-        Fri, 29 Oct 2021 14:11:33 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id B6A761FD5F;
+        Fri, 29 Oct 2021 14:21:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635516693;
+        t=1635517315;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0oRTQWHjL1RtGYkheghx2UVZL9ALbf1vkKjDXHi6rZI=;
-        b=fLwYTSMAPHRF3j+dASrB2Vl4ciQhs3Rj6+6kkqn0p0JlMm2oKRZsJ1fd9LMH5FdKqB2QBc
-        Pt5DTjisQVTj40a/nNyipu2d64OpO0pK5g307Gtazkji1KYbnZWtDTwNfq2uA1ZoqJu1hR
-        yclUzEiEb4sX/+7bGgevNxWAoapN9WU=
+        bh=jFAPSe5jWTXf+GhXzLli9NjTlFlb2QBwSmv6rU8dp7w=;
+        b=dehN3WzJSYHTIeVQuI4DwKHgz18i4NYdVOY+K/HI/7jbJiE94dI3pdoVCmAgXKSwLuZHxK
+        k/4LsrusPq2X2s2Wxakzzr5ctC6Fw6CIEICOWx7Yw/uP8VX0xI300Y4IyQrfPICFBlmEZY
+        vsB2F5CGyBk1FhwPoVepDiRHF49tza0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635516693;
+        s=susede2_ed25519; t=1635517315;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0oRTQWHjL1RtGYkheghx2UVZL9ALbf1vkKjDXHi6rZI=;
-        b=k413uCsPS9PVi5bgZA7O73v0I4b42rQungRrw2GHWBMM9eeWqjVoK+GSZHSAcDJN1MW8ky
-        QtfASNXlu4gViNCg==
+        bh=jFAPSe5jWTXf+GhXzLli9NjTlFlb2QBwSmv6rU8dp7w=;
+        b=xoachcckKxt7kn+bAdgi/ZzV/8GKai20Sr2i8SjhNEo75RxwQMxpJtD0Pzi5O9oij8N5cA
+        blBBtRKUZcV53hDQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 9F7BEA3B8F;
-        Fri, 29 Oct 2021 14:11:33 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id AF6FBA3B81;
+        Fri, 29 Oct 2021 14:21:55 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6898EDA7A9; Fri, 29 Oct 2021 16:11:00 +0200 (CEST)
-Date:   Fri, 29 Oct 2021 16:11:00 +0200
+        id 73FF8DA7A9; Fri, 29 Oct 2021 16:21:22 +0200 (CEST)
+Date:   Fri, 29 Oct 2021 16:21:21 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] btrfs: use ilog2() to replace if () branches for
- btrfs_bg_flags_to_raid_index()
-Message-ID: <20211029141059.GC20319@twin.jikos.cz>
+To:     Jingyun He <jingyun.ho@gmail.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: unable to run mkfs.btrfs for host managed sata hdd
+Message-ID: <20211029142121.GD20319@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Jingyun He <jingyun.ho@gmail.com>,
         linux-btrfs@vger.kernel.org
-References: <20211027052859.44507-1-wqu@suse.com>
- <20211027052859.44507-3-wqu@suse.com>
+References: <CAHQ7scWxVCuQkbtY_dTo3rPoW+J0ofADW4GYGDMb_bfcha81CA@mail.gmail.com>
+ <20211029132232.GA20319@twin.jikos.cz>
+ <CAHQ7scV9i_s3gEXXki_U+RmqWLHu-DMWF_kzXFWKgOtqBQhvhA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211027052859.44507-3-wqu@suse.com>
+In-Reply-To: <CAHQ7scV9i_s3gEXXki_U+RmqWLHu-DMWF_kzXFWKgOtqBQhvhA@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 01:28:59PM +0800, Qu Wenruo wrote:
-> +#define BTRFS_RAID_SHIFT	(ilog2(BTRFS_BLOCK_GROUP_RAID0) - 1)
-> +
->  enum btrfs_raid_types {
-> -	BTRFS_RAID_RAID10,
-> -	BTRFS_RAID_RAID1,
-> -	BTRFS_RAID_DUP,
-> -	BTRFS_RAID_RAID0,
-> -	BTRFS_RAID_SINGLE,
-> -	BTRFS_RAID_RAID5,
-> -	BTRFS_RAID_RAID6,
-> -	BTRFS_RAID_RAID1C3,
-> -	BTRFS_RAID_RAID1C4,
-> +	BTRFS_RAID_SINGLE  = 0,
-> +	BTRFS_RAID_RAID0   = ilog2(BTRFS_BLOCK_GROUP_RAID0 >> BTRFS_RAID_SHIFT),
-> +	BTRFS_RAID_RAID1   = ilog2(BTRFS_BLOCK_GROUP_RAID1 >> BTRFS_RAID_SHIFT),
-> +	BTRFS_RAID_DUP     = ilog2(BTRFS_BLOCK_GROUP_DUP >> BTRFS_RAID_SHIFT),
-> +	BTRFS_RAID_RAID10  = ilog2(BTRFS_BLOCK_GROUP_RAID10 >> BTRFS_RAID_SHIFT),
-> +	BTRFS_RAID_RAID5   = ilog2(BTRFS_BLOCK_GROUP_RAID5 >> BTRFS_RAID_SHIFT),
-> +	BTRFS_RAID_RAID6   = ilog2(BTRFS_BLOCK_GROUP_RAID6 >> BTRFS_RAID_SHIFT),
-> +	BTRFS_RAID_RAID1C3 = ilog2(BTRFS_BLOCK_GROUP_RAID1C3 >> BTRFS_RAID_SHIFT),
-> +	BTRFS_RAID_RAID1C4 = ilog2(BTRFS_BLOCK_GROUP_RAID1C4 >> BTRFS_RAID_SHIFT),
+On Fri, Oct 29, 2021 at 09:52:34PM +0800, Jingyun He wrote:
+> Hi,
+> Thanks for your reply,
+> I run these commands under root account.
+> 
+> After debugging this furthermore,
+> 
+> The issue looks like LSI 2308 doesn't report it as a host managed device.
+> 
+> If I connect it to the onboard SATA port, everything is working fine.
+> 
+> I'm not sure if there is any method to run mkfs.btrfs forcely, as even
+> LSI 2308 didn't report it as a host managed device, but it can pass
+> most of the libzbc tests.
 
-Please use const_ilog2 in case all the terms in the expression are
-constants that can be evaluated at the enum definition time.
+mkfs relies on the kernel interfaces to access the zone information, ie.
+the ioctls to report and reset the zones. AFAIK libzbc works in a
+different way and tracks the zone information outside of the device and
+can work as an emulation layer.
 
-I agree that deriving the indexes from the flags is safe but all the
-magic around that scares me a bit.
+https://zonedstorage.io/projects/libzbc/
+"libzbc command implementation is compliant with the latest published
+versions of the ZBC and ZAC standards defined by INCITS technical
+committees T10 and T13 (respectively)."
+
+You could connect the two together so there's normal block device that
+also works as a native host-managed zoned devices.  For testing I've
+been using TCMU runner that utilizes the libzbc library and exports the
+block devices backed by file images.
+
+But if the problem is on the lower layer where the LSI controller does
+not pass the ZBC ioctls at all I don't see a way how you could use the
+combination because simply calling zone reset would not work and that's
+quite fundamental limitation.
