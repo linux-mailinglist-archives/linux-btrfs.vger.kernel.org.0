@@ -2,133 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF1D43FCA7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 14:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB5443FCB1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 14:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhJ2Mwm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Oct 2021 08:52:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231367AbhJ2Mwl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Oct 2021 08:52:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAE10611CC;
-        Fri, 29 Oct 2021 12:50:09 +0000 (UTC)
-Date:   Fri, 29 Oct 2021 13:50:06 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v8 00/17] gfs2: Fix mmap + page fault deadlocks
-Message-ID: <YXvt/mNABVv6a5nO@arm.com>
-References: <CAHk-=wgP058PNY8eoWW=5uRMox-PuesDMrLsrCWPS+xXhzbQxQ@mail.gmail.com>
- <YXL9tRher7QVmq6N@arm.com>
- <CAHk-=wg4t2t1AaBDyMfOVhCCOiLLjCB5TFVgZcV4Pr8X2qptJw@mail.gmail.com>
- <CAHc6FU7BEfBJCpm8wC3P+8GTBcXxzDWcp6wAcgzQtuaJLHrqZA@mail.gmail.com>
- <YXhH0sBSyTyz5Eh2@arm.com>
- <CAHk-=wjWDsB-dDj+x4yr8h8f_VSkyB7MbgGqBzDRMNz125sZxw@mail.gmail.com>
- <YXmkvfL9B+4mQAIo@arm.com>
- <CAHk-=wjQqi9cw1Guz6a8oBB0xiQNF_jtFzs3gW0k7+fKN-mB1g@mail.gmail.com>
- <YXsUNMWFpmT1eQcX@arm.com>
- <CAHpGcMLeiXSjCJGY6SCJJ=bdNOspHLHofmTE8aC_sZtfHRG5ZA@mail.gmail.com>
+        id S230134AbhJ2Mzc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Oct 2021 08:55:32 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49260 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230492AbhJ2Mzc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 29 Oct 2021 08:55:32 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 27FDE1FD65;
+        Fri, 29 Oct 2021 12:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635511983;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BL0X6M+QIrpizYGDbr7+BVnUeMlbZqi1Bv6eM3mA81I=;
+        b=i5EcHRWNv7V/p3d4KCKwJ5he1ac2bAayIQ7px8wUKoEagr1Y8I0mXXpEGuQ/MFx+/M05iA
+        CR0K5vC31/0up8mMdploZjhXDyp6Ot1EYfQrVMGoDg/UDyg4/TaykHG9QlK7tFcfIqR1y+
+        Kx17jlNn7WDZg3zxjH42jdOnJIXO3HU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635511983;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BL0X6M+QIrpizYGDbr7+BVnUeMlbZqi1Bv6eM3mA81I=;
+        b=l7weRgiVyWNv6hhQwVzS1JI6hfGwPql3cMcjt5QWRMrXvaERvYTDBZ8EthaKl1Ax9CcABy
+        NDJZt6qVQayLiVDg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1FA41A3B85;
+        Fri, 29 Oct 2021 12:53:03 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0FB5EDA7A9; Fri, 29 Oct 2021 14:52:29 +0200 (CEST)
+Date:   Fri, 29 Oct 2021 14:52:29 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     grub-devel@gnu.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] fs/btrfs: Make extent item iteration to handle gaps
+Message-ID: <20211029125229.GY20319@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        grub-devel@gnu.org, linux-btrfs@vger.kernel.org
+References: <20211016014049.201556-1-wqu@suse.com>
+ <3845c0be-6ed8-171e-67c2-92a6f80a60cd@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcMLeiXSjCJGY6SCJJ=bdNOspHLHofmTE8aC_sZtfHRG5ZA@mail.gmail.com>
+In-Reply-To: <3845c0be-6ed8-171e-67c2-92a6f80a60cd@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 12:15:55AM +0200, Andreas Grünbacher wrote:
-> Am Do., 28. Okt. 2021 um 23:21 Uhr schrieb Catalin Marinas
-> <catalin.marinas@arm.com>:
-> > I think for nested contexts we can save the uaccess fault state on
-> > exception entry, restore it on return. Or (needs some thinking on
-> > atomicity) save it in a local variable. The high-level API would look
-> > something like:
-> >
-> >         unsigned long uaccess_flags;    /* we could use TIF_ flags */
-> >
-> >         uaccess_flags = begin_retriable_uaccess();
-> >         copied = copy_page_from_iter_atomic(...);
-> >         retry = end_retriable_uaccess(uaccess_flags);
-> >         ...
-> >
-> >         if (!retry)
-> >                 break;
-> >
-> > I think we'd need a TIF flag to mark the retriable region and another to
-> > track whether a non-recoverable fault occurred. It needs prototyping.
-> >
-> > Anyway, if you don't like this approach, I'll look at error codes being
-> > returned but rather than changing all copy_from_user() etc., introduce a
-> > new API that returns different error codes depending on the fault
-> > (e.g -EFAULT vs -EACCES). We already have copy_from_user_nofault(), we'd
-> > need something for the iov_iter stuff to use in the fs code.
+On Thu, Oct 28, 2021 at 03:36:10PM +0800, Qu Wenruo wrote:
+> Gentle ping?
 > 
-> We won't need any of that on the filesystem read and write paths. The
-> two cases there are buffered and direct I/O:
+> Without this patch, the new mkfs.btrfs NO_HOLES feature would break any 
+> kernel/initramfs with hole in it.
 
-Thanks for the clarification, very useful.
-
-> * In the buffered I/O case, the copying happens with page faults
-> disabled, at a byte granularity. If that returns a short result, we
-> need to enable page faults, check if the exact address that failed
-> still fails (in which case we have a sub-page fault),  fault in the
-> pages, disable page faults again, and repeat. No probing for sub-page
-> faults beyond the first byte of the fault-in address is needed.
-> Functions fault_in_{readable,writeable} implicitly have this behavior;
-> for fault_in_safe_writeable() the choice we have is to either add
-> probing of the first byte for sub-page faults to this function or
-> force callers to do that probing separately. At this point, I'd vote
-> for the former.
-
-This sounds fine to me (and I have some draft patches already on top of
-your series).
-
-> * In the direct I/O case, the copying happens while we're holding page
-> references, so the only page faults that can occur during copying are
-> sub-page faults.
-
-Does holding a page reference guarantee that the user pte pointing to
-such page won't change, for example a pte_mkold()? I assume for direct
-I/O, the PG_locked is not held. But see below, it may not be relevant.
-
-> When iomap_dio_rw or its legacy counterpart is called
-> with page faults disabled, we need to make sure that the caller can
-> distinguish between page faults triggered during
-> bio_iov_iter_get_pages() and during the copying, but that's a separate
-> problem. (At the moment, when iomap_dio_rw fails with -EFAULT, the
-> caller *cannot* distinguish between a bio_iov_iter_get_pages failure
-> and a failure during synchronous copying, but that could be fixed by
-> returning unique error codes from iomap_dio_rw.)
-
-Since the direct I/O pins the pages in memory, does it even need to do a
-uaccess? It could copy the data via the kernel mapping (kmap). For arm64
-MTE, all such accesses are not checked (they use a match-all pointer
-tag) since the kernel is not set up to handle such sub-page faults (no
-copy_from/to_user but a direct access).
-
-> So as far as I can see, the only problematic case we're left with is
-> copying bigger than byte-size chunks with page faults disabled when we
-> don't know whether the underlying pages are resident or not. My guess
-> would be that in this case, if the copying fails, it would be
-> perfectly acceptable to explicitly probe the entire chunk for sub-page
-> faults.
-
-Yeah, if there are only a couple of places left, we can add the explicit
-probing (via some probe_user_writable function).
-
--- 
-Catalin
+Just to clarify, it's not a new feature, it's been out for a long time
+(since 3.14).  The new thing is that it's going to be enabled by default
+so the potential impact would be higher.
