@@ -2,93 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594CA43FE60
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 16:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDDE43FEDA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 17:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhJ2OYZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Oct 2021 10:24:25 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56294 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbhJ2OYZ (ORCPT
+        id S229636AbhJ2PCm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Oct 2021 11:02:42 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38890 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhJ2PCm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Oct 2021 10:24:25 -0400
+        Fri, 29 Oct 2021 11:02:42 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B6A761FD5F;
-        Fri, 29 Oct 2021 14:21:55 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id BA91921977;
+        Fri, 29 Oct 2021 15:00:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635517315;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        t=1635519612;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=jFAPSe5jWTXf+GhXzLli9NjTlFlb2QBwSmv6rU8dp7w=;
-        b=dehN3WzJSYHTIeVQuI4DwKHgz18i4NYdVOY+K/HI/7jbJiE94dI3pdoVCmAgXKSwLuZHxK
-        k/4LsrusPq2X2s2Wxakzzr5ctC6Fw6CIEICOWx7Yw/uP8VX0xI300Y4IyQrfPICFBlmEZY
-        vsB2F5CGyBk1FhwPoVepDiRHF49tza0=
+        bh=U8fTZhDabONM+9gZNFAkwGAG2sHN0GZyal7eI4ulnVc=;
+        b=eHhJrL4UzP5YnqK9IBsPuzI7HDIuylywoevgv8E1C0xZPQvtV9Makz6gPg4syFFPIpE5Y8
+        xYUZy8K0tolu15YuNJfLjfyrVIyhBrG07OD7TkWTU09+AwV5h3ScPz+Xlj0uo5r+wCa75g
+        GAcy3JcIH68S8BXliN1SPX6SJDnJrY4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635517315;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1635519612;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=jFAPSe5jWTXf+GhXzLli9NjTlFlb2QBwSmv6rU8dp7w=;
-        b=xoachcckKxt7kn+bAdgi/ZzV/8GKai20Sr2i8SjhNEo75RxwQMxpJtD0Pzi5O9oij8N5cA
-        blBBtRKUZcV53hDQ==
+        bh=U8fTZhDabONM+9gZNFAkwGAG2sHN0GZyal7eI4ulnVc=;
+        b=rsCWc0cGAK8Z6T48Br22d1NinAKo52lSNxusAen8pER9QnZDL/XRJgnEyx1FnoIwbOm0w9
+        UhWsG6bk1A/g75Cw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id AF6FBA3B81;
-        Fri, 29 Oct 2021 14:21:55 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id B20CEA3B84;
+        Fri, 29 Oct 2021 15:00:12 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 73FF8DA7A9; Fri, 29 Oct 2021 16:21:22 +0200 (CEST)
-Date:   Fri, 29 Oct 2021 16:21:21 +0200
+        id A7F93DA7A9; Fri, 29 Oct 2021 16:59:39 +0200 (CEST)
+Date:   Fri, 29 Oct 2021 16:59:39 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Jingyun He <jingyun.ho@gmail.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: unable to run mkfs.btrfs for host managed sata hdd
-Message-ID: <20211029142121.GD20319@twin.jikos.cz>
+To:     dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: btrfs.wiki.k.org and git-based update workflow
+Message-ID: <20211029145939.GE20319@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Jingyun He <jingyun.ho@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CAHQ7scWxVCuQkbtY_dTo3rPoW+J0ofADW4GYGDMb_bfcha81CA@mail.gmail.com>
- <20211029132232.GA20319@twin.jikos.cz>
- <CAHQ7scV9i_s3gEXXki_U+RmqWLHu-DMWF_kzXFWKgOtqBQhvhA@mail.gmail.com>
+Mail-Followup-To: dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <20211022141200.GK20319@twin.jikos.cz>
+ <CAEg-Je_j=3JgTon1NpNF2PzzWHMracyOWAYHv4CBGoq420f2oQ@mail.gmail.com>
+ <20211025133416.GO20319@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHQ7scV9i_s3gEXXki_U+RmqWLHu-DMWF_kzXFWKgOtqBQhvhA@mail.gmail.com>
+In-Reply-To: <20211025133416.GO20319@twin.jikos.cz>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 29, 2021 at 09:52:34PM +0800, Jingyun He wrote:
-> Hi,
-> Thanks for your reply,
-> I run these commands under root account.
+On Mon, Oct 25, 2021 at 03:34:16PM +0200, David Sterba wrote:
+> On Fri, Oct 22, 2021 at 11:42:14AM -0400, Neal Gompa wrote:
 > 
-> After debugging this furthermore,
+> > It'd probably be good if we could eventually convert it to
+> > Sphinx-based documentation like the rest of the Linux kernel
+> > documentation. We could use readthedocs or reuse btrfs.kernel.org for
+> > this.
 > 
-> The issue looks like LSI 2308 doesn't report it as a host managed device.
+> The way sphinx docs are presented is a bit differnt (more linear whan
+> the wiki pages web), but I think it could improve discoverability of the
+> deeper pages. I'm not sure it's suitable for all the content that's
+> currently on the wiki, there are some free-form looking pages, but eg.
+> manual pages or FAQ are good candidates.
 > 
-> If I connect it to the onboard SATA port, everything is working fine.
-> 
-> I'm not sure if there is any method to run mkfs.btrfs forcely, as even
-> LSI 2308 didn't report it as a host managed device, but it can pass
-> most of the libzbc tests.
+> The only thing that bothers me is that spinx needs RST, yet another
+> markup language. I haven't found convertors asciidoc -> rst, but the
+> format is simple and some of the sturucture can be scripted.  It does
+> not conflict with the goal to have the sources in git and we could have
+> both output formats, wiki and readthedocs. So, thanks for the suggestion.
 
-mkfs relies on the kernel interfaces to access the zone information, ie.
-the ioctls to report and reset the zones. AFAIK libzbc works in a
-different way and tracks the zone information outside of the device and
-can work as an emulation layer.
+A preview of the manual pages is here
 
-https://zonedstorage.io/projects/libzbc/
-"libzbc command implementation is compliant with the latest published
-versions of the ZBC and ZAC standards defined by INCITS technical
-committees T10 and T13 (respectively)."
+https://deleteme12545.readthedocs.io/en/latest/
 
-You could connect the two together so there's normal block device that
-also works as a native host-managed zoned devices.  For testing I've
-been using TCMU runner that utilizes the libzbc library and exports the
-block devices backed by file images.
+It's a temporary location because btrfs.readthedocs.io was not free but
+I'm in the process of claiming it.
 
-But if the problem is on the lower layer where the LSI controller does
-not pass the ZBC ioctls at all I don't see a way how you could use the
-combination because simply calling zone reset would not work and that's
-quite fundamental limitation.
+The RST is not much different from the asciidoc syntax so I converted
+all the manual pages, the RTD is directly from the devel branch in
+btrfs-progs. I'll full switch to RST after 5.15 release, there are some
+formatting artifacts still to solve but right now the result is
+pleasant.
