@@ -2,42 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6094401DE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 20:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC154401EB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 20:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhJ2SbJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Oct 2021 14:31:09 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4974 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229755AbhJ2SbI (ORCPT
+        id S230084AbhJ2Sej (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Oct 2021 14:34:39 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21710 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229826AbhJ2Sei (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Oct 2021 14:31:08 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with SMTP id 19THwR4e003760
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Oct 2021 11:28:39 -0700
+        Fri, 29 Oct 2021 14:34:38 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19THwQSZ023569
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Oct 2021 11:32:10 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
  bh=PhMjLyz00qPRmsaUiWAWs8e9QKYTov5mmdXFEWW0Wj0=;
- b=hwK2sj+VX/DNf4FQVc3Dpwwt2EPqEYYHdRY0voAmRRNTNdLprxHdArsOn4lb3oyqyh4l
- 7TWXFTc43rRyHwF5b2QQG0TRvgF2iajZSIbvSU6zhfVrgPt6zaeZ5ePN/RP0LNd/O4L7
- VnuD4lHnWuNiGBqOw4eA4o29QfAdU/UNWjw= 
+ b=Ffk87wq0QV+kk4lqrAAsJsO29uDSSjHqNd6hf7nCRDL9KhMHduQ1zoAUjSiS+o2XSgr8
+ 2mBjOwIuugtXTVDIc7WictH0eascXErOzg6tWOPK845NQQgobr7nHi5Bj5bqkIlWkxBv
+ Sb8ZaHmeCBgFLHesOgUxKwbb1LjQmhLC87A= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 3c0b94npa0-2
+        by mx0a-00082601.pphosted.com with ESMTP id 3c0mdnh7ps-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Fri, 29 Oct 2021 11:28:29 -0700
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <linux-btrfs@vger.kernel.org>; Fri, 29 Oct 2021 11:32:09 -0700
+Received: from intmgw001.38.frc1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 29 Oct 2021 11:28:18 -0700
+ 15.1.2308.14; Fri, 29 Oct 2021 11:28:17 -0700
 Received: by devvm225.atn0.facebook.com (Postfix, from userid 425415)
-        id E1F1F5BCB63C; Fri, 29 Oct 2021 11:28:15 -0700 (PDT)
+        id E7A625BCB63E; Fri, 29 Oct 2021 11:28:15 -0700 (PDT)
 From:   Stefan Roesch <shr@fb.com>
 To:     <linux-btrfs@vger.kernel.org>, <kernel-team@fb.com>
 CC:     <shr@fb.com>
-Subject: [PATCH v3 2/4] btrfs: expose chunk size in sysfs.
-Date:   Fri, 29 Oct 2021 11:28:09 -0700
-Message-ID: <20211029182812.3560677-4-shr@fb.com>
+Subject: [PATCH v3 2/4] btrfs: expose stripe and chunk size in sysfs.
+Date:   Fri, 29 Oct 2021 11:28:10 -0700
+Message-ID: <20211029182812.3560677-5-shr@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211029182812.3560677-1-shr@fb.com>
 References: <20211029182812.3560677-1-shr@fb.com>
@@ -46,16 +46,16 @@ Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-FB-Source: Intern
-X-Proofpoint-GUID: dVj15poRKwGgk-M8_sy9BGU58KADpAB3
-X-Proofpoint-ORIG-GUID: dVj15poRKwGgk-M8_sy9BGU58KADpAB3
+X-Proofpoint-GUID: VMvEOdxH3L54cx6bG-R3XOlF0AV9yo5l
+X-Proofpoint-ORIG-GUID: VMvEOdxH3L54cx6bG-R3XOlF0AV9yo5l
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
  definitions=2021-10-29_04,2021-10-29_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 bulkscore=0 clxscore=1015
- spamscore=0 impostorscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2110290100
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
+ mlxlogscore=999 lowpriorityscore=0 spamscore=0 suspectscore=0
+ malwarescore=0 impostorscore=0 priorityscore=1501 phishscore=0
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2110290100
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
