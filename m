@@ -2,94 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0676E440003
-	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 18:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8994400B8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 29 Oct 2021 18:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhJ2QGE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 29 Oct 2021 12:06:04 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42270 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhJ2QGD (ORCPT
+        id S230055AbhJ2Q6I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 29 Oct 2021 12:58:08 -0400
+Received: from tartarus.angband.pl ([51.83.246.204]:42394 "EHLO
+        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229837AbhJ2Q6H (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 29 Oct 2021 12:06:03 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0CF5021979;
-        Fri, 29 Oct 2021 16:03:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1635523414;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sw3zdEN9nfFPtZag7wthC6B16S94bC/1qnJjoOZVqSM=;
-        b=MVt9rRWrCymIg1t6VClbeIEVDmdDjhVvXUStRRpauLAemsHpV1bJ6XNEPbOjDhD7g3azKz
-        sacntX942ZEyFbU4lKK3SYezTMQg9mCEH8DGFG2KPbFpNCvyNQh2gQloDiPK5M8+HzaKRu
-        WIxCG58L2Dzp6N8ZRk3uzO0vEQgNLKI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1635523414;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sw3zdEN9nfFPtZag7wthC6B16S94bC/1qnJjoOZVqSM=;
-        b=PYK8zxHICMpz3Qzv9nJkSWschrxBRe47jcNpDxMr9ZxI6h0eFVL00T9zlLUNYZl9XPYtEH
-        wsa6Wc/swsX9C/Ag==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id F3C58A3B84;
-        Fri, 29 Oct 2021 16:03:33 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E4CD9DA7A9; Fri, 29 Oct 2021 18:03:00 +0200 (CEST)
-Date:   Fri, 29 Oct 2021 18:03:00 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        osandov@osandov.com, nborisov@suse.com
-Subject: Re: [PATCH v2] btrfs: send: prepare for v2 protocol
-Message-ID: <20211029160300.GF20319@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        osandov@osandov.com, nborisov@suse.com
-References: <20211022145336.29711-1-dsterba@suse.com>
- <72708fe4-5886-8814-f5e2-3c1dbf523965@oracle.com>
+        Fri, 29 Oct 2021 12:58:07 -0400
+X-Greylist: delayed 1729 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 12:58:07 EDT
+Received: from kilobyte by tartarus.angband.pl with local (Exim 4.94.2)
+        (envelope-from <kilobyte@angband.pl>)
+        id 1mgUgI-007lEQ-Rr; Fri, 29 Oct 2021 18:24:38 +0200
+Date:   Fri, 29 Oct 2021 18:24:38 +0200
+From:   Adam Borowski <kilobyte@angband.pl>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Btrfs progs pre-release 5.15-rc1
+Message-ID: <YXwgRuMiS2OFYP8+@angband.pl>
+References: <20211029155346.19985-1-dsterba@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <72708fe4-5886-8814-f5e2-3c1dbf523965@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211029155346.19985-1-dsterba@suse.com>
+X-Junkbait: aaron@angband.pl, zzyx@angband.pl
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: kilobyte@angband.pl
+X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 27, 2021 at 03:17:46PM +0800, Anand Jain wrote:
-> On 22/10/2021 22:53, David Sterba wrote:
-> > --- a/fs/btrfs/send.h
-> > +++ b/fs/btrfs/send.h
-> > @@ -48,6 +48,7 @@ struct btrfs_tlv_header {
-> >   enum btrfs_send_cmd {
-> >   	BTRFS_SEND_C_UNSPEC,
-> >   
-> > +	/* Version 1 */
-> >   	BTRFS_SEND_C_SUBVOL,
-> >   	BTRFS_SEND_C_SNAPSHOT,
-> >   
-> > @@ -76,6 +77,12 @@ enum btrfs_send_cmd {
-> >   
-> >   	BTRFS_SEND_C_END,
-> >   	BTRFS_SEND_C_UPDATE_EXTENT,
-> > +	__BTRFS_SEND_C_MAX_V1,
-> > +
-> > +	/* Version 2 */
-> > +	__BTRFS_SEND_C_MAX_V2,
-> > +
+On Fri, Oct 29, 2021 at 05:53:46PM +0200, David Sterba wrote:
+> The noticeable changes are in the mkfs defaults:
 > 
->   Isn't this has to be in tandem with BTRFS_SEND_STREAM_VERSION == 2?
+>   * no-holes
+>   * free-space-tree
+      ^^^^^^^^^^^^^^^
+>   * DUP for metadata unconditionally
 
-The patch is only preparatory and adds the base code for the real
-protocol updates where the STREAM_VERSION will be increased, but does
-not do that yet so we don't falsely advertise v2 support when there's no
-such thing.
+\o/ !!!
 
->   The changelog doesn't explain the plan of __BTRFS_SEND_C_MAX_Vx use case.
-
-It's supposed to prevent doubts and questions "what should I do when I
-want to add v2 command" and make the code ready for anybody working on
-the v2 update.
+-- 
+⢀⣴⠾⠻⢶⣦⠀
+⣾⠁⢠⠒⠀⣿⡁
+⢿⡄⠘⠷⠚⠋⠀ An imaginary friend squared is a real enemy.
+⠈⠳⣄⠀⠀⠀⠀
