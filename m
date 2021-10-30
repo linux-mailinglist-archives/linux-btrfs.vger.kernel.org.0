@@ -2,85 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD10E44092B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Oct 2021 15:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCDE440972
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Oct 2021 16:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhJ3Nku (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Oct 2021 09:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
+        id S229822AbhJ3OSv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Oct 2021 10:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhJ3Nkt (ORCPT
+        with ESMTP id S229633AbhJ3OSv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Oct 2021 09:40:49 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE53C061570
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Oct 2021 06:38:19 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id l13so26766547lfg.6
-        for <linux-btrfs@vger.kernel.org>; Sat, 30 Oct 2021 06:38:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=J+VQVFWXmPGZ7NCt3mYyjhsr/niKmCTz4NsGpE180AE=;
-        b=k9zy8tPZt9lHVJtLHON39+2PUwwm+zXe6YnBe7GSCYGy8XMEoBzmzqDd1O4bRPbOz6
-         /kwv3uPdn5skwf2qGORhufnqjyPOb1dpU7q092T6w6IgpC5Nv56JSfzyMU7voNZAIpVq
-         g0CCvossOxf4RwBF76IhnLaU5AhVs0iFGTB/Zi5pn9DyvAg+LKGwU8LZiHXH5+CUiDA4
-         GBSBzCbhzEYZ1HMPTd2BSW/i0H4BDTdy+uBQGntbowwy4SI68DLIKFJ/LR4KRLnRSISO
-         uRN9NZA3Y98sjLjUIEyVI+kJSXleUGWovR2IYhV953QIoeV5B6AHiJXRxSG/yXExVbet
-         qyvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J+VQVFWXmPGZ7NCt3mYyjhsr/niKmCTz4NsGpE180AE=;
-        b=Sh0DrGdvIr+7cc+u9o1EIdKnZqBiV7nGXpzO0Y5geZxnxCkkiSKJzmtpUwlaXmSjo2
-         +ayrzXS/PfrnsRnJfkF4KhlLFkLfd08YGmg/Z9NILinUFiXWHt+zjuQEQ9X0dvI0LQcI
-         V4s9cxX4udHDRqxGwiIPZtXbUFFNYQGxMAJOTGc2QVaiVKvmUoc4Jab9cN+hxymZZ1yS
-         Wm/Tv94zOzOqtxYPUPJlMO9EQeXKmn8PviaNw0C5fus9nwZiwGApuQjZi2M2lYuY3jUq
-         CKBHqRjKZTz7Rmx9FXgMpTbYIAj8E2un/F0QPk1ealRA4PbE4SvRUdDRrkonmVTUA25S
-         gJFA==
-X-Gm-Message-State: AOAM531nasgQehd/m8glEwuFlSmwjug2PEA/uyGXDSwrDL/z/bFMexvG
-        Vcw9iae2RHNqvRK2Bs/GfKIcFbY+JvXeTA==
-X-Google-Smtp-Source: ABdhPJxZPeqvcEL5x510lkKbRUs0fN7Bqv7VGJKCR861IkYw7ZLc9txRaIq19ns1aoyJVohuGHA9pA==
-X-Received: by 2002:a05:6512:3f8b:: with SMTP id x11mr16357553lfa.536.1635601097374;
-        Sat, 30 Oct 2021 06:38:17 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:812d:2ee3:d0da:16e0:4d67:a3d0? ([2a00:1370:812d:2ee3:d0da:16e0:4d67:a3d0])
-        by smtp.gmail.com with ESMTPSA id v19sm895530lfe.54.2021.10.30.06.38.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Oct 2021 06:38:17 -0700 (PDT)
+        Sat, 30 Oct 2021 10:18:51 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3DDEC061570
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Oct 2021 07:16:20 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4HhLv52YL9zQjnB;
+        Sat, 30 Oct 2021 16:16:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=duxsco.de; s=MBO0001;
+        t=1635603374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v4yyacLR+V6kiYXBifbHvd4ncJCdW6mSeTtzk1z8YU4=;
+        b=Xi0fOZj22lVUYJZnyFzZW3xrjLI6Mi0ZeZ7L3OA4JDqKjsEFKIj7dDtQ8xGsZ/yeANXq5K
+        BS2DxKSd4n+v7nFIV0yPIYrqGOgaJ+GVr4afyK75FdLZAU+fjLPwN8aWRQYBTNr3dyR1dT
+        moLW1poft71UcpeENYWSwUXeBQyTstkHsSohlaRZi6QonuBf/bqhQ79gg1uCzHc6QplIIs
+        LMPZwU+DDs+yoUO8hSXMqXk2yWxarhFQZGIJBU8WYNJz+lANdPB/BkdbrinRO0ucJ6cHHD
+        5Tw435nrJYlYy7pgd97npW3nRuq65XVeNKAh6AzilVhFjRwYgW1Gd3wfTfCa2g==
+Message-ID: <8d2d6b96071b9f50c2a509c71a0eb34fd20b4349.camel@duxsco.de>
 Subject: Re: Btrfs failing to make incremental backups
-To:     David Sardari <d@duxsco.de>, linux-btrfs@vger.kernel.org
+From:   David Sardari <d@duxsco.de>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>, linux-btrfs@vger.kernel.org
+Date:   Sat, 30 Oct 2021 16:14:41 +0200
+In-Reply-To: <3574af93-d40d-1502-3c8b-5c71c2ee1abd@gmail.com>
 References: <58d81c70b2c7de2faa209b56ba18143b5bfb6e2a.camel@duxsco.de>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Message-ID: <3574af93-d40d-1502-3c8b-5c71c2ee1abd@gmail.com>
-Date:   Sat, 30 Oct 2021 16:38:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+         <3574af93-d40d-1502-3c8b-5c71c2ee1abd@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-In-Reply-To: <58d81c70b2c7de2faa209b56ba18143b5bfb6e2a.camel@duxsco.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: D6186881
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 30.10.2021 15:49, David Sardari wrote:
-> Hi *,
-> 
-> I have a problem doing an incremental backup with "btrfs send/receive"
-> using a snapshot as parent, that has been incrementally saved on the
-> destination side itself. Attached you find the problem description and
-> my dmesg.log. They can also be viewed on github:
-> 
-> https://gist.github.com/duxsco/55b31a5e73fd2ef498f0ae96d9152f99
-> 
-> https://gist.github.com/duxsco/b5ee79e51f68d50240b2bc5b6a7fd82c
-> 
+I understand. Next time I write everything in the mail body.
 
-This makes it impossible to comment on your description or logs inline.
+I deleted the snapshot on the destination side. So, I had to do again
+just now resulting in same problem:
 
-Anyway, the usual primary suspect is duplicated received UUID. Show
-"btrfs subvolume show snapshot" on both source and destination systems
-for each involved snapshot.
+   btrfs send -p | \
+       "${SRC}/@2021-10-30-095620_files" \
+       "${DST}/@2021-10-30-100526_files" | \
+       btrfs receive "${DST}/"; echo $status; sync
+   At subvol /mnt/backup/src/@00_snapshot_hourly/@2021-10-30-100526_files
+   At snapshot @2021-10-30-100526_files
+   0
+
+The parent snapshot:
+
+   bash-5.1# btrfs subvolume show "${SRC}/@2021-10-30-095620_files"
+   WARNING: the subvolume is read-write and has received_uuid set,
+   	 don't use it for incremental send. Please see section
+   	 'SUBVOLUME FLAGS' in manual page btrfs-subvolume for
+   	 further information.
+   @00_snapshot_hourly/@2021-10-30-095620_files
+   	Name: 			@2021-10-30-095620_files
+   	UUID: 			c4914d2e-b1f7-134e-984f-bf686f8d919b
+   	Parent UUID: 		537c7db2-05da-6546-9092-89f873d7276a
+   	Received UUID: 		7eb8ade9-0234-474c-b3c6-
+   3b439bb51aa4
+   	Creation time: 		2021-10-30 11:56:20 +0200
+   	Subvolume ID: 		5914
+   	Generation: 		319458
+   	Gen at creation: 	319458
+   	Parent ID: 		5855
+   	Top level ID: 		5855
+   	Flags: 			readonly
+   	Send transid: 		14924
+   	Send time: 		2021-10-30 11:56:20 +0200
+   	Receive transid: 	1276
+   	Receive time: 		2020-10-30 23:44:11 +0100
+   	Snapshot(s):
+
+Snapshot that needs to be sent:
+
+   bash-5.1# btrfs subvolume show "${SRC}/@2021-10-30-100526_files"
+   WARNING: the subvolume is read-write and has received_uuid set,
+   	 don't use it for incremental send. Please see section
+   	 'SUBVOLUME FLAGS' in manual page btrfs-subvolume for
+   	 further information.
+   @00_snapshot_hourly/@2021-10-30-100526_files
+   	Name: 			@2021-10-30-100526_files
+   	UUID: 			74c54234-20b3-7d4c-9dd8-ebb919d2e876
+   	Parent UUID: 		537c7db2-05da-6546-9092-89f873d7276a
+   	Received UUID: 		7eb8ade9-0234-474c-b3c6-
+   3b439bb51aa4
+   	Creation time: 		2021-10-30 12:05:26 +0200
+   	Subvolume ID: 		5920
+   	Generation: 		319481
+   	Gen at creation: 	319481
+   	Parent ID: 		5855
+   	Top level ID: 		5855
+   	Flags: 			readonly
+   	Send transid: 		14924
+   	Send time: 		2021-10-30 12:05:26 +0200
+   	Receive transid: 	1276
+   	Receive time: 		2020-10-30 23:44:11 +0100
+   	Snapshot(s):
+
+
+Resulting snapshot on the destination side:
+
+   bash-5.1# btrfs subvolume show "${DST}/@2021-10-30-100526_files"
+   WARNING: the subvolume is read-write and has received_uuid set,
+   	 don't use it for incremental send. Please see section
+   	 'SUBVOLUME FLAGS' in manual page btrfs-subvolume for
+   	 further information.
+   @00_snapshot_hourly/@2021-10-30-100526_files
+   	Name: 			@2021-10-30-100526_files
+   	UUID: 			4a97faed-5852-e140-a6ec-4eaac6ab4863
+   	Parent UUID: 		e04d86db-293a-cc44-a226-059677aa6e11
+   	Received UUID: 		7eb8ade9-0234-474c-b3c6-
+   3b439bb51aa4
+   	Creation time: 		2021-10-30 15:54:32 +0200
+   	Subvolume ID: 		3300
+   	Generation: 		1146
+   	Gen at creation: 	1146
+   	Parent ID: 		1988
+   	Top level ID: 		1988
+   	Flags: 			readonly
+   	Send transid: 		319434
+   	Send time: 		2021-10-30 15:54:32 +0200
+   	Receive transid: 	1147
+   	Receive time: 		2021-10-30 15:54:32 +0200
+   	Snapshot(s):
+
+-- 
+My GnuPG public key:
+gpg --auto-key-locate clear,dane --locate-external-key d@duxsco.de
+
+
+
+On Sat, 2021-10-30 at 16:38 +0300, Andrei Borzenkov wrote:
+> This makes it impossible to comment on your description or logs inline.
+> 
+> Anyway, the usual primary suspect is duplicated received UUID. Show
+> "btrfs subvolume show snapshot" on both source and destination systems
+> for each involved snapshot.
+
