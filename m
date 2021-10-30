@@ -2,82 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D9A440991
-	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Oct 2021 16:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909644409CB
+	for <lists+linux-btrfs@lfdr.de>; Sat, 30 Oct 2021 17:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhJ3Ojc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 30 Oct 2021 10:39:32 -0400
-Received: from out20-3.mail.aliyun.com ([115.124.20.3]:58110 "EHLO
-        out20-3.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhJ3Ojb (ORCPT
+        id S230025AbhJ3PFR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 30 Oct 2021 11:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhJ3PFR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 30 Oct 2021 10:39:31 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07638914|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00171305-0.000136274-0.998151;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=2;RT=2;SR=0;TI=SMTPD_---.LkeF9iB_1635604619;
-Received: from T640.e16-tech.com(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.LkeF9iB_1635604619)
-          by smtp.aliyun-inc.com(10.147.41.143);
-          Sat, 30 Oct 2021 22:36:59 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Wang Yugui <wangyugui@e16-tech.com>
-Subject: [PATCH] btrfs-progs: fix btrfs_group_profile_str regression
-Date:   Sat, 30 Oct 2021 22:36:58 +0800
-Message-Id: <20211030143658.39136-1-wangyugui@e16-tech.com>
-X-Mailer: git-send-email 2.32.0
+        Sat, 30 Oct 2021 11:05:17 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FAFC061570
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Oct 2021 08:02:46 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id u21so27004547lff.8
+        for <linux-btrfs@vger.kernel.org>; Sat, 30 Oct 2021 08:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=h84v5gj9sxC2T/V3PtPQ8tdSmpnyez0cbL6+HSUxKzA=;
+        b=nSNQ6UFzSNVzyTEbeO/71ijEY13nrFxq1+sx5y5qaIUGHkSIJOdP5x2vQz1C8l66Dt
+         rNzkR4qou2DkWkzPpOCsPGfN3Z/HLuaTQuS9hxaleRQ1F0zc+ZPTulMREiG6GWvKmjma
+         oprHKnS+qFttbgUYP21UxFXGRJAPqJSzAx0Unp6YOaD6iMEIdtDsZNT04bZns0U96YhL
+         hOoqvsX+9Z9N4XECxw7EWJgFXkWonKs+7MvOhCaVvDnB5ghNs31lH0+x9bp+NIq4KSTt
+         ErolY80pE++9kEqqcOqJq9O3WPW8l9qcGeiQxR/oDwUWuOdQjeQ19AkUgwpnWiRzX6TF
+         xk2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h84v5gj9sxC2T/V3PtPQ8tdSmpnyez0cbL6+HSUxKzA=;
+        b=fWa3LLwOMYjOaBL9Tcn/qgGYwnf+1+gapnQzwTQRm5qn+ZL24Mm7CkfGkuLiHIqBKx
+         TpjdG60s3Ctbi4WFR6qH/50EBxUuqBVd9eudRi6i/nCAzchqYg50SlJuzi1a/muzZQP0
+         2qrplwMcfyVJaBCL5+L2OCXDtpfE3fy9N8Blt2tlc6vHrda/7JKS/URyK+FaKz4zHJ7U
+         a1CHfnsQarOn4Ym2TMHzcsMd3liB816G2nV/M/HLuMOshAVfBc/9s5e06LpztDWaO6A/
+         HiSln8YDR/p0seaoZ+HSpfcNOj7yodet13e5hLrWN20GBeTRaiFt3M9+5MiSjLEbVwau
+         7jLA==
+X-Gm-Message-State: AOAM530pMmb9SbtlW4I7KimiIEyZmyhO0A7rMOJRRx/ceA0TJFxRcxC1
+        UHum9PHUGp2PT6BqrMdZyvsTsD9SZnA=
+X-Google-Smtp-Source: ABdhPJwLqd/MY3kV0aZ4N2dkflhf2zNoZ2wpyJi5Qg5pgnl+u2EuUbSbyjw/I0xXCpPya2AJkZb/oQ==
+X-Received: by 2002:a05:6512:261f:: with SMTP id bt31mr16999452lfb.506.1635606164833;
+        Sat, 30 Oct 2021 08:02:44 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:812d:2ee3:d0da:16e0:4d67:a3d0? ([2a00:1370:812d:2ee3:d0da:16e0:4d67:a3d0])
+        by smtp.gmail.com with ESMTPSA id q6sm937750ljh.1.2021.10.30.08.02.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Oct 2021 08:02:44 -0700 (PDT)
+Subject: Re: Btrfs failing to make incremental backups
+To:     David Sardari <d@duxsco.de>, linux-btrfs@vger.kernel.org
+References: <58d81c70b2c7de2faa209b56ba18143b5bfb6e2a.camel@duxsco.de>
+ <3574af93-d40d-1502-3c8b-5c71c2ee1abd@gmail.com>
+ <8d2d6b96071b9f50c2a509c71a0eb34fd20b4349.camel@duxsco.de>
+ <9eefd0b24436350452e993dce3cf02c4f6284b71.camel@duxsco.de>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Message-ID: <d73a72b5-7b53-4ff3-f9b7-1a098868b967@gmail.com>
+Date:   Sat, 30 Oct 2021 18:02:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <9eefd0b24436350452e993dce3cf02c4f6284b71.camel@duxsco.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str to use raid table")
-introduced a regression that raid profile of GlobalReserve will be output
-as 'unknown'.
+On 30.10.2021 17:20, David Sardari wrote:
+> Here is what the corresponding parent snapshot looks like on the
+> destination side:
+> 
 
- $ btrfs filesystem df /mnt/test
- Data, single: total=5.02TiB, used=4.98TiB
- System, single: total=4.00MiB, used=624.00KiB
- Metadata, single: total=11.01GiB, used=6.94GiB
- GlobalReserve, unknown: total=512.00MiB, used=0.00B
+Please understand that mailing list is not a web forum where you can
+scroll up and see previous posts. You previous mail may not be available
+when reading so context is lost.
 
-fix it by
-- add the process of BTRFS_BLOCK_GROUP_RESERVED
-- fix the define of BTRFS_BLOCK_GROUP_RESERVED too.
+> bash-5.1# btrfs subvolume show "${DST}/@2021-10-30-095620_files"
 
-Fixes: dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str to use raid table")
-Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
+I asked you to show this information for all snapshots that you have
+listed on github for a reason. You so far only provided two source
+snapshots and one received snapshot.
 
----
- common/utils.c        | 2 +-
- kernel-shared/ctree.h | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+Anyway, your two source snapshots show the same received UUID which
+confirms what I suspected. It means that every snapshot on destination
+will have the same received UUID as well and "btrfs receive" will use
+the wrong snapshot as base to apply change stream.
 
-diff --git a/common/utils.c b/common/utils.c
-index aee0eedc..e8744199 100644
---- a/common/utils.c
-+++ b/common/utils.c
-@@ -1030,7 +1030,7 @@ const char* btrfs_group_profile_str(u64 flag)
- {
- 	int index;
- 
--	flag &= ~BTRFS_BLOCK_GROUP_TYPE_MASK;
-+	flag &= ~(BTRFS_BLOCK_GROUP_TYPE_MASK | BTRFS_BLOCK_GROUP_RESERVED);
- 	if (flag & ~BTRFS_BLOCK_GROUP_PROFILE_MASK)
- 		return "unknown";
- 
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 563ea50b..99ebc3ad 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -972,7 +972,8 @@ struct btrfs_csum_item {
- #define BTRFS_BLOCK_GROUP_RAID6    	(1ULL << 8)
- #define BTRFS_BLOCK_GROUP_RAID1C3    	(1ULL << 9)
- #define BTRFS_BLOCK_GROUP_RAID1C4    	(1ULL << 10)
--#define BTRFS_BLOCK_GROUP_RESERVED	BTRFS_AVAIL_ALLOC_BIT_SINGLE
-+#define BTRFS_BLOCK_GROUP_RESERVED	(BTRFS_AVAIL_ALLOC_BIT_SINGLE | \
-+					 BTRFS_SPACE_INFO_GLOBAL_RSV)
- 
- enum btrfs_raid_types {
- 	BTRFS_RAID_RAID10,
--- 
-2.32.0
+The same problem was discussed just recently and pops up with
+regrettable frequency.
+
+https://lore.kernel.org/linux-btrfs/CAL3q7H5y6z7rRu-ZsZe_WXeHteWx1edZi+L3-UL0aa0oYg+qQA@mail.gmail.com/
+
+
+> WARNING: the subvolume is read-write and has received_uuid set,
+> 	 don't use it for incremental send. Please see section
+> 	 'SUBVOLUME FLAGS' in manual page btrfs-subvolume for
+> 	 further information.
+> @00_snapshot_hourly/@2021-10-30-095620_files
+> 	Name: 			@2021-10-30-095620_files
+> 	UUID: 			59c8e5fb-f3f7-d448-9da9-e2af0cc5b0d8
+> 	Parent UUID: 		e04d86db-293a-cc44-a226-059677aa6e11
+> 	Received UUID: 		7eb8ade9-0234-474c-b3c6-
+> 3b439bb51aa4
+> 	Creation time: 		2021-10-30 11:56:27 +0200
+> 	Subvolume ID: 		3275
+> 	Generation: 		1048
+> 	Gen at creation: 	1045
+> 	Parent ID: 		1988
+> 	Top level ID: 		1988
+> 	Flags: 			readonly
+> 	Send transid: 		319434
+> 	Send time: 		2021-10-30 11:56:27 +0200
+> 	Receive transid: 	1046
+> 	Receive time: 		2021-10-30 11:56:27 +0200
+> 	Snapshot(s):
+> 
 
