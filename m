@@ -2,138 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA1F44319C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 16:25:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1B744327C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 17:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234560AbhKBP2S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 11:28:18 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50524 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233007AbhKBP2J (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 11:28:09 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D8B701FD4C;
-        Tue,  2 Nov 2021 15:25:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635866732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S234784AbhKBQJN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Nov 2021 12:09:13 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58636 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234658AbhKBQET (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 12:04:19 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 984CF218D6;
+        Tue,  2 Nov 2021 16:01:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635868903;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6GiLMiJAnzbcLthSAl63S33g7iKONODGvH3XGxM/R0o=;
-        b=K7gLoMiRyUeZh7HLcZBFrqwMvxbmkkbhXcP91l+wofrlw3wOIWqbqYp06s1OFkz/gOELiT
-        ZX/0NWCxoVh6I//D6I7cIGnkeW5DJFyCzI7fbnugZ94LWWLN7lmNmIeCdZQSdLy6X1dNkU
-        Z6J1vXAhPA9B6P0w6IN+XrrZZeAJPVw=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A5B6613D66;
-        Tue,  2 Nov 2021 15:25:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2cPlJWxYgWExSgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 02 Nov 2021 15:25:32 +0000
-Subject: Re: [PATCH 0/3] Balance vs device add fixes
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <20211101115324.374076-1-nborisov@suse.com>
- <YYFLlL4NTF4L+PmE@localhost.localdomain>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <516c7eaf-3fb2-fe61-08f8-ac4201752121@suse.com>
-Date:   Tue, 2 Nov 2021 17:25:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=7cVHXpoVPPgrRSOw0P152RgHjff0Yl+kqK0cDW7ep1U=;
+        b=TfGDUYZb4vlsXSEurr0MEG7Y3Mx8q7/0Edou5E7J88GKQdhfYO6MRsi1Zji312kr5pqfR3
+        1wCwj/6bDg0Bmw8PYuEAa9XOpTH8LFeOoYOaKIHuSwrXD91YB8+9LVcFnW7B6010ZZFb13
+        Am6oD0DMWnB3DEmFkR7TrNCeutnekIQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635868903;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7cVHXpoVPPgrRSOw0P152RgHjff0Yl+kqK0cDW7ep1U=;
+        b=4SAnm+frEL2waY4D5P0AnZtHjYy+L/JLDaFEct0uSNihxvuAESAUPjIO6DexbW/DvFwMwg
+        dEM+4xA1eR3KLFDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 909B2A3B83;
+        Tue,  2 Nov 2021 16:01:43 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 354D1DA7A9; Tue,  2 Nov 2021 17:01:08 +0100 (CET)
+Date:   Tue, 2 Nov 2021 17:01:07 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Chris Murphy <lists@colorremedies.com>
+Subject: Re: [PATCH] btrfs: fix memory ordering between normal and ordered
+ work functions
+Message-ID: <20211102160107.GL20319@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org, Chris Murphy <lists@colorremedies.com>
+References: <20211102124916.433836-1-nborisov@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <YYFLlL4NTF4L+PmE@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211102124916.433836-1-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Nov 02, 2021 at 02:49:16PM +0200, Nikolay Borisov wrote:
+> Ordered work functions aren't guaranteed to be handled by the same thread
+> which executed the normal work functions. The only way execution between
+> normal/ordered functions is synchronized is via the WORK_DONE_BIT,
+> unfortunately the used bitops don't guarantee any ordering whatsoever.
+> 
+> This manifested as seemingly inexplicable crashes on arm64, where
+> async_chunk::inode is seens as non-null in async_cow_submit which causes
+> submit_compressed_extents to be called and crash occurs because
+> async_chunk::inode suddenly became NULL. The call trace was similar to:
+> 
+>     pc : submit_compressed_extents+0x38/0x3d0
+>     lr : async_cow_submit+0x50/0xd0
+>     sp : ffff800015d4bc20
+> 
+>     <registers omitted for brevity>
+> 
+>     Call trace:
+>      submit_compressed_extents+0x38/0x3d0
+>      async_cow_submit+0x50/0xd0
+>      run_ordered_work+0xc8/0x280
+>      btrfs_work_helper+0x98/0x250
+>      process_one_work+0x1f0/0x4ac
+>      worker_thread+0x188/0x504
+>      kthread+0x110/0x114
+>      ret_from_fork+0x10/0x18
+> 
+> Fix this by adding respective barrier calls which ensure that all
+> accesses preceding setting of WORK_DONE_BIT are strictly ordered before
+> settint the flag. At the same time add a read barrier after reading of
+> WORK_DONE_BIT in run_ordered_work which ensures all subsequent loads
+> would be strictly ordered after reading the bit. This in turn ensures
+> are all accesses before WORK_DONE_BIT are going to be strictly ordered
+> before any access that can occur in ordered_func.
+> 
+> Fixes: 08a9ff326418 ("btrfs: Added btrfs_workqueue_struct implemented ordered execution based on kernel workqueue")
+> Reported-by: Chris Murphy <lists@colorremedies.com>
+> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2011928
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
+Added to misc-next, thanks.
+> ---
+> 
+> David,
+> 
+> IMO this is stable material.
 
-On 2.11.21 г. 16:30, Josef Bacik wrote:
-> On Mon, Nov 01, 2021 at 01:53:21PM +0200, Nikolay Borisov wrote:
->> This series enables adding of a device when balance is paused (i.e an fs is mounted
->> with skip_balance options). This is needed to give users a chance to gracefully
->> handle an ENOSPC situation in the face of running balance. To achieve this introduce
->> a new exclop - BALANCE_PAUSED which is made compatible with device add. More
->> details in each patche.
->>
->> I've tested this with an fstests which I will be posting in a bit.
->>
->> Nikolay Borisov (3):
->>   btrfs: introduce BTRFS_EXCLOP_BALANCE_PAUSED exclusive state
->>   btrfs: make device add compatible with paused balance in
->>     btrfs_exclop_start_try_lock
->>   btrfs: allow device add if balance is paused
->>
->>  fs/btrfs/ctree.h   |  1 +
->>  fs/btrfs/ioctl.c   | 49 +++++++++++++++++++++++++++++++++++++++-------
->>  fs/btrfs/volumes.c | 23 ++++++++++++++++++----
->>  fs/btrfs/volumes.h |  2 +-
->>  4 files changed, 63 insertions(+), 12 deletions(-)
->>
-> 
-> A few things
-> 
-> 1) Can we integrate the flipping into helpers?  Something like
-> 
-> 	btrfs_exclop_change_state(PAUSED);
-> 
->    So the locking and stuff is all with the code that messes with the exclop?
-
-Right, I left the code flipping balance->paused opencoded because that's
-really a special case. By all means I can add a specific helper so that
-the ASSERT is not lost as well. The reason I didn't do it in the first
-place is because PAUSED is really "special" in the sense it can be
-entered only from BALANCE and it's not really generic. If you take a
-look how btrfs_exclop_start does it for example, it simply checks we
-don't have a running op and simply sets it to whatever is passed
-
-> 
-> 2) The existing helpers do WRITE_ONCE(), is that needed here?  I assume not>    because we're not actually exiting our exclop state, but still
-seems wonky.
-
-That got me thinking in the first place and actually initially I had a
-patch which removed it. However, I *think* it might be required since
-exclusive_operation is accessed without a lock ini the sysfs code i.e.
-btrfs_exclusive_operation_show so I guess that's why we need it.
-
-Goldwyn, what's your take on this?
-
-> 
-> 3) Maybe have an __btrfs_exclop_finish(type), so instead of 
-> 
-> 	if (paused) {
-> 		do thing;
-> 	} else {
-> 		btrfs_exclop_finish();
-> 	}
-> 
->   you can instead do
-> 
-> 	type = BTRFS_EXCLOP_NONE;
-> 	if (pause stuff) {
-> 		do things;
-> 		type = BTRFS_EXCLOP_BALANCE_PAUSED;
-> 	}
-> 
-> 	/* other stuff. */
-> 	__btrfs_exclop_finish(type);
-> 
-> then btrfs_exclop_finish just does __btrfs_exclop_finish(NONE);
-
-I'm having a hard time seeing how this would increase readability. What
-should go into the __btrfs_exclop_finish function?
-
-
-> Thanks,
-> 
-> Josef
-> 
+Yes. You can add the CC: stable@ tag or leave such notice so we don't
+spam their mailinglist.
