@@ -2,162 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43900443312
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 17:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D15443335
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 17:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234937AbhKBQjr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 12:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        id S234703AbhKBQmS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Nov 2021 12:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234858AbhKBQNw (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 12:13:52 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449ACC0613B9
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Nov 2021 09:10:27 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id s1so17911507qta.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Nov 2021 09:10:27 -0700 (PDT)
+        with ESMTP id S231702AbhKBQmO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 12:42:14 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787A2C079781
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Nov 2021 09:15:43 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id d6so13630198qvb.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Nov 2021 09:15:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=xs/hUNnt4SJtje4TDpjvMYwWwssDf5czyN1WO11VqAg=;
-        b=XIVE/E8HiC//pZ9OceGDLjmQJOpK9e4+MOb0+ge78/yQXfHGCXzjy03YKafcSXCPPX
-         ErZO8jqD/ljonXxt4D9jqTLL39J/KkJpj1HawxVRnKD8YPvsnzvrr+qXMj8BevhItCis
-         Sqk7EFpqfL86VutbR2WKkmZ8KMS/CwRZLXeAvpXLnkUpZe/0MrIUOFLUlTdAUEEBztxG
-         LSt3GuJ1CiSvY5CWU3eOo7VrFpc/+3OjsbaN4R0OhQTm+FMrUamP2ZIPocr3s2shplb+
-         gHY1pb++LJBapCBkAKFcFuzmURiOD3o9jGHaOjePMDg0rggR7eGv3jI+npymDtHCtTUH
-         4mMQ==
+         :content-disposition:in-reply-to;
+        bh=NkEWS5pYGhHqSCEdMuaKKkALB6ssriZ0zhr6usSATmw=;
+        b=I9WxXFsCBFhDwOTelaNgFDHEKLdUjPkPhQaQWrVYv9qhfQHcHQx0tVouE7dyrudm9r
+         WbN5NF1w0gq3vIbuIUtLPE/0EOD4cvUa9uvxj4LVDwD4Qxe+n7vabkXFQ2BBuJNuL7qd
+         LpT/Y03QWu5uhpISPl4suNKOGSlwt6D96X4/A1iGES+oevF3JTzoXd6h6rR8LPT1SD1l
+         UAzUcDGW3h0ahRRJaAUpjWTgDa46IOXQj4WOuPH+kDNh9cenUuUYf/DqGpuOKw7kdDsD
+         OR7UbGMFPNljeVCVzmv1BJZzhFRnDYlt5/SD0t6Yh6CFdwVuLu6pHszzqTgMlzWnaGi7
+         8jTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xs/hUNnt4SJtje4TDpjvMYwWwssDf5czyN1WO11VqAg=;
-        b=UvRBWsN8QLazE8I3yaB4EcvMvbzH/143qs6sRt1xTeDfoV0PMYZ7MVYcRykBEWAq79
-         Jx4ey2JvFZ1XFR5qSulHaNVrp8KFH3IRdKSId4OkosFsHbC/xSLHrJ1W/oldF8KXg8N6
-         8fKOiMj1rLNRDlddyZ4we89Xwwwmk6RBdmNnnKdm1A74QtpjVzpM1ec30yGDvwwqgLcC
-         UoMGVQhvEAuMOYagcKRavo4Mz7I9DYna55Vlnz3W63SBxCVjJRLhEqvbkM8p9BmLPhsL
-         ncSUtjKTTIU/0VKfQiLdxt6IxrIwIPNus+9ApkKq0m9Coqczr2OmVSc4mxopg5RyhbNV
-         t/eQ==
-X-Gm-Message-State: AOAM530/BbkYgHbdT8twQ9JrGQLxoUgvczB7N8tjJuJQhyq+S92O7Mkp
-        fMvz4W27wto8HHc/80Qkd8Q+wRyr59A6IQ==
-X-Google-Smtp-Source: ABdhPJwC81pn3d40hwPXzkozsYCQnN/+d6bhiMD7Z9/am9L8K6XPEtmxWpkuQsvjDleEu26V2YDSlg==
-X-Received: by 2002:a05:622a:508:: with SMTP id l8mr39120367qtx.55.1635869426184;
-        Tue, 02 Nov 2021 09:10:26 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=NkEWS5pYGhHqSCEdMuaKKkALB6ssriZ0zhr6usSATmw=;
+        b=vSTsOd3EKfKgaOxnklLnWAC40JzyJ1feuhBykahfegEo6h2llMwR02TCU1TnR6z/Co
+         w6jrvZGntDlvj+tML2yu12lHFuDYZuyqwnHt5a5h70TFilsfTbueHoXOuXMzOkuAukVL
+         GIlEz4TBwP91ntgcuQ5uq+L4RZugc85xVWFjUyooOzqKfVyRKs8xT8TLwSysUukEhsZJ
+         7Z7ZGktTO6LAbGf0RAmxcPhN+eK/SqummO5tFobxm8SIdgzGe/eQxn0TcnH1wgAyJ6fu
+         lczniucO6dJ3Ih72eZ71SsHh20KwbBcq40aO3JrDXkGCti1ulrsUUSC5XcF1E3Xv9VW4
+         FxVQ==
+X-Gm-Message-State: AOAM530v/EK0zauXNuWaNM0nJrcYTdZZAu5KCcUKOWhNnLjy3ASnJtSk
+        DR5U1dEaW0I968gzN2Kkm6CGhw==
+X-Google-Smtp-Source: ABdhPJwZMjWe2azIuHoxBETIn11HKljGMJlKDjn7uusy6hjW8Dxnk53NMM8h5CHlkGg3BxXmfqMUhA==
+X-Received: by 2002:a05:6214:21a5:: with SMTP id t5mr9680519qvc.46.1635869742563;
+        Tue, 02 Nov 2021 09:15:42 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id f21sm7324076qtk.61.2021.11.02.09.10.25
+        by smtp.gmail.com with ESMTPSA id b21sm11372431qtk.69.2021.11.02.09.15.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 09:10:25 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 12:10:24 -0400
+        Tue, 02 Nov 2021 09:15:42 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 12:15:40 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 0/3] Balance vs device add fixes
-Message-ID: <YYFi8CRmQW4L5phF@localhost.localdomain>
-References: <20211101115324.374076-1-nborisov@suse.com>
- <YYFLlL4NTF4L+PmE@localhost.localdomain>
- <516c7eaf-3fb2-fe61-08f8-ac4201752121@suse.com>
+To:     Stefan Roesch <shr@fb.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v4 0/4] btrfs: sysfs: set / query btrfs chunk size
+Message-ID: <YYFkLP/cOgje+Vi7@localhost.localdomain>
+References: <20211029183950.3613491-1-shr@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <516c7eaf-3fb2-fe61-08f8-ac4201752121@suse.com>
+In-Reply-To: <20211029183950.3613491-1-shr@fb.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 05:25:32PM +0200, Nikolay Borisov wrote:
+On Fri, Oct 29, 2021 at 11:39:46AM -0700, Stefan Roesch wrote:
+> Motivation:
+> The btrfs allocator is currently not ideal for all workloads. It tends
+> to suffer from overallocating data block groups and underallocating
+> metadata block groups. This results in filesystems becoming read-only
+> even though there is plenty of "free" space.
 > 
+> This is naturally confusing and distressing to users.
 > 
-> On 2.11.21 г. 16:30, Josef Bacik wrote:
-> > On Mon, Nov 01, 2021 at 01:53:21PM +0200, Nikolay Borisov wrote:
-> >> This series enables adding of a device when balance is paused (i.e an fs is mounted
-> >> with skip_balance options). This is needed to give users a chance to gracefully
-> >> handle an ENOSPC situation in the face of running balance. To achieve this introduce
-> >> a new exclop - BALANCE_PAUSED which is made compatible with device add. More
-> >> details in each patche.
-> >>
-> >> I've tested this with an fstests which I will be posting in a bit.
-> >>
-> >> Nikolay Borisov (3):
-> >>   btrfs: introduce BTRFS_EXCLOP_BALANCE_PAUSED exclusive state
-> >>   btrfs: make device add compatible with paused balance in
-> >>     btrfs_exclop_start_try_lock
-> >>   btrfs: allow device add if balance is paused
-> >>
-> >>  fs/btrfs/ctree.h   |  1 +
-> >>  fs/btrfs/ioctl.c   | 49 +++++++++++++++++++++++++++++++++++++++-------
-> >>  fs/btrfs/volumes.c | 23 ++++++++++++++++++----
-> >>  fs/btrfs/volumes.h |  2 +-
-> >>  4 files changed, 63 insertions(+), 12 deletions(-)
-> >>
-> > 
-> > A few things
-> > 
-> > 1) Can we integrate the flipping into helpers?  Something like
-> > 
-> > 	btrfs_exclop_change_state(PAUSED);
-> > 
-> >    So the locking and stuff is all with the code that messes with the exclop?
+> Patches:
+> 1) Store the stripe and chunk size in the btrfs_space_info structure
+> 2) Add a sysfs entry to expose the above information
+> 3) Add a sysfs entry to force a space allocation
+> 4) Increase the default size of the metadata chunk allocation to 5GB
+>    for volumes greater than 50GB.
 > 
-> Right, I left the code flipping balance->paused opencoded because that's
-> really a special case. By all means I can add a specific helper so that
-> the ASSERT is not lost as well. The reason I didn't do it in the first
-> place is because PAUSED is really "special" in the sense it can be
-> entered only from BALANCE and it's not really generic. If you take a
-> look how btrfs_exclop_start does it for example, it simply checks we
-> don't have a running op and simply sets it to whatever is passed
+> Testing:
+>   A new test is being added to the xfstest suite. For reference the
+>   corresponding patch has the title:
+>     [PATCH] btrfs: Test chunk allocation with different sizes
 > 
-> > 
-> > 2) The existing helpers do WRITE_ONCE(), is that needed here?  I assume not>    because we're not actually exiting our exclop state, but still
-> seems wonky.
+>   In addition also manual testing has been performed.
+>     - Run xfstests with the changes and the new test. It does not
+>       show new diffs.
+>     - Test with storage devices 10G, 20G, 30G, 50G, 60G
+>       - Default allocation
+>       - Increase of chunk size
+>       - If the stripe size is > the free space, it allocates
+>         free space - 1MB. The 1MB is left as free space.
+>       - If the device has a storage size > 50G, it uses a 5GB
+>         chunk size for new allocations.
 > 
-> That got me thinking in the first place and actually initially I had a
-> patch which removed it. However, I *think* it might be required since
-> exclusive_operation is accessed without a lock ini the sysfs code i.e.
-> btrfs_exclusive_operation_show so I guess that's why we need it.
-> 
-> Goldwyn, what's your take on this?
-> 
-> > 
-> > 3) Maybe have an __btrfs_exclop_finish(type), so instead of 
-> > 
-> > 	if (paused) {
-> > 		do thing;
-> > 	} else {
-> > 		btrfs_exclop_finish();
-> > 	}
-> > 
-> >   you can instead do
-> > 
-> > 	type = BTRFS_EXCLOP_NONE;
-> > 	if (pause stuff) {
-> > 		do things;
-> > 		type = BTRFS_EXCLOP_BALANCE_PAUSED;
-> > 	}
-> > 
-> > 	/* other stuff. */
-> > 	__btrfs_exclop_finish(type);
-> > 
-> > then btrfs_exclop_finish just does __btrfs_exclop_finish(NONE);
-> 
-> I'm having a hard time seeing how this would increase readability. What
-> should go into the __btrfs_exclop_finish function?
+> Stefan Roesch (4):
+>   btrfs: store chunk size in space-info struct.
+>   btrfs: expose chunk size in sysfs.
+>   btrfs: add force_chunk_alloc sysfs entry to force allocation
+>   btrfs: increase metadata alloc size to 5GB for volumes > 50GB
 > 
 
-btrfs_exclop_finish would become __btrfs_exclop_finish(type) and do all the
-work, but instead of setting NONE it would set type.
+You can add
 
-Honestly I could go either way, having a helper would make it more readable than
-it is, because then its
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-if (pause)
-	btrfs_exclop_pause();
-else
-	btrfs_exclop_finish();
-
-I'm not strong on this, I think having a helper instead of open coding helps
-given the number of places it's used.  Perhaps just doing that step will make it
-clean enough.  Thanks,
+to the series, thanks,
 
 Josef
