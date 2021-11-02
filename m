@@ -2,76 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D364434AC
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 18:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3D34435EC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 19:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbhKBRmQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 13:42:16 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36434 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbhKBRmO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 13:42:14 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E0F95212B8;
-        Tue,  2 Nov 2021 17:39:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635874777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qTAPescKnC+rR6GSQmNXDgFDXQo1qZT2sE337LU7Rlk=;
-        b=BRPcNRSJmfYoCwaDudBLu+btrx5HIQl0Rf370wY7hRrrrPg38PT+u5/orjIzYf4cfop84Z
-        QRlLIA8Ezl2dmy1LzEwePMdUcHq6qX2aEPT6k6w3PSq66g51ZiFh8PQuEdfA1lxOE4Kqk8
-        ExOmfKFmBpyaPEEdywSOKqpg2tsF0eA=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A17D713C3D;
-        Tue,  2 Nov 2021 17:39:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 7u/OJNl3gWEcDwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 02 Nov 2021 17:39:37 +0000
-Subject: Re: [PATCH 0/3] Balance vs device add fixes
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20211101115324.374076-1-nborisov@suse.com>
- <YYFLlL4NTF4L+PmE@localhost.localdomain>
- <516c7eaf-3fb2-fe61-08f8-ac4201752121@suse.com>
- <20211102172528.se6voh75geqjjltf@zuko>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <541927b1-ff40-4d5a-6d99-709b10e4c141@suse.com>
-Date:   Tue, 2 Nov 2021 19:39:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235169AbhKBSrk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Nov 2021 14:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231749AbhKBSrj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 14:47:39 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0D1C061203
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Nov 2021 11:45:04 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id a129so572313yba.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Nov 2021 11:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=dpVkovntqs1NXffCxTfwsYEnEoLBHSIkxuy6EGdjGIA=;
+        b=c0V1sI53cH1HzyYwPwHTYnAUFUBpp/nvFjgysivKRA53SNSvXIzQIapygpm3nA/IqQ
+         oTpWETQkxBkFHFcopjVdnoHZOoHG0TY5eEpw1m4CbFUQCXGKd9jBO78/TFsmj01jn+Ig
+         UPD6C01qy7UB+4wIDdZqQfUzspEFgO5KTtgNShMj4KgWWED6puyZkcOR67eOvoxzXFR6
+         6Azob38R2rpflU75Jc11zZ8svs3hzsGEaHjqL4irpvQKhAnH9Ej4r0ZofAfoU73++w0J
+         6KXJz/pOES93ph8Fh8Ve3KkVtRCY2gy9aKTdwBnUKXmNkLqygak62BgJA9RKBFZ8NpST
+         APzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=dpVkovntqs1NXffCxTfwsYEnEoLBHSIkxuy6EGdjGIA=;
+        b=WolEG3Pta/q9tgjTckKCSRkfhq9ttxXoOKGc6i5kNnxaaBOhMwdA4gVAGsfhajYBdI
+         5rxUjr9okd1FEDwgibaCezdSz3XFwns1FaqLuyfPS9bmEggwfXMmLbr5sLKpPoUy5cEx
+         lnXRy4LeTfc4W+hnNDZqyPyD7cNRRRIh1wmdAUTw+s24rKU96xpeEXYQ8/OCHeaxuA4J
+         k8JXyfMSO+tkvHvHpJcE/3L6d3CZDMFPwRWoCC4z90bdOJw9xIkjC6Sl7qU+xCzCDAfX
+         fbAy2TAXdvZ5zJ9kO9nKPnfnhj05cmGVa/tjP9nhNeHPaR4ltQRY1hysKfM/sPFTkcF2
+         jLfw==
+X-Gm-Message-State: AOAM530S3z9C/8FSK1MkLdiKaV4bhIGRpTLTbblKbPVjlJMTiPQmiJjR
+        Q3u1fApOiXbeUJaXx4bOQU9aKtMUSRShdjuW5j3hq2EZ9yO3VNaWooE=
+X-Google-Smtp-Source: ABdhPJyFpN0iKk7kRjzvrbZmoIlF2uGFGC/g+mNldD6viU2eyDuAfQcaXHH+XxmgEsIU1PDPhKc7ljPXGBaP0O0IYXo=
+X-Received: by 2002:a25:d9c9:: with SMTP id q192mr30288975ybg.470.1635878703632;
+ Tue, 02 Nov 2021 11:45:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211102172528.se6voh75geqjjltf@zuko>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 2 Nov 2021 14:44:48 -0400
+Message-ID: <CAJCQCtS7YqzmWGta7uCAv-cOMuhiFG1M-idrO4_VotWi_Tpu7g@mail.gmail.com>
+Subject: Moby/Docker gradually exhausts disk space on BTRFS
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Docker gradually exhausts disk space on BTRFS #27653
+https://github.com/moby/moby/issues/27653
+
+This bug goes back to 2016 and could really use some attention to
+figure out what's going on. I'm not sure even whose bug it is. It
+could be docker itself, or the btrfs "graph" driver that docker uses,
+or if it's a (btrfs) kernel bug.
+
+It could be there's more than one bug.
 
 
-On 2.11.21 г. 19:25, Goldwyn Rodrigues wrote:
-> But do we really need to use *_ONCE, assuming btrfs_exclusive_operation
-> fits in 8 bits?
-> 
-
-
-The way I understand it based on the LWN articles is that the effect of
-_ONCE is twofold:
-
-1. It prevents theoretical torn writes + forces the compiler to always
-issue the access i.e prevent it being optimized out - this could be moot
-in our case.
-
-2. It serves a documentation purpose where it states "this variable is
-accessed in multithreaded contexts, possibly without an explicit lock" -
-and this IMO is quite helpful in this particular context.
+-- 
+Chris Murphy
