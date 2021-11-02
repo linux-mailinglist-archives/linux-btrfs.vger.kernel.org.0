@@ -2,121 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4A0442B58
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 11:06:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E90E3442BC2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 11:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhKBKIg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 06:08:36 -0400
-Received: from mout.gmx.net ([212.227.17.22]:46005 "EHLO mout.gmx.net"
+        id S229963AbhKBKpX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Nov 2021 06:45:23 -0400
+Received: from mout.gmx.net ([212.227.15.19]:52009 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229924AbhKBKIf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:08:35 -0400
+        id S229800AbhKBKpX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 2 Nov 2021 06:45:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635847556;
-        bh=2JKK5p+n78C0oJdATvq2q15kfzuAivWfd23c9zMK+JE=;
+        s=badeba3b8450; t=1635849761;
+        bh=5vb2HgqC9BAY0oTv/+k9qP3p8/26rl9Lk+i+Uxj6iHM=;
         h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=cOPt3jVdnSNpZNF+NItFO468A5nY51Wl8P4KORPCQNElLbjS/oaDxucSxZ0hsRKJo
-         fDE0AtRb4NoPhGDI0vDM7t4KX99D/PuXJkBk0yiXs4swaBnk9RhmBsm+n6vR7egp0A
-         eE94vFYgvsIy5u/i0Q+eMjqwIrTaEw4VfU5eznns=
+        b=ckPUTBsGJtroYiCUrWBjBwU3SuZueFiv44J1lclazkazyObb4ePd2wDS/lb+LzE7Z
+         LKzbr0aNau170pE+FpJMKcLN94ltdL+dE+Il8/5gutlx2JUPRDk8G24FqNG92/nxX8
+         2qPUewq2uIobz8runtmronoBd0hEwF6ITDJFdXGc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MFKGP-1mx0yg0VJZ-00FnUw; Tue, 02
- Nov 2021 11:05:55 +0100
-Message-ID: <2423e01c-6db8-4d45-e35c-37a10364c811@gmx.com>
-Date:   Tue, 2 Nov 2021 18:05:51 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5mKP-1mgAHE3nop-017Ams; Tue, 02
+ Nov 2021 11:42:41 +0100
+Message-ID: <94ccb3c3-f701-3fab-e80a-ac7286f69492@gmx.com>
+Date:   Tue, 2 Nov 2021 18:42:36 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.2.1
-Subject: Re: [PATCH] btrfs-progs: fix XX_flags_to_str() to always end with
- '\0'
+Subject: Re: [PATCH] btrfs-progs: fix btrfs_group_profile_str regression
 Content-Language: en-US
 To:     Wang Yugui <wangyugui@e16-tech.com>, linux-btrfs@vger.kernel.org
-References: <20211102100316.20256-1-wangyugui@e16-tech.com>
+References: <20211030143658.39136-1-wangyugui@e16-tech.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20211102100316.20256-1-wangyugui@e16-tech.com>
+In-Reply-To: <20211030143658.39136-1-wangyugui@e16-tech.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CLH5clFjG8algoIpVUxHEHb15NzL5Nvw9ylBOCOZ24SDEKPKevl
- E7hI3hUt0wqAzHt7TRCkzJrHI4W1NDBzERj5MZCeyGMWy4IX+go7k8ZrxWBzY47o1ERXN1j
- p8sQ1LpJck0rxgX5Ejx26VSGT81Vig8RsvYUGkf4myTCVGzQF6VL/X6ocPnZRPqM5BOY5Y6
- BZn9TFvk4LAsGS2CON/Ew==
+X-Provags-ID: V03:K1:2D7Be3+bGsDF34zZlNF3KzHDMsDZb3BUxubU3JPFMLOyZopysHd
+ T3EbV+KNk36/dn0IgHwWDaDdfcbaYVMRcKHKw+TCTaZ7v3P5Xgjft5OIkrIFN4AJLR/nKeU
+ XHa0KFkw1skKmU+fkbxI70wK4lQ+SZU+gHOIZZf1kgIS9HwTcFxyyZbs/EkfkWuMmY8t7OF
+ DgXdWMrzKIbkd2Be+s6og==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:th93GOF5v4g=:LM4lqZwyFdBs508iQOOxN3
- 7Iw6e/JJll1+5hHTDL0x/echQ5n3iV8yBZqsFsx/+ryGCojOjVgdESCzr9RaY/+nC3fqfpyAU
- UrLagEn/TwKm0bUY1r6uKRzPzAQQT6o6SOAnbuyX4lfFEJ+mjWkzkLVqVd8KQSc7lBQt7Jyvu
- RfKxEs9b1tJKjziBnPshZyrKDjZiho+ieFUYeIv8TszCmHXsDuHomYFLRZE8sw/hSXPIrvY1H
- jJja4JUzj3DoYQXFMNaVGBZ55CbZUtmjBFHHLp0O+q9neaCz8Gf+AgP4FLHlpDf5HNNYWZe74
- 61KCmMeZwI1FVxBc4zNEGieTtlSuyFKNJJhZB6jn90AXDJSmZOSONbnejycceq7k5fXS5r9p0
- sCe6IMHCQ7yX7zkqXfhsFv+Hb0rjMQkVUiMiDgQWGLHQkjGk01cEDevrlAauCMLwlKtctgoF8
- iK6k9ao/uRWQSR7rsMep9BmmgT7pdQPl9cEnCUQckcORbA3jqxsfVMKHJHGmj0n+NUsBgWBTc
- tcOri91POWES+vFvP7BLumTDSnL/zG6mfaXhxbL0oKDy8mqQZqI8YkgB9RBsaUaVxEa0Qbo5A
- bwKxp2CzAW3wDKU3+6KUYQ8dIybHgfNqIvamfOMot1Dx/75xmZAoUOCVlTub9qIY4u3+uJNPD
- QYeKNPAeElMRx7BaPxZAZcKGU7vXnjWPsR0i3NGdJh6RtwoU5uZSKEt7LPCL/U04reUrk0tza
- 0WOFVqhucE64Tf4bLidqH/Y9ChYjRaMLfEJvwGofFNQ2kqepHSBQukS0QVdqL6Fi+F438pyF5
- Cdty0K7jAADgAVCVnqXxnpUVufQWGm3xcLriatGRvxOm/eCwtBP+WavxzgKpV8Bslvkf0YSqw
- GWXV8L8V8x71xZfOTsAOaeyzA2YsGXUs5aNcx5IVWbI+A3XwVDyPrKqKrKwF7eO3fg8sJnE57
- ysna4m6fif/mLVzEh4dgaThBxQcxkDy7B6vlJbcGdu5ENu7eUv+zcL397zyOWT5DwcQHcfU8/
- oqb/cFPwwzFUE+6agw6WQjCib0qhaE29WtPH6o4PZ4gqvbukXfIkL8OY/WLAvP03ZDabbisyM
- XDOHL4DwBu1szc=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OeJ5ymF6AXs=:1Fhpxa3f43nLazCEjLMLRl
+ c7BX5ALxZTTRmeTrtLxcRLnIrPpqsxm1rd+OpnAfPf0WbX60rB8nPcAZXqThxvSIN1lknTePo
+ RjqinIRdnyzJrfOmHxcYKgRBrRxEptg7IicYbATyeRezeH8Fo8grLgzr5K7h6tvhZ+kMZKhV5
+ xuqRcYbwOMveOv9xPc2cOAKh9mskV7aiKtyNxb86U8/aWVe4kgjPAFYLKV0iuoXBZy9kwsigy
+ /Rpw0nmNYjaEytNebtY88rV8BGThJgi9qEaErJ5rPDLS3j6dfqeEvbjtzYG4asahMa565fCJl
+ xyVTuthQGxxnVUA++B8lfAtToEdvnMshyUu+lj7VlDfN/SqI1X+4lWI5wnCs4glKjcFYAOzWw
+ 4lvT+44MJ2OGzshatNiysdnLYdm0ah+AWiob3gthHKCPqv3+n3Bcumr/dqyMbguiEBT64f1Mk
+ qgSzoHmMUx0wop+dNW6V6J2SVpBFiz+sDyMTTs7mbX0GdogmW/podTzNV3t+Bz3fbkNBajZ1l
+ iLdyKSIr3LVB9SfgdlHJxJpGENIWma+yvxBgXwXz3NikTA47lmZuqRw5DcePDsYZtB8BJPPAx
+ lnmvnUkyXXwQazX+/IArJfS0OGY3zAiq9rBj8lLcqYpWbHpMmo84Ui9CHE7/1YrEBEp/2cFSv
+ GjKVgeS6ZCa4gl/IPJzFZy3OxawQ+Ytw/G6hzRoORkqEwqm6Qp46dIjVuW0c2paelnsWFTX0X
+ WlL27wt31+NCWqWfaOJs0ByAbY3nAXqYxRg10rxVjpYz2mX5x0Y73SIovuCbv2COL4ScgLytl
+ s7BvXxJl7W58HUWBW73lvSUbDji61pNMj1lZ3810YLM/NP2I5EsFdFEZ67B0nPJq7AiBOvIDB
+ JcT+MmaUROt4/GPdmUaahum/Zwu+wcCCfkEpPNYzu3TgJOnyBc5X1eo1vFWJ3lrRRzG/FSuxp
+ 9F5L2xzm390uwWHg0mgnwEOLjJtLtGOiXY7yPR06srHsKuQUztyD/UiDV2sKvX3xb7JM8W1Yb
+ PUsRbclYOayYu7hEfzYwtPhn5+qPzimDtHom1TCzglErGYV42j0vN1jBRqEPfPPQYyfiSKf5z
+ 3HNmIdOQK+LTXA=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/11/2 18:03, Wang Yugui wrote:
-> [BUG]
-> We noticed 'btrfs check' output something like
->    leaf 30408704 flags 0x0(P1=E9=80=85?) backref revision 1
-> but we expected
->    leaf 30408704 flags 0x0() backref revision 1
+On 2021/10/30 22:36, Wang Yugui wrote:
+> dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str to use raid t=
+able")
+> introduced a regression that raid profile of GlobalReserve will be outpu=
+t
+> as 'unknown'.
 >
-> [CAUSE]
-> some XX_flags_to_str() failed to make sure the result string always end
-> with '\0' in some case.
+>   $ btrfs filesystem df /mnt/test
+>   Data, single: total=3D5.02TiB, used=3D4.98TiB
+>   System, single: total=3D4.00MiB, used=3D624.00KiB
+>   Metadata, single: total=3D11.01GiB, used=3D6.94GiB
+>   GlobalReserve, unknown: total=3D512.00MiB, used=3D0.00B
 >
-> [FIX]
-> add 'ret[0] =3D 0;' at the begining.
->
-> Signed-off-by: Wang Yugui (wangyugui@e16-tech.com)
+> fix it by
+> - add the process of BTRFS_BLOCK_GROUP_RESERVED
+> - fix the define of BTRFS_BLOCK_GROUP_RESERVED too.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+That also unified kernel uapi and progs headers' definition of
+BTRFS_BLOCK_GROUP_RESERVED.
+
+>
+> Fixes: dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str to use=
+ raid table")
+> Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
+
+Revewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+>
 > ---
->   kernel-shared/print-tree.c | 3 +++
->   1 file changed, 3 insertions(+)
+>   common/utils.c        | 2 +-
+>   kernel-shared/ctree.h | 3 ++-
+>   2 files changed, 3 insertions(+), 2 deletions(-)
 >
-> diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
-> index 39655590..1b6e4a02 100644
-> --- a/kernel-shared/print-tree.c
-> +++ b/kernel-shared/print-tree.c
-> @@ -210,6 +210,7 @@ static void bg_flags_to_str(u64 flags, char *ret)
->   /* Caller should ensure sizeof(*ret)>=3D 26 "OFF|SCANNING|INCONSISTENT=
-" */
->   static void qgroup_flags_to_str(u64 flags, char *ret)
+> diff --git a/common/utils.c b/common/utils.c
+> index aee0eedc..e8744199 100644
+> --- a/common/utils.c
+> +++ b/common/utils.c
+> @@ -1030,7 +1030,7 @@ const char* btrfs_group_profile_str(u64 flag)
 >   {
-> +	ret[0] =3D '\0';
->   	if (flags & BTRFS_QGROUP_STATUS_FLAG_ON)
->   		strcpy(ret, "ON");
->   	else
-> @@ -417,6 +418,7 @@ static void extent_flags_to_str(u64 flags, char *ret=
-)
->   {
->   	int empty =3D 1;
+>   	int index;
 >
-> +	ret[0] =3D '\0';
->   	if (flags & BTRFS_EXTENT_FLAG_DATA) {
->   		empty =3D 0;
->   		strcpy(ret, "DATA");
-> @@ -1201,6 +1203,7 @@ static void header_flags_to_str(u64 flags, char *r=
-et)
->   {
->   	int empty =3D 1;
+> -	flag &=3D ~BTRFS_BLOCK_GROUP_TYPE_MASK;
+> +	flag &=3D ~(BTRFS_BLOCK_GROUP_TYPE_MASK | BTRFS_BLOCK_GROUP_RESERVED);
+>   	if (flag & ~BTRFS_BLOCK_GROUP_PROFILE_MASK)
+>   		return "unknown";
 >
-> +	ret[0] =3D '\0';
->   	if (flags & BTRFS_HEADER_FLAG_WRITTEN) {
->   		empty =3D 0;
->   		strcpy(ret, "WRITTEN");
+> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+> index 563ea50b..99ebc3ad 100644
+> --- a/kernel-shared/ctree.h
+> +++ b/kernel-shared/ctree.h
+> @@ -972,7 +972,8 @@ struct btrfs_csum_item {
+>   #define BTRFS_BLOCK_GROUP_RAID6    	(1ULL << 8)
+>   #define BTRFS_BLOCK_GROUP_RAID1C3    	(1ULL << 9)
+>   #define BTRFS_BLOCK_GROUP_RAID1C4    	(1ULL << 10)
+> -#define BTRFS_BLOCK_GROUP_RESERVED	BTRFS_AVAIL_ALLOC_BIT_SINGLE
+> +#define BTRFS_BLOCK_GROUP_RESERVED	(BTRFS_AVAIL_ALLOC_BIT_SINGLE | \
+> +					 BTRFS_SPACE_INFO_GLOBAL_RSV)
+>
+>   enum btrfs_raid_types {
+>   	BTRFS_RAID_RAID10,
 >
