@@ -2,109 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE25B442EDB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 14:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB1C442EE5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 14:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhKBNMb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 09:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
+        id S229924AbhKBNOy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Nov 2021 09:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhKBNM2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 09:12:28 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F79C061714
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Nov 2021 06:09:53 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id az8so8343001qkb.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Nov 2021 06:09:53 -0700 (PDT)
+        with ESMTP id S231312AbhKBNOy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 09:14:54 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42825C061714
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Nov 2021 06:12:19 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id t40so18753266qtc.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Nov 2021 06:12:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=kfiS2PmMzJMhlLMbYFwTfnZJKP0XIBAqCboiuL8cFHk=;
-        b=rdEvdV2D1jB1oj6NyV57eDbEANnEcmTlmNn8bvzoQEj1zvcAiUMR+VTFNrTLYuqL2w
-         QTdjlPTSLnibXdTcOlTponzkqBmYAtc91QBNxxBvuAOfgeLqZJMmyhV9SqqXFRk3xHlw
-         xPR6VDiSPUQtPaDOgK2yfvQy54hDJMukIkTeXF/QY0AOl3uQUSYqdBQddy9uNF/nlb4a
-         8XgOLXaMNA8QWlqPWYFQauKlfrZcgqgldvlBcaJNTwo8F1sgFPhyvnF5ZiA60QkKMPG9
-         dD5/EJwWhM30yrImK80rzjKpqS/aohKmQF6LwhW8Jebv3gMWhDR4mE2dQm7BBEPK+BOg
-         ZQ7A==
+        bh=I6a3q8pTz0iz2539rUt0uOZPgToIWGygBrQ9MZOdAfo=;
+        b=aJ2kCAW4hgQQp4P+vcRT54M8OSaBnvpXsYNXmwp6YLqYSCZpCramXqV2NxG/xkbm2x
+         vwniPR+VjHyC3p3O+GNmjkTZjKO/4kkD8Vi+IiClJoVdjrnQHkelspKpBKkcFz9xMVNU
+         yKWpoz1lJHHbcDhFKR4Vyxt4nNqw6esgAtfAVgrsTA5TVeujwWzFq8XzzQJw5nk9IrW/
+         gfUCd6/DTBnvrGX4bm5MgEBGEX8WsFE/zOHIT0MKGuqoGlJYVqNwsFGke9F9YwaTGJLL
+         utEBa27fz+sniDB6pB8PDa/7kfk0u4Zg9t39JXY1V5jsHeWPWu1o4ECyELW1AHMfnmRg
+         LtEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=kfiS2PmMzJMhlLMbYFwTfnZJKP0XIBAqCboiuL8cFHk=;
-        b=i+PiduwT3CJkI2X1L1Vggt1IVhE3ytAkWxrzWs0GubawKKPje7HbYck5zD8h/b5Mln
-         3zeU+4FD+B6UfWLHZsya6qQzHlK0eIliEKrOKTmcDXbsCtBlVDWPpOLgO/lYMQGxV9qu
-         IS1aQJJTvcShcd75249HtWYBueaqO3zqvLVYWvCuwc8mbmvTX9mPAoSg+cD8cFNL28m2
-         SOvFKYb6YsXcgdm8MrKWCX07Mcs5zETIB/trY4xckm44oH3gtSv/MEzlewfXt3QU5hhD
-         KjUN/KAMfPnY9L9DdpuEJN91pZ6PSYEto4106+rb/JM1QcJwxGL5a9edlU8odN9CvlK4
-         y/IQ==
-X-Gm-Message-State: AOAM530fiQaqpMkrzpwQPj4TT9/DgQ2DM6F0qytOEqJpyyg+dFJdPlVk
-        UyFWva76NKJLF3Ezcq0H7wZkGYWVaSbPFA==
-X-Google-Smtp-Source: ABdhPJz1ytmECcOGzY7EYG2wHiAnwo847SFkv7CPjUzRvy5ki9AEGqXd5d/re52LJQuOaZ910nqxqQ==
-X-Received: by 2002:ae9:f815:: with SMTP id x21mr29437042qkh.484.1635858592939;
-        Tue, 02 Nov 2021 06:09:52 -0700 (PDT)
+        bh=I6a3q8pTz0iz2539rUt0uOZPgToIWGygBrQ9MZOdAfo=;
+        b=z7XnnWLo2er9PCBDgNHAVSdp4br7CfkhgwFeXxoysQmazSMqeDxw8GXJMPcH4FmLvp
+         9BEHelyT3XJLbP6nD44KDCQIMtZDDBbtUOx2uHvPtB8jvw4PyLXrd3KHd1Cjoi7C0Tzd
+         f9AHEmN7LTNaHT0G4PdG5YEPaTSuL1mgxAnCtHGS3j394SyaC+AyI2ChzruVo45nTeB1
+         aEUvfKAtikt8X3C1zC0B4WOHNIXMsOCe7JJstO4KAZx/qzyXvUFNuQeNrEGv4UutiS9i
+         KGxe/njfPKB/zF05465oggqIRc9bQfHMSGyr3ToovYskcy8H/vqqWKErPf08g2JwXsk4
+         +Prw==
+X-Gm-Message-State: AOAM5333YGHPXl6Au5t/cwh7Xo9pB79luSC5slbPow4oo7Fy8eJvNWOw
+        B01rttOmCqAM2Cb9fAfy+XpH6z4wy0dmZA==
+X-Google-Smtp-Source: ABdhPJzeDI7HC5dStkM0uqaDeyRk1MMszze85mAt32gHBo6gUvLJaEgpHhrvD0i0ZSSzXA9Ivc1vQg==
+X-Received: by 2002:a05:622a:50b:: with SMTP id l11mr37730347qtx.415.1635858738280;
+        Tue, 02 Nov 2021 06:12:18 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v16sm2312070qtw.90.2021.11.02.06.09.52
+        by smtp.gmail.com with ESMTPSA id i13sm12134618qtp.87.2021.11.02.06.12.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Nov 2021 06:09:52 -0700 (PDT)
-Date:   Tue, 2 Nov 2021 09:09:51 -0400
+        Tue, 02 Nov 2021 06:12:17 -0700 (PDT)
+Date:   Tue, 2 Nov 2021 09:12:16 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Chris Murphy <lists@colorremedies.com>
-Subject: Re: [PATCH] btrfs: fix memory ordering between normal and ordered
- work functions
-Message-ID: <YYE4n4+LdL/nnGpO@localhost.localdomain>
-References: <20211102124916.433836-1-nborisov@suse.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] Balance vs device add fixes
+Message-ID: <YYE5MB31cKGy0KD1@localhost.localdomain>
+References: <20211101115324.374076-1-nborisov@suse.com>
+ <3447a87c-d91f-1c24-a77f-9a87d946bab4@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211102124916.433836-1-nborisov@suse.com>
+In-Reply-To: <3447a87c-d91f-1c24-a77f-9a87d946bab4@oracle.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 02:49:16PM +0200, Nikolay Borisov wrote:
-> Ordered work functions aren't guaranteed to be handled by the same thread
-> which executed the normal work functions. The only way execution between
-> normal/ordered functions is synchronized is via the WORK_DONE_BIT,
-> unfortunately the used bitops don't guarantee any ordering whatsoever.
+On Tue, Nov 02, 2021 at 12:52:11PM +0800, Anand Jain wrote:
+> On 01/11/2021 19:53, Nikolay Borisov wrote:
+> > This series enables adding of a device when balance is paused (i.e an fs is mounted
+> > with skip_balance options). This is needed to give users a chance to gracefully
+> > handle an ENOSPC situation in the face of running balance. To achieve this introduce
+> > a new exclop - BALANCE_PAUSED which is made compatible with device add. More
+> > details in each patche.
+> > 
 > 
-> This manifested as seemingly inexplicable crashes on arm64, where
-> async_chunk::inode is seens as non-null in async_cow_submit which causes
-> submit_compressed_extents to be called and crash occurs because
-> async_chunk::inode suddenly became NULL. The call trace was similar to:
+> Have you thought about allowing the device-add during the balance-running,
+> not only at the balance-paused? Is it much complicated? If not, then we
+> could drop the new exclop state BALANCE_PAUSED altogether.
 > 
->     pc : submit_compressed_extents+0x38/0x3d0
->     lr : async_cow_submit+0x50/0xd0
->     sp : ffff800015d4bc20
-> 
->     <registers omitted for brevity>
-> 
->     Call trace:
->      submit_compressed_extents+0x38/0x3d0
->      async_cow_submit+0x50/0xd0
->      run_ordered_work+0xc8/0x280
->      btrfs_work_helper+0x98/0x250
->      process_one_work+0x1f0/0x4ac
->      worker_thread+0x188/0x504
->      kthread+0x110/0x114
->      ret_from_fork+0x10/0x18
-> 
-> Fix this by adding respective barrier calls which ensure that all
-> accesses preceding setting of WORK_DONE_BIT are strictly ordered before
-> settint the flag. At the same time add a read barrier after reading of
-> WORK_DONE_BIT in run_ordered_work which ensures all subsequent loads
-> would be strictly ordered after reading the bit. This in turn ensures
-> are all accesses before WORK_DONE_BIT are going to be strictly ordered
-> before any access that can occur in ordered_func.
-> 
-> Fixes: 08a9ff326418 ("btrfs: Added btrfs_workqueue_struct implemented ordered execution based on kernel workqueue")
-> Reported-by: Chris Murphy <lists@colorremedies.com>
-> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2011928
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+We could be changing the raid settings, adding chunks before the new device is
+added and then ending up with chunks that don't have all of their stripes.  The
+number of bugs that could show up is scary, I think this is the safer choice for
+now.  Thanks,
 
 Josef
