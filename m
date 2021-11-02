@@ -2,230 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14393442E34
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 13:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D20442E72
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 13:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhKBMfm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 08:35:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20592 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229712AbhKBMfl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Nov 2021 08:35:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1635856386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=faLoLpLyKy/Ab8XQ27t5jmK0JEkq3soAYUpBSCy17oY=;
-        b=IK+AjIu611fdTN+F3jj2S9My+NFiyQvlN3s0ALv3BEmR79E/LiK0/USNJeOCg+ysAu2NpF
-        IWIi6++YA9YFZzUN4r02jvOk9O9AyEp3BOYIL9V421un3yZ5HslyOWdeO0atS8rBVTa9b3
-        qNbqdGLYX6/de3BUgcRkD5zk/tuGBoU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-460-Ww8bC-2wMe2RsfP5VGf83w-1; Tue, 02 Nov 2021 08:33:03 -0400
-X-MC-Unique: Ww8bC-2wMe2RsfP5VGf83w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S230282AbhKBMvx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Nov 2021 08:51:53 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39280 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhKBMvx (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 08:51:53 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4574B802682;
-        Tue,  2 Nov 2021 12:33:01 +0000 (UTC)
-Received: from max.localdomain (unknown [10.40.195.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 06EF769119;
-        Tue,  2 Nov 2021 12:32:08 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     cluster-devel@redhat.com
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v9 17/17] gfs2: Fix mmap + page fault deadlocks for direct I/O
-Date:   Tue,  2 Nov 2021 13:29:45 +0100
-Message-Id: <20211102122945.117744-18-agruenba@redhat.com>
-In-Reply-To: <20211102122945.117744-1-agruenba@redhat.com>
-References: <20211102122945.117744-1-agruenba@redhat.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 87DE51FD3D;
+        Tue,  2 Nov 2021 12:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635857357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=zYVaif4wR7oL8o2BtndkDlh3Ggv9y4LmZUpKJ25luFg=;
+        b=JlvA2uId7K9Il75PmVDaSXxtO+ZIV3pHN/OpixAxeWnuJeVm/nvfZSl2LWPPVkwf/MRebN
+        aMzS/o/kXO8buVakcGhiimR2qvTy2877YohQ/whk+auUxUoL+/VMi1RZivpKlvxQGX3sbK
+        9q3ODznabslyCmfuhzW3vMj3j0+7n/M=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D09413BF7;
+        Tue,  2 Nov 2021 12:49:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Wm9LEM0zgWFBdAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 02 Nov 2021 12:49:17 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Chris Murphy <lists@colorremedies.com>
+Subject: [PATCH] btrfs: fix memory ordering between normal and ordered work functions
+Date:   Tue,  2 Nov 2021 14:49:16 +0200
+Message-Id: <20211102124916.433836-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Also disable page faults during direct I/O requests and implement a
-similar kind of retry logic as in the buffered I/O case.
+Ordered work functions aren't guaranteed to be handled by the same thread
+which executed the normal work functions. The only way execution between
+normal/ordered functions is synchronized is via the WORK_DONE_BIT,
+unfortunately the used bitops don't guarantee any ordering whatsoever.
 
-The retry logic in the direct I/O case differs from the buffered I/O
-case in the following way: direct I/O doesn't provide the kinds of
-consistency guarantees between concurrent reads and writes that buffered
-I/O provides, so once we lose the inode glock while faulting in user
-pages, we always resume the operation.  We never need to return a
-partial read or write.
+This manifested as seemingly inexplicable crashes on arm64, where
+async_chunk::inode is seens as non-null in async_cow_submit which causes
+submit_compressed_extents to be called and crash occurs because
+async_chunk::inode suddenly became NULL. The call trace was similar to:
 
-This locking problem was originally reported by Jan Kara.  Linus came up
-with the idea of disabling page faults.  Many thanks to Al Viro and
-Matthew Wilcox for their feedback.
+    pc : submit_compressed_extents+0x38/0x3d0
+    lr : async_cow_submit+0x50/0xd0
+    sp : ffff800015d4bc20
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+    <registers omitted for brevity>
+
+    Call trace:
+     submit_compressed_extents+0x38/0x3d0
+     async_cow_submit+0x50/0xd0
+     run_ordered_work+0xc8/0x280
+     btrfs_work_helper+0x98/0x250
+     process_one_work+0x1f0/0x4ac
+     worker_thread+0x188/0x504
+     kthread+0x110/0x114
+     ret_from_fork+0x10/0x18
+
+Fix this by adding respective barrier calls which ensure that all
+accesses preceding setting of WORK_DONE_BIT are strictly ordered before
+settint the flag. At the same time add a read barrier after reading of
+WORK_DONE_BIT in run_ordered_work which ensures all subsequent loads
+would be strictly ordered after reading the bit. This in turn ensures
+are all accesses before WORK_DONE_BIT are going to be strictly ordered
+before any access that can occur in ordered_func.
+
+Fixes: 08a9ff326418 ("btrfs: Added btrfs_workqueue_struct implemented ordered execution based on kernel workqueue")
+Reported-by: Chris Murphy <lists@colorremedies.com>
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=2011928
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/gfs2/file.c | 99 ++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 87 insertions(+), 12 deletions(-)
 
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index f772ee0fcae3..40e6501c02e5 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -811,22 +811,64 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
- {
- 	struct file *file = iocb->ki_filp;
- 	struct gfs2_inode *ip = GFS2_I(file->f_mapping->host);
--	size_t count = iov_iter_count(to);
-+	size_t prev_count = 0, window_size = 0;
-+	size_t written = 0;
- 	ssize_t ret;
- 
--	if (!count)
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we indicate
-+	 * that the inode glock may be dropped, fault in the pages manually,
-+	 * and retry.
-+	 *
-+	 * Unlike generic_file_read_iter, for reads, iomap_dio_rw can trigger
-+	 * physical as well as manual page faults, and we need to disable both
-+	 * kinds.
-+	 *
-+	 * For direct I/O, gfs2 takes the inode glock in deferred mode.  This
-+	 * locking mode is compatible with other deferred holders, so multiple
-+	 * processes and nodes can do direct I/O to a file at the same time.
-+	 * There's no guarantee that reads or writes will be atomic.  Any
-+	 * coordination among readers and writers needs to happen externally.
-+	 */
-+
-+	if (!iov_iter_count(to))
- 		return 0; /* skip atime */
- 
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
- 	if (ret)
- 		goto out_uninit;
-+retry_under_glock:
-+	pagefault_disable();
-+	to->nofault = true;
-+	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, written);
-+	to->nofault = false;
-+	pagefault_enable();
-+	if (ret > 0)
-+		written = ret;
- 
--	ret = iomap_dio_rw(iocb, to, &gfs2_iomap_ops, NULL, 0, 0);
--	gfs2_glock_dq(gh);
-+	if (should_fault_in_pages(ret, to, &prev_count, &window_size)) {
-+		size_t leftover;
-+
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_writeable(to, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return written;
- }
- 
- static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
-@@ -835,10 +877,20 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file->f_mapping->host;
- 	struct gfs2_inode *ip = GFS2_I(inode);
--	size_t len = iov_iter_count(from);
--	loff_t offset = iocb->ki_pos;
-+	size_t prev_count = 0, window_size = 0;
-+	size_t read = 0;
- 	ssize_t ret;
- 
-+	/*
-+	 * In this function, we disable page faults when we're holding the
-+	 * inode glock while doing I/O.  If a page fault occurs, we indicate
-+	 * that the inode glock may be dropped, fault in the pages manually,
-+	 * and retry.
-+	 *
-+	 * For writes, iomap_dio_rw only triggers manual page faults, so we
-+	 * don't need to disable physical ones.
-+	 */
-+
- 	/*
- 	 * Deferred lock, even if its a write, since we do no allocation on
- 	 * this path. All we need to change is the atime, and this lock mode
-@@ -848,22 +900,45 @@ static ssize_t gfs2_file_direct_write(struct kiocb *iocb, struct iov_iter *from,
- 	 * VFS does.
- 	 */
- 	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-+retry:
- 	ret = gfs2_glock_nq(gh);
- 	if (ret)
- 		goto out_uninit;
--
-+retry_under_glock:
- 	/* Silently fall back to buffered I/O when writing beyond EOF */
--	if (offset + len > i_size_read(&ip->i_inode))
-+	if (iocb->ki_pos + iov_iter_count(from) > i_size_read(&ip->i_inode))
- 		goto out;
- 
--	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL, 0, 0);
-+	from->nofault = true;
-+	ret = iomap_dio_rw(iocb, from, &gfs2_iomap_ops, NULL,
-+			   IOMAP_DIO_PARTIAL, read);
-+	from->nofault = false;
-+
- 	if (ret == -ENOTBLK)
- 		ret = 0;
-+	if (ret > 0)
-+		read = ret;
-+
-+	if (should_fault_in_pages(ret, from, &prev_count, &window_size)) {
-+		size_t leftover;
-+
-+		gfs2_holder_allow_demote(gh);
-+		leftover = fault_in_iov_iter_readable(from, window_size);
-+		gfs2_holder_disallow_demote(gh);
-+		if (leftover != window_size) {
-+			if (!gfs2_holder_queued(gh))
-+				goto retry;
-+			goto retry_under_glock;
-+		}
-+	}
- out:
--	gfs2_glock_dq(gh);
-+	if (gfs2_holder_queued(gh))
-+		gfs2_glock_dq(gh);
- out_uninit:
- 	gfs2_holder_uninit(gh);
--	return ret;
-+	if (ret < 0)
-+		return ret;
-+	return read;
- }
- 
- static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
--- 
-2.31.1
+David,
+
+IMO this is stable material.
+
+ fs/btrfs/async-thread.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
+index 309516e6a968..d39af03b456c 100644
+--- a/fs/btrfs/async-thread.c
++++ b/fs/btrfs/async-thread.c
+@@ -234,6 +234,13 @@ static void run_ordered_work(struct __btrfs_workqueue *wq,
+ 				  ordered_list);
+ 		if (!test_bit(WORK_DONE_BIT, &work->flags))
+ 			break;
++		/*
++		 * Orders all subsequent loads after reading WORK_DONE_BIT,
++		 * paired with the smp_mb__before_atomic in btrfs_work_helper
++		 * this guarantees that the ordered function will see all
++		 * updates from ordinary work function.
++		 */
++		smp_rmb();
+
+ 		/*
+ 		 * we are going to call the ordered done function, but
+@@ -317,6 +324,13 @@ static void btrfs_work_helper(struct work_struct *normal_work)
+ 	thresh_exec_hook(wq);
+ 	work->func(work);
+ 	if (need_order) {
++		/*
++		 * Ensures all memory accesses done in the work function are
++		 * ordered before setting the WORK_DONE_BIT.Ensuring the thread
++		 * which is going to executed the ordered work sees them.
++		 * Pairs with the smp_rmb in run_ordered_work.
++		 */
++		smp_mb__before_atomic();
+ 		set_bit(WORK_DONE_BIT, &work->flags);
+ 		run_ordered_work(wq, work);
+ 	} else {
+--
+2.25.1
 
