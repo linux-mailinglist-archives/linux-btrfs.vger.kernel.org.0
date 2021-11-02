@@ -2,149 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9096644308A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 15:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735944430CF
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 15:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhKBOih (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 10:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhKBOih (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 10:38:37 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C85C061714
-        for <linux-btrfs@vger.kernel.org>; Tue,  2 Nov 2021 07:36:02 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id s186so29476020yba.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Nov 2021 07:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SYil15jWr5CRlFoW8GLSwS7jX/sPu73o0181WhkgJCo=;
-        b=j+OMiKv/x+Q5R9Vep0Y/mvZEX9jHHFzpu7l5fHrzlreeN+udHrdrMaa+q8cwigflHS
-         AZoU/FFC6QhniTlboxZoMQ8jMOx8KABa8OGn3z+ZiRfVaZovWEn79gidIVgcmKnV02FD
-         3ueJXfV6A1i7YYV8mtnmBRIfyMC9VS2k54M8seRhWW65TLWnq8LC8nnBC13n3IAgaOE9
-         Do0N1SBU+EWpoJ8Dfg+gkZB9OpVAVt910h4UGUr9Y5ZS13j+P3sBEsGpTFvMC61pH7OW
-         4CaEocJeedpBuzdSimy+A7eIEv1SgVkV7EB65q7MPYhHW/7ujJNEsPvaIjkPze9YxMGb
-         0XcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SYil15jWr5CRlFoW8GLSwS7jX/sPu73o0181WhkgJCo=;
-        b=Z2KNRZrlbQT7eJxPu/UKjI2cEvp8w8LaHuGnQP1YRHZrf98HK+6tgR0KEI6RpYzUV7
-         gEaWvbXZx6EqQp1paazW94+RY4vSEQjDP4JzxzxMkQN2+cWP3HMfbuEEX3MZgVPjhJGe
-         xqHWh5jO/Fq7Hy9YMj5RO5h7tmzZwQfEO2mUbl0clZXNSOg+L5awTJ19TMqdH+WPZRgw
-         I0/9Rg7Gh3GQ9sPTzCVNLbqBSLuVGJdbtMNOjX6UKeSWYVT96diwSCTQ+BxJhiEEFtJM
-         hJD3iEMgLcggB7oU28OhAAR8+6Sp+pky5fQeIPAXxoP1mOF1pj+hYfMEIFLiW46JWon5
-         bSWQ==
-X-Gm-Message-State: AOAM532fZoh929knrOvzqFHJnKtCrTaABdSSfI4FP3gV60aJ+A5OKeD0
-        F1q7dn5mGAEWrfgqgoSxhkBy/NUO3YWXedSdLaFNXg==
-X-Google-Smtp-Source: ABdhPJzLDdMbmFGAAJ3hAzGi2tpCwpvFcxcIQw3uu3gsRKlr0qoExB4YXoFFMxsRX11RrEkmOunYGVVQLEnk9M6x6Iw=
-X-Received: by 2002:a25:4d83:: with SMTP id a125mr39721121ybb.277.1635863761750;
- Tue, 02 Nov 2021 07:36:01 -0700 (PDT)
+        id S233413AbhKBOxc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Nov 2021 10:53:32 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:48476 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232985AbhKBOxa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 10:53:30 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 67A481FD4C;
+        Tue,  2 Nov 2021 14:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1635864654;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hUR1+HJbWQQ47r9x8xPETncMuUN4UXEP73XAuC0V2SE=;
+        b=Q1buZLmwVNFTcORhqbeBaA5ReztWd8isw4byGjZVw0NjdL0YObpeLVoIITtGIIsyDXfxxa
+        RS/EvdlsIiuMHGIsiXgEFw3l6oDZpaBNrpUpTu524LiyUikMuwFNRZe+nXcacXhM+148ny
+        nru2XvSo9B3bNc22G5oT6x9hETLTEDU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1635864654;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hUR1+HJbWQQ47r9x8xPETncMuUN4UXEP73XAuC0V2SE=;
+        b=P37eNTEvq9XTW4hMU/dAT/benTNmc0IeqMmaHavyX99QFglCHrUGSN4ekuMqbAUWtEG/C+
+        YckmuzwLhtLFyeDw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 5E6FDA3B81;
+        Tue,  2 Nov 2021 14:50:54 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2214ADA7A9; Tue,  2 Nov 2021 15:50:19 +0100 (CET)
+Date:   Tue, 2 Nov 2021 15:50:18 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Btrfs updates for 5.16
+Message-ID: <20211102145018.GK20319@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1635773880.git.dsterba@suse.com>
+ <CAHk-=wjowO+mmVBoiWkCk6LeqVTYVBp0ruSUPN2z0_ObKisPYw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211102124916.433836-1-nborisov@suse.com>
-In-Reply-To: <20211102124916.433836-1-nborisov@suse.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 2 Nov 2021 10:35:45 -0400
-Message-ID: <CAJCQCtTD3yxU8oHtDzBHakc1vMXK_zAjmoigNCUHM=if=oZjzg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix memory ordering between normal and ordered
- work functions
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Chris Murphy <lists@colorremedies.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjowO+mmVBoiWkCk6LeqVTYVBp0ruSUPN2z0_ObKisPYw@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 8:49 AM Nikolay Borisov <nborisov@suse.com> wrote:
->
-> Ordered work functions aren't guaranteed to be handled by the same thread
-> which executed the normal work functions. The only way execution between
-> normal/ordered functions is synchronized is via the WORK_DONE_BIT,
-> unfortunately the used bitops don't guarantee any ordering whatsoever.
->
-> This manifested as seemingly inexplicable crashes on arm64, where
-> async_chunk::inode is seens as non-null in async_cow_submit which causes
-> submit_compressed_extents to be called and crash occurs because
-> async_chunk::inode suddenly became NULL. The call trace was similar to:
->
->     pc : submit_compressed_extents+0x38/0x3d0
->     lr : async_cow_submit+0x50/0xd0
->     sp : ffff800015d4bc20
->
->     <registers omitted for brevity>
->
->     Call trace:
->      submit_compressed_extents+0x38/0x3d0
->      async_cow_submit+0x50/0xd0
->      run_ordered_work+0xc8/0x280
->      btrfs_work_helper+0x98/0x250
->      process_one_work+0x1f0/0x4ac
->      worker_thread+0x188/0x504
->      kthread+0x110/0x114
->      ret_from_fork+0x10/0x18
->
-> Fix this by adding respective barrier calls which ensure that all
-> accesses preceding setting of WORK_DONE_BIT are strictly ordered before
-> settint the flag. At the same time add a read barrier after reading of
-> WORK_DONE_BIT in run_ordered_work which ensures all subsequent loads
-> would be strictly ordered after reading the bit. This in turn ensures
-> are all accesses before WORK_DONE_BIT are going to be strictly ordered
-> before any access that can occur in ordered_func.
->
-> Fixes: 08a9ff326418 ("btrfs: Added btrfs_workqueue_struct implemented ordered execution based on kernel workqueue")
-> Reported-by: Chris Murphy <lists@colorremedies.com>
-> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2011928
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->
-> David,
->
-> IMO this is stable material.
->
->  fs/btrfs/async-thread.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->
-> diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
-> index 309516e6a968..d39af03b456c 100644
-> --- a/fs/btrfs/async-thread.c
-> +++ b/fs/btrfs/async-thread.c
-> @@ -234,6 +234,13 @@ static void run_ordered_work(struct __btrfs_workqueue *wq,
->                                   ordered_list);
->                 if (!test_bit(WORK_DONE_BIT, &work->flags))
->                         break;
-> +               /*
-> +                * Orders all subsequent loads after reading WORK_DONE_BIT,
-> +                * paired with the smp_mb__before_atomic in btrfs_work_helper
-> +                * this guarantees that the ordered function will see all
-> +                * updates from ordinary work function.
-> +                */
-> +               smp_rmb();
->
->                 /*
->                  * we are going to call the ordered done function, but
-> @@ -317,6 +324,13 @@ static void btrfs_work_helper(struct work_struct *normal_work)
->         thresh_exec_hook(wq);
->         work->func(work);
->         if (need_order) {
-> +               /*
-> +                * Ensures all memory accesses done in the work function are
-> +                * ordered before setting the WORK_DONE_BIT.Ensuring the thread
-> +                * which is going to executed the ordered work sees them.
-> +                * Pairs with the smp_rmb in run_ordered_work.
-> +                */
-> +               smp_mb__before_atomic();
->                 set_bit(WORK_DONE_BIT, &work->flags);
->                 run_ordered_work(wq, work);
->         } else {
-> --
-> 2.25.1
->
+On Mon, Nov 01, 2021 at 01:03:25PM -0700, Linus Torvalds wrote:
+> On Mon, Nov 1, 2021 at 9:46 AM David Sterba <dsterba@suse.com> wrote:
+> >
+> > There's a merge conflict due to the last minute 5.15 changes (kmap
+> > reverts) and the conflict is not trivial.
+> 
+> You don't say.
+> 
+> I ended up just re-doing that resolution entirely, and as I did so, I
+> think I found a bug in the original revert that caused the conflict in
+> the first place.
+> 
+> And since that revert made it into 5.15, I felt like I had to fix that
+> bug first - and separately - so that the fix can be backported to
+> stable.
+> 
+> I then re-did my merge on top of that hopefully fixed state, and maybe
+> it's correct.
+> 
+> Or maybe I messed up entirely.
+> 
+> I did end up comparing it to your other branch too, but that was
+> equally as messy, apart from the "ok, I can mindlessly just take your
+> side".
+> 
+> And it was fairly different from what I had done in my merge
+> resolution, so who knows.
 
-Tested-by: Chris Murphy <chris@colorremedies.com>
+Looks good to me, thanks for catching the bug.
 
--- 
-Chris Murphy
+> ANYWAY. What I'm trying to say is that you should look very very
+> carefully at commits
+> 
+>   2cf3f8133bda ("btrfs: fix lzo_decompress_bio() kmap leakage")
+>   037c50bfbeb3 ("Merge tag 'for-5.16-tag' of git://git.../linux")
+> 
+> because I marked that first one for stable, and the second is
+> obviously my entirely untested merge.
+> 
+> It makes sense to me, but apart from "it builds", I've not actually
+> tested any of it. This is all purely from looking at the code and
+> trying to figure out what the RightThing(tm) is.
+> 
+> Obviously the kmap thing tends to only be noticeable on 32-bit
+> platforms, and that lzo_decompress_bio() bug also needs just the
+> proper filesystem settings to trigger in the first place.
+> 
+> Again - please take a careful look. Both at my merge and at that
+> alleged kmap fix.
+
+I checked the commits individually and in the source files, all the
+kmaps seem to be correctly paired with kunmaps. We'll do more tests too.
+I'm sorry that it turned out to be such mess.
