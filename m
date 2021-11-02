@@ -2,127 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90E3442BC2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 11:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EED442BD3
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Nov 2021 11:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhKBKpX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 06:45:23 -0400
-Received: from mout.gmx.net ([212.227.15.19]:52009 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229800AbhKBKpX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:45:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635849761;
-        bh=5vb2HgqC9BAY0oTv/+k9qP3p8/26rl9Lk+i+Uxj6iHM=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=ckPUTBsGJtroYiCUrWBjBwU3SuZueFiv44J1lclazkazyObb4ePd2wDS/lb+LzE7Z
-         LKzbr0aNau170pE+FpJMKcLN94ltdL+dE+Il8/5gutlx2JUPRDk8G24FqNG92/nxX8
-         2qPUewq2uIobz8runtmronoBd0hEwF6ITDJFdXGc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5mKP-1mgAHE3nop-017Ams; Tue, 02
- Nov 2021 11:42:41 +0100
-Message-ID: <94ccb3c3-f701-3fab-e80a-ac7286f69492@gmx.com>
-Date:   Tue, 2 Nov 2021 18:42:36 +0800
+        id S229924AbhKBKuw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Nov 2021 06:50:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36840 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhKBKuv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 06:50:51 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 78DFE2190B
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Nov 2021 10:48:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635850096; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=rPAHtbS/4CNHyTO5ZFXKgWdCqtk+WQ6VBihKjGKJoyY=;
+        b=lF7Cu0SIWoKiVAEqh0lY82Ji371rU8JTJQsBGiVnnR5wuevcaSW74rACeCNU2x66yHzyR7
+        LriWMw20sa1fotGQqWfeB77Ocsn7QqAdeV0cx+VXLdoatmlr3+KwxlC7KLeIl6XfGEedBi
+        jNpDwWSWflS8L1c8D2I0yoboHuiOgJg=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA8D113C1F
+        for <linux-btrfs@vger.kernel.org>; Tue,  2 Nov 2021 10:48:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 2RW9KW8XgWGWMAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Nov 2021 10:48:15 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: Make "btrfs filesystem df" command to show upper case profile
+Date:   Tue,  2 Nov 2021 18:47:58 +0800
+Message-Id: <20211102104758.39871-1-wqu@suse.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH] btrfs-progs: fix btrfs_group_profile_str regression
-Content-Language: en-US
-To:     Wang Yugui <wangyugui@e16-tech.com>, linux-btrfs@vger.kernel.org
-References: <20211030143658.39136-1-wangyugui@e16-tech.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20211030143658.39136-1-wangyugui@e16-tech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2D7Be3+bGsDF34zZlNF3KzHDMsDZb3BUxubU3JPFMLOyZopysHd
- T3EbV+KNk36/dn0IgHwWDaDdfcbaYVMRcKHKw+TCTaZ7v3P5Xgjft5OIkrIFN4AJLR/nKeU
- XHa0KFkw1skKmU+fkbxI70wK4lQ+SZU+gHOIZZf1kgIS9HwTcFxyyZbs/EkfkWuMmY8t7OF
- DgXdWMrzKIbkd2Be+s6og==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OeJ5ymF6AXs=:1Fhpxa3f43nLazCEjLMLRl
- c7BX5ALxZTTRmeTrtLxcRLnIrPpqsxm1rd+OpnAfPf0WbX60rB8nPcAZXqThxvSIN1lknTePo
- RjqinIRdnyzJrfOmHxcYKgRBrRxEptg7IicYbATyeRezeH8Fo8grLgzr5K7h6tvhZ+kMZKhV5
- xuqRcYbwOMveOv9xPc2cOAKh9mskV7aiKtyNxb86U8/aWVe4kgjPAFYLKV0iuoXBZy9kwsigy
- /Rpw0nmNYjaEytNebtY88rV8BGThJgi9qEaErJ5rPDLS3j6dfqeEvbjtzYG4asahMa565fCJl
- xyVTuthQGxxnVUA++B8lfAtToEdvnMshyUu+lj7VlDfN/SqI1X+4lWI5wnCs4glKjcFYAOzWw
- 4lvT+44MJ2OGzshatNiysdnLYdm0ah+AWiob3gthHKCPqv3+n3Bcumr/dqyMbguiEBT64f1Mk
- qgSzoHmMUx0wop+dNW6V6J2SVpBFiz+sDyMTTs7mbX0GdogmW/podTzNV3t+Bz3fbkNBajZ1l
- iLdyKSIr3LVB9SfgdlHJxJpGENIWma+yvxBgXwXz3NikTA47lmZuqRw5DcePDsYZtB8BJPPAx
- lnmvnUkyXXwQazX+/IArJfS0OGY3zAiq9rBj8lLcqYpWbHpMmo84Ui9CHE7/1YrEBEp/2cFSv
- GjKVgeS6ZCa4gl/IPJzFZy3OxawQ+Ytw/G6hzRoORkqEwqm6Qp46dIjVuW0c2paelnsWFTX0X
- WlL27wt31+NCWqWfaOJs0ByAbY3nAXqYxRg10rxVjpYz2mX5x0Y73SIovuCbv2COL4ScgLytl
- s7BvXxJl7W58HUWBW73lvSUbDji61pNMj1lZ3810YLM/NP2I5EsFdFEZ67B0nPJq7AiBOvIDB
- JcT+MmaUROt4/GPdmUaahum/Zwu+wcCCfkEpPNYzu3TgJOnyBc5X1eo1vFWJ3lrRRzG/FSuxp
- 9F5L2xzm390uwWHg0mgnwEOLjJtLtGOiXY7yPR06srHsKuQUztyD/UiDV2sKvX3xb7JM8W1Yb
- PUsRbclYOayYu7hEfzYwtPhn5+qPzimDtHom1TCzglErGYV42j0vN1jBRqEPfPPQYyfiSKf5z
- 3HNmIdOQK+LTXA=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[BUG]
+Since commit dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str
+to use raid table"), fstests/btrfs/023 and btrfs/151 will always fail.
 
+The failure of btrfs/151 explains the reason pretty well:
 
-On 2021/10/30 22:36, Wang Yugui wrote:
-> dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str to use raid t=
-able")
-> introduced a regression that raid profile of GlobalReserve will be outpu=
-t
-> as 'unknown'.
->
->   $ btrfs filesystem df /mnt/test
->   Data, single: total=3D5.02TiB, used=3D4.98TiB
->   System, single: total=3D4.00MiB, used=3D624.00KiB
->   Metadata, single: total=3D11.01GiB, used=3D6.94GiB
->   GlobalReserve, unknown: total=3D512.00MiB, used=3D0.00B
->
-> fix it by
-> - add the process of BTRFS_BLOCK_GROUP_RESERVED
-> - fix the define of BTRFS_BLOCK_GROUP_RESERVED too.
+btrfs/151 1s ... - output mismatch
+    --- tests/btrfs/151.out	2019-10-22 15:18:14.068965341 +0800
+    +++ ~/xfstests-dev/results//btrfs/151.out.bad	2021-11-02 17:13:43.879999994 +0800
+    @@ -1,2 +1,2 @@
+     QA output created by 151
+    -Data, RAID1
+    +Data, raid1
+    ...
+    (Run 'diff -u ~/xfstests-dev/tests/btrfs/151.out ~/xfstests-dev/results//btrfs/151.out.bad'  to see the entire diff)
 
-That also unified kernel uapi and progs headers' definition of
-BTRFS_BLOCK_GROUP_RESERVED.
+[CAUSE]
+Commit dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str to use
+raid table") will use btrfs_raid_array[index].raid_name, which is all
+lower case.
 
->
-> Fixes: dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str to use=
- raid table")
-> Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
+[FIX]
+There is no need to bring such output format change.
 
-Revewed-by: Qu Wenruo <wqu@suse.com>
+So here we adds a new helper function, btrfs_group_profile_upper_str()
+to print the upper case profile name.
 
-Thanks,
-Qu
->
-> ---
->   common/utils.c        | 2 +-
->   kernel-shared/ctree.h | 3 ++-
->   2 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/common/utils.c b/common/utils.c
-> index aee0eedc..e8744199 100644
-> --- a/common/utils.c
-> +++ b/common/utils.c
-> @@ -1030,7 +1030,7 @@ const char* btrfs_group_profile_str(u64 flag)
->   {
->   	int index;
->
-> -	flag &=3D ~BTRFS_BLOCK_GROUP_TYPE_MASK;
-> +	flag &=3D ~(BTRFS_BLOCK_GROUP_TYPE_MASK | BTRFS_BLOCK_GROUP_RESERVED);
->   	if (flag & ~BTRFS_BLOCK_GROUP_PROFILE_MASK)
->   		return "unknown";
->
-> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-> index 563ea50b..99ebc3ad 100644
-> --- a/kernel-shared/ctree.h
-> +++ b/kernel-shared/ctree.h
-> @@ -972,7 +972,8 @@ struct btrfs_csum_item {
->   #define BTRFS_BLOCK_GROUP_RAID6    	(1ULL << 8)
->   #define BTRFS_BLOCK_GROUP_RAID1C3    	(1ULL << 9)
->   #define BTRFS_BLOCK_GROUP_RAID1C4    	(1ULL << 10)
-> -#define BTRFS_BLOCK_GROUP_RESERVED	BTRFS_AVAIL_ALLOC_BIT_SINGLE
-> +#define BTRFS_BLOCK_GROUP_RESERVED	(BTRFS_AVAIL_ALLOC_BIT_SINGLE | \
-> +					 BTRFS_SPACE_INFO_GLOBAL_RSV)
->
->   enum btrfs_raid_types {
->   	BTRFS_RAID_RAID10,
->
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ cmds/filesystem.c |  4 +++-
+ common/utils.c    | 10 ++++++++++
+ common/utils.h    |  3 +++
+ 3 files changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+index 6a9e46d2b7dc..9f49b7d0c9c5 100644
+--- a/cmds/filesystem.c
++++ b/cmds/filesystem.c
+@@ -72,6 +72,7 @@ static void print_df(int fd, struct btrfs_ioctl_space_args *sargs, unsigned unit
+ {
+ 	u64 i;
+ 	struct btrfs_ioctl_space_info *sp = sargs->spaces;
++	char profile_buf[BTRFS_PROFILE_STR_LEN];
+ 	u64 unusable;
+ 	bool ok;
+ 
+@@ -79,9 +80,10 @@ static void print_df(int fd, struct btrfs_ioctl_space_args *sargs, unsigned unit
+ 		unusable = device_get_zone_unusable(fd, sp->flags);
+ 		ok = (unusable != DEVICE_ZONE_UNUSABLE_UNKNOWN);
+ 
++		btrfs_group_profile_upper_str(sp->flags, profile_buf);
+ 		printf("%s, %s: total=%s, used=%s%s%s\n",
+ 			btrfs_group_type_str(sp->flags),
+-			btrfs_group_profile_str(sp->flags),
++			profile_buf,
+ 			pretty_size_mode(sp->total_bytes, unit_mode),
+ 			pretty_size_mode(sp->used_bytes, unit_mode),
+ 			(ok ? ", zone_unusable=" : ""),
+diff --git a/common/utils.c b/common/utils.c
+index aee0eedc15fc..32ca6b2ef432 100644
+--- a/common/utils.c
++++ b/common/utils.c
+@@ -1038,6 +1038,16 @@ const char* btrfs_group_profile_str(u64 flag)
+ 	return btrfs_raid_array[index].raid_name;
+ }
+ 
++void btrfs_group_profile_upper_str(u64 flags, char *ret)
++{
++	int i;
++
++	strncpy(ret, btrfs_group_profile_str(flags), BTRFS_PROFILE_STR_LEN);
++
++	for (i = 0; i < BTRFS_PROFILE_STR_LEN && ret[i]; i++)
++		ret[i] = toupper(ret[i]);
++}
++
+ u64 div_factor(u64 num, int factor)
+ {
+ 	if (factor == 10)
+diff --git a/common/utils.h b/common/utils.h
+index 6f84e3cbc98f..0c1b6baa7ae3 100644
+--- a/common/utils.h
++++ b/common/utils.h
+@@ -75,6 +75,9 @@ int find_next_key(struct btrfs_path *path, struct btrfs_key *key);
+ const char* btrfs_group_type_str(u64 flag);
+ const char* btrfs_group_profile_str(u64 flag);
+ 
++#define BTRFS_PROFILE_STR_LEN	(64)
++void btrfs_group_profile_upper_str(u64 flag, char *ret);
++
+ int count_digits(u64 num);
+ u64 div_factor(u64 num, int factor);
+ 
+-- 
+2.33.1
+
