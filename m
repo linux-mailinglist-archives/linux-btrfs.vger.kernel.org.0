@@ -2,101 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E0B444644
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Nov 2021 17:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C82444BCC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 00:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbhKCQwE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Nov 2021 12:52:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34364 "EHLO
+        id S229603AbhKCXzq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Nov 2021 19:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232993AbhKCQwD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Nov 2021 12:52:03 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCD9C061203
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Nov 2021 09:49:24 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id i12so3178162ila.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Nov 2021 09:49:24 -0700 (PDT)
+        with ESMTP id S229541AbhKCXzq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Nov 2021 19:55:46 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0870DC061714
+        for <linux-btrfs@vger.kernel.org>; Wed,  3 Nov 2021 16:53:09 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id n8so4252121plf.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Nov 2021 16:53:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=RkjMpeIuQ6aVWCs6FPMVIVUmVZwq7aWhwwHDvLPHoTA=;
-        b=KicifnRFUfO4N9gaBjWUeuCchiYARsN8O1co+rO5IPT91uvvueOb0wsNsI11GdxVwJ
-         dr9v6erho2NSiuAeQPjWWXr80/aDVX4ZDGtF2bYMrGeduV8774afaJs3cID0VrxXXw7W
-         JDNCz20doyAvjpa932g4VxBDygv/KK4Hwh9BB6Swam9PLtudLuRnmWMqKFmrCPti0oN6
-         3OZoxOISvBEHzZfHQFfitqzxdyzkjiYvSP50xycioY8b7q/U3fNpFPjIe+8bUg6ZzHGT
-         Rdiyer48xVYTxzp41hAy+B1fxpvmAGO5SZ5uQpOd5wdpNL64m7eSnlE6qoHNEWewrATl
-         tLUw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=y524zfaTNpao9uOc6VFD8PUDOQ9BCZXzmeBSXRUHnWI=;
+        b=HK/Gh1v9hTSaOJYAZuSga9RuLSTVZg1RuQoB5S+tfyA/C5eDoLMrEzHGibLWQNnjAF
+         qWLlaat5T4BtTsXietTYTL7bpEnAAlCvlN9fT1xgy/bqIS40A2WcmWCVVmPz3dydC6uo
+         5/OMrwOvmoPF01RsMKkIS61Rg8GM8beOQ+wWFFa+wfefZBpXwcA3bg73x7nfm97sixHK
+         9awdsl+0upl4+H3LEb6yKdGVZ2mR6BCcuWAbq2+wLhP4jl3pvoiroWokwJa4m1yMj9dy
+         g4Y3evUgKrJWItnHUdUlzniyBst5ujI6zzsWeUxG6S9TlUKAvhd4RC41qI3HpIBkRE0U
+         /8Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=RkjMpeIuQ6aVWCs6FPMVIVUmVZwq7aWhwwHDvLPHoTA=;
-        b=j90dfsFY/sYZxi7oTY4Nwf+EmnAnglO0wZuvJF4L8ljJxXLzF1EI9JcWsjNDD2hLfj
-         NC2MCVupp9Nr+Mj2CBpIBDikgB9354OCoclaebKYHTuOLP5JJZS9imGo6W3LfnHp4xge
-         oC1siczv4nmpR2NakIcYLOowi/Nn3QKgamaE8pW2dw9rmjbLvxljtgCpzeN884Tyr17G
-         XUhkfpeJ5m0f3zdW8GTJWVj7vzcdbqQu33vRaKzcEFWjwGoxQ/yhnbFUfsc6q4knwHxN
-         +mZ8c64mJ106e86RsCm7Uhp1SQwN1owZJ+fM8t+e1UwhFEbXjB+fZoUzrQj0asECHYCq
-         yEgQ==
-X-Gm-Message-State: AOAM533QMCO434A9I7c0XolfAd/YuSQarexVK7ZN/Y/IAlDV1UxUlO/Y
-        3ycJq5drNiS3Yf7QxNzQhlDzCt4bZ+iIlyNdFyI=
-X-Google-Smtp-Source: ABdhPJzDZdGYiXBK4LHoEf4nsJbCPFz0PgWUFSUy6M3Q4PINGqDOM979ILAXeEjz4rLCT609Uhbd5D7Dop6EpQ1n0zc=
-X-Received: by 2002:a05:6e02:1848:: with SMTP id b8mr6349174ilv.299.1635958163970;
- Wed, 03 Nov 2021 09:49:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=y524zfaTNpao9uOc6VFD8PUDOQ9BCZXzmeBSXRUHnWI=;
+        b=ucJPLoqgyY5UXTYqhbEZhYQOEQp0pZJzGF2FyKSfSNBrZDgpCiW86xWVnH6rwiio4h
+         pzt24HznTJX7ii37Cu+j/AiBI1H4nq5M0P2dVW+oWY9w6aOfxihOgJqvmD0hElEO6d0B
+         zFpmMnH3F+TQLgbn7IVvwT089RT+ItBQu/qiRvSJrfR39ZzlVcRFjAMHMI+gC9WiHO9F
+         ePEzwkYMloxOlJzxyG7+VAMCVltcSCoomuFbN14/H14KHCQs3uwRxA602ym7kqQPxuV6
+         It2XNKDcjeNDoUm19MUN/R5JEMOheHNmK2uO14OV80KsXkj7qsdSC1ep6vARtrPxyjeg
+         s+2g==
+X-Gm-Message-State: AOAM530BMSRbI346sbZSykKi/Xv1FI9k4rZFiBawpISVn8OiFiMZ8Z8H
+        /eUWKvvd4ynhVfg+VvFsXHESAneqMHgdjQ==
+X-Google-Smtp-Source: ABdhPJzJYb74fIKrIGRTThMpvS50ZrN1stBqfEgxA08XsXAjNEBBZWReBEEO5BWjLqnXb4F5lWyDAg==
+X-Received: by 2002:a17:902:c947:b0:142:13f9:3444 with SMTP id i7-20020a170902c94700b0014213f93444mr10988851pla.82.1635983588504;
+        Wed, 03 Nov 2021 16:53:08 -0700 (PDT)
+Received: from realwakka ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id k5sm3652989pfc.111.2021.11.03.16.53.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Nov 2021 16:53:08 -0700 (PDT)
+Date:   Wed, 3 Nov 2021 23:52:59 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs-progs: check: change commit condition in
+ fixup_extent_refs()
+Message-ID: <20211103235259.GA47276@realwakka>
+References: <20211103151554.46991-1-realwakka@gmail.com>
+ <665f8532-e176-3dc6-ccf0-395672cb3383@suse.com>
 MIME-Version: 1.0
-Reply-To: mrsdaniella.kyle@yandex.com
-Sender: marksmithtinufelix@gmail.com
-Received: by 2002:a05:6638:16ce:0:0:0:0 with HTTP; Wed, 3 Nov 2021 09:49:23
- -0700 (PDT)
-From:   Mrs Daniella Kyle <mrsdaniellakyle6@gmail.com>
-Date:   Wed, 3 Nov 2021 09:49:23 -0700
-X-Google-Sender-Auth: kY5Mgx72WX63GBhVTYyCO1hJNRE
-Message-ID: <CA+EzCkr4+A=h3ZA1jNaO5PpgS4M7LpScPb39OCAVex9JAy9qwA@mail.gmail.com>
-Subject: Re:ATM Visa card compensation, Thanks for your past effort
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <665f8532-e176-3dc6-ccf0-395672cb3383@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Good Day,
+On Wed, Nov 03, 2021 at 05:25:38PM +0200, Nikolay Borisov wrote:
+> 
+> 
+> On 3.11.21 г. 17:15, Sidong Yang wrote:
+> > This patch fixes potential bugs in fixup_extent_refs(). If
+> > btrfs_start_transaction() fails in some way and returns error ptr, It
+> > goes to out logic. But old code checkes whether it is null and it calls
+> > commit. This patch solves the problem with change the condition to
+> > checks if it is error by IS_ERR().
+> > 
+> > Issue: #409
+> > 
+> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> > ---
+> >  check/main.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/check/main.c b/check/main.c
+> > index 235a9bab..ca858e07 100644
+> > --- a/check/main.c
+> > +++ b/check/main.c
+> > @@ -7735,7 +7735,7 @@ static int fixup_extent_refs(struct cache_tree *extent_cache,
+> >  			goto out;
+> >  	}
+> >  out:
+> > -	if (trans) {
+> > +	if (!IS_ERR(trans)) {
+> 
+> Actually I think we want to commit the transaction only if ret is not
+> error, otherwise we run the risk of committing partial changes to the fs.
 
-This message may actually come to you as surprises today, To be very
-honest with you, It is a joyful moment for me and my family right now,
-so therefore am using this opportunity to inform you that have
-successfully move to Vietnam where am currently living with my
-business partner who assisted me to complete the transfer, but due to
-the willingness and acceptance you showed during my pain have decided
-to willingly compensated you and show my gratitude to you with these
-sum of $950,000.00 Nine Hundred and fifty Thousand US Dollars).
+I agree. If ret is error, committing should not be happen. But I 
+think it needs to check trans. 
 
-I want you to accept this amount it=E2=80=99s from the bottom of my heart,
-have issued the check and instructed the bank to roll the fund on a
-master card for security reasons, you can use the card to withdraw
-money from any ATM machine worldwide with a maximum of US$10,000 per
-day. My bank account manager said you can receive the card and use it
-anywhere in this global world.
-
- Go ahead contact the Global ATM Alliance directly with this below
-information. Email Address:   maastercarddeptme20@yahoo.com
-
-The Company Name: ........... ....... Global Alliance Burkina Faso
-Company Address; ...... 01BP 23 Rue Des Grands Moulins.Ouagadougou, Burkina=
- Faso
-Email Address: ..... [maastercarddeptme20@yahoo.com]
-Name of Manager In charge: Mrs Zoure Gueratou
-
-Presently, I am very busy here in Vietnam because of the investment
-projects which I and my new partner are having at hand, I have given
-instructions to the ATM Visa card office on your behalf to release the
-ATM card which I gave to you as compensation. Therefore feel free and
-get in touch with her and she will send the card and the pin code to
-you in your location in order for you to start withdrawing the
-compensation money without delay.
-
-Let me know as soon you received the card together with the pin code.
-
-Thank you
-Yours Sincerely
-Daniela Angelo Kyle
+I wonder that if ret is error but trans is okay, trans needs to be
+aborted by calling btrfs_abort_transaction()?
+> 
+> >  		int err = btrfs_commit_transaction(trans, gfs_info->extent_root);
+> >  
+> >  		if (!ret)
+> > 
