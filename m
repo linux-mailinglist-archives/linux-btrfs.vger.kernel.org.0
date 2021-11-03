@@ -2,27 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4368443A3E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Nov 2021 01:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B634444015
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Nov 2021 11:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbhKCAJ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 20:09:57 -0400
-Received: from out20-25.mail.aliyun.com ([115.124.20.25]:33385 "EHLO
-        out20-25.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbhKCAJ4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 20:09:56 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.03713102|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.024118-0.00076046-0.975122;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.LmWn0pw_1635898038;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.LmWn0pw_1635898038)
-          by smtp.aliyun-inc.com(10.147.41.187);
-          Wed, 03 Nov 2021 08:07:19 +0800
-Date:   Wed, 03 Nov 2021 08:07:22 +0800
+        id S231557AbhKCKoJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Nov 2021 06:44:09 -0400
+Received: from out20-38.mail.aliyun.com ([115.124.20.38]:51266 "EHLO
+        out20-38.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231338AbhKCKoJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Nov 2021 06:44:09 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.0467361-0.000518537-0.952745;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=1;RT=1;SR=0;TI=SMTPD_---.LmsqW4J_1635936090;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.LmsqW4J_1635936090)
+          by smtp.aliyun-inc.com(10.147.41.138);
+          Wed, 03 Nov 2021 18:41:31 +0800
+Date:   Wed, 03 Nov 2021 18:41:34 +0800
 From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     dsterba@suse.cz, Wang Yugui <wangyugui@e16-tech.com>,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@gmail.com>
-Subject: Re: [PATCH v3] btrfs: fix a check-integrity warning on write caching disabled disk
-In-Reply-To: <20211102164830.GO20319@twin.jikos.cz>
-References: <20211027223254.8095-1-wangyugui@e16-tech.com> <20211102164830.GO20319@twin.jikos.cz>
-Message-Id: <20211103080721.23DC.409509F4@e16-tech.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: btrfs reflink take too long time(21s)
+Message-Id: <20211103184134.631B.409509F4@e16-tech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
@@ -33,131 +30,273 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Hi,
 
-> On Thu, Oct 28, 2021 at 06:32:54AM +0800, Wang Yugui wrote:
-> > When a disk has write caching disabled, we skip submission of a bio
-> > with flush and sync requests before writing the superblock, since
-> > it's not needed. However when the integrity checker is enabled,
-> > this results in reports that there are metadata blocks referred
-> > by a superblock that were not properly flushed. So don't skip the
-> > bio submission only when the integrity checker is enabled
-> > for the sake of simplicity, since this is a debug tool and
-> > not meant for use in non-debug builds.
-> > 
-> > xfstest/btrfs/220 trigger a check-integrity warning like the following
-> > when CONFIG_BTRFS_FS_CHECK_INTEGRITY=y and the disk with WCE=0.
-> 
-> Does this need the integrity checker to be also enabled by mount
-> options? I don't think compile time (ie the #ifdef) is enough, the
-> message is printed only when it's enabled based on check in
-> __btrfsic_submit_bio "if (!btrfsic_is_initialized) return", where the
-> rest of the function does all the verification.
+fstests(generic/297) report that btrfs reflink take too long time(21s)
+   reflink didn't stop in time, n=17179869184 t=21
 
-Yes.  We need mount option 'check_int' or 'check_int_data' to  trigger
-this check-integrity warning.
+reproduce frequency:
+  DUP metadata(mkfs.btrfs -m DUP): about 20%
+  single metadata(mkfs.btrfs -m single): < 3%
+
+kernel/btrfs: 5.15
+	I just begin to test DUP metadata(mkfs.btrfs -m DUP) recently,
+	so it may NOT a problem introduced in 5.15
+
+DUP metadata is useful to reproduce.
+--- a/tests/generic/297
++++ b/tests/generic/297
+@@ -29,7 +32,7 @@ _require_command "$TIMEOUT_PROG" "timeout"
+ test $FSTYP == "nfs"  && _notrun "NFS can't interrupt clone operations"
+ 
+ echo "Format and mount"
+-_scratch_mkfs > $seqres.full 2>&1
++_scratch_mkfs -m DUP > $seqres.full 2>&1
+ _scratch_mount >> $seqres.full 2>&1
+ 
+ testdir=$SCRATCH_MNT/test-$seq
+
+
+I used 'hung_task_timeout_secs=2' to gather some call trace
+
+[  572.942085] INFO: task btrfs-transacti:8203 blocked for more than 2 seconds.
+[  572.943264]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  572.944391] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  572.945516] task:btrfs-transacti state:D stack:    0 pid: 8203 ppid:     2 flags:0x00004000
+[  572.946653] Call Trace:
+[  572.947789]  __schedule+0x37c/0x7a0
+[  572.948928]  schedule+0x3a/0xa0
+[  572.950066]  btrfs_commit_transaction+0x200/0xac0 [btrfs]
+[  572.951284]  ? finish_wait+0x80/0x80
+[  572.952422]  transaction_kthread+0x13d/0x190 [btrfs]
+[  572.953613]  ? btrfs_cleanup_transaction+0x580/0x580 [btrfs]
+[  572.954807]  kthread+0x118/0x140
+[  572.955954]  ? set_kthread_struct+0x40/0x40
+[  572.957091]  ret_from_fork+0x1f/0x30
+
+[  572.958231] INFO: task xfs_io:8398 blocked for more than 2 seconds.
+[  572.959385]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  572.960539] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  572.961723] task:xfs_io          state:D stack:    0 pid: 8398 ppid:  8397 flags:0x00004004
+[  572.962873] Call Trace:
+[  572.964006]  __schedule+0x37c/0x7a0
+[  572.965142]  schedule+0x3a/0xa0
+[  572.966277]  wait_current_trans+0xc2/0x120 [btrfs]
+[  572.967475]  ? finish_wait+0x80/0x80
+[  572.968595]  start_transaction+0x490/0x590 [btrfs]
+[  572.969745]  btrfs_replace_file_extents+0xfd/0x880 [btrfs]
+[  572.970898]  ? btrfs_search_slot+0x8e3/0x900 [btrfs]
+[  572.972051]  ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
+[  572.973180]  btrfs_clone+0x796/0x7f0 [btrfs]
+[  572.974366]  ? __btrfs_add_free_space+0x8c/0x4c0 [btrfs]
+[  572.975552]  btrfs_clone_files+0xfc/0x150 [btrfs]
+[  572.976918]  btrfs_remap_file_range+0x3d8/0x4a0 [btrfs]
+[  572.978111]  do_clone_file_range+0xea/0x230
+[  572.979250]  vfs_clone_file_range+0x37/0x110
+[  572.980384]  ioctl_file_clone+0x7d/0xb0
+[  572.981512]  do_vfs_ioctl+0x47d/0x7f0
+[  572.982639]  __x64_sys_ioctl+0x62/0xc0
+[  572.983766]  do_syscall_64+0x37/0x80
+[  572.984869]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  572.985958] RIP: 0033:0x7fe48946c62b
+[  572.987037] RSP: 002b:00007ffff68bb648 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[  572.988145] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fe48946c62b
+[  572.989259] RDX: 00007ffff68bb680 RSI: 000000004020940d RDI: 0000000000000003
+[  572.990382] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000d5f2c
+[  572.991501] R10: 00007ffff690d080 R11: 0000000000000246 R12: 0000000000000000
+[  572.992621] R13: 0000000000000000 R14: 0000562c0a4f29c8 R15: 0000000400000000
+
+[  575.054091] INFO: task btrfs-transacti:8203 blocked for more than 4 seconds.
+[  575.055252]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  575.056391] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  575.057540] task:btrfs-transacti state:D stack:    0 pid: 8203 ppid:     2 flags:0x00004000
+[  575.058704] Call Trace:
+[  575.059864]  __schedule+0x37c/0x7a0
+[  575.061026]  schedule+0x3a/0xa0
+[  575.062157]  btrfs_commit_transaction+0x200/0xac0 [btrfs]
+[  575.063352]  ? finish_wait+0x80/0x80
+[  575.064463]  transaction_kthread+0x13d/0x190 [btrfs]
+[  575.065628]  ? btrfs_cleanup_transaction+0x580/0x580 [btrfs]
+[  575.066796]  kthread+0x118/0x140
+[  575.067924]  ? set_kthread_struct+0x40/0x40
+[  575.069029]  ret_from_fork+0x1f/0x30
+[  575.070112] INFO: task xfs_io:8398 blocked for more than 4 seconds.
+[  575.071207]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  575.072303] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  575.073424] task:xfs_io          state:D stack:    0 pid: 8398 ppid:  8397 flags:0x00004004
+[  575.074566] Call Trace:
+[  575.075688]  __schedule+0x37c/0x7a0
+[  575.076799]  schedule+0x3a/0xa0
+[  575.077893]  wait_current_trans+0xc2/0x120 [btrfs]
+[  575.079036]  ? finish_wait+0x80/0x80
+[  575.080110]  start_transaction+0x490/0x590 [btrfs]
+[  575.081239]  btrfs_replace_file_extents+0xfd/0x880 [btrfs]
+[  575.082378]  ? btrfs_search_slot+0x8e3/0x900 [btrfs]
+[  575.083506]  ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
+[  575.084609]  btrfs_clone+0x796/0x7f0 [btrfs]
+[  575.085765]  ? __btrfs_add_free_space+0x8c/0x4c0 [btrfs]
+[  575.086920]  btrfs_clone_files+0xfc/0x150 [btrfs]
+[  575.088072]  btrfs_remap_file_range+0x3d8/0x4a0 [btrfs]
+[  575.089226]  do_clone_file_range+0xea/0x230
+[  575.090328]  vfs_clone_file_range+0x37/0x110
+[  575.091419]  ioctl_file_clone+0x7d/0xb0
+[  575.092505]  do_vfs_ioctl+0x47d/0x7f0
+[  575.093575]  __x64_sys_ioctl+0x62/0xc0
+[  575.094628]  do_syscall_64+0x37/0x80
+[  575.095670]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  575.096722] RIP: 0033:0x7fe48946c62b
+[  575.097773] RSP: 002b:00007ffff68bb648 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[  575.098845] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fe48946c62b
+[  575.099923] RDX: 00007ffff68bb680 RSI: 000000004020940d RDI: 0000000000000003
+[  575.101002] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000d5f2c
+[  575.102080] R10: 00007ffff690d080 R11: 0000000000000246 R12: 0000000000000000
+[  575.103155] R13: 0000000000000000 R14: 0000562c0a4f29c8 R15: 0000000400000000
+
+
+[  577.166111] INFO: task btrfs-transacti:8203 blocked for more than 6 seconds.
+[  577.167209]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  577.168289] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  577.169385] task:btrfs-transacti state:D stack:    0 pid: 8203 ppid:     2 flags:0x00004000
+[  577.170499] Call Trace:
+[  577.171601]  __schedule+0x37c/0x7a0
+[  577.172709]  schedule+0x3a/0xa0
+[  577.173812]  btrfs_commit_transaction+0x200/0xac0 [btrfs]
+[  577.175005]  ? finish_wait+0x80/0x80
+[  577.176118]  transaction_kthread+0x13d/0x190 [btrfs]
+[  577.177281]  ? btrfs_cleanup_transaction+0x580/0x580 [btrfs]
+[  577.178446]  kthread+0x118/0x140
+[  577.179576]  ? set_kthread_struct+0x40/0x40
+[  577.180683]  ret_from_fork+0x1f/0x30
+
+
+[  577.181823] INFO: task xfs_io:8398 blocked for more than 6 seconds.
+[  577.182977]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  577.184087] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  577.185216] task:xfs_io          state:D stack:    0 pid: 8398 ppid:  8397 flags:0x00004004
+[  577.186364] Call Trace:
+[  577.187492]  __schedule+0x37c/0x7a0
+[  577.188611]  schedule+0x3a/0xa0
+[  577.189711]  wait_current_trans+0xc2/0x120 [btrfs]
+[  577.190862]  ? finish_wait+0x80/0x80
+[  577.191941]  start_transaction+0x490/0x590 [btrfs]
+[  577.193073]  btrfs_replace_file_extents+0xfd/0x880 [btrfs]
+[  577.194220]  ? btrfs_search_slot+0x8e3/0x900 [btrfs]
+[  577.195355]  ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
+[  577.196464]  btrfs_clone+0x796/0x7f0 [btrfs]
+[  577.197627]  ? __btrfs_add_free_space+0x8c/0x4c0 [btrfs]
+[  577.198790]  btrfs_clone_files+0xfc/0x150 [btrfs]
+[  577.199947]  btrfs_remap_file_range+0x3d8/0x4a0 [btrfs]
+[  577.201105]  do_clone_file_range+0xea/0x230
+[  577.202212]  vfs_clone_file_range+0x37/0x110
+[  577.203308]  ioctl_file_clone+0x7d/0xb0
+[  577.204398]  do_vfs_ioctl+0x47d/0x7f0
+[  577.205470]  __x64_sys_ioctl+0x62/0xc0
+[  577.206527]  do_syscall_64+0x37/0x80
+[  577.207573]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  577.208627] RIP: 0033:0x7fe48946c62b
+[  577.209679] RSP: 002b:00007ffff68bb648 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[  577.210755] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fe48946c62b
+[  577.211834] RDX: 00007ffff68bb680 RSI: 000000004020940d RDI: 0000000000000003
+[  577.212913] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000d5f2c
+[  577.213992] R10: 00007ffff690d080 R11: 0000000000000246 R12: 0000000000000000
+[  577.215066] R13: 0000000000000000 R14: 0000562c0a4f29c8 R15: 0000000400000000
+
+
+[  579.278098] INFO: task btrfs-transacti:8203 blocked for more than 8 seconds.
+[  579.279201]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  579.280278] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  579.281373] task:btrfs-transacti state:D stack:    0 pid: 8203 ppid:     2 flags:0x00004000
+[  579.282486] Call Trace:
+[  579.283590]  __schedule+0x37c/0x7a0
+[  579.284698]  schedule+0x3a/0xa0
+[  579.285801]  btrfs_commit_transaction+0x200/0xac0 [btrfs]
+[  579.286991]  ? finish_wait+0x80/0x80
+[  579.288104]  transaction_kthread+0x13d/0x190 [btrfs]
+[  579.289270]  ? btrfs_cleanup_transaction+0x580/0x580 [btrfs]
+[  579.290435]  kthread+0x118/0x140
+[  579.291553]  ? set_kthread_struct+0x40/0x40
+[  579.292661]  ret_from_fork+0x1f/0x30
+[  579.293764] INFO: task xfs_io:8398 blocked for more than 8 seconds.
+[  579.294880]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  579.295990] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  579.297120] task:xfs_io          state:D stack:    0 pid: 8398 ppid:  8397 flags:0x00004004
+[  579.298264] Call Trace:
+[  579.299388]  __schedule+0x37c/0x7a0
+[  579.300503]  schedule+0x3a/0xa0
+[  579.301601]  wait_current_trans+0xc2/0x120 [btrfs]
+[  579.302747]  ? finish_wait+0x80/0x80
+[  579.303828]  start_transaction+0x490/0x590 [btrfs]
+[  579.304959]  btrfs_replace_file_extents+0xfd/0x880 [btrfs]
+[  579.306103]  ? btrfs_search_slot+0x8e3/0x900 [btrfs]
+[  579.307235]  ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
+[  579.308341]  btrfs_clone+0x796/0x7f0 [btrfs]
+[  579.309500]  ? __btrfs_add_free_space+0x8c/0x4c0 [btrfs]
+[  579.310661]  btrfs_clone_files+0xfc/0x150 [btrfs]
+[  579.311817]  btrfs_remap_file_range+0x3d8/0x4a0 [btrfs]
+[  579.313144]  do_clone_file_range+0xea/0x230
+[  579.314251]  vfs_clone_file_range+0x37/0x110
+[  579.315350]  ioctl_file_clone+0x7d/0xb0
+[  579.316441]  do_vfs_ioctl+0x47d/0x7f0
+[  579.317516]  __x64_sys_ioctl+0x62/0xc0
+[  579.318576]  do_syscall_64+0x37/0x80
+[  579.319623]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  579.320682] RIP: 0033:0x7fe48946c62b
+[  579.321736] RSP: 002b:00007ffff68bb648 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[  579.322812] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fe48946c62b
+[  579.323895] RDX: 00007ffff68bb680 RSI: 000000004020940d RDI: 0000000000000003
+[  579.324980] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000d5f2c
+[  579.326061] R10: 00007ffff690d080 R11: 0000000000000246 R12: 0000000000000000
+[  579.327139] R13: 0000000000000000 R14: 0000562c0a4f29c8 R15: 0000000400000000
+
+
+[  581.390104] INFO: task btrfs-transacti:8203 blocked for more than 10 seconds.
+[  581.391207]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  581.392290] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  581.393391] task:btrfs-transacti state:D stack:    0 pid: 8203 ppid:     2 flags:0x00004000
+[  581.394513] Call Trace:
+[  581.395621]  __schedule+0x37c/0x7a0
+[  581.396733]  schedule+0x3a/0xa0
+[  581.397841]  btrfs_commit_transaction+0x200/0xac0 [btrfs]
+[  581.399040]  ? finish_wait+0x80/0x80
+[  581.400160]  transaction_kthread+0x13d/0x190 [btrfs]
+[  581.401331]  ? btrfs_cleanup_transaction+0x580/0x580 [btrfs]
+[  581.402502]  kthread+0x118/0x140
+[  581.403626]  ? set_kthread_struct+0x40/0x40
+[  581.404741]  ret_from_fork+0x1f/0x30
+
+
+[  581.405848] INFO: task xfs_io:8398 blocked for more than 10 seconds.
+[  581.406966]       Not tainted 5.15.0-1.el7.x86_64 #1
+[  581.408082] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  581.409220] task:xfs_io          state:D stack:    0 pid: 8398 ppid:  8397 flags:0x00004004
+[  581.410373] Call Trace:
+[  581.411507]  __schedule+0x37c/0x7a0
+[  581.412632]  schedule+0x3a/0xa0
+[  581.413739]  wait_current_trans+0xc2/0x120 [btrfs]
+[  581.414893]  ? finish_wait+0x80/0x80
+[  581.415977]  start_transaction+0x490/0x590 [btrfs]
+[  581.417116]  btrfs_replace_file_extents+0xfd/0x880 [btrfs]
+[  581.418438]  ? btrfs_search_slot+0x8e3/0x900 [btrfs]
+[  581.419577]  ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
+[  581.420691]  btrfs_clone+0x796/0x7f0 [btrfs]
+[  581.422025]  ? __btrfs_add_free_space+0x8c/0x4c0 [btrfs]
+[  581.423199]  btrfs_clone_files+0xfc/0x150 [btrfs]
+[  581.424364]  btrfs_remap_file_range+0x3d8/0x4a0 [btrfs]
+[  581.425528]  do_clone_file_range+0xea/0x230
+[  581.426640]  vfs_clone_file_range+0x37/0x110
+[  581.427743]  ioctl_file_clone+0x7d/0xb0
+[  581.428839]  do_vfs_ioctl+0x47d/0x7f0
+[  581.429919]  __x64_sys_ioctl+0x62/0xc0
+[  581.430983]  do_syscall_64+0x37/0x80
+[  581.432121]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  581.433302] RIP: 0033:0x7fe48946c62b
+[  581.434368] RSP: 002b:00007ffff68bb648 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[  581.435457] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fe48946c62b
+[  581.436547] RDX: 00007ffff68bb680 RSI: 000000004020940d RDI: 0000000000000003
+[  581.437636] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000d5f2c
+[  581.438722] R10: 00007ffff690d080 R11: 0000000000000246 R12: 0000000000000000
+[  581.439808] R13: 0000000000000000 R14: 0000562c0a4f29c8 R15: 0000000400000000
 
 Best Regards
 Wang Yugui (wangyugui@e16-tech.com)
 2021/11/03
-
-> 
-> >  btrfs: attempt to write superblock which references block M @5242880 (sdb2/5242880/0) which is not flushed out of disk's write cache (block flush_gen=1, dev->flush_gen=0)!
-> >  ------------[ cut here ]------------
-> >  WARNING: CPU: 28 PID: 843680 at fs/btrfs/check-integrity.c:2196 btrfsic_process_written_superblock+0x22a/0x2a0 [btrfs]
-> >  CPU: 28 PID: 843680 Comm: umount Not tainted 5.15.0-0.rc5.39.el8.x86_64 #1
-> >  Hardware name: Dell Inc. Precision T7610/0NK70N, BIOS A18 09/11/2019
-> >  RIP: 0010:btrfsic_process_written_superblock+0x22a/0x2a0 [btrfs]
-> >  Code: 44 24 1c 83 f8 03 0f 85 7e fe ff ff 4c 8b 74 24 08 31 d2 48 89 ef 4c 89 f6 e8 82 f1 ff ff 89 c2 31 c0 83 fa ff 75 a1 89 04 24 <0f> 0b 48 89 ef e8 36 3f 01 00 8b 04 24 eb 8f 48 8b 40 60 48 89 04
-> >  RSP: 0018:ffffb642afb47940 EFLAGS: 00010246
-> >  RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
-> >  RDX: 00000000ffffffff RSI: ffff8b722fc97d00 RDI: ffff8b722fc97d00
-> >  RBP: ffff8b5601c00000 R08: 0000000000000000 R09: c0000000ffff7fff
-> >  R10: 0000000000000001 R11: ffffb642afb476f8 R12: ffffffffffffffff
-> >  R13: ffffb642afb47974 R14: ffff8b5499254c00 R15: 0000000000000003
-> >  FS:  00007f00a06d4080(0000) GS:ffff8b722fc80000(0000) knlGS:0000000000000000
-> >  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >  CR2: 00007fff5cff5ff0 CR3: 00000001c0c2a006 CR4: 00000000001706e0
-> >  Call Trace:
-> >   btrfsic_process_written_block+0x2f7/0x850 [btrfs]
-> >   __btrfsic_submit_bio.part.19+0x310/0x330 [btrfs]
-> >   ? bio_associate_blkg_from_css+0xa4/0x2c0
-> >   btrfsic_submit_bio+0x18/0x30 [btrfs]
-> >   write_dev_supers+0x81/0x2a0 [btrfs]
-> >   ? find_get_pages_range_tag+0x219/0x280
-> >   ? pagevec_lookup_range_tag+0x24/0x30
-> >   ? __filemap_fdatawait_range+0x6d/0xf0
-> >   ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
-> >   ? find_first_extent_bit+0x9b/0x160 [btrfs]
-> >   ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
-> >   write_all_supers+0x1b3/0xa70 [btrfs]
-> >   ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
-> >   btrfs_commit_transaction+0x59d/0xac0 [btrfs]
-> >   close_ctree+0x11d/0x339 [btrfs]
-> >   generic_shutdown_super+0x71/0x110
-> >   kill_anon_super+0x14/0x30
-> >   btrfs_kill_super+0x12/0x20 [btrfs]
-> >   deactivate_locked_super+0x31/0x70
-> >   cleanup_mnt+0xb8/0x140
-> >   task_work_run+0x6d/0xb0
-> >   exit_to_user_mode_prepare+0x1f0/0x200
-> >   syscall_exit_to_user_mode+0x12/0x30
-> >   do_syscall_64+0x46/0x80
-> >   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >  RIP: 0033:0x7f009f711dfb
-> >  Code: 20 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 5d 20 2c 00 f7 d8 64 89 01 48
-> >  RSP: 002b:00007fff5cff7928 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-> >  RAX: 0000000000000000 RBX: 000055b68c6c9970 RCX: 00007f009f711dfb
-> >  RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055b68c6c9b50
-> >  RBP: 0000000000000000 R08: 000055b68c6ca900 R09: 00007f009f795580
-> >  R10: 0000000000000000 R11: 0000000000000246 R12: 000055b68c6c9b50
-> >  R13: 00007f00a04bf184 R14: 0000000000000000 R15: 00000000ffffffff
-> >  ---[ end trace 2c4b82abcef9eec4 ]---
-> >  S-65536(sdb2/65536/1)
-> >   --> 
-> >  M-1064960(sdb2/1064960/1)
-> > 
-> > Reviewed-by: Filipe Manana <fdmanana@gmail.com>
-> > Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
-> > ---
-> > Changes since v2:
-> > - add the whole Call Trace:
-> > Changes since v1:
-> > - update the changelog/code comment. (Filipe Manana)
-> > - var(struct request_queue *q) is only needed when
-> >    !CONFIG_BTRFS_FS_CHECK_INTEGRITY
-> > ---
-> >  fs/btrfs/disk-io.c | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> > index 355ea88d5c5f..4ef06d0555b0 100644
-> > --- a/fs/btrfs/disk-io.c
-> > +++ b/fs/btrfs/disk-io.c
-> > @@ -3968,11 +3968,23 @@ static void btrfs_end_empty_barrier(struct bio *bio)
-> >   */
-> >  static void write_dev_flush(struct btrfs_device *device)
-> >  {
-> > -	struct request_queue *q = bdev_get_queue(device->bdev);
-> >  	struct bio *bio = device->flush_bio;
-> >  
-> > +	#ifndef CONFIG_BTRFS_FS_CHECK_INTEGRITY
-> > +	/*
-> > +	* When a disk has write caching disabled, we skip submission of a bio
-> > +	* with flush and sync requests before writing the superblock, since
-> > +	* it's not needed. However when the integrity checker is enabled,
-> > +	* this results in reports that there are metadata blocks referred
-> > +	* by a superblock that were not properly flushed. So don't skip the
-> > +	* bio submission only when the integrity checker is enabled
-> > +	* for the sake of simplicity, since this is a debug tool and
-> > +	* not meant for use in non-debug builds.
-> > +	*/
-> > +	struct request_queue *q = bdev_get_queue(device->bdev);
-> >  	if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-> >  		return;
-> > +	#endif
-> >  
-> >  	bio_reset(bio);
-> >  	bio->bi_end_io = btrfs_end_empty_barrier;
-> > -- 
-> > 2.32.0
 
 
