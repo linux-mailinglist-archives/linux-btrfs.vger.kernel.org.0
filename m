@@ -2,110 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E0D443996
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Nov 2021 00:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4368443A3E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Nov 2021 01:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhKBX1F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Nov 2021 19:27:05 -0400
-Received: from mout.gmx.net ([212.227.17.21]:58097 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229747AbhKBX1F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Nov 2021 19:27:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1635895467;
-        bh=uyvCfQ62gzRKgOq3Hw/YeoZBs50kF/fJdBuSxnTFiqw=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=WCoSsSo4lNTH94RBQhnjRTDBieiJyiGj9O8Q27Vi/a4JllpbkOfpiGmTghcpfhSbE
-         YFHLLUXNcuMJhtZqSRsUu9ZQhdcqmKAyCRbYR3Pxg5sDpU1MkHuu9ltETQ9p2pexyH
-         h9RMg0l0h3EJGpFm9ogUS5dhHsZegZzeBz7fHPFw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MC34X-1mtuAJ05L3-00CSfP; Wed, 03
- Nov 2021 00:24:26 +0100
-Message-ID: <a79daa40-b36e-c7db-da31-527c05f5954f@gmx.com>
-Date:   Wed, 3 Nov 2021 07:24:22 +0800
+        id S230431AbhKCAJ5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Nov 2021 20:09:57 -0400
+Received: from out20-25.mail.aliyun.com ([115.124.20.25]:33385 "EHLO
+        out20-25.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230293AbhKCAJ4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Nov 2021 20:09:56 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.03713102|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.024118-0.00076046-0.975122;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.LmWn0pw_1635898038;
+Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.LmWn0pw_1635898038)
+          by smtp.aliyun-inc.com(10.147.41.187);
+          Wed, 03 Nov 2021 08:07:19 +0800
+Date:   Wed, 03 Nov 2021 08:07:22 +0800
+From:   Wang Yugui <wangyugui@e16-tech.com>
+To:     dsterba@suse.cz, Wang Yugui <wangyugui@e16-tech.com>,
+        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@gmail.com>
+Subject: Re: [PATCH v3] btrfs: fix a check-integrity warning on write caching disabled disk
+In-Reply-To: <20211102164830.GO20319@twin.jikos.cz>
+References: <20211027223254.8095-1-wangyugui@e16-tech.com> <20211102164830.GO20319@twin.jikos.cz>
+Message-Id: <20211103080721.23DC.409509F4@e16-tech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH v2] btrfs-progs: Make "btrfs filesystem df" command to
- show upper case profile
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211102120637.44447-1-wqu@suse.com>
- <20211102141236.GI20319@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20211102141236.GI20319@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:O99VtRihHRGWg6vxFHI3y4oncDa3IVa58wJoN62SV6IJDJe6MaP
- lsTNh//+vr/6c+bBJma3NW/EwVS6JY0Z3gXSrXWYKyAUvHu+uXaWX3pKdEAUXzZFzIYunSQ
- RyHHVLS3PwleOK0Acr4AcI/ux7c53BUNtgkPlS82xKgae3ZNv+jXZ/btjyeqmj09vbznpOx
- 2muDywJCyRvKuXtQNZbbg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:pOEkA1ME33Q=:R4oyySCcikeHcgC230/R5x
- jUR4+UUikbKCYLSlPGQsgXthaODyj4hiLUTAZI86zLd/2ysmP/yQBkYqpKNmoO/5ajFI1TwTL
- CzAuN7Rv1kt4LqAxRGMsRCtq845+3Lr25RanTKtCZbM8MIwmAbbMH7IrZeGRt/TVYJTiAzWxr
- 96FhfTMMAKIafcY1VgFQVHOv00JPXfiZOXe094VXGVYzfWCywvWWTLGrC5lptHYFdNujov4hO
- WBgfa966oEYedYsDkwam5po67LBvJv16AzQcakFEh5OiRE/MZ5doiZuUwJPRiMt1eyTm+nWI4
- KaULns4YjWbmol6mbypD/4UaEHhYfSp40Y3lZmIog1BAmBfBA3ezP5CdUfUddHYtodEgvs5TR
- mI5uoDPuDHkp0nRyYhPZHA9aNtwNl2NkiygEqTACWx7ySSIqt/kFbfSs2tmiCIjJz8l9Hhku/
- EZy+Pxkt2/I8aJLBB14xH3LhoOIJbGSIEXW8PsWXF580+uFlIM53o4GzUdSji3IAyvE/ahyj3
- MsqXjRX4UNrqCGbRUZ6ughrWpKhup7VDhVWI8Z/iV3jOE2+i9hFCAng1xLKu5J9z0o7x8PAhy
- CsA4HWiKgWVrHRzGA0Pdh1dZr2luc+pEPgPG+7ZWrgtLwvpGwZ/MyH5O5z+LJKGtjqYWI/dCN
- 4F5EpXPQ27thREuRMm7ZM6Yps2Km8Cb8Rf0U2UJyKMrUMWStRdYcvM8mKEDsTHydBtjTmDwaI
- Q5nY2CY/N3KWD01wfkZuA6wYRAegG8AQgL/QH2HhmWHYhdIriX+/G/zfCHfXYhHZQ8xv9KYeC
- VK/n6LfQgdXPMY0pTU3D7uZsDknPvapGBgr7/4/7333GDmqPATMmCjitjgxEXOwZCQNqRP4vy
- qvFBh1szWIdm6K5ffq3wzri72XzPVybBJQLlMKWEkJcWeRU02WXoZckaoigEYlAwqkHxUHULq
- jhVIaa0wGbvICmqN7HHvdei4ET3ujqY/idd7k7rwU2eTHdzUwWacjEtjJn2kkD2huQlJC0m0r
- XmzHYPT3Ma3AIlkJRVc5uWQ4BMJ15W/Ywhrhpk80PrBot9971NSLphkJbYI7VHcfvgjWIuCdR
- jElJT3na4FUQrw=
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Becky! ver. 2.75.04 [en]
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
+
+> On Thu, Oct 28, 2021 at 06:32:54AM +0800, Wang Yugui wrote:
+> > When a disk has write caching disabled, we skip submission of a bio
+> > with flush and sync requests before writing the superblock, since
+> > it's not needed. However when the integrity checker is enabled,
+> > this results in reports that there are metadata blocks referred
+> > by a superblock that were not properly flushed. So don't skip the
+> > bio submission only when the integrity checker is enabled
+> > for the sake of simplicity, since this is a debug tool and
+> > not meant for use in non-debug builds.
+> > 
+> > xfstest/btrfs/220 trigger a check-integrity warning like the following
+> > when CONFIG_BTRFS_FS_CHECK_INTEGRITY=y and the disk with WCE=0.
+> 
+> Does this need the integrity checker to be also enabled by mount
+> options? I don't think compile time (ie the #ifdef) is enough, the
+> message is printed only when it's enabled based on check in
+> __btrfsic_submit_bio "if (!btrfsic_is_initialized) return", where the
+> rest of the function does all the verification.
+
+Yes.  We need mount option 'check_int' or 'check_int_data' to  trigger
+this check-integrity warning.
+
+Best Regards
+Wang Yugui (wangyugui@e16-tech.com)
+2021/11/03
+
+> 
+> >  btrfs: attempt to write superblock which references block M @5242880 (sdb2/5242880/0) which is not flushed out of disk's write cache (block flush_gen=1, dev->flush_gen=0)!
+> >  ------------[ cut here ]------------
+> >  WARNING: CPU: 28 PID: 843680 at fs/btrfs/check-integrity.c:2196 btrfsic_process_written_superblock+0x22a/0x2a0 [btrfs]
+> >  CPU: 28 PID: 843680 Comm: umount Not tainted 5.15.0-0.rc5.39.el8.x86_64 #1
+> >  Hardware name: Dell Inc. Precision T7610/0NK70N, BIOS A18 09/11/2019
+> >  RIP: 0010:btrfsic_process_written_superblock+0x22a/0x2a0 [btrfs]
+> >  Code: 44 24 1c 83 f8 03 0f 85 7e fe ff ff 4c 8b 74 24 08 31 d2 48 89 ef 4c 89 f6 e8 82 f1 ff ff 89 c2 31 c0 83 fa ff 75 a1 89 04 24 <0f> 0b 48 89 ef e8 36 3f 01 00 8b 04 24 eb 8f 48 8b 40 60 48 89 04
+> >  RSP: 0018:ffffb642afb47940 EFLAGS: 00010246
+> >  RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
+> >  RDX: 00000000ffffffff RSI: ffff8b722fc97d00 RDI: ffff8b722fc97d00
+> >  RBP: ffff8b5601c00000 R08: 0000000000000000 R09: c0000000ffff7fff
+> >  R10: 0000000000000001 R11: ffffb642afb476f8 R12: ffffffffffffffff
+> >  R13: ffffb642afb47974 R14: ffff8b5499254c00 R15: 0000000000000003
+> >  FS:  00007f00a06d4080(0000) GS:ffff8b722fc80000(0000) knlGS:0000000000000000
+> >  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >  CR2: 00007fff5cff5ff0 CR3: 00000001c0c2a006 CR4: 00000000001706e0
+> >  Call Trace:
+> >   btrfsic_process_written_block+0x2f7/0x850 [btrfs]
+> >   __btrfsic_submit_bio.part.19+0x310/0x330 [btrfs]
+> >   ? bio_associate_blkg_from_css+0xa4/0x2c0
+> >   btrfsic_submit_bio+0x18/0x30 [btrfs]
+> >   write_dev_supers+0x81/0x2a0 [btrfs]
+> >   ? find_get_pages_range_tag+0x219/0x280
+> >   ? pagevec_lookup_range_tag+0x24/0x30
+> >   ? __filemap_fdatawait_range+0x6d/0xf0
+> >   ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
+> >   ? find_first_extent_bit+0x9b/0x160 [btrfs]
+> >   ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
+> >   write_all_supers+0x1b3/0xa70 [btrfs]
+> >   ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
+> >   btrfs_commit_transaction+0x59d/0xac0 [btrfs]
+> >   close_ctree+0x11d/0x339 [btrfs]
+> >   generic_shutdown_super+0x71/0x110
+> >   kill_anon_super+0x14/0x30
+> >   btrfs_kill_super+0x12/0x20 [btrfs]
+> >   deactivate_locked_super+0x31/0x70
+> >   cleanup_mnt+0xb8/0x140
+> >   task_work_run+0x6d/0xb0
+> >   exit_to_user_mode_prepare+0x1f0/0x200
+> >   syscall_exit_to_user_mode+0x12/0x30
+> >   do_syscall_64+0x46/0x80
+> >   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> >  RIP: 0033:0x7f009f711dfb
+> >  Code: 20 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 5d 20 2c 00 f7 d8 64 89 01 48
+> >  RSP: 002b:00007fff5cff7928 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> >  RAX: 0000000000000000 RBX: 000055b68c6c9970 RCX: 00007f009f711dfb
+> >  RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055b68c6c9b50
+> >  RBP: 0000000000000000 R08: 000055b68c6ca900 R09: 00007f009f795580
+> >  R10: 0000000000000000 R11: 0000000000000246 R12: 000055b68c6c9b50
+> >  R13: 00007f00a04bf184 R14: 0000000000000000 R15: 00000000ffffffff
+> >  ---[ end trace 2c4b82abcef9eec4 ]---
+> >  S-65536(sdb2/65536/1)
+> >   --> 
+> >  M-1064960(sdb2/1064960/1)
+> > 
+> > Reviewed-by: Filipe Manana <fdmanana@gmail.com>
+> > Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
+> > ---
+> > Changes since v2:
+> > - add the whole Call Trace:
+> > Changes since v1:
+> > - update the changelog/code comment. (Filipe Manana)
+> > - var(struct request_queue *q) is only needed when
+> >    !CONFIG_BTRFS_FS_CHECK_INTEGRITY
+> > ---
+> >  fs/btrfs/disk-io.c | 14 +++++++++++++-
+> >  1 file changed, 13 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > index 355ea88d5c5f..4ef06d0555b0 100644
+> > --- a/fs/btrfs/disk-io.c
+> > +++ b/fs/btrfs/disk-io.c
+> > @@ -3968,11 +3968,23 @@ static void btrfs_end_empty_barrier(struct bio *bio)
+> >   */
+> >  static void write_dev_flush(struct btrfs_device *device)
+> >  {
+> > -	struct request_queue *q = bdev_get_queue(device->bdev);
+> >  	struct bio *bio = device->flush_bio;
+> >  
+> > +	#ifndef CONFIG_BTRFS_FS_CHECK_INTEGRITY
+> > +	/*
+> > +	* When a disk has write caching disabled, we skip submission of a bio
+> > +	* with flush and sync requests before writing the superblock, since
+> > +	* it's not needed. However when the integrity checker is enabled,
+> > +	* this results in reports that there are metadata blocks referred
+> > +	* by a superblock that were not properly flushed. So don't skip the
+> > +	* bio submission only when the integrity checker is enabled
+> > +	* for the sake of simplicity, since this is a debug tool and
+> > +	* not meant for use in non-debug builds.
+> > +	*/
+> > +	struct request_queue *q = bdev_get_queue(device->bdev);
+> >  	if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
+> >  		return;
+> > +	#endif
+> >  
+> >  	bio_reset(bio);
+> >  	bio->bi_end_io = btrfs_end_empty_barrier;
+> > -- 
+> > 2.32.0
 
 
-On 2021/11/2 22:12, David Sterba wrote:
-> On Tue, Nov 02, 2021 at 08:06:37PM +0800, Qu Wenruo wrote:
->> [BUG]
->> Since commit dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str
->> to use raid table"), fstests/btrfs/023 and btrfs/151 will always fail.
->>
->> The failure of btrfs/151 explains the reason pretty well:
->>
->> btrfs/151 1s ... - output mismatch
->>      --- tests/btrfs/151.out	2019-10-22 15:18:14.068965341 +0800
->>      +++ ~/xfstests-dev/results//btrfs/151.out.bad	2021-11-02 17:13:43.=
-879999994 +0800
->>      @@ -1,2 +1,2 @@
->>       QA output created by 151
->>      -Data, RAID1
->>      +Data, raid1
->>      ...
->>      (Run 'diff -u ~/xfstests-dev/tests/btrfs/151.out ~/xfstests-dev/re=
-sults//btrfs/151.out.bad'  to see the entire diff)
->>
->> [CAUSE]
->> Commit dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str to us=
-e
->> raid table") will use btrfs_raid_array[index].raid_name, which is all
->> lower case.
->>
->> [FIX]
->> There is no need to bring such output format change.
->
-> Well, indeed, I thought it won't be such a problem. If we want to have
-> the upper case version, it could be better to add another string to the
-> raid table. It is a bit of duplication but it would be easier to avoid
-> the temporary buffers whenever it's printed. For kernel we don't need
-> that but progs print the profiles a lot.
->
-That's also an alternative way I'm trying to go, but don't want to bring
-duplication in the raid table.
-
-Let me try to find a better way, like doing it using macros at
-initialization time.
-
-Thanks,
-Qu
