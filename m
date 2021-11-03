@@ -2,90 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5E044447C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Nov 2021 16:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB914444A2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Nov 2021 16:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhKCPTS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Nov 2021 11:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbhKCPSi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Nov 2021 11:18:38 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DD2C061714
-        for <linux-btrfs@vger.kernel.org>; Wed,  3 Nov 2021 08:16:02 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id s24so2777163plp.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Nov 2021 08:16:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BWUoQpJ3n1pbVknpUSJ6oJKcMGcqPTvpJL65j8DUc7g=;
-        b=SYx3tOMp1+Jo07x7CCeY7XtJsOL4RxfXqzyUv8wYcY/zrXJ7LbXw8W9PIjGsWtlAun
-         YaUC4mZDVc5wcUhp32JS7grYerRex7DDV6s7k+vFkl7jnktu3TmM6Aczihx1JYHlaCT3
-         ATGw1wHvaKHXyiQe39YXRMnhF7D58tcH2aS9dxJcaiQG35rEdbs3k/9wUzDj2JEVOqg8
-         I2rwIxfdfLBuntnLNWNybxAOpoCMnOD+EML6wZDcPTpgk1s9BRRgtCwVCEVhcyTH3EUl
-         Ld2QchNMfcVA0Jwhu4V4Zx82WRlGtPra7Q5AJ+Svg8P5qIKQ0TfyiihCa8xeQbc7h/CU
-         jXeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BWUoQpJ3n1pbVknpUSJ6oJKcMGcqPTvpJL65j8DUc7g=;
-        b=oe7VC+IllcRcqLUrQWzqkBvaGfrhCEiqdxLbCZ4xITeqddhTB3HmIMYzlkYNC4nZBq
-         WOu26juwgML6Jb/KWmO3YBHARVejdz0y4M9JVKIhrOu6eZEqaNTy1foaBbvB5ufqUCWa
-         aiOr0OYkD82TK80hxNQmqHG0L/fYlUtnrfr9074oI90yzknY1jLqcFRlIcozd54YESLp
-         Unye5dUL6xM41zxsUs6gYgAMPcqcXZNWxdyuIggJmj5swZXdZ7AAwWow1R17Vtga0Xs5
-         y6Ky91Vj7q+S431CJWTaQ2WhTcfYvAtME5VDGtZaPE5lIiUucv0rgvoDvQLvyesTKWaH
-         38yA==
-X-Gm-Message-State: AOAM532bRu7DzNf/c91jtgi9KfgDmUwZgYE54Quda/fghYEAnj8RT0+O
-        YaXmQ3TpZCszzH/ixXMcyT7Hn3PT4iMHJw==
-X-Google-Smtp-Source: ABdhPJyash5/dbzEX/CVunIyo2BzFZsr8K88kJX5oXfiukEUF5XwvbQWHRHM0qsJnCw07Jyf/nWnEQ==
-X-Received: by 2002:a17:90a:e005:: with SMTP id u5mr15405368pjy.17.1635952561686;
-        Wed, 03 Nov 2021 08:16:01 -0700 (PDT)
-Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id n19sm5702052pjq.40.2021.11.03.08.16.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Nov 2021 08:16:01 -0700 (PDT)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH] btrfs-progs: check: change commit condition in fixup_extent_refs()
-Date:   Wed,  3 Nov 2021 15:15:54 +0000
-Message-Id: <20211103151554.46991-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231701AbhKCP2R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Nov 2021 11:28:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56700 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231651AbhKCP2Q (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Nov 2021 11:28:16 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 77A2A1F782;
+        Wed,  3 Nov 2021 15:25:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1635953139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DG9ns99QS5Bp4/BgyTxGgOhjvHNQXMO8//VRXqqxpAk=;
+        b=D14ZmikFcew/3u50gBl0jj81lfqlEQe7ec+W9HLZzUnfddUjGnpJ/dKtnye7fVl40efFHd
+        r5KgaECTDDBhMTf5uIr5++HWivcMqVw7oZqexzG0xyMCfJd7RcDVQXkpJDA1pV29SnVtht
+        jKnZZ5oShAj4PmXlOWySs+USwiR+j6c=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5086A13C91;
+        Wed,  3 Nov 2021 15:25:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8Q4VEfOpgmHfNgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Wed, 03 Nov 2021 15:25:39 +0000
+Subject: Re: [PATCH] btrfs-progs: check: change commit condition in
+ fixup_extent_refs()
+To:     Sidong Yang <realwakka@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20211103151554.46991-1-realwakka@gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <665f8532-e176-3dc6-ccf0-395672cb3383@suse.com>
+Date:   Wed, 3 Nov 2021 17:25:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211103151554.46991-1-realwakka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch fixes potential bugs in fixup_extent_refs(). If
-btrfs_start_transaction() fails in some way and returns error ptr, It
-goes to out logic. But old code checkes whether it is null and it calls
-commit. This patch solves the problem with change the condition to
-checks if it is error by IS_ERR().
 
-Issue: #409
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
----
- check/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 3.11.21 г. 17:15, Sidong Yang wrote:
+> This patch fixes potential bugs in fixup_extent_refs(). If
+> btrfs_start_transaction() fails in some way and returns error ptr, It
+> goes to out logic. But old code checkes whether it is null and it calls
+> commit. This patch solves the problem with change the condition to
+> checks if it is error by IS_ERR().
+> 
+> Issue: #409
+> 
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> ---
+>  check/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/check/main.c b/check/main.c
+> index 235a9bab..ca858e07 100644
+> --- a/check/main.c
+> +++ b/check/main.c
+> @@ -7735,7 +7735,7 @@ static int fixup_extent_refs(struct cache_tree *extent_cache,
+>  			goto out;
+>  	}
+>  out:
+> -	if (trans) {
+> +	if (!IS_ERR(trans)) {
 
-diff --git a/check/main.c b/check/main.c
-index 235a9bab..ca858e07 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -7735,7 +7735,7 @@ static int fixup_extent_refs(struct cache_tree *extent_cache,
- 			goto out;
- 	}
- out:
--	if (trans) {
-+	if (!IS_ERR(trans)) {
- 		int err = btrfs_commit_transaction(trans, gfs_info->extent_root);
- 
- 		if (!ret)
--- 
-2.25.1
+Actually I think we want to commit the transaction only if ret is not
+error, otherwise we run the risk of committing partial changes to the fs.
 
+>  		int err = btrfs_commit_transaction(trans, gfs_info->extent_root);
+>  
+>  		if (!ret)
+> 
