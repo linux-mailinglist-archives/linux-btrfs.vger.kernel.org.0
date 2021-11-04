@@ -2,88 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51006445666
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 16:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE30F44580D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 18:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhKDPhe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Nov 2021 11:37:34 -0400
-Received: from out20-1.mail.aliyun.com ([115.124.20.1]:45182 "EHLO
-        out20-1.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhKDPhe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 11:37:34 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.03771266|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.317786-0.00353176-0.678682;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047193;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.LnZkhEF_1636040093;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.LnZkhEF_1636040093)
-          by smtp.aliyun-inc.com(10.147.43.230);
-          Thu, 04 Nov 2021 23:34:53 +0800
-Date:   Thu, 04 Nov 2021 23:34:59 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     dsterba@suse.cz, Wang Yugui <wangyugui@e16-tech.com>,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@gmail.com>
-Subject: Re: [PATCH v3] btrfs: fix a check-integrity warning on write caching disabled disk
-In-Reply-To: <20211104150212.GZ20319@twin.jikos.cz>
-References: <20211103080721.23DC.409509F4@e16-tech.com> <20211104150212.GZ20319@twin.jikos.cz>
-Message-Id: <20211104233458.1670.409509F4@e16-tech.com>
+        id S232047AbhKDRNs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Nov 2021 13:13:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:40442 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232242AbhKDRNr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 13:13:47 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D06001FD74;
+        Thu,  4 Nov 2021 17:11:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636045868;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CByc0ucpeUE5014jZzhrzI4Y8p2DtQrk8tqo5nMalFw=;
+        b=PiFEwKlwOQJthD+RI56U0FttluQlAMLQeCHF1FwpdB7gKSJ4hjGCMlG1fahuXy5Ms2D1/L
+        dOLUzcRMxfcErv7EcYGb3dreon/74ZpXc+No76tWEJHgUvqQUsDHSD32aIgmsKQl3Jm9+A
+        Ili3+1rkO/1kOBP4knKhDqcCRWmL0Mo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636045868;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CByc0ucpeUE5014jZzhrzI4Y8p2DtQrk8tqo5nMalFw=;
+        b=qS3qUvOurkPm0xN3BmqEX/d2FoKMSjief1+ZYTkN5VkvGkUX1ZXQyks7drs421SifF2GSL
+        4evjqP3lGHQcfkDg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id C8C632C150;
+        Thu,  4 Nov 2021 17:11:08 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 6B8C9DA781; Thu,  4 Nov 2021 18:10:32 +0100 (CET)
+Date:   Thu, 4 Nov 2021 18:10:32 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     David Sterba <dsterba@suse.cz>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: fix deadlock between quota enable and other quota
+ operations
+Message-ID: <20211104171032.GA28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <3df4731012ac6dc17f9f3a33c519735fbe89fc84.1635355240.git.fdmanana@suse.com>
+ <20211104150015.GY20319@twin.jikos.cz>
+ <CAL3q7H4y1G8pBfGPXQ8ce=1Msq6SaEj_REbQyFuUONFxfpnoZg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H4y1G8pBfGPXQ8ce=1Msq6SaEj_REbQyFuUONFxfpnoZg@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Thu, Nov 04, 2021 at 03:23:40PM +0000, Filipe Manana wrote:
+> Btw, I forgot to add the Fixes tag, the matching commit is
+> 340f1aa27f367e ("btrfs: qgroups: Move transaction management inside
+> btrfs_quota_enable/disable").
+> It's from 2018, that's a bit old, not entirely sure if needed. If you
+> want it, feel free to add it.
 
-> On Wed, Nov 03, 2021 at 08:07:22AM +0800, Wang Yugui wrote:
-> > Hi,
-> > 
-> > > On Thu, Oct 28, 2021 at 06:32:54AM +0800, Wang Yugui wrote:
-> > > > When a disk has write caching disabled, we skip submission of a bio
-> > > > with flush and sync requests before writing the superblock, since
-> > > > it's not needed. However when the integrity checker is enabled,
-> > > > this results in reports that there are metadata blocks referred
-> > > > by a superblock that were not properly flushed. So don't skip the
-> > > > bio submission only when the integrity checker is enabled
-> > > > for the sake of simplicity, since this is a debug tool and
-> > > > not meant for use in non-debug builds.
-> > > > 
-> > > > xfstest/btrfs/220 trigger a check-integrity warning like the following
-> > > > when CONFIG_BTRFS_FS_CHECK_INTEGRITY=y and the disk with WCE=0.
-> > > 
-> > > Does this need the integrity checker to be also enabled by mount
-> > > options? I don't think compile time (ie the #ifdef) is enough, the
-> > > message is printed only when it's enabled based on check in
-> > > __btrfsic_submit_bio "if (!btrfsic_is_initialized) return", where the
-> > > rest of the function does all the verification.
-> > 
-> > Yes.  We need mount option 'check_int' or 'check_int_data' to  trigger
-> > this check-integrity warning.
-> 
-> So the mount options need to be checked here as well.
-
-We just need to add the mount option(check_int/check_int_data) to
-changelog
-
-when CONFIG_BTRFS_FS_CHECK_INTEGRITY=y and the disk with WCE=0.
-=>
-when CONFIG_BTRFS_FS_CHECK_INTEGRITY=y , and mount
-option(check_int/check_int_data), and the disk with WCE=0.
-
-
-The check of mount option(check_int/check_int_data) is done later
-inside btrfsic_submit_bio. No necessary to check mount
-option(check_int/check_int_data) here, we just need to match
-submit_bio(linux/bio.h).
-
-#ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
-void btrfsic_submit_bio(struct bio *bio);
-int btrfsic_submit_bio_wait(struct bio *bio);
-#else
-#define btrfsic_submit_bio submit_bio
-#define btrfsic_submit_bio_wait submit_bio_wait
-#endif
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/11/04
-
-
+Thanks, I've updated the patch.
