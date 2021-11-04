@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0AC444CBF
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 01:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB04444D2A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 02:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhKDA6u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Nov 2021 20:58:50 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57750 "EHLO
+        id S232919AbhKDCBE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Nov 2021 22:01:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59536 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhKDA6t (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Nov 2021 20:58:49 -0400
+        with ESMTP id S231945AbhKDCBD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Nov 2021 22:01:03 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5B6F321639;
-        Thu,  4 Nov 2021 00:56:11 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 82ADE218F7
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 Nov 2021 01:58:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1635987371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1635991105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=5/X5/+kBq854gx+r5Fdj/nqyaaBASHeO0eyO2GZXwGY=;
-        b=SbCk9gKrFBaFdpTYZtbJAcNlwIIXPdpoKIb16vr5dwev4ELqghYSdlxJUpffpj+K3Gyd62
-        SBYYExJW+2p8e3CnTqUfXZURoRqtlzTQaPLsanx/ausfiHUBIDTuBjFa6jxza4/lXYAT4G
-        /IBLz6TiLgf2lvtfN+n/Is5tvo7N6o4=
+        bh=mmNBBmprkLGbHBB2nQYJQVlNd07gdWe3b4a1ue+tRkM=;
+        b=OmR98SAIrwQVqIF+ruK3wcJE+wGqMMbNXyxxCA/hQmLnM44BvH+6GT92bpjHbgFSCSEI/b
+        IIO4UeYj74/9o7MfOwfnvJE8MfcIqfY4giS4IwmoplXEk57BsFAKhX4sTuH5fcsTWxqa9s
+        aVdNMMjOPGieSh1K9bYoHZqOLZqJO30=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E21E13B9F;
-        Thu,  4 Nov 2021 00:56:10 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D749413D72
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 Nov 2021 01:58:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZYoTF6ovg2EUGAAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 04 Nov 2021 00:56:10 +0000
+        id 0D8ZKEA+g2FsKQAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 04 Nov 2021 01:58:24 +0000
 From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] fstests: btrfs: make nospace_cache related test cases to work with latest v2 cache
-Date:   Thu,  4 Nov 2021 08:55:53 +0800
-Message-Id: <20211104005553.14485-1-wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs-progs: Make "btrfs filesystem df" command to show upper case profile
+Date:   Thu,  4 Nov 2021 09:58:07 +0800
+Message-Id: <20211104015807.35774-1-wqu@suse.com>
 X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -47,191 +47,263 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the coming btrfs-progs v5.15 release, mkfs.btrfs will change to use
-v2 cache by default.
+[BUG]
+Since commit dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str
+to use raid table"), fstests/btrfs/023 and btrfs/151 will always fail.
 
-However nospace_cache mount option will not work with v2 cache, as it
-will make v2 cache out of sync with on-disk used space.
+The failure of btrfs/151 explains the reason pretty well:
 
-So mounting a btrfs with v2 cache using "nospace_cache" will make btrfs
-to reject the mount.
+btrfs/151 1s ... - output mismatch
+    --- tests/btrfs/151.out	2019-10-22 15:18:14.068965341 +0800
+    +++ ~/xfstests-dev/results//btrfs/151.out.bad	2021-11-02 17:13:43.879999994 +0800
+    @@ -1,2 +1,2 @@
+     QA output created by 151
+    -Data, RAID1
+    +Data, raid1
+    ...
+    (Run 'diff -u ~/xfstests-dev/tests/btrfs/151.out ~/xfstests-dev/results//btrfs/151.out.bad'  to see the entire diff)
 
-There are quite some test cases relying on nospace_cache to prevent v1
-cache to take up data space.
+[CAUSE]
+Commit dad03fac3bb8 ("btrfs-progs: switch btrfs_group_profile_str to use
+raid table") will use btrfs_raid_array[index].raid_name, which is all
+lower case.
 
-For that case, we can append "clear_cache" mount option to it, so that
-btrfs knows we do not only want to prevent cache from being created, but
-also want to clear any existing v2 cache.
+[FIX]
+There is no need to bring such output format change.
 
-By this, we can keep those existing tests to do the same behavior for
-both v1 and v2 cache.
+So here we split the btrfs_raid_attr::raid_name[] into upper_name[] and
+lower_name[], and make upper and lower case helpers for callers to use.
+
+Now there are several types of callers referring to lower_name and
+upper_name:
+
+- parse_bg_profile()
+  It uses strcasecmp(), either case would be fine.
+
+- btrfs_group_profile_str()
+  Originally it uses upper case for all profiles except "single".
+  Now unified to upper case.
+
+- sprint_profiles()
+  It uses lower case.
+
+- bg_flags_to_str()
+  It uses upper case.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/btrfs/102 | 2 +-
- tests/btrfs/140 | 2 +-
- tests/btrfs/141 | 2 +-
- tests/btrfs/142 | 2 +-
- tests/btrfs/143 | 2 +-
- tests/btrfs/151 | 2 +-
- tests/btrfs/157 | 2 +-
- tests/btrfs/158 | 2 +-
- tests/btrfs/170 | 2 +-
- tests/btrfs/199 | 5 ++++-
- tests/btrfs/215 | 2 +-
- 11 files changed, 14 insertions(+), 11 deletions(-)
+Changelog:
+v2:
+- Add new lower_name[] and upper_name[] for btrfs_raid_attr
+  So we don't need temporary string buffer
 
-diff --git a/tests/btrfs/102 b/tests/btrfs/102
-index e5a1b068..39c3ba37 100755
---- a/tests/btrfs/102
-+++ b/tests/btrfs/102
-@@ -22,7 +22,7 @@ _scratch_mkfs >>$seqres.full 2>&1
- # Mount our filesystem without space caches enabled so that we do not get any
- # space used from the initial data block group that mkfs creates (space caches
- # used space from data block groups).
--_scratch_mount "-o nospace_cache"
-+_scratch_mount "-o nospace_cache,clear_cache"
+- Review all commits unifying the output to check what's the original
+  output format
+---
+ common/parse-utils.c       |  2 +-
+ common/utils.c             | 10 +++++-----
+ kernel-shared/print-tree.c |  7 +------
+ kernel-shared/volumes.c    | 29 +++++++++++++++++++----------
+ kernel-shared/volumes.h    |  3 ++-
+ 5 files changed, 28 insertions(+), 23 deletions(-)
+
+diff --git a/common/parse-utils.c b/common/parse-utils.c
+index ad57b74a7b64..062cb6931d84 100644
+--- a/common/parse-utils.c
++++ b/common/parse-utils.c
+@@ -269,7 +269,7 @@ int parse_bg_profile(const char *profile, u64 *flags)
+ 	int i;
  
- # Need an fs with at least 2Gb to make sure mkfs.btrfs does not create an fs
- # using mixed block groups (used both for data and metadata). We really need
-diff --git a/tests/btrfs/140 b/tests/btrfs/140
-index 5a5f828c..e7a36927 100755
---- a/tests/btrfs/140
-+++ b/tests/btrfs/140
-@@ -62,7 +62,7 @@ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
+-		if (strcasecmp(btrfs_raid_array[i].raid_name, profile) == 0) {
++		if (strcasecmp(btrfs_raid_array[i].upper_name, profile) == 0) {
+ 			*flags |= btrfs_raid_array[i].bg_flag;
+ 			return 0;
+ 		}
+diff --git a/common/utils.c b/common/utils.c
+index aee0eedc15fc..9cc9b9fa19c1 100644
+--- a/common/utils.c
++++ b/common/utils.c
+@@ -1032,10 +1032,10 @@ const char* btrfs_group_profile_str(u64 flag)
  
- # -o nospace_cache makes sure data is written to the start position of the data
- # chunk
--_scratch_mount -o nospace_cache
-+_scratch_mount -o nospace_cache,clear_cache
+ 	flag &= ~BTRFS_BLOCK_GROUP_TYPE_MASK;
+ 	if (flag & ~BTRFS_BLOCK_GROUP_PROFILE_MASK)
+-		return "unknown";
++		return "UNKNOWN";
  
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
- 	_filter_xfs_io_offset
-diff --git a/tests/btrfs/141 b/tests/btrfs/141
-index cf0979e9..bf559953 100755
---- a/tests/btrfs/141
-+++ b/tests/btrfs/141
-@@ -61,7 +61,7 @@ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 	index = btrfs_bg_flags_to_raid_index(flag);
+-	return btrfs_raid_array[index].raid_name;
++	return btrfs_raid_array[index].upper_name;
+ }
  
- # -o nospace_cache makes sure data is written to the start position of the data
- # chunk
--_scratch_mount -o nospace_cache
-+_scratch_mount -o nospace_cache,clear_cache
+ u64 div_factor(u64 num, int factor)
+@@ -1260,14 +1260,14 @@ static char *sprint_profiles(u64 profiles)
+ 		return NULL;
  
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
- 	_filter_xfs_io_offset
-diff --git a/tests/btrfs/142 b/tests/btrfs/142
-index 1318be0f..b2cc34a3 100755
---- a/tests/btrfs/142
-+++ b/tests/btrfs/142
-@@ -39,7 +39,7 @@ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++)
+-		maxlen += strlen(btrfs_raid_array[i].raid_name) + 2;
++		maxlen += strlen(btrfs_raid_array[i].lower_name) + 2;
  
- # -o nospace_cache makes sure data is written to the start position of the data
- # chunk
--_scratch_mount -o nospace_cache,nodatasum
-+_scratch_mount -o nospace_cache,nodatasum,clear_cache
+ 	ptr = calloc(1, maxlen);
+ 	if (!ptr)
+ 		return NULL;
  
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
- 	_filter_xfs_io_offset
-diff --git a/tests/btrfs/143 b/tests/btrfs/143
-index 6736dcad..2f673ae2 100755
---- a/tests/btrfs/143
-+++ b/tests/btrfs/143
-@@ -46,7 +46,7 @@ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 	if (profiles & BTRFS_AVAIL_ALLOC_BIT_SINGLE)
+-		strcat(ptr, btrfs_raid_array[BTRFS_RAID_SINGLE].raid_name);
++		strcat(ptr, btrfs_raid_array[BTRFS_RAID_SINGLE].lower_name);
  
- # -o nospace_cache makes sure data is written to the start position of the data
- # chunk
--_scratch_mount -o nospace_cache,nodatasum
-+_scratch_mount -o nospace_cache,nodatasum,clear_cache
+ 	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
+ 		if (!(btrfs_raid_array[i].bg_flag & profiles))
+@@ -1275,7 +1275,7 @@ static char *sprint_profiles(u64 profiles)
  
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
- 	_filter_xfs_io_offset
-diff --git a/tests/btrfs/151 b/tests/btrfs/151
-index 099e85cc..e8bdc33c 100755
---- a/tests/btrfs/151
-+++ b/tests/btrfs/151
-@@ -32,7 +32,7 @@ _scratch_dev_pool_get 3
- _scratch_pool_mkfs "-d raid1 -b 1G" >> $seqres.full 2>&1
+ 		if (ptr[0])
+ 			strcat(ptr, ", ");
+-		strcat(ptr, btrfs_raid_array[i].raid_name);
++		strcat(ptr, btrfs_raid_array[i].lower_name);
+ 	}
  
- # we need an empty data chunk, so nospace_cache is required.
--_scratch_mount -onospace_cache
-+_scratch_mount -onospace_cache,clear_cache
+ 	return ptr;
+diff --git a/kernel-shared/print-tree.c b/kernel-shared/print-tree.c
+index 39655590272e..0cb1e68f6c79 100644
+--- a/kernel-shared/print-tree.c
++++ b/kernel-shared/print-tree.c
+@@ -188,18 +188,13 @@ static void bg_flags_to_str(u64 flags, char *ret)
+ 		snprintf(profile, BG_FLAG_STRING_LEN, "UNKNOWN.0x%llx",
+ 			 flags & BTRFS_BLOCK_GROUP_PROFILE_MASK);
+ 	} else {
+-		int i;
+-
+ 		/*
+ 		 * Special handing for SINGLE profile, we don't output "SINGLE"
+ 		 * for SINGLE profile, since there is no such bit for it.
+ 		 * Thus here we only fill @profile if it's not single.
+ 		 */
+-		if (strncmp(name, "single", strlen("single")) != 0)
++		if (strncmp(name, "SINGLE", strlen("SINGLE")) != 0)
+ 			strncpy(profile, name, BG_FLAG_STRING_LEN);
+-
+-		for (i = 0; i < BG_FLAG_STRING_LEN && profile[i]; i++)
+-			profile[i] = toupper(profile[i]);
+ 	}
+ 	if (profile[0]) {
+ 		strncat(ret, "|", BG_FLAG_STRING_LEN);
+diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
+index 6c1e6f1018a3..24732d8ae6f0 100644
+--- a/kernel-shared/volumes.c
++++ b/kernel-shared/volumes.c
+@@ -42,7 +42,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.devs_increment	= 2,
+ 		.ncopies	= 2,
+ 		.nparity        = 0,
+-		.raid_name	= "raid10",
++		.lower_name	= "raid10",
++		.upper_name	= "RAID10",
+ 		.bg_flag	= BTRFS_BLOCK_GROUP_RAID10,
+ 		.mindev_error	= BTRFS_ERROR_DEV_RAID10_MIN_NOT_MET,
+ 	},
+@@ -55,7 +56,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.devs_increment	= 2,
+ 		.ncopies	= 2,
+ 		.nparity        = 0,
+-		.raid_name	= "raid1",
++		.lower_name	= "raid1",
++		.upper_name	= "RAID1",
+ 		.bg_flag	= BTRFS_BLOCK_GROUP_RAID1,
+ 		.mindev_error	= BTRFS_ERROR_DEV_RAID1_MIN_NOT_MET,
+ 	},
+@@ -68,7 +70,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.devs_increment	= 3,
+ 		.ncopies	= 3,
+ 		.nparity        = 0,
+-		.raid_name	= "raid1c3",
++		.lower_name	= "raid1c3",
++		.upper_name	= "RAID1C3",
+ 		.bg_flag	= BTRFS_BLOCK_GROUP_RAID1C3,
+ 		.mindev_error	= BTRFS_ERROR_DEV_RAID1C3_MIN_NOT_MET,
+ 	},
+@@ -81,7 +84,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.devs_increment	= 4,
+ 		.ncopies	= 4,
+ 		.nparity        = 0,
+-		.raid_name	= "raid1c4",
++		.lower_name	= "raid1c4",
++		.upper_name	= "RAID1C4",
+ 		.bg_flag	= BTRFS_BLOCK_GROUP_RAID1C4,
+ 		.mindev_error	= BTRFS_ERROR_DEV_RAID1C4_MIN_NOT_MET,
+ 	},
+@@ -94,7 +98,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.devs_increment	= 1,
+ 		.ncopies	= 2,
+ 		.nparity        = 0,
+-		.raid_name	= "dup",
++		.lower_name	= "dup",
++		.upper_name	= "DUP",
+ 		.bg_flag	= BTRFS_BLOCK_GROUP_DUP,
+ 		.mindev_error	= 0,
+ 	},
+@@ -107,7 +112,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.devs_increment	= 1,
+ 		.ncopies	= 1,
+ 		.nparity        = 0,
+-		.raid_name	= "raid0",
++		.lower_name	= "raid0",
++		.upper_name	= "RAID0",
+ 		.bg_flag	= BTRFS_BLOCK_GROUP_RAID0,
+ 		.mindev_error	= 0,
+ 	},
+@@ -120,7 +126,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.devs_increment	= 1,
+ 		.ncopies	= 1,
+ 		.nparity        = 0,
+-		.raid_name	= "single",
++		.lower_name	= "single",
++		.upper_name	= "SINGLE",
+ 		.bg_flag	= 0,
+ 		.mindev_error	= 0,
+ 	},
+@@ -133,7 +140,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.devs_increment	= 1,
+ 		.ncopies	= 1,
+ 		.nparity        = 1,
+-		.raid_name	= "raid5",
++		.lower_name	= "raid5",
++		.upper_name	= "RAID5",
+ 		.bg_flag	= BTRFS_BLOCK_GROUP_RAID5,
+ 		.mindev_error	= BTRFS_ERROR_DEV_RAID5_MIN_NOT_MET,
+ 	},
+@@ -146,7 +154,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.devs_increment	= 1,
+ 		.ncopies	= 1,
+ 		.nparity        = 2,
+-		.raid_name	= "raid6",
++		.lower_name	= "raid6",
++		.upper_name	= "RAID6",
+ 		.bg_flag	= BTRFS_BLOCK_GROUP_RAID6,
+ 		.mindev_error	= BTRFS_ERROR_DEV_RAID6_MIN_NOT_MET,
+ 	},
+@@ -207,7 +216,7 @@ const char *btrfs_bg_type_to_raid_name(u64 flags)
+ 	if (index >= BTRFS_NR_RAID_TYPES)
+ 		return NULL;
  
- # if data chunk is empty, 'btrfs device remove' can change raid1 to
- # single.
-diff --git a/tests/btrfs/157 b/tests/btrfs/157
-index 0cfe3ce5..cd69cc16 100755
---- a/tests/btrfs/157
-+++ b/tests/btrfs/157
-@@ -66,7 +66,7 @@ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+-	return btrfs_raid_array[index].raid_name;
++	return btrfs_raid_array[index].upper_name;
+ }
  
- # -o nospace_cache makes sure data is written to the start position of the data
- # chunk
--_scratch_mount -o nospace_cache
-+_scratch_mount -o nospace_cache,clear_cache
+ int btrfs_bg_type_to_tolerated_failures(u64 flags)
+diff --git a/kernel-shared/volumes.h b/kernel-shared/volumes.h
+index 4fedfc95d155..5cfe7e39f6b8 100644
+--- a/kernel-shared/volumes.h
++++ b/kernel-shared/volumes.h
+@@ -134,7 +134,8 @@ struct btrfs_raid_attr {
+ 	int nparity;		/* number of stripes worth of bytes to store
+ 				 * parity information */
+ 	int mindev_error;	/* error code if min devs requisite is unmet */
+-	const char raid_name[8]; /* name of the raid */
++	const char lower_name[8]; /* name of the profile in lower case*/
++	const char upper_name[8]; /* name of the profile in upper case*/
+ 	u64 bg_flag;		/* block group flag of the raid */
+ };
  
- # [0,64K) is written to stripe 0 and [64K, 128K) is written to stripe 1
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa 0 128K" -c "fsync" \
-diff --git a/tests/btrfs/158 b/tests/btrfs/158
-index ad374eba..1bc73450 100755
---- a/tests/btrfs/158
-+++ b/tests/btrfs/158
-@@ -58,7 +58,7 @@ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
- 
- # -o nospace_cache makes sure data is written to the start position of the data
- # chunk
--_scratch_mount -o nospace_cache
-+_scratch_mount -o nospace_cache,clear_cache
- 
- # [0,64K) is written to stripe 0 and [64K, 128K) is written to stripe 1
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa 0 128K" -c "fsync" \
-diff --git a/tests/btrfs/170 b/tests/btrfs/170
-index 15382eb3..746170f4 100755
---- a/tests/btrfs/170
-+++ b/tests/btrfs/170
-@@ -29,7 +29,7 @@ _scratch_mkfs_sized $fs_size >>$seqres.full 2>&1
- 
- # Mount without space cache so that we can precisely fill all data space and
- # unallocated space later (space cache v1 uses data block groups).
--_scratch_mount "-o nospace_cache"
-+_scratch_mount "-o nospace_cache,clear_cache"
- 
- # Create our test file and allocate 1826.25Mb of space for it.
- # This will exhaust the existing data block group and all unallocated space on
-diff --git a/tests/btrfs/199 b/tests/btrfs/199
-index 6aca62f4..2369d52f 100755
---- a/tests/btrfs/199
-+++ b/tests/btrfs/199
-@@ -70,12 +70,15 @@ mkdir -p $loop_mnt
- # - nospace_cache
- #   Since v1 cache using DATA space, it can break data extent bytenr
- #   continuousness.
-+# - clear_cache
-+#   v2 cache can't work with nospace_cache, so we workaround it by clearing
-+#   all the space cache.
- # - nodatasum
- #   As there will be 1.5G data write, generating 1.5M csum.
- #   Disabling datasum could reduce the margin caused by metadata to minimal
- # - discard
- #   What we're testing
--_mount -o nospace_cache,nodatasum,discard $loop_dev $loop_mnt
-+_mount -o nospace_cache,clear_cache,nodatasum,discard $loop_dev $loop_mnt
- 
- # Craft the following extent layout:
- #         |  BG1 |      BG2        |       BG3            |
-diff --git a/tests/btrfs/215 b/tests/btrfs/215
-index fa622568..7f0986af 100755
---- a/tests/btrfs/215
-+++ b/tests/btrfs/215
-@@ -30,7 +30,7 @@ _require_non_zoned_device $SCRATCH_DEV
- _scratch_mkfs > /dev/null
- # disable freespace inode to ensure file is the first thing in the data
- # blobk group
--_scratch_mount -o nospace_cache
-+_scratch_mount -o nospace_cache,clear_cache
- 
- pagesize=$(get_page_size)
- blocksize=$(_get_block_size $SCRATCH_MNT)
 -- 
-2.33.0
+2.33.1
 
