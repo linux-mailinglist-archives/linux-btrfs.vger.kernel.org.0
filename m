@@ -2,59 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62204453B3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 14:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9205445423
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 14:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhKDNVq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Nov 2021 09:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhKDNVl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 09:21:41 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C480DC061714
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 Nov 2021 06:19:03 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id l7-20020a0568302b0700b0055ae988dcc8so5026438otv.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 04 Nov 2021 06:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=s3OwdWXCx5xWg/N09N4oEgjgwD5rhwGQaHwtzs0+CU4=;
-        b=jKJ8u+kchdivQ1ulUUTRuui4pypqKOXzLiO2ZKOPkpdKoXc4vLszOwm4BoyX2YUpoX
-         i++677YENLBRrf4Au8l0hck8cA/+qSWo3Qlb6JhynIkleLYt2kLXk7Ons3S7UMA+XxMa
-         qy+/aR1D+EIIU/yKyw2JFlqtyMR7ZrVv6bXgpAq29SfA0t/lE5usKVVFz7eH3ujnV9VU
-         vpbOorcUh7lCwz7UtrBLCvFYq8GP4IuFcee+gosuLExMqOEssxAv8fIrlrz41qzbNBmA
-         FNzKbLeSiOpfXf/5zpnZ7M/TlZPYCzzFpPUSp4djMDJZR3xjq7Gg+Aea45PmNBlhvdw7
-         Y8pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=s3OwdWXCx5xWg/N09N4oEgjgwD5rhwGQaHwtzs0+CU4=;
-        b=KifcN0Ek3N0yWz6He/QYut/dAWoZMo7RJ5nAUBSaxH36Ksga4L9+WY+2Byu32CRPwJ
-         9wFD+r03wZtW9AksuQ1Sc26FVdW5sD6DwF6BJR5cMWtTHK4YusNpvUrHrvI9QrKAzj5y
-         OoNzvxFN5QxCgCopA3nfA5sZkwM1Ggk3Tqk45yvkpX6Tic946u6YSil0xOdXgKYMI9oz
-         9Yd9SpebjtTRQIEo8Ezp+Fha9WaCc9CiG225wEvF/LtaxuClOAUV59abZKuGYPRKcgk5
-         7yXYqKm9S9i57oY5TYeeqS/SlVDfHkMW/33YootXOB/CZWER1csFzj/djreUXXx8mECw
-         Yf4w==
-X-Gm-Message-State: AOAM531lktmnUKwt2pkfHPT/s8tqTqvuI+v1VxhpfMaNQ2NeHaaYJQ3c
-        o9IY7btImvfEypFromx6evfLY7D/7K38ogbZ+xU=
-X-Google-Smtp-Source: ABdhPJwwCm/ZNlrS4OEETeK8goYqbK3dFPEwMYcL6oHXAyje/BixC9E2YBFvWhulHuT239loQOd65+Y8k6GNr9iCdbY=
-X-Received: by 2002:a9d:7302:: with SMTP id e2mr25509508otk.52.1636031943250;
- Thu, 04 Nov 2021 06:19:03 -0700 (PDT)
+        id S231551AbhKDNnb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Nov 2021 09:43:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53054 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231441AbhKDNnY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 09:43:24 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 26D10218A9;
+        Thu,  4 Nov 2021 13:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636033244; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TJg64CbAnTl1j4J98GnzEkHbVetdY4gPeJJv4OQ53hs=;
+        b=iKuD3rNcZP1Pd27+9+W9OAi+qyrpb3yrDPFFz1tH3wcp4B0y5ttwydYgiY/8Xmd+dQ+AjH
+        vrvDbvb+XPMfcIDyC2f+MF19SlSeqcQ0U95XjcmZYzHW+AoK7jxaxkHwrMTu/12TvHl3Px
+        /Hj6fLT2rYum9rmcd2rbUlr81qXYOow=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EB7FF13C68;
+        Thu,  4 Nov 2021 13:40:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id TE4GN9vig2HwMwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 04 Nov 2021 13:40:43 +0000
+Subject: Re: [PATCH 4/4] btrfs: change root to fs_info for
+ btrfs_reserve_metadata_bytes
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1635450288.git.josef@toxicpanda.com>
+ <8027647184fd9180b25055df007ff5476004b62b.1635450288.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <fd152656-d3ec-3d07-cad6-ebc24b3d1dc7@suse.com>
+Date:   Thu, 4 Nov 2021 15:40:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a54:4f02:0:0:0:0:0 with HTTP; Thu, 4 Nov 2021 06:19:02 -0700 (PDT)
-Reply-To: tomcook480@gmail.com
-From:   "Mr.Tom Donation" <gerrynice771@gmail.com>
-Date:   Thu, 4 Nov 2021 14:19:02 +0100
-Message-ID: <CAEj0PE843T-Qc+8qWO6ef=fogeb6AJMO7QZTudX5cqQ6A1hkYA@mail.gmail.com>
-Subject: Re
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8027647184fd9180b25055df007ff5476004b62b.1635450288.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-You have been nominated to receive $2,000.000.00 sent in your
-name.reply for more details
+
+
+On 28.10.21 г. 22:50, Josef Bacik wrote:
+> We used to need the root for btrfs_reserve_metadata_bytes to check the
+> orphan cleanup state, but we no longer need that, we simply need the
+> fs_info.  Change btrfs_reserve_metadata_bytes() to use the fs_info, and
+> change both btrfs_block_rsv_refill() and btrfs_block_rsv_add() to do the
+> same as they simply call btrfs_reserve_metadata_bytes() and then
+> manipulate the block_rsv that is being used.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
