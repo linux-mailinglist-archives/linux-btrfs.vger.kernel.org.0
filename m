@@ -2,92 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AD34459A7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 19:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD8D445A79
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 20:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbhKDSZc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Nov 2021 14:25:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234135AbhKDSZ2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 4 Nov 2021 14:25:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A5C161212;
-        Thu,  4 Nov 2021 18:22:47 +0000 (UTC)
-Date:   Thu, 4 Nov 2021 18:22:44 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     cluster-devel@redhat.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, joey.gouly@arm.com
-Subject: Re: [PATCH v9 04/17] iov_iter: Turn iov_iter_fault_in_readable into
- fault_in_iov_iter_readable
-Message-ID: <YYQk9L0D57QHc0gE@arm.com>
-References: <20211102122945.117744-1-agruenba@redhat.com>
- <20211102122945.117744-5-agruenba@redhat.com>
+        id S234008AbhKDTNd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Nov 2021 15:13:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47462 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233832AbhKDTNd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 15:13:33 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E58761FD43;
+        Thu,  4 Nov 2021 19:10:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636053053;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rL6W1gFvQNCxIWDUsleBK4rN+3BTYCsIoqERlBPmgP8=;
+        b=K3IpWOe8ma+33bpgwXT6vVvg1twIC6FoTc6nl4EixWITpGBuXcJAsFIhrLH3KHriN9nnQV
+        UvNvu8CAWrRgXcoBiOgn3pBX8hlferIQwyYjeLcFXXN/IWnHHTP0VrWkbl3OMv6s53X/P2
+        neM9bvaT73Wl8t8TfoRMSrQhpf0bIB4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636053053;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rL6W1gFvQNCxIWDUsleBK4rN+3BTYCsIoqERlBPmgP8=;
+        b=z32CiH7pIYX17mHexXcM/6y/qoWjMHaLksOFKotlcBHAJU1Q7nELG1ObjKk9sajDREzWuE
+        GVQ/daIrz1Tx5WBQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id DE8DE2C167;
+        Thu,  4 Nov 2021 19:10:53 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 75A76DA735; Thu,  4 Nov 2021 20:10:17 +0100 (CET)
+Date:   Thu, 4 Nov 2021 20:10:17 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/3] btrfs-progs: cleanup related to btrfs super block
+Message-ID: <20211104191017.GD28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20211021014020.482242-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211102122945.117744-5-agruenba@redhat.com>
+In-Reply-To: <20211021014020.482242-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 01:29:32PM +0100, Andreas Gruenbacher wrote:
-> Turn iov_iter_fault_in_readable into a function that returns the number
-> of bytes not faulted in, similar to copy_to_user, instead of returning a
-> non-zero value when any of the requested pages couldn't be faulted in.
-> This supports the existing users that require all pages to be faulted in
-> as well as new users that are happy if any pages can be faulted in.
+On Thu, Oct 21, 2021 at 09:40:17AM +0800, Qu Wenruo wrote:
+> This patchset mostly cleans up the mismatch between
+> BTRFS_SUPER_INFO_SIZE and sizeof(struct btrfs_super_block).
 > 
-> Rename iov_iter_fault_in_readable to fault_in_iov_iter_readable to make
-> sure this change doesn't silently break things.
+> This cleanup itself is going to replace all the following snippets:
 > 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-[...]
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index ff34f4087f87..4dd5edcd39fd 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3757,7 +3757,7 @@ ssize_t generic_perform_write(struct file *file,
->  		 * same page as we're writing to, without it being marked
->  		 * up-to-date.
->  		 */
-> -		if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
-> +		if (unlikely(fault_in_iov_iter_readable(i, bytes))) {
->  			status = -EFAULT;
->  			break;
->  		}
+> 	u8 super_block_data[BTRFS_SUPER_INFO_SIZE];
+> 	struct btrfs_super_block *sb;
+> 
+> 	sb = (struct btrfs_super_block *)super_block_data;
+> 
+> With:
+> 
+> 	struct btrfs_super_block sb;
+> 
+> Also since we're here, also cache csum_type and csum_size in fs_info,
+> just like what we did in the kernel.
+> 
+> Qu Wenruo (3):
+>   btrfs-progs: unify sizeof(struct btrfs_super_block) and
+>     BTRFS_SUPER_INFO_SIZE
+>   btrfs-progs: remove temporary buffer for super block
+>   btrfs-progs: cache csum_size and csum_type in btrfs_fs_info
 
-Now that fault_in_iov_iter_readable() returns the number of bytes, we
-could change the above test to:
-
-		if (unlikely(fault_in_iov_iter_readable(i, bytes) == bytes)) {
-
-Assuming we have a pointer 'a', accessible, and 'a + PAGE_SIZE' unmapped:
-
-	write(fd, a + PAGE_SIZE - 1, 2);
-
-can still copy one byte but it returns -EFAULT instead since the second
-page is not accessible.
-
-While writing some test-cases for MTE (sub-page faults, 16-byte
-granularity), we noticed that reading 2 bytes from 'a + 15' with
-'a + 16' tagged for faulting:
-
-	write(fd, a + 15, 2);
-
-succeeds as long as 'a + 16' is not at a page boundary. Checking against
-'bytes' above makes this consistent.
-
-The downside is that it's an ABI change though not sure anyone is
-relying on it.
-
--- 
-Catalin
+Added to devel, thanks, the removal of temporary buffer for superblock
+is nice.
