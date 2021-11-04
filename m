@@ -2,80 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7EC445556
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 15:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B7344558D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 15:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhKDOdl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Nov 2021 10:33:41 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:55556 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhKDOdk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 10:33:40 -0400
+        id S231186AbhKDOpu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Nov 2021 10:45:50 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57392 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhKDOpt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 10:45:49 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0C79F1FD5A;
-        Thu,  4 Nov 2021 14:31:02 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6B689218B2;
+        Thu,  4 Nov 2021 14:43:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1636036262;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        t=1636036990;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uY+Xts3/m5gcoHt9bqO1IDfdpt1G+n9FRmKzgdcEAvM=;
-        b=XkiIylOHKyVdTYT4GK6gNkk5j5hwGmmNt9e1HDjoWr6lC4A+vJAb570Ue2bIpkXGGDPVGa
-        qL3eiqdQQzFgQWe8RMFzJevVGDN/55MzdRO5CS0Gr0Z+CHgBeWtdUbU/l7uGspy4P0FOYe
-        5U794ZdiM+gEUubJ1qnrAEpD8u20GSA=
+        bh=APcCLap5/5ONGbiFJRe+mz81xr0yIxpfF5APOy4xPT8=;
+        b=IVkJuUAIo60WrqZSTz8Egrl7hhgwudfDxPNTyksHX05wIG84LROu9PFMqpuxX8iF6FVr83
+        FWlDXSiy1gcIs5QyufzoGwZ5ZEBjT42KJgwRXNr21F64/bA/V2wKXlgDe5bL5iHV44qb6s
+        3gKZ1ZHkpHKdp10pksjPg6FVmBDbAqs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1636036262;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
+        s=susede2_ed25519; t=1636036990;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uY+Xts3/m5gcoHt9bqO1IDfdpt1G+n9FRmKzgdcEAvM=;
-        b=rxZbA2gTtWKl633A5gSRdRspRRHOpRxJr4avodQ5ozhEaPBSnvz7nCL/NNrYbxaqqM1v9o
-        T1EtZO8lmqCerECw==
+        bh=APcCLap5/5ONGbiFJRe+mz81xr0yIxpfF5APOy4xPT8=;
+        b=MGsxYJIGdyxCli4RR7vHslAIm5k4XscNOBYjpekvTssevDJD2sHrmi8qNadNa//p3SDpEv
+        yoEat6UBBlHfm4CQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 0474C2C167;
-        Thu,  4 Nov 2021 14:31:02 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 649072C157;
+        Thu,  4 Nov 2021 14:43:10 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A23BFDA7A9; Thu,  4 Nov 2021 15:30:25 +0100 (CET)
-Date:   Thu, 4 Nov 2021 15:30:25 +0100
+        id D31FFDA7A9; Thu,  4 Nov 2021 15:42:33 +0100 (CET)
+Date:   Thu, 4 Nov 2021 15:42:33 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] btrfs-progs: Make "btrfs filesystem df" command to
- show upper case profile
-Message-ID: <20211104143025.GW20319@twin.jikos.cz>
+To:     Wang Yugui <wangyugui@e16-tech.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: fix XX_flags_to_str() to always end with
+ '\0'
+Message-ID: <20211104144233.GX20319@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Wang Yugui <wangyugui@e16-tech.com>,
         linux-btrfs@vger.kernel.org
-References: <20211104015807.35774-1-wqu@suse.com>
- <20211104124538.GV20319@twin.jikos.cz>
+References: <20211102100316.20256-1-wangyugui@e16-tech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211104124538.GV20319@twin.jikos.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211102100316.20256-1-wangyugui@e16-tech.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 01:45:38PM +0100, David Sterba wrote:
-> On Thu, Nov 04, 2021 at 09:58:07AM +0800, Qu Wenruo wrote:
-> > @@ -120,7 +126,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
-> >  		.devs_increment	= 1,
-> >  		.ncopies	= 1,
-> >  		.nparity        = 0,
-> > -		.raid_name	= "single",
-> > +		.lower_name	= "single",
-> > +		.upper_name	= "SINGLE",
+On Tue, Nov 02, 2021 at 06:03:16PM +0800, Wang Yugui wrote:
+> [BUG]
+> We noticed 'btrfs check' output something like
+>   leaf 30408704 flags 0x0(P1逅?) backref revision 1
+> but we expected
+>   leaf 30408704 flags 0x0() backref revision 1
 > 
-> This would print SINGLE in upper case in 'fi df':
+> [CAUSE]
+> some XX_flags_to_str() failed to make sure the result string always end
+> with '\0' in some case.
 > 
-> Data, SINGLE: total=745.00GiB, used=456.22GiB
-> System, SINGLE: total=32.00MiB, used=112.00KiB
-> Metadata, SINGLE: total=23.00GiB, used=5.50GiB
-> GlobalReserve, SINGLE: total=512.00MiB, used=0.00B
+> [FIX]
+> add 'ret[0] = 0;' at the begining.
 > 
-> I think we should keep the output same as before.
+> Signed-off-by: Wang Yugui (wangyugui@e16-tech.com)
 
-I'll add a separate commit that makes it lower case, we can flip it to
-upper case in the future but I don't want to do such change right before
-relelease.
+Added to devel, thanks.
