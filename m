@@ -2,65 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E39445819
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 18:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF7144583B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 18:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhKDRQr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Nov 2021 13:16:47 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42128 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233185AbhKDRQr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 13:16:47 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2251F218ED;
-        Thu,  4 Nov 2021 17:14:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1636046048;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jTI16dGQ0lG7FNA/kW98v3Pzn1J1rUVWMVXaoacx5Rs=;
-        b=QV4ZOH7LwLfHpXoOG/qlWXSJqE1OmlOhunSoeJDzsw+pOBv9phu500mhrdvc68kiteB5Cb
-        e6GLpHFDl8iIIIkCpD3b1lwdXCY8+grQZ/+I5/54xFBQQJlb6MsSz2M9p1RkinDDcf+nNx
-        HZKX6B2yU2OjZ44m9DJlcRWGOcVcvOY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1636046048;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jTI16dGQ0lG7FNA/kW98v3Pzn1J1rUVWMVXaoacx5Rs=;
-        b=fC0Xezpg0FSRD3detpYLvVNk/JrHZJLDyhqzImmLu81z/ISLhZxy9O2KHrAbgUAFeYGLte
-        qOczkR+ajbj13XDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 16F5F2C154;
-        Thu,  4 Nov 2021 17:14:08 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B7FA9DA781; Thu,  4 Nov 2021 18:13:31 +0100 (CET)
-Date:   Thu, 4 Nov 2021 18:13:31 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Remove spurious unlock/lock of unused_bgs_lock
-Message-ID: <20211104171331.GB28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211014070311.1595609-1-nborisov@suse.com>
+        id S233779AbhKDR0m convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 4 Nov 2021 13:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234901AbhKDR0W (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 13:26:22 -0400
+Received: from mail.lichtvoll.de (lichtvoll.de [IPv6:2001:67c:14c:12f::11:100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5329C061714
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 Nov 2021 10:23:44 -0700 (PDT)
+Received: from ananda.localnet (unknown [IPv6:2001:a62:1a2d:e700:1e95:40e5:99df:91ba])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 456DF2F082A;
+        Thu,  4 Nov 2021 18:23:43 +0100 (CET)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     linux-btrfs@vger.kernel.org, Forza <forza@tnonline.net>
+Subject: Re: Settings compression for a filesystem
+Date:   Thu, 04 Nov 2021 18:23:42 +0100
+Message-ID: <4290595.HUiMQM4q2P@ananda>
+In-Reply-To: <8479126f-c24d-4f2a-2ceb-2d71f063a294@tnonline.net>
+References: <11237766.pNdQY1Vl8f@ananda> <8479126f-c24d-4f2a-2ceb-2d71f063a294@tnonline.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211014070311.1595609-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin2 smtp.mailfrom=martin@lichtvoll.de
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 14, 2021 at 10:03:11AM +0300, Nikolay Borisov wrote:
-> Since both unused block groups and reclaim bgs lists are protected by
-> unused_bgs_lock then free them in the same critical section without
-> doing an extra unlock/lock pair.
+Forza - 04.11.21, 16:14:31 CET:
+> You can use `btrfs property set <file> compression zstd`[1] on
+> directories and files. This enables compression for any new writes to
+> those directories and files. If you set compression on a directory,
+> any new files and directories will inherit the property, while
+> existing files and directories won't.
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> After mounting your disks you can use find to set compression
+> recursively:
+> 
+> # find /media/btrfs/ -exec btrfs prop set {} compression zstd \;
 
-Added to misc-next. The cond_resched in the loops still makes sense but
-is for another patch.
+So it just inherits to the newly created files and directories in that 
+directory directly.
+
+Ah, I see… then in case I set it on the root inode of a new empty 
+filesystem it just works, otherwise… I'd need to use find unless I choose 
+to add an entry for each of the disks.
+
+Thanks,
+-- 
+Martin
+
+
