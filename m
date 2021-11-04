@@ -2,136 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52008445469
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 14:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F350B445532
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 15:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhKDOCT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Nov 2021 10:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        id S231824AbhKDOWz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Nov 2021 10:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhKDOCS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 10:02:18 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F16C061714
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 Nov 2021 06:59:40 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 75so5493694pga.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 04 Nov 2021 06:59:40 -0700 (PDT)
+        with ESMTP id S232011AbhKDOWf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 10:22:35 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33673C061230
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 Nov 2021 07:16:19 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id o14so7440286plg.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 04 Nov 2021 07:16:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=98MyJo9mg4QqHjmZeMr+eLaMKTNdCutofSjC5WZQ2XA=;
-        b=Qiajfo1pJPZKAI4nAIkHTVyXxghK/pxLG2wxq46nhHfAFTs17U/EozEKJIij9Vxlfl
-         EYLtUpnjj8N7hKPuUjFIvAXZrPdDnV4EwD+bR5UU56aw/8QhzdtuttIr8BAf/j0kaCPb
-         oa+svjlekKFP3naKqjTUddWUiHjlDja9PBeV0FeLA7iMWGKiLztZYTB0x4QEihzDEJss
-         kdIbOC7R5cUN+y9bD9bkbY2f7k+9qh4pX2dZZR3NU4QOYSDee4Tk14IFRcXpLmPU7B/w
-         DUVn4NoL/vsFgjQ8zNEkJ9T3wQgVgIxY0Fr4GXA8agkBzSndGhjyMdG2bUrMTvqDO1px
-         v5sQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j6o8YD5en5fFTJkKKvRwp/gnfd76mDFz0ZTc6iYyo/w=;
+        b=OzNb6bD/xaHfosFmiEVQCP+jE60/IwZAC4xUMZ4w4+F2YgYZqPZPW0lalihDYQl0uk
+         SwGHv0x/E/EPZpDBvjzC1tOukTw07fqCOmpsIvR9RT4lmtfzEwv6sj6GLUjPUvs74neN
+         RwMsulC+Nn5eQDuOaIXSAMh2DKlXlqekpEmJQ0CXanCekll5tGLvlvurNRn0OO71YdXX
+         wsngAlAeHdPRV0n2dkc2DMOcHddGYX+g+OFI5Pj2YI+iBTDeAvymqgaGyArJu1cX6n9u
+         1M4A4FBCQ4BY0CUHQuLT8XKFWcz0N3ylH/aq88td1OvpBV0sVmD6R/HSU2hPUOm1r79R
+         WQ8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=98MyJo9mg4QqHjmZeMr+eLaMKTNdCutofSjC5WZQ2XA=;
-        b=RV0B30PoO31Z30lO6AXvodw9v0qQIiQSUoZlUgz2txwWphFZSw47SxTzPL6eAdWTB+
-         DHqInlDkbreKBRBEKLweksu8XXl4UeCbuMX6MSmkw1XCdWtRRYCvyJIMv74xf+ldNXav
-         BX2SSp32HlQ1UQFHcZ8Z/YwlcZrfPdtB5+qmXZnEfKOaTW9wFZBNQbWIi93A8OjQoi53
-         AVGgGzmrFT94c4e8aND7ctjdUoYvftgkxP6PiwTyfyVyS/C9blApIn+YrkCr7rU5zSwF
-         TOrz4ObRyeZhzisRFDVMttXVnIJmG6HPAlhm9RKc/1MoMJ1mubVYumqN1LyDOFpScwkv
-         LX/A==
-X-Gm-Message-State: AOAM5306blRE+3pnvLlxcx9IZd3CDHSgAAjEm5efLPmKDR5uE3/FGF3+
-        ILRvovt21hwFGzRzvSd7HIo=
-X-Google-Smtp-Source: ABdhPJxhmlfdW3wKvukC86y/iVFL5pKEcuRPIkxKkzDubSt56+5eNyzm8PAMWvqanVemRhhUooydKQ==
-X-Received: by 2002:a05:6a00:248c:b0:494:73de:45a7 with SMTP id c12-20020a056a00248c00b0049473de45a7mr279352pfv.50.1636034379830;
-        Thu, 04 Nov 2021 06:59:39 -0700 (PDT)
-Received: from realwakka ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id v22sm5091634pff.93.2021.11.04.06.59.38
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j6o8YD5en5fFTJkKKvRwp/gnfd76mDFz0ZTc6iYyo/w=;
+        b=QwItiqwZDIcqlu89TqSNKPZs1xOy/v/924WAb6I7gQD/Lw1EOWCBzL/EGCuNe4Krb5
+         5kcP+QXbh7IUuzR/1C27kErtXP8q6caz5SOUEmPBGUiYqJk6o/XBo4TAwX9R58B8oVCj
+         gBzCBp6mMrs1v5ErJKsd30U5KvgEDrEt3bcmQR6lnPDKf/nfNRk8lZn4HJDdsX3LElGF
+         QxEzNEshXexg1ITJVwxnEQu9H+hYjzevg4uyeGL12wS/peeYcTqSpRLFGvI5iEa8b0Sw
+         T5HUOfmRy+76zDIRKre7FAZysCR2W+k2YF5+KQ8eC7sRk3kbFqwkdxpNFKTrSflLcZD7
+         6XoA==
+X-Gm-Message-State: AOAM532FWeX8YyXLCjVMwdCuA0LYDVcTndfKecP9rhKwrmP4MY//iyag
+        2z4LYK2YVU1oysUYXi8NrV0DhWHW45u2kw==
+X-Google-Smtp-Source: ABdhPJz+f85ZUsOocR7PnRcFD/0ItB0GN6Dc0zPdTHgB+8ZdOczLzBLkUgXmuxwFF936DHoQ9ipHlA==
+X-Received: by 2002:a17:90b:2502:: with SMTP id ns2mr22374972pjb.51.1636035378620;
+        Thu, 04 Nov 2021 07:16:18 -0700 (PDT)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id d18sm5291457pfv.161.2021.11.04.07.16.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 06:59:39 -0700 (PDT)
-Date:   Thu, 4 Nov 2021 13:59:35 +0000
+        Thu, 04 Nov 2021 07:16:18 -0700 (PDT)
 From:   Sidong Yang <realwakka@gmail.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs-progs: check: change commit condition in
- fixup_extent_refs()
-Message-ID: <20211104135935.GB47276@realwakka>
-References: <20211103151554.46991-1-realwakka@gmail.com>
- <665f8532-e176-3dc6-ccf0-395672cb3383@suse.com>
- <20211103235259.GA47276@realwakka>
- <dd777050-db1e-d6f0-d41b-2b1f7226cb20@suse.com>
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH v2] btrfs-progs: check: change commit condition in fixup_extent_refs()
+Date:   Thu,  4 Nov 2021 14:16:10 +0000
+Message-Id: <20211104141610.48818-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <dd777050-db1e-d6f0-d41b-2b1f7226cb20@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 04, 2021 at 09:50:33AM +0200, Nikolay Borisov wrote:
-> 
-> 
-> On 4.11.21 г. 1:52, Sidong Yang wrote:
-> > On Wed, Nov 03, 2021 at 05:25:38PM +0200, Nikolay Borisov wrote:
-> >>
-> >>
-> >> On 3.11.21 г. 17:15, Sidong Yang wrote:
-> >>> This patch fixes potential bugs in fixup_extent_refs(). If
-> >>> btrfs_start_transaction() fails in some way and returns error ptr, It
-> >>> goes to out logic. But old code checkes whether it is null and it calls
-> >>> commit. This patch solves the problem with change the condition to
-> >>> checks if it is error by IS_ERR().
-> >>>
-> >>> Issue: #409
-> >>>
-> >>> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> >>> ---
-> >>>  check/main.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/check/main.c b/check/main.c
-> >>> index 235a9bab..ca858e07 100644
-> >>> --- a/check/main.c
-> >>> +++ b/check/main.c
-> >>> @@ -7735,7 +7735,7 @@ static int fixup_extent_refs(struct cache_tree *extent_cache,
-> >>>  			goto out;
-> >>>  	}
-> >>>  out:
-> >>> -	if (trans) {
-> >>> +	if (!IS_ERR(trans)) {
-> >>
-> >> Actually I think we want to commit the transaction only if ret is not
-> >> error, otherwise we run the risk of committing partial changes to the fs.
-> > 
-> > I agree. If ret is error, committing should not be happen. But I 
-> > think it needs to check trans. 
-> > 
-> > I wonder that if ret is error but trans is okay, trans needs to be
-> > aborted by calling btrfs_abort_transaction()?
-> 
-> This is the general way errors are handled in kernel. Currently abort
-> trans in progs simply sets transaction_aborted = error and
-> commit_transaction checks if this is set and returns an EROFS. Every
-> failure site in this function should ideally have a
-> btrfs_abort_transaction, because in the future we probably want to add
-> code which would yield the exact call site where a transaction abort
-> occurred.
+This patch fixes potential bugs in fixup_extent_refs(). If
+btrfs_start_transaction() fails in some way and returns error ptr, It
+goes to out logic. But old code checkes whether it is null and it calls
+commit. This patch solves the problem with make that it calls only if
+ret is no error.
 
-Okay, Thanks for detailed description. I understood that we don't need
-to call btrfs_abort_transaction() in the function.
-I would write new version for this patch.
+Issue: #409
 
-Thanks again for helping me.
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+v2:
+ - Checks ret as well as trans
+---
+ check/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Sidong
+diff --git a/check/main.c b/check/main.c
+index 235a9bab..ddcc5c44 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -7735,7 +7735,7 @@ static int fixup_extent_refs(struct cache_tree *extent_cache,
+ 			goto out;
+ 	}
+ out:
+-	if (trans) {
++	if (!ret && !IS_ERR(trans)) {
+ 		int err = btrfs_commit_transaction(trans, gfs_info->extent_root);
+ 
+ 		if (!ret)
+-- 
+2.25.1
 
-> 
-> 
-> 
-> >>
-> >>>  		int err = btrfs_commit_transaction(trans, gfs_info->extent_root);
-> >>>  
-> >>>  		if (!ret)
-> >>>
-> > 
