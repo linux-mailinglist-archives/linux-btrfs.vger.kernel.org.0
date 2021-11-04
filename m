@@ -2,94 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F350B445532
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 15:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7EC445556
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Nov 2021 15:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbhKDOWz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Nov 2021 10:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbhKDOWf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 10:22:35 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33673C061230
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 Nov 2021 07:16:19 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id o14so7440286plg.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 04 Nov 2021 07:16:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j6o8YD5en5fFTJkKKvRwp/gnfd76mDFz0ZTc6iYyo/w=;
-        b=OzNb6bD/xaHfosFmiEVQCP+jE60/IwZAC4xUMZ4w4+F2YgYZqPZPW0lalihDYQl0uk
-         SwGHv0x/E/EPZpDBvjzC1tOukTw07fqCOmpsIvR9RT4lmtfzEwv6sj6GLUjPUvs74neN
-         RwMsulC+Nn5eQDuOaIXSAMh2DKlXlqekpEmJQ0CXanCekll5tGLvlvurNRn0OO71YdXX
-         wsngAlAeHdPRV0n2dkc2DMOcHddGYX+g+OFI5Pj2YI+iBTDeAvymqgaGyArJu1cX6n9u
-         1M4A4FBCQ4BY0CUHQuLT8XKFWcz0N3ylH/aq88td1OvpBV0sVmD6R/HSU2hPUOm1r79R
-         WQ8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j6o8YD5en5fFTJkKKvRwp/gnfd76mDFz0ZTc6iYyo/w=;
-        b=QwItiqwZDIcqlu89TqSNKPZs1xOy/v/924WAb6I7gQD/Lw1EOWCBzL/EGCuNe4Krb5
-         5kcP+QXbh7IUuzR/1C27kErtXP8q6caz5SOUEmPBGUiYqJk6o/XBo4TAwX9R58B8oVCj
-         gBzCBp6mMrs1v5ErJKsd30U5KvgEDrEt3bcmQR6lnPDKf/nfNRk8lZn4HJDdsX3LElGF
-         QxEzNEshXexg1ITJVwxnEQu9H+hYjzevg4uyeGL12wS/peeYcTqSpRLFGvI5iEa8b0Sw
-         T5HUOfmRy+76zDIRKre7FAZysCR2W+k2YF5+KQ8eC7sRk3kbFqwkdxpNFKTrSflLcZD7
-         6XoA==
-X-Gm-Message-State: AOAM532FWeX8YyXLCjVMwdCuA0LYDVcTndfKecP9rhKwrmP4MY//iyag
-        2z4LYK2YVU1oysUYXi8NrV0DhWHW45u2kw==
-X-Google-Smtp-Source: ABdhPJz+f85ZUsOocR7PnRcFD/0ItB0GN6Dc0zPdTHgB+8ZdOczLzBLkUgXmuxwFF936DHoQ9ipHlA==
-X-Received: by 2002:a17:90b:2502:: with SMTP id ns2mr22374972pjb.51.1636035378620;
-        Thu, 04 Nov 2021 07:16:18 -0700 (PDT)
-Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id d18sm5291457pfv.161.2021.11.04.07.16.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Nov 2021 07:16:18 -0700 (PDT)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH v2] btrfs-progs: check: change commit condition in fixup_extent_refs()
-Date:   Thu,  4 Nov 2021 14:16:10 +0000
-Message-Id: <20211104141610.48818-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231253AbhKDOdl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Nov 2021 10:33:41 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:55556 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhKDOdk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Nov 2021 10:33:40 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 0C79F1FD5A;
+        Thu,  4 Nov 2021 14:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636036262;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uY+Xts3/m5gcoHt9bqO1IDfdpt1G+n9FRmKzgdcEAvM=;
+        b=XkiIylOHKyVdTYT4GK6gNkk5j5hwGmmNt9e1HDjoWr6lC4A+vJAb570Ue2bIpkXGGDPVGa
+        qL3eiqdQQzFgQWe8RMFzJevVGDN/55MzdRO5CS0Gr0Z+CHgBeWtdUbU/l7uGspy4P0FOYe
+        5U794ZdiM+gEUubJ1qnrAEpD8u20GSA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636036262;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uY+Xts3/m5gcoHt9bqO1IDfdpt1G+n9FRmKzgdcEAvM=;
+        b=rxZbA2gTtWKl633A5gSRdRspRRHOpRxJr4avodQ5ozhEaPBSnvz7nCL/NNrYbxaqqM1v9o
+        T1EtZO8lmqCerECw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 0474C2C167;
+        Thu,  4 Nov 2021 14:31:02 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A23BFDA7A9; Thu,  4 Nov 2021 15:30:25 +0100 (CET)
+Date:   Thu, 4 Nov 2021 15:30:25 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs-progs: Make "btrfs filesystem df" command to
+ show upper case profile
+Message-ID: <20211104143025.GW20319@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20211104015807.35774-1-wqu@suse.com>
+ <20211104124538.GV20319@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211104124538.GV20319@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch fixes potential bugs in fixup_extent_refs(). If
-btrfs_start_transaction() fails in some way and returns error ptr, It
-goes to out logic. But old code checkes whether it is null and it calls
-commit. This patch solves the problem with make that it calls only if
-ret is no error.
+On Thu, Nov 04, 2021 at 01:45:38PM +0100, David Sterba wrote:
+> On Thu, Nov 04, 2021 at 09:58:07AM +0800, Qu Wenruo wrote:
+> > @@ -120,7 +126,8 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+> >  		.devs_increment	= 1,
+> >  		.ncopies	= 1,
+> >  		.nparity        = 0,
+> > -		.raid_name	= "single",
+> > +		.lower_name	= "single",
+> > +		.upper_name	= "SINGLE",
+> 
+> This would print SINGLE in upper case in 'fi df':
+> 
+> Data, SINGLE: total=745.00GiB, used=456.22GiB
+> System, SINGLE: total=32.00MiB, used=112.00KiB
+> Metadata, SINGLE: total=23.00GiB, used=5.50GiB
+> GlobalReserve, SINGLE: total=512.00MiB, used=0.00B
+> 
+> I think we should keep the output same as before.
 
-Issue: #409
-
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
----
-v2:
- - Checks ret as well as trans
----
- check/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/check/main.c b/check/main.c
-index 235a9bab..ddcc5c44 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -7735,7 +7735,7 @@ static int fixup_extent_refs(struct cache_tree *extent_cache,
- 			goto out;
- 	}
- out:
--	if (trans) {
-+	if (!ret && !IS_ERR(trans)) {
- 		int err = btrfs_commit_transaction(trans, gfs_info->extent_root);
- 
- 		if (!ret)
--- 
-2.25.1
-
+I'll add a separate commit that makes it lower case, we can flip it to
+upper case in the future but I don't want to do such change right before
+relelease.
