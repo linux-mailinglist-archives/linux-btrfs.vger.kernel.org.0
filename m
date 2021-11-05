@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BED4469C1
+	by mail.lfdr.de (Postfix) with ESMTP id 6702F4469C2
 	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Nov 2021 21:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbhKEUb4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Nov 2021 16:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
+        id S233650AbhKEUb7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Nov 2021 16:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233663AbhKEUbz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:31:55 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAFBC061205
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:29:15 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id bi29so9847855qkb.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:29:15 -0700 (PDT)
+        with ESMTP id S233549AbhKEUb6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:31:58 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E66AC061714
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:29:17 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id w9so3191955qtk.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:29:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=iJXWVIvO1tuVtnIozW4eE+rzIC8d+GMpsaxozXvZXMY=;
-        b=dct8L4HSzAFU/yvJ3jJk6MuDAXomEgql5/Cehe6VvLYvl4k+5zjFhloIi5V7BpmgUY
-         e0KquaxffEpsnufmb53XZWHopL1a/z2PWjbXNhj29WfLhn5q0KMn21R6IQB+yhm/wXPz
-         rAJqcPWdNVHYe40QvXpQAh65NJjFah3AHna+BQYcW7cABPtzBO4dFBiLL5SIdgVtlHnY
-         nt4ZzSpOaw95gZ5VRFbxpYzwxu3gReFxBpweu/l++0MgYu958RSKl+OKnyd2aqAjcXD5
-         SQECcbcl6L+oVJ6Bh456fDWb8ok9v+4n+9hCB+uhiX2KvdzWIT2T2bTZJqcUPas477CB
-         h7JQ==
+        bh=aBUk2cArVvEwez5VE+87HZJGc9HIWulLuJzNnuBNwzE=;
+        b=HF0gOM9T8WB7eMO7k3bl5QBEa1M1AsyRjOKFvj65PXvVcXE9+otcxsSgP3MwBl5ngx
+         Tl28sEJ4KDGHBdPtTfQzkdnNgVBw5OlkFPjN5dfl8WJ6i424NWkySoG5aHguvki9ukIf
+         A7ulDGVG57pU1qXUKjYqGtJlngb9ZoUcegpP5FGwgB3/x8Qb0qfWxKwsuHEGhEcjGhIU
+         cJXxKa7SPxhfJLGqOlZ+a5ThkE8Sk+xs2/2g6/OddenPqzwL3UGBGWr5jdoaEm9fKwl0
+         vtMIzEBO6uEVIwslBUofJ/6eJW6qE1WeKSol8SPf/80+KMaezgEkNuui0Adnf56bJYMN
+         Rkog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iJXWVIvO1tuVtnIozW4eE+rzIC8d+GMpsaxozXvZXMY=;
-        b=ovBxed4eZUYqPnDE9YNaqUOadM0+uWOptb0UegqqZDWt+QUAEG3NNIqRPjECxDb+4k
-         FeDzizqcJ2yyovwQgAGSpbVmR1KeX3xi/6MmpeBK7X66dsPjtb16hxZlrKVLhIpq86Kx
-         6IPd/uEJTW/2jBDugxSd947X84AusL3Q9OSyvXKusxBuO2JWYU3/jBBE7gaS1zxnLMTr
-         zgh/DLMoVxb3+7KkSpVC+QWwPIxfeXC/eeD1Mb+y7gCiqlkd05WYXddRb07JjgQ5ORGW
-         toozNm1K10dnG1k6ied4MnCIb/wpKjfNQxXu70YArX1mMwKeOeTgRTsLCaIp6GvoJlVV
-         AZdQ==
-X-Gm-Message-State: AOAM533yNuA/GSVVzfttl9ZOA8pzrKQOWLN6teXQvxTJEehYVRr7zQSv
-        5aAGGWSOrKfkA3K8mQzeroLkmc9USqw8Fw==
-X-Google-Smtp-Source: ABdhPJzrMGjpxy1I2fWv65SxEqQ4qABDfbCKM0DjBtp2K//En+KLuh3MwtpukVI7gxDj4xjkmb+X9g==
-X-Received: by 2002:a05:620a:4722:: with SMTP id bs34mr48382815qkb.28.1636144154652;
-        Fri, 05 Nov 2021 13:29:14 -0700 (PDT)
+        bh=aBUk2cArVvEwez5VE+87HZJGc9HIWulLuJzNnuBNwzE=;
+        b=btGDEB0NSFIgZxn2rY/iy8UB1U3f/mrOHVHP+ftXMB8eMeag0YoyzZ2ngShs7Nkt2Z
+         DYhuOx+0hodxuxg+YOU52+F07PYz/VHCA9wCPPixqZvc2iwX5du5Pgzk+9DqRqwSeJTW
+         BW8GtCZG52k2g/LkGk4ybPy6cU2IsUZlvdwHV/z88tUi+z2v8OJfAhNZxUodmfh9NmWn
+         y2crEzwz3OLJ7w5ZSy+3pImD0FJeUO4R5LYxW0aOinlKkjsRMOVkOvAoIz0IxTnJPuog
+         4Hk6S5hey+q0ZddkBVrotRF6bDhtkjCY5wFcte6B7CKjSRNOhLd22xgCvxPdNfoe9oLc
+         UQOg==
+X-Gm-Message-State: AOAM532YgQ33/DoTQQJ0m56KMKdA6KweAhjfT4SPJPsmL7/IsKOhg6BE
+        UXhyhfmmZ7NbX1kDyvwZW5umX/H0FpYliA==
+X-Google-Smtp-Source: ABdhPJyp5y6e3Zl0yAn98IPE/KtcikjFdk3dPKsAugWEYYUIDok/JvNX9hfEWO/yxqgJiE8feTwe4w==
+X-Received: by 2002:a05:622a:1a9c:: with SMTP id s28mr17783506qtc.406.1636144156033;
+        Fri, 05 Nov 2021 13:29:16 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id f66sm5909480qkj.76.2021.11.05.13.29.13
+        by smtp.gmail.com with ESMTPSA id f7sm6105321qkp.107.2021.11.05.13.29.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 13:29:13 -0700 (PDT)
+        Fri, 05 Nov 2021 13:29:15 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 18/20] btrfs-progs: check: check all of the csum roots
-Date:   Fri,  5 Nov 2021 16:28:43 -0400
-Message-Id: <3f368f78df03050d975704be9b2bb1654fc05000.1636143924.git.josef@toxicpanda.com>
+Subject: [PATCH 19/20] btrfs-progs: check: fill csum root from all extent roots
+Date:   Fri,  5 Nov 2021 16:28:44 -0400
+Message-Id: <dc0a4d8d60f88c222e5237a9091a298b4a270793.1636143924.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1636143924.git.josef@toxicpanda.com>
 References: <cover.1636143924.git.josef@toxicpanda.com>
@@ -61,72 +61,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Use the global roots tree to find all of the csum roots in the system
-and check all of them as appropriate.
+We may have multiple extent roots, so cycle through all of the extent
+roots and populate the csum tree based on the content of every extent
+root we have in the file system.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/main.c | 26 +++++++++++++++++++++++---
- 1 file changed, 23 insertions(+), 3 deletions(-)
+ check/main.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
 diff --git a/check/main.c b/check/main.c
-index 6795e675..175fe616 100644
+index 175fe616..5fb28216 100644
 --- a/check/main.c
 +++ b/check/main.c
-@@ -5977,7 +5977,7 @@ out:
+@@ -9690,9 +9690,9 @@ out:
  	return ret;
  }
  
--static int check_csums(struct btrfs_root *root)
-+static int check_csum_root(struct btrfs_root *root)
+-static int fill_csum_tree_from_extent(struct btrfs_trans_handle *trans)
++static int fill_csum_tree_from_extent(struct btrfs_trans_handle *trans,
++				      struct btrfs_root *extent_root)
  {
+-	struct btrfs_root *extent_root = btrfs_extent_root(gfs_info, 0);
+ 	struct btrfs_root *csum_root;
  	struct btrfs_path path;
- 	struct extent_buffer *leaf;
-@@ -5991,7 +5991,6 @@ static int check_csums(struct btrfs_root *root)
- 	unsigned long leaf_offset;
- 	bool verify_csum = !!check_data_csum;
- 
--	root = btrfs_csum_root(gfs_info, 0);
- 	if (!extent_buffer_uptodate(root->node)) {
- 		fprintf(stderr, "No valid csum tree found\n");
- 		return -ENOENT;
-@@ -6087,6 +6086,27 @@ skip_csum_check:
- 	return errors;
- }
- 
-+static int check_csums(void)
-+{
-+	struct rb_node *n;
+ 	struct btrfs_extent_item *ei;
+@@ -9766,10 +9766,26 @@ static int fill_csum_tree_from_extent(struct btrfs_trans_handle *trans)
+ static int fill_csum_tree(struct btrfs_trans_handle *trans,
+ 			  int search_fs_tree)
+ {
 +	struct btrfs_root *root;
++	struct rb_node *n;
 +	int ret;
 +
-+	root = btrfs_csum_root(gfs_info, 0);
+ 	if (search_fs_tree)
+ 		return fill_csum_tree_from_fs(trans);
+-	else
+-		return fill_csum_tree_from_extent(trans);
++
++	root = btrfs_extent_root(gfs_info, 0);
 +	while (1) {
-+		ret = check_csum_root(root);
++		ret = fill_csum_tree_from_extent(trans, root);
 +		if (ret)
 +			break;
 +		n = rb_next(&root->rb_node);
 +		if (!n)
 +			break;
 +		root = rb_entry(n, struct btrfs_root, rb_node);
-+		if (root->root_key.objectid != BTRFS_CSUM_TREE_OBJECTID)
++		if (root->root_key.objectid != BTRFS_EXTENT_TREE_OBJECTID)
 +			break;
 +	}
 +	return ret;
-+}
-+
- static int is_dropped_key(struct btrfs_key *key,
- 			  struct btrfs_key *drop_key)
- {
-@@ -10899,7 +10919,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
- 		task_start(ctx.info, &ctx.start_time, &ctx.item_count);
- 	}
+ }
  
--	ret = check_csums(root);
-+	ret = check_csums();
- 	task_stop(ctx.info);
- 	/*
- 	 * Data csum error is not fatal, and it may indicate more serious
+ static void free_roots_info_cache(void)
 -- 
 2.26.3
 
