@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1D74469D8
+	by mail.lfdr.de (Postfix) with ESMTP id 773EE4469D9
 	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Nov 2021 21:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbhKEUnm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Nov 2021 16:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        id S233525AbhKEUnn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Nov 2021 16:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232537AbhKEUnl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:43:41 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEBEC061714
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:41:01 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id l12so7805588qtx.7
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:41:01 -0700 (PDT)
+        with ESMTP id S233501AbhKEUnm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:43:42 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8327DC061714
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:41:02 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id bl12so9817303qkb.13
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:41:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=zzGoFbPaHjYxOdEvMNYA2KUeGYoOWZmWRW9btUenLJA=;
-        b=5Qs6M2XnHVQAjrLa+CxL0+IA+lmWK/E+yEYNijk2ca4P+NC/XezobHPNMHsS6E4P1J
-         EEUmRwqCtFQSfSIJTSov2reA77Y+ToDcgN2wah8iqrsutsveVpeiqMJbwMpkG/u0kXDU
-         Q153qAMMnLX0cPQAxG1Gp9zQFn5yx3p3l3rM2AaIqh3/FbKmLHWmvC02MmVgGosivKZv
-         WOdkyVKwKhFilHsOWNXtS8OQ0K78PjC58G5XOE4h4ChdDPT1Pt6Pteei1+E/NalQDjz0
-         9e6xL/wVT11rsZFwMe3/szCd0pl4L+vSF6//HXyGFwgBK2toh4bYoZ4cHESO9SwJtuiS
-         GWxg==
+        bh=Fx5zkf+JCd5xeyOZgGTbI6N5LU0o9nCwDJxj2dtLvFE=;
+        b=dELx8Bczi0CntxCqBFxC5MyHPQCozzlIuPNqWfaYScl6gmlIp7YP0ceL/5+U8hSTph
+         TdxtLF5PVkI27x2R8gWWvT5wP01Eeu8V5bcd3Tz8EmsznyA0YBcv9qBRAWxk0J2HzVf6
+         QOFPTO6iJNYIENfoOSNCymSQ5jSMR5rijNJAuK5EpX1LSDw3036w5jSllBYN4w7tq8w4
+         dXyPDCtC0C84RJsEblTa2BfHT4aVrIT0XcTb+es3PseeQ30CJHBjcB09Xxy7RUZk4SP5
+         3xZSSUC8p+EwLo+3urVz/jfaauLjZXnPZDazHGfncFw49SudRtu3B1wAQepai/1LmtzL
+         zfiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zzGoFbPaHjYxOdEvMNYA2KUeGYoOWZmWRW9btUenLJA=;
-        b=2Je/olpEBfSrOTCMcZlwoJHUCYX8U4TmKEhU+AKZS4mfm6zX4uzSvCCMOKxgOAN+kz
-         Pmb75LiKedhZkkN3p6RKNyWQIX1lGM1a74PSn4pIkfQGw+L+p4wh9wB3cg/72kEw5JsR
-         wo/n0EA+6CFL+G6fkhjfD87vhgSTVfonQul/7XtelIy18yrG2CBaYHn/XzVHgKPZVDdL
-         FhbAM5e8hjAxJRyxuC7vo4VSsZnYUaz96RzZFQkKUg2Lcs7SXJadg1gAYa3wWAwjVb1A
-         +tppBZqwWZzPqBaQQqioeIn/2J3oGrYCPSmEgTaJL7KVp5HHgcapx+X4rKCUxf/8Uubv
-         +02g==
-X-Gm-Message-State: AOAM532TOgCvq04WzacDgliqSK3ucUOzEpJIhiMS8TNnjqCuAU8wHCox
-        go52P8ZYxQVmK1vHiTmPHhMBWRjmy3DdQg==
-X-Google-Smtp-Source: ABdhPJxaSB6kv9HZ1QBBj/8wcoXZC8JjHqihfBxvme6LMbV+N2MvrJC45PMfQD527IKnvofoibjjTg==
-X-Received: by 2002:a05:622a:394:: with SMTP id j20mr65502268qtx.386.1636144859995;
-        Fri, 05 Nov 2021 13:40:59 -0700 (PDT)
+        bh=Fx5zkf+JCd5xeyOZgGTbI6N5LU0o9nCwDJxj2dtLvFE=;
+        b=e1w/Y3zyDAV43uEbmWS5iYGnbiHLXdXORFVsOpy04NHrhrSMESje0GE/OiVTJoAzZZ
+         R7hduH0117M9RXB/F/QJTqZivIOdRGdhNgCMdd2EnGuiG3D+rQSppE2jGZ7VGi8VZdQS
+         JHn/BFef2QDVq/gyqaKx8FlIOoCq6ocgGYTkhha68F0IUdTCNVtkh7DLO/Iz5xKGEVBM
+         DvgGBRWMm9qcss7StoyOUikasjY05Ato3LUj4rdUy9eMne9uL/FnXyTatSaMCNyXHCE9
+         ept5aHSKsdQPfARpG+lpOKIqdiHnUcWzfhvfTdWHBIFR8sJLZ/ZZEYLgFI3UpLfGhfzB
+         YnQA==
+X-Gm-Message-State: AOAM531TQpAyoE1txhkek2bcLB3RiVWj8SuL7PYPoNPargzWG3W5W1ME
+        6uOWjSb+dVuxm4nqDViEuU5nt/FFxg/uwA==
+X-Google-Smtp-Source: ABdhPJxefNGYKiqT3QkjOxtDdC4S3/No/I0fSOgHM97lE9qZdRF8qW2h8g7q2LNepkHpPJcmP9BqCg==
+X-Received: by 2002:a37:4041:: with SMTP id n62mr48014326qka.225.1636144861357;
+        Fri, 05 Nov 2021 13:41:01 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id w9sm6181896qko.19.2021.11.05.13.40.59
+        by smtp.gmail.com with ESMTPSA id bp40sm6267289qkb.114.2021.11.05.13.41.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 13:40:59 -0700 (PDT)
+        Fri, 05 Nov 2021 13:41:00 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 08/22] btrfs-progs: handle no bg item in extent tree for free space tree
-Date:   Fri,  5 Nov 2021 16:40:34 -0400
-Message-Id: <ce42c1f18b80994e554fec7aa3a885bbb2656484.1636144275.git.josef@toxicpanda.com>
+Subject: [PATCH 09/22] btrfs-progs: mkfs: add support for the block group tree
+Date:   Fri,  5 Nov 2021 16:40:35 -0400
+Message-Id: <ab7b911b889f0bcdf1911eb8505b4edf5143fdef.1636144275.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1636144275.git.josef@toxicpanda.com>
 References: <cover.1636144275.git.josef@toxicpanda.com>
@@ -61,55 +61,215 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have an ASSERT(ret == 0) when populating the free space tree as we
-should at least find the block group item with extent tree v1.  However
-with v2 we no longer have the block group item in the extent tree, so
-fix the population logic to handle an empty block group (which occurs
-during mkfs) and only assert if ret != 0 and we don't have extent tree
-v2 turned on.
+Add the extent tree v2 table with the block group tree as a root, and
+then create the empty root and use the proper root for cleanup up the
+temporary block groups.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/free-space-tree.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ mkfs/common.c | 93 ++++++++++++++++++++++++++++++++++++++++-----------
+ mkfs/common.h | 12 +++++++
+ mkfs/main.c   |  5 +++
+ 3 files changed, 91 insertions(+), 19 deletions(-)
 
-diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-tree.c
-index 0fdf5004..896bd3a2 100644
---- a/kernel-shared/free-space-tree.c
-+++ b/kernel-shared/free-space-tree.c
-@@ -1057,6 +1057,9 @@ int populate_free_space_tree(struct btrfs_trans_handle *trans,
- 	if (ret)
- 		goto out;
+diff --git a/mkfs/common.c b/mkfs/common.c
+index ca5393d5..71589c0d 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -39,6 +39,7 @@ static u64 reference_root_table[] = {
+ 	[MKFS_FS_TREE]		=	BTRFS_FS_TREE_OBJECTID,
+ 	[MKFS_CSUM_TREE]	=	BTRFS_CSUM_TREE_OBJECTID,
+ 	[MKFS_FREE_SPACE_TREE]	=	BTRFS_FREE_SPACE_TREE_OBJECTID,
++	[MKFS_BLOCK_GROUP_TREE]	=	BTRFS_BLOCK_GROUP_TREE_OBJECTID,
+ };
  
-+	start = block_group->start;
-+	end = block_group->start + block_group->length;
+ static int btrfs_write_empty_tree(int fd, struct btrfs_mkfs_config *cfg,
+@@ -97,7 +98,8 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+ 
+ 	for (i = 0; i < blocks_nr; i++) {
+ 		blk = blocks[i];
+-		if (blk == MKFS_ROOT_TREE || blk == MKFS_CHUNK_TREE)
++		if (blk == MKFS_ROOT_TREE || blk == MKFS_CHUNK_TREE ||
++		    blk == MKFS_BLOCK_GROUP_TREE)
+ 			continue;
+ 
+ 		btrfs_set_root_bytenr(&root_item, cfg->blocks[blk]);
+@@ -188,6 +190,50 @@ static int create_free_space_tree(int fd, struct btrfs_mkfs_config *cfg,
+ 	return 0;
+ }
+ 
++static void write_block_group_item(struct extent_buffer *buf, u32 nr,
++				   u64 objectid, u64 offset, u64 used,
++				   u32 itemoff)
++{
++	struct btrfs_block_group_item *bg_item;
++	struct btrfs_disk_key disk_key;
 +
- 	/*
- 	 * Iterate through all of the extent and metadata items in this block
- 	 * group, adding the free space between them and the free space at the
-@@ -1071,10 +1074,11 @@ int populate_free_space_tree(struct btrfs_trans_handle *trans,
- 	ret = btrfs_search_slot_for_read(extent_root, &key, path, 1, 0);
- 	if (ret < 0)
- 		goto out;
--	ASSERT(ret == 0);
-+	if (ret > 0) {
-+		ASSERT(btrfs_fs_incompat(trans->fs_info, EXTENT_TREE_V2));
-+		goto done;
++	btrfs_set_disk_key_objectid(&disk_key, objectid);
++	btrfs_set_disk_key_offset(&disk_key, offset);
++	btrfs_set_disk_key_type(&disk_key, BTRFS_BLOCK_GROUP_ITEM_KEY);
++	btrfs_set_item_key(buf, &disk_key, nr);
++	btrfs_set_item_offset(buf, btrfs_item_nr(nr), itemoff);
++	btrfs_set_item_size(buf, btrfs_item_nr(nr), sizeof(*bg_item));
++
++	bg_item = btrfs_item_ptr(buf, nr, struct btrfs_block_group_item);
++	btrfs_set_block_group_used(buf, bg_item, used);
++	btrfs_set_block_group_flags(buf, bg_item, BTRFS_BLOCK_GROUP_SYSTEM);
++	btrfs_set_block_group_chunk_objectid(buf, bg_item,
++					     BTRFS_FIRST_CHUNK_TREE_OBJECTID);
++}
++
++static int create_block_group_tree(int fd, struct btrfs_mkfs_config *cfg,
++				   struct extent_buffer *buf,
++				   u64 bg_offset, u64 bg_size, u64 bg_used)
++{
++	int ret;
++
++	memset(buf->data + sizeof(struct btrfs_header), 0,
++		cfg->nodesize - sizeof(struct btrfs_header));
++	write_block_group_item(buf, 0, bg_offset, bg_size, bg_used,
++			       __BTRFS_LEAF_DATA_SIZE(cfg->nodesize) -
++			       sizeof(struct btrfs_block_group_item));
++	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_BLOCK_GROUP_TREE]);
++	btrfs_set_header_owner(buf, BTRFS_BLOCK_GROUP_TREE_OBJECTID);
++	btrfs_set_header_nritems(buf, 1);
++	csum_tree_block_size(buf, btrfs_csum_type_size(cfg->csum_type), 0,
++			     cfg->csum_type);
++	ret = pwrite(fd, buf->data, cfg->nodesize,
++		     cfg->blocks[MKFS_BLOCK_GROUP_TREE]);
++	if (ret != cfg->nodesize)
++		return ret < 0 ? -errno : -EIO;
++	return 0;
++}
++
+ /*
+  * @fs_uuid - if NULL, generates a UUID, returns back the new filesystem UUID
+  *
+@@ -240,11 +286,19 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	bool add_block_group = true;
+ 	bool free_space_tree = !!(cfg->runtime_features &
+ 				  BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE);
++	bool extent_tree_v2 = !!(cfg->features &
++				 BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2);
+ 
+ 	/* Don't include the free space tree in the blocks to process. */
+ 	if (!free_space_tree)
+ 		blocks_nr--;
+ 
++	if (extent_tree_v2) {
++		blocks = extent_tree_v2_blocks;
++		blocks_nr = ARRAY_SIZE(extent_tree_v2_blocks);
++		add_block_group = false;
 +	}
++
+ 	if ((cfg->features & BTRFS_FEATURE_INCOMPAT_ZONED)) {
+ 		system_group_offset = cfg->zone_size * BTRFS_NR_SB_LOG_ZONES;
+ 		system_group_size = cfg->zone_size;
+@@ -309,6 +363,12 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
  
--	start = block_group->start;
--	end = block_group->start + block_group->length;
- 	while (1) {
- 		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
- 
-@@ -1106,6 +1110,7 @@ int populate_free_space_tree(struct btrfs_trans_handle *trans,
- 		if (ret)
- 			break;
+ 		btrfs_set_super_compat_ro_flags(&super, ro_flags);
  	}
-+done:
- 	if (start < end) {
- 		ret = __add_to_free_space_tree(trans, block_group, path2,
- 				start, end - start);
++	if (extent_tree_v2) {
++		btrfs_set_super_block_group_root(&super,
++						 cfg->blocks[MKFS_BLOCK_GROUP_TREE]);
++		btrfs_set_super_block_group_root_generation(&super, 1);
++		btrfs_set_super_block_group_root_level(&super, 0);
++	}
+ 	if (cfg->label)
+ 		__strncpy_null(super.label, cfg->label, BTRFS_LABEL_SIZE - 1);
+ 
+@@ -340,25 +400,12 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 
+ 		/* Add the block group item for our temporary chunk. */
+ 		if (cfg->blocks[blk] > system_group_offset && add_block_group) {
+-			struct btrfs_block_group_item *bg_item;
+-
++			itemoff -= sizeof(struct btrfs_block_group_item);
++			write_block_group_item(buf, nritems,
++					       system_group_offset,
++					       system_group_size, total_used,
++					       itemoff);
+ 			add_block_group = false;
+-
+-			itemoff -= sizeof(*bg_item);
+-			btrfs_set_disk_key_objectid(&disk_key, system_group_offset);
+-			btrfs_set_disk_key_offset(&disk_key, system_group_size);
+-			btrfs_set_disk_key_type(&disk_key, BTRFS_BLOCK_GROUP_ITEM_KEY);
+-			btrfs_set_item_key(buf, &disk_key, nritems);
+-			btrfs_set_item_offset(buf, btrfs_item_nr(nritems), itemoff);
+-			btrfs_set_item_size(buf, btrfs_item_nr(nritems), sizeof(*bg_item));
+-
+-			bg_item = btrfs_item_ptr(buf, nritems,
+-						 struct btrfs_block_group_item);
+-			btrfs_set_block_group_used(buf, bg_item, total_used);
+-			btrfs_set_block_group_flags(buf, bg_item,
+-						    BTRFS_BLOCK_GROUP_SYSTEM);
+-			btrfs_set_block_group_chunk_objectid(buf, bg_item,
+-					BTRFS_FIRST_CHUNK_TREE_OBJECTID);
+ 			nritems++;
+ 		}
+ 
+@@ -579,6 +626,14 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 			goto out;
+ 	}
+ 
++	if (extent_tree_v2) {
++		ret = create_block_group_tree(fd, cfg, buf,
++					      system_group_offset,
++					      system_group_size, total_used);
++		if (ret)
++			goto out;
++	}
++
+ 	/* and write out the super block */
+ 	memset(buf->data, 0, BTRFS_SUPER_INFO_SIZE);
+ 	memcpy(buf->data, &super, sizeof(super));
+diff --git a/mkfs/common.h b/mkfs/common.h
+index 66c9d9d0..6a48aa52 100644
+--- a/mkfs/common.h
++++ b/mkfs/common.h
+@@ -51,6 +51,7 @@ enum btrfs_mkfs_block {
+ 	MKFS_FS_TREE,
+ 	MKFS_CSUM_TREE,
+ 	MKFS_FREE_SPACE_TREE,
++	MKFS_BLOCK_GROUP_TREE,
+ 	MKFS_BLOCK_COUNT
+ };
+ 
+@@ -69,6 +70,17 @@ static const enum btrfs_mkfs_block extent_tree_v1_blocks[] = {
+ 	MKFS_FREE_SPACE_TREE,
+ };
+ 
++static const enum btrfs_mkfs_block extent_tree_v2_blocks[] = {
++	MKFS_ROOT_TREE,
++	MKFS_EXTENT_TREE,
++	MKFS_CHUNK_TREE,
++	MKFS_DEV_TREE,
++	MKFS_FS_TREE,
++	MKFS_CSUM_TREE,
++	MKFS_FREE_SPACE_TREE,
++	MKFS_BLOCK_GROUP_TREE,
++};
++
+ struct btrfs_mkfs_config {
+ 	/* Label of the new filesystem */
+ 	const char *label;
+diff --git a/mkfs/main.c b/mkfs/main.c
+index 9a57cef8..1653ab32 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -299,6 +299,11 @@ static int recow_roots(struct btrfs_trans_handle *trans,
+ 	ret = __recow_root(trans, info->dev_root);
+ 	if (ret)
+ 		return ret;
++        if (btrfs_fs_incompat(info, EXTENT_TREE_V2)) {
++		ret = __recow_root(trans, info->block_group_root);
++		if (ret)
++			return ret;
++        }
+ 	ret = recow_global_roots(trans);
+ 	if (ret)
+ 		return ret;
 -- 
 2.26.3
 
