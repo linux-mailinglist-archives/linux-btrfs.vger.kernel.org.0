@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F474469E1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Nov 2021 21:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C5F4469E2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Nov 2021 21:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233658AbhKEUnz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Nov 2021 16:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        id S233661AbhKEUn5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Nov 2021 16:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233555AbhKEUnx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:43:53 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6373C061205
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:41:13 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id bi29so9876350qkb.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:41:13 -0700 (PDT)
+        with ESMTP id S233593AbhKEUnz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:43:55 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFC9C061714
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:41:15 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id g13so7869318qtk.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:41:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=cjyp+iyJMKE7dQvZXu1Jjrqc82IKIZ7caisFHeyE2BM=;
-        b=W9MxFDN99w2FLMOzEsOcxgYFsvqCz0gabhIEOa/EJDHvy2CTAOonwHcfudSo4j2DOz
-         DvJGndSBYgyEqtZp2xxKeBebSdKPqgxquNTEDaczLZ2R7vlKahSERD0/+gdQvaerNQT6
-         lyyRcXiv07brBtPQGLovVyw7UIHY0gTcuIvnsSvILT3nTyjRaX/ei8H00rqmgnvbmFP4
-         UNIU43FBoqN/wdDD03An4JCryNl5AMFYhRRdwp+b0M3CFhVqUgUYlovvLrKfZ5GGJKNZ
-         1dDxOMO3Rqpv6S15L+QL3Mg7ohvLP4lOb3TNj5bz94tTxoUme1bQGIe/Ga2hNkGP14yA
-         puzw==
+        bh=AkCQ2BcBy4V2mlHKFbwaIlcHABtcv/nGbJ+ZWF8MQr8=;
+        b=zYdTab9LMs5VccWP27FYcSWd6EZt4Qxu95CFHalLB7/QRXyOhbi9Kn8SI5u310K83m
+         m/whxXfKm+cxgoWdNlNYrfa08QnY11Tlr1rFzSlp2HnTGpuLYODIjgqOxBggIOJJ1ju4
+         rnRNCV/r7J/NUb2VwBLkMTr3D1xl17uVDovdOvFtVEIpABm3ho1afZpXsTlKu1tlxE4p
+         WI0+m1WT78Kh+otkKdEtZCj9ebVKl9oOrrkx68ndxxzw5PbNxYdVaRDzlNQESGC1h0UR
+         OKsEqOR6HlUEu9nfC91liE9QedLjC0XexxfKHRRvkiHyP4ZLQybkKinGNp2HhPRc4KY8
+         /JuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cjyp+iyJMKE7dQvZXu1Jjrqc82IKIZ7caisFHeyE2BM=;
-        b=0udNIgmgPkvVWskI2DItOFAPP5FwiH9M+T6SRnHLJnf2JCuizrVAJ0OIws8GQK2A+I
-         Ms0g7qkQG6gtTnt3vI/KMDMTxoWPX/uMjlqyk5BUvOdVR02g7UWHYM5d/OGeiZ9/yJK1
-         4LwxAwVViJ9A32b4Hpbqbo4lNAJC/BDfxdQ2K33BU0z3y6qCqCjT5IXs/yf33Y1Y02an
-         ODtuWOQfs6zlW51+NxDQkq+PkzEx+CPiD4neWYcaT+ksz2iABIli6cL0qGn6UGNCSf2q
-         dRaTHz3O4HqQGTHqUpLaVjgTleXCqm/6XBfEjwlpnf/1US3CvCHH7JmMIoDOJ/zk6dAl
-         VK3w==
-X-Gm-Message-State: AOAM533JiXV6CDg9H+hXJHV8wqa/NOT67joNqpSPKw90dlj/BBh7i5f4
-        mEu9JBp2zBA7mRhMLh1S/63x097ViQsJoQ==
-X-Google-Smtp-Source: ABdhPJwFaVd6RxBXY3pikPiYGESmpK9PGX6utm9D5fs7QFqvItWnPw2Ii+No/tvSMy7EZJJAQryd9Q==
-X-Received: by 2002:a37:a847:: with SMTP id r68mr4820955qke.293.1636144872668;
-        Fri, 05 Nov 2021 13:41:12 -0700 (PDT)
+        bh=AkCQ2BcBy4V2mlHKFbwaIlcHABtcv/nGbJ+ZWF8MQr8=;
+        b=jRZK7zsmN3VYgY0R1DT3LXrEA80UtoVa9zuh4f8lRBc0c5lVV5Kkzzm3M7Uv53/KVD
+         FcHpjBjk1rU5EKDEjqkZOAQoe4vbzOM/iG+OD8vDl8FRy+IbpBn0I7fSCp5E15GDExHQ
+         2PC8xLZmxOYsnaXRSg+2KTsj/EIeugKINQFHVvyrS4/G3XPrGyOstVx0REXJEa5Cqh83
+         L0wT42UrqdTZpa4IeY4Ev/6Jo7eq+ZkaOArZcnE2cUypGpzLPnWidLo8J75VN+iDdgAt
+         gxFCrEh6U+RqI7pxF4uBTjUQRJYaJmbZncE8KgeNtl4hIN0pfrs/4H2KF7k5prIA/Fng
+         cmcg==
+X-Gm-Message-State: AOAM531zgCW4nzoHUGEiIBe2RdblGmfuFre6s5PMkaXk0I5NTtc9oozr
+        X8Xmpuv3d5nGlHwqvOc3CigetEdYV6xTLA==
+X-Google-Smtp-Source: ABdhPJxHcgU2MVCVThWGmlLpbFkgQD1QF1fT5I/zWjchv/ngI2dWSK2xnsQ1qRzaLVtiF+0EEq3OZQ==
+X-Received: by 2002:ac8:1ca:: with SMTP id b10mr63882499qtg.327.1636144874120;
+        Fri, 05 Nov 2021 13:41:14 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id c64sm10552qkg.25.2021.11.05.13.41.12
+        by smtp.gmail.com with ESMTPSA id u26sm1594260qtc.70.2021.11.05.13.41.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 13:41:12 -0700 (PDT)
+        Fri, 05 Nov 2021 13:41:13 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 17/22] btrfs-progs: add a btrfs_delete_and_free_root helper
-Date:   Fri,  5 Nov 2021 16:40:43 -0400
-Message-Id: <669d869249be8b9e3d7fa186ff7905a71d63eb80.1636144276.git.josef@toxicpanda.com>
+Subject: [PATCH 18/22] btrfs-progs: make btrfs_clear_free_space_tree extent tree v2 aware
+Date:   Fri,  5 Nov 2021 16:40:44 -0400
+Message-Id: <7c11a6aef78ff3379ff69c7ccfbd3dd7069a15c9.1636144276.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1636144275.git.josef@toxicpanda.com>
 References: <cover.1636144275.git.josef@toxicpanda.com>
@@ -61,98 +61,62 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The free space tree code already does this, but we need it for cleaning
-up per block group roots.  Abstract this code out into a helper so that
-we can use it in multiple places in the future.
+With extent tree v2 we'll have multiple free space trees, and we can't
+just unset the feature flags for the free space tree.  Fix this to loop
+through all of the free space trees and clear them out properly.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/disk-io.c         | 25 +++++++++++++++++++++++++
- kernel-shared/disk-io.h         |  2 ++
- kernel-shared/free-space-tree.c | 24 +++---------------------
- 3 files changed, 30 insertions(+), 21 deletions(-)
+ kernel-shared/free-space-tree.c | 37 ++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 10 deletions(-)
 
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index af29a7ae..c35bdff4 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -2349,6 +2349,31 @@ int btrfs_set_buffer_uptodate(struct extent_buffer *eb)
- 	return set_extent_buffer_uptodate(eb);
- }
- 
-+int btrfs_delete_and_free_root(struct btrfs_trans_handle *trans,
-+			       struct btrfs_root *root)
-+{
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct btrfs_root *tree_root = fs_info->tree_root;
-+	int ret;
-+
-+	ret = btrfs_del_root(trans, tree_root, &root->root_key);
-+	if (ret)
-+		return ret;
-+
-+	list_del(&root->dirty_list);
-+	ret = clean_tree_block(root->node);
-+	if (ret)
-+		return ret;
-+	ret = btrfs_free_tree_block(trans, root, root->node, 0, 1);
-+	if (ret)
-+		return ret;
-+	rb_erase(&root->rb_node, &fs_info->global_roots_tree);
-+	free_extent_buffer(root->node);
-+	free_extent_buffer(root->commit_root);
-+	kfree(root);
-+	return 0;
-+}
-+
- struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
- 				     struct btrfs_fs_info *fs_info,
- 				     u64 objectid)
-diff --git a/kernel-shared/disk-io.h b/kernel-shared/disk-io.h
-index e2c2f3d9..fa4d41f3 100644
---- a/kernel-shared/disk-io.h
-+++ b/kernel-shared/disk-io.h
-@@ -217,6 +217,8 @@ int btrfs_fs_roots_compare_roots(struct rb_node *node1, struct rb_node *node2);
- struct btrfs_root *btrfs_create_tree(struct btrfs_trans_handle *trans,
- 				     struct btrfs_fs_info *fs_info,
- 				     u64 objectid);
-+int btrfs_delete_and_free_root(struct btrfs_trans_handle *trans,
-+			       struct btrfs_root *root);
- struct btrfs_root *btrfs_csum_root(struct btrfs_fs_info *fs_info, u64 bytenr);
- struct btrfs_root *btrfs_extent_root(struct btrfs_fs_info *fs_inf, u64 bytenr);
- struct btrfs_root *btrfs_global_root(struct btrfs_fs_info *fs_info,
 diff --git a/kernel-shared/free-space-tree.c b/kernel-shared/free-space-tree.c
-index a82865d3..0a13b1d6 100644
+index 0a13b1d6..70306175 100644
 --- a/kernel-shared/free-space-tree.c
 +++ b/kernel-shared/free-space-tree.c
-@@ -1257,27 +1257,9 @@ int btrfs_clear_free_space_tree(struct btrfs_fs_info *fs_info)
- 	if (ret)
- 		goto abort;
+@@ -1248,18 +1248,35 @@ int btrfs_clear_free_space_tree(struct btrfs_fs_info *fs_info)
+ 	if (IS_ERR(trans))
+ 		return PTR_ERR(trans);
  
--	ret = btrfs_del_root(trans, tree_root, &free_space_root->root_key);
+-	features = btrfs_super_compat_ro_flags(fs_info->super_copy);
+-	features &= ~(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |
+-		      BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE);
+-	btrfs_set_super_compat_ro_flags(fs_info->super_copy, features);
++	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
++		struct btrfs_key key = {
++			.objectid = BTRFS_FREE_SPACE_TREE_OBJECTID,
++			.type = BTRFS_ROOT_ITEM_KEY,
++			.offset = 0,
++		};
++
++		while (key.offset < fs_info->num_global_roots) {
++			free_space_root = btrfs_global_root(fs_info, &key);
++			ret = clear_free_space_tree(trans, free_space_root);
++			if (ret)
++				goto abort;
++			key.offset++;
++		}
++	} else {
++		features = btrfs_super_compat_ro_flags(fs_info->super_copy);
++		features &= ~(BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |
++			      BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE);
++		btrfs_set_super_compat_ro_flags(fs_info->super_copy, features);
+ 
+-	ret = clear_free_space_tree(trans, free_space_root);
 -	if (ret)
 -		goto abort;
--
--	list_del(&free_space_root->dirty_list);
--
--	ret = clean_tree_block(free_space_root->node);
--	if (ret)
--		goto abort;
--	ret = btrfs_free_tree_block(trans, free_space_root,
--				    free_space_root->node, 0, 1);
--	if (ret)
--		goto abort;
--
--	rb_erase(&free_space_root->rb_node, &fs_info->global_roots_tree);
--	free_extent_buffer(free_space_root->node);
--	free_extent_buffer(free_space_root->commit_root);
--	kfree(free_space_root);
--
--	ret = btrfs_commit_transaction(trans, tree_root);
--
-+	ret = btrfs_delete_and_free_root(trans, free_space_root);
-+	if (!ret)
-+		ret = btrfs_commit_transaction(trans, tree_root);
++		ret = clear_free_space_tree(trans, free_space_root);
++		if (ret)
++			goto abort;
+ 
+-	ret = btrfs_delete_and_free_root(trans, free_space_root);
+-	if (!ret)
+-		ret = btrfs_commit_transaction(trans, tree_root);
++		ret = btrfs_delete_and_free_root(trans, free_space_root);
++		if (ret)
++			goto abort;
++	}
++	ret = btrfs_commit_transaction(trans, tree_root);
  abort:
  	return ret;
  }
