@@ -2,71 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4944462FF
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Nov 2021 12:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB4D44635D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Nov 2021 13:28:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232712AbhKELxy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Nov 2021 07:53:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58646 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231952AbhKELxy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 07:53:54 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E8AAB212BC;
-        Fri,  5 Nov 2021 11:51:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1636113073;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        id S232130AbhKEMan (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Nov 2021 08:30:43 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58792 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232105AbhKEMam (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 08:30:42 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 56AEE1FD48;
+        Fri,  5 Nov 2021 12:28:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636115281; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GLnNnciQBxIm9dixRppFJ+O0DJZUtntS5N+qiTHFsOk=;
-        b=QGKUrVmHdbFSvfebjLm7+PDrDmzpoOQtFZFoS59vEbTVIX4uuhIpHnl5pykPRAhrGHapY/
-        z2FSUQLoQDc/O9bz9g7pOpXvLyq0BtraoJDF0t4ZGzaPNMNKX9yrgQVd9OwYS3fmFwafiW
-        ZCkrR/IZGyWX77Xk1bfLrA/nReXpZvE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1636113073;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GLnNnciQBxIm9dixRppFJ+O0DJZUtntS5N+qiTHFsOk=;
-        b=XmnFOHLvbF63Qn7w8zeOmTQNgGsCVcSCapG2I/0BL4ozfL6aDd9X3CWUMC32fGXnA8mV68
-        F5z6PhRZ/4GLdcAA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E19802C144;
-        Fri,  5 Nov 2021 11:51:13 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CF83CDA735; Fri,  5 Nov 2021 12:50:36 +0100 (CET)
-Date:   Fri, 5 Nov 2021 12:50:36 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Wang Yugui <wangyugui@e16-tech.com>
-Cc:     Sidong Yang <realwakka@gmail.com>,
+        bh=qy7qM6tsegDv130WHVbzxvoBhS7uJT0hwAnyTXDCcQw=;
+        b=PvgDrMyTWM0e8bTfZzjlAHG5HxdQ5EbcHnLS81JIVz7xyvLdyCH7AGfEB7A3czKNCsk1p9
+        vg7j9YfBDN6Zly3m3G46xcT2sMMvPqqAuJP3QIHX5eW4MjMBgGLLRApDnvu2bW1Dv8+2Ia
+        tDCg0fXiKqPbkbDjQj6dWuTD03nK/mA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3200D13FFD;
+        Fri,  5 Nov 2021 12:28:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id UjexCVEjhWFzRwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Fri, 05 Nov 2021 12:28:01 +0000
+Subject: Re: [PATCH v2] btrfs-progs: check: change commit condition in
+ fixup_extent_refs()
+To:     Sidong Yang <realwakka@gmail.com>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2] btrfs-progs: balance: print warn mesg in old command
-Message-ID: <20211105115036.GH28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Wang Yugui <wangyugui@e16-tech.com>,
-        Sidong Yang <realwakka@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20211031131011.42401-1-realwakka@gmail.com>
- <20211105160541.ED15.409509F4@e16-tech.com>
+References: <20211104141610.48818-1-realwakka@gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <7f57af76-b994-e558-5aef-22f8644d3aef@suse.com>
+Date:   Fri, 5 Nov 2021 14:28:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211105160541.ED15.409509F4@e16-tech.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20211104141610.48818-1-realwakka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 04:05:41PM +0800, Wang Yugui wrote:
-> Hi,
-> 
-> This patch broken tests/cli-tests/002-balance-full-no-filters.
-> 
-> becasue this
-> 	printf("WARNING:\n\n");
->         printf("\tFull balance without filters requested. This operation is very\n");
-> is put after fork() in this patch when '--backgroud';
 
-Right, I ran all the other tests than test-cli. I'll remove the patch
-from 5.15 queue.
+
+On 4.11.21 г. 16:16, Sidong Yang wrote:
+> This patch fixes potential bugs in fixup_extent_refs(). If
+> btrfs_start_transaction() fails in some way and returns error ptr, It
+> goes to out logic. But old code checkes whether it is null and it calls
+> commit. This patch solves the problem with make that it calls only if
+> ret is no error.
+> 
+> Issue: #409
+> 
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+> v2:
+>  - Checks ret as well as trans
+> ---
+>  check/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/check/main.c b/check/main.c
+> index 235a9bab..ddcc5c44 100644
+> --- a/check/main.c
+> +++ b/check/main.c
+> @@ -7735,7 +7735,7 @@ static int fixup_extent_refs(struct cache_tree *extent_cache,
+>  			goto out;
+>  	}
+>  out:
+> -	if (trans) {
+> +	if (!ret && !IS_ERR(trans)) {
+>  		int err = btrfs_commit_transaction(trans, gfs_info->extent_root);
+>  
+>  		if (!ret)
+> 
