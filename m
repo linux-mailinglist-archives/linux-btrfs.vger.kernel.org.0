@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04ACB4469AF
+	by mail.lfdr.de (Postfix) with ESMTP id 4F91F4469B0
 	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Nov 2021 21:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233591AbhKEUbg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Nov 2021 16:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52466 "EHLO
+        id S232016AbhKEUbi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Nov 2021 16:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233558AbhKEUbg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:31:36 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E284DC061714
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:28:55 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id u16so8046919qvk.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:28:55 -0700 (PDT)
+        with ESMTP id S233558AbhKEUbh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:31:37 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57875C061714
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:28:57 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id u7so8294708qtc.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:28:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=uDUd9Djc18/EZmjFf2IWDQX1z3kaklI7M8l12xYdp4c=;
-        b=SHfepNGii35MlaydK1iFjpYD/pAatPypvs+j1ex6aHke4sJv3veENp9bCAkQG4r3Sm
-         vxbMPoReQbrHfOQKouZi6EPh8VyXNyfj831l/pXW6VTqZ3hIO1P58nuE1gJk6Iueh6GA
-         3FO0pcDPVe7AtyH9+KsYaRm7qEL7gr3RNYKU9LiERZZ2OlbyTxCbxpvbhDwaHQq4hHuN
-         CifT1W34aBI0cdaDYDDlzbZMQ9vcF+Pgpz2M3vlXsI2mAUR5c9ov847gbQv06Ck6M8eL
-         PzEtlmn8/GlGkh+uiG4PBW5Qy78hXTh7mb5KFlE/JTLh05Laou1/ckBuieOCK3bSr67i
-         1yNA==
+        bh=2BeCkkhFN5j+8LBsWbF9ujUHhrFgTG5V3qbkQhyx8vQ=;
+        b=R3aIQG9kzHQXWcbPzWqZrj0TQ4Wo76QPS31Bmf+IsyTNcrt7q1uTdiVO1PZY4t1hYp
+         vFyohmPnAJxbZ09eEi7+WyYoNSkdyxpj46q1PrHOlTZQnc1S3OupjC3bGzF7kxgtiAJ+
+         eg0Z7lI5wV3s84VJephup0ML2Z1QqRsvWdr+YfsNRaLNGrXJ7N4KM82Is3VthAvou7Rc
+         qewMb5B3MxxIo2FM+9KFAFmc0AbnGCl/riic6c9Ud2o7tX/NbaEQQVMJeZ21Q3PY7nDl
+         ZnY4hORSuugKp0H4ADw2yv90NArobMda4X8H1NdQsRvqlXWmuMTTsYYK7LorzQ/rEeNt
+         yo1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uDUd9Djc18/EZmjFf2IWDQX1z3kaklI7M8l12xYdp4c=;
-        b=tzOAcOAJQ+AWCbGfK7Neg/zGAQaHDp3XWZPs1XgTUKlnWihp5TbggiRGJUtC8ifYlD
-         rjhqMMj9NZN+70wPAKM3COuglfgh7/qHZbJPiNjHumM4nhJBTiLnm82KAQKiYUrgjaiu
-         EveBFPT5QpeJRd5E4OUXzXr9FvhQdCZub7zq6QigQl/EgcaUdnk7PqYhS6BtHUxk/8DR
-         4ambzrbJgZ0NwXC4d29R1HENmrSTJX5/CipVZHMHvUamkrDq2+3DYq3oJXB/Mx6ZRlv2
-         IeKejvr3jjvYlWDwVz9gttbinzhIviKWm+y08kwlh79r6ftl/U9FxhBDFx121lOr4UhW
-         Vgfg==
-X-Gm-Message-State: AOAM531pRXYnM3C0Wjtr1t6G2H1lDphZX7D16nqqj3Y3YYfwehUeiI7F
-        f0IiKWCCRIruO5foYB6XS9FNyAkyEKSPZA==
-X-Google-Smtp-Source: ABdhPJw+VcAqibaF0ac1M64w5bKBT8wy7Pb0cbTunCxJVE9p71fQgGngOvfSysUOhB30VjbgSlk6XQ==
-X-Received: by 2002:a05:6214:906:: with SMTP id dj6mr1415900qvb.11.1636144134689;
-        Fri, 05 Nov 2021 13:28:54 -0700 (PDT)
+        bh=2BeCkkhFN5j+8LBsWbF9ujUHhrFgTG5V3qbkQhyx8vQ=;
+        b=35f4yqq9AsrfiKaTOiqhQXoBlIYalZtSyV1iYUzOICMsvfDOCPSFQHEsc8ia6/Koi2
+         +IG1gcVrZZdgkehQYByQXy8RnNVZ1pH2MXKYt3nma6KULIixEdbpbGB2VhUhEouYJQw9
+         BnTyzNiCwmE02zcdMu5Jm4IxmuYIseEZFFK46/cJx15gVX9tYwgZg/Q5P0nYoLmcRF48
+         EdJ0ouEkKNLYhjGEyYCmNyo+OBPE6+uxRZxZyFO3QWhxVXjJrgYrWK2w1fqR/jkqBCl2
+         2rKFzl9wVuTx6ZQ68btgo0PkvPbmUa+L4uGyzvE394TYRo8Fv4IMPSFLuAH1U26x6auM
+         VdBw==
+X-Gm-Message-State: AOAM530ktHi9sAO3Mx5oIYnY0px076JwttJxtGmEFeI662EWgfyCpNfo
+        ecvweIjiqmOEiA5mS4UKEzTpcSf5ncAtcQ==
+X-Google-Smtp-Source: ABdhPJzhW1u8aFF/1pUIr/a+d3CdTXVa8hlrgVu4w5m97tGveiHp5u4c0jo2nAG6udJcQmyqkPqmgw==
+X-Received: by 2002:ac8:610b:: with SMTP id a11mr63282050qtm.182.1636144136091;
+        Fri, 05 Nov 2021 13:28:56 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id l15sm6666778qtk.41.2021.11.05.13.28.53
+        by smtp.gmail.com with ESMTPSA id j8sm6754244qta.79.2021.11.05.13.28.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 13:28:54 -0700 (PDT)
+        Fri, 05 Nov 2021 13:28:55 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 05/20] btrfs-progs: btrfs-shared: stop passing root to csum related functions
-Date:   Fri,  5 Nov 2021 16:28:30 -0400
-Message-Id: <3eb2d14594f36893b7bd4ea28b38b00548f4aca3.1636143924.git.josef@toxicpanda.com>
+Subject: [PATCH 06/20] btrfs-progs: check: stop passing csum root around
+Date:   Fri,  5 Nov 2021 16:28:31 -0400
+Message-Id: <d3f2065cdfc56e6fe96e7cf1b736899ef7699111.1636143924.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1636143924.git.josef@toxicpanda.com>
 References: <cover.1636143924.git.josef@toxicpanda.com>
@@ -61,97 +61,91 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We are going to need to start looking up the csum root based on the
-bytenr with extent tree v2.  To that end stop passing the root to the
-csum related functions so that can be done in the helper functions
-themselves.
-
-There's an unrelated deletion of a function prototype that no longer
-exists, if desired I can break that out from this patch.
+We pass the csum root from way high in the call chain in check down to
+where we actually need it.  However we can just get it from the fs_info
+in these places, so clean up the functions to skip passing around the
+csum root needlessly.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/main.c              | 4 ++--
- convert/main.c            | 1 -
- kernel-shared/ctree.h     | 6 +-----
- kernel-shared/file-item.c | 4 ++--
- mkfs/rootdir.c            | 2 +-
- 5 files changed, 6 insertions(+), 11 deletions(-)
+ check/main.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
 diff --git a/check/main.c b/check/main.c
-index 235a9bab..08810c5f 100644
+index 08810c5f..22306cf4 100644
 --- a/check/main.c
 +++ b/check/main.c
-@@ -9484,8 +9484,8 @@ static int populate_csum(struct btrfs_trans_handle *trans,
- 				       &sectorsize, 0);
- 		if (ret)
- 			break;
--		ret = btrfs_csum_file_block(trans, csum_root, start + len,
--					    start + offset, buf, sectorsize);
-+		ret = btrfs_csum_file_block(trans, start + len, start + offset,
-+					    buf, sectorsize);
- 		if (ret)
- 			break;
- 		offset += sectorsize;
-diff --git a/convert/main.c b/convert/main.c
-index 223eebad..7f33d4e1 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -187,7 +187,6 @@ static int csum_disk_extent(struct btrfs_trans_handle *trans,
- 		if (ret)
- 			break;
- 		ret = btrfs_csum_file_block(trans,
--					    root->fs_info->csum_root,
- 					    disk_bytenr + num_bytes,
- 					    disk_bytenr + offset,
- 					    buffer, blocksize);
-diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
-index 3c0743cc..73904255 100644
---- a/kernel-shared/ctree.h
-+++ b/kernel-shared/ctree.h
-@@ -2847,12 +2847,8 @@ int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
- int btrfs_insert_inline_extent(struct btrfs_trans_handle *trans,
- 				struct btrfs_root *root, u64 objectid,
- 				u64 offset, const char *buffer, size_t size);
--int btrfs_csum_file_block(struct btrfs_trans_handle *trans,
--			  struct btrfs_root *root, u64 alloc_end,
-+int btrfs_csum_file_block(struct btrfs_trans_handle *trans, u64 alloc_end,
- 			  u64 bytenr, char *data, size_t len);
--int btrfs_csum_truncate(struct btrfs_trans_handle *trans,
--			struct btrfs_root *root, struct btrfs_path *path,
--			u64 isize);
- 
- /* uuid-tree.c, interface for mounted mounted filesystem */
- int btrfs_lookup_uuid_subvol_item(int fd, const u8 *uuid, u64 *subvol_id);
-diff --git a/kernel-shared/file-item.c b/kernel-shared/file-item.c
-index c910e27e..5bf6aab4 100644
---- a/kernel-shared/file-item.c
-+++ b/kernel-shared/file-item.c
-@@ -183,9 +183,9 @@ fail:
+@@ -9494,9 +9494,9 @@ static int populate_csum(struct btrfs_trans_handle *trans,
  }
  
- int btrfs_csum_file_block(struct btrfs_trans_handle *trans,
--			  struct btrfs_root *root, u64 alloc_end,
--			  u64 bytenr, char *data, size_t len)
-+			  u64 alloc_end, u64 bytenr, char *data, size_t len)
+ static int fill_csum_tree_from_one_fs_root(struct btrfs_trans_handle *trans,
+-				      struct btrfs_root *csum_root,
+-				      struct btrfs_root *cur_root)
++					   struct btrfs_root *cur_root)
  {
-+	struct btrfs_root *root = trans->fs_info->csum_root;
- 	int ret = 0;
- 	struct btrfs_key file_key;
- 	struct btrfs_key found_key;
-diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-index 16ff257a..92be32ea 100644
---- a/mkfs/rootdir.c
-+++ b/mkfs/rootdir.c
-@@ -403,7 +403,7 @@ again:
- 		 * we're doing the csum before we record the extent, but
- 		 * that's ok
- 		 */
--		ret = btrfs_csum_file_block(trans, root->fs_info->csum_root,
-+		ret = btrfs_csum_file_block(trans,
- 				first_block + bytes_read + sectorsize,
- 				first_block + bytes_read,
- 				eb->data, sectorsize);
++	struct btrfs_root *csum_root = gfs_info->csum_root;
+ 	struct btrfs_path path;
+ 	struct btrfs_key key;
+ 	struct extent_buffer *node;
+@@ -9557,8 +9557,7 @@ out:
+ 	return ret;
+ }
+ 
+-static int fill_csum_tree_from_fs(struct btrfs_trans_handle *trans,
+-				  struct btrfs_root *csum_root)
++static int fill_csum_tree_from_fs(struct btrfs_trans_handle *trans)
+ {
+ 	struct btrfs_path path;
+ 	struct btrfs_root *tree_root = gfs_info->tree_root;
+@@ -9598,8 +9597,7 @@ static int fill_csum_tree_from_fs(struct btrfs_trans_handle *trans,
+ 				key.objectid);
+ 			goto out;
+ 		}
+-		ret = fill_csum_tree_from_one_fs_root(trans, csum_root,
+-				cur_root);
++		ret = fill_csum_tree_from_one_fs_root(trans, cur_root);
+ 		if (ret < 0)
+ 			goto out;
+ next:
+@@ -9617,10 +9615,10 @@ out:
+ 	return ret;
+ }
+ 
+-static int fill_csum_tree_from_extent(struct btrfs_trans_handle *trans,
+-				      struct btrfs_root *csum_root)
++static int fill_csum_tree_from_extent(struct btrfs_trans_handle *trans)
+ {
+ 	struct btrfs_root *extent_root = gfs_info->extent_root;
++	struct btrfs_root *csum_root = gfs_info->csum_root;
+ 	struct btrfs_path path;
+ 	struct btrfs_extent_item *ei;
+ 	struct extent_buffer *leaf;
+@@ -9690,13 +9688,12 @@ static int fill_csum_tree_from_extent(struct btrfs_trans_handle *trans,
+  * will use fs/subvol trees to init the csum tree.
+  */
+ static int fill_csum_tree(struct btrfs_trans_handle *trans,
+-			  struct btrfs_root *csum_root,
+ 			  int search_fs_tree)
+ {
+ 	if (search_fs_tree)
+-		return fill_csum_tree_from_fs(trans, csum_root);
++		return fill_csum_tree_from_fs(trans);
+ 	else
+-		return fill_csum_tree_from_extent(trans, csum_root);
++		return fill_csum_tree_from_extent(trans);
+ }
+ 
+ static void free_roots_info_cache(void)
+@@ -10700,8 +10697,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 				goto close_out;
+ 			}
+ 
+-			ret = fill_csum_tree(trans, gfs_info->csum_root,
+-					     init_extent_tree);
++			ret = fill_csum_tree(trans, init_extent_tree);
+ 			err |= !!ret;
+ 			if (ret) {
+ 				error("checksum tree refilling failed: %d", ret);
 -- 
 2.26.3
 
