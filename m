@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FEB446A02
+	by mail.lfdr.de (Postfix) with ESMTP id CE448446A03
 	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Nov 2021 21:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233756AbhKEUs7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Nov 2021 16:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56388 "EHLO
+        id S232810AbhKEUtA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Nov 2021 16:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233754AbhKEUsy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:48:54 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9460BC06120E
-        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:46:13 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id u7so8336974qtc.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:46:13 -0700 (PDT)
+        with ESMTP id S233760AbhKEUsz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Nov 2021 16:48:55 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFACEC061714
+        for <linux-btrfs@vger.kernel.org>; Fri,  5 Nov 2021 13:46:14 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id bm28so9873434qkb.9
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Nov 2021 13:46:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=asZdoKSDjmIrE7eQTEkp38011/Esa3FZnRjeOqa44VE=;
-        b=r2Pv+9MrSeRWxDkXA8lPhRaYJG+cBHoqzm5ccxI9thcoaUXVUygE3MhaxeSeYcTXMI
-         4vE/NiM4cd1/9FLifCUeEUgDElVNLLKmYUzbSsK7+DAKDSIHji5W+bpCcfhXNg1lN2Fv
-         7sISkCHe8YcXyb6tBNpqlzwxyzXk9CX8iOqxL+X4Rmz8aFcBLdKeUPq/BC/3k+GXHqDR
-         kajbBw+6IdTXcHRjDjYCXGBsFWMEAHZCpkW8le+UPcwj2MbdKRjq6Hp6mGfW3huplFDk
-         EdNhPdjwvGMD56P/5DrgFtO4GR2LGnjFqzp05ADn5lkS+wruTXrtpDkGGRXEpIzGFTUn
-         WiWQ==
+        bh=O6Js92v4mWwWzxhWJTuiturFVEFfGsnUr+zndkZZRFM=;
+        b=jY5ON/G/rqC6oNZeX9NErxbhAavhSZ0kL1k5MIStIqfpmqkUh9Jtbl9bMxxE1+FWc4
+         XQ+jjj1VSSA/1iZnU9vRov/RrjVimAyiU8OOQFosWHFJfk5VZ/XS+vcW02yDIyY6PGSL
+         goXcOjtBWevm/6iCkYcXcQbJsm55TcTa2TFi07HqNH2F5PPVGNhdjh2hyHKhi6DXtQu5
+         00C4ROMBKNUhZYB8gCRVDXGdtaSzjXKuUCPuDRnqeMWpwD2vu3Vky7WTbzK7FhgfdzmB
+         lViJb/M2VCgZdISLz2mfrjmtsYlYF+1K1Cu5TchM2NDEOtzH18nL7/FmkoksYU1LABaF
+         0S8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=asZdoKSDjmIrE7eQTEkp38011/Esa3FZnRjeOqa44VE=;
-        b=2kGPyG9KPJMo9uEwbA/OxAYZ32U3I1edRjBKvUnbSMDVN5+8XYXBWiL8sqF4t3cz7s
-         +LiyYgHsvsdZWesbbB2EtR/e9P7ZY0oKGhnkLuK9YECYyMaG2IaTfVcj5gTlriO8XLEi
-         9t7DhpF15uXBKws0JlHt9hCZdyoabAz86u2FPt/5ZoPEGMd2rutnnibzRJuiHTnQaQfA
-         rzoxdQpwUBLEXDz8N2Ssa7IptP3orlIEtGNSUMnnPyICn2vKudF5R/34kP/xh5FW2W4d
-         e+9n580A1DtSQHrYlsxr4FxPHaLJYvD94jTo1uGkj+DtNFihX1G4EiCyYQuTa0Jc8wQp
-         aiZw==
-X-Gm-Message-State: AOAM532QU3j5nxgaDBFYDSV/LDJVrrwYYqWzIA0P+qK25RGCHR1ovkms
-        Ajnd5Kj0AOhoqA41VIawjP2mUELVIcroAA==
-X-Google-Smtp-Source: ABdhPJwMtZdutnZ+2xS43q7ektfvX+uXCsJ/6m6ipHQGCCGo6I7D5DSV2rktedIBQXEAcyYrVYezZA==
-X-Received: by 2002:a05:622a:198a:: with SMTP id u10mr20996519qtc.156.1636145172477;
-        Fri, 05 Nov 2021 13:46:12 -0700 (PDT)
+        bh=O6Js92v4mWwWzxhWJTuiturFVEFfGsnUr+zndkZZRFM=;
+        b=DJ4wLGMDpnYjIA4QuzjkDV47nVgalfxKrkUIo1CmzHwLKTdd93Myfu8Z4T7C66BDWQ
+         B/JWtExgfQan96qUHRWrvZIbBV/mnURxB/ldEEowSvYxJWdIY2ugkb+LExx20VLZz02Y
+         Mg5sI+NRN+PqVXz7fxm0cpVhVxNeka5T7o9B1OYb155cROte0YsjDmAujT/Ebn3nOGZN
+         h+2K5HwODyLW0BceVg+2UizAZVaq7wERzA4EZSIy5T0OhkPehbUEZNlRt6pMFXoK5KHf
+         AMrHXF9yxTtMEXP6G/LDTRlbFeaVzj96iuCKJ3bcFhckzxCC/xEVTl8MRjwSror0JAqo
+         O4jw==
+X-Gm-Message-State: AOAM530RiSVO05R886dag7NZAnRT7zqKLV8MxUZi8nWfMteRfQGj1GMx
+        fIuhIKSxqgj3Z5HnNuOsbYRoRl0LGlzxIQ==
+X-Google-Smtp-Source: ABdhPJwgyzQH4++0kV4x738Vl7/YzZdGpXSH80wCpiokmTebIJlVK49xxdTTmy+bY+mtgrlXO70dGA==
+X-Received: by 2002:a05:620a:1317:: with SMTP id o23mr2516186qkj.189.1636145173823;
+        Fri, 05 Nov 2021 13:46:13 -0700 (PDT)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id i67sm5790887qkd.90.2021.11.05.13.46.11
+        by smtp.gmail.com with ESMTPSA id m68sm5961656qkb.105.2021.11.05.13.46.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Nov 2021 13:46:12 -0700 (PDT)
+        Fri, 05 Nov 2021 13:46:13 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 14/25] btrfs: remove unnecessary extent root check in btrfs_defrag_leaves
-Date:   Fri,  5 Nov 2021 16:45:40 -0400
-Message-Id: <044f71dad030673718c4c888e1df2ca023ff5dbb.1636144971.git.josef@toxicpanda.com>
+Subject: [PATCH 15/25] btrfs: don't use the extent root in btrfs_chunk_alloc_add_chunk_item
+Date:   Fri,  5 Nov 2021 16:45:41 -0400
+Message-Id: <5727e025cd94712c10decf691db251d935a128ed.1636144971.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1636144971.git.josef@toxicpanda.com>
 References: <cover.1636144971.git.josef@toxicpanda.com>
@@ -61,33 +61,36 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We only defrag leaves on roots that have SHAREABLE set, so we don't need
-to check if we're the extent root as it doesn't have SHAREABLE set.
+We're just using the extent_root to set the chunk owner to
+root_key->objectid, which is BTRFS_EXTENT_TREE_OBJECTID, so use that
+directly instead of using the root.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/tree-defrag.c | 8 --------
- 1 file changed, 8 deletions(-)
+ fs/btrfs/volumes.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/tree-defrag.c b/fs/btrfs/tree-defrag.c
-index 7c45d960b53c..b6cf39f4e7e4 100644
---- a/fs/btrfs/tree-defrag.c
-+++ b/fs/btrfs/tree-defrag.c
-@@ -27,14 +27,6 @@ int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
- 	int next_key_ret = 0;
- 	u64 last_ret = 0;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 546bf1146b2d..85842eb1f7b1 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5502,7 +5502,6 @@ int btrfs_chunk_alloc_add_chunk_item(struct btrfs_trans_handle *trans,
+ 				     struct btrfs_block_group *bg)
+ {
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+-	struct btrfs_root *extent_root = fs_info->extent_root;
+ 	struct btrfs_root *chunk_root = fs_info->chunk_root;
+ 	struct btrfs_key key;
+ 	struct btrfs_chunk *chunk;
+@@ -5574,7 +5573,7 @@ int btrfs_chunk_alloc_add_chunk_item(struct btrfs_trans_handle *trans,
+ 	}
  
--	if (root->fs_info->extent_root == root) {
--		/*
--		 * there's recursion here right now in the tree locking,
--		 * we can't defrag the extent root without deadlock
--		 */
--		goto out;
--	}
--
- 	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
- 		goto out;
- 
+ 	btrfs_set_stack_chunk_length(chunk, bg->length);
+-	btrfs_set_stack_chunk_owner(chunk, extent_root->root_key.objectid);
++	btrfs_set_stack_chunk_owner(chunk, BTRFS_EXTENT_TREE_OBJECTID);
+ 	btrfs_set_stack_chunk_stripe_len(chunk, map->stripe_len);
+ 	btrfs_set_stack_chunk_type(chunk, map->type);
+ 	btrfs_set_stack_chunk_num_stripes(chunk, map->num_stripes);
 -- 
 2.26.3
 
