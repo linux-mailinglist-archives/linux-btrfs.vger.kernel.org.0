@@ -2,159 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB77446BAD
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Nov 2021 01:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02360446BB2
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Nov 2021 02:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbhKFA6T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Nov 2021 20:58:19 -0400
-Received: from mout.gmx.net ([212.227.15.18]:50197 "EHLO mout.gmx.net"
+        id S233433AbhKFBIt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Nov 2021 21:08:49 -0400
+Received: from mout.gmx.net ([212.227.15.15]:32785 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229504AbhKFA6M (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 5 Nov 2021 20:58:12 -0400
+        id S230081AbhKFBIs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 5 Nov 2021 21:08:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636160125;
-        bh=eGCHjYoLvNAPTtDoSco/R7taXwk5n7a+30fsWVX5l8I=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=VivQNKrUB/cAzAgmu4laXo8ytCie5Ni8qsMoVGiSsLAfnuVGcvO8oLHCVXNY05Vu6
-         IS5Jpj8PFgopYkADv7yXh+KnCnU6UDUNbipmWJP8WcKLUcp5+SWNALDXyZrzhUdulV
-         hDZ0rKnohPLiq/cYCbsl/jaInZqQQO+0yKhTQEK8=
+        s=badeba3b8450; t=1636160762;
+        bh=Z9EDlslOuixHZs2ImYxqTCcIP8SKFB2EmXKMHwNi0H8=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=H79VAabSqgqEQrQDhJ2G+RoCyRcrxxJ92qpKQXqOHQqmE1chwZI2YDbsoGjgiRzY2
+         id7axnuQk6Twh0KdA3SXOuvwvl4QOIuBl8WBSA0XPHQFz1D2S20qKv3ui3Dh8RNlQB
+         +fLi8HCIKb1VTKR4YH5Kzojt+VRL9dF24tC6yFoo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5GDv-1mYorh1bDp-0118IS; Sat, 06
- Nov 2021 01:55:25 +0100
-Message-ID: <80f4c9f3-91dd-5afe-efd7-d60c5d4bcdcf@gmx.com>
-Date:   Sat, 6 Nov 2021 08:55:21 +0800
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M5QJD-1mhmiC2exh-001UoV; Sat, 06
+ Nov 2021 02:06:02 +0100
+Message-ID: <59a47abb-4725-bbcd-ce44-2b78c46eda57@gmx.com>
+Date:   Sat, 6 Nov 2021 09:05:58 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.0
+Subject: Re: [PATCH 5/8] btrfs: tree-checker: don't fail on empty extent roots
+ for extent tree v2
 Content-Language: en-US
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-References: <cover.1636143924.git.josef@toxicpanda.com>
+References: <cover.1636145221.git.josef@toxicpanda.com>
+ <8fada4dda40dbfb5cefad7eabd16ac00a340896d.1636145221.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Subject: Re: [PATCH 00/20] btrfs-progs: extent tree v2 global root support
- prep work
-In-Reply-To: <cover.1636143924.git.josef@toxicpanda.com>
+In-Reply-To: <8fada4dda40dbfb5cefad7eabd16ac00a340896d.1636145221.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hos9XyY4YHs5B32n9SSGL0N5m1sMAelApjfokH4LvDulJBPt4/I
- BAAqIoqwnaUw9GdxceNPTilyPtK8hOQpAry5WqwZ4AvfX7yVSHLTeewvdXlV4c82cRHJ1BH
- IyrWm64/Sg6aDWX42/EbePZLa/ez4XUOZtwMLjOnIo+h5Z6xI+wvNsdegy8Ogci1RjyRrbi
- Piok9KqNukm2ziiH/4k+w==
+X-Provags-ID: V03:K1:GuRiJ3F2xj8Sgxua9qdqTgtRJ1aZKW0u6PtIRFpfRqQ2oFgxRRo
+ SRhRDDINKN2Mr1+Os7hFTrus/mWzY3Iyj8JwfG3gQuBpYiKzGQ3ZiM6LWhCQcLth/Blefq5
+ Dd5FZ6G87Q/AQvWaEEdaaDBTSt7IdVtWwiLrDRHRLxpyA5fETHUsrnDPsC1K6N3lWxn1Utc
+ 5Jdz4MBvMIAhd5opIx8kw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sTR8mcPkTVs=:exloU2LBe7E2vf+P3irZD1
- 5G5WVY6obBla2a3PT6sddqpFMRP4Rl23JG1JOmKLTNHx7o5tLHXspm6BCh/0wfSs+1f+C+fKO
- 0ZxR8dT/yhc6DwIty/EVSfC2Vhm5P47unCXpZH2nldSrfKcefdTvSTK8Z10JT55KVf3mwhU2f
- tJ7g8c7dIOjPnuNAQ6v+yocNIADE/i78jKSz9oenUtNC5Wg5cIMkvk5JTCx/zIoxC+CQEN8qh
- J+Oh8lufIaQS4Bc8Rgj7H3btFl1TTj5mxeUD4rpbzT2cRwfp5Vjdl7Hl4XedGgELM//mSIexk
- pA43t5Us2SgKR79WXSHY1QIMDVmbL1Eyrx3opPcLDpJiUcCnAyVqD/PARC7pBNV8hD2S9Mo3Y
- CphKtKlB0mM3i9IvYIKC06Bm0L0lFLz59/D49gLHgNOhuxkexr8nFPtmP9HRQs2VrFQKH1iC5
- c09SlL6TmJfPPEqM2n9+05/9iH52rCjq4aDrrQ8oYUiTmP2U9z0vM+powapn6PcOVoQEbY/Fc
- r34gn2dKbIlkFlaJaB9R6FYmcc/u+ER7yTRtO5cndw4kDO8vNm4OWEYs39WmqMlfN7klNhmSl
- ALoyokmX4GbNwjX8INqpAlgrNt46I0V4Q8H+65yZzOJXofKZSq2KBk1Iuz8+o5ISm9LxxbEQE
- /zFIQZhV4scqgf3ETqQxWauNwqtPvHmCs/tdncsQGeij0Y8VO1MyOGz6S4ncDfECiZihdGAVq
- alUxhxco8GtUW11Yf6U3UnE9HgN1c87H3h0HG+WGm028mCnpzECL4NVAsmamJy2lWVaWhb10x
- PnZjP8tENd1d9MuHDkErx3O3edu06quMr6bZESMR42Iomwz7rG34z6m2iS8/5A9ag15/DMcfR
- erw4QblAE6ZixenWY449ydIbhWhjM/iV/TMi08izx2vVPIaSaPCt9UvXnHsqHnOW1fD9DtHPu
- 3enBIK2dxIssNLI6WPgs+Xp8QvScK+VLSSarMj/TffKTmoNKr2tVToJGt9qIcsgOSyzDhnpdj
- W2TmkrlEVYFyltEdMQzIACCXgrxq3seC0qON2eN4L/Ts0XYZH8R0XVohm5XjlwRdZ8vN6TyN1
- 5IedCMpo6Y0T7w=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:atPOeoJy0aE=:2pnyb3enlpDYFstOz2ykxe
+ aylxegPRwkImasUXvN8bpYo0LqyvxPP46OO6AqFqyYmSPkCvD01DIjlRwxuJa8jJhA872mNM9
+ TR7dDOmb6xEAUXHMTXg2VQQjgoBTuUU/7QjG3WOv99SUIVFk1DeNpDM3WFgxCbwCVqPb3Y2xa
+ IBDZ8FFDv05r/0j8Wq8zshyJaatpNofmyxFmRRt/voVf7zmR0XlF/vDQTc0SeV5pH0prYM3pd
+ iVZSLw+zR4SNHW+yG8GSjrvIBRfTmGA8S8PBdajH+fnAgbBWMWsJ1PG/qqoaKIfATNkgbu/Ol
+ BMId2i+Al3wpSTBppf81BcevCC6TOqcy8QAaV4+4nzzXZyrx1JD3ys+3YxjGwyAxWjvOQhykG
+ 14pwCaX0u24V8L0TKM74RVREr1vbnz/w0AuHXktaRf8/WixLib+MB0Lki3A4qJ8mT5jSme6h7
+ RalAaI6B4inaMKuwZD4LaRuB2eKwkbdPbTrbgeiEL41HYt8pcYzfrr8KiJmWus2ol+5aH86Gi
+ IRZkmeqgRdBRiY08a935KgKuryRVLBH56mvm+oo6R4u87rTM7AHHFJRN4X9jp1WyP3XurVehl
+ mbQLFwd+zL1LIE1lJXsEJa8pCSnA1D9kEkQ3AcrAfhR5+fcP9luhyEfGxjn6kN1lzSS4xyCr9
+ NX+XcnUv2q9/RD1IC0C32DXi64Fu8EIehUKxQM5z7gLqctRq1DiVrjbMTMYBfpjJQowb6S9Q/
+ 16iwewbkPqIPJDsIG2UYWvn1S366ADi+z7KzBDQPkBHqe1RZcopflgdzcJmGdCSfMSbYSKSi5
+ 5coByDYsxUDojmtykw+9+Vao5bL+O8LtEBaosjAKpKl8DypuWIZT3+kumsMer2GWayyAJrE+W
+ FPs9vi1/6W5B3txYKCH6zCeHF0zX+pDGOZiUt9+Rl1JJ4Gg2u3zfpnuYeW2o4QMtgx7ASF396
+ DUePUN3FTyXGk+BFnenDG6HmK9gio7hSxIoZYHd0JbFMeOz+6E9cbmMdq2n695lbWb4Se6DqO
+ bdm3/WRWqVN5/ntuTDWrmc4DNOrl7yH+vCkEuUR0YjKo4G6sDKG7CrscwhcCh90NlaxyglYO+
+ m2V6IFQZdIOncw=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/11/6 04:28, Josef Bacik wrote:
-> Hello,
->
-> This is a series of patches to do all the prep work needed to support ex=
-tent
-> tree v2.  These patches are independent of the actual extent tree v2 sup=
-port,
-> some of them are fixes,
+On 2021/11/6 04:49, Josef Bacik wrote:
+> For extent tree v2 we can definitely have empty extent roots, so skip
+> this particular check if we have that set.
 
-First half are mostly good, as they are really fixes and independent
-refactors.
+OK I guess the changes in tree-checker is not yet complete.
 
-> some of them are purely to pave the way for the global
-> root support.  These patches are mostly around stopping direct access of
-> ->extent_root/->csum_root/->free_space_root, putting these roots into a =
-rb_tree,
-> and changing the code to look up the roots in the rb_tree instead of acc=
-essing
-> them directly.  There are a variety of fixes to help make this easier, m=
-ostly
-> removing access to these roots that are strictly necessary.  Thanks,
+As I thought there would be more and bigger changes to support those
+global roots.
 
-But the later part for indirect access to previously global trees are
-somewhat questionable.
+But so far so good for tree-checker.
 
-The idea of rb-tree caching these trees are no problem, but the callers
-are still passing place holder values to these helpers.
-
-For current extent-tree, we can pass whatever values and get the root we
-want, but that also means, we need another round of patches to fix all
-the place holders to make them really extent-tree-v2 compatible.
-
-Thus I'd prefer to see these helpers are called in a proper way in one
-go, which is not really feasible to test in current preparation form.
-
-Maybe it would be better to put these patches with the real
-extent-tree-v2 code?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
-
 >
-> Josef
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>   fs/btrfs/tree-checker.c | 14 +++++++++++++-
+>   1 file changed, 13 insertions(+), 1 deletion(-)
 >
-> Josef Bacik (20):
->    btrfs-progs: simplify btrfs_make_block_group
->    btrfs-progs: check: don't walk down non fs-trees for qgroup check
->    btrfs-progs: filesystem-show: close ctree once we're done
->    btrfs-progs: add a helper for setting up a root node
->    btrfs-progs: btrfs-shared: stop passing root to csum related function=
-s
->    btrfs-progs: check: stop passing csum root around
->    btrfs-progs: stop accessing ->csum_root directly
->    btrfs-progs: image: keep track of seen blocks when walking trees
->    btrfs-progs: common: move btrfs_fix_block_accounting to repair.c
->    btrfs-progs: check: abstract out the used marking helpers
->    btrfs-progs: check: move btrfs_mark_used_tree_blocks to common
->    btrfs-progs: mark reloc roots as used
->    btrfs-progs: stop accessing ->extent_root directly
->    btrfs-progs: stop accessing ->free_space_root directly
->    btrfs-progs: track csum, extent, and free space trees in a rb tree
->    btrfs-progs: check: make reinit work per found root item
->    btrfs-progs: check: check the global roots for uptodate root nodes
->    btrfs-progs: check: check all of the csum roots
->    btrfs-progs: check: fill csum root from all extent roots
->    btrfs-progs: common: search all extent roots for marking used space
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index 7733e8ac0a69..1c33dd0e4afc 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -1633,7 +1633,6 @@ static int check_leaf(struct extent_buffer *leaf, =
+bool check_item_data)
+>   		/* These trees must never be empty */
+>   		if (unlikely(owner =3D=3D BTRFS_ROOT_TREE_OBJECTID ||
+>   			     owner =3D=3D BTRFS_CHUNK_TREE_OBJECTID ||
+> -			     owner =3D=3D BTRFS_EXTENT_TREE_OBJECTID ||
+>   			     owner =3D=3D BTRFS_DEV_TREE_OBJECTID ||
+>   			     owner =3D=3D BTRFS_FS_TREE_OBJECTID ||
+>   			     owner =3D=3D BTRFS_DATA_RELOC_TREE_OBJECTID)) {
+> @@ -1642,12 +1641,25 @@ static int check_leaf(struct extent_buffer *leaf=
+, bool check_item_data)
+>   				    owner);
+>   			return -EUCLEAN;
+>   		}
+> +
+>   		/* Unknown tree */
+>   		if (unlikely(owner =3D=3D 0)) {
+>   			generic_err(leaf, 0,
+>   				"invalid owner, root 0 is not defined");
+>   			return -EUCLEAN;
+>   		}
+> +
+> +		/* EXTENT_TREE_V2 can have empty extent trees. */
+> +		if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
+> +			return 0;
+> +
+> +		if (unlikely(owner =3D=3D BTRFS_EXTENT_TREE_OBJECTID)) {
+> +			generic_err(leaf, 0,
+> +			"invalid root, root %llu must never be empty",
+> +				    owner);
+> +			return -EUCLEAN;
+> +		}
+> +
+>   		return 0;
+>   	}
 >
->   btrfs-corrupt-block.c           |  15 +-
->   btrfs-map-logical.c             |   9 +-
->   btrfstune.c                     |   2 +-
->   check/main.c                    | 223 ++++++++++++++------
->   check/mode-common.c             | 132 +-----------
->   check/mode-lowmem.c             |  72 ++++---
->   check/qgroup-verify.c           |   6 +-
->   cmds/filesystem.c               |  19 +-
->   cmds/rescue-chunk-recover.c     |  35 ++--
->   common/repair.c                 | 230 +++++++++++++++++++++
->   common/repair.h                 |   5 +
->   convert/main.c                  |   5 +-
->   image/main.c                    |  14 +-
->   kernel-shared/backref.c         |  10 +-
->   kernel-shared/ctree.h           |  10 +-
->   kernel-shared/disk-io.c         | 356 +++++++++++++++++++++++---------
->   kernel-shared/disk-io.h         |   8 +-
->   kernel-shared/extent-tree.c     | 159 ++++----------
->   kernel-shared/file-item.c       |   6 +-
->   kernel-shared/free-space-tree.c |  54 +++--
->   kernel-shared/volumes.c         |   3 +-
->   kernel-shared/zoned.c           |   2 +-
->   mkfs/main.c                     |  29 ++-
->   mkfs/rootdir.c                  |   2 +-
->   24 files changed, 892 insertions(+), 514 deletions(-)
 >
