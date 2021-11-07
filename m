@@ -2,62 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C082447203
-	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Nov 2021 08:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E52D44724F
+	for <lists+linux-btrfs@lfdr.de>; Sun,  7 Nov 2021 10:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234920AbhKGHb0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 7 Nov 2021 02:31:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234856AbhKGHb0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 Nov 2021 02:31:26 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881E1C061570
-        for <linux-btrfs@vger.kernel.org>; Sun,  7 Nov 2021 00:28:43 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id o18so28577131lfu.13
-        for <linux-btrfs@vger.kernel.org>; Sun, 07 Nov 2021 00:28:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=EJk4IdAnwncIQY2sZmNIaf8dgnrmcOB3j2X1ApMLi0o=;
-        b=QweglcI8uROrlY2XtMz14GBWxrBuamlOCcD1EZoCg4OC6Qea4RcgEVHk7VMRwe/pV6
-         qF06HpN2V1/Qh6+rbyIn29OvdNktqZQ3wLGoUDByZwUmAIfX9i4iP7rnnQL1t0tu8Pm9
-         emv4KwK5Nigt5Wg0HA48JrmCDYzJgk4FOXGxybzxArLByt7SgiUR03KCU/fC8O4i0xnF
-         O6DCh2+MZEWyWto7H67DGFTZ4HVXDuM6QoCJGCWU7YAk6IINB7O78zzkdRIrE8m2mtT/
-         1dJYpkX+KLKENm5efpJxx1Ckj7Nq4MCpTsHeKLvqFKDzbiQpPzLE/YmW0X16dpGA9bue
-         iZXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EJk4IdAnwncIQY2sZmNIaf8dgnrmcOB3j2X1ApMLi0o=;
-        b=LTUARpJ9oZqr4Xm9MWU+exBm5lvHGmU9XG9OgpaC8DoHcYuboT6FV7537rWSkG1DtM
-         p3pVSWuw7WCi9rombvVmJBqdPaLkX1AoUeIroMVDalHOmYtyaf0TE6gilOCtMY+k2SXS
-         gyj7pFt80Wwsh/ktG0vH41SjTzg1kqucgHQsVI8xql3lOrJ1T1jgSnvdixRPQ5gWX58Z
-         Kj0vkPwcIR06eAo8NErbEIE2y00+66CqvB1kiLmCfjtuq2pLZtlyyBFilh1VRi8egiAt
-         rCvUJwfnEf4ka99h7owLX5JVpDJEPoqvCQxuURsrdzzUi7Evq9jbJxGoO28hDxqd633C
-         3rtg==
-X-Gm-Message-State: AOAM5316nXTLb8TWGlYQ/TOZ4s22Opc/tzDG0Rlw259/U6WbDzp1BjIp
-        jQNS9Qsgg7CYg14tkkvIYSfz50LlGcA=
-X-Google-Smtp-Source: ABdhPJz1e9X+Ans54LbM8BULmAq7YNpSkXzjneJCSSg5Ow9O+XdF9HHmBh+6fEYxbI/qrjaiEuILTg==
-X-Received: by 2002:a05:6512:239c:: with SMTP id c28mr5330592lfv.502.1636270121375;
-        Sun, 07 Nov 2021 00:28:41 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:812d:8125:b91a:ea46:b49a:9664? ([2a00:1370:812d:8125:b91a:ea46:b49a:9664])
-        by smtp.gmail.com with ESMTPSA id n5sm1388011lfh.65.2021.11.07.00.28.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Nov 2021 00:28:40 -0700 (PDT)
-Subject: Re: Finding long-term data corruption
-To:     Alex Lieflander <atlief@icloud.com>, linux-btrfs@vger.kernel.org
-References: <C85EE7D2-FC47-4A0E-B7A8-9285CF46C3FC@icloud.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Message-ID: <b341cf51-f747-71b9-e762-89bf6dbb7be2@gmail.com>
-Date:   Sun, 7 Nov 2021 10:28:39 +0300
+        id S235055AbhKGJO3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 7 Nov 2021 04:14:29 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:50160 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229897AbhKGJO3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 7 Nov 2021 04:14:29 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9DE8D212C4;
+        Sun,  7 Nov 2021 09:11:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636276305; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ov5Q2dptB258GtOSsMBLlu0gIshz3sHRLgjz2pjzCgg=;
+        b=Hjcz10I1kpNF5DAbmwi4XDQGSVdnbDvb3XNiOSvbeW9GU+CRGsOjYdOw+6DXb60hdfkeuG
+        2aH4bXtHKMCVjhmYsM62dlnqZgUt/tvvavofZr91PcDf2W0F33dXxbSZj3JXLP1yZ+7U4U
+        TAXg5vHCtaYxLfPTWn4Cq1GD6HMN4W0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D1441345F;
+        Sun,  7 Nov 2021 09:11:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JlbjD1GYh2HlaAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Sun, 07 Nov 2021 09:11:45 +0000
+Subject: Re: 5.14.9 aarch64 OOPS Workqueue: btrfs-delalloc btrfs_work_helper
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Su Yue <l@damenly.su>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtTqR8TJGZKKfwWB4sbu2-A+ZMPUBSQWzb0mYnXruuykAw@mail.gmail.com>
+ <35owijrm.fsf@damenly.su>
+ <CAJCQCtS-QhnZm2X_k77BZPDP_gybn-Ao_qPOJhXLabgPHUvKng@mail.gmail.com>
+ <ff911f0c-9ea5-43b1-4b8d-e8c392f0718e@suse.com>
+ <9e746c1c-85e5-c766-26fa-a4d83f1bfd34@suse.com>
+ <CAJCQCtTHPAHMAaBg54Cs9CRKBLD9hRdA2HwOCBjsqZCwWBkyvg@mail.gmail.com>
+ <91185758-fdaf-f8da-01eb-a9932734fc09@suse.com>
+ <CAJCQCtTEm5UKR+pr3q-5xw34Tmy2suuU4p9f5H43eQkkw5AiKw@mail.gmail.com>
+ <CAJCQCtTBg0BkccvsiRA+KgGL6ObwCqPPx8bb=QZhcaC=tXUsBA@mail.gmail.com>
+ <CAJCQCtQ0_iAyC8Tc8OZyf2JGGnboXm8zk9itZaOLAoK=w1qdrg@mail.gmail.com>
+ <b03fb30f-3d4b-413c-0227-6655ffeba75d@suse.com>
+ <CAJCQCtQT22cdBPZ+d03m8c_sCtdVaM_Oz705T37v2XPx26SWFg@mail.gmail.com>
+ <420a1889-6a35-c7d2-b4f7-735a922fe469@suse.com>
+ <CAJCQCtTwGvk4zCAQ16L5Pq5+Us4JprKw1LQse_3Nodt_nn3CXQ@mail.gmail.com>
+ <a1087c57-06a8-65e9-a4e0-b9f81a58b2f5@suse.com>
+ <CAJCQCtSVEortM-UT-=kfFuJsKX5xsSYKS+g-NAwwYXZjo=_iDw@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <1156817e-45fc-78bd-a837-26db03deed5e@suse.com>
+Date:   Sun, 7 Nov 2021 11:11:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <C85EE7D2-FC47-4A0E-B7A8-9285CF46C3FC@icloud.com>
+In-Reply-To: <CAJCQCtSVEortM-UT-=kfFuJsKX5xsSYKS+g-NAwwYXZjo=_iDw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -65,81 +71,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 06.11.2021 20:24, Alex Lieflander wrote:
-> Hello,
+
+
+On 5.11.21 г. 18:12, Chris Murphy wrote:
+> On Tue, Nov 2, 2021 at 10:25 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>>
+>>
+>>
+>> On 2.11.21 г. 16:23, Chris Murphy wrote:
+>>> On Thu, Oct 28, 2021 at 1:36 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>>
+>> <snip>
+>>
+>>>>>
+>>>>> So far this appears to be working well - thanks!
+>>>>> https://bugzilla.redhat.com/show_bug.cgi?id=2011928#c54
+>>>>
+>>>> Great, but due to the nature of the bug I'd rather wait at least until
+>>>> the beginning of next week before sending an official patch so that this
+>>>> can be tested more. In your comment you state 3/3 kernel debug info
+>>>> installs and 6/6 libreoffice installs, how do those numbers compare
+>>>> without the fix?
+>>>
+>>> More than 1/2 of the time there'd be an indefinite hang. Perhaps 1/3
+>>> of those would result in a call trace.
+>>
+>> As you might have seen I did send a proper patch, if you've continued
+>> testing it over the weekend and still haven't encountered an issue you
+>> can reply with a Tested-by to the patch .
 > 
-> All of my files and data were exposed to an unknown amount of corruption, and I’d like to know how much I can recover and/or whether I can detect the extent of the damage. The steps that led me here are a bit complicated but (I think) relevant to the problem, so I’ve detailed them below.
+> Did that.
 > 
-> I use BTRFS for most of my filesystems, and my system recently died. While investigating the issue, I found out that corruption had been detected months earlier (after an unclean shutdown) on one of them. Corruption was detected on another a few weeks later for unknown reasons. The number of detected corruptions continued to grow to about 160 and 30, respectively, before things began to noticeably malfunction.
+> Also, I just noticed the downstream bug comment that another tester
+> has run the original patch for several days and can't reproduce the
+> problem.
 > 
-> During this time I’d been `btrfs sub snap -r`-ing and `btrfs send -p`-ing both to the third BTRFS filesystem as a backup method, with no errors except some warnings about the “capabilities” of particular files being “set multiple times". I reformatted my backup drive a few weeks ago for unrelated reasons (after corruption was detected, unbeknownst to me). Since then I continued to regularly “backup” in this way.
+> But the side note is that without the patch, they were experiencing
+> file system corruption, i.e. it would not mount following the crash.
+> Let me know if it's worth asking the tester for mount time failure
+> kernel messages; or a btrfs check of the corrupted system. I guess
+
+Sure, let's see if there's anything else stemming from this.
+
+> this race is expected to never manifest on x86?
+
+Yes, x86 is strongly ordered so it won't need the barriers hence the
+issue doesn't exist there.
+
+> https://bugzilla.redhat.com/show_bug.cgi?id=2011928#c55
 > 
-> Once I noticed the corruption (that `btrfs scrub` couldn’t fix) I tried increasingly aggressive actions until both original filesystems were destroyed and unrecoverable. After that I reformatted and “sent” the corresponding sub-volumes back to their original drives (with the newly reformatted filesystems). Now scrub detects no errors on any of the filesystems, but btrfs-send can’t incrementally send on one of the filesystems. The parent I’m using is the one that I sent from the backup drive. On closer inspection, the received sub-volume has a few subtle permission changes from the sent one. These sub-volumes have always been read-only and I don’t think I ever modified them.
 > 
-
-That most likely is the result of stale received UUID on the source side.
-
-https://lore.kernel.org/linux-btrfs/CAL3q7H5y6z7rRu-ZsZe_WXeHteWx1edZi+L3-UL0aa0oYg+qQA@mail.gmail.com/
-
-> With the situation now described, I have a few questions that I’m hoping to find the answer to:
 > 
-> 1. Can corrupt data propagate through sent sub-volumes?
-> 
-
-You did not really explain what kind of corruption it was or how you
-detected it in the first place. If you are talking about corruption
-detected by scrub - it should not, as btrfs should have either used good
-copy (in case of redundant profile) or failed btrfs send (if data was
-unreadable).
-
-> 2. Can this corruption damage earlier, intact, sub-volumes?
-> 
-
-Again - what corruption? Physical media errors may happen anywhere.
-RAID5 or RAID6 profiles errors may affect non-related data under some
-conditions.
-
-> 3. Does sub-volume sending include the checksums? Would a clean scrub report on the receiving filesystem be an actual indication of uncorrupted data?
-
-As far as I know send stream does not include any checksums. btrfs
-receive is logical, it creates/writes files from user space so scrub
-results on receive side have no relation to content or state of
-filesystem on send side.
-
-> 
-> 4. Is there a way that I could detect what data/files are currently corrupted? How so?
-> 
-
-For the third time - explain what kind of corruption you are talking
-about. If corruption cannot be detected by btrfs, you need to use
-data/application specific methods to verify data integrity.
-
-> 5. What might cause a sent sub-volume (with no parent) to differ between two filesystems? Is that a sign of corruption?
-> 
-
-You need to show much more details before this can be answered. Full
-send is expected to have the same content. If you have evidences that
-this is not the case, provide logs/commands output/any facts that show
-how you determine that, starting with actual send/receive invocations
-you were using.
-
-> 6. Is using sub-volumes in the way that I described appropriate for use as a backup solution?
-> 
-
-You did not really describe much. If you refer to
-
-"I’d been `btrfs sub snap -r`-ing and `btrfs send -p`-ing both to the
-third BTRFS filesystem as a backup method"
-
-yes, it is. Do not forget received UUID pitfall and never ever (and I
-mean really *EVER*) change any subvolume from being read-only to
-read-write as part of restore from backup. Always create a clone
-(writable subvolume) of read-only snapshot and use it as recovered content.
-
-
-> Thank you for your work on this interesting and extremely useful filesystem, and for reading this far!
-> 
-> Regards,
-> Alex Lieflander
-> 
-
