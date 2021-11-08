@@ -2,56 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CED449C6A
+	by mail.lfdr.de (Postfix) with ESMTP id 6F23D449C6B
 	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Nov 2021 20:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237350AbhKHT3l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Nov 2021 14:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
+        id S237359AbhKHT3n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Nov 2021 14:29:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237334AbhKHT3l (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Nov 2021 14:29:41 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4C6C061570
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Nov 2021 11:26:56 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id n15so16513388qkp.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 08 Nov 2021 11:26:56 -0800 (PST)
+        with ESMTP id S237334AbhKHT3m (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Nov 2021 14:29:42 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E636AC061570
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Nov 2021 11:26:57 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id p19so538170qtw.12
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Nov 2021 11:26:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=ywRd49RF0MstrK6f5cLCsNUMASHUsZ4Ly6fOCupP39Y=;
-        b=gvR9mO1hlbKENd31yuUTS2a70nB7Iifcztp8i35g3V3txcYq/w38FwiikufRqutzzy
-         iKQjeZb+Av8+ZSTuG5K+U91cgB3NC+DfkXU/F2jGP4YHwkmG/UPSaBndywVs7SBIC0GW
-         VmzVRa0zBLJ/PLV1GblHOBckB9PIqaMr3Y5FVzR4/oigZCKDK7LFseE1DmpK8cwIUGRe
-         86iSGBAaA3gBnDL6LYzn7/JqP7CiQJvf5HNQOOR+tIEbavGTg0wXT85SSeWLryW1IOwT
-         3L/9PBQ09FZwKUw27mb0kx3DO2qjLppQYARDa3dSfqFZaMt+QdcCkOkIiTOJJkQ9Pq7b
-         ZOPw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=YAV+J+0O1cpV0vx7cSMHrMECAGe2QGBaiCpMb7PeMXs=;
+        b=1VA9tCEsurG57s4fmlmlnfE4hy67GfHIvJmLzS5OZOoA/UInq3xHa+qDPvVqjKxQLx
+         lsToPqhmNcOYVSgEYPpXQbLzfTdSiiYOsTb6OIzUnT97fnc5X+13HMj7Un/agzsMORvG
+         dr/I1e6PvcxPtsgXyh51tqJXyjIif1c0jqF5kEABCr7/LkKjKnVTv0zIHjG3cpn57/+m
+         27h9Zsvp82bSHoJAok3XNZrnzQRuo4nF/v81jSY22+ep4tLfR/erAoJmbenlEFU0E1uc
+         FY27/XgAoOIrKxV0x9ikq/9DNBsLvZzY9jfD6rZGdRBqY3d/y2AfzQjj/OIrZK1LtR/R
+         UqLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ywRd49RF0MstrK6f5cLCsNUMASHUsZ4Ly6fOCupP39Y=;
-        b=LtQnClyQfcfolPsAdoSoCN7kUYaT6Qp0tcWHnp0nHfz1iwS8BSJ7gsjOZK1xwi5VGM
-         OTS8plmsyEZWBf8t2JQ2ZrwC4PczgCciKvWp5cJnoX3v0K8cQHY0M9OWPfn9o7ErHUOH
-         O3XifLSKztrcELNj7WQNWQeg2D0w29H9tbKS6PZr20bIOVNQ1fchkcDU4Um59OkTMIsI
-         CxU1uxHZlgicVjV2LllVYPoA0efd9c+f27RSNowKSxXCYg8/Gfhsg/7dJcpz1/qs2WCD
-         9HqbCZxXD/tUeYcrHl7mTdEuMQFBMWEuCz/ZXiw5504oHJ0b7Ld8lu/a8BW8OQmUP+9Q
-         BZUg==
-X-Gm-Message-State: AOAM532P27/HYFK/GdJoIREifVB1gsd00sIbFXD2eg6Wyb/JJJVF5I19
-        Mkq4ZEZsV8jLM5FyXRMbdimRwhvwoXLWKw==
-X-Google-Smtp-Source: ABdhPJyIdr7GQAnnHzFv8CCzRDyMgh2fXKrtguFSfw+x01dVsSJs2lA6gcboENatYZwD/uzHhwuuCw==
-X-Received: by 2002:a37:6295:: with SMTP id w143mr1239333qkb.86.1636399615373;
-        Mon, 08 Nov 2021 11:26:55 -0800 (PST)
+        bh=YAV+J+0O1cpV0vx7cSMHrMECAGe2QGBaiCpMb7PeMXs=;
+        b=oqwwlvFedDKistgTOsTOyEDNw+/6xICB5YbymiVCZKXscIVAnqOpce+QdqRelEjBcz
+         MUcrRp3SUvdRuvTpEFFX42k8cDPiAVltHLcSxC1QZC2hUwv7gp9Z3GEEnKOOHJPg1hJ9
+         pIrZy5ZEqdfMsxTmkXZ5mek26oeAjXm2+vxCCf7x4m8JmfaRML1JhOCAJXrRn2T31oiJ
+         zrwCkqQr8lIgbAfy8XmerTB4cYXFv8ZG6yxb15lqa1yTnt0j4U896hApg/SDEXYqHH8k
+         Dj4kxsI7oWlQJasbsLPcUzQFFAFaCzzsSlzLFOenXVlXJptXbrEZlEO0ruHW4NuWZBAs
+         b9zw==
+X-Gm-Message-State: AOAM532Nx8SmhFgIZyWCLM0iuDesuRiWZUwwwYX0FOXWRO0NwW0qhuUu
+        taKybSOcq9tDqawEpa+aGy6AZk4jT7Nghw==
+X-Google-Smtp-Source: ABdhPJz93gxN12J9amxBp4H2HpAnJ2z458EmtMdkHdLFeyOC6h51l1mXtI92Cljq2M9TODreo2NO1g==
+X-Received: by 2002:ac8:58d2:: with SMTP id u18mr2147604qta.262.1636399616846;
+        Mon, 08 Nov 2021 11:26:56 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z5sm11332590qtw.71.2021.11.08.11.26.54
+        by smtp.gmail.com with ESMTPSA id 6sm11359540qtz.48.2021.11.08.11.26.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 11:26:54 -0800 (PST)
+        Mon, 08 Nov 2021 11:26:56 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 04/20] btrfs-progs: add a helper for setting up a root node
-Date:   Mon,  8 Nov 2021 14:26:32 -0500
-Message-Id: <30280548dca2ebfdd8e92dcdf5fc5cc185984dd2.1636399481.git.josef@toxicpanda.com>
+Cc:     Qu Wenruo <wqu@suse.com>
+Subject: [PATCH v2 05/20] btrfs-progs: btrfs-shared: stop passing root to csum related functions
+Date:   Mon,  8 Nov 2021 14:26:33 -0500
+Message-Id: <c5198de638b7933ef967a401c1356793e4529c07.1636399481.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1636399481.git.josef@toxicpanda.com>
 References: <cover.1636399481.git.josef@toxicpanda.com>
@@ -61,165 +62,98 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We use this pattern in a few places, and will use it more with different
-roots in the future.  Extract out this helper to read the root nodes.
+We are going to need to start looking up the csum root based on the
+bytenr with extent tree v2.  To that end stop passing the root to the
+csum related functions so that can be done in the helper functions
+themselves.
 
-There is a behavior change here in that we're now checking the root
-levels, whereas before we were not.
+There's an unrelated deletion of a function prototype that no longer
+exists, if desired I can break that out from this patch.
 
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- kernel-shared/disk-io.c | 73 +++++++++++++++++++++++++----------------
- 1 file changed, 45 insertions(+), 28 deletions(-)
+ check/main.c              | 4 ++--
+ convert/main.c            | 1 -
+ kernel-shared/ctree.h     | 6 +-----
+ kernel-shared/file-item.c | 4 ++--
+ mkfs/rootdir.c            | 2 +-
+ 5 files changed, 6 insertions(+), 11 deletions(-)
 
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index 3b3c4523..7a797801 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -578,12 +578,31 @@ void btrfs_setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
- 	root->root_key.objectid = objectid;
+diff --git a/check/main.c b/check/main.c
+index 235a9bab..08810c5f 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -9484,8 +9484,8 @@ static int populate_csum(struct btrfs_trans_handle *trans,
+ 				       &sectorsize, 0);
+ 		if (ret)
+ 			break;
+-		ret = btrfs_csum_file_block(trans, csum_root, start + len,
+-					    start + offset, buf, sectorsize);
++		ret = btrfs_csum_file_block(trans, start + len, start + offset,
++					    buf, sectorsize);
+ 		if (ret)
+ 			break;
+ 		offset += sectorsize;
+diff --git a/convert/main.c b/convert/main.c
+index 223eebad..7f33d4e1 100644
+--- a/convert/main.c
++++ b/convert/main.c
+@@ -187,7 +187,6 @@ static int csum_disk_extent(struct btrfs_trans_handle *trans,
+ 		if (ret)
+ 			break;
+ 		ret = btrfs_csum_file_block(trans,
+-					    root->fs_info->csum_root,
+ 					    disk_bytenr + num_bytes,
+ 					    disk_bytenr + offset,
+ 					    buffer, blocksize);
+diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+index 3c0743cc..73904255 100644
+--- a/kernel-shared/ctree.h
++++ b/kernel-shared/ctree.h
+@@ -2847,12 +2847,8 @@ int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
+ int btrfs_insert_inline_extent(struct btrfs_trans_handle *trans,
+ 				struct btrfs_root *root, u64 objectid,
+ 				u64 offset, const char *buffer, size_t size);
+-int btrfs_csum_file_block(struct btrfs_trans_handle *trans,
+-			  struct btrfs_root *root, u64 alloc_end,
++int btrfs_csum_file_block(struct btrfs_trans_handle *trans, u64 alloc_end,
+ 			  u64 bytenr, char *data, size_t len);
+-int btrfs_csum_truncate(struct btrfs_trans_handle *trans,
+-			struct btrfs_root *root, struct btrfs_path *path,
+-			u64 isize);
+ 
+ /* uuid-tree.c, interface for mounted mounted filesystem */
+ int btrfs_lookup_uuid_subvol_item(int fd, const u8 *uuid, u64 *subvol_id);
+diff --git a/kernel-shared/file-item.c b/kernel-shared/file-item.c
+index c910e27e..5bf6aab4 100644
+--- a/kernel-shared/file-item.c
++++ b/kernel-shared/file-item.c
+@@ -183,9 +183,9 @@ fail:
  }
  
-+static int read_root_node(struct btrfs_fs_info *fs_info,
-+			  struct btrfs_root *root, u64 bytenr, u64 gen,
-+			  int level)
-+{
-+	root->node = read_tree_block(fs_info, bytenr, gen);
-+	if (!extent_buffer_uptodate(root->node))
-+		goto err;
-+	if (btrfs_header_level(root->node) != level) {
-+		error("root [%llu %llu] level %d does not match %d\n",
-+		      root->root_key.objectid, root->root_key.offset,
-+		      btrfs_header_level(root->node), level);
-+		goto err;
-+	}
-+	return 0;
-+err:
-+	free_extent_buffer(root->node);
-+	root->node = NULL;
-+	return -EIO;
-+}
-+
- static int find_and_setup_root(struct btrfs_root *tree_root,
- 			       struct btrfs_fs_info *fs_info,
- 			       u64 objectid, struct btrfs_root *root)
+ int btrfs_csum_file_block(struct btrfs_trans_handle *trans,
+-			  struct btrfs_root *root, u64 alloc_end,
+-			  u64 bytenr, char *data, size_t len)
++			  u64 alloc_end, u64 bytenr, char *data, size_t len)
  {
- 	int ret;
--	u64 generation;
- 
- 	btrfs_setup_root(root, fs_info, objectid);
- 	ret = btrfs_find_last_root(tree_root, objectid,
-@@ -591,13 +610,10 @@ static int find_and_setup_root(struct btrfs_root *tree_root,
- 	if (ret)
- 		return ret;
- 
--	generation = btrfs_root_generation(&root->root_item);
--	root->node = read_tree_block(fs_info,
--			btrfs_root_bytenr(&root->root_item), generation);
--	if (!extent_buffer_uptodate(root->node))
--		return -EIO;
--
--	return 0;
-+	return read_root_node(fs_info, root,
-+			      btrfs_root_bytenr(&root->root_item),
-+			      btrfs_root_generation(&root->root_item),
-+			      btrfs_root_level(&root->root_item));
- }
- 
- static int find_and_setup_log_root(struct btrfs_root *tree_root,
-@@ -606,6 +622,7 @@ static int find_and_setup_log_root(struct btrfs_root *tree_root,
- {
- 	u64 blocknr = btrfs_super_log_root(disk_super);
- 	struct btrfs_root *log_root = malloc(sizeof(struct btrfs_root));
-+	int ret;
- 
- 	if (!log_root)
- 		return -ENOMEM;
-@@ -615,20 +632,16 @@ static int find_and_setup_log_root(struct btrfs_root *tree_root,
- 		return 0;
- 	}
- 
--	btrfs_setup_root(log_root, fs_info,
--			 BTRFS_TREE_LOG_OBJECTID);
--
--	log_root->node = read_tree_block(fs_info, blocknr,
--				     btrfs_super_generation(disk_super) + 1);
--
--	fs_info->log_root_tree = log_root;
--
--	if (!extent_buffer_uptodate(log_root->node)) {
--		free_extent_buffer(log_root->node);
-+	btrfs_setup_root(log_root, fs_info, BTRFS_TREE_LOG_OBJECTID);
-+	ret = read_root_node(fs_info, log_root, blocknr,
-+			     btrfs_super_generation(disk_super) + 1,
-+			     btrfs_super_log_root_level(disk_super));
-+	if (ret) {
- 		free(log_root);
- 		fs_info->log_root_tree = NULL;
--		return -EIO;
-+		return ret;
- 	}
-+	fs_info->log_root_tree = log_root;
- 
- 	return 0;
- }
-@@ -704,9 +717,10 @@ out:
- 		return ERR_PTR(ret);
- 	}
- 	generation = btrfs_root_generation(&root->root_item);
--	root->node = read_tree_block(fs_info,
--			btrfs_root_bytenr(&root->root_item), generation);
--	if (!extent_buffer_uptodate(root->node)) {
-+	ret = read_root_node(fs_info, root,
-+			     btrfs_root_bytenr(&root->root_item), generation,
-+			     btrfs_root_level(&root->root_item));
-+	if (ret) {
- 		free(root);
- 		return ERR_PTR(-EIO);
- 	}
-@@ -950,11 +964,13 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
- 	struct btrfs_root *root;
- 	struct btrfs_key key;
- 	u64 generation;
-+	int level;
- 	int ret;
- 
- 	root = fs_info->tree_root;
- 	btrfs_setup_root(root, fs_info, BTRFS_ROOT_TREE_OBJECTID);
- 	generation = btrfs_super_generation(sb);
-+	level = btrfs_super_root_level(sb);
- 
- 	if (!root_tree_bytenr && !(flags & OPEN_CTREE_BACKUP_ROOT)) {
- 		root_tree_bytenr = btrfs_super_root(sb);
-@@ -968,10 +984,12 @@ int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
- 		backup = fs_info->super_copy->super_roots + index;
- 		root_tree_bytenr = btrfs_backup_tree_root(backup);
- 		generation = btrfs_backup_tree_root_gen(backup);
-+		level = btrfs_backup_tree_root_level(backup);
- 	}
- 
--	root->node = read_tree_block(fs_info, root_tree_bytenr, generation);
--	if (!extent_buffer_uptodate(root->node)) {
-+	ret = read_root_node(fs_info, root, root_tree_bytenr, generation,
-+			     level);
-+	if (ret) {
- 		fprintf(stderr, "Couldn't read tree root\n");
- 		return -EIO;
- 	}
-@@ -1179,10 +1197,9 @@ int btrfs_setup_chunk_tree_and_device_map(struct btrfs_fs_info *fs_info,
- 	else
- 		generation = 0;
- 
--	fs_info->chunk_root->node = read_tree_block(fs_info,
--						    chunk_root_bytenr,
--						    generation);
--	if (!extent_buffer_uptodate(fs_info->chunk_root->node)) {
-+	ret = read_root_node(fs_info, fs_info->chunk_root, chunk_root_bytenr,
-+			     generation, btrfs_super_chunk_root_level(sb));
-+	if (ret) {
- 		if (fs_info->ignore_chunk_tree_error) {
- 			warning("cannot read chunk root, continue anyway");
- 			fs_info->chunk_root = NULL;
++	struct btrfs_root *root = trans->fs_info->csum_root;
+ 	int ret = 0;
+ 	struct btrfs_key file_key;
+ 	struct btrfs_key found_key;
+diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+index 16ff257a..92be32ea 100644
+--- a/mkfs/rootdir.c
++++ b/mkfs/rootdir.c
+@@ -403,7 +403,7 @@ again:
+ 		 * we're doing the csum before we record the extent, but
+ 		 * that's ok
+ 		 */
+-		ret = btrfs_csum_file_block(trans, root->fs_info->csum_root,
++		ret = btrfs_csum_file_block(trans,
+ 				first_block + bytes_read + sectorsize,
+ 				first_block + bytes_read,
+ 				eb->data, sectorsize);
 -- 
 2.26.3
 
