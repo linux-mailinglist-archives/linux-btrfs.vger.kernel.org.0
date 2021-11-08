@@ -2,68 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF87B449CDD
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Nov 2021 21:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B365449D4E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Nov 2021 21:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238332AbhKHUJ2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Nov 2021 15:09:28 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:43064 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbhKHUJ1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Nov 2021 15:09:27 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6790921B0B;
-        Mon,  8 Nov 2021 20:06:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1636402002;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/Xx006MWHd2uLefGTTXOqBzasP8D7Rf4t9gtBDX29i4=;
-        b=i40IpDbum9Gp/VMQuyMePGjoflJNyEm8HzqzB94TbomnI/t6N0cXpc0LXoASsc8YF532B7
-        CHJGU1msG0i7pwGWD7HTZ0/WsM7OAtNapmmNG0SkyQfNtm1alGQtrHKEseAJ9fxdJ0qt38
-        Xpmsd4gb2iXclVX1tXHP9XyVuCaEzSQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1636402002;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/Xx006MWHd2uLefGTTXOqBzasP8D7Rf4t9gtBDX29i4=;
-        b=p7sqvMao94ysUVATeX+98tqlLUtDK8fXFKyY7L6JzK3+rdxoeohOWqyqiWW5nGoE7MiWpP
-        7QbRYeRjCgbb6CAg==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 61667A3B87;
-        Mon,  8 Nov 2021 20:06:42 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B2CF1DA799; Mon,  8 Nov 2021 21:06:03 +0100 (CET)
-Date:   Mon, 8 Nov 2021 21:06:03 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] btrfs: declare seeding_dev in init_new_device as
- bool
-Message-ID: <20211108200603.GP28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org
-References: <cover.1632179897.git.anand.jain@oracle.com>
- <d0e619aa1de4c142d5b12a41045cc60df0d1c8dc.1632179897.git.anand.jain@oracle.com>
- <6fea27d3-1eb7-4725-b894-1a742d6e5c3d@oracle.com>
- <58acdca4-a716-7144-e75c-0810bac754b4@oracle.com>
+        id S236524AbhKHU6s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Nov 2021 15:58:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232955AbhKHU6r (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Nov 2021 15:58:47 -0500
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B03C061570
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Nov 2021 12:56:03 -0800 (PST)
+Received: by mail-qv1-xf41.google.com with SMTP id i13so12780267qvm.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Nov 2021 12:56:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
+        b=RgVW/6nY6tRo8oLT3HMdM2Onil+yLpblD0rfBnrS9023tQHVGqROTu6pZmOFkMjGb4
+         lB3YwNb2ghmphunsUNJzox1De4LT6rx7FTxFrSxxuUa+Fe4asqqwAPhPUC1Zm7E35Qrb
+         MPRjU3BzOx34WLl5rRl1brREhZj/n31a1L18y4WttjL9/CONFeXquqmNFu47R+xpcvr4
+         WoFDfywwOssQ9QtnR7qnJ8cf0AyduDjou6oAU2vgPbgTRpeVPbystLLm6sKREQY8fhfT
+         kHtucyKDiWulwCAFnnYDLHBVuubRtP87Mzsc4Fr3+uSEXKLbabZYTFehyQeq5wxk6/I+
+         xpGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=+OhYyTKGmAf5Y61RBhMkXMlQv+hOjswu4u5NSWPSjMI=;
+        b=HBm5lyIZsVzcGCFb7PJTqbZGdpuRv2dYGcOhG1mxB0eVpKFVlB+q0j2dRSFNA/wPK/
+         hNy02vBZsDpmu371A8zbGGe/4x40GTJYxbaoI82+tpuI36KDsUGMhTbzTGjUnVKt0SD2
+         CnOIVpoGHbqH5m/XOaZoCEw8iiBHaET20nogZgTauD4c4CrxpCteW+4u2IxqPsIOt7wD
+         Yb8RjhhzomMzwOnPm/kwXF74nMN9I1YaeTnjsdx9wRuJr3pWlzuukbb9pTZw2nbf7/Re
+         LwHiq1eWY5jumxGngL3YK5Mw6bMmwpG1eym8iMBlMaqodzHGz4eNJNr8cL1CWsF7nHnx
+         eGAQ==
+X-Gm-Message-State: AOAM5322L0p0mclZyd02ZCiVv17Mn1OtEVV/PlRL1Ngna9PsqRyv+9qa
+        RI3/Xc+sfIWBvDQ5mO2r8I5GLJrBgaFDZuPlWq8=
+X-Google-Smtp-Source: ABdhPJybY8+sYfd8r7FE5IGm3hoBzA43DVuT9Xxx1oGMh+U8gdPjg8B4DNIGiNk3rM/tnX/kW6Dns1AZE407+Hg2Lbo=
+X-Received: by 2002:ad4:5cc1:: with SMTP id iu1mr2259087qvb.58.1636404962131;
+ Mon, 08 Nov 2021 12:56:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <58acdca4-a716-7144-e75c-0810bac754b4@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Sender: dscottman3@gmail.com
+Received: by 2002:ad4:58b1:0:0:0:0:0 with HTTP; Mon, 8 Nov 2021 12:56:01 -0800 (PST)
+From:   "Mr. Mustafa Ali." <muafalia@gmail.com>
+Date:   Mon, 8 Nov 2021 21:56:01 +0100
+X-Google-Sender-Auth: ovF2O1iOufUdDlhdth7iVjkytOQ
+Message-ID: <CALrj6TkKSKE6KjfifUBMH9degL-DGd34CJWLEhoJkzfGB3aS0A@mail.gmail.com>
+Subject: Greetings Dear Friend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 12:39:54PM +0800, Anand Jain wrote:
-> 
->   2nd try. Ping?
-> 
->   (Pls note, patch 2/3  dropped based on Nik's comments.  patch 3/3 
-> separated from this set, as it went thru revisions and not related)
+Hello Friend,
 
-Patch 1 added to misc-next, thanks.
+This message might meet you in utmost surprise. However, It's just my
+urgent need for a foreign partner that made me contact you for this
+transaction. I assured you of honesty and reliability to champion this
+business opportunity. I am a banker by profession in Turkey, and
+currently holding the post of Auditor in Standard Chartered Bank.
+
+I have the opportunity of transferring the leftover funds ($15 Million
+Dollars) of one of my clients who died along with his entire family in
+a crisis in Myanmar Asia. I am inviting you for a business deal where
+this money can be shared between us if you agree to my business
+proposal.
+
+Further details of the transfer will be forwarded to you immediately
+after I receive your return letter.
+
+Best Regards,
+Mr. Mustafa Ali.
+mustafa.ali@rahroco.com
