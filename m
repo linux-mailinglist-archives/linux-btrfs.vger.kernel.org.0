@@ -2,82 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868A6447AC8
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Nov 2021 08:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 767DC447B06
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Nov 2021 08:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhKHH2W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Nov 2021 02:28:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57188 "EHLO
+        id S237855AbhKHHa1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Nov 2021 02:30:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhKHH2W (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Nov 2021 02:28:22 -0500
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49275C061570
-        for <linux-btrfs@vger.kernel.org>; Sun,  7 Nov 2021 23:25:38 -0800 (PST)
-Received: by mail-ua1-x944.google.com with SMTP id o26so29650535uab.5
-        for <linux-btrfs@vger.kernel.org>; Sun, 07 Nov 2021 23:25:38 -0800 (PST)
+        with ESMTP id S237760AbhKHHaI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Nov 2021 02:30:08 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31108C06120B
+        for <linux-btrfs@vger.kernel.org>; Sun,  7 Nov 2021 23:27:23 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id b15so39286993edd.7
+        for <linux-btrfs@vger.kernel.org>; Sun, 07 Nov 2021 23:27:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=bhBzwG8Q8aHjtudNQOObLlKcuL9M/CXaZvcPGWA4SIk=;
-        b=Cx3ukZx6DtOxufeGM7AUgkVQLtKMU4qyBsfk0gMcUR31wRv+2Oa1jSsEbSwhyPzCsJ
-         7JWZF4rVFYJT+qrfmp2WeA3m+gkuRPSRwc1SCpzkChvUdN6rqR/FcsFah+ugoq3HCmUo
-         tBwhri4ylqtLAOXRHIo3txiVWAAy93zJrDop62ILsDMpbYBumhXkAtfc/muRxXREPUvY
-         Fo682aSm3qpQm5KLMWOK28byAdO0yhFjytGgG8ZevPcxG0zeBcElpi3duOKdxoHAOzHw
-         +kXsICMgz+5WC+iaekwmywvohABGw2nX234CKP5oR7pW6qzr2gQu8ifrvnpbos0xE2w9
-         3WBQ==
+        bh=gS+G2bXPLTc8QV9oSOsVFPfildfSifO+gabOlUjPn+8=;
+        b=lohGAXI96njXpZ5r6vgYlUkp2V68iRMzDV25uaLpmT1WmpX2h0YNNnPekuKOrJR7Hh
+         rCcmOUgGjsAkeHEvvQCkM6ux+TyqL0CqGbf0IPfL8V+eIKLF7r3X9QWFup/xVl2xV9qZ
+         NGc0LQ7JpvXhk+YTEHFaFd2QnuENE8mCWi0drmIQkANv1zf9DM6Bfjx/yF/A/b9RtJFU
+         CT2DuJeqJ7evq+rJKQgmUSCIg2GjkqvLZlnb0ekZ1/3u7apFf2k73Uqo2u8YZ8hKmOIw
+         ZGA3M8LZJFGSmW3P+nQyYMCLCtL13s+WCsnPOmCuuFd5xieMsN0vbLhindKIE3OfrP6U
+         BcYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
          :subject:to;
-        bh=bhBzwG8Q8aHjtudNQOObLlKcuL9M/CXaZvcPGWA4SIk=;
-        b=JUoh4WSbQxc4NZldmSpGWqLQGYFAll02RXg1tT7MSCju/BMrFWOMgL/4B54uviDRBt
-         qoog4YLGroiuj1xqZxtFTT6aS1CkdA7pOWsCgPzp/Ze+94iuO4cG2t4drJMO6B55nLaC
-         OTGS5uunwVxE1zDv2905yBoI4M2reHWhMGQWobfCqGPl+YLt5s/AnpplLsij850MbA3X
-         /2wWLvozFXbK/6yZNNi3qQ6v4UeRPt/YQ52nHwdwIDcXQvVd77SR9tPqAeVyN/18D6ax
-         7QkrFW3tClxpbztDT5MgBcJsBRLf8CoQ0gMiMQdBW3EPI0Bx+VJwiS22pRNGJz8dKucU
-         KvwA==
-X-Gm-Message-State: AOAM530vQ8Jgh5a9c9FxEE9vwVi3txsXi92wV6zla/NMIoZhezEWmbbI
-        7679XrBnAOX042TCpKrSIeDgBQoXW8+O2ot9Sgw=
-X-Google-Smtp-Source: ABdhPJxAPtB0ASjG5HZn+9ERrc1IN1Ro9hwPt2HkvJ7w2EVinKwGKq1MkXFuRMmaKARCqxKDL4G8Bi5330tShQAxZz4=
-X-Received: by 2002:a05:6130:424:: with SMTP id ba36mr51845112uab.1.1636356337378;
- Sun, 07 Nov 2021 23:25:37 -0800 (PST)
+        bh=gS+G2bXPLTc8QV9oSOsVFPfildfSifO+gabOlUjPn+8=;
+        b=oLs4lO1CG1ePYkr3vVNdWWas63XiyBEKR0muR8CXEPS5a7d5i0NUKwAGueer1DBQ8r
+         t22D4LHqEIArsztnRtvGs3c9SAkaW1Lj/1asBDSUgCz5mdIjCsCzEq5dB0SdLzSxP1Wm
+         4/m30pfFHrCvi25MGh3cc62kO8KWoedf1Gho/+vJKaYIcn8i5XgHXnYU06KzyPcmj7Ru
+         Ul2xy9BXmBK4yS+M5I43Knc+cnJfSb8Cau0zpC502MpoGvAAFHkeikXnU+d+f3Kws5oC
+         o9A46N9BWr7yWJzL8llOMyD8QjIy3zLvKItW+pJvlphKlB+5muxrH62QLm8l5QSBu+N0
+         VX3A==
+X-Gm-Message-State: AOAM531VqVaXk+OyXQHSvy6gh1uLvhpIdDY4kSyVMlUbteKbXCoUhdHr
+        ljY0V5PEPLVP5COnWE1koDuAjf2zjm1bKDzZQqk=
+X-Google-Smtp-Source: ABdhPJwiROS9SRRNMvDLES4YHo6uT5d60ZUwIiFmBNAm9OxEfLgMU9cee9PqVQWim0XNVifN/Rk5vWcyMQ7rvBndYNE=
+X-Received: by 2002:a05:6402:557:: with SMTP id i23mr66769092edx.176.1636356441798;
+ Sun, 07 Nov 2021 23:27:21 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a59:8198:0:b0:23d:509a:6491 with HTTP; Sun, 7 Nov 2021
- 23:25:36 -0800 (PST)
-Reply-To: aishagaddafi557@aol.com
-From:   "Mrs. Aisha Gaddafi" <morrisongood2@gmail.com>
-Date:   Mon, 8 Nov 2021 08:25:36 +0100
-Message-ID: <CAOc-JU7Mcon4KG_uCw17PK-TjDRdd0nw49zUZdLc3EJ_CU4c9Q@mail.gmail.com>
-Subject: Hello!!
+Received: by 2002:a50:2501:0:0:0:0:0 with HTTP; Sun, 7 Nov 2021 23:27:21 -0800 (PST)
+Reply-To: mariaschaefler@gmx.com
+From:   Maria Schaefler <ziskoraa@gmail.com>
+Date:   Mon, 8 Nov 2021 07:27:21 +0000
+Message-ID: <CAJh0FjiFL7uihMBL6ckYO8FJ6tnzM+tBivU2c60yDbG14LZLeA@mail.gmail.com>
+Subject: MY HEART CHOOSE YOU.
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Friend,
-
-I came across your e-mail contact prior a private search while in need
-of your assistance. I am Aisha Al-Qaddafi, the only daughter to Former
-President of Libya Col. Muammar Al-Qaddafi. Am a Widow with Children.
-
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
-
-I am willing to negotiate investment/business profit sharing ratio
-with you based on the future investment earning profits.
-
-If you are willing to handle this project on my behalf, kindly reply
-urgent to enable me provide you more information about the investment
-funds.
-
-Your Urgent Reply Will Be Appreciated
-
-Best Regards
-Mrs Aisha Al-Qaddafi
-Email: (  aishagaddafi557@aol.com  ).
+Given my current state of health, I have decided to donate what I
+inherited from my late husband to you to help the poor and needy. I am
+Mrs Maria Schaefler,a 57years old dying woman. I was diagnosed for
+cancer about 2 years ago and I have few months to live according to
+medical experts. Email me for my directives
