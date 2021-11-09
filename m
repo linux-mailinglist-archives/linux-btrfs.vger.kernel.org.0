@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9407F44B01B
+	by mail.lfdr.de (Postfix) with ESMTP id 9261F44B01A
 	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Nov 2021 16:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235716AbhKIPO6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Nov 2021 10:14:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
+        id S235727AbhKIPO7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Nov 2021 10:14:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S231272AbhKIPO6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Nov 2021 10:14:58 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FA9C061764
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Nov 2021 07:12:11 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id t11so1458617qtw.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 09 Nov 2021 07:12:11 -0800 (PST)
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1381C061764
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Nov 2021 07:12:12 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id b17so14420486qvl.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Nov 2021 07:12:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=PY+Tb/hXONSwfiHE9mGSVdCqtFpHa6qIEurbMEgXjn0=;
-        b=46w2wPzLRC9wy+WuZgoAPM/F67hly+HbYHbbR4a0HcIwweReyy6ZT7Ajl1e7TW23Mv
-         ygofiQMAEZV3+r1xgi7i4q2VYZ9F1S44YSE1tPHOqNDlcHiA93lYFVsc5bWvOdWPVZ+m
-         GhJI71Nnb1VPsKkwG7QOMkHGPG6RegLgekDCTyIQeHnHKFUQFksEJ0FRfDNP9AGYMlTc
-         Tb7lF+pwt6erpikSTNvMGxGgbhxyad42+ejYLS+xvKqLzddGUk9zM9xeBXGk7VDDuluj
-         Yi5qtSpGWB8yGDBAn7WrzWnSoqYa3fLfFoVXdsMlzH7KWccnYKgfu9EFn7sAc+9Db69d
-         +VVg==
+        bh=zVB3RqvDnL/UuuXLrtef8qIkZdoUFKQN42oehYvzxPY=;
+        b=1w2tJHoaxef5RSBeyLJ2gD5RHhA7+cDYghmREW/RmhQiRcUyLoM827TPB3hQNAGC9Z
+         IFO25dL1XD8Rwg2HMBxhMm8+zkdML3GP9/5B2awpQ5GsIN9qtHJXNGXRZE4eYATqKcft
+         7sAUCIdGWKeXYpkbJJGM/tsdS8vgmfnO8Y5gNFIqxqzWs5P2nGBwhgf718VMNYEfAq2+
+         lKHnlIP+nH09KJjy+NwnIJwz+XHAqKjJH7hEZsWUbpK1fTNDS7roR1Z/Y+pcVmMDMGO5
+         9PLD/OjgtWiYflTZLDayDu2VOoQTkcOweWo5Nr0Ewvq6AZEzS4FBBgT6sdIMZJhIWXJR
+         1hxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PY+Tb/hXONSwfiHE9mGSVdCqtFpHa6qIEurbMEgXjn0=;
-        b=279l8U69WvgcSjqvc3CJCzqWqAYNKi64aOuRkvqhPWqZESWUz4DexX3MHRa7AVWb4Q
-         Q2SQeu6+245jtziCcFxC8wYQyFp5bmu6EyztFm49XYGTV8HCD/fFJb+QaJ1k99RYanxC
-         tDVl18QLZ6IFUp47QUA58lqZhm7/+gamcS0asq4LT6UsQ7BLQUt9lP4m8NKwcuq+zWaU
-         xKaIEdIIr9FDjhhIpqzul+FKTgjed1gL9Q7d3IaTmM1/o8D4ZjFZRpv8T99BAUQNGyvD
-         mV/IOPLf3rIitmyluglH6NWjemRCRTWSbRpBf0So1s6mV6DHCAYDwDY49QFRC4wvUTDC
-         /X2Q==
-X-Gm-Message-State: AOAM5310AUtRztpF9crN3AunzJUN+a6ucJ16Wd2ptdlv0EuU6s/83SF4
-        k3pY93kv1/YkvEOWefyUYO1HICzoKpgfBQ==
-X-Google-Smtp-Source: ABdhPJwQTIDF7mZab5Yb2SQwD9/MVCd0tlF5YtR4H5GwUZNQD/wQkKgkPmWhyx2F0W4arbjV/Gw8GQ==
-X-Received: by 2002:ac8:5855:: with SMTP id h21mr9222862qth.8.1636470730482;
-        Tue, 09 Nov 2021 07:12:10 -0800 (PST)
+        bh=zVB3RqvDnL/UuuXLrtef8qIkZdoUFKQN42oehYvzxPY=;
+        b=KIOZoY36nsuRmO1rsA6POKM0Fm3pD6ioZlf7ef9KEui7TcV7fEYtHRCJVKb1MGDH5y
+         TLdlGhl95nJJh+FfP5aVcMVbnguYWRZfXIg9rVhCprTfmTz7HUp4d3Ya3ClrdF6WUj9b
+         jrYQoUlGOljnRrE+uBFdypHJ1F37Ap/yX+7OjOehPaGFxh3Lu5tM8rg2uLnRZDLAvdD8
+         kzlCjwdlEkMOq7OcVM9nQhZGUTK7rCTXOZ3KHVZ4P1VUBP6NrbtfmPCMq6LMGhPqeQZj
+         X7f/0NSR1Ru8NNLDZj86TbDz2TpZ0A0B0RXselW+526f0QLqQ7l2x2Pkfs/ybG531YaT
+         toHQ==
+X-Gm-Message-State: AOAM532e61WbkkoNRi0XmUr/3exv3N/FChSq1SgJMioBMSCsA0xzgwko
+        ewmP+jKo/VW6ahUO43UE6kcQoNRenwf5Dg==
+X-Google-Smtp-Source: ABdhPJw+OEg0XHeF2eWSN6rXGZZNBvEc3kmwH9FEz7iYfTqcetfid2HgDO+dFK/XqgvwX/hhdsMqow==
+X-Received: by 2002:ad4:4e49:: with SMTP id eb9mr7856814qvb.22.1636470731865;
+        Tue, 09 Nov 2021 07:12:11 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id q4sm12746389qtw.19.2021.11.09.07.12.09
+        by smtp.gmail.com with ESMTPSA id bl28sm6604290qkb.44.2021.11.09.07.12.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 07:12:09 -0800 (PST)
+        Tue, 09 Nov 2021 07:12:11 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 1/7] btrfs: handle priority ticket failures in their respective helpers
-Date:   Tue,  9 Nov 2021 10:12:01 -0500
-Message-Id: <78469f9381de3b91f689d419cb0d632346d294b8.1636470628.git.josef@toxicpanda.com>
+Subject: [PATCH v3 2/7] btrfs: check for priority ticket granting before flushing
+Date:   Tue,  9 Nov 2021 10:12:02 -0500
+Message-Id: <efd7030290cfce311cea39f381b2e5cb38761336.1636470628.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1636470628.git.josef@toxicpanda.com>
 References: <cover.1636470628.git.josef@toxicpanda.com>
@@ -61,117 +61,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently the error case for the priority tickets is handled where we
-deal with all of the tickets, priority and non-priority.  This is ok in
-general, but it makes for some awkward locking.  We take and drop the
-space_info->lock back to back because of these different types of
-tickets.
-
-Rework the code to handle priority ticket failures in their respective
-helpers.  This allows us to be less wonky with our space_info->lock
-usage, and means that the main handler simply has to check
-ticket->error, as the ticket is guaranteed to be off any list and
-completely handled by the time it exits one of the handlers.
+Since we're dropping locks before we enter the priority flushing loops
+we could have had our ticket granted before we got the space_info->lock.
+So add this check to avoid doing some extra flushing in the priority
+flushing cases.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 46 ++++++++++++++++++++-----------------------
- 1 file changed, 21 insertions(+), 25 deletions(-)
+ fs/btrfs/space-info.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 48d77f360a24..9d6048f54097 100644
+index 9d6048f54097..9a362f3a6df4 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -1260,7 +1260,7 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
- 				int states_nr)
- {
- 	u64 to_reclaim;
--	int flush_state;
-+	int flush_state = 0;
+@@ -1264,7 +1264,7 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
  
  	spin_lock(&space_info->lock);
  	to_reclaim = btrfs_calc_reclaim_metadata_size(fs_info, space_info);
-@@ -1268,10 +1268,9 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
+-	if (!to_reclaim) {
++	if (!to_reclaim || ticket->bytes == 0) {
  		spin_unlock(&space_info->lock);
  		return;
  	}
--	spin_unlock(&space_info->lock);
- 
--	flush_state = 0;
--	do {
-+	while (flush_state < states_nr) {
-+		spin_unlock(&space_info->lock);
- 		flush_space(fs_info, space_info, to_reclaim, states[flush_state],
- 			    false);
- 		flush_state++;
-@@ -1280,23 +1279,38 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
- 			spin_unlock(&space_info->lock);
- 			return;
- 		}
--		spin_unlock(&space_info->lock);
--	} while (flush_state < states_nr);
-+	}
-+
-+	/*
-+	 * We must run try_granting_tickets here because we could be a large
-+	 * ticket in front of a smaller ticket that can now be satisfied with
-+	 * the available space.
-+	 */
-+	ticket->error = -ENOSPC;
-+	remove_ticket(space_info, ticket);
-+	btrfs_try_granting_tickets(fs_info, space_info);
-+	spin_unlock(&space_info->lock);
- }
- 
- static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
- 					struct btrfs_space_info *space_info,
+@@ -1297,6 +1297,13 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
  					struct reserve_ticket *ticket)
  {
-+	spin_lock(&space_info->lock);
- 	while (!space_info->full) {
-+		spin_unlock(&space_info->lock);
- 		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE, false);
- 		spin_lock(&space_info->lock);
- 		if (ticket->bytes == 0) {
- 			spin_unlock(&space_info->lock);
- 			return;
- 		}
--		spin_unlock(&space_info->lock);
- 	}
+ 	spin_lock(&space_info->lock);
 +
-+	ticket->error = -ENOSPC;
-+	remove_ticket(space_info, ticket);
-+	btrfs_try_granting_tickets(fs_info, space_info);
-+	spin_unlock(&space_info->lock);
- }
- 
- static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
-@@ -1378,25 +1392,7 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
- 		break;
- 	}
- 
--	spin_lock(&space_info->lock);
- 	ret = ticket->error;
--	if (ticket->bytes || ticket->error) {
--		/*
--		 * We were a priority ticket, so we need to delete ourselves
--		 * from the list.  Because we could have other priority tickets
--		 * behind us that require less space, run
--		 * btrfs_try_granting_tickets() to see if their reservations can
--		 * now be made.
--		 */
--		if (!list_empty(&ticket->list)) {
--			remove_ticket(space_info, ticket);
--			btrfs_try_granting_tickets(fs_info, space_info);
--		}
--
--		if (!ret)
--			ret = -ENOSPC;
--	}
--	spin_unlock(&space_info->lock);
- 	ASSERT(list_empty(&ticket->list));
- 	/*
- 	 * Check that we can't have an error set if the reservation succeeded,
++	/* We could have been granted before we got here. */
++	if (ticket->bytes == 0) {
++		spin_unlock(&space_info->lock);
++		return;
++	}
++
+ 	while (!space_info->full) {
+ 		spin_unlock(&space_info->lock);
+ 		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE, false);
 -- 
 2.26.3
 
