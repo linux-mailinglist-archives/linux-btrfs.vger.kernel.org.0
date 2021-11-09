@@ -2,86 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1CC44AF21
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Nov 2021 15:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732CC44AF43
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Nov 2021 15:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237424AbhKIOEE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Nov 2021 09:04:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237380AbhKIOED (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Nov 2021 09:04:03 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DD8C061767
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Nov 2021 06:01:17 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id u11so21082425plf.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 09 Nov 2021 06:01:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=2VcVhi/PparMAaoxA+8AtDPLzdB6Uy95mlFQN3afpqk=;
-        b=mlZd2K4gZrA32L5BtCb/KEHk2Jv7/BAJcz8Cl4nSdk7bqdf1+GwuSRQqnMuLMocoDh
-         n/AoL40YMizu+zkDKN1J17C6HxN4022yBrHoByqPmsEMJSHnPqKbcbAInEWyC3I5Zn38
-         pN+VPTkCEJGh6vqxcuWhBeD29cCZjvz+l8ZC4B2axZGibAduTSiDnoFHU4fh5iRhZpFv
-         wwUhu4vw3KS+hKpWCL2krhVL8aV8DgAD8sbWN7UJuvxXfQzsL55Sm4JXRE9MIBawP2oM
-         fhGsWRFN9erE3xw44dHnsiHQybl78Kkcqry9uExGjpGjQ08wjwDlrw06WEQ7Hi/t/rYa
-         G3fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=2VcVhi/PparMAaoxA+8AtDPLzdB6Uy95mlFQN3afpqk=;
-        b=NmBKPZ9xxsAiW2c/xTp/tYLWkGwQR0bCxrmFCx017nkT/bCrFfRS/BSLbzpV2OGlAb
-         hUt5Tyyv7uf+oGLi4kazTHjqyZV2vNGXbixQW7hG3kYwm1eYrjjHNroY9XvX7KqHvrho
-         4IDcFroFmcT5el7/wBc7yj5qyMY9tpnEl62S8TgiOaggTxtCOtqL2gtq8D3Hq35kj7Jm
-         Mj4fNDbJ841S7MOPjV+eVfeUcyFdMnrqb4hEGQ6oa2nqZi1HM6dyX7sr5lJ6HqDFw7iL
-         xopposBeXCXBJKpBCCq/3hT2sMsbF4CPX6J8VEDeXa9P9QYzCHoZMAeKUjpYV7ayp+ws
-         kfxQ==
-X-Gm-Message-State: AOAM53284jo+Bi8N8bzXwvdrWw3yUZMzuBQDKi8/9C1r/kFO+n+oyi32
-        +Q0SwRF1py7SRoyC0HFUdSUwIkAC0PU3yYC72Bc=
-X-Google-Smtp-Source: ABdhPJwsK0xSrt5KO53QWAPeO5Q6yfOO00oDEcQ6rqprzAcwZ5WOQ87vTvC4+lzQVmDXswadGWUAUGnfRjJsEqd2zVE=
-X-Received: by 2002:a17:902:c643:b0:141:cf6b:6999 with SMTP id
- s3-20020a170902c64300b00141cf6b6999mr7599318pls.80.1636466476803; Tue, 09 Nov
- 2021 06:01:16 -0800 (PST)
+        id S237097AbhKIORc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Nov 2021 09:17:32 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:57048 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231169AbhKIORc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Nov 2021 09:17:32 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1EEC72195F;
+        Tue,  9 Nov 2021 14:14:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636467285;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+EWWEWw3cQ4dnUTkDbD8K6wBSp9GYErd1OFDcPnmMbQ=;
+        b=BzENprVpCfRw8XLqPNlqehbtxDFmaNHZOhDJDhR0v0dB0xRNu0P+0HX4PUvLKe+1/ZHM0L
+        vOvtXsRTIwwoLfzgP1yc/bV4ErPg0rRN72XKxR6LCQa+9QRLfrKR3JQRgslazYCNNbh4CX
+        MB2D4UJirqcD/XNC9gCwsH+bBqz2giA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636467285;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+EWWEWw3cQ4dnUTkDbD8K6wBSp9GYErd1OFDcPnmMbQ=;
+        b=e3wjVrm/IuT6FD0WkOjJhoyGYg/DsQaOsqCMQMteWnt7lKWFmrui1kpS7YLsXWC/bbSXOP
+        vnEDMWN0YlbBkUBQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 10C94A3B83;
+        Tue,  9 Nov 2021 14:14:45 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0ADFBDA799; Tue,  9 Nov 2021 15:14:05 +0100 (CET)
+Date:   Tue, 9 Nov 2021 15:14:05 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v10] btrfs: consolidate device_list_mutex in
+ prepare_sprout to its parent
+Message-ID: <20211109141405.GR28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        Josef Bacik <josef@toxicpanda.com>
+References: <31950264637728c53f794571354ef91842c6ea59.1636443598.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:8e87:0:0:0:0 with HTTP; Tue, 9 Nov 2021 06:01:16
- -0800 (PST)
-Reply-To: mohamedouedraogo1987@gmail.com
-From:   Mohamed Ouedraogo <sawadoga189@gmail.com>
-Date:   Tue, 9 Nov 2021 15:01:16 +0100
-Message-ID: <CAF1TusS3R6Umgn55Ku0Wjaw0=XOoiV6Yy6jv0Vp6ixm3A2=LkQ@mail.gmail.com>
-Subject: DEAR FRIEND
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31950264637728c53f794571354ef91842c6ea59.1636443598.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The International Monetary Fund (IMF) compensates all victims of fraud and
-your email address was found on the list of victims of fraud. this
-Santander bank of Spain has been hired by the IMF to transfer your
-compensation to you
-via Santander bank of Spain.
+On Tue, Nov 09, 2021 at 05:51:58PM +0800, Anand Jain wrote:
+> btrfs_prepare_sprout() splices seed devices into its own struct fs_devices,
+> so that its parent function btrfs_init_new_device() can add the new sprout
+> device to fs_info->fs_devices.
+> 
+> Both btrfs_prepare_sprout() and btrfs_init_new_device() needs
+> device_list_mutex. But they are holding it sequentially, thus creates a
+> small window to an opportunity to race. Close this opportunity and hold
+> device_list_mutex common to both btrfs_init_new_device() and
+> btrfs_prepare_sprout().
+> 
+> This patch splits btrfs_prepare_sprout() into btrfs_init_sprout() and
+> btrfs_setup_sprout(). This split is essential because device_list_mutex
+> shouldn't be held for allocs in btrfs_init_sprout() but must be held for
+> btrfs_setup_sprout(). So now a common device_list_mutex can be used
+> between btrfs_init_new_device() and btrfs_setup_sprout().
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> v10:
+>  %ret should carry the error code from the init sprout, thx David.
+> 
+> v9:
+>  Moved back the lockdep_assert_held(&uuid_mutex) to the top of the func
+>    per Josef comment.
+>  Add Josef RB.
 
-However, we have decided to make your own payment through Santander
-bank of Spain , $5,000 per day until the total of $500,000.00 has been
-transferred to you in full.
-
-We may not be able to send the payment with your email address alone, so we
-need your information on where we will send the money to you, such as:
-
-Name of the addressee________________
-Address________________
-Country__________________
-Telephone number________________
-Attached copy of your ID ___________
-Old ________________________
-
-
-We will start the transfer once we have received your information:
-Contact email (rafaelajose939@gmail.com )
-
-Thank you faithfully,
-
-Mrs. Jose Rafaela
-Director of Santander bank of Spain
+Added to misc-next, thanks.
