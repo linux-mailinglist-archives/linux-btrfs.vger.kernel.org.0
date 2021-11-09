@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9261F44B01A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Nov 2021 16:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E20D44B01C
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Nov 2021 16:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhKIPO7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Nov 2021 10:14:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
+        id S235973AbhKIPPA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Nov 2021 10:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbhKIPO6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Nov 2021 10:14:58 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1381C061764
-        for <linux-btrfs@vger.kernel.org>; Tue,  9 Nov 2021 07:12:12 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id b17so14420486qvl.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 09 Nov 2021 07:12:12 -0800 (PST)
+        with ESMTP id S235732AbhKIPPA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Nov 2021 10:15:00 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8EDC061764
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Nov 2021 07:12:14 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id de30so4938383qkb.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Nov 2021 07:12:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=zVB3RqvDnL/UuuXLrtef8qIkZdoUFKQN42oehYvzxPY=;
-        b=1w2tJHoaxef5RSBeyLJ2gD5RHhA7+cDYghmREW/RmhQiRcUyLoM827TPB3hQNAGC9Z
-         IFO25dL1XD8Rwg2HMBxhMm8+zkdML3GP9/5B2awpQ5GsIN9qtHJXNGXRZE4eYATqKcft
-         7sAUCIdGWKeXYpkbJJGM/tsdS8vgmfnO8Y5gNFIqxqzWs5P2nGBwhgf718VMNYEfAq2+
-         lKHnlIP+nH09KJjy+NwnIJwz+XHAqKjJH7hEZsWUbpK1fTNDS7roR1Z/Y+pcVmMDMGO5
-         9PLD/OjgtWiYflTZLDayDu2VOoQTkcOweWo5Nr0Ewvq6AZEzS4FBBgT6sdIMZJhIWXJR
-         1hxg==
+        bh=9w7/+PEuqqwnAwz9UNZSbysRdIjE5uCBFXWYa+CI92c=;
+        b=3wS965n33S6q8OhEGIPv71wBbQSYaZ2ecBUXRrvq1oR8ZsJBZzCtO58TdhAy/+d2E/
+         1ICbVjWVtVTCZPGKkNaiWjKmnq0+rqcYrlRh58qQBOJ9Btp1bUhim70ab4T9HGHhdUcC
+         czU1iWWBNrR6NqJUySoe+0CJm2fxBSbE0j0SzBcRrv1ovqemb1cMZfUMWzvS3Qe26/DZ
+         0G76TVRdGIefVK96rwoPAh78m7pMs/sDJdVXos/7JsgRs1peqp8RmtGO2G/sQ9WV0TLV
+         taSDsEjwPhgn3BJL/taaDvdUw82ZE+dCy2ik7gbth1GgtfegoUG/qrMQi+av4DTXN9E8
+         UScg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zVB3RqvDnL/UuuXLrtef8qIkZdoUFKQN42oehYvzxPY=;
-        b=KIOZoY36nsuRmO1rsA6POKM0Fm3pD6ioZlf7ef9KEui7TcV7fEYtHRCJVKb1MGDH5y
-         TLdlGhl95nJJh+FfP5aVcMVbnguYWRZfXIg9rVhCprTfmTz7HUp4d3Ya3ClrdF6WUj9b
-         jrYQoUlGOljnRrE+uBFdypHJ1F37Ap/yX+7OjOehPaGFxh3Lu5tM8rg2uLnRZDLAvdD8
-         kzlCjwdlEkMOq7OcVM9nQhZGUTK7rCTXOZ3KHVZ4P1VUBP6NrbtfmPCMq6LMGhPqeQZj
-         X7f/0NSR1Ru8NNLDZj86TbDz2TpZ0A0B0RXselW+526f0QLqQ7l2x2Pkfs/ybG531YaT
-         toHQ==
-X-Gm-Message-State: AOAM532e61WbkkoNRi0XmUr/3exv3N/FChSq1SgJMioBMSCsA0xzgwko
-        ewmP+jKo/VW6ahUO43UE6kcQoNRenwf5Dg==
-X-Google-Smtp-Source: ABdhPJw+OEg0XHeF2eWSN6rXGZZNBvEc3kmwH9FEz7iYfTqcetfid2HgDO+dFK/XqgvwX/hhdsMqow==
-X-Received: by 2002:ad4:4e49:: with SMTP id eb9mr7856814qvb.22.1636470731865;
-        Tue, 09 Nov 2021 07:12:11 -0800 (PST)
+        bh=9w7/+PEuqqwnAwz9UNZSbysRdIjE5uCBFXWYa+CI92c=;
+        b=OfAgTOeNtrKzmOJtZ0JIUJGkP7P4oyoxdncB72XoAtgmV9WHWCYyxHo40VoMCg/pgc
+         Pwo2yaxmHM7j841MfY2nano1EMHyVXLplqhTSU5UrZIZuR/R+oJWA5nX7+FdqwXSDU+E
+         4Etaw2yRRIdntnVcpvxZOvPsWEydI9jERWni/Xem6S9Z0XLxNHpRsDnp1NSpnRoOgXAs
+         QyesM0d6movmhNWKCMF0rfYt9SMwC2NCmfvSNq4I7CDrQTnIxRs7QI3Wq9Gq0xucQmm3
+         drBlmsE/M6zvs25rTy1vgRiZH4ZYc4ZHLIpF8jfwEUPto+llM6I0NgHSOI31LZCtEEj2
+         4DfA==
+X-Gm-Message-State: AOAM531DehcM9wDS6iC9r1pP03i2TzOPafVFnXIXnZPiAQpomw95RF9B
+        aT8IaadyKFZWrAYtrIjZHCpv5VUhX+yr/A==
+X-Google-Smtp-Source: ABdhPJzYAzR5R2v7nHyt31h7cykRBDNU4RhLfytlLKFw0y5A0pvHpAjr+I0+vV6/zMy8H6kbQ3ewWA==
+X-Received: by 2002:a05:620a:4044:: with SMTP id i4mr6320831qko.319.1636470733227;
+        Tue, 09 Nov 2021 07:12:13 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id bl28sm6604290qkb.44.2021.11.09.07.12.11
+        by smtp.gmail.com with ESMTPSA id s13sm7306477qtw.33.2021.11.09.07.12.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Nov 2021 07:12:11 -0800 (PST)
+        Tue, 09 Nov 2021 07:12:12 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 2/7] btrfs: check for priority ticket granting before flushing
-Date:   Tue,  9 Nov 2021 10:12:02 -0500
-Message-Id: <efd7030290cfce311cea39f381b2e5cb38761336.1636470628.git.josef@toxicpanda.com>
+Subject: [PATCH v3 3/7] btrfs: check ticket->steal in steal_from_global_block_rsv
+Date:   Tue,  9 Nov 2021 10:12:03 -0500
+Message-Id: <ac8ed2e738287a01338f8c0d502bfb46c18cc888.1636470628.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1636470628.git.josef@toxicpanda.com>
 References: <cover.1636470628.git.josef@toxicpanda.com>
@@ -61,43 +61,39 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since we're dropping locks before we enter the priority flushing loops
-we could have had our ticket granted before we got the space_info->lock.
-So add this check to avoid doing some extra flushing in the priority
-flushing cases.
+We're going to use this helper in the priority flushing loop, move this
+check into the helper to simplify the logic.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/space-info.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ fs/btrfs/space-info.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 9d6048f54097..9a362f3a6df4 100644
+index 9a362f3a6df4..6498e79d4c9b 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -1264,7 +1264,7 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
+@@ -844,6 +844,9 @@ static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
+ 	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+ 	u64 min_bytes;
  
- 	spin_lock(&space_info->lock);
- 	to_reclaim = btrfs_calc_reclaim_metadata_size(fs_info, space_info);
--	if (!to_reclaim) {
-+	if (!to_reclaim || ticket->bytes == 0) {
- 		spin_unlock(&space_info->lock);
- 		return;
- 	}
-@@ -1297,6 +1297,13 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
- 					struct reserve_ticket *ticket)
- {
- 	spin_lock(&space_info->lock);
++	if (!ticket->steal)
++		return false;
 +
-+	/* We could have been granted before we got here. */
-+	if (ticket->bytes == 0) {
-+		spin_unlock(&space_info->lock);
-+		return;
-+	}
-+
- 	while (!space_info->full) {
- 		spin_unlock(&space_info->lock);
- 		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE, false);
+ 	if (global_rsv->space_info != space_info)
+ 		return false;
+ 
+@@ -899,8 +902,8 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
+ 		ticket = list_first_entry(&space_info->tickets,
+ 					  struct reserve_ticket, list);
+ 
+-		if (!aborted && ticket->steal &&
+-		    steal_from_global_rsv(fs_info, space_info, ticket))
++		if (!aborted && steal_from_global_rsv(fs_info, space_info,
++						      ticket))
+ 			return true;
+ 
+ 		if (!aborted && btrfs_test_opt(fs_info, ENOSPC_DEBUG))
 -- 
 2.26.3
 
