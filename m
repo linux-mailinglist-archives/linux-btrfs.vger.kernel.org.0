@@ -2,341 +2,200 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312A144AAFA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Nov 2021 10:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D8D44AB15
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Nov 2021 10:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245115AbhKIJzP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Nov 2021 04:55:15 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:26290 "EHLO
+        id S245119AbhKIKCF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Nov 2021 05:02:05 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:17014 "EHLO
         mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243025AbhKIJzM (ORCPT
+        by vger.kernel.org with ESMTP id S245116AbhKIKCE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Nov 2021 04:55:12 -0500
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A98SbU4017452;
-        Tue, 9 Nov 2021 09:52:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2021-07-09;
- bh=NB83R15Ili0zQTLOP1hT3kY1u0Jrx/d/nA6tS1HJcLo=;
- b=mPE9jor/BDrh330yIvgG2ly7c9+OUWaitwMs/BJVYa/BrtuVjCMLT6BZnaR4aKPj86eM
- MHBRplywqxssCkhCks+/q8Vt56z/l8KbboOebkiCQH7SuX14ASUFQP7t/qJ8GD1tqCAG
- b3CkGblebd0RVh1TSJTUuCSJ3VxKfYBf2XVYRszH3l4KEWOucyCQ3isC2V6qVgz3vuzx
- gCTOjkfa2VyHIJCmkIo9FK7XTm4au/OgUHzt8Gm5CYdDECA6P9b6I0bh46RTZHB6xo+b
- nOcjoNn62hL9nO07sRObcvbXbDq2h3EoAcdup0fFeFwPfCR2TA2xsSBBkur53c/a+w2n bA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3c6uh4htu1-1
+        Tue, 9 Nov 2021 05:02:04 -0500
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A99sgwE015319;
+        Tue, 9 Nov 2021 09:59:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=TpBD8JBCuEme9ZKus/6Qs00T6/n6R1H5j3SbdW5pWL8=;
+ b=phR6HFJTJMCNGiEkv/9mdR9g7g8isaZ4vpEyLlYpKRX6ilVdgKYHYKRlQSP4YIWTPYsN
+ a8GyWlkN5xynxjv7iPkF0z7enf8Tx8ha9oaSZtUg+MP4HEeHk82bwRVLzRhnFdgI07ht
+ ss/jskZICwdAtts/9dofsWq3AuU2gZq+7F7Xl5VWXo9Y82LNv2k/uVJk/B4YVV1vDoQ0
+ Mvp0PUswV+T0EBzD8rfP9msiZchzyplKU0ewMx+yHW36ZO03nniFQgiV+ql456oc6w7z
+ Gxfmzc6kWobfizAs2tUzMmgex7Tw9jZG+pq1wTYgxKOqNKeQ6PIhfY5MhHfVef4eFGhg Kg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3c6usnhraa-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Nov 2021 09:52:22 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A99pMqR170559;
-        Tue, 9 Nov 2021 09:52:14 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2046.outbound.protection.outlook.com [104.47.57.46])
-        by userp3030.oracle.com with ESMTP id 3c5etvcqhq-1
+        Tue, 09 Nov 2021 09:59:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1A99uFNm131370;
+        Tue, 9 Nov 2021 09:59:14 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2107.outbound.protection.outlook.com [104.47.55.107])
+        by aserp3020.oracle.com with ESMTP id 3c5hh3caut-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 09 Nov 2021 09:52:14 +0000
+        Tue, 09 Nov 2021 09:59:14 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DGlD3CBJHLjQjHb0kMgM/ijDMESBE6vYnPUqPwCIf6Azo6/nHpDjrYmjW9rNcIEicYMmZW06zWjT4bawfQnjpJz9UDuivZXsS8L2uVJMuOi0eAcdz9sQSENUxwe608G7k3S0rb0qnlaco/RdRBydZdQiRFIMwhqE39QTxaj507+MT+mfOHvSRkfwymjNRN1pnHq2HV2nUXseLto0CIzGqobgH5hMRlgsTY1YYC7Lj+qY6ehYywqFE/yO1qmlB6v6oNNOYZB95MK6mi0jQOsF5LoV8kXYQ/Ip3AXqGpcD2nSmwspEalEFmHyRiMmJTzs8vrRYsuLXAQf1VtimnmINkQ==
+ b=XFBYZOdaroKSI2qqI10cBzxA6NqRX8/mxJVCPhmhRLvDekD5/qvyt4TID85pWZ5yNhh//D2BhpnLMdbJxQ1q87GhqjXsCKkqAEXwK5ahebJNxUuE/lgJyaCAiSNu176bQP3vxn8Nltcu+hkU61s7Q1TZjfCSAyY6FuXiLz8YjT23DY+Ko5M5k7kAsSGAKRq9Qr1xQh5B2ebxUEDkdBaWFbtA/LBaDqU2pxAMQH9XpJJPSrNjhF4jZdALVVCk75xlLNBHl+mJflCeU5bAVH4RUwxbrIfXFaQ0zk/8dzdkw94lj9AVsX2LJtKR/NzfCIz74KeOZfyhT9LewFxYE3Xqbg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NB83R15Ili0zQTLOP1hT3kY1u0Jrx/d/nA6tS1HJcLo=;
- b=T0k1wwfIJB8yr97XAoj5ZOE0cj+hLoXC/7c2ch6YBKqhJreiKEnZ1hbg6e1SmYdpIgxlAym7iIz1sc5xajNC1vbnKaIzAFZdTd85pWZo2cSCiZ97S2hfBB9U4e0TJBbQ6nrIGwbYx4ejdjNx+ocoydXShFJjIMqeTCQ+FZEGbCxeHZT3M42XcYwZZXpNqWiJY6RrBE0xCBpnvx2WQ6GRTmeFSrFrvrEgNUcg7vaYJttVJLV7pCo2G0nEPqKxcHt3QHP4zBJxmXecuOeCsPl2FzEnsNSXOiGanVUWNqqjlepelAoW1Lf6FW8pYrGiHGuGH79dyhSJ+6wNPFWdixxokA==
+ bh=TpBD8JBCuEme9ZKus/6Qs00T6/n6R1H5j3SbdW5pWL8=;
+ b=G4YbiaVVvwxJj+8WQ34IRqmNOuStpYFI5Ij+9rpOOSduDOo/TCwjfLJEau/PEYaYyExSa+aHgw14HRelsmAYIqX9KYouJMXj4yg9iBJF8rRDQYNubJ0RP9ArjHC+LKm9Gn5t6XBmgE5Xvmbhj8GhavyZOXcOj2bQ5w7T3cc+yal4JiBLcZzNBu046i52urUwDqa0vqkgpCFmCAz/Uod83UV9c+iNvqok1vRmRMp/1ECr5gXUGZOGPUMeBYg9WX3iWI8XORHVD9/caiqeyL3+FuyhmfjVcxevc7LN6kHAtnx8W8bUTyFwAwTt4eBx4Xxrcpo+//mzkk/MN9Mn4E2lwg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NB83R15Ili0zQTLOP1hT3kY1u0Jrx/d/nA6tS1HJcLo=;
- b=G1q35bEYPJnf+WJ+RLbrNkXWE/IPIhtBcSVObC1Iq0n3T/qhWapee0Q06jgiFEyRVyE192td58PKtPFQuxmRt/lXD1dnlCw/zir8TXIDuxNbLBkI6Ue/YQS9l+3w860fD701AqfAjnf6wcR94VVy6kqItbHF99uYeBJl3MYiZgQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+ bh=TpBD8JBCuEme9ZKus/6Qs00T6/n6R1H5j3SbdW5pWL8=;
+ b=u+nz0Xx9BleWRxEcyJ51Slwh2u1dSSrTrSzUCscpFJKpaa3X88D5ybU8b0WMxdVo65lPA4g0MarNpo1mrFsq344YeMlfMVi1j3RD+iVe5JOJzdf5C6no6x3QdHG/RQxu42bfjfX7VQUhYLR9ZJNg8grvB5X0yzIlFxW3fACPSew=
+Authentication-Results: toxicpanda.com; dkim=none (message not signed)
+ header.d=none;toxicpanda.com; dmarc=none action=none header.from=oracle.com;
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by BLAPR10MB5028.namprd10.prod.outlook.com (2603:10b6:208:307::9) with
+ by BL0PR10MB3427.namprd10.prod.outlook.com (2603:10b6:208:7e::26) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Tue, 9 Nov
- 2021 09:52:12 +0000
+ 2021 09:59:12 +0000
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::31a8:a8e7:1ccd:6038]) by MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::31a8:a8e7:1ccd:6038%5]) with mapi id 15.20.4669.016; Tue, 9 Nov 2021
- 09:52:12 +0000
+ 09:59:12 +0000
+Subject: Re: [PATCH v9] btrfs: consolidate device_list_mutex in prepare_sprout
+ to its parent
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>
+References: <8afc1ed3ef688557bbb0dfae1e23d47e53cb645f.1634813005.git.anand.jain@oracle.com>
+ <20211108193650.GL28560@twin.jikos.cz>
 From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v10] btrfs: consolidate device_list_mutex in prepare_sprout to its parent
-Date:   Tue,  9 Nov 2021 17:51:58 +0800
-Message-Id: <31950264637728c53f794571354ef91842c6ea59.1636443598.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.30.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0138.apcprd02.prod.outlook.com
- (2603:1096:4:188::12) To MN2PR10MB4128.namprd10.prod.outlook.com
+Message-ID: <8525b9a0-2a0c-533a-baf5-aeee8568bdf0@oracle.com>
+Date:   Tue, 9 Nov 2021 17:59:03 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+In-Reply-To: <20211108193650.GL28560@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR01CA0001.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:191::13) To MN2PR10MB4128.namprd10.prod.outlook.com
  (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Received: from localhost.localdomain (39.109.140.76) by SG2PR02CA0138.apcprd02.prod.outlook.com (2603:1096:4:188::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Tue, 9 Nov 2021 09:52:11 +0000
+Received: from [192.168.10.137] (39.109.140.76) by SI2PR01CA0001.apcprd01.prod.exchangelabs.com (2603:1096:4:191::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Tue, 9 Nov 2021 09:59:10 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8ded707b-36eb-44e7-3356-08d9a3669a94
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5028:
-X-Microsoft-Antispam-PRVS: <BLAPR10MB5028E28E7B675E1A612515BCE5929@BLAPR10MB5028.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Office365-Filtering-Correlation-Id: 7f4775ec-41a8-42bc-9e9c-08d9a36794a0
+X-MS-TrafficTypeDiagnostic: BL0PR10MB3427:
+X-Microsoft-Antispam-PRVS: <BL0PR10MB3427D6EB75B90DC78F2516C3E5929@BL0PR10MB3427.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:483;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sx+ALZ1tAS7DVAEBGmmbYdyA+e7V5bhYMscjUY99o9VqsVbtU+fC22JwHcMWoZNQiwWceIykLcGZ6C7Cx+x0x3WvE6d4TFcVO+deftspvUDlkjOQtO66oBcTmExOIhtHJD38GGRCVxh5bLbv7lS8yy16nhm9Jur1CDJHOVSZKqvG5oy2ruJn+oW9wCP3BKE197cJL0uLQP2c31Tbz6G54obxxXJiQCYU9h9W1jqd/4FuPMjf9H34SQoOOESKavA803iaQN08WyZJ/0tASFyu1YyJvGGwqUTRo3FFSeYmczXlrGb6WBYTtKQQ1L56Y0UkAKkoBsdz3jNnjV0GnNUFXg0K2C0LqpiTKGtkq+siYublNfkt3JqWqacOTnasPOQ2nEZH5n2KlH/NAZYDIyt2OeQVbW52QaVyyMcueMvbATnf8gA308Dni2U3WIt1zoZLugqOgpTm808GDw6mF1VbQ79T+5sI/YtPsqa9zEjaxW1HJEfOghDjwBv5F9Xls/7L5toVY1kNMhF8QWOTHzNkKXpg+l40qsHduNhx343Ij7bqm2NxQ8hWTsCXtDNS1WEZE22oPWxl6eahMXifXav+59WCDO18K7wUo6QgvCxD6bJoLXU4ndWKRXizeOzigOi04ibh2NbMitjdPyDWt1R076hphuVYhLcawAdahEP7bVgkwgFBATtcmuTIYSJuZo+0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6666004)(83380400001)(508600001)(956004)(8936002)(6486002)(186003)(44832011)(6506007)(5660300002)(66476007)(66556008)(6916009)(66946007)(36756003)(4326008)(38350700002)(8676002)(38100700002)(52116002)(2616005)(26005)(2906002)(86362001)(6512007)(316002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: jL5x7A5DUtMQ/3PeNpA0LT+7/ebJcAtiW5CYnizZhYhIvisn8cY/OaKQI2gp0RtLBKHIb4fLnOxcMw1y55w81SHrHhBzk/bNKAozSlvxYf+ZnpLzncn805SgTL3Kmtq37kZUNktQxeaEQYIQ2VJMEeLz9sEy3/io8uPdta5BWXGWtfTcjZjhNM9KejstVw78EiTTbM0uT11hZ2EFemUk5eHED2J/pSBsncGUSOlPuAO2LZDSxc/cjjJn77MYi6JukZ92xicMea/lAsPSsh9KMyXuN6q0ZYQDCAzhJchHFFKWYNiuGwEeLUV41ftu5ba3d/TKvR0ihvowjPntuDJwPRB80NM86fezAn0stkdIyt2AjuP/TSaX0W93+KBqsHXF+Gmd/NzfDEVlFHB3Hdj/xkOzliFa0KmnIu25NsveyeJgFefJLlY9WHTkvLaVlZdeYi4sqCHBa4eA1hZKV0qaFUF27h+2ZHHPFtsKgVGiyhpnLw7hgxe0IM9SOcnSOpQDpVaoEOB5OT/jv3GIB3bymi+v4iJ0U45TNRUQ6FU0xcbxy4Z6itAQvNfRpiR9rcc/gd8pjD6B0DxFByNQRSnfu3VNqknc7IKKzpEI8S6NkO+e5dihSAqHvE5Xy7AK3OZH1Yyc3xranKKjQw7HA5NGzIca44NNtpfp5WJ+Vdf4LEpGIiqIiD4Zwnpen3DN16t41KUBkmFszmPCv4AeK1RQaw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6916009)(31696002)(8936002)(83380400001)(66556008)(38100700002)(16576012)(66946007)(53546011)(2616005)(66476007)(8676002)(316002)(956004)(2906002)(5660300002)(186003)(6486002)(6666004)(86362001)(31686004)(508600001)(36756003)(44832011)(26005)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cTMpSJ2yR5rNwk/+Xg3V/UmFTQ9cArTYgcVq9oTvGWT3FOqOnG/i2z8avsBZ?=
- =?us-ascii?Q?K8YMgC1+jlo25zDjJ4tAUpUYKCAC7gIWocr6BSKYuZ8HQBxD/XpwUbcNMglI?=
- =?us-ascii?Q?+dYZlLLeLSFOOvZpB6AhxCF88XTEQ6tmi42yKRGSPzepfC+xiUn6y3Mupu88?=
- =?us-ascii?Q?hdpgBQNG7vX3GFmtEqfwGQgT0Vf9bq7/Gc2fkPADpuGB67TZ5D3lX7Sz6KU6?=
- =?us-ascii?Q?YgEBmoyoAhjvmaMN5aLVmcjCqz7+UsSIOYT/gqJpn7SLGSD5N0hVsRjkNiYH?=
- =?us-ascii?Q?y4//2aafn/RXK44WCpI+NpxoPGgTSR9RUr2+c/6BvqnOk2U9FchRV9B6mD40?=
- =?us-ascii?Q?ht2c6UrD6slgYjKS6YfGscZwov4hum7TUKzFv47k+Ww/a+1Q2a1e5C2+IXLo?=
- =?us-ascii?Q?uDx1oyHEX3lO6MDKn2gfqEwuY0hSgO7ln8rieoyCgaHThZjeT5cJe8EPLuRS?=
- =?us-ascii?Q?OxSiIzUXwtTSgYkZ+IeXaSUAqOZ55vvZQMwsUKXtvFf2vJJhOUY0EEiMVUg7?=
- =?us-ascii?Q?u+lpFkVoV/jBvoy/lQwSQECfpTgmRYFqKM8qDX3ADo6x51laL6LuWfW15s3a?=
- =?us-ascii?Q?1rlJHTTmtO8s7o+eKdr233z3qAGB0ujBjJPav6wfBsp04ODBm9xKCZ125XAN?=
- =?us-ascii?Q?jN7OJajnBKgde3Lz79PEVslqBk4umQL9Y/ymhrOF0s0iOUMbS2Laq3LhFLsw?=
- =?us-ascii?Q?MSKyJKHYknR2zmzapdSja/rff4NRjhjxVbxKsiysIRW30o3WXS0cRAYMUR+c?=
- =?us-ascii?Q?mGKJn11qSNgTpcHcyD1fpVB9Fzw3ZtRXJePZIxt61D1KsNh8bHpZKsZd7eJx?=
- =?us-ascii?Q?XW6AnZmAoi1NVLvzC1+zstsswoUm+bVxWpfJLEWY4DzMZwxNZ7V1hDT7dllY?=
- =?us-ascii?Q?XkNrtRZCZBqAOOZ9jtlrRrCRHEthEtHIGs9PoXIXoKy5/9ddZV7Wecav4VBj?=
- =?us-ascii?Q?i61CDgMJk+fnlG0AU/fyI2Ceq9c4ErR2vKFAnnAIX4fD3nzwPx6/gG2aLyoM?=
- =?us-ascii?Q?c8pFr0IXMzzNmF/SOooqhgYWiKXQ6ePn4sxtAJ5YkU0+00ujpOE1CkjFOBTB?=
- =?us-ascii?Q?c2BQSRqXQKiQCKeTd/8aDbaskSQGIrVgIRh/oaDg9yhunTlBELHMAZd+2AGE?=
- =?us-ascii?Q?cFMjPncskmnelTw60jRSk+Vx1tEgehbrHaFewT6kR0ystccogn2pvRcc5Olb?=
- =?us-ascii?Q?Cm7v7dkto8/bJhdb9oDe1hOOAOBJiiVc3iyyJyAsrRdV4Ph16TwobpnIHK9/?=
- =?us-ascii?Q?mxHUZ8WiEfxRvbXa08SqJmHIzUi1osd4uL3ab5d389oB7NjknNKnfzRbV4m/?=
- =?us-ascii?Q?bpYw7JkC2FeWg2RWazqO37+SECEMTStUcQb72pwHC/m0ItAmzSODYIbY/bGk?=
- =?us-ascii?Q?+XqnVPbDPFtFqzfhSgpRVHE++NBUgFk38X3e3+AgxBBumeVqYypvj9IThDS2?=
- =?us-ascii?Q?bZQ286Haxic80wBNtSdYAur/I/SVP7jSjKczEaBAX/bcvldkbi5evTo8ZiS8?=
- =?us-ascii?Q?YQhmuraVJtAWJwq3fLm1aquy77GrZfGnHjhmjY5/qc1qLkwacNW0xnYKcZbc?=
- =?us-ascii?Q?HDpY5foDN0o3RVb71cTY5meDFvf/I+AHKXxGFAm/jRF4fxBZ+7SeXk6b5agr?=
- =?us-ascii?Q?C5Di7KqUK8AI7W9UzK12SLY=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UHlMd3VCVGVLbC9EZVdpT2ZXUHBaYm9iamRSeldkMUhjOWRLMi9CQWhvT0lS?=
+ =?utf-8?B?ZjlmUnVIZXhxTHBUU0t4VFhOUzFlZUkwOWs2SUQ1NVNrSE84cVhjSFNJY3Y0?=
+ =?utf-8?B?M3ZLZFNvd3pGdTh2ZHUzVFlHeDE4cjh2UUVrUVRBcDNtU3Q0MWZzS1NMWGIr?=
+ =?utf-8?B?eG14Wk11bVF6c0FkSWhLNlpMY21POGpoMjMvRnhiN2Njb2g4VTIvRWE1RTh5?=
+ =?utf-8?B?VUp0WWsraDJVSXVvQ0poK3Y1MnJyRExEOE1YVVFUUkw3YUI2eXZja1JmL1Vk?=
+ =?utf-8?B?UUNESnVsU0hBNFFlUXJKend3TzZWelZTV29xUzdUSmJ4MUhjOStuN2lWZGVv?=
+ =?utf-8?B?SlNKT0ZaMjJPQ1Z0NXYrR0l0M1lQdVhTUFY1M3ExOWtSeklUTHk2Z2p3SUJV?=
+ =?utf-8?B?alIzekFKekpHeEY0T296YXprRGM5Rnhvb0lQR3lESnB3eFg3Um9oMnBla2pQ?=
+ =?utf-8?B?cnBNcXgzOURsTUFDdmlGRUtrSWZ4Zi9TTWpiZXFDNHh6L3lEeWkxR2tUOTFW?=
+ =?utf-8?B?WXpGR0FiTkkzTGVRd3RacVAyZHpycWE1cGI1NXBFTmhKeDNNVjlZNDc4VmFo?=
+ =?utf-8?B?NjdPWG1qYmZPSzUwU0lhY1phZ1A5QXIrMisrNms3QWFvaXNwbGRiODRBZ1p6?=
+ =?utf-8?B?UndVaTFQVk5iZmhSTVR0VXYyb2I4NDc4REg4ZXVVZVpkTmRSdG1ZRXlmU1lH?=
+ =?utf-8?B?WmZhNkZISEpBdjVQd1JUT283Y0Q4RG5rcmVERGloeHRGZWNJY3UrQ1Y1eWg3?=
+ =?utf-8?B?b2VZdTBnZkJVWmhnVUtkQmtpUHE5WEVSdVdROE9LWFUxalYxZ1o4RlpNTS9S?=
+ =?utf-8?B?dmtsMERESUtxaFhRdWpPUkFsRFN2TWxWeHpGUEE5STRzMGYwbEJHelozbEFE?=
+ =?utf-8?B?djIvaUVjbm5CL0Fsa2pBR3Zoa01UQjVCbmRRVkgxMDN4cmxVNU8rNTdrTmhL?=
+ =?utf-8?B?Z3RZaUlvZ045Ry9oZjVtOUVLZ1hXSTUrb2h3bmM5WFgzLzQrWnEvWElLL3Va?=
+ =?utf-8?B?d0hCZ2FzenhtMWs1SkpoOXk1RGtaRE14dnR0WHgxTnhPdHdzTjljeXhMVmdm?=
+ =?utf-8?B?NFFrbmpNVTVPeGhiY09tZ0hSejlWWnZlVUpadUdUMWlHYzlyZHNXRm9XanFI?=
+ =?utf-8?B?dExPM1RNTXA0SjcxbmJ6RmxBeWZLQ0dUc2lxOE9ZZWVGOFlzcjl0TFc5REg1?=
+ =?utf-8?B?VGRVRU1na2ZLc3ZMa0F1TTg4V3Z3N3NJTDY4NkxJcFVRdzdyNzY1d2ZIS1NH?=
+ =?utf-8?B?ak1UK04yM2pHMjVxNytuNUcraEFvdTFpMEQwbmZ1VE8rYXVtWThRbTQ5ekZS?=
+ =?utf-8?B?L3JOcjZCUXhPRitJaHRhd2N3U1ZuN2krblc5MC9iMGE3RkhFRE43Q01VY1Vk?=
+ =?utf-8?B?TXdoQ1JVZUNrNlRVZXIrMSs1TUZWZXpVZDd4eWNxRDZldzl2NmdlWHBYYmcx?=
+ =?utf-8?B?ak5JVXVzKzJwMTlaTGZoNzUyZU1HSWNBbnh1UzB2b2tWc1cyQ0ZRMHBpdmNO?=
+ =?utf-8?B?ajV5czBmUEhvMDVHaWlHRWV1RnovVlJ6ZGNqUGZrakUrblRyRVVXRjhTS2Vy?=
+ =?utf-8?B?bFIyWldFeHlGUkhNcjlCTnJLOXlWN2dmaE1wWkRaTkp3VGZDb21tVUdGY2tY?=
+ =?utf-8?B?Z1kyVlVYN0FHUE5PTm5ZLzNJOGp0cG5HZVRxQUZOZEovNEIwbTg3TCtGYkYz?=
+ =?utf-8?B?Sm1GTkM0SEwxc1NvNGprOHBwYXZUTFcwTFNUVUttcEFqRFFIMDA5QXZIMkh3?=
+ =?utf-8?B?MXhaQ2QvNkpIdnNhSXVBb09lSmxocGM5SFprRnp6WjdPczhTMnV4OTZhTVo5?=
+ =?utf-8?B?VS9TNnZNY1hkMi9OWlpGOVE3UVN0emNydVEzNDdBSUZzN0RLTjRzRWt1cnlo?=
+ =?utf-8?B?S0t5UDN0K3NFN0IyZHdMbjhET1ZXeTJZL3JaY1ZpanpUYzBJMGxCbVNodmJz?=
+ =?utf-8?B?emtoME43RnA2R2g2Z2lkQVdSbldJZjU5ODY5L3hqbzNXY2Q2MFlvOVVCcVI3?=
+ =?utf-8?B?bzZUd3orT1ZpL2JEUW95ZGFvVXFWY1MvdEUrMVVQWURBNUx1bXZ6N0FMRU9w?=
+ =?utf-8?B?MksxQitod1pFK0NhWTVwTHhlNWhxdldxaXZZaFNHbnVGa3ByS2JhbVNNa2pD?=
+ =?utf-8?B?b0UzdDMrV2NrdkJFVHlaQVI0MVdGaHU1YTFja1AvamlmcExWaFkycFFzK1Qv?=
+ =?utf-8?Q?R/10w9ZcXLXbYigAG8s30QY=3D?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ded707b-36eb-44e7-3356-08d9a3669a94
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f4775ec-41a8-42bc-9e9c-08d9a36794a0
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2021 09:52:12.7789
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2021 09:59:12.0985
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4PlDTUoAsQ6jhD6a58DujP3J8+4Uo4YrfZb1IZwExtNrP7c+sKVg+zU7AUv67cVe8HJCaZelZr37hto2BKJfOg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5028
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3ppkcADHa7wF6MXbBzgaSsFaRZjNz6NpC94f5tJY3WZmDBA/jmL8wYp/zsak5g9oKxO/cagHn1KNg0441OZlbg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR10MB3427
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10162 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111090059
-X-Proofpoint-ORIG-GUID: QGYIT5rBXJAqAgdsGNFYLR7pmYNWiTi0
-X-Proofpoint-GUID: QGYIT5rBXJAqAgdsGNFYLR7pmYNWiTi0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111090060
+X-Proofpoint-ORIG-GUID: 7IN5_0wzCbMbafwphDjFqxLnQQLN2_Ve
+X-Proofpoint-GUID: 7IN5_0wzCbMbafwphDjFqxLnQQLN2_Ve
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_prepare_sprout() splices seed devices into its own struct fs_devices,
-so that its parent function btrfs_init_new_device() can add the new sprout
-device to fs_info->fs_devices.
+On 9/11/21 3:36 am, David Sterba wrote:
+> On Thu, Oct 21, 2021 at 06:49:57PM +0800, Anand Jain wrote:
+>> @@ -2662,18 +2688,25 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>>   
+>>   	if (seeding_dev) {
+>>   		btrfs_clear_sb_rdonly(sb);
+>> -		ret = btrfs_prepare_sprout(fs_info);
+>> -		if (ret) {
+>> -			btrfs_abort_transaction(trans, ret);
+>> +
+>> +		/* GFP_KERNEL alloc should not be under device_list_mutex */
+>> +		seed_devices = btrfs_init_sprout(fs_info);
+>> +		if (IS_ERR(seed_devices)) {
+>> +			btrfs_abort_transaction(trans, (int)PTR_ERR(seed_devices));
+> 
+> Shouldn't this do
+> 
+> 			ret = PTR_ERR(seed_devices)
+> 			btrfs_abort_transaction(trans, ret);
+> 			goto error_trans;
+> 
 
-Both btrfs_prepare_sprout() and btrfs_init_new_device() needs
-device_list_mutex. But they are holding it sequentially, thus creates a
-small window to an opportunity to race. Close this opportunity and hold
-device_list_mutex common to both btrfs_init_new_device() and
-btrfs_prepare_sprout().
+  You are right. We need it. I sent v10 with this change. Thanks.
 
-This patch splits btrfs_prepare_sprout() into btrfs_init_sprout() and
-btrfs_setup_sprout(). This split is essential because device_list_mutex
-shouldn't be held for allocs in btrfs_init_sprout() but must be held for
-btrfs_setup_sprout(). So now a common device_list_mutex can be used
-between btrfs_init_new_device() and btrfs_setup_sprout().
+-Anand
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
-v10:
- %ret should carry the error code from the init sprout, thx David.
 
-v9:
- Moved back the lockdep_assert_held(&uuid_mutex) to the top of the func
-   per Josef comment.
- Add Josef RB.
-
-v8:
- Change log update:
- s/btrfs_alloc_sprout/btrfs_init_sprout/g
- s/btrfs_splice_sprout/btrfs_setup_sprout/g
- No code change.
-
-v7:
- . Not part of the patchset "btrfs: cleanup prepare_sprout" anymore as
- 1/3 is merged and 2/3 is dropped.
- . Rename btrfs_alloc_sprout() to btrfs_init_sprout() as it does more
- than just alloc and change return to btrfs_device *.
- . Rename btrfs_splice_sprout() to btrfs_setup_sprout() as it does more
- than just the splice.
- . Add lockdep_assert_held(&uuid_mutex) and
- lockdep_assert_held(&fs_devices->device_list_mutex) in btrfs_setup_sprout().
-
-v6:
- Remove RFC.
- Split btrfs_prepare_sprout so that the allocation part can be outside
- of the device_list_mutex in the parent function btrfs_init_new_device().
-
- fs/btrfs/volumes.c | 70 ++++++++++++++++++++++++++++++++++------------
- 1 file changed, 52 insertions(+), 18 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 68bb3709834a..155892bf5c7f 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2429,21 +2429,15 @@ struct btrfs_device *btrfs_find_device_by_devspec(
- 	return device;
- }
- 
--/*
-- * does all the dirty work required for changing file system's UUID.
-- */
--static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
-+static struct btrfs_fs_devices *btrfs_init_sprout(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
- 	struct btrfs_fs_devices *old_devices;
- 	struct btrfs_fs_devices *seed_devices;
--	struct btrfs_super_block *disk_super = fs_info->super_copy;
--	struct btrfs_device *device;
--	u64 super_flags;
- 
- 	lockdep_assert_held(&uuid_mutex);
- 	if (!fs_devices->seeding)
--		return -EINVAL;
-+		return ERR_PTR(-EINVAL);
- 
- 	/*
- 	 * Private copy of the seed devices, anchored at
-@@ -2451,7 +2445,7 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
- 	 */
- 	seed_devices = alloc_fs_devices(NULL, NULL);
- 	if (IS_ERR(seed_devices))
--		return PTR_ERR(seed_devices);
-+		return seed_devices;
- 
- 	/*
- 	 * It's necessary to retain a copy of the original seed fs_devices in
-@@ -2462,7 +2456,7 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
- 	old_devices = clone_fs_devices(fs_devices);
- 	if (IS_ERR(old_devices)) {
- 		kfree(seed_devices);
--		return PTR_ERR(old_devices);
-+		return old_devices;
- 	}
- 
- 	list_add(&old_devices->fs_list, &fs_uuids);
-@@ -2473,7 +2467,41 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
- 	INIT_LIST_HEAD(&seed_devices->alloc_list);
- 	mutex_init(&seed_devices->device_list_mutex);
- 
--	mutex_lock(&fs_devices->device_list_mutex);
-+	return seed_devices;
-+}
-+
-+/*
-+ * Splice seed devices into the sprout fs_devices.
-+ * Generate a new fsid for the sprouted readwrite btrfs.
-+ */
-+static void btrfs_setup_sprout(struct btrfs_fs_info *fs_info,
-+			       struct btrfs_fs_devices *seed_devices)
-+{
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	struct btrfs_super_block *disk_super = fs_info->super_copy;
-+	struct btrfs_device *device;
-+	u64 super_flags;
-+
-+	/*
-+	 * We are updating the fsid, the thread leading to device_list_add()
-+	 * could race, so uuid_mutex is needed.
-+	 */
-+	lockdep_assert_held(&uuid_mutex);
-+
-+	/*
-+	 * Below threads though they parse dev_list they are fine without
-+	 * device_list_mutex:
-+	 *   All device ops and balance - as we are in btrfs_exclop_start.
-+	 *   Various dev_list read parser - are using rcu.
-+	 *   btrfs_ioctl_fitrim() - is using rcu.
-+	 *
-+	 * For-read threads as below are using device_list_mutex:
-+	 *   Readonly scrub btrfs_scrub_dev()
-+	 *   Readonly scrub btrfs_scrub_progress()
-+	 *   btrfs_get_dev_stats()
-+	 */
-+	lockdep_assert_held(&fs_devices->device_list_mutex);
-+
- 	list_splice_init_rcu(&fs_devices->devices, &seed_devices->devices,
- 			      synchronize_rcu);
- 	list_for_each_entry(device, &seed_devices->devices, dev_list)
-@@ -2489,13 +2517,10 @@ static int btrfs_prepare_sprout(struct btrfs_fs_info *fs_info)
- 	generate_random_uuid(fs_devices->fsid);
- 	memcpy(fs_devices->metadata_uuid, fs_devices->fsid, BTRFS_FSID_SIZE);
- 	memcpy(disk_super->fsid, fs_devices->fsid, BTRFS_FSID_SIZE);
--	mutex_unlock(&fs_devices->device_list_mutex);
- 
- 	super_flags = btrfs_super_flags(disk_super) &
- 		      ~BTRFS_SUPER_FLAG_SEEDING;
- 	btrfs_set_super_flags(disk_super, super_flags);
--
--	return 0;
- }
- 
- /*
-@@ -2586,6 +2611,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 	struct super_block *sb = fs_info->sb;
- 	struct rcu_string *name;
- 	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	struct btrfs_fs_devices *seed_devices;
- 	u64 orig_super_total_bytes;
- 	u64 orig_super_num_devices;
- 	int ret = 0;
-@@ -2669,18 +2695,26 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 
- 	if (seeding_dev) {
- 		btrfs_clear_sb_rdonly(sb);
--		ret = btrfs_prepare_sprout(fs_info);
--		if (ret) {
-+
-+		/* GFP_KERNEL alloc should not be under device_list_mutex */
-+		seed_devices = btrfs_init_sprout(fs_info);
-+		if (IS_ERR(seed_devices)) {
-+			ret = PTR_ERR(seed_devices);
- 			btrfs_abort_transaction(trans, ret);
- 			goto error_trans;
- 		}
-+	}
-+
-+	mutex_lock(&fs_devices->device_list_mutex);
-+	if (seeding_dev) {
-+		btrfs_setup_sprout(fs_info, seed_devices);
-+
- 		btrfs_assign_next_active_device(fs_info->fs_devices->latest_dev,
- 						device);
- 	}
- 
- 	device->fs_devices = fs_devices;
- 
--	mutex_lock(&fs_devices->device_list_mutex);
- 	mutex_lock(&fs_info->chunk_mutex);
- 	list_add_rcu(&device->dev_list, &fs_devices->devices);
- 	list_add(&device->dev_alloc_list, &fs_devices->alloc_list);
-@@ -2742,7 +2776,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 
- 		/*
- 		 * fs_devices now represents the newly sprouted filesystem and
--		 * its fsid has been changed by btrfs_prepare_sprout
-+		 * its fsid has been changed by btrfs_sprout_splice().
- 		 */
- 		btrfs_sysfs_update_sprout_fsid(fs_devices);
- 	}
--- 
-2.33.1
+> The ret value would otherwise remain unchanged, from some previous use
+> which at this point would be 0. >
+>>   			goto error_trans;
+>>   		}
+>> +	}
+>> +
+>> +	mutex_lock(&fs_devices->device_list_mutex);
+>> +	if (seeding_dev) {
+>> +		btrfs_setup_sprout(fs_info, seed_devices);
+>> +
+>>   		btrfs_assign_next_active_device(fs_info->fs_devices->latest_dev,
+>>   						device);
+>>   	}
+>>   
+>>   	device->fs_devices = fs_devices;
+>>   
+>> -	mutex_lock(&fs_devices->device_list_mutex);
+>>   	mutex_lock(&fs_info->chunk_mutex);
+>>   	list_add_rcu(&device->dev_list, &fs_devices->devices);
+>>   	list_add(&device->dev_alloc_list, &fs_devices->alloc_list);
 
