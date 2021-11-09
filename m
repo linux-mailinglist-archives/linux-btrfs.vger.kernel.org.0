@@ -2,206 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E14344B2C6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Nov 2021 19:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B7944B326
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Nov 2021 20:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242505AbhKISkH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Nov 2021 13:40:07 -0500
-Received: from st43p00im-zteg10061901.me.com ([17.58.63.168]:33653 "EHLO
-        st43p00im-zteg10061901.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241812AbhKISkG (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Nov 2021 13:40:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1636483039;
-        bh=7d/ZO/68PioGiDQXrOFO0jjtZrOwryW8x8NODpALZWY=;
-        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-        b=GzKR3YKfJWOtPMmDjDW5clitvZ5LYl6pIrPpmjfBnPj0l9AjMoY2fuuQVC/0i4XWM
-         PUhFhgmdM6lb8tVBlOcvpgfSf6z75yxzEcVExBYz58ZHP37YXoHdmd5J2WYbNRWV4T
-         n4kPLgt/f/RfBP8B0eK36c/5qxncA1xq4gQsJJp6GOLzy8Jv2vB9gSh0f0iWovyjcJ
-         UEBL+JqlCF775QCsm9t6Lic/saHaG3HNx0Yh/vllH/w3lQE17k8QP/l3EoNOgUBFlC
-         SUjYlzYd/KmEaA9QFe1Y0j1kIY1EXkfxn0TH44jATZnePK80++wtN70clpGdV1NOJI
-         MinYfPIXb4sXQ==
-Received: from [192.168.6.187] (206-188-64-235.cpe.distributel.net [206.188.64.235])
-        by st43p00im-zteg10061901.me.com (Postfix) with ESMTPSA id 07645860A40;
-        Tue,  9 Nov 2021 18:37:17 +0000 (UTC)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: Finding long-term data corruption
-From:   Alex Lieflander <atlief@icloud.com>
-In-Reply-To: <b341cf51-f747-71b9-e762-89bf6dbb7be2@gmail.com>
-Date:   Tue, 9 Nov 2021 13:37:16 -0500
-Cc:     linux-btrfs@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9A4FF989-58C9-4780-A06E-5E0F245EF2BC@icloud.com>
-References: <C85EE7D2-FC47-4A0E-B7A8-9285CF46C3FC@icloud.com>
- <b341cf51-f747-71b9-e762-89bf6dbb7be2@gmail.com>
-To:     Andrei Borzenkov <arvidjaar@gmail.com>
-X-Mailer: Apple Mail (2.3445.104.21)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
- definitions=2021-11-09_05:2021-11-08,2021-11-09 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2111090104
+        id S242091AbhKIT0z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Nov 2021 14:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243085AbhKIT0y (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Nov 2021 14:26:54 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D57C061764
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Nov 2021 11:24:07 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id bl12so122064qkb.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Nov 2021 11:24:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0s/82m1YP1Pxv+EIM+LlrnkxEl55fzl09EdmKQa7XJI=;
+        b=O6BlA3FD+lRctMTrJdNAunU7pg8Lt1fo7ryS+b8U6w/a4aPRnJ3zLhdl17EwEE0HXK
+         JB0dK9Tt6e6iUnatCNWT7Rf5jDLTfDcoMoeu1foobN1JgkBmZoXyEBojPTD+6fPeOKNq
+         2cZQt0X9ho4hIEHolclIbSrGDC7FMTsQCMpkWv9HoRT+acb8fTE3re2nQZfdmZ0EaZRz
+         /g5n4vSzb6F24DL1LAe/SODcfGALFYmxNKXa5ZYRZFQpFJgi85syYOt1zmwiIlNnGbus
+         gjCjtlTGKI9l+yGUQ5x5wtdDULDNZGLphOrNUYfwu2hLIBCF4QjkcOcntsr4iRk7f2+v
+         3DzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0s/82m1YP1Pxv+EIM+LlrnkxEl55fzl09EdmKQa7XJI=;
+        b=oTevxaj6EocfYF9mes2FfERLE93YaekUg0YvsVA87ldC9swrOb6I3QP7h5Ylpa28L9
+         7INcXm+X2ausk4VnBMIQN8S9X5QGHZxCP4qYFma4q5nVVYI7E004+JwyPDbUghF3Vh8a
+         KeERcMsQYpRpyocIhIV1/O+9rkuv5oU9Rq1Q5MEeNjqhl06Qg2CZBV/FPVblwrLUlbUo
+         171GVFfQxxu2hNKPAbkpSrsGYAtoxYhOIRw90uERJZ4+24ZCUaONaeWB4dHgq9LZLkGS
+         yegBxDBJHax+nwyB5b0on3J3cw3sM88LxEck6EcMU4pRlnwa2mZu8nSL/Uoaro8pfzci
+         FRMg==
+X-Gm-Message-State: AOAM530FZPqUqHvZYk9K85f6udC5eGJ/XaTNMPHLVcQ3lbYLUZH3GYjo
+        k/WUTxNkZe7pUzsdYSu2/CyIrKozMnetMw==
+X-Google-Smtp-Source: ABdhPJwRpM8Tqdvy1E5jxoKYSAZinaIp1I+lGuzBWR1W2NwC/G9Ftw9crTgyuTfpVHI9MQ0E7v2ccA==
+X-Received: by 2002:a05:620a:400f:: with SMTP id h15mr4963292qko.226.1636485846987;
+        Tue, 09 Nov 2021 11:24:06 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id t20sm12663259qkp.68.2021.11.09.11.24.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Nov 2021 11:24:06 -0800 (PST)
+Date:   Tue, 9 Nov 2021 14:24:05 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 7/8] btrfs: add code to support the block group root
+Message-ID: <YYrK1QVmJhiG2vDc@localhost.localdomain>
+References: <cover.1636145221.git.josef@toxicpanda.com>
+ <6e96419001ae2d477a84483dee0f9731f78b25bd.1636145221.git.josef@toxicpanda.com>
+ <749db638-d703-fd30-4835-d539806197cb@gmx.com>
+ <YYl8QTnLySc5hDRV@localhost.localdomain>
+ <d9ada670-7d11-c1fd-2e15-b1794375c45b@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d9ada670-7d11-c1fd-2e15-b1794375c45b@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> On Nov 7, 2021, at 2:28 AM, Andrei Borzenkov <arvidjaar@gmail.com> =
-wrote:
->=20
->> On 06.11.2021 20:24, Alex Lieflander wrote:
->>=20
->> Hello,
->>=20
->> All of my files and data were exposed to an unknown amount of =
-corruption, and I=E2=80=99d like to know how much I can recover and/or =
-whether I can detect the extent of the damage. The steps that led me =
-here are a bit complicated but (I think) relevant to the problem, so =
-I=E2=80=99ve detailed them below.
->>=20
->> I use BTRFS for most of my filesystems, and my system recently died. =
-While investigating the issue, I found out that corruption had been =
-detected months earlier (after an unclean shutdown) on one of them. =
-Corruption was detected on another a few weeks later for unknown =
-reasons. The number of detected corruptions continued to grow to about =
-160 and 30, respectively, before things began to noticeably malfunction.
->>=20
->> During this time I=E2=80=99d been `btrfs sub snap -r`-ing and `btrfs =
-send -p`-ing both to the third BTRFS filesystem as a backup method, with =
-no errors except some warnings about the =E2=80=9Ccapabilities=E2=80=9D =
-of particular files being =E2=80=9Cset multiple times". I reformatted my =
-backup drive a few weeks ago for unrelated reasons (after corruption was =
-detected, unbeknownst to me). Since then I continued to regularly =
-=E2=80=9Cbackup=E2=80=9D in this way.
->>=20
->> Once I noticed the corruption (that `btrfs scrub` couldn=E2=80=99t =
-fix) I tried increasingly aggressive actions until both original =
-filesystems were destroyed and unrecoverable. After that I reformatted =
-and =E2=80=9Csent=E2=80=9D the corresponding sub-volumes back to their =
-original drives (with the newly reformatted filesystems). Now scrub =
-detects no errors on any of the filesystems, but btrfs-send can=E2=80=99t =
-incrementally send on one of the filesystems. The parent I=E2=80=99m =
-using is the one that I sent from the backup drive. On closer =
-inspection, the received sub-volume has a few subtle permission changes =
-from the sent one. These sub-volumes have always been read-only and I =
-don=E2=80=99t think I ever modified them.
->=20
-> That most likely is the result of stale received UUID on the source =
-side.
->=20
-> =
-https://lore.kernel.org/linux-btrfs/CAL3q7H5y6z7rRu-ZsZe_WXeHteWx1edZi+L3-=
-UL0aa0oYg+qQA@mail.gmail.com/
+On Tue, Nov 09, 2021 at 09:14:06AM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2021/11/9 03:36, Josef Bacik wrote:
+> > On Sat, Nov 06, 2021 at 09:11:44AM +0800, Qu Wenruo wrote:
+> > > 
+> > > 
+> > > On 2021/11/6 04:49, Josef Bacik wrote:
+> > > > This code adds the on disk structures for the block group root, which
+> > > > will hold the block group items for extent tree v2.
+> > > > 
+> > > > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > > > ---
+> > > >    fs/btrfs/ctree.h                | 26 ++++++++++++++++-
+> > > >    fs/btrfs/disk-io.c              | 49 ++++++++++++++++++++++++++++-----
+> > > >    fs/btrfs/disk-io.h              |  2 ++
+> > > >    fs/btrfs/print-tree.c           |  1 +
+> > > >    include/trace/events/btrfs.h    |  1 +
+> > > >    include/uapi/linux/btrfs_tree.h |  3 ++
+> > > >    6 files changed, 74 insertions(+), 8 deletions(-)
+> > > > 
+> > > > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > > > index 8ec2f068a1c2..b57367141b95 100644
+> > > > --- a/fs/btrfs/ctree.h
+> > > > +++ b/fs/btrfs/ctree.h
+> > > > @@ -271,8 +271,13 @@ struct btrfs_super_block {
+> > > >    	/* the UUID written into btree blocks */
+> > > >    	u8 metadata_uuid[BTRFS_FSID_SIZE];
+> > > > 
+> > > > +	__le64 block_group_root;
+> > > > +	__le64 block_group_root_generation;
+> > > > +	u8 block_group_root_level;
+> > > > +
+> > > 
+> > > Is there any special reason that, block group root can't be put into
+> > > root tree?
+> > > 
+> > 
+> > Yes, I'm so glad you asked!
+> > 
+> > One of the planned changes with extent-tree-v2 is how we do relocation.  With no
+> > longer being able to track metadata in the extent tree, relocation becomes much
+> > more of a pain in the ass.
+> 
+> I'm even surprised that relocation can even be done without proper metadata
+> tracking in the new extent tree(s).
+> 
+> > 
+> > In addition, relocation currently has a pretty big problem, it can generate
+> > unlimited delayed refs because it absolutely has to update all paths that point
+> > to a relocated block in a single transaction.
+> 
+> Yep, that's also the biggest problem I attacked for the qgroup balance
+> optimization.
+> 
+> > 
+> > I'm fixing both of these problems with a new relocation thing, which will walk
+> > through a block group, copy those extents to a new block group, and then update
+> > a tree that maps the old logical address to the new logical address.
+> 
+> That sounds like the proposal from Johannes for zoned support of RAID56.
+> An FTL-like layer.
+> 
+> But I'm still not sure how we could even get all the tree blocks in one
+> block group in the first place, as there is no longer backref in the extent
+> tree(s).
+> 
+> By iterating all tree blocks? That doesn't sound sane to me...
+> 
 
-That problem has now been solved, thank you.
+No, iterating the free areas in the free space tree.  We no longer care about
+the metadata itself, just the space that is utilized in the block group.  We
+will mark the block group as read only, search through the free space tree for
+that block group to find extents, copy them to new locations, insert a mapping
+object for that block group to say "X range is now at Y".
 
->> With the situation now described, I have a few questions that I=E2=80=99=
-m hoping to find the answer to:
->>=20
->> 1. Can corrupt data propagate through sent sub-volumes?
->=20
-> You did not really explain what kind of corruption it was or how you
-> detected it in the first place. If you are talking about corruption
-> detected by scrub - it should not, as btrfs should have either used =
-good
-> copy (in case of redundant profile) or failed btrfs send (if data was
-> unreadable).
+As extent's are free'd their new respective ranges are freed.  Once a relocated
+block groups ->used hits 0 its mapping items are deleted.
 
-When I mention the initial instances of detected corruption, I=E2=80=99m =
-referring to entries in my recovered syslog that are similar to:
+> > 
+> > Because of this we could end up with blocks in the tree root that need to be
+> > remapped from a relocated block group into a new block group.  Thus we need to
+> > be able to know what that mapping is before we go read the tree root.  This
+> > means we have to store the block group root (and the new mapping root I'll
+> > introduce later) in the super block.
+> 
+> Wouldn't the new mapping root becoming a new bottleneck then?
+> 
+> If we relocate the full fs, then the mapping root (block group root) would
+> be no different than an old extent tree?
+> 
+> Especially the mapping is done in extent level, not chunk level, thus it can
+> cause tons of mapping entries, really not that better than old extent tree
+> then.
+> 
 
-[696136.626700] BTRFS error (device bcache0): bdev /dev/bcache0 errs: wr =
-0, rd 0, flush 0, corrupt 11, gen 0
-[696211.391232] BTRFS warning (device bcache0): csum failed root 9219 =
-ino 6967679 off 1415057616896 csum 0x9212d341 expected csum 0x8c30380c =
-mirror 1
+Except the problem with the old extent tree is we are constantly modifying it.
+The mapping's are never modified once they're created, unless we're remapping
+and already remapped range.  Once the remapped extent is free'd it's new
+location will be normal, and won't update anything in the mapping tree.
 
-When I mention later instances of detected corruption, I=E2=80=99m (in =
-addition) referring to syslog entries similar to:
+> > 
+> > These two roots will behave like the chunk root, they'll have to be read first
+> > in order to know where to find any remapped metadata blocks.  Because of that we
+> > have to keep pointers to them in the super block instead of the tree root.
+> 
+> Got the reason now, but I'm not yet convinced the block group root mapping
+> is the proper way to go....
+> 
+> And still not sure how can we find out all tree blocks in one block group
+> without backref for each tree blocks...
+> 
 
-[158941.583633] BTRFS error (device bcache0): bad tree block level 178 =
-on 2811210498048
-[   89.312657] BTRFS error (device dm-3): bad tree block start, want =
-6733332480 have 9811680321309906454
+We won't, we'll find allocated ranges.  It's certainly less precise than the
+backref tree, but waaaaaaaay faster, because we only care about the range that
+is allocated and moving that range.
 
-I also remember similar entires in `dmesg` (shortly before the failure) =
-referring to =E2=80=9Clogical=E2=80=9D and =E2=80=9Cphysical=E2=80=9D =
-numbers, however I wasn=E2=80=99t able to recover any logs from it.
+Also it gives us another neat ability, we can relocate parts of extents instead
+of being required to move full extents.  Before we had to move the whole extent
+because we have to modify the file extent items to point at exactly the same
+range.
 
-For the sake of brevity I=E2=80=99ll refer to the time surrounding the =
-initial corruption detection as =E2=80=9Cthe incident=E2=80=9D.
+Here the translation happens at the logical level, so we can easily split up
+large extents and simply split up any bio's across the new logical locations and
+stitch it back together at the end.  Thanks,
 
->> 2. Can this corruption damage earlier, intact, sub-volumes?
->=20
-> Again - what corruption? Physical media errors may happen anywhere.
-> RAID5 or RAID6 profiles errors may affect non-related data under some
-> conditions.
-
-I have another disk in another country with sub-volumes sent to it =
-before and after the incident, and I have no evidence to suggest that it =
-experienced direct damage. I think the only way it might have been =
-damaged would be by receiving sub-volumes from the other two filesystems =
-after the incident; I=E2=80=99m wondering how likely it is that =
-sub-volumes sent before the incident would still contain the data =
-exactly as it was stored/sent/received.
-
-The earliest I would have access to that disk is in several months and =
-it=E2=80=99s pretty outdated; having to use it would be a last resort.
-
->> 3. Does sub-volume sending include the checksums? Would a clean scrub =
-report on the receiving filesystem be an actual indication of =
-uncorrupted data?
->=20
-> As far as I know send stream does not include any checksums. btrfs
-> receive is logical, it creates/writes files from user space so scrub
-> results on receive side have no relation to content or state of
-> filesystem on send side.
->=20
->> 4. Is there a way that I could detect what data/files are currently =
-corrupted? How so?
->=20
-> For the third time - explain what kind of corruption you are talking
-> about. If corruption cannot be detected by btrfs, you need to use
-> data/application specific methods to verify data integrity.
->=20
->> 5. What might cause a sent sub-volume (with no parent) to differ =
-between two filesystems? Is that a sign of corruption?
->=20
-> You need to show much more details before this can be answered. Full
-> send is expected to have the same content. If you have evidences that
-> this is not the case, provide logs/commands output/any facts that show
-> how you determine that, starting with actual send/receive invocations
-> you were using.
-
-I=E2=80=99m not sure what you mean by invocations, but the versions of =
-"btrfs-progs=E2=80=9D I used were between 5.1 and 5.10.1. The command I =
-used to send/receive the sub-volume was `btrfs send =
-/path/to/backup_snapshot | pv -pterbas 2T | btrfs receive =
-/path/to/newly_formatted/`. While collecting proof of the differences, I =
-realized that the only difference was in the modification time of the =
-top-level =E2=80=9Cdirectory=E2=80=9D of the sub-volumes (according to =
-`ls -lh`) by 4 days, which is probably normal.
-
->> 6. Is using sub-volumes in the way that I described appropriate for =
-use as a backup solution?
->=20
-> You did not really describe much. If you refer to
->=20
-> "I=E2=80=99d been `btrfs sub snap -r`-ing and `btrfs send -p`-ing both =
-to the
-> third BTRFS filesystem as a backup method"
->=20
-> yes, it is. Do not forget received UUID pitfall and never ever (and I
-> mean really *EVER*) change any subvolume from being read-only to
-> read-write as part of restore from backup. Always create a clone
-> (writable subvolume) of read-only snapshot and use it as recovered =
-content.
->=20
->> Thank you for your work on this interesting and extremely useful =
-filesystem, and for reading this far!
->>=20
->> Regards,
->> Alex Lieflander
+Josef
