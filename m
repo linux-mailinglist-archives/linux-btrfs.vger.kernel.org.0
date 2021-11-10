@@ -2,144 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA00644BFA4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 12:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9916244C009
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 12:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhKJLEp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Nov 2021 06:04:45 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:47997 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231675AbhKJLE2 (ORCPT
+        id S231311AbhKJLVQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Nov 2021 06:21:16 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:36780 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhKJLVO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Nov 2021 06:04:28 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UvuiLch_1636542099;
-Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0UvuiLch_1636542099)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 10 Nov 2021 19:01:39 +0800
-Date:   Wed, 10 Nov 2021 19:01:39 +0800
-From:   Eryu Guan <eguan@linux.alibaba.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3] fstests: btrfs: make nospace_cache related test cases
- to work with latest v2 cache
-Message-ID: <20211110110139.GX60846@e18g06458.et15sqa>
-References: <20211110093417.47185-1-wqu@suse.com>
- <20211110104809.GV60846@e18g06458.et15sqa>
- <e33a7317-d740-b698-61bf-4882bea4a70b@gmx.com>
+        Wed, 10 Nov 2021 06:21:14 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4456D2195F;
+        Wed, 10 Nov 2021 11:18:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636543106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HLZ2mXV0pc2SLO9dt0S6fo2pp/kc4vkap9OJcKCIHTg=;
+        b=mztUHNzOEdPDDGmjY+lC04wQ5Spc6m7ki9G0nY1pQKBGYq92Flxqm1dbm6si5zem03Aq7q
+        yni/CnKAIqDy4DxO9So6iOy3d3mLRoaPYBtqUMstm4G9qJWUy78rCwyu3FipfBb5onhfVU
+        ZeJrr/LlI9bQSCatwb8/QAQfPKkgWoI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 089E913BAC;
+        Wed, 10 Nov 2021 11:18:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id JF8qO4Gqi2HlUwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Wed, 10 Nov 2021 11:18:25 +0000
+Subject: Re: [PATCH v3] btrfs: Test proper interaction between skip_balance
+ and paused balance
+To:     Eryu Guan <eguan@linux.alibaba.com>
+Cc:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org
+References: <20211108142901.1003352-1-nborisov@suse.com>
+ <9a98623c-f34a-8a64-f211-18e3e3439078@oracle.com>
+ <2e4207b5-0266-392e-39fd-1848632c93f8@suse.com>
+ <20211110105311.GW60846@e18g06458.et15sqa>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <3e58ea25-d21a-b668-4d48-40437ac0ea29@suse.com>
+Date:   Wed, 10 Nov 2021 13:18:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e33a7317-d740-b698-61bf-4882bea4a70b@gmx.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20211110105311.GW60846@e18g06458.et15sqa>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 06:52:17PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2021/11/10 18:48, Eryu Guan wrote:
-> >On Wed, Nov 10, 2021 at 05:34:17PM +0800, Qu Wenruo wrote:
-> >>In the coming btrfs-progs v5.15 release, mkfs.btrfs will change to use
-> >>v2 cache by default.
-> >>
-> >>However nospace_cache mount option will not work with v2 cache, as it
-> >>would make v2 cache out of sync with on-disk used space.
-> >>
-> >>So mounting a btrfs with v2 cache using "nospace_cache" will make btrfs
-> >>to reject the mount.
-> >>
-> >>There are quite some test cases relying on nospace_cache to prevent v1
-> >>cache to take up data space.
-> >>
-> >>For those test cases, we no longer need the "nospace_cache" mount option
-> >>if the filesystem is already using v2 cache.
-> >>Since v2 cache is using metadata space, it will no longer take up data
-> >>space, thus no extra mount options for those test cases.
-> >>
-> >>By this, we can keep those existing tests to run without problem for
-> >>both v1 and v2 cache.
-> >>
-> >>Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >>---
-> >>Changelog:
-> >>v2:
-> >>- Add _scratch_no_v1_cache_opt() function
-> >>v3:
-> >>- Add _require_btrfs_command for _scratch_no_v1_cache_opt()
-> >>---
-> >>  common/btrfs    | 11 +++++++++++
-> >>  tests/btrfs/102 |  2 +-
-> >>  tests/btrfs/140 |  5 ++---
-> >>  tests/btrfs/141 |  5 ++---
-> >>  tests/btrfs/142 |  5 ++---
-> >>  tests/btrfs/143 |  5 ++---
-> >>  tests/btrfs/151 |  4 ++--
-> >>  tests/btrfs/157 |  7 +++----
-> >>  tests/btrfs/158 |  7 +++----
-> >>  tests/btrfs/170 |  4 ++--
-> >>  tests/btrfs/199 |  4 ++--
-> >>  tests/btrfs/215 |  2 +-
-> >>  12 files changed, 33 insertions(+), 28 deletions(-)
-> >>
-> >>diff --git a/common/btrfs b/common/btrfs
-> >>index ac880bdd..e21c452c 100644
-> >>--- a/common/btrfs
-> >>+++ b/common/btrfs
-> >>@@ -445,3 +445,14 @@ _scratch_btrfs_is_zoned()
-> >>  	[ `_zone_type ${SCRATCH_DEV}` != "none" ] && return 0
-> >>  	return 1
-> >>  }
-> >>+
-> >>+_scratch_no_v1_cache_opt()
-> >
-> >This name indicates it's a general helper, but it's btrfs-specific, how
-> >about _scratch_btrfs_no_v1_cache_opt ?
-> >
-> >>+{
-> >>+	_require_btrfs_command inspect-internal dump-tree
-> >
-> >This will call _notrun if btrfs command doesn't have inspect-internal
-> >dump-tree sub-command, and _notrun will call exit, but ...
-> >
-> >>+
-> >>+	if $BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV |\
-> >>+	   grep -q "FREE_SPACE_TREE"; then
-> >>+		return
-> >>+	fi
-> >>+	echo -n "-onospace_cache"
-> >>+}
-> >>diff --git a/tests/btrfs/102 b/tests/btrfs/102
-> >>index e5a1b068..c1678b5d 100755
-> >>--- a/tests/btrfs/102
-> >>+++ b/tests/btrfs/102
-> >>@@ -22,7 +22,7 @@ _scratch_mkfs >>$seqres.full 2>&1
-> >>  # Mount our filesystem without space caches enabled so that we do not get any
-> >>  # space used from the initial data block group that mkfs creates (space caches
-> >>  # used space from data block groups).
-> >>-_scratch_mount "-o nospace_cache"
-> >>+_scratch_mount $(_scratch_no_v1_cache_opt)
-> >
-> >_scratch_no_v1_cache_opt is called in a sub-shell, so the _notrun will
-> >just exit the sub-shell, not the test itself. Should call the _require
-> >rule in test.
-> 
-> That means we will have a hard dependency on binding
-> _scratch_btrfs_no_v1_cache_opt() with _require rule then.
-> 
-> Then a sudden "_require_btrfs_command inspect-internal dump-tree"
-> without context could be sometimes confusing AFAIK.
 
-That's true.
+
+On 10.11.21 г. 12:53, Eryu Guan wrote:
+> On Wed, Nov 10, 2021 at 12:07:37PM +0200, Nikolay Borisov wrote:
+>> <snip>
+>>
+>>
+>>>> +# titled "btrfs: allow device add if balance is paused"
+>>>
+>>> It is a new feature, not a bug fix? The kernel patch won't backport to
+>>> the stable kernels. Then on older kernels, this test has to exit with
+>>> _notrun().
+>>> Is there any way to achieve this? There isn't any sysfs interface that
+>>> will help and, so far we haven't used the kernel version to achieve
+>>> something like this.
+>>>
+>>
+>> No, and this is outside the remit of xfstest. Anyone who is running
+>> xfstest should ensure incompatible tests are excluded.
+> 
+> I don't think that's the case, we perfer test case detect required env
+> to run the test and _notrun if any condition not met. For regression
+> test for bug fix, we want the test to fail on old/un-patched kernel, but
+> for new features we need a way to tell if the kernel in test has the
+> feature or not.
+
+There isn't really an easy way to test for the presence of this feature.
+The closest I could think of is modify btrfs' exclusive_operation sysfs
+to show "balance paused" and in the test simply run a dummy balance and
+pause it and check whether "balance" or "balance paused" is the state of
+the exclusive op. However this means for this test to also rely on the
+presence of the exclusive_operation sysfs file. However, I don't like
+this because adding a device to balance is independent of the
+exclusive_operation sysfs i.e it only has an informative role.
 
 > 
-> Considering "inspect-internal" should be in btrfs-progs for a very long
-> time, any non-EOF distro should have them already, can we just remove
-> the _require rule?
-
-It seems like that dump-tree sub-command was added in 2016 in v4.5, so I
-guess I'm fine with it.
-
-Thanks,
-Eryu
+> Thanks,
+> Eryu
+> 
