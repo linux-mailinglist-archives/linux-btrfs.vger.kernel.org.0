@@ -2,94 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE89E44C8E8
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 20:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E52344CA1E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 21:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhKJTXA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Nov 2021 14:23:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        id S230487AbhKJUK4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Nov 2021 15:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhKJTW7 (ORCPT
+        with ESMTP id S229695AbhKJUKz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Nov 2021 14:22:59 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E9FC061766;
-        Wed, 10 Nov 2021 11:20:11 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 77-20020a1c0450000000b0033123de3425so5528423wme.0;
-        Wed, 10 Nov 2021 11:20:11 -0800 (PST)
+        Wed, 10 Nov 2021 15:10:55 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6F5C061764
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Nov 2021 12:08:07 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id bl12so3626183qkb.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Nov 2021 12:08:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=T2gR6okmLSMlMIhfCQTlyRrP9i8TvjzjbMxZ8UL3G+U=;
-        b=ZlL6MzG25MmTPSIhCaqmFE0o5ZJkk4P7wI+ZLWAO7W2YXoHzfKEDDkqljk6vNfXl03
-         aap+e71LCTcBSvUkcYJGpUr8i5Bq5C9xhl0k3FbeiPc2tf/aiLp5pT/HQ+CebYpUbHVK
-         KXTu4FCuvWWukJXO8/JvYhiwe5CpL5GIe9oQpjoH87LgPTt7W1nBLDm9vth3+dAHnvMY
-         lH9SvJDeGDOxZdcyWi4U8H6dq5dW8TIHKCEl9WRGj+6+AGjTfHZfXKGJg9uI0qB/DJTu
-         IiuHdMxjNKCOpdix7OyBMrgCarV7KW2XF5nPkQkj6bfEHiX0xAPbSylRkduhORU7PlEM
-         K27w==
+        bh=fiCWdx3qh0AEX6s+xjBYtu1RC1jMCToPPRr6J0rOmKs=;
+        b=7kFk+ovRsvfuy2tor3r+I7cVgETjGQkOr276WZ1h5pMZVC3/iJ1jP3x0dv9Q/r2h4Y
+         1EyaSPepCh/5yupS7cbdZTtqTqU9Ld9viTk5ElIbD1Dzxz+ECo0DowJ2G+Q4wjbXj1+V
+         55JG2h5ViD8WsQyZEHk2gid3RuSqRv6uJqickh1nsIC5wwnGWdUAwT+YV7gRlwS8f/q4
+         V3WiHjR4eoXI6aricszKH3FuGBBXCBb4V7Ty8hEybXxmEhCSrqesxxeD+Nx7dWKtLyYL
+         aPjtnLtJjocE99uEkHaibCdKuWQfQ4lPucbZICj09Y5EwkgWU9VkD5SbkFulJueuXS0f
+         f7Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=T2gR6okmLSMlMIhfCQTlyRrP9i8TvjzjbMxZ8UL3G+U=;
-        b=LMx13GQtK4GMeGjFBkZ8DtvxeO+grstIFjK1TFCI0AjyKJc26naA+tSDpBDcFuUhQO
-         J2cqkF49wYXYzJsaJuiUTYhXFenHSN45JWYcIoZRzV2+RjupGhaRhsUbx6GEcq+JaZrB
-         P4wvm9zYHyZPX3P19Y3yf8xNRJImma3jq7Zn7UuNkskCyjJdSK+ZhixJdEojywKF5ghG
-         B0ZY3m5vkBFI60415HunHuR7h+kiXHPqEn0h22Lpld8dH0QVTWCxFLOOU/H6gjFERC9c
-         n8FPattOhmru4+oFE/TKEL3B5imvWgchXk+Mmb+GJRtDbZwfpuwEGs1MsVJvLnMCx3gR
-         OjSA==
-X-Gm-Message-State: AOAM530Yk7Sr1OsMtK87BeexpQdDMOxYcONwxirSwosnjXfAjP22OnAA
-        N9XMDdcC0l2yYA==
-X-Google-Smtp-Source: ABdhPJxkjsyfnVhoNjji26QSNCrhZkbSE262C9r9Z1O3juc2nhpF2kfC5Ou0624AkR7HAjaHO6LhfA==
-X-Received: by 2002:a05:600c:a42:: with SMTP id c2mr19334580wmq.154.1636572010145;
-        Wed, 10 Nov 2021 11:20:10 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id b197sm598885wmb.24.2021.11.10.11.20.09
+        bh=fiCWdx3qh0AEX6s+xjBYtu1RC1jMCToPPRr6J0rOmKs=;
+        b=35Sy4jrO8joSUZ/ppUCYjYyq4dd6XFmCkvmxA0kaoGlhuBcyPpYnYOSmKtdX4Hf7Hx
+         kmadgmqNfJkMLpweQa8y3fHXHgertlrQMthUig4tNxRW59U34AtZD7gL2iP0XCoKd3e1
+         vZkrEFvJzd8cyXyHqV9VbxG4bGo4bi0novjvoo4l5V7G4eVQMAr8NwNo47e4bR/A2Svo
+         VAHLJS6aIDk8qUGaIMUVxH+mdoNJkZG+0E8/99aXj/Ozqthu/5qLWxQeR6ne30/4FwJ/
+         s6Mku+zsuKvi91EotzsFRQWigYnvMycblqieiWKegQwpclb5tPv1zHdOevGEXb5ZxOgf
+         b5PQ==
+X-Gm-Message-State: AOAM5321YEwthSfGVulJrHHqoGhZt9nawmMajYvjlFaGJ14F8i/5vGAR
+        tX1M9vmRJ+fMSZKprgtICn/OmiYugHfO0Q==
+X-Google-Smtp-Source: ABdhPJy8WZakcGxKdsKSio7pQIwebO8cjlgM/wbupfKa9XssZ357z3O1bkGxC2E4qWv51iEZSFJfAg==
+X-Received: by 2002:a37:647:: with SMTP id 68mr1682239qkg.343.1636574885881;
+        Wed, 10 Nov 2021 12:08:05 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id j20sm490511qtj.72.2021.11.10.12.08.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 11:20:09 -0800 (PST)
-From:   Colin Ian King <colin.i.king@googlemail.com>
-X-Google-Original-From: Colin Ian King <colin.i.king@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: make 1-bit bit-fields unsigned int
-Date:   Wed, 10 Nov 2021 19:20:08 +0000
-Message-Id: <20211110192008.311901-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 10 Nov 2021 12:08:05 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 00/13] btrfs-progs: extent tree v2 global root support prep work
+Date:   Wed, 10 Nov 2021 15:07:51 -0500
+Message-Id: <cover.1636574767.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The bitfields have_csum and io_error are currently signed which is
-not recommended as the representation is an implementation defined
-behaviour. Fix this by making the bit-fields unsigned ints.
+v1->v2:
+- Added a "btrfs-progs: check: fix set_extent_dirty range" which I discovered
+  when adding the next part of the changes.
+- Dropped all of the global root stuff, pushing it into the extent tree v2
+  specific changes.
+- Reworked the super block root helper to take a level as suggested by Qu.
 
-Fixes: 2c36395430b0 ("btrfs: scrub: remove the anonymous structure from scrub_page")
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- fs/btrfs/scrub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--- Original email ---
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index cf82ea6f54fb..8f6ceea33969 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -73,8 +73,8 @@ struct scrub_page {
- 	u64			physical_for_dev_replace;
- 	atomic_t		refs;
- 	u8			mirror_num;
--	int			have_csum:1;
--	int			io_error:1;
-+	unsigned int		have_csum:1;
-+	unsigned int		io_error:1;
- 	u8			csum[BTRFS_CSUM_SIZE];
- 
- 	struct scrub_recover	*recover;
+Hello,
+
+This is a series of patches to do all the prep work needed to support extent
+tree v2.  These patches are independent of the actual extent tree v2 support,
+some of them are fixes, some of them are purely to pave the way for the global
+root support.  These patches are mostly around stopping direct access of
+->extent_root/->csum_root/->free_space_root, putting these roots into a rb_tree,
+and changing the code to look up the roots in the rb_tree instead of accessing
+them directly.  There are a variety of fixes to help make this easier, mostly
+removing access to these roots that are strictly necessary.  Thanks,
+
+Josef
+
+Josef Bacik (13):
+  btrfs-progs: check: fix set_extent_dirty range
+  btrfs-progs: simplify btrfs_make_block_group
+  btrfs-progs: check: don't walk down non fs-trees for qgroup check
+  btrfs-progs: filesystem-show: close ctree once we're done
+  btrfs-progs: add a helper for setting up a root node
+  btrfs-progs: btrfs-shared: stop passing root to csum related functions
+  btrfs-progs: check: stop passing csum root around
+  btrfs-progs: stop accessing ->csum_root directly
+  btrfs-progs: image: keep track of seen blocks when walking trees
+  btrfs-progs: common: move btrfs_fix_block_accounting to repair.c
+  btrfs-progs: check: abstract out the used marking helpers
+  btrfs-progs: check: move btrfs_mark_used_tree_blocks to common
+  btrfs-progs: mark reloc roots as used
+
+ btrfs-corrupt-block.c       |   2 +-
+ check/main.c                |  37 ++++----
+ check/mode-common.c         | 124 ++-----------------------
+ check/qgroup-verify.c       |   4 +
+ cmds/filesystem.c           |  19 ++--
+ cmds/rescue-chunk-recover.c |  17 ++--
+ common/repair.c             | 176 ++++++++++++++++++++++++++++++++++++
+ common/repair.h             |   3 +
+ convert/main.c              |   2 +-
+ image/main.c                |  12 +++
+ kernel-shared/ctree.h       |   8 +-
+ kernel-shared/disk-io.c     | 101 +++++++++++++--------
+ kernel-shared/disk-io.h     |   2 +-
+ kernel-shared/extent-tree.c | 117 ++++--------------------
+ kernel-shared/file-item.c   |   6 +-
+ mkfs/main.c                 |   3 +-
+ mkfs/rootdir.c              |   2 +-
+ 17 files changed, 326 insertions(+), 309 deletions(-)
+
 -- 
-2.32.0
+2.26.3
 
