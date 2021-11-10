@@ -2,125 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0803844CDFD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Nov 2021 00:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B32644CDFF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Nov 2021 00:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhKJXtO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Nov 2021 18:49:14 -0500
-Received: from mout.gmx.net ([212.227.15.18]:46203 "EHLO mout.gmx.net"
+        id S234263AbhKJXuw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Nov 2021 18:50:52 -0500
+Received: from mout.gmx.net ([212.227.15.15]:34209 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234005AbhKJXtN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Nov 2021 18:49:13 -0500
+        id S234005AbhKJXuv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Nov 2021 18:50:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636587983;
-        bh=YHkLLv9/aJuHuJjMyfMXYv7WwynLh6ka35TPrk5cCAo=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=dY6vdchKONRlkTvnMmfzY7RdMoY6mPL0GWnQpl/KigQtHumxZfVaBPL4jKwEokQ54
-         arTBj9qNzNrMJ2c4s4LKg5uLyGhM1eg9rFvfWH0i27Xtqg8FIncZjtuJ8iw4Ag3Rlt
-         QQrLv0C+2vp9i2aVmK0wdh2WB7X9X2TehEhO/5SU=
+        s=badeba3b8450; t=1636588075;
+        bh=hFZEda4jT6qK2iwx4Zd6aOTn+Vq4l11Q+5u4SkV+Wts=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Sc67zSKoen4DipDXfWW1k5rQcGPVO809jMl+z+wZtZmxmuRg7eb/pDLhqzZDw6Vcl
+         2H9KNnKN5h77BVzYrSbWy0u1JMyEN1iTgMKTsyLb8PmQeCpgctap01I9Dipbx/0P2E
+         bvMsZ0lXtmcK4p9MvhaKXf4hq2E5thC62uwxlIw8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZTmO-1nF9s82R0Q-00WS2x; Thu, 11
- Nov 2021 00:46:23 +0100
-Message-ID: <1f4db1f5-2f37-0074-cbe8-e78ba7836587@gmx.com>
-Date:   Thu, 11 Nov 2021 07:46:19 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mz9Un-1mYdIn3aDr-00wAOh; Thu, 11
+ Nov 2021 00:47:55 +0100
+Message-ID: <9717059f-cbd3-3dc3-90a2-f9ef7c32b8d9@gmx.com>
+Date:   Thu, 11 Nov 2021 07:47:49 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.0
-Subject: Re: Upgraded from Buster to Bullseye, unmountable Btrfs filesystem
+Subject: Re: [PATCH] btrfs: make 1-bit bit-fields unsigned int
 Content-Language: en-US
-To:     "S." <sb56637@gmail.com>, linux-btrfs@vger.kernel.org
-References: <a979e8db-f86a-dd3a-6f0a-588b14bbd97f@gmail.com>
- <37379516-cc7c-b045-ad2e-15c669a60921@gmail.com>
- <179e61f7-82c9-0a5f-1a05-7c0019b4f126@gmail.com>
- <76156d73-9d4c-a473-4dd2-105a905d3d1e@gmx.com>
- <c94ecfa2-752b-9952-9483-ae3dd04f6c02@gmail.com>
+To:     Colin Ian King <colin.i.king@googlemail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211110192008.311901-1-colin.i.king@gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <c94ecfa2-752b-9952-9483-ae3dd04f6c02@gmail.com>
+In-Reply-To: <20211110192008.311901-1-colin.i.king@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zZkHO3upzmKucjut5YU/IUPlB1TsKDvYWBEBx6FCsCu6JuExOMh
- Ngue9zO0TzFSw83E64o/V4w5yUcSR76tMTXK/y2vwbKfqouMoypkmvoj9uG96mtXnDh2f55
- nF+YU+OeQPZZMVg41RgkMobz2gUCZER5N/naxT7/5RjktZ4QLX43jJbPYdCip3WzA0t3Fth
- bVUO5XUR4itYQN7nKpuUg==
+X-Provags-ID: V03:K1:fyaJGUPyE1oNaAC5f4f7jc3gueg3Ub582k9Vp+FYWRJebtb/FYV
+ 7cjrAMkzfaRTZ7jsSAdledCunV4lKFUMALec6QwQI8J5um+7938JZnAjkDPJLpfphxcdQSF
+ pqkSR7rkke/+7P3Mlf3zHNI+kEWytDLiPqiUGmx0Kmn/deOhgtI2urPa9oeC36bUVRvuzZf
+ iLBlddTPbHM+NTL0XyOLA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:VPRlZLHzLzw=:2jXmiIMsQzHU7gKh0DrXNc
- kt8qV5uAup7AM7rlP5tMaJAE+l6g8R+hlDs/vDcz2FCzfI+/GWzQZKBbUpKNyicxmhyDb8x4A
- lcQEBZy4jJ4HKunG6cilG80NXrcnGTwOcvGeGPAFOMtMkU7rHQNqxg5XHJuuVpMcaRDvlHFlF
- jWwPBZvcTfm5G34gRmplP6fT8L3YpVrfr4hoxnPE5YNhOKxQa2lYQ9wondsOysloYuOo2qlR6
- cfAOUazLP6q4SuO5zOJN/f1mdqbNF4SAycODQjxdRKXW/gJTklzC8QK+gXRzfJyXpxf7Tw7G9
- C19FIqpQT2nbpyAvmBYBQAv8rTbNHce2ATjluQGGaplTvcaY5koO1cNvkweenRI5HsWg+inwI
- ihpfWa9PG2VT6h17ZyD9oRmegSmYRDtks6mRDIultL59AR1ABdrlqPOAYXFdXCzDh9levrnyK
- VctVFwmiFvOBfl+R7njyO3FYSqAKi5fkp+xufNbUaRh5lK2MVfl6uIF9oQDI8psAgLtDk1IYA
- mUx7EZltNGM3VBQmebxC2/UKRyv0OhpAqbrzDROa98itqYaEU/Y5K9yl1+aVLGEmeiMBQRQ2f
- rLhho8C9N4L7dToofWXWffmTZDDVMkMyetRGg9czpaX9sNSdj+U0Z4wY+fjyDcf742lT+0fm6
- RTzZJbDIzi5sxe39HdWsA5U2koVkEA9FMaJxziX3MQ/GFQV+R/r5PM8jc8X5iyA9aF45fsYmF
- Xww8703o+sJw1PC0ienXleK13fSbYAp4bYX8KZmC+uDSPl7wKqqMKSJKxHmZO8Do/vNz6loBy
- W6aiq6/57VtYCH6jvMlzYgw2UO1wq6D0CIwyY93UglqCgqruuxkEFlppTfAW5jPXuwKTpZGm4
- qbnqZyRrHx+1e6jWaTpo3332RXi7LQpCvpFzEb416uMUm4/VSCmgCIzMyt77w7/iF7st7RGT8
- mlHhcdHkJxfOHEsCMu+kUzZoMy/MT4HwrKU+mXs0acLaEH/x5yqu2iV4PFT18uXI+r+/Aw6G4
- MGAkAnUDkQ3BqE1FBB6whpmWvc4A11Vtrffs7TooEwDi/FDaUOFL6/cpp0qilWqUITseWo7Wx
- JWbotc2+2CwI9g=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iOmM1IkaDQM=:VcNPISPAQzrA64Dl4Wznr4
+ Bc2Xl1lPcJ5Zc4tR+exRZrEs6lrvErNv2xdJ+4UwUo3O6J8OwEU3diVXxUAkYbuocMeN0Ub0c
+ 1ZmCHWc6ngI/Yc5KvBITdqssAnzPoyQaYbupoDC1JHvLPAnUWdr0HTgqk5rV9dXRUEtEPAIxg
+ P6TBh9NGRV9y8cz6c1kgBZDxVZ/MzIqtxLOnucY22/n8g5uoRyitTYTPi8GUL3D8Nc0FwDbAQ
+ fgYRrBEK2cFYOv04sYRmPyvj5kqW7+rXtvH5T9lh+HZ+SUwsXiX7I7KJX9D/4jYtUtOH5YglT
+ pyT36qSsuT8KZ3H59hLMLkfhe5+SVnIqgChbqZQAlL7WziOLRc6NLFas1dyG4B7dy2kLy5fYP
+ USx5ivyBFg3fdhxuhw5cqGhKhkfyN0C/uwELL/2LEQ78yVrPs0xbsjATmXP/9tXz+IwA+JWrB
+ yPfsQ1rMPCzE6caUeU5DJ2sRCfPasklL7Jlar7E+jCeNvFM1gJjnD21sqhsLY0XsgaBU1Z5ZB
+ 1qVLKt1HyhfwtNu9AF/V5OS24pQ7xlw98XuJiFXlbznkb48nTHauGDhWi1LLm2gq1AEvhtozl
+ j27wacA7/7DFSLjcTqqNpcBvtd/H3rNozF+izioESf4e5UUHSz3RmFBCsUtsojmT49QjWc00f
+ AHYMeCinEMKwZF3Sdnr7QIEWnPSkyiwpsv8ML2HFnyXSotKfLDXJB/C+Xp70NYxSllyEX3ufU
+ WrRYuriHBaCYM1q1Aoz2cLQmsYQ+gDbz+Rjt9o5fA0GtyF3y0yBPl3MCuoDUF+ZK/QC/mnD6F
+ 8fvsWfKy3sCN9C0WZUPs3AAComYklSJvRTJOVxzHnYRzg9+AMODuEaUpwNEC4PgHmtI/N/vxZ
+ buua1P73F9bKtvkcPaIuv6nXIQnuCk++w8vWIimyg49KL+YdcUyCh90l4Nimy6+2fDrwiVWsq
+ +1EcN5Y4TVbkAh6+YiuZpysXddQ5Bp/JUu/nCLcJ+YNkv+HAqUdxL+rfY+DiO5+fgPh9v/VQ/
+ 2BOOuILYPn6CQZ/hDbghUoaxzmvh3w0+NbZH/IQcDD5QNm0LOfwg/EE4jzDzU5CPRZeYrD9Pf
+ cR+hLce2aj2YJg=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/11/10 22:01, S. wrote:
+On 2021/11/11 03:20, Colin Ian King wrote:
+> The bitfields have_csum and io_error are currently signed which is
+> not recommended as the representation is an implementation defined
+> behaviour. Fix this by making the bit-fields unsigned ints.
 >
-> On 11/10/21 02:01, Qu Wenruo wrote:
->> If you can revert to older kernel/distro, then you can mount the fs wit=
-h
->> "-o rescan_uuid" to regenerate the UUID tree using the old kernel.
->>
->> Then it would rebuild the UUID tree, no need for a tool in user space.
->
-> Thanks very much for the explanation and for the suggestions.
-> Fortunately the system saved a copy of the old 4.19 kernel and initrd
-> image. You are correct that the old kernel can still boot the filesystem
-> without errors. Then I unmounted it and remounted it with `-o
-> rescan_uuid_tree`. This also appeared to work, as it was able to mount.
-> However, after rebooting into the new Bullseye kernel the filesystem is
-> still unmountable:
->
-> ------------------------
-> [=C2=A0 115.250774] BTRFS info (device sda3): flagging fs with big metad=
-ata
-> feature
-> [=C2=A0 115.257773] BTRFS info (device sda3): disk space caching is enab=
-led
-> [=C2=A0 115.264089] BTRFS info (device sda3): has skinny extents
-> [=C2=A0 115.414229] BTRFS critical (device sda3): corrupt leaf: root=3D9
-> block=3D170459136 slot=3D0, invalid key objectid, have 11018354394740573=
-44
-> expect to be aligned to 4096r
-> [=C2=A0 115.428780] BTRFS error (device sda3): block=3D170459136 read ti=
-me tree
-> block corruption detected
-> [=C2=A0 115.459643] BTRFS critical (device sda3): corrupt leaf: root=3D9
-> block=3D170459136 slot=3D0, invalid key objectid, have 11018354394740573=
-44
-> expect to be aligned to 4096
-> [=C2=A0 115.474296] BTRFS error (device sda3): block=3D170459136 read ti=
-me tree
-> block corruption detected
-> [=C2=A0 115.483109] BTRFS warning (device sda3): failed to read root
-> (objectid=3D9): -5
-> [=C2=A0 115.534748] BTRFS error (device sda3): open_ctree failed
-> ------------------------
+> Fixes: 2c36395430b0 ("btrfs: scrub: remove the anonymous structure from =
+scrub_page")
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-After a deeper look into the uuid rescan code, it doesn't delete those
-corrupted keys, but only add back correct items.
-
-So it means, we still need btrfs-progs to repair it.
-
-Thus I believe you still need to prepare a build environment for it.
-
-For the worst case, I could try to build a static btrfs-progs for you if
-you could provide the "uname -a" output.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+> ---
+>   fs/btrfs/scrub.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> Any more ideas? Thanks again.
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+> index cf82ea6f54fb..8f6ceea33969 100644
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -73,8 +73,8 @@ struct scrub_page {
+>   	u64			physical_for_dev_replace;
+>   	atomic_t		refs;
+>   	u8			mirror_num;
+> -	int			have_csum:1;
+> -	int			io_error:1;
+> +	unsigned int		have_csum:1;
+> +	unsigned int		io_error:1;
+>   	u8			csum[BTRFS_CSUM_SIZE];
+>
+>   	struct scrub_recover	*recover;
+>
