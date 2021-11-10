@@ -2,169 +2,306 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8874044BDCD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 10:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2500844BDDA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 10:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhKJJeO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Nov 2021 04:34:14 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:57754 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbhKJJeO (ORCPT
+        id S230459AbhKJJhY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Nov 2021 04:37:24 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:33860 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhKJJhX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Nov 2021 04:34:14 -0500
+        Wed, 10 Nov 2021 04:37:23 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 79EE22190C;
-        Wed, 10 Nov 2021 09:31:26 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7079C1FD6B;
+        Wed, 10 Nov 2021 09:34:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636536686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xaUGIhtwnMjh2FDT5MbpbNBDdTRaJVCqEURrpaKxOLE=;
-        b=KrfAZGblzwm8p2Lce75A+D7cso84SE/QP7KthQMivM/Vkp8xKZMuu3DVIhhdFkVCX5npBn
-        p1gF1BiOU8p8zfm4bcXeqGdz8dqFyE/ftv0vFt1z48+Wygl0l7FpeYmtuMS64DUbKwYy07
-        74vNJaVQskNL+1UqbcVFyb0EL6VOrOE=
+        t=1636536875; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=pDEKxqjr0F89kKnaIofHdlQDtikaPHr14NlXI/AXI2w=;
+        b=h4xPHiAnm9LHCvZLiyjtMq8lQSQchMRwDO8/pCYkTfV8QlDtCvrRjbcjAWIATuMkD+1Hyt
+        SN8ikVGS/2j17EmhYEcb3USEgiXG7XGWdjgtx3nbg8pA+5svWRHjpGKRFiE82RHrNNAKKQ
+        wUZYxsDnKzqf3JyE2nnNdRJ//NI/Pjk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 540E713B16;
-        Wed, 10 Nov 2021 09:31:26 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 87A5B13BAC;
+        Wed, 10 Nov 2021 09:34:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id TY7/EW6Ri2GMGQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Wed, 10 Nov 2021 09:31:26 +0000
-Subject: Re: [PATCH v2 1/3] btrfs: introduce BTRFS_EXCLOP_BALANCE_PAUSED
- exclusive state
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20211108142820.1003187-1-nborisov@suse.com>
- <20211108142820.1003187-2-nborisov@suse.com>
- <ec5447a6-b9bc-17ac-11a7-4fc14e1c6a82@oracle.com>
- <e6b4d90e-5e5a-37be-24a8-f493451a889b@suse.com>
- <6b09a082-fe67-a6da-7322-1822425e14c0@oracle.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <7563dfb3-5be8-7746-0851-055b849a67da@suse.com>
-Date:   Wed, 10 Nov 2021 11:31:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id 5HOEEyqSi2G8GgAAMHmgww
+        (envelope-from <wqu@suse.com>); Wed, 10 Nov 2021 09:34:34 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3] fstests: btrfs: make nospace_cache related test cases to work with latest v2 cache
+Date:   Wed, 10 Nov 2021 17:34:17 +0800
+Message-Id: <20211110093417.47185-1-wqu@suse.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-In-Reply-To: <6b09a082-fe67-a6da-7322-1822425e14c0@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+In the coming btrfs-progs v5.15 release, mkfs.btrfs will change to use
+v2 cache by default.
 
+However nospace_cache mount option will not work with v2 cache, as it
+would make v2 cache out of sync with on-disk used space.
 
-On 10.11.21 г. 10:56, Anand Jain wrote:
-> 
-> 
-> On 9/11/21 11:33 pm, Nikolay Borisov wrote:
->> <snip>
->>
->>>
->>>> +void btrfs_exclop_pause_balance(struct btrfs_fs_info *fs_info)
->>>> +{
->>>> +    spin_lock(&fs_info->super_lock);
->>>> +    ASSERT(fs_info->exclusive_operation == BTRFS_EXCLOP_BALANCE ||
->>>> +           fs_info->exclusive_operation == BTRFS_EXCLOP_DEV_ADD);
->>>> +    fs_info->exclusive_operation = BTRFS_EXCLOP_BALANCE_PAUSED;
->>>> +    spin_unlock(&fs_info->super_lock);
->>>> +}
->>>> +
->>>
->>> This function can be more generic and replace its open coded version
->>> in a few places.
->>>
->>>   btrfs_exclop_balance(fs_info, exclop)
->>>   {
->>> ::
->>>      switch(exclop)
->>>      {
->>>          case BTRFS_EXCLOP_BALANCE_PAUSED:
->>>                ASSERT(fs_info->exclusive_operation ==
->>>                  BTRFS_EXCLOP_BALANCE ||
->>>                           fs_info->exclusive_operation ==
->>>                  BTRFS_EXCLOP_DEV_ADD);
->>>              break;
->>>          case BTRFS_EXCLOP_BALANCE:
->>>              ASSERT(fs_info->exclusive_operation ==
->>>                  BTRFS_EXCLOP_BALANCE_PAUSED);
->>>              break;
->>>      }
->>> ::
->>>   }
->>>
->>>
->>>>    static int btrfs_ioctl_getversion(struct file *file, int __user
->>>> *arg)
->>>>    {
->>>>        struct inode *inode = file_inode(file);
->>>> @@ -4020,6 +4029,10 @@ static long btrfs_ioctl_balance(struct file
->>>> *file, void __user *arg)
->>>>                if (fs_info->balance_ctl &&
->>>>                    !test_bit(BTRFS_FS_BALANCE_RUNNING,
->>>> &fs_info->flags)) {
->>>
->>>
->>>>                    /* this is (3) */
->>>> +                spin_lock(&fs_info->super_lock);
->>>> +                ASSERT(fs_info->exclusive_operation ==
->>>> BTRFS_EXCLOP_BALANCE_PAUSED);
->>>> +                fs_info->exclusive_operation = BTRFS_EXCLOP_BALANCE;
->>>
->>> Here you set the status to BALANCE running. Why do we do it so early
->>> without even checking if the user cmd is a resume? Like a few lines
->>> below?
->>>
->>>      4064 if (bargs->flags & BTRFS_BALANCE_RESUME) {
->>>
->>> I guess it is because of the legacy balance ioctl.
->>>
->>>      4927 case BTRFS_IOC_BALANCE:
->>>      4928 return btrfs_ioctl_balance(file, NULL);
->>>
->>> Could you confirm?
->>
->>
->> Actually no, I thought that just because we are in (3) (based on the
->> comments) the right thing would be done. However, that's clearly not the
->> case...
->>
->> I wonder whether putting the code under the & BALANCE_RESUME branch is
->> sufficient because as you pointed out the v1 ioctl doesn't handle args
->> at all. If I'm reading the code correctly balance ioctl v1 can't really
->> resume balance because it will always return with :
->>
-> 
-> 
->>      20         if (fs_info->balance_ctl) {
-As this part of the code is very confusing I think it is better to split
-the balance v1 and v2 codes into separate functions.
->>
->>      19                 ret = -EINPROGRESS;
->>
->>      18                 goto out_bargs;
->>
->>      17         }
->>
->> OTOH if I put the code right before we call btrfs_balance then there's
->> no way to distinguish we are starting from paused state
->>
->> <snip>
-> 
-> Yeah looks like the legacy code did not resume the balance, it supported
-> the pause though or may be the trick was to remount to resume the
-> balance?
-> 
-> As this part of the code is very confusing I think it is better to split
-> the balance v1 and v2 codes into separate functions.
+So mounting a btrfs with v2 cache using "nospace_cache" will make btrfs
+to reject the mount.
 
+There are quite some test cases relying on nospace_cache to prevent v1
+cache to take up data space.
 
-Actually V1 is going to be deprecated so I think the way forward is to
-move the resume under the & BALANCE_RESUME branch.
+For those test cases, we no longer need the "nospace_cache" mount option
+if the filesystem is already using v2 cache.
+Since v2 cache is using metadata space, it will no longer take up data
+space, thus no extra mount options for those test cases.
+
+By this, we can keep those existing tests to run without problem for
+both v1 and v2 cache.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Add _scratch_no_v1_cache_opt() function
+v3:
+- Add _require_btrfs_command for _scratch_no_v1_cache_opt()
+---
+ common/btrfs    | 11 +++++++++++
+ tests/btrfs/102 |  2 +-
+ tests/btrfs/140 |  5 ++---
+ tests/btrfs/141 |  5 ++---
+ tests/btrfs/142 |  5 ++---
+ tests/btrfs/143 |  5 ++---
+ tests/btrfs/151 |  4 ++--
+ tests/btrfs/157 |  7 +++----
+ tests/btrfs/158 |  7 +++----
+ tests/btrfs/170 |  4 ++--
+ tests/btrfs/199 |  4 ++--
+ tests/btrfs/215 |  2 +-
+ 12 files changed, 33 insertions(+), 28 deletions(-)
+
+diff --git a/common/btrfs b/common/btrfs
+index ac880bdd..e21c452c 100644
+--- a/common/btrfs
++++ b/common/btrfs
+@@ -445,3 +445,14 @@ _scratch_btrfs_is_zoned()
+ 	[ `_zone_type ${SCRATCH_DEV}` != "none" ] && return 0
+ 	return 1
+ }
++
++_scratch_no_v1_cache_opt()
++{
++	_require_btrfs_command inspect-internal dump-tree
++
++	if $BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV |\
++	   grep -q "FREE_SPACE_TREE"; then
++		return
++	fi
++	echo -n "-onospace_cache"
++}
+diff --git a/tests/btrfs/102 b/tests/btrfs/102
+index e5a1b068..c1678b5d 100755
+--- a/tests/btrfs/102
++++ b/tests/btrfs/102
+@@ -22,7 +22,7 @@ _scratch_mkfs >>$seqres.full 2>&1
+ # Mount our filesystem without space caches enabled so that we do not get any
+ # space used from the initial data block group that mkfs creates (space caches
+ # used space from data block groups).
+-_scratch_mount "-o nospace_cache"
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ # Need an fs with at least 2Gb to make sure mkfs.btrfs does not create an fs
+ # using mixed block groups (used both for data and metadata). We really need
+diff --git a/tests/btrfs/140 b/tests/btrfs/140
+index 5a5f828c..77d1cab9 100755
+--- a/tests/btrfs/140
++++ b/tests/btrfs/140
+@@ -60,9 +60,8 @@ echo "step 1......mkfs.btrfs" >>$seqres.full
+ mkfs_opts="-d raid1 -b 1G"
+ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 
+-# -o nospace_cache makes sure data is written to the start position of the data
+-# chunk
+-_scratch_mount -o nospace_cache
++# makes sure data is written to the start position of the data chunk
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
+ 	_filter_xfs_io_offset
+diff --git a/tests/btrfs/141 b/tests/btrfs/141
+index cf0979e9..9bde0977 100755
+--- a/tests/btrfs/141
++++ b/tests/btrfs/141
+@@ -59,9 +59,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
+ mkfs_opts="-d raid1 -b 1G"
+ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 
+-# -o nospace_cache makes sure data is written to the start position of the data
+-# chunk
+-_scratch_mount -o nospace_cache
++# make sure data is written to the start position of the data chunk
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
+ 	_filter_xfs_io_offset
+diff --git a/tests/btrfs/142 b/tests/btrfs/142
+index 1318be0f..ffe298d6 100755
+--- a/tests/btrfs/142
++++ b/tests/btrfs/142
+@@ -37,9 +37,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
+ mkfs_opts="-d raid1 -b 1G"
+ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 
+-# -o nospace_cache makes sure data is written to the start position of the data
+-# chunk
+-_scratch_mount -o nospace_cache,nodatasum
++# make sure data is written to the start position of the data chunk
++_scratch_mount -o nodatasum $(_scratch_no_v1_cache_opt)
+ 
+ $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
+ 	_filter_xfs_io_offset
+diff --git a/tests/btrfs/143 b/tests/btrfs/143
+index 6736dcad..1f55cded 100755
+--- a/tests/btrfs/143
++++ b/tests/btrfs/143
+@@ -44,9 +44,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
+ mkfs_opts="-d raid1 -b 1G"
+ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 
+-# -o nospace_cache makes sure data is written to the start position of the data
+-# chunk
+-_scratch_mount -o nospace_cache,nodatasum
++# make sure data is written to the start position of the data chunk
++_scratch_mount -o nodatasum $(_scratch_no_v1_cache_opt)
+ 
+ $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
+ 	_filter_xfs_io_offset
+diff --git a/tests/btrfs/151 b/tests/btrfs/151
+index 099e85cc..b343271f 100755
+--- a/tests/btrfs/151
++++ b/tests/btrfs/151
+@@ -31,8 +31,8 @@ _scratch_dev_pool_get 3
+ # create raid1 for data
+ _scratch_pool_mkfs "-d raid1 -b 1G" >> $seqres.full 2>&1
+ 
+-# we need an empty data chunk, so nospace_cache is required.
+-_scratch_mount -onospace_cache
++# we need an empty data chunk, so need to disable v1 cache
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ # if data chunk is empty, 'btrfs device remove' can change raid1 to
+ # single.
+diff --git a/tests/btrfs/157 b/tests/btrfs/157
+index 0cfe3ce5..e779e33a 100755
+--- a/tests/btrfs/157
++++ b/tests/btrfs/157
+@@ -64,9 +64,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
+ mkfs_opts="-d raid6 -b 1G"
+ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 
+-# -o nospace_cache makes sure data is written to the start position of the data
+-# chunk
+-_scratch_mount -o nospace_cache
++# make sure data is written to the start position of the data chunk
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ # [0,64K) is written to stripe 0 and [64K, 128K) is written to stripe 1
+ $XFS_IO_PROG -f -d -c "pwrite -S 0xaa 0 128K" -c "fsync" \
+@@ -94,7 +93,7 @@ $XFS_IO_PROG -f -d -c "pwrite -S 0xbb $phy1 64K" $devpath1 > /dev/null
+ 
+ # step 3: read foobar to repair the bitrot
+ echo "step 3......repair the bitrot" >> $seqres.full
+-_scratch_mount -o nospace_cache
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ # read the 2nd stripe, i.e. [64K, 128K), to trigger repair
+ od -x -j 64K $SCRATCH_MNT/foobar
+diff --git a/tests/btrfs/158 b/tests/btrfs/158
+index ad374eba..52d67001 100755
+--- a/tests/btrfs/158
++++ b/tests/btrfs/158
+@@ -56,9 +56,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
+ mkfs_opts="-d raid6 -b 1G"
+ _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
+ 
+-# -o nospace_cache makes sure data is written to the start position of the data
+-# chunk
+-_scratch_mount -o nospace_cache
++# make sure data is written to the start position of the data chunk
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ # [0,64K) is written to stripe 0 and [64K, 128K) is written to stripe 1
+ $XFS_IO_PROG -f -d -c "pwrite -S 0xaa 0 128K" -c "fsync" \
+@@ -85,7 +84,7 @@ $XFS_IO_PROG -f -d -c "pwrite -S 0xbb $phy1 64K" $devpath1 > /dev/null
+ 
+ # step 3: scrub filesystem to repair the bitrot
+ echo "step 3......repair the bitrot" >> $seqres.full
+-_scratch_mount -o nospace_cache
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ $BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >> $seqres.full 2>&1
+ 
+diff --git a/tests/btrfs/170 b/tests/btrfs/170
+index 15382eb3..3efe085d 100755
+--- a/tests/btrfs/170
++++ b/tests/btrfs/170
+@@ -27,9 +27,9 @@ _require_xfs_io_command "falloc" "-k"
+ fs_size=$((2 * 1024 * 1024 * 1024)) # 2Gb
+ _scratch_mkfs_sized $fs_size >>$seqres.full 2>&1
+ 
+-# Mount without space cache so that we can precisely fill all data space and
++# Mount without v1 cache so that we can precisely fill all data space and
+ # unallocated space later (space cache v1 uses data block groups).
+-_scratch_mount "-o nospace_cache"
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ # Create our test file and allocate 1826.25Mb of space for it.
+ # This will exhaust the existing data block group and all unallocated space on
+diff --git a/tests/btrfs/199 b/tests/btrfs/199
+index 6aca62f4..7fa678e7 100755
+--- a/tests/btrfs/199
++++ b/tests/btrfs/199
+@@ -67,7 +67,7 @@ loop_dev=$(_create_loop_device "$loop_file")
+ loop_mnt=$tmp/loop_mnt
+ 
+ mkdir -p $loop_mnt
+-# - nospace_cache
++# - _scratch_no_v1_cache_opt
+ #   Since v1 cache using DATA space, it can break data extent bytenr
+ #   continuousness.
+ # - nodatasum
+@@ -75,7 +75,7 @@ mkdir -p $loop_mnt
+ #   Disabling datasum could reduce the margin caused by metadata to minimal
+ # - discard
+ #   What we're testing
+-_mount -o nospace_cache,nodatasum,discard $loop_dev $loop_mnt
++_mount -o nodatasum,discard $(_scratch_no_v1_cache_opt) $loop_dev $loop_mnt
+ 
+ # Craft the following extent layout:
+ #         |  BG1 |      BG2        |       BG3            |
+diff --git a/tests/btrfs/215 b/tests/btrfs/215
+index fa622568..d62b2ff6 100755
+--- a/tests/btrfs/215
++++ b/tests/btrfs/215
+@@ -30,7 +30,7 @@ _require_non_zoned_device $SCRATCH_DEV
+ _scratch_mkfs > /dev/null
+ # disable freespace inode to ensure file is the first thing in the data
+ # blobk group
+-_scratch_mount -o nospace_cache
++_scratch_mount $(_scratch_no_v1_cache_opt)
+ 
+ pagesize=$(get_page_size)
+ blocksize=$(_get_block_size $SCRATCH_MNT)
+-- 
+2.33.0
+
