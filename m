@@ -2,75 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11A144C290
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 14:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D12A44C29E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 14:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhKJN5f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Nov 2021 08:57:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
+        id S232144AbhKJOAM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Nov 2021 09:00:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhKJN5e (ORCPT
+        with ESMTP id S232139AbhKJOAL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Nov 2021 08:57:34 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007EAC061764
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Nov 2021 05:54:46 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id az8so2523542qkb.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Nov 2021 05:54:46 -0800 (PST)
+        Wed, 10 Nov 2021 09:00:11 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D93C061764
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Nov 2021 05:57:24 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id bk22so2509432qkb.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Nov 2021 05:57:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=jZHp/+6BlPw7wsdSB9/Sq02ZO+SgI8O0/Y4Ghogg7FU=;
-        b=SLT2MVuSTjskezy4QDXcuggKnlro+vdMetH17t9TDYghKOeUIvtQV48Tv2j52EoeDh
-         /9EmI0pFz7h+P+PAj5OClQT2pua7AlUt6sLKqIhZvXFOjAa208xN/256LHxshQXASLFP
-         CdEf3/0D3HzaxCl+lYlFQHnhvyFVzF8ZnxZF+wLjqSs/MWdP92hHMFGLgk1FnceqznWB
-         8DFPQjsSaO48yPV8ClFFQYGhC6nLADetYG7ZVRqX5VrGEs1VyYaTtFssqwO0FZDwpEJl
-         8am5lkmnVhK9dLisYu57WcrKSBjfOy3uK7CvyuvXFS/3xBWIZ7Ovmuf0v8dRtzZG4qf4
-         uzBA==
+        bh=gTdxUYOkQtWNQjoRSz+/W9BlbHSLEROigElnrCorwts=;
+        b=Gsv0Si2MVM63jIioznWmvO0KTPBO0eg/y42KLMj/0hFkr+iIQmujHAWrLOsWcic89F
+         +S4Dt99CO7HuchJqJq1jeueB9NTItOy62S1reO/QXSjdhtIHRPqmHc9Ja0LKXC5pW0Fm
+         2CJN/TRc+vYBlzFDaYWqhioMHIIxKVzggD5hFe5HWxLxlX14s1KG1UZm29BquwoFfyXS
+         g1+lM5WYzJkw0I9sudeMcl0luHVBWP7jWrjEMLiilcRWVaYpPr79Dd6lq2sXzs1zcapM
+         xLrO+h+JLswonF9Vqh3WL7pZkOdcO71bHuMXAEPW2moGTN/aGsqZ2328URw/EFiHc/fj
+         TYcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jZHp/+6BlPw7wsdSB9/Sq02ZO+SgI8O0/Y4Ghogg7FU=;
-        b=cUk//p2D2c1PPC1CIpnOOnr7LGf+0SbE8h7/ECn8Bc83+/WHP/QHxFogqJ6Np4jTV3
-         Y2dnkWz903s9H/V/q1dIn7WAdq0btcQr2aqp1Z/3SLVKTr5EEvG5qbXxLP42Ob/Uwijc
-         DwCk+qtbCeb9GVxQC/WjBi0XdjG6u9A/Rd0tKYbDEH5OeBlEri/kH1qxdF206L3QUUw9
-         vqfyG3IudB+Mj2p7HNUFbsxQGGUdPgGeuvzevOCKQE7DHhhhP8qnIk2AevxEC3c5qecE
-         Kqgsj9ggslOQ2uG2QkALsO42VCeIcuGXN/RX2ZXIcB8qWOYGi1FIf/4lyfiKCqKvSjo/
-         cmzg==
-X-Gm-Message-State: AOAM532CBMxPhZXYKa3Di/KiJWoiH79sv1GUlh5qBmMaSrcEoFTT5S2k
-        PwrVe1vMIMaTf2ujO9Aq77qJag==
-X-Google-Smtp-Source: ABdhPJyzmxRAtukMZR4+yU6K5HRsyFQqOIBFSk5t7icaY1RVwdWt39anpWX77JC8SiZ3SzJBV2MuoA==
-X-Received: by 2002:a05:620a:25cc:: with SMTP id y12mr12561648qko.322.1636552485852;
-        Wed, 10 Nov 2021 05:54:45 -0800 (PST)
+        bh=gTdxUYOkQtWNQjoRSz+/W9BlbHSLEROigElnrCorwts=;
+        b=iJyqShZT8/DrrQHqf9zZIYjY3LmImu9Q+lUcbDYqxePSNyTrKscF+YlTscuViaGmen
+         3rvFsCG0f1JYIYqc0OoHFfiClTWFknSoWInR4FaipsXlAukO25XyxTKElcP8S0/hoXKl
+         cle+4ckjDbNeAijAv1cNj2I8vj5opNlAbanzmQrmKbyUbLPQhVGgjf/33PGs+8HmT5Fo
+         VRcYJBWNuNh8JY0djMYWfOXrtxfZ1wBlJg4fp+JaQgNZ6EBEsrotzw2bJyNQfjAxYciF
+         LQ3qaPjx60ACC6e5/bcMgT0GPniTazvsV59CtXXS0zwNUlGHTfj52YLznEW8Pr8RmsiO
+         THZQ==
+X-Gm-Message-State: AOAM533bJVGvkaVUjFRDcqWaj+70x1LWjS4KHSs2W+y0jzq5VkrKTktk
+        ZsJmIG9/oUjCoVYw3MhgWhsBfUysGYMsbA==
+X-Google-Smtp-Source: ABdhPJxl6Kgw753bU52EH8TyZE6PAllPdN85qlFJNkHyk6ZqdU6V5MNnV2clwspDiP13nmcv4yo6Gg==
+X-Received: by 2002:a37:a617:: with SMTP id p23mr9908145qke.466.1636552643053;
+        Wed, 10 Nov 2021 05:57:23 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id g15sm467651qtk.2.2021.11.10.05.54.44
+        by smtp.gmail.com with ESMTPSA id c8sm13955305qtb.29.2021.11.10.05.57.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Nov 2021 05:54:45 -0800 (PST)
-Date:   Wed, 10 Nov 2021 08:54:38 -0500
+        Wed, 10 Nov 2021 05:57:22 -0800 (PST)
+Date:   Wed, 10 Nov 2021 08:57:21 -0500
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 Subject: Re: [PATCH 7/8] btrfs: add code to support the block group root
-Message-ID: <YYvPHv9dxZKFlraB@localhost.localdomain>
+Message-ID: <YYvPwRhnrd+up0PT@localhost.localdomain>
 References: <cover.1636145221.git.josef@toxicpanda.com>
  <6e96419001ae2d477a84483dee0f9731f78b25bd.1636145221.git.josef@toxicpanda.com>
  <749db638-d703-fd30-4835-d539806197cb@gmx.com>
  <YYl8QTnLySc5hDRV@localhost.localdomain>
  <d9ada670-7d11-c1fd-2e15-b1794375c45b@suse.com>
  <YYrK1QVmJhiG2vDc@localhost.localdomain>
- <e58230c4-1536-dca5-7e1c-1b6a4a0321bb@gmx.com>
+ <6563adc9-9606-1100-344a-53236ee3185a@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e58230c4-1536-dca5-7e1c-1b6a4a0321bb@gmx.com>
+In-Reply-To: <6563adc9-9606-1100-344a-53236ee3185a@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 03:13:37PM +0800, Qu Wenruo wrote:
+On Wed, Nov 10, 2021 at 07:44:51AM +0800, Qu Wenruo wrote:
 > 
 > 
 > On 2021/11/10 03:24, Josef Bacik wrote:
@@ -149,6 +149,9 @@ On Wed, Nov 10, 2021 at 03:13:37PM +0800, Qu Wenruo wrote:
 > > will mark the block group as read only, search through the free space tree for
 > > that block group to find extents, copy them to new locations, insert a mapping
 > > object for that block group to say "X range is now at Y".
+> 
+> OK, this makes sense now.
+> 
 > > 
 > > As extent's are free'd their new respective ranges are freed.  Once a relocated
 > > block groups ->used hits 0 its mapping items are deleted.
@@ -171,26 +174,24 @@ On Wed, Nov 10, 2021 at 03:13:37PM +0800, Qu Wenruo wrote:
 > > > 
 > > 
 > > Except the problem with the old extent tree is we are constantly modifying it.
+> > The mapping's are never modified once they're created, unless we're remapping
+> > and already remapped range.  Once the remapped extent is free'd it's new
+> > location will be normal, and won't update anything in the mapping tree.
 > 
-> I have another question related to this block group tree.
+> Oh, so the block group tree would be an colder version of extent tree, that
+> would be really much nicer.
 > 
-> AFAIK your new extent-tree-v2 will greatly reduce the amount of extent
-> items by:
+> But that also means, to determine if a tree block/data extent is really
+> belonging to a chunk/bg, we need to search for the new tree to be sure.
 > 
-> - Skip all backref items for global trees
-> 
-> - Skip backref items for non-shared subvolumes
->   As they act just like global trees (until being snapshotted).
-> 
-> I'm wondering if above modification is enough to make extent tree so
-> cold that we don't even need block group tree?
+> Would there be something to do reverse search? Or it may be a problem for
+> balance again.
 > 
 
-We need it separate still because we need to get at it from the super block in
-order to pre-load it so we can load the mapping tree in order to do the
-logical->logical translation for the new relocation scheme.
-
-Also the extent tree is still going to have data backrefs, so we'll still end up
-with a huge spread.  Thanks,
+Reverse search will be fuzzier than it used to be.  Using the snapshot tree
+we'll be able to figure out who *potentially* points at a block, but we'll have
+to go check.  This is the other reason I'm redoing balance at the same time,
+first it super sucks and needs to be better, but secondly because it simply
+won't be practical to do backref lookups for metadata anymore.  Thanks,
 
 Josef
