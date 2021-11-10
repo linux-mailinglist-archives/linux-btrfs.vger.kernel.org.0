@@ -2,202 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097B044BA5B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 03:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1573A44BA7E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 03:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhKJCgc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Nov 2021 21:36:32 -0500
-Received: from mout.gmx.net ([212.227.17.20]:47159 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229717AbhKJCgb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Nov 2021 21:36:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636511622;
-        bh=9tB4gzF7Nr/wk7gpcYIKpXXKYepercLOCq8MsUd1c80=;
-        h=X-UI-Sender-Class:Date:To:References:From:Subject:In-Reply-To;
-        b=cTC5O26kbBSwKQt8cjifFlEDKqi7BOeSWsFHsEYULFwBqCpg8fuvCEOI8YgYQeAEI
-         TMpyoV3FXc+Ja/0pEQqC4e6St2pkKiq6QGKVpjecsyR25Rl5JRQ2afzrNLMb8RxTji
-         XWf60k8ScUHA+0z1blxYaHFHQtBL46dekJBQGOyU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MuDXp-1mRqxd2snd-00uVyc; Wed, 10
- Nov 2021 03:33:42 +0100
-Message-ID: <ea81c94d-8bb1-5d78-012d-b63ff3f6ab4a@gmx.com>
-Date:   Wed, 10 Nov 2021 10:33:37 +0800
+        id S230083AbhKJC6M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Nov 2021 21:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230059AbhKJC6K (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Nov 2021 21:58:10 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1362FC061764
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Nov 2021 18:55:24 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id v3so1785379uam.10
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Nov 2021 18:55:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:references:in-reply-to:content-transfer-encoding;
+        bh=3CO92oRnXojz7rVBUiXiTNB8foKL2ur/KOJyJGBJrqc=;
+        b=NkigK8uniAZKOXhxnhEag+UqCQWgsE5Ct5TAA1UZ+SbwSj+qdPesB8ZtR667L9Dq29
+         K0dewpimxtdjg5cjUzEC03IjfwL+0yXXH/bdulHRo+f/pG1Kk15511v4ibQyVl1WgcTe
+         DEgBu7l5VyW5Hwa1vza1J/uRmLvHCB1iIxEN76+MZX1f5GJv74RerZptBbunOu57E3z/
+         zm5yNoFAB/7Hox7TwyxuGKV0ZRFp9MpOU77zjSnfGYIFYzwwGn8RFGAvTvC2d5JUTyzE
+         hBEveV2zN9tRrytO0k7dsiVWLbPNz7ITwJu9O7jKicx5N4eC3PlxfL5JNSdNl849cxRx
+         bjqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=3CO92oRnXojz7rVBUiXiTNB8foKL2ur/KOJyJGBJrqc=;
+        b=v9qIqNRPc5DnWDXC71/SXnhvYDs+KCF6SDkhZKFn2i3ZpQu2jl20TK3dkoMBxd2BGm
+         vyQOEjnUJPKyAnpZ+tSdDdmmfcsx5CXegtHpn5fqENLV++WyC8r3cHliR5QHIp1T3dHL
+         Wg23jI8nWzynuBXAVQ08cmvF00jA4TiEh5KJUNFnWvgiIKKDzS/t4KkRxf02tmNC0nEv
+         zGG9ainDMlXjNjRT556zlsBUbbiDHeR45oZYhVokPKkyXxik4keuoLyB2xkm3Bz7p3Z4
+         1kbgXvBBiFBDMhr6go0OQ03NR06m0d1SFN3vUayoRqOpo5iX8u3cP5P5iQrqLSsCSTsq
+         YBmQ==
+X-Gm-Message-State: AOAM532rBWdLF4q5qo8F8bLuwWj4xN1HM3RBMuId/WdUOcwto714WMDC
+        4MqtMqhkQmgvbpojaz+/NQxD8kr/F2E=
+X-Google-Smtp-Source: ABdhPJz/ZuwZlXf9JnKGVOaCT0uIvO1R36j9qJRwELLQ0aipj/n7KUkoAITSlVpyvbypKS0Ili9xJg==
+X-Received: by 2002:a05:6102:c4e:: with SMTP id y14mr4762907vss.61.1636512922824;
+        Tue, 09 Nov 2021 18:55:22 -0800 (PST)
+Received: from ?IPV6:2800:370:144:81b0:f245:e007:48ea:38b5? ([2800:370:144:81b0:f245:e007:48ea:38b5])
+        by smtp.gmail.com with ESMTPSA id l28sm2437376vkn.45.2021.11.09.18.55.21
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 18:55:22 -0800 (PST)
+Message-ID: <37379516-cc7c-b045-ad2e-15c669a60921@gmail.com>
+Date:   Tue, 9 Nov 2021 21:55:20 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Content-Language: en-US
-To:     "S." <sb56637@gmail.com>, linux-btrfs@vger.kernel.org
-References: <a979e8db-f86a-dd3a-6f0a-588b14bbd97f@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Firefox/88.0
 Subject: Re: Upgraded from Buster to Bullseye, unmountable Btrfs filesystem
+Content-Language: en-US
+From:   "S." <sb56637@gmail.com>
+To:     linux-btrfs@vger.kernel.org
+References: <a979e8db-f86a-dd3a-6f0a-588b14bbd97f@gmail.com>
 In-Reply-To: <a979e8db-f86a-dd3a-6f0a-588b14bbd97f@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7Gca2yyq+O6aYvoIBgPtCXmb6v0uqT9xraYpZQn3IqxCHFbd+mf
- nb7DccfGAIukSFCPOHjmdiyZuon4IdoPdxQMlFgPqwes6TeQYnLk+kX4ZK8bmrf2db4owSr
- GHkkvnLZW8zKwtUoe5jujhscDCisixTwEjd3H3OQphqEHr7WPlcjdpTe9IaFJGmgwE52EgJ
- 3xRqSUL0W6b+cVkA//rcQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JgZbbmzYi5w=:vshDbZWiqcrY+6Mi0aGcW4
- mZsAMlre0jo/YcY0jXH15WE1+sR5FZPJ6PGccuE1zoWWaF5g8hItVl4tIiEIVXnN8jWC6QE0A
- mBG6qq0PehIXwLGboV9YCj9Mn6FjQWLQ3NWOzbAxRCP9NjWaq/eIbWCH7vKUg0fXFEzP2fC1W
- w7x62U83GwYUrzu0HTKm6wg5Yvn+Pah7r9oQU70imHR2QBsyd1114uMPay/xAyy6WQK72jCEq
- m/UnLLkywRYPVmAWMAIQYAwzvDddiUG1iAT626fPuRfqOv+xxlYe+N3Y3GnjVPCVYKXzdKDBK
- dSlbnHicp12R0KLJ0tFlaigXi0NnGWqfdmoG+lbGz7nRGog8l8ILqlkYo4fwnMV+zaGPW8Hmg
- 2AKVcOZQQTzFU9OWL2ugKbTs/xNF16qA8etQLwcGVoJymuBtyK/2Xhuk0vJFctCuEVx/sec0X
- ipC957mQtoSJEHDKjoxQlRAJN7nEGk4nrYP4KbxhAkThiLTE7CdBqavRqTRbejR8N6qZR5Ryg
- nRUeqFKvYHStuRA5ng4mVkrc+6oiDeK6Kk+CnHM4x9NVbSJSE6dYm2MFW2eAv4taBKEAL/5WY
- ls8dgKLUqw90VLzlIDAXLYc7dsBpGzBBAJ0EjCbfOlNH+oQkxp9KpI8VAySjWIjI2wj53okSf
- mCuQ9E6+Vc6M7M++fKnQASc4btXDopGvLDpAsa7oauaKsrAtbxmYooICtrZzqvL3BJfV0c1Yp
- bg1c3PMPlUAZAKr9wyTYdBzUH7Z/3alcQpAhgzu3mK2HK4pLFW/jEAVB+HLXSq8/hWPRaL3a0
- LZT/irPOd7hmdrAJ1eF4xuI5CY0ALn1bMtEiQWHDNZM7Q67FB+vS6xN3LLFjRjtLNjkV1NxqB
- oQMytpAYnd4/z/vxb5rF+kEUVZdAgqYd/jnkIiU64utqDUcfMLqc8cU1yzDyat31tl32+d6VG
- VGx4n2hTpDlRAxhh1luqC9ppoGCesgtwulE6Kpr+JxNjtm/fLSifnaZMjrq37CvqesWz7bzKs
- K7IEcweUE6PeQ4B73gAygdErU/FL+t3nGoZQIeEgLDwb7ADXFARKCMQ/EdNBJyiSKztgUcgQv
- 6cW6hYBg7BJ3YU=
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Qu, thank you very much for your fast response!
 
+Regarding memtest, normally in Linux I have never been able to run it from inside an installed Linux system because it needs access to protected kernel memory, and instead it has to run from a live USB or from the memtest86 live testing image. But since this system is a proprietary NAS with uboot and no video interface I don't know how to run a memtest.
 
-On 2021/11/10 10:17, S. wrote:
-> Hi there, I run OpenMediaVault on an old LaCiE NAS with an armel
-> processor. It has two HDDs, with the Debian root on an EXT4 partition
-> and a simple BtrFS RAID-1 using `/dev/sda3` + `/dev/sdb2` for the
-> OpenMediaVault data. Both drives have a few bad blocks, but I assumed
-> that the filesystem was working around them, because it was running fine
-> for almost 2 years on Buster. The SMART report for both drives says
-> `SMART overall-health self-assessment test result: PASSED`. Today I
-> upgraded to OpenMediaVault 6 and Debian Bullseye, and the BtrFS volume
-> is no longer mountable. Here are my attempts thus far:
+> To be extra safe, please provide the dump of your UUID tree:
 
-Newer kernel (mostly since v5.11?) has much strict sanity check inside
-btrfs, thus it can detects things which doesn't show up in older kernels.
-
->
-> https://paste.debian.net/1218866/
->
-> For the search engines, these are the key errors:
->
-> -----------------------------
->
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.110770] BTRFS critical (device sda3=
-): corrupt leaf: root=3D9
-> block=3D170459136 slot=3D0, invalid key objectid, have 11018354394740573=
-44
-> expect to be aligned to 4096
-
-The root is UUID tree, thus the objectid is part of the UUID.
-
-The problem is, the key type is corrupted, from your fsck result:
-
- >    Invalid key type(EXTENT_ITEM) found in root(UUID_TREE)
- >    ignoring invalid key
-
-This bad key type gets caught by tree-checker, and the mount is rejected.
-
-Further more, EXTENT_ITEM_KEY value is 168, while the correct key types
-in UUID tree should be UUID_KEY_SUBVOL (251) or
-UUID_KEY_RECEVIED_SUBVOL(252).
-Which doesn't seem to be an simple bit flip.
-
-But I still recommend to do a memtest to rule out memory problem.
-
-
-For the repair, we can rebuilt UUID tree, but unfortunately btrfs-progs
-doesn't have such ability yet.
-
-Meanwhile, you can prepare a build environment to build btrfs-progs, I
-can soon craft a branch for you to re-init UUID tree to solve the
-problem first.
-
-To be extra safe, please provide the dump of your UUID tree:
-
-# btrfs ins dump-tree -t uuid /dev/sda3
-
-Thanks,
-Qu
-
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.125317] BTRFS error (device sda3): =
-block=3D170459136 read time
-> tree block corruption detected
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.149595] BTRFS critical (device sda3=
-): corrupt leaf: root=3D9
-> block=3D170459136 slot=3D0, invalid key objectid, have 11018354394740573=
-44
-> expect to be aligned to 4096
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.164280] BTRFS error (device sda3): =
-block=3D170459136 read time
-> tree block corruption detected
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.173099] BTRFS warning (device sda3)=
-: failed to read root
-> (objectid=3D9): -5
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.268589] BTRFS critical (device sda3=
-): corrupt leaf: root=3D9
-> block=3D170459136 slot=3D0, invalid key objectid, have 11018354394740573=
-44
-> expect to be aligned to 4096
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.283207] BTRFS error (device sda3): =
-block=3D170459136 read time
-> tree block corruption detected
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.298934] BTRFS critical (device sda3=
-): corrupt leaf: root=3D9
-> block=3D170459136 slot=3D0, invalid key objectid, have 11018354394740573=
-44
-> expect to be aligned to 4096
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.313575] BTRFS error (device sda3): =
-block=3D170459136 read time
-> tree block corruption detected
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.322394] BTRFS warning (device sda3)=
-: failed to read root
-> (objectid=3D9): -5
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.363745] BTRFS error (device sda3): =
-parent transid verify
-> failed on 78086144 wanted 8060 found 8063
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.390901] BTRFS error (device sda3): =
-parent transid verify
-> failed on 78086144 wanted 8060 found 8063
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.414379] BTRFS error (device sda3): =
-parent transid verify
-> failed on 79216640 wanted 8061 found 8063
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.434284] BTRFS error (device sda3): =
-parent transid verify
-> failed on 79216640 wanted 8061 found 8063
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.465467] BTRFS warning (device sda3)=
-: couldn't read tree root
->  =C2=A0=C2=A0=C2=A0 [=C2=A0=C2=A0 86.500332] BTRFS error (device sda3): =
-open_ctree failed
->
-> -----------------------------
->
->  =C2=A0=C2=A0=C2=A0 root@OpenMediaVault:~# btrfs check /dev/sda3
->  =C2=A0=C2=A0=C2=A0 Opening filesystem to check...
->  =C2=A0=C2=A0=C2=A0 Checking filesystem on /dev/sda3
->  =C2=A0=C2=A0=C2=A0 UUID: 4a057760-998c-4c66-aa6a-2a08c51d5299
->  =C2=A0=C2=A0=C2=A0 [1/7] checking root items
->  =C2=A0=C2=A0=C2=A0 [2/7] checking extents
->  =C2=A0=C2=A0=C2=A0 Invalid key type(EXTENT_ITEM) found in root(UUID_TRE=
-E)
->  =C2=A0=C2=A0=C2=A0 ignoring invalid key
->  =C2=A0=C2=A0=C2=A0 [3/7] checking free space cache
->  =C2=A0=C2=A0=C2=A0 [4/7] checking fs roots
->  =C2=A0=C2=A0=C2=A0 [5/7] checking only csums items (without verifying d=
-ata)
->  =C2=A0=C2=A0=C2=A0 [6/7] checking root refs
->  =C2=A0=C2=A0=C2=A0 [7/7] checking quota groups skipped (not enabled on =
-this FS)
->  =C2=A0=C2=A0=C2=A0 found 704343715840 bytes used, no error found
->  =C2=A0=C2=A0=C2=A0 total csum bytes: 686922316
->  =C2=A0=C2=A0=C2=A0 total tree bytes: 757006336
->  =C2=A0=C2=A0=C2=A0 total fs tree bytes: 14794752
->  =C2=A0=C2=A0=C2=A0 total extent tree bytes: 13795328
->  =C2=A0=C2=A0=C2=A0 btree space waste bytes: 32551835
->  =C2=A0=C2=A0=C2=A0 file data blocks allocated: 707684626432
->  =C2=A0=C2=A0=C2=A0=C2=A0 referenced 707430318080
->
-> -----------------------------
->
-> Any suggestions? Thanks a lot.
+------------------
+root@OpenMediaVault:~# btrfs ins dump-tree -t uuid /dev/sda3
+btrfs-progs v5.10.1
+uuid tree key (UUID_TREE ROOT_ITEM 0)
+leaf 170459136 items 4 free space 16151 generation 366 owner UUID_TREE
+leaf 170459136 flags 0x1(WRITTEN) backref revision 1
+fs uuid 4a057760-998c-4c66-aa6a-2a08c51d5299
+chunk uuid 54b2fa0f-9907-49d1-af33-e172581cd25e
+	item 0 key (1101835439474057344 EXTENT_ITEM 56168916570538915) itemoff 16275 itemsize 8
+	item 1 key (0x0f4a817e92c9a080 UUID_KEY_SUBVOL 0xc78d54ff9b03a3a8) itemoff 16267 itemsize 8
+		subvol_id 5
+	item 2 key (0x421cfa6924ef510d UUID_KEY_SUBVOL 0xc8423812cf31288b) itemoff 16259 itemsize 8
+		subvol_id 269
+	item 3 key (0x45a64f82bc9152f1 UUID_KEY_SUBVOL 0x3859efe8688d6ea4) itemoff 16251 itemsize 8
+		subvol_id 274
+total bytes 1990110658560
+bytes used 704343715840
+uuid 4a057760-998c-4c66-aa6a-2a08c51d5299
+------------------
