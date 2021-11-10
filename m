@@ -2,120 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC57744BAA6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 04:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A50D44BAD5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Nov 2021 05:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhKJDhc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 9 Nov 2021 22:37:32 -0500
-Received: from mout.gmx.net ([212.227.15.18]:33907 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229963AbhKJDhc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 9 Nov 2021 22:37:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1636515284;
-        bh=l3Dh/dyvXy8bdifd/XBIPMdl4oEDCc/dpjDnwYMy2TY=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=RB1F2SEVIqRHToUBRsrqcul2OoXRSVF84VcrGsU3TlFlKOCREZ1Djq7rqcPwbs3o1
-         TVeUHg98+c6wevaQn6CUR/7qEPHYFZ/3QHlICsm58cDkSXEd/vkpFD93ON9MsRmth9
-         cwloKeOMC6bh8aWCmPqNRlgkoUx4nH2KVbfzu5Gs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MxDp4-1mVQmR0rCS-00xXJ0; Wed, 10
- Nov 2021 04:34:44 +0100
-Message-ID: <fe797f87-c39f-9c24-26f4-e85a1c0eaad3@gmx.com>
-Date:   Wed, 10 Nov 2021 11:34:40 +0800
+        id S230351AbhKJEdG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 9 Nov 2021 23:33:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230273AbhKJEdE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 9 Nov 2021 23:33:04 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6ADC061764
+        for <linux-btrfs@vger.kernel.org>; Tue,  9 Nov 2021 20:30:17 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id p2so2134485uad.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 09 Nov 2021 20:30:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:references:in-reply-to:content-transfer-encoding;
+        bh=288SklEmePNUjDw6X58uCbfu5jCc+wuf60uAAW5AEKE=;
+        b=nd0eJBJCpQ7fAQJkf1OqnpwN9irrF0CbB1vM4Dd5ax7moMoXTPPApOfQ2+EM1wZ1Zg
+         wiG4dEsWh79Ja2gw3aPareqUgk4iiyeLhCIXbe6sHr1Ky7zrdLta29VZb2T+izqqZhSH
+         J+GOd9BEoNk2D1wLQM58+jTs+A19Y3quNB9wzBn6t8O8M+5mHSqQHrxHTpqzEyTX/h14
+         zM1ViRDximDyyt9D7yJEs7tc3GA8xnhXl8rGdGN24kIzZqMSQa6axSi8Ina9iZn4hlDf
+         c/GivDx71k11P/pyWSqbjvDFqhtrgpLSbb13TrcfYIIg/NmbnBrpLDRgtrWg1MzugNwZ
+         TnWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:from:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=288SklEmePNUjDw6X58uCbfu5jCc+wuf60uAAW5AEKE=;
+        b=ScPWvAsteaqBmeo4H8n3LdF2JqgEpUzjWXLwIx2a7uVpWVsehMDgov/2fjKp9rxPhB
+         XrsQv4hoDRu1mc9TsRa0R6GTRcx+MngnVVteYtbdOtFoqIXheAizgvqbeebeh5u+pFfq
+         w+gVK3Gssq4OwexezX1FU7oXL7Z6DtJ0025H2OLgEnXSyWt9Rk3NPETmo35hDnUStxyt
+         NMF1ixYVgJDnFAdoOQECMLQCPnWOINuelY8WnZd6VQ8AeMZY9kK0UIV+moJuSvmOGzJm
+         S1oIlqWG0jSz2gosz5bNnkCHLmkenoa75pgyC1bnrPdWAJ6j6hdcY6KMVDzXCzQdYI//
+         t+8w==
+X-Gm-Message-State: AOAM532sdhdNwGKQLBR+Ge09VDugvzobqU0G/f4qwMPDwkd44EYt19DT
+        r/LuyS+WLUGt+sHhBKg2ZBYfOW3BBJM=
+X-Google-Smtp-Source: ABdhPJwgKgkPNFb0CDdpe9nxzd7dprorjPdUxKxJN69WauMBdb7TMNaPXK+Pt+xwIkIyZuzLg0qyMw==
+X-Received: by 2002:a67:e0d6:: with SMTP id m22mr20027644vsl.15.1636518616375;
+        Tue, 09 Nov 2021 20:30:16 -0800 (PST)
+Received: from ?IPV6:2800:370:144:81b0:f245:e007:48ea:38b5? ([2800:370:144:81b0:f245:e007:48ea:38b5])
+        by smtp.gmail.com with ESMTPSA id d22sm3547473uan.15.2021.11.09.20.30.14
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Nov 2021 20:30:15 -0800 (PST)
+Message-ID: <179e61f7-82c9-0a5f-1a05-7c0019b4f126@gmail.com>
+Date:   Tue, 9 Nov 2021 23:30:13 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Firefox/88.0
 Subject: Re: Upgraded from Buster to Bullseye, unmountable Btrfs filesystem
 Content-Language: en-US
-To:     "S." <sb56637@gmail.com>, linux-btrfs@vger.kernel.org
+From:   "S." <sb56637@gmail.com>
+To:     linux-btrfs@vger.kernel.org
 References: <a979e8db-f86a-dd3a-6f0a-588b14bbd97f@gmail.com>
  <37379516-cc7c-b045-ad2e-15c669a60921@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 In-Reply-To: <37379516-cc7c-b045-ad2e-15c669a60921@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Pfd9ZLCh8sqJO63JawXXCe7LXhQTRfZk0IsxRmJ1WISafnWbZlr
- f9HrRT5Y7ExEc2u5dvA2GWEzz7A/30Uamt2Sutj1py9mHoTV5HYRAPce24lxvx1UakgcQ4c
- 1xd7tAdyHad4N763f3dZIrw17lnf8YMQFepwJE7SkpbJWLCvyUTUleXqxLpJ0vW27Simaps
- K73xb8dDSzAsEuMEM4JKQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7sVAIVMGqi0=:2UKvujKh3RfF4NmqSLddYF
- oYypf8tOIqItIzArZ1PZaRI1vwTJT4lMy8bwQvwNHRFBjHuufcwIx+gjjsVBnrZV47BxIHYim
- gBK2L+8a3oa8qmGVoKWfr5UIRKRs9XA4rPlZr16/85OQL69BUISt3APP8CcF1P6bHNknQgSd9
- ujn9LsLnOgaNlav76LI+JE7yVdMSvebnStsPExUI2trIiHmRqpMYUt5FOKlCQ3/7bMiCfh4EA
- ht2ff2CjiE9Fw/+huj1/zdwhHCbVD9W8xyfWjBzyEI6JcdxNzTHIBwovfXo+s7KI7bTwjD7SL
- sgQWaZikMrHnsqMQUAC9GJhiAd7zOBtgqScAKZDpI4TIrKw6B+kZMGsHerKo11mvlj1g4IEhJ
- Do4aMPAQlW2OtvBtKUxlRq6UJvyZa0dA2kM8XW4Qk46mhSFuvFWvvL3iNvxCwG5bWdHkxL7En
- sjZpqD5weV615sWxYk7GwYbNBAk1o7qrbVOYNVv1+e9K4d3jONi071nDub9pYXRwVLeDG9gsm
- /NqXbperlGB1kZZeY5lKrLMUI2nD4FNUWpPHmwCyXEs8zz/WYmyinMYm5/d8uFHpOKPVQh9UW
- VrPj09sfhz/UtwMKyQDvTRAbK7TCNVgJC4UNCZL38JQazRkhbz2b621YuPrArJGKWY4NyzkZZ
- 9TbXAVV6HLlFRIJag3k92pGo+5SyWzyyphyzpyW74fQHxCjzky+AOuNB6hP/vrgAziiWqk0i9
- hww7bGngg6jiX3vMVN18TAWMI1fkfiDbqtKn4kpmummioFrVYJfD0zqAj20VGDJvUgin6YL6D
- csVcB7xR/KAMHXi1Lwp6l6lG8J80wo7CN4w83zssu0tpC6xRlTRC3iMgKru/gj9YwF+Ihx2jb
- Z0u4nMEb74/JqGC1igQaPj3IYepahHFJM9IyGg5L8bVYkKC7e21BgQftp8M3EGlT4Oa2pG/G+
- cz7LhaZ2vG99UV8Cyh18ImdfW4BceiJgYYAnHl77/sto3XHDVloaLlHPE9pf8pGaBQJtVBSaS
- NXYpi00R9Kbr3rsDklWfIL3k/SeRAh7uN2bE9r3PNfyzOGAPAC6MDQOhe7YPTuAFrspZs6VvA
- JbJN+xFMHgbB/o=
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Thanks again for your help Qu.
 
+> There is a user space tool, memtester, which pins down a large chunk of memory, and do tests in user space.
 
-On 2021/11/10 10:55, S. wrote:
-> Hi Qu, thank you very much for your fast response!
->
-> Regarding memtest, normally in Linux I have never been able to run it
-> from inside an installed Linux system because it needs access to
-> protected kernel memory, and instead it has to run from a live USB or
-> from the memtest86 live testing image. But since this system is a
-> proprietary NAS with uboot and no video interface I don't know how to
-> run a memtest.
+I see, thanks, I'll try that and report back.
 
-There is a user space tool, memtester, which pins down a large chunk of
-memory, and do tests in user space.
+> Yep, exactly the problem.
 
-It would not be able to test memory space used by kernel, but it would
-be mostly enough for memory test use case.
+I'm not very familiar with the low level functions of Btrfs. Could you please help me understand what went wrong? Assuming that this isn't a bad RAM issue, is the the filesystem in the same state as it was before the OS upgrade, just with a more strict kernel now that doesn't like the bad blocks? Or did the tree get damaged during the OS upgrade process?
 
->
->> To be extra safe, please provide the dump of your UUID tree:
->
-> ------------------
-> root@OpenMediaVault:~# btrfs ins dump-tree -t uuid /dev/sda3
-> btrfs-progs v5.10.1
-> uuid tree key (UUID_TREE ROOT_ITEM 0)
-> leaf 170459136 items 4 free space 16151 generation 366 owner UUID_TREE
-> leaf 170459136 flags 0x1(WRITTEN) backref revision 1
-> fs uuid 4a057760-998c-4c66-aa6a-2a08c51d5299
-> chunk uuid 54b2fa0f-9907-49d1-af33-e172581cd25e
->  =C2=A0=C2=A0=C2=A0=C2=A0item 0 key (1101835439474057344 EXTENT_ITEM 561=
-68916570538915)
-> itemoff 16275 itemsize 8
+> And you haven't yet recevied any subovlume, it would be way much easier to rebuild the tree.
 
-Yep, exactly the problem.
+So should I wait for a btrfs-progs update? I'm not sure how to build it for armel. Any idea on the timeframe?
+I assume that `btrfs check --repair` is not an option?
 
->  =C2=A0=C2=A0=C2=A0=C2=A0item 1 key (0x0f4a817e92c9a080 UUID_KEY_SUBVOL =
-0xc78d54ff9b03a3a8)
-> itemoff 16267 itemsize 8
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 subvol_id 5
->  =C2=A0=C2=A0=C2=A0=C2=A0item 2 key (0x421cfa6924ef510d UUID_KEY_SUBVOL =
-0xc8423812cf31288b)
-> itemoff 16259 itemsize 8
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 subvol_id 269
->  =C2=A0=C2=A0=C2=A0=C2=A0item 3 key (0x45a64f82bc9152f1 UUID_KEY_SUBVOL =
-0x3859efe8688d6ea4)
-> itemoff 16251 itemsize 8
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 subvol_id 274
-
-And you haven't yet recevied any subovlume, it would be way much easier
-to rebuild the tree.
-
-Thanks,
-Qu
-> total bytes 1990110658560
-> bytes used 704343715840
-> uuid 4a057760-998c-4c66-aa6a-2a08c51d5299
-> ------------------
+Thanks again.
