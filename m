@@ -2,245 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA0144D306
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Nov 2021 09:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3182144D350
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Nov 2021 09:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhKKIRw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Nov 2021 03:17:52 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:56940 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232450AbhKKIRm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Nov 2021 03:17:42 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6B2B121B33;
-        Thu, 11 Nov 2021 08:14:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636618491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=54aGChwXqpd/691EAaA9gfl5L591hO5BJGvwGqM6ju4=;
-        b=ucQ9TPKWZ9r+xunPwLIMBwpMwAUdONEw2oE7KLH9/B8Tx8YZbU4T0gMlYKTTiUkAFwxAcO
-        7hMKPsUUTxMcLGWDCqU0cfmab6846sFqsTde0mXnvhOA3BfKHquYabmgvKVQih+sZWGjW7
-        QllEcGtX5r4zoySeXxHOJA30dN8IN6U=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7721D13D51;
-        Thu, 11 Nov 2021 08:14:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Ju9hEPrQjGENQwAAMHmgww
-        (envelope-from <wqu@suse.com>); Thu, 11 Nov 2021 08:14:50 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     "S ." <sb56637@gmail.com>
-Subject: [PATCH v2] btrfs-progs: rescue: introduce clear-uuid-tree
-Date:   Thu, 11 Nov 2021 16:14:33 +0800
-Message-Id: <20211111081433.95253-1-wqu@suse.com>
-X-Mailer: git-send-email 2.33.1
+        id S232022AbhKKIok (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Nov 2021 03:44:40 -0500
+Received: from mout.gmx.net ([212.227.15.15]:36279 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229674AbhKKIoj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Nov 2021 03:44:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1636620109;
+        bh=AZ3CiMa3s5RqYUoLPpfvhnK7zklsvu7IILqMY7/7X4U=;
+        h=X-UI-Sender-Class:Date:To:From:Subject;
+        b=YDxL86QVlAwXvpJWOvW0CPbTcQaBsf7jyRcaHObtIEkgx2aNqB8YS7RtCJrDxGWRW
+         lB4EJxjviEjf+X9Rce+VBtCxrqZSQLICzcmLJnop42qN3O7E7ZntL/GQHtGjE+T01Y
+         sLmU9RI8cT0CK3rZIJAU/7YQoGdB7t4SJOrk2C9Y=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Msq2E-1mR5tM41OK-00tCVp for
+ <linux-btrfs@vger.kernel.org>; Thu, 11 Nov 2021 09:41:49 +0100
+Message-ID: <bebb9da7-2262-b7b5-4bbf-05eb57fdd717@gmx.com>
+Date:   Thu, 11 Nov 2021 16:41:46 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Content-Language: en-US
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Side project announcement: btrfs-fuse
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:yrmvsFGQ/FNW68cwNKGoWfq2WPfjKq72NWbdbsvu1a6Stfq9Oaj
+ 0qOV1e1YvCh4SiEYE6+fjDXqCvHTlhptA9mc2Ah+im2gilFh1wL/gw3TxgntKs1SX4aWjUA
+ 7AVfs9TJCYP7Z4kaySIhPQDP10XCeYG04RbG4YxmNHkNIJHLgGr9e/yVE7Aite0ydp546MU
+ qwcsPiIwYdPb/iLO5m9Hw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RUC+UB2VvSk=:Gp1A6LkM7PnXkgOUZMiyXw
+ V+N6Cvy2HpjvHHf0FR7fIU9JCSGJzNWh87BDg4Ky972L3o+Ogeh2cY85Uq5meMwPnjNF8QdVD
+ jLykcqOKmTU5qajJRKneksgsY0GjIa8gvl30Ab9gpGs/LuBj5mEy0hC3KjdB852buMnzxdPJl
+ afcP95GYSZvCzb0Fhp+P3e7DDIiGDcUX9eHg7RgGo+K9xyYElW8QzKng+0xE42D7VbKwJRJwv
+ EDHrpZBBtPQp0YdNfNP1osswoP3vXdNaNPDPpHUm60/yaLk0lYrgNCfKes2KI4uZkC3k+r2Uc
+ ELPvoVlKHtI5/0quwFsqGHrkRP8z61dfCwXKagjFBCS2ryzRCQRuhL2p7jyuRD530M7lk3Yz5
+ mdvHFyi+jqBku0Yh8vBFZtg/jq4LrFCCUMPbCe4rENdwpaEdod+R3wh5pLrjggBzrs7IR3uQ6
+ 7eV6XLrltljLiSmAJM7uS067//nRm+BnNbn+5fzimQ28VydeI1MBpzfMcmnO1nCDaGJW/OKPs
+ tPXZfscuVOgYXgO9Jdcs4oMX/uY0iU3xS30PonVjbNaIRJhXNE2p7TyaKQsXNl0oZsS2qqxXM
+ 2w28XIRyYtK3krW+8ZgN2dPjzrwUdCdFUpo5ISSJqNFbY1BRmglUGo6QqYHCCqIcE2zCQchK0
+ JmRwobPgSoJWg/dfQ35uNwxMlBUXJZbyANMfZOjznWu2VzfYv+hy4GzZIUSoaLLxLrJsJ7Cr+
+ 3j08ASOnTUCGdwtovw+DLkOTxCYC6Evx5rsmc5UJ+BMnHe1vk4WBe+l1SYGfQW/OwIGeEcBBg
+ BYYLAv4R1PSJMDRaieXgjZhefgM4a5sivTwJAkUioMHqCD08C5U2sg9V6jrkuAg7EDvswg0lz
+ UubbK1uYvB9OjmzMZFooHkA0fXWCbVhLQsrh4BpNXfr4C+/5IC8Q9b1KQy/jX+V9jSv6nBDsP
+ 161lYYw5UVpXRO01j1uapO5kNIpvhxUXL1M7MRUry8KqpxWm2K9Avkwl4TBb355g8gMM/gldT
+ lUmjkfOjfSy76Y5u1Hek4Pkr1oSEj1YpLacaRNPujFDt3hmNHzZXDR+jWRzwjp5w0n3C3ixKU
+ GdEf6raeSD3bVc=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a bug report that a corrupted key type (expected
-UUID_KEY_SUBVOL, has EXTENT_ITEM) causing newer kernel to reject a
-mount.
+Hi guys,
 
-Although the root cause is not determined yet, with roll out of v5.11
-kernel to various distros, such problem should be prevented by
-tree-checker, no matter if it's hardware problem or not.
+Some may have already noticed that, there is a small project call btrfs-
+fuse under active development:
 
-And older kernel with "-o uuid_rescan" mount option won't help, as
-uuid_rescan will only delete items with
-UUID_KEY_SUBVOL/UUID_KEY_RECEIVED_SUBVOL key types, not deleting such
-corrupted key.
+https://github.com/adam900710/btrfs-fuse
 
-[FIX]
-To fix such problem we have to rely on offline tool, thus there we
-introduce a new rescue tool, clear-uuid-tree, to empty and then remove
-uuid tree.
+I guess it's time to properly announce the project, a FUSE *read-only*
+btrfs implementation.
 
-Kernel will re-generate the correct uuid tree at next mount.
+Although btrfs is already mainlined for a long time, there are still
+something that even a read-only implementation can help:
 
-Reported-by: S. <sb56637@gmail.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Add proper man page entry
----
- Documentation/btrfs-rescue.asciidoc |   7 ++
- Documentation/btrfs-rescue.rst      |   9 +++
- cmds/rescue.c                       | 104 ++++++++++++++++++++++++++++
- 3 files changed, 120 insertions(+)
+- Education
+   Good luck if you're a newbie interested in modern filesystems, and
+   just start reading the kernel btrfs code.
+   It's already over 133K C lines, not to mention the complex
+   relationship between VFS and block layer.
 
-diff --git a/Documentation/btrfs-rescue.asciidoc b/Documentation/btrfs-rescue.asciidoc
-index af5443722b5e..d38797c97fbb 100644
---- a/Documentation/btrfs-rescue.asciidoc
-+++ b/Documentation/btrfs-rescue.asciidoc
-@@ -50,6 +50,13 @@ The mismatch may also exhibit as a kernel warning:
- WARNING: CPU: 3 PID: 439 at fs/btrfs/ctree.h:1559 btrfs_update_device+0x1c5/0x1d0 [btrfs]
- ----
- 
-+*clear-uuid-tree* <device>::
-+Clear uuid tree, so that kernel can re-generate it at next read-write mount.
-++
-+Since kernel v4.16, btrfs has more and more sanity check, and sometimes
-+non-critical trees like uuid tree can cause problem and reject the mount.
-+In such case, clearing uuid tree may make the filesystem to be mountable again.
-+
- *super-recover* [options] <device>::
- Recover bad superblocks from good copies.
- +
-diff --git a/Documentation/btrfs-rescue.rst b/Documentation/btrfs-rescue.rst
-index f3e73f199dd8..787136aab51a 100644
---- a/Documentation/btrfs-rescue.rst
-+++ b/Documentation/btrfs-rescue.rst
-@@ -50,6 +50,15 @@ fix-device-size <device>
- 
-                 WARNING: CPU: 3 PID: 439 at fs/btrfs/ctree.h:1559 btrfs_update_device+0x1c5/0x1d0 [btrfs]
- 
-+clear-uuid-tree <device>
-+        Clear uuid tree, so that kernel can re-generate it at next read-write
-+        mount.
-+
-+        Since kernel v4.16, btrfs has more and more sanity check, and sometimes
-+        non-critical trees like uuid tree can cause problem and reject the mount.
-+        In such case, clearing uuid tree may make the filesystem to be mountable
-+        again.
-+
- super-recover [options] <device>
-         Recover bad superblocks from good copies.
- 
-diff --git a/cmds/rescue.c b/cmds/rescue.c
-index a98b255ad328..8b5b619da4f6 100644
---- a/cmds/rescue.c
-+++ b/cmds/rescue.c
-@@ -296,6 +296,109 @@ static int cmd_rescue_create_control_device(const struct cmd_struct *cmd,
- }
- static DEFINE_SIMPLE_COMMAND(rescue_create_control_device, "create-control-device");
- 
-+static int clear_uuid_tree(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_root *uuid_root = fs_info->uuid_root;
-+	struct btrfs_trans_handle *trans;
-+	struct btrfs_path path = {};
-+	struct btrfs_key key = {};
-+	int ret;
-+
-+	if (!uuid_root)
-+		return 0;
-+
-+	fs_info->uuid_root = NULL;
-+	trans = btrfs_start_transaction(fs_info->tree_root, 0);
-+	if (IS_ERR(trans))
-+		return PTR_ERR(trans);
-+
-+	while (1) {
-+		int nr;
-+
-+		ret = btrfs_search_slot(trans, uuid_root, &key, &path, -1, 1);
-+		if (ret < 0)
-+			goto out;
-+		ASSERT(ret > 0);
-+		ASSERT(path.slots[0] == 0);
-+
-+		nr = btrfs_header_nritems(path.nodes[0]);
-+		if (nr == 0) {
-+			btrfs_release_path(&path);
-+			break;
-+		}
-+
-+		ret = btrfs_del_items(trans, uuid_root, &path, 0, nr);
-+		btrfs_release_path(&path);
-+		if (ret < 0)
-+			goto out;
-+	}
-+	ret = btrfs_del_root(trans, fs_info->tree_root, &uuid_root->root_key);
-+	if (ret < 0)
-+		goto out;
-+	list_del(&uuid_root->dirty_list);
-+	ret = clean_tree_block(uuid_root->node);
-+	if (ret < 0)
-+		goto out;
-+	ret = btrfs_free_tree_block(trans, uuid_root, uuid_root->node, 0, 1);
-+	if (ret < 0)
-+		goto out;
-+	free_extent_buffer(uuid_root->node);
-+	free_extent_buffer(uuid_root->commit_root);
-+	kfree(uuid_root);
-+out:
-+	if (ret < 0)
-+		btrfs_abort_transaction(trans, ret);
-+	else
-+		ret = btrfs_commit_transaction(trans, fs_info->tree_root);
-+	return ret;
-+}
-+
-+static const char * const cmd_rescue_clear_uuid_tree_usage[] = {
-+	"btrfs rescue clear-uuid-tree",
-+	"Delete uuid tree so that kernel can rebuild it at mount time",
-+	NULL,
-+};
-+
-+static int cmd_rescue_clear_uuid_tree(const struct cmd_struct *cmd,
-+				      int argc, char **argv)
-+{
-+	struct btrfs_fs_info *fs_info;
-+	struct open_ctree_flags ocf = {};
-+	char *devname;
-+	int ret;
-+
-+	clean_args_no_options(cmd, argc, argv);
-+	if (check_argc_exact(argc, 2))
-+		return -EINVAL;
-+
-+	devname = argv[optind];
-+	ret = check_mounted(devname);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("could not check mount status: %m");
-+		goto out;
-+	} else if (ret) {
-+		error("%s is currently mounted", devname);
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+	ocf.filename = devname;
-+	ocf.flags = OPEN_CTREE_WRITES | OPEN_CTREE_PARTIAL;
-+	fs_info = open_ctree_fs_info(&ocf);
-+	if (!fs_info) {
-+		error("could not open btrfs");
-+		ret = -EIO;
-+		goto out;
-+	}
-+
-+	ret = clear_uuid_tree(fs_info);
-+	close_ctree(fs_info->tree_root);
-+out:
-+	return !!ret;
-+}
-+
-+static DEFINE_SIMPLE_COMMAND(rescue_clear_uuid_tree, "clear-uuid-tree");
-+
- static const char rescue_cmd_group_info[] =
- "toolbox for specific rescue operations";
- 
-@@ -306,6 +409,7 @@ static const struct cmd_group rescue_cmd_group = {
- 		&cmd_struct_rescue_zero_log,
- 		&cmd_struct_rescue_fix_device_size,
- 		&cmd_struct_rescue_create_control_device,
-+		&cmd_struct_rescue_clear_uuid_tree,
- 		NULL
- 	}
- };
--- 
-2.33.1
+   This project only has 3K lines of C code (excluding headers which
+   include ondisk format, various compatible helpers).
 
+   With my special educational comments among the 3K lines of C code.
+
+- Better and easier subpage/multi-page support
+   I just feel reborn when I don't need to bother page operations in
+   kernel.
+
+- For certain bootloader
+   In a galaxy not far, far away, there are some bootloader projects
+   requiring GPLv3+ license, thus kernel/progs code can not be utilized.
+
+   But filesystem is getting more and more complex, especially for btrfs.
+   Without a proper maintained fs implementation, things will get out-of-
+   control eventually.
+
+   This project is crafted from scratch with MIT license, only certain
+   external libraries are from GPLv2+ or GPLv2-only kernel code.
+   (But to make newbie to get familiar with the kernel/progs code, most
+    function/structure names are kept the same as kernel/progs).
+
+   Hopes one day btrfs-fuse can be crossported to those projects.
+
+
+But this new project hasn't yet reach v1.0, as there is some
+limitations:
+
+- RAID5/6 read support
+   Already working on that.
+
+- stat::st_dev and stat::st_ino
+   Currently FUSE will override st_dev, thus no way to use st_dev to
+   indicate subvolume boundary, and duplicated st_ino in different
+   subvolumes will make tools like `find` unhappy.
+   Will explore a different way to represent st_ino.
+
+Currently I'm still testing the project with fsstress (to generate a
+btrfs using kernel) and fssum (to verify both kernel and btrfs-fuse are
+reporting the same content), which should be pretty comprehensive.
+Will convert the tests to a self-test eventually.
+
+Extra tests and contribution are always helpful!
+
+Happy learning btrfs details!
+
+Thanks,
+Qu
