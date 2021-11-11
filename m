@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DFE44D70B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Nov 2021 14:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4D844D73A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Nov 2021 14:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhKKNRM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Nov 2021 08:17:12 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:33510 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhKKNRL (ORCPT
+        id S233392AbhKKNbo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Nov 2021 08:31:44 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:43878 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233449AbhKKNbn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Nov 2021 08:17:11 -0500
+        Thu, 11 Nov 2021 08:31:43 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AE13221B38;
-        Thu, 11 Nov 2021 13:14:21 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8232B1FD4D;
+        Thu, 11 Nov 2021 13:28:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636636461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+        t=1636637333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1aZrs78i90hAEl3tu0m+jLSdxwXFteHISd54HfG/KEo=;
-        b=tN1RaKBJTZLas5ythHqCY41A+9enWAqTRmV1mcoS/KpPtTaRSob6krS6N2SD++7kalcJgh
-        wDsuUNFsf4OeCuvoQtLvymTtG7iaC5/ca+VxVinWKXtmhkUUewTa4U7aIAjorTEkGLTltf
-        2vwIA6Ww2Ob+QExubow5FtAzeLxavck=
+        bh=aCmsrcyzD/3aVrKl6voMC+opedhx46WuKHEjmmDaKFY=;
+        b=fjEs15rBilQlUXSVaTzuNa06LSXq9Mvk/zlIkFxZqpRzyYC9cNcEK97XvTt3KInU2BuC5b
+        RExEIVbut23Oa8Er70TMP7ei5A/0Sg9rkFSbnVuDGerQ+7yTUzmBa2bOm3AC5yTLvg/qUe
+        XIDkhSSqVscrvAbM1B/Sdwi+qapr8VQ=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6C33413DB4;
-        Thu, 11 Nov 2021 13:14:21 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 43B9F13DB4;
+        Thu, 11 Nov 2021 13:28:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id tE9AFy0XjWHSGwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 11 Nov 2021 13:14:21 +0000
-Subject: Re: [PATCH v3 2/7] btrfs: check for priority ticket granting before
- flushing
+        id m0kNDpUajWHTJwAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 11 Nov 2021 13:28:53 +0000
+Subject: Re: [PATCH v3 3/7] btrfs: check ticket->steal in
+ steal_from_global_block_rsv
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
 References: <cover.1636470628.git.josef@toxicpanda.com>
- <efd7030290cfce311cea39f381b2e5cb38761336.1636470628.git.josef@toxicpanda.com>
+ <ac8ed2e738287a01338f8c0d502bfb46c18cc888.1636470628.git.josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <f0f97d68-cf01-515b-f787-3ccb924ff9ad@suse.com>
-Date:   Thu, 11 Nov 2021 15:14:20 +0200
+Message-ID: <382653b1-b38e-0eef-4bd1-0f5753e02031@suse.com>
+Date:   Thu, 11 Nov 2021 15:28:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <efd7030290cfce311cea39f381b2e5cb38761336.1636470628.git.josef@toxicpanda.com>
+In-Reply-To: <ac8ed2e738287a01338f8c0d502bfb46c18cc888.1636470628.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -60,51 +60,40 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 9.11.21 г. 17:12, Josef Bacik wrote:
-> Since we're dropping locks before we enter the priority flushing loops
-> we could have had our ticket granted before we got the space_info->lock.
-> So add this check to avoid doing some extra flushing in the priority
-> flushing cases.
+> We're going to use this helper in the priority flushing loop, move this
+> check into the helper to simplify the logic.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-> --->  fs/btrfs/space-info.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+> ---
+>  fs/btrfs/space-info.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
 > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 9d6048f54097..9a362f3a6df4 100644
+> index 9a362f3a6df4..6498e79d4c9b 100644
 > --- a/fs/btrfs/space-info.c
 > +++ b/fs/btrfs/space-info.c
-> @@ -1264,7 +1264,7 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
+> @@ -844,6 +844,9 @@ static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
+>  	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+>  	u64 min_bytes;
 >  
->  	spin_lock(&space_info->lock);
->  	to_reclaim = btrfs_calc_reclaim_metadata_size(fs_info, space_info);
-> -	if (!to_reclaim) {
-> +	if (!to_reclaim || ticket->bytes == 0) {
-
-nit: This is purely an optimization, handling the case where a prio
-ticket N is being added to the list, but at the same time we might have
-had ticket N-1 just satisfied (or failed) and having called
-try_granting_ticket might have satisfied concurrently added ticket N,
-right? And this is a completely independent change of the other cleanups
-being done here?
-
->  		spin_unlock(&space_info->lock);
->  		return;
->  	}
-> @@ -1297,6 +1297,13 @@ static void priority_reclaim_data_space(struct btrfs_fs_info *fs_info,
->  					struct reserve_ticket *ticket)
->  {
->  	spin_lock(&space_info->lock);
+> +	if (!ticket->steal)
+> +		return false;
 > +
-> +	/* We could have been granted before we got here. */
-> +	if (ticket->bytes == 0) {
-> +		spin_unlock(&space_info->lock);
-> +		return;
-> +	}
-> +
->  	while (!space_info->full) {
->  		spin_unlock(&space_info->lock);
->  		flush_space(fs_info, space_info, U64_MAX, ALLOC_CHUNK_FORCE, false);
+>  	if (global_rsv->space_info != space_info)
+>  		return false;
+>  
+> @@ -899,8 +902,8 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
+>  		ticket = list_first_entry(&space_info->tickets,
+>  					  struct reserve_ticket, list);
+>  
+> -		if (!aborted && ticket->steal &&
+> -		    steal_from_global_rsv(fs_info, space_info, ticket))
+> +		if (!aborted && steal_from_global_rsv(fs_info, space_info,
+> +						      ticket))
+>  			return true;
+>  
+>  		if (!aborted && btrfs_test_opt(fs_info, ENOSPC_DEBUG))
 > 
