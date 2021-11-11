@@ -2,75 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E007B44D4EE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Nov 2021 11:18:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFECC44D5C6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Nov 2021 12:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232871AbhKKKVD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Nov 2021 05:21:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhKKKVD (ORCPT
+        id S230400AbhKKL3T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Nov 2021 06:29:19 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:35762 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhKKL3S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Nov 2021 05:21:03 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E931BC061766
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Nov 2021 02:18:13 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id n29so8889996wra.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Nov 2021 02:18:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hMKkCAOogUAP6Yp/j0rU04+UdJr/E0fdqc1Ew1lHJ1A=;
-        b=XQfr+fF36bchUYq5floAzku6SVvCUniyN8L9BP9DLndet4qAiKf7lbQiXkW61/E+yM
-         lfdmLcxFTEztDUlM1cixttG97iGgyG+ETSj3WlQYaixhcjjxNTwpSZNVnO1KuCt82Am4
-         t3+aGMvg7WiN3Hest8uRN8EQO1ADCMJCYayu76I0757+U6sVIeDnHETWWg7yVOnbZiJD
-         abiYCTVnVusyBrfbCxMTuOqS1RiMrF5cZK8kku00U955l+2h+UoknecqUSYE4n37ZKvS
-         btBVjJhHfzTNTtTKJisUqI8qu17PgCs80QUQs2UQ7S9saFQM/YMeCayjyxE4KwOHUR78
-         dTPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hMKkCAOogUAP6Yp/j0rU04+UdJr/E0fdqc1Ew1lHJ1A=;
-        b=ygeUTo0eY2ZNJ3eoO4pazO8+jN5kuvm4PSuIO7mbQ6oMzSpgoQCElunOliHQx3sehu
-         m78gl8SOl/vRLqHnAnO8ZoTRoswg7cWVamuNpNptJqDjuvoatmd2dke4M+/FbNKzJVv0
-         PispMwFb22liae+23M5nRlz69EijR/KYmAEGkq/7qhx4pLN7+1FNs2txjrVL4RamHW/M
-         cH7F+N2DIIhJ2ELFOYLZvq90Z7410PHoiQOWSjYnLtXLLYa9oDhS7XujZ0esorhud01+
-         e+8U+TQhhbZnBrGI9bhXn/BbnEcD5xcBKniW/ots6lIPXaqCVa7Wv3KxRdy4wxfEsJWc
-         zSjQ==
-X-Gm-Message-State: AOAM532vaY3R674oXymVXad8VyJtXZNOAKZ7em1SMybiCJk7l1wIEnEc
-        HgZz4Ex/23b3tQYe51lMR0UDMOpZ6x4=
-X-Google-Smtp-Source: ABdhPJxRmFRYGY4b5HAyB0+iOWymA1VUdRR50J7bfadMBuC1eAX2bm+zXmCHCeVzM91FjUkvGM4FVQ==
-X-Received: by 2002:adf:8165:: with SMTP id 92mr7716596wrm.199.1636625892541;
-        Thu, 11 Nov 2021 02:18:12 -0800 (PST)
-Received: from [10.20.1.172] ([185.138.176.94])
-        by smtp.gmail.com with ESMTPSA id g4sm2404987wro.12.2021.11.11.02.18.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Nov 2021 02:18:12 -0800 (PST)
+        Thu, 11 Nov 2021 06:29:18 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id D6CFD1FD4A;
+        Thu, 11 Nov 2021 11:26:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636629988;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wauzwbc82ei4yPOq21j6UlK3t+kq7+cWhLhxcUJdqcU=;
+        b=y4q7sEbhm+j8ptEIbK1zBPX1BoXN3xQyzoRdyo1MHhnWIR8wH0vLPjZKrG2hIIqpXRmCUj
+        A6jba9Pq4EbN21RJmzRgPHpiqu0DiyTzUY4wYctQpCuue8HmoIXWYxHiS+lrIpZ5zUPqlt
+        kZBzQ6hToAGtfVWDWE9t9mz6WWhCCTU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636629988;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wauzwbc82ei4yPOq21j6UlK3t+kq7+cWhLhxcUJdqcU=;
+        b=ZvvNIrUM69YMNaXrVvR/K/FeciXtDkJMrShp2tCImie85Z+y6bDT8+KUoI9W6c0EvHYrff
+        E76HIeeno7GyHfAg==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id CF655A3B83;
+        Thu, 11 Nov 2021 11:26:28 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 4EFF0DA799; Thu, 11 Nov 2021 12:26:28 +0100 (CET)
+Date:   Thu, 11 Nov 2021 12:26:28 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Filipe Manana <fdmanana@suse.com>
 Subject: Re: [PATCH v3] btrfs: index free space entries on size
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Cc:     Filipe Manana <fdmanana@suse.com>
+Message-ID: <20211111112628.GX28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Filipe Manana <fdmanana@suse.com>
 References: <d69c29c8428a923d526aa2fe068d421d14667b47.1636408067.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <n.borisov.lkml@gmail.com>
-Message-ID: <93c4c316-1bc1-5144-18f0-f85233060102@gmail.com>
-Date:   Thu, 11 Nov 2021 12:18:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <d69c29c8428a923d526aa2fe068d421d14667b47.1636408067.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 8.11.21 г. 23:49, Josef Bacik wrote:
+On Mon, Nov 08, 2021 at 04:49:17PM -0500, Josef Bacik wrote:
 > Currently we index free space on offset only, because usually we have a
 > hint from the allocator that we want to honor for locality reasons.
 > However if we fail to use this hint we have to go back to a brute force
@@ -163,5 +151,56 @@ On 8.11.21 г. 23:49, Josef Bacik wrote:
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> ---
+> v2->v3:
+> - Added a comment to explain why we don't break if our size is too small after
+>   the alignment check if we're using bytes index, as it's subtle.
+> - Added Filipe's reviewed-by.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Added to misc-next, thanks.
+
+> +static u64 free_space_info_bytes(struct btrfs_free_space *info)
+
+info can be const, added
+
+> +{
+> +	if (info->bitmap && info->max_extent_size)
+> +		return info->max_extent_size;
+> +	return info->bytes;
+> +}
+> +
+> +/*
+> + * This is indexed in reverse of what we generally do for rb-tree's, the largest
+> + * chunks are left most and the smallest are rightmost.  This is so that we can
+> + * take advantage of the cached property of the cached rb-tree and simply get
+> + * the largest free space chunk right away.
+> + */
+> +static void tree_insert_bytes(struct btrfs_free_space_ctl *ctl,
+> +			      struct btrfs_free_space *info)
+> +{
+> +	struct rb_root_cached *root = &ctl->free_space_bytes;
+> +	struct rb_node **p = &root->rb_root.rb_node;
+
+The single letter for rb-tree traversal has been in some old code and
+if there's a chance to switch it to something like 'node' I can't
+resist, so s/p/node/.
+
+> +	struct rb_node *parent_node = NULL;
+> +	struct btrfs_free_space *tmp;
+> +	bool leftmost = true;
+> +
+> +	while (*p) {
+> +		parent_node = *p;
+> +		tmp = rb_entry(parent_node, struct btrfs_free_space,
+> +			       bytes_index);
+> +		if (free_space_info_bytes(info) < free_space_info_bytes(tmp)) {
+> +			p = &(*p)->rb_right;
+> +			leftmost = false;
+> +		} else {
+> +			p = &(*p)->rb_left;
+> +		}
+> +	}
+> +
+> +	rb_link_node(&info->bytes_index, parent_node, p);
+> +	rb_insert_color_cached(&info->bytes_index, root, leftmost);
+> +}
