@@ -2,45 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E629E44E12E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 05:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D7544E193
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 06:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhKLEuk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Nov 2021 23:50:40 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:56912 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhKLEuk (ORCPT
+        id S230182AbhKLFgZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Nov 2021 00:36:25 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:49602 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhKLFgY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Nov 2021 23:50:40 -0500
+        Fri, 12 Nov 2021 00:36:24 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2C96C1FD64;
-        Fri, 12 Nov 2021 04:47:49 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1976421B1F
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 05:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636692469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1636695213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
          mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=tXIv8H0kionnx7n09wWgxh6YKq9zHK9C8+FFXlPPMaM=;
-        b=D3cAsmiejhmIqoosKUoho/tcAGYih9tdka1HfpeC9vVidPVKvRQCdjWmEhPvZ1fL+W5+Iu
-        nxSSUJc+Pc2/ZJVpxPAmP6xKYGt7GlW97ZhoJY1CPuJVKMw2VB3S7MYLnF2CXCtCgbMeLe
-        uD3/hQnt0SlnhgNUHwjLgnhmEdk6V2M=
+        bh=sWUko77XU88dL5OkkjPbu/65596NVZfR12LlAoKWGEo=;
+        b=BrVXAT9s0PZgCEqkz1+jx0xMc+vaj9gNJ6gSVv86imFTSkVbYbjJtRVdEzJ3V79yeZIbn4
+        /X5KBG56edA8CiKbOAKhE1IEOB6CmPnCxVCmEqckdtKZnRgwCIDwQo7LhTU88sSr+TuAH8
+        kS72X6oRRgDEVuhX2N5ta2Dc4sDTO9A=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 28D5913E3D;
-        Fri, 12 Nov 2021 04:47:47 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F0D413E3B
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 05:33:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id eFFaN/PxjWG4PwAAMHmgww
-        (envelope-from <wqu@suse.com>); Fri, 12 Nov 2021 04:47:47 +0000
+        id vq9oCaz8jWEWTAAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 05:33:32 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Omar Sandoval <osandov@fb.com>
-Subject: [PATCH v2] btrfs: fix a out-of-boundary access for copy_compressed_data_to_page()
-Date:   Fri, 12 Nov 2021 12:47:30 +0800
-Message-Id: <20211112044730.25161-1-wqu@suse.com>
+Subject: [PATCH v2] btrfs: remove unnecessary @nr_written parameters
+Date:   Fri, 12 Nov 2021 13:33:14 +0800
+Message-Id: <20211112053314.30009-1-wqu@suse.com>
 X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -48,117 +48,163 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-The following script can cause btrfs to crash:
+We use @nr_written to record how many pages have been started by
+btrfs_run_delalloc_range().
 
- mount -o compress-force=lzo $DEV /mnt
- dd if=/dev/urandom of=/mnt/foo bs=4k count=1
- sync
+Currently there are only two cases that would populate @nr_written:
 
-The calltrace looks like this:
+- Inline extent creation
+- Compressed write
 
- general protection fault, probably for non-canonical address 0xe04b37fccce3b000: 0000 [#1] PREEMPT SMP NOPTI
- CPU: 5 PID: 164 Comm: kworker/u20:3 Not tainted 5.15.0-rc7-custom+ #4
- Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
- RIP: 0010:__memcpy+0x12/0x20
- Call Trace:
-  lzo_compress_pages+0x236/0x540 [btrfs]
-  btrfs_compress_pages+0xaa/0xf0 [btrfs]
-  compress_file_range+0x431/0x8e0 [btrfs]
-  async_cow_start+0x12/0x30 [btrfs]
-  btrfs_work_helper+0xf6/0x3e0 [btrfs]
-  process_one_work+0x294/0x5d0
-  worker_thread+0x55/0x3c0
-  kthread+0x140/0x170
-  ret_from_fork+0x22/0x30
- ---[ end trace 63c3c0f131e61982 ]---
+But both cases will also set @page_started to one.
 
-[CAUSE]
-In lzo_compress_pages(), parameter @out_pages is not only an output
-parameter (for the number of compressed pages), but also an input
-parameter, as the upper limit of compressed pages we can utilize.
+In fact, in writepage_delalloc() we have the following code, showing
+that @nr_written is really only utilized for above two cases:
 
-In commit d4088803f511 ("btrfs: subpage: make lzo_compress_pages()
-compatible"), the refactor doesn't take @out_pages as an input, thus
-completely ignoring the limit.
+	/* did the fill delalloc function already unlock and start
+	 * the IO?
+	 */
+	if (page_started) {
+		/*
+		 * we've unlocked the page, so we can't update
+		 * the mapping's writeback index, just update
+		 * nr_to_write.
+		 */
+		wbc->nr_to_write -= nr_written;
+		return 1;
+	}
 
-And for compress-force case, we could hit incompressible data that
-compressed size would go beyond the page limit, and cause above crash.
+But for such cases, writepage_delalloc() will return 1, and exit
+__extent_writepage() without going through __extent_writepage_io().
 
-[FIX]
-Save @out_pages as @max_nr_page, and pass it to lzo_compress_pages(),
-and check if we're beyond the limit before accessing the pages.
+Thus this means, inside __extent_writepage_io(), we always get
+@nr_written as 0.
 
-Reported-by: Omar Sandoval <osandov@fb.com>
-Fixes: d4088803f511 ("btrfs: subpage: make lzo_compress_pages() compatible")
+So this patch is going to remove the unnecessary parameter from the
+following functions:
+
+- writepage_delalloc()
+
+  As @nr_written passed in is always the initial value 0.
+
+  Although inside that function, we still need a local @nr_written
+  to update wbc->nr_to_write.
+
+- __extent_writepage_io()
+
+  As explained above, @nr_written passed in can only be 0.
+
+  This also means we can remove one update_nr_written() call.
+
 Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Omar Sandoval <osandov@fb.com>
-
 ---
 Changelog:
 v2:
-- also make @max_nr_page parameter of copy_compressed_data_to_page() const
+- Rebased to lastest misc-next
+- Small comment update for old comments
 ---
- fs/btrfs/lzo.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ fs/btrfs/extent_io.c | 24 ++++++++++--------------
+ 1 file changed, 10 insertions(+), 14 deletions(-)
 
-diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-index 00cffc183ec0..6912def2c1f8 100644
---- a/fs/btrfs/lzo.c
-+++ b/fs/btrfs/lzo.c
-@@ -125,6 +125,7 @@ static inline size_t read_compress_length(const char *buf)
- static int copy_compressed_data_to_page(char *compressed_data,
- 					size_t compressed_size,
- 					struct page **out_pages,
-+					const unsigned long max_nr_page,
- 					u32 *cur_out,
- 					const u32 sectorsize)
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 4e03a6d3aa32..47bbc2f79273 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3785,12 +3785,13 @@ static void update_nr_written(struct writeback_control *wbc,
+  * This returns < 0 if there were errors (page still locked)
+  */
+ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+-		struct page *page, struct writeback_control *wbc,
+-		unsigned long *nr_written)
++		struct page *page, struct writeback_control *wbc)
  {
-@@ -132,6 +133,9 @@ static int copy_compressed_data_to_page(char *compressed_data,
- 	u32 orig_out;
- 	struct page *cur_page;
+ 	const u64 page_end = page_offset(page) + PAGE_SIZE - 1;
+ 	u64 delalloc_start = page_offset(page);
+ 	u64 delalloc_to_write = 0;
++	/* How many pages are started by btrfs_run_delalloc_range() */
++	unsigned long nr_written = 0;
+ 	int ret;
+ 	int page_started = 0;
  
-+	if ((*cur_out / PAGE_SIZE) >= max_nr_page)
-+		return -E2BIG;
-+
- 	/*
- 	 * We never allow a segment header crossing sector boundary, previous
- 	 * run should ensure we have enough space left inside the sector.
-@@ -158,6 +162,9 @@ static int copy_compressed_data_to_page(char *compressed_data,
- 		u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
- 				     orig_out + compressed_size - *cur_out);
- 
-+		if ((*cur_out / PAGE_SIZE) >= max_nr_page)
-+			return -E2BIG;
-+
- 		cur_page = out_pages[*cur_out / PAGE_SIZE];
- 		/* Allocate a new page */
- 		if (!cur_page) {
-@@ -195,6 +202,7 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
- 	struct workspace *workspace = list_entry(ws, struct workspace, list);
- 	const u32 sectorsize = btrfs_sb(mapping->host->i_sb)->sectorsize;
- 	struct page *page_in = NULL;
-+	const unsigned long max_nr_page = *out_pages;
- 	int ret = 0;
- 	/* Points to the file offset of input data */
- 	u64 cur_in = start;
-@@ -202,6 +210,7 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
- 	u32 cur_out = 0;
- 	u32 len = *total_out;
- 
-+	ASSERT(max_nr_page > 0);
- 	*out_pages = 0;
- 	*total_out = 0;
- 	*total_in = 0;
-@@ -237,7 +246,8 @@ int lzo_compress_pages(struct list_head *ws, struct address_space *mapping,
+@@ -3806,7 +3807,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+ 			continue;
  		}
+ 		ret = btrfs_run_delalloc_range(inode, page, delalloc_start,
+-				delalloc_end, &page_started, nr_written, wbc);
++				delalloc_end, &page_started, &nr_written, wbc);
+ 		if (ret) {
+ 			btrfs_page_set_error(inode->root->fs_info, page,
+ 					     page_offset(page), PAGE_SIZE);
+@@ -3829,16 +3830,14 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+ 					 thresh);
+ 	}
  
- 		ret = copy_compressed_data_to_page(workspace->cbuf, out_len,
--						   pages, &cur_out, sectorsize);
-+						   pages, max_nr_page,
-+						   &cur_out, sectorsize);
- 		if (ret < 0)
- 			goto out;
+-	/* did the fill delalloc function already unlock and start
+-	 * the IO?
+-	 */
++	/* Did btrfs_run_dealloc_range() already unlock and start the IO? */
+ 	if (page_started) {
+ 		/*
+-		 * we've unlocked the page, so we can't update
++		 * We've unlocked the page, so we can't update
+ 		 * the mapping's writeback index, just update
+ 		 * nr_to_write.
+ 		 */
+-		wbc->nr_to_write -= *nr_written;
++		wbc->nr_to_write -= nr_written;
+ 		return 1;
+ 	}
+ 
+@@ -3910,7 +3909,6 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 				 struct writeback_control *wbc,
+ 				 struct extent_page_data *epd,
+ 				 loff_t i_size,
+-				 unsigned long nr_written,
+ 				 int *nr_ret)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+@@ -3929,7 +3927,6 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 	if (ret) {
+ 		/* Fixup worker will requeue */
+ 		redirty_page_for_writepage(wbc, page);
+-		update_nr_written(wbc, nr_written);
+ 		unlock_page(page);
+ 		return 1;
+ 	}
+@@ -3938,7 +3935,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
+ 	 * we don't want to touch the inode after unlocking the page,
+ 	 * so we update the mapping writeback index now
+ 	 */
+-	update_nr_written(wbc, nr_written + 1);
++	update_nr_written(wbc, 1);
+ 
+ 	while (cur <= end) {
+ 		u64 disk_bytenr;
+@@ -4076,7 +4073,6 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
+ 	size_t pg_offset;
+ 	loff_t i_size = i_size_read(inode);
+ 	unsigned long end_index = i_size >> PAGE_SHIFT;
+-	unsigned long nr_written = 0;
+ 
+ 	trace___extent_writepage(page, inode, wbc);
+ 
+@@ -4105,7 +4101,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
+ 	}
+ 
+ 	if (!epd->extent_locked) {
+-		ret = writepage_delalloc(BTRFS_I(inode), page, wbc, &nr_written);
++		ret = writepage_delalloc(BTRFS_I(inode), page, wbc);
+ 		if (ret == 1)
+ 			return 0;
+ 		if (ret)
+@@ -4113,7 +4109,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
+ 	}
+ 
+ 	ret = __extent_writepage_io(BTRFS_I(inode), page, wbc, epd, i_size,
+-				    nr_written, &nr);
++				    &nr);
+ 	if (ret == 1)
+ 		return 0;
  
 -- 
 2.33.1
