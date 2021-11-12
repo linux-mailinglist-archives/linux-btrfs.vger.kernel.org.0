@@ -2,109 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740AE44ECCB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 19:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C4C44EDF5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 21:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbhKLStg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Nov 2021 13:49:36 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:46346 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbhKLStg (ORCPT
+        id S235484AbhKLUkp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Nov 2021 15:40:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232183AbhKLUko (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Nov 2021 13:49:36 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1B3D71FD5E;
-        Fri, 12 Nov 2021 18:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636742804; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LtiOUgFml5wXOb4LYQwg084WSwwUrzV4ukXr1FDAp78=;
-        b=jbXw5p4NzK9k4IIdE/XU4h+y54Hxk631ClnVJ+v7r5r5KBUcPjWKe/YU8eQZTN6QhNvNcg
-        gaGuG5vxbRY7mnGFv+2eRwUQcGx1CBeFyL1QEtbUwZ2tfkkobJEQK366WzRiIB/F4QFalD
-        oypvp7TcQLREA9h2943IkboXlK3dWgM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C35CA13C7E;
-        Fri, 12 Nov 2021 18:46:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GA+XLJO2jmH2MwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Fri, 12 Nov 2021 18:46:43 +0000
-Subject: Re: 5.15+, blocked tasks, folio_wait_bit_common
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Omar Sandoval <osandov@osandov.com>
-References: <CAJCQCtSh2WT3fijK4sYEdfYpp09ehA+SA75rLyiJ6guUtyWjyw@mail.gmail.com>
- <CAJCQCtQ=JsO6bH=vJE2aZDS_7FDq+y-yHFVm4NTaf7QLArWGAw@mail.gmail.com>
- <9f7d7997-b1a1-9c4f-8e2f-56e28a54c8c6@suse.com>
- <CAJCQCtQ4JwAD8Nw-mHWxoXtJT7m0d-d+gi23_JgU=C8dvTtEOA@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <41cabdcf-894f-353b-0c9d-98635b26fe30@suse.com>
-Date:   Fri, 12 Nov 2021 20:46:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 12 Nov 2021 15:40:44 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4556C061767
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 12:37:53 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id 132so10301995qkj.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 12:37:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E0mC8E0nVs+4PIAevDGFm/VHiYARiuJ41dU7KZkBaPw=;
+        b=KVaP/N/QrT5ENGGVLBNM2idWsODJquG7UmEHCTVFShbpBz54Ldg07DTTat6e5zUWcM
+         McvJ2oJR3xpVAYKbmFmW/rFezJv3T46fTJrrew9VGahkCnglzPo3WUnlyhQJQtTpDnRz
+         5fXK+Qr1xFqHefIvmnK5UJIi4+IXqF2ks5TQMBUkhIcpUUC7FDOcwzg9Ij3eQzjZjve0
+         vPXf0EmVH3xT4fg7WK14VDWY0s1sBr7hdRfTmCnWUwUM5MKwNH73yP6hJ08lLz8Swzod
+         kTlaRb5fATYuDcXDDbCIGjuzYu6//Rz8nnIzxPE8d5i8WlOLYRuF9TVm5fqmUdTKn9Um
+         TBAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E0mC8E0nVs+4PIAevDGFm/VHiYARiuJ41dU7KZkBaPw=;
+        b=ZWS0lqiGNai5Aqjp1XMJepB19WD1JSide3ANFQjpndUGwXxVDHUbrFxiOOyUl6OQ1T
+         JlsG98dHFiT5ZKyp2xGFRdtzkjRxZF534xBZNXWKRyA99H1cYC7mpFuFhanByOVdp3tv
+         cCDPtHrFGnKCYKsJ/2Wytqag9f7zBrrXu//HYHLKnX4TQui2+covxbWnqHebl8FSUECy
+         VC+yHwLYAqOi85khwZreo5mgzdMXYy4UVlbIAVD1BQyRpedYtIKxGxpLItK9R8c/TWoY
+         PRgZbfPzyRpllFAOPBN/xMBxO9ADS4VSvRnrnJr1FPWM/WA30KIxT7CRZAu2WgTca/8h
+         vGbQ==
+X-Gm-Message-State: AOAM532oOqRxdTF5CYdRaPXmG3pEu9bTCmIe3o+DcdSX1BpHimP5HUpD
+        gGy2cyhM+qeuGYNgbld82bwpckUyrYiGug==
+X-Google-Smtp-Source: ABdhPJx9lCGOWzFxvKztUOT7d5TKeXIzh2x0XayjyDs8xS5sLZpMKiU47GUZzUNqZsYWrY87XSHL4w==
+X-Received: by 2002:a05:620a:400f:: with SMTP id h15mr14700401qko.226.1636749472507;
+        Fri, 12 Nov 2021 12:37:52 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id s8sm3452735qkp.17.2021.11.12.12.37.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 12:37:51 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        fstests@vger.kernel.org
+Subject: [PATCH] fstests: print symbolic names for fiemap flags
+Date:   Fri, 12 Nov 2021 15:37:48 -0500
+Message-Id: <36864f7a8701651bd7c1734aa57cb520fbf34a49.1636749456.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtQ4JwAD8Nw-mHWxoXtJT7m0d-d+gi23_JgU=C8dvTtEOA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[CC'ing Omar as Kyber is mentioned]
+My nightly btrfs tests are failing on my configs with -o compress because the
+extents have FIEMAP_EXTENT_ENCODED set, which throws the golden output off.
 
-On 12.11.21 г. 20:06, Chris Murphy wrote:
-> On Fri, Nov 12, 2021 at 1:55 AM Nikolay Borisov <nborisov@suse.com> wrote:
->>
->>
->>
->> On 11.11.21 г. 22:57, Chris Murphy wrote:
->>> On Thu, Nov 11, 2021 at 3:24 PM Chris Murphy <lists@colorremedies.com> wrote:
->>>>
->>>> Soon after logging in and launching some apps, I get a hang. Although
->>>> there's lots of btrfs stuff in the call traces, I think we're stuck in
->>>> writeback so everything else just piles up and it all hangs
->>>> indefinitely.
->>>>
->>>> Happening since at least
->>>> 5.16.0-0.rc0.20211109gitd2f38a3c6507.9.fc36.x86_64 and is still happening with
->>>> 5.16.0-0.rc0.20211111gitdebe436e77c7.11.fc36.x86_64
->>>>
->>>> Full dmesg including sysrq+w when the journal becomes unresponsive and
->>>> then a bunch of block tasks  > 120s roll in on their own.
->>>>
->>>> https://bugzilla-attachments.redhat.com/attachment.cgi?id=1841283
->>>
->>
->>
->> The btrfs traces in this one doesn't look interesting, what's
->> interesting is you have a bunch of tasks, including btrfs transaction
->> commit which are stuck waiting to get a tag from the underlying block
->> device - blk_mq_get_tag function. This indicates something's going on
->> with the underlying block device.
-> 
-> Well the hang doesn't ever happen with 5.14.x or 5.15.x kernels, only
-> the misc-next (Fedora rc0) kernels. And also I just discovered that
-> it's not happening (or not as quickly) with IO scheduler none. I've
-> been using kyber and when I switch back to it, the hang happens almost
-> immediately.
+Fix this by changing the filter helper to spit out symbolic names for SHARED and
+LAST (these tests only care about SHARED).  Then change the golden output to
+match the new output of the filter.  With this patch my -o compress configs now
+pass these tests.
 
-Well I see a bunch of WARN_ONs being triggered, so is it possible that
-this is some issue which is going to be fixed in some future RC ? Omar
-what steps should be taken to try and debug this from the Kyber side of
-things?
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ common/punch          | 16 +++++++++++++++-
+ tests/generic/352.out |  4 ++--
+ tests/generic/353.out |  8 ++++----
+ 3 files changed, 21 insertions(+), 7 deletions(-)
 
+diff --git a/common/punch b/common/punch
+index b6c337e7..b6b8a0b9 100644
+--- a/common/punch
++++ b/common/punch
+@@ -119,7 +119,21 @@ _filter_fiemap_flags()
+ 			next;
+ 		}
+ 		$5 ~ /0x[[:xdigit:]]+/ {
+-			print $1, $2, $5;
++			flags = strtonum($5);
++			flag_str = "none";
++			set = 0;
++
++			if (and(flags, 0x2000)) {
++				flag_str = "shared";
++				set = 1;
++			}
++			if (and(flags, 0x1)) {
++				if (set) {
++					flag_str = flag_str"|";
++				}
++				flag_str = flag_str"last";
++			}
++			print $1, $2, flag_str
+ 		}' |
+ 	_coalesce_extents
+ }
+diff --git a/tests/generic/352.out b/tests/generic/352.out
+index a87c5073..4ff66c21 100644
+--- a/tests/generic/352.out
++++ b/tests/generic/352.out
+@@ -1,5 +1,5 @@
+ QA output created by 352
+ wrote 131072/131072 bytes at offset 0
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+-0: [0..2097151]: 0x2000
+-1: [2097152..2097407]: 0x2001
++0: [0..2097151]: shared
++1: [2097152..2097407]: shared|last
+diff --git a/tests/generic/353.out b/tests/generic/353.out
+index b7184a61..4f6e0b92 100644
+--- a/tests/generic/353.out
++++ b/tests/generic/353.out
+@@ -5,11 +5,11 @@ linked 65536/65536 bytes at offset 0
+ XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+ before sync:
+ SCRATCH_MNT/file1
+-0: [0..127]: 0x2001
++0: [0..127]: shared|last
+ SCRATCH_MNT/file2
+-0: [0..127]: 0x2001
++0: [0..127]: shared|last
+ after sync:
+ SCRATCH_MNT/file1
+-0: [0..127]: 0x2001
++0: [0..127]: shared|last
+ SCRATCH_MNT/file2
+-0: [0..127]: 0x2001
++0: [0..127]: shared|last
+-- 
+2.26.3
 
-> 
-> 
-> 
-> 
