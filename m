@@ -2,59 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E1244E0F9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 05:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A6744E123
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 05:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhKLETz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Nov 2021 23:19:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
+        id S232860AbhKLE3n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Nov 2021 23:29:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbhKLETz (ORCPT
+        with ESMTP id S230495AbhKLE3n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Nov 2021 23:19:55 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE101C061766
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Nov 2021 20:17:04 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id j63so3601929qkd.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Nov 2021 20:17:04 -0800 (PST)
+        Thu, 11 Nov 2021 23:29:43 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E96C061766
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Nov 2021 20:26:53 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id u17so7410874plg.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Nov 2021 20:26:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=9PkQqvKLLPVUjck24kkYqSOLxPnP0iGlTSL3c4NXxDk=;
-        b=xXPfWISUPXI8gjo15mbuGS1EKFaoKkr3rPMwkjWiLMjxbn4PEQJ3U8u86RYEZ1Xjc3
-         2BywW9xgb9wUqtrNOr6TiJCnvFAzqepvbgW8ucQFRiNwCjXuEsZ4XZiJ8p4ecT5ULAk7
-         X5XiiYYdkzuFzLJriHSG43W92P9vLn6ni2MeYrYXLmyVgIH5Cj8keBkc9E9fdlQtlGvR
-         9V2GESxpbbkX1OSdLrILi8nAnCMSXecV5P2W4+KX7BInNE+h46vq7DAFtzta0bFvvQmg
-         07A5qLl9A76bufj44qoTSocSNAR5KjzlhLpTh84xpkEXNavYE6C+Kk5XVLGd0dvxTAp6
-         +fvw==
+        bh=+fFPD8uOCbWH2ZUyqNRziJC+rbJrrR2gF9pxR11C66U=;
+        b=Re2RDHdaOqydCEZW6+p9xdGhxfE64q/1CUZmYPjsFqVL30Pm6O80m5P1XqEH8+zDra
+         01huHsj6qzqiF+MqVb26u2k2KMYl6VqG05RZei+RlNSUDY4KT8LC9u3F29wHt/NL21wP
+         M1OBFyGjBQi26D9eXiMMrxjxRtEqEkvWW1lm1gKpADpZv/CJm8fvbflnSnjm55FFGhox
+         +nwVKBX6TF9A5UIgtDrhJw7ZYY2SDUfQxFQMeliTdd8QsFi9lVYxUepO97IT2dQ+85jm
+         fKIRUGz6Z2Dqcj3Pi8TsXE4XZmgtxq9QMUVga04utV50h9KO4Hqr1+LU+/rTGnFBN53N
+         NV+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9PkQqvKLLPVUjck24kkYqSOLxPnP0iGlTSL3c4NXxDk=;
-        b=SgWvUPb4vdgqtPSAW6TCVzTGyiVw7herieZl7yJcrM/iSPLbJIy22br+zcBQ/V7F9P
-         L2UV5w7n5pWzxaaqdsQKlHn4yAr6ai8QK1+C2TkXVlmKBXi3sHeIQDI3pYCV2YTK7CzD
-         85jorg3XAtnQZsV8zsCfEHvcHJb5tpmeT6Pd0CHrx8PSPHi4LHI1ftZ5qJp+2UTbmN7s
-         WvPgrV/oKUIGuXalL6/g8FeshedqkyiM0tJLkPIrTWFhgficF6OyM0RTHmbJ/ZifLYEY
-         Rl+5q8sH+yCsaxlBo0DsELAg8oFlQDbWuMJbvYwPjCs4a6gxM10/uYT8fcuyXJhiuNPo
-         4x7A==
-X-Gm-Message-State: AOAM531zwNc5V5HqDrMMjE5YwKrO3OaEpwjVy6R8H/KGNefZgRy3EFnN
-        6XDDlVG6h2OBIPY9EbbET9IlLg==
-X-Google-Smtp-Source: ABdhPJzeqGxfjn+cqecBCdH2YN0uvJGIaY0RGjWbNOqF6nPJ6q/4qQZ610zOePBNOccWJuw9dzSimg==
-X-Received: by 2002:a05:620a:2589:: with SMTP id x9mr10339128qko.454.1636690622582;
-        Thu, 11 Nov 2021 20:17:02 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v4sm2325597qkp.118.2021.11.11.20.17.01
+        bh=+fFPD8uOCbWH2ZUyqNRziJC+rbJrrR2gF9pxR11C66U=;
+        b=jsOp6Qj4b91QfGxn36nyP4CUziGGA3RGBKVauTp5eRylElL/9G00fo6Yb7c4zK052P
+         w8A/+AwAkZAaah5dsLoaZzMw5k3lUfRft9AL3c58u5Bb1jjypLN0ZYYRXU9iQPLUC4nX
+         MXjSyKEsspEVn9nEzevd8HQWpaWlO/9O4mB3PGSzxRemb96GO2Pi5BR/bqbGotnMy/oU
+         Pu4+MlLnUMslz/XA/qAom8KSoi/xeY/ICHt3Cqr5Bdq1BOsHi3xaTBvR/O1EaJf+cqMo
+         E9Nc2B6Yue7REPvfvuCBcGTzICOzsDHngd5+1owChHVqLwvSNkr0OSwbc9fd11vuvm2j
+         0VsA==
+X-Gm-Message-State: AOAM532Z3Pt5pkCDE6615P5Whrz9LgE2cqmhKO68FMlvXowqarL+lhlB
+        ii56DXqO9gZ2dbyH2tcyiR6h6w==
+X-Google-Smtp-Source: ABdhPJycpinosXmKtRo/Ml7pMpUYV/yno24RmUPC655ywHRggNK2O3ZrayZLt760A29VnOdYGjNd2g==
+X-Received: by 2002:a17:90b:1947:: with SMTP id nk7mr14531280pjb.227.1636691212739;
+        Thu, 11 Nov 2021 20:26:52 -0800 (PST)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:aa3b])
+        by smtp.gmail.com with ESMTPSA id s30sm4697524pfg.17.2021.11.11.20.26.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Nov 2021 20:17:02 -0800 (PST)
-Date:   Thu, 11 Nov 2021 23:17:00 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
+        Thu, 11 Nov 2021 20:26:52 -0800 (PST)
+Date:   Thu, 11 Nov 2021 20:26:51 -0800
+From:   Omar Sandoval <osandov@osandov.com>
 To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org, Omar Sandoval <osandov@fb.com>
 Subject: Re: [PATCH] btrfs: fix a out-of-boundary access for
  copy_compressed_data_to_page()
-Message-ID: <YY3qvDNC6S/YVrkZ@localhost.localdomain>
+Message-ID: <YY3tC8HBOApvh4mK@relinquished.localdomain>
 References: <20211112022253.20576-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -112,17 +112,7 @@ On Fri, Nov 12, 2021 at 10:22:53AM +0800, Qu Wenruo wrote:
 > ---
 >  fs/btrfs/lzo.c | 12 +++++++++++-
 >  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-> index 00cffc183ec0..f410ceabcdbd 100644
-> --- a/fs/btrfs/lzo.c
-> +++ b/fs/btrfs/lzo.c
-> @@ -125,6 +125,7 @@ static inline size_t read_compress_length(const char *buf)
->  static int copy_compressed_data_to_page(char *compressed_data,
->  					size_t compressed_size,
->  					struct page **out_pages,
-> +					unsigned long max_nr_page,
 
-If you want to do const down below you should use const here probably?  Thanks,
+This fixed the issue for me, and it looks correct.
 
-Josef
+Reviewed-by: Omar Sandoval <osandov@fb.com>
