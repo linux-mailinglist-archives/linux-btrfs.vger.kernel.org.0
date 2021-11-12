@@ -2,81 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C5744E909
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 15:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBCF44E90A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 15:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235139AbhKLOhc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Nov 2021 09:37:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbhKLOhb (ORCPT
+        id S235151AbhKLOh6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Nov 2021 09:37:58 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:50658 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235142AbhKLOh5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Nov 2021 09:37:31 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C716FC061766
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 06:34:40 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id j63so4878814qkd.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 06:34:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ooE0frV4e4BZQ6DGEscixRebQUga5YpWwjUvIc6rw+Y=;
-        b=td8rxrKEUWNG1MaDADBMoBNb3rRn9vIgA6mG+TdBxWU/5A3JDWkgK5CVrau3+dyPIW
-         TQ8DbqLfGeWn4Zxu9Vwl69xaMo9+nkwYu0Zrbiz5x7OAnRvhG/MP24UVtp1yG4/v3eCr
-         rMcFTpHpIJ+dMVv5zmCevxkGKaUaMbd4bABZiZki0jnxRxll0TM9cg4FTKq594iMsMFp
-         Nk+fet9+pm2bZQ+dqzRKzTuX7wLibmoQsGl3VDBctvvKk6PkyV07ATWdIVGHDNUOBbrQ
-         HUWQ2Gt39oi9KiQPUYoQuiBUWqb+Wg67VI/X+SLRyyWYnwb5iPDCIFnFBTGlamenPLUL
-         Bp3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ooE0frV4e4BZQ6DGEscixRebQUga5YpWwjUvIc6rw+Y=;
-        b=bJ/fwyARdiCUu4OEJMv+Tgehymj/Zmn/y981wr4CSWA41tPRDtgBpLmMZorkxcQwg8
-         /mDYQlyT3nsRrZegjiCiAk8HXmXFgHBOqAHV9OkCKAsZz2SoI2rhW82aqLKCxYE/O0+a
-         NFoinWch/bEkaoQdQ+YKJGvLzfVq/x72zKylXTU+mYK1eCkhzUpTXMTm1XC4ezSvR1et
-         GN8PVrmdFQew0v6XJjIWdp88KgsnhyQ+nzHSedncOP/L4Bl3iABRZwbXb2aLlRmbEG9S
-         IDz7mysmZlYJs+NaHWmQg0jCvgWrh1SPhs4gWezAAOUCPkR4kKU43fpSNLAYm4o5dhaV
-         C+MA==
-X-Gm-Message-State: AOAM5305REtpNslt6O7fL7lHx2DLS/06KgGD4nEypDS6Lmw+EkT9eBOD
-        VlDoEqJ2fMeGZQKhe7XY6x9idg==
-X-Google-Smtp-Source: ABdhPJz5Ng9itOBnsl552VMbygxMj+ALRUt00flYD/Ata/pKssfyII0VKg5l3IqzzlG81iJ3QrLDTQ==
-X-Received: by 2002:a05:620a:708:: with SMTP id 8mr13250683qkc.316.1636727679885;
-        Fri, 12 Nov 2021 06:34:39 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v125sm2816321qki.63.2021.11.12.06.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 06:34:39 -0800 (PST)
-Date:   Fri, 12 Nov 2021 09:34:38 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3 RFC] fsperf: enhancements supporting read policy
- benchmark
-Message-ID: <YY57fpO88z4I0irk@localhost.localdomain>
-References: <cover.1636678032.git.anand.jain@oracle.com>
+        Fri, 12 Nov 2021 09:37:57 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 454F721981;
+        Fri, 12 Nov 2021 14:35:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1636727706;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aSrrXX1B1TvaR3l7Q2fbXy9bSv2ciIyw7ukigrC/diw=;
+        b=3JsJGWimxI6GMtLPNy6VINl6b2aSEstJjk+chBuGE4P38Ox56a71UQnDbc0eakLx7DgwuN
+        nh5hHzCyiNunrADB303c/v0uOffM2AItdGyanSRQXAyzBENP+EbuBcBZ+0C8+a8o/KHm+R
+        FTSk4hIznt4v+CJ6dX9TFIPGBa7IzvU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1636727706;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aSrrXX1B1TvaR3l7Q2fbXy9bSv2ciIyw7ukigrC/diw=;
+        b=jBpDNOLobwNqBJPwON6afMyrNdS5N/0/leZAJd9CQEuILddL4S5OREVTu4Lnc21HtbXicI
+        TSoAufJD7KJ9AsDA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 3B037A3B8E;
+        Fri, 12 Nov 2021 14:35:06 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id EB02BDA781; Fri, 12 Nov 2021 15:35:04 +0100 (CET)
+Date:   Fri, 12 Nov 2021 15:35:04 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Omar Sandoval <osandov@fb.com>
+Subject: Re: [PATCH] btrfs: fix a out-of-boundary access for
+ copy_compressed_data_to_page()
+Message-ID: <20211112143504.GI28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Omar Sandoval <osandov@fb.com>
+References: <20211112022253.20576-1-wqu@suse.com>
+ <YY3qvDNC6S/YVrkZ@localhost.localdomain>
+ <5424db53-a734-6fcf-6b1f-e2e11b50e624@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1636678032.git.anand.jain@oracle.com>
+In-Reply-To: <5424db53-a734-6fcf-6b1f-e2e11b50e624@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 04:04:36PM +0800, Anand Jain wrote:
-> I am sending this early to seek feedback on the best way to benchmark 
-> more than one read policy.
+On Fri, Nov 12, 2021 at 12:41:37PM +0800, Qu Wenruo wrote:
 > 
-> Patch 1,2 adds helpers to support a new setup.
-> Patch 3 adds a generic readonly dio fio benchmark script.
 > 
+> On 2021/11/12 12:17, Josef Bacik wrote:
+> > On Fri, Nov 12, 2021 at 10:22:53AM +0800, Qu Wenruo wrote:
+> >> [BUG]
+> >> The following script can cause btrfs to crash:
+> >>
+> >>   mount -o compress-force=lzo $DEV /mnt
+> >>   dd if=/dev/urandom of=/mnt/foo bs=4k count=1
+> >>   sync
+> >>
+> >> The calltrace looks like this:
+> >>
+> >>   general protection fault, probably for non-canonical address 0xe04b37fccce3b000: 0000 [#1] PREEMPT SMP NOPTI
+> >>   CPU: 5 PID: 164 Comm: kworker/u20:3 Not tainted 5.15.0-rc7-custom+ #4
+> >>   Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+> >>   RIP: 0010:__memcpy+0x12/0x20
+> >>   Call Trace:
+> >>    lzo_compress_pages+0x236/0x540 [btrfs]
+> >>    btrfs_compress_pages+0xaa/0xf0 [btrfs]
+> >>    compress_file_range+0x431/0x8e0 [btrfs]
+> >>    async_cow_start+0x12/0x30 [btrfs]
+> >>    btrfs_work_helper+0xf6/0x3e0 [btrfs]
+> >>    process_one_work+0x294/0x5d0
+> >>    worker_thread+0x55/0x3c0
+> >>    kthread+0x140/0x170
+> >>    ret_from_fork+0x22/0x30
+> >>   ---[ end trace 63c3c0f131e61982 ]---
+> >>
+> >> [CAUSE]
+> >> In lzo_compress_pages(), parameter @out_pages is not only an output
+> >> parameter (for the compressed pages), but also an input parameter, for
+> >> the maximum amount of pages we can utilize.
+> >>
+> >> In commit d4088803f511 ("btrfs: subpage: make lzo_compress_pages()
+> >> compatible"), the refactor doesn't take @out_pages as an input, thus
+> >> completely ignoring the limit.
+> >>
+> >> And for compress-force case, we could hit incompressible data that
+> >> compressed size would go beyond the page limit, and cause above crash.
+> >>
+> >> [FIX]
+> >> Save @out_pages as @max_nr_page, and pass it to lzo_compress_pages(),
+> >> and check if we're beyond the limit before accessing the pages.
+> >>
+> >> Reported-by: Omar Sandoval <osandov@fb.com>
+> >> Fixes: d4088803f511 ("btrfs: subpage: make lzo_compress_pages() compatible")
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >>   fs/btrfs/lzo.c | 12 +++++++++++-
+> >>   1 file changed, 11 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+> >> index 00cffc183ec0..f410ceabcdbd 100644
+> >> --- a/fs/btrfs/lzo.c
+> >> +++ b/fs/btrfs/lzo.c
+> >> @@ -125,6 +125,7 @@ static inline size_t read_compress_length(const char *buf)
+> >>   static int copy_compressed_data_to_page(char *compressed_data,
+> >>   					size_t compressed_size,
+> >>   					struct page **out_pages,
+> >> +					unsigned long max_nr_page,
+> >
+> > If you want to do const down below you should use const here probably?  Thanks,
+> 
+> Right, max_nr_page should also be const.
 
-This looks reasonable to me, the only thing is I'd want a way for the setup()
-part of the test to see that we don't have readpolicy support and simply skip.
-Right now there's no mechanism for skipping a test, so add that and it'll be
-good.
-
-Also you can just do PR's through github if you want.  Thanks,
-
-Josef
+const for non-pointer parameters does not make much sense, it only
+prevents reuse of the variable inside the function.
