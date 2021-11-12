@@ -2,210 +2,114 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D7544E193
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 06:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E410E44E1EC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Nov 2021 07:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhKLFgZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Nov 2021 00:36:25 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:49602 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhKLFgY (ORCPT
+        id S230464AbhKLGco (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Nov 2021 01:32:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhKLGcm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Nov 2021 00:36:24 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1976421B1F
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 05:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636695213; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=sWUko77XU88dL5OkkjPbu/65596NVZfR12LlAoKWGEo=;
-        b=BrVXAT9s0PZgCEqkz1+jx0xMc+vaj9gNJ6gSVv86imFTSkVbYbjJtRVdEzJ3V79yeZIbn4
-        /X5KBG56edA8CiKbOAKhE1IEOB6CmPnCxVCmEqckdtKZnRgwCIDwQo7LhTU88sSr+TuAH8
-        kS72X6oRRgDEVuhX2N5ta2Dc4sDTO9A=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5F0D413E3B
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 05:33:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vq9oCaz8jWEWTAAAMHmgww
-        (envelope-from <wqu@suse.com>)
-        for <linux-btrfs@vger.kernel.org>; Fri, 12 Nov 2021 05:33:32 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: remove unnecessary @nr_written parameters
-Date:   Fri, 12 Nov 2021 13:33:14 +0800
-Message-Id: <20211112053314.30009-1-wqu@suse.com>
-X-Mailer: git-send-email 2.33.1
+        Fri, 12 Nov 2021 01:32:42 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04FCC061766
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Nov 2021 22:29:52 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id x64so7699174pfd.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Nov 2021 22:29:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=kQ/2px0QzjBgnki15W2bL0Ki3/d1RDjdoesHFT1zh5I=;
+        b=q1lvanPjZVTSd0XApCySy13AdOO4IAmMdaTFtX118crY4ziRmixiHJAROfpCN0RKVZ
+         HrAQOALfhCqUfqV3VmemrXN24bi/tAXy4jpBApngCvAMyg8a2RNd1oJYa3tQIR6iE7I8
+         vFxp6HhBGWwPw+2EcptmV+d/Lm3oCjPccZqKX1aOfHbkxo+cFvtdHA2T0fcnSuXpjivf
+         DHVlwP5Iim4yukq08YgZDN/JQ0jm8FniJc0TUrhLA7hQsC1EUHxXSJAEpIJShG5OPBBT
+         YLHFqNvFEsanGOeu/jYGqWbV/vS+BE4er80FmFCEN50HpugGok6nFNbzxiU5/JY0MxiV
+         A2Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=kQ/2px0QzjBgnki15W2bL0Ki3/d1RDjdoesHFT1zh5I=;
+        b=pcai70iRoYBXDHxdQc3ZQK+kZ+JDOqX9Ph0c3LuLCL15OuPY9nz8QRTnm/fb6gLmjn
+         bpBi70qoGyFi6yVNZHRCTiJwaWrpxM8wXt5SBrY1gepWsN/2WlIVgYfP4ALpMUSI1NDu
+         +3Ia8P9LncdXZ8pWB2RCyqFBom0uerIEqw2xiFyssGlOGDiTKuWLhUEksp+q/ZgfzCrw
+         wrw1JkVYQ2af55/5jcjTlrgPf+Vg14qkEBDNQ9D8MBwog+xkyZpj+QJMB1lfq6ANv08x
+         kF6iFrh+PM0sina6fjkZU0Py3l0ppLyeSJR1Zq0faUSjxyg8I9O0nykUYG1c4/LiiDES
+         v5ug==
+X-Gm-Message-State: AOAM533FjPxCHjmKJ1NShh40qBtLhBdPFtJ8prfE5H2Z3VTlB70yILcN
+        31DzSHfoxTwI8Tl4X/xg/7mFJnGFGCfMPhjRcrw=
+X-Google-Smtp-Source: ABdhPJxd8Ga6z9+wtRZSVjpTWCMlq4ttsqraK8QF9yC5mCJ1nIa1OD8mxk9BqeFuNmgpD4SGGfpY84dP9cyRvvzy4pU=
+X-Received: by 2002:a05:6a00:b8b:b0:481:16a1:abff with SMTP id
+ g11-20020a056a000b8b00b0048116a1abffmr11579415pfj.77.1636698592282; Thu, 11
+ Nov 2021 22:29:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6a10:fda2:0:0:0:0 with HTTP; Thu, 11 Nov 2021 22:29:51
+ -0800 (PST)
+Reply-To: cristinacampeell@outlook.com
+From:   "Mrs. Cristina Campbell" <look6532@gmail.com>
+Date:   Fri, 12 Nov 2021 06:29:51 +0000
+Message-ID: <CAJ3bDB5E=o_TY7LYZZ_X7yW1pXjy0CqY01jm1ForOSSQYEgJJA@mail.gmail.com>
+Subject: =?UTF-8?B?64KY66W8IOuPhOyZgOykhCDsiJgg7J6I64uIPw==?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We use @nr_written to record how many pages have been started by
-btrfs_run_delalloc_range().
-
-Currently there are only two cases that would populate @nr_written:
-
-- Inline extent creation
-- Compressed write
-
-But both cases will also set @page_started to one.
-
-In fact, in writepage_delalloc() we have the following code, showing
-that @nr_written is really only utilized for above two cases:
-
-	/* did the fill delalloc function already unlock and start
-	 * the IO?
-	 */
-	if (page_started) {
-		/*
-		 * we've unlocked the page, so we can't update
-		 * the mapping's writeback index, just update
-		 * nr_to_write.
-		 */
-		wbc->nr_to_write -= nr_written;
-		return 1;
-	}
-
-But for such cases, writepage_delalloc() will return 1, and exit
-__extent_writepage() without going through __extent_writepage_io().
-
-Thus this means, inside __extent_writepage_io(), we always get
-@nr_written as 0.
-
-So this patch is going to remove the unnecessary parameter from the
-following functions:
-
-- writepage_delalloc()
-
-  As @nr_written passed in is always the initial value 0.
-
-  Although inside that function, we still need a local @nr_written
-  to update wbc->nr_to_write.
-
-- __extent_writepage_io()
-
-  As explained above, @nr_written passed in can only be 0.
-
-  This also means we can remove one update_nr_written() call.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Rebased to lastest misc-next
-- Small comment update for old comments
----
- fs/btrfs/extent_io.c | 24 ++++++++++--------------
- 1 file changed, 10 insertions(+), 14 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 4e03a6d3aa32..47bbc2f79273 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3785,12 +3785,13 @@ static void update_nr_written(struct writeback_control *wbc,
-  * This returns < 0 if there were errors (page still locked)
-  */
- static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
--		struct page *page, struct writeback_control *wbc,
--		unsigned long *nr_written)
-+		struct page *page, struct writeback_control *wbc)
- {
- 	const u64 page_end = page_offset(page) + PAGE_SIZE - 1;
- 	u64 delalloc_start = page_offset(page);
- 	u64 delalloc_to_write = 0;
-+	/* How many pages are started by btrfs_run_delalloc_range() */
-+	unsigned long nr_written = 0;
- 	int ret;
- 	int page_started = 0;
- 
-@@ -3806,7 +3807,7 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 			continue;
- 		}
- 		ret = btrfs_run_delalloc_range(inode, page, delalloc_start,
--				delalloc_end, &page_started, nr_written, wbc);
-+				delalloc_end, &page_started, &nr_written, wbc);
- 		if (ret) {
- 			btrfs_page_set_error(inode->root->fs_info, page,
- 					     page_offset(page), PAGE_SIZE);
-@@ -3829,16 +3830,14 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 					 thresh);
- 	}
- 
--	/* did the fill delalloc function already unlock and start
--	 * the IO?
--	 */
-+	/* Did btrfs_run_dealloc_range() already unlock and start the IO? */
- 	if (page_started) {
- 		/*
--		 * we've unlocked the page, so we can't update
-+		 * We've unlocked the page, so we can't update
- 		 * the mapping's writeback index, just update
- 		 * nr_to_write.
- 		 */
--		wbc->nr_to_write -= *nr_written;
-+		wbc->nr_to_write -= nr_written;
- 		return 1;
- 	}
- 
-@@ -3910,7 +3909,6 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 				 struct writeback_control *wbc,
- 				 struct extent_page_data *epd,
- 				 loff_t i_size,
--				 unsigned long nr_written,
- 				 int *nr_ret)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-@@ -3929,7 +3927,6 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 	if (ret) {
- 		/* Fixup worker will requeue */
- 		redirty_page_for_writepage(wbc, page);
--		update_nr_written(wbc, nr_written);
- 		unlock_page(page);
- 		return 1;
- 	}
-@@ -3938,7 +3935,7 @@ static noinline_for_stack int __extent_writepage_io(struct btrfs_inode *inode,
- 	 * we don't want to touch the inode after unlocking the page,
- 	 * so we update the mapping writeback index now
- 	 */
--	update_nr_written(wbc, nr_written + 1);
-+	update_nr_written(wbc, 1);
- 
- 	while (cur <= end) {
- 		u64 disk_bytenr;
-@@ -4076,7 +4073,6 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 	size_t pg_offset;
- 	loff_t i_size = i_size_read(inode);
- 	unsigned long end_index = i_size >> PAGE_SHIFT;
--	unsigned long nr_written = 0;
- 
- 	trace___extent_writepage(page, inode, wbc);
- 
-@@ -4105,7 +4101,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 	}
- 
- 	if (!epd->extent_locked) {
--		ret = writepage_delalloc(BTRFS_I(inode), page, wbc, &nr_written);
-+		ret = writepage_delalloc(BTRFS_I(inode), page, wbc);
- 		if (ret == 1)
- 			return 0;
- 		if (ret)
-@@ -4113,7 +4109,7 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 	}
- 
- 	ret = __extent_writepage_io(BTRFS_I(inode), page, wbc, epd, i_size,
--				    nr_written, &nr);
-+				    &nr);
- 	if (ret == 1)
- 		return 0;
- 
--- 
-2.33.1
-
+7Lmc7JWg7ZWY64qULA0KDQrsnbTqsoPsnYAg64u57Iug7J20IOuwm+ydgCDqsIDsnqUg7KSR7JqU
+7ZWcIOydtOuplOydvCDspJEg7ZWY64KY7J28IOyImCDsnojsnLzrr4DroZwg7LKc7LKc7Z6IIOyj
+vOydmCDquYrqsowg7J297Jy87Iut7Iuc7JikLuyggOuKlCBDcmlzdGluYQ0KQ2FtcGJlbGwg67aA
+7J247J6F64uI64ukLiDsoIDripQg64qm7J2AIEVkd2FyZCBDYW1wYmVsbOqzvCDqsrDtmLztlojs
+irXri4jri6QuIOq3uOuKlCBTaGVsbCBQZXRyb2xldW0NCkRldmVsb3BtZW50IENvbXBhbnkgTG9u
+ZG9u7JeQ7IScIOydvO2WiOycvOupsCDrmJDtlZwg64+Z7JWE7Iuc7JWEIOyngOyXreydmCDrhbjr
+oKjtlZwg6rOE7JW97J6QLiDqt7jripQgMjAwM+uFhCA37JuUIDMx7J28DQrsm5TsmpTsnbwg7YyM
+66as7JeQ7IScIOyCrOunne2WiOyKteuLiOuLpC4g7Jqw66as64qUIOyVhOydtCDsl4bsnbQgN+uF
+hCDrj5nslYgg6rKw7Zi87ZaI7Iq164uI64ukLg0KDQrri7nsi6DsnbQg7J20IOq4gOydhCDsnb3s
+nLzrqbTshJwg64KY64qUIOuLueyLoOydtCDrgpjrpbwg67aI7IyN7Z6IIOyXrOq4sOyngCDslYrq
+uLDrpbwg67CU656N64uI64ukLiDsmZzrg5DtlZjrqbQg64KY64qUIOuqqOuToCDsgqzrnozsnbQg
+7Ja47KCg6rCA64qUIOyjveydhCDqsoPsnbTrnbzqs6ANCuuvv+q4sCDrlYzrrLjsnoXri4jri6Qu
+IOuCmOuKlCDsi53rj4TslZQg7KeE64uo7J2EIOuwm+yVmOqzoCDsnZjsgqzripQg64K0IOuzteye
+oe2VnCDqsbTqsJUg66y47KCc66GcIOyduO2VtCDsmKTrnpgg6rCA7KeAIOuqu+2VoCDqsoPsnbTr
+nbzqs6Ag66eQ7ZaI7Iq164uI64ukLg0KDQrtlZjrgpjri5jqu5jshJwg7KCA7JeQ6rKMIOyekOu5
+hOulvCDrsqDtkbjsi5zqs6Ag7KCcIOyYge2YvOydhCDrsJvslYTso7zsi5zquLDrpbwg67CU6528
+64qUIOuniOydjOyXkCDsnpDshKDri6jssrQv6rWQ7ZqML+u2iOq1kC/rqqjsiqTtgawv7Ja066i4
+64uIIOyXhuuKlCDslYTquLAv7IaM7Jm46rOE7Li1DQrrsI8g6rO867aA7JeQ6rKMIOyekOyEoOyd
+hCDtlZjquLDroZwg7ZaI7Iq164uI64ukLiDrgpjripQg7KO96riwIOyghOyXkCDsp4Dsg4Hsl5Ds
+hJwg7ZWc64ukLiDsp4DquIjquYzsp4Ag64KY64qUIOyKpOy9lO2LgOuenOuTnCwg7Juo7J287KaI
+LCDrhKTtjJQsIO2VgOuegOuTnCwNCuu4jOudvOyniOyXkCDsnojripQg66qH66qHIOyekOyEoOuL
+qOyytOyXkCDrj4jsnYQg6riw67aA7ZaI7Iq164uI64ukLiDsnbTsoJwg6rG06rCV7J20IOuEiOus
+tCDrgpjruaDsoLjshJwg642UIOydtOyDgSDtmLzsnpDshJwg7ZWgIOyImCDsl4bsirXri4jri6Qu
+DQoNCu2VnOuyiOydgCDqsIDsobHrk6Tsl5Dqsowg64K0IOqzhOyijCDspJEg7ZWY64KY66W8IO2P
+kOyHhO2VmOqzoCDqsbDquLDsl5Ag7J6I64qUIOuPiOydhCDspJHqta0sIOyalOultOuLqCwg64+F
+7J28LCDtlZzqta0sIOydvOuzuOydmCDsnpDshKAg64uo7LK07JeQIOuCmOuIhOyWtOuLrOudvOqz
+oA0K7JqU7LKt7ZaI7KeA66eMIOq3uOuTpOydgCDqsbDrtoDtlZjqs6Ag64+I7J2EIO2YvOyekCDr
+s7TqtIDtlojsirXri4jri6QuIOuCtOqwgCDqt7jrk6Tsl5Dqsowg64Ko6rKo65GUIOqyg+qzvCDr
+i6TtiKzsp4Ag7JWK64qUIOqygyDqsJnsnLzri4gg642UIOydtOyDgSDqt7jrk6TsnYQNCuuvv+yc
+vOyLreyLnOyYpC4g7JWE66y064+EIOuqqOultOuKlCDrgrQg66eI7KeA66eJIOuPiOydgCA2MDDr
+p4wg66+46rWtIOuLrOufrCgkNiwwMDAsMDAwLjAwKeudvOuKlCDqsbDrjIDtlZwg7ZiE6riIIOyY
+iOy5mOq4iOycvOuhnCwg7J20DQrquLDquIjsnYQg7JiI7LmY7ZWcIO2DnOq1rSDsnYDtlonsl5Ag
+7J6I7Iq164uI64ukLiDsnbQg6riw6riI7J2EIOyekOyEoCDtlITroZzqt7jrnqjsl5Ag7IKs7Jqp
+7ZWY6rOgIOuLueyLoOydtCDsp4Tsi6TtlZjquLDrp4wg7ZWY64uk66m0IOuLueyLoOydmCDrgpjr
+nbzsl5DshJwg7J2466WY66W8DQrsp4Dsm5DtlZjquLDrpbwg67CU656N64uI64ukLg0KDQrrgpjr
+ipQg7J20IOuPiOydhCDsg4Hsho3rsJvsnYQg7J6Q7Iud7J20IOyXhuq4sCDrlYzrrLjsl5Ag7J20
+IOqysOygleydhCDrgrTroLjsirXri4jri6QuIOyjveydjOydtCDrkZDroLXsp4Ag7JWK7Jy866+A
+66GcIOyWtOuUlOuhnCDqsIDripTsp4Ag7JWV64uI64ukLiDrgrTqsIAg7KO864uY7J2YDQrtkojs
+l5Ag7JWI6ri4IOqyg+ydhCDslZXri4jri6QuIOq3gO2VmOydmCDtmozsi6DsnYQg67Cb64qUIOym
+ieyLnCDqt4DtlZjsl5Dqsowg7J2A7ZaJIOyXsOudveyymOulvCDsoJzqs7XtlZjqs6Ag6reA7ZWY
+6rCAIOq3gO2VmOydmCDqta3qsIDsl5DshJwg7J20IOyekOyEoCDtlITroZzqt7jrnqjsnYQNCuym
+ieyLnCDsi5zsnpHtlaAg7IiYIOyeiOuPhOuhnSDsnbQg6riw6riI7J2YIOy1nOy0iCDsiJjtmJzs
+npDroZzshJwg6raM7ZWc7J2EIOu2gOyXrO2VmOuKlCDsirnsnbjshJzrpbwg67Cc7ZaJ7ZWY6rKg
+7Iq164uI64ukLg0KDQrrgqjsnYQg7JyE7ZW0IOyCsCDsgrbrp4zsnbQg6rCA7LmYIOyeiOuKlCDs
+grbsnbTri6QuIOuCmOuKlCDri7nsi6DsnbQg64KY66W8IOychO2VtCDtla3sg4Eg6riw64+E7ZW0
+IOyjvOq4sOulvCDrsJTrno3ri4jri6QuIOuLueyLoOydmCDsnZHri7XsnbQg64qm7Ja07KeA66m0
+IOqwmeydgA0K66qp7KCB7J2EIOychO2VtCDri6Trpbgg7IKs656M7J2EIOyGjOyLse2VoCDsl6zs
+p4DqsIAg7IOd6ri4IOqyg+yeheuLiOuLpC4g6rSA7Ius7J20IOyXhuycvOyLnOuLpOuptCDsl7Dr
+nb3rk5zroKQg7KOE7Iah7ZWp64uI64ukLiDrgrQg6rCc7J24DQrsnbTrqZTsnbwoY3Jpc3RpbmFj
+YW1wZWVsbEBvdXRsb29rLmNvbSnroZwg7Jew65297ZWY6rGw64KYIO2ajOyLoO2VoCDsiJgg7J6I
+7Iq164uI64ukLg0KDQrqsJDsgqwg7ZW07JqULA0K7KeE7Ius7Jy866GcLA0K7YGs66as7Iqk7Yuw
+64KYIOy6oOuyqCDrtoDsnbgNCuydtOuplOydvDsgY3Jpc3RpbmFjYW1wZWVsbEBvdXRsb29rLmNv
+bQ0K
