@@ -2,98 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBE844FA2A
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Nov 2021 20:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B8344FB99
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Nov 2021 21:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236184AbhKNTiG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Nov 2021 14:38:06 -0500
-Received: from mail.mailmag.net ([5.135.159.181]:37830 "EHLO mail.mailmag.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233136AbhKNTiC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Nov 2021 14:38:02 -0500
-Received: from authenticated-user (mail.mailmag.net [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.mailmag.net (Postfix) with ESMTPSA id 93493EC5AC2;
-        Sun, 14 Nov 2021 10:35:02 -0900 (AKST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net; s=mail;
-        t=1636918503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hgs+AWiGP3k2fZfv4JHL5tOzj2rlkNmk4HUsgvuVIUA=;
-        b=SNB+1aqkT0voL2k4rOfaVgH4yo5X2h8hcXNAWAeYbBV61LZ9Ozo+w+AINbnEcOmuUYT9VM
-        NfX2mj/4ubTb6qGCG9LvEgtLKtbHVNo/8YwSYcjjpdbs7Nr2fk6jD1b8NuVPy9y+eIxR9F
-        /A0D+HAspS8yuU3wkVcpozUI3HwyJ0k=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Joshua Villwock <joshua@mailmag.net>
-Mime-Version: 1.0
-Subject: Re: Large BTRFS array suddenly says 53TiB Free, usage inconsistent
-Date:   Sun, 14 Nov 2021 11:34:58 -0800
-Message-Id: <17249A9D-D368-4978-BB66-930EC8FE30AC@mailmag.net>
-References: <77924dab-1bc9-ce56-056f-da795998365c@applied-asynchrony.com>
-Cc:     =?utf-8?Q?Max_Splieth=C3=B6ver?= <max@spliethoever.de>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-In-Reply-To: <77924dab-1bc9-ce56-056f-da795998365c@applied-asynchrony.com>
-To:     =?utf-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mailmag.net;
-        s=mail; t=1636918503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hgs+AWiGP3k2fZfv4JHL5tOzj2rlkNmk4HUsgvuVIUA=;
-        b=sfcPT7LYqVvreVcDAOuBQA5+gp6tFCffkRic1WmY/AuJrWYLmlhQCVk4QkgI9Y1w6zlm8s
-        QTuspUlQTonWWPecJnnAdBZU/MoUwm9KN6jnYg32JasfIvNmtFhZ8VobsAZigmkJ+cNuQ2
-        qg4iZKIJYaGwDmzlh3nnx0LIKxDOM3E=
-ARC-Seal: i=1; s=mail; d=mailmag.net; t=1636918503; a=rsa-sha256; cv=none;
-        b=uF+Nx9VMy6F2XWn6TAvyv2qB6pMV7DoF4OYk3zKFKHq92Bm8P9wETB7Eip5JFjl2hLlzLh
-        L3l12NOM+76E6l1ZEDFGwOe6rr2Gzefo8Fk5BSk+sEaVr9EnTSFDmZw+F25VRmS3/+gjJo
-        QdAxvOy6Tyej7N2JNb+Osw16/HJ4+eM=
-ARC-Authentication-Results: i=1;
-        mail.mailmag.net;
-        auth=pass smtp.mailfrom=joshua@mailmag.net
+        id S236293AbhKNUhA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Nov 2021 15:37:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236232AbhKNUgv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 14 Nov 2021 15:36:51 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E61C061746;
+        Sun, 14 Nov 2021 12:33:53 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id v138so40646648ybb.8;
+        Sun, 14 Nov 2021 12:33:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iACvn6MK1LO2lB6vFyhNu2ydwbSkNnulX+sOko7Bz0A=;
+        b=Myh33ShzDDC1kEzySEO8tnbMKLfdT2xBxjDtl0FaBbh9V3MCdME75Vo9TsP444FIBq
+         YtbumvvbtyXIJsc/TJ6NlhTXCPlA1KbFjfswCre2vNxOo/vnIjJC+mOTNZckIugq2VNs
+         M60szxnYCTS2nS/91bGQYs3nPvi4JuSzeUr993YaE9CwJgI+aMOYnbBJqs/GdKchIh8y
+         YVua+Dt4wah3xkvdNrocRLASZvocD3eJoS+rat/04wMDWXAT86Fz7p7S2XcuRq/dKiZx
+         PUNO73A1PVqARtgd7ZgKhtZuqZDH7tl3h0C0YdE4T1vnoTR/kDVa/45/EVMYLjbt5ZA7
+         +v8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iACvn6MK1LO2lB6vFyhNu2ydwbSkNnulX+sOko7Bz0A=;
+        b=v8pvOK6qvWZYh5cqP2tBEVbr6V6xDQsAbLOXEaEglv+ZdTQLRpL3eKkipl4urkjgOX
+         IFZzotZLrWBPxFfJmnu7gPczU9yBQT7SVSBSQzNaOyBNwSQ5IlhDb+T4C9byYt/lCQfR
+         v9D8cGmZH4XjpCPLg6agRBtlJVaaPYxMzqmu+n1XHbmfu6u0T84xxyP6rM9OVkknwrpV
+         BmalIwjUl2suOJo0wb/3+bkZnHNWtHCT6SEiKEBK50veVKF+MRFRhFQxc50BuNBMCc3i
+         kOAIzznBFfqGMGqe7AdA1ADKjOFgum7o4w5GNmsKV/lGju5UMbRyVMLYGOu1GjeWe8cD
+         jDcQ==
+X-Gm-Message-State: AOAM530ehxWNkXaPaqZ7W8f65SmKoycnPUrYHV86A6338BdymW6pNrFP
+        jnCz//7kyZUWTACIKLDry+J7LFikadETZKc5xWo=
+X-Google-Smtp-Source: ABdhPJznee7TMd2ZMaYm26gmU6hWlIBtVQTHY+sIBtV7ExbmuuBQACj/pVfeuW3Q1PsDF/GuMSLuiksWeqv7DUEbLPI=
+X-Received: by 2002:a25:ad14:: with SMTP id y20mr34423278ybi.102.1636922032754;
+ Sun, 14 Nov 2021 12:33:52 -0800 (PST)
+MIME-Version: 1.0
+References: <20211109013058.22224-1-nickrterrell@gmail.com>
+ <CA+icZUVV+RfrW__qvT04Rigx1dTeDT4ah+KdAVhXWMab=13t_g@mail.gmail.com> <CAMuHMdWqBAwVnfuwmonT1hESB4P+EH0p0dtszdrZLJGxBbU2gw@mail.gmail.com>
+In-Reply-To: <CAMuHMdWqBAwVnfuwmonT1hESB4P+EH0p0dtszdrZLJGxBbU2gw@mail.gmail.com>
+From:   Nick Terrell <nickrterrell@gmail.com>
+Date:   Sun, 14 Nov 2021 12:33:41 -0800
+Message-ID: <CANr2DbfSu9RWv+c8jzj=6r0cRC-R0f_Z2v3gSkJm2dPR8MJi4A@mail.gmail.com>
+Subject: Re: [GIT PULL] zstd changes for v5.16
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
+        Petr Malat <oss@malat.biz>, Yann Collet <cyan@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        David Sterba <dsterba@suse.cz>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Felix Handte <felixh@fb.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Paul Jones <paul@pauljones.id.au>,
+        Tom Seewald <tseewald@gmail.com>,
+        Jean-Denis Girard <jd.girard@sysnux.pf>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sun, Nov 14, 2021 at 11:11 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> On Sat, Nov 13, 2021 at 10:12 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > On Tue, Nov 9, 2021 at 2:24 AM Nick Terrell <nickrterrell@gmail.com> wrote:
+> > > I am sending you a pull request to add myself as the maintainer of zstd and
+> > > update the zstd version in the kernel, which is now 4 years out of date,
+> > > to the latest zstd release. This includes bug fixes, much more extensive fuzzing,
+> > > and performance improvements. And generates the kernel zstd automatically
+> > > from upstream zstd, so it is easier to keep the zstd verison up to date, and we
+> > > don't fall so far out of date again.
+>
+> > is it possible to have an adapted version of your work for Linux
+> > v5.15.y which is a new kernel with LongTerm Support (see [1])?
+>
+> Let's wait a bit before porting this to stable...
+>
+> bloat-o-meter output for an atari_defconfig build with the old/new zstd
+> code (i.e. before/after commit e0c1b49f5b674cca ("lib: zstd: Upgrade to
+> latest upstream zstd version 1.4.10"):
+>
+> vmlinux:
+>
+>     add/remove: 96/28 grow/shrink: 28/29 up/down: 51766/-38162 (13604)
+>     CONFIG_ZSTD_DECOMPRESS=y due to CONFIG_RD_ZSTD=y (which is the default)
+>
+>     Not a small increase, but acceptable, I guess?
+>
+> lib/zstd/zstd_compress.ko:
+>
+>     CONFIG_ZSTD_COMPRESS=m
+>
+>     add/remove: 183/38 grow/shrink: 58/37 up/down: 346620/-51074 (295546)
+>     Function                                     old     new   delta
+>     ZSTD_compressBlock_btultra_dictMatchState       -   27802  +27802
+>     ZSTD_compressBlock_btopt_dictMatchState        -   27614  +27614
+>     ZSTD_compressBlock_doubleFast_dictMatchState       -   24420  +24420
+>     ZSTD_compressBlock_btultra_extDict             -   24376  +24376
+>     ZSTD_compressBlock_fast_dictMatchState         -   16712  +16712
+>     ZSTD_compressBlock_btultra2                    -   15432  +15432
+>     ZSTD_compressBlock_btopt_extDict            9052   24096  +15044
+>     ZSTD_initStats_ultra                           -   15040  +15040
+>     ZSTD_compressBlock_btultra                     -   14802  +14802
+>     ZSTD_compressBlock_doubleFast_extDict_generic    2432   12216   +9784
+>     ZSTD_compressBlock_doubleFast               8846   16342   +7496
+>     ZSTD_compressBlock_fast_extDict_generic     1254    8556   +7302
+>     ZSTD_compressBlock_btopt                    8826   15184   +6358
+>     ZSTD_compressBlock_fast                     3896    9532   +5636
+>     ZSTD_compressBlock_lazy2_extDict            6940   11578   +4638
+>     ZSTD_compressSuperBlock                        -    4440   +4440
+>     ZSTD_resetCCtx_internal                        -    3736   +3736
+>     ZSTD_HcFindBestMatch_dedicatedDictSearch_selectMLS.constprop
+> -    3706   +3706
+>     ...
+>
+>     An increase of 288 KiB?
+>     My first thought was bloat-a-meter doesn't handle modules correctly.
+>     So I enabled CONFIG_CRYPTO_ZSTD=y, which made CONFIG_ZSTD_COMPRESS=y,
+>     and the impact on vmlinux is:
+>
+>         add/remove: 288/0 grow/shrink: 5/0 up/down: 432712/0 (432712)
+>
+>     Whoops...
+>
+>     All of the top functions above just call ZSTD_compressBlock_opt_generic()
+>     with different parameters. Looks like the forced inlining
+>
+>         FORCE_INLINE_TEMPLATE size_t
+>         ZSTD_compressBlock_opt_generic(ZSTD_matchState_t* ms,
+>                                        seqStore_t* seqStore,
+>                                        U32 rep[ZSTD_REP_NUM],
+>                                  const void* src, size_t srcSize,
+>                                  const int optLevel,
+>                                  const ZSTD_dictMode_e dictMode)
+>
+>     is not that suitable for the kernel...
 
-> On Nov 14, 2021, at 11:16 AM, Holger Hoffst=C3=A4tte <holger@applied-async=
-hrony.com> wrote:
->=20
-> =EF=BB=BFOn 2021-11-14 19:45, Max Splieth=C3=B6ver wrote:
->> Hello everyone. I observed the exact same behavior on my 2x4TB RAID1.
->> After an update of my server that runs a btrfs RAID1 as data storage
->> (root fs runs on different, non-btrfs disks) and running `sudo btrfs
->> filesystem usage /tank`, I realized that the "Data ratio" and
->> "Metadata ratio" had dropped from 2.00 (before upgrade) to 1.00 and
->> that the Unallocated space on both drives jumped from ~550GB to
->> 2.10TB. I sporadically checked the files and everything seems to be
->> still there.
->> I would appreciate any help with explaining what happened and how to
->> possibly fix this issue. Below I provided some information. If
->> further outputs are required, please let me know.
->> ```
->> $ btrfs --version
->> btrfs-progs v5.15
->  ---------------^^
->=20
-> https://github.com/kdave/btrfs-progs/issues/422
->=20
-> Try to revert progs to 5.14.x.
->=20
-> cheers
-> Holger
+Thanks for pointing that out! Code size wasn't something I was measuring in my
+tests. I'll put up a patch to fix it.
 
-I can also report that I am on btrfs-progs v5.15 as well.
+That function is used by the highest compression level, so there
+should be little
+usage in the kernel. And what usage there is shouldn't be very speed sensitive.
+So we should just be able to disable inlining for that file.
 
-I can also confirm that btrfs-progs was updated precisely when the issue beg=
-an happening.
+Longer term, we have noticed upstream that we had some code size bloat in
+the compressor. We aggressively inlined to get better speed, but that tradeoff
+went too far in some cases. So we're working on reducing the code size of
+our largest translation units for the next release. All that to say
+that we can land
+a shorter term fix of disabling inlining for
+lib/zstd/compress/zstd_opt.c for the
+v5.16 kernel, and handle the problem thoroughly upstream in our next release.
 
-Thanks, I will test reverting later, and maybe provide more details on the g=
-ithub issue if that makes sense.
+Best,
+Nick Terrell
 
-=E2=80=94Joshua Villwock=
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
