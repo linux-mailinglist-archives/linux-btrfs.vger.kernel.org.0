@@ -2,307 +2,236 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1614544F7F3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Nov 2021 13:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6627344F9FC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Nov 2021 19:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233752AbhKNMyT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Nov 2021 07:54:19 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:35012 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbhKNMyQ (ORCPT
+        id S234526AbhKNStF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Nov 2021 13:49:05 -0500
+Received: from mail-4018.proton.ch ([185.70.40.18]:36261 "EHLO
+        mail-4018.proton.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231128AbhKNStC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Nov 2021 07:54:16 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AB9D82177B;
-        Sun, 14 Nov 2021 12:51:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636894279; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=m+hRe6illxHtoFOLvPSQJVrcOT9Os9gQlE36l4ZcsxE=;
-        b=HnigsK2zIuJWPPF6F03jyVnrbf8KxBFbMV/6nqQN31XjLKvzHUIh3HaGUmrDP4Yy/Nu4Ys
-        3vQxLHZqWRs3WUAUxLe8o2p68ymw7YIQUUf7SGyLVDNjI+3dx+A0XDd6/p/gpzs8wxqZ8y
-        DKSG6tE2VWHppZ/nsegOsrVokCovIYI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C93AC13AAE;
-        Sun, 14 Nov 2021 12:51:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9Ug/JEYGkWHUSQAAMHmgww
-        (envelope-from <wqu@suse.com>); Sun, 14 Nov 2021 12:51:18 +0000
-From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4] fstests: btrfs: make nospace_cache related test cases to work with latest v2 cache
-Date:   Sun, 14 Nov 2021 20:51:01 +0800
-Message-Id: <20211114125101.19751-1-wqu@suse.com>
-X-Mailer: git-send-email 2.33.1
+        Sun, 14 Nov 2021 13:49:02 -0500
+Date:   Sun, 14 Nov 2021 18:45:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spliethoever.de;
+        s=protonmail2; t=1636915565;
+        bh=fM/KEPhu0W+rZX6SxGOZqnxD3v7j9FvYQ9NawPIObN4=;
+        h=Date:To:From:Reply-To:Subject:In-Reply-To:References:From;
+        b=GAi2FqsurlKjZKVE9TixcnZY5V2I9xT4ANHAnS0lYcgUdAagAWK91cQJruT4s2T80
+         CjEyBzzL8omqAU701vLiBvP6zWqZ+yCF3etXnlCBCQvJFOmYvWgcQ32UFffd126eTF
+         /jmYo2DXRldDQmjLw3q8gBN1jYyu8khZPkwm6zXnAOj/kPzvklPx/vUvMsdXRX3K/L
+         rqUg5bFukKYRUFJGI6v9QyBBvmBW1lbsWOI207JsnXvUHeAmA2JyQkiFXtMF1aG0eq
+         c/fjc5u8tcjHGfIQhUKmLg9FhBmIzM67ZBnBcENLNjgro/7VQSZE9+U2d5Yz+sWyT8
+         iCVtb7ImUe2aA==
+To:     Joshua <joshua@mailmag.net>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+From:   =?utf-8?Q?Max_Splieth=C3=B6ver?= <max@spliethoever.de>
+Reply-To: =?utf-8?Q?Max_Splieth=C3=B6ver?= <max@spliethoever.de>
+Subject: Re: Large BTRFS array suddenly says 53TiB Free, usage inconsistent
+Message-ID: <b219d9de-ac42-1ec4-0fff-c8be2c36bfae@spliethoever.de>
+In-Reply-To: <2f87defb6b4c199de7ce0ba85ec6b690@mailmag.net>
+References: <2f87defb6b4c199de7ce0ba85ec6b690@mailmag.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In the coming btrfs-progs v5.15 release, mkfs.btrfs will change to use
-v2 cache by default.
+Hello everyone.
+I observed the exact same behavior on my 2x4TB RAID1. After an update of my=
+ server that runs a btrfs RAID1 as data storage (root fs runs on different,=
+ non-btrfs disks) and running `sudo btrfs filesystem usage /tank`, I realiz=
+ed that the "Data ratio" and "Metadata ratio" had dropped from 2.00 (before=
+ upgrade) to 1.00 and that the Unallocated space on both drives jumped from=
+ ~550GB to 2.10TB. I sporadically checked the files and everything seems to=
+ be still there.
 
-However nospace_cache mount option will not work with v2 cache, as it
-would make v2 cache out of sync with on-disk used space.
+I would appreciate any help with explaining what happened and how to possib=
+ly fix this issue. Below I provided some information. If further outputs ar=
+e required, please let me know.
 
-So mounting a btrfs with v2 cache using "nospace_cache" will make btrfs
-to reject the mount.
+```
+$ sudo btrfs filesystem usage /tank
+Overall:
+     Device size:                   7.28TiB
+     Device allocated:              3.07TiB
+     Device unallocated:            4.21TiB
+     Device missing:                  0.00B
+     Used:                          3.07TiB
+     Free (estimated):              4.21TiB      (min: 4.21TiB)
+     Free (statfs, df):           582.54GiB
+     Data ratio:                       1.00
+     Metadata ratio:                   1.00
+     Global reserve:              512.00MiB      (used: 0.00B)
+     Multiple profiles:                  no
 
-There are quite some test cases relying on nospace_cache to prevent v1
-cache to take up data space.
+Data,RAID1: Size:3.07TiB, Used:3.06TiB (99.95%)
+    /dev/sdd1       1.53TiB
+    /dev/sde1       1.53TiB
 
-For those test cases, we no longer need the "nospace_cache" mount option
-if the filesystem is already using v2 cache.
-Since v2 cache is using metadata space, it will no longer take up data
-space, thus no extra mount options for those test cases.
+Metadata,RAID1: Size:5.00GiB, Used:4.13GiB (82.59%)
+    /dev/sdd1       2.50GiB
+    /dev/sde1       2.50GiB
 
-By this, we can keep those existing tests to run without problem for
-both v1 and v2 cache.
+System,RAID1: Size:32.00MiB, Used:464.00KiB (1.42%)
+    /dev/sdd1      16.00MiB
+    /dev/sde1      16.00MiB
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Add _scratch_no_v1_cache_opt() function
-v3:
-- Add _require_btrfs_command for _scratch_no_v1_cache_opt()
-v4:
-- Remove _require_btrfs_command since it won't work in a sub-shell
-  And since "btrfs inspect dump-tree" should be included in all non-EOF
-  distros, there isn't much need for such requirement.
+Unallocated:
+    /dev/sdd1       2.10TiB
+    /dev/sde1       2.10TiB
+```
 
-- Rename the helper function to _btrfs_no_v1_cache_opt()
----
- common/btrfs    | 9 +++++++++
- tests/btrfs/102 | 2 +-
- tests/btrfs/140 | 5 ++---
- tests/btrfs/141 | 5 ++---
- tests/btrfs/142 | 5 ++---
- tests/btrfs/143 | 5 ++---
- tests/btrfs/151 | 4 ++--
- tests/btrfs/157 | 7 +++----
- tests/btrfs/158 | 7 +++----
- tests/btrfs/170 | 2 +-
- tests/btrfs/199 | 4 ++--
- tests/btrfs/215 | 2 +-
- 12 files changed, 30 insertions(+), 27 deletions(-)
 
-diff --git a/common/btrfs b/common/btrfs
-index 2eab4b29..3021815c 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -461,3 +461,12 @@ _require_btrfs_sysfs_fsid()
- 	test -f /sys/fs/btrfs/$fsid/devinfo/1/fsid ||\
- 		_notrun "Need btrfs sysfs fsid support"
- }
-+
-+_btrfs_no_v1_cache_opt()
-+{
-+	if $BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV |\
-+	   grep -q "FREE_SPACE_TREE"; then
-+		return
-+	fi
-+	echo -n "-onospace_cache"
-+}
-diff --git a/tests/btrfs/102 b/tests/btrfs/102
-index e5a1b068..2a384f3c 100755
---- a/tests/btrfs/102
-+++ b/tests/btrfs/102
-@@ -22,7 +22,7 @@ _scratch_mkfs >>$seqres.full 2>&1
- # Mount our filesystem without space caches enabled so that we do not get any
- # space used from the initial data block group that mkfs creates (space caches
- # used space from data block groups).
--_scratch_mount "-o nospace_cache"
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- # Need an fs with at least 2Gb to make sure mkfs.btrfs does not create an fs
- # using mixed block groups (used both for data and metadata). We really need
-diff --git a/tests/btrfs/140 b/tests/btrfs/140
-index 5a5f828c..66efc126 100755
---- a/tests/btrfs/140
-+++ b/tests/btrfs/140
-@@ -60,9 +60,8 @@ echo "step 1......mkfs.btrfs" >>$seqres.full
- mkfs_opts="-d raid1 -b 1G"
- _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
- 
--# -o nospace_cache makes sure data is written to the start position of the data
--# chunk
--_scratch_mount -o nospace_cache
-+# make sure data is written to the start position of the data chunk
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
- 	_filter_xfs_io_offset
-diff --git a/tests/btrfs/141 b/tests/btrfs/141
-index cf0979e9..ca164fdc 100755
---- a/tests/btrfs/141
-+++ b/tests/btrfs/141
-@@ -59,9 +59,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
- mkfs_opts="-d raid1 -b 1G"
- _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
- 
--# -o nospace_cache makes sure data is written to the start position of the data
--# chunk
--_scratch_mount -o nospace_cache
-+# make sure data is written to the start position of the data chunk
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
- 	_filter_xfs_io_offset
-diff --git a/tests/btrfs/142 b/tests/btrfs/142
-index 1318be0f..c88cace9 100755
---- a/tests/btrfs/142
-+++ b/tests/btrfs/142
-@@ -37,9 +37,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
- mkfs_opts="-d raid1 -b 1G"
- _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
- 
--# -o nospace_cache makes sure data is written to the start position of the data
--# chunk
--_scratch_mount -o nospace_cache,nodatasum
-+# make sure data is written to the start position of the data chunk
-+_scratch_mount -o nodatasum $(_btrfs_no_v1_cache_opt)
- 
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
- 	_filter_xfs_io_offset
-diff --git a/tests/btrfs/143 b/tests/btrfs/143
-index 6736dcad..8f086ee8 100755
---- a/tests/btrfs/143
-+++ b/tests/btrfs/143
-@@ -44,9 +44,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
- mkfs_opts="-d raid1 -b 1G"
- _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
- 
--# -o nospace_cache makes sure data is written to the start position of the data
--# chunk
--_scratch_mount -o nospace_cache,nodatasum
-+# make sure data is written to the start position of the data chunk
-+_scratch_mount -o nodatasum $(_btrfs_no_v1_cache_opt)
- 
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa -b 128K 0 128K" "$SCRATCH_MNT/foobar" |\
- 	_filter_xfs_io_offset
-diff --git a/tests/btrfs/151 b/tests/btrfs/151
-index 099e85cc..54cd0827 100755
---- a/tests/btrfs/151
-+++ b/tests/btrfs/151
-@@ -31,8 +31,8 @@ _scratch_dev_pool_get 3
- # create raid1 for data
- _scratch_pool_mkfs "-d raid1 -b 1G" >> $seqres.full 2>&1
- 
--# we need an empty data chunk, so nospace_cache is required.
--_scratch_mount -onospace_cache
-+# we need an empty data chunk, so $(_btrfs_no_v1_cache_opt) is required.
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- # if data chunk is empty, 'btrfs device remove' can change raid1 to
- # single.
-diff --git a/tests/btrfs/157 b/tests/btrfs/157
-index 0cfe3ce5..ae56f3e1 100755
---- a/tests/btrfs/157
-+++ b/tests/btrfs/157
-@@ -64,9 +64,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
- mkfs_opts="-d raid6 -b 1G"
- _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
- 
--# -o nospace_cache makes sure data is written to the start position of the data
--# chunk
--_scratch_mount -o nospace_cache
-+# make sure data is written to the start position of the data chunk
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- # [0,64K) is written to stripe 0 and [64K, 128K) is written to stripe 1
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa 0 128K" -c "fsync" \
-@@ -94,7 +93,7 @@ $XFS_IO_PROG -f -d -c "pwrite -S 0xbb $phy1 64K" $devpath1 > /dev/null
- 
- # step 3: read foobar to repair the bitrot
- echo "step 3......repair the bitrot" >> $seqres.full
--_scratch_mount -o nospace_cache
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- # read the 2nd stripe, i.e. [64K, 128K), to trigger repair
- od -x -j 64K $SCRATCH_MNT/foobar
-diff --git a/tests/btrfs/158 b/tests/btrfs/158
-index ad374eba..aa85835a 100755
---- a/tests/btrfs/158
-+++ b/tests/btrfs/158
-@@ -56,9 +56,8 @@ _check_minimal_fs_size $(( 1024 * 1024 * 1024 ))
- mkfs_opts="-d raid6 -b 1G"
- _scratch_pool_mkfs $mkfs_opts >>$seqres.full 2>&1
- 
--# -o nospace_cache makes sure data is written to the start position of the data
--# chunk
--_scratch_mount -o nospace_cache
-+# make sure data is written to the start position of the data chunk
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- # [0,64K) is written to stripe 0 and [64K, 128K) is written to stripe 1
- $XFS_IO_PROG -f -d -c "pwrite -S 0xaa 0 128K" -c "fsync" \
-@@ -85,7 +84,7 @@ $XFS_IO_PROG -f -d -c "pwrite -S 0xbb $phy1 64K" $devpath1 > /dev/null
- 
- # step 3: scrub filesystem to repair the bitrot
- echo "step 3......repair the bitrot" >> $seqres.full
--_scratch_mount -o nospace_cache
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- $BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >> $seqres.full 2>&1
- 
-diff --git a/tests/btrfs/170 b/tests/btrfs/170
-index 15382eb3..8700be07 100755
---- a/tests/btrfs/170
-+++ b/tests/btrfs/170
-@@ -29,7 +29,7 @@ _scratch_mkfs_sized $fs_size >>$seqres.full 2>&1
- 
- # Mount without space cache so that we can precisely fill all data space and
- # unallocated space later (space cache v1 uses data block groups).
--_scratch_mount "-o nospace_cache"
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- # Create our test file and allocate 1826.25Mb of space for it.
- # This will exhaust the existing data block group and all unallocated space on
-diff --git a/tests/btrfs/199 b/tests/btrfs/199
-index 6aca62f4..2024447c 100755
---- a/tests/btrfs/199
-+++ b/tests/btrfs/199
-@@ -67,7 +67,7 @@ loop_dev=$(_create_loop_device "$loop_file")
- loop_mnt=$tmp/loop_mnt
- 
- mkdir -p $loop_mnt
--# - nospace_cache
-+# - $(_btrfs_no_v1_cache_opt)
- #   Since v1 cache using DATA space, it can break data extent bytenr
- #   continuousness.
- # - nodatasum
-@@ -75,7 +75,7 @@ mkdir -p $loop_mnt
- #   Disabling datasum could reduce the margin caused by metadata to minimal
- # - discard
- #   What we're testing
--_mount -o nospace_cache,nodatasum,discard $loop_dev $loop_mnt
-+_mount $(_btrfs_no_v1_cache_opt) -o nodatasum,discard $loop_dev $loop_mnt
- 
- # Craft the following extent layout:
- #         |  BG1 |      BG2        |       BG3            |
-diff --git a/tests/btrfs/215 b/tests/btrfs/215
-index fa622568..9ee1a8b3 100755
---- a/tests/btrfs/215
-+++ b/tests/btrfs/215
-@@ -30,7 +30,7 @@ _require_non_zoned_device $SCRATCH_DEV
- _scratch_mkfs > /dev/null
- # disable freespace inode to ensure file is the first thing in the data
- # blobk group
--_scratch_mount -o nospace_cache
-+_scratch_mount $(_btrfs_no_v1_cache_opt)
- 
- pagesize=$(get_page_size)
- blocksize=$(_get_block_size $SCRATCH_MNT)
--- 
-2.33.0
+Also, `dmesg` and `btrfs check` do not show any errors.
+
+```
+$ sudo dmesg | grep BTRFS
+[    4.161867] BTRFS: device label tank devid 2 transid 204379 /dev/sde1 sc=
+anned by systemd-udevd (252)
+[    4.163715] BTRFS: device label tank devid 1 transid 204379 /dev/sdd1 sc=
+anned by systemd-udevd (234)
+[  300.416174] BTRFS info (device sdd1): flagging fs with big metadata feat=
+ure
+[  300.416179] BTRFS info (device sdd1): disk space caching is enabled
+[  300.416181] BTRFS info (device sdd1): has skinny extents
+
+
+$ sudo btrfs check -p /dev/sdd1
+Opening filesystem to check...
+Checking filesystem on /dev/sdd1
+UUID: 37ce3698-b9d4-4475-8569-fc440c54ad82
+[1/7] checking root items                      (0:00:11 elapsed, 698424 ite=
+ms checked)
+[2/7] checking extents                         (0:00:42 elapsed, 270676 ite=
+ms checked)
+[3/7] checking free space cache                (0:00:02 elapsed, 3147 items=
+ checked)
+[4/7] checking fs roots                        (0:00:11 elapsed, 22115 item=
+s checked)
+[5/7] checking csums (without verifying data)  (0:00:02 elapsed, 1439154 it=
+ems checked)
+[6/7] checking root refs                       (0:00:00 elapsed, 13 items c=
+hecked)
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 3374319136768 bytes used, no error found
+total csum bytes: 3290097884
+total tree bytes: 4434460672
+total fs tree bytes: 363446272
+total extent tree bytes: 62717952
+btree space waste bytes: 721586744
+file data blocks allocated: 4579386322944
+  referenced 4576433889280
+
+
+$ sudo btrfs check -p /dev/sde1
+Opening filesystem to check...
+Checking filesystem on /dev/sde1
+UUID: 37ce3698-b9d4-4475-8569-fc440c54ad82
+[1/7] checking root items                      (0:00:11 elapsed, 698424 ite=
+ms checked)
+[2/7] checking extents                         (0:00:43 elapsed, 270676 ite=
+ms checked)
+[3/7] checking free space cache                (0:00:02 elapsed, 3147 items=
+ checked)
+[4/7] checking fs roots                        (0:00:11 elapsed, 22115 item=
+s checked)
+[5/7] checking csums (without verifying data)  (0:00:02 elapsed, 1439154 it=
+ems checked)
+[6/7] checking root refs                       (0:00:00 elapsed, 13 items c=
+hecked)
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 3374319136768 bytes used, no error found
+total csum bytes: 3290097884
+total tree bytes: 4434460672
+total fs tree bytes: 363446272
+total extent tree bytes: 62717952
+btree space waste bytes: 721586744
+file data blocks allocated: 4579386322944
+  referenced 4576433889280
+```
+
+
+Below, you can find some more useful outputs.
+
+```
+$ sudo btrfs fi show
+Label: 'tank'  uuid: 37ce3698-b9d4-4475-8569-fc440c54ad82
+         Total devices 2 FS bytes used 3.07TiB
+         devid    1 size 3.64TiB used 3.07TiB path /dev/sdd1
+         devid    2 size 3.64TiB used 3.07TiB path /dev/sde1
+
+$ btrfs --version
+btrfs-progs v5.15
+
+$ uname -r
+5.15.2-arch1-1
+```
+
+
+-Max
+
+On 11/14/21 06:48, Joshua wrote:
+> I have a large multi-device BTRFS array. (13 devices / 96TiB total usable=
+ space)
+>
+> As of yesterday, it had a little over 5 TiB reported as estimated free by=
+ 'btrfs fi usage'
+>
+> At exactly 7am this morning, my reporting tool reports that the "Free (es=
+timated)" line of 'btrfs
+> fi usage' jumped to 53TiB.
+>
+> Now I do use snapshots, managed by btrbk. I currently have 80 snapshots, =
+and it is possible old
+> snapshots were deleted at midnight, freeing up data.  Perhaps the deletio=
+ns didn't finish committing until 7am?
+>
+> However, the current state of the array is concerning to me:
+>
+> #> btrfs fi usage /mnt
+> Overall:
+> Device size: 96.42TiB
+> Device allocated: 43.16TiB
+> Device unallocated: 53.26TiB
+> Device missing: 0.00B
+> Used: 43.15TiB
+> Free (estimated): 53.27TiB (min: 53.27TiB)
+> Free (statfs, df): 4.71TiB
+> Data ratio: 1.00
+> Metadata ratio: 1.00
+> Global reserve: 512.00MiB (used: 0.00B)
+> Multiple profiles: no
+>
+> Data,RAID1: Size:43.10TiB, Used:43.09TiB (99.98%)
+> {snip}
+> Metadata,RAID1C3: Size:66.00GiB, Used:62.51GiB (94.71%)
+> {snip}
+> System,RAID1C3: Size:32.00MiB, Used:7.12MiB (22.27%)
+> {snip}
+> Unallocated:
+> {snip}
+>
+> As you can see, it's showing all my data is Raid1 as it should be, and al=
+l my metadata is raid1c3
+> as it should be.
+> BUT it's showing data ratio: 1 and metadata ratio: 1
+> Also, the allocated space is showing 43 TiB, which I know to be around th=
+e actual amount of used
+> data by files. Since Raid1 is in use, Allocated data should be around 86.=
+...
+>
+> Any ideas as to what happened, why it's showing this erroneous data, or i=
+f I should be worried
+> about my data in any way?
+> As of right now, everything appears intact....
+>
+> --Joshua Villwock
+>
 
