@@ -2,176 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7258044F7C1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Nov 2021 13:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F7A44F7C9
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Nov 2021 13:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbhKNMJa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Nov 2021 07:09:30 -0500
-Received: from out20-39.mail.aliyun.com ([115.124.20.39]:40734 "EHLO
-        out20-39.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhKNMJ2 (ORCPT
+        id S233656AbhKNMOU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Nov 2021 07:14:20 -0500
+Received: from out20-110.mail.aliyun.com ([115.124.20.110]:36894 "EHLO
+        out20-110.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhKNMOS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Nov 2021 07:09:28 -0500
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436291|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00747111-0.0124616-0.980067;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=guan@eryu.me;NM=1;PH=DS;RN=3;RT=3;SR=0;TI=SMTPD_---.LseRfn2_1636891592;
-Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.LseRfn2_1636891592)
-          by smtp.aliyun-inc.com(10.147.42.22);
-          Sun, 14 Nov 2021 20:06:32 +0800
-Date:   Sun, 14 Nov 2021 20:06:32 +0800
+        Sun, 14 Nov 2021 07:14:18 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07440201|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0382905-0.000491757-0.961218;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=guan@eryu.me;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.LseN9sz_1636891882;
+Received: from localhost(mailfrom:guan@eryu.me fp:SMTPD_---.LseN9sz_1636891882)
+          by smtp.aliyun-inc.com(10.147.40.26);
+          Sun, 14 Nov 2021 20:11:22 +0800
+Date:   Sun, 14 Nov 2021 20:11:22 +0800
 From:   Eryu Guan <guan@eryu.me>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH v3] btrfs: Test proper interaction between skip_balance
- and paused balance
-Message-ID: <YZD7yEhwsKRBm0IE@desktop>
-References: <20211108142901.1003352-1-nborisov@suse.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Eryu Guan <eguan@linux.alibaba.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3] fstests: btrfs: make nospace_cache related test cases
+ to work with latest v2 cache
+Message-ID: <YZD86qQFpuRCsG+J@desktop>
+References: <20211110093417.47185-1-wqu@suse.com>
+ <20211110104809.GV60846@e18g06458.et15sqa>
+ <e33a7317-d740-b698-61bf-4882bea4a70b@gmx.com>
+ <20211110110139.GX60846@e18g06458.et15sqa>
+ <72a12bb8-c268-046c-1a38-a7017b2228e2@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211108142901.1003352-1-nborisov@suse.com>
+In-Reply-To: <72a12bb8-c268-046c-1a38-a7017b2228e2@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 04:29:01PM +0200, Nikolay Borisov wrote:
-> Ensure a device can be added to a filesystem that has a paused balance
-> operation and has been mounted with the 'skip_balance' mount option
+On Wed, Nov 10, 2021 at 08:13:07PM +0800, Qu Wenruo wrote:
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
 > 
-> V3:
->  * Added swapon to the list of exclusive ops
->  * Use _spare_dev_get
->  * Test balance resume via progs while balance is paused. I hit an assertion failure
->  outside of xfstest while doing this sequence of steps so let's add it to
->  ensure that's not regressed.
+> On 2021/11/10 19:01, Eryu Guan wrote:
+> > On Wed, Nov 10, 2021 at 06:52:17PM +0800, Qu Wenruo wrote:
+> > > 
+> > > 
+> > > On 2021/11/10 18:48, Eryu Guan wrote:
+> > > > On Wed, Nov 10, 2021 at 05:34:17PM +0800, Qu Wenruo wrote:
+> > > > > In the coming btrfs-progs v5.15 release, mkfs.btrfs will change to use
+> > > > > v2 cache by default.
+> > > > > 
+> > > > > However nospace_cache mount option will not work with v2 cache, as it
+> > > > > would make v2 cache out of sync with on-disk used space.
+> > > > > 
+> > > > > So mounting a btrfs with v2 cache using "nospace_cache" will make btrfs
+> > > > > to reject the mount.
+> > > > > 
+> > > > > There are quite some test cases relying on nospace_cache to prevent v1
+> > > > > cache to take up data space.
+> > > > > 
+> > > > > For those test cases, we no longer need the "nospace_cache" mount option
+> > > > > if the filesystem is already using v2 cache.
+> > > > > Since v2 cache is using metadata space, it will no longer take up data
+> > > > > space, thus no extra mount options for those test cases.
+> > > > > 
+> > > > > By this, we can keep those existing tests to run without problem for
+> > > > > both v1 and v2 cache.
+> > > > > 
+> > > > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > > > > ---
+> > > > > Changelog:
+> > > > > v2:
+> > > > > - Add _scratch_no_v1_cache_opt() function
+> > > > > v3:
+> > > > > - Add _require_btrfs_command for _scratch_no_v1_cache_opt()
+> > > > > ---
+> > > > >   common/btrfs    | 11 +++++++++++
+> > > > >   tests/btrfs/102 |  2 +-
+> > > > >   tests/btrfs/140 |  5 ++---
+> > > > >   tests/btrfs/141 |  5 ++---
+> > > > >   tests/btrfs/142 |  5 ++---
+> > > > >   tests/btrfs/143 |  5 ++---
+> > > > >   tests/btrfs/151 |  4 ++--
+> > > > >   tests/btrfs/157 |  7 +++----
+> > > > >   tests/btrfs/158 |  7 +++----
+> > > > >   tests/btrfs/170 |  4 ++--
+> > > > >   tests/btrfs/199 |  4 ++--
+> > > > >   tests/btrfs/215 |  2 +-
+> > > > >   12 files changed, 33 insertions(+), 28 deletions(-)
+> > > > > 
+> > > > > diff --git a/common/btrfs b/common/btrfs
+> > > > > index ac880bdd..e21c452c 100644
+> > > > > --- a/common/btrfs
+> > > > > +++ b/common/btrfs
+> > > > > @@ -445,3 +445,14 @@ _scratch_btrfs_is_zoned()
+> > > > >   	[ `_zone_type ${SCRATCH_DEV}` != "none" ] && return 0
+> > > > >   	return 1
+> > > > >   }
+> > > > > +
+> > > > > +_scratch_no_v1_cache_opt()
+> > > > 
+> > > > This name indicates it's a general helper, but it's btrfs-specific, how
+> > > > about _scratch_btrfs_no_v1_cache_opt ?
+> > > > 
+> > > > > +{
+> > > > > +	_require_btrfs_command inspect-internal dump-tree
+> > > > 
+> > > > This will call _notrun if btrfs command doesn't have inspect-internal
+> > > > dump-tree sub-command, and _notrun will call exit, but ...
+> > > > 
+> > > > > +
+> > > > > +	if $BTRFS_UTIL_PROG inspect-internal dump-tree $SCRATCH_DEV |\
+> > > > > +	   grep -q "FREE_SPACE_TREE"; then
+> > > > > +		return
+> > > > > +	fi
+> > > > > +	echo -n "-onospace_cache"
+> > > > > +}
+> > > > > diff --git a/tests/btrfs/102 b/tests/btrfs/102
+> > > > > index e5a1b068..c1678b5d 100755
+> > > > > --- a/tests/btrfs/102
+> > > > > +++ b/tests/btrfs/102
+> > > > > @@ -22,7 +22,7 @@ _scratch_mkfs >>$seqres.full 2>&1
+> > > > >   # Mount our filesystem without space caches enabled so that we do not get any
+> > > > >   # space used from the initial data block group that mkfs creates (space caches
+> > > > >   # used space from data block groups).
+> > > > > -_scratch_mount "-o nospace_cache"
+> > > > > +_scratch_mount $(_scratch_no_v1_cache_opt)
+> > > > 
+> > > > _scratch_no_v1_cache_opt is called in a sub-shell, so the _notrun will
+> > > > just exit the sub-shell, not the test itself. Should call the _require
+> > > > rule in test.
+> > > 
+> > > That means we will have a hard dependency on binding
+> > > _scratch_btrfs_no_v1_cache_opt() with _require rule then.
+> > > 
+> > > Then a sudden "_require_btrfs_command inspect-internal dump-tree"
+> > > without context could be sometimes confusing AFAIK.
+> > 
+> > That's true.
+> > 
+> > > 
+> > > Considering "inspect-internal" should be in btrfs-progs for a very long
+> > > time, any non-EOF distro should have them already, can we just remove
+> > > the _require rule?
+> > 
+> > It seems like that dump-tree sub-command was added in 2016 in v4.5, so I
+> > guess I'm fine with it.
 > 
->  tests/btrfs/049     | 92 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/049.out |  1 +
->  2 files changed, 93 insertions(+)
->  create mode 100755 tests/btrfs/049
-> 
-> diff --git a/tests/btrfs/049 b/tests/btrfs/049
-> new file mode 100755
-> index 000000000000..d01ef05e5ead
-> --- /dev/null
-> +++ b/tests/btrfs/049
-> @@ -0,0 +1,92 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2021 SUSE Linux Products GmbH.  All Rights Reserved.
-> +#
-> +# FS QA Test 049
-> +#
-> +# Ensure that it's possible to add a device when we have a paused balance
-> +# and the filesystem is mounted with skip_balance. The issue is fixed by a patch
-> +# titled "btrfs: allow device add if balance is paused"
+> Mind to remove the _require rule at merge time?
+> Or do I need to resend?
 
-After looking at the kernel patch, it looks more like a bug fix not a
-new feature, as adding device to a ENOSPC-but-paused balance seems to be
-the only reasonable way to finish the balance. If that's the case,
-there's no problem add this case that will fail on old kernels.
-
-> +#
-> +. ./common/preamble
-> +_begin_fstest quick balance auto
-> +
-> +# real QA test starts here
-> +
-> +_supported_fs btrfs
-> +_require_scratch_swapfile
-> +_require_scratch_dev_pool 3
-> +
-> +_scratch_dev_pool_get 2
-> +_spare_dev_get
-> +
-> +swapfile="$SCRATCH_MNT/swap"
-> +_scratch_pool_mkfs >/dev/null
-> +_scratch_mount
-> +_format_swapfile "$swapfile" $(($(get_page_size) * 10))
-> +
-> +check_exclusive_ops()
-> +{
-> +	$BTRFS_UTIL_PROG device remove 2 $SCRATCH_MNT &>/dev/null
-> +	[ $? -ne 0 ] || _fail "Successfully removed device"
-> +	$BTRFS_UTIL_PROG filesystem resize -5m $SCRATCH_MNT &> /dev/null
-> +	[ $? -ne 0 ] || _fail "Successfully resized filesystem"
-> +	$BTRFS_UTIL_PROG replace start -B 2 $SPARE_DEV $SCRATCH_MNT &> /dev/null
-> +	[ $? -ne 0 ] || _fail "Successfully replaced device"
-> +	swapon "$swapfile" &> /dev/null
-> +	[ $? -ne 0 ] || _fail "Successfully enabled a swap file"
-> +}
-> +
-> +uuid=$(findmnt -n -o UUID $SCRATCH_MNT)
-
-$uuid is not used anywhere, can be removed?
-
-> +
-> +# Create some files on the so that balance doesn't complete instantly
-
-You mean "on the device"?
-
-> +args=`_scale_fsstress_args -z \
-> +	-f write=10 -f creat=10 \
-> +	-n 1000 -p 2 -d $SCRATCH_MNT/stress_dir`
-> +echo "Run fsstress $args" >>$seqres.full
-> +$FSSTRESS_PROG $args >/dev/null 2>&1
-> +
-> +# Start and pause balance to ensure it will be restored on remount
-> +echo "Start balance" >>$seqres.full
-> +_run_btrfs_balance_start --bg "$SCRATCH_MNT"
-> +$BTRFS_UTIL_PROG balance pause "$SCRATCH_MNT"
-> +$BTRFS_UTIL_PROG balance status "$SCRATCH_MNT" | grep -q paused
-> +[ $? -eq 0 ] || _fail "Balance not paused"
-> +
-> +# Exclusive ops should be blocked on manual pause of balance
-> +check_exclusive_ops
-> +
-> +# Balance is now placed in paused state during mount
-> +_scratch_cycle_mount "skip_balance"
-> +
-> +# Exclusive ops should be blocked on balance pause due to 'skip_balance'
-> +check_exclusive_ops
-> +
-> +# Device add is the only allowed operation
-> +$BTRFS_UTIL_PROG device add -K -f $SPARE_DEV "$SCRATCH_MNT"
-> +
-> +# Exclusive ops should still be blocked on account that balance is still paused
-> +check_exclusive_ops
-> +
-> +# Should be possible to resume balance after device add
-> +$BTRFS_UTIL_PROG balance resume "$SCRATCH_MNT" &>/dev/null
-> +[ $? -eq 0 ] || _fail "Couldn't resume balance after device add"
-> +
-> +# Add more files so that new balance won't fish immediately
-                                              ^^^^ finish ?
-> +$FSSTRESS_PROG $args >/dev/null 2>&1
-> +
-> +# Now pause->resume balance. This ensures balance paused is properly set in
-> +# the kernel and won't trigger an assertion failure.
-> +echo "Start balance" >>$seqres.full
-> +_run_btrfs_balance_start --bg "$SCRATCH_MNT"
-> +$BTRFS_UTIL_PROG balance pause "$SCRATCH_MNT"
-> +$BTRFS_UTIL_PROG balance status "$SCRATCH_MNT" | grep -q paused
-> +[ $? -eq 0 ] || _fail "Balance not paused"
-> +$BTRFS_UTIL_PROG balance resume "$SCRATCH_MNT" &>/dev/null
-> +[ $? -eq 0 ] || _fail "Balance can't be resumed via IOCTL"
-> +
-> +_spare_dev_put
-> +_scratch_dev_pool_put
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/049.out b/tests/btrfs/049.out
-> index cb0061b33ff0..c69568ad9323 100644
-> --- a/tests/btrfs/049.out
-> +++ b/tests/btrfs/049.out
-> @@ -1 +1,2 @@
->  QA output created by 049
-> +Silence is golden
-
-Ah, 049.out was forgotten to be removed by commit 668c859d37f2
-("btrfs/049: remove the test"), so it's reused here.
+A new version is preferred, as it's not only delete the _require rule,
+but also needs a function rename, and a rebase against latest master
+branch. The patch currently doesn't apply due to conflit.
 
 Thanks,
 Eryu
