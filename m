@@ -2,136 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B615D44FCD4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Nov 2021 02:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5FD44FD5E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Nov 2021 04:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhKOBz3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 14 Nov 2021 20:55:29 -0500
-Received: from scadrial.mjdsystems.ca ([192.99.73.14]:47201 "EHLO
-        scadrial.mjdsystems.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhKOBz2 (ORCPT
+        id S230020AbhKODLZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Nov 2021 22:11:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229568AbhKODLX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 14 Nov 2021 20:55:28 -0500
-Received: from cwmtaff.localnet (unknown [IPv6:2607:f2c0:ed80:400:9a1:e909:22b4:2b45])
-        by scadrial.mjdsystems.ca (Postfix) with ESMTPSA id C0B4C81E3855
-        for <linux-btrfs@vger.kernel.org>; Sun, 14 Nov 2021 20:52:32 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed; d=mjdsystems.ca;
-        s=202010; t=1636941152;
-        bh=qNKukkvlOVQOm7KRanw9MYdP0kz7CnJyF+V1n0xVuJg=;
-        h=From:To:Subject:Date:From;
-        b=oj8AyNn4xAYZiS0M9F4VR44nSHE8986PbOcxWQwADqpLMtF6AQtdMSoy6XHjWhogd
-         31K9G7+MKwwWNoQMsJzDXFEBol8lQJre+d5/j0WZ832HE4tZfmSdPyvhlaeom+O/9K
-         +0Nz5xAEP+jcsMUHeT4pQBmQGrlwUE5MiIjhffVXqeBzCGVzbPdB9JRhyLRYtBWU/I
-         6x0HYLyPj8bSa9Wh/S7IGndOsczfasbKfgAH5qvgYkuc5ukwzcYq1Yx70Ou/K4H/nQ
-         +/USh2LQmTIK/KNLr4n9oi+jsmpcMbDxBI9JySU4o548W1xNHYKniSTcEPcwzY/XvT
-         SsitxTeEy35x8DslYm1T/REcYtqkqMLTYwZQtseC7TrEF+bd772xnj+BxdrrZjsF7e
-         QQhWdpAaum3o+MrJhs2//J8lLqhf+Cu8VrsHdVbyNLMSJVngKsnkVmRFs1ALrKXpq9
-         00s4oEGOSFNtIeWiSzri9pp60tKnE0iI2gEWWFXrhmN3AkcWNBaBWRRBdkg6MqZtVe
-         gNgz2UxA96Jm6wu99XP8LT0Op4HYfICbvBvDXTDucwxMmxkmqX4LfSuOcGBBqkbriA
-         3ZXIIhQp5Yvu5raJFZSzNc+Nb/HMOPA+Y+rPvl2rF1D251HrjPza9o8rWrNfhQvKjv
-         lyspWh3RDMFx1LlbLLXspeyQ=
-From:   Matthew Dawson <matthew@mjdsystems.ca>
-To:     linux-btrfs@vger.kernel.org
-Subject: Help recovering filesystem (if possible)
-Date:   Sun, 14 Nov 2021 20:52:32 -0500
-Message-ID: <2586108.vuYhMxLoTh@cwmtaff>
+        Sun, 14 Nov 2021 22:11:23 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2632C061746
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Nov 2021 19:08:28 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id p3-20020a05600c1d8300b003334fab53afso11680379wms.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 14 Nov 2021 19:08:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=/v4+kL0ukpKtB6PCdntz6v7i7VD5fl62cACslVzVBzA=;
+        b=XCHqPZh8hErf8N+7TupFFkRzfOMYcfyrWAubI3HxUt2Lp/SCfHrMCqPp3slM5F/D7k
+         /TmcUvv8KjgTfJhLT9RbpPQzfj8NsbvjoepFjpvGxTGuQQu0os+CvQ9ZSiBry96bmN5t
+         pXaNBWBbkRBW9DlFIKN0j/j3JCxVtcpT+ZIC5u6o8PSFthEZXPKKBAoxUxDcxqVVulND
+         G8Hn4y/OumiF5tx6JM/w5DGe2c6/GriTHyP/may5TAq5+lvO+Eg2s8IP0jIkxnim8YBi
+         nlJcRowE8VbIQlFYWmISTGcU6skumZaRRR9+btle23wyBO+c1PM204CzpXDWzMR+aTa9
+         1Acg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=/v4+kL0ukpKtB6PCdntz6v7i7VD5fl62cACslVzVBzA=;
+        b=kPCxYkK5ebS/u0siC4i+MoG6VvCWR0jFaBWyWm4BtMtU1HW5r/J3eB1eNmUwArqhBi
+         o57Ja6+Qm8FhrQ2vkFW6l1LoGcvka3df1SClMixYW1PMK42+V1230PQtLyYmS5xTRyoA
+         WihOOJw5F32qu6KENyfZn9Ratiq69VCzO0sHUD2jgaNOjyrMOOL11Rsilpd3CMJHlFl4
+         4lfOYQG6ndgDyOspezlzsJvHjRor5vd40QYQmuSHjcwCJM4FVcljk10VkodVfGHAz3zr
+         7b/tNGkozOVNBaSPn+xyjiAYspeABeX7a+u2muYAJQQaPj49TI3X8IlQbuS7ujSs9Mb0
+         h7FQ==
+X-Gm-Message-State: AOAM531wNYOj67Kc4KeJHFs/XB4vAWq/BGd+fCYvnty3QQkO7cy0R2iq
+        F/VwN9XJwe1WXwZ4S6tgSps=
+X-Google-Smtp-Source: ABdhPJxqCSA/NLG9MGJwGU3a9YF70uuR3+pM1coJ3oUFvxatOR4/0GBODUMGfgBZ5g57x66CEJVZtw==
+X-Received: by 2002:a7b:c257:: with SMTP id b23mr38465339wmj.67.1636945707021;
+        Sun, 14 Nov 2021 19:08:27 -0800 (PST)
+Received: from [127.0.0.1] (tmo-108-120.customers.d1-online.com. [80.187.108.120])
+        by smtp.gmail.com with ESMTPSA id z8sm13486982wrh.54.2021.11.14.19.08.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Nov 2021 19:08:26 -0800 (PST)
+Date:   Mon, 15 Nov 2021 03:08:24 +0000 (UTC)
+From:   Emil Heimpel <broetchenrackete@gmail.com>
+To:     waxhead <waxhead@dirtcellar.net>
+Cc:     Pascal <comfreak89@googlemail.com>, linux-btrfs@vger.kernel.org
+Message-ID: <59e6afec-09c7-4d21-b31e-6ea759ff34d1@gmail.com>
+In-Reply-To: <123daa93-9354-4df2-8c6b-be403e6ce8bc@dirtcellar.net>
+References: <CADSoW+KdEuw7qd=dfvL-nCWF_AECVfY3oY5UGzdhm1=uvjA6JA@mail.gmail.com> <123daa93-9354-4df2-8c6b-be403e6ce8bc@dirtcellar.net>
+Subject: Re: Failed drive in RAID-6
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Correlation-ID: <59e6afec-09c7-4d21-b31e-6ea759ff34d1@gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi all,
+It actually says that device 13 is missing:
 
-I recently upgrade one of my machines to the 5.15.2 kernel.  on the first 
-reboot, I had a kernel fault during the initialization (I didn't get to 
-capture the printed stack trace, but I'm 99% sure it did not have BTRFS 
-related calls).  I then rebooted the machine back to a 5.14 kernel, but the 
-BCache (writeback) cache was corrupted.  I then force started the underlying 
-disks, but now my BTRFS filesystem will no longer mount.  I realize there may 
-be missing/corrupted data, but I would like to ideally get any data I can off 
-the disks.
-
-This system involves 10 8TB disk, some are doing BCache -> LUKS -> BTRFS, some 
-are doing LUKS -> BTRFS.
-
-When I try to mount the filesystem, I get the following in dmesg:
-[117632.798339] BTRFS info (device dm-0): flagging fs with big metadata feature
-[117632.798344] BTRFS info (device dm-0): disk space caching is enabled
-[117632.798346] BTRFS info (device dm-0): has skinny extents
-[117632.873186] BTRFS error (device dm-0): parent transid verify failed on 
-132806584614912 wanted 3240123 found 3240119
-[117632.873542] BTRFS error (device dm-0): parent transid verify failed on 
-132806584614912 wanted 3240123 found 3240119
-[117632.873592] BTRFS warning (device dm-0): couldn't read tree root
-[117632.883662] BTRFS error (device dm-0): open_ctree failed
-
-I then tried using rescue=all,ro to mount the filesystem, but got:
-[117658.264048] BTRFS info (device dm-0): flagging fs with big metadata feature
-[117658.264056] BTRFS info (device dm-0): enabling all of the rescue options
-[117658.264057] BTRFS info (device dm-0): ignoring data csums
-[117658.264059] BTRFS info (device dm-0): ignoring bad roots
-[117658.264060] BTRFS info (device dm-0): disabling log replay at mount time
-[117658.264061] BTRFS info (device dm-0): disk space caching is enabled
-[117658.264062] BTRFS info (device dm-0): has skinny extents
-[117658.286252] BTRFS error (device dm-0): parent transid verify failed on 
-132806584614912 wanted 3240123 found 3240119
-[117658.286573] BTRFS error (device dm-0): parent transid verify failed on 
-132806584614912 wanted 3240123 found 3240119
-[117658.286614] BTRFS warning (device dm-0): couldn't read tree root
-[117658.294632] BTRFS error (device dm-0): open_ctree failed
-
-Running btrfs check (not repair) to see if it had anything else printed:
-parent transid verify failed on 132806546751488 wanted 3240122 found 3239869
-parent transid verify failed on 132806546751488 wanted 3240122 found 3239869
-parent transid verify failed on 132806571458560 wanted 3240122 found 3239869
-parent transid verify failed on 132806571458560 wanted 3240122 found 3239869
-parent transid verify failed on 132806571458560 wanted 3240122 found 3239869
-parent transid verify failed on 132806571458560 wanted 3240122 found 3239869
-Ignoring transid failure
-leaf parent key incorrect 132806571458560
-Couldn't setup extent tree
-ERROR: cannot open file system
-
-Running btrfs restore to see if data could be recovered prints:
-parent transid verify failed on 132806584614912 wanted 3240123 found 3240119
-parent transid verify failed on 132806584614912 wanted 3240123 found 3240119
-parent transid verify failed on 132806584614912 wanted 3240123 found 3240119
-parent transid verify failed on 132806584614912 wanted 3240123 found 3240119
-Ignoring transid failure
-Couldn't setup extent tree
-Couldn't setup device tree
-Could not open root, trying backup super
-warning, device 6 is missing
+root@proxmox:~# btrfs fi show
 warning, device 13 is missing
-warning, device 12 is missing
-warning, device 11 is missing
-warning, device 7 is missing
-warning, device 9 is missing
-warning, device 14 is missing
-bytenr mismatch, want=136920576753664, have=0
-ERROR: cannot read chunk root
-Could not open root, trying backup super
-warning, device 6 is missing
-warning, device 13 is missing
-warning, device 12 is missing
-warning, device 11 is missing
-warning, device 7 is missing
-warning, device 9 is missing
-warning, device 14 is missing
-bytenr mismatch, want=136920576753664, have=0
-ERROR: cannot read chunk root
-Could not open root, trying backup super
 
-(All disks are present in the system)
+Afaik there is a patch in the works that improves the message including the last known device path (/dev/sdh e.g.)
 
-Is there any hope in recovering this data?  Or should I give up on it at this 
-point and reformat?  Most of the data is backed up (or are backups 
-themselves), but I'd like to get what I can.
+Nov 14, 2021 22:53:59 waxhead <waxhead@dirtcellar.net>:
 
-Thanks,
--- 
-Matthew
-
-
+> Pascal wrote:
+>> Hi,
+>> I have a failed drive in my RAID-6 with Metadata C3.
+>> I am able to mount the filesytem via mount -o degraded /dev/sda /mnt/data/.
+>> How can I remove the disk from the filesystem? The failed disk is a 8TB drive.
+>> Do I have to replace it with a new one (only smaller size available)?
+>> I would like just to remove the drive - I should have plenty of free
+>> space available, even when the drive is missing afterwards.
+>> 
+> No you do not have to replace the drive. And if you do, you can use a smaller drive. Note that BTRFS "RAID" is close, but not really RAID in the traditional sense. You might as well call it BTRFS-RAID, Fred or Barney because it is NOT your off the shelve RAID implementation.
+> 
+> https://btrfs.wiki.kernel.org/index.php/Using_Btrfs_with_Multiple_Devices
+> 
+> By the way , I am just a regular BTRFS user, so be warned. Do not blindly follow my advice - i have not toyed around with raid5/6 in years. (I suggest waiting for a follow up response if you can). However, you remove missing devices with:
+> btrfs device delete missing /mnt/data
+> (I think you have to physically remove the device for that to work as you expect.)
+> 
+> It is very annoying that btrfs does not show WHICH devices are missing, but if you know that only one drives is faulty it should be straight forward.
+> 
+> After that I would have have run a scrub to ensure that all is good.
