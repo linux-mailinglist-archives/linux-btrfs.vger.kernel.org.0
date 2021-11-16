@@ -2,201 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD85453490
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Nov 2021 15:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1B6453724
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Nov 2021 17:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237606AbhKPOs4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Nov 2021 09:48:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237744AbhKPOsS (ORCPT
+        id S230114AbhKPQUS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Nov 2021 11:20:18 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:44478 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhKPQUQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Nov 2021 09:48:18 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38892C061764
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Nov 2021 06:45:19 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id bu11so13963606qvb.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Nov 2021 06:45:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=Sm0tYuI0lOyk/DSIwt5nlq49Rt3//bn0UdNQje0toj0=;
-        b=JNSl45AlvBwoy2/FLMRtV74oy8MVRQvzUnQFUMC545y2HFoGkmXsdeQx9ahAMAj0wd
-         pKtEaoH0BJSo1doQ52xTtj4zKaeF6j/N9BAWIJphFSyCqbbdFGg69rrX3PHrUfC6ArET
-         SmWslsG10+RSEZLcKh6rjIdPPa4oRrl3umIetTTGIxyGOjI7dJ1sEgZKuEapOXCStKKy
-         7/e0LhV2PssJZCI39RIq+u4BI01rmC6ZnWXcA034QOHvRYRvPLDX12lNUaCcrdxt+xM5
-         06A0fVC298/Np/0SFDUvJB+G7vkOy3fKGkHgPbNM4Rk+dn7Th8fnuyE8uAIspJisbTN/
-         rsGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Sm0tYuI0lOyk/DSIwt5nlq49Rt3//bn0UdNQje0toj0=;
-        b=nmMHXXVd3X9ASDzpII58SK15w+II9r/+vqHQzPjykYF8W7U0im80ZkjFa97t9LnIHO
-         9V3cRLwTFG6re5pm5ZxGDCSVMWIdpyW56x/1vCyTPMVmxbdP+ccQ4inf+/aeW9x2MjvG
-         zeE24MwhP2DjDoHjzHia0dGpxGWu0GZeukfrv+RB/YUq5Z9frBpAArtKqJvIXNapvfBO
-         Kg53wLo67W8p0zY530NSRkHCoXeDjMDg9lDXuhZ2QXMZBX9H2kffmvxgEeJJR3tXu9mC
-         cyl8x5NssX5JqLE6b/RqYWQDAmjUXWILVK6lPqSPEGsSQDesjqR/vgH5UEZZTuhAJXec
-         W9QA==
-X-Gm-Message-State: AOAM532JGhuIeUpneSknnOqW8zBaGU0TTU+xfMyVzRhp6t3QP+OKhf2y
-        O11mArGeHopD0G/Ow6EFT2Iy9U09YywEHg==
-X-Google-Smtp-Source: ABdhPJykF8SNreO/qxZinynlP97308+J68umNWcULNmcf29a2SeV7r7C+vnrqrX5DtmyT1RiMCNThw==
-X-Received: by 2002:a05:6214:509a:: with SMTP id kk26mr46526849qvb.43.1637073918055;
-        Tue, 16 Nov 2021 06:45:18 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h68sm8500459qkf.126.2021.11.16.06.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 06:45:17 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com, dsterba@suse.cz
-Subject: [PATCH v3] btrfs-progs: mkfs: create the global root's
-Date:   Tue, 16 Nov 2021 09:45:16 -0500
-Message-Id: <3413edb7e30f27c2b90fec76f2ef1f2e6c751dd4.1637073844.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20211115205107.GO28560@twin.jikos.cz>
-References: <20211115205107.GO28560@twin.jikos.cz>
+        Tue, 16 Nov 2021 11:20:16 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id CD1DD218B5;
+        Tue, 16 Nov 2021 16:17:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637079438;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s9WSaUzKQB+MGHP2uMFi88IqwamPv+0/VujK5xyFNY0=;
+        b=iCEKgl1C+xPkqzkrjLmr+4NudAcd7YjWB9D16FXT+hUJWGLv+1F6rCo2mqCrqjVEbIO7Mv
+        pmCvj17rxMPyw684Mh9nW7+/khtQw9R+o6qH+0Mhe/KId8JMaiAsOFiRrgaAcR33xluGNt
+        Z4vdX0PcRCtPhA+6eohqZ/KAhD65kZA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637079438;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s9WSaUzKQB+MGHP2uMFi88IqwamPv+0/VujK5xyFNY0=;
+        b=3e2sOjqIf0F7CTC94F4Y89psgvaijjdUQOv1gQuODlGmoyKU3rH8r/EIotHCF3SkwhoYZA
+        of/k0x7jlk6SlXAQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id C60D9A3B83;
+        Tue, 16 Nov 2021 16:17:18 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5A1E3DA799; Tue, 16 Nov 2021 17:17:15 +0100 (CET)
+Date:   Tue, 16 Nov 2021 17:17:15 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Omar Sandoval <osandov@fb.com>
+Subject: Re: [PATCH v2] btrfs: fix a out-of-boundary access for
+ copy_compressed_data_to_page()
+Message-ID: <20211116161715.GR28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Omar Sandoval <osandov@fb.com>
+References: <20211112044730.25161-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112044730.25161-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that we have all of the supporting code, add the ability to create
-all of the global roots for an extent tree v2 fs.  This will default to
-nr_cpu's, but also allow the user to specify how many global roots they
-would like.
+On Fri, Nov 12, 2021 at 12:47:30PM +0800, Qu Wenruo wrote:
+> [BUG]
+> The following script can cause btrfs to crash:
+> 
+>  mount -o compress-force=lzo $DEV /mnt
+>  dd if=/dev/urandom of=/mnt/foo bs=4k count=1
+>  sync
+> 
+> The calltrace looks like this:
+> 
+>  general protection fault, probably for non-canonical address 0xe04b37fccce3b000: 0000 [#1] PREEMPT SMP NOPTI
+>  CPU: 5 PID: 164 Comm: kworker/u20:3 Not tainted 5.15.0-rc7-custom+ #4
+>  Workqueue: btrfs-delalloc btrfs_work_helper [btrfs]
+>  RIP: 0010:__memcpy+0x12/0x20
+>  Call Trace:
+>   lzo_compress_pages+0x236/0x540 [btrfs]
+>   btrfs_compress_pages+0xaa/0xf0 [btrfs]
+>   compress_file_range+0x431/0x8e0 [btrfs]
+>   async_cow_start+0x12/0x30 [btrfs]
+>   btrfs_work_helper+0xf6/0x3e0 [btrfs]
+>   process_one_work+0x294/0x5d0
+>   worker_thread+0x55/0x3c0
+>   kthread+0x140/0x170
+>   ret_from_fork+0x22/0x30
+>  ---[ end trace 63c3c0f131e61982 ]---
+> 
+> [CAUSE]
+> In lzo_compress_pages(), parameter @out_pages is not only an output
+> parameter (for the number of compressed pages), but also an input
+> parameter, as the upper limit of compressed pages we can utilize.
+> 
+> In commit d4088803f511 ("btrfs: subpage: make lzo_compress_pages()
+> compatible"), the refactor doesn't take @out_pages as an input, thus
+> completely ignoring the limit.
+> 
+> And for compress-force case, we could hit incompressible data that
+> compressed size would go beyond the page limit, and cause above crash.
+> 
+> [FIX]
+> Save @out_pages as @max_nr_page, and pass it to lzo_compress_pages(),
+> and check if we're beyond the limit before accessing the pages.
+> 
+> Reported-by: Omar Sandoval <osandov@fb.com>
+> Fixes: d4088803f511 ("btrfs: subpage: make lzo_compress_pages() compatible")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Reviewed-by: Omar Sandoval <osandov@fb.com>
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v2->v3:
-- Added the EXPERIMENTAL block around --num-global-roots.
-
- mkfs/main.c | 70 ++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 69 insertions(+), 1 deletion(-)
-
-diff --git a/mkfs/main.c b/mkfs/main.c
-index fd40c70e..beed511c 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -810,6 +810,50 @@ out:
- 	return ret;
- }
- 
-+static int create_global_root(struct btrfs_trans_handle *trans, u64 objectid,
-+			      int root_id)
-+{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_root *root;
-+	struct btrfs_key key = {
-+		.objectid = objectid,
-+		.type = BTRFS_ROOT_ITEM_KEY,
-+		.offset = root_id,
-+	};
-+	int ret = 0;
-+
-+	root = btrfs_create_tree(trans, fs_info, &key);
-+	if (IS_ERR(root)) {
-+		ret = PTR_ERR(root);
-+		goto out;
-+	}
-+	ret = btrfs_global_root_insert(fs_info, root);
-+out:
-+	if (ret)
-+		btrfs_abort_transaction(trans, ret);
-+	return ret;
-+}
-+
-+static int create_global_roots(struct btrfs_trans_handle *trans,
-+			       int nr_global_roots)
-+{
-+	int ret, i;
-+
-+	for (i = 1; i < nr_global_roots; i++) {
-+		ret = create_global_root(trans, BTRFS_EXTENT_TREE_OBJECTID, i);
-+		if (ret)
-+			return ret;
-+		ret = create_global_root(trans, BTRFS_CSUM_TREE_OBJECTID, i);
-+		if (ret)
-+			return ret;
-+		ret = create_global_root(trans, BTRFS_FREE_SPACE_TREE_OBJECTID, i);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int insert_qgroup_items(struct btrfs_trans_handle *trans,
- 			       struct btrfs_fs_info *fs_info,
- 			       u64 qgroupid)
-@@ -966,13 +1010,18 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	struct btrfs_mkfs_config mkfs_cfg;
- 	enum btrfs_csum_type csum_type = BTRFS_CSUM_TYPE_CRC32;
- 	u64 system_group_size;
-+	int nr_global_roots = sysconf(_SC_NPROCESSORS_ONLN);
- 
- 	crc32c_optimization_init();
- 	btrfs_config_init();
- 
- 	while(1) {
- 		int c;
--		enum { GETOPT_VAL_SHRINK = 257, GETOPT_VAL_CHECKSUM };
-+		enum {
-+			GETOPT_VAL_SHRINK = 257,
-+			GETOPT_VAL_CHECKSUM,
-+			GETOPT_VAL_GLOBAL_ROOTS,
-+		};
- 		static const struct option long_options[] = {
- 			{ "byte-count", required_argument, NULL, 'b' },
- 			{ "csum", required_argument, NULL,
-@@ -996,6 +1045,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			{ "quiet", 0, NULL, 'q' },
- 			{ "verbose", 0, NULL, 'v' },
- 			{ "shrink", no_argument, NULL, GETOPT_VAL_SHRINK },
-+#if EXPERIMENTAL
-+			{ "num-global-roots", required_argument, NULL, GETOPT_VAL_GLOBAL_ROOTS },
-+#endif
- 			{ "help", no_argument, NULL, GETOPT_VAL_HELP },
- 			{ NULL, 0, NULL, 0}
- 		};
-@@ -1100,6 +1152,9 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 			case GETOPT_VAL_CHECKSUM:
- 				csum_type = parse_csum_type(optarg);
- 				break;
-+			case GETOPT_VAL_GLOBAL_ROOTS:
-+				nr_global_roots = (int)arg_strtou64(optarg);
-+				break;
- 			case GETOPT_VAL_HELP:
- 			default:
- 				print_usage(c != GETOPT_VAL_HELP);
-@@ -1239,6 +1294,11 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 	if (features & BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2) {
- 		features |= BTRFS_FEATURE_INCOMPAT_NO_HOLES;
- 		runtime_features |= BTRFS_RUNTIME_FEATURE_FREE_SPACE_TREE;
-+
-+		if (!nr_global_roots) {
-+			error("you must set a non-zero num-global-roots value");
-+			exit(1);
-+		}
- 	}
- 
- 	if (zoned) {
-@@ -1466,6 +1526,14 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
- 		goto error;
- 	}
- 
-+	if (features & BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2) {
-+		ret = create_global_roots(trans, nr_global_roots);
-+		if (ret) {
-+			error("failed to create global roots: %d", ret);
-+			goto error;
-+		}
-+	}
-+
- 	ret = make_root_dir(trans, root);
- 	if (ret) {
- 		error("failed to setup the root directory: %d", ret);
--- 
-2.26.3
-
+Added to misc-next and verified that it also fixes the 32bit crashes.
+Pull request will be out by the end of the week so hopefully this will
+be over.
