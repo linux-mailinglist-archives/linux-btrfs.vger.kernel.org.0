@@ -2,91 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CD545333F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Nov 2021 14:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E390A453383
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Nov 2021 15:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236804AbhKPNzY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Nov 2021 08:55:24 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:39520 "EHLO
+        id S237024AbhKPOFa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Nov 2021 09:05:30 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:40082 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbhKPNzX (ORCPT
+        with ESMTP id S237052AbhKPOFH (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:55:23 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id BCFE21FD26;
-        Tue, 16 Nov 2021 13:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637070745;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UvcveD268uoUtkiQChrEB8p64Qw44Kd3U7mTB/HFZQ0=;
-        b=D2fhJ8kGexYrgc0ZOHs4/7ZtEpEcGrsCNwQ7m88EjFI5h8zGffhzCkXX/7aSoRpu8OX+PZ
-        GHm7mohIctdN4tyy11QffDkdoy7DsAXpjbAsDq5r+vv//Q7FzgE3YVGd87cxj+lvWBCkpj
-        1DTDS1S9o8pHCIWid9EJzs35UoeZnDQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637070745;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UvcveD268uoUtkiQChrEB8p64Qw44Kd3U7mTB/HFZQ0=;
-        b=BhTWiHeRNuK4be6y6YChJra5J7NrnOkRXElbepZprjgTBOLt3xUGmvc1KRypPSGvMRVAIi
-        PQRd2T0Wjg0lrvDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id B656EA3B83;
-        Tue, 16 Nov 2021 13:52:25 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 62407DA7A9; Tue, 16 Nov 2021 14:52:22 +0100 (CET)
-Date:   Tue, 16 Nov 2021 14:52:22 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: raid56: fix the wrong recovery condition
- for data and P case
-Message-ID: <20211116135222.GP28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211116131051.247977-1-wqu@suse.com>
+        Tue, 16 Nov 2021 09:05:07 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C66571FD26;
+        Tue, 16 Nov 2021 14:02:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637071327; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=CuCIzIuGNRzzGoUqVHZSkCdsgKMNLnpFRPkYyppnPTs=;
+        b=Uk2Nw2mYf1+3qrZlCxqi0CUIos14G+0m0Tuu6qRSRzsa4DF7s94BUI/jzv3iAp/d7A9bSt
+        tUINt8N189+CcFRXMKRj2zW8f4Psa1Dhp+GK41t40I2GZIklGIQM0qjMvjgtD+Rh54cPC3
+        /2C4Tzo2P9oaRT1YhO+QmzOCpbyRuNU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 87D6113C22;
+        Tue, 16 Nov 2021 14:02:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id EzyCHt+5k2E2DQAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 16 Nov 2021 14:02:07 +0000
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] Fix calculation of chunk size for RAID1/DUP profiles
+Date:   Tue, 16 Nov 2021 16:02:06 +0200
+Message-Id: <20211116140206.291252-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116131051.247977-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 09:10:51PM +0800, Qu Wenruo wrote:
-> There is a bug in raid56_recov() which doesn't properly repair data and
-> P case corruption:
-> 
-> 	/* Data and P*/
-> 	if (dest2 == nr_devs - 1)
-> 		return raid6_recov_datap(nr_devs, stripe_len, dest1, data);
-> 
-> Note that, dest1/2 is to indicate which slot has corruption.
-> 
-> For RAID6 cases:
-> 
-> [0, nr_devs - 2) is for data stripes,
-> @data_devs - 2 is for P,
-> @data_devs - 1 is for Q.
-> 
-> For above code, the comment is correct, but the check condition is
-> wrong, and leads to the only project, btrfs-fuse, to report raid6
-> recovery error for 2 devices missing case.
-> 
-> Fix it by using correct condition.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> But I'm more interested in why this function is still there, as there
-> seems to be no caller of this function in btrfs-progs anyway.
+Current formula calculates the stripe size, however that's not what we want
+in the case of RAID1/DUP profiles. In those cases since chunkc are mirrored
+across devices we want the full size of the chunk. Without this patch the
+'btrfs fi usage' output from an fs which is using RAID1 is:
 
-The file is there from old times when the radi56 implementation landed
-and the file was a copy of something in the lib/raid6 directory, but the
-sources have diverged.
+	<snip>
 
-The function was not used as there was no repair code in userspace, so
-the question is if w still want it there or remove it.
+	Data,RAID1: Size:2.00GiB, Used:1.00GiB (50.03%)
+	   /dev/vdc	   1.00GiB
+	   /dev/vdf	   1.00GiB
+
+	Metadata,RAID1: Size:256.00MiB, Used:1.34MiB (0.52%)
+	   /dev/vdc	 128.00MiB
+	   /dev/vdf	 128.00MiB
+
+	System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
+	   /dev/vdc	   4.00MiB
+	   /dev/vdf	   4.00MiB
+
+	Unallocated:
+	   /dev/vdc	   8.87GiB
+	   /dev/vdf	   8.87GiB
+
+
+So a 2 gigabyte RAID1 chunk actually will take up 4 gigabytes on the actual disks
+2 each. In this case this is being miscalculated as taking up 1gb on each device.
+
+This also leads to erroneously calculated unallocated space. The correct output
+in this case is:
+
+	<snip>
+
+	Data,RAID1: Size:2.00GiB, Used:1.00GiB (50.03%)
+	   /dev/vdc	   2.00GiB
+	   /dev/vdf	   2.00GiB
+
+	Metadata,RAID1: Size:256.00MiB, Used:1.34MiB (0.52%)
+	   /dev/vdc	 256.00MiB
+	   /dev/vdf	 256.00MiB
+
+	System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
+	   /dev/vdc	   8.00MiB
+	   /dev/vdf	   8.00MiB
+
+	Unallocated:
+	   /dev/vdc	   7.74GiB
+	   /dev/vdf	   7.74GiB
+
+
+Fix it by only utilising the chunk formula for profiles which are not RAID1/DUP.
+
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ cmds/filesystem-usage.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/cmds/filesystem-usage.c b/cmds/filesystem-usage.c
+index 6195f633da44..5f2289a9b40d 100644
+--- a/cmds/filesystem-usage.c
++++ b/cmds/filesystem-usage.c
+@@ -805,11 +805,17 @@ int load_chunk_and_device_info(int fd, struct chunk_info **chunkinfo,
+  */
+ static u64 calc_chunk_size(struct chunk_info *ci)
+ {
+-	u32 div;
++	u32 div = 1;
+
+-	/* No parity + sub_stripes, so order of "-" and "/" does not matter */
+-	div = (ci->num_stripes - btrfs_bg_type_to_nparity(ci->type)) /
+-	      btrfs_bg_type_to_sub_stripes(ci->type);
++	/*
++	 * The formula doesn't work for RAID1/DUP types, we should just return the
++	 * chunk size
++	 */
++	if (!(ci->type & (BTRFS_BLOCK_GROUP_RAID1_MASK|BTRFS_BLOCK_GROUP_DUP))) {
++		/* No parity + sub_stripes, so order of "-" and "/" does not matter */
++		div = (ci->num_stripes - btrfs_bg_type_to_nparity(ci->type)) /
++			btrfs_bg_type_to_sub_stripes(ci->type);
++	}
+
+ 	return ci->size / div;
+ }
+--
+2.17.1
+
