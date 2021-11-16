@@ -2,105 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE1D4537C6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Nov 2021 17:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D096B45385F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Nov 2021 18:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233786AbhKPQlv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Nov 2021 11:41:51 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:51530 "EHLO
+        id S238371AbhKPRTY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Nov 2021 12:19:24 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:53762 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233055AbhKPQlv (ORCPT
+        with ESMTP id S229509AbhKPRTW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:41:51 -0500
+        Tue, 16 Nov 2021 12:19:22 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 1DA6C1FD33;
-        Tue, 16 Nov 2021 16:38:53 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id EC6071FD26;
+        Tue, 16 Nov 2021 17:16:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637080733;
+        t=1637082984;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9V4Scp2VY1Xg4OAB05gefIEP8eteTuvcuI+w2w9k+FM=;
-        b=lTmssLL1Uq0aabWCvZFNmdWoZpN537kSBo1cWZCUa3o3Npx/a36MimyWhvHDkW/YABE00N
-        9ulXB2fQMvh6Bl64Qhg+fTZVBLgL4FBvm8yqRa9fnzCudbx4EZ4km2UifCeT1AW8XvkSm3
-        PyrRfre27c0wa9kbnoOB4KmilLjClTI=
+        bh=WBVpDTFwNq/27G70E5kvYi8sXTameSLYVuVfAK4x8Ag=;
+        b=GCsIxJSIt/RL00/21wBH3gWYMj7s0uBifr+hUMeljAe/FqbtQ4u++g8qQSFd1g2/RiNv5s
+        S9Q+cwWS2MSHu38n8OAphxFC3xkG35V7//ZDYzPIV0WMCj4ysvy82QB0UV+LLOrTZ5scg/
+        nVPMmV5cNCXH6F7WYyeDOwkHYkK6fqo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637080733;
+        s=susede2_ed25519; t=1637082984;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9V4Scp2VY1Xg4OAB05gefIEP8eteTuvcuI+w2w9k+FM=;
-        b=UKutfpIMz7rCZCapkX/pKYeMoAImktllryy+FHw3fb255HvVMcb+dH2Sk57tl39wMgKqmH
-        6kwE5wWruyOTxeBw==
+        bh=WBVpDTFwNq/27G70E5kvYi8sXTameSLYVuVfAK4x8Ag=;
+        b=gyFHuJ/7Zy1+AFqo1x+41zPc/u0IEtjkC2cqSrBFIEC+QB+riRihMkg6mu7aliAidny1Wc
+        EtdJfFdi6HYeXEBA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id EC98DA3B84;
-        Tue, 16 Nov 2021 16:38:52 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id E579FA3B88;
+        Tue, 16 Nov 2021 17:16:24 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8180CDA799; Tue, 16 Nov 2021 17:38:49 +0100 (CET)
-Date:   Tue, 16 Nov 2021 17:38:49 +0100
+        id 8990EDA799; Tue, 16 Nov 2021 18:16:21 +0100 (CET)
+Date:   Tue, 16 Nov 2021 18:16:21 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v3 0/7] Use global rsv stealing for evict and clean
- things up
-Message-ID: <20211116163849.GT28560@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH v2 2/2] btrfs: sysfs add devinfo/fsid to retrieve fsid
+ from the device
+Message-ID: <20211116171621.GU28560@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1636470628.git.josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
+References: <cover.1634829757.git.anand.jain@oracle.com>
+ <33e179f8b9341c88754df639b77dafaa1ffec0d1.1634829757.git.anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1636470628.git.josef@toxicpanda.com>
+In-Reply-To: <33e179f8b9341c88754df639b77dafaa1ffec0d1.1634829757.git.anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 09, 2021 at 10:12:00AM -0500, Josef Bacik wrote:
-> v2->v3:
-> - Nikolay suggested an additional cleanup, which lead to multiple other cleanups
->   and small fixes.
+On Thu, Oct 21, 2021 at 11:31:17PM +0800, Anand Jain wrote:
+> In the case of the seed device, the fsid can be different from the mounted
+> sprout fsid.  The userland has to read the device superblock to know the
+> fsid but, that idea fails if the device is missing. So add a sysfs
+> interface devinfo/<devid>/fsid to show the fsid of the device.
 > 
-> v1->v2:
-> - Reworked the stealing logic to be inside of the priority metadata loop, since
->   that's the part we care about.
-> - Renamed the helper to see if we can steal to can_steal.
-> - Added Nikolay's reviewed-by's.
+> For example:
+>  $ cd /sys/fs/btrfs/b10b02a5-f9de-4276-b9e8-2bfd09a578a8
 > 
-> --- Original email ---
-> 
-> Hello,
-> 
-> While trying to remove direct access of fs_info->extent_root I noticed we were
-> passing root into btrfs_reserve_metadata_bytes() for the sole purpose of
-> stealing from the global reserve if we were doing orphan cleanup.  This isn't
-> really necessary anymore, but I needed to clean up a few things
-> 
-> 1) We have global reserve stealing logic in the flushing code now that does the
->    proper ordering already.  We just hadn't converted evict to this yet, so I've
->    done that.
-> 2) Since we already do the global reserve stealing as a part of the reservation
->    process we don't need the extra check to steal from the global reserve if we
->    fail to make our reservation during orphan cleanup.
-> 3) Since we no longer need this logic we don't need the orphan_cleanup_state bit
->    in the root so we can remove that.
-> 4) Finally with all of this removed we don't have a need for root in
->    btrfs_reserve_metadata_bytes(), so change it to fs_info and change it's main
->    callers as well.
-> 
-> With that we've got more consistent global reserve stealing handling in evict,
-> and I've cleaned up the reservation path so I no longer have to worry about a
-> couple of places where we were doing
-> btrfs_reserve_metadata_bytes(root->extent_root).  Thanks,
-> 
-> Josef Bacik (7):
->   btrfs: handle priority ticket failures in their respective helpers
->   btrfs: check for priority ticket granting before flushing
->   btrfs: check ticket->steal in steal_from_global_block_rsv
->   btrfs: make BTRFS_RESERVE_FLUSH_EVICT use the global rsv stealing code
->   btrfs: remove global rsv stealing logic for orphan cleanup
->   btrfs: get rid of root->orphan_cleanup_state
->   btrfs: change root to fs_info for btrfs_reserve_metadata_bytes
+>  $ cat devinfo/1/fsid
+>  c44d771f-639d-4df3-99ec-5bc7ad2af93b
+>  $ cat  devinfo/3/fsid
+>  b10b02a5-f9de-4276-b9e8-2bfd09a578a8
 
-Moved from topic branch to misc-next, thanks.
+From user perspective, it's another fsid, one is in the path, so I'm
+wondering if it should be named like read_fsid or sprout_fsid or if the
+seed/sprout information should be put into another directory completely.
