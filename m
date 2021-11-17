@@ -2,58 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A49C454E69
+	by mail.lfdr.de (Postfix) with ESMTP id D86BB454E6B
 	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Nov 2021 21:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240659AbhKQUXV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Nov 2021 15:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
+        id S240676AbhKQUXW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Nov 2021 15:23:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240665AbhKQUXL (ORCPT
+        with ESMTP id S240673AbhKQUXM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Nov 2021 15:23:11 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD00C061764
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Nov 2021 12:20:12 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id l8so3879287qtk.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Nov 2021 12:20:12 -0800 (PST)
+        Wed, 17 Nov 2021 15:23:12 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D72C061570
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Nov 2021 12:20:13 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id a11so3864147qkh.13
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Nov 2021 12:20:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qBQva0FUvt3/5vG/ecPqeKPJFo4tO0Jrs3EWII0VQ54=;
-        b=IHrt7ef/F10KfuYQXnzg26k8VxkjppqEW+UIqeXu1EF5M5waQcu+xtaffU1noxOlcj
-         l7ii6BQYYhwr+tHs+Hinpv3MFJ/kZn67KqSZQg2LBdrWBREDzraoWQ2HvRS7zX4Kozhn
-         qkSCyI7iw7e8RaAQSrCMlIk1e+ZCAqmFDSeOuhlb78EUTg0iGwII8TVcLCLrbX98ADS/
-         8T5k0Cr8/t+oR7fTbwv16sePnhXUxIwRxa6Hl+S3QrcQH9VgF+jKniPcMJioRRLGItwx
-         6Zfao4Gqnjlhhx5Wb4FLuxtPG8e7lRqHJcDMHNThlJcL8rhe5oAvm1nPpW+/8hWb1hKy
-         4GxA==
+        bh=FSd9FSAHvwRStKfG5eBvhbiT9acKh6fdEyQqg0VRLcU=;
+        b=vzuaJNx8HlHEgIWVqBIgPcRxmkatk4PupbaLzlPs9ZdJX0inwPYn22x9nFKmtzZNsD
+         y/V7MBJ3mDSgGlMrGUUYe9N8TH+w2eBMEhl9l38J4xIqeEUdDq0fFv7nMOhCrjnl/vg0
+         vox7WTYL88mUPEtqeKgDe2CXJeCj76BcEyTWiDyI4COlgvTbsXRdm9f5OHMiS2IwfV4w
+         Z9T93bwlQ8McRwo7CwkxSOCJp+XB0F9z5NBx8Kl6R1ubs54viO47L7cTHu3c/G5tjyAO
+         rskK5JZTy6V2SqTHjBFsyKmCmPW9/H26e8e2jBW/ttyXCcN9CtZkfKLZ2a9sOIKj/pD/
+         I0/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qBQva0FUvt3/5vG/ecPqeKPJFo4tO0Jrs3EWII0VQ54=;
-        b=UNC1IBWWGxYuaYgoEAOcprhBs7pB3ptRuVU6YRJTZq8wOlbO++0Rgbdt2PZtsTXz6e
-         5uyQfSWIqihnbbO02GeVvV8MKIhAWdohyLjKAv5ywnj6/yb4m0UORKY/fqcgJMeO9eSv
-         mZAdvwGHCBNbFURGAhnNl068Y36JCaUZ8k3oWKUyjOfiyf1DNOaxeHzK7NaYzjIpwtuG
-         DTYmxj3s79M8wIxizP8x3X89Wq6Bx1XMSq/hJ2rkDs4RcdWMcj6/BKJvXXS6zq9drXIX
-         GzzF7RUWo2mUgFRkAIsW7gQDDxJhozkUus+xdsq3bdlWUfkMdWCdMc1mvKwxdsaA0IQH
-         RRtw==
-X-Gm-Message-State: AOAM532zvD7qwU5rAW7mo3vBfrkbzCzl3fldt0LIh0Km++Poog7sWAmC
-        e58HK47jQIgbIgouO4XcI4dQdiXNf/Oy1Q==
-X-Google-Smtp-Source: ABdhPJx9r/04O5IehEisXGLFVPtDNv3IDa+/CJYNLMdJA2sOVbMwtnMqx364AstNjI78b9Nj/KO3wQ==
-X-Received: by 2002:a05:622a:18e:: with SMTP id s14mr20896510qtw.203.1637180411174;
-        Wed, 17 Nov 2021 12:20:11 -0800 (PST)
+        bh=FSd9FSAHvwRStKfG5eBvhbiT9acKh6fdEyQqg0VRLcU=;
+        b=zEo9Byiurc9I5wqzF6f0KTQAO8OjktTaoLotvgS1WnyQYLyazSfCW/nexi9maK5CjV
+         4vdkKL9qTO2kOghZU9224YXwXuyipww+r3WLSaUqFrc5JlcHnMk9FjOwRDt0GY48cwmg
+         4WFi8INNvrvmCj1I4YogUEPmUTNRkyNOHrppnf2p2SMGqEvBCx0DADmRLAGZRuFlvQYW
+         xm67BZOmpySpSjr4bUTPShUIbf594vYj1Hgh+yoQ8cxtKnVSonHeATv5XcfezA+bhyqW
+         O6qfwvcRO3GThqNtn2qFnQxwiNDxLXFfyuZJyMFFXl5MikOBEfyOWpRj3mWgqYRGQwXS
+         RbCg==
+X-Gm-Message-State: AOAM533B9NAdfu9pFdBF2M2Us9gxzSTsCf6wwZ+qJ5yC5CHZxWCyzkzN
+        nxzJ5IHpJz+8iQNIrFiEPCJ8ORI/H85QcA==
+X-Google-Smtp-Source: ABdhPJzGuH1CjkgxwLeG5C9AvF4iZGpeo3U5jIVbiVJVGhqr9CPkxwxVovj5nYcmI0qGHhX7Lq5KdA==
+X-Received: by 2002:a05:620a:d58:: with SMTP id o24mr15180250qkl.517.1637180412238;
+        Wed, 17 Nov 2021 12:20:12 -0800 (PST)
 Received: from relinquished.tfbnw.net ([2620:10d:c091:480::1:153e])
-        by smtp.gmail.com with ESMTPSA id bj1sm438074qkb.75.2021.11.17.12.20.10
+        by smtp.gmail.com with ESMTPSA id bj1sm438074qkb.75.2021.11.17.12.20.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 12:20:10 -0800 (PST)
+        Wed, 17 Nov 2021 12:20:11 -0800 (PST)
 From:   Omar Sandoval <osandov@osandov.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     kernel-team@fb.com
-Subject: [PATCH v12 11/17] btrfs: send: remove unused send_ctx::{total,cmd}_send_size
-Date:   Wed, 17 Nov 2021 12:19:21 -0800
-Message-Id: <27b1a93caae1666ea29ea76f3eb6a7aa2878e65e.1637179348.git.osandov@fb.com>
+Subject: [PATCH v12 12/17] btrfs: send: fix maximum command numbering
+Date:   Wed, 17 Nov 2021 12:19:22 -0800
+Message-Id: <bc324fbf99e8a792719da7bb96f5dcf4964904de.1637179348.git.osandov@fb.com>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <cover.1637179348.git.osandov@fb.com>
 References: <cover.1637179348.git.osandov@fb.com>
@@ -65,35 +65,57 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Omar Sandoval <osandov@fb.com>
 
-We collect these statistics but have never used them for anything.
+Commit e77fbf990316 ("btrfs: send: prepare for v2 protocol") added
+_BTRFS_SEND_C_MAX_V* macros equal to the maximum command number for the
+version plus 1, but as written this creates gaps in the number space.
+The maximum command number is currently 22, and __BTRFS_SEND_C_MAX_V1 is
+accordingly 23. But then __BTRFS_SEND_C_MAX_V2 is 24, suggesting that v2
+has a command numbered 23, and __BTRFS_SEND_C_MAX is 25, suggesting that
+23 and 24 are valid commands.
+
+Instead, let's explicitly set BTRFS_SEND_C_MAX_V* to the maximum command
+number. This requires repeating the command name, but it has a clearer
+meaning and avoids gaps. It also doesn't require updating
+__BTRFS_SEND_C_MAX for every new version.
 
 Signed-off-by: Omar Sandoval <osandov@fb.com>
 ---
- fs/btrfs/send.c | 4 ----
- 1 file changed, 4 deletions(-)
+ fs/btrfs/send.c | 4 ++--
+ fs/btrfs/send.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 6bdcb9d481d5..500b866ede43 100644
+index 500b866ede43..450c873684e8 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -81,8 +81,6 @@ struct send_ctx {
- 	char *send_buf;
- 	u32 send_size;
- 	u32 send_max_size;
--	u64 total_send_size;
--	u64 cmd_send_size[BTRFS_SEND_C_MAX + 1];
- 	u64 flags;	/* 'flags' member of btrfs_ioctl_send_args is u64 */
- 	/* Protocol version compatibility requested */
- 	u32 proto;
-@@ -722,8 +720,6 @@ static int send_cmd(struct send_ctx *sctx)
- 	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
- 					&sctx->send_off);
+@@ -316,8 +316,8 @@ __maybe_unused
+ static bool proto_cmd_ok(const struct send_ctx *sctx, int cmd)
+ {
+ 	switch (sctx->proto) {
+-	case 1:	 return cmd < __BTRFS_SEND_C_MAX_V1;
+-	case 2:	 return cmd < __BTRFS_SEND_C_MAX_V2;
++	case 1:	 return cmd <= BTRFS_SEND_C_MAX_V1;
++	case 2:	 return cmd <= BTRFS_SEND_C_MAX_V2;
+ 	default: return false;
+ 	}
+ }
+diff --git a/fs/btrfs/send.h b/fs/btrfs/send.h
+index 23bcefc84e49..59a4be3b09cd 100644
+--- a/fs/btrfs/send.h
++++ b/fs/btrfs/send.h
+@@ -77,10 +77,10 @@ enum btrfs_send_cmd {
  
--	sctx->total_send_size += sctx->send_size;
--	sctx->cmd_send_size[get_unaligned_le16(&hdr->cmd)] += sctx->send_size;
- 	sctx->send_size = 0;
+ 	BTRFS_SEND_C_END,
+ 	BTRFS_SEND_C_UPDATE_EXTENT,
+-	__BTRFS_SEND_C_MAX_V1,
++	BTRFS_SEND_C_MAX_V1 = BTRFS_SEND_C_UPDATE_EXTENT,
  
- 	return ret;
+ 	/* Version 2 */
+-	__BTRFS_SEND_C_MAX_V2,
++	BTRFS_SEND_C_MAX_V2 = BTRFS_SEND_C_MAX_V1,
+ 
+ 	/* End */
+ 	__BTRFS_SEND_C_MAX,
 -- 
 2.34.0
 
