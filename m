@@ -2,113 +2,154 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C2B453C8E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Nov 2021 00:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E44453E8F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Nov 2021 03:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232148AbhKPXMm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Nov 2021 18:12:42 -0500
-Received: from mout.gmx.net ([212.227.17.22]:50779 "EHLO mout.gmx.net"
+        id S232479AbhKQCvx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Nov 2021 21:51:53 -0500
+Received: from trent.utfs.org ([94.185.90.103]:39784 "EHLO trent.utfs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229704AbhKPXMl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Nov 2021 18:12:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637104181;
-        bh=qnCznAuoBIQ4fSJaEsmO8Bmx8bhK1QkJNp9UNXhNjAE=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=MWg2bIZPChz8J+Vk4dH2v/zDJLqFF1eE3lJzoZrnLlMK1I3uxgSer4BHafJiXg0NZ
-         wGPc3rlJDc7stS3qBIU35zAJub58jYWRzHUeS9pRpi1kkc6RFQYfkNqjiAQRYytLQV
-         oEeNjAWgR+3pRnyAouDsOUTaFarPqjMg7zjWSrJ0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6sn1-1mbzsB3wkB-018GAX; Wed, 17
- Nov 2021 00:09:41 +0100
-Message-ID: <4dbad01d-00e7-882c-6d91-c0351514df71@gmx.com>
-Date:   Wed, 17 Nov 2021 07:09:37 +0800
+        id S229889AbhKQCvw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Nov 2021 21:51:52 -0500
+X-Greylist: delayed 462 seconds by postgrey-1.27 at vger.kernel.org; Tue, 16 Nov 2021 21:51:52 EST
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+ d=nerdbynature.de; i=@nerdbynature.de; q=dns/txt; s=key1;
+ t=1637116872; h=date : from : to : subject : message-id : mime-version
+ : content-type : from;
+ bh=CniObYlK7tmUy+S12Lo8qW9CN9kb1hPmT98ZTF/rjXc=;
+ b=lZtUR5uM2wva+9O4wp+gTDB/MVYAngGtBiipHHL3G2p21QHTc+Ld/7T3AXA7rGm+fKanZ
+ hIVK8iRPUGd5kOTBA==
+Authentication-Results: mail.nerdbynature.de; dmarc=fail (p=none dis=none) header.from=nerdbynature.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nerdbynature.de;
+ i=@nerdbynature.de; q=dns/txt; s=key0; t=1637116872; h=date : from :
+ to : subject : message-id : mime-version : content-type : from;
+ bh=CniObYlK7tmUy+S12Lo8qW9CN9kb1hPmT98ZTF/rjXc=;
+ b=hTThKmqlUlKCxRgp2JbEV4rX9ym21e9UeJv62BIwMBRI7zYqpexSYwKg9IYuy2p2k0gGX
+ RbOAUqvR1j5kJ2T40oBrAeZQrWONVIHXceQoSwMZr8Si/3A4Kmjq4On3t97Bo+CoGxNhnxg
+ d6WQkY15/DKCfj+qtHpuNGfn7rAsDH64spZNQne3gS2O6GVF+cKYaa98P3GBRcQ90uLX/i9
+ coPV5NheuW3FC2ndkn/EQLgoMk14ePY0c0EM7zro40x4OwffJkrY6RAoN2mX24s35giVdLg
+ ftDWq2A10synZaZD6TAg31RHImkIgAMm4bnufkvBFjjEniZWmG1vApatkUtg==
+Received: from localhost (localhost [IPv6:::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by trent.utfs.org (Postfix) with ESMTPS id 1D7C561F5B
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Nov 2021 03:41:12 +0100 (CET)
+Date:   Wed, 17 Nov 2021 03:41:12 +0100 (CET)
+From:   Christian Kujau <lists@nerdbynature.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: failed to load free space cache for block group
+Message-ID: <9aaa22f5-3fe-19ff-ff8f-318d6ba78313@trent.utfs.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH] btrfs-progs: raid56: fix the wrong recovery condition for
- data and P case
-Content-Language: en-US
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211116131051.247977-1-wqu@suse.com>
- <20211116135222.GP28560@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <20211116135222.GP28560@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SAD+2HovguM8XPJv8tCBlrjtzrDIr+Ko2cC3fOaokBby5yRKSkK
- O53MwQaJx6BuUPOXlkEXdyZ9utxt7/Rf8Ehcqyq2lVw0dzjSxkEtDudcolXVZOb3jf1f51z
- McTvRWwfxca+UtSqXEzs8LASN9asGRTYU+D/CVVJzHlAltA0h4zfrULZhqASL10SFIffdVe
- kXLKOWBfhnK2Pb/WL/vIQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IwGl0UJ43vs=:LOOj2vbDTEnOOmCeTRc46Z
- ms0QiywBi15PS2VakeurAsJB42V9OcgvOWsKIJrrZA6m8YO7h5nLmAUMve5yDdMspSCSIZrLT
- grTZYEe20iVH/rwjBxanzozjgWdNKlNMM/IZeuYnTARUIQTnrPsdTiNauoBmVulKGChZI+jqn
- 1pIY3YrMJXSxBdEx0cz50KuzM8jbgUnE/LXWClwc57mEVXfAxXmWtDNfHTSVwTsDPoElJ080z
- 8fSbiUROnoVRky1KxR8QQD8edaGD6/QxKLG80two3YvyHHqBXTBdUoyVhbNtZpmvdZtOcbc/T
- JwaqR3yESzxc/1tN1SDTKTRyu1rxdX9pDmfoUroRMGMa9kygkijEfdZYN+gY9dPGaoQEHVd++
- pPe1uGRTKqWsYvGuwoP7pF5RMi41oD9sYiMjCpDTCp69lAww4gFKXjgkoq6hgx2iz17mYzSPQ
- FvQ4xBaqqzLQ6XqVZYVwsIDaeEeIZBzPpYbnxX6NT700zqsZAyOkNx07fh5vN1fjX8W9R0XBL
- UNJYKhje1VGFYoZ4stlOblHO2iTUk9YqdbucocVtjGE8/75vgkt6fCdpU82irNnF/K3ELmPfA
- 6V7WFO9rvET94LsagRPgWJTi5bU2Xei1qdjde/gwNh7T+2i9oHDiEF9H8TeLpsJtdc6hmEiNX
- IK0WCf92rO9YF0Pa7H/Cg8UGy9vMIqyConJ5lGk+t2lQGuEDwufIDgtrJHYsS7PZimt5b1Tvq
- 13R62R8FqLROp9nAsbNLy3uAVSCOf+F0jzfr732vP9NvuPeRsjRaOi1pgnYVXfxDnRcEEztuS
- kUuh9CtlXrseCHVmj5SGJoaBokY8n49455Wxnk7fcqkVZyPaEK+gBZRnQNZSUDK76M2zQsVhE
- 491DIkuqe7u/FGeAHzPuHhC8GORAxxf0fl29UfWS8HAs1YBvhwJWQPtOWMjR4kGnPgjSbStjH
- Pmnjhvn2AbgLE3/i3C3wU8wR7+1Lv3CCrwIOs+p7s9KKpSK30t71rrn/4hXREM/ETRuYhkG9F
- 0pgkh0H9Z0cWCBq3ih5c/RLzuUb9Kfq9Mr7jwb84OQ+p75+YF31y3JKGFxzZbe6Vjv9XxqOxz
- +rdnXlOBblLC/4=
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On fairly freshly installed Fedora 34 system (just upgraded to F35 with 
+5.14.17-301.fc35.x86_64 running) the following messages started to appear 
+during bootup, about ~1 week after the file system had been created by the 
+installer:
 
+ BTRFS warning (device dm-0): block group 49414144000 has wrong amount of free space
+ BTRFS warning (device dm-0): failed to load free space cache for block group 49414144000, rebuilding it now
 
-On 2021/11/16 21:52, David Sterba wrote:
-> On Tue, Nov 16, 2021 at 09:10:51PM +0800, Qu Wenruo wrote:
->> There is a bug in raid56_recov() which doesn't properly repair data and
->> P case corruption:
->>
->> 	/* Data and P*/
->> 	if (dest2 =3D=3D nr_devs - 1)
->> 		return raid6_recov_datap(nr_devs, stripe_len, dest1, data);
->>
->> Note that, dest1/2 is to indicate which slot has corruption.
->>
->> For RAID6 cases:
->>
->> [0, nr_devs - 2) is for data stripes,
->> @data_devs - 2 is for P,
->> @data_devs - 1 is for Q.
->>
->> For above code, the comment is correct, but the check condition is
->> wrong, and leads to the only project, btrfs-fuse, to report raid6
->> recovery error for 2 devices missing case.
->>
->> Fix it by using correct condition.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> But I'm more interested in why this function is still there, as there
->> seems to be no caller of this function in btrfs-progs anyway.
->
-> The file is there from old times when the radi56 implementation landed
-> and the file was a copy of something in the lib/raid6 directory, but the
-> sources have diverged.
->
-> The function was not used as there was no repair code in userspace, so
-> the question is if w still want it there or remove it.
->
-But then the problem is, how could userspace doesn't have any RAID56
-recovery mechanism?
+There are a few more block groups affected now (see below), and it's 
+always the same block groups being reported.
 
-Things like btrfs check still needs RAID56 recovery to read fs with
-missing devices, this doesn't make any sense to me.
+The btrfs file system resides on a LUKS encrypted device, on an NVMe disk 
+inside a Lenovo T470 laptop. The device appears to be fine, no hardware 
+related errors have been logged here. Maybe (!) the laptop has not been 
+shutdown properly but I don't remember if that really happened.
 
-The only good news is now we have another project which would do a full
-coverage test for btrfs-progs...
+A (readonly) btrfs scrub found no errors here. All files on the file 
+system can be read, so there is no real problem here. I just want to 
+understand if that's something to worry about. The messages can be found 
+on the interwebs, but mostly in (very) old postings and w/o the message 
+being explained.
+
+So, let me ask here - is this something to worry about? How to get rid of 
+those messages? And: how to prevent those in the future? :-)
 
 Thanks,
-Qu
+Christian.
+
+$ mount | grep btrfs
+/dev/mapper/luks-root on / type btrfs (rw,relatime,seclabel,compress=zstd:3,ssd,discard,space_cache,subvolid=5,subvol=/)
+
+$ btrfs inspect-internal dump-super /dev/mapper/luks-root 
+superblock: bytenr=65536, device=/dev/mapper/luks-root
+---------------------------------------------------------
+csum_type		0 (crc32c)
+csum_size		4
+csum			0xb15c2efc [match]
+bytenr			65536
+flags			0x1
+			( WRITTEN )
+magic			_BHRfS_M [match]
+fsid			f1093dd0-ba7e-47c7-98de-e0ac85a34972
+metadata_uuid		f1093dd0-ba7e-47c7-98de-e0ac85a34972
+label			
+generation		44115
+root			136606744576
+sys_array_size		97
+chunk_root_generation	43990
+root_level		1
+chunk_root		1048576
+chunk_root_level	0
+log_root		0
+log_root_transid	0
+log_root_level		0
+total_bytes		268418678784
+bytes_used		109501288448
+sectorsize		4096
+nodesize		16384
+leafsize (deprecated)	16384
+stripesize		4096
+root_dir		6
+num_devices		1
+compat_flags		0x0
+compat_ro_flags		0x0
+incompat_flags		0x171
+			( MIXED_BACKREF |
+			  COMPRESS_ZSTD |
+			  BIG_METADATA |
+			  EXTENDED_IREF |
+			  SKINNY_METADATA )
+[...]
+
+$ journalctl -b | grep BTRFS | cut -c30-
+ BTRFS: device fsid f1093dd0-ba7e-47c7-98de-e0ac85a34972 devid 1 transid 44043 /dev/dm-0 scanned by systemd-udevd (715)
+ BTRFS info (device dm-0): flagging fs with big metadata feature
+ BTRFS info (device dm-0): disk space caching is enabled
+ BTRFS info (device dm-0): has skinny extents
+ BTRFS info (device dm-0): enabling ssd optimizations
+ BTRFS info (device dm-0): turning on sync discard
+ BTRFS info (device dm-0): use zstd compression, level 3
+ BTRFS info (device dm-0): disk space caching is enabled
+ BTRFS info (device dm-0): devid 1 device path /dev/mapper/luks-root changed to /dev/dm-0 scanned by systemd-udevd (895)
+ BTRFS info (device dm-0): devid 1 device path /dev/dm-0 changed to /dev/mapper/luks-root scanned by systemd-udevd (895)
+ BTRFS warning (device dm-0): block group 11833180160 has wrong amount of free space
+ BTRFS warning (device dm-0): failed to load free space cache for block group 11833180160, rebuilding it now
+ BTRFS warning (device dm-0): block group 16128147456 has wrong amount of free space
+ BTRFS warning (device dm-0): failed to load free space cache for block group 16128147456, rebuilding it now
+ BTRFS warning (device dm-0): block group 20423114752 has wrong amount of free space
+ BTRFS warning (device dm-0): block group 21496856576 has wrong amount of free space
+ BTRFS warning (device dm-0): failed to load free space cache for block group 20423114752, rebuilding it now
+ BTRFS warning (device dm-0): failed to load free space cache for block group 21496856576, rebuilding it now
+ BTRFS warning (device dm-0): block group 22570598400 has wrong amount of free space
+ BTRFS warning (device dm-0): failed to load free space cache for block group 22570598400, rebuilding it now
+ BTRFS warning (device dm-0): block group 45119176704 has wrong amount of free space
+ BTRFS warning (device dm-0): failed to load free space cache for block group 45119176704, rebuilding it now
+ BTRFS warning (device dm-0): block group 48340402176 has wrong amount of free space
+ BTRFS warning (device dm-0): failed to load free space cache for block group 48340402176, rebuilding it now
+ BTRFS warning (device dm-0): block group 126684758016 has wrong amount of free space
+ BTRFS warning (device dm-0): failed to load free space cache for block group 126684758016, rebuilding it now
+
+ BTRFS info (device dm-0): scrub: started on devid 1
+ BTRFS info (device dm-0): scrub: finished on devid 1 with status: 0
+
+-- 
+BOFH excuse #450:
+
+Terrorists crashed an airplane into the server room, have to remove /bin/laden. (rm -rf /bin/laden)
