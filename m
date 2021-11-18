@@ -2,152 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D9145619C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 18:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECC84562F7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 19:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbhKRRkw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Nov 2021 12:40:52 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:60304 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbhKRRko (ORCPT
+        id S230446AbhKRS5U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Nov 2021 13:57:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229600AbhKRS5U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Nov 2021 12:40:44 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B7C1E1FD38;
-        Thu, 18 Nov 2021 17:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637257062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=gr4vTY2qmq+4abZaqjY58lKDgGoIRxKbq/34OYSg12s=;
-        b=DyyId0ieskvMDaBOVlUlhes5ODIBreBFDnHdGD7IDaGYOiyig/KYf4qN0eSxpgYmpyDmkm
-        CJ+DLkBERnC0Gxr068PLrSGblt7+YF2DAv5V+YzYkF4v+QZQdvfFWaqYjd9QB4/ghoHQE5
-        sRMkY0+pNLLanz6HdGqGczLVvZyNb4U=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id AF43EA3B81;
-        Thu, 18 Nov 2021 17:37:42 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 37055DA735; Thu, 18 Nov 2021 18:37:38 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.16-rc2
-Date:   Thu, 18 Nov 2021 18:37:37 +0100
-Message-Id: <cover.1637255480.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.33.0
+        Thu, 18 Nov 2021 13:57:20 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9858EC061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 10:54:19 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id g19so6948509pfb.8
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 10:54:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bcFIKm6OUM2zm4fjkRqvDV+QTI1Au7nfVIZhzUXt1V0=;
+        b=GrvLhf/x1AIv8LmlqYNF21B0yMb1JWF0nI6qviANdqx2nUC94Urod8/PzWmAAGvBp+
+         2oe7QJrioBzSe5F2+c/tt/XX/8Ze2hhvJMnhLCDAT8zE5x7qv7IlR1Jw8kFilEtZxG8Q
+         CozoISPSJD95D1FSR1u4crKckSIi4NIrMP0Z9h04u1tB6As+zP5+kV9NCh/m+Fib9f7w
+         lTpK+QvxwaYvVz1cwcILci+iCgF8hQD0G5doMdJPAMi7J+EBeMwGJq9GFOEftW3wvSQB
+         hI1SW5CJmoHDD/YZjBoiUEKx81onL3cZlJXEtX0XpgnizWs4M5kmKZRMowwjVUbsGIz9
+         dCyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bcFIKm6OUM2zm4fjkRqvDV+QTI1Au7nfVIZhzUXt1V0=;
+        b=Tp/RCK9168QXrKq8V09Fy63rkh/KpI6yGmRmR0ihvm8Q2bCBTHUWD+rqZ1hm+d1+5B
+         Qw+Dg5+ZmP+pQ3ySeGIft0Id5Xhscla4ZrrYzFAGjBA4Z+GQuQQf3zKplnXEKdzmimp+
+         deAUMWB7vkcNDjazt9od1lDpo3RtgCcNlgKJNWnv3eG0SsHhBzM5NJr3dE6DpjfaaEjE
+         Q1mwYcnbZBFko/J0Gx8OOZYcEQKBKoGJRCdjcn7/oQE/frZLwbIKjKLxfj/pf7fKa/1z
+         1ekknCMKQ/+bddIGQlGkL/YlO54onTZsHryPLVwpm+xyA2Piuwh4jf+eiejxRn49ivpP
+         jpHw==
+X-Gm-Message-State: AOAM530qXzYZZoAScprsbuqRedWZHnUuYd9UL0Jl8dsr1wr05brW0Sdt
+        RpP3CqIvxCDM8RP2xJbbsvfYGQ==
+X-Google-Smtp-Source: ABdhPJyJ7qrd2Bl+2g6goa8URdo+/ibyaMyG1fHqkzZbOQT3j28SrZlEoiyzR0Q92pd61IdR+b2dFw==
+X-Received: by 2002:a05:6a00:80c:b0:49f:de3e:e475 with SMTP id m12-20020a056a00080c00b0049fde3ee475mr17316940pfk.27.1637261658916;
+        Thu, 18 Nov 2021 10:54:18 -0800 (PST)
+Received: from relinquished.localdomain ([2620:10d:c090:400::5:174e])
+        by smtp.gmail.com with ESMTPSA id f21sm357875pfe.69.2021.11.18.10.54.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 10:54:18 -0800 (PST)
+Date:   Thu, 18 Nov 2021 10:54:16 -0800
+From:   Omar Sandoval <osandov@osandov.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v12 12/17] btrfs: send: fix maximum command numbering
+Message-ID: <YZahWPMfY5CLXTa6@relinquished.localdomain>
+References: <cover.1637179348.git.osandov@fb.com>
+ <bc324fbf99e8a792719da7bb96f5dcf4964904de.1637179348.git.osandov@fb.com>
+ <20211118142359.GE28560@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118142359.GE28560@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Thu, Nov 18, 2021 at 03:23:59PM +0100, David Sterba wrote:
+> On Wed, Nov 17, 2021 at 12:19:22PM -0800, Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
+> > 
+> > Commit e77fbf990316 ("btrfs: send: prepare for v2 protocol") added
+> > _BTRFS_SEND_C_MAX_V* macros equal to the maximum command number for the
+> > version plus 1, but as written this creates gaps in the number space.
+> > The maximum command number is currently 22, and __BTRFS_SEND_C_MAX_V1 is
+> > accordingly 23. But then __BTRFS_SEND_C_MAX_V2 is 24, suggesting that v2
+> > has a command numbered 23, and __BTRFS_SEND_C_MAX is 25, suggesting that
+> > 23 and 24 are valid commands.
+> 
+> The MAX definitions have the __ prefix so they're private and not meant
+> to be used as proper commands, so nothing should suggest there are any
+> commands with numbers 23 to 25 in the example.
+> 
+> > Instead, let's explicitly set BTRFS_SEND_C_MAX_V* to the maximum command
+> > number. This requires repeating the command name, but it has a clearer
+> > meaning and avoids gaps. It also doesn't require updating
+> > __BTRFS_SEND_C_MAX for every new version.
+> 
+> It's probably a matter of taste, I'd intentionally avoid the pattern
+> above, ie. repeating the previous command to define max.
+> 
+> > --- a/fs/btrfs/send.c
+> > +++ b/fs/btrfs/send.c
+> > @@ -316,8 +316,8 @@ __maybe_unused
+> >  static bool proto_cmd_ok(const struct send_ctx *sctx, int cmd)
+> >  {
+> >  	switch (sctx->proto) {
+> > -	case 1:	 return cmd < __BTRFS_SEND_C_MAX_V1;
+> > -	case 2:	 return cmd < __BTRFS_SEND_C_MAX_V2;
+> > +	case 1:	 return cmd <= BTRFS_SEND_C_MAX_V1;
+> > +	case 2:	 return cmd <= BTRFS_SEND_C_MAX_V2;
+> 
+> This seems to be the only practical difference, < or <= .
 
-there are several fixes and one old ioctl deprecation. Namely there's
-fix for crashes/warnings with lzo compression that was suspected to be
-caused by first pull merge resolution, but it was a different bug.
+There is another practical difference, which is more significant in my
+opinion: the linear style creates "gaps" in the valid commands. Consider
+this, with explicit values added for clarity:
 
-The branch is based on the previous pull so there's still a conflict in
-lzo.c but this time it's a trivial one (diff below). I've also tested
-the branches with/without the fix and on both 64bit and 32bit hosts so
-there should be no surprises.
+enum btrfs_send_cmd {
+        BTRFS_SEND_C_UNSPEC = 0,
 
-The ioctl deprecation patch is new but it's just adding a warning
-message, there's no reason to delay that for another full release.
+        /* Version 1 */
+        BTRFS_SEND_C_SUBVOL = 1,
+        BTRFS_SEND_C_SNAPSHOT = 2,
 
-Changes:
+        BTRFS_SEND_C_MKFILE = 3,
+        BTRFS_SEND_C_MKDIR = 4,
+        BTRFS_SEND_C_MKNOD = 5,
+        BTRFS_SEND_C_MKFIFO = 6,
+        BTRFS_SEND_C_MKSOCK = 7,
+        BTRFS_SEND_C_SYMLINK = 8,
 
-* regression, fix crash in lzo due to missing boundary checks of page
-  array
+        BTRFS_SEND_C_RENAME = 9,
+        BTRFS_SEND_C_LINK = 10,
+        BTRFS_SEND_C_UNLINK = 11,
+        BTRFS_SEND_C_RMDIR = 12,
 
-* fix crashes on ARM64 due to missing barriers when synchronizing
-  status bits between work queues
+        BTRFS_SEND_C_SET_XATTR = 13,
+        BTRFS_SEND_C_REMOVE_XATTR = 14,
 
-* silence lockdep when reading chunk tree during mount
+        BTRFS_SEND_C_WRITE = 15,
+        BTRFS_SEND_C_CLONE = 16,
 
-* fix false positive warning in integrity checker on devices with
-  disabled write caching
+        BTRFS_SEND_C_TRUNCATE = 17,
+        BTRFS_SEND_C_CHMOD = 18,
+        BTRFS_SEND_C_CHOWN = 19,
+        BTRFS_SEND_C_UTIMES = 20,
 
-* fix signedness of bitfields in scrub
+        BTRFS_SEND_C_END = 21,
+        BTRFS_SEND_C_UPDATE_EXTENT = 22,
+        __BTRFS_SEND_C_MAX_V1 = 23,
 
-* start deprecation of balance v1 ioctl
+        /* Version 2 */
+        BTRFS_SEND_C_FALLOCATE = 24,
+        BTRFS_SEND_C_SETFLAGS = 25,
+        BTRFS_SEND_C_ENCODED_WRITE = 26,
+        __BTRFS_SEND_C_MAX_V2 = 27,
 
-Please pull, thanks.
+        /* End */
+        __BTRFS_SEND_C_MAX = 28,
+};
+#define BTRFS_SEND_C_MAX (__BTRFS_SEND_C_MAX - 1) /* 27 */
 
-Conflict resolution:
+Notice that BTRFS_SEND_C_UPDATE_EXTENT is 22 and the next valid command
+is BTRFS_SEND_C_FALLOCATE, which is 24. So 23 does not correspond to an
+actual command; it's a "gap". This is somewhat cosmetic, but it's an
+ugly wart in the protocol.
 
-diff --cc fs/btrfs/lzo.c
-index 65cb0766e62d,f410ceabcdbd..9febb8025825
---- a/fs/btrfs/lzo.c
-+++ b/fs/btrfs/lzo.c
-@@@ -131,8 -132,10 +132,11 @@@ static int copy_compressed_data_to_page
-  	u32 sector_bytes_left;
-  	u32 orig_out;
-  	struct page *cur_page;
- +	char *kaddr;
-  
-+ 	if ((*cur_out / PAGE_SIZE) >= max_nr_page)
-+ 		return -E2BIG;
-+ 
-  	/*
-  	 * We never allow a segment header crossing sector boundary, previous
-  	 * run should ensure we have enough space left inside the sector.
-@@@ -160,7 -162,9 +164,11 @@@
-  		u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
-  				     orig_out + compressed_size - *cur_out);
-  
- +		kunmap(cur_page);
-++
-+ 		if ((*cur_out / PAGE_SIZE) >= max_nr_page)
-+ 			return -E2BIG;
-+ 
-  		cur_page = out_pages[*cur_out / PAGE_SIZE];
-  		/* Allocate a new page */
-  		if (!cur_page) {
-@@@ -202,7 -202,7 +210,8 @@@ int lzo_compress_pages(struct list_hea
-  	struct workspace *workspace = list_entry(ws, struct workspace, list);
-  	const u32 sectorsize = btrfs_sb(mapping->host->i_sb)->sectorsize;
-  	struct page *page_in = NULL;
- +	char *sizes_ptr;
-+ 	const unsigned long max_nr_page = *out_pages;
-  	int ret = 0;
-  	/* Points to the file offset of input data */
-  	u64 cur_in = start;
+Also consider something indexing on the command number, like the
+cmd_send_size thing I got rid of in the previous patch:
 
-----------------------------------------------------------------
-The following changes since commit d1ed82f3559e151804743df0594f45d7ff6e55fa:
+	u64 cmd_send_size[BTRFS_SEND_C_MAX + 1]
 
-  btrfs: remove root argument from check_item_in_log() (2021-10-29 12:39:13 +0200)
+Indices 23 and 27 are wasted. It's only 16 bytes in this case, which
+doesn't matter practically, but it's unpleasant.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.16-rc1-tag
-
-for you to fetch changes up to 6c405b24097c24cbb11570b47fd382676014f72e:
-
-  btrfs: deprecate BTRFS_IOC_BALANCE ioctl (2021-11-16 16:51:19 +0100)
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      btrfs: make 1-bit bit-fields of scrub_page unsigned int
-
-Filipe Manana (1):
-      btrfs: silence lockdep when reading chunk tree during mount
-
-Nikolay Borisov (2):
-      btrfs: fix memory ordering between normal and ordered work functions
-      btrfs: deprecate BTRFS_IOC_BALANCE ioctl
-
-Qu Wenruo (1):
-      btrfs: fix a out-of-bound access in copy_compressed_data_to_page()
-
-Wang Yugui (1):
-      btrfs: check-integrity: fix a warning on write caching disabled disk
-
- fs/btrfs/async-thread.c | 14 ++++++++++++++
- fs/btrfs/disk-io.c      | 14 +++++++++++++-
- fs/btrfs/ioctl.c        |  4 ++++
- fs/btrfs/lzo.c          | 12 +++++++++++-
- fs/btrfs/scrub.c        |  4 ++--
- fs/btrfs/volumes.c      | 18 +++++++++++++-----
- 6 files changed, 57 insertions(+), 9 deletions(-)
+Maybe you were aware of this and fine with it, in which case we can drop
+this change. But I think the name repetition is less ugly than the gaps.
