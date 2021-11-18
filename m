@@ -2,112 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBFE4557C8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 10:12:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 533FE455829
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 10:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243210AbhKRJPu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Nov 2021 04:15:50 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:56550 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245010AbhKRJPj (ORCPT
+        id S245198AbhKRJkq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Nov 2021 04:40:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243574AbhKRJkn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:15:39 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0E5B51FD29;
-        Thu, 18 Nov 2021 09:12:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637226758;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kw6ZxJNkxKjdGq1ChNnyoww3nrYBTnlHXQuQRVD7rXw=;
-        b=JgBPMIiD7x+8hpIn/A+DixORmwkYzr8HNj99UcPfUMHiQ/FH7+pINfFB+eJ6mtXSQU9DfT
-        rp1YKiSAm+7Z7mlHU9ZWVU6DSLKyd8kFPTOfInw+G8M+Q2Z99qQFbqT8XKu2Wzd7HA1VXe
-        +Rfhpc0POY0ZlEkNhIZYzNvs7L893Go=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637226758;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kw6ZxJNkxKjdGq1ChNnyoww3nrYBTnlHXQuQRVD7rXw=;
-        b=AH/dnhZRfOv7DoCEbkWfwQY5D47d7bQYMSDFxUBC7bgpyf2330uaMVqT989zc5uNzxGQRn
-        WSMvrpPNcJs9VfDA==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 073C0A3B85;
-        Thu, 18 Nov 2021 09:12:38 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B25CBDA799; Thu, 18 Nov 2021 10:12:33 +0100 (CET)
-Date:   Thu, 18 Nov 2021 10:12:33 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Fix calculation of chunk size for RAID1/DUP profiles
-Message-ID: <20211118091233.GW28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211116140206.291252-1-nborisov@suse.com>
+        Thu, 18 Nov 2021 04:40:43 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D6CC061570
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 01:37:43 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so9898445otj.7
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 01:37:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=QAGwmYMIasX1UVCqGuIfmxR4l8/J1AuoyUSoeBdEgXo=;
+        b=qNXvm2q1nQR7QSnq/CSd75sahq9Cxad7VoJgBkv927diGtn8sVgHT12W4DIw5tM3ew
+         LRh+qZTz0X9B4z7WBufWw7xmZit3gjwyhECQMSEPOkkg4kVLh936/sUHIlxxs1xgtlZG
+         bXI6blsrqkmRKr214Deb+2STqUr3ZTFgbGlvjtYPXcveUaL1D54hsvQ0mdEvgYZnmyoz
+         kdVB5kvgXIQRfU5ywZAucWWICNFn43IjaLnDWCmvL4BSPvH68XPZHwrAYbkwCVjLZTFU
+         3CRhkqYp9mOeU5RKHfIWbA3tOR+LlwJ3UDQRA7hwDCdinS9Su3q947dc9oZbCeiDF6rI
+         bmEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=QAGwmYMIasX1UVCqGuIfmxR4l8/J1AuoyUSoeBdEgXo=;
+        b=RBLMWNq4plLFnA20XjG7PjXDOyrndffWPTmP3esWA9QL1m6GblMcaP9pd36412LtxD
+         2bL86KZmBxWEJsxFjiD5jjo7jZRkL9XJLYHuP7pHxszVAeWCH6GnNay9tdEiXexIVQIT
+         NLVuuhLw+3MfcnIx3gfMq2cEzl7xp+pcYk0exNepd/xKHYlOeF6QDAUYi8uFSxDJ2A0w
+         wMdynzeZbO2+RZoT2We6kkwR0d38fYNmjtAr2AciTa9G+a3nctrSKjXmMSDrk/uGtUDt
+         FnH5d0cRByUPURt8hbCwxdHgiqo4xdHF07fZoxmJk513JZGj+0HiB2Gu2SyT/zfoFC2S
+         gUoA==
+X-Gm-Message-State: AOAM533PFQmqTpbIL2DYzN1jTf1NqDvKy5k03b+acGe17D94YylnlEI9
+        7oy8ovBcPeCiwcaqPPc15gS9Vw9Op5z+nd+3GBM=
+X-Google-Smtp-Source: ABdhPJwxuPXdgN8MJhyBnVunuLxOqqcynuDTE7zfG0urmH9nqnI4AcKrF0BO6MD1p36yWHXIoJAaaJqodrhszOLmCxo=
+X-Received: by 2002:a9d:75d4:: with SMTP id c20mr6202915otl.85.1637228263048;
+ Thu, 18 Nov 2021 01:37:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211116140206.291252-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Received: by 2002:a4a:8f51:0:0:0:0:0 with HTTP; Thu, 18 Nov 2021 01:37:42
+ -0800 (PST)
+Reply-To: billchantal01@gmail.com
+From:   bill chantal <billchantal0@gmail.com>
+Date:   Thu, 18 Nov 2021 10:37:42 +0100
+Message-ID: <CAKrjFFSUcZkawe1AWaBgvH-D25hkqJOUy282U_7UF6pze977Mg@mail.gmail.com>
+Subject: You have been compensated
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 16, 2021 at 04:02:06PM +0200, Nikolay Borisov wrote:
-> Current formula calculates the stripe size, however that's not what we want
-> in the case of RAID1/DUP profiles. In those cases since chunkc are mirrored
-> across devices we want the full size of the chunk. Without this patch the
-> 'btrfs fi usage' output from an fs which is using RAID1 is:
-> 
-> 	<snip>
-> 
-> 	Data,RAID1: Size:2.00GiB, Used:1.00GiB (50.03%)
-> 	   /dev/vdc	   1.00GiB
-> 	   /dev/vdf	   1.00GiB
-> 
-> 	Metadata,RAID1: Size:256.00MiB, Used:1.34MiB (0.52%)
-> 	   /dev/vdc	 128.00MiB
-> 	   /dev/vdf	 128.00MiB
-> 
-> 	System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
-> 	   /dev/vdc	   4.00MiB
-> 	   /dev/vdf	   4.00MiB
-> 
-> 	Unallocated:
-> 	   /dev/vdc	   8.87GiB
-> 	   /dev/vdf	   8.87GiB
-> 
-> 
-> So a 2 gigabyte RAID1 chunk actually will take up 4 gigabytes on the actual disks
-> 2 each. In this case this is being miscalculated as taking up 1gb on each device.
-> 
-> This also leads to erroneously calculated unallocated space. The correct output
-> in this case is:
-> 
-> 	<snip>
-> 
-> 	Data,RAID1: Size:2.00GiB, Used:1.00GiB (50.03%)
-> 	   /dev/vdc	   2.00GiB
-> 	   /dev/vdf	   2.00GiB
-> 
-> 	Metadata,RAID1: Size:256.00MiB, Used:1.34MiB (0.52%)
-> 	   /dev/vdc	 256.00MiB
-> 	   /dev/vdf	 256.00MiB
-> 
-> 	System,RAID1: Size:8.00MiB, Used:16.00KiB (0.20%)
-> 	   /dev/vdc	   8.00MiB
-> 	   /dev/vdf	   8.00MiB
-> 
-> 	Unallocated:
-> 	   /dev/vdc	   7.74GiB
-> 	   /dev/vdf	   7.74GiB
-> 
-> 
-> Fix it by only utilising the chunk formula for profiles which are not RAID1/DUP.
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+-- 
+You have been compensated with the sum of $ 5.8  million dollars in
+the United Nations, the payment will be issued on the ATM visa card
+and will be sent from the Santander bank.
 
-Added to devel, thanks.
+   we need your address,whatsapp  number and your passport
+ this is my private email address (billchantal01@gmail.com)
+
+Thanks
+
+Bill Chantal
