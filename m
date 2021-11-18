@@ -2,82 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B827C455839
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 10:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19527455AC2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 12:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245249AbhKRJvC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Nov 2021 04:51:02 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:53948 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245246AbhKRJu6 (ORCPT
+        id S1344087AbhKRLnE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Nov 2021 06:43:04 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:38550 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344412AbhKRLlB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:50:58 -0500
+        Thu, 18 Nov 2021 06:41:01 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1949E212C1
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 09:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637228878; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=+ntObkqKlkZd+1iwgP2GUlkY/SCaGegRUos2orfznJs=;
-        b=H0vNLizjfzTBonmAXieWI7uUqBz4goWbkb9iEnXryBTVmwo3vEwdYoxIoAG6mfGa02NoMZ
-        eU2i+Dg4jAfT4Dcfzn/Sv2w80PxcfY1B5EcNmiEVHPDK/J/XrZMfrBhev0bLq3Q8jpDxA+
-        DoIR8OK9jx4GdUV++Uo6GQTb1RCPZi4=
+        by smtp-out2.suse.de (Postfix) with ESMTP id 246371FD29;
+        Thu, 18 Nov 2021 11:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637235481;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/WLnHx0QShvT5z0YSeVCbnYKCZLddOFHLmCDt/S7niQ=;
+        b=sHAvt0dkVkoZweTrnURiS7sNrqqVzNjQgLa7BBfJnSlzZk8uqIRzHNBjfkMndAoou+lRk+
+        b/yVfdsPlBsoxOPBpTWyE0zAfdI0XvIW4f3AoKoKAiRL+CmQNxH2gx+3TvN1mIQP7DmA36
+        XwxIEonqihHZSEGIpuibdjRKmFpLm1o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637235481;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/WLnHx0QShvT5z0YSeVCbnYKCZLddOFHLmCDt/S7niQ=;
+        b=BoEj+CVhBYwH0dA8NBsj12Z0oUKEIMqPbwMlLPKIZA2+Zaq8/DhNsw+nqI4eosq2JeVuww
+        PkY4ZjK/QAl/WbBA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 13973A3B84
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 09:47:58 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 1C904A3B83;
+        Thu, 18 Nov 2021 11:38:01 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C201DDA781; Thu, 18 Nov 2021 10:47:53 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs pre-release 5.15.1-rc1
-Date:   Thu, 18 Nov 2021 10:47:53 +0100
-Message-Id: <20211118094753.18900-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.33.0
+        id BA47ADA735; Thu, 18 Nov 2021 12:37:56 +0100 (CET)
+Date:   Thu, 18 Nov 2021 12:37:56 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: remove unnecessary @nr_written parameters
+Message-ID: <20211118113756.GX28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20211112053314.30009-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211112053314.30009-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Fri, Nov 12, 2021 at 01:33:14PM +0800, Qu Wenruo wrote:
+> We use @nr_written to record how many pages have been started by
+> btrfs_run_delalloc_range().
+> 
+> Currently there are only two cases that would populate @nr_written:
+> 
+> - Inline extent creation
+> - Compressed write
+> 
+> But both cases will also set @page_started to one.
+> 
+> In fact, in writepage_delalloc() we have the following code, showing
+> that @nr_written is really only utilized for above two cases:
+> 
+> 	/* did the fill delalloc function already unlock and start
+> 	 * the IO?
+> 	 */
+> 	if (page_started) {
+> 		/*
+> 		 * we've unlocked the page, so we can't update
+> 		 * the mapping's writeback index, just update
+> 		 * nr_to_write.
+> 		 */
+> 		wbc->nr_to_write -= nr_written;
+> 		return 1;
+> 	}
+> 
+> But for such cases, writepage_delalloc() will return 1, and exit
+> __extent_writepage() without going through __extent_writepage_io().
+> 
+> Thus this means, inside __extent_writepage_io(), we always get
+> @nr_written as 0.
+> 
+> So this patch is going to remove the unnecessary parameter from the
+> following functions:
+> 
+> - writepage_delalloc()
+> 
+>   As @nr_written passed in is always the initial value 0.
+> 
+>   Although inside that function, we still need a local @nr_written
+>   to update wbc->nr_to_write.
+> 
+> - __extent_writepage_io()
+> 
+>   As explained above, @nr_written passed in can only be 0.
+> 
+>   This also means we can remove one update_nr_written() call.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-this is a pre-release announcement of btrfs-progs, 5.15.1-rc1. There are fixes
-and documentation updates.
-
-The proper release is scheduled to this Friday, +1 day (2021-11-19).
-
-There is no -rc1 tag and no tarball, the changes are in git branch v5.15.x in
-the devel repositories.
-
-Changelog:
-
-* fixes:
-  * fi usage: fix wrongly reported space of used or unallocated space
-  * fix detection of block device discard capability
-* check: add more sanity checks for checksum items
-* build: make sphinx optional backend for documentation
-
-Shortlog:
-
-David Sterba (7):
-      btrfs-progs: docs: add Glossary from wiki
-      btrfs-progs: docs: RST formatting fixups
-      btrfs-progs: docs: fix RST mkfs.btrfs table formatting
-      btrfs-progs: docs: disable RST smartquotes for em-dash
-      btrfs-progs: docs: integrate sphinx build
-      btrfs-progs: docs: mention ntfs2btrfs conversion tool
-      btrfs-progs: update CHANGES for 5.15.1
-
-Mark Harmstone (1):
-      btrfs-progs: check: add check for too many csum entries
-
-Nikolay Borisov (2):
-      btrfs-progs: fi usage: don't reset ratio to 1 if we don't have RAID56 profile
-      btrfs-progs: fi usage: fix calculation of chunk size for RAID1/DUP profiles
-
-Qu Wenruo (1):
-      btrfs-progs: raid56: fix the wrong recovery condition for data and P case
-
-Wang Yugui (1):
-      btrfs-progs: fix discard support check
-
+Added to misc-next, thanks.
