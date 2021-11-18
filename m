@@ -2,92 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0675455FDF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 16:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD7C4560D7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 17:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232769AbhKRPxo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Nov 2021 10:53:44 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:49176 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232745AbhKRPxn (ORCPT
+        id S233659AbhKRQqk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Nov 2021 11:46:40 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:57154 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233677AbhKRQqh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:53:43 -0500
+        Thu, 18 Nov 2021 11:46:37 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2112F2177B;
-        Thu, 18 Nov 2021 15:50:42 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id 48DA21FD29;
+        Thu, 18 Nov 2021 16:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637250642;
+        t=1637253815;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SOH6b64f3mvz/cUl9Lt3RStR0g8Wok3zbS9/V6F1rkw=;
-        b=VVeSmyNmJIz9jorssE9f5iYgVYihnnFa/u6Z5ws9+ldhvE/de/7HXtO1r+Ib5x0I3Fleju
-        /20r7iuIAqJd4o8lqX+xQQfsRsER+ZQ5dBx2bQv6RYDIEQ1m4o7/dY6v3KhLgcqjHzXD2L
-        k9GBoM123XkuG/V1JvCW9Bu+K2Ot8z4=
+        bh=qlYuTiJ0ArdlnNgoFx0zHGrDjc4hOf2fdKQgZ/C13xs=;
+        b=qp5r5INRdvLoz/FWi7E6l8Qc89Ok+ycX+XAh3iNETp9H75kHApHyp+ETah/i/l40VVBF73
+        USrXYFc6S27q47stloJkU2vQf4lxfBrUUuj/pug28NKiUzjd0qdTd169XTqEX84Oo6AEoF
+        B8RhO0d66OUW3eIOPxbFh2f/O8eT1wQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637250642;
+        s=susede2_ed25519; t=1637253815;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SOH6b64f3mvz/cUl9Lt3RStR0g8Wok3zbS9/V6F1rkw=;
-        b=Bk/nHpUfsGvdFO2W1uJZP6getW9AhCd8TjiFlHju7UuN7bE/tYofhJswHxu6PGX1MnpCy5
-        KojA8HGCG79GabAA==
+        bh=qlYuTiJ0ArdlnNgoFx0zHGrDjc4hOf2fdKQgZ/C13xs=;
+        b=5sVcG8ya7i0VK2Ig2q+RrexVhAoXs0tQvrzOlpy/fU7F8F9fzyUS0/86C2/T6EpI29xxXB
+        2EobjWXiqk5VKNCw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 16586A3B81;
-        Thu, 18 Nov 2021 15:50:42 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 409EFA3B90;
+        Thu, 18 Nov 2021 16:43:35 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 71E4FDA735; Thu, 18 Nov 2021 16:50:37 +0100 (CET)
-Date:   Thu, 18 Nov 2021 16:50:37 +0100
+        id C3420DA735; Thu, 18 Nov 2021 17:43:30 +0100 (CET)
+Date:   Thu, 18 Nov 2021 17:43:30 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v12 14/17] btrfs: send: write larger chunks when using
- stream v2
-Message-ID: <20211118155037.GH28560@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH v4 2/2] btrfs: index free space entries on size
+Message-ID: <20211118164330.GI28560@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1637179348.git.osandov@fb.com>
- <051232485e4ac1a1a5fd35de7328208385c59f65.1637179348.git.osandov@fb.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Filipe Manana <fdmanana@suse.com>
+References: <cover.1637248994.git.josef@toxicpanda.com>
+ <41d72c6b01a1a1510015902d3a5a5729d3a159c5.1637248994.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <051232485e4ac1a1a5fd35de7328208385c59f65.1637179348.git.osandov@fb.com>
+In-Reply-To: <41d72c6b01a1a1510015902d3a5a5729d3a159c5.1637248994.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 12:19:24PM -0800, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> The length field of the send stream TLV header is 16 bits. This means
-> that the maximum amount of data that can be sent for one write is 64k
-> minus one. However, encoded writes must be able to send the maximum
-> compressed extent (128k) in one command. To support this, send stream
-> version 2 encodes the DATA attribute differently: it has no length
-> field, and the length is implicitly up to the end of containing command
-> (which has a 32-bit length field). Although this is necessary for
-> encoded writes, normal writes can benefit from it, too.
-> 
-> Also add a check to enforce that the DATA attribute is last. It is only
-> strictly necessary for v2, but we might as well make v1 consistent with
-> it.
-> 
-> For v2, let's bump up the send buffer to the maximum compressed extent
-> size plus 16k for the other metadata (144k total).
+On Thu, Nov 18, 2021 at 10:26:16AM -0500, Josef Bacik wrote:
+> + */
+> +static inline u64 get_max_extent_size(struct btrfs_free_space *entry)
+> +{
+> +	if (entry->bitmap && entry->max_extent_size)
+> +		return entry->max_extent_size;
+> +	return entry->bytes;
+> +}
+> +
+> +/*
+> + * This is indexed in reverse of what we generally do for rb-tree's, the largest
+> + * chunks are left most and the smallest are rightmost.  This is so that we can
+> + * take advantage of the cached property of the cached rb-tree and simply get
+> + * the largest free space chunk right away.
+> + */
+> +static void tree_insert_bytes(struct btrfs_free_space_ctl *ctl,
+> +			      struct btrfs_free_space *info)
+> +{
+> +	struct rb_root_cached *root = &ctl->free_space_bytes;
+> +	struct rb_node **p = &root->rb_root.rb_node;
 
-I'm not sure we want to set the number like that, it feels quite
-limiting for potential compression enhancements.
+Please don't use single letter variables, other than 'i' for indexing.
+For tree nodes I've been renaming it to 'node' in any new code.
 
-
-> Since this will most
-> likely be vmalloc'd (and always will be after the next commit), we round
-> it up to the next page since we might as well use the rest of the page
-> on systems with >16k pages.
-
-Would it work also without the virtual mappings? For speedup it makes
-sense to use vmalloc area, but as a fallback writing in smaller portions
-or page by page eventually should be also possible. For that reason I
-don't think we should set the maximum other than what fits to 32bit
-number minus some overhead.
+> +	struct rb_node *parent_node = NULL;
+> +	struct btrfs_free_space *tmp;
+> +	bool leftmost = true;
+> +
+> +	while (*p) {
+> +		parent_node = *p;
+> +		tmp = rb_entry(parent_node, struct btrfs_free_space,
+> +			       bytes_index);
+> +		if (get_max_extent_size(info) < get_max_extent_size(tmp)) {
+> +			p = &(*p)->rb_right;
+> +			leftmost = false;
+> +		} else {
+> +			p = &(*p)->rb_left;
+> +		}
+> +	}
+> +
+> +	rb_link_node(&info->bytes_index, parent_node, p);
+> +	rb_insert_color_cached(&info->bytes_index, root, leftmost);
+> +}
+> +
+>  /*
+>   * searches the tree for the given offset.
+>   *
