@@ -2,69 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533FE455829
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 10:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B827C455839
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 10:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245198AbhKRJkq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Nov 2021 04:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243574AbhKRJkn (ORCPT
+        id S245249AbhKRJvC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Nov 2021 04:51:02 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:53948 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245246AbhKRJu6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Nov 2021 04:40:43 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D6CC061570
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 01:37:43 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id v15-20020a9d604f000000b0056cdb373b82so9898445otj.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 01:37:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=QAGwmYMIasX1UVCqGuIfmxR4l8/J1AuoyUSoeBdEgXo=;
-        b=qNXvm2q1nQR7QSnq/CSd75sahq9Cxad7VoJgBkv927diGtn8sVgHT12W4DIw5tM3ew
-         LRh+qZTz0X9B4z7WBufWw7xmZit3gjwyhECQMSEPOkkg4kVLh936/sUHIlxxs1xgtlZG
-         bXI6blsrqkmRKr214Deb+2STqUr3ZTFgbGlvjtYPXcveUaL1D54hsvQ0mdEvgYZnmyoz
-         kdVB5kvgXIQRfU5ywZAucWWICNFn43IjaLnDWCmvL4BSPvH68XPZHwrAYbkwCVjLZTFU
-         3CRhkqYp9mOeU5RKHfIWbA3tOR+LlwJ3UDQRA7hwDCdinS9Su3q947dc9oZbCeiDF6rI
-         bmEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=QAGwmYMIasX1UVCqGuIfmxR4l8/J1AuoyUSoeBdEgXo=;
-        b=RBLMWNq4plLFnA20XjG7PjXDOyrndffWPTmP3esWA9QL1m6GblMcaP9pd36412LtxD
-         2bL86KZmBxWEJsxFjiD5jjo7jZRkL9XJLYHuP7pHxszVAeWCH6GnNay9tdEiXexIVQIT
-         NLVuuhLw+3MfcnIx3gfMq2cEzl7xp+pcYk0exNepd/xKHYlOeF6QDAUYi8uFSxDJ2A0w
-         wMdynzeZbO2+RZoT2We6kkwR0d38fYNmjtAr2AciTa9G+a3nctrSKjXmMSDrk/uGtUDt
-         FnH5d0cRByUPURt8hbCwxdHgiqo4xdHF07fZoxmJk513JZGj+0HiB2Gu2SyT/zfoFC2S
-         gUoA==
-X-Gm-Message-State: AOAM533PFQmqTpbIL2DYzN1jTf1NqDvKy5k03b+acGe17D94YylnlEI9
-        7oy8ovBcPeCiwcaqPPc15gS9Vw9Op5z+nd+3GBM=
-X-Google-Smtp-Source: ABdhPJwxuPXdgN8MJhyBnVunuLxOqqcynuDTE7zfG0urmH9nqnI4AcKrF0BO6MD1p36yWHXIoJAaaJqodrhszOLmCxo=
-X-Received: by 2002:a9d:75d4:: with SMTP id c20mr6202915otl.85.1637228263048;
- Thu, 18 Nov 2021 01:37:43 -0800 (PST)
+        Thu, 18 Nov 2021 04:50:58 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1949E212C1
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 09:47:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637228878; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=+ntObkqKlkZd+1iwgP2GUlkY/SCaGegRUos2orfznJs=;
+        b=H0vNLizjfzTBonmAXieWI7uUqBz4goWbkb9iEnXryBTVmwo3vEwdYoxIoAG6mfGa02NoMZ
+        eU2i+Dg4jAfT4Dcfzn/Sv2w80PxcfY1B5EcNmiEVHPDK/J/XrZMfrBhev0bLq3Q8jpDxA+
+        DoIR8OK9jx4GdUV++Uo6GQTb1RCPZi4=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 13973A3B84
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 09:47:58 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C201DDA781; Thu, 18 Nov 2021 10:47:53 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Btrfs progs pre-release 5.15.1-rc1
+Date:   Thu, 18 Nov 2021 10:47:53 +0100
+Message-Id: <20211118094753.18900-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: by 2002:a4a:8f51:0:0:0:0:0 with HTTP; Thu, 18 Nov 2021 01:37:42
- -0800 (PST)
-Reply-To: billchantal01@gmail.com
-From:   bill chantal <billchantal0@gmail.com>
-Date:   Thu, 18 Nov 2021 10:37:42 +0100
-Message-ID: <CAKrjFFSUcZkawe1AWaBgvH-D25hkqJOUy282U_7UF6pze977Mg@mail.gmail.com>
-Subject: You have been compensated
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
--- 
-You have been compensated with the sum of $ 5.8  million dollars in
-the United Nations, the payment will be issued on the ATM visa card
-and will be sent from the Santander bank.
+Hi,
 
-   we need your address,whatsapp  number and your passport
- this is my private email address (billchantal01@gmail.com)
+this is a pre-release announcement of btrfs-progs, 5.15.1-rc1. There are fixes
+and documentation updates.
 
-Thanks
+The proper release is scheduled to this Friday, +1 day (2021-11-19).
 
-Bill Chantal
+There is no -rc1 tag and no tarball, the changes are in git branch v5.15.x in
+the devel repositories.
+
+Changelog:
+
+* fixes:
+  * fi usage: fix wrongly reported space of used or unallocated space
+  * fix detection of block device discard capability
+* check: add more sanity checks for checksum items
+* build: make sphinx optional backend for documentation
+
+Shortlog:
+
+David Sterba (7):
+      btrfs-progs: docs: add Glossary from wiki
+      btrfs-progs: docs: RST formatting fixups
+      btrfs-progs: docs: fix RST mkfs.btrfs table formatting
+      btrfs-progs: docs: disable RST smartquotes for em-dash
+      btrfs-progs: docs: integrate sphinx build
+      btrfs-progs: docs: mention ntfs2btrfs conversion tool
+      btrfs-progs: update CHANGES for 5.15.1
+
+Mark Harmstone (1):
+      btrfs-progs: check: add check for too many csum entries
+
+Nikolay Borisov (2):
+      btrfs-progs: fi usage: don't reset ratio to 1 if we don't have RAID56 profile
+      btrfs-progs: fi usage: fix calculation of chunk size for RAID1/DUP profiles
+
+Qu Wenruo (1):
+      btrfs-progs: raid56: fix the wrong recovery condition for data and P case
+
+Wang Yugui (1):
+      btrfs-progs: fix discard support check
+
