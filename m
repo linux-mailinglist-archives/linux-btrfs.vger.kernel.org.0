@@ -2,181 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C301455F50
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 16:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CC0455F51
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 16:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbhKRPZJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Nov 2021 10:25:09 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:47074 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbhKRPZH (ORCPT
+        id S231947AbhKRPZg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Nov 2021 10:25:36 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:52204 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230098AbhKRPZf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Nov 2021 10:25:07 -0500
+        Thu, 18 Nov 2021 10:25:35 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C60C0212C4;
-        Thu, 18 Nov 2021 15:22:05 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C981C1FD29
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 15:22:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637248925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=DvXCv13/TWOEDrWtkkvBeubdJqm4HqnXqMRJkihk3J8=;
-        b=bYaI3nTzDHxxAU/S8FoY3MLeDEoe4njB9idbZKvs5NIOY5eHNERNHr2hpvwlNO/8kKE2Vh
-        XPMcjDRxFattBjo5YCO05V4ey9KggN62C/mMARgaSjSw5MeCQhWaxBCBGwOqKB7Lz0AGjl
-        WYQ78XWvk2madfI8fD+o3tEeKLzRa8U=
+        t=1637248954; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tys3zM3aG+SIp0oVibby5VpUKZLCaWbhCMN4SUtqEdo=;
+        b=eF/ZODIAZ/WtqAEfVJbmYPY4laRVs8cptn5oQqS8F5nEGpcvPh4td8fGP4jvvKdlL0XikX
+        LKi+F1OnhiFcCn6mIR7xN6WYj2tCJn25l7p/o6EdxkaQpbLimloAxGcAOtwFEeqyBPjRl8
+        3ECKBEPIXVgb6cn255M7/EiG1C7gRzk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94F8113D43;
-        Thu, 18 Nov 2021 15:22:05 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A922B13D43
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 15:22:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id STjkIZ1vlmEPHQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 18 Nov 2021 15:22:05 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
+        id D5++JrpvlmFSHQAAMHmgww
+        (envelope-from <nborisov@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 15:22:34 +0000
+Subject: Re: [PATCH v2 1/2] btrfs-progs: fi show: Print missing device for a
+ mounted file system
 To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs-progs: Add test for btrfs fi usage output
-Date:   Thu, 18 Nov 2021 17:22:04 +0200
-Message-Id: <20211118152204.424144-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+References: <20210910083344.1876661-1-nborisov@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <1a0eb650-e23f-ea3d-07ac-b6109c8103b4@suse.com>
+Date:   Thu, 18 Nov 2021 17:22:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <20210910083344.1876661-1-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There was a regression in btrfs progs release 5.15 due to changes in how
-the ratio for the various raid profiles got calculated and this in turn
-had a cascading effect on unallocated/allocated space reported.
 
-Add a test to ensure this regression doesn't occur again.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- tests/cli-tests/016-btrfs-fi-usage/test.sh | 111 +++++++++++++++++++++
- 1 file changed, 111 insertions(+)
- create mode 100755 tests/cli-tests/016-btrfs-fi-usage/test.sh
+On 10.09.21 г. 11:33, Nikolay Borisov wrote:
+> Currently when a device is missing for a mounted filesystem the output
+> that is produced is unhelpful:
+> 
+> Label: none  uuid: 139ef309-021f-4b98-a3a8-ce230a83b1e2
+> 	Total devices 2 FS bytes used 128.00KiB
+> 	devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
+> 	*** Some devices missing
+> 
+> While the context which prints this is perfectly capable of showing
+> which device exactly is missing, like so:
+> 
+> Label: none  uuid: 4a85a40b-9b79-4bde-8e52-c65a550a176b
+> 	Total devices 2 FS bytes used 128.00KiB
+> 	devid    1 size 5.00GiB used 1.26GiB path /dev/loop0
+> 	devid    2 size 0 used 0 path /dev/loop1 MISSING
+> 
+> This is a lot more usable output as it presents the user with the id
+> of the missing device and its path.
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+> 
+> V2:
+>  * Removed stars around MISSING
 
-diff --git a/tests/cli-tests/016-btrfs-fi-usage/test.sh b/tests/cli-tests/016-btrfs-fi-usage/test.sh
-new file mode 100755
-index 000000000000..6c1563f8e0ce
---- /dev/null
-+++ b/tests/cli-tests/016-btrfs-fi-usage/test.sh
-@@ -0,0 +1,111 @@
-+#!/bin/bash
-+# Tests 'btrfs fi usage' reports correct space/ratio with various RAID profiles
-+
-+source "$TEST_TOP/common"
-+
-+check_prereq btrfs
-+setup_root_helper
-+setup_loopdevs 4
-+prepare_loopdevs
-+TEST_DEV=${loopdevs[1]}
-+
-+report_numbers()
-+{
-+	vars=($(run_check_stdout $SUDO_HELPER "$TOP/btrfs" filesystem usage -b "$TEST_MNT" | awk '
-+	/Data ratio/ { ratio=$3 }
-+	a {dev_alloc=$2; exit}
-+	/Data,(DUP|RAID[0156][C34]{0,2}|single)/ { size=substr($2,6,length($2)-6); a=1 }
-+END {print ratio " " size " " dev_alloc}'))
-+
-+	echo "${vars[@]}"
-+}
-+
-+test_dup()
-+{
-+	run_check_mkfs_test_dev -ddup
-+	run_check_mount_test_dev
-+	vars=($(report_numbers))
-+	data_chunk_size=${vars[1]}
-+	used_on_dev=${vars[2]}
-+	data_ratio=${vars[0]}
-+
-+	[[ $used_on_dev -eq $((2*$data_chunk_size)) ]] || _fail "DUP inconsistent chunk/device usage. Chunk: $data_chunk_size Device: $used_on_dev"
-+
-+	[[ "$data_ratio" = "2.00" ]] || _fail "DUP: Unexpected data ratio: $data_ratio (must be 2)"
-+	run_check_umount_test_dev
-+}
-+
-+test_raid1()
-+{
-+	# single is not raid1 but it has the same characteristics so put it in here
-+	# as well
-+	for i in single,1.00 raid1,2.00 raid1c3,3.00 raid1c4,4.00; do
-+
-+		# this allows to set the tuples to $1 and $2 respectively
-+		OLDIFS=$IFS
-+		IFS=","
-+		set -- $i
-+		IFS=$OLDIFS
-+
-+		run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -d$1 ${loopdevs[@]}
-+		run_check_mount_test_dev
-+		vars=($(report_numbers))
-+		data_chunk_size=${vars[1]}
-+		used_on_dev=${vars[2]}
-+		data_ratio=${vars[0]}
-+
-+		[[ $used_on_dev -eq $data_chunk_size ]] || _fail "$1 inconsistent chunk/device usage. Chunk: $data_chunk_size Device: $used_on_dev"
-+
-+		[[ "$data_ratio" = "$2" ]] || _fail "$1: Unexpected data ratio: $data_ratio (must be $2)"
-+
-+		run_check_umount_test_dev
-+	done
-+}
-+
-+test_raid0()
-+{
-+	run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -draid0 ${loopdevs[@]}
-+	run_check_mount_test_dev
-+	vars=($(report_numbers))
-+	data_chunk_size=${vars[1]}
-+	used_on_dev=${vars[2]}
-+	data_ratio=${vars[0]}
-+
-+	# Divide by 4 since 4 loopp devices are setup
-+	[[ $used_on_dev -eq $(($data_chunk_size / 4)) ]] || _fail "raid0 inconsistent chunk/device usage. Chunk: $data_chunk_size Device: $used_on_dev"
-+
-+	[[ $data_ratio = "1.00" ]] || _fail "raid0: Unexpected data ratio: $data_ratio (must be 1.5)"
-+	run_check_umount_test_dev
-+}
-+
-+test_raid56()
-+{
-+	for i in raid5,1.33,3 raid6,2.00,2; do
-+
-+		# this allows to set the tuples to $1 and $2 respectively
-+		OLDIFS=$IFS
-+		IFS=","
-+		set -- $i
-+		IFS=$OLDIFS
-+
-+		run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f -d$1 ${loopdevs[@]}
-+		run_check_mount_test_dev
-+		vars=($(report_numbers))
-+		data_chunk_size=${vars[1]}
-+		used_on_dev=${vars[2]}
-+		data_ratio=${vars[0]}
-+
-+		[[ $used_on_dev -eq $(($data_chunk_size / $3)) ]] || _fail "$i inconsistent chunk/device usage. Chunk: $data_chunk_size Device: $used_on_dev"
-+
-+		[[ $data_ratio = "$2" ]] || _fail "$1: Unexpected data ratio: $data_ratio (must be $2)"
-+
-+		run_check_umount_test_dev
-+	done
-+}
-+
-+test_dup
-+test_raid1
-+test_raid0
-+test_raid56
-+
-+cleanup_loopdevs
--- 
-2.17.1
 
+Ping
