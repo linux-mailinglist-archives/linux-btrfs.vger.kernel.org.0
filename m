@@ -2,130 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8254564E7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 22:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F412456514
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 22:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhKRVMR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Nov 2021 16:12:17 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:36670 "EHLO
-        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229514AbhKRVMQ (ORCPT
+        id S231214AbhKRVgU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Nov 2021 16:36:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230398AbhKRVgU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Nov 2021 16:12:16 -0500
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id D9AEA880EF; Thu, 18 Nov 2021 16:09:15 -0500 (EST)
-Date:   Thu, 18 Nov 2021 16:09:15 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Matthew Dawson <matthew@mjdsystems.ca>
-Cc:     Kai Krakow <hurikhan77+btrfs@gmail.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: Help recovering filesystem (if possible)
-Message-ID: <20211118210915.GC17148@hungrycats.org>
-References: <2586108.vuYhMxLoTh@cwmtaff>
- <CAMthOuMxvff2d0THhKWCpErQFumrJA9vmNqS6vtBNDwUwf3j-w@mail.gmail.com>
- <3321185.LZWGnKmheA@cwmtaff>
+        Thu, 18 Nov 2021 16:36:20 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F13C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 13:33:19 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id j9so5623087qvm.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 13:33:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xQ2JTZmj7ZCjZmSfcsjgywIq+RkEBJtveiBzRdnvygM=;
+        b=J9wWwZafb8kv1jnw5gl06sxwGm2wu1ilT3KwwZmRwdT0MrvOiJeXXEobWKVJ6eICwN
+         88cppdCW3TVTGVWP5s4OvZ94PYp2nC71SClt3TgVzJ7elDJ5WlRvvpmwOIkhl9++wc13
+         q3PljKSNIcPxlpGcsvDuNsnmQC4n9vfbq+7qAm9pml9RZffDpzvAx69RYrCGe7URazLM
+         5NL8PoPxV1JC65O6et9Fd8knhiMBRvqa+GTIxvuRVS8O7vc+XAJkqMM+eZOr1pJCLrXE
+         hALEuC0ZhRgbIK2Ayp2CCGhlRuAgGpj35o+pyFvb0QuKauaI8Wdkiggc70UBHULbH8i4
+         zztw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xQ2JTZmj7ZCjZmSfcsjgywIq+RkEBJtveiBzRdnvygM=;
+        b=nphinYjoeGMeX9lfrmA831sireUUaEJWclb78uFiqWQ/H42o+1aVliwrr9skS7/82s
+         FF/6LWiqtOwpFfYBRLMVld+DhGWzganukAqfNKExeGlmUD+4cqIjZ7+SrRIalZ66Th21
+         0SQnras87ig5XkEtmVXXNVnVLLm6bAf8moOu8QUMa3HO6ZeMcuK8bUkUOo8SXPycL6dm
+         byXgIdXvRULkPTIIHwel0lSD9K8dOL/uwfTatZEZA2MQxTFtiBq963JkqA2hLuUWcO/w
+         65I5tgGzb09YkVrlq1vChXCmELkLUVCuY4mXnteU3gNhzH0KeRfPjnajrpK/RBUEF97s
+         5OSw==
+X-Gm-Message-State: AOAM532hO2axjfAI9ZBtyNc23eq3357NyR9rOYl0elFJareOWQLyzUkC
+        IuEYPvtcX+QvvH8hSKx7NQzNwBLusZMNPw==
+X-Google-Smtp-Source: ABdhPJysMiObHUS4DkL4U8bMAUeSFL0brSCemmrmj/hDUTMpZkBH5fPCpGD+x6gUKNNoweobQzpU+A==
+X-Received: by 2002:a05:6214:5002:: with SMTP id jo2mr68385286qvb.54.1637271198561;
+        Thu, 18 Nov 2021 13:33:18 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id bs16sm611970qkb.45.2021.11.18.13.33.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Nov 2021 13:33:17 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v5 0/3] Index free space entries on size
+Date:   Thu, 18 Nov 2021 16:33:13 -0500
+Message-Id: <cover.1637271014.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3321185.LZWGnKmheA@cwmtaff>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 09:57:40PM -0500, Matthew Dawson wrote:
-> On Monday, November 15, 2021 5:46:43 A.M. EST Kai Krakow wrote:
-> > Am Mo., 15. Nov. 2021 um 02:55 Uhr schrieb Matthew Dawson
-> > 
-> > <matthew@mjdsystems.ca>:
-> > > I recently upgrade one of my machines to the 5.15.2 kernel.  on the first
-> > > reboot, I had a kernel fault during the initialization (I didn't get to
-> > > capture the printed stack trace, but I'm 99% sure it did not have BTRFS
-> > > related calls).  I then rebooted the machine back to a 5.14 kernel, but
-> > > the
-> > > BCache (writeback) cache was corrupted.  I then force started the
-> > > underlying disks, but now my BTRFS filesystem will no longer mount.  I
-> > > realize there may be missing/corrupted data, but I would like to ideally
-> > > get any data I can off the disks.
-> > 
-> > I had a similar issue lately where the system didn't reboot cleanly
-> > (there's some issue in the BIOS or with the SSD firmware where it
-> > would disconnect the SSD from SATA a few seconds after boot, forcing
-> > bcache into detaching dirty caches).
-> > 
-> > Since you are seeing transaction IDs lacking behind expectations, I
-> > think you've lost dirty writeback data from bcache. Do fix this in the
-> > future, you should use bcache only in writearound or writethrough
-> > mode.
-> Considering I started the bcache devices without the cache, I don't doubt I've 
-> lost writeback data and I have no doubts there will be issues.  At this point 
-> I'm just in data recovery, trying to get what I can.
+v4->v5:
+- Broke out the self tests into their own patch.
+- Use the rb_add_cached() helper instead of yet again duplicating the rb tree
+  insertion code.
 
-The word "issues" is not adequate to describe the catastrophic damage
-to metadata that occurs if the contents of a writeback cache are lost.
+--- Original email ---
 
-If writeback failure happens to only one btrfs device's cache, you
-can recover with btrfs raid1 self-healing using intact copies stored
-on working devices.  If it happens on multiple btrfs devices at once
-(e.g. due to misconfiguration of bcache with more than one btrfs device
-per pool or more than one bcache pool per SSD, or due to a kernel bug
-that affects all bcache instances at once, or a firmware bug that affects
-each SSD device the same way during a crash) then recovery isn't possible.
+Hello,
 
-Writeback cache failures are _bad_, falling between "many thousands of
-bad sectors" and "total disk failure" in terms of difficulty of recovery.
+I noticed while digging into an xfstests hang that the bytes index stuff was a
+little wonky when it came to bitmap entries.  If we change the ->bytes at all we
+weren't re-arranging the bytes indexed tree for bitmaps, because we don't do the
+unlink/link thing that we do with extent entries.
 
-> Hopefully someone has a different idea?  I am posting here because I feel any 
-> luck is going to start using more dangerous options and those usually say to 
-> ask the mailing list first.
+I fixed this particular shortcoming and added a new set of selftests to validate
+that everything was working as expected.  This uncovered a weirdness with how we
+handle ->max_extent_size, so I've added that as a separate patch to make it
+clear why the change is necessary.
 
-Your best option would be to get the caches running again, at least in
-read-only mode.  It's not a good option, but all your other options depend
-on having access to as many cached dirty pages as possible.  If all you
-have is the backing devices, then now is the time to scrape what you
-can from the drives with 'btrfs restore' then make use of your backups.
+Additionally I've updated my original patch to include the fixes necessary to
+make bitmaps re-index when they change.  I've added self tests to validate the
+changes to make sure everything is acting as we expect.  Thanks,
 
-This is what you're up against:
+Josef
 
-btrfs writes metadata pages in a specific order to keep one complete
-metadata tree on disk intact at all times.  This means that a specific
-item of metadata (e.g. a directory or inode) is stored in different disk
-blocks at different times.  Old physical disk blocks are frequently
-recycled to store different data--not merely newer versions of the
-same items, but completely unrelated items from different areas of
-the filesystem.
+Josef Bacik (3):
+  btrfs: only use ->max_extent_size if it is set in the bitmap
+  btrfs: index free space entries on size
+  btrfs: add self test for bytes_index free space cache
 
-Writeback caches write to backing devices in mostly sequential
-LBA order for performance.  This is a defining characteristic of a
-writeback cache--if the cache maintained the btrfs write order on the
-backing device then we'd call it a "writethrough" or "writebehind"
-cache instead.  Writeback caches don't need to respect write order for
-individual blocks on the backing device as long as they can guarantee they
-will eventually finish writing all of the data out to the backing device
-(i.e. they restart writeback automatically after a reboot or crash).
+ fs/btrfs/free-space-cache.c       | 157 ++++++++++++++++++++++----
+ fs/btrfs/free-space-cache.h       |   2 +
+ fs/btrfs/tests/free-space-tests.c | 181 ++++++++++++++++++++++++++++++
+ 3 files changed, 320 insertions(+), 20 deletions(-)
 
-During writeback, some metadata items will temporarily appear on the
-backing device two or more times (a new version of the item was written,
-but an old version of the item has not been overwritten yet and remains
-on the backing device) while other items will be completely missing (the
-old version of the item has been overwritten, but the new version of the
-item has not been written yet, so no version of the item exists on the
-backing device).  The backing disk will normally be missing significant
-portions of the filesystem's metadata as long as there are dirty pages
-in the cache device.
+-- 
+2.26.3
 
-A recovery tool reading the backing device can't simply find an old
-version of an inode's metadata, get a location for most of its data
-blocks, and guess the locations of remaining blocks or truncate the file
-(as tools like e2fsck do).  The missing btrfs metadata items are not
-present at all on the backing device, because their old versions will be
-erased from the backing device during writeback, while the new versions
-haven't been written yet and will exist only in the cache device.
-
-If the cache had a non-trivial number of dirty blocks when it failed, then
-the above losses occur many thousands of times in the metadata trees, and
-each lost page may contain metadata for hundreds of files.  The backing
-disk will contain a severely damaged (some might say "destroyed")
-filesystem.  Recovery tools would be able to delete incomplete objects
-from the filesystem and make the filesystem mountable, but with
-significant (if not total) data losses.
