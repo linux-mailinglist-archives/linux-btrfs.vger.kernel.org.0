@@ -2,87 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF0145635E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 20:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7912845638E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 20:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhKRTWn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Nov 2021 14:22:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
+        id S230290AbhKRThl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Nov 2021 14:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbhKRTWm (ORCPT
+        with ESMTP id S229574AbhKRThl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:22:42 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0C2C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 11:19:42 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id x131so7001002pfc.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 11:19:42 -0800 (PST)
+        Thu, 18 Nov 2021 14:37:41 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB28C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 11:34:40 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id gx15-20020a17090b124f00b001a695f3734aso6703915pjb.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 11:34:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        h=date:from:to:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=r/KCuEUuq7HzUmnTa9vj1McLqk0uyhbLn1CfNmt60cQ=;
-        b=jfXtz1Y1XN8nbrgy00oy1MwWhtkc2qIsXeS3Dtw2B3fzHGRQ56+xM2e1BBNduKUD7E
-         4jY2J40/ZxOChAEf5oVQukT1sGJUWk2YqqdOexqqrJjytpys+L/LqcQbENa0Y9Wdhy2K
-         /TNownk5/0dWnP1Cv7I2cgQR1/bvf3rAtzhN7XdxA1vVZJDDCNYsau55Zb9UD57ksSj5
-         Q/XugRU9NtEUiYm3ZPKK59HDsfXcP2cvzS2jra1AKKzhje4osNfmECbbEghnIswFQ1Y4
-         4BonuIZw+XSF35CtGD9V+EsPeujSJ8U9Ra25LbUc0xcGUVUJYQDZfYfcw1T2gaNUTeuV
-         VW4g==
+        bh=B4LvMygTJj8QSegSj2ejFP09c4vIVt3wcnl9LGOxu9s=;
+        b=XLPD9fOruqDX5hv+eluY5uzJh5N/avUwA5qaVupwEhrOwb0psPc+SvhuJ0C9k7CWHV
+         XO4CjVJLsiejNw90xfdPgOnB0T+kQ4eFe6HyyulGtfZFrHLrYLsUW6GcFFF5v0ZkaQcG
+         X2slvjVCrUSyAS4ZQ6fqsynnVOs6nolyE7Dya1+QYNd1QzT771X6A6/CKrSoy3k6BGWP
+         W+YKd3rSj/j4XyLuvHNVlLCaz6Z79KYaSfoSIux7bF10IqEYaodxhaKbrwxQMxXlVNXS
+         swY+xclQLmj2fhuVNEMx+SFNvDQfCEBL2wg6ASYON25nkzGzT20qtbH8uqGwqi4RRi01
+         kL9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:date:from:to:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=r/KCuEUuq7HzUmnTa9vj1McLqk0uyhbLn1CfNmt60cQ=;
-        b=LD/oQ2/jfAkIC9D0ewpM7UkuiqZ4hSNRmUdAPqMKv1rbvapcYkXOzb1+XvzlJWT23D
-         YoI/q20C2g+H8F/Dxe+4YnW/D7flh4nTDQkMmjV3DA57w+4XqvdXS2KSDCvuJAEAB4v+
-         gmpbW45xz6IJinJIzK3RW7ISvjywbREDuCIZCbZrcWncRIUOGzGgpaUYnOBOScAfW9Fr
-         pK/L+N8V3rI5ZdVf2PAl3xXjv0sOLrXgrXQfCC/z+eMTDX4eonK4+siuNqKeKAM0rYq1
-         rOEtAYpQNrL9QwjrLRnZgIwaQdehoYjhBXUsDRaDEzGA6alz/dTiaT4pR8p1LWq5IXe0
-         rW1g==
-X-Gm-Message-State: AOAM53387EDjVj+vbVZfhRhdD7LN8zLOd2nLT5EZ9ekp7wyFeOA9M267
-        NY1gj86KbKirkU0bSQKYP5wXTzlVru2REw==
-X-Google-Smtp-Source: ABdhPJwRma8uUjJdafphLfaYQlBBCX12xP60toVWSBoYNSwsoZu/VeA3khvxwwWwjNRWHmOmDIWWUg==
-X-Received: by 2002:a63:d80c:: with SMTP id b12mr12980196pgh.331.1637263181350;
-        Thu, 18 Nov 2021 11:19:41 -0800 (PST)
+        bh=B4LvMygTJj8QSegSj2ejFP09c4vIVt3wcnl9LGOxu9s=;
+        b=gRMWBUjnuBrPjQrwGYx4e4Vie/gcHRg/GAFKcUt9TdQPApVpeOsv+/BcYkPTJThoLr
+         UTLpM1kwek1egWil1vpzQa+ilu6iIfu2D82DP+d2PJvM3SHQzNN4If3tmcVLX6K5VXUZ
+         a087QwTc+C4oLbc/0lBT2tzxdt213aElyrNfqHblLHNt/HE/TOymp6P95RC0HPKbYNkf
+         vp6ObLQJO23xrU8gFjbPUZ4UgXHpDMYSSEy4KfNCtKIAIKrHhwX3Kph4GtR7VKdxSI9Y
+         Iq9HFkwMZrISuwHIxPP99YBd9h5E7U4pvS+5zbdgwGBsggwEH4mzrCGtyTQ2eiMhtXJa
+         FDFQ==
+X-Gm-Message-State: AOAM530i01EIs5Y21ERHTEF1mHdUerNlgZ+3Ykih0pxiOHM72O6lY4Pk
+        R29Q7KvmpPtTrYoO7Zr/SpDfNT352xWkZA==
+X-Google-Smtp-Source: ABdhPJyuHCTRHVhAtKU/MiiCum42dLaP9rymOIxwqOR0kv7rBkS8rtb6+ZEh5fNmkTaZ8YEcP0HXvg==
+X-Received: by 2002:a17:903:2341:b0:142:1b63:98f3 with SMTP id c1-20020a170903234100b001421b6398f3mr69946719plh.49.1637264080142;
+        Thu, 18 Nov 2021 11:34:40 -0800 (PST)
 Received: from relinquished.localdomain ([2620:10d:c090:400::5:174e])
-        by smtp.gmail.com with ESMTPSA id oc10sm9862283pjb.26.2021.11.18.11.19.40
+        by smtp.gmail.com with ESMTPSA id y130sm353912pfg.202.2021.11.18.11.34.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 11:19:40 -0800 (PST)
-Date:   Thu, 18 Nov 2021 11:19:39 -0800
+        Thu, 18 Nov 2021 11:34:39 -0800 (PST)
+Date:   Thu, 18 Nov 2021 11:34:37 -0800
 From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v11 01/14] fs: export rw_verify_area()
-Message-ID: <YZanS89YcCeN9i3y@relinquished.localdomain>
-References: <cover.1630514529.git.osandov@fb.com>
- <9cd494dbd55c46a22f07c56ca42a399af78accd1.1630514529.git.osandov@fb.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v12 14/17] btrfs: send: write larger chunks when using
+ stream v2
+Message-ID: <YZaqzbXFlNLkBGYf@relinquished.localdomain>
+References: <cover.1637179348.git.osandov@fb.com>
+ <051232485e4ac1a1a5fd35de7328208385c59f65.1637179348.git.osandov@fb.com>
+ <20211118155037.GH28560@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9cd494dbd55c46a22f07c56ca42a399af78accd1.1630514529.git.osandov@fb.com>
+In-Reply-To: <20211118155037.GH28560@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 10:00:56AM -0700, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
+On Thu, Nov 18, 2021 at 04:50:37PM +0100, David Sterba wrote:
+> On Wed, Nov 17, 2021 at 12:19:24PM -0800, Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
+> > 
+> > The length field of the send stream TLV header is 16 bits. This means
+> > that the maximum amount of data that can be sent for one write is 64k
+> > minus one. However, encoded writes must be able to send the maximum
+> > compressed extent (128k) in one command. To support this, send stream
+> > version 2 encodes the DATA attribute differently: it has no length
+> > field, and the length is implicitly up to the end of containing command
+> > (which has a 32-bit length field). Although this is necessary for
+> > encoded writes, normal writes can benefit from it, too.
+> > 
+> > Also add a check to enforce that the DATA attribute is last. It is only
+> > strictly necessary for v2, but we might as well make v1 consistent with
+> > it.
+> > 
+> > For v2, let's bump up the send buffer to the maximum compressed extent
+> > size plus 16k for the other metadata (144k total).
 > 
-> I'm adding Btrfs ioctls to read and write compressed data, and rather
-> than duplicating the checks in rw_verify_area(), let's just export it.
-> 
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
-> ---
->  fs/internal.h      | 5 -----
->  fs/read_write.c    | 1 +
->  include/linux/fs.h | 1 +
->  3 files changed, 2 insertions(+), 5 deletions(-)
+> I'm not sure we want to set the number like that, it feels quite
+> limiting for potential compression enhancements.
 
-Could I please get an ack from the VFS side on this patch and "fs:
-export variant of generic_write_checks without iov_iter"? We're going
-the route of doing this as a Btrfs ioctl since we couldn't agree on a
-generic interface, so this is all I need from the VFS.
+This is all we need for now, but we can always raise it in the future. I
+amended the protocol and the progs send parsing code to assume no hard
+limit.
+
+> > Since this will most
+> > likely be vmalloc'd (and always will be after the next commit), we round
+> > it up to the next page since we might as well use the rest of the page
+> > on systems with >16k pages.
+> 
+> Would it work also without the virtual mappings? For speedup it makes
+> sense to use vmalloc area, but as a fallback writing in smaller portions
+> or page by page eventually should be also possible. For that reason I
+> don't think we should set the maximum other than what fits to 32bit
+> number minus some overhead.
+
+I think you're saying that we could allocate a smaller buffer and do
+smaller reads that we immediately write to the send pipe/file? So
+something like:
+
+send_write() {
+	write_tlv_metadata_to_pipe();
+	while (written < to_write) {
+		read_small_chunk();
+		write_small_chunk_to_pipe();
+		written += size_of_small_chunk();
+	}
+}
+
+And from the protocol's point of view, it's still one big command,
+although we didn't have to keep it all in memory at once.
+
+If I'm understanding correctly, then yes, I think that's something we
+could do eventually. And my description of v2 allows this:
+
+-#define BTRFS_SEND_BUF_SIZE SZ_64K
++/*
++ * In send stream v1, no command is larger than 64k. In send stream v2, no limit
++ * should be assumed.
++ */
++#define BTRFS_SEND_BUF_SIZE_V1 SZ_64K
+
+Although receive would have to be more intelligent about reading huge
+commands.
