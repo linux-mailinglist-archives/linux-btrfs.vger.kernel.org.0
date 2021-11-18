@@ -2,88 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB96456348
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 20:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF0145635E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Nov 2021 20:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhKRTSw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 18 Nov 2021 14:18:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54302 "EHLO
+        id S231611AbhKRTWn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 18 Nov 2021 14:22:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233450AbhKRTSv (ORCPT
+        with ESMTP id S229929AbhKRTWm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 18 Nov 2021 14:18:51 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F388C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 11:15:51 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id v19so6101663plo.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 11:15:51 -0800 (PST)
+        Thu, 18 Nov 2021 14:22:42 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0C2C061574
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 11:19:42 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id x131so7001002pfc.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 18 Nov 2021 11:19:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:subject:message-id:references:mime-version
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ZojpOZ/BtppyWal440A5hVjBaLigPp+e6JoExU6eie0=;
-        b=x5mH1VGf/L7ba00RwOQ2NyyFpFpVYhigMQvkdG5tXPwtUhDxK6+Uwm2CTOuhdYdTfS
-         7unazHhAJ+4g4FPqa11/T2BhWQHkOrlBad5s0VlMCJEigMRt3HSz1mDwuqsjhpEzg/sy
-         jrUnkhP9lO26TEaUUHLhSbV8gs3yYKG2UaGSFZg9gXdVjOOApztkcsFQasWbmYIZzdu0
-         D6EJThIpT4cNd+wx3vpofeIfLFXIfLDgzS6m07SMnJUuhlxUxM+TmYjIhwfvssgdoV52
-         ZJynlFqgOV1h3CUctGfGZk7m5bw4RwPsutg77hGdKs0jdqd6pvhxo+3g3ifTQfun7ozd
-         XXcQ==
+        bh=r/KCuEUuq7HzUmnTa9vj1McLqk0uyhbLn1CfNmt60cQ=;
+        b=jfXtz1Y1XN8nbrgy00oy1MwWhtkc2qIsXeS3Dtw2B3fzHGRQ56+xM2e1BBNduKUD7E
+         4jY2J40/ZxOChAEf5oVQukT1sGJUWk2YqqdOexqqrJjytpys+L/LqcQbENa0Y9Wdhy2K
+         /TNownk5/0dWnP1Cv7I2cgQR1/bvf3rAtzhN7XdxA1vVZJDDCNYsau55Zb9UD57ksSj5
+         Q/XugRU9NtEUiYm3ZPKK59HDsfXcP2cvzS2jra1AKKzhje4osNfmECbbEghnIswFQ1Y4
+         4BonuIZw+XSF35CtGD9V+EsPeujSJ8U9Ra25LbUc0xcGUVUJYQDZfYfcw1T2gaNUTeuV
+         VW4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ZojpOZ/BtppyWal440A5hVjBaLigPp+e6JoExU6eie0=;
-        b=grI6NLXFSkMIVEkpLJ8iGzrY9Gxqj5BA1rdHeorGCFUCpqRtCTKUJAQ56Eh+w3wwVo
-         2npfQLjQzUxIahFInKvwxDSIdUef3WY1odU9uWONt1wye3W1fMc32OLSGHBZHa3UvFL/
-         h+pvpVCNa//27I9lJl0CpzPterAQNPWvQ0pPvUzvPrPKsNNCqeC6VyH4WiiLdfFGsJBn
-         XY1uPzyJCN3qBruDZmkwn2st7nygU/5HQVRgeThKCrSXtBm52D02RSHZWLQFE3bjEHom
-         xdlRJDjQYMcnMBnN7AYkvVZBmDKYi5r7mKCY5XQs6PMJDG6Pc0jrAG1Pv0QV7VQg2+xo
-         Fc9w==
-X-Gm-Message-State: AOAM533thVF4XuxCdWbFfFxCKkuqyiAQTeQmfUwZHxCyFd2SDtuX2ZaL
-        zdZ4ZmEOWuR3VXqlrpSg6S56Cg==
-X-Google-Smtp-Source: ABdhPJxn1ZA+G96VOsHiEEBPsPYZJ4eu0Hqj+KmzM5tmq4SYheS83gVzPPm17YydurUj9SIc2oV6mQ==
-X-Received: by 2002:a17:90a:134f:: with SMTP id y15mr13026425pjf.158.1637262950735;
-        Thu, 18 Nov 2021 11:15:50 -0800 (PST)
+        bh=r/KCuEUuq7HzUmnTa9vj1McLqk0uyhbLn1CfNmt60cQ=;
+        b=LD/oQ2/jfAkIC9D0ewpM7UkuiqZ4hSNRmUdAPqMKv1rbvapcYkXOzb1+XvzlJWT23D
+         YoI/q20C2g+H8F/Dxe+4YnW/D7flh4nTDQkMmjV3DA57w+4XqvdXS2KSDCvuJAEAB4v+
+         gmpbW45xz6IJinJIzK3RW7ISvjywbREDuCIZCbZrcWncRIUOGzGgpaUYnOBOScAfW9Fr
+         pK/L+N8V3rI5ZdVf2PAl3xXjv0sOLrXgrXQfCC/z+eMTDX4eonK4+siuNqKeKAM0rYq1
+         rOEtAYpQNrL9QwjrLRnZgIwaQdehoYjhBXUsDRaDEzGA6alz/dTiaT4pR8p1LWq5IXe0
+         rW1g==
+X-Gm-Message-State: AOAM53387EDjVj+vbVZfhRhdD7LN8zLOd2nLT5EZ9ekp7wyFeOA9M267
+        NY1gj86KbKirkU0bSQKYP5wXTzlVru2REw==
+X-Google-Smtp-Source: ABdhPJwRma8uUjJdafphLfaYQlBBCX12xP60toVWSBoYNSwsoZu/VeA3khvxwwWwjNRWHmOmDIWWUg==
+X-Received: by 2002:a63:d80c:: with SMTP id b12mr12980196pgh.331.1637263181350;
+        Thu, 18 Nov 2021 11:19:41 -0800 (PST)
 Received: from relinquished.localdomain ([2620:10d:c090:400::5:174e])
-        by smtp.gmail.com with ESMTPSA id p15sm326221pjh.1.2021.11.18.11.15.49
+        by smtp.gmail.com with ESMTPSA id oc10sm9862283pjb.26.2021.11.18.11.19.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 11:15:50 -0800 (PST)
-Date:   Thu, 18 Nov 2021 11:15:48 -0800
+        Thu, 18 Nov 2021 11:19:40 -0800 (PST)
+Date:   Thu, 18 Nov 2021 11:19:39 -0800
 From:   Omar Sandoval <osandov@osandov.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v12 01/17] fs: export rw_verify_area()
-Message-ID: <YZamZEfaCpaedir+@relinquished.localdomain>
-References: <cover.1637179348.git.osandov@fb.com>
- <11bc0fc15490afc6ce15c405cca3e16582f2f0ec.1637179348.git.osandov@fb.com>
- <20211118145714.GG28560@twin.jikos.cz>
+To:     linux-btrfs@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v11 01/14] fs: export rw_verify_area()
+Message-ID: <YZanS89YcCeN9i3y@relinquished.localdomain>
+References: <cover.1630514529.git.osandov@fb.com>
+ <9cd494dbd55c46a22f07c56ca42a399af78accd1.1630514529.git.osandov@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211118145714.GG28560@twin.jikos.cz>
+In-Reply-To: <9cd494dbd55c46a22f07c56ca42a399af78accd1.1630514529.git.osandov@fb.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 03:57:14PM +0100, David Sterba wrote:
-> On Wed, Nov 17, 2021 at 12:19:11PM -0800, Omar Sandoval wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> > 
-> > I'm adding Btrfs ioctls to read and write compressed data, and rather
-> > than duplicating the checks in rw_verify_area(), let's just export it.
-> > 
-> > Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -3244,6 +3244,7 @@ extern loff_t fixed_size_llseek(struct file *file, loff_t offset,
-> >  		int whence, loff_t size);
-> >  extern loff_t no_seek_end_llseek_size(struct file *, loff_t, int, loff_t);
-> >  extern loff_t no_seek_end_llseek(struct file *, loff_t, int);
-> > +extern int rw_verify_area(int, struct file *, const loff_t *, size_t);
+On Wed, Sep 01, 2021 at 10:00:56AM -0700, Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
 > 
-> Do you have an ack from VFS people for exporting a function from
-> fs/interna.h to the normal fs.h?
+> I'm adding Btrfs ioctls to read and write compressed data, and rather
+> than duplicating the checks in rw_verify_area(), let's just export it.
+> 
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>  fs/internal.h      | 5 -----
+>  fs/read_write.c    | 1 +
+>  include/linux/fs.h | 1 +
+>  3 files changed, 2 insertions(+), 5 deletions(-)
 
-Nope, although I've sent it enough times that they should've nacked it
-by now if they cared. I guess I didn't cc fsdevel on this version, so
-I'll ping this patch on v11.
+Could I please get an ack from the VFS side on this patch and "fs:
+export variant of generic_write_checks without iov_iter"? We're going
+the route of doing this as a Btrfs ioctl since we couldn't agree on a
+generic interface, so this is all I need from the VFS.
