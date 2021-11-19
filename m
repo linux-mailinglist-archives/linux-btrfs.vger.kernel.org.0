@@ -2,66 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EA24572CB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Nov 2021 17:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E621B4572D5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Nov 2021 17:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236118AbhKSQZ4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Nov 2021 11:25:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbhKSQZz (ORCPT
+        id S233522AbhKSQ2c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Nov 2021 11:28:32 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:37721 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhKSQ2b (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Nov 2021 11:25:55 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CA0C061574;
-        Fri, 19 Nov 2021 08:22:53 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id c4so19034481wrd.9;
-        Fri, 19 Nov 2021 08:22:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=gJ7nvh3PYL8XuI32u9B1gA3gTx9kf/bMqpXsk3AEZsU=;
-        b=fpsj7+4SpFXqpTSemI06B9IcXVdlbuued/IQBN4FCqBdSC/xtpTgB2iz9UIQnOPSv5
-         7dinU35yvOUDiH/9vJWKbZ9GctdBbeB/cRDVHk0phW4F/NxhOCWoSFMTVcX26VVw3HMt
-         GPKNYBxNtyTgnGx50kBrFXzcpurXEIcb4r3vdAScw53cOY82S+nnM1F4LxEs39YLMQ/S
-         uDHYEpfJs9WPfjtx2YvKeV+ilwmoATVlGw8z6GW1nGOzQsTXfXgbQ/sMgtuNKtzjMgO+
-         m/GWqEfFdALvOcc/k4vNSzQQ8s1MyiSdciXJWtO0mjZ1O20qNFBqF7s2UCtRG1bgp0aS
-         YbJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=gJ7nvh3PYL8XuI32u9B1gA3gTx9kf/bMqpXsk3AEZsU=;
-        b=3UAVTh0LUHtRX1wmiMOCq7iQ9nP43yrlAw+tKssdwrTo7IkqKs/trY2X7vcTrdTsly
-         RqoPlwUHj+/G1q6+u4eESRMLivU3clJv6h1yUXlVuXG8JNNf53guyERJhvKEpeT24qCs
-         yh4aHG8HVtwA1mq6f3QPdSUc2kJhJm2JMT7CgpSDpvumLpx6VqTqzbkmFY3S7B1DOF4C
-         WaeRxdjGvI0fU7GnzMmjJNUCyJpDhzzKUT92FALy/RKTzZVd05kLisuyqmtg0A1/CZTY
-         cC0es4+rLdPwbqz+O0ucopKuzhefQqh0LW3rvLjEJ1knsZ4+6em0mnvZrfW/2VwADFZE
-         WoDw==
-X-Gm-Message-State: AOAM533Qd2EXmjPYUk14KuMgoFH7xykgZr1I2wFfhhrGcHTb1CaqmaHf
-        0HGTX6xQ0GpN3N/wYHLG8OA=
-X-Google-Smtp-Source: ABdhPJz+RkhKg2oPM+DFfdJrmKTihG8D5yySz9/H4aR55REMYZ6fa+PNcb8l7yv++672VBes+PtaDw==
-X-Received: by 2002:a5d:5986:: with SMTP id n6mr9039788wri.297.1637338971943;
-        Fri, 19 Nov 2021 08:22:51 -0800 (PST)
-Received: from [192.168.0.160] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id n2sm12993701wmi.36.2021.11.19.08.22.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Nov 2021 08:22:51 -0800 (PST)
-Message-ID: <2d790206-124b-f850-895f-a57a74c55f79@gmail.com>
-Date:   Fri, 19 Nov 2021 17:22:48 +0100
+        Fri, 19 Nov 2021 11:28:31 -0500
+Received: from mail-wm1-f42.google.com ([209.85.128.42]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N6t3Z-1mb0kh08vH-018LPc; Fri, 19 Nov 2021 17:25:28 +0100
+Received: by mail-wm1-f42.google.com with SMTP id 137so5498842wma.1;
+        Fri, 19 Nov 2021 08:25:27 -0800 (PST)
+X-Gm-Message-State: AOAM531EvBgRjSO/rPL+MikyqJUJgJ7hDn/0QXW+BJ8CSpO+fK8zq3nE
+        Pna/xromGdR+sNS6jilUSP6+6dowlIt+bfZo2D8=
+X-Google-Smtp-Source: ABdhPJxceAOgZg4K9oWzLDHPv4QMPRjgvN2Y7oQmQdzE+p3Y265dv2VJvOf0muRFSn+nfOr9pX8E0TuGzsEYEIm5yn0=
+X-Received: by 2002:a1c:770e:: with SMTP id t14mr963230wmi.173.1637339127628;
+ Fri, 19 Nov 2021 08:25:27 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
+References: <20211119113644.1600-1-alx.manpages@gmail.com> <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
+ <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com> <CAK8P3a2yVXw9gf8-BNvX_rzectNoiy0MqGKvBcXydiUSrc_fCA@mail.gmail.com>
+ <f751fb48-d19c-88af-452e-680994a586b4@gmail.com>
+In-Reply-To: <f751fb48-d19c-88af-452e-680994a586b4@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 19 Nov 2021 17:25:11 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0DD+odXthvGq2UWwrvhDDavukUB=bW-m+=HohjoiTE6w@mail.gmail.com>
+Message-ID: <CAK8P3a0DD+odXthvGq2UWwrvhDDavukUB=bW-m+=HohjoiTE6w@mail.gmail.com>
 Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
  simplify code
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, LKML <linux-kernel@vger.kernel.org>,
         Ajit Khaparde <ajit.khaparde@broadcom.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Borislav Petkov <bp@suse.de>,
         Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
@@ -97,63 +73,81 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
         <virtualization@lists.linux-foundation.org>
-References: <20211119113644.1600-1-alx.manpages@gmail.com>
- <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
- <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
- <CAK8P3a2yVXw9gf8-BNvX_rzectNoiy0MqGKvBcXydiUSrc_fCA@mail.gmail.com>
- <YZfMXlqvG52ls2TE@smile.fi.intel.com>
- <CAK8P3a06CMzWVj2C3P5v0u8ZVPumXJKrq=TdjSq1NugmeT7-RQ@mail.gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-In-Reply-To: <CAK8P3a06CMzWVj2C3P5v0u8ZVPumXJKrq=TdjSq1NugmeT7-RQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:S5GuW/FhJbZCJ3G6FZbqnEKQXlwtqEiKjIB0f1n46pQpxbhqhXc
+ 6TveCz4iJxy1ngbMqrcjwLihHZOf0blM/QEruKdvtftaFuxkNRcf6rYUG+eT/YN7nwx+D+S
+ t7g9hk3ovohE0MTVRink/GFOcrma6dR6CuY261CBtUgYQp3oBJpclcC7D8RFsh76yDL6GOZ
+ etrrOS799x4OeEF7qxydQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5kg0MnOF4wE=:yE4PMYyOqjRnLg466CChJC
+ /QantnQnajSM6eB8pwa1ByYIZqmcwFEjlJonk11kwoI+WvZdMf/7Zaefr8yzPJtFg/uN23Bzi
+ ECC7V178fPJTABXCS70/BoC29ReieLA/crQKVj65sR36AZp8/cTJd6kcAoCi5QSiUINd5gHQy
+ CTB7TxA6lWkdYEudiuf8F9jZvA22oE8ybLsHsMHcpFVTxdgy3spEJN/FP6NUn9qJJqxi9fVOz
+ 02hZ2Dbr3MX0So2JTUJLLOO3SXAKNqZ2+w/x+i0qqKthBGsD2fo5k9Ckas7iNvZCuLFkxsqn0
+ p2bw9vaxdZj9mo5XZcMAUN/N9a/obC/uRNUkzL5v6Sl0qAm09rN7QRvXTFWYNehafwHbVHLex
+ 6n6vCIASlYWqftr+pdcyaMimnn0sTREdp9DqDGIRntEVNjfa8958LgJAzNjmPVPbZOJYHiEl6
+ +QHNyZE9Nw6pFbf0oc0pfprTLqlwhCoAY98hEZelcK+GrTL1EoCtm3mzv/tCGwmWxsHFLs0T4
+ DyifwFBNF7vsiS0Ch59QxU4jpd0xoMDoL5lYO1ci8+2WxD9Fdz2mfW2gJnCApO+4GuvSiG0Ca
+ yCoEsopQQHEckmGtTjpQhBFYZq5kqoeUMW1/UkQ1eo8F/Aik0ThzabCXsHcZmjKzn6u4lhDCH
+ awCMZRHOaaaG3/VbAocDT3/QUQjq9uLw1nJZaxIEeV595lcqAjEkPFsyYiBEn6ma5Jb84TEQH
+ ELedWRrO7KIV+q+wJG3UqC5PfE55neE0LfAkkz8UhyYFvXSl+lm8o5w28GFFOTJjsTOlGy1h7
+ Y+hx9jXNgQPXkDnLwmnfm5qLXdZi6BWJBnCsjEjFuqF9dQhj6U=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Nov 19, 2021 at 5:12 PM Alejandro Colomar (man-pages)
+<alx.manpages@gmail.com> wrote:
+>
+> On 11/19/21 16:57, Arnd Bergmann wrote:
+> >
+> > From what I can tell, linux/stddef.h is tiny, I don't think it's really
+> > worth optimizing this part. I have spent some time last year
+> > trying to untangle some of the more interesting headers, but ended
+> > up not completing this as there are some really hard problems
+> > once you start getting to the interesting bits.
+>
+> In this case it was not about being worth it or not,
+> but that the fact that adding memberof() would break,
+> unless I use 0 instead of NULL for the implementation of memberof(),
+> which I'm against, or I split stddef.
+>
+> If I don't do either of those,
+> I'm creating a circular dependency,
+> and it doesn't compile.
 
+Sorry for missing the background here, but I don't see what that
+dependency is. If memberof() is a macro, then including the definition
+should not require having the NULL definition first, you just need to
+have both at the time you use it.
 
-On 11/19/21 17:18, Arnd Bergmann wrote:
-> On Fri, Nov 19, 2021 at 5:10 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
->> On Fri, Nov 19, 2021 at 04:57:46PM +0100, Arnd Bergmann wrote:
-> 
->>> The main problem with this approach is that as soon as you start
->>> actually reducing the unneeded indirect includes, you end up with
->>> countless .c files that no longer build because they are missing a
->>> direct include for something that was always included somewhere
->>> deep underneath, so I needed a second set of scripts to add
->>> direct includes to every .c file.
->>
->> Can't it be done with cocci support?
-> 
-> There are many ways of doing it, but they all tend to suffer from the
-> problem of identifying which headers are actually needed based on
-> the contents of a file, and also figuring out where to put the extra
-> #include if there are complex #ifdefs.
-> 
-> For reference, see below for the naive pattern matching I tried.
-> This is obviously incomplete and partially wrong.
+> > The main issue here is that user space code should not
+> > include anything outside of include/uapi/ and arch/*/include/uapi/
+>
+> Okay.  That's good to know.
+>
+> So everything can use uapi code,
+> and uapi code can only use uapi code,
+> right?
 
-FYI, if you may not know the tool,
-theres include-what-you-use(1) (a.k.a. iwyu(1))[1],
-although it is still not mature,
-and I'm helping improve it a bit.
+Correct.
 
-If I understood better the kernel Makefiles,
-I'd try it.
+> > offsetof() is defined in include/linux/stddef.h, so this is by
+> > definition not accessible here. It appears that there is also
+> > an include/uapi/linux/stddef.h that is really strange because
+> > it includes linux/compiler_types.h, which in turn is outside
+> > of uapi/. This should probably be fixed.
+>
+> I see.
+> Then,
+> perhaps it would be better to define offsetof() _only_ inside uapi/,
+> and use that definition from everywhere else,
+> and therefore remove the non-uapi version,
+> right?
 
-You can try it yourselves.
-I still can't use it for my own code,
-since it has a lot of false positives.
+No, because the user-space <stddef.h> provided by the compiler
+also includes an offsetof() definition. In the uapi/ namespace, the
+kernel must only provide definitions that do not clash with anything
+in user space.
 
-Cheers,
-Alex
-
-[1]: <https://include-what-you-use.org/>
-
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+        Arnd
