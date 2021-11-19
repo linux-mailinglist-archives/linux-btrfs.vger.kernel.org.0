@@ -2,41 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DED457141
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Nov 2021 15:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B138457166
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Nov 2021 16:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhKSO6C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Nov 2021 09:58:02 -0500
-Received: from mga05.intel.com ([192.55.52.43]:47817 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235243AbhKSO6A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Nov 2021 09:58:00 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="320638699"
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="320638699"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 06:54:58 -0800
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="568904791"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 06:54:50 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mo5Hl-008ZVj-Jj;
-        Fri, 19 Nov 2021 16:54:41 +0200
-Date:   Fri, 19 Nov 2021 16:54:41 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
+        id S233800AbhKSPJf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Nov 2021 10:09:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhKSPJe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 19 Nov 2021 10:09:34 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BED7C061574;
+        Fri, 19 Nov 2021 07:06:32 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id p18so8781400wmq.5;
+        Fri, 19 Nov 2021 07:06:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=9LghidGzK5wVxoEesb/L8gTDRQW74I1XzqD+h7Ydxd8=;
+        b=ThJg3WF09aFCTuH2nUMR2RjPEiyZEHH/Ew5m2/uZZSMAXSP+tUthdSO1fmjo2qKWeU
+         45Hn8Hgn91hV5q+U6rorUGLM2sMuPDHYa9LJlaaq4CGvWIdUAiWRzi7l32411ezoz7Ed
+         UfEhsgFqn/TYVjlTQ1x6OtTfh4ZgxcGVNdiY8dyFmAyRcy8suheoHZR/1Dey0LgdcvG+
+         mankWsi9N4kQ6WRh+ekZfYzxKW7qeB6RN1v8FkSZ+4tesaMcXM8Cgfdtx8KejMMX8Vg5
+         5KEZ1IPldun0lw36a/VB9DNib6XHhQiudT9RMvJEyRiGROFsOfg9l4q11bv5IhtZMxc3
+         R0yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=9LghidGzK5wVxoEesb/L8gTDRQW74I1XzqD+h7Ydxd8=;
+        b=nbCB00TCBy5D3lyYmHEG/qV2Y4ZsHAUIaF4gCWgOnkRNVNciPWtlob6uISdOjhq2CD
+         vPYAcGLBKJxUIsOKdRGc6BvGMrqeVZKPrZK4H9mDZHf7GHHGQj7n5nObsBh2HlTKTbWd
+         yYJ7i+sZ2jk7dEUrXjB8+d+ceM97WToKbG/zzWLzQ8I1/GUU3Nj6rlYM3j16GP+hQeam
+         YPtHVkF/fpe6INCKBsVf9bRegCwbKhLk+hPIl6bD2QTFNJm81QYQh2HhyUMx0ZZ6rjIM
+         EApIpSTBUYvr4r3zLz4Vr1CKwTWTwF6j5+En3nliBOKk8kyKWLdB2Nedw/NCkmd47sWQ
+         lFKw==
+X-Gm-Message-State: AOAM531z1V463rK4bEw729uHnPaT1CJgXXWKrXtMCepiKp1A02wENoJb
+        7dRl8ccy9KPltv1zLXA+bdQ=
+X-Google-Smtp-Source: ABdhPJzu9ei/pAU2yn2kzxvlKTIuV+OQKa9BIy8XnEer1U+7uUmszt8b/HqJvarFM0xoXQ8IPgXm6g==
+X-Received: by 2002:a1c:6a0e:: with SMTP id f14mr409487wmc.58.1637334391087;
+        Fri, 19 Nov 2021 07:06:31 -0800 (PST)
+Received: from [192.168.0.160] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id u23sm29930wru.21.2021.11.19.07.06.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Nov 2021 07:06:30 -0800 (PST)
+Message-ID: <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
+Date:   Fri, 19 Nov 2021 16:06:27 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
+ simplify code
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Ajit Khaparde <ajit.khaparde@broadcom.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Borislav Petkov <bp@suse.de>,
         Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
         Christian Brauner <christian.brauner@ubuntu.com>,
         David Sterba <dsterba@suse.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
         Jason Wang <jasowang@redhat.com>,
         Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
         John Hubbard <jhubbard@nvidia.com>,
@@ -62,41 +93,89 @@ Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
         linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org,
         linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
         virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
- simplify code
-Message-ID: <YZe6seRR7SIzDrX/@smile.fi.intel.com>
 References: <20211119113644.1600-1-alx.manpages@gmail.com>
- <87mtm0jos3.fsf@intel.com>
- <a9522c0e-0762-c7cd-edb1-0376c435c4d9@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a9522c0e-0762-c7cd-edb1-0376c435c4d9@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+ <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+In-Reply-To: <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 02:16:03PM +0100, Alejandro Colomar (man-pages) wrote:
-> On 11/19/21 13:47, Jani Nikula wrote:
-> > On Fri, 19 Nov 2021, Alejandro Colomar <alx.manpages@gmail.com> wrote:
+Hi Arnd,
 
-...
+On 11/19/21 15:47, Arnd Bergmann wrote:
+> On Fri, Nov 19, 2021 at 12:36 PM Alejandro Colomar
+> <alx.manpages@gmail.com> wrote:
+>>
+>> Alejandro Colomar (17):
+>>   linux/container_of.h: Add memberof(T, m)
+>>   Use memberof(T, m) instead of explicit NULL dereference
+>>   Replace some uses of memberof() by its wrappers
+>>   linux/memberof.h: Move memberof() to separate header
+>>   linux/typeof_member.h: Move typeof_member() to a separate header
+>>   Simplify sizeof(typeof_member()) to sizeof_field()
+>>   linux/NULL.h: Move NULL to a separate header
+>>   linux/offsetof.h: Move offsetof(T, m) to a separate header
+>>   linux/offsetof.h: Implement offsetof() in terms of memberof()
+>>   linux/container_of.h: Implement container_of_safe() in terms of
+>>     container_of()
+>>   linux/container_of.h: Cosmetic
+>>   linux/container_of.h: Remove unnecessary cast to (void *)
+> 
+> My feeling is that this takes the separation too far: by having this many header
+> files that end up being included from practically every single .c file
+> in the kernel,
+> I think you end up making compile speed worse overall.
+> 
+> If your goal is to avoid having to recompile as much of the kernel
+> after touching
+> a header, I think a better approach is to help untangle the dependencies, e.g.
+> by splitting out type definitions from headers with inline functions (most
+> indirect header dependencies are on type definitions) and by focusing on
+> linux/fs.h, linux/sched.h, linux/mm.h and how they interact with the rest of the
+> headers. At the moment, these are included in most .c files and they in turn
+> include a ton of other headers.
 
-> Patch set 1:
-> - Add <linux/memberof.h> with memberof()
-> - Split offsetof() to <linux/offsetof.h>
-> - Split offsetofend() to <linux/offsetofend.h>
-> - Split typeof_member() to <linux/typeof_member.h>
-> - Split sizeof_field() to <linux/sizeof_field.h>
-> - Split NULL to <linux/NULL.h>
-> - Split ARRAY_SIZE() to <linux/array_size.h>
+Yes, I would like to untangle the dependencies.
 
-Isn't it way too small granularity? I agree on having the separate header
-for ARRAY_SIZE() and it was discussed, but the rest...
+The main reason I started doing this splitting
+is because I wouldn't be able to include
+<linux/stddef.h> in some headers,
+because it pulled too much stuff that broke unrelated things.
+
+So that's why I started from there.
+
+I for example would like to get NULL in memberof()
+without puling anything else,
+so <linux/NULL.h> makes sense for that.
+
+It's clear that every .c wants NULL,
+but it's not so clear that every .c wants
+everything that <linux/stddef.h> pulls indirectly.
+
+But I'll note that linux/fs.h, linux/sched.h, linux/mm.h are
+interesting headers for further splitting.
+
+
+BTW, I also have a longstanding doubt about
+how header files are organized in the kernel,
+and which headers can and cannot be included
+from which other files.
+
+For example I see that files in samples or scripts or tools,
+that redefine many things such as offsetof() or ARRAY_SIZE(),
+and I don't know if there's a good reason for that,
+or if I should simply remove all that stuff and
+include <linux/offsetof.h> everywhere I see offsetof() being used.
+
+
+
+Thanks,
+Alex
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
