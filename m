@@ -2,133 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3004571B1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Nov 2021 16:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D044571B9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Nov 2021 16:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbhKSPiP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Nov 2021 10:38:15 -0500
-Received: from mga03.intel.com ([134.134.136.65]:18351 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235441AbhKSPiM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Nov 2021 10:38:12 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="234379749"
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="234379749"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 07:35:10 -0800
-X-IronPort-AV: E=Sophos;i="5.87,248,1631602800"; 
-   d="scan'208";a="506474100"
-Received: from smile.fi.intel.com ([10.237.72.184])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2021 07:35:01 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mo5uf-008a3l-IP;
-        Fri, 19 Nov 2021 17:34:53 +0200
-Date:   Fri, 19 Nov 2021 17:34:53 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, LKML <linux-kernel@vger.kernel.org>,
-        Ajit Khaparde <ajit.khaparde@broadcom.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Borislav Petkov <bp@suse.de>,
-        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        David Sterba <dsterba@suse.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "John S . Gruber" <JohnSGruber@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Len Brown <lenb@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        intel-gfx@lists.freedesktop.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 00/17] Add memberof(), split some headers, and slightly
- simplify code
-Message-ID: <YZfEHZa3f5MXeqoH@smile.fi.intel.com>
-References: <20211119113644.1600-1-alx.manpages@gmail.com>
- <CAK8P3a0qT9tAxFkLN_vJYRcocDW2TcBq79WcYKZFyAG0udZx5Q@mail.gmail.com>
- <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
+        id S234808AbhKSPkc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Nov 2021 10:40:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231563AbhKSPkc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 19 Nov 2021 10:40:32 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81640C061574
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Nov 2021 07:37:30 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id a2so9789397qtx.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Nov 2021 07:37:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uSiFALQeJdjIsHpo19crR1r9PfkDBTxo2788sCMhKQ4=;
+        b=JpEa9krjbna6rzdICxB+t199Dwne5cJ9gcj7UkmcuhEVSr+xhs73D6BDdMV5/EeSlg
+         bkFkYWEeUGScyo84J5hdLthPql9m0fO+wnYGvx+APkHSOJEKHTYhpkLS4ShjNblIe3QJ
+         A5q8MS9w7MPcoCokKxQZFdT8VDxZIXxXGa4p3N6cCbt1nLfHETFPlQjTlB+uiYRtbRG1
+         lv0Z6En9QivrvU2CnsTOei56Dn+E50DnseB6XjD35C5dY9aivYx3cYvl2MmSQf+1tPv8
+         DsFxBr7O0QKmpPfP7AIYOTIvJTgYJomtHtf4LcWlYUdJvd1jwfIxiTT9Urr3MMjtJs0S
+         qNXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uSiFALQeJdjIsHpo19crR1r9PfkDBTxo2788sCMhKQ4=;
+        b=bvvY5wOOv9mqilh7gHwWjhiCMtKpzSaLgHDRwccjT4hcDVSF8PJ1LroD0wQQ3PUbr9
+         yTa4jLhYrS2Kie/kCDIGEAP43a4khEWQx4xu+VWhdqNJgN6R4l697sk5G5ld6M2g8SB+
+         TmaTzfvMwK02xkWi0J7cSBbGwZbE6xQfLZ7oKY7cJWh2rxNITnXgkiqgDfpKDr60pZ7i
+         zzj8he9l+UBovv602Vi3yVAtUMaFRplyJQDhU9uQJqq51fmw00IuSATLW9zoR+WOIpVt
+         j9LDis9OHRH6W2ocQPJvmZcBEgqRpC7i+fRYkxwPBMtmFsUQ9JD7pHk6hsC8c84WJFxG
+         dU9A==
+X-Gm-Message-State: AOAM531JDM5Gf1M+NjzU9FT/NmiSDSpVwnwOyf4Rn0DfS4oJN/xv07qJ
+        KjGerLwWIxeVvwcsiS7WB5iwjQ==
+X-Google-Smtp-Source: ABdhPJylaPNjJC3PeKutd2T41IcL2y79QYeXiXFkoQrZWHFDFqt2EvmjdG0WaddLJPbP3YQ+yqePvw==
+X-Received: by 2002:ac8:7dcd:: with SMTP id c13mr7023943qte.133.1637336249511;
+        Fri, 19 Nov 2021 07:37:29 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id f12sm48650qtj.93.2021.11.19.07.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 07:37:28 -0800 (PST)
+Date:   Fri, 19 Nov 2021 10:37:27 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "kernel-team@fb.com" <kernel-team@fb.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH v5 2/3] btrfs: index free space entries on size
+Message-ID: <YZfEt/i0E87N+FmG@localhost.localdomain>
+References: <cover.1637271014.git.josef@toxicpanda.com>
+ <afe97640a3d170bea4be47e7ac1487bc81be3a89.1637271014.git.josef@toxicpanda.com>
+ <PH0PR04MB7416BDFF1C613094C64689639B9C9@PH0PR04MB7416.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <434296d3-8fe1-f1d2-ee9d-ea25d6c4e43e@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <PH0PR04MB7416BDFF1C613094C64689639B9C9@PH0PR04MB7416.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 19, 2021 at 04:06:27PM +0100, Alejandro Colomar (man-pages) wrote:
-> Hi Arnd,
+On Fri, Nov 19, 2021 at 10:52:38AM +0000, Johannes Thumshirn wrote:
+> On 18/11/2021 22:33, Josef Bacik wrote:
+> > +/*
+> > + * This is a little subtle.  We *only* have ->max_extent_size set if we actually
+> > + * searched through the bitmap and figured out the largest ->max_extent_size,
+> > + * otherwise it's 0.  In the case that it's 0 we don't want to tell the
+> > + * allocator the wrong thing, we want to use the actual real max_extent_size
+> > + * we've found already if it's larger, or we want to use ->bytes.
+> > + *
+> > + * This matters because find_free_space() will skip entries who's ->bytes is
+> > + * less than the required bytes.  So if we didn't search down this bitmap, we
+> > + * may pick some previous entry that has a smaller ->max_extent_size than we
+> > + * have.  For example, assume we have two entries, one that has
+> > + * ->max_extent_size set to 4k and ->bytes set to 1M.  A second entry hasn't set
+> > + * ->max_extent_size yet, has ->bytes set to 8k and it's contiguous.  We will
+> > + *  call into find_free_space(), and return with max_extent_size == 4k, because
+> > + *  that first bitmap entry had ->max_extent_size set, but the second one did
+> > + *  not.  If instead we returned 8k we'd come in searching for 8k, and find the
+> > + *  8k contiguous range.
+> > + *
+> > + *  Consider the other case, we have 2 8k chunks in that second entry and still
+> > + *  don't have ->max_extent_size set.  We'll return 16k, and the next time the
+> > + *  allocator comes in it'll fully search our second bitmap, and this time it'll
+> > + *  get an uptodate value of 8k as the maximum chunk size.  Then we'll get the
+> > + *  right allocation the next loop through.
+> > + */
+> > +static inline u64 get_max_extent_size(const struct btrfs_free_space *entry)
+> > +{
+> > +	if (entry->bitmap && entry->max_extent_size)
+> > +		return entry->max_extent_size;
+> > +	return entry->bytes;
+> > +}
 > 
-> On 11/19/21 15:47, Arnd Bergmann wrote:
-> > On Fri, Nov 19, 2021 at 12:36 PM Alejandro Colomar
-> > <alx.manpages@gmail.com> wrote:
-> >>
-> >> Alejandro Colomar (17):
-> >>   linux/container_of.h: Add memberof(T, m)
-> >>   Use memberof(T, m) instead of explicit NULL dereference
-> >>   Replace some uses of memberof() by its wrappers
-> >>   linux/memberof.h: Move memberof() to separate header
-> >>   linux/typeof_member.h: Move typeof_member() to a separate header
-> >>   Simplify sizeof(typeof_member()) to sizeof_field()
-> >>   linux/NULL.h: Move NULL to a separate header
-> >>   linux/offsetof.h: Move offsetof(T, m) to a separate header
-> >>   linux/offsetof.h: Implement offsetof() in terms of memberof()
-> >>   linux/container_of.h: Implement container_of_safe() in terms of
-> >>     container_of()
-> >>   linux/container_of.h: Cosmetic
-> >>   linux/container_of.h: Remove unnecessary cast to (void *)
-> > 
-> > My feeling is that this takes the separation too far: by having this many header
-> > files that end up being included from practically every single .c file
-> > in the kernel,
-> > I think you end up making compile speed worse overall.
-> > 
-> > If your goal is to avoid having to recompile as much of the kernel
-> > after touching
-> > a header, I think a better approach is to help untangle the dependencies, e.g.
-> > by splitting out type definitions from headers with inline functions (most
-> > indirect header dependencies are on type definitions) and by focusing on
-> > linux/fs.h, linux/sched.h, linux/mm.h and how they interact with the rest of the
-> > headers. At the moment, these are included in most .c files and they in turn
-> > include a ton of other headers.
-> 
-> Yes, I would like to untangle the dependencies.
-> 
-> The main reason I started doing this splitting
-> is because I wouldn't be able to include
-> <linux/stddef.h> in some headers,
-> because it pulled too much stuff that broke unrelated things.
-> 
-> So that's why I started from there.
-> 
-> I for example would like to get NULL in memberof()
-> without puling anything else,
-> so <linux/NULL.h> makes sense for that.
+> This part is also present in 
+> [PATCH v5 1/3] btrfs: only use ->max_extent_size if it is set in the bitmap
 
-I don't believe that the code that uses NULL won't include types.h.
+Yeah I moved it up here, you'll see the removal lower down in the patch.
+Thanks,
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Josef
