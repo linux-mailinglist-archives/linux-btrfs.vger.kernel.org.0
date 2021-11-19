@@ -2,184 +2,273 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC601456DD5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Nov 2021 11:53:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FE5456E51
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Nov 2021 12:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhKSKzn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 19 Nov 2021 05:55:43 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:44075 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbhKSKzm (ORCPT
+        id S235117AbhKSLkL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 19 Nov 2021 06:40:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231243AbhKSLkL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 19 Nov 2021 05:55:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1637319160; x=1668855160;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=ulv2HXU6WySmZqDdxqXP5Ex1aWp//myUFIuehZa+FZA=;
-  b=joWn4sl44cO8WNrRSFxuJQStGVH7awweOfpnw+f6nYH9akpFoga/XZdv
-   Rb6MxYj4w5NWU/d0GtqEDFzoikNxxSDMkQZFqo6NuNagcAwXl4KUPrbwL
-   CY+f9fI0R/dxH92E5I92eoCnfQSjPxQzgt2Z+PGbJ7cmp776H9I8HdpWv
-   F4jyuZgN8EKIos6H1nIaBiIDBfrRxZ26Bz3+yk9DMyZQtGyvOql42kWd3
-   gZQIGzXz/akXbwXrKferpDQEpiWZcKpmk/JLNUhsjDOuYHPxOIEHkG2ie
-   8OmR76l+iP3OC2mFuGGA2nSuo54CcpjSVLOd6yDSDnVPow7k3AIPhzNet
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,247,1631548800"; 
-   d="scan'208";a="297913825"
-Received: from mail-bn7nam10lp2106.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.106])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Nov 2021 18:52:39 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BBH9TRiL4s6rPpLco+xhVZnpiJ69WRYrYx22nGOZv05hwljjHMX/7KPSf4d3abVmgS8HwImkTrEmagYjOiPrWmizd0IVXDDoT7l7sYLK7D6xYPRdPr0BACXNfU/JU2W0oUKqLZmWMj7mhJ9eE+NW5C6i1Qhw6qpmO4m86zG+MSGyIUfCLuh66c5tUBwl2jwva4iSLN9EqD22t0ZImxg6MdtJ9i2mBmx+WE0JfBw8iu/HoyJkPh2/YOeT6Jqkx+I2ASx7sXehxWOZU1X7FWy/USgrvkXnRzMSkhxlYBxfy3nJBeysgC7k4NOtpnoiJxkFbypOwyH8sPtXMoVtJN4x7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZEP9aLI6/GhYWCQzlJQSP/rjcyCCFukRO5hXsdDLR40=;
- b=bNolPBEfsRi1g+CSTz7p+6w+JpuUolqVg+rAzk5CvDMlSJU9HJJpCLcfZfd36AF5ZytjyCzLAgiNoIoMJ/a+8o8s7OQEOPaCH1Hw0WagAbmIv4O1nQw2QbfIV/FYSzdjQIdYj4hCVDigglORAClT69ienFBhNa+EvhefhIX68s2pL4k1qemz3nWbh9NJ0zH6d7AA3/H8yAqzSAHn/yWxz6jMU3rRaj3rlRFRGwIqAZwx4PiskZa8xHinlBheLbRlwraR7wEKQT6VJpAAAanHDj9T9sWLsrz8bCIgEYhHxpBAGTyd2C9CvJ5FzQewlg8e3da56UR85N03gpxhL7aVWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Fri, 19 Nov 2021 06:40:11 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DAFC061574;
+        Fri, 19 Nov 2021 03:37:09 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id d72-20020a1c1d4b000000b00331140f3dc8so7263328wmd.1;
+        Fri, 19 Nov 2021 03:37:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZEP9aLI6/GhYWCQzlJQSP/rjcyCCFukRO5hXsdDLR40=;
- b=tyjxokxj8jA5ohbCLPcm9WdBq1i49Ei5QTzOLtpzGKBzBF7P5U+R9H6dLUioxPx5f/zArvXOuJ9JhdOGj4YBM564d1gfHbCY5/WzkZ6e48NTkykmY7k4yjnNej1hHvQu+4KRWittjMejZOKFU60JgkL38g36dnzCaBA2iX6n0aY=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7413.namprd04.prod.outlook.com (2603:10b6:510:13::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Fri, 19 Nov
- 2021 10:52:38 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::3418:fa40:16a4:6e0c]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::3418:fa40:16a4:6e0c%4]) with mapi id 15.20.4713.022; Fri, 19 Nov 2021
- 10:52:38 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-CC:     Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH v5 2/3] btrfs: index free space entries on size
-Thread-Topic: [PATCH v5 2/3] btrfs: index free space entries on size
-Thread-Index: AQHX3MPwl0obl13NHU+KLpqmKw+bYQ==
-Date:   Fri, 19 Nov 2021 10:52:38 +0000
-Message-ID: <PH0PR04MB7416BDFF1C613094C64689639B9C9@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <cover.1637271014.git.josef@toxicpanda.com>
- <afe97640a3d170bea4be47e7ac1487bc81be3a89.1637271014.git.josef@toxicpanda.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a7be48b3-10ef-4498-d6f6-08d9ab4ab417
-x-ms-traffictypediagnostic: PH0PR04MB7413:
-x-microsoft-antispam-prvs: <PH0PR04MB7413BFEAFF7C7D8F97EF3D369B9C9@PH0PR04MB7413.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: B9vsLMtAa9AovI+gQ9hzfAHkq5++aHlIBtSbSs738iiMzAMt10o9oLdlekM3MawKAYO4ryrK2eHMWMmaC5Zcd+R40MS6Q11K38o116YARL8mSh5rFxFdqwy6f++ZUce2EdptvUNhq4A4oMcZRrM4pMOp4LB66O5y7ofmPti+Q7+ukHbg64bJMU/3gr2SuYOkCeBzM3FNhAdP08VvSFCi0Ls5vNg8DOkN1cG6QI7qjYEoWX8Y5ve0u3o2b0uk3NW9NMYLiHHylk7c9r9PzTbS63oNR78FDixxKw/WYxCiq5ULZWBcd5gJFztNrUlRTS8YdfyWwCdBwUxJA68zZCihTRh2fi0Gk4MmErUMI04+JB1beN02b+MRcviS9oHCHJLE4THNrIFrkfZiL1XNaTfB0u7l5pM4R/Gsp5VUgR/nqSB3p8DmzHc9oJuTE2+ejEgdKF++uYtkOl5H6QcCvBn8G1LWpBnuv1fE3AuokAxH++eilpPkz5RJDYfoJQvUDquDSHBGoziVV/bvzZF8XnweDrIfjYlls9u/vbYiqlxjIr1xRr3xRwomjo39Bpts/hV5IaOBM1GpAhFEVaqZ4U8ojvz7CFH0KjxhbzXQ5mnbvjVSssUENh2ZPTdZOg1wRBtV+UaKpxnC+8GdTRI6fTRcLMhle2JYc535fOW4j69tomZWWVYIQwV7xjQeZtiFZ/LAobhQDxZvEvwwXgQ+R0KVlw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(508600001)(76116006)(110136005)(6506007)(53546011)(122000001)(64756008)(38070700005)(316002)(86362001)(4326008)(82960400001)(5660300002)(38100700002)(2906002)(55016002)(33656002)(52536014)(8676002)(186003)(66946007)(66446008)(66476007)(9686003)(7696005)(66556008)(71200400001)(91956017);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bnE/Hgr1oGkvctyUz6dK5we/PmWwzp5XkI000Q5lCU0JXlh8ubX9fA6G+nc+?=
- =?us-ascii?Q?jBvBpZXxSDN3gROmhWjjDOf+eWmDh3vOtiZI61wsflJk1SdOsthMqSOphYIH?=
- =?us-ascii?Q?oO2OkoxUesxaF03OzJGrLEzUNiBjrEfvNi8NZWPjem5QZHrfHTnSmkiggoFE?=
- =?us-ascii?Q?Mc6JeV58pp2eQ3EW/BcEzswxSndULqOUlXMiG9Uy2frHebxO0+EbMj/ETg2i?=
- =?us-ascii?Q?b1mem1W+WqSllkIRlwIiD5EsASU4/XtPojH0An+18Zz0oE2n/ipXkgvvhOaL?=
- =?us-ascii?Q?GKfXtU0+l+Xz7plcfjOhqURXWifJ7PfBP+Ama44lV11LQNtWgerOSmgx1nl0?=
- =?us-ascii?Q?6VEChrSOsuZ6ySEcYPCpNVufHEOPSxL34aE562gzhjLQT864mxOT0ceN1V5h?=
- =?us-ascii?Q?51TY97Ux1AQgK4tOkc/aDvoy+j9UgVxnMTX6ltE/b86+JDgWxPgM9tF/5nyq?=
- =?us-ascii?Q?US8ujAbCyVAxYieTmF9I+1Eu6UmUZfsTeD+2Dua+RrgGC2bW2dwiOrJZOC8F?=
- =?us-ascii?Q?C1eKiVqPZo8ipt3/L31fn+aHu7zGXTQWySdd0GQv0Jo0B4RJM6pqeDFKkax2?=
- =?us-ascii?Q?KGXbQv/BB4zvkP5RycEUJe0SmRvf6Bbv2VXeoy+UsUTmjAQGcSDBUFOqlleW?=
- =?us-ascii?Q?i5oZ1t0hQWdveGpP5puK9xAfLIwurvfqRjKm030wqFjcyiQLXLIw5nsTkWQG?=
- =?us-ascii?Q?H6WMztPuhi/lUz9e0mlgI+j8UtGwm8DqxpCG8SQqk/+5BM62OJDAgZ0Qzkw3?=
- =?us-ascii?Q?wLig4PkHnGi66ZyDi8gysHnugUjTsXlXDftEbzcKWLWU9mSRiB1KLFwmOYOC?=
- =?us-ascii?Q?b/iUZ21c3X/iNdjDxTATTM6QPrRUmEdS0MnhHnep+L6nCZd+gZk9PgniN9xz?=
- =?us-ascii?Q?Q5RxHq26EAxUDpju2rKL0U4gFLdyYxc0HTqz9VSwItx4B6Nkp4XocPIjrYd5?=
- =?us-ascii?Q?9e+NsAjBpqK+mYqURR6F8eJmG0OIbh8TPcv47+7Z8ZMHHCb91ls1V7a3n/WU?=
- =?us-ascii?Q?WnQAP2kwHtDFxGN+NlbqE+Iz2eqTXbC3Lg7J6tTwWjBj7OH7OUCVZEk+v3pd?=
- =?us-ascii?Q?k0SN/Cxd+B69oHnPsqlMVjouGlOYRyNY/RqoqbVwiS3bdafGeE7tt1gmmrrv?=
- =?us-ascii?Q?bFgRAdvXDxye6ez00CpX85nX0XUliQUzDkD+ocTgb//mWcFW4w1T/GR4Uuxn?=
- =?us-ascii?Q?L9oBHRYGxeuHcTWIgtIRhd0DB2T/ynq1Zylf/7w4ruUicUxMvW2/6QYvV2RB?=
- =?us-ascii?Q?dV8FZPZyKATKHVnK9DFZItEnsL+nHvI6kmooUwAYvVMN1Q7anhIUUbAXvZWK?=
- =?us-ascii?Q?8X7hDNncjxGWWahWCUz5e+XzoQMs3GnyYFcZh/lOaGghDQHKw2bMDBYZiOHO?=
- =?us-ascii?Q?pLIPFGfU2YKIK3IdfTXcbRsP3o7ibeISUnMn6z2aATTM34eiPaJeu9GQYjAC?=
- =?us-ascii?Q?ZskwOkZbeFIy+CHrHU0qQ4VDDMNCec4mJwBeTxZ/U59+amHArliL4Rtl7hQQ?=
- =?us-ascii?Q?GcMGfAS439SAkG+q+whXJzu/xUmxQ8oq/W1OYnYZitC4mOroPcr06KIyANQr?=
- =?us-ascii?Q?0aMRK9VtpjUIv5dq+3GG1wELkfp2UlpTyycSecIWRbblh0+619i8ks+pJ2sC?=
- =?us-ascii?Q?20yeaNYuIVJy1Qwzzdljh3MdPeSpieH4daGn2Pi7ZeyRpXEPDMvLpW34u/9v?=
- =?us-ascii?Q?6xLXEP2VbxokIfn9UiV26jpjmLWFYJh1MERKN5lFQXuIIobRd0sf505stQfG?=
- =?us-ascii?Q?Pmq3qNCquIcqJSQ2irDE9EPicxLxuQM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i/fXbPVRBN7s8r5M3WRHcaBt2UUAnkHDSIE3JuEClQs=;
+        b=LdKaBDoXj5kLikAyAmdIKIT2p/1ZnFNnEoDHrFpvPz7+3Ge8onDjpohtiCMAnlnsiK
+         SBn8bjvzha8CnoksjBka38G2LiNZqnYBv275eAjwpBruCcNX7PYKuRJSnX8RcO5ORT/g
+         l2Ebp7hBv9FRd6DoviS5UaQJN+kUwYCf+cZGSD0dbUhMFVOjR6DfDQGHL+bmpzTYKkAD
+         U2E5MYD17sxdcnjcomWe4oG7wo7H90SpoWYL2I41ybq+DVRU7A/hifhcbTucr7CG5zdC
+         sOxBPibe1UMLSiucWQu3denVSkrZVSS/diEnVBHTo80lgv+7qZffYh7SMRb7wNWX2Iaj
+         qOCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i/fXbPVRBN7s8r5M3WRHcaBt2UUAnkHDSIE3JuEClQs=;
+        b=x0Wm1zCcajFrkoiOf3OSsnu0cub3soVIPrLWuRbbN2zcd1JkbbcCc7OxY02R/h3Q7m
+         eODluNJd/OkPhX1O3VzWfm71eMZClDoDXpSuA50Idx1cfj7sBEIRnSpRMHDPmxnRrk31
+         pVJ9tqrpXdMfRpYpngvljrTJIzgYqmFJDkwZQI93Qk/vVNAZ5UdKzrX6g0NgA711hNRp
+         HlwJXF+JYEWhP/xHCsoFY924AzJZBFAgP9C1kNZlcmOwBZ5KIWxehkbysml8iKSW8kit
+         lHzdwUYjLwbpa4Av++mQILdTHwyC2yxiX7Plx6jHkg0YeBSjrxMoPrPtDdxEq/nPPV1S
+         iOYQ==
+X-Gm-Message-State: AOAM532y7xUbs/bf3gz+BHLqyBMjMRU8d7p+0vAYIKVQfpvE3X3P7/du
+        +rYQlBMuSpotGdH0hZZop+Tio4XCwnkrqQ==
+X-Google-Smtp-Source: ABdhPJyJbfoMgk75T8Fyd/k0Splt6ZMCLNuREiyUbadwsKMpXolha/fffbI6cizRQl/wpfUClrVQ4g==
+X-Received: by 2002:a7b:cd02:: with SMTP id f2mr324816wmj.115.1637321827678;
+        Fri, 19 Nov 2021 03:37:07 -0800 (PST)
+Received: from ady1.alejandro-colomar.es ([170.253.36.171])
+        by smtp.googlemail.com with ESMTPSA id f15sm3361260wmg.30.2021.11.19.03.37.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Nov 2021 03:37:07 -0800 (PST)
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        Ajit Khaparde <ajit.khaparde@broadcom.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Borislav Petkov <bp@suse.de>,
+        Corey Minyard <cminyard@mvista.com>, Chris Mason <clm@fb.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        David Sterba <dsterba@suse.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "John S . Gruber" <JohnSGruber@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kees Cook <keescook@chromium.org>,
+        Ketan Mukadam <ketan.mukadam@broadcom.com>,
+        Len Brown <lenb@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
+        intel-gfx@lists.freedesktop.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH 00/17] Add memberof(), split some headers, and slightly simplify code
+Date:   Fri, 19 Nov 2021 12:36:28 +0100
+Message-Id: <20211119113644.1600-1-alx.manpages@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7be48b3-10ef-4498-d6f6-08d9ab4ab417
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2021 10:52:38.5234
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ufQbY0rpL0XkCd1Juzkb5JvMJ0UmTlRAd6CoAVqiIbjwKZtKM93X2HWQEPi8GcnnrzL3wq1k2r4iq2zBQRES3ihZXhjz62oHREwJYHI35o8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7413
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 18/11/2021 22:33, Josef Bacik wrote:=0A=
-> +/*=0A=
-> + * This is a little subtle.  We *only* have ->max_extent_size set if we =
-actually=0A=
-> + * searched through the bitmap and figured out the largest ->max_extent_=
-size,=0A=
-> + * otherwise it's 0.  In the case that it's 0 we don't want to tell the=
-=0A=
-> + * allocator the wrong thing, we want to use the actual real max_extent_=
-size=0A=
-> + * we've found already if it's larger, or we want to use ->bytes.=0A=
-> + *=0A=
-> + * This matters because find_free_space() will skip entries who's ->byte=
-s is=0A=
-> + * less than the required bytes.  So if we didn't search down this bitma=
-p, we=0A=
-> + * may pick some previous entry that has a smaller ->max_extent_size tha=
-n we=0A=
-> + * have.  For example, assume we have two entries, one that has=0A=
-> + * ->max_extent_size set to 4k and ->bytes set to 1M.  A second entry ha=
-sn't set=0A=
-> + * ->max_extent_size yet, has ->bytes set to 8k and it's contiguous.  We=
- will=0A=
-> + *  call into find_free_space(), and return with max_extent_size =3D=3D =
-4k, because=0A=
-> + *  that first bitmap entry had ->max_extent_size set, but the second on=
-e did=0A=
-> + *  not.  If instead we returned 8k we'd come in searching for 8k, and f=
-ind the=0A=
-> + *  8k contiguous range.=0A=
-> + *=0A=
-> + *  Consider the other case, we have 2 8k chunks in that second entry an=
-d still=0A=
-> + *  don't have ->max_extent_size set.  We'll return 16k, and the next ti=
-me the=0A=
-> + *  allocator comes in it'll fully search our second bitmap, and this ti=
-me it'll=0A=
-> + *  get an uptodate value of 8k as the maximum chunk size.  Then we'll g=
-et the=0A=
-> + *  right allocation the next loop through.=0A=
-> + */=0A=
-> +static inline u64 get_max_extent_size(const struct btrfs_free_space *ent=
-ry)=0A=
-> +{=0A=
-> +	if (entry->bitmap && entry->max_extent_size)=0A=
-> +		return entry->max_extent_size;=0A=
-> +	return entry->bytes;=0A=
-> +}=0A=
-=0A=
-This part is also present in =0A=
-[PATCH v5 1/3] btrfs: only use ->max_extent_size if it is set in the bitmap=
-=0A=
+
+Hi all,
+
+I simplified some xxxof() macros,
+by adding a new macro memberof(),
+which implements a common operation in many of them.
+
+I also splitted many of those macros into tiny headers,
+since I noticed that touching those headers implied
+recompiling almost the whole kernel.
+
+Hopefully after this patch there will be less
+things to recompile after touching one of those.
+
+Having simpler headers means that now one can
+include one of those without pulling too much stuff
+that might break other stuff.
+
+I removed some unnecessary casts too.
+
+Every few commits in this series
+and of course after the last commit
+I rebuilt the kernel and run for a while with it without any problems.
+
+Please note that I have written very few kernel code
+and for example some files wouldn't let me include some of these files,
+so I didn't change those.
+
+What I mean is that,
+even though this is super obvious and shouldn't break stuff,
+and I'm not new to C,
+I'm quite new to the kernel,
+and ask that reviewers take deep look, please.
+
+
+In the first and second commits
+I changed a lot of stuff in many parts,
+and that's why I CCd so many people (also in this cover letter).
+However, to avoid spamming,
+and since it would be a nightmare to
+find all the relevant people affected in so many different areas,
+I only CCd in 01, 02 and in the cover letter.
+If anyone is interested in reading the full patch set,
+I sent it to the LKML.
+
+
+Thanks,
+Alex
+
+
+Alejandro Colomar (17):
+  linux/container_of.h: Add memberof(T, m)
+  Use memberof(T, m) instead of explicit NULL dereference
+  Replace some uses of memberof() by its wrappers
+  linux/memberof.h: Move memberof() to separate header
+  linux/typeof_member.h: Move typeof_member() to a separate header
+  Simplify sizeof(typeof_member()) to sizeof_field()
+  linux/NULL.h: Move NULL to a separate header
+  linux/offsetof.h: Move offsetof(T, m) to a separate header
+  linux/offsetof.h: Implement offsetof() in terms of memberof()
+  linux/container_of.h: Implement container_of_safe() in terms of
+    container_of()
+  linux/container_of.h: Cosmetic
+  linux/container_of.h: Remove unnecessary cast to (void *)
+  linux/sizeof_field.h: Move sizeof_field(T, m) to a separate header
+  include/linux/: Include a smaller header if just for NULL
+  linux/offsetofend.h: Move offsetofend(T, m) to a separate header
+  linux/array_size.h: Move ARRAY_SIZE(arr) to a separate header
+  include/: Include <linux/array_size.h> for ARRAY_SIZE()
+
+ arch/x86/include/asm/bootparam_utils.h        |  3 +-
+ arch/x86/kernel/signal_compat.c               |  5 ++--
+ drivers/gpu/drm/i915/i915_sw_fence.c          |  1 +
+ drivers/gpu/drm/i915/i915_utils.h             |  5 ++--
+ drivers/gpu/drm/i915/intel_runtime_pm.h       |  3 +-
+ drivers/net/ethernet/emulex/benet/be.h        | 10 +++----
+ drivers/net/ethernet/i825xx/ether1.c          |  7 +++--
+ drivers/platform/x86/wmi.c                    |  3 +-
+ drivers/scsi/be2iscsi/be.h                    | 12 ++++----
+ drivers/scsi/be2iscsi/be_cmds.h               |  5 +++-
+ fs/btrfs/ctree.h                              |  5 ++--
+ fs/proc/inode.c                               |  1 +
+ include/acpi/actypes.h                        |  4 ++-
+ include/crypto/internal/blake2b.h             |  1 +
+ include/crypto/internal/blake2s.h             |  1 +
+ include/crypto/internal/chacha.h              |  1 +
+ include/drm/drm_mipi_dbi.h                    |  1 +
+ include/drm/drm_mode_object.h                 |  1 +
+ include/kunit/test.h                          |  1 +
+ include/linux/NULL.h                          | 10 +++++++
+ include/linux/arm_ffa.h                       |  1 +
+ include/linux/array_size.h                    | 15 ++++++++++
+ include/linux/blk_types.h                     |  1 +
+ include/linux/can/core.h                      |  1 +
+ include/linux/clk-provider.h                  |  1 +
+ include/linux/container_of.h                  | 28 ++++++++++-------
+ include/linux/counter.h                       |  1 +
+ include/linux/crash_core.h                    |  1 +
+ include/linux/efi.h                           |  1 +
+ include/linux/extable.h                       |  2 +-
+ include/linux/f2fs_fs.h                       |  1 +
+ include/linux/filter.h                        |  3 ++
+ include/linux/fs.h                            |  1 +
+ include/linux/genl_magic_func.h               |  1 +
+ include/linux/hashtable.h                     |  1 +
+ include/linux/ieee80211.h                     |  1 +
+ include/linux/kbuild.h                        |  3 ++
+ include/linux/kernel.h                        |  7 +----
+ include/linux/kfifo.h                         |  1 +
+ include/linux/kvm_host.h                      |  3 ++
+ include/linux/libata.h                        |  1 +
+ include/linux/llist.h                         |  1 +
+ include/linux/memberof.h                      | 11 +++++++
+ include/linux/mlx5/device.h                   |  1 +
+ include/linux/mlx5/driver.h                   |  1 +
+ include/linux/mm_types.h                      |  1 +
+ include/linux/moduleparam.h                   |  3 ++
+ include/linux/mtd/rawnand.h                   |  1 +
+ include/linux/netdevice.h                     |  1 +
+ include/linux/netfilter.h                     |  1 +
+ include/linux/nvme-fc.h                       |  2 ++
+ include/linux/offsetof.h                      | 17 +++++++++++
+ include/linux/offsetofend.h                   | 19 ++++++++++++
+ include/linux/pagemap.h                       |  1 +
+ include/linux/phy.h                           |  1 +
+ include/linux/phy_led_triggers.h              |  1 +
+ include/linux/pinctrl/machine.h               |  1 +
+ include/linux/property.h                      |  1 +
+ include/linux/rcupdate.h                      |  1 +
+ include/linux/rcupdate_wait.h                 |  1 +
+ include/linux/regmap.h                        |  1 +
+ include/linux/sched/task.h                    |  1 +
+ include/linux/sizeof_field.h                  | 14 +++++++++
+ include/linux/skb_array.h                     |  1 +
+ include/linux/skbuff.h                        |  1 +
+ include/linux/skmsg.h                         |  3 ++
+ include/linux/slab.h                          |  2 ++
+ include/linux/spinlock_types.h                |  1 +
+ include/linux/stddef.h                        | 30 +++----------------
+ include/linux/string.h                        |  5 +++-
+ include/linux/surface_aggregator/controller.h |  1 +
+ include/linux/surface_aggregator/serial_hub.h |  1 +
+ include/linux/swap.h                          |  1 +
+ include/linux/ti-emif-sram.h                  |  1 +
+ include/linux/typeof_member.h                 | 11 +++++++
+ include/linux/ucs2_string.h                   |  2 +-
+ include/linux/vdpa.h                          |  1 +
+ include/linux/virtio_config.h                 | 17 ++++++-----
+ include/linux/wireless.h                      |  2 ++
+ include/net/bond_3ad.h                        |  1 +
+ include/net/dsa.h                             |  1 +
+ include/net/ip_vs.h                           |  1 +
+ include/net/netfilter/nf_conntrack_tuple.h    |  1 +
+ include/net/netfilter/nf_tables.h             |  1 +
+ include/net/netlink.h                         |  1 +
+ include/rdma/uverbs_ioctl.h                   |  1 +
+ include/rdma/uverbs_named_ioctl.h             |  1 +
+ include/scsi/scsi_host.h                      |  1 +
+ include/sound/soc-dapm.h                      |  1 +
+ include/sound/soc.h                           |  1 +
+ include/trace/events/wbt.h                    |  1 +
+ include/uapi/linux/netfilter/xt_sctp.h        |  1 +
+ include/xen/hvm.h                             |  1 +
+ kernel/kallsyms.c                             |  3 +-
+ 94 files changed, 255 insertions(+), 79 deletions(-)
+ create mode 100644 include/linux/NULL.h
+ create mode 100644 include/linux/array_size.h
+ create mode 100644 include/linux/memberof.h
+ create mode 100644 include/linux/offsetof.h
+ create mode 100644 include/linux/offsetofend.h
+ create mode 100644 include/linux/sizeof_field.h
+ create mode 100644 include/linux/typeof_member.h
+
+-- 
+2.33.1
+
