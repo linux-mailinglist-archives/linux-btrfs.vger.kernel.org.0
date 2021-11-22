@@ -2,185 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80434591A5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 16:51:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD974591C4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 16:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238228AbhKVPyf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Nov 2021 10:54:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
+        id S240204AbhKVP5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Nov 2021 10:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbhKVPyf (ORCPT
+        with ESMTP id S240212AbhKVP5e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:54:35 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F999C061574
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 07:51:28 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso17248538pji.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 07:51:28 -0800 (PST)
+        Mon, 22 Nov 2021 10:57:34 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FD2C061746
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 07:54:19 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id q12so15649874pgh.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 07:54:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6+RrtX/RqIJP9MdrzcI2o2KCOQtGt5iHYtstZKO1Xjc=;
-        b=WbO5Ojx4GL89XY0Y7ckwiUkjlDJiPLUuTP73bAcEz06GTAnL7EtGXQTFtrBFrXmHJy
-         jLYn1pJlA21uyajZK1MI+XAGdxXHc+rE1HaOOrJ0Kv5CxBJ/kq820sRJKdHhRdhShkKj
-         gyP2B4PHKlZHRu+nDcMwrytllDsp0haYDyaZibzlYqDgj/5qsos9/C3okRAFfHs+0ML+
-         d9aetsBZBGsAsBRPwCYEP9gYqeGIyeXjsllecMvIJZhwUnjD59+EWx8B9HVB4xU0URKB
-         rm+fVU5wl3w9Xw0DKElgX51be6oT0WDzJ7RZZqEb2AORbgb/yB89N2CJTDPESjNMT7WM
-         MvOg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MIOl5FabVOqkD6AtHa6uCXmnh1LFQkwm3+TSpHEm/J4=;
+        b=l8QMTG9tPndka4MQ9l6LP5VAGNvA4qWlbvy7hP/zpAKZ3H27/bo+UTQoUzO3VnmvPw
+         emWcBbwuXFedUcua2S150M9nZCGUTiOef/wSDjCMPcxvQyYvOxrbtjoDPXdAsP0vpt6f
+         zzlZyL/yRv5LjsNo33gHfP8hrAOS+ZVkJ5U6xoJ6YzfqkwBwUHcxktJmyEBFj4M/QX88
+         OdWQ/5yuyUdIcrejLVn+KuKJgBBA8ar//yKkfT9NBr3vxoUTa22VMBhD2sNk5+vzYMs8
+         lhl4wwUeeCTIlGA4klQY38mfXnOUknToYcd0MHawEql7nQMz/p2rpIQcO5aECsWj6nFF
+         IgIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6+RrtX/RqIJP9MdrzcI2o2KCOQtGt5iHYtstZKO1Xjc=;
-        b=PjxyqAQ9x6j+mIWHx1hwlFWpXSkhhfNO/bYU7rYIxHoWHCucjWA9rg8rB3Hbmmc/3Q
-         NGkpu+l2yxIJrT6ZnD8FgGKzlGbhsMlJW3vegtMak8FswwDJPPujt1srxzqIo8e9sEIg
-         rilYRcCYBllGchEL/fpQTplo3KEUwcB5PwnCVcavMtlAlPW5S8st6Tt7Yg5uKd4vVR7u
-         JaT207PoQeQMrXthKCLmJLQ5+jwnKRzRBNkvHEdCnBNdB3eOKs69sTMbifC0LHR0ZT31
-         ovbEfxsIKWQ/foQoLrBRjRe/V3EIKBVTh1oiP9V/he4hp8MbhZ2lH+nCFJNfTVyvLqSe
-         n43A==
-X-Gm-Message-State: AOAM5322fgTLbVdzUohVNpT++kHJXkhen2E3ey/vd6td5Rf5unszwPGK
-        DlHUKYkBy+sMjmlDRoGaWkmOLyXr64r6Lw==
-X-Google-Smtp-Source: ABdhPJySl7aKw6SyAsUX0BlLcq+Iunh1Jd8aLAfhe1+DIbIzsH9SyptqXi5mP2K6s/38dcxuCvgjWg==
-X-Received: by 2002:a17:902:9303:b0:143:d6c7:babc with SMTP id bc3-20020a170902930300b00143d6c7babcmr63906116plb.58.1637596288038;
-        Mon, 22 Nov 2021 07:51:28 -0800 (PST)
-Received: from realwakka ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id k91sm8064429pja.19.2021.11.22.07.51.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MIOl5FabVOqkD6AtHa6uCXmnh1LFQkwm3+TSpHEm/J4=;
+        b=5LXJQ0+FnUyOa12fLjHtm+YcGuH/0jt07qGjOUSF77ENpUeGnxIXctTCGFGGM7xL2E
+         GCPAvGZAKKoIjV+7+OOnuIInbwSF/mDjHZqUruqmakDtACybt6SFn+j/n2BQfuo0KF8m
+         7nMglOsDINzkCLA1OFJffHZAH9qOo3enqi/RjAORnhilpD8lPtl6s6mu5ZWDZoeK7MVL
+         W2z+NyAXe/wnF51/NzeyZy0HT8IG9jBR08RFdY740eSg4UL26TGIY2ColjFjordCwfFz
+         x/w2miYpbuxttXxTo6ZSGKNXS7lHmkK9c/iNfj6ICkHI4n3TvuoGX+m2zLuPW0U6I2yz
+         eDiw==
+X-Gm-Message-State: AOAM5330N2GVx+D6QCw0DQ30jgAvzRTQK4+YDh+i1ccBiTKY4OiQ64uC
+        lDkoxWsOc3253TJaCSA8xx4=
+X-Google-Smtp-Source: ABdhPJx4mbLEm2jPe/ry1HkhWUUAXsHqnqZNsIu2OyZi6Ph1RheqSVpKrb6dMaAsaJ44rBK2h/bzUw==
+X-Received: by 2002:a62:1e81:0:b0:4a3:7a97:d868 with SMTP id e123-20020a621e81000000b004a37a97d868mr29169071pfe.52.1637596459457;
+        Mon, 22 Nov 2021 07:54:19 -0800 (PST)
+Received: from localhost.localdomain ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id b4sm9848456pfl.60.2021.11.22.07.54.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 07:51:27 -0800 (PST)
-Date:   Mon, 22 Nov 2021 15:51:20 +0000
+        Mon, 22 Nov 2021 07:54:19 -0800 (PST)
 From:   Sidong Yang <realwakka@gmail.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Graham Cobb <g.btrfs@cobb.uk.net>,
+To:     Nikolay Borisov <nborisov@suse.com>,
+        Graham Cobb <g.btrfs@cobb.uk.net>,
         linux-btrfs <linux-btrfs@vger.kernel.org>,
         David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v2] btrfs-progs: filesystem: du: skip file that
- permission denied
-Message-ID: <20211122155120.GA10576@realwakka>
-References: <20211121151556.8874-1-realwakka@gmail.com>
- <09d229c6-ae30-4453-c9d4-39109f032b99@suse.com>
- <20211122083240.GB8836@realwakka>
- <a28e62b7-f1ee-858f-990b-678ab21312d9@suse.com>
- <a5cd8f64-066e-8791-5de8-a2263d50f597@cobb.uk.net>
- <0a7ce0b1-300c-233b-d844-012dfc771efe@suse.com>
- <20211122151027.GA10523@realwakka>
- <b07b5fb0-a545-264a-9e6c-0ccdd1bb728c@suse.com>
+Cc:     Sidong Yang <realwakka@gmail.com>
+Subject: [PATCH v3] btrfs-progs: filesystem: du: skip file that permission denied
+Date:   Mon, 22 Nov 2021 15:54:11 +0000
+Message-Id: <20211122155411.10626-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b07b5fb0-a545-264a-9e6c-0ccdd1bb728c@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 05:20:30PM +0200, Nikolay Borisov wrote:
-> 
-> 
-> On 22.11.21 г. 17:10, Sidong Yang wrote:
-> > On Mon, Nov 22, 2021 at 12:57:18PM +0200, Nikolay Borisov wrote:
-> >>
-> >>
-> >> On 22.11.21 г. 11:53, Graham Cobb wrote:
-> >>>
-> >>> On 22/11/2021 09:32, Nikolay Borisov wrote:
-> >>>>
-> >>>>
-> >>>> On 22.11.21 г. 10:32, Sidong Yang wrote:
-> >>>>> On Mon, Nov 22, 2021 at 09:20:00AM +0200, Nikolay Borisov wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>> On 21.11.21 г. 17:15, Sidong Yang wrote:
-> >>>>>>> This patch handles issue #421. Filesystem du command fails and exit
-> >>>>>>> when it access file that has permission denied. But it can continue the
-> >>>>>>> command except the files. This patch recovers ret value when permission
-> >>>>>>> denied.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> >>>>>>
-> >>>>>>
-> >>>>>> The code itself is fine so :
-> >>>>>>
-> >>>>>>
-> >>>>>> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> >>>>>>
-> >>>>>>
-> >>>>>> OTOH when I looked at the code rather than just the patch I can't help
-> >>>>>> but wonder shouldn't we actually structure this the way you initially
-> >>>>>> proposed but also add a debug output along the lines of "skipping
-> >>>>>> file/dir XXXX due to permission denied", otherwise users might not be
-> >>>>>> able to account for some space and they can possibly wonder that
-> >>>>>> something is wrong with btrfs fi du command.
-> >>>>>
-> >>>>> You mean that it would be better that print some debug message than
-> >>>>> skipping silently. I agree. So I would add this code in condition.
-> >>>>>
-> >>>>> fprintf(stderr, "skipping file/dir: %s : %m\n", entry->d_name);
-> >>>>>
-> >>>>> I think it's okay that it prints when ENOTTY occurs. Is this code what
-> >>>>> you meant?
-> >>>>
-> >>>>
-> >>>> I meant to print only if we have EACCESS, but now that I think about it,
-> >>>> printing something when we have a non-fatal error and simply skipping
-> >>>> some dirs/files makes sense. OTOH printing it by default might be too
-> >>>> verbose so perhaps usuing a pr_verbose call would be more appropriate.
-> >>>>
-> >>>> This is one of those things which don't have a clear-cut answers so it's
-> >>>> useful to get as many perspective as possible to arrive at some workable
-> >>>> solution to a wider number of people.
-> >>>
-> >>> I must admit I just assumed it worked the same way as /bin/du. I have
-> >>> just created an inaccessible directory and got:
-> >>>
-> >>> $ du -sh ~
-> >>> du: cannot read directory '/home/cobb/permtest': Permission denied
-> >>> 61G	/home/cobb
-> >>>
-> >>> And when the directory was accessible but the file in it was not, I got:
-> >>>
-> >>> $ du -sh ~
-> >>> du: cannot access '/home/cobb/permtest/file': Permission denied
-> >>> 61G	/home/cobb
-> >>>
-> >>> In other words, I think any error should be printed but the error is
-> >>> then skipped and the du continues. No need to tell people the file is
-> >>> being skipped - that is obvious. But the error must be printed by
-> >>> default (if there are really cases where the error should not be printed
-> >>> but reasons not to redirect stderr to /dev/null then add an option to
-> >>> suppress printing it).
-> >>>
-> >>> Just my opinion.
-> >>
-> >>
-> >> That actually works for me, I'd rather btrfs be as consistent as
-> >> possible and not give surprises to users. So just mimicking what an
-> >> omnipresent tool does is as good as it gets :)
-> > 
-> > Yeah, I understood that any error should be printed but no need to print
-> > that it is skipped. I agree. If so, I think the code that print error
-> > message should like below.
-> > 
-> > fprintf(stderr, "failed to walk dir/file: %s: %m\n", entry->d_name);
-> > 
-> > I agreed that btrfs command should be like "du" command that familiar
-> > with users. I wonder if I understood it well.
-> > 
-> > If so, I think it would be better that use switch-case than if-else.
-> 
-> let's be inline with du:
-> 
-> fprintf(stderr, "cannot access: '%s:' %m\n", entry->d_name);
-> 
-> Also %m works with the error in errno and in this case the error is in
-> ret, so you'd need to set errno to ret.
+This patch handles issue #421. Filesystem du command fails and exit
+when it access file that has permission denied. But it can continue the
+command except the files. This patch prints error message just like
+/bin/du does and it continues if it can.
 
-Thanks for a tip. I'll write next version of this patch.
-> 
-> >>
-> >>
-> >>>
-> >>> Graham
-> >>>
-> > 
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+v3:
+ - prints error message like /bin/du does
+---
+ cmds/filesystem-du.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/cmds/filesystem-du.c b/cmds/filesystem-du.c
+index 5865335d..7ea2da85 100644
+--- a/cmds/filesystem-du.c
++++ b/cmds/filesystem-du.c
+@@ -403,14 +403,14 @@ static int du_walk_dir(struct du_dir_ctxt *ctxt, struct rb_root *shared_extents)
+ 						  dirfd(dirstream),
+ 						  shared_extents, &tot, &shr,
+ 						  0);
+-				if (ret == -ENOTTY) {
+-					ret = 0;
+-					continue;
+-				} else if (ret) {
++				if (ret) {
+ 					errno = -ret;
+-					fprintf(stderr,
+-					"failed to walk dir/file: %s : %m\n",
+-						entry->d_name);
++					fprintf(stderr, "cannot access: '%s:' %m\n",
++							entry->d_name);
++					if (ret == -ENOTTY || ret == -EACCES) {
++						ret = 0;
++						continue;
++					}
+ 					break;
+ 				}
+ 
+-- 
+2.25.1
+
