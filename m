@@ -2,103 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD81445986C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 00:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E9C459871
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 00:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbhKVXcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Nov 2021 18:32:31 -0500
-Received: from mout.gmx.net ([212.227.17.21]:41105 "EHLO mout.gmx.net"
+        id S231910AbhKVXfx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Nov 2021 18:35:53 -0500
+Received: from mout.gmx.net ([212.227.15.18]:45669 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231811AbhKVXca (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:32:30 -0500
+        id S231550AbhKVXfx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Nov 2021 18:35:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637623749;
-        bh=O+5lNOPAUrZTgMWbEBWmyDMsJg01k6+2aQchkaxKGBE=;
+        s=badeba3b8450; t=1637623961;
+        bh=Z9/W77qsti5bD8UyDv7AfFg5JlsVhhtAmquSYjvbB80=;
         h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=TShmSvmfrFS6Von8tJ3DHpZzRojcYivY940sQHWrK7Z+a+HXIWI8X25Gv/c4roert
-         S/nLVAV0KhW0oGHxh0odIhUhdt/nQvExQSRzfyCGmMH5d0JP32N1aKwVOpTLufpnQX
-         qKFDZYxvtaN8JXPZK/Ex6ygAbBttDICkdCvtmnRg=
+        b=FipZfZpJwxrVukhZTP6jOCrXlAdFGzuCDNA1yc6ZvbfTpUR1E6HMrrmIYYXfb+73k
+         /fc99nuYgH3Zoe/j7mX3+pHdmM7n9sae/rlPbmRAOGf+8O8H/Xe8IqivcPLCBle9UX
+         /SBSqRZ+aQLIZQUA+j5xpUDqbs6HIjBSwx0M1FO8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MxUrx-1mRblV1wKX-00xqZ1; Tue, 23
- Nov 2021 00:29:09 +0100
-Message-ID: <e31d5b36-a8f3-05a1-040a-7295c3f64b42@gmx.com>
-Date:   Tue, 23 Nov 2021 07:29:04 +0800
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MatRZ-1mErS73K9b-00cTTJ; Tue, 23
+ Nov 2021 00:32:41 +0100
+Message-ID: <754fdf36-cc66-9a02-2e0b-e0fb54f65982@gmx.com>
+Date:   Tue, 23 Nov 2021 07:32:37 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.1
-Subject: Re: [PATCH] btrfs: fail if fstrim_range->start == U64_MAX
+Subject: Re: [PATCH] fstests: btrfs/099: use the qgroupid for qgroup limit
 Content-Language: en-US
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <3990fc5294f2a20a8a4b27c5be0b4b1359f7f1a6.1637618651.git.josef@toxicpanda.com>
+        kernel-team@fb.com, fstests@vger.kernel.org
+References: <595829c06353ab12280513ab880bb742a2389bbe.1637614211.git.josef@toxicpanda.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <3990fc5294f2a20a8a4b27c5be0b4b1359f7f1a6.1637618651.git.josef@toxicpanda.com>
+In-Reply-To: <595829c06353ab12280513ab880bb742a2389bbe.1637614211.git.josef@toxicpanda.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BtcDGy4B5y5Qj8OMHF1R8LLSKJXQ4nnAvM22h9n+DJ6yOMNGyZX
- R53MU3qCRydCA/uGzMRL8ssYpey9x/DCOlZvnddzeUgXNkrp9vmGkkND9zP5HpsrydcNmMW
- QXGyag7bsGqG62Pyr9mBAoyqS4VDglNHEu4jOTVRW0WEBWY6A3OrxqvM+flHDEppF4NB/w2
- XVcWZoqdJGe39RWP4MSsA==
+X-Provags-ID: V03:K1:l/IdmX5uEyiNwlS7bz3BSB20JEKmgkGUTxgH8hybNKx3fTyu/MV
+ EI9anfbUKy5zfXThJ4kwwOB+QGDvc10RDfnIDeCRez2GmSeNUVX6F7kxpohwbWemOv2vplV
+ N72YRU8qFpuGsyQ+LboeKIXZVKYioyRI7UrYnTPlwhPY1xsrY54xzLyTJlqwqbdx0ubPDzz
+ ORlLvyhOlTQMYIHeAHfwQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NMqW+GOkKl0=:rsnrLM++6Z4NL2rGbTbgvm
- Ls0OlOygUDJdPJ5cNIF0MxEZyrQjgvup7dgtOovCQOPdrc0+UlCfHj9lCiKPvYanpp4r2Lcv7
- Ut2qKPwvP9l38ZhFuudXirVc5neN9G3+VpbKEJkRwEmmK4B+sPWmbVvg4n0BC7DMd8cTq72PV
- K+j4Je9LiiyHZOEgzCQh0D7gJVGEKSwoRMVZeUGHMklGAO8uUMscGqAnCJQ1uxcrt5FTuQGS4
- HYzJPtgO++RiDRuS9/VWuM4uJYof6qHF0VqOfP9TTjTIwMfgTbCg87OBbF0OsialYUwTI6gYq
- ihjMRy8rpavGvMedwES5p74yycl+NEOm5hYoBlB4jgcmn3Utl1v8H4wMmEpuK3MbJSFxbVxia
- L/K6m38qYnktonlE5OmY4VJk72rKhXZPVX0f5v1z73sgYJEXQb8Q6+DXNEpm6FY/mjMdH7See
- 8y3KyYvrA0cPagb9t2d8Xr0AYPRoB0JqJOoA7p+JKYqgTbwp6ABBAzaxTk+AToRPo2QC9Uqy/
- uTS8iaiJpDmvLqIRidJj39KSktP4CpSpTjt2V3kRTprRqIzL37NuEkxccpM5iB7Lf0RCjs+K6
- tTeb7jOCNgSLkMgmR0/onOi+AHK4DGp4O1WfKx6LqoqV9s1Fq4PyWHdyzd5/6M4fjaGI+vCNW
- 1TaMs6Uyw7wizt7ymawSnqE2YJdHihj00hw8TsMbbiT0TYpeNUreyPb/95dyLGqPO8k+Z/ZzQ
- 9riMOuqEkO8h2xMtw3HG4Umqi2sfRQbsDpsSkl6W7+jVNO8ZNuv55WfngaW27hZr6zLgDffIY
- YC33kXJXCOAB5tDSaBrGVJ2xedGFWtDQBUhXjyKORZwfMtlgxd6bP52UiEye7i08Y9GLcfvys
- hwx+wdmKse/u3TrrP1CFaX4w2mbZuqwQy1kFZAPMwr73lugIa8NdhakZ6NuYBXL8AUhdZ1Xla
- ix19mrBBXhdTbzlxCfb6e2n7o92hVipJws+5hdrxIdhqpTO5Lr0Hv96PR7tUwpgV7L4CvHp9q
- pdzsA5jZ0hSTGUie4yX5OVULJz7Pst5TtdC1ZtzHCSo+PvAlsSP+UohsIpHulL4TRyGJpRs8H
- dJBl1ZB4WJPeTg=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HTnUpxVhBM0=:Mb92FeDfo0QWVo9SakFDWx
+ Dcr9K/U0L6a8qNgk1MIJAh4e/EFs8qCIktPRxGSLF+muPOJgKcpQ79EVTiX7DxTQttIrppVnP
+ S7SCvgoQ+mmMQsNqWcu/mtNpafHc4vez5wb63SsrksDeR4VlmS0xP007PYsDiJryDmTjvX2A9
+ e2ZdKApJlMrVWXeavudOw2Y1PHyYMqb0J5Uagc7iwrSSnUBMLkrVjN4g+/PRhrAKh+TpMc0oD
+ 4DIEybZ4hRSI5TJQ/hLZ95eNHa48CuGOPPUeScVGMhnukDJMzKFhhLSyJDVPPr/+IiQwepyzC
+ 9YHEKAYIwmaExhW9y6HQ50v/kDMjLNkUHfxFc+zo/6fKn/Hk4UkMhyTz7MEA3A7lfHRAnYtg0
+ ZKgnEV4LK4SaoCwATshISk3SUMN6nbWm/8ggnJmTX6uTjyNptZW/zty7wSfbtHGzUxDpB8bfX
+ 4nUSCaH/dRY6oStmxMdcE5pM4R/hqznSWQM2eZacl0ovCYlYzBpDc7qbdaP3e+ROhzYRLXwYW
+ EtvK57TiGxEll9Snm7K/WMpK9CO0gOBokHJebfshV4eLID8yHGUlI+CodAW1eQcIe9yPkorcl
+ UmjbG8qg9umzoJsB51dtHFFkrrNIIilV9h5l+adRoiRfQQ01A+yipDg6nm+O/+1lX0tPgr3kU
+ iIrrJs56L0n9Pw77FX4HP0yF9hEDQMRbuS1ftHlgDO5/oPjrlvcOodJ1o2Ztm0v97BBI6BbuY
+ uRjk5lOswgkVA/X87bWS+CSd/yeoCgEm3i3Qb743xnwZB/kXrrFzNfV1Xo3xdty4xHWp0KV3H
+ DlHQPau5S9AUgacZrykTuSO076WjOsFq/ppPcBlFRRcVNcmdQhyc9Pol98+juyw0+c7BkG+k0
+ 00W+yYULZ9Ub2uhA/oxymnpW+GkdbsXOQSNI2bWupzNfDOhdwOuIsEH+sex8U+ScsjfnItyo1
+ DGI85nt6NCLIr/qjw4su2IC+Nne9dFJChmSB5SgTmr6utWotIrAqAcS6sYDRHw118CiOcs94M
+ LCzmbD151hLW2hFJCT+8zI38A+BlwxAYshVz8ORlbLVnlMXKEJG38PJI2qrNBHejx5RuB/htv
+ Yb7b8s2bNJ6p7U=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2021/11/23 06:04, Josef Bacik wrote:
-> We've always been failing generic/260 because it's testing things we
-> actually don't care about and thus won't fail for.  However we probably
-> should fail for fstrim_range->start =3D=3D U64_MAX since we clearly can'=
-t
-> trim anything past that.  This in combination with an update to
-> generic/260 will allow us to pass this test properly.
+On 2021/11/23 04:50, Josef Bacik wrote:
+> A change to btrfs-progs uncovered a problem with btrfs/099, we weren't
+> specifying the qgroupid with the subvol id.  This technically worked
+> before but only by accident, and all other tests properly specify the
+> qgroupid for qgroup limit commands.  Fix this test to specify the
+> qgroupid, which will work with older versions of btrfs-progs and newer
+> ones as well.
 >
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->   fs/btrfs/extent-tree.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 13a371ea68fc..6b4a132d4b86 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -6065,6 +6065,9 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, s=
-truct fstrim_range *range)
->   	int dev_ret =3D 0;
->   	int ret =3D 0;
->
-> +	if (range->start =3D=3D U64_MAX)
-> +		return -EINVAL;
-> +
 
-Isn't the next overflow check would catch anything which length is not
-U64_MAX?
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-And if length is U64_MAX, we just don't need to trim anything, thus can
-continue without returing -EINVAL.
-
-THanks,
+Thanks,
 Qu
->   	/*
->   	 * Check range overflow if range->len is set.
->   	 * The default range->len is U64_MAX.
+
+> ---
+>   tests/btrfs/099 | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tests/btrfs/099 b/tests/btrfs/099
+> index 375cc2b9..f3a2002a 100755
+> --- a/tests/btrfs/099
+> +++ b/tests/btrfs/099
+> @@ -29,7 +29,7 @@ _scratch_mount
+>   _require_fs_space $SCRATCH_MNT $(($FILESIZE * 2 / 1024))
+>
+>   _run_btrfs_util_prog quota enable $SCRATCH_MNT
+> -_run_btrfs_util_prog qgroup limit $FILESIZE 5 $SCRATCH_MNT
+> +_run_btrfs_util_prog qgroup limit $FILESIZE 0/5 $SCRATCH_MNT
+>
+>   # loop 5 times without sync to ensure reserved space leak will happen
+>   for i in `seq 1 5`; do
 >
