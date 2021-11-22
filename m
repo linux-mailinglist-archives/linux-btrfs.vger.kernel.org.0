@@ -2,110 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D11F459099
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 15:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842C2459105
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 16:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237038AbhKVO4v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Nov 2021 09:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51476 "EHLO
+        id S234216AbhKVPNo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Nov 2021 10:13:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238762AbhKVO4u (ORCPT
+        with ESMTP id S239182AbhKVPNm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Nov 2021 09:56:50 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F05C061714
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 06:53:44 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id 193so18336778qkh.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 06:53:44 -0800 (PST)
+        Mon, 22 Nov 2021 10:13:42 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB8DC061574
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 07:10:35 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id np6-20020a17090b4c4600b001a90b011e06so112301pjb.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 07:10:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uZwAqXi4vTOsVF2XV9A3UCf4Y1PE/+4W235b9a4Nk/k=;
-        b=6WD08nGmeM/uPfoSFUrT1UdbAbYYuHcbekZSOGWw/8y3EqJMZWlA93bqSIRragJFV8
-         9zIwIvBpvTONlw4K3G3f7GZFqChfu2in0wy4GdF+U08fZH4YvfAZrgZe31hP6ALBXE39
-         U3pej7/LW1t0bCm58s4evG+3eEM/wSUQ+rlzJkXbhiFabGBumC14LdXJD7aPKQI0JM+3
-         PCzqAE3ChZNoXFhAJBkPAY0MYDJycg/SkUOIuhks4pgxnnVcvjM7b6jOh8jNea3df+TX
-         K/ZA3gFQ94twybBzAdSdIGpshY4U/bHjaE4ulSFJOPrrONgCkbEwknsI2TbnfhlEs8cY
-         ujxA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=IAiSH9UDTZaaX9UIqcW4Q/Xrwx1iSq0vcfxIg0DMYgo=;
+        b=Ji7XbP5iABrUZUbypVtAGUFX8mvB0ZGcoOefIiNeuLiXLGJ/8ZVitOHQchf352voPi
+         d3PMu+PtRUc8QRfdliFMrFiqckvvtIegZnKaTKJYqtBBz9lFyCUPnt48qNKSQpjygrgr
+         lVfQ6eWiznoqQGkaw+JoiIMS96J82KU7/QhMK29ogXFPhEbwr1AGbE18xNSMWC1Ia/+r
+         /z7h0rEKFwE2/0D5TpqZnycFmK6MH139c6LNs/tVCXP1bpORT+MrHiU930JdEEXBqtDe
+         giu5XtzKEqO8w8XypPwjGXCAluxiguHwiykBnijYOK2haob5PSi4hJLwkxvmFcNwzwId
+         oWnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uZwAqXi4vTOsVF2XV9A3UCf4Y1PE/+4W235b9a4Nk/k=;
-        b=2OpnuEeRbrsIexkXGIVPg7EdA+ZUCpBCDwqXKWOuAtDwi4apU3v1rz91v4Wn87I/Co
-         I4/SuI1pg+PTUaNELY8+k7eP1OYI9vcwkT3Z+zt3WwkUlx3/019jQAJS4InbsnKnli1B
-         qb5KvL5j0DoOKKC+lEVIxB+3nPf673GyAN3ncE4i0ekko858/Jd2X51eIrP28gSIf5CI
-         0JhHHasBNF+J+OXgN1glz+2rjwJ0/seBYco5FhsSR5WqVFo9VVoN+9+Qmd+RBAl/ndfE
-         Z/uNSWyDf/kP+AFqfTCmCRtBjkA6mVfcqhErcdvkgQ04FDDRYheBxXCBBz6DqkpvEzDh
-         E22w==
-X-Gm-Message-State: AOAM532TZmzNptSWHfxeYPQc8klp9vsumHN3of8tk1SmIBjb+YPVw6mK
-        A4T9cgipbxm5JfxUVTkpo29PwYgWj2ta0Q==
-X-Google-Smtp-Source: ABdhPJxrt/Z2i2I4M9QF0qA3t4eclRc6+gv+sbC0vuMQytjPQu2OiuylZoscUHQa0aWdRwShHyiv/Q==
-X-Received: by 2002:a05:620a:2f9:: with SMTP id a25mr50134438qko.327.1637592823369;
-        Mon, 22 Nov 2021 06:53:43 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v5sm4442092qtc.60.2021.11.22.06.53.42
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IAiSH9UDTZaaX9UIqcW4Q/Xrwx1iSq0vcfxIg0DMYgo=;
+        b=KvMeHiA2i/slVkfRKWsaUy1Owjruy9w2jZPiTgxIt3tB/GxLsQDtAVBB0SuoMSHI8R
+         xWLEwHcYfA3GzFAJ8TdB5/nXot+ScfWiAPRLYI87/UoQwpim098dCL/p2dQldVVUYm1+
+         lajL/XQkqSeL3IgKssAfxUBBF9EhGAPDLyNlPA6FAiMxrB1BNcrOIQ51xzxnKClUTlo9
+         8rsKvcrVunHDeaFgLr7sqzeLIEFQgv1bhgnwlGPbVX9QHceMPLt6jx6TRVjnSLh2EQ7G
+         R6ZAHegV1xs+rfCmhdHkyFbkSJuq1r3wih3wywNiUXrtgGmGToFCLTaD/nBzNetQ9/nN
+         agCQ==
+X-Gm-Message-State: AOAM532gB46yciaL53s+JOYXM4k1l43+OzzJK9uefo4K9dEiiJkggnYK
+        NnNMHx1N+ep/2HDydQUtSxM=
+X-Google-Smtp-Source: ABdhPJzNMkzX2q4bo2J3wE3/TYbey/TpeSRX6Lk9BUKJSehg/rRYvHkcSzZ+zqsqL669m6LgqsCcOw==
+X-Received: by 2002:a17:902:9888:b0:142:8731:4b55 with SMTP id s8-20020a170902988800b0014287314b55mr109240209plp.51.1637593835442;
+        Mon, 22 Nov 2021 07:10:35 -0800 (PST)
+Received: from realwakka ([59.12.165.26])
+        by smtp.gmail.com with ESMTPSA id 4sm6450543pgj.63.2021.11.22.07.10.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 06:53:42 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        fstests@vger.kernel.org
-Subject: [PATCH v2] fstests: redirect device replace output to $seqres.full
-Date:   Mon, 22 Nov 2021 09:53:41 -0500
-Message-Id: <21ff35d62f029775ceb7051ec836413ded89cb51.1637592771.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.26.3
+        Mon, 22 Nov 2021 07:10:35 -0800 (PST)
+Date:   Mon, 22 Nov 2021 15:10:27 +0000
+From:   Sidong Yang <realwakka@gmail.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH v2] btrfs-progs: filesystem: du: skip file that
+ permission denied
+Message-ID: <20211122151027.GA10523@realwakka>
+References: <20211121151556.8874-1-realwakka@gmail.com>
+ <09d229c6-ae30-4453-c9d4-39109f032b99@suse.com>
+ <20211122083240.GB8836@realwakka>
+ <a28e62b7-f1ee-858f-990b-678ab21312d9@suse.com>
+ <a5cd8f64-066e-8791-5de8-a2263d50f597@cobb.uk.net>
+ <0a7ce0b1-300c-233b-d844-012dfc771efe@suse.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0a7ce0b1-300c-233b-d844-012dfc771efe@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The btrfs utils are printing a status message about TRIM'ing device on
-replace and this is throwing off the golden output, redirect stdout from
-'device replace start' to $seqres.full so we don't get false negatives.
+On Mon, Nov 22, 2021 at 12:57:18PM +0200, Nikolay Borisov wrote:
+> 
+> 
+> On 22.11.21 г. 11:53, Graham Cobb wrote:
+> > 
+> > On 22/11/2021 09:32, Nikolay Borisov wrote:
+> >>
+> >>
+> >> On 22.11.21 г. 10:32, Sidong Yang wrote:
+> >>> On Mon, Nov 22, 2021 at 09:20:00AM +0200, Nikolay Borisov wrote:
+> >>>>
+> >>>>
+> >>>> On 21.11.21 г. 17:15, Sidong Yang wrote:
+> >>>>> This patch handles issue #421. Filesystem du command fails and exit
+> >>>>> when it access file that has permission denied. But it can continue the
+> >>>>> command except the files. This patch recovers ret value when permission
+> >>>>> denied.
+> >>>>>
+> >>>>> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+> >>>>
+> >>>>
+> >>>> The code itself is fine so :
+> >>>>
+> >>>>
+> >>>> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> >>>>
+> >>>>
+> >>>> OTOH when I looked at the code rather than just the patch I can't help
+> >>>> but wonder shouldn't we actually structure this the way you initially
+> >>>> proposed but also add a debug output along the lines of "skipping
+> >>>> file/dir XXXX due to permission denied", otherwise users might not be
+> >>>> able to account for some space and they can possibly wonder that
+> >>>> something is wrong with btrfs fi du command.
+> >>>
+> >>> You mean that it would be better that print some debug message than
+> >>> skipping silently. I agree. So I would add this code in condition.
+> >>>
+> >>> fprintf(stderr, "skipping file/dir: %s : %m\n", entry->d_name);
+> >>>
+> >>> I think it's okay that it prints when ENOTTY occurs. Is this code what
+> >>> you meant?
+> >>
+> >>
+> >> I meant to print only if we have EACCESS, but now that I think about it,
+> >> printing something when we have a non-fatal error and simply skipping
+> >> some dirs/files makes sense. OTOH printing it by default might be too
+> >> verbose so perhaps usuing a pr_verbose call would be more appropriate.
+> >>
+> >> This is one of those things which don't have a clear-cut answers so it's
+> >> useful to get as many perspective as possible to arrive at some workable
+> >> solution to a wider number of people.
+> > 
+> > I must admit I just assumed it worked the same way as /bin/du. I have
+> > just created an inaccessible directory and got:
+> > 
+> > $ du -sh ~
+> > du: cannot read directory '/home/cobb/permtest': Permission denied
+> > 61G	/home/cobb
+> > 
+> > And when the directory was accessible but the file in it was not, I got:
+> > 
+> > $ du -sh ~
+> > du: cannot access '/home/cobb/permtest/file': Permission denied
+> > 61G	/home/cobb
+> > 
+> > In other words, I think any error should be printed but the error is
+> > then skipped and the du continues. No need to tell people the file is
+> > being skipped - that is obvious. But the error must be printed by
+> > default (if there are really cases where the error should not be printed
+> > but reasons not to redirect stderr to /dev/null then add an option to
+> > suppress printing it).
+> > 
+> > Just my opinion.
+> 
+> 
+> That actually works for me, I'd rather btrfs be as consistent as
+> possible and not give surprises to users. So just mimicking what an
+> omnipresent tool does is as good as it gets :)
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v1->v2:
-- Had vim open in another pane for btrfs/223 and forgot to save, my bad.
+Yeah, I understood that any error should be printed but no need to print
+that it is skipped. I agree. If so, I think the code that print error
+message should like below.
 
- tests/btrfs/176 | 6 ++++--
- tests/btrfs/223 | 2 +-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+fprintf(stderr, "failed to walk dir/file: %s: %m\n", entry->d_name);
 
-diff --git a/tests/btrfs/176 b/tests/btrfs/176
-index 9a833575..4cd510b6 100755
---- a/tests/btrfs/176
-+++ b/tests/btrfs/176
-@@ -53,10 +53,12 @@ swapon "$SCRATCH_MNT/swap" 2>&1 | _filter_scratch
- # Again, we know the swap file is on device 1.
- $BTRFS_UTIL_PROG replace start -fB "$scratch_dev1" "$scratch_dev3" "$SCRATCH_MNT" 2>&1 | grep -o "Text file busy"
- # Replacing device 2 should still work.
--$BTRFS_UTIL_PROG replace start -fB "$scratch_dev2" "$scratch_dev3" "$SCRATCH_MNT"
-+$BTRFS_UTIL_PROG replace start -fB "$scratch_dev2" "$scratch_dev3" "$SCRATCH_MNT" \
-+	>> $seqres.full
- swapoff "$SCRATCH_MNT/swap" > /dev/null 2>&1
- # Replacing device 1 should work again after swapoff.
--$BTRFS_UTIL_PROG replace start -fB "$scratch_dev1" "$scratch_dev2" "$SCRATCH_MNT"
-+$BTRFS_UTIL_PROG replace start -fB "$scratch_dev1" "$scratch_dev2" "$SCRATCH_MNT" \
-+	>> $seqres.full
- _scratch_unmount
- _check_scratch_fs "$scratch_dev2"
- 
-diff --git a/tests/btrfs/223 b/tests/btrfs/223
-index af072ede..8125cdf2 100755
---- a/tests/btrfs/223
-+++ b/tests/btrfs/223
-@@ -33,7 +33,7 @@ _require_batched_discard $SCRATCH_MNT
- $XFS_IO_PROG -f -c "pwrite -S 0xab 0 10M" $SCRATCH_MNT/foo | _filter_xfs_io
- 
- # Replace the first device, $dev1, with a new device.
--$BTRFS_UTIL_PROG replace start -Bf $dev1 $SPARE_DEV $SCRATCH_MNT
-+$BTRFS_UTIL_PROG replace start -Bf $dev1 $SPARE_DEV $SCRATCH_MNT >> $seqres.full
- 
- # Run fstrim, it should not trim/discard allocated extents in the new device.
- $FSTRIM_PROG $SCRATCH_MNT
--- 
-2.26.3
+I agreed that btrfs command should be like "du" command that familiar
+with users. I wonder if I understood it well.
 
+If so, I think it would be better that use switch-case than if-else.
+> 
+> 
+> > 
+> > Graham
+> > 
