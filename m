@@ -2,57 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536AF459717
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 23:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9392E459723
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 23:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239932AbhKVWHe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Nov 2021 17:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
+        id S233268AbhKVWLU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Nov 2021 17:11:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239809AbhKVWH3 (ORCPT
+        with ESMTP id S232880AbhKVWLU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Nov 2021 17:07:29 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C7FC061574
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 14:04:21 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id gu12so13489210qvb.6
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 14:04:21 -0800 (PST)
+        Mon, 22 Nov 2021 17:11:20 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5B5C061714
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 14:08:13 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id m25so17971568qtq.13
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 14:08:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JtfLawQ6+982U/+FVo7vvfcLpdg1QfhSOB02c3boJew=;
-        b=zcnWWtb56WYwkAfu4DM+ygr1Jxs/olDDwB8R4ZjtavuUcL0t4Tk3LV5adSGf/+IuKn
-         MRpjt5JNpgLlvAn/FmjROR+UNaYj9lTDT0HP8GoX8RTlTvlhy3HGIQRUy7J4TA1xRYK1
-         jukbgZHTwQW+9N4DDpyKfS1AeGVY5WI/9CyqJKnZmwisvHAnotZHPipUlytZxwdsYnLx
-         88ELrvkGsv2ha3s4tEQnW6SEFhALGyY5eqR8X6OYXyZjJ/MY1MzkN5D0ckONfyhMfiZy
-         CruXEoGZPa/S10NVgek7kqieJJisHu91akeWLh7EmwAUomX0JsJB0wPASyItN8cDhDre
-         ehZQ==
+        bh=F9rZNuDq+dHvDicprv1NyKqx8G2mf6YGPZRjLyH0Qxc=;
+        b=6qJ3oPs9Sx1kvHfWsatFq8AwtN//7B8bux6dEWvP91VlnyZrTzhTiSP9FaufGEhbAZ
+         nNlRl0pKfshbHhQ9o7RZv3FZcQBCwCtnIINofviP9wXIWRHdh0yKMWWNhTa1OXp0JXYK
+         8wdmYbLRbCujRU8gFWfpnVqGt6LxWliBdnF/OruBa1YquCj6PUDMlwkqsSPdj9XjUiAl
+         EJiGMDO0zldg1j8opU04TyLqv46+70dqNXt1AiP61V95kZp4d+w5WAl+4y2WgfrJIChd
+         MBh/fGJE3tedKNCzNBxu2EyXwCI0t31SSxj9vXks1Ly3uiYo4AHqj4jQRLqX1nimOxt4
+         U4Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JtfLawQ6+982U/+FVo7vvfcLpdg1QfhSOB02c3boJew=;
-        b=DQSqd0+/uai0QI8CWpG9IesVpw/KElU/m+TlzPObzrtNZq3p/m0lEW5JMqFXalxoux
-         of8qc7IfFZSD5pqGMHAa9+bg5u5swl6dKENrJyoGzNE5khGEAD5dou8dFR2SI3QPJtGS
-         vL7WN/0Fxa1ePkqnWmSc7e/wqm5G7xPAYBazOd3nexEug2WkneuIR/sxuRhxm96BYf10
-         8Sk/xqmH4/ckAkr/ycH9RGvoqlScLTVFjYIyUk2T2w6Zy5UlyzY15Hxv+qaQLSXKKRnM
-         bPQauXp6CoM3gCEv4URjkZS57+3ewcSXLUR9faoUM3h2cUJ8MFCbCm4265s1A6yvOYvR
-         ka/Q==
-X-Gm-Message-State: AOAM531RYZJIlOW+SeEQKrdDB3OVjDtGkJlEoo7UNsSgFgmkbczDfsy+
-        oXHHuotX1LhANFrjZYySNWHZpRdEkScgIw==
-X-Google-Smtp-Source: ABdhPJwkUdZy4EYbIKAHm7irvKg7dhYrz2TChbG+pmI0NDYhzOoMIgFXzsIWSXMba0Vy8U82/1N3XQ==
-X-Received: by 2002:ad4:4e49:: with SMTP id eb9mr102977425qvb.22.1637618660800;
-        Mon, 22 Nov 2021 14:04:20 -0800 (PST)
+        bh=F9rZNuDq+dHvDicprv1NyKqx8G2mf6YGPZRjLyH0Qxc=;
+        b=4Pr49o3ksyrgZa3LdDpSVhMfxqogE0mGFdcGaLQXgPI0ItqEiRO+0vcGMyzsxso7JO
+         VpHItOkrknOD93ucZ0eDawpOJUOWrULAewzaihfDLpJa5wRXscq9ZwczyOFf2FO701fw
+         1WPtgyHPaQANLoY74fUaU9UU6IB1NU03mw/m5L1SzcVYALI2pLZEMtNwsIgGhZK+qAHt
+         EIMmkvKhsFChctVwQ22MbLqA0isCa4YS4nz+80O2UGzYoFmll/IYFuYd0BZuWWlm+j9Z
+         s5Nzd5ZrUo6+qgmG0d9byDWZGi4OsqZrI9Dan8h5zBmhrvAVyeC6991nd85fvcieFDak
+         dhMw==
+X-Gm-Message-State: AOAM531/hFe2YqeNFCEzu5Ujp1TU8DroSkIHUepk+ETxdDLZONd4eben
+        qnQEh24mOyp1TL2AmQHNG/Z+7IVETQA5LQ==
+X-Google-Smtp-Source: ABdhPJy31P0VpL0uuo/4ZrvlP1yLFKWQxexZsI4LpaiKf1qdOT8OffWxIM+pN3LJiM4ecIpdI6iINg==
+X-Received: by 2002:a05:622a:148e:: with SMTP id t14mr671812qtx.266.1637618892316;
+        Mon, 22 Nov 2021 14:08:12 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v12sm5313713qtx.80.2021.11.22.14.04.20
+        by smtp.gmail.com with ESMTPSA id g5sm5176239qko.12.2021.11.22.14.08.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 14:04:20 -0800 (PST)
+        Mon, 22 Nov 2021 14:08:11 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: fail if fstrim_range->start == U64_MAX
-Date:   Mon, 22 Nov 2021 17:04:19 -0500
-Message-Id: <3990fc5294f2a20a8a4b27c5be0b4b1359f7f1a6.1637618651.git.josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] fstests: generic/260: don't fail for certain fstrim ops on btrfs
+Date:   Mon, 22 Nov 2021 17:08:10 -0500
+Message-Id: <175b1ef92bbd2a48e2efb80d0064ca91aab1402e.1637618880.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -60,31 +61,48 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We've always been failing generic/260 because it's testing things we
-actually don't care about and thus won't fail for.  However we probably
-should fail for fstrim_range->start == U64_MAX since we clearly can't
-trim anything past that.  This in combination with an update to
-generic/260 will allow us to pass this test properly.
+We have always failed generic/260, because it tests to see if the file
+system will reject a trim range that is above the reported fs size.
+However for btrfs we will happily remap logical byte offsets within the
+file system, so you can end up with bye offsets past the end of the
+reported end of the file system.  Thus we do not fail these weird
+ranges.  We also don't have the concept of allocation groups, so the
+other test that tries to catch overflow doesn't apply to us either.  Fix
+this by simply using an offset that will fail (once a related kernel
+path is applied) for btrfs.  This will allow us to test the different
+overflow cases that do apply to btrfs, and not muddy up test results by
+giving us a false negative for the cases that do not apply to btrfs.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-tree.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tests/generic/260 | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 13a371ea68fc..6b4a132d4b86 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -6065,6 +6065,9 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
- 	int dev_ret = 0;
- 	int ret = 0;
+diff --git a/tests/generic/260 b/tests/generic/260
+index b15b4e57..b4d72e0f 100755
+--- a/tests/generic/260
++++ b/tests/generic/260
+@@ -31,6 +31,7 @@ fssize=$($DF_PROG -k | grep "$SCRATCH_MNT" | grep "$SCRATCH_DEV"  | awk '{print
  
-+	if (range->start == U64_MAX)
-+		return -EINVAL;
-+
- 	/*
- 	 * Check range overflow if range->len is set.
- 	 * The default range->len is U64_MAX.
+ beyond_eofs=$(_math "$fssize*2048")
+ max_64bit=$(_math "2^64 - 1")
++[ $FSTYP == "btrfs" ] && beyond_eofs=$max_64bit
+ 
+ # All these tests should return EINVAL
+ # since the start is beyond the end of
+@@ -128,6 +129,12 @@ case $FSTYP in
+ 		len=$start
+ 		export MKFS_OPTIONS="-f -d agsize=$(_math "$agsize*$bsize") -b size=$bsize"
+ 		;;
++	btrfs)
++		# Btrfs doesn't care about any of this, just test max_64bit
++		# since it'll fail
++		start=$max_64bit
++		len=$(_math "$start / 2")
++		;;
+ 	*)
+ 		# (2^32-1) * 4096 * 65536 == 32bit max size * block size * ag size
+ 		start=$(_math "(2^32 - 1) * 4096 * 65536")
 -- 
 2.26.3
 
