@@ -2,114 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BE5458930
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 06:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8846E4589BC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 08:20:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbhKVGCi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Nov 2021 01:02:38 -0500
-Received: from m1533.mail.126.com ([220.181.15.33]:47098 "EHLO
-        m1533.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhKVGCi (ORCPT
+        id S238653AbhKVHXJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Nov 2021 02:23:09 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:55898 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229806AbhKVHXI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Nov 2021 01:02:38 -0500
-X-Greylist: delayed 1888 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Nov 2021 01:02:37 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=6bJNk
-        tqlBemDWmKxQDLRrPEPRHHl44FL0n0aXSKuMgs=; b=D1/OSudnkmEGNxXCNREns
-        zXDVYLNRBQEk/rwwZcKaHwRpTYXy2T3lpmUsMJPJMIUkeGZ7U6wKD8opRXltpeIF
-        2d07b4lGY8htCr7mMZdtp5OfjOALCb14mbwkFNub+8GAk0ZV6wySNTekcorZvuUg
-        o2I8meWWk+jGeRTo7o7Atw=
-Received: from ericleaf$126.com ( [124.126.224.36] ) by ajax-webmail-wmsvr33
- (Coremail) ; Mon, 22 Nov 2021 13:26:04 +0800 (CST)
-X-Originating-IP: [124.126.224.36]
-Date:   Mon, 22 Nov 2021 13:26:04 +0800 (CST)
-From:   x8062 <ericleaf@126.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: read time tree block corruption detected
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Mon, 22 Nov 2021 02:23:08 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BDBE21FD49;
+        Mon, 22 Nov 2021 07:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637565601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BNcCX14qCSrHr3BToZlyS7Q5CKppj+Ol21HZt+kb274=;
+        b=dqebz/q9JqHgMstXONX7iArOHWrGPJe2AqKAN3Wytm9JXox+EH4wYvqhiZjenaVaJG22cP
+        OqBmwj3Ah+695DwZKF0vDHmKjxG14uJdJzYwlJ1wo8eGUTDopySqIsJ2Jcq+s94Ich/ygG
+        jlm5u1KDjsvTIkgVpiMsB4oL1sdClnU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8146813A96;
+        Mon, 22 Nov 2021 07:20:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xFnNHKFEm2HBGgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Mon, 22 Nov 2021 07:20:01 +0000
+Subject: Re: [PATCH v2] btrfs-progs: filesystem: du: skip file that permission
+ denied
+To:     Sidong Yang <realwakka@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+References: <20211121151556.8874-1-realwakka@gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <09d229c6-ae30-4453-c9d4-39109f032b99@suse.com>
+Date:   Mon, 22 Nov 2021 09:20:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Message-ID: <56d93523.27d4.17d461bc3c6.Coremail.ericleaf@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: IcqowABnwRjtKZthElydAQ--.35680W
-X-CM-SenderInfo: phuluzxhdiqiyswou0bp/1tbimhtTnVpEFJOZygACsH
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+In-Reply-To: <20211121151556.8874-1-realwakka@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-SGVsbG8sCiBJIGdvdCBwZXJpb2RpYyB3YXJucyBpbiBteSBsaW51eCBjb25zb2xlLiBpbiBkbWVz
-ZyBpdCBpcyB0aGUgZm9sbG93aW5nIHBhc3RlZCB0ZXh0LgpBdCBodHRwczovL2J0cmZzLndpa2ku
-a2VybmVsLm9yZy9pbmRleC5waHAvVHJlZS1jaGVja2VyIEkgbGVhcm5lZCBpdCBtYXkgYmUgYSBl
-cnJvciwgc28gaSBzZW5kIHRoZSBtZXNzYWdlLiBIb3BlZnVsbHkgaXQgY291bGQgaGVscCwgVGhh
-bmtzIGluIGFkdmFuY2UhCgpbICA1MTMuOTAwODUyXSBCVFJGUyBjcml0aWNhbCAoZGV2aWNlIHNk
-YjMpOiBjb3JydXB0IGxlYWY6IHJvb3Q9MzgxIGJsb2NrPTcxOTI4MzQ4NjcyIHNsb3Q9NzQgaW5v
-PTIzOTQ2MzQgZmlsZV9vZmZzZXQ9MCwgaW52YWxpZCByYW1fYnl0ZXMgZm9yIHVuY29tcHJlc3Nl
-ZCBpbmxpbmUgZXh0ZW50LCBoYXZlIDM5MyBleHBlY3QgMTMxNDY1CgpbICA1MTMuOTAwODY5XSBC
-VFJGUyBlcnJvciAoZGV2aWNlIHNkYjMpOiBibG9jaz03MTkyODM0ODY3MiByZWFkIHRpbWUgdHJl
-ZSBibG9jayBjb3JydXB0aW9uIGRldGVjdGVkClsgIDUxMy45MDE1MzRdIEJUUkZTIGNyaXRpY2Fs
-IChkZXZpY2Ugc2RiMyk6IGNvcnJ1cHQgbGVhZjogcm9vdD0zODEgYmxvY2s9NzE5MjgzNDg2NzIg
-c2xvdD03NCBpbm89MjM5NDYzNCBmaWxlX29mZnNldD0wLCBpbnZhbGlkIHJhbV9ieXRlcyBmb3Ig
-dW5jb21wcmVzc2VkIGlubGluZSBleHRlbnQsIGhhdmUgMzkzIGV4cGVjdCAxMzE0NjUKWyAgNTEz
-LjkwMTU1MF0gQlRSRlMgZXJyb3IgKGRldmljZSBzZGIzKTogYmxvY2s9NzE5MjgzNDg2NzIgcmVh
-ZCB0aW1lIHRyZWUgYmxvY2sgY29ycnVwdGlvbiBkZXRlY3RlZApbICA1MTMuOTEyNDE0XSBCVFJG
-UyBjcml0aWNhbCAoZGV2aWNlIHNkYjMpOiBjb3JydXB0IGxlYWY6IHJvb3Q9MzgxIGJsb2NrPTcx
-OTI4MzQ4NjcyIHNsb3Q9NzQgaW5vPTIzOTQ2MzQgZmlsZV9vZmZzZXQ9MCwgaW52YWxpZCByYW1f
-Ynl0ZXMgZm9yIHVuY29tcHJlc3NlZCBpbmxpbmUgZXh0ZW50LCBoYXZlIDM5MyBleHBlY3QgMTMx
-NDY1ClsgIDUxMy45MTI0MzNdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiMyk6IGJsb2NrPTcxOTI4
-MzQ4NjcyIHJlYWQgdGltZSB0cmVlIGJsb2NrIGNvcnJ1cHRpb24gZGV0ZWN0ZWQKWyAgNjExLjgz
-NTkzMl0gQlRSRlMgY3JpdGljYWwgKGRldmljZSBzZGIzKTogY29ycnVwdCBsZWFmOiByb290PTM4
-MSBibG9jaz03MTkyODM0ODY3MiBzbG90PTc0IGlubz0yMzk0NjM0IGZpbGVfb2Zmc2V0PTAsIGlu
-dmFsaWQgcmFtX2J5dGVzIGZvciB1bmNvbXByZXNzZWQgaW5saW5lIGV4dGVudCwgaGF2ZSAzOTMg
-ZXhwZWN0IDEzMTQ2NQpbICA2MTEuODM1OTUwXSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYjMpOiBi
-bG9jaz03MTkyODM0ODY3MiByZWFkIHRpbWUgdHJlZSBibG9jayBjb3JydXB0aW9uIGRldGVjdGVk
-ClsgIDYxMS44MzY1OTRdIEJUUkZTIGNyaXRpY2FsIChkZXZpY2Ugc2RiMyk6IGNvcnJ1cHQgbGVh
-Zjogcm9vdD0zODEgYmxvY2s9NzE5MjgzNDg2NzIgc2xvdD03NCBpbm89MjM5NDYzNCBmaWxlX29m
-ZnNldD0wLCBpbnZhbGlkIHJhbV9ieXRlcyBmb3IgdW5jb21wcmVzc2VkIGlubGluZSBleHRlbnQs
-IGhhdmUgMzkzIGV4cGVjdCAxMzE0NjUKWyAgNjExLjgzNjYwM10gQlRSRlMgZXJyb3IgKGRldmlj
-ZSBzZGIzKTogYmxvY2s9NzE5MjgzNDg2NzIgcmVhZCB0aW1lIHRyZWUgYmxvY2sgY29ycnVwdGlv
-biBkZXRlY3RlZApbICA2MTEuODQ3NDg0XSBCVFJGUyBjcml0aWNhbCAoZGV2aWNlIHNkYjMpOiBj
-b3JydXB0IGxlYWY6IHJvb3Q9MzgxIGJsb2NrPTcxOTI4MzQ4NjcyIHNsb3Q9NzQgaW5vPTIzOTQ2
-MzQgZmlsZV9vZmZzZXQ9MCwgaW52YWxpZCByYW1fYnl0ZXMgZm9yIHVuY29tcHJlc3NlZCBpbmxp
-bmUgZXh0ZW50LCBoYXZlIDM5MyBleHBlY3QgMTMxNDY1ClsgIDYxMS44NDc1MDBdIEJUUkZTIGVy
-cm9yIChkZXZpY2Ugc2RiMyk6IGJsb2NrPTcxOTI4MzQ4NjcyIHJlYWQgdGltZSB0cmVlIGJsb2Nr
-IGNvcnJ1cHRpb24gZGV0ZWN0ZWQKWyAgNzA4LjM1NDE3NF0gQlRSRlMgY3JpdGljYWwgKGRldmlj
-ZSBzZGIzKTogY29ycnVwdCBsZWFmOiByb290PTM4MSBibG9jaz03MTkyODM0ODY3MiBzbG90PTc0
-IGlubz0yMzk0NjM0IGZpbGVfb2Zmc2V0PTAsIGludmFsaWQgcmFtX2J5dGVzIGZvciB1bmNvbXBy
-ZXNzZWQgaW5saW5lIGV4dGVudCwgaGF2ZSAzOTMgZXhwZWN0IDEzMTQ2NQpbICA3MDguMzU0MTg2
-XSBCVFJGUyBlcnJvciAoZGV2aWNlIHNkYjMpOiBibG9jaz03MTkyODM0ODY3MiByZWFkIHRpbWUg
-dHJlZSBibG9jayBjb3JydXB0aW9uIGRldGVjdGVkClsgIDcwOC4zNTQ4MzNdIEJUUkZTIGNyaXRp
-Y2FsIChkZXZpY2Ugc2RiMyk6IGNvcnJ1cHQgbGVhZjogcm9vdD0zODEgYmxvY2s9NzE5MjgzNDg2
-NzIgc2xvdD03NCBpbm89MjM5NDYzNCBmaWxlX29mZnNldD0wLCBpbnZhbGlkIHJhbV9ieXRlcyBm
-b3IgdW5jb21wcmVzc2VkIGlubGluZSBleHRlbnQsIGhhdmUgMzkzIGV4cGVjdCAxMzE0NjUKWyAg
-NzA4LjM1NDg0MV0gQlRSRlMgZXJyb3IgKGRldmljZSBzZGIzKTogYmxvY2s9NzE5MjgzNDg2NzIg
-cmVhZCB0aW1lIHRyZWUgYmxvY2sgY29ycnVwdGlvbiBkZXRlY3RlZApbICA3MDguMzU3NDA5XSBC
-VFJGUyBjcml0aWNhbCAoZGV2aWNlIHNkYjMpOiBjb3JydXB0IGxlYWY6IHJvb3Q9MzgxIGJsb2Nr
-PTcxOTI4MzQ4NjcyIHNsb3Q9NzQgaW5vPTIzOTQ2MzQgZmlsZV9vZmZzZXQ9MCwgaW52YWxpZCBy
-YW1fYnl0ZXMgZm9yIHVuY29tcHJlc3NlZCBpbmxpbmUgZXh0ZW50LCBoYXZlIDM5MyBleHBlY3Qg
-MTMxNDY1ClsgIDcwOC4zNTc0MjBdIEJUUkZTIGVycm9yIChkZXZpY2Ugc2RiMyk6IGJsb2NrPTcx
-OTI4MzQ4NjcyIHJlYWQgdGltZSB0cmVlIGJsb2NrIGNvcnJ1cHRpb24gZGV0ZWN0ZWQKCkJUVzog
-bXkgbW91bnQgb3B0aW9uIGlzIChydyxyZWxhdGltZSxzcGFjZV9jYWNoZSxjb21taXQ9OTAsc3Vi
-dm9saWQ9NSxzdWJ2b2w9LyksIEknbSB1c2luZyBidHJmcyB1cG9uIC9kZXYvc2RiMyBhbmQgL2Rl
-di9zZGE0LCB3aXRoIGJ0cmZzIHJhaWQwIHN1cHBvcnQuCiQgdW5hbWUgLWEKTGludXggWFhYUCA1
-LjE1LjMtYXJjaDEtMSAjMSBTTVAgUFJFRU1QVCBUaHUsIDE4IE5vdiAyMDIxIDIyOjIzOjA4ICsw
-MDAwIHg4Nl82NCBHTlUvTGludXgKJCBwYWNtYW4gLVFpIGJ0cmZzLXByb2dzCk5hbWUgICAgICAg
-ICAgICA6IGJ0cmZzLXByb2dzClZlcnNpb24gICAgICAgICA6IDUuMTUtMQpEZXNjcmlwdGlvbiAg
-ICAgOiBCdHJmcyBmaWxlc3lzdGVtIHV0aWxpdGllcwpBcmNoaXRlY3R1cmUgICAgOiB4ODZfNjQK
-VVJMICAgICAgICAgICAgIDogaHR0cHM6Ly9idHJmcy53aWtpLmtlcm5lbC5vcmcKTGljZW5zZXMg
-ICAgICAgIDogR1BMMgpHcm91cHMgICAgICAgICAgOiBOb25lClByb3ZpZGVzICAgICAgICA6IGJ0
-cmZzLXByb2dzLXVuc3RhYmxlCkRlcGVuZHMgT24gICAgICA6IGdsaWJjICB1dGlsLWxpbnV4LWxp
-YnMgIGx6byAgemxpYiAgenN0ZCAgbGliZ2NyeXB0Ck9wdGlvbmFsIERlcHMgICA6IHB5dGhvbjog
-bGliYnRyZnN1dGlsIHB5dGhvbiBiaW5kaW5ncyBbaW5zdGFsbGVkXQogICAgICAgICAgICAgICAg
-ICBlMmZzcHJvZ3M6IGJ0cmZzLWNvbnZlcnQgW2luc3RhbGxlZF0KICAgICAgICAgICAgICAgICAg
-cmVpc2VyZnNwcm9nczogYnRyZnMtY29udmVydCBbaW5zdGFsbGVkXQpSZXF1aXJlZCBCeSAgICAg
-OiBOb25lCk9wdGlvbmFsIEZvciAgICA6IE5vbmUKQ29uZmxpY3RzIFdpdGggIDogYnRyZnMtcHJv
-Z3MtdW5zdGFibGUKUmVwbGFjZXMgICAgICAgIDogYnRyZnMtcHJvZ3MtdW5zdGFibGUKSW5zdGFs
-bGVkIFNpemUgIDogNC44MCBNaUIKUGFja2FnZXIgICAgICAgIDogVG9iaWFzIFBvd2Fsb3dza2kg
-PHRwb3dhQGFyY2hsaW51eC5vcmc+CkJ1aWxkIERhdGUgICAgICA6IFN1biAwNyBOb3YgMjAyMSAw
-Mjo1NjoyMCBBTSBDU1QKSW5zdGFsbCBEYXRlICAgIDogVHVlIDA5IE5vdiAyMDIxIDAxOjEwOjEx
-IFBNIENTVApJbnN0YWxsIFJlYXNvbiAgOiBFeHBsaWNpdGx5IGluc3RhbGxlZApJbnN0YWxsIFNj
-cmlwdCAgOiBZZXMKVmFsaWRhdGVkIEJ5ICAgIDogU2lnbmF0dXJlCgo=
+
+
+On 21.11.21 г. 17:15, Sidong Yang wrote:
+> This patch handles issue #421. Filesystem du command fails and exit
+> when it access file that has permission denied. But it can continue the
+> command except the files. This patch recovers ret value when permission
+> denied.
+> 
+> Signed-off-by: Sidong Yang <realwakka@gmail.com>
+
+
+The code itself is fine so :
+
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+
+OTOH when I looked at the code rather than just the patch I can't help
+but wonder shouldn't we actually structure this the way you initially
+proposed but also add a debug output along the lines of "skipping
+file/dir XXXX due to permission denied", otherwise users might not be
+able to account for some space and they can possibly wonder that
+something is wrong with btrfs fi du command.
+
+
+> ---
+>  cmds/filesystem-du.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/cmds/filesystem-du.c b/cmds/filesystem-du.c
+> index 5865335d..fb7753ca 100644
+> --- a/cmds/filesystem-du.c
+> +++ b/cmds/filesystem-du.c
+> @@ -403,7 +403,7 @@ static int du_walk_dir(struct du_dir_ctxt *ctxt, struct rb_root *shared_extents)
+>  						  dirfd(dirstream),
+>  						  shared_extents, &tot, &shr,
+>  						  0);
+> -				if (ret == -ENOTTY) {
+> +				if (ret == -ENOTTY || ret == -EACCES) {
+>  					ret = 0;
+>  					continue;
+>  				} else if (ret) {
+> 
