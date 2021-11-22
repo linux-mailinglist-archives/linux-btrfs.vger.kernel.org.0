@@ -2,107 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD974591C4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 16:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 137C245935D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Nov 2021 17:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240204AbhKVP5o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Nov 2021 10:57:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
+        id S240416AbhKVQuf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Nov 2021 11:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240212AbhKVP5e (ORCPT
+        with ESMTP id S240415AbhKVQue (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Nov 2021 10:57:34 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FD2C061746
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 07:54:19 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id q12so15649874pgh.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 07:54:19 -0800 (PST)
+        Mon, 22 Nov 2021 11:50:34 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E61C061714
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 08:47:27 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id 193so18775696qkh.10
+        for <linux-btrfs@vger.kernel.org>; Mon, 22 Nov 2021 08:47:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MIOl5FabVOqkD6AtHa6uCXmnh1LFQkwm3+TSpHEm/J4=;
-        b=l8QMTG9tPndka4MQ9l6LP5VAGNvA4qWlbvy7hP/zpAKZ3H27/bo+UTQoUzO3VnmvPw
-         emWcBbwuXFedUcua2S150M9nZCGUTiOef/wSDjCMPcxvQyYvOxrbtjoDPXdAsP0vpt6f
-         zzlZyL/yRv5LjsNo33gHfP8hrAOS+ZVkJ5U6xoJ6YzfqkwBwUHcxktJmyEBFj4M/QX88
-         OdWQ/5yuyUdIcrejLVn+KuKJgBBA8ar//yKkfT9NBr3vxoUTa22VMBhD2sNk5+vzYMs8
-         lhl4wwUeeCTIlGA4klQY38mfXnOUknToYcd0MHawEql7nQMz/p2rpIQcO5aECsWj6nFF
-         IgIg==
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=66aTTX1ievisSV7kdAcng7UYVWFzSGqn7DrFrZE8OcY=;
+        b=SjJs9C4extw126YTlcgS+ZHCJd8kLSiIVEXgDHBVk/fRzH1/0x4fdIZwlgG0877kr6
+         tOCvI9AOhDGkxIQ87rd6j+TqqZChLNdH+bYPG6HC+6GyxignyfFPv4K0kl1wdah1+34+
+         KYAyrw/T0HleZDIR70OrUTUDmyHSVeLwJD7+ganpgJ0GRANG17OW5BAFOkVokwoCHnvW
+         dp9ncfv2d0FSmB471H8M4892sgjNSzxzod4TI/q8gxXg6OVBhh+B8hS+IfIlBC2Z+2RO
+         SBGI7ynXsDqmYc/PGZpCP2IUOiGHkpGZB8Bl0+Kxmv+l+jw34hMqcpNqgbcDjYfvd5ij
+         ON0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MIOl5FabVOqkD6AtHa6uCXmnh1LFQkwm3+TSpHEm/J4=;
-        b=5LXJQ0+FnUyOa12fLjHtm+YcGuH/0jt07qGjOUSF77ENpUeGnxIXctTCGFGGM7xL2E
-         GCPAvGZAKKoIjV+7+OOnuIInbwSF/mDjHZqUruqmakDtACybt6SFn+j/n2BQfuo0KF8m
-         7nMglOsDINzkCLA1OFJffHZAH9qOo3enqi/RjAORnhilpD8lPtl6s6mu5ZWDZoeK7MVL
-         W2z+NyAXe/wnF51/NzeyZy0HT8IG9jBR08RFdY740eSg4UL26TGIY2ColjFjordCwfFz
-         x/w2miYpbuxttXxTo6ZSGKNXS7lHmkK9c/iNfj6ICkHI4n3TvuoGX+m2zLuPW0U6I2yz
-         eDiw==
-X-Gm-Message-State: AOAM5330N2GVx+D6QCw0DQ30jgAvzRTQK4+YDh+i1ccBiTKY4OiQ64uC
-        lDkoxWsOc3253TJaCSA8xx4=
-X-Google-Smtp-Source: ABdhPJx4mbLEm2jPe/ry1HkhWUUAXsHqnqZNsIu2OyZi6Ph1RheqSVpKrb6dMaAsaJ44rBK2h/bzUw==
-X-Received: by 2002:a62:1e81:0:b0:4a3:7a97:d868 with SMTP id e123-20020a621e81000000b004a37a97d868mr29169071pfe.52.1637596459457;
-        Mon, 22 Nov 2021 07:54:19 -0800 (PST)
-Received: from localhost.localdomain ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id b4sm9848456pfl.60.2021.11.22.07.54.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=66aTTX1ievisSV7kdAcng7UYVWFzSGqn7DrFrZE8OcY=;
+        b=cwmJgLPI2PLAtRqEpjqsFJZvKfszpZtcCbzjcpXzJ5ovmo/OrimLvalF2qKb+4rW6B
+         K/i5PB2wF3MQNoKYcWo/aHXENxEtLBKJtEf1fSQZIO8W0kIcAz+j6wvO26JEJlXJS5f8
+         bllYQJOEk8JP2RFQvDERYsuPzEydqHHBMbo+QLo8/rTLqJLYH9GxzWZCBqT2NzTMRz7S
+         rcS1GOPa2Z8Jrh6Xh8xge3PJU3KOHorzH3cv0BTEzioKVE9LYsU4cDNC63b0yY0QiFd5
+         DTMwKMJM2fH3np3l8tRvLhe+/fUHsF4cXguv5pIWCmKg2KK8wyGcAD5QOccBXX7uz64e
+         zDUQ==
+X-Gm-Message-State: AOAM532TQqO6s4XtsWmEhEykag3oR92+jmLVOFA5meMDdCv+AgtzGnI4
+        PsT4E4KkHNBOZyzcD1QDEcZFsrH+ZitmBQ==
+X-Google-Smtp-Source: ABdhPJxT7PaTFkmwX1AgXl/XTmG50djwEJHWvz3GVdiRvH8FWLz4+q+SjtIVPIs0gOqfav8QUZ0M3g==
+X-Received: by 2002:a05:620a:199f:: with SMTP id bm31mr49980357qkb.450.1637599647036;
+        Mon, 22 Nov 2021 08:47:27 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id v12sm4836765qtx.80.2021.11.22.08.47.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Nov 2021 07:54:19 -0800 (PST)
-From:   Sidong Yang <realwakka@gmail.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        Graham Cobb <g.btrfs@cobb.uk.net>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>
-Cc:     Sidong Yang <realwakka@gmail.com>
-Subject: [PATCH v3] btrfs-progs: filesystem: du: skip file that permission denied
-Date:   Mon, 22 Nov 2021 15:54:11 +0000
-Message-Id: <20211122155411.10626-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 22 Nov 2021 08:47:26 -0800 (PST)
+Date:   Mon, 22 Nov 2021 11:47:25 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: get next entry in tree_search_offset before doing
+ checks
+Message-ID: <YZvJnQ3SvyWpjDUp@localhost.localdomain>
+References: <20211122151646.14235-1-nborisov@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211122151646.14235-1-nborisov@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch handles issue #421. Filesystem du command fails and exit
-when it access file that has permission denied. But it can continue the
-command except the files. This patch prints error message just like
-/bin/du does and it continues if it can.
+On Mon, Nov 22, 2021 at 05:16:46PM +0200, Nikolay Borisov wrote:
+> This is a small optimisation since the currenty 'entry' is already
+> checked in the if () {} else if {} construct above the loop. In essence
+> the first iteration of the final while loop is redundant. To eliminate
+> this extra check simply get the next entry at the beginning of the loop.
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
----
-v3:
- - prints error message like /bin/du does
----
- cmds/filesystem-du.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+You forgot your signed-off-by, but you can add my
 
-diff --git a/cmds/filesystem-du.c b/cmds/filesystem-du.c
-index 5865335d..7ea2da85 100644
---- a/cmds/filesystem-du.c
-+++ b/cmds/filesystem-du.c
-@@ -403,14 +403,14 @@ static int du_walk_dir(struct du_dir_ctxt *ctxt, struct rb_root *shared_extents)
- 						  dirfd(dirstream),
- 						  shared_extents, &tot, &shr,
- 						  0);
--				if (ret == -ENOTTY) {
--					ret = 0;
--					continue;
--				} else if (ret) {
-+				if (ret) {
- 					errno = -ret;
--					fprintf(stderr,
--					"failed to walk dir/file: %s : %m\n",
--						entry->d_name);
-+					fprintf(stderr, "cannot access: '%s:' %m\n",
-+							entry->d_name);
-+					if (ret == -ENOTTY || ret == -EACCES) {
-+						ret = 0;
-+						continue;
-+					}
- 					break;
- 				}
- 
--- 
-2.25.1
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
+Thanks,
+
+Josef
