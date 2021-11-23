@@ -2,98 +2,96 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E9C459871
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 00:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C768459A6A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 04:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhKVXfx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Nov 2021 18:35:53 -0500
-Received: from mout.gmx.net ([212.227.15.18]:45669 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231550AbhKVXfx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Nov 2021 18:35:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637623961;
-        bh=Z9/W77qsti5bD8UyDv7AfFg5JlsVhhtAmquSYjvbB80=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=FipZfZpJwxrVukhZTP6jOCrXlAdFGzuCDNA1yc6ZvbfTpUR1E6HMrrmIYYXfb+73k
-         /fc99nuYgH3Zoe/j7mX3+pHdmM7n9sae/rlPbmRAOGf+8O8H/Xe8IqivcPLCBle9UX
-         /SBSqRZ+aQLIZQUA+j5xpUDqbs6HIjBSwx0M1FO8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MatRZ-1mErS73K9b-00cTTJ; Tue, 23
- Nov 2021 00:32:41 +0100
-Message-ID: <754fdf36-cc66-9a02-2e0b-e0fb54f65982@gmx.com>
-Date:   Tue, 23 Nov 2021 07:32:37 +0800
+        id S231743AbhKWDTN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Nov 2021 22:19:13 -0500
+Received: from m1514.mail.126.com ([220.181.15.14]:53183 "EHLO
+        m1514.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhKWDTN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Nov 2021 22:19:13 -0500
+X-Greylist: delayed 1887 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Nov 2021 22:19:12 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=ISmsJ
+        3qeTQGpFCYaAP0d2tZQtnxxqIrQqAmtiJjfcaA=; b=bqyGLaaPPe0EZ8ZieY7AZ
+        nl7Y0JVt2kUYtwEI5R6qJBqrGNlsIure7yHILW0+/sMm1CcNXTIS453zSyWJ2RTa
+        0vmYhhNpDhxyliN8xVK1P4Zj8BH4sUQAtSFk8angFTgC/yMkRVTxNyzByJu9mszL
+        rEzdFAOimlITBG5SmeKyJI=
+Received: from ericleaf$126.com ( [124.126.224.36] ) by ajax-webmail-wmsvr14
+ (Coremail) ; Tue, 23 Nov 2021 10:42:59 +0800 (CST)
+X-Originating-IP: [124.126.224.36]
+Date:   Tue, 23 Nov 2021 10:42:59 +0800 (CST)
+From:   x8062 <ericleaf@126.com>
+To:     "Nikolay Borisov" <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re:Re: read time tree block corruption detected
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
+ Copyright (c) 2002-2021 www.mailtech.cn 126com
+In-Reply-To: <fe1ce96b-e483-b698-f0f4-9eb8d9ad0634@suse.com>
+References: <56d93523.27d4.17d461bc3c6.Coremail.ericleaf@126.com>
+ <aed20fe5-4e7d-9f0f-ee39-1b584d8572f0@suse.com>
+ <7f681c79.4eba.17d471d802e.Coremail.ericleaf@126.com>
+ <fe1ce96b-e483-b698-f0f4-9eb8d9ad0634@suse.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH] fstests: btrfs/099: use the qgroupid for qgroup limit
-Content-Language: en-US
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com, fstests@vger.kernel.org
-References: <595829c06353ab12280513ab880bb742a2389bbe.1637614211.git.josef@toxicpanda.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <595829c06353ab12280513ab880bb742a2389bbe.1637614211.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:l/IdmX5uEyiNwlS7bz3BSB20JEKmgkGUTxgH8hybNKx3fTyu/MV
- EI9anfbUKy5zfXThJ4kwwOB+QGDvc10RDfnIDeCRez2GmSeNUVX6F7kxpohwbWemOv2vplV
- N72YRU8qFpuGsyQ+LboeKIXZVKYioyRI7UrYnTPlwhPY1xsrY54xzLyTJlqwqbdx0ubPDzz
- ORlLvyhOlTQMYIHeAHfwQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HTnUpxVhBM0=:Mb92FeDfo0QWVo9SakFDWx
- Dcr9K/U0L6a8qNgk1MIJAh4e/EFs8qCIktPRxGSLF+muPOJgKcpQ79EVTiX7DxTQttIrppVnP
- S7SCvgoQ+mmMQsNqWcu/mtNpafHc4vez5wb63SsrksDeR4VlmS0xP007PYsDiJryDmTjvX2A9
- e2ZdKApJlMrVWXeavudOw2Y1PHyYMqb0J5Uagc7iwrSSnUBMLkrVjN4g+/PRhrAKh+TpMc0oD
- 4DIEybZ4hRSI5TJQ/hLZ95eNHa48CuGOPPUeScVGMhnukDJMzKFhhLSyJDVPPr/+IiQwepyzC
- 9YHEKAYIwmaExhW9y6HQ50v/kDMjLNkUHfxFc+zo/6fKn/Hk4UkMhyTz7MEA3A7lfHRAnYtg0
- ZKgnEV4LK4SaoCwATshISk3SUMN6nbWm/8ggnJmTX6uTjyNptZW/zty7wSfbtHGzUxDpB8bfX
- 4nUSCaH/dRY6oStmxMdcE5pM4R/hqznSWQM2eZacl0ovCYlYzBpDc7qbdaP3e+ROhzYRLXwYW
- EtvK57TiGxEll9Snm7K/WMpK9CO0gOBokHJebfshV4eLID8yHGUlI+CodAW1eQcIe9yPkorcl
- UmjbG8qg9umzoJsB51dtHFFkrrNIIilV9h5l+adRoiRfQQ01A+yipDg6nm+O/+1lX0tPgr3kU
- iIrrJs56L0n9Pw77FX4HP0yF9hEDQMRbuS1ftHlgDO5/oPjrlvcOodJ1o2Ztm0v97BBI6BbuY
- uRjk5lOswgkVA/X87bWS+CSd/yeoCgEm3i3Qb743xnwZB/kXrrFzNfV1Xo3xdty4xHWp0KV3H
- DlHQPau5S9AUgacZrykTuSO076WjOsFq/ppPcBlFRRcVNcmdQhyc9Pol98+juyw0+c7BkG+k0
- 00W+yYULZ9Ub2uhA/oxymnpW+GkdbsXOQSNI2bWupzNfDOhdwOuIsEH+sex8U+ScsjfnItyo1
- DGI85nt6NCLIr/qjw4su2IC+Nne9dFJChmSB5SgTmr6utWotIrAqAcS6sYDRHw118CiOcs94M
- LCzmbD151hLW2hFJCT+8zI38A+BlwxAYshVz8ORlbLVnlMXKEJG38PJI2qrNBHejx5RuB/htv
- Yb7b8s2bNJ6p7U=
+Message-ID: <46d6bc87.14b4.17d4aacd1dc.Coremail.ericleaf@126.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: DsqowAC3P3Y0VZxhXIsNAA--.27099W
+X-CM-SenderInfo: phuluzxhdiqiyswou0bp/1tbimhRUnVpEFJ8T4gAAsj
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2021/11/23 04:50, Josef Bacik wrote:
-> A change to btrfs-progs uncovered a problem with btrfs/099, we weren't
-> specifying the qgroupid with the subvol id.  This technically worked
-> before but only by accident, and all other tests properly specify the
-> qgroupid for qgroup limit commands.  Fix this test to specify the
-> qgroupid, which will work with older versions of btrfs-progs and newer
-> ones as well.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
-> ---
->   tests/btrfs/099 | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tests/btrfs/099 b/tests/btrfs/099
-> index 375cc2b9..f3a2002a 100755
-> --- a/tests/btrfs/099
-> +++ b/tests/btrfs/099
-> @@ -29,7 +29,7 @@ _scratch_mount
->   _require_fs_space $SCRATCH_MNT $(($FILESIZE * 2 / 1024))
->
->   _run_btrfs_util_prog quota enable $SCRATCH_MNT
-> -_run_btrfs_util_prog qgroup limit $FILESIZE 5 $SCRATCH_MNT
-> +_run_btrfs_util_prog qgroup limit $FILESIZE 0/5 $SCRATCH_MNT
->
->   # loop 5 times without sync to ensure reserved space leak will happen
->   for i in `seq 1 5`; do
->
+QXQgMjAyMS0xMS0yMiAxODozNjo0MSwgIk5pa29sYXkgQm9yaXNvdiIgPG5ib3Jpc292QHN1c2Uu
+Y29tPiB3cm90ZToKPgo+Cj5PbiAyMi4xMS4yMSCn1C4gMTI6MDcsIHg4MDYyIHdyb3RlOgo+PiBB
+dCAyMDIxLTExLTIyIDE1OjI0OjM4LCAiTmlrb2xheSBCb3Jpc292IiA8bmJvcmlzb3ZAc3VzZS5j
+b20+IHdyb3RlOgo+Pj4KPj4+Cj4+PiBPbiAyMi4xMS4yMSCn1C4gNzoyNiwgeDgwNjIgd3JvdGU6
+Cj4+Pj4gSGVsbG8sCj4+Pj4gIEkgZ290IHBlcmlvZGljIHdhcm5zIGluIG15IGxpbnV4IGNvbnNv
+bGUuIGluIGRtZXNnIGl0IGlzIHRoZSBmb2xsb3dpbmcgcGFzdGVkIHRleHQuCj4+Pj4gQXQgaHR0
+cHM6Ly9idHJmcy53aWtpLmtlcm5lbC5vcmcvaW5kZXgucGhwL1RyZWUtY2hlY2tlciBJIGxlYXJu
+ZWQgaXQgbWF5IGJlIGEgZXJyb3IsIHNvIGkgc2VuZCB0aGUgbWVzc2FnZS4gSG9wZWZ1bGx5IGl0
+IGNvdWxkIGhlbHAsIFRoYW5rcyBpbiBhZHZhbmNlIQo+Pj4+Cj4+Pj4gWyAgNTEzLjkwMDg1Ml0g
+QlRSRlMgY3JpdGljYWwgKGRldmljZSBzZGIzKTogY29ycnVwdCBsZWFmOiByb290PTM4MSBibG9j
+az03MTkyODM0ODY3MiBzbG90PTc0IGlubz0yMzk0NjM0IGZpbGVfb2Zmc2V0PTAsIGludmFsaWQg
+cmFtX2J5dGVzIGZvciB1bmNvbXByZXNzZWQgaW5saW5lIGV4dGVudCwgaGF2ZSAzOTMgZXhwZWN0
+IDEzMTQ2NQo+Pj4+Cj4+Pgo+Pj4KPj4+IFlvdSBoYXZlIGZhdWx0eSByYW0sIHNpbmNlIDM5MyBo
+YXMgdGhlIDE3dGggYml0IHNldCB0byAwIHdoaWxzdCBoYXMgaXQKPj4+IHNldCB0byAxLiBTbyB5
+b3VyIHJhbSBpcyBjbGVhcmx5IGNvcnJ1cHRpbmcgYml0cy4gSSBhZHZpc2UgeW91IHJ1biBhCj4+
+PiBtZW10ZXN0IHRvb2wgYW5kIGxvb2sgZm9yIHBvc3NpYmx5IGNoYW5naW5nIHRoZSBmYXVsdHkg
+cmFtIG1vZHVsZS4KPj4gCj4+IFRoYW5rIHlvdSwgY2FuJ3QgYmVsaWV2ZSB0aGUgcmFtIGlzIG5v
+dCBzbyBzdGFibGUuICBJJ2xsIHJ1biBhIG1lbXRlc3QgbGF0ZXIuCj4KPkFjdHVhbGx5IGFjY29y
+ZGluZyB0byB0aGUgb3V0cHV0IHRoaXMgaXMgYSByZWFkLXRpbWUgY29ycnVwdGlvbi4gVEhpcwo+
+bWVhbnMgdGhlIGNvcnJ1cHRlZCBkYXRhIGhhcyBhbHJlYWR5IGJlZW4gd3JpdHRlbiB0byBkaXNr
+LCBsaWtlbHkgYnkgYW4KPm9sZGVyIGtlcm5lbCB0aGF0IGRpZG4ndCBoYXZlIHRoZSB0cmVlIGNo
+ZXJrIGNvZGUuIFNvIHJ1bm5pbmcgYSBtZW1jaGVjawo+aXMgc3RpbGwgdXNlZnVsIHRvIHByZXZl
+bnQgZnV0dXJlIGNvcnJ1cHRpb24uCj4KPkFzIGZhciBhcyB0aGUgY29ycnVwdGVkIGZpbGVzIGdv
+ZXMgLSB3ZWxsIGl0cyBkYXRhIGlzIGNvcnJ1cHRlZC4gSXQgY2FuCj50ZWNobmljYWxseSBiZSBm
+aXhlZCwgYnV0IHlvdSdkIGhhdmUgdG8gZG8gaXQgeW91cnNlbGYuIE9yIGFsdGVybmF0aXZlbHkK
+PmdvIGJhY2sgb24gYW4gb2xkZXIga2VybmVsIGkuZSBwcmUtIDUuMTEgYW5kIHRyeSB0byBjb3B5
+IHRoYXQgcGFydGljdWxhcgo+ZmlsZSAoaW5vZGUgMjM5NDYzNCkuCj4KPj4gCkkgZmluZCBzb21l
+IHByb2JsZW1zIGhlcmUuICBJIHVzZSB0aGUgY29tbWFuZCAiZmluZCAuIC1pbnVtIDIzOTQ2MzQi
+IGluIHRoZSBidHJmcyByb290IGRpciwgIGJ1dCBub3RoaW5nIHByaW50ZWQuCmRvZXMgInJvb3Q9
+MzgxIiBtZWFucyB0aGUgc3Vidm9sdW1lIElEPTM4MT8gYnV0IG5vdyBJIGRvbid0IGhhdmUgc3Vj
+aCBzdWJ2b2x1bWUuIEkgZGVsZXRlZCBzb21lIG9mIHRoZQpzdWJ2b2x1bWVzIGEgZmV3IGRheXMg
+YWdvLiB0aGlzIGlzIHRoZSBjdXJyZW50IHN1YnZvbHVtZSBsaXN0KHNvbWUgb2YgdGhlIGRpciBu
+YW1lIHNob3J0ZW5lZCkKc3VkbyBidHJmcyBzdWJ2b2wgbGlzdCAuCklEIDI2MyBnZW4gMTExNzMy
+IHRvcCBsZXZlbCA1IHBhdGggODAwNy9hCklEIDM1NCBnZW4gMTExNzI5IHRvcCBsZXZlbCA1IHBh
+dGggODAwNy9iCklEIDYyMiBnZW4gMTExNzU3IHRvcCBsZXZlbCA1IHBhdGggZjAxNQpJRCAxMTc0
+IGdlbiAxMTE3NTggdG9wIGxldmVsIDUgcGF0aCBjYwpJRCAxMzI2IGdlbiAxMTE3NTcgdG9wIGxl
+dmVsIDUgcGF0aCA4MDA3L2MKSUQgMTc4MSBnZW4gMTExNzQwIHRvcCBsZXZlbCA1IHBhdGggaXAK
+SUQgMTc4MiBnZW4gMTExNzU4IHRvcCBsZXZlbCA1IHBhdGggb2cKSUQgMTg1NiBnZW4gMTExNTg2
+IHRvcCBsZXZlbCAxNzgyIHBhdGggb2cvT0cvREIvc2VydmVyCklEIDE4NTggZ2VuIDExMTc1NyB0
+b3AgbGV2ZWwgNjIyIHBhdGggVjYvZGIKSUQgMTg3NSBnZW4gMTExNzQyIHRvcCBsZXZlbCA1IHBh
+dGggc2RrCklEIDE5MTggZ2VuIDExMTc0MiB0b3AgbGV2ZWwgNSBwYXRoIDgwMTUKSUQgMTk0MiBn
+ZW4gMTExNzQ1IHRvcCBsZXZlbCA1IHBhdGggaXA2CklEIDIwMDcgZ2VuIDExMTc1OCB0b3AgbGV2
+ZWwgNSBwYXRoIG1uZXcKSUQgMjExNCBnZW4gMTExNzUxIHRvcCBsZXZlbCA1IHBhdGggZGQKSUQg
+MjExNiBnZW4gMTExNzYwIHRvcCBsZXZlbCAyMTE3IHBhdGggZHMvdHJ1bmsvMjAyMDA2MTYKSUQg
+MjExNyBnZW4gMTExNzU4IHRvcCBsZXZlbCA1IHBhdGggZHMKSUQgMjExOCBnZW4gMTExNzU4IHRv
+cCBsZXZlbCAyMTE0IHBhdGggZGQvdHJ1bmsvc291cmNlY29kZQpJRCAyMTE5IGdlbiAxMTE3NTEg
+dG9wIGxldmVsIDIxMTQgcGF0aCBkZC9iLzExMDMKSUQgMjEyMCBnZW4gMTExNzYxIHRvcCBsZXZl
+bCA1IHBhdGggdHQK
