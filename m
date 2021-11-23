@@ -2,96 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C768459A6A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 04:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C50B6459BFE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 06:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhKWDTN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Nov 2021 22:19:13 -0500
-Received: from m1514.mail.126.com ([220.181.15.14]:53183 "EHLO
-        m1514.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhKWDTN (ORCPT
+        id S233241AbhKWF7h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Nov 2021 00:59:37 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:44450 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhKWF7h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Nov 2021 22:19:13 -0500
-X-Greylist: delayed 1887 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Nov 2021 22:19:12 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=ISmsJ
-        3qeTQGpFCYaAP0d2tZQtnxxqIrQqAmtiJjfcaA=; b=bqyGLaaPPe0EZ8ZieY7AZ
-        nl7Y0JVt2kUYtwEI5R6qJBqrGNlsIure7yHILW0+/sMm1CcNXTIS453zSyWJ2RTa
-        0vmYhhNpDhxyliN8xVK1P4Zj8BH4sUQAtSFk8angFTgC/yMkRVTxNyzByJu9mszL
-        rEzdFAOimlITBG5SmeKyJI=
-Received: from ericleaf$126.com ( [124.126.224.36] ) by ajax-webmail-wmsvr14
- (Coremail) ; Tue, 23 Nov 2021 10:42:59 +0800 (CST)
-X-Originating-IP: [124.126.224.36]
-Date:   Tue, 23 Nov 2021 10:42:59 +0800 (CST)
-From:   x8062 <ericleaf@126.com>
-To:     "Nikolay Borisov" <nborisov@suse.com>
+        Tue, 23 Nov 2021 00:59:37 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1A77D1FD5A;
+        Tue, 23 Nov 2021 05:56:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637646989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wiE9MWuNPVe/4672OdmVu7RzDSjfGMTsGo5uyrwa/qY=;
+        b=VghV41zJS9nn/VazEMB92SWnsn8m1xu+YctwiBkdpGWQ4ov1UdMiHROAn9ygnxMGdrC+Uh
+        bHWWT0ez0KN90AFX9jflePOmGK5naz9y5q+dfT82jrjGp4eVfwNG1Kaevl3PG7gr/pYAwU
+        ltI6sFleNyjbFSUEGN0pAoLa+N5AIMs=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D16AA13CE1;
+        Tue, 23 Nov 2021 05:56:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id sb+pLIyCnGGMQgAAMHmgww
+        (envelope-from <nborisov@suse.com>); Tue, 23 Nov 2021 05:56:28 +0000
+Subject: Re: read time tree block corruption detected
+To:     x8062 <ericleaf@126.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re:Re: read time tree block corruption detected
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
-In-Reply-To: <fe1ce96b-e483-b698-f0f4-9eb8d9ad0634@suse.com>
 References: <56d93523.27d4.17d461bc3c6.Coremail.ericleaf@126.com>
  <aed20fe5-4e7d-9f0f-ee39-1b584d8572f0@suse.com>
  <7f681c79.4eba.17d471d802e.Coremail.ericleaf@126.com>
  <fe1ce96b-e483-b698-f0f4-9eb8d9ad0634@suse.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+ <46d6bc87.14b4.17d4aacd1dc.Coremail.ericleaf@126.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <c5abf17e-85bc-c9ed-2c97-c323dc19f3f9@suse.com>
+Date:   Tue, 23 Nov 2021 07:56:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Message-ID: <46d6bc87.14b4.17d4aacd1dc.Coremail.ericleaf@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: DsqowAC3P3Y0VZxhXIsNAA--.27099W
-X-CM-SenderInfo: phuluzxhdiqiyswou0bp/1tbimhRUnVpEFJ8T4gAAsj
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+In-Reply-To: <46d6bc87.14b4.17d4aacd1dc.Coremail.ericleaf@126.com>
+Content-Type: text/plain; charset=gbk
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-QXQgMjAyMS0xMS0yMiAxODozNjo0MSwgIk5pa29sYXkgQm9yaXNvdiIgPG5ib3Jpc292QHN1c2Uu
-Y29tPiB3cm90ZToKPgo+Cj5PbiAyMi4xMS4yMSCn1C4gMTI6MDcsIHg4MDYyIHdyb3RlOgo+PiBB
-dCAyMDIxLTExLTIyIDE1OjI0OjM4LCAiTmlrb2xheSBCb3Jpc292IiA8bmJvcmlzb3ZAc3VzZS5j
-b20+IHdyb3RlOgo+Pj4KPj4+Cj4+PiBPbiAyMi4xMS4yMSCn1C4gNzoyNiwgeDgwNjIgd3JvdGU6
-Cj4+Pj4gSGVsbG8sCj4+Pj4gIEkgZ290IHBlcmlvZGljIHdhcm5zIGluIG15IGxpbnV4IGNvbnNv
-bGUuIGluIGRtZXNnIGl0IGlzIHRoZSBmb2xsb3dpbmcgcGFzdGVkIHRleHQuCj4+Pj4gQXQgaHR0
-cHM6Ly9idHJmcy53aWtpLmtlcm5lbC5vcmcvaW5kZXgucGhwL1RyZWUtY2hlY2tlciBJIGxlYXJu
-ZWQgaXQgbWF5IGJlIGEgZXJyb3IsIHNvIGkgc2VuZCB0aGUgbWVzc2FnZS4gSG9wZWZ1bGx5IGl0
-IGNvdWxkIGhlbHAsIFRoYW5rcyBpbiBhZHZhbmNlIQo+Pj4+Cj4+Pj4gWyAgNTEzLjkwMDg1Ml0g
-QlRSRlMgY3JpdGljYWwgKGRldmljZSBzZGIzKTogY29ycnVwdCBsZWFmOiByb290PTM4MSBibG9j
-az03MTkyODM0ODY3MiBzbG90PTc0IGlubz0yMzk0NjM0IGZpbGVfb2Zmc2V0PTAsIGludmFsaWQg
-cmFtX2J5dGVzIGZvciB1bmNvbXByZXNzZWQgaW5saW5lIGV4dGVudCwgaGF2ZSAzOTMgZXhwZWN0
-IDEzMTQ2NQo+Pj4+Cj4+Pgo+Pj4KPj4+IFlvdSBoYXZlIGZhdWx0eSByYW0sIHNpbmNlIDM5MyBo
-YXMgdGhlIDE3dGggYml0IHNldCB0byAwIHdoaWxzdCBoYXMgaXQKPj4+IHNldCB0byAxLiBTbyB5
-b3VyIHJhbSBpcyBjbGVhcmx5IGNvcnJ1cHRpbmcgYml0cy4gSSBhZHZpc2UgeW91IHJ1biBhCj4+
-PiBtZW10ZXN0IHRvb2wgYW5kIGxvb2sgZm9yIHBvc3NpYmx5IGNoYW5naW5nIHRoZSBmYXVsdHkg
-cmFtIG1vZHVsZS4KPj4gCj4+IFRoYW5rIHlvdSwgY2FuJ3QgYmVsaWV2ZSB0aGUgcmFtIGlzIG5v
-dCBzbyBzdGFibGUuICBJJ2xsIHJ1biBhIG1lbXRlc3QgbGF0ZXIuCj4KPkFjdHVhbGx5IGFjY29y
-ZGluZyB0byB0aGUgb3V0cHV0IHRoaXMgaXMgYSByZWFkLXRpbWUgY29ycnVwdGlvbi4gVEhpcwo+
-bWVhbnMgdGhlIGNvcnJ1cHRlZCBkYXRhIGhhcyBhbHJlYWR5IGJlZW4gd3JpdHRlbiB0byBkaXNr
-LCBsaWtlbHkgYnkgYW4KPm9sZGVyIGtlcm5lbCB0aGF0IGRpZG4ndCBoYXZlIHRoZSB0cmVlIGNo
-ZXJrIGNvZGUuIFNvIHJ1bm5pbmcgYSBtZW1jaGVjawo+aXMgc3RpbGwgdXNlZnVsIHRvIHByZXZl
-bnQgZnV0dXJlIGNvcnJ1cHRpb24uCj4KPkFzIGZhciBhcyB0aGUgY29ycnVwdGVkIGZpbGVzIGdv
-ZXMgLSB3ZWxsIGl0cyBkYXRhIGlzIGNvcnJ1cHRlZC4gSXQgY2FuCj50ZWNobmljYWxseSBiZSBm
-aXhlZCwgYnV0IHlvdSdkIGhhdmUgdG8gZG8gaXQgeW91cnNlbGYuIE9yIGFsdGVybmF0aXZlbHkK
-PmdvIGJhY2sgb24gYW4gb2xkZXIga2VybmVsIGkuZSBwcmUtIDUuMTEgYW5kIHRyeSB0byBjb3B5
-IHRoYXQgcGFydGljdWxhcgo+ZmlsZSAoaW5vZGUgMjM5NDYzNCkuCj4KPj4gCkkgZmluZCBzb21l
-IHByb2JsZW1zIGhlcmUuICBJIHVzZSB0aGUgY29tbWFuZCAiZmluZCAuIC1pbnVtIDIzOTQ2MzQi
-IGluIHRoZSBidHJmcyByb290IGRpciwgIGJ1dCBub3RoaW5nIHByaW50ZWQuCmRvZXMgInJvb3Q9
-MzgxIiBtZWFucyB0aGUgc3Vidm9sdW1lIElEPTM4MT8gYnV0IG5vdyBJIGRvbid0IGhhdmUgc3Vj
-aCBzdWJ2b2x1bWUuIEkgZGVsZXRlZCBzb21lIG9mIHRoZQpzdWJ2b2x1bWVzIGEgZmV3IGRheXMg
-YWdvLiB0aGlzIGlzIHRoZSBjdXJyZW50IHN1YnZvbHVtZSBsaXN0KHNvbWUgb2YgdGhlIGRpciBu
-YW1lIHNob3J0ZW5lZCkKc3VkbyBidHJmcyBzdWJ2b2wgbGlzdCAuCklEIDI2MyBnZW4gMTExNzMy
-IHRvcCBsZXZlbCA1IHBhdGggODAwNy9hCklEIDM1NCBnZW4gMTExNzI5IHRvcCBsZXZlbCA1IHBh
-dGggODAwNy9iCklEIDYyMiBnZW4gMTExNzU3IHRvcCBsZXZlbCA1IHBhdGggZjAxNQpJRCAxMTc0
-IGdlbiAxMTE3NTggdG9wIGxldmVsIDUgcGF0aCBjYwpJRCAxMzI2IGdlbiAxMTE3NTcgdG9wIGxl
-dmVsIDUgcGF0aCA4MDA3L2MKSUQgMTc4MSBnZW4gMTExNzQwIHRvcCBsZXZlbCA1IHBhdGggaXAK
-SUQgMTc4MiBnZW4gMTExNzU4IHRvcCBsZXZlbCA1IHBhdGggb2cKSUQgMTg1NiBnZW4gMTExNTg2
-IHRvcCBsZXZlbCAxNzgyIHBhdGggb2cvT0cvREIvc2VydmVyCklEIDE4NTggZ2VuIDExMTc1NyB0
-b3AgbGV2ZWwgNjIyIHBhdGggVjYvZGIKSUQgMTg3NSBnZW4gMTExNzQyIHRvcCBsZXZlbCA1IHBh
-dGggc2RrCklEIDE5MTggZ2VuIDExMTc0MiB0b3AgbGV2ZWwgNSBwYXRoIDgwMTUKSUQgMTk0MiBn
-ZW4gMTExNzQ1IHRvcCBsZXZlbCA1IHBhdGggaXA2CklEIDIwMDcgZ2VuIDExMTc1OCB0b3AgbGV2
-ZWwgNSBwYXRoIG1uZXcKSUQgMjExNCBnZW4gMTExNzUxIHRvcCBsZXZlbCA1IHBhdGggZGQKSUQg
-MjExNiBnZW4gMTExNzYwIHRvcCBsZXZlbCAyMTE3IHBhdGggZHMvdHJ1bmsvMjAyMDA2MTYKSUQg
-MjExNyBnZW4gMTExNzU4IHRvcCBsZXZlbCA1IHBhdGggZHMKSUQgMjExOCBnZW4gMTExNzU4IHRv
-cCBsZXZlbCAyMTE0IHBhdGggZGQvdHJ1bmsvc291cmNlY29kZQpJRCAyMTE5IGdlbiAxMTE3NTEg
-dG9wIGxldmVsIDIxMTQgcGF0aCBkZC9iLzExMDMKSUQgMjEyMCBnZW4gMTExNzYxIHRvcCBsZXZl
-bCA1IHBhdGggdHQK
+
+
+On 23.11.21 §Ô. 4:42, x8062 wrote:
+> At 2021-11-22 18:36:41, "Nikolay Borisov" <nborisov@suse.com> wrote:
+>>
+>>
+>> On 22.11.21 §Ô. 12:07, x8062 wrote:
+>>> At 2021-11-22 15:24:38, "Nikolay Borisov" <nborisov@suse.com> wrote:
+>>>>
+>>>>
+>>>> On 22.11.21 §Ô. 7:26, x8062 wrote:
+>>>>> Hello,
+>>>>>  I got periodic warns in my linux console. in dmesg it is the following pasted text.
+>>>>> At https://btrfs.wiki.kernel.org/index.php/Tree-checker I learned it may be a error, so i send the message. Hopefully it could help, Thanks in advance!
+>>>>>
+>>>>> [  513.900852] BTRFS critical (device sdb3): corrupt leaf: root=381 block=71928348672 slot=74 ino=2394634 file_offset=0, invalid ram_bytes for uncompressed inline extent, have 393 expect 131465
+>>>>>
+>>>>
+>>>>
+>>>> You have faulty ram, since 393 has the 17th bit set to 0 whilst has it
+>>>> set to 1. So your ram is clearly corrupting bits. I advise you run a
+>>>> memtest tool and look for possibly changing the faulty ram module.
+>>>
+>>> Thank you, can't believe the ram is not so stable.  I'll run a memtest later.
+>>
+>> Actually according to the output this is a read-time corruption. THis
+>> means the corrupted data has already been written to disk, likely by an
+>> older kernel that didn't have the tree cherk code. So running a memcheck
+>> is still useful to prevent future corruption.
+>>
+>> As far as the corrupted files goes - well its data is corrupted. It can
+>> technically be fixed, but you'd have to do it yourself. Or alternatively
+>> go back on an older kernel i.e pre- 5.11 and try to copy that particular
+>> file (inode 2394634).
+>>
+>>>
+> I find some problems here.  I use the command "find . -inum 2394634" in the btrfs root dir,  but nothing printed.
+> does "root=381" means the subvolume ID=381? but now I don't have such subvolume. I deleted some of the
+
+Yes root is the id of the subvolume, if you have deleted it then the
+corrupted inode should also be gone.
+
+
+> subvolumes a few days ago. this is the current subvolume list(some of the dir name shortened)
+> sudo btrfs subvol list .
+> ID 263 gen 111732 top level 5 path 8007/a
+> ID 354 gen 111729 top level 5 path 8007/b
+> ID 622 gen 111757 top level 5 path f015
+> ID 1174 gen 111758 top level 5 path cc
+> ID 1326 gen 111757 top level 5 path 8007/c
+> ID 1781 gen 111740 top level 5 path ip
+> ID 1782 gen 111758 top level 5 path og
+> ID 1856 gen 111586 top level 1782 path og/OG/DB/server
+> ID 1858 gen 111757 top level 622 path V6/db
+> ID 1875 gen 111742 top level 5 path sdk
+> ID 1918 gen 111742 top level 5 path 8015
+> ID 1942 gen 111745 top level 5 path ip6
+> ID 2007 gen 111758 top level 5 path mnew
+> ID 2114 gen 111751 top level 5 path dd
+> ID 2116 gen 111760 top level 2117 path ds/trunk/20200616
+> ID 2117 gen 111758 top level 5 path ds
+> ID 2118 gen 111758 top level 2114 path dd/trunk/sourcecode
+> ID 2119 gen 111751 top level 2114 path dd/b/1103
+> ID 2120 gen 111761 top level 5 path tt
+> 
