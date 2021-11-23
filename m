@@ -2,67 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687CA45A65B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 16:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBB445A65C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 16:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbhKWPRb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Nov 2021 10:17:31 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:41212 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236308AbhKWPRH (ORCPT
+        id S238309AbhKWPRf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Nov 2021 10:17:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237123AbhKWPRe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Nov 2021 10:17:07 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1397321940;
-        Tue, 23 Nov 2021 15:13:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637680437;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CXCOqfkFyBq2dq9RvUyd3Ay3AuTDWCffLSzpgupEri0=;
-        b=RxzItaXUSBDpO9RCUAnnaLnsH/kzB1aNNCWcxiWHQ3osNxWa+XmcOExFX1yzgw2uzh6dg1
-        9My94x47+LVmA1VNqZA+hBkU94DlaCSLAtbWan4P8g003j+avmqjz9VQ+USAm+WpwRHaGl
-        ZJkpgiyZqEMv5ZmG9DwZJfXvGIsM5OM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637680437;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CXCOqfkFyBq2dq9RvUyd3Ay3AuTDWCffLSzpgupEri0=;
-        b=6g7M0odzBr1Y+qoGPF4kowq2ORYtGzOX0/JOhuWYEgo0o1wAi6qZsEcwHwGQqS+M1AQMrC
-        zgEHUOp68kYLfIAw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id E3691A3B85;
-        Tue, 23 Nov 2021 15:13:56 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B2AA0DA735; Tue, 23 Nov 2021 16:13:49 +0100 (CET)
-Date:   Tue, 23 Nov 2021 16:13:49 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: fail if fstrim_range->start == U64_MAX
-Message-ID: <20211123151349.GQ28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <3990fc5294f2a20a8a4b27c5be0b4b1359f7f1a6.1637618651.git.josef@toxicpanda.com>
+        Tue, 23 Nov 2021 10:17:34 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DE6C061714
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Nov 2021 07:14:26 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id v22so20104296qtx.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 23 Nov 2021 07:14:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gfmuL2rY+y7qUOGLyu4QCPd8HSrEHOjpKavwAQDrGfo=;
+        b=FA9122zacvuVvKLT6YPTlqWKUllXFigCcfkgePv0mjq5EFu26Khi4ggNXN5herShsT
+         m9/RF6pv4LDbeppg/5d2TnGk0xpAIzF7FrB5yEp4o/7UynYkI1m8Fz9DIvjFSrvdUj2U
+         qtm1DZnhRqncvkX2hvftV0qiHdLj2IbY1/FDuMcIN2gzJ5zQPemzHvqa5zpCO1h35C9K
+         doOolBub7U0yNBer1jbhlroCRUr31f6fEMHA/1PnFmTKmDKYOVheFsGHfvLo95SV3hPH
+         Kqi4hiaHS5lenCu8Zw7xE4ms6sCtcEBO+L5Km2Mr4/mhy8nx8hiOdzAe2h73++809jLH
+         DSzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gfmuL2rY+y7qUOGLyu4QCPd8HSrEHOjpKavwAQDrGfo=;
+        b=cNPtB9+qf3qG8unvjRQP4x/5rNsr1MeNsO5h/C0GO3gUE/OowxpuGjCVT0gapi+y4L
+         d08wcpU3mkpNRLErhWZ2L/S4YBewzSYdea6rNYG4nkfRIWHNql/qWL6lwmieZeVFcGFI
+         Li8qMYw2j8W3IisNRxSrW++C40jXAN+LaKnrVQlWgADgqbG58fMTGf5NMDgOLRbwhf38
+         Br4+LJSt1aGsIf9DT0qI9nEOBN69BZDSO4k7SSv1WLsbQDYqYqAvrG1xh3Xtd44WNk5y
+         d3bFzpfrEPdzCkVyzTyQgwOH0MqycgiSfehj4k/oxu8Ipq1fXZvg5yn7heArD1bL9ZKo
+         T1Sg==
+X-Gm-Message-State: AOAM533BVDQgxzp9pMvSvQGpbFr+rPZPS+lLyuHRsrs0g98fM12wQNZm
+        yiYc8R3BKBssqsKRbtRI50ZhnPye/U1bgg==
+X-Google-Smtp-Source: ABdhPJwFQK9BCy1k1os3P4TWfGHAMQC4fNUehv0q65/H3i2FTOjN2+upRPkMZ0nj8sydZOfDg0dO9A==
+X-Received: by 2002:ac8:58d0:: with SMTP id u16mr7252710qta.150.1637680465594;
+        Tue, 23 Nov 2021 07:14:25 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id z10sm6295325qtw.71.2021.11.23.07.14.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Nov 2021 07:14:24 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        fstests@vger.kernel.org
+Subject: [PATCH] fstests: generic/274: require no compress
+Date:   Tue, 23 Nov 2021 10:14:23 -0500
+Message-Id: <4360f78499ffdb15a1dfff9b9647c144842995b3.1637680452.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3990fc5294f2a20a8a4b27c5be0b4b1359f7f1a6.1637618651.git.josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 05:04:19PM -0500, Josef Bacik wrote:
-> We've always been failing generic/260 because it's testing things we
-> actually don't care about and thus won't fail for.  However we probably
-> should fail for fstrim_range->start == U64_MAX since we clearly can't
-> trim anything past that.  This in combination with an update to
-> generic/260 will allow us to pass this test properly.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+We hit spurious errors with generic/274 with compression on because we
+attempt to fill up the disk with small writes, and these writes end up
+taking up metadata space instead of data space.  Thus when we go to
+write into the preallocated area we get an ENOSPC, but from the metadata
+side and not the data side.  Simply skip this test if we have
+compression enabled.
 
-Added to misc-next, thanks.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ tests/generic/274 | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tests/generic/274 b/tests/generic/274
+index 43fc2d3e..8c0e420e 100755
+--- a/tests/generic/274
++++ b/tests/generic/274
+@@ -30,6 +30,10 @@ _supported_fs generic
+ _require_scratch
+ _require_xfs_io_command "falloc" "-k"
+ 
++# Compression can exhaust metadata space here for btrfs and cause spurious
++# failurs because we hit a metadata ENOSPC, skip if we have compression enabled
++_require_no_compress
++
+ echo "------------------------------"
+ echo "preallocation test"
+ echo "------------------------------"
+-- 
+2.26.3
+
