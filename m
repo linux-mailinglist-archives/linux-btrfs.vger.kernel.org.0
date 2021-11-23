@@ -2,125 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50B6459BFE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 06:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B75459C66
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 07:44:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233241AbhKWF7h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Nov 2021 00:59:37 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:44450 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbhKWF7h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Nov 2021 00:59:37 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1A77D1FD5A;
-        Tue, 23 Nov 2021 05:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637646989; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wiE9MWuNPVe/4672OdmVu7RzDSjfGMTsGo5uyrwa/qY=;
-        b=VghV41zJS9nn/VazEMB92SWnsn8m1xu+YctwiBkdpGWQ4ov1UdMiHROAn9ygnxMGdrC+Uh
-        bHWWT0ez0KN90AFX9jflePOmGK5naz9y5q+dfT82jrjGp4eVfwNG1Kaevl3PG7gr/pYAwU
-        ltI6sFleNyjbFSUEGN0pAoLa+N5AIMs=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D16AA13CE1;
-        Tue, 23 Nov 2021 05:56:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sb+pLIyCnGGMQgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 23 Nov 2021 05:56:28 +0000
-Subject: Re: read time tree block corruption detected
-To:     x8062 <ericleaf@126.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <56d93523.27d4.17d461bc3c6.Coremail.ericleaf@126.com>
- <aed20fe5-4e7d-9f0f-ee39-1b584d8572f0@suse.com>
- <7f681c79.4eba.17d471d802e.Coremail.ericleaf@126.com>
- <fe1ce96b-e483-b698-f0f4-9eb8d9ad0634@suse.com>
- <46d6bc87.14b4.17d4aacd1dc.Coremail.ericleaf@126.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <c5abf17e-85bc-c9ed-2c97-c323dc19f3f9@suse.com>
-Date:   Tue, 23 Nov 2021 07:56:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231292AbhKWGrq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Nov 2021 01:47:46 -0500
+Received: from mout.gmx.net ([212.227.15.18]:38347 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230270AbhKWGrq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Nov 2021 01:47:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637649876;
+        bh=mqTghZlQDWC96e4znXis7Ak03d2cVK8eZtpwdHSYW68=;
+        h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+        b=M1joFZH3HvzhSdAx9iZN8PD/Wx9ZY+qmgCwiKGh+qDgElaJUz2ySfDnzGRrRfTRY7
+         4vT/yVfvbV/XHZGr0kF5nTRejI9ctyh38wvJBydrlaEBQmSNzjFaPVDCdmcPWZ5m6Y
+         gzkmYL4mL4vY6ijDs5+e0B17nQ8K27eEyRGcKsoU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZktZ-1nBFeW2R4Z-00Wj20; Tue, 23
+ Nov 2021 07:44:36 +0100
+Message-ID: <5d8351f1-1b09-bff0-02f2-a417c1669607@gmx.com>
+Date:   Tue, 23 Nov 2021 14:44:32 +0800
 MIME-Version: 1.0
-In-Reply-To: <46d6bc87.14b4.17d4aacd1dc.Coremail.ericleaf@126.com>
-Content-Type: text/plain; charset=gbk
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Linux FS Devel <linux-fsdevel@vger.kernel.org>, dm-devel@redhat.com
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Any bio_clone_slow() implementation which doesn't share bi_io_vec?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/KzIMRoAX7PxbEm1Bkj26bYMQrmSjX45HekEQlqPdr3cOtGtt5D
+ mvzIVxHRSEfXCCQDXRxzoEgDGcraK1fTwOTwApxlv+r2byjfBFoMh3ADlQPcACmrS7xpSKE
+ xidaX7Ig7Bed+WJ7ANBriz2TCzju94j2c8YlMOhhZNLmAY9rqryhwOjrdYAinXg0YBUuqTO
+ Y35p1hNbFS+2UmMS3wrfw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wsj5FAmNYto=:8tN16ch8ldn4zdPsIENzqQ
+ 6z1t1p4zXJbFbnEREbyUSIk9slFxyWrWQkUYAtDXHh0QO7AaF/g9c+7M2nrt8Sc5NpPpUQX8v
+ FlldBD+w4ihLq9u1yPbf6/sEAj9Th+k3qQvmPqFWOfN5ObEtF6CvssOy+p1XZOYWOLOBucjXv
+ 2PfM3mkimUdjyLt717/I8lKP/tfrI2AO40SmmfjjLYJFhGTN60S8P/IBI465IrL0gmnGq5w3j
+ 5U/fEREgRpD6jDXozCGwmnOP9zoEP2YkVB+gdd6Dh7Iclp6kpY2J9tyCkhhcSLeQZMpu6mtNI
+ KS5LXBWFeVA4i1xXnegrY0JfQ7OTzxcYDADVZWelhCmFjaQaxB9cWu9aw3jkGb1IL7ZkIUTz0
+ rhzDlQMdhaeetFR27u1w5a5U/nDkGw7H+DgdxlFacJGyjXGutetUhMgDJ+CdgYu0xN+1zKCi3
+ FkUnVDSi+lhXAr7T3FH2JQCCIXbTILZjpLEO9OaEE1zsvWd6GzxKIWsi/KayF0mZwH4zkE3xq
+ vSRLZMaTog1ZztCP5NJ0rVpUjcs+/oBiT4UHEZUY+l3Xw+suzScBY3fB8mL2lMjC9tYAuwSZ6
+ u0IbuaZjJtFG3BoQvLvCkG5YDnnQqaqYfu4e5WaRse+0l8kcgTaud9j2CCZNR5p+RAuJsWmlX
+ wY6cEO+GdC90nAOaynXq3KhOKhQto4A/KrRZwN+rR9WP/hxSYDA65L372wXmg/6kFCsnvxsJz
+ hECKRiqIC5S8Qvv7vEYhDyBM3cD2Xs2Rsg1y3A/GjKRJmx/4KjQmJIASgFLoxhN3JQTesNEQj
+ wIOm7g/lO6iumaSb7N3TrHRYe/rGpmP8gWhsqdmrHChGLbPFLa2LO08ATqRzH15IQdSqy0+9b
+ 2JdzQlg75oJ4961wwbPeWGEw9iJQOxo+X+7DPqcY22CkOgXO+p+NjD1nNfgEV6lYHiw9OCOcW
+ Xvf2amqWprxtKg/jWU3ozthWFkGc1Rjq6aAuZ7cLiGsBXX1Lr0Ncd+us7/hP8ChIW9aMcO+gB
+ aInI7HATzEXf3flsM7YCmctFYd2E7j0exj4JlWdEuLq4/6f1P9vLiuOizJc3+HjMFOZxEq5fd
+ Yz9zvJrpyuvVwA=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
+
+Although there are some out-of-date comments mentions other
+bio_clone_*() variants, but there isn't really any other bio clone
+variants other than __bio_clone_fast(), which shares bi_io_vec with the
+source bio.
+
+This limits means we can't free the source bio before the cloned one.
+
+Is there any bio_clone variant which do a deep clone, including bi_io_vec?
 
 
-On 23.11.21 §Ô. 4:42, x8062 wrote:
-> At 2021-11-22 18:36:41, "Nikolay Borisov" <nborisov@suse.com> wrote:
->>
->>
->> On 22.11.21 §Ô. 12:07, x8062 wrote:
->>> At 2021-11-22 15:24:38, "Nikolay Borisov" <nborisov@suse.com> wrote:
->>>>
->>>>
->>>> On 22.11.21 §Ô. 7:26, x8062 wrote:
->>>>> Hello,
->>>>>  I got periodic warns in my linux console. in dmesg it is the following pasted text.
->>>>> At https://btrfs.wiki.kernel.org/index.php/Tree-checker I learned it may be a error, so i send the message. Hopefully it could help, Thanks in advance!
->>>>>
->>>>> [  513.900852] BTRFS critical (device sdb3): corrupt leaf: root=381 block=71928348672 slot=74 ino=2394634 file_offset=0, invalid ram_bytes for uncompressed inline extent, have 393 expect 131465
->>>>>
->>>>
->>>>
->>>> You have faulty ram, since 393 has the 17th bit set to 0 whilst has it
->>>> set to 1. So your ram is clearly corrupting bits. I advise you run a
->>>> memtest tool and look for possibly changing the faulty ram module.
->>>
->>> Thank you, can't believe the ram is not so stable.  I'll run a memtest later.
->>
->> Actually according to the output this is a read-time corruption. THis
->> means the corrupted data has already been written to disk, likely by an
->> older kernel that didn't have the tree cherk code. So running a memcheck
->> is still useful to prevent future corruption.
->>
->> As far as the corrupted files goes - well its data is corrupted. It can
->> technically be fixed, but you'd have to do it yourself. Or alternatively
->> go back on an older kernel i.e pre- 5.11 and try to copy that particular
->> file (inode 2394634).
->>
->>>
-> I find some problems here.  I use the command "find . -inum 2394634" in the btrfs root dir,  but nothing printed.
-> does "root=381" means the subvolume ID=381? but now I don't have such subvolume. I deleted some of the
 
-Yes root is the id of the subvolume, if you have deleted it then the
-corrupted inode should also be gone.
+The background story is a little long, with btrfs involved.
 
+Unlike dm/md-raid which uses bio_split(), btrfs splits its bio before
+even creating a bio.
+Every time btrfs wants to create a bio, it will calculate the boundary,
+thus will only create a bio which never cross various raid boundary.
 
-> subvolumes a few days ago. this is the current subvolume list(some of the dir name shortened)
-> sudo btrfs subvol list .
-> ID 263 gen 111732 top level 5 path 8007/a
-> ID 354 gen 111729 top level 5 path 8007/b
-> ID 622 gen 111757 top level 5 path f015
-> ID 1174 gen 111758 top level 5 path cc
-> ID 1326 gen 111757 top level 5 path 8007/c
-> ID 1781 gen 111740 top level 5 path ip
-> ID 1782 gen 111758 top level 5 path og
-> ID 1856 gen 111586 top level 1782 path og/OG/DB/server
-> ID 1858 gen 111757 top level 622 path V6/db
-> ID 1875 gen 111742 top level 5 path sdk
-> ID 1918 gen 111742 top level 5 path 8015
-> ID 1942 gen 111745 top level 5 path ip6
-> ID 2007 gen 111758 top level 5 path mnew
-> ID 2114 gen 111751 top level 5 path dd
-> ID 2116 gen 111760 top level 2117 path ds/trunk/20200616
-> ID 2117 gen 111758 top level 5 path ds
-> ID 2118 gen 111758 top level 2114 path dd/trunk/sourcecode
-> ID 2119 gen 111751 top level 2114 path dd/b/1103
-> ID 2120 gen 111761 top level 5 path tt
-> 
+But this is not really the common practice, I'd like to at least change
+the timing of bio split so that reflects more like dm/md raid.
+
+That's why the bio_clone thing is involved, there is still some corner
+cases that we don't want to fail the whole large bio if there is only
+one stripe failed (mostly for read bio, that we want to salvage as much
+data as possible)
+
+Thus regular bio_split() + bio_chain() solution is not that good here.
+
+Any idea why no such bio_clone_slow() or bio_split_slow() provided in
+block layer?
+
+Or really bio_split() + bio_chain() is the only recommended solution?
+
+Thanks,
+Qu
