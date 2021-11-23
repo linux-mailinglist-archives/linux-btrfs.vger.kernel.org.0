@@ -2,102 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7740E45AE81
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Nov 2021 22:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E23C45AFC7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 00:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235906AbhKWVim (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Nov 2021 16:38:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhKWVil (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Nov 2021 16:38:41 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3BFC061574
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Nov 2021 13:35:33 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id 193so589651qkh.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Nov 2021 13:35:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=feAgbVjYkULnOJMngXhdYQZGpLmW5dvynAmK3KCwEn4=;
-        b=XL3qFY07JqsI1iL5aiO/26ypaMHRw6eeDE/NJmqA9f5UUZ6qm3mECKN+xWg4TeExkn
-         sEjRZn9pL3RCfZPeRN5iL+tUWUrsh9rdlD7GzNgF16V6t40YWgdKBOUGJ8ip7DJWp+Zd
-         wWbaXMPDzDJ6p/8yMgawRHRUqvzJkIi2S5RMYRAkXNDdxU+U7WhnRsAIaoMzzHlYIQ7B
-         i/Hs4JRB9uVYaKj8glAKgfFhkZT32hM3V+mWWArlz1K2l7bK7EEObqzCxCZpMiJ2m/xg
-         vAGqMlp+xhRwj+1GhVsdo8efdxnzkggfP9rH2xWv4kXYRt8lUGpWIly+I55Zxwg4E2li
-         yzkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=feAgbVjYkULnOJMngXhdYQZGpLmW5dvynAmK3KCwEn4=;
-        b=7662wzAwKA4aPrG+sQ3/jyw7honFR/foubpFOSk2esks+HtkJ1MNCWUaq1NozHm1pn
-         EsvdI83kDi8VJEh2vKx465DPK91gtgqYHWIchsLp6cMQ03GsnUqhTMdfve5Tu5h8jWsA
-         jumcU4HV8+cWPnO/Qquqb76G6yMoQMUzvwkDRdW+Fu74iPf6ragE8BGPXTmRbh7Gi11S
-         hOMAXLNdsVFHoIenezNqdZEzkeUpcingQdBArqlGMXpIxn081yCS12lY6Hv67zuSzNEN
-         6NVrwqd2whH0AMwS//XsBeYEbmw9++IjMXk3JvQYKoeexIYlnKkqE8HQd/ZxvqvGIavL
-         xP2g==
-X-Gm-Message-State: AOAM530g6Iy96nzTsk1CxMX6As/XoaTvFWAru0x3F7Tf2YqnbEHKk4rK
-        XJJkAIzQEVbSgqbTMlXUsCEZim0EETAc6Q==
-X-Google-Smtp-Source: ABdhPJw3E/SMJEA+IPwcBNe+2Pmr7i+Hu7hmPc+WVMbXTXqQF/OZ+k+woc4LOg5y957WQ4r7QUXtQg==
-X-Received: by 2002:a05:620a:407:: with SMTP id 7mr565216qkp.506.1637703332429;
-        Tue, 23 Nov 2021 13:35:32 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d6sm6404908qtq.15.2021.11.23.13.35.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Nov 2021 13:35:31 -0800 (PST)
-Date:   Tue, 23 Nov 2021 16:35:30 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 08/25] btrfs: remove BUG_ON() in find_parent_nodes()
-Message-ID: <YZ1eouKhavsSz1p6@localhost.localdomain>
-References: <cover.1636144971.git.josef@toxicpanda.com>
- <be1a91360aa5e5eaae56cb09a90333f7da07b3a6.1636144971.git.josef@toxicpanda.com>
- <adf7aeac-5e5c-f58b-b377-ebb6af808677@suse.com>
+        id S233734AbhKWXKn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Nov 2021 18:10:43 -0500
+Received: from mout.gmx.net ([212.227.17.22]:50653 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231683AbhKWXKm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Nov 2021 18:10:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1637708843;
+        bh=poAXb4E5nX2Wv7O/wHXlEUMVzQsMmd13N7EewkqUMHs=;
+        h=X-UI-Sender-Class:Date:To:Cc:References:From:Subject:In-Reply-To;
+        b=EkxYx+ErlgWvq5xGt6edGqWPNuww4kuVrlwr7kibCVPDzePTEyAmnDQtkMffAxl+H
+         h9K3MaKpEbkN7BUHZQH1/UoCxKeldcGUWEc0buujJFBLKy/WR4mwefuEGENG7mXBwA
+         nI6eFQ9s143Z10rYZ48kZ36E4BdI1XOtIIQ9T1DE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhD2Y-1mCjZA2yqQ-00eOwX; Wed, 24
+ Nov 2021 00:07:23 +0100
+Message-ID: <133792e9-b89b-bc82-04fe-41202c3453a5@gmx.com>
+Date:   Wed, 24 Nov 2021 07:07:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <adf7aeac-5e5c-f58b-b377-ebb6af808677@suse.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Content-Language: en-US
+To:     "hch@infradead.org" <hch@infradead.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <5d8351f1-1b09-bff0-02f2-a417c1669607@gmx.com>
+ <YZybvlheyLGAadFF@infradead.org>
+ <79d38fc2-cd2f-2980-2c4e-408078ce6079@gmx.com>
+ <YZyiuFxAeKE/WMrR@infradead.org>
+ <cca20bcb-1674-f99d-d504-b7fc928e227a@gmx.com>
+ <PH0PR04MB74169757F9CF740289B790C49B609@PH0PR04MB7416.namprd04.prod.outlook.com>
+ <YZz6jAVXun8yC/6k@infradead.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: Any bio_clone_slow() implementation which doesn't share
+ bi_io_vec?
+In-Reply-To: <YZz6jAVXun8yC/6k@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:qASjRyYRjJnLkrnZlSVGlZAZgsTMuJmguDInPrNNx+V3HgKz2ZX
+ JgTDvELnCmstXDimn/HR4QUbvaruhP53LS61RyZb1dGMlCVEiHplGwdca7UsjCw3xv9Z/QH
+ y7U/eA+HElDgXJ2TxGJzoioVeGNjOa2BN89ufziw6WSp1ohfvJTta7fy/XxIrwqwv8hoyMI
+ 5RvfLURk3X0mZv+Cm544A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3eFqAMexTz4=:m1BNluKfSjwvib3xt17B7Z
+ jM/IPlEZdsfA8QOqYFXaNVeAwzvc4BDQBddJt6bRMILr0A3W2toL2M7m5aHN7h7nh2Nu7Dr6g
+ rDezAhQAL7Ggd7h66IScupMbbpFBdV/+i7wKv5nb+NbsMOAfSeH5gOP8gu1R+RPLfQQQa7axM
+ fz6/qcnmsYcnj/QUsdcmgmlIQPxE0FGX2dllBTtWhYLfM1mqhEPlE+yGANuJ4HJ+piv/O7bHz
+ VIGpLhAMjzbitwYfbf1v6Ym19/jB6h7NPBynGe8Pr+tBshlhHG8ALgCCT133Ne7N5p+TOq99F
+ Evjiruoy2blCDoCfUNx4q12Khy3bFSiqK8OI2vEqlUAa//JnHAzSRioq02MblIA4rrycizDll
+ 550kFYesOZ4MSslJuvd4iuOI69Vf+uImi/ZZDFppuTzotBwre75iVT7wWTsa+3pMUZGXmOBEh
+ 2y5vJo5I193b7Ojvbvfpk8v4eNPpf+cmr24k+6iQrgz4qYFMgAFuvK+YhmvevPU23yuiqyBle
+ 1YqGsxC5pjNq+PIDbc+YHwiE2tTumno8cUj0PAWuqwnZFDsTCosDN8EJ1rD55oWMauSskEg6h
+ ++K4Hz/0pdkrEjuRSemfldT877XDqVZHma1sdfz/6J58p6s/Dld0eHAbgQPKuL0DZiUZDuC4X
+ 7j5yLGvODBRLWhWdvujli/qdFxO/fO5QE1XvNQPBVpsI4IL9+GgneYp//tUdZJzP9kDcl06Px
+ 4gehT7Ntz9msNwTOnbxwxVdqUTWRLtbvL4j+nzqWmourG5Rtcab6p9ISq19zWAqKdqE6bAtqD
+ 6tZvkgDqscfJ0OnIBoQciYJBh2Og8zGRhnvdjwKisPnmlrrzPXL8xlyXs4BCpsYTTo6GPDz1h
+ cmJrbizN0m9HyQvBUpvemKKVmjyKCMTDvOVOSWvbD2/WsSXfsN5CW+4g3wMyGWDDVsBuzUCDZ
+ eY/glM/WDnhVR6E0SMhuBd4wpj+WVVIyj5mV1YMSZvntlPm6KEfGgB9cw1swvBq1YPjdWCYhP
+ wXivyJjXQ5evZV3iX4tmDwZnFcyJbXnCkwZMAwTEbI7o0i8D5ddjzGGhCfIxo8/UOZv9Sc7Bx
+ b3iZRCOl0nqISA=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 23, 2021 at 10:53:07PM +0200, Nikolay Borisov wrote:
-> 
-> 
-> On 5.11.21 г. 22:45, Josef Bacik wrote:
-> > We search for an extent entry with .offset = -1, which shouldn't be a
-> > thing, but corruption happens.  Add an ASSERT() for the developers,
-> > return -EUCLEAN for mortals.
-> > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> >  fs/btrfs/backref.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> > index 12276ff08dd4..7d942f5d6443 100644
-> > --- a/fs/btrfs/backref.c
-> > +++ b/fs/btrfs/backref.c
-> > @@ -1210,7 +1210,12 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
-> >  	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
-> >  	if (ret < 0)
-> >  		goto out;
-> > -	BUG_ON(ret == 0);
-> > +	if (ret == 0) {
-> > +		/* This shouldn't happen, indicates a bug or fs corruption. */
-> > +		ASSERT(ret != 0);
-> 
-> This can never trigger in this branch, because ret is guaranteed to be 0
-> o_O?
-> 
 
-It'll always trigger right?  ASSERT(false) == BUG_ON(true), and in this case ret
-== 0, so we'll BUG_ON() in this case because it's wrong.  Thanks,
 
-Jsoef
+On 2021/11/23 22:28, hch@infradead.org wrote:
+> On Tue, Nov 23, 2021 at 11:39:11AM +0000, Johannes Thumshirn wrote:
+>> I think we have to differentiate two cases here:
+>> A "regular" REQ_OP_ZONE_APPEND bio and a RAID stripe REQ_OP_ZONE_APPEND
+>> bio. The 1st one (i.e. the regular REQ_OP_ZONE_APPEND bio) can't be spl=
+it
+>> because we cannot guarantee the order the device writes the data to dis=
+k.
+
+That's correct.
+
+But if we want to move all bio split into chunk layer, we want a initial
+bio without any limitation, and then using that bio to create real
+REQ_OP_ZONE_APPEND bios with proper size limitations.
+
+>> For the RAID stripe bio we can split it into the two (or more) parts th=
+at
+>> will end up on _different_ devices. All we need to do is a) ensure it
+>> doesn't cross the device's zone append limit and b) clamp all
+>> bi_iter.bi_sector down to the start of the target zone, a.k.a sticking =
+to
+>> the rules of REQ_OP_ZONE_APPEND.
+>
+> Exactly.  A stacking driver must never split a REQ_OP_ZONE_APPEND bio.
+> But the file system itself can of course split it as long as each split
+> off bio has it's own bi_end_io handler to record where it has been
+> written to.
+>
+
+This makes me wonder, can we really forget the zone thing for the
+initial bio so we just create a plain bio without any special
+limitation, and let every split condition be handled in the lower layer?
+
+Including raid stripe boundary, zone limitations etc.
+
+(yeah, it's still not pure stacking driver, but it's more
+stacking-driver like).
+
+In that case, the missing piece seems to be a way to convert a splitted
+plain bio into a REQ_OP_ZONE_APPEND bio.
+
+Can this be done without slow bvec copying?
+
+Thanks,
+Qu
