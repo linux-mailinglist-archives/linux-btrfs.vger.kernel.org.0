@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C7145CB14
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 18:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8D045CB20
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 18:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbhKXRg1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Nov 2021 12:36:27 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:36080 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbhKXRg0 (ORCPT
+        id S235865AbhKXRkG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Nov 2021 12:40:06 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:58990 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229538AbhKXRkG (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Nov 2021 12:36:26 -0500
+        Wed, 24 Nov 2021 12:40:06 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 297EF1FD37;
-        Wed, 24 Nov 2021 17:33:16 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7441121958;
+        Wed, 24 Nov 2021 17:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637775196;
+        t=1637775415;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XFuVfpmxIZUHVWMlchelc1rFV37Kwz/0SpGpZNrzBC4=;
-        b=TxYve/mjJ7VHFaJkelFEU6ZCBE9vRFLzo23cR23Rfse9h89oDs8oRxb9dqEeMPROtrgCkd
-        m47mbdEEx7iIvRC+kWotRPMfgAVsTqrAVUEnfev0GWaJxIksxXzo/zJo3Bt4myOVkT7GTE
-        hZ3mY1x1fQWbFRIJ46xG22WSedCoDJU=
+        bh=z55J7WvBzjF3VpTkPkEXhp04aqZz3z/txr7VYRagib0=;
+        b=JFDn3PHyOMIPl6M1nOc79nOAYY0KhpPMN2LwgexP5zfYeGIIcK298Blf6NcAqCEHesxSxT
+        SAS6Uthbsxtt0wg4R8Sq1jFeqhZRykPwhN3yFtv/UoTRulvZkQuXQ8lf4k6W7TIrFhprKx
+        ERGI/uOc6/1+Zk2Uzzi5QgkL82gVx04=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637775196;
+        s=susede2_ed25519; t=1637775415;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=XFuVfpmxIZUHVWMlchelc1rFV37Kwz/0SpGpZNrzBC4=;
-        b=AAHOruqfq1jQ92noZR6vqJy2vmtMi6q9s/nDyQYXsf4u07TcA65kUFkh/HJKk3ac4IUsx9
-        pJop+v1KFjt90oDg==
+        bh=z55J7WvBzjF3VpTkPkEXhp04aqZz3z/txr7VYRagib0=;
+        b=SL5zhLqDw8b6l78O6j8DTnbjEnS02tNRL3S3Zb4B4FXm0neYQEXjeJFcjcf8u+A4arMYZ7
+        sx0Tfesh1noSxEAA==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 217F6A3B83;
-        Wed, 24 Nov 2021 17:33:16 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 4274FA3B88;
+        Wed, 24 Nov 2021 17:36:55 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 62826DA735; Wed, 24 Nov 2021 18:33:08 +0100 (CET)
-Date:   Wed, 24 Nov 2021 18:33:08 +0100
+        id 7251EDA735; Wed, 24 Nov 2021 18:36:47 +0100 (CET)
+Date:   Wed, 24 Nov 2021 18:36:47 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
         Nikolay Borisov <nborisov@suse.com>,
         Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH 04/21] btrfs: zoned: it's pointless to check for
- REQ_OP_ZONE_APPEND and btrfs_is_zoned
-Message-ID: <20211124173308.GV28560@twin.jikos.cz>
+Subject: Re: [PATCH 05/21] btrfs: zoned: move compatible fs flags check to
+ zoned code
+Message-ID: <20211124173647.GW28560@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz,
         Johannes Thumshirn <johannes.thumshirn@wdc.com>,
@@ -53,42 +53,53 @@ Mail-Followup-To: dsterba@suse.cz,
         Nikolay Borisov <nborisov@suse.com>,
         Naohiro Aota <Naohiro.Aota@wdc.com>
 References: <cover.1637745470.git.johannes.thumshirn@wdc.com>
- <2a77d18e249ace733422771b05d48a883c4e5b07.1637745470.git.johannes.thumshirn@wdc.com>
+ <dd096a7fac48e8314eb43b3f4a17fa5e4ca56c53.1637745470.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2a77d18e249ace733422771b05d48a883c4e5b07.1637745470.git.johannes.thumshirn@wdc.com>
+In-Reply-To: <dd096a7fac48e8314eb43b3f4a17fa5e4ca56c53.1637745470.git.johannes.thumshirn@wdc.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 01:30:30AM -0800, Johannes Thumshirn wrote:
-> REQ_OP_ZONE_APPEND can only work on zoned devices, so it is redundant to
-> check if the filesystem is zoned when REQ_OP_ZONE_APPEND is set as the
-> bio's bio_op.
-> 
+On Wed, Nov 24, 2021 at 01:30:31AM -0800, Johannes Thumshirn wrote:
+> check_fsflags_compatible() is only used in zoned filesystems, so move it
+> to zoned code.
+
+The function logically belongs to the ioctl, it is supposed to verify
+that the flags requested by user are compatible with current filesystem
+state.
+
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->  fs/btrfs/extent_io.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  fs/btrfs/ioctl.c | 12 ++----------
+>  fs/btrfs/zoned.h |  9 +++++++++
+>  2 files changed, 11 insertions(+), 10 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 96c2e40887772..d5eb31306c448 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3282,8 +3282,7 @@ static int calc_bio_boundaries(struct btrfs_bio_ctrl *bio_ctrl,
->  	else
->  		bio_ctrl->len_to_stripe_boundary = (u32)geom.len;
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 05c77a1979a9f..d7f710e57890e 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -49,6 +49,7 @@
+>  #include "delalloc-space.h"
+>  #include "block-group.h"
+>  #include "subpage.h"
+> +#include "zoned.h"
 >  
-> -	if (!btrfs_is_zoned(fs_info) ||
-> -	    bio_op(bio_ctrl->bio) != REQ_OP_ZONE_APPEND) {
-> +	if (bio_op(bio_ctrl->bio) != REQ_OP_ZONE_APPEND) {
+>  #ifdef CONFIG_64BIT
+>  /* If we have a 32-bit userspace and 64-bit kernel, then the UAPI
+> @@ -192,15 +193,6 @@ static int check_fsflags(unsigned int old_flags, unsigned int flags)
+>  	return 0;
+>  }
+>  
+> -static int check_fsflags_compatible(struct btrfs_fs_info *fs_info,
+> -				    unsigned int flags)
+> -{
+> -	if (btrfs_is_zoned(fs_info) && (flags & FS_NOCOW_FL))
+> -		return -EPERM;
 
-As for this style of open coded conditions, I think it's fine in
-functions that handle bios or the REQ_OPs anyway, so like here. Removing
-redundant conditions is correct too.
-
->  		bio_ctrl->len_to_oe_boundary = U32_MAX;
->  		return 0;
->  	}
+The intention of the function is "verify anything that's relevant", so
+checking the zoned condition here is IMHO appropriate and expected as
+there can be more such checks in the future. Although we don't have any
+yet moving the helper to zoned.c disconnects it from the ioctl.
