@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D3045CD08
+	by mail.lfdr.de (Postfix) with ESMTP id 9FBBE45CD09
 	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 20:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245083AbhKXTTM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Nov 2021 14:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        id S242428AbhKXTTN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Nov 2021 14:19:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245163AbhKXTSd (ORCPT
+        with ESMTP id S244966AbhKXTSd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 24 Nov 2021 14:18:33 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F795C0613F9
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 11:14:31 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id 132so3945200qkj.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 11:14:31 -0800 (PST)
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96646C061756
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 11:14:33 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id f20so3753495qtb.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 11:14:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=eV76BhMaV7ICxpaf3Rg687QKyoeuV9qyzdY3LRAyKLw=;
-        b=YGsMmSWI5k0feZlQnhV29vVAzpdbNBQmF5m0Ed6PVX/aLw55zEuOYI/y3TOt8JPaRS
-         2wPkXL2LvhCZ6crJIttnFXbhR+fK4gYAfkEoKHB20JRkimK2bWiTXiXB+k0TjucuARmd
-         P1DAbnzYBOZDAk1Bnq2lBu4PyFIa47H375mwvx0t630mv/JbUurALdVD7xpdbBO+paH8
-         aMXzVLHzFFxRQS4y0sKJkF0fiBbeIbg8Ic9GdCGt+/g9rU2wautTnA+0cigIym2/Wxj2
-         Jtla5mVDRGqZVZr+/32OJbNbda2TLVfns1oed3ti97GBdjkvJU3hGx6T2dp4ll0Tg8Gw
-         nPIQ==
+        bh=XrmlgMYx9RqElUbssPucIFCPw3hERWs53HV8oJ9nzOw=;
+        b=M9ReCxMSs5cMkPtKKkE0hX478zYEMCxc25+FwKWu8f8EB/LX1xlEz9jgWh1b4YApAP
+         40YyYiHolF9HEFJ6TQ6XyCK9FVlZ8aaa+TpRNinQyKlF7FHA9fI9eG3AOQ25O/tJj9w5
+         P3eI3xmYOTtQXoOarYVhweUS5RSYGcLTy41WecZtVKz3kOLdiPFmi1j+l0RIel+h3Y+q
+         n5dYDDK8v8/uw1c6NabZnLBq2pIOTaMELpoyBFiTk1HUfuLJ0r1f9oMzosTlVR57mFbG
+         7O+Yi+YdEDeN8im49nxBRHkXRegngHbQZ0L2dWeDq5dYJwBSR1zvjvR9RFWuWq9wnkfh
+         HqVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eV76BhMaV7ICxpaf3Rg687QKyoeuV9qyzdY3LRAyKLw=;
-        b=l43yiRTuFiqW6gjIRbd14TroPyDBcUGpe8HdRve7F3lillPlHN5MbZEsLJRoNIcfid
-         8F359l61ofnxXtsvEcJlBnTPESg1lIV6BQDp9jtR/TIAnYOatkHmUvrsnR1bPjfJ6tAb
-         giMeTOIJ0UZRbI0wgve1B/ePnq71WYM55udMhV2A93Zq3yGghlRkFv2CUi6ajXAgmN/Y
-         kJm13aJKL8MSXgXF1V+3wrkXebTRVl0ZzbP3b54ZmY7kK4EkV1oUh7nRgsm7dFC6EKpo
-         v+18286IRFwyYxMC+irO9RHRfIkugQLxgVMor0zlA6317JYR2HbgNN/uUJlEntglKpgL
-         EcKg==
-X-Gm-Message-State: AOAM533mwsQoiPAvojixCDfKwutegRZrpPzeVkLXTOi3bcphX5/5H3MM
-        IbOf9r2Aj+g67dX3Qj8uHW0h6LBQkyOLTA==
-X-Google-Smtp-Source: ABdhPJxI/ew+VB9Ze71YNnwaoxkPa0PFIAq+GeEc1W1uvaMckYvS06pz3UXsN6C+3Fqdb0mfwgNDvQ==
-X-Received: by 2002:a37:68ce:: with SMTP id d197mr672891qkc.693.1637781269937;
-        Wed, 24 Nov 2021 11:14:29 -0800 (PST)
+        bh=XrmlgMYx9RqElUbssPucIFCPw3hERWs53HV8oJ9nzOw=;
+        b=Yrbagw5l5HWJZArNS9ZVb/C3FsyPPZfX7B7H+t5ON/+wtjgYSNyAuITvaGjZm6UNsB
+         kkhxR9siNB2c1zKfyrhIrrv9GJYdpwwMjaM2ZN/U1ZB2EG+7EYrC0abuXF15DC2fbJa/
+         jMxeQajoOkV5IcRTbbe6iNlQISaGXoDQFBpRjCGZegRYc8fgPA6hYJTEyKaVVEn5gqvt
+         g+Dc8Gu/ySIVvDxLEGr9Gcd5pU//KEiCfI08ZbX+U8CUSP7jd7AZpMxPWoUn7jiVDGJ6
+         vDQ9A/nHbncUIT2XFmMZJSZDdPaJubeGbQwYfPRP5cNC+qMx1sKggXVUkyb6zxHpXAOr
+         tb8Q==
+X-Gm-Message-State: AOAM532edEwCloKOq6ur6Vokfs0scRRn7zI5nCS0HgFbSDLoiqn7KJ+5
+        wG2jH9RUimi7GdMZXrhWmeUSN5/jW5gawg==
+X-Google-Smtp-Source: ABdhPJyRY6dqEKp17v14Y8EcvaF8Y4y2W99C9wPVEgo9gzu27IFQZ/zxoXctGrkszllo+O6dq4o3jg==
+X-Received: by 2002:a05:622a:2ce:: with SMTP id a14mr1429846qtx.445.1637781271163;
+        Wed, 24 Nov 2021 11:14:31 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id j24sm265776qkg.133.2021.11.24.11.14.29
+        by smtp.gmail.com with ESMTPSA id y18sm299614qkp.120.2021.11.24.11.14.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Nov 2021 11:14:29 -0800 (PST)
+        Wed, 24 Nov 2021 11:14:30 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 2/3] btrfs: check the root node for uptodate before returning it
-Date:   Wed, 24 Nov 2021 14:14:24 -0500
-Message-Id: <1d95650cf7f6c184b112c41801620b5faf43a520.1637781110.git.josef@toxicpanda.com>
+Subject: [PATCH v2 3/3] btrfs: call mapping_set_error() on btree inode with a write error
+Date:   Wed, 24 Nov 2021 14:14:25 -0500
+Message-Id: <f6f2469932a07a706149353618a1f77e88706fc2.1637781110.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1637781110.git.josef@toxicpanda.com>
 References: <cover.1637781110.git.josef@toxicpanda.com>
@@ -62,63 +62,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that we clear the extent buffer uptodate if we fail to write it out
-we need to check to see if our root node is uptodate before we search
-down it.  Otherwise we could return stale data (or potentially corrupt
-data that was caught by the write verification step) and think that the
-path is OK to search down.
+generic/484 fails sometimes with compression on because the write ends
+up small enough that it goes into the btree.  This means that we never
+call mapping_set_error() on the inode itself, because the page gets
+marked as fine when we inline it into the metadata.  When the metadata
+writeback happens we see it and abort the transaction properly and mark
+the fs as readonly, however we don't do the mapping_set_error() on
+anything.  In syncfs() we will simply return 0 if the sb is marked
+read-only, so we can't check for this in our syncfs callback.  The only
+way the error gets returned if we called mapping_set_error() on
+something.  Fix this by calling mapping_set_error() on the btree inode
+mapping.  This allows us to properly return an error on syncfs and pass
+generic/484 with compression on.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ fs/btrfs/extent_io.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 216bf35f6caf..d2297e449072 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -1568,12 +1568,9 @@ static struct extent_buffer *btrfs_search_slot_get_root(struct btrfs_root *root,
- 							int write_lock_level)
- {
- 	struct extent_buffer *b;
--	int root_lock;
-+	int root_lock = 0;
- 	int level = 0;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 3454cac28389..1a67f4b3986b 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4314,6 +4314,14 @@ static void set_btree_ioerr(struct page *page, struct extent_buffer *eb)
+ 	 */
+ 	clear_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
  
--	/* We try very hard to do read locks on the root */
--	root_lock = BTRFS_READ_LOCK;
--
- 	if (p->search_commit_root) {
- 		b = root->commit_root;
- 		atomic_inc(&b->refs);
-@@ -1593,6 +1590,9 @@ static struct extent_buffer *btrfs_search_slot_get_root(struct btrfs_root *root,
- 		goto out;
- 	}
- 
-+	/* We try very hard to do read locks on the root */
-+	root_lock = BTRFS_READ_LOCK;
++	/*
++	 * We need to set the mapping with the io error as well because a write
++	 * error will flip the file system readonly, and then syncfs() will
++	 * return a 0 because we are readonly if we don't modify the err seq for
++	 * the superblock.
++	 */
++	mapping_set_error(page->mapping, -EIO);
 +
  	/*
- 	 * If the level is set to maximum, we can skip trying to get the read
- 	 * lock.
-@@ -1619,6 +1619,17 @@ static struct extent_buffer *btrfs_search_slot_get_root(struct btrfs_root *root,
- 	level = btrfs_header_level(b);
- 
- out:
-+	/*
-+	 * The root may have failed to write out at some point, and thus is no
-+	 * longer valid, return an error in this case.
-+	 */
-+	if (!extent_buffer_uptodate(b)) {
-+		if (root_lock)
-+			btrfs_tree_unlock_rw(b, root_lock);
-+		free_extent_buffer(b);
-+		return ERR_PTR(-EIO);
-+	}
-+
- 	p->nodes[level] = b;
- 	if (!p->skip_locking)
- 		p->locks[level] = root_lock;
+ 	 * If we error out, we should add back the dirty_metadata_bytes
+ 	 * to make it consistent.
 -- 
 2.26.3
 
