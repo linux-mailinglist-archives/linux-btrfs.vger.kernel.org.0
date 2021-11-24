@@ -2,119 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCED845B43F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 07:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E172845B499
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 07:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhKXGV2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Nov 2021 01:21:28 -0500
-Received: from mout.gmx.net ([212.227.15.19]:43327 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232689AbhKXGV2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Nov 2021 01:21:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1637734686;
-        bh=TUZFvBsMw1AsvORHoT7iSE7LY1SgcnSYgHu/zaSlMsw=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=AqAAuKWthH1u32A++CSLY6ojp8tMC3jMydfHxoJwFoYWD5isB+axsOx3YbqMIOSsN
-         +9tzlVo0LH1swZWFDjb5vvhdNX41m1J4ADZ2aoUsW2U/h2fcWZqdi43vEVSis67uqR
-         XwepjWjgSuYlkk79bvJCMkmK1EkEnaTfRSWH67ac=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWRRZ-1n9mX02bb1-00XrAu; Wed, 24
- Nov 2021 07:18:06 +0100
-Message-ID: <e3fce9af-429c-a1e3-3f0b-4d90fa061d94@gmx.com>
-Date:   Wed, 24 Nov 2021 14:18:00 +0800
+        id S239354AbhKXGzt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Nov 2021 01:55:49 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:52118 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239337AbhKXGzt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Nov 2021 01:55:49 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D5B5B2195D;
+        Wed, 24 Nov 2021 06:52:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637736757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=ZRvQvNamCIZDlHsesCFWN/ht4h87pR7NgUjqIz5SbSw=;
+        b=aqMxSbSxXmigRtLBXO9oHbD2ZvASMHnjyWldNaD8dyb+1ieCD+qUUxyK9dtSfw1i4pLgBY
+        BzKh+PITxBblCo0JLtsRKRPhmKzFL7W1GSXes3wvYyBCLzBjFjuR5mboFbAovluBLtOVbI
+        PNg+1S7CZx9KD0P3uzjE5+le9dGo1Jo=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E82F013240;
+        Wed, 24 Nov 2021 06:52:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id BIWEKzThnWGiBQAAMHmgww
+        (envelope-from <wqu@suse.com>); Wed, 24 Nov 2021 06:52:36 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] fstests: btrfs/049: add regression test for compress-force mount options
+Date:   Wed, 24 Nov 2021 14:52:19 +0800
+Message-Id: <20211124065219.33409-1-wqu@suse.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: Any bio_clone_slow() implementation which doesn't share
- bi_io_vec?
-Content-Language: en-US
-To:     "hch@infradead.org" <hch@infradead.org>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <5d8351f1-1b09-bff0-02f2-a417c1669607@gmx.com>
- <YZybvlheyLGAadFF@infradead.org>
- <79d38fc2-cd2f-2980-2c4e-408078ce6079@gmx.com>
- <YZyiuFxAeKE/WMrR@infradead.org>
- <cca20bcb-1674-f99d-d504-b7fc928e227a@gmx.com>
- <PH0PR04MB74169757F9CF740289B790C49B609@PH0PR04MB7416.namprd04.prod.outlook.com>
- <YZz6jAVXun8yC/6k@infradead.org>
- <133792e9-b89b-bc82-04fe-41202c3453a5@gmx.com>
- <YZ3XH2PWwrIl/XMy@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <YZ3XH2PWwrIl/XMy@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZxeW4fJ7S5g/EUK+d5QXEFC182bf1PlurcjtsWZRReag8gJgaTQ
- WTvu1uZm/uhZXTkXL/puyXAqIJpf2YyYP4o5qQrxRjeVeK8i6LT1VF449mq/tQBJ0ThUiKH
- fEtg2oRg51Tvg08PS6L4Gm9uRvu7K+Zt1DqmlnlcQia5Y+geaQSAMD/jvUsghoxaPmox1tF
- bzEg5YJtOhpbxWsPfcVlA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bAzBGslp/jM=:kkpMcgLlLndXSNdeIchiCx
- pIR6pFjsyX1M4YrTNq63w5Mgv1GOUf7bBllfDTYhM5jx8FIIVLoHJuPYsFSa6FAbKgTNN0EVt
- QMVpUH8ppvcGBtgcu+8pXfhz/n1XOCMJezr8M8ChRSTnA4O+QgL4YTnpevVeEWWeYt6NegRIV
- NrtfTg21n5m/NIj+SzRU/BfTWAJ839qVLzDfwxGPXM392U52+Y2G8OM4I0SUA2m+3NPQVpaUt
- UGpDL1edhXtaAYJLAKuuBQ9JfRyyJ0byR0Sy/eoxgcj38ZRuQjnnXOyBfAy5bhrzhAm6ok4Ul
- GAot0c3NLL7dWSYjeN6G6WhRFOXMVf4GPkkEiEdGl2kvk8MuWaA25TeFnEaK4qN5xYzuozCWo
- d3z7GNufCJKUSDUlzwFIQWjj3yv1ys6yC+bpOdR6E4KZg0QpEyjWYNecy1ufAT6Au4yOvkDdi
- oS125Wl2PwxnbTpFUm6MfeTxK2hatGZ0UCppAHKcT3BTVldfanL2ubbX5CcNZ3pYNuI97t4Ke
- 8h62Iix1Zs+9/qrDYW05O4PCDFecwiNgFRDRWT6N3PelYJLQER+iIc6WgwEfUbuuM3MN9lRSz
- k1BqejtqFDhQLlAUemXXkC8vPmNU8k951f5jH2CAxz1YUfTY7W+nFGZEojyrb/wg+mKNNG2hC
- dZULNm5MjwW+bCscpAbAmHJUzAP3I/XZ0EVxgAWmP4oWa71ikH28sxbOInQzuQdDGDzu69csc
- YqYKtO5T5y7RqVb1++uJZEU3tcGKy9/UnzrMyqYM8G0I+NLkEi+Sy0WwoGg7jE3525nhVNV+F
- OA06h5mYi9b4bWn/RgBmli65bu9PpsZrYgG+kbVB+sOzitqiOErZkCjnEJ5SKXI+HIqcE9a7R
- c7W9fvxSPbluB05bJSww+ZGwhccrB46V0cI1Xi1VFkzYK6bebX2G0rCotMyW73TNZ6TrvNCDC
- bOYldivwFoAtwutXQl1bDdnUtbkiZgi42DeeraTGxlJ3cBs2LowrY06UK/b5IKD2jyc4S8WW6
- 3LuJyN6y0abbH/o7YdqclJE3gA/o39lKL5ywLpABTITwzXYPXns7Z0lkG2o8a/kn0lNuxdj7s
- oHOM4f1JMXULaU=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Since kernel commit d4088803f511 ("btrfs: subpage: make lzo_compress_pages()
+compatible"), lzo compression no longer respects the max compressed page
+limit, and can cause kernel crash.
 
+The upstream fix is 6f019c0e0193 ("btrfs: fix a out-of-bound access in
+copy_compressed_data_to_page()").
 
-On 2021/11/24 14:09, hch@infradead.org wrote:
-> On Wed, Nov 24, 2021 at 07:07:18AM +0800, Qu Wenruo wrote:
->> In that case, the missing piece seems to be a way to convert a splitted
->> plain bio into a REQ_OP_ZONE_APPEND bio.
->>
->> Can this be done without slow bvec copying?
->
-> Yes.  I have a WIP stacking driver that converts writes to zone appends
-> and it does just that:
->
-> 	sector_t orig_sector =3D bio->bi_iter.bi_sector;
-> 	unsigned int bio_flags =3D bio->bi_opf & ~REQ_OP_MASK;
->
-> 	...
->
-> 	clone =3D bio_clone_fast(bio, GFP_NOIO, &bdev->write_bio_set);
->
-> 	...
->
-> 	clone->bi_opf =3D REQ_OP_ZONE_APPEND | REQ_NOMERGE | bio_flags;
+This patch will add such regression test for all possible compress-force
+mount options, including lzo, zstd and zlib.
 
-Just so simple? Then that's super awesome.
+And since we're here, also make sure the content of the file matches
+after a mount cycle.
 
-But I'm a little concerned about the bio_add_hw_page() call in
-bio_add_zoned_append().
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Also test zlib and zstd
+- Add file content verification check
+---
+ tests/btrfs/049     | 56 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/049.out |  6 +++++
+ 2 files changed, 62 insertions(+)
+ create mode 100755 tests/btrfs/049
 
-It's not exactly the same as bio_add_page().
+diff --git a/tests/btrfs/049 b/tests/btrfs/049
+new file mode 100755
+index 00000000..264e576f
+--- /dev/null
++++ b/tests/btrfs/049
+@@ -0,0 +1,56 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2021 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 049
++#
++# Test if btrfs will crash when using compress-force mount option against
++# incompressible data
++#
++. ./common/preamble
++_begin_fstest auto quick compress dangerous
++
++# Override the default cleanup function.
++_cleanup()
++{
++	cd /
++ 	rm -r -f $tmp.*
++}
++
++# Import common functions.
++. ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch
++
++pagesize=$(get_page_size)
++workload()
++{
++	local compression
++	compression=$1
++
++	echo "=== Testing compress-force=$compression ==="
++	_scratch_mkfs -s "$pagesize">> $seqres.full
++	_scratch_mount -o compress-force="$compression"
++	$XFS_IO_PROG -f -c "pwrite -i /dev/urandom 0 $pagesize" \
++		"$SCRATCH_MNT/file" > /dev/null
++	md5sum "$SCRATCH_MNT/file" > "$tmp.$compression"
++
++	# When unpatched, compress-force=lzo would crash at data writeback
++	_scratch_cycle_mount
++
++	# Make sure the content matches
++	md5sum -c "$tmp.$compression" | _filter_scratch
++	_scratch_unmount
++}
++
++workload lzo
++workload zstd
++workload zlib
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/049.out b/tests/btrfs/049.out
+index cb0061b3..258f3c09 100644
+--- a/tests/btrfs/049.out
++++ b/tests/btrfs/049.out
+@@ -1 +1,7 @@
+ QA output created by 049
++=== Testing compress-force=lzo ===
++SCRATCH_MNT/file: OK
++=== Testing compress-force=zstd ===
++SCRATCH_MNT/file: OK
++=== Testing compress-force=zlib ===
++SCRATCH_MNT/file: OK
+-- 
+2.34.0
 
-Does it mean as long as our splitted bio doesn't exceed zone limit, we
-can do the convert without any further problem?
-
-Thanks,
-Qu
-> 	bio_set_dev(clone, dev->lower_bdev);
-> 	clone->bi_iter.bi_sector =3D zone_sector;
-> 	trace_block_bio_remap(clone, disk_devt(disk), orig_sector);
->
->>
->> Thanks,
->> Qu
-> ---end quoted text---
->
