@@ -2,89 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AA045C77E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 15:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D3245C872
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 16:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353503AbhKXOhe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Nov 2021 09:37:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
+        id S233940AbhKXPU5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Nov 2021 10:20:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351290AbhKXOha (ORCPT
+        with ESMTP id S231610AbhKXPUy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Nov 2021 09:37:30 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0DDC047CCD
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 05:30:31 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id t83so2759743qke.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 05:30:31 -0800 (PST)
+        Wed, 24 Nov 2021 10:20:54 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D58C061714
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 07:17:44 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id g28so3141283qkk.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 07:17:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=HfOOw1h14z5OjfscedupUWWjOnf4zgrM3V3mvlQprBg=;
-        b=aqSSImx8bMtHU+g3I80F/CA9HJ8lg8GIXJajHwYG9dq4O8D/JNUBL2ezna+mctEM0l
-         G3Uo0+MqhWO4/Y+rHOOhy7o/Q5z08l/LjiVOF9ANFmsL4CtO/6LC8OjJBZsp3C1Rx60v
-         gYYNc4mbqQKLtshNixu+rFQTYJZjDR/X7gS2A9jnCdznVVD3ANFEU02CyAxOETDl0CH7
-         E3sHEGKERKDt8P88I6kDwOUyp2EJmxxbk018datJ4mmRqkhNAnJoYaOaT8supusA0bkw
-         gVabilDcTRRmpy/eX7rzfy5OlrlnAcnh8kJsOuYH39BRX5k1KhzhsT8sPfxePNNz/N3K
-         J66Q==
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jJMnl51hQ0OwhZ0gFTr7o3/duIRSwAy8JZ2VpMbFu4w=;
+        b=H33OD67+XM2JUi4W2SrkckZmmOnXzHfAGnjDrE+tm0Tj7Rvy4OithnDSQi5E7NjUk7
+         2hWuPsFodiLqUCebeZuusev3V3r716qlKe0JqPkag4J0xy9ax4Nj+9MaYHWRbra6HugK
+         hnpGwQI0kf1bi+kUHQrSWViO+phpfweeOLAJAeuCkryfRSfsFOYo0kxFkGJMxgq5K8+y
+         effUKyv7LOnblTfcso0B2ZKs+Fk9q6piZ1eMuyef2eXooAV7JQEm9bhCocI0LjoDS3Ix
+         Y5peFhY7IuHPtGZhO32Xh6Y/o0qlZ9HYh/e5fsATORs1Jjq0qTc3XF29ZiDxhQjShCH6
+         q7NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=HfOOw1h14z5OjfscedupUWWjOnf4zgrM3V3mvlQprBg=;
-        b=yX5ITK+Fs3/vb3VqxWSrwox6Sb8+OwcBGEW5Du7PR6funJKXopuMqdXWsItkxTTHGW
-         B2pYELVA/i5kZ5W94BnUPTjjUjnXMZHQ/wk1GZp6ZKcy6LBXHaDbfB2yzCFZ1E0oCgpM
-         OitBMHvQVHwfVw7eQ4m+CzomfBBfPziOKQwyFRtqeliy6AKEPMyZvGuiiZ5bG0c55YgR
-         WHVbJQwjqGg8oeA9LtJwsLwPpeq9ed4Kk97krhqX6s7E2GfG+KCh/Luy57MkFx56Mu0V
-         TBOamcOah5AirbdhgeMzd10WRMQLODLOmgbDzu2rAdCIrieFQMGA57H5CgEFZufkv2LT
-         bpCQ==
-X-Gm-Message-State: AOAM530ZVOVrL5hIUxOT3q5KUJtTNDQ5Ugkv48JGULswVjbeZMLpbgPu
-        y8jCl+IeT//zUI0A+Utq3Gag8V8dT3m0iZFhPR4=
-X-Google-Smtp-Source: ABdhPJzYoxaFJEpvgYd66AaBsNIFfPH1x/BAaAJ4pWttXNiGWjPdYyZ6Dumf/RmVOSjjNIzXGML2wk6cI7Jhb9kpPVA=
-X-Received: by 2002:ae9:eb15:: with SMTP id b21mr5731794qkg.268.1637760630815;
- Wed, 24 Nov 2021 05:30:30 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jJMnl51hQ0OwhZ0gFTr7o3/duIRSwAy8JZ2VpMbFu4w=;
+        b=uiLQtdCyjDedS2KiUnl6uoszF/jnNQmrOQH4yCR8/6muqCO5vzjZtCjHssToE2t+kf
+         b5iBd0na/MVlPIbGGM9l3pRo2nb2QLx1M1BcBu5sBxgFL0/0zKWe7iQXMM7No+6gSyWL
+         rOFP/I8BdNz18pe91fZi0wOL/dVOfF9TgiRFRTYDvHZxEFB9HGQhgENbSlzRRW8E8DoQ
+         UbVANi1zpA0m1jipJDK+9IXa0Z8DKBhCClCA7BLNm2eMQFOI3/EoGPPCLrBHrpzZnJyr
+         7vHYawmCkTwmn3OpEpSk3VtGu6h54AHB3mgwom+pdmUZjtGCPRzqwnUmm6k862kNvUwM
+         8VlQ==
+X-Gm-Message-State: AOAM531eJKiOFy37iFVFKz9oR4vPwkdsH71H1V1tK8h/iiw2iF2yZyCt
+        zpk+sZ4ef3cO6IS/MsM9IW/5lMnSxZDbxg==
+X-Google-Smtp-Source: ABdhPJy3h2Z7ck2vWkvPS3yAWIakp+2IWlSXBfpkkWSpcet2rXGoC+AyUyI6iRN59zlVVoqPME7qww==
+X-Received: by 2002:a37:f619:: with SMTP id y25mr6712621qkj.201.1637767063006;
+        Wed, 24 Nov 2021 07:17:43 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id c3sm9158qkp.47.2021.11.24.07.17.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Nov 2021 07:17:41 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] fstests: btrfs/176: redirect _format_swapfile to null
+Date:   Wed, 24 Nov 2021 10:17:40 -0500
+Message-Id: <c7b5fe8406c425736f638f4d9eba9fc707a1d9db.1637767047.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Received: by 2002:ac8:4e96:0:0:0:0:0 with HTTP; Wed, 24 Nov 2021 05:30:30
- -0800 (PST)
-Reply-To: juliahelibert77@gmail.com
-From:   Julia Helibert <sandrinedjessi@gmail.com>
-Date:   Wed, 24 Nov 2021 14:30:30 +0100
-Message-ID: <CAF20PY0=NH57O6kjbrM9mT+4vxr7aRpgVmcvXc0L72ZuV6q49A@mail.gmail.com>
-Subject: I NEED YOUR IMMEDIATE RESPONSE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Since bb0ab7b2 ("common/rc: Enable _format_swapfile to return the swap
+size") we started echo'ing out the swap file size, which is polluting
+the golden output for btrfs/176 causing it to fail.  Fix this by
+redirecting the output to /dev/null.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ tests/btrfs/176 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/btrfs/176 b/tests/btrfs/176
+index 4cd510b6..33f9a061 100755
+--- a/tests/btrfs/176
++++ b/tests/btrfs/176
+@@ -47,7 +47,7 @@ _check_scratch_fs "$scratch_dev2"
+ echo "Replace device"
+ _scratch_mkfs >> $seqres.full 2>&1
+ _scratch_mount
+-_format_swapfile "$SCRATCH_MNT/swap" $(($(get_page_size) * 10))
++_format_swapfile "$SCRATCH_MNT/swap" $(($(get_page_size) * 10)) > /dev/null
+ $BTRFS_UTIL_PROG device add -f "$scratch_dev2" "$SCRATCH_MNT" >> $seqres.full
+ swapon "$SCRATCH_MNT/swap" 2>&1 | _filter_scratch
+ # Again, we know the swap file is on device 1.
 -- 
-Good day,
+2.26.3
 
-I am obliged to make the transfer of your funds  to you via ATM CARD.
-
-Due to the stringent financial policy and monetary regulation/reform
-introduced by the Bank for the first quarter of this fiscal year 2021 and
-the huge costs involved in direct wire transfer of the fund from the Apex
-bank, it becomes expedient that we formulate a more workable means of
-remitting the fund into any designated account to be nominated by you.
-
-I will apply for the funds to be packed into the electronic banking system
-and paid by Automated Payment Systems (CHAPS ///ATM for $1,200,000.00 United
-States dollars only).
-
-An automated teller machine (ATM) is an electronic banking outlet,which
-allows customers to complete basic transactions without the aid of a branch
-representative or teller.
-
-I will make proper arrangements for the ATM Card to be sent to you in the
-next few days.
-
-Do reconfirm  to me the followings:
-
-1.Your full names and full address
-
-2.Your direct phone number to enable me reach you at all times
-
-RESPECTFULLY,
-
-MR HELIBERT.
