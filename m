@@ -2,27 +2,20 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9E145CF1D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 22:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF6545D01A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Nov 2021 23:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343913AbhKXVjN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Nov 2021 16:39:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47886 "EHLO mail.kernel.org"
+        id S1344865AbhKXWfI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Nov 2021 17:35:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229920AbhKXVjN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Nov 2021 16:39:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7373461038;
-        Wed, 24 Nov 2021 21:36:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1637789762;
-        bh=1qxWEC18le/A8a+N+COfBev7NdB1IPDGt4hnJIvrNwg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=P8rTHiQ7DBWjiMEGFw33451N0sRxqPFqWieczHCkX39OnJt1bfR04SQCx6RSFGpf6
-         iZPDUWsPtC46QiCzMnjhqucmerI0qtIJFG5RF0r6FSi2rKwoWEz25ZRPikr/diwjTX
-         bLlVbbqKsSNKUYFowE542Io7+4i1PFNHCZ+sZNU8=
-Date:   Wed, 24 Nov 2021 13:36:00 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
+        id S242784AbhKXWfI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Nov 2021 17:35:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 156826108B;
+        Wed, 24 Nov 2021 22:31:55 +0000 (UTC)
+Date:   Wed, 24 Nov 2021 22:31:52 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -33,34 +26,45 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH 0/3] Avoid live-lock in fault-in+uaccess loops with
  sub-page faults
-Message-Id: <20211124133600.94f0b9a6c611ee663c9a8d6d@linux-foundation.org>
-In-Reply-To: <20211124192024.2408218-1-catalin.marinas@arm.com>
+Message-ID: <YZ69WNNKKNE2hAzB@arm.com>
 References: <20211124192024.2408218-1-catalin.marinas@arm.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ <20211124133600.94f0b9a6c611ee663c9a8d6d@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124133600.94f0b9a6c611ee663c9a8d6d@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, 24 Nov 2021 19:20:21 +0000 Catalin Marinas <catalin.marinas@arm.com> wrote:
-
-> Hi,
+On Wed, Nov 24, 2021 at 01:36:00PM -0800, Andrew Morton wrote:
+> On Wed, 24 Nov 2021 19:20:21 +0000 Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > There are a few places in the filesystem layer where a uaccess is
+> > performed in a loop with page faults disabled, together with a
+> > fault_in_*() call to pre-fault the pages. On architectures like arm64
+> > with MTE (memory tagging extensions) or SPARC ADI, even if the
+> > fault_in_*() succeeded, the uaccess can still fault indefinitely.
+> > 
+> > In general this is not an issue since such code restarts the
+> > fault_in_*() from where the uaccess failed, therefore guaranteeing
+> > forward progress. The btrfs search_ioctl(), however, rewinds the
+> > fault_in_*() position and it can live-lock. This was reported by Al
+> > here:
 > 
-> There are a few places in the filesystem layer where a uaccess is
-> performed in a loop with page faults disabled, together with a
-> fault_in_*() call to pre-fault the pages. On architectures like arm64
-> with MTE (memory tagging extensions) or SPARC ADI, even if the
-> fault_in_*() succeeded, the uaccess can still fault indefinitely.
-> 
-> In general this is not an issue since such code restarts the
-> fault_in_*() from where the uaccess failed, therefore guaranteeing
-> forward progress. The btrfs search_ioctl(), however, rewinds the
-> fault_in_*() position and it can live-lock. This was reported by Al
-> here:
+> Btrfs livelock on some-of-arm sounds fairly serious.
 
-Btrfs livelock on some-of-arm sounds fairly serious.  Should we
-backport this?  If so, a48b73eca4ce ("btrfs: fix potential deadlock in
-the search ioctl") appears to be a suitable Fixes: target?
+Luckily not much btrfs use on Arm mobile parts.
 
+> Should we
+> backport this?  If so, a48b73eca4ce ("btrfs: fix potential deadlock in
+> the search ioctl") appears to be a suitable Fixes: target?
+
+This should be a suitable target together with a Cc stable to v4.4
+(that's what the above commit had). Of course, the other two patches
+need backporting as well and they won't apply cleanly.
+
+Once we agreed on the fix, I'm happy to do the backports and send them
+all to stable.
+
+-- 
+Catalin
