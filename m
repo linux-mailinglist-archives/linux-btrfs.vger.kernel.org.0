@@ -2,66 +2,20 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE6B45E07C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 19:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D0445E1D0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 21:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbhKYS0p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Nov 2021 13:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236120AbhKYSYp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Nov 2021 13:24:45 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E14C061574
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Nov 2021 10:13:44 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id x6so28797339edr.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Nov 2021 10:13:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gv+HQYkMF2MUdwH7i5Rls63Sav/Z6H1TGrZ+exMMaZQ=;
-        b=TItRyyYyk4ENYxCUQ4Qsl3l6tZLo/FYeFCqpdiBNSGTaisgS2/ZoqSG/jbgW+X7inj
-         iq4iqO/R43G4MV2H+P2Wfu6d4eSHT28liGzs2PrK7DA3wxxtZGxPg7gc6oUzfEYJZefq
-         EnMeRVfLN7yBg4Vf3gPpuSzCNtdwPuZ69RxxA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gv+HQYkMF2MUdwH7i5Rls63Sav/Z6H1TGrZ+exMMaZQ=;
-        b=AQAaruw86+Z3dhVebfku4he0QgNo6xaDl3nszSHSqQLoAaBW0Duyaksk+GKITKeDtR
-         XOGIa5O33wwvf8eQXuwmsPC5lr89H8q16ehIh43rg9pA5BZeAV06CjR9rMpNya4V8e2I
-         bEghkNBjOnYjWcaCaHUwTVNf1LDBKg8vIGDJJIzVwfVQu+yWjr0UvXTlUO6yBMSrAAa/
-         2SeMMkK6rf3tBJPmTz3iv7W6yrwNRmY46CAz5bCrpJAiNte2e4SyvnsUno30lWjAkiAg
-         +lDzI40uo9iv8LZay2nfST1lm0XI/+j4+BpTuHe1RNSlwBjR3HugwBCLujHJFRhG9XG0
-         44WQ==
-X-Gm-Message-State: AOAM532eE5YqrSB21lLoafOZYKCSvX6bj475COsDrmD24tg8hKboxB6p
-        trwewzVaU82nUiFFjTkwYR5DI3VDjcza3Ksq
-X-Google-Smtp-Source: ABdhPJyM1cuqcTX1w5x+F39faUob6oxZNktQO2cBmK4HEJSA2Vb0UuAHX7UwAp2yUUO8+QUIreEf2Q==
-X-Received: by 2002:a17:906:a08c:: with SMTP id q12mr33278927ejy.443.1637864023157;
-        Thu, 25 Nov 2021 10:13:43 -0800 (PST)
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com. [209.85.221.51])
-        by smtp.gmail.com with ESMTPSA id w24sm1955558ejk.0.2021.11.25.10.13.41
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Nov 2021 10:13:41 -0800 (PST)
-Received: by mail-wr1-f51.google.com with SMTP id l16so13405405wrp.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Nov 2021 10:13:41 -0800 (PST)
-X-Received: by 2002:adf:e5c7:: with SMTP id a7mr9078200wrn.318.1637864021623;
- Thu, 25 Nov 2021 10:13:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org>
- <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com> <YZ9vM91Uj8g36VQC@arm.com>
-In-Reply-To: <YZ9vM91Uj8g36VQC@arm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 25 Nov 2021 10:13:25 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
-Message-ID: <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-To:     Catalin Marinas <catalin.marinas@arm.com>
+        id S1357211AbhKYUtP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Nov 2021 15:49:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242104AbhKYUrO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Nov 2021 15:47:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D2BD6101B;
+        Thu, 25 Nov 2021 20:44:00 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 20:43:57 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Matthew Wilcox <willy@infradead.org>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -73,42 +27,85 @@ Cc:     Matthew Wilcox <willy@infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YZ/1jflaSjgRRl2o@arm.com>
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
+ <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
+ <YZ9vM91Uj8g36VQC@arm.com>
+ <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 3:10 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> For this specific btrfs case, if we want go with tuning the offset based
-> on the fault address, we'd need copy_to_user_nofault() (or a new
-> function) to be exact.
+On Thu, Nov 25, 2021 at 10:13:25AM -0800, Linus Torvalds wrote:
+> On Thu, Nov 25, 2021 at 3:10 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > For this specific btrfs case, if we want go with tuning the offset based
+> > on the fault address, we'd need copy_to_user_nofault() (or a new
+> > function) to be exact.
+> 
+> I really don't see why you harp on the exactness.
 
-I really don't see why you harp on the exactness.
+I guess because I always thought we either fix fault_in_writable() to
+probe the whole range (this series) or we change the loops to take the
+copy_to_user() returned value into account when re-faulting.
 
-I really believe that the fix is to make the read/write probing just
-be more aggressive.
+> I really believe that the fix is to make the read/write probing just
+> be more aggressive.
+> 
+> Make the read/write probing require that AT LEAST <n> bytes be
+> readable/writable at the beginning, where 'n' is 'min(len,ALIGN)', and
+> ALIGN is whatever size that copy_from/to_user_xyz() might require just
+> because it might do multi-byte accesses.
+> 
+> In fact, make ALIGN be perhaps something reasonable like 512 bytes or
+> whatever, and then you know you can handle the btrfs "copy a whole
+> structure and reset if that fails" case too.
 
-Make the read/write probing require that AT LEAST <n> bytes be
-readable/writable at the beginning, where 'n' is 'min(len,ALIGN)', and
-ALIGN is whatever size that copy_from/to_user_xyz() might require just
-because it might do multi-byte accesses.
+IIUC what you are suggesting, we still need changes to the btrfs loop
+similar to willy's but that should work fine together with a slightly
+more aggressive fault_in_writable().
 
-In fact, make ALIGN be perhaps something reasonable like 512 bytes or
-whatever, and then you know you can handle the btrfs "copy a whole
-structure and reset if that fails" case too.
+A probing of at least sizeof(struct btrfs_ioctl_search_key) should
+suffice without any loop changes and 512 would cover it but it doesn't
+look generic enough. We could pass a 'probe_prefix' argument to
+fault_in_exact_writeable() to only probe this and btrfs would just
+specify the above sizeof().
 
-Don't require that the fundamental copying routines (and whatever
-fixup the code might need) be some kind of byte-precise - it's the
-error case that should instead be made stricter.
+> Don't require that the fundamental copying routines (and whatever
+> fixup the code might need) be some kind of byte-precise - it's the
+> error case that should instead be made stricter.
+> 
+> If the user gave you a range that triggered a pointer color mismatch,
+> then returning an error is fine, rather than say "we'll do as much as
+> we can and waste time and effort on being byte-exact too".
 
-If the user gave you a range that triggered a pointer color mismatch,
-then returning an error is fine, rather than say "we'll do as much as
-we can and waste time and effort on being byte-exact too".
+Yes, I'm fine with not copying anything at all, I just want to avoid the
+infinite loop.
 
-Your earlier argument was that it was too expensive to probe things.
-That was based on looking at the whole range that migth be MB (or GB)
-in size. So just make it check the first <n> bytes, and problem
-solved.
+I think we are down to three approaches:
 
-                 Linus
+1. Probe the whole range in fault_in_*() for sub-page faults, no need to
+   worry about copy_*_user() failures.
+
+2. Get fault_in_*() to probe a sufficient prefix to cover the uaccess
+   inexactness. In addition, change the btrfs loop to fault-in from
+   where the copy_to_user() failed (willy's suggestion combined with
+   the more aggressive probing in fault_in_*()).
+
+3. Implement fault_in_exact_writeable(uaddr, size, probe_prefix) where
+   loops that do some rewind would pass an appropriate value.
+
+(1) is this series, (2) requires changing the loop logic, (3) looks
+pretty simple.
+
+I'm happy to attempt either (2) or (3) with a preference for the latter.
+
+-- 
+Catalin
