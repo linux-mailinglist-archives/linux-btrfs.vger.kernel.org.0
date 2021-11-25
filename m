@@ -2,89 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EEE45D80C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 11:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8314645D8DD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 12:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354485AbhKYKRM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Nov 2021 05:17:12 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:46272 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348687AbhKYKPM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Nov 2021 05:15:12 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5F8A221954;
-        Thu, 25 Nov 2021 10:12:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637835120; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5RX7ivBwOWf/bFD/GJbHhfXII0Ai46b7xucinIeid6w=;
-        b=nKpWk+1JKCurglERytwXC6b6AdPhpZsKn8yVxoxQH9JWA/wdc538rpkEsKplGkao93xqzC
-        iqNgt+BQe+ybPYTj7wY4CAkSmkyQRp8yYAm6tVjcEjRkShT4yCYzlcfH9SwBMNhQBSPySa
-        YcC9bOnCmni1Z0D4+asrRA9FOFuvxeU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 231F413F5A;
-        Thu, 25 Nov 2021 10:12:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GcWxBXBhn2F/OQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 25 Nov 2021 10:12:00 +0000
-Subject: Re: [PATCH 12/25] btrfs: use chunk_root in
- find_free_extent_update_loop
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-References: <cover.1636144971.git.josef@toxicpanda.com>
- <ded3b6f8c2730943739f2c88f88241994ce53612.1636144971.git.josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <3305a261-5596-c05b-e4b2-3ea5da32f4b9@suse.com>
-Date:   Thu, 25 Nov 2021 12:11:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S234647AbhKYLP7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Nov 2021 06:15:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232138AbhKYLN7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Nov 2021 06:13:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C807360230;
+        Thu, 25 Nov 2021 11:10:45 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 11:10:43 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YZ9vM91Uj8g36VQC@arm.com>
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
+ <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <ded3b6f8c2730943739f2c88f88241994ce53612.1636144971.git.josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 5.11.21 г. 22:45, Josef Bacik wrote:
-> We're only using this to start the transaction with to possibly allocate
-                                                  ^^
-delete "with"
-
-> a chunk.  It doesn't really matter which root to use, but with extent
-> tree v2 we'll need a bytenr to look up a extent root which makes the
-> usage of the extent_root awkward here.  Simply change it to the
-> chunk_root.
+On Wed, Nov 24, 2021 at 03:00:00PM -0800, Linus Torvalds wrote:
+> On Wed, Nov 24, 2021 at 12:04 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > (where __copy_to_user_nofault() is a new function that does exactly what
+> > copy_to_user_nofault() does, but returns the number of bytes copied)
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/extent-tree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> If we want the "how many bytes" part, then we should just make
+> copy_to_user_nofault() have the same semantics as a plain
+> copy_to_user().
 > 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index c33f3dc6b322..f40b97072231 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -3977,7 +3977,7 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
->  					struct find_free_extent_ctl *ffe_ctl,
->  					bool full_search)
->  {
-> -	struct btrfs_root *root = fs_info->extent_root;
-> +	struct btrfs_root *root = fs_info->chunk_root;
->  	int ret;
->  
->  	if ((ffe_ctl->loop == LOOP_CACHING_NOWAIT) &&
+> IOW, change it to return "number of bytes not copied".
 > 
+> Looking at the current uses, such a change would be trivial. The only
+> case that wants a 0/-EFAULT error is the bpf_probe_write_user(),
+> everybody else already just wants "zero for success", so changing
+> copy_to_user_nofault() would be trivial.
+
+I agree, if we want the number of byte not copied, we should just change
+copy_{to,from}_user_nofault() and their callers (I can count three
+each).
+
+For this specific btrfs case, if we want go with tuning the offset based
+on the fault address, we'd need copy_to_user_nofault() (or a new
+function) to be exact. IOW, fall back to byte-at-a-time copy until it
+hits the real faulting address.
+
+-- 
+Catalin
