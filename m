@@ -2,170 +2,295 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1622145DF5C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 18:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7451945E078
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 19:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242112AbhKYRKe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Nov 2021 12:10:34 -0500
-Received: from mail-4325.protonmail.ch ([185.70.43.25]:41819 "EHLO
-        mail-4325.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347725AbhKYRIe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Nov 2021 12:08:34 -0500
-Date:   Thu, 25 Nov 2021 17:05:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1637859921;
-        bh=mOhXLqogjGbU+qWa7AzSjHX6cw+MW8S6Tmc/tkUIydQ=;
-        h=Date:To:From:Reply-To:Subject:From;
-        b=ghUDaU0+tO50EYQ9/UbKVXDAQRmTbHbJPAuDhi7lV/YoClOhtZBSBN8AHDe+LnKDo
-         /iZ5SsQUeRvqv+RtwoXUzuuHM8b8Dtju5m3L7jCHP3JGq836AblEDsemD0otsLp2HY
-         miPqkVEianDRC+YVOXkBNXiatZV+tZTWeB1Fl8Oo=
+        id S235004AbhKYSUu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Nov 2021 13:20:50 -0500
+Received: from vs2.lukas-pirl.de ([5.45.100.90]:43872 "EHLO pim.lukas-pirl.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233741AbhKYSSt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Nov 2021 13:18:49 -0500
+X-Greylist: delayed 521 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Nov 2021 13:18:49 EST
+Received: from [192.168.178.54] (dslb-002-207-042-160.002.207.pools.vodafone-ip.de [2.207.42.160])
+        by pim.lukas-pirl.de (Postfix) with ESMTPSA id C2945A0A5745
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Nov 2021 19:06:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lukas-pirl.de;
+        s=201701; t=1637863615;
+        bh=3dJRyEKsSqPunYKckFkrEesyQdNtRRYeOL+var47dmc=;
+        h=Message-ID:Subject:From:To:Date:MIME-Version:From;
+        b=RFGGLS4M+0sYm2RQ4LFngxUa4nEikRINnEpy/ILyJO97aNgJWKCB5SwNWruLCjeTn
+         yArT+CRLK0MeJWMzitMyxJNC/eiCSBfd2O4k8srfEX9dmUkjuBRVS1H3AyWTgtjj2q
+         OaXcJxj/rJbpSBSzRWMnWsLX9/L/6zoT/fEcdPIc9+OTy/YxSxLr/Ipk/Dkw856mid
+         gFYHocKHQ3mKc+J+HZk7SOr2EoCF/FTPKoNwkj4djckN8S3WxzU2x/jikv3Yling4w
+         69yqU4Fze/6bWx3noCqqKM3IZV44ZFJDwKlPHdZk8UfPhx8oMrTfIeGx+4JHBZFVAl
+         SGji7/HaRihzJEaH2GkMuwcqJ6g6zhVtRHm/rUXdMFw+mHNH9IE7J3xoXabIenimk4
+         7rGf7+izaTHjjZHtdRNuG35HqpsSxO7c16HZLiWj/QDD0npV+xKemxtHZ3sAq1YaC3
+         +VP0K2o1ria/zn7j5zyIC2/FnPK3lfJsXHvzWtd5cXS16FwSowt/bxsEjSLX64ZqrC
+         nWQn0BBI2oqdRQH1jNGwJjY0q35w9Oo2clSa9ldAw23WXbvSXtRAhUnIN0m1vDd+31
+         xSuIUVzech8tfcwvmqrEzd+f/L70FygQQ+0Tk1DUXuvh5rb3Mi18NzBFHLhkKYcDE1
+         w7SWWGYYcAcNOmQ6alcjgg9w=
+Message-ID: <5a73c349971ff005640af3854667f492e0697724.camel@lukas-pirl.de>
+Subject: Balance loop on "device delete missing"? (RAID 1, Linux 5.15,
+ "found 1 extents, stage: update data pointers")
+From:   Lukas Pirl <btrfs@lukas-pirl.de>
 To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   mcq909 <mcq909@protonmail.com>
-Reply-To: mcq909 <mcq909@protonmail.com>
-Subject: Scraping data from broken raid0 btrfs
-Message-ID: <ggvg1Extbl_pBXtcXLwaIJ3J_sdgHx9XfGbMN0NA_SaJNdqC4GsNCPTgPxTNyzxpxot9UC6j-PQL1WOFAVhojpn5nC9x0gkJHhGh1QV8K5k=@protonmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-BFngcPb19acrckOOXSnj"
+Date:   Thu, 25 Nov 2021 19:06:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.7 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+User-Agent: Evolution 3.42.0-2 
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-I have a btrfs raid0 array (2 drives) that is broken after the power of one=
- of the drives was
-unplugged for a few seconds. The hardware and superblocks are fine but the =
-chunk-root seems to be destroyed.
-I am desperate enough to try to recover some of the not yet backed up files=
- by finding file signatures within a
-dd written binary blob. However i am not sure how to proceed since the file=
-system was using zstd and
-the files should be split between the drives in raid0. Am i out of luck or =
-is there anything i can do to get at
-least a raw binary blob of all the files?
-Many thanks for any suggestion!
-M. Webber
 
-Below is a summary of all rescue attempts so far (both drives, sdb and sdc,=
- are online and fdisk readable):
+--=-BFngcPb19acrckOOXSnj
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-System:
-Linux 5.15.2
-btrfs-progs v5.15
+Dear btrfs community,
 
+this is another report of a probably endless balance which loops on
+"found 1 extents, stage: update data pointers".
 
-mount -o ro /dev/sdb /mnt
-=09BTRFS warning: checksum verify failed on 22036480 wanted 0x00000000 foun=
-d 0x7b064cd2 level 1
-=09BTRFS error: failed to read chunk root
-=09BTRFS error: open_ctree failed
-=09mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdb, miss=
-ing codepage or helper =09program, or other error
+I observe it on a btrfs RAID 1 on around 7 luks-encrypted spinning
+disks (more fs details below) used for storing cold data. One disk
+failed physically. Now, I try to "btrfs device delete missing". The
+operation runs forever (probably, waited more than 30 days, another
+time more than 50 days).
 
+dmesg says:
+[      22:26] BTRFS info (device dm-1): relocating block group 110920466432=
+0 flags data|raid1
+[      22:27] BTRFS info (device dm-1): found 4164 extents, stage: move dat=
+a extents
+[  +5.476247] BTRFS info (device dm-1): found 4164 extents, stage: update d=
+ata pointers
+[  +2.545299] BTRFS info (device dm-1): found 1 extents, stage: update data=
+ pointers
 
-mount -o ro,rescue=3Dusebackuproot /dev/sdb /mnt
-=09BTRFS warning: checksum verify failed on 22036480 wanted 0x00000000 foun=
-d 0x7b064cd2 level 1
-=09BTRFS error: failed to read chunk root
-=09BTRFS error: open_ctree failed
-=09mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sdb, miss=
-ing codepage or helper =09program, or other error
+and then the last message repeats every ~ .25 seconds ("forever").
+Memory and CPU usage are not excessive (most is IO wait, I assume).
 
+What I have tried:
+* Linux 4 (multiple minor versions, don't remember which exactly)
+* Linux 5.10
+* Linux 5.15
+* btrfs-progs v5.15
+* remove subvolues (before: ~ 200, after: ~ 90)
+* free space cache v1, v2, none
+* reboot, restart removal/balance (multiple times)
 
-btrfs rescue super-recover /dev/sdb
-=09All supers are valid, no need to recover
+How can we find the problem here to make btrfs an even more stable
+file system in the future?
+(The particular fs has been created 2016, I am otherwise happy with
+btrfs and advocating; BTW I have backups and are ready to use them)
 
+Another question I was asking myself: can btrfs be forced to forget
+about a device (as in "delete from meta data) to then just run a
+regular balance?
 
-btrfs check /dev/sdb
-=09Opening filesystem to check...
-=09checksum verify failed on 22036480 wanted 0x00000000 found 0x7b064cd2
-=09Csum didn't match
-=09ERROR: cannot read chunk root
-=09ERROR: cannot open file system
+Thanks in advance; I hope we can debug this.
 
+Lukas
 
-btrfs restore /dev/sdb /tmp
-=09checksum verify failed on 22036480 wanted 0x00000000 found 0x7b064cd2
-=09Csum didn't match
-=09ERROR: cannot read chunk root
-=09Could not open root, trying backup super
-=09warning, device 1 is missing
-=09checksum verify failed on 22036480 wanted 0x00000000 found 0x7b064cd2
-=09Csum didn't match
-=09ERROR: cannot read chunk root
-=09Could not open root, trying backup super
-=09warning, device 1 is missing
-=09checksum verify failed on 22036480 wanted 0x00000000 found 0x7b064cd2
-=09Csum didn't match
-=09ERROR: cannot read chunk root
-=09Could not open root, trying backup super
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
+filesystem show
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-btrfs rescue zero-log /dev/sdb
-=09checksum verify failed on 22036480 wanted 0x00000000 found 0x7b064cd2
-=09ERROR: cannot read chunk root
-=09ERROR: could not open ctree
+Label: 'pool_16-03'  uuid: 59301fea-434a-xxxx-bb45-08fcfe8ce113
+	Total devices 8 FS bytes used 3.84TiB
+	devid    1 size 931.51GiB used 592.00GiB path /dev/mapper/WD-
+WCAU45xxxx03
+	devid    3 size 1.82TiB used 1.37TiB path /dev/mapper/WD-WCAZAFxxxx78
+	devid    4 size 931.51GiB used 593.00GiB path /dev/mapper/WD-
+WCC4J7xxxxSZ
+	devid    5 size 1.82TiB used 1.46TiB path /dev/mapper/WD-WCC4M2xxxxXH
+	devid    7 size 931.51GiB used 584.00GiB path /dev/mapper/S1xxxxJ3
+	devid    9 size 2.73TiB used 2.28TiB path /dev/mapper/WD-WCC4N3xxxx17
+	devid   10 size 3.64TiB used 1.03TiB path /dev/mapper/WD-WCC7K2xxxxNS
+	*** Some devices missing
 
+subvolumes
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-btrfs rescue chunk-recover /dev/sdb
-=09runs for a long time and then crashes with BUG_ON(!ce) from volumes.c tr=
-iggered,
-=09replacing BUG_ON(!ce) with if(!ce) return 0; does not help, core dumped
+~ 90, of which ~ 60 are read-only snapshots of the other ~ 30
 
+filesystem usage
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-btrfs inspect-internal dump-super -f -a /dev/sdb
-=09generation              26935
-=09chunk_root_generation   26935
-=09root_level              1
-=09chunk_root              22036480
-=09chunk_root_level        1
-=09cache_generation        26934
-=09uuid_tree_generation    26934
-=09sys_chunk_array[2048]:
-        item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
-=09length 8388608 owner 2 stripe_len 65536 type SYSTEM|RAID1
-        io_align 65536 io_width 65536 sector_size 4096
-        num_stripes 2 sub_stripes 1
-        stripe 0 devid 1 offset 22020096
-        stripe 1 devid 2 offset 1048576
+Overall:
+    Device size:		  12.74TiB
+    Device allocated:		   8.36TiB
+    Device unallocated:		   4.38TiB
+    Device missing:		     0.00B
+    Used:			   7.69TiB
+    Free (estimated):		   2.50TiB	(min: 2.50TiB)
+    Free (statfs, df):		   1.46TiB
+    Data ratio:			      2.00
+    Metadata ratio:		      2.00
+    Global reserve:		 512.00MiB	(used: 48.00KiB)
+    Multiple profiles:		        no
 
-=09backup_roots[4]:
-        backup 0:
-                backup_tree_root:       4811447648256   gen: 26933      lev=
-el: 1
-                backup_chunk_root:      22134784        gen: 26933      lev=
-el: 1
-                backup_extent_root:     4811320770560   gen: 26933      lev=
-el: 2
-        backup 1:
-                backup_tree_root:       4811056234496   gen: 26934      lev=
-el: 1
-                backup_chunk_root:      22134784        gen: 26933      lev=
-el: 1
-                backup_extent_root:     4811055906816   gen: 26934      lev=
-el: 2
-        backup 2:
-                backup_tree_root:       4811009376256   gen: 26935      lev=
-el: 1
-                backup_chunk_root:      22036480        gen: 26935      lev=
-el: 1
-                backup_extent_root:     4810999791616   gen: 26935      lev=
-el: 2
-        backup 3:
-                backup_tree_root:       4811296555008   gen: 26932      lev=
-el: 1
-                backup_chunk_root:      22020096        gen: 26932      lev=
-el: 1
-                backup_extent_root:     4811259297792   gen: 26932      lev=
-el: 2
+Data,RAID1: Size:4.14TiB, Used:3.82TiB (92.33%)
+   /dev/mapper/WD-WCAU45xxxx03	 584.00GiB
+   /dev/mapper/WD-WCAZAFxxxx78	   1.35TiB
+   /dev/mapper/WD-WCC4J7xxxxSZ	 588.00GiB
+   /dev/mapper/WD-WCC4M2xxxxXH	   1.44TiB
+   missing	 510.00GiB
+   /dev/mapper/S1xxxxJ3	 579.00GiB
+   /dev/mapper/WD-WCC4N3xxxx17	   2.26TiB
+   /dev/mapper/WD-WCC7K2xxxxNS	   1.01TiB
 
-For "btrfs check" it also does not matter if -s 0,1,2 or --chunk-root 22020=
-096, 22036480 and so on is used.
+Metadata,RAID1: Size:41.00GiB, Used:23.14GiB (56.44%)
+   /dev/mapper/WD-WCAU45xxxx03	   8.00GiB
+   /dev/mapper/WD-WCAZAFxxxx78	  17.00GiB
+   /dev/mapper/WD-WCC4J7xxxxSZ	   5.00GiB
+   /dev/mapper/WD-WCC4M2xxxxXH	  13.00GiB
+   missing	   3.00GiB
+   /dev/mapper/S1xxxxJ3	   5.00GiB
+   /dev/mapper/WD-WCC4N3xxxx17	  16.00GiB
+   /dev/mapper/WD-WCC7K2xxxxNS	  15.00GiB
 
+System,RAID1: Size:32.00MiB, Used:848.00KiB (2.59%)
+   missing	  32.00MiB
+   /dev/mapper/WD-WCC4N3xxxx17	  32.00MiB
+
+Unallocated:
+   /dev/mapper/WD-WCAU45xxxx03	 339.51GiB
+   /dev/mapper/WD-WCAZAFxxxx78	 461.01GiB
+   /dev/mapper/WD-WCC4J7xxxxSZ	 338.51GiB
+   /dev/mapper/WD-WCC4M2xxxxXH	 373.01GiB
+   missing	-513.03GiB
+   /dev/mapper/S1xxxxJ3	 347.51GiB
+   /dev/mapper/WD-WCC4N3xxxx17	 460.47GiB
+   /dev/mapper/WD-WCC7K2xxxxNS	   2.61TiB
+
+dump-super
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+superblock: bytenr=3D65536, device=3D/dev/mapper/WD-WCAU45xxxx03
+---------------------------------------------------------
+csum_type		0 (crc32c)
+csum_size		4
+csum			0x51beb068 [match]
+bytenr			65536
+flags			0x1
+			( WRITTEN )
+magic			_BHRfS_M [match]
+fsid			59301fea-434a-xxxx-bb45-08fcfe8ce113
+metadata_uuid		59301fea-434a-xxxx-bb45-08fcfe8ce113
+label			pool_16-03
+generation		113519755
+root			15602414796800
+sys_array_size		129
+chunk_root_generation	63394299
+root_level		1
+chunk_root		19216820502528
+chunk_root_level	1
+log_root		0
+log_root_transid	0
+log_root_level		0
+total_bytes		16003136864256
+bytes_used		4227124142080
+sectorsize		4096
+nodesize		16384
+leafsize (deprecated)	16384
+stripesize		4096
+root_dir		6
+num_devices		8
+compat_flags		0x0
+compat_ro_flags		0x0
+incompat_flags		0x371
+			( MIXED_BACKREF |
+			  COMPRESS_ZSTD |
+			  BIG_METADATA |
+			  EXTENDED_IREF |
+			  SKINNY_METADATA |
+			  NO_HOLES )
+cache_generation	2975866
+uuid_tree_generation	113519755
+dev_item.uuid		a9b2e4ea-404c-xxxx-a450-dc84b0956ce1
+dev_item.fsid		59301fea-434a-xxxx-bb45-08fcfe8ce113 [match]
+dev_item.type		0
+dev_item.total_bytes	1000201740288
+dev_item.bytes_used	635655159808
+dev_item.io_align	4096
+dev_item.io_width	4096
+dev_item.sector_size	4096
+dev_item.devid		1
+dev_item.dev_group	0
+dev_item.seek_speed	0
+dev_item.bandwidth	0
+dev_item.generation	0
+
+device stats
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+[/dev/mapper/WD-WCAU45xxxx03].write_io_errs    0
+[/dev/mapper/WD-WCAU45xxxx03].read_io_errs     0
+[/dev/mapper/WD-WCAU45xxxx03].flush_io_errs    0
+[/dev/mapper/WD-WCAU45xxxx03].corruption_errs  0
+[/dev/mapper/WD-WCAU45xxxx03].generation_errs  0
+[/dev/mapper/WD-WCAZAFxxxx78].write_io_errs    0
+[/dev/mapper/WD-WCAZAFxxxx78].read_io_errs     0
+[/dev/mapper/WD-WCAZAFxxxx78].flush_io_errs    0
+[/dev/mapper/WD-WCAZAFxxxx78].corruption_errs  0
+[/dev/mapper/WD-WCAZAFxxxx78].generation_errs  0
+[/dev/mapper/WD-WCC4J7xxxxSZ].write_io_errs    0
+[/dev/mapper/WD-WCC4J7xxxxSZ].read_io_errs     1
+[/dev/mapper/WD-WCC4J7xxxxSZ].flush_io_errs    0
+[/dev/mapper/WD-WCC4J7xxxxSZ].corruption_errs  0
+[/dev/mapper/WD-WCC4J7xxxxSZ].generation_errs  0
+[/dev/mapper/WD-WCC4M2xxxxXH].write_io_errs    0
+[/dev/mapper/WD-WCC4M2xxxxXH].read_io_errs     0
+[/dev/mapper/WD-WCC4M2xxxxXH].flush_io_errs    0
+[/dev/mapper/WD-WCC4M2xxxxXH].corruption_errs  0
+[/dev/mapper/WD-WCC4M2xxxxXH].generation_errs  0
+[devid:6].write_io_errs    0
+[devid:6].read_io_errs     0
+[devid:6].flush_io_errs    0
+[devid:6].corruption_errs  72016
+[devid:6].generation_errs  100
+[/dev/mapper/S1xxxxJ3].write_io_errs    0
+[/dev/mapper/S1xxxxJ3].read_io_errs     0
+[/dev/mapper/S1xxxxJ3].flush_io_errs    0
+[/dev/mapper/S1xxxxJ3].corruption_errs  2
+[/dev/mapper/S1xxxxJ3].generation_errs  0
+[/dev/mapper/WD-WCC4N3xxxx17].write_io_errs    0
+[/dev/mapper/WD-WCC4N3xxxx17].read_io_errs     0
+[/dev/mapper/WD-WCC4N3xxxx17].flush_io_errs    0
+[/dev/mapper/WD-WCC4N3xxxx17].corruption_errs  0
+[/dev/mapper/WD-WCC4N3xxxx17].generation_errs  0
+[/dev/mapper/WD-WCC7K2xxxxNS].write_io_errs    0
+[/dev/mapper/WD-WCC7K2xxxxNS].read_io_errs     0
+[/dev/mapper/WD-WCC7K2xxxxNS].flush_io_errs    0
+[/dev/mapper/WD-WCC7K2xxxxNS].corruption_errs  0
+[/dev/mapper/WD-WCC7K2xxxxNS].generation_errs  0
+
+--=-BFngcPb19acrckOOXSnj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEIfDl2cvwrHf6TgsUf2MCUJXpoBgFAmGf0L4ACgkQf2MCUJXp
+oBhxRA//VuJg2sujrjvDvzNKmxj+bXp6TSuc3rzqqEDftjVh75k045bYg8dehn+O
+tFRFCx1SXKNXSclRJI9OcEZo5OrwWKeA1/keivHyYOH3pjJmVh9XZaGqC1n2kJ+H
+staor/vb5efJjn29WdeKnLRCK565RcTAzixVmb2cQAjzuEpjX007hahSgK20pJaH
+C9tBjmmcso1yEzoPXiQEcyqtDbv6FddrarjMPlTILPxiHf3KmcwqNaRHQ+dDfBTr
+JuHLC03AG9pxZb2T8PV5RZ0TLROf/SQfXG/F1SnCRFSt2s/hMkF4cyLsJfU0ZsbC
+Uqorixssx6H9kv6yB6cminjje851TDX9L4TKr3LVgPKQ37P34lUtN+l5ToLY0+T9
+SRJ8jHKQx/5SB9T9IUr0eSCErdt2RrnByQQy27xkAIzxc2Z5/BBIPFYK8OIBUT9a
+Ssn4Pgn4c/trS/WE53pIrMIHEa8MTP9wS3a62RhJlkdmq8SRIeB/J2m20TMv/qC4
+M8NlGXU0HOFhjSUJKsOJI+9kHkTXHdFJ6PzqExahvS6RxFWXqo5oxAJBWeB6gp9l
+oqTfJC5Ssfc8LlPavxNfmkvfB9g5qZLNvaG6UnA0SA43R3+2Eu86bYy0ZHOAwhke
+emAfnySP6yji01VE+ORlyyk5fxPHXpXWAI07+wQKqm6JDf/j2BU=
+=5oFF
+-----END PGP SIGNATURE-----
+
+--=-BFngcPb19acrckOOXSnj--
