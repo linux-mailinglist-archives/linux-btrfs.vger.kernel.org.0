@@ -2,70 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8314645D8DD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 12:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A2745DC52
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 15:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234647AbhKYLP7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Nov 2021 06:15:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232138AbhKYLN7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Nov 2021 06:13:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C807360230;
-        Thu, 25 Nov 2021 11:10:45 +0000 (UTC)
-Date:   Thu, 25 Nov 2021 11:10:43 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-Message-ID: <YZ9vM91Uj8g36VQC@arm.com>
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com>
- <YZ6arlsi2L3LVbFO@casper.infradead.org>
- <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
+        id S240255AbhKYOcN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Nov 2021 09:32:13 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:44574 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353988AbhKYOaP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Nov 2021 09:30:15 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id BF5981FD34;
+        Thu, 25 Nov 2021 14:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637850423;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PBYzt0XffX/ggu5fE3/JyU8+9m2yBzaLiOWWzLqlPRw=;
+        b=B7LoMLzPOWoNfKpDswKRwC98TZHLUqqjzpBq9btCUiRJeAH7NCywHOryxTyvD/3Z71iwMx
+        mM0qrOqaSqBEc7CBIGhHpU/uBDWjJ+MYvvJfZBVngKkg/jMp2n5CiQCKIUpxeY1ceGmvSp
+        tXXdzGoPMFE7TGMVTUAmHvEY3dnHXkU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637850423;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PBYzt0XffX/ggu5fE3/JyU8+9m2yBzaLiOWWzLqlPRw=;
+        b=DkEGXpvbnXlVwVT/symVrHQsHlT1bw0migjjDNpgZe8RgGTwxlaRqsS1Wrr5+MFCyHGvu7
+        yGsE7D6yJoe55UCw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id BA1DDA3B88;
+        Thu, 25 Nov 2021 14:27:03 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 88E0DDA735; Thu, 25 Nov 2021 15:26:55 +0100 (CET)
+Date:   Thu, 25 Nov 2021 15:26:55 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: Add test for btrfs fi usage output
+Message-ID: <20211125142655.GY28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20211118152204.424144-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
+In-Reply-To: <20211118152204.424144-1-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 03:00:00PM -0800, Linus Torvalds wrote:
-> On Wed, Nov 24, 2021 at 12:04 PM Matthew Wilcox <willy@infradead.org> wrote:
-> > (where __copy_to_user_nofault() is a new function that does exactly what
-> > copy_to_user_nofault() does, but returns the number of bytes copied)
+On Thu, Nov 18, 2021 at 05:22:04PM +0200, Nikolay Borisov wrote:
+> There was a regression in btrfs progs release 5.15 due to changes in how
+> the ratio for the various raid profiles got calculated and this in turn
+> had a cascading effect on unallocated/allocated space reported.
 > 
-> If we want the "how many bytes" part, then we should just make
-> copy_to_user_nofault() have the same semantics as a plain
-> copy_to_user().
+> Add a test to ensure this regression doesn't occur again.
 > 
-> IOW, change it to return "number of bytes not copied".
-> 
-> Looking at the current uses, such a change would be trivial. The only
-> case that wants a 0/-EFAULT error is the bpf_probe_write_user(),
-> everybody else already just wants "zero for success", so changing
-> copy_to_user_nofault() would be trivial.
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-I agree, if we want the number of byte not copied, we should just change
-copy_{to,from}_user_nofault() and their callers (I can count three
-each).
+Added to devel, thanks.
 
-For this specific btrfs case, if we want go with tuning the offset based
-on the fault address, we'd need copy_to_user_nofault() (or a new
-function) to be exact. IOW, fall back to byte-at-a-time copy until it
-hits the real faulting address.
+> +report_numbers()
+> +{
+> +	vars=($(run_check_stdout $SUDO_HELPER "$TOP/btrfs" filesystem usage -b "$TEST_MNT" | awk '
 
--- 
-Catalin
+Please declare local variables
+
+> +	/Data ratio/ { ratio=$3 }
+> +	a {dev_alloc=$2; exit}
+> +	/Data,(DUP|RAID[0156][C34]{0,2}|single)/ { size=substr($2,6,length($2)-6); a=1 }
+> +END {print ratio " " size " " dev_alloc}'))
+> +
+> +	echo "${vars[@]}"
+> +}
+> +
+> +test_dup()
+> +{
+> +	run_check_mkfs_test_dev -ddup
+> +	run_check_mount_test_dev
+> +	vars=($(report_numbers))
+> +	data_chunk_size=${vars[1]}
+> +	used_on_dev=${vars[2]}
+> +	data_ratio=${vars[0]}
+
+And the whole bunch
+
+> +
+> +	[[ $used_on_dev -eq $((2*$data_chunk_size)) ]] || _fail "DUP inconsistent chunk/device usage. Chunk: $data_chunk_size Device: $used_on_dev"
+
+Though there's no limit for the line width, if it can be at the pipe/||
+point it's preferred, in this case the _fail is not hidden in the middle
+of the long command.
+
+All fixed.
