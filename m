@@ -2,34 +2,20 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D4F45E1E7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 22:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A819F45E287
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 22:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357163AbhKYVHu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Nov 2021 16:07:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243233AbhKYVFu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:05:50 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0DDC061574;
-        Thu, 25 Nov 2021 13:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6whOC0TKGHPxQK7AWkvSbq/nnQHgn420BvdvtIX5e9U=; b=fDmyyCipVl5lPnqbKdEPMegTzV
-        HFDsVdla5bphMbGh+7EV0KFHgJLrVEjpxrC7U/+PPFFepp08yoIBFLW7U7hhOmc8MDJJFKatzWbXK
-        WLyDBkfDAtHi7Yjd2VGTc2HhQH9qVumun2C6yBBrQuH49PvfUGHOpM4vgEey9HVHddPH78RKUDHZ0
-        S88l0v/qDztowz1PSr4G7vVaZrSoQOjYdEzrairMtUjVtFkhQObIJojCclDLFOquxxJikzReA3JK/
-        Lkbr76gzdZQH3z2bpMB8djessDrHZSR3hCTrW+27G2j3AvAEzAoxmw16XWjfbjTIuWeIYOBQiTssO
-        W39v+IRA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mqLsz-007nbV-Ak; Thu, 25 Nov 2021 21:02:29 +0000
-Date:   Thu, 25 Nov 2021 21:02:29 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
+        id S1350775AbhKYVeS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Nov 2021 16:34:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1351924AbhKYVcS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Nov 2021 16:32:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AE0A60527;
+        Thu, 25 Nov 2021 21:29:04 +0000 (UTC)
+Date:   Thu, 25 Nov 2021 21:29:01 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
@@ -43,7 +29,7 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
 Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
  with sub-page faults
-Message-ID: <YZ/55fYE0l7ewo/t@casper.infradead.org>
+Message-ID: <YaAAHfAaOg2tmLKU@arm.com>
 References: <20211124192024.2408218-1-catalin.marinas@arm.com>
  <20211124192024.2408218-4-catalin.marinas@arm.com>
  <YZ6arlsi2L3LVbFO@casper.infradead.org>
@@ -51,58 +37,67 @@ References: <20211124192024.2408218-1-catalin.marinas@arm.com>
  <YZ9vM91Uj8g36VQC@arm.com>
  <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
  <YZ/1jflaSjgRRl2o@arm.com>
+ <YZ/55fYE0l7ewo/t@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YZ/1jflaSjgRRl2o@arm.com>
+In-Reply-To: <YZ/55fYE0l7ewo/t@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 08:43:57PM +0000, Catalin Marinas wrote:
-> > I really believe that the fix is to make the read/write probing just
-> > be more aggressive.
+On Thu, Nov 25, 2021 at 09:02:29PM +0000, Matthew Wilcox wrote:
+> On Thu, Nov 25, 2021 at 08:43:57PM +0000, Catalin Marinas wrote:
+> > > I really believe that the fix is to make the read/write probing just
+> > > be more aggressive.
+> > > 
+> > > Make the read/write probing require that AT LEAST <n> bytes be
+> > > readable/writable at the beginning, where 'n' is 'min(len,ALIGN)', and
+> > > ALIGN is whatever size that copy_from/to_user_xyz() might require just
+> > > because it might do multi-byte accesses.
+> > > 
+> > > In fact, make ALIGN be perhaps something reasonable like 512 bytes or
+> > > whatever, and then you know you can handle the btrfs "copy a whole
+> > > structure and reset if that fails" case too.
 > > 
-> > Make the read/write probing require that AT LEAST <n> bytes be
-> > readable/writable at the beginning, where 'n' is 'min(len,ALIGN)', and
-> > ALIGN is whatever size that copy_from/to_user_xyz() might require just
-> > because it might do multi-byte accesses.
+> > IIUC what you are suggesting, we still need changes to the btrfs loop
+> > similar to willy's but that should work fine together with a slightly
+> > more aggressive fault_in_writable().
 > > 
-> > In fact, make ALIGN be perhaps something reasonable like 512 bytes or
-> > whatever, and then you know you can handle the btrfs "copy a whole
-> > structure and reset if that fails" case too.
+> > A probing of at least sizeof(struct btrfs_ioctl_search_key) should
+> > suffice without any loop changes and 512 would cover it but it doesn't
+> > look generic enough. We could pass a 'probe_prefix' argument to
+> > fault_in_exact_writeable() to only probe this and btrfs would just
+> > specify the above sizeof().
 > 
-> IIUC what you are suggesting, we still need changes to the btrfs loop
-> similar to willy's but that should work fine together with a slightly
-> more aggressive fault_in_writable().
+> How about something like this?
 > 
-> A probing of at least sizeof(struct btrfs_ioctl_search_key) should
-> suffice without any loop changes and 512 would cover it but it doesn't
-> look generic enough. We could pass a 'probe_prefix' argument to
-> fault_in_exact_writeable() to only probe this and btrfs would just
-> specify the above sizeof().
+> +++ b/mm/gup.c
+> @@ -1672,6 +1672,13 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
+> 
+>         if (unlikely(size == 0))
+>                 return 0;
+> +       if (SUBPAGE_PROBE_INTERVAL) {
+> +               while (uaddr < PAGE_ALIGN((unsigned long)uaddr)) {
+> +                       if (unlikely(__put_user(0, uaddr) != 0))
+> +                               goto out;
+> +                       uaddr += SUBPAGE_PROBE_INTERVAL;
+> +               }
+> +       }
+>         if (!PAGE_ALIGNED(uaddr)) {
+>                 if (unlikely(__put_user(0, uaddr) != 0))
+>                         return size;
+> 
+> ARM then defines SUBPAGE_PROBE_INTERVAL to be 16 and the rest of us
+> leave it as 0.  That way we probe all the way to the end of the current
+> page and the start of the next page.
 
-How about something like this?
+It doesn't help if the copy_to_user() fault happens 16 bytes into the
+second page for example. The fault_in() passes, copy_to_user() fails and
+the loop restarts from the same place. With sub-page faults, the page
+boundary doesn't have any relevance. We want to probe the beginning of
+the buffer that's at least as big as the loop rewind size even if it
+goes past a page boundary.
 
-+++ b/mm/gup.c
-@@ -1672,6 +1672,13 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
-
-        if (unlikely(size == 0))
-                return 0;
-+       if (SUBPAGE_PROBE_INTERVAL) {
-+               while (uaddr < PAGE_ALIGN((unsigned long)uaddr)) {
-+                       if (unlikely(__put_user(0, uaddr) != 0))
-+                               goto out;
-+                       uaddr += SUBPAGE_PROBE_INTERVAL;
-+               }
-+       }
-        if (!PAGE_ALIGNED(uaddr)) {
-                if (unlikely(__put_user(0, uaddr) != 0))
-                        return size;
-
-ARM then defines SUBPAGE_PROBE_INTERVAL to be 16 and the rest of us
-leave it as 0.  That way we probe all the way to the end of the current
-page and the start of the next page.
-
-Oh, that needs to be checked to not exceed size as well ... anyway,
-you get the idea.
+-- 
+Catalin
