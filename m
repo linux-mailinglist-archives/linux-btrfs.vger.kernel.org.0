@@ -2,131 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED81645E2AB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 22:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12AF345E2CF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 22:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351128AbhKYVqU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Nov 2021 16:46:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:34669 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239140AbhKYVoU (ORCPT
+        id S245742AbhKYWCd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Nov 2021 17:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236079AbhKYWAa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Nov 2021 16:44:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637876468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zy1D3BcfbmTkQAKQ8xyKaO+OdCXbfXv9jg1mQpYzJQU=;
-        b=eFdPVysPfUn6i2C6KFj1OdMDjxV9inm+/XgxWjR+rJuD4zKCxxiQrz/4OWfJNwsp2Rli8s
-        Tm8CMU0vX5KT8wWL6fywzDKk90Ja/EPuLF+g2HR/ToKfint9cWFC6a3KwIkZ+0jflUV1zL
-        eM8OCBMwzGzM5TNrp7Uxojnr++OVJhI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-387-U7_2dZIyOQq7J4Yv4BcQNw-1; Thu, 25 Nov 2021 16:41:07 -0500
-X-MC-Unique: U7_2dZIyOQq7J4Yv4BcQNw-1
-Received: by mail-wm1-f69.google.com with SMTP id n16-20020a05600c3b9000b003331973fdbbso4182949wms.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Nov 2021 13:41:07 -0800 (PST)
+        Thu, 25 Nov 2021 17:00:30 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FCFC06173E
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Nov 2021 13:56:37 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id k21so9155728ioh.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Nov 2021 13:56:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=WTTljflqCCKGI0sUpXRHNGZawg2nOpEa0L7IANnepKQ=;
+        b=YkBxVIQw2gzMbk4YUmbuHqYf74m1usjbj864uUrEshxgOItyIv753Kg0B5WnD2Ht8D
+         oFw1JVWiIHhBTjeXGPgE29Dg7m1z0CBe+bCYmFXOGyYqc5BTd9xQOSO8v43L4OKr1vrF
+         8AYxTC8w5/epDp+FZD1qs+59XD1NOziNk8IsKYMVl0W30DF1Z61iu9CdLroztTH8FUi0
+         C9AP/T42ybXv/njZSHFH9yAcyTROAN7BbW8nACZy5YyUYepzknOtN4VRyc7kdyjcTv7D
+         Gqjt7/Bqg1vjlFoWLKYkzWzFXCqaTOou9PvTEwJYFd38wJvuCPtcAfNLfCMP6lltyZKo
+         snXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zy1D3BcfbmTkQAKQ8xyKaO+OdCXbfXv9jg1mQpYzJQU=;
-        b=SZdq+92NtKU5p39PEHMpqMsWKvpEah1LCJS0OEKf7lsqSLraAvnJQAJ6aGAyvrb9bf
-         BrkY40bCeMQVu2MXyxxErPl6WPUO/+WuX1AFy84dS4CSMmpk8c7ZnYigQ/onYrNgTRKd
-         U10YkkTrVpIJuVsZ9Isa50YBKC6moMg507vEeRhmhAmLYnAjHHzybXja6tHk9maJ7STo
-         3+MI0FBizxIwgrm6/hFqa2/RyIfxyiMXwfZAkqiuODGUSxXyjzOcY1AmFRw1oXDZDMWi
-         dYNvwKnhENgSG39ICuQwVsvJBh7B3AKZc9YCKGQVV9Lyy/Kijz+PHJnyAMTD0FabTyV/
-         0V4w==
-X-Gm-Message-State: AOAM533e+zYdi4o/xvy3cK/s6TbhMhv5jQ5MfEKSDc6MxtIWaVN3WLwa
-        kj/oRXVv7zQga4w8BssElgrqZDXx8y6hKO+sKnSI6+MV1CG7rM0Q0+3hzHjWRfkhQa2Z4sLm5sT
-        6e2GvxP2qlCjGWG6iQY4ciHw2VlFW+xQrAkSN73c=
-X-Received: by 2002:a05:600c:1e26:: with SMTP id ay38mr11407736wmb.14.1637876465786;
-        Thu, 25 Nov 2021 13:41:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxBOJN0sKvw/32yrofU9l5xWSU9km9NEYBCalXaAIBq9JyTlz4/gcW6rG7s0RNEsFbdNvJaMjB37Li1S3SYJcE=
-X-Received: by 2002:a05:600c:1e26:: with SMTP id ay38mr11407713wmb.14.1637876465617;
- Thu, 25 Nov 2021 13:41:05 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=WTTljflqCCKGI0sUpXRHNGZawg2nOpEa0L7IANnepKQ=;
+        b=AbzEEkgyu3e6J6qbgbCUPoF5+qJ3TFr7+e78klNUdaO/Z+xtaffFELp+HqUwIBeCYc
+         aGK1xXsvZEkEqPSdrvqSdHSIT/u2VdjAec+cLPcuvVJFx8DdtVVjCIKtS2Rw5FlpgUot
+         zAQsWgf7yu0Ru1a6Pwykl2oOex5nyZSKnHq6KWp+Kvwxy0oL5FtZDMdhqMaFe18iVYkB
+         SKwZRmhGYtwPUIyJBad+jWF/01vUfvmU1dHwKWmeL8aaoDf/KAeOGCQGYW+OAPLj7yv6
+         n4N9WrHUFPfqQDb66+OA+22qWH9A0bHKMbV2trhbS9cKv8xCw92P7Myv5Jm7Atmbatpi
+         HFzQ==
+X-Gm-Message-State: AOAM533PjdVccz3+3gURLlK2ffFSMHQ5+5mHWtuLsvGSupbh23klJS/2
+        vvJV6lMtYWR9pw3WMQTbY0LF3hfFXWa9oc7pMcc6wZ+F
+X-Google-Smtp-Source: ABdhPJwNsv933SwvJgR3RJISkuSPS++joI7bnz/SYmQOpPHimeRjGi3lo6XvWdbCwZ2zMW0HQFbtkzAfZLyPiMBdSWg=
+X-Received: by 2002:a6b:d904:: with SMTP id r4mr28502251ioc.52.1637877396700;
+ Thu, 25 Nov 2021 13:56:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org>
- <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
- <YZ9vM91Uj8g36VQC@arm.com> <CAHk-=wgUn1vBReeNcZNEObkxPQGhN5EUq5MC94cwF0FaQvd2rQ@mail.gmail.com>
- <YZ/1jflaSjgRRl2o@arm.com> <YZ/55fYE0l7ewo/t@casper.infradead.org>
-In-Reply-To: <YZ/55fYE0l7ewo/t@casper.infradead.org>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Thu, 25 Nov 2021 22:40:54 +0100
-Message-ID: <CAHc6FU6zwmwK3fEaDY_-Qxn2+PA8pnwXUPRKRZ=SGd_6RbKoQQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Andrey Melnikov <temnota.am@gmail.com>
+Date:   Fri, 26 Nov 2021 00:56:25 +0300
+Message-ID: <CA+PODjrE4V9hL1bXEEghU6NAFgPgfUu4f75FCQn+0vKUaeu1zg@mail.gmail.com>
+Subject: btrfs with huge numbers of hardlinks is extremely slow
+To:     linux-btrfs@vger.kernel.org, Andrey Melnikov <temnota.am@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 10:02 PM Matthew Wilcox <willy@infradead.org> wrote:
-> On Thu, Nov 25, 2021 at 08:43:57PM +0000, Catalin Marinas wrote:
-> > > I really believe that the fix is to make the read/write probing just
-> > > be more aggressive.
-> > >
-> > > Make the read/write probing require that AT LEAST <n> bytes be
-> > > readable/writable at the beginning, where 'n' is 'min(len,ALIGN)', and
-> > > ALIGN is whatever size that copy_from/to_user_xyz() might require just
-> > > because it might do multi-byte accesses.
-> > >
-> > > In fact, make ALIGN be perhaps something reasonable like 512 bytes or
-> > > whatever, and then you know you can handle the btrfs "copy a whole
-> > > structure and reset if that fails" case too.
-> >
-> > IIUC what you are suggesting, we still need changes to the btrfs loop
-> > similar to willy's but that should work fine together with a slightly
-> > more aggressive fault_in_writable().
-> >
-> > A probing of at least sizeof(struct btrfs_ioctl_search_key) should
-> > suffice without any loop changes and 512 would cover it but it doesn't
-> > look generic enough. We could pass a 'probe_prefix' argument to
-> > fault_in_exact_writeable() to only probe this and btrfs would just
-> > specify the above sizeof().
->
-> How about something like this?
->
-> +++ b/mm/gup.c
-> @@ -1672,6 +1672,13 @@ size_t fault_in_writeable(char __user *uaddr, size_t size)
->
->         if (unlikely(size == 0))
->                 return 0;
-> +       if (SUBPAGE_PROBE_INTERVAL) {
-> +               while (uaddr < PAGE_ALIGN((unsigned long)uaddr)) {
-> +                       if (unlikely(__put_user(0, uaddr) != 0))
-> +                               goto out;
-> +                       uaddr += SUBPAGE_PROBE_INTERVAL;
-> +               }
-> +       }
->         if (!PAGE_ALIGNED(uaddr)) {
->                 if (unlikely(__put_user(0, uaddr) != 0))
->                         return size;
->
-> ARM then defines SUBPAGE_PROBE_INTERVAL to be 16 and the rest of us
-> leave it as 0.  That way we probe all the way to the end of the current
-> page and the start of the next page.
->
-> Oh, that needs to be checked to not exceed size as well ... anyway,
-> you get the idea.
+Every night a new backup is stored on this fs with 'rsync
+--link-dest=$yestoday/ $today/' - 1402700 hardlinks and 23000
+directories are created, 50-100 normal files transferred.
+Now, FS contains 351 copies of backup data with 486086495 hardlinks
+and ANY operations on this FS take significant time. For example -
+simple count hardlinks with
+"time find . -type f -links +1 | wc -l" take:
+real    28567m33.611s
+user    31m33.395s
+sys     506m28.576s
 
-Note that we don't need this additional probing when accessing the
-buffer with byte granularity. That's probably the common case.
+19 days 20 hours 10 mins with constant reads from storage 2-4Mb/s.
 
-Andreas
+- BTRFS not suitable for this workload?
+- using reflinks helps speedup FS operations?
+- readed metadata not cached at all? What BTRFS read 19 days from disks???
 
+Hardware: dell r300 with 2 WD Purple 1Tb disk on LSISAS1068E RAID 1
+(without cache).
+Linux nlxc 5.14-51412-generic #0~lch11 SMP Wed Oct 13 15:57:07 UTC
+2021 x86_64 GNU/Linux
+btrfs-progs v5.14.1
+
+# btrfs fi show
+Label: none  uuid: a840a2ca-bf05-4074-8895-60d993cb5bdd
+        Total devices 1 FS bytes used 474.26GiB
+        devid    1 size 931.00GiB used 502.23GiB path /dev/sdb1
+
+# btrfs fi df /srv
+Data, single: total=367.19GiB, used=343.92GiB
+System, single: total=32.00MiB, used=128.00KiB
+Metadata, single: total=135.00GiB, used=130.34GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+
+# btrfs fi us /srv
+Overall:
+    Device size:                 931.00GiB
+    Device allocated:            502.23GiB
+    Device unallocated:          428.77GiB
+    Device missing:                  0.00B
+    Used:                        474.26GiB
+    Free (estimated):            452.04GiB      (min: 452.04GiB)
+    Free (statfs, df):           452.04GiB
+    Data ratio:                       1.00
+    Metadata ratio:                   1.00
+    Global reserve:              512.00MiB      (used: 0.00B)
+    Multiple profiles:                  no
+
+Data,single: Size:367.19GiB, Used:343.92GiB (93.66%)
+   /dev/sdb1     367.19GiB
+
+Metadata,single: Size:135.00GiB, Used:130.34GiB (96.55%)
+   /dev/sdb1     135.00GiB
+
+System,single: Size:32.00MiB, Used:128.00KiB (0.39%)
+   /dev/sdb1      32.00MiB
+
+Unallocated:
+   /dev/sdb1     428.77GiB
