@@ -2,101 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A2745DC52
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 15:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D0045DCE5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 16:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240255AbhKYOcN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Nov 2021 09:32:13 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:44574 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353988AbhKYOaP (ORCPT
+        id S240571AbhKYPKz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Nov 2021 10:10:55 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:35228 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232258AbhKYPIz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Nov 2021 09:30:15 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id BF5981FD34;
-        Thu, 25 Nov 2021 14:27:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1637850423;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 25 Nov 2021 10:08:55 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0FC7E212BD;
+        Thu, 25 Nov 2021 15:05:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637852743; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PBYzt0XffX/ggu5fE3/JyU8+9m2yBzaLiOWWzLqlPRw=;
-        b=B7LoMLzPOWoNfKpDswKRwC98TZHLUqqjzpBq9btCUiRJeAH7NCywHOryxTyvD/3Z71iwMx
-        mM0qrOqaSqBEc7CBIGhHpU/uBDWjJ+MYvvJfZBVngKkg/jMp2n5CiQCKIUpxeY1ceGmvSp
-        tXXdzGoPMFE7TGMVTUAmHvEY3dnHXkU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1637850423;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PBYzt0XffX/ggu5fE3/JyU8+9m2yBzaLiOWWzLqlPRw=;
-        b=DkEGXpvbnXlVwVT/symVrHQsHlT1bw0migjjDNpgZe8RgGTwxlaRqsS1Wrr5+MFCyHGvu7
-        yGsE7D6yJoe55UCw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id BA1DDA3B88;
-        Thu, 25 Nov 2021 14:27:03 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 88E0DDA735; Thu, 25 Nov 2021 15:26:55 +0100 (CET)
-Date:   Thu, 25 Nov 2021 15:26:55 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: Add test for btrfs fi usage output
-Message-ID: <20211125142655.GY28560@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20211118152204.424144-1-nborisov@suse.com>
+        bh=NoVmc707/Ywnm4Ar1x9adlBDKX/kbCT39b4dvTZgSdQ=;
+        b=S1hxShFkGqQsbWWxK1l/ksE6SxZlKcbvrcE0/yyD5Dih9VBVorTjldiDyTQ72yZlImkGQg
+        uj4jomn9/hNEqRVXyAb2sD5gTSwgaBDKYaDWNvkUhIrulwuxePSeWdNQuU/pAuK9EIKzUy
+        XJ9d5bauZi1ttoplZSLQ1sHrFHbBI8I=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CFA7013C3A;
+        Thu, 25 Nov 2021 15:05:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id HhgcMEamn2GcJAAAMHmgww
+        (envelope-from <nborisov@suse.com>); Thu, 25 Nov 2021 15:05:42 +0000
+Subject: Re: [PATCH 21/25] btrfs: set BTRFS_FS_STATE_NO_CSUMS if we fail to
+ load the csum root
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <cover.1636144971.git.josef@toxicpanda.com>
+ <4cc384d51e895b2aaaaf302b909f5eec39a06adb.1636144971.git.josef@toxicpanda.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Message-ID: <3d3829ba-961e-ab0c-fda4-4ce8a751fdba@suse.com>
+Date:   Thu, 25 Nov 2021 17:05:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211118152204.424144-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <4cc384d51e895b2aaaaf302b909f5eec39a06adb.1636144971.git.josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 05:22:04PM +0200, Nikolay Borisov wrote:
-> There was a regression in btrfs progs release 5.15 due to changes in how
-> the ratio for the various raid profiles got calculated and this in turn
-> had a cascading effect on unallocated/allocated space reported.
+
+
+On 5.11.21 г. 22:45, Josef Bacik wrote:
+> We have a few places where we skip doing csums if we mounted with one of
+> the rescue options that ignores bad csum roots.  In the future when
+> there are multiple csum roots it'll be costly to check and see if there
+> are any missing csum roots, so simply add a flag to indicate the fs
+> should skip loading csums in case of errors.
 > 
-> Add a test to ensure this regression doesn't occur again.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/compression.c | 3 ++-
+>  fs/btrfs/ctree.h       | 2 ++
+>  fs/btrfs/disk-io.c     | 5 +++++
+>  fs/btrfs/file-item.c   | 3 ++-
+>  fs/btrfs/inode.c       | 4 ++--
+>  5 files changed, 13 insertions(+), 4 deletions(-)
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-
-Added to devel, thanks.
-
-> +report_numbers()
-> +{
-> +	vars=($(run_check_stdout $SUDO_HELPER "$TOP/btrfs" filesystem usage -b "$TEST_MNT" | awk '
-
-Please declare local variables
-
-> +	/Data ratio/ { ratio=$3 }
-> +	a {dev_alloc=$2; exit}
-> +	/Data,(DUP|RAID[0156][C34]{0,2}|single)/ { size=substr($2,6,length($2)-6); a=1 }
-> +END {print ratio " " size " " dev_alloc}'))
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 1d071c8d6fff..a76107d6f7f2 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -156,7 +156,8 @@ static int check_compressed_csum(struct btrfs_inode *inode, struct bio *bio,
+>  	struct compressed_bio *cb = bio->bi_private;
+>  	u8 *cb_sum = cb->sums;
+>  
+> -	if (!fs_info->csum_root || (inode->flags & BTRFS_INODE_NODATASUM))
+> +	if ((inode->flags & BTRFS_INODE_NODATASUM) ||
+> +	    test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state))
+>  		return 0;
+>  
+>  	shash->tfm = fs_info->csum_shash;
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index dac5741cb6fa..13bd6fc3901a 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -143,6 +143,8 @@ enum {
+>  	BTRFS_FS_STATE_DEV_REPLACING,
+>  	/* The btrfs_fs_info created for self-tests */
+>  	BTRFS_FS_STATE_DUMMY_FS_INFO,
 > +
-> +	echo "${vars[@]}"
-> +}
-> +
-> +test_dup()
-> +{
-> +	run_check_mkfs_test_dev -ddup
-> +	run_check_mount_test_dev
-> +	vars=($(report_numbers))
-> +	data_chunk_size=${vars[1]}
-> +	used_on_dev=${vars[2]}
-> +	data_ratio=${vars[0]}
+> +	BTRFS_FS_STATE_NO_CSUMS,
+>  };
+>  
+>  #define BTRFS_BACKREF_REV_MAX		256
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 1ada4c96ef71..898b4ff83718 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2475,11 +2475,16 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
+>  			if (!btrfs_test_opt(fs_info, IGNOREBADROOTS)) {
+>  				ret = PTR_ERR(root);
+>  				goto out;
+> +			} else {
+> +				set_bit(BTRFS_FS_STATE_NO_CSUMS,
+> +					&fs_info->fs_state);
+>  			}
+>  		} else {
+>  			set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
+>  			fs_info->csum_root = root;
+>  		}
+> +	} else {
+> +		set_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state);
+>  	}
+>  
+>  	/*
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 359f3a047360..4904286139bf 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -376,7 +376,8 @@ blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u8 *dst
+>  	const unsigned int nblocks = orig_len >> fs_info->sectorsize_bits;
+>  	int count = 0;
+>  
+> -	if (!fs_info->csum_root || (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM))
+> +	if ((BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM) ||
+> +	    test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state))
+>  		return BLK_STS_OK;
+>  
+>  	/*
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 9e81fd94ab09..6d14dd2cf36e 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2516,7 +2516,7 @@ blk_status_t btrfs_submit_data_bio(struct inode *inode, struct bio *bio,
+>  	int async = !atomic_read(&BTRFS_I(inode)->sync_writers);
+>  
+>  	skip_sum = (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM) ||
+> -		   !fs_info->csum_root;
+> +		test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state);
+>  
+>  	if (btrfs_is_free_space_inode(BTRFS_I(inode)))
+>  		metadata = BTRFS_WQ_ENDIO_FREE_SPACE;
+> @@ -3314,7 +3314,7 @@ unsigned int btrfs_verify_data_csum(struct btrfs_bio *bbio,
+>  	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
+>  		return 0;
+>  
+> -	if (!root->fs_info->csum_root)
+> +	if (unlikely(test_bit(BTRFS_FS_STATE_NO_CSUMS, &fs_info->fs_state)))
+>  		return 0;
 
-And the whole bunch
+Should writes be allowed to proceed when FS_STATE_NO_CSUMS is set, which
+indicates errors while loading trees?
 
-> +
-> +	[[ $used_on_dev -eq $((2*$data_chunk_size)) ]] || _fail "DUP inconsistent chunk/device usage. Chunk: $data_chunk_size Device: $used_on_dev"
-
-Though there's no limit for the line width, if it can be at the pipe/||
-point it's preferred, in this case the _fail is not hidden in the middle
-of the long command.
-
-All fixed.
+>  
+>  	ASSERT(page_offset(page) <= start &&
+> 
