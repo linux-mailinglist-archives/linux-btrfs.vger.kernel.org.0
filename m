@@ -2,103 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD65745D0AD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 00:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388BE45D48D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Nov 2021 07:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343912AbhKXXDc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Nov 2021 18:03:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345925AbhKXXDb (ORCPT
+        id S1347116AbhKYGLA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Nov 2021 01:11:00 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:59216 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244689AbhKYGI7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Nov 2021 18:03:31 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17EAC061574
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 15:00:20 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id y12so17075245eda.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 15:00:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3I9PlA7fC8HgB2vr5zydxZ4zg5kA0COA3RvDIbE8i6k=;
-        b=akPSCYrD6EASyAHbxHctwYr0LW3XzQryE1WnwGL61n9RnWw1NkFmVSX0i9BtWuGZYh
-         3HsX+j15WJiusBmje+0ffkwgWfbwZl3OZuwQ+FeVw4qqieUoMRy3mrm7/NfOdIx1DyJ8
-         WJvl/rGNRCqOZGiGzEuCEgFc6r1TDjmx7J7Ok=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3I9PlA7fC8HgB2vr5zydxZ4zg5kA0COA3RvDIbE8i6k=;
-        b=a7tohLvAX40Kafc3LqHRAInL81PGo+HxKno1iKG7jhfBGJMI1dUDdmZS4ArbgmfuvH
-         g7pkYVR0dJ5KDi6khoRX+a1ABCpBtOeJjBPQ/6d/L4xA1E1jaPzdggi7STPuDQGSfgJ8
-         ZmiF4Q13sjZlztbH3paF2RaItvAzp5xmeT5HkuJpQaCVYOX/6nbJ6YuS3YlFOC2fjDKO
-         e7Nnd+7wwbi3bhrU+z96zrOS8AjynXQTy05ESkm7yg2o/z2TwoeMM3Yi4paPSvjfwxol
-         bPj9zWBA31s3kaZvPRj/KuJspr168MeaJUSxamK6ojIZSjZpLAtPgJWbdgx17SbtCxAt
-         IqJA==
-X-Gm-Message-State: AOAM530dbquQNYBtLwClq4u7P0Y0Dvl/cJGiZjL5VlzS4NR0Z77tmFFL
-        R7ZwwSTW5uI78kC9tZ6kCaMuDAEFimGclWo3
-X-Google-Smtp-Source: ABdhPJzv3eqh92V2kMvi+YPRSDSeeOB3FzKIwfB1ZfmJDbEgCzGrjhMv1DmsV4xQhEdLybDLLSZwxA==
-X-Received: by 2002:aa7:d58c:: with SMTP id r12mr31990843edq.115.1637794818961;
-        Wed, 24 Nov 2021 15:00:18 -0800 (PST)
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
-        by smtp.gmail.com with ESMTPSA id f16sm866245edd.37.2021.11.24.15.00.16
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Nov 2021 15:00:16 -0800 (PST)
-Received: by mail-wm1-f52.google.com with SMTP id o29so3905742wms.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Nov 2021 15:00:16 -0800 (PST)
-X-Received: by 2002:a05:600c:4e07:: with SMTP id b7mr1159359wmq.8.1637794816000;
- Wed, 24 Nov 2021 15:00:16 -0800 (PST)
+        Thu, 25 Nov 2021 01:08:59 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 072A321954;
+        Thu, 25 Nov 2021 06:05:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1637820348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=X4vA0OfeWuSH0twumEAJxx4/BG9Em1XrSJdcCIfFMOg=;
+        b=jLFzLWURpqxBTYmt+f7pQk/8T7U7rlMww0tbo34NT++bxRHqbTI+0oP03KEaBSALFpXHsE
+        rzALnkVvlkkiWaaof/7CBGu/pNR2da4cxwN09HQ72HNmNkzxMOlbRsuuw5Tk7MD+xwxAZJ
+        b3gSOH3/ix5g7QKVHGib4ucZKDKWbd8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 19EFF13AE9;
+        Thu, 25 Nov 2021 06:05:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Q3lPNLonn2HXXAAAMHmgww
+        (envelope-from <wqu@suse.com>); Thu, 25 Nov 2021 06:05:46 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3] fstests: btrfs/049: add regression test for compress-force mount options
+Date:   Thu, 25 Nov 2021 14:05:29 +0800
+Message-Id: <20211125060529.53289-1-wqu@suse.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org>
-In-Reply-To: <YZ6arlsi2L3LVbFO@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 24 Nov 2021 15:00:00 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
-Message-ID: <CAHk-=wgHqjX3kenSk5_bCRM+ZC-tgndBMfbVVsbp0CwJf2DU-w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Catalin talked about the other change, but this part:
+Since kernel commit d4088803f511 ("btrfs: subpage: make lzo_compress_pages()
+compatible"), lzo compression no longer respects the max compressed page
+limit, and can cause kernel crash.
 
-On Wed, Nov 24, 2021 at 12:04 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> (where __copy_to_user_nofault() is a new function that does exactly what
-> copy_to_user_nofault() does, but returns the number of bytes copied)
+The upstream fix is 6f019c0e0193 ("btrfs: fix a out-of-bound access in
+copy_compressed_data_to_page()").
 
-If we want the "how many bytes" part, then we should just make
-copy_to_user_nofault() have the same semantics as a plain
-copy_to_user().
+This patch will add such regression test for all possible compress-force
+mount options, including lzo, zstd and zlib.
 
-IOW, change it to return "number of bytes not copied".
+And since we're here, also make sure the content of the file matches
+after a mount cycle.
 
-Lookin gat the current uses, such a change would be trivial. The only
-case that wants a 0/-EFAULT error is the bpf_probe_write_user(),
-everybody else already just wants "zero for success", so changing
-copy_to_user_nofault() would be trivial.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Also test zlib and zstd
+- Add file content verification check
+v3:
+- Use $tmp.good as a known good file source
+- Also make sure we didn't get short read for the good copy
+---
+ tests/btrfs/049     | 67 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/049.out |  6 ++++
+ 2 files changed, 73 insertions(+)
+ create mode 100755 tests/btrfs/049
 
-And it really is odd and very non-intuitive that
-copy_to_user_nofault() has a completely different return value from
-copy_to_user().
+diff --git a/tests/btrfs/049 b/tests/btrfs/049
+new file mode 100755
+index 00000000..c1f35dc9
+--- /dev/null
++++ b/tests/btrfs/049
+@@ -0,0 +1,67 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2021 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 049
++#
++# Test if btrfs will crash when using compress-force mount option against
++# incompressible data
++#
++. ./common/preamble
++_begin_fstest auto quick compress dangerous
++
++# Override the default cleanup function.
++_cleanup()
++{
++	cd /
++ 	rm -r -f $tmp.*
++}
++
++# Import common functions.
++. ./common/filter
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_require_scratch
++
++pagesize=$(get_page_size)
++
++# Read the content from urandom to a known safe location
++$XFS_IO_PROG -f -c "pwrite -i /dev/urandom 0 $pagesize" "$tmp.good" > /dev/null
++
++# Make sure we didn't get short read
++if [ $(_get_filesize "$tmp.good") != "$pagesize" ]; then
++	_fail "Got a short read from /dev/urandom"
++fi
++
++workload()
++{
++	local compression=$1
++
++	echo "=== Testing compress-force=$compression ==="
++	_scratch_mkfs -s "$pagesize">> $seqres.full
++	_scratch_mount -o compress-force="$compression"
++	cp "$tmp.good" "$SCRATCH_MNT/$compression"
++
++	# When unpatched, compress-force=lzo would crash at data writeback
++	_scratch_cycle_mount
++
++	# Make sure the content matches
++	if [ "$(_md5_checksum $tmp.good)" != \
++	     "$(_md5_checksum $SCRATCH_MNT/$compression)" ]; then
++		_fail "Content of '$SCRATCH_MNT/file' mismatch with known good copy"
++	else
++		echo "OK"
++	fi
++	_scratch_unmount
++}
++
++workload lzo
++workload zstd
++workload zlib
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/049.out b/tests/btrfs/049.out
+index cb0061b3..41bffeaa 100644
+--- a/tests/btrfs/049.out
++++ b/tests/btrfs/049.out
+@@ -1 +1,7 @@
+ QA output created by 049
++=== Testing compress-force=lzo ===
++OK
++=== Testing compress-force=zstd ===
++OK
++=== Testing compress-force=zlib ===
++OK
+-- 
+2.34.0
 
-So if _anybody_ wants a byte-count, that should just be fixed.
-
-                    Linus
