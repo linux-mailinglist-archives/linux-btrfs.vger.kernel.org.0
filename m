@@ -2,317 +2,324 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AA245E9AC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 09:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6449B45E9D2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 10:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359714AbhKZI5H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Nov 2021 03:57:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344213AbhKZIzG (ORCPT
+        id S1359668AbhKZJGY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 26 Nov 2021 04:06:24 -0500
+Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:26846 "EHLO
+        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346114AbhKZJEX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:55:06 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1270C061763
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Nov 2021 00:51:49 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id l16so17049843wrp.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Nov 2021 00:51:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=03Ffy8fQsHx6wqbxJOf6BCom1MKr8CDZn7VGnmkTdu0=;
-        b=CO0BXT8HiTn+8guEGK+v6v6GSXxHRjFdEqggIa0tEZtstXtjLwbF+MTjDCkvAqWAVU
-         NNUf7trAJJQJ2Fer3BpZCbP4tc/m6VufyyZ1Q87iWDGZD+jWxqJEnNHat2w8eEwE4Noc
-         4P7sH1klNLcTIpY90yNeZnJYK0hso6c5DMqBp3AMYPqmDaJl+jCURkmtQZ4f1QdkygUz
-         63bLtDqiABJs7L96FikMkFO/HOO+jYNUtIrZDR20tJ4pwGT6pFNXGhMF63GsSqDHIitE
-         dh0FkCdFcWEmNNOc4eeoD3nEQwVg3EWkEr4KIoo11tcVsXZ8HsE2BRXwXsdp5jiNGnTs
-         qXtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=03Ffy8fQsHx6wqbxJOf6BCom1MKr8CDZn7VGnmkTdu0=;
-        b=vQ5HFjIqafnOEKYeDJhvN7mdslwEib+/A5Hqet+y80+3bsi0lFQDDOsxpZwcmR34/M
-         VZa6JnELhC7RcVllc6QVdyebkhwrCFwQEiPO634jLK2R04lbxeHpA7hmWn7E9TEjMzrl
-         WsR8CBPg5pUQz8LoIJ74etCZD3jEEeRC952CfHm+d6f0iG7Pa0jJwcWM7yR2xkxzxoTa
-         bahTfv3RsHNjOqc+urtMaz9I0SS9AdgLN+DR6sHC06FhdspM43qrXijXa87qJqoNNZK0
-         zkDaRvGoH1FbtbTExYUzNnkpAmSLHTsXTAItn1Gxbu7kmblvfBbANkOIbYqUKadfpwOE
-         D5Aw==
-X-Gm-Message-State: AOAM533oNsJLDfF19i5/PcP+zsdkLlXp+5qNfRHWjfe5J9oXKvquuph7
-        6jaaaFjmDkBRTZWrUkCcJANgdhKwo2Q07g==
-X-Google-Smtp-Source: ABdhPJzX2Zk83H0U0k+EyLUi/bnIlrAZOpersQk2MPoDUXzwrjfitTtMlQPfAJIwKKnTh769Kr6bhQ==
-X-Received: by 2002:a5d:4d8b:: with SMTP id b11mr12369954wru.393.1637916708086;
-        Fri, 26 Nov 2021 00:51:48 -0800 (PST)
-Received: from [192.168.1.100] (77-57-171-168.dclient.hispeed.ch. [77.57.171.168])
-        by smtp.googlemail.com with ESMTPSA id g13sm7047252wrd.57.2021.11.26.00.51.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Nov 2021 00:51:47 -0800 (PST)
-Message-ID: <869708a5-38ff-1143-4ef0-42f7354171b6@gmail.com>
-Date:   Fri, 26 Nov 2021 09:51:46 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
+        Fri, 26 Nov 2021 04:04:23 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 8AB1A40935;
+        Fri, 26 Nov 2021 10:01:09 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -1.899
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.899 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, URIBL_BLOCKED=0.001]
+        autolearn=ham autolearn_force=no
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qTPDjXwUjwvc; Fri, 26 Nov 2021 10:01:05 +0100 (CET)
+Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id B08A93F68F;
+        Fri, 26 Nov 2021 10:01:05 +0100 (CET)
+Received: from [8.43.224.52] (port=60750 helo=[100.95.114.229])
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <forza@tnonline.net>)
+        id 1mqX6K-0009o4-Pf; Fri, 26 Nov 2021 10:01:05 +0100
+Date:   Fri, 26 Nov 2021 10:01:00 +0100 (GMT+01:00)
+From:   Forza <forza@tnonline.net>
+To:     Egor Konstantinov <egorks@gmail.com>, linux-btrfs@vger.kernel.org
+Message-ID: <b553433.faa9ddbc.17d5b79f9fa@tnonline.net>
+In-Reply-To: <869708a5-38ff-1143-4ef0-42f7354171b6@gmail.com>
+References: <7c367beb-f2ab-19cc-9a44-e1a64dfaabb0@gmail.com> <94a1a1e.faa9ddbb.17d5b636231@tnonline.net> <869708a5-38ff-1143-4ef0-42f7354171b6@gmail.com>
 Subject: Re: Btrfs disk issues - please advise on repair
-Content-Language: en-CA
-To:     Forza <forza@tnonline.net>, linux-btrfs@vger.kernel.org
-References: <7c367beb-f2ab-19cc-9a44-e1a64dfaabb0@gmail.com>
- <94a1a1e.faa9ddbb.17d5b636231@tnonline.net>
-From:   Egor Konstantinov <egorks@gmail.com>
-In-Reply-To: <94a1a1e.faa9ddbb.17d5b636231@tnonline.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Mailer: R2Mail2
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMjYvMTEvMjAyMSAwOTozNiwgRm9yemEgd3JvdGU6DQo+IC0tLS0gRnJvbTogRWdvciBL
-b25zdGFudGlub3YgPGVnb3Jrc0BnbWFpbC5jb20+IC0tIFNlbnQ6IDIwMjEtMTEtMjQgLSAx
-Nzo0MiAtLS0tDQo+DQo+PiBoaSBhbGwNCj4+DQo+PiBpIGhhdmUgYSBzaW5nbGUgL2Rldi9z
-ZGMgYXMgYSBidHJmcyB2b2x1bWUuIHJlY2VudGx5IHRoZSB2b2x1bWUgZ290IGNvcnJ1cHRl
-ZA0KPj4gYW5kIGkgY2Fubm90IHNlZW0gdG8gZmluZCBhIHdheSB0byByZXN0b3JlIGl0cyBm
-dW5jdGlvbmFsaXR5IGJ5IHVzaW5nIGFueSBvZg0KPj4gaW50ZXJuZXQgaG93dG9zLg0KPj4g
-aSB0cmllZCBzdGFuZGFyZCDigJhzYWZl4oCZIG9wdGlvbnMgYW5kIHN0aWxsIGRpZCBub3Qg
-cnVuIC0tcmVwYWlyIG9wdGlvbiBpbiBmZWFyIG9mDQo+PiBraWxsaW5nIHRoZSBkYXRhIGNv
-bXBsZXRlbHkuDQo+PiBhbHNvIGlmIGkgY2hlY2sgd2l0aCBidHJmcyB0b29scyB2NCBhbmQg
-djUgKGZyb20gdHVtYmxld2VlZCBsaXZlIHVzYikgaSBnZXQNCj4+IHRvdGFsbHkgZGlmZmVy
-ZW50IHJlc3VsdHMuDQo+PiB3aXRoIHY0IGkgZ2VyIHNpbXBseToNCj4+DQo+PiBhbmQgd2l0
-aCB2NSBpIGdldCBhIGxvZyBmaWxlIG9mIDMyTWIgd2l0aCBvdmVyIDUwMGsgbGluZXMgc3Rh
-dGluZyBmb2xsb3dpbmc6DQo+Pg0KPj4gQ29kZToNCj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tDQo+PiBwYXJlbnQgdHJhbnNpZCB2ZXJpZnkgZmFpbGVkIG9uIDM2NDY5OTg0MTMz
-MTIgd2FudGVkIDMwNjUgZm91bmQgMjc0Nw0KPj4gcGFyZW50IHRyYW5zaWQgdmVyaWZ5IGZh
-aWxlZCBvbiAzNjQ2OTk4NDEzMzEyIHdhbnRlZCAzMDY1IGZvdW5kIDI3NDcNCj4+IHBhcmVu
-dCB0cmFuc2lkIHZlcmlmeSBmYWlsZWQgb24gMzY0Njk5ODQxMzMxMiB3YW50ZWQgMzA2NSBm
-b3VuZCAyNzQ3DQo+PiBJZ25vcmluZyB0cmFuc2lkIGZhaWx1cmUNCj4+IE9wZW5pbmcgZmls
-ZXN5c3RlbSB0byBjaGVjay4uLg0KPj4gQ2hlY2tpbmcgZmlsZXN5c3RlbSBvbiAvZGV2L3Nk
-Yw0KPj4gVVVJRDogYmM2NzcwNjctZWZmZC00MzBhLTkwZmEtYWIxYzZjZDUxZGUxDQo+PiBb
-MS83XSBjaGVja2luZyByb290IGl0ZW1zwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgKDA6MDA6MDAgZWxhcHNlZCwgMTQ0IGl0ZW1zIGNoZWNrZWQpDQo+PiBbMS83XSBjaGVj
-a2luZyByb290IGl0ZW1zwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKDA6MDA6
-MDEgZWxhcHNlZCwgNTExMTMgaXRlbXMNCj4+IGNoZWNrZWQpDQo+PiBbMS83XSBjaGVja2lu
-ZyByb290IGl0ZW1zwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKDA6MDA6MDIg
-ZWxhcHNlZCwgMTMyMTU2IGl0ZW1zDQo+PiBjaGVja2VkKQ0KPj4gWzEvN10gY2hlY2tpbmcg
-cm9vdCBpdGVtc8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICgwOjAwOjAzIGVs
-YXBzZWQsIDIwMTIwMyBpdGVtcw0KPj4gY2hlY2tlZCkNCj4+IFsxLzddIGNoZWNraW5nIHJv
-b3QgaXRlbXPCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAoMDowMDowNCBlbGFw
-c2VkLCAzMTc0MjYgaXRlbXMNCj4+IGNoZWNrZWQpDQo+PiBbMi83XSBjaGVja2luZyBleHRl
-bnRzwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKDA6MDA6MDAgZWxhcHNl
-ZCkNCj4+IFsyLzddIGNoZWNraW5nIGV4dGVudHPCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCAoMDowMDowMSBlbGFwc2VkLCAxOTQwIGl0ZW1zIGNoZWNrZWQpDQo+PiBb
-Mi83XSBjaGVja2luZyBleHRlbnRzwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgKDA6MDA6MDIgZWxhcHNlZCwgMjM1NSBpdGVtcyBjaGVja2VkKQ0KPj4gcGFyZW50IHRy
-YW5zaWQgdmVyaWZ5IGZhaWxlZCBvbiAzNjQ2OTk4NjQyNjg4IHdhbnRlZCAzMDY1IGZvdW5k
-IDI3NDcNCj4+IHBhcmVudCB0cmFuc2lkIHZlcmlmeSBmYWlsZWQgb24gMzY0Njk5ODY0MjY4
-OCB3YW50ZWQgMzA2NSBmb3VuZCAyNzQ3DQo+PiBwYXJlbnQgdHJhbnNpZCB2ZXJpZnkgZmFp
-bGVkIG9uIDM2NDY5OTg2NDI2ODggd2FudGVkIDMwNjUgZm91bmQgMjc0Nw0KPj4gSWdub3Jp
-bmcgdHJhbnNpZCBmYWlsdXJlDQo+PiBbMi83XSBjaGVja2luZyBleHRlbnRzwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKDA6MDA6MDMgZWxhcHNlZCwgOTk3MyBpdGVt
-cyBjaGVja2VkKQ0KPj4gWzIvN10gY2hlY2tpbmcgZXh0ZW50c8KgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgICgwOjAwOjA0IGVsYXBzZWQsIDI1NzAyIGl0ZW1zIGNoZWNr
-ZWQpDQo+PiBbMi83XSBjaGVja2luZyBleHRlbnRzwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgKDA6MDA6MDUgZWxhcHNlZCwgMzk0MzcgaXRlbXMgY2hlY2tlZCkNCj4+
-IFsyLzddIGNoZWNraW5nIGV4dGVudHPCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCAoMDowMDowNiBlbGFwc2VkLCA1NjExNCBpdGVtcyBjaGVja2VkKQ0KPj4gWzIvN10g
-Y2hlY2tpbmcgZXh0ZW50c8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICgw
-OjAwOjA3IGVsYXBzZWQsIDcxOTU2IGl0ZW1zIGNoZWNrZWQpDQo+PiBbMi83XSBjaGVja2lu
-ZyBleHRlbnRzwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKDA6MDA6MDgg
-ZWxhcHNlZCwgODc4NTAgaXRlbXMgY2hlY2tlZCkNCj4+IFsyLzddIGNoZWNraW5nIGV4dGVu
-dHPCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAoMDowMDowOSBlbGFwc2Vk
-LCAxMDM0MTcgaXRlbXMNCj4+IGNoZWNrZWQpDQo+PiBbMi83XSBjaGVja2luZyBleHRlbnRz
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKDA6MDA6MTAgZWxhcHNlZCwg
-MTE4MTQ2IGl0ZW1zDQo+PiBjaGVja2VkKQ0KPj4gWzIvN10gY2hlY2tpbmcgZXh0ZW50c8Kg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICgwOjAwOjExIGVsYXBzZWQsIDEz
-MzMzNyBpdGVtcw0KPj4gY2hlY2tlZCkNCj4+IFsyLzddIGNoZWNraW5nIGV4dGVudHPCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAoMDowMDoxMiBlbGFwc2VkLCAxNDg0
-OTAgaXRlbXMNCj4+IGNoZWNrZWQpDQo+PiBbMi83XSBjaGVja2luZyBleHRlbnRzwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKDA6MDA6MTMgZWxhcHNlZCwgMTYzMzkw
-IGl0ZW1zDQo+PiBjaGVja2VkKQ0KPj4gWzIvN10gY2hlY2tpbmcgZXh0ZW50c8KgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICgwOjAwOjE0IGVsYXBzZWQsIDE3Nzc2OCBp
-dGVtcw0KPj4gY2hlY2tlZCkNCj4+IFsyLzddIGNoZWNraW5nIGV4dGVudHPCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAoMDowMDoxNSBlbGFwc2VkLCAxOTI0MTYgaXRl
-bXMNCj4+IGNoZWNrZWQpDQo+PiBbMi83XSBjaGVja2luZyBleHRlbnRzwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKDA6MDA6MTYgZWxhcHNlZCwgMjAyODI5IGl0ZW1z
-DQo+PiBjaGVja2VkKQ0KPj4gWzIvN10gY2hlY2tpbmcgZXh0ZW50c8KgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgICgwOjAwOjE3IGVsYXBzZWQsIDIxMjk2OCBpdGVtcw0K
-Pj4gY2hlY2tlZCkNCj4+IFsyLzddIGNoZWNraW5nIGV4dGVudHPCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCAoMDowMDoxOCBlbGFwc2VkLCAyMTkwNzYgaXRlbXMNCj4+
-IGNoZWNrZWQpDQo+PiByZWYgbWlzbWF0Y2ggb24gWzEzNjMxNDg4IDE2Mzg0XSBleHRlbnQg
-aXRlbSAxLCBmb3VuZCAwDQo+PiBpbmNvcnJlY3QgbG9jYWwgYmFja3JlZiBjb3VudCBvbiAx
-MzYzMTQ4OCByb290IDUgb3duZXIgMzY5MTkgb2Zmc2V0IDAgZm91bmQgMA0KPj4gd2FudGVk
-IDEgYmFjayAweDU1YzE4OTVlYWNhMA0KPj4gYmFja3JlZiBkaXNrIGJ5dGVuciBkb2VzIG5v
-dCBtYXRjaCBleHRlbnQgcmVjb3JkLCBieXRlbnI9MTM2MzE0ODgsIHJlZiBieXRlbnI9MA0K
-Pj4gYmFja3BvaW50ZXIgbWlzbWF0Y2ggb24gWzEzNjMxNDg4IDE2Mzg0XQ0KPj4gb3duZXIg
-cmVmIGNoZWNrIGZhaWxlZCBbMTM2MzE0ODggMTYzODRdDQo+PiByZWYgbWlzbWF0Y2ggb24g
-WzEzNjQ3ODcyIDQwOTZdIGV4dGVudCBpdGVtIDEsIGZvdW5kIDANCj4+IGluY29ycmVjdCBs
-b2NhbCBiYWNrcmVmIGNvdW50IG9uIDEzNjQ3ODcyIHJvb3QgNSBvd25lciAzNzIyNSBvZmZz
-ZXQgMCBmb3VuZCAwDQo+PiB3YW50ZWQgMSBiYWNrIDB4NTVjMTg5NWVhZTUwDQo+PiBiYWNr
-cmVmIGRpc2sgYnl0ZW5yIGRvZXMgbm90IG1hdGNoIGV4dGVudCByZWNvcmQsIGJ5dGVucj0x
-MzY0Nzg3MiwgcmVmIGJ5dGVucj0wDQo+PiBiYWNrcG9pbnRlciBtaXNtYXRjaCBvbiBbMTM2
-NDc4NzIgNDA5Nl0NCj4+IG93bmVyIHJlZiBjaGVjayBmYWlsZWQgWzEzNjQ3ODcyIDQwOTZd
-DQo+Pg0KPj4gLi4uc2tpcHBlZCBtYW55IG1hbnkgbGluZXMNCj4+DQo+PiByZWYgbWlzbWF0
-Y2ggb24gWzYxNDIzNjE2IDE2Mzg0XSBleHRlbnQgaXRlbSAxLCBmb3VuZCAwDQo+PiBiYWNr
-cmVmIDYxNDIzNjE2IHJvb3QgNSBub3QgcmVmZXJlbmNlZCBiYWNrIDB4NTVjMTg2ZTc0NTUw
-DQo+PiBpbmNvcnJlY3QgZ2xvYmFsIGJhY2tyZWYgY291bnQgb24gNjE0MjM2MTYgZm91bmQg
-MSB3YW50ZWQgMA0KPj4gYmFja3BvaW50ZXIgbWlzbWF0Y2ggb24gWzYxNDIzNjE2IDE2Mzg0
-XQ0KPj4gb3duZXIgcmVmIGNoZWNrIGZhaWxlZCBbNjE0MjM2MTYgMTYzODRdDQo+PiByZWYg
-bWlzbWF0Y2ggb24gWzI2ODc0Njc1MiAxNjM4NF0gZXh0ZW50IGl0ZW0gMSwgZm91bmQgMA0K
-Pj4gYmFja3JlZiAyNjg3NDY3NTIgcm9vdCA1IG5vdCByZWZlcmVuY2VkIGJhY2sgMHg1NWMx
-ODc1YmNkMTANCj4+IGluY29ycmVjdCBnbG9iYWwgYmFja3JlZiBjb3VudCBvbiAyNjg3NDY3
-NTIgZm91bmQgMSB3YW50ZWQgMA0KPj4gYmFja3BvaW50ZXIgbWlzbWF0Y2ggb24gWzI2ODc0
-Njc1MiAxNjM4NF0NCj4+IG93bmVyIHJlZiBjaGVjayBmYWlsZWQgWzI2ODc0Njc1MiAxNjM4
-NF0NCj4+IHJlZiBtaXNtYXRjaCBvbiBbMjg0NjM5MjMyIDE2Mzg0XSBleHRlbnQgaXRlbSAx
-LCBmb3VuZCAwDQo+PiBiYWNrcmVmIDI4NDYzOTIzMiByb290IDcgbm90IHJlZmVyZW5jZWQg
-YmFjayAweDU1YzE4NmZmOTEzMA0KPj4gaW5jb3JyZWN0IGdsb2JhbCBiYWNrcmVmIGNvdW50
-IG9uIDI4NDYzOTIzMiBmb3VuZCAxIHdhbnRlZCAwDQo+PiBiYWNrcG9pbnRlciBtaXNtYXRj
-aCBvbiBbMjg0NjM5MjMyIDE2Mzg0XQ0KPj4gb3duZXIgcmVmIGNoZWNrIGZhaWxlZCBbMjg0
-NjM5MjMyIDE2Mzg0XQ0KPj4NCj4+IC4uLnNraXBwaW5nIGFnYWluIG1hbnkgbWFueSBsaW5l
-cw0KPj4NCj4+IHJlZiBtaXNtYXRjaCBvbiBbMTEwNDE1MDUyOCAxMzQyMTc3MjhdIGV4dGVu
-dCBpdGVtIDEsIGZvdW5kIDANCj4+IGluY29ycmVjdCBsb2NhbCBiYWNrcmVmIGNvdW50IG9u
-IDExMDQxNTA1Mjggcm9vdCA1IG93bmVyIDI2MCBvZmZzZXQgMCBmb3VuZCAwDQo+PiB3YW50
-ZWQgMSBiYWNrIDB4NTVjMTg3YTA5ZTMwDQo+PiBiYWNrcmVmIGRpc2sgYnl0ZW5yIGRvZXMg
-bm90IG1hdGNoIGV4dGVudCByZWNvcmQsIGJ5dGVucj0xMTA0MTUwNTI4LCByZWYgYnl0ZW5y
-PTANCj4+IGJhY2twb2ludGVyIG1pc21hdGNoIG9uIFsxMTA0MTUwNTI4IDEzNDIxNzcyOF0N
-Cj4+IG93bmVyIHJlZiBjaGVjayBmYWlsZWQgWzExMDQxNTA1MjggMTM0MjE3NzI4XQ0KPj4g
-cmVmIG1pc21hdGNoIG9uIFsxMjM4MzY4MjU2IDEzNDIxNzcyOF0gZXh0ZW50IGl0ZW0gMSwg
-Zm91bmQgMA0KPj4gaW5jb3JyZWN0IGxvY2FsIGJhY2tyZWYgY291bnQgb24gMTIzODM2ODI1
-NiByb290IDUgb3duZXIgMjYwIG9mZnNldCAxMzQyMTc3MjgNCj4+IGZvdW5kIDAgd2FudGVk
-IDEgYmFjayAweDU1YzE4N2EwOWZlMA0KPj4gYmFja3JlZiBkaXNrIGJ5dGVuciBkb2VzIG5v
-dCBtYXRjaCBleHRlbnQgcmVjb3JkLCBieXRlbnI9MTIzODM2ODI1NiwgcmVmIGJ5dGVucj0w
-DQo+PiBiYWNrcG9pbnRlciBtaXNtYXRjaCBvbiBbMTIzODM2ODI1NiAxMzQyMTc3MjhdDQo+
-PiBvd25lciByZWYgY2hlY2sgZmFpbGVkIFsxMjM4MzY4MjU2IDEzNDIxNzcyOF0NCj4+IHJl
-ZiBtaXNtYXRjaCBvbiBbMTM3MjU4NTk4NCAxMzQyMTc3MjhdIGV4dGVudCBpdGVtIDEsIGZv
-dW5kIDANCj4+IGluY29ycmVjdCBsb2NhbCBiYWNrcmVmIGNvdW50IG9uIDEzNzI1ODU5ODQg
-cm9vdCA1IG93bmVyIDI2MCBvZmZzZXQgMjY4NDM1NDU2DQo+PiBmb3VuZCAwIHdhbnRlZCAx
-IGJhY2sgMHg1NWMxODdhMGExMTANCj4+IGJhY2tyZWYgZGlzayBieXRlbnIgZG9lcyBub3Qg
-bWF0Y2ggZXh0ZW50IHJlY29yZCwgYnl0ZW5yPTEzNzI1ODU5ODQsIHJlZiBieXRlbnI9MA0K
-Pj4gYmFja3BvaW50ZXIgbWlzbWF0Y2ggb24gWzEzNzI1ODU5ODQgMTM0MjE3NzI4XQ0KPj4g
-b3duZXIgcmVmIGNoZWNrIGZhaWxlZCBbMTM3MjU4NTk4NCAxMzQyMTc3MjhdDQo+Pg0KPj4g
-Li4uc2tpcHBpbmcgYWdhaW4gYnVuZGxlDQo+Pg0KPj4gcmVmIG1pc21hdGNoIG9uIFszNjcx
-MDYwMzY1MzEyIDE1Nzc3NzkyXSBleHRlbnQgaXRlbSAxLCBmb3VuZCAwDQo+PiBpbmNvcnJl
-Y3QgbG9jYWwgYmFja3JlZiBjb3VudCBvbiAzNjcxMDYwMzY1MzEyIHJvb3QgNSBvd25lciAz
-NzI2NyBvZmZzZXQNCj4+IDE4NzI0MzcyNDgwIGZvdW5kIDAgd2FudGVkIDEgYmFjayAweDU1
-YzE4OTVlYTk1MA0KPj4gYmFja3JlZiBkaXNrIGJ5dGVuciBkb2VzIG5vdCBtYXRjaCBleHRl
-bnQgcmVjb3JkLCBieXRlbnI9MzY3MTA2MDM2NTMxMiwgcmVmIGJ5dGVucj0wDQo+PiBiYWNr
-cG9pbnRlciBtaXNtYXRjaCBvbiBbMzY3MTA2MDM2NTMxMiAxNTc3Nzc5Ml0NCj4+IG93bmVy
-IHJlZiBjaGVjayBmYWlsZWQgWzM2NzEwNjAzNjUzMTIgMTU3Nzc3OTJdDQo+PiByZWYgbWlz
-bWF0Y2ggb24gWzM2NzEwNzYxNDMxMDQgMTY3NzcyMTZdIGV4dGVudCBpdGVtIDEsIGZvdW5k
-IDANCj4+IGluY29ycmVjdCBsb2NhbCBiYWNrcmVmIGNvdW50IG9uIDM2NzEwNzYxNDMxMDQg
-cm9vdCA1IG93bmVyIDM3MjY3IG9mZnNldA0KPj4gMTk3MzAwMDYwMTYgZm91bmQgMCB3YW50
-ZWQgMSBiYWNrIDB4NTVjMTg5NWVhYTgwDQo+PiBiYWNrcmVmIGRpc2sgYnl0ZW5yIGRvZXMg
-bm90IG1hdGNoIGV4dGVudCByZWNvcmQsIGJ5dGVucj0zNjcxMDc2MTQzMTA0LCByZWYgYnl0
-ZW5yPTANCj4+IGJhY2twb2ludGVyIG1pc21hdGNoIG9uIFszNjcxMDc2MTQzMTA0IDE2Nzc3
-MjE2XQ0KPj4gb3duZXIgcmVmIGNoZWNrIGZhaWxlZCBbMzY3MTA3NjE0MzEwNCAxNjc3NzIx
-Nl0NCj4+IFsyLzddIGNoZWNraW5nIGV4dGVudHPCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCAoMDowMDoyMCBlbGFwc2VkLCAyMjA5MzQgaXRlbXMNCj4+IGNoZWNrZWQp
-DQo+PiBFUlJPUjogZXJyb3JzIGZvdW5kIGluIGV4dGVudCBhbGxvY2F0aW9uIHRyZWUgb3Ig
-Y2h1bmsgYWxsb2NhdGlvbg0KPj4gY2FjaGUgYW5kIHN1cGVyIGdlbmVyYXRpb24gZG9uJ3Qg
-bWF0Y2gsIHNwYWNlIGNhY2hlIHdpbGwgYmUgaW52YWxpZGF0ZWQNCj4+IFszLzddIGNoZWNr
-aW5nIGZyZWUgc3BhY2UgY2FjaGXCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAoMDowMDowMCBl
-bGFwc2VkKQ0KPj4gWzMvN10gY2hlY2tpbmcgZnJlZSBzcGFjZSBjYWNoZcKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgICgwOjAwOjAwIGVsYXBzZWQpDQo+PiBbNC83XSBjaGVja2luZyBmcyBy
-b290c8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICgwOjAwOjAwIGVsYXBz
-ZWQpDQo+PiByb290IDUgcm9vdCBkaXIgMjU2IG5vdCBmb3VuZA0KPj4gWzQvN10gY2hlY2tp
-bmcgZnMgcm9vdHPCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAoMDowMDow
-MCBlbGFwc2VkLCAyIGl0ZW1zIGNoZWNrZWQpDQo+PiBFUlJPUjogZXJyb3JzIGZvdW5kIGlu
-IGZzIHJvb3RzDQo+PiBmb3VuZCAzNTA4NTg0NDA3MDQwIGJ5dGVzIHVzZWQsIGVycm9yKHMp
-IGZvdW5kDQo+PiB0b3RhbCBjc3VtIGJ5dGVzOiAzNDE3OTA2NDMyDQo+PiB0b3RhbCB0cmVl
-IGJ5dGVzOiAzNjE5NjUxNTg0DQo+PiB0b3RhbCBmcyB0cmVlIGJ5dGVzOiAxNjM4NA0KPj4g
-dG90YWwgZXh0ZW50IHRyZWUgYnl0ZXM6IDI2MDgzMzI4DQo+PiBidHJlZSBzcGFjZSB3YXN0
-ZSBieXRlczogMTM1OTYyOTE4DQo+PiBmaWxlIGRhdGEgYmxvY2tzIGFsbG9jYXRlZDogODgw
-ODAzODQwDQo+PiAgIMKgcmVmZXJlbmNlZCA4ODA4MDM4NDB8DQo+PiAtLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQ0KPj4gaSBjYW4gYXR0YWNoIGEgZnVsbCBsb2cgaWYgbmVlZGVkLCBi
-dXQgZ2VuZXJhbGx5IGl0IGNvbWVzIGRvd24gdG8gdHlwZXMgb2YNCj4+IGVycm9ycyBhYm92
-ZS4NCj4+DQo+PiBjYW4gdGhpcyBkaXNrIHN0aWxsIGJlIHJlcGFpcmVkIG9yIHNob3VsZCBp
-IGp1c3QgcmVmb3JtYXQgaXQgYW5kIGJlIGRvbmUgd2l0aCBpdD8NCj4+IGkgZGlkIGNodW5r
-IHNjYW4gKHRvb2sgb3ZlciAxMGgpIHdoaWNoIGNhbWUgdXAgd2l0aCBub3RoaW5nLg0KPj4g
-emVyby1sb2dzIGFuZCBvdGhlciBvcHRpb25zIHJlc3VsdCBpbiBhYm9ydDsgaSBjYW5ub3Qg
-ZG8gYnRyZnMtaW1hZ2UgKGl0IGFwcGVhcnMNCj4+IHRvIGJlIG11Y2ggbXVjaCBzbWFsbGVy
-IHRoZW4gaSB3b3VsZCBleHBlY3QpLg0KPj4gdm9sdW1lIGluZm86DQo+PiBDb2RlOg0KPj4g
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4+IHwNCj4+ICAgwqBMYWJlbDogJ3N1bTUn
-wqAgdXVpZDogeHh4DQo+PiAgIMKgIMKgIMKgIMKgIFRvdGFsIGRldmljZXMgMSBGUyBieXRl
-cyB1c2VkIDMuMTlUaUINCj4+ICAgwqAgwqAgwqAgwqAgZGV2aWTCoCDCoCAxIHNpemUgNy4y
-OFRpQiB1c2VkIDMuMzBUaUIgcGF0aCAvZGV2L3NkY3wNCj4+IC0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tDQo+PiBpbWFnZSBkdW1wZWQgaXMganVzdCBhIGNvdXBsZSBvZiBnaWdzLCBh
-bmQgLWQgc2F5cyB0aGF0IGRhdGEgZHVtcCBpcyBub3Qgc3VwcG9ydGVkLg0KPj4NCj4+IHNv
-bWUgb3RoZXIgb3V0cHV0IG9mIOKAmHNhZmXigJkgY29tbWFuZHMgaSByYW4gYmFzZWQgb24g
-aW50ZXJuZXQgZmVlZGJhY2s6DQo+Pg0KPj4NCj4+IENvZGU6DQo+PiAtLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLQ0KPj4gfHRodW1saXZleDp+ICMgYnRyZnMgc2NydWIgc3RhcnQgL2Rl
-di9zZGMgRVJST1I6ICcvZGV2L3NkYycgaXMgbm90IGEgbW91bnRlZA0KPj4gYnRyZnMgZGV2
-aWNlDQo+PiB0aHVtbGl2ZXg6fiAjIGJ0cmZzIHNjcnViIHN0YXJ0IC9kZXYvc2RjDQo+PiBF
-UlJPUjogJy9kZXYvc2RjJyBpcyBub3QgYSBtb3VudGVkIGJ0cmZzIGRldmljZQ0KPj4gdGh1
-bWxpdmV4On4gIyBidHJmcyBmaSBzaA0KPj4gTGFiZWw6ICdzdW01J8KgIHV1aWQ6IGJjNjc3
-MDY3LWVmZmQtNDMwYS05MGZhLWFiMWM2Y2Q1MWRlMQ0KPj4gICDCoCDCoCDCoCDCoCBUb3Rh
-bCBkZXZpY2VzIDEgRlMgYnl0ZXMgdXNlZCAzLjE5VGlCDQo+PiAgIMKgIMKgIMKgIMKgIGRl
-dmlkwqAgwqAgMSBzaXplIDcuMjhUaUIgdXNlZCAzLjMwVGlCIHBhdGggL2Rldi9zZGMNCj4+
-DQo+PiB0aHVtbGl2ZXg6fiAjIG1vdW50IC1vIHJvLHVzZWJhY2t1cHJvb3QgL2Rldi9zZGMg
-L21udC8zLw0KPj4gbW91bnQ6IC9tbnQvMzogY2FuJ3QgcmVhZCBzdXBlcmJsb2NrIG9uIC9k
-ZXYvc2RjLg0KPj4gdGh1bWxpdmV4On4gIyBidHJmcyByZXN0b3JlIC9kZXYvc2RjIC9tbnQv
-MS90ZW1wLzAwLw0KPj4gcGFyZW50IHRyYW5zaWQgdmVyaWZ5IGZhaWxlZCBvbiAzNjQ2OTk4
-NDEzMzEyIHdhbnRlZCAzMDY1IGZvdW5kIDI3NDcNCj4+IHBhcmVudCB0cmFuc2lkIHZlcmlm
-eSBmYWlsZWQgb24gMzY0Njk5ODQxMzMxMiB3YW50ZWQgMzA2NSBmb3VuZCAyNzQ3DQo+PiBw
-YXJlbnQgdHJhbnNpZCB2ZXJpZnkgZmFpbGVkIG9uIDM2NDY5OTg0MTMzMTIgd2FudGVkIDMw
-NjUgZm91bmQgMjc0Nw0KPj4gSWdub3JpbmcgdHJhbnNpZCBmYWlsdXJlDQo+PiB0aHVtbGl2
-ZXg6fiAjIGJ0cmZzIHJlc2N1ZSBzdXBlci1yZWNvdmVyIC9kZXYvc2RjDQo+PiBBbGwgc3Vw
-ZXJzIGFyZSB2YWxpZCwgbm8gbmVlZCB0byByZWNvdmVyDQo+PiB0aHVtbGl2ZXg6fiAjIGJ0
-cmZzIHJlc2N1ZSB6ZXJvLWxvZyAvZGV2L3NkYw0KPj4gcGFyZW50IHRyYW5zaWQgdmVyaWZ5
-IGZhaWxlZCBvbiAzNjQ2OTk4NDEzMzEyIHdhbnRlZCAzMDY1IGZvdW5kIDI3NDcNCj4+IHBh
-cmVudCB0cmFuc2lkIHZlcmlmeSBmYWlsZWQgb24gMzY0Njk5ODQxMzMxMiB3YW50ZWQgMzA2
-NSBmb3VuZCAyNzQ3DQo+PiBFUlJPUjogY291bGQgbm90IG9wZW4gY3RyZWUNCj4+IHRodW1s
-aXZleDp+ICMgYnRyZnMgcmVzY3VlIGZpeC1kZXZpY2Utc2l6ZSAvZGV2L3NkYw0KPj4gcGFy
-ZW50IHRyYW5zaWQgdmVyaWZ5IGZhaWxlZCBvbiAzNjQ2OTk4NDEzMzEyIHdhbnRlZCAzMDY1
-IGZvdW5kIDI3NDcNCj4+IHBhcmVudCB0cmFuc2lkIHZlcmlmeSBmYWlsZWQgb24gMzY0Njk5
-ODQxMzMxMiB3YW50ZWQgMzA2NSBmb3VuZCAyNzQ3DQo+PiBFUlJPUjogY291bGQgbm90IG9w
-ZW4gYnRyZnMNCj4+IHRodW1saXZleDp+ICN8DQo+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQ0KPj4gaSBhbHNvIHJhbiBjaHVuay1yZWNvdmVyIHdpdGggbm8gcmVzdWx0Lg0KPj4g
-YW55IGlkZWFzIHdvdWxkIGJlIHdlbGNvbWUsIGl0IHdvdWxkIGJlIGEgcGl0eSB0byBsb3Nl
-IDMuM1Qgb2YgZGF0YSBiZWNhdXNlIG9mIGENCj4+IHBvd2VyIG91dGFnZeKApiBuZXZlciBo
-YWQgdGhpcyBraW5kIG9mIGlzc3VlcyB3aXRoIGV4dDQuDQo+Pg0KPj4gd291bGQgYmUgdGhh
-bmtmdWwgZm9yIGFueSBpbnNpZ2h0cyBvbiBob3cgdG8gaW52ZXN0aWdhdGUgbW9yZSBvciBm
-aXggcGFydGlhbGx5DQo+PiBhcyB3ZWxsLg0KPj4NCj4+IHRoYW5rcyBpbiBhZHZhbmNlIQ0K
-Pj4gLS0gDQo+PiBTaW5jZXJlbHksDQo+PiBFZ29yIEtvbnN0YW50aW5vdg0KPg0KPiBIaSwN
-Cj4NCj4gQXMgZmFyIGFzIEkga25vdywgaXQgaXMgbm90IHBvc3NpYmxlIHRvIHJlcGFpciAi
-cGFyZW50IHRyYW5zaWQgZmFpbGVkIiBlcnJvcnMuIEl0IG1lYW5zIHlvdSBoYXZlIGEgc2Vy
-aW91cyBkYW1hZ2UgdG8geW91ciBmaWxlc3lzdGVtLg0KPg0KPiBUaGVyZSBpcyBzb21lIGJh
-Y2tncm91bmQgb24gd2h5IHRoaXMgY2FuIGhhcHBlbiBvbiB0aGUgQnRyZnMgd2lraS4gaHR0
-cHM6Ly9idHJmcy53aWtpLmtlcm5lbC5vcmcvaW5kZXgucGhwL0ZBUSNIb3dfZG9fSV9yZWNv
-dmVyX2Zyb21fYV8uMjJwYXJlbnRfdHJhbnNpZF92ZXJpZnlfZmFpbGVkLjIyX2Vycm9yLjNG
-DQo+DQo+IEl0IGdlbmVyYWxseSBjb21lcyBkb3duIHRvIGEgc2l0dWF0aW9uIHdoZXJlIHRo
-ZSBzdG9yYWdlIHN5c3RlbSBkaWQgbm90IGhvbm91ciBiYXJyaWVycyBhbmQgeW91IGxvc3Qg
-d3JpdGVzIGFmdGVyIHdyaXRlIHJlb3JkZXJpbmcgaGFwcGVuZWQuDQo+DQo+IEJ0cmZzIHVw
-ZGF0ZXMgdGhlIHJlZmVyZW5jZSB0byBkYXRhIGV4dGVudHMgb24gaXRzIGxlYXZlcyBmaXJz
-dCwgdGhlIGl0IHVwZGF0ZXMgdGhlIHJlZmVyZW5jZSB0byB0aGUgbGVhdmVzLCB0aGUgcm9v
-dCByZWZlcmVuY2VzIGFuZCBsYXN0IHRoZSBzdXBlciBibG9ja3MuDQo+DQo+IFRoZSBwYXJl
-bnQgdHJhbnNpZCBmYWlsZWQgbWVhbnMgdGhhdCB5b3UgaGF2ZSBsb3N0IHVwZGF0ZWQgcmVm
-ZXJlbmNlcyBpbiB0aGUgbWlkZGxlLiBUaGlzIHNob3VsZCBub3JtYWxseSBub3QgYmUgcG9z
-c2libGUuIFJhbSBjb3JydXB0aW9uIGNvdWxkIGFsc28gbGVhZCB0byBhIHByb2JsZW0gbGlr
-ZSB0aGlzLg0KDQppIGNoZWNrZWQgdGhlIHJhbSwgaXQgd2FzIG9rLg0KDQpob3dldmVyIGkg
-dGhpbmsgdGhlcmUgbWlnaHQgaGF2ZSBiZWVuIHNvbWUgY29udHJvbGxlciBvciBtb3RoZXJi
-b2FyZCBpc3N1ZSBpbiANCnRoZSBtZWFudGltZS4gaW50ZXJlc3RpbmdseSBpIGhhdmUgc2V2
-ZXJhbCBleHQ0IGRpc2tzIGFsb25nIHRoaXMgb25lIGFuZCB0aGV5IA0KZGVtb25zdHJhdGVk
-IG5vIGlzc3VlcyBmb3IgdGhlIHNhbWUgaHcuDQoNCmN1cnJlbnRseSBpIHVwZ3JhZGVkIG15
-IHNlcnZlciB3aXRoIG5ldyBtb3RoZXJib2FyZC9jcHUvcmFtOyBlcnJvcnMgZm9yIGJ0cmZz
-Y2sgDQphcmUgc3RpbGwgdGhlIHNhbWUgLSB2NCBqdXN0IGRldGVjdHMgaGlnaCBsZXZlbCBp
-c3N1ZXM7IHY1IHJlcG9ydHMgbWlsbGlvbnMgb2YgDQpicmVha3MuDQoNCj4gWW91IHNob3Vs
-ZCBzZWUgaWYgeW91IGNhbiBtb3VudCB0aGUgZmlsZXN5c3RlbSByZWFkLW9ubHkgYW5kIGNv
-cHkgYXMgbXVjaCBkYXRhIGFzIHBvc3NpYmxlLiBJdCBpcyBpbXBvcnRhbnQgdGhhdCB5b3Ug
-Zmkgb3V0IHdoeSBpdCBoYXBwZW5lZC4gSXQgaXMgcG9zc2libGUgdGhhdCB0aGUgY29ycnVw
-dGlvbiBoYXBwZW5lZCBhIHdoaWxlIGFnbywgYnV0IG9ubHkgbWFuaWZlc3RlZCBub3cgYWZ0
-ZXIgdGhlIGxhc3QgcG93ZXIgb3V0YWdlLg0KDQphcyBwZXIgYWJvdmUgbW91bnRpbmcgZmFp
-bHMgZm9yIGVhY2ggYW5kIGV2ZXJ5IHRyeSBhbmQgb3B0aW9uIHdpdGggdmFyaW91cyBlcnJv
-ciANCm1lc3NhZ2VzLiBpIGFtIHdvbmRlcmluZyBpZiBpIGNhbiBtYXliZSBtYW51YWxseSBy
-ZXNvbHZlIHRoaXMgYml0Og0KDQpwYXJlbnQgdHJhbnNpZCB2ZXJpZnkgZmFpbGVkIG9uIDM2
-NDY5OTg0MTMzMTIgd2FudGVkIDMwNjUgZm91bmQgMjc0Nw0KcGFyZW50IHRyYW5zaWQgdmVy
-aWZ5IGZhaWxlZCBvbiAzNjQ2OTk4NDEzMzEyIHdhbnRlZCAzMDY1IGZvdW5kIDI3NDcNCnBh
-cmVudCB0cmFuc2lkIHZlcmlmeSBmYWlsZWQgb24gMzY0Njk5ODQxMzMxMiB3YW50ZWQgMzA2
-NSBmb3VuZCAyNzQ3DQoNCmFuZCBpZiB0aGlzIG1pZ2h0IGhlbHAgdG8gbW91bnQgZnMgKGlu
-IHdoYXRldmVyIHN0YXRlIGl0IGlzKSB0byBzYWx2YWdlIGF0IGxlYXN0IA0Kc29tZXRoaW5n
-Pw0KDQpvdGhlcndpc2UgaSBzaGFsbCBqdXN0IHJlZm9ybWF0IGl0LCBjaGVjayBmb3IgYmFk
-YmxvY2tzIGFuZCBtb3N0IGxpa2VseSB1c2UgZXh0NC4uLg0KDQpTaW5jZXJlbHksDQpFZ29y
-IEtvbnN0YW50aW5vdg0KDQo=
+
+
+---- From: Egor Konstantinov <egorks@gmail.com> -- Sent: 2021-11-26 - 09:51 ----
+
+> On 26/11/2021 09:36, Forza wrote:
+>> ---- From: Egor Konstantinov <egorks@gmail.com> -- Sent: 2021-11-24 - 17:42 ----
+>>
+>>> hi all
+>>>
+>>> i have a single /dev/sdc as a btrfs volume. recently the volume got corrupted
+>>> and i cannot seem to find a way to restore its functionality by using any of
+>>> internet howtos.
+>>> i tried standard ‘safe’ options and still did not run --repair option in fear of
+>>> killing the data completely.
+>>> also if i check with btrfs tools v4 and v5 (from tumbleweed live usb) i get
+>>> totally different results.
+>>> with v4 i ger simply:
+>>>
+>>> and with v5 i get a log file of 32Mb with over 500k lines stating following:
+>>>
+>>> Code:
+>>> --------------------------------------------------------------------------------
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> Ignoring transid failure
+>>> Opening filesystem to check...
+>>> Checking filesystem on /dev/sdc
+>>> UUID: bc677067-effd-430a-90fa-ab1c6cd51de1
+>>> [1/7] checking root items                      (0:00:00 elapsed, 144 items checked)
+>>> [1/7] checking root items                      (0:00:01 elapsed, 51113 items
+>>> checked)
+>>> [1/7] checking root items                      (0:00:02 elapsed, 132156 items
+>>> checked)
+>>> [1/7] checking root items                      (0:00:03 elapsed, 201203 items
+>>> checked)
+>>> [1/7] checking root items                      (0:00:04 elapsed, 317426 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:00 elapsed)
+>>> [2/7] checking extents                        (0:00:01 elapsed, 1940 items checked)
+>>> [2/7] checking extents                        (0:00:02 elapsed, 2355 items checked)
+>>> parent transid verify failed on 3646998642688 wanted 3065 found 2747
+>>> parent transid verify failed on 3646998642688 wanted 3065 found 2747
+>>> parent transid verify failed on 3646998642688 wanted 3065 found 2747
+>>> Ignoring transid failure
+>>> [2/7] checking extents                        (0:00:03 elapsed, 9973 items checked)
+>>> [2/7] checking extents                        (0:00:04 elapsed, 25702 items checked)
+>>> [2/7] checking extents                        (0:00:05 elapsed, 39437 items checked)
+>>> [2/7] checking extents                        (0:00:06 elapsed, 56114 items checked)
+>>> [2/7] checking extents                        (0:00:07 elapsed, 71956 items checked)
+>>> [2/7] checking extents                        (0:00:08 elapsed, 87850 items checked)
+>>> [2/7] checking extents                        (0:00:09 elapsed, 103417 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:10 elapsed, 118146 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:11 elapsed, 133337 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:12 elapsed, 148490 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:13 elapsed, 163390 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:14 elapsed, 177768 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:15 elapsed, 192416 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:16 elapsed, 202829 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:17 elapsed, 212968 items
+>>> checked)
+>>> [2/7] checking extents                        (0:00:18 elapsed, 219076 items
+>>> checked)
+>>> ref mismatch on [13631488 16384] extent item 1, found 0
+>>> incorrect local backref count on 13631488 root 5 owner 36919 offset 0 found 0
+>>> wanted 1 back 0x55c1895eaca0
+>>> backref disk bytenr does not match extent record, bytenr=13631488, ref bytenr=0
+>>> backpointer mismatch on [13631488 16384]
+>>> owner ref check failed [13631488 16384]
+>>> ref mismatch on [13647872 4096] extent item 1, found 0
+>>> incorrect local backref count on 13647872 root 5 owner 37225 offset 0 found 0
+>>> wanted 1 back 0x55c1895eae50
+>>> backref disk bytenr does not match extent record, bytenr=13647872, ref bytenr=0
+>>> backpointer mismatch on [13647872 4096]
+>>> owner ref check failed [13647872 4096]
+>>>
+>>> ...skipped many many lines
+>>>
+>>> ref mismatch on [61423616 16384] extent item 1, found 0
+>>> backref 61423616 root 5 not referenced back 0x55c186e74550
+>>> incorrect global backref count on 61423616 found 1 wanted 0
+>>> backpointer mismatch on [61423616 16384]
+>>> owner ref check failed [61423616 16384]
+>>> ref mismatch on [268746752 16384] extent item 1, found 0
+>>> backref 268746752 root 5 not referenced back 0x55c1875bcd10
+>>> incorrect global backref count on 268746752 found 1 wanted 0
+>>> backpointer mismatch on [268746752 16384]
+>>> owner ref check failed [268746752 16384]
+>>> ref mismatch on [284639232 16384] extent item 1, found 0
+>>> backref 284639232 root 7 not referenced back 0x55c186ff9130
+>>> incorrect global backref count on 284639232 found 1 wanted 0
+>>> backpointer mismatch on [284639232 16384]
+>>> owner ref check failed [284639232 16384]
+>>>
+>>> ...skipping again many many lines
+>>>
+>>> ref mismatch on [1104150528 134217728] extent item 1, found 0
+>>> incorrect local backref count on 1104150528 root 5 owner 260 offset 0 found 0
+>>> wanted 1 back 0x55c187a09e30
+>>> backref disk bytenr does not match extent record, bytenr=1104150528, ref bytenr=0
+>>> backpointer mismatch on [1104150528 134217728]
+>>> owner ref check failed [1104150528 134217728]
+>>> ref mismatch on [1238368256 134217728] extent item 1, found 0
+>>> incorrect local backref count on 1238368256 root 5 owner 260 offset 134217728
+>>> found 0 wanted 1 back 0x55c187a09fe0
+>>> backref disk bytenr does not match extent record, bytenr=1238368256, ref bytenr=0
+>>> backpointer mismatch on [1238368256 134217728]
+>>> owner ref check failed [1238368256 134217728]
+>>> ref mismatch on [1372585984 134217728] extent item 1, found 0
+>>> incorrect local backref count on 1372585984 root 5 owner 260 offset 268435456
+>>> found 0 wanted 1 back 0x55c187a0a110
+>>> backref disk bytenr does not match extent record, bytenr=1372585984, ref bytenr=0
+>>> backpointer mismatch on [1372585984 134217728]
+>>> owner ref check failed [1372585984 134217728]
+>>>
+>>> ...skipping again bundle
+>>>
+>>> ref mismatch on [3671060365312 15777792] extent item 1, found 0
+>>> incorrect local backref count on 3671060365312 root 5 owner 37267 offset
+>>> 18724372480 found 0 wanted 1 back 0x55c1895ea950
+>>> backref disk bytenr does not match extent record, bytenr=3671060365312, ref bytenr=0
+>>> backpointer mismatch on [3671060365312 15777792]
+>>> owner ref check failed [3671060365312 15777792]
+>>> ref mismatch on [3671076143104 16777216] extent item 1, found 0
+>>> incorrect local backref count on 3671076143104 root 5 owner 37267 offset
+>>> 19730006016 found 0 wanted 1 back 0x55c1895eaa80
+>>> backref disk bytenr does not match extent record, bytenr=3671076143104, ref bytenr=0
+>>> backpointer mismatch on [3671076143104 16777216]
+>>> owner ref check failed [3671076143104 16777216]
+>>> [2/7] checking extents                        (0:00:20 elapsed, 220934 items
+>>> checked)
+>>> ERROR: errors found in extent allocation tree or chunk allocation
+>>> cache and super generation don't match, space cache will be invalidated
+>>> [3/7] checking free space cache                (0:00:00 elapsed)
+>>> [3/7] checking free space cache                (0:00:00 elapsed)
+>>> [4/7] checking fs roots                        (0:00:00 elapsed)
+>>> root 5 root dir 256 not found
+>>> [4/7] checking fs roots                        (0:00:00 elapsed, 2 items checked)
+>>> ERROR: errors found in fs roots
+>>> found 3508584407040 bytes used, error(s) found
+>>> total csum bytes: 3417906432
+>>> total tree bytes: 3619651584
+>>> total fs tree bytes: 16384
+>>> total extent tree bytes: 26083328
+>>> btree space waste bytes: 135962918
+>>> file data blocks allocated: 880803840
+>>>    referenced 880803840|
+>>> --------------------------------------------------------------------------------
+>>> i can attach a full log if needed, but generally it comes down to types of
+>>> errors above.
+>>>
+>>> can this disk still be repaired or should i just reformat it and be done with it?
+>>> i did chunk scan (took over 10h) which came up with nothing.
+>>> zero-logs and other options result in abort; i cannot do btrfs-image (it appears
+>>> to be much much smaller then i would expect).
+>>> volume info:
+>>> Code:
+>>> --------------------------------------------------------------------------------
+>>> |
+>>>    Label: 'sum5'  uuid: xxx
+>>>           Total devices 1 FS bytes used 3.19TiB
+>>>           devid    1 size 7.28TiB used 3.30TiB path /dev/sdc|
+>>> --------------------------------------------------------------------------------
+>>> image dumped is just a couple of gigs, and -d says that data dump is not supported.
+>>>
+>>> some other output of ‘safe’ commands i ran based on internet feedback:
+>>>
+>>>
+>>> Code:
+>>> --------------------------------------------------------------------------------
+>>> |thumlivex:~ # btrfs scrub start /dev/sdc ERROR: '/dev/sdc' is not a mounted
+>>> btrfs device
+>>> thumlivex:~ # btrfs scrub start /dev/sdc
+>>> ERROR: '/dev/sdc' is not a mounted btrfs device
+>>> thumlivex:~ # btrfs fi sh
+>>> Label: 'sum5'  uuid: bc677067-effd-430a-90fa-ab1c6cd51de1
+>>>           Total devices 1 FS bytes used 3.19TiB
+>>>           devid    1 size 7.28TiB used 3.30TiB path /dev/sdc
+>>>
+>>> thumlivex:~ # mount -o ro,usebackuproot /dev/sdc /mnt/3/
+>>> mount: /mnt/3: can't read superblock on /dev/sdc.
+>>> thumlivex:~ # btrfs restore /dev/sdc /mnt/1/temp/00/
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> Ignoring transid failure
+>>> thumlivex:~ # btrfs rescue super-recover /dev/sdc
+>>> All supers are valid, no need to recover
+>>> thumlivex:~ # btrfs rescue zero-log /dev/sdc
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> ERROR: could not open ctree
+>>> thumlivex:~ # btrfs rescue fix-device-size /dev/sdc
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+>>> ERROR: could not open btrfs
+>>> thumlivex:~ #|
+>>> --------------------------------------------------------------------------------
+>>> i also ran chunk-recover with no result.
+>>> any ideas would be welcome, it would be a pity to lose 3.3T of data because of a
+>>> power outage… never had this kind of issues with ext4.
+>>>
+>>> would be thankful for any insights on how to investigate more or fix partially
+>>> as well.
+>>>
+>>> thanks in advance!
+>>> -- 
+>>> Sincerely,
+>>> Egor Konstantinov
+>>
+>> Hi,
+>>
+>> As far as I know, it is not possible to repair "parent transid failed" errors. It means you have a serious damage to your filesystem.
+>>
+>> There is some background on why this can happen on the Btrfs wiki. https://btrfs.wiki.kernel.org/index.php/FAQ#How_do_I_recover_from_a_.22parent_transid_verify_failed.22_error.3F
+>>
+>> It generally comes down to a situation where the storage system did not honour barriers and you lost writes after write reordering happened.
+>>
+>> Btrfs updates the reference to data extents on its leaves first, the it updates the reference to the leaves, the root references and last the super blocks.
+>>
+>> The parent transid failed means that you have lost updated references in the middle. This should normally not be possible. Ram corruption could also lead to a problem like this.
+> 
+> i checked the ram, it was ok.
+> 
+> however i think there might have been some controller or motherboard issue in 
+> the meantime. interestingly i have several ext4 disks along this one and they 
+> demonstrated no issues for the same hw.
+> 
+> currently i upgraded my server with new motherboard/cpu/ram; errors for btrfsck 
+> are still the same - v4 just detects high level issues; v5 reports millions of 
+> breaks.
+> 
+>> You should see if you can mount the filesystem read-only and copy as much data as possible. It is important that you fi out why it happened. It is possible that the corruption happened a while ago, but only manifested now after the last power outage.
+> 
+> as per above mounting fails for each and every try and option with various error 
+> messages. i am wondering if i can maybe manually resolve this bit:
+> 
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> 
+> and if this might help to mount fs (in whatever state it is) to salvage at least 
+> something?
+> 
+
+Btrfs restore can work. https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-restore 
+
+I suggest you get help on the irc channel #btrfs on how to use restore. The is a Web client you can use if you don't have a normal IRC app installed. https://web.libera.chat/#btrfs 
+
+
+> otherwise i shall just reformat it, check for badblocks and most likely use ext4...
+>  
+
+The error would happen with ext4 but would not be detected so easily. 
+
+USB disks can often lie about supported for barriers, write cache, reordering and dropped writes. 
+
+One option that can help is to disable write cache. 
+
+What hardware do you use now? 
+
+Good luck! 
+
+> Sincerely,
+> Egor Konstantinov
+> 
+
+
