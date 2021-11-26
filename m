@@ -2,68 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D001145F0FA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 16:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6498345F256
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 17:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378169AbhKZPsD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Nov 2021 10:48:03 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:45524 "EHLO
+        id S1353720AbhKZQsW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Nov 2021 11:48:22 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:48962 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354267AbhKZPqD (ORCPT
+        with ESMTP id S1378460AbhKZQqR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Nov 2021 10:46:03 -0500
+        Fri, 26 Nov 2021 11:46:17 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 36E102191E;
-        Fri, 26 Nov 2021 15:42:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1637941369; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=hs+OViqGHngS3KJzx7vMZHD09b5UaCJE4IqzDvjyyYE=;
-        b=vPAuGnEYmsjCDyjYB71IGZ3RfTBrd1DXylHGOMFz9tRroKtjiSOLknVXLpx9PlrpaSK1ri
-        dDX0rtbwBOAn6xwf+O/+ByKbpSbozTWOeylrGl2ZftFYU304teFH8WPs7XzomqfEvAHQox
-        0x0JCHmtj6jOILAD0NIDzsakcWYS6Zc=
+        by smtp-out1.suse.de (Postfix) with ESMTP id 35BF2212BD;
+        Fri, 26 Nov 2021 16:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1637944982;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fmBvewAO8mTwkpsCQPRg1igFqC3ChA+p22fO+6l0PPE=;
+        b=duP48ZS+TCtwDH5L3z96anN30Oj70SYnxUhMPpbW0T+VPm2AK9ka0IinIUYu4ChfXpdKbC
+        f8IZsiB/L6/FeYO6+PYfTkSHYauXm9UeZ38hJdrXNeh6Ytwwj+9m3vgjITH9z3+KnQjhfZ
+        mcVJZSYeP1JTGBXhWoCDf1bK7AXg9Fo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1637944982;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fmBvewAO8mTwkpsCQPRg1igFqC3ChA+p22fO+6l0PPE=;
+        b=5s4aCH6YWzWhJOA2vKNRBndbY/L0bi8pskC/m8XiVaQCVBtnxm4NkcJIiKwt62/cSHm1PZ
+        4WKq5pkxWBb7fjDw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 2EC50A3B8F;
-        Fri, 26 Nov 2021 15:42:49 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 15FC4A3B81;
+        Fri, 26 Nov 2021 16:43:01 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 65A90DA735; Fri, 26 Nov 2021 16:42:40 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.16-rc3
-Date:   Fri, 26 Nov 2021 16:42:39 +0100
-Message-Id: <cover.1637940049.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.33.0
+        id F01A3DA735; Fri, 26 Nov 2021 17:42:52 +0100 (CET)
+Date:   Fri, 26 Nov 2021 17:42:52 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <20211126164252.GB28560@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org
+References: <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211124192024.2408218-4-catalin.marinas@arm.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Wed, Nov 24, 2021 at 07:20:24PM +0000, Catalin Marinas wrote:
+> Commit a48b73eca4ce ("btrfs: fix potential deadlock in the search
+> ioctl") addressed a lockdep warning by pre-faulting the user pages and
+> attempting the copy_to_user_nofault() in an infinite loop. On
+> architectures like arm64 with MTE, an access may fault within a page at
+> a location different from what fault_in_writeable() probed. Since the
+> sk_offset is rewound to the previous struct btrfs_ioctl_search_header
+> boundary, there is no guaranteed forward progress and search_ioctl() may
+> live-lock.
+> 
+> Use fault_in_exact_writeable() instead which probes the entire user
+> buffer for faults at sub-page granularity.
+> 
+> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reported-by: Al Viro <viro@zeniv.linux.org.uk>
 
-one more fix to the lzo code, a missing put_page causing memory leaks
-when some error branches are taken.
-
-Please pull, thanks.
-
-----------------------------------------------------------------
-The following changes since commit 6c405b24097c24cbb11570b47fd382676014f72e:
-
-  btrfs: deprecate BTRFS_IOC_BALANCE ioctl (2021-11-16 16:51:19 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.16-rc2-tag
-
-for you to fetch changes up to 504d851ab360dc00e2163acef2e200ea69ac800a:
-
-  btrfs: fix the memory leak caused in lzo_compress_pages() (2021-11-26 14:32:40 +0100)
-
-----------------------------------------------------------------
-Qu Wenruo (1):
-      btrfs: fix the memory leak caused in lzo_compress_pages()
-
- fs/btrfs/lzo.c | 2 ++
- 1 file changed, 2 insertions(+)
+Acked-by: David Sterba <dsterba@suse.com>
