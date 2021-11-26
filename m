@@ -2,47 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFC645E956
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 09:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2154E45E97F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 09:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353191AbhKZI2d convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 26 Nov 2021 03:28:33 -0500
-Received: from pio-pvt-msa2.bahnhof.se ([79.136.2.41]:58454 "EHLO
-        pio-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359562AbhKZI0c (ORCPT
+        id S1353255AbhKZIlh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 26 Nov 2021 03:41:37 -0500
+Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:23436 "EHLO
+        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347737AbhKZIjg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Nov 2021 03:26:32 -0500
+        Fri, 26 Nov 2021 03:39:36 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTP id ABB023F614;
-        Fri, 26 Nov 2021 09:23:17 +0100 (CET)
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id E5CC34092F;
+        Fri, 26 Nov 2021 09:36:22 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at bahnhof.se
 X-Spam-Flag: NO
-X-Spam-Score: -1.899
+X-Spam-Score: -1.9
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.899 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, URIBL_BLOCKED=0.001]
-        autolearn=ham autolearn_force=no
-Received: from pio-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (pio-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rH5ovmQgCn4s; Fri, 26 Nov 2021 09:23:16 +0100 (CET)
-Received: by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 7975C3F4CF;
-        Fri, 26 Nov 2021 09:23:16 +0100 (CET)
-Received: from [8.43.224.52] (port=60436 helo=[100.95.114.229])
+X-Spam-Status: No, score=-1.9 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vWqLUq8ExoQ5; Fri, 26 Nov 2021 09:36:21 +0100 (CET)
+Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 3B6464092A;
+        Fri, 26 Nov 2021 09:36:21 +0100 (CET)
+Received: from [8.43.224.52] (port=60526 helo=[100.95.114.229])
         by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
         (Exim 4.94.2)
         (envelope-from <forza@tnonline.net>)
-        id 1mqWVl-0008Fv-Tk; Fri, 26 Nov 2021 09:23:15 +0100
-Date:   Fri, 26 Nov 2021 09:23:12 +0100 (GMT+01:00)
+        id 1mqWiS-0008nR-9I; Fri, 26 Nov 2021 09:36:20 +0100
+Date:   Fri, 26 Nov 2021 09:36:19 +0100 (GMT+01:00)
 From:   Forza <forza@tnonline.net>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Andrey Melnikov <temnota.am@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-Message-ID: <8747149.faa9ddba.17d5b575f6b@tnonline.net>
-In-Reply-To: <20211126051503.GG17148@hungrycats.org>
-References: <CA+PODjrE4V9hL1bXEEghU6NAFgPgfUu4f75FCQn+0vKUaeu1zg@mail.gmail.com> <20211126051503.GG17148@hungrycats.org>
-Subject: Re: btrfs with huge numbers of hardlinks is extremely slow
+To:     Egor Konstantinov <egorks@gmail.com>, linux-btrfs@vger.kernel.org
+Message-ID: <94a1a1e.faa9ddbb.17d5b636231@tnonline.net>
+In-Reply-To: <7c367beb-f2ab-19cc-9a44-e1a64dfaabb0@gmail.com>
+References: <7c367beb-f2ab-19cc-9a44-e1a64dfaabb0@gmail.com>
+Subject: Re: Btrfs disk issues - please advise on repair
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
 X-Mailer: R2Mail2
 Precedence: bulk
@@ -51,164 +48,233 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
----- From: Zygo Blaxell <ce3g8jdj@umail.furryterror.org> -- Sent: 2021-11-26 - 06:15 ----
+---- From: Egor Konstantinov <egorks@gmail.com> -- Sent: 2021-11-24 - 17:42 ----
 
-> On Fri, Nov 26, 2021 at 12:56:25AM +0300, Andrey Melnikov wrote:
->> Every night a new backup is stored on this fs with 'rsync
->> --link-dest=$yestoday/ $today/' - 1402700 hardlinks and 23000
->> directories are created, 50-100 normal files transferred.
->> Now, FS contains 351 copies of backup data with 486086495 hardlinks
->> and ANY operations on this FS take significant time. For example -
->> simple count hardlinks with
->> "time find . -type f -links +1 | wc -l" take:
->> real    28567m33.611s
->> user    31m33.395s
->> sys     506m28.576s
->> 
->> 19 days 20 hours 10 mins with constant reads from storage 2-4Mb/s.
+> hi all
 > 
-> That works out to reading the entire drive 4x in 20 days, or all of the
-> metadata 30x.  Certainly hardlinks will not result in optimal object
-> placement, and you probably don't have enough RAM to cache the entire
-> metadata tree, and you're using WD Purple drives in a fileserver for
-> some reason, so those numbers seem plausible.
+> i have a single /dev/sdc as a btrfs volume. recently the volume got corrupted 
+> and i cannot seem to find a way to restore its functionality by using any of 
+> internet howtos.
+> i tried standard ‘safe’ options and still did not run --repair option in fear of 
+> killing the data completely.
+> also if i check with btrfs tools v4 and v5 (from tumbleweed live usb) i get 
+> totally different results.
+> with v4 i ger simply:
+> 
+> and with v5 i get a log file of 32Mb with over 500k lines stating following:
+> 
+> Code:
+> --------------------------------------------------------------------------------
+> |parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> Ignoring transid failure
+> Opening filesystem to check...
+> Checking filesystem on /dev/sdc
+> UUID: bc677067-effd-430a-90fa-ab1c6cd51de1
+> [1/7] checking root items                      (0:00:00 elapsed, 144 items checked)
+> [1/7] checking root items                      (0:00:01 elapsed, 51113 items 
+> checked)
+> [1/7] checking root items                      (0:00:02 elapsed, 132156 items 
+> checked)
+> [1/7] checking root items                      (0:00:03 elapsed, 201203 items 
+> checked)
+> [1/7] checking root items                      (0:00:04 elapsed, 317426 items 
+> checked)
+> [2/7] checking extents                        (0:00:00 elapsed)
+> [2/7] checking extents                        (0:00:01 elapsed, 1940 items checked)
+> [2/7] checking extents                        (0:00:02 elapsed, 2355 items checked)
+> parent transid verify failed on 3646998642688 wanted 3065 found 2747
+> parent transid verify failed on 3646998642688 wanted 3065 found 2747
+> parent transid verify failed on 3646998642688 wanted 3065 found 2747
+> Ignoring transid failure
+> [2/7] checking extents                        (0:00:03 elapsed, 9973 items checked)
+> [2/7] checking extents                        (0:00:04 elapsed, 25702 items checked)
+> [2/7] checking extents                        (0:00:05 elapsed, 39437 items checked)
+> [2/7] checking extents                        (0:00:06 elapsed, 56114 items checked)
+> [2/7] checking extents                        (0:00:07 elapsed, 71956 items checked)
+> [2/7] checking extents                        (0:00:08 elapsed, 87850 items checked)
+> [2/7] checking extents                        (0:00:09 elapsed, 103417 items 
+> checked)
+> [2/7] checking extents                        (0:00:10 elapsed, 118146 items 
+> checked)
+> [2/7] checking extents                        (0:00:11 elapsed, 133337 items 
+> checked)
+> [2/7] checking extents                        (0:00:12 elapsed, 148490 items 
+> checked)
+> [2/7] checking extents                        (0:00:13 elapsed, 163390 items 
+> checked)
+> [2/7] checking extents                        (0:00:14 elapsed, 177768 items 
+> checked)
+> [2/7] checking extents                        (0:00:15 elapsed, 192416 items 
+> checked)
+> [2/7] checking extents                        (0:00:16 elapsed, 202829 items 
+> checked)
+> [2/7] checking extents                        (0:00:17 elapsed, 212968 items 
+> checked)
+> [2/7] checking extents                        (0:00:18 elapsed, 219076 items 
+> checked)
+> ref mismatch on [13631488 16384] extent item 1, found 0
+> incorrect local backref count on 13631488 root 5 owner 36919 offset 0 found 0 
+> wanted 1 back 0x55c1895eaca0
+> backref disk bytenr does not match extent record, bytenr=13631488, ref bytenr=0
+> backpointer mismatch on [13631488 16384]
+> owner ref check failed [13631488 16384]
+> ref mismatch on [13647872 4096] extent item 1, found 0
+> incorrect local backref count on 13647872 root 5 owner 37225 offset 0 found 0 
+> wanted 1 back 0x55c1895eae50
+> backref disk bytenr does not match extent record, bytenr=13647872, ref bytenr=0
+> backpointer mismatch on [13647872 4096]
+> owner ref check failed [13647872 4096]
+> 
+> ...skipped many many lines
+> 
+> ref mismatch on [61423616 16384] extent item 1, found 0
+> backref 61423616 root 5 not referenced back 0x55c186e74550
+> incorrect global backref count on 61423616 found 1 wanted 0
+> backpointer mismatch on [61423616 16384]
+> owner ref check failed [61423616 16384]
+> ref mismatch on [268746752 16384] extent item 1, found 0
+> backref 268746752 root 5 not referenced back 0x55c1875bcd10
+> incorrect global backref count on 268746752 found 1 wanted 0
+> backpointer mismatch on [268746752 16384]
+> owner ref check failed [268746752 16384]
+> ref mismatch on [284639232 16384] extent item 1, found 0
+> backref 284639232 root 7 not referenced back 0x55c186ff9130
+> incorrect global backref count on 284639232 found 1 wanted 0
+> backpointer mismatch on [284639232 16384]
+> owner ref check failed [284639232 16384]
+> 
+> ...skipping again many many lines
+> 
+> ref mismatch on [1104150528 134217728] extent item 1, found 0
+> incorrect local backref count on 1104150528 root 5 owner 260 offset 0 found 0 
+> wanted 1 back 0x55c187a09e30
+> backref disk bytenr does not match extent record, bytenr=1104150528, ref bytenr=0
+> backpointer mismatch on [1104150528 134217728]
+> owner ref check failed [1104150528 134217728]
+> ref mismatch on [1238368256 134217728] extent item 1, found 0
+> incorrect local backref count on 1238368256 root 5 owner 260 offset 134217728 
+> found 0 wanted 1 back 0x55c187a09fe0
+> backref disk bytenr does not match extent record, bytenr=1238368256, ref bytenr=0
+> backpointer mismatch on [1238368256 134217728]
+> owner ref check failed [1238368256 134217728]
+> ref mismatch on [1372585984 134217728] extent item 1, found 0
+> incorrect local backref count on 1372585984 root 5 owner 260 offset 268435456 
+> found 0 wanted 1 back 0x55c187a0a110
+> backref disk bytenr does not match extent record, bytenr=1372585984, ref bytenr=0
+> backpointer mismatch on [1372585984 134217728]
+> owner ref check failed [1372585984 134217728]
+> 
+> ...skipping again bundle
+> 
+> ref mismatch on [3671060365312 15777792] extent item 1, found 0
+> incorrect local backref count on 3671060365312 root 5 owner 37267 offset 
+> 18724372480 found 0 wanted 1 back 0x55c1895ea950
+> backref disk bytenr does not match extent record, bytenr=3671060365312, ref bytenr=0
+> backpointer mismatch on [3671060365312 15777792]
+> owner ref check failed [3671060365312 15777792]
+> ref mismatch on [3671076143104 16777216] extent item 1, found 0
+> incorrect local backref count on 3671076143104 root 5 owner 37267 offset 
+> 19730006016 found 0 wanted 1 back 0x55c1895eaa80
+> backref disk bytenr does not match extent record, bytenr=3671076143104, ref bytenr=0
+> backpointer mismatch on [3671076143104 16777216]
+> owner ref check failed [3671076143104 16777216]
+> [2/7] checking extents                        (0:00:20 elapsed, 220934 items 
+> checked)
+> ERROR: errors found in extent allocation tree or chunk allocation
+> cache and super generation don't match, space cache will be invalidated
+> [3/7] checking free space cache                (0:00:00 elapsed)
+> [3/7] checking free space cache                (0:00:00 elapsed)
+> [4/7] checking fs roots                        (0:00:00 elapsed)
+> root 5 root dir 256 not found
+> [4/7] checking fs roots                        (0:00:00 elapsed, 2 items checked)
+> ERROR: errors found in fs roots
+> found 3508584407040 bytes used, error(s) found
+> total csum bytes: 3417906432
+> total tree bytes: 3619651584
+> total fs tree bytes: 16384
+> total extent tree bytes: 26083328
+> btree space waste bytes: 135962918
+> file data blocks allocated: 880803840
+>   referenced 880803840|
+> --------------------------------------------------------------------------------
+> i can attach a full log if needed, but generally it comes down to types of 
+> errors above.
+> 
+> can this disk still be repaired or should i just reformat it and be done with it?
+> i did chunk scan (took over 10h) which came up with nothing.
+> zero-logs and other options result in abort; i cannot do btrfs-image (it appears 
+> to be much much smaller then i would expect).
+> volume info:
+> Code:
+> --------------------------------------------------------------------------------
+> |
+>   Label: 'sum5'  uuid: xxx
+>          Total devices 1 FS bytes used 3.19TiB
+>          devid    1 size 7.28TiB used 3.30TiB path /dev/sdc|
+> --------------------------------------------------------------------------------
+> image dumped is just a couple of gigs, and -d says that data dump is not supported.
+> 
+> some other output of ‘safe’ commands i ran based on internet feedback:
+> 
+> 
+> Code:
+> --------------------------------------------------------------------------------
+> |thumlivex:~ # btrfs scrub start /dev/sdc ERROR: '/dev/sdc' is not a mounted 
+> btrfs device
+> thumlivex:~ # btrfs scrub start /dev/sdc
+> ERROR: '/dev/sdc' is not a mounted btrfs device
+> thumlivex:~ # btrfs fi sh
+> Label: 'sum5'  uuid: bc677067-effd-430a-90fa-ab1c6cd51de1
+>          Total devices 1 FS bytes used 3.19TiB
+>          devid    1 size 7.28TiB used 3.30TiB path /dev/sdc
+> 
+> thumlivex:~ # mount -o ro,usebackuproot /dev/sdc /mnt/3/
+> mount: /mnt/3: can't read superblock on /dev/sdc.
+> thumlivex:~ # btrfs restore /dev/sdc /mnt/1/temp/00/
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> Ignoring transid failure
+> thumlivex:~ # btrfs rescue super-recover /dev/sdc
+> All supers are valid, no need to recover
+> thumlivex:~ # btrfs rescue zero-log /dev/sdc
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> ERROR: could not open ctree
+> thumlivex:~ # btrfs rescue fix-device-size /dev/sdc
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> parent transid verify failed on 3646998413312 wanted 3065 found 2747
+> ERROR: could not open btrfs
+> thumlivex:~ #|
+> --------------------------------------------------------------------------------
+> i also ran chunk-recover with no result.
+> any ideas would be welcome, it would be a pity to lose 3.3T of data because of a 
+> power outage… never had this kind of issues with ext4.
+> 
+> would be thankful for any insights on how to investigate more or fix partially 
+> as well.
+> 
+> thanks in advance!
+> -- 
+> Sincerely,
+> Egor Konstantinov
 
-Defragmenting the subvolume and extent tree could help reducing the amount and distance of seeks to metadata which should improve performance of find. 
 
-# btrfs fi defrag /path/to/subvol 
+Hi,
 
+As far as I know, it is not possible to repair "parent transid failed" errors. It means you have a serious damage to your filesystem.
 
-If you cannot change drive model, breaking up your HW raid and create a btrfs raid1 should also improve performance, as well as fault tolerance. 
+There is some background on why this can happen on the Btrfs wiki. https://btrfs.wiki.kernel.org/index.php/FAQ#How_do_I_recover_from_a_.22parent_transid_verify_failed.22_error.3F
 
-Apart from this, I second Zygo's suggestions below. 
+It generally comes down to a situation where the storage system did not honour barriers and you lost writes after write reordering happened.
 
+Btrfs updates the reference to data extents on its leaves first, the it updates the reference to the leaves, the root references and last the super blocks. 
 
+The parent transid failed means that you have lost updated references in the middle. This should normally not be possible. Ram corruption could also lead to a problem like this. 
 
+You should see if you can mount the filesystem read-only and copy as much data as possible. It is important that you fi out why it happened. It is possible that the corruption happened a while ago, but only manifested now after the last power outage. 
 
-> 
->> - BTRFS not suitable for this workload?
-> 
-> There are definitely better ways to do this on btrfs, e.g.
-> 
-> 	btrfs sub snap $yesterday $today
-> 	rsync ... (no link-dest) ... $today
-> 
-> This will avoid duplicating the entire file tree every time.  It will also
-> store historical file attributes correctly, which --link-dest sometimes
-> does not.
-> 
-> You might also consider doing it differently:
-> 
-> 	rsync ... (no link-dest) ... working-dir/. &&
-> 	btrfs sub snap -r working-dir $today
-> 
-> so that your $today directory doesn't exist until it is complete with
-> no rsync errors.  'working-dir' will have to be a subvol, but you only
-> have to create it once and you can keep reusing it afterwards.
-> 
->> - using reflinks helps speedup FS operations?
-> 
-> Snapshots are lazy reflink copies, so they'll do a little better than
-> reflinks.  You'll only modify the metadata for the 50-100 files that you
-> transfer each day, instead of completely rewriting all of the metadata
-> in the filesystem every day with hardlinks.
-> 
-> Hardlinks put the inodes further and further away from their directory
-> nodes each day, and add some extra searching overhead within directories
-> as well.  You'll need more and more RAM to cache the same amount of
-> each filesystem tree, because they're all in the same metadata tree.
-> With snapshots they'll end up in separate metadata trees.
-> 
->> - readed metadata not cached at all? 
-> 
-> If you have less than about 640GB of RAM (4x the size of your metadata)
-> then you're going to be rereading metadata pages at some point.  Because
-> you're using hardlinks, the metadata pages from different days are all
-> mashed together, and 'find' will flood the cache chasing references to
-> them.
-> 
-> Other recommendations:
-> 
-> - Use the right drive model for your workload.  WD Purple drives are for
-> continuous video streaming, they are not for seeky millions-of-tiny-files
-> rsync workloads.  Almost any other model will outperform them, and
-> better drives for this workload (e.g. CMR WD Red models) are cheaper.
-> Your WD Purple drives are getting 283 links/s.  Compare that with some
-> other drive models:
-> 
-> 	1665 links/s:  WD Green (2x1TB + 1x2TB btrfs raid1)
-> 
-> 	6850 links/s:  Sandisk Extreme MicroSD (1x256GB btrfs single/dup)
-> 
-> 	12511 links/s:  WD Red (2x1TB btrfs raid1)
-> 
-> 	13371 links/s:  WD Red SSD + Seagate Ironwolf SSD (6x1TB btrfs raid1)
-> 
-> 	14872 links/s:  WD Black (1x1TB btrfs single/dup, 8 years old)
-> 
-> 	25498 links/s:  WD Gold + Seagate Exos (3x16TB btrfs raid1)
-> 
-> 	27341 links/s:  Toshiba NVME (1x2TB btrfs single/dup)
-> 
-> 	311284 links/s:  Sabrent Rocket 4 NVME (2x1TB btrfs raid1)
-> 	(1344748222 links, 111 snapshots)
-> 
-> Some of these numbers are lower than they should be, because I ran
-> 'find' commands on some machines that were busy doing other work.
-> The point is that even if some of these numbers are too low, all of
-> these numbers are higher what we can expect from a WD Purple.
-> 
-> - Use btrfs raid1 instead of hardware RAID1, i.e. expose each disk
-> separately through the RAID interface to btrfs.  This will enable btrfs
-> to correct errors and isolate faults if one of your drives goes bad.
-> You can also use iostat to see if one of the drives is running much
-> slower than the other, which might be an early indication of failure
-> (and it might be the only indication of failure you get, if your drive's
-> firmware doesn't support SCTERC and hides failures).
-> 
->> What BTRFS read 19 days from disks???
->> 
->> Hardware: dell r300 with 2 WD Purple 1Tb disk on LSISAS1068E RAID 1
->> (without cache).
->> Linux nlxc 5.14-51412-generic #0~lch11 SMP Wed Oct 13 15:57:07 UTC
->> 2021 x86_64 GNU/Linux
->> btrfs-progs v5.14.1
->> 
->> # btrfs fi show
->> Label: none  uuid: a840a2ca-bf05-4074-8895-60d993cb5bdd
->>         Total devices 1 FS bytes used 474.26GiB
->>         devid    1 size 931.00GiB used 502.23GiB path /dev/sdb1
->> 
->> # btrfs fi df /srv
->> Data, single: total=367.19GiB, used=343.92GiB
->> System, single: total=32.00MiB, used=128.00KiB
->> Metadata, single: total=135.00GiB, used=130.34GiB
->> GlobalReserve, single: total=512.00MiB, used=0.00B
->> 
->> # btrfs fi us /srv
->> Overall:
->>     Device size:                 931.00GiB
->>     Device allocated:            502.23GiB
->>     Device unallocated:          428.77GiB
->>     Device missing:                  0.00B
->>     Used:                        474.26GiB
->>     Free (estimated):            452.04GiB      (min: 452.04GiB)
->>     Free (statfs, df):           452.04GiB
->>     Data ratio:                       1.00
->>     Metadata ratio:                   1.00
->>     Global reserve:              512.00MiB      (used: 0.00B)
->>     Multiple profiles:                  no
->> 
->> Data,single: Size:367.19GiB, Used:343.92GiB (93.66%)
->>    /dev/sdb1     367.19GiB
->> 
->> Metadata,single: Size:135.00GiB, Used:130.34GiB (96.55%)
->>    /dev/sdb1     135.00GiB
->> 
->> System,single: Size:32.00MiB, Used:128.00KiB (0.39%)
->>    /dev/sdb1      32.00MiB
->> 
->> Unallocated:
->>    /dev/sdb1     428.77GiB
 
 
