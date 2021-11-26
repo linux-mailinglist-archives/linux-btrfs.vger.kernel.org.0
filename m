@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E3B45E5B2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 04:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7B845E5E9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 04:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358322AbhKZCoN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Nov 2021 21:44:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50356 "EHLO mail.kernel.org"
+        id S1359072AbhKZCpv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Nov 2021 21:45:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1357803AbhKZCmL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Nov 2021 21:42:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEE1D611C5;
-        Fri, 26 Nov 2021 02:35:06 +0000 (UTC)
+        id S1358827AbhKZCnu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Nov 2021 21:43:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90DFA6126A;
+        Fri, 26 Nov 2021 02:35:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637894107;
-        bh=VriIERuYkDmStPsJWOSn8d/sD4jt8Zx4ULQ99zupz3w=;
+        s=k20201202; t=1637894148;
+        bh=sgiv5Ump/GT979rCOQ1JsMuo3gcBXiKY1RleDtPnKsQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rSKlaAak88Wdma2Ho9+V2QZOcBR8qa29W8DJaUPX26G8iZTDtWPPWRJNRJig+ozvQ
-         k4ks9jbcduvQjqeXWk3fDn+P01Fc7JBTLhMs/oYoFdOAd74gevZAOjGWJWVgNF8nQ+
-         hQ2FRG8i2NJrpszBoWJFT8YhsxuCQrqyE5PaNsvduNK5vriuWp5da8KWipTNQ7SOpL
-         PZHA/CCUxgYeC7s1HgXhMBuS7cljFZFbrO1VdV7kCz5p0N30XFa0u4pg2fv0+RXsdo
-         tDgcr/f+QTBQtQM1pYpwksPTWLh1iBdNrInMb71YHn+J0WgG8iPB+DZgVWmZgf/wrS
-         I2SC9vqUXCaJQ==
+        b=Lq07/mNktUhH2dYbwLpgLi0D8nJe/54pjTs3A9HOltO7+DgH+PMe7W564o86TCQSB
+         FHC+3BAJb2Ctvs8F3UK/clUO6Y2FyqPqwxu8a3qjVLgoBrR29J+iqIjXqzFBoE0lsf
+         OBDxIW02VC9wWQgf0cztoJOompFQpGaB//xSArcP3YWafAQLosRcrIdbuDLh2JfoDr
+         ET8vA7w94NIObrVPgR4QJMfPGpfC/jApNb5XU52fP2ZBrvd7WVZ1s5D1sWhPmi58pU
+         XL/M0WVb3MlO7nK3ZmQ8DQUWA7GUUmqcOq6bxSsWPvY2uT1o5w1TVEptyusSK/Y8XS
+         P82SextuEq7pw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Wang Yugui <wangyugui@e16-tech.com>,
@@ -30,12 +30,12 @@ Cc:     Wang Yugui <wangyugui@e16-tech.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, clm@fb.com,
         josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/19] btrfs: check-integrity: fix a warning on write caching disabled disk
-Date:   Thu, 25 Nov 2021 21:34:40 -0500
-Message-Id: <20211126023448.442529-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 08/15] btrfs: check-integrity: fix a warning on write caching disabled disk
+Date:   Thu, 25 Nov 2021 21:35:26 -0500
+Message-Id: <20211126023533.442895-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211126023448.442529-1-sashal@kernel.org>
-References: <20211126023448.442529-1-sashal@kernel.org>
+In-Reply-To: <20211126023533.442895-1-sashal@kernel.org>
+References: <20211126023533.442895-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -121,10 +121,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 1499531bc1511..f18c6d97932ed 100644
+index cb21ffd3bba7c..06e5529fedfdb 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -3636,11 +3636,23 @@ static void btrfs_end_empty_barrier(struct bio *bio)
+@@ -3578,11 +3578,23 @@ static void btrfs_end_empty_barrier(struct bio *bio)
   */
  static void write_dev_flush(struct btrfs_device *device)
  {
