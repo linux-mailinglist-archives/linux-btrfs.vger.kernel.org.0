@@ -2,153 +2,175 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C969F45E617
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 04:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C0F45E718
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Nov 2021 06:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358927AbhKZCr0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Nov 2021 21:47:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358934AbhKZCpY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Nov 2021 21:45:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC86061354;
-        Fri, 26 Nov 2021 02:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637894181;
-        bh=zckwn8ZqgcsTcbvynf3POGfdMPebx1qlpjUTQOx6pMk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qnUuVvsI8+3idJ3D7pFggog5CunteOImY+vb2Moeavs5TARtxkn+d2mmTMWMs97G+
-         G8oPQaPg7YpHd+zU+QzRE3cy8Eo9hkt+zg8NXHLR5/p7OefBrjegS0dEsgBGzMGiY8
-         +Z/xE/h85+0AF5d7XDyZ4Z78SZ/n/+3DL/A8OumqbcYz4QOHqTr04+j0EVeJ70p30Q
-         0g2cRGUR00VBzI3HEYaS262TwX22H0Ig1T59BDjVwuYmA0khcrzuZgT61XHmQ5fcii
-         lccpsFQfRfzY+Lbsh3+1a4kG5phZmg7PFCov9lR7T7o9kegXxzOJvy8Q0IX6tFF1Fi
-         dQB/QTLMWFTUg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wang Yugui <wangyugui@e16-tech.com>,
-        Filipe Manana <fdmanana@gmail.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, clm@fb.com,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 06/12] btrfs: check-integrity: fix a warning on write caching disabled disk
-Date:   Thu, 25 Nov 2021 21:36:02 -0500
-Message-Id: <20211126023611.443098-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211126023611.443098-1-sashal@kernel.org>
-References: <20211126023611.443098-1-sashal@kernel.org>
+        id S232289AbhKZFUR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Nov 2021 00:20:17 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:40766 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235223AbhKZFSQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Nov 2021 00:18:16 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 3BE109B5B4; Fri, 26 Nov 2021 00:15:03 -0500 (EST)
+Date:   Fri, 26 Nov 2021 00:15:03 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Andrey Melnikov <temnota.am@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: btrfs with huge numbers of hardlinks is extremely slow
+Message-ID: <20211126051503.GG17148@hungrycats.org>
+References: <CA+PODjrE4V9hL1bXEEghU6NAFgPgfUu4f75FCQn+0vKUaeu1zg@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+PODjrE4V9hL1bXEEghU6NAFgPgfUu4f75FCQn+0vKUaeu1zg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Wang Yugui <wangyugui@e16-tech.com>
+On Fri, Nov 26, 2021 at 12:56:25AM +0300, Andrey Melnikov wrote:
+> Every night a new backup is stored on this fs with 'rsync
+> --link-dest=$yestoday/ $today/' - 1402700 hardlinks and 23000
+> directories are created, 50-100 normal files transferred.
+> Now, FS contains 351 copies of backup data with 486086495 hardlinks
+> and ANY operations on this FS take significant time. For example -
+> simple count hardlinks with
+> "time find . -type f -links +1 | wc -l" take:
+> real    28567m33.611s
+> user    31m33.395s
+> sys     506m28.576s
+> 
+> 19 days 20 hours 10 mins with constant reads from storage 2-4Mb/s.
 
-[ Upstream commit a91cf0ffbc244792e0b3ecf7d0fddb2f344b461f ]
+That works out to reading the entire drive 4x in 20 days, or all of the
+metadata 30x.  Certainly hardlinks will not result in optimal object
+placement, and you probably don't have enough RAM to cache the entire
+metadata tree, and you're using WD Purple drives in a fileserver for
+some reason, so those numbers seem plausible.
 
-When a disk has write caching disabled, we skip submission of a bio with
-flush and sync requests before writing the superblock, since it's not
-needed. However when the integrity checker is enabled, this results in
-reports that there are metadata blocks referred by a superblock that
-were not properly flushed. So don't skip the bio submission only when
-the integrity checker is enabled for the sake of simplicity, since this
-is a debug tool and not meant for use in non-debug builds.
+> - BTRFS not suitable for this workload?
 
-fstests/btrfs/220 trigger a check-integrity warning like the following
-when CONFIG_BTRFS_FS_CHECK_INTEGRITY=y and the disk with WCE=0.
+There are definitely better ways to do this on btrfs, e.g.
 
-  btrfs: attempt to write superblock which references block M @5242880 (sdb2/5242880/0) which is not flushed out of disk's write cache (block flush_gen=1, dev->flush_gen=0)!
-  ------------[ cut here ]------------
-  WARNING: CPU: 28 PID: 843680 at fs/btrfs/check-integrity.c:2196 btrfsic_process_written_superblock+0x22a/0x2a0 [btrfs]
-  CPU: 28 PID: 843680 Comm: umount Not tainted 5.15.0-0.rc5.39.el8.x86_64 #1
-  Hardware name: Dell Inc. Precision T7610/0NK70N, BIOS A18 09/11/2019
-  RIP: 0010:btrfsic_process_written_superblock+0x22a/0x2a0 [btrfs]
-  RSP: 0018:ffffb642afb47940 EFLAGS: 00010246
-  RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
-  RDX: 00000000ffffffff RSI: ffff8b722fc97d00 RDI: ffff8b722fc97d00
-  RBP: ffff8b5601c00000 R08: 0000000000000000 R09: c0000000ffff7fff
-  R10: 0000000000000001 R11: ffffb642afb476f8 R12: ffffffffffffffff
-  R13: ffffb642afb47974 R14: ffff8b5499254c00 R15: 0000000000000003
-  FS:  00007f00a06d4080(0000) GS:ffff8b722fc80000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007fff5cff5ff0 CR3: 00000001c0c2a006 CR4: 00000000001706e0
-  Call Trace:
-   btrfsic_process_written_block+0x2f7/0x850 [btrfs]
-   __btrfsic_submit_bio.part.19+0x310/0x330 [btrfs]
-   ? bio_associate_blkg_from_css+0xa4/0x2c0
-   btrfsic_submit_bio+0x18/0x30 [btrfs]
-   write_dev_supers+0x81/0x2a0 [btrfs]
-   ? find_get_pages_range_tag+0x219/0x280
-   ? pagevec_lookup_range_tag+0x24/0x30
-   ? __filemap_fdatawait_range+0x6d/0xf0
-   ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
-   ? find_first_extent_bit+0x9b/0x160 [btrfs]
-   ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
-   write_all_supers+0x1b3/0xa70 [btrfs]
-   ? __raw_callee_save___native_queued_spin_unlock+0x11/0x1e
-   btrfs_commit_transaction+0x59d/0xac0 [btrfs]
-   close_ctree+0x11d/0x339 [btrfs]
-   generic_shutdown_super+0x71/0x110
-   kill_anon_super+0x14/0x30
-   btrfs_kill_super+0x12/0x20 [btrfs]
-   deactivate_locked_super+0x31/0x70
-   cleanup_mnt+0xb8/0x140
-   task_work_run+0x6d/0xb0
-   exit_to_user_mode_prepare+0x1f0/0x200
-   syscall_exit_to_user_mode+0x12/0x30
-   do_syscall_64+0x46/0x80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
-  RIP: 0033:0x7f009f711dfb
-  RSP: 002b:00007fff5cff7928 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-  RAX: 0000000000000000 RBX: 000055b68c6c9970 RCX: 00007f009f711dfb
-  RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055b68c6c9b50
-  RBP: 0000000000000000 R08: 000055b68c6ca900 R09: 00007f009f795580
-  R10: 0000000000000000 R11: 0000000000000246 R12: 000055b68c6c9b50
-  R13: 00007f00a04bf184 R14: 0000000000000000 R15: 00000000ffffffff
-  ---[ end trace 2c4b82abcef9eec4 ]---
-  S-65536(sdb2/65536/1)
-   -->
-  M-1064960(sdb2/1064960/1)
+	btrfs sub snap $yesterday $today
+	rsync ... (no link-dest) ... $today
 
-Reviewed-by: Filipe Manana <fdmanana@gmail.com>
-Signed-off-by: Wang Yugui <wangyugui@e16-tech.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/disk-io.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+This will avoid duplicating the entire file tree every time.  It will also
+store historical file attributes correctly, which --link-dest sometimes
+does not.
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index ace58d6a270b6..41ebc613ca4cf 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3339,11 +3339,23 @@ static void btrfs_end_empty_barrier(struct bio *bio)
-  */
- static void write_dev_flush(struct btrfs_device *device)
- {
--	struct request_queue *q = bdev_get_queue(device->bdev);
- 	struct bio *bio = device->flush_bio;
- 
-+#ifndef CONFIG_BTRFS_FS_CHECK_INTEGRITY
-+	/*
-+	 * When a disk has write caching disabled, we skip submission of a bio
-+	 * with flush and sync requests before writing the superblock, since
-+	 * it's not needed. However when the integrity checker is enabled, this
-+	 * results in reports that there are metadata blocks referred by a
-+	 * superblock that were not properly flushed. So don't skip the bio
-+	 * submission only when the integrity checker is enabled for the sake
-+	 * of simplicity, since this is a debug tool and not meant for use in
-+	 * non-debug builds.
-+	 */
-+	struct request_queue *q = bdev_get_queue(device->bdev);
- 	if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags))
- 		return;
-+#endif
- 
- 	bio_reset(bio);
- 	bio->bi_end_io = btrfs_end_empty_barrier;
--- 
-2.33.0
+You might also consider doing it differently:
 
+	rsync ... (no link-dest) ... working-dir/. &&
+	btrfs sub snap -r working-dir $today
+
+so that your $today directory doesn't exist until it is complete with
+no rsync errors.  'working-dir' will have to be a subvol, but you only
+have to create it once and you can keep reusing it afterwards.
+
+> - using reflinks helps speedup FS operations?
+
+Snapshots are lazy reflink copies, so they'll do a little better than
+reflinks.  You'll only modify the metadata for the 50-100 files that you
+transfer each day, instead of completely rewriting all of the metadata
+in the filesystem every day with hardlinks.
+
+Hardlinks put the inodes further and further away from their directory
+nodes each day, and add some extra searching overhead within directories
+as well.  You'll need more and more RAM to cache the same amount of
+each filesystem tree, because they're all in the same metadata tree.
+With snapshots they'll end up in separate metadata trees.
+
+> - readed metadata not cached at all? 
+
+If you have less than about 640GB of RAM (4x the size of your metadata)
+then you're going to be rereading metadata pages at some point.  Because
+you're using hardlinks, the metadata pages from different days are all
+mashed together, and 'find' will flood the cache chasing references to
+them.
+
+Other recommendations:
+
+- Use the right drive model for your workload.  WD Purple drives are for
+continuous video streaming, they are not for seeky millions-of-tiny-files
+rsync workloads.  Almost any other model will outperform them, and
+better drives for this workload (e.g. CMR WD Red models) are cheaper.
+Your WD Purple drives are getting 283 links/s.  Compare that with some
+other drive models:
+
+	1665 links/s:  WD Green (2x1TB + 1x2TB btrfs raid1)
+
+	6850 links/s:  Sandisk Extreme MicroSD (1x256GB btrfs single/dup)
+
+	12511 links/s:  WD Red (2x1TB btrfs raid1)
+
+	13371 links/s:  WD Red SSD + Seagate Ironwolf SSD (6x1TB btrfs raid1)
+
+	14872 links/s:  WD Black (1x1TB btrfs single/dup, 8 years old)
+
+	25498 links/s:  WD Gold + Seagate Exos (3x16TB btrfs raid1)
+
+	27341 links/s:  Toshiba NVME (1x2TB btrfs single/dup)
+
+	311284 links/s:  Sabrent Rocket 4 NVME (2x1TB btrfs raid1)
+	(1344748222 links, 111 snapshots)
+
+Some of these numbers are lower than they should be, because I ran
+'find' commands on some machines that were busy doing other work.
+The point is that even if some of these numbers are too low, all of
+these numbers are higher what we can expect from a WD Purple.
+
+- Use btrfs raid1 instead of hardware RAID1, i.e. expose each disk
+separately through the RAID interface to btrfs.  This will enable btrfs
+to correct errors and isolate faults if one of your drives goes bad.
+You can also use iostat to see if one of the drives is running much
+slower than the other, which might be an early indication of failure
+(and it might be the only indication of failure you get, if your drive's
+firmware doesn't support SCTERC and hides failures).
+
+> What BTRFS read 19 days from disks???
+> 
+> Hardware: dell r300 with 2 WD Purple 1Tb disk on LSISAS1068E RAID 1
+> (without cache).
+> Linux nlxc 5.14-51412-generic #0~lch11 SMP Wed Oct 13 15:57:07 UTC
+> 2021 x86_64 GNU/Linux
+> btrfs-progs v5.14.1
+> 
+> # btrfs fi show
+> Label: none  uuid: a840a2ca-bf05-4074-8895-60d993cb5bdd
+>         Total devices 1 FS bytes used 474.26GiB
+>         devid    1 size 931.00GiB used 502.23GiB path /dev/sdb1
+> 
+> # btrfs fi df /srv
+> Data, single: total=367.19GiB, used=343.92GiB
+> System, single: total=32.00MiB, used=128.00KiB
+> Metadata, single: total=135.00GiB, used=130.34GiB
+> GlobalReserve, single: total=512.00MiB, used=0.00B
+> 
+> # btrfs fi us /srv
+> Overall:
+>     Device size:                 931.00GiB
+>     Device allocated:            502.23GiB
+>     Device unallocated:          428.77GiB
+>     Device missing:                  0.00B
+>     Used:                        474.26GiB
+>     Free (estimated):            452.04GiB      (min: 452.04GiB)
+>     Free (statfs, df):           452.04GiB
+>     Data ratio:                       1.00
+>     Metadata ratio:                   1.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
+>     Multiple profiles:                  no
+> 
+> Data,single: Size:367.19GiB, Used:343.92GiB (93.66%)
+>    /dev/sdb1     367.19GiB
+> 
+> Metadata,single: Size:135.00GiB, Used:130.34GiB (96.55%)
+>    /dev/sdb1     135.00GiB
+> 
+> System,single: Size:32.00MiB, Used:128.00KiB (0.39%)
+>    /dev/sdb1      32.00MiB
+> 
+> Unallocated:
+>    /dev/sdb1     428.77GiB
