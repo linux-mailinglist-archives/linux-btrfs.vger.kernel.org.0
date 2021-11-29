@@ -2,55 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F04461B63
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Nov 2021 16:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650DE461BA4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Nov 2021 17:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhK2Pzl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Nov 2021 10:55:41 -0500
-Received: from w1.tutanota.de ([81.3.6.162]:50444 "EHLO w1.tutanota.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232047AbhK2Pxk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Nov 2021 10:53:40 -0500
-Received: from w3.tutanota.de (unknown [192.168.1.164])
-        by w1.tutanota.de (Postfix) with ESMTP id D9C5DFBF883;
-        Mon, 29 Nov 2021 15:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1638201020;
-        s=s1; d=tutanota.com;
-        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
-        bh=90UgJKs8MANi/hqnG6V971kSyvmKZ2rw7WNKHUUdWaQ=;
-        b=WWs3oa+FgmGwAxCHHajOHARLEYdkU0DTpTr8hisagwaHgEeuPBd3XAIa+eMTwIe+
-        NiRMnUVFjhxqFsnMz82O4DF1VswLFf/39r1CTuOphQpBYOvlMnT7aFcXAvDKQGs0Y9p
-        7tTafvCJn3qw+lFmBrEi1mlovpVkCd80SJPkpuTW2dRe/h8HmxhgIiUY8t059Qn0F78
-        zXDOlq/nWku0aBSZ4IqjNrPgVOyMQm8nScBBlFCcD933K7333iF57wBsjLMJjnG5Tyl
-        g31o3ut+Sl7N4ryXDrOqWHjUxANuTc/IGGAjmgazFsy0pKdsTWtti0HXmqUBjNFHgED
-        Dzzd5jYwvQ==
-Date:   Mon, 29 Nov 2021 16:50:20 +0100 (CET)
-From:   Borden <borden_c@tutanota.com>
-To:     Phillip Susi <phill@thesusis.net>
-Cc:     linux-btrfs@vger.kernel.org
-Message-ID: <MpgNwtq--3-2@tutanota.com>
-In-Reply-To: <87r1azashl.fsf@vps.thesusis.net>
-References: <MpesPIt--3-2@tutanota.com> <87r1azashl.fsf@vps.thesusis.net>
-Subject: Re: Connection lost during BTRFS move + resize
+        id S1344810AbhK2QSk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Nov 2021 11:18:40 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:52126 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345410AbhK2QQk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Nov 2021 11:16:40 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 6D7C91FCA1;
+        Mon, 29 Nov 2021 16:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1638202401;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rScVNxr4TVVnzusXkesoEKZZv5Q1aX4f/dKE5XP6q9c=;
+        b=NTUHWH+tTUCSSrKe/soToE2DHJLnM3p0QqTYCB0AwpXSrMCyd6edcnqchWtTpCTa5syNVy
+        NvNovnqlRSjxB+G/JsTH6DC17iydqeYPBbpAZMDzhPISqQgDwnXkMifZ81f5mRD+SEh9LH
+        Fc4TJRX+5LUaaJOSE3lLb8PiMDHb0Dg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1638202401;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rScVNxr4TVVnzusXkesoEKZZv5Q1aX4f/dKE5XP6q9c=;
+        b=f20q2Bc2DxqbbvaIvBu8b3E1YVjU3vt0yGrJ4QXEyo8+sVtHvUriNdL6VF8Od+UazIWLmV
+        N3lLTYcGXEq9UpCA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 663E6A3B83;
+        Mon, 29 Nov 2021 16:13:21 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0C410DA735; Mon, 29 Nov 2021 17:13:10 +0100 (CET)
+Date:   Mon, 29 Nov 2021 17:13:10 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Btrfs fixes for 5.16-rc3
+Message-ID: <20211129161310.GE28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1637940049.git.dsterba@suse.com>
+ <CAHk-=wia6jNRQDm51wNf2X2cNGeN+5Uz3DWQ2bgnGyVRK4LRJA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wia6jNRQDm51wNf2X2cNGeN+5Uz3DWQ2bgnGyVRK4LRJA@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-29 Nov 2021, 10:26 by phill@thesusis.net:
-> The only tool I know of that can do this is gparted, so I assume you are
-> using that.  In this case, it has to umount the filesystem and manually
-> copy data from the old start of the partition to the new start.  Being
-> interrupted in the middle leaves part of the filesystem in the wrong
-> place ( and which parts is unknowable ), and so it is toast.  This is
-> one area where LVM has a significant advantage as its moves are
-> interruption safe and automatically resumed on the next activation of
-> the volume.
->
-This is the answer that I anticipated, and it's good to know now so I don't destroy data that I _cannot_ afford to lose later. So thank you.
+On Fri, Nov 26, 2021 at 12:48:15PM -0800, Linus Torvalds wrote:
+> On Fri, Nov 26, 2021 at 7:42 AM David Sterba <dsterba@suse.com> wrote:
+> >
+> > one more fix to the lzo code, a missing put_page causing memory leaks
+> > when some error branches are taken.
+> >
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.16-rc2-tag
+> 
+> Hmm.
+> 
+> pr-tracker-bot didn't react to this one, and it wasn't obvious why.
+> 
+> Until I started looking closer. You claim:
+> 
+> > for you to fetch changes up to 504d851ab360dc00e2163acef2e200ea69ac800a:
+> >
+> >   btrfs: fix the memory leak caused in lzo_compress_pages() (2021-11-26 14:32:40 +0100)
+> 
+> but in fact it's commit daf87e953527, not as the pull request claims
+> 504d851ab360..
+> 
+> And no, it's not the tag either, that was d0a295f521e2.
+> 
+> The diffstat and the shortlog matched, so I had pulled it without
+> noticing. But something went wrong in there in the pull request.
 
-For my own education/curiosity/intellectual banter: ddrescue, badblocks, rsync and other utilities have log files that track progress and allow it to resume if it's interrupted. Since resize operations work in the linear process you described, how hard would it be, theoretically, to implement a "needle position" in a move operation to allow a move to pick up where it left off?
-
-Obviously, it wouldn't be 100% perfect, but if a recovery utility could look at the disk and say "partition starts here, skip a bit somewhere in the middle, continue here, stop there," surely that would be more efficient than trying to recover files with a low-level utility?
+Possible explanation: I had problems pushing to k.org repo from work
+machine (ssh timeout, fetching worked) so I pushed it from a different
+one. The branch to pull was recreated from the same commit, with id
+daf87e953527b03c0b and pushed to k.org but I must have kept the previous
+for-5.16-rc2 branch without update when preparing the pull request mail.
