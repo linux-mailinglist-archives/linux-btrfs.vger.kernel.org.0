@@ -2,144 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE88C462097
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Nov 2021 20:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FE846209B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Nov 2021 20:35:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345067AbhK2ThP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Nov 2021 14:37:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55110 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347496AbhK2TfO (ORCPT
+        id S1350545AbhK2Ti2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Nov 2021 14:38:28 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:50152 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235801AbhK2Tg0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Nov 2021 14:35:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638214316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 29 Nov 2021 14:36:26 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 41902212FE;
+        Mon, 29 Nov 2021 19:33:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1638214387;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yaRvpoInOnEEHMP7nyqwnXQsh6SAlooVZxGGKWanykI=;
-        b=g3ysvnMWMSLafJrQ7CpXnsCzTsfuzBBOdlwYROYS9WlO4WAq3UWd/I/b4fyCra5SUkAhs8
-        r+kXVgyWxNsNh6cZqyddTBFEs/uCLKR6HmIKhVQBve0YEcmh9wQDC2gewIT2EcUOVDPTdL
-        wWnn8bYtqVG/VwWVXKBVjiIbVTgvBN0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-478--M0PDbNGMk2wsS3ud5yWbw-1; Mon, 29 Nov 2021 14:31:52 -0500
-X-MC-Unique: -M0PDbNGMk2wsS3ud5yWbw-1
-Received: by mail-wr1-f72.google.com with SMTP id q17-20020adff791000000b00183e734ba48so3128258wrp.8
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Nov 2021 11:31:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yaRvpoInOnEEHMP7nyqwnXQsh6SAlooVZxGGKWanykI=;
-        b=AbLeWkNg0ZhiY9cVrj65aHur9n1bmXA72KPdT5GQ408QWQcs2/QcbtGJSUtkcXVJ4P
-         tp1rJCBwIAFvApwrfZGxHfJfAjAjCsldG+XBfHjr51gG1SmirQS+2oX/XTOD4299/1qu
-         /rCIK14ytg+55CApyHGS7GeAzwO7g0VEcxRWFEUVxhe0i726Gszx96Njispmm+fwfap8
-         gKT8Wj4UU7OTL9DkwC/DMWJGiJvMtUVtpFk38bfxQ+ITJjTWfWyaJAgU8CRQ4hDnZ3g2
-         qcHI4+SaEdRjyDgydrk7d0wREi8cTcDJssiRkcdc+kmVof1dKv4ka4+oahljjILW6xzM
-         rw4w==
-X-Gm-Message-State: AOAM533y3wYX+wa4XsLN0mTk+2FnN7fBjfmovJ9Az6OPUqQl9W9GYuSG
-        x13mX5dt3SM4lQPAVZIM5rNgfjuOItgI0VLjs41gwNv9dCoPG3pqe3Cw8/x1OQvJ718u4xBri+i
-        y70cjwJOKxgY9ErW/gJ0eJoX+i9OHCKqZm94ofa4=
-X-Received: by 2002:adf:f749:: with SMTP id z9mr36910289wrp.379.1638214311587;
-        Mon, 29 Nov 2021 11:31:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwSv2WybHRedA4NST/0L7m41HCQb6LRVF5wHW9P5FzzrZgkSDOaniNFjz8BjqBW06bNnR5BfRT4OlQsVo6M068=
-X-Received: by 2002:adf:f749:: with SMTP id z9mr36910269wrp.379.1638214311399;
- Mon, 29 Nov 2021 11:31:51 -0800 (PST)
+        bh=pqJqB4aG/B4QaE0V/N2msVAs/z57H6qb6kEwXl2hejQ=;
+        b=baDTsaA2LE5KePEuPMotCVMCZkrDxZhnVDEjbd5VmNdC9FC9ZQgZeqbLM7htlnbIClHoM/
+        eFGeNRg8nPwR6Cqs11tN2JjfeH7atk0E4/rJvvaHdiFgurCialzOg7Iy3yUPcnTSIrlWPA
+        jSptjGMkOz9WT2r+WpIxx87fhe2g9eA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1638214387;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pqJqB4aG/B4QaE0V/N2msVAs/z57H6qb6kEwXl2hejQ=;
+        b=P3uUNNxq65aIbYKfGEOu4K820rFBDrSDvXsHpRGHBB76QYC7ATSeMdeoNv15GjHmwEAbSO
+        Y+W98lIJ7JBm2iBw==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 383C4A3B81;
+        Mon, 29 Nov 2021 19:33:07 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C3D69DA735; Mon, 29 Nov 2021 20:32:56 +0100 (CET)
+Date:   Mon, 29 Nov 2021 20:32:56 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Eryu Guan <guan@eryu.me>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] fstests: generic/260: don't fail for certain fstrim ops
+ on btrfs
+Message-ID: <20211129193256.GH28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Eryu Guan <guan@eryu.me>,
+        Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        fstests@vger.kernel.org, kernel-team@fb.com
+References: <175b1ef92bbd2a48e2efb80d0064ca91aab1402e.1637618880.git.josef@toxicpanda.com>
+ <YaOeFrS/wX43Qw5c@desktop>
 MIME-Version: 1.0
-References: <20211124192024.2408218-1-catalin.marinas@arm.com>
- <20211124192024.2408218-4-catalin.marinas@arm.com> <YZ6arlsi2L3LVbFO@casper.infradead.org>
- <YZ6idVy3zqQC4atv@arm.com> <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
- <20211127123958.588350-1-agruenba@redhat.com> <YaJM4n31gDeVzUGA@arm.com>
- <CAHc6FU7BSL58GVkOh=nsNQczRKG3P+Ty044zs7PjKPik4vzz=Q@mail.gmail.com>
- <YaTEkAahkCwuQdPN@arm.com> <CAHc6FU6zVi9A2D3V3T5zE71YAdkBiJTs0ao1Q6ysSuEp=bz8fQ@mail.gmail.com>
- <YaTziROgnFwB6Ddj@arm.com> <CAHk-=wiZgAgcynfLsop+D1xBUAZ-Z+NUBxe9mb-AedecFRNm+w@mail.gmail.com>
-In-Reply-To: <CAHk-=wiZgAgcynfLsop+D1xBUAZ-Z+NUBxe9mb-AedecFRNm+w@mail.gmail.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 29 Nov 2021 20:31:39 +0100
-Message-ID: <CAHc6FU4bdwTo72d-ULdW=9vxH09qW1Z+_6ksZrkefuXEtLSOkA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
- with sub-page faults
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YaOeFrS/wX43Qw5c@desktop>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 29, 2021 at 7:41 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Mon, Nov 29, 2021 at 7:36 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> >
-> > That's what this series does when it probes the whole range in
-> > fault_in_writeable(). The main reason was that it's more efficient to do
-> > a read than a write on a large range (the latter dirtying the cache
-> > lines).
->
-> The more this thread goes on, the more I'm starting to think that we
-> should just make "fault_in_writable()" (and readable, of course) only
-> really work on the beginning of the area.
->
-> Not just for the finer-granularity pointer color probing, but for the
-> page probing too.
->
-> I'm looking at our current fault_in_writeable(), and I'm going
->
->  (a) it uses __put_user() without range checks, which is really not great
->
->  (b) it looks like a disaster from another standpoint: essentially
-> user-controlled loop size with no limit checking, no preemption, and
-> no check for fatal signals.
->
-> Now, (a) should be fixed with a access_ok() or similar.
->
-> And (b) can easily be fixed multiple ways, with one option simply just
-> being adding a can_resched() call and checking for fatal signals.
->
-> But faulting in the whole region is actually fundamentally wrong in
-> low-memory situations - the beginning of the region might be swapped
-> out by the time we get to the end. That's unlikely to be a problem in
-> real life, but it's an example of how it's simply not conceptually
-> sensible.
->
-> So I do wonder why we don't just say "fault_in_writable will fault in
-> _at_most_ X bytes", and simply limit the actual fault-in size to
-> something reasonable.
->
-> That solves _all_ the problems. It solves the lack of preemption and
-> fatal signals (by virtue of just limiting the amount of work we do).
-> It solves the low memory situation. And it solves the "excessive dirty
-> cachelines" case too.
->
-> Of course, we want to have some minimum bytes we fault in too, but
-> that minimum range might well be "we guarantee at least a full page
-> worth of data" (and in practice make it a couple of pages).
->
-> It's not like fault_in_writeable() avoids page faults or anything like
-> that - it just moves them around. So there's really very little reason
-> to fault in a large range, and there are multiple reasons _not_ to do
-> it.
->
-> Hmm?
+On Sun, Nov 28, 2021 at 11:19:50PM +0800, Eryu Guan wrote:
+> On Mon, Nov 22, 2021 at 05:08:10PM -0500, Josef Bacik wrote:
+> > We have always failed generic/260, because it tests to see if the file
+> > system will reject a trim range that is above the reported fs size.
+> > However for btrfs we will happily remap logical byte offsets within the
+> > file system, so you can end up with bye offsets past the end of the
+> > reported end of the file system.  Thus we do not fail these weird
+> > ranges.  We also don't have the concept of allocation groups, so the
+> > other test that tries to catch overflow doesn't apply to us either.  Fix
+> > this by simply using an offset that will fail (once a related kernel
+> > path is applied) for btrfs.  This will allow us to test the different
+> > overflow cases that do apply to btrfs, and not muddy up test results by
+> > giving us a false negative for the cases that do not apply to btrfs.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> 
+> I'd like an ACK from btrfs folks as well.
 
-This would mean that we could get rid of gfs2's
-should_fault_in_pages() logic, which is based on what's in
-btrfs_buffered_write().
-
-Andreas
-
->
->                Linus
->
-
+Ack.
