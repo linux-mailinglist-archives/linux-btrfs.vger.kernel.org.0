@@ -2,92 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDFE462800
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Nov 2021 00:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97067462817
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Nov 2021 00:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbhK2XRb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Nov 2021 18:17:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
+        id S233080AbhK2XTw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Nov 2021 18:19:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbhK2XRP (ORCPT
+        with ESMTP id S230152AbhK2XTh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Nov 2021 18:17:15 -0500
+        Mon, 29 Nov 2021 18:19:37 -0500
 Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32F7C06175A;
-        Mon, 29 Nov 2021 15:02:23 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F2CC0619DC;
+        Mon, 29 Nov 2021 15:12:50 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 1BDA6CE167C;
-        Mon, 29 Nov 2021 23:02:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C408C53FC7;
-        Mon, 29 Nov 2021 23:02:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638226940;
-        bh=1i2gZ5NGBOA7KsIRxdWJ7aD3gL4YbJYucMh+Om0IHO4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BmgvC2cJiYl9hg0+DWzrUeegL1v3t/0Ldjou6S6SPHApfqANoPUv82DGNm2PvdjxC
-         FOMooKapEe85SHUpBBmfjVnOLqNRyUOb7yVD/jzS9pQgChawpzSYzuR2QWOCHbYpls
-         dSkfzbUqp6Ue8NZReOpR6ks/s/+j4KbJ6PSJTxpEKygYa2272ixlWyeRNFlRtGwEOL
-         LTpOsd6dIzH+Fpw+8LdQHGQWdQBD0mtJXOJa/+copBW9sMcrNbUwMM7ivbIOPHBI5l
-         GGzASoGXWhfibOgzK25omCP/MHXOw+HrdIiB8gBA4/BTSlrxZ0qhDgN08RhTRhfd4a
-         XRTe7QQwuyDAA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        by sin.source.kernel.org (Postfix) with ESMTPS id 4ED62CE16E7;
+        Mon, 29 Nov 2021 23:12:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 665C2C53FAD;
+        Mon, 29 Nov 2021 23:12:44 +0000 (UTC)
+Date:   Mon, 29 Nov 2021 23:12:41 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 3/3] lib/Kconfig.debug: Make TEST_KMOD depend on PAGE_SIZE_LESS_THAN_256KB
-Date:   Mon, 29 Nov 2021 16:01:41 -0700
-Message-Id: <20211129230141.228085-4-nathan@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20211129230141.228085-1-nathan@kernel.org>
-References: <20211129230141.228085-1-nathan@kernel.org>
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YaVeafjbutiVXavv@arm.com>
+References: <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
+ <20211127123958.588350-1-agruenba@redhat.com>
+ <YaJM4n31gDeVzUGA@arm.com>
+ <CAHc6FU7BSL58GVkOh=nsNQczRKG3P+Ty044zs7PjKPik4vzz=Q@mail.gmail.com>
+ <YaTEkAahkCwuQdPN@arm.com>
+ <CAHc6FU6zVi9A2D3V3T5zE71YAdkBiJTs0ao1Q6ysSuEp=bz8fQ@mail.gmail.com>
+ <YaTziROgnFwB6Ddj@arm.com>
+ <CAHk-=wiZgAgcynfLsop+D1xBUAZ-Z+NUBxe9mb-AedecFRNm+w@mail.gmail.com>
+ <YaU+aDG5pCAba57r@arm.com>
+ <CAHk-=wjZ6zME2SzohM1P_-B0BNi2JJgvz22ypF-EuAQiVKipRg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjZ6zME2SzohM1P_-B0BNi2JJgvz22ypF-EuAQiVKipRg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit b05fbcc36be1 ("btrfs: disable build on platforms having page size
-256K") disabled btrfs for configurations that used a 256kB page size.
-However, it did not fully solve the problem because CONFIG_TEST_KMOD
-selects CONFIG_BTRFS, which does not account for the dependency. This
-results in a Kconfig warning and the failed BUILD_BUG_ON error
-returning.
+On Mon, Nov 29, 2021 at 01:53:01PM -0800, Linus Torvalds wrote:
+> On Mon, Nov 29, 2021 at 12:56 PM Catalin Marinas
+> <catalin.marinas@arm.com> wrote:
+> > I think that would be useful, though it doesn't solve the potential
+> > livelock with sub-page faults.
+> 
+> I was assuming we'd just do the sub-page faults.
+> 
+> In fact, I was assuming we'd basically just replace all the PAGE_ALIGN
+> and PAGE_SIZE with SUBPAGE_{ALIGN,SIZE}, together with something like
+> 
+>         if (size > PAGE_SIZE)
+>                 size = PAGE_SIZE;
+> 
+> to limit that size thing (or possibly make that "min size" be a
+> parameter, so that people who have things like that "I need at least
+> this initial structure to be copied" issue can document their minimum
+> size needs).
 
-WARNING: unmet direct dependencies detected for BTRFS_FS
-  Depends on [n]: BLOCK [=y] && !PPC_256K_PAGES && !PAGE_SIZE_256KB [=y]
-  Selected by [m]:
-  - TEST_KMOD [=m] && RUNTIME_TESTING_MENU [=y] && m && MODULES [=y] && NETDEVICES [=y] && NET_CORE [=y] && INET [=y] && BLOCK [=y]
+Ah, so fault_in_writeable() would never fault in the whole range (if too
+large). When copy_to_user() goes beyond the faulted in range, it may
+fail and we go back to fault in a bit more of the range. A copy loop
+would be equivalent to:
 
-To resolve this, add CONFIG_PAGE_SIZE_LESS_THAN_256KB as a dependency of
-CONFIG_TEST_KMOD so there is no more invalid configuration or build
-errors.
+	fault_addr = ubuf;
+	end = ubuf + size;
+	while (1) {
+		if (fault_in_writeable(fault_addr,
+				       min(PAGE_SIZE, end - fault_addr)))
+			break;
+		left = copy_to_user(ubuf, kbuf, size);
+		if (!left)
+			break;
+		fault_addr = end - left;
+	}
 
-Fixes: b05fbcc36be1 ("btrfs: disable build on platforms having page size 256K")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- lib/Kconfig.debug | 1 +
- 1 file changed, 1 insertion(+)
+That should work. I'll think about it tomorrow, getting late over here.
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 5c12bde10996..a32f6bb4642c 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2486,6 +2486,7 @@ config TEST_KMOD
- 	depends on m
- 	depends on NETDEVICES && NET_CORE && INET # for TUN
- 	depends on BLOCK
-+	depends on PAGE_SIZE_LESS_THAN_256KB # for BTRFS
- 	select TEST_LKM
- 	select XFS_FS
- 	select TUN
+(I may still keep the sub-page probing in the arch code, see my earlier
+exchanges with Andreas)
+
 -- 
-2.34.1
-
+Catalin
