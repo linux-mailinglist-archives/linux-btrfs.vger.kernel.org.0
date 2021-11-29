@@ -2,136 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3AD4619E8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Nov 2021 15:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29029461B44
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Nov 2021 16:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378869AbhK2Omk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Nov 2021 09:42:40 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:35616 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347867AbhK2Oki (ORCPT
+        id S238205AbhK2PtW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Nov 2021 10:49:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245276AbhK2PrV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Nov 2021 09:40:38 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Mon, 29 Nov 2021 10:47:21 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D99C061A13;
+        Mon, 29 Nov 2021 05:52:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5C6E421709;
-        Mon, 29 Nov 2021 14:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1638196635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xAq1M0EfufsYxEj0cGJTIegFHRqYev6kiU/B6mvpyqU=;
-        b=oOqk/0e4y6iUgH/83aRt3QYO59jLC5fxx3b/xikcMylkgzk1HSYj1cgYOBoOT0+DT9YSt3
-        llV7CRDu7oi1poQ+4t9gdtJ+/hkEmfssB0kEv1apSBY1qbhUVr7726aFaJkqUk4cDGGzy5
-        pIOlvYyZRkdHXscPkmDTnF94bBaNMEg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 050BA13B15;
-        Mon, 29 Nov 2021 14:37:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Q4ruOZrlpGEGBwAAMHmgww
-        (envelope-from <nborisov@suse.com>); Mon, 29 Nov 2021 14:37:14 +0000
-Subject: Re: [BUG] fs: btrfs: several possible ABBA deadlocks
-To:     Josef Bacik <josef@toxicpanda.com>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <44b385ca-f00d-0b47-e370-bd7d97cb1be3@gmail.com>
- <YaQgFhuaQHsND/jr@localhost.localdomain>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <8c1f9493-ef50-635e-4426-61120c4b1a86@suse.com>
-Date:   Mon, 29 Nov 2021 16:37:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27A676152F;
+        Mon, 29 Nov 2021 13:52:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71BD1C004E1;
+        Mon, 29 Nov 2021 13:52:16 +0000 (UTC)
+Date:   Mon, 29 Nov 2021 13:52:12 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YaTbDJS5MtvIm9aS@arm.com>
+References: <CAHc6FU53gdXR4VjSQJUtUigVkgDY6yfRkNBYuBj4sv3eT=MBSQ@mail.gmail.com>
+ <YaAROdPCqNzSKCjh@arm.com>
+ <20211124192024.2408218-1-catalin.marinas@arm.com>
+ <20211124192024.2408218-4-catalin.marinas@arm.com>
+ <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <YZ6idVy3zqQC4atv@arm.com>
+ <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
+ <20211127123958.588350-1-agruenba@redhat.com>
+ <YaJM4n31gDeVzUGA@arm.com>
+ <CAHc6FU7BSL58GVkOh=nsNQczRKG3P+Ty044zs7PjKPik4vzz=Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YaQgFhuaQHsND/jr@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHc6FU7BSL58GVkOh=nsNQczRKG3P+Ty044zs7PjKPik4vzz=Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 29.11.21 г. 2:34, Josef Bacik wrote:
-> On Sat, Nov 27, 2021 at 04:23:37PM +0800, Jia-Ju Bai wrote:
->> Hello,
->>
->> My static analysis tool reports several possible ABBA deadlocks in the btrfs
->> module in Linux 5.10:
->>
->> # DEADLOCK 1:
->> __clear_extent_bit()
->>   spin_lock(&tree->lock); --> Line 733 (Lock A)
->>   split_state()
->>     btrfs_split_delalloc_extent()
->>       spin_lock(&BTRFS_I(inode)->lock); --> Line 1870 (Lock B)
->>
->> btrfs_inode_safe_disk_i_size_write()
->>   spin_lock(&BTRFS_I(inode)->lock); --> Line 53 (Lock B)
->>   find_contiguous_extent_bit()
->>     spin_lock(&tree->lock); --> Line 1620 (Lock A)
->>
->> When __clear_extent_bit() and btrfs_inode_safe_disk_i_size_write() are
->> concurrently executed, the deadlock can occur.
->>
->> # DEADLOCK 2:
->> __set_extent_bit()
->>   spin_lock(&tree->lock); --> Line 995 (Lock A)
->>   set_state_bits()
->>     btrfs_set_delalloc_extent()
->>       spin_lock(&BTRFS_I(inode)->lock); --> Line 2007 or 2017 or 2029 (Lock
->> B)
->>
->> btrfs_inode_safe_disk_i_size_write()
->>   spin_lock(&BTRFS_I(inode)->lock); --> Line 53 (Lock B)
->>   find_contiguous_extent_bit()
->>     spin_lock(&tree->lock); --> Line 1620 (Lock A)
->>
->> When __set_extent_bit() and btrfs_inode_safe_disk_i_size_write() are
->> concurrently executed, the deadlock can occur.
->>
->> # DEADLOCK 3:
->> convert_extent_bit()
->>   spin_lock(&tree->lock); --> Line 1241 (Lock A)
->>   set_state_bits()
->>     btrfs_set_delalloc_extent()
->>       spin_lock(&BTRFS_I(inode)->lock); --> Line 2007 or 2017 or 2029 (Lock
->> B)
->>
->> btrfs_inode_safe_disk_i_size_write()
->>   spin_lock(&BTRFS_I(inode)->lock); --> Line 53 (Lock B)
->>   find_contiguous_extent_bit()
->>     spin_lock(&tree->lock); --> Line 1620 (Lock A)
->>
->> When convert_extent_bit() and btrfs_inode_safe_disk_i_size_write() are
->> concurrently executed, the deadlock can occur.
->>
->> I am not quite sure whether these possible deadlocks are real and how to fix
->> them if they are real.
->> Any feedback would be appreciated, thanks :)
->>
+On Sat, Nov 27, 2021 at 07:05:39PM +0100, Andreas Gruenbacher wrote:
+> Maybe you want to add this though:
 > 
-> Hey Jia-Ju,
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2202,3 +2202,3 @@ static noinline int search_ioctl(struct inode *inode,
+>         unsigned long sk_offset = 0;
+> -       char __user *fault_in_addr;
+> +       char __user *fault_in_addr, *end;
 > 
-> This is pretty good work, unfortunately it's wrong but it's in a subtle way that
-> a tool wouldn't be able to catch.  The btrfs_inode_safe_disk_i_size_write()
-> helper only messes with BTRFS_I(inode)->file_extent_tree, which is separate from
-> the BTRFS_I(inode)->io_tree.  io_tree gets the btrfs_set_delalloc_extent() stuff
-> called on it, but the file_extent_tree does not.  The file_extent_tree has
-> inode->lock -> tree->lock as the locking order, whereas the file_extent_tree has
-> inode->lock -> tree->lock as the locking order.  Thanks,
+> @@ -2230,6 +2230,6 @@ static noinline int search_ioctl(struct inode *inode,
+>         fault_in_addr = ubuf;
+> +       end = ubuf + *buf_size;
+>         while (1) {
+>                 ret = -EFAULT;
+> -               if (fault_in_writeable(fault_in_addr,
+> -                                      *buf_size - (fault_in_addr - ubuf)))
+> +               if (fault_in_writeable(fault_in_addr, end - fault_in_addr))
+>                         break;
 
-nit: did you mean to reverse tree->lock ->inode->lock for the
-file_extent_tree?
+It looks like *buf_size is updated inside copy_to_sk(), so I'll move the
+end update inside the loop.
 
-> 
-> Josef
-> 
+-- 
+Catalin
