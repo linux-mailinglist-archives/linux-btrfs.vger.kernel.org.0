@@ -2,92 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B014625D5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Nov 2021 23:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F050462764
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Nov 2021 00:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhK2WoA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Nov 2021 17:44:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
+        id S236831AbhK2XDl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Nov 2021 18:03:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234793AbhK2WnT (ORCPT
+        with ESMTP id S237101AbhK2XBo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Nov 2021 17:43:19 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD56C05816A
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Nov 2021 11:49:31 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id f20so17785930qtb.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Nov 2021 11:49:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=77pIMPY0DRqIRNulPGyN+kaDHJuIP/tsohLoFAabMaA=;
-        b=Ty40tdgepASovZT6ntq5Yakq5xpCnQoI0Bg6ZF10cH7cKK2i4s+NeZzyylqKmqiIEJ
-         Lj5RQ87gbJZLzeMyUhgJ9Iqlc85/aOoLgNmkt+7theJhVmC29r7/lbA9UCp3TtBfhMK9
-         lDMcXjvDJM9Is7tpq4zdD4T68AHCVOTgwSQgpEuyE/56Gbl7AbZjS8EONZhK/QCrh+S8
-         YqA8tAR+bQcxK5eLdZlUFwD0UXggpzG2VaHFJzmSnDdK/0rBhQvyDqfEbU7/5W6WjvKj
-         4c50oZaPHTc6lh6huPAhoKWhWfAlgXsgmofI0HoiTgredobbidIrTGHxab/yZOO4NBw8
-         WjIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=77pIMPY0DRqIRNulPGyN+kaDHJuIP/tsohLoFAabMaA=;
-        b=ZMeLKRwLGoOLpKhu7djJprUQEVQHQ5T1Fducr39D5pjEEmhWs3XMUla6aL2a1dMCIF
-         uMENYBxfyEwYLbS2Sc3gbj2Vu3jA1S6AR0SHCycvXA6Ol4L2yXjeb47ConBrLPlaiuEJ
-         /gR4PXbuBh0ekrInRTAWaSBU7b+kSXKn0UYA0sZXG3k9kcBLJ5F6ecW6+2EALXrmHt+G
-         mL7dIYqKwIwVNSjDDFklp1hu7gWHI4RjjxLbitPRLHFDj7y6q3X3MNIiAGyXZHxrqzRJ
-         N4ue9EvW8QzQ5owSM+XU0TnXlWKIOjHRe5pZO6Wgo3Z0X7lWgTHj9t2BiNsX/2RjyrmM
-         HyEw==
-X-Gm-Message-State: AOAM533svj0FqsXmbjbUGoOElE7SabBA1VxkDmPDVvbE52XDXAP7GuFi
-        4gZqY4rKjZGEAdroJPNRWSHykg==
-X-Google-Smtp-Source: ABdhPJziQ539dzvCnkchJn9u/+4tbDzPDQH7IuKrDLjAQqJYz6yxO9OEWlzBrT4ymrzA649FVkCaEg==
-X-Received: by 2002:a05:622a:1005:: with SMTP id d5mr37693725qte.533.1638215369925;
-        Mon, 29 Nov 2021 11:49:29 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id h12sm8760663qkp.52.2021.11.29.11.49.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Nov 2021 11:49:29 -0800 (PST)
-Date:   Mon, 29 Nov 2021 14:49:28 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     peterz@infradead.org, vincent.guittot@linaro.org,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [REGRESSION] 5-10% increase in IO latencies with nohz balance
- patch
-Message-ID: <YaUuyN3h07xlEx8j@localhost.localdomain>
-References: <YaUH5GFFoLiS4/3/@localhost.localdomain>
- <87ee6yc00j.mognet@arm.com>
- <YaUYsUHSKI5P2ulk@localhost.localdomain>
- <87bl22byq2.mognet@arm.com>
+        Mon, 29 Nov 2021 18:01:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E9EC0F4B30;
+        Mon, 29 Nov 2021 12:56:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2298BB81643;
+        Mon, 29 Nov 2021 20:56:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B26FAC53FAD;
+        Mon, 29 Nov 2021 20:56:11 +0000 (UTC)
+Date:   Mon, 29 Nov 2021 20:56:08 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 3/3] btrfs: Avoid live-lock in search_ioctl() on hardware
+ with sub-page faults
+Message-ID: <YaU+aDG5pCAba57r@arm.com>
+References: <YZ6arlsi2L3LVbFO@casper.infradead.org>
+ <YZ6idVy3zqQC4atv@arm.com>
+ <CAHc6FU4-P9sVexcNt5CDQxROtMAo=kH8hEu==AAhZ_+Zv53=Ag@mail.gmail.com>
+ <20211127123958.588350-1-agruenba@redhat.com>
+ <YaJM4n31gDeVzUGA@arm.com>
+ <CAHc6FU7BSL58GVkOh=nsNQczRKG3P+Ty044zs7PjKPik4vzz=Q@mail.gmail.com>
+ <YaTEkAahkCwuQdPN@arm.com>
+ <CAHc6FU6zVi9A2D3V3T5zE71YAdkBiJTs0ao1Q6ysSuEp=bz8fQ@mail.gmail.com>
+ <YaTziROgnFwB6Ddj@arm.com>
+ <CAHk-=wiZgAgcynfLsop+D1xBUAZ-Z+NUBxe9mb-AedecFRNm+w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87bl22byq2.mognet@arm.com>
+In-Reply-To: <CAHk-=wiZgAgcynfLsop+D1xBUAZ-Z+NUBxe9mb-AedecFRNm+w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 29, 2021 at 06:31:17PM +0000, Valentin Schneider wrote:
-> On 29/11/21 13:15, Josef Bacik wrote:
-> > On Mon, Nov 29, 2021 at 06:03:24PM +0000, Valentin Schneider wrote:
-> >> Would you happen to have execution traces by any chance? If not I should be
-> >> able to get one out of that fsperf thingie.
-> >>
-> >
-> > I don't, if you want to tell me how I can do it right now.  I've disabled
-> > everything on this box for now so it's literally just sitting there waiting to
-> > have things done to it.  Thanks,
-> >
+On Mon, Nov 29, 2021 at 10:40:38AM -0800, Linus Torvalds wrote:
+> On Mon, Nov 29, 2021 at 7:36 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > That's what this series does when it probes the whole range in
+> > fault_in_writeable(). The main reason was that it's more efficient to do
+> > a read than a write on a large range (the latter dirtying the cache
+> > lines).
 > 
-> I see you have Ftrace enabled in your config, so that ought to do it:
+> The more this thread goes on, the more I'm starting to think that we
+> should just make "fault_in_writable()" (and readable, of course) only
+> really work on the beginning of the area.
 > 
->   trace-cmd record -e 'sched:*' -e 'cpu_idle' $your_test_cmd
+> Not just for the finer-granularity pointer color probing, but for the
+> page probing too.
+
+I have patches for the finer-granularity checking of the beginning of
+the buffer. They need a bit of testing, so probably posting them
+tomorrow.
+
+> I'm looking at our current fault_in_writeable(), and I'm going
 > 
+>  (a) it uses __put_user() without range checks, which is really not great
 
-http://toxicpanda.com/performance/trace.dat
+For arm64 at least __put_user() does the access_ok() check. I thought
+only unsafe_put_user() should skip the checks. If __put_user() can write
+arbitrary memory, we may have a bigger problem.
 
-it's like 16mib.  Enjoy,
+>  (b) it looks like a disaster from another standpoint: essentially
+> user-controlled loop size with no limit checking, no preemption, and
+> no check for fatal signals.
 
-Josef
+Indeed, the fault_in_*() loop can get pretty long, bounded by how much
+memory can be faulted in the user process. My patches for now only
+address the outer loop doing the copy_to_user() as that can be
+unbounded.
+
+> Now, (a) should be fixed with a access_ok() or similar.
+> 
+> And (b) can easily be fixed multiple ways, with one option simply just
+> being adding a can_resched() call and checking for fatal signals.
+> 
+> But faulting in the whole region is actually fundamentally wrong in
+> low-memory situations - the beginning of the region might be swapped
+> out by the time we get to the end. That's unlikely to be a problem in
+> real life, but it's an example of how it's simply not conceptually
+> sensible.
+> 
+> So I do wonder why we don't just say "fault_in_writable will fault in
+> _at_most_ X bytes", and simply limit the actual fault-in size to
+> something reasonable.
+> 
+> That solves _all_ the problems. It solves the lack of preemption and
+> fatal signals (by virtue of just limiting the amount of work we do).
+> It solves the low memory situation. And it solves the "excessive dirty
+> cachelines" case too.
+
+I think that would be useful, though it doesn't solve the potential
+livelock with sub-page faults. We still need the outer loop to
+handle the copy_to_user() for the whole user buffer and the sub-page
+probing of the beginning of such buffer (or whenever copy_to_user()
+failed). IOW, you still fault in the whole buffer eventually.
+
+Anyway, I think the sub-page probing and limiting the fault-in are
+complementary improvements.
+
+-- 
+Catalin
