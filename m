@@ -2,104 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BCE463D56
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Nov 2021 19:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D3E463D7D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Nov 2021 19:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245216AbhK3SEZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Nov 2021 13:04:25 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:57840 "EHLO
+        id S245391AbhK3SSF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Nov 2021 13:18:05 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:58368 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238677AbhK3SEY (ORCPT
+        with ESMTP id S245272AbhK3SRy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Nov 2021 13:04:24 -0500
+        Tue, 30 Nov 2021 13:17:54 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9A10221891;
-        Tue, 30 Nov 2021 18:01:04 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7EAD8212C6;
+        Tue, 30 Nov 2021 18:14:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1638295264;
+        t=1638296074;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=agDUIp5jy6bjxbEoHdOnb3vReVX/2+J1VtSFzdphYkA=;
-        b=JJiw39HsqI9z8QCoq3xUfKirjvfAScfEPSuM2S2vm3D2hQDfTexo1cSL95RT3uj48XKOZe
-        BlkBkbvR/5pSbPxjP8sq5MFhrvB4t0shkURg5Yh4Y7Oj05RugBkwtDFCSb8E2t6iZp7xuu
-        p2Q/9+qwIxY/6qttdZgUAD0ByX1SsyA=
+        bh=EBusNqomOoBV134/OLjoeGLAEEG6t4aXmoIT1vJRl3I=;
+        b=PTuxMKpQxL94gorunMrMHwTu8ml3U1sbJo04o1SsN/m4s+J3M+ApsmgBIeMTSKJBbsdXEm
+        UAbEdrNvu0LOkIelwL5F/uN7+0ombwCQmpjxYsq6TwGsDOCah/qezNxC8XFRGfh9H9E17r
+        mZ+v58oYVHu0mBSdf6VlrTKKcilL0/g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1638295264;
+        s=susede2_ed25519; t=1638296074;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=agDUIp5jy6bjxbEoHdOnb3vReVX/2+J1VtSFzdphYkA=;
-        b=BrA/fkcNmQW6RZMYxBPyUVtPSxAuPZ5wH8Me5hfZGYgHWIRhvDN6+61x3zxEPBTJB4qybi
-        S8oRerRq+dt0e/AA==
+        bh=EBusNqomOoBV134/OLjoeGLAEEG6t4aXmoIT1vJRl3I=;
+        b=rr/WOc+3gncHvBBG+JCEK/KPnLDYe6hnL5F5RN/7tyIFaysIKBYuTF5g3xou25BeGdQeMu
+        5vLPbzvVXZmFWWCQ==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 92880A3B81;
-        Tue, 30 Nov 2021 18:01:04 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 7634BA3B88;
+        Tue, 30 Nov 2021 18:14:34 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A478EDA7A3; Tue, 30 Nov 2021 19:00:53 +0100 (CET)
-Date:   Tue, 30 Nov 2021 19:00:53 +0100
+        id 52CC6DA799; Tue, 30 Nov 2021 19:14:23 +0100 (CET)
+Date:   Tue, 30 Nov 2021 19:14:23 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 00/20] btrfs-progs: extent tree v2 global root support
- prep work
-Message-ID: <20211130180053.GK28560@twin.jikos.cz>
+Subject: Re: [PATCH 04/22] btrfs-progs: add support for loading the block
+ group root
+Message-ID: <20211130181423.GL28560@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <cover.1636399481.git.josef@toxicpanda.com>
+References: <cover.1636144275.git.josef@toxicpanda.com>
+ <2c32382719d5e8771b2db03cdf8c75d06ad1e3f8.1636144275.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1636399481.git.josef@toxicpanda.com>
+In-Reply-To: <2c32382719d5e8771b2db03cdf8c75d06ad1e3f8.1636144275.git.josef@toxicpanda.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 08, 2021 at 02:26:28PM -0500, Josef Bacik wrote:
-> v1->v2:
-> - reworked the root node helper thing to check the level as well as per Qu's
->   suggestion.
-> - Fixed a place where we weren't inluding common/repair.h to get a helper that I
->   moved (not entirely sure how this still built but whatever.)
-> - Fixed a place where I could get fs_info from an eb instead of passing it
->   around.
+On Fri, Nov 05, 2021 at 04:40:30PM -0400, Josef Bacik wrote:
+> This adds the ability to load the block group root, as well as make sure
+> the various backup super block and super block updates are made
+> appropriately.
 > 
-> --- Original email ---
-> Hello,
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  kernel-shared/ctree.h       |   1 +
+>  kernel-shared/disk-io.c     | 156 +++++++++++++++++++++++++++---------
+>  kernel-shared/disk-io.h     |  10 ++-
+>  kernel-shared/extent-tree.c |   8 +-
+>  kernel-shared/transaction.c |   2 +
+>  5 files changed, 135 insertions(+), 42 deletions(-)
 > 
-> This is a series of patches to do all the prep work needed to support extent
-> tree v2.  These patches are independent of the actual extent tree v2 support,
-> some of them are fixes, some of them are purely to pave the way for the global
-> root support.  These patches are mostly around stopping direct access of
-> ->extent_root/->csum_root/->free_space_root, putting these roots into a rb_tree,
-> and changing the code to look up the roots in the rb_tree instead of accessing
-> them directly.  There are a variety of fixes to help make this easier, mostly
-> removing access to these roots that are strictly necessary.  Thanks,
-> 
-> Josef
-> 
-> Josef Bacik (20):
->   btrfs-progs: simplify btrfs_make_block_group
->   btrfs-progs: check: don't walk down non fs-trees for qgroup check
->   btrfs-progs: filesystem-show: close ctree once we're done
->   btrfs-progs: add a helper for setting up a root node
->   btrfs-progs: btrfs-shared: stop passing root to csum related functions
->   btrfs-progs: check: stop passing csum root around
->   btrfs-progs: stop accessing ->csum_root directly
->   btrfs-progs: image: keep track of seen blocks when walking trees
->   btrfs-progs: common: move btrfs_fix_block_accounting to repair.c
->   btrfs-progs: check: abstract out the used marking helpers
->   btrfs-progs: check: move btrfs_mark_used_tree_blocks to common
->   btrfs-progs: mark reloc roots as used
->   btrfs-progs: stop accessing ->extent_root directly
->   btrfs-progs: stop accessing ->free_space_root directly
->   btrfs-progs: track csum, extent, and free space trees in a rb tree
->   btrfs-progs: check: make reinit work per found root item
->   btrfs-progs: check: check the global roots for uptodate root nodes
->   btrfs-progs: check: check all of the csum roots
->   btrfs-progs: check: fill csum root from all extent roots
->   btrfs-progs: common: search all extent roots for marking used space
+> diff --git a/kernel-shared/ctree.h b/kernel-shared/ctree.h
+> index e54e03c4..27e31e03 100644
+> --- a/kernel-shared/ctree.h
+> +++ b/kernel-shared/ctree.h
+> @@ -1195,6 +1195,7 @@ struct btrfs_fs_info {
+>  	struct btrfs_root *dev_root;
+>  	struct btrfs_root *quota_root;
+>  	struct btrfs_root *uuid_root;
+> +	struct btrfs_root *block_group_root;
+>  
+>  	struct rb_root global_roots_tree;
+>  	struct rb_root fs_root_tree;
+> diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
+> index bea42556..38741819 100644
+> --- a/kernel-shared/disk-io.c
+> +++ b/kernel-shared/disk-io.c
+> @@ -838,6 +838,9 @@ struct btrfs_root *btrfs_read_fs_root(struct btrfs_fs_info *fs_info,
+>  		root = btrfs_global_root(fs_info, location);
+>  		return root ? root : ERR_PTR(-ENOENT);
+>  	}
+> +	if (location->objectid == BTRFS_BLOCK_GROUP_TREE_OBJECTID)
+> +		return fs_info->block_group_root ? fs_info->block_group_root :
+> +						ERR_PTR(-ENOENT);
+>  
+>  	BUG_ON(location->objectid == BTRFS_TREE_RELOC_OBJECTID);
+>  
+> @@ -876,6 +879,7 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
+>  	free(fs_info->chunk_root);
+>  	free(fs_info->dev_root);
+>  	free(fs_info->uuid_root);
+> +	free(fs_info->block_group_root);
+>  	free(fs_info->super_copy);
+>  	free(fs_info->log_root_tree);
+>  	free(fs_info);
+> @@ -894,10 +898,12 @@ struct btrfs_fs_info *btrfs_new_fs_info(int writable, u64 sb_bytenr)
+>  	fs_info->dev_root = calloc(1, sizeof(struct btrfs_root));
+>  	fs_info->quota_root = calloc(1, sizeof(struct btrfs_root));
+>  	fs_info->uuid_root = calloc(1, sizeof(struct btrfs_root));
+> +	fs_info->block_group_root = calloc(1, sizeof(struct btrfs_root));
+>  	fs_info->super_copy = calloc(1, BTRFS_SUPER_INFO_SIZE);
+>  
+>  	if (!fs_info->tree_root || !fs_info->chunk_root || !fs_info->dev_root ||
+> -	    !fs_info->quota_root || !fs_info->uuid_root || !fs_info->super_copy)
+> +	    !fs_info->quota_root || !fs_info->uuid_root ||
+> +	    !fs_info->block_group_root || !fs_info->super_copy)
+>  		goto free_all;
+>  
+>  	extent_io_tree_init(&fs_info->extent_cache);
+> @@ -1016,7 +1022,7 @@ static int read_root_or_create_block(struct btrfs_fs_info *fs_info,
+>  static inline bool maybe_load_block_groups(struct btrfs_fs_info *fs_info,
+>  					   u64 flags)
+>  {
+> -	struct btrfs_root *root = btrfs_extent_root(fs_info, 0);
+> +	struct btrfs_root *root = btrfs_block_group_root(fs_info);
+>  
+>  	if (flags & OPEN_CTREE_NO_BLOCK_GROUPS)
+>  		return false;
+> @@ -1027,7 +1033,6 @@ static inline bool maybe_load_block_groups(struct btrfs_fs_info *fs_info,
+>  	return false;
+>  }
+>  
+> -
+>  static int load_global_roots_objectid(struct btrfs_fs_info *fs_info,
+>  				      struct btrfs_path *path, u64 objectid,
+>  				      unsigned flags, char *str)
+> @@ -1125,39 +1130,94 @@ out:
+>  	return ret;
+>  }
+>  
+> -int btrfs_setup_all_roots(struct btrfs_fs_info *fs_info, u64 root_tree_bytenr,
+> -			  unsigned flags)
+> +static int load_important_roots(struct btrfs_fs_info *fs_info,
+> +				u64 root_tree_bytenr, unsigned flags)
+>  {
+>  	struct btrfs_super_block *sb = fs_info->super_copy;
+> +	struct btrfs_root_backup *backup = NULL;
+>  	struct btrfs_root *root;
+> -	struct btrfs_key key;
+> -	u64 generation;
+> +	u64 bytenr, gen;
+> +	int index = -1;
+>  	int ret;
+>  
+> -	root = fs_info->tree_root;
+> -	btrfs_setup_root(root, fs_info, BTRFS_ROOT_TREE_OBJECTID);
+> -	generation = btrfs_super_generation(sb);
 
-Half of the series was in devel, the rest added as well, thanks.
+I've got a conflict when applying this, there's a level for the root
+also read and passed to read_root_node, while this patch does not expect
+it. I think I haven't missed any patch that would drop the parameter,
+all the preparatory v2 patches are in devel. Can you please refresh 4-22
+and resend? Thanks.
