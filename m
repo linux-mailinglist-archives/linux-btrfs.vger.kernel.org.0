@@ -2,207 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976734635E5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Nov 2021 14:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 016914636CD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Nov 2021 15:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241891AbhK3N6h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Nov 2021 08:58:37 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:58862 "EHLO
+        id S242238AbhK3OiM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Nov 2021 09:38:12 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:35070 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241931AbhK3N6d (ORCPT
+        with ESMTP id S235562AbhK3OiL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Nov 2021 08:58:33 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E646F2177B;
-        Tue, 30 Nov 2021 13:55:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1638280512; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 30 Nov 2021 09:38:11 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id BE348212B9;
+        Tue, 30 Nov 2021 14:34:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1638282891;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=uHt4lxdG22YzbgTRI8gRz868SZQ2CuWpCdpu065QB4g=;
-        b=YOjczcawoO4LRCYN4BCDwIjYhqWEaxH2zhtXqZHBtFuV6groXSHXsHLNVwTfn3fcFCe3nS
-        UhR6a9r7WUi22HlKpBArHW9beAJFQzOeuSF0yuIj5izXe+jHoZ/+4mWsPrJRaP5fllPerp
-        1ybkqmOPcf4SiqmAGzNWO8+GP93IvaQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B934513D4E;
-        Tue, 30 Nov 2021 13:55:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2/Y/KkAtpmGzJQAAMHmgww
-        (envelope-from <nborisov@suse.com>); Tue, 30 Nov 2021 13:55:12 +0000
-Subject: Re: 'btrfs replace' hangs at end of replacing a device (v5.10.82)
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        linux-btrfs@vger.kernel.org
-References: <20211129214647.GH17148@hungrycats.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-Message-ID: <cfceba98-f925-8a95-5b09-caec932efc42@suse.com>
-Date:   Tue, 30 Nov 2021 15:55:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        bh=3ymYlkEdRzRThXsgytUcx26oQejHHqu8lMp4Vpricss=;
+        b=rpjgtKDprWUYFEH6QxuZiJPo3tGyYRZBR5e3IC1LXhBp+MhgVqHESFbj95O58qzWSNIMrR
+        bJyzhXkphGR3B2uVgVE2c6M4Tx9xngnJRUcnPa0pomf0fnfhxbPs5gd+JK4YR/xw801tpn
+        ay8BESGodrAR4h/mTy3bW0PLmNDftA4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1638282891;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3ymYlkEdRzRThXsgytUcx26oQejHHqu8lMp4Vpricss=;
+        b=cv07tFte49l+LaGSc2uw8A1nLMoMLLRaSv7hWRtLHzuPhN8hn1EkVzpDs8TMKXR9+wUVIN
+        d/nFzTmkpnvpQ9CQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 8A2D4A3B83;
+        Tue, 30 Nov 2021 14:34:51 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8ADB0DA7A3; Tue, 30 Nov 2021 15:34:40 +0100 (CET)
+Date:   Tue, 30 Nov 2021 15:34:40 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] btrfs: Use generic Kconfig option for 256kB page
+ size limit
+Message-ID: <20211130143440.GI28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nathan Chancellor <nathan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211129230141.228085-1-nathan@kernel.org>
+ <20211129230141.228085-3-nathan@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20211129214647.GH17148@hungrycats.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211129230141.228085-3-nathan@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 29.11.21 г. 23:46, Zygo Blaxell wrote:
-> Not a new bug, but it's still there.  btrfs replace ends in a transaction
-> deadlock.
+On Mon, Nov 29, 2021 at 04:01:40PM -0700, Nathan Chancellor wrote:
+> Use the newly introduced CONFIG_PAGE_SIZE_LESS_THAN_256KB to describe
+> the dependency introduced by commit b05fbcc36be1 ("btrfs: disable build
+> on platforms having page size 256K").
 > 
-> 'btrfs replace status' reports the replace completed and exits:
-> 
-> 	Started on 27.Nov 02:05:07, finished on 29.Nov 14:11:20, 0 write errs, 0 uncorr. read errs
-> 
-> Magic-SysRq-W:
-> 
-> 	sysrq: Show Blocked State
-> 	task:btrfs-transacti state:D stack:    0 pid:29509 ppid:     2 flags:0x00004000
-> 	Call Trace:
-> 	 __schedule+0x35a/0xaa0
-> 	 schedule+0x68/0xe0
-> 	 schedule_preempt_disabled+0x15/0x20
-> 	 __mutex_lock+0x1ac/0x7e0
-> 	 ? lock_acquire+0x190/0x2d0
-> 	 ? btrfs_run_dev_stats+0x46/0x450
-> 	 ? rcu_read_lock_sched_held+0x16/0x80
-> 	 mutex_lock_nested+0x1b/0x20
-> 	 btrfs_run_dev_stats+0x46/0x450
-> 	 ? _raw_spin_unlock+0x23/0x30
-> 	 ? release_extent_buffer+0xa7/0xe0
-> 	 commit_cowonly_roots+0xa2/0x2a0
-> 	 ? btrfs_qgroup_account_extents+0x2d3/0x320
-> 	 btrfs_commit_transaction+0x51f/0xc60
-> 	 transaction_kthread+0x15a/0x180
-> 	 kthread+0x151/0x170
-> 	 ? btrfs_cleanup_transaction.isra.0+0x630/0x630
-> 	 ? kthread_create_worker_on_cpu+0x70/0x70
-> 	 ret_from_fork+0x22/0x30
-> 	task:nfsd            state:D stack:    0 pid:31445 ppid:     2 flags:0x00004000
-> 	Call Trace:
-> 	 __schedule+0x35a/0xaa0
-> 	 schedule+0x68/0xe0
-> 	 btrfs_bio_counter_inc_blocked+0xe3/0x120
-> 	 ? add_wait_queue_exclusive+0x80/0x80
-> 	 btrfs_map_bio+0x4d/0x3f0
-> 	 ? rcu_read_lock_sched_held+0x16/0x80
-> 	 ? kmem_cache_alloc+0x2e8/0x360
-> 	 btrfs_submit_metadata_bio+0xe9/0x100
-> 	 submit_one_bio+0x67/0x80
-> 	 read_extent_buffer_pages+0x277/0x380
-> 	 btree_read_extent_buffer_pages+0xa1/0x120
-> 	 read_tree_block+0x3b/0x70
-> 	 read_block_for_search.isra.0+0x1a2/0x350
-> 	 ? rcu_read_lock_sched_held+0x16/0x80
-> 	 btrfs_search_slot+0x20f/0x910
-> 	 btrfs_lookup_dir_item+0x78/0xc0
-> 	 btrfs_lookup_dentry+0xca/0x540
-> 	 btrfs_lookup+0x13/0x40
-> 	 __lookup_slow+0x10d/0x1e0
-> 	 ? rcu_read_lock_sched_held+0x16/0x80
-> 	 lookup_one_len+0x77/0x90
-> 	 nfsd_lookup_dentry+0xe0/0x440 [nfsd]
-> 	 nfsd_lookup+0x89/0x150 [nfsd]
-> 	 nfsd4_lookup+0x1a/0x20 [nfsd]
-> 	 nfsd4_proc_compound+0x58b/0x8a0 [nfsd]
-> 	 nfsd_dispatch+0xe6/0x1a0 [nfsd]
-> 	 svc_process+0x55e/0x990 [sunrpc]
-> 	 ? nfsd_svc+0x6a0/0x6a0 [nfsd]
-> 	 nfsd+0x173/0x2a0 [nfsd]
-> 	 kthread+0x151/0x170
-> 	 ? nfsd_destroy+0x190/0x190 [nfsd]
-> 	 ? kthread_create_worker_on_cpu+0x70/0x70
-> 	 ret_from_fork+0x22/0x30
-> 	task:btrfs           state:D stack:    0 pid:14692 ppid: 14687 flags:0x00004000
-> 	Call Trace:
-> 	 __schedule+0x35a/0xaa0
-> 	 schedule+0x68/0xe0
-> 	 btrfs_rm_dev_replace_blocked+0x8a/0xc0
-> 	 ? add_wait_queue_exclusive+0x80/0x80
-> 	 btrfs_dev_replace_finishing+0x59a/0x790
-> 	 btrfs_dev_replace_by_ioctl+0x59d/0x6f0
-> 	 ? btrfs_dev_replace_by_ioctl+0x59d/0x6f0
-> 	 btrfs_ioctl+0x27b2/0x2fe0
-> 	 ? _raw_spin_unlock_irq+0x28/0x40
-> 	 ? _raw_spin_unlock_irq+0x28/0x40
-> 	 ? trace_hardirqs_on+0x54/0xf0
-> 	 ? _raw_spin_unlock_irq+0x28/0x40
-> 	 ? do_sigaction+0xfd/0x250
-> 	 ? __might_fault+0x79/0x80
-> 	 __x64_sys_ioctl+0x91/0xc0
-> 	 ? __x64_sys_ioctl+0x91/0xc0
-> 	 do_syscall_64+0x38/0x90
-> 	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 	RIP: 0033:0x7f1d8a0f4cc7
-> 	RSP: 002b:00007ffc6cffe588 EFLAGS: 00000202 ORIG_RAX: 0000000000000010
-> 	RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f1d8a0f4cc7
-> 	RDX: 00007ffc6cfff400 RSI: 00000000ca289435 RDI: 0000000000000003
-> 	RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> 	R10: 0000000000000008 R11: 0000000000000202 R12: 0000000000000003
-> 	R13: 00005583a17fb2e0 R14: 00007ffc6d001b7a R15: 0000000000000001
-> 	task:mkdir           state:D stack:    0 pid: 2349 ppid:  2346 flags:0x00000000
-> 	Call Trace:
-> 	 __schedule+0x35a/0xaa0
-> 	 schedule+0x68/0xe0
-> 	 wait_current_trans+0xed/0x150
-> 	 ? add_wait_queue_exclusive+0x80/0x80
-> 	 start_transaction+0x551/0x700
-> 	 btrfs_start_transaction+0x1e/0x20
-> 	 btrfs_mkdir+0x5f/0x210
-> 	 vfs_mkdir+0x150/0x200
-> 	 do_mkdirat+0x118/0x140
-> 	 __x64_sys_mkdir+0x1b/0x20
-> 	 do_syscall_64+0x38/0x90
-> 	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 	RIP: 0033:0x7f608a3c6b07
-> 	RSP: 002b:00007fffbbd2bab8 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
-> 	RAX: ffffffffffffffda RBX: 0000563d79f1dc30 RCX: 00007f608a3c6b07
-> 	RDX: 0000000000000000 RSI: 00000000000001ff RDI: 00007fffbbd2db5e
-> 	RBP: 00007fffbbd2db39 R08: 0000000000000000 R09: 0000563d79f1dd60
-> 	R10: fffffffffffff284 R11: 0000000000000246 R12: 00000000000001ff
-> 	R13: 00007fffbbd2bc30 R14: 00007fffbbd2db5e R15: 0000000000000000
-> 
-> After a reboot (still in degraded mode), btrfs finishes the replace in
-> a little under 5 seconds:
-> 
-> 	[  508.664454] BTRFS info (device dm-34): continuing dev_replace from <missing disk> (devid 5) to target /dev/mapper/md17 @100%
-> 	[  513.285473] BTRFS info (device dm-34): dev_replace from <missing disk> (devid 5) to /dev/mapper/md17 finished
-> 
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-
-I have a working hypothesis what might be going wrong, however without a
-crash dump to investigate I can't really confirm it. Basically I think
-btrfs_rm_dev_replace_blocked is not seeing the decrement aka the store
-to running bios count since it's using cond_wake_up_nomb. If I'm right
-then the following should fix it:
-
-@@ -1122,7 +1123,8 @@ void btrfs_bio_counter_inc_noblocked(struct
-btrfs_fs_info *fs_info)
- void btrfs_bio_counter_sub(struct btrfs_fs_info *fs_info, s64 amount)
- {
-        percpu_counter_sub(&fs_info->dev_replace.bio_counter, amount);
--       cond_wake_up_nomb(&fs_info->dev_replace.replace_wait);
-+       /* paired with the wait_event barrier in replace_blocked */
-+       cond_wake_up(&fs_info->dev_replace.replace_wait);
- }
-
-
-
-Can you apply it and see if it can reproduce, I don't know what's the
-incident rate of this bug so you have to decide at what point it should
-be fixed. In any case this patch can't have any negative functional
-impact, it just makes the ordering slightly stronger to ensure the write
-happens before possibly waking up someone on the queue.
-
-
+Acked-by: David Sterba <dsterba@suse.com>
