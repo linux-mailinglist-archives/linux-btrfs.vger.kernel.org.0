@@ -2,158 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3E9465725
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 21:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1165B465844
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 22:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242326AbhLAUcq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Dec 2021 15:32:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:46690 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239617AbhLAUcg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 1 Dec 2021 15:32:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BCA9013D5;
-        Wed,  1 Dec 2021 12:29:14 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.65.205])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFC133F5A1;
-        Wed,  1 Dec 2021 12:29:12 -0800 (PST)
-Date:   Wed, 1 Dec 2021 20:29:06 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] arm64: Add support for user sub-page fault probing
-Message-ID: <YafbEpoiFB4emaPW@FVFF77S0Q05N>
-References: <20211201193750.2097885-1-catalin.marinas@arm.com>
- <20211201193750.2097885-4-catalin.marinas@arm.com>
+        id S1344051AbhLAVWQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Dec 2021 16:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344040AbhLAVWP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 16:22:15 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755D9C061574
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Dec 2021 13:18:54 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id u16so23029854qvk.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Dec 2021 13:18:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h6kR4gzlA46tz3V9klx8YiB7h5SbxbcMsX4E0uq2dBk=;
+        b=y8/mHMfpbWqwKg0PBDXMqX67rMvBmVmYps16wcHe6R9AKxwd/TccirOmZrhjKoIJzo
+         MajcbCS0o1g20aZIAVL0EthbBgCzLOfHBX9l/3BI8yBd0S1qdb7xWfDJ7kFa7v125d2z
+         jlfd2TfMUPxHtmE2zGR8lbSb6A79jM+ohai4w8bZGlTF4Bad609sHeiV4qAZHZEJOCJ3
+         LWUfrksZbanraEQZdTQlTS8Lct9LmY/7zk4Bz7xZr9vpUalw30Jh8BbTNSMhOJa7M2jy
+         J0Nps4d6WcvoF7TCKsCzqCAdy6N+hp1lEV1apIMJs5Er4ks3pRWy6sb80uocynqQ7uzz
+         XQUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h6kR4gzlA46tz3V9klx8YiB7h5SbxbcMsX4E0uq2dBk=;
+        b=NzN+FRKGBRPpPI43aVDUJ9OkyRlZzECTHQC/Do+nfqutSajVj30Qqlzp4vfrUl1xLm
+         B9NCAxAfor5t6Qh7oUgVIOmt4UtBCfFwYWw5gKXpv49GpJPgdA/wHyz7kb/0AqMx/Nvx
+         Y6cB45POFvOnjtHG+UqDvbrbJk9OeOCLiDu/6ANq8Xj7E9hP8QerkAEfmLrcI8K0WVQc
+         5NdFKtSlgg7dU0w2Pz2FregeGkWEYdVUHIiID5HppWugqhVaIV3CoMPBTWWsGAYzL0jO
+         7Od8/x48ayPtb1a0dcbxG8xFzL3K0QtMX5o07EdHli7/Pqj3kcc7I25hpnFZbnbmCeYw
+         n4Aw==
+X-Gm-Message-State: AOAM5328befwDUrpZmy6T5+uri0+ZvqBSIqC4++hHlLyfjEYMArGXgkl
+        b8naiMa0uDNb1532p/QK2vZb/sgENNBbrQ==
+X-Google-Smtp-Source: ABdhPJxBTUEdpjEUd0wTwaFURs37FcaXVm6sgvWeyJt2/pkFYkuRiZyZy1y6ftXhJ4Il30q3D9brgQ==
+X-Received: by 2002:a05:6214:4107:: with SMTP id kc7mr9317508qvb.57.1638393533146;
+        Wed, 01 Dec 2021 13:18:53 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id u10sm505399qkp.104.2021.12.01.13.18.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Dec 2021 13:18:52 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs: free device if we fail to open it
+Date:   Wed,  1 Dec 2021 16:18:51 -0500
+Message-Id: <7cfd63a1232900565abf487e82b7aa4af5fbca29.1638393521.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211201193750.2097885-4-catalin.marinas@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Catalin,
+We've been having transient failures of btrfs/197 because sometimes we
+don't show a missing device.
 
-On Wed, Dec 01, 2021 at 07:37:49PM +0000, Catalin Marinas wrote:
-> With MTE, even if the pte allows an access, a mismatched tag somewhere
-> within a page can still cause a fault. Select ARCH_HAS_SUBPAGE_FAULTS if
-> MTE is enabled and implement the probe_subpage_*() functions. Note that
-> get_user() is sufficient for the writeable checks since the same tag
-> mismatch fault would be triggered by a read.
-> 
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> ---
->  arch/arm64/Kconfig               |  1 +
->  arch/arm64/include/asm/uaccess.h | 59 ++++++++++++++++++++++++++++++++
->  2 files changed, 60 insertions(+)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index c4207cf9bb17..dff89fd0d817 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1777,6 +1777,7 @@ config ARM64_MTE
->  	depends on AS_HAS_LSE_ATOMICS
->  	# Required for tag checking in the uaccess routines
->  	depends on ARM64_PAN
-> +	select ARCH_HAS_SUBPAGE_FAULTS
->  	select ARCH_USES_HIGH_VMA_FLAGS
->  	help
->  	  Memory Tagging (part of the ARMv8.5 Extensions) provides
-> diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
-> index 6e2e0b7031ab..bcbd24b97917 100644
-> --- a/arch/arm64/include/asm/uaccess.h
-> +++ b/arch/arm64/include/asm/uaccess.h
-> @@ -445,4 +445,63 @@ static inline int __copy_from_user_flushcache(void *dst, const void __user *src,
->  }
->  #endif
->  
-> +#ifdef CONFIG_ARCH_HAS_SUBPAGE_FAULTS
-> +
-> +/*
-> + * Return 0 on success, the number of bytes not accessed otherwise.
-> + */
-> +static inline size_t __mte_probe_user_range(const char __user *uaddr,
-> +					    size_t size, bool skip_first)
-> +{
-> +	const char __user *end = uaddr + size;
-> +	int err = 0;
-> +	char val;
-> +
-> +	uaddr = PTR_ALIGN_DOWN(uaddr, MTE_GRANULE_SIZE);
-> +	if (skip_first)
-> +		uaddr += MTE_GRANULE_SIZE;
+This turned out to be because I use LVM for my devices, and sometimes we
+race with udev and get the "/dev/dm-#" device registered as a device in
+the fs_devices list instead of "/dev/mapper/vg0-lv#" device.  Thus when
+the test adds a device to the existing mount it doesn't find the old
+device in the original fs_devices list and remove it properly.
 
-Do we need the skipping for a functional reason, or is that an optimization?
+This is fine in general, because when we open the devices we check the
+UUID, and properly skip using the device that we added to the other file
+system.  However we do not remove it from our fs_devices, so when we get
+the device info we still see this old device and think that everything
+is ok.
 
-From the comments in probe_subpage_writeable() and
-probe_subpage_safe_writeable() I wasn't sure if the skipping was because we
-*don't need to* check the first granule, or because we *must not* check the
-first granule.
+We have a check for -ENODATA coming back from reading the super off of
+the device to catch the wipefs case, but we don't catch literally any
+other error where the device is no longer valid and thus do not remove
+the device.
 
-> +	while (uaddr < end) {
-> +		/*
-> +		 * A read is sufficient for MTE, the caller should have probed
-> +		 * for the pte write permission if required.
-> +		 */
-> +		__raw_get_user(val, uaddr, err);
-> +		if (err)
-> +			return end - uaddr;
-> +		uaddr += MTE_GRANULE_SIZE;
-> +	}
+Fix this to not special case an empty device when reading the super
+block, and simply remove any device we are unable to open.
 
-I think we may need to account for the residue from PTR_ALIGN_DOWN(), or we can
-report more bytes not copied than was passed in `size` in the first place,
-which I think might confused some callers.
+With this fix we properly print out missing devices in the test case,
+and after 500 iterations I'm no longer able to reproduce the problem,
+whereas I could usually reproduce within 200 iterations.
 
-Consider MTE_GRANULE_SIZE is 16, uaddr is 31, and size is 1 (so end is 32). We
-align uaddr down to 16, and if we fail the first access we return (32 - 16),
-i.e. 16.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/disk-io.c | 2 +-
+ fs/btrfs/volumes.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Mark.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 5c598e124c25..fa34b8807f8d 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3924,7 +3924,7 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+ 	super = page_address(page);
+ 	if (btrfs_super_magic(super) != BTRFS_MAGIC) {
+ 		btrfs_release_disk_super(super);
+-		return ERR_PTR(-ENODATA);
++		return ERR_PTR(-EINVAL);
+ 	}
+ 
+ 	if (btrfs_super_bytenr(super) != bytenr_orig) {
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index f38c230111be..890153dd2a2b 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1223,7 +1223,7 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+ 		if (ret == 0 &&
+ 		    (!latest_dev || device->generation > latest_dev->generation)) {
+ 			latest_dev = device;
+-		} else if (ret == -ENODATA) {
++		} else if (ret) {
+ 			fs_devices->num_devices--;
+ 			list_del(&device->dev_list);
+ 			btrfs_free_device(device);
+-- 
+2.26.3
 
-> +	(void)val;
-> +
-> +	return 0;
-> +}
-> +
-> +static inline size_t probe_subpage_writeable(const void __user *uaddr,
-> +					     size_t size)
-> +{
-> +	if (!system_supports_mte())
-> +		return 0;
-> +	/* first put_user() done in the caller */
-> +	return __mte_probe_user_range(uaddr, size, true);
-> +}
-> +
-> +static inline size_t probe_subpage_safe_writeable(const void __user *uaddr,
-> +						  size_t size)
-> +{
-> +	if (!system_supports_mte())
-> +		return 0;
-> +	/* the caller used GUP, don't skip the first granule */
-> +	return __mte_probe_user_range(uaddr, size, false);
-> +}
-> +
-> +static inline size_t probe_subpage_readable(const void __user *uaddr,
-> +					    size_t size)
-> +{
-> +	if (!system_supports_mte())
-> +		return 0;
-> +	/* first get_user() done in the caller */
-> +	return __mte_probe_user_range(uaddr, size, true);
-> +}
-> +
-> +#endif /* CONFIG_ARCH_HAS_SUBPAGE_FAULTS */
-> +
->  #endif /* __ASM_UACCESS_H */
