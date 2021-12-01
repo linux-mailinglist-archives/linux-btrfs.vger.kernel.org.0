@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C02A465521
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 19:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E7E465523
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 19:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352218AbhLASVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Dec 2021 13:21:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
+        id S242537AbhLASVG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Dec 2021 13:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352248AbhLASU4 (ORCPT
+        with ESMTP id S1352249AbhLASU4 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 13:20:56 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B793C06174A
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Dec 2021 10:17:33 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id p4so31991539qkm.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Dec 2021 10:17:33 -0800 (PST)
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED21C061756
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Dec 2021 10:17:34 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id i13so22537837qvm.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Dec 2021 10:17:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=S8rLavpX0K8kRyVpzqSbFoyoKf5rceaTacSOQ9Yu2Ug=;
-        b=gbIt8i1qZhllQy7k79UF6MwsjuBIgK4B44WYR+sZSYq+CSzRsHgiqp4aiZ9ZJ8yFgJ
-         uwYxhYjzczcQgrhTxaTxOwlx6Xj3dwdRsahqQOBlLnCUVEsxhPFpu6QpBy8M6cX9tXXf
-         xQ6d6DNGtGPg5cqAZr9RZMG5/m/GUilSYlzXfPvoMyDbtR8tGEDanJ1EHECAZ5T0e+PP
-         dRuhTWmNoaY/ZOA5+vkam/qeYR9BSj7FpZo9zEGknuJJwDrEHb5k17ZEMz8rOg8csxns
-         eVZrBBr8xj+eLdJ908P5GGmMcBL7lc77djD8hqPf0VkyVYUX8CeiOEdkfYXsK2SxRRhP
-         P6+Q==
+        bh=MsHd+omzg3fLiFS+pOt2YWV8wr0jRWzNLntxMRqjGoU=;
+        b=YZkaszH9jigDJOick8L0pON+svsTUOhYu/Dwzo0+LwkUlLTXj2rEwKBBzV6hVCCxRn
+         9mZbxdI44kf7Box9gMa/+nU4tHow1UtO1gPiKKM0S1oJk5yygoCWM+BaSHfwPvuw0ggE
+         nyK9nUr1b+NFa3/j7x10uGD1VBZq4ZqERrtZD086TqYxYKoKNZyJ9zxvrfr497x4mDMS
+         f+FwFC1l00A+1wlHtBktaERPaBLUCBsxBLq02s4SGXzG0gBdI1bP4v6Htc3cJLzYw0M3
+         ReoR/TlmJPk2rYMRQm2pS1+V3Fdz4ECfNImHdVZpHlVaf/jQig7N2X8bVodAgfM+fM5s
+         iJeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=S8rLavpX0K8kRyVpzqSbFoyoKf5rceaTacSOQ9Yu2Ug=;
-        b=iOwAOzQwUlK8P/WR4isG3YDpvcfIaFpieoku1uWmKx4OJYZUakqLewxEqjGYbvTifm
-         5tfaDG15cNz9guM1vDfhZItQqkToK3Asf9aNd1/BO7T0EZAFr8QDC4ywKX6Va6ep90I/
-         43m5wZPTK56SLHZkszzZJ6Ju0dEtA7ssK/9k+a9hIxvVoD0Pebf/cMMl8oNwifsZe3Ja
-         Q9RlaD8usPlRLG9mN1pnWuAEuHMinVRrZ+ndz4hivAyZ4pzV5I0pAYn1a0YCc4IyB//K
-         +tL4UoE9JiyIVxsbBL4cNzQPRuXGl8WL9C5wYPLI6pQIj5tEuTm5/aWSX4H29ExJ2c7O
-         0auA==
-X-Gm-Message-State: AOAM530oblWeyVPjIqX+KyBZYlP/dYhZ5BXpvmV3TSNFpHfAUJ9l88qF
-        DCNvAbK5JFJGYoVWwPg7TJsrmalZb3eF4w==
-X-Google-Smtp-Source: ABdhPJyBfMX/TJ3F1rAGPHKBv3C5LrzEyErKIRxg1wqBoY1kCFKSdemAVB//3k4k45ti9wXaEeLtTA==
-X-Received: by 2002:a05:620a:2486:: with SMTP id i6mr8056514qkn.522.1638382651880;
-        Wed, 01 Dec 2021 10:17:31 -0800 (PST)
+        bh=MsHd+omzg3fLiFS+pOt2YWV8wr0jRWzNLntxMRqjGoU=;
+        b=fTO1lKU2iSZqygz5aFoZvNbXCozzqE1NGKNsBrflzc1IKZz4h1CGL2hRHsJSVNDteC
+         oQ6LbSaYuOp0QoP7p+aquCaP30Bbro2bUKQjp8KvQGwaDQaws/IYlba5UCy4Fn/1d9+Q
+         AXelLSFpTTgbzR1jp5HE36rcA5KwUlMJHhlyjmr+bvCcrwWtMrcmO38hELZASUHtSaIe
+         ohjtpkt0PraaQ0JhgGXEwEKxH4/iaf07hNgS2hUCKrafehp3XuqBWR6Gq9MhkQdv9Hl3
+         G8WssIbxr+mfF3r7koUcb1neM5OPIwSLB9Do5g71zeoNkZRO0QtulVjiLebS0jn8gMw6
+         dw+g==
+X-Gm-Message-State: AOAM530y2S/zxZJAhV8TfnpKo7rchv/uVDBfNhCk/XkwHR89cEqq3+6A
+        xq6CaKnQos+qQuL/rIo/l48xw029Ml+bQA==
+X-Google-Smtp-Source: ABdhPJzvphMMDKLwh6V7uuK0tkb/TtP5b6ddZodDm62ELPfZvVL6k0ak0NYk8BhNVF+lt/JEoiNYEw==
+X-Received: by 2002:a0c:d841:: with SMTP id i1mr7796705qvj.126.1638382653251;
+        Wed, 01 Dec 2021 10:17:33 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id o10sm291173qtx.33.2021.12.01.10.17.31
+        by smtp.gmail.com with ESMTPSA id q20sm260058qkl.53.2021.12.01.10.17.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Dec 2021 10:17:31 -0800 (PST)
+        Wed, 01 Dec 2021 10:17:32 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 10/22] btrfs-progs: check: add block group tree support
-Date:   Wed,  1 Dec 2021 13:17:04 -0500
-Message-Id: <ec485813c7edf8b7ed2673ec05ad9b52a6517f73.1638382588.git.josef@toxicpanda.com>
+Subject: [PATCH v2 11/22] btrfs-progs: qgroup-verify: scan extents based on block groups
+Date:   Wed,  1 Dec 2021 13:17:05 -0500
+Message-Id: <cbdfe7c345af59922480ffabbcf045d75aac9202.1638382588.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1638382588.git.josef@toxicpanda.com>
 References: <cover.1638382588.git.josef@toxicpanda.com>
@@ -61,81 +61,79 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This makes the appropriate changes to enable the block group tree
-checking for both lowmem and normal check modes.  This is relatively
-straightforward, simply need to use the helper to get the right root for
-dealing with block groups.
+When we switch to per-block group extent roots we'll need to scan each
+individual extent root.  To make this easier in the future go ahead and
+use the range of the block groups to scan the extents.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- check/main.c        | 21 ++++++++++++++++++++-
- check/mode-lowmem.c |  4 ++--
- 2 files changed, 22 insertions(+), 3 deletions(-)
+ check/qgroup-verify.c | 32 ++++++++++++++++++++++++--------
+ 1 file changed, 24 insertions(+), 8 deletions(-)
 
-diff --git a/check/main.c b/check/main.c
-index b3563ee1..6341dd43 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -6242,10 +6242,17 @@ static int check_type_with_root(u64 rootid, u8 key_type)
- 		break;
- 	case BTRFS_EXTENT_ITEM_KEY:
- 	case BTRFS_METADATA_ITEM_KEY:
--	case BTRFS_BLOCK_GROUP_ITEM_KEY:
- 		if (rootid != BTRFS_EXTENT_TREE_OBJECTID)
- 			goto err;
- 		break;
-+	case BTRFS_BLOCK_GROUP_ITEM_KEY:
-+		if (btrfs_fs_incompat(gfs_info, EXTENT_TREE_V2)) {
-+			if (rootid != BTRFS_BLOCK_GROUP_TREE_OBJECTID)
-+				goto err;
-+		} else if (rootid != BTRFS_EXTENT_TREE_OBJECTID) {
-+			goto err;
-+		}
-+		break;
- 	case BTRFS_ROOT_ITEM_KEY:
- 		if (rootid != BTRFS_ROOT_TREE_OBJECTID)
- 			goto err;
-@@ -9466,6 +9473,18 @@ again:
- 		return ret;
- 	}
- 
-+	/*
-+	 * If we are extent tree v2 then we can reint the block group root as
-+	 * well.
-+	 */
-+	if (btrfs_fs_incompat(gfs_info, EXTENT_TREE_V2)) {
-+		ret = btrfs_fsck_reinit_root(trans, gfs_info->block_group_root);
-+		if (ret) {
-+			fprintf(stderr, "block group initialization failed\n");
-+			return ret;
-+		}
-+	}
-+
+diff --git a/check/qgroup-verify.c b/check/qgroup-verify.c
+index 0813b841..45007d8c 100644
+--- a/check/qgroup-verify.c
++++ b/check/qgroup-verify.c
+@@ -1400,6 +1400,7 @@ static bool is_bad_qgroup(struct qgroup_count *count)
+  */
+ int qgroup_verify_all(struct btrfs_fs_info *info)
+ {
++	struct rb_node *n;
+ 	int ret;
+ 	bool found_err = false;
+ 	bool skip_err = false;
+@@ -1430,10 +1431,17 @@ int qgroup_verify_all(struct btrfs_fs_info *info)
  	/*
- 	 * Now we have all the in-memory block groups setup so we can make
- 	 * allocations properly, and the metadata we care about is safe since we
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 263b56d1..7be12e6b 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -5530,7 +5530,7 @@ int check_chunks_and_extents_lowmem(void)
- 	key.offset = 0;
- 	key.type = BTRFS_ROOT_ITEM_KEY;
- 
--	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
-+	ret = btrfs_search_slot(NULL, gfs_info->tree_root, &key, &path, 0, 0);
- 	if (ret) {
- 		error("cannot find extent tree in tree_root");
- 		goto out;
-@@ -5565,7 +5565,7 @@ int check_chunks_and_extents_lowmem(void)
- 		if (ret)
- 			goto out;
- next:
--		ret = btrfs_next_item(root, &path);
-+		ret = btrfs_next_item(gfs_info->tree_root, &path);
- 		if (ret)
- 			goto out;
+ 	 * Put all extent refs into our rbtree
+ 	 */
+-	ret = scan_extents(info, 0, ~0ULL);
+-	if (ret) {
+-		fprintf(stderr, "ERROR: while scanning extent tree: %d\n", ret);
+-		goto out;
++	for (n = rb_first(&info->block_group_cache_tree); n; n = rb_next(n)) {
++		struct btrfs_block_group *bg;
++
++		bg = rb_entry(n, struct btrfs_block_group, cache_node);
++		ret = scan_extents(info, bg->start,
++				   bg->start + bg->length - 1);
++		if (ret) {
++			fprintf(stderr, "ERROR: while scanning extent tree: %d\n",
++				ret);
++			goto out;
++		}
  	}
+ 
+ 	ret = map_implied_refs(info);
+@@ -1507,6 +1515,7 @@ static void print_subvol_info(u64 subvolid, u64 bytenr, u64 num_bytes,
+ 
+ int print_extent_state(struct btrfs_fs_info *info, u64 subvol)
+ {
++	struct rb_node *n;
+ 	int ret;
+ 
+ 	tree_blocks = ulist_alloc(0);
+@@ -1519,10 +1528,17 @@ int print_extent_state(struct btrfs_fs_info *info, u64 subvol)
+ 	/*
+ 	 * Put all extent refs into our rbtree
+ 	 */
+-	ret = scan_extents(info, 0, ~0ULL);
+-	if (ret) {
+-		fprintf(stderr, "ERROR: while scanning extent tree: %d\n", ret);
+-		goto out;
++	for (n = rb_first(&info->block_group_cache_tree); n; n = rb_next(n)) {
++		struct btrfs_block_group *bg;
++
++		bg = rb_entry(n, struct btrfs_block_group, cache_node);
++		ret = scan_extents(info, bg->start,
++				   bg->start + bg->length - 1);
++		if (ret) {
++			fprintf(stderr, "ERROR: while scanning extent tree: %d\n",
++				ret);
++			goto out;
++		}
+ 	}
+ 
+ 	ret = map_implied_refs(info);
 -- 
 2.26.3
 
