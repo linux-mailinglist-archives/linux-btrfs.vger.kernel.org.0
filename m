@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156FF46466C
+	by mail.lfdr.de (Postfix) with ESMTP id A892246466E
 	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 06:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346729AbhLAFV5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Dec 2021 00:21:57 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:37882 "EHLO
+        id S1346725AbhLAFWA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Dec 2021 00:22:00 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:37890 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346739AbhLAFVz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 00:21:55 -0500
+        with ESMTP id S1346714AbhLAFV4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 00:21:56 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EF18C1FD2F;
-        Wed,  1 Dec 2021 05:18:33 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4F3041FD58;
+        Wed,  1 Dec 2021 05:18:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1638335913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1638335915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iGoATI8QhpJQFUqpKLovdoPmLhCegyDIShiT0EoICN4=;
-        b=HBk8iT1VcldRuyrVjDbwSVrmVOzKIq67TvNOSoVD8IKy2iMJIMDQ9UiZdDnS44OJn9/WmL
-        Um9JqtEzAOi6GoMM7FYJ16WKNKm/Fv1un9IZfnoumjfxN9ZaC+ft5YW/kRp085qD3QWasY
-        DQIDxVuJSMPLKLsf52bSIpRuFntVzIA=
+        bh=FfzzaplRdzADfh5C67JmZThB8OL3fW3foCobHjbNNyA=;
+        b=SJnT9Yx2k1chf+4wdGTtRjDmkBkH6eNNokiiloYILzt4olwISfkGg8nz2XqdFHzoTIne8T
+        pEsfdI6h91lwBP9ovUVUB1W8dQBhLOBZQ1acbToKVKV6dmJWUyq2Dl2aXfRtm/dnOL1NRS
+        T/lgG/P0BtIc10JQ9gsqPguuePcX6C8=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2D0513425;
-        Wed,  1 Dec 2021 05:18:32 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 537D713425;
+        Wed,  1 Dec 2021 05:18:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4HzNL6gFp2EGbwAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 01 Dec 2021 05:18:32 +0000
+        id 0FL8CKoFp2EGbwAAMHmgww
+        (envelope-from <wqu@suse.com>); Wed, 01 Dec 2021 05:18:34 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     linux-block@vger.kernel.org, dm-devel@redhat.com
-Subject: [PATCH 14/17] btrfs: remove buffered IO stripe boundary calculation
-Date:   Wed,  1 Dec 2021 13:17:53 +0800
-Message-Id: <20211201051756.53742-15-wqu@suse.com>
+Subject: [PATCH 15/17] btrfs: remove stripe boundary calculation for compressed IO
+Date:   Wed,  1 Dec 2021 13:17:54 +0800
+Message-Id: <20211201051756.53742-16-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211201051756.53742-1-wqu@suse.com>
 References: <20211201051756.53742-1-wqu@suse.com>
@@ -51,75 +51,157 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This will remove btrfs_bio_ctrl::len_to_stripe_boundary, so that buffer
-IO will no longer limits its bio size according to stripe length.
+For compressed IO, we calculate the next stripe start inside
+alloc_compressed_bio().
 
-This will move the bio split to btrfs_map_bio() for all buffered IO.
+Since now btrfs_map_bio() can handle bio split, we no longer need to
+calculate the boundary any more.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 23 ++---------------------
- 1 file changed, 2 insertions(+), 21 deletions(-)
+ fs/btrfs/compression.c | 49 +++++-------------------------------------
+ 1 file changed, 5 insertions(+), 44 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 8f5a1059a296..7fabf46312dd 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -3301,7 +3301,7 @@ static int btrfs_bio_add_page(struct btrfs_bio_ctrl *bio_ctrl,
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 8b4b84b59b0c..70af7d3973b7 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -442,21 +442,15 @@ static blk_status_t submit_compressed_bio(struct btrfs_fs_info *fs_info,
+  *                      from or written to.
+  * @endio_func:         The endio function to call after the IO for compressed data
+  *                      is finished.
+- * @next_stripe_start:  Return value of logical bytenr of where next stripe starts.
+- *                      Let the caller know to only fill the bio up to the stripe
+- *                      boundary.
+  */
  
- 	ASSERT(bio);
- 	/* The limit should be calculated when bio_ctrl->bio is allocated */
--	ASSERT(bio_ctrl->len_to_oe_boundary && bio_ctrl->len_to_stripe_boundary);
-+	ASSERT(bio_ctrl->len_to_oe_boundary);
- 	if (bio_ctrl->bio_flags != bio_flags)
- 		return 0;
  
-@@ -3312,9 +3312,7 @@ static int btrfs_bio_add_page(struct btrfs_bio_ctrl *bio_ctrl,
- 	if (!contig)
- 		return 0;
- 
--	real_size = min(bio_ctrl->len_to_oe_boundary,
--			bio_ctrl->len_to_stripe_boundary) - bio_size;
--	real_size = min(real_size, size);
-+	real_size = min(bio_ctrl->len_to_oe_boundary - bio_size, size);
- 
- 	/*
- 	 * If real_size is 0, never call bio_add_*_page(), as even size is 0,
-@@ -3335,11 +3333,8 @@ static int calc_bio_boundaries(struct btrfs_bio_ctrl *bio_ctrl,
- 			       struct btrfs_inode *inode, u64 file_offset)
+ static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u64 disk_bytenr,
+-					unsigned int opf, bio_end_io_t endio_func,
+-					u64 *next_stripe_start)
++					unsigned int opf, bio_end_io_t endio_func)
  {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(cb->inode->i_sb);
 -	struct btrfs_io_geometry geom;
- 	struct btrfs_ordered_extent *ordered;
--	struct extent_map *em;
- 	u64 logical = (bio_ctrl->bio->bi_iter.bi_sector << SECTOR_SHIFT);
+ 	struct extent_map *em;
+ 	struct bio *bio;
 -	int ret;
  
- 	/*
- 	 * Pages for compressed extent are never submitted to disk directly,
-@@ -3350,22 +3345,8 @@ static int calc_bio_boundaries(struct btrfs_bio_ctrl *bio_ctrl,
- 	 */
- 	if (bio_ctrl->bio_flags & EXTENT_BIO_COMPRESSED) {
- 		bio_ctrl->len_to_oe_boundary = U32_MAX;
--		bio_ctrl->len_to_stripe_boundary = U32_MAX;
- 		return 0;
- 	}
--	em = btrfs_get_chunk_map(fs_info, logical, fs_info->sectorsize);
--	if (IS_ERR(em))
--		return PTR_ERR(em);
--	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio_ctrl->bio),
--				    logical, &geom);
--	free_extent_map(em);
--	if (ret < 0) {
--		return ret;
--	}
--	if (geom.len > U32_MAX)
--		bio_ctrl->len_to_stripe_boundary = U32_MAX;
--	else
--		bio_ctrl->len_to_stripe_boundary = (u32)geom.len;
+ 	bio = btrfs_bio_alloc(BIO_MAX_VECS);
  
- 	if (!btrfs_is_zoned(fs_info) ||
- 	    bio_op(bio_ctrl->bio) != REQ_OP_ZONE_APPEND) {
+@@ -473,14 +467,7 @@ static struct bio *alloc_compressed_bio(struct compressed_bio *cb, u64 disk_byte
+ 
+ 	if (bio_op(bio) == REQ_OP_ZONE_APPEND)
+ 		bio_set_dev(bio, em->map_lookup->stripes[0].dev->bdev);
+-
+-	ret = btrfs_get_io_geometry(fs_info, em, btrfs_op(bio), disk_bytenr, &geom);
+ 	free_extent_map(em);
+-	if (ret < 0) {
+-		bio_put(bio);
+-		return ERR_PTR(ret);
+-	}
+-	*next_stripe_start = disk_bytenr + geom.len;
+ 
+ 	return bio;
+ }
+@@ -506,7 +493,6 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 	struct bio *bio = NULL;
+ 	struct compressed_bio *cb;
+ 	u64 cur_disk_bytenr = disk_start;
+-	u64 next_stripe_start;
+ 	blk_status_t ret;
+ 	int skip_sum = inode->flags & BTRFS_INODE_NODATASUM;
+ 	const bool use_append = btrfs_use_zone_append(inode, disk_start);
+@@ -539,28 +525,19 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 		/* Allocate new bio if submitted or not yet allocated */
+ 		if (!bio) {
+ 			bio = alloc_compressed_bio(cb, cur_disk_bytenr,
+-				bio_op | write_flags, end_compressed_bio_write,
+-				&next_stripe_start);
++				bio_op | write_flags, end_compressed_bio_write);
+ 			if (IS_ERR(bio)) {
+ 				ret = errno_to_blk_status(PTR_ERR(bio));
+ 				bio = NULL;
+ 				goto finish_cb;
+ 			}
+ 		}
+-		/*
+-		 * We should never reach next_stripe_start start as we will
+-		 * submit comp_bio when reach the boundary immediately.
+-		 */
+-		ASSERT(cur_disk_bytenr != next_stripe_start);
+-
+ 		/*
+ 		 * We have various limits on the real read size:
+-		 * - stripe boundary
+ 		 * - page boundary
+ 		 * - compressed length boundary
+ 		 */
+-		real_size = min_t(u64, U32_MAX, next_stripe_start - cur_disk_bytenr);
+-		real_size = min_t(u64, real_size, PAGE_SIZE - offset_in_page(offset));
++		real_size = min_t(u64, U32_MAX, PAGE_SIZE - offset_in_page(offset));
+ 		real_size = min_t(u64, real_size, compressed_len - offset);
+ 		ASSERT(IS_ALIGNED(real_size, fs_info->sectorsize));
+ 
+@@ -575,9 +552,6 @@ blk_status_t btrfs_submit_compressed_write(struct btrfs_inode *inode, u64 start,
+ 			submit = true;
+ 
+ 		cur_disk_bytenr += added;
+-		/* Reached stripe boundary */
+-		if (cur_disk_bytenr == next_stripe_start)
+-			submit = true;
+ 
+ 		/* Finished the range */
+ 		if (cur_disk_bytenr == disk_start + compressed_len)
+@@ -797,7 +771,6 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 	struct bio *comp_bio = NULL;
+ 	const u64 disk_bytenr = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+ 	u64 cur_disk_byte = disk_bytenr;
+-	u64 next_stripe_start;
+ 	u64 file_offset;
+ 	u64 em_len;
+ 	u64 em_start;
+@@ -878,27 +851,19 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 		/* Allocate new bio if submitted or not yet allocated */
+ 		if (!comp_bio) {
+ 			comp_bio = alloc_compressed_bio(cb, cur_disk_byte,
+-					REQ_OP_READ, end_compressed_bio_read,
+-					&next_stripe_start);
++					REQ_OP_READ, end_compressed_bio_read);
+ 			if (IS_ERR(comp_bio)) {
+ 				ret = errno_to_blk_status(PTR_ERR(comp_bio));
+ 				comp_bio = NULL;
+ 				goto finish_cb;
+ 			}
+ 		}
+-		/*
+-		 * We should never reach next_stripe_start start as we will
+-		 * submit comp_bio when reach the boundary immediately.
+-		 */
+-		ASSERT(cur_disk_byte != next_stripe_start);
+ 		/*
+ 		 * We have various limit on the real read size:
+-		 * - stripe boundary
+ 		 * - page boundary
+ 		 * - compressed length boundary
+ 		 */
+-		real_size = min_t(u64, U32_MAX, next_stripe_start - cur_disk_byte);
+-		real_size = min_t(u64, real_size, PAGE_SIZE - offset_in_page(offset));
++		real_size = min_t(u64, U32_MAX, PAGE_SIZE - offset_in_page(offset));
+ 		real_size = min_t(u64, real_size, compressed_len - offset);
+ 		ASSERT(IS_ALIGNED(real_size, fs_info->sectorsize));
+ 
+@@ -910,10 +875,6 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 		ASSERT(added == real_size);
+ 		cur_disk_byte += added;
+ 
+-		/* Reached stripe boundary, need to submit */
+-		if (cur_disk_byte == next_stripe_start)
+-			submit = true;
+-
+ 		/* Has finished the range, need to submit */
+ 		if (cur_disk_byte == disk_bytenr + compressed_len)
+ 			submit = true;
 -- 
 2.34.1
 
