@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B343046465E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 06:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF20B464660
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 06:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346693AbhLAFVq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Dec 2021 00:21:46 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:55520 "EHLO
+        id S1346694AbhLAFVs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Dec 2021 00:21:48 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:55528 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346691AbhLAFVp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 00:21:45 -0500
+        with ESMTP id S1346674AbhLAFVr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 00:21:47 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 851C2212BC;
-        Wed,  1 Dec 2021 05:18:24 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id DBB14212BA;
+        Wed,  1 Dec 2021 05:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1638335904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1638335905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZcP/wV7AYhhX+nSq875ds9inUWH5cEaDMVx7lYnhDk0=;
-        b=ON5ChSRvXnTIzW32TV93veaH6wHwRb03dHNxi/S3BkxATrB7ikCjYz2TTOs5a3202xrjV0
-        yUKryy8wMtGJ8XJNgY/tJ+DuU/1QvLmdC6L4/j20J1ss5CrI+AgewwcPvMKgdb2MKS4WAr
-        V5M3GXg3K5GfLaSLcr/YaEDEUWP1gC4=
+        bh=oIq5Wlg49F7ossiz/x4hZwHfw8NiGLRtkthYXsKRAUI=;
+        b=RUutWjhmw4011/0N6rXEIxNQe8j28SAHrL7aUcI1EBbB+2YtZiz11gGi9fILZjdvW/a5h5
+        meEudKitdMeGsspJN+dCBtZDzRz/eWKG//uxEsxBIONm2GjbBlud3A45WzZJhnv3DjIqfe
+        7j1xY/+MZzH64c1tYX6bg96XZMuMhOA=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8801B13425;
-        Wed,  1 Dec 2021 05:18:23 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DEB8613425;
+        Wed,  1 Dec 2021 05:18:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mLq6FZ8Fp2EGbwAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 01 Dec 2021 05:18:23 +0000
+        id 0CDfKqAFp2EGbwAAMHmgww
+        (envelope-from <wqu@suse.com>); Wed, 01 Dec 2021 05:18:24 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     linux-block@vger.kernel.org, dm-devel@redhat.com
-Subject: [PATCH 07/17] btrfs: introduce btrfs_bio_split() helper
-Date:   Wed,  1 Dec 2021 13:17:46 +0800
-Message-Id: <20211201051756.53742-8-wqu@suse.com>
+Subject: [PATCH 08/17] btrfs: make data buffered read path to handle split bio properly
+Date:   Wed,  1 Dec 2021 13:17:47 +0800
+Message-Id: <20211201051756.53742-9-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211201051756.53742-1-wqu@suse.com>
 References: <20211201051756.53742-1-wqu@suse.com>
@@ -51,223 +51,171 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This new function will handle the split of a btrfs bio, to co-operate
-with the incoming chunk mapping time bio split.
+This involves the following modifications:
 
-This patch will introduce the following new members and functions:
+- Use bio_for_each_segment() instead of bio_for_each_segment_all()
+  bio_for_each_segment_all() will iterate all bvecs, even if they are
+  not referred by current bi_iter.
 
-- btrfs_bio::offset_to_original
-  Since btrfs_bio::csum is still storing the checksum for the original
-  logical bytenr, we need to know the offset between current advanced
-  bio and the original logical bytenr.
+  *_all() variant can only be used if the bio is never split.
 
-  Thus here we need such new member.
-  And the new member will fit into the existing hole between
-  btrfs_bio::mirror_num and btrfs_bio::device, it should not increase
-  the memory usage of btrfs_bio.
+  Change it to __bio_for_each_segment() call so we won't have endio called
+  on the same range by both split and parent bios, and it can handle
+  both split and unsplit bios.
 
-- btrfs_bio::parent and btrfs_bio::orig_endio
-  To record where the parent bio is and the original endio function.
+- Make check_data_csum() to take bbio->offset_to_original into
+  consideration
+  Since btrfs bio can be split now, split/original bio can all start
+  with some offset to the original logical bytenr.
 
-- btrfs_bio::is_split_bio
-  To distinguish bio created by btrfs_bio_split() and
-  btrfs_bio_clone*().
+  Take btrfs_bio::offset_to_original into consideration to get correct
+  checksum offset.
 
-  For cloned bio, they still have their csum pointed to correct memory,
-  while split bio must rely on its parent bbio to grab csum pointer.
-
-- split_bio_endio()
-  Just to call the original endio function then call bio_endio() on
-  the original bio.
-  This will ensure the original bio is freed after all cloned bio.
-
-- btrfs_split_bio()
-  Split the original bio into two, the behavior is pretty much the same
-  as bio_split(), just with extra btrfs specific setup.
-
-Currently there is no other caller utilizing above new members/functions
-yet.
+- Remove the BIO_CLONED ASSERT() in submit_read_repair()
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 82 +++++++++++++++++++++++++++++++++++++++++++-
- fs/btrfs/extent_io.h |  2 ++
- fs/btrfs/volumes.h   | 43 +++++++++++++++++++++--
- 3 files changed, 123 insertions(+), 4 deletions(-)
+ fs/btrfs/extent_io.c | 34 +++++++++++++++++++---------------
+ fs/btrfs/inode.c     | 23 +++++++++++++++++++++--
+ fs/btrfs/volumes.h   |  3 ++-
+ 3 files changed, 42 insertions(+), 18 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 1a67f4b3986b..083700621b9f 100644
+index 083700621b9f..e0e072c0e5c8 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3005,7 +3005,6 @@ static void end_bio_extent_readpage(struct bio *bio)
- 	int ret;
- 	struct bvec_iter_all iter_all;
+@@ -2735,10 +2735,9 @@ static blk_status_t submit_read_repair(struct inode *inode,
+ 	ASSERT(error_bitmap);
  
--	ASSERT(!bio_flagged(bio, BIO_CLONED));
- 	bio_for_each_segment_all(bvec, bio, iter_all) {
+ 	/*
+-	 * We only get called on buffered IO, thus page must be mapped and bio
+-	 * must not be cloned.
+-	 */
+-	ASSERT(page->mapping && !bio_flagged(failed_bio, BIO_CLONED));
++	 * We only get called on buffered IO, thus page must be mapped
++	*/
++	ASSERT(page->mapping);
+ 
+ 	/* Iterate through all the sectors in the range */
+ 	for (i = 0; i < nr_bits; i++) {
+@@ -2992,7 +2991,8 @@ static struct extent_buffer *find_extent_buffer_readpage(
+  */
+ static void end_bio_extent_readpage(struct bio *bio)
+ {
+-	struct bio_vec *bvec;
++	struct bio_vec bvec;
++	struct bvec_iter iter;
+ 	struct btrfs_bio *bbio = btrfs_bio(bio);
+ 	struct extent_io_tree *tree, *failure_tree;
+ 	struct processed_extent processed = { 0 };
+@@ -3003,11 +3003,15 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 	u32 bio_offset = 0;
+ 	int mirror;
+ 	int ret;
+-	struct bvec_iter_all iter_all;
+ 
+-	bio_for_each_segment_all(bvec, bio, iter_all) {
++	/*
++	 * We should have saved the orignal bi_iter, and then start iterating
++	 * using that saved iter, as at endio time bi_iter is not reliable.
++	 */
++	ASSERT(bbio->iter.bi_size);
++	__bio_for_each_segment(bvec, bio, iter, bbio->iter) {
  		bool uptodate = !bio->bi_status;
- 		struct page *page = bvec->bv_page;
-@@ -3184,6 +3183,87 @@ struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size)
- 	return bio;
+-		struct page *page = bvec->bv_page;
++		struct page *page = bvec.bv_page;
+ 		struct inode *inode = page->mapping->host;
+ 		struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 		const u32 sectorsize = fs_info->sectorsize;
+@@ -3030,19 +3034,19 @@ static void end_bio_extent_readpage(struct bio *bio)
+ 		 * for unaligned offsets, and an error if they don't add up to
+ 		 * a full sector.
+ 		 */
+-		if (!IS_ALIGNED(bvec->bv_offset, sectorsize))
++		if (!IS_ALIGNED(bvec.bv_offset, sectorsize))
+ 			btrfs_err(fs_info,
+ 		"partial page read in btrfs with offset %u and length %u",
+-				  bvec->bv_offset, bvec->bv_len);
+-		else if (!IS_ALIGNED(bvec->bv_offset + bvec->bv_len,
++				  bvec.bv_offset, bvec.bv_len);
++		else if (!IS_ALIGNED(bvec.bv_offset + bvec.bv_len,
+ 				     sectorsize))
+ 			btrfs_info(fs_info,
+ 		"incomplete page read with offset %u and length %u",
+-				   bvec->bv_offset, bvec->bv_len);
++				   bvec.bv_offset, bvec.bv_len);
+ 
+-		start = page_offset(page) + bvec->bv_offset;
+-		end = start + bvec->bv_len - 1;
+-		len = bvec->bv_len;
++		start = page_offset(page) + bvec.bv_offset;
++		end = start + bvec.bv_len - 1;
++		len = bvec.bv_len;
+ 
+ 		mirror = bbio->mirror_num;
+ 		if (likely(uptodate)) {
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 1aa060de917c..186304c69900 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3225,6 +3225,24 @@ void btrfs_writepage_endio_finish_ordered(struct btrfs_inode *inode,
+ 				       finish_ordered_fn, uptodate);
  }
  
-+/*
-+ * A very simple wrapper to call original endio function and then
-+ * call bio_endio() on the parent bio to decrease its bi_remaining count.
-+ */
-+static void split_bio_endio(struct bio *bio)
++static u8 *bbio_get_real_csum(struct btrfs_fs_info *fs_info,
++			      struct btrfs_bio *bbio)
 +{
-+	struct btrfs_bio *bbio = btrfs_bio(bio);
-+	/* After endio bbio could be freed, thus grab the info before endio */
-+	struct bio *parent = bbio->parent;
++	u8 *ret;
 +
-+	/*
-+	 * BIO_CLONED can even be set for our parent bio (DIO use clones
-+	 * the initial bio, then uses the cloned one for IO).
-+	 * So here we don't check BIO_CLONED for parent.
-+	 */
-+	ASSERT(bio_flagged(bio, BIO_CLONED) && bbio->is_split_bio);
-+	ASSERT(parent && !btrfs_bio(parent)->is_split_bio);
++	/* Split bbio needs to grab csum from its parent */
++	if (bbio->is_split_bio)
++		ret = btrfs_bio(bbio->parent)->csum;
++	else
++		ret = bbio->csum;
 +
-+	bio->bi_end_io = bbio->orig_endio;
-+	bio_endio(bio);
-+	bio_endio(parent);
++	if (ret == NULL)
++		return ret;
++
++	return ret + (bbio->offset_to_original >> fs_info->sectorsize_bits) *
++		     fs_info->csum_size;
 +}
 +
-+/*
-+ * Pretty much like bio_split(), caller needs to ensure @src is not freed
-+ * before the newly allocated bio, as the new bio is relying on @src for
-+ * its bvecs.
-+ */
-+struct bio *btrfs_bio_split(struct btrfs_fs_info *fs_info,
-+			    struct bio *src, unsigned int bytes)
-+{
-+	struct bio *new;
-+	struct btrfs_bio *src_bbio = btrfs_bio(src);
-+	struct btrfs_bio *new_bbio;
-+	const unsigned int old_offset = src_bbio->offset_to_original;
-+
-+	/* Src should not be split */
-+	ASSERT(!src_bbio->is_split_bio);
-+	ASSERT(IS_ALIGNED(bytes, fs_info->sectorsize));
-+	ASSERT(bytes < src->bi_iter.bi_size);
-+
-+	/*
-+	 * We're in fact chaining the new bio to the parent, but we still want
-+	 * to have independent bi_private/bi_endio, thus we need to manually
-+	 * increase the remaining for the source, just like bio_chain().
-+	 */
-+	bio_inc_remaining(src);
-+
-+	/* Bioset backed split should not fail */
-+	new = bio_split(src, bytes >> SECTOR_SHIFT, GFP_NOFS, &btrfs_bioset);
-+	new_bbio = btrfs_bio(new);
-+	new_bbio->offset_to_original = old_offset;
-+	new_bbio->iter = new->bi_iter;
-+	new_bbio->orig_endio = src->bi_end_io;
-+	new_bbio->parent = src;
-+	new_bbio->endio_type = src_bbio->endio_type;
-+	new_bbio->is_split_bio = 1;
-+	new->bi_end_io = split_bio_endio;
-+
-+	/*
-+	 * This is very tricky, as if any endio has extra refcount on
-+	 * bi_private, we will be screwed up.
-+	 *
-+	 * We workaround this hacky behavior by reviewing all the involved
-+	 * endio stacks. Making sure only split-safe endio remap are called.
-+	 *
-+	 * Split-unsafe endio remap like btrfs_bio_wq_end_io() will be called
-+	 * after btrfs_bio_split().
-+	 */
-+	new->bi_private = src->bi_private;
-+
-+	src_bbio->offset_to_original += bytes;
-+
-+	/*
-+	 * For direct IO, @src is a cloned bio thus bbio::iter still points to
-+	 * the full bio. Need to update it too.
-+	 */
-+	src_bbio->iter = src->bi_iter;
-+	return new;
-+}
-+
- /**
-  * Attempt to add a page to bio
-  *
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index 0399cf8e3c32..cb727b77ecda 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -280,6 +280,8 @@ void extent_clear_unlock_delalloc(struct btrfs_inode *inode, u64 start, u64 end,
- struct bio *btrfs_bio_alloc(unsigned int nr_iovecs);
- struct bio *btrfs_bio_clone(struct bio *bio);
- struct bio *btrfs_bio_clone_partial(struct bio *orig, u64 offset, u64 size);
-+struct bio *btrfs_bio_split(struct btrfs_fs_info *fs_info,
-+			    struct bio *src, unsigned int bytes);
+ /*
+  * check_data_csum - verify checksum of one sector of uncompressed data
+  * @inode:	inode
+@@ -3252,7 +3270,8 @@ static int check_data_csum(struct inode *inode, struct btrfs_bio *bbio,
+ 	ASSERT(pgoff + len <= PAGE_SIZE);
  
- void end_extent_writepage(struct page *page, int err, u64 start, u64 end);
- int btrfs_repair_eb_io_failure(const struct extent_buffer *eb, int mirror_num);
+ 	offset_sectors = bio_offset >> fs_info->sectorsize_bits;
+-	csum_expected = ((u8 *)bbio->csum) + offset_sectors * csum_size;
++	csum_expected = bbio_get_real_csum(fs_info, bbio) +
++			offset_sectors * csum_size;
+ 
+ 	kaddr = kmap_atomic(page);
+ 	shash->tfm = fs_info->csum_shash;
+@@ -3310,7 +3329,7 @@ unsigned int btrfs_verify_data_csum(struct btrfs_bio *bbio,
+ 	 * Normally this should be covered by above check for compressed read
+ 	 * or the next check for NODATASUM.  Just do a quicker exit here.
+ 	 */
+-	if (bbio->csum == NULL)
++	if (bbio_get_real_csum(fs_info, bbio) == NULL)
+ 		return 0;
+ 
+ 	if (BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)
 diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index f88f39042558..bd789544268c 100644
+index bd789544268c..8825a17d0620 100644
 --- a/fs/btrfs/volumes.h
 +++ b/fs/btrfs/volumes.h
-@@ -332,15 +332,52 @@ struct btrfs_bio {
+@@ -400,7 +400,8 @@ static inline struct btrfs_bio *btrfs_bio(struct bio *bio)
  
- 	/*
- 	 * To tell which workqueue the bio's endio should be exeucted in.
-+	 * This member is to make sure btrfs_bio_wq_end_io() is the last
-+	 * endio remap in the stack.
- 	 *
- 	 * Only for read bios.
- 	 */
--	u16 endio_type;
-+	u8 endio_type;
-+
-+	/*
-+	 * To tell if this btrfs bio is split or just cloned.
-+	 * Both btrfs_bio_clone*() and btrfs_bio_split() will make bbio->bio
-+	 * to have BIO_CLONED flag.
-+	 * But cloned bio still has its bbio::csum pointed to correct memory,
-+	 * unlike split bio relies on its parent bbio to grab csum.
-+	 *
-+	 * Thus we needs this extra flag to distinguish those cloned bio.
-+	 */
-+	u8 is_split_bio;
-+
-+	/*
-+	 * Records the offset we're from the original bio.
-+	 *
-+	 * Since btrfs_bio can be split, but our csum is alwasy for the
-+	 * original logical bytenr, we need a way to know the bytes offset
-+	 * from the original logical bytenr to do proper csum verification.
-+	 */
-+	unsigned int offset_to_original;
- 
- 	/* @device is for stripe IO submission. */
- 	struct btrfs_device *device;
--	u8 *csum;
--	u8 csum_inline[BTRFS_BIO_INLINE_CSUM_SIZE];
-+
-+	union {
-+		/*
-+		 * For the parent bio recording the csum for the original
-+		 * logical bytenr
-+		 */
-+		struct {
-+			u8 *csum;
-+			u8 csum_inline[BTRFS_BIO_INLINE_CSUM_SIZE];
-+		};
-+
-+		/* For child (split) bio to record where its parent is */
-+		struct {
-+			struct bio *parent;
-+			bio_end_io_t *orig_endio;
-+		};
-+	};
- 	/*
- 	 * Saved bio::bi_iter before submission.
- 	 *
+ static inline void btrfs_bio_free_csum(struct btrfs_bio *bbio)
+ {
+-	if (bbio->csum != bbio->csum_inline) {
++	/* Only free the csum if we're not a split bio */
++	if (!bbio->is_split_bio && bbio->csum != bbio->csum_inline) {
+ 		kfree(bbio->csum);
+ 		bbio->csum = NULL;
+ 	}
 -- 
 2.34.1
 
