@@ -2,131 +2,129 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B87F46476E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 07:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCAC1464A39
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 09:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347033AbhLAG42 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Dec 2021 01:56:28 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:21360 "EHLO
+        id S1347976AbhLAJBL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Dec 2021 04:01:11 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:20340 "EHLO
         de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239448AbhLAG41 (ORCPT
+        by vger.kernel.org with ESMTP id S242281AbhLAJBJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 1 Dec 2021 01:56:27 -0500
+        Wed, 1 Dec 2021 04:01:09 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1638341585;
+        t=1638349067;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3emI/MDpAqT6URsE9WIiQbNiMqu9qxtOOoDTC4LZTck=;
-        b=DI4vUGs5yDf9m/V9ArB1B0WUYwGEcLPcziVRRakpifMZWR+JyYia5rhv/rr8tAlefbV66a
-        C0Pz1QOo2yVDGrsgZqRMIB+ZRQsR+9eWvqlK+IwFkw04F0TV3MXvyXfTk7Vx2UcvGiNrXQ
-        YU5HkzFybBN+CEfHggwL8qLv9Xejx+w=
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01lp2051.outbound.protection.outlook.com [104.47.1.51]) by
+        bh=udOFQyUmp0QEz+tXB1zYnBDLM74Rh6PpMlbBHF3JqPY=;
+        b=bG4Gzryh8AM1AI8E7xKe0z4/Jr5ULRVbnOD8J9BLJCNKnEoOoqBQ9X2rctLWazMP6rmvFa
+        G7vPDkdzdXWGYzY+uOVzA74YqfseB3rjluj6CaCLphdVExjiPgrXnJzTt80n4VRIV/oCb2
+        gwPDGF4l3P8BVJsdV4ug2a/PXSU91O0=
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2051.outbound.protection.outlook.com [104.47.12.51]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- de-mta-19-ZgZ4dU4rM22g0_q7dWdHlw-1; Wed, 01 Dec 2021 07:53:05 +0100
-X-MC-Unique: ZgZ4dU4rM22g0_q7dWdHlw-1
+ de-mta-1-IgA7gTcINO63VQiGbzs3-A-1; Wed, 01 Dec 2021 09:57:46 +0100
+X-MC-Unique: IgA7gTcINO63VQiGbzs3-A-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mWReACPI17H/Q4Eqe8NYml+DL7JQZWDh53egQEgPjF6jDqQ2uhTwKh2wMDVg3aK9rWKzzm7gRtRvTtTHeD2nJB6sEZnwX3kakeX2pECIAll2laiyBiB9lBZjT/3QYtN7VrtNVIKuq6bSBYhZk2Viv8RS7032gZ1EQAEgvAiVwiRDxTTivWzJ0MuRpoSxyfCvbkUUWGdeuo8AI5YLGwLjkUBMbtJBslqgkApUQQubmAPW+66lex6MXPTJ7t0fknZo8UeiBY3O0nPddzqUhVm0TxDwlH5recKz+ER/fjh81vJ1xDXBmyrcd0Jy/xfDQmWwk4OfvpXhyttPwmGZHybd9w==
+ b=Eabyv1YqteqOBLd8wBrxwl5Kyq8Pl8K/SoNbGSBRXUGo5AKWykUdMts/22Dntjkm4jM6O3fTe6s+Px5IK1KxBjhzXRFiwAwJOHopMQ4XkRr5IhcykO1lzMwvUwTXI0d9X/cN5uKDZZrQiRCyQ9KPtm5pHz/ysHTTldUY+T+/aLBbLEsPtYMmh4F8oqdEgsFY3ubnZdwwT55tNqH/VOV819zlKizUK59bvmqiLzT5bKT5FKBVGPaBNexziUKZhuCX2UNJlRpwW2uZEYSPtEvpw0XFJc+H/uPKqUuRlvqw5//FpmV2byb7PdiNwK5RwURx/mlLZkybCNatZWd8fpsmqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3emI/MDpAqT6URsE9WIiQbNiMqu9qxtOOoDTC4LZTck=;
- b=iJRdgsvTc7dPIPm5dW3DFqaQlYXRP5c1rmEgh6uHiwer3sXKAsxgHfV6L+TkeuJV519pTVHBZ+siuuO14AsT3bw2fs67LIIjYe5qGrrFKL/gH7lqMfUxzcGfbkdoXso2ksUnfx6SQOJJ01GMCPdObfOb1kadkqvn13xW6r1K0GO7mYkYJ36upeh8002qiLcPk4zjgAIcwTE8dXddWSgcPaYFpLgr5AzpZklQL0LpmgBWPkDADUvdvi/qgQ7mXOZyUZKV4ixtNudV/E6SkrSYuP9JAtimlSumF8iphMiMYgMe9ahgQ/5kuyjgLl5sGSmv4c1ONbKzTSP8KzCMoVm/1g==
+ bh=udOFQyUmp0QEz+tXB1zYnBDLM74Rh6PpMlbBHF3JqPY=;
+ b=NHHBoYEvUaHM37hfBUNHDo24dnkonxwZPFNn54KC7NVbNl3e5YWekQulvT4oVFZHptuEiGVCW1A3RiGkmZxR5yOORCUWmXcKuuzbTR1kdeJRH741tN3xogSk6u3lyItcGSsVYGCtH3zVwcLsDJRgDLaY//O3va2PazSFn0tAZ0JrjKZFte0sDRbohhBwgw3mREHuTSlhO3KUoU6xEYfPWyoKmmD7tF/e/aispotlYXI19OnmYmhsFVCmJlmamtpTK2Gswiecj7+pcO/S7RKmi3vtDrq6igwxtuHVgftOnSXV6WbO62kngpuRfdikQaIGgrwThQo3VGwXEQ267OAzWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from DB9PR04MB9426.eurprd04.prod.outlook.com (2603:10a6:10:36a::14)
- by DU2PR04MB8824.eurprd04.prod.outlook.com (2603:10a6:10:2e3::22) with
+ by DU2PR04MB8887.eurprd04.prod.outlook.com (2603:10a6:10:2e2::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22; Wed, 1 Dec
- 2021 06:53:03 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.23; Wed, 1 Dec
+ 2021 08:57:45 +0000
 Received: from DB9PR04MB9426.eurprd04.prod.outlook.com
  ([fe80::ed16:bc50:4079:9286]) by DB9PR04MB9426.eurprd04.prod.outlook.com
  ([fe80::ed16:bc50:4079:9286%9]) with mapi id 15.20.4734.023; Wed, 1 Dec 2021
- 06:53:03 +0000
-Message-ID: <0c495a80-66f4-9e33-f292-9c9377756243@suse.com>
-Date:   Wed, 1 Dec 2021 14:52:54 +0800
+ 08:57:44 +0000
+Message-ID: <bf794c47-35aa-7823-35ea-854873a20949@suse.com>
+Date:   Wed, 1 Dec 2021 16:57:35 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.3.2
-Subject: Re: [PATCH 12/17] btrfs: return proper mapped length for RAID56
- profiles in __btrfs_map_block()
+Subject: Re: [PATCH 00/17] btrfs: split bio at btrfs_map_bio() time
 Content-Language: en-US
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     linux-block@vger.kernel.org, dm-devel@redhat.com
 References: <20211201051756.53742-1-wqu@suse.com>
- <20211201051756.53742-13-wqu@suse.com>
-In-Reply-To: <20211201051756.53742-13-wqu@suse.com>
+In-Reply-To: <20211201051756.53742-1-wqu@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PH0PR07CA0044.namprd07.prod.outlook.com
- (2603:10b6:510:e::19) To DB9PR04MB9426.eurprd04.prod.outlook.com
+X-ClientProxiedBy: SJ0PR05CA0122.namprd05.prod.outlook.com
+ (2603:10b6:a03:33d::7) To DB9PR04MB9426.eurprd04.prod.outlook.com
  (2603:10a6:10:36a::14)
 MIME-Version: 1.0
-Received: from [0.0.0.0] (149.28.201.231) by PH0PR07CA0044.namprd07.prod.outlook.com (2603:10b6:510:e::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.20 via Frontend Transport; Wed, 1 Dec 2021 06:53:01 +0000
+Received: from [0.0.0.0] (149.28.201.231) by SJ0PR05CA0122.namprd05.prod.outlook.com (2603:10b6:a03:33d::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.11 via Frontend Transport; Wed, 1 Dec 2021 08:57:43 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2f149335-749e-408d-859d-08d9b497386b
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8824:
-X-Microsoft-Antispam-PRVS: <DU2PR04MB882450869E8D6C64E66D5B7ED6689@DU2PR04MB8824.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Office365-Filtering-Correlation-Id: df69c5fe-84cc-456f-8503-08d9b4a8a3e3
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8887:
+X-Microsoft-Antispam-PRVS: <DU2PR04MB888743A17C3EF5551BB60A23D6689@DU2PR04MB8887.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8UWbUpuiRE8ouW/Vy6Nl4BUF6WO4LdeN7mFjVZbvuMvpT/sh8e8hdOVr6zGZCoVhyi1SMPh2r6m+wy0RnSrBWPkfocRXi0JhIV2zeC0TWNgO5pU+0qNxpOLXgWCag/WX04U9xuTglV87oQTCbOthxRo4skl0n8IncOs9W2v4ukd5oKdyNwg5vfGC53h6yy4Zk8kL7C/qrKr+rhVcCCD/2f47bIJ1XE2Q86u5UFgPIHKJX7QyV2WlaDViQ8NA3vBFQaSSn3ti/W+X8stCkOZf01uXsRZS4YQS3VfidLdICWOKsv9920pt+Bko0f1RkR0sbQoSXJAAAY4sIgckeXsVPyAPm6xyqNrEfZWteQnFw8XeNjYg8txyi+yk3nosmWhClb0TJsVQYUFmDTUxTTWrERjlIGO9R7vRtrE+VDNk/FZiLFEleRFU68dZQPnOEd75S79DaF4cpj2ikFVc075HkY0t9vql7lIoMDhV7L/49jg0bvlpQ/E2Sk45L3/3EAkMM3SC1Q55V0J1jFYj5KqQF6sJtMLWPPN+OSXCB5VKT54MTnhzfOjrVVQR6HD0gbRZHWHTCmaw8AyUay+DF/slYda0Jn22qts0bYwShrxzuTnE4N26uYB1f7YAXS+apth0X7Td1gdtJ1ot56zpQsGhnWZfAIPXKgyqcDfLeBdycudR0ISUfOZt/im6kon2l9g5ai7rlNCCgKCAE97Mcv2SmPLQgCzo0Rj5MMMbsj1s9d0mpqAXxuTPd3FWBQ4I76dw3DhmyGuhdY9NWJZWverQYw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(508600001)(6486002)(26005)(66556008)(66476007)(186003)(6666004)(6706004)(86362001)(83380400001)(5660300002)(36756003)(16576012)(31696002)(53546011)(6916009)(316002)(8676002)(8936002)(2616005)(31686004)(2906002)(38100700002)(956004)(66946007)(4326008)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: XafGkp3xgCi/iCrSLJ4ROZ+oSnj5X5IkV5zj+C2KYf06xDAGgKA6LRc2nzYV9OMzFISkhgXTgFb3uNRKh/aNW8jwYfh8Ve5bayBxjeL8ofXI69FdrqBAebHiCbrSwMiYzdNbzxj8XKKNVrVaWSRkXJJz0vSfMamQLFNUnMwV61zNZWlhADANbpL9RPJkqRyJDFnRsPgw75OijGRbTRQdGuN/18z4wk4kq3D7rA3b3Zql/csmWL02hvG9lQt9E/prT7D5IAWJ+rkKx98VWdlTc3IoYwOTblxjBJ+OQftGnA6ptwcNzO87v+MvSwyMgJSJRzp0jplvI/ovFb72YAjHlHh0A/oE9p3WADN4lGp/ID+ToIc+huoyQHS+xXt+RPU1gMlK86maaFXjSKxymaQsyxjLadB1Rw7oMxgmt16vfNru7jj9EmK1TjVNDdais+YziCw2uCdZRuyomemCdazYLCuyeuruJbXArJuSJecrWmntqT0AlB1TGVKZ259RQ24IBwNOHbwIMqTAvhAuhs5RsotlXnaTf6ACR7qfhiIEJJx/5m3dWxh7VD97jDrtscCOt8XhDIIbmxyKEssAlH1gl0XyB6LSxNy6WuS5fnysuc+UARnJhr7WmyZerkStyKaEhu9SzyFmIZ5yjohIFN+uA/W6E+QVlDyH9XPvXexwXTCD4HI+UkPNW8LwylKpi/DmMdOje3OMTj0GOyQ5aiapQAgkWAjEUibtUjUp8MZkPINwVntk6TN4fp4BdK+7MSs8sWA9SiuoWyx4AIyy4rVeoS8qXJQIlpsAD1m6llD8wE+ZjzkGTsPa2kwILYInCwjSiIx3179VAMfxLQzboNf7Y0DZ2qjYpHejpGKZ0JJC9a0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9426.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(508600001)(38100700002)(66556008)(2906002)(186003)(83380400001)(316002)(966005)(6486002)(31696002)(66946007)(66476007)(26005)(16576012)(956004)(2616005)(53546011)(31686004)(8676002)(86362001)(6666004)(6706004)(8936002)(4326008)(5660300002)(6916009)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OXBOZWlQNmJCQk5JZVd3WmpaV3FPZ2tVMzFGTkdaR1FFeDMrYzdBbEQ3S2VN?=
- =?utf-8?B?U0VmNk5WVkd5blU5ZDNlQlhTclhQYjczeFBFNzRkaTRvWmtSUFNoNDBPalRa?=
- =?utf-8?B?YUtrOFFSYlBWcWpMTGZ1WmxGWVpGTTFzWk5kQUxXOVYwdytFZmJ5T0VYUHNY?=
- =?utf-8?B?cWdXYTA3OGJMajd6MU1WUE1BV0VnMG41K2tudTllUm1CTzVBeHd1dnRxR1VS?=
- =?utf-8?B?QSthZy9hNEgwVklnc0tqSGlHd0d0S2I4Tjl4MVFSR3k5eHVhOG5Ga29kTjBs?=
- =?utf-8?B?bTBvM3pDR1JicDhRTE9BcThvMUFLY0pDWEJOZHFMczR2WDZpRGxoY0xmbm9Q?=
- =?utf-8?B?QjVYWWpSbFFzVnJFaEY4SGtIaW53YXExQlZmL0dpaGswWXkxZ1FuTENEdEFu?=
- =?utf-8?B?R0lTbUNCMjJvdGxTdlI2dzVpS0JZNEp0ZUp4MWt2aU9tZEVDcU1ydnNBYVVI?=
- =?utf-8?B?ZHVsU3RPYTJUbXAwNmtYKzN0MmZHWndmaHZZYWNCZkZjZVVrT3IyNGlDQmxC?=
- =?utf-8?B?bDlwUGkwdjJLK0F6NGhEOE1DZStGVnkrUUwvcEJCV3Jpd2NiVExLRndtSE9p?=
- =?utf-8?B?Y3hYOFNTVUV4eTYwR05oQ00zK21ILzAvV0RtOG4yNTlxK2VCWlZjTms4ZDNW?=
- =?utf-8?B?WDN6YTBLN2xxdGUrSkwramFUWFhwcDhTa2tuUEFtd2dzVWNBTWN2aCtzalBU?=
- =?utf-8?B?RHU4dWtpYW9jV3hoRldVSzBzeEg0bUs2V0tnc0tML2tUeWRHa015OHlzOFdK?=
- =?utf-8?B?UDNZbFpyUjkyWGpNdGduNjlqVTVPYnJDYzNxNUFIcTNoRFZBOFR4S3FZdTRI?=
- =?utf-8?B?NVkxYTFKTUNoQmFZS09BUks1ZERrQjRBQldmcVhYMmNnVUkxTGZmdStlZG1y?=
- =?utf-8?B?THZ6UzBpenFKUlhGTThjdXBsQzR1eVJBUCt3dERKT3pxTlkxdW1qSEpkREtK?=
- =?utf-8?B?NlZ0aGU0eHlsbDFYMy84b0JWNnhoMHU2d3JFVjJFdXQwakhxUXBmVVY0RnlK?=
- =?utf-8?B?bXE0anl6aWJsR3o3dkpNSkV4TXZ6dlZvVVVaVS9EOTFpRTRoRE1LdW9OaEph?=
- =?utf-8?B?cUdJTitIc1ROcTc2ZzYrMkI4Q0FLQWVHZFV2bU9FTXk3dHBEVEswU0ZRK3Vw?=
- =?utf-8?B?WVdXQTZJSjByWmZvcllVUDFvWi9sbUlIcVE4OTBnZUxNWTVIcmpGZVhnTS9J?=
- =?utf-8?B?dWFsV2plZXpCNG5FRkVhNVUzMTVYZ2c0dDhjS0V3RjA2RFBBSUVRV0daNHBL?=
- =?utf-8?B?enpTckJPTzRWanp5akwzbG8zT2t3RDFoVm5sUWt4cUgzWEZBLy80cFovTXE4?=
- =?utf-8?B?ZUN5c01XNGNWUmVadHVicUY0Y2dya0hycDZsNmxZbXhmM3JJM0NJZ0d4MXR6?=
- =?utf-8?B?cEpZVVZBaUh1dWdRUlBwcDREZUFUNXoyMnR6clg3NUF3cytXNVd1Uy9CM3Mv?=
- =?utf-8?B?ZEttSGE0YmFTTFNiQW1ySEhUblZXRm9vYjdtTXRFeWV1c3pCallSNnBzWVJY?=
- =?utf-8?B?K09aMEt6Y0VKeUc1dU5ENnZDY2ZZQ3Irb1R3eVdqbnhXVFZ2TVFQc2lkVEkx?=
- =?utf-8?B?eXhVazZXQUp2QkNVQW5FRzFQR29UNUx3Y0lCQkNWcUV5UW05VGJjdHpiem8z?=
- =?utf-8?B?b2tWRXBLNlhSWDgwK09wOC9HQkZCRUJ5TmMyTjVJZ041UDFEdUVBM0haMmRK?=
- =?utf-8?B?eTIwM1Znbm5rTDByeXN5bmorZWQwMTB2VlNwNmVORVh5V09hT09hdkoxaTlq?=
- =?utf-8?B?MDY1UFVlK3l4M2RCTG53a2xON3FVOWtGRDJrNlNpUFYrR09FM0NVU3djVC8v?=
- =?utf-8?B?dzVidTVmNjhqOXp4RW11b0t5OXRHU01lT2dOam1ubmlnRSt3MUpTOXNKczFY?=
- =?utf-8?B?aGFMQ1BIT1BWN3NBMGtPaU01OHM3bXRVTVdsZ08vYVlaanhneW1qZGtyZFZi?=
- =?utf-8?B?ZWc0ajN0UUhPR3lha3V1d2xBUEgrOWVmUGZxVkFjTFVoSlN0czJaMDhGc2NR?=
- =?utf-8?B?WDk1YW5nS3pxQU93ZE1lVkxwNmZKZXgzTzUvMzAyQ3o2alJER2dsZmwvWDdM?=
- =?utf-8?B?TWxiR2poZXNZMGZhSDEzcDZ6UFVzQ3I4a29pSlpOeXVuWW41RzVSb1ZYdTJI?=
- =?utf-8?Q?DiUE=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a09PRDBQNlM1NmRhUTFmdU5ZdzRINlFoQWdSaXowQVdUY2NHQWphR1krekJo?=
+ =?utf-8?B?WDRLS0l3NytvSzl0OUV1NXJzTmhoL1V5MW1ucnpqdjcraTNWcEpQUXhYbzF5?=
+ =?utf-8?B?U3BSU04rb1cveDRwdkZYRjBEcGNkdDYrbGROM2M0eTU2SSs1SCtkUFJUVmNH?=
+ =?utf-8?B?NGpGak9MWlFtNmdsa1d2NUJ2VjhWL1paR0VubXJLU1F2MWhMeEdoV0N2cTlt?=
+ =?utf-8?B?VHNGeUg4UnRPVnNsbi9XT21wNEhTT0tVb0RvL1BQUG82T2c4a0tNRUlNU3VY?=
+ =?utf-8?B?OThxV3QwV0dJZWdZM1hwL3VDbkNubWpUNjNzQVRUaTQzSHg5dGNIU0hTMUor?=
+ =?utf-8?B?WG5SaGZ4RnNvUTdkNU96ZDJSQmJOaGFHMXNxNjMzVXJOQnVUbERqYVBGWkdX?=
+ =?utf-8?B?YWtrZSt0TVBZM2JUVEQwVER4TEY2MTE1bmh3dDJLSUZzTDRQcEFsamFaSVha?=
+ =?utf-8?B?SHhQcTRiaklTNmJ3VzQrelhHVkNHcHovNHYzTEhyTUVROVFqbjRIVDZTNEdZ?=
+ =?utf-8?B?QS9Kd1JXTytkaU80SlFjcUFGdEg0cmtDRldHVE5EaFo3Nzd0S3ZCRVNNaFJJ?=
+ =?utf-8?B?aGRrL3pIWUlqbVU3TXVibzIzUGE4SS9FcmhVbWMvQmRTNFl0NzlqZ2cwTGUy?=
+ =?utf-8?B?ZnJ0MjJpUHpXNkhzR2s5YnZlcS95akt4RHFXeDBVYkNVcENNOGM2U2FHQWJF?=
+ =?utf-8?B?TzVUcDhNVTl5YmpCZHdDeU5qUEpCKzQ2RHY5c3U2VmR6Wi9tdDc2aXlFc0pk?=
+ =?utf-8?B?dDl4QUFDSXFmamxtNnhJZ1N1d0Q4a0pzQk9vazVuNXFkNS9aelMxVzFGazlP?=
+ =?utf-8?B?MCtZbUVpOHRVVVpERmV1aiswWmYwWXBpS0o1emQ5dUFnUGhoWlQvNEpaZ3hl?=
+ =?utf-8?B?eWZiTWU1bXBBQUZBaE9ReWozWVMvYkhCV3BQUWpVdHkwb2Z2NlRTaUxNb3ZL?=
+ =?utf-8?B?Rzc2UldONE1KMWxMdHVrbkVGQUpzZ1dhVWZSQW01Qk4xWk1pWiszcWFSeFZY?=
+ =?utf-8?B?Y3JiUEhQRG01QXFKS0dvZVVlUi94VGxhSXNJclhOT1paWnhPTFVMeTcrQ05n?=
+ =?utf-8?B?aWE4SmdZNWUwQkZjVFo0UVQ5c3NWOU9qbTBtazBZUDRBODNoMnpNa0RzeE5S?=
+ =?utf-8?B?YzRiZllocWlZK2dqdUVXVm04TE8vMCtUb0xMQllXbWFvcW0xRmd3ZE82Uzhh?=
+ =?utf-8?B?RVVhQi9mQisxTjFnTUFNRjlRelIvaDl1bk9yR2RjbWNIc0x5bW1rb0NHS1hI?=
+ =?utf-8?B?c1pUUjljZWEyKzM3MDF5WW1FMml2djNUUmphVDc5b2Yyb1pVbkJwL1Z1c1R0?=
+ =?utf-8?B?Qmc1S2d2Ulowbm9Ldzh6UG5ld21IRXlTNCtxVjFxRnEwL2pLSWhURm1QVGEz?=
+ =?utf-8?B?dHJCeU1ZRjVlcEN0VWh5YXIwVm1lR3AzeVhVbHhsL0syZkcreTFGRmtzc1Fo?=
+ =?utf-8?B?dk5oQXZUQUw4L0hqZkx1cVJpTkdZN1FpRGRRNHJXSUdHalpJOG4ycDRVNXB2?=
+ =?utf-8?B?bERVUXU4RGE2V2JIZG1wbktTYkpHRjljekJ0SnhzQi93bzI2UzU4M0tNSllN?=
+ =?utf-8?B?ZkdWMmtIelR0YjJueTkvVllrd2NIQU1mWmpIcmx4dEtwejQySEhDWHJHR3Nr?=
+ =?utf-8?B?Z0t0VEFacU44ZnVMQ0VxdGQvVlBSTTEyN0lTblBpVVdJamNNN013Wk5hL29L?=
+ =?utf-8?B?OFE2Sm90cEl2KzB3cG5FbWVTMFBQMnZRMjdWdllBMWhiREFZQXFVaSs5aWxP?=
+ =?utf-8?B?d1hkOU0vRHpPWVdIQkJMYnMrb2FwYVRhTFIrb0FJc3NTM04yUlZzcVRJNVZJ?=
+ =?utf-8?B?eHdIU212bmNUNkNXc3g4NTIzck83UFQ0UytMVFI1UFU0V3JGMGM3ekl5eGUz?=
+ =?utf-8?B?M0E3clVOb1pHcTJDTGRkcDdGMVlGS3MyMUFoQThES2JEWE51YWNKL2xwdWN1?=
+ =?utf-8?B?c3pEbFp1aDBnd1BTdmxBYkpsckJOeDhicG9rTUhTSUc0VW1nZURjc0pyeGhZ?=
+ =?utf-8?B?MVlydVI0elhTVWNIZ1A0NWdBVi9nbms3c3djUnlmZ2JldnIrQndHYWVtRVZn?=
+ =?utf-8?B?ditWZGFycXlsTEYvWE5YNExQbnpCNTBLTjU5YmVaR1pvb091UysvcWo4YUty?=
+ =?utf-8?Q?mZUA=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f149335-749e-408d-859d-08d9b497386b
+X-MS-Exchange-CrossTenant-Network-Message-Id: df69c5fe-84cc-456f-8503-08d9b4a8a3e3
 X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9426.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2021 06:53:03.0104
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2021 08:57:44.8112
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mpjhpqllmyNc4ebtRpKBYJpqPTsMZY9MP+Abk9r6Bpbb0+AIjFY+jAQogv8BiS2T
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8824
+X-MS-Exchange-CrossTenant-UserPrincipalName: mb8E9EVCp+VExfRo3d0kiXeDic3Mm+EVu2E0eHeHnMuCdhcsHcCvh+lR7BmlhhJ3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8887
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -134,202 +132,173 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2021/12/1 13:17, Qu Wenruo wrote:
-> For profiles other than RAID56, __btrfs_map_block() returns @map_length
-> as min(stripe_end, logical + *length), which is also the same result
-> from btrfs_get_io_geometry().
+> [BACKGROUND]
 > 
-> But for RAID56, __btrfs_map_block() returns @map_length as stripe_len.
+> Currently btrfs never uses bio_split() to split its bio against RAID
+> stripe boundaries.
 > 
-> This strange behavior is going to hurt incoming bio split at
-> btrfs_map_bio() time, as we will use @map_length as bio split size.
+> Instead inside btrfs we check our stripe boundary everytime we allocate
+> a new bio, and ensure the new bio never cross stripe boundaries.
 > 
-> Fix this behavior by:
+> [PROBLEMS]
 > 
-> - Return @map_length by the same calculatioin as other profiles
+> Although this behavior works fine, it's against the common practice used in
+> stacked drivers, and is making the effort to convert to iomap harder.
 > 
-> - Save stripe_len into btrfs_io_context
+> There is also an hidden burden, every time we allocate a new bio, we uses
+> BIO_MAX_BVECS, but since we know the boundaries, for RAID0/RAID10 we can
+> only fit at most 16 pages (fixed 64K stripe size, and 4K page size),
+> wasting the 256 slots we allocated.
 > 
-> - Pass btrfs_io_context::stripe_len to raid56_*() functions
+> [CHALLENGES]
 > 
-> - Update raid56_*() functions to make its stripe_len parameter more
->    explicit
+> To change the situation, this patchset attempts to improve the situation
+> by moving the bio split into btrfs_map_bio() time, so upper layer should
+> no longer bother the bio split against RAID stripes or even chunk
+> boundaries.
 > 
-> - Add extra ASSERT()s to make sure the passed stripe_len is correct
+> But there are several challenges:
+> 
+> - Conflicts in various endio functions
+>    We want the existing granularity, instead of chained endio, thus we
+>    must make the involved endio functions to handle split bios.
+> 
+>    Although most endio functions are already doing their works
+>    independent of the bio size, they are not yet fully handling split
+>    bio.
+> 
+>    This patch will convert them to use saved bi_iter and only iterate
+>    the split range instead of the whole bio.
+>    This change involved 3 types of IOs:
+> 
+>    * Buffered IO
+>      Including both data and metadata
+>    * Direct IO
+>    * Compressed IO
+> 
+>    Their endio functions needs different level of updates to handle split
+>    bios.
+> 
+>    Furthermore, there is another endio, end_workqueue_bio(), it can't
+>    handle split bios at all, thus we change the timing so that
+>    btrfs_bio_wq_end_io() is only called after the bio being split.
+> 
+> - Checksum verification
+>    Currently we rely on btrfs_bio::csum to contain the checksum for the
+>    whole bio.
+>    If one bio get split, csum will no longer points to the correct
+>    location for the split bio.
+> 
+>    This can be solved by introducing btrfs_bio::offset_to_original, and
+>    use that new member to calculate where we should read csum from.
+> 
+>    For the parent bio, it still has btrfs_bio::csum for the whole bio,
+>    thus it can still free it correctly.
+> 
+> - Independent endio for each split bio
+>    Unlike stack drivers, for RAID10 btrfs needs to try its best effort to
+>    read every sectors, to handle the following case: (X means bad, either
+>    unable to read or failed to pass checksum verification, V means good)
+> 
+>    Dev 1	(missing) | D1 (X) |
+>    Dev 2 (OK)	  | D1 (V) |
+>    Dev 3 (OK)	  | D2 (V) |
+>    Dev 4 (OK)	  | D2 (X) |
+> 
+>    In the above RAID10 case, dev1 is missing, and although dev4 is fine,
+>    its D2 sector is corrupted (by bit rot or whatever).
+> 
+>    If we use bio_chain(), read bio for both D1 and D2 will be split, and
+>    since D1 is missing, the whole D1 and D2 read will be marked as error,
+>    thus we will try to read from dev2 and dev4.
+> 
+>    But D2 in dev4 has csum mismatch, we can only rebuild D1 and D2
+>    correctly from dev2:D1 and dev3:D2.
+> 
+>    This patchset resolve this by saving bi_iter into btrfs_bio::iter, and
+>    uses that at endio to iterate only the split part of an bio.
+>    Other than this, existing read/write page endio functions can handle
+>    them properly without problem.
+> 
+> - Bad RAID56 naming/functionality
+>    There are quite some RAID56 call sites relies on specific behavior on
+>    __btrfs_map_block(), like returning @map_length as stripe_len other
+>    than real mapped length.
+> 
+>    This is handled by some small cleanups specific for RAID56.
+> 
+> [NEED FEEDBACK]
+> In this refactor, btrfs is utilizing a lot of call sites like:
+> 
+>   btrfs_bio_save_iter();	// Save bi_iter into some other location
+>   __bio_for_each_segment(bvec, bio, iter, btrfs_bio->iter) {
+> 	/* Doing endio for each bvec */
+>   }
+> 
+> And manually implementing an endio which does some work of
+> __bio_chain_endio() but with extra btrfs specific workload.
+> 
+> I'm wondering if block layer is fine to provide some *enhanced* chain
+> bio facilities?
+> 
+> [CHANGELOG]
+> RFC->v1:
+> - Better patch split
+>    Now patch 01~06 are refactors/cleanups/preparations.
+>    While 07~13 are the patches that doing the conversion while can handle
+>    both old and new bio split timings.
+>    Finally patch 14~16 convert the bio split call sites one by one to
+>    newer facility.
+>    The final patch is just a small clean up.
+> 
+> - Various bug fixes
+>    During the full fstests run, various stupid bugs are exposed and
+>    fixed.
 
-There is another hidden call site, scrub_stripe_index_and_offset() that 
-is abusing such stripe_len and mapped_length.
+The latest version can be fetched from this branch:
 
-And this would cause crash at btrfs/158.
+https://github.com/adam900710/linux/tree/refactor_chunk_map
 
-Will fix it in next update, and make this specific patch to do better 
-check on stripe_len.
+Which already has the fix for the btrfs/187 crash, which is caused by a 
+missing modification for scrub_stripe_index_and_offset().
 
 Thanks,
 Qu
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->   fs/btrfs/raid56.c  | 12 ++++++++++--
->   fs/btrfs/raid56.h  |  2 +-
->   fs/btrfs/scrub.c   |  4 ++--
->   fs/btrfs/volumes.c | 13 ++++++++++---
->   fs/btrfs/volumes.h |  1 +
->   5 files changed, 24 insertions(+), 8 deletions(-)
+> Qu Wenruo (17):
+>    btrfs: update an stale comment on btrfs_submit_bio_hook()
+>    btrfs: save bio::bi_iter into btrfs_bio::iter before submitting
+>    btrfs: use correct bio size for error message in btrfs_end_dio_bio()
+>    btrfs: refactor btrfs_map_bio()
+>    btrfs: move btrfs_bio_wq_end_io() calls into submit_stripe_bio()
+>    btrfs: replace btrfs_dio_private::refs with
+>      btrfs_dio_private::pending_bytes
+>    btrfs: introduce btrfs_bio_split() helper
+>    btrfs: make data buffered read path to handle split bio properly
+>    btrfs: make data buffered write endio function to be split bio
+>      compatible
+>    btrfs: make metadata write endio functions to be split bio compatible
+>    btrfs: make dec_and_test_compressed_bio() to be split bio compatible
+>    btrfs: return proper mapped length for RAID56 profiles in
+>      __btrfs_map_block()
+>    btrfs: allow btrfs_map_bio() to split bio according to chunk stripe
+>      boundaries
+>    btrfs: remove buffered IO stripe boundary calculation
+>    btrfs: remove stripe boundary calculation for compressed IO
+>    btrfs: remove the stripe boundary calculation for direct IO
+>    btrfs: unexport btrfs_get_io_geometry()
 > 
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index 13e726c88a81..d35cfd750b76 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -969,6 +969,8 @@ static struct btrfs_raid_bio *alloc_rbio(struct btrfs_fs_info *fs_info,
->   	int stripe_npages = DIV_ROUND_UP(stripe_len, PAGE_SIZE);
->   	void *p;
->   
-> +	ASSERT(stripe_len == BTRFS_STRIPE_LEN);
-> +
->   	rbio = kzalloc(sizeof(*rbio) +
->   		       sizeof(*rbio->stripe_pages) * num_pages +
->   		       sizeof(*rbio->bio_pages) * num_pages +
-> @@ -1725,6 +1727,9 @@ int raid56_parity_write(struct bio *bio, struct btrfs_io_context *bioc,
->   	struct blk_plug_cb *cb;
->   	int ret;
->   
-> +	/* Currently we only support fixed stripe len */
-> +	ASSERT(stripe_len == BTRFS_STRIPE_LEN);
-> +
->   	rbio = alloc_rbio(fs_info, bioc, stripe_len);
->   	if (IS_ERR(rbio)) {
->   		btrfs_put_bioc(bioc);
-> @@ -2122,6 +2127,9 @@ int raid56_parity_recover(struct bio *bio, struct btrfs_io_context *bioc,
->   	struct btrfs_raid_bio *rbio;
->   	int ret;
->   
-> +	/* Currently we only support fixed stripe len */
-> +	ASSERT(stripe_len == BTRFS_STRIPE_LEN);
-> +
->   	if (generic_io) {
->   		ASSERT(bioc->mirror_num == mirror_num);
->   		btrfs_bio(bio)->mirror_num = mirror_num;
-> @@ -2671,12 +2679,12 @@ void raid56_parity_submit_scrub_rbio(struct btrfs_raid_bio *rbio)
->   
->   struct btrfs_raid_bio *
->   raid56_alloc_missing_rbio(struct bio *bio, struct btrfs_io_context *bioc,
-> -			  u64 length)
-> +			  u64 stripe_len)
->   {
->   	struct btrfs_fs_info *fs_info = bioc->fs_info;
->   	struct btrfs_raid_bio *rbio;
->   
-> -	rbio = alloc_rbio(fs_info, bioc, length);
-> +	rbio = alloc_rbio(fs_info, bioc, stripe_len);
->   	if (IS_ERR(rbio))
->   		return NULL;
->   
-> diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
-> index 72c00fc284b5..7322dcae4498 100644
-> --- a/fs/btrfs/raid56.h
-> +++ b/fs/btrfs/raid56.h
-> @@ -46,7 +46,7 @@ void raid56_parity_submit_scrub_rbio(struct btrfs_raid_bio *rbio);
->   
->   struct btrfs_raid_bio *
->   raid56_alloc_missing_rbio(struct bio *bio, struct btrfs_io_context *bioc,
-> -			  u64 length);
-> +			  u64 stripe_len);
->   void raid56_submit_missing_rbio(struct btrfs_raid_bio *rbio);
->   
->   int btrfs_alloc_stripe_hash_table(struct btrfs_fs_info *info);
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index 15a123e67108..58c7e8fcdeb1 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -2230,7 +2230,7 @@ static void scrub_missing_raid56_pages(struct scrub_block *sblock)
->   	bio->bi_private = sblock;
->   	bio->bi_end_io = scrub_missing_raid56_end_io;
->   
-> -	rbio = raid56_alloc_missing_rbio(bio, bioc, length);
-> +	rbio = raid56_alloc_missing_rbio(bio, bioc, bioc->stripe_len);
->   	if (!rbio)
->   		goto rbio_out;
->   
-> @@ -2846,7 +2846,7 @@ static void scrub_parity_check_and_repair(struct scrub_parity *sparity)
->   	bio->bi_private = sparity;
->   	bio->bi_end_io = scrub_parity_bio_endio;
->   
-> -	rbio = raid56_parity_alloc_scrub_rbio(bio, bioc, length,
-> +	rbio = raid56_parity_alloc_scrub_rbio(bio, bioc, bioc->stripe_len,
->   					      sparity->scrub_dev,
->   					      sparity->dbitmap,
->   					      sparity->nsectors);
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index af01d54502ab..365e43bbfd14 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -6051,6 +6051,7 @@ static int __btrfs_map_block_for_discard(struct btrfs_fs_info *fs_info,
->   		ret = -ENOMEM;
->   		goto out;
->   	}
-> +	bioc->stripe_len = map->stripe_len;
->   
->   	for (i = 0; i < num_stripes; i++) {
->   		bioc->stripes[i].physical =
-> @@ -6406,6 +6407,7 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
->   {
->   	struct extent_map *em;
->   	struct map_lookup *map;
-> +	const u64 orig_length = *length;
->   	u64 stripe_offset;
->   	u64 stripe_nr;
->   	u64 stripe_len;
-> @@ -6427,6 +6429,7 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
->   
->   	ASSERT(bioc_ret);
->   	ASSERT(op != BTRFS_MAP_DISCARD);
-> +	ASSERT(orig_length);
->   
->   	em = btrfs_get_chunk_map(fs_info, logical, *length);
->   	ASSERT(!IS_ERR(em));
-> @@ -6522,7 +6525,10 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
->   			num_stripes = map->num_stripes;
->   			max_errors = nr_parity_stripes(map);
->   
-> -			*length = map->stripe_len;
-> +			/* Return the length to the full stripe end */
-> +			*length = min(raid56_full_stripe_start + em->start +
-> +				      data_stripes * stripe_len,
-> +				      logical + orig_length) - logical;
->   			stripe_index = 0;
->   			stripe_offset = 0;
->   		} else {
-> @@ -6574,6 +6580,7 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
->   		ret = -ENOMEM;
->   		goto out;
->   	}
-> +	bioc->stripe_len = map->stripe_len;
->   
->   	for (i = 0; i < num_stripes; i++) {
->   		bioc->stripes[i].physical = map->stripes[stripe_index].physical +
-> @@ -6824,9 +6831,9 @@ static int submit_one_mapped_range(struct btrfs_fs_info *fs_info, struct bio *bi
->   		/* In this case, map_length has been set to the length of
->   		   a single stripe; not the whole write */
->   		if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
-> -			ret = raid56_parity_write(bio, bioc, map_length);
-> +			ret = raid56_parity_write(bio, bioc, bioc->stripe_len);
->   		} else {
-> -			ret = raid56_parity_recover(bio, bioc, map_length,
-> +			ret = raid56_parity_recover(bio, bioc, bioc->stripe_len,
->   						    mirror_num, 1);
->   		}
->   
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index 8825a17d0620..b2dbf895b4e3 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -450,6 +450,7 @@ struct btrfs_io_context {
->   	struct bio *orig_bio;
->   	void *private;
->   	atomic_t error;
-> +	u32 stripe_len;
->   	int max_errors;
->   	int num_stripes;
->   	int mirror_num;
+>   fs/btrfs/btrfs_inode.h |  10 +-
+>   fs/btrfs/compression.c |  70 +++-----------
+>   fs/btrfs/disk-io.c     |   9 +-
+>   fs/btrfs/extent_io.c   | 189 +++++++++++++++++++++++++------------
+>   fs/btrfs/extent_io.h   |   2 +
+>   fs/btrfs/inode.c       | 210 ++++++++++++++++-------------------------
+>   fs/btrfs/raid56.c      |  14 ++-
+>   fs/btrfs/raid56.h      |   2 +-
+>   fs/btrfs/scrub.c       |   4 +-
+>   fs/btrfs/volumes.c     | 157 ++++++++++++++++++++++--------
+>   fs/btrfs/volumes.h     |  75 +++++++++++++--
+>   11 files changed, 435 insertions(+), 307 deletions(-)
 > 
 
