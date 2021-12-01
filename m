@@ -2,210 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60496464650
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 06:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BE7464652
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 06:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241714AbhLAFVg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Dec 2021 00:21:36 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:37818 "EHLO
+        id S1346663AbhLAFVi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Dec 2021 00:21:38 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:37828 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhLAFVg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 00:21:36 -0500
+        with ESMTP id S231666AbhLAFVh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 00:21:37 -0500
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 1D4B61FD2F;
-        Wed,  1 Dec 2021 05:18:15 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7B98A1FD58;
+        Wed,  1 Dec 2021 05:18:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1638335895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=a34p0FNDMtx0fTNQkrq/BTn8Y6cp1I7JXutEyrWYRcA=;
-        b=BVjd4hAnigph7uVMt0tawLBW+xelkoi9SOQ/eIobczJaEuHM0sayE2vuWzcU0GOR8yhWSv
-        CVeymVFP86LKHXJ3P1oJaYvpY1cuGTAMWBtftcJ2n7yL8/FXO28/Bs7n6iZTNgFltHQd7H
-        JstAOuPk6fwt2ggRa1PQg4qKLKkT3vc=
+        t=1638335896; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hF+d1OqsGjogNJdDpe0L/7qbT0oBeA/kXRnlOH9HPjc=;
+        b=ae7emaCSA8zlyEKAmMKs+k06ZOHfwF2XoTVH8zUBKzGhvOUeTMci2g5GteAgeVOWzz4RE2
+        JBjjgkVD3q0th2oUbAj6gROHqoDE/Oa016wo1umRWFlwxnXpzlql1UJ56Hne4osS9pUEPK
+        58sx3HBptQ1hYg/ekRkaTLEdnZ02Sb0=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2003713425;
-        Wed,  1 Dec 2021 05:18:13 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 756D313425;
+        Wed,  1 Dec 2021 05:18:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9GSjN5UFp2EGbwAAMHmgww
-        (envelope-from <wqu@suse.com>); Wed, 01 Dec 2021 05:18:13 +0000
+        id uPFEEZcFp2EGbwAAMHmgww
+        (envelope-from <wqu@suse.com>); Wed, 01 Dec 2021 05:18:15 +0000
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     linux-block@vger.kernel.org, dm-devel@redhat.com
-Subject: [PATCH 00/17] btrfs: split bio at btrfs_map_bio() time
-Date:   Wed,  1 Dec 2021 13:17:39 +0800
-Message-Id: <20211201051756.53742-1-wqu@suse.com>
+Subject: [PATCH 01/17] btrfs: update an stale comment on btrfs_submit_bio_hook()
+Date:   Wed,  1 Dec 2021 13:17:40 +0800
+Message-Id: <20211201051756.53742-2-wqu@suse.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211201051756.53742-1-wqu@suse.com>
+References: <20211201051756.53742-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BACKGROUND]
+This function is renamed to btrfs_submit_data_bio(), update the comment
+and add extra reason why it doesn't completely follow the same rule in
+btrfs_submit_data_bio().
 
-Currently btrfs never uses bio_split() to split its bio against RAID
-stripe boundaries.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/inode.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Instead inside btrfs we check our stripe boundary everytime we allocate
-a new bio, and ensure the new bio never cross stripe boundaries.
-
-[PROBLEMS]
-
-Although this behavior works fine, it's against the common practice used in
-stacked drivers, and is making the effort to convert to iomap harder.
-
-There is also an hidden burden, every time we allocate a new bio, we uses
-BIO_MAX_BVECS, but since we know the boundaries, for RAID0/RAID10 we can
-only fit at most 16 pages (fixed 64K stripe size, and 4K page size),
-wasting the 256 slots we allocated.
-
-[CHALLENGES]
-
-To change the situation, this patchset attempts to improve the situation
-by moving the bio split into btrfs_map_bio() time, so upper layer should
-no longer bother the bio split against RAID stripes or even chunk
-boundaries.
-
-But there are several challenges:
-
-- Conflicts in various endio functions
-  We want the existing granularity, instead of chained endio, thus we
-  must make the involved endio functions to handle split bios.
-
-  Although most endio functions are already doing their works
-  independent of the bio size, they are not yet fully handling split
-  bio.
-
-  This patch will convert them to use saved bi_iter and only iterate
-  the split range instead of the whole bio.
-  This change involved 3 types of IOs:
-
-  * Buffered IO
-    Including both data and metadata
-  * Direct IO
-  * Compressed IO
-
-  Their endio functions needs different level of updates to handle split
-  bios.
-
-  Furthermore, there is another endio, end_workqueue_bio(), it can't
-  handle split bios at all, thus we change the timing so that
-  btrfs_bio_wq_end_io() is only called after the bio being split.
-
-- Checksum verification
-  Currently we rely on btrfs_bio::csum to contain the checksum for the
-  whole bio.
-  If one bio get split, csum will no longer points to the correct
-  location for the split bio.
-
-  This can be solved by introducing btrfs_bio::offset_to_original, and
-  use that new member to calculate where we should read csum from.
-
-  For the parent bio, it still has btrfs_bio::csum for the whole bio,
-  thus it can still free it correctly.
-
-- Independent endio for each split bio
-  Unlike stack drivers, for RAID10 btrfs needs to try its best effort to
-  read every sectors, to handle the following case: (X means bad, either
-  unable to read or failed to pass checksum verification, V means good)
-
-  Dev 1	(missing) | D1 (X) |
-  Dev 2 (OK)	  | D1 (V) |
-  Dev 3 (OK)	  | D2 (V) |
-  Dev 4 (OK)	  | D2 (X) |
-
-  In the above RAID10 case, dev1 is missing, and although dev4 is fine,
-  its D2 sector is corrupted (by bit rot or whatever).
-
-  If we use bio_chain(), read bio for both D1 and D2 will be split, and
-  since D1 is missing, the whole D1 and D2 read will be marked as error,
-  thus we will try to read from dev2 and dev4.
-
-  But D2 in dev4 has csum mismatch, we can only rebuild D1 and D2
-  correctly from dev2:D1 and dev3:D2.
-
-  This patchset resolve this by saving bi_iter into btrfs_bio::iter, and
-  uses that at endio to iterate only the split part of an bio.
-  Other than this, existing read/write page endio functions can handle
-  them properly without problem.
-
-- Bad RAID56 naming/functionality
-  There are quite some RAID56 call sites relies on specific behavior on
-  __btrfs_map_block(), like returning @map_length as stripe_len other
-  than real mapped length.
-
-  This is handled by some small cleanups specific for RAID56.
-
-[NEED FEEDBACK]
-In this refactor, btrfs is utilizing a lot of call sites like:
-
- btrfs_bio_save_iter();	// Save bi_iter into some other location
- __bio_for_each_segment(bvec, bio, iter, btrfs_bio->iter) {
-	/* Doing endio for each bvec */
- }
-
-And manually implementing an endio which does some work of
-__bio_chain_endio() but with extra btrfs specific workload.
-
-I'm wondering if block layer is fine to provide some *enhanced* chain
-bio facilities?
-
-[CHANGELOG]
-RFC->v1:
-- Better patch split
-  Now patch 01~06 are refactors/cleanups/preparations.
-  While 07~13 are the patches that doing the conversion while can handle
-  both old and new bio split timings.
-  Finally patch 14~16 convert the bio split call sites one by one to
-  newer facility.
-  The final patch is just a small clean up.
-
-- Various bug fixes
-  During the full fstests run, various stupid bugs are exposed and
-  fixed.
-
-Qu Wenruo (17):
-  btrfs: update an stale comment on btrfs_submit_bio_hook()
-  btrfs: save bio::bi_iter into btrfs_bio::iter before submitting
-  btrfs: use correct bio size for error message in btrfs_end_dio_bio()
-  btrfs: refactor btrfs_map_bio()
-  btrfs: move btrfs_bio_wq_end_io() calls into submit_stripe_bio()
-  btrfs: replace btrfs_dio_private::refs with
-    btrfs_dio_private::pending_bytes
-  btrfs: introduce btrfs_bio_split() helper
-  btrfs: make data buffered read path to handle split bio properly
-  btrfs: make data buffered write endio function to be split bio
-    compatible
-  btrfs: make metadata write endio functions to be split bio compatible
-  btrfs: make dec_and_test_compressed_bio() to be split bio compatible
-  btrfs: return proper mapped length for RAID56 profiles in
-    __btrfs_map_block()
-  btrfs: allow btrfs_map_bio() to split bio according to chunk stripe
-    boundaries
-  btrfs: remove buffered IO stripe boundary calculation
-  btrfs: remove stripe boundary calculation for compressed IO
-  btrfs: remove the stripe boundary calculation for direct IO
-  btrfs: unexport btrfs_get_io_geometry()
-
- fs/btrfs/btrfs_inode.h |  10 +-
- fs/btrfs/compression.c |  70 +++-----------
- fs/btrfs/disk-io.c     |   9 +-
- fs/btrfs/extent_io.c   | 189 +++++++++++++++++++++++++------------
- fs/btrfs/extent_io.h   |   2 +
- fs/btrfs/inode.c       | 210 ++++++++++++++++-------------------------
- fs/btrfs/raid56.c      |  14 ++-
- fs/btrfs/raid56.h      |   2 +-
- fs/btrfs/scrub.c       |   4 +-
- fs/btrfs/volumes.c     | 157 ++++++++++++++++++++++--------
- fs/btrfs/volumes.h     |  75 +++++++++++++--
- 11 files changed, 435 insertions(+), 307 deletions(-)
-
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 504cf090fc88..6079d30f83e8 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8202,7 +8202,13 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
+ 	bool write = btrfs_op(bio) == BTRFS_MAP_WRITE;
+ 	blk_status_t ret;
+ 
+-	/* Check btrfs_submit_bio_hook() for rules about async submit. */
++	/*
++	 * Check btrfs_submit_data_bio() for rules about async submit.
++	 *
++	 * The only exception is for RAID56, when there are more than one bios
++	 * to submit, async submit seems to make it harder to collect csums
++	 * for the full stripe.
++	 */
+ 	if (async_submit)
+ 		async_submit = !atomic_read(&BTRFS_I(inode)->sync_writers);
+ 
 -- 
 2.34.1
 
