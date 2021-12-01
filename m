@@ -2,261 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16104654FF
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 19:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9F8465515
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 19:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhLASTR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Dec 2021 13:19:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
+        id S1352215AbhLASUp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Dec 2021 13:20:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244539AbhLASTD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 13:19:03 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9909AC0613E0
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Dec 2021 10:15:24 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id m17so22532232qvx.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Dec 2021 10:15:24 -0800 (PST)
+        with ESMTP id S1351967AbhLASUk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 13:20:40 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41280C061574
+        for <linux-btrfs@vger.kernel.org>; Wed,  1 Dec 2021 10:17:19 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id q14so24930920qtx.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 01 Dec 2021 10:17:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=QnkCVniF1guvZj/nG5J4jMpI4BWPXl1J45QuBunC7eE=;
-        b=UBz6i1deAInnEWuUOak2cSrYkQ/4Qzj6u35uNRS9XKkTCjWcYLZ34APCnzISEwooy7
-         7FcTuQYHzWbyZXizwbXk5KetwwTsqDw1Bn9dLaE9ILzWyQ0C1unL4X9Y0cLd3CxuJLkX
-         Kr3eT9/e2kGA6Swz5bjXSQ7u7HG+39/NU9nEpuMf/sqNPLErG82OrbtmKrtbHyDMScCL
-         Ne6xKEr41Jalyuprf6KVArA7pouKyeANxhlIeN67KMajapnJ8YQ7CaUEr5zxg7J0YshI
-         xNqO3llXYJng4fgsbqyI+sfiF0Xv5kzs+cW1OlDtkF9QaICcPFIevYDEN6kc6aYmkbZM
-         zLQg==
+        bh=XH/Wy26ppFCa/QH3KrXgRAB3dEhTeKGQy/L9b1y1B5g=;
+        b=bdXeLBJmxMsRcW07Z9GCTs3gTAJ4sTEBZgBa4loAh+0GefDz0PQ989WlaYEG0l2RlP
+         SOi8/QC2rMcq1WmsvE6uV7iXRGPFwmLS89k6sHZMCr1AxKzCq9ajVt0z2zqiGKH5yAvw
+         2SWZKSN55Ry6GUfO7oWzc1kwQwHreGHFQ//JmOoJuLJP+aP0h1BjyCff4P3DxD8rn8y9
+         pLmXirOQ5lQx8AZxF5ndeyAHNTOwx/UXrtl0NhyvW7RerN6H78K6PvGfxBNnMaXxDQdM
+         CEJTNhKUBU4jbk9nkIg24nTD3cYHFvN6pIldmo5KrDGQvUWwhNk6V5Vt0P8JjVvrnXny
+         4HQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QnkCVniF1guvZj/nG5J4jMpI4BWPXl1J45QuBunC7eE=;
-        b=7naTSXr6aVYR8aEj+yy6ytD65OrzC6SSFTCoZC3nsN/fteEtRAIZuTdjcWxFKXPn0t
-         udax2R1zqSgKMTkqErvl7/yIhN1tHShmWr1PBygOelkeA3ysbzFDRDCC8MehRNayiVpg
-         I7Q6j0rsuqaXhFahAOJ6ptK0X5HAiQwGZI8fFVBAiJItjvXfZRpVY3DKqLIy2rEzR8Rg
-         lcnQL9/kukYDmCtILWxWQ17R2oizgRmtxPMCQMe85bHsr6aQbjhOPHtV2aGUz72IsPti
-         2DjLwm59aTtkYCm9zXekMbkaSXGRVbS6rHD5hmf7BDwkkWFqPZggsa/CKkNuwy0LOl5I
-         +SyQ==
-X-Gm-Message-State: AOAM530PYOHekAaO3CzrE1YOZ2zhrgjA4AqZNnR1fbpWWRMrF9pMnt1m
-        XkdIN7W0dPhVA4J3P+xEDSuk5Evd79Rd3g==
-X-Google-Smtp-Source: ABdhPJx43QXyfdjEgWOEVG+quMyQaypiR5Z1RIdl8+rRcR79ohOLtH1NPSVFRkJHCVp5uxOjBaRQzg==
-X-Received: by 2002:a05:6214:19e3:: with SMTP id q3mr8368570qvc.35.1638382523529;
-        Wed, 01 Dec 2021 10:15:23 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XH/Wy26ppFCa/QH3KrXgRAB3dEhTeKGQy/L9b1y1B5g=;
+        b=3mk2Oh/w5WfCCja3JKS+nj6F7LpfgbD5WGI0n8NgRJXpN+cLJCYSpYTmb7AYbYq8up
+         nvXZzCTj1uh2f1HYe7uHjz4i9JqHWV13R/8TQejTbQopiqMIEKPJ4M7R/qMIBhkolpQ+
+         xmEUd+i5bh91vXDqKFnt7AKewlLj+mjM0r+HsQ8w8UVLeWkHmuaed7tpp7BtcXNED5A5
+         1oTNLFs6WtpwlLvEnLpGnNPdHAeCcYObw7lpfeqqlnvIh8SYFhmdkYFsyoNZM1ZtzP6a
+         MgsAa/fpNo6cmlDogI+b6iA8LnQfj9SD1dI8qJCuNP3c0GhWexi7RhGQnALqosGgRyKX
+         IcXw==
+X-Gm-Message-State: AOAM531w7OSQXSR/UkcsbVVBs4a0pirdba7T8lt2vOUZ/aDhwCbv5NCL
+        V0Pk8Hvqwudam9E4wADtPBveV5BO3sS2eQ==
+X-Google-Smtp-Source: ABdhPJzROTP2whQ71P7d2yaORd/SRArqx7K21ZJZi+daAmg16rq2mXD5Ql9mBurH9WuAG3nF5tFfqg==
+X-Received: by 2002:ac8:5952:: with SMTP id 18mr8762209qtz.612.1638382637865;
+        Wed, 01 Dec 2021 10:17:17 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id v5sm224306qtc.60.2021.12.01.10.15.23
+        by smtp.gmail.com with ESMTPSA id 2sm230683qkr.126.2021.12.01.10.17.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Dec 2021 10:15:23 -0800 (PST)
+        Wed, 01 Dec 2021 10:17:17 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 8/8] btrfs-progs: common: search all extent roots for marking used space
-Date:   Wed,  1 Dec 2021 13:15:10 -0500
-Message-Id: <a9dc9a07a9c8ceae011107816ab265f3a3254a8a.1638382443.git.josef@toxicpanda.com>
+Subject: [PATCH v2 00/22]  btrfs-progs: extent tree v2 support, global roots
+Date:   Wed,  1 Dec 2021 13:16:54 -0500
+Message-Id: <cover.1638382588.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1638382443.git.josef@toxicpanda.com>
-References: <cover.1638382443.git.josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We could have multiple extent roots, so add a helper to mark all the
-used space in the FS based on any extent roots we find, and then use
-this extent io tree to fixup the block group accounting.
+v1->v2:
+- Rebased onto origin/devel.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- common/repair.c | 142 +++++++++++++++++++++++++++++++++---------------
- common/repair.h |   2 +
- 2 files changed, 100 insertions(+), 44 deletions(-)
+--- Original email ---
+Hello,
 
-diff --git a/common/repair.c b/common/repair.c
-index 41520b32..f8c3f89c 100644
---- a/common/repair.c
-+++ b/common/repair.c
-@@ -152,47 +152,27 @@ int btrfs_mark_used_tree_blocks(struct btrfs_fs_info *fs_info,
- 	return ret;
- }
- 
--/*
-- * Fixup block accounting. The initial block accounting created by
-- * make_block_groups isn't accuracy in this case.
-- */
--int btrfs_fix_block_accounting(struct btrfs_trans_handle *trans)
-+static int populate_used_from_extent_root(struct btrfs_root *root,
-+					  struct extent_io_tree *io_tree)
- {
--	int ret = 0;
--	int slot;
--	u64 start = 0;
--	u64 bytes_used = 0;
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct extent_buffer *leaf;
- 	struct btrfs_path path;
- 	struct btrfs_key key;
--	struct extent_buffer *leaf;
--	struct btrfs_block_group *cache;
--	struct btrfs_fs_info *fs_info = trans->fs_info;
--	struct btrfs_root *root = btrfs_extent_root(fs_info, 0);
--
--	ret = btrfs_run_delayed_refs(trans, -1);
--	if (ret)
--		return ret;
--
--	while(1) {
--		cache = btrfs_lookup_first_block_group(fs_info, start);
--		if (!cache)
--			break;
--
--		start = cache->start + cache->length;
--		cache->used = 0;
--		cache->space_info->bytes_used = 0;
--		if (list_empty(&cache->dirty_list))
--			list_add_tail(&cache->dirty_list, &trans->dirty_bgs);
--	}
-+	int slot;
-+	int ret;
- 
- 	btrfs_init_path(&path);
- 	key.offset = 0;
- 	key.objectid = 0;
- 	key.type = BTRFS_EXTENT_ITEM_KEY;
--	ret = btrfs_search_slot(trans, root, &key, &path, 0, 0);
-+	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
- 	if (ret < 0)
- 		return ret;
-+
- 	while(1) {
-+		u64 start, end;
-+
- 		leaf = path.nodes[0];
- 		slot = path.slots[0];
- 		if (slot >= btrfs_header_nritems(leaf)) {
-@@ -205,23 +185,97 @@ int btrfs_fix_block_accounting(struct btrfs_trans_handle *trans)
- 			slot = path.slots[0];
- 		}
- 		btrfs_item_key_to_cpu(leaf, &key, slot);
--		if (key.type == BTRFS_EXTENT_ITEM_KEY) {
--			bytes_used += key.offset;
--			ret = btrfs_update_block_group(trans,
--				  key.objectid, key.offset, 1, 0);
--			BUG_ON(ret);
--		} else if (key.type == BTRFS_METADATA_ITEM_KEY) {
--			bytes_used += fs_info->nodesize;
--			ret = btrfs_update_block_group(trans,
--				  key.objectid, fs_info->nodesize, 1, 0);
--			if (ret)
--				goto out;
--		}
-+		start = end = key.objectid;
-+		if (key.type == BTRFS_EXTENT_ITEM_KEY)
-+			end = start + key.offset - 1;
-+		else if (key.type == BTRFS_METADATA_ITEM_KEY)
-+			end = start + fs_info->nodesize - 1;
-+
-+		if (start != end)
-+			set_extent_dirty(io_tree, start, end);
-+
- 		path.slots[0]++;
- 	}
--	btrfs_set_super_bytes_used(root->fs_info->super_copy, bytes_used);
-+	btrfs_release_path(&path);
-+	return 0;
-+}
-+
-+int btrfs_mark_used_blocks(struct btrfs_fs_info *fs_info,
-+			   struct extent_io_tree *tree)
-+{
-+	struct btrfs_root *root;
-+	struct rb_node *n;
-+	int ret;
-+
-+	root = btrfs_extent_root(fs_info, 0);
-+	while (1) {
-+		ret = populate_used_from_extent_root(root, tree);
-+		if (ret)
-+			break;
-+		n = rb_next(&root->rb_node);
-+		if (!n)
-+			break;
-+		root = rb_entry(n, struct btrfs_root, rb_node);
-+		if (root->root_key.objectid != BTRFS_EXTENT_TREE_OBJECTID)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * Fixup block accounting. The initial block accounting created by
-+ * make_block_groups isn't accuracy in this case.
-+ */
-+int btrfs_fix_block_accounting(struct btrfs_trans_handle *trans)
-+{
-+	struct extent_io_tree used;
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_block_group *cache;
-+	u64 start, end;
-+	u64 bytes_used = 0;
-+	int ret = 0;
-+
-+	ret = btrfs_run_delayed_refs(trans, -1);
-+	if (ret)
-+		return ret;
-+
-+	extent_io_tree_init(&used);
-+
-+	ret = btrfs_mark_used_blocks(fs_info, &used);
-+	if (ret)
-+		goto out;
-+
-+	start = 0;
-+	while(1) {
-+		cache = btrfs_lookup_first_block_group(fs_info, start);
-+		if (!cache)
-+			break;
-+
-+		start = cache->start + cache->length;
-+		cache->used = 0;
-+		cache->space_info->bytes_used = 0;
-+		if (list_empty(&cache->dirty_list))
-+			list_add_tail(&cache->dirty_list, &trans->dirty_bgs);
-+	}
-+
-+	start = 0;
-+	while (1) {
-+		ret = find_first_extent_bit(&used, 0, &start, &end,
-+					    EXTENT_DIRTY);
-+		if (ret)
-+			break;
-+
-+		bytes_used += end - start + 1;
-+		ret = btrfs_update_block_group(trans, start, end - start + 1,
-+					       1, 0);
-+		if (ret)
-+			goto out;
-+		clear_extent_dirty(&used, start, end);
-+	}
-+	btrfs_set_super_bytes_used(fs_info->super_copy, bytes_used);
- 	ret = 0;
- out:
--	btrfs_release_path(&path);
-+	extent_io_tree_cleanup(&used);
- 	return ret;
- }
-diff --git a/common/repair.h b/common/repair.h
-index 793ebcd2..1b19739d 100644
---- a/common/repair.h
-+++ b/common/repair.h
-@@ -35,5 +35,7 @@ int btrfs_add_corrupt_extent_record(struct btrfs_fs_info *info,
- int btrfs_fix_block_accounting(struct btrfs_trans_handle *trans);
- int btrfs_mark_used_tree_blocks(struct btrfs_fs_info *fs_info,
- 				struct extent_io_tree *tree);
-+int btrfs_mark_used_blocks(struct btrfs_fs_info *fs_info,
-+			   struct extent_io_tree *tree);
- 
- #endif
+These patches are the first chunk of the extent tree v2 format changes.  This
+includes the separate block group root which will hold all of the block group
+items.  This also includes the global root support, which is the work to allow
+us to have multiple extent, csum, and free space trees in the same file system.
+
+The goal of these two changes are straightforward.  For the block group root, on
+very large file systems the block group items are very widely separated, which
+means it takes a very long time to mount the file system on large, slow disks.
+Putting the block group items in their own root will allow us to densely
+populate the tree and dramatically increase mount times in these cases.
+
+The global roots change is motivated by lock contention on the root nodes of
+these global roots.  I've had to make many changes to how we run delayed refs to
+speed up things like the transaction commit because of all the delayed refs
+going into one tree and contending on the root node of the extent tree.  In the
+same token you can have heavy lock contention on the csum roots when writing to
+many files.  Allowing for multiple roots will let us spread the lock contention
+load around.
+
+I have disabled a few key features, namely balance and qgroups.  There will be
+more to come as I make more and more invasive changes, and then they will slowly
+be re-enabled as the work is added.  These are disabled to avoid a bunch of work
+that would be thrown away by future changes.
+
+These patches have passed xfstests without panicing, but clearly failing a lot
+of tests because of the disabled features.  I've also run it through fsperf to
+validate that there are no major performance regressions.
+
+WARNING: there are many more format changes planned, this is just the first
+batch.  If you want to test then please feel free, but know that the format is
+still in flux.  Thanks,
+
+Josef
+
+Josef Bacik (22):
+  btrfs-progs: common: allow users to select extent-tree-v2 option
+  btrfs-progs: add definitions for the block group tree
+  btrfs-progs: add on disk pointers to global tree ids
+  btrfs-progs: add support for loading the block group root
+  btrfs-progs: add print support for the block group tree
+  btrfs-progs: mkfs: use the btrfs_block_group_root helper
+  btrfs-progs: check-lowmem: use the btrfs_block_group_root helper
+  btrfs-progs: handle no bg item in extent tree for free space tree
+  btrfs-progs: mkfs: add support for the block group tree
+  btrfs-progs: check: add block group tree support
+  btrfs-progs: qgroup-verify: scan extents based on block groups
+  btrfs-progs: check: make free space tree validation extent tree v2
+    aware
+  btrfs-progs: check: add helper to reinit the root based on a key
+  btrfs-progs: check: handle the block group tree properly
+  btrfs-progs: load the number of global roots into the fs_info
+  btrfs-progs: handle the per-block group global root id
+  btrfs-progs: add a btrfs_delete_and_free_root helper
+  btrfs-progs: make btrfs_clear_free_space_tree extent tree v2 aware
+  btrfs-progs: make btrfs_create_tree take a key for the root key
+  btrfs-progs: mkfs: set chunk_item_objectid properly for extent tree v2
+  btrfs-progs: mkfs: create the global root's
+  btrfs-progs: check: don't do the root item check for extent tree v2
+
+ check/main.c                    | 233 ++++++++++++++------------
+ check/mode-lowmem.c             |  12 +-
+ check/qgroup-verify.c           |  32 +++-
+ cmds/inspect-dump-tree.c        |  37 +++-
+ common/fsfeatures.c             |  11 ++
+ common/repair.c                 |   3 +
+ kernel-shared/ctree.h           |  66 +++++++-
+ kernel-shared/disk-io.c         | 287 ++++++++++++++++++++++++++------
+ kernel-shared/disk-io.h         |  15 +-
+ kernel-shared/extent-tree.c     |  32 +++-
+ kernel-shared/free-space-tree.c |  72 ++++----
+ kernel-shared/print-tree.c      |  26 ++-
+ kernel-shared/transaction.c     |   2 +
+ libbtrfsutil/btrfs_tree.h       |   3 +
+ mkfs/common.c                   |  93 ++++++++---
+ mkfs/common.h                   |  12 ++
+ mkfs/main.c                     |  96 ++++++++++-
+ 17 files changed, 791 insertions(+), 241 deletions(-)
+
 -- 
 2.26.3
 
