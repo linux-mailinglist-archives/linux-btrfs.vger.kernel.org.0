@@ -2,111 +2,186 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4B74655B8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 19:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A465446569A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 Dec 2021 20:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352600AbhLASpy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 1 Dec 2021 13:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238768AbhLASpx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 13:45:53 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31015C061574
-        for <linux-btrfs@vger.kernel.org>; Wed,  1 Dec 2021 10:42:32 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id o13so54242350wrs.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 01 Dec 2021 10:42:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yGWwv7AGMWbnLT0KEM2Ov8+ZkvKR9+p9vjqCOZPf52U=;
-        b=iE8kjVkAJUUJ3S10z2k07v1bYsD2VkgeqasCr+guv3Ij0FevZYLP0FSQFMgMD2Uq7J
-         OjiJceRl42z2Rzb9lNvKY3asFrw12H3QRUJcVGvx42SPTo/XATaQ0caQn/f5ZdO2bamz
-         d9X55SZyOdfVfi3IhO92yCtRFFe23jjPCywIbWXnF2+/3FzfFFqgxH6FuzGy3pqw5KNI
-         8UQ7rW3kg92vDU+b/Om42uTCN8tZcO/dheY7RJu5u8MgKInYqZwfH03+dz3ss8hRF9Dy
-         IvPpJf7vrag5QAHxuEER2eoAD9VT3XPPtCp2lgKTXWt4ODDiZJDEAug8rbUvtdC+OrQr
-         /jiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yGWwv7AGMWbnLT0KEM2Ov8+ZkvKR9+p9vjqCOZPf52U=;
-        b=QJOM6r0h8bIvwN1kDICrkXBM1cns9RAcS6PB/FC4IZd0vu2GSr01OIEwPdlRTJ6g5R
-         VS2qdgRMlJXohF6OoDvkDuA5A+mZ9I8qksRxH3fDiRJsNLFtrC+CmVGoEZwQemN8BfCL
-         raFpcVRN9VjnlTkxJHlbvC4Av9sebp5Yz/WlI7AhZxZuLoidiyKdZGKhJwH8j0Ye38Mi
-         Whk+jcK+3xWzk6CkF4cbU2CRkRmgyMh7nDHSpIy25HJQrhf/z8q6jFGfJrEtcIHptWH9
-         /kIstlzQGWL/QeGm3NzXNfhlA1shRc03hhKPfr2PdEg+FFShn/MXtF9J2jeVJ2b46U9V
-         6Z3Q==
-X-Gm-Message-State: AOAM531q5dzKFlOL1jLANuAOm/vLR2RXMdSYxGqVHSab2S7dwJ9YfW8F
-        O7Xl5D4MmXsbrPz5fbO4cX+NEkyHDqZ1N9tkbeE=
-X-Google-Smtp-Source: ABdhPJzuTaa+ZBOlNoW5sNBfddGf8TncrdDu/4Oywj05cZni4YFVRqLuMDbHtqasjDAhxkm6rvfSHiyHJe/6/7tP3J4=
-X-Received: by 2002:a5d:45c4:: with SMTP id b4mr8700884wrs.222.1638384150805;
- Wed, 01 Dec 2021 10:42:30 -0800 (PST)
+        id S1352687AbhLATlV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 1 Dec 2021 14:41:21 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:34420 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245594AbhLATlS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 Dec 2021 14:41:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 088DFB8211B;
+        Wed,  1 Dec 2021 19:37:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84EDEC53FAD;
+        Wed,  1 Dec 2021 19:37:52 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/4] Avoid live-lock in fault-in+uaccess loops with sub-page faults
+Date:   Wed,  1 Dec 2021 19:37:46 +0000
+Message-Id: <20211201193750.2097885-1-catalin.marinas@arm.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <MpesPIt--3-2@tutanota.com> <87r1azashl.fsf@vps.thesusis.net>
- <MpgNwtq--3-2@tutanota.com> <75c33ef6-af1a-43cc-6732-ce4b298a7337@cobb.uk.net>
-In-Reply-To: <75c33ef6-af1a-43cc-6732-ce4b298a7337@cobb.uk.net>
-From:   Matthew Warren <matthewwarren101010@gmail.com>
-Date:   Wed, 1 Dec 2021 12:42:20 -0600
-Message-ID: <CA+H1V9yCM3vSOC+-dhWJ9d62GdpKr7suzFNAQwYNYt71MG3Gig@mail.gmail.com>
-Subject: Re: Connection lost during BTRFS move + resize
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     Borden <borden_c@tutanota.com>, Phillip Susi <phill@thesusis.net>,
-        linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Even if it wrote more than 1 TB and started overwriting the file
-system, it SHOULD be possible to find what data still needs to be
-written by searching backwards from the old partition's end point and
-the new partition's end point until you start finding identical data.
+Hi,
 
-Matthew Warren
+Following the discussions on the first series,
 
-On Mon, Nov 29, 2021 at 5:07 PM Graham Cobb <g.btrfs@cobb.uk.net> wrote:
->
-> On 29/11/2021 15:50, Borden wrote:
-> > 29 Nov 2021, 10:26 by phill@thesusis.net:
-> >> The only tool I know of that can do this is gparted, so I assume you a=
-re
-> >> using that.  In this case, it has to umount the filesystem and manuall=
-y
-> >> copy data from the old start of the partition to the new start.  Being
-> >> interrupted in the middle leaves part of the filesystem in the wrong
-> >> place ( and which parts is unknowable ), and so it is toast.  This is
-> >> one area where LVM has a significant advantage as its moves are
-> >> interruption safe and automatically resumed on the next activation of
-> >> the volume.
-> >>
-> > This is the answer that I anticipated, and it's good to know now so I d=
-on't destroy data that I _cannot_ afford to lose later. So thank you.
-> >
-> > For my own education/curiosity/intellectual banter: ddrescue, badblocks=
-, rsync and other utilities have log files that track progress and allow it=
- to resume if it's interrupted. Since resize operations work in the linear =
-process you described, how hard would it be, theoretically, to implement a =
-"needle position" in a move operation to allow a move to pick up where it l=
-eft off?
-> >
-> > Obviously, it wouldn't be 100% perfect, but if a recovery utility could=
- look at the disk and say "partition starts here, skip a bit somewhere in t=
-he middle, continue here, stop there," surely that would be more efficient =
-than trying to recover files with a low-level utility?
-> >
->
-> I can't comment on that, and I don't know how the utility you were using
-> works, but if it was copying blocks from higher disk addresses to lower
-> ones, starting at the bottom, it is *possible* that it hadn't got beyond
-> the first 1TB before it failed and the original filesystem is still
-> untouched.
->
-> Did you try just resetting the original partition parameters manually
-> (forcing them using something like GNU parted's mkpart - not a resize
-> operation) to see whether the original filesystem could be mounted? It's
-> just a long shot, of course.
->
-> Graham
+https://lore.kernel.org/r/20211124192024.2408218-1-catalin.marinas@arm.com
+
+this new patchset aims to generalise the sub-page probing and introduce
+a minimum size to the fault_in_*() functions. I called this 'v2' but I
+can rebase it on top of v1 and keep v1 as a btrfs live-lock
+back-portable fix. The fault_in_*() API improvements would be a new
+series. Anyway, I'd first like to know whether this is heading in the
+right direction and whether it's worth adding min_size to all
+fault_in_*() (more below).
+
+v2 adds a 'min_size' argument to all fault_in_*() functions with current
+callers passing 0 (or we could make it 1). A probe_subpage_*() call is
+made for the min_size range, though with all 0 this wouldn't have any
+effect. The only difference is btrfs search_ioctl() in the last patch
+which passes a non-zero min_size to avoid the live-lock (functionally
+that's the same as the v1 series).
+
+In terms of sub-page probing, I don't think with the current kernel
+anything other than search_ioctl() matters. The buffered file I/O can
+already cope with current fault_in_*() + copy_*_user() loops (the
+uaccess makes progress). Direct I/O either goes via GUP + kernel mapping
+access (and memcpy() can't fault) or, if the user buffer is not PAGE
+aligned, it may fall back to buffered I/O. So we really only care about
+fault_in_writeable(), as in v1.
+
+Linus suggested that we could use the min_size to request a minimum
+guaranteed probed size (in most cases this would be 1) and put a cap on
+the faulted-in size, say two pages. All the fault_in_iov_iter_*()
+callers will need to check the actual quantity returned by fault_in_*()
+rather than bail out on non-zero but Andreas has a patch already (though
+I think there are a few cases in btrfs etc.):
+
+https://lore.kernel.org/r/20211123151812.361624-1-agruenba@redhat.com
+
+With these callers fixed, we could add something like the diff below.
+But, again, min_size doesn't actually have any current use in the kernel
+other than fault_in_writeable() and search_ioctl().
+
+Thanks for having a look. Suggestions welcomed.
+
+------------------8<-------------------------------
+diff --git a/mm/gup.c b/mm/gup.c
+index 7fa69b0fb859..3aa88aa8ce9d 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1658,6 +1658,8 @@ static long __get_user_pages_locked(struct mm_struct *mm, unsigned long start,
+ }
+ #endif /* !CONFIG_MMU */
+ 
++#define MAX_FAULT_IN_SIZE	(2 * PAGE_SIZE)
++
+ /**
+  * fault_in_writeable - fault in userspace address range for writing
+  * @uaddr: start of address range
+@@ -1671,6 +1673,7 @@ size_t fault_in_writeable(char __user *uaddr, size_t size, size_t min_size)
+ {
+ 	char __user *start = uaddr, *end;
+ 	size_t faulted_in = size;
++	size_t max_size = max_t(size_t, MAX_FAULT_IN_SIZE, min_size);
+ 
+ 	if (unlikely(size == 0))
+ 		return 0;
+@@ -1679,7 +1682,7 @@ size_t fault_in_writeable(char __user *uaddr, size_t size, size_t min_size)
+ 			return size;
+ 		uaddr = (char __user *)PAGE_ALIGN((unsigned long)uaddr);
+ 	}
+-	end = (char __user *)PAGE_ALIGN((unsigned long)start + size);
++	end = (char __user *)PAGE_ALIGN((unsigned long)start + max_size);
+ 	if (unlikely(end < start))
+ 		end = NULL;
+ 	while (uaddr != end) {
+@@ -1726,9 +1729,10 @@ size_t fault_in_safe_writeable(const char __user *uaddr, size_t size,
+ 	struct vm_area_struct *vma = NULL;
+ 	int locked = 0;
+ 	size_t faulted_in = size;
++	size_t max_size = max_t(size_t, MAX_FAULT_IN_SIZE, min_size);
+ 
+ 	nstart = start & PAGE_MASK;
+-	end = PAGE_ALIGN(start + size);
++	end = PAGE_ALIGN(start + max_size);
+ 	if (end < nstart)
+ 		end = 0;
+ 	for (; nstart != end; nstart = nend) {
+@@ -1759,7 +1763,7 @@ size_t fault_in_safe_writeable(const char __user *uaddr, size_t size,
+ 	if (locked)
+ 		mmap_read_unlock(mm);
+ 	if (nstart != end)
+-		faulted_in = min_t(size_t, nstart - start, size);
++		faulted_in = min_t(size_t, nstart - start, max_size);
+ 	if (faulted_in < min_size ||
+ 	    (min_size && probe_subpage_safe_writeable(uaddr, min_size)))
+ 		return size;
+@@ -1782,6 +1786,7 @@ size_t fault_in_readable(const char __user *uaddr, size_t size,
+ 	const char __user *start = uaddr, *end;
+ 	volatile char c;
+ 	size_t faulted_in = size;
++	size_t max_size = max_t(size_t, MAX_FAULT_IN_SIZE, min_size);
+ 
+ 	if (unlikely(size == 0))
+ 		return 0;
+@@ -1790,7 +1795,7 @@ size_t fault_in_readable(const char __user *uaddr, size_t size,
+ 			return size;
+ 		uaddr = (const char __user *)PAGE_ALIGN((unsigned long)uaddr);
+ 	}
+-	end = (const char __user *)PAGE_ALIGN((unsigned long)start + size);
++	end = (const char __user *)PAGE_ALIGN((unsigned long)start + max_size);
+ 	if (unlikely(end < start))
+ 		end = NULL;
+ 	while (uaddr != end) {
+------------------8<-------------------------------
+
+Catalin Marinas (4):
+  mm: Introduce a 'min_size' argument to fault_in_*()
+  mm: Probe for sub-page faults in fault_in_*()
+  arm64: Add support for user sub-page fault probing
+  btrfs: Avoid live-lock in search_ioctl() on hardware with sub-page
+    faults
+
+ arch/Kconfig                        |  7 ++++
+ arch/arm64/Kconfig                  |  1 +
+ arch/arm64/include/asm/uaccess.h    | 59 +++++++++++++++++++++++++++++
+ arch/powerpc/kernel/kvm.c           |  2 +-
+ arch/powerpc/kernel/signal_32.c     |  4 +-
+ arch/powerpc/kernel/signal_64.c     |  2 +-
+ arch/x86/kernel/fpu/signal.c        |  2 +-
+ drivers/gpu/drm/armada/armada_gem.c |  2 +-
+ fs/btrfs/file.c                     |  6 +--
+ fs/btrfs/ioctl.c                    |  7 +++-
+ fs/f2fs/file.c                      |  2 +-
+ fs/fuse/file.c                      |  2 +-
+ fs/gfs2/file.c                      |  8 ++--
+ fs/iomap/buffered-io.c              |  2 +-
+ fs/ntfs/file.c                      |  2 +-
+ fs/ntfs3/file.c                     |  2 +-
+ include/linux/pagemap.h             |  8 ++--
+ include/linux/uaccess.h             | 53 ++++++++++++++++++++++++++
+ include/linux/uio.h                 |  6 ++-
+ lib/iov_iter.c                      | 28 +++++++++++---
+ mm/filemap.c                        |  2 +-
+ mm/gup.c                            | 37 +++++++++++++-----
+ 22 files changed, 203 insertions(+), 41 deletions(-)
+
