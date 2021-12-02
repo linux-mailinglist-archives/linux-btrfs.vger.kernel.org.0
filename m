@@ -2,120 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEC6466C17
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Dec 2021 23:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20668466D3D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Dec 2021 23:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245266AbhLBW3S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Dec 2021 17:29:18 -0500
-Received: from mail-dm6nam11on2138.outbound.protection.outlook.com ([40.107.223.138]:9985
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        id S235768AbhLBWxr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Dec 2021 17:53:47 -0500
+Received: from mail-bn8nam11on2122.outbound.protection.outlook.com ([40.107.236.122]:23776
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234846AbhLBW3S (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Dec 2021 17:29:18 -0500
+        id S232923AbhLBWxq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 2 Dec 2021 17:53:46 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J6tIK0HXuYOdvuK5a+D0fu5ksE2ytOGfCfrtxgHFfCUH3OGMBU5oxYeJVR50yzVaxauy8rjdr0ZMP2KyDU2G7uoMP0cX77mFRNjH9U25F/dWDLboRV57DsuBI1MSCwYx55pN7qmY3MKclFdEXpayDc34UfGMRm79GoL86+N2z9KiR7BEh6TGA9QCq71cpciTyeEGyseZLH1q7s56LE2SCxzk0C8X2boNBDOv3yPTnM5soGANw04wuD5AnnegqJJITS+WkvSYmcP0n6Ko2ac+v84a9nCSy8fqMKnyqpVCwIkryn+jz/TZHOntDnv0SAd8vZ9BP9Z27MLiGDWQtWpDQA==
+ b=IJp9rYMdJV05XV1IscnvLUSiPtsR/ifo6Z6xmrBHZCYMMzuysDqgqSMkRdPvdHySKBQotPSb99fEYwHaxf0UAzgpHWBc4RERRSMVRbF5U97ssUy5CmPJm/xpIPyAGDVThP7dp1E0ij4P6fJi0OIdA6mrl+r5nz2/jh4CtSiNzcbF3CE+menZsJodld2Trgpo8Miz8m44q6xMW92dEf7MNPwiBoN0mHQmKSaijsUPiSppkyqtIrgNA+VvOV2/4+7H8t5yuT4ZqcezLeDKktBTUssmy6RdsCUTu+FTWbs6I89f3ql1lHzpiYkb1OvgpNpCmHr7iP3oT/Rai8rMSjhRxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ob8XEF4tGTou63uJKWZMrMzbIpWp5EstDETiG1Yoyqk=;
- b=RxTWMoKK1ghD08HSoutsAwOCWQrcSmcIoyYSwjPvnH/7zsMwnzfeuaqEvfZpLVDSs0dNLambm4/Ie6D+2cuvaA2s1Mez6RtumV/2RdxWa2y/zkzIietsF5/5xg6D5FW0K/PuhgSRz9YggPaR85fjXRjmQ9MD1OaddBSws34pWqFjus735aeaRtzBZgipeCJvDvyOAgtA8xgLCgLiOD9tzukEW1q264hXvXRs9+TpN4q2l1bPhvhjPZDTwm/PMg6oOXx9juYGvqB6JgJP6aJawvxDy7fKlm6of8HbEYfLtLM2EhJGclapRTFOz5d7BWc93Cx7S7bKwT7rXAETG9lMCQ==
+ bh=Ai7FmcFpqw4R5Lt7r9s/u+qAowfjvK1T2bwo9ie9M7M=;
+ b=WTL9XEcLOfiD0YYWavOUV1OiVJ8Oj3ME2NH9gEt9VwPfk8gEHu03ZeLz8uMgDBLu+clPyJ910KuLdMe/TVJFpcEgJm8tL082sutcWUJWyk9H0JdzYYVHGZppQ7CBSmkiIW2b5zV5PQCrEB4AximirOsKTAShft5P2m567td9B+rszypsb8oGgpLaQghoO9K/VyaibHle+p4J7v4NpFzoOgOrhYyK0tRovVbyeBR8jmzR/1JeqkNcMzeWKtLWlV+o5RiR4ZbK+Drq2/kmL/SaY2QEcIg5sh1BGjK2cEY2RGpgK8vXFht9wc41k2kswgc5kCZPMjPkN6RQw8dZyKYYAw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=rollins.edu; dmarc=pass action=none header.from=rollins.edu;
  dkim=pass header.d=rollins.edu; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rollins.edu;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ob8XEF4tGTou63uJKWZMrMzbIpWp5EstDETiG1Yoyqk=;
- b=RE8Zb/moC3ONsK0sihdu7zyl4QLr33LJKiQU7aUTPlGAR+R3SS3lMTLfV/VjpwZ59eObrt8ul6nsjvM5WtZ+ASlaKcqrG00Y48yHINakrdifvKvBp5ecWGXAVRFxV+BDSQdsSN81ZhhkPoEeOLQIlBVlSxXyPrgeuji8IseZyek=
+ bh=Ai7FmcFpqw4R5Lt7r9s/u+qAowfjvK1T2bwo9ie9M7M=;
+ b=aGbEMPdDRieXmuIFMxH+sIFY9dsm7l7S/IWOCW+7mNhRt0y9NqW8UbGJ3WwyQLBNFHo6Y0vtcvmhlwQYZ/9mSP6Jj1n3kYZsRqvNC9tWhAY9uyd6K5QU5n3IKxUxP24KWM1xp8RgWEJBfvCaGnNJ4//eCa3DR0YXkdE1xfSo3+0=
 Received: from DM8P220MB0342.NAMP220.PROD.OUTLOOK.COM (2603:10b6:8:32::12) by
- DM8P220MB0406.NAMP220.PROD.OUTLOOK.COM (2603:10b6:8:37::5) with Microsoft
+ DM8P220MB0407.NAMP220.PROD.OUTLOOK.COM (2603:10b6:8:24::19) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4734.23; Thu, 2 Dec 2021 22:25:53 +0000
+ 15.20.4734.23; Thu, 2 Dec 2021 22:50:21 +0000
 Received: from DM8P220MB0342.NAMP220.PROD.OUTLOOK.COM
  ([fe80::7488:5485:739b:c303]) by DM8P220MB0342.NAMP220.PROD.OUTLOOK.COM
  ([fe80::7488:5485:739b:c303%9]) with mapi id 15.20.4734.028; Thu, 2 Dec 2021
- 22:25:53 +0000
+ 22:50:21 +0000
 From:   Charlie Lin <CLIN@Rollins.edu>
-To:     "rm@romanrm.net" <rm@romanrm.net>
-CC:     Charlie Lin <CLIN@Rollins.edu>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+To:     Hugo Mills <hugo@carfax.org.uk>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 Subject: Re: Unable to Mount Btrfs Partition used on Both Funtoo and Windows
 Thread-Topic: Unable to Mount Btrfs Partition used on Both Funtoo and Windows
-Thread-Index: AQHX58t5+GVppLc5S0ePxfaVV1jvJQ==
-Date:   Thu, 2 Dec 2021 22:25:53 +0000
-Message-ID: <DM8P220MB0342912966C295206FF80725C1699@DM8P220MB0342.NAMP220.PROD.OUTLOOK.COM>
+Thread-Index: AQHX58t5+GVppLc5S0ePxfaVV1jvJawfyWsAgAAEn94=
+Date:   Thu, 2 Dec 2021 22:50:21 +0000
+Message-ID: <DM8P220MB03423618BD92E125EAC107EEC1699@DM8P220MB0342.NAMP220.PROD.OUTLOOK.COM>
+References: <DM8P220MB0342912966C295206FF80725C1699@DM8P220MB0342.NAMP220.PROD.OUTLOOK.COM>
+ <20211202223236.GC3478@savella.carfax.org.uk>
+In-Reply-To: <20211202223236.GC3478@savella.carfax.org.uk>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-suggested_attachment_session_id: bfd8008f-29d8-9c06-6f69-4bf250eeec80
+suggested_attachment_session_id: 7936c266-589a-8a87-92b3-14aa96562ff4
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=Rollins.edu;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3ad9abf1-e961-42ee-bebb-08d9b5e2b3d5
-x-ms-traffictypediagnostic: DM8P220MB0406:
-x-microsoft-antispam-prvs: <DM8P220MB040607FBDBE0123EFD52E80CC1699@DM8P220MB0406.NAMP220.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-office365-filtering-correlation-id: 780da1ba-85e2-40d6-7c8f-08d9b5e61f15
+x-ms-traffictypediagnostic: DM8P220MB0407:
+x-microsoft-antispam-prvs: <DM8P220MB04072FD7C164AFB0CB13CC86C1699@DM8P220MB0407.NAMP220.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ObRX1K9fewyCwL05aQR0hMtC/dJr2oqu/3gMxU+cK6G4coE2CcKLaqXoCv33sldGhX8iGDGjn02pTwMlaQh+hFknCUWPQjd5rkMlUdrFa1yuOQwRJ6GGfThT3+52xM4ELW7H0ulI1O/Vk0+Lkm+9b8ICCeQPxdv7fWjvEuwWpEgxD+UTCgRqZTNPTV/NMAYR/2vVvB5ZqHjHkIcVgxXBU7Ep1HO+Vz9OU+Ixxp4YEyOYZet2RbvX5wIRZ3r9XmgF8mGk9uCSH2kauS/qWVyxo7FXLIU5YJtnEs1t7ofnZcW/Cdfjh+CqybWYaKd0HaqY0wNAd2h3TFq1SkQSFr/qBvOhTzsf7b+XvG9kOPoChXAle3dDCipWK5LI0ezs4fylhF1O/4xiYolI4ckXAAiz252ZDDoMZrEFMXk92fKhplqJ8JWgvS8ZwDwQ2fVnYYPqTI7cvdG+g6nRNDUsY14Wrx6M9mh3ACh+OoYUKvwDkHkehfsCtGptaLRE2yGqSr3APaFeW6sjGwtcjRvc1LqzWKH/Ipn6v0NVRHutk5Rs6d+nU+MmOZ3lEiR6RdkxQUqzDoU0cJf0D5Ie7IWMM71XMEA6MoI0wd/xy76thNOY4YI3AqIkzmDhp2cDS67DeKTIQRUgbZXUYY+XVkvyFJYZyY6soRamSXZr3GPEk49WAcqnjOrGQVxTQvsOl3nSyH0l7j5vBtD/D0pCdYkD1xKPwA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8P220MB0342.NAMP220.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(4326008)(86362001)(6506007)(8676002)(316002)(122000001)(4744005)(71200400001)(7696005)(786003)(52536014)(91956017)(66446008)(75432002)(9686003)(66946007)(66476007)(64756008)(76116006)(66556008)(186003)(2906002)(508600001)(26005)(38100700002)(5660300002)(8936002)(55016003)(38070700005)(83380400001)(33656002)(6916009);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: pKpFGwbRnOGAnu2b3hhCPfigNkpm1yC/7/PwMops2CjjTwNvWOCZEfj+Mmcws0AEZaNfAmzA+Vnea8klNNcMKIrObI50fb6h7CaA0CIpnbdquezsgsPYcdgPytyP7G2ZwaffSy2BlTZm5zlBF2rlVWqtn/k+UiyLRG7Lk0wxg5bNoEtUak1/nT065gK0j6wmsZNKSKDcLrokkbx1OOdfXVzWhFhUL0NvwUXJhGCzgXtkWneQ3dIAM3kOgOXufMJwWR/ZuuDd20aYYg4jxJ9UACigUk/mJOS+M/8E/RNZROCRheGaxzjRlC8j/QyoqvGMcatLx0unFR7/w9LjHlwnmk8BrXDQpxJJ6eyFpwM8MrMeBh3ExvanObQfSBRb5WeGcn8GYoNbbdETgaF2q4MVYWOjKWqEQhq5Z/7tWYOfy6oC1naR99WBVGkPM7A+lNrbZMLLIViaIe5T6OL4xwHVdlRiuY7EfApH/KLKeYIqBC9dh8yO33+tW7QFeArGhpMBIx7rtewGDCIbvQyh4tSDkckSaE+p7F0pw2ysTKFKxQuwItV2QG8Adt6SZoCKdqc4FolkgR2FGpu63iZswx5D7OoP57sVNg0rXy8DAWUC1W+NrJNOq7XHhevpz3Qw0XHR/rh8XjRZT8U722VPCWo/HcADAd8HWk+TQgfk2jFK/lkqlHWqAZAc7/51w07A3cd/nKBRooIKUznHZVpcYa98HNhNneqa1gfkO/dZ636V4fjrnFZKFPh6p5EhypmtBBk83Mot7d6cMBgQJDX967vcr6TEFkBP77RQUId85+uhBlY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8P220MB0342.NAMP220.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(64756008)(55016003)(91956017)(71200400001)(2906002)(186003)(66476007)(66446008)(4326008)(45080400002)(26005)(76116006)(75432002)(6506007)(52536014)(66556008)(38070700005)(8936002)(5660300002)(53546011)(7696005)(66946007)(83380400001)(508600001)(786003)(8676002)(316002)(122000001)(966005)(33656002)(9686003)(38100700002)(6916009);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?P9RyfNX0b2s5XI1e9smcUU0N4zsiK9suInklwoiIbhhjXjEjuIM73csyW6?=
- =?iso-8859-1?Q?Fhcpl/1guoqbMohuKlCZoPRbtCrULAiWG+R4Pn1+h+7OTJ4P267xDEHOk3?=
- =?iso-8859-1?Q?wX36Xd96dO0JN1MtJmetYMK28y41eYOf6B3JBvOsNtzTSXOnpWNYvaTTeW?=
- =?iso-8859-1?Q?/dv/5iBd4PQ0fNkH7yTcTW0m0JkyvDEs7v5G9XRSMSSjzrmK3M44em0v8w?=
- =?iso-8859-1?Q?0as9C/K82lz7exXzI7H4LAsZWFqcE96J3AiEG0SePdImwIq1uvVLoaFBxf?=
- =?iso-8859-1?Q?Vo2XEVyuH6AXoU+yuZI/6iPm+Nby5sWyvoYYJZC3CpSksqOgYmQ0KmD2Fj?=
- =?iso-8859-1?Q?h3jRIDtnNnsgcNwMzzAJPdJGBhippBS8Jli6Fyvb6EHfKzqsxPFTolXAAj?=
- =?iso-8859-1?Q?qf3zWAJhqCh438CMx+HmHl6pqnQZuRa5BIFKa6Y6ZhkRFFPvM8t2SgWO2t?=
- =?iso-8859-1?Q?DVEYj+AX0tINEPsLDY6Ud2MLKRk/e3BQQgxon2XPlT5JkbPfUlUwKOBgZr?=
- =?iso-8859-1?Q?m64RhiCna6S3BWpX+obXHgkwuuJK3DWwUoHYDxgbv/jnyI6XDFfqTaYfRc?=
- =?iso-8859-1?Q?8pJcPygwlPSp4MEpVKyxNHtJaGvDfC4fujSrQ1fN9+VQIRkaaMBCWLy7jL?=
- =?iso-8859-1?Q?KPsYYg5N9yUwPydfU8Xrca9bd1HnZM55Md75XuZa6tYv01tsZRoDVWAQpu?=
- =?iso-8859-1?Q?XF6glF1QQ3Nj2pLu7YGV0Q7v9HtQnnyeTW9HixUH/AiXlh9Oxo/T3pj9Yw?=
- =?iso-8859-1?Q?mHDqL4DVZaE/MSMDuyqMJGKk0m5GW5C3EHRSISokPEe9lhPIksYuwXBoV8?=
- =?iso-8859-1?Q?jnz6X/e30WPbWcf8Jb0rDLX0HofDU2stu68fw4Sxi7L4oR30+XOWYIGNJx?=
- =?iso-8859-1?Q?tYBDr9zEoJjoW/TUFhkNCBEdPeuRr+KKNY7X508hQoq/Ae4QuA5eVCieG0?=
- =?iso-8859-1?Q?wykyGWcCGIo+Y1CBcuvO1CdEv7XbLDCqUeoAV5AsXislk7hJhj/YWhswfv?=
- =?iso-8859-1?Q?ptOI6o947aa8zOn2pJ1V8ZZ9IR/j1bBwU2EZlIOLwD2FUoWELZd7DEGgEc?=
- =?iso-8859-1?Q?y+bFH2+QNaNxE3qBrh98UKH9IAJ7N48OScDo5sEnM7L90Dpte9Im/ANhKi?=
- =?iso-8859-1?Q?P0WzIiicjpptYYcGEuUSmNbl/08TTr7shwbOGp4jbJlSwFGWS6hNYaYH1q?=
- =?iso-8859-1?Q?BUiz36pZksendjSufavfnijFZFl13XyNo2yndoMBlyeDsUjUNi2hNkXoaP?=
- =?iso-8859-1?Q?gLzWQOh3+09+Ia8zPblyzkmAkXvl7pE7avy6/j4MiMQUhh1T/pKZwqTt/1?=
- =?iso-8859-1?Q?/amXw73jgX8UUyEnpZrIcp2rNEJHpR4M191JL5VBsP7yOCzIoSMXz8PSSz?=
- =?iso-8859-1?Q?30Cs2CRl5dUIyrsJu0Qoeuh5yVXqw+69+sEd8dOl7nObtsPE8EQA8z9bgR?=
- =?iso-8859-1?Q?2EwmzxR0BXaLcssutOQNH/1M/l0NGm8Ka+qlq84ZRaoAXCWC/GI+QYkl+g?=
- =?iso-8859-1?Q?U5P5zGmZ/aeQ0xKO5vxt+DGgAy+yAwW33KDxay54IOk3VXJCD2uLJhZSAG?=
- =?iso-8859-1?Q?1HcpRvyuThssPcCP9ljSHsKQfw3qXEDbl3F9m3vZ7Ysg0c88FaA0hJl7RQ?=
- =?iso-8859-1?Q?/2QLRQUHkEMOs1CI8/QcaHhNLROoEgiXW4qjtrdLvJM6fqSG3Fth0+Bw?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?jrZobCtB6Dmjw2P7Vg+cOkDpZg2HFwuVsD3bILFIvTtAUSgulDD2nDTaBr+P?=
+ =?us-ascii?Q?CDaqMaReoMn58tF+OA1WHoqNOwYXxwpLB3VS5RuutjcFF5gdym6XoSj0Qa6L?=
+ =?us-ascii?Q?v///Uag478BgWpAGZTSRsabs3bHSj/KLX0kjpTVZfuHPXocFkQqLSwATOzRm?=
+ =?us-ascii?Q?eor6YRZJzWp5at6q2g6mCTtSTBhN5cOUC+6aRpK8QULWesg8RGnxgDXeuzmx?=
+ =?us-ascii?Q?8y1I+4+30A1mADo/IR5PTadnv8HJEZ0MA+UwR3un+FrFWAWcukKzsIwgOkBX?=
+ =?us-ascii?Q?P+H20OXba64DL0sJowEIGhKhzDDjuIZubC66XSImaeEs/xsarBHqHqLoZ4LO?=
+ =?us-ascii?Q?meiSiKOvn5efzLWrd9s1/MREFFUshAwfTeccHS7BLTLZCZXiViHeA6hosJcr?=
+ =?us-ascii?Q?fG5zkQJasuTlkXRsrlCK2srTIQ7Xr6JG/o0eclkBw3vCrlzDzycnxmz9omC8?=
+ =?us-ascii?Q?bs65a/H6ySkQsvOSVEWw3KBpq4YyBtjBU+1f6GammfPoIXtazn1m9onqF/2K?=
+ =?us-ascii?Q?D6ouzTNjmoP5CVDf0LmjEwO//o86/tU4xKtevbs3teHECPfzMsy2vDvpeVgH?=
+ =?us-ascii?Q?Iihid0AHv+32UYRBh/r98lD1SU7IE844LSBZpRUjRb41XKzvpRAZJakz5OF9?=
+ =?us-ascii?Q?rWzdZdfYK0+PCc5GCEojZ35pIPfZbktTqPIX32416SE6ANsckBnY8VE3+tNY?=
+ =?us-ascii?Q?qTon1VFR3Sj7CRFA7TcLguxhT0Gf0fD2ebyfLTvrqUa4Hxqr55KVx4a7hIhI?=
+ =?us-ascii?Q?UGSil3iPGKFPVrMQW5mGl4AyWI28sgfFHdgXKkOGPghfJQawyO994y+Dua00?=
+ =?us-ascii?Q?7k8ZAVnzYGG/CB6feDgNFybk/qTNUmGqup+IG5xVCfLFX8e6BD/LAw2k4A42?=
+ =?us-ascii?Q?61nSE6A7J/O5R8u2eq8dPQv/SvzAoShuhRorHF/SrPg/vy2ZQT5CAxRfIO1p?=
+ =?us-ascii?Q?Hq9nWGG8aWiAAO6nHRLLEgkqWHh701RtXE3S/J8xhbzh5Ssjzhd7JVSx/RVs?=
+ =?us-ascii?Q?o4jSIzY2/LqPKrkI+agPDYRpiXW1/mL8Hbup8SNJ7pwLyAUx8nYkoRG9HeHe?=
+ =?us-ascii?Q?7dF3kCLDeysnntBO8zbvtWu1LWr8TvfD2qs0Sp/qo9D79mjzCc+cp0GoGJit?=
+ =?us-ascii?Q?1zdHzaLmeLLSS7WOeiZgPrUgoKEc4ItMd5HRVHN/pi5qlMHQhlFdIf361INl?=
+ =?us-ascii?Q?Zov34s7CV/DCNafyhc4ujIfAZ0SMAisMQomDZV+EjANXu2lz8eOQPjU5XPIj?=
+ =?us-ascii?Q?JKOcYDe+1GULIB8oMDp4+2Hq7oBwzSvei5YXGzUy9RYzczBRGnCzfXpqBJht?=
+ =?us-ascii?Q?wkcki0NXPKsCjIHD7jfSawlcB06tMonoNuRKyNyyyRP+qC8I2tV0BX7fAhKg?=
+ =?us-ascii?Q?AOOXIYikar2v3z0jaRNnB3sFiYZbXXDH3xJ9G9q0aFb2p8mVKekiOsrSXtBA?=
+ =?us-ascii?Q?36aXZIh9Qn6l25qUiiIBKXMYpStHQBPeqx0dnxyw8W2nA+tAyBGQDAlm+RQK?=
+ =?us-ascii?Q?s/H1vNkc+grtwkY74B/yZ0uljGqXVDQk57i/cHOUHTZygJdY5zjFXNALuac/?=
+ =?us-ascii?Q?tvBUNypJZGqeQtuV+Sy/BbMrx3HE5GtP8XyRZiqEOCFMfJUJAart0P3eEB26?=
+ =?us-ascii?Q?bw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: rollins.edu
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: DM8P220MB0342.NAMP220.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ad9abf1-e961-42ee-bebb-08d9b5e2b3d5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2021 22:25:53.3334
+X-MS-Exchange-CrossTenant-Network-Message-Id: 780da1ba-85e2-40d6-7c8f-08d9b5e61f15
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2021 22:50:21.7237
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b8e8d71a-947d-41dd-81dd-8401dcc51007
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zbvzu8tHD65/Lu3CKfZzVYoiTyE0/erqQbpy+FtUB8TTTtfH7sFm3pNzmPZtcEiuSWYBn1/f6EJiOrCOfLKVbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8P220MB0406
+X-MS-Exchange-CrossTenant-userprincipalname: y0BHj8ADEz/btVGEWnb6XkEG3D7WPSgpVYCRn9mL8oaY3pTzRy8FglzE5C5dUcoEVQ3itjuEgO4BlAomzslDJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8P220MB0407
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-=0A=
-I'm actually dual-booting both systems on my laptop ie (Funtoo's kernel and=
- initramfs are on the same EFI system partition that Windows uses)=0A=
-=0A=
-Admittedly, I configured Windows to mount those Btrfs partitions at startup=
-, and for both OSes to be able to hibernate, so that I can access the affec=
-ted partition by hibernating one OS then resuming on the other. This worked=
- well for about three weeks.=0A=
-=0A=
-Anyway, are there commands to try to recover /dev/nvme0n1p{6,8}?=
+Is it still advisable to run btrfs check on the partition in 2021?
+
+________________________________________
+From: Hugo Mills <hugo@carfax.org.uk>
+Sent: Thursday, December 2, 2021 5:32 PM
+To: Charlie Lin
+Cc: rm@romanrm.net; linux-btrfs@vger.kernel.org
+Subject: Re: Unable to Mount Btrfs Partition used on Both Funtoo and Window=
+s
+
+* External Email *
+
+
+On Thu, Dec 02, 2021 at 10:25:53PM +0000, Charlie Lin wrote:
+>
+> I'm actually dual-booting both systems on my laptop ie (Funtoo's kernel a=
+nd initramfs are on the same EFI system partition that Windows uses)
+>
+> Admittedly, I configured Windows to mount those Btrfs partitions at start=
+up, and for both OSes to be able to hibernate, so that I can access the aff=
+ected partition by hibernating one OS then resuming on the other. This work=
+ed well for about three weeks.
+
+   This is approximately equal to mounting the FS on both machines at
+the same time. Honestly, I'm surprised it lasted as long as three
+weeks. I'd have said three minutes would be nearer the expected
+lifetime. When you hibernate/suspend a machine, it stores its current
+kernel state (including memory relating to things like filesystems),
+and then restores that state when it resumes. If, in the meantime,
+something else (like another OS) modifies the FS, you're effectively
+injecting changes into the on-disk data that the hibernated OS doesn't
+know about on resume.
+
+> Anyway, are there commands to try to recover /dev/nvme0n1p{6,8}?
+
+   The phrase "masssive filesystem metadata corruption" springs to
+mind here, with a follow up of "it's dead, Jim". You might get
+something out of it with btrfs restore, although restoring from your
+backups is probably going to be much easier. The FS itself needs to be
+rebuilt with mkfs.
+
+   Hugo.
+
+--
+Hugo Mills             | Two things came out of Berkeley in the 1960s: LSD
+hugo@... carfax.org.uk | and Unix. This is not a coincidence.
+https://nam10.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fcarfax.o=
+rg.uk%2F&amp;data=3D04%7C01%7CCLIN%40Rollins.edu%7Cb5264c1f5b5d480293be08d9=
+b5e41b8c%7Cb8e8d71a947d41dd81dd8401dcc51007%7C0%7C0%7C637740814482794269%7C=
+Unknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiL=
+CJXVCI6Mn0%3D%7C3000&amp;sdata=3DQriqcPu4YG4yZ131EIs%2Beyh66q4uQxCA9SB87Lw5=
+dZU%3D&amp;reserved=3D0  |
+PGP: E2AB1DE4          |
