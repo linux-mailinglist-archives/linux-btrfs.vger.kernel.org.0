@@ -2,251 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F92D4665C7
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Dec 2021 15:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F1646670A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Dec 2021 16:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358795AbhLBOwe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Dec 2021 09:52:34 -0500
-Received: from vs2.lukas-pirl.de ([5.45.100.90]:43856 "EHLO pim.lukas-pirl.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358789AbhLBOwd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 2 Dec 2021 09:52:33 -0500
-Received: from pygmy.fritz.box (dslb-088-068-167-043.088.068.pools.vodafone-ip.de [88.68.167.43])
-        by pim.lukas-pirl.de (Postfix) with ESMTPSA id 8846AA0E5052
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Dec 2021 15:49:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lukas-pirl.de;
-        s=201701; t=1638456549;
-        bh=7BSkCAkfBKlg8hWPKzkXMdWzrivE/6+Oz057i+lX9zE=;
-        h=Message-ID:Subject:From:To:In-Reply-To:References:Date:
-         MIME-Version:From;
-        b=wMIwZ1URX2fsyBWIqPBF1yRpdgUB8atEZDIZfmLD9fhaMMcxALacHQvils13ooZl0
-         MUuyxG0vKkQM/jcPaXFglGE38wfkgwoQ0h7QcN1SoOVLI3c1h4WrF4+mkbYQjSvZQ5
-         +Iz/STTMHRoOFTPzot9A+NeC9TbwPij2g8IJzg53+PJdM/4unTC3rYbb3Q/HZ6+BuR
-         UDTuXXRPzWQ+8y3lmakBrhC172jkVqdBvMJdz7NoI8Aw+bDGnTipOyr71ljnNgtR4I
-         xNvLwv7Zn0RLR2DP29PxcpN1UtaM3AiAPUtetSfid2/3W8mhwwLWX76OeELgh+Pkod
-         s0WJ6BpM6YzrLfmwNR+YeCIi9QCwkOJGh79oy9wUBigSkjtN+FGwOH2DPfms5e/gA6
-         SZ9lEp/Mv3AfSCNQgE08lrtdEVWchJUCXp5E0WbahysbVMnHnrKtd+SNUdbTaKfH+J
-         AtoG1kGwNSW5jsksSjMw5lRBjHS90lQL3H4TVQ2vrqC1kCopLsSguMKklS96pOAqUh
-         BpsT0WGI/huCX3Rj2csxR4P60+Ed2nfrSLaDd5/5m1oOsr3BBRCX/kkPczLmql7PQR
-         b0eOk7It10kXPyqlQFQZAjP8IY3H7Vxg9tLOzZcPWyv4L0o0/IzlKF+i0a+aGTPmGT
-         00Wnb2NmuulY6hmehCbRbkow=
-Message-ID: <f5766e3cb0e2b7bcf3ef45cb7b9a7f3ef96b07ce.camel@lukas-pirl.de>
-Subject: Re: Balance loop on "device delete missing"? (RAID 1, Linux 5.15,
- "found 1 extents, stage: update data pointers")
-From:   Lukas Pirl <btrfs@lukas-pirl.de>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-In-Reply-To: <5a73c349971ff005640af3854667f492e0697724.camel@lukas-pirl.de>
-References: <5a73c349971ff005640af3854667f492e0697724.camel@lukas-pirl.de>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-i9cwVwjanmTV0wMRZ3iU"
-Date:   Thu, 02 Dec 2021 15:49:08 +0100
+        id S242136AbhLBPtE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Dec 2021 10:49:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359157AbhLBPtA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Dec 2021 10:49:00 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830EBC06175A
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Dec 2021 07:45:38 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id bu11so25356596qvb.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 02 Dec 2021 07:45:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iXhj9Dahb/XR7UJf3qPZ7hMpxbCT43vslMTNNGwBHaU=;
+        b=K2G8XPyaVebT7Ox/0ppsy0W2p9aU8hp7TAuAOSECXjWsG8KNY5Js1xRMvdLE9CMAY8
+         VjJ2egDvUa3L/4EZNCZLoUn/eS1GRT+nzNk52NM6wWKV2QLvSphDYkl2FACTu8Wo1QaR
+         aEKMZqAanOSU+0DBrPY5JWbJYaUZBXI4IWQ72iiek/dIMxaZfyDneUs9+tVWHBX1t8st
+         w4rBa8L6kJLULxVVmPbOFiE0+JKWgwfmWsouRt4yhRtH897hGRU0r3XeqUcyNb6phhS0
+         IyX+F/gaOjXi6IKgd208JtQKBh3G1Im8386NwBWCHWcvoDBSp2N6UdEkTJctjrL14ipY
+         OiAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iXhj9Dahb/XR7UJf3qPZ7hMpxbCT43vslMTNNGwBHaU=;
+        b=E2uS+dgrHoB3ANrGkvOXsbTIlmmyTNVQ09xKuZ8d6YkdZazp7TKp9W9+e2GzYMXkcz
+         y1jBvzufKrQ91JBFos4UJOFC4f2CfHPMxTQdAz78gzc1Y3LgGCnaNFZLg/IvAQsj2s8o
+         IUxB8XaC+/+bymvA5t07isZEPVkUnVyVR54TAmx1OJFwU/Zhj/pQoOUU2XzhsNEtEtB9
+         kJQsy2g/BJ1rGTxmB0UD3Qjdv44yj1ZbenZGlUWW52uFOKNjN5C3zN/0cFOBOyDCBwUg
+         rU7qlFyMJull5iUOqqlIVEmD/t1SvZwG3sdW8yBE5zp5+/OWclSA0lKWSpyD7JCtVGPQ
+         fnaA==
+X-Gm-Message-State: AOAM5328dHFV+KOE5CStKwaOnfsCae/oBLJJTOg1enggQCXpDQP2+2mX
+        EYZO1MFefQww+MVGZaLh7mmrZ/2Vo2Fmqw==
+X-Google-Smtp-Source: ABdhPJwGWNeBSn9jbgb9oGSKd3xHsRx1lpgBwrXU1KR3M+WevqZptIgyCCdkdAjoQwCnh6h1OT5aVA==
+X-Received: by 2002:a05:6214:18c7:: with SMTP id cy7mr13586545qvb.0.1638459937321;
+        Thu, 02 Dec 2021 07:45:37 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id s11sm98645qki.95.2021.12.02.07.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Dec 2021 07:45:36 -0800 (PST)
+Date:   Thu, 2 Dec 2021 10:45:35 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] fstests: UDEV_SETTLE_PROG before dmsetup create
+Message-ID: <YajqH1Njtqz0ZXF+@localhost.localdomain>
+References: <ebf63c27065c5fa676701184501353a9f2014832.1638382705.git.josef@toxicpanda.com>
+ <YajcBNMm3dR4YI/N@debian9.Home>
 MIME-Version: 1.0
-User-Agent: Evolution 3.42.1-1 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YajcBNMm3dR4YI/N@debian9.Home>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, Dec 02, 2021 at 02:45:24PM +0000, Filipe Manana wrote:
+> On Wed, Dec 01, 2021 at 01:18:52PM -0500, Josef Bacik wrote:
+> > We've been seeing transient errors with any test that uses a dm device
+> > for the entirety of the time that we've been running nightly xfstests
+> 
+> I have been having it on my tests vms since ever as well.
+> It's really annoying, but fortunatelly it doesn't happen too often.
+> 
 
---=-i9cwVwjanmTV0wMRZ3iU
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Yeah before this change we'd fail ~6 tests on every configruation on every
+overnight run.  With this change we fail 0.  It's rare, but with our continual
+testing it happens sooooooo much.
 
-KHJlLXBvc3QpCgpJcyB0aGVyZSBubyBtb3RpdmF0aW9uIHRvIGFkZHJlc3MgdGhpcyBvciBkbyBJ
-IG5lZWQgdG8gc3VwcGx5IGFkZGl0aW9uYWwKaW5mb3JtYXRpb24/CgpDaGVlcnMKCkx1a2FzCgpP
-biBUaHUsIDIwMjEtMTEtMjUgMTk6MDYgKzAxMDAsIEx1a2FzIFBpcmwgd3JvdGUgYXMgZXhjZXJw
-dGVkOgo+IERlYXIgYnRyZnMgY29tbXVuaXR5LAo+IAo+IHRoaXMgaXMgYW5vdGhlciByZXBvcnQg
-b2YgYSBwcm9iYWJseSBlbmRsZXNzIGJhbGFuY2Ugd2hpY2ggbG9vcHMgb24KPiAiZm91bmQgMSBl
-eHRlbnRzLCBzdGFnZTogdXBkYXRlIGRhdGEgcG9pbnRlcnMiLgo+IAo+IEkgb2JzZXJ2ZSBpdCBv
-biBhIGJ0cmZzIFJBSUQgMSBvbiBhcm91bmQgNyBsdWtzLWVuY3J5cHRlZCBzcGlubmluZwo+IGRp
-c2tzIChtb3JlIGZzIGRldGFpbHMgYmVsb3cpIHVzZWQgZm9yIHN0b3JpbmcgY29sZCBkYXRhLiBP
-bmUgZGlzawo+IGZhaWxlZCBwaHlzaWNhbGx5LiBOb3csIEkgdHJ5IHRvICJidHJmcyBkZXZpY2Ug
-ZGVsZXRlIG1pc3NpbmciLiBUaGUKPiBvcGVyYXRpb24gcnVucyBmb3JldmVyIChwcm9iYWJseSwg
-d2FpdGVkIG1vcmUgdGhhbiAzMCBkYXlzLCBhbm90aGVyCj4gdGltZSBtb3JlIHRoYW4gNTAgZGF5
-cykuCj4gCj4gZG1lc2cgc2F5czoKPiBbwqDCoMKgwqDCoCAyMjoyNl0gQlRSRlMgaW5mbyAoZGV2
-aWNlIGRtLTEpOiByZWxvY2F0aW5nIGJsb2NrIGdyb3VwIDExMDkyMDQ2NjQzMjAKPiBmbGFncyBk
-YXRhfHJhaWQxCj4gW8KgwqDCoMKgwqAgMjI6MjddIEJUUkZTIGluZm8gKGRldmljZSBkbS0xKTog
-Zm91bmQgNDE2NCBleHRlbnRzLCBzdGFnZTogbW92ZSBkYXRhCj4gZXh0ZW50cwo+IFvCoCArNS40
-NzYyNDddIEJUUkZTIGluZm8gKGRldmljZSBkbS0xKTogZm91bmQgNDE2NCBleHRlbnRzLCBzdGFn
-ZTogdXBkYXRlCj4gZGF0YSBwb2ludGVycwo+IFvCoCArMi41NDUyOTldIEJUUkZTIGluZm8gKGRl
-dmljZSBkbS0xKTogZm91bmQgMSBleHRlbnRzLCBzdGFnZTogdXBkYXRlIGRhdGEKPiBwb2ludGVy
-cwo+IAo+IGFuZCB0aGVuIHRoZSBsYXN0IG1lc3NhZ2UgcmVwZWF0cyBldmVyeSB+IC4yNSBzZWNv
-bmRzICgiZm9yZXZlciIpLgo+IE1lbW9yeSBhbmQgQ1BVIHVzYWdlIGFyZSBub3QgZXhjZXNzaXZl
-IChtb3N0IGlzIElPIHdhaXQsIEkgYXNzdW1lKS4KPiAKPiBXaGF0IEkgaGF2ZSB0cmllZDoKPiAq
-IExpbnV4IDQgKG11bHRpcGxlIG1pbm9yIHZlcnNpb25zLCBkb24ndCByZW1lbWJlciB3aGljaCBl
-eGFjdGx5KQo+ICogTGludXggNS4xMAo+ICogTGludXggNS4xNQo+ICogYnRyZnMtcHJvZ3MgdjUu
-MTUKPiAqIHJlbW92ZSBzdWJ2b2x1ZXMgKGJlZm9yZTogfiAyMDAsIGFmdGVyOiB+IDkwKQo+ICog
-ZnJlZSBzcGFjZSBjYWNoZSB2MSwgdjIsIG5vbmUKPiAqIHJlYm9vdCwgcmVzdGFydCByZW1vdmFs
-L2JhbGFuY2UgKG11bHRpcGxlIHRpbWVzKQo+IAo+IEhvdyBjYW4gd2UgZmluZCB0aGUgcHJvYmxl
-bSBoZXJlIHRvIG1ha2UgYnRyZnMgYW4gZXZlbiBtb3JlIHN0YWJsZQo+IGZpbGUgc3lzdGVtIGlu
-IHRoZSBmdXR1cmU/Cj4gKFRoZSBwYXJ0aWN1bGFyIGZzIGhhcyBiZWVuIGNyZWF0ZWQgMjAxNiwg
-SSBhbSBvdGhlcndpc2UgaGFwcHkgd2l0aAo+IGJ0cmZzIGFuZCBhZHZvY2F0aW5nOyBCVFcgSSBo
-YXZlIGJhY2t1cHMgYW5kIGFyZSByZWFkeSB0byB1c2UgdGhlbSkKPiAKPiBBbm90aGVyIHF1ZXN0
-aW9uIEkgd2FzIGFza2luZyBteXNlbGY6IGNhbiBidHJmcyBiZSBmb3JjZWQgdG8gZm9yZ2V0Cj4g
-YWJvdXQgYSBkZXZpY2UgKGFzIGluICJkZWxldGUgZnJvbSBtZXRhIGRhdGEpIHRvIHRoZW4ganVz
-dCBydW4gYQo+IHJlZ3VsYXIgYmFsYW5jZT8KPiAKPiBUaGFua3MgaW4gYWR2YW5jZTsgSSBob3Bl
-IHdlIGNhbiBkZWJ1ZyB0aGlzLgo+IAo+IEx1a2FzCj4gCj4gPT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQo+IAo+IGZp
-bGVzeXN0ZW0gc2hvdwo+ID09PT09PT09PT09PT09PQo+IAo+IExhYmVsOiAncG9vbF8xNi0wMyfC
-oCB1dWlkOiA1OTMwMWZlYS00MzRhLXh4eHgtYmI0NS0wOGZjZmU4Y2UxMTMKPiDCoMKgwqDCoMKg
-wqDCoMKgVG90YWwgZGV2aWNlcyA4IEZTIGJ5dGVzIHVzZWQgMy44NFRpQgo+IMKgwqDCoMKgwqDC
-oMKgwqBkZXZpZMKgwqDCoCAxIHNpemUgOTMxLjUxR2lCIHVzZWQgNTkyLjAwR2lCIHBhdGggL2Rl
-di9tYXBwZXIvV0QtCj4gV0NBVTQ1eHh4eDAzCj4gwqDCoMKgwqDCoMKgwqDCoGRldmlkwqDCoMKg
-IDMgc2l6ZSAxLjgyVGlCIHVzZWQgMS4zN1RpQiBwYXRoIC9kZXYvbWFwcGVyL1dELQo+IFdDQVpB
-Rnh4eHg3OAo+IMKgwqDCoMKgwqDCoMKgwqBkZXZpZMKgwqDCoCA0IHNpemUgOTMxLjUxR2lCIHVz
-ZWQgNTkzLjAwR2lCIHBhdGggL2Rldi9tYXBwZXIvV0QtCj4gV0NDNEo3eHh4eFNaCj4gwqDCoMKg
-wqDCoMKgwqDCoGRldmlkwqDCoMKgIDUgc2l6ZSAxLjgyVGlCIHVzZWQgMS40NlRpQiBwYXRoIC9k
-ZXYvbWFwcGVyL1dELQo+IFdDQzRNMnh4eHhYSAo+IMKgwqDCoMKgwqDCoMKgwqBkZXZpZMKgwqDC
-oCA3IHNpemUgOTMxLjUxR2lCIHVzZWQgNTg0LjAwR2lCIHBhdGggL2Rldi9tYXBwZXIvUzF4eHh4
-SjMKPiDCoMKgwqDCoMKgwqDCoMKgZGV2aWTCoMKgwqAgOSBzaXplIDIuNzNUaUIgdXNlZCAyLjI4
-VGlCIHBhdGggL2Rldi9tYXBwZXIvV0QtCj4gV0NDNE4zeHh4eDE3Cj4gwqDCoMKgwqDCoMKgwqDC
-oGRldmlkwqDCoCAxMCBzaXplIDMuNjRUaUIgdXNlZCAxLjAzVGlCIHBhdGggL2Rldi9tYXBwZXIv
-V0QtCj4gV0NDN0syeHh4eE5TCj4gwqDCoMKgwqDCoMKgwqDCoCoqKiBTb21lIGRldmljZXMgbWlz
-c2luZwo+IAo+IHN1YnZvbHVtZXMKPiA9PT09PT09PT09Cj4gCj4gfiA5MCwgb2Ygd2hpY2ggfiA2
-MCBhcmUgcmVhZC1vbmx5IHNuYXBzaG90cyBvZiB0aGUgb3RoZXIgfiAzMAo+IAo+IGZpbGVzeXN0
-ZW0gdXNhZ2UKPiA9PT09PT09PT09PT09PT09Cj4gCj4gT3ZlcmFsbDoKPiDCoMKgwqAgRGV2aWNl
-IHNpemU6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxMi43NFRpQgo+IMKgwqDC
-oCBEZXZpY2UgYWxsb2NhdGVkOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDguMzZUaUIKPiDC
-oMKgwqAgRGV2aWNlIHVuYWxsb2NhdGVkOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgNC4zOFRpQgo+
-IMKgwqDCoCBEZXZpY2UgbWlzc2luZzrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IDAuMDBCCj4gwqDCoMKgIFVzZWQ6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgNy42OVRpQgo+IMKgwqDCoCBGcmVlIChlc3RpbWF0ZWQpOsKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIDIuNTBUaULCoMKgwqDCoMKgwqAobWluOiAyLjUwVGlCKQo+IMKg
-wqDCoCBGcmVlIChzdGF0ZnMsIGRmKTrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgMS40NlRpQgo+
-IMKgwqDCoCBEYXRhIHJhdGlvOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIDIuMDAKPiDCoMKgwqAgTWV0YWRhdGEgcmF0aW86wqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIDIuMDAKPiDCoMKgwqAgR2xvYmFsIHJlc2VydmU6wqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgNTEyLjAwTWlCwqDCoMKgwqDCoMKgKHVzZWQ6IDQ4LjAwS2lCKQo+IMKg
-wqDCoCBNdWx0aXBsZSBwcm9maWxlczrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IG5vCj4gCj4gRGF0YSxSQUlEMTogU2l6ZTo0LjE0VGlCLCBVc2VkOjMuODJUaUIgKDkyLjMzJSkK
-PiDCoMKgIC9kZXYvbWFwcGVyL1dELVdDQVU0NXh4eHgwM8KgwqAgNTg0LjAwR2lCCj4gwqDCoCAv
-ZGV2L21hcHBlci9XRC1XQ0FaQUZ4eHh4NzjCoMKgwqDCoCAxLjM1VGlCCj4gwqDCoCAvZGV2L21h
-cHBlci9XRC1XQ0M0Sjd4eHh4U1rCoMKgIDU4OC4wMEdpQgo+IMKgwqAgL2Rldi9tYXBwZXIvV0Qt
-V0NDNE0yeHh4eFhIwqDCoMKgwqAgMS40NFRpQgo+IMKgwqAgbWlzc2luZ8KgwqDCoMKgwqDCoCA1
-MTAuMDBHaUIKPiDCoMKgIC9kZXYvbWFwcGVyL1MxeHh4eEozwqAgNTc5LjAwR2lCCj4gwqDCoCAv
-ZGV2L21hcHBlci9XRC1XQ0M0TjN4eHh4MTfCoMKgwqDCoCAyLjI2VGlCCj4gwqDCoCAvZGV2L21h
-cHBlci9XRC1XQ0M3SzJ4eHh4TlPCoMKgwqDCoCAxLjAxVGlCCj4gCj4gTWV0YWRhdGEsUkFJRDE6
-IFNpemU6NDEuMDBHaUIsIFVzZWQ6MjMuMTRHaUIgKDU2LjQ0JSkKPiDCoMKgIC9kZXYvbWFwcGVy
-L1dELVdDQVU0NXh4eHgwM8KgwqDCoMKgIDguMDBHaUIKPiDCoMKgIC9kZXYvbWFwcGVyL1dELVdD
-QVpBRnh4eHg3OMKgwqDCoCAxNy4wMEdpQgo+IMKgwqAgL2Rldi9tYXBwZXIvV0QtV0NDNEo3eHh4
-eFNawqDCoMKgwqAgNS4wMEdpQgo+IMKgwqAgL2Rldi9tYXBwZXIvV0QtV0NDNE0yeHh4eFhIwqDC
-oMKgIDEzLjAwR2lCCj4gwqDCoCBtaXNzaW5nwqDCoMKgwqDCoMKgwqDCoCAzLjAwR2lCCj4gwqDC
-oCAvZGV2L21hcHBlci9TMXh4eHhKM8KgwqDCoCA1LjAwR2lCCj4gwqDCoCAvZGV2L21hcHBlci9X
-RC1XQ0M0TjN4eHh4MTfCoMKgwqAgMTYuMDBHaUIKPiDCoMKgIC9kZXYvbWFwcGVyL1dELVdDQzdL
-Mnh4eHhOU8KgwqDCoCAxNS4wMEdpQgo+IAo+IFN5c3RlbSxSQUlEMTogU2l6ZTozMi4wME1pQiwg
-VXNlZDo4NDguMDBLaUIgKDIuNTklKQo+IMKgwqAgbWlzc2luZ8KgwqDCoMKgwqDCoMKgIDMyLjAw
-TWlCCj4gwqDCoCAvZGV2L21hcHBlci9XRC1XQ0M0TjN4eHh4MTfCoMKgwqAgMzIuMDBNaUIKPiAK
-PiBVbmFsbG9jYXRlZDoKPiDCoMKgIC9kZXYvbWFwcGVyL1dELVdDQVU0NXh4eHgwM8KgwqAgMzM5
-LjUxR2lCCj4gwqDCoCAvZGV2L21hcHBlci9XRC1XQ0FaQUZ4eHh4NzjCoMKgIDQ2MS4wMUdpQgo+
-IMKgwqAgL2Rldi9tYXBwZXIvV0QtV0NDNEo3eHh4eFNawqDCoCAzMzguNTFHaUIKPiDCoMKgIC9k
-ZXYvbWFwcGVyL1dELVdDQzRNMnh4eHhYSMKgwqAgMzczLjAxR2lCCj4gwqDCoCBtaXNzaW5nwqDC
-oMKgwqDCoMKgLTUxMy4wM0dpQgo+IMKgwqAgL2Rldi9tYXBwZXIvUzF4eHh4SjPCoCAzNDcuNTFH
-aUIKPiDCoMKgIC9kZXYvbWFwcGVyL1dELVdDQzROM3h4eHgxN8KgwqAgNDYwLjQ3R2lCCj4gwqDC
-oCAvZGV2L21hcHBlci9XRC1XQ0M3SzJ4eHh4TlPCoMKgwqDCoCAyLjYxVGlCCj4gCj4gZHVtcC1z
-dXBlcgo+ID09PT09PT09PT0KPiAKPiBzdXBlcmJsb2NrOiBieXRlbnI9NjU1MzYsIGRldmljZT0v
-ZGV2L21hcHBlci9XRC1XQ0FVNDV4eHh4MDMKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBjc3VtX3R5cGXCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAwIChjcmMzMmMpCj4gY3N1bV9zaXplwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgNAo+IGNzdW3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-MHg1MWJlYjA2OCBbbWF0Y2hdCj4gYnl0ZW5ywqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgNjU1MzYKPiBmbGFnc8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-MHgxCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgKCBX
-UklUVEVOICkKPiBtYWdpY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgX0JI
-UmZTX00gW21hdGNoXQo+IGZzaWTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgNTkzMDFmZWEtNDM0YS14eHh4LWJiNDUtMDhmY2ZlOGNlMTEzCj4gbWV0YWRhdGFfdXVpZMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqA1OTMwMWZlYS00MzRhLXh4eHgtYmI0NS0wOGZjZmU4Y2UxMTMK
-PiBsYWJlbMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcG9vbF8xNi0wMwo+
-IGdlbmVyYXRpb27CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgMTEzNTE5NzU1Cj4gcm9vdMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAxNTYwMjQxNDc5NjgwMAo+IHN5
-c19hcnJheV9zaXplwqDCoMKgwqDCoMKgwqDCoMKgwqAxMjkKPiBjaHVua19yb290X2dlbmVyYXRp
-b27CoMKgwqA2MzM5NDI5OQo+IHJvb3RfbGV2ZWzCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-MQo+IGNodW5rX3Jvb3TCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgMTkyMTY4MjA1MDI1MjgK
-PiBjaHVua19yb290X2xldmVswqDCoMKgwqDCoMKgwqDCoDEKPiBsb2dfcm9vdMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgMAo+IGxvZ19yb290X3RyYW5zaWTCoMKgwqDCoMKgwqDCoMKg
-MAo+IGxvZ19yb290X2xldmVswqDCoMKgwqDCoMKgwqDCoMKgwqAwCj4gdG90YWxfYnl0ZXPCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoDE2MDAzMTM2ODY0MjU2Cj4gYnl0ZXNfdXNlZMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqA0MjI3MTI0MTQyMDgwCj4gc2VjdG9yc2l6ZcKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqA0MDk2Cj4gbm9kZXNpemXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoDE2Mzg0Cj4gbGVhZnNpemUgKGRlcHJlY2F0ZWQpwqDCoMKgMTYzODQKPiBzdHJpcGVz
-aXplwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoDQwOTYKPiByb290X2RpcsKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgNgo+IG51bV9kZXZpY2VzwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqA4Cj4gY29tcGF0X2ZsYWdzwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgMHgwCj4gY29tcGF0
-X3JvX2ZsYWdzwqDCoMKgwqDCoMKgwqDCoMKgMHgwCj4gaW5jb21wYXRfZmxhZ3PCoMKgwqDCoMKg
-wqDCoMKgwqDCoDB4MzcxCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgKCBNSVhFRF9CQUNLUkVGIHwKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBDT01QUkVTU19aU1REIHwKPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCSUdfTUVUQURBVEEgfAo+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEVYVEVOREVEX0lS
-RUYgfAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IFNLSU5OWV9NRVRBREFUQSB8Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgTk9fSE9MRVMgKQo+IGNhY2hlX2dlbmVyYXRpb27CoMKgwqDCoMKgwqDC
-oMKgMjk3NTg2Ngo+IHV1aWRfdHJlZV9nZW5lcmF0aW9uwqDCoMKgwqAxMTM1MTk3NTUKPiBkZXZf
-aXRlbS51dWlkwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGE5YjJlNGVhLTQwNGMteHh4eC1hNDUwLWRj
-ODRiMDk1NmNlMQo+IGRldl9pdGVtLmZzaWTCoMKgwqDCoMKgwqDCoMKgwqDCoMKgNTkzMDFmZWEt
-NDM0YS14eHh4LWJiNDUtMDhmY2ZlOGNlMTEzIFttYXRjaF0KPiBkZXZfaXRlbS50eXBlwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoDAKPiBkZXZfaXRlbS50b3RhbF9ieXRlc8KgwqDCoMKgMTAwMDIwMTc0
-MDI4OAo+IGRldl9pdGVtLmJ5dGVzX3VzZWTCoMKgwqDCoMKgNjM1NjU1MTU5ODA4Cj4gZGV2X2l0
-ZW0uaW9fYWxpZ27CoMKgwqDCoMKgwqDCoDQwOTYKPiBkZXZfaXRlbS5pb193aWR0aMKgwqDCoMKg
-wqDCoMKgNDA5Ngo+IGRldl9pdGVtLnNlY3Rvcl9zaXplwqDCoMKgwqA0MDk2Cj4gZGV2X2l0ZW0u
-ZGV2aWTCoMKgwqDCoMKgwqDCoMKgwqDCoDEKPiBkZXZfaXRlbS5kZXZfZ3JvdXDCoMKgwqDCoMKg
-wqAwCj4gZGV2X2l0ZW0uc2Vla19zcGVlZMKgwqDCoMKgwqAwCj4gZGV2X2l0ZW0uYmFuZHdpZHRo
-wqDCoMKgwqDCoMKgMAo+IGRldl9pdGVtLmdlbmVyYXRpb27CoMKgwqDCoMKgMAo+IAo+IGRldmlj
-ZSBzdGF0cwo+ID09PT09PT09PT09PQo+IAo+IFsvZGV2L21hcHBlci9XRC1XQ0FVNDV4eHh4MDNd
-LndyaXRlX2lvX2VycnPCoMKgwqAgMAo+IFsvZGV2L21hcHBlci9XRC1XQ0FVNDV4eHh4MDNdLnJl
-YWRfaW9fZXJyc8KgwqDCoMKgIDAKPiBbL2Rldi9tYXBwZXIvV0QtV0NBVTQ1eHh4eDAzXS5mbHVz
-aF9pb19lcnJzwqDCoMKgIDAKPiBbL2Rldi9tYXBwZXIvV0QtV0NBVTQ1eHh4eDAzXS5jb3JydXB0
-aW9uX2VycnPCoCAwCj4gWy9kZXYvbWFwcGVyL1dELVdDQVU0NXh4eHgwM10uZ2VuZXJhdGlvbl9l
-cnJzwqAgMAo+IFsvZGV2L21hcHBlci9XRC1XQ0FaQUZ4eHh4NzhdLndyaXRlX2lvX2VycnPCoMKg
-wqAgMAo+IFsvZGV2L21hcHBlci9XRC1XQ0FaQUZ4eHh4NzhdLnJlYWRfaW9fZXJyc8KgwqDCoMKg
-IDAKPiBbL2Rldi9tYXBwZXIvV0QtV0NBWkFGeHh4eDc4XS5mbHVzaF9pb19lcnJzwqDCoMKgIDAK
-PiBbL2Rldi9tYXBwZXIvV0QtV0NBWkFGeHh4eDc4XS5jb3JydXB0aW9uX2VycnPCoCAwCj4gWy9k
-ZXYvbWFwcGVyL1dELVdDQVpBRnh4eHg3OF0uZ2VuZXJhdGlvbl9lcnJzwqAgMAo+IFsvZGV2L21h
-cHBlci9XRC1XQ0M0Sjd4eHh4U1pdLndyaXRlX2lvX2VycnPCoMKgwqAgMAo+IFsvZGV2L21hcHBl
-ci9XRC1XQ0M0Sjd4eHh4U1pdLnJlYWRfaW9fZXJyc8KgwqDCoMKgIDEKPiBbL2Rldi9tYXBwZXIv
-V0QtV0NDNEo3eHh4eFNaXS5mbHVzaF9pb19lcnJzwqDCoMKgIDAKPiBbL2Rldi9tYXBwZXIvV0Qt
-V0NDNEo3eHh4eFNaXS5jb3JydXB0aW9uX2VycnPCoCAwCj4gWy9kZXYvbWFwcGVyL1dELVdDQzRK
-N3h4eHhTWl0uZ2VuZXJhdGlvbl9lcnJzwqAgMAo+IFsvZGV2L21hcHBlci9XRC1XQ0M0TTJ4eHh4
-WEhdLndyaXRlX2lvX2VycnPCoMKgwqAgMAo+IFsvZGV2L21hcHBlci9XRC1XQ0M0TTJ4eHh4WEhd
-LnJlYWRfaW9fZXJyc8KgwqDCoMKgIDAKPiBbL2Rldi9tYXBwZXIvV0QtV0NDNE0yeHh4eFhIXS5m
-bHVzaF9pb19lcnJzwqDCoMKgIDAKPiBbL2Rldi9tYXBwZXIvV0QtV0NDNE0yeHh4eFhIXS5jb3Jy
-dXB0aW9uX2VycnPCoCAwCj4gWy9kZXYvbWFwcGVyL1dELVdDQzRNMnh4eHhYSF0uZ2VuZXJhdGlv
-bl9lcnJzwqAgMAo+IFtkZXZpZDo2XS53cml0ZV9pb19lcnJzwqDCoMKgIDAKPiBbZGV2aWQ6Nl0u
-cmVhZF9pb19lcnJzwqDCoMKgwqAgMAo+IFtkZXZpZDo2XS5mbHVzaF9pb19lcnJzwqDCoMKgIDAK
-PiBbZGV2aWQ6Nl0uY29ycnVwdGlvbl9lcnJzwqAgNzIwMTYKPiBbZGV2aWQ6Nl0uZ2VuZXJhdGlv
-bl9lcnJzwqAgMTAwCj4gWy9kZXYvbWFwcGVyL1MxeHh4eEozXS53cml0ZV9pb19lcnJzwqDCoMKg
-IDAKPiBbL2Rldi9tYXBwZXIvUzF4eHh4SjNdLnJlYWRfaW9fZXJyc8KgwqDCoMKgIDAKPiBbL2Rl
-di9tYXBwZXIvUzF4eHh4SjNdLmZsdXNoX2lvX2VycnPCoMKgwqAgMAo+IFsvZGV2L21hcHBlci9T
-MXh4eHhKM10uY29ycnVwdGlvbl9lcnJzwqAgMgo+IFsvZGV2L21hcHBlci9TMXh4eHhKM10uZ2Vu
-ZXJhdGlvbl9lcnJzwqAgMAo+IFsvZGV2L21hcHBlci9XRC1XQ0M0TjN4eHh4MTddLndyaXRlX2lv
-X2VycnPCoMKgwqAgMAo+IFsvZGV2L21hcHBlci9XRC1XQ0M0TjN4eHh4MTddLnJlYWRfaW9fZXJy
-c8KgwqDCoMKgIDAKPiBbL2Rldi9tYXBwZXIvV0QtV0NDNE4zeHh4eDE3XS5mbHVzaF9pb19lcnJz
-wqDCoMKgIDAKPiBbL2Rldi9tYXBwZXIvV0QtV0NDNE4zeHh4eDE3XS5jb3JydXB0aW9uX2VycnPC
-oCAwCj4gWy9kZXYvbWFwcGVyL1dELVdDQzROM3h4eHgxN10uZ2VuZXJhdGlvbl9lcnJzwqAgMAo+
-IFsvZGV2L21hcHBlci9XRC1XQ0M3SzJ4eHh4TlNdLndyaXRlX2lvX2VycnPCoMKgwqAgMAo+IFsv
-ZGV2L21hcHBlci9XRC1XQ0M3SzJ4eHh4TlNdLnJlYWRfaW9fZXJyc8KgwqDCoMKgIDAKPiBbL2Rl
-di9tYXBwZXIvV0QtV0NDN0syeHh4eE5TXS5mbHVzaF9pb19lcnJzwqDCoMKgIDAKPiBbL2Rldi9t
-YXBwZXIvV0QtV0NDN0syeHh4eE5TXS5jb3JydXB0aW9uX2VycnPCoCAwCj4gWy9kZXYvbWFwcGVy
-L1dELVdDQzdLMnh4eHhOU10uZ2VuZXJhdGlvbl9lcnJzwqAgMAoK
+> > runs.  This turns out to be because sometimes we get EBUSY while trying
+> > to create our new dm device.  Generally this is because the test comes
+> > right after another test that messes with the dm device, and thus we
+> > still have udev messing around with the device when DM tries to O_EXCL
+> > the block device.
+> > 
+> > Add a UDEV_SETTLE_PROG before creating the device to make sure we can
+> > create our new dm device without getting this transient error.
+> 
+> I suspect this might only make it seem the problem goes away but does not
+> really fix it.
+> 
+> I say that for 2 reasons:
+> 
+> 1) All tests that use dm end up calling _dmsetup_remove(), like through
+>    _log_writes_remove() or _cleanup_flakey() for example. Normally those
+>    are called in the _cleanup() function, which ensures it's done even if
+>    the test fails for some reason.
+> 
+>    So I don't understand why we need that UDEV_SETTLE_PROG at _dmsetup_create().
+> 
+>    And I've seen the ebusy failure happen even when the previous tests did
+>    not use any dm device;
+> 
+> 2) Some tests fail after creating the dm device and using it. For example
+>    btrfs/206 often fails when it tries to fsck the filesystem:
+> 
+>    btrfs/206 3s ... [failed, exit status 1]- output mismatch (see /home/fdmanana/git/hub/xfstests/results//btrfs/206.out.bad)
+>         --- tests/btrfs/206.out     2020-10-16 23:13:46.554152652 +0100
+>         +++ /home/fdmanana/git/hub/xfstests/results//btrfs/206.out.bad      2021-12-01 21:09:46.317632589 +0000
+>         @@ -3,3 +3,5 @@
+>         XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>         wrote 8192/8192 bytes at offset 0
+>         XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+>         +_check_btrfs_filesystem: filesystem on /dev/sdc is inconsistent
+>         +(see /home/fdmanana/git/hub/xfstests/results//btrfs/206.full for details)
+>         ...
+> 
+>        (Run 'diff -u /home/fdmanana/git/hub/xfstests/tests/btrfs/206.out /home/fdmanana/git/hub/xfstests/results//btrfs/206.out.bad'  to see the entire diff)
+> 
+>     In the .full file I got:
+> 
+>     (...)
+>     replaying 1239@11201: sector 2173408, size 16384, flags 0x10(METADATA)
+>     replaying 1240@11234: sector 0, size 0, flags 0x1(FLUSH)
+>     replaying 1241@11235: sector 128, size 4096, flags 0x12(FUA|METADATA)
+>     _check_btrfs_filesystem: filesystem on /dev/sdc is inconsistent
+>     *** fsck.btrfs output ***
+>     ERROR: cannot open device '/dev/sdc': Device or resource busy
+>     ERROR: cannot open file system
+>     Opening filesystem to check...
+>     *** end fsck.btrfs output
+>     *** mount output ***
+> 
+>    The ebusy failure is not when the test starts, but when somewhere in the middle
+>    of the replay loop when it calls fsck, or when it ends and the fstests framework
+>    calls fsck.
+> 
+>    I've seen that with btrfs/172 too, which also uses dm logwrites in a similar way.
+> 
+> So to me this suggests 2 things:
+> 
+> 1) Calling UDEV_SETTLE_PROG at _dmsetup_create() doesn't solve that problem with
+>    btrfs/206 (and other tests) - the problem is fsck failing to open the scratch
+>    device after it called _log_writes_remove() -> _dmsetup_remove(), and not a
+>    failure to create the dm device;
+> 
+> 2) The problem is likely something missing at _dmsetup_remove(). Perhaps add
+>    another UDEV_SETTLE_PROG there:
+> 
+>    diff --git a/common/rc b/common/rc
+>    index 8e351f17..22b34677 100644
+>    --- a/common/rc
+>    +++ b/common/rc
+>    @@ -4563,6 +4563,7 @@ _dmsetup_remove()
+>             $UDEV_SETTLE_PROG >/dev/null 2>&1
+>             $DMSETUP_PROG remove "$@" >>$seqres.full 2>&1
+>             $DMSETUP_PROG mknodes >/dev/null 2>&1
+>     +       $UDEV_SETTLE_PROG >/dev/null 2>&1
+>      }
+>  
+>     _dmsetup_create()
+> 
+>   I can't say if that change to _dmsetup_remove() is correct, or what it's
+>   needed, as I really haven't spent time trying to figure out why the issue
+>   happens.
+> 
 
+I actually tried a few iterations before I settled on this one, but I was only
+trying to reproduce the EBUSY when creating the flakey device, I hadn't seen it
+with fsck.  So I originally started with your change, but it didn't fix the
+problem.  Then I did both, UDEV_SETTLE at the end of remove and at the beginning
+of create and the problem went away, and then I removed the one from remove and
+the problem still was gone.
 
---=-i9cwVwjanmTV0wMRZ3iU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+But since I've made this change I also have been investigating another problem
+where we'll get EBUSY at mkfs time when we use SCRATCH_DEV_POOL.  I have a test
+patch in our staging branch to make sure it actuall fixes it, but I have to add
+this to the start of _scratch_pool_mkfs as well.
 
------BEGIN PGP SIGNATURE-----
+It turns out that udev is doing this thing where it writes to
+/sys/block/whatever/uevent to make sure that a KOBJ_CHANGE event gets sent out
+for the device.
 
-iQIzBAABCgAdFiEEIfDl2cvwrHf6TgsUf2MCUJXpoBgFAmGo3OQACgkQf2MCUJXp
-oBjk1g//d4ogymkodsePUXpMkSqYxuVXX4fjPoxYgbECGp48prB9c27MBNciRewq
-g4WGVniLWaEO1MwfqvZc101wLJlWn1wNs4WiFVtr+KojiRK8AEYUHYmODHv3wI++
-lDOB7GGQnVB5aJX7dGbZBLd5itFVX9SM57HopCg/MBmTsxQoHBmpXO6BD8gzHGZZ
-hu8fiNX6kvcht84UycQuOSsf9/Efyb36i23iq/VfWxL/xH/qwEdSFJd53tDGXRpG
-A0gn+Ty5IKdmVbSPjTZGFVBWcjXLpsQ8qQQglWtN3NqXTaSst0uUy4lYoiyL+/Cr
-eRrzmHI5BHhEVNtjd8DStASX3LPfqfKwPpw2/N26pzjxUpJRrRrminnLDa+JJcWr
-+ofogG9ZENZ55RJYVpgLGY9n2X05DIS6IYtW6XdGlPbFlaRDrBcz3s7k/bZRLucx
-M5p9gNXWs4uZoXsgCCcyTw9Upc3Z04Ax11RAxivkAflmXJOpIFYxUTMAi+sTpDM5
-FNz+lzUuHB1+44vBQWF/kiF2yEzauxCfeepTu13yqEDOU1NA/OUxI65mQ0QWSEJa
-pIY+B7bfnDnxI+yjh4VPNoB/CItAcPWfpTUgPTj2fp7kyGyO19gFbcWfUFtqkBDL
-/hpQ7hQYaLjO/lsAjtMbrmpFX0jMqs5rQq4iTsGXeCr120nkQ5w=
-=RrdC
------END PGP SIGNATURE-----
+This is racing with the test doing a mount.  So the mount gets O_EXCL, which
+means the uevent doesn't get emitted until umount.  This would explain what
+you're seeing, we umount, we get the KOBJ_CHANGE event once the O_EXCL is
+dropped, udev runs, and then fsck gets an EBUSY.
 
---=-i9cwVwjanmTV0wMRZ3iU--
+This is a very long email to say that udev is causing spurious failures because
+of behavior I don't entirely understand.  We're going to need to sprinkle in
+UDEV_SETTLE_PROG in different places to kill all of these different scenarios.
+
+What do we think is best here?  Put UDEV_SETTLE_PROG at the start of any
+function that needs to do O_EXCL?  So this would mean
+
+_dmsetup_create
+_dmsetup_remove
+*_mkfs
+*_mount
+*_check
+
+That would be safest, and I can certainly do that.  My initial approach was just
+to do it where it was problematic, but the debugging I did yesterday around
+btrfs/223 failures and the fact that udev is queue'ing up events that get
+delivered at some point in the future makes it kind of hard to handle on a
+case-by-case basis.  Thanks,
+
+Josef
