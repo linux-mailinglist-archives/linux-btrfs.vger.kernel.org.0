@@ -2,44 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C09466158
-	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Dec 2021 11:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F92246615E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  2 Dec 2021 11:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356770AbhLBKX0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 2 Dec 2021 05:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
+        id S1356930AbhLBKZN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 2 Dec 2021 05:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240883AbhLBKX0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Dec 2021 05:23:26 -0500
+        with ESMTP id S242697AbhLBKZM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 2 Dec 2021 05:25:12 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25D6C06174A;
-        Thu,  2 Dec 2021 02:20:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7055AC06174A
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Dec 2021 02:21:50 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5D6B0B82251;
-        Thu,  2 Dec 2021 10:20:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26849C00446;
-        Thu,  2 Dec 2021 10:19:59 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 36A46B82250
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Dec 2021 10:21:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62A65C00446
+        for <linux-btrfs@vger.kernel.org>; Thu,  2 Dec 2021 10:21:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638440401;
-        bh=PDwAP8WJiw/i5S++6TLSoyfQhJXFP5vKD0l1fHJLTuE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MDbGk+VXDe9a++JS4GIuC+v6MiLqkol06uZSXv0E265YAwaqRjeUOnwSqTgsihkFB
-         quCgZuR+3NnK70Tid1kr8mdES836MgUG7v/K3+57akF5eOArBI3uBDeoTAO/6Tq9Sd
-         UQJ0wLnFGWn3/NnsF0OldO4CyektoZz68nlr5Ew65JfEcqyUw0JS/IiC/Gc3gut9Mo
-         qAQ4rCp20+YOIHICals+mWaM5TiD2NpiKfGAiO2KsomL12vQdGb/kKKMQOv07WuGCT
-         IcsKLmexVYZPg9a3WnGe4MjtZo6NJ4ueV6pToJzELfII/zJhM64WLHZnYNwZjRxTHz
-         5ry4bYF1ChZ3w==
+        s=k20201202; t=1638440507;
+        bh=KuH7HqOP/no48hRxcIKBDvkGTHietKGoVJ7aG4vuo7o=;
+        h=From:To:Subject:Date:From;
+        b=rQI084gr8RaKpVPQtNPQ0AxVg+T/fGD6KuwACaqGe3/fIvTdHFDkWAOVPl0qFhkdT
+         7IgJK4vc3AwLH0hp37qs9lLJwzwU/ZOP/JvioDl5pKnVAeX8DnlW3im8zat0XiAXgm
+         KVJgEe8lRmcKkBlSQymsxNQQuV04eFHD8soOEmUrn/ncLPuQE6CH2Onkx8xfuyyJ3w
+         +L9CXuD2jAih/78RoJaaEW9hOP9f5G2TTSWbQkrqUtWRvlGyYO51gd26GM2B4RoeGt
+         kMXdSdLM9aLdydI6yTxnQnG0K9Kvt6rHqfnHc6WsrY1apyH6uYASYS5wekei+QtDky
+         RgA0TSfholq6Q==
 From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v3] btrfs: test balance and send running in parallel
-Date:   Thu,  2 Dec 2021 10:19:47 +0000
-Message-Id: <73f4674dbd5b5b9402ab81684e66d9ffbb337aa9.1638439655.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <f0bab9b2c90444bcb2612d8e6d6d71c447c01179.1637582346.git.fdmanana@suse.com>
-References: <f0bab9b2c90444bcb2612d8e6d6d71c447c01179.1637582346.git.fdmanana@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: send: fix a failure when looking for data backrefs after relocation
+Date:   Thu,  2 Dec 2021 10:21:43 +0000
+Message-Id: <829076d580be74f270e740f8dded6fda45390311.1638440202.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -48,241 +45,96 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Test that send and balance can run in parallel, without failures and
-producing correct results.
+During a send, when trying to find roots from which to clone data extents,
+if the leaf of our file extent item was obtained before relocation for a
+data block group finished, we can end up trying to lookup for backrefs
+for an extent location (file extent item's disk_bytenr) that is not in
+use anymore. That is, the extent was reallocated and the transaction used
+for the relocation was committed. This makes the backref lookup not find
+anything and we fail at find_extent_clone() with -EIO and log an error
+message like the following:
 
-Before kernel 5.3 it was possible to run both operations in parallel,
-however it was buggy and caused sporadic failures due to races, so it was
-disabled in kernel 5.3 by commit 9e967495e0e0ae ("Btrfs: prevent send
-failures and crashes due to concurrent relocation"). There is a now a
-patch that enables both operations to safely run in parallel, and it has
-the following subject:
+  [ 7642.897365] BTRFS error (device sdc): did not find backref in send_root. inode=881, offset=2592768, disk_byte=1292025856 found extent=1292025856
 
-    "btrfs: make send work with concurrent block group relocation"
-
-This also serves the purpose of testing a succession of incremental send
-operations, where we have a bunch of snapshots of the same subvolume and
-we keep doing an incremental send using the previous snapshot as the
-parent.
+This is because we are checking if relocation happened after we check if
+we found the backref for the file extent item we are processing. We should
+do it before, and in case relocation happened, do not attempt to clone and
+instead fallback to issuing write commands, which will read the correct
+data from the new extent location. The current check is being done too
+late, so fix this by moving it to right after we do the backref lookup and
+before checking if we found our own backref.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
 
-V3: Fixed the check for the receive command's exit code.
-V2: Add the test to the stress group as well.
-    Make the test work with older versions of btrfs-progs that don't
-    have the --quiet global option for the btrfs command.
+David, this can be squashed into the patch:
 
- tests/btrfs/252     | 190 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/252.out |   2 +
- 2 files changed, 192 insertions(+)
- create mode 100755 tests/btrfs/252
- create mode 100644 tests/btrfs/252.out
+   "btrfs: make send work with concurrent block group relocation"
 
-diff --git a/tests/btrfs/252 b/tests/btrfs/252
-new file mode 100755
-index 00000000..65ebe571
---- /dev/null
-+++ b/tests/btrfs/252
-@@ -0,0 +1,190 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2021 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test No. 252
-+#
-+# Test that send and balance can run in parallel, without failures and producing
-+# correct results.
-+#
-+# Before kernel 5.3 it was possible to run both operations in parallel, however
-+# it was buggy and caused sporadic failures due to races, so it was disabled in
-+# kernel 5.3 by commit 9e967495e0e0ae ("Btrfs: prevent send failures and crashes
-+# due to concurrent relocation"). There is a now a patch that enables both
-+# operations to safely run in parallel, and it has the following subject:
-+#
-+#      "btrfs: make send work with concurrent block group relocation"
-+#
-+# This also serves the purpose of testing a succession of incremental send
-+# operations, where we have a bunch of snapshots of the same subvolume and we
-+# keep doing an incremental send using the previous snapshot as the parent.
-+#
-+. ./common/preamble
-+_begin_fstest auto send balance stress
+ fs/btrfs/send.c | 42 +++++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index f0015b5cf4b1..3fc144b8c0d8 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -1431,6 +1431,26 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	if (ret < 0)
+ 		goto out;
+ 
++	down_read(&fs_info->commit_root_sem);
++	if (fs_info->last_reloc_trans > sctx->last_reloc_trans) {
++		/*
++		 * A transaction commit for a transaction in which block group
++		 * relocation was done just happened.
++		 * The disk_bytenr of the file extent item we processed is
++		 * possibly stale, referring to the extent's location before
++		 * relocation. So act as if we haven't found any clone sources
++		 * and fallback to write commands, which will read the correct
++		 * data from the new extent location. Otherwise we will fail
++		 * below because we haven't found our own back reference or we
++		 * could be getting incorrect sources in case the old extent
++		 * was already reallocated after the relocation.
++		 */
++		up_read(&fs_info->commit_root_sem);
++		ret = -ENOENT;
++		goto out;
++	}
++	up_read(&fs_info->commit_root_sem);
 +
-+_cleanup()
-+{
-+	if [ ! -z $balance_pid ]; then
-+		kill $balance_pid &> /dev/null
-+		wait $balance_pid
-+	fi
-+	cd /
-+	rm -r -f $tmp.*
-+}
-+
-+# Import common functions.
-+. ./common/filter
-+
-+# real QA test starts here
-+
-+_supported_fs btrfs
-+# The size needed is variable as it depends on the specific randomized
-+# operations from fsstress and on the value of $LOAD_FACTOR. But require
-+# at least $LOAD_FACTOR * 6G, as we do the receive operations to the same
-+# filesystem, do relocation and store snapshot checksums from fssum in the
-+# filesystem as well (can be hundreds of megabytes for $LOAD_FACTOR > 3).
-+_require_scratch_size $(($LOAD_FACTOR * 6 * 1024 * 1024))
-+_require_fssum
-+
-+balance_loop()
-+{
-+	trap "wait; exit" SIGTERM
-+
-+	while true; do
-+		_run_btrfs_balance_start $SCRATCH_MNT > /dev/null
-+		[ $? -eq 0 ] || echo "Balance failed: $?"
-+	done
-+}
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_scratch_mount
-+
-+num_snapshots=$((10 + $LOAD_FACTOR * 2))
-+avg_ops_per_snapshot=$((1000 * LOAD_FACTOR))
-+total_fsstress_ops=$((num_snapshots * avg_ops_per_snapshot))
-+
-+data_subvol="$SCRATCH_MNT/data"
-+snapshots_dir="$SCRATCH_MNT/snapshots"
-+dest_dir="$SCRATCH_MNT/received"
-+fssum_dir="$SCRATCH_MNT/fssum"
-+
-+mkdir -p "$snapshots_dir"
-+mkdir -p "$dest_dir"
-+mkdir -p "$fssum_dir"
-+$BTRFS_UTIL_PROG subvolume create "$data_subvol" >> $seqres.full
-+
-+snapshot_cmd="$BTRFS_UTIL_PROG subvolume snapshot -r \"$data_subvol\""
-+snapshot_cmd="$snapshot_cmd \"$snapshots_dir/snap_\`date +'%s%N'\`\""
-+
-+# Use a single fsstress process so that in case of a failure we can grab the seed
-+# number from the .full log file and deterministically reproduce a failure.
-+# Also disable subvolume and snapshot creation, since send is not recursive, so
-+# it's pointless to have them.
-+#
-+echo "Running fsstress..." >> $seqres.full
-+$FSSTRESS_PROG $FSSTRESS_AVOID -d "$data_subvol" -p 1 -w \
-+	       -f subvol_create=0 -f subvol_delete=0 -f snapshot=0 \
-+	       -x "$snapshot_cmd" -X $num_snapshots \
-+	       -n $total_fsstress_ops >> $seqres.full
-+
-+snapshots=(`IFS=$'\n' ls -1 "$snapshots_dir"`)
-+
-+# Compute the checksums for every snapshot.
-+for i in "${!snapshots[@]}"; do
-+	snap="${snapshots_dir}/${snapshots[$i]}"
-+	echo "Computing checksum for snapshot: ${snapshots[$i]}" >> $seqres.full
-+	$FSSUM_PROG -A -f -w "${fssum_dir}/${i}.fssum" "$snap"
-+done
-+
-+# Now leave a process constantly running balance.
-+balance_loop &
-+balance_pid=$!
-+
-+# Now send and receive all snapshots to our destination directory.
-+# We send and receive from/to the same same filesystem using a pipe, because
-+# this is the most stressful scenario and it could lead (and has lead to during
-+# development) to deadlocks - the sending task blocking on a full pipe while
-+# holding some lock, while the receiving side was not reading from the pipe
-+# because it was waiting for a transaction commit, which could not happen due
-+# to the lock held by the sending task.
-+#
-+for i in "${!snapshots[@]}"; do
-+	snap="${snapshots_dir}/${snapshots[$i]}"
-+	prev_snap="${snapshots_dir}/${snapshots[$i - 1]}"
-+
-+	# For the first snapshot we do a full incremental send, for all the
-+	# others we do an incremental send, using the previous snapshot as the
-+	# parent.
-+	#
-+	# We redirect stderr of the send command because the commands prints to
-+	# stderr a message like "At subvol ...", and the number of snapshots and
-+	# snapshot names we have depends on LOAD_FACTOR and timestamps, so we
-+	# don't use them in the golden output. Recent versions of btrfs-progs
-+	# have the --quiet option to eliminate these messages.
-+	#
-+	# We also redirect stderr and stdout of the receive command. Note that
-+	# when receiving a full stream, the command prints a message like
-+	# "At subvol ..." to stderr, but when receiving an incremental stream it
-+	# prints a message to stdout like "At snapshot ...". Just like for the
-+	# send command, new versions of btrfs-progs have the --quiet option to
-+	# eliminate these messages.
-+	#
-+	# Further the send command prints the messages with a full snapshot path,
-+	# while receive prints only the snapshot name.
-+	#
-+	# We redirect all these messages to $seqres.full and then manually check
-+	# if the commands succeeded. This is just so that the test is able to
-+	# run with older versions of btrfs-progs.
-+	#
-+	if [ $i -eq 0 ]; then
-+		echo "Full send of the snapshot at: $snap" >>$seqres.full
-+		$BTRFS_UTIL_PROG send "$snap" 2>>$seqres.full | \
-+			$BTRFS_UTIL_PROG receive "$dest_dir" 2>>$seqres.full
-+	else
-+		echo "Incremental send of the snapshot at: $snap" >>$seqres.full
-+		$BTRFS_UTIL_PROG send -p "$prev_snap" "$snap" 2>>$seqres.full | \
-+			$BTRFS_UTIL_PROG receive "$dest_dir" >>$seqres.full
-+	fi
-+
-+	retvals=( "${PIPESTATUS[@]}" )
-+
-+	[ ${retvals[0]} -eq 0 ] || \
-+		echo "Send of snapshot $snap failed: ${retvals[0]}"
-+	[ ${retvals[1]} -eq 0 ] || \
-+		echo "Receive of snapshot $snap failed: ${retvals[1]}"
-+
-+	if [ $i -gt 0 ]; then
-+		# We don't need the previous snapshot anymore, so delete it.
-+		# This makes balance not so slow and triggers the cleaner kthread
-+		# to run and delete the snapshot tree in parallel, while we are
-+		# also running balance and send/receive, adding additional test
-+		# coverage and stress.
-+		$BTRFS_UTIL_PROG subvolume delete "$prev_snap" >> $seqres.full
-+	fi
-+done
-+
-+# We are done with send/receive, send a signal to the balance job and verify
-+# the snapshot checksums while it terminates. We do the wait at _cleanup() so
-+# that we do some useful work while it terminates.
-+kill $balance_pid
-+
-+# Now verify that received snapshots have the expected checksums.
-+for i in "${!snapshots[@]}"; do
-+	snap_csum="${fssum_dir}/${i}.fssum"
-+	snap_copy="${dest_dir}/${snapshots[$i]}"
-+
-+	echo "Verifying checksum for snapshot at: $snap_copy" >> $seqres.full
-+	# On success, fssum outputs only a single line with "OK" to stdout, and
-+	# on error it outputs several lines to stdout. Since the number of
-+	# snapshots in the test depends on $LOAD_FACTOR, filter out the success
-+	# case, so we don't have a mismatch with the golden output in case we
-+	# run with a non default $LOAD_FACTOR (default is 1). We only want the
-+	# mismatch with the golden output in case there's a checksum failure.
-+	$FSSUM_PROG -r "$snap_csum" "$snap_copy" | egrep -v '^OK$'
-+done
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/252.out b/tests/btrfs/252.out
-new file mode 100644
-index 00000000..ddfa3e02
---- /dev/null
-+++ b/tests/btrfs/252.out
-@@ -0,0 +1,2 @@
-+QA output created by 252
-+Silence is golden
+ 	if (!backref_ctx.found_itself) {
+ 		/* found a bug in backref code? */
+ 		ret = -EIO;
+@@ -1444,28 +1464,8 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 		    "find_extent_clone: data_offset=%llu, ino=%llu, num_bytes=%llu, logical=%llu",
+ 		    data_offset, ino, num_bytes, logical);
+ 
+-	if (backref_ctx.found > 0) {
+-		down_read(&fs_info->commit_root_sem);
+-		if (fs_info->last_reloc_trans > sctx->last_reloc_trans) {
+-			/*
+-			 * A transaction commit for a transaction in which block
+-			 * group relocation was done just happened.
+-			 * The disk_bytenr of the file extent item we processed
+-			 * is possibly stale, referring to the extent's location
+-			 * before relocation, so act as if we haven't found any
+-			 * clone sources - otherwise we could end up later issuing
+-			 * clone operations that could leave the receiver with
+-			 * incorrect data, in case the old disk_bytenr got
+-			 * reallocated for another extent.
+-			 */
+-			up_read(&fs_info->commit_root_sem);
+-			ret = -ENOENT;
+-			goto out;
+-		}
+-		up_read(&fs_info->commit_root_sem);
+-	} else {
++	if (!backref_ctx.found)
+ 		btrfs_debug(fs_info, "no clones found");
+-	}
+ 
+ 	cur_clone_root = NULL;
+ 	for (i = 0; i < sctx->clone_roots_cnt; i++) {
 -- 
 2.33.0
 
