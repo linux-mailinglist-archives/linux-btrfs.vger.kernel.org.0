@@ -2,136 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6672467643
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 12:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE1E4676F1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 13:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380408AbhLCL2p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 06:28:45 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:51776 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380405AbhLCL2p (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 06:28:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0CF02B826AD
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 11:25:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3386AC53FAD;
-        Fri,  3 Dec 2021 11:25:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638530719;
-        bh=rCCbFC9TbN48lbID4tPB3s6EmbS++hjTWmsB1lJ4yrY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CWeEfJUu9JWjsmFzXBY5CV8I78vu3ZbZdwJR7iTtHqtLqdhJ7I6kRZVzS8NkmaVO+
-         6GREbCn/oVvOCJfTSwJHWEZPYsxZP9gJ2zHql4FUs5Gr1rfUfWqp1b5SqMU8X7SD5n
-         HLC3qiCWtRRizneoZtTR6dcTZiubKpGErww1ybjBL8xtUmhPN7gSCIcq5E3EsUolUs
-         YVRpPYSCCa0WacKHd/0FHqc8p0P74R4+5xOYGxneht6vk1wBYG0v9WFz8FoN/ikegJ
-         5cdz85RJJELLmSz+Ip5uiObXiE4bofZ/+sHZAd3mRx9RvdJoPXccU6WXhM/BsxIjAK
-         uznlAQIm9hmgQ==
-Date:   Fri, 3 Dec 2021 11:25:17 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: free exchange changeset on failures
-Message-ID: <Yan+ncm6Vc8bdl/5@debian9.Home>
-References: <95ce11234dd6911a433b1a016e4d4194856212b5.1638523623.git.johannes.thumshirn@wdc.com>
+        id S1380667AbhLCMEH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Dec 2021 07:04:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1380660AbhLCMEE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 07:04:04 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AA1C06173E
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 04:00:41 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id g19so2691118pfb.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 Dec 2021 04:00:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=esxAadU3+UzyTWgJKT1bUwFTK6KpmX9nIkgAaCqEFJ8=;
+        b=bWCDhAXOhgkKRfUpkUHRaZNfUUtNkbKat9EImjmCwuR3f+rQlxOfy6g1ysaiDP5UZs
+         ZWbVhJf/6anQsPmydaW3Bykq0GpkKq6FSsu6VQbDFTYg8cg5b7AsUJFuAYzcvsagFJTq
+         azxbcaCsnwAY+6eCvt6ZsXXbfsvo1dwKrhDyLSor4QM2L08OuDz4G6uRpCeKGBaMQjM2
+         nUlWEoHDnmV0GOqqiMfjsZvcWRyaSjw2GdV1vrZjHXHvMWE6TTYUmdvRH/3IxawLfyEk
+         Uk9eIVkopG6npIW9DN29P8260Jexjd3RVuh4ZacHIfxltwLkCuOovooV+p2oUz40RXZa
+         4H+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=esxAadU3+UzyTWgJKT1bUwFTK6KpmX9nIkgAaCqEFJ8=;
+        b=liSXu6K0544R2MyLfS8YgobXAj1QcWiBacI4zXZ52shQd3trQG/1r2njJvJt7/xZPy
+         qunlrRRW1kUzNCLr1fkJLit18I2nFzOQ/05jQ14Eqt8iZHeOySVsLLvkrCxngdJik5+H
+         5RN/3UiVSiCZZq4FYHRe181h53CMgZYcyox+hlr08IxJKwRhqZgRCv4m2TbZnTnO2/Yr
+         0ivh0BTYruaxWZ7Eagj+uzzcI23iktQkTtoY0Lm5DOzGBGd9OHii/4Zir62Gl+oIu3kM
+         PKRCWUAs3g8pHa1yJ4h9Z41AzyywAsSqOn6ECwsZNF/WhH1bRn1pL2svxiY3y2pwbAMd
+         HmhA==
+X-Gm-Message-State: AOAM532Wxllqm7SM1OzNng3JJ0V7k+AxgdO1TKG613uWQjxUu+p19C7n
+        GV9ZEuS/96t3Zf4v8GldWpAjLufFVQ+7jxRSoNo=
+X-Google-Smtp-Source: ABdhPJwUEBIdyjk4Fi10GDJcGPK+zuBs0QnUuZkn9Y6DbrraF/kL7g4mRUyuYgoj2vHvsOTHaK81QLzmmJEAINeQbdQ=
+X-Received: by 2002:a63:80c7:: with SMTP id j190mr4105935pgd.239.1638532840455;
+ Fri, 03 Dec 2021 04:00:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95ce11234dd6911a433b1a016e4d4194856212b5.1638523623.git.johannes.thumshirn@wdc.com>
+Received: by 2002:a05:6a20:100f:b0:5d:93e7:5991 with HTTP; Fri, 3 Dec 2021
+ 04:00:39 -0800 (PST)
+Reply-To: t50730171@gmail.com
+From:   Maria Elisabeth Schaeffler <wanyoikendungu224@gmail.com>
+Date:   Fri, 3 Dec 2021 15:00:39 +0300
+Message-ID: <CAMcy-Yoc9SZUf7ojYwyzUU41MYzN=Zb6=fZsmKp86Jd59zcpiw@mail.gmail.com>
+Subject: Re
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 03, 2021 at 02:55:33AM -0800, Johannes Thumshirn wrote:
-> Fstests runs on my VMs have show several kmemleak reports like the following.
-> 
->   unreferenced object 0xffff88811ae59080 (size 64):
->     comm "xfs_io", pid 12124, jiffies 4294987392 (age 6.368s)
->     hex dump (first 32 bytes):
->       00 c0 1c 00 00 00 00 00 ff cf 1c 00 00 00 00 00  ................
->       90 97 e5 1a 81 88 ff ff 90 97 e5 1a 81 88 ff ff  ................
->     backtrace:
->       [<00000000ac0176d2>] ulist_add_merge+0x60/0x150 [btrfs]
->       [<0000000076e9f312>] set_state_bits+0x86/0xc0 [btrfs]
->       [<0000000014fe73d6>] set_extent_bit+0x270/0x690 [btrfs]
->       [<000000004f675208>] set_record_extent_bits+0x19/0x20 [btrfs]
->       [<00000000b96137b1>] qgroup_reserve_data+0x274/0x310 [btrfs]
->       [<0000000057e9dcbb>] btrfs_check_data_free_space+0x5c/0xa0 [btrfs]
->       [<0000000019c4511d>] btrfs_delalloc_reserve_space+0x1b/0xa0 [btrfs]
->       [<000000006d37e007>] btrfs_dio_iomap_begin+0x415/0x970 [btrfs]
->       [<00000000fb8a74b8>] iomap_iter+0x161/0x1e0
->       [<0000000071dff6ff>] __iomap_dio_rw+0x1df/0x700
->       [<000000002567ba53>] iomap_dio_rw+0x5/0x20
->       [<0000000072e555f8>] btrfs_file_write_iter+0x290/0x530 [btrfs]
->       [<000000005eb3d845>] new_sync_write+0x106/0x180
->       [<000000003fb505bf>] vfs_write+0x24d/0x2f0
->       [<000000009bb57d37>] __x64_sys_pwrite64+0x69/0xa0
->       [<000000003eba3fdf>] do_syscall_64+0x43/0x90
-> 
-> In case brtfs_qgroup_reserve_data() or btrfs_delalloc_reserve_metadata()
-> fail the allocated extent_changeset will not be freed.
-> 
-> So in btrfs_check_data_free_space() and btrfs_delalloc_reserve_space()
-> free the allocated extent_changeset to get rid of the allocated memory.
-> 
-> Cc: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+--=20
+Ich bin Maria Elisabeth Schaeffler, ich habe eine Spende f=C3=BCr Sie,
+E-Mail f=C3=BCr weitere Informationen.
 
-
-Looks good, and it ran successfully on my fstests run with kmemleak as well.
-
-Just a note worth adding, is that the issue currently only happens in the
-direct IO write path, but only after my change "btrfs: fix ENOSPC failure
-when attempting direct IO write into NOCOW range", and also at
-defrag_one_locked_target() (haven't checked since when). Every other place
-is always calling extent_changeset_free() even if its call to
-btrfs_delalloc_reserve_space() or btrfs_check_data_free_space() has failed.
-
-With that, which probably David can add, it looks good:
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
-> ---
->  fs/btrfs/delalloc-space.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-> index bca438c7c972..fb46a28f5065 100644
-> --- a/fs/btrfs/delalloc-space.c
-> +++ b/fs/btrfs/delalloc-space.c
-> @@ -143,10 +143,13 @@ int btrfs_check_data_free_space(struct btrfs_inode *inode,
->  
->  	/* Use new btrfs_qgroup_reserve_data to reserve precious data space. */
->  	ret = btrfs_qgroup_reserve_data(inode, reserved, start, len);
-> -	if (ret < 0)
-> +	if (ret < 0) {
->  		btrfs_free_reserved_data_space_noquota(fs_info, len);
-> -	else
-> +		extent_changeset_free(*reserved);
-> +		*reserved = NULL;
-> +	} else {
->  		ret = 0;
-> +	}
->  	return ret;
->  }
->  
-> @@ -452,8 +455,11 @@ int btrfs_delalloc_reserve_space(struct btrfs_inode *inode,
->  	if (ret < 0)
->  		return ret;
->  	ret = btrfs_delalloc_reserve_metadata(inode, len);
-> -	if (ret < 0)
-> +	if (ret < 0) {
->  		btrfs_free_reserved_data_space(inode, *reserved, start, len);
-> +		extent_changeset_free(*reserved);
-> +		*reserved = NULL;
-> +	}
->  	return ret;
->  }
->  
-> -- 
-> 2.31.1
-> 
+Gr=C3=BC=C3=9Fe
+Maria-Elisabeth_Schaeffler
