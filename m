@@ -2,65 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE1E4676F1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 13:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5DE4676F8
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 13:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380667AbhLCMEH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 07:04:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380660AbhLCMEE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 07:04:04 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AA1C06173E
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 04:00:41 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id g19so2691118pfb.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Dec 2021 04:00:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=esxAadU3+UzyTWgJKT1bUwFTK6KpmX9nIkgAaCqEFJ8=;
-        b=bWCDhAXOhgkKRfUpkUHRaZNfUUtNkbKat9EImjmCwuR3f+rQlxOfy6g1ysaiDP5UZs
-         ZWbVhJf/6anQsPmydaW3Bykq0GpkKq6FSsu6VQbDFTYg8cg5b7AsUJFuAYzcvsagFJTq
-         azxbcaCsnwAY+6eCvt6ZsXXbfsvo1dwKrhDyLSor4QM2L08OuDz4G6uRpCeKGBaMQjM2
-         nUlWEoHDnmV0GOqqiMfjsZvcWRyaSjw2GdV1vrZjHXHvMWE6TTYUmdvRH/3IxawLfyEk
-         Uk9eIVkopG6npIW9DN29P8260Jexjd3RVuh4ZacHIfxltwLkCuOovooV+p2oUz40RXZa
-         4H+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=esxAadU3+UzyTWgJKT1bUwFTK6KpmX9nIkgAaCqEFJ8=;
-        b=liSXu6K0544R2MyLfS8YgobXAj1QcWiBacI4zXZ52shQd3trQG/1r2njJvJt7/xZPy
-         qunlrRRW1kUzNCLr1fkJLit18I2nFzOQ/05jQ14Eqt8iZHeOySVsLLvkrCxngdJik5+H
-         5RN/3UiVSiCZZq4FYHRe181h53CMgZYcyox+hlr08IxJKwRhqZgRCv4m2TbZnTnO2/Yr
-         0ivh0BTYruaxWZ7Eagj+uzzcI23iktQkTtoY0Lm5DOzGBGd9OHii/4Zir62Gl+oIu3kM
-         PKRCWUAs3g8pHa1yJ4h9Z41AzyywAsSqOn6ECwsZNF/WhH1bRn1pL2svxiY3y2pwbAMd
-         HmhA==
-X-Gm-Message-State: AOAM532Wxllqm7SM1OzNng3JJ0V7k+AxgdO1TKG613uWQjxUu+p19C7n
-        GV9ZEuS/96t3Zf4v8GldWpAjLufFVQ+7jxRSoNo=
-X-Google-Smtp-Source: ABdhPJwUEBIdyjk4Fi10GDJcGPK+zuBs0QnUuZkn9Y6DbrraF/kL7g4mRUyuYgoj2vHvsOTHaK81QLzmmJEAINeQbdQ=
-X-Received: by 2002:a63:80c7:: with SMTP id j190mr4105935pgd.239.1638532840455;
- Fri, 03 Dec 2021 04:00:40 -0800 (PST)
+        id S1380669AbhLCMHE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 3 Dec 2021 07:07:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:48330 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230154AbhLCMHA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Dec 2021 07:07:00 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19D381396;
+        Fri,  3 Dec 2021 04:03:36 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 325A23F5A1;
+        Fri,  3 Dec 2021 04:03:35 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     peterz@infradead.org, vincent.guittot@linaro.org,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [REGRESSION] 5-10% increase in IO latencies with nohz balance patch
+In-Reply-To: <878rx6bia5.mognet@arm.com>
+References: <YaUH5GFFoLiS4/3/@localhost.localdomain> <87ee6yc00j.mognet@arm.com> <YaUYsUHSKI5P2ulk@localhost.localdomain> <87bl22byq2.mognet@arm.com> <YaUuyN3h07xlEx8j@localhost.localdomain> <878rx6bia5.mognet@arm.com>
+Date:   Fri, 03 Dec 2021 12:03:27 +0000
+Message-ID: <87wnklaoa8.mognet@arm.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a20:100f:b0:5d:93e7:5991 with HTTP; Fri, 3 Dec 2021
- 04:00:39 -0800 (PST)
-Reply-To: t50730171@gmail.com
-From:   Maria Elisabeth Schaeffler <wanyoikendungu224@gmail.com>
-Date:   Fri, 3 Dec 2021 15:00:39 +0300
-Message-ID: <CAMcy-Yoc9SZUf7ojYwyzUU41MYzN=Zb6=fZsmKp86Jd59zcpiw@mail.gmail.com>
-Subject: Re
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=20
-Ich bin Maria Elisabeth Schaeffler, ich habe eine Spende f=C3=BCr Sie,
-E-Mail f=C3=BCr weitere Informationen.
+On 30/11/21 00:26, Valentin Schneider wrote:
+> On 29/11/21 14:49, Josef Bacik wrote:
+>> On Mon, Nov 29, 2021 at 06:31:17PM +0000, Valentin Schneider wrote:
+>>> On 29/11/21 13:15, Josef Bacik wrote:
+>>> > On Mon, Nov 29, 2021 at 06:03:24PM +0000, Valentin Schneider wrote:
+>>> >> Would you happen to have execution traces by any chance? If not I should be
+>>> >> able to get one out of that fsperf thingie.
+>>> >>
+>>> >
+>>> > I don't, if you want to tell me how I can do it right now.  I've disabled
+>>> > everything on this box for now so it's literally just sitting there waiting to
+>>> > have things done to it.  Thanks,
+>>> >
+>>>
+>>> I see you have Ftrace enabled in your config, so that ought to do it:
+>>>
+>>>   trace-cmd record -e 'sched:*' -e 'cpu_idle' $your_test_cmd
+>>>
+>>
+>> http://toxicpanda.com/performance/trace.dat
+>>
+>> it's like 16mib.  Enjoy,
+>>
+>
+> Neat, thanks!
+>
+> Runqueue depth seems to be very rarely greater than 1, tasks with ~1ms
+> runtime and lots of sleeping (also bursty kworker activity with activations
+> of tens of µs), and some cores (Internet tells me that Xeon Bronze 3204
+> doesn't have SMT) spend most of their time idling. Not the most apocalyptic
+> task placement vs ILB selection, but the task activation patterns roughly
+> look like what I was thinking of - there might be hope for me yet.
+>
+> I'll continue the headscratching after tomorrow's round of thinking juice.
+>
 
-Gr=C3=BC=C3=9Fe
-Maria-Elisabeth_Schaeffler
+Could you give the 4 top patches, i.e. those above
+8c92606ab810 ("sched/cpuacct: Make user/system times in cpuacct.stat more precise")
+a try?
+
+https://git.gitlab.arm.com/linux-arm/linux-vs.git -b mainline/sched/nohz-next-update-regression
+
+I gave that a quick test on the platform that caused me to write the patch
+you bisected and looks like it didn't break the original fix. If the above
+counter-measures aren't sufficient, I'll have to go poke at your
+reproducers...
+
+>> Josef
