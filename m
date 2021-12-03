@@ -2,122 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4023A467497
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 11:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF08C4675BA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 11:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379795AbhLCKRu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 05:17:50 -0500
-Received: from vs2.lukas-pirl.de ([5.45.100.90]:55264 "EHLO pim.lukas-pirl.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351071AbhLCKRt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 Dec 2021 05:17:49 -0500
-Received: from pygmy.fritz.box (dslb-088-068-184-120.088.068.pools.vodafone-ip.de [88.68.184.120])
-        by pim.lukas-pirl.de (Postfix) with ESMTPSA id E4E9CA0F042F;
-        Fri,  3 Dec 2021 11:14:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lukas-pirl.de;
-        s=201701; t=1638526464;
-        bh=ImQ3avB0uUwnPmlvz3D83eDRpyCGQO//bIVQNH3L+hQ=;
-        h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Date:
-         MIME-Version:From;
-        b=oi9+TOHB3mGNCYzPkXx2RwUc4IIHbCLrqZgCYeIzky5ijRJRI4wbtqQFMVuhRmSuP
-         0ismfiX6lZiZbMJz52IfRqjo562nLogePMsSyU68f9f82yC0nkUuU5rf8jznKF2yHD
-         Hzxh8BaSuVrGB3QwDii7UjwMJxdE68mFqwWJflGEyxNaLDJcmiuZTnCirvs01hf6s7
-         r4Fa8swn3K+/XF2Q6dNGx6yOr8pQQqETTgGLIJvXobqTCiELGNFjbFtqvq7OPX/5Dh
-         yEkzHTKJ3AYXad6iOEiAPt7CdeG1iieZa+gK2NwlegM1sbIQgnnmBBUrCC2Zbh//lN
-         X83X090Az6wLOu/5+pAryprjBeBs3swGixUpyi1U2IM56Btvx6SNMpjpOBc6L4PJLQ
-         1RwcJGb4Rn3BTWj1eaoLLuuvZJ4dimkWBDNuMbpwUga0ees2t81ZNzwwULB68fbUJI
-         GmB1GySDELaeX2TmAX9OS3Y6T0GF49QrqWmc8g5Mdzqq1d3qwH/ImR7HMaxumqS+r/
-         u86DIMWIfPo43mDeIgagPDwz7gaNJLbDohy1RnnSl43rK/29SmnbUrN9cQHuhP1wjy
-         gaQaB5nngpA+xFLmA8CtoIJKNVYjWoeVz2F5fU4cdmNaORbAPi1XSvOOZGyt7ISw0/
-         3qV7XpZzYA1Gp7ieLBn8Oa9Y=
-Message-ID: <05a7bb92ca85dc19637a2b306b6b17da3663e2fc.camel@lukas-pirl.de>
-Subject: Re: Balance loop on "device delete missing"? (RAID 1, Linux 5.15,
- "found 1 extents, stage: update data pointers")
-From:   Lukas Pirl <btrfs@lukas-pirl.de>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-In-Reply-To: <20211202181152.GK17148@hungrycats.org>
-References: <5a73c349971ff005640af3854667f492e0697724.camel@lukas-pirl.de>
-         <f5766e3cb0e2b7bcf3ef45cb7b9a7f3ef96b07ce.camel@lukas-pirl.de>
-         <20211202181152.GK17148@hungrycats.org>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-c/FoyyVJbUL7ScbC+rPl"
-Date:   Fri, 03 Dec 2021 11:14:21 +0100
+        id S1380170AbhLCK7E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Dec 2021 05:59:04 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:30174 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237898AbhLCK7E (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 05:59:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1638528940; x=1670064940;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EvkFAoZwQ/vXOBod031+oXJo1Xu3LWkCAURzET63jcs=;
+  b=LfQw9OI0Grh4Ahy7p+khAgx040TVaAsFnIGJh0qK689ZwYG73utwK3ee
+   3TPo/qUO2PKBpArMNRATSy+AACQiQ2kOkDlmoAX/2+LNAvDcThcOpJyA7
+   jl/EdbzrgE14jSaCYTrptVHvaa4DFkIx+82VT5PgJoOOM3XpxEDvM2eq0
+   iwDFJWfsw2w4qE26Sn4RPu0y+GOMjz9oLOQ4A/LBpBk2Hyv/VvX4WMDIS
+   uLZ+K2n3sTExx+j0GqavtkP0On67VWOCOBsxgDN16IGKwpc11vcFACvjs
+   z3wTa9PVxOCPiHYTPGOEG9VjKF58uq/2md3T38X8Yu44f4H+eVPqqpTjd
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.87,284,1631548800"; 
+   d="scan'208";a="299216502"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Dec 2021 18:55:40 +0800
+IronPort-SDR: izhxbgBw0twhIPZf2/aXAQzSKyTSREjdYWX1vkAxw+ZdYPRSSD6vmthzbJGr45/TzNmskMgUwd
+ 8htvb9kAz8U01I+iFjIW2tiqZtsdPfoYcx8rm12FfHZM7wYhVHmWEDYKa2dMHI9ZMcCHGO0xhg
+ JMakQnFZdF3raJtoZXwbegy3DzstHfygRwDJiHCRtK8nAG042n3weu2swq40ulHkivJnn+AWL1
+ DRtrIsWtB7iToxxPKACzDDFeqsczMRSnVJzzYvW5LddWVJ3RQJINEFvGR3kYqTTK4cjgBndmJ8
+ F1SzKkVX0ArtkJfbLCe6k7KV
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2021 02:28:49 -0800
+IronPort-SDR: YytBOS+4MzMLPTpSdMFIGEM/Pg369l+hVzWesepXjYt1pH3bJxzDL3hxu2q9C+/GtFsnI3j3fx
+ hym5KtyV4BufZBaZTTfeodXVoIt7pxxaXo9WU23lY/b+DpcTSuEIpIZVhkS7hUGD70J5XuunOl
+ HkZWDq/fhgCID/ElgKkWmf4eFgjACRpPANiv83MBUVf195dp83DmQmT9oL2ydTXXhZChZnL+y5
+ TLTCoKFFY3GpCSCwrULyB4UopPjeLwjhAm9fdFUzdAzAJSDdImHI25vkB9N3FDQGrr+q8qQtsP
+ CiU=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
+  by uls-op-cesaip02.wdc.com with ESMTP; 03 Dec 2021 02:55:40 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: free exchange changeset on failures
+Date:   Fri,  3 Dec 2021 02:55:33 -0800
+Message-Id: <95ce11234dd6911a433b1a016e4d4194856212b5.1638523623.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Evolution 3.42.1-1 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Fstests runs on my VMs have show several kmemleak reports like the following.
 
---=-c/FoyyVJbUL7ScbC+rPl
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+  unreferenced object 0xffff88811ae59080 (size 64):
+    comm "xfs_io", pid 12124, jiffies 4294987392 (age 6.368s)
+    hex dump (first 32 bytes):
+      00 c0 1c 00 00 00 00 00 ff cf 1c 00 00 00 00 00  ................
+      90 97 e5 1a 81 88 ff ff 90 97 e5 1a 81 88 ff ff  ................
+    backtrace:
+      [<00000000ac0176d2>] ulist_add_merge+0x60/0x150 [btrfs]
+      [<0000000076e9f312>] set_state_bits+0x86/0xc0 [btrfs]
+      [<0000000014fe73d6>] set_extent_bit+0x270/0x690 [btrfs]
+      [<000000004f675208>] set_record_extent_bits+0x19/0x20 [btrfs]
+      [<00000000b96137b1>] qgroup_reserve_data+0x274/0x310 [btrfs]
+      [<0000000057e9dcbb>] btrfs_check_data_free_space+0x5c/0xa0 [btrfs]
+      [<0000000019c4511d>] btrfs_delalloc_reserve_space+0x1b/0xa0 [btrfs]
+      [<000000006d37e007>] btrfs_dio_iomap_begin+0x415/0x970 [btrfs]
+      [<00000000fb8a74b8>] iomap_iter+0x161/0x1e0
+      [<0000000071dff6ff>] __iomap_dio_rw+0x1df/0x700
+      [<000000002567ba53>] iomap_dio_rw+0x5/0x20
+      [<0000000072e555f8>] btrfs_file_write_iter+0x290/0x530 [btrfs]
+      [<000000005eb3d845>] new_sync_write+0x106/0x180
+      [<000000003fb505bf>] vfs_write+0x24d/0x2f0
+      [<000000009bb57d37>] __x64_sys_pwrite64+0x69/0xa0
+      [<000000003eba3fdf>] do_syscall_64+0x43/0x90
 
-Thanks for taking care, Zygo.
+In case brtfs_qgroup_reserve_data() or btrfs_delalloc_reserve_metadata()
+fail the allocated extent_changeset will not be freed.
 
-On Thu, 2021-12-02 13:11 -0500, Zygo Blaxell wrote as excerpted:
-> Does it always happen on the same block group?=C2=A0 If so, that points t=
-o
-> something lurking in your metadata.=C2=A0 If a reboot fixes it for one bl=
-ock
-> group and then it gets stuck on some other block group, it points to
-> an issue in kernel memory state.
+So in btrfs_check_data_free_space() and btrfs_delalloc_reserve_space()
+free the allocated extent_changeset to get rid of the allocated memory.
 
-Good point, I'll check. I can also do a memory test but the machine runs we=
-ll
-otherwise.
+Cc: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/delalloc-space.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-> What do you get from 'btrfs check --readonly'?
+diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
+index bca438c7c972..fb46a28f5065 100644
+--- a/fs/btrfs/delalloc-space.c
++++ b/fs/btrfs/delalloc-space.c
+@@ -143,10 +143,13 @@ int btrfs_check_data_free_space(struct btrfs_inode *inode,
+ 
+ 	/* Use new btrfs_qgroup_reserve_data to reserve precious data space. */
+ 	ret = btrfs_qgroup_reserve_data(inode, reserved, start, len);
+-	if (ret < 0)
++	if (ret < 0) {
+ 		btrfs_free_reserved_data_space_noquota(fs_info, len);
+-	else
++		extent_changeset_free(*reserved);
++		*reserved = NULL;
++	} else {
+ 		ret = 0;
++	}
+ 	return ret;
+ }
+ 
+@@ -452,8 +455,11 @@ int btrfs_delalloc_reserve_space(struct btrfs_inode *inode,
+ 	if (ret < 0)
+ 		return ret;
+ 	ret = btrfs_delalloc_reserve_metadata(inode, len);
+-	if (ret < 0)
++	if (ret < 0) {
+ 		btrfs_free_reserved_data_space(inode, *reserved, start, len);
++		extent_changeset_free(*reserved);
++		*reserved = NULL;
++	}
+ 	return ret;
+ }
+ 
+-- 
+2.31.1
 
-Interestingly, the machine disappeared from the network shortly after I iss=
-ued
-the command. :) I'll drive to the machine today or tomorrow, see what is go=
-ing
-on and report back.
-
-> > > (The particular fs has been created 2016, I am otherwise happy with
-> > > btrfs and advocating; BTW I have backups and are ready to use them)
-> > >=20
-> > > Another question I was asking myself: can btrfs be forced to forget
-> > > about a device (as in "delete from meta data) to then just run a
-> > > regular balance?
->=20
-> It can, but the way you do that is "mount in degraded mode (to force
-> forget the device), then run btrfs device delete," and you're getting
-> stuck on the "btrfs device delete" step.
->=20
-> "btrfs device delete" is itself "resize device to zero, then run balance"
-> and it's the balance step you're stuck on.
-
-Yes, but btrfs still knows about the drive. But if it's really the balance
-that hangs, it probably wouldn't make much sense to just "delete the device
-from the metadata" if one would have to balance afterwards anyway.
-
-Cheers
-
-Lukas
-
-
---=-c/FoyyVJbUL7ScbC+rPl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEIfDl2cvwrHf6TgsUf2MCUJXpoBgFAmGp7fwACgkQf2MCUJXp
-oBgGEQ//Z1ERxlTvi91a63LsRdJZwBfZiNbzo1+qvLJIhUFG27lnN0k7xxiD/Sgr
-EnkfEbzREfBec7ZRflMK5yta8QD23mLUe2gACesiV4N0GGfK819rpG6nQgJBEp6O
-vXMz7kMHnPvCrG8p1ahl4uaTlR6HZcasiK2q5grawP+pS2WnMz089BK4LXFY1w1G
-qFL5F3rP7B8RKuLLPyzVZQUZ3vV8tYLXAL0RBU0WQ2tKSianG3oguxmeYZNBoyy0
-d0rWCTNHSraZN/Ma3DI9If31KANzUyEttn3Z73T8NyfKKI0JU9JjX9PVuFDqRc/w
-NxKHqUKnnH3zpmqBGp2ql2/K/gfPeuDYmZv837Cer7cPW8UZPLE8QrwC8f7oq4+F
-/85e3pIf/ZyvytvZ2dPRIlcU4pKYK3Ij6z5eBImBNhdptkzw7zKgnOZ73noEQBfT
-O6OC8w+fQ2TEsxKPyvdLYcCf9rI/cgCUn4cgOypeM84YaK07hr3QuR7V0nvYknf7
-JTL1IpWN0+RAtG5L6oY+0cNf76pbi38Ogcu/4CDNM8KN9ixlCIII+1BD12rjsIsS
-n4WRPhtqyEgiscO7K316mRT/caTHvo4qXPWnXsMj+4nBvahdp0G26sO2pJevADh/
-CAGArk36PFTaXXcJrkTYBvDROGn+W3fGszy0LMy1zZN+8JeQOWQ=
-=/iWG
------END PGP SIGNATURE-----
-
---=-c/FoyyVJbUL7ScbC+rPl--
