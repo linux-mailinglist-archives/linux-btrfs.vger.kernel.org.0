@@ -2,109 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC324675F9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 12:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6672467643
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 12:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380304AbhLCLRW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 06:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235997AbhLCLRO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 06:17:14 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A927C06173E
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 03:13:50 -0800 (PST)
+        id S1380408AbhLCL2p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Dec 2021 06:28:45 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:51776 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1380405AbhLCL2p (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 06:28:45 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1FF93B8269B
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 11:13:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42B89C53FC7;
-        Fri,  3 Dec 2021 11:13:47 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0CF02B826AD
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 11:25:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3386AC53FAD;
+        Fri,  3 Dec 2021 11:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638530027;
-        bh=sMP13Sq3mV91RIkNgGpneL1ZMzNafwAf+iQkThCI5sA=;
+        s=k20201202; t=1638530719;
+        bh=rCCbFC9TbN48lbID4tPB3s6EmbS++hjTWmsB1lJ4yrY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f4b7lBr6CQ02H8U65V+5vnAv8VuLEhFMneamAxJYSmtA8CYMI5vFQfb1wQrXKCNU8
-         1thCfOmvAYbIIhywRxAZZd+oS5yeMqg2LyepKdYG4VbbL41XbkJ/7vahsz6ABdgVPZ
-         dXGb9tqJfJtokWMazEsBEeTethSzUhfVbVHy3+Jqvfuzg6/3BTdtTMkTlMfyXy944O
-         zJ9Ucj6T3s/AbXFWWLtLHstw2RBTrKtngg+hPQNh5RXO+iUlKQ6dssMu003M66Uy7g
-         FncfmHuGgbFAnAyKQb2KubC0lencPrIuAxSgsjIg2hWmh5SjOCc8Zc/R79BNFqi1Pq
-         dva79L2PYbMuw==
-Date:   Fri, 3 Dec 2021 11:13:44 +0000
+        b=CWeEfJUu9JWjsmFzXBY5CV8I78vu3ZbZdwJR7iTtHqtLqdhJ7I6kRZVzS8NkmaVO+
+         6GREbCn/oVvOCJfTSwJHWEZPYsxZP9gJ2zHql4FUs5Gr1rfUfWqp1b5SqMU8X7SD5n
+         HLC3qiCWtRRizneoZtTR6dcTZiubKpGErww1ybjBL8xtUmhPN7gSCIcq5E3EsUolUs
+         YVRpPYSCCa0WacKHd/0FHqc8p0P74R4+5xOYGxneht6vk1wBYG0v9WFz8FoN/ikegJ
+         5cdz85RJJELLmSz+Ip5uiObXiE4bofZ/+sHZAd3mRx9RvdJoPXccU6WXhM/BsxIjAK
+         uznlAQIm9hmgQ==
+Date:   Fri, 3 Dec 2021 11:25:17 +0000
 From:   Filipe Manana <fdmanana@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: send: fix a failure when looking for data
- backrefs after relocation
-Message-ID: <Yan76IDfL2R0rrRS@debian9.Home>
-References: <829076d580be74f270e740f8dded6fda45390311.1638440202.git.fdmanana@suse.com>
- <YakecWBMcRKlPdGa@localhost.localdomain>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: free exchange changeset on failures
+Message-ID: <Yan+ncm6Vc8bdl/5@debian9.Home>
+References: <95ce11234dd6911a433b1a016e4d4194856212b5.1638523623.git.johannes.thumshirn@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YakecWBMcRKlPdGa@localhost.localdomain>
+In-Reply-To: <95ce11234dd6911a433b1a016e4d4194856212b5.1638523623.git.johannes.thumshirn@wdc.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Dec 02, 2021 at 02:28:49PM -0500, Josef Bacik wrote:
-> On Thu, Dec 02, 2021 at 10:21:43AM +0000, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> > 
-> > During a send, when trying to find roots from which to clone data extents,
-> > if the leaf of our file extent item was obtained before relocation for a
-> > data block group finished, we can end up trying to lookup for backrefs
-> > for an extent location (file extent item's disk_bytenr) that is not in
-> > use anymore. That is, the extent was reallocated and the transaction used
-> > for the relocation was committed. This makes the backref lookup not find
-> > anything and we fail at find_extent_clone() with -EIO and log an error
-> > message like the following:
-> > 
-> >   [ 7642.897365] BTRFS error (device sdc): did not find backref in send_root. inode=881, offset=2592768, disk_byte=1292025856 found extent=1292025856
-> > 
-> > This is because we are checking if relocation happened after we check if
-> > we found the backref for the file extent item we are processing. We should
-> > do it before, and in case relocation happened, do not attempt to clone and
-> > instead fallback to issuing write commands, which will read the correct
-> > data from the new extent location. The current check is being done too
-> > late, so fix this by moving it to right after we do the backref lookup and
-> > before checking if we found our own backref.
-> > 
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Fri, Dec 03, 2021 at 02:55:33AM -0800, Johannes Thumshirn wrote:
+> Fstests runs on my VMs have show several kmemleak reports like the following.
 > 
-> I'm not against this in principal, but won't we come all the way back out of
-> this loop and re-search higher up because things changed?  Can we just do a
-> -EAGAIN, come out and re-search down to this key so we can still do the clone
-> properly?  If we can't then this is reasonable, but I'd like to avoid blowing up
-> a send stream because relocation was running if at all possible.
+>   unreferenced object 0xffff88811ae59080 (size 64):
+>     comm "xfs_io", pid 12124, jiffies 4294987392 (age 6.368s)
+>     hex dump (first 32 bytes):
+>       00 c0 1c 00 00 00 00 00 ff cf 1c 00 00 00 00 00  ................
+>       90 97 e5 1a 81 88 ff ff 90 97 e5 1a 81 88 ff ff  ................
+>     backtrace:
+>       [<00000000ac0176d2>] ulist_add_merge+0x60/0x150 [btrfs]
+>       [<0000000076e9f312>] set_state_bits+0x86/0xc0 [btrfs]
+>       [<0000000014fe73d6>] set_extent_bit+0x270/0x690 [btrfs]
+>       [<000000004f675208>] set_record_extent_bits+0x19/0x20 [btrfs]
+>       [<00000000b96137b1>] qgroup_reserve_data+0x274/0x310 [btrfs]
+>       [<0000000057e9dcbb>] btrfs_check_data_free_space+0x5c/0xa0 [btrfs]
+>       [<0000000019c4511d>] btrfs_delalloc_reserve_space+0x1b/0xa0 [btrfs]
+>       [<000000006d37e007>] btrfs_dio_iomap_begin+0x415/0x970 [btrfs]
+>       [<00000000fb8a74b8>] iomap_iter+0x161/0x1e0
+>       [<0000000071dff6ff>] __iomap_dio_rw+0x1df/0x700
+>       [<000000002567ba53>] iomap_dio_rw+0x5/0x20
+>       [<0000000072e555f8>] btrfs_file_write_iter+0x290/0x530 [btrfs]
+>       [<000000005eb3d845>] new_sync_write+0x106/0x180
+>       [<000000003fb505bf>] vfs_write+0x24d/0x2f0
+>       [<000000009bb57d37>] __x64_sys_pwrite64+0x69/0xa0
+>       [<000000003eba3fdf>] do_syscall_64+0x43/0x90
+> 
+> In case brtfs_qgroup_reserve_data() or btrfs_delalloc_reserve_metadata()
+> fail the allocated extent_changeset will not be freed.
+> 
+> So in btrfs_check_data_free_space() and btrfs_delalloc_reserve_space()
+> free the allocated extent_changeset to get rid of the allocated memory.
+> 
+> Cc: Filipe Manana <fdmanana@suse.com>
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-It could be done, but I didn't do it that way because:
 
-1) Mostly to keep it as simple as possible initially.
+Looks good, and it ran successfully on my fstests run with kmemleak as well.
 
-2) I wanted to avoid the possibility of too many tree re-searches.
-   Though I have seen it happens rarely at find_extent_clone() during my
-   testing, and that's because we do the check and re-search before advancing
-   to the next key in the tree iteration code (full_send_tree() and
-   btrfs_compare_trees()).
+Just a note worth adding, is that the issue currently only happens in the
+direct IO write path, but only after my change "btrfs: fix ENOSPC failure
+when attempting direct IO write into NOCOW range", and also at
+defrag_one_locked_target() (haven't checked since when). Every other place
+is always calling extent_changeset_free() even if its call to
+btrfs_delalloc_reserve_space() or btrfs_check_data_free_space() has failed.
 
-   Overall I haven't seen an excessive number of re-searches, and when they
-   happen they are cheap as the extent buffers are already in memory.
+With that, which probably David can add, it looks good:
 
-   But I plan on later to eliminate some unnecessary re-searches, by keeping
-   track of what kind of block group was relocated (data/metadata/system) and
-   its logical range.
-
-   For now I wanted to make sure that it always produces corrects results and
-   that performance is acceptable. As it is it may ocassionaly issues write
-   operations instead of clone operations, but again it rarely happens and we
-   already have a few cases where we skip cloning anyway (too many extent refs
-   and a few edge cases).
-
-Seems reasonable?
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
 Thanks.
 
+> ---
+>  fs/btrfs/delalloc-space.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 > 
-> Josef
+> diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
+> index bca438c7c972..fb46a28f5065 100644
+> --- a/fs/btrfs/delalloc-space.c
+> +++ b/fs/btrfs/delalloc-space.c
+> @@ -143,10 +143,13 @@ int btrfs_check_data_free_space(struct btrfs_inode *inode,
+>  
+>  	/* Use new btrfs_qgroup_reserve_data to reserve precious data space. */
+>  	ret = btrfs_qgroup_reserve_data(inode, reserved, start, len);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+>  		btrfs_free_reserved_data_space_noquota(fs_info, len);
+> -	else
+> +		extent_changeset_free(*reserved);
+> +		*reserved = NULL;
+> +	} else {
+>  		ret = 0;
+> +	}
+>  	return ret;
+>  }
+>  
+> @@ -452,8 +455,11 @@ int btrfs_delalloc_reserve_space(struct btrfs_inode *inode,
+>  	if (ret < 0)
+>  		return ret;
+>  	ret = btrfs_delalloc_reserve_metadata(inode, len);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+>  		btrfs_free_reserved_data_space(inode, *reserved, start, len);
+> +		extent_changeset_free(*reserved);
+> +		*reserved = NULL;
+> +	}
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.31.1
+> 
