@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E958467FD0
+	by mail.lfdr.de (Postfix) with ESMTP id C6E0D467FD1
 	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 23:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383395AbhLCWWB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 17:22:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47848 "EHLO
+        id S1383397AbhLCWWC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Dec 2021 17:22:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383391AbhLCWV7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 17:21:59 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED8AC061353
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 14:18:35 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id b67so4998377qkg.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Dec 2021 14:18:35 -0800 (PST)
+        with ESMTP id S1383393AbhLCWWA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 17:22:00 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68548C061751
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 14:18:36 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id j9so4115911qvm.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 Dec 2021 14:18:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=0bWGGXJlS9Jn3POFye1qVoQWPeB6GgvgS19h7McZZ1s=;
-        b=WBZo80dSc+6Vi+EwNZXY34nZxYnfSNxhP5w4GvMYOdRD9nblMi5YiBawjJA1STTnRi
-         rZkRIqyOBp3U7u1ZQ6/uRRfjm+OTC3WwDMdQ3bibxtxUqV/EMpBiGNr4R1l0MQaCM7K3
-         TDFETRLn1LYAgqw1Xr2c6hTYtkVmbfpoThZJoxEuMtwtz3bXuhFAb+pnB2EJ+VEJoxPL
-         3oOLD9hwyEwTwowinpxD0iPOWDtRmFAreC64CQSv2JiI9a3rts49vry++uWkpK31Tux1
-         q5Gjz5M3Ct+yTQFT8C/hsIi0dc9SlwQEJxsBYXxpoHJtg+dzYAzyqZScR6R2jx7SwTTa
-         lCMQ==
+        bh=5KmbS+8OgjJksWB2vTqx97Mpyu6/QKGGCISuLJbxFGA=;
+        b=A2aLCwaS6Zc13Nua07b8GiTF5fPQVx2qC5tlmeXOWasZ5F+8yQJoJ8wEllRyxOQIaI
+         Fh3A1IY0jM6GO3VYqbN94ToPM2ve4cYPAGxW7ke8gjnmNpoefzsQp7nqAQyqMit1mmrb
+         6PMeU8klPJB3SdvNxxvGYjWrVCZbz9Biz9V2oVYDfQyEct83YPOWCXYeTxFjoEdUJdMj
+         Nl4JMHBN/pFn7DGtFcmq+OPxdHBr8nousTshbOkse6GOB8xSHUk37MidOPLsOE/ugGiV
+         yhh0VkNYP9uydlJvv7bb0QH/XXZ2fa5KqPej8ENKJXKtRUQWzqG895O7NQugFIZDkKAe
+         RXuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0bWGGXJlS9Jn3POFye1qVoQWPeB6GgvgS19h7McZZ1s=;
-        b=3hqg66WI074JA/1SxkMKOwUvkMsYhmb91GQnRTZAqC6GBnnt1PPiDhKhXkFCOdYEn5
-         mUrbSbvXAUiYt3EoHjMsbt2IunWlCWNWe1neZZeFVjnitwqhb7CoyyrWiVzzQLzfYjjk
-         P+u0gOTfi2GfslTztTcBAsWofFbbMAQJqwSWI6utlrfQeddq98vL+bh270dTPrPZqGga
-         E5fRHgTFT+mYOKaQHs3vFx5/EUqYVpIyYU3qOPYaxqkOa8QBeWdgvh/dfSOjbesaSqG5
-         Jj1IUsoqwUF0RHRMDMe//3TTCq2X10NoSII2Cizhjwy2KbFcudGrX5KdJ/n6H9DeoWmY
-         dqpg==
-X-Gm-Message-State: AOAM533JYGmJAPaeVTdjDN9c2DL+K8QC7eZ+IOmKd+G8kOVJaGNXN+PC
-        47RmDDPvF07PanQ7qzQL0ODqhWEcazqLSQ==
-X-Google-Smtp-Source: ABdhPJwQ1x+I04fWsYICfwOL/RiBuGVaR7rVZe7dZixClm1UG3OXWMPH88S8lveeY9H4vZRyiLx8kg==
-X-Received: by 2002:a05:620a:28c3:: with SMTP id l3mr20027937qkp.584.1638569914034;
-        Fri, 03 Dec 2021 14:18:34 -0800 (PST)
+        bh=5KmbS+8OgjJksWB2vTqx97Mpyu6/QKGGCISuLJbxFGA=;
+        b=6mPiSJfuxTUihyJFls+QYS471Y51O4n0lu10SqN+PFVqhmwyYan455ubTHkWrwyYP9
+         KyuE6iMX0GtShZqrVId/Nj1G/rh6CVOO0DcPRUkTKxnuTNLZEdRwFyAnOyUPOnCZE7ti
+         zVgH7f7hogTsTNnc9U0RPJpKuWBaULqpo2BDa1H9yUk3bPHRUg6fmZCWUVUlNgV/MzWj
+         NwZze1GJoA+OrFpbs2al3Sv5Q8hXfXVC/zrBNtKZJ5CfWUhDOjacy4YRpUTWSxldUdtl
+         G6KfJ9hHK4hmFh8MVpGU21uBdXIZp40E6zhX/syu4ibYncdPv3PvS4TY6AiryHMEqJcX
+         jFjw==
+X-Gm-Message-State: AOAM531h07sdxMXf+UxwErJVBj+GTeS5fBx4jywwLvkP82UA9fZYRhHV
+        CYg3LHev77f/bw4I6MtJZwKINZ4tlqD+pA==
+X-Google-Smtp-Source: ABdhPJymjTcuXXgVze+7jiTs3CvfCI93C8zq7XiFpQerCjoVszoykzSHl3KfIEyF9ut/HPxAaKZcSA==
+X-Received: by 2002:a05:6214:767:: with SMTP id f7mr22693277qvz.36.1638569915279;
+        Fri, 03 Dec 2021 14:18:35 -0800 (PST)
 Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id bk25sm2987991qkb.13.2021.12.03.14.18.33
+        by smtp.gmail.com with ESMTPSA id r16sm3301232qta.46.2021.12.03.14.18.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Dec 2021 14:18:33 -0800 (PST)
+        Fri, 03 Dec 2021 14:18:34 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 10/18] btrfs: control extent reference updates with a control flag for truncate
-Date:   Fri,  3 Dec 2021 17:18:12 -0500
-Message-Id: <450bed2abc79c39b448de30cf381a7e418cec058.1638569556.git.josef@toxicpanda.com>
+Subject: [PATCH 11/18] btrfs: use a flag to control when to clear the file extent range
+Date:   Fri,  3 Dec 2021 17:18:13 -0500
+Message-Id: <9bf47eb21a7497c3ea75d0a1ff5b6309d4465183.1638569556.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <cover.1638569556.git.josef@toxicpanda.com>
 References: <cover.1638569556.git.josef@toxicpanda.com>
@@ -61,62 +61,80 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We've had weird bugs in the past where we forgot to adjust the truncate
-path to deal with the fact that we can be called by the tree log path.
-Instead of checking if our root is a LOG_ROOT use a flag on the
-btrfs_truncate_control to indicate that we don't want to do extent
-reference updates during this truncate.
+We only care about updating the file extent range when we are doing a
+normal truncation.  We skip this for tree logging currently, but we can
+also skip this for eviction as well.  Using a flag makes it more
+explicit when we want to do this work.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode-item.c | 3 +--
- fs/btrfs/inode-item.h | 6 ++++++
- fs/btrfs/tree-log.c   | 1 +
- 3 files changed, 8 insertions(+), 2 deletions(-)
+ fs/btrfs/free-space-cache.c | 1 +
+ fs/btrfs/inode-item.c       | 8 ++++----
+ fs/btrfs/inode-item.h       | 6 ++++++
+ fs/btrfs/inode.c            | 1 +
+ 4 files changed, 12 insertions(+), 4 deletions(-)
 
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index d2f4716f8485..3a6bf361409b 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -294,6 +294,7 @@ int btrfs_truncate_free_space_cache(struct btrfs_trans_handle *trans,
+ 	struct btrfs_truncate_control control = {
+ 		.new_size = 0,
+ 		.min_type = BTRFS_EXTENT_DATA_KEY,
++		.clear_extent_range = true,
+ 	};
+ 	struct btrfs_inode *inode = BTRFS_I(vfs_inode);
+ 	struct btrfs_root *root = inode->root;
 diff --git a/fs/btrfs/inode-item.c b/fs/btrfs/inode-item.c
-index ebbe4054ae93..79305d646b98 100644
+index 79305d646b98..225a5cd3f0ea 100644
 --- a/fs/btrfs/inode-item.c
 +++ b/fs/btrfs/inode-item.c
-@@ -663,8 +663,7 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
+@@ -628,11 +628,11 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
  		}
- 		should_throttle = false;
- 
--		if (del_item && extent_start != 0 &&
--		    root->root_key.objectid != BTRFS_TREE_LOG_OBJECTID) {
-+		if (del_item && extent_start != 0 && !control->skip_ref_updates) {
- 			struct btrfs_ref ref = { 0 };
- 
- 			bytes_deleted += extent_num_bytes;
+ delete:
+ 		/*
+-		 * We use btrfs_truncate_inode_items() to clean up log trees for
+-		 * multiple fsyncs, and in this case we don't want to clear the
+-		 * file extent range because it's just the log.
++		 * We only want to clear the file extent range if we're
++		 * modifying the actual inode's mapping, which is just the
++		 * normal truncate path.
+ 		 */
+-		if (root == inode->root) {
++		if (control->clear_extent_range) {
+ 			ret = btrfs_inode_clear_file_extent_range(inode,
+ 						  clear_start, clear_len);
+ 			if (ret) {
 diff --git a/fs/btrfs/inode-item.h b/fs/btrfs/inode-item.h
-index 771e264a2ede..0cb16cac07d1 100644
+index 0cb16cac07d1..50acee3f4e28 100644
 --- a/fs/btrfs/inode-item.h
 +++ b/fs/btrfs/inode-item.h
-@@ -27,6 +27,12 @@ struct btrfs_truncate_control {
- 	 * removed only if their offset >= new_size.
+@@ -33,6 +33,12 @@ struct btrfs_truncate_control {
+ 	 * extents we drop.
  	 */
- 	u32 min_type;
+ 	bool skip_ref_updates;
 +
 +	/*
-+	 * IN: true if we don't want to do extent reference updates for any file
-+	 * extents we drop.
++	 * IN: true if we need to clear the file extent range for the inode as
++	 * we drop the file extent items.
 +	 */
-+	bool skip_ref_updates;
++	bool clear_extent_range;
  };
  
  int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 04374a7346db..11b9b516af80 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -4098,6 +4098,7 @@ static int truncate_inode_items(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 306d410b4db4..45dc4355102a 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8534,6 +8534,7 @@ static int btrfs_truncate(struct inode *inode, bool skip_writeback)
+ {
  	struct btrfs_truncate_control control = {
- 		.new_size = new_size,
- 		.min_type = min_type,
-+		.skip_ref_updates = true,
+ 		.min_type = BTRFS_EXTENT_DATA_KEY,
++		.clear_extent_range = true,
  	};
- 	int ret;
- 
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
 -- 
 2.26.3
 
