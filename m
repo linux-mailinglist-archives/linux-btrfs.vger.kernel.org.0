@@ -2,150 +2,196 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FDD467DB0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 20:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B8A467E77
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 20:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244062AbhLCTDx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 14:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        id S1353583AbhLCTzR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Dec 2021 14:55:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241273AbhLCTDv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 14:03:51 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDD2C061353
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 11:00:26 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id q14so4295189qtx.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Dec 2021 11:00:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nNm0E1dt53Ys7eEguh/q8bEyr1mEBHtvIgKGK0oVRpY=;
-        b=SpkI4kI6N8ncRG6uGFFEMd+qUpz0YQIpr/i1gxplbdvaLIBPoZE793VSZo2TzRMDdm
-         C1Tw3RoM0AWPZXCFleFN9RRcHd0k/VymMYnBrQXZmjeaPuZ5WYPTryOK50rnlbY+33Bn
-         OMx/XbbtxA1hc2lu74RHQT6eUsfkJSpG6F4WH8qB3Wz7EEG9UuVWncd5oOcwbCYTuXzl
-         9kETy2VHot9AXQ30B/Scl0gF8uxGLIbsL27dJ0lLAEnFR2LlkpXxmwZtDuwMr/8VjMSG
-         dcoj+KbeDmN/fQ5Pox6QLAm5hgHr5CU61B+Ki4OazMOhQxPZFooWOJXByYnPuyRy8u+r
-         HlBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nNm0E1dt53Ys7eEguh/q8bEyr1mEBHtvIgKGK0oVRpY=;
-        b=miiVrLvYFlEtmZTClV1o0GnK+e9TVYaF2R3doa70awUy0KIvooNQ84mwnTWvHmEPHi
-         Kp0K1H4bCtwwbVoHrX/Zwrsi/vLnpyBHRxeVGM1AFjTe9C7KGj7I5TJ5Fheb5lMFEH1K
-         X9PGQgX28GfFkfOdWPDgMUxZKZGxwAnPS0lKPofoXXX+dR1f3m/PECx/O5qOqLiwvU1N
-         LRGfmv+2yPlhUY700BIhchn43aHWSP961KzYwc2CYJul3Oiz/rFtbllO/VaNA8OYl4Ma
-         rZyx3UbawDNKELUrxON5w22E92mw1TMJTm8Z/lrSB8tR4ybJg9aefK7HH5/YX/J1mi/M
-         uoOA==
-X-Gm-Message-State: AOAM531tOCVTGjPeNz0G0ICgDU2ceUB7lda8S3NIicLcB/CLfS6GHqwK
-        4nSvq5l7/FWbOUQMU2S3IOQ32Q==
-X-Google-Smtp-Source: ABdhPJzEkUoIManrmiZjKkIiA+0JcqpCS+WOoRqMcUAayKATbICFoKkPCbsKuUqmEBZUYq3WwIGMxQ==
-X-Received: by 2002:a05:622a:407:: with SMTP id n7mr23121199qtx.601.1638558025828;
-        Fri, 03 Dec 2021 11:00:25 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id m9sm2547869qkn.59.2021.12.03.11.00.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Dec 2021 11:00:25 -0800 (PST)
-Date:   Fri, 3 Dec 2021 14:00:24 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     peterz@infradead.org, vincent.guittot@linaro.org,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [REGRESSION] 5-10% increase in IO latencies with nohz balance
- patch
-Message-ID: <YappSLDS2EvRJmr9@localhost.localdomain>
-References: <YaUH5GFFoLiS4/3/@localhost.localdomain>
- <87ee6yc00j.mognet@arm.com>
- <YaUYsUHSKI5P2ulk@localhost.localdomain>
- <87bl22byq2.mognet@arm.com>
- <YaUuyN3h07xlEx8j@localhost.localdomain>
- <878rx6bia5.mognet@arm.com>
- <87wnklaoa8.mognet@arm.com>
+        with ESMTP id S1353441AbhLCTzQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 14:55:16 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE17C061751;
+        Fri,  3 Dec 2021 11:51:52 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 9F269CE2830;
+        Fri,  3 Dec 2021 19:51:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4450C53FCE;
+        Fri,  3 Dec 2021 19:51:46 +0000 (UTC)
+Date:   Fri, 3 Dec 2021 19:51:43 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] Avoid live-lock in fault-in+uaccess loops with
+ sub-page faults
+Message-ID: <Yap1TzdTNHJDXodO@arm.com>
+References: <20211201193750.2097885-1-catalin.marinas@arm.com>
+ <CAHc6FU7gXfZk7=Xj+RjxCqkmsrcAhenfbeoqa4AmHd5+vgja7g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87wnklaoa8.mognet@arm.com>
+In-Reply-To: <CAHc6FU7gXfZk7=Xj+RjxCqkmsrcAhenfbeoqa4AmHd5+vgja7g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 03, 2021 at 12:03:27PM +0000, Valentin Schneider wrote:
-> On 30/11/21 00:26, Valentin Schneider wrote:
-> > On 29/11/21 14:49, Josef Bacik wrote:
-> >> On Mon, Nov 29, 2021 at 06:31:17PM +0000, Valentin Schneider wrote:
-> >>> On 29/11/21 13:15, Josef Bacik wrote:
-> >>> > On Mon, Nov 29, 2021 at 06:03:24PM +0000, Valentin Schneider wrote:
-> >>> >> Would you happen to have execution traces by any chance? If not I should be
-> >>> >> able to get one out of that fsperf thingie.
-> >>> >>
-> >>> >
-> >>> > I don't, if you want to tell me how I can do it right now.  I've disabled
-> >>> > everything on this box for now so it's literally just sitting there waiting to
-> >>> > have things done to it.  Thanks,
-> >>> >
-> >>>
-> >>> I see you have Ftrace enabled in your config, so that ought to do it:
-> >>>
-> >>>   trace-cmd record -e 'sched:*' -e 'cpu_idle' $your_test_cmd
-> >>>
-> >>
-> >> http://toxicpanda.com/performance/trace.dat
-> >>
-> >> it's like 16mib.  Enjoy,
-> >>
-> >
-> > Neat, thanks!
-> >
-> > Runqueue depth seems to be very rarely greater than 1, tasks with ~1ms
-> > runtime and lots of sleeping (also bursty kworker activity with activations
-> > of tens of µs), and some cores (Internet tells me that Xeon Bronze 3204
-> > doesn't have SMT) spend most of their time idling. Not the most apocalyptic
-> > task placement vs ILB selection, but the task activation patterns roughly
-> > look like what I was thinking of - there might be hope for me yet.
-> >
-> > I'll continue the headscratching after tomorrow's round of thinking juice.
-> >
-> 
-> Could you give the 4 top patches, i.e. those above
-> 8c92606ab810 ("sched/cpuacct: Make user/system times in cpuacct.stat more precise")
-> a try?
-> 
-> https://git.gitlab.arm.com/linux-arm/linux-vs.git -b mainline/sched/nohz-next-update-regression
-> 
-> I gave that a quick test on the platform that caused me to write the patch
-> you bisected and looks like it didn't break the original fix. If the above
-> counter-measures aren't sufficient, I'll have to go poke at your
-> reproducers...
-> 
+Hi Andreas,
 
-It's better but still around 6% regression.  If I compare these patches to the
-average of the last few days worth of runs you're 5% better than before, so
-progress but not completely erased.
+On Fri, Dec 03, 2021 at 04:29:18PM +0100, Andreas Gruenbacher wrote:
+> On Wed, Dec 1, 2021 at 8:38 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > Following the discussions on the first series,
+> >
+> > https://lore.kernel.org/r/20211124192024.2408218-1-catalin.marinas@arm.com
+> >
+> > this new patchset aims to generalise the sub-page probing and introduce
+> > a minimum size to the fault_in_*() functions. I called this 'v2' but I
+> > can rebase it on top of v1 and keep v1 as a btrfs live-lock
+> > back-portable fix.
+> 
+> that's what I was actually expecting, an updated patch series that
+> changes the btrfs code to keep track of the user-copy fault address,
+> the corresponding changes to the fault_in functions to call the
+> appropriate arch functions, and the arch functions that probe far
+> enough from the fault address to prevent deadlocks. In this step, how
+> far the arch functions need to probe depends on the fault windows of
+> the user-copy functions.
 
-     metric         baseline   current      stdev           diff      
-======================================================================
-write_io_kbytes       125000     125000            0    0.00%
-read_clat_ns_p99           0          0            0    0.00%
-write_bw_bytes      1.73e+08   1.74e+08   5370366.50    0.69%
-read_iops                  0          0            0    0.00%
-write_clat_ns_p50   18265.60   18150.40       345.21   -0.63%
-read_io_kbytes             0          0            0    0.00%
-read_io_bytes              0          0            0    0.00%
-write_clat_ns_p99   84684.80   90316.80      6607.94    6.65%
-read_bw_bytes              0          0            0    0.00%
-elapsed                    1          1            0    0.00%
-write_lat_ns_min           0          0            0    0.00%
-sys_cpu                91.22      91.00         1.40   -0.24%
-write_lat_ns_max           0          0            0    0.00%
-read_lat_ns_min            0          0            0    0.00%
-write_iops          42308.54   42601.71      1311.12    0.69%
-read_lat_ns_max            0          0            0    0.00%
-read_clat_ns_p50           0          0            0    0.00%
+I have that series as well, see the top patch here (well, you've seen it
+already):
 
-Thanks,
+https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=devel/btrfs-live-lock-fix
 
-Josef
+But I'm not convinced it's worth it if we go for the approach in v2
+here. A key difference between v2 and the above branch is that
+probe_subpage_writeable() checks exactly what is given (min_size) in v2
+while in the devel/btrfs-live-lock-fix branch it can be given a
+PAGE_SIZE or more but only checks the beginning 16 bytes to cover the
+copy_to_user() error margin. The latter assumes that the caller will
+always attempt the fault_in() from where the uaccess failed rather than
+relying on the fault_in() itself to avoid the live-lock.
+
+v1 posted earlier also checks the full range but only in
+fault_in_writeable() which seems to be only relevant for btrfs in the
+arm64 case.
+
+Maybe I should post the other series as an alternative, get some input
+on it.
+
+> A next step (as a patch series on top) would be to make sure direct
+> I/O also takes sub-page faults into account. That seems to require
+> probing the entire address range before the actual copying. A concern
+> I have about this is time-of-check versus time-of-use: what if
+> sub-page faults are added after the probing but before the copying?
+
+With direct I/O (that doesn't fall back to buffered), the access is done
+via the kernel mapping following a get_user_pages(). Since the access
+here cannot cope with exceptions, it must be unchecked. Yes, we do have
+the time-of-use vs check problem but I'm not worried. I regard MTE as a
+probabilistic security feature. Things get even murkier if the I/O is
+done by some DMA engine which ignores tags anyway.
+
+CHERI, OTOH, is a lot more strict but there is no check vs use issue
+here since all permissions are encoded in the pointer itself (we might
+just expand access_ok() to take this into account).
+
+We could use the min_size logic for this I think in functions like
+gfs2_file_direct_read() you'd have to fault in first and than invoke
+iomap_dio_rw().
+
+Anyway, like I said before, I'd leave the MTE accesses for direct I/O
+unchecked as they currently are, I don't think it's worth the effort and
+the potential slow-down (it will be significant).
+
+> Other than that, an approach like adding min_size parameters might
+> work except that maybe we can find a better name. Also, in order not
+> to make things even more messy, the fault_in functions should probably
+> continue to report how much of the address range they've failed to
+> fault in. Callers can then check for themselves whether the function
+> could fault in min_size bytes or not.
+
+That's fine as well. I did it this way because I found the logic easier
+to write.
+
+> > The fault_in_*() API improvements would be a new
+> > series. Anyway, I'd first like to know whether this is heading in the
+> > right direction and whether it's worth adding min_size to all
+> > fault_in_*() (more below).
+> >
+> > v2 adds a 'min_size' argument to all fault_in_*() functions with current
+> > callers passing 0 (or we could make it 1). A probe_subpage_*() call is
+> > made for the min_size range, though with all 0 this wouldn't have any
+> > effect. The only difference is btrfs search_ioctl() in the last patch
+> > which passes a non-zero min_size to avoid the live-lock (functionally
+> > that's the same as the v1 series).
+> 
+> In the btrfs case, the copying will already trigger sub-page faults;
+> we only need to make sure that the next fault-in attempt happens at
+> the fault address. (And that the fault_in functions take the user-copy
+> fuzz into account, which we also need for byte granularity copying
+> anyway.) Otherwise, we're creating the same time-of-check versus
+> time-of-use disparity as for direct-IO here, unnecessarily.
+
+I don't think it matters for btrfs. In some way, you'd have the time of
+check vs use problem even if you fault in from where uaccess failed.
+It's just that in practice it's impossible to live-lock as it needs very
+precise synchronisation to change the tags from another CPU. But you do
+guarantee that the uaccess was correct.
+
+> > In terms of sub-page probing, I don't think with the current kernel
+> > anything other than search_ioctl() matters. The buffered file I/O can
+> > already cope with current fault_in_*() + copy_*_user() loops (the
+> > uaccess makes progress). Direct I/O either goes via GUP + kernel mapping
+> > access (and memcpy() can't fault) or, if the user buffer is not PAGE
+> > aligned, it may fall back to buffered I/O. So we really only care about
+> > fault_in_writeable(), as in v1.
+> 
+> Yes from a regression point of view, but note that direct I/O still
+> circumvents the sub-page fault checking, which seems to defeat the
+> whole point.
+
+It doesn't entirely defeat it. From my perspective MTE is more of a best
+effort to find use-after-free etc. bugs. It has a performance penalty
+and I wouldn't want to make it worse. Some libc allocators even go for
+untagged memory (unchecked) if the required size is over some threshold
+(usually when it falls back to multiple page allocations). That's more
+likely to be involved in direct I/O anyway, so the additional check in
+fault_in() won't matter.
+
+> > Linus suggested that we could use the min_size to request a minimum
+> > guaranteed probed size (in most cases this would be 1) and put a cap on
+> > the faulted-in size, say two pages. All the fault_in_iov_iter_*()
+> > callers will need to check the actual quantity returned by fault_in_*()
+> > rather than bail out on non-zero but Andreas has a patch already (though
+> > I think there are a few cases in btrfs etc.):
+> >
+> > https://lore.kernel.org/r/20211123151812.361624-1-agruenba@redhat.com
+> >
+> > With these callers fixed, we could add something like the diff below.
+> > But, again, min_size doesn't actually have any current use in the kernel
+> > other than fault_in_writeable() and search_ioctl().
+> 
+> We're trying pretty hard to handle large I/O requests efficiently at
+> the filesystem level. A small, static upper limit in the fault-in
+> functions has the potential to ruin those efforts. So I'm not a fan of
+> that.
+
+I can't comment on this, I haven't spent time in the fs land. But I did
+notice that generic_perform_write() for example limits the fault_in() to
+PAGE_SIZE. So this min_size potential optimisation wouldn't make any
+difference.
+
+-- 
+Catalin
