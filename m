@@ -2,196 +2,531 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B8A467E77
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 20:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A0D467F98
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 22:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353583AbhLCTzR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 14:55:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353441AbhLCTzQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 14:55:16 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE17C061751;
-        Fri,  3 Dec 2021 11:51:52 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 9F269CE2830;
-        Fri,  3 Dec 2021 19:51:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4450C53FCE;
-        Fri,  3 Dec 2021 19:51:46 +0000 (UTC)
-Date:   Fri, 3 Dec 2021 19:51:43 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] Avoid live-lock in fault-in+uaccess loops with
- sub-page faults
-Message-ID: <Yap1TzdTNHJDXodO@arm.com>
-References: <20211201193750.2097885-1-catalin.marinas@arm.com>
- <CAHc6FU7gXfZk7=Xj+RjxCqkmsrcAhenfbeoqa4AmHd5+vgja7g@mail.gmail.com>
+        id S1353934AbhLCV7d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Dec 2021 16:59:33 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28152 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353912AbhLCV7c (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 Dec 2021 16:59:32 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B3L6R28021861
+        for <linux-btrfs@vger.kernel.org>; Fri, 3 Dec 2021 13:56:06 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=oecPqI3xyiapHZCBknXinn57DRrNhoWToefbgYknlMo=;
+ b=ZVf/quZ5RMxNBEUVRBuUyopDfO88W0ckKwglP+LOvYmFgvKYWQXyJN8kC8KY6UNaD7SJ
+ hIzdbNKVLSehdw6PTh3pI4wjgAPyiV5GJ9u67qpGk7OAacY8JUkBweeoNT/aOmf9pAPW
+ Kxn6zy3xPNhUAzKU+u5iEHIBfgqQxNlH8+g= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3cqeku5p9r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 Dec 2021 13:56:06 -0800
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 3 Dec 2021 13:56:05 -0800
+Received: by devvm225.atn0.facebook.com (Postfix, from userid 425415)
+        id 3C35276B2605; Fri,  3 Dec 2021 13:55:58 -0800 (PST)
+From:   Stefan Roesch <shr@fb.com>
+To:     <fstests@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
+        <kernel-team@fb.com>
+CC:     <shr@fb.com>, Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH v8] btrfs: Add new test for setting the chunk size.
+Date:   Fri, 3 Dec 2021 13:55:56 -0800
+Message-ID: <20211203215556.2267461-1-shr@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHc6FU7gXfZk7=Xj+RjxCqkmsrcAhenfbeoqa4AmHd5+vgja7g@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-ORIG-GUID: DKTmfCsue8WkXVGZvChZ3oa6dMyjJVtD
+X-Proofpoint-GUID: DKTmfCsue8WkXVGZvChZ3oa6dMyjJVtD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-03_11,2021-12-02_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ clxscore=1015 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ malwarescore=0 spamscore=0 adultscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112030141
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Andreas,
+Add new testcase for testing the new btrfs sysfs knob to change the
+chunk size. The new knob uses /sys/fs/btrfs/<UUID>/allocation/<block
+type>/chunk_size.
 
-On Fri, Dec 03, 2021 at 04:29:18PM +0100, Andreas Gruenbacher wrote:
-> On Wed, Dec 1, 2021 at 8:38 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > Following the discussions on the first series,
-> >
-> > https://lore.kernel.org/r/20211124192024.2408218-1-catalin.marinas@arm.com
-> >
-> > this new patchset aims to generalise the sub-page probing and introduce
-> > a minimum size to the fault_in_*() functions. I called this 'v2' but I
-> > can rebase it on top of v1 and keep v1 as a btrfs live-lock
-> > back-portable fix.
-> 
-> that's what I was actually expecting, an updated patch series that
-> changes the btrfs code to keep track of the user-copy fault address,
-> the corresponding changes to the fault_in functions to call the
-> appropriate arch functions, and the arch functions that probe far
-> enough from the fault address to prevent deadlocks. In this step, how
-> far the arch functions need to probe depends on the fault windows of
-> the user-copy functions.
+The test case implements three different cases:
+- Test allocation with the default chunk size
+- Test allocation after increasing the chunk size
+- Test allocation when the free space is smaller than the chunk size.
 
-I have that series as well, see the top patch here (well, you've seen it
-already):
+Note: this test needs to force the allocation of space. It uses the
+/sys/fs/btrfs/<UUID>/allocation/<block type>/force_chunk_alloc knob.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=devel/btrfs-live-lock-fix
+Testing:
+The test has been run with volumes of different sizes.
 
-But I'm not convinced it's worth it if we go for the approach in v2
-here. A key difference between v2 and the above branch is that
-probe_subpage_writeable() checks exactly what is given (min_size) in v2
-while in the devel/btrfs-live-lock-fix branch it can be given a
-PAGE_SIZE or more but only checks the beginning 16 bytes to cover the
-copy_to_user() error margin. The latter assumes that the caller will
-always attempt the fault_in() from where the uaccess failed rather than
-relying on the fault_in() itself to avoid the live-lock.
+Signed-off-by: Stefan Roesch <shr@fb.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+---
+V8: - fix whitespace issues
+    - use _real_dev helper
+    - change comment
+V7: - fixed whitespace issues
+    - removed test_file variable (no longer needed)
+    - removed _require_btrfs_fs_sysfs (check for filesystem attributes
+      is sufficient)
+    - Added comment for 10G requirement
+V6: - renamed test case from 248 to 251
+    - use _require_fs_sysfs
+    - use device name in _get_fs_sysfs_attr and _set_fs_sysfs_attr
+V5: - Modify _get_fs_sysfs_attr and _set_fs_sysfs_attr to support btrfs
+    - Use _get_fs_sysfs_attr and _set_fs_sysfs_attr
+    - Remove _get_btrfs_sysfs_attr and _set_btrfs_fsysfs_attr
+    - Rename local functions to not use "_"
+    - use $AWK_PROG and $BTRFS_UTIL_PROG
+    - remove call to _require_scratch_size
+    - fixes for coding convention
+    - replace fail calls with echo
+V4: - fixed indentation in common/btrfs
+    - Removed UUID code, which is no longer necessary (provided
+      by helper function)
+    - Used new helper _get_btrfs_sysfs_attr
+    - Direct output to /dev/null
+V3: - removed tests for system block type.
+    - added failure case for system block type.
+    - renamed stripe_size to chunk_size
+V2: - added new functions to common/btrfs and use them in the new test
+      - _require_btrfs_sysfs_attr - Make sure btrfs supports a sysfs
+        setting
+      - _get_btrfs_sysfs_attr - Read sysfs value
+      - _set_btrfs_sysfs_attr - Write sysfs value
+    - create file system of required size with _scratch_mkfs_sized
+    - use shortened error message
+    - Remove last logging message
+---
+ common/rc           |  27 ++++-
+ tests/btrfs/251     | 273 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/251.out |  10 ++
+ 3 files changed, 307 insertions(+), 3 deletions(-)
+ create mode 100755 tests/btrfs/251
+ create mode 100644 tests/btrfs/251.out
 
-v1 posted earlier also checks the full range but only in
-fault_in_writeable() which seems to be only relevant for btrfs in the
-arm64 case.
+diff --git a/common/rc b/common/rc
+index 0a30a842..bdd29b06 100644
+--- a/common/rc
++++ b/common/rc
+@@ -4401,7 +4401,14 @@ run_fsx()
+ _require_fs_sysfs()
+ {
+ 	local attr=3D$1
+-	local dname=3D$(_short_dev $TEST_DEV)
++	local dname
++
++	case "$FSTYP" in
++	btrfs)
++		dname=3D$(findmnt -n -o UUID $TEST_DEV) ;;
++	*)
++		dname=3D$(_short_dev $TEST_DEV) ;;
++	esac
+=20
+ 	if [ -z "$attr" -o -z "$dname" ];then
+ 		_fail "Usage: _require_fs_sysfs <sysfs_attr_path>"
+@@ -4439,7 +4446,14 @@ _set_fs_sysfs_attr()
+ 		_fail "Usage: _set_fs_sysfs_attr <mounted_device> <attr> <content>"
+ 	fi
+=20
+-	local dname=3D$(_short_dev $dev)
++	local dname
++	case "$FSTYP" in
++	btrfs)
++		dname=3D$(findmnt -n -o UUID ${dev}) ;;
++	*)
++		dname=3D$(_short_dev $dev) ;;
++	esac
++
+ 	echo "$content" > /sys/fs/${FSTYP}/${dname}/${attr}
+ }
+=20
+@@ -4460,7 +4474,14 @@ _get_fs_sysfs_attr()
+ 		_fail "Usage: _get_fs_sysfs_attr <mounted_device> <attr>"
+ 	fi
+=20
+-	local dname=3D$(_short_dev $dev)
++	local dname
++	case "$FSTYP" in
++	btrfs)
++		dname=3D$(findmnt -n -o UUID ${dev}) ;;
++	*)
++		dname=3D$(_short_dev $dev) ;;
++	esac
++
+ 	cat /sys/fs/${FSTYP}/${dname}/${attr}
+ }
+=20
+diff --git a/tests/btrfs/251 b/tests/btrfs/251
+new file mode 100755
+index 00000000..6013a1ee
+--- /dev/null
++++ b/tests/btrfs/251
+@@ -0,0 +1,273 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2021 Facebook.  All Rights Reserved.
++#
++# FS QA Test 250
++#
++# Test the new /sys/fs/btrfs/<uuid>/allocation/<block-type>/chunk_size
++# setting. This setting allows the admin to change the chunk size
++# setting for the next allocation.
++#
++# Test 1:
++#   Allocate storage for all three block types (data, metadata and syste=
+m)
++#   with the default chunk size.
++#
++# Test 2:
++#   Set a new chunk size to double the default size and allocate space
++#   for all new block types with the new chunk size.
++#
++# Test 3:
++#   Pick an allocation size that is used in a loop and make sure the las=
+t
++#   allocation cannot be partially fullfilled.
++#
++# Note: Variable naming uses the following convention: if a variable nam=
+e
++#       ends in "_B" then its a byte value, if it ends in "_MB" then the
++#       value is in megabytes.
++#
++. ./common/preamble
++_begin_fstest auto
++
++seq=3D`basename $0`
++seqres=3D"${RESULT_DIR}/${seq}"
++
++# Parse a size string which is in the format "XX.XXMib".
++#
++# Parameters:
++#   - (IN)    Block group type (Data, Metadata, System)
++#   - (INOUT) Variable to store block group size in MB
++#
++parse_size_string() {
++	local SIZE=3D$(echo "$1" | $AWK_PROG 'match($0, /([0-9.]+)/) { print su=
+bstr($0, RSTART, RLENGTH) }')
++	eval $2=3D"${SIZE%.*}"
++}
++
++# Determine the size of the device in MB.
++#
++# Parameters:
++#   - (INOUT) Variable to store device size in MB
++#
++device_size() {
++	btrfs fi show ${SCRATCH_MNT} --mbytes | grep devid >> $seqres.full
++	local SIZE=3D$($BTRFS_UTIL_PROG filesystem show ${SCRATCH_MNT} --mbytes=
+ | grep devid)
++	parse_size_string $(echo "${SIZE}" | awk '{print $4}') SIZE_ALLOC
++	eval $1=3D${SIZE_ALLOC%.*}
++}
++
++# Determine the free space of a block group in MB.
++#
++# Parameters:
++#   - (INOUT) Variable to store free space in MB
++#
++free_space() {
++	local SIZE=3D$($BTRFS_UTIL_PROG filesystem show ${SCRATCH_MNT} --mbytes=
+ | grep devid)
++	parse_size_string $(echo "${SIZE}" | awk '{print $4}') SIZE_ALLOC
++	parse_size_string $(echo "${SIZE}" | awk '{print $6}') SIZE_USED
++	eval $1=3D$(expr ${SIZE_ALLOC} - ${SIZE_USED})
++}
++
++# Determine how much space in MB has been allocated to a block group.
++#
++# Parameters:
++#   - (IN)    Block group type (Data, Metadata, System)
++#   - (INOUT) Variable to store block group size in MB
++#
++alloc_size() {
++	local SIZE_STRING=3D$($BTRFS_UTIL_PROG filesystem df ${SCRATCH_MNT} -m =
+| grep  "$1" | awk '{print $3}')
++	parse_size_string ${SIZE_STRING} BLOCK_GROUP_SIZE
++	eval $2=3D"${BLOCK_GROUP_SIZE}"
++}
++
++. ./common/filter
++_supported_fs btrfs
++_require_test
++_require_scratch
++
++# Delete log file if it exists.
++rm -f "${seqres}.full"
++
++# Make filesystem. 10GB is needed to test different chunk sizes for
++# metadata and data and the default size for volumes > 5GB is different.
++_scratch_mkfs_sized $((10 * 1024 * 1024 * 1024)) >> $seqres.full 2>&1
++_scratch_mount >> $seqres.full 2>&1
++
++# Check if there is sufficient sysfs support.
++_require_fs_sysfs allocation/metadata/chunk_size
++_require_fs_sysfs allocation/metadata/force_chunk_alloc
++
++# Get free space.
++free_space  FREE_SPACE_MB
++device_size DEVICE_SIZE_MB
++
++echo "free space =3D ${FREE_SPACE_MB}MB" >> ${seqres}.full
++
++# If device is a symbolic link, get block device.
++SCRATCH_BDEV=3D$(_real_dev $SCRATCH_DEV)
++
++# Get chunk sizes.
++echo "Capture default chunk sizes."
++FIRST_DATA_CHUNK_SIZE_B=3D$(_get_fs_sysfs_attr ${SCRATCH_BDEV} allocatio=
+n/data/chunk_size)
++FIRST_METADATA_CHUNK_SIZE_B=3D$(_get_fs_sysfs_attr ${SCRATCH_BDEV} alloc=
+ation/metadata/chunk_size)
++
++echo "Orig Data chunk size    =3D ${FIRST_DATA_CHUNK_SIZE_B}"     >> ${s=
+eqres}.full
++echo "Orig Metaata chunk size =3D ${FIRST_METADATA_CHUNK_SIZE_B}" >> ${s=
+eqres}.full
++
++INIT_ALLOC_SIZE_MB=3D$(expr \( ${FIRST_DATA_CHUNK_SIZE_B} + ${FIRST_META=
+DATA_CHUNK_SIZE_B} \) / 1024 / 1024)
++echo "Allocation size for initial allocation =3D ${INIT_ALLOC_SIZE_MB}MB=
+" >> $seqres.full
++
++#
++# Do first allocation with the default chunk sizes for the different blo=
+ck
++# types.
++#
++echo "First allocation."
++alloc_size "Data"     DATA_SIZE_START_MB
++alloc_size "Metadata" METADATA_SIZE_START_MB
++
++echo "Block group Data alloc size     =3D ${DATA_SIZE_START_MB}MB"     >=
+> $seqres.full
++echo "Block group Metadata alloc size =3D ${METADATA_SIZE_START_MB}MB" >=
+> $seqres.full
++
++_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/data/force_chunk_alloc 1
++_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/metadata/force_chunk_alloc=
+ 1
++
++alloc_size "Data"     FIRST_DATA_SIZE_MB
++alloc_size "Metadata" FIRST_METADATA_SIZE_MB
++
++echo "First block group Data alloc size     =3D ${FIRST_DATA_SIZE_MB}MB"=
+     >> ${seqres}.full
++echo "First block group Metadata alloc size =3D ${FIRST_METADATA_SIZE_MB=
+}MB" >> ${seqres}.full
++
++free_space FREE_SPACE_AFTER
++echo "Free space after first allocation =3D ${FREE_SPACE_AFTER}MB" >> ${=
+seqres}.full
++
++#
++# Do allocation with the doubled chunk sizes for the different block typ=
+es.
++#
++echo "Second allocation."
++SECOND_DATA_CHUNK_SIZE_B=3D$(expr ${FIRST_DATA_CHUNK_SIZE_B} \* 2)
++SECOND_METADATA_CHUNK_SIZE_B=3D$(expr ${FIRST_METADATA_CHUNK_SIZE_B} \* =
+2)
++
++echo "Second block group Data calc alloc size     =3D ${SECOND_DATA_CHUN=
+K_SIZE_B}"     >> $seqres.full
++echo "Second block group Metadata calc alloc size =3D ${SECOND_METADATA_=
+CHUNK_SIZE_B}" >> $seqres.full
++
++# Stripe size is limited to 10% of device size.
++if [[ ${SECOND_DATA_CHUNK_SIZE_B} -gt $(expr ${DEVICE_SIZE_MB} \* 10 \* =
+1024 \* 1024 / 100) ]]; then
++	SECOND_DATA_CHUNK_SIZE_B=3D$(expr ${DEVICE_SIZE_MB} \* 10 / 100 \* 1024=
+ \* 1024)
++fi
++if [[ ${SECOND_METADATA_CHUNK_SIZE_B} -gt $(expr ${DEVICE_SIZE_MB} \* 10=
+ \* 1024 \* 1024 / 100) ]]; then
++	SECOND_METADATA_CHUNK_SIZE_B=3D$(expr ${DEVICE_SIZE_MB} \* 10 / 100 \* =
+1024 \* 1024)
++fi
++
++echo "Second block group Data alloc size     =3D ${SECOND_DATA_CHUNK_SIZ=
+E_B}"     >> $seqres.full
++echo "Second block group Metadata alloc size =3D ${SECOND_METADATA_CHUNK=
+_SIZE_B}" >> $seqres.full
++
++_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/data/chunk_size ${SECOND_D=
+ATA_CHUNK_SIZE_B}
++_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/metadata/chunk_size ${SECO=
+ND_METADATA_CHUNK_SIZE_B}
++
++SECOND_DATA_CHUNK_SIZE_READ_B=3D$(_get_fs_sysfs_attr ${SCRATCH_BDEV} all=
+ocation/data/chunk_size)
++SECOND_METADATA_CHUNK_SIZE_READ_B=3D$(_get_fs_sysfs_attr ${SCRATCH_BDEV}=
+ allocation/metadata/chunk_size)
++
++_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/data/force_chunk_alloc 1
++echo "Allocated data chunk" >> $seqres.full
++_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/metadata/force_chunk_alloc=
+ 1
++echo "Allocated metadata chunk" >> $seqres.full
++
++alloc_size "Data"     SECOND_DATA_SIZE_MB
++alloc_size "Metadata" SECOND_METADATA_SIZE_MB
++alloc_size "System"   SECOND_SYSTEM_SIZE_MB
++
++echo "Calculate request size so last memory allocation cannot be complet=
+ely fullfilled."
++free_space FREE_SPACE_MB
++
++# Find request size whose space allocation cannot be completely fullfill=
+ed.
++THIRD_DATA_CHUNK_SIZE_MB=3D$(expr 256)
++until [ ${THIRD_DATA_CHUNK_SIZE_MB} -gt $(expr 7 \* 1024) ]; do
++	if [ $((FREE_SPACE_MB%THIRD_DATA_CHUNK_SIZE_MB)) -ne 0 ]; then
++		break
++	fi
++	THIRD_DATA_CHUNK_SIZE_MB=3D$((THIRD_DATA_CHUNK_SIZE_MB+256))
++done
++
++if [[ ${THIRD_DATA_CHUNK_SIZE_MB} -eq $(expr 7 \* 1024) ]]; then
++	_fail "Cannot find allocation size for partial block allocation."
++fi
++
++THIRD_DATA_CHUNK_SIZE_B=3D$(expr ${THIRD_DATA_CHUNK_SIZE_MB} \* 1024 \* =
+1024)
++echo "Allocation size in mb    =3D ${THIRD_DATA_CHUNK_SIZE_MB}" >> ${seq=
+res}.full
++echo "Allocation size in bytes =3D ${THIRD_DATA_CHUNK_SIZE_B}"  >> ${seq=
+res}.full
++
++#
++# Do allocation until free space is exhausted.
++#
++echo "Third allocation."
++_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/data/chunk_size ${THIRD_DA=
+TA_CHUNK_SIZE_B}
++
++free_space FREE_SPACE_MB
++while [ $FREE_SPACE_MB -gt $THIRD_DATA_CHUNK_SIZE_MB ]
++do
++	alloc_size "Data" THIRD_DATA_SIZE_MB
++	_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/data/force_chunk_alloc 1
++
++	free_space FREE_SPACE_MB
++done
++
++alloc_size "Data" FOURTH_DATA_SIZE_MB
++
++#
++# Force chunk allocation of system block type must fail.
++#
++echo "Force allocation of system block type must fail."
++_set_fs_sysfs_attr ${SCRATCH_BDEV} allocation/system/force_chunk_alloc 1=
+ 2>/dev/null
++
++#
++# Verification of initial allocation.
++#
++echo "Verify first allocation."
++FIRST_DATA_CHUNK_SIZE_MB=3D$(expr ${FIRST_DATA_CHUNK_SIZE_B} / 1024 / 10=
+24)
++FIRST_METADATA_CHUNK_SIZE_MB=3D$(expr ${FIRST_METADATA_CHUNK_SIZE_B} / 1=
+024 / 1024)
++
++# if [[ $(expr ${FIRST_DATA_CHUNK_SIZE_MB} + ${DATA_SIZE_START_MB}) -ne =
+$(expr ${FIRST_DATA_SIZE_MB}) ]]; then
++if [[ $(expr ${FIRST_DATA_CHUNK_SIZE_MB} + ${DATA_SIZE_START_MB}) -ne ${=
+FIRST_DATA_SIZE_MB} ]]; then
++	echo "tInitial data allocation not correct."
++fi
++
++if [[ $(expr ${FIRST_METADATA_CHUNK_SIZE_MB} + ${METADATA_SIZE_START_MB}=
+) -ne ${FIRST_METADATA_SIZE_MB} ]]; then
++	echo "Initial metadata allocation not correct."
++fi
++
++#
++# Verification of second allocation.
++#
++echo "Verify second allocation."
++SECOND_DATA_CHUNK_SIZE_MB=3D$(expr ${SECOND_DATA_CHUNK_SIZE_B} / 1024 / =
+1024)
++SECOND_METADATA_CHUNK_SIZE_MB=3D$(expr ${SECOND_METADATA_CHUNK_SIZE_B} /=
+ 1024 / 1024)
++
++if [[ ${SECOND_DATA_CHUNK_SIZE_B} -ne ${SECOND_DATA_CHUNK_SIZE_READ_B} ]=
+]; then
++	echo "Value written to allocation/data/chunk_size and read value are di=
+fferent."
++fi
++
++if [[ ${SECOND_METADATA_CHUNK_SIZE_B} -ne ${SECOND_METADATA_CHUNK_SIZE_R=
+EAD_B} ]]; then
++	echo "Value written to allocation/metadata/chunk_size and read value ar=
+e different."
++fi
++
++if [[ $(expr ${SECOND_DATA_CHUNK_SIZE_MB} + ${FIRST_DATA_SIZE_MB}) -ne $=
+{SECOND_DATA_SIZE_MB} ]]; then
++	echo "Data allocation after chunk size change not correct."
++fi
++
++if [[ $(expr ${SECOND_METADATA_CHUNK_SIZE_MB} + ${FIRST_METADATA_SIZE_MB=
+}) -ne ${SECOND_METADATA_SIZE_MB} ]]; then
++	echo "Metadata allocation after chunk size change not correct."
++fi
++
++#
++# Verification of third allocation.
++#
++echo "Verify third allocation."
++if [[ ${FREE_SPACE_MB} -gt ${THIRD_DATA_CHUNK_SIZE_MB} ]]; then
++	echo "Free space after allocating over memlimit is too high."
++fi
++
++# The + 1 is required as 1MB is always kept as free space.
++if [[ $(expr ${THIRD_DATA_CHUNK_SIZE_MB} + ${THIRD_DATA_SIZE_MB} + 1) -l=
+e $(expr ${FOURTH_DATA_SIZE_MB}) ]]; then
++	echo "Allocation until out of memory: last memory allocation size is no=
+t correct."
++fi
++
++status=3D0
++exit
++
+diff --git a/tests/btrfs/251.out b/tests/btrfs/251.out
+new file mode 100644
+index 00000000..9a44a03a
+--- /dev/null
++++ b/tests/btrfs/251.out
+@@ -0,0 +1,10 @@
++QA output created by 251
++Capture default chunk sizes.
++First allocation.
++Second allocation.
++Calculate request size so last memory allocation cannot be completely fu=
+llfilled.
++Third allocation.
++Force allocation of system block type must fail.
++Verify first allocation.
++Verify second allocation.
++Verify third allocation.
 
-Maybe I should post the other series as an alternative, get some input
-on it.
+base-commit: 9f8f0e4d5ae00990bac05fbd69a882255bf7bf9f
+--=20
+2.30.2
 
-> A next step (as a patch series on top) would be to make sure direct
-> I/O also takes sub-page faults into account. That seems to require
-> probing the entire address range before the actual copying. A concern
-> I have about this is time-of-check versus time-of-use: what if
-> sub-page faults are added after the probing but before the copying?
-
-With direct I/O (that doesn't fall back to buffered), the access is done
-via the kernel mapping following a get_user_pages(). Since the access
-here cannot cope with exceptions, it must be unchecked. Yes, we do have
-the time-of-use vs check problem but I'm not worried. I regard MTE as a
-probabilistic security feature. Things get even murkier if the I/O is
-done by some DMA engine which ignores tags anyway.
-
-CHERI, OTOH, is a lot more strict but there is no check vs use issue
-here since all permissions are encoded in the pointer itself (we might
-just expand access_ok() to take this into account).
-
-We could use the min_size logic for this I think in functions like
-gfs2_file_direct_read() you'd have to fault in first and than invoke
-iomap_dio_rw().
-
-Anyway, like I said before, I'd leave the MTE accesses for direct I/O
-unchecked as they currently are, I don't think it's worth the effort and
-the potential slow-down (it will be significant).
-
-> Other than that, an approach like adding min_size parameters might
-> work except that maybe we can find a better name. Also, in order not
-> to make things even more messy, the fault_in functions should probably
-> continue to report how much of the address range they've failed to
-> fault in. Callers can then check for themselves whether the function
-> could fault in min_size bytes or not.
-
-That's fine as well. I did it this way because I found the logic easier
-to write.
-
-> > The fault_in_*() API improvements would be a new
-> > series. Anyway, I'd first like to know whether this is heading in the
-> > right direction and whether it's worth adding min_size to all
-> > fault_in_*() (more below).
-> >
-> > v2 adds a 'min_size' argument to all fault_in_*() functions with current
-> > callers passing 0 (or we could make it 1). A probe_subpage_*() call is
-> > made for the min_size range, though with all 0 this wouldn't have any
-> > effect. The only difference is btrfs search_ioctl() in the last patch
-> > which passes a non-zero min_size to avoid the live-lock (functionally
-> > that's the same as the v1 series).
-> 
-> In the btrfs case, the copying will already trigger sub-page faults;
-> we only need to make sure that the next fault-in attempt happens at
-> the fault address. (And that the fault_in functions take the user-copy
-> fuzz into account, which we also need for byte granularity copying
-> anyway.) Otherwise, we're creating the same time-of-check versus
-> time-of-use disparity as for direct-IO here, unnecessarily.
-
-I don't think it matters for btrfs. In some way, you'd have the time of
-check vs use problem even if you fault in from where uaccess failed.
-It's just that in practice it's impossible to live-lock as it needs very
-precise synchronisation to change the tags from another CPU. But you do
-guarantee that the uaccess was correct.
-
-> > In terms of sub-page probing, I don't think with the current kernel
-> > anything other than search_ioctl() matters. The buffered file I/O can
-> > already cope with current fault_in_*() + copy_*_user() loops (the
-> > uaccess makes progress). Direct I/O either goes via GUP + kernel mapping
-> > access (and memcpy() can't fault) or, if the user buffer is not PAGE
-> > aligned, it may fall back to buffered I/O. So we really only care about
-> > fault_in_writeable(), as in v1.
-> 
-> Yes from a regression point of view, but note that direct I/O still
-> circumvents the sub-page fault checking, which seems to defeat the
-> whole point.
-
-It doesn't entirely defeat it. From my perspective MTE is more of a best
-effort to find use-after-free etc. bugs. It has a performance penalty
-and I wouldn't want to make it worse. Some libc allocators even go for
-untagged memory (unchecked) if the required size is over some threshold
-(usually when it falls back to multiple page allocations). That's more
-likely to be involved in direct I/O anyway, so the additional check in
-fault_in() won't matter.
-
-> > Linus suggested that we could use the min_size to request a minimum
-> > guaranteed probed size (in most cases this would be 1) and put a cap on
-> > the faulted-in size, say two pages. All the fault_in_iov_iter_*()
-> > callers will need to check the actual quantity returned by fault_in_*()
-> > rather than bail out on non-zero but Andreas has a patch already (though
-> > I think there are a few cases in btrfs etc.):
-> >
-> > https://lore.kernel.org/r/20211123151812.361624-1-agruenba@redhat.com
-> >
-> > With these callers fixed, we could add something like the diff below.
-> > But, again, min_size doesn't actually have any current use in the kernel
-> > other than fault_in_writeable() and search_ioctl().
-> 
-> We're trying pretty hard to handle large I/O requests efficiently at
-> the filesystem level. A small, static upper limit in the fault-in
-> functions has the potential to ruin those efforts. So I'm not a fan of
-> that.
-
-I can't comment on this, I haven't spent time in the fs land. But I did
-notice that generic_perform_write() for example limits the fault_in() to
-PAGE_SIZE. So this min_size potential optimisation wouldn't make any
-difference.
-
--- 
-Catalin
