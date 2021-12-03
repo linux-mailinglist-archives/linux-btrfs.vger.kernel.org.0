@@ -2,109 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8674675F3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 12:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC324675F9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 12:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380283AbhLCLP5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 06:15:57 -0500
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:21681 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235997AbhLCLP4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 06:15:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1638529952; x=1670065952;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=GaxKpsgIAuloNxDaQ0qppdDDeVX8f30FGtFMyTW2w0Y=;
-  b=YOQxcJleY9VC8iCYJFeavnfwjPWxPTFM/aCBWNzYd7Mh+WUvpFM81rAG
-   nkQ5V4PCOX8Q/UTTIWXiR1hXXmR9JJRD29UdbwOPolPNVzW9LW5obVpJS
-   EPIqn9T2WcUZUibdke9unvSUStDzAlSQSw6f39GPUzyUzHf0E6u1V/Olp
-   KZmXWP7DxtUGx2SfSrB0XdeOywIPRQqsVwr9eV2NszLw0PDYnbzUMBdJy
-   Vm0dYHCSAamv2UIc/RuW0Ko1Kuykyt6AyY+GURJRhggSoL2J4uZXReRd2
-   U9gqiP2w0INdCGR3UJR44dHNS/VEsqp5nthpFyAI094xbFoSfHMdeBu2J
-   Q==;
-X-IronPort-AV: E=Sophos;i="5.87,284,1631548800"; 
-   d="scan'208";a="187379621"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Dec 2021 19:12:32 +0800
-IronPort-SDR: tTVnZS00WkThF3aOp+RSyAsXqa4wSzBMg/8+2xO4y+FhdHN1Zmw8z+Zv2Qn0PY89oD1VeZRHTv
- iSsRqblV31IDo/JCvpQF5zKGiPt2COqpX/sNYwxekWFrF+6lpScc0km+ZiWSRiX9xOWprTsFwJ
- MCX8cQhfmKdSo/RlKq3kNGYVvJt82MibRzRI3a2T87CB2FPCPY+P0Vu3tfh9w1Bcg3IqDEsSiu
- vMXgIdtQCxCbaZs6G41wAq6P9tzlkKKtagVXpPN76g6XJSG+UHmiyDwsbAd4qHlesyUNna2ghv
- Of5eAYlc8CGqg8sqsRJPQYLF
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2021 02:47:14 -0800
-IronPort-SDR: w3rnP1SLT8W1iCTQps09aRiL47TIq7WVTPbVLg1Unk5d94f2Duwc+uXrWlkwwAOHtJ3zZz3a9E
- 65/jW4gbnEvsRy9YV+0xODMz+4ctF8NmbFFOEqvycsCgQDVa+UHtjLQIGwTHV16BmKH/6j65b5
- H2cF7hPstViiK5YZ8NXBXuAwd8/qmOaNe/uTEKVTpCCWNiEmRGyYES0ZICTsbZClkEfkDXi5l2
- /3hmMoFJfDdRERDPwmSHqD0lqEBfrcctdK1iHffGrY5pZC4ilAEMnv4J/mknoD4+MofGs/k/93
- /b8=
-WDCIronportException: Internal
-Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 03 Dec 2021 03:12:31 -0800
-From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: zoned: free zone_cache when freeing zone_info
-Date:   Fri,  3 Dec 2021 03:12:27 -0800
-Message-Id: <2dbe65bc10716401b0c663b1a14131becff484dd.1638529933.git.johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.31.1
+        id S1380304AbhLCLRW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Dec 2021 06:17:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235997AbhLCLRO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 06:17:14 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A927C06173E
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 03:13:50 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1FF93B8269B
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 11:13:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42B89C53FC7;
+        Fri,  3 Dec 2021 11:13:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638530027;
+        bh=sMP13Sq3mV91RIkNgGpneL1ZMzNafwAf+iQkThCI5sA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f4b7lBr6CQ02H8U65V+5vnAv8VuLEhFMneamAxJYSmtA8CYMI5vFQfb1wQrXKCNU8
+         1thCfOmvAYbIIhywRxAZZd+oS5yeMqg2LyepKdYG4VbbL41XbkJ/7vahsz6ABdgVPZ
+         dXGb9tqJfJtokWMazEsBEeTethSzUhfVbVHy3+Jqvfuzg6/3BTdtTMkTlMfyXy944O
+         zJ9Ucj6T3s/AbXFWWLtLHstw2RBTrKtngg+hPQNh5RXO+iUlKQ6dssMu003M66Uy7g
+         FncfmHuGgbFAnAyKQb2KubC0lencPrIuAxSgsjIg2hWmh5SjOCc8Zc/R79BNFqi1Pq
+         dva79L2PYbMuw==
+Date:   Fri, 3 Dec 2021 11:13:44 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: send: fix a failure when looking for data
+ backrefs after relocation
+Message-ID: <Yan76IDfL2R0rrRS@debian9.Home>
+References: <829076d580be74f270e740f8dded6fda45390311.1638440202.git.fdmanana@suse.com>
+ <YakecWBMcRKlPdGa@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YakecWBMcRKlPdGa@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Kmemleak was reporting the following memory leak on fstests btrfs/224 on my
-zoned test setup:
+On Thu, Dec 02, 2021 at 02:28:49PM -0500, Josef Bacik wrote:
+> On Thu, Dec 02, 2021 at 10:21:43AM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> > 
+> > During a send, when trying to find roots from which to clone data extents,
+> > if the leaf of our file extent item was obtained before relocation for a
+> > data block group finished, we can end up trying to lookup for backrefs
+> > for an extent location (file extent item's disk_bytenr) that is not in
+> > use anymore. That is, the extent was reallocated and the transaction used
+> > for the relocation was committed. This makes the backref lookup not find
+> > anything and we fail at find_extent_clone() with -EIO and log an error
+> > message like the following:
+> > 
+> >   [ 7642.897365] BTRFS error (device sdc): did not find backref in send_root. inode=881, offset=2592768, disk_byte=1292025856 found extent=1292025856
+> > 
+> > This is because we are checking if relocation happened after we check if
+> > we found the backref for the file extent item we are processing. We should
+> > do it before, and in case relocation happened, do not attempt to clone and
+> > instead fallback to issuing write commands, which will read the correct
+> > data from the new extent location. The current check is being done too
+> > late, so fix this by moving it to right after we do the backref lookup and
+> > before checking if we found our own backref.
+> > 
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> 
+> I'm not against this in principal, but won't we come all the way back out of
+> this loop and re-search higher up because things changed?  Can we just do a
+> -EAGAIN, come out and re-search down to this key so we can still do the clone
+> properly?  If we can't then this is reasonable, but I'd like to avoid blowing up
+> a send stream because relocation was running if at all possible.
 
- unreferenced object 0xffffc900001a9000 (size 4096):
-   comm "mount", pid 1781, jiffies 4295339102 (age 5.740s)
-   hex dump (first 32 bytes):
-     00 00 00 00 00 00 00 00 00 00 08 00 00 00 00 00  ................
-     00 00 08 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
-   backtrace:
-     [<00000000b0ef6261>] __vmalloc_node_range+0x240/0x3d0
-     [<00000000aa06ac88>] vzalloc+0x3c/0x50
-     [<000000001824c35c>] btrfs_get_dev_zone_info+0x426/0x7e0 [btrfs]
-     [<0000000004ba8d9d>] btrfs_get_dev_zone_info_all_devices+0x52/0x80 [btrfs]
-     [<0000000054bc27eb>] open_ctree+0x1022/0x1709 [btrfs]
-     [<0000000074fe7dc0>] btrfs_mount_root.cold+0x13/0xe5 [btrfs]
-     [<00000000a54ca18b>] legacy_get_tree+0x22/0x40
-     [<00000000ce480896>] vfs_get_tree+0x1b/0x80
-     [<000000006423c6bd>] vfs_kern_mount.part.0+0x6c/0xa0
-     [<000000003cf6fc28>] btrfs_mount+0x10d/0x380 [btrfs]
-     [<00000000a54ca18b>] legacy_get_tree+0x22/0x40
-     [<00000000ce480896>] vfs_get_tree+0x1b/0x80
-     [<00000000995da674>] path_mount+0x6b6/0xa10
-     [<00000000a5b4b6ec>] __x64_sys_mount+0xde/0x110
-     [<00000000fe985c23>] do_syscall_64+0x43/0x90
-     [<00000000c6071ff4>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+It could be done, but I didn't do it that way because:
 
-The allocated object in question is the zone_cache.
+1) Mostly to keep it as simple as possible initially.
 
-Free it when freeing a btrfs_device's zone_info.
+2) I wanted to avoid the possibility of too many tree re-searches.
+   Though I have seen it happens rarely at find_extent_clone() during my
+   testing, and that's because we do the check and re-search before advancing
+   to the next key in the tree iteration code (full_send_tree() and
+   btrfs_compare_trees()).
 
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/zoned.c | 1 +
- 1 file changed, 1 insertion(+)
+   Overall I haven't seen an excessive number of re-searches, and when they
+   happen they are cheap as the extent buffers are already in memory.
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index c917867a4261..fc9c6ae7bc00 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -612,6 +612,7 @@ void btrfs_destroy_dev_zone_info(struct btrfs_device *device)
- 	bitmap_free(zone_info->active_zones);
- 	bitmap_free(zone_info->seq_zones);
- 	bitmap_free(zone_info->empty_zones);
-+	vfree(zone_info->zone_cache);
- 	kfree(zone_info);
- 	device->zone_info = NULL;
- }
--- 
-2.31.1
+   But I plan on later to eliminate some unnecessary re-searches, by keeping
+   track of what kind of block group was relocated (data/metadata/system) and
+   its logical range.
 
+   For now I wanted to make sure that it always produces corrects results and
+   that performance is acceptable. As it is it may ocassionaly issues write
+   operations instead of clone operations, but again it rarely happens and we
+   already have a few cases where we skip cloning anyway (too many extent refs
+   and a few edge cases).
+
+Seems reasonable?
+
+Thanks.
+
+> 
+> Josef
