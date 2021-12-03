@@ -2,126 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1798146726D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 08:16:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B62467323
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 09:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378793AbhLCHTb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 02:19:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378786AbhLCHTa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 02:19:30 -0500
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208F6C06174A
-        for <linux-btrfs@vger.kernel.org>; Thu,  2 Dec 2021 23:16:07 -0800 (PST)
-Received: by mail-oo1-xc34.google.com with SMTP id v19-20020a4a2453000000b002bb88bfb594so1431614oov.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 02 Dec 2021 23:16:07 -0800 (PST)
+        id S1379179AbhLCINX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Dec 2021 03:13:23 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:16670 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379151AbhLCINQ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 03:13:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1638518993; x=1670054993;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=GADzyRnyTEVd0RPn0ARtHG7LTuVX4H+f1io49+2k2E4=;
+  b=Gu+yopJ/kgpU2Rtb2sELeJz4KTmpNXsoHP8rPp0sWdyCK5PxT50BDcko
+   5r2/WvTqF9MMRLZdCNyDjO1+mCXm8vb8swkNUGNG3fm/WVkeZyIPTxv5O
+   nRXRE6YKBEWW0d5tMZWuVPq14gzWC6MNxuxqodCpKwXcU6erpiCF9qiak
+   duPWL5mxHh5sYualsSV16KZMvNxULQET2R5m10pY/Mgvp5eSgOs6PD6YW
+   7HzKZOVfOZOFwx0eYeR79eTut3WV0MqjgWRDOgQYTx77d0crwt/jTXMur
+   I+xswEUFhnmd2hxsD7VXgsMV6gRo0fTkCMlc79ZAp0Vkm8eW6l7x8p6r4
+   w==;
+X-IronPort-AV: E=Sophos;i="5.87,283,1631548800"; 
+   d="scan'208";a="291333550"
+Received: from mail-bn8nam11lp2175.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.175])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Dec 2021 16:09:50 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i45SZUQpbiQHt5Bk5hH57nTpdFBYX2OL0l8j1xCbAo6GEgey3atQ3hCJrJ07pJT4Le0kMNCystyOaTGO54qFRsxHpFpFnWNuoNLrA8LDU353EEoJWhGn2gprvm9RO+8053PDgAFUBYrP3YqM9ftwJIcnQyKuRDGdVBlZKBkIMa3QIMY0SpaW+e8bKtUauGidiCNmGaZP9jyvOymm4NSZ9yzOy/agYCJxde9RtVPwQZnBFn8n0LOzexfs1wFI9DkSUax3p1OwyOPt3OyJ/Z0+XOJz5+qBPPoOHHhXZRkmeUpnaOceV/UkAzQ7Hc59vRVPlTZO/27CT3PKtRzw7a/hng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fdgldL+WNp8dqmFe3BUiqhl8/IfPCTy9Ju8BKw503pM=;
+ b=hI7syq5ghHK/ZchjaJ6AKie4e2RffTvONPpzUzi76ifq4QQslY+qgtvK0y+MzS+JgRauwXVkCg+Y59qmdY2Fdc1Lihtz4zAQsWwo0G9icONz9egpFyGVZAryFMdX3ca0Nl/fwnstzQG/q7ty9uG1T8Z2m/Hvd324VVGk/M8K6kYM0AqK2ABkT6VjNC+JKEce3cLc1Cof3XayF501HM5o6KTdFhibT4uVr3Mrt8cwt2sPskYtVoxLDyBeIVYqAWBQfhtaHPXkjZlkY2DPrdpQdItTxw4Rd8Ef9DR2y+IoW/P5eYDpvHtp6JrP9Y53pmxKtdCrXG5Yr6RATjw1uydwUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=0QE/cB8hot+2g1JVsEdgY9x2CUO4uU7bJfSJphU83AQ=;
-        b=AkaJ4bZpzsPbApLENULokJ0NPutpMg415aXhtlS0X2cBbl4sJOeWVg756v3Cjn0dl8
-         UoGL4jmvpTOVEgGgR9wM7XLrEwEmltEciEQHQQJLyDRkBP+TM1INViXIb1CmBF9eVZGa
-         EXy0c61Aq+ibUAv/veQ+0bkr9dT1jyR/dzzEYXdQreBUkvAgv6R02/I/Njw2Ce5B1bI8
-         UciU1xFNcOUa3X7Ez0yASS3xSVKbx2ULhsYbB5FbkKvZUnmDSR3PnAuhg0KHQVw+X3I+
-         FFHF4wfUlLSF0Hg0kiUoi+tO6HKpxImZzqRbje0lwlgpmBDuaDsk3Yf6kBZMVnXqWMYi
-         Ne9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=0QE/cB8hot+2g1JVsEdgY9x2CUO4uU7bJfSJphU83AQ=;
-        b=CzgkdvhuyEa/91X80Zs02HVilqEWWm7DfbV3DxrXt5vrxjadK5Wi/6s/d7KNSdojGs
-         ZfvVOqtRcEbBTgPMOireHwId9q8/kRjGP9ci7GAVA0wwKamv9PAZ+bHbSraEBYsvnzUu
-         zctm2D2IbPpSmkVRsA3pcEf5VZAVdDueQ3xI7GJa485wmyZt0Hu4HrgNkz0gWNDuGI9m
-         96Y9HnLzrFJo6dEnNhQhDyTpjd/MVh3yKMfcYddOk5v4ltXAjnwRDkZbwGBRv2GaiM0D
-         VJUS3BLUD24BpOXDGvT+tT8qBskpRHJ6BhRwAFUCqAbNFWpsdcDxgASlPzIcnIF9lmSm
-         12tA==
-X-Gm-Message-State: AOAM5310IwlcyiQJeYkWH82Q5zy8TlDsTaSwBVnG/JUQVRRMTUEeh1la
-        /7kcyRIo1+VCp8ZJND6r9OdGxo4iaQmDbCOCcoJfEHzOggM=
-X-Google-Smtp-Source: ABdhPJzp+ypO8kf+/ulLjnBzRNRCeHwk9kB68yc8MgCfrCwGpJ1KVObuzCFYuKbs3hKquuZ2WakiY6i+Bqcp2lFFNiE=
-X-Received: by 2002:a05:6830:90a:: with SMTP id v10mr15171924ott.223.1638515766234;
- Thu, 02 Dec 2021 23:16:06 -0800 (PST)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fdgldL+WNp8dqmFe3BUiqhl8/IfPCTy9Ju8BKw503pM=;
+ b=f9JXlCWGPFjf5SXPi/Ncy4q0JMy0ZPRoqAL9SfXHKMa4QWT125y4oBpRurmWA+VAwlqaSFhdLUOYpLHgwaZMncCrQ/ZUd68YXyA3IjKLn9w7xTxfuh/yfy26tK873B9OC/Nl2RqTbXByQbkUv1+aUe2yv4pCPrEiYSdtn/PvruI=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7477.namprd04.prod.outlook.com (2603:10b6:510:4f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.11; Fri, 3 Dec
+ 2021 08:09:48 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::3418:fa40:16a4:6e0c]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::3418:fa40:16a4:6e0c%3]) with mapi id 15.20.4755.011; Fri, 3 Dec 2021
+ 08:09:48 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Tomasz Chmielewski <mangoo@wpkg.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: kworker/u32:5+btrfs-delalloc using 100% CPU
+Thread-Topic: kworker/u32:5+btrfs-delalloc using 100% CPU
+Thread-Index: AQHX59Or+fvG7aRbMEaEYJLTiDQa9A==
+Date:   Fri, 3 Dec 2021 08:09:48 +0000
+Message-ID: <PH0PR04MB7416465C59F5F339FA87AB839B6A9@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <c5af7d3735e68237fbd49a2ae69a7e7f@wpkg.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 598bbea5-3173-472c-72c0-08d9b634466d
+x-ms-traffictypediagnostic: PH0PR04MB7477:
+x-microsoft-antispam-prvs: <PH0PR04MB7477B1D4E34D328442F8AAA39B6A9@PH0PR04MB7477.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1jEia180XK3qd8IAsQO2XRyZplnUgl9rL3h1tzEF4eP9/GcykVOk47ESOcsfwpvyvbmsMnGJByfE/zEpBrGWLqK5Z2cXe/iSPmIvE/a3hI8tNM5I7JH/DAKuIQ2E7yIekuvs8RVIY4A4MoH6u+YEIHGvnaM775b7OU6Pf2OwNEVtO8DO+eaXysm2vIEYeqC1SEWY/jINV28uVVGYI5v18jZHG+P6pivD9gmyS/Ewj7hMhcp5mWKnZAR7S9DmrdV9XPCof3Xw2A1Gw8atBkzGA1y1KjeodAM/cpp5YNeO+WU29Wd1NEA543dDryu6y6dFk/BT6M7FToK/75pPVMT644ZIZdGZsuwPaPupQWLc5k20ul3TSgusJarXhLyEk9aM+xkn6P15EtCA/i4ILffuFBdEBM+3r1O+gkHUagZMXuT4/9CbDjvO7zMkqiP95hfR2Flxva8OGp9SMhTq5sIFElk3seyNBoUgpGuTCJdzK7hIhZX+GyeaYqlAjTTxO+bZLU0WsBsL0sXmfsVl/lOnytlv5IeTd4ucoPq0CsKd9/+rU4+XzOJM6dN2bcGeSXnIwa21yuWDrUGgDuGOM8zWYw7+B5eDRWTyyCA6pgDKWgym4ltxahXKdGMTqElAtI7lu+d+49Mw+qXUl9Kbbdk2mQ7zxs4fEoFjldFav+go1r4gEE6TWWMAMfybbUJcju1wLTIfZPw9WEIYTknK7Fm1dA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(82960400001)(38070700005)(8676002)(2906002)(508600001)(76116006)(55016003)(66946007)(91956017)(71200400001)(316002)(186003)(5660300002)(110136005)(53546011)(83380400001)(52536014)(64756008)(66476007)(66556008)(66446008)(9686003)(4744005)(122000001)(7696005)(33656002)(38100700002)(86362001)(6506007)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VMKO3Nl8CaEk5Jz33v9kN66ZOftYZ1xYeJxIfSDbk+Dmcvri31COvnH+A3um?=
+ =?us-ascii?Q?RZAbbY8/pcEnCl/bIamd45i41nanxgSoOFBimQmmYvR1ES+NcPuESNsDCKsB?=
+ =?us-ascii?Q?q1xzOgiljkZfVNlGHBzCUe29Traym2MktpsAUk2S3WEESWIBXmQMZdT3BCr0?=
+ =?us-ascii?Q?tVZpQH3fV5N4434tDbQSjAYrjSWuXYXXEWzWq/6+lCuoUXlLMZgE9+midtIY?=
+ =?us-ascii?Q?NyMKQRt5kVhokQ0g8Gmda6lRUa9q3WFqYeAWH9NmcLj50P/5AAv/GxdLgf8t?=
+ =?us-ascii?Q?XK+C7s0K9u/oH0yQEVd3mj7C8xAAOw3FG8DC3cJv+h3+t2ZJP8mhupJ239j7?=
+ =?us-ascii?Q?FE4z+eMrlqDqhZSsVVERxR2+lCtnZmsrS2fSwFoWzfSS8BeV7jxShSIhs8M7?=
+ =?us-ascii?Q?Hx0+18bxt5E0gpjema//i4uw8IYyJt0njtdAtq0uIMC+WPgiUk0441FvjE1e?=
+ =?us-ascii?Q?y3PiiyMDzYlKX8dQzOV2doiSGuWxh+3ONt832C/bqGIoLVBqcgxo5LO29cOT?=
+ =?us-ascii?Q?d8WeyDwZ/omGI3/TL5/LPhp7BVXpJ5vw5Hxd7NbH095GaM58X14NKEAcJc24?=
+ =?us-ascii?Q?tPkylCrE9AZLrbnJZg3Hli73MLHoBrPaq4ieF8HjxUgantPjGAbQzg2g4/GT?=
+ =?us-ascii?Q?GpFxTLvOWWhqXJmI7XEL0nstswyx238S0qduw2f/C3wF80/+wQJD2YLkvR3U?=
+ =?us-ascii?Q?bSlNn3UqCcIciesCm0USt1n0IbSKd+EcJCOXfavGvSIIpouTid3Z27h3v4cs?=
+ =?us-ascii?Q?k5Dh9R8RTWzUEwCsxyarTsF61SQV0krK7iA7t3f2TVMbfvJ9y5B6zH0rqtAC?=
+ =?us-ascii?Q?XP8POFm0aFVSw3hzWs8h3PcUrXZR/PCExdMWbUGNOGJyocJgcxabJymo2guP?=
+ =?us-ascii?Q?BT0VbziqmdX7vn4X8xMzZa7N+ikjcqqXeHP0xye0dEesEk858BFavznmohP0?=
+ =?us-ascii?Q?+ZHygYAlHi5NsKsQpxsETgpk8dB9lLswLleh4egChqipxweQiV4vOc9g3VyC?=
+ =?us-ascii?Q?FQyUhcpwfSBjusGs2qv3ZEoFFvXB1qEMbnbJjD6M9qdnc557oDie8wbDMhi5?=
+ =?us-ascii?Q?jy4vjGYKFoV/NE84hxv3Rj5FSgYfb6u1C5MOYG7M82fTygQZ1s0V7EEL/KCJ?=
+ =?us-ascii?Q?x62P/DLuJX3slPAdL0/CVeicpQht8FnGC2na2anwzu1TUI7oJJIGrNQUB1zp?=
+ =?us-ascii?Q?pOpHoHEe32x61UVPQnUoajZHRofHqoDkxWQEOpvM1G3TSatTw+nSH3Ik5MMS?=
+ =?us-ascii?Q?CYnFwQOn7fs/By5dlypdvzZMjVxrgugaVnwHQEGR1fBLD3crpdK9zCNKZ776?=
+ =?us-ascii?Q?HiTbYmCj2YwRss8x/ildMfSImztOkR6Rgpaw1F+P9E/wc8QSEPDMunWX1wA9?=
+ =?us-ascii?Q?IME+al1RHmCEsPMCJppSSsVKTzvZYNSWj99+UkkBE+haCeVE8Kcq6CdQK5K4?=
+ =?us-ascii?Q?wWOHYAMo8LjnMVPWdr/lTqDtTtz/GMMLpfxrcx3S2hW5qu3RLVsqSCbb0+ms?=
+ =?us-ascii?Q?TbIPYSdPZtpy8DazEAyWnJTyQA9AgycMGznk3Fetqd5VFBDQ8EeHz/Gk7FQz?=
+ =?us-ascii?Q?ZIMiugef48VRkBdiwyf9shh727HdoPo0V34RvvGNJ0uyteI4CcNbZAiZ++KY?=
+ =?us-ascii?Q?pLd6aAAYgp915ooU21tUVaOxrr/EQk5jRDiI4sT/NYqmsCgq5szFzZYSZLw+?=
+ =?us-ascii?Q?2Qq46549rp/hybk0KVye539XzpbNKcCpN0IVhCW9YFbel5tZFG/uY7ZaPm75?=
+ =?us-ascii?Q?N/LA2Vnnd3y5CwmKFnqyjNzzcObLR8w=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-From:   Adrian Vovk <adrianvovk@gmail.com>
-Date:   Fri, 3 Dec 2021 02:15:55 -0500
-Message-ID: <CAAdYy_mU14KxdwG+-KoyHfA+t34SZnXGmxMTcd2d7Y_dhMKHDQ@mail.gmail.com>
-Subject: Question: Cryptographically Sealed Subvolumes?
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 598bbea5-3173-472c-72c0-08d9b634466d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2021 08:09:48.4264
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Meo+J4b9ynyOVMt1PiMDnkMBC0zPFMe3NGdswcZVybsO7N9ebCIfp7/zjyHR4bvwd/j9YcLzr9m50PxIJ7a+u92JsPpihjwIfmd1Ey++fLc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7477
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello!
-
-How possible would it be to implement a "sealed subvolume" in Btrfs?
-By that I mean something like fs-verity for a whole subvolume. The way
-I envision it working is: I'd make a subvolume, populate it with
-content, and then "seal" it. This will go through and generate a
-Merkle tree of the contents of that subvolume (which I'll call "the
-seal"). Then, at any point, I can recompute the subvolume's seal's
-root hash and compare it to a known-good list of hashes. Also, reads
-that don't match the seal would fail.
-
-I see this as something that provides functionality somewhere between
-fs-verity and dm-verity. Basically, if two snapshots have the same
-file content and metadata in the same directory structure, they should
-have the same seal. Filesystem-internal details (like where exactly
-the data is stored on disk, compression, filesystem UUID, etc)
-shouldn't be part of the seal (unlike dm-verity). It would allow users
-to quickly check whether or not two subvolumes have the same content
-inside
-
-Apple's APFS has something like this implemented:
-https://support.apple.com/guide/security/signed-system-volume-security-secd698747c9/web.
-
-Ideally, this seal mechanism would be compatible with the
-authenticated-btrfs work being done
-(https://kdave.github.io/authenticated-hashes-for-btrfs-part1/) to
-protect from offline modification to the filesystem's writable parts
-
-From my understanding of how Btrfs works, this should be feasible.
-Perhaps even Btrfs's existing checksum infrastructure could be reused
-here (but probably not). It could probably reuse Btrfs's fs-verity
-support, and just make additional Merkle trees for the directory
-structure. But I'm not familiar enough with Btrfs internals (only been
-doing a couple of days of research) to say if and how this can work.
-So, I'm referring to the experts!
-
-Motivation for this: I'm trying to implement a fully verified boot
-chain in my OS, but one of my requirements is that the underlying
-filesystem remains writeable. To perform an update, my OS downloads
-the new version into a git-like repository, and then does a
-"checkout". This creates the OS's directory structure, with hardlinks
-pointing into the repository. At boot, the initramfs switches root
-into this directory structure. With the seal, this process could be
-made more secure. I'd download content into the repository, then
-create a subvolume and do the checkout into there. Finally, I'd seal
-the subvolume. At boot time, the initramfs can verify that the seal's
-root hash matches the hash I computed at OS build time. Thus, the
-subvolume's contents match the contents of the OS I built. Thus, I can
-verify that the OS hasn't been tampered with in any way!
-
-The benefit of something like this over dm-verity is:
-1. I could create as many sealed snapshots as necessary. If I use
-dm-verity, I'm stuck with an A/B partition scheme and can only keep
-around 2 copies of the OS
-2. dm-verity will force me to pick a single maximum size for my OS,
-and then use up double that on the users' system. This is infeasible,
-because different variants of my OS are vastly different in size (the
-normal variant is only ~3Gb, whereas the development image is a full
-7Gb).
-3. I could dynamically install overlays on top of a base image with
-this model, without pre-generating & distributing a full filesystem
-image for each combination at build time
-4. I get to keep using Btrfs's compression, CoW, deduplication, and
-multi-device features
-
-I think providing a middle-ground between fs-verity and dm-verity
-would be beneficial for other projects as well. Perhaps Flatpak could
-use sealed subvolumes to do verity on each app installed by the user.
-It would definitely go a long way towards improving security on Linux!
-I'd love to hear your thoughts on something like this. Thank you!
-
-Thank You,
-Adrian Vovk
+On 03/12/2021 00:23, Tomasz Chmielewski wrote:=0A=
+> On two of my servers running Linux 5.15.5 I can observe =0A=
+> kworker/u32:5+btrfs-delalloc process using 100% CPU.=0A=
+> =0A=
+> The servers receive files with rsync and I suspect that because of that =
+=0A=
+> process using 100% CPU, the speed is very slow, less than 1 MB/s over a =
+=0A=
+> gigabit network.=0A=
+> =0A=
+=0A=
+Hi,=0A=
+=0A=
+We're currently working on a similar hang with btrfs on zoned =0A=
+block devices. Which brings me to the question, are you seeing this issues=
+=0A=
+on a zoned device, like an SMR drive, or on a regular device?=0A=
+=0A=
+Thanks,=0A=
+	Johannes=0A=
