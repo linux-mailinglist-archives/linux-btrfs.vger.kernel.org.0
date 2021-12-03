@@ -2,101 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C044C467D3E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 19:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EE5467D4B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 Dec 2021 19:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353212AbhLCS3B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 Dec 2021 13:29:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51724 "EHLO
+        id S239548AbhLCSfB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 Dec 2021 13:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233740AbhLCS3A (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 13:29:00 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60714C061751
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 10:25:36 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id g14so14656836edb.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Dec 2021 10:25:36 -0800 (PST)
+        with ESMTP id S231857AbhLCSfA (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 Dec 2021 13:35:00 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E7CC061751
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 Dec 2021 10:31:36 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id v64so11883057ybi.5
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 Dec 2021 10:31:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=colorremedies-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Or/JmgPTS79GqZIutDkpHnEjHVYD0LU+lzufkfg0YQw=;
-        b=WTkKNkRE6R418ysyxmvF8zDurfo/zAOdLc0UOp7eCzeFJefSW8HET1IAYuo+Taimiy
-         p4iweJpk9xplCCWJEpzAorhhQJWPSFavF78h6ld1rIUuOva5uei/OUOvEgUzYiVZm1wt
-         QpKnqVIUdp4omi7wXkYSNGbpjyco2jCVtE1Lw=
+        bh=qMMUH2n47x5idBxzpnwobUZAnZoOsKzZsTacOauLFBQ=;
+        b=pRCdLqnHMjFt0Lhqqqk+dOw9Yf90JjrdqB+lOPvKQ711lkxqjvvAeQISOTjOP98c9V
+         LwHp65/DzsbWCT5ZuOiskHzxHkfnAUxZgxQ7MVUy/q4kxcsIadutrPPHPktQdI8VLWfS
+         js3hZWdJ0amwuD9SB4hgEdAUtvPDDZd4Dx83DOsJYPmGv7C8L8xr1pbnq+FDsY8uxfDV
+         frd235SpCkh3c2X6joHk2MLHzXY48EjytEQm6nYoh1g02v+IUjMc6L3YcGd0WVPF1UhJ
+         SxZ+p3zHljbrlRLYa8ulJ22x29pV+qiKtdMaYje+Zr8pGc5T9b73jq545avZXGk74ihc
+         KNhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Or/JmgPTS79GqZIutDkpHnEjHVYD0LU+lzufkfg0YQw=;
-        b=IE5HDvbsCQhoy+dWJ87PwzxV++ZK7SGwG8cwJ++IkvOQdDm5Jy2YvVpSbfUx6tCH4e
-         icMX9gAW2saRdb1tJMFTw4HPQ6UBE6OLPqJFh/HCYcX/0XCqrLF5zx5QZrZg3MS2jEnQ
-         HtO1zTZ81cOhdW7JEyBmwK8twKKMfq2qym0/5iFV1rjTFVvfKV1FDKYUj/82xehaNa/N
-         KsyIWv+SuameGERCkmeiHcLyNWrgDbDzhGP8gvsEj4N/m4VMEk7emy6xjS2AYPlozbVJ
-         KUcLbYIHCZh+WAM6A7D2g3pjJR4xM9WjC3OpPwuqS5f1XvgiD0FKTOvY6hGgmunyW/OB
-         dnig==
-X-Gm-Message-State: AOAM532ECQcY+ZL/YJ7Nw27AG2Z2M17RIt4N8riP11koFW06JDyylEtX
-        R/HlrIw8JO+QC8eN+ycHc5khpiOaWAIDNdwN
-X-Google-Smtp-Source: ABdhPJzxaAzENI/BLgp0XdJfMX3demcfk6tngvLNL/Ciq9QkhvYQzWy7VNdDXndNasywJwjlS6gM9Q==
-X-Received: by 2002:a17:907:7b99:: with SMTP id ne25mr25393895ejc.15.1638555934569;
-        Fri, 03 Dec 2021 10:25:34 -0800 (PST)
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
-        by smtp.gmail.com with ESMTPSA id w18sm2356056edx.55.2021.12.03.10.25.33
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Dec 2021 10:25:33 -0800 (PST)
-Received: by mail-wr1-f41.google.com with SMTP id d9so7517929wrw.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 Dec 2021 10:25:33 -0800 (PST)
-X-Received: by 2002:adf:f8c3:: with SMTP id f3mr23456435wrq.495.1638555933321;
- Fri, 03 Dec 2021 10:25:33 -0800 (PST)
+        bh=qMMUH2n47x5idBxzpnwobUZAnZoOsKzZsTacOauLFBQ=;
+        b=QMNzJgQRG4kM/nk5gsrNZpEC1hZSYdaJhbu8F2CZkW/L+fUPA5FLlEQbVZc7iPnzE/
+         fP1La+qrkpQRaudjDDV4lMtVZgnIjXLUfWMChOEFwk2xfPyNO8upl5NP9xzGaW25GaTr
+         CktEwfvZaXLQC8Qy7R94A0wzLKNad35DPWlb3UJ2rgjiAIiVKwm0WKdmz0gJGwJGbQfa
+         d/XuaaFklklpRQd/wi9GCJQO/zEmf/l01Zf6aHVyVkyf/Z2MHgO8ZjxXspTFT34wbHyy
+         jfkI5JgpIcVHLUPnDVD/iw4ah+r1NLKObFSUrhkVefDCvsPEaIvuvdN9SSCAJtLofy4Z
+         7bew==
+X-Gm-Message-State: AOAM533M+0Ka9Aip9lmEnvx+Uo8+Z8QBq/SdRUXKSdVlttUy7HIszRtC
+        pqa3URwwfLEaCTKiqDbLJhskYSNLN8n1Oy8qtkph639+Cxgu+tOr
+X-Google-Smtp-Source: ABdhPJy+WkRe5/s1w00zorLtYwuL64C33W0x4fX01dZRGqP5x949c/UsfB1jBGEXPGVhBAStnfYMODCvL2DrDk5vCH0=
+X-Received: by 2002:a25:99c7:: with SMTP id q7mr23582505ybo.642.1638556295997;
+ Fri, 03 Dec 2021 10:31:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20211201193750.2097885-1-catalin.marinas@arm.com>
- <CAHc6FU7gXfZk7=Xj+RjxCqkmsrcAhenfbeoqa4AmHd5+vgja7g@mail.gmail.com>
- <CAHk-=wiQAQTGdMNLCKwgnt4EiAXf7Bm6p7NQx5-31S9-qPD8jg@mail.gmail.com> <CAHc6FU6r-CsMHkWzxEm237mV2vZ2O9g_D7BbCPeaA2qX0dpi0g@mail.gmail.com>
-In-Reply-To: <CAHc6FU6r-CsMHkWzxEm237mV2vZ2O9g_D7BbCPeaA2qX0dpi0g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 3 Dec 2021 10:25:17 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi12AStfPrXLjki_SLc5qqDwYX21bJLp10mynNQj7u8FA@mail.gmail.com>
-Message-ID: <CAHk-=wi12AStfPrXLjki_SLc5qqDwYX21bJLp10mynNQj7u8FA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Avoid live-lock in fault-in+uaccess loops with
- sub-page faults
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <MpesPIt--3-2@tutanota.com> <87r1azashl.fsf@vps.thesusis.net>
+In-Reply-To: <87r1azashl.fsf@vps.thesusis.net>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Fri, 3 Dec 2021 13:31:20 -0500
+Message-ID: <CAJCQCtRPnbjM+Uu=j2Ti=Gw4WKh6dzjnCg6uMcg0Qcr2nzLUiQ@mail.gmail.com>
+Subject: Re: Connection lost during BTRFS move + resize
+To:     Phillip Susi <phill@thesusis.net>
+Cc:     Borden <borden_c@tutanota.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 3, 2021 at 10:12 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+On Mon, Nov 29, 2021 at 10:33 AM Phillip Susi <phill@thesusis.net> wrote:
 >
-> It happens when you mmap a file and write the mmapped region to
-> another file, for example.
+>
+> Borden <borden_c@tutanota.com> writes:
+>
+> > Good morning,
+> >
+> > I couldn't find any definitive guidance on the list archives or Internet, so I want to double-check before giving up.
+> >
+> > I tried to left-move and resize a btrfs partition on a USB-attached
+> > hard drive. My intention was to expand the partition from 2 TB to 3 TB
+> > on a 4TB drive. During the move, the USB cable came loose and the
+> > process failed.
+>
+> The only tool I know of that can do this is gparted, so I assume you are
+> using that.  In this case, it has to umount the filesystem and manually
+> copy data from the old start of the partition to the new start.  Being
+> interrupted in the middle leaves part of the filesystem in the wrong
+> place ( and which parts is unknowable ), and so it is toast.  This is
+> one area where LVM has a significant advantage as its moves are
+> interruption safe and automatically resumed on the next activation of
+> the volume.
 
-Do you actually have such loads? Nobody should use mmap() for
-single-access file copy purposes. It's slower than just doing the copy
-exactly due to page fault overhead.
+Whether LVM or Btrfs, you can just add the earlier partition to the
+storage pool. No need to move extents around, and near as I can tell
+no advantage of doing so.
 
-In other words, you seem to be worrying about the performance of a
-load that is _explicitly_ badly written. You should be fixing the
-application, not making the kernel do stupid things.
+i.e. if the btrfs is on vda2 and it's now desired to expand the file
+system "forward" into the space defined by vda1, just add it
 
-Also, it's worth noting that that situation should be caught by the
-page-in code, which will map multiple pages in one go
-(do_fault_around() - for when the pages are cached), and do the
-readahead logic (filemap_fault() - for when the pages aren't in the
-page cache).
+btrfs device add /dev/vda1 /mnt
 
-Both of which are a lot more important than the "synchronously fault
-in pages one at a time".
+The command implies an abbreviated mkfs on vda1, and resizes the btrfs
+file system to encompass both devices. And it's also an interrupt safe
+operation unlike gparted move/resize which should come with dire
+warnings about the consequence for any interruption.
 
-                Linus
+
+-- 
+Chris Murphy
