@@ -2,95 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8BE46A378
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Dec 2021 18:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B9A46A37B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Dec 2021 18:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344539AbhLFRwe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Dec 2021 12:52:34 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:59214 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344408AbhLFRwa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Dec 2021 12:52:30 -0500
+        id S1345069AbhLFR4b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Dec 2021 12:56:31 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:35054 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345004AbhLFR4b (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 Dec 2021 12:56:31 -0500
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 3DB181FE04;
-        Mon,  6 Dec 2021 17:49:01 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 9C76E212C1;
+        Mon,  6 Dec 2021 17:53:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1638812941;
+        t=1638813181;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DI75RRGTuYAUmwltrNtOcByAzqGNJnO1YQgFxF3NthY=;
-        b=iGHFGKPvNMlsSBsAs4r9AXS9HrPnFvhP31+ZJr3f1sghzlDnhn9MnwCYZd8XqSeExub9+x
-        05dcppbT/7eUyAlql3u7kifPd9/OQOSL8QuYylkw92F9+9xQO4uCZy/tRo/DXEUgY9nXZZ
-        SFJA77kRakrr+W2ZOPVKRzqR5IGh9F4=
+        bh=vX9STzTgHR2Z/STS1HPkJvke1Uads3ZfS/ZlA3ikAlU=;
+        b=n3lKvKy9K6EUhZhhIup+xoZ+7T9h0pIM9V3JXwPWhCErVopqIQ33zSRlAOFhQI1Yz7QG+V
+        3LTWOzrAm7RacKVGOlM8C6yuFd8uGKS5+U1Eh2Z6CngkIsjMkho5P8LYT8CfyyIGpguy7w
+        t5Ux3bPQqZtYEKtX2WuqYU6UbkXr2TA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1638812941;
+        s=susede2_ed25519; t=1638813181;
         h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
          cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DI75RRGTuYAUmwltrNtOcByAzqGNJnO1YQgFxF3NthY=;
-        b=76oA9PnwQdsGPdJL9G765NG9T7J9PduL/UExjutYg2k9Gr5gXHUvQPRjh/RUdTD69pKltF
-        s412MwGor71EdrBg==
+        bh=vX9STzTgHR2Z/STS1HPkJvke1Uads3ZfS/ZlA3ikAlU=;
+        b=2ADoNyeEqf9c1af0L78zjIUHBvZEvMpA1G2vVMYfP1O0z+x5wqedLszTv4vhB7BVkZYhIr
+        kKR/mpEajMzjfpDw==
 Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 0A14AA3B87;
-        Mon,  6 Dec 2021 17:49:01 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTP id 95D97A3B88;
+        Mon,  6 Dec 2021 17:53:01 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D54B1DA799; Mon,  6 Dec 2021 18:48:46 +0100 (CET)
-Date:   Mon, 6 Dec 2021 18:48:46 +0100
+        id 845A5DA799; Mon,  6 Dec 2021 18:52:47 +0100 (CET)
+Date:   Mon, 6 Dec 2021 18:52:47 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: free exchange changeset on failures
-Message-ID: <20211206174846.GO28560@twin.jikos.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: send: fix a failure when looking for data
+ backrefs after relocation
+Message-ID: <20211206175247.GP28560@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>
-References: <95ce11234dd6911a433b1a016e4d4194856212b5.1638523623.git.johannes.thumshirn@wdc.com>
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <829076d580be74f270e740f8dded6fda45390311.1638440202.git.fdmanana@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <95ce11234dd6911a433b1a016e4d4194856212b5.1638523623.git.johannes.thumshirn@wdc.com>
+In-Reply-To: <829076d580be74f270e740f8dded6fda45390311.1638440202.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Dec 03, 2021 at 02:55:33AM -0800, Johannes Thumshirn wrote:
-> Fstests runs on my VMs have show several kmemleak reports like the following.
+On Thu, Dec 02, 2021 at 10:21:43AM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
->   unreferenced object 0xffff88811ae59080 (size 64):
->     comm "xfs_io", pid 12124, jiffies 4294987392 (age 6.368s)
->     hex dump (first 32 bytes):
->       00 c0 1c 00 00 00 00 00 ff cf 1c 00 00 00 00 00  ................
->       90 97 e5 1a 81 88 ff ff 90 97 e5 1a 81 88 ff ff  ................
->     backtrace:
->       [<00000000ac0176d2>] ulist_add_merge+0x60/0x150 [btrfs]
->       [<0000000076e9f312>] set_state_bits+0x86/0xc0 [btrfs]
->       [<0000000014fe73d6>] set_extent_bit+0x270/0x690 [btrfs]
->       [<000000004f675208>] set_record_extent_bits+0x19/0x20 [btrfs]
->       [<00000000b96137b1>] qgroup_reserve_data+0x274/0x310 [btrfs]
->       [<0000000057e9dcbb>] btrfs_check_data_free_space+0x5c/0xa0 [btrfs]
->       [<0000000019c4511d>] btrfs_delalloc_reserve_space+0x1b/0xa0 [btrfs]
->       [<000000006d37e007>] btrfs_dio_iomap_begin+0x415/0x970 [btrfs]
->       [<00000000fb8a74b8>] iomap_iter+0x161/0x1e0
->       [<0000000071dff6ff>] __iomap_dio_rw+0x1df/0x700
->       [<000000002567ba53>] iomap_dio_rw+0x5/0x20
->       [<0000000072e555f8>] btrfs_file_write_iter+0x290/0x530 [btrfs]
->       [<000000005eb3d845>] new_sync_write+0x106/0x180
->       [<000000003fb505bf>] vfs_write+0x24d/0x2f0
->       [<000000009bb57d37>] __x64_sys_pwrite64+0x69/0xa0
->       [<000000003eba3fdf>] do_syscall_64+0x43/0x90
+> During a send, when trying to find roots from which to clone data extents,
+> if the leaf of our file extent item was obtained before relocation for a
+> data block group finished, we can end up trying to lookup for backrefs
+> for an extent location (file extent item's disk_bytenr) that is not in
+> use anymore. That is, the extent was reallocated and the transaction used
+> for the relocation was committed. This makes the backref lookup not find
+> anything and we fail at find_extent_clone() with -EIO and log an error
+> message like the following:
 > 
-> In case brtfs_qgroup_reserve_data() or btrfs_delalloc_reserve_metadata()
-> fail the allocated extent_changeset will not be freed.
+>   [ 7642.897365] BTRFS error (device sdc): did not find backref in send_root. inode=881, offset=2592768, disk_byte=1292025856 found extent=1292025856
 > 
-> So in btrfs_check_data_free_space() and btrfs_delalloc_reserve_space()
-> free the allocated extent_changeset to get rid of the allocated memory.
+> This is because we are checking if relocation happened after we check if
+> we found the backref for the file extent item we are processing. We should
+> do it before, and in case relocation happened, do not attempt to clone and
+> instead fallback to issuing write commands, which will read the correct
+> data from the new extent location. The current check is being done too
+> late, so fix this by moving it to right after we do the backref lookup and
+> before checking if we found our own backref.
 > 
-> Cc: Filipe Manana <fdmanana@suse.com>
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+> 
+> David, this can be squashed into the patch:
+> 
+>    "btrfs: make send work with concurrent block group relocation"
 
-Added to devel with Filipe's comment, thanks.
+Squashed, thanks.
