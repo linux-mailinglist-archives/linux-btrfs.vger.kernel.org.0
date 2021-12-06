@@ -2,79 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97B2468BAA
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 Dec 2021 16:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC48468E73
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 Dec 2021 02:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235399AbhLEPR1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 Dec 2021 10:17:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45196 "EHLO
+        id S234857AbhLFBHq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 Dec 2021 20:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235368AbhLEPR1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Dec 2021 10:17:27 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F06C061714
-        for <linux-btrfs@vger.kernel.org>; Sun,  5 Dec 2021 07:13:59 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 137so8060299pgg.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 05 Dec 2021 07:13:59 -0800 (PST)
+        with ESMTP id S242845AbhLFA6S (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 Dec 2021 19:58:18 -0500
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32F1C061751
+        for <linux-btrfs@vger.kernel.org>; Sun,  5 Dec 2021 16:54:50 -0800 (PST)
+Received: by mail-ua1-x92d.google.com with SMTP id y5so16486816ual.7
+        for <linux-btrfs@vger.kernel.org>; Sun, 05 Dec 2021 16:54:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=boDKMdAeCyxxZM99fKq0bQHNAp1h846DLeDZStX6Wps=;
-        b=hq5ys/tHTa8h4To/VSDFiBTfUJluau8aGb7QpgWodX9VFasPtMBUEUB/Lk6WKxMzdi
-         Ylm+yCUZnUNzzSmpOhcWxiPDrzbCuEZUEfyzucrN+LKVKIW2aKSfNN/mb/ivwKbLtXs4
-         4SZBFFklzgfdy6mQmE2yCxsFVw/y1+CMasImyZR9q+8U01JD+nXlCX+e3yNgaLk0YdD3
-         i8vara1ugT+OS9llN+0QjPHPCXuC9LmxYAUA2gcNsU4YWMrWm/Rb79BJAC3+dezYOh0C
-         SVAjRVdaj978rvPNCf0mlh8VOwH15D4KQ8KbY0wLlgy5ZdV+7d7tqKHylgcvktX7hqaT
-         pzxQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=5AsGrA4DlL+PCBChvj92hqjB0hfn92LRQaKu0Z47lw0=;
+        b=WWR5BJbyDNcnl97P/L8mRAjeMZ35ktlBaUQccwas39vc7rvmkTcrErWYaAwYN2mFsx
+         DX8/+w1p9XPodK+WzjGaVGwC4tiN23p1XPTeNNyx9rFpzGY3sAgmvDhYDM45Rd5mIXYC
+         9SG/zT8uynTp95FnN2Wt6turdwsmI0ufKxbDNeiW2J90b916KF5PUB5oHTaZXjc8Gy0W
+         YJJzOi6Od9hSOn7sKespvIr+sef44NjZ5tCudOm3PNCfz9Oi+ynNj1HlGJihY8Mmv/+J
+         6oWgOecpMm6AG75X75IJnMGLW8YOOzditpOosl1LaKOkQrDydgnPf0Y5fNvLsXlPt0u2
+         Vnhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=boDKMdAeCyxxZM99fKq0bQHNAp1h846DLeDZStX6Wps=;
-        b=XoV/DDmfXmrHIyy5zC0RcrkWQjnELcy6VvIWOnNUykD+ogQbD6Daph537obyE/PWMU
-         4B9gOrqZPuW3a+DJgUGjjbKzd+mFyZhh6QTuk/QoTY8GKUeHcWGYYX1LcJqIiWMYE6dr
-         Pag8iWTXzcemuDIrvfpsr2SGxlj5L1eq+bSqLNjx6hwWMuGhYE3PlTHffW/wEcEQC4yo
-         /3857vCflQ/NKwQ5FDksTZyHoNdG0Jqo9UUPinIKQEGjVNAsvkeoK3NvdJR5f3kUwSWC
-         PCVtLa/N+D7P3oUONZaxNHZTlr6eZmiQf2i8JOAnZJ4Qtj+M4HuCoY5/Qrk17gF4MZG1
-         kkGA==
-X-Gm-Message-State: AOAM533/U/bMc16ic6omEKWhvQLDc0WwioE24PZOUNf9+06WetI/AITS
-        TdIcETdGrAJAfy3H5mdW3uCFtRGJJ16xbw==
-X-Google-Smtp-Source: ABdhPJy+iUZ/cVBtp2B1vq/CX7daN+fnrQHG0Uorcgf1z65RTx7blxcnnN6wx5ahX6lpkpiZuZ4brg==
-X-Received: by 2002:a63:f252:: with SMTP id d18mr13440940pgk.191.1638717239540;
-        Sun, 05 Dec 2021 07:13:59 -0800 (PST)
-Received: from realwakka ([59.12.165.26])
-        by smtp.gmail.com with ESMTPSA id g18sm9387493pfb.103.2021.12.05.07.13.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Dec 2021 07:13:59 -0800 (PST)
-Date:   Sun, 5 Dec 2021 15:13:51 +0000
-From:   Sidong Yang <realwakka@gmail.com>
-To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Graham Cobb <g.btrfs@cobb.uk.net>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH v3] btrfs-progs: filesystem: du: skip file that
- permission denied
-Message-ID: <20211205151351.GA1160@realwakka>
-References: <20211122155411.10626-1-realwakka@gmail.com>
- <20211130174340.GJ28560@twin.jikos.cz>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=5AsGrA4DlL+PCBChvj92hqjB0hfn92LRQaKu0Z47lw0=;
+        b=f3BIswoe3NQvTd1ag4952g6G4IeQgwGlTFA1S6PIEP9x8W57PfpmnHnREU49f69DtS
+         aylhHxnZAgQpHVfHz0U4cuKkXNsVzoG5sNU+mNvnv9Xg9hx6wEvHbvekHYQlygub/jY/
+         L5IbEGHz+jLXXNpJs8/waTSc5/vW47oo28CraaeJMR9vnijQHiZc5zbRXz75LqY8GyyK
+         xBuzK+0SpUA52aupg0osKpI/5b4BmJ3IyML6TBHCEce546fvjY7GdIuKp4S+Xb/VMA1l
+         DGOl+acSG4KMRKrSk7gjhAuOGbSHbPMTuSPoIFta4Yxt0NuW3ILCy46plAN3TEBa1Aya
+         p1vA==
+X-Gm-Message-State: AOAM531mQzdyNG6VAy2xPI/R4d+fmcwcnYCC937gKT6PvEVXZugUwbEa
+        qBC+y4a7gJCIX8/09hRKAJv7G9hSvsRY7HJ/Hwk=
+X-Google-Smtp-Source: ABdhPJz745Up+31EXZdlxxaeu2kQUKGjCtUnTC5t8M9Jg7kyfeyXE8+1C3o0XrpfcviFHh3WweoYhZYgw5/tHo4VDqU=
+X-Received: by 2002:ab0:3349:: with SMTP id h9mr37668042uap.111.1638752089778;
+ Sun, 05 Dec 2021 16:54:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211130174340.GJ28560@twin.jikos.cz>
+Received: by 2002:a59:9e8c:0:b0:23d:e092:9ade with HTTP; Sun, 5 Dec 2021
+ 16:54:49 -0800 (PST)
+Reply-To: mrsbillchantallawrence2@gmail.com
+From:   MRS BILL CHANTAL LAWRANCE <emmanuellaclever32@gmail.com>
+Date:   Sun, 5 Dec 2021 16:54:49 -0800
+Message-ID: <CALWpAgGYP2gcyt9xezGbDyE1L4+73h2AkgNYsJYLEirhPEVY7A@mail.gmail.com>
+Subject: DEAR FRIEND
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 30, 2021 at 06:43:40PM +0100, David Sterba wrote:
-> On Mon, Nov 22, 2021 at 03:54:11PM +0000, Sidong Yang wrote:
-> > This patch handles issue #421.
-> 
-> The issue is about descending to mount points, while you add handling of
-> permissions. Is it referring to the right issue?
+dear
 
-I understood it as a permission issue. Because the issue describe that
-it can not descend into a folder because of permission. So, I patched
-about permission. It could be solved with skipping all decending mount
-points. But I think it's little awkward because "/bin/du" doesn't work
-like it.
+You have been compensated with the sum of 5.1 million dollars in this
+united nation the payment will be Issue into ATM visa card and send to
+you from the Santander bank of Spain we need your address passport and
+your whatsapp number.
+Thanks
+
+Mrs. bill Chantal
