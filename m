@@ -2,100 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B645846B181
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 04:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0899B46B19A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 04:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234206AbhLGDdc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 Dec 2021 22:33:32 -0500
-Received: from mout.gmx.net ([212.227.17.20]:57827 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232168AbhLGDdb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 Dec 2021 22:33:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1638847801;
-        bh=gxXPt1ocetaapKNHCD+KYUnuVlBDBOWU3Fc7/FYyvw8=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=lq/H14hUp9kYKfviwxgRIeeqLjZFZLDdF9yo8Ao3/6x4X+nqdYxwrhxsVnAR/N/ZQ
-         c3mJaQgoO7UjsCQ19cFDluDJRw14rddEAfH19RyOOWwCQjLGiwa04BL851RYn7XlBC
-         9pYedTE4KfN5ZEmqrdrxuSz1M8+jP6Nca4S0fxBY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYvY8-1n7aKe08oq-00UoI5; Tue, 07
- Dec 2021 04:30:00 +0100
-Message-ID: <b7b6a6a7-700e-f83d-dae6-581ed6befbef@gmx.com>
-Date:   Tue, 7 Dec 2021 11:29:57 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
+        id S234392AbhLGDrx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 Dec 2021 22:47:53 -0500
+Received: from bee.birch.relay.mailchannels.net ([23.83.209.14]:56517 "EHLO
+        bee.birch.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231324AbhLGDrw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 Dec 2021 22:47:52 -0500
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id A9B17621042;
+        Tue,  7 Dec 2021 03:44:22 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (unknown [127.0.0.6])
+        (Authenticated sender: instrampxe0y3a)
+        by relay.mailchannels.net (Postfix) with ESMTPA id C9EEE621495;
+        Tue,  7 Dec 2021 03:44:21 +0000 (UTC)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.105.57.109 (trex/6.4.3);
+        Tue, 07 Dec 2021 03:44:22 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Ski-Grain: 31e1d8d15060590c_1638848662485_2678359442
+X-MC-Loop-Signature: 1638848662485:1060601635
+X-MC-Ingress-Time: 1638848662485
+Received: from p57b045ec.dip0.t-ipconnect.de ([87.176.69.236]:49576 helo=heisenberg.scientia.net)
+        by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <calestyo@scientia.org>)
+        id 1muROq-0004sw-QG; Tue, 07 Dec 2021 03:44:19 +0000
+Message-ID: <3239b2307fae4c7f9e8be9f194d5f3ef470ddb8c.camel@scientia.org>
 Subject: Re: ENOSPC while df shows 826.93GiB free
-Content-Language: en-US
-To:     Christoph Anton Mitterer <calestyo@scientia.org>,
-        linux-btrfs@vger.kernel.org
+From:   Christoph Anton Mitterer <calestyo@scientia.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Date:   Tue, 07 Dec 2021 04:44:13 +0100
+In-Reply-To: <b7b6a6a7-700e-f83d-dae6-581ed6befbef@gmx.com>
 References: <f001f3e81d413ea290722c38b14d95f3f1f52249.camel@scientia.org>
- <25d305e5-c75f-3d71-fc5a-c2019e49bed9@gmx.com>
- <c64be50bdc99b993b910a7ab019af8d552eeb0d4.camel@scientia.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-In-Reply-To: <c64be50bdc99b993b910a7ab019af8d552eeb0d4.camel@scientia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8IAtGy3ImOeOS6BRYwWJVB56BAGH1jfjgs8RmEEhjqNFDtEvvUI
- O3QwvtRdQ5rmlAmpXjdNIxmwfEN6YzNy0RuZiAMT+CPEVzPIHUYzwGzZENzopjb+VXcN7/G
- 6BGhJPZR5olpC3W66Gjl/warmhRSGQdvvzuDDMWigYfZ9kLW4prqBYpKulesO9vILft9Rsv
- v0Z0+juIP+7LQ+sMHcX5A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Z5p3rImx4HQ=:6za/m4FYJtLtoKJwdwqcAS
- a4AzaY3eZUP1t72X0tEJJseaxR+tzw9MDpb+xyN3ZWctWrBFdbagPKG2XSJLF/mARpRAUXm+x
- pJ7DaknogCfKuhSp2pkCIWrlRpuPvBZf2yH2vBTcYKpNVt72DW8HfcWMHrRnJzha5f4CQRAFZ
- crXWXvCskXTpIKtZza5sReDncYarSjpXWtQnn1FhQs2pCRTzz0YaUN1IPWlXJhmcVuWwubImw
- t+/7NaiW1eVyVCty2ym14GZ8WzEzFEC4ak53dmhD4mwAfVdRINftBrfq8IwxK51OJgiGTeK5u
- 684KVPaksBS0w5fTrevBGgoRhGxBf3uH8rjIIEI1uwkJ2vxc3HsvOXPJFjhMUxMYo1DIIFu4w
- WQJAeplfLV3z51yHeb+3pfKl9RKcxX67tvuBoN+L9OE/cqaEv69xV7K4outQFH6LF3br3lEVz
- xPG82/GN4GPHUAD9tYgxHtO6/UABuD3ONYpuEsFnBnTsaa3iKJW3zOLfitn2tBOgmNvJMAEXp
- /JBOOM0jRxetE7YlfYsxgd8m0Vv+wzmBwnW784C3iYbEaEmAIbH72RsdBVOawq+1dbieNGuc+
- Q3Pez1ey++AYNUk3DCbEeA89eouCV6bEdMuNDkBQCfvHev4Xv0zgyDHMGJWp+AXvKD1DmCOXD
- 2zWULMnrgAyu4jUz81m6kAHpH9CHpXVr2ARRv7VOJYjwyZB5eOtdOqwnF0JNMYx+OrrSwpa9Z
- zYe94TP4Uu5NO7vnqQCA3AfKmg1YIGVvYKgQvqcppdujQeCS287RWj8G8VqxBGNPUNUfxbvbO
- 6/Gy2hpkUEgSMw38nxJjdtMp8WseYppzTS6t3c3jWNRhRJPJIgMZyCuSKmTXO2n3nbLmLlzQ9
- ntBFkAXkJCfThYyMxcztTYzutS27lXsUMjCkDXVabcR92uW7yQkxkOI+hwjgNkJqgK2PEGCf1
- P+lSAGfnaRRH3oRthSwvX3yDIzewnOS1ZYjZfWhwZSDojcKg2ypYTrQsKOyuiv17LBY2QisZC
- E2t0myuo5cCOPext/itS3uHZuW7hnRhpzaWGzlMYdkWB3FdR95bCQNhAoqHaeLt2k16s/CsFe
- KTSurPIQ95CXl0=
+         <25d305e5-c75f-3d71-fc5a-c2019e49bed9@gmx.com>
+         <c64be50bdc99b993b910a7ab019af8d552eeb0d4.camel@scientia.org>
+         <b7b6a6a7-700e-f83d-dae6-581ed6befbef@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.2-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AuthUser: calestyo@scientia.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, 2021-12-07 at 11:29 +0800, Qu Wenruo wrote:
+> For other regular operations, you either got ENOSPC just like all
+> other
+> fses which runs out of space, or do it without problem.
+> 
+> Furthermore, balance in this case is not really the preferred way to
+> free up space, really freeing up data is the correct way to go.
+
+Well but to be honest... that makes btrfs kinda broke for that
+particular purpose.
 
 
-On 2021/12/7 11:06, Christoph Anton Mitterer wrote:
-> On Tue, 2021-12-07 at 10:59 +0800, Qu Wenruo wrote:
->>
->> Since your metadata is already full, you may need to delete enough
->> data
->> to free up enough metadata space.
->>
->> The candidates includes small files (mostly inlined files), and large
->> files with checksums.
->
-> On that fs, there are rather many large files (800MB - 1.5 GB).
->
-> Is there anyway to get (much?) more space reserved for metadata in the
-> future respectively on the other existing filesystems that haven't
-> deadlocked themselves yet?!
+The software which runs on the storage and provides the data to the
+experiments does in fact make sure that the space isn't fully used (per
+default, it leave a gap of 4GB).
 
-In fact, this is not really a deadlock, only balance is blocked by such
-problem.
+While this gap is configurable it seems a bit odd if one would have to
+set it to ~1TB per fs... just to make sure that btrfs doesn't run out
+of space for metadata.
 
-For other regular operations, you either got ENOSPC just like all other
-fses which runs out of space, or do it without problem.
 
-Furthermore, balance in this case is not really the preferred way to
-free up space, really freeing up data is the correct way to go.
+And btrfs *does* show that plenty of space is left (always around 700-
+800 GB)... so the application thinks it can happily continue to write,
+while in fact it fails (and the cannot even start anymore as it fails
+to create lock files).
 
-Thanks,
-Qu
 
->
->
-> Thanks,
-> Chris.
->
+My understanding was the when not using --mixed, btrfs has block groups
+for data and metadata.
+
+And it seems here that the data block groups have several 100 GB still
+free, while - AFAIU you - the metadata block groups are already full.
+
+
+
+I also wouldn't want to regularly balance (which doesn't really seem to
+help that much so far)... cause it puts quite some IO load on the
+systems.
+
+
+So if csum data needs so much space... why can't it simply reserve e.g.
+60 GB for metadata instead of just 17 GB?
+
+
+
+If I really had to reserve ~ 1TB of storage to be unused (per 16TB fs)
+just to get that working... I would need to move stuff back to ext4,
+cause that's such a big loss we couldn't justify to our funding
+agencies.
+
+
+And we haven't had that issue with e.g. ext4 ... that seems to reserve
+just enough for meta, so that we could basically fill up the fs close
+to the end.
+
+
+
+Cheers,
+Chris.
