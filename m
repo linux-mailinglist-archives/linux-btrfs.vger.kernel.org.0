@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11F346BDAE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 15:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B0446BDAF
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 15:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbhLGOcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S238056AbhLGOcb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Tue, 7 Dec 2021 09:32:31 -0500
 Received: from esa1.hgst.iphmx.com ([68.232.141.245]:19470 "EHLO
         esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237927AbhLGOcN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Dec 2021 09:32:13 -0500
+        with ESMTP id S237947AbhLGOcO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Dec 2021 09:32:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1638887323; x=1670423323;
+  t=1638887324; x=1670423324;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=jvZxxsiFkLOQFYwWHJVH4rb3l2IijlgtP1W4yG4cL6c=;
-  b=ZWD8puwoBFO8wg+Xhdc0Aiaoplwk4EfSS2ZgXH35NUTBo841EpDUPTXI
-   swagyvfDLosYggZXRRSHdJAVnuTogb5BJHGzGJQ7DDzo+asP5Q/R66vdL
-   sz3Dk7BHt2vuz1ThLzuhO+MmQzjFa7h4U24aRoN1ea2GljjFctvVV+CUU
-   uxeGU2hOlJrZIGDhqh1Ye4O2BvjJBoZzn9oanVwl942LG7yeoRr2ogzTm
-   eLD8K872D36jgh3bRqfYbqnZUCsSjKF2ZOXYZrrape2jIKFZDyW54b8qc
-   nopNj61jmqE0xojdatlDUaOigNBf+DG7ydOm/wMV1NwqknERu8tmuaujN
-   A==;
+  bh=wITIB6M1U2DL2VHvvb/GawAI5cc/q8x6EKRWjDVKxFo=;
+  b=U+wQfIDwURFu3Ng3hqvf6zJPbVNxXYcrA0BEMQmrlY1+lw/9kiMf3OFc
+   CA/JqTK1AVWRQfYamXWu4rloyfRqipFC8bIyJwxSai6MeF+mMn9h9xYZj
+   CJt5gZ9Z6mBrLoC5yxs7GdeYU6/wH9tCxbEGWzKSaOWxL/rliapOka/nm
+   F6biXcBy70zmY0qsd+UsI9MuTBSxVCe5MySpfFjMWAABfMn6JQv+PB+4Z
+   DZ2NC6PzOF0Joj26QeLC6aHUPcXk4YLgqaZxOAyW2ZBSpYhhP/z0dGPFA
+   ge/Te9JFdmidK9LJsz6eNfh/t64u6kWJBlawoMG07oV5O9naLNTMdCA7q
+   g==;
 X-IronPort-AV: E=Sophos;i="5.87,293,1631548800"; 
-   d="scan'208";a="299501476"
+   d="scan'208";a="299501477"
 Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Dec 2021 22:28:43 +0800
-IronPort-SDR: ujzh26xGoCsM82gQVd6wRhjLLoslPVnBi3WNQl9ghNZr0OPKSwPoY6qRBsR2LSmLmzLL/kKypb
- jvt66wRB8Hx9UBNfJLZpzkGNSFKefF4y0M1BbULj3sYg7s4yEVzEMTmoDfxMFFHNrjMDGyPJP0
- qTYjaLNBUVnDvcjMnlpkmu9wN6dchWR60Rj8tpCuVse53ZL2nKYCYXlpfao83AyI6TytXP3bVJ
- QsQooIfBSxSdevdf/Ie0P+7/4RiRZJMoza+tPr39NXFEUI9ADvxqfZZuGYg/AxnKvqlmANVoxe
- uZA8hSovQvExvCKkaBuM2fnQ
+  by ob1.hgst.iphmx.com with ESMTP; 07 Dec 2021 22:28:44 +0800
+IronPort-SDR: dp0YLbt0WJKnWBhVYI79cP8CgAHjaFZ+HE+zQOCQsHI35hSWfLDaduWd0LvpCViK1MKZ/+XQzH
+ mC8ArT7Q5jC4VIjq+gyTUWdV6yszKinRxdpdPQpEM1nllDQj3aXaI9GkGAhbCe/Xev5G/Xl/cn
+ nun3tXg4uCq7YSoTy9ZHfVHDEVf5AmFdIZTLs35cWhEQAlZcfkmPfswq7j45bwZOf1RqI14rgP
+ X4z5/U6kboIb90Ml28SpLBMnMAik8yCg8lU2RNZh8dBCoFTlGzvUYJ+gC9Gm2m+qaXVZ4C/rji
+ QDcCFG9rPo2/BWJzwaaWTzJq
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2021 06:01:48 -0800
-IronPort-SDR: DNqSvWwoHjXElzo5HIGdsyiFXng+D6Qh6itAZqLlWOGtKRUGJA1FSnMfsBYR3FIZHwkn5O470H
- +IecJDW9jfYwdmJFbYNGlSOVDnfLc27crURN2YTi0X1qynw9GLUq70jA4bghKnMMwe8pBi79AK
- AZcWAOgK53isIAp2C+OKWLciLznCbOwWZvssssmY2FBwe0lsA1grJNkosEGzv4QDNGPMTpG3uC
- RlQxt1cphetRFiF3DjDjdskrjB13rqZ15OKazo6nvXfNotgPl4T1b78UU2kI59o6RTOnbVpvVr
- 3jM=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2021 06:01:49 -0800
+IronPort-SDR: T1DCd7+kzzwAXSU453hQVIGR9yf3PJFfcmXJRpFEYP3IqNJS6b04BIgvQlFMrmqcyIbrO/hDHh
+ v7XFZKu6/d5P1I/YgDcNaxWpym6rT1ZI8+FHQ0JzpDyuO8SHUMCdlPg6DyPOsUyZiQClHsVTRa
+ 5k/Xykh5Pt+kip9ZgE+etixw+jt1bXhNZO4YS2EF24mDP2ajFSsZCH171UninudJmT6nE4ETH5
+ SqDGmDudJ3IIMvBj4iJ8g3lxjmTNuMdpPwbbrvwSFqPNIv7OOBU4LM7fvbMfAczTNbnRDr6e65
+ 5lE=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.72])
-  by uls-op-cesaip02.wdc.com with ESMTP; 07 Dec 2021 06:28:43 -0800
+  by uls-op-cesaip02.wdc.com with ESMTP; 07 Dec 2021 06:28:44 -0800
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     David Sterba <dsterba@suse.com>
 Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH v2 1/4] btrfs: zoned: encapsulate inode locking for zoned relocation
-Date:   Tue,  7 Dec 2021 06:28:34 -0800
-Message-Id: <b1d1bab106ddc4456224c0bf1c1bfcfaea4844b7.1638886948.git.johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 2/4] btrfs: zoned: simplify btrfs_check_meta_write_pointer
+Date:   Tue,  7 Dec 2021 06:28:35 -0800
+Message-Id: <0330e97246527726dd7741650065c0b8a5844df5.1638886948.git.johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1638886948.git.johannes.thumshirn@wdc.com>
 References: <cover.1638886948.git.johannes.thumshirn@wdc.com>
@@ -59,79 +59,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Encapsulate the inode lock needed for serializing the data relocation
-writes on a zoned filesystem into a helper.
+btrfs_check_meta_write_pointer() will always be called with a NULL
+'cache_ret' argument.
 
-This streamlines the code reading flow and hides special casing for
-zoned filesystems.
+As there's no need to check if we have a valid block_group passed in
+remove these checks.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c |  8 ++------
- fs/btrfs/zoned.h     | 17 +++++++++++++++++
- 2 files changed, 19 insertions(+), 6 deletions(-)
+ fs/btrfs/zoned.c | 26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 1a67f4b3986b..cc27e6e6d6ce 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -5184,8 +5184,6 @@ int extent_writepages(struct address_space *mapping,
- 		      struct writeback_control *wbc)
- {
- 	struct inode *inode = mapping->host;
--	const bool data_reloc = btrfs_is_data_reloc_root(BTRFS_I(inode)->root);
--	const bool zoned = btrfs_is_zoned(BTRFS_I(inode)->root->fs_info);
- 	int ret = 0;
- 	struct extent_page_data epd = {
- 		.bio_ctrl = { 0 },
-@@ -5197,11 +5195,9 @@ int extent_writepages(struct address_space *mapping,
- 	 * Allow only a single thread to do the reloc work in zoned mode to
- 	 * protect the write pointer updates.
- 	 */
--	if (data_reloc && zoned)
--		btrfs_inode_lock(inode, 0);
-+	btrfs_zoned_data_reloc_lock(inode);
- 	ret = extent_write_cache_pages(mapping, wbc, &epd);
--	if (data_reloc && zoned)
--		btrfs_inode_unlock(inode, 0);
-+	btrfs_zoned_data_reloc_unlock(inode);
- 	ASSERT(ret <= 0);
- 	if (ret < 0) {
- 		end_write_bio(&epd, ret);
-diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-index 4344f4818389..e3eaf03a3422 100644
---- a/fs/btrfs/zoned.h
-+++ b/fs/btrfs/zoned.h
-@@ -8,6 +8,7 @@
- #include "volumes.h"
- #include "disk-io.h"
- #include "block-group.h"
-+#include "btrfs_inode.h"
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 9cdef5e8f6b7..39bce555d3c6 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -1641,29 +1641,19 @@ bool btrfs_check_meta_write_pointer(struct btrfs_fs_info *fs_info,
+ 	if (!btrfs_is_zoned(fs_info))
+ 		return true;
  
- /*
-  * Block groups with more than this value (percents) of unusable space will be
-@@ -354,4 +355,20 @@ static inline void btrfs_clear_treelog_bg(struct btrfs_block_group *bg)
- 	spin_unlock(&fs_info->treelog_bg_lock);
+-	cache = *cache_ret;
++	cache = btrfs_lookup_block_group(fs_info, eb->start);
++	if (!cache)
++		return true;
+ 
+-	if (cache && (eb->start < cache->start ||
+-		      cache->start + cache->length <= eb->start)) {
++	if (cache->meta_write_pointer != eb->start) {
+ 		btrfs_put_block_group(cache);
+ 		cache = NULL;
+-		*cache_ret = NULL;
++		ret = false;
++	} else {
++		cache->meta_write_pointer = eb->start + eb->len;
+ 	}
+ 
+-	if (!cache)
+-		cache = btrfs_lookup_block_group(fs_info, eb->start);
+-
+-	if (cache) {
+-		if (cache->meta_write_pointer != eb->start) {
+-			btrfs_put_block_group(cache);
+-			cache = NULL;
+-			ret = false;
+-		} else {
+-			cache->meta_write_pointer = eb->start + eb->len;
+-		}
+-
+-		*cache_ret = cache;
+-	}
++	*cache_ret = cache;
+ 
+ 	return ret;
  }
- 
-+static inline void btrfs_zoned_data_reloc_lock(struct inode *inode)
-+{
-+	struct btrfs_root *root = BTRFS_I(inode)->root;
-+
-+	if (btrfs_is_data_reloc_root(root) && btrfs_is_zoned(root->fs_info))
-+		btrfs_inode_lock(inode, 0);
-+}
-+
-+static inline void btrfs_zoned_data_reloc_unlock(struct inode *inode)
-+{
-+	struct btrfs_root *root = BTRFS_I(inode)->root;
-+
-+	if (btrfs_is_data_reloc_root(root) && btrfs_is_zoned(root->fs_info))
-+		btrfs_inode_unlock(inode, 0);
-+}
-+
- #endif
 -- 
 2.31.1
 
