@@ -2,76 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D203446B710
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 10:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 470A446B9B2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 12:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbhLGJcu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Dec 2021 04:32:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbhLGJct (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Dec 2021 04:32:49 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57701C061574
-        for <linux-btrfs@vger.kernel.org>; Tue,  7 Dec 2021 01:29:19 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id t6so14101493qkg.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 Dec 2021 01:29:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=7Z4bIWUJcNwasnOvZT//wASf4/xDxe1Cc4BxfIfuhGs=;
-        b=gmIGm1Ns0u65RCHL8oLxtMYP3z9kz/fBl+YLbT91X1KD8+t7DHKJobZgP+nEECbwBv
-         SdBKj5r/SCqnqvfWVL+fAySdTvgKth6uaTa/6bfOtxwWJt6U56cHzaJPgWcD7evp231N
-         8mUFIic2YQ0s8vAMqncRfsxF+3o9VEWmFnsstIva4RMnHu7vFpuATCevjIHm/J+UgcZz
-         XoNye80AW0y8MDPtBRoHzBGXUKgyz1JashTar7R8GlzpXQKdZxP2F5P5krKGRgEoTWX+
-         F6qDXaB8Jk5mqpUG+CjqWU+DKX8PmN/HytBwLK4PhFyCCd5JCJhFkRM5oITNOoeMELtT
-         Kuiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=7Z4bIWUJcNwasnOvZT//wASf4/xDxe1Cc4BxfIfuhGs=;
-        b=nyhAheaVufGEW4GKrExKfJ+gy1Z5HQXMfWtwEyfNYCVbkOn7HtohRz/Ja+ZuUW05pY
-         D0hu/+DxuDDyf7y3Felc3L0lQzLl5nZSi6An0fnrO87rIxaTw/GXylxdYkJB7faMtaF0
-         vwgH6jUOISYPuWhy5KKxgFZotQn8sFA6XE7zg3l7ykAct9LboiYmzpLBoDCT5PhnR0QK
-         wmXwmliELB+wyFnp9D/f2ODqbLZ5iLb1nXkuSMA4o8Uu6sLT3aMMOqSa8IxhkMsJHBGA
-         pGDBzFO6ChXq1E/nrySAVA1VjDW7/go9DGpZkaEyYPk8MxHjjFg1kSRODliFU28aQEGw
-         5f1w==
-X-Gm-Message-State: AOAM533ndSAmnNz9Atl4yk5UBSQ4O55Sn0GpFTec55ZUvGTIeVNMRa0c
-        sy3Ks9F6HfMewaxZ90RGgWhBd9g779g2mnsurAU=
-X-Google-Smtp-Source: ABdhPJwrwvHWHW+sU2R6V54ResQ3nDuxDCEuM/jye6psLg+qFzbTAOLV7x+MAU8qh6G7VvzY63+/BlFmSMJLvA2/H1E=
-X-Received: by 2002:a05:620a:269b:: with SMTP id c27mr38031027qkp.364.1638869358405;
- Tue, 07 Dec 2021 01:29:18 -0800 (PST)
+        id S235514AbhLGLFw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Dec 2021 06:05:52 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:41540 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230293AbhLGLFw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Dec 2021 06:05:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id CD9E2CE1A08
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Dec 2021 11:02:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 705EDC341C1;
+        Tue,  7 Dec 2021 11:02:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638874939;
+        bh=pLrDdIJAdCN/zO0K12YGW3iJ/ceOzKNw4RnZrwM/II0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o39LABwsmOvnRfgiy7ReL0vhLfOV0s8YdLQhFivtrrpSlkp6klLKWQUV9JkAboKia
+         aekVqn/YKWhlPE8TP56X9PV6wLjaPtczbxeuBs1havqj9vGcF9F8iq0CEuEZifuVzN
+         5mYLog2ZTOxfNg6h7GJVo5ErgVeUaqQsQx3K9l3TDRS58LcjNdBETTg9trI57lXGWm
+         pTytGDWa7rRGmSICjuJutE1V23GZWJqPPP37SP5fwkgk5B5/pg1PWMe2bi96S1bYGC
+         vvCGS+4TyLcoJK4G1Fw5z8p+JyY32k8udbGtpy/+e2rTIF4vG5pN3S5qsK5wL2FiFk
+         RygLbWF5oB0+g==
+Date:   Tue, 7 Dec 2021 11:02:14 +0000
+From:   Filipe Manana <fdmanana@kernel.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC 0/2] btrfs: remove the metadata readahead mechanism
+Message-ID: <Ya8/NpvxmCCouKqg@debian9.Home>
+References: <20211207074400.63352-1-wqu@suse.com>
 MIME-Version: 1.0
-Received: by 2002:ad4:5be6:0:0:0:0:0 with HTTP; Tue, 7 Dec 2021 01:29:17 -0800 (PST)
-Reply-To: mohammedshamekh24@gmail.com
-From:   Mrmohammed shamekh <msmschneider1771@gmail.com>
-Date:   Tue, 7 Dec 2021 01:29:17 -0800
-Message-ID: <CA+ODssNi=+g_2=Oyd=k_OC3gmzuVMpjSLJJLax0FR7KkJxMXZQ@mail.gmail.com>
-Subject: THE AMOUNT IS 27.5 MILLIOMS USD
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211207074400.63352-1-wqu@suse.com>
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-RGVhcsKgRnJpZW5kLA0KDQpHcmVldGluZ3MuDQoNCkhvd8KgYXJlwqB5b3XCoGRvaW5nwqB0b2Rh
-ecKgacKgaG9wZcKgZmluZT8NCg0KScKgY2FtZcKgYWNyb3NzwqB5b3VywqBlLW1haWzCoGNvbnRh
-Y3TCoHByaW9ywqBhwqBwcml2YXRlwqBzZWFyY2jCoHdoaWxlwqBpbsKgbmVlZA0Kb2bCoHlvdXLC
-oGFzc2lzdGFuY2UuwqBNecKgbmFtZcKgIE1yICBtb2hhbW1lZCAgIHNoYW1la2ggIOKAmcKgScKg
-d29ya8Kgd2l0aMKgdGhlDQpkZXBhcnRtZW50wqBvZsKgQXVkaXTCoGFuZMKgYWNjb3VudGluZ8Kg
-bWFuYWdlcsKgaGVyZcKgaW7CoFVCQcKgQmFua8Kgb2bCoEFmcmljYSwNClRoZXJlwqBpc8KgdGhp
-c8KgZnVuZMKgdGhhdMKgd2FzwqBrZWVwwqBpbsKgbXnCoGN1c3RvZHnCoHllYXJzwqBhZ2/CoGFu
-ZMKgScKgbmVlZA0KeW91csKgYXNzaXN0YW5jZcKgZm9ywqB0aGXCoHRyYW5zZmVycmluZ8Kgb2bC
-oHRoaXPCoGZ1bmTCoHRvwqB5b3VywqBiYW5rwqBhY2NvdW50DQpmb3LCoGJvdGjCoG9mwqB1c8Kg
-YmVuZWZpdMKgZm9ywqBsaWZlwqB0aW1lwqBpbnZlc3RtZW50wqBhbmTCoHRoZcKgYW1vdW50wqBp
-c8KgKFVTDQokMjcsNTAwLsKgTWlsbGlvbsKgRG9sbGFycykuDQoNCknCoGhhdmXCoGV2ZXJ5wqBp
-bnF1aXJ5wqBkZXRhaWxzwqB0b8KgbWFrZcKgdGhlwqBiYW5rwqBiZWxpZXZlwqB5b3XCoGFuZMKg
-cmVsZWFzZQ0KdGhlwqBmdW5kwqB0b8KgeW91csKgYmFua8KgYWNjb3VudMKgaW7CoHdpdGhpbsKg
-N8KgYmFua2luZ8Kgd29ya2luZ8KgZGF5c8Kgd2l0aA0KeW91csKgZnVsbMKgY28tb3BlcmF0aW9u
-wqB3aXRowqBtZcKgYWZ0ZXLCoHN1Y2Nlc3PCoE5vdGXCoDUwJcKgZm9ywqB5b3XCoHdoaWxlDQo1
-MCXCoGZvcsKgbWXCoGFmdGVywqBzdWNjZXNzwqBvZsKgdGhlwqB0cmFuc2ZlcsKgb2bCoHRoZcKg
-ZnVuZHPCoHRvwqB5b3VywqBiYW5rDQphY2NvdW50wqBva2F5Lg0KDQpXQUlUSU5HwqBUT8KgSEVB
-UsKgRlJPTcKgWU9VLg0KVEhBTktTLg0KDQogTXIgIG1vaGFtbWVkICAgc2hhbWVraCAsDQo=
+On Tue, Dec 07, 2021 at 03:43:58PM +0800, Qu Wenruo wrote:
+> This is originally just my preparation for scrub refactors, but when the
+> readahead is involved, it won't just be a small cleanup.
+> 
+> The metadata readahead code is introduced in 2011 (surprisingly, the
+> commit message even contains changelog), but now only one user for it,
+> and even for the only one user, the readahead mechanism can't provide
+> much help in fact.
+> 
+> Scrub needs readahead for commit root, but the existing one can only do
+> current root readahead.
+
+If support for the commit root is added, is there a noticeable speedup?
+Have you tested that?
+
+> 
+> And the code is at a very bad layer inside btrfs, all metadata are at
+> btrfs logical address space, but the readahead is kinda working at
+> device layer (to manage the in-flight readahead).
+> 
+> Personally speaking, I don't think such "optimization" is really even
+> needed, since we have better way like setting IO priority.
+
+Have you done any benchmarks?
+How? On physical machines or VMs?
+
+Please include such details in the changelogs.
+
+> 
+> I really prefer to let the professional block layer guys do whatever
+> they are good at (and in fact, those block layer guys rock!).
+> Immature optimization is the cause of bugs, and it has already caused
+> several bugs recently.
+> 
+> Nowadays we have btrfs_path::reada to do the readahead, I doubt if we
+> really need such facility.
+
+btrfs_path:reada is important and it makes a difference.
+I recently changed send to use it, and benchmarks can be found in the
+changelogs.
+
+There are also other places where it makes a difference, such as when
+reading a large chunk tree during mount or when reading a large directory.
+
+It's all about reading other leaves/nodes in the background that will be
+needed in the near future while the task is doing something else. Even if
+the nodes/leaves are not physically contiguous on disk (that's the main
+reason why the mechanism exists).
+
+> 
+> So here I purpose to completely remove the old and under utilized
+> metadata readahead system.
+> 
+> Qu Wenruo (2):
+>   btrfs: remove the unnecessary path parameter for scrub_raid56_parity()
+>   btrfs: remove reada mechanism
+> 
+>  fs/btrfs/Makefile      |    2 +-
+>  fs/btrfs/ctree.h       |   25 -
+>  fs/btrfs/dev-replace.c |    5 -
+>  fs/btrfs/disk-io.c     |   20 +-
+>  fs/btrfs/extent_io.c   |    3 -
+>  fs/btrfs/reada.c       | 1086 ----------------------------------------
+>  fs/btrfs/scrub.c       |   64 +--
+>  fs/btrfs/super.c       |    1 -
+>  fs/btrfs/volumes.c     |    7 -
+>  fs/btrfs/volumes.h     |    7 -
+>  10 files changed, 17 insertions(+), 1203 deletions(-)
+>  delete mode 100644 fs/btrfs/reada.c
+> 
+> -- 
+> 2.34.1
+> 
