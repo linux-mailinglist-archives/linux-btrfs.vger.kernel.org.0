@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C3C46BF79
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 16:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1910046BF7A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 16:36:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238908AbhLGPjt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 Dec 2021 10:39:49 -0500
+        id S238917AbhLGPju (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Dec 2021 10:39:50 -0500
 Received: from esa3.hgst.iphmx.com ([216.71.153.141]:35689 "EHLO
         esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238913AbhLGPjs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Dec 2021 10:39:48 -0500
+        with ESMTP id S238916AbhLGPjt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Dec 2021 10:39:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1638891377; x=1670427377;
+  t=1638891378; x=1670427378;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=JavpZOJSy917ZTOKrvFANscGut3+lDHjqpXWNZGNlNU=;
-  b=Z5iwq3RO9p92vJdIgm2sV7fLN/P8SqggQmb8bTd0IUK43njjQt2xJAGX
-   kajZvCmxGDCRCkSDwWNnQ5ALjNF36IaathPVCekkA1ospp8Bo1gEQRdPl
-   GrwXGyu7R0TaRvmHejIhGqXSqvc5iL83B6OM2ioAIt78i+w0e5fbVAJJs
-   TRWfTJlp4xmgvVJPIqCB8S80qsII376/TkM9j03fR4VOjJs2Q28z1B26J
-   pY7FTLAmbSmVtB1tPw5JYsXf09jUhUnFWM0SEPJQs3G2Xv4+iDcKY9g82
-   7F6dBs4KqwazhbjmUIHkDsonoIFPL9nbGEvf+mj2ixKsxTNWVqgM0Z5Kw
-   Q==;
+  bh=VyzKTouzv9P2XOsDIRci5FGaoImY0Z5Q6PCFEjhdbnI=;
+  b=QfwuBOIYDjN7JkfppUzLL05l2R6NaGgs2v8TZQ5xX9+aA2w4TAUsw4WR
+   Qrb5Tp4JESgbWxoIBWDGZdVvO0+4muF/g72N/IJV4w09TUS35BttvB8OV
+   1d+tRtYkmQhA1UEAoZnd/sFd/+tWRyNL+/4DD5buYMClsoclTa4KKkzBI
+   7QofFRk/M7QkNjtVRay99Z+JFQW8o5TOyldNq4oJo8vWKe4UdRv+qOkBk
+   UE/4dtGlVWjy5FtruXIqmN4Fq04kPxMh0lp/kk2UUGZIUdWh0BKh2Oipi
+   eTkXaYsyP2f3GYGATB45Lr+SIhChBWfo2L7X+fRzJZPHCsvGVhpnmRxVF
+   g==;
 X-IronPort-AV: E=Sophos;i="5.87,293,1631548800"; 
-   d="scan'208";a="192442649"
+   d="scan'208";a="192442651"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Dec 2021 23:36:17 +0800
-IronPort-SDR: I5Psf62Mi2JXTh+u2CcWIYkxGN9g93RMoV/MlJFr6+QTUmCsLvIpNilmADQNwFl/JEyJvDX5cJ
- SBZlrA+kZFZBnAIt/CQHp5qRdS8LeCP4qVWHHQEsKQ61h71SkZYQ/srukEyCCeDEUItCe7inrR
- eqMXT4MY7DlldgvtZTxbP0k06+MLU9CX1qcfRt4Il+foYGFSMH4WVfcLCAdKLp4621YG2kwM6f
- 6BfH29558iP2AbBCtLkSA5xXkW+o7IwJsTMNP5/zIf6Hw5SjtXcmbTbSIdmo6vSNrxv3zg4eDf
- Wn/aBOvhMYxGEwQpl8wKK2PD
+  by ob1.hgst.iphmx.com with ESMTP; 07 Dec 2021 23:36:18 +0800
+IronPort-SDR: gvbG7bhBg8FY2N2aGnbHYrRhHOYcENPfAHHvn7Uy2SbpKk/yrZlVyzf62LkZQLkr8HvnL9I4KG
+ /K+3ix9rSDnbgUouOoUJADGk4zuzCuKeXhEPUAwfEnCo7U1Cb2DA/YuGmCBFNpLKRMioe3s1Wi
+ bjz9C+0dr4SyBHzAjOV4kSsXQQHie5tC9hpH6JELRN/jcePl10vCgdCj/G1nhp2ImwA/aSvdmK
+ Pf64MIx7LOrzyn9+NRKt4LagyLiUdUiCHm7X+UUSsM8BcIZQh68t9nIXvouDC8Gnqqmg8uCF76
+ ucKHWj2TVlr1/Fw6xZsDVfpv
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2021 07:09:23 -0800
-IronPort-SDR: NKrXtCNuWho0MAt7UuWkNmX0xefmAeowf0WjYlEvZYZ4UjHoZf8YR5Kgg6o9Upn/b2kl1XhqWp
- 02myEN9NzWjNc+UWbn2RWPNhnPNYLJNH3KxWUFD9Noq+TYXtXbsFmccUAlZeqqBLTHl6VtlfbF
- /wTW8TsaA7rNaNeV9ucWkYPwvECBZa0DwGbpXfbmZdRTT4Ol/Gl/2r8b4KhuGy8dLHAbZB3mB6
- SKilMK6ibw7LYl7PXEzrY5CX5hSWNBrkp1KfJrSpmlOJAcNpN+0ahX5j0x0/p/8r+K9X6FzDqA
- 0to=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2021 07:09:24 -0800
+IronPort-SDR: qA7xqYWEtdQ5MFxIKYCTvT3oCdXlw9iYWZY/meC8xTcRaV9PWbdVKQDiNtMwdPF6yXZdq/xsf8
+ NNvlpYUvjvaGvpC6XEMgI0i5S4V0w6m2UjfAkYJymqwd4u24cuEjUozDoNopb50UhdCjKbywJV
+ d9PpAZlrz7tq9PUmxF0Pbe1pcf1GwTeDYrLZ989nOXzKe3ls0RzijwXdAqPdxEJWUDaFyddvSd
+ ERDH8bd+Z4fjQ3Uq+djLXEDD5Gon2loSV8pb9WZNFdHl8FHj+++uiMV9OzqpPYa/NE3OYGgftJ
+ a20=
 WDCIronportException: Internal
 Received: from hx4cl13.ad.shared (HELO naota-xeon.wdc.com) ([10.225.50.41])
   by uls-op-cesaip02.wdc.com with ESMTP; 07 Dec 2021 07:36:18 -0800
@@ -47,9 +47,9 @@ From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>,
         Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 1/3] btrfs: zoned: unset dedicated block group on allocation failure
-Date:   Wed,  8 Dec 2021 00:35:47 +0900
-Message-Id: <20211207153549.2946602-2-naohiro.aota@wdc.com>
+Subject: [PATCH 2/3] btrfs: add extent allocator hook to decide to allocate chunk or not
+Date:   Wed,  8 Dec 2021 00:35:48 +0900
+Message-Id: <20211207153549.2946602-3-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20211207153549.2946602-1-naohiro.aota@wdc.com>
 References: <20211207153549.2946602-1-naohiro.aota@wdc.com>
@@ -59,69 +59,55 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Allocating an extent from a block group can fail for various
-reasons. When an allocation from a dedicated block group (for tree-log
-or relocation data) fails, we need to unregister it as a dedicated one
-so that we can allocate a new block group for the dedicated one.
+Introduce a new hook for an extent allocator policy. With the new
+hook, a policy can decide to allocate a new block group or not. If
+not, it will return -ENOSPC, so btrfs_reserve_extent() will cut the
+allocation size in half and retry the allocation if min_alloc_size is
+large enough.
 
-However, we are returning early when the block group in case it is
-read-only, fully used, or not be able to activate the zone. As a
-result, we keep the non-usable block group as a dedicated one, leading
-to further allocation failure. With many block groups, the allocator
-will iterate hopeless loop to find a free extent, results in
-a hung task.
-
-Fix the issue by delaying the return and doing the proper cleanups.
+The hook has a place holder and will be replaced with the real
+implementation in the next patch.
 
 Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/extent-tree.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ fs/btrfs/extent-tree.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 3fd736a02c1e..34200c1a7da0 100644
+index 34200c1a7da0..5ec512673dc5 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -3790,23 +3790,35 @@ static int do_allocation_zoned(struct btrfs_block_group *block_group,
- 	spin_unlock(&fs_info->relocation_bg_lock);
- 	if (skip)
- 		return 1;
-+
- 	/* Check RO and no space case before trying to activate it */
- 	spin_lock(&block_group->lock);
- 	if (block_group->ro ||
- 	    block_group->alloc_offset == block_group->zone_capacity) {
--		spin_unlock(&block_group->lock);
--		return 1;
-+		ret = 1;
-+		/*
-+		 * May need to clear fs_info->{treelog,data_reloc}_bg.
-+		 * Return the error after taking the locks.
-+		 */
+@@ -3959,6 +3959,19 @@ static void found_extent(struct find_free_extent_ctl *ffe_ctl,
  	}
- 	spin_unlock(&block_group->lock);
+ }
  
--	if (!btrfs_zone_activate(block_group))
--		return 1;
-+	if (!ret && !btrfs_zone_activate(block_group)) {
-+		ret = 1;
-+		/*
-+		 * May need to clear fs_info->{treelog,data_reloc}_bg.
-+		 * Return the error after taking the locks.
-+		 */
++static bool can_allocate_chunk(struct btrfs_fs_info *fs_info,
++			       struct find_free_extent_ctl *ffe_ctl)
++{
++	switch (ffe_ctl->policy) {
++	case BTRFS_EXTENT_ALLOC_CLUSTERED:
++		return true;
++	case BTRFS_EXTENT_ALLOC_ZONED:
++		return true;
++	default:
++		BUG();
 +	}
- 
- 	spin_lock(&space_info->lock);
- 	spin_lock(&block_group->lock);
- 	spin_lock(&fs_info->treelog_bg_lock);
- 	spin_lock(&fs_info->relocation_bg_lock);
- 
-+	if (ret)
-+		goto out;
++}
 +
- 	ASSERT(!ffe_ctl->for_treelog ||
- 	       block_group->start == fs_info->treelog_bg ||
- 	       fs_info->treelog_bg == 0);
+ static int chunk_allocation_failed(struct find_free_extent_ctl *ffe_ctl)
+ {
+ 	switch (ffe_ctl->policy) {
+@@ -4046,6 +4059,10 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+ 			struct btrfs_trans_handle *trans;
+ 			int exist = 0;
+ 
++			/*Check if allocation policy allows to create a new chunk */
++			if (!can_allocate_chunk(fs_info, ffe_ctl))
++				return -ENOSPC;
++
+ 			trans = current->journal_info;
+ 			if (trans)
+ 				exist = 1;
 -- 
 2.34.1
 
