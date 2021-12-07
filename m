@@ -2,132 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B67A46B3C3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 08:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8484246B43B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 Dec 2021 08:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhLGHY7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 7 Dec 2021 02:24:59 -0500
-Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:34692 "EHLO
-        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229820AbhLGHY6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 7 Dec 2021 02:24:58 -0500
-Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
-        id 7A87EB6FF4; Tue,  7 Dec 2021 02:21:28 -0500 (EST)
-Date:   Tue, 7 Dec 2021 02:21:28 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Christoph Anton Mitterer <calestyo@scientia.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Subject: Re: ENOSPC while df shows 826.93GiB free
-Message-ID: <20211207072128.GL17148@hungrycats.org>
-References: <f001f3e81d413ea290722c38b14d95f3f1f52249.camel@scientia.org>
- <25d305e5-c75f-3d71-fc5a-c2019e49bed9@gmx.com>
- <c64be50bdc99b993b910a7ab019af8d552eeb0d4.camel@scientia.org>
- <b7b6a6a7-700e-f83d-dae6-581ed6befbef@gmx.com>
- <3239b2307fae4c7f9e8be9f194d5f3ef470ddb8c.camel@scientia.org>
+        id S230161AbhLGHru (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 Dec 2021 02:47:50 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:55460 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhLGHrt (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 Dec 2021 02:47:49 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 05C1A21B3E
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Dec 2021 07:44:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1638863059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=vKGT/JTMR9nfANgC3RhHAHumOudxLtUcEAIaItDDZM8=;
+        b=as8vDFmgI9H7Qx0+ZXVxL1Drb9zbTu0ZH4Hwo3V+LRdrLpSLosxSxjG8NXRTipVu/knPj0
+        Zf82vdsrMDyGS0KWiyPnA87i19tHNSn51gYIuGQHd+N5MfWvtaEECsv2lZI+jtbMXRi7BP
+        7bZyQKr6rAFVosCNpDZoS2a/ndZ8cJU=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4EDA81332F
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 Dec 2021 07:44:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xMoNBdIQr2FRHwAAMHmgww
+        (envelope-from <wqu@suse.com>)
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 Dec 2021 07:44:18 +0000
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC 0/2] btrfs: remove the metadata readahead mechanism
+Date:   Tue,  7 Dec 2021 15:43:58 +0800
+Message-Id: <20211207074400.63352-1-wqu@suse.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <3239b2307fae4c7f9e8be9f194d5f3ef470ddb8c.camel@scientia.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Dec 07, 2021 at 04:44:13AM +0100, Christoph Anton Mitterer wrote:
-> On Tue, 2021-12-07 at 11:29 +0800, Qu Wenruo wrote:
-> > For other regular operations, you either got ENOSPC just like all
-> > other
-> > fses which runs out of space, or do it without problem.
-> > 
-> > Furthermore, balance in this case is not really the preferred way to
-> > free up space, really freeing up data is the correct way to go.
-> 
-> Well but to be honest... that makes btrfs kinda broke for that
-> particular purpose.
-> 
-> 
-> The software which runs on the storage and provides the data to the
-> experiments does in fact make sure that the space isn't fully used (per
-> default, it leave a gap of 4GB).
-> 
-> While this gap is configurable it seems a bit odd if one would have to
-> set it to ~1TB per fs... just to make sure that btrfs doesn't run out
-> of space for metadata.
-> 
-> 
-> And btrfs *does* show that plenty of space is left (always around 700-
-> 800 GB)... so the application thinks it can happily continue to write,
-> while in fact it fails (and the cannot even start anymore as it fails
-> to create lock files).
-> 
-> 
-> My understanding was the when not using --mixed, btrfs has block groups
-> for data and metadata.
-> 
-> And it seems here that the data block groups have several 100 GB still
-> free, while - AFAIU you - the metadata block groups are already full.
-> 
-> 
-> 
-> I also wouldn't want to regularly balance (which doesn't really seem to
-> help that much so far)... cause it puts quite some IO load on the
-> systems.
+This is originally just my preparation for scrub refactors, but when the
+readahead is involved, it won't just be a small cleanup.
 
-If you minimally balance data (so that you keep 2GB unallocated at all
-times) then it works much better: you can allocate the last metadata
-chunk that you need to expand, and it requires only a few minutes of IO
-per day.  After a while you don't need to do this any more, as a large
-buffer of allocated but unused metadata will form.
+The metadata readahead code is introduced in 2011 (surprisingly, the
+commit message even contains changelog), but now only one user for it,
+and even for the only one user, the readahead mechanism can't provide
+much help in fact.
 
-If you need a drastic intervention, you can mount with metadata_ratio=1
-for a short(!) time to allocate a lot of extra metadata block groups.
-Combine with a data block group balance for a few blocks (e.g. -dlimit=9).
+Scrub needs readahead for commit root, but the existing one can only do
+current root readahead.
 
-You need about (3 + number_of_disks) GB of allocated but unused metadata
-block groups to handle the worst case (balance, scrub, and discard all
-active at the same time, plus the required free metadata space).  Also
-leave room for existing metadata to expand by about 50%, especially if
-you have snapshots.
+And the code is at a very bad layer inside btrfs, all metadata are at
+btrfs logical address space, but the readahead is kinda working at
+device layer (to manage the in-flight readahead).
 
-Never balance metadata.  Balancing metadata will erase existing metadata
-allocations, leading directly to this situation.
+Personally speaking, I don't think such "optimization" is really even
+needed, since we have better way like setting IO priority.
 
-Free space search time goes up as the filesystem fills up.  The last 1%
-of the filesystem will fill up significantly slower than the other 99%,
-You might need to reserve 3% of the filesystem to keep latencies down
-(ironically about the same amount that ext4 reserves).
+I really prefer to let the professional block layer guys do whatever
+they are good at (and in fact, those block layer guys rock!).
+Immature optimization is the cause of bugs, and it has already caused
+several bugs recently.
 
-There are some patches floating around to address these issues.
+Nowadays we have btrfs_path::reada to do the readahead, I doubt if we
+really need such facility.
 
-> So if csum data needs so much space... why can't it simply reserve e.g.
-> 60 GB for metadata instead of just 17 GB?
+So here I purpose to completely remove the old and under utilized
+metadata readahead system.
 
-It normally does.  Are you:
+Qu Wenruo (2):
+  btrfs: remove the unnecessary path parameter for scrub_raid56_parity()
+  btrfs: remove reada mechanism
 
-	- running metadata balances?  (Stop immediately.)
+ fs/btrfs/Makefile      |    2 +-
+ fs/btrfs/ctree.h       |   25 -
+ fs/btrfs/dev-replace.c |    5 -
+ fs/btrfs/disk-io.c     |   20 +-
+ fs/btrfs/extent_io.c   |    3 -
+ fs/btrfs/reada.c       | 1086 ----------------------------------------
+ fs/btrfs/scrub.c       |   64 +--
+ fs/btrfs/super.c       |    1 -
+ fs/btrfs/volumes.c     |    7 -
+ fs/btrfs/volumes.h     |    7 -
+ 10 files changed, 17 insertions(+), 1203 deletions(-)
+ delete mode 100644 fs/btrfs/reada.c
 
-	- preallocating large files?  Checksums are allocated later, and
-	naive usage of prealloc burns metadata space due to fragmentation.
+-- 
+2.34.1
 
-	- modifying snapshots?	Metadata size increases with each
-	modified snapshot.
-
-	- replacing large files with a lot of very small ones?	Files
-	below 2K are stored in metadata.  max_inline=0 disables this.
-
-> If I really had to reserve ~ 1TB of storage to be unused (per 16TB fs)
-> just to get that working... I would need to move stuff back to ext4,
-> cause that's such a big loss we couldn't justify to our funding
-> agencies.
-> 
-> 
-> And we haven't had that issue with e.g. ext4 ... that seems to reserve
-> just enough for meta, so that we could basically fill up the fs close
-> to the end.
-> 
-> 
-> 
-> Cheers,
-> Chris.
