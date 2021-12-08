@@ -2,214 +2,280 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0104446D509
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Dec 2021 15:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DD646D540
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 Dec 2021 15:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234711AbhLHOJV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Dec 2021 09:09:21 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:56086 "EHLO
+        id S234924AbhLHOLp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Dec 2021 09:11:45 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:30138 "EHLO
         mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234653AbhLHOJU (ORCPT
+        by vger.kernel.org with ESMTP id S234904AbhLHOLa (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Dec 2021 09:09:20 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B8CxVbP012167;
-        Wed, 8 Dec 2021 14:05:48 GMT
+        Wed, 8 Dec 2021 09:11:30 -0500
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B8CxWOW005888;
+        Wed, 8 Dec 2021 14:07:58 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : content-transfer-encoding : content-type :
  mime-version; s=corp-2021-07-09;
- bh=s/9Oe2t+YWYR8LxyVYc5PH27E6VbbuZ3shlRFwXav94=;
- b=uSuDEYPXNrMg9/neyaf7XjF8MBMHkvR3/dyeWW8SieWU1ltrjK8SELkIho6NmvPXsfB2
- 8KGN+NXjJPz+eWTm447lB3QQJ5eNV3ZdymkPfC4noX3qRQHWXD/dDJ5lqic025l1XG/s
- 8UZo/+vNmvAteDA5BuCi0u6NxLCrp8ZyxY5j7S9JknZNgkbnw/dCuOhm9Z0meIsVWOmC
- yOmi8D+olGu6rykl/dfth9WZQa397L8RyvWWaAntSwdg3MnOCpEUNhWM8eXXToLDVbZx
- a+FHur743fld/435kp6mXRNcvwaF5Q0CsFakiquAjUNIQNs0rsCHr899rcjTUMAnHctk gA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ctt9mrhvt-1
+ bh=FUkaGlrn5C1D4dPc1QYjOJwxDGFn6eryTon7T7Zv/Ak=;
+ b=LNITYii7Bu5ivKzFfn4edes+NXZWJS1sTDp/HhS8I+8yDw1vZSJ2cvYcJi2rD7UcYOTv
+ 0AB7iR4brwdM2uEd7ZJ8ticzOldKGMfLMj1SYyPOsQPmUfTK0g7V8Lh1i3eGVGIJMoFt
+ CNzOJlXgEPiV6e+8gZlE3EYZPlqA+SM9rJxOM6dvaajKeqv1eL1802LW+OjXH+tM2S2O
+ BxttIzpiAIhdofWrK7MiFOnzQLenEX/YKnWwUGvnb+qgr5g8DOny5kh0/aE12EroSTm2
+ mbxGTkScYbYQmtYgDFszWnuyLH0WpnF462KDidrCYqOrFCvV8Kstw3TJlkobOo8nWTRs YQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3ctrj2rtu4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Dec 2021 14:05:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1B8E1Fjj084076;
-        Wed, 8 Dec 2021 14:05:46 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2172.outbound.protection.outlook.com [104.47.57.172])
-        by userp3030.oracle.com with ESMTP id 3cqwf0frb8-1
+        Wed, 08 Dec 2021 14:07:57 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1B8E1NZw158396;
+        Wed, 8 Dec 2021 14:07:57 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
+        by aserp3030.oracle.com with ESMTP id 3csc4us00p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Dec 2021 14:05:46 +0000
+        Wed, 08 Dec 2021 14:07:56 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YFqklFYA3OIFJU6byBz297LS2akOXezFGIVNeW/VfV6dgO+IfldUMhPiXliK5IEnv+C3mfYWjoCP3WbNpmWRp1XuAYtN7Kjeg6k1/6yWv/iL2M7UcKuEi12NDlN6Mehx1RDgEAQoE6oir7VQDxjsIARUxsKn41BOSUdcFIaPkKrLwCffjK8awta9D5B7T621ir7SCoJFPdJwcBZxY0Bj2IPJ131F69T8/ORI64jhoz1XDXyr4WxOXUOMpUkdfL/4FQ/d/oPyv35BoF19rHI6Hd3ZTqoubwAy3tvvT2AqzyZz/0Hk7HFhNHxygt2elNq3ldeZ9j7Z9XmjW3ErkJ3cQQ==
+ b=mdKYKQckTWiJqELW0yiucqWfpWw6j0a6dn1n1YkzbkPhh38hLn5fB3fUXlR0HuiDIZ7AZDF42QaJAzqARGEUunoaw73WHSi62pmrSWWZ90anmrDvB+m18frg42jfH9YXjUeLXruYYTlsFo7zxfNSjm70PzAHo4NlYdoo6RRVun9QLaDexVp0CayC5Pl9I/AOQlM69mk0Boi4tHSmeQXQczhRSBwUa0ddKX1f42GbpokaznHCxewQ8lHo2yzIeptqtK6d+Kw69LwAEPSTckwmXa+QKkIntUBxIemrNX8cIWFllTZsFM+lvEV1cnhYhTRVhOXUXSYtW3kazsTwDM1p6w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s/9Oe2t+YWYR8LxyVYc5PH27E6VbbuZ3shlRFwXav94=;
- b=miwvZPcKRfCOkoSBA2g5R/63Y0I54oKMINO16xoO8K1MMZyp9148gOuVFcqjGJU10xPLP2Tun5Od2sWJkPkquM2SC7DQJY2fsC+DNy3cJwEVrCM2tmxwBB7dbbp5wosjjNx6q2GMQ4Bghw7QhDPDEaD0l7vhLW3adEvGu5e5nUQrMSmj/DRD0aeeWA/KUNQiyPWkdGh29bFaSjpFHc1O7nn66h9HxvelBmzTuR7nGCsUszms00nzmEJFh7dMe2b/rhouF76FbBT/gau3LcF5z3plXakB1MUgOXo8IQdZXTjoBePKpZdVGSlbOOD+5coMU2SN//Ixr1vBdAL6WiwtEg==
+ bh=FUkaGlrn5C1D4dPc1QYjOJwxDGFn6eryTon7T7Zv/Ak=;
+ b=ZOa+rTP7bW5a1F48oyV/grVCHq73Qrm7p1H+NB6u9hSAvuWX3OGWFPsfFdWRuEPT27Juswl4aCBd9QpQdw2mUb5O9GxmSYgCtz77XK0p2AeTE+AOfCpbbOA3/423CxAm5wEwit4Cbz8fZsQPDCwrDur2US/qQ3V+PE+/xmfpdHHJNeTLaxnMT0sy79D2loJGdtxwZJr+nZ/upvrNfVtk2h6c/+fFmRp7xun9Ih70ciaGflFSx6w0BqkRMyQPlpEHPBrQrIankFKgLF77kilkKQ3rVxW7BjY6OVn5BD5QAPPj3LuhsLqyEuJjNwhey3To6AbvMcSRjDIe9zkI0kfPRw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s/9Oe2t+YWYR8LxyVYc5PH27E6VbbuZ3shlRFwXav94=;
- b=FT9JwVpkYuXzareAawT5cCxkwvZRjiDtz7zOob5Nc9t8jrGOCivOiGJ5gBo5Y/iWdYI8MYoF1+gAPSh464wV492IxHy4cwEwthyXNNZSv+ZYVm4wbEsZaQGgDBAyzBpCEuFpWUrjljPxQ8Ng/j8Cyg9Xz4pIf86B7AG5EIEPlZc=
+ bh=FUkaGlrn5C1D4dPc1QYjOJwxDGFn6eryTon7T7Zv/Ak=;
+ b=djhECPqls1YA092MSY9h9gOtkqXtPhBe1/sSmw7rSIaTHFzl5MzjlRSh9iWdITWJ+nS4d3yZBMbwQSVQQJ/vnHoHyFh1qNsyb5EXWheKNDMw7dUAW+MZE/3wyXmhLFz+ASR39OGbUjUziacxJeJecmIMd5BpGtpcpcxQ5sdJEJc=
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4191.namprd10.prod.outlook.com (2603:10b6:208:1d1::14) with
+ by BLAPR10MB5187.namprd10.prod.outlook.com (2603:10b6:208:334::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.21; Wed, 8 Dec
- 2021 14:05:44 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.11; Wed, 8 Dec
+ 2021 14:07:54 +0000
 Received: from MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::f450:87d2:4d68:5e00]) by MN2PR10MB4128.namprd10.prod.outlook.com
  ([fe80::f450:87d2:4d68:5e00%5]) with mapi id 15.20.4755.022; Wed, 8 Dec 2021
- 14:05:44 +0000
+ 14:07:54 +0000
 From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>
-Subject: [PATCH] btrfs: harden identification of the stale device
-Date:   Wed,  8 Dec 2021 22:05:29 +0800
-Message-Id: <166e39f69a8693e5fe10784cdbd950d68f98d4fb.1638953372.git.anand.jain@oracle.com>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com
+Subject: [PATCH] btrfs/254: test cleaning up of the stale device
+Date:   Wed,  8 Dec 2021 22:07:46 +0800
+Message-Id: <c1c22a67c90f1b0b94ea3f99d6d6fd4a4d5d5473.1638953165.git.anand.jain@oracle.com>
 X-Mailer: git-send-email 2.33.1
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SGXP274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::36)
+X-ClientProxiedBy: SG2P153CA0033.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::20)
  To MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
 MIME-Version: 1.0
-Received: from localhost (39.109.140.76) by SGXP274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.17 via Frontend Transport; Wed, 8 Dec 2021 14:05:44 +0000
+Received: from localhost (39.109.140.76) by SG2P153CA0033.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::20) with Microsoft SMTP Server (version=TLS1_2, cipher=) via Frontend Transport; Wed, 8 Dec 2021 14:07:54 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d18ad872-adc1-4d2b-f47f-08d9ba53d3a8
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4191:EE_
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4191F06B97C3FD062FD88C48E56F9@MN2PR10MB4191.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: 77d30a33-e353-4955-66d7-08d9ba542128
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5187:EE_
+X-Microsoft-Antispam-PRVS: <BLAPR10MB5187DE0F584D7EBE977C6510E56F9@BLAPR10MB5187.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dmQQhyoKpvChmEa2SyB6A14b/VpFIL9VDB8+ci/w3u8sVF5YUcDs50m37BM0rzOP4MYEaEvuCb/70ylKv2/E64NpfQI6g/cEShRjghKOwRhCalRrpRG85pqkWpcsyJL5UyZkDdcnQpmnBMS+5rMjbRFRzI+JG0IKZVgmjshXtZkjpiI+1Zs8yvAZj3Lge++Pm4VOUuCqe67nnwF9EZkEtC7SCGOaRYGjs+GwcTSTUCEA3OALT/VKDMfYAv2FZ9wJaozVYgQbrz+Tulqail6EMJJQdm+2efHBjxjpq/x0IWREAaECRfQiFYT3tn0FeW4hiIBmVJsm7Iq5oNMeHETWy2MGXtwq7F87gpL38HMLU6ws8EATghx143kPT8g6JPyd9+zLfp7oTX7S/QSygggjURRmVkp+3eXKisNhzC/o/QLk6l60Ohh8eeFeG+wD7C2oZyR246eOrsDEhlXY7g+FKFX3lR3YyNk4K6h1qR3EEYdyR6WDraIcuifGqle/SlEBPLJByhY2ltb61H+hbphAhoMeT/yMEs4qc9qZvo404edlel5+cZS5kAsODnI0cjSdE2C2QnZqe4OQq+douSh56JRAEFyZ3idAOj35uW75maGnn74WTfQXHPScmNZfhv/IQiwr3ZRj3chhwiDwV+ipbw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(2906002)(86362001)(4326008)(38100700002)(66556008)(66476007)(508600001)(83380400001)(956004)(36756003)(26005)(6486002)(44832011)(316002)(6916009)(5660300002)(6496006)(186003)(66946007)(6666004)(8676002)(2616005)(8936002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: RO0NyF23VcqV4p6eD1xLZoS35etS4S960P7HvsbZbN5MQOUAPRuXCXKZwQyAFvxveKtYk0naKQCU3aweBw8B4XZmrDFXwFnch5qv5UYkvahi0tbvZp4P1rz1YUqZTW/3JVyL9fhkdCnLzRnG5MaWl8rH43U3D7UkHMgiGuzbvfQpigIV70KXBfxz/vxRuLUZADPjNqd6ICqqhh7eHqnjDHGg/7izG6liJcCjmhjHY2LcQqUraw1Oq65mBGl27uqqZNGqmFKvpMabN/argequ+MLaPLT9YqGoff3wM9y4Y4J6/MFTn5/sZKr3iOOHWMi6xbdcCogUUZs28JFiFBjts4GcTm00Lgn85VFiGph1wwTLeo/6zOp3vj4v8btc6Gd7SU0p+Cjn2Fd6cUXHP6yU+2tUA9KucjvkVEoKbLYUQDUyZGo3ROi2pmwGdnPMWQwSAynUz3fJWqEOzBMcOop/7kVRaIgMLjjSSK4/sXsZARKwO79zIRaD896obp2SUNTsQ57MZGMwN2u+g5hNFg1/F9J7llbpPGUTRt2dYcswNo2VqpjdfRKisJ2WLUWCp2i8jdD2x+pIkBcOq0DX9QU/YGlqlKOpv66ef+3IMa2VLxBGMn3quUcBlYFZAUDkvq1eX0OMXy3mFLvC1Tn/Dnnm1w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38100700002)(83380400001)(8936002)(508600001)(2906002)(26005)(44832011)(66556008)(36756003)(316002)(4326008)(86362001)(6666004)(956004)(6496006)(66476007)(186003)(6916009)(2616005)(8676002)(5660300002)(66946007)(6486002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+vRocXfVHT91kl1CeGCaqdNEpdJJTDI+erBG9T9785NmxEcvs+Y6prXZwoo/?=
- =?us-ascii?Q?FG1I759WJXlPDfBQJpD/Ifl0hTUEMseK+JND3Fxucj2XKqogVNWjkTRadTEt?=
- =?us-ascii?Q?5LtixXo1SWLyAAV4kHbJBtJyUUrubomN97/1yPGAJikP4EKuOKnAEWi3tJIq?=
- =?us-ascii?Q?Pa8MS4U6DMpwBxccULtexnsOnHx2DjCNJW/ryE+mv86FdLK/UY8vUuuQ6fAX?=
- =?us-ascii?Q?BA/mjRSgfdqcgHaUvL4sl9CoJQjoYHSe6TRfN9ZvXYJhtFDK2B+uq4FZRf/N?=
- =?us-ascii?Q?5OC/YROMKFe40puYZjPWBky1j1yXtKYFDX+hziEJXMHKVGvv6bH4gCvbMRlh?=
- =?us-ascii?Q?iBajSjp3VhU14IK7vDqV3GZsQ+65W/GbF33XKTSksczLuJpRNe/y1wKs7Nfx?=
- =?us-ascii?Q?kpN4BPlTCmAbAmGV8g/GCsOtTTIGa30swaqrp316SQIAschQbncxT8Zl95M/?=
- =?us-ascii?Q?2b7ZCiy+Kq+XsAsYfJSVuuaPPcOqR8gIl6Npo6si45/lPDA9UebUOxiwZe4Z?=
- =?us-ascii?Q?uojjtB1eW+ZjWApinpLas42/w+de4zYYMLMyInWglw12E3i0n0YFQ1dCTWbp?=
- =?us-ascii?Q?Hlye1jio4++heVEBNfYO3eloJq4TJkMwfyfc349TUYM5NOKsTxPsMFUsaxpq?=
- =?us-ascii?Q?Tvr7C4gyJOG/q4mhWYQqoQvKwLKAG4F93uh4Aw7h9AB1dFxvIIhGJJ+bqDO0?=
- =?us-ascii?Q?3jqHXmzP3d1iZxAvM/f4hmpau1GxzpIhFcUuNTWZX70iMHP0dQPXBuje7pF9?=
- =?us-ascii?Q?Nuvb2XzO4leqAthscZC5jsEyyDAmowwVEmvQc2M8ZNc0cVObQWXH+LtUX+J5?=
- =?us-ascii?Q?jmPuy7S1jSsDha62XQF2jz2VTqXDf+C1uzT439rVJz+IvvyRS30VUlI7rydW?=
- =?us-ascii?Q?NyzwcPOnMVb+t0dfavdNXNRWHOllXneuVcnvghgK2690nXvcy/3GWsKJL/sX?=
- =?us-ascii?Q?DnErf0RbV6hmUGvQDJXjX9HlZbQ0MeH48pV9ZnorDULRhvDib4htsK6sotVV?=
- =?us-ascii?Q?/wxDyRpq9Dffp9SnBNY5CmWzcBeLJP/XFNW6I2QDSBNV+CqxEctbkYDjnnWv?=
- =?us-ascii?Q?9OPnPdamHISK4eUZJya7aqqyz0AvjdI8i1zfOTKX4fWK2/3BPWhkVccYZBMh?=
- =?us-ascii?Q?RmNnyF4Z2CD9Px8cPFq78vUfJgUTobo43Jh2WwgKx9E/dQxSp8+9eeNN4Hko?=
- =?us-ascii?Q?MhZLdXaRE/19ydVxqlZEml7MbEMSaUJ2b6GjQmSqwO0u5kxxjY64qCj0IEvp?=
- =?us-ascii?Q?mVykudFrkfou08wmX1xYLCmT1wgGFpmUluQJ1KFeS2AAMT5dK74g7bs5YPh5?=
- =?us-ascii?Q?ThbdJMDrwlghKYQYpl2QhqirZnDEaSYBJSiTvCpxUbAPLsqg6uGbJUlP4DDU?=
- =?us-ascii?Q?z7aKC7tGSLi0yJAymA02/8EGUUlu31Hsgt5th2Q8PltCCz4k7BdtWRIFGtxR?=
- =?us-ascii?Q?Bf5Rkou+pfivAp7aqs8uZDM1PU/L/CkNSFDeYpxRLhaXATNDuZAIJvNso9hn?=
- =?us-ascii?Q?KrBXK7bt53/fZippQb0oyxLzMZeGGzaSKg6TMdUCraeuiybtLI5Vv2FwPmpY?=
- =?us-ascii?Q?7mA70nSxmgHUe7ea3xI06VKnsfeFeaornIemiMuXJ9NZMtBiQyMch3tJQ5vl?=
- =?us-ascii?Q?5O3/r4PppZIzRGOL1a+ySbE=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?050Ai9bCMZrao8vnoLcHBuKFE50eXJnRDslOuSR44ZfMwSYwaURkRo2dJZe0?=
+ =?us-ascii?Q?SI+9y+thDYMCUTTLH70HD8AvKvcqh/Zl4ikFYei/Cgr5JUgemLdgdLOcJ63l?=
+ =?us-ascii?Q?I2pcW/6GdOn4O4JlTb3wyryEgCS4ZcEBExz5UEyP1VMAM30qtJW5Gy4XGoNu?=
+ =?us-ascii?Q?zy37cVzAFA4vWZDOS2XQK4eEt768g32kJbTX/zZrn2GDPCQkJ6cY6F9oiy23?=
+ =?us-ascii?Q?rZ9z7bMlfESquoGTcfhtH/oEWFS2plcivvvGciN26FPIaFmbZD59xnOs74Fr?=
+ =?us-ascii?Q?n7bUTbGhFaiu2LSm9y/gfDObxzogbFIq4Arq9Qkpvv+1okCpPjbD74INROr3?=
+ =?us-ascii?Q?ei5mM9Je4THj2d63rTpaPYjEfORz1zw82Vz8itbSPh9WlNGdffHzr/D8HMte?=
+ =?us-ascii?Q?W+oZjEqeSFacbUa+Hbqy+CcNn28rx+eRLoI5DhkELyS3U2B49uX4HdndQpLa?=
+ =?us-ascii?Q?MMIE43K/fhqpEmSejPCOjIUN7CMz6liwHSRwnjDGTYxuY6soW0SAgdh0WB8R?=
+ =?us-ascii?Q?eLNwlKY7qtgkOEi8mD64fYIi7FT4aSzXRuvZzJh78k9yfVXlcX8OvfM48KUb?=
+ =?us-ascii?Q?IweYDtMWOYVOmEKkX3djsWuF8qnl/W4KSXudFgzKHnULE+dG6twA5QiW79WV?=
+ =?us-ascii?Q?P7hpfJ21illq1Wc+oCnbMOHza1rKJy7c/8AbfqFvvhGjsX02sjV2A2MLJPGo?=
+ =?us-ascii?Q?b439KzmYN2Rx7mkiTb+AuidX/GS0DH2zeLbqRdFMnoTbObrcrPtSH9g073sV?=
+ =?us-ascii?Q?t2Qrr6HnYI0H0qrMgoB0oQCC2MfDGgUCVBKZ1/Rxvi/YC/snZM1DOa3fCi75?=
+ =?us-ascii?Q?GvywCllMnI04YMJgz+Q13VYg/ySp2GYD4JK35YajGhzhDz157HiIjWJRH4Fm?=
+ =?us-ascii?Q?GF9yQk9Sx4S1jdOhlimCqUcTCC0szDbS4Z4mGme168+1olghWAkWRUajfZeF?=
+ =?us-ascii?Q?kJDQPlqhbBOtJDY7vRfnz1UtmCLaVcinEHqCF+C5UBaziWPIbc9bfiKXrUYB?=
+ =?us-ascii?Q?6hzZ+BOWK6LK5Gm7I2XIJe/1ynsTSeYoo2jsDqHLssD6sfE3iq1AN71EM+KE?=
+ =?us-ascii?Q?Nrr8vHl+00P7kdwKNl5m16GhRg6KxpfPVo1a2zyqIEtpW2wWq+hm87srotKi?=
+ =?us-ascii?Q?gwZxqlZej+DqYR/Mglj2VcSdgdUTw/+33jU6GGwBxtB2neMsWNKsF89aA4xJ?=
+ =?us-ascii?Q?yzBkHCbnrHOWQvgCQNjotneBmGODQHs+IqqPccC99w223lx97uiEaIGsF3lj?=
+ =?us-ascii?Q?neJl/L7rv1jfjLNNGPviDbSumVhGURzWaQbGgcri9rtyPVVSQCHcGqyWNCRJ?=
+ =?us-ascii?Q?JzOdW/eya4rop7Gupm/+J4J4LVd/EwmFgW/dmdgmsyjdflOYe76UfswbpdFU?=
+ =?us-ascii?Q?2SwBZJR28uxPd9Xa9vPt1ORuVdduTmWTfY+UqpN01EfPp9Ds3sXLJrzDUyih?=
+ =?us-ascii?Q?DjLpOAm4fgC/tieFsBhe7awX90JwPw3G8wdPZMLAYfPJRUSJoPvvf6pPbCjz?=
+ =?us-ascii?Q?SVGvzWCqVv067tDEVeAFkfTjoyb49OqIdlUpb+74al3F30wBkJaeMcNYYtHL?=
+ =?us-ascii?Q?vOIVHXjI3n1/ydt6FrQaqyRejctTU4f34cJgwJ5LERjFfe9Lb2TB/kO4HvPh?=
+ =?us-ascii?Q?XW6edep3CpepYIm0G7h/Qgg=3D?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d18ad872-adc1-4d2b-f47f-08d9ba53d3a8
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77d30a33-e353-4955-66d7-08d9ba542128
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2021 14:05:44.7471
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2021 14:07:54.6419
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rog2OFn4d352C4veWkjbtaHV7W4Yq2/AvGY+sKAx6KAo6PJbwe0cH5Q3giiMYEtFFKGgZ+fXei2+3pabOHQflA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4191
+X-MS-Exchange-CrossTenant-UserPrincipalName: dLVXhje28+EKi2i6HJr7E3QlrssgtGqz7aVVPqUDH5lUAbSF8yAAZdsDMbkXe9eldjsgWo4uWBT39+Ws6bFSpw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5187
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10191 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2112080089
-X-Proofpoint-GUID: 4wpkLDOHqLLnoxeQmkv1INcbzwvQAmfR
-X-Proofpoint-ORIG-GUID: 4wpkLDOHqLLnoxeQmkv1INcbzwvQAmfR
+X-Proofpoint-ORIG-GUID: ddsed7t4c64YYoxd5slxXMo-CU2K1vaZ
+X-Proofpoint-GUID: ddsed7t4c64YYoxd5slxXMo-CU2K1vaZ
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Identifying and removing the stale device from the fs_uuids list is done
-by the function btrfs_free_stale_devices().
-btrfs_free_stale_devices() in turn depends on the function
-device_path_matched() to check if the device repeats in more than one
-btrfs_device structure.
+Recreating a new filesystem or adding a device to a mounted the filesystem
+should remove the device entries under its previous fsid even when
+confused with different device paths to the same device.
 
-The matching of the device happens by its path, the device path. However,
-when dm mapper is in use, the dm device paths are nothing but a link to
-the actual block device, which leads to the device_path_matched() failing
-to match.
+Fixed by the kernel patch (in the ml):
+  btrfs: harden identification of the stale device
 
-Fix this by matching the dev_t as provided by lookup_bdev() instead of
-plain strcmp() the device paths.
-
-Reported-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-This patch should go to Stable-5.4.y and up but, there is a conflict.
-I will send a separate patch for the stable.
+ tests/btrfs/254     | 110 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/254.out |   6 +++
+ 2 files changed, 116 insertions(+)
+ create mode 100755 tests/btrfs/254
+ create mode 100644 tests/btrfs/254.out
 
- fs/btrfs/volumes.c | 33 ++++++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 553ee97078f6..cedadc81c851 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -535,15 +535,34 @@ btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
- 	return ret;
- }
- 
--static bool device_path_matched(const char *path, struct btrfs_device *device)
-+/*
-+ * Check if the device in the 'path' matches with the device in the given
-+ * struct btrfs_device '*device'.
-+ * Returns:
-+ *	0	If it is the same device.
-+ *	1	If it is not the same device.
-+ *	-errno	For error.
-+ */
-+static int device_matched(struct btrfs_device *device, const char *path)
- {
--	int found;
-+	dev_t dev_old;
-+	dev_t dev_new;
-+	int error;
- 
--	rcu_read_lock();
--	found = strcmp(rcu_str_deref(device->name), path);
--	rcu_read_unlock();
-+	lockdep_assert_held(&device->fs_devices->device_list_mutex);
-+	/* rcu is not required as we are inside the device_list_mutex */
-+	error = lookup_bdev(device->name->str, &dev_old);
-+	if (error)
-+		return error;
- 
--	return found == 0;
-+	error = lookup_bdev(path, &dev_new);
-+	if (error)
-+		return error;
+diff --git a/tests/btrfs/254 b/tests/btrfs/254
+new file mode 100755
+index 000000000000..6c3414f73d15
+--- /dev/null
++++ b/tests/btrfs/254
+@@ -0,0 +1,110 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2021 Anand Jain. All Rights Reserved.
++# Copyright (c) 2021 Oracle. All Rights Reserved.
++#
++# FS QA Test No. 254
++#
++# Test if the kernel can free the stale device entries.
++# 
++. ./common/preamble
++_begin_fstest auto quick
 +
-+	if (dev_old == dev_new)
-+		return 0;
++# Override the default cleanup function.
++node=$seq-test
++cleanup_dmdev()
++{
++	_dmsetup_remove $node
++}
 +
-+	return 1;
- }
- 
- /*
-@@ -578,7 +597,7 @@ static int btrfs_free_stale_devices(const char *path,
- 				continue;
- 			if (path && !device->name)
- 				continue;
--			if (path && !device_path_matched(path, device))
-+			if (path && device_matched(device, path) != 0)
- 				continue;
- 			if (fs_devices->opened) {
- 				/* for an already deleted device return 0 */
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++	rm -rf $seq_mnt > /dev/null 2>&1
++	cleanup_dmdev
++}
++
++# Import common functions.
++. ./common/filter
++. ./common/filter.btrfs
++
++# real QA test starts here
++_supported_fs btrfs
++_require_scratch_dev_pool 3
++_require_block_device $SCRATCH_DEV
++_require_dm_target linear
++_require_btrfs_forget_or_module_loadable
++_require_scratch_nocheck
++_require_command "$WIPEFS_PROG" wipefs
++
++_scratch_dev_pool_get 3
++
++setup_dmdev()
++{
++	# Some small size.
++	size=$((1024 * 1024 * 1024))
++	size_in_sector=$((size / 512))
++
++	table="0 $size_in_sector linear $SCRATCH_DEV 0"
++	_dmsetup_create $node --table "$table" || \
++		_fail "setup dm device failed"
++}
++
++# Use a known it is much easier to debug.
++uuid="--uuid 12345678-1234-1234-1234-123456789abc"
++lvdev=/dev/mapper/$node
++
++seq_mnt=$TEST_DIR/$seq.mnt
++mkdir -p $seq_mnt
++
++test_forget()
++{
++	setup_dmdev
++	dmdev=$(realpath $lvdev)
++
++	_mkfs_dev $uuid $dmdev
++
++	# Check if we can un-scan using the mapper device path.
++	$BTRFS_UTIL_PROG device scan --forget $lvdev
++
++	# Cleanup
++	$WIPEFS_PROG -a $lvdev > /dev/null 2>&1
++	$BTRFS_UTIL_PROG device scan --forget
++
++	cleanup_dmdev
++}
++
++test_add_device()
++{
++	setup_dmdev
++	dmdev=$(realpath $lvdev)
++	scratch_dev2=$(echo $SCRATCH_DEV_POOL | awk '{print $2}')
++	scratch_dev3=$(echo $SCRATCH_DEV_POOL | awk '{print $3}')
++
++	_mkfs_dev $scratch_dev3
++	_mount $scratch_dev3 $seq_mnt
++
++	_mkfs_dev $uuid -draid1 -mraid1 $dmdev $scratch_dev2
++
++	# Add device should free the device under $uuid in the kernel.
++	$BTRFS_UTIL_PROG device add -f $lvdev $seq_mnt
++
++	_mount -o degraded $scratch_dev2 $SCRATCH_MNT
++
++	# Check if the missing device is shown.
++	$BTRFS_UTIL_PROG filesystem show -m $SCRATCH_MNT | \
++					_filter_btrfs_filesystem_show
++
++	$UMOUNT_PROG $seq_mnt
++	_scratch_unmount
++	cleanup_dmdev
++}
++
++test_forget
++test_add_device
++
++_scratch_dev_pool_put
++
++status=0
++exit
+diff --git a/tests/btrfs/254.out b/tests/btrfs/254.out
+new file mode 100644
+index 000000000000..20819cf5140c
+--- /dev/null
++++ b/tests/btrfs/254.out
+@@ -0,0 +1,6 @@
++QA output created by 254
++Label: none  uuid: <UUID>
++	Total devices <NUM> FS bytes used <SIZE>
++	devid <DEVID> size <SIZE> used <SIZE> path SCRATCH_DEV
++	*** Some devices missing
++
 -- 
-2.33.1
+2.27.0
 
