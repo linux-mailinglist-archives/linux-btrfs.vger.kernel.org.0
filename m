@@ -2,105 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC8846EA3F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 15:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCF646EA66
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 15:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234902AbhLIOrt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Dec 2021 09:47:49 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:45038 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233886AbhLIOrs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Dec 2021 09:47:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 80EE5B82488;
-        Thu,  9 Dec 2021 14:44:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62200C004DD;
-        Thu,  9 Dec 2021 14:44:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639061053;
-        bh=YprkNrs5Q2tjNnWBp1vFs/paQHCb28ylFF9XBS4AgPo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GATxCcDbdiEf6ze5KAjPJ0uSp6ZAnmlo6gOie1TCT2d8nD954G30D1kI+h182ujEO
-         HmyJ7P/Zjj++DwSkegqjTuo5918qPHmEOQvPaE8MC+LZP+qOB1Ls+Eo8YlklKKDHWf
-         HUIE7AelScRjsrgAtOStHePsWHJ0HiFViciQ/CwWeDff5l2TFq5xtmBePmIwjVl4FF
-         VDARkNe0x2j9TQGIXnUY2V8YUmcxpOkf+09/jvMWz7czGD3uDdlT3AI1yG6DFaRs1m
-         J+pPmluk4DRKYjFiQZvaQmE7EZHlRqI06W6rXtYgbim8Y9Hh4XBcelRU5P8uBID0IK
-         ir/WRhfrBGwfw==
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic/335: explicitly fsync file foo when running on btrfs
-Date:   Thu,  9 Dec 2021 14:44:06 +0000
-Message-Id: <4e00357fe3aaa843bd8fd02218b97104e5fd74bf.1639060960.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.33.0
+        id S239014AbhLIPBM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Dec 2021 10:01:12 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:35298 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239004AbhLIPBL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Dec 2021 10:01:11 -0500
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 9529F1F37E;
+        Thu,  9 Dec 2021 14:57:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1639061857;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LzIyK+gI/e6qy64cioNsB/eyWTg6lDPo2zLef13Qb4k=;
+        b=Qo5sPc/P1oqZt0kfsY2w9dkF4Jm+6ERRLHS87A719/Ex1Zc61R0GsKZpKg8tnwZQxqPrGI
+        ySfuR88cyrVS/cvTgVBBq8Nn7cjippO69D0oKYxMLh5t5mxK2njJvrFojXqc8ao1W27YIx
+        BxL26MVDl4raecYeibt+c5L8thHSzik=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1639061857;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LzIyK+gI/e6qy64cioNsB/eyWTg6lDPo2zLef13Qb4k=;
+        b=uW0xqn7RdCT45OG86B/Ho7qyuawOQXG4iBlCbJtajyWcYhNzYQMZNE2KZNZ3WcZCyuEaGS
+        p8zS/o3rISAOOnBA==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 80111A3B93;
+        Thu,  9 Dec 2021 14:57:37 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DBA4FDA799; Thu,  9 Dec 2021 15:57:21 +0100 (CET)
+Date:   Thu, 9 Dec 2021 15:57:21 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Jianglei Nie <niejianglei2021@163.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Fix memory leak in __add_inode_ref()
+Message-ID: <20211209145721.GN28560@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Jianglei Nie <niejianglei2021@163.com>,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211209065631.124586-1-niejianglei2021@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211209065631.124586-1-niejianglei2021@163.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Dec 09, 2021 at 02:56:31PM +0800, Jianglei Nie wrote:
+> Line 1169 (#3) allocates a memory chunk for victim_name by kmalloc(),
+> but  when the function returns in line 1184 (#4) victim_name allcoated
+> by line 1169 (#3) is not freed, which will lead to a memory leak.
+> There is a similar snippet of code in this function as allocating a memory
+> chunk for victim_name in line 1104 (#1) as well as releasing the memory
+> in line 1116 (#2).
+> 
+> We should kfree() victim_name when the return value of backref_in_log()
+> is less than zero and before the function returns in line 1184 (#4).
+> 
+> 1057 static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
+> 1058 				  struct btrfs_root *root,
+> 1059 				  struct btrfs_path *path,
+> 1060 				  struct btrfs_root *log_root,
+> 1061 				  struct btrfs_inode *dir,
+> 1062 				  struct btrfs_inode *inode,
+> 1063 				  u64 inode_objectid, u64 parent_objectid,
+> 1064 				  u64 ref_index, char *name, int namelen,
+> 1065 				  int *search_done)
+> 1066 {
+> 
+> 1104 	victim_name = kmalloc(victim_name_len, GFP_NOFS);
+> 	// #1: kmalloc (victim_name-1)
+> 1105 	if (!victim_name)
+> 1106 		return -ENOMEM;
+> 
+> 1112	ret = backref_in_log(log_root, &search_key,
+> 1113			parent_objectid, victim_name,
+> 1114			victim_name_len);
+> 1115	if (ret < 0) {
+> 1116		kfree(victim_name); // #2: kfree (victim_name-1)
+> 1117		return ret;
+> 1118	} else if (!ret) {
+> 
+> 1169 	victim_name = kmalloc(victim_name_len, GFP_NOFS);
+> 	// #3: kmalloc (victim_name-2)
+> 1170 	if (!victim_name)
+> 1171 		return -ENOMEM;
+> 
+> 1180 	ret = backref_in_log(log_root, &search_key,
+> 1181 			parent_objectid, victim_name,
+> 1182 			victim_name_len);
+> 1183 	if (ret < 0) {
+> 1184 		return ret; // #4: missing kfree (victim_name-2)
+> 1185 	} else if (!ret) {
+> 
+> 1241 	return 0;
+> 1242 }
+> 
+> Signed-off-by: Jianglei Nie <niejianglei2021@163.com>
 
-The test is relying on the fact that an fsync on directory "a" will
-result in persisting the changes of its subdirectory "b", namely the
-rename of "/a/b/foo" to "/c/foo". For this particular filesystem layout,
-that will happen on btrfs, because all the directory entries end up in
-the same metadata leaf. However that is not a behaviour we can always
-guarantee on btrfs. For example, if we add more files to directory
-"a" before and after creating subdirectory "b", like this:
-
-  mkdir $SCRATCH_MNT/a
-  for ((i = 0; i < 1000; i++)); do
-      echo -n > $SCRATCH_MNT/a/file_$i
-  done
-  mkdir $SCRATCH_MNT/a/b
-  for ((i = 1000; i < 2000; i++)); do
-      echo -n > $SCRATCH_MNT/a/file_$i
-  done
-  mkdir $SCRATCH_MNT/c
-  touch $SCRATCH_MNT/a/b/foo
-
-  sync
-
-  # The rest of the test remains unchanged...
-  (...)
-
-Then after fsyncing only directory "a", the rename of file "foo" from
-"/a/b/foo" to "/c/foo" is not persisted.
-
-Guaranteeing that on btrfs would be expensive on large directories, as
-it would require scanning for every subdirectory. It's also not required
-by posix for the fsync on a directory to persist changes inside its
-subdirectories. So add an explicit fsync on file "foo" when the filesystem
-being tested is btrfs.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/generic/335 | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/tests/generic/335 b/tests/generic/335
-index e04f7a5f..196ada64 100755
---- a/tests/generic/335
-+++ b/tests/generic/335
-@@ -51,6 +51,15 @@ mv $SCRATCH_MNT/a/b/foo $SCRATCH_MNT/c/
- touch $SCRATCH_MNT/a/bar
- $XFS_IO_PROG -c "fsync" $SCRATCH_MNT/a
- 
-+# btrfs can not guarantee that when we fsync a directory all its subdirectories
-+# created on past transactions are fsynced as well. It may do it sometimes, but
-+# it's not guaranteed, giving such guarantees would be too expensive for large
-+# directories and posix does not require that recursive behaviour. So if we want
-+# the rename of "foo" to be persisted, explicitly fsync "foo".
-+if [ $FSTYP == "btrfs" ]; then
-+	$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/c/foo
-+fi
-+
- echo "Filesystem content before power failure:"
- ls -R $SCRATCH_MNT/a $SCRATCH_MNT/c | _filter_scratch
- 
--- 
-2.33.0
-
+Added to misc-next, thanks.
