@@ -2,133 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486D946E168
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 05:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C2C46E1A8
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 05:44:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbhLIEDl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Dec 2021 23:03:41 -0500
-Received: from mga18.intel.com ([134.134.136.126]:60516 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231622AbhLIEDl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 Dec 2021 23:03:41 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10192"; a="224879294"
-X-IronPort-AV: E=Sophos;i="5.88,191,1635231600"; 
-   d="scan'208";a="224879294"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2021 20:00:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,191,1635231600"; 
-   d="scan'208";a="680174853"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 08 Dec 2021 20:00:06 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mvAbF-0001RU-W3; Thu, 09 Dec 2021 04:00:05 +0000
-Date:   Thu, 9 Dec 2021 11:59:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] btrfs: harden identification of the stale device
-Message-ID: <202112091123.ETjD5KQj-lkp@intel.com>
-References: <166e39f69a8693e5fe10784cdbd950d68f98d4fb.1638953372.git.anand.jain@oracle.com>
+        id S230473AbhLIEsU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Dec 2021 23:48:20 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:33370 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232319AbhLIEsP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Dec 2021 23:48:15 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id E062CC9B7D; Wed,  8 Dec 2021 23:44:39 -0500 (EST)
+Date:   Wed, 8 Dec 2021 23:44:38 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Libor =?utf-8?B?S2xlcMOhxI0=?= <libor.klepac@bcom.cz>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: Btrfs lockups on ubuntu with bees
+Message-ID: <20211209044438.GO17148@hungrycats.org>
+References: <c9f1640177563f545ef70eb6ec1560faa1bb1bd7.camel@bcom.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <166e39f69a8693e5fe10784cdbd950d68f98d4fb.1638953372.git.anand.jain@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c9f1640177563f545ef70eb6ec1560faa1bb1bd7.camel@bcom.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Anand,
+On Fri, Nov 26, 2021 at 02:36:30PM +0000, Libor Klepáč wrote:
+> Hi,
+> we are trying to use btrfs with compression and deduplication using
+> bees to host filesystem for nakivo repository.
+> Nakivo repository is in "incremental with full backups" format - ie.
+> one file per VM snapshot transferred from vmware, full backup every x
+> days, no internal deduplication. 
+> We have also disabled internal compression in nakivo repository and put
+> compression-force=zstd:13 on filesystem.
+> 
+> It's a VM on vmware 6.7.0 Update 3 (Build 17700523) on Dell R540.
+> It has 6vCPU, 16GB of ram.
+> 
+> Bees is run with this parameters
+> OPTIONS="--strip-paths --no-timestamps --verbose 5 --loadavg-target 5 
+> --thread-min 1"
+> DB_SIZE=$((8*1024*1024*1024)) # 8G in bytes
+> 
+> 
+> 
+> Until today it was running ubuntu provided kernel 5.11.0-40.44~20.04.2
+> (not sure about exact upstream version),
+> today we switched to 5.13.0-21.21~20.04.1 after first crash.
+> 
+> It was working ok for 7+days, all data were in (around 10TB), so i
+> started bees. 
+> It now locks the FS, bees runs on 100% CPU, i cannot enter directory
+> with btrfs
+> 
+> # btrfs filesystem usage /mnt/btrfs/repo02/
+> Overall:
+>     Device size:                  20.00TiB
+>     Device allocated:             10.88TiB
+>     Device unallocated:            9.12TiB
+>     Device missing:                  0.00B
+>     Used:                         10.87TiB
+>     Free (estimated):              9.13TiB      (min: 4.57TiB)
+>     Data ratio:                       1.00
+>     Metadata ratio:                   1.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
+> 
+> Data,single: Size:10.85TiB, Used:10.83TiB (99.91%)
+>    /dev/sdd       10.85TiB
+> 
+> Metadata,single: Size:35.00GiB, Used:34.71GiB (99.17%)
+>    /dev/sdd       35.00GiB
+> 
+> System,DUP: Size:32.00MiB, Used:1.14MiB (3.56%)
+>    /dev/sdd       64.00MiB
+> 
+> Unallocated:
+>    /dev/sdd        9.12TiB
+> 
+> This happened yesterday on kernel 5.11
+> https://download.bcom.cz/btrfs/trace1.txt
+> 
+> This is today, on 5.13
+> https://download.bcom.cz/btrfs/trace2.txt
+> 
+> this is trace from sysrq later, when i noticed it happened again
+> https://download.bcom.cz/btrfs/trace3.txt
+> 
+> 
+> Any clue what can be done?
 
-Thank you for the patch! Perhaps something to improve:
+I am currently hitting this bug on all kernel versions starting from 5.11.
+Test runs end with the filesystem locked up, 100% CPU usage in bees
+and the following lockdep dump:
 
-[auto build test WARNING on kdave/for-next]
-[also build test WARNING on v5.16-rc4 next-20211208]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+	[Wed Dec  8 14:14:03 2021] Linux version 5.11.22-zb64-e4d48558d24c+ (zblaxell@waya) (gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.37) #1 SMP Sun Dec 5 04:18:31 EST 2021
 
-url:    https://github.com/0day-ci/linux/commits/Anand-Jain/btrfs-harden-identification-of-the-stale-device/20211208-220757
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-config: i386-randconfig-s001-20211207 (https://download.01.org/0day-ci/archive/20211209/202112091123.ETjD5KQj-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://github.com/0day-ci/linux/commit/03b597640967afb3d37dc37f0a685fed95594b83
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Anand-Jain/btrfs-harden-identification-of-the-stale-device/20211208-220757
-        git checkout 03b597640967afb3d37dc37f0a685fed95594b83
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 SHELL=/bin/bash
+	[Wed Dec  8 23:17:32 2021] sysrq: Show Locks Held
+	[Wed Dec  8 23:17:32 2021] 
+				   Showing all locks held in the system:
+	[Wed Dec  8 23:17:32 2021] 1 lock held by in:imklog/3603:
+	[Wed Dec  8 23:17:32 2021] 1 lock held by dmesg/3720:
+	[Wed Dec  8 23:17:32 2021]  #0: ffff8a1406ac80e0 (&user->lock){+.+.}-{3:3}, at: devkmsg_read+0x4d/0x320
+	[Wed Dec  8 23:17:32 2021] 3 locks held by bash/3721:
+	[Wed Dec  8 23:17:32 2021]  #0: ffff8a142a589498 (sb_writers#4){.+.+}-{0:0}, at: ksys_write+0x70/0xf0
+	[Wed Dec  8 23:17:32 2021]  #1: ffffffff98f199a0 (rcu_read_lock){....}-{1:2}, at: __handle_sysrq+0x5/0xa0
+	[Wed Dec  8 23:17:32 2021]  #2: ffffffff98f199a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x23/0x187
+	[Wed Dec  8 23:17:32 2021] 1 lock held by btrfs-transacti/6161:
+	[Wed Dec  8 23:17:32 2021]  #0: ffff8a14e0178850 (&fs_info->transaction_kthread_mutex){+.+.}-{3:3}, at: transaction_kthread+0x5a/0x1b0
+	[Wed Dec  8 23:17:32 2021] 3 locks held by crawl_257_265/6491:
+	[Wed Dec  8 23:17:32 2021] 3 locks held by crawl_257_291/6494:
+	[Wed Dec  8 23:17:32 2021]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
+	[Wed Dec  8 23:17:32 2021]  #1: ffff8a1410d7c848 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
+	[Wed Dec  8 23:17:32 2021]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
+	[Wed Dec  8 23:17:32 2021] 4 locks held by crawl_257_292/6502:
+	[Wed Dec  8 23:17:32 2021]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
+	[Wed Dec  8 23:17:32 2021]  #1: ffff8a131637a908 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
+	[Wed Dec  8 23:17:32 2021]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
+	[Wed Dec  8 23:17:32 2021]  #3: ffff8a14bd0926b8 (sb_internal#2){.+.+}-{0:0}, at: btrfs_start_transaction+0x1e/0x20
+	[Wed Dec  8 23:17:32 2021] 2 locks held by crawl_257_293/6503:
+	[Wed Dec  8 23:17:32 2021]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
+	[Wed Dec  8 23:17:32 2021]  #1: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: btrfs_remap_file_range+0x2eb/0x3c0
+	[Wed Dec  8 23:17:32 2021] 3 locks held by crawl_256_289/6504:
+	[Wed Dec  8 23:17:32 2021]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
+	[Wed Dec  8 23:17:32 2021]  #1: ffff8a140f2c4748 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
+	[Wed Dec  8 23:17:32 2021]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+	[Wed Dec  8 23:17:32 2021] =============================================
 
+There's only one commit touching vfs_dedupe_file_range_one
+between v5.10 and v5.15 (3078d85c9a10 "vfs: verify source area in
+vfs_dedupe_file_range_one()"), so I'm now testing 5.11 with that commit
+reverted to see if it introduced a regression.
 
-sparse warnings: (new ones prefixed by >>)
-   fs/btrfs/volumes.c:402:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct rcu_string *str @@     got struct rcu_string [noderef] __rcu *name @@
-   fs/btrfs/volumes.c:402:31: sparse:     expected struct rcu_string *str
-   fs/btrfs/volumes.c:402:31: sparse:     got struct rcu_string [noderef] __rcu *name
->> fs/btrfs/volumes.c:549:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char const *pathname @@     got char [noderef] __rcu * @@
-   fs/btrfs/volumes.c:549:35: sparse:     expected char const *pathname
-   fs/btrfs/volumes.c:549:35: sparse:     got char [noderef] __rcu *
-   fs/btrfs/volumes.c:643:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char const *device_path @@     got char [noderef] __rcu * @@
-   fs/btrfs/volumes.c:643:43: sparse:     expected char const *device_path
-   fs/btrfs/volumes.c:643:43: sparse:     got char [noderef] __rcu *
-   fs/btrfs/volumes.c:904:50: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char const *cs @@     got char [noderef] __rcu * @@
-   fs/btrfs/volumes.c:904:50: sparse:     expected char const *cs
-   fs/btrfs/volumes.c:904:50: sparse:     got char [noderef] __rcu *
-   fs/btrfs/volumes.c:984:39: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct rcu_string *str @@     got struct rcu_string [noderef] __rcu *name @@
-   fs/btrfs/volumes.c:984:39: sparse:     expected struct rcu_string *str
-   fs/btrfs/volumes.c:984:39: sparse:     got struct rcu_string [noderef] __rcu *name
-   fs/btrfs/volumes.c:1040:58: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char const *src @@     got char [noderef] __rcu * @@
-   fs/btrfs/volumes.c:1040:58: sparse:     expected char const *src
-   fs/btrfs/volumes.c:1040:58: sparse:     got char [noderef] __rcu *
-   fs/btrfs/volumes.c:2235:49: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected char const *device_path @@     got char [noderef] __rcu * @@
-   fs/btrfs/volumes.c:2235:49: sparse:     expected char const *device_path
-   fs/btrfs/volumes.c:2235:49: sparse:     got char [noderef] __rcu *
-   fs/btrfs/volumes.c:2350:41: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected char const *device_path @@     got char [noderef] __rcu * @@
-   fs/btrfs/volumes.c:2350:41: sparse:     expected char const *device_path
-   fs/btrfs/volumes.c:2350:41: sparse:     got char [noderef] __rcu *
-
-vim +549 fs/btrfs/volumes.c
-
-   532	
-   533	/*
-   534	 * Check if the device in the 'path' matches with the device in the given
-   535	 * struct btrfs_device '*device'.
-   536	 * Returns:
-   537	 *	0	If it is the same device.
-   538	 *	1	If it is not the same device.
-   539	 *	-errno	For error.
-   540	 */
-   541	static int device_matched(struct btrfs_device *device, const char *path)
-   542	{
-   543		dev_t dev_old;
-   544		dev_t dev_new;
-   545		int error;
-   546	
-   547		lockdep_assert_held(&device->fs_devices->device_list_mutex);
-   548		/* rcu is not required as we are inside the device_list_mutex */
- > 549		error = lookup_bdev(device->name->str, &dev_old);
-   550		if (error)
-   551			return error;
-   552	
-   553		error = lookup_bdev(path, &dev_new);
-   554		if (error)
-   555			return error;
-   556	
-   557		if (dev_old == dev_new)
-   558			return 0;
-   559	
-   560		return 1;
-   561	}
-   562	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> We would really like to use btrfs for this use case, because nakivo,
+> with this type of repository format, needs to be se to do full backup
+> every x days and does not do deduplication on its own.
+> 
+> 
+> With regards,
+> Libor
+> 
