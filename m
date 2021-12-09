@@ -2,170 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1361F46F2CA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 19:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECCE46F372
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 19:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243204AbhLISLk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Dec 2021 13:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
+        id S229838AbhLIS5D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Dec 2021 13:57:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243201AbhLISLj (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Dec 2021 13:11:39 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA6EC061746
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Dec 2021 10:08:05 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id n8so4487590plf.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 09 Dec 2021 10:08:05 -0800 (PST)
+        with ESMTP id S229949AbhLIS47 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Dec 2021 13:56:59 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77A0C0617A2
+        for <linux-btrfs@vger.kernel.org>; Thu,  9 Dec 2021 10:53:25 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id u18-20020a9d7212000000b00560cb1dc10bso7161428otj.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 09 Dec 2021 10:53:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pE5zMUDjjkrq1kttAXZYbh4uJ8zMkW83Aa6DS95Ku3k=;
-        b=eLb/75QmyA0sR4GpXqw/M/CZ1s91kc9drM/PHmWkfeG34dkG2jHD8XEa4z9m7ewV3E
-         hDjT9y7DxR71uC9feKqvqOG/UBTlqYnkv46GIzqKAT26hL3xZKaFI0D17rkzwXK3MTI0
-         q46RTVxIB2WEIUrjA7ae7qESZASVGt2Q4ts7DrcnQWu6tWgfjdkISXcFUfKWp/4Folra
-         zGSnRhHbrGzBfy0VyG+wT2UkXVGZUXmi394HwPA63y6Hgfw9wPWhPB1eDEYFe8HKsBxU
-         DzBQt1ZmfSnQzilI8nyWoQn/n/hpFZVsMBsFl+fi7g6YFWi+vzzrsCamg+7ZzOf/L/g0
-         geXg==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=80HWnHPWJlbwBoph1SQxVteq6hb4x4YiCtS4rhN7W3w=;
+        b=UunRr2pt99avIJf0ecqDwbmL1I50AF9VmbHxlcaZzEiRfOdB3gZn5FAkKxX+ZQwN8S
+         f24s5UoHYH4xRDpzp08oOxYsU/VjSxDtBzvkFdG0Z24cHX6ZGYDcyXk93wYDiMB5GOep
+         PJmXEnbgGUj8pxFnZzKn+pT6NMRUFvN79KfGnf/aWKMKuEzUuykj3kJi6v5tjgsfWIH9
+         KLR6KIzm4TCfUAh94hgixJQIZhwd8Q6HWltQKuWClZBcRvQ/BQTpNCPDO90+fb1j/5zM
+         fUv5oDZWafqVYpB3KugRm6qBitz8Sth27qN3uJdM0MK5iTYPKfrOemgg+XzKkl2Oeu57
+         oTpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pE5zMUDjjkrq1kttAXZYbh4uJ8zMkW83Aa6DS95Ku3k=;
-        b=hNKvL4vut3HPE7/wBmgZ0bHqiJeiPSF7V53nPL5dsjO0AsusTGF/IjO5rGqa4iQcx5
-         Dpeyj/hX0Vd5/2nuFxZakjNVJlppeDhUeBmlGjjscMhB1MGvoagglj7feXSug+qY2Dv5
-         LreNhBH6Ss+oJTMxMso8iwSsH4DNAz3R7tHIxgbhIiQqJBErgUkFYlDoqu6UEQSpf4Mn
-         LsOxTgSjs8+i3843Yntd/WVMBWarGoVEl4G7muRj9i7nMPpyYBEVP1GhcPZgamEwzTn/
-         FNARDxHs+WUda5HP26QdYPeNbucFUy6pMOIMlqkW7xqZFQAL39oTP2uSYyNMD6CcNwSl
-         2D7A==
-X-Gm-Message-State: AOAM533X83B0o9iFD3M6N9YRNGGJ/oK1Bz0bfkzNqUqCYTre5KEgS8B3
-        CC+J9DOJO/VB+Uw/RZISGfZlUQ==
-X-Google-Smtp-Source: ABdhPJzrWa0ES2DlmybxY+dqRGTvrju0zraQgZgokCHY98Mi0YIReWgwZppicJUrJQJVza7iw7Ub6A==
-X-Received: by 2002:a17:902:e0d4:b0:142:8897:94e2 with SMTP id e20-20020a170902e0d400b00142889794e2mr69189453pla.58.1639073284789;
-        Thu, 09 Dec 2021 10:08:04 -0800 (PST)
-Received: from relinquished.localdomain ([2601:602:8b80:8e0::547e])
-        by smtp.gmail.com with ESMTPSA id w1sm382785pfg.11.2021.12.09.10.08.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Dec 2021 10:08:04 -0800 (PST)
-Date:   Thu, 9 Dec 2021 10:08:02 -0800
-From:   Omar Sandoval <osandov@osandov.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v12 12/17] btrfs: send: fix maximum command numbering
-Message-ID: <YbJGAtRjYAinr4Ak@relinquished.localdomain>
-References: <cover.1637179348.git.osandov@fb.com>
- <bc324fbf99e8a792719da7bb96f5dcf4964904de.1637179348.git.osandov@fb.com>
- <20211118142359.GE28560@twin.jikos.cz>
- <YZahWPMfY5CLXTa6@relinquished.localdomain>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=80HWnHPWJlbwBoph1SQxVteq6hb4x4YiCtS4rhN7W3w=;
+        b=dRII183eG0g4XNWqRzAbsofvVPW6NjDi2aPS7MvIasqVAU36jsVm81+dMT05RQdAXy
+         QbWf1yHHwcAziOk+6Zhn2LN6vD/nljtoC9G3zCV6zPEgjFoweU8yTm0gv6tvWvZg7EBN
+         LyfBL/gtx+rWHj9EvVUs4YYtgtv/kpwfs6cWIe9mbBqWIPMGtl0tSq1PJ+FprVEuP70X
+         2ku5fQwjiEOhSy5YMTYVgvvum5YoN2kI6HUx9j/ktzJN5OYQNaHnbGsXsXy0mVYuQXOV
+         +bpBfKVnNDECn462K+POohZkduVCgPfHqZYq95eQPHCC9jaJtO6pIJn5tdYeqJCXw21+
+         pqxQ==
+X-Gm-Message-State: AOAM530H1BgkeLzqXpCBfI8FWaP2xm3vWIh1mIdTZDrPXPD56yDYp/na
+        XSns3TgktpwA8pGFzWSinQJrZ5446vK5jgn9zSk=
+X-Google-Smtp-Source: ABdhPJyfjZGxMSO7FMTVlhzAsEb07GNlskuxs4OHSISmZsqLnLK51B/LYAjDBFThG+Uq3Ome5PUMROH9It7mOrfDl3Y=
+X-Received: by 2002:a05:6830:4392:: with SMTP id s18mr7268153otv.168.1639076005198;
+ Thu, 09 Dec 2021 10:53:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YZahWPMfY5CLXTa6@relinquished.localdomain>
+Received: by 2002:a4a:1dc7:0:0:0:0:0 with HTTP; Thu, 9 Dec 2021 10:53:24 -0800 (PST)
+Reply-To: msbelinaya892@gmail.com
+From:   msbelinaya <davidparkens234@gmail.com>
+Date:   Thu, 9 Dec 2021 18:53:24 +0000
+Message-ID: <CA+7aL4P3TOOcrBdAY=t2BJvodS2fPLQQ28uW=9-QTJLfesTYRg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 18, 2021 at 10:54:16AM -0800, Omar Sandoval wrote:
-> On Thu, Nov 18, 2021 at 03:23:59PM +0100, David Sterba wrote:
-> > On Wed, Nov 17, 2021 at 12:19:22PM -0800, Omar Sandoval wrote:
-> > > From: Omar Sandoval <osandov@fb.com>
-> > > 
-> > > Commit e77fbf990316 ("btrfs: send: prepare for v2 protocol") added
-> > > _BTRFS_SEND_C_MAX_V* macros equal to the maximum command number for the
-> > > version plus 1, but as written this creates gaps in the number space.
-> > > The maximum command number is currently 22, and __BTRFS_SEND_C_MAX_V1 is
-> > > accordingly 23. But then __BTRFS_SEND_C_MAX_V2 is 24, suggesting that v2
-> > > has a command numbered 23, and __BTRFS_SEND_C_MAX is 25, suggesting that
-> > > 23 and 24 are valid commands.
-> > 
-> > The MAX definitions have the __ prefix so they're private and not meant
-> > to be used as proper commands, so nothing should suggest there are any
-> > commands with numbers 23 to 25 in the example.
-> > 
-> > > Instead, let's explicitly set BTRFS_SEND_C_MAX_V* to the maximum command
-> > > number. This requires repeating the command name, but it has a clearer
-> > > meaning and avoids gaps. It also doesn't require updating
-> > > __BTRFS_SEND_C_MAX for every new version.
-> > 
-> > It's probably a matter of taste, I'd intentionally avoid the pattern
-> > above, ie. repeating the previous command to define max.
-> > 
-> > > --- a/fs/btrfs/send.c
-> > > +++ b/fs/btrfs/send.c
-> > > @@ -316,8 +316,8 @@ __maybe_unused
-> > >  static bool proto_cmd_ok(const struct send_ctx *sctx, int cmd)
-> > >  {
-> > >  	switch (sctx->proto) {
-> > > -	case 1:	 return cmd < __BTRFS_SEND_C_MAX_V1;
-> > > -	case 2:	 return cmd < __BTRFS_SEND_C_MAX_V2;
-> > > +	case 1:	 return cmd <= BTRFS_SEND_C_MAX_V1;
-> > > +	case 2:	 return cmd <= BTRFS_SEND_C_MAX_V2;
-> > 
-> > This seems to be the only practical difference, < or <= .
-> 
-> There is another practical difference, which is more significant in my
-> opinion: the linear style creates "gaps" in the valid commands. Consider
-> this, with explicit values added for clarity:
-> 
-> enum btrfs_send_cmd {
->         BTRFS_SEND_C_UNSPEC = 0,
-> 
->         /* Version 1 */
->         BTRFS_SEND_C_SUBVOL = 1,
->         BTRFS_SEND_C_SNAPSHOT = 2,
-> 
->         BTRFS_SEND_C_MKFILE = 3,
->         BTRFS_SEND_C_MKDIR = 4,
->         BTRFS_SEND_C_MKNOD = 5,
->         BTRFS_SEND_C_MKFIFO = 6,
->         BTRFS_SEND_C_MKSOCK = 7,
->         BTRFS_SEND_C_SYMLINK = 8,
-> 
->         BTRFS_SEND_C_RENAME = 9,
->         BTRFS_SEND_C_LINK = 10,
->         BTRFS_SEND_C_UNLINK = 11,
->         BTRFS_SEND_C_RMDIR = 12,
-> 
->         BTRFS_SEND_C_SET_XATTR = 13,
->         BTRFS_SEND_C_REMOVE_XATTR = 14,
-> 
->         BTRFS_SEND_C_WRITE = 15,
->         BTRFS_SEND_C_CLONE = 16,
-> 
->         BTRFS_SEND_C_TRUNCATE = 17,
->         BTRFS_SEND_C_CHMOD = 18,
->         BTRFS_SEND_C_CHOWN = 19,
->         BTRFS_SEND_C_UTIMES = 20,
-> 
->         BTRFS_SEND_C_END = 21,
->         BTRFS_SEND_C_UPDATE_EXTENT = 22,
->         __BTRFS_SEND_C_MAX_V1 = 23,
-> 
->         /* Version 2 */
->         BTRFS_SEND_C_FALLOCATE = 24,
->         BTRFS_SEND_C_SETFLAGS = 25,
->         BTRFS_SEND_C_ENCODED_WRITE = 26,
->         __BTRFS_SEND_C_MAX_V2 = 27,
-> 
->         /* End */
->         __BTRFS_SEND_C_MAX = 28,
-> };
-> #define BTRFS_SEND_C_MAX (__BTRFS_SEND_C_MAX - 1) /* 27 */
-> 
-> Notice that BTRFS_SEND_C_UPDATE_EXTENT is 22 and the next valid command
-> is BTRFS_SEND_C_FALLOCATE, which is 24. So 23 does not correspond to an
-> actual command; it's a "gap". This is somewhat cosmetic, but it's an
-> ugly wart in the protocol.
-> 
-> Also consider something indexing on the command number, like the
-> cmd_send_size thing I got rid of in the previous patch:
-> 
-> 	u64 cmd_send_size[BTRFS_SEND_C_MAX + 1]
-> 
-> Indices 23 and 27 are wasted. It's only 16 bytes in this case, which
-> doesn't matter practically, but it's unpleasant.
-> 
-> Maybe you were aware of this and fine with it, in which case we can drop
-> this change. But I think the name repetition is less ugly than the gaps.
+Ich biete meine Freundschaft an und glaube, dass Sie mich mit gutem
+Herzen annehmen werden. Ich wurde gedr=C3=A4ngt, Sie zu kontaktieren und zu
+sehen, wie wir uns am besten unterst=C3=BCtzen k=C3=B6nnen. Ich bin Frau Ko=
+djovi
+Hegbor aus der T=C3=BCrkei und ich arbeite als Operations Division Manager
+bei der StandardBNP Bank Limited T=C3=BCrkei. Ich glaube, es ist Gottes
+Wille, dass ich Ihnen jetzt begegnen werde. Ich habe ein wichtiges
+gesch=C3=A4ftliches Gespr=C3=A4ch, das ich mit Ihnen teilen m=C3=B6chte, vo=
+n dem ich
+glaube, dass es Sie interessiert, da es mit Ihrem Nachnamen
+zusammenh=C3=A4ngt und Sie davon profitieren wird.
 
-Ping. Please let me know how you'd like me to proceed on this issue and
-my other replies. Thanks!
+ Im Jahr 2006 er=C3=B6ffnete ein B=C3=BCrger Ihres Landes bei meiner Bank e=
+in
+36-monatiges Nicht-Residentenkonto im Wert von =C2=A3 8.400.000,00. Das
+Ablaufdatum f=C3=BCr diese Hinterlegungsvereinbarung war der 16. Januar
+2009. Leider starb er bei einem t=C3=B6dlichen Erdbeben am 12. Mai 2008 in
+Sichuan, China, bei dem auf einer Gesch=C3=A4ftsreise mindestens 68.000
+Menschen ums Leben kamen.
+
+Die Gesch=C3=A4ftsleitung meiner Bank hat noch nichts von seinem Tod
+geh=C3=B6rt, ich wusste davon, weil er mein Freund war und ich sein
+Kontoverwalter war, als das Konto vor meiner Bef=C3=B6rderung er=C3=B6ffnet
+wurde. Aber Sir
+ hat bei der Kontoer=C3=B6ffnung die n=C3=A4chsten Angeh=C3=B6rigen / Erben=
+ nicht
+erw=C3=A4hnt und er war nicht verheiratet oder hatte keine Kinder. Letzte
+Woche bat mich meine Bankdirektion, Anweisungen zu geben, was mit
+seinem Geld zu tun sei, wenn der Vertrag verl=C3=A4ngert werden sollte.
+
+Ich wei=C3=9F, dass dies passieren wird, und deshalb habe ich nach einem
+Mittel gesucht, mit der Situation umzugehen, denn wenn meine
+Bankdirektoren wissen, dass sie tot sind und keinen Erben haben,
+nehmen sie das Geld f=C3=BCr ihren pers=C3=B6nlichen Gebrauch, also tue ich=
+ es
+nicht Ich m=C3=B6chte nicht, dass so etwas passiert. Da habe ich deinen
+Nachnamen gesehen, habe mich gefreut und suche nun deine Mitarbeit, um
+dich als n=C3=A4chster Angeh=C3=B6riger / Erbe des Kontos zu pr=C3=A4sentie=
+ren, da du
+den gleichen Nachnamen wie er hast und meine Bankzentrale das Konto
+freigeben wird f=C3=BCr dich. Es besteht kein Risiko; die Transaktion wird
+im Rahmen einer legitimen Vereinbarung durchgef=C3=BChrt, die Sie vor
+Rechtsverletzungen sch=C3=BCtzt.
+
+Es ist besser f=C3=BCr uns, das Geld zu beanspruchen, als es den
+Bankdirektoren zu =C3=BCberlassen, sie sind bereits reich. Ich bin kein
+gieriger Mensch, also schlage ich vor, dass wir das Geld gleichm=C3=A4=C3=
+=9Fig
+aufteilen, 50/50% auf beide Parteien. Mein Anteil wird mir helfen,
+mein eigenes Unternehmen zu gr=C3=BCnden und den Erl=C3=B6s f=C3=BCr wohlt=
+=C3=A4tige
+Zwecke zu verwenden, was mein Traum war.
+
+Bitte teilen Sie mir Ihre Meinung zu meinem Vorschlag mit, ich brauche
+wirklich Ihre Hilfe bei dieser Transaktion. Ich habe dich auserw=C3=A4hlt,
+mir zu helfen, nicht aus eigener Kraft, mein Lieber, sondern bei Gott,
+ich wollte, dass du wei=C3=9Ft, dass ich mir die Zeit genommen habe, f=C3=
+=BCr
+diese Nachricht zu beten, bevor ich dich jemals kontaktiert habe, um
+deine Meinung mitzuteilen und bitte zu behandeln diese Informationen
+als STRENG GEHEIM. Nach Erhalt Ihrer Antwort ausschlie=C3=9Flich =C3=BCber =
+meine
+pers=C3=B6nliche E-Mail-Adresse msbelinaya892@gmail.com
+gibt Ihnen Details zur Transaktion. Und eine Kopie der
+Einlagenbescheinigung des Fonds und der Gr=C3=BCndungsurkunde der
+Gesellschaft, die den Fonds gegr=C3=BCndet hat.
+Gott segne in Erwartung Ihrer dringenden Antwort
+Mit freundlichen Gr=C3=BC=C3=9Fen
+Frau. Kodjovi Hegbor
+msbelinaya892@gmail.coma
