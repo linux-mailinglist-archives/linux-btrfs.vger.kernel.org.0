@@ -2,127 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F1846E688
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 11:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBD246E6A1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 11:35:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhLIK2s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Dec 2021 05:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhLIK2q (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Dec 2021 05:28:46 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AB7C061746
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Dec 2021 02:25:13 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 03EAFB81FA7
-        for <linux-btrfs@vger.kernel.org>; Thu,  9 Dec 2021 10:25:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 464F4C004DD;
-        Thu,  9 Dec 2021 10:25:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639045510;
-        bh=NScd/y+c6upGU5N+FGfpVvYxP4rePuLVFFUntuXW4kQ=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=MrkH0FRkVMhZYeqLTO6DocHlsTvFF5i0Q6l32IoUmwTEkR8HzgVBODSpzcm28zNfv
-         sGlD/msEJ3lZKvihpvgapPUKWQ9f3qDOrEtrGE++fem0gZB4AfitPqkIlVJvWOCbUM
-         RfIMMfVpSc8elpRqex1hmsblqBIbW/ov0lOH2tMmNgLmdxVogS10nJHCpoFgFU9zk0
-         GnwoRlHgcEXT7m0lB1L7Yub5nEVWaUhQAcTejRIraghuTkR7Ij1DuR8PT+Qm6HaBFQ
-         wPQnibpugd7wOJrsY8iD71WgpIGeGKFCXkJc7/0LKDUd2QOtxo22cfKdN/CPTh7TXo
-         JXg4FNgMFpL9w==
-Date:   Thu, 9 Dec 2021 10:25:08 +0000
-From:   Filipe Manana <fdmanana@kernel.org>
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH RFC 0/2] btrfs: remove the metadata readahead mechanism
-Message-ID: <YbHZhGGpBvqoqfiT@debian9.Home>
-References: <20211207074400.63352-1-wqu@suse.com>
- <Ya8/NpvxmCCouKqg@debian9.Home>
- <e019c8d6-4d59-4559-b56a-73dd2276903c@gmx.com>
- <Ya9L2qSe+XKgtesq@debian9.Home>
- <a91e60a4-7f5a-43eb-3c10-af2416aade9f@suse.com>
- <20211207145329.GW28560@twin.jikos.cz>
- <20211207154048.GX28560@twin.jikos.cz>
- <CAL3q7H6uUasjNSxpfAN_oNEVQiTtMNGbsEKrvywES4fCbHcByg@mail.gmail.com>
- <20211208140411.GK28560@twin.jikos.cz>
+        id S231648AbhLIKis (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Dec 2021 05:38:48 -0500
+Received: from mout.gmx.net ([212.227.17.20]:40027 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhLIKis (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 9 Dec 2021 05:38:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1639046110;
+        bh=nEmhvgNk4XjnD1n4GWjUzc+eNaMokMRe7qJsrrSo94I=;
+        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+        b=I+ySKj+Z7f4pIgrhmU8BecqRTJh4iUX2BAJYoVRwu33J7U4AHzDHsrGHgD0E+AZi+
+         aygdKMO34QBfrPl0CuPkBInEEtinJVyrg7gSPcwBcEZGmzTDiQwF9gIx836BgJFO1I
+         WhSXZsNxrqRoN5oxjv31iI0RZp5l0aDTSC1bgRcc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmUHp-1mCtPI44e1-00iW4v; Thu, 09
+ Dec 2021 11:35:10 +0100
+Message-ID: <c42daef2-e763-0f76-1952-6f162281a5da@gmx.com>
+Date:   Thu, 9 Dec 2021 18:35:06 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211208140411.GK28560@twin.jikos.cz>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v2 06/17] btrfs: replace btrfs_dio_private::refs with
+ btrfs_dio_private::pending_bytes
+Content-Language: en-US
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Qu Wenruo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20211206022937.26465-1-wqu@suse.com>
+ <20211206022937.26465-7-wqu@suse.com>
+ <PH0PR04MB7416D9D7F3A2BB818E9215239B709@PH0PR04MB7416.namprd04.prod.outlook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <PH0PR04MB7416D9D7F3A2BB818E9215239B709@PH0PR04MB7416.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:IzPT2BlutC3nxqKw9Y40gm2aYdcK++gaL6rS08L4jjALsUbED2v
+ r7LoxMmkG/msAUF5tYGsC5qmv13mmAGejpGr1REe8JyaUACEPlLyN4hZO7EhEfze9I5TOOR
+ LeS+GyWbNwvZkE2XC1q5wWJIAUu+8PlAgLAVfrHklP/roouQEpzLV+DeQIPlcztY9WWJJtz
+ 6kznXI3PIVnNxR/pW3CDA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7KB4IInFJ4w=:dCuCQDLg25vrxRvhZhAral
+ X/fqfhMkLofSCK7VvwEw0Cv12dCLeuN+qA5LDTl0SAyBT9a8zkyXRkqp100BCoMiqHGkbOXu3
+ E3uS6Si8Z8At8rp35MT+FcBhJD5It84FcrKsR/EzMbZlhgEJSHbC0h1LUBFNBj9fb3vr1/RZ0
+ R3YUZ0MvnzUm+slfoRSUs1R31T5OH6KB7MsaVI3RiV3aehhHvAJ+Oc1HldZ2cJZ88SzpMhMAd
+ PfXbUi0Rlw8Fu8ruh7HalcljB5jjC0/bp8ny/y88d6c5qyyFQ4P57iDFJOBBvFr71tLuKpVIk
+ ABb30D+RvMDDkG3ZmnmbvHxpNq7mV7MXNpghmqRpUTeePcCUCKgdP78dDswHzchcYtNC/RGJh
+ JcbW+6HdvyjEysz8OABynOp4521WpiDH+2jNOoBBxdiQz4WXwxjlSGteezLbgQa9yje1wVIrA
+ lAtvhbeoPqktZbo7oWmoYqz0eA1Laf6YvZI6vDf2gkgJI4or5falBVuxwS7ul8x19Mj0YdrTT
+ +sfQTSx4SREDkSIJr3wdzEdk1YVbCw6piTCB+tus78R2VtN0EVig1YvsXXg+TF7wlykqD66R2
+ tB+infe7RHL13rDPofl9EroyMOvjwA9JB6qVnMKdD0wWokCKS8K6UTVTvPfu3OKuV6lqCC1zl
+ 94F3RXyCwkGiPJzF4FVADXgt3beeyKAGtsIqJ8QCjVobpPC1CoZ8etbqj0rDOfWtMn5dT5c9G
+ tRH4RxsRqSkruzhpYvhYS0alzbuqmjuUBjr2/C4/8LPFofUYQm/WEFt4ZlGV+xHNKPSFzGZRb
+ jp3OPrWuP1PMrTp3byjOvdF6yVlSla8Q8gxvqz3fTB8G9GuqqHpFNlP9oRzkk+KpFkh3g064O
+ nURpWvOt92aXSo3w4wbFfz7Ky0W5QO2CtXbfPlo5zR0AsPFZEFSkcGia+orQJzVnhw0d3WzeO
+ ui9dk2UWAR9QL/QGlsWctCySpfxPzpLrlVw+Jdo5XrELCDkhiKAB3x3G1eD4Hw7zZP0UnXIND
+ s006Zbb9n4VVmNRi5PBhXkKs+J9Dl7gL49ro3ADtdHeJbc+Uh3pAwB1rgYBZRyl0M9aLOgLYL
+ lngrXzqmTWrJqg=
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Dec 08, 2021 at 03:04:11PM +0100, David Sterba wrote:
-> On Tue, Dec 07, 2021 at 03:53:22PM +0000, Filipe Manana wrote:
-> > > > I'm doing some tests, in a VM on a dedicated HDD.
-> > >
-> > > There's some measurable difference:
-> > >
-> > > With readahead:
-> > >
-> > > Duration:         0:00:20
-> > > Total to scrub:   7.02GiB
-> > > Rate:             236.92MiB/s
-> > >
-> > > Duration:         0:00:48
-> > > Total to scrub:   12.02GiB
-> > > Rate:             198.02MiB/s
-> > >
-> > > Without readahead:
-> > >
-> > > Duration:         0:00:22
-> > > Total to scrub:   7.02GiB
-> > > Rate:             215.10MiB/s
-> > >
-> > > Duration:         0:00:50
-> > > Total to scrub:   12.02GiB
-> > > Rate:             190.66MiB/s
-> > >
-> > > The setup is: data/single, metadata/dup, no-holes, free-space-tree,
-> > > there are 8 backing devices but all reside on one HDD.
-> > >
-> > > Data generated by fio like
-> > >
-> > > fio --rw=randrw --randrepeat=1 --size=3000m \
-> > >          --bsrange=512b-64k --bs_unaligned \
-> > >          --ioengine=libaio --fsync=1024 \
-> > >          --name=job0 --name=job1 \
-> > >
-> > > and scrub starts right away this. VM has 4G or memory and 4 CPUs.
-> > 
-> > How about using bare metal? And was it a debug kernel, or a default
-> > kernel config from a distro?
-> 
-> It was the debug config I use for normal testing, I'll try to redo it on
-> another physical box.
-> 
-> > Those details often make all the difference (either for the best or
-> > for the worse).
-> > 
-> > I'm curious to see as well the results when:
-> > 
-> > 1) The reada.c code is changed to work with commit roots;
-> > 
-> > 2) The standard btree readahead (struct btrfs_path::reada) is used
-> > instead of the reada.c code.
-> > 
-> > >
-> > > The difference is 2 seconds, roughly 4% but the sample is not large
-> > > enough to be conclusive.
-> > 
-> > A bit too small.
-> 
-> What's worse, I did a few more rounds and the results were too unstable,
-> from 44 seconds to 25 seconds (all on the removed readahead branch), but
-> the machine was not quiescent.
 
-I get such huge variations too when using a debug kernel and virtualized
-disks for any tests, even for single threaded tests.
 
-That's why I use a default, non-debug, kernel config from a popular distro
-and without any virtualization (or at least have qemu use a raw device, not
-a file backed disk on top of another filesystem) when measuring performance.
+On 2021/12/9 18:02, Johannes Thumshirn wrote:
+> On 06/12/2021 03:30, Qu Wenruo wrote:
+>> This mostly follows the behavior of compressed_bio::pending_sectors.
+>>
+>> The point here is, dip::refs is not split bio friendly, as if a bio wit=
+h
+>> its bi_private =3D dip, and the bio get split, we can easily underflow
+>> dip::refs.
+>>
+>> By using the same sector based solution as compressed_bio, dio can
+>> handle both unsplit and split bios.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+>
+> JFYI, for this patch I get checkpatch complains:
+>
+> Applying: btrfs: replace btrfs_dio_private::refs with btrfs_dio_private:=
+:pending_bytes
+> .git/rebase-apply/patch:37: space before tab in indent.
+>                                       u32 bytes)
+> warning: 1 line adds whitespace errors.
+> ERROR:CODE_INDENT: code indent should use tabs where possible
+> #32: FILE: fs/btrfs/inode.c:7693:
+> +^I    ^I^I^I     u32 bytes)$
+>
+> WARNING:SPACE_BEFORE_TAB: please, no space before tabs
+> #32: FILE: fs/btrfs/inode.c:7693:
+> +^I    ^I^I^I     u32 bytes)$
+>
+> total: 1 errors, 1 warnings, 180 lines checked
+>
+Oh, I should add checkpatch to my git hooks...
 
+Thanks for catching this, will rebase the branch to misc-next with this
+fixed.
+
+Thanks,
+Qu
