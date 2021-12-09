@@ -2,95 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C36546E155
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 04:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 486D946E168
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 05:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbhLIDtE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 Dec 2021 22:49:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231517AbhLIDtE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 Dec 2021 22:49:04 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD2CC0617A2
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 Dec 2021 19:45:31 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id b11so2909611pld.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 Dec 2021 19:45:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=njhG45usifVSAm2aSkNzlUSK10yx6nuwV6S2Kl0u5U4=;
-        b=lxly56tID1rFfrom22nKVj1Bo78mbuL35BeHfQH79mlihekrCddSi5Z+LZwr72g+Ib
-         OGMytoPiNYXJi++qs9qW6OLDloUcsHFmByYTKXbYJfrzsRODKzaRmzb3AK/WHjfC5rSD
-         AQaRRc49NahQhibS0vpWikeNSMn06Fr0jzyHOVdtDEIGNFxHreehIZI3xVXy7/00KG5n
-         3lSNN7og+b9EzdYzz4IQHlLTmENYs5GVzi5cNMUAQ7dFUOvUb8Y9Tp0RmXdohQr8PVuR
-         oEDr1ZwpdQ5o9veyEm3JYw0v8RDYE1CSPpq4zLRTPYu5fv43o3qmzWvgpQR+D6aG6tUC
-         0FZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=njhG45usifVSAm2aSkNzlUSK10yx6nuwV6S2Kl0u5U4=;
-        b=1dZmTBNBFfZLGnb0YOoEzM6U25LHg+QqYbsqyWzHeMHJ0AZoO17Y1P1D8CmKoxFGyf
-         381vRw3148fiqALAERgtepKT5UdaXiDJFi0J9Bc4sVb5xuTOCQPxzlJFcQRc39c5080Q
-         EtUzV1BbG8H0LW7MuiMGUDIiJxnktta+TDIvFSzoybpwtK5hPW8HtRXw6Ik6ur/fze1l
-         Cff70Yd1QxZAVdcauJPJfv086W4MSNRitFValGKb7UF9fRGYn2Ja0Xu+8MZeX1vLWFOI
-         oaXV7fs9x9wOOINmhCzk8KjL4BO+rYZZgbimOWb6BR8npOb0rWtFWtf6Vy+aj7rSonj9
-         394g==
-X-Gm-Message-State: AOAM532sQdZtilrLWU5CZFXe5HlOfzjJXNiz2vdXZPHBLM9H9zZ1BdFH
-        rqhqDtLNuCvtiBL8/T2VROhIvw==
-X-Google-Smtp-Source: ABdhPJz7tUH9m3lXUkXs8q2IISmHauEMBN0g0gHbAw9FC3FwsSbC6W27CPuO4vqyFhv7N8g8VPJ6tw==
-X-Received: by 2002:a17:903:1d2:b0:142:24f1:1213 with SMTP id e18-20020a17090301d200b0014224f11213mr64832437plh.81.1639021530561;
-        Wed, 08 Dec 2021 19:45:30 -0800 (PST)
-Received: from [172.20.4.26] ([66.185.175.30])
-        by smtp.gmail.com with ESMTPSA id i1sm3967058pgs.50.2021.12.08.19.45.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Dec 2021 19:45:30 -0800 (PST)
-Subject: Re: [syzbot] INFO: task hung in io_uring_cancel_generic (2)
-To:     Josef Bacik <josef@toxicpanda.com>,
-        syzbot <syzbot+21e6887c0be14181206d@syzkaller.appspotmail.com>
-Cc:     asml.silence@gmail.com, clm@fb.com, dsterba@suse.com,
-        fgheet255t@gmail.com, io-uring@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, wqu@suse.com
-References: <000000000000e016c205d1025f4c@google.com>
- <000000000000fadd4905d2a9c7e8@google.com>
- <YbFvF7J220iAHqHJ@localhost.localdomain>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f820728f-8dbd-9e36-1293-02514812eea0@kernel.dk>
-Date:   Wed, 8 Dec 2021 20:45:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231747AbhLIEDl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 Dec 2021 23:03:41 -0500
+Received: from mga18.intel.com ([134.134.136.126]:60516 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231622AbhLIEDl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 Dec 2021 23:03:41 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10192"; a="224879294"
+X-IronPort-AV: E=Sophos;i="5.88,191,1635231600"; 
+   d="scan'208";a="224879294"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2021 20:00:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,191,1635231600"; 
+   d="scan'208";a="680174853"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 08 Dec 2021 20:00:06 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mvAbF-0001RU-W3; Thu, 09 Dec 2021 04:00:05 +0000
+Date:   Thu, 9 Dec 2021 11:59:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH] btrfs: harden identification of the stale device
+Message-ID: <202112091123.ETjD5KQj-lkp@intel.com>
+References: <166e39f69a8693e5fe10784cdbd950d68f98d4fb.1638953372.git.anand.jain@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <YbFvF7J220iAHqHJ@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <166e39f69a8693e5fe10784cdbd950d68f98d4fb.1638953372.git.anand.jain@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/8/21 7:51 PM, Josef Bacik wrote:
-> On Wed, Dec 08, 2021 at 02:12:09PM -0800, syzbot wrote:
->> syzbot has bisected this issue to:
->>
->> commit 741ec653ab58f5f263f2b6df38157997661c7a50
->> Author: Qu Wenruo <wqu@suse.com>
->> Date:   Mon Sep 27 07:22:01 2021 +0000
->>
->>     btrfs: subpage: make end_compressed_bio_writeback() compatible
->>
-> 
-> This isn't the right patch, this is x86 so sectorsize == pagesize, so this patch
-> didn't change anything at all.  Also unless the local fs is btrfs with
-> compression enabled I'm not entirely sure how this would even matter, the
-> reproducer seems to be purely io_uring related.  Thanks,
+Hi Anand,
 
-Yeah, it's not btrfs, it's just one of those "bisect gone awry" cases. btrfs
-guys can ignore this one.
+Thank you for the patch! Perhaps something to improve:
 
--- 
-Jens Axboe
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on v5.16-rc4 next-20211208]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
+url:    https://github.com/0day-ci/linux/commits/Anand-Jain/btrfs-harden-identification-of-the-stale-device/20211208-220757
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+config: i386-randconfig-s001-20211207 (https://download.01.org/0day-ci/archive/20211209/202112091123.ETjD5KQj-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://github.com/0day-ci/linux/commit/03b597640967afb3d37dc37f0a685fed95594b83
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Anand-Jain/btrfs-harden-identification-of-the-stale-device/20211208-220757
+        git checkout 03b597640967afb3d37dc37f0a685fed95594b83
+        # save the config file to linux build tree
+        mkdir build_dir
+        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=i386 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+   fs/btrfs/volumes.c:402:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct rcu_string *str @@     got struct rcu_string [noderef] __rcu *name @@
+   fs/btrfs/volumes.c:402:31: sparse:     expected struct rcu_string *str
+   fs/btrfs/volumes.c:402:31: sparse:     got struct rcu_string [noderef] __rcu *name
+>> fs/btrfs/volumes.c:549:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char const *pathname @@     got char [noderef] __rcu * @@
+   fs/btrfs/volumes.c:549:35: sparse:     expected char const *pathname
+   fs/btrfs/volumes.c:549:35: sparse:     got char [noderef] __rcu *
+   fs/btrfs/volumes.c:643:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char const *device_path @@     got char [noderef] __rcu * @@
+   fs/btrfs/volumes.c:643:43: sparse:     expected char const *device_path
+   fs/btrfs/volumes.c:643:43: sparse:     got char [noderef] __rcu *
+   fs/btrfs/volumes.c:904:50: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char const *cs @@     got char [noderef] __rcu * @@
+   fs/btrfs/volumes.c:904:50: sparse:     expected char const *cs
+   fs/btrfs/volumes.c:904:50: sparse:     got char [noderef] __rcu *
+   fs/btrfs/volumes.c:984:39: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct rcu_string *str @@     got struct rcu_string [noderef] __rcu *name @@
+   fs/btrfs/volumes.c:984:39: sparse:     expected struct rcu_string *str
+   fs/btrfs/volumes.c:984:39: sparse:     got struct rcu_string [noderef] __rcu *name
+   fs/btrfs/volumes.c:1040:58: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char const *src @@     got char [noderef] __rcu * @@
+   fs/btrfs/volumes.c:1040:58: sparse:     expected char const *src
+   fs/btrfs/volumes.c:1040:58: sparse:     got char [noderef] __rcu *
+   fs/btrfs/volumes.c:2235:49: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected char const *device_path @@     got char [noderef] __rcu * @@
+   fs/btrfs/volumes.c:2235:49: sparse:     expected char const *device_path
+   fs/btrfs/volumes.c:2235:49: sparse:     got char [noderef] __rcu *
+   fs/btrfs/volumes.c:2350:41: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected char const *device_path @@     got char [noderef] __rcu * @@
+   fs/btrfs/volumes.c:2350:41: sparse:     expected char const *device_path
+   fs/btrfs/volumes.c:2350:41: sparse:     got char [noderef] __rcu *
+
+vim +549 fs/btrfs/volumes.c
+
+   532	
+   533	/*
+   534	 * Check if the device in the 'path' matches with the device in the given
+   535	 * struct btrfs_device '*device'.
+   536	 * Returns:
+   537	 *	0	If it is the same device.
+   538	 *	1	If it is not the same device.
+   539	 *	-errno	For error.
+   540	 */
+   541	static int device_matched(struct btrfs_device *device, const char *path)
+   542	{
+   543		dev_t dev_old;
+   544		dev_t dev_new;
+   545		int error;
+   546	
+   547		lockdep_assert_held(&device->fs_devices->device_list_mutex);
+   548		/* rcu is not required as we are inside the device_list_mutex */
+ > 549		error = lookup_bdev(device->name->str, &dev_old);
+   550		if (error)
+   551			return error;
+   552	
+   553		error = lookup_bdev(path, &dev_new);
+   554		if (error)
+   555			return error;
+   556	
+   557		if (dev_old == dev_new)
+   558			return 0;
+   559	
+   560		return 1;
+   561	}
+   562	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
