@@ -2,68 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613CE46E61B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 11:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9926446E639
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 Dec 2021 11:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhLIKGN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 9 Dec 2021 05:06:13 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:23738 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhLIKGN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Dec 2021 05:06:13 -0500
+        id S232566AbhLIKKf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 Dec 2021 05:10:35 -0500
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:64270 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232469AbhLIKKd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 Dec 2021 05:10:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1639044160; x=1670580160;
+  t=1639044420; x=1670580420;
   h=from:to:subject:date:message-id:references:
    content-transfer-encoding:mime-version;
-  bh=6Gkc7Cxgmrp51ag3CuuSVdOuFmvNVwfs/EIhB7J8oFA=;
-  b=oOZ/j4ol9bHjq5e14LN3AJmoilYV8UZSk76dz71kg0ZHcirxDEEv+Ic3
-   qhjDnOt3mzqgFJVr47ViZCbd7R9zj7o61FwjJwCrHb9gRFFnH+g/912Kf
-   hrz/3l5upqbDlMvO4JHPkBRWiR9dvtDjzoz1gWS1envVnKM4ZMswUtOjZ
-   T936kIRwPiSyvGBnCtLMbGYyIQJQOYlYimAmXWBR4e2xfwNqbreKqJKGs
-   kRelR3amWWakI4tUZl5w08DLdI9JF4iqMGvmSeARoSu2Ah2j0OsnysLJd
-   KwXMTRU9uAlLk0pxdgQ8OPJUsENdXB8mzmhNZBJEZfqrod8Vp35PLWeDO
-   w==;
+  bh=+vfOIjW/RCaOSHBiAIG4xoBiUT/R8JMiOy+1aKYLCSI=;
+  b=DYqF35gWg/qhPumGlF/MyfjIcuo4WaBazyukiAOSReWF/4M3Jvn8rrIF
+   XhOrNJvhP4+ZM9WCdpabWe7ESrUX0UaWDIo+9ZEP59dAPSq5SoYNYl1oo
+   zhDMGslWhjwKRm456NgNPHADjuUUQiiY/iIeO2xd5rttgYUO8Zkaepb+n
+   NGBu+r51rzIF5nrRI0qK4TSOAnqvZ9+vk6wMaHqhBFs0XlXfVTYCUObun
+   mjL33Pne8cc68RG23aVGW+V5Ma9bJGKkvwgtNAhrcxdxxAvtL/IUF1o6B
+   ddlbqyDc/qnDa1YpRWQbV360CW9onPH8OxMMpEcFiupFfVPlzeidptYVn
+   g==;
 X-IronPort-AV: E=Sophos;i="5.88,192,1635177600"; 
-   d="scan'208";a="291808749"
-Received: from mail-mw2nam10lp2104.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.104])
-  by ob1.hgst.iphmx.com with ESMTP; 09 Dec 2021 18:02:39 +0800
+   d="scan'208";a="299674005"
+Received: from mail-bn8nam12lp2173.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.173])
+  by ob1.hgst.iphmx.com with ESMTP; 09 Dec 2021 18:06:59 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z/KImh2lurE7xgWY1K/pBYW2mNYC7xCL2oGQRGcZaLYg2p/QgsgOsOtJ2ipMe9GMzt9cJ7DO8WTA9WVOcjH8kxdLk2yBuJz3rQR0T3qnRVZ1A81Llu4dh+HRFQ04S+x+l7we8FS9k0t4pUCp7TKfleN/rtqwSO30EqQ/YG4el/MwkRlblVZ7uziqDgpjKvTOWs5+p/yy2FAQZiii5gsXeqJJ9hEwXz3NlfqNiwufLT6jB+M9cTzR1lPS76Habl4/5lfAl1Zaa6MJ0tb+cMYy2mBAfK3DsAC7+slFRfqPdjTw7u65J62v2lLfP55FRL4ymF1ZDgT5Iiago9tmemGF4w==
+ b=OvWhZRuJS6jt8nypkuS4+othYTxrA/to+p18Ila4tyl23ziQZmyIFgj7frpTuyLANj55ym6xqymmEOrjb85mSNtHRNtUhHHTHN75yNjJ7LEJtlH5eaEeKftoKQpqP+SGh6swHKzsK4Mly4ru88rcrrs2sV9AEH62H0UtfQdiUbiIP7unnmDIiJ09W6LPd4ahbnGi+PWZaZEOyINIepFiyUS3iaY2KQ1VXbXZ01ia6VWXf2ftZJ036eZ/TF33r92habERO5zZoVkGMXo1Dwq2uZyiAYPJlJQGEb5SjlZBdtn79axFUkDgMTsQ0h1qdK8zeZU7VXCjJGUeRQuLTb3Mnw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ggZs9hBLZWdaVi6AkvdgL2bhTgFVnflUvVAtBEe7I9M=;
- b=QHs2iXOG2Nh/vwFIAy7/5+Ea/JG2fr0+HhhBMlDObnTLMIPrm1IgN9wlwqaYv/QWlR89rjvR1UWKFT8idG8LR04j3bkxRwSPTjj5Zbxx2XKw+L8Wxnzye2GpF6FV7q9EPO7Q6dIRWAV6fCAKjt394Axe6oMZdH9bX1b+uUSYfkhy6Eo3JoJQM3/gJSUyAC3edjMXX29FHC4n4ZHc8w5qdguXdzaEYsDSQ5JoybgHckKJdKNdNZW0QvZT6/+od2HKtJmZ0voZA72+acT/ScvUrA8Iw8bhWNwjO6q3wS50ShYvHgypu/wujVCOHKrUYLWVCkcOkxbCGu62TWWgrO4ySQ==
+ bh=PX5dU3sGfDRKe4wgkamYVq8y3JJYmFhdXrKAC6M1fBs=;
+ b=iBVtOak7Rsuh7OQrxVHXIhi+Aw+aK2dkoOObesW/YjX5v/W+6e7jrxfBCunkRWh1Fyo47py0Cf8ElyHyTFTlKleGZV25lc0w4mnjQwCTqAaIaDtlH6ncPupGCrwYp0elGEBRuCdlHyiasL6ml+UPzVSxrkXCEwRApOXIBhCysnGPlcNtYNvBzDc3ep9SymWWsaBzlgQHzqZQboJQs+M8x8QcQMixq1y7GvLvEJhi2aOzPVBhHQ/CBTlqovbH2jo0u8Zwh6e7p52qLF9yBeIZFvXliMcqby/058VbVzo15g3pHtNQpM7RVqGjEHVdyCIsTX07LgIgq0S8+GrBDYHpQQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ggZs9hBLZWdaVi6AkvdgL2bhTgFVnflUvVAtBEe7I9M=;
- b=AIcd0e1M2fDERXQIaVZlAzx3ZaG2e0uKOdo0RUNkvb/sxhjmKuvVQwJEvz/hrCp0CzR3y6HXHbss8PQjQUpsGHK6WHRkWpavCJmEsxc6BOeTmj9ZfUjwaiBb3jArc4NIl/g5XiqlddJdEbKF9gCVn6butiVx89dESqdhhpInp+o=
+ bh=PX5dU3sGfDRKe4wgkamYVq8y3JJYmFhdXrKAC6M1fBs=;
+ b=o+cVJPaZ7A4SscaeOuzocbA6x73w1080GwRBuAS83Yv3vvgcx4xxjYlc1iLP/ueit+BUd18UjcIBKMyhnQx5WaD0zYEVc5sAkFXFA2Zzs1XhqvmVabKi0328sfG7cSc/ZDZKT1MUK4eDbqF9rg8QRhf33Uy4o8MgSD/LGsf+fpw=
 Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7159.namprd04.prod.outlook.com (2603:10b6:510:1e::12) with
+ by PH0PR04MB7320.namprd04.prod.outlook.com (2603:10b6:510:18::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.11; Thu, 9 Dec
- 2021 10:02:38 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.20; Thu, 9 Dec
+ 2021 10:06:58 +0000
 Received: from PH0PR04MB7416.namprd04.prod.outlook.com
  ([fe80::3418:fa40:16a4:6e0c]) by PH0PR04MB7416.namprd04.prod.outlook.com
  ([fe80::3418:fa40:16a4:6e0c%3]) with mapi id 15.20.4778.012; Thu, 9 Dec 2021
- 10:02:38 +0000
+ 10:06:58 +0000
 From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
 To:     Qu Wenruo <wqu@suse.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 06/17] btrfs: replace btrfs_dio_private::refs with
- btrfs_dio_private::pending_bytes
-Thread-Topic: [PATCH v2 06/17] btrfs: replace btrfs_dio_private::refs with
- btrfs_dio_private::pending_bytes
-Thread-Index: AQHX6kk02sqfdKZCI0WZ3lYuAeiaWg==
-Date:   Thu, 9 Dec 2021 10:02:38 +0000
-Message-ID: <PH0PR04MB7416D9D7F3A2BB818E9215239B709@PH0PR04MB7416.namprd04.prod.outlook.com>
+Subject: Re: [PATCH v2 00/17] btrfs: split bio at btrfs_map_bio() time
+Thread-Topic: [PATCH v2 00/17] btrfs: split bio at btrfs_map_bio() time
+Thread-Index: AQHX6kkvn7e4gQGU+UGEWJCojwlgqw==
+Date:   Thu, 9 Dec 2021 10:06:58 +0000
+Message-ID: <PH0PR04MB74160D826D891E5E543603769B709@PH0PR04MB7416.namprd04.prod.outlook.com>
 References: <20211206022937.26465-1-wqu@suse.com>
- <20211206022937.26465-7-wqu@suse.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -71,93 +68,211 @@ X-MS-TNEF-Correlator:
 authentication-results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wdc.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fe71d6c2-ab08-42a4-959e-08d9bafb0842
-x-ms-traffictypediagnostic: PH0PR04MB7159:EE_
-x-microsoft-antispam-prvs: <PH0PR04MB715945D94A4DF41C84C36D759B709@PH0PR04MB7159.namprd04.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: eed7ed98-87f1-4ab1-6d29-08d9bafba30d
+x-ms-traffictypediagnostic: PH0PR04MB7320:EE_
+x-microsoft-antispam-prvs: <PH0PR04MB732051107F2EE73AC83F7DA19B709@PH0PR04MB7320.namprd04.prod.outlook.com>
 wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wFasFJSguU+HS5EV75bTTTiRrwmnuqGi88dwzPkniH4eA1mCCxYROoexc/lfa31yvB3MOxuZPnxaFNfzkOAuvffSo44V87MxVC5DsfzvomPy11B/j/vM91ADZRS8nUWNP685/GVNKHpS/O1axQuTLj59YsSpIrHG2GWlN5LoNUOcIsIHzkbbD4WonUL6e1a7N+Nkgq1Z96JluM88oLCkPuSGGyN+5m/8yGN67ZX4Pi7U7iRaG78+GQ7gV+FM9jjl/y9hiGOi/8o3IQjZonEANHAaHbykVuL7xOV0SjXRvJ1DfFrk7aLCnuKvQv54R4fD1LJ5lD/kt0URzJOcogA1l/EC5tgdDYBq9xHOlORgyyHGixjW1bBAvlr3AkXvWYMD5MnL3HKjaVpl79mIi7lwc5+zJrbMh0uvGJUdQ4fn52VQVyzCKHpVcNMHmPcW67GjDM95CMj9GCRHkeOE3CIasCRnqu7ypNK/vV3hhwEdEJPT9gO3V8DG/IZUAy045OYcDsIDQv+RLwpc2e23JQmZWB+YL65ov4VsAxSiyq4s3Cx/J0fB8kM66v2Y8/VcdyUCtfpFbXujEsTJ7gZMln5HZehRoF51fGyLvJlIwsiI2qnQcH2xmZXW/MtvEJukZkk6WHGGtDkRfD3VDZjUFL82aEynfzApipiWt35tJUBMd8z1DfR2ErvJ+KDN2+NE+oGszYTrYemVjTXcrHEa705U5g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(9686003)(7696005)(186003)(82960400001)(6506007)(66476007)(508600001)(86362001)(53546011)(33656002)(2906002)(66946007)(71200400001)(8936002)(91956017)(38070700005)(4744005)(8676002)(64756008)(122000001)(76116006)(38100700002)(66446008)(55016003)(52536014)(316002)(110136005)(5660300002)(66556008);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: TkV1wPoyHsW5dJhi4yAW4lAtNCve1EMD7M9w93DdFnwRRZ0d4wPZt2nNrJOPXcFedDzrvJjJ7MqOFcxPMApOhysBBFBJ6mLTglhF4Ztp0sSQJrqR3w0UMs+YzT+OzZPU67w8ZTprapfOmVuSKgf4NQlggWXfvq7p4dPdyHH1hpDvSt6HKrdSKFQ2jfSz1S38x1uo9cG5aL+nYI9Er1Mbzjui3o7kEG4fDhRCTGt2k0ZZDCdRnYZrue7OUvVyw14VQvLLo+Gtu2aGjAgsZyZ/4v00PPDr6dtIiUlBG+yL8Sxhx8LOjQlx4ysbQgu+G0jJpxCiB/5sVmgWnjMgyXwp06mzUTYAUmcsiI3gQrFAPjBAyxb0zr+sQKKheHlgtJUiDGE4ya1GwTdf7UweNVcTPu/77OmRx4mQDwCjPA0cN4sjWIZofWr9x5TbikNqnaz7irrBkx6i2Ibj8ldfW/CPMZLkJQHG63I+0jJSU0bY37/u1V26bkcHQ9d9Czc5ImQfCXCauBuq3xw4X/dX6ufo5VU33HTU24PxPzg4IV7n/Dm70Xex9KcsAePnl3ebmNCDnFZmIs8IkP+nlwMq7rp1amTmMbKNJ1gypzW12ePT0kZGG8qUnIyJ3BVWgqiA2PbHHzQ9ABpaUGmFhYAT0qUu+jL2kY0qLdikyxcaYr6KCfxL7F+Z2/T2E1b8UmtaQQLtHmCWvTDUE23V12kGZM8jZ9VcKGDLa7VobUBKmvs8Y0EVbgiJtcZ3Y4nsdh+eyuH+vBiBISkQxQyFfwGzNb+h6EfK12Aj698BaU7DmZH7N3s=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(110136005)(55016003)(5660300002)(71200400001)(82960400001)(8936002)(86362001)(316002)(76116006)(91956017)(9686003)(66476007)(33656002)(66446008)(7696005)(64756008)(66556008)(66946007)(966005)(2906002)(508600001)(122000001)(52536014)(38100700002)(186003)(83380400001)(6506007)(53546011)(38070700005);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Ko94zcfo9ExeDir7kcKMuc81oaxzS5DCnm46stb0r4TeM8gBcPV+HGtUYHbb?=
- =?us-ascii?Q?ulCJ0rLuTrYtEO+ok37hyh26N2wd2g/PdNc2Ewl7ZTQSNYzx+FSL20OgyUIR?=
- =?us-ascii?Q?3Xy04AH2HeHzeUCtg6Rdvtnj3kZKpKJdzJ6tkPx6m17RFpo0P4/oU2EQkqj9?=
- =?us-ascii?Q?ZIlvBX/upQ6sBYyrqXnVhnLqKwxsSiDZ0kjTph+sqFcBvo4pyq3sXW9W9vdU?=
- =?us-ascii?Q?Hbd5NvmBeV4Qa3iyncx2P/xzrfdkEaQnX7OjMKXU7D6mXlYcGyE4QtY83DQ0?=
- =?us-ascii?Q?gsahdplNx/RkM/mBIpSnk7MV0vEj5vWatb7A60T4ik/L0Vclpwhcai4y5kKC?=
- =?us-ascii?Q?yBbdmzqFIUo9Kwc4dDxnodfBE0PGPoQfSfcysbgEFF22gkSJrOoluP0LpPlc?=
- =?us-ascii?Q?/FLpvq+0EJeTbsnLkeD6bK/Ds1s1wHn5x3DhXEgaCzAiIOJblFsfltSYTJKq?=
- =?us-ascii?Q?JzKfqZDHj34EDHNvuge6HtnHGT/lMHfDJUjkCMLZ4mXO2xj7cVtc/UYaUH0T?=
- =?us-ascii?Q?ImQB2Vwe29RJHQL5PIfbaM/uDoJpYQbMMZScniSsDesGKBHXNQJEiz4egbvr?=
- =?us-ascii?Q?77H8VLihAOscb7zGPCzIfKOevJnGbFIbqWBqZtxTSJSn7JWkiutwanFyRU7J?=
- =?us-ascii?Q?YdFlDEekGrKurO2LZ94nETBeEhf+sb3+eS2HYCcZPUe03QJjvBE+4/95k7ZL?=
- =?us-ascii?Q?BTTDJa9h7Ou9Eid2/FnNBFALoSQilw9w5mWBm4ESTszp+Mkr+KNTBTSRtj1N?=
- =?us-ascii?Q?6StIt2ocmh+KkXNClQanVSljAJgQiQKRuCcVILtXSxdBebdYsP4vxOmFE303?=
- =?us-ascii?Q?a265RTGO43L3jv2BG9CFbZh4IES6clW6zXZZydkL0bZrfDPBCJHS8tH0yyiu?=
- =?us-ascii?Q?6sL2UETpeOxOfb9uYm8ncocRrLq8CTt85bFmXRXShE7T9x2S0rjctP7JnuGN?=
- =?us-ascii?Q?FI3wc3v3uJxvBTKIITy3wMy2Tp1zn2DguSIelXknq1tXlNa15nsvV8TJCmLM?=
- =?us-ascii?Q?VschJhITpqMFnrwHLHApzNFZMRtt0Dvh5DhouLrJGwGwjbqBGUlRyQdUa/Xw?=
- =?us-ascii?Q?0MfO0eYsamJmaqGsdZpwU3gkDiIeVFm/6eH6XqBXiVB7XIegHy/lDxDDhafJ?=
- =?us-ascii?Q?HOXsm8FjJ8Up0gtEVehItMd0azYeOvmPrfV1/f24U773oOl8k/rIvpbOf2KW?=
- =?us-ascii?Q?NgI7bdKGaEQMwg0PMCXIWjjkZFf/7Hly3z2vtKBLolGr8t8AGBgorcxbJfYZ?=
- =?us-ascii?Q?jyQjKwoz+m2dMELFZcFnEi9jAPlAfFrwg1AUzgJgV0tHzzMuWmh828Z+QxLp?=
- =?us-ascii?Q?HZ7BhHD0GjXnoFSjOlYIKRC5CVfOqWYvo3CU/bJGFqusfOB+BRaaOWz0GPtb?=
- =?us-ascii?Q?OItH2ne0j8B3tu5NygAlTksPLLGRbbG8ITA3FxwaHo/EUzZ+rprBvBTirZ9t?=
- =?us-ascii?Q?qUjSZIVEX2deeQgCIUPyUciRc/SOKm4pVg7hg2H7BUMeoh0TV/ZRVuA12eFG?=
- =?us-ascii?Q?8SkjyulbdXF44l4t5HkY+vr1C9sPpuZOLVbOMgmsN21HSrZ3c6OW0QunW7FQ?=
- =?us-ascii?Q?rjNCME/bRdjl4HLeDF/cbmd4xm4atNyyv3mfKPAgQrnrJ4ycfvmMeSy2872R?=
- =?us-ascii?Q?wFxm5TignK/Lh5lkZ6V/8hK76popIaKmO45sIt8mVEuv57jI2QlyZVREaqll?=
- =?us-ascii?Q?fvaG3fSTi7vQa6RnLIcw1+mEgkzAHJYUfhw7RUp4FZbNgTnFy4jiKftKf0g2?=
- =?us-ascii?Q?2xpJ7m6bbEc0MiXxSlGsyhT7/0jBmHg=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?zqN7xzV9BHs4Hp84YZut78WiKXVTdMmeGusoxPNDzPg/cm0QGNhyaccIwKGs?=
+ =?us-ascii?Q?ghK777tApWzB26iFg4/z19MYARkHJtKAmrvLIM+9qRH/9N8gydrTJERFzVyT?=
+ =?us-ascii?Q?jvqUk5JwhGTto3NK/EZxaYghMhvbwTDw/Os0VjX6LbUw37oywT0HWZphlgPT?=
+ =?us-ascii?Q?0pBxEou+zhNO8smYKspol+XRT8q4NZv5zdk1TiSRAAkcipCmXBD5HDHACz8Z?=
+ =?us-ascii?Q?wh6qwMLgQ6OytfDcRzQsHWe2Nw/n1NsSg0l7QKwM6jjpFhxvgRrGfJSbiIWJ?=
+ =?us-ascii?Q?36cunomZpSe0/sTr1/EYyV6LK6iyC8me/SfF+cfySd5DJC/z799xbFAnmUAw?=
+ =?us-ascii?Q?D0/jnDJZjUZJT6kzmlRivwZQcLZy9QYnlMtsOrnhmdOofNNdUXGjzVJTfngX?=
+ =?us-ascii?Q?2Ghe8bQADE+Wg4L7ceKugjVYyiEo4AZZgjMCsXp+mj3W4/S+9BEGGIYDzwJn?=
+ =?us-ascii?Q?M5xPc+1yRrG1axyUzSC4BErnHHA7yT0QAhu5SbIm11CJJHEEeYinjMkSfqN/?=
+ =?us-ascii?Q?Q/UBYJ14fmVqdWw2f2+1v+2XTOVb6pR8HXYOd7uW3MSGURVQIbYV0BL8YDTC?=
+ =?us-ascii?Q?8/5bW7LzIyNFbS8uvrPq+MczJ9d0hV1ozBL/USrbA5BlQ5IkLmkszE4/fT/q?=
+ =?us-ascii?Q?cGeEQxg2d/+kMKZPIaSZkmJ6HRzAMoCnP6YveNvFcoswmNC9uiiiN1cka9l5?=
+ =?us-ascii?Q?3ZtilcUrmTWItXVFvClb6dODzfjvhSsMZHKKORdnQA0BFJDbYTs8QtFuhbFh?=
+ =?us-ascii?Q?B5h5wvivMMVI9WoF17fSNk6ljSiHDMXjkDf5mqbX9e+eF2YZe/6YT6otEtvD?=
+ =?us-ascii?Q?SsTDEz5sYgzB/JTtBhS7SDpUeGM0F3kgm/VXRaWJEADQACoJJ/mQ4x+82eKn?=
+ =?us-ascii?Q?Va+7EJil062xwouEzWiuNTQQPItqwRJUeXTxBttQ041dVk2plT50komz6A5I?=
+ =?us-ascii?Q?Jeqw2NpmEMOKng+Uby8OsNWbM7UTck+FlOiZPyj2fUwf4yY0V2Sh/IqUJdme?=
+ =?us-ascii?Q?jYhZ5YyqJxOZ0MlIVj8w/VIWfLfImJFepMQJ+doLb5Boey3mGcV6oQ0hCWt8?=
+ =?us-ascii?Q?4v/p2CYkX2624MuuiMBnsLrKj7L5qS66oOhKbFOoB7P2dA35JXZkOdn+/WkM?=
+ =?us-ascii?Q?VuqB5PhYITcIB6swf1komI/A15EbJWePlDzXxUw3v7GF86h6aWCvugVvEkl7?=
+ =?us-ascii?Q?kMmJGXRX++8BoIaFDIDIxMZOCmDr2MAnUGntyVOt3LY6BXhY4W1iyVFq14Dj?=
+ =?us-ascii?Q?XKajPR9vHdUBCUTh9OAeOR2LLoB+ZSajEVb12WjH36qNDPZybsC+/GDeKIc/?=
+ =?us-ascii?Q?8lB6+zcex1CKCeNJ2+oV2mqUoT4a0UyMdSRv5OpQAdrbU5xFZPqR8iKnhNFe?=
+ =?us-ascii?Q?QbV9Ap72NX92EcGKaTOD4E3xjWu0GuoxVT9pGhYW16dTAFJzRu3mhQJKuXbz?=
+ =?us-ascii?Q?lkHR3i81R/prVH8CTN0k0jRPJD3MVeeibK8CfMy30xpg5W6L9VrjMlEBP+MF?=
+ =?us-ascii?Q?xr20AROC+iR5W9Q+KZFzzA6DSheTawHYi14QFgTX++P9YJtcIMxOWPFiJmie?=
+ =?us-ascii?Q?yq9v/nq7bHdjB5FkVvHO+3bsdfN6+WDiCVtoaW2mRY9l3F9XBRemPZoCOkrf?=
+ =?us-ascii?Q?m16ZavWBcEp0HHM3G0fYbVTpORt5MoEfnVqDMihxyRGsVKwWmgzGNbqr3pKX?=
+ =?us-ascii?Q?n1/JJvP4sc3d9qj/luLao4M2yCyt99J0zDy9nR9U4o3H/DPGkgD2ISYCR9l+?=
+ =?us-ascii?Q?Jp7TP50aNc6VVfVTw6A9DsIs5b36Nfk=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe71d6c2-ab08-42a4-959e-08d9bafb0842
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2021 10:02:38.6371
+X-MS-Exchange-CrossTenant-Network-Message-Id: eed7ed98-87f1-4ab1-6d29-08d9bafba30d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2021 10:06:58.2798
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Akjrkf2Gtxu2OGXmyRiTOaHZhfwcyFACQWhqKVV7UAQG5bCmUjaRhfKK6bwLF5YdAZC7Eenxz/PiVhC94+FJmdx6QUTfumLiBtB3WCQ41xc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7159
+X-MS-Exchange-CrossTenant-userprincipalname: 2la4aEpTDCWFeANk118p0N+GbeCjEHl1w1fS21ZUlCtdIPeOpwJHv/I0iZUcxmhr1rsLuLcKuF2v63L3ETMLRUqd4LRthFc8uTPdR4FoRoc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7320
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 06/12/2021 03:30, Qu Wenruo wrote:=0A=
-> This mostly follows the behavior of compressed_bio::pending_sectors.=0A=
+> This patchset be fetched from this branch:=0A=
 > =0A=
-> The point here is, dip::refs is not split bio friendly, as if a bio with=
-=0A=
-> its bi_private =3D dip, and the bio get split, we can easily underflow=0A=
-> dip::refs.=0A=
+> https://github.com/adam900710/linux/tree/refactor_chunk_map=0A=
 > =0A=
-> By using the same sector based solution as compressed_bio, dio can=0A=
-> handle both unsplit and split bios.=0A=
+> [BACKGROUND]=0A=
 > =0A=
-> Signed-off-by: Qu Wenruo <wqu@suse.com>=0A=
+> Currently btrfs never uses bio_split() to split its bio against RAID=0A=
+> stripe boundaries.=0A=
+> =0A=
+> Instead inside btrfs we check our stripe boundary everytime we allocate=
+=0A=
+> a new bio, and ensure the new bio never cross stripe boundaries.=0A=
+> =0A=
+> [PROBLEMS]=0A=
+> =0A=
+> Although this behavior works fine, it's against the common practice used =
+in=0A=
+> stacked drivers, and is making the effort to convert to iomap harder.=0A=
+> =0A=
+> There is also an hidden burden, every time we allocate a new bio, we uses=
+=0A=
+> BIO_MAX_BVECS, but since we know the boundaries, for RAID0/RAID10 we can=
+=0A=
+> only fit at most 16 pages (fixed 64K stripe size, and 4K page size),=0A=
+> wasting the 256 slots we allocated.=0A=
+> =0A=
+> [CHALLENGES]=0A=
+> =0A=
+> To change the situation, this patchset attempts to improve the situation=
+=0A=
+> by moving the bio split into btrfs_map_bio() time, so upper layer should=
+=0A=
+> no longer bother the bio split against RAID stripes or even chunk=0A=
+> boundaries.=0A=
+> =0A=
+> But there are several challenges:=0A=
+> =0A=
+> - Conflicts in various endio functions=0A=
+>   We want the existing granularity, instead of chained endio, thus we=0A=
+>   must make the involved endio functions to handle split bios.=0A=
+> =0A=
+>   Although most endio functions are already doing their works=0A=
+>   independent of the bio size, they are not yet fully handling split=0A=
+>   bio.=0A=
+> =0A=
+>   This patch will convert them to use saved bi_iter and only iterate=0A=
+>   the split range instead of the whole bio.=0A=
+>   This change involved 3 types of IOs:=0A=
+> =0A=
+>   * Buffered IO=0A=
+>     Including both data and metadata=0A=
+>   * Direct IO=0A=
+>   * Compressed IO=0A=
+> =0A=
+>   Their endio functions needs different level of updates to handle split=
+=0A=
+>   bios.=0A=
+> =0A=
+>   Furthermore, there is another endio, end_workqueue_bio(), it can't=0A=
+>   handle split bios at all, thus we change the timing so that=0A=
+>   btrfs_bio_wq_end_io() is only called after the bio being split.=0A=
+> =0A=
+> - Checksum verification=0A=
+>   Currently we rely on btrfs_bio::csum to contain the checksum for the=0A=
+>   whole bio.=0A=
+>   If one bio get split, csum will no longer points to the correct=0A=
+>   location for the split bio.=0A=
+> =0A=
+>   This can be solved by introducing btrfs_bio::offset_to_original, and=0A=
+>   use that new member to calculate where we should read csum from.=0A=
+> =0A=
+>   For the parent bio, it still has btrfs_bio::csum for the whole bio,=0A=
+>   thus it can still free it correctly.=0A=
+> =0A=
+> - Independent endio for each split bio=0A=
+>   Unlike stack drivers, for RAID10 btrfs needs to try its best effort to=
+=0A=
+>   read every sectors, to handle the following case: (X means bad, either=
+=0A=
+>   unable to read or failed to pass checksum verification, V means good)=
+=0A=
+> =0A=
+>   Dev 1	(missing) | D1 (X) |=0A=
+>   Dev 2 (OK)	  | D1 (V) |=0A=
+>   Dev 3 (OK)	  | D2 (V) |=0A=
+>   Dev 4 (OK)	  | D2 (X) |=0A=
+> =0A=
+>   In the above RAID10 case, dev1 is missing, and although dev4 is fine,=
+=0A=
+>   its D2 sector is corrupted (by bit rot or whatever).=0A=
+> =0A=
+>   If we use bio_chain(), read bio for both D1 and D2 will be split, and=
+=0A=
+>   since D1 is missing, the whole D1 and D2 read will be marked as error,=
+=0A=
+>   thus we will try to read from dev2 and dev4.=0A=
+> =0A=
+>   But D2 in dev4 has csum mismatch, we can only rebuild D1 and D2=0A=
+>   correctly from dev2:D1 and dev3:D2.=0A=
+> =0A=
+>   This patchset resolve this by saving bi_iter into btrfs_bio::iter, and=
+=0A=
+>   uses that at endio to iterate only the split part of an bio.=0A=
+>   Other than this, existing read/write page endio functions can handle=0A=
+>   them properly without problem.=0A=
+> =0A=
+> - Bad RAID56 naming/functionality=0A=
+>   There are quite some RAID56 call sites relies on specific behavior on=
+=0A=
+>   __btrfs_map_block(), like returning @map_length as stripe_len other=0A=
+>   than real mapped length.=0A=
+> =0A=
+>   This is handled by some small cleanups specific for RAID56.=0A=
+> =0A=
+> [CHANGELOG]=0A=
+> RFC->v1:=0A=
+> - Better patch split=0A=
+>   Now patch 01~06 are refactors/cleanups/preparations.=0A=
+>   While 07~13 are the patches that doing the conversion while can handle=
+=0A=
+>   both old and new bio split timings.=0A=
+>   Finally patch 14~16 convert the bio split call sites one by one to=0A=
+>   newer facility.=0A=
+>   The final patch is just a small clean up.=0A=
+> =0A=
+> - Various bug fixes=0A=
+>   During the full fstests run, various stupid bugs are exposed and=0A=
+>   fixed.=0A=
+> =0A=
+> v2:=0A=
+> - Fix the error paths for allocated but never submitted bios=0A=
+>   There are tons of error path that we allocate a bio but it goes=0A=
+>   bio_endio() directly without going through btrfs_map_bio().=0A=
+>   New ASSERTS() in endio functions require a populated btrfs_bio::iter,=
+=0A=
+>   thus for such bios we still need to call btrfs_bio_save_iter() to=0A=
+>   populate btrfs_bio::iter to prevent such ASSERT()s get triggered.=0A=
+> =0A=
+> - Fix scrub_stripe_index_and_offset() which abuses stripe_len and=0A=
+>   mapped_length=0A=
+> =0A=
 =0A=
 =0A=
-JFYI, for this patch I get checkpatch complains:=0A=
+FYI the patchset doesn't apply cleanly to misc-next anymore. I've=0A=
+pulled your branch form github and queued it for testing on zoned=0A=
+devices.=0A=
 =0A=
-Applying: btrfs: replace btrfs_dio_private::refs with btrfs_dio_private::pe=
-nding_bytes=0A=
-.git/rebase-apply/patch:37: space before tab in indent.=0A=
-                                     u32 bytes)=0A=
-warning: 1 line adds whitespace errors.=0A=
-ERROR:CODE_INDENT: code indent should use tabs where possible=0A=
-#32: FILE: fs/btrfs/inode.c:7693:=0A=
-+^I    ^I^I^I     u32 bytes)$=0A=
-=0A=
-WARNING:SPACE_BEFORE_TAB: please, no space before tabs=0A=
-#32: FILE: fs/btrfs/inode.c:7693:=0A=
-+^I    ^I^I^I     u32 bytes)$=0A=
-=0A=
-total: 1 errors, 1 warnings, 180 lines checked=0A=
-=0A=
+I'll report any findings.=0A=
