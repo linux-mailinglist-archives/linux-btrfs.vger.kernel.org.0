@@ -2,317 +2,227 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B0747084C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Dec 2021 19:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAC24708E7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 Dec 2021 19:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236953AbhLJSTg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 Dec 2021 13:19:36 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:36382 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236861AbhLJSTe (ORCPT
+        id S234194AbhLJSid convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 10 Dec 2021 13:38:33 -0500
+Received: from drax.kayaks.hungrycats.org ([174.142.148.226]:40470 "EHLO
+        drax.kayaks.hungrycats.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229502AbhLJSic (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 Dec 2021 13:19:34 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1BAGHT4h005395;
-        Fri, 10 Dec 2021 18:15:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2021-07-09; bh=ot5V6yIRb0N8D5om+P3BlirnB/bWciqWtVmmSCehyVk=;
- b=RvfIzNkXBCicCIwNVjOP8UYCYpshPvJUmry7a+HVktAVbeeJyMRR3LG4ft04wdQaCgHN
- 62P3EJBv+N/weS5KH1tRYUqx81lrsg2/kDt55KhcGcU2uR9OAkmuiO5S8eE5wChpFDp3
- BwPQk/bAmy6E4gVVNHok28z1Ik5YSGz1cFJXI7Foycd93u969nX+EWSmOXTAVWduYVj1
- ndMdgtMBqhIXPAid4ZLIZQoo4U0KREcfR9GJAo9ZZcnWJBzowWTa2EyMFl8zcQwGvRdO
- eAmZsAfDH0gPii1Tjv1zXyj8qNczXmSVdvnCjnM7BvR1vvwFA8zJsSYGGWnmdgK54S7n FQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cva9ng97p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Dec 2021 18:15:58 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1BAI6GkJ148135;
-        Fri, 10 Dec 2021 18:15:57 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2042.outbound.protection.outlook.com [104.47.56.42])
-        by aserp3020.oracle.com with ESMTP id 3cr059mdyp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Dec 2021 18:15:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g1021Yf1QqR3l26401TYhYzxAJkKLdn21ey+gInALEzpl9JlkjjoOT9Q8hQY14ErsjiR5QVpkVcKQmWAfeu0ViCidPaFE0WXF8h1YWRQyufZ5py0idMmb20Bx81Engw1Z7oWhU4RMFp6SkVrL+lsFbfGkfeBOj73ENF87V7GoFzE6h2V2Nz7its/0ooJOZjAjf5GtyyO9tZJiGfFPY//o32yxh2Hi8f80wWZldEVxpF8dFhL6lhbxJ+TXYM9Rf3FrOnRa4qaSNwcPMQlaTnJdYxR45tNpAn6f13VVhvikFgLBJXwH38LHy7ua7nPgBTU+NJI09kJOMp/TTnPsp1GyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ot5V6yIRb0N8D5om+P3BlirnB/bWciqWtVmmSCehyVk=;
- b=iLvHhIQokGJDztgsHb3RtTdKI35J5Uh7BIHxULML+TXMfBsrJpuGOHM7d45VV7RKHCfdRdEuurdtyslyX++MsbuAZoGSAzhmJeBkv+aMqjDBYFfchKS29tz6f6C7QIRADzPF7FiOt1QkXGH4r5EbkQDTFnnrJbQPYk0NlVvoswJLFBNwO6NJhsVW4YA4rqY/d99fkE+Q62kDwCIH9injreIVc/Vwn6iLzlr1jkOe/xsjLQrKap8k/EH2G+gAgc8MPYtlxi5DI/zupzfKX5SEKfV0+3NpjibjoizdImkIuT2WPNeCsyWHf6kUKPK78aetJvOD9VJM2E5fYMCg6f1VxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ot5V6yIRb0N8D5om+P3BlirnB/bWciqWtVmmSCehyVk=;
- b=DKMQO2QVg/+RUmQDNTvmxTDThqcCIXqZNsXVwK09vdE4Euh88woWqPjZPnAS00S67Pidk8mzbf8QzF/ZikNba8uuUdlG2tZoGTLJFKl7tQdMBq3xYfJJcH66OSwwvSqPapdXbrE95Bfpxy8StXkfiNlOUdiIZPFYSxmelywtJjE=
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com (2603:10b6:208:1d2::24)
- by MN2PR10MB4368.namprd10.prod.outlook.com (2603:10b6:208:1d6::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.14; Fri, 10 Dec
- 2021 18:15:56 +0000
-Received: from MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::f450:87d2:4d68:5e00]) by MN2PR10MB4128.namprd10.prod.outlook.com
- ([fe80::f450:87d2:4d68:5e00%5]) with mapi id 15.20.4755.026; Fri, 10 Dec 2021
- 18:15:56 +0000
-From:   Anand Jain <anand.jain@oracle.com>
+        Fri, 10 Dec 2021 13:38:32 -0500
+Received: by drax.kayaks.hungrycats.org (Postfix, from userid 1002)
+        id 6DEACCF6DD; Fri, 10 Dec 2021 13:34:56 -0500 (EST)
+Date:   Fri, 10 Dec 2021 13:34:56 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 To:     linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com
-Subject: [PATCH v2 2/2] btrfs: redeclare btrfs_stale_devices arg1 to dev_t
-Date:   Sat, 11 Dec 2021 02:15:30 +0800
-Message-Id: <859725555b836e4aba6338fe78a0a3c175787ac2.1639155519.git.anand.jain@oracle.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <cover.1639155519.git.anand.jain@oracle.com>
-References: <cover.1639155519.git.anand.jain@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0134.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::14) To MN2PR10MB4128.namprd10.prod.outlook.com
- (2603:10b6:208:1d2::24)
+Cc:     Miklos Szeredi <mszeredi@redhat.com>
+Subject: bisected: btrfs dedupe regression in v5.11-rc1: 3078d85c9a10 vfs:
+ verify source area in vfs_dedupe_file_range_one()
+Message-ID: <20211210183456.GP17148@hungrycats.org>
 MIME-Version: 1.0
-Received: from localhost (39.109.140.76) by SG2PR01CA0134.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::14) with Microsoft SMTP Server (version=TLS1_2, cipher=) via Frontend Transport; Fri, 10 Dec 2021 18:15:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 23b73268-25ab-4d11-4def-08d9bc091bc6
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4368:EE_
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4368E73B78C789A7424DCDFEE5719@MN2PR10MB4368.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:989;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xeJ4zXgnn/lfClm+ZaPwYjg5RrslFvNhkSHM6JkbbmYkjhmHVWzK60xqRJsW7sYF+eucFATizq1a7X8v41sC9drhHGr3Yhhr1D1S1kegwW+ElgTBMmXjP+nkhOZYzPZ8mtSCE4+cbIKP+wdaDFQkcxIKGum97pTtK2Z7y+luw3vdTgaWfx5yynj8Ho3zYrOwR3o4J2U+SZAEK7wyoz/QPgz/88RLTBuC0lxUgQHaQnIcQmgcqSZhUiBIDDyU2el/CnlilmThMld0tCf6YxxZBsCo4T68+cw2pL9vIVMezh9456D61NIz22UBvZD0Ww3Syz0PPMhPho3B/cbA0z9hK15kmNkmSJefiZBx15VodRXouitqvwtfz/lGHRTjaxUYrPSm+BWvh0ud0aTbhYo0iyqgOO53ndrlWQd7HEPSbkR3gxPjdH7qEuWF1Q9lPVZsEzBFKDd6C0aOR4fne4J4er+eu8Fnw+7N+0PZmUdOfVRFvwPKLIhYm19JqY8BES+75Ds6QpkRAUBAMTu6KnL7BB+CFIG6D7ouVw7mZUhCdi3ua2qI/D+iR8tX+hdT7Wpbr7TBYMf2EawqqOhgHx5ZPfG10CtW3V9WHICk9/fLXg23MA2eHYoP4AWvfs+W+1ACLwGL8TD/zGkfXKUy3iOQLw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(2616005)(38100700002)(66476007)(6496006)(6916009)(66946007)(4326008)(66556008)(83380400001)(6666004)(508600001)(8676002)(26005)(44832011)(2906002)(956004)(36756003)(186003)(316002)(8936002)(6486002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Q0GbB5qgckFhzgW3x04SkYx+o9mNqS/n3eIdqNdqgwC+1sjrv7bIlt3FYoXF?=
- =?us-ascii?Q?Ih2wiN73Bf6lYXUJrft1ROcxp2etoWFpt0L7tXRjqrp1VDZANu/SEhGppPeW?=
- =?us-ascii?Q?dpRJ2onUGv5DEsNZtdpgcZRUqWJ1Emh/KZo5SHgvMO+/OwkIWPsSIlZcF/IE?=
- =?us-ascii?Q?pv9tSx48JaHSyW+/WG60WGaePZnj72nhgu8bzioJO4aaDyzQPhOrzihJVVUi?=
- =?us-ascii?Q?hX7Tg8r5H90o3DnqN4XR2SFKwWXWWAe49m/J0+eSOcNL0JQCJOQfHgTkOnhm?=
- =?us-ascii?Q?Qj6yne7gJR8WwOrgP1qH1Wx85U84SwfkUn3wmm0CzkNv/OfnKp0Ir/KPQWDL?=
- =?us-ascii?Q?jGJAZiN68R/SvsPtpEZepAh8WmfWuofx0SQ/suGmxbXN1gELL/rV6L5Sb3uY?=
- =?us-ascii?Q?E0uU3lPuRvITu3CTZw6BcMbaDRgreF3cl0yPoTKr0qrkK/ACo7AtyXwudjes?=
- =?us-ascii?Q?jUxVfoQfhXRtMnnZ3LtrPMJHqakfL7iGOHzgyChuqoWlOYYJ1sn43kg+qabD?=
- =?us-ascii?Q?xQt0TMBhm1u8XsI6l9+UtN5ZeiP6Q4NpliPT79B+96Fsyia1hchRQbpSUeaP?=
- =?us-ascii?Q?WFUtLSVqmeUsjrh+SWnXBk5sA9tp/mpQpagtqwuJZhYcKLo97BgCcT2yXGkf?=
- =?us-ascii?Q?A48U3ufIuO+VXQTzXM4TScm5HTnRRKtP4D/sM2qgMs2RMOaGZUJEzgtGlS8d?=
- =?us-ascii?Q?EyZ8QMbdgABE6QHiTz67ifmD0VM0UtAoVIJdfBdg1NEBy63saprw79Xbagb1?=
- =?us-ascii?Q?KW6DzqnteJYXNg5MoZy73JWo1FFPA/7Zid3QCsri1ZQWEY5QX0BHNVgf7WZt?=
- =?us-ascii?Q?nNfbU8j5R7vXrowQ8JGmkMshzzA7fzX1hExBM7U7hox5LiBLG/nA3Vp2O/A7?=
- =?us-ascii?Q?RSNY0XD/2WMZ93HHLNEj+pig5GBKd7xjKwVx/abuh5XiXwWWlz6vl5mJgVUo?=
- =?us-ascii?Q?kpO1xtytO3KcJD/LqjbXthuLkETeKMRL8Qnr4kGpiDPQtMwSCoyQWwnJQLxZ?=
- =?us-ascii?Q?NqsRbJzDNm4AKcHvAOv4ly9hM2/BdWrACgZbIZrzS3/yOWsJazFjT7BdE2pg?=
- =?us-ascii?Q?VGw0cIxGNMH8+ipZo+TXYoVMhG5B3YY4H2147QPbcb8rcDj91jBbVRAh1i2e?=
- =?us-ascii?Q?yB7Nbt/hg5YmqasYTY2JvAJsBuA0dhjieBrZ+zqiOqgex+ufjfZ3URzsQEXy?=
- =?us-ascii?Q?SAujDvaVzhumBmU4Vwwb9G19c/gVNMbF+7+cBYKkiXFKAJJKCSLiY2SlB17k?=
- =?us-ascii?Q?whYzbDjN2spKM9EC6D67kLlbiw2qvXC718DnQcR6FrFCa/SDVYW8+3hXrYBy?=
- =?us-ascii?Q?kj0WQU8zcCTD3U1mQ1y+bPWQ3oCZZMK+T1WzoPf3qqQWkBA19xhxpRJvrZW6?=
- =?us-ascii?Q?kAW/YWVOmzcQijekS/tdKCCrBCe0PFqCp+x34DNdvy4qHzSw9TE0+CgF5D4w?=
- =?us-ascii?Q?DZLXQ2mW+iQUGLabjVDhi+zoF2Gi1Q10Hzbj+SQDplrkme6dDCAi8eYkpVXB?=
- =?us-ascii?Q?7+LxVOS56OhC3VtpPoVkGWwK4GHiQ3q6fWR549dizhEKL+E8lgX0kKxaxERa?=
- =?us-ascii?Q?cL1AdTwS20BLzjvg4OkVB1CSxg0XFirQxN4jmRh9cXpTIZ+R0iCZPhUCVVAH?=
- =?us-ascii?Q?gvTQWRFO1sd/XqHmgj8B+Gw=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23b73268-25ab-4d11-4def-08d9bc091bc6
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Dec 2021 18:15:55.9937
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A28gOZ4TtdYKN20pqZAcAt1kJsjwZuUZ8yk4f1yod8Njb1+5Zp8N0SzoGckqMyAX+CWADaPbyCZ/7qsh+nlhLQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4368
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10194 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- malwarescore=0 spamscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2112100102
-X-Proofpoint-GUID: sO3MdLn7nOJ8O3p5luCzqkrTrtW13cjT
-X-Proofpoint-ORIG-GUID: sO3MdLn7nOJ8O3p5luCzqkrTrtW13cjT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-After the commit cb57afa39796 ("btrfs: harden identification of the stale
-device"), we don't have to match the device path anymore. Instead, we
-match the dev_t. So pass in the dev_t instead of the device-path, in the call
-chain btrfs_forget_devices()->btrfs_free_stale_devices().
+I've been getting deadlocks in dedupe on btrfs since kernel 5.11, and
+some bees users have reported it as well.  I bisected to this commit:
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/super.c   |  8 +++++++-
- fs/btrfs/volumes.c | 45 +++++++++++++++++++++++----------------------
- fs/btrfs/volumes.h |  2 +-
- 3 files changed, 31 insertions(+), 24 deletions(-)
+	3078d85c9a10 vfs: verify source area in vfs_dedupe_file_range_one()
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index a1c54a2c787c..985395085886 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2386,6 +2386,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- {
- 	struct btrfs_ioctl_vol_args *vol;
- 	struct btrfs_device *device = NULL;
-+	dev_t devt = 0;
- 	int ret = -ENOTTY;
- 
- 	if (!capable(CAP_SYS_ADMIN))
-@@ -2405,7 +2406,12 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
- 		mutex_unlock(&uuid_mutex);
- 		break;
- 	case BTRFS_IOC_FORGET_DEV:
--		ret = btrfs_forget_devices(vol->name);
-+		if (strlen(vol->name)) {
-+			ret = lookup_bdev(vol->name, &devt);
-+			if (ret)
-+				break;
-+		}
-+		ret = btrfs_forget_devices(devt);
- 		break;
- 	case BTRFS_IOC_DEVICES_READY:
- 		mutex_lock(&uuid_mutex);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 559fdb0c4a0e..fdf35dc561ab 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -542,11 +542,10 @@ btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
-  *	1	If it is not the same device.
-  *	-errno	For error.
-  */
--static int device_matched(struct btrfs_device *device, const char *path)
-+static int device_matched(struct btrfs_device *device, dev_t dev_new)
- {
- 	char *device_name;
- 	dev_t dev_old;
--	dev_t dev_new;
- 	int ret;
- 
- 	device_name = kzalloc(BTRFS_PATH_NAME_MAX, GFP_KERNEL);
-@@ -566,10 +565,6 @@ static int device_matched(struct btrfs_device *device, const char *path)
- 	if (ret)
- 		return ret;
- 
--	ret = lookup_bdev(path, &dev_new);
--	if (ret)
--		return ret;
--
- 	if (dev_old == dev_new)
- 		return 0;
- 
-@@ -579,16 +574,16 @@ static int device_matched(struct btrfs_device *device, const char *path)
- /*
-  *  Search and remove all stale (devices which are not mounted) devices.
-  *  When both inputs are NULL, it will search and release all stale devices.
-- *  path:	Optional. When provided will it release all unmounted devices
-- *		matching this path only.
-+ *  devt:	Optional. When provided will it release all unmounted devices
-+ *		matching this devt only.
-  *  skip_dev:	Optional. Will skip this device when searching for the stale
-  *		devices.
-- *  Return:	0 for success or if @path is NULL.
-- * 		-EBUSY if @path is a mounted device.
-- * 		-ENOENT if @path does not match any device in the list.
-+ *  Return:	0 for success or if @devt is 0.
-+ *		-EBUSY if @devt is a mounted device.
-+ *		-ENOENT if @devt does not match any device in the list.
-  */
--static int btrfs_free_stale_devices(const char *path,
--				     struct btrfs_device *skip_device)
-+static int btrfs_free_stale_devices(dev_t devt,
-+				    struct btrfs_device *skip_device)
- {
- 	struct btrfs_fs_devices *fs_devices, *tmp_fs_devices;
- 	struct btrfs_device *device, *tmp_device;
-@@ -596,7 +591,7 @@ static int btrfs_free_stale_devices(const char *path,
- 
- 	lockdep_assert_held(&uuid_mutex);
- 
--	if (path)
-+	if (devt)
- 		ret = -ENOENT;
- 
- 	list_for_each_entry_safe(fs_devices, tmp_fs_devices, &fs_uuids, fs_list) {
-@@ -606,13 +601,13 @@ static int btrfs_free_stale_devices(const char *path,
- 					 &fs_devices->devices, dev_list) {
- 			if (skip_device && skip_device == device)
- 				continue;
--			if (path && !device->name)
-+			if (devt && !device->name)
- 				continue;
--			if (path && device_matched(device, path) != 0)
-+			if (devt && device_matched(device, devt) != 0)
- 				continue;
- 			if (fs_devices->opened) {
- 				/* for an already deleted device return 0 */
--				if (path && ret != 0)
-+				if (devt && ret != 0)
- 					ret = -EBUSY;
- 				break;
- 			}
-@@ -1361,12 +1356,12 @@ static struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev
- 	return disk_super;
- }
- 
--int btrfs_forget_devices(const char *path)
-+int btrfs_forget_devices(dev_t devt)
- {
- 	int ret;
- 
- 	mutex_lock(&uuid_mutex);
--	ret = btrfs_free_stale_devices(strlen(path) ? path : NULL, NULL);
-+	ret = btrfs_free_stale_devices(devt, NULL);
- 	mutex_unlock(&uuid_mutex);
- 
- 	return ret;
-@@ -1414,8 +1409,12 @@ struct btrfs_device *btrfs_scan_one_device(const char *path, fmode_t flags,
- 
- 	device = device_list_add(path, disk_super, &new_device_added);
- 	if (!IS_ERR(device)) {
--		if (new_device_added)
--			btrfs_free_stale_devices(path, device);
-+		if (new_device_added) {
-+			dev_t devt;
-+
-+			if (!lookup_bdev(path, &devt))
-+				btrfs_free_stale_devices(devt, device);
-+		}
- 	}
- 
- 	btrfs_release_disk_super(disk_super);
-@@ -2649,6 +2648,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 	int ret = 0;
- 	bool seeding_dev = false;
- 	bool locked = false;
-+	dev_t devt;
- 
- 	if (sb_rdonly(sb) && !fs_devices->seeding)
- 		return -EROFS;
-@@ -2843,7 +2843,8 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 	 * We can ignore the return value as it typically returns -EINVAL and
- 	 * only succeeds if the device was an alien.
- 	 */
--	btrfs_forget_devices(device_path);
-+	if (!lookup_bdev(device_path, &devt))
-+		btrfs_forget_devices(devt);
- 
- 	/* Update ctime/mtime for blkid or udev */
- 	update_dev_time(device_path);
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 9cf1d93a3d66..1b644ee60d22 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -512,7 +512,7 @@ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       fmode_t flags, void *holder);
- struct btrfs_device *btrfs_scan_one_device(const char *path,
- 					   fmode_t flags, void *holder);
--int btrfs_forget_devices(const char *path);
-+int btrfs_forget_devices(dev_t devt);
- void btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
- void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices);
- void btrfs_assign_next_active_device(struct btrfs_device *device,
--- 
-2.33.1
+These kernels work for at least 18 hours:
 
+	5.10.83 (months)
+	5.11.22 with 3078d85c9a10 reverted (36 hours)
+	btrfs misc-next 66dc4de326b0 with 3078d85c9a10 reverted
+
+These kernels lock up in 3 hours or less:
+
+	5.11.22
+	5.12.19
+	5.14.21
+	5.15.6
+	btrfs for-next 279373dee83e
+
+All of the failing kernels include this commit, none of the non-failing
+kernels include the commit.
+
+Kernel logs from the lockup:
+
+	[19647.696042][ T3721] sysrq: Show Blocked State
+	[19647.697024][ T3721] task:btrfs-transacti state:D stack:    0 pid: 6161 ppid:     2 flags:0x00004000
+	[19647.698203][ T3721] Call Trace:
+	[19647.698608][ T3721]  __schedule+0x388/0xaf0
+	[19647.699125][ T3721]  schedule+0x68/0xe0
+	[19647.699615][ T3721]  btrfs_commit_transaction+0x97c/0xbf0
+	[19647.700276][ T3721]  ? start_transaction+0xd5/0x6f0
+	[19647.700897][ T3721]  ? do_wait_intr_irq+0xd0/0xd0
+	[19647.701507][ T3721]  transaction_kthread+0x138/0x1b0
+	[19647.702154][ T3721]  kthread+0x151/0x170
+	[19647.702651][ T3721]  ? btrfs_cleanup_transaction.isra.0+0x620/0x620
+	[19647.703404][ T3721]  ? kthread_create_worker_on_cpu+0x70/0x70
+	[19647.704119][ T3721]  ret_from_fork+0x22/0x30
+	[19647.704679][ T3721] task:crawl_257_291   state:D stack:    0 pid: 6494 ppid:  6435 flags:0x00000000
+	[19647.705797][ T3721] Call Trace:
+	[19647.706188][ T3721]  __schedule+0x388/0xaf0
+	[19647.706723][ T3721]  ? rwsem_down_write_slowpath+0x35f/0x770
+	[19647.707414][ T3721]  schedule+0x68/0xe0
+	[19647.707905][ T3721]  rwsem_down_write_slowpath+0x39f/0x770
+	[19647.708597][ T3721]  down_write_nested+0xc1/0x130
+	[19647.709167][ T3721]  lock_two_nondirectories+0x59/0x70
+	[19647.709831][ T3721]  btrfs_remap_file_range+0x54/0x3c0
+	[19647.710505][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
+	[19647.711197][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
+	[19647.711902][ T3721]  do_vfs_ioctl+0x551/0x720
+	[19647.712434][ T3721]  ? __fget_files+0x109/0x1d0
+	[19647.713010][ T3721]  __x64_sys_ioctl+0x6f/0xc0
+	[19647.713544][ T3721]  do_syscall_64+0x38/0x90
+	[19647.714098][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+	[19647.714818][ T3721] RIP: 0033:0x7f0ab2429cc7
+	[19647.715327][ T3721] RSP: 002b:00007f0ab03241d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+	[19647.716326][ T3721] RAX: ffffffffffffffda RBX: 00007f0ab0324420 RCX: 00007f0ab2429cc7
+	[19647.717264][ T3721] RDX: 00007f0a981afe50 RSI: 00000000c0189436 RDI: 0000000000000012
+	[19647.718203][ T3721] RBP: 00007f0a981afe50 R08: 00007f0a983759e0 R09: 0000000000000000
+	[19647.719151][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a981afe50
+	[19647.720087][ T3721] R13: 00007f0ab0324428 R14: 0000000000000000 R15: 00007f0ab0324448
+	[19647.721041][ T3721] task:crawl_256_295   state:D stack:    0 pid: 6496 ppid:  6435 flags:0x00000000
+	[19647.722126][ T3721] Call Trace:
+	[19647.722517][ T3721]  __schedule+0x388/0xaf0
+	[19647.723060][ T3721]  schedule+0x68/0xe0
+	[19647.723524][ T3721]  wait_current_trans+0xed/0x150
+	[19647.724117][ T3721]  ? do_wait_intr_irq+0xd0/0xd0
+	[19647.724697][ T3721]  start_transaction+0x37e/0x6f0
+	[19647.725273][ T3721]  ? btrfs_inode_flags_to_xflags+0x50/0x50
+	[19647.725969][ T3721]  btrfs_attach_transaction+0x1d/0x20
+	[19647.726625][ T3721]  iterate_extent_inodes+0x7b/0x270
+	[19647.727236][ T3721]  iterate_inodes_from_logical+0x9f/0xe0
+	[19647.727912][ T3721]  ? btrfs_inode_flags_to_xflags+0x50/0x50
+	[19647.728599][ T3721]  btrfs_ioctl_logical_to_ino+0x183/0x210
+	[19647.729263][ T3721]  btrfs_ioctl+0xa83/0x2fe0
+	[19647.729818][ T3721]  ? kvm_sched_clock_read+0x18/0x30
+	[19647.730430][ T3721]  ? sched_clock+0x9/0x10
+	[19647.730976][ T3721]  ? __fget_files+0xe6/0x1d0
+	[19647.731521][ T3721]  ? __fget_files+0x109/0x1d0
+	[19647.732096][ T3721]  __x64_sys_ioctl+0x91/0xc0
+	[19647.732647][ T3721]  ? __x64_sys_ioctl+0x91/0xc0
+	[19647.733209][ T3721]  do_syscall_64+0x38/0x90
+	[19647.733750][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+	[19647.734438][ T3721] RIP: 0033:0x7f0ab2429cc7
+	[19647.734992][ T3721] RSP: 002b:00007f0aaf322378 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+	[19647.735994][ T3721] RAX: ffffffffffffffda RBX: 0000558110d25dd0 RCX: 00007f0ab2429cc7
+	[19647.736949][ T3721] RDX: 00007f0aaf322608 RSI: 00000000c038943b RDI: 0000000000000003
+	[19647.737895][ T3721] RBP: 00007f0aaf322550 R08: 0000000000000000 R09: 00007f0aaf3227e0
+	[19647.738862][ T3721] R10: 000019f231c642a4 R11: 0000000000000246 R12: 00007f0aaf322600
+	[19647.739799][ T3721] R13: 0000000000000003 R14: 00007f0aaf322608 R15: 00007f0aaf3225e0
+	[19647.740748][ T3721] task:crawl_257_292   state:D stack:    0 pid: 6502 ppid:  6435 flags:0x00000000
+	[19647.741832][ T3721] Call Trace:
+	[19647.742216][ T3721]  __schedule+0x388/0xaf0
+	[19647.742761][ T3721]  schedule+0x68/0xe0
+	[19647.743225][ T3721]  wait_current_trans+0xed/0x150
+	[19647.743825][ T3721]  ? do_wait_intr_irq+0xd0/0xd0
+	[19647.744399][ T3721]  start_transaction+0x587/0x6f0
+	[19647.745003][ T3721]  btrfs_start_transaction+0x1e/0x20
+	[19647.745638][ T3721]  btrfs_replace_file_extents+0x135/0x8d0
+	[19647.746305][ T3721]  ? release_extent_buffer+0xae/0xf0
+	[19647.746973][ T3721]  btrfs_clone+0x828/0x8c0
+	[19647.747513][ T3721]  btrfs_extent_same_range+0x75/0xa0
+	[19647.748152][ T3721]  btrfs_remap_file_range+0x354/0x3c0
+	[19647.748802][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
+	[19647.749460][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
+	[19647.750098][ T3721]  do_vfs_ioctl+0x551/0x720
+	[19647.750666][ T3721]  ? __fget_files+0x109/0x1d0
+	[19647.751216][ T3721]  __x64_sys_ioctl+0x6f/0xc0
+	[19647.751777][ T3721]  do_syscall_64+0x38/0x90
+	[19647.752290][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+	[19647.752992][ T3721] RIP: 0033:0x7f0ab2429cc7
+	[19647.753511][ T3721] RSP: 002b:00007f0aac31c1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+	[19647.754500][ T3721] RAX: ffffffffffffffda RBX: 00007f0aac31c420 RCX: 00007f0ab2429cc7
+	[19647.755460][ T3721] RDX: 00007f0a787fc690 RSI: 00000000c0189436 RDI: 0000000000000012
+	[19647.756406][ T3721] RBP: 00007f0a787fc690 R08: 00007f0a78f4fd40 R09: 0000000000000000
+	[19647.757340][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a787fc690
+	[19647.758291][ T3721] R13: 00007f0aac31c428 R14: 0000000000000000 R15: 00007f0aac31c448
+	[19647.759261][ T3721] task:crawl_257_293   state:D stack:    0 pid: 6503 ppid:  6435 flags:0x00000000
+	[19647.760362][ T3721] Call Trace:
+	[19647.760761][ T3721]  __schedule+0x388/0xaf0
+	[19647.761261][ T3721]  ? rwsem_down_write_slowpath+0x35f/0x770
+	[19647.761958][ T3721]  schedule+0x68/0xe0
+	[19647.762425][ T3721]  rwsem_down_write_slowpath+0x39f/0x770
+	[19647.763126][ T3721]  down_write+0xbd/0x120
+	[19647.763643][ T3721]  btrfs_remap_file_range+0x2eb/0x3c0
+	[19647.764278][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
+	[19647.764954][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
+	[19647.765589][ T3721]  do_vfs_ioctl+0x551/0x720
+	[19647.766115][ T3721]  ? __fget_files+0x109/0x1d0
+	[19647.766700][ T3721]  __x64_sys_ioctl+0x6f/0xc0
+	[19647.767238][ T3721]  do_syscall_64+0x38/0x90
+	[19647.767772][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+	[19647.768458][ T3721] RIP: 0033:0x7f0ab2429cc7
+	[19647.768990][ T3721] RSP: 002b:00007f0aabb1b1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+	[19647.769986][ T3721] RAX: ffffffffffffffda RBX: 00007f0aabb1b420 RCX: 00007f0ab2429cc7
+	[19647.770951][ T3721] RDX: 00007f0a6c1f5ac0 RSI: 00000000c0189436 RDI: 0000000000000012
+	[19647.771894][ T3721] RBP: 00007f0a6c1f5ac0 R08: 00007f0a6d00da10 R09: 0000000000000000
+	[19647.772839][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a6c1f5ac0
+	[19647.773789][ T3721] R13: 00007f0aabb1b428 R14: 0000000000000000 R15: 00007f0aabb1b448
+	[19647.774784][ T3721] task:crawl_256_289   state:D stack:    0 pid: 6504 ppid:  6435 flags:0x00000000
+	[19647.775882][ T3721] Call Trace:
+	[19647.776271][ T3721]  __schedule+0x388/0xaf0
+	[19647.776807][ T3721]  ? rwsem_down_write_slowpath+0x35f/0x770
+	[19647.777499][ T3721]  schedule+0x68/0xe0
+	[19647.777994][ T3721]  rwsem_down_write_slowpath+0x39f/0x770
+	[19647.778712][ T3721]  down_write_nested+0xc1/0x130
+	[19647.779285][ T3721]  lock_two_nondirectories+0x59/0x70
+	[19647.779931][ T3721]  btrfs_remap_file_range+0x54/0x3c0
+	[19647.780564][ T3721]  vfs_dedupe_file_range_one+0x117/0x180
+	[19647.781366][ T3721]  vfs_dedupe_file_range+0x159/0x1e0
+	[19647.782009][ T3721]  do_vfs_ioctl+0x551/0x720
+	[19647.782554][ T3721]  ? __fget_files+0x109/0x1d0
+	[19647.783230][ T3721]  __x64_sys_ioctl+0x6f/0xc0
+	[19647.783804][ T3721]  do_syscall_64+0x38/0x90
+	[19647.784319][ T3721]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+	[19647.785031][ T3721] RIP: 0033:0x7f0ab2429cc7
+	[19647.785548][ T3721] RSP: 002b:00007f0aab31a1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+	[19647.786660][ T3721] RAX: ffffffffffffffda RBX: 00007f0aab31a420 RCX: 00007f0ab2429cc7
+	[19647.787609][ T3721] RDX: 00007f0a70008f00 RSI: 00000000c0189436 RDI: 0000000000000012
+	[19647.788551][ T3721] RBP: 00007f0a70008f00 R08: 00007f0a708e66e0 R09: 0000000000000000
+	[19647.789533][ T3721] R10: 00007ffc0f9f2080 R11: 0000000000000246 R12: 00007f0a70008f00
+	[19647.790482][ T3721] R13: 00007f0aab31a428 R14: 0000000000000000 R15: 00007f0aab31a448
+	[32609.668575][ T3721] sysrq: Show Locks Held
+	[32609.673950][ T3721] 
+	[32609.673950][ T3721] Showing all locks held in the system:
+	[32609.675276][ T3721] 1 lock held by in:imklog/3603:
+	[32609.675885][ T3721] 1 lock held by dmesg/3720:
+	[32609.676432][ T3721]  #0: ffff8a1406ac80e0 (&user->lock){+.+.}-{3:3}, at: devkmsg_read+0x4d/0x320
+	[32609.678403][ T3721] 3 locks held by bash/3721:
+	[32609.678972][ T3721]  #0: ffff8a142a589498 (sb_writers#4){.+.+}-{0:0}, at: ksys_write+0x70/0xf0
+	[32609.680364][ T3721]  #1: ffffffff98f199a0 (rcu_read_lock){....}-{1:2}, at: __handle_sysrq+0x5/0xa0
+	[32609.682046][ T3721]  #2: ffffffff98f199a0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x23/0x187
+	[32609.683847][ T3721] 1 lock held by btrfs-transacti/6161:
+	[32609.684498][ T3721]  #0: ffff8a14e0178850 (&fs_info->transaction_kthread_mutex){+.+.}-{3:3}, at: transaction_kthread+0x5a/0x1b0
+	[32609.686275][ T3721] 3 locks held by crawl_257_265/6491:
+	[32609.686937][ T3721] 3 locks held by crawl_257_291/6494:
+	[32609.687578][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
+	[32609.689126][ T3721]  #1: ffff8a1410d7c848 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
+	[32609.690694][ T3721]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
+	[32609.692091][ T3721] 4 locks held by crawl_257_292/6502:
+	[32609.692763][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
+	[32609.694014][ T3721]  #1: ffff8a131637a908 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
+	[32609.695377][ T3721]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
+	[32609.696764][ T3721]  #3: ffff8a14bd0926b8 (sb_internal#2){.+.+}-{0:0}, at: btrfs_start_transaction+0x1e/0x20
+	[32609.697986][ T3721] 2 locks held by crawl_257_293/6503:
+	[32609.698629][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
+	[32609.699882][ T3721]  #1: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: btrfs_remap_file_range+0x2eb/0x3c0
+	[32609.701674][ T3721] 3 locks held by crawl_256_289/6504:
+	[32609.702443][ T3721]  #0: ffff8a14bd092498 (sb_writers#12){.+.+}-{0:0}, at: vfs_dedupe_file_range_one+0x3b/0x180
+	[32609.703927][ T3721]  #1: ffff8a140f2c4748 (&sb->s_type->i_mutex_key#17){+.+.}-{3:3}, at: lock_two_nondirectories+0x6b/0x70
+	[32609.705444][ T3721]  #2: ffff8a14161a39c8 (&sb->s_type->i_mutex_key#17/4){+.+.}-{3:3}, at: lock_two_nondirectories+0x59/0x70
+	[32609.706899][ T3721] 
+	[32609.707177][ T3721] =============================================
+
+There is also a severe performance regression (50% slower) in btrfs dedupe
+starting in 5.11, but reverting this commit doesn't make the performance
+regression go away.  I'll follow up on that separately.
